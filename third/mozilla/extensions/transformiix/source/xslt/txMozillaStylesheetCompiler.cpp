@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -148,13 +148,13 @@ NS_IMETHODIMP
 txStylesheetSink::HandleStartElement(const PRUnichar *aName,
                                      const PRUnichar **aAtts,
                                      PRUint32 aAttsCount,
-                                     PRUint32 aIndex,
+                                     PRInt32 aIndex,
                                      PRUint32 aLineNumber)
 {
-    // XXX aIndex should be a signed int, that's a bug in the 
-    // Mozilla content sink api.
+    NS_PRECONDITION(aAttsCount % 2 == 0, "incorrect aAttsCount");
+
     nsresult rv =
-        mCompiler->startElement(aName, aAtts, aAttsCount, (PRInt32)aIndex);
+        mCompiler->startElement(aName, aAtts, aAttsCount / 2, aIndex);
     if (NS_FAILED(rv)) {
         mCompiler->cancel(rv);
 
@@ -573,21 +573,13 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
         {
             nsCOMPtr<nsIContent> element = do_QueryInterface(aNode);
 
-            nsCOMPtr<nsINodeInfo> ni;
-            element->GetNodeInfo(getter_AddRefs(ni));
-
-            PRInt32 namespaceID = ni->GetNamespaceID();
-            nsCOMPtr<nsIAtom> localname = ni->GetNameAtom();
-            nsCOMPtr<nsIAtom> prefix = ni->GetPrefixAtom();
-
-            PRInt32 attsCount;
-            element->GetAttrCount(attsCount);
+            PRUint32 attsCount = element->GetAttrCount();
             nsAutoArrayPtr<txStylesheetAttr> atts;
             if (attsCount > 0) {
                 atts = new txStylesheetAttr[attsCount];
                 NS_ENSURE_TRUE(atts, NS_ERROR_OUT_OF_MEMORY);
 
-                PRInt32 counter;
+                PRUint32 counter;
                 for (counter = 0; counter < attsCount; ++counter) {
                     txStylesheetAttr& att = atts[counter];
                     element->GetAttrNameAt(counter, &att.mNamespaceID,
@@ -597,19 +589,22 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
                 }
             }
 
-            rv = aCompiler->startElement(namespaceID, localname, prefix, atts,
+            nsINodeInfo *ni = element->GetNodeInfo();
+
+            rv = aCompiler->startElement(ni->NamespaceID(),
+                                         ni->NameAtom(),
+                                         ni->GetPrefixAtom(), atts,
                                          attsCount);
             NS_ENSURE_SUCCESS(rv, rv);
 
             // explicitly destroy the attrs here since we no longer need it
             atts = nsnull;
 
-            PRInt32 childCount;
-            element->ChildCount(childCount);
+            PRUint32 childCount = element->GetChildCount();
             if (childCount > 0) {
-                PRInt32 counter = 0;
-                nsCOMPtr<nsIContent> child;
-                while (NS_SUCCEEDED(element->ChildAt(counter++, getter_AddRefs(child))) && child) {
+                PRUint32 counter = 0;
+                nsIContent *child;
+                while ((child = element->GetChildAt(counter++))) {
                     nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(child);
                     rv = handleNode(childNode, aCompiler);
                     NS_ENSURE_SUCCESS(rv, rv);
@@ -634,16 +629,13 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
         case nsIDOMNode::DOCUMENT_NODE:
         {
             nsCOMPtr<nsIDocument> document = do_QueryInterface(aNode);
-            PRInt32 childCount;
-            document->GetChildCount(childCount);
-            if (childCount > 0) {
-                PRInt32 counter = 0;
-                nsCOMPtr<nsIContent> child;
-                while (NS_SUCCEEDED(document->ChildAt(counter++, getter_AddRefs(child))) && child) {
-                    nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(child);
-                    rv = handleNode(childNode, aCompiler);
-                    NS_ENSURE_SUCCESS(rv, rv);
-                }
+
+            PRUint32 counter = 0;
+            nsIContent *child;
+            while ((child = document->GetChildAt(counter++))) {
+                nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(child);
+                rv = handleNode(childNode, aCompiler);
+                NS_ENSURE_SUCCESS(rv, rv);
             }
             break;
         }
@@ -762,8 +754,7 @@ TX_CompileStylesheet(nsIDOMNode* aNode, txStylesheet** aStylesheet)
     }
 
     nsCOMPtr<nsIDocument> doc = do_QueryInterface(document);
-    nsCOMPtr<nsIURI> uri;
-    doc->GetBaseURL(getter_AddRefs(uri));
+    nsIURI *uri = doc->GetBaseURL();
     nsCAutoString baseURI;
     uri->GetSpec(baseURI);
 

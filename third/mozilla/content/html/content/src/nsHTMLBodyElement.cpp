@@ -155,9 +155,7 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
   if (!aData || (aData->mSID != eStyleStruct_Margin) || !aData->mMarginData || !mPart)
     return NS_OK; // We only care about margins.
 
-  nsHTMLValue   value;
-  PRInt32       attrCount;
-  mPart->GetAttrCount(attrCount);
+  nsHTMLValue value;
   
   PRInt32 bodyMarginWidth  = -1;
   PRInt32 bodyMarginHeight = -1;
@@ -172,7 +170,7 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
   aData->mPresContext->GetCompatibilityMode(&mode);
 
 
-  if (attrCount > 0) {
+  if (mPart->GetAttrCount() > 0) {
     // if marginwidth/marginheight are set, reflect them as 'margin'
     mPart->GetHTMLAttribute(nsHTMLAtoms::marginwidth, value);
     if (eHTMLUnit_Pixel == value.GetUnit()) {
@@ -413,7 +411,7 @@ nsHTMLBodyElement::Set##func_(const nsAString& aColor)              \
 }
 
 NS_IMPL_HTMLBODY_COLOR_ATTR(vlink, VLink, VisitedLinkColor)
-NS_IMPL_HTMLBODY_COLOR_ATTR(alink, ALink, LinkColor)
+NS_IMPL_HTMLBODY_COLOR_ATTR(alink, ALink, ActiveLinkColor)
 NS_IMPL_HTMLBODY_COLOR_ATTR(link, Link, LinkColor)
 // XXX Should text check the body frame's style struct for color,
 // like we do for bgColor?
@@ -434,8 +432,7 @@ nsHTMLBodyElement::GetBgColor(nsAString& aBgColor)
     // XXX This should just use nsGenericHTMLElement::GetPrimaryFrame()
     if (mDocument) {
       // Make sure the presentation is up-to-date
-      rv = mDocument->FlushPendingNotifications();
-      NS_ENSURE_SUCCESS(rv, rv);
+      mDocument->FlushPendingNotifications();
     }
 
     nsCOMPtr<nsIPresContext> context;
@@ -522,10 +519,7 @@ nsHTMLBodyElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
 static 
 void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
 {
-  if (!aAttributes || !aData)
-    return;
-  
-  if (aData->mDisplayData && aData->mSID == eStyleStruct_Display) {
+  if (aData->mSID == eStyleStruct_Display) {
     // When display if first asked for, go ahead and get our colors set up.
     nsHTMLValue value;
     
@@ -564,7 +558,7 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
     }
   }
 
-  if (aData->mColorData && aData->mSID == eStyleStruct_Color) {
+  if (aData->mSID == eStyleStruct_Color) {
     if (aData->mColorData->mColor.GetUnit() == eCSSUnit_Null) {
       // color: color
       nsHTMLValue value;

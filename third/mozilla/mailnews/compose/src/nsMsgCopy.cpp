@@ -44,7 +44,7 @@
 #include "nsMsgFolderFlags.h"
 #include "nsIMsgFolder.h"
 #include "nsIMsgAccountManager.h"
-#include "nsIFolder.h"
+#include "nsIMsgFolder.h"
 #include "nsISupportsArray.h"
 #include "nsIMsgIncomingServer.h"
 #include "nsISupports.h"
@@ -59,6 +59,7 @@
 #include "nsIMsgImapMailFolder.h"
 #include "nsIEventQueueService.h"
 #include "nsMsgSimulateError.h"
+#include "nsIMsgWindow.h"
 
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
@@ -196,7 +197,7 @@ nsMsgCopy::StartCopyOperation(nsIMsgIdentity       *aUserIdentity,
   nsCOMPtr<nsIMsgFolder>  dstFolder;
   PRBool                  isDraft = PR_FALSE;
   PRBool                  waitForUrl = PR_FALSE;
-  nsresult			rv;
+  nsresult                rv;
 
   if (!aMsgSendObj)
     return NS_ERROR_INVALID_ARG;
@@ -238,10 +239,20 @@ nsMsgCopy::StartCopyOperation(nsIMsgIdentity       *aUserIdentity,
       return NS_MSG_COULDNT_OPEN_FCC_FOLDER;
   }
 
+  nsCOMPtr <nsIMsgWindow> msgWindow;
+
+  if (aMsgSendObj)
+  {
+    nsCOMPtr <nsIMsgProgress> progress;
+    aMsgSendObj->GetProgress(getter_AddRefs(progress));
+    if (progress)
+      progress->GetMsgWindow(getter_AddRefs(msgWindow));
+  }
+
   mMode = aMode;
   if (!waitForUrl)
   {
-    rv = DoCopy(aFileSpec, dstFolder, aMsgToReplace, isDraft, nsnull, aMsgSendObj);
+    rv = DoCopy(aFileSpec, dstFolder, aMsgToReplace, isDraft, msgWindow, aMsgSendObj);
   }
   else
   {
@@ -267,9 +278,9 @@ nsMsgCopy::DoCopy(nsIFileSpec *aDiskFile, nsIMsgFolder *dstFolder,
   if ((!aDiskFile) || (!dstFolder))
     return NS_ERROR_INVALID_ARG;
 
-	//Call copyservice with dstFolder, disk file, and txnManager
-	if(NS_SUCCEEDED(rv))
-	{
+  //Call copyservice with dstFolder, disk file, and txnManager
+  if(NS_SUCCEEDED(rv))
+  {
     CopyListener    *tPtr = new CopyListener();
     if (!tPtr)
       return NS_ERROR_OUT_OF_MEMORY;
@@ -322,9 +333,9 @@ nsMsgCopy::DoCopy(nsIFileSpec *aDiskFile, nsIMsgFolder *dstFolder,
         if (eventQueue)
             eventQueue->ProcessPendingEvents();
     }
-	}
+  }
 
-	return rv;
+  return rv;
 }
 
 // nsIUrlListener methods
@@ -383,7 +394,7 @@ nsMsgCopy::CreateIfMissing(nsIMsgFolder **folder, PRBool *waitForUrl)
   nsresult ret = NS_OK;
   if (folder && *folder)
   {
-    nsCOMPtr <nsIFolder> parent;
+    nsCOMPtr <nsIMsgFolder> parent;
     (*folder)->GetParent(getter_AddRefs(parent));
     if (!parent)
     {
@@ -503,13 +514,8 @@ LocateMessageFolder(nsIMsgIdentity   *userIdentity,
       if ( NS_FAILED(rv) || (!serverURI) || !(*serverURI) )
         continue;
       
-      nsCOMPtr <nsIFolder> folder;
-      rv = inServer->GetRootFolder(getter_AddRefs(folder));
-      if (NS_FAILED(rv) || (!folder))
-        continue;
-      
       nsCOMPtr<nsIMsgFolder> rootFolder;
-      rootFolder = do_QueryInterface(folder, &rv);
+      rv = inServer->GetRootFolder(getter_AddRefs(rootFolder));
       
       if(NS_FAILED(rv) || (!rootFolder))
         continue;

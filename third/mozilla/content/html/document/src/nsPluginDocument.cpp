@@ -61,7 +61,7 @@ public:
                                PRBool              aReset = PR_TRUE,
                                nsIContentSink*     aSink = nsnull);
 
-  NS_IMETHOD SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject);
+  virtual void SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject);
 
 protected:
   nsresult CreateSyntheticPluginDocument();
@@ -91,13 +91,14 @@ NS_INTERFACE_MAP_BEGIN(nsPluginDocument)
 NS_INTERFACE_MAP_END_INHERITING(nsMediaDocument)
 
 
-NS_IMETHODIMP nsPluginDocument::SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject)
+void
+nsPluginDocument::SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject)
 {
   if (!aScriptGlobalObject) {
     mStreamListener = nsnull;
   }
 
-  return nsMediaDocument::SetScriptGlobalObject(aScriptGlobalObject);
+  nsMediaDocument::SetScriptGlobalObject(aScriptGlobalObject);
 }
 
 
@@ -224,29 +225,29 @@ nsPluginDocument::Print()
 {
   NS_ENSURE_TRUE(mPluginContent, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIPresShell> shell;
-  GetShellAt(0, getter_AddRefs(shell));
-  if (shell) {
+  nsIPresShell *shell = GetShellAt(0);
+  if (!shell) {
+    return NS_OK;
+  }
 
-    nsIFrame* frame = nsnull;
-    shell->GetPrimaryFrameFor(mPluginContent, &frame);
+  nsIFrame* frame = nsnull;
+  shell->GetPrimaryFrameFor(mPluginContent, &frame);
 
-    nsIObjectFrame* objectFrame = nsnull;
-    CallQueryInterface(frame,&objectFrame);
+  nsIObjectFrame* objectFrame = nsnull;
+  CallQueryInterface(frame, &objectFrame);
 
-    if (objectFrame) {
-      nsCOMPtr<nsIPluginInstance> pi;
-      objectFrame->GetPluginInstance(*getter_AddRefs(pi));
-      if (pi) {
+  if (objectFrame) {
+    nsCOMPtr<nsIPluginInstance> pi;
+    objectFrame->GetPluginInstance(*getter_AddRefs(pi));
 
-        nsPluginPrint npprint;
-        npprint.mode = nsPluginMode_Full;
-        npprint.print.fullPrint.pluginPrinted = PR_FALSE;
-        npprint.print.fullPrint.printOne = PR_FALSE;
-        npprint.print.fullPrint.platformPrint = nsnull;
+    if (pi) {
+      nsPluginPrint npprint;
+      npprint.mode = nsPluginMode_Full;
+      npprint.print.fullPrint.pluginPrinted = PR_FALSE;
+      npprint.print.fullPrint.printOne = PR_FALSE;
+      npprint.print.fullPrint.platformPrint = nsnull;
 
-        pi->Print(&npprint);
-      }
+      pi->Print(&npprint);
     }
   }
 

@@ -50,7 +50,7 @@
 #include "nsXPIDLString.h"
 
 class nsParseNewMailState;
-class nsIFolder;
+class nsIMsgFolder;
 
 class nsPop3Sink : public nsIPop3Sink
 {
@@ -60,7 +60,7 @@ public:
 
     NS_DECL_ISUPPORTS
     NS_DECL_NSIPOP3SINK
-    nsresult	GetServerFolder(nsIFolder **aFolder);
+    nsresult	GetServerFolder(nsIMsgFolder **aFolder);
 
     static char*  GetDummyEnvelope(void);
     
@@ -73,13 +73,14 @@ protected:
     PRInt32 m_msgOffset;
     char* m_accountUrl;
     PRUint32 m_biffState;
+    PRInt32 m_numNewMessages;
     PRBool m_senderAuthed;
     char* m_outputBuffer;
     PRInt32 m_outputBufferSize;
     nsIPop3IncomingServer *m_popServer;
-	//Currently the folder we want to update about biff info
-	nsIMsgFolder *m_folder;
-	nsParseNewMailState	*m_newMailParser;
+    //Currently the folder we want to update about biff info
+    nsIMsgFolder *m_folder;
+    nsParseNewMailState	*m_newMailParser;
 #ifdef DEBUG
     PRInt32 m_fileCounter;
 #endif

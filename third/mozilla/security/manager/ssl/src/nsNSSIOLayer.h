@@ -18,7 +18,7 @@
  * Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  */
 
 #ifndef _NSNSSIOLAYER_H
@@ -111,7 +111,8 @@ private:
   void destructorSafeDestroyNSSReference();
 };
 
-nsresult nsSSLIOLayerNewSocket(const char *host,
+nsresult nsSSLIOLayerNewSocket(PRInt32 family,
+                               const char *host,
                                PRInt32 port,
                                const char *proxyHost,
                                PRInt32 proxyPort,
@@ -119,7 +120,8 @@ nsresult nsSSLIOLayerNewSocket(const char *host,
                                nsISupports **securityInfo,
                                PRBool forSTARTTLS);
 
-nsresult nsSSLIOLayerAddToSocket(const char *host,
+nsresult nsSSLIOLayerAddToSocket(PRInt32 family,
+                                 const char *host,
                                  PRInt32 port,
                                  const char *proxyHost,
                                  PRInt32 proxyPort,

@@ -38,9 +38,7 @@
 #ifndef nsTraceRefcnt_h___
 #define nsTraceRefcnt_h___
 
-#include "nsCom.h"
-
-#include <stdio.h>
+#include "nscore.h"
 
 class nsISupports;
 

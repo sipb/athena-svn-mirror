@@ -55,7 +55,7 @@ class nsIntervalSet;
  * Child list name indices
  * @see #GetAdditionalChildListName()
  */
-#define NS_BLOCK_FRAME_FLOATER_LIST_INDEX   0
+#define NS_BLOCK_FRAME_FLOAT_LIST_INDEX   0
 #define NS_BLOCK_FRAME_BULLET_LIST_INDEX    1
 #define NS_BLOCK_FRAME_OVERFLOW_LIST_INDEX  2
 #define NS_BLOCK_FRAME_ABSOLUTE_LIST_INDEX  3
@@ -132,7 +132,7 @@ public:
                    const nsRect&        aDirtyRect,
                    nsFramePaintLayer    aWhichLayer,
                    PRUint32             aFlags = 0);
-  NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  virtual nsIAtom* GetType() const;
 #ifdef DEBUG
   NS_IMETHOD List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
@@ -149,9 +149,7 @@ public:
                                   PRBool               aCheckVis,
                                   PRBool*              aIsVisible);
 
-  NS_IMETHOD IsEmpty(nsCompatibility aCompatMode,
-                     PRBool aIsPre,
-                     PRBool* aResult);
+  virtual PRBool IsEmpty();
 
   // nsIHTMLReflow
   NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
@@ -195,20 +193,15 @@ public:
 
   static nsresult GetCurrentLine(nsBlockReflowState *aState, nsLineBox **aOutCurrentLine);
 
-  static void CombineRects(const nsRect& r1, nsRect& r2);
-
   inline nscoord GetAscent() { return mAscent; }
 
   // Create a contination for aPlaceholder and its out of flow frame and
-  // add it to the list of overflow floaters
+  // add it to the list of overflow floats
   nsresult SplitPlaceholder(nsIPresContext& aPresContext, nsIFrame& aPlaceholder);
 
   void UndoSplitPlaceholders(nsBlockReflowState& aState,
                              nsIFrame*           aLastPlaceholder);
   
-#ifdef MOZ_ACCESSIBILITY_ATK
-  NS_IMETHOD GetAccessible(nsIAccessible** aAccessible);
-#endif
 protected:
   nsBlockFrame();
   virtual ~nsBlockFrame();
@@ -256,7 +249,7 @@ protected:
   }
 
   /** move the frames contained by aLine by aDY
-    * if aLine is a block, it's child floaters are added to the state manager
+    * if aLine is a block, it's child floats are added to the state manager
     */
   void SlideLine(nsBlockReflowState& aState,
                  nsLineBox* aLine, nscoord aDY);
@@ -276,10 +269,6 @@ protected:
   void ComputeCombinedArea(const nsHTMLReflowState& aReflowState,
                            nsHTMLReflowMetrics& aMetrics);
 
-  // Calls |nsLineBox::IsEmpty| with the correct arguments.
-  PRBool IsLineEmpty(nsIPresContext* aPresContext,
-                     const nsLineBox* aLine) const;
-
   /** add the frames in aFrameList to this block after aPrevSibling
     * this block thinks in terms of lines, but the frame construction code
     * knows nothing about lines at all. So we need to find the line that
@@ -298,7 +287,7 @@ protected:
   nsresult DoRemoveFrame(nsIPresContext* aPresContext,
                          nsIFrame* aDeletedFrame);
 
-  // Remove a floater, abs, rel positioned frame from the appropriate block's list
+  // Remove a float, abs, rel positioned frame from the appropriate block's list
   static void DoRemoveOutOfFlowFrame(nsIPresContext* aPresContext,
                                      nsIFrame*       aFrame);
 
@@ -429,12 +418,12 @@ protected:
                              nsIFrame* aFrame,
                              PRUint8* aLineReflowStatus);
 
-  // An incomplete aReflowStatus indicates the floater should be split
+  // An incomplete aReflowStatus indicates the float should be split
   // but only if the available height is constrained.
-  nsresult ReflowFloater(nsBlockReflowState& aState,
-                         nsPlaceholderFrame* aPlaceholder,
-                         nsFloaterCache*     aFloaterCache,
-                         nsReflowStatus&     aReflowStatus);
+  nsresult ReflowFloat(nsBlockReflowState& aState,
+                       nsPlaceholderFrame* aPlaceholder,
+                       nsFloatCache*       aFloatCache,
+                       nsReflowStatus&     aReflowStatus);
 
   //----------------------------------------
   // Methods for pushing/pulling lines/frames
@@ -480,15 +469,15 @@ protected:
                              nsFramePaintLayer    aWhichLayer,
                              PRUint32             aFlags = 0);
 
-  void PaintFloaters(nsIPresContext* aPresContext,
-                     nsIRenderingContext& aRenderingContext,
-                     const nsRect& aDirtyRect);
+  void PaintFloats(nsIPresContext* aPresContext,
+                   nsIRenderingContext& aRenderingContext,
+                   const nsRect& aDirtyRect);
 
-  void PropagateFloaterDamage(nsBlockReflowState& aState,
-                              nsLineBox* aLine,
-                              nscoord aDeltaY);
+  void PropagateFloatDamage(nsBlockReflowState& aState,
+                            nsLineBox* aLine,
+                            nscoord aDeltaY);
 
-  void BuildFloaterList();
+  void BuildFloatList();
 
   //----------------------------------------
   // List handling kludge
@@ -537,8 +526,8 @@ protected:
 
   nsLineList mLines;
 
-  // List of all floaters in this block
-  nsFrameList mFloaters;
+  // List of all floats in this block
+  nsFrameList mFloats;
 
   // XXX_fix_me: subclass one more time!
   // For list-item frames, this is the bullet frame.

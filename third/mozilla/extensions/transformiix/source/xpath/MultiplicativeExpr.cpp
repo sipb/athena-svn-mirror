@@ -42,20 +42,6 @@
 #include "txIXPathContext.h"
 
 /**
- * Creates a new MultiplicativeExpr using the given operator
-**/
-MultiplicativeExpr::MultiplicativeExpr(Expr* leftExpr, Expr* rightExpr, short op) {
-    this->op = op;
-    this->leftExpr = leftExpr;
-    this->rightExpr = rightExpr;
-} //-- MultiplicativeExpr
-
-MultiplicativeExpr::~MultiplicativeExpr() {
-    delete leftExpr;
-    delete rightExpr;
-} //-- ~MultiplicativeExpr
-
-/**
  * Evaluates this Expr based on the given context node and processor state
  * @param context the context node for evaluation of this Expr
  * @param ps the ContextState containing the stack information needed
@@ -82,7 +68,7 @@ MultiplicativeExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     switch ( op ) {
         case DIVIDE:
             if (rightDbl == 0) {
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
                 /* XXX MSVC miscompiles such that (NaN == 0) */
                 if (Double::isNaN(rightDbl))
                     result = Double::NaN;
@@ -103,7 +89,7 @@ MultiplicativeExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
                 result = Double::NaN;
             }
             else {
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
                 /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
                 if (!Double::isInfinite(leftDbl) && Double::isInfinite(rightDbl))
                     result = leftDbl;

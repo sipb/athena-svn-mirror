@@ -93,6 +93,8 @@ public:
   NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
 protected:
+  already_AddRefed<nsIDOMHTMLTableSectionElement> GetSection(nsIAtom *aTag);
+
   GenericElementCollection *mTBodies;
   TableRowsCollection *mRows;
 };
@@ -451,32 +453,33 @@ nsHTMLTableElement::SetCaption(nsIDOMHTMLTableCaptionElement* aValue)
   return rv;
 }
 
+already_AddRefed<nsIDOMHTMLTableSectionElement>
+nsHTMLTableElement::GetSection(nsIAtom *aTag)
+{
+  PRUint32 childCount = GetChildCount();
+
+  nsCOMPtr<nsIDOMHTMLTableSectionElement> section;
+
+  for (PRUint32 i = 0; i < childCount; ++i) {
+    nsIContent *child = GetChildAt(i);
+
+    section = do_QueryInterface(child);
+
+    if (section && child->GetNodeInfo()->Equals(aTag)) {
+      nsIDOMHTMLTableSectionElement *result = section;
+      NS_ADDREF(result);
+
+      return result;
+    }
+  }
+
+  return nsnull;
+}
+
 NS_IMETHODIMP
 nsHTMLTableElement::GetTHead(nsIDOMHTMLTableSectionElement** aValue)
 {
-  *aValue = nsnull;
-  nsCOMPtr<nsIDOMNode> child;
-  GetFirstChild(getter_AddRefs(child));
-
-  while (child) {
-    nsCOMPtr<nsIDOMHTMLTableSectionElement> section(do_QueryInterface(child));
-
-    if (section) {
-      nsCOMPtr<nsIAtom> tag;
-      nsCOMPtr<nsIContent> content = do_QueryInterface(section);
-
-      content->GetTag(getter_AddRefs(tag));
-      if (tag.get() == nsHTMLAtoms::thead) {
-        *aValue = section;
-        NS_ADDREF(*aValue);
-
-        break;
-      }
-    }
-
-    nsIDOMNode *temp = child.get();
-    temp->GetNextSibling(getter_AddRefs(child));
-  }
+  *aValue = GetSection(nsHTMLAtoms::thead).get();
 
   return NS_OK;
 }
@@ -506,30 +509,7 @@ nsHTMLTableElement::SetTHead(nsIDOMHTMLTableSectionElement* aValue)
 NS_IMETHODIMP
 nsHTMLTableElement::GetTFoot(nsIDOMHTMLTableSectionElement** aValue)
 {
-  *aValue = nsnull;
-  nsCOMPtr<nsIDOMNode> child;
-  GetFirstChild(getter_AddRefs(child));
-
-  while (child) {
-    nsCOMPtr<nsIDOMHTMLTableSectionElement> section(do_QueryInterface(child));
-
-    if (section) {
-      nsCOMPtr<nsIAtom> tag;
-      nsCOMPtr<nsIContent> content = do_QueryInterface(section);
-
-      content->GetTag(getter_AddRefs(tag));
-
-      if (tag.get() == nsHTMLAtoms::tfoot) {
-        *aValue = section;
-        NS_ADDREF(*aValue);
-
-        break;
-      }
-    }
-
-    nsIDOMNode *temp = child.get();
-    temp->GetNextSibling(getter_AddRefs(child));
-  }
+  *aValue = GetSection(nsHTMLAtoms::tfoot).get();
 
   return NS_OK;
 }
@@ -1237,16 +1217,10 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
   // which *element* it's matching (style rules should not stop matching
   // when the display type is changed).
 
-  if (!aData)
-    return;
-
-  if (!aAttributes)
-    return;
-
   nsCompatibility mode;
   aData->mPresContext->GetCompatibilityMode(&mode);
 
-  if (aData->mSID == eStyleStruct_TableBorder && aData->mTableData) {
+  if (aData->mSID == eStyleStruct_TableBorder) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       // cellspacing 
@@ -1266,9 +1240,8 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
           aData->mTableData->mBorderSpacingY.SetFloatValue(100.0f * value.GetPercentValue(), eCSSUnit_Pixel);
       }
     }
-  }
-
-  if (aData->mSID == eStyleStruct_Table && aData->mTableData) {
+  } 
+  else if (aData->mSID == eStyleStruct_Table) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       MapTableBorderInto(aAttributes, aData, 0);
@@ -1296,7 +1269,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
         aData->mTableData->mRules.SetIntValue(value.GetIntValue(), eCSSUnit_Enumerated);
     }
   }
-  else if (aData->mSID == eStyleStruct_Margin && aData->mMarginData) {
+  else if (aData->mSID == eStyleStruct_Margin) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
@@ -1342,7 +1315,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_Padding && aData->mMarginData) {
+  else if (aData->mSID == eStyleStruct_Padding) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL) {
@@ -1376,7 +1349,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mPositionData) {
+  else if (aData->mSID == eStyleStruct_Position) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
@@ -1406,7 +1379,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL)
       nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
   }
-  else if (aData->mSID == eStyleStruct_Border && aData->mMarginData) {
+  else if (aData->mSID == eStyleStruct_Border) {
     if (!aData->mStyleContext) return;
     const nsStyleTableBorder* tableStyle = aData->mStyleContext->GetStyleTableBorder();
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
@@ -1489,8 +1462,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       MapTableBorderInto(aAttributes, aData, borderStyle);
     }
   }
-
-  if (aData->mSID == eStyleStruct_Background) {
+  else if (aData->mSID == eStyleStruct_Background) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL)
@@ -1515,9 +1487,6 @@ nsHTMLTableElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
     
     { &nsHTMLAtoms::bordercolor },
     
-    // Changing to rules will force border-collapse. Unfortunately, if
-    // border-collapse was already in effect, then a frame change is
-    // not necessary.
     { &nsHTMLAtoms::align },
     { &nsHTMLAtoms::rules },
     { nsnull }

@@ -9,12 +9,12 @@
 		<!-- ::::::::::::::::: CONTENT ::::::::::::::::::::::::: -->
 		<content id="content">
 		<xul:hbox flex="1" id="hbox">
-			<xul:textbox id="textbox" 
-				onkeypress="if (event.keyCode == 13) this.parentNode.parentNode.update(new Date(this.value));"
-				onblur="this.parentNode.parentNode.parentNode.parentNode.update(new Date(this.value),true);"/>
+			<xul:textbox id="textbox"
+ 				onkeypress="if (event.keyCode == 13) this.parentNode.parentNode.parseTextDate();"
+ 				onblur="this.parentNode.parentNode.parentNode.parentNode.parseTextDate(true);"/> 
 			
 			<xul:menu class="datepicker-button">
-				<xul:menupopup popupanchor="bottomright" popupalign="topright" oncreate="this.parentNode.parentNode.parentNode.parentNode.openPopup()">
+				<xul:menupopup popupanchor="bottomright" popupalign="topright" onpopupshowing="this.parentNode.parentNode.parentNode.openPopup()">
 					<xul:calendar onchange="this.parentNode.hidePopup(); this.parentNode.parentNode.parentNode.parentNode.update(new Date(this.value),true); "/>
 				</xul:menupopup>
 			</xul:menu>
@@ -37,6 +37,7 @@
 				this.mTextBox = document.getAnonymousNodes(this)[0].childNodes[0];
 				this.mPopup = document.getAnonymousNodes(this)[0].childNodes[1].childNodes[0];
 				this.calendar = document.getAnonymousNodes(this)[0].childNodes[1].childNodes[0].childNodes[0];
+                                this.formatter= new DateFormater();
                 
 				var val = this.getAttribute("value");
 
@@ -54,11 +55,12 @@
 		<parameter name="aValue"/>
         <parameter name="refresh"/>
 			<body><![CDATA[
-            if (!aValue || aValue.toString() == "Invalid Date") {
-					this.mTextBox.setAttribute("value", this.getPrettyDate(this.mValue));
+ 			  if (aValue == null) {  // invalid date, revert to previous date
+ 			    // set textBox.value property, not attribute
+ 			    this.mTextBox.value = this.getPrettyDate(this.mValue);
 				} else {
 					this.mValue = aValue;
-                    this.mTextBox.setAttribute("value", this.getPrettyDate(this.mValue));
+					this.mTextBox.value = this.getPrettyDate(this.mValue);
                     if( this.callback && refresh != false )
                         this.callback();
 				}
@@ -76,14 +78,19 @@
         <method name="getPrettyDate">
 		<parameter name="aValue"/>
 			<body><![CDATA[
-				return (aValue.getMonth()+1) + "/" + aValue.getDate() + "/" + aValue.getFullYear();
+                                return this.formatter.getShortFormatedDate(aValue);
 			]]></body>
 		</method>
 
+		<method name="parseTextDate">
+ 		        <parameter name="aRefresh"/>
+ 			<body><![CDATA[
+ 			   this.update(this.formatter.parseShortDate(this.mTextBox.value), aRefresh);
+  			]]></body>
+		</method>
 		<method name="openPopup">
 			<body><![CDATA[
-				var cal = this.mPopup.childNodes[0];
-				cal.update( this.mValue );
+                            this.calendar.update( this.mValue );
 			]]></body>
 		</method>
 

@@ -331,80 +331,82 @@ nsMessenger::SetWindow(nsIDOMWindowInternal *aWin, nsIMsgWindow *aMsgWindow)
     if (prefBranch)
       pbi = do_QueryInterface(prefBranch);
   }
-	if(!aWin)
-	{
+  if(!aWin)
+  {
     // it isn't an error to pass in null for aWin, in fact it means we are shutting
     // down and we should start cleaning things up...
-
-		if (mMsgWindow)
-		{
-			nsCOMPtr<nsIMsgStatusFeedback> aStatusFeedback;
-
-			mMsgWindow->GetStatusFeedback(getter_AddRefs(aStatusFeedback));
-			if (aStatusFeedback)
-				aStatusFeedback->SetDocShell(nsnull, nsnull);
-
+    
+    if (mMsgWindow)
+    {
+      nsCOMPtr<nsIMsgStatusFeedback> aStatusFeedback;
+      
+      mMsgWindow->GetStatusFeedback(getter_AddRefs(aStatusFeedback));
+      if (aStatusFeedback)
+        aStatusFeedback->SetDocShell(nsnull, nsnull);
+      
       // Remove pref observer
       if (pbi)
         pbi->RemoveObserver(MAILNEWS_ALLOW_PLUGINS_PREF_NAME, this);
-		}
-
-		return NS_OK;
-	}
-
+    }
+    
+    return NS_OK;
+  }
+  
   mMsgWindow = aMsgWindow;
-
+  
   NS_IF_RELEASE(mWindow);
   mWindow = aWin;
   NS_ADDREF(aWin);
-
+  
   nsCOMPtr<nsIScriptGlobalObject> globalObj( do_QueryInterface(aWin) );
   NS_ENSURE_TRUE(globalObj, NS_ERROR_FAILURE);
-
+  
   nsCOMPtr<nsIDocShell> docShell;
   globalObj->GetDocShell(getter_AddRefs(docShell));
   nsCOMPtr<nsIDocShellTreeItem> docShellAsItem(do_QueryInterface(docShell));
   NS_ENSURE_TRUE(docShellAsItem, NS_ERROR_FAILURE);
-
+  
   nsCOMPtr<nsIDocShellTreeItem> rootDocShellAsItem;
   docShellAsItem->GetSameTypeRootTreeItem(getter_AddRefs(rootDocShellAsItem));
+  
+  nsCOMPtr<nsIDocShellTreeNode> rootDocShellAsNode(do_QueryInterface(rootDocShellAsItem));
 
-  nsCOMPtr<nsIDocShellTreeNode> 
-                     rootDocShellAsNode(do_QueryInterface(rootDocShellAsItem));
   if (rootDocShellAsNode) 
   {
     nsCOMPtr<nsIDocShellTreeItem> childAsItem;
     nsresult rv = rootDocShellAsNode->FindChildWithName(NS_LITERAL_STRING("messagepane").get(),
       PR_TRUE, PR_FALSE, nsnull, getter_AddRefs(childAsItem));
-
+    
     mDocShell = do_QueryInterface(childAsItem);
-
+    
     if (NS_SUCCEEDED(rv) && mDocShell) {
+      
+      mCurrentDisplayCharset = ""; // Important! Clear out mCurrentDisplayCharset so we reset a default charset on mDocshell the next time we try to load something into it.
+      
+      if (aMsgWindow) 
+      {
+        nsCOMPtr<nsIMsgStatusFeedback> aStatusFeedback;
+        
+        aMsgWindow->GetStatusFeedback(getter_AddRefs(aStatusFeedback));
+        if (aStatusFeedback)
+          aStatusFeedback->SetDocShell(mDocShell, mWindow);
 
-        if (aMsgWindow) {
-            nsCOMPtr<nsIMsgStatusFeedback> aStatusFeedback;
-            
-            aMsgWindow->GetStatusFeedback(getter_AddRefs(aStatusFeedback));
-            if (aStatusFeedback)
-            {
-                aStatusFeedback->SetDocShell(mDocShell, mWindow);
-            }
-            aMsgWindow->GetTransactionManager(getter_AddRefs(mTxnMgr));
-
-            // Add pref observer
-            if (pbi)
-              pbi->AddObserver(MAILNEWS_ALLOW_PLUGINS_PREF_NAME, this, PR_TRUE);
-            SetDisplayProperties();
-        }
+        aMsgWindow->GetTransactionManager(getter_AddRefs(mTxnMgr));
+        
+        // Add pref observer
+        if (pbi)
+          pbi->AddObserver(MAILNEWS_ALLOW_PLUGINS_PREF_NAME, this, PR_TRUE);
+        SetDisplayProperties();
+      }
     }
   }
-
+  
   // we don't always have a message pane, like in the addressbook
   // so if we don't havea docshell, use the one for the xul window.
   // we do this so OpenURL() will work.
   if (!mDocShell)
     mDocShell = docShell;
-
+  
   return NS_OK;
 }
 
@@ -421,10 +423,8 @@ NS_IMETHODIMP nsMessenger::SetDisplayCharset(const char * aCharset)
     if (cv) 
     {
       nsCOMPtr<nsIMarkupDocumentViewer> muDV = do_QueryInterface(cv);
-      if (muDV) {
+      if (muDV) 
         muDV->SetForceCharacterSet(nsDependentCString(aCharset));
-
-      }
 
       mCurrentDisplayCharset = aCharset;
     }
@@ -581,7 +581,7 @@ nsMessenger::OpenURL(const char *aURL)
     if(webNav)
       rv = webNav->LoadURI(NS_ConvertASCIItoUCS2(unescapedUrl).get(), // URI string
       nsIWebNavigation::LOAD_FLAGS_NONE,  // Load flags
-      nsnull,                             // Refering URI
+      nsnull,                             // Referring URI
       nsnull,                             // Post stream
       nsnull);                            // Extra headers
   }
@@ -885,7 +885,7 @@ enum MESSENGER_SAVEAS_FILE_TYPE
 #define EML_FILE_EXTENSION  ".eml"
 
 NS_IMETHODIMP
-nsMessenger::SaveAs(const char *aURI, PRBool aAsFile, nsIMsgIdentity *aIdentity, nsIMsgWindow *aMsgWindow)
+nsMessenger::SaveAs(const char *aURI, PRBool aAsFile, nsIMsgIdentity *aIdentity, const PRUnichar *aMsgFilename)
 {
   NS_ENSURE_ARG_POINTER(aURI);
   
@@ -907,8 +907,12 @@ nsMessenger::SaveAs(const char *aURI, PRBool aAsFile, nsIMsgIdentity *aIdentity,
       goto done;
     
     filePicker->Init(nsnull, GetString(NS_LITERAL_STRING("SaveMailAs").get()), nsIFilePicker::modeSave);
-    
-    filePicker->SetDefaultString(GetString(NS_LITERAL_STRING("defaultSaveMessageAsFileName").get()));
+
+    // if we have a non-null filename use it, otherwise use default save message one
+    if (aMsgFilename)    
+      filePicker->SetDefaultString(aMsgFilename);
+    else
+      filePicker->SetDefaultString(GetString(NS_LITERAL_STRING("defaultSaveMessageAsFileName").get()));
     
     // because we will be using GetFilterIndex()
     // we must call AppendFilters() one at a time, 
@@ -1192,36 +1196,6 @@ nsMessenger::DoCommand(nsIRDFCompositeDataSource* db, const nsACString& command,
 
 	return rv;
 
-}
-
-NS_IMETHODIMP
-nsMessenger::DeleteMessages(nsIRDFCompositeDataSource *database,
-                            nsIRDFResource *srcFolderResource,
-                            nsISupportsArray *resourceArray,
-							PRBool reallyDelete)
-{
-	nsresult rv;
-
-	if(!database || !srcFolderResource || !resourceArray)
-		return NS_ERROR_NULL_POINTER;
-
-	nsCOMPtr<nsISupportsArray> folderArray;
-
-	rv = NS_NewISupportsArray(getter_AddRefs(folderArray));
-	if(NS_FAILED(rv))
-	{
-		return NS_ERROR_OUT_OF_MEMORY;
-	}
-
-	folderArray->AppendElement(srcFolderResource);
-	
-	if(reallyDelete)
-		rv = DoCommand(database, NS_LITERAL_CSTRING(NC_RDF_REALLY_DELETE), folderArray, resourceArray);
-	else
-		rv = DoCommand(database, NS_LITERAL_CSTRING(NC_RDF_DELETE), folderArray, resourceArray);
-
-
-	return rv;
 }
 
 NS_IMETHODIMP nsMessenger::DeleteFolders(nsIRDFCompositeDataSource *db,

@@ -279,21 +279,16 @@ ValidateRealName(nsMsgAttachmentData *aAttach, MimeHeaders *aHdrs)
       contentType.Truncate(pos);
 
     nsCOMPtr<nsIMIMEService> mimeFinder (do_GetService(NS_MIMESERVICE_CONTRACTID, &rv));
-    if (NS_SUCCEEDED(rv) && mimeFinder) 
+    if (NS_SUCCEEDED(rv)) 
     {
-      nsIMIMEInfo *mimeInfo = nsnull;
-      rv = mimeFinder->GetFromTypeAndExtension(contentType.get(), nsnull, &mimeInfo);
-      if (NS_SUCCEEDED(rv) && mimeInfo) 
-      {
-        char *aFileExtension = nsnull;
+      nsXPIDLCString fileExtension;
+      rv = mimeFinder->GetPrimaryExtension(contentType.get(), nsnull, getter_Copies(fileExtension));
 
-        if ( (NS_SUCCEEDED(mimeInfo->GetPrimaryExtension(&aFileExtension))) && aFileExtension)
-        {
-          newAttachName.Append(NS_LITERAL_STRING("."));
-          newAttachName.AppendWithConversion(aFileExtension);
-          PR_FREEIF(aFileExtension);
-        }
-      }        
+      if (NS_SUCCEEDED(rv) && !fileExtension.IsEmpty())
+      {
+        newAttachName.Append(PRUnichar('.'));
+        newAttachName.AppendWithConversion(fileExtension);
+      }
     }
 
     aAttach->real_name = ToNewCString(newAttachName);
@@ -1181,7 +1176,7 @@ mime_image_make_image_html(void *image_closure)
 
   /* Internal-external-reconnect only works when going to the screen. */
   if (!mid->istream)
-    return nsCRT::strdup("<P><CENTER><IMG SRC=\"resource:/res/network/gopher-image.gif\" ALT=\"[Image]\"></CENTER><P>");
+    return nsCRT::strdup("<P><CENTER><IMG SRC=\"resource://gre/res/network/gopher-image.gif\" ALT=\"[Image]\"></CENTER><P>");
 
   if ( (!mid->url) || (!(*mid->url)) )
     url = "";

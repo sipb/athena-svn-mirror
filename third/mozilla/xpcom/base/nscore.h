@@ -91,18 +91,6 @@
 #define NS_CALLBACK_(_type, _name) _type (* _name)
 #define NS_STDCALL
 
-#elif defined(XP_OS2)
-
-#define NS_IMPORT
-#define NS_IMPORT_(type) type
-#define NS_EXPORT
-#define NS_EXPORT_(type) type
-#define NS_IMETHOD_(type) virtual type
-#define NS_IMETHODIMP_(type) type
-#define NS_METHOD_(type) type
-#define NS_CALLBACK_(_type, _name) _type (* _name)
-#define NS_STDCALL
-
 #else
 
 #define NS_IMPORT
@@ -117,13 +105,30 @@
 #endif
 
 /**
- * Macro for creating function protoypes which use stdcall
+ * Macro for creating typedefs for pointer-to-member types which are
+ * declared with stdcall.  It is important to use this for any type which is
+ * declared as stdcall (i.e. NS_IMETHOD).  For example, instead of writing:
+ *
+ *  typedef nsresult (nsIFoo::*someType)(nsISupports* arg);
+ *
+ *  you should write:
+ *
+ *  typedef
+ *  NS_STDCALL_FUNCPROTO(nsresult, someType, nsIFoo, typeFunc, (nsISupports*));
+ *
+ *  where nsIFoo::typeFunc is any method declared as
+ *  NS_IMETHOD typeFunc(nsISupports*);
+ *
+ *  XXX this can be simplified to always use the non-typeof implementation
+ *  when http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11893 is fixed.
  */
 
 #ifdef __GNUC__
-#define NS_STDCALL_FUNCPROTO(func,args) (func) args NS_STDCALL
+#define NS_STDCALL_FUNCPROTO(ret, name, class, func, args) \
+  typeof(&class::func) name
 #else
-#define NS_STDCALL_FUNCPROTO(func,args) (NS_STDCALL func) args
+#define NS_STDCALL_FUNCPROTO(ret, name, class, func, args) \
+  ret (NS_STDCALL class::*name) args
 #endif
 
 /**

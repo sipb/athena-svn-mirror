@@ -40,7 +40,6 @@
 
 #include "nsIDOMWindow.idl"
 
-interface nsISidebar;
 interface nsIPrompt;
 interface nsIControllers;
 interface nsIDOMLocation;
@@ -59,9 +58,6 @@ interface nsIDOMWindowInternal : nsIDOMWindow
 
   /* [replaceable] content */
   readonly attribute nsIDOMWindow                content;
-
-  /* [replaceable] sidebar */
-  readonly attribute nsISidebar                  sidebar;
 
   /* [replaceable] prompter */
   [noscript] readonly attribute nsIPrompt        prompter;
@@ -170,9 +166,6 @@ interface nsIDOMWindowInternal : nsIDOMWindow
 
   // XXX Should this be in nsIDOMChromeWindow?
   void                      updateCommands(in DOMString action);
-
-  DOMString                 escape(in DOMString str);
-  DOMString                 unescape(in DOMString str);
 
   /* See nsIDOMJSWindow for the scriptable version of find()
    * @param str: the search pattern

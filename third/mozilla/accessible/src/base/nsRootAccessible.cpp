@@ -125,8 +125,7 @@ NS_IMETHODIMP nsRootAccessible::GetRole(PRUint32 *aRole)
   *aRole = ROLE_PANE;
 
   // If it's a <dialog>, use ROLE_DIALOG instead
-  nsCOMPtr<nsIContent> rootContent;
-  mDocument->GetRootContent(getter_AddRefs(rootContent));
+  nsIContent *rootContent = mDocument->GetRootContent();
   if (rootContent) {
     nsCOMPtr<nsIDOMElement> rootElement(do_QueryInterface(rootContent));
     if (rootElement) {
@@ -243,8 +242,11 @@ nsresult nsRootAccessible::RemoveEventListeners()
 
 NS_IMETHODIMP nsRootAccessible::GetCaretAccessible(nsIAccessible **aCaretAccessible)
 {
-  *aCaretAccessible = (nsCOMPtr<nsIAccessible>)do_QueryInterface(mCaretAccessible);
-  NS_IF_ADDREF(*aCaretAccessible);
+  *aCaretAccessible = nsnull;
+  if (mCaretAccessible) {
+    CallQueryInterface(mCaretAccessible, aCaretAccessible);
+  }
+
   return NS_OK;
 }
 
@@ -259,7 +261,7 @@ void nsRootAccessible::FireAccessibleFocusEvent(nsIAccessible *focusAccessible, 
     if (role != ROLE_MENUITEM && role != ROLE_LISTITEM) {
       // It must report all focus events on menu and list items
       gLastFocusedNode = focusNode;
-      NS_IF_ADDREF(gLastFocusedNode);
+      NS_ADDREF(gLastFocusedNode);
     }
     if (mCaretAccessible)
       mCaretAccessible->AttachNewSelectionListener(focusNode);
@@ -270,7 +272,7 @@ void nsRootAccessible::GetEventShell(nsIDOMNode *aNode, nsIPresShell **aEventShe
 {
   // XXX aaronl - this is not ideal.
   // We could avoid this whole section and the fallible 
-  // doc->GetShellAt(0, ...) by putting the event handler
+  // doc->GetShellAt(0) by putting the event handler
   // on nsDocAccessible instead.
   // The disadvantage would be that we would be seeing some events
   // for inner documents that we don't care about.
@@ -280,8 +282,10 @@ void nsRootAccessible::GetEventShell(nsIDOMNode *aNode, nsIPresShell **aEventShe
   if (!doc) {   // This is necessary when the node is the document node
     doc = do_QueryInterface(aNode);
   }
-  if (doc)
-    doc->GetShellAt(0, aEventShell);
+  if (doc) {
+    *aEventShell = doc->GetShellAt(0);
+    NS_IF_ADDREF(*aEventShell);
+  }
 }
 
 // --------------- nsIDOMEventListener Methods (3) ------------------------
@@ -307,18 +311,18 @@ NS_IMETHODIMP nsRootAccessible::HandleEvent(nsIDOMEvent* aEvent)
     optionTargetNode = do_QueryInterface(selectItem);
   }
 
+  nsCOMPtr<nsIPresShell> eventShell;
+  GetEventShell(targetNode, getter_AddRefs(eventShell));
+
 #ifdef MOZ_ACCESSIBILITY_ATK
   nsCOMPtr<nsIDOMHTMLAnchorElement> anchorElement(do_QueryInterface(targetNode));
   if (anchorElement) {
     nsCOMPtr<nsIDOMNode> blockNode;
     // For ATK, we don't create any individual object for hyperlink, use its parent who has block frame instead
-    nsAccessible::GetParentBlockNode(targetNode, getter_AddRefs(blockNode));
-    targetNode = blockNode;
+    if (NS_SUCCEEDED(nsAccessible::GetParentBlockNode(eventShell, targetNode, getter_AddRefs(blockNode))))
+      targetNode = blockNode;
   }
 #endif
-
-  nsCOMPtr<nsIPresShell> eventShell;
-  GetEventShell(targetNode, getter_AddRefs(eventShell));
 
   nsCOMPtr<nsIAccessible> accessible;
   if (!eventShell ||
@@ -483,10 +487,12 @@ NS_IMETHODIMP nsRootAccessible::HandleEvent(nsIDOMEvent* aEvent)
       FireAccessibleFocusEvent(accessible, targetNode);
     }
   }
-  else if (eventType.EqualsIgnoreCase("popupshowing")) 
+  else if (eventType.EqualsIgnoreCase("popupshowing")) {
     FireAccessibleFocusEvent(accessible, targetNode);
-  else if (eventType.EqualsIgnoreCase("popuphiding")) 
-    FireAccessibleFocusEvent(accessible, targetNode);
+  }
+  else if (eventType.EqualsIgnoreCase("popuphiding")) {
+    //FireAccessibleFocusEvent(accessible, targetNode);
+  }
 #endif
   return NS_OK;
 }
@@ -495,13 +501,14 @@ void nsRootAccessible::GetTargetNode(nsIDOMEvent *aEvent, nsIDOMNode **aTargetNo
 {
   *aTargetNode = nsnull;
 
-  nsCOMPtr<nsIDOMEventTarget> domEventTarget;
   nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aEvent));
 
   if (nsevent) {
+    nsCOMPtr<nsIDOMEventTarget> domEventTarget;
     nsevent->GetOriginalTarget(getter_AddRefs(domEventTarget));
-    nsCOMPtr<nsIDOMNode> targetNode(do_QueryInterface(domEventTarget));
-    NS_IF_ADDREF(*aTargetNode = targetNode);
+    if (domEventTarget) {
+      CallQueryInterface(domEventTarget, aTargetNode);
+    }
   }
 }
 

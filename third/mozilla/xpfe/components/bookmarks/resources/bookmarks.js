@@ -1038,9 +1038,9 @@ var BookmarksUtils = {
       var BUNDLESVC = Components.classes["@mozilla.org/intl/stringbundle;1"]
                                 .getService(Components.interfaces.nsIStringBundleService);
       var bookmarksBundle  = "chrome://communicator/locale/bookmarks/bookmarks.properties";
-      this._bundle         = BUNDLESVC.createBundle(bookmarksBundle, LOCALESVC.GetApplicationLocale());
+      this._bundle         = BUNDLESVC.createBundle(bookmarksBundle, LOCALESVC.getApplicationLocale());
       var brandBundle      = "chrome://global/locale/brand.properties";
-      this._brandShortName = BUNDLESVC.createBundle(brandBundle,     LOCALESVC.GetApplicationLocale())
+      this._brandShortName = BUNDLESVC.createBundle(brandBundle,     LOCALESVC.getApplicationLocale())
                                       .GetStringFromName("brandShortName");
     }
    
@@ -1512,7 +1512,7 @@ var BookmarksUtils = {
       var name = "";
       var charset;
       try {
-        var doc = webNav.document;
+        var doc = new XPCNativeWrapper(webNav.document, "title", "characterSet");
         name = doc.title || url;
         charset = doc.characterSet;
       } catch (e) {
@@ -1541,8 +1541,9 @@ var BookmarksUtils = {
     var url = aDocShell.currentURI.spec;
     var title, docCharset = null;
     try {
-      title = aDocShell.document.title || url;
-      docCharset = aDocShell.document.characterSet;
+      var doc = new XPCNativeWrapper(aDocShell.document, "title", "characterSet");
+      title = doc.title || url;
+      docCharset = doc.characterSet;
     }
     catch (e) {
       title = url;

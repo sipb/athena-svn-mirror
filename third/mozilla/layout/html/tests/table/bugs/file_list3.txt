@@ -6,12 +6,17 @@ file:///s|/mozilla/layout/html/tests/table/bugs/bug2123.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug21299.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug21518.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug21918.html
+file:///s|/mozilla/layout/html/tests/table/bugs/bug219693-1.html
+file:///s|/mozilla/layout/html/tests/table/bugs/bug219693-2.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22019.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22122.html
+file:///s|/mozilla/layout/html/tests/table/bugs/bug221784-1.html
+file:///s|/mozilla/layout/html/tests/table/bugs/bug221784-2.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22246-2.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22246-2a.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22246-3.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22246-3a.html
+file:///s|/mozilla/layout/html/tests/table/bugs/bug222846.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug2267.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug22513.html
 file:///s|/mozilla/layout/html/tests/table/bugs/bug2296.html

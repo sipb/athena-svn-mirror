@@ -47,6 +47,8 @@
 #include <nsIURI.h>
 #include <nsNetUtil.h>
 #include <nsIWindowMediator.h>
+#include <nsCExternalHandlerService.h>
+#include <nsIExternalProtocolService.h>
 
 NS_DEFINE_CID(kWindowCID, NS_WINDOW_CID);
 
@@ -69,11 +71,16 @@ XRemoteService::~XRemoteService()
   Shutdown();
 }
 
-NS_IMPL_ISUPPORTS1(XRemoteService, nsIXRemoteService)
+NS_IMPL_ISUPPORTS2(XRemoteService, nsIXRemoteService, nsIObserver)
 
 NS_IMETHODIMP
 XRemoteService::Startup(void)
 {
+  // We have to destroy the proxy window before the event loop stops running.
+  nsCOMPtr<nsIObserverService> obsServ =
+    do_GetService("@mozilla.org/observer-service;1");
+  obsServ->AddObserver(this, "quit-application", PR_FALSE);
+
   mRunning = PR_TRUE;
   if (mNumWindows == 0)
     CreateProxyWindow();
@@ -85,6 +92,20 @@ XRemoteService::Shutdown(void)
 {
   DestroyProxyWindow();
   mRunning = PR_FALSE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+XRemoteService::Observe(nsISupports *aSubject, const char *aTopic,
+                        const PRUnichar *aData)
+{
+  if (!nsCRT::strcmp(aTopic, "quit-application")) {
+    Shutdown();
+  } else {
+    NS_NOTREACHED("unexpected topic");
+    return NS_ERROR_UNEXPECTED;
+  }
+
   return NS_OK;
 }
 
@@ -350,7 +371,7 @@ XRemoteService::AddBrowserInstance(nsIDOMWindowInternal *aBrowser)
   }
 
   // walk up the widget tree and find the toplevel window in the
-  // heirarchy
+  // hierarchy
 
   nsCOMPtr<nsIWidget> tempWidget;
 
@@ -630,11 +651,57 @@ XRemoteService::GetComposeLocation(const char **_retval)
   return NS_OK;
 }
 
+PRBool
+XRemoteService::MayOpenURL(const nsCString &aURL)
+{
+  // by default, we assume nothing can be loaded.
+  PRBool allowURL= PR_FALSE;
+
+  nsCOMPtr<nsIExternalProtocolService> extProtService =
+      do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID);
+  if (extProtService) {
+    nsCAutoString scheme;
+
+    // empty URLs will be treated as about:blank by OpenURL
+    if (aURL.IsEmpty()) {
+      scheme = NS_LITERAL_CSTRING("about");
+    }
+    else {
+      nsCOMPtr<nsIIOService> ios = do_GetIOService();
+      if (ios) {
+        ios->ExtractScheme(aURL, scheme);
+        if (scheme.IsEmpty()) {
+          // could not parse out a scheme.  perhaps this is a file path.
+          nsCOMPtr<nsILocalFile> file;
+          NS_NewNativeLocalFile(aURL, PR_FALSE, getter_AddRefs(file));
+          if (file)
+            scheme = NS_LITERAL_CSTRING("file");
+        }
+      }
+    }
+
+    if (!scheme.IsEmpty()) {
+      // if the given URL scheme corresponds to an exposed protocol, then we
+      // can try to load it.  otherwise, we must not.
+      PRBool isExposed;
+      nsresult rv = extProtService->IsExposedProtocol(scheme.get(), &isExposed);
+      if (NS_SUCCEEDED(rv) && isExposed)
+        allowURL = PR_TRUE; // ok, we can load this URL.
+    }
+  }
+
+  return allowURL;
+}
+
 nsresult
 XRemoteService::OpenURL(nsCString &aArgument,
 			nsIDOMWindowInternal *aParent,
 			PRBool aOpenBrowser)
 {
+  // check if we can handle this type of URL
+  if (!MayOpenURL(aArgument))
+    return NS_ERROR_ABORT;
+
   // the eventual toplevel target of the load
   nsCOMPtr<nsIDOMWindowInternal> finalWindow = aParent;
 

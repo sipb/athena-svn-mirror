@@ -38,7 +38,6 @@
 #include "nsISupports.idl"
 #include "nsIMsgSignature.idl"
 #include "nsILocalFile.idl"
-#include "nsIMsgVCard.idl"
 
 /*
  * this interface contains all the personal outgoing mail information
@@ -88,14 +87,16 @@ interface nsIMsgIdentity : nsISupports {
   /* what should our quoting preference be? */
   attribute long replyOnTop;
 
+  /* what should our signature be at the end of the quoted text when replying above it? */
+  attribute boolean sigBottom;
+
   /* the current signature */
   /*  after PR1, let's make this a real object */
   /*  attribute nsIMsgSignature signature; */
   attribute nsILocalFile signature;
   attribute long signatureDate;
 
-  /* the current vcard */
-  attribute nsIMsgVCard vCard;
+  attribute string escapedVCard;
 
   attribute boolean doFcc;
   attribute string fccFolder;

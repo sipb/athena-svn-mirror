@@ -80,6 +80,7 @@
 #include "nsHashtable.h"
 #include "nsIAtom.h"
 #include "nsProfileDirServiceProvider.h"
+#include "nsISessionRoaming.h"
 
 // Interfaces Needed
 #include "nsIDocShell.h"
@@ -119,7 +120,10 @@
 #define CONTENTLOCALE_CMD_LINE_ARG "-contentLocale"   
 
 #define PREF_CONFIRM_AUTOMIGRATION     "profile.confirm_automigration"
-#define SHRIMP_PREF                    "shrimp.startup.enable"
+#define PREF_AUTOMIGRATION             "profile.allow_automigration"
+#define PREF_MIGRATE_ALL               "profile.migrate_all"
+#define PREF_MIGRATION_BEHAVIOR        "profile.migration_behavior"
+#define PREF_MIGRATION_DIRECTORY       "profile.migration_directory"
 
 #if defined (XP_MAC)
 #define CHROME_STYLE nsIWebBrowserChrome::CHROME_WINDOW_BORDERS | nsIWebBrowserChrome::CHROME_WINDOW_CLOSE | nsIWebBrowserChrome::CHROME_CENTER_SCREEN
@@ -156,6 +160,7 @@ static nsProfileDirServiceProvider *gDirServiceProvider = nsnull;
 static NS_DEFINE_CID(kPrefMigrationCID, NS_PREFMIGRATION_CID);
 static NS_DEFINE_CID(kPrefConverterCID, NS_PREFCONVERTER_CID);
 
+#define NS_SESSIONROAMING_CONTRACTID "@mozilla.org/profile/session-roaming;1"
 
 
 /*
@@ -887,13 +892,25 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
 		NS_ASSERTION(NS_SUCCEEDED(rv),"failed to determine if we should force migration");
 	}
 
-#ifndef MOZ_XUL_APP // The phoenix/thunderbird doesn't use old profiles.
+    nsCOMPtr<nsIPrefBranch> prefBranch;
+   
+    // First check PREF_AUTOMIGRATION. 
+    PRBool allowAutoMigration = PR_TRUE;
+    nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv)) return rv;
+    rv = prefs->GetBranch(nsnull, getter_AddRefs(prefBranch));
+    if (NS_FAILED(rv)) return rv;
+
+    (void)prefBranch->GetBoolPref(PREF_AUTOMIGRATION, &allowAutoMigration);
 
     // Start Migaration activity
     rv = cmdLineArgs->GetCmdLineValue(INSTALLER_CMD_LINE_ARG, getter_Copies(cmdResult));
-    if (NS_SUCCEEDED(rv) || forceMigration)
+    if (allowAutoMigration && (NS_SUCCEEDED(rv) || forceMigration))
     {        
         if (cmdResult || forceMigration) {
+        PRBool migrateAll = PR_FALSE;
+        (void)prefBranch->GetBoolPref(PREF_MIGRATE_ALL, &migrateAll);
+
             rv = MigrateProfileInfo();
             if (NS_FAILED(rv)) return rv;
 
@@ -911,7 +928,7 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
             else if (num4xProfiles == 0 && numProfiles == 1) {
                 profileURLStr = "";
             }
-            else if (num4xProfiles == 1 && numProfiles == 0) {
+            else if ((num4xProfiles == 1 || migrateAll) && numProfiles == 0) {
                 PRBool confirmed = PR_FALSE;
                 if (NS_SUCCEEDED(ConfirmAutoMigration(canInteract, &confirmed)) && confirmed)
                     AutoMigrate();
@@ -928,8 +945,6 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
             }
         }
     }
-
-#endif // MOZ_XUL_APP
 
 #ifdef DEBUG_profile_verbose
     printf("Profile Manager : Command Line Options : End\n");
@@ -1251,6 +1266,13 @@ nsProfile::SetCurrentProfile(const PRUnichar * aCurrentProfile)
           return NS_ERROR_ABORT;
     }
 
+    // Roaming download
+    // Tolerate errors. Maybe the roaming extension isn't installed.
+    nsCOMPtr <nsISessionRoaming> roam =
+      do_GetService(NS_SESSIONROAMING_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv))
+      roam->BeginSession();
+
     // Phase 4: Notify observers that the profile has changed - Here they respond to new profile
     observerService->NotifyObservers(subject, "profile-do-change", context.get());
     if (mProfileChangeFailed)
@@ -1336,6 +1358,13 @@ NS_IMETHODIMP nsProfile::ShutDownCurrentProfile(PRUint32 shutDownType)
       // Phase 3: Notify observers of a profile change
       observerService->NotifyObservers(subject, "profile-before-change", context.get());        
     }
+
+    // Roaming upload
+    // Tolerate errors. Maybe the roaming extension isn't installed.
+    nsCOMPtr <nsISessionRoaming> roam =
+      do_GetService(NS_SESSIONROAMING_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv))
+      roam->EndSession();
 
     gDirServiceProvider->SetProfileDir(nsnull);
     UpdateCurrentProfileModTime(PR_TRUE);
@@ -1447,7 +1476,7 @@ nsProfile::AddLevelOfIndirection(nsIFile *aDir)
   rv = aDir->Exists(&exists);
   NS_ENSURE_SUCCESS(rv,rv);
   if (!exists) {
-    rv = aDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+    rv = aDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 	
@@ -1521,7 +1550,7 @@ nsresult nsProfile::SetProfileDir(const PRUnichar *profileName, nsIFile *profile
     PRBool exists;
     rv = profileDir->Exists(&exists);
     if (NS_SUCCEEDED(rv) && !exists)
-        rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+        rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
     if (NS_FAILED(rv)) 
         return rv;
     
@@ -1583,7 +1612,7 @@ nsProfile::CreateNewProfileWithLocales(const PRUnichar* profileName,
         rv = profileDir->Exists(&exists);
         if (NS_FAILED(rv)) return rv;        
         if (!exists)
-            profileDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+            profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
 
         // append profile name
         profileDir->Append(nsDependentString(profileName));
@@ -1602,7 +1631,7 @@ nsProfile::CreateNewProfileWithLocales(const PRUnichar* profileName,
     // Make profile directory unique only when the user 
     // decides to not use an already existing profile directory
     if (!useExistingDir) {
-        rv = profileDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0775);
+        rv = profileDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0700);
         if (NS_FAILED(rv)) return rv;
     }
 
@@ -1614,7 +1643,7 @@ nsProfile::CreateNewProfileWithLocales(const PRUnichar* profileName,
     if (NS_FAILED(rv)) return rv;        
     if (!exists)
     {
-        rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+        rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
         if (NS_FAILED(rv)) return rv;
         useExistingDir = PR_FALSE;
     }
@@ -2206,20 +2235,65 @@ nsProfile::MigrateProfile(const PRUnichar* profileName)
 
     nsCOMPtr<nsIFile> oldProfDir;    
     nsCOMPtr<nsIFile> newProfDir;
+    nsCOMPtr<nsIPrefBranch> prefBranch;
+    nsXPIDLCString profMigDir;
  
     rv = GetProfileDir(profileName, getter_AddRefs(oldProfDir));
     if (NS_FAILED(rv)) 
       return rv;
    
-    rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILES_ROOT_DIR, getter_AddRefs(newProfDir));
-    if (NS_FAILED(rv)) 
-      return rv;
+    // Check PREF_MIGRATION_BEHAVIOR for how to set profiles root
+    // 0 - use NS_APP_USER_PROFILES_ROOT_DIR
+    // 1 - create one based on the NS4.x profile root
+    // 2 - use if not empty PREF_MIGRATION_DIRECTORY
+    PRInt32 profRootBehavior = 0;
+    nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+    if (NS_SUCCEEDED(rv)) {
+      rv = prefs->GetBranch(nsnull, getter_AddRefs(prefBranch));
+      if (NS_SUCCEEDED(rv))
+        (void) prefBranch->GetIntPref(PREF_MIGRATION_BEHAVIOR, &profRootBehavior);
+    }
+
+    switch (profRootBehavior) {
+
+      case 1:
+        rv = oldProfDir->Clone(getter_AddRefs(newProfDir));
+        if (NS_FAILED(rv)) 
+          return rv;
+        rv = newProfDir->SetNativeLeafName(NS_LITERAL_CSTRING("Profiles"));
+        if (NS_FAILED(rv)) 
+          return rv;
+        break;
+
+      case 2:
+        rv = prefBranch->GetCharPref(PREF_MIGRATION_DIRECTORY, getter_Copies(profMigDir));
+        if (NS_SUCCEEDED(rv) && !profMigDir.IsEmpty()) {
+          nsCOMPtr<nsILocalFile> localFile(do_CreateInstance(NS_LOCAL_FILE_CONTRACTID, &rv));
+          NS_ENSURE_SUCCESS(rv, rv);
+          rv = localFile->InitWithNativePath(nsDependentCString(profMigDir));
+          if (NS_SUCCEEDED(rv)) {
+            newProfDir = do_QueryInterface(localFile, &rv);
+            if (NS_FAILED(rv)) 
+              return rv;
+          }
+        }
+        break;
+
+      default:
+        break;
+
+    }
+    if (!newProfDir) {
+      rv = NS_GetSpecialDirectory(NS_APP_USER_PROFILES_ROOT_DIR, getter_AddRefs(newProfDir));
+      if (NS_FAILED(rv)) 
+        return rv;
+    }
 
     rv = newProfDir->Append(nsDependentString(profileName));
     if (NS_FAILED(rv)) 
       return rv;
     
-    rv = newProfDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0775);
+    rv = newProfDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0700);
     if (NS_FAILED(rv)) 
       return rv;
     
@@ -2262,7 +2336,7 @@ nsProfile::RemigrateProfile(const PRUnichar* profileName)
     NS_ENSURE_SUCCESS(rv,rv);
     
     // Create a new directory for the remigrated profile
-    rv = newProfileDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0775);
+    rv = newProfileDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0700);
     NS_ASSERTION(NS_SUCCEEDED(rv), "failed to create new directory for the remigrated profile");
     if (NS_SUCCEEDED(rv)) {
         rv = MigrateProfileInternal(profileName, oldProfileDir, newProfileDir);
@@ -2367,7 +2441,7 @@ NS_IMETHODIMP nsProfile::CloneProfile(const PRUnichar* newProfile)
         destDir->AppendRelativePath(nsDependentString(newProfile));
 
         // Find a unique name in the dest dir
-        rv = destDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0775);
+        rv = destDir->CreateUnique(nsIFile::DIRECTORY_TYPE, 0700);
         if (NS_FAILED(rv)) return rv;
         
         rv = RecursiveCopy(currProfileDir, destDir);

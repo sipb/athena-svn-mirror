@@ -30,6 +30,7 @@
 #include "nsIStreamListener.h"
 #include "nsIURL.h"
 #include "nsIDocument.h"
+#include "nsINodeInfo.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
 #include "nsWidgetsCID.h"
@@ -283,9 +284,9 @@ nsHTMLFramesetFrame::Observe(nsISupports* aObject, const char* aAction,
 {
   nsAutoString prefName(aPrefName);
   if (prefName.Equals(NS_LITERAL_STRING(kFrameResizePref))) {
-    nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
+    nsIDocument* doc = mContent->GetDocument();
+    mozAutoDocUpdate updateBatch(doc, UPDATE_CONTENT_MODEL, PR_TRUE);
     if (doc) {
-      doc->BeginUpdate();
       doc->AttributeWillChange(mContent,
                                kNameSpaceID_None,
                                nsHTMLAtoms::frameborder);
@@ -300,7 +301,6 @@ nsHTMLFramesetFrame::Observe(nsISupports* aObject, const char* aAction,
                             kNameSpaceID_None,
                             nsHTMLAtoms::frameborder,
                             nsIDOMMutationEvent::MODIFICATION);
-      doc->EndUpdate();
     }
   }
   return NS_OK;
@@ -342,9 +342,7 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
   nsresult result = CallCreateInstance(kViewCID, &view);
   nsIViewManager* viewMan = aPresContext->GetViewManager();
 
-  nsIFrame* parWithView;
-  GetParentWithView(aPresContext, &parWithView);
-  nsIView *parView = parWithView->GetView();
+  nsIView *parView = GetAncestorWithView()->GetView();
   nsRect boundBox(0, 0, 0, 0); 
   result = view->Init(viewMan, boundBox, parView);
   // XXX Put it last in document order until we can do better
@@ -388,18 +386,20 @@ nsHTMLFramesetFrame::Init(nsIPresContext*  aPresContext,
   nsIFrame* lastChild = nsnull;
   mChildCount = 0; // number of <frame> or <frameset> children
   nsIFrame* frame;
-  PRInt32 numChildren; // number of any type of children
-  mContent->ChildCount(numChildren);
-  for (int childX = 0; childX < numChildren; childX++) {
+
+  // number of any type of children
+  PRUint32 numChildren = mContent->GetChildCount();
+
+  for (PRUint32 childX = 0; childX < numChildren; childX++) {
     if (mChildCount == numCells) { // we have more <frame> or <frameset> than cells
       break;
     }
-    nsCOMPtr<nsIContent> child;
-    mContent->ChildAt(childX, getter_AddRefs(child));
+    nsIContent *child = mContent->GetChildAt(childX);
+
     if (!child->IsContentOfType(nsIContent::eHTML))
       continue;
-    nsCOMPtr<nsIAtom> tag;
-    child->GetTag(getter_AddRefs(tag));
+
+    nsIAtom *tag = child->Tag();
     if (tag == nsHTMLAtoms::frameset || tag == nsHTMLAtoms::frame) {
       nsRefPtr<nsStyleContext> kidSC;
       nsresult result;
@@ -482,16 +482,26 @@ void nsHTMLFramesetFrame::Scale(nscoord  aDesired,
     actual += aItems[j];
   }
 
-  float factor = (float)aDesired / (float)actual;
-  actual = 0;
-  // scale the items up or down
-  for (i = 0; i < aNumIndicies; i++) {
-    j = aIndicies[i];
-    aItems[j] = NSToCoordRound((float)aItems[j] * factor);
-    actual += aItems[j];
+  if (actual > 0) {
+    float factor = (float)aDesired / (float)actual;
+    actual = 0;
+    // scale the items up or down
+    for (i = 0; i < aNumIndicies; i++) {
+      j = aIndicies[i];
+      aItems[j] = NSToCoordRound((float)aItems[j] * factor);
+      actual += aItems[j];
+    }
+  } else if (aNumIndicies != 0) {
+    // All the specs say zero width, but we have to fill up space
+    // somehow.  Distribute it equally.
+    nscoord width = NSToCoordRound((float)aDesired / (float)aNumIndicies);
+    actual = width * aNumIndicies;
+    for (i = 0; i < aNumIndicies; i++) {
+      aItems[aIndicies[i]] = width;
+    }
   }
 
-  if ((aNumIndicies > 0) && (aDesired != actual)) {
+  if (aNumIndicies > 0 && aDesired != actual) {
     PRInt32 unit = (aDesired > actual) ? 1 : -1;
     for (i=0; (i < aNumIndicies) && (aDesired != actual); i++) {
       j = aIndicies[i];
@@ -708,14 +718,10 @@ nsHTMLFramesetFrame* nsHTMLFramesetFrame::GetFramesetParent(nsIFrame* aChild)
   if (content) { 
     nsCOMPtr<nsIContent> contentParent = content->GetParent();
 
-    if (contentParent && contentParent->IsContentOfType(nsIContent::eHTML)) {
-      nsCOMPtr<nsIAtom> tag;
-      contentParent->GetTag(getter_AddRefs(tag));
-
-      if (tag == nsHTMLAtoms::frameset) {
-        nsIFrame* fptr = aChild->GetParent();
-        parent = (nsHTMLFramesetFrame*) fptr;
-      }
+    if (contentParent && contentParent->IsContentOfType(nsIContent::eHTML) &&
+        contentParent->Tag() == nsHTMLAtoms::frameset) {
+      nsIFrame* fptr = aChild->GetParent();
+      parent = (nsHTMLFramesetFrame*) fptr;
     }
   }
 
@@ -1336,24 +1342,23 @@ nsHTMLFramesetFrame::RecalculateBorderResize()
 
   PRInt32 numCells = mNumRows * mNumCols; // max number of cells
   PRInt32* childTypes = new PRInt32[numCells];
-  PRInt32 childIndex, frameOrFramesetChildIndex = 0;
+  PRUint32 childIndex, frameOrFramesetChildIndex = 0;
 
-  PRInt32 numChildren; // number of any type of children
-  mContent->ChildCount(numChildren);
+  // number of any type of children
+  PRUint32 numChildren = mContent->GetChildCount();
   for (childIndex = 0; childIndex < numChildren; childIndex++) {
-    nsCOMPtr<nsIContent> childCon;
-    mContent->ChildAt(childIndex, getter_AddRefs(childCon));
-    nsCOMPtr<nsIHTMLContent> child(do_QueryInterface(childCon));
-    if (child) {
-      nsCOMPtr<nsIAtom> tag;
-      child->GetTag(getter_AddRefs(tag));
-      if (tag == nsHTMLAtoms::frameset) {
+    nsIContent *child = mContent->GetChildAt(childIndex);
+
+    if (child->IsContentOfType(nsIContent::eHTML)) {
+      nsINodeInfo *ni = child->GetNodeInfo();
+
+      if (ni->Equals(nsHTMLAtoms::frameset)) {
         childTypes[frameOrFramesetChildIndex++] = FRAMESET;
-      } else if (tag == nsHTMLAtoms::frame) {
+      } else if (ni->Equals(nsHTMLAtoms::frame)) {
         childTypes[frameOrFramesetChildIndex++] = FRAME;
       }
       // Don't overflow childTypes array
-      if (frameOrFramesetChildIndex >= numCells) {
+      if (((PRInt32)frameOrFramesetChildIndex) >= numCells) {
         break;
       }
     }

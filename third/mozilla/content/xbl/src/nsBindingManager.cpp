@@ -41,10 +41,11 @@
 #include "nsCOMPtr.h"
 #include "nsIXBLService.h"
 #include "nsIInputStream.h"
-#include "nsHashtable.h"
 #include "nsDoubleHashtable.h"
+#include "nsInterfaceHashtable.h"
 #include "nsIURI.h"
 #include "nsIURL.h"
+#include "nsURIHashKey.h"
 #include "nsIChannel.h"
 #include "nsXPIDLString.h"
 #include "nsIParser.h"
@@ -174,28 +175,6 @@ nsAnonymousContentList::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
 
   return NS_ERROR_FAILURE;
 }
-
-// nsDoubleHashtable stuff to create a generic string -> nsISupports
-// table
-
-class StringToObjectEntry : public PLDHashCStringEntry {
-public:
-  StringToObjectEntry(const void* aKey) : PLDHashCStringEntry(aKey) {
-    MOZ_COUNT_CTOR(StringToObjectEntry);
-  }
-  ~StringToObjectEntry() {
-    MOZ_COUNT_DTOR(StringToObjectEntry);
-  }
-
-  nsISupports* GetValue() { return mValue; }
-  void SetValue(nsISupports* aValue) { mValue = aValue; }
-
-private:
-  nsCOMPtr<nsISupports> mValue;
-};
-
-DECL_DHASH_WRAPPER(StringToObjectTable, StringToObjectEntry, nsACString&)
-DHASH_WRAPPER(StringToObjectTable, StringToObjectEntry, nsACString&)
 
 //
 // Generic pldhash table stuff for mapping one nsISupports to another
@@ -352,9 +331,9 @@ public:
   NS_IMETHOD GetSingleInsertionPoint(nsIContent* aParent, nsIContent** aResult, PRUint32* aIndex,  
                                      PRBool* aMultipleInsertionPoints);
 
-  NS_IMETHOD AddLayeredBinding(nsIContent* aContent, const nsAString& aURL);
-  NS_IMETHOD RemoveLayeredBinding(nsIContent* aContent, const nsAString& aURL);
-  NS_IMETHOD LoadBindingDocument(nsIDocument* aBoundDoc, const nsAString& aURL,
+  NS_IMETHOD AddLayeredBinding(nsIContent* aContent, nsIURI* aURL);
+  NS_IMETHOD RemoveLayeredBinding(nsIContent* aContent, nsIURI* aURL);
+  NS_IMETHOD LoadBindingDocument(nsIDocument* aBoundDoc, nsIURI* aURL,
                                  nsIDocument** aResult);
 
   NS_IMETHOD AddToAttachedQueue(nsIXBLBinding* aBinding);
@@ -364,12 +343,12 @@ public:
   NS_IMETHOD ExecuteDetachedHandlers();
 
   NS_IMETHOD PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo);
-  NS_IMETHOD GetXBLDocumentInfo(const nsCString& aURL, nsIXBLDocumentInfo** aResult);
+  NS_IMETHOD GetXBLDocumentInfo(nsIURI* aURI, nsIXBLDocumentInfo** aResult);
   NS_IMETHOD RemoveXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo);
 
-  NS_IMETHOD PutLoadingDocListener(const nsCString& aURL, nsIStreamListener* aListener);
-  NS_IMETHOD GetLoadingDocListener(const nsCString& aURL, nsIStreamListener** aResult);
-  NS_IMETHOD RemoveLoadingDocListener(const nsCString& aURL);
+  NS_IMETHOD PutLoadingDocListener(nsIURI* aURL, nsIStreamListener* aListener);
+  NS_IMETHOD GetLoadingDocListener(nsIURI* aURL, nsIStreamListener** aResult);
+  NS_IMETHOD RemoveLoadingDocListener(nsIURI* aURL);
 
   NS_IMETHOD InheritsStyle(nsIContent* aContent, PRBool* aResult);
   NS_IMETHOD FlushSkinBindings();
@@ -443,17 +422,17 @@ protected:
   // A mapping from a URL (a string) to nsIXBLDocumentInfo*.  This table
   // is the cache of all binding documents that have been loaded by a
   // given bound document.
-  StringToObjectTable mDocumentTable;
+  nsInterfaceHashtable<nsURIHashKey,nsIXBLDocumentInfo> mDocumentTable;
 
   // A mapping from a URL (a string) to a nsIStreamListener. This
   // table is the currently loading binding docs.  If they're in this
   // table, they have not yet finished loading.
-  StringToObjectTable mLoadingDocTable;
+  nsInterfaceHashtable<nsURIHashKey,nsIStreamListener> mLoadingDocTable;
 
   // A queue of binding attached event handlers that are awaiting
   // execution.
-  nsCOMPtr<nsISupportsArray> mAttachedQueue;
-  PRBool mProcessingAttachedQueue;
+  nsCOMPtr<nsISupportsArray> mAttachedStack;
+  PRBool mProcessingAttachedStack;
 };
 
 // Implementation /////////////////////////////////////////////////////////////////
@@ -465,7 +444,7 @@ NS_IMPL_ISUPPORTS3(nsBindingManager, nsIBindingManager, nsIStyleRuleSupplier, ns
 
 // Constructors/Destructors
 nsBindingManager::nsBindingManager(void)
-: mProcessingAttachedQueue(PR_FALSE)
+: mProcessingAttachedStack(PR_FALSE)
 {
   mBindingTable.ops = nsnull;
   mContentListTable.ops = nsnull;
@@ -573,11 +552,8 @@ nsBindingManager::ChangeDocumentFor(nsIContent* aContent, nsIDocument* aOldDocum
   if (binding) {
     binding->ChangeDocument(aOldDocument, aNewDocument);
     SetBinding(aContent, nsnull);
-    if (aNewDocument) {
-      nsCOMPtr<nsIBindingManager> otherManager;
-      aNewDocument->GetBindingManager(getter_AddRefs(otherManager));
-      otherManager->SetBinding(aContent, binding);
-    }
+    if (aNewDocument)
+      aNewDocument->GetBindingManager()->SetBinding(aContent, binding);
   }
 
   // Clear out insertion parents and content lists.
@@ -585,10 +561,11 @@ nsBindingManager::ChangeDocumentFor(nsIContent* aContent, nsIDocument* aOldDocum
   SetContentListFor(aContent, nsnull);
   SetAnonymousNodesFor(aContent, nsnull);
 
-  for (PRInt32 i = aOldDocument->GetNumberOfShells() - 1; i >= 0; --i) {
-    nsCOMPtr<nsIPresShell> shell;
-    aOldDocument->GetShellAt(i, getter_AddRefs(shell));
-    NS_ASSERTION(shell != nsnull, "Zoiks! nsIPresShell::ShellAt() broke");
+  PRUint32 count = aOldDocument->GetNumberOfShells();
+
+  for (PRUint32 i = 0; i < count; ++i) {
+    nsIPresShell *shell = aOldDocument->GetShellAt(i);
+    NS_ASSERTION(shell != nsnull, "Zoiks! nsIDocument::GetShellAt() broke");
 
     // See if the element has nsIAnonymousContentCreator-created
     // anonymous content...
@@ -617,23 +594,24 @@ nsBindingManager::ChangeDocumentFor(nsIContent* aContent, nsIDocument* aOldDocum
 }
 
 NS_IMETHODIMP
-nsBindingManager::ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID, nsIAtom** aResult)
+nsBindingManager::ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID,
+                             nsIAtom** aResult)
 {
   nsCOMPtr<nsIXBLBinding> binding;
   GetBinding(aContent, getter_AddRefs(binding));
   
   if (binding) {
-    nsCOMPtr<nsIAtom> tag;
-    binding->GetBaseTag(aNameSpaceID, getter_AddRefs(tag));
-    if (tag) {
-      *aResult = tag;
-      NS_ADDREF(*aResult);
+    binding->GetBaseTag(aNameSpaceID, aResult);
+
+    if (*aResult) {
       return NS_OK;
     }
   }
 
   aContent->GetNameSpaceID(aNameSpaceID);
-  return aContent->GetTag(aResult);
+  NS_ADDREF(*aResult = aContent->Tag());
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -800,7 +778,7 @@ nsBindingManager::GetSingleInsertionPoint(nsIContent* aParent, nsIContent** aRes
 }
 
 NS_IMETHODIMP
-nsBindingManager::AddLayeredBinding(nsIContent* aContent, const nsAString& aURL)
+nsBindingManager::AddLayeredBinding(nsIContent* aContent, nsIURI* aURL)
 {
   // First we need to load our binding.
   nsresult rv;
@@ -822,7 +800,7 @@ nsBindingManager::AddLayeredBinding(nsIContent* aContent, const nsAString& aURL)
 }
 
 NS_IMETHODIMP
-nsBindingManager::RemoveLayeredBinding(nsIContent* aContent, const nsAString& aURL)
+nsBindingManager::RemoveLayeredBinding(nsIContent* aContent, nsIURI* aURL)
 {
   nsCOMPtr<nsIXBLBinding> binding;
   GetBinding(aContent, getter_AddRefs(binding));
@@ -837,17 +815,10 @@ nsBindingManager::RemoveLayeredBinding(nsIContent* aContent, const nsAString& aU
   NS_ENSURE_FALSE(nextBinding, NS_ERROR_FAILURE);
 
   // Make sure that the binding has the URI that is requested to be removed
-  nsCAutoString bindingUriStr;
-  binding->GetBindingURI(bindingUriStr);
-  nsCOMPtr<nsIURI> bindingUri;
-  nsresult rv = NS_NewURI(getter_AddRefs(bindingUri), bindingUriStr);
-  NS_ENSURE_SUCCESS(rv, rv);
+  nsIURI* bindingUri = binding->BindingURI();
   
-  nsCOMPtr<nsIURI> uri;
-  rv = NS_NewURI(getter_AddRefs(uri), aURL);
-  NS_ENSURE_SUCCESS(rv, rv);
   PRBool equalUri;
-  rv = uri->Equals(bindingUri, &equalUri);
+  nsresult rv = aURL->Equals(bindingUri, &equalUri);
   NS_ENSURE_SUCCESS(rv, rv);
   if (!equalUri) {
     return NS_OK;
@@ -878,28 +849,24 @@ nsBindingManager::RemoveLayeredBinding(nsIContent* aContent, const nsAString& aU
   // ...and recreate it's frames. We need to do this since the frames may have
   // been removed and style may have changed due to the removal of the
   // anonymous children.
-  nsCOMPtr<nsIPresShell> presShell;
-  rv = doc->GetShellAt(0, getter_AddRefs(presShell));
+  nsIPresShell *presShell = doc->GetShellAt(0);
   NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
   return presShell->RecreateFramesFor(aContent);;
 }
 
 NS_IMETHODIMP
-nsBindingManager::LoadBindingDocument(nsIDocument* aBoundDoc, const nsAString& aURL,
+nsBindingManager::LoadBindingDocument(nsIDocument* aBoundDoc,
+                                      nsIURI* aURL,
                                       nsIDocument** aResult)
 {
-  NS_ConvertUCS2toUTF8 url(aURL);
+  NS_PRECONDITION(aURL, "Must have a URI to load!");
   
   nsCAutoString otherScheme;
-  nsCOMPtr<nsIIOService> ioService = do_GetIOService();
-  if (!ioService) return NS_ERROR_FAILURE;
-  ioService->ExtractScheme(url, otherScheme);
-
-  nsCOMPtr<nsIURI> docURL;
-  aBoundDoc->GetDocumentURL(getter_AddRefs(docURL));
+  aURL->GetScheme(otherScheme);
+  
   nsCAutoString scheme;
-  docURL->GetScheme(scheme);
+  aBoundDoc->GetDocumentURL()->GetScheme(scheme);
 
   // First we need to load our binding.
   *aResult = nsnull;
@@ -911,11 +878,14 @@ nsBindingManager::LoadBindingDocument(nsIDocument* aBoundDoc, const nsAString& a
 
   // Load the binding doc.
   nsCOMPtr<nsIXBLDocumentInfo> info;
-  xblService->LoadBindingDocumentInfo(nsnull, aBoundDoc, url, nsCAutoString(), PR_TRUE, getter_AddRefs(info));
+  xblService->LoadBindingDocumentInfo(nsnull, aBoundDoc, aURL,
+                                      PR_TRUE, getter_AddRefs(info));
   if (!info)
     return NS_ERROR_FAILURE;
 
-  if (!strcmp(scheme.get(), otherScheme.get()))
+  // XXXbz Why is this based on a scheme comparison?  Shouldn't this
+  // be a real security check???
+    if (!strcmp(scheme.get(), otherScheme.get()))
     info->GetDocument(aResult); // Addref happens here.
     
   return NS_OK;
@@ -924,10 +894,10 @@ nsBindingManager::LoadBindingDocument(nsIDocument* aBoundDoc, const nsAString& a
 NS_IMETHODIMP
 nsBindingManager::AddToAttachedQueue(nsIXBLBinding* aBinding)
 {
-  if (!mAttachedQueue)
-    NS_NewISupportsArray(getter_AddRefs(mAttachedQueue)); // This call addrefs the array.
+  if (!mAttachedStack)
+    NS_NewISupportsArray(getter_AddRefs(mAttachedStack)); // This call addrefs the array.
 
-  mAttachedQueue->AppendElement(aBinding);
+  mAttachedStack->AppendElement(aBinding);
 
   return NS_OK;
 }
@@ -935,31 +905,29 @@ nsBindingManager::AddToAttachedQueue(nsIXBLBinding* aBinding)
 NS_IMETHODIMP
 nsBindingManager::ClearAttachedQueue()
 {
-  if (mAttachedQueue)
-    mAttachedQueue->Clear();
+  if (mAttachedStack)
+    mAttachedStack->Clear();
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::ProcessAttachedQueue()
 {
-  if (!mAttachedQueue || mProcessingAttachedQueue)
+  if (!mAttachedStack || mProcessingAttachedStack)
     return NS_OK;
 
-  mProcessingAttachedQueue = PR_TRUE;
+  mProcessingAttachedStack = PR_TRUE;
 
   PRUint32 count;
-  while (NS_SUCCEEDED(mAttachedQueue->Count(&count)) && count) {
-    nsCOMPtr<nsISupports> supp;
-    mAttachedQueue->GetElementAt(0, getter_AddRefs(supp));
-    mAttachedQueue->RemoveElementAt(0);
+  while (NS_SUCCEEDED(mAttachedStack->Count(&count)) && count--) {
+    nsCOMPtr<nsIXBLBinding> binding = do_QueryElementAt(mAttachedStack, count);
+    mAttachedStack->RemoveElementAt(count);
 
-    nsCOMPtr<nsIXBLBinding> binding(do_QueryInterface(supp));
     if (binding)
       binding->ExecuteAttachedHandler();
   }
 
-  mProcessingAttachedQueue = PR_FALSE;
+  mProcessingAttachedStack = PR_FALSE;
   ClearAttachedQueue();
   return NS_OK;
 }
@@ -986,89 +954,68 @@ nsBindingManager::ExecuteDetachedHandlers()
 NS_IMETHODIMP
 nsBindingManager::PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
 {
-  if (!mDocumentTable.mHashTable.ops)
-    mDocumentTable.Init(16);
+  NS_PRECONDITION(aDocumentInfo, "Must have a non-null documentinfo!");
+  
+  NS_ENSURE_TRUE(mDocumentTable.IsInitialized() || mDocumentTable.Init(16),
+                 NS_ERROR_OUT_OF_MEMORY);
 
-  nsCOMPtr<nsIDocument> doc;
-  aDocumentInfo->GetDocument(getter_AddRefs(doc));
+  NS_ENSURE_TRUE(mDocumentTable.Put(aDocumentInfo->DocumentURI(),
+                                    aDocumentInfo),
+                 NS_ERROR_OUT_OF_MEMORY);
 
-  nsCOMPtr<nsIURI> uri;
-  doc->GetDocumentURL(getter_AddRefs(uri));
-  nsCAutoString str;
-  uri->GetSpec(str);
-
-  StringToObjectEntry* entry = mDocumentTable.AddEntry(str);
-  if (!entry) return NS_ERROR_OUT_OF_MEMORY;
-
-  entry->SetValue(aDocumentInfo);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::RemoveXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
 {
-  if (!mDocumentTable.mHashTable.ops)
+  if (!mDocumentTable.IsInitialized())
     return NS_OK;
 
-  nsCOMPtr<nsIDocument> doc;
-  aDocumentInfo->GetDocument(getter_AddRefs(doc));
-
-  nsCOMPtr<nsIURI> uri;
-  doc->GetDocumentURL(getter_AddRefs(uri));
-  nsCAutoString str;
-  uri->GetSpec(str);
-
-  mDocumentTable.Remove(str);
+  mDocumentTable.Remove(aDocumentInfo->DocumentURI());
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsBindingManager::GetXBLDocumentInfo(const nsCString& aURL, nsIXBLDocumentInfo** aResult)
+nsBindingManager::GetXBLDocumentInfo(nsIURI* aURL, nsIXBLDocumentInfo** aResult)
 {
   *aResult = nsnull;
-  if (!mDocumentTable.mHashTable.ops)
+  if (!mDocumentTable.IsInitialized())
     return NS_OK;
 
-  StringToObjectEntry *entry = mDocumentTable.GetEntry(aURL);
-  if (entry) {
-    *aResult = NS_STATIC_CAST(nsIXBLDocumentInfo*, entry->GetValue());
-    NS_IF_ADDREF(*aResult);
-  }
+  mDocumentTable.Get(aURL, aResult);
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsBindingManager::PutLoadingDocListener(const nsCString& aURL, nsIStreamListener* aListener)
+nsBindingManager::PutLoadingDocListener(nsIURI* aURL, nsIStreamListener* aListener)
 {
-  if (!mLoadingDocTable.mHashTable.ops)
-    mLoadingDocTable.Init(16);
-
-  StringToObjectEntry* entry = mLoadingDocTable.AddEntry(aURL);
-  if (!entry) return NS_ERROR_OUT_OF_MEMORY;
-  entry->SetValue(aListener);
+  NS_PRECONDITION(aListener, "Must have a non-null listener!");
+  
+  NS_ENSURE_TRUE(mLoadingDocTable.IsInitialized() || mLoadingDocTable.Init(16),
+                 NS_ERROR_OUT_OF_MEMORY);
+  
+  NS_ENSURE_TRUE(mLoadingDocTable.Put(aURL, aListener),
+                 NS_ERROR_OUT_OF_MEMORY);
 
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsBindingManager::GetLoadingDocListener(const nsCString& aURL, nsIStreamListener** aResult)
+nsBindingManager::GetLoadingDocListener(nsIURI* aURL, nsIStreamListener** aResult)
 {
   *aResult = nsnull;
-  if (!mLoadingDocTable.mHashTable.ops)
+  if (!mLoadingDocTable.IsInitialized())
     return NS_OK;
 
-  StringToObjectEntry* entry = mLoadingDocTable.GetEntry(aURL);
-  if (entry) {
-    *aResult = NS_STATIC_CAST(nsIStreamListener*, entry->GetValue());
-    NS_IF_ADDREF(*aResult);
-  }
+  mLoadingDocTable.Get(aURL, aResult);
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsBindingManager::RemoveLoadingDocListener(const nsCString& aURL)
+nsBindingManager::RemoveLoadingDocListener(nsIURI* aURL)
 {
-  if (!mLoadingDocTable.mHashTable.ops)
+  if (!mLoadingDocTable.IsInitialized())
     return NS_OK;
 
   mLoadingDocTable.Remove(aURL);
@@ -1087,16 +1034,12 @@ MarkForDeath(PLDHashTable* aTable, PLDHashEntryHdr* aHdr, PRUint32 aNumber, void
   if (marked)
     return PL_DHASH_NEXT; // Already marked for death.
 
-  nsCAutoString uriStr;
-  binding->GetDocURI(uriStr);
-  nsCOMPtr<nsIURI> uri;
-  NS_NewURI(getter_AddRefs(uri), uriStr);
-  if (uri) {
-    nsCAutoString path;
-    uri->GetPath(path);
-    if (!strncmp(path.get(), "/skin", 5))
-      binding->MarkForDeath();
-  }
+  nsCAutoString path;
+  binding->DocURI()->GetPath(path);
+
+  if (!strncmp(path.get(), "/skin", 5))
+    binding->MarkForDeath();
+  
   return PL_DHASH_NEXT;
 }
 
@@ -1185,8 +1128,7 @@ nsBindingManager::GetBindingImplementation(nsIContent* aContent, REFNSIID aIID,
       if (!doc)
         return NS_NOINTERFACE;
 
-      nsCOMPtr<nsIScriptGlobalObject> global;
-      doc->GetScriptGlobalObject(getter_AddRefs(global));
+      nsIScriptGlobalObject *global = doc->GetScriptGlobalObject();
       if (!global)
         return NS_NOINTERFACE;
 
@@ -1414,11 +1356,10 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
     // It's anonymous.
     return NS_OK;
 
-  PRInt32 childCount;
-  nsCOMPtr<nsIContent> child;
-  aContainer->ChildCount(childCount);
-  aContainer->ChildAt(aNewIndexInContainer, getter_AddRefs(child));
-  
+  PRInt32 childCount = aContainer->GetChildCount();
+
+  nsIContent *child = aContainer->GetChildAt(aNewIndexInContainer);
+
   nsCOMPtr<nsIContent> ins;
   GetNestedInsertionPoint(aContainer, child, getter_AddRefs(ins));
 
@@ -1441,7 +1382,7 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
           // We're real. Jam all the kids in.
           // XXX Check the filters to find the correct points.
           for (PRInt32 j = aNewIndexInContainer; j < childCount; j++) {
-            aContainer->ChildAt(j, getter_AddRefs(child));
+            child = aContainer->GetChildAt(j);
             point->AddChild(child);
             SetInsertionParent(child, ins);
           }

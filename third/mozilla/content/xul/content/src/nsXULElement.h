@@ -56,6 +56,7 @@
 #include "nsINodeInfo.h"
 #include "nsIControllers.h"
 #include "nsICSSParser.h"
+#include "nsICSSStyleRule.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOM3EventTarget.h"
@@ -78,6 +79,7 @@
 #include "nsIChromeEventHandler.h"
 #include "nsXULAttributeValue.h"
 #include "nsIXBLService.h"
+#include "nsICSSOMFactory.h"
 #include "nsLayoutCID.h"
 
 #include "nsGenericElement.h" // for nsCheapVoidArray
@@ -113,6 +115,8 @@ static NS_DEFINE_CID(kCSSParserCID, NS_CSSPARSER_CID);
 
  */
 
+MOZ_DECL_CTOR_COUNTER(nsXULPrototypeAttribute)
+
 class nsXULPrototypeAttribute
 {
 public:
@@ -120,6 +124,7 @@ public:
         : mEventHandler(nsnull)
     {
         XUL_PROTOTYPE_ATTRIBUTE_METER(gNumAttributes);
+        MOZ_COUNT_CTOR(nsXULPrototypeAttribute);
     }
 
     ~nsXULPrototypeAttribute();
@@ -199,11 +204,11 @@ public:
     virtual ~nsXULPrototypeNode() {}
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
-                               nsISupportsArray* aNodeInfos) = 0;
+                               const nsCOMArray<nsINodeInfo> *aNodeInfos) = 0;
     virtual nsresult Deserialize(nsIObjectInputStream* aStream,
                                  nsIScriptContext* aContext,
                                  nsIURI* aDocumentURI,
-                                 nsISupportsArray* aNodeInfos) = 0;
+                                 const nsCOMArray<nsINodeInfo> *aNodeInfos) = 0;
 
     void AddRef() { ++mRefCnt; };
     void Release()
@@ -257,21 +262,21 @@ public:
 
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
-                               nsISupportsArray* aNodeInfos);
+                               const nsCOMArray<nsINodeInfo> *aNodeInfos);
     virtual nsresult Deserialize(nsIObjectInputStream* aStream,
                                  nsIScriptContext* aContext,
                                  nsIURI* aDocumentURI,
-                                 nsISupportsArray* aNodeInfos);
+                                 const nsCOMArray<nsINodeInfo> *aNodeInfos);
 
-    PRInt32                  mNumChildren;
+    PRUint32                 mNumChildren;
     nsXULPrototypeNode**     mChildren;           // [OWNER]
 
     nsCOMPtr<nsINodeInfo>    mNodeInfo;           // [OWNER]
 
-    PRInt32                  mNumAttributes;
+    PRUint32                 mNumAttributes;
     nsXULPrototypeAttribute* mAttributes;         // [OWNER]
 
-    nsCOMPtr<nsIStyleRule>   mInlineStyleRule;    // [OWNER]
+    nsCOMPtr<nsICSSStyleRule> mInlineStyleRule;    // [OWNER]
     nsClassList*             mClassList;
 
     nsresult GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsAString& aValue);
@@ -304,13 +309,13 @@ public:
 
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
-                               nsISupportsArray* aNodeInfos);
+                               const nsCOMArray<nsINodeInfo> *aNodeInfos);
     nsresult SerializeOutOfLine(nsIObjectOutputStream* aStream,
                                 nsIScriptContext* aContext);
     virtual nsresult Deserialize(nsIObjectInputStream* aStream,
                                  nsIScriptContext* aContext,
                                  nsIURI* aDocumentURI,
-                                 nsISupportsArray* aNodeInfos);
+                                 const nsCOMArray<nsINodeInfo> *aNodeInfos);
     nsresult DeserializeOutOfLine(nsIObjectInputStream* aInput,
                                   nsIScriptContext* aContext);
 
@@ -359,11 +364,11 @@ public:
 
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
-                               nsISupportsArray* aNodeInfos);
+                               const nsCOMArray<nsINodeInfo> *aNodeInfos);
     virtual nsresult Deserialize(nsIObjectInputStream* aStream,
                                  nsIScriptContext* aContext,
                                  nsIURI* aDocumentURI,
-                                 nsISupportsArray* aNodeInfos);
+                                 const nsCOMArray<nsINodeInfo> *aNodeInfos);
 
     nsString                 mValue;
 };
@@ -387,12 +392,17 @@ public:
             CallGetService("@mozilla.org/xbl;1", &gXBLService);
         return gXBLService;
     }
-    static void ReleaseGlobals() { NS_IF_RELEASE(gXBLService); }
+    static void ReleaseGlobals() {
+        NS_IF_RELEASE(gXBLService);
+        NS_IF_RELEASE(gCSSOMFactory);
+    }
 
 protected:
     static nsrefcnt             gRefCnt;
     // pseudo-constants
     static nsIRDFService*       gRDFService;
+    static nsIXBLService*       gXBLService;
+    static nsICSSOMFactory*     gCSSOMFactory;
 
 public:
     static nsresult
@@ -406,36 +416,36 @@ public:
     NS_DECL_ISUPPORTS
 
     // nsIContent (from nsIStyledContent)
-    NS_IMETHOD_(nsIDocument*) GetDocument() const;
     NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers);
-    NS_IMETHOD_(nsIContent*) GetParent() const;
-    NS_IMETHOD SetParent(nsIContent* aParent);
+    NS_IMETHOD_(void) SetParent(nsIContent* aParent);
     NS_IMETHOD_(PRBool) IsNativeAnonymous() const;
     NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous);
-    NS_IMETHOD CanContainChildren(PRBool& aResult) const;
-    NS_IMETHOD ChildCount(PRInt32& aResult) const;
-    NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
-    NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
-    NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
+    NS_IMETHOD_(PRBool) CanContainChildren() const;
+    NS_IMETHOD_(PRUint32) GetChildCount() const;
+    NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
+    NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
+    NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
                              PRBool aDeepSetDocument);
-    NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex,
+    NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex,
                               PRBool aNotify, PRBool aDeepSetDocument);
     NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
                              PRBool aDeepSetDocument);
-    NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify);
+    NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
     NS_IMETHOD GetNameSpaceID(PRInt32* aNameSpeceID) const;
-    NS_IMETHOD GetTag(nsIAtom** aResult) const;
-    NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const;
-    NS_IMETHOD NormalizeAttrString(const nsAString& aStr, nsINodeInfo** aNodeInfo);
+    virtual nsIAtom *Tag() const;
+    NS_IMETHOD_(nsINodeInfo *) GetNodeInfo() const;
+    NS_IMETHOD_(nsIAtom *) GetIDAttributeName() const;
+    NS_IMETHOD_(nsIAtom *) GetClassAttributeName() const;
+    NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
     NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, const nsAString& aValue, PRBool aNotify);
     NS_IMETHOD SetAttr(nsINodeInfo *aNodeInfo, const nsAString& aValue, PRBool aNotify);
     NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsAString& aResult) const;
     NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsIAtom** aPrefix, nsAString& aResult) const;
     NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
     NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, PRBool aNotify);
-    NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
+    NS_IMETHOD GetAttrNameAt(PRUint32 aIndex, PRInt32* aNameSpaceID,
                              nsIAtom** aName, nsIAtom** aPrefix) const;
-    NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
+    NS_IMETHOD_(PRUint32) GetAttrCount() const;
 #ifdef DEBUG
     NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
     NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const { return NS_OK; }
@@ -447,12 +457,12 @@ public:
                               nsEventStatus* aEventStatus);
     NS_IMETHOD DoneCreatingElement();
 
-    NS_IMETHOD GetContentID(PRUint32* aID);
+    virtual PRUint32 ContentID() const;
     NS_IMETHOD SetContentID(PRUint32 aID);
 
     NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
     NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-    NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
+    virtual const nsVoidArray *GetRangeList() const;
     NS_IMETHOD SetFocus(nsIPresContext* aPresContext);
     NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext);
 
@@ -471,14 +481,15 @@ public:
     NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
 
     NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-    NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
+    NS_IMETHOD GetInlineStyleRule(nsICSSStyleRule** aStyleRule);
+    NS_IMETHOD SetInlineStyleRule(nsICSSStyleRule* aStyleRule, PRBool aNotify);
     NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
                                       PRInt32 aModType,
                                       nsChangeHint& aHint) const;
     NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
     // nsIXULContent
-    NS_IMETHOD PeekChildCount(PRInt32& aCount) const;
+    NS_IMETHOD_(PRUint32) PeekChildCount() const;
     NS_IMETHOD SetLazyState(LazyState aFlags);
     NS_IMETHOD ClearLazyState(LazyState aFlags);
     NS_IMETHOD GetLazyState(LazyState aFlag, PRBool& aValue);
@@ -535,11 +546,16 @@ protected:
 
     nsresult AddPopupListener(nsIAtom* aName);
 
+    nsIContent* GetParent() const {
+        // Override nsIContent::GetParent to be more efficient internally,
+        // we don't use the low 2 bits of mParentPtrBits for anything.
+ 
+        return NS_REINTERPRET_CAST(nsIContent *, mParentPtrBits);
+    }
+
 protected:
     // Required fields
     nsXULPrototypeElement*              mPrototype;
-    nsIDocument*                        mDocument;           // [WEAK]
-    nsIContent*                         mParent;             // [WEAK]
     nsSmallVoidArray                    mChildren;           // [OWNER]
     nsCOMPtr<nsIEventListenerManager>   mListenerManager;    // [OWNER]
 
@@ -649,6 +665,10 @@ protected:
 
     nsresult HideWindowChrome(PRBool aShouldHide);
 
+    void FinishSetAttr(PRInt32 aAttrNS, nsIAtom* aAttrName,
+                       const nsAString& aOldValue, const nsAString& aNewValue,
+                       PRInt32 aModHint, PRBool aNotify);
+
 protected:
     // Internal accessors. These shadow the 'Slots', and return
     // appropriate default values if there are no slots defined in the
@@ -658,8 +678,6 @@ protected:
     nsXULAttributes *Attributes() const  { return mSlots ? mSlots->GetAttributes()    : nsnull; }
 
     void UnregisterAccessKey(const nsAString& aOldValue);
-
-    static nsIXBLService *gXBLService;
 };
 
 

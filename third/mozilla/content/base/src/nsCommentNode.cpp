@@ -63,7 +63,7 @@ public:
   // Empty interface
 
   // nsIContent
-  NS_IMETHOD GetTag(nsIAtom** aResult) const;
+  virtual nsIAtom *Tag() const;
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
@@ -112,12 +112,10 @@ NS_IMPL_ADDREF_INHERITED(nsCommentNode, nsGenericDOMDataNode)
 NS_IMPL_RELEASE_INHERITED(nsCommentNode, nsGenericDOMDataNode)
 
 
-NS_IMETHODIMP
-nsCommentNode::GetTag(nsIAtom** aResult) const
+nsIAtom *
+nsCommentNode::Tag() const
 {
-  NS_ADDREF(*aResult = nsLayoutAtoms::commentTagName);
-
-  return NS_OK;
+  return nsLayoutAtoms::commentTagName;
 }
 
 NS_IMETHODIMP
@@ -125,6 +123,18 @@ nsCommentNode::GetNodeName(nsAString& aNodeName)
 {
   aNodeName.Assign(NS_LITERAL_STRING("#comment"));
   return NS_OK;
+}
+
+NS_IMETHODIMP
+nsCommentNode::GetNodeValue(nsAString& aNodeValue)
+{
+  return nsGenericDOMDataNode::GetNodeValue(aNodeValue);
+}
+
+NS_IMETHODIMP
+nsCommentNode::SetNodeValue(const nsAString& aNodeValue)
+{
+  return nsGenericDOMDataNode::SetNodeValue(aNodeValue);
 }
 
 NS_IMETHODIMP

@@ -142,7 +142,7 @@ nsLanguageAtomService::InitLangGroupTable()
   if (NS_FAILED(rv)) return rv;
 
 
-  rv = bundleService->CreateBundle("resource:/res/langGroups.properties",
+  rv = bundleService->CreateBundle("resource://gre/res/langGroups.properties",
                                    getter_AddRefs(mLangGroups));
   return rv;
 }
@@ -300,11 +300,11 @@ nsLanguageAtomService::GetLocaleLanguageGroup(nsIAtom** aResult)
     NS_ENSURE_SUCCESS(res, res);
     nsAutoString category;
     category.AssignWithConversion(NSILOCALE_MESSAGE);
-    nsXPIDLString loc;
-    res = locale->GetCategory(category.get(), getter_Copies(loc));
+    nsAutoString loc;
+    res = locale->GetCategory(category, loc);
     NS_ENSURE_SUCCESS(res, res);
     nsCOMPtr<nsILanguageAtom> langAtom;
-    res = LookupLanguage(loc, getter_AddRefs(langAtom));
+    res = LookupLanguage(loc.get(), getter_AddRefs(langAtom));
     NS_ENSURE_SUCCESS(res, res);
     res = langAtom->GetLanguageGroup(getter_AddRefs(mLocaleLangGroup));
     NS_ENSURE_SUCCESS(res, res);

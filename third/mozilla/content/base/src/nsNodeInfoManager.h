@@ -42,10 +42,10 @@
 #include "nsINodeInfo.h"
 #include "nsCOMPtr.h"
 #include "plhash.h"
-#include "nsIURI.h"
-#include "nsIPrincipal.h"
 
 class nsNodeInfo;
+class nsIPrincipal;
+class nsIURI;
 
 
 class nsNodeInfoManager : public nsINodeInfoManager
@@ -54,24 +54,22 @@ public:
   NS_DECL_ISUPPORTS
 
   // nsINodeInfoManager
-  NS_IMETHOD Init(nsIDocument *aDocument);
-  NS_IMETHOD DropDocumentReference();
-  NS_IMETHOD GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
-                         PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
-  NS_IMETHOD GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
-                         PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
-  NS_IMETHOD GetNodeInfo(const nsAString& aName, const nsAString& aPrefix,
-                         PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
-  NS_IMETHOD GetNodeInfo(const nsAString& aName, const nsAString& aPrefix,
-                         const nsAString& aNamespaceURI,
-                         nsINodeInfo** aNodeInfo);
-  NS_IMETHOD GetNodeInfo(const nsAString& aQualifiedName,
-                         const nsAString& aNamespaceURI,
-                         nsINodeInfo** aNodeInfo);
-  virtual nsIDocument* GetDocument() const;
-  NS_IMETHOD GetDocumentPrincipal(nsIPrincipal** aPrincipal);
-  NS_IMETHOD SetDocumentPrincipal(nsIPrincipal* aPrincipal);
-  NS_IMETHOD GetNodeInfoArray(nsISupportsArray** aArray);
+  virtual nsresult Init(nsIDocument *aDocument);
+  virtual void DropDocumentReference();
+  virtual nsresult GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
+                               PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
+  virtual nsresult GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
+                               PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
+  virtual nsresult GetNodeInfo(const nsAString& aQualifiedName,
+                               const nsAString& aNamespaceURI,
+                               nsINodeInfo** aNodeInfo);
+
+  virtual nsresult GetNodeInfo(const nsACString& aName, nsIAtom *aPrefix,
+                               PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo);
+
+  virtual nsresult GetDocumentPrincipal(nsIPrincipal** aPrincipal);
+  virtual nsresult SetDocumentPrincipal(nsIPrincipal* aPrincipal);
+  virtual nsresult GetNodeInfos(nsCOMArray<nsINodeInfo> *aArray);
 
   // nsNodeInfoManager
   nsNodeInfoManager();
@@ -91,7 +89,6 @@ private:
                                                         void* arg);
 
   PLHashTable *mNodeInfoHash;
-  nsIDocument *mDocument; // WEAK
   nsCOMPtr<nsIPrincipal> mPrincipal;
 
   /*

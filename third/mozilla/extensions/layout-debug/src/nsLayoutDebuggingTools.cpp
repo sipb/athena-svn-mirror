@@ -103,15 +103,13 @@ pres_context(nsIDocShell *aDocShell)
 }
 #endif
 
-static already_AddRefed<nsIViewManager>
+static nsIViewManager*
 view_manager(nsIDocShell *aDocShell)
 {
     nsCOMPtr<nsIPresShell> shell(pres_shell(aDocShell));
     if (!shell)
         return nsnull;
-    nsIViewManager *result = nsnull;
-    shell->GetViewManager(&result);
-    return result;
+    return shell->GetViewManager();
 }
 
 static already_AddRefed<nsIDocument>
@@ -403,8 +401,7 @@ DumpContentRecur(nsIDocShell* aDocShell, FILE* out)
         fprintf(out, "docshell=%p \n", NS_STATIC_CAST(void*, aDocShell));
         nsCOMPtr<nsIDocument> doc(document(aDocShell));
         if (doc) {
-            nsCOMPtr<nsIContent> root;
-            doc->GetRootContent(getter_AddRefs(root));
+            nsIContent *root = doc->GetRootContent();
             if (root) {
                 root->List(out);
             }

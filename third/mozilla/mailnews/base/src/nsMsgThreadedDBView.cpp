@@ -56,9 +56,9 @@ nsMsgThreadedDBView::~nsMsgThreadedDBView()
   /* destructor code */
 }
 
-NS_IMETHODIMP nsMsgThreadedDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder, nsMsgViewFlagsTypeValue viewFlags, PRBool aTreatRecipientAsAuthor, PRInt32 *pCount)
+NS_IMETHODIMP nsMsgThreadedDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder, nsMsgViewFlagsTypeValue viewFlags, PRInt32 *pCount)
 {
-  nsresult rv = nsMsgDBView::Open(folder, sortType, sortOrder, viewFlags, aTreatRecipientAsAuthor, pCount);
+  nsresult rv = nsMsgDBView::Open(folder, sortType, sortOrder, viewFlags, pCount);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Preset msg hdr cache size for performance reason.
@@ -68,6 +68,13 @@ NS_IMETHODIMP nsMsgThreadedDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeV
     nsCOMPtr <nsIDBFolderInfo> dbFolderInfo;
     rv = m_db->GetDBFolderInfo(getter_AddRefs(dbFolderInfo));
     NS_ENSURE_SUCCESS(rv, rv);
+    // save off sort type and order, view type and flags
+    dbFolderInfo->SetSortType(m_sortType);
+    dbFolderInfo->SetSortOrder(m_sortOrder);
+    dbFolderInfo->SetViewFlags(m_viewFlags);
+    nsMsgViewTypeValue viewType;
+    GetViewType(&viewType);
+    dbFolderInfo->SetViewType(viewType);
     if (m_viewFlags & nsMsgViewFlagsType::kUnreadOnly)
     { 
       // Set unread msg size + extra entries to avoid reallocation on new mail.
@@ -167,7 +174,7 @@ nsresult nsMsgThreadedDBView::SortThreads(nsMsgViewSortTypeValue sortType, nsMsg
     m_keys.RemoveAll();
     m_flags.RemoveAll();
     m_levels.RemoveAll();
-  	for (PRInt32 i = 0; i < saveKeys.GetSize(); i++)
+    for (PRInt32 i = 0; i < saveKeys.GetSize(); i++)
     {
       if (saveFlags.GetAt(i) & MSG_VIEW_FLAG_ISTHREAD)
       {
@@ -176,7 +183,7 @@ nsresult nsMsgThreadedDBView::SortThreads(nsMsgViewSortTypeValue sortType, nsMsg
         m_levels.Add(0);
       }
     }
-    m_viewFlags &= ~nsMsgViewFlagsType::kThreadedDisplay;
+//    m_viewFlags &= ~nsMsgViewFlagsType::kThreadedDisplay;
     m_sortType = nsMsgViewSortType::byNone; // sort from scratch
     nsMsgDBView::Sort(sortType, sortOrder);
     m_viewFlags |= nsMsgViewFlagsType::kThreadedDisplay;
@@ -199,31 +206,31 @@ nsresult nsMsgThreadedDBView::SortThreads(nsMsgViewSortTypeValue sortType, nsMsg
 nsresult nsMsgThreadedDBView::AddKeys(nsMsgKey *pKeys, PRInt32 *pFlags, const char *pLevels, nsMsgViewSortTypeValue sortType, PRInt32 numKeysToAdd)
 
 {
-	PRInt32	numAdded = 0;
+  PRInt32	numAdded = 0;
   // Allocate enough space first to avoid memory allocation/deallocation.
   m_keys.AllocateSpace(numKeysToAdd+m_keys.GetSize());
   m_flags.AllocateSpace(numKeysToAdd+m_flags.GetSize());
   m_levels.AllocateSpace(numKeysToAdd+m_levels.GetSize());
-	for (PRInt32 i = 0; i < numKeysToAdd; i++)
-	{
-		PRInt32 threadFlag = pFlags[i];
-		PRInt32 flag = threadFlag;
-
-		// skip ignored threads.
-		if ((threadFlag & MSG_FLAG_IGNORED) && !(m_viewFlags & nsMsgViewFlagsType::kShowIgnored))
-			continue;
-		// by default, make threads collapsed, unless we're in only viewing new msgs
-
-		if (flag & MSG_VIEW_FLAG_HASCHILDREN)
-			flag |= MSG_FLAG_ELIDED;
-		// should this be persistent? Doesn't seem to need to be.
-		flag |= MSG_VIEW_FLAG_ISTHREAD;
-		m_keys.Add(pKeys[i]);
-		m_flags.Add(flag);
-		m_levels.Add(pLevels[i]);
-		numAdded++;
-	}
-	return numAdded;
+  for (PRInt32 i = 0; i < numKeysToAdd; i++)
+  {
+    PRInt32 threadFlag = pFlags[i];
+    PRInt32 flag = threadFlag;
+    
+    // skip ignored threads.
+    if ((threadFlag & MSG_FLAG_IGNORED) && !(m_viewFlags & nsMsgViewFlagsType::kShowIgnored))
+      continue;
+    // by default, make threads collapsed, unless we're in only viewing new msgs
+    
+    if (flag & MSG_VIEW_FLAG_HASCHILDREN)
+      flag |= MSG_FLAG_ELIDED;
+    // should this be persistent? Doesn't seem to need to be.
+    flag |= MSG_VIEW_FLAG_ISTHREAD;
+    m_keys.Add(pKeys[i]);
+    m_flags.Add(flag);
+    m_levels.Add(pLevels[i]);
+    numAdded++;
+  }
+  return numAdded;
 }
 
 NS_IMETHODIMP nsMsgThreadedDBView::Sort(nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder)

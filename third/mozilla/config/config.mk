@@ -361,6 +361,7 @@ MOZ_META_COMPONENTS_mail_comps = \
 	msgdb \
 	msgmdn \
 	mailview \
+  offline-startup \
 	bayesflt \
 	$(NULL)
 
@@ -677,7 +678,7 @@ endif
 ifdef MOZ_WINCONSOLE
 ifeq ($(MOZ_WINCONSOLE),1)
 ifeq ($(MOZ_OS2_TOOLS),EMX)
-BIN_FLAGS	:= -Zlinker /PM:VIO -Zlinker /Stack:0x30000
+BIN_FLAGS	+= -Zlinker /PM:VIO
 endif
 ifeq ($(OS_ARCH),WINNT)
 WIN32_EXE_LDFLAGS	+= /SUBSYSTEM:CONSOLE
@@ -687,7 +688,7 @@ ifeq ($(MOZ_OS2_TOOLS),VACPP)
 LDFLAGS += /PM:PM
 endif
 ifeq ($(MOZ_OS2_TOOLS),EMX)
-BIN_FLAGS	:= -Zlinker /PM:PM -Zlinker /Stack:0x30000
+BIN_FLAGS	+= -Zlinker /PM:PM
 endif
 ifeq ($(OS_ARCH),WINNT)
 WIN32_EXE_LDFLAGS	+= /SUBSYSTEM:WINDOWS

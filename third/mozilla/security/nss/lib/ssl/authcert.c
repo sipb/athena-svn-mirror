@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: authcert.c,v 1.1.1.1 2003-02-14 17:55:09 rbasch Exp $
+ * $Id: authcert.c,v 1.1.1.2 2004-02-27 15:50:44 rbasch Exp $
  */
 
 #include <stdio.h>
@@ -68,7 +68,9 @@ NSS_GetClientAuthData(void *                       arg,
   proto_win = SSL_RevealPinArg(socket);
   
   if (chosenNickName) {
-    cert = PK11_FindCertFromNickname(chosenNickName, proto_win);
+    cert = CERT_FindUserCertByUsage(CERT_GetDefaultCertDB(),
+                                    chosenNickName, certUsageSSLClient,
+                                    PR_FALSE, proto_win);	
     if ( cert ) {
       privkey = PK11_FindKeyByAnyCert(cert, proto_win);
       if ( privkey ) {
@@ -85,7 +87,9 @@ NSS_GetClientAuthData(void *                       arg,
 				  SEC_CERT_NICKNAMES_USER, proto_win);
     if (names != NULL) {
       for (i = 0; i < names->numnicknames; i++) {
-	cert = PK11_FindCertFromNickname(names->nicknames[i],proto_win);
+	cert = CERT_FindUserCertByUsage(CERT_GetDefaultCertDB(),
+                            names->nicknames[i], certUsageSSLClient,
+                            PR_FALSE, proto_win);	
 	if ( !cert )
 	  continue;
 	/* Only check unexpired certs */

@@ -36,9 +36,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsIStreamTransportService.h"
-#include "nsIThreadPool.h"
-#include "nsCOMPtr.h"
-#include "prlock.h"
 
 class nsStreamTransportService : public nsIStreamTransportService
 {
@@ -46,15 +43,6 @@ public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSISTREAMTRANSPORTSERVICE
 
-    nsStreamTransportService();
-    virtual ~nsStreamTransportService();
-
-    /** used internally **/
-    nsresult Dispatch(nsIRunnable *);
-
-private:
-    nsresult Dispatch_Locked(nsIRunnable *);
-
-    nsCOMPtr<nsIThreadPool> mPool;
-    PRLock                 *mLock;
+    nsStreamTransportService() {}
+    virtual ~nsStreamTransportService() {}
 };

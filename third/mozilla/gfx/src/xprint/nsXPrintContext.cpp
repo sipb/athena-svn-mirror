@@ -1166,8 +1166,9 @@ nsXPrintContext::DrawImageBitsScaled(xGC *xgc, nsIImage *aImage,
     return NS_ERROR_FAILURE;
   }
 
-  RectStretch(aSX, aSY, aSX+aSWidth-1, aSY+aSHeight-1,
-              0, 0, (aDWidth-1), (aDHeight-1),
+  RectStretch(aSWidth, aSHeight,
+              aDWidth, aDHeight,
+              0, 0, aDWidth-1, aDHeight-1,
               srcimg_data, srcimg_bytes_per_line,
               dstimg_data, dstimg_bytes_per_line,
               imageDepth);
@@ -1382,7 +1383,8 @@ NS_IMETHODIMP nsXPrintContext::RenderPostScriptDataFragment(const unsigned char 
   PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, 
          ("nsXPrintContext::RenderPostScriptDataFragment(aData, aDatalen=%d)\n", aDatalen));
   
-  const char *embedded_formats_supported = XpGetOneAttribute(mPDisplay, mPContext,XPPrinterAttr, "xp-embedded-formats-supported");
+  char xp_formats_supported[] = "xp-embedded-formats-supported";
+  const char *embedded_formats_supported = XpGetOneAttribute(mPDisplay, mPContext,XPPrinterAttr, xp_formats_supported);
 
   /* Check whether "PostScript Level 2" is supported as embedding format
    * (The content of the "xp-embedded-formats-supported" attribute needs

@@ -42,6 +42,7 @@
 #include "nsIAsyncInputStream.h"
 #include "nsIAsyncOutputStream.h"
 #include "nsIRequestObserver.h"
+#include "nsStreamUtils.h"
 #include "nsCOMPtr.h"
 #include "prlock.h"
 
@@ -63,88 +64,24 @@ public:
     PRBool IsComplete(nsresult *status = nsnull);
     void   Complete(nsresult status);
 
-    //-------------------------------------------------------------------------
-    // nsInputWrapper
-    //-------------------------------------------------------------------------
-
-    class nsInputWrapper : public nsIAsyncInputStream
-                         , public nsIInputStreamNotify
-    {
-    public:
-        NS_DECL_ISUPPORTS_INHERITED
-        NS_DECL_NSIINPUTSTREAM
-        NS_DECL_NSIASYNCINPUTSTREAM
-        NS_DECL_NSIINPUTSTREAMNOTIFY
-        
-        nsInputWrapper(nsAsyncStreamCopier *copier)
-            : mCopier(copier)
-            , mBuffered(PR_FALSE)
-        { }
-        virtual ~nsInputWrapper() {}
-
-        nsAsyncStreamCopier           *mCopier;
-        nsCOMPtr<nsIInputStream>       mSource;
-        nsCOMPtr<nsIAsyncInputStream>  mAsyncSource;
-        PRBool                         mBuffered;
-
-    private:
-        // ReadSegments thunk impl
-        nsWriteSegmentFun  mWriter;
-        void              *mClosure;
-        static NS_METHOD ReadSegmentsThunk(nsIInputStream *, void *, const char *,
-                                           PRUint32, PRUint32, PRUint32 *);
-
-        // AsyncWait thunk impl
-        nsCOMPtr<nsIInputStreamNotify> mNotify;
-    };
-
-    //-------------------------------------------------------------------------
-    // nsInputWrapper
-    //-------------------------------------------------------------------------
-
-    class nsOutputWrapper : public nsIAsyncOutputStream
-                          , public nsIOutputStreamNotify
-    {
-    public:
-        NS_DECL_ISUPPORTS_INHERITED
-        NS_DECL_NSIOUTPUTSTREAM
-        NS_DECL_NSIASYNCOUTPUTSTREAM
-        NS_DECL_NSIOUTPUTSTREAMNOTIFY
-        
-        nsOutputWrapper(nsAsyncStreamCopier *copier)
-            : mCopier(copier)
-            , mBuffered(PR_FALSE)
-        { }
-        virtual ~nsOutputWrapper() {}
-
-        nsAsyncStreamCopier            *mCopier;
-        nsCOMPtr<nsIOutputStream>       mSink;
-        nsCOMPtr<nsIAsyncOutputStream>  mAsyncSink;
-        PRBool                          mBuffered;
-
-    private:
-        // WriteSegments thunk impl
-        nsReadSegmentFun  mReader;
-        void             *mClosure;
-        static NS_METHOD WriteSegmentsThunk(nsIOutputStream *, void *, char *,
-                                            PRUint32, PRUint32, PRUint32 *);
-
-        // AsyncWait thunk impl
-        nsCOMPtr<nsIOutputStreamNotify> mNotify;
-    };
-
 private:
-    nsInputWrapper                 mInput;
-    nsOutputWrapper                mOutput;
+
+    static void OnAsyncCopyComplete(void *, nsresult);
+
+    nsCOMPtr<nsIInputStream>       mSource;
+    nsCOMPtr<nsIOutputStream>      mSink;
 
     nsCOMPtr<nsIRequestObserver>   mObserver;
     nsCOMPtr<nsISupports>          mObserverContext;
 
+    nsCOMPtr<nsIEventTarget>       mTarget;
+
     PRLock                        *mLock;
 
+    nsAsyncCopyMode                mMode;
     PRUint32                       mChunkSize;
     nsresult                       mStatus;
-    PRBool                         mIsPending;
+    PRPackedBool                   mIsPending;
 };
 
 #endif // !nsAsyncStreamCopier_h__

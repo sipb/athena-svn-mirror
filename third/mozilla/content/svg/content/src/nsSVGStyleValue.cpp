@@ -39,7 +39,7 @@
 #include "nsSVGValue.h"
 #include "nsISVGStyleValue.h"
 #include "nsSVGStyleValue.h"
-#include "nsIStyleRule.h"
+#include "nsICSSStyleRule.h"
 #include "nsIContent.h"
 #include "nsIURI.h"
 #include "nsICSSParser.h"
@@ -65,14 +65,14 @@ public:
   NS_IMETHOD GetValueString(nsAString& aValue);
 
   // nsISVGStyleValue interface:
-  NS_IMETHOD GetStyleRule(nsIContent* aContent, nsIStyleRule** rule);
+  NS_IMETHOD GetStyleRule(nsIContent* aContent, nsICSSStyleRule** rule);
   
 protected:
   // Implementation helpers:
   void UpdateStyleRule(nsIContent* aContent);
   
   nsString mValue;
-  nsCOMPtr<nsIStyleRule> mRule; // lazily cached
+  nsCOMPtr<nsICSSStyleRule> mRule; // lazily cached
 };
 
 //----------------------------------------------------------------------
@@ -127,7 +127,7 @@ nsSVGStyleValue::GetValueString(nsAString& aValue)
 // nsISVGStyleValue interface:
 
 NS_IMETHODIMP
-nsSVGStyleValue::GetStyleRule(nsIContent* aContent, nsIStyleRule** rule)
+nsSVGStyleValue::GetStyleRule(nsIContent* aContent, nsICSSStyleRule** rule)
 {
   if (!mRule) {
     UpdateStyleRule(aContent);

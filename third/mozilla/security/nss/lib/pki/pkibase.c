@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: pkibase.c,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:52:10 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: pkibase.c,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 16:23:00 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef DEV_H
@@ -106,8 +106,7 @@ nssPKIObject_Destroy (
 {
     PRUint32 i;
     PR_ASSERT(object->refCount > 0);
-    PR_AtomicDecrement(&object->refCount);
-    if (object->refCount == 0) {
+    if (PR_AtomicDecrement(&object->refCount) == 0) {
 	for (i=0; i<object->numInstances; i++) {
 	    nssCryptokiObject_Destroy(object->instances[i]);
 	}
@@ -808,22 +807,19 @@ nssPKIObjectCollection_AddInstances (
 	    if (numInstances > 0 && i == numInstances) {
 		break;
 	    }
-	    node = add_object_instance(collection, *instances, &foundIt);
-	    if (node == NULL) {
-		goto loser;
+	    if (status == PR_SUCCESS) {
+		node = add_object_instance(collection, *instances, &foundIt);
+		if (node == NULL) {
+		    /* add_object_instance freed the current instance */
+		    /* free the remaining instances */
+		    status = PR_FAILURE;
+		}
+	    } else {
+		nssCryptokiObject_Destroy(*instances);
 	    }
 	}
     }
     return status;
-loser:
-    /* free the remaining instances */
-    for (; *instances; instances++, i++) {
-	if (numInstances > 0 && i == numInstances) {
-	    break;
-	}
-	nssCryptokiObject_Destroy(*instances);
-    }
-    return PR_FAILURE;
 }
 
 static void

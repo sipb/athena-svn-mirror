@@ -561,7 +561,7 @@ XULContentSinkImpl::SetDocumentCharset(nsACString& aCharset)
 {
     nsCOMPtr<nsIDocument> doc = do_QueryReferent(mDocument);
     if (doc) {
-        return doc->SetDocumentCharacterSet(aCharset);
+        doc->SetDocumentCharacterSet(aCharset);
     }
   
     return NS_OK;
@@ -767,12 +767,17 @@ NS_IMETHODIMP
 XULContentSinkImpl::HandleStartElement(const PRUnichar *aName, 
                                        const PRUnichar **aAtts,
                                        PRUint32 aAttsCount, 
-                                       PRUint32 aIndex, 
+                                       PRInt32 aIndex, 
                                        PRUint32 aLineNumber)
 { 
   // XXX Hopefully the parser will flag this before we get here. If
   // we're in the epilog, there should be no new elements
   NS_PRECONDITION(mState != eInEpilog, "tag in XUL doc epilog");
+  NS_PRECONDITION(aIndex >= -1, "Bogus aIndex");
+  NS_PRECONDITION(aAttsCount % 2 == 0, "incorrect aAttsCount");
+  // Adjust aAttsCount so it's the actual number of attributes
+  aAttsCount /= 2;
+  
   if (mState == eInEpilog)
       return NS_ERROR_UNEXPECTED;
 
@@ -810,6 +815,15 @@ XULContentSinkImpl::HandleStartElement(const PRUnichar *aName,
              aLineNumber));
       rv = NS_ERROR_UNEXPECTED; // XXX
       break;
+  }
+
+  // Set the ID attribute atom on the node info object for this node
+  if (aIndex != -1 && NS_SUCCEEDED(rv)) {
+    nsCOMPtr<nsIAtom> IDAttr = do_GetAtom(aAtts[aIndex]);
+
+    if (IDAttr) {
+      nodeInfo->SetIDAttributeAtom(IDAttr);
+    }
   }
 
   return rv;
@@ -939,11 +953,10 @@ NS_IMETHODIMP
 XULContentSinkImpl::HandleCharacterData(const PRUnichar *aData, 
                                         PRUint32 aLength)
 {
-  nsresult result = NS_OK;
-  if (aData) {
-    result = result = AddText(aData,aLength);
+  if (aData && mState != eInProlog && mState != eInEpilog) {
+    return AddText(aData, aLength);
   }
-  return result;
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
@@ -1069,16 +1082,16 @@ XULContentSinkImpl::ReportError(const PRUnichar* aErrorText,
   NS_NAMED_LITERAL_STRING(name, "xmlns");
   NS_NAMED_LITERAL_STRING(value, "http://www.mozilla.org/newlayout/xml/parsererror.xml");
 
-  const PRUnichar* atts[] = {name.get(), value.get(), nsnull};;
+  const PRUnichar* atts[] = {name.get(), value.get(), nsnull};
     
-  rv = HandleStartElement(NS_LITERAL_STRING("parsererror").get(), atts, 1, -1, -1);
+  rv = HandleStartElement(NS_LITERAL_STRING("parsererror").get(), atts, 2, -1, 0);
   NS_ENSURE_SUCCESS(rv,rv);
 
   rv = HandleCharacterData(aErrorText, nsCRT::strlen(aErrorText));
   NS_ENSURE_SUCCESS(rv,rv);  
   
   const PRUnichar* noAtts[] = {0, 0};
-  rv = HandleStartElement(NS_LITERAL_STRING("sourcetext").get(), noAtts, 0, -1, -1);
+  rv = HandleStartElement(NS_LITERAL_STRING("sourcetext").get(), noAtts, 0, -1, 0);
   NS_ENSURE_SUCCESS(rv,rv);
   
   rv = HandleCharacterData(aSourceText, nsCRT::strlen(aSourceText));
@@ -1355,12 +1368,10 @@ XULContentSinkImpl::OpenScript(const PRUnichar** aAttributes,
   nsAutoString src;
   while (*aAttributes) {
       const nsDependentString key(aAttributes[0]);
-      if (key.Equals(NS_LITERAL_STRING("src"),
-                     nsCaseInsensitiveStringComparator())) {
+      if (key.Equals(NS_LITERAL_STRING("src"))) {
           src.Assign(aAttributes[1]);
       }
-      else if (key.Equals(NS_LITERAL_STRING("type"),
-                          nsCaseInsensitiveStringComparator())) {
+      else if (key.Equals(NS_LITERAL_STRING("type"))) {
           nsAutoString  type(aAttributes[1]);
           nsAutoString  mimeType;
           nsAutoString  params;
@@ -1386,8 +1397,7 @@ XULContentSinkImpl::OpenScript(const PRUnichar** aAttributes,
               jsVersionString = JS_VersionToString(jsVersion);
           }
       }
-      else if (key.Equals(NS_LITERAL_STRING("language"),
-                          nsCaseInsensitiveStringComparator())) {
+      else if (key.Equals(NS_LITERAL_STRING("language"))) {
         nsAutoString  lang(aAttributes[1]);
         isJavaScript = nsParserUtils::IsJavaScriptLanguage(lang, &jsVersionString);
       }
@@ -1430,8 +1440,7 @@ XULContentSinkImpl::OpenScript(const PRUnichar** aAttributes,
           // where it's already there.
           nsCOMPtr<nsIDocument> doc(do_QueryReferent(mDocument));
           if (doc) {
-              nsCOMPtr<nsIScriptGlobalObject> globalObject;
-              doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
+              nsIScriptGlobalObject* globalObject = doc->GetScriptGlobalObject();
               if (globalObject) {
                   nsCOMPtr<nsIScriptContext> scriptContext;
                   globalObject->GetContext(getter_AddRefs(scriptContext));

@@ -39,7 +39,7 @@
  * SW FORTEZZA to link with some low level security functions without dragging
  * in NSPR.
  *
- * $Id: stub.c,v 1.1.1.2 2003-07-08 17:56:48 rbasch Exp $
+ * $Id: stub.c,v 1.1.1.3 2004-02-27 15:54:06 rbasch Exp $
  */
 
 #include "seccomon.h"

@@ -43,15 +43,16 @@
 #include "baseutils.h"
 #include "List.h"
 #include "nsIAtom.h"
+#include "txXPathNode.h"
 
 class Element;
 class Expr;
-class Node;
-class NodeSet;
 class txExecutionState;
+class txNodeSet;
 class TxObject;
 class txXPathResultComparator;
 class txIEvalContext;
+class txNodeSetContext;
 
 /*
  * Sorts Nodes as specified by the W3C XSLT 1.0 Recommendation
@@ -66,32 +67,27 @@ public:
     nsresult addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
                             Expr* aDataTypeExpr, Expr* aOrderExpr,
                             Expr* aCaseOrderExpr, txIEvalContext* aContext);
-    nsresult sortNodeSet(NodeSet* aNodes, txExecutionState* aEs);
+    nsresult sortNodeSet(txNodeSet* aNodes, txExecutionState* aEs,
+                         txNodeSet** aResult);
 
 private:
-    class SortableNode
+    struct SortData
     {
-    public:
-        SortableNode(Node* aNode, int aNValues);
-        void clear(int aNValues);
+        txNodeSorter* mNodeSorter;
+        txNodeSetContext* mContext;
         TxObject** mSortValues;
-        Node* mNode;
+        nsresult mRv;
     };
     struct SortKey
     {
         Expr* mExpr;
         txXPathResultComparator* mComparator;
     };
-    
-    int compareNodes(SortableNode* sNode1,
-                     SortableNode* sNode2,
-                     NodeSet* aNodes,
-                     txExecutionState* aEs);
 
-    MBool getAttrAsAVT(Element* aSortElement,
-                       nsIAtom* aAttrName,
-                       nsAString& aResult);
-
+    static int compareNodes(const void* aIndexA, const void* aIndexB,
+                            void* aSortData);
+    static PRBool calcSortValue(TxObject*& aSortValue, SortKey* aKey,
+                                SortData* aSortData, PRUint32 aNodeIndex);
     txList mSortKeys;
     int mNKeys;
 };

@@ -73,7 +73,6 @@
 #include "nsIWidget.h"
 #include "nsIBaseWindow.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICodebasePrincipal.h"
 #include "nsIContent.h"
 #include "nsIWebBrowserPrint.h"
 #include "nsIContentViewerEdit.h"
@@ -113,7 +112,6 @@
 #include "nsISelectionController.h"
 #include "nsISelection.h"
 #include "nsIFrameSelection.h"
-#include "nsISidebar.h"         // XXX for sidebar HACK, see bug 20721
 #include "nsIPrompt.h"
 #include "nsIWebNavigation.h"
 #include "nsIWebBrowser.h"
@@ -395,7 +393,7 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
     NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-    doc->GetPrincipal(getter_AddRefs(mDocumentPrincipal));
+    mDocumentPrincipal = doc->GetPrincipal();
   }
 
   // Always clear watchpoints, to deal with two cases:
@@ -427,9 +425,9 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
       nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDocument));
       NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-      nsCOMPtr<nsIPrincipal> newPrincipal;
-      nsresult rv = doc->GetPrincipal(getter_AddRefs(newPrincipal));
-      if (NS_SUCCEEDED(rv)) {
+      nsIPrincipal *newPrincipal = doc->GetPrincipal();
+      nsresult rv = NS_ERROR_FAILURE;
+      if (newPrincipal) {
         rv = sSecMan->CheckSameOriginPrincipal(mDocumentPrincipal,
                                                newPrincipal);
       }
@@ -453,11 +451,6 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
 
     // Let go of the cached principal since we no longer need it.
     mDocumentPrincipal = nsnull;
-  }
-
-  if (mSidebar) {
-    mSidebar->SetWindow(nsnull);
-    mSidebar = nsnull;
   }
 
   if (mFirstDocumentLoad) {
@@ -507,7 +500,7 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
 
   if (mDocument) {
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
-    nsCOMPtr<nsIURI> docURL;
+    nsIURI *docURL;
 
     // If we had a document in this window the document most likely
     // made our scope "unclear"
@@ -515,12 +508,9 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
     mIsScopeClear = PR_FALSE;
 
     if (doc) {
-      doc->GetDocumentURL(getter_AddRefs(docURL));
-    }
-
-    if (aRemoveEventListeners && mListenerManager) {
-      mListenerManager->RemoveAllListeners(PR_FALSE);
-      mListenerManager = nsnull;
+      docURL = doc->GetDocumentURL();
+    } else {
+      docURL = nsnull;
     }
 
     if (docURL) {
@@ -575,6 +565,16 @@ GlobalWindowImpl::SetNewDocument(nsIDOMDocument* aDocument,
           mIsScopeClear = PR_TRUE;
         }
       }
+
+      // Don't remove event listeners in similar conditions
+      aRemoveEventListeners = aRemoveEventListeners &&
+        (!isAboutBlank || (isContentWindow && !isSameOrigin));
+
+    }
+    
+    if (aRemoveEventListeners && mListenerManager) {
+      mListenerManager->RemoveAllListeners(PR_FALSE);
+      mListenerManager = nsnull;
     }
   }
 
@@ -815,8 +815,7 @@ GlobalWindowImpl::HandleDOMEvent(nsIPresContext* aPresContext,
     // down.
     if (aEvent->message == NS_PAGE_UNLOAD && mDocument && !(aFlags & NS_EVENT_FLAG_SYSTEM_EVENT)) {
       nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
-      nsCOMPtr<nsIBindingManager> bindingManager;
-      doc->GetBindingManager(getter_AddRefs(bindingManager));
+      nsIBindingManager *bindingManager = doc->GetBindingManager();
       if (bindingManager)
         bindingManager->ExecuteDetachedHandlers();
     }
@@ -976,7 +975,12 @@ GlobalWindowImpl::GetPrincipal(nsIPrincipal** result)
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
     NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-    return doc->GetPrincipal(result);
+    *result = doc->GetPrincipal();
+    if (!*result)
+      return NS_ERROR_FAILURE;
+
+    NS_ADDREF(*result);
+    return NS_OK;
   }
 
   if (mDocumentPrincipal) {
@@ -1168,29 +1172,6 @@ GlobalWindowImpl::GetContent(nsIDOMWindow** aContent)
   NS_IF_ADDREF(*aContent = domWindow);
 
   return NS_OK;
-}
-
-// XXX for sidebar HACK, see bug 20721
-NS_IMETHODIMP
-GlobalWindowImpl::GetSidebar(nsISidebar** aSidebar)
-{
-  nsresult rv = NS_OK;
-
-  if (!mSidebar) {
-    mSidebar = do_CreateInstance(NS_SIDEBAR_CONTRACTID, &rv);
-
-    if (mSidebar) {
-      nsIDOMWindowInternal *win = NS_STATIC_CAST(nsIDOMWindowInternal *, this);
-      /* no addref */
-      mSidebar->SetWindow(win);
-    }
-  }
-
-  *aSidebar = mSidebar;
-  NS_IF_ADDREF(*aSidebar);
-
-  return rv;
-
 }
 
 NS_IMETHODIMP
@@ -1973,8 +1954,7 @@ GlobalWindowImpl::GetScrollMaxXY(PRInt32* aScrollMaxX, PRInt32* aScrollMaxY)
   rv = CallQueryInterface(view, &portView);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsRect portRect;
-  portView->GetBounds(portRect);
+  nsRect portRect = portView->GetBounds();
 
   if (aScrollMaxX)
     *aScrollMaxX = PR_MAX(0,
@@ -2504,8 +2484,7 @@ GlobalWindowImpl::Focus()
 
   nsresult result = NS_OK;
   if (presShell) {
-    nsCOMPtr<nsIViewManager> vm;
-    presShell->GetViewManager(getter_AddRefs(vm));
+    nsIViewManager* vm = presShell->GetViewManager();
     if (vm) {
       nsCOMPtr<nsIWidget> widget;
       vm->GetWidget(getter_AddRefs(widget));
@@ -2933,11 +2912,8 @@ PRBool IsPopupBlocked(nsIDOMDocument* aDoc)
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDoc));
   nsCOMPtr<nsIPopupWindowManager> pm(do_GetService(NS_POPUPWINDOWMANAGER_CONTRACTID));
   if (pm && doc) {
-    nsCOMPtr<nsIURI> uri;
-    doc->GetDocumentURL(getter_AddRefs(uri));
-
     PRUint32 permission = nsIPopupWindowManager::ALLOW_POPUP;
-    pm->TestPermission(uri, &permission);
+    pm->TestPermission(doc->GetDocumentURL(), &permission);
     blocked = (permission == nsIPopupWindowManager::DENY_POPUP);
   }
   return blocked;
@@ -3374,6 +3350,20 @@ GlobalWindowImpl::Close()
     }
   }
 
+  // Ask the content viewer whether the toplevel window can close.
+  // If the content viewer returns false, it is responsible for calling
+  // Close() as soon as it is possible for the window to close.
+  // This allows us to not close the window while printing is happening.
+
+  nsCOMPtr<nsIContentViewer> cv;
+  mDocShell->GetContentViewer(getter_AddRefs(cv));
+  if (cv) {
+    PRBool canClose;
+    cv->RequestWindowClose(&canClose);
+    if (!canClose)
+      return NS_OK;
+  }
+
   // Fire a DOM event notifying listeners that this window is about to
   // be closed. The tab UI code may choose to cancel the default
   // action for this event, if so, we won't actually close the window
@@ -3438,7 +3428,7 @@ GlobalWindowImpl::Close()
       rv = ev->PostCloseEvent();
 
       if (NS_FAILED(rv)) {
-        delete ev;
+        PL_DestroyEvent(ev);
       }
     } else rv = NS_ERROR_OUT_OF_MEMORY;
   }
@@ -3562,10 +3552,8 @@ GlobalWindowImpl::ConvertCharset(const nsAString& aStr,
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
 
     if (doc)
-      result = doc->GetDocumentCharacterSet(charset);
+      charset = doc->GetDocumentCharacterSet();
   }
-  if (NS_FAILED(result))
-    return result;
 
   // Get an encoder for the character set
   result = ccm->GetUnicodeEncoderRaw(charset.get(),
@@ -3619,96 +3607,6 @@ GlobalWindowImpl::GetBlurSuppression()
   if (treeOwnerAsWin)
     treeOwnerAsWin->GetBlurSuppression(&suppress);
   return suppress;
-}
-
-NS_IMETHODIMP
-GlobalWindowImpl::Escape(const nsAString& aStr,
-                         nsAString& aReturn)
-{
-  nsresult rv = NS_OK;
-  nsXPIDLCString dest;
-
-  rv = ConvertCharset(aStr, getter_Copies(dest));
-  if (NS_SUCCEEDED(rv)) {
-    // Escape the string
-    char *outBuf =
-      nsEscape(dest.get(), nsEscapeMask(url_XAlphas | url_XPAlphas | url_Path));
-    CopyASCIItoUCS2(nsDependentCString(outBuf), aReturn);
-    nsMemory::Free(outBuf);
-  }
-
-  return rv;
-}
-
-NS_IMETHODIMP
-GlobalWindowImpl::Unescape(const nsAString& aStr,
-                           nsAString& aReturn)
-{
-  // To gracefully deal with encoding issues, we have to do the following:
-  // 1)  Convert aStr into the document encoding.
-  // 2)  Unescape the byte buffer
-  // 3)  Convert the byte buffer back into Unicode.
-  
-  aReturn.Truncate();
-
-  // encode
-  nsXPIDLCString encodedString;
-  nsresult rv = ConvertCharset(aStr, getter_Copies(encodedString));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<nsICharsetConverterManager>
-    ccm(do_GetService(kCharsetConverterManagerCID));
-  NS_ENSURE_TRUE(ccm, NS_ERROR_NOT_AVAILABLE);
-
-  // Get the document character set; default to utf-8 if all else fails
-  nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8"));
-
-  if (mDocument) {
-    nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
-
-    if (doc) {
-      rv = doc->GetDocumentCharacterSet(charset);
-    }
-  }
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  // Get a decoder for the character set
-  nsCOMPtr<nsIUnicodeDecoder> decoder;
-  rv = ccm->GetUnicodeDecoderRaw(charset.get(),
-                                 getter_AddRefs(decoder));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  // Unescape
-  // We cast away the const here; after this point, do not attempt to
-  // access encodedString directly -- it exists only to properly
-  // release the data buffer!
-  char *encodedData = NS_CONST_CAST(char*, encodedString.get());
-  PRInt32 unescapedByteCount = nsUnescapeCount(encodedData);
-
-  // Allocate buffer to decode into
-  PRInt32 maxLength;
-
-  // Get the expected length of the result string
-  rv = decoder->GetMaxLength(encodedData, unescapedByteCount, &maxLength);
-  NS_ENSURE_SUCCESS(rv, rv);
-  
-  // Allocate a buffer of the maximum length
-  PRUnichar *dest = (PRUnichar*)nsMemory::Alloc(sizeof(PRUnichar) * maxLength);
-  NS_ENSURE_TRUE(dest, NS_ERROR_OUT_OF_MEMORY);
-  
-  PRInt32 destLen = maxLength;
-
-  // Convert from character set to unicode
-  rv = decoder->Convert(encodedData, &unescapedByteCount, dest, &destLen);
-  if (NS_FAILED(rv)) {
-    nsMemory::Free(dest);
-    return rv;
-  }
-
-  aReturn.Assign(dest, destLen);
-  nsMemory::Free(dest);
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -4025,28 +3923,26 @@ GlobalWindowImpl::RemoveEventListener(const nsAString& aType,
 NS_IMETHODIMP
 GlobalWindowImpl::DispatchEvent(nsIDOMEvent* aEvent, PRBool* _retval)
 {
-  if (mDocument) {
-    nsCOMPtr<nsIDocument> idoc(do_QueryInterface(mDocument));
-    if (idoc) {
-      // Obtain a presentation context
-      PRInt32 count = idoc->GetNumberOfShells();
-      if (count == 0)
-        return NS_OK;
+  nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
+  if (doc) {
+    // Obtain a presentation context
+    nsIPresShell *shell = doc->GetShellAt(0);
+    if (!shell) {
+      return NS_OK;
+    }
 
-      nsCOMPtr<nsIPresShell> shell;
-      idoc->GetShellAt(0, getter_AddRefs(shell));
+    // Retrieve the context
+    nsCOMPtr<nsIPresContext> aPresContext;
+    shell->GetPresContext(getter_AddRefs(aPresContext));
 
-      // Retrieve the context
-      nsCOMPtr<nsIPresContext> aPresContext;
-      shell->GetPresContext(getter_AddRefs(aPresContext));
-
-      nsCOMPtr<nsIEventStateManager> esm;
-      if (NS_SUCCEEDED(aPresContext->GetEventStateManager(getter_AddRefs(esm)))) {
-        return esm->DispatchNewEvent(NS_STATIC_CAST(nsIScriptGlobalObject *,
-                                                    this), aEvent, _retval);
-      }
+    nsCOMPtr<nsIEventStateManager> esm;
+    aPresContext->GetEventStateManager(getter_AddRefs(esm));
+    if (esm) {
+      return esm->DispatchNewEvent(NS_STATIC_CAST(nsIScriptGlobalObject *,
+                                                  this), aEvent, _retval);
     }
   }
+
   return NS_ERROR_FAILURE;
 }
 
@@ -4180,8 +4076,7 @@ GlobalWindowImpl::GetPrivateParent(nsPIDOMWindow ** aParent)
     if (!doc)
       return NS_OK;             // This is ok, just means a null parent.
 
-    nsCOMPtr<nsIScriptGlobalObject> globalObject;
-    doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
+    nsIScriptGlobalObject *globalObject = doc->GetScriptGlobalObject();
     if (!globalObject)
       return NS_OK;             // This is ok, just means a null parent.
 
@@ -4219,10 +4114,7 @@ GlobalWindowImpl::GetPrivateRoot(nsIDOMWindowInternal ** aParent)
   if (chromeElement) {
     nsIDocument* doc = chromeElement->GetDocument();
     if (doc) {
-      nsCOMPtr<nsIScriptGlobalObject> globalObject;
-      doc->GetScriptGlobalObject(getter_AddRefs(globalObject));
-
-      parent = do_QueryInterface(globalObject);
+      parent = do_QueryInterface(doc->GetScriptGlobalObject());
       nsCOMPtr<nsIDOMWindow> tempParent;
       parent->GetTop(getter_AddRefs(tempParent));
       CallQueryInterface(tempParent, aParent);
@@ -4302,16 +4194,14 @@ GlobalWindowImpl::Activate()
    mDocShell->GetPresShell(getter_AddRefs(presShell));
    NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
-   nsCOMPtr<nsIViewManager> vm;
-   presShell->GetViewManager(getter_AddRefs(vm));
+   nsIViewManager* vm = presShell->GetViewManager();
    NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
    nsIView* rootView;
    vm->GetRootView(rootView);
    NS_ENSURE_TRUE(rootView, NS_ERROR_FAILURE);
 
-   nsCOMPtr<nsIWidget> widget;
-   rootView->GetWidget(*getter_AddRefs(widget));
+   nsIWidget* widget = rootView->GetWidget();
    NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);
 
    return widget->SetFocus();
@@ -4336,16 +4226,16 @@ GlobalWindowImpl::Activate()
     return NS_ERROR_FAILURE;
   }
 
-  nsCOMPtr<nsIViewManager> vm;
-  presShell->GetViewManager(getter_AddRefs(vm));
+  nsIViewManager* vm = presShell->GetViewManager();
   NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
   nsIView *rootView;
   vm->GetRootView(rootView);
   NS_ENSURE_TRUE(rootView, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIWidget> widget;
-  rootView->GetWidget(*getter_AddRefs(widget));
+  // We're holding a STRONG REF to the widget to ensure it doesn't go away
+  // during event processing
+  nsCOMPtr<nsIWidget> widget = rootView->GetWidget();
   NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);
 
   nsEventStatus status;
@@ -4371,16 +4261,15 @@ GlobalWindowImpl::Deactivate()
   mDocShell->GetPresShell(getter_AddRefs(presShell));
   NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIViewManager> vm;
-  presShell->GetViewManager(getter_AddRefs(vm));
+  nsIViewManager* vm = presShell->GetViewManager();
   NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
   nsIView *rootView;
   vm->GetRootView(rootView);
   NS_ENSURE_TRUE(rootView, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIWidget> widget;
-  rootView->GetWidget(*getter_AddRefs(widget));
+  // Hold a STRONG REF to keep the widget around during event processing
+  nsCOMPtr<nsIWidget> widget = rootView->GetWidget();
   NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);
 
   nsEventStatus status;
@@ -4561,9 +4450,7 @@ GlobalWindowImpl::GetInterface(const nsIID & aIID, void **aSink)
   else if (aIID.Equals(NS_GET_IID(nsIScriptEventManager))) {
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
     if (doc) {
-      nsCOMPtr<nsIScriptEventManager> mgr;
-
-      doc->GetScriptEventManager(getter_AddRefs(mgr));
+      nsIScriptEventManager* mgr = doc->GetScriptEventManager();
       if (mgr) {
         *aSink = mgr;
       }
@@ -4668,12 +4555,13 @@ GlobalWindowImpl::OpenInternal(const nsAString& aUrl,
         if (sSecMan) {
           nsCOMPtr<nsIPrincipal> principal;
           sSecMan->GetSubjectPrincipal(getter_AddRefs(principal));
-          nsCOMPtr<nsICodebasePrincipal> codebasePrin(do_QueryInterface(principal));
-          if (codebasePrin) {
+          if (principal) {
             nsCOMPtr<nsIURI> subjectURI;
-            codebasePrin->GetURI(getter_AddRefs(subjectURI));
-            nsCOMPtr<nsPIDOMWindow> domReturnPrivate(do_QueryInterface(domReturn));
-            domReturnPrivate->SetOpenerScriptURL(subjectURI);
+            principal->GetURI(getter_AddRefs(subjectURI));
+            if (subjectURI) {
+              nsCOMPtr<nsPIDOMWindow> domReturnPrivate(do_QueryInterface(domReturn));
+              domReturnPrivate->SetOpenerScriptURL(subjectURI);
+            }
           }
         }
       }
@@ -5470,14 +5358,9 @@ GlobalWindowImpl::GetScrollInfo(nsIScrollableView **aScrollableView,
     presContext->GetPixelsToTwips(aP2T);
     presContext->GetTwipsToPixels(aT2P);
 
-    nsCOMPtr<nsIPresShell> presShell;
-    presContext->GetShell(getter_AddRefs(presShell));
-    if (presShell) {
-      nsCOMPtr<nsIViewManager> vm;
-      presShell->GetViewManager(getter_AddRefs(vm));
-      if (vm)
-        return vm->GetRootScrollableView(aScrollableView);
-    }
+    nsIViewManager* vm = presContext->GetViewManager();
+    if (vm)
+      return vm->GetRootScrollableView(aScrollableView);
   }
   return NS_OK;
 }
@@ -5504,7 +5387,7 @@ GlobalWindowImpl::SecurityCheckURL(const char *aURL)
   /* resolve the URI, which could be relative to the calling window
      (note the algorithm to get the base URI should match the one
      used to actually kick off the load in nsWindowWatcher.cpp). */
-  nsCOMPtr<nsIURI> baseURI;
+  nsIURI* baseURI = nsnull;
   nsCOMPtr<nsIURI> uriToLoad;
 
   nsCOMPtr<nsIScriptContext> scriptcx;
@@ -5519,7 +5402,7 @@ GlobalWindowImpl::SecurityCheckURL(const char *aURL)
       caller->GetDocument(getter_AddRefs(callerDOMdoc));
       nsCOMPtr<nsIDocument> callerDoc(do_QueryInterface(callerDOMdoc));
       if (callerDoc)
-        callerDoc->GetDocumentURL(getter_AddRefs(baseURI));
+        baseURI = callerDoc->GetDocumentURL();
     }
   }
 
@@ -5748,16 +5631,14 @@ nsGlobalChromeWindow::SetCursor(const nsAString& aCursor)
       mDocShell->GetPresShell(getter_AddRefs(presShell));
       NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
 
-      nsCOMPtr<nsIViewManager> vm;
-      presShell->GetViewManager(getter_AddRefs(vm));
+      nsIViewManager* vm = presShell->GetViewManager();
       NS_ENSURE_TRUE(vm, NS_ERROR_FAILURE);
 
       nsIView *rootView;
       vm->GetRootView(rootView);
       NS_ENSURE_TRUE(rootView, NS_ERROR_FAILURE);
 
-      nsCOMPtr<nsIWidget> widget;
-      rootView->GetWidget(*getter_AddRefs(widget));
+      nsIWidget* widget = rootView->GetWidget();
       NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);
 
       // Call esm and set cursor.
@@ -6074,10 +5955,13 @@ NavigatorImpl::GetPlugins(nsIDOMPluginArray **aPlugins)
   return NS_OK;
 }
 
+// values for the network.cookie.cookieBehavior pref are documented in
+// nsCookieService.cpp.
+#define COOKIE_BEHAVIOR_REJECT 2
+
 NS_IMETHODIMP
 NavigatorImpl::GetCookieEnabled(PRBool *aCookieEnabled)
 {
-  nsresult rv = NS_OK;
   *aCookieEnabled = PR_FALSE;
 
   nsCOMPtr<nsIPrefBranch> prefBranch(gPrefBranch);
@@ -6086,25 +5970,12 @@ NavigatorImpl::GetCookieEnabled(PRBool *aCookieEnabled)
     NS_ENSURE_STATE(prefBranch);
   }
 
-#ifdef MOZ_PHOENIX
-  PRBool cookiesEnabled;
-  rv = prefBranch->GetBoolPref("network.cookie.enable", &cookiesEnabled);
-
-  if (NS_FAILED(rv))
-    return rv;
-
-  *aCookieEnabled = cookiesEnabled;
-#else
   PRInt32 cookieBehaviorPref;
-  rv = prefBranch->GetIntPref("network.cookie.cookieBehavior",
-                              &cookieBehaviorPref);
-
-  if (NS_FAILED(rv))
-    return rv;
-
-  const PRInt32 DONT_USE = 2;
-  *aCookieEnabled = (cookieBehaviorPref != DONT_USE);
-#endif
+  nsresult rv = prefBranch->GetIntPref("network.cookie.cookieBehavior",
+                                       &cookieBehaviorPref);
+  if (NS_SUCCEEDED(rv)) {
+    *aCookieEnabled = cookieBehaviorPref != COOKIE_BEHAVIOR_REJECT;
+  }
 
   return rv;
 }

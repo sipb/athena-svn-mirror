@@ -69,7 +69,7 @@ nsPlatformCharset::InitInfo()
   PR_AtomicIncrement(&gCnt); // count for gInfo
 
   if (gInfo == nsnull) {
-    nsURLProperties *info = new nsURLProperties(NS_LITERAL_CSTRING("resource:/res/os2charset.properties"));
+    nsURLProperties *info = new nsURLProperties(NS_LITERAL_CSTRING("resource://gre/res/os2charset.properties"));
 
     NS_ASSERTION(info , "cannot open properties file");
     NS_ENSURE_TRUE(info, NS_ERROR_FAILURE);
@@ -106,7 +106,7 @@ nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsACString& outCharse
     return rv;
   }
 
-  CopyUCS2toASCII(charset, outCharset);
+  LossyCopyUTF16toASCII(charset, outCharset);
   return NS_OK;
 }
 
@@ -134,7 +134,7 @@ nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector,
 }
 
 NS_IMETHODIMP
-nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, nsACString &oResult)
+nsPlatformCharset::GetDefaultCharsetForLocale(const nsAString& localeName, nsACString &oResult)
 {
   oResult.Truncate();
   return NS_OK;
@@ -159,7 +159,7 @@ nsPlatformCharset::InitGetCharset(nsACString &oString)
 }
 
 nsresult
-nsPlatformCharset::ConvertLocaleToCharsetUsingDeprecatedConfig(nsAutoString& locale, nsAString& oResult)
+nsPlatformCharset::ConvertLocaleToCharsetUsingDeprecatedConfig(nsAString& locale, nsACString& oResult)
 {
   return NS_OK;
 }

@@ -26,7 +26,6 @@
 #include "nsParserUtils.h"
 #include "nsICharsetConverterManager.h"
 #include "nsIUnicodeDecoder.h"
-#include "nsICharsetAlias.h"
 #include "nsIContent.h"
 #include "nsHTMLAtoms.h"
 #include "nsNetUtil.h"
@@ -45,12 +44,43 @@
 #include "nsUnicharUtils.h"
 #include "nsAutoPtr.h"
 
-static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 
 //////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////
+
+static already_AddRefed<nsIPrincipal>
+IntersectPrincipalCerts(nsIPrincipal *aOld, nsIPrincipal *aNew)
+{
+  NS_PRECONDITION(aOld, "Null old principal!");
+  NS_PRECONDITION(aNew, "Null new principal!");
+
+  nsIPrincipal *principal = aOld;
+
+  PRBool hasCert;
+  aOld->GetHasCertificate(&hasCert);
+  if (hasCert) {
+    PRBool equal;
+    aOld->Equals(aNew, &equal);
+    if (!equal) {
+      nsCOMPtr<nsIURI> uri, domain;
+      aOld->GetURI(getter_AddRefs(uri));
+      aOld->GetDomain(getter_AddRefs(domain));
+
+      nsContentUtils::GetSecurityManager()->GetCodebasePrincipal(uri, &principal);
+      if (principal && domain) {
+        principal->SetDomain(domain);
+      }
+
+      return principal;
+    }
+  }
+
+  NS_ADDREF(principal);
+
+  return principal;
+}
 
 //////////////////////////////////////////////////////////////
 // Per-request data structure
@@ -205,22 +235,21 @@ nsScriptLoader::InNonScriptingContainer(nsIDOMHTMLScriptElement* aScriptElement)
     if (!content) {
       break;
     }
-    
-    nsCOMPtr<nsINodeInfo> nodeInfo;
-    content->GetNodeInfo(getter_AddRefs(nodeInfo));
+
+    nsINodeInfo *nodeInfo = content->GetNodeInfo();
     NS_ASSERTION(nodeInfo, "element without node info");
 
     if (nodeInfo) {
-      nsCOMPtr<nsIAtom> localName = nodeInfo->GetNameAtom();
+      nsIAtom *localName = nodeInfo->NameAtom();
       
       // XXX noframes and noembed are currently unconditionally not
       // displayed and processed. This might change if we support either
       // prefs or per-document container settings for not allowing
       // frames or plugins.
       if (content->IsContentOfType(nsIContent::eHTML) &&
-          ((localName.get() == nsHTMLAtoms::iframe) ||
-           (localName.get() == nsHTMLAtoms::noframes) ||
-           (localName.get() == nsHTMLAtoms::noembed))) {
+          ((localName == nsHTMLAtoms::iframe) ||
+           (localName == nsHTMLAtoms::noframes) ||
+           (localName == nsHTMLAtoms::noembed))) {
         return PR_TRUE;
       }
     }
@@ -331,8 +360,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   
   // Script evaluation can also be disabled in the current script
   // context even though it's enabled in the document.
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  mDocument->GetScriptGlobalObject(getter_AddRefs(globalObject));
+  nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
   if (globalObject)
   {
     nsCOMPtr<nsIScriptContext> context;
@@ -402,28 +430,25 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   aElement->GetSrc(src);
   if (!src.IsEmpty()) {
     nsCOMPtr<nsIURI> baseURI, scriptURI;
-    
+
     // Use the SRC attribute value to load the URL
     nsCOMPtr<nsIContent> content(do_QueryInterface(aElement));
     NS_ASSERTION(content, "nsIDOMHTMLScriptElement not implementing nsIContent");
     content->GetBaseURL(getter_AddRefs(baseURI));
     rv = NS_NewURI(getter_AddRefs(scriptURI), src, nsnull, baseURI);
+
     if (NS_FAILED(rv)) {
       return FireErrorNotification(rv, aElement, aObserver);
     }
-    
+
     // Check that the containing page is allowed to load this URI.
-    nsCOMPtr<nsIScriptSecurityManager> securityManager(do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv));
-    if (NS_FAILED(rv)) {
-      return FireErrorNotification(rv, aElement, aObserver);
-    }
-    nsCOMPtr<nsIURI> docURI;
-    mDocument->GetDocumentURL(getter_AddRefs(docURI));
+    nsIURI *docURI = mDocument->GetDocumentURL();
     if (!docURI) {
       return FireErrorNotification(NS_ERROR_UNEXPECTED, aElement, aObserver);
     }
-    rv = securityManager->CheckLoadURI(docURI, scriptURI, 
-                                       nsIScriptSecurityManager::ALLOW_CHROME);
+    rv = nsContentUtils::GetSecurityManager()->
+      CheckLoadURI(docURI, scriptURI, nsIScriptSecurityManager::ALLOW_CHROME);
+
     if (NS_FAILED(rv)) {
       return FireErrorNotification(rv, aElement, aObserver);
     }
@@ -436,7 +461,8 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
       rv = NS_CheckContentLoadPolicy(nsIContentPolicy::SCRIPT,
                                      scriptURI, aElement, domWin, &shouldLoad);
       if (NS_SUCCEEDED(rv) && !shouldLoad) {
-        return FireErrorNotification(NS_ERROR_NOT_AVAILABLE, aElement, aObserver);
+        return FireErrorNotification(NS_ERROR_NOT_AVAILABLE, aElement,
+                                     aObserver);
       }
 
       request->mURI = scriptURI;
@@ -447,10 +473,8 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
       // Add the request to our pending requests list
       mPendingRequests.AppendObject(request);
 
-      nsCOMPtr<nsILoadGroup> loadGroup;
+      nsCOMPtr<nsILoadGroup> loadGroup = mDocument->GetDocumentLoadGroup();
       nsCOMPtr<nsIStreamLoader> loader;
-
-      (void) mDocument->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
 
       nsCOMPtr<nsIDocShell> docshell;
       rv = globalObject->GetDocShell(getter_AddRefs(docshell));
@@ -458,10 +482,6 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
         mPendingRequests.RemoveObject(request);
         return FireErrorNotification(rv, aElement, aObserver);
       }
-
-      // Get the referrer url from the document
-      nsCOMPtr<nsIURI> documentURI;
-      mDocument->GetDocumentURL(getter_AddRefs(documentURI));
 
       nsCOMPtr<nsIInterfaceRequestor> prompter(do_QueryInterface(docshell));
 
@@ -476,7 +496,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
           httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
                                         NS_LITERAL_CSTRING("*/*"),
                                         PR_FALSE);
-          httpChannel->SetReferrer(documentURI);
+          httpChannel->SetReferrer(mDocument->GetDocumentURL());
         }
         rv = NS_NewStreamLoader(getter_AddRefs(loader), channel, this, request);
       }
@@ -488,7 +508,7 @@ nsScriptLoader::ProcessScriptElement(nsIDOMHTMLScriptElement *aElement,
   } else {
     request->mLoading = PR_FALSE;
     request->mIsInline = PR_TRUE;
-    mDocument->GetDocumentURL(getter_AddRefs(request->mURI));
+    request->mURI = mDocument->GetDocumentURL();
 
     nsCOMPtr<nsIScriptElement> scriptElement(do_QueryInterface(aElement));
     if (scriptElement) {
@@ -561,7 +581,7 @@ nsScriptLoader::ProcessRequest(nsScriptLoadRequest* aRequest)
   FireScriptAvailable(NS_OK, aRequest, *script);
   nsresult rv = EvaluateScript(aRequest, *script);
   FireScriptEvaluated(rv, aRequest);
-  
+
   return rv;
 }
 
@@ -613,8 +633,7 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
     return NS_ERROR_FAILURE;
   }
 
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  mDocument->GetScriptGlobalObject(getter_AddRefs(globalObject));
+  nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
   NS_ENSURE_TRUE(globalObject, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIScriptContext> context;
@@ -623,8 +642,7 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
     return NS_ERROR_FAILURE;
   }
 
-  nsCOMPtr<nsIPrincipal> principal;
-  mDocument->GetPrincipal(getter_AddRefs(principal));
+  nsIPrincipal *principal = mDocument->GetPrincipal();
   // We can survive without a principal, but we really should
   // have one.
   NS_ASSERTION(principal, "principal required for document");
@@ -740,7 +758,7 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
   rv = aLoader->GetRequest(getter_AddRefs(req));    
   NS_ASSERTION(req, "StreamLoader's request went away prematurely");
   if (NS_FAILED(rv)) return rv;  // XXX Should this remove the pending request?
-  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(request));
+  nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(req));
   if (httpChannel) {
     PRBool requestSucceeded;
     rv = httpChannel->GetRequestSucceeded(&requestSucceeded);
@@ -754,49 +772,21 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
   }
 
   if (stringLen) {
-    nsCAutoString characterSet, preferred;
-    nsCOMPtr<nsIUnicodeDecoder> unicodeDecoder;
-
+    nsCAutoString characterSet;
     nsCOMPtr<nsIChannel> channel;
 
     channel = do_QueryInterface(req);
-    nsAutoString charset;
     if (channel) {
-      nsCAutoString charsetVal;
-      rv = channel->GetContentCharset(charsetVal);
-    
-      if (NS_SUCCEEDED(rv)) {
-        charset = NS_ConvertASCIItoUCS2(charsetVal);      
-        nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID,&rv));
-
-        if(NS_SUCCEEDED(rv) && calias) {
-          NS_LossyConvertUCS2toASCII asciiCharset(charset);
-
-          rv = calias->GetPreferred(asciiCharset, preferred);
-
-          if(NS_SUCCEEDED(rv)) {
-            characterSet = preferred;
-          }
-        }
-      }
+      rv = channel->GetContentCharset(characterSet);
     }
 
     if (NS_FAILED(rv) || characterSet.IsEmpty()) {
       // Check the charset attribute to determine script charset.
-      request->mElement->GetCharset(charset);
-      if (!charset.IsEmpty()) {
-        // Get the preferred charset from charset alias service if there
-        // is one.
-        nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID,&rv));
-        if (NS_SUCCEEDED(rv)) {
-          NS_LossyConvertUCS2toASCII asciiCharset(charset);
-
-          rv = calias->GetPreferred(asciiCharset, preferred);
-          
-          if(NS_SUCCEEDED(rv)) {
-            characterSet = preferred;
-          }
-        }
+      nsAutoString charset;
+      rv = request->mElement->GetCharset(charset);
+      if (NS_SUCCEEDED(rv)) {  
+        // charset name is always ASCII.
+        LossyCopyUTF16toASCII(charset, characterSet);
       }
     }
 
@@ -806,22 +796,22 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
 
     if (characterSet.IsEmpty()) {
       // charset from document default
-      rv = mDocument->GetDocumentCharacterSet(characterSet);
+      characterSet = mDocument->GetDocumentCharacterSet();
     }
 
-    NS_ASSERTION(NS_SUCCEEDED(rv), "Could not get document charset!");
-
     if (characterSet.IsEmpty()) {
-      // fall back to ISO-8851-1, see bug 118404
+      // fall back to ISO-8859-1, see bug 118404
       characterSet = NS_LITERAL_CSTRING("ISO-8859-1");
     }
     
     nsCOMPtr<nsICharsetConverterManager> charsetConv =
       do_GetService(kCharsetConverterManagerCID, &rv);
 
+    nsCOMPtr<nsIUnicodeDecoder> unicodeDecoder;
+
     if (NS_SUCCEEDED(rv) && charsetConv) {
-      rv = charsetConv->GetUnicodeDecoderRaw(characterSet.get(),
-                                             getter_AddRefs(unicodeDecoder));
+      rv = charsetConv->GetUnicodeDecoder(characterSet.get(),
+                                          getter_AddRefs(unicodeDecoder));
     }
 
     // converts from the charset to unicode
@@ -875,18 +865,21 @@ nsScriptLoader::OnStreamComplete(nsIStreamLoader* aLoader,
     if (channel) {
       nsCOMPtr<nsISupports> owner;
       channel->GetOwner(getter_AddRefs(owner));
-      nsCOMPtr<nsIPrincipal> prin;
-      
-      if (owner) {
-        prin = do_QueryInterface(owner, &rv);
-      }
-      
-      rv = mDocument->AddPrincipal(prin);
-      if (NS_FAILED(rv)) {
-        mPendingRequests.RemoveObject(request);
-        FireScriptAvailable(rv, request, NS_LITERAL_STRING(""));
-        ProcessPendingReqests();
-        return NS_OK;
+      nsCOMPtr<nsIPrincipal> principal = do_QueryInterface(owner);
+
+      if (principal) {
+        nsIPrincipal *docPrincipal = mDocument->GetPrincipal();
+        if (docPrincipal) {
+          nsCOMPtr<nsIPrincipal> newPrincipal =
+              IntersectPrincipalCerts(docPrincipal, principal);
+
+          mDocument->SetPrincipal(newPrincipal);
+        } else {
+          mPendingRequests.RemoveObject(request);
+          FireScriptAvailable(rv, request, NS_LITERAL_STRING(""));
+          ProcessPendingReqests();
+          return NS_OK;
+        }
       }
     }
   }

@@ -43,11 +43,12 @@ VPATH = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = ipcd
-LIBRARY_NAME = transmngr
+LIBRARY_NAME = transmgr
 MODULE_NAME = ipcd
 
 FORCE_SHARED_LIB	= 1
 NO_DIST_INSTALL	= 1
+NO_INSTALL = 1
 
 ifeq ($(OS_ARCH),Darwin)
 NO_COMPONENT_LINK_MAP = 1
@@ -82,7 +83,7 @@ LIBS = \
 EXTRA_DSO_LDOPTS = \
   $(LIBS_DIR) \
   $(NSPR_LIBS) \
-  $(DIST)/lib/$(LIB_PREFIX)transmngrcom_s.$(LIB_SUFFIX) \
+  $(DIST)/lib/$(LIB_PREFIX)transmgrcom_s.$(LIB_SUFFIX) \
   $(EXTRA_DSO_LIBS) \
   $(NULL)
 

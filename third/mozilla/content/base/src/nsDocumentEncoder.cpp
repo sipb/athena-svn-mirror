@@ -388,21 +388,8 @@ nsDocumentEncoder::SerializeToStringRecursive(nsIDOMNode* aNode,
 PRBool 
 nsDocumentEncoder::IsTag(nsIDOMNode* aNode, nsIAtom* aAtom)
 {
-  if (aNode)
-  {
-    nsCOMPtr<nsIAtom> atom;
-    nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-    if (content)
-      content->GetTag(getter_AddRefs(atom));
-    if (atom)
-    {
-      if (atom.get() == aAtom)
-      {
-        return PR_TRUE;
-      }
-    }
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+  return content && content->Tag() == aAtom;
 }
 
 static nsresult
@@ -494,14 +481,13 @@ nsDocumentEncoder::FlushText(nsAString& aString, PRBool aForce)
       // there are problems with it so we don't use it now, maybe later...
 static nsresult ChildAt(nsIDOMNode* aNode, PRInt32 aIndex, nsIDOMNode*& aChild)
 {
-  nsCOMPtr<nsIContent> node(do_QueryInterface(aNode));
-  nsCOMPtr<nsIContent> child;
+  nsCOMPtr<nsIContent> content(do_QueryInterface(aNode));
 
   aChild = nsnull;
 
-  NS_ENSURE_TRUE(node, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(content, NS_ERROR_FAILURE);
 
-  node->ChildAt(aIndex, getter_AddRefs(child));
+  nsIContent *child = content->GetChildAt(aIndex);
 
   if (child)
     return CallQueryInterface(child, &aChild);
@@ -514,14 +500,10 @@ static PRInt32 IndexOf(nsIDOMNode* aParent, nsIDOMNode* aChild)
   nsCOMPtr<nsIContent> parent(do_QueryInterface(aParent));
   nsCOMPtr<nsIContent> child(do_QueryInterface(aChild));
 
-  if (!parent || !child)
+  if (!parent)
     return -1;
 
-  PRInt32 indx = 0;
-
-  parent->IndexOf(child, indx);
-
-  return indx;
+  return parent->IndexOf(child);
 }
 
 static inline PRInt32 GetIndex(nsVoidArray& aIndexArray)
@@ -688,7 +670,7 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
     }
     else
     {
-      if (aNode != mCommonParent.get())
+      if (aNode != mCommonParent)
       {
         if (IncludeInContext(aNode))
         {
@@ -704,8 +686,8 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
         NS_ENSURE_SUCCESS(rv, rv);
       }
       
-      // do some calculations that will tell us which children of this node are in the range.
-      nsCOMPtr<nsIContent> child;
+      // do some calculations that will tell us which children of this
+      // node are in the range.
       nsCOMPtr<nsIDOMNode> childAsNode;
       PRInt32 startOffset = 0, endOffset = -1;
       if (startNode == content && mStartRootIndex >= aDepth)
@@ -713,9 +695,9 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
       if (endNode == content && mEndRootIndex >= aDepth)
         endOffset = NS_PTR_TO_INT32(mEndOffsets[mEndRootIndex - aDepth]) ;
       // generated content will cause offset values of -1 to be returned.  
-      PRInt32 j, childCount=0;
-      rv = content->ChildCount(childCount);
-      NS_ENSURE_SUCCESS(rv, rv);
+      PRInt32 j;
+      PRUint32 childCount = content->GetChildCount();
+
       if (startOffset == -1) startOffset = 0;
       if (endOffset == -1) endOffset = childCount;
       else
@@ -728,7 +710,7 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
         // to add one here in order to include it in the children we serialize.
         nsCOMPtr<nsIDOMNode> endParent;
         aRange->GetEndContainer(getter_AddRefs(endParent));
-        if (aNode != endParent.get())
+        if (aNode != endParent)
         {
           endOffset++;
         }
@@ -736,18 +718,18 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
       // serialize the children of this node that are in the range
       for (j=startOffset; j<endOffset; j++)
       {
-        rv = content->ChildAt(j, getter_AddRefs(child));
-        childAsNode = do_QueryInterface(child);
-        NS_ENSURE_SUCCESS(rv, rv);
+        childAsNode = do_QueryInterface(content->GetChildAt(j));
+
         if ((j==startOffset) || (j==endOffset-1))
           rv = SerializeRangeNodes(aRange, childAsNode, aString, aDepth+1);
         else
           rv = SerializeToStringRecursive(childAsNode, aString);
+
         NS_ENSURE_SUCCESS(rv, rv);
       }
 
       // serialize the end of this node
-      if (aNode != mCommonParent.get())
+      if (aNode != mCommonParent)
       {
         rv = SerializeNodeEnd(aNode, aString);
         NS_ENSURE_SUCCESS(rv, rv); 
@@ -1122,15 +1104,14 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
        selContent = selContent->GetParent())
   {
     // checking for selection inside a plaintext form widget
-    nsCOMPtr<nsIAtom> atom;
-    selContent->GetTag(getter_AddRefs(atom));
-    if (atom.get() == nsHTMLAtoms::input ||
-        atom.get() == nsHTMLAtoms::textarea)
+    nsIAtom *atom = selContent->Tag();
+    if (atom == nsHTMLAtoms::input ||
+        atom == nsHTMLAtoms::textarea)
     {
       mIsTextWidget = PR_TRUE;
       break;
     }
-    else if (atom.get() == nsHTMLAtoms::body)
+    else if (atom == nsHTMLAtoms::body)
     {
       // check for moz prewrap style on body.  If it's there we are 
       // in a plaintext editor.  This is pretty cheezy but I haven't 
@@ -1269,41 +1250,34 @@ nsHTMLCopyEncoder::IncludeInContext(nsIDOMNode *aNode)
   if (!content)
     return PR_FALSE;
 
-  nsCOMPtr<nsIAtom> tag;
+  nsIAtom *tag = content->Tag();
 
-  content->GetTag(getter_AddRefs(tag));
-
-  if (tag.get() == nsHTMLAtoms::b        ||
-      tag.get() == nsHTMLAtoms::i        ||
-      tag.get() == nsHTMLAtoms::u        ||
-      tag.get() == nsHTMLAtoms::a        ||
-      tag.get() == nsHTMLAtoms::tt       ||
-      tag.get() == nsHTMLAtoms::s        ||
-      tag.get() == nsHTMLAtoms::big      ||
-      tag.get() == nsHTMLAtoms::small    ||
-      tag.get() == nsHTMLAtoms::strike   ||
-      tag.get() == nsHTMLAtoms::em       ||
-      tag.get() == nsHTMLAtoms::strong   ||
-      tag.get() == nsHTMLAtoms::dfn      ||
-      tag.get() == nsHTMLAtoms::code     ||
-      tag.get() == nsHTMLAtoms::cite     ||
-      tag.get() == nsHTMLAtoms::variable ||
-      tag.get() == nsHTMLAtoms::abbr     ||
-      tag.get() == nsHTMLAtoms::font     ||
-      tag.get() == nsHTMLAtoms::script   ||
-      tag.get() == nsHTMLAtoms::span     ||
-      tag.get() == nsHTMLAtoms::pre      ||
-      tag.get() == nsHTMLAtoms::h1       ||
-      tag.get() == nsHTMLAtoms::h2       ||
-      tag.get() == nsHTMLAtoms::h3       ||
-      tag.get() == nsHTMLAtoms::h4       ||
-      tag.get() == nsHTMLAtoms::h5       ||
-      tag.get() == nsHTMLAtoms::h6) 
-  {
-    return PR_TRUE;
-  }
-
-  return PR_FALSE;
+  return (tag == nsHTMLAtoms::b        ||
+          tag == nsHTMLAtoms::i        ||
+          tag == nsHTMLAtoms::u        ||
+          tag == nsHTMLAtoms::a        ||
+          tag == nsHTMLAtoms::tt       ||
+          tag == nsHTMLAtoms::s        ||
+          tag == nsHTMLAtoms::big      ||
+          tag == nsHTMLAtoms::small    ||
+          tag == nsHTMLAtoms::strike   ||
+          tag == nsHTMLAtoms::em       ||
+          tag == nsHTMLAtoms::strong   ||
+          tag == nsHTMLAtoms::dfn      ||
+          tag == nsHTMLAtoms::code     ||
+          tag == nsHTMLAtoms::cite     ||
+          tag == nsHTMLAtoms::variable ||
+          tag == nsHTMLAtoms::abbr     ||
+          tag == nsHTMLAtoms::font     ||
+          tag == nsHTMLAtoms::script   ||
+          tag == nsHTMLAtoms::span     ||
+          tag == nsHTMLAtoms::pre      ||
+          tag == nsHTMLAtoms::h1       ||
+          tag == nsHTMLAtoms::h2       ||
+          tag == nsHTMLAtoms::h3       ||
+          tag == nsHTMLAtoms::h4       ||
+          tag == nsHTMLAtoms::h5       ||
+          tag == nsHTMLAtoms::h6);
 }
 
 
@@ -1462,11 +1436,8 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
           nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
           if (content)
           {
-            nsCOMPtr<nsIAtom> atom;
-            content->GetTag(getter_AddRefs(atom));
-
             PRInt32 id;
-            parserService->HTMLAtomTagToId(atom, &id);
+            parserService->HTMLAtomTagToId(content->Tag(), &id);
 
             PRBool isBlock = PR_FALSE;
             parserService->IsBlock(id, isBlock);
@@ -1551,11 +1522,8 @@ nsHTMLCopyEncoder::GetPromotedPoint(Endpoint aWhere, nsIDOMNode *aNode, PRInt32 
           nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
           if (content)
           {
-            nsCOMPtr<nsIAtom> atom;
-            content->GetTag(getter_AddRefs(atom));
-
             PRInt32 id;
-            parserService->HTMLAtomTagToId(atom, &id);
+            parserService->HTMLAtomTagToId(content->Tag(), &id);
 
             PRBool isBlock = PR_FALSE;
             parserService->IsBlock(id, isBlock);
@@ -1604,13 +1572,10 @@ nsHTMLCopyEncoder::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
     return resultNode;
   
   nsCOMPtr<nsIContent> content = do_QueryInterface(aParent);
-  nsCOMPtr<nsIContent> cChild;
   NS_PRECONDITION(content, "null content in nsHTMLCopyEncoder::GetChildAt");
-  
-  if (NS_FAILED(content->ChildAt(aOffset, getter_AddRefs(cChild))))
-    return resultNode;
-  
-  resultNode = do_QueryInterface(cChild);
+
+  resultNode = do_QueryInterface(content->GetChildAt(aOffset));
+
   return resultNode;
 }
 
@@ -1635,7 +1600,9 @@ nsHTMLCopyEncoder::IsMozBR(nsIDOMNode* aNode)
 }
 
 nsresult 
-nsHTMLCopyEncoder::GetNodeLocation(nsIDOMNode *inChild, nsCOMPtr<nsIDOMNode> *outParent, PRInt32 *outOffset)
+nsHTMLCopyEncoder::GetNodeLocation(nsIDOMNode *inChild,
+                                   nsCOMPtr<nsIDOMNode> *outParent,
+                                   PRInt32 *outOffset)
 {
   NS_ASSERTION((inChild && outParent && outOffset), "bad args");
   nsresult result = NS_ERROR_NULL_POINTER;
@@ -1646,8 +1613,10 @@ nsHTMLCopyEncoder::GetNodeLocation(nsIDOMNode *inChild, nsCOMPtr<nsIDOMNode> *ou
     {
       nsCOMPtr<nsIContent> content = do_QueryInterface(*outParent);
       nsCOMPtr<nsIContent> cChild = do_QueryInterface(inChild);
-      if (!cChild || !content) return NS_ERROR_NULL_POINTER;
-      result = content->IndexOf(cChild, *outOffset);
+      if (!cChild || !content)
+        return NS_ERROR_NULL_POINTER;
+
+      *outOffset = content->IndexOf(cChild);
     }
   }
   return result;

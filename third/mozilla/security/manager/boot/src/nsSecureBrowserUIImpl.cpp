@@ -23,7 +23,7 @@
  *   Hubbie Shaw
  *   Doug Turner <dougt@netscape.com>
  *   Stuart Parmenter <pavlov@netscape.com>
- *   Brian Ryner <bryner@netscape.com>
+ *   Brian Ryner <bryner@brianryner.com>
  *   Terry Hayes <thayes@netscape.com>
  *   Kai Engert <kaie@netscape.com>
  *
@@ -329,12 +329,9 @@ nsSecureBrowserUIImpl::Notify(nsIContent* formNode,
   nsCOMPtr<nsIDocument> document = formNode->GetDocument();
   if (!document) return NS_OK;
 
-  nsCOMPtr<nsIURI> formURL;
-  document->GetBaseURL(getter_AddRefs(formURL));
-  
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  document->GetScriptGlobalObject(getter_AddRefs(globalObject));
-  nsCOMPtr<nsIDOMWindow> postingWindow(do_QueryInterface(globalObject));
+  nsIURI *formURL = document->GetBaseURL();
+
+  nsCOMPtr<nsIDOMWindow> postingWindow(do_QueryInterface(document->GetScriptGlobalObject()));
   
   PRBool isChild;
   IsChildOfDomWindow(mWindow, postingWindow, &isChild);

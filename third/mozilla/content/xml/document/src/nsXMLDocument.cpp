@@ -76,9 +76,8 @@
 #include "nsICharsetAlias.h"
 #include "nsNetUtil.h"
 #include "nsDOMError.h"
-#include "nsScriptSecurityManager.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsIPrincipal.h"
-#include "nsIAggregatePrincipal.h"
 #include "nsLayoutCID.h"
 #include "nsDOMAttribute.h"
 #include "nsGUIEvent.h"
@@ -236,17 +235,15 @@ nsXMLDocument::Init()
   return rv;
 }
 
-NS_IMETHODIMP 
+void
 nsXMLDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
 {
-  nsresult result = nsDocument::Reset(aChannel, aLoadGroup);
-  if (NS_FAILED(result))
-    return result;
+  nsDocument::Reset(aChannel, aLoadGroup);
   nsCOMPtr<nsIURI> url;
   if (aChannel) {
-    result = aChannel->GetURI(getter_AddRefs(url));
+    nsresult result = aChannel->GetURI(getter_AddRefs(url));
     if (NS_FAILED(result))
-      return result;
+      return;
   }
 
   if (mAttrStyleSheet) {
@@ -256,13 +253,11 @@ nsXMLDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
     mInlineStyleSheet->SetOwningDocument(nsnull);
   }
 
-  result = SetDefaultStylesheets(url);
+  SetDefaultStylesheets(url);
 
   mBaseTarget.Truncate();
 
   mScriptContext = nsnull;
-
-  return result;
 }
 
 /////////////////////////////////////////////////////
@@ -301,17 +296,12 @@ nsXMLDocument::OnRedirect(nsIHttpChannel *aHttpChannel, nsIChannel *aNewChannel)
 {
   NS_ENSURE_ARG_POINTER(aNewChannel);
 
-  nsresult rv;
-
-  nsCOMPtr<nsIScriptSecurityManager> secMan = 
-           do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) 
-    return rv;
-
   nsCOMPtr<nsIURI> newLocation;
-  rv = aNewChannel->GetURI(getter_AddRefs(newLocation)); // The redirected URI
+  nsresult rv = aNewChannel->GetURI(getter_AddRefs(newLocation)); // The redirected URI
   if (NS_FAILED(rv)) 
     return rv;
+
+  nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
 
   if (mScriptContext && !mCrossSiteAccessEnabled) {
     nsCOMPtr<nsIJSContextStack> stack(do_GetService("@mozilla.org/js/xpc/ContextStack;1", & rv));
@@ -332,21 +322,7 @@ nsXMLDocument::OnRedirect(nsIHttpChannel *aHttpChannel, nsIChannel *aNewChannel)
       return rv;
   }
 
-  nsCOMPtr<nsIPrincipal> newCodebase;
-  rv = secMan->GetCodebasePrincipal(newLocation,
-                                    getter_AddRefs(newCodebase));
-  if (NS_FAILED(rv))
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAggregatePrincipal> agg = do_QueryInterface(mPrincipal, &rv);
-  NS_ASSERTION(NS_SUCCEEDED(rv), "Principal not an aggregate.");
-
-  if (NS_FAILED(rv))
-    return NS_ERROR_FAILURE;
-
-  rv = agg->SetCodebase(newCodebase);
-
-  return rv;
+  return secMan->GetCodebasePrincipal(newLocation, getter_AddRefs(mPrincipal));
 }
 
 NS_IMETHODIMP
@@ -402,7 +378,7 @@ nsXMLDocument::GetLoadGroup(nsILoadGroup **aLoadGroup)
       window->GetDocument(getter_AddRefs(domdoc));
       nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
       if (doc) {
-        doc->GetDocumentLoadGroup(aLoadGroup);
+        *aLoadGroup = doc->GetDocumentLoadGroup().get(); // already_AddRefed
       }
     }
   }
@@ -447,7 +423,7 @@ nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
     }
   }
 
-  nsCOMPtr<nsIURI> baseURI(mDocumentURL);
+  nsIURI *baseURI = mDocumentURL;
   nsCAutoString charset;
 
   if (callingContext) {
@@ -462,8 +438,8 @@ nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
       nsCOMPtr<nsIDocument> doc(do_QueryInterface(dom_doc));
 
       if (doc) {
-        doc->GetBaseURL(getter_AddRefs(baseURI));
-        doc->GetDocumentCharacterSet(charset);
+        baseURI = doc->GetBaseURL();
+        charset = doc->GetDocumentCharacterSet();
       }
     }
   }
@@ -615,17 +591,14 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
     // who puts the document on display to worry about enabling.
 
     // scripts
-    nsCOMPtr<nsIScriptLoader> loader;
-    nsresult rv = GetScriptLoader(getter_AddRefs(loader));
-    if (NS_FAILED(rv))
-      return rv;
+    nsIScriptLoader *loader = GetScriptLoader();
     if (loader) {
       loader->SetEnabled(PR_FALSE); // Do not load/process scripts when loading as data
     }
 
     // styles
     nsCOMPtr<nsICSSLoader> cssLoader;
-    rv = GetCSSLoader(*getter_AddRefs(cssLoader));
+    nsresult rv = GetCSSLoader(*getter_AddRefs(cssLoader));
     if (NS_FAILED(rv))
       return rv;
     if (cssLoader) {
@@ -634,7 +607,7 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
   } else if (nsCRT::strcmp("loadAsInteractiveData", aCommand) == 0) {
     aCommand = kLoadAsData; // XBL, for example, needs scripts and styles
   }
-  
+
   if (nsCRT::strcmp(aCommand, kLoadAsData) == 0) {
     mLoadedAsData = PR_TRUE;
   }
@@ -702,7 +675,7 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+void
 nsXMLDocument::EndLoad()
 {
   mLoopingForSyncLoad = PR_FALSE;
@@ -726,7 +699,7 @@ nsXMLDocument::EndLoad()
 
     HandleDOMEvent(nsnull, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
   }    
-  return nsDocument::EndLoad();  
+  nsDocument::EndLoad();  
 }
 
 NS_IMETHODIMP 
@@ -807,15 +780,13 @@ nsXMLDocument::InternalInsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex)
   mStyleSheets.InsertObjectAt(aSheet, aIndex + mCatalogSheetCount + 1);
 }
 
-already_AddRefed<nsIStyleSheet>
-nsXMLDocument::InternalGetStyleSheetAt(PRInt32 aIndex)
+nsIStyleSheet*
+nsXMLDocument::InternalGetStyleSheetAt(PRInt32 aIndex) const
 {
   PRInt32 count = InternalGetNumberOfStyleSheets();
 
   if (aIndex >= 0 && aIndex < count) {
-    nsIStyleSheet* sheet = mStyleSheets[aIndex + mCatalogSheetCount + 1];
-    NS_ADDREF(sheet);
-    return sheet;
+    return mStyleSheets[aIndex + mCatalogSheetCount + 1];
   } else {
     NS_ERROR("Index out of range");
     return nsnull;
@@ -823,7 +794,7 @@ nsXMLDocument::InternalGetStyleSheetAt(PRInt32 aIndex)
 }
 
 PRInt32
-nsXMLDocument::InternalGetNumberOfStyleSheets()
+nsXMLDocument::InternalGetNumberOfStyleSheets() const
 {
   PRInt32 count = mStyleSheets.Count();
 
@@ -1065,13 +1036,10 @@ MatchElementId(nsIContent *aContent, const nsACString& aUTF8Id, const nsAString&
   }
   
   nsIContent *result = nsnull;
-  PRInt32 i, count;
+  PRUint32 i, count = aContent->GetChildCount();
 
-  aContent->ChildCount(count);
-  nsCOMPtr<nsIContent> child;
   for (i = 0; i < count && result == nsnull; i++) {
-    aContent->ChildAt(i, getter_AddRefs(child));
-    result = MatchElementId(child, aUTF8Id, aId);
+    result = MatchElementId(aContent->GetChildAt(i), aUTF8Id, aId);
   }  
 
   return result;
@@ -1130,18 +1098,16 @@ nsXMLDocument::SetDefaultStylesheets(nsIURI* aUrl)
   return rv;
 }
 
-NS_IMETHODIMP 
+void
 nsXMLDocument::SetBaseTarget(const nsAString &aBaseTarget)
 {
   mBaseTarget.Assign(aBaseTarget);
-  return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsXMLDocument::GetBaseTarget(nsAString &aBaseTarget)
+void
+nsXMLDocument::GetBaseTarget(nsAString &aBaseTarget) const
 {
   aBaseTarget.Assign(mBaseTarget);
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1171,7 +1137,7 @@ nsXMLDocument::CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult)
   
   nsCOMPtr<nsIContent> content;
 
-  PRInt32 namespaceID = aNodeInfo->GetNamespaceID();
+  PRInt32 namespaceID = aNodeInfo->NamespaceID();
 
   nsCOMPtr<nsIElementFactory> elementFactory;
   nsContentUtils::GetNSManagerWeakRef()->GetElementFactory(namespaceID,

@@ -78,11 +78,6 @@
 #include "prprf.h"
 #include "math.h"
 
-// XXX TODO:
-// - rework aErrorCode stuff: switch over to nsresult
-// verify ! is followed by important and nothing else
-
-
 #define ENABLE_OUTLINE   // un-comment this to enable the outline properties (bug 9816)
                          // XXX un-commenting for temporary fix for nsbeta3+ Bug 48973
                          // so we can use "mozoutline
@@ -111,9 +106,9 @@ public:
                    nsIURI*                aInputURL,
                    nsICSSStyleSheet*&     aResult);
 
-  NS_IMETHOD ParseStyleAttribute(const nsAString& aAttributeValue,
-                                 nsIURI*          aBaseURL,
-                                 nsIStyleRule**   aResult);
+  NS_IMETHOD ParseStyleAttribute(const nsAString&  aAttributeValue,
+                                 nsIURI*           aBaseURL,
+                                 nsICSSStyleRule** aResult);
   
   NS_IMETHOD ParseAndAppendDeclaration(const nsAString&  aBuffer,
                                        nsIURI*           aBaseURL,
@@ -138,60 +133,60 @@ protected:
   nsresult InitScanner(nsIUnicharInputStream* aInput, nsIURI* aURI);
   nsresult ReleaseScanner(void);
 
-  PRBool GetToken(PRInt32& aErrorCode, PRBool aSkipWS);
-  PRBool GetURLToken(PRInt32& aErrorCode, PRBool aSkipWS);
+  PRBool GetToken(nsresult& aErrorCode, PRBool aSkipWS);
+  PRBool GetURLToken(nsresult& aErrorCode, PRBool aSkipWS);
   void UngetToken();
 
-  PRBool ExpectSymbol(PRInt32& aErrorCode, PRUnichar aSymbol, PRBool aSkipWS);
-  PRBool ExpectEndProperty(PRInt32& aErrorCode, PRBool aSkipWS);
-  nsString* NextIdent(PRInt32& aErrorCode);
-  void SkipUntil(PRInt32& aErrorCode, PRUnichar aStopSymbol);
-  void SkipRuleSet(PRInt32& aErrorCode);
-  PRBool SkipAtRule(PRInt32& aErrorCode);
-  PRBool SkipDeclaration(PRInt32& aErrorCode, PRBool aCheckForBraces);
+  PRBool ExpectSymbol(nsresult& aErrorCode, PRUnichar aSymbol, PRBool aSkipWS);
+  PRBool ExpectEndProperty(nsresult& aErrorCode, PRBool aSkipWS);
+  nsString* NextIdent(nsresult& aErrorCode);
+  void SkipUntil(nsresult& aErrorCode, PRUnichar aStopSymbol);
+  void SkipRuleSet(nsresult& aErrorCode);
+  PRBool SkipAtRule(nsresult& aErrorCode);
+  PRBool SkipDeclaration(nsresult& aErrorCode, PRBool aCheckForBraces);
 
   PRBool PushGroup(nsICSSGroupRule* aRule);
   void PopGroup(void);
 
-  PRBool ParseRuleSet(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParseAtRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParseCharsetRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParseImportRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool GatherMedia(PRInt32& aErrorCode, nsString& aMedia, nsISupportsArray* aMediaAtoms);
-  PRBool ProcessImport(PRInt32& aErrorCode, const nsString& aURLSpec, const nsString& aMedia, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParseMediaRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParseNameSpaceRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ProcessNameSpace(PRInt32& aErrorCode, const nsString& aPrefix, 
+  PRBool ParseRuleSet(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseAtRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseCharsetRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseImportRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool GatherMedia(nsresult& aErrorCode, nsString& aMedia, nsISupportsArray* aMediaAtoms);
+  PRBool ProcessImport(nsresult& aErrorCode, const nsString& aURLSpec, const nsString& aMedia, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseMediaRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseNameSpaceRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ProcessNameSpace(nsresult& aErrorCode, const nsString& aPrefix, 
                           const nsString& aURLSpec, RuleAppendFunc aAppendFunc,
                           void* aProcessData);
-  PRBool ParseFontFaceRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
-  PRBool ParsePageRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParseFontFaceRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
+  PRBool ParsePageRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aProcessData);
 
   void ParseIDSelector(PRInt32&  aDataMask, nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode);
+                         PRInt32& aParsingStatus, nsresult& aErrorCode);
   void ParseClassSelector(PRInt32&  aDataMask, nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode);
+                         PRInt32& aParsingStatus, nsresult& aErrorCode);
   void ParsePseudoSelector(PRInt32&  aDataMask, nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode,
+                         PRInt32& aParsingStatus, nsresult& aErrorCode,
                          PRBool aIsNegated);
   void ParseAttributeSelector(PRInt32&  aDataMask, nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode);
+                         PRInt32& aParsingStatus, nsresult& aErrorCode);
 
   void ParseTypeOrUniversalSelector(PRInt32&  aDataMask,
                          nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode,
+                         PRInt32& aParsingStatus, nsresult& aErrorCode,
                          PRBool aIsNegated);
   void ParseNegatedSimpleSelector(PRInt32&  aDataMask, nsCSSSelector& aSelector,
-                         PRInt32& aParsingStatus, PRInt32& aErrorCode);
+                         PRInt32& aParsingStatus, nsresult& aErrorCode);
   void ParseLangSelector(nsCSSSelector& aSelector, PRInt32& aParsingStatus,
-                         PRInt32& aErrorCode);
+                         nsresult& aErrorCode);
 
-  PRBool ParseSelectorList(PRInt32& aErrorCode, nsCSSSelectorList*& aListHead);
-  PRBool ParseSelectorGroup(PRInt32& aErrorCode, nsCSSSelectorList*& aListHead);
-  PRBool ParseSelector(PRInt32& aErrorCode, nsCSSSelector& aSelectorResult);
-  nsCSSDeclaration* ParseDeclarationBlock(PRInt32& aErrorCode,
+  PRBool ParseSelectorList(nsresult& aErrorCode, nsCSSSelectorList*& aListHead);
+  PRBool ParseSelectorGroup(nsresult& aErrorCode, nsCSSSelectorList*& aListHead);
+  PRBool ParseSelector(nsresult& aErrorCode, nsCSSSelector& aSelectorResult);
+  nsCSSDeclaration* ParseDeclarationBlock(nsresult& aErrorCode,
                                            PRBool aCheckForBraces);
-  PRBool ParseDeclaration(PRInt32& aErrorCode,
+  PRBool ParseDeclaration(nsresult& aErrorCode,
                           nsCSSDeclaration* aDeclaration,
                           PRBool aCheckForBraces,
                           PRBool* aChanged);
@@ -207,89 +202,89 @@ protected:
   void DoTransferTempData(nsCSSDeclaration* aDeclaration,
                           nsCSSProperty aPropID, PRBool aIsImportant,
                           PRBool* aChanged);
-  PRBool ParseProperty(PRInt32& aErrorCode, nsCSSProperty aPropID);
-  PRBool ParseSingleValueProperty(PRInt32& aErrorCode, nsCSSValue& aValue, 
+  PRBool ParseProperty(nsresult& aErrorCode, nsCSSProperty aPropID);
+  PRBool ParseSingleValueProperty(nsresult& aErrorCode, nsCSSValue& aValue, 
                                   nsCSSProperty aPropID);
 
 #ifdef MOZ_XUL
-  PRBool ParseTreePseudoElement(PRInt32& aErrorCode, nsCSSSelector& aSelector);
+  PRBool ParseTreePseudoElement(nsresult& aErrorCode, nsCSSSelector& aSelector);
 #endif
 
   // Property specific parsing routines
-  PRBool ParseAzimuth(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseBackground(PRInt32& aErrorCode);
-  PRBool ParseBackgroundPosition(PRInt32& aErrorCode);
-  PRBool ParseBorderColor(PRInt32& aErrorCode);
-  PRBool ParseBorderColors(PRInt32& aErrorCode,
+  PRBool ParseAzimuth(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseBackground(nsresult& aErrorCode);
+  PRBool ParseBackgroundPosition(nsresult& aErrorCode);
+  PRBool ParseBorderColor(nsresult& aErrorCode);
+  PRBool ParseBorderColors(nsresult& aErrorCode,
                            nsCSSValueList** aResult,
                            nsCSSProperty aProperty);
-  PRBool ParseBorderSpacing(PRInt32& aErrorCode);
-  PRBool ParseBorderSide(PRInt32& aErrorCode,
+  PRBool ParseBorderSpacing(nsresult& aErrorCode);
+  PRBool ParseBorderSide(nsresult& aErrorCode,
                          const nsCSSProperty aPropIDs[],
                          PRBool aSetAllSides);
-  PRBool ParseBorderStyle(PRInt32& aErrorCode);
-  PRBool ParseBorderWidth(PRInt32& aErrorCode);
-  PRBool ParseBorderRadius(PRInt32& aErrorCode);
+  PRBool ParseBorderStyle(nsresult& aErrorCode);
+  PRBool ParseBorderWidth(nsresult& aErrorCode);
+  PRBool ParseBorderRadius(nsresult& aErrorCode);
 #ifdef ENABLE_OUTLINE
-  PRBool ParseOutlineRadius(PRInt32& aErrorCode);
+  PRBool ParseOutlineRadius(nsresult& aErrorCode);
 #endif
   // for 'clip' and '-moz-image-region'
-  PRBool ParseRect(nsCSSRect& aRect, PRInt32& aErrorCode,
+  PRBool ParseRect(nsCSSRect& aRect, nsresult& aErrorCode,
                    nsCSSProperty aPropID);
-  PRBool DoParseRect(nsCSSRect& aRect, PRInt32& aErrorCode);
-  PRBool ParseContent(PRInt32& aErrorCode);
+  PRBool DoParseRect(nsCSSRect& aRect, nsresult& aErrorCode);
+  PRBool ParseContent(nsresult& aErrorCode);
   PRBool SetSingleCounterValue(nsCSSCounterData** aResult,
-                               PRInt32& aErrorCode,
+                               nsresult& aErrorCode,
                                nsCSSProperty aPropID,
                                const nsCSSValue& aValue);
-  PRBool ParseCounterData(PRInt32& aErrorCode,
+  PRBool ParseCounterData(nsresult& aErrorCode,
                           nsCSSCounterData** aResult,
                           nsCSSProperty aPropID);
-  PRBool ParseCue(PRInt32& aErrorCode);
-  PRBool ParseCursor(PRInt32& aErrorCode);
-  PRBool ParseFont(PRInt32& aErrorCode);
-  PRBool ParseFontWeight(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseFamily(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseListStyle(PRInt32& aErrorCode);
-  PRBool ParseMargin(PRInt32& aErrorCode);
-  PRBool ParseMarks(PRInt32& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseCue(nsresult& aErrorCode);
+  PRBool ParseCursor(nsresult& aErrorCode);
+  PRBool ParseFont(nsresult& aErrorCode);
+  PRBool ParseFontWeight(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseFamily(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseListStyle(nsresult& aErrorCode);
+  PRBool ParseMargin(nsresult& aErrorCode);
+  PRBool ParseMarks(nsresult& aErrorCode, nsCSSValue& aValue);
 #ifdef ENABLE_OUTLINE
-  PRBool ParseOutline(PRInt32& aErrorCode);
+  PRBool ParseOutline(nsresult& aErrorCode);
 #endif
-  PRBool ParsePadding(PRInt32& aErrorCode);
-  PRBool ParsePause(PRInt32& aErrorCode);
-  PRBool ParsePlayDuring(PRInt32& aErrorCode);
-  PRBool ParseQuotes(PRInt32& aErrorCode);
-  PRBool ParseSize(PRInt32& aErrorCode);
-  PRBool ParseTextDecoration(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseTextShadow(PRInt32& aErrorCode);
+  PRBool ParsePadding(nsresult& aErrorCode);
+  PRBool ParsePause(nsresult& aErrorCode);
+  PRBool ParsePlayDuring(nsresult& aErrorCode);
+  PRBool ParseQuotes(nsresult& aErrorCode);
+  PRBool ParseSize(nsresult& aErrorCode);
+  PRBool ParseTextDecoration(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseTextShadow(nsresult& aErrorCode);
 
   // Reused utility parsing routines
   void AppendValue(nsCSSProperty aPropID, const nsCSSValue& aValue);
-  PRBool ParseBoxProperties(PRInt32& aErrorCode, nsCSSRect& aResult,
+  PRBool ParseBoxProperties(nsresult& aErrorCode, nsCSSRect& aResult,
                             const nsCSSProperty aPropIDs[]);
-  PRInt32 ParseChoice(PRInt32& aErrorCode, nsCSSValue aValues[],
+  PRInt32 ParseChoice(nsresult& aErrorCode, nsCSSValue aValues[],
                       const nsCSSProperty aPropIDs[], PRInt32 aNumIDs);
-  PRBool ParseColor(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseColorComponent(PRInt32& aErrorCode, PRUint8& aComponent,
+  PRBool ParseColor(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseColorComponent(nsresult& aErrorCode, PRUint8& aComponent,
                              PRInt32& aType, char aStop);
   // ParseHSLColor parses everything starting with the opening '(' up through
   // and including the aStop char.
-  PRBool ParseHSLColor(PRInt32& aErrorCode, nscolor& aColor, char aStop);
+  PRBool ParseHSLColor(nsresult& aErrorCode, nscolor& aColor, char aStop);
   // ParseColorOpacity will enforce that the color ends with a ')' after the opacity
-  PRBool ParseColorOpacity(PRInt32& aErrorCode, PRUint8& aOpacity);
-  PRBool ParseEnum(PRInt32& aErrorCode, nsCSSValue& aValue, const PRInt32 aKeywordTable[]);
+  PRBool ParseColorOpacity(nsresult& aErrorCode, PRUint8& aOpacity);
+  PRBool ParseEnum(nsresult& aErrorCode, nsCSSValue& aValue, const PRInt32 aKeywordTable[]);
   PRInt32 SearchKeywordTable(nsCSSKeyword aKeyword, const PRInt32 aTable[]);
-  PRBool ParseVariant(PRInt32& aErrorCode, nsCSSValue& aValue,
+  PRBool ParseVariant(nsresult& aErrorCode, nsCSSValue& aValue,
                       PRInt32 aVariantMask,
                       const PRInt32 aKeywordTable[]);
-  PRBool ParsePositiveVariant(PRInt32& aErrorCode, nsCSSValue& aValue, 
+  PRBool ParsePositiveVariant(nsresult& aErrorCode, nsCSSValue& aValue, 
                               PRInt32 aVariantMask, 
                               const PRInt32 aKeywordTable[]); 
-  PRBool ParseCounter(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool ParseURL(PRInt32& aErrorCode, nsCSSValue& aValue);
-  PRBool TranslateDimension(PRInt32& aErrorCode, nsCSSValue& aValue, PRInt32 aVariantMask,
+  PRBool ParseCounter(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseAttr(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool ParseURL(nsresult& aErrorCode, nsCSSValue& aValue);
+  PRBool TranslateDimension(nsresult& aErrorCode, nsCSSValue& aValue, PRInt32 aVariantMask,
                             float aNumber, const nsString& aUnit);
 
   void SetParsingCompoundProperty(PRBool aBool) {
@@ -532,7 +527,7 @@ CSSParserImpl::Parse(nsIUnicharInputStream* aInput,
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  PRInt32 errorCode = NS_OK;
+  nsresult errorCode = NS_OK;
 
   nsresult result = InitScanner(aInput, aInputURL);
   if (! NS_SUCCEEDED(result)) {
@@ -596,7 +591,7 @@ CSSParserImpl::Parse(nsIUnicharInputStream* aInput,
 NS_IMETHODIMP
 CSSParserImpl::ParseStyleAttribute(const nsAString& aAttributeValue,
                                    nsIURI*                  aBaseURL,
-                                   nsIStyleRule**           aResult)
+                                   nsICSSStyleRule**        aResult)
 {
   NS_ASSERTION(nsnull != aBaseURL, "need base URL");
 
@@ -620,7 +615,7 @@ CSSParserImpl::ParseStyleAttribute(const nsAString& aAttributeValue,
   }
 
   mSection = eCSSSection_General;
-  PRInt32 errorCode = NS_OK;
+  nsresult errorCode = NS_OK;
 
   // In quirks mode, allow style declarations to have braces or not
   // (bug 99554).
@@ -684,7 +679,7 @@ CSSParserImpl::ParseAndAppendDeclaration(const nsAString&  aBuffer,
   }
 
   mSection = eCSSSection_General;
-  PRInt32 errorCode = NS_OK;
+  nsresult errorCode = NS_OK;
 
   if (aClearOldDecl) {
     mData.AssertInitialState();
@@ -697,17 +692,15 @@ CSSParserImpl::ParseAndAppendDeclaration(const nsAString&  aBuffer,
 
   do {
     if (!ParseDeclaration(errorCode, aDeclaration, PR_FALSE, aChanged)) {
-      if (errorCode != -1) { // -1 means EOF so we ignore that
-        rv = errorCode;
-      }
+      NS_ASSERTION(errorCode != nsresult(-1), "-1 is no longer used for EOF");
+      rv = errorCode;
 
       if (NS_FAILED(errorCode))
         break;
 
       if (!SkipDeclaration(errorCode, PR_FALSE)) {
-        if (errorCode != -1) {
-          rv = errorCode;
-        }
+        NS_ASSERTION(errorCode != nsresult(-1), "-1 is no longer used for EOF");
+        rv = errorCode;
         break;
       }
     }
@@ -748,7 +741,7 @@ CSSParserImpl::ParseRule(const nsAString& aRule,
   }
   
   mSection = eCSSSection_Charset; // callers are responsible for rejecting invalid rules.
-  PRInt32 errorCode = NS_OK;
+  nsresult errorCode = NS_OK;
 
   nsCSSToken* tk = &mToken;
   // Get first non-whitespace token
@@ -801,7 +794,7 @@ CSSParserImpl::ParseProperty(const nsAString& aPropName,
   }
 
   mSection = eCSSSection_General;
-  PRInt32 errorCode = NS_OK;
+  nsresult errorCode = NS_OK;
 
   nsCSSProperty propID = nsCSSProps::LookupProperty(aPropName);
   if (eCSSProperty_UNKNOWN == propID) { // unknown property
@@ -826,9 +819,8 @@ CSSParserImpl::ParseProperty(const nsAString& aPropName,
       NS_LITERAL_STRING("'.  Declaration dropped."));
     OUTPUT_ERROR();
     ClearTempData(propID);
-    if (errorCode != -1) { // -1 means EOF which we ignore
-      result = errorCode;
-    }
+    NS_ASSERTION(errorCode != nsresult(-1), "-1 is no longer used for EOF");
+    result = errorCode;
   }
   CLEAR_ERROR();
   
@@ -839,7 +831,7 @@ CSSParserImpl::ParseProperty(const nsAString& aPropName,
 }
 //----------------------------------------------------------------------
 
-PRBool CSSParserImpl::GetToken(PRInt32& aErrorCode, PRBool aSkipWS)
+PRBool CSSParserImpl::GetToken(nsresult& aErrorCode, PRBool aSkipWS)
 {
   for (;;) {
     if (!mHavePushBack) {
@@ -856,7 +848,7 @@ PRBool CSSParserImpl::GetToken(PRInt32& aErrorCode, PRBool aSkipWS)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::GetURLToken(PRInt32& aErrorCode, PRBool aSkipWS)
+PRBool CSSParserImpl::GetURLToken(nsresult& aErrorCode, PRBool aSkipWS)
 {
   for (;;) {
     if (! mHavePushBack) {
@@ -879,7 +871,7 @@ void CSSParserImpl::UngetToken()
   mHavePushBack = PR_TRUE;
 }
 
-PRBool CSSParserImpl::ExpectSymbol(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ExpectSymbol(nsresult& aErrorCode,
                                    PRUnichar aSymbol,
                                    PRBool aSkipWS)
 {
@@ -893,7 +885,7 @@ PRBool CSSParserImpl::ExpectSymbol(PRInt32& aErrorCode,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ExpectEndProperty(PRInt32& aErrorCode, PRBool aSkipWS)
+PRBool CSSParserImpl::ExpectEndProperty(nsresult& aErrorCode, PRBool aSkipWS)
 {
   if (!GetToken(aErrorCode, aSkipWS)) {
     return PR_TRUE; // properties may end with eof
@@ -912,7 +904,7 @@ PRBool CSSParserImpl::ExpectEndProperty(PRInt32& aErrorCode, PRBool aSkipWS)
 }
 
 
-nsString* CSSParserImpl::NextIdent(PRInt32& aErrorCode)
+nsString* CSSParserImpl::NextIdent(nsresult& aErrorCode)
 {
   // XXX Error reporting?
   if (!GetToken(aErrorCode, PR_TRUE)) {
@@ -925,7 +917,7 @@ nsString* CSSParserImpl::NextIdent(PRInt32& aErrorCode)
   return &mToken.mIdent;
 }
 
-PRBool CSSParserImpl::SkipAtRule(PRInt32& aErrorCode)
+PRBool CSSParserImpl::SkipAtRule(nsresult& aErrorCode)
 {
   for (;;) {
     if (!GetToken(aErrorCode, PR_TRUE)) {
@@ -950,7 +942,7 @@ PRBool CSSParserImpl::SkipAtRule(PRInt32& aErrorCode)
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseAtRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc,
+PRBool CSSParserImpl::ParseAtRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc,
                                   void* aData)
 {
   if ((mSection <= eCSSSection_Charset) && 
@@ -1000,7 +992,7 @@ PRBool CSSParserImpl::ParseAtRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFun
   return SkipAtRule(aErrorCode);
 }
 
-PRBool CSSParserImpl::ParseCharsetRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc,
+PRBool CSSParserImpl::ParseCharsetRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc,
                                        void* aData)
 {
   if (!GetToken(aErrorCode, PR_TRUE)) {
@@ -1030,7 +1022,7 @@ PRBool CSSParserImpl::ParseCharsetRule(PRInt32& aErrorCode, RuleAppendFunc aAppe
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::GatherMedia(PRInt32& aErrorCode, nsString& aMedia, 
+PRBool CSSParserImpl::GatherMedia(nsresult& aErrorCode, nsString& aMedia, 
                                   nsISupportsArray* aMediaAtoms)
 {
   PRBool first = PR_TRUE;
@@ -1099,7 +1091,7 @@ PRBool CSSParserImpl::GatherMedia(PRInt32& aErrorCode, nsString& aMedia,
 }
 
 // Parse a CSS2 import rule: "@import STRING | URL [medium [, mdeium]]"
-PRBool CSSParserImpl::ParseImportRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
+PRBool CSSParserImpl::ParseImportRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
 {
   if (!GetToken(aErrorCode, PR_TRUE)) {
     REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("URI in @import rule"));
@@ -1142,7 +1134,7 @@ PRBool CSSParserImpl::ParseImportRule(PRInt32& aErrorCode, RuleAppendFunc aAppen
 }
 
 
-PRBool CSSParserImpl::ProcessImport(PRInt32& aErrorCode, const nsString& aURLSpec, const nsString& aMedia, RuleAppendFunc aAppendFunc, void* aData)
+PRBool CSSParserImpl::ProcessImport(nsresult& aErrorCode, const nsString& aURLSpec, const nsString& aMedia, RuleAppendFunc aAppendFunc, void* aData)
 {
   nsCOMPtr<nsICSSImportRule> rule;
   aErrorCode = NS_NewCSSImportRule(getter_AddRefs(rule), aURLSpec, aMedia);
@@ -1169,7 +1161,7 @@ PRBool CSSParserImpl::ProcessImport(PRInt32& aErrorCode, const nsString& aURLSpe
 }
 
 // Parse a CSS2 media rule: "@media medium [, medium] { ... }"
-PRBool CSSParserImpl::ParseMediaRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc,
+PRBool CSSParserImpl::ParseMediaRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc,
                                      void* aData)
 {
   nsAutoString  mediaStr;
@@ -1228,7 +1220,7 @@ PRBool CSSParserImpl::ParseMediaRule(PRInt32& aErrorCode, RuleAppendFunc aAppend
 }
 
 // Parse a CSS3 namespace rule: "@namespace [prefix] STRING | URL;"
-PRBool CSSParserImpl::ParseNameSpaceRule(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseNameSpaceRule(nsresult& aErrorCode,
                                          RuleAppendFunc aAppendFunc,
                                          void* aData)
 {
@@ -1280,7 +1272,7 @@ PRBool CSSParserImpl::ParseNameSpaceRule(PRInt32& aErrorCode,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ProcessNameSpace(PRInt32& aErrorCode, const nsString& aPrefix, 
+PRBool CSSParserImpl::ProcessNameSpace(nsresult& aErrorCode, const nsString& aPrefix, 
                                        const nsString& aURLSpec, RuleAppendFunc aAppendFunc,
                                        void* aData)
 {
@@ -1302,19 +1294,19 @@ PRBool CSSParserImpl::ProcessNameSpace(PRInt32& aErrorCode, const nsString& aPre
   return result;
 }
 
-PRBool CSSParserImpl::ParseFontFaceRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
+PRBool CSSParserImpl::ParseFontFaceRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
 {
   // XXX not yet implemented
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParsePageRule(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
+PRBool CSSParserImpl::ParsePageRule(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
 {
   // XXX not yet implemented
   return PR_FALSE;
 }
 
-void CSSParserImpl::SkipUntil(PRInt32& aErrorCode, PRUnichar aStopSymbol)
+void CSSParserImpl::SkipUntil(nsresult& aErrorCode, PRUnichar aStopSymbol)
 {
   nsCSSToken* tk = &mToken;
   for (;;) {
@@ -1337,7 +1329,7 @@ void CSSParserImpl::SkipUntil(PRInt32& aErrorCode, PRUnichar aStopSymbol)
 }
 
 PRBool
-CSSParserImpl::SkipDeclaration(PRInt32& aErrorCode, PRBool aCheckForBraces)
+CSSParserImpl::SkipDeclaration(nsresult& aErrorCode, PRBool aCheckForBraces)
 {
   nsCSSToken* tk = &mToken;
   for (;;) {
@@ -1371,7 +1363,7 @@ CSSParserImpl::SkipDeclaration(PRInt32& aErrorCode, PRBool aCheckForBraces)
   return PR_TRUE;
 }
 
-void CSSParserImpl::SkipRuleSet(PRInt32& aErrorCode)
+void CSSParserImpl::SkipRuleSet(nsresult& aErrorCode)
 {
   nsCSSToken* tk = &mToken;
   for (;;) {
@@ -1421,7 +1413,7 @@ void CSSParserImpl::AppendRule(nsICSSRule* aRule)
   }
 }
 
-PRBool CSSParserImpl::ParseRuleSet(PRInt32& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
+PRBool CSSParserImpl::ParseRuleSet(nsresult& aErrorCode, RuleAppendFunc aAppendFunc, void* aData)
 {
   // First get the list of selectors for the rule
   nsCSSSelectorList* slist = nsnull;
@@ -1466,7 +1458,7 @@ PRBool CSSParserImpl::ParseRuleSet(PRInt32& aErrorCode, RuleAppendFunc aAppendFu
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseSelectorList(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseSelectorList(nsresult& aErrorCode,
                                         nsCSSSelectorList*& aListHead)
 {
   nsCSSSelectorList* list = nsnull;
@@ -1534,14 +1526,15 @@ static PRBool IsTreePseudoElement(nsIAtom* aPseudo)
 }
 #endif
 
-PRBool CSSParserImpl::ParseSelectorGroup(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseSelectorGroup(nsresult& aErrorCode,
                                          nsCSSSelectorList*& aList)
 {
   nsCSSSelectorList* list = nsnull;
   PRUnichar     combinator = PRUnichar(0);
   PRInt32       weight = 0;
   PRBool        havePseudoElement = PR_FALSE;
-  for (;;) {
+  PRBool        done = PR_FALSE;
+  while (!done) {
     nsCSSSelector selector;
     if (! ParseSelector(aErrorCode, selector)) {
       break;
@@ -1607,15 +1600,27 @@ PRBool CSSParserImpl::ParseSelectorGroup(PRInt32& aErrorCode,
     }
 
     combinator = PRUnichar(0);
-    if (GetToken(aErrorCode, PR_TRUE)) {
-      if ((eCSSToken_Symbol == mToken.mType) && 
-          (('+' == mToken.mSymbol) || ('>' == mToken.mSymbol))) {
-        combinator = mToken.mSymbol;
-        list->mSelectors->SetOperator(combinator);
+    if (!GetToken(aErrorCode, PR_FALSE)) {
+      break;
+    }
+
+    // Assume we are done unless we find a combinator here.
+    done = PR_TRUE;
+    if (eCSSToken_WhiteSpace == mToken.mType) {
+      if (!GetToken(aErrorCode, PR_TRUE)) {
+        break;
       }
-      else {
-        UngetToken(); // give it back to selector
-      }
+      done = PR_FALSE;
+    }
+
+    if (eCSSToken_Symbol == mToken.mType && 
+        ('+' == mToken.mSymbol || '>' == mToken.mSymbol)) {
+      done = PR_FALSE;
+      combinator = mToken.mSymbol;
+      list->mSelectors->SetOperator(combinator);
+    }
+    else {
+      UngetToken(); // give it back to selector
     }
 
     if (havePseudoElement) {
@@ -1661,7 +1666,7 @@ PRBool CSSParserImpl::ParseSelectorGroup(PRInt32& aErrorCode,
 void CSSParserImpl::ParseIDSelector(PRInt32&  aDataMask,
                                     nsCSSSelector& aSelector,
                                     PRInt32& aParsingStatus,
-                                    PRInt32& aErrorCode)
+                                    nsresult& aErrorCode)
 {
   if (!mToken.mIdent.IsEmpty()) { // verify is legal ID
     aDataMask |= SEL_MASK_ID;
@@ -1683,7 +1688,7 @@ void CSSParserImpl::ParseIDSelector(PRInt32&  aDataMask,
 void CSSParserImpl::ParseClassSelector(PRInt32&  aDataMask,
                                         nsCSSSelector& aSelector,
                                         PRInt32& aParsingStatus,
-                                        PRInt32& aErrorCode)
+                                        nsresult& aErrorCode)
 {
   if (! GetToken(aErrorCode, PR_FALSE)) { // get ident
     REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("class name"));
@@ -1710,7 +1715,7 @@ void CSSParserImpl::ParseClassSelector(PRInt32&  aDataMask,
 void CSSParserImpl::ParseTypeOrUniversalSelector(PRInt32&  aDataMask,
                                       nsCSSSelector& aSelector,
                                       PRInt32& aParsingStatus,
-                                      PRInt32& aErrorCode,
+                                      nsresult& aErrorCode,
                                       PRBool aIsNegated)
 {
   nsAutoString buffer;
@@ -1901,7 +1906,7 @@ void CSSParserImpl::ParseTypeOrUniversalSelector(PRInt32&  aDataMask,
 void CSSParserImpl::ParseAttributeSelector(PRInt32&  aDataMask,
                                       nsCSSSelector& aSelector,
                                       PRInt32& aParsingStatus,
-                                      PRInt32& aErrorCode)
+                                      nsresult& aErrorCode)
 {
   if (! GetToken(aErrorCode, PR_TRUE)) { // premature EOF
     REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("attribute name"));
@@ -2103,7 +2108,7 @@ void CSSParserImpl::ParseAttributeSelector(PRInt32&  aDataMask,
 void CSSParserImpl::ParsePseudoSelector(PRInt32&  aDataMask,
                                       nsCSSSelector& aSelector,
                                       PRInt32& aParsingStatus,
-                                      PRInt32& aErrorCode,
+                                      nsresult& aErrorCode,
                                       PRBool aIsNegated)
 {
   if (! GetToken(aErrorCode, PR_FALSE)) { // premature eof
@@ -2276,7 +2281,7 @@ void CSSParserImpl::ParsePseudoSelector(PRInt32&  aDataMask,
 void CSSParserImpl::ParseNegatedSimpleSelector(PRInt32&  aDataMask,
                                       nsCSSSelector& aSelector,
                                       PRInt32& aParsingStatus,
-                                      PRInt32& aErrorCode)
+                                      nsresult& aErrorCode)
 {
   // Check if we have the first parenthesis
   if (ExpectSymbol(aErrorCode, '(', PR_FALSE)) {
@@ -2345,7 +2350,7 @@ void CSSParserImpl::ParseNegatedSimpleSelector(PRInt32&  aDataMask,
 //
 void CSSParserImpl::ParseLangSelector(nsCSSSelector& aSelector,
                                       PRInt32& aParsingStatus,
-                                      PRInt32& aErrorCode)
+                                      nsresult& aErrorCode)
 {
   // Check if we have the first parenthesis
   if (ExpectSymbol(aErrorCode, '(', PR_FALSE)) {
@@ -2381,7 +2386,7 @@ void CSSParserImpl::ParseLangSelector(nsCSSSelector& aSelector,
  * This is the format for selectors:
  * operator? [[namespace |]? element_name]? [ ID | class | attrib | pseudo ]*
  */
-PRBool CSSParserImpl::ParseSelector(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseSelector(nsresult& aErrorCode,
                                 nsCSSSelector& aSelector)
 {
   PRInt32  dataMask = 0;
@@ -2434,7 +2439,7 @@ PRBool CSSParserImpl::ParseSelector(PRInt32& aErrorCode,
 }
 
 nsCSSDeclaration*
-CSSParserImpl::ParseDeclarationBlock(PRInt32& aErrorCode,
+CSSParserImpl::ParseDeclarationBlock(nsresult& aErrorCode,
                                      PRBool aCheckForBraces)
 {
   if (aCheckForBraces) {
@@ -2474,7 +2479,7 @@ CSSParserImpl::ParseDeclarationBlock(PRInt32& aErrorCode,
 #define COLOR_TYPE_INTEGERS 1
 #define COLOR_TYPE_PERCENTAGES 2
 
-PRBool CSSParserImpl::ParseColor(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseColor(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (!GetToken(aErrorCode, PR_TRUE)) {
     REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("color"));
@@ -2620,7 +2625,7 @@ PRBool CSSParserImpl::ParseColor(PRInt32& aErrorCode, nsCSSValue& aValue)
 
 // aType will be set if we have already parsed other color components
 // in this color spec
-PRBool CSSParserImpl::ParseColorComponent(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseColorComponent(nsresult& aErrorCode,
                                           PRUint8& aComponent,
                                           PRInt32& aType,
                                           char aStop)
@@ -2695,7 +2700,7 @@ PRBool CSSParserImpl::ParseColorComponent(PRInt32& aErrorCode,
 }
 
 
-PRBool CSSParserImpl::ParseHSLColor(PRInt32& aErrorCode, nscolor& aColor,
+PRBool CSSParserImpl::ParseHSLColor(nsresult& aErrorCode, nscolor& aColor,
                                     char aStop)
 {
   float h, s, l;
@@ -2775,7 +2780,7 @@ PRBool CSSParserImpl::ParseHSLColor(PRInt32& aErrorCode, nscolor& aColor,
 }
  
  
-PRBool CSSParserImpl::ParseColorOpacity(PRInt32& aErrorCode, PRUint8& aOpacity)
+PRBool CSSParserImpl::ParseColorOpacity(nsresult& aErrorCode, PRUint8& aOpacity)
 {
   if (!GetToken(aErrorCode, PR_TRUE)) {
     REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("opacity in color value"));
@@ -2804,7 +2809,7 @@ PRBool CSSParserImpl::ParseColorOpacity(PRInt32& aErrorCode, PRUint8& aOpacity)
 }
 
 #ifdef MOZ_XUL
-PRBool CSSParserImpl::ParseTreePseudoElement(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseTreePseudoElement(nsresult& aErrorCode,
                                                  nsCSSSelector& aSelector)
 {
   if (ExpectSymbol(aErrorCode, '(', PR_FALSE)) {
@@ -2831,7 +2836,7 @@ PRBool CSSParserImpl::ParseTreePseudoElement(PRInt32& aErrorCode,
 //----------------------------------------------------------------------
 
 PRBool
-CSSParserImpl::ParseDeclaration(PRInt32& aErrorCode,
+CSSParserImpl::ParseDeclaration(nsresult& aErrorCode,
                                 nsCSSDeclaration* aDeclaration,
                                 PRBool aCheckForBraces,
                                 PRBool* aChanged)
@@ -3193,7 +3198,7 @@ PRInt32 CSSParserImpl::SearchKeywordTable(nsCSSKeyword aKeyword, const PRInt32 a
   return -1;
 }
 
-PRBool CSSParserImpl::ParseEnum(PRInt32& aErrorCode, nsCSSValue& aValue,
+PRBool CSSParserImpl::ParseEnum(nsresult& aErrorCode, nsCSSValue& aValue,
                                 const PRInt32 aKeywordTable[])
 {
   nsString* ident = NextIdent(aErrorCode);
@@ -3214,7 +3219,7 @@ PRBool CSSParserImpl::ParseEnum(PRInt32& aErrorCode, nsCSSValue& aValue,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::TranslateDimension(PRInt32& aErrorCode,
+PRBool CSSParserImpl::TranslateDimension(nsresult& aErrorCode,
                                          nsCSSValue& aValue,
                                          PRInt32 aVariantMask,
                                          float aNumber,
@@ -3279,7 +3284,7 @@ PRBool CSSParserImpl::TranslateDimension(PRInt32& aErrorCode,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParsePositiveVariant(PRInt32& aErrorCode, 
+PRBool CSSParserImpl::ParsePositiveVariant(nsresult& aErrorCode, 
                                            nsCSSValue& aValue, 
                                            PRInt32 aVariantMask, 
                                            const PRInt32 aKeywordTable[]) 
@@ -3303,7 +3308,7 @@ PRBool CSSParserImpl::ParsePositiveVariant(PRInt32& aErrorCode,
   return PR_FALSE; 
 } 
 
-PRBool CSSParserImpl::ParseVariant(PRInt32& aErrorCode, nsCSSValue& aValue,
+PRBool CSSParserImpl::ParseVariant(nsresult& aErrorCode, nsCSSValue& aValue,
                                    PRInt32 aVariantMask,
                                    const PRInt32 aKeywordTable[])
 {
@@ -3448,7 +3453,7 @@ PRBool CSSParserImpl::ParseVariant(PRInt32& aErrorCode, nsCSSValue& aValue,
 }
 
 
-PRBool CSSParserImpl::ParseCounter(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseCounter(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   nsCSSUnit unit = (mToken.mIdent.EqualsIgnoreCase("counter") ? 
                     eCSSUnit_Counter : eCSSUnit_Counters);
@@ -3507,7 +3512,7 @@ PRBool CSSParserImpl::ParseCounter(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseAttr(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ExpectSymbol(aErrorCode, '(', PR_FALSE)) {
     if (GetToken(aErrorCode, PR_TRUE)) {
@@ -3522,11 +3527,14 @@ PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
             mNameSpace->FindNameSpaceID(prefix, &nameSpaceID);
           } // else, no declared namespaces
           if (kNameSpaceID_Unknown == nameSpaceID) {  // unknown prefix, dump it
+            REPORT_UNEXPECTED(NS_LITERAL_STRING("Unknown namespace prefix '") +
+                              holdIdent + NS_LITERAL_STRING("'."));
             return PR_FALSE;
           }
           attr.AppendInt(nameSpaceID, 10);
           attr.Append(PRUnichar('|'));
           if (! GetToken(aErrorCode, PR_FALSE)) {
+            REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("attribute name"));
             return PR_FALSE;
           }
           if (eCSSToken_Ident == mToken.mType) {
@@ -3539,6 +3547,8 @@ PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
             }
           }
           else {
+            REPORT_UNEXPECTED_TOKEN(
+              NS_LITERAL_STRING("Expected attribute name but found"));
             UngetToken();
             return PR_FALSE;
           }
@@ -3553,26 +3563,15 @@ PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
         }
       }
       else if (mToken.IsSymbol('*')) {  // namespace wildcard
-        if (ExpectSymbol(aErrorCode, '|', PR_FALSE)) {
-          attr.AppendInt(kNameSpaceID_Unknown, 10);
-          attr.Append(PRUnichar('|'));
-          if (! GetToken(aErrorCode, PR_FALSE)) {
-            return PR_FALSE;
-          }
-          if (eCSSToken_Ident == mToken.mType) {
-            attr.Append(mToken.mIdent);
-          }
-          else {
-            UngetToken();
-            return PR_FALSE;
-          }
-        }
-        else {
-          return PR_FALSE;
-        }
+        // Wildcard namespace makes no sense here and is not allowed
+        REPORT_UNEXPECTED_TOKEN(
+          NS_LITERAL_STRING("Expected attribute name but found"));
+        UngetToken();
+        return PR_FALSE;
       }
       else if (mToken.IsSymbol('|')) {  // explicit NO namespace
         if (! GetToken(aErrorCode, PR_FALSE)) {
+          REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("attribute name"));
           return PR_FALSE;
         }
         if (eCSSToken_Ident == mToken.mType) {
@@ -3585,11 +3584,15 @@ PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
           }
         }
         else {
+          REPORT_UNEXPECTED_TOKEN(
+            NS_LITERAL_STRING("Expected attribute name but found"));
           UngetToken();
           return PR_FALSE;
         }
       }
       else {
+        REPORT_UNEXPECTED_TOKEN(
+          NS_LITERAL_STRING("Expected attribute name or namespace but found"));
         UngetToken();
         return PR_FALSE;
       }
@@ -3602,14 +3605,7 @@ PRBool CSSParserImpl::ParseAttr(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_FALSE;
 }
 
-inline static PRBool
-css_RequiresAbsoluteURI(const nsString& uri)
-{
-  // cheap shot at figuring out if this requires an absolute url translation
-  return !StringBeginsWith(uri, NS_LITERAL_STRING("chrome:"));
-}
-
-PRBool CSSParserImpl::ParseURL(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseURL(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ExpectSymbol(aErrorCode, '(', PR_FALSE)) {
     if (! GetURLToken(aErrorCode, PR_TRUE)) {
@@ -3619,17 +3615,18 @@ PRBool CSSParserImpl::ParseURL(PRInt32& aErrorCode, nsCSSValue& aValue)
     if ((eCSSToken_String == tk->mType) || (eCSSToken_URL == tk->mType)) {
       // Translate url into an absolute url if the url is relative to
       // the style sheet.
-      // XXX editors won't like this - too bad for now
-      nsAutoString absURL;
-      nsresult rv = NS_ERROR_FAILURE;
-      if (mURL && css_RequiresAbsoluteURI(tk->mIdent)) {
-        rv = NS_MakeAbsoluteURI(absURL, tk->mIdent, mURL);
-      }
-      if (NS_FAILED(rv)) {
-        absURL = tk->mIdent;
-      }
+      nsCOMPtr<nsIURI> uri;
+      NS_NewURI(getter_AddRefs(uri), tk->mIdent, nsnull, mURL);
       if (ExpectSymbol(aErrorCode, ')', PR_TRUE)) {
-        aValue.SetStringValue(absURL, eCSSUnit_URL);
+        // Set a null value on failure.  Most failure cases should be
+        // NS_ERROR_MALFORMED_URI.
+        nsCSSValue::URL *url = new nsCSSValue::URL(uri, tk->mIdent.get());
+        if (!url || !url->mString) {
+          aErrorCode = NS_ERROR_OUT_OF_MEMORY;
+          delete url;
+          return PR_FALSE;
+        }
+        aValue.SetURLValue(url);
         return PR_TRUE;
       }
     }
@@ -3637,7 +3634,7 @@ PRBool CSSParserImpl::ParseURL(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_FALSE;
 }
 
-PRInt32 CSSParserImpl::ParseChoice(PRInt32& aErrorCode, nsCSSValue aValues[],
+PRInt32 CSSParserImpl::ParseChoice(nsresult& aErrorCode, nsCSSValue aValues[],
                                    const nsCSSProperty aPropIDs[], PRInt32 aNumIDs)
 {
   PRInt32 found = 0;
@@ -3712,7 +3709,7 @@ CSSParserImpl::AppendValue(nsCSSProperty aPropID,
  * than 4 values are provided a standard mapping is used to replicate
  * existing values. 
  */
-PRBool CSSParserImpl::ParseBoxProperties(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseBoxProperties(nsresult& aErrorCode,
                                          nsCSSRect& aResult,
                                          const nsCSSProperty aPropIDs[])
 {
@@ -3758,7 +3755,7 @@ PRBool CSSParserImpl::ParseBoxProperties(PRInt32& aErrorCode,
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseProperty(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseProperty(nsresult& aErrorCode,
                                     nsCSSProperty aPropID)
 {
   switch (aPropID) {  // handle shorthand or multiple properties
@@ -3854,6 +3851,7 @@ PRBool CSSParserImpl::ParseProperty(PRInt32& aErrorCode,
   case eCSSProperty_border_x_spacing:
   case eCSSProperty_border_y_spacing:
   case eCSSProperty_play_during_flags:
+  case eCSSProperty_play_during_uri:
   case eCSSProperty_size_height:
   case eCSSProperty_size_width:
     // The user can't use these
@@ -3898,7 +3896,7 @@ static const PRInt32 kBackgroundXYPositionKTable[] = {
   -1,
 };
 
-PRBool CSSParserImpl::ParseSingleValueProperty(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseSingleValueProperty(nsresult& aErrorCode,
                                                nsCSSValue& aValue,
                                                nsCSSProperty aPropID)
 {
@@ -3947,6 +3945,7 @@ PRBool CSSParserImpl::ParseSingleValueProperty(PRInt32& aErrorCode,
   case eCSSProperty_border_x_spacing:
   case eCSSProperty_border_y_spacing:
   case eCSSProperty_play_during_flags:
+  case eCSSProperty_play_during_uri:
   case eCSSProperty_size_height:
   case eCSSProperty_size_width:
     NS_ERROR("not currently parsed here");
@@ -4284,7 +4283,7 @@ PRBool CSSParserImpl::ParseSingleValueProperty(PRInt32& aErrorCode,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseAzimuth(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseAzimuth(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ParseVariant(aErrorCode, aValue, VARIANT_HK | VARIANT_ANGLE, 
                    nsCSSProps::kAzimuthKTable)) {
@@ -4313,7 +4312,7 @@ PRBool CSSParserImpl::ParseAzimuth(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseBackground(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBackground(nsresult& aErrorCode)
 {
   const PRInt32 numProps = 6;
   static const nsCSSProperty kBackgroundIDs[numProps] = {
@@ -4467,7 +4466,7 @@ PRBool CSSParserImpl::ParseBackground(PRInt32& aErrorCode)
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseBackgroundPosition(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBackgroundPosition(nsresult& aErrorCode)
 {
   // First try a number or a length value
   nsCSSValue  xValue;
@@ -4588,13 +4587,13 @@ static const nsCSSProperty kOutlineRadiusIDs[] = {
   eCSSProperty__moz_outline_radius_bottomLeft
 };
 
-PRBool CSSParserImpl::ParseBorderColor(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBorderColor(nsresult& aErrorCode)
 {
   return ParseBoxProperties(aErrorCode, mTempData.mMargin.mBorderColor,
                             kBorderColorIDs);
 }
 
-PRBool CSSParserImpl::ParseBorderSpacing(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBorderSpacing(nsresult& aErrorCode)
 {
   nsCSSValue  xValue;
   if (ParsePositiveVariant(aErrorCode, xValue, VARIANT_HL, nsnull)) {
@@ -4623,7 +4622,7 @@ PRBool CSSParserImpl::ParseBorderSpacing(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseBorderSide(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseBorderSide(nsresult& aErrorCode,
                                       const nsCSSProperty aPropIDs[],
                                       PRBool aSetAllSides)
 {
@@ -4663,33 +4662,33 @@ PRBool CSSParserImpl::ParseBorderSide(PRInt32& aErrorCode,
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseBorderStyle(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBorderStyle(nsresult& aErrorCode)
 {
   return ParseBoxProperties(aErrorCode, mTempData.mMargin.mBorderStyle,
                             kBorderStyleIDs);
 }
 
-PRBool CSSParserImpl::ParseBorderWidth(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBorderWidth(nsresult& aErrorCode)
 {
   return ParseBoxProperties(aErrorCode, mTempData.mMargin.mBorderWidth,
                             kBorderWidthIDs);
 }
 
-PRBool CSSParserImpl::ParseBorderRadius(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseBorderRadius(nsresult& aErrorCode)
 {
   return ParseBoxProperties(aErrorCode, mTempData.mMargin.mBorderRadius,
                             kBorderRadiusIDs);
 }
 
 #ifdef ENABLE_OUTLINE
-PRBool CSSParserImpl::ParseOutlineRadius(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseOutlineRadius(nsresult& aErrorCode)
 {
   return ParseBoxProperties(aErrorCode, mTempData.mMargin.mOutlineRadius,
                             kOutlineRadiusIDs);
 }
 #endif
 
-PRBool CSSParserImpl::ParseBorderColors(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseBorderColors(nsresult& aErrorCode,
                                         nsCSSValueList** aResult,
                                         nsCSSProperty aProperty)
 {
@@ -4727,7 +4726,7 @@ PRBool CSSParserImpl::ParseBorderColors(PRInt32& aErrorCode,
 }
 
 PRBool
-CSSParserImpl::ParseRect(nsCSSRect& aRect, PRInt32& aErrorCode,
+CSSParserImpl::ParseRect(nsCSSRect& aRect, nsresult& aErrorCode,
                          nsCSSProperty aPropID)
 {
   nsCSSRect rect;
@@ -4741,29 +4740,35 @@ CSSParserImpl::ParseRect(nsCSSRect& aRect, PRInt32& aErrorCode,
 }
 
 PRBool
-CSSParserImpl::DoParseRect(nsCSSRect& aRect, PRInt32& aErrorCode)
+CSSParserImpl::DoParseRect(nsCSSRect& aRect, nsresult& aErrorCode)
 {
   if (! GetToken(aErrorCode, PR_TRUE)) {
     return PR_FALSE;
   }
-  if ((eCSSToken_Ident == mToken.mType) && 
-      mToken.mIdent.EqualsIgnoreCase("auto")) {
-    if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
-      aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Auto));
-      return PR_TRUE;
-    }
-  } else if ((eCSSToken_Ident == mToken.mType) && 
-             mToken.mIdent.EqualsIgnoreCase("inherit")) {
-    if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
-      aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Inherit));
-      return PR_TRUE;
-    }
-  } 
-  else if ((eCSSToken_Ident == mToken.mType) && 
-             mToken.mIdent.EqualsIgnoreCase("-moz-initial")) {
-    if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
-      aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Initial));
-      return PR_TRUE;
+  if (eCSSToken_Ident == mToken.mType) {
+    nsCSSKeyword keyword = nsCSSKeywords::LookupKeyword(mToken.mIdent);
+    switch (keyword) {
+      case eCSSKeyword_auto:
+        if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
+          aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Auto));
+          return PR_TRUE;
+        }
+        break;
+      case eCSSKeyword_inherit:
+        if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
+          aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Inherit));
+          return PR_TRUE;
+        }
+        break;
+      case eCSSKeyword__moz_initial:
+        if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
+          aRect.SetAllSidesTo(nsCSSValue(eCSSUnit_Initial));
+          return PR_TRUE;
+        }
+        break;
+      default:
+        UngetToken();
+        break;
     }
   } else if ((eCSSToken_Function == mToken.mType) && 
              mToken.mIdent.EqualsIgnoreCase("rect")) {
@@ -4794,7 +4799,7 @@ CSSParserImpl::DoParseRect(nsCSSRect& aRect, PRInt32& aErrorCode)
 
 #define VARIANT_CONTENT (VARIANT_STRING | VARIANT_URL | VARIANT_COUNTER | VARIANT_ATTR | \
                          VARIANT_KEYWORD)
-PRBool CSSParserImpl::ParseContent(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseContent(nsresult& aErrorCode)
 {
   nsCSSValue  value;
   if (ParseVariant(aErrorCode, value, VARIANT_CONTENT | VARIANT_INHERIT, 
@@ -4840,7 +4845,7 @@ PRBool CSSParserImpl::ParseContent(PRInt32& aErrorCode)
 
 PRBool
 CSSParserImpl::SetSingleCounterValue(nsCSSCounterData** aResult,
-                                     PRInt32& aErrorCode,
+                                     nsresult& aErrorCode,
                                      nsCSSProperty aPropID,
                                      const nsCSSValue& aValue)
 {
@@ -4855,7 +4860,7 @@ CSSParserImpl::SetSingleCounterValue(nsCSSCounterData** aResult,
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseCounterData(PRInt32& aErrorCode,
+PRBool CSSParserImpl::ParseCounterData(nsresult& aErrorCode,
                                        nsCSSCounterData** aResult,
                                        nsCSSProperty aPropID)
 {
@@ -4934,7 +4939,7 @@ PRBool CSSParserImpl::ParseCounterData(PRInt32& aErrorCode,
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseCue(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseCue(nsresult& aErrorCode)
 {
   nsCSSValue before;
   if (ParseSingleValueProperty(aErrorCode, before, eCSSProperty_cue_before)) {
@@ -4958,7 +4963,7 @@ PRBool CSSParserImpl::ParseCue(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseCursor(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseCursor(nsresult& aErrorCode)
 {
   nsCSSValue  value;
   if (ParseVariant(aErrorCode, value, VARIANT_AHUK, nsCSSProps::kCursorKTable)) {
@@ -5010,7 +5015,7 @@ PRBool CSSParserImpl::ParseCursor(PRInt32& aErrorCode)
 }
 
 
-PRBool CSSParserImpl::ParseFont(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseFont(nsresult& aErrorCode)
 {
   static const nsCSSProperty fontIDs[] = {
     eCSSProperty_font_style,
@@ -5103,7 +5108,7 @@ PRBool CSSParserImpl::ParseFont(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseFontWeight(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseFontWeight(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ParseVariant(aErrorCode, aValue, VARIANT_HMKI, nsCSSProps::kFontWeightKTable)) {
     if (eCSSUnit_Integer == aValue.GetUnit()) { // ensure unit value
@@ -5122,7 +5127,7 @@ PRBool CSSParserImpl::ParseFontWeight(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseFamily(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseFamily(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   nsCSSToken* tk = &mToken;
   nsAutoString family;
@@ -5133,11 +5138,12 @@ PRBool CSSParserImpl::ParseFamily(PRInt32& aErrorCode, nsCSSValue& aValue)
     }
     if (eCSSToken_Ident == tk->mType) {
       if (firstOne) {
-        if (tk->mIdent.EqualsIgnoreCase("inherit")) {
+        nsCSSKeyword keyword = nsCSSKeywords::LookupKeyword(tk->mIdent);
+        if (keyword == eCSSKeyword_inherit) {
           aValue.SetInheritValue();
           return PR_TRUE;
         }
-        else if (tk->mIdent.EqualsIgnoreCase("initial")) {
+        else if (keyword == eCSSKeyword__moz_initial) {
           aValue.SetInitialValue();
           return PR_TRUE;
         }
@@ -5195,7 +5201,7 @@ PRBool CSSParserImpl::ParseFamily(PRInt32& aErrorCode, nsCSSValue& aValue)
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseListStyle(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseListStyle(nsresult& aErrorCode)
 {
   const PRInt32 numProps = 3;
   static const nsCSSProperty listStyleIDs[] = {
@@ -5228,7 +5234,7 @@ PRBool CSSParserImpl::ParseListStyle(PRInt32& aErrorCode)
   return PR_TRUE;
 }
 
-PRBool CSSParserImpl::ParseMargin(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseMargin(nsresult& aErrorCode)
 {
   static const nsCSSProperty kMarginSideIDs[] = {
     eCSSProperty_margin_top,
@@ -5240,7 +5246,7 @@ PRBool CSSParserImpl::ParseMargin(PRInt32& aErrorCode)
                             kMarginSideIDs);
 }
 
-PRBool CSSParserImpl::ParseMarks(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseMarks(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ParseVariant(aErrorCode, aValue, VARIANT_HOK, nsCSSProps::kPageMarksKTable)) {
     if (eCSSUnit_Enumerated == aValue.GetUnit()) {
@@ -5259,7 +5265,7 @@ PRBool CSSParserImpl::ParseMarks(PRInt32& aErrorCode, nsCSSValue& aValue)
 }
 
 #ifdef ENABLE_OUTLINE
-PRBool CSSParserImpl::ParseOutline(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseOutline(nsresult& aErrorCode)
 {
   const PRInt32 numProps = 3;
   static const nsCSSProperty kOutlineIDs[] = {
@@ -5293,7 +5299,7 @@ PRBool CSSParserImpl::ParseOutline(PRInt32& aErrorCode)
 }
 #endif
 
-PRBool CSSParserImpl::ParsePadding(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParsePadding(nsresult& aErrorCode)
 {
   static const nsCSSProperty kPaddingSideIDs[] = {
     eCSSProperty_padding_top,
@@ -5305,7 +5311,7 @@ PRBool CSSParserImpl::ParsePadding(PRInt32& aErrorCode)
                             kPaddingSideIDs);
 }
 
-PRBool CSSParserImpl::ParsePause(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParsePause(nsresult& aErrorCode)
 {
   nsCSSValue  before;
   if (ParseSingleValueProperty(aErrorCode, before, eCSSProperty_pause_before)) {
@@ -5329,7 +5335,7 @@ PRBool CSSParserImpl::ParsePause(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParsePlayDuring(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParsePlayDuring(nsresult& aErrorCode)
 {
   nsCSSValue  playDuring;
   nsCSSValue  flags;
@@ -5343,7 +5349,7 @@ PRBool CSSParserImpl::ParsePlayDuring(PRInt32& aErrorCode)
       }
     }
     if (ExpectEndProperty(aErrorCode, PR_TRUE)) {
-      AppendValue(eCSSProperty_play_during, playDuring);
+      AppendValue(eCSSProperty_play_during_uri, playDuring);
       AppendValue(eCSSProperty_play_during_flags, flags);
       return PR_TRUE;
     }
@@ -5351,7 +5357,7 @@ PRBool CSSParserImpl::ParsePlayDuring(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseQuotes(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseQuotes(nsresult& aErrorCode)
 {
   nsCSSValue  open;
   if (ParseVariant(aErrorCode, open, VARIANT_HOS, nsnull)) {
@@ -5399,7 +5405,7 @@ PRBool CSSParserImpl::ParseQuotes(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseSize(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseSize(nsresult& aErrorCode)
 {
   nsCSSValue width;
   if (ParseVariant(aErrorCode, width, VARIANT_AHKL, nsCSSProps::kPageSizeKTable)) {
@@ -5423,7 +5429,7 @@ PRBool CSSParserImpl::ParseSize(PRInt32& aErrorCode)
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseTextDecoration(PRInt32& aErrorCode, nsCSSValue& aValue)
+PRBool CSSParserImpl::ParseTextDecoration(nsresult& aErrorCode, nsCSSValue& aValue)
 {
   if (ParseVariant(aErrorCode, aValue, VARIANT_HOK, nsCSSProps::kTextDecorationKTable)) {
     if (eCSSUnit_Enumerated == aValue.GetUnit()) {  // look for more keywords
@@ -5445,7 +5451,7 @@ PRBool CSSParserImpl::ParseTextDecoration(PRInt32& aErrorCode, nsCSSValue& aValu
   return PR_FALSE;
 }
 
-PRBool CSSParserImpl::ParseTextShadow(PRInt32& aErrorCode)
+PRBool CSSParserImpl::ParseTextShadow(nsresult& aErrorCode)
 {
   nsCSSValue  value;
   if (ParseVariant(aErrorCode, value, VARIANT_HC | VARIANT_LENGTH | VARIANT_NONE, nsnull)) {

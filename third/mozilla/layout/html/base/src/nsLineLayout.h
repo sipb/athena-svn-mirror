@@ -72,14 +72,14 @@ public:
 
   void BeginLineReflow(nscoord aX, nscoord aY,
                        nscoord aWidth, nscoord aHeight,
-                       PRBool aImpactedByFloaters,
+                       PRBool aImpactedByFloats,
                        PRBool aIsTopOfPage);
 
   void EndLineReflow();
 
   void UpdateBand(nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight,
-                  PRBool aPlacedLeftFloater,
-                  nsIFrame* aFloaterFrame);
+                  PRBool aPlacedLeftFloat,
+                  nsIFrame* aFloatFrame);
 
   nsresult BeginSpan(nsIFrame* aFrame,
                      const nsHTMLReflowState* aSpanReflowState,
@@ -131,13 +131,12 @@ public:
 protected:
 #define LL_ENDSINWHITESPACE            0x00000001
 #define LL_UNDERSTANDSNWHITESPACE      0x00000002
-#define LL_TEXTSTARTSWITHNBSP          0x00000004
 #define LL_FIRSTLETTERSTYLEOK          0x00000008
 #define LL_ISTOPOFPAGE                 0x00000010
 #define LL_UPDATEDBAND                 0x00000020
-#define LL_IMPACTEDBYFLOATERS          0x00000040
-#define LL_LASTFLOATERWASLETTERFRAME   0x00000080
-#define LL_CANPLACEFLOATER             0x00000100
+#define LL_IMPACTEDBYFLOATS            0x00000040
+#define LL_LASTFLOATWASLETTERFRAME     0x00000080
+#define LL_CANPLACEFLOAT               0x00000100
 #define LL_LINEENDSINBR                0x00000200
 #define LL_LASTFLAG                    LL_LINEENDSINBR
 
@@ -185,11 +184,6 @@ public:
     mTextJustificationNumLetters = aNumLetters;
   }
 
-
-  void SetTextStartsWithNBSP(PRBool aYes) {
-    SetFlag(LL_TEXTSTARTSWITHNBSP, aYes);
-  }
-
   void RecordWordFrame(nsIFrame* aWordFrame) {
     mWordFrames.Push(aWordFrame);
   }
@@ -206,9 +200,7 @@ public:
 
   nsIFrame* FindNextText(nsIPresContext* aPresContext, nsIFrame* aFrame);
 
-  PRBool CanPlaceFloaterNow() const;
-
-  PRBool LineIsEmpty() const;
+  PRBool CanPlaceFloatNow() const;
 
   PRBool LineIsBreakable() const;
 
@@ -235,12 +227,12 @@ public:
   //----------------------------------------
   // Inform the line-layout about the presence of a floating frame
   // XXX get rid of this: use get-frame-type?
-  void InitFloater(nsPlaceholderFrame* aFrame, nsReflowStatus& aReflowStatus) {
-    mBlockRS->InitFloater(*this, aFrame, aReflowStatus);
+  void InitFloat(nsPlaceholderFrame* aFrame, nsReflowStatus& aReflowStatus) {
+    mBlockRS->InitFloat(*this, aFrame, aReflowStatus);
   }
 
-  void AddFloater(nsPlaceholderFrame* aFrame, nsReflowStatus& aReflowStatus) {
-    mBlockRS->AddFloater(*this, aFrame, PR_FALSE, aReflowStatus);
+  void AddFloat(nsPlaceholderFrame* aFrame, nsReflowStatus& aReflowStatus) {
+    mBlockRS->AddFloat(*this, aFrame, PR_FALSE, aReflowStatus);
   }
 
   //----------------------------------------
@@ -286,7 +278,7 @@ protected:
   PRPackedBool mComputeMaxElementWidth;
   PRUint8 mTextAlign;
 
-  PRUint8 mPlacedFloaters;
+  PRUint8 mPlacedFloats;
   
   // The amount of text indent that we applied to this line, needed for
   // max-element-size calculation.
@@ -412,7 +404,7 @@ protected:
     PRUint8 mDirection;
     PRPackedBool mChangedFrameDirection;
     PRPackedBool mZeroEffectiveSpanBox;
-    PRPackedBool mContainsFloater;
+    PRPackedBool mContainsFloat;
 
     nscoord mLeftEdge;
     nscoord mX;

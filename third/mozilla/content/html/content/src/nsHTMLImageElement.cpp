@@ -143,7 +143,7 @@ public:
 
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);  
-  NS_IMETHOD SetParent(nsIContent* aParent);  
+  NS_IMETHOD_(void) SetParent(nsIContent* aParent);  
 
 protected:
   void GetImageFrame(nsIImageFrame** aImageFrame);
@@ -171,8 +171,7 @@ NS_NewHTMLImageElement(nsIHTMLContent** aInstancePtrResult,
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(dom_doc));
     NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
-    nsCOMPtr<nsINodeInfoManager> nodeInfoManager;
-    doc->GetNodeInfoManager(getter_AddRefs(nodeInfoManager));
+    nsINodeInfoManager *nodeInfoManager = doc->GetNodeInfoManager();
     NS_ENSURE_TRUE(nodeInfoManager, NS_ERROR_UNEXPECTED);
 
     rv = nodeInfoManager->GetNodeInfo(nsHTMLAtoms::img, nsnull,
@@ -273,7 +272,7 @@ nsHTMLImageElement::GetImageFrame(nsIImageFrame** aImageFrame)
 {
   *aImageFrame = nsnull;
   // If we have no parent, then we won't have a frame yet
-  if (!mParent)
+  if (!GetParent())
     return;
 
   nsIFrame* frame = GetPrimaryFrame(PR_TRUE);
@@ -318,9 +317,7 @@ nsHTMLImageElement::GetXY(PRInt32* aX, PRInt32* aY)
   }
 
   // Get Presentation shell 0
-  nsCOMPtr<nsIPresShell> presShell;
-  mDocument->GetShellAt(0, getter_AddRefs(presShell));
-
+  nsIPresShell *presShell = mDocument->GetShellAt(0);
   if (!presShell) {
     return NS_OK;
   }
@@ -547,8 +544,6 @@ static void
 MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
-  if (!aData || !aAttributes)
-    return;
   nsGenericHTMLElement::MapImageAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapImageBorderAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapImageMarginAttributeInto(aAttributes, aData);
@@ -650,7 +645,7 @@ nsHTMLImageElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
   
   nsresult rv = nsGenericHTMLLeafElement::SetDocument(aDocument, aDeep,
                                                       aCompileEventHandlers);
-  if (documentChanging && mParent) {
+  if (documentChanging && GetParent()) {
     // Our base URI may have changed; claim that our URI changed, and the
     // nsImageLoadingContent will decide whether a new image load is warranted.
     nsAutoString uri;
@@ -662,10 +657,10 @@ nsHTMLImageElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
   return rv;
 }
 
-NS_IMETHODIMP
+NS_IMETHODIMP_(void)
 nsHTMLImageElement::SetParent(nsIContent* aParent)
 {
-  nsresult rv = nsGenericHTMLLeafElement::SetParent(aParent);
+  nsGenericHTMLLeafElement::SetParent(aParent);
   if (aParent && mDocument) {
     // Our base URI may have changed; claim that our URI changed, and the
     // nsImageLoadingContent will decide whether a new image load is warranted.
@@ -675,7 +670,6 @@ nsHTMLImageElement::SetParent(nsIContent* aParent)
       ImageURIChanged(uri);
     }
   }
-  return rv;
 }
 
 NS_IMETHODIMP

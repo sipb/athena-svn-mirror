@@ -74,9 +74,9 @@ class nsHTMLEditUtils;
 // ==================================================================
 NS_IMPL_ISUPPORTS1(DocumentResizeEventListener, nsIDOMEventListener)
 
-DocumentResizeEventListener::DocumentResizeEventListener(nsIHTMLEditor * aEditor) :
- mEditor(aEditor)
+DocumentResizeEventListener::DocumentResizeEventListener(nsIHTMLEditor * aEditor) 
 {
+  mEditor = do_GetWeakReference(aEditor);
 }
 
 DocumentResizeEventListener::~DocumentResizeEventListener()
@@ -86,8 +86,10 @@ DocumentResizeEventListener::~DocumentResizeEventListener()
 NS_IMETHODIMP
 DocumentResizeEventListener::HandleEvent(nsIDOMEvent* aMouseEvent)
 {
-  nsCOMPtr<nsIHTMLObjectResizer> objectResizer = do_QueryInterface(mEditor);
-  return objectResizer->RefreshResizers();
+  nsCOMPtr<nsIHTMLObjectResizer> objectResizer = do_QueryReferent(mEditor);
+  if (objectResizer)
+    return objectResizer->RefreshResizers();
+  return NS_OK;
 }
 
 // ==================================================================
@@ -96,9 +98,9 @@ DocumentResizeEventListener::HandleEvent(nsIDOMEvent* aMouseEvent)
 
 NS_IMPL_ISUPPORTS1(ResizerSelectionListener, nsISelectionListener)
 
-ResizerSelectionListener::ResizerSelectionListener(nsIHTMLEditor * aEditor) :
- mEditor(aEditor)
+ResizerSelectionListener::ResizerSelectionListener(nsIHTMLEditor * aEditor)
 {
+  mEditor = do_GetWeakReference(aEditor);
 }
 
 ResizerSelectionListener::~ResizerSelectionListener()
@@ -110,10 +112,13 @@ ResizerSelectionListener::NotifySelectionChanged(nsIDOMDocument *, nsISelection 
 {
   if ((aReason & (nsISelectionListener::MOUSEDOWN_REASON |
                   nsISelectionListener::KEYPRESS_REASON |
-                  nsISelectionListener::SELECTALL_REASON)) && aSelection) {
+                  nsISelectionListener::SELECTALL_REASON)) && aSelection) 
+  {
     // the selection changed and we need to check if we have to
     // hide and/or redisplay resizing handles
-    mEditor->CheckSelectionStateForAnonymousButtons(aSelection);
+    nsCOMPtr<nsIHTMLEditor> editor = do_QueryReferent(mEditor);
+    if (editor)
+      editor->CheckSelectionStateForAnonymousButtons(aSelection);
   }
 
   return NS_OK;
@@ -125,9 +130,9 @@ ResizerSelectionListener::NotifySelectionChanged(nsIDOMDocument *, nsISelection 
 
 NS_IMPL_ISUPPORTS2(ResizerMouseMotionListener, nsIDOMEventListener, nsIDOMMouseMotionListener)
 
-ResizerMouseMotionListener::ResizerMouseMotionListener(nsIHTMLEditor * aEditor):
- mEditor(aEditor)
+ResizerMouseMotionListener::ResizerMouseMotionListener(nsIHTMLEditor * aEditor)
 {
+  mEditor = do_GetWeakReference(aEditor);
 }
 
 ResizerMouseMotionListener::~ResizerMouseMotionListener() 
@@ -145,7 +150,7 @@ ResizerMouseMotionListener::MouseMove(nsIDOMEvent* aMouseEvent)
   }
 
   // Don't do anything special if not an HTML object resizer editor
-  nsCOMPtr<nsIHTMLObjectResizer> objectResizer = do_QueryInterface(mEditor);
+  nsCOMPtr<nsIHTMLObjectResizer> objectResizer = do_QueryReferent(mEditor);
   if (objectResizer)
   {
     // check if we have to redisplay a resizing shadow
@@ -397,9 +402,7 @@ nsHTMLEditor::ShowResizers(nsIDOMElement *aResizedElement)
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
   if (!doc) return NS_ERROR_NULL_POINTER;
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  res = doc->GetScriptGlobalObject(getter_AddRefs(global));
-  if (NS_FAILED(res)) return res;
+  nsIScriptGlobalObject *global = doc->GetScriptGlobalObject();
   if (!global) { return NS_ERROR_NULL_POINTER; }
 
   mResizeEventListenerP = new DocumentResizeEventListener(this);
@@ -471,9 +474,7 @@ nsHTMLEditor::HideResizers(void)
   GetDocument(getter_AddRefs(domDoc));
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
   if (!doc) { return NS_ERROR_NULL_POINTER; }
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  res = doc->GetScriptGlobalObject(getter_AddRefs(global));
-  if (NS_FAILED(res)) return res;
+  nsIScriptGlobalObject *global = doc->GetScriptGlobalObject();
   if (!global) { return NS_ERROR_NULL_POINTER; }
 
   nsCOMPtr<nsIDOMEventTarget> target = do_QueryInterface(global);
@@ -681,9 +682,7 @@ nsHTMLEditor::SetResizingInfoPosition(PRInt32 aX, PRInt32 aY, PRInt32 aW, PRInt3
     return NS_ERROR_UNEXPECTED;
 
   // get the root content
-  nsCOMPtr<nsIContent> rootContent;
-  doc->GetRootContent(getter_AddRefs(rootContent));
-  nsCOMPtr<nsIDOMNSHTMLElement> nsElement = do_QueryInterface(rootContent);
+  nsCOMPtr<nsIDOMNSHTMLElement> nsElement = do_QueryInterface(doc->GetRootContent());
   if (!nsElement) {return NS_ERROR_NULL_POINTER; }
 
   // let's get the size of the document

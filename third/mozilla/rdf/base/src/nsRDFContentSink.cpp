@@ -143,6 +143,18 @@ enum RDFContentSinkParseMode {
 
 MOZ_DECL_CTOR_COUNTER(RDFContentSinkImpl::NameSpaceEntry)
 
+typedef
+NS_STDCALL_FUNCPROTO(nsresult,
+                     nsContainerTestFn,
+                     nsIRDFContainerUtils, IsAlt,
+                     (nsIRDFDataSource*, nsIRDFResource*, PRBool*));
+
+typedef
+NS_STDCALL_FUNCPROTO(nsresult,
+                     nsMakeContainerFn,
+                     nsIRDFContainerUtils, MakeAlt,
+                     (nsIRDFDataSource*, nsIRDFResource*, nsIRDFContainer**));
+
 class RDFContentSinkImpl : public nsIRDFContentSink,
                            public nsIExpatSink
 {
@@ -192,17 +204,6 @@ public:
     static nsIAtom* kXMLNSAtom;
     static nsIAtom* kParseTypeAtom;
 
-    typedef nsresult 
-    NS_STDCALL_FUNCPROTO(nsIRDFContainerUtils::*nsContainerTestFn,
-                         (nsIRDFDataSource* aDataSource,
-                          nsIRDFResource* aResource,
-                          PRBool* aResult));
-
-    typedef nsresult 
-    NS_STDCALL_FUNCPROTO(nsIRDFContainerUtils::*nsMakeContainerFn,
-                         (nsIRDFDataSource* aDataSource,
-                          nsIRDFResource* aContainer,
-                          nsIRDFContainer** aResult));
 
     typedef struct ContainerInfo {
         nsIRDFResource**  mType;
@@ -496,7 +497,7 @@ NS_IMETHODIMP
 RDFContentSinkImpl::HandleStartElement(const PRUnichar *aName, 
                                        const PRUnichar **aAtts, 
                                        PRUint32 aAttsCount, 
-                                       PRUint32 aIndex, 
+                                       PRInt32 aIndex, 
                                        PRUint32 aLineNumber)
 {
   FlushText();
@@ -507,7 +508,7 @@ RDFContentSinkImpl::HandleStartElement(const PRUnichar *aName,
   // the attribute list.
   PushNameSpacesFrom(aAtts);
 
-  nsresult rv;
+  nsresult rv = NS_ERROR_UNEXPECTED; // XXX
 
   switch (mState) {
   case eRDFContentSinkState_InProlog:
@@ -535,8 +536,6 @@ RDFContentSinkImpl::HandleStartElement(const PRUnichar *aName,
       PR_LOG(gLog, PR_LOG_ALWAYS,
              ("rdfxml: unexpected content in epilog at line %d",
               aLineNumber));
-
-      rv = NS_ERROR_UNEXPECTED; // XXX
       break;
   }
 

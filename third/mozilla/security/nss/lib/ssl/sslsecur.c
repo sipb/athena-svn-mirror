@@ -36,7 +36,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslsecur.c,v 1.1.1.2 2003-07-08 17:24:34 rbasch Exp $
+ * $Id: sslsecur.c,v 1.1.1.3 2004-02-27 16:41:39 rbasch Exp $
  */
 #include "cert.h"
 #include "secitem.h"
@@ -583,6 +583,11 @@ ssl_FindCertKEAType(CERTCertificate * cert)
   case SEC_OID_X942_DIFFIE_HELMAN_KEY:
     keaType = kt_dh;
     break;
+#ifdef NSS_ENABLE_ECC
+  case SEC_OID_ANSIX962_EC_PUBLIC_KEY:
+    keaType = kt_ecdh;
+    break;
+#endif /* NSS_ENABLE_ECC */
   default:
     keaType = kt_null;
   }

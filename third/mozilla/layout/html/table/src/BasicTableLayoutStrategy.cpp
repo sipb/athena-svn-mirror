@@ -219,7 +219,7 @@ BasicTableLayoutStrategy::BalanceColumnWidths(nsIPresContext*          aPresCont
   nscoord horOffset; 
   // get the reduction in available horizontal space due to borders and padding
   if (mTableFrame->IsBorderCollapse()) {
-    nsMargin offset = mTableFrame->GetChildAreaOffset(*aPresContext, &aReflowState);
+    nsMargin offset = mTableFrame->GetChildAreaOffset(aPresContext, &aReflowState);
     horOffset = offset.left + offset.right;
   }
   else {
@@ -489,6 +489,10 @@ void BasicTableLayoutStrategy::AllocateUnconstrained(PRInt32  aAllocAmount,
       divisor += mTableFrame->GetColumnWidth(colX);
       numColsAllocated++;
     }
+  }
+  if (!numColsAllocated) {
+    // redistribute the space to all columns and prevent a division by zero
+    numColsAllocated = numCols;
   }
   for (colX = 0; colX < numCols; colX++) { 
     if (FINISHED != aAllocTypes[colX]) {
@@ -1235,7 +1239,7 @@ BasicTableLayoutStrategy::CalcPctAdjTableWidth(nsIPresContext&          aPresCon
     rawPctValues[colX] = 0.0f;
   }
 
-  nsMargin borderPadding = mTableFrame->GetContentAreaOffset(aPresContext, &aReflowState);
+  nsMargin borderPadding = mTableFrame->GetContentAreaOffset(&aPresContext, &aReflowState);
   nscoord availWidth = aAvailWidthIn;
   if (NS_UNCONSTRAINEDSIZE != availWidth) {
     // adjust the avail width to exclude table border, padding and cell spacing
@@ -1320,7 +1324,7 @@ BasicTableLayoutStrategy::CalcPctAdjTableWidth(nsIPresContext&          aPresCon
   }
   // If there is only one col and it is % based, it won't affect anything
   if ((1 == numCols) && (numCols == numPerCols)) {
-    return basis; 
+    return basis + borderPadding.left + borderPadding.right + mCellSpacingTotal;
   }
 
   // compute a basis considering total percentages and the desired width of everything else
@@ -1369,7 +1373,7 @@ BasicTableLayoutStrategy::AssignPctColumnWidths(nsIPresContext&          aPresCo
                   : aAvailWidth;
 
   // adjust the basis to exclude table border, padding and cell spacing
-  nsMargin borderPadding = mTableFrame->GetContentAreaOffset(aPresContext, &aReflowState);
+  nsMargin borderPadding = mTableFrame->GetContentAreaOffset(&aPresContext, &aReflowState);
   basis -= borderPadding.left + borderPadding.right + mCellSpacingTotal;
 
   nscoord colPctTotal = 0;

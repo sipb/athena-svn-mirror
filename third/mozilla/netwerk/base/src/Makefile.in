@@ -30,7 +30,6 @@ MODULE		= necko
 LIBRARY_NAME	= neckobase_s
 REQUIRES	= xpcom \
 		  string \
-		  exthandler \
 		  mimetype \
 		  uconv \
 		  locale \
@@ -38,6 +37,8 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 CPPSRCS		= \
+		nsIOThreadPool.cpp \
+		nsTransportUtils.cpp \
 		nsAsyncStreamCopier.cpp \
 		nsAsyncStreamListener.cpp \
 		nsBufferedStreams.cpp \
@@ -50,8 +51,6 @@ CPPSRCS		= \
 		nsIOService.cpp \
 		nsLoadGroup.cpp \
 		nsMIMEInputStream.cpp \
-		nsNetModRegEntry.cpp \
-		nsNetModuleMgr.cpp \
 		nsProtocolProxyService.cpp \
 		nsRequestObserverProxy.cpp \
 		nsResumableEntityID.cpp \
@@ -60,8 +59,10 @@ CPPSRCS		= \
 		nsStandardURL.cpp \
 		nsSocketTransport2.cpp \
 		nsSocketTransportService2.cpp \
+		nsServerSocket.cpp \
 		nsStreamListenerTee.cpp \
 		nsStreamLoader.cpp \
+		nsSyncStreamListener.cpp \
 		nsUnicharStreamLoader.cpp \
 		nsURIChecker.cpp \
 		nsURLHelper.cpp \

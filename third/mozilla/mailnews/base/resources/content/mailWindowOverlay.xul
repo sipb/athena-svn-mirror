@@ -302,6 +302,9 @@ Rights Reserved.
   <key id="key_selectThread" key="&selectThreadCmd.key;"             oncommand="goDoCommand('cmd_selectThread');" modifiers="accel, shift"/>
   
   <key id="key_toggleRead" key="&markAsReadCmd.key;"                 oncommand="goDoCommand('cmd_markAsRead');"/>
+  <key id="key_markJunk" key="&markAsJunkCmd.key;"                   oncommand="goDoCommand('cmd_markAsJunk');"/>
+  <key id="key_markNotJunk" key="&markAsNotJunkCmd.key;"             oncommand="goDoCommand('cmd_markAsNotJunk');"
+       modifiers="shift"/>
   <key id="key_markAllRead" key="&markAllReadCmd.key;"               oncommand="goDoCommand('cmd_markAllRead');" modifiers="accel, shift"/>
   <key id="key_markThreadAsRead" key="&markThreadAsReadCmd.key;"     oncommand="goDoCommand('cmd_markThreadAsRead')"/>
   <key id="key_markReadByDate" key="&markReadByDateCmd.key;"         oncommand="goDoCommand('cmd_markReadByDate')"/>
@@ -575,20 +578,16 @@ Rights Reserved.
       <menupopup onpopupshowing="InitMessageMark()">
         <menuitem id="threadPaneContext-markRead"
                   type="checkbox"
-                  key="key_toggleRead"
                   label="&markAsReadCmd.label;"
                   accesskey="&markAsReadCmd.accesskey;"
                   observes="cmd_markAsRead"/>
         <menuitem label="&markThreadAsReadCmd.label;"
-                  key="key_markThreadAsRead"
                   accesskey="&markThreadAsReadCmd.accesskey;"
                   observes="cmd_markThreadAsRead"/>
         <menuitem label="&markReadByDateCmd.label;"
-                  key="key_markReadByDate"
                   accesskey="&markReadByDateCmd.accesskey;"
                   command="cmd_markReadByDate"/>
         <menuitem label="&markAllReadCmd.label;"
-                  key="key_markAllRead"
                   accesskey="&markAllReadCmd.accesskey;"
                   observes="cmd_markAllRead"/>
         <menuseparator/>
@@ -917,20 +916,16 @@ Rights Reserved.
       <menupopup onpopupshowing="InitMessageMark()">
         <menuitem id="threadPaneContext-markRead"
                   type="checkbox"
-                  key="key_toggleRead"
                   label="&markAsReadCmd.label;"
                   accesskey="&markAsReadCmd.accesskey;"
                   observes="cmd_markAsRead"/>
         <menuitem label="&markThreadAsReadCmd.label;"
-                  key="key_markThreadAsRead"
                   accesskey="&markThreadAsReadCmd.accesskey;"
                   observes="cmd_markThreadAsRead"/>
         <menuitem label="&markReadByDateCmd.label;"
-                  key="key_markReadByDate"
                   accesskey="&markReadByDateCmd.accesskey;"
                   command="cmd_markReadByDate"/>
         <menuitem label="&markAllReadCmd.label;"
-                  key="key_markAllRead"
                   accesskey="&markAllReadCmd.accesskey;"
                   observes="cmd_markAllRead"/>
         <menuseparator/>
@@ -1070,6 +1065,7 @@ Rights Reserved.
                             <menupopup/>
                         </menu>
       <menuitem id="menu_getnextnmsg" label="&getNextNMsgCmd.label;"
+       accesskey="&getNextNMsgCmd.accesskey;"
        observes="cmd_getNextNMessages"/>
       <menuitem id="menu_sendunsentmsgs" label="&sendUnsentCmd.label;"
        accesskey="&sendUnsentCmd.accesskey;"
@@ -1174,8 +1170,8 @@ Rights Reserved.
           <menuitem id="sortByFlagMenuitem" type="radio" name="sortby" label="&sortByFlagCmd.label;" accesskey="&sortByFlagCmd.accesskey;" oncommand="MsgSortByFlagged()"/>
           <menuitem id="sortByOrderReceivedMenuitem" type="radio" name="sortby" label="&sortByOrderReceivedCmd.label;"  accesskey="&sortByOrderReceivedCmd.accesskey;" oncommand="MsgSortByOrderReceived()"/>
           <menuitem id="sortByPriorityMenuitem" type="radio" name="sortby" label="&sortByPriorityCmd.label;" accesskey="&sortByPriorityCmd.accesskey;" oncommand="MsgSortByPriority()"/>
-    <!-- for Sender / Recipient, accesskey and label are set dynamically -->
-          <menuitem id="sortBySenderOrRecipientMenuitem" type="radio" name="sortby" oncommand="MsgSortBySenderOrRecipient()"/>
+          <menuitem id="sortBySenderMenuitem" type="radio" name="sortby" label="&sortBySenderCmd.label;" accesskey="&sortBySenderCmd.accesskey;" oncommand="MsgSortBySender()"/>
+          <menuitem id="sortByRecipientMenuitem" type="radio" name="sortby" label="&sortByRecipientCmd.label;" accesskey="&sortByRecipientCmd.accesskey;" oncommand="MsgSortByRecipient()"/>
           <menuitem id="sortBySizeMenuitem" type="radio" name="sortby" label="&sortBySizeCmd.label;" accesskey="&sortBySizeCmd.accesskey;" oncommand="MsgSortBySize()"/>
           <menuitem id="sortByStatusMenuitem" type="radio" name="sortby" label="&sortByStatusCmd.label;" accesskey="&sortByStatusCmd.accesskey;" oncommand="MsgSortByStatus()"/>
           <menuitem id="sortBySubjectMenuitem" type="radio" name="sortby" label="&sortBySubjectCmd.label;" accesskey="&sortBySubjectCmd.accesskey;" oncommand="MsgSortBySubject()"/>
@@ -1321,7 +1317,7 @@ Rights Reserved.
       accesskey="&forwardMsgCmd.accesskey;"
       key="key_forward"
       observes="cmd_forward"/>
-    <menu label="&forwardAsMenu.label;" accesskey="&forwardAsMenu.accesskey;">
+    <menu id="forwardAsMenu" label="&forwardAsMenu.label;" accesskey="&forwardAsMenu.accesskey;">
       <menupopup>
         <menuitem label="&forwardAsInline.label;" accesskey="&forwardAsInline.accesskey;" observes="cmd_forwardInline"/>
         <menuitem label="&forwardAsAttachmentCmd.label;" accesskey="&forwardAsAttachmentCmd.accesskey;" observes="cmd_forwardAttachment"/>
@@ -1463,7 +1459,7 @@ Rights Reserved.
         </rule>
       </template>
     </menu>
-    <menu label="&labelMenu.label;" accesskey="&labelMenu.accesskey;">
+    <menu id="labelMenu" label="&labelMenu.label;" accesskey="&labelMenu.accesskey;">
       <menupopup id="menuPopup-labels" onpopupshowing="InitMessageLabel('menuPopup')">
         <menuitem
            id="menuPopup-labelMenuItem0"
@@ -1504,7 +1500,7 @@ Rights Reserved.
            observes="cmd_label5"/>
       </menupopup>
     </menu>
-    <menu label="&markMenu.label;" accesskey="&markMenu.accesskey;">
+    <menu id="markMenu" label="&markMenu.label;" accesskey="&markMenu.accesskey;">
       <menupopup onpopupshowing="InitMessageMark()">
         <menuitem id="markReadMenuItem"
                   type="checkbox"
@@ -1532,9 +1528,11 @@ Rights Reserved.
                   observes="cmd_markAsFlagged"/>
         <menuseparator/>
         <menuitem label="&markAsJunkCmd.label;" 
+                  key="key_markJunk"
                   accesskey="&markAsJunkCmd.accesskey;" 
                   observes="cmd_markAsJunk"/>
         <menuitem label="&markAsNotJunkCmd.label;" 
+                  key="key_markNotJunk"
                   accesskey="&markAsNotJunkCmd.accesskey;" 
                   observes="cmd_markAsNotJunk"/>
       </menupopup>
@@ -1764,16 +1762,14 @@ Rights Reserved.
 </hbox>
 
 <statusbar class="chromeclass-status" id="status-bar"> 
-  <hbox insertbefore="unreadMessageCount" flex="1">
-    <statusbarpanel id="component-bar"/>
-    <statusbarpanel id="statusText" label="&statusText.label;" flex="1"/>
-    <statusbarpanel class="statusbarpanel-progress">
-      <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0" oncommand="dumpProgress()"/>
-    </statusbarpanel>
-  </hbox>
-  <hbox insertafter="totalMessageCount" id="status-bar-end-box">
-    <statusbarpanel checkfunc="MailCheckBeforeOfflineChange()" id="offline-status" class="statusbarpanel-iconic"/> 
-  </hbox>
+  <statusbarpanel id="component-bar"/>
+  <statusbarpanel id="statusText" label="&statusText.label;" crop="right" flex="1"/>
+  <statusbarpanel class="statusbarpanel-progress">
+    <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0" oncommand="dumpProgress()"/>
+  </statusbarpanel>
+  <statusbarpanel id="unreadMessageCount" hidden="true"/>
+  <statusbarpanel id="totalMessageCount" hidden="true"/>
+  <statusbarpanel checkfunc="MailCheckBeforeOfflineChange()" id="offline-status" class="statusbarpanel-iconic"/> 
 </statusbar> 
 
 

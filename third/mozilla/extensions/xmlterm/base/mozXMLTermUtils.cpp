@@ -156,9 +156,8 @@ mozXMLTermUtils::GetPresContextScrollableView(nsIPresContext* aPresContext,
   if (NS_FAILED(result) || !presShell)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIViewManager> viewManager;
-  result = presShell->GetViewManager(getter_AddRefs(viewManager));
-  if (NS_FAILED(result) || !viewManager)
+  nsIViewManager* viewManager = presShell->GetViewManager();
+  if (!viewManager)
     return NS_ERROR_FAILURE;
 
   return viewManager->GetRootScrollableView(aScrollableView);
@@ -183,14 +182,8 @@ mozXMLTermUtils::GetPresContextDeviceContext(nsIPresContext* aPresContext,
 
   *aDeviceContext = nsnull;
 
-  nsCOMPtr<nsIPresShell> presShell;
-  result = aPresContext->GetShell(getter_AddRefs(presShell));
-  if (NS_FAILED(result) || !presShell)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIViewManager> viewManager;
-  result = presShell->GetViewManager(getter_AddRefs(viewManager));
-  if (NS_FAILED(result) || !viewManager)
+  nsIViewManager* viewManager = aPresContext->GetViewManager();
+  if (!viewManager)
     return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIDeviceContext> deviceContext;
@@ -214,18 +207,15 @@ NS_EXPORT nsresult
 mozXMLTermUtils::GetScriptContext(nsIDOMDocument* aDOMDocument,
                                   nsIScriptContext** aScriptContext)
 {
-  nsresult result;
-
   XMLT_LOG(mozXMLTermUtils::GetScriptContext,20,("\n"));
 
   nsCOMPtr<nsIDocument> doc ( do_QueryInterface(aDOMDocument) );
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-  result = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
+  nsIScriptGlobalObject *scriptGlobalObject = doc->GetScriptGlobalObject();
 
-  if (NS_FAILED(result) || !scriptGlobalObject)
+  if (!scriptGlobalObject)
     return NS_ERROR_FAILURE;
 
   return scriptGlobalObject->GetContext(aScriptContext);
@@ -252,10 +242,9 @@ mozXMLTermUtils::ExecuteScript(nsIDOMDocument* aDOMDocument,
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPrincipal> docPrincipal;
-  result =  doc->GetPrincipal(getter_AddRefs(docPrincipal));
-  if (NS_FAILED(result)) 
-    return result;
+  nsIPrincipal *docPrincipal = doc->GetPrincipal();
+  if (!docPrincipal) 
+    return NS_ERROR_FAILURE;
 
   // Get document script context
   nsCOMPtr<nsIScriptContext> scriptContext;

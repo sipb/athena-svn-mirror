@@ -408,3 +408,32 @@ function utilityOnUnload(aEvent)
 }
 
 addEventListener("load", utilityOnLoad, false);
+
+function GenerateValidFilename(filename, extension)
+{
+  if (filename) // we have a title; let's see if it's usable
+  {
+    // clean up the filename to make it usable and
+    // then trim whitespace from beginning and end
+    filename = validateFileName(filename).replace(/^\s+|\s+$/g, "");
+    if (filename.length > 0)
+      return filename + extension;
+  }
+  return null;
+}
+
+function validateFileName(aFileName)
+{
+  var re = /[\/]+/g;
+  if (navigator.appVersion.indexOf("Windows") != -1) {
+    re = /[\\\/\|]+/g;
+    aFileName = aFileName.replace(/[\"]+/g, "'");
+    aFileName = aFileName.replace(/[\*\:\?]+/g, " ");
+    aFileName = aFileName.replace(/[\<]+/g, "(");
+    aFileName = aFileName.replace(/[\>]+/g, ")");
+  }
+  else if (navigator.appVersion.indexOf("Macintosh") != -1)
+    re = /[\:\/]+/g;
+  
+  return aFileName.replace(re, "_");
+}

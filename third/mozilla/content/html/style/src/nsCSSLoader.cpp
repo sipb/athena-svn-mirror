@@ -39,6 +39,7 @@
 #include "nsIURL.h"
 #include "nsIServiceManager.h"
 #include "nsNetUtil.h"
+#include "nsContentUtils.h"
 #include "nsCRT.h"
 #include "nsCOMArray.h"
 #include "nsCOMPtr.h"
@@ -368,123 +369,121 @@ static nsresult GetCharsetFromData(const unsigned char* aStyleSheetData,
     return NS_ERROR_NOT_AVAILABLE;
   PRUint32 step = 1;
   PRUint32 pos = 0;
-  // Determine the encoding type
+  // Determine the encoding type.  If we have a BOM, set aCharset to the
+  // charset listed for that BOM in http://www.w3.org/TR/REC-xml#sec-guessing;
+  // that way even if we don't have a valid @charset rule we can use the BOM to
+  // get a reasonable charset.  If we do have an @charset rule, the string from
+  // that will override this fallback setting of aCharset.
   if (*aStyleSheetData == 0x40 && *(aStyleSheetData+1) == 0x63 /* '@c' */ ) {
-    // 1-byte ASCII-based encoding (ISO-8859-*, UTF-8, etc)
+    // 1-byte ASCII-based encoding (ISO-8859-*, UTF-8, etc), no BOM
     step = 1;
     pos = 0;
   }
-  else if (*aStyleSheetData == 0xEF &&
-           *(aStyleSheetData+1) == 0xBB &&
-           *(aStyleSheetData+2) == 0xBF) {
+  else if (aStyleSheetData[0] == 0xEF &&
+           aStyleSheetData[1] == 0xBB &&
+           aStyleSheetData[2] == 0xBF) {
     // UTF-8 BOM
     step = 1;
     pos = 3;
+    aCharset = "UTF-8";
   }
-  else if (*aStyleSheetData == 0xFE && *(aStyleSheetData+1) == 0xFF) {
-    // big-endian 2-byte encoding BOM
-    step = 2;
-    pos = 3;
-  }
-  else if (*aStyleSheetData == 0xFF && *(aStyleSheetData+1) == 0xFE) {
-    // little-endian 2-byte encoding BOM
-    NS_WARNING("Our unicode decoders aren't likely  to deal with this one");
-    step = 2;
-    pos = 2;
-  }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0xFE &&
-           *(aStyleSheetData+3) == 0xFF) {
+  // Check for a 4-byte encoding BOM before checking for a 2-byte one,
+  // since the latter can be a proper subset of the former.
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0xFE &&
+           aStyleSheetData[3] == 0xFF) {
     // big-endian 4-byte encoding BOM
     step = 4;
     pos = 7;
+    aCharset = "UTF-32BE";
   }
-  else if (*aStyleSheetData == 0xFF &&
-           *(aStyleSheetData+1) == 0xFE &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x00) {
+  else if (aStyleSheetData[0] == 0xFF &&
+           aStyleSheetData[1] == 0xFE &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x00) {
     // little-endian 4-byte encoding BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
     step = 4;
     pos = 4;
+    aCharset = "UTF-32LE";
   }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0xFF &&
-           *(aStyleSheetData+3) == 0xFE) {
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0xFF &&
+           aStyleSheetData[3] == 0xFE) {
     // 4-byte encoding BOM in 2143 order
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
+    NS_WARNING("Our unicode decoders aren't likely  to deal with this one");
     step = 4;
     pos = 6;
+    aCharset = "UTF-32";
   }
-  else if (*aStyleSheetData == 0xFE &&
-           *(aStyleSheetData+1) == 0xFF &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x00) {
+  else if (aStyleSheetData[0] == 0xFE &&
+           aStyleSheetData[1] == 0xFF &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x00) {
     // 4-byte encoding BOM in 3412 order
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
+    NS_WARNING("Our unicode decoders aren't likely  to deal with this one");
     step = 4;
     pos = 5;
+    aCharset = "UTF-32";
   }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x40) {
+  else if (aStyleSheetData[0] == 0xFE && aStyleSheetData[1] == 0xFF) {
+    // big-endian 2-byte encoding BOM
+    step = 2;
+    pos = 3;
+    aCharset = "UTF-16BE";
+  }
+  else if (aStyleSheetData[0] == 0xFF && aStyleSheetData[1] == 0xFE) {
+    // little-endian 2-byte encoding BOM
+    step = 2;
+    pos = 2;
+    aCharset = "UTF-16LE";
+  }
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x40) {
     // big-endian 4-byte encoding, no BOM
     step = 4;
     pos = 3;
   }
-  else if (*aStyleSheetData == 0x40 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x00) {
-    // little-encoding 4-byte encoding, no BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
+  else if (aStyleSheetData[0] == 0x40 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x00) {
+    // little-endian 4-byte encoding, no BOM
     step = 4;
     pos = 0;
   }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0x40 &&
-           *(aStyleSheetData+3) == 0x00) {
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0x40 &&
+           aStyleSheetData[3] == 0x00) {
     // 4-byte encoding in 2143 order, no BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
     step = 4;
     pos = 2;
   }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x40 &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x00) {
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x40 &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x00) {
     // 4-byte encoding in 3412 order, no BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
     step = 4;
     pos = 1;
   }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x40 &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x00) {
-    // 4-byte encoding in 3412 order, no BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
-    step = 4;
-    pos = 1;
-  }
-  else if (*aStyleSheetData == 0x00 &&
-           *(aStyleSheetData+1) == 0x40 &&
-           *(aStyleSheetData+2) == 0x00 &&
-           *(aStyleSheetData+3) == 0x63) {
+  else if (aStyleSheetData[0] == 0x00 &&
+           aStyleSheetData[1] == 0x40 &&
+           aStyleSheetData[2] == 0x00 &&
+           aStyleSheetData[3] == 0x63) {
     // 2-byte big-endian encoding, no BOM
     step = 2;
     pos = 1;
   }
-  else if (*aStyleSheetData == 0x40 &&
-           *(aStyleSheetData+1) == 0x00 &&
-           *(aStyleSheetData+2) == 0x63 &&
-           *(aStyleSheetData+3) == 0x00) {
-    // 2-byte big-endian encoding, no BOM
-    NS_WARNING("Our unicode decoders aren't likely to deal with this one");
+  else if (aStyleSheetData[0] == 0x40 &&
+           aStyleSheetData[1] == 0x00 &&
+           aStyleSheetData[2] == 0x63 &&
+           aStyleSheetData[3] == 0x00) {
+    // 2-byte little-endian encoding, no BOM
     step = 2;
     pos = 0;
   }
@@ -496,7 +495,10 @@ static nsresult GetCharsetFromData(const unsigned char* aStyleSheetData,
   PRUint32 index = 0;
   while (pos < aDataLength && index < sizeof(kCharsetSym) - 1) {
     if (aStyleSheetData[pos] != kCharsetSym[index]) {
-      return NS_ERROR_NOT_AVAILABLE;
+      // If we have a guess as to the charset based on the BOM, then
+      // we can just return NS_OK even if there is no valid @charset
+      // rule.
+      return aCharset.IsEmpty() ? NS_ERROR_NOT_AVAILABLE : NS_OK;
     }
     ++index;
     pos += step;
@@ -508,11 +510,12 @@ static nsresult GetCharsetFromData(const unsigned char* aStyleSheetData,
 
   if (pos >= aDataLength ||
       (aStyleSheetData[pos] != '"' && aStyleSheetData[pos] != '\'')) {
-    return NS_ERROR_NOT_AVAILABLE;
+    return aCharset.IsEmpty() ? NS_ERROR_NOT_AVAILABLE : NS_OK;
   }
 
   char quote = aStyleSheetData[pos];
   pos += step;
+  nsCAutoString charset;
   while (pos < aDataLength) {
     if (aStyleSheetData[pos] == '\\') {
       pos += step;
@@ -524,7 +527,7 @@ static nsresult GetCharsetFromData(const unsigned char* aStyleSheetData,
     }
     
     // casting to avoid ambiguities
-    aCharset.Append(char(aStyleSheetData[pos]));
+    charset.Append(char(aStyleSheetData[pos]));
     pos += step;
   }
 
@@ -535,10 +538,10 @@ static nsresult GetCharsetFromData(const unsigned char* aStyleSheetData,
   }
 
   if (pos >= aDataLength || aStyleSheetData[pos] != ';') {
-    aCharset.Truncate();
-    return NS_ERROR_NOT_AVAILABLE;
+    return aCharset.IsEmpty() ? NS_ERROR_NOT_AVAILABLE : NS_OK;
   }
 
+  aCharset = charset;
   return NS_OK;
 }
 
@@ -581,12 +584,12 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
 
   if (aCharset.IsEmpty()) {
     //  We have no charset
-    //  Try @charset rule
+    //  Try @charset rule and BOM
     result = GetCharsetFromData((const unsigned char*)aData,
                                 aDataLength, aCharset);
 #ifdef DEBUG_bzbarsky
     if (NS_SUCCEEDED(result)) {
-      fprintf(stderr, "Setting from @charset rule: %s\n",
+      fprintf(stderr, "Setting from @charset rule or BOM: %s\n",
               PromiseFlatCString(aCharset).get());
     }
 #endif
@@ -611,7 +614,7 @@ SheetLoadData::OnDetermineCharset(nsIUnicharStreamLoader* aLoader,
   if (aCharset.IsEmpty() && mLoader->mDocument) {
     // no useful data on charset.  Try the document charset.
     // That needs no resolution, since it's already fully resolved
-    mLoader->mDocument->GetDocumentCharacterSet(aCharset);
+    aCharset = mLoader->mDocument->GetDocumentCharacterSet();
 #ifdef DEBUG_bzbarsky
     fprintf(stderr, "Set from document: %s\n",
             PromiseFlatCString(aCharset).get());
@@ -780,10 +783,14 @@ SheetLoadData::OnStreamComplete(nsIUnicharStreamLoader* aLoader,
     return NS_OK;
   }
 
+  if (channelURI) {
+    // Enough to set the URI on mSheet, since any sibling datas we have share
+    // the same mInner as mSheet and will thus get the same URI.
+    mSheet->SetURL(channelURI);
+  }
+  
   PRBool completed;
-  return mLoader->ParseSheet(aDataStream, this,
-                             channelURI ? channelURI : mURI,
-                             completed);
+  return mLoader->ParseSheet(aDataStream, this, completed);
 }
 
 #ifdef MOZ_XUL
@@ -901,13 +908,9 @@ CSSLoaderImpl::CheckLoadAllowed(nsIURI* aSourceURI,
   LOG(("CSSLoaderImpl::CheckLoadAllowed"));
   
   // Check with the security manager
-  nsresult rv;
-  nsCOMPtr<nsIScriptSecurityManager> secMan =
-           do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = secMan->CheckLoadURI(aSourceURI, aTargetURI,
-                            nsIScriptSecurityManager::ALLOW_CHROME);
+  nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
+  nsresult rv = secMan->CheckLoadURI(aSourceURI, aTargetURI,
+                                     nsIScriptSecurityManager::ALLOW_CHROME);
   if (NS_FAILED(rv)) { // failure is normal here; don't warn
     return rv;
   }
@@ -920,11 +923,10 @@ CSSLoaderImpl::CheckLoadAllowed(nsIURI* aSourceURI,
     return NS_OK;
   }
   
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
-  rv = mDocument->GetScriptGlobalObject(getter_AddRefs(globalObject));
-  if (NS_FAILED(rv) || !globalObject) {
+  nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
+  if (!globalObject) {
     LOG(("  No script global object"));
-    return rv;
+    return NS_OK;
   }
   
   nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(globalObject));
@@ -1033,8 +1035,15 @@ CSSLoaderImpl::CreateSheet(nsIURI* aURI,
 
   if (!*aSheet) {
     aSheetState = eSheetNeedsParser;
-    rv = NS_NewCSSStyleSheet(aSheet); // Don't init the sheet here, but in
-                                      // ParseSheet once we know the final URI
+    nsCOMPtr<nsIURI> sheetURI = aURI;
+    if (!sheetURI) {
+      // Inline style.  Use the document's base URL so that @import in
+      // the inline sheet picks up the right base.
+      NS_ASSERTION(aLinkingContent, "Inline stylesheet without linking content?");
+      aLinkingContent->GetBaseURL(getter_AddRefs(sheetURI));
+    }
+
+    rv = NS_NewCSSStyleSheet(aSheet, sheetURI);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
@@ -1098,8 +1107,7 @@ CSSLoaderImpl::InsertSheetInDoc(nsICSSStyleSheet* aSheet,
 
   // XXX Need to cancel pending sheet loads for this element, if any
 
-  PRInt32 sheetCount;
-  aDocument->GetNumberOfStyleSheets(PR_FALSE, &sheetCount);
+  PRInt32 sheetCount = aDocument->GetNumberOfStyleSheets(PR_FALSE);
 
   /*
    * Start the walk at the _end_ of the list, since in the typical
@@ -1111,9 +1119,8 @@ CSSLoaderImpl::InsertSheetInDoc(nsICSSStyleSheet* aSheet,
    */
   PRInt32 insertionPoint;
   for (insertionPoint = sheetCount - 1; insertionPoint >= 0; --insertionPoint) {
-    nsCOMPtr<nsIStyleSheet> curSheet;
-    aDocument->GetStyleSheetAt(insertionPoint, PR_FALSE,
-                               getter_AddRefs(curSheet));
+    nsIStyleSheet *curSheet = aDocument->GetStyleSheetAt(insertionPoint,
+                                                         PR_FALSE);
     NS_ASSERTION(curSheet, "There must be a sheet here!");
     nsCOMPtr<nsIDOMStyleSheet> domSheet = do_QueryInterface(curSheet);
     NS_ASSERTION(domSheet, "All the \"normal\" sheets implement nsIDOMStyleSheet");
@@ -1162,7 +1169,9 @@ CSSLoaderImpl::InsertSheetInDoc(nsICSSStyleSheet* aSheet,
     linkingElement->SetStyleSheet(aSheet); // This sets the ownerNode on the sheet
   }
 
+  aDocument->BeginUpdate(UPDATE_STYLE);
   aDocument->InsertStyleSheetAt(aSheet, insertionPoint);
+  aDocument->EndUpdate(UPDATE_STYLE);
   LOG(("  Inserting into document at position %d", insertionPoint));
 
   return NS_OK;
@@ -1267,7 +1276,7 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
     }
 
     PRBool completed;
-    rv = ParseSheet(converterStream, aLoadData, aLoadData->mURI, completed);
+    rv = ParseSheet(converterStream, aLoadData, completed);
     NS_ASSERTION(completed, "sync load did not complete");
     return rv;
   }
@@ -1315,7 +1324,7 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
 #endif
   nsCOMPtr<nsILoadGroup> loadGroup;
   if (mDocument) {
-    mDocument->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
+    loadGroup = mDocument->GetDocumentLoadGroup();
     NS_ASSERTION(loadGroup,
                  "No loadgroup for stylesheet; onload will fire early");
   }
@@ -1343,8 +1352,7 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
                                   NS_LITERAL_CSTRING("text/css,*/*;q=0.1"),
                                   PR_FALSE);
     if (mDocument) {
-      nsCOMPtr<nsIURI> documentURI;
-      mDocument->GetDocumentURL(getter_AddRefs(documentURI));
+      nsIURI *documentURI = mDocument->GetDocumentURL();
       NS_ASSERTION(documentURI, "Null document uri is bad!");
       if (documentURI) {
         httpChannel->SetReferrer(documentURI);
@@ -1388,25 +1396,17 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
 nsresult
 CSSLoaderImpl::ParseSheet(nsIUnicharInputStream* aStream,
                           SheetLoadData* aLoadData,
-                          nsIURI* aSheetURI,
                           PRBool& aCompleted)
 {
   LOG(("CSSLoaderImpl::ParseSheet"));
   NS_PRECONDITION(aStream, "Must have data to parse");
   NS_PRECONDITION(aLoadData, "Must have load data");
-  NS_PRECONDITION(aSheetURI, "Must have sheet URI");
   NS_PRECONDITION(aLoadData->mSheet, "Must have sheet to parse into");
 
   aCompleted = PR_FALSE;
 
-  // Init the sheet with the correct URI so that the relative URIs in
-  // it will be resolved properly.
-  nsresult rv = aLoadData->mSheet->Init(aSheetURI);
-  NS_ASSERTION(NS_SUCCEEDED(rv),
-               "If this is failing, something has gone terribly wrong");
-  
   nsCOMPtr<nsICSSParser> parser;
-  rv = GetParserFor(aLoadData->mSheet, getter_AddRefs(parser));
+  nsresult rv = GetParserFor(aLoadData->mSheet, getter_AddRefs(parser));
   if (NS_FAILED(rv)) {
     LOG_ERROR(("  Failed to get CSS parser"));
     SheetComplete(aLoadData, PR_FALSE);
@@ -1418,7 +1418,9 @@ CSSLoaderImpl::ParseSheet(nsIUnicharInputStream* aStream,
   nsCOMPtr<nsICSSStyleSheet> dummySheet;
   // Push our load data on the stack so any kids can pick it up
   mParsingDatas.AppendElement(aLoadData);
-  rv = parser->Parse(aStream, aSheetURI, *getter_AddRefs(dummySheet));
+  nsCOMPtr<nsIURI> uri;
+  aLoadData->mSheet->GetURL(*getter_AddRefs(uri));
+  rv = parser->Parse(aStream, uri, *getter_AddRefs(dummySheet));
   mParsingDatas.RemoveElementAt(mParsingDatas.Count() - 1);
   RecycleParser(parser);
 
@@ -1606,12 +1608,9 @@ CSSLoaderImpl::LoadInlineStyle(nsIContent* aElement,
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  nsCOMPtr<nsIURI> baseURI;
-  aElement->GetBaseURL(getter_AddRefs(baseURI));  
-
   NS_ADDREF(data);
   // Parse completion releases the load data
-  return ParseSheet(aStream, data, baseURI, aCompleted);
+  return ParseSheet(aStream, data, aCompleted);
 }        
 
 NS_IMETHODIMP
@@ -1639,10 +1638,9 @@ CSSLoaderImpl::LoadStyleLink(nsIContent* aElement,
   NS_ENSURE_TRUE(mDocument, NS_ERROR_NOT_INITIALIZED);
 
   // Check whether we should even load
-  nsCOMPtr<nsIURI> docURI;
-  nsresult rv = mDocument->GetDocumentURL(getter_AddRefs(docURI));
-  if (NS_FAILED(rv) || !docURI) return NS_ERROR_FAILURE;
-  rv = CheckLoadAllowed(docURI, aURL, aElement);
+  nsIURI *docURI = mDocument->GetDocumentURL();
+  if (!docURI) return NS_ERROR_FAILURE;
+  nsresult rv = CheckLoadAllowed(docURI, aURL, aElement);
   if (NS_FAILED(rv)) return rv;
 
   LOG(("  Passed load check"));

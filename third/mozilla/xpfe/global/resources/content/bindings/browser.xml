@@ -265,7 +265,7 @@
             var stringBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"]
                                   .getService(Components.interfaces.nsIStringBundleService);
             var bundleURL = "chrome://global/locale/tabbrowser.properties";
-            this._mStrBundle = stringBundleService.createBundle(bundleURL, localeService.GetApplicationLocale());
+            this._mStrBundle = stringBundleService.createBundle(bundleURL, localeService.getApplicationLocale());
           }
           return this._mStrBundle;
         ]]></getter>
@@ -302,6 +302,14 @@
       </field>
 
       <field name="_userTypedValue">
+        null
+      </field>
+
+      <field name="focusedWindow">
+        null
+      </field>
+
+      <field name="focusedElement">
         null
       </field>
 

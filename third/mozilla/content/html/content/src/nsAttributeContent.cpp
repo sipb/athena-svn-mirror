@@ -48,7 +48,6 @@
 #include "nsISelection.h"
 #include "nsIEnumerator.h"
 
-
 #include "nsCRT.h"
 #include "nsIEventStateManager.h"
 #include "nsIPrivateDOMEvent.h"
@@ -58,19 +57,18 @@
 #include "prprf.h"
 #include "nsCOMPtr.h"
 
-
 #include "nsIContent.h"
 #include "nsTextFragment.h"
 #include "nsVoidArray.h"
 #include "nsINameSpaceManager.h"
 #include "nsITextContent.h"
 #include "nsIURI.h"
+#include "nsLayoutAtoms.h"
 // XXX share all id's in this dir
 
 
-
-
-class nsAttributeContent : public nsITextContent, public nsIAttributeContent {
+class nsAttributeContent : public nsITextContent, public nsIAttributeContent
+{
 public:
   friend nsresult NS_NewAttributeContent(nsAttributeContent** aNewFrame);
 
@@ -83,10 +81,6 @@ public:
   NS_DECL_ISUPPORTS
 
   // Implementation for nsIContent
-  NS_IMETHOD_(nsIDocument*) GetDocument() const;
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers);
-  NS_IMETHOD_(nsIContent*) GetParent() const;
-  NS_IMETHOD SetParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsNativeAnonymous() const { return PR_TRUE; }
   NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous) { }
 
@@ -96,24 +90,29 @@ public:
     return NS_OK;
   }
 
-  NS_IMETHOD GetTag(nsIAtom** aResult) const
+  nsIAtom *Tag() const
   {
-    *aResult = nsnull;
-    return NS_OK;
+    return nsLayoutAtoms::textTagName;
   }
 
-  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const
+  NS_IMETHOD_(nsINodeInfo *) GetNodeInfo() const
   {
-    *aResult = nsnull;
-    return NS_OK;
+    return nsnull;
   }
 
-
-  NS_IMETHOD NormalizeAttrString(const nsAString& aStr, 
-                                 nsINodeInfo** aNodeInfo)
+  NS_IMETHOD_(nsIAtom *) GetIDAttributeName() const
   {
-    *aNodeInfo = nsnull;
-    return NS_OK; 
+    return nsnull;
+  }
+  
+  NS_IMETHOD_(nsIAtom *) GetClassAttributeName() const
+  {
+    return nsnull;
+  }
+  
+  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr)
+  {
+    return nsnull; 
   }
 
   NS_IMETHOD SetFocus(nsIPresContext* aPresContext) { return NS_OK; }
@@ -151,13 +150,13 @@ public:
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const {
     return PR_FALSE;
   }
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID, nsIAtom** aName, nsIAtom** aPrefix) const {
+  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex, PRInt32* aNameSpaceID, nsIAtom** aName, nsIAtom** aPrefix) const {
     aName = nsnull;
     aPrefix = nsnull;
     return NS_ERROR_ILLEGAL_VALUE;
   }
 
-  NS_IMETHOD GetAttrCount(PRInt32& aResult) const { aResult = 0; return NS_OK; }
+  NS_IMETHOD_(PRUint32) GetAttrCount() const { return 0; }
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const {  return NS_OK;  }
@@ -169,9 +168,9 @@ public:
                           PRUint32 aFlags,
                           nsEventStatus* aEventStatus);
 
-  NS_IMETHOD GetContentID(PRUint32* aID) {
-    *aID = 0;
-    return NS_ERROR_NOT_IMPLEMENTED;
+  virtual PRUint32 ContentID() const {
+    NS_ERROR("nsAttributeContent::ContentID() not implemented!");
+    return 0;
   }
 
   NS_IMETHOD SetContentID(PRUint32 aID) {
@@ -180,22 +179,22 @@ public:
 
   NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
+  const nsVoidArray * GetRangeList() const;
 
   // Implementation for nsIContent
-  NS_IMETHOD CanContainChildren(PRBool& aResult) const { aResult = PR_FALSE; return NS_OK; }
+  NS_IMETHOD_(PRBool) CanContainChildren() const { return PR_FALSE; }
 
-  NS_IMETHOD ChildCount(PRInt32& aResult) const { aResult = 0; return NS_OK;  }
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const { aResult = nsnull; return NS_OK;  }
-  NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const { aResult = -1; return NS_OK;  }
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                           PRBool aDeepSetDocument) { return NS_OK;  }
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
-                            PRBool aDeepSetDocument) { return NS_OK;  }
+  NS_IMETHOD_(PRUint32) GetChildCount() const { return 0; }
+  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const { return nsnull; }
+  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const { return -1; }
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
+                           PRBool aDeepSetDocument) { return NS_OK; }
+  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
+                            PRBool aDeepSetDocument) { return NS_OK; }
   NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
-                           PRBool aDeepSetDocument) { return NS_OK;  }
-  NS_IMETHOD RemoveChildAt(PRInt32 aIndex, PRBool aNotify) {  return NS_OK;  }
-  NS_IMETHOD SplitText(PRUint32 aOffset, nsIDOMText** aReturn){  return NS_OK;  }
+                           PRBool aDeepSetDocument) { return NS_OK; }
+  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify) { return NS_OK; }
+  NS_IMETHOD SplitText(PRUint32 aOffset, nsIDOMText** aReturn){ return NS_OK; }
  
   ///////////////////
   // Implementation for nsITextContent
@@ -220,18 +219,22 @@ public:
 
   void ToCString(nsAString& aBuf, PRInt32 aOffset, PRInt32 aLen) const;
 
+  nsIContent*  GetParent() const {
+    // Override nsIContent::GetParent to be more efficient internally,
+    // since we don't use the low 2 bits of mParentPtrBits for anything.
+ 
+    return NS_REINTERPRET_CAST(nsIContent *, mParentPtrBits);
+  }
+
   // Up pointer to the real content object that we are
   // supporting. Sometimes there is work that we just can't do
   // ourselves, so this is needed to ask the real object to do the
   // work.
   nsIContent*  mContent;
-  nsIDocument* mDocument;
-  nsIContent*  mParent;
 
   nsTextFragment mText;
   PRInt32        mNameSpaceID;
-  nsIAtom*       mAttrName;
-
+  nsCOMPtr<nsIAtom> mAttrName;
 };
 
 
@@ -240,7 +243,7 @@ NS_NewAttributeContent(nsIContent** aContent)
 {
   NS_ENSURE_ARG_POINTER(aContent);
 
-  nsAttributeContent* it = new nsAttributeContent;
+  nsAttributeContent* it = new nsAttributeContent();
   if (!it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -253,30 +256,25 @@ NS_NewAttributeContent(nsIContent** aContent)
 nsAttributeContent::nsAttributeContent()
   : mText()
 {
-  mDocument = nsnull;
-  mParent   = nsnull;
   mContent  = nsnull;
-  mAttrName = nsnull;
 }
 
 //----------------------------------------------------------------------
 nsAttributeContent::~nsAttributeContent()
 {
-  NS_IF_RELEASE(mAttrName);
-  //NS_IF_RELEASE(mDocument);
 }
 
 //----------------------------------------------------------------------
 NS_IMETHODIMP
-nsAttributeContent::Init(nsIContent* aContent, PRInt32 aNameSpaceID, nsIAtom* aAttrName)
+nsAttributeContent::Init(nsIContent* aContent, PRInt32 aNameSpaceID,
+                         nsIAtom* aAttrName)
 {
-  NS_ASSERTION((nsnull == mContent) && (nsnull != aContent), "null ptr");
+  NS_ENSURE_TRUE(aAttrName && aContent, NS_ERROR_NULL_POINTER);
+
   mContent = aContent;
 
-  NS_IF_RELEASE(mAttrName);
   mNameSpaceID = aNameSpaceID;
   mAttrName    = aAttrName;
-  NS_ADDREF(mAttrName);
   return NS_OK;
 }
 
@@ -287,7 +285,7 @@ nsAttributeContent::Init(nsIContent* aContent, PRInt32 aNameSpaceID, nsIAtom* aA
  * @param _classiiddef The name of the #define symbol that defines the IID
  * for the class (e.g. NS_ISUPPORTS_IID)
  * 
-*/
+ */
 
 NS_INTERFACE_MAP_BEGIN(nsAttributeContent)
   NS_INTERFACE_MAP_ENTRY(nsIContent)
@@ -310,34 +308,6 @@ void
 nsAttributeContent::ToCString(nsAString& aBuf, PRInt32 aOffset,
                                 PRInt32 aLen) const
 {
-}
-
-NS_IMETHODIMP_(nsIDocument*)
-nsAttributeContent::GetDocument() const
-{
-  return mDocument;
-}
-
-
-nsresult
-nsAttributeContent::SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers)
-{
-  mDocument = aDocument;
-  //NS_IF_ADDREF(mDocument);
-  return NS_OK;
-}
-
-NS_IMETHODIMP_(nsIContent*)
-nsAttributeContent::GetParent() const
-{
-  return mParent;
-}
-
-nsresult
-nsAttributeContent::SetParent(nsIContent* aParent)
-{
-  mParent = aParent;
-  return NS_OK;
 }
 
 nsresult
@@ -366,24 +336,25 @@ nsAttributeContent::RangeRemove(nsIDOMRange* aRange)
 }
 
 
-nsresult 
-nsAttributeContent::GetRangeList(nsVoidArray** aResult) const
+const nsVoidArray *
+nsAttributeContent::GetRangeList() const
 {
-  return NS_ERROR_FAILURE;
+  return nsnull;
 }
 
 NS_IMETHODIMP
 nsAttributeContent::GetBaseURL(nsIURI** aURI) const
 {
-  if (mParent) {
-    return mParent->GetBaseURL(aURI);
+  if (GetParent()) {
+    return GetParent()->GetBaseURL(aURI);
   }
 
   if (mDocument) {
-    return mDocument->GetBaseURL(aURI);
+    NS_IF_ADDREF(*aURI = mDocument->GetBaseURL());
+  } else {
+    *aURI = nsnull;
   }
 
-  *aURI = nsnull;
   return NS_OK;
 }
 
@@ -441,7 +412,7 @@ nsAttributeContent::CopyText(nsAString& aResult)
   }
   else {
     const char *data = mText.Get1b();
-    CopyASCIItoUCS2(Substring(data, data + mText.GetLength()), aResult);
+    CopyASCIItoUTF16(Substring(data, data + mText.GetLength()), aResult);
   }
   return NS_OK;
 }
@@ -566,10 +537,7 @@ nsAttributeContent::AppendTextTo(nsAString& aResult)
     aResult.Append(mText.Get2b(), mText.GetLength());
   }
   else {
-    // XXX we would like to have a AppendASCIItoUCS2 here
-    aResult.Append(NS_ConvertASCIItoUCS2(mText.Get1b(),
-                                         mText.GetLength()).get(),
-                   mText.GetLength());
+    AppendASCIItoUTF16(mText.Get1b(), aResult);
   }
 
   return NS_OK;

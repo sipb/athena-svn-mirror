@@ -214,7 +214,7 @@ nsHTMLScriptEventHandler::Invoke(nsISupports *aTargetObject,
 
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domdoc));
   if (doc) {
-    doc->GetScriptGlobalObject(getter_AddRefs(sgo));
+    sgo = doc->GetScriptGlobalObject();
     if (sgo) {
       sgo->GetContext(getter_AddRefs(scriptContext));
     }
@@ -349,7 +349,7 @@ public:
                      const nsAString& aValue, PRBool aNotify);
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
+  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                            PRBool aNotify, PRBool aDeepSetDocument);
   NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
                            PRBool aDeepSetDocument);
@@ -476,7 +476,7 @@ nsHTMLScriptElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
 }
 
 NS_IMETHODIMP 
-nsHTMLScriptElement::InsertChildAt(nsIContent* aKid, PRInt32 aIndex,
+nsHTMLScriptElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                    PRBool aNotify, PRBool aDeepSetDocument)
 {
   nsresult rv = nsGenericHTMLContainerElement::InsertChildAt(aKid, aIndex,
@@ -645,15 +645,14 @@ nsHTMLScriptElement::GetLineNumber(PRUint32* aLineNumber)
 void
 nsHTMLScriptElement::MaybeProcessScript()
 {
-  if (mIsEvaluated || mEvaluating || !mDocument || !mParent) {
+  if (mIsEvaluated || mEvaluating || !mDocument || !GetParent()) {
     return;
   }
 
   // We'll always call this to make sure that
   // ScriptAvailable/ScriptEvaluated gets called. See bug 153600
   nsresult rv = NS_OK;
-  nsCOMPtr<nsIScriptLoader> loader;
-  mDocument->GetScriptLoader(getter_AddRefs(loader));
+  nsCOMPtr<nsIScriptLoader> loader = mDocument->GetScriptLoader();
   if (loader) {
     mEvaluating = PR_TRUE;
     rv = loader->ProcessScriptElement(this, this);

@@ -138,9 +138,7 @@ nsScrollBoxFrame::SetUpScrolledFrame(nsIPresContext* aPresContext)
      return;
 
   // create a view if we don't already have one.
-  nsStyleContext* context = frame->GetStyleContext();
-  nsHTMLContainerFrame::CreateViewForFrame(aPresContext, frame,
-                                           context, nsnull, PR_TRUE);
+  nsHTMLContainerFrame::CreateViewForFrame(frame, nsnull, PR_TRUE);
 }
 
 NS_IMETHODIMP
@@ -607,13 +605,10 @@ nsScrollBoxFrame::GetContentOf(nsIContent** aContent)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsScrollBoxFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsScrollBoxFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::scrollFrame; 
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::scrollFrame;
 }
 
 #ifdef NS_DEBUG

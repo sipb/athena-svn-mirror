@@ -65,10 +65,7 @@ nsMailDatabase::nsMailDatabase()
 
 nsMailDatabase::~nsMailDatabase()
 {
-  if(m_folderSpec)
-    delete m_folderSpec;
-  if (m_mdbAllOfflineOpsTable)
-    m_mdbAllOfflineOpsTable->Release();
+  delete m_folderSpec;
 }
 
 NS_IMETHODIMP nsMailDatabase::SetFolderStream(nsIOFileStream *aFileStream)
@@ -93,6 +90,9 @@ void nsMailDatabase::GetGlobalPrefs()
   }
 }
 
+// caller passes in upgrading==PR_TRUE if they want back a db even if the db is out of date.
+// If so, they'll extract out the interesting info from the db, close it, delete it, and
+// then try to open the db again, prior to reparsing.
 NS_IMETHODIMP nsMailDatabase::Open(nsIFileSpec *aFolderName, PRBool create, PRBool upgrading, nsIMsgDatabase** pMessageDB)
 {
   nsMailDatabase	*mailDB;
@@ -150,9 +150,7 @@ NS_IMETHODIMP nsMailDatabase::Open(nsIFileSpec *aFolderName, PRBool create, PRBo
     else
     {
       // if opening existing file, make sure summary file is up to date.
-      // if caller is upgrading, don't return NS_MSG_ERROR_FOLDER_SUMMARY_OUT_OF_DATE so the caller
-      // can pull out the transfer info for the new db.
-      if (!newFile && summaryFileExists && !upgrading)
+      if (!newFile && summaryFileExists)
       {
         PRBool valid;
         mailDB->GetSummaryValid(&valid);
@@ -161,7 +159,7 @@ NS_IMETHODIMP nsMailDatabase::Open(nsIFileSpec *aFolderName, PRBool create, PRBo
       }
       NS_RELEASE(folderInfo);
     }
-    if (err != NS_OK)
+    if (NS_FAILED(err) && !upgrading)
       deleteInvalidDB = PR_TRUE;
   }
   else
@@ -187,27 +185,23 @@ NS_IMETHODIMP nsMailDatabase::Open(nsIFileSpec *aFolderName, PRBool create, PRBo
     {					// leave db around and open so caller can upgrade it.
       err = NS_MSG_ERROR_FOLDER_SUMMARY_MISSING;
     }
-    else if (err != NS_OK)
+    else if (err != NS_OK && deleteInvalidDB)
     {
       NS_IF_RELEASE(mailDB);
     }
   }
-  if (err == NS_OK || err == NS_MSG_ERROR_FOLDER_SUMMARY_MISSING)
+  if (err == NS_OK || !deleteInvalidDB)
   {
     *pMessageDB = mailDB;
     if (mailDB)
       GetDBCache()->AppendElement(mailDB);
   }
-  return err;
+  return (summaryFileExists) ? err : NS_MSG_ERROR_FOLDER_SUMMARY_MISSING;
 }
 
 NS_IMETHODIMP nsMailDatabase::ForceClosed()
 {
-  if (m_mdbAllOfflineOpsTable)
-  {
-    m_mdbAllOfflineOpsTable->Release();
-    m_mdbAllOfflineOpsTable = nsnull;
-  }
+  m_mdbAllOfflineOpsTable = nsnull;
   return nsMsgDatabase::ForceClosed();
 }
 
@@ -217,40 +211,9 @@ nsresult nsMailDatabase::GetAllOfflineOpsTable()
 {
   nsresult rv = NS_OK;
   if (!m_mdbAllOfflineOpsTable)
-  {
-		mdb_err err	= GetStore()->StringToToken(GetEnv(), kOfflineOpsScope, &m_offlineOpsRowScopeToken); 
-    err = GetStore()->StringToToken(GetEnv(), kOfflineOpsTableKind, &m_offlineOpsTableKindToken); 
-		gAllOfflineOpsTableOID.mOid_Scope = m_offlineOpsRowScopeToken;
-		gAllOfflineOpsTableOID.mOid_Id = 1;
-
-    rv = GetStore()->GetTable(GetEnv(), &gAllOfflineOpsTableOID, &m_mdbAllOfflineOpsTable);
-    if (rv != NS_OK)
-      rv = NS_ERROR_FAILURE;
-
-    // create new all msg hdrs table, if it doesn't exist.
-    if (NS_SUCCEEDED(rv) && !m_mdbAllOfflineOpsTable)
-    {
-	    nsIMdbStore *store = GetStore();
-	    mdb_err mdberr = (nsresult) store->NewTable(GetEnv(), m_offlineOpsRowScopeToken, 
-		    m_offlineOpsTableKindToken, PR_FALSE, nsnull, &m_mdbAllOfflineOpsTable);
-      if (mdberr != NS_OK || !m_mdbAllOfflineOpsTable)
-        rv = NS_ERROR_FAILURE;
-    }
-    NS_ASSERTION(NS_SUCCEEDED(rv), "couldn't create offline ops table");
-  }
+    rv = GetTableCreateIfMissing(kOfflineOpsScope, kOfflineOpsTableKind, getter_AddRefs(m_mdbAllOfflineOpsTable), 
+                                                m_offlineOpsRowScopeToken, m_offlineOpsTableKindToken) ;
   return rv;
-}
-
-/* static */ nsresult nsMailDatabase::CloneInvalidDBInfoIntoNewDB(nsFileSpec &pathName, nsMailDatabase** pMailDB)
-{
-	nsresult ret = NS_OK;
-	return ret;
-}
-
-nsresult nsMailDatabase::OnNewPath (nsFileSpec &newPath)
-{
-	nsresult ret = NS_OK;
-	return ret;
 }
 
 // cache m_folderStream to make updating mozilla status flags fast
@@ -285,6 +248,7 @@ NS_IMETHODIMP nsMailDatabase::EndBatch()
     m_folderStream = nsnull;
     m_ownFolderStream = PR_FALSE;
   }
+  SetFolderInfoValid(m_folderSpec, 0, 0);
   return NS_OK;
 }
 
@@ -409,9 +373,9 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
     {
       PRUint32 msgOffset;
       (void)mailHdr->GetMessageOffset(&msgOffset);
-      PRUint32 position = offset + msgOffset;
+      PRUint32 statusPos = offset + msgOffset;
       PR_ASSERT(offset < 10000);
-      fileStream->seek(position);
+      fileStream->seek(statusPos);
       buf[0] = '\0';
       if (fileStream->readline(buf, sizeof(buf))) 
       {
@@ -440,15 +404,16 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
           {
             flags &= ~MSG_FLAG_RUNTIME_ONLY;
           }
-          fileStream->seek(position);
-          // We are filing out old Cheddar flags here
+          fileStream->seek(statusPos);
+          // We are filing out x-mozilla-status flags here
           PR_snprintf(buf, sizeof(buf), X_MOZILLA_STATUS_FORMAT,
             flags & 0x0000FFFF);
-          fileStream->write(buf, PL_strlen(buf));
+          PRInt32 lineLen = PL_strlen(buf);
+          PRInt32 status2Pos = statusPos + lineLen + MSG_LINEBREAK_LEN;
+          fileStream->write(buf, lineLen);
           
           // time to upate x-mozilla-status2
-          position = fileStream->tell();
-          fileStream->seek(position + MSG_LINEBREAK_LEN);
+          fileStream->seek(status2Pos);
           if (fileStream->readline(buf, sizeof(buf))) 
           {
             if (strncmp(buf, X_MOZILLA_STATUS2, X_MOZILLA_STATUS2_LEN) == 0 &&
@@ -458,7 +423,7 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
               PRUint32 dbFlags;
               (void)mailHdr->GetFlags(&dbFlags);
               dbFlags &= 0xFFFF0000;
-              fileStream->seek(position + MSG_LINEBREAK_LEN);
+              fileStream->seek(status2Pos);
               PR_snprintf(buf, sizeof(buf), X_MOZILLA_STATUS2_FORMAT, dbFlags);
               fileStream->write(buf, PL_strlen(buf));
             }
@@ -468,7 +433,7 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
 #ifdef DEBUG
           printf("Didn't find %s where expected at position %ld\n"
             "instead, found %s.\n",
-            X_MOZILLA_STATUS, (long) position, buf);
+            X_MOZILLA_STATUS, (long) statusPos, buf);
 #endif
           SetReparse(PR_TRUE);
         }			
@@ -477,7 +442,7 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
       {
 #ifdef DEBUG
         printf("Couldn't read old status line at all at position %ld\n",
-          (long) position);
+          (long) statusPos);
 #endif
         SetReparse(PR_TRUE);
       }
@@ -505,6 +470,31 @@ void nsMailDatabase::UpdateFolderFlag(nsIMsgDBHdr *mailHdr, PRBool bSet,
     m_folderStream->seek(PR_SEEK_SET, folderStreamPos);
 }
 
+PRUint32 nsMailDatabase::GetMailboxModDate()
+{
+  PRUint32 retModTime = 0;
+  nsCOMPtr <nsILocalFile> localFile;
+  PRInt64 lastModTime;
+  nsresult rv = NS_FileSpecToIFile(m_folderSpec, getter_AddRefs(localFile));
+  if (NS_SUCCEEDED(rv))
+  {
+    rv = localFile->GetLastModifiedTime(&lastModTime);
+    if (NS_SUCCEEDED(rv))
+    {
+
+      PRTime  temp64;
+      PRInt64 thousand;
+      LL_I2L(thousand, PR_MSEC_PER_SEC);
+      LL_DIV(temp64, lastModTime, thousand);
+      LL_L2UI(retModTime, temp64);
+    }
+  }
+  if (!retModTime)
+    m_folderSpec->GetModDate(retModTime) ;
+
+  return retModTime;
+}
+
 NS_IMETHODIMP nsMailDatabase::GetSummaryValid(PRBool *aResult)
 {
   NS_ENSURE_ARG_POINTER(aResult);
@@ -519,7 +509,7 @@ NS_IMETHODIMP nsMailDatabase::GetSummaryValid(PRBool *aResult)
   
   if (m_folderSpec && m_dbFolderInfo)
   {
-    m_folderSpec->GetModDate(actualFolderTimeStamp) ;
+    actualFolderTimeStamp = GetMailboxModDate();
   
     m_dbFolderInfo->GetNumNewMessages(&numNewMessages);
     m_dbFolderInfo->GetFolderSize(&folderSize);
@@ -588,8 +578,7 @@ NS_IMETHODIMP nsMailDatabase::SetSummaryValid(PRBool valid)
   {
     if (valid)
     {
-      nsFileSpec::TimeStamp actualFolderTimeStamp;
-      m_folderSpec->GetModDate(actualFolderTimeStamp) ;
+      nsFileSpec::TimeStamp actualFolderTimeStamp = GetMailboxModDate();
       
       m_dbFolderInfo->SetFolderSize(m_folderSpec->GetFileSize());
       m_dbFolderInfo->SetFolderDate(actualFolderTimeStamp);
@@ -624,22 +613,8 @@ NS_IMETHODIMP  nsMailDatabase::RemoveOfflineOp(nsIMsgOfflineImapOperation *op)
   return rv;
 }
 
-nsresult SetSourceMailbox(nsOfflineImapOperation *op, const char *mailbox, nsMsgKey key)
-{
-	nsresult ret = NS_OK;
-	return ret;
-}
-
-	
-nsresult nsMailDatabase::GetIdsWithNoBodies (nsMsgKeyArray &bodylessIds)
-{
-	nsresult ret = NS_OK;
-	return ret;
-}
-
 NS_IMETHODIMP nsMailDatabase::GetOfflineOpForKey(nsMsgKey msgKey, PRBool create, nsIMsgOfflineImapOperation **offlineOp)
 {
-  PRBool newOp = PR_FALSE;
   mdb_bool	hasOid;
   mdbOid		rowObjectId;
   mdb_err   err;
@@ -668,10 +643,7 @@ NS_IMETHODIMP nsMailDatabase::GetOfflineOpForKey(nsMsgKey msgKey, PRBool create,
         NS_ENSURE_SUCCESS(err, err);
       }
       if (offlineOpRow && !hasOid)
-      {
         m_mdbAllOfflineOpsTable->AddRow(GetEnv(), offlineOpRow);
-        newOp = PR_TRUE;
-      }
     }
     
     if (err == NS_OK && offlineOpRow)
@@ -849,12 +821,11 @@ nsresult nsMailDatabase::SetFolderInfoValid(nsFileSpec *folderName, int num, int
   }
   
   {
-    nsFileSpec::TimeStamp actualFolderTimeStamp;
-    folderName->GetModDate(actualFolderTimeStamp) ;
-    
+ 
+    pMessageDB->m_folderSpec = folderName;
+    nsFileSpec::TimeStamp actualFolderTimeStamp = pMessageDB->GetMailboxModDate();
     pMessageDB->m_dbFolderInfo->SetFolderSize(folderName->GetFileSize());
     pMessageDB->m_dbFolderInfo->SetFolderDate(actualFolderTimeStamp);
-    pMessageDB->m_dbFolderInfo->ChangeNumVisibleMessages(num);
     pMessageDB->m_dbFolderInfo->ChangeNumNewMessages(numunread);
     pMessageDB->m_dbFolderInfo->ChangeNumMessages(num);
   }
@@ -877,7 +848,7 @@ nsresult nsMailDatabase::SetFolderInfoValid(nsFileSpec *folderName, int num, int
 // and needs to be regenerated.
 void nsMailDatabase::SetReparse(PRBool reparse)
 {
-	m_reparse = reparse;
+  m_reparse = reparse;
 }
 
 
@@ -886,7 +857,7 @@ void nsMailDatabase::SetReparse(PRBool reparse)
 PRBool	nsMailDatabase::ThreadBySubjectWithoutRe()
 {
   GetGlobalPrefs();
-	return gThreadWithoutRe;
+  return gThreadWithoutRe;
 }
 
 class nsMsgOfflineOpEnumerator : public nsISimpleEnumerator {

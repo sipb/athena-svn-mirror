@@ -48,6 +48,7 @@
 #include "nsHTMLAtoms.h"
 #include "nsISupportsArray.h"
 #include "nsIDOMElement.h"
+#include "nsIDOMXULElement.h"
 #include "nsIDOMDocument.h"
 #include "nsIXMLContent.h"
 #include "nsIPresContext.h"
@@ -185,7 +186,7 @@ nsSplitterFrameInner::GetResizeBefore()
     nsString value;
     mOuter->GetContent()->GetAttr(kNameSpaceID_None,
                                   nsXULAtoms::resizebefore, value);
-    if (value.EqualsIgnoreCase("farthest"))
+    if (value.Equals(NS_LITERAL_STRING("farthest")))
       return Farthest;
     else
       return Closest;
@@ -203,9 +204,9 @@ nsSplitterFrameInner::GetResizeAfter()
     nsString value;
     mOuter->GetContent()->GetAttr(kNameSpaceID_None,
                                   nsXULAtoms::resizeafter, value);
-    if (value.EqualsIgnoreCase("farthest"))
+    if (value.Equals(NS_LITERAL_STRING("farthest")))
       return Farthest;
-    else if (value.EqualsIgnoreCase("grow"))
+    else if (value.Equals(NS_LITERAL_STRING("grow")))
       return Grow;
     else 
       return Closest;
@@ -217,9 +218,9 @@ nsSplitterFrameInner::GetState()
     nsString value;
     mOuter->GetContent()->GetAttr(kNameSpaceID_None,
                                   nsXULAtoms::state, value);
-    if (value.EqualsIgnoreCase("dragging"))
+    if (value.Equals(NS_LITERAL_STRING("dragging")))
       return Dragging;
-    else if (value.EqualsIgnoreCase("collapsed"))
+    else if (value.Equals(NS_LITERAL_STRING("collapsed")))
       return Collapsed;
 	else 
       return Open;
@@ -360,7 +361,7 @@ nsSplitterFrame::Init(nsIPresContext*  aPresContext,
   // XXX Hack because we need the pres context in some of the event handling functions...
   mPresContext = aPresContext; 
 
-  nsHTMLContainerFrame::CreateViewForFrame(aPresContext,this,aContext,nsnull,PR_TRUE);
+  nsHTMLContainerFrame::CreateViewForFrame(this, nsnull, PR_TRUE);
   nsIView* view = GetView();
 
   nsIViewManager* viewManager = view->GetViewManager();
@@ -448,28 +449,24 @@ NS_IMETHODIMP  nsSplitterFrame::GetFrameForPoint(nsIPresContext* aPresContext,
                                              nsFramePaintLayer aWhichLayer,    
                                              nsIFrame**     aFrame)
 {   
-  if ((aWhichLayer != NS_FRAME_PAINT_LAYER_FOREGROUND))
-    return NS_ERROR_FAILURE;
-
   // if the mouse is captured always return us as the frame.
   if (mInner->mDragging)
   {
     // XXX It's probably better not to check visibility here, right?
     *aFrame = this;
     return NS_OK;
-  } else {
-
-      if (!mRect.Contains(aPoint))
-         return NS_ERROR_FAILURE;
-
-      nsresult rv = nsBoxFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame);
-      if (rv == NS_ERROR_FAILURE) {
-        *aFrame = this;
-        rv = NS_OK;
-      } 
-
-      return rv;
   }
+
+  nsresult rv = nsBoxFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame);
+
+  if (NS_FAILED(rv) &&
+      aWhichLayer == NS_FRAME_PAINT_LAYER_FOREGROUND &&
+      mRect.Contains(aPoint)) {
+    *aFrame = this;
+    rv = NS_OK;
+  } 
+
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -505,6 +502,12 @@ nsSplitterFrameInner::MouseUp(nsIPresContext* aPresContext, nsGUIEvent* aEvent)
               mOuter->mContent->SetAttr(kNameSpaceID_None, nsXULAtoms::state, nsAutoString(), PR_TRUE);
 
           mPressed = PR_FALSE;
+
+          // if we dragged then fire a command event.
+          if (mDidDrag) {
+              nsCOMPtr<nsIDOMXULElement> element = do_QueryInterface(mOuter->GetContent());
+              element->DoCommand();
+          }
 
           //printf("MouseUp\n");
 
@@ -806,10 +809,10 @@ nsSplitterFrameInner::MouseDown(nsIDOMEvent* aMouseEvent)
       PRInt32 dummy;
       xblService->ResolveTag(content, &dummy, getter_AddRefs(atom));
     } else
-      content->GetTag(getter_AddRefs(atom));
+      atom = content->Tag();
 
     // skip over any splitters
-    if (atom.get() != nsXULAtoms::splitter) { 
+    if (atom != nsXULAtoms::splitter) { 
         nsSize prefSize(0,0);
         nsSize minSize(0,0);
         nsSize maxSize(0,0);
@@ -958,9 +961,9 @@ nsSplitterFrameInner::GetCollapseDirection()
     nsString value;
     if (NS_CONTENT_ATTR_HAS_VALUE == mOuter->mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::collapse, value))
     {
-     if (value.EqualsIgnoreCase("before"))
+     if (value.Equals(NS_LITERAL_STRING("before")))
          return Before;
-     else if (value.EqualsIgnoreCase("after"))
+     else if (value.Equals(NS_LITERAL_STRING("after")))
          return After;
      else 
        return None;

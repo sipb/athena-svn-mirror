@@ -19,6 +19,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Darin Fisher <darin@meer.net>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,19 +40,47 @@
 
 #include "nsICookiePermission.h"
 #include "nsIPermissionManager.h"
+#include "nsIObserver.h"
 #include "nsCOMPtr.h"
+#include "nsInt64.h"
+#include "prlong.h"
+
+class nsIPrefBranch;
 
 class nsCookiePermission : public nsICookiePermission
+                         , public nsIObserver
 {
 public:
-  nsCookiePermission() {}
-  virtual ~nsCookiePermission() {}
-
   NS_DECL_ISUPPORTS
   NS_DECL_NSICOOKIEPERMISSION
+  NS_DECL_NSIOBSERVER
+
+  nsCookiePermission() 
+    : mCookiesAskPermission(PR_FALSE)
+    , mCookiesLifetimeEnabled(PR_FALSE)
+#ifndef MOZ_PHOENIX
+    , mCookiesDisabledForMailNews(PR_TRUE)
+    , mCookiesLifetimeCurrentSession(PR_FALSE)
+    , mCookiesLifetimeSec(LL_MAXINT)
+#endif
+    {}
+  virtual ~nsCookiePermission() {}
+
+  nsresult Init();
+  void     PrefChanged(nsIPrefBranch *, const char *);
 
 private:
   nsCOMPtr<nsIPermissionManager> mPermMgr;
+
+  PRPackedBool mCookiesAskPermission;
+  PRPackedBool mCookiesLifetimeEnabled;        // cookie lifetime limit enabled
+                                               // (for phoenix, this implies limited to session)
+#ifndef MOZ_PHOENIX
+  PRPackedBool mCookiesDisabledForMailNews;
+  PRPackedBool mCookiesLifetimeCurrentSession; // limit cookie lifetime to current session
+  nsInt64      mCookiesLifetimeSec;            // lifetime limit specified in seconds
+#endif
+
 };
 
 // {CE002B28-92B7-4701-8621-CC925866FB87}

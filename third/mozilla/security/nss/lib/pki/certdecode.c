@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: certdecode.c,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 14:25:40 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: certdecode.c,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 16:49:59 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKIT_H
@@ -44,7 +44,7 @@ static const char CVS_ID[] = "@(#) $RCSfile: certdecode.c,v $ $Revision: 1.1.1.3
 #endif /* PKIM_H */
 
 #ifdef NSS_3_4_CODE
-/* This is defined in nss3hack.c */
+/* This is defined in pki3hack.c */
 NSS_EXTERN nssDecodedCert *
 nssDecodedPKIXCertificate_Create (
   NSSArena *arenaOpt,

@@ -83,9 +83,9 @@ NS_IMETHODIMP nsGIFDecoder2::Init(imgILoad *aLoad)
   /* do gif init stuff */
   /* Always decode to 24 bit pixdepth */
   
-  PRBool created = gif_create(&mGIFStruct);
-  NS_ASSERTION(created, "gif_create failed");
-  if (!created)
+  mGIFStruct = (gif_struct *)PR_CALLOC(sizeof(gif_struct));
+  NS_ASSERTION(mGIFStruct, "gif_create failed");
+  if (!mGIFStruct)
     return NS_ERROR_FAILURE;
 
   // Call GIF decoder init routine
@@ -436,7 +436,7 @@ int nsGIFDecoder2::HaveDecodedRow(
       bgColor |= cmap[bgIndex + 2] << 16;
       decoder->mImageFrame->SetBackgroundColor(bgColor);
     }
-    if(decoder->mGIFStruct->local_colormap) {
+    if (decoder->mGIFStruct->is_local_colormap_defined) {
       cmapsize = decoder->mGIFStruct->local_colormap_size;
       cmap = decoder->mGIFStruct->local_colormap;
     }

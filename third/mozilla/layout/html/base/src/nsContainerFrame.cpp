@@ -548,11 +548,38 @@ SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
   // view's contents should be repainted and not bitblt'd
   vm->SetViewBitBltEnabled(aView, !fixedBackground);
 
+  // If the frame has a solid background color, 'background-clip:border',
+  // and it's a kind of frame that paints its background, and rounded borders aren't
+  // clipping the background, then it's opaque.
   PRBool  viewHasTransparentContent =
-    !hasBG ||
-    (bg->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT) ||
-    !aFrame->CanPaintBackground() ||
-    HasNonZeroBorderRadius(aStyleContext);
+    !(hasBG && !(bg->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT) &&
+      bg->mBackgroundClip == NS_STYLE_BG_CLIP_BORDER &&
+      aFrame->CanPaintBackground() &&
+      !HasNonZeroBorderRadius(aStyleContext));
+
+  PRBool drawnOnUniformField = PR_FALSE;
+  if (aStyleContext->GetPseudoType() == nsCSSAnonBoxes::scrolledContent) {
+    // If the nsGfxScrollFrame draws a solid unclipped background
+    // color, and nothing else, then tell the view system that we're
+    // drawn on a uniform field. Note that it's OK if the background
+    // is clipped to the padding area, since the scrollport is within
+    // the borders.
+    nsIFrame* scrollFrame = aFrame->GetParent();
+    while (scrollFrame->GetStyleContext()->GetPseudoType()
+           == nsCSSAnonBoxes::scrolledContent) {
+      scrollFrame = scrollFrame->GetParent();
+    }
+    PRBool scrollFrameIsCanvas;
+    const nsStyleBackground* scrollFrameBG;
+    PRBool scrollFrameHasBG =
+      nsCSSRendering::FindBackground(aPresContext, scrollFrame, &scrollFrameBG,
+                                     &scrollFrameIsCanvas);
+    drawnOnUniformField = scrollFrameHasBG &&
+      !(scrollFrameBG->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT) &&
+      (scrollFrameBG->mBackgroundFlags & NS_STYLE_BG_IMAGE_NONE) &&
+      !HasNonZeroBorderRadius(scrollFrame->GetStyleContext());
+  }
+  aView->SetHasUniformBackground(drawnOnUniformField);
 
   if (isCanvas) {
     nsIView* rootView;
@@ -569,11 +596,9 @@ SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
     nsCOMPtr<nsIDocument> doc;
     shell->GetDocument(getter_AddRefs(doc));
     if (doc) {
-      nsCOMPtr<nsIDocument> parentDoc;
-      doc->GetParentDocument(getter_AddRefs(parentDoc));
-      nsCOMPtr<nsIContent> rootElem;
-      doc->GetRootContent(getter_AddRefs(rootElem));
-      if (!parentDoc && rootElem && rootElem->IsContentOfType(nsIContent::eXUL)) {
+      nsIContent *rootElem = doc->GetRootContent();
+      if (!doc->GetParentDocument() &&
+          rootElem && rootElem->IsContentOfType(nsIContent::eXUL)) {
         // we're XUL at the root of the document hierarchy. Try to make our
         // window translucent.
         // don't proceed unless this is the root view
@@ -739,6 +764,9 @@ nsContainerFrame::SyncFrameViewAfterSizeChange(nsIPresContext*  aPresContext,
                                                nsIView*         aView,
                                                PRUint32         aFlags)
 {
+  NS_ASSERTION(!aStyleContext || aFrame->GetStyleContext() == aStyleContext,
+               "Wrong style context for frame?");
+
   if (!aView) {
     return;
   }
@@ -757,6 +785,9 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
                                           nsIView*         aView,
                                           PRUint32         aFlags)
 {
+  NS_ASSERTION(!aStyleContext || aFrame->GetStyleContext() == aStyleContext,
+               "Wrong style context for frame?");
+
   if (!aView) {
     return;
   }
@@ -767,13 +798,15 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
     aStyleContext = aFrame->GetStyleContext();
   }
     
-  const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
+  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
 
   // Set the view's opacity
-  vm->SetViewOpacity(aView, vis->mOpacity);
+  vm->SetViewOpacity(aView, display->mOpacity);
 
   // Make sure visibility is correct
   if (0 == (aFlags & NS_FRAME_NO_VISIBILITY)) {
+    const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
+
     // See if the view should be hidden or visible
     PRBool  viewIsVisible = PR_TRUE;
 
@@ -803,7 +836,6 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
                           nsViewVisibility_kHide);
   }
 
-  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
   // See if the frame is being relatively positioned or absolutely
   // positioned
   PRBool isTopMostView = display->IsPositioned();
@@ -826,13 +858,11 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
 }
 
 PRBool
-nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
-                                 nsIFrame* aFrame,
-                                 nsStyleContext* aStyleContext)
+nsContainerFrame::FrameNeedsView(nsIFrame* aFrame)
 {
-  const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
-    
-  if (vis->mOpacity != 1.0f) {
+  nsStyleContext* sc = aFrame->GetStyleContext();
+  const nsStyleDisplay* display = sc->GetStyleDisplay();
+  if (display->mOpacity != 1.0f) {
     return PR_TRUE;
   }
 
@@ -840,22 +870,20 @@ nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
   const nsStyleBackground *color;
   PRBool isCanvas;
   PRBool hasBackground = 
-    nsCSSRendering::FindBackground(aPresContext, aFrame, &color, &isCanvas);
+    nsCSSRendering::FindBackground(aFrame->GetPresContext(),
+                                   aFrame, &color, &isCanvas);
   if (hasBackground &&
       NS_STYLE_BG_ATTACHMENT_FIXED == color->mBackgroundAttachment) {
     return PR_TRUE;
   }
     
-  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
-
   if (NS_STYLE_POSITION_RELATIVE == display->mPosition) {
     return PR_TRUE;
   } else if (display->IsAbsolutelyPositioned()) {
     return PR_TRUE;
   } 
 
-  nsCOMPtr<nsIAtom>  pseudoTag = aStyleContext->GetPseudoType();
-  if (pseudoTag == nsCSSAnonBoxes::scrolledContent) {
+  if (sc->GetPseudoType() == nsCSSAnonBoxes::scrolledContent) {
     return PR_TRUE;
   }
 
@@ -869,9 +897,7 @@ nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
     // XXX Check for the frame being a block frame and only force a view
     // in that case, because adding a view for box frames seems to cause
     // problems for XUL...
-    nsCOMPtr<nsIAtom> frameType;
-    
-    aFrame->GetFrameType(getter_AddRefs(frameType));
+    nsIAtom* frameType = aFrame->GetType();
     if ((frameType == nsLayoutAtoms::blockFrame) ||
         (frameType == nsLayoutAtoms::areaFrame)) {
       return PR_TRUE;

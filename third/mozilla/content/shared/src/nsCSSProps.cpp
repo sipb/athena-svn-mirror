@@ -352,6 +352,7 @@ const PRInt32 nsCSSProps::kColorKTable[] = {
   eCSSKeyword_window, nsILookAndFeel::eColor_window,
   eCSSKeyword_windowframe, nsILookAndFeel::eColor_windowframe,
   eCSSKeyword_windowtext, nsILookAndFeel::eColor_windowtext,
+  eCSSKeyword__moz_activehyperlinktext, NS_COLOR_MOZ_ACTIVEHYPERLINKTEXT,
   eCSSKeyword__moz_buttondefault, nsILookAndFeel::eColor__moz_buttondefault,
   eCSSKeyword__moz_field, nsILookAndFeel::eColor__moz_field,
   eCSSKeyword__moz_fieldtext, nsILookAndFeel::eColor__moz_fieldtext,
@@ -625,11 +626,12 @@ const PRInt32 nsCSSProps::kOutlineColorKTable[] = {
 
 const PRInt32 nsCSSProps::kOverflowKTable[] = {
   eCSSKeyword_visible, NS_STYLE_OVERFLOW_VISIBLE,
-  eCSSKeyword_hidden, NS_STYLE_OVERFLOW_HIDDEN,
+  eCSSKeyword_hidden, NS_STYLE_OVERFLOW_SCROLLBARS_NONE,
   eCSSKeyword_scroll, NS_STYLE_OVERFLOW_SCROLL,
   eCSSKeyword__moz_scrollbars_none, NS_STYLE_OVERFLOW_SCROLLBARS_NONE,
   eCSSKeyword__moz_scrollbars_horizontal, NS_STYLE_OVERFLOW_SCROLLBARS_HORIZONTAL,
   eCSSKeyword__moz_scrollbars_vertical, NS_STYLE_OVERFLOW_SCROLLBARS_VERTICAL,
+  eCSSKeyword__moz_hidden_unscrollable, NS_STYLE_OVERFLOW_HIDDEN,
   -1,-1
 };
 
@@ -1210,6 +1212,7 @@ static const PRInt32 kBackgroundYPositionKTable[] = {
 
   case eCSSProperty_pitch_range:
   case eCSSProperty_play_during:
+  case eCSSProperty_play_during_uri:
     break;
 
   case eCSSProperty_play_during_flags:
@@ -1572,6 +1575,12 @@ static const nsCSSProperty gPaddingSubpropTable[] = {
 static const nsCSSProperty gPauseSubpropTable[] = {
   eCSSProperty_pause_after,
   eCSSProperty_pause_before,
+  eCSSProperty_UNKNOWN
+};
+
+static const nsCSSProperty gPlayDuringSubpropTable[] = {
+  eCSSProperty_play_during_uri,
+  eCSSProperty_play_during_flags,
   eCSSProperty_UNKNOWN
 };
 

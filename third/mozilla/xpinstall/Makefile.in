@@ -48,3 +48,15 @@ endif
 
 include $(topsrcdir)/config/rules.mk
 
+packages:
+	$(MAKE) -C packager
+
+installer: packages
+ifeq ($(OS_ARCH),Linux)
+	$(MAKE) -C packager/unix
+endif
+ifeq ($(OS_ARCH),WINNT)
+	$(MAKE) -C wizard/windows/builder
+endif
+
+

@@ -210,8 +210,7 @@ endif # LIBRARY_NAME
 endif # MOZ_MAPINFO
 
 ifdef DEFFILE
-CFLAGS += /DEF:$(DEFFILE)
-CXXFLAGS += /DEF:$(DEFFILE)
+OS_LDFLAGS += /DEF:$(DEFFILE)
 DSO_LDOPTS += /DEF:$(DEFFILE)
 endif
 
@@ -264,9 +263,9 @@ endif
 ALL_TRASH = \
 	$(GARBAGE) $(TARGETS) $(OBJS) $(PROGOBJS) LOGS TAGS a.out \
 	$(HOST_PROGOBJS) $(HOST_OBJS) $(IMPORT_LIBRARY) $(DEF_FILE)\
-	$(EXE_DEF_FILE) so_locations _gen _stubs $(wildcard *.res) \
+	$(EXE_DEF_FILE) so_locations _gen _stubs $(wildcard *.res) $(wildcard *.RES) \
 	$(wildcard *.pdb) $(CODFILE) $(MAPFILE) $(IMPORT_LIBRARY) \
-	$(SHARED_LIBRARY:$(DLL_SUFFIX)=.exp) \
+	$(SHARED_LIBRARY:$(DLL_SUFFIX)=.exp) $(wildcard *.ilk) \
 	$(PROGRAM:$(BIN_SUFFIX)=.exp) $(SIMPLE_PROGRAMS:$(BIN_SUFFIX)=.exp) \
 	$(PROGRAM:$(BIN_SUFFIX)=.lib) $(SIMPLE_PROGRAMS:$(BIN_SUFFIX)=.lib) \
 	$(SIMPLE_PROGRAMS:$(BIN_SUFFIX)=.$(OBJ_SUFFIX)) \
@@ -521,7 +520,7 @@ endif
 ifeq ($(OS_ARCH),WINNT)
 ifdef GNU_CC
 ifndef IS_COMPONENT
-DSO_LDOPTS += -Wl,--export-all-symbols -Wl,--out-implib -Wl,$(IMPORT_LIBRARY)
+DSO_LDOPTS += -Wl,--export-all-symbols -Wl,--out-implib -Wl,$(IMPORT_LIBRARY)  -Wl,-enable-runtime-pseudo-reloc
 endif
 endif
 endif
@@ -974,7 +973,7 @@ ifeq ($(IS_COMPONENT),1)
 ifeq ($(HAS_EXTRAEXPORTS),1)
 	$(FILTER) $(OBJS) $(SHARED_LIBRARY_LIBS) >> $@
 else
-	echo    NSGetModule >> $@
+	echo    _NSGetModule >> $@
 endif
 else
 	$(FILTER) $(OBJS) $(SHARED_LIBRARY_LIBS) >> $@
@@ -997,7 +996,9 @@ SUB_SHLOBJS = $(SUB_LOBJS)
 endif
 
 $(SHARED_LIBRARY): $(OBJS) $(LOBJS) $(DEF_FILE) $(RESFILE) $(SHARED_LIBRARY_LIBS) $(EXTRA_DEPS) Makefile Makefile.in
+ifndef INCREMENTAL_LINKER
 	rm -f $@
+endif
 ifneq ($(MOZ_OS2_TOOLS),VACPP)
 ifeq ($(OS_ARCH),OpenVMS)
 	@if test ! -f $(VMS_SYMVEC_FILE); then \
@@ -1461,7 +1462,7 @@ endif # SDK_BINARY
 
 JAR_MANIFEST := $(srcdir)/jar.mn
 
-ifeq (flat,$(MOZ_CHROME_FILE_FORMAT))
+ifneq (,$(filter flat symlink,$(MOZ_CHROME_FILE_FORMAT)))
 _JAR_REGCHROME_DISABLE_JAR=1
 else
 _JAR_REGCHROME_DISABLE_JAR=0
@@ -1475,23 +1476,19 @@ ifeq ($(OS_TARGET),WIN95)
 _NO_FLOCK=-l
 endif
 
-libs chrome:: $(CHROME_DEPS)
+chrome::
+	$(MAKE) realchrome
+	+$(LOOP_OVER_MOZ_DIRS)
+
+libs realchrome:: $(CHROME_DEPS)
 ifndef NO_DIST_INSTALL
-ifdef MOZ_XUL_APP
 	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-jars.pl $(if $(filter gtk gtk2 xlib,$(MOZ_WIDGET_TOOLKIT)),-x) $(_NO_FLOCK) $(_JAR_AUTO_REG) -f $(MOZ_CHROME_FILE_FORMAT) -d $(DIST)/bin/chrome -s $(srcdir) -z $(ZIP) -p $(MOZILLA_DIR)/config/preprocessor.pl -- "$(DEFINES) $(ACDEFINES)" < $(JAR_MANIFEST); fi
-else
-	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-jars.pl $(if $(filter gtk gtk2 xlib,$(MOZ_WIDGET_TOOLKIT)),-x) $(_NO_FLOCK) $(_JAR_AUTO_REG) -f $(MOZ_CHROME_FILE_FORMAT) -d $(DIST)/bin/chrome -s $(srcdir) -z $(ZIP) < $(JAR_MANIFEST); fi
-endif
 	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-chromelist.pl $(DIST)/bin/chrome $(JAR_MANIFEST) $(_NO_FLOCK); fi
 endif
 
 install:: $(CHROME_DEPS)
 ifndef NO_INSTALL
-ifdef MOZ_XUL_APP
 	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-jars.pl $(if $(filter gtk gtk2 xlib,$(MOZ_WIDGET_TOOLKIT)),-x) $(_NO_FLOCK) $(_JAR_AUTO_REG) -f $(MOZ_CHROME_FILE_FORMAT) -d $(DESTDIR)$(mozappdir)/chrome -s $(srcdir) -z $(ZIP) -p $(MOZILLA_DIR)/config/preprocessor.pl -- "$(DEFINES) $(ACDEFINES)" < $(JAR_MANIFEST); fi
-else
-	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-jars.pl $(if $(filter gtk gtk2 xlib,$(MOZ_WIDGET_TOOLKIT)),-x) $(_NO_FLOCK) $(_JAR_AUTO_REG) -f $(MOZ_CHROME_FILE_FORMAT) -d $(DESTDIR)$(mozappdir)/chrome -s $(srcdir) -z $(ZIP) < $(JAR_MANIFEST); fi
-endif
 	@if test -f $(JAR_MANIFEST); then $(PERL) -I$(MOZILLA_DIR)/config $(MOZILLA_DIR)/config/make-chromelist.pl $(DESTDIR)$(mozappdir)/chrome $(JAR_MANIFEST) $(_NO_FLOCK); fi
 endif
 
@@ -1631,7 +1628,7 @@ endif
 # Fake targets.  Always run these rules, even if a file/directory with that
 # name already exists.
 #
-.PHONY: all all_platforms alltags boot checkout clean clobber clobber_all export install libs makefiles realclean run_viewer run_apprunner $(DIRS) FORCE
+.PHONY: all all_platforms alltags boot checkout chrome realchrome clean clobber clobber_all export install libs makefiles realclean run_viewer run_apprunner $(DIRS) FORCE
 
 # Used as a dependency to force targets to rebuild
 FORCE:

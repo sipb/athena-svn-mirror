@@ -45,7 +45,6 @@
 #include "nsIFontMetricsGTK.h"
 
 #include <X11/Xlib.h>
-#include <X11/Xdefs.h>
 #include <X11/Xft/Xft.h>
 
 class nsFontXft;
@@ -220,12 +219,18 @@ public:
 #endif /* MOZ_MATHML */
 
 private:
+    enum FontMatch {
+        eNoMatch,
+        eBestMatch,
+        eAllMatching
+    };
+
     // local methods
     nsresult    RealizeFont      (void);
     nsresult    CacheFontMetrics (void);
-    nsFontXft  *FindFont         (PRUnichar);
+    nsFontXft  *FindFont         (PRUint32);
     void        SetupFCPattern   (void);
-    void        DoMatch          (void);
+    void        DoMatch          (PRBool aMatchAll);
 
     gint        RawGetWidth      (const PRUnichar* aString,
                                   PRUint32         aLength);
@@ -265,7 +270,7 @@ private:
     // Xft-related items
     nsFontXft           *mWesternFont;
     FcPattern           *mPattern;
-    PRBool               mMatched;
+    FontMatch            mMatchType;
 
     // for rendering unknown fonts
     XftFont                 *mMiniFont;

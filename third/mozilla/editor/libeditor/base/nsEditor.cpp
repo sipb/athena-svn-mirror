@@ -275,8 +275,9 @@ nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot
   // is no way to do that right now.  So we leave it null here and set
   // up a nav html dtd in nsHTMLEditor::Init
 
-  ps->GetViewManager(&mViewManager);
+  mViewManager = ps->GetViewManager();
   if (!mViewManager) {return NS_ERROR_NULL_POINTER;}
+  NS_ADDREF(mViewManager);
 
   mUpdateCount=0;
   InsertTextTxn::ClassInit();
@@ -737,6 +738,9 @@ nsEditor::BeginPlaceHolderTransaction(nsIAtom *aName)
     nsresult res = GetSelection(getter_AddRefs(selection));
     if (NS_FAILED(res)) return res;
     mSelState = new nsSelectionState();
+    if (!mSelState)
+      return NS_ERROR_OUT_OF_MEMORY;
+
     mSelState->SaveSelection(selection);
   }
   mPlaceHolderBatch++;
@@ -953,8 +957,10 @@ nsEditor::GetDocumentCharacterSet(nsACString &characterSet)
   {
     nsCOMPtr<nsIDocument> doc;
     presShell->GetDocument(getter_AddRefs(doc));
-    if (doc)
-      return doc->GetDocumentCharacterSet(characterSet);
+    if (doc) {
+      characterSet = doc->GetDocumentCharacterSet();
+      return NS_OK;
+    }
     rv = NS_ERROR_NULL_POINTER;
   }
 
@@ -972,7 +978,8 @@ nsEditor::SetDocumentCharacterSet(const nsACString& characterSet)
     nsCOMPtr<nsIDocument> doc;
     presShell->GetDocument(getter_AddRefs(doc));
     if (doc) {
-      return doc->SetDocumentCharacterSet(characterSet);
+      doc->SetDocumentCharacterSet(characterSet);
+      return NS_OK;
     }
     rv = NS_ERROR_NULL_POINTER;
   }
@@ -1979,29 +1986,17 @@ GetEditorContentWindow(nsIPresShell *aPresShell, nsIDOMElement *aRoot, nsIWidget
   if (!frame)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresContext> presContext;
-
-  result = aPresShell->GetPresContext(getter_AddRefs(presContext));
-
-  if (NS_FAILED(result))
-    return result;
-
-  if (!presContext)
-    return NS_ERROR_FAILURE;
-
   // Check first to see if this frame contains a view with a native widget.
-
-  nsIView *view = frame->GetViewExternal(presContext);
+  nsIView *view = frame->GetViewExternal();
 
   if (view)
   {
-    result = view->GetWidget(*aResult);
+    *aResult = view->GetWidget();
 
-    if (NS_FAILED(result))
-      return result;
-
-    if (*aResult)
+    if (*aResult) {
+      NS_ADDREF(*aResult);
       return NS_OK;
+    }
   }
 
   // frame doesn't have a view with a widget, so call GetWindow()
@@ -3092,11 +3087,15 @@ nsresult
 nsEditor::GetChildOffset(nsIDOMNode *aChild, nsIDOMNode *aParent, PRInt32 &aOffset)
 {
   NS_ASSERTION((aChild && aParent), "bad args");
-  if (!aChild || !aParent) return NS_ERROR_NULL_POINTER;
+
   nsCOMPtr<nsIContent> content = do_QueryInterface(aParent);
   nsCOMPtr<nsIContent> cChild = do_QueryInterface(aChild);
-  if (!cChild || !content) return NS_ERROR_NULL_POINTER;
-  return content->IndexOf(cChild, aOffset);
+  if (!cChild || !content)
+    return NS_ERROR_NULL_POINTER;
+
+  aOffset = content->IndexOf(cChild);
+
+  return NS_OK;
 }
 
 nsresult 
@@ -3663,9 +3662,7 @@ nsEditor::IsEditable(nsIDOMNode *aNode)
     nsCOMPtr<nsITextContent> text(do_QueryInterface(content));
     if (!text)
       return PR_TRUE;  // not a text node; has a frame
-    nsFrameState fs;
-    resultFrame->GetFrameState(&fs);
-    if ((fs & NS_FRAME_IS_DIRTY)) // we can only trust width data for undirty frames
+    if (resultFrame->GetStateBits() & NS_FRAME_IS_DIRTY) // we can only trust width data for undirty frames
     {
       // In the past a comment said:
       //   "assume all text nodes with dirty frames are editable"
@@ -3674,9 +3671,7 @@ nsEditor::IsEditable(nsIDOMNode *aNode)
       // and uses enhanced logic to find out in the HTML world.
       return IsTextInDirtyFrameVisible(aNode);
     }
-    nsRect rect;
-    resultFrame->GetRect(rect);
-    if (rect.width > 0) 
+    if (resultFrame->GetSize().width > 0) 
       return PR_TRUE;  // text node has width
   }
   return PR_FALSE;  // didn't pass any editability test
@@ -3790,22 +3785,19 @@ NS_IMETHODIMP nsEditor::ResetModificationCount()
 ///////////////////////////////////////////////////////////////////////////
 // GetTag: digs out the atom for the tag of this node
 //                    
-nsCOMPtr<nsIAtom> 
+nsIAtom *
 nsEditor::GetTag(nsIDOMNode *aNode)
 {
-  nsCOMPtr<nsIAtom> atom;
-  
-  if (!aNode) 
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+
+  if (!content) 
   {
-    NS_NOTREACHED("null node passed to nsEditor::GetTag()");
-    return atom;
+    NS_ASSERTION(aNode, "null node passed to nsEditor::Tag()");
+
+    return nsnull;
   }
   
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-  if (content)
-    content->GetTag(getter_AddRefs(atom));
-
-  return atom;
+  return content->Tag();
 }
 
 
@@ -3821,14 +3813,14 @@ nsEditor::GetTagString(nsIDOMNode *aNode, nsAString& outString)
     return NS_ERROR_NULL_POINTER;
   }
   
-  nsCOMPtr<nsIAtom> atom = GetTag(aNode);
-  if (atom)
+  nsIAtom *atom = GetTag(aNode);
+  if (!atom)
   {
-    atom->ToString(outString);
-    return NS_OK;
+    return NS_ERROR_FAILURE;
   }
-  
-  return NS_ERROR_FAILURE;
+
+  atom->ToString(outString);
+  return NS_OK;
 }
 
 
@@ -3844,10 +3836,7 @@ nsEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
     return PR_FALSE;
   }
   
-  nsCOMPtr<nsIAtom> atom1 = GetTag(aNode1);
-  nsCOMPtr<nsIAtom> atom2 = GetTag(aNode2);
-  
-  return (atom1 == atom2);
+  return GetTag(aNode1) == GetTag(aNode2);
 }
 
 
@@ -3893,21 +3882,12 @@ nsEditor::IsTextNode(nsIDOMNode *aNode)
 PRInt32 
 nsEditor::GetIndexOf(nsIDOMNode *parent, nsIDOMNode *child)
 {
-  PRInt32 idx = 0;
-  
-  NS_PRECONDITION(parent, "null parent passed to nsEditor::GetIndexOf");
-  NS_PRECONDITION(parent, "null child passed to nsEditor::GetIndexOf");
   nsCOMPtr<nsIContent> content = do_QueryInterface(parent);
   nsCOMPtr<nsIContent> cChild = do_QueryInterface(child);
   NS_PRECONDITION(content, "null content in nsEditor::GetIndexOf");
   NS_PRECONDITION(cChild, "null content in nsEditor::GetIndexOf");
-  
-  nsresult res = content->IndexOf(cChild, idx);
-  if (NS_FAILED(res)) 
-  {
-    NS_NOTREACHED("could not find child in parent - nsEditor::GetIndexOf");
-  }
-  return idx;
+
+  return content->IndexOf(cChild);
 }
   
 
@@ -3919,17 +3899,13 @@ nsEditor::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
 {
   nsCOMPtr<nsIDOMNode> resultNode;
   
-  if (!aParent) 
+  nsCOMPtr<nsIContent> parent = do_QueryInterface(aParent);
+
+  if (!parent) 
     return resultNode;
-  
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aParent);
-  nsCOMPtr<nsIContent> cChild;
-  NS_PRECONDITION(content, "null content in nsEditor::GetChildAt");
-  
-  if (NS_FAILED(content->ChildAt(aOffset, getter_AddRefs(cChild))))
-    return resultNode;
-  
-  resultNode = do_QueryInterface(cChild);
+
+  resultNode = do_QueryInterface(parent->GetChildAt(aOffset));
+
   return resultNode;
 }
   
@@ -5096,11 +5072,7 @@ nsEditor::CreateHTMLContent(const nsAString& aTag, nsIContent** aContent)
 
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(tempDoc);
 
-  nsCOMPtr<nsINodeInfoManager> nodeInfoManager;
-  rv = doc->GetNodeInfoManager(getter_AddRefs(nodeInfoManager));
-  if (NS_FAILED(rv))
-    return rv;
-
+  nsINodeInfoManager *nodeInfoManager = doc->GetNodeInfoManager();
   NS_ENSURE_TRUE(nodeInfoManager, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsINodeInfo> nodeInfo;

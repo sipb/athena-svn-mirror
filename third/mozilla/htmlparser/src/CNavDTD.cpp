@@ -1122,7 +1122,6 @@ nsresult CNavDTD::DidHandleStartTag(nsIParserNode& aNode,eHTMLTags aChildTag){
         mBodyContext->IncrementCounter(theGrandParentTag,aNode,theNumber);
 
         CTextToken theToken(theNumber);
-        PRInt32 theLineNumber=0;
         nsCParserNode theNode(&theToken, 0 /*stack token*/);
         result=mSink->AddLeaf(theNode);
       }
@@ -2584,6 +2583,17 @@ CNavDTD::IntTagToStringTag(PRInt32 aIntTag) const
                "!!");
 
   return str_ptr;
+}
+
+NS_IMETHODIMP_(nsIAtom *)
+CNavDTD::IntTagToAtom(PRInt32 aIntTag) const
+{
+  nsIAtom *atom = nsHTMLTags::GetAtom((nsHTMLTag)aIntTag);
+
+  NS_ASSERTION(atom, "Bad tag enum passed to CNavDTD::IntTagToAtom()"
+               "!!");
+
+  return atom;
 }
 
 /**

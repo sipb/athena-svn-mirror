@@ -307,6 +307,9 @@ nsImageFrame::Init(nsIPresContext*  aPresContext,
 
   nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(aContent);
   NS_ENSURE_TRUE(imageLoader, NS_ERROR_UNEXPECTED);
+  // XXXbz this call _has_ to happen before we decide we won't be rendering the
+  // image, just in case -- this lets the image loading content know someone
+  // cares.
   imageLoader->AddObserver(mListener);
 
   LoadIcons(aPresContext);
@@ -493,9 +496,8 @@ nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
     else {
       // We are in quirks mode, so we can just check the tag name; no need to
       // check the namespace.
-      nsCOMPtr<nsINodeInfo> nodeInfo;
-      mContent->GetNodeInfo(getter_AddRefs(nodeInfo));
-      
+      nsINodeInfo *nodeInfo = mContent->GetNodeInfo();
+
       if (!mContent->HasAttr(kNameSpaceID_None, nsHTMLAtoms::alt) &&
           nodeInfo &&
           !nodeInfo->Equals(nsHTMLAtoms::object)) {
@@ -939,10 +941,8 @@ nsImageFrame::Reflow(nsIPresContext*          aPresContext,
       ((loadStatus & imgIRequest::STATUS_SIZE_AVAILABLE) || (mState & IMAGE_SIZECONSTRAINED)) &&
       NS_UNCONSTRAINEDSIZE != aReflowState.availableHeight && 
       aMetrics.height > aReflowState.availableHeight) { 
-    nsCOMPtr<nsIAtom> fType;
-    GetFrameType(getter_AddRefs(fType));
     // split an image frame but not an image control frame
-    if (nsLayoutAtoms::imageFrame == fType) {
+    if (nsLayoutAtoms::imageFrame == GetType()) {
       float p2t;
       aPresContext->GetScaledPixelsToTwips(&p2t);
       // our desired height was greater than 0, so to avoid infinite splitting, use 1 pixel as the min
@@ -1211,13 +1211,10 @@ nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
   if (!inner.IsEmpty()) {
     nsIContent* content = GetContent();
     if (content) {
-      nsCOMPtr<nsIAtom> tag;
-      content->GetTag(getter_AddRefs(tag));
-      if (tag) {
-        nsAutoString altText;
-        nsCSSFrameConstructor::GetAlternateTextFor(content, tag, altText);
-        DisplayAltText(aPresContext, aRenderingContext, altText, inner);
-      }
+      nsAutoString altText;
+      nsCSSFrameConstructor::GetAlternateTextFor(content, content->Tag(),
+                                                 altText);
+      DisplayAltText(aPresContext, aRenderingContext, altText, inner);
     }
   }
 
@@ -1256,147 +1253,148 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
       PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
     }
 
-    nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(mContent);
-    NS_ASSERTION(mContent, "Not an image loading content?");
+    if (mComputedSize.width != 0 && mComputedSize.height != 0) {
+      nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(mContent);
+      NS_ASSERTION(mContent, "Not an image loading content?");
 
-    nsCOMPtr<imgIRequest> currentRequest;
-    if (imageLoader) {
-      imageLoader->GetRequest(nsIImageLoadingContent::CURRENT_REQUEST,
-                              getter_AddRefs(currentRequest));
-    }
-      
-    nsCOMPtr<imgIContainer> imgCon;
-
-    PRUint32 loadStatus = imgIRequest::STATUS_ERROR;
-
-    if (currentRequest) {
-      currentRequest->GetImage(getter_AddRefs(imgCon));
-      currentRequest->GetImageStatus(&loadStatus);
-    }
-
-    if (loadStatus & imgIRequest::STATUS_ERROR || !imgCon) {
-      // No image yet, or image load failed. Draw the alt-text and an icon
-      // indicating the status (unless image is blocked, in which case we show nothing)
-
-      PRBool imageBlocked = PR_FALSE;
+      nsCOMPtr<imgIRequest> currentRequest;
       if (imageLoader) {
-        imageLoader->GetImageBlocked(&imageBlocked);
+        imageLoader->GetRequest(nsIImageLoadingContent::CURRENT_REQUEST,
+                                getter_AddRefs(currentRequest));
       }
       
-      if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer &&
-          (!imageBlocked || mIconLoad->mPrefAllImagesBlocked)) {
-        DisplayAltFeedback(aPresContext, aRenderingContext, 
-                           (loadStatus & imgIRequest::STATUS_ERROR)
-                           ? NS_ICON_BROKEN_IMAGE
-                           : NS_ICON_LOADING_IMAGE);
+      nsCOMPtr<imgIContainer> imgCon;
+
+      PRUint32 loadStatus = imgIRequest::STATUS_ERROR;
+
+      if (currentRequest) {
+        currentRequest->GetImage(getter_AddRefs(imgCon));
+        currentRequest->GetImageStatus(&loadStatus);
       }
-    }
-    else {
-      PRBool paintOutline   = PR_FALSE;
-      if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer && imgCon) {
-        // Render the image into our content area (the area inside
-        // the borders and padding)
-        nsRect inner;
-        GetInnerArea(aPresContext, inner);
-        nsRect paintArea(inner);
 
-        nscoord offsetY = 0; 
+      if (loadStatus & imgIRequest::STATUS_ERROR || !imgCon) {
+        // No image yet, or image load failed. Draw the alt-text and an icon
+        // indicating the status (unless image is blocked, in which case we show nothing)
 
-        // if the image is split account for y-offset
-        if (mPrevInFlow) {
-          offsetY = GetContinuationOffset();
+        PRBool imageBlocked = PR_FALSE;
+        if (imageLoader) {
+          imageLoader->GetImageBlocked(&imageBlocked);
+        }
+      
+        if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer &&
+            (!imageBlocked || mIconLoad->mPrefAllImagesBlocked)) {
+          DisplayAltFeedback(aPresContext, aRenderingContext, 
+                             (loadStatus & imgIRequest::STATUS_ERROR)
+                             ? NS_ICON_BROKEN_IMAGE
+                             : NS_ICON_LOADING_IMAGE);
+        }
+      }
+      else {
+        PRBool paintOutline   = PR_FALSE;
+        if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer && imgCon) {
+          // Render the image into our content area (the area inside
+          // the borders and padding)
+          nsRect inner;
+          GetInnerArea(aPresContext, inner);
+          nsRect paintArea(inner);
+
+          nscoord offsetY = 0; 
+
+          // if the image is split account for y-offset
+          if (mPrevInFlow) {
+            offsetY = GetContinuationOffset();
+          }
+
+          if (mIntrinsicSize == mComputedSize) {
+            // Find the actual rect to be painted to in the rendering context
+            paintArea.IntersectRect(paintArea, aDirtyRect);
+
+            // Point to paint to
+            nsPoint p(paintArea.x, paintArea.y);
+          
+            // Rect in the image to paint
+            nsRect r(paintArea.x - inner.x,
+                     paintArea.y - inner.y + offsetY,
+                     paintArea.width,
+                     paintArea.height);
+          
+            aRenderingContext.DrawImage(imgCon, &r, &p);
+          } else {
+            // The computed size is the total size of all the continuations,
+            // including ourselves.  Note that we're basically inverting
+            // mTransform here (would it too much to ask for
+            // nsTransform2D::Invert?), since we need to convert from
+            // rendering context coords to image coords...
+            nsTransform2D trans;
+            trans.SetToScale((float(mIntrinsicSize.width) / float(mComputedSize.width)),
+                             (float(mIntrinsicSize.height) / float(mComputedSize.height)));
+          
+            // XXXbz it looks like we should take
+            // IntersectRect(paintArea, aDirtyRect) here too, but things
+            // get very weird if I do that ....
+            //   paintArea.IntersectRect(paintArea, aDirtyRect);
+          
+            // dirty rect in image our coord size...
+            nsRect r(paintArea.x - inner.x,
+                     paintArea.y - inner.y + offsetY,
+                     paintArea.width,
+                     paintArea.height);
+
+            // Transform that to image coords
+            trans.TransformCoord(&r.x, &r.y, &r.width, &r.height);
+          
+            // dest rect in our coords
+            nsRect d(paintArea.x, paintArea.y,
+                     paintArea.width, paintArea.height);
+          
+            aRenderingContext.DrawScaledImage(imgCon, &r, &d);
+          }
+          paintOutline = PR_TRUE;
         }
 
-        if (mIntrinsicSize == mComputedSize) {
-          // Find the actual rect to be painted to in the rendering context
-          paintArea.IntersectRect(paintArea, aDirtyRect);
-
-          // Point to paint to
-          nsPoint p(paintArea.x, paintArea.y);
-          
-          // Rect in the image to paint
-          nsRect r(paintArea.x - inner.x,
-                   paintArea.y - inner.y + offsetY,
-                   paintArea.width,
-                   paintArea.height);
-          
-          aRenderingContext.DrawImage(imgCon, &r, &p);
-        } else {
-          // The computed size is the total size of all the continuations,
-          // including ourselves.  Note that we're basically inverting
-          // mTransform here (would it too much to ask for
-          // nsTransform2D::Invert?), since we need to convert from
-          // rendering context coords to image coords...
-          nsTransform2D trans;
-          trans.SetToScale((float(mIntrinsicSize.width) / float(mComputedSize.width)),
-                           (float(mIntrinsicSize.height) / float(mComputedSize.height)));
-          
-          // XXXbz it looks like we should take
-          // IntersectRect(paintArea, aDirtyRect) here too, but things
-          // get very weird if I do that ....
-          //   paintArea.IntersectRect(paintArea, aDirtyRect);
-          
-          // dirty rect in image our coord size...
-          nsRect r(paintArea.x - inner.x,
-                   paintArea.y - inner.y + offsetY,
-                   paintArea.width,
-                   paintArea.height);
-
-          // Transform that to image coords
-          trans.TransformCoord(&r.x, &r.y, &r.width, &r.height);
-          
-          // dest rect in our coords
-          nsRect d(paintArea.x, paintArea.y,
-                   paintArea.width, paintArea.height);
-          
-          aRenderingContext.DrawScaledImage(imgCon, &r, &d);
-        }
-        paintOutline = PR_TRUE;
-      }
-
-      nsImageMap* map = GetImageMap(aPresContext);
-      if (nsnull != map) {
-        nsRect inner;
-        GetInnerArea(aPresContext, inner);
-        PRBool clipState;
-        aRenderingContext.SetColor(NS_RGB(0, 0, 0));
-        aRenderingContext.SetLineStyle(nsLineStyle_kDotted);
-        aRenderingContext.PushState();
-        aRenderingContext.Translate(inner.x, inner.y);
-        map->Draw(aPresContext, aRenderingContext);
-        aRenderingContext.PopState(clipState);
-        paintOutline = PR_TRUE;
-      }
-
-      // paint the outline in the overlay layer (or if there is an image map) until the 
-      // general problem of painting it outside the border box is solved.
-      if (paintOutline) {
-        const nsStyleBorder* myBorder = GetStyleBorder();
-        const nsStyleOutline* myOutline = GetStyleOutline();
-        nsRect rect(0, 0, mRect.width, mRect.height);
-        nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
-                                     aDirtyRect, rect, *myBorder,
-                                     *myOutline, mStyleContext, 0);
-      }
-
-#ifdef DEBUG
-      if ((NS_FRAME_PAINT_LAYER_DEBUG == aWhichLayer) &&
-          GetShowFrameBorders()) {
         nsImageMap* map = GetImageMap(aPresContext);
         if (nsnull != map) {
           nsRect inner;
           GetInnerArea(aPresContext, inner);
           PRBool clipState;
           aRenderingContext.SetColor(NS_RGB(0, 0, 0));
+          aRenderingContext.SetLineStyle(nsLineStyle_kDotted);
           aRenderingContext.PushState();
           aRenderingContext.Translate(inner.x, inner.y);
           map->Draw(aPresContext, aRenderingContext);
           aRenderingContext.PopState(clipState);
+          paintOutline = PR_TRUE;
         }
-      }
-#endif
-    }
 
+        // paint the outline in the overlay layer (or if there is an image map) until the 
+        // general problem of painting it outside the border box is solved.
+        if (paintOutline) {
+          const nsStyleBorder* myBorder = GetStyleBorder();
+          const nsStyleOutline* myOutline = GetStyleOutline();
+          nsRect rect(0, 0, mRect.width, mRect.height);
+          nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
+                                       aDirtyRect, rect, *myBorder,
+                                       *myOutline, mStyleContext, 0);
+        }
+
+#ifdef DEBUG
+        if ((NS_FRAME_PAINT_LAYER_DEBUG == aWhichLayer) &&
+            GetShowFrameBorders()) {
+          nsImageMap* map = GetImageMap(aPresContext);
+          if (nsnull != map) {
+            nsRect inner;
+            GetInnerArea(aPresContext, inner);
+            PRBool clipState;
+            aRenderingContext.SetColor(NS_RGB(0, 0, 0));
+            aRenderingContext.PushState();
+            aRenderingContext.Translate(inner.x, inner.y);
+            map->Draw(aPresContext, aRenderingContext);
+            aRenderingContext.PopState(clipState);
+          }
+        }
+#endif
+      }
+    }
   }
   PRInt16 displaySelection = 0;
 
@@ -1431,8 +1429,7 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
           nsCOMPtr<nsIContent> parentContent = mContent->GetParent();
           if (parentContent)
           {
-            PRInt32 thisOffset;
-            parentContent->IndexOf(mContent, thisOffset);
+            PRInt32 thisOffset = parentContent->IndexOf(mContent);
             nsCOMPtr<nsIDOMNode> parentNode = do_QueryInterface(parentContent);
             nsCOMPtr<nsIDOMNode> rangeNode;
             PRInt32 rangeOffset;
@@ -1507,7 +1504,6 @@ nsImageFrame::TriggerLink(nsIPresContext* aPresContext,
   aPresContext->GetLinkHandler(getter_AddRefs(handler));
   if (nsnull != handler) {
     if (aClick) {
-      nsresult proceed = NS_OK;
       // Check that this page is allowed to load this URI.
       // Almost a copy of the similarly named method in nsGenericElement
       nsresult rv;
@@ -1521,17 +1517,18 @@ nsImageFrame::TriggerLink(nsIPresContext* aPresContext,
       if (NS_SUCCEEDED(rv) && ps) 
         rv = ps->GetDocument(getter_AddRefs(doc));
       
-      nsCOMPtr<nsIURI> baseURI;
-      if (NS_SUCCEEDED(rv) && doc) 
-        doc->GetDocumentURL(getter_AddRefs(baseURI));
-      
-      if (NS_SUCCEEDED(rv)) 
-        proceed = securityManager->CheckLoadURI(baseURI, aURI, nsIScriptSecurityManager::STANDARD);
+      if (NS_SUCCEEDED(rv)) {
+        nsIURI *baseURI = doc ? doc->GetDocumentURL() : nsnull;
 
-      // Only pass off the click event if the script security manager
-      // says it's ok.
-      if (NS_SUCCEEDED(proceed))
-        handler->OnLinkClick(mContent, eLinkVerb_Replace, aURI, aTargetSpec.get());
+        rv = securityManager->CheckLoadURI(baseURI, aURI,
+                                           nsIScriptSecurityManager::STANDARD);
+
+        // Only pass off the click event if the script security manager
+        // says it's ok.
+        if (NS_SUCCEEDED(rv))
+          handler->OnLinkClick(mContent, eLinkVerb_Replace, aURI,
+                               aTargetSpec.get());
+      }
     }
     else {
       handler->OnOverLink(mContent, aURI, aTargetSpec.get());
@@ -1693,17 +1690,15 @@ nsImageFrame::HandleEvent(nsIPresContext* aPresContext,
             // element to provide the basis for the destination url.
             nsAutoString src;
             if (GetAnchorHREFAndTarget(src, target)) {
-              nsCOMPtr<nsINodeInfo> nodeInfo;
-              mContent->GetNodeInfo(getter_AddRefs(nodeInfo));
+              nsINodeInfo *nodeInfo = mContent->GetNodeInfo();
               NS_ASSERTION(nodeInfo, "Image content without a nodeinfo?");
               nsIDocument* doc = nodeInfo->GetDocument();
               nsCAutoString charset;
               if (doc) {
-                doc->GetDocumentCharacterSet(charset);
+                charset = doc->GetDocumentCharacterSet();
               } 
               nsCOMPtr<nsIURI> uri;
-              nsresult rv = NS_NewURI(getter_AddRefs(uri), src,
-                                      charset.get(),
+              nsresult rv = NS_NewURI(getter_AddRefs(uri), src, charset.get(),
                                       baseURL);
               NS_ENSURE_SUCCESS(rv, rv);
             
@@ -1792,13 +1787,10 @@ nsImageFrame::AttributeChanged(nsIPresContext* aPresContext,
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsImageFrame::GetFrameType(nsIAtom** aType) const
+nsIAtom*
+nsImageFrame::GetType() const
 {
-  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
-  *aType = nsLayoutAtoms::imageFrame;
-  NS_ADDREF(*aType);
-  return NS_OK;
+  return nsLayoutAtoms::imageFrame;
 }
 
 #ifdef DEBUG
@@ -1888,7 +1880,7 @@ nsImageFrame::GetDocumentCharacterSet(nsACString& aCharset) const
   if (mContent) {
     NS_ASSERTION(mContent->GetDocument(),
                  "Frame still alive after content removed from document!");
-    mContent->GetDocument()->GetDocumentCharacterSet(aCharset);
+    aCharset = mContent->GetDocument()->GetDocumentCharacterSet();
   }
 }
 
@@ -1926,13 +1918,13 @@ nsImageFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGro
   if (!doc)
     return;
 
-  doc->GetDocumentLoadGroup(aLoadGroup);
+  *aLoadGroup = doc->GetDocumentLoadGroup().get();  // already_AddRefed
 }
 
 nsresult nsImageFrame::LoadIcons(nsIPresContext *aPresContext)
 {
-  NS_NAMED_LITERAL_STRING(loadingSrc,"resource:/res/loading-image.gif"); 
-  NS_NAMED_LITERAL_STRING(brokenSrc,"resource:/res/broken-image.gif");
+  NS_NAMED_LITERAL_STRING(loadingSrc,"resource://gre/res/loading-image.gif"); 
+  NS_NAMED_LITERAL_STRING(brokenSrc,"resource://gre/res/broken-image.gif");
 
   PRBool doLoad = PR_FALSE;  // only load icons once...
 

@@ -166,12 +166,6 @@ map_jsj_thread_to_js_context_impl(JSJavaThreadState *jsj_env, void* java_applet_
 #endif
 }
 
-JS_STATIC_DLL_CALLBACK(void) detach_jsjava_thread_state(void* env)
-{
-    JSJavaThreadState *jsj_env = NS_REINTERPRET_CAST(JSJavaThreadState*, env);
-    JSJ_DetachCurrentThreadFromJava(jsj_env);
-}
-
 /*
 ** This callback is called to map a JSContext to a JSJavaThreadState which
 ** is a wrapper around JNIEnv. Hence this callback essentially maps a JSContext
@@ -358,7 +352,7 @@ get_JSPrincipals_from_java_caller_impl(JNIEnv *pJNIEnv, JSContext *pJSContext, v
                     rv = ssm->GetCodebasePrincipal(codebaseURI, getter_AddRefs(principal));
                     if (NS_SUCCEEDED(rv)) {
                         JSPrincipals* jsprincipals;
-                        principal->GetJSPrincipals(&jsprincipals);
+                        principal->GetJSPrincipals(pJSContext, &jsprincipals);
                         return jsprincipals;
                     }
                 }
@@ -368,7 +362,7 @@ get_JSPrincipals_from_java_caller_impl(JNIEnv *pJNIEnv, JSContext *pJSContext, v
         nsCOMPtr<nsIPrincipal> principal = do_QueryInterface(credentials);
         if (principal) {
             JSPrincipals* jsprincipals;
-            principal->GetJSPrincipals(&jsprincipals);
+            principal->GetJSPrincipals(pJSContext, &jsprincipals);
             return jsprincipals;
         }
     }

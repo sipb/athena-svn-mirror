@@ -90,7 +90,6 @@
 #include "nsIXULPrototypeCache.h"
 #endif
 #include "nsIIOService.h"
-#include "nsIResProtocolHandler.h"
 #include "nsLayoutCID.h"
 #include "nsGfxCIID.h"
 #include "nsIBindingManager.h"
@@ -269,22 +268,26 @@ nsChromeRegistry::nsChromeRegistry() : mRDFService(nsnull),
 }
 
 
-static PRBool PR_CALLBACK DatasourceEnumerator(nsHashKey *aKey, void *aData, void* closure)
+static PRBool PR_CALLBACK
+DatasourceEnumerator(nsHashKey *aKey, void *aData, void* closure)
 {
-    if (!closure || !aData)
-        return PR_FALSE;
+  if (!closure || !aData)
+    return PR_FALSE;
 
-    nsIRDFCompositeDataSource* compositeDS = (nsIRDFCompositeDataSource*) closure;
+  nsIRDFCompositeDataSource* compositeDS = (nsIRDFCompositeDataSource*) closure;
 
-    nsCOMPtr<nsISupports> supports = (nsISupports*)aData;
+  nsCOMPtr<nsISupports> supports = (nsISupports*)aData;
 
-    nsCOMPtr<nsIRDFDataSource> dataSource = do_QueryInterface(supports);
-    if (!dataSource)
-        return PR_FALSE;
+  nsCOMPtr<nsIRDFDataSource> dataSource = do_QueryInterface(supports);
+  if (!dataSource)
+    return PR_FALSE;
 
-    nsresult rv = compositeDS->RemoveDataSource(dataSource);
-    NS_ASSERTION(NS_SUCCEEDED(rv), "failed to RemoveDataSource");
-    return PR_TRUE;
+#ifdef DEBUG
+  nsresult rv =
+#endif
+  compositeDS->RemoveDataSource(dataSource);
+  NS_ASSERTION(NS_SUCCEEDED(rv), "failed to RemoveDataSource");
+  return PR_TRUE;
 }
 
 
@@ -1428,9 +1431,7 @@ static void FlushSkinBindingsForWindow(nsIDOMWindowInternal* aWindow)
     return;
 
   // Annihilate all XBL bindings.
-  nsCOMPtr<nsIBindingManager> bindingManager;
-  document->GetBindingManager(getter_AddRefs(bindingManager));
-  bindingManager->FlushSkinBindings();
+  document->GetBindingManager()->FlushSkinBindings();
 }
 
 NS_IMETHODIMP nsChromeRegistry::RefreshSkins()
@@ -1529,49 +1530,47 @@ nsresult nsChromeRegistry::RefreshWindow(nsIDOMWindowInternal* aWindow)
     return NS_OK;
 
   // Deal with the agent sheets first.  Have to do all the style sets by hand.
-  PRInt32 shellCount = document->GetNumberOfShells();
-  for (PRInt32 k = 0; k < shellCount; k++) {
-    nsCOMPtr<nsIPresShell> shell;
-    document->GetShellAt(k, getter_AddRefs(shell));
-    if (shell) {
-      nsCOMPtr<nsIStyleSet> styleSet;
-      rv = shell->GetStyleSet(getter_AddRefs(styleSet));
+  PRUint32 shellCount = document->GetNumberOfShells();
+  for (PRUint32 k = 0; k < shellCount; k++) {
+    nsIPresShell *shell = document->GetShellAt(k);
+
+    nsCOMPtr<nsIStyleSet> styleSet;
+    rv = shell->GetStyleSet(getter_AddRefs(styleSet));
+    if (NS_FAILED(rv)) return rv;
+    if (styleSet) {
+      // Reload only the chrome URL agent style sheets.
+      nsCOMPtr<nsISupportsArray> agents;
+      rv = NS_NewISupportsArray(getter_AddRefs(agents));
       if (NS_FAILED(rv)) return rv;
-      if (styleSet) {
-        // Reload only the chrome URL agent style sheets.
-        nsCOMPtr<nsISupportsArray> agents;
-        rv = NS_NewISupportsArray(getter_AddRefs(agents));
+
+      nsCOMPtr<nsISupportsArray> newAgentSheets;
+      rv = NS_NewISupportsArray(getter_AddRefs(newAgentSheets));
+      if (NS_FAILED(rv)) return rv;
+
+      PRInt32 bc = styleSet->GetNumberOfAgentStyleSheets();
+      for (PRInt32 l = 0; l < bc; l++) {
+        nsCOMPtr<nsIStyleSheet> sheet = getter_AddRefs(styleSet->GetAgentStyleSheetAt(l));
+        nsCOMPtr<nsIURI> uri;
+        rv = sheet->GetURL(*getter_AddRefs(uri));
         if (NS_FAILED(rv)) return rv;
 
-        nsCOMPtr<nsISupportsArray> newAgentSheets;
-        rv = NS_NewISupportsArray(getter_AddRefs(newAgentSheets));
-        if (NS_FAILED(rv)) return rv;
-
-        PRInt32 bc = styleSet->GetNumberOfAgentStyleSheets();
-        for (PRInt32 l = 0; l < bc; l++) {
-          nsCOMPtr<nsIStyleSheet> sheet = getter_AddRefs(styleSet->GetAgentStyleSheetAt(l));
-          nsCOMPtr<nsIURI> uri;
-          rv = sheet->GetURL(*getter_AddRefs(uri));
+        if (IsChromeURI(uri)) {
+          // Reload the sheet.
+          nsCOMPtr<nsICSSStyleSheet> newSheet;
+          rv = LoadStyleSheetWithURL(uri, getter_AddRefs(newSheet));
           if (NS_FAILED(rv)) return rv;
-
-          if (IsChromeURI(uri)) {
-            // Reload the sheet.
-            nsCOMPtr<nsICSSStyleSheet> newSheet;
-            rv = LoadStyleSheetWithURL(uri, getter_AddRefs(newSheet));
-            if (NS_FAILED(rv)) return rv;
-            if (newSheet) {
-              rv = newAgentSheets->AppendElement(newSheet) ? NS_OK : NS_ERROR_FAILURE;
-              if (NS_FAILED(rv)) return rv;
-            }
-          }
-          else {  // Just use the same sheet.
-            rv = newAgentSheets->AppendElement(sheet) ? NS_OK : NS_ERROR_FAILURE;
+          if (newSheet) {
+            rv = newAgentSheets->AppendElement(newSheet) ? NS_OK : NS_ERROR_FAILURE;
             if (NS_FAILED(rv)) return rv;
           }
         }
-
-        styleSet->ReplaceAgentStyleSheets(newAgentSheets);
+        else {  // Just use the same sheet.
+          rv = newAgentSheets->AppendElement(sheet) ? NS_OK : NS_ERROR_FAILURE;
+          if (NS_FAILED(rv)) return rv;
+        }
       }
+
+      styleSet->ReplaceAgentStyleSheets(newAgentSheets);
     }
   }
 
@@ -1586,15 +1585,13 @@ nsresult nsChromeRegistry::RefreshWindow(nsIDOMWindowInternal* aWindow)
   nsCOMArray<nsIStyleSheet> oldSheets;
   nsCOMArray<nsIStyleSheet> newSheets;
 
-  PRInt32 count = 0;
-  document->GetNumberOfStyleSheets(PR_FALSE, &count);
+  PRInt32 count = document->GetNumberOfStyleSheets(PR_FALSE);
 
   // Iterate over the style sheets.
   PRInt32 i;
   for (i = 0; i < count; i++) {
     // Get the style sheet
-    nsCOMPtr<nsIStyleSheet> styleSheet;
-    document->GetStyleSheetAt(i, PR_FALSE, getter_AddRefs(styleSheet));
+    nsIStyleSheet *styleSheet = document->GetStyleSheetAt(i, PR_FALSE);
     
     if (!oldSheets.AppendObject(styleSheet)) {
       return NS_ERROR_OUT_OF_MEMORY;
@@ -3109,10 +3106,9 @@ nsChromeRegistry::GetAgentSheets(nsIDocShell* aDocShell, nsISupportsArray **aRes
         while (token) {
           nsCOMPtr<nsIContent> content(do_QueryInterface(elt));
           nsCOMPtr<nsIDocument> doc = content->GetDocument();
-          nsCOMPtr<nsIURI> docURL;
-          doc->GetDocumentURL(getter_AddRefs(docURL));
           nsCOMPtr<nsIURI> url;
-          rv = NS_NewURI(getter_AddRefs(url), nsDependentCString(token), nsnull, docURL);
+          rv = NS_NewURI(getter_AddRefs(url), nsDependentCString(token),
+                         nsnull, doc->GetDocumentURL());
 
           nsCOMPtr<nsICSSStyleSheet> sheet;
           // The CSSLoader handles all the prototype cache stuff for
@@ -3204,7 +3200,7 @@ nsresult nsChromeRegistry::GetUserSheetURL(PRBool aIsChrome, nsACString & aURL)
 
 nsresult nsChromeRegistry::GetFormSheetURL(nsACString& aURL)
 {
-  aURL = mUseXBLForms ? "chrome://forms/skin/forms.css" : "resource:/res/platform-forms.css";
+  aURL = mUseXBLForms ? "chrome://forms/skin/forms.css" : "resource://gre/res/platform-forms.css";
 
   return NS_OK;
 }
@@ -3451,8 +3447,14 @@ nsChromeRegistry::ProcessNewChromeBuffer(char *aBuffer, PRInt32 aLength)
     *++aBuffer = '\0';
 
     // process the parsed line
-    isProfile = profile.Equals(chromeProfile);
     isSelection = select.Equals(chromeLocType);
+    isProfile = profile.Equals(chromeProfile);
+    if (isProfile && !mProfileInitialized) 
+    { // load profile chrome.rdf only if needed
+      rv = LoadProfileDataSource();
+      if (NS_FAILED(rv)) 
+        return rv;
+    }
 
     if (path.Equals(chromeLocType)) {
       // location is a (full) path. convert it to an URL.

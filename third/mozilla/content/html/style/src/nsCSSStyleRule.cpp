@@ -1032,11 +1032,7 @@ DOMCSSDeclarationImpl::DeclarationChanged()
     sheet->GetOwningDocument(*getter_AddRefs(owningDoc));
   }
 
-  if (owningDoc) {
-    // XXXldb Do we need to bother with this?  We're now doing it in
-    // more places than we used to, but it probably doesn't matter...
-    owningDoc->BeginUpdate();
-  }
+  mozAutoDocUpdate updateBatch(owningDoc, UPDATE_STYLE, PR_TRUE);
 
   nsCOMPtr<nsICSSStyleRule> oldRule = mRule;
   mRule = oldRule->DeclarationChanged(PR_TRUE).get();
@@ -1051,7 +1047,6 @@ DOMCSSDeclarationImpl::DeclarationChanged()
 
   if (owningDoc) {
     owningDoc->StyleRuleChanged(sheet, oldRule, mRule);
-    owningDoc->EndUpdate();
   }
   return NS_OK;
 }

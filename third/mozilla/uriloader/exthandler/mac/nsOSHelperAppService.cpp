@@ -31,6 +31,7 @@
 #include "nsIStringBundle.h"
 #include "nsIPromptService.h"
 #include "nsMemory.h"
+#include "nsCRT.h"
 
 #include "nsIInternetConfigService.h"
 
@@ -65,7 +66,7 @@ NS_IMETHODIMP nsOSHelperAppService::LaunchAppWithTempFile(nsIMIMEInfo * aMIMEInf
       aMIMEInfo->GetDefaultApplicationHandler(getter_AddRefs(application));
 
     if (!application)
-        return NS_ERROR_FAILURE;
+        return NS_ERROR_FILE_NOT_FOUND;
 
     nsCOMPtr<nsILocalFileMac> app = do_QueryInterface(application, &rv);
     if (NS_FAILED(rv)) return rv;
@@ -170,13 +171,54 @@ NS_IMETHODIMP nsOSHelperAppService::LoadUrl(nsIURI * aURL)
   return rv;
 }
 
-nsresult nsOSHelperAppService::GetFileTokenForPath(const PRUnichar * platformAppPath, nsIFile ** aFile)
+nsresult nsOSHelperAppService::GetFileTokenForPath(const PRUnichar * aPlatformAppPath, nsIFile ** aFile)
 {
-  nsCOMPtr<nsILocalFile> localFile (do_CreateInstance(NS_LOCAL_FILE_CONTRACTID));
-  if (!localFile)
-    return NS_ERROR_FAILURE;
-  
-  localFile->InitWithPath(nsDependentString(platformAppPath));
+  nsresult rv;
+  nsCOMPtr<nsILocalFileMac> localFile (do_CreateInstance(NS_LOCAL_FILE_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  CFURLRef pathAsCFURL;
+  CFStringRef pathAsCFString = ::CFStringCreateWithCharacters(NULL,
+                                                              aPlatformAppPath,
+                                                              nsCRT::strlen(aPlatformAppPath));
+  if (!pathAsCFString)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  if (::CFStringGetCharacterAtIndex(pathAsCFString, 0) == '/') {
+    // we have a Posix path
+    pathAsCFURL = ::CFURLCreateWithFileSystemPath(nsnull, pathAsCFString,
+                                                  kCFURLPOSIXPathStyle, PR_FALSE);
+    if (!pathAsCFURL) {
+      ::CFRelease(pathAsCFString);
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+  }
+  else {
+    // if it doesn't start with a / it's not an absolute Posix path
+    // let's check if it's a HFS path left over from old preferences
+
+    // If it starts with a ':' char, it's not an absolute HFS path
+    // so bail for that, and also if it's empty
+    if (::CFStringGetLength(pathAsCFString) == 0 ||
+        ::CFStringGetCharacterAtIndex(pathAsCFString, 0) == ':')
+    {
+      ::CFRelease(pathAsCFString);
+      return NS_ERROR_FILE_UNRECOGNIZED_PATH;
+    }
+
+    pathAsCFURL = ::CFURLCreateWithFileSystemPath(nsnull, pathAsCFString,
+                                                  kCFURLHFSPathStyle, PR_FALSE);
+    if (!pathAsCFURL) {
+      ::CFRelease(pathAsCFString);
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+  }
+
+  rv = localFile->InitWithCFURL(pathAsCFURL);
+  ::CFRelease(pathAsCFString);
+  ::CFRelease(pathAsCFURL);
+  if (NS_FAILED(rv))
+    return rv;
   *aFile = localFile;
   NS_IF_ADDREF(*aFile);
 
@@ -199,9 +241,11 @@ NS_IMETHODIMP nsOSHelperAppService::GetFromTypeAndExtension(const char * aType, 
 
 already_AddRefed<nsIMIMEInfo>
 nsOSHelperAppService::GetMIMEInfoFromOS(const char * aMIMEType,
-                                        const char * aFileExt)
+                                        const char * aFileExt,
+                                        PRBool * aFound)
 {
   nsIMIMEInfo* mimeInfo = nsnull;
+  *aFound = PR_TRUE;
 
   // ask the internet config service to look it up for us...
   nsCOMPtr<nsIInternetConfigService> icService (do_GetService(NS_INTERNETCONFIGSERVICE_CONTRACTID));
@@ -239,6 +283,19 @@ nsOSHelperAppService::GetMIMEInfoFromOS(const char * aMIMEType,
       miByType.swap(mimeInfo);
     else if (miByExt)
       miByExt.swap(mimeInfo);
+  }
+
+  if (!mimeInfo) {
+    *aFound = PR_FALSE;
+    PR_LOG(mLog, PR_LOG_DEBUG, ("Creating new mimeinfo\n"));
+    CallCreateInstance(NS_MIMEINFO_CONTRACTID, &mimeInfo);
+    if (!mimeInfo)
+      return nsnull;
+
+    if (aMIMEType && *aMIMEType)
+      mimeInfo->SetMIMEType(aMIMEType);
+    if (aFileExt && *aFileExt)
+      mimeInfo->AppendExtension(aFileExt);
   }
   
   return mimeInfo;

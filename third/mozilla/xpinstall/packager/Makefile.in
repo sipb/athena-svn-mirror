@@ -38,8 +38,10 @@ MOZ_PKG_FORMAT	= DMG
 else
 ifeq (,$(filter-out OS2 WINNT, $(OS_ARCH)))
 MOZ_PKG_FORMAT  = ZIP
+INSTALLER_DIR   = windows
 else
 MOZ_PKG_FORMAT	= TGZ
+INSTALLER_DIR   = unix
 endif
 endif
 endif # MOZ_PKG_FORMAT
@@ -82,8 +84,8 @@ MAKE_SDK        = tar -cf - $(SDK_PKG_APPNAME)-$(SDK_DIR) | bzip2 -vf > $(SDK)
 endif
 ifeq ($(MOZ_PKG_FORMAT),ZIP)
 PKG_SUFFIX	= .zip
-MAKE_PACKAGE	= $(ZIP) -r9 $(PACKAGE) $(MOZ_PKG_APPNAME)
-MAKE_SDK	= $(ZIP) -r9 $(SDK) $(SDK_PKG_APPNAME)-$(SDK_DIR)
+MAKE_PACKAGE	= $(ZIP) -r9D $(PACKAGE) $(MOZ_PKG_APPNAME)
+MAKE_SDK	= $(ZIP) -r9D $(SDK) $(SDK_PKG_APPNAME)-$(SDK_DIR)
 endif
 ifeq ($(MOZ_PKG_FORMAT),DMG)
 ifndef MOZ_PKG_APPNAME
@@ -256,3 +258,7 @@ endif
 	@echo "Done creating $(PACKAGE)."
 endif
 
+installer:
+ifdef INSTALLER_DIR
+	make -C $(INSTALLER_DIR) installer
+endif

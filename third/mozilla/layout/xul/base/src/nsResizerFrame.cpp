@@ -156,8 +156,7 @@ nsResizerFrame::HandleEvent(nsIPresContext* aPresContext,
 			   aPresContext->GetShell(getter_AddRefs(presShell));
 			   nsCOMPtr<nsIDocument> document;
 			   presShell->GetDocument(getter_AddRefs(document));
-			   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-			   document->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
+			   nsIScriptGlobalObject *scriptGlobalObject = document->GetScriptGlobalObject();
          NS_ENSURE_TRUE(scriptGlobalObject, NS_ERROR_FAILURE);
 
          nsCOMPtr<nsIDocShell> docShell;
@@ -273,35 +272,35 @@ nsResizerFrame::EvalDirection(nsAutoString& aText,eDirection& aDir)
 {
 	PRBool aResult = PR_TRUE;
 	
-	if( aText.EqualsIgnoreCase("topleft") )
+	if( aText.Equals( NS_LITERAL_STRING("topleft") ) )
 	{
 		aDir = topleft;
 	}
-	else if( aText.EqualsIgnoreCase("top") )
+	else if( aText.Equals( NS_LITERAL_STRING("top") ) )
 	{
 		aDir = top;
 	}
-	else if( aText.EqualsIgnoreCase("topright") )
+	else if( aText.Equals( NS_LITERAL_STRING("topright") ) )
 	{
 		aDir = topright;
 	}
-	else if( aText.EqualsIgnoreCase("left") )
+	else if( aText.Equals( NS_LITERAL_STRING("left") ) )
 	{
 		aDir = left;
 	}	
-	else if( aText.EqualsIgnoreCase("right") )
+	else if( aText.Equals( NS_LITERAL_STRING("right") ) )
 	{
 		aDir = right;
 	}
-	else if( aText.EqualsIgnoreCase("bottomleft") )
+	else if( aText.Equals( NS_LITERAL_STRING("bottomleft") ) )
 	{
 		aDir = bottomleft;
 	}
-	else if( aText.EqualsIgnoreCase("bottom") )
+	else if( aText.Equals( NS_LITERAL_STRING("bottom") ) )
 	{
 		aDir = bottom;
 	}
-	else if( aText.EqualsIgnoreCase("bottomright") )
+	else if( aText.Equals( NS_LITERAL_STRING("bottomright") ) )
 	{
 		aDir = bottomright;
 	}

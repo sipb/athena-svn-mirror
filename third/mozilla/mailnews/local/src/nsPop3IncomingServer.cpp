@@ -73,7 +73,8 @@ nsPop3IncomingServer::nsPop3IncomingServer()
         POP3_TOP_UNDEFINED |
         POP3_XTND_XLST_UNDEFINED;
 
-	m_canHaveFilters = PR_TRUE;
+    m_canHaveFilters = PR_TRUE;
+    m_authenticated = PR_FALSE;
 }
 
 nsPop3IncomingServer::~nsPop3IncomingServer()
@@ -96,6 +97,30 @@ NS_IMPL_SERVERPREF_BOOL(nsPop3IncomingServer,
 NS_IMPL_SERVERPREF_BOOL(nsPop3IncomingServer,
                         DotFix,
                         "dot_fix")
+
+NS_IMPL_SERVERPREF_BOOL(nsPop3IncomingServer,
+                        DeleteByAgeFromServer,
+                        "delete_by_age_from_server")
+
+NS_IMPL_SERVERPREF_INT(nsPop3IncomingServer,
+                        NumDaysToLeaveOnServer,
+                        "num_days_to_leave_on_server")
+
+
+//NS_IMPL_GETSET(nsPop3IncomingServer, Authenticated, PRBool, m_authenticated);
+
+NS_IMETHODIMP nsPop3IncomingServer::GetAuthenticated(PRBool *aAuthenticated)
+{
+  NS_ENSURE_ARG_POINTER(aAuthenticated);
+  *aAuthenticated = m_authenticated;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsPop3IncomingServer::SetAuthenticated(PRBool aAuthenticated)
+{
+  m_authenticated = aAuthenticated;
+  return NS_OK;
+}
 
 nsresult 
 nsPop3IncomingServer::GetPop3CapabilityFlags(PRUint32 *flags)
@@ -181,7 +206,7 @@ nsPop3IncomingServer::SetFlagsOnDefaultMailboxes()
 {
     nsresult rv;
     
-    nsCOMPtr<nsIFolder> rootFolder;
+    nsCOMPtr<nsIMsgFolder> rootFolder;
     rv = GetRootFolder(getter_AddRefs(rootFolder));
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -202,55 +227,55 @@ nsPop3IncomingServer::SetFlagsOnDefaultMailboxes()
 
 NS_IMETHODIMP nsPop3IncomingServer::CreateDefaultMailboxes(nsIFileSpec *path)
 {
-	nsresult rv;
-	PRBool exists;
-	if (!path) return NS_ERROR_NULL_POINTER;
-
+  nsresult rv;
+  PRBool exists;
+  if (!path) return NS_ERROR_NULL_POINTER;
+  
   rv = path->AppendRelativeUnixPath("Inbox");
-	if (NS_FAILED(rv)) return rv;
-	rv = path->Exists(&exists);
-	if (!exists) {
-		rv = path->Touch();
-		if (NS_FAILED(rv)) return rv;
-	}
-	
-	rv = path->SetLeafName("Trash");
-	if (NS_FAILED(rv)) return rv;
-	rv = path->Exists(&exists);
-	if (NS_FAILED(rv)) return rv;
-	if (!exists) {
-		rv = path->Touch();
-		if (NS_FAILED(rv)) return rv;
-	}
-
-	rv = path->SetLeafName("Sent");
-	if (NS_FAILED(rv)) return rv;
-	rv = path->Exists(&exists);
-	if (NS_FAILED(rv)) return rv;
-	if (!exists) {
-		rv = path->Touch();
-		if (NS_FAILED(rv)) return rv;
-	}
-	
-	rv = path->SetLeafName("Drafts");
-	if (NS_FAILED(rv)) return rv;
-	rv = path->Exists(&exists);
-	if (NS_FAILED(rv)) return rv;
-	if (!exists) {
-		rv = path->Touch();
-		if (NS_FAILED(rv)) return rv;
-	}
-	
-	rv = path->SetLeafName("Templates");
-	if (NS_FAILED(rv)) return rv;
-	rv = path->Exists(&exists);
-	if (NS_FAILED(rv)) return rv;
-	if (!exists) {
-		rv = path->Touch();
-		if (NS_FAILED(rv)) return rv;
-	}
-	
-	return NS_OK;
+  if (NS_FAILED(rv)) return rv;
+  rv = path->Exists(&exists);
+  if (!exists) {
+    rv = path->Touch();
+    if (NS_FAILED(rv)) return rv;
+  }
+  
+  rv = path->SetLeafName("Trash");
+  if (NS_FAILED(rv)) return rv;
+  rv = path->Exists(&exists);
+  if (NS_FAILED(rv)) return rv;
+  if (!exists) {
+    rv = path->Touch();
+    if (NS_FAILED(rv)) return rv;
+  }
+  
+  rv = path->SetLeafName("Sent");
+  if (NS_FAILED(rv)) return rv;
+  rv = path->Exists(&exists);
+  if (NS_FAILED(rv)) return rv;
+  if (!exists) {
+    rv = path->Touch();
+    if (NS_FAILED(rv)) return rv;
+  }
+  
+  rv = path->SetLeafName("Drafts");
+  if (NS_FAILED(rv)) return rv;
+  rv = path->Exists(&exists);
+  if (NS_FAILED(rv)) return rv;
+  if (!exists) {
+    rv = path->Touch();
+    if (NS_FAILED(rv)) return rv;
+  }
+  
+  rv = path->SetLeafName("Templates");
+  if (NS_FAILED(rv)) return rv;
+  rv = path->Exists(&exists);
+  if (NS_FAILED(rv)) return rv;
+  if (!exists) {
+    rv = path->Touch();
+    if (NS_FAILED(rv)) return rv;
+  }
+  
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsPop3IncomingServer::GetNewMail(nsIMsgWindow *aMsgWindow, nsIUrlListener *aUrlListener, nsIMsgFolder *inbox, nsIURI **aResult)
@@ -301,3 +326,35 @@ nsPop3IncomingServer::GetOfflineSupportLevel(PRInt32 *aSupportLevel)
     return NS_OK;
 }
 
+NS_IMETHODIMP
+nsPop3IncomingServer::SetRunningProtocol(nsIPop3Protocol *aProtocol)
+{
+  NS_ASSERTION(!aProtocol || !m_runningProtocol, "overriding running protocol");
+  m_runningProtocol = aProtocol;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsPop3IncomingServer::GetRunningProtocol(nsIPop3Protocol **aProtocol)
+{
+  NS_ENSURE_ARG_POINTER(aProtocol);
+  NS_IF_ADDREF(*aProtocol = m_runningProtocol);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsPop3IncomingServer::MarkMessagesDeleted(const char **aUIDLArray, PRUint32 aCount, PRBool aDeleteMsgs)
+{
+  if (m_runningProtocol)
+    return m_runningProtocol->MarkMessagesDeleted(aUIDLArray, aCount, aDeleteMsgs);
+
+  nsXPIDLCString hostName;
+  nsXPIDLCString userName;
+  nsCOMPtr<nsIFileSpec> localPath;
+
+  GetLocalPath(getter_AddRefs(localPath));
+  
+  GetHostName(getter_Copies(hostName));
+  GetUsername(getter_Copies(userName));
+  
+  // do it all in one fell swoop
+  return nsPop3Protocol::MarkMsgDeletedForHost(hostName, userName, localPath, aUIDLArray, aCount, aDeleteMsgs);
+}

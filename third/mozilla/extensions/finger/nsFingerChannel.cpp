@@ -17,7 +17,7 @@
  * All Rights Reserved.
  *
  * Contributor(s): 
- *   Brian Ryner <bryner@uiuc.edu>
+ *   Brian Ryner <bryner@brianryner.com>
  *   Darin Fisher <darin@netscape.com>
  */
 
@@ -144,7 +144,7 @@ NS_IMETHODIMP
 nsFingerChannel::Suspend()
 {
     if (mPump)
-        mPump->Suspend();
+        return mPump->Suspend();
     return NS_ERROR_UNEXPECTED;
 }
 
@@ -152,7 +152,7 @@ NS_IMETHODIMP
 nsFingerChannel::Resume()
 {
     if (mPump)
-        mPump->Resume();
+        return mPump->Resume();
     return NS_ERROR_UNEXPECTED;
 }
 
@@ -185,8 +185,7 @@ nsFingerChannel::GetURI(nsIURI* *aURI)
 NS_IMETHODIMP
 nsFingerChannel::Open(nsIInputStream **_retval)
 {
-    NS_NOTREACHED("nsFingerChannel::Open");
-    return NS_ERROR_NOT_IMPLEMENTED;
+    return NS_ImplementChannelOpen(this, _retval);
 }
 
 NS_IMETHODIMP

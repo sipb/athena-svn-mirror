@@ -79,6 +79,9 @@ function CalendarWindow( )
 {
    //setup the preferences
    this.calendarPreferences = new calendarPreferences( this );
+
+   // miniMonth used by preferences
+   this.miniMonth = document.getElementById( "lefthandcalendar" );
    
    //setup the calendars
    this.calendarManager = new calendarManager( this );
@@ -528,6 +531,12 @@ CalendarWindow.prototype.compareNumbers = function calWin_compareNumbers(a, b) {
    return a - b
 }
 
+
+CalendarWindow.prototype.onMouseUpCalendarSplitter = function calWinOnMouseUpCalendarSplitter()
+{
+   //check if calendar-splitter is collapsed
+   this.doResize();
+}
 
 CalendarWindow.prototype.onMouseUpCalendarViewSplitter = function calWinOnMouseUpCalendarViewSplitter()
 {

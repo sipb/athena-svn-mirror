@@ -105,8 +105,7 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
   nsCOMPtr<nsIDocument> doc;
   info->GetDocument(getter_AddRefs(doc));
 
-  nsCOMPtr<nsIURI> docURL;
-  doc->GetDocumentURL(getter_AddRefs(docURL));
+  nsIURI *docURL = doc->GetDocumentURL();
 
   nsCOMPtr<nsIURI> url;
 
@@ -250,8 +249,7 @@ void
 nsXBLResourceLoader::NotifyBoundElements()
 {
   nsCOMPtr<nsIXBLService> xblService(do_GetService("@mozilla.org/xbl;1"));
-  nsCAutoString bindingURI;
-  mBinding->GetBindingURI(bindingURI);
+  nsIURI* bindingURI = mBinding->BindingURI();
 
   PRUint32 eltCount;
   mBoundElements->Count(&eltCount);
@@ -273,7 +271,7 @@ nsXBLResourceLoader::NotifyBoundElements()
         nsCOMPtr<nsIContent> parent = content->GetParent();
         PRInt32 index = 0;
         if (parent)
-          parent->IndexOf(content, index);
+          index = parent->IndexOf(content);
         
         // If |content| is (in addition to having binding |mBinding|)
         // also a descendant of another element with binding |mBinding|,
@@ -284,8 +282,7 @@ nsXBLResourceLoader::NotifyBoundElements()
         // has a primary frame and whether it's in the undisplayed map
         // before sending a ContentInserted notification, or bad things
         // will happen.
-        nsCOMPtr<nsIPresShell> shell;
-        doc->GetShellAt(0, getter_AddRefs(shell));
+        nsIPresShell *shell = doc->GetShellAt(0);
         if (shell) {
           nsIFrame* childFrame;
           shell->GetPrimaryFrameFor(content, &childFrame);

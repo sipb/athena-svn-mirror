@@ -217,8 +217,7 @@ nsAccessibilityService::GetInfo(nsISupports* aFrame, nsIFrame** aRealFrame, nsIW
 {
   NS_ASSERTION(aFrame,"Error -- 1st argument (aFrame) is null!!");
   *aRealFrame = NS_STATIC_CAST(nsIFrame*, aFrame);
-  nsCOMPtr<nsIContent> content;
-  (*aRealFrame)->GetContent(getter_AddRefs(content));
+  nsCOMPtr<nsIContent> content = (*aRealFrame)->GetContent();
   nsCOMPtr<nsIDOMNode> node(do_QueryInterface(content));
   if (!content || !node)
     return NS_ERROR_FAILURE;
@@ -235,10 +234,8 @@ nsAccessibilityService::GetInfo(nsISupports* aFrame, nsIFrame** aRealFrame, nsIW
 #endif
 
   // do_GetWR only works into a |nsCOMPtr| :-(
-  nsCOMPtr<nsIPresShell> tempShell;
-  nsCOMPtr<nsIWeakReference> weakShell;
-  document->GetShellAt(0, getter_AddRefs(tempShell));
-  weakShell = do_GetWeakReference(tempShell);
+  nsCOMPtr<nsIWeakReference> weakShell =
+    do_GetWeakReference(document->GetShellAt(0));
   NS_IF_ADDREF(*aShell = weakShell);
 
   return NS_OK;
@@ -254,8 +251,7 @@ nsAccessibilityService::GetShellFromNode(nsIDOMNode *aNode, nsIWeakReference **a
     return NS_ERROR_INVALID_ARG;
 
   // ---- Get the pres shell ----
-  nsCOMPtr<nsIPresShell> shell;
-  doc->GetShellAt(0, getter_AddRefs(shell));
+  nsIPresShell *shell = doc->GetShellAt(0);
   if (!shell)
     return NS_ERROR_FAILURE;
 
@@ -302,12 +298,11 @@ nsAccessibilityService::CreateRootAccessible(nsIPresShell *aShell,
   nsCOMPtr<nsIDOMNode> rootNode(do_QueryInterface(aDocument));
   NS_ENSURE_TRUE(rootNode, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDocument> parentDoc;
-  aDocument->GetParentDocument(getter_AddRefs(parentDoc));
+  nsIDocument *parentDoc = aDocument->GetParentDocument();
 
-  nsCOMPtr<nsIPresShell> presShell(aShell);
+  nsIPresShell *presShell = aShell;
   if (!presShell) {
-    aDocument->GetShellAt(0, getter_AddRefs(presShell));
+    presShell = aDocument->GetShellAt(0);
   }
   nsCOMPtr<nsIWeakReference> weakShell(do_GetWeakReference(presShell));
 
@@ -764,6 +759,7 @@ nsAccessibilityService::CreateHTMLTextAccessible(nsISupports *aFrame, nsIAccessi
 
   *_retval = nsnull;
 
+#ifndef MOZ_ACCESSIBILITY_ATK
   nsCOMPtr<nsITextContent> textContent(do_QueryInterface(node));
   if (textContent) {
     // If empty text string, don't include in accessible tree
@@ -787,6 +783,29 @@ nsAccessibilityService::CreateHTMLTextAccessible(nsISupports *aFrame, nsIAccessi
   }
     
   *_retval = new nsHTMLTextAccessible(node, weakShell);
+#else
+  // In ATK, we are only creating the accessible object for the text frame that is the FIRST
+  //   text frame in its block.
+  // A depth-first traversal from its nearest parent block frame will produce a frame sequence like
+  //   TTTBTTBTT... (B for block frame, T for text frame), so every T frame which is the immediate 
+  //   sibiling of B frame will be the FIRST text frame.
+  nsIFrame* parentFrame = nsAccessible::GetParentBlockFrame(frame);
+  if (! parentFrame)
+    return NS_ERROR_FAILURE; 
+
+  nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(weakShell));
+  nsCOMPtr<nsIPresContext> presContext;
+  presShell->GetPresContext(getter_AddRefs(presContext));
+  nsIFrame* childFrame = nsnull;
+  parentFrame->FirstChild(presContext, nsnull, &childFrame);
+  PRInt32 index = 0;
+  nsIFrame* firstTextFrame = nsnull;
+  PRBool ret = nsAccessible::FindTextFrame(index, presContext, childFrame, &firstTextFrame, frame);
+  if (!ret || index != 0)
+    return NS_ERROR_FAILURE; 
+
+  *_retval = new nsHTMLBlockAccessible(node, weakShell);
+#endif //MOZ_ACCESSIBILITY_ATK
   if (! *_retval) 
     return NS_ERROR_OUT_OF_MEMORY;
 
@@ -1493,8 +1512,7 @@ NS_IMETHODIMP nsAccessibilityService::GetAccessibleFor(nsIDOMNode *aNode,
   if (!doc)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresShell> presShell;
-  doc->GetShellAt(0, getter_AddRefs(presShell));
+  nsIPresShell *presShell = doc->GetShellAt(0);
   return GetAccessibleInShell(aNode, presShell, aAccessible);
 }
 

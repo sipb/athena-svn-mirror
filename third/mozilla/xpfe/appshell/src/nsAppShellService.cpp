@@ -624,27 +624,24 @@ nsAppShellService::Quit(PRUint32 aFerocity)
       rv = svc->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(queue));
       if (NS_SUCCEEDED(rv)) {
 
-        ExitEvent* event = new ExitEvent;
+        PLEvent* event = new PLEvent;
         if (event) {
-          PL_InitEvent(NS_REINTERPRET_CAST(PLEvent*, event),
-                       nsnull,
+          NS_ADDREF_THIS();
+          PL_InitEvent(event,
+                       this,
                        HandleExitEvent,
                        DestroyExitEvent);
 
-          event->mService = this;
-          NS_ADDREF(event->mService);
-
+          // XXXdf why enter the queue's critical section?
           rv = queue->EnterMonitor();
           if (NS_SUCCEEDED(rv))
-            rv = queue->PostEvent(NS_REINTERPRET_CAST(PLEvent*, event));
+            rv = queue->PostEvent(event);
           if (NS_SUCCEEDED(rv))
             postedExitEvent = PR_TRUE;
           queue->ExitMonitor();
 
-          if (NS_FAILED(rv)) {
-            NS_RELEASE(event->mService);
-            delete event;
-          }
+          if (NS_FAILED(rv))
+            PL_DestroyEvent(event);
         } else
           rv = NS_ERROR_OUT_OF_MEMORY;
       }
@@ -661,13 +658,14 @@ nsAppShellService::Quit(PRUint32 aFerocity)
 void* PR_CALLBACK
 nsAppShellService::HandleExitEvent(PLEvent* aEvent)
 {
-  ExitEvent* event = NS_REINTERPRET_CAST(ExitEvent*, aEvent);
+  nsAppShellService *service =
+    NS_REINTERPRET_CAST(nsAppShellService*, aEvent->owner);
 
   // Tell the appshell to exit
-  event->mService->mAppShell->Exit();
+  service->mAppShell->Exit();
 
   // We're done "shutting down".
-  event->mService->mShuttingDown = PR_FALSE;
+  service->mShuttingDown = PR_FALSE;
 
   return nsnull;
 }
@@ -675,9 +673,10 @@ nsAppShellService::HandleExitEvent(PLEvent* aEvent)
 void PR_CALLBACK
 nsAppShellService::DestroyExitEvent(PLEvent* aEvent)
 {
-  ExitEvent* event = NS_REINTERPRET_CAST(ExitEvent*, aEvent);
-  NS_RELEASE(event->mService);
-  delete event;
+  nsAppShellService *service =
+    NS_REINTERPRET_CAST(nsAppShellService*, aEvent->owner);
+  NS_RELEASE(service);
+  delete aEvent;
 }
 
 /*
@@ -698,13 +697,53 @@ nsAppShellService::CreateTopLevelWindow(nsIXULWindow *aParent,
                                  aChromeMask, aInitialWidth, aInitialHeight,
                                  PR_FALSE, aResult);
 
-  if (NS_SUCCEEDED(rv))
+  if (NS_SUCCEEDED(rv)) {
     // the addref resulting from this is the owning addref for this window
     RegisterTopLevelWindow(*aResult);
+    (*aResult)->SetZLevel(CalculateWindowZLevel(aParent, aChromeMask));
+  }
 
   return rv;
 }
 
+PRUint32
+nsAppShellService::CalculateWindowZLevel(nsIXULWindow *aParent,
+                                         PRUint32      aChromeMask)
+{
+  PRUint32 zLevel;
+
+  zLevel = nsIXULWindow::normalZ;
+  if (aChromeMask & nsIWebBrowserChrome::CHROME_WINDOW_RAISED)
+    zLevel = nsIXULWindow::raisedZ;
+  else if (aChromeMask & nsIWebBrowserChrome::CHROME_WINDOW_LOWERED)
+    zLevel = nsIXULWindow::loweredZ;
+
+#if defined(XP_MAC) || defined(XP_MACOSX)
+  /* Platforms on which modal windows are always application-modal, not
+     window-modal (that's just the Mac, right?) want modal windows to
+     be stacked on top of everyone else.
+
+     On Mac OS X, bind modality to parent window instead of app (ala Mac OS 9)
+  */
+  PRUint32 modalDepMask = nsIWebBrowserChrome::CHROME_MODAL |
+                          nsIWebBrowserChrome::CHROME_DEPENDENT;
+  if (aParent && (aChromeMask & modalDepMask)) {
+    if (::OnMacOSX())
+      aParent->GetZLevel(&zLevel);
+    else
+      zLevel = nsIXULWindow::highestZ;
+  }
+#else
+  /* Platforms with native support for dependent windows (that's everyone
+      but pre-Mac OS X, right?) know how to stack dependent windows. On these
+      platforms, give the dependent window the same level as its parent,
+      so we won't try to override the normal platform behaviour. */
+  if ((aChromeMask & nsIWebBrowserChrome::CHROME_DEPENDENT) && aParent)
+    aParent->GetZLevel(&zLevel);
+#endif
+
+  return zLevel;
+}
 
 /*
  * Just do the window-making part of CreateTopLevelWindow
@@ -720,7 +759,6 @@ nsAppShellService::JustCreateTopWindow(nsIXULWindow *aParent,
   nsresult rv;
   nsWebShellWindow* window;
   PRBool intrinsicallySized;
-  PRUint32 zlevel;
 
   *aResult = nsnull;
   intrinsicallySized = PR_FALSE;
@@ -782,35 +820,6 @@ nsAppShellService::JustCreateTopWindow(nsIXULWindow *aParent,
     }
 #endif
 
-    zlevel = nsIXULWindow::normalZ;
-    if (aChromeMask & nsIWebBrowserChrome::CHROME_WINDOW_RAISED)
-      zlevel = nsIXULWindow::raisedZ;
-    else if (aChromeMask & nsIWebBrowserChrome::CHROME_WINDOW_LOWERED)
-      zlevel = nsIXULWindow::loweredZ;
-
-#if defined(XP_MAC) || defined(XP_MACOSX)
-    /* Platforms on which modal windows are always application-modal, not
-       window-modal (that's just the Mac, right?) want modal windows to
-       be stacked on top of everyone else.
-
-       On Mac OS X, bind modality to parent window instead of app (ala Mac OS 9)
-    */
-    PRUint32 modalDepMask = nsIWebBrowserChrome::CHROME_MODAL |
-                            nsIWebBrowserChrome::CHROME_DEPENDENT;
-    if (aParent && (aChromeMask & modalDepMask))
-    {
-      if (::OnMacOSX()) aParent->GetZlevel(&zlevel);
-      else  zlevel = nsIXULWindow::highestZ;
-    }
-#else
-    /* Platforms with native support for dependent windows (that's everyone
-       but pre-Mac OS X, right?) know how to stack dependent windows. On these
-       platforms, give the dependent window the same level as its parent,
-       so we won't try to override the normal platform behaviour. */
-    if ((aChromeMask & nsIWebBrowserChrome::CHROME_DEPENDENT) && aParent)
-      aParent->GetZlevel(&zlevel);
-#endif
-
     if (aInitialWidth == nsIAppShellService::SIZE_TO_CONTENT ||
         aInitialHeight == nsIAppShellService::SIZE_TO_CONTENT) {
       aInitialWidth = 1;
@@ -820,7 +829,7 @@ nsAppShellService::JustCreateTopWindow(nsIXULWindow *aParent,
     }
 
     rv = window->Initialize(aParent, mAppShell, aUrl,
-                            aShowWindow, aLoadDefaultPage, zlevel,
+                            aShowWindow, aLoadDefaultPage,
                             aInitialWidth, aInitialHeight, aIsHiddenWindow, widgetInitData);
       
     if (NS_SUCCEEDED(rv)) {

@@ -36,14 +36,18 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/* This file implements an XPCOM object which represents a calendar event. It provides access to individual 
+fields of an event and performs calculations concerning its behaviour. The code for the eventDisplay object
+which is an event with display information added to it is included here as well.
+*/
+
 #include <stdlib.h> // for atol
 
 #include "oeICalEventImpl.h"
 #include "nsMemory.h"
 #include "nsCOMPtr.h"
 #include "plbase64.h"
-#include "nsMsgCompCID.h"
-#include "nsAbBaseCID.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIAbCard.h"
 #include "nsIMsgAttachment.h"
 
@@ -2234,7 +2238,7 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
             if( strcmp( tmpstr, "Attachment" ) == 0 ) {
                 nsresult rv;
                 tmpstr = (char *)icalproperty_get_value_as_string( prop );
-                nsCOMPtr<nsIMsgAttachment> attachment = do_CreateInstance(NS_MSGATTACHMENT_CONTRACTID, &rv);
+                nsCOMPtr<nsIMsgAttachment> attachment = do_CreateInstance( "@mozilla.org/messengercompose/attachment;1", &rv);
                 if ( NS_SUCCEEDED(rv) && attachment ) {
                     attachment->SetUrl( tmpstr );
                     AddAttachment( attachment );
@@ -2249,7 +2253,7 @@ bool oeICalEventImpl::ParseIcalComponent( icalcomponent *comp )
         prop = icalcomponent_get_next_property( vevent, ICAL_CONTACT_PROPERTY ) ) {
         tmpstr = icalproperty_get_contact( prop );
         nsresult rv;
-        nsCOMPtr<nsIAbCard> contact = do_CreateInstance(NS_ABCARDPROPERTY_CONTRACTID, &rv);
+        nsCOMPtr<nsIAbCard> contact = do_CreateInstance( "@mozilla.org/addressbook/cardproperty;1", &rv);
         if ( NS_SUCCEEDED(rv) && contact ) {
             nsAutoString email;
             email.AssignWithConversion( tmpstr );

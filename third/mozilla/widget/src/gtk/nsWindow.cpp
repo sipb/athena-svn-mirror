@@ -204,6 +204,9 @@ static void printDepth(int depth) {
 }
 #endif
 
+static int is_parent_ungrab_enter(GdkEventCrossing *aEvent);
+static int is_parent_grab_leave(GdkEventCrossing *aEvent);
+
 
 // This function will check if a button event falls inside of a
 // window's bounds.
@@ -1018,7 +1021,7 @@ NS_IMETHODIMP nsWindow::Invalidate(PRBool aIsSynchronous)
   if (!mSuperWin)
     return NS_OK;
   
-  mUpdateArea->SetTo(mBounds.x, mBounds.y, mBounds.width, mBounds.height);
+  mUpdateArea->SetTo(0, 0, mBounds.width, mBounds.height);
   
   if (aIsSynchronous)
     Update();
@@ -1752,6 +1755,7 @@ nsWindow::InstallFocusOutSignal(GtkWidget * aWidget)
 				GTK_SIGNAL_FUNC(nsWindow::FocusOutSignal));
 }
 
+
 void 
 nsWindow::HandleGDKEvent(GdkEvent *event)
 {
@@ -1775,9 +1779,15 @@ nsWindow::HandleGDKEvent(GdkEvent *event)
     OnButtonReleaseSignal (&event->button);
     break;
   case GDK_ENTER_NOTIFY:
+    if(is_parent_ungrab_enter(&event->crossing))
+      return;
+
     OnEnterNotifySignal (&event->crossing);
     break;
   case GDK_LEAVE_NOTIFY:
+    if(is_parent_grab_leave(&event->crossing))
+      return;
+
     OnLeaveNotifySignal (&event->crossing);
     break;
 
@@ -2585,7 +2595,7 @@ void nsWindow::SetInternalVisibility(PRBool aVisible)
     // later.
     // So, we delay setting the mask until the last moment: when the window
     // is shown.
-    if (mTransparencyBitmap) {
+    if (mIsTranslucent) {
       ApplyTransparencyBitmap();
     }
 
@@ -3893,6 +3903,10 @@ nsWindow::ime_preedit_draw(nsIMEGtkIC *aXIC) {
 
 void
 nsWindow::ime_preedit_done() {
+#ifdef _AIX
+  IMEComposeStart(nsnull);
+  IMEComposeText(nsnull, nsnull, 0, nsnull);
+#endif
   IMEComposeEnd(nsnull);
 }
 
@@ -4320,19 +4334,25 @@ NS_IMETHODIMP nsWindow::GetWindowTranslucency(PRBool& aTranslucent) {
   return NS_OK;
 }
 
+static gchar* CreateDefaultTransparencyBitmap(PRInt32 aWidth, PRInt32 aHeight) {
+  PRInt32 size = ((aWidth+7)/8)*aHeight;
+  gchar* bits = new gchar[size];
+  if (bits) {
+    memset(bits, 255, size);
+  }
+  return bits;
+}
+
 void nsWindow::ResizeTransparencyBitmap(PRInt32 aNewWidth, PRInt32 aNewHeight) {
   if (!mTransparencyBitmap)
     return;
 
-  PRInt32 newSize = ((aNewWidth+7)/8)*aNewHeight;
-  gchar* newBits = new gchar[newSize];
+  gchar* newBits = CreateDefaultTransparencyBitmap(aNewWidth, aNewHeight);
   if (!newBits) {
     delete[] mTransparencyBitmap;
     mTransparencyBitmap = nsnull;
     return;
   }
-  // fill new mask with "opaque", first
-  memset(newBits, 255, newSize);
 
   // Now copy the intersection of the old and new areas into the new mask
   PRInt32 copyWidth = PR_MIN(aNewWidth, mBounds.width);
@@ -4395,6 +4415,12 @@ static void UpdateMaskBits(gchar* aMaskBits, PRInt32 aMaskWidth, PRInt32 aMaskHe
 }
 
 void nsWindow::ApplyTransparencyBitmap() {
+  if (!mTransparencyBitmap) {
+    mTransparencyBitmap = CreateDefaultTransparencyBitmap(mBounds.width, mBounds.height);
+    if (!mTransparencyBitmap)
+      return;
+  }
+
   gtk_widget_reset_shapes(mShell);
   GdkBitmap* maskBitmap = gdk_bitmap_create_from_data(mShell->window,
                                                       mTransparencyBitmap,
@@ -4414,12 +4440,10 @@ NS_IMETHODIMP nsWindow::UpdateTranslucentWindowAlpha(const nsRect& aRect,
 
   NS_ASSERTION(mIsTranslucent, "Window is not transparent");
 
-  if (mTransparencyBitmap == nsnull) {
-    PRInt32 size = ((mBounds.width+7)/8)*mBounds.height;
-    mTransparencyBitmap = new gchar[size];
-    if (mTransparencyBitmap == nsnull)
+  if (!mTransparencyBitmap) {
+    mTransparencyBitmap = CreateDefaultTransparencyBitmap(mBounds.width, mBounds.height);
+    if (!mTransparencyBitmap)
       return NS_ERROR_FAILURE;
-    memset(mTransparencyBitmap, 255, size);
   }
 
   NS_ASSERTION(aRect.x >= 0 && aRect.y >= 0
@@ -4514,4 +4538,22 @@ nsWindow::ClearIconEntry(PLDHashTable* aTable, PLDHashEntryHdr* aHdr)
   if (entry->string)
     free((void*) entry->string);
   PL_DHashClearEntryStub(aTable, aHdr);
+}
+
+/* static */
+int
+is_parent_ungrab_enter(GdkEventCrossing *event)
+{
+  return (GDK_CROSSING_UNGRAB == event->mode) &&
+    ((GDK_NOTIFY_ANCESTOR == event->detail) ||
+     (GDK_NOTIFY_VIRTUAL == event->detail));
+}
+
+/* static */
+int
+is_parent_grab_leave(GdkEventCrossing *event)
+{
+  return (GDK_CROSSING_GRAB == event->mode) &&
+    ((GDK_NOTIFY_ANCESTOR == event->detail) ||
+     (GDK_NOTIFY_VIRTUAL == event->detail));
 }

@@ -154,10 +154,11 @@ STDMETHODIMP nsAccessNodeWrap::get_nodeInfo(
   *aUniqueID = 0; // magic value of 0 means we're on the document node.
   if (content) {
     content->GetNameSpaceID(&nameSpaceID);
-    // This is a unique ID for every content node.
-    // The 3rd party accessibility application can compare this to the childID we return for 
-    // events such as focus events, to correlate back to data nodes in their internal object model.
-    content->GetContentID(NS_STATIC_CAST(PRUint32*, aUniqueID));
+    // This is a unique ID for every content node.  The 3rd party
+    // accessibility application can compare this to the childID we
+    // return for events such as focus events, to correlate back to
+    // data nodes in their internal object model.
+    *aUniqueID = content->ContentID();
   }
   *aNameSpaceID = NS_STATIC_CAST(short, nameSpaceID);
 
@@ -186,16 +187,16 @@ STDMETHODIMP nsAccessNodeWrap::get_attributes(
   if (!content) 
     return E_FAIL;
 
-  PRInt32 numAttribs;
-  content->GetAttrCount(numAttribs);
+  PRUint32 numAttribs = content->GetAttrCount();
+
   if (numAttribs > aMaxAttribs)
     numAttribs = aMaxAttribs;
   *aNumAttribs = NS_STATIC_CAST(unsigned short, numAttribs);
 
-  PRInt32 index, nameSpaceID;
+  PRInt32 nameSpaceID;
   nsCOMPtr<nsIAtom> nameAtom, prefixAtom;
 
-  for (index = 0; index < numAttribs; index++) {
+  for (PRUint32 index = 0; index < numAttribs; index++) {
     aNameSpaceIDs[index] = 0; aAttribValues[index] = aAttribNames[index] = nsnull;
     nsAutoString attributeValue;
     const char *pszAttributeName; 
@@ -270,9 +271,7 @@ NS_IMETHODIMP nsAccessNodeWrap::GetComputedStyleDeclaration(nsIDOMCSSStyleDeclar
     return NS_ERROR_FAILURE;
   }
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  doc->GetScriptGlobalObject(getter_AddRefs(global));
-  nsCOMPtr<nsIDOMViewCSS> viewCSS(do_QueryInterface(global));
+  nsCOMPtr<nsIDOMViewCSS> viewCSS(do_QueryInterface(doc->GetScriptGlobalObject()));
 
   if (!viewCSS)
     return NS_ERROR_FAILURE;   
@@ -486,9 +485,8 @@ nsAccessNodeWrap::get_childAt(unsigned aChildIndex,
   if (!content)
     return E_FAIL;  // Node already shut down
 
-  nsCOMPtr<nsIContent> childContent;
-  content->ChildAt(aChildIndex, getter_AddRefs(childContent));
-  nsCOMPtr<nsIDOMNode> node(do_QueryInterface(childContent));
+  nsCOMPtr<nsIDOMNode> node =
+    do_QueryInterface(content->GetChildAt(aChildIndex));
 
   if (!node)
     return E_FAIL; // No such child

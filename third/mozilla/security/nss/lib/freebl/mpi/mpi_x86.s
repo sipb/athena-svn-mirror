@@ -29,7 +29,7 @@
  # the GPL.  If you do not delete the provisions above, a recipient
  # may use your version of this file under either the MPL or the
  # GPL.
- #  $Id: mpi_x86.s,v 1.1.1.1 2003-02-14 21:20:58 rbasch Exp $
+ #  $Id: mpi_x86.s,v 1.1.1.2 2004-02-27 16:43:27 rbasch Exp $
  #
 
 .text
@@ -340,3 +340,6 @@ s_mpv_div_2dx1d:
        ret    
        nop
   
+ # Magic indicating no need for an executable stack
+.section .note.GNU-stack, "", @progbits
+.previous

@@ -23,9 +23,9 @@
  * Contributor(s):
  *  Ben Goodger <ben@netscape.com>
  *  Joe Hewitt <hewitt@netscape.com>
- *  Jan Varga <varga@utcru.sk>
+ *  Jan Varga <varga@nixcorp.com>
  *  Dean Tessman <dean_tessman@hotmail.com>
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  *  Blake Ross <blaker@netscape.com>
  *  Pierre Chanial <pierrechanial@netscape.net>
  *  Rene Pronk <r.pronk@its.tudelft.nl>
@@ -224,9 +224,10 @@ nsTreeColumn::nsTreeColumn(nsIContent* aColElement, nsIFrame* aFrame)
   mCropStyle = 0;
   nsAutoString crop;
   mColElement->GetAttr(kNameSpaceID_None, nsXULAtoms::crop, crop);
-  if (crop.EqualsIgnoreCase("center"))
+  if (crop.Equals(NS_LITERAL_STRING("center")))
     mCropStyle = 1;
-  else if (crop.EqualsIgnoreCase("left") || crop.EqualsIgnoreCase("start"))
+  else if (crop.Equals(NS_LITERAL_STRING("left")) ||
+           crop.Equals(NS_LITERAL_STRING("start")))
     mCropStyle = 2;
 
   // Cache our text alignment policy.
@@ -243,7 +244,7 @@ nsTreeColumn::nsTreeColumn(nsIContent* aColElement, nsIFrame* aFrame)
   mIsPrimaryCol = PR_FALSE;
   nsAutoString primary;
   mColElement->GetAttr(kNameSpaceID_None, nsXULAtoms::primary, primary);
-  if (primary.EqualsIgnoreCase("true"))
+  if (primary.Equals(NS_LITERAL_STRING("true")))
     mIsPrimaryCol = PR_TRUE;
 
   // Figure out if we're a cycling column (one that doesn't cause a selection
@@ -251,30 +252,28 @@ nsTreeColumn::nsTreeColumn(nsIContent* aColElement, nsIFrame* aFrame)
   mIsCyclerCol = PR_FALSE;
   nsAutoString cycler;
   mColElement->GetAttr(kNameSpaceID_None, nsXULAtoms::cycler, cycler);
-  if (cycler.EqualsIgnoreCase("true"))
+  if (cycler.Equals(NS_LITERAL_STRING("true")))
     mIsCyclerCol = PR_TRUE;
 
   // Figure out our column type. Default type is text.
   mType = eText;
   nsAutoString type;
   mColElement->GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, type);
-  if (type.EqualsIgnoreCase("checkbox"))
+  if (type.Equals(NS_LITERAL_STRING("checkbox")))
     mType = eCheckbox;
-  else if (type.EqualsIgnoreCase("progressmeter"))
+  else if (type.Equals(NS_LITERAL_STRING("progressmeter")))
     mType = eProgressMeter;
 
   // Cache our index.
   mColIndex = -1;
   nsIContent* parent = mColElement->GetParent();
-  PRInt32 count;
-  parent->ChildCount(count);
+  PRUint32 count = parent->GetChildCount();
   PRInt32 j = 0;
-  for (PRInt32 i = 0; i < count; i++) {
-    nsCOMPtr<nsIContent> child;
-    parent->ChildAt(i, getter_AddRefs(child));
-    nsCOMPtr<nsIAtom> tag;
-    child->GetTag(getter_AddRefs(tag));
-    if (tag == nsXULAtoms::treecol) {
+  for (PRUint32 i = 0; i < count; i++) {
+    nsIContent *child = parent->GetChildAt(i);
+    nsINodeInfo *ni = child->GetNodeInfo();
+
+    if (ni && ni->Equals(nsXULAtoms::treecol, kNameSpaceID_XUL)) {
       if (child == mColElement) {
         mColIndex = j;
         break;
@@ -421,11 +420,10 @@ nsTreeBodyFrame::GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize)
 
   nsCOMPtr<nsIContent> baseElement;
   GetBaseElement(getter_AddRefs(baseElement));
-  nsCOMPtr<nsIAtom> tag;
-  baseElement->GetTag(getter_AddRefs(tag));
 
   PRInt32 desiredRows;
-  if (tag == nsHTMLAtoms::select) {
+  if (baseElement->Tag() == nsHTMLAtoms::select &&
+      baseElement->IsContentOfType(nsIContent::eHTML)) {
     aSize.width = CalcMaxRowWidth(aBoxLayoutState);
     nsAutoString size;
     baseElement->GetAttr(kNameSpaceID_None, nsHTMLAtoms::size, size);
@@ -835,7 +833,7 @@ NS_IMETHODIMP nsTreeBodyFrame::GetKeyColumnIndex(PRInt32 *_retval)
   for (nsTreeColumn* currCol = mColumns; currCol; currCol = currCol->GetNext()) {
     // Skip hidden column
     currCol->GetElement()->GetAttr(kNameSpaceID_None, nsHTMLAtoms::hidden, attr);
-    if (attr.EqualsIgnoreCase("true"))
+    if (attr.Equals(NS_LITERAL_STRING("true")))
       continue;
 
     // Skip non-text column
@@ -1065,12 +1063,10 @@ nsresult nsTreeBodyFrame::CheckVerticalOverflow()
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBodyFrame::InvalidateScrollbar()
+void nsTreeBodyFrame::InvalidateScrollbar()
 {
-  if (mUpdateBatchNest)
-    return NS_OK;
-  if (!EnsureScrollbar() || !mView || mRowCount <= mPageCount)
-    return NS_OK;
+  if (mUpdateBatchNest || !mView || mRowCount <= mPageCount || !EnsureScrollbar())
+    return;
 
   nsIContent* scrollbar = mScrollbar->GetContent();
 
@@ -1089,8 +1085,6 @@ NS_IMETHODIMP nsTreeBodyFrame::InvalidateScrollbar()
   nsAutoString pageStr;
   pageStr.AppendInt(pageincrement);
   scrollbar->SetAttr(kNameSpaceID_None, nsXULAtoms::pageincrement, pageStr, PR_TRUE);
-
-  return NS_OK;
 }
 
 
@@ -1645,9 +1639,9 @@ nsTreeBodyFrame::MarkDirtyIfSelect()
 {
   nsCOMPtr<nsIContent> baseElement;
   GetBaseElement(getter_AddRefs(baseElement));
-  nsCOMPtr<nsIAtom> tag;
-  baseElement->GetTag(getter_AddRefs(tag));
-  if (tag == nsHTMLAtoms::select) {
+
+  if (baseElement->Tag() == nsHTMLAtoms::select &&
+      baseElement->IsContentOfType(nsIContent::eHTML)) {
     // If we are an intrinsically sized select widget, we may need to
     // resize, if the widest item was removed or a new item was added.
     // XXX optimize this more
@@ -1884,23 +1878,22 @@ nsTreeBodyFrame::GetImage(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUs
 {
   *aResult = nsnull;
 
-  const nsAString* imagePtr;
   nsAutoString imageSrc;
   mView->GetImageSrc(aRowIndex, aColID, imageSrc);
   if (!aUseContext && !imageSrc.IsEmpty()) {
-    imagePtr = &imageSrc;
     aAllowImageRegions = PR_FALSE;
   }
   else {
     // Obtain the URL from the style context.
     aAllowImageRegions = PR_TRUE;
-    const nsStyleList* myList = aStyleContext->GetStyleList();
-    if (!myList->mListStyleImage.IsEmpty())
-      imagePtr = &myList->mListStyleImage;
-    else
+    nsIURI* uri = aStyleContext->GetStyleList()->mListStyleImage;
+    if (!uri)
       return NS_OK;
+    nsCAutoString spec;
+    uri->GetSpec(spec);
+    CopyUTF8toUTF16(spec, imageSrc);
   }
-  nsStringKey key(*imagePtr);
+  nsStringKey key(imageSrc);
 
   if (mImageCache) {
     // Look the image up in our cache.
@@ -1945,7 +1938,8 @@ nsTreeBodyFrame::GetImage(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUs
     mContent->GetBaseURL(getter_AddRefs(baseURI));
 
     nsCOMPtr<nsIURI> srcURI;
-    NS_NewURI(getter_AddRefs(srcURI), *imagePtr, nsnull, baseURI);
+    // XXX origin charset needed
+    NS_NewURI(getter_AddRefs(srcURI), imageSrc, nsnull, baseURI);
     if (!srcURI)
       return NS_ERROR_FAILURE;
     nsCOMPtr<imgIRequest> imageRequest;
@@ -1955,15 +1949,11 @@ nsTreeBodyFrame::GetImage(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUs
     if (NS_FAILED(rv))
       return rv;
 
-    // Get the documment URI for the referrer.
-    nsCOMPtr<nsIURI> documentURI;
-    doc->GetDocumentURL(getter_AddRefs(documentURI));
-
     mImageGuard = PR_TRUE;
     // XXX: initialDocumentURI is NULL!
-    rv = il->LoadImage(srcURI, nsnull, documentURI, nsnull, imgDecoderObserver,
-                       doc, nsIRequest::LOAD_NORMAL, nsnull, nsnull,
-                       getter_AddRefs(imageRequest));
+    rv = il->LoadImage(srcURI, nsnull, doc->GetDocumentURL(), nsnull,
+                       imgDecoderObserver, doc, nsIRequest::LOAD_NORMAL,
+                       nsnull, nsnull, getter_AddRefs(imageRequest));
     mImageGuard = PR_FALSE;
 
     if (!imageRequest)
@@ -3330,7 +3320,7 @@ nsTreeBodyFrame::ScrollInternal(PRInt32 aRow)
   nscoord rowHeightAsPixels = NSToCoordRound((float)mRowHeight*t2p);
 
   // See if we have a background image.  If we do, then we cannot blit.
-  PRBool hasBackground = !GetStyleBackground()->mBackgroundImage.IsEmpty();
+  PRBool hasBackground = GetStyleBackground()->mBackgroundImage != nsnull;
 
   PRInt32 absDelta = PR_ABS(delta);
   if (hasBackground || absDelta*mRowHeight >= mRect.height)
@@ -3438,17 +3428,16 @@ nsTreeBodyFrame::EnsureColumns()
 
     // Note: this is dependent on the anonymous content for select
     // defined in select.xml
-    nsCOMPtr<nsIAtom> parentTag;
-    parent->GetTag(getter_AddRefs(parentTag));
-    if (parentTag == nsHTMLAtoms::select) {
+    if (parent->Tag() == nsHTMLAtoms::select &&
+        parent->IsContentOfType(nsIContent::eHTML)) {
       // We can avoid crawling the content nodes in this case, since we know
       // that we have a single column, and we know where it's at.
 
       ChildIterator iter, last;
       ChildIterator::Init(parent, &iter, &last);
       nsCOMPtr<nsIContent> treeCols = *iter;
-      nsCOMPtr<nsIContent> column;
-      treeCols->ChildAt(0, getter_AddRefs(column));
+
+      nsIContent *column = treeCols->GetChildAt(0);
 
       nsIFrame* colFrame = nsnull;
       shell->GetPrimaryFrameFor(column, &colFrame);
@@ -3478,9 +3467,9 @@ nsTreeBodyFrame::EnsureColumns()
       nsIFrame* frame = nsnull;
       colBox->GetFrame(&frame);
       nsIContent* content = frame->GetContent();
-      nsCOMPtr<nsIAtom> tag;
-      content->GetTag(getter_AddRefs(tag));
-      if (tag == nsXULAtoms::treecol) {
+
+      nsINodeInfo *ni = content->GetNodeInfo();
+      if (ni && ni->Equals(nsXULAtoms::treecol, kNameSpaceID_XUL)) {
         // Create a new column structure.
         nsTreeColumn* col = new nsTreeColumn(content, frame);
         if (normalDirection) {
@@ -3504,13 +3493,18 @@ nsTreeBodyFrame::EnsureColumns()
 nsresult
 nsTreeBodyFrame::GetBaseElement(nsIContent** aContent)
 {
-  nsCOMPtr<nsIAtom> tag;
-  nsIContent* parent;
-  for (parent = mContent;
-       parent && NS_SUCCEEDED(parent->GetTag(getter_AddRefs(tag)))
-         && tag != nsXULAtoms::tree && tag != nsHTMLAtoms::select;
-       parent = parent->GetParent()) {
-    // Do nothing; we just go up till we hit the right tag or run off the tree
+  nsINodeInfo *ni;
+  nsIContent* parent = mContent;
+  while (parent) {
+    ni = parent->GetNodeInfo();
+
+    if (ni && (ni->Equals(nsXULAtoms::tree, kNameSpaceID_XUL) ||
+               (ni->Equals(nsHTMLAtoms::select) &&
+                parent->IsContentOfType(nsIContent::eHTML)))) {
+      break;
+    }
+
+    parent = parent->GetParent();
   }
 
   NS_IF_ADDREF(*aContent = parent);

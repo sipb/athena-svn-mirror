@@ -74,7 +74,9 @@
 
 static NS_DEFINE_IID(kDocLoaderServiceCID, NS_DOCUMENTLOADER_SERVICE_CID);
 
+
 ////////////////////////////////////////////////////////////////////////////////
+// nsWalletlibService
 
 nsWalletlibService::nsWalletlibService()
 {
@@ -121,15 +123,15 @@ nsWalletlibService::WALLET_RequestToCapture(nsIDOMWindowInternal* aWin,
                                             PRUint32* status)
 {
 
-  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject; 
+  nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   scriptGlobalObject = do_QueryInterface(aWin);
-  nsCOMPtr<nsIDocShell> docShell; 
-  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell)); 
+  nsCOMPtr<nsIDocShell> docShell;
+  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
 
   nsCOMPtr<nsIPresShell> presShell;
-  if(docShell) 
+  if(docShell)
    docShell->GetPresShell(getter_AddRefs(presShell));
-  
+
   ::WLLT_RequestToCapture(presShell, aWin, status);
   return NS_OK;
 }
@@ -151,9 +153,9 @@ nsWalletlibService::WALLET_Prefill(PRBool quick,
 {
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   scriptGlobalObject = do_QueryInterface(aWin);
-  nsCOMPtr<nsIDocShell> docShell; 
-  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell)); 
-  
+  nsCOMPtr<nsIDocShell> docShell;
+  scriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
+
   nsCOMPtr<nsIPresShell> presShell;
   if(docShell)
     docShell->GetPresShell(getter_AddRefs(presShell));
@@ -163,11 +165,6 @@ nsWalletlibService::WALLET_Prefill(PRBool quick,
 
 NS_IMETHODIMP nsWalletlibService::WALLET_PrefillReturn(nsAutoString results){
   ::WLLT_PrefillReturn(results);
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsWalletlibService::WALLET_FetchFromNetCenter(){
-  ::WLLT_FetchFromNetCenter();
   return NS_OK;
 }
 
@@ -192,7 +189,6 @@ NS_IMETHODIMP nsWalletlibService::SI_StorePassword(const char *key, const PRUnic
   return NS_OK;
 }
 
-
 NS_IMETHODIMP nsWalletlibService::WALLET_GetNopreviewListForViewer(nsAutoString& aNopreviewList){
   ::WLLT_GetNopreviewListForViewer(aNopreviewList);
   return NS_OK;
@@ -213,7 +209,7 @@ NS_IMETHODIMP nsWalletlibService::SI_SignonViewerReturn(nsAutoString results){
   return NS_OK;
 }
 
-NS_IMETHODIMP nsWalletlibService::Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *someData) 
+NS_IMETHODIMP nsWalletlibService::Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *someData)
 {
   if (!nsCRT::strcmp(aTopic, "profile-before-change")) {
     PRBool status;
@@ -246,7 +242,7 @@ NS_IMETHODIMP nsWalletlibService::Observe(nsISupports *aSubject, const char *aTo
   return NS_OK;
 }
 
-#define CRLF "\015\012"   
+#define CRLF "\015\012"
 NS_IMETHODIMP nsWalletlibService::Notify(nsIContent* formNode, nsIDOMWindowInternal* window, nsIURI* actionURL, PRBool* cancelSubmit)
 {
   if (!formNode) {
@@ -286,10 +282,10 @@ nsWalletlibService::UnregisterProc(nsIComponentManager *aCompMgr,
   nsresult rv;
   nsCOMPtr<nsICategoryManager> catman = do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
   if (NS_FAILED(rv)) return rv;
-  
+
   catman->DeleteCategoryEntry(NS_FIRST_FORMSUBMIT_CATEGORY,
                               NS_WALLETSERVICE_CONTRACTID, PR_TRUE);
-  
+
   catman->DeleteCategoryEntry(NS_PASSWORDMANAGER_CATEGORY,
                               NS_WALLETSERVICE_CONTRACTID, PR_TRUE);
 
@@ -314,11 +310,11 @@ ExpireMasterPasswordPrefChanged(const char * newpref, void * data) {
   return 0;
 }
 
-nsresult nsWalletlibService::Init() 
+nsresult nsWalletlibService::Init()
 {
   nsresult rv;
 
-  nsCOMPtr<nsIObserverService> svc = 
+  nsCOMPtr<nsIObserverService> svc =
            do_GetService("@mozilla.org/observer-service;1", &rv);
   if (NS_SUCCEEDED(rv) && svc) {
     // Register as an observer of form submission
@@ -331,9 +327,9 @@ nsresult nsWalletlibService::Init()
   }
   else
     NS_ASSERTION(PR_FALSE, "Could not get nsIObserverService");
-    
-  // Get the global document loader service...  
-  nsCOMPtr<nsIDocumentLoader> docLoaderService = 
+
+  // Get the global document loader service...
+  nsCOMPtr<nsIDocumentLoader> docLoaderService =
            do_GetService(kDocLoaderServiceCID, &rv);
   if (NS_SUCCEEDED(rv) && docLoaderService) {
     nsCOMPtr<nsIWebProgress> progress(do_QueryInterface(docLoaderService, &rv));
@@ -343,7 +339,7 @@ nsresult nsWalletlibService::Init()
   }
   else
     NS_ASSERTION(PR_FALSE, "Could not get nsIDocumentLoader");
-  
+
   /* initialize the expire-master-password feature */
   nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
   if (NS_SUCCEEDED(rv)) {
@@ -356,8 +352,8 @@ nsresult nsWalletlibService::Init()
 
 // nsIWebProgressListener implementation
 NS_IMETHODIMP
-nsWalletlibService::OnStateChange(nsIWebProgress* aWebProgress, 
-                                  nsIRequest *aRequest, 
+nsWalletlibService::OnStateChange(nsIWebProgress* aWebProgress,
+                                  nsIRequest *aRequest,
                                   PRUint32 progressStateFlags,
                                   nsresult aStatus)
 {
@@ -384,15 +380,14 @@ nsWalletlibService::OnStateChange(nsIWebProgress* aWebProgress,
           // pre-fill.
           nsCOMPtr<nsIDOMHTMLDocument> htmldoc(do_QueryInterface(domDoc, &rv));
           if (NS_FAILED(rv)) return NS_OK;
-              
+
           nsCOMPtr<nsIDocument> doc(do_QueryInterface(htmldoc, &rv));
           if (NS_FAILED(rv)) {
             NS_ASSERTION(0, "no document available");
             return NS_OK;
           }
-  
-          nsCOMPtr<nsIURI> uri;
-          doc->GetDocumentURL(getter_AddRefs(uri));
+
+          nsIURI *uri = doc->GetDocumentURL();
           if (!uri) {
             NS_ASSERTION(0, "no URI available");
             return NS_OK;
@@ -414,7 +409,7 @@ nsWalletlibService::OnStateChange(nsIWebProgress* aWebProgress,
                 nsCOMPtr<nsIDOMHTMLCollection> elements;
                 rv = formElement->GetElements(getter_AddRefs(elements));
                 if ((NS_SUCCEEDED(rv)) && (nsnull != elements)) {
-                  /* got to the form elements at long last */ 
+                  /* got to the form elements at long last */
                   PRUint32 numElements;
                   elements->GetLength(&numElements);
                   /* get number of passwords on form */
@@ -523,7 +518,6 @@ nsWalletlibService::OnLocationChange(nsIWebProgress* aWebProgress,
     return NS_OK;
 }
 
-
 NS_IMETHODIMP
 nsWalletlibService::OnStatusChange(nsIWebProgress* aWebProgress,
                                    nsIRequest* aRequest,
@@ -534,21 +528,13 @@ nsWalletlibService::OnStatusChange(nsIWebProgress* aWebProgress,
     return NS_OK;
 }
 
-
 NS_IMETHODIMP
-nsWalletlibService::OnSecurityChange(nsIWebProgress *aWebProgress, 
-                                     nsIRequest *aRequest, 
+nsWalletlibService::OnSecurityChange(nsIWebProgress *aWebProgress,
+                                     nsIRequest *aRequest,
                                      PRUint32 state)
 {
     NS_NOTREACHED("notification excluded in AddProgressListener(...)");
     return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsWalletlibService::GetPassword(PRUnichar **password)
-{
-  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
@@ -589,9 +575,8 @@ nsSingleSignOnPrompt::Init()
   return NS_OK;
 }
 
-
 NS_IMETHODIMP
-nsSingleSignOnPrompt::Prompt(const PRUnichar *dialogTitle, const PRUnichar *text, 
+nsSingleSignOnPrompt::Prompt(const PRUnichar *dialogTitle, const PRUnichar *text,
                              const PRUnichar *passwordRealm, PRUint32 savePassword,
                              const PRUnichar *defaultText, PRUnichar **result, PRBool *_retval)
 {
@@ -603,8 +588,8 @@ nsSingleSignOnPrompt::Prompt(const PRUnichar *dialogTitle, const PRUnichar *text
 }
 
 NS_IMETHODIMP
-nsSingleSignOnPrompt::PromptUsernameAndPassword(const PRUnichar *dialogTitle, const PRUnichar *text, 
-                                                const PRUnichar *passwordRealm, PRUint32 savePassword, 
+nsSingleSignOnPrompt::PromptUsernameAndPassword(const PRUnichar *dialogTitle, const PRUnichar *text,
+                                                const PRUnichar *passwordRealm, PRUint32 savePassword,
                                                 PRUnichar **user, PRUnichar **pwd, PRBool *_retval)
 {
   nsresult rv;
@@ -615,8 +600,8 @@ nsSingleSignOnPrompt::PromptUsernameAndPassword(const PRUnichar *dialogTitle, co
 }
 
 NS_IMETHODIMP
-nsSingleSignOnPrompt::PromptPassword(const PRUnichar *dialogTitle, const PRUnichar *text, 
-                                     const PRUnichar *passwordRealm, PRUint32 savePassword, 
+nsSingleSignOnPrompt::PromptPassword(const PRUnichar *dialogTitle, const PRUnichar *text,
+                                     const PRUnichar *passwordRealm, PRUint32 savePassword,
                                      PRUnichar **pwd, PRBool *_retval)
 {
   nsresult rv;
@@ -625,7 +610,7 @@ nsSingleSignOnPrompt::PromptPassword(const PRUnichar *dialogTitle, const PRUnich
     NS_ConvertUCS2toUTF8(passwordRealm).get(), mPrompt, _retval, savePassword);
   return rv;
 }
-  
+
 // nsISingleSignOnPrompt methods:
 
 NS_IMETHODIMP

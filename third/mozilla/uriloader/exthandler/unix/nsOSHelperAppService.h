@@ -44,7 +44,9 @@ public:
   NS_IMETHOD LaunchAppWithTempFile(nsIMIMEInfo *aMIMEInfo, nsIFile * aTempFile);
 
   // method overrides for mime.types and mime.info look up steps
-  already_AddRefed<nsIMIMEInfo> GetMIMEInfoFromOS(const char *aMimeType, const char *aFileExt);
+  already_AddRefed<nsIMIMEInfo> GetMIMEInfoFromOS(const char *aMimeType,
+                                                  const char *aFileExt,
+                                                  PRBool     *aFound);
 
   // override nsIExternalProtocolService methods
   NS_IMETHOD ExternalProtocolHandlerExists(const char * aProtocolScheme, PRBool * aHandlerExists);
@@ -71,9 +73,10 @@ private:
                                   const char* aEnvVarName,
                                   PRUnichar** aFileLocation);
   static nsresult LookUpTypeAndDescription(const nsAString& aFileExtension,
-                                    nsAString& aMajorType,
-                                    nsAString& aMinorType,
-                                    nsAString& aDescription);
+                                           nsAString& aMajorType,
+                                           nsAString& aMinorType,
+                                           nsAString& aDescription,
+                                           PRBool aUserData);
   static nsresult CreateInputStream(const nsAString& aFilename,
                                     nsIFileInputStream ** aFileInputStream,
                                     nsILineInputStream ** aLineInputStream,
@@ -128,7 +131,8 @@ private:
                                                 nsHashtable& aTypeOptions,
                                                 nsAString& aHandler,
                                                 nsAString& aDescription,
-                                                nsAString& aMozillaFlags);
+                                                nsAString& aMozillaFlags,
+                                                PRBool aUserData);
   
   static nsresult GetHandlerAndDescriptionFromMailcapFile(const nsAString& aFilename,
                                                           const nsAString& aMajorType,
@@ -137,6 +141,8 @@ private:
                                                           nsAString& aHandler,
                                                           nsAString& aDescription,
                                                           nsAString& aMozillaFlags);
+
+  nsresult GetHandlerAppFromPrefs(const char* aScheme, nsIFile** aApp);
 };
 
 #endif // nsOSHelperAppService_h__

@@ -1,36 +1,41 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.  Portions created by Netscape are
- * Copyright (C) 1998 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
- * Alternatively, the contents of this file may be used under the
- * terms of the GNU Public License (the "GPL"), in which case the
- * provisions of the GPL are applicable instead of those above.
- * If you wish to allow use of your version of this file only
- * under the terms of the GPL and not to allow others to use your
- * version of this file under the NPL, indicate your decision by
- * deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL.  If you do not delete
- * the provisions above, a recipient may use your version of this
- * file under either the NPL or the GPL.
- */
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * JS parser.
@@ -117,6 +122,16 @@ static JSParser PrimaryExpr;
     JS_BEGIN_MACRO                                                            \
         if (js_GetToken(cx, ts) != tt) {                                      \
             js_ReportCompileErrorNumber(cx, ts, NULL, JSREPORT_ERROR, errno); \
+            return NULL;                                                      \
+        }                                                                     \
+    JS_END_MACRO
+
+#define CHECK_RECURSION()                                                     \
+    JS_BEGIN_MACRO                                                            \
+        int stackDummy;                                                       \
+        if (!JS_CHECK_STACK_SIZE(cx, stackDummy)) {                           \
+            js_ReportCompileErrorNumber(cx, ts, NULL, JSREPORT_ERROR,         \
+                                        JSMSG_OVER_RECURSED);                 \
             return NULL;                                                      \
         }                                                                     \
     JS_END_MACRO
@@ -638,13 +653,17 @@ FunctionBody(JSContext *cx, JSTokenStream *ts, JSFunction *fun,
 JSBool
 js_CompileFunctionBody(JSContext *cx, JSTokenStream *ts, JSFunction *fun)
 {
+    JSArenaPool codePool, notePool;
     JSCodeGenerator funcg;
     JSStackFrame *fp, frame;
     JSObject *funobj;
     JSParseNode *pn;
     JSBool ok;
 
-    if (!js_InitCodeGenerator(cx, &funcg, ts->filename, ts->lineno,
+    JS_InitArenaPool(&codePool, "code", 1024, sizeof(jsbytecode));
+    JS_InitArenaPool(&notePool, "note", 1024, sizeof(jssrcnote));
+    if (!js_InitCodeGenerator(cx, &funcg, &codePool, &notePool,
+                              ts->filename, ts->lineno,
                               ts->principals)) {
         return JS_FALSE;
     }
@@ -687,6 +706,8 @@ js_CompileFunctionBody(JSContext *cx, JSTokenStream *ts, JSFunction *fun)
     cx->fp = fp;
     JS_UNKEEP_ATOMS(cx->runtime);
     js_FinishCodeGenerator(cx, &funcg);
+    JS_FinishArenaPool(&codePool);
+    JS_FinishArenaPool(&notePool);
     return ok;
 }
 
@@ -957,6 +978,8 @@ Statements(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
 {
     JSParseNode *pn, *pn2;
     JSTokenType tt;
+
+    CHECK_RECURSION();
 
     pn = NewParseNode(cx, &CURRENT_TOKEN(ts), PN_LIST, tc);
     if (!pn)
@@ -1361,7 +1384,7 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
             pn4->pn_type = TOK_LC;
             PN_INIT_LIST(pn4);
             while ((tt = js_PeekToken(cx, ts)) != TOK_RC &&
-                    tt != TOK_CASE && tt != TOK_DEFAULT) {
+                   tt != TOK_CASE && tt != TOK_DEFAULT) {
                 if (tt == TOK_ERROR)
                     return NULL;
                 pn5 = Statement(cx, ts, tc);
@@ -1483,8 +1506,15 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
                 return NULL;
             }
 
+            if (pn1->pn_type == TOK_VAR) {
+                /* Tell js_EmitTree(TOK_VAR) to generate a final POP. */
+                pn1->pn_extra = JS_TRUE;
+                pn2 = pn1->pn_head;
+            } else {
+                pn2 = pn1;
+            }
+
             /* Beware 'for (arguments in ...)' with or without a 'var'. */
-            pn2 = (pn1->pn_type == TOK_VAR) ? pn1->pn_head : pn1;
             if (pn2->pn_type == TOK_NAME &&
                 pn2->pn_atom == cx->runtime->atomState.argumentsAtom) {
                 tc->flags |= TCF_FUN_HEAVYWEIGHT;
@@ -2207,6 +2237,8 @@ AssignExpr(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
     JSTokenType tt;
     JSOp op;
 
+    CHECK_RECURSION();
+
     pn = CondExpr(cx, ts, tc);
     if (!pn)
         return NULL;
@@ -2645,6 +2677,8 @@ MemberExpr(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc,
     JSParseNode *pn, *pn2, *pn3;
     JSTokenType tt;
 
+    CHECK_RECURSION();
+
     /* Check for new expression first. */
     ts->flags |= TSF_REGEXP;
     tt = js_PeekToken(cx, ts);
@@ -2771,6 +2805,8 @@ PrimaryExpr(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
      * should set notsharp.
      */
 #endif
+
+    CHECK_RECURSION();
 
     ts->flags |= TSF_REGEXP;
     tt = js_GetToken(cx, ts);
@@ -3213,7 +3249,7 @@ FoldBinaryNumeric(JSContext *cx, JSOp op, JSParseNode *pn1, JSParseNode *pn2,
 
       case JSOP_DIV:
         if (d2 == 0) {
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
             /* XXX MSVC miscompiles such that (NaN == 0) */
             if (JSDOUBLE_IS_NaN(d2))
                 d = *cx->runtime->jsNaN;
@@ -3234,7 +3270,7 @@ FoldBinaryNumeric(JSContext *cx, JSOp op, JSParseNode *pn1, JSParseNode *pn2,
         if (d2 == 0) {
             d = *cx->runtime->jsNaN;
         } else {
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN)
           /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
           if (!(JSDOUBLE_IS_FINITE(d) && JSDOUBLE_IS_INFINITE(d2)))
 #endif
@@ -3261,6 +3297,12 @@ JSBool
 js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
 {
     JSParseNode *pn1 = NULL, *pn2 = NULL, *pn3 = NULL;
+    int stackDummy;
+
+    if (!JS_CHECK_STACK_SIZE(cx, stackDummy)) {
+        JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL, JSMSG_OVER_RECURSED);
+        return JS_FALSE;
+    }
 
     switch (pn->pn_arity) {
       case PN_FUNC:

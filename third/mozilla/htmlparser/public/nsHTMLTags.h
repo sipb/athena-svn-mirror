@@ -41,6 +41,8 @@
 
 #include "nsAString.h"
 
+class nsIAtom;
+
 /*
    Declare the enum list using the magic of preprocessing
    enum values are "eHTMLTag_foo" (where foo is the tag)
@@ -48,19 +50,19 @@
    To change the list of tags, see nsHTMLTagList.h
 
  */
-#define HTML_TAG(_tag) eHTMLTag_##_tag,
+#define HTML_TAG(_tag, _classname) eHTMLTag_##_tag,
+#define HTML_OTHER(_tag, _classname) eHTMLTag_##_tag,
 enum nsHTMLTag {
   /* this enum must be first and must be zero */
   eHTMLTag_unknown = 0,
 #include "nsHTMLTagList.h"
 
-  /* The remaining enums are not for tags */
-  eHTMLTag_text,    eHTMLTag_whitespace, eHTMLTag_newline,
-  eHTMLTag_comment, eHTMLTag_entity,     eHTMLTag_doctypeDecl,
-  eHTMLTag_markupDecl, eHTMLTag_instruction,
+  /* can't be moved into nsHTMLTagList since gcc3.4 doesn't like a
+     comma at the end of enum list*/
   eHTMLTag_userdefined
 };
 #undef HTML_TAG
+#undef HTML_OTHER
 
 // Currently there are 110 HTML tags. eHTMLTag_text = 112.
 #define NS_HTML_TAG_MAX PRInt32(eHTMLTag_text - 1)
@@ -73,6 +75,7 @@ public:
   static nsHTMLTag LookupTag(const nsAString& aTagName);
   static nsHTMLTag CaseSensitiveLookupTag(const PRUnichar* aTagName);
   static const PRUnichar *GetStringValue(nsHTMLTag aEnum);
+  static nsIAtom *GetAtom(nsHTMLTag aEnum);
 };
 
 #define eHTMLTags nsHTMLTag

@@ -40,7 +40,6 @@ XPIDLSRCS	= \
 		nsICopyMessageListener.idl \
 		nsICopyMsgStreamListener.idl \
 		nsIMessenger.idl \
-		nsIFolder.idl \
 		nsIFolderListener.idl \
 		nsIMsgAccount.idl \
 		nsIMsgAccountManager.idl \
@@ -56,7 +55,6 @@ XPIDLSRCS	= \
 		nsIMsgMessageService.idl \
 		nsIMsgSignature.idl \
 		nsIMsgThread.idl \
-		nsIMsgVCard.idl \
 		nsIUrlListener.idl \
 		nsIUrlListenerManager.idl \
 		nsIMsgBiffManager.idl \

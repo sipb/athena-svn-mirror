@@ -312,6 +312,7 @@ pref("mail.identity.default.directoryServer","");
 pref("mail.identity.default.overrideGlobal_Pref", false);
 pref("mail.identity.default.auto_quote", true);
 pref("mail.identity.default.reply_on_top", 0); // 0=bottom 1=top 2=select
+pref("mail.identity.default.sig_bottom", true); // true=below quoted false=above quoted
 // Headers to always add to outgoing mail
 // examples: "header1,header2"
 // pref("mail.identity.id1.headers", "header1");
@@ -334,6 +335,8 @@ pref("mail.server.default.offline_support_level", -1);
 pref("mail.server.default.leave_on_server", false);
 pref("mail.server.default.download_on_biff", false);
 pref("mail.server.default.check_time", 10);
+pref("mail.server.default.delete_by_age_from_server", false);
+pref("mail.server.default.num_days_to_leave_on_server", 7);
 // "mail.server.default.check_new_mail" now lives in the protocol info
 pref("mail.server.default.dot_fix", true);
 pref("mail.server.default.limit_offline_message_size", false);
@@ -351,6 +354,7 @@ pref("mail.server.default.fetch_by_chunks", true);
 pref("mail.server.default.mime_parts_on_demand", true);
 
 pref("mail.server.default.always_authenticate",false);
+pref("mail.server.default.singleSignon", true);
 pref("mail.server.default.max_articles", 500);
 pref("mail.server.default.notify.on", true);
 pref("mail.server.default.mark_old_read", false);
@@ -394,7 +398,7 @@ pref("mailnews.display.original_date", false);   // display date string from mai
 // For the next 4 prefs, see <http://www.bucksch.org/1/projects/mozilla/108153>
 pref("mailnews.display.prefer_plaintext", false);  // Ignore HTML parts in multipart/alternative
 pref("mailnews.display.html_as", 0);  // How to display HTML parts. 0 = Render the sender's HTML; 1 = HTML->TXT->HTML; 2 = Show HTML source; 3 = Sanitize HTML
-pref("mailnews.display.html_sanitizer.allowed_tags", "html head title body p br div(lang,title) h1 h2 h3 h4 h5 h6 ul ol li(value,start,compact) dl dt dd blockquote(type,cite) pre noscript noframes strong em sub sup span(lang,title) acronym(title) abbr(title) del(title,cite,datetime) ins(title,cite,datetime) q(cite) a(href,name,title) img(alt,title,longdesc,src) base(href) area(alt) applet(alt) object(alt) var samp dfn address kbd code cite s strike tt b i table(align) caption tr(align,valign) td(rowspan,colspan,align,valign) th(rowspan,colspan,align,valign)");
+pref("mailnews.display.html_sanitizer.allowed_tags", "html head title body p br div(lang,title) h1 h2 h3 h4 h5 h6 ul(type,compact) ol(type,compact,start) li(type,value) dl dt dd blockquote(type,cite) pre noscript noframes strong em sub sup span(lang,title) acronym(title) abbr(title) del(title,cite,datetime) ins(title,cite,datetime) q(cite) a(href,name,title) img(alt,title,longdesc,src) base(href) area(alt) applet(alt) object(alt) var samp dfn address kbd code cite s strike tt b i table(align) caption tr(align,valign) td(rowspan,colspan,align,valign) th(rowspan,colspan,align,valign)");
 pref("mailnews.display.disallow_mime_handlers", 0);  /* Let only a few classes process incoming data. This protects from bugs (e.g. buffer overflows) and from security loopholes (e.g. allowing unchecked HTML in some obscure classes, although the user has html_as > 0).
 This option is mainly for the UI of html_as.
 0 = allow all available classes
@@ -429,6 +433,8 @@ pref("mail.enable_autocomplete",true);
 pref("mailnews.html_domains","");
 pref("mailnews.plaintext_domains","");
 pref("mailnews.global_html_domains.version",1);
+
+pref("mail.imap.use_status_for_biff", true);
 
 // Pref controlling the updates on the pre-configured accounts.
 // In order to add new pre-configured accounts (after a version),

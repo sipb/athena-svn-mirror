@@ -46,10 +46,8 @@ public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSIHTTPAUTHENTICATOR
 
-    nsHttpNTLMAuth();
-    virtual ~nsHttpNTLMAuth();
-
-    nsresult Init();
+    nsHttpNTLMAuth() {}
+    virtual ~nsHttpNTLMAuth() {}
 };
 
 #endif // !nsHttpNTLMAuth_h__

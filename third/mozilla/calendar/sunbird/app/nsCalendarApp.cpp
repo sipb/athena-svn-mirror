@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@netscape.com>
+ *  Brian Ryner <bryner@brianryner.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 {
   nsXREAppData appData;
   appData.SetSplashEnabled(PR_FALSE);
-  appData.SetProductName(NS_LITERAL_CSTRING("Phoenix"));
+  appData.SetProductName(NS_LITERAL_CSTRING("Sunbird"));
   appData.SetUseStartupPrefs(PR_FALSE);
 
   return xre_main(argc, argv, appData);

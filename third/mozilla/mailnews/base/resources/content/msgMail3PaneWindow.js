@@ -18,7 +18,7 @@
  * Rights Reserved.
  *
  * Contributor(s):
- *   Jan Varga (varga@utcru.sk)
+ *   Jan Varga (varga@nixcorp.com)
  *   Håkan Waara (hwaara@chello.se)
  *   Neil Rashbrook (neil@parkwaycc.co.uk)
  *   Seth Spitzer <sspitzer@netscape.com>
@@ -61,7 +61,6 @@ var gRightMouseButtonDown = false;
 // after a Delete or Move of a message that has a row index less than currentIndex.
 var gThreadPaneCurrentSelectedIndex = -1;
 var gLoadStartFolder = true;
-var gNewAccountToLoad = null;
 
 // Global var to keep track of if the 'Delete Message' or 'Move To' thread pane
 // context menu item was triggered.  This helps prevent the tree view from
@@ -629,7 +628,6 @@ function OnLoadMessenger()
   verifyAccounts(null);
     
   HideAccountCentral();
-  loadStartPage();
   InitMsgWindow();
   messenger.SetWindow(window, msgWindow);
 
@@ -650,7 +648,6 @@ function OnLoadMessenger()
     gStartFolderUri = window.arguments[0];
     gStartMsgKey = window.arguments[1];
     gSearchEmailAddress = window.arguments[2];
-
   }
   else
   {
@@ -780,7 +777,7 @@ function loadStartFolder(initialUri)
             }
         }
 
-        var startFolder = startFolderResource.QueryInterface(Components.interfaces.nsIFolder);
+        var startFolder = startFolderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
         SelectFolder(startFolder.URI);
 
         // only do this on startup, when we pass in null
@@ -925,24 +922,38 @@ function UpgradeThreadPaneUI()
 
   try {
     threadPaneUIVersion = pref.getIntPref("mailnews.ui.threadpane.version");
-    if (threadPaneUIVersion < 3) {
-      var subjectCol = document.getElementById("subjectCol");
-      var junkCol = document.getElementById("junkStatusCol");
+    if (threadPaneUIVersion < 4) {
       var threadTree = document.getElementById("threadTree");
-      
-      var beforeCol = subjectCol.boxObject.nextSibling.boxObject.nextSibling;
-      if (beforeCol)
-        threadTree._reorderColumn(junkCol, beforeCol, true);
-      else // subjectCol was the last column, put it after
-        threadTree._reorderColumn(junkCol, subjectCol, false);
+      var junkCol = document.getElementById("junkStatusCol");
+      var beforeCol;
 
-      if (threadPaneUIVersion == 1) {
-        labelCol = document.getElementById("labelCol");
-        labelCol.setAttribute("hidden", "true");
+      if (threadPaneUIVersion < 3) {
+        var subjectCol = document.getElementById("subjectCol");
+      
+        beforeCol = subjectCol.boxObject.nextSibling.boxObject.nextSibling;
+        if (beforeCol)
+          threadTree._reorderColumn(junkCol, beforeCol, true);
+        else // subjectCol was the last column, put it after
+          threadTree._reorderColumn(junkCol, subjectCol, false);
+
+        if (threadPaneUIVersion == 1) {
+          labelCol = document.getElementById("labelCol");
+          labelCol.setAttribute("hidden", "true");
+        }
       }
 
-      pref.setIntPref("mailnews.ui.threadpane.version", 3);
-    }    
+      var senderCol = document.getElementById("senderCol");
+      var recipientCol = document.getElementById("recipientCol");
+    
+      beforeCol = junkCol.boxObject.nextSibling.boxObject.nextSibling;
+      if (beforeCol)
+        threadTree._reorderColumn(recipientCol, beforeCol, true);
+      else // junkCol was the last column, put it after
+        threadTree._reorderColumn(recipientCol, junkCol, false);
+      threadTree._reorderColumn(senderCol, recipientCol, true);
+
+      pref.setIntPref("mailnews.ui.threadpane.version", 4);
+    }
 	}
   catch (ex) {
     dump("UpgradeThreadPane: ex = " + ex + "\n");
@@ -1389,42 +1400,28 @@ function SetNextMessageAfterDelete()
     gNextMessageViewIndexAfterDelete = treeSelection.currentIndex;
 }
 
-function EnsureAllAncestorsAreExpanded(tree, resource)
+function EnsureFolderIndex(builder, msgFolder)
 {
-    // get the parent of the desired folder, and then try to get
-    // the index of the parent in the tree
-    var folder = resource.QueryInterface(Components.interfaces.nsIFolder);
-    
-    // if this is a server, there are no ancestors, so stop.
-    var msgFolder = folder.QueryInterface(Components.interfaces.nsIMsgFolder);
-    if (msgFolder.isServer)
-      return;
-
-    var parentFolderResource = RDF.GetResource(folder.parent.URI);
-    var folderIndex = GetFolderIndex(tree, parentFolderResource);
-
-    if (folderIndex == -1) {
-      // if we couldn't find the parent, recurse
-      EnsureAllAncestorsAreExpanded(tree, parentFolderResource);
-      // ok, now we should be able to find the parent
-      folderIndex = GetFolderIndex(tree, parentFolderResource);
-    }
-
-    // if the parent isn't open, open it
-    if (!(tree.treeBoxObject.view.isContainerOpen(folderIndex)))
-      tree.treeBoxObject.view.toggleOpenState(folderIndex);
+  // try to get the index of the folder in the tree
+  var index = builder.getIndexOfResource(msgFolder);
+  if (index == -1) {
+    // if we couldn't find the folder, open the parent
+    builder.toggleOpenState(EnsureFolderIndex(builder, msgFolder.parent));
+    index = builder.getIndexOfResource(msgFolder);
+  }
+  return index;
 }
 
 function SelectFolder(folderUri)
 {
     var folderTree = GetFolderTree();
     var folderResource = RDF.GetResource(folderUri);
+    var msgFolder = folderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
 
     // before we can select a folder, we need to make sure it is "visible"
     // in the tree.  to do that, we need to ensure that all its
     // ancestors are expanded
-    EnsureAllAncestorsAreExpanded(folderTree, folderResource);
-    var folderIndex = GetFolderIndex(folderTree, folderResource);
+    var folderIndex = EnsureFolderIndex(folderTree.builderView, msgFolder);
     ChangeSelection(folderTree, folderIndex);
 }
 

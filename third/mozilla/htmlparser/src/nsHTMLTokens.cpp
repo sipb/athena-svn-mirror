@@ -215,7 +215,9 @@ nsresult CStartToken::Consume(PRUnichar aChar, nsScanner& aScanner,PRInt32 aFlag
     nsAutoString theSubstr;
     result=aScanner.GetIdentifier(theSubstr,PR_TRUE);
     mTypeID = (PRInt32)nsHTMLTags::LookupTag(theSubstr);
-    if(eHTMLTag_userdefined==mTypeID) {
+    // Save the original tag string if this is user-defined or if we
+    // are viewing source
+    if(eHTMLTag_userdefined==mTypeID || (aFlag & NS_IPARSER_FLAG_VIEW_SOURCE)) {
       mTextValue=theSubstr;
     }
   }
@@ -328,7 +330,9 @@ nsresult CEndToken::Consume(PRUnichar aChar, nsScanner& aScanner,PRInt32 aFlag)
     NS_ENSURE_SUCCESS(result, result);
     
     mTypeID = (PRInt32)nsHTMLTags::LookupTag(theSubstr);
-    if(eHTMLTag_userdefined==mTypeID) {
+    // Save the original tag string if this is user-defined or if we
+    // are viewing source
+    if(eHTMLTag_userdefined==mTypeID || (aFlag & NS_IPARSER_FLAG_VIEW_SOURCE)) {
       mTextValue=theSubstr;
     }
   }
@@ -595,7 +599,8 @@ nsresult CTextToken::ConsumeUntil(PRUnichar aChar,PRBool aIgnoreComments,nsScann
     PRBool found = PR_FALSE;
     nsReadingIterator<PRUnichar> gtOffset,ltOffset = theCurrOffset;
     while (FindCharInReadable(PRUnichar(kLessThan), ltOffset, endPos) &&
-           Distance(ltOffset, endPos) >= termStrLen) {
+           ((PRUint32)ltOffset.size_forward() >= termStrLen ||
+            Distance(ltOffset, endPos) >= termStrLen)) {
       // Make a copy of the (presumed) end tag and
       // do a case-insensitive comparison
 

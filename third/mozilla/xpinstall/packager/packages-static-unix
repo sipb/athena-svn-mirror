@@ -72,7 +72,6 @@ bin/components/bookmarks.xpt
 bin/components/directory.xpt
 bin/components/downloadmanager.xpt
 bin/components/history.xpt
-bin/components/timebomb.xpt
 bin/components/related.xpt
 bin/components/urlbarhistory.xpt
 bin/components/search.xpt
@@ -253,8 +252,6 @@ bin/res/table-remove-row-hover.gif
 bin/res/table-remove-row.gif
 bin/res/viewsource.css
 bin/res/mathml.css
-bin/res/rdf/article.gif
-bin/res/rdf/document.gif
 bin/res/rdf/folder-closed.gif
 bin/res/rdf/folder-open.gif
 bin/res/rdf/loading.gif

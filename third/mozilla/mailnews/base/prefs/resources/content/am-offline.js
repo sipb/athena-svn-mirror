@@ -100,7 +100,7 @@ function initDownloadSettings()
 
     var downloadSettings =  gIncomingServer.downloadSettings;
     document.getElementById("nntp.downloadMsg").checked = downloadSettings.downloadByDate;
-    document.getElementById("nntp.downloadUnread").checked = downloadSettings.downloadUnreadOnly;
+    document.getElementById("nntp.notDownloadRead").checked = downloadSettings.downloadUnreadOnly;
     if(downloadSettings.ageLimitOfMsgsToDownload > 0)
         document.getElementById("nntp.downloadMsgMin").setAttribute("value", downloadSettings.ageLimitOfMsgsToDownload);
     else
@@ -131,67 +131,6 @@ function onPreInit(account, accountValues)
     var headertitle = document.getElementById("headertitle");
     headertitle.setAttribute('title',prefBundle.getString(titleStringID));
 }
-
-function hideShowControls(type)
-{
-    
-    var controls = document.getElementsByAttribute("hidable", "true");
-    var len = controls.length;
-
-    for (var i=0; i<len; i++) {
-        var control = controls[i];
-
-        var hideFor = control.getAttribute("hidefor");
-
-        if (!hideFor)
-            throw "this should not happen, things that are hidable should have hidefor set";
-
-        var box = getEnclosingContainer(control);
-
-        if (!box)
-            throw "this should not happen, things that are hidable should be in a box";
-
-        // hide unsupported server type
-        // adding support for hiding multiple server types using hideFor="server1,server2"
-        var hideForBool = false;
-        var hideForTokens = hideFor.split(",");
-        for (var j = 0; j < hideForTokens.length; j++) {
-            if (hideForTokens[j] == type) {
-                hideForBool = true;
-                break;
-            }
-        }
-
-        if (hideForBool) {
-            box.setAttribute("hidden", "true");
-        }
-        else {
-            box.removeAttribute("hidden");
-        }
-    }
-}
-
-function getEnclosingContainer(startNode) {
-
-    var parent = startNode;
-    var box;
-
-    while (parent && parent != document) {
-
-    var isContainer = (parent.getAttribute("iscontrolcontainer") == "true");
-
-    if (!box || isContainer)
-        box=parent;
-
-    // break out with a controlcontainer
-    if (isContainer)
-        break;
-    parent = parent.parentNode;
-    }
-
-    return box;
-}
-
 
 function onClickSelect()
 {
@@ -225,7 +164,7 @@ function onSave()
     retentionSettings.cleanupBodiesByDays = document.getElementById("nntp.removeBody").checked;
 
     downloadSettings.downloadByDate = document.getElementById("nntp.downloadMsg").checked;
-    downloadSettings.downloadUnreadOnly = document.getElementById("nntp.downloadUnread").checked;
+    downloadSettings.downloadUnreadOnly = document.getElementById("nntp.notDownloadRead").checked;
     downloadSettings.ageLimitOfMsgsToDownload = document.getElementById("nntp.downloadMsgMin").value;
 
     gIncomingServer.retentionSettings = retentionSettings;
@@ -279,7 +218,7 @@ function onLockPreference()
                            id:"offline.downloadBodiesOnGetNewMail"},
       { prefstring:"limit_offline_message_size", id:"offline.notDownload"},
       { prefstring:"max_size", id:"offline.notDownloadMin"},
-      { prefstring:"downloadUnreadOnly", id:"nntp.downloadUnread"},
+      { prefstring:"downloadUnreadOnly", id:"nntp.notDownloadRead"},
       { prefstring:"downloadByDate", id:"nntp.downloadMsg"},
       { prefstring:"ageLimit", id:"nntp.downloadMsgMin"},
       { prefstring:"retainBy", id:"nntp.keepMsg"},
@@ -288,7 +227,8 @@ function onLockPreference()
       { prefstring:"keepUnreadOnly", id:"nntp.keepUnread"},
       { prefstring:"daysToKeepBodies", id:"nntp.removeBodyMin"},
       { prefstring:"cleanupBodies", id:"nntp.removeBody" },
-      { prefstring:"disable_button.selectFolder", id:"selectFolderButton"}
+      { prefstring:"disable_button.selectFolder", id:"selectNewsgroupsButton"},
+      { prefstring:"disable_button.selectFolder", id:"selectImapFoldersButton"}
     ];
 
     finalPrefString = initPrefString + "." + gIncomingServer.key + ".";
@@ -318,12 +258,12 @@ function onCheckKeepMsg()
         // radiogroup have been locked by the function onLockPreference.
         return;
     }
-    var broadcaster_keepMsg = document.getElementById("bc_keepMsg");
     var checkedOld = document.getElementById("nntp.keepOldMsg").selected;
     var checkedNew = document.getElementById("nntp.keepNewMsg").selected;
     var checkedAll = document.getElementById("nntp.keepAllMsg").selected;
     if(checkedAll) {
-        broadcaster_keepMsg.setAttribute("disabled", "true");
+        document.getElementById("nntp.keepNewMsgMin").setAttribute("disabled", "true");
+        document.getElementById("nntp.keepOldMsgMin").setAttribute("disabled", "true");
     }
     else if(checkedOld) {
         document.getElementById("nntp.keepOldMsgMin").removeAttribute("disabled");

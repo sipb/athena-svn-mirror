@@ -1287,16 +1287,13 @@ nsWebBrowserPersist::GetExtensionForContentType(const PRUnichar *aContentType, P
     nsCOMPtr<nsIMIMEInfo> mimeInfo;
     nsCAutoString contentType;
     contentType.AssignWithConversion(aContentType);
-    mMIMEService->GetFromTypeAndExtension(contentType.get(), nsnull, getter_AddRefs(mimeInfo));
-    if (mimeInfo)
+    nsXPIDLCString ext;
+    rv = mMIMEService->GetPrimaryExtension(contentType.get(), nsnull, getter_Copies(ext));
+    if (NS_SUCCEEDED(rv))
     {
-        nsXPIDLCString ext;
-        if (NS_SUCCEEDED(mimeInfo->GetPrimaryExtension(getter_Copies(ext))))
-        {
-            *aExt = ToNewUnicode(ext);
-            NS_ENSURE_TRUE(*aExt, NS_ERROR_OUT_OF_MEMORY);
-            return NS_OK;
-        }
+        *aExt = ToNewUnicode(ext);
+        NS_ENSURE_TRUE(*aExt, NS_ERROR_OUT_OF_MEMORY);
+        return NS_OK;
     }
 
     return NS_ERROR_FAILURE;
@@ -1404,14 +1401,14 @@ nsresult nsWebBrowserPersist::SaveDocumentInternal(
 
     // Persist the main document
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDocument));
-    doc->GetDocumentURL(getter_AddRefs(mURI));
+    mURI = doc->GetDocumentURL();
 
     nsCOMPtr<nsIURI> oldBaseURI = mCurrentBaseURI;
     nsCAutoString oldCharset(mCurrentCharset);
 
     // Store the base URI and the charset
-    doc->GetBaseURL(getter_AddRefs(mCurrentBaseURI));
-    doc->GetDocumentCharacterSet(mCurrentCharset);
+    mCurrentBaseURI = doc->GetBaseURL();
+    mCurrentCharset = doc->GetDocumentCharacterSet();
 
     // Does the caller want to fixup the referenced URIs and save those too?
     if (aDataPath)
@@ -3377,13 +3374,8 @@ nsWebBrowserPersist::SaveDocumentWithFixup(
 
     nsCAutoString charsetStr(aSaveCharset);
     if (charsetStr.IsEmpty())
-    {
-        rv = aDocument->GetDocumentCharacterSet(charsetStr);
-        if(NS_FAILED(rv))
-        {
-            charsetStr = NS_LITERAL_CSTRING("ISO-8859-1");
-        }
-    }
+        charsetStr = aDocument->GetDocumentCharacterSet();
+
     rv = encoder->SetCharset(charsetStr);
     NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
 

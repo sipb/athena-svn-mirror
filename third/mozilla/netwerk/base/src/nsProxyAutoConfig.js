@@ -121,13 +121,14 @@ nsProxyAutoConfig.prototype = {
         // evaluate loded js file
         evalInSandbox(mypac, ProxySandBox, pacURL);
         try {
-            ProxySandBox.myIP = dns.myIPAddress;
+            ProxySandBox.myIP = dns.resolve(dns.myHostName, false).getNextAddrAsString();
         } catch (e) {
             // Well, theres nothing better.
             // see bugs 80363 and 92516.
             ProxySandBox.myIP = "127.0.0.1";
         }
         ProxySandBox.dnsResolve = dnsResolve;
+        ProxySandBox.alert = proxyAlert;
         LocalFindProxyForURL=ProxySandBox.FindProxyForURL;
         this.done = true;
     },
@@ -135,6 +136,16 @@ nsProxyAutoConfig.prototype = {
     onDataAvailable: function(request, ctxt, inStream, sourceOffset, count) {
         var ins = new this.sis(inStream);
         pac += ins.read(count);
+    }
+}
+
+function proxyAlert(msg) {
+    try {
+        var cns = Components.classes["@mozilla.org/consoleservice;1"]
+                            .getService(Components.interfaces.nsIConsoleService);
+        cns.logStringMessage("PAC-alert: "+msg);
+    } catch (e) {
+        dump("PAC: proxyAlert ERROR: "+e+"\n");
     }
 }
 
@@ -149,7 +160,7 @@ function dnsResolve(host) {
         return dnsResolveCachedIp;
     }
     try {
-        dnsResolveCachedIp = dns.resolve(host);
+        dnsResolveCachedIp = dns.resolve(host, false).getNextAddrAsString();
         dnsResolveCachedHost = host;
     }
     catch (e) {

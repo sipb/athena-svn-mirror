@@ -68,6 +68,7 @@
 #include "nsIScriptError.h"
 #include "nsIDOMScriptObjectFactory.h"
 #include "nsDOMCID.h"
+#include "nsArray.h"
 
 
 static NS_DEFINE_CID(kDOMScriptObjectFactoryCID,
@@ -146,7 +147,7 @@ public:
     NS_IMETHOD GetHeaderData(nsIAtom* aField, nsAString& aData) const;
     NS_IMETHOD SetHeaderData(nsIAtom* aField, const nsAString& aData);
 
-    NS_IMETHOD GetDocumentPrincipal(nsIPrincipal** aResult);
+    virtual nsIPrincipal* GetDocumentPrincipal();
     NS_IMETHOD SetDocumentPrincipal(nsIPrincipal* aPrincipal);
 
     NS_IMETHOD AwaitLoadDone(nsIXULDocument* aDocument, PRBool* aResult);
@@ -319,10 +320,9 @@ NS_NewXULPrototypeDocument(nsISupports* aOuter, REFNSIID aIID, void** aResult)
 nsresult
 nsXULPrototypeDocument::NewXULPDGlobalObject(nsIScriptGlobalObject** aResult)
 {
-    nsCOMPtr<nsIPrincipal> principal;
-    nsresult rv = GetDocumentPrincipal(getter_AddRefs(principal));
-    if (NS_FAILED(rv))
-        return rv;
+    nsIPrincipal *principal = GetDocumentPrincipal();
+    if (!principal)
+        return NS_ERROR_FAILURE;
 
     // Now that GetDocumentPrincipal has succeeded, we can safely compare its
     // result to gSystemPrincipal, in order to create gSystemGlobal if the two
@@ -389,7 +389,9 @@ nsXULPrototypeDocument::Read(nsIObjectInputStream* aStream)
     nsCOMPtr<nsIPrincipal> principal;
     rv |= NS_ReadOptionalObject(aStream, PR_TRUE, getter_AddRefs(principal));
     if (! principal) {
-        rv |= GetDocumentPrincipal(getter_AddRefs(principal));
+        principal = GetDocumentPrincipal();
+        if (!principal)
+            rv |= NS_ERROR_FAILURE;
     } else {
         mNodeInfoManager->SetDocumentPrincipal(principal);
         mDocumentPrincipal = principal;
@@ -410,9 +412,7 @@ nsXULPrototypeDocument::Read(nsIObjectInputStream* aStream)
                  "no prototype script context!");
 
     // nsINodeInfo table
-    nsCOMPtr<nsISupportsArray> nodeInfos;
-    rv |= NS_NewISupportsArray(getter_AddRefs(nodeInfos));
-    NS_ENSURE_TRUE(nodeInfos, rv);
+    nsCOMArray<nsINodeInfo> nodeInfos;
 
     rv |= aStream->Read32(&referenceCount);
     nsAutoString namespaceURI, qualifiedName;
@@ -422,7 +422,8 @@ nsXULPrototypeDocument::Read(nsIObjectInputStream* aStream)
 
         nsCOMPtr<nsINodeInfo> nodeInfo;
         rv |= mNodeInfoManager->GetNodeInfo(qualifiedName, namespaceURI, getter_AddRefs(nodeInfo));
-        rv |= nodeInfos->AppendElement(nodeInfo);
+        if (!nodeInfos.AppendObject(nodeInfo))
+            rv |= NS_ERROR_OUT_OF_MEMORY;
     }
 
     // Document contents
@@ -432,7 +433,7 @@ nsXULPrototypeDocument::Read(nsIObjectInputStream* aStream)
     if ((nsXULPrototypeNode::Type)type != nsXULPrototypeNode::eType_Element)
         return NS_ERROR_FAILURE;
 
-    rv |= mRoot->Deserialize(aStream, scriptContext, mURI, nodeInfos);
+    rv |= mRoot->Deserialize(aStream, scriptContext, mURI, &nodeInfos);
     rv |= NotifyLoadDone();
 
     return rv;
@@ -477,15 +478,14 @@ nsXULPrototypeDocument::Write(nsIObjectOutputStream* aStream)
     rv |= NS_WriteOptionalObject(aStream, mDocumentPrincipal, PR_TRUE);
     
     // nsINodeInfo table
-    nsCOMPtr<nsISupportsArray> nodeInfos;
-    rv |= mNodeInfoManager->GetNodeInfoArray(getter_AddRefs(nodeInfos));
+    nsCOMArray<nsINodeInfo> nodeInfos;
+    rv |= mNodeInfoManager->GetNodeInfos(&nodeInfos);
     NS_ENSURE_SUCCESS(rv, rv);
-    PRUint32 nodeInfoCount;
-    nodeInfos->Count(&nodeInfoCount);
+    PRInt32 nodeInfoCount = nodeInfos.Count();
 
     rv |= aStream->Write32(nodeInfoCount);
-    for (i = 0; i < nodeInfoCount; ++i) {
-        nsCOMPtr<nsINodeInfo> nodeInfo = do_QueryElementAt(nodeInfos, i);
+    for (PRInt32 j = 0; j < nodeInfoCount; ++j) {
+        nsINodeInfo *nodeInfo = nodeInfos[j];
         NS_ENSURE_TRUE(nodeInfo, NS_ERROR_FAILURE);
 
         nsAutoString namespaceURI;
@@ -493,7 +493,7 @@ nsXULPrototypeDocument::Write(nsIObjectOutputStream* aStream)
         rv |= aStream->WriteWStringZ(namespaceURI.get());
 
         nsAutoString qualifiedName;
-        rv |= nodeInfo->GetQualifiedName(qualifiedName);
+        nodeInfo->GetQualifiedName(qualifiedName);
         rv |= aStream->WriteWStringZ(qualifiedName.get());
     }
 
@@ -505,7 +505,7 @@ nsXULPrototypeDocument::Write(nsIObjectOutputStream* aStream)
     rv |= globalObject->GetContext(getter_AddRefs(scriptContext));
     
     if (mRoot)
-        rv |= mRoot->Serialize(aStream, scriptContext, nodeInfos);
+        rv |= mRoot->Serialize(aStream, scriptContext, &nodeInfos);
  
     return rv;
 }
@@ -536,8 +536,7 @@ nsXULPrototypeDocument::SetURI(nsIURI* aURI)
     if (!mDocumentPrincipal) {
         // If the document doesn't have a principal yet we'll force the creation of one
         // so that mNodeInfoManager properly gets one.
-        nsCOMPtr<nsIPrincipal> principal;
-        GetDocumentPrincipal(getter_AddRefs(principal));
+        GetDocumentPrincipal();
     }
     return NS_OK;
 }
@@ -620,17 +619,14 @@ nsXULPrototypeDocument::SetHeaderData(nsIAtom* aField, const nsAString& aData)
 
 
 
-NS_IMETHODIMP
-nsXULPrototypeDocument::GetDocumentPrincipal(nsIPrincipal** aResult)
+nsIPrincipal*
+nsXULPrototypeDocument::GetDocumentPrincipal()
 {
     NS_PRECONDITION(mNodeInfoManager, "missing nodeInfoManager");
     if (!mDocumentPrincipal) {
-        nsresult rv;
-        nsCOMPtr<nsIScriptSecurityManager> securityManager = 
-                 do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-
-        if (NS_FAILED(rv))
-            return NS_ERROR_FAILURE;
+        nsIScriptSecurityManager *securityManager =
+            nsContentUtils::GetSecurityManager();
+        nsresult rv = NS_OK;
 
         // XXX This should be handled by the security manager, see bug 160042
         PRBool isChrome = PR_FALSE;
@@ -648,14 +644,12 @@ nsXULPrototypeDocument::GetDocumentPrincipal(nsIPrincipal** aResult)
         }
 
         if (NS_FAILED(rv))
-            return NS_ERROR_FAILURE;
+            return nsnull;
 
         mNodeInfoManager->SetDocumentPrincipal(mDocumentPrincipal);
     }
 
-    *aResult = mDocumentPrincipal;
-    NS_ADDREF(*aResult);
-    return NS_OK;
+    return mDocumentPrincipal;
 }
 
 
@@ -959,6 +953,13 @@ nsXULPDGlobalObject::GetPrincipal(nsIPrincipal** aPrincipal)
     }
     nsCOMPtr<nsIXULPrototypeDocument> protoDoc
       = do_QueryInterface(mGlobalObjectOwner);
-    return protoDoc->GetDocumentPrincipal(aPrincipal);
+
+    *aPrincipal = protoDoc->GetDocumentPrincipal();
+    if (!*aPrincipal) {
+        return NS_ERROR_FAILURE;
+    }
+
+    NS_ADDREF(*aPrincipal);
+    return NS_OK;
 }
 

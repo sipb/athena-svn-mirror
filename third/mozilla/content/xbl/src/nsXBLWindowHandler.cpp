@@ -66,6 +66,8 @@
 #include "nsIDOMDocument.h"
 #include "nsISelectionController.h"
 #include "nsXULAtoms.h"
+#include "nsIURI.h"
+#include "nsNetUtil.h"
 
 class nsXBLSpecialDocInfo
 {
@@ -73,10 +75,6 @@ public:
   nsCOMPtr<nsIXBLDocumentInfo> mHTMLBindings;
   nsCOMPtr<nsIXBLDocumentInfo> mPlatformHTMLBindings;
   nsCOMPtr<nsIXBLDocumentInfo> mUserHTMLBindings;
-
-  nsCString mHTMLBindingStr;
-  nsCString mPlatformHTMLBindingStr;
-  nsCString mUserHTMLBindingStr;
 
   static const char sHTMLBindingStr[];
   static const char sPlatformHTMLBindingStr[];
@@ -97,24 +95,17 @@ public:
   nsXBLSpecialDocInfo() : mInitialized(PR_FALSE) {};
 };
 
-const char nsXBLSpecialDocInfo::sHTMLBindingStr[] = "resource:///res/builtin/htmlBindings.xml";
-const char nsXBLSpecialDocInfo::sPlatformHTMLBindingStr[] = "resource:///res/builtin/platformHTMLBindings.xml";
+const char nsXBLSpecialDocInfo::sHTMLBindingStr[] = "resource://gre/res/builtin/htmlBindings.xml";
+const char nsXBLSpecialDocInfo::sPlatformHTMLBindingStr[] = "resource://gre/res/builtin/platformHTMLBindings.xml";
 // Allow for a userHTMLBindings.xml.
-// XXX Should be in the user profile directory, when we have a urlspec for that
-const char nsXBLSpecialDocInfo::sUserHTMLBindingStr[] = "resource:///res/builtin/userHTMLBindings.xml";
+// XXXbsmedberg Should be in the profile chrome directory, when we have a resource mapping for that
+const char nsXBLSpecialDocInfo::sUserHTMLBindingStr[] = "resource://gre/res/builtin/userHTMLBindings.xml";
 
 void nsXBLSpecialDocInfo::LoadDocInfo()
 {
   if (mInitialized)
     return;
   mInitialized = PR_TRUE;
-
-  mHTMLBindingStr = sHTMLBindingStr;
-  mPlatformHTMLBindingStr = sPlatformHTMLBindingStr;
-  mUserHTMLBindingStr = sUserHTMLBindingStr;
-
-  if (mHTMLBindings && mPlatformHTMLBindings && mUserHTMLBindings)
-    return;
 
   nsresult rv;
   nsCOMPtr<nsIXBLService> xblService = 
@@ -123,17 +114,36 @@ void nsXBLSpecialDocInfo::LoadDocInfo()
     return;
 
   // Obtain the XP and platform doc infos
+  nsCOMPtr<nsIURI> bindingURI;
+  NS_NewURI(getter_AddRefs(bindingURI), sHTMLBindingStr);
+  if (!bindingURI) {
+    return;
+  }
   xblService->LoadBindingDocumentInfo(nsnull, nsnull, 
-                                      mHTMLBindingStr,
-                                      nsCAutoString(""), PR_TRUE, 
+                                      bindingURI,
+                                      PR_TRUE, 
                                       getter_AddRefs(mHTMLBindings));
+  
+  rv = bindingURI->SetSpec(NS_LITERAL_CSTRING(sPlatformHTMLBindingStr));
+  if (NS_FAILED(rv)) {
+    NS_ERROR("Shouldn't fail to set spec here");
+    return;
+  }
+  
   xblService->LoadBindingDocumentInfo(nsnull, nsnull,
-                                      mPlatformHTMLBindingStr,
-                                      nsCAutoString(""), PR_TRUE, 
+                                      bindingURI,
+                                      PR_TRUE, 
                                       getter_AddRefs(mPlatformHTMLBindings));
+
+  rv = bindingURI->SetSpec(NS_LITERAL_CSTRING(sUserHTMLBindingStr));
+  if (NS_FAILED(rv)) {
+    NS_ERROR("Shouldn't fail to set spec here");
+    return;
+  }
+  
   xblService->LoadBindingDocumentInfo(nsnull, nsnull,
-                                      mUserHTMLBindingStr,
-                                      nsCAutoString(""), PR_TRUE, 
+                                      bindingURI,
+                                      PR_TRUE, 
                                       getter_AddRefs(mUserHTMLBindings));
 }
 

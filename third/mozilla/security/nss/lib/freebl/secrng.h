@@ -37,7 +37,7 @@
  * secrng.h - public data structures and prototypes for the secure random
  *	      number generator
  *
- * $Id: secrng.h,v 1.1.1.1 2003-02-14 17:50:20 rbasch Exp $
+ * $Id: secrng.h,v 1.1.1.2 2004-02-27 16:03:08 rbasch Exp $
  */
 
 /******************************************/
@@ -79,4 +79,4 @@ extern void RNG_FileForRNG(const char *filename);
 
 SEC_END_PROTOS
 
-#endif /* _SECUTIL_H_ */
+#endif /* _SECRNG_H_ */

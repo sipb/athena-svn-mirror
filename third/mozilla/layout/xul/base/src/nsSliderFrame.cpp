@@ -628,7 +628,8 @@ nsSliderFrame::HandleEvent(nsIPresContext* aPresContext,
     //return nsFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
     return NS_OK;
   }
-  else if (mMiddlePref && aEvent->message == NS_MOUSE_MIDDLE_BUTTON_DOWN) {
+  else if ((aEvent->message == NS_MOUSE_LEFT_BUTTON_DOWN && ((nsMouseEvent *)aEvent)->isShift)
+      || (mMiddlePref && aEvent->message == NS_MOUSE_MIDDLE_BUTTON_DOWN)) {
     // convert coord from twips to pixels
     nscoord pos = isHorizontal ? aEvent->point.x : aEvent->point.y;
     float p2t;
@@ -859,9 +860,6 @@ NS_IMETHODIMP  nsSliderFrame::GetFrameForPoint(nsIPresContext* aPresContext,
                                              nsFramePaintLayer aWhichLayer,
                                              nsIFrame**     aFrame)
 {
-  if ((aWhichLayer != NS_FRAME_PAINT_LAYER_FOREGROUND))
-    return NS_ERROR_FAILURE;
-
   // This is EVIL, we shouldn't be messing with GetFrameForPoint just to get
   // thumb mouse drag events to arrive at the slider!
   if (isDraggingThumb())
@@ -871,15 +869,11 @@ NS_IMETHODIMP  nsSliderFrame::GetFrameForPoint(nsIPresContext* aPresContext,
     return NS_OK;
   }
 
-  if (!mRect.Contains(aPoint))
-    return NS_ERROR_FAILURE;
-
-
   if (NS_SUCCEEDED(nsBoxFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame)))
     return NS_OK;
 
   // always return us (if visible)
-  if (GetStyleVisibility()->IsVisible()) {
+  if (mRect.Contains(aPoint) && GetStyleVisibility()->IsVisible()) {
     *aFrame = this;
     return NS_OK;
   }
@@ -931,14 +925,18 @@ nsSliderFrame::MouseDown(nsIDOMEvent* aMouseEvent)
   nsCOMPtr<nsIDOMMouseEvent> mouseEvent(do_QueryInterface(aMouseEvent));
 
   PRUint16 button = 0;
+  PRBool scrollToClick = PR_FALSE;
+  mouseEvent->GetShiftKey(&scrollToClick);
   mouseEvent->GetButton(&button);
-  if((mMiddlePref && button != 0 && button != 1) ||
-     (!mMiddlePref && button != 0))
+  if (button != 0) {
+    if (button != 1 || !mMiddlePref)
       return NS_OK;
+    scrollToClick = PR_TRUE;
+  }
 
-  // If middle button, first place the middle of the slider thumb
-  // under the click
-  if (button == 1) {
+  // If shift click or middle button, first
+  // place the middle of the slider thumb under the click
+  if (scrollToClick) {
 
     nscoord pos;
     nscoord pospx;
@@ -1099,6 +1097,9 @@ nsSliderFrame::HandlePress(nsIPresContext* aPresContext,
                            nsGUIEvent*     aEvent,
                            nsEventStatus*  aEventStatus)
 {
+  if (((nsMouseEvent *)aEvent)->isShift)
+    return NS_OK;
+
   nsIFrame* thumbFrame = mFrames.FirstChild();
   if (!thumbFrame) // display:none?
     return NS_OK;

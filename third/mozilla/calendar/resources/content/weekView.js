@@ -54,6 +54,8 @@
 /** these globals are kinda ugly, but i want to be able to use them in a few places! ***/
 var LowestStartHour = 0;
 var HighestEndHour = 0;
+var gRefColumnIndex = 0;
+
 /*** end benw 19/12/2002 ***/
 
 
@@ -112,10 +114,26 @@ function WeekView( calendarWindow )
    {
       onSelectionChanged : function( EventSelectionArray )
       {
-         for( i = 0; i < EventSelectionArray.length; i++ )
-         {
-            gCalendarWindow.weekView.selectBoxForEvent( EventSelectionArray[i] );
-         }
+          if( EventSelectionArray.length > 0 )
+          {
+             //if there are selected events.
+
+             //for some reason, this function causes the tree to go into a select / unselect loop
+             //putting it in a settimeout fixes this.
+             setTimeout( "gCalendarWindow.weekView.clearSelectedDate();", 1 );
+
+             var i = 0;
+
+             for( i = 0; i < EventSelectionArray.length; i++ )
+             {
+                 gCalendarWindow.weekView.selectBoxForEvent( EventSelectionArray[i] );
+             }
+          }
+          else
+          {
+             //select the proper day
+             gCalendarWindow.weekView.hiliteSelectedDate();
+          }
       }
    }
       
@@ -411,23 +429,18 @@ WeekView.prototype.createEventBox = function ( calendarEventDisplay, dayIndex )
    eventBox.calendarEventDisplay = calendarEventDisplay;
    
    //alert("boxLeftOffset: "+boxLeftOffset);
-   var hourHeight = document.getElementById("week-tree-day-0-item-"+startHour).boxObject.height;
+   var ElementOfRef = document.getElementById("week-tree-day-"+gRefColumnIndex+"-item-"+startHour) ;
+   var hourHeight = ElementOfRef.boxObject.height;
    var Height = eventDuration * hourHeight + 1 ;
    eventBox.setAttribute( "height", Height );
    
-   var Width = Math.floor( 
-			  ( document.getElementById("week-tree-day-0-item-"+startHour).boxObject.width ) 
-			  / 
-			  calendarEventDisplay.NumberOfSameTimeEvents 
-			  + 1);
+   var Width = Math.floor( ElementOfRef.boxObject.width / calendarEventDisplay.NumberOfSameTimeEvents + 1);
    eventBox.setAttribute( "width", Width );
    
-   var top = eval( document.getElementById("week-tree-day-0-item-"+startHour).boxObject.y + ( ( startMinutes/60 ) * hourHeight ) );
-
-   top1 = top ;
-   top = top - document.getElementById("week-tree-day-0-item-"+startHour).parentNode.boxObject.y - 2;
-
+   var top = eval( ElementOfRef.boxObject.y + ( ( startMinutes/60 ) * hourHeight ) );
+   top = top - ElementOfRef.parentNode.boxObject.y - 2;
    eventBox.setAttribute( "top", top );
+
    var dayIndex = new Date( gHeaderDateItemArray[1].getAttribute( "date" ) );
    
    var index = displayDateObject.getDay( ) - dayIndex.getDay( );
@@ -551,7 +564,10 @@ WeekView.prototype.refreshDisplay = function( )
       
    // Set the from-to title string, based on the selected date
    var Offset = getIntPref(this.calendarWindow.calendarPreferences.calendarPref, "week.start", defaultWeekStart );
-   
+   // Define a reference column (which will not be collapsed latter) to use to get its width. 
+   // This is used to place the event Box
+   if (Offset == 0 || Offset == 6) gRefColumnIndex = 3 ;
+
    var selectedDate = this.calendarWindow.getSelectedDate();
    var viewDay = selectedDate.getDay();
    var viewDayOfMonth = selectedDate.getDate();
@@ -815,7 +831,6 @@ WeekView.prototype.hiliteTodaysDate = function( )
 WeekView.prototype.clearSelectedEvent = function( )
 {
    //Event = gCalendarWindow.getSelectedEvent();
-   
    var ArrayOfBoxes = document.getElementsByAttribute( "eventselected", "true" );
 
    for( i = 0; i < ArrayOfBoxes.length; i++ )
@@ -857,3 +872,9 @@ WeekView.prototype.clearSelectedDate = function( )
       SelectedBoxes[i].removeAttribute( "weekselected" );
    }
 }
+
+function debug( Text )
+{
+   dump( "\nweekView.js: "+ Text);
+}
+

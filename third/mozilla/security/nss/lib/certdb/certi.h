@@ -33,7 +33,7 @@
 /*
  * certi.h - private data structures for the certificate library
  *
- * $Id: certi.h,v 1.1.1.2 2003-07-08 16:57:42 rbasch Exp $
+ * $Id: certi.h,v 1.1.1.3 2004-02-27 16:04:03 rbasch Exp $
  */
 #ifndef _CERTI_H_
 #define _CERTI_H_
@@ -208,6 +208,9 @@ cert_DestroySubjectKeyIDHashTable(void);
 
 SECItem*
 cert_FindDERCertBySubjectKeyID(SECItem *subjKeyID);
+
+/* return maximum length of AVA value based on its type OID tag. */
+extern int cert_AVAOidTagToMaxLen(SECOidTag tag);
 
 #endif /* _CERTI_H_ */
 

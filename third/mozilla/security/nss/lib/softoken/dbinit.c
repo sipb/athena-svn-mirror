@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- # $Id: dbinit.c,v 1.1.1.2 2003-07-08 16:49:43 rbasch Exp $
+ # $Id: dbinit.c,v 1.1.1.3 2004-02-27 16:03:13 rbasch Exp $
  */
 
 #include <ctype.h>
@@ -43,7 +43,6 @@
 #include "pcertt.h"
 #include "lowkeyi.h"
 #include "pcert.h"
-#include "secrng.h"
 #include "cdbhdl.h"
 #include "pkcs11i.h"
 

@@ -62,6 +62,7 @@
 #include "nsISimpleEnumerator.h"
 #include "nsISupportsPrimitives.h"
 #include "nsGfxCIID.h"
+#include "stdlib.h"
  
 static NS_DEFINE_IID(kCPrinterEnumerator, NS_PRINTER_ENUMERATOR_CID);
 
@@ -101,8 +102,10 @@ const char kPrinterName[]        = "print_printer";
 const char kPrintToFile[]        = "print_to_file";
 const char kPrintToFileName[]    = "print_to_filename";
 const char kPrintPageDelay[]     = "print_pagedelay";
-const char kPrintBGColors[]       = "print_bgcolor";
+const char kPrintBGColors[]      = "print_bgcolor";
 const char kPrintBGImages[]      = "print_bgimages";
+const char kPrintShrinkToFit[]   = "print_shrink_to_fit";
+const char kPrintScaling[]       = "print_scaling";
 
 const char kJustLeft[]   = "left";
 const char kJustCenter[] = "center";
@@ -302,7 +305,7 @@ nsPrintOptions::ShowPrintSetupDialog(nsIPrintSettings *aPS)
      wwatch->GetActiveWindow(getter_AddRefs(active));           nsCOMPtr<nsIDOMWindowInternal> parent = do_QueryInterface(active);
 
      nsCOMPtr<nsIDOMWindow> newWindow;
-     rv = wwatch->OpenWindow(parent, "chrome://communicator/content/printPageSetup.xul",
+     rv = wwatch->OpenWindow(parent, "chrome://global/content/printPageSetup.xul",
                    "_blank", "chrome,modal,centerscreen", array,
                    getter_AddRefs(newWindow));
    }
@@ -578,9 +581,21 @@ nsPrintOptions::ReadPrefs(nsIPrintSettings* aPS, const nsString& aPrefName, PRUi
     }
   }
 
+  if (aFlags & nsIPrintSettings::kInitSaveShrinkToFit) {
+    if (NS_SUCCEEDED(mPrefBranch->GetBoolPref(GetPrefName(kPrintShrinkToFit, aPrefName),   &b))) {
+      aPS->SetShrinkToFit(b);
+      DUMP_BOOL(kReadStr, kPrintShrinkToFit, b);
+    }
+  }
+
+  if (aFlags & nsIPrintSettings::kInitSaveScaling) {
+    if (NS_SUCCEEDED(ReadPrefDouble(GetPrefName(kPrintScaling, aPrefName),  dbl))) {
+      aPS->SetScaling(dbl);
+      DUMP_DBL(kReadStr, kPrintScaling, dbl);
+    }
+  }
+
   // Not Reading In:
-  //   Scaling
-  //   ShrinkToFit
   //   Number of Copies
 
   return NS_OK;
@@ -798,9 +813,21 @@ nsPrintOptions::WritePrefs(nsIPrintSettings *aPS, const nsString& aPrefName, PRU
     }
   }
 
+  if (aFlags & nsIPrintSettings::kInitSaveShrinkToFit) {
+    if (NS_SUCCEEDED(aPS->GetShrinkToFit(&b))) {
+      DUMP_BOOL(kWriteStr, kPrintShrinkToFit, b);
+      mPrefBranch->SetBoolPref(GetPrefName(kPrintShrinkToFit, aPrefName), b);
+    }
+  }
+
+  if (aFlags & nsIPrintSettings::kInitSaveScaling) {
+    if (NS_SUCCEEDED(aPS->GetScaling(&dbl))) {
+      DUMP_DBL(kWriteStr, kPrintScaling, dbl);
+      WritePrefDouble(GetPrefName(kPrintScaling, aPrefName), dbl);
+    }
+  }
+
   // Not Writing Out:
-  //   Scaling
-  //   ShrinkToFit
   //   Number of Copies
 
   return NS_OK;
@@ -1057,7 +1084,7 @@ nsresult nsPrintOptions::ReadPrefString(const char * aPrefId,
   char * str = nsnull;
   nsresult rv = mPrefBranch->GetCharPref(aPrefId, &str);
   if (NS_SUCCEEDED(rv) && str) {
-    aString.AssignWithConversion(str);
+    CopyUTF8toUTF16(str, aString);
     nsMemory::Free(str);
   }
   return rv;
@@ -1071,16 +1098,10 @@ nsresult nsPrintOptions::WritePrefString(PRUnichar*& aStr, const char* aPrefId)
   NS_ENSURE_STATE(mPrefBranch);
   if (!aStr) return NS_ERROR_FAILURE;
 
-  nsresult rv = NS_ERROR_FAILURE;
-  if (aStr) {
-    nsCOMPtr<nsISupportsString> prefStr = do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID);
-    if (prefStr) {
-      prefStr->SetData(nsDependentString(aStr));
-      rv = mPrefBranch->SetComplexValue(aPrefId, NS_GET_IID(nsISupportsString), prefStr);
-    }
-    nsMemory::Free(aStr);
-    aStr = nsnull;
-  }
+  nsresult rv = mPrefBranch->SetCharPref(aPrefId,
+                                         NS_ConvertUTF16toUTF8(aStr).get());
+  nsMemory::Free(aStr);
+  aStr = nsnull;
   return rv;
 }
 
@@ -1090,32 +1111,18 @@ nsresult nsPrintOptions::WritePrefString(const char * aPrefId,
   NS_ENSURE_STATE(mPrefBranch);
   NS_ENSURE_ARG_POINTER(aPrefId);
 
-  PRUnichar * str = ToNewUnicode(aString);
-  if (!str) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  nsresult rv = NS_ERROR_FAILURE;
-  nsCOMPtr<nsISupportsString> prefStr = do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID);
-  if (prefStr) {
-    prefStr->SetData(nsDependentString(str));
-    rv = mPrefBranch->SetComplexValue(aPrefId, NS_GET_IID(nsISupportsString), prefStr);
-  }
-
-  nsMemory::Free(str);
-  return rv;
+  return mPrefBranch->SetCharPref(aPrefId,
+                                  NS_ConvertUTF16toUTF8(aString).get());
 }
 
 nsresult nsPrintOptions::ReadPrefDouble(const char * aPrefId, 
                                         double&      aVal)
 {
   NS_ENSURE_STATE(mPrefBranch);
-  char * str = nsnull;
+  char * str;
   nsresult rv = mPrefBranch->GetCharPref(aPrefId, &str);
   if (NS_SUCCEEDED(rv) && str) {
-    float f;
-    PR_sscanf(str, "%f", &f);
-    aVal = double(f);
+    aVal = atof(str);
     nsMemory::Free(str);
   }
   return rv;
@@ -1266,6 +1273,7 @@ Tester::Tester()
     ps->SetPrintToFile(PR_TRUE);
     ps->SetToFileName(NS_ConvertUTF8toUCS2("File Name").get());
     ps->SetPrintPageDelay(1000);
+    ps->SetShrinkToFit(PR_TRUE);
 
     struct SettingsType {
       const char* mName;
@@ -1281,6 +1289,7 @@ Tester::Tester()
       {kPrintFooterStrRight, nsIPrintSettings::kInitSaveFooterRight},
       {kPrintBGColors, nsIPrintSettings::kInitSaveBGColors},
       {kPrintBGImages, nsIPrintSettings::kInitSaveBGImages},
+      {kPrintShrinkToFit, nsIPrintSettings::kInitSaveShrinkToFit},
       {kPrintPaperSize, nsIPrintSettings::kInitSavePaperSize},
       {kPrintPaperName, nsIPrintSettings::kInitSavePaperName},
       {kPrintPlexName, nsIPrintSettings::kInitSavePlexName},

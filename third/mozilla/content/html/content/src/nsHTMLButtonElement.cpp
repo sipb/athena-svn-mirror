@@ -289,31 +289,29 @@ nsHTMLButtonElement::Click()
   nsCOMPtr<nsIDocument> doc = mDocument; 
 
   if (mDocument) {
-    PRInt32 numShells = doc->GetNumberOfShells();
-    nsCOMPtr<nsIPresContext> context;
-    for (PRInt32 count=0; count < numShells; count++) {
-      nsCOMPtr<nsIPresShell> shell;
-      doc->GetShellAt(count, getter_AddRefs(shell));
-      if (shell) {
-        shell->GetPresContext(getter_AddRefs(context));
-        if (context) {
-          nsEventStatus status = nsEventStatus_eIgnore;
-          nsMouseEvent event;
-          event.eventStructType = NS_MOUSE_EVENT;
-          event.message = NS_MOUSE_LEFT_CLICK;
-          event.isShift = PR_FALSE;
-          event.isControl = PR_FALSE;
-          event.isAlt = PR_FALSE;
-          event.isMeta = PR_FALSE;
-          event.clickCount = 0;
-          event.widget = nsnull;
-          HandleDOMEvent(context, &event, nsnull,
-                              NS_EVENT_FLAG_INIT, &status);
-        }
+    nsIPresShell *shell = doc->GetShellAt(0);
+    if (shell) {
+      nsCOMPtr<nsIPresContext> context;
+      shell->GetPresContext(getter_AddRefs(context));
+      if (context) {
+        nsEventStatus status = nsEventStatus_eIgnore;
+        nsMouseEvent event;
+        event.eventStructType = NS_MOUSE_EVENT;
+        event.message = NS_MOUSE_LEFT_CLICK;
+        event.isShift = PR_FALSE;
+        event.isControl = PR_FALSE;
+        event.isAlt = PR_FALSE;
+        event.isMeta = PR_FALSE;
+        event.clickCount = 0;
+        event.widget = nsnull;
+        HandleDOMEvent(context, &event, nsnull,
+                       NS_EVENT_FLAG_INIT, &status);
       }
     }
   }
+
   mHandlingClick = PR_FALSE;
+
   return NS_OK;
 }
 
@@ -364,9 +362,7 @@ nsHTMLButtonElement::RemoveFocus(nsIPresContext* aPresContext)
     if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
-    nsCOMPtr<nsIContent> rootContent;
-    mDocument->GetRootContent(getter_AddRefs(rootContent));
-    rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
+    rv = esm->SetContentState(nsnull, NS_EVENT_STATE_FOCUS);
   }
 
   return rv;

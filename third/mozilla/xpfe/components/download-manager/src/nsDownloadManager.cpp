@@ -59,6 +59,9 @@
 #include "nsIPromptService.h"
 #include "nsIObserverService.h"
 #include "nsIProfileChangeStatus.h"
+#include "nsISound.h"
+#include "nsIPrefService.h"
+#include "nsIURL.h"
 
 /* Outstanding issues/todo:
  * 1. Implement pause/resume.
@@ -741,7 +744,7 @@ nsDownloadManager::Open(nsIDOMWindow* aParent, nsIDownload* aDownload)
 }
 
 NS_IMETHODIMP
-nsDownloadManager::OpenProgressDialogFor(const nsACString & aTargetPath, nsIDOMWindow* aParent)
+nsDownloadManager::OpenProgressDialogFor(const nsACString & aTargetPath, nsIDOMWindow* aParent, PRBool aCancelDownloadOnClose)
 {
   nsresult rv;
   nsCStringKey key(aTargetPath);
@@ -771,7 +774,7 @@ nsDownloadManager::OpenProgressDialogFor(const nsACString & aTargetPath, nsIDOMW
   nsCOMPtr<nsIProgressDialog> dialog(do_CreateInstance("@mozilla.org/progressdialog;1", &rv));
   if (NS_FAILED(rv)) return rv;
   
-  dialog->SetCancelDownloadOnClose(PR_FALSE);
+  dialog->SetCancelDownloadOnClose(aCancelDownloadOnClose);
   
   nsCOMPtr<nsIDownload> dl = do_QueryInterface(dialog);
 
@@ -1215,6 +1218,33 @@ nsDownload::OnStateChange(nsIWebProgress* aWebProgress,
         mMaxBytes = 1;
       mCurrBytes = mMaxBytes;
       mPercentComplete = 100;
+
+      //Play a sound when the download finishes
+      nsXPIDLCString soundStr;
+
+      nsCOMPtr<nsIPrefService> prefs = do_GetService("@mozilla.org/preferences-service;1");
+
+      if (prefs) {
+        nsCOMPtr<nsIPrefBranch> prefBranch;
+        prefs->GetBranch(nsnull, getter_AddRefs(prefBranch));
+        if (prefBranch)
+          prefBranch->GetCharPref("browser.download.finished_sound_url", getter_Copies(soundStr));
+      }
+
+      //only continue if it isn't blank
+      if (!soundStr.IsEmpty()) {
+        nsCOMPtr<nsISound> snd = do_GetService("@mozilla.org/sound;1");
+        if (snd) { //hopefully we got it
+          nsCOMPtr<nsIURI> soundURI;
+          
+          NS_NewURI(getter_AddRefs(soundURI), soundStr);
+          nsCOMPtr<nsIURL> soundURL(do_QueryInterface(soundURI));
+          if (soundURL)
+            snd->Play(soundURL);
+          else
+            snd->Beep();
+        }
+      }
 
       nsAutoString path;
       rv = mTarget->GetPath(path);

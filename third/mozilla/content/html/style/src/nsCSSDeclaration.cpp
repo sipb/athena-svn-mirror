@@ -46,6 +46,7 @@
 #include "nsUnitConversion.h"
 #include "nsVoidArray.h"
 #include "nsFont.h"
+#include "nsReadableUtils.h"
 
 #include "nsStyleConsts.h"
 
@@ -193,16 +194,27 @@ PRBool nsCSSDeclaration::AppendValueToString(nsCSSProperty aProperty, nsAString&
       } break;
       case eCSSType_Rect: {
         const nsCSSRect *rect = NS_STATIC_CAST(const nsCSSRect*, storage);
-        aResult.Append(NS_LITERAL_STRING("rect("));
-        AppendCSSValueToString(aProperty, rect->mTop, aResult);
-        NS_NAMED_LITERAL_STRING(comma, ", ");
-        aResult.Append(comma);
-        AppendCSSValueToString(aProperty, rect->mRight, aResult);
-        aResult.Append(comma);
-        AppendCSSValueToString(aProperty, rect->mBottom, aResult);
-        aResult.Append(comma);
-        AppendCSSValueToString(aProperty, rect->mLeft, aResult);
-        aResult.Append(PRUnichar(')'));
+        if (rect->mTop.GetUnit() == eCSSUnit_Inherit ||
+            rect->mTop.GetUnit() == eCSSUnit_Initial) {
+          NS_ASSERTION(rect->mRight.GetUnit() == rect->mTop.GetUnit(),
+                       "Top inherit or initial, right isn't.  Fix the parser!");
+          NS_ASSERTION(rect->mBottom.GetUnit() == rect->mTop.GetUnit(),
+                       "Top inherit or initial, bottom isn't.  Fix the parser!");
+          NS_ASSERTION(rect->mLeft.GetUnit() == rect->mTop.GetUnit(),
+                       "Top inherit or initial, left isn't.  Fix the parser!");
+          AppendCSSValueToString(aProperty, rect->mTop, aResult);
+        } else {
+          aResult.Append(NS_LITERAL_STRING("rect("));
+          AppendCSSValueToString(aProperty, rect->mTop, aResult);
+          NS_NAMED_LITERAL_STRING(comma, ", ");
+          aResult.Append(comma);
+          AppendCSSValueToString(aProperty, rect->mRight, aResult);
+          aResult.Append(comma);
+          AppendCSSValueToString(aProperty, rect->mBottom, aResult);
+          aResult.Append(comma);
+          AppendCSSValueToString(aProperty, rect->mLeft, aResult);
+          aResult.Append(PRUnichar(')'));
+        }
       } break;
       case eCSSType_ValueList: {
         const nsCSSValueList* val =
@@ -282,8 +294,6 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
 
   if ((eCSSUnit_String <= unit) && (unit <= eCSSUnit_Counters)) {
     switch (unit) {
-      case eCSSUnit_URL:      aResult.Append(NS_LITERAL_STRING("url("));
-        break;
       case eCSSUnit_Attr:     aResult.Append(NS_LITERAL_STRING("attr("));
         break;
       case eCSSUnit_Counter:  aResult.Append(NS_LITERAL_STRING("counter("));
@@ -309,7 +319,7 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
         // get a string mapping the name
         nsCAutoString str;
         if (nsCSSProps::GetColorName(aValue.GetIntValue(), str)){
-          aResult.Append(NS_ConvertASCIItoUCS2(str));
+          AppendASCIItoUTF16(str, aResult);
         } else {
           nsAutoString tmpStr;
           tmpStr.AppendInt(aValue.GetIntValue(), 10);
@@ -336,7 +346,7 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
              mask <= NS_STYLE_TEXT_DECORATION_BLINK; 
              mask <<= 1) {
           if ((mask & intValue) == mask) {
-            aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, mask)));
+            AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, mask), aResult);
             intValue &= ~mask;
             if (0 != intValue) { // more left
               aResult.Append(PRUnichar(' '));
@@ -345,47 +355,47 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
         }
       }
       else {
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_TEXT_DECORATION_NONE)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_TEXT_DECORATION_NONE), aResult);
       }
     }
     else if (eCSSProperty_azimuth == aProperty) {
       PRInt32 intValue = aValue.GetIntValue();
-      aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, (intValue & ~NS_STYLE_AZIMUTH_BEHIND))));
+      AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, (intValue & ~NS_STYLE_AZIMUTH_BEHIND)), aResult);
       if ((NS_STYLE_AZIMUTH_BEHIND & intValue) != 0) {
         aResult.Append(PRUnichar(' '));
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_AZIMUTH_BEHIND)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_AZIMUTH_BEHIND), aResult);
       }
     }
     else if (eCSSProperty_play_during_flags == aProperty) {
       PRInt32 intValue = aValue.GetIntValue();
       if ((NS_STYLE_PLAY_DURING_MIX & intValue) != 0) {
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PLAY_DURING_MIX)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PLAY_DURING_MIX), aResult);
       }
       if ((NS_STYLE_PLAY_DURING_REPEAT & intValue) != 0) {
         if (NS_STYLE_PLAY_DURING_REPEAT != intValue) {
           aResult.Append(PRUnichar(' '));
         }
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PLAY_DURING_REPEAT)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PLAY_DURING_REPEAT), aResult);
       }
     }
     else if (eCSSProperty_marks == aProperty) {
       PRInt32 intValue = aValue.GetIntValue();
       if ((NS_STYLE_PAGE_MARKS_CROP & intValue) != 0) {
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PAGE_MARKS_CROP)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PAGE_MARKS_CROP), aResult);
       }
       if ((NS_STYLE_PAGE_MARKS_REGISTER & intValue) != 0) {
         if ((NS_STYLE_PAGE_MARKS_CROP & intValue) != 0) {
           aResult.Append(PRUnichar(' '));
         }
-        aResult.Append(NS_ConvertASCIItoUCS2(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PAGE_MARKS_REGISTER)));
+        AppendASCIItoUTF16(nsCSSProps::LookupPropertyValue(aProperty, NS_STYLE_PAGE_MARKS_REGISTER), aResult);
       }
     }
     else {
       const nsAFlatCString& name = nsCSSProps::LookupPropertyValue(aProperty, aValue.GetIntValue());
-      aResult.Append(NS_ConvertASCIItoUCS2(name));
+      AppendASCIItoUTF16(name, aResult);
     }
   }
-  else if (eCSSUnit_Color == unit){
+  else if (eCSSUnit_Color == unit) {
     nsAutoString tmpStr;
     nscolor color = aValue.GetColorValue();
 
@@ -405,6 +415,11 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
     aResult.Append(tmpStr);
 
     aResult.Append(PRUnichar(')'));
+  }
+  else if (eCSSUnit_URL == unit) {
+    aResult.Append(NS_LITERAL_STRING("url(") +
+                   nsDependentString(aValue.GetOriginalURLValue()) +
+                   NS_LITERAL_STRING(")"));
   }
   else if (eCSSUnit_Percent == unit) {
     nsAutoString tmpStr;
@@ -426,7 +441,7 @@ PRBool nsCSSDeclaration::AppendCSSValueToString(nsCSSProperty aProperty, const n
     case eCSSUnit_Normal:       aResult.Append(NS_LITERAL_STRING("normal"));   break;
 
     case eCSSUnit_String:       break;
-    case eCSSUnit_URL:
+    case eCSSUnit_URL:          break;
     case eCSSUnit_Attr:
     case eCSSUnit_Counter:
     case eCSSUnit_Counters:     aResult.Append(PRUnichar(')'));    break;
@@ -479,8 +494,7 @@ nsCSSDeclaration::GetValue(nsCSSProperty aProperty,
   aValue.Truncate(0);
 
   // simple properties are easy.
-  if (!nsCSSProps::IsShorthand(aProperty) &&
-      aProperty != eCSSProperty_play_during) {
+  if (!nsCSSProps::IsShorthand(aProperty)) {
     AppendValueToString(aProperty, aValue);
     return NS_OK;
   }
@@ -629,7 +643,7 @@ nsCSSDeclaration::GetValue(nsCSSProperty aProperty,
       break;
     }
     case eCSSProperty_play_during: {
-      if (AppendValueToString(eCSSProperty_play_during, aValue)) {
+      if (AppendValueToString(eCSSProperty_play_during_uri, aValue)) {
         nsAutoString tmp;
         if (AppendValueToString(eCSSProperty_play_during_flags, tmp)) {
           aValue.Append(PRUnichar(' '));
@@ -717,8 +731,8 @@ nsCSSDeclaration::AppendPropertyAndValueToString(nsCSSProperty aProperty,
                                                  nsAString& aString) const
 {
   NS_ASSERTION(aProperty, "null CSS property passed to AppendPropertyAndValueToString.");
-  aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(aProperty))
-                 + NS_LITERAL_STRING(": "));
+  AppendASCIItoUTF16(nsCSSProps::GetStringValue(aProperty), aString);
+  aString.Append(NS_LITERAL_STRING(": "));
   AppendValueToString(aProperty, aString);
   PRBool  isImportant = GetValueIsImportant(aProperty);
   AppendImportanceToString(isImportant, aString);
@@ -773,8 +787,8 @@ nsCSSDeclaration::TryBorderShorthand(nsAString & aString, PRUint32 aPropertiesSe
     }
   }
   if (border) {
-    aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(eCSSProperty_border))
-                   + NS_LITERAL_STRING(": "));
+    AppendASCIItoUTF16(nsCSSProps::GetStringValue(eCSSProperty_border), aString);
+    aString.Append(NS_LITERAL_STRING(": "));
 
     AppendValueToString(eCSSProperty_border_top_width, aString);
     aString.Append(PRUnichar(' '));
@@ -808,9 +822,9 @@ nsCSSDeclaration::TryBorderSideShorthand(nsAString & aString,
   if (AllPropertiesSameImportance(aBorderWidth, aBorderStyle, aBorderColor,
                                   0, 0, 0,
                                   isImportant)) {
-    aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(aShorthand))
-                   + NS_LITERAL_STRING(":"));
-    aString.Append(PRUnichar(' '));
+    AppendASCIItoUTF16(nsCSSProps::GetStringValue(aShorthand), aString);
+    aString.Append(NS_LITERAL_STRING(": "));
+
     AppendValueToString(OrderValueAt(aBorderWidth-1), aString);
 
     aString.Append(PRUnichar(' '));
@@ -845,8 +859,8 @@ nsCSSDeclaration::TryFourSidesShorthand(nsAString & aString,
                                   0, 0,
                                   isImportant)) {
     // all 4 properties are set, we can output a shorthand
-    aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(aShorthand))
-                   + NS_LITERAL_STRING(": "));
+    AppendASCIItoUTF16(nsCSSProps::GetStringValue(aShorthand), aString);
+    aString.Append(NS_LITERAL_STRING(": "));
     nsCSSValue topValue, bottomValue, leftValue, rightValue;
     nsCSSProperty topProp    = OrderValueAt(aTop-1);
     nsCSSProperty bottomProp = OrderValueAt(aBottom-1);
@@ -895,10 +909,9 @@ nsCSSDeclaration::TryBackgroundShorthand(nsAString & aString,
   if (aBgColor && aBgImage && aBgRepeat && aBgAttachment && aBgPositionX && aBgPositionY &&
       AllPropertiesSameImportance(aBgColor, aBgImage, aBgRepeat, aBgAttachment,
                                   aBgPositionX, aBgPositionY, isImportant)) {
-    aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(eCSSProperty_background))
-                   + NS_LITERAL_STRING(":"));
+    AppendASCIItoUTF16(nsCSSProps::GetStringValue(eCSSProperty_background), aString);
+    aString.Append(NS_LITERAL_STRING(": "));
 
-    aString.Append(PRUnichar(' '));
     AppendValueToString(eCSSProperty_background_color, aString);
     aBgColor = 0;
 
@@ -1156,8 +1169,8 @@ nsCSSDeclaration::ToString(nsAString& aString) const
         if (bgPositionX && bgPositionY &&
             AllPropertiesSameImportance(bgPositionX, bgPositionY,
                                         0, 0, 0, 0, isImportant)) {
-          aString.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(eCSSProperty_background_position))
-                         + NS_LITERAL_STRING(": "));
+          AppendASCIItoUTF16(nsCSSProps::GetStringValue(eCSSProperty_background_position), aString);
+          aString.Append(NS_LITERAL_STRING(": "));
           UseBackgroundPosition(aString, bgPositionX, bgPositionY);
           AppendImportanceToString(isImportant, aString);
           aString.Append(NS_LITERAL_STRING("; "));
@@ -1211,7 +1224,7 @@ nsCSSDeclaration::GetNthProperty(PRUint32 aIndex, nsAString& aReturn) const
   if (aIndex < (PRUint32)mOrder.Count()) {
     nsCSSProperty property = OrderValueAt(aIndex);
     if (0 <= property) {
-      aReturn.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(property)));
+      AppendASCIItoUTF16(nsCSSProps::GetStringValue(property), aReturn);
     }
   }
   

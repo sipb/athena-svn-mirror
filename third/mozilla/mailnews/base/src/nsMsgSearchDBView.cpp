@@ -60,13 +60,13 @@ nsMsgSearchDBView::~nsMsgSearchDBView()
 
 NS_IMPL_ISUPPORTS_INHERITED3(nsMsgSearchDBView, nsMsgDBView, nsIMsgDBView, nsIMsgCopyServiceListener, nsIMsgSearchNotify)
 
-NS_IMETHODIMP nsMsgSearchDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder, nsMsgViewFlagsTypeValue viewFlags, PRBool aTreatRecipientAsAuthor, PRInt32 *pCount)
+NS_IMETHODIMP nsMsgSearchDBView::Open(nsIMsgFolder *folder, nsMsgViewSortTypeValue sortType, nsMsgViewSortOrderValue sortOrder, nsMsgViewFlagsTypeValue viewFlags, PRInt32 *pCount)
 {
     nsresult rv;
     m_folders = do_CreateInstance(NS_SUPPORTSARRAY_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    rv = nsMsgDBView::Open(folder, sortType, sortOrder, viewFlags, aTreatRecipientAsAuthor, pCount);
+    rv = nsMsgDBView::Open(folder, sortType, sortOrder, viewFlags, pCount);
     NS_ENSURE_SUCCESS(rv, rv);
 
 	if (pCount)
@@ -79,9 +79,8 @@ NS_IMETHODIMP nsMsgSearchDBView::Close()
 	PRInt32 count = m_dbToUseList.Count();
 
 	for(PRInt32 i = 0; i < count; i++)
-	{
 		m_dbToUseList[i]->RemoveListener(this);
-	}
+
 	return NS_OK;
 }
 
@@ -201,9 +200,9 @@ nsMsgSearchDBView::OnNewSearch()
   PRInt32 oldSize = GetSize();
 
   PRInt32 count = m_dbToUseList.Count();
-  for(PRInt32 j = 0; j < count; j++) {
+  for(PRInt32 j = 0; j < count; j++) 
     m_dbToUseList[j]->RemoveListener(this);
-  }
+
   m_dbToUseList.Clear();
 
   m_folders->Clear();
@@ -230,7 +229,7 @@ NS_IMETHODIMP
 nsMsgSearchDBView::DoCommandWithFolder(nsMsgViewCommandTypeValue command, nsIMsgFolder *destFolder)
 {
     mCommand = command;
-    mDestFolder = getter_AddRefs(destFolder);
+    mDestFolder = destFolder;
 
     return nsMsgDBView::DoCommandWithFolder(command, destFolder);
 }

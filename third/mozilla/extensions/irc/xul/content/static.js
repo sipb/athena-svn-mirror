@@ -34,8 +34,8 @@
  *  Samuel Sieb, samuel@sieb.net, MIRC color codes, munger menu, and various
  */
 
-const __cz_version   = "0.9.35";
-const __cz_condition = "yellow";
+const __cz_version   = "0.9.52B";
+const __cz_condition = "green";
 
 var warn;
 var ASSERT;
@@ -367,7 +367,7 @@ function processStartupURLs()
         "url" in window.arguments[0])
     {
         var url = window.arguments[0].url;
-        if (url.search(/^irc:\/?\/?$/i) == -1)
+        if (url.search(/^irc:\/?\/?\/?$/i) == -1)
         {
             /* if the url is not irc: irc:/ or irc://, then go to it. */
             gotoIRCURL(url);
@@ -381,6 +381,13 @@ function processStartupURLs()
         var ary = client.prefs["initialURLs"];
         for (var i = 0; i < ary.length; ++i)
         {
+            if (ary[i] && ary[i] == "irc:///")
+            {
+                // Clean out "default network" entries, which we don't 
+                // support any more; replace with the harmless irc:// URL.
+                ary[i] = "irc://";
+                client.prefs["initialURLs"].update();
+            }
             if (ary[i] && ary[i] != "irc://")
                 gotoIRCURL(ary[i]);
         }
@@ -515,10 +522,10 @@ function insertChannelLink (matchText, containerTag, eventData)
     }
     
     var encodedMatchText = fromUnicode(matchText, eventData.sourceObject);
-    var anchor = document.createElementNS ("http://www.w3.org/1999/xhtml",
-                                           "html:a");
+    var anchor = document.createElementNS("http://www.w3.org/1999/xhtml",
+                                          "html:a");
     anchor.setAttribute ("href", eventData.network.getURL() +
-                         escape(encodedMatchText));
+                         ecmaEscape(encodedMatchText));
     anchor.setAttribute ("class", "chatzilla-link");
     insertHyphenatedWord (matchText, anchor);
     containerTag.appendChild (anchor);
@@ -624,33 +631,40 @@ function mircChangeColor (colorInfo, containerTag, data)
     var fgColor = ary[1];
     if (fgColor > 16)
         fgColor &= 16;
+
     switch (fgColor.length)
     {
         case 0:
             delete data.currFgColor;
             delete data.currBgColor;
             return;
+
         case 1:
             data.currFgColor = "0" + fgColor;
             break;
+
         case 2:
             data.currFgColor = fgColor;
             break;
     }
+
     if (fgColor == 1)
         delete data.currFgColor;
-    if (ary.length >= 4)
+    if (arrayHasElementAt(ary, 3))
     {
         var bgColor = ary[3];
         if (bgColor > 16)
             bgColor &= 16;
+
         if (bgColor.length == 1)
             data.currBgColor = "0" + bgColor;
         else
             data.currBgColor = bgColor;
+
         if (bgColor == 0)
             delete data.currBgColor;
     }
+
     data.hasColorInfo = true;
 }
 
@@ -1162,13 +1176,13 @@ function parseIRCURL (url)
 
     /* split url into <host>/<everything-else> pieces */
     var ary = url.match (/^irc:\/\/([^\/\s]+)?(\/.*)?\s*$/i);
-    if (!ary)
+    if (!ary || !ary[1])
     {
         dd ("parseIRCURL: initial split failed");
         return null;
     }
     var host = ary[1];
-    var rest = (2 in ary) ? ary[2] : "";
+    var rest = arrayHasElementAt(ary, 2) ? ary[2] : "";
 
     /* split <host> into server (or network) / port */
     ary = host.match (/^([^\s\:]+)?(\:\d+)?$/);
@@ -1178,9 +1192,9 @@ function parseIRCURL (url)
         return null;
     }
     
-    if (2 in ary)
+    if (arrayHasElementAt(ary, 2))
     {
-        if (!(1 in ary))
+        if (!arrayHasElementAt(ary, 2))
         {
             dd ("parseIRCURL: port with no host");
             return null;
@@ -1189,7 +1203,7 @@ function parseIRCURL (url)
         rv.isserver = true;
         rv.port = parseInt(ary[2].substr(1));
     }
-    else if (1 in ary)
+    else if (arrayHasElementAt(ary, 1))
     {
         specifiedHost = rv.host = ary[1].toLowerCase();
         if (specifiedHost.indexOf(".") != -1)
@@ -1205,13 +1219,13 @@ function parseIRCURL (url)
             return null;
         }
         
-        rv.target = (1 in ary) ? 
-            unescape(ary[1]).replace("\n", "\\n") : "";
+        rv.target = arrayHasElementAt(ary, 1) ? 
+            ecmaUnescape(ary[1]).replace("\n", "\\n") : "";
         var i = rv.target.indexOf(" ");
         if (i != -1)
             rv.target = rv.target.substr(0, i);
-        var params = (2 in ary) ? ary[2].toLowerCase() : "";
-        var query = (3 in ary) ? ary[3] : "";
+        var params = arrayHasElementAt(ary, 2) ? ary[2].toLowerCase() : "";
+        var query = arrayHasElementAt(ary, 3) ? ary[3] : "";
 
         if (params)
         {
@@ -1286,12 +1300,13 @@ function parseIRCURL (url)
 
 function gotoIRCURL (url)
 {
+    var urlspec = url;
     if (typeof url == "string")
         url = parseIRCURL(url);
     
     if (!url)
     {
-        window.alert (getMsg(MSG_ERR_BAD_IRCURL, url));
+        window.alert (getMsg(MSG_ERR_BAD_IRCURL, urlspec));
         return;
     }
 
@@ -1310,10 +1325,10 @@ function gotoIRCURL (url)
     
     if (url.needpass)
     {
-        if ("pass" in url)
+        if (url.pass)
             pass = url.pass;
         else
-            pass = window.prompt(getMsg(MSG_URL_PASSWORD, url.spec));
+            pass = window.promptPassword(getMsg(MSG_URL_PASSWORD, url.spec));
     }
     
     if (url.isserver)
@@ -1395,11 +1410,11 @@ function gotoIRCURL (url)
                 if (url.key)
                     key = url.key;
                 else
-                    key = window.prompt(getMsg(MSG_URL_KEY, url.spec));
+                    key = window.promptPassword(getMsg(MSG_URL_KEY, url.spec));
             }
 
             var charset;
-            if ("charset" in url)
+            if (url.charset)
                 charset = url.charset;
                     
             targetObject = network.dispatch("join",
@@ -1424,7 +1439,7 @@ function gotoIRCURL (url)
                 targetObject.display(msg, "PRIVMSG", "ME!",
                                      client.currentObject);
             }
-            targetObject.say(fromUnicode(msg, targetObject));
+            targetObject.say(msg);
             setCurrentObject(targetObject);
         }
     }
@@ -1732,6 +1747,8 @@ function setCurrentObject (obj)
 
     if (client.PRINT_DIRECTION == 1)
         scrollDown(obj.frame, false);    
+
+    client.input.focus();
 }
 
 function checkScroll(frame)
@@ -2308,8 +2325,8 @@ function cli_say(msg)
         case "IRCUser":
         case "IRCChanUser":
             msg = filterOutput (msg, "PRIVMSG");
-            display (msg, "PRIVMSG", "ME!", client.currentObject);
-            client.currentObject.say(fromUnicode(msg));
+            display(msg, "PRIVMSG", "ME!", client.currentObject);
+            client.currentObject.say(msg);
             break;
 
         case "IRCClient":
@@ -2348,6 +2365,18 @@ function net_getprefmgr()
     }
     
     return this._prefManager;
+}
+
+CIRCServer.prototype.__defineGetter__("prefs", srv_getprefs);
+function srv_getprefs()
+{
+    return this.parent.prefs;
+}
+
+CIRCServer.prototype.__defineGetter__("prefManager", srv_getprefmgr);
+function srv_getprefmgr()
+{
+    return this.parent.prefManager;
 }
 
 CIRCChannel.prototype.__defineGetter__("prefs", chan_getprefs);
@@ -2558,12 +2587,12 @@ function __display(message, msgtype, sourceObj, destObj)
         var name;
         if (sourceObj)
         {
-            name = (sourceObj.TYPE == "CIRCChannel") ?
+            name = (sourceObj.TYPE == "IRCChannel") ?
                 sourceObj.unicodeName : sourceObj.name;
         }
         else
         {
-            name = (this.TYPE == "CIRCChannel") ?
+            name = (this.TYPE == "IRCChannel") ?
                 this.unicodeName : this.name;
         }
 
@@ -2792,7 +2821,7 @@ function __display(message, msgtype, sourceObj, destObj)
         
         try
         {
-            this.logFile.write(logText + "\n");
+            this.logFile.write(fromUnicode(logText + "\n", "utf-8"));
         }
         catch (ex)
         {
@@ -3140,6 +3169,7 @@ function usr_graphres()
         rdf.Assert (this.rdfRes, rdf.resHost, rdf.litUnk);
         rdf.Assert (this.rdfRes, rdf.resSortName, rdf.litUnk);
         rdf.Assert (this.rdfRes, rdf.resOp, rdf.litUnk);
+        rdf.Assert (this.rdfRes, rdf.resHalfOp, rdf.litUnk);
         rdf.Assert (this.rdfRes, rdf.resVoice, rdf.litUnk);
         this.updateGraphResource();
     }
@@ -3177,16 +3207,20 @@ function usr_updres()
     var sortname;
 
     if (this.isOp)
-        sortname = "o-";
+        sortname = "a-";
+    else if (this.isHalfOp)
+        sortname = "b-";
     else if (this.isVoice)
-        sortname = "v-";
+        sortname = "c-";
     else
-        sortname = "x-";
+        sortname = "d-";
     
     sortname += this.nick;
     rdf.Change (this.rdfRes, rdf.resSortName, rdf.GetLiteral(sortname));
     rdf.Change (this.rdfRes, rdf.resOp, 
                 this.isOp ? rdf.litTrue : rdf.litFalse);
+    rdf.Change (this.rdfRes, rdf.resHalfOp, 
+                this.isHalfOp ? rdf.litTrue : rdf.litFalse);
     rdf.Change (this.rdfRes, rdf.resVoice,
                 this.isVoice ? rdf.litTrue : rdf.litFalse);
 }

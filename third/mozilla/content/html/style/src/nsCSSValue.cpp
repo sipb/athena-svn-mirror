@@ -90,6 +90,13 @@ nsCSSValue::nsCSSValue(nscolor aValue)
   mValue.mColor = aValue;
 }
 
+nsCSSValue::nsCSSValue(nsCSSValue::URL* aValue)
+  : mUnit(eCSSUnit_URL)
+{
+  mValue.mURL = aValue;
+  mValue.mURL->AddRef();
+}
+
 nsCSSValue::nsCSSValue(const nsCSSValue& aCopy)
   : mUnit(aCopy.mUnit)
 {
@@ -106,6 +113,10 @@ nsCSSValue::nsCSSValue(const nsCSSValue& aCopy)
   }
   else if (eCSSUnit_Color == mUnit){
     mValue.mColor = aCopy.mValue.mColor;
+  }
+  else if (eCSSUnit_URL == mUnit){
+    mValue.mURL = aCopy.mValue.mURL;
+    mValue.mURL->AddRef();
   }
   else {
     mValue.mFloat = aCopy.mValue.mFloat;
@@ -127,6 +138,10 @@ nsCSSValue& nsCSSValue::operator=(const nsCSSValue& aCopy)
   else if (eCSSUnit_Color == mUnit){
     mValue.mColor = aCopy.mValue.mColor;
   }
+  else if (eCSSUnit_URL == mUnit){
+    mValue.mURL = aCopy.mValue.mURL;
+    mValue.mURL->AddRef();
+  }
   else {
     mValue.mFloat = aCopy.mValue.mFloat;
   }
@@ -147,13 +162,16 @@ PRBool nsCSSValue::operator==(const nsCSSValue& aOther) const
       }
     }
     else if ((eCSSUnit_Integer <= mUnit) && (mUnit <= eCSSUnit_Enumerated)) {
-      return PRBool(mValue.mInt == aOther.mValue.mInt);
+      return mValue.mInt == aOther.mValue.mInt;
     }
-    else if (eCSSUnit_Color == mUnit){
-      return PRBool(mValue.mColor == aOther.mValue.mColor);
+    else if (eCSSUnit_Color == mUnit) {
+      return mValue.mColor == aOther.mValue.mColor;
+    }
+    else if (eCSSUnit_URL == mUnit) {
+      return *mValue.mURL == *aOther.mValue.mURL;
     }
     else {
-      return PRBool(mValue.mFloat == aOther.mValue.mFloat);
+      return mValue.mFloat == aOther.mValue.mFloat;
     }
   }
   return PR_FALSE;
@@ -187,6 +205,14 @@ void nsCSSValue::SetColorValue(nscolor aValue)
   Reset();
   mUnit = eCSSUnit_Color;
   mValue.mColor = aValue;
+}
+
+void nsCSSValue::SetURLValue(nsCSSValue::URL* aValue)
+{
+  Reset();
+  mUnit = eCSSUnit_URL;
+  mValue.mURL = aValue;
+  mValue.mURL->AddRef();
 }
 
 void nsCSSValue::SetAutoValue(void)
@@ -227,7 +253,7 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
   }
 
   if (-1 < aPropID) {
-    aBuffer.Append(NS_ConvertASCIItoUCS2(nsCSSProps::GetStringValue(aPropID)));
+    AppendASCIItoUTF16(nsCSSProps::GetStringValue(aPropID), aBuffer);
     aBuffer.Append(NS_LITERAL_STRING(": "));
   }
 
@@ -261,7 +287,7 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
 
     aBuffer.Append(PRUnichar(']'));
   }
-  else if (eCSSUnit_Color == mUnit){
+  else if (eCSSUnit_Color == mUnit) {
     aBuffer.Append(NS_LITERAL_STRING("(0x"));
 
     nsAutoString intStr;
@@ -287,6 +313,9 @@ void nsCSSValue::AppendToString(nsAString& aBuffer,
     aBuffer.Append(intStr);
 
     aBuffer.Append(PRUnichar(')'));
+  }
+  else if (eCSSUnit_URL == mUnit) {
+    aBuffer.Append(mValue.mURL->mString);
   }
   else if (eCSSUnit_Percent == mUnit) {
     nsAutoString floatString;
@@ -351,4 +380,3 @@ void nsCSSValue::ToString(nsAString& aBuffer,
   aBuffer.Truncate();
   AppendToString(aBuffer, aPropID);
 }
-

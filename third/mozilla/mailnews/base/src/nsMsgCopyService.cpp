@@ -287,11 +287,17 @@ nsMsgCopyService::DoNextCopy()
           }
           else if (copyRequest->m_requestType == nsCopyFoldersType )
           {
-			        copySource->m_processed = PR_TRUE;
+              copySource->m_processed = PR_TRUE;
               rv = copyRequest->m_dstFolder->CopyFolder
                   (copySource->m_msgFolder,
                    copyRequest->m_isMoveOrDraftOrTemplate,
                    copyRequest->m_msgWindow, copyRequest->m_listener);
+              // If it's a copy folder operation and the destination
+              // folder already exists, CopyFolder() returns an error w/o sending
+              // a completion notification, so clear it here.
+              if (NS_FAILED(rv))
+                ClearRequest(copyRequest, rv);
+
           }
           else if (copyRequest->m_requestType == nsCopyFileMessageType)
           {
@@ -318,14 +324,6 @@ nsMsgCopyService::DoNextCopy()
           }
       }
     }
-    // Don't clear copy request in failure case - notify completion should do that.
-    // Hmm, this is not true in case it's a copy folder opeation and the destination
-    // folder already exists. In this case CopyFolder() returns an error and there
-    // won't be completion notification at all and the request will stay in the
-    // queue forever.
-    if (NS_FAILED(rv))
-      ClearRequest(copyRequest, rv);
-
     return rv;
 }
 
@@ -355,7 +353,7 @@ nsMsgCopyService::FindRequest(nsISupports* aSupport,
         nsresult rv = NS_OK;
         PRBool isServer=PR_FALSE;
         dstFolder->GetIsServer(&isServer);
-        if (isServer)
+        if (!isServer)
           rv = dstFolder->GetParentMsgFolder(getter_AddRefs(parentMsgFolder));
         if ((NS_FAILED(rv)) || (!parentMsgFolder && !isServer) || (copyRequest->m_dstFolder.get() != parentMsgFolder))
         {
@@ -503,7 +501,6 @@ nsMsgCopyService::CopyFolders( nsISupportsArray* folders,
   nsCopySource* copySource = nsnull;
   nsresult rv = NS_ERROR_NULL_POINTER;
   PRUint32 cnt;
-  nsCOMPtr<nsIFolder> folder;
   nsCOMPtr<nsIMsgFolder> curFolder;
   nsCOMPtr<nsISupports> support;
   
@@ -522,10 +519,7 @@ nsMsgCopyService::CopyFolders( nsISupportsArray* folders,
     isMove, listener, window, PR_FALSE);
   NS_ENSURE_SUCCESS(rv,rv);
   
-  folder = do_QueryInterface(support, &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
-  
-  curFolder = do_QueryInterface(folder, &rv);
+  curFolder = do_QueryInterface(support, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   
   copySource = copyRequest->AddNewCopySource(curFolder);
@@ -549,13 +543,13 @@ nsMsgCopyService::CopyFileMessage(nsIFileSpec* fileSpec,
                                   nsIMsgDBHdr* msgToReplace,
                                   PRBool isDraft,
                                   nsIMsgCopyServiceListener* listener,
-	                               nsIMsgWindow* window)
+                                  nsIMsgWindow* window)
 {
   nsresult rv = NS_ERROR_NULL_POINTER;
   nsCopyRequest* copyRequest;
   nsCopySource* copySource = nsnull;
   nsCOMPtr<nsISupports> fileSupport;
-	nsCOMPtr<nsITransactionManager> txnMgr;
+  nsCOMPtr<nsITransactionManager> txnMgr;
 
   NS_ENSURE_ARG_POINTER(fileSpec);
   NS_ENSURE_ARG_POINTER(dstFolder);
@@ -603,10 +597,9 @@ nsMsgCopyService::NotifyCompletion(nsISupports* aSupport,
   nsresult rv;
   rv = DoNextCopy();
   nsCopyRequest* copyRequest = FindRequest(aSupport, dstFolder);
-  if (copyRequest && copyRequest->m_processed)
-  {
+
+  if (copyRequest && copyRequest->m_processed) 
     ClearRequest(copyRequest, result);
-  }
 
   return rv;
 }

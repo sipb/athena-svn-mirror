@@ -45,6 +45,7 @@
 #include "nsIPop3Sink.h"
 #include "nsMsgLineBuffer.h"
 #include "nsMsgProtocol.h"
+#include "nsIPop3Protocol.h"
 #include "MailNewsTypes.h"
 #include "nsLocalStringBundle.h"
 #include "nsIMsgStatusFeedback.h"
@@ -87,23 +88,29 @@ and change the POP3_QUIT_RESPONSE state to flush the newly committed deletes. */
  */
 
 enum Pop3CapabilityEnum {
-    POP3_CAPABILITY_UNDEFINED = 0x00000000,
-    POP3_AUTH_MECH_UNDEFINED = 0x00000001,
-    POP3_HAS_AUTH_LOGIN		    = 0x00000002,
-    POP3_XSENDER_UNDEFINED    = 0x00000004,
-    POP3_HAS_XSENDER		      = 0x00000008,
-    POP3_GURL_UNDEFINED		    = 0x00000010,
-    POP3_HAS_GURL			        = 0x00000020,
-    POP3_UIDL_UNDEFINED       = 0x00000040,
-    POP3_HAS_UIDL             = 0x00000080,
-    POP3_XTND_XLST_UNDEFINED  = 0x00000100,
-    POP3_HAS_XTND_XLST        = 0x00000200,
-    POP3_TOP_UNDEFINED         = 0x00000400,
-    POP3_HAS_TOP              = 0x00000800,
-    POP3_HAS_AUTH_USER		    = 0x00001000,
-    POP3_HAS_AUTH_CRAM_MD5	    = 0x00002000,
-    POP3_HAS_AUTH_APOP		    = 0x00004000
+    POP3_CAPABILITY_UNDEFINED   = 0x00000000,
+    POP3_AUTH_MECH_UNDEFINED    = 0x00000001,
+    POP3_HAS_AUTH_LOGIN         = 0x00000002,
+    POP3_XSENDER_UNDEFINED      = 0x00000004,
+    POP3_HAS_XSENDER            = 0x00000008,
+    POP3_GURL_UNDEFINED         = 0x00000010,
+    POP3_HAS_GURL               = 0x00000020,
+    POP3_UIDL_UNDEFINED         = 0x00000040,
+    POP3_HAS_UIDL               = 0x00000080,
+    POP3_XTND_XLST_UNDEFINED    = 0x00000100,
+    POP3_HAS_XTND_XLST          = 0x00000200,
+    POP3_TOP_UNDEFINED          = 0x00000400,
+    POP3_HAS_TOP                = 0x00000800,
+    POP3_HAS_AUTH_USER          = 0x00001000,
+    POP3_HAS_AUTH_CRAM_MD5      = 0x00002000,
+    POP3_HAS_AUTH_APOP          = 0x00004000,
+    POP3_HAS_AUTH_PLAIN         = 0x00008000,
+    POP3_HAS_RESP_CODES         = 0x00010000,
+    POP3_HAS_AUTH_RESP_CODE     = 0x00020000
 };
+
+#define POP3_HAS_AUTH_ANY         0x00009002
+#define POP3_HAS_AUTH_ANY_SEC     0x00006000
 
 enum Pop3StatesEnum {
     POP3_READ_PASSWORD,                         // 0
@@ -144,38 +151,38 @@ enum Pop3StatesEnum {
     POP3_GET_FAKE_UIDL_TOP,                     // 28
     POP3_SEND_AUTH,                             // 29
     POP3_AUTH_RESPONSE,                         // 30
-    POP3_PROCESS_AUTH,                          // 31
-    POP3_AUTH_FALLBACK,                         // 32
+    POP3_SEND_CAPA,                             // 31
+    POP3_CAPA_RESPONSE,                         // 32
+    POP3_PROCESS_AUTH,                          // 33
+    POP3_AUTH_FALLBACK,                         // 34
 
-    POP3_AUTH_LOGIN,                            // 33
-    POP3_AUTH_LOGIN_RESPONSE,                   // 34
-    POP3_SEND_XSENDER,                          // 35
-    POP3_XSENDER_RESPONSE,                      // 36
-    POP3_SEND_GURL,                             // 37
+    POP3_AUTH_LOGIN,                            // 35
+    POP3_AUTH_LOGIN_RESPONSE,                   // 36
+    POP3_SEND_XSENDER,                          // 37
+    POP3_XSENDER_RESPONSE,                      // 38
+    POP3_SEND_GURL,                             // 39
 
-    POP3_GURL_RESPONSE,                         // 38
-    POP3_QUIT_RESPONSE,
-    POP3_INTERRUPTED,
-    POP3_STOPLOGIN
+    POP3_GURL_RESPONSE,                         // 40
+    POP3_QUIT_RESPONSE,                         // 41
+    POP3_INTERRUPTED                            // 42
 };
 
 
-#define KEEP		'k'			/* If we want to keep this item on server. */
-#define DELETE_CHAR	'd'			/* If we want to delete this item. */
-#define TOO_BIG		'b'			/* item left on server because it was too big */
+#define KEEP        'k'         /* If we want to keep this item on server. */
+#define DELETE_CHAR 'd'         /* If we want to delete this item. */
+#define TOO_BIG     'b'         /* item left on server because it was too big */
 
-typedef struct Pop3AllocedString { /* Need this silliness as a place to
-                                      keep the strings that are allocated
-                                      for the keys in the hash table. ### */
-    char* str;
-    struct Pop3AllocedString* next;
-} Pop3AllocedString;
+typedef struct Pop3UidlEntry { /* information about this message */
+    char* uidl;
+    char  status; // KEEP=='k', DELETE='d' TOO_BIG='b'
+    PRInt32 dateReceived; // time message received, used for aging
+} Pop3UidlEntry;
 
 typedef struct Pop3UidlHost {
     char* host;
     char* user;
     PLHashTable * hash;
-    Pop3AllocedString* strings;
+    Pop3UidlEntry* uidlEntries;
     struct Pop3UidlHost* next;
 } Pop3UidlHost;
 
@@ -215,7 +222,7 @@ typedef struct _Pop3ConData {
                                  * called
                                  */
     PRBool only_check_for_new_mail;
-	nsMsgBiffState biffstate;     /* If just checking for, what the answer is. */
+    nsMsgBiffState biffstate;     /* If just checking for, what the answer is. */
     
     void *msg_closure;
     
@@ -235,9 +242,9 @@ typedef struct _Pop3ConData {
     /* the current message that we are retrieving 
        with the TOP command */
     PRInt32 current_msg_to_top;	
-   	
+
     /* we will download this many in 
-       POP3_GET_MSG */							   
+       POP3_GET_MSG */
     PRInt32 number_of_messages_not_seen_before;
     /* reached when we have TOPped 
        all of the new messages */
@@ -261,109 +268,128 @@ typedef struct _Pop3ConData {
 // commands, etc. I do not intend it to refer to protocol state)
 #define POP3_PAUSE_FOR_READ			0x00000001  /* should we pause for the next read */
 #define POP3_PASSWORD_FAILED		0x00000002
+#define POP3_STOPLOGIN              0x00000004  /* error loging in, so stop here */
+#define POP3_AUTH_FAILURE           0x00000008  /* extended code said authentication failed */
 
 
-class nsPop3Protocol : public nsMsgProtocol, public nsMsgLineBuffer
+class nsPop3Protocol : public nsMsgProtocol, public nsMsgLineBuffer, public nsIPop3Protocol
 {
 public:
-    nsPop3Protocol(nsIURI* aURL);  
-    virtual ~nsPop3Protocol();
-    
-	nsresult Initialize(nsIURI * aURL);
-    virtual nsresult LoadUrl(nsIURI *aURL, nsISupports * aConsumer = nsnull);
+  nsPop3Protocol(nsIURI* aURL);  
+  virtual ~nsPop3Protocol();
+  
+  NS_DECL_ISUPPORTS_INHERITED
+  NS_DECL_NSIPOP3PROTOCOL
 
-    const char* GetUsername() { return m_username.get(); };
-    void SetUsername(const char* name);
+  nsresult Initialize(nsIURI * aURL);
+  virtual nsresult LoadUrl(nsIURI *aURL, nsISupports * aConsumer = nsnull);
 
-    nsresult GetPassword(char ** aPassword, PRBool *okayValue);
+  const char* GetUsername() { return m_username.get(); };
+  void SetUsername(const char* name);
 
-	NS_IMETHOD OnStopRequest(nsIRequest *request, nsISupports * aContext, nsresult aStatus);
+  nsresult GetPassword(char ** aPassword, PRBool *okayValue);
+
+  NS_IMETHOD OnStopRequest(nsIRequest *request, nsISupports * aContext, nsresult aStatus);
   NS_IMETHOD Cancel(nsresult status);
-	// for nsMsgLineBuffer
-    virtual PRInt32 HandleLine(char *line, PRUint32 line_length);
+  // for nsMsgLineBuffer
+  virtual PRInt32 HandleLine(char *line, PRUint32 line_length);
 
+  static void MarkMsgDeletedInHashTable(PLHashTable *hashTable, const char *uidl, 
+                                  PRBool deleteChar, PRBool *changed);
+
+  static nsresult MarkMsgDeletedForHost(const char *hostName, const char *userName,
+                                      nsIFileSpec *mailDirectory, 
+                                      const char **UIDLArray, PRUint32 count, 
+                                      PRBool deleteMsgs);
 private:
   nsCString m_ApopTimestamp;
   nsCOMPtr<nsIMsgStringService> mStringService;
 
   nsCString m_username;
-	nsCString m_senderInfo;
-	nsCString m_commandResponse;
-	nsCOMPtr<nsIMsgStatusFeedback> m_statusFeedback;
+  nsCString m_senderInfo;
+  nsCString m_commandResponse;
+  nsCOMPtr<nsIMsgStatusFeedback> m_statusFeedback;
 
-	// progress state information
-	void UpdateProgressPercent (PRUint32 totalDone, PRUint32 total);
-	void UpdateStatus(PRInt32 aStatusID);
-	void UpdateStatusWithString(const PRUnichar * aString);
+  // progress state information
+  void UpdateProgressPercent (PRUint32 totalDone, PRUint32 total);
+  void UpdateStatus(PRInt32 aStatusID);
+  void UpdateStatusWithString(const PRUnichar * aString);
 
-	PRInt32	m_bytesInMsgReceived; 
+  PRInt32	m_bytesInMsgReceived; 
   PRInt32	m_totalFolderSize;    
   PRInt32	m_totalDownloadSize; /* Number of bytes we're going to
                                     download.  Might be much less
                                     than the total_folder_size. */
-	PRInt32 m_totalBytesReceived; // total # bytes received for the connection
+  PRInt32 m_totalBytesReceived; // total # bytes received for the connection
 
-	virtual nsresult ProcessProtocolState(nsIURI * url, nsIInputStream * inputStream, 
-									      PRUint32 sourceOffset, PRUint32 length);
-	virtual nsresult CloseSocket();
-	virtual PRInt32 SendData(nsIURI * aURL, const char * dataBuffer, PRBool aSuppressLogging = PR_FALSE);
+  virtual nsresult ProcessProtocolState(nsIURI * url, nsIInputStream * inputStream, 
+                                        PRUint32 sourceOffset, PRUint32 length);
+  virtual nsresult CloseSocket();
+  virtual PRInt32 SendData(nsIURI * aURL, const char * dataBuffer, PRBool aSuppressLogging = PR_FALSE);
 
   nsCOMPtr<nsIURI> m_url;
   nsCOMPtr<nsIPop3Sink> m_nsIPop3Sink;
   nsCOMPtr<nsIPop3IncomingServer> m_pop3Server;
-	
-	nsMsgLineStreamBuffer   * m_lineStreamBuffer; // used to efficiently extract lines from the incoming data stream
+
+  nsMsgLineStreamBuffer   * m_lineStreamBuffer; // used to efficiently extract lines from the incoming data stream
   Pop3ConData* m_pop3ConData;
   void FreeMsgInfo();
   void Abort();
 
   PRBool m_useSecAuth;
+  PRBool m_password_already_sent;
 
   void SetCapFlag(PRUint32 flag);
   void ClearCapFlag(PRUint32 flag);
   PRBool TestCapFlag(PRUint32 flag);
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-	// Begin Pop3 protocol state handlers
-	//////////////////////////////////////////////////////////////////////////////////////////
-    PRInt32 WaitForStartOfConnectionResponse(nsIInputStream* inputStream, 
-                                             PRUint32 length);
-    PRInt32 WaitForResponse(nsIInputStream* inputStream, 
-                            PRUint32 length);
-    PRInt32 Error(PRInt32 err_code);
-    PRInt32 SendAuth();
-    PRInt32 AuthResponse(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 ProcessAuth();
-    PRInt32 AuthFallback();
-    PRInt32 AuthLogin();
-    PRInt32 AuthLoginResponse();
-    PRInt32 SendUsername();
-    PRInt32 SendPassword();
-    PRInt32 SendStatOrGurl(PRBool sendStat);
-    PRInt32 SendStat();
-    PRInt32 GetStat();
-    PRInt32 SendGurl();
-    PRInt32 GurlResponse();
-    PRInt32 SendList();
-    PRInt32 GetList(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 SendFakeUidlTop();
-    PRInt32 StartUseTopForFakeUidl();
-    PRInt32 GetFakeUidlTop(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 SendXtndXlstMsgid();
-    PRInt32 GetXtndXlstMsgid(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 SendUidlList();
-    PRInt32 GetUidlList(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 GetMsg();
-    PRInt32 SendTop();
-    PRInt32 SendXsender();
-    PRInt32 XsenderResponse();
-    PRInt32 SendRetr();
+  void BackupAuthFlags();
+  void RestoreAuthFlags();
+  PRInt32 m_origAuthFlags;
 
-    PRInt32 RetrResponse(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 TopResponse(nsIInputStream* inputStream, PRUint32 length);
-    PRInt32 SendDele();
-    PRInt32 DeleResponse();
-    PRInt32 CommitState(PRBool remove_last_entry);
+  //////////////////////////////////////////////////////////////////////////////////////////
+      // Begin Pop3 protocol state handlers
+      //////////////////////////////////////////////////////////////////////////////////////////
+  PRInt32 WaitForStartOfConnectionResponse(nsIInputStream* inputStream, 
+                                           PRUint32 length);
+  PRInt32 WaitForResponse(nsIInputStream* inputStream, 
+                          PRUint32 length);
+  PRInt32 Error(PRInt32 err_code);
+  PRInt32 SendAuth();
+  PRInt32 AuthResponse(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 SendCapa();
+  PRInt32 CapaResponse(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 ProcessAuth();
+  PRInt32 AuthFallback();
+  PRInt32 AuthLogin();
+  PRInt32 AuthLoginResponse();
+  PRInt32 SendUsername();
+  PRInt32 SendPassword();
+  PRInt32 SendStatOrGurl(PRBool sendStat);
+  PRInt32 SendStat();
+  PRInt32 GetStat();
+  PRInt32 SendGurl();
+  PRInt32 GurlResponse();
+  PRInt32 SendList();
+  PRInt32 GetList(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 SendFakeUidlTop();
+  PRInt32 StartUseTopForFakeUidl();
+  PRInt32 GetFakeUidlTop(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 SendXtndXlstMsgid();
+  PRInt32 GetXtndXlstMsgid(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 SendUidlList();
+  PRInt32 GetUidlList(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 GetMsg();
+  PRInt32 SendTop();
+  PRInt32 SendXsender();
+  PRInt32 XsenderResponse();
+  PRInt32 SendRetr();
+
+  PRInt32 RetrResponse(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 TopResponse(nsIInputStream* inputStream, PRUint32 length);
+  PRInt32 SendDele();
+  PRInt32 DeleResponse();
+  PRInt32 CommitState(PRBool remove_last_entry);
 };
 
 #endif /* nsPop3Protocol_h__ */

@@ -406,15 +406,9 @@ PK11_NewSlotInfo(SECMODModule *mod)
     if (slot == NULL) return slot;
 
 #ifdef PKCS11_USE_THREADS
-    slot->refLock = PZ_NewLock(nssILockSlot);
-    if (slot->refLock == NULL) {
-	PORT_Free(slot);
-	return slot;
-    }
     slot->sessionLock = mod->isThreadSafe ?
 	PZ_NewLock(nssILockSession) : (PZLock *)mod->refLock;
     if (slot->sessionLock == NULL) {
-	PZ_DestroyLock(slot->refLock);
 	PORT_Free(slot);
 	return slot;
     }
@@ -423,13 +417,11 @@ PK11_NewSlotInfo(SECMODModule *mod)
 	if (mod->isThreadSafe) {
 	    PZ_DestroyLock(slot->sessionLock);
 	}
-	PZ_DestroyLock(slot->refLock);
 	PORT_Free(slot);
 	return slot;
     }
 #else
     slot->sessionLock = NULL;
-    slot->refLock = NULL;
     slot->freeListLock = NULL;
 #endif
     slot->freeSymKeysHead = NULL;
@@ -480,9 +472,7 @@ PK11_NewSlotInfo(SECMODModule *mod)
 PK11SlotInfo *
 PK11_ReferenceSlot(PK11SlotInfo *slot)
 {
-    PK11_USE_THREADS(PZ_Lock(slot->refLock);)
-    slot->refCount++;
-    PK11_USE_THREADS(PZ_Unlock(slot->refLock);)
+    PR_AtomicIncrement(&slot->refCount);
     return slot;
 }
 
@@ -502,10 +492,6 @@ PK11_DestroySlot(PK11SlotInfo *slot)
 	PORT_Free(slot->mechanismList);
    }
 #ifdef PKCS11_USE_THREADS
-   if (slot->refLock) {
-	PZ_DestroyLock(slot->refLock);
-	slot->refLock = NULL;
-   }
    if (slot->isThreadSafe && slot->sessionLock) {
 	PZ_DestroyLock(slot->sessionLock);
    }
@@ -530,13 +516,9 @@ PK11_DestroySlot(PK11SlotInfo *slot)
 void
 PK11_FreeSlot(PK11SlotInfo *slot)
 {
-    PRBool freeit = PR_FALSE;
-
-    PK11_USE_THREADS(PZ_Lock(slot->refLock);)
-    if (slot->refCount-- == 1) freeit = PR_TRUE;
-    PK11_USE_THREADS(PZ_Unlock(slot->refLock);)
-
-    if (freeit) PK11_DestroySlot(slot);
+    if (PR_AtomicDecrement(&slot->refCount) == 0) {
+	PK11_DestroySlot(slot);
+    }
 }
 
 void
@@ -583,6 +565,78 @@ SECMOD_HasRootCerts(void)
 /***********************************************************
  * Functions to find specific slots.
  ***********************************************************/
+PK11SlotList *
+PK11_FindSlotsByAliases(const char *dllName, const char* slotName,
+                        const char* tokenName, PRBool presentOnly)
+{
+    SECMODModuleList *mlp;
+    SECMODModuleList *modules = SECMOD_GetDefaultModuleList();
+    SECMODListLock *moduleLock = SECMOD_GetDefaultModuleListLock();
+    int i;
+    PK11SlotList* slotList = NULL;
+    PRUint32 slotcount = 0;
+    SECStatus rv = SECSuccess;
+
+    slotList = PK11_NewSlotList();
+    if (!slotList) {
+        PORT_SetError(SEC_ERROR_NO_MEMORY);
+        return NULL;
+    }
+
+    if ( ((NULL == dllName) || (0 == *dllName)) &&
+        ((NULL == slotName) || (0 == *slotName)) &&
+        ((NULL == tokenName) || (0 == *tokenName)) ) {
+        /* default to softoken */
+        PK11_AddSlotToList(slotList, PK11_GetInternalKeySlot());
+        return slotList;
+    }
+
+    /* work through all the slots */
+    SECMOD_GetReadLock(moduleLock);
+    for (mlp = modules; mlp != NULL; mlp = mlp->next) {
+        PORT_Assert(mlp->module);
+        if (!mlp->module) {
+            rv = SECFailure;
+            break;
+        }
+        if ((!dllName) || (mlp->module->dllName &&
+            (0 == PORT_Strcmp(mlp->module->dllName, dllName)))) {
+            for (i=0; i < mlp->module->slotCount; i++) {
+                PK11SlotInfo *tmpSlot = (mlp->module->slots?mlp->module->slots[i]:NULL);
+                PORT_Assert(tmpSlot);
+                if (!tmpSlot) {
+                    rv = SECFailure;
+                    break;
+                }
+                if ((PR_FALSE == presentOnly || PK11_IsPresent(tmpSlot)) &&
+                    ( (!tokenName) || (tmpSlot->token_name &&
+                    (0==PORT_Strcmp(tmpSlot->token_name, tokenName)))) &&
+                    ( (!slotName) || (tmpSlot->slot_name &&
+                    (0==PORT_Strcmp(tmpSlot->slot_name, slotName)))) ) {
+                    PK11SlotInfo* slot = PK11_ReferenceSlot(tmpSlot);
+                    if (slot) {
+                        PK11_AddSlotToList(slotList, slot);
+                        slotcount++;
+                    }
+                }
+            }
+        }
+    }
+    SECMOD_ReleaseReadLock(moduleLock);
+
+    if ( (0 == slotcount) || (SECFailure == rv) ) {
+        PORT_SetError(SEC_ERROR_NO_TOKEN);
+        PK11_FreeSlotList(slotList);
+        slotList = NULL;
+    }
+
+    if (SECFailure == rv) {
+        PORT_SetError(SEC_ERROR_LIBRARY_FAILURE);
+    }
+
+    return slotList;
+}
+
 PK11SlotInfo *
 PK11_FindSlotByName(char *name)
 {
@@ -1694,7 +1748,7 @@ PK11_ReadMechanismList(PK11SlotInfo *slot)
 {
     CK_ULONG count;
     CK_RV crv;
-    int i;
+    PRUint32 i;
 
     if (slot->mechanismList) {
 	PORT_Free(slot->mechanismList);
@@ -1906,7 +1960,6 @@ PK11_TokenRefresh(PK11SlotInfo *slot)
 {
     CK_TOKEN_INFO tokenInfo;
     CK_RV crv;
-    SECStatus rv;
 
     /* set the slot flags to the current token values */
     if (!slot->isThreadSafe) PK11_EnterSlotMonitor(slot);
@@ -2066,7 +2119,6 @@ pk11_IsPresentCertLoad(PK11SlotInfo *slot, PRBool loadCerts)
 	if (slot->session != CK_INVALID_SESSION) {
 	    PK11_GETTAB(slot)->C_CloseSession(slot->session);
 	    slot->session = CK_INVALID_SESSION;
-	    /* force certs to be freed */
 	}
         if (!slot->isThreadSafe) PK11_ExitSlotMonitor(slot);
 	return PR_FALSE;
@@ -2141,7 +2193,7 @@ PRBool PK11_HasRootCerts(PK11SlotInfo *slot) {
     return slot->hasRootCerts;
 }
 
-/* Get the module this slot is attatched to */
+/* Get the module this slot is attached to */
 SECMODModule *
 PK11_GetModule(PK11SlotInfo *slot)
 {
@@ -2823,6 +2875,58 @@ PK11_AddMechanismEntry(CK_MECHANISM_TYPE type, CK_KEY_TYPE key,
  * Get the key type needed for the given mechanism
  */
 CK_MECHANISM_TYPE
+PK11_GetKeyMechanism(CK_KEY_TYPE type)
+{
+    switch (type) {
+    case CKK_AES:
+	return CKM_AES_CBC;
+    case CKK_DES:
+	return CKM_DES_CBC;
+    case CKK_DES3:
+	return CKM_DES3_KEY_GEN;
+    case CKK_DES2:
+	return CKM_DES2_KEY_GEN;
+    case CKK_CDMF:
+	return CKM_CDMF_CBC;
+    case CKK_RC2:
+	return CKM_RC2_CBC;
+    case CKK_RC4:
+	return CKM_RC4;
+    case CKK_RC5:
+	return CKM_RC5_CBC;
+    case CKK_SKIPJACK:
+	return CKM_SKIPJACK_CBC64;
+    case CKK_BATON:
+	return CKM_BATON_CBC128;
+    case CKK_JUNIPER:
+	return CKM_JUNIPER_CBC128;
+    case CKK_IDEA:
+	return CKM_IDEA_CBC;
+    case CKK_CAST:
+	return CKM_CAST_CBC;
+    case CKK_CAST3:
+	return CKM_CAST3_CBC;
+    case CKK_CAST5:
+	return CKM_CAST5_CBC;
+    case CKK_RSA:
+	return CKM_RSA_PKCS;
+    case CKK_DSA:
+	return CKM_DSA;
+    case CKK_DH:
+	return CKM_DH_PKCS_DERIVE;
+    case CKK_KEA:
+	return CKM_KEA_KEY_DERIVE;
+    case CKK_EC:  /* CKK_ECDSA is deprecated */
+	return CKM_ECDSA;
+    case CKK_GENERIC_SECRET:
+    default:
+	return CKM_SHA_1_HMAC;
+    }
+}
+/*
+ * Get the key type needed for the given mechanism
+ */
+CK_MECHANISM_TYPE
 PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
 {
     switch (type) {
@@ -2848,7 +2952,7 @@ PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
     case CKM_DES3_MAC:
     case CKM_DES3_MAC_GENERAL:
     case CKM_DES3_CBC_PAD:
-	return (len == 128) ? CKK_DES2 : CKK_DES3;
+	return (len == 16) ? CKK_DES2 : CKK_DES3;
     case CKM_DES2_KEY_GEN:
     case CKM_PBE_SHA1_DES2_EDE_CBC:
 	return CKK_DES2;
@@ -3001,6 +3105,12 @@ PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
 CK_MECHANISM_TYPE
 PK11_GetKeyGen(CK_MECHANISM_TYPE type)
 {
+    return PK11_GetKeyGenWithSize(type, 0);
+}
+
+CK_MECHANISM_TYPE
+PK11_GetKeyGenWithSize(CK_MECHANISM_TYPE type, int size)
+{
     switch (type) {
     case CKM_AES_ECB:
     case CKM_AES_CBC:
@@ -3022,8 +3132,11 @@ PK11_GetKeyGen(CK_MECHANISM_TYPE type)
     case CKM_DES3_MAC:
     case CKM_DES3_MAC_GENERAL:
     case CKM_DES3_CBC_PAD:
+	return (size == 16) ? CKM_DES2_KEY_GEN : CKM_DES3_KEY_GEN;
     case CKM_DES3_KEY_GEN:
 	return CKM_DES3_KEY_GEN;
+    case CKM_DES2_KEY_GEN:
+	return CKM_DES2_KEY_GEN;
     case CKM_CDMF_ECB:
     case CKM_CDMF_CBC:
     case CKM_CDMF_MAC:

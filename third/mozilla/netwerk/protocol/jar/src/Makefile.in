@@ -31,12 +31,12 @@ LIBRARY_NAME	= nkjar_s
 REQUIRES	= xpcom \
 		  string \
 		  jar \
-		  exthandler \
 		  mimetype \
 		  caps \
 		  js \
 		  pref \
 		  xpconnect \
+		  uconv \
 		  $(NULL)
 
 CPPSRCS		= \

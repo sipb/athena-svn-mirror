@@ -214,21 +214,8 @@ static NS_DEFINE_CID(kStyleSetCID,  NS_STYLESET_CID);
 
 #ifdef PR_LOGGING
 
-#ifdef NS_DEBUG
-// PR_LOGGING is force to always be on (even in release builds)
-// but we only want some of it on,
-#define EXTENDED_DEBUG_PRINTING 
-#endif
-
-#define DUMP_LAYOUT_LEVEL 9 // this turns on the dumping of each doucment's layout info
-
 static PRLogModuleInfo * kPrintingLogMod = PR_NewLogModule("printing");
 #define PR_PL(_p1)  PR_LOG(kPrintingLogMod, PR_LOG_DEBUG, _p1);
-
-#ifdef EXTENDED_DEBUG_PRINTING
-static PRUint32 gDumpFileNameCnt   = 0;
-static PRUint32 gDumpLOFileNameCnt = 0;
-#endif
 
 #define PRT_YESNO(_p) ((_p)?"YES":"NO")
 #else
@@ -422,6 +409,7 @@ protected:
   PRPackedBool  mEnableRendering;
   PRPackedBool  mStopped;
   PRPackedBool  mLoaded;
+  PRPackedBool  mDeferredWindowClose;
   PRInt16 mNumURLStarts;
   PRInt16 mDestroyRefCount;     // a second "refcount" for the document viewer's "destroy"
 
@@ -486,6 +474,7 @@ void DocumentViewerImpl::PrepareToStartLoad()
   mEnableRendering  = PR_TRUE;
   mStopped          = PR_FALSE;
   mLoaded           = PR_FALSE;
+  mDeferredWindowClose = PR_FALSE;
 
 #ifdef NS_PRINTING
   mPrintIsPending        = PR_FALSE;
@@ -702,10 +691,7 @@ DocumentViewerImpl::InitPresentationStuff(PRBool aDoInitialReflow)
     nsCOMPtr<nsIScrollable> sc = do_QueryInterface(mContainer);
 
     if (sc) {
-      nsCOMPtr<nsIContent> root;
-      mDocument->GetRootContent(getter_AddRefs(root));
-
-      nsCOMPtr<nsIDOMHTMLFrameSetElement> frameset(do_QueryInterface(root));
+      nsCOMPtr<nsIDOMHTMLFrameSetElement> frameset(do_QueryInterface(mDocument->GetRootContent()));
 
       if (frameset) {
         // If this is a frameset (i.e. not a frame) then we never want
@@ -897,10 +883,8 @@ DocumentViewerImpl::LoadComplete(nsresult aStatus)
   nsresult rv = NS_OK;
   NS_ENSURE_TRUE(mDocument, NS_ERROR_NOT_AVAILABLE);
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-
   // First, get the script global object from the document...
-  rv = mDocument->GetScriptGlobalObject(getter_AddRefs(global));
+  nsIScriptGlobalObject *global = mDocument->GetScriptGlobalObject();
 
   // Fail if no ScriptGlobalObject is available...
   NS_ENSURE_TRUE(global, NS_ERROR_NULL_POINTER);
@@ -930,8 +914,7 @@ DocumentViewerImpl::LoadComplete(nsresult aStatus)
     if (mDocument) {
       //printf("DEBUG: getting uri from document (%p)\n", mDocument.get());
 
-      nsCOMPtr<nsIURI> uri;
-      mDocument->GetDocumentURL(getter_AddRefs(uri));
+      nsIURI *uri = mDocument->GetDocumentURL();
 
       if (uri) {
         //printf("DEBUG: getting spec fro uri (%p)\n", uri.get());
@@ -977,9 +960,8 @@ DocumentViewerImpl::Unload()
   }
 
   // First, get the script global object from the document...
-  nsCOMPtr<nsIScriptGlobalObject> global;
+  nsCOMPtr<nsIScriptGlobalObject> global = mDocument->GetScriptGlobalObject();
 
-  nsresult rv = mDocument->GetScriptGlobalObject(getter_AddRefs(global));
   if (!global) {
     // Fail if no ScriptGlobalObject is available...
     NS_ASSERTION(0, "nsIScriptGlobalObject not set for document!");
@@ -992,10 +974,8 @@ DocumentViewerImpl::Unload()
 
   event.eventStructType = NS_EVENT;
   event.message = NS_PAGE_UNLOAD;
-  rv = global->HandleDOMEvent(mPresContext, &event, nsnull,
-                              NS_EVENT_FLAG_INIT, &status);
-
-  return rv;
+  return global->HandleDOMEvent(mPresContext, &event, nsnull,
+                                NS_EVENT_FLAG_INIT, &status);
 }
 
 NS_IMETHODIMP
@@ -1023,8 +1003,7 @@ DocumentViewerImpl::Close()
 
     // Break global object circular reference on the document created
     // in the DocViewer Init
-    nsCOMPtr<nsIScriptGlobalObject> globalObject;
-    mDocument->GetScriptGlobalObject(getter_AddRefs(globalObject));
+    nsIScriptGlobalObject* globalObject = mDocument->GetScriptGlobalObject();
 
     if (globalObject) {
       globalObject->SetNewDocument(nsnull, PR_TRUE, PR_TRUE);
@@ -1585,6 +1564,21 @@ DocumentViewerImpl::GetEnableRendering(PRBool* aResult)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+DocumentViewerImpl::RequestWindowClose(PRBool* aCanClose)
+{
+#ifdef NS_PRINTING
+  if (mPrintIsPending || (mPrintEngine && mPrintEngine->GetIsPrinting())) {
+    *aCanClose = PR_FALSE;
+    mDeferredWindowClose = PR_TRUE;
+  } else
+#endif
+    *aCanClose = PR_TRUE;
+
+  return NS_OK;
+}
+
+
 void
 DocumentViewerImpl::ForceRefresh()
 {
@@ -1605,12 +1599,10 @@ DocumentViewerImpl::CreateStyleSet(nsIDocument* aDocument,
 
   rv = CallCreateInstance(kStyleSetCID, aStyleSet);
   if (NS_OK == rv) {
-    PRInt32 index = 0;
-    aDocument->GetNumberOfStyleSheets(PR_TRUE, &index);
+    PRInt32 index = aDocument->GetNumberOfStyleSheets(PR_TRUE);
 
     while (0 < index--) {
-      nsCOMPtr<nsIStyleSheet> sheet;
-      aDocument->GetStyleSheetAt(index, PR_TRUE, getter_AddRefs(sheet));
+      nsIStyleSheet *sheet = aDocument->GetStyleSheetAt(index, PR_TRUE);
 
       /*
        * GetStyleSheetAt will return all style sheets in the document but
@@ -1642,9 +1634,11 @@ DocumentViewerImpl::CreateStyleSet(nsIDocument* aDocument,
         nsCOMPtr<nsICSSStyleSheet> sheet;
         PRUint32 count;
         sheets->Count(&count);
+        // Insert the user sheets at the front of the user sheet list
+        // so that they are most significant user sheets.
         for(PRUint32 i=0; i<count; i++) {
           sheets->GetElementAt(i, getter_AddRefs(sheet));
-          (*aStyleSet)->AppendUserStyleSheet(sheet);
+          (*aStyleSet)->InsertUserStyleSheetBefore(sheet, nsnull);
         }
       }
 
@@ -1674,7 +1668,7 @@ DocumentViewerImpl::CreateStyleSet(nsIDocument* aDocument,
 // Note this is also defined in nsPrintEngine
 // They can't share it because nsPrintEngine may not be available
 // when printing isn't turned on
-static nsIPresShell*
+static nsIPresShell *
 GetPresShellFor(nsIDocShell* aDocShell)
 {
   nsCOMPtr<nsIDOMDocument> domDoc(do_GetInterface(aDocShell));
@@ -1683,10 +1677,7 @@ GetPresShellFor(nsIDocShell* aDocShell)
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
   if (!doc) return nsnull;
 
-  nsIPresShell* shell = nsnull;
-  doc->GetShellAt(0, &shell);
-
-  return shell;
+  return doc->GetShellAt(0);
 }
 
 //---------------------------------------------------------------------
@@ -1706,16 +1697,17 @@ DocumentViewerImpl::GetPresShellAndRootContent(nsIWebShell *  aWebShell,
 
   nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(aWebShell));
 
-  nsCOMPtr<nsIPresShell> presShell(getter_AddRefs(GetPresShellFor(docShell)));
-  if (!presShell) return;
+  nsIPresShell *presShell = GetPresShellFor(docShell);
+  if (!presShell)
+    return;
 
   nsCOMPtr<nsIDocument> doc;
   presShell->GetDocument(getter_AddRefs(doc));
-  if (!doc) return;
+  if (!doc)
+    return;
 
-  doc->GetRootContent(aContent); // this addrefs
-  *aPresShell = presShell.get();
-  NS_ADDREF(*aPresShell);
+  NS_IF_ADDREF(*aContent = doc->GetRootContent());
+  NS_ADDREF(*aPresShell = presShell);
 }
 
 //---------------------------------------------------------------------
@@ -1723,14 +1715,14 @@ nsresult
 DocumentViewerImpl::FindFrameSetWithIID(nsIContent * aParentContent,
                                         const nsIID& aIID)
 {
-  PRInt32 numChildren;
-  aParentContent->ChildCount(numChildren);
+  PRUint32 numChildren = aParentContent->GetChildCount();
 
   // do a breadth search across all siblings
-  PRInt32 inx;
+  PRUint32 inx;
   for (inx = 0; inx < numChildren; ++inx) {
-    nsCOMPtr<nsIContent> child;
-    if (NS_SUCCEEDED(aParentContent->ChildAt(inx, getter_AddRefs(child))) && child) {
+    nsIContent *child = aParentContent->GetChildAt(inx);
+
+    if (child) {
       nsCOMPtr<nsISupports> temp;
       if (NS_SUCCEEDED(child->QueryInterface(aIID, (void**)getter_AddRefs(temp)))) {
         return NS_OK;
@@ -1996,9 +1988,7 @@ NS_IMETHODIMP DocumentViewerImpl::SelectAll()
   }
   else if (mDocument)
   {
-    nsCOMPtr<nsIContent> rootContent;
-    mDocument->GetRootContent(getter_AddRefs(rootContent));
-    bodyNode = do_QueryInterface(rootContent);
+    bodyNode = do_QueryInterface(mDocument->GetRootContent());
   }
   if (!bodyNode) return NS_ERROR_FAILURE;
 
@@ -2741,31 +2731,22 @@ DocumentViewerImpl::GetPopupNode(nsIDOMNode** aNode)
   NS_ENSURE_SUCCESS(rv, rv);
   NS_ENSURE_TRUE(document, NS_ERROR_FAILURE);
 
-  // get the script global object
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  rv = document->GetScriptGlobalObject(getter_AddRefs(global));
-  NS_ENSURE_SUCCESS(rv, rv);
-  NS_ENSURE_TRUE(global, NS_ERROR_FAILURE);
 
   // get the internal dom window
-  nsCOMPtr<nsIDOMWindowInternal> internalWin(do_QueryInterface(global, &rv));
+  nsCOMPtr<nsIDOMWindowInternal> internalWin(do_QueryInterface(document->GetScriptGlobalObject(), &rv));
   NS_ENSURE_SUCCESS(rv, rv);
-  NS_ENSURE_TRUE(internalWin, NS_ERROR_FAILURE);
 
   // get the private dom window
   nsCOMPtr<nsPIDOMWindow> privateWin(do_QueryInterface(internalWin, &rv));
   NS_ENSURE_SUCCESS(rv, rv);
-  NS_ENSURE_TRUE(privateWin, NS_ERROR_FAILURE);
 
   // get the focus controller
   nsCOMPtr<nsIFocusController> focusController;
-  rv = privateWin->GetRootFocusController(getter_AddRefs(focusController));
-  NS_ENSURE_SUCCESS(rv, rv);
+  privateWin->GetRootFocusController(getter_AddRefs(focusController));
   NS_ENSURE_TRUE(focusController, NS_ERROR_FAILURE);
 
   // get the popup node
-  rv = focusController->GetPopupNode(aNode); // addref happens here
-  NS_ENSURE_SUCCESS(rv, rv);
+  focusController->GetPopupNode(aNode); // addref happens here
 
   return rv;
 }
@@ -2935,10 +2916,7 @@ NS_IMETHODIMP nsDocViewerSelectionListener::NotifySelectionChanged(nsIDOMDocumen
     mDocViewer->GetDocument(getter_AddRefs(theDoc));
     if (!theDoc) return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-    theDoc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
-
-    nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(scriptGlobalObject);
+    nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(theDoc->GetScriptGlobalObject());
     if (!domWindow) return NS_ERROR_FAILURE;
 
     domWindow->UpdateCommands(NS_LITERAL_STRING("select"));
@@ -3815,7 +3793,12 @@ DocumentViewerImpl::OnDonePrinting()
     }
 
     // We are done printing, now cleanup 
-    if (mClosingWhilePrinting) {
+    if (mDeferredWindowClose) {
+      mDeferredWindowClose = PR_FALSE;
+      nsCOMPtr<nsIDOMWindowInternal> win = do_GetInterface(mContainer);
+      if (win)
+        win->Close();
+    } else if (mClosingWhilePrinting) {
       if (mDocument) {
         mDocument->SetScriptGlobalObject(nsnull);
         mDocument = nsnull;
