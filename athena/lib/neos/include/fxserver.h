@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: epeisach $
+ * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.2 1992-04-27 12:55:19 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.3 1993-05-06 15:22:15 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -23,6 +23,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <rpc/rpc.h>
+#ifdef SOLARIS
+#include <rpc/svc.h>
+#endif
 #include <fx_prot.h>
 #include <sys/param.h>
 #ifdef KERBEROS
