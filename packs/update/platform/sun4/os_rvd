@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.10 1997-05-13 20:00:11 ghudson Exp $
+## $Id: os_rvd,v 1.11 1997-05-17 08:46:15 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -102,11 +102,11 @@ GLOBAL : *.CKP *.local *.pid :
 		*.old
 		:
 	/platform:::
-		-> sun4c
-		-> sun4d
-		-> sun4m
-		-> sun4mL
-		-> sun4u
+		sun4c
+		sun4d
+		sun4m
+		sun4mL
+		sun4u
 		:
 	/usr::: 
 		-> 4lib
