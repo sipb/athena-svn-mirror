@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.20.2.1 2003-07-30 20:42:36 ghudson Exp $
+# $Id: sendbug.sh,v 1.20.2.2 2003-08-20 16:53:05 ghudson Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
