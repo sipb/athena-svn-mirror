@@ -1,0 +1,299 @@
+# Yelp eesti tõlge.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Tõivo Leedjärv <toivo@linux.ee>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: yelp\n"
+"POT-Creation-Date: 2002-11-18 23:28+0100\n"
+"PO-Revision-Date: 2002-06-30 00:50+0300\n"
+"Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
+"Language-Team: Estonian <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/GNOME_Yelp.server.in.h:1
+msgid "Yelp"
+msgstr "Yelp"
+
+#: src/GNOME_Yelp.server.in.h:2
+msgid "Yelp Factory"
+msgstr "Yelp Factory"
+
+#: src/yelp-main.c:114
+#, c-format
+msgid "Could not activate Yelp: '%s'"
+msgstr "Ei saa Yelpi aktiveerida: '%s'"
+
+#: src/yelp-main.c:133
+msgid "Could not open new window."
+msgstr "Ei saa uut akent avada."
+
+#: src/yelp-man.c:296 src/yelp-man.c:317 src/yelp-man.c:353 src/yelp-man.c:385
+#: src/yelp-man.c:401 src/yelp-man.c:412
+msgid "X11"
+msgstr "X11"
+
+#: src/yelp-man.c:301 src/yelp-man.c:332 src/yelp-man.c:390 src/yelp-man.c:417
+msgid "OpenSSL"
+msgstr "OpenSSL"
+
+#: src/yelp-man.c:306
+msgid "Termcap"
+msgstr "Termcap"
+
+#: src/yelp-man.c:322
+msgid "Perl"
+msgstr "Perl"
+
+#: src/yelp-man.c:327
+msgid "Qt"
+msgstr "Qt"
+
+#: src/yelp-man.c:337
+msgid "TIFF"
+msgstr "TIFF"
+
+#: src/yelp-man.c:342
+msgid "PThreads"
+msgstr "PThreads"
+
+#: src/yelp-man.c:364
+msgid "System Calls"
+msgstr "Süsteemipöördused"
+
+#: src/yelp-man.c:369
+msgid "Library Functions"
+msgstr "Teegifunktsioonid"
+
+#: src/yelp-man.c:374
+msgid "Kernel Routines"
+msgstr "Kernelitoimingud"
+
+#: src/yelp-man.c:429
+msgid "Applications"
+msgstr "Rakendused"
+
+#: src/yelp-man.c:434
+msgid "Development"
+msgstr "Arendus"
+
+#: src/yelp-man.c:439
+msgid "Hardware Devices"
+msgstr "Riistvaraseadmed"
+
+#: src/yelp-man.c:444
+msgid "Configuration Files"
+msgstr "Konfiguratsioonifailid"
+
+#: src/yelp-man.c:449
+msgid "Games"
+msgstr "Mängud"
+
+#: src/yelp-man.c:454
+msgid "Overviews"
+msgstr "Ülevaated"
+
+#: src/yelp-man.c:459
+msgid "System Administration"
+msgstr "Süsteemi administreerimine"
+
+#: src/yelp-view-content.c:422 src/yelp-view-index.c:498
+msgid "Section"
+msgstr "Peatükk"
+
+#: src/yelp-view-content.c:567 src/yelp-view-index.c:566
+msgid "Loading..."
+msgstr "Laadimine..."
+
+#: src/yelp-view-index.c:461
+msgid "Search for:"
+msgstr "Otsi:"
+
+#. GList           *seriesids;
+#: src/yelp-view-toc.c:183
+msgid "Help Contents"
+msgstr "Abiinfo sisukord"
+
+#: src/yelp-view-toc.c:184
+msgid "GNOME - Desktop"
+msgstr "GNOME - Töölaud"
+
+#: src/yelp-view-toc.c:185
+msgid "Additional documents"
+msgstr "Muud dokumendid"
+
+#: src/yelp-view-toc.c:186 src/yelp-view-toc.c:511
+msgid "Manual Pages"
+msgstr "Manuaalilehed"
+
+#: src/yelp-view-toc.c:187 src/yelp-view-toc.c:567
+msgid "Info Pages"
+msgstr "Infolehed"
+
+#: src/yelp-view-toc.c:384 src/yelp-view-toc.c:568 src/yelp-view-toc.c:792
+msgid "Documents"
+msgstr "Dokumendid"
+
+#: src/yelp-view-toc.c:385 src/yelp-view-toc.c:512 src/yelp-view-toc.c:793
+msgid "Categories"
+msgstr "Kategooriad"
+
+#: src/yelp-view-toc.c:466
+msgid "Manual pages"
+msgstr "Manuaalilehed"
+
+#: src/yelp-view-toc.c:731
+msgid "GNOME is"
+msgstr "GNOME on"
+
+#: src/yelp-view-toc.c:732
+msgid "Free Software"
+msgstr "vaba tarkvara"
+
+#: src/yelp-view-toc.c:733
+msgid "(C)"
+msgstr "©"
+
+#: src/yelp-window.c:159
+msgid "/_File"
+msgstr "/_Fail"
+
+#: src/yelp-window.c:160
+msgid "/File/_New window"
+msgstr "/Fail/_Uus aken"
+
+#: src/yelp-window.c:161
+msgid "/File/_Close window"
+msgstr "/Fail/_Sulge aken"
+
+#. {N_("/File/_Quit"),         NULL,         window_exit_cb,         0,                           "<StockItem>", GTK_STOCK_QUIT    },
+#: src/yelp-window.c:163
+msgid "/_Go"
+msgstr "/_Liigu"
+
+#: src/yelp-window.c:164
+msgid "/Go/_Back"
+msgstr "/Liigu/_Tagasi"
+
+#: src/yelp-window.c:165
+msgid "/Go/_Forward"
+msgstr "/Liigu/_Edasi"
+
+#: src/yelp-window.c:166
+msgid "/Go/_Home"
+msgstr "/Liigu/_Kodu"
+
+#: src/yelp-window.c:167
+msgid "/Go/_Index"
+msgstr "/Liigu/_Indeks"
+
+#: src/yelp-window.c:168
+msgid "/_Help"
+msgstr "/_Abi"
+
+#: src/yelp-window.c:169
+msgid "/Help/_About"
+msgstr "/Abi/_Info"
+
+#: src/yelp-window.c:227 src/yelp-window.c:429
+msgid "Help Browser"
+msgstr "Abiinfo brauser"
+
+#: src/yelp-window.c:339
+#, c-format
+msgid "The document '%s' does not exist"
+msgstr "Dokumenti '%s' ei ole olemas"
+
+#. Note to translators: put here your name (and address) so it
+#. * will shop up in the "about" box
+#: src/yelp-window.c:598
+msgid "translator_credits"
+msgstr ""
+"Tõlge eesti keelde:\n"
+"       Tõivo Leedjärv <toivo@linux.ee>, 2002."
+
+#: src/yelp-window.c:602
+msgid "Help Browser for GNOME 2.0"
+msgstr "GNOME 2.0 abiinfo brauser"
+
+#: src/yelp-window.c:657
+msgid "Back"
+msgstr "Tagasi"
+
+#: src/yelp-window.c:658
+msgid "Show previous page in history"
+msgstr "Näita eelmist lehekülge ajaloos"
+
+#: src/yelp-window.c:669
+msgid "Forward"
+msgstr "Edasi"
+
+#: src/yelp-window.c:670
+msgid "Show next page in history"
+msgstr "Näita järgmist lehekülge ajaloos"
+
+#: src/yelp-window.c:683
+msgid "Home"
+msgstr "Kodu"
+
+#: src/yelp-window.c:684
+msgid "Go to home view"
+msgstr "Liigu koduvaatele"
+
+#: src/yelp-window.c:694
+msgid "Index"
+msgstr "Indeks"
+
+#: src/yelp-window.c:695
+msgid "Search in the index"
+msgstr "Otsi indeksist"
+
+#: yelp.desktop.in.h:1
+msgid "Get help with GNOME"
+msgstr "Abistab GNOMEi kasutamisel"
+
+#: yelp.desktop.in.h:2
+msgid "Help"
+msgstr "Abi"
+
+#~ msgid ""
+#~ "Error while parsing the stylesheet, make sure you have your docbook "
+#~ "environment setup correctly."
+#~ msgstr ""
+#~ "Viga stiililehe töötlemisel. Palun kontrolli, kas sul on docbook keskkond "
+#~ "korrektselt seadistatud."
+
+#~ msgid "Couldn't parse the document '%s'."
+#~ msgstr "Ei suuda dokumenti '%s' töödelda."
+
+#~ msgid "Error while applying the stylesheet."
+#~ msgstr "Viga stiililehe rakendamisel."
+
+#~ msgid "info"
+#~ msgstr "info"
+
+#~ msgid "man"
+#~ msgstr "man"
+
+#~ msgid "Get help on..."
+#~ msgstr "Otsi abi teemal..."
+
+#~ msgid "Installed documents"
+#~ msgstr "Installitud dokumendid"
+
+#~ msgid "Start page"
+#~ msgstr "Algusleht"
+
+#~ msgid "Scrollkeeper docs for category"
+#~ msgstr "Scrollkeeperi dokumendid kategoorias"
+
+#~ msgid "/File/_Quit"
+#~ msgstr "/Fail/_Lõpeta"
+
+#~ msgid "Search for a phrase in the document"
+#~ msgstr "Otsi dokumendist fraasi"
+
+#~ msgid "Enter phrase to search for in all documents"
+#~ msgstr "Sisesta fraas, mida kõigist dokumentidest otsida"

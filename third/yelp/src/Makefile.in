@@ -1,0 +1,630 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
+GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBGNOME_INFO2HTML = @LIBGNOME_INFO2HTML@
+LIBGNOME_MAN2HTML = @LIBGNOME_MAN2HTML@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_CFLAGS = @ORBIT_CFLAGS@
+ORBIT_CONFIG = @ORBIT_CONFIG@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_LIBS = @ORBIT_LIBS@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+YELP_IDL_INCLUDES = @YELP_IDL_INCLUDES@
+cxxflags_set = @cxxflags_set@
+yelplocaledir = @yelplocaledir@
+
+INCLUDES = \
+	-I$(top_srcdir)							\
+	@YELP_CFLAGS@							\
+	-DG_LOG_DOMAIN=\"Yelp\"						\
+	-DPREFIX=\""$(prefix)"\"					\
+	-DSYSCONFDIR=\""$(sysconfdir)"\"				\
+	-DDATADIR=\""$(datadir)"\"					\
+	-DLIBDIR=\""$(libdir)"\"					\
+	-DIMAGEDIR=\""$(datadir)/images/yelp"\"				\
+	-DGNOMELOCALEDIR=\""$(yelplocaledir)"\"				\
+	-DLIBGNOME_MAN2HTML=\"$(LIBGNOME_MAN2HTML)\"			\
+	-DLIBGNOME_INFO2HTML=\"$(LIBGNOME_INFO2HTML)\"			\
+	-DSERVERDIR=\"$(libexecdir)\"
+
+@HTML_WIDGET_GTKHTML1_TRUE@html_widget_impl = @HTML_WIDGET_GTKHTML1_TRUE@yelp-html-gtkhtml1.c
+@HTML_WIDGET_GTKHTML1_FALSE@html_widget_impl = @HTML_WIDGET_GTKHTML1_FALSE@yelp-html-gtkhtml2.c
+
+libexec_PROGRAMS = yelp-db2html
+bin_PROGRAMS = yelp
+
+noinst_PROGRAMS = test-uri test-reader
+
+test_uri_SOURCES = \
+	test-uri.c							\
+	yelp-uri.c		yelp-uri.h				\
+	yelp-error.c		yelp-error.h				\
+	yelp-util.c		yelp-util.h
+
+
+test_uri_LDADD = \
+	@YELP_LIBS@
+
+
+test_reader_SOURCES = \
+	test-reader.c							\
+	yelp-uri.c		yelp-uri.h				\
+	yelp-cache.c		yelp-cache.h				\
+	yelp-reader.c		yelp-reader.h				\
+	yelp-error.c		yelp-error.h				\
+	yelp-util.c		yelp-util.h				\
+	yelp-marshal-main.c
+
+
+test_reader_LDADD = \
+	@YELP_LIBS@
+
+
+yelp_db2html_SOURCES = \
+	yelp-db2html.c
+
+
+yelp_db2html_LDADD = \
+	@DB2HTML_LIBS@
+
+
+yelp_SOURCES = \
+	$(gnome_yelp_idl_sources)					\
+	yelp-base.c		yelp-base.h				\
+	yelp-cache.c		yelp-cache.h				\
+	yelp-error.c		yelp-error.h				\
+	yelp-history.c		yelp-history.h				\
+	$(html_widget_impl) 	yelp-html.h				\
+	yelp-index-model.c	yelp-index-model.h			\
+	yelp-info.c		yelp-info.h				\
+	yelp-main.c							\
+	yelp-man.c		yelp-man.h				\
+	yelp-marshal-main.c						\
+	yelp-reader.c		yelp-reader.h				\
+	yelp-section.c		yelp-section.h				\
+	yelp-scrollkeeper.c	yelp-scrollkeeper.h			\
+	yelp-util.c		yelp-util.h				\
+	yelp-view-content.c	yelp-view-content.h			\
+	yelp-view-index.c	yelp-view-index.h			\
+	yelp-view-toc.c		yelp-view-toc.h				\
+	yelp-window.c 		yelp-window.h				\
+	yelp-uri.c	        yelp-uri.h
+
+
+yelp_LDADD = \
+	@YELP_LIBS@							\
+	@HTML_WIDGET_LIBS@						\
+	$(POPT_LIBS)
+
+
+gnome_yelp_idl_sources = \
+	GNOME_Yelp-stubs.c						\
+	GNOME_Yelp-skels.c						\
+	GNOME_Yelp.in							\
+	GNOME_Yelp-common.c						\
+	GNOME_Yelp.h
+
+
+serverdir = $(libdir)/bonobo/servers
+server_in_files = GNOME_Yelp.server.in
+server_DATA = $(server_in_files:.server.in=.server)
+
+CLEANFILES = \
+	$(gnome_yelp_idl_sources)					\
+	gnome_yelp_idl_stamp						\
+	GNOME_Yelp.server
+
+
+EXTRA_DIST = \
+	yelp-marshal.list						\
+	$(server_in_files)						\
+	$(server_DATA)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  yelp$(EXEEXT)
+libexec_PROGRAMS =  yelp-db2html$(EXEEXT)
+noinst_PROGRAMS =  test-uri$(EXEEXT) test-reader$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS) $(libexec_PROGRAMS) $(noinst_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LIBS = @LIBS@
+@HTML_WIDGET_GTKHTML1_TRUE@yelp_OBJECTS =  GNOME_Yelp-stubs.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@GNOME_Yelp-skels.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@GNOME_Yelp-common.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-base.$(OBJEXT) yelp-cache.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-error.$(OBJEXT) yelp-history.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-html-gtkhtml1.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-index-model.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-info.$(OBJEXT) yelp-main.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-man.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-marshal-main.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-reader.$(OBJEXT) yelp-section.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-scrollkeeper.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-util.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-view-content.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-view-index.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-view-toc.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_TRUE@yelp-window.$(OBJEXT) yelp-uri.$(OBJEXT)
+@HTML_WIDGET_GTKHTML1_FALSE@yelp_OBJECTS =  GNOME_Yelp-stubs.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@GNOME_Yelp-skels.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@GNOME_Yelp-common.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-base.$(OBJEXT) yelp-cache.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-error.$(OBJEXT) yelp-history.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-html-gtkhtml2.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-index-model.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-info.$(OBJEXT) yelp-main.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-man.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-marshal-main.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-reader.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-section.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-scrollkeeper.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-util.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-view-content.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-view-index.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-view-toc.$(OBJEXT) \
+@HTML_WIDGET_GTKHTML1_FALSE@yelp-window.$(OBJEXT) yelp-uri.$(OBJEXT)
+yelp_DEPENDENCIES = 
+yelp_LDFLAGS = 
+yelp_db2html_OBJECTS =  yelp-db2html.$(OBJEXT)
+yelp_db2html_DEPENDENCIES = 
+yelp_db2html_LDFLAGS = 
+test_uri_OBJECTS =  test-uri.$(OBJEXT) yelp-uri.$(OBJEXT) \
+yelp-error.$(OBJEXT) yelp-util.$(OBJEXT)
+test_uri_DEPENDENCIES = 
+test_uri_LDFLAGS = 
+test_reader_OBJECTS =  test-reader.$(OBJEXT) yelp-uri.$(OBJEXT) \
+yelp-cache.$(OBJEXT) yelp-reader.$(OBJEXT) yelp-error.$(OBJEXT) \
+yelp-util.$(OBJEXT) yelp-marshal-main.$(OBJEXT)
+test_reader_DEPENDENCIES = 
+test_reader_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(server_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(yelp_SOURCES) $(yelp_db2html_SOURCES) $(test_uri_SOURCES) $(test_reader_SOURCES)
+OBJECTS = $(yelp_OBJECTS) $(yelp_db2html_OBJECTS) $(test_uri_OBJECTS) $(test_reader_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+mostlyclean-libexecPROGRAMS:
+
+clean-libexecPROGRAMS:
+	-test -z "$(libexec_PROGRAMS)" || rm -f $(libexec_PROGRAMS)
+
+distclean-libexecPROGRAMS:
+
+maintainer-clean-libexecPROGRAMS:
+
+install-libexecPROGRAMS: $(libexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	@list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-libexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+yelp$(EXEEXT): $(yelp_OBJECTS) $(yelp_DEPENDENCIES)
+	@rm -f yelp$(EXEEXT)
+	$(LINK) $(yelp_LDFLAGS) $(yelp_OBJECTS) $(yelp_LDADD) $(LIBS)
+
+yelp-db2html$(EXEEXT): $(yelp_db2html_OBJECTS) $(yelp_db2html_DEPENDENCIES)
+	@rm -f yelp-db2html$(EXEEXT)
+	$(LINK) $(yelp_db2html_LDFLAGS) $(yelp_db2html_OBJECTS) $(yelp_db2html_LDADD) $(LIBS)
+
+test-uri$(EXEEXT): $(test_uri_OBJECTS) $(test_uri_DEPENDENCIES)
+	@rm -f test-uri$(EXEEXT)
+	$(LINK) $(test_uri_LDFLAGS) $(test_uri_OBJECTS) $(test_uri_LDADD) $(LIBS)
+
+test-reader$(EXEEXT): $(test_reader_OBJECTS) $(test_reader_DEPENDENCIES)
+	@rm -f test-reader$(EXEEXT)
+	$(LINK) $(test_reader_LDFLAGS) $(test_reader_OBJECTS) $(test_reader_LDADD) $(LIBS)
+
+install-serverDATA: $(server_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-serverDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS install-libexecPROGRAMS \
+		install-exec-local
+install-exec: install-exec-am
+
+install-data-am: install-serverDATA
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS uninstall-libexecPROGRAMS \
+		uninstall-serverDATA
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(libexecdir) \
+		$(DESTDIR)$(serverdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-libexecPROGRAMS \
+		mostlyclean-noinstPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-libexecPROGRAMS clean-noinstPROGRAMS \
+		clean-compile clean-libtool clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-libexecPROGRAMS \
+		distclean-noinstPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-libexecPROGRAMS \
+		maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
+clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
+uninstall-libexecPROGRAMS install-libexecPROGRAMS \
+mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-serverDATA \
+install-serverDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-local install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+install-exec-local:
+	rm -f $(DESTDIR)$(bindir)/gnome-help
+	ln -s yelp $(DESTDIR)$(bindir)/gnome-help
+
+yelp-marshal.h: yelp-marshal.list
+	cd $(srcdir) && \
+	( @GLIB_GENMARSHAL@ --prefix=yelp_marshal yelp-marshal.list --header > yelp-marshal1.tmp \
+	&& mv yelp-marshal1.tmp yelp-marshal.h ) \
+	|| ( rm -f yelp-marshal1.tmp && exit 1 )
+
+yelp-marshal.c: yelp-marshal.h
+	cd $(srcdir) && \
+	( @GLIB_GENMARSHAL@ --prefix=yelp_marshal yelp-marshal.list --body > yelp-marshal2.tmp \
+	&& mv yelp-marshal2.tmp yelp-marshal.c ) \
+	|| ( rm -f yelp-marshal2.tmp && exit 1 )
+
+yelp-marshal-main.c: yelp-marshal.c
+
+$(gnome_yelp_idl_sources): gnome_yelp_idl_stamp
+
+gnome_yelp_idl_stamp: $(top_srcdir)/idl/GNOME_Yelp.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) $(YELP_IDL_INCLUDES) -I$(top_srcdir) $<
+	touch $@
+
+$(yelp_OBJECTS): yelp-marshal.h gnome_yelp_idl_stamp
+
+@INTLTOOL_SERVER_RULE@
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
