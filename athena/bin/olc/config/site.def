@@ -166,6 +166,10 @@ HesiodLib	=	-L/usr/athena/lib -lhesiod$(LIBSUFFIX)
 #endif
 
 
+#if !defined(Solaris)
+MotifLibDir	=	-L/mit/motif/$(MACHINE)lib
+XLibDir		=	-L/usr/athena/lib
+#endif
 /* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
    depending on what you have installed.  */
 
@@ -175,26 +179,26 @@ MotifUtilLib	=	-lMu
 RandomIncludes	=	-I/build/third/supported/wcl
 #else
 #if HaveSysWCL
-MotifWCLLib	=	-L/mit/motif/$(MACHINE)lib -lWcm
+MotifWCLLib	=	$(MotifLibDir) -lWcm
 #else
 MotifWCLLib	=	$(TOP)/wcl/libWcm$(LIBSUFFIX).a
 #endif
 
 #if HaveSysLibMu
-MotifUtilLib	=	-L/mit/motif/$(MACHINE)lib -lMu
+MotifUtilLib	=	$(MotifLibDir) -lMu
 #else
 MotifUtilLib	=	$(TOP)/libMu/libMu$(LIBSUFFIX).a
 #endif
 #endif /* 1 */
 
 CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
-ComErrLib	=	-L/usr/athena/lib -lcom_err$(LIBSUFFIX)
-MotifResLib	=	-L/mit/motif/$(MACHINE)lib -lMrm
-MotifLib	=	-L/mit/motif/$(MACHINE)lib -lXm
+ComErrLib	=	$(XLibDir) -lcom_err$(LIBSUFFIX)
+MotifResLib	=	$(MotifLibDir) -lMrm
+MotifLib	=	$(MotifLibDir) -lXm
 MotifToolLib	=	 -lXt
-XUtilLib	=	-L/usr/athena/lib -lXmu$(LIBSUFFIX)
-XtoolLib	=	-L/usr/athena/lib -lXt$(LIBSUFFIX)
-XLib		=	-L/usr/athena/lib -lX11$(LIBSUFFIX)
+XUtilLib	=	$(XLibDir) -lXmu$(LIBSUFFIX)
+XtoolLib	=	$(XLibDir) -lXt$(LIBSUFFIX)
+XLib		=	$(XLibDir) -lX11$(LIBSUFFIX)
 
 #define StandardDefines	ZephyrDef HesiodDef KerberosDef AthenaDef \
 LogDef ULogDef SilentDef SyslogDef DiscussDef MachSpecDef PosixDef
