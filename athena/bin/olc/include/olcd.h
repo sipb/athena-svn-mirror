@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.42 1992-03-16 15:37:35 lwvanels Exp $
+ *	$Id: olcd.h,v 1.43 1992-08-17 17:00:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -71,7 +71,6 @@
 #define is_me(r,t)              (r->user == t->user)
 #define is_connected_to(t,r)    (r->connected) && (t->connected) && \
                                 (r->connected == t) && (t->connected == r)
-#define is_specialty(user,code) is_topic(user->specialties,code)
 
 #define ON_ACL                  1<<1
 #define MONITOR_ACL             1<<2
@@ -135,6 +134,7 @@ int has_new_messages P((KNUCKLE *target ));
 QUEUE_STATUS *get_status_info P((void ));
 int verify_topic P((char *topic ));
 int owns_question P((KNUCKLE *knuckle ));
+int is_specialty P((USER *u , int topic ));
 int is_topic P((int *topics , int code ));
 void write_question_info P(( QUESTION *q ));
 
