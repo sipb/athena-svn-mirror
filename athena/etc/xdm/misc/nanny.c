@@ -46,10 +46,11 @@ char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
 
 char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
-  char *value;
+  void *value;
+  int length;
 
-  var_getString(vin, name, &value);
-  var_setString(ds->vars, name, value);
+  var_getValue(vin, name, &value, &length);
+  var_setValue(ds->vars, name, value, length);
   var_setString(vout, name, "OK");
 }
 
@@ -245,6 +246,7 @@ char *handleVars(pc_message *input, disp_state *ds, buffer **buf)
   varlist *vin, *vout;
   char **vlist, **ptr, *value;
   var_def *vstep;
+  int length;
 
   var_init(&vin);
   var_init(&vout);
@@ -265,10 +267,10 @@ char *handleVars(pc_message *input, disp_state *ds, buffer **buf)
 	  var_getString(vin, *ptr, &value);
 	  if (!strcmp(value, cvt_query))
 	    {
-	      if (var_getString(ds->vars, *ptr, &value))
+	      if (var_getValue(ds->vars, *ptr, &value, &length))
 		var_setString(vout, *ptr, "NONE");
 	      else
-		var_setString(vout, *ptr, value);
+		var_setValue(vout, *ptr, value, length);
 	    }
 	  else
 	    {
@@ -390,7 +392,8 @@ void dumpMessage(pc_message *message)
 {
   varlist *vout;
   buffer outbuf;
-  char **vlist, **ptr, *val;
+  char **vlist, **ptr, *val, *step;
+  int len;
 
   var_init(&vout);
 
@@ -402,8 +405,15 @@ void dumpMessage(pc_message *message)
 
   for (ptr = vlist; *ptr != NULL; ptr++)
     {
-      var_getString(vout, *ptr, &val);
-      fprintf(stdout, "%s=%s\n", *ptr, val);
+      var_getValue(vout, *ptr, (void *)&val, &len);
+      if (!strchr(*ptr, '['))
+	fprintf(stdout, "%s=%s\n", *ptr, val);
+      else
+	{
+	  fprintf(stdout, "%s%d]=\n", *ptr, len);
+	  for (step = val; step < val + len; step += strlen(step) + 1)
+	    fprintf(stdout, "   %s\n", step);
+	}
     }
 
   var_freeList(vout, vlist);
@@ -485,6 +495,9 @@ int main(int argc, char **argv)
     }
   else
     {
+      /* This direct conversion allows ENV[xxx] to suck in later
+	 args and do the right magic, because we're not parsing
+	 the actual variables here. */
       cvt_strings2buf(&outbuf, &argv[1]);
       message->data = outbuf->buf;
       message->length = outbuf->len;
