@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_text_operations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.c,v 1.3 1989-11-09 12:26:24 jtkohl Exp $";
+static char rcsid_text_operations_c[] = "$Id: text_operations.c,v 1.4 1989-11-15 16:35:01 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

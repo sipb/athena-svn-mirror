@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_formatter_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v 1.4 1989-11-09 12:26:22 jtkohl Exp $";
+static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.5 1989-11-15 16:35:08 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
