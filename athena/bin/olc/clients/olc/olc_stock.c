@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.7 1989-11-17 14:05:22 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.8 1990-02-15 18:27:33 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -157,7 +157,7 @@ do_olc_stock(arguments)
 	}
       else
 	{
-	  printf("%s (%d) is not connected to a consultant but the next one\n",
+	  printf("%s [%d] is not connected to a consultant but the next one\n",
 		 Request.target.username,Request.target.instance);
 	  printf("to answer %s's question will receive your message.\n",
 		 Request.target.username);
@@ -169,7 +169,7 @@ do_olc_stock(arguments)
       break;
   
     case PERMISSION_DENIED:
-      fprintf(stderr, "You no longer allowed to send to %s (%d).\n",
+      fprintf(stderr, "You are no longer allowed to send to %s [%d].\n",
 	      Request.target.username,
 	      Request.target.instance);
       status = NO_ACTION;
