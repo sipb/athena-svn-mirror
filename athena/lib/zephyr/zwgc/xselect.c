@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: jtkohl $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.7 1989-12-08 13:07:47 jtkohl Exp $";
+static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.8 1990-11-04 10:52:27 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -104,7 +104,7 @@ static void xselSetProperties(dpy,w,property,target,selreq)
       for (i=0;i<alistsize;i+=2)
 	xselSetProperties(dpy,w,alist[i+1],alist[i],selreq);
 
-      XFree(alist);
+      XFree((char *) alist);
    } else if (target==ZA_TIMESTAMP) {
       ChangeProp(XA_INTEGER,32,&ownership_start,1);
       XSync(dpy,0);
