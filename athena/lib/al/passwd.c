@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.4 1997-10-31 03:58:59 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.5 1997-11-13 21:57:51 ghudson Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -30,8 +30,21 @@ static const char rcsid[] = "$Id: passwd.c,v 1.4 1997-10-31 03:58:59 ghudson Exp
 #include <string.h>
 #include <unistd.h>
 #include <hesiod.h>
+#ifdef HAVE_SHADOW
+#include <shadow.h>
+#endif
 #include "al.h"
 #include "al_private.h"
+
+/* /etc/ptmp should be mode 600 on a master.passwd system, 644 otherwise. */
+#ifdef HAVE_MASTER_PASSWD
+#define PTMP_MODE (S_IWUSR|S_IRUSR)
+#else
+#define PTMP_MODE (S_IWUSR|S_IRUSR|S_IRGRP|S_IROTH)
+#endif
+
+static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
+				 const char *cryptpw);
 
 /* This is an internal function.  Its contract is to lock the passwd
  * database in a manner consistent with the operating system and return
@@ -50,23 +63,26 @@ static FILE *lock_passwd()
   fp = fopen(PATH_PASSWD_TMP, "w");
   if (fp)
     fchmod(fileno(fp), S_IWUSR|S_IRUSR|S_IRGRP|S_IROTH);
+  else
+    ulckpwdf();
   return fp;
 #else
-
   int i, fd = -1;
+  FILE *fp;
 
   for (i = 0; i < 10; i++)
     {
-      fd = open(PATH_PASSWD_TMP, O_RDWR|O_CREAT|O_EXCL,
-		S_IWUSR|S_IRUSR|S_IRGRP|S_IROTH);
+      fd = open(PATH_PASSWD_TMP, O_RDWR|O_CREAT|O_EXCL, PTMP_MODE);
       if (fd >= 0 || errno != EEXIST)
 	break;
       sleep(1);
     }
   if (fd == -1)
     return NULL;
-  else
-    return fdopen(fd, "w");
+  fp = fdopen(fd, "w");
+  if (fp == NULL)
+    unlink(PATH_PASSWD_TMP);
+  return fp;
 #endif
 }
 
@@ -78,25 +94,40 @@ static int update_passwd(FILE *fp)
 {
 #ifdef HAVE_MASTER_PASSWD
   int pstat;
-  pid_t pid;
+  pid_t pid, rpid;
 #endif
+  int status;
 
-  fclose(fp);
+  status = ferror(fp);
+  if (fclose(fp) || status)
+    {
+      unlink(PATH_PASSWD_TMP);
+#ifdef HAVE_LCKPWDF
+      ulckpwdf();
+#endif
+    }
 
   /* Replace the passwd file with the lock file. */
 #ifdef HAVE_MASTER_PASSWD
-  pid = vfork();
+  pid = fork();
   if (pid == 0)
     {
       execl(_PATH_PWD_MKDB, "pwd_mkdb", "-p", PATH_PASSWD_TMP, NULL);
       _exit(1);
     }
-  pid = waitpid(pid, &pstat, 0);
-  if (pid == -1 || !WIFEXITED(pstat) || WEXITSTATUS(pstat) != 0)
+  while ((rpid = waitpid(pid, &pstat, 0)) < 0 && errno == EINTR)
+    ;
+  if (rpid == -1 || !WIFEXITED(pstat) || WEXITSTATUS(pstat) != 0)
     return AL_EPASSWD;
 #else /* HAVE_MASTER_PASSWD */
   if (rename(PATH_PASSWD_TMP, PATH_PASSWD))
-    return AL_EPASSWD;
+    {
+      unlink(PATH_PASSWD_TMP);
+#ifdef HAVE_LCKPWDF
+      ulckpwdf();
+#endif
+      return AL_EPASSWD;
+    }
 #endif /* HAVE_MASTER_PASSWD */
 
   /* Unlock the passwd file if we're using System V style locking. */
@@ -145,7 +176,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
   struct passwd *pwd, *tmppwd;
   const char *passwd;
   char buf[BUFSIZ];
-  int nbytes, retval, have_nocrack;
+  int nbytes, retval, have_nocrack, fd;
   void *hescontext = NULL;
 
   tmppwd = al__getpwnam(username);
@@ -172,6 +203,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
   if (tmppwd)
     {
       al__free_passwd(tmppwd);
+      hesiod_free_passwd(hescontext, pwd);
       hesiod_end(hescontext);
       return AL_EBADHES;
     }
@@ -208,25 +240,29 @@ int al__add_to_passwd(const char *username, struct al_record *record,
 	  pwd->pw_gecos, pwd->pw_dir, pwd->pw_shell);
 
 #ifdef HAVE_SHADOW
-  shadow_out = fopen(PATH_SHADOW_TMP, "w");
-  shadow_in = fopen(PATH_SHADOW, "r");
-  if (!shadow_out || !shadow_in)
+  fd = open(PATH_SHADOW_TMP, O_RDWR|O_CREAT, S_IWUSR|S_IRUSR);
+  if (fd < 0)
     goto cleanup;
-  fchmod(fileno(shadow_out), S_IWUSR|S_IRUSR|S_IRGRP);
-  do
+  shadow_out = fdopen(fd, "w");
+  if (!shadow_out)
     {
-      nbytes = fread(buf, sizeof(char), BUFSIZ, shadow_in);
-      if (nbytes)
-	{
-	  if (!fwrite(buf, sizeof(char), nbytes, shadow_out))
-	    goto cleanup;
-	}
+      close(fd);
+      unlink(PATH_SHADOW_TMP);
+      goto cleanup;
     }
-  while (nbytes == BUFSIZ);
-
-  fprintf(shadow_out, "%s:%s:%d::::::\n", pwd->pw_name, passwd,
-	  time(NULL) / (60 * 60 * 24));
-  retval = fclose(shadow_out);
+  shadow_in = fopen(PATH_SHADOW, "r");
+  if (!shadow_in)
+    goto cleanup;
+  retval = copy_changing_cryptpw(shadow_in, shadow_out, username, passwd);
+  if (retval == -1)
+    goto cleanup;
+  if (retval == 0)
+    {
+      fprintf(shadow_out, "%s:%s:%lu::::::\n", pwd->pw_name, passwd,
+	      (unsigned long) (time(NULL) / (60 * 60 * 24)));
+    }
+  retval = ferror(shadow_out);
+  retval = fclose(shadow_out) || retval;
   shadow_out = NULL;
   if (retval)
     goto cleanup;
@@ -269,8 +305,6 @@ cleanup:
 #endif
   if (out)
     discard_passwd_lockfile(out);
-  hesiod_free_passwd(hescontext, pwd);
-  hesiod_end(hescontext);
   return AL_EPASSWD;
 }
 
@@ -285,7 +319,7 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
   FILE *shadow_in = NULL, *shadow_out = NULL;
 #endif
   char *buf = NULL;
-  int bufsize = 0, retval, len;
+  int bufsize = 0, retval, len, fd;
 
   if (!record->passwd_added)
     return AL_SUCCESS;
@@ -296,7 +330,7 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
     goto cleanup;
   len = strlen(username);
 
-  while (al__read_line(in, &buf, &bufsize) == 0)
+  while ((retval = al__read_line(in, &buf, &bufsize)) == 0)
     {
       if (strncmp(username, buf, len) != 0 || buf[len] != ':')
 	{
@@ -304,19 +338,29 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
 	  fputs("\n", out);
 	}
     }
+  if (retval == -1)
+    goto cleanup;
   retval = fclose(in);
   in = NULL;
   if (retval)
     goto cleanup;
 
 #ifdef HAVE_SHADOW
-  shadow_out = fopen(PATH_SHADOW_TMP, "w");
+  fd = open(PATH_SHADOW_TMP, O_RDWR|O_CREAT, S_IWUSR|S_IRUSR);
+  if (fd < 0)
+    goto cleanup;
+  shadow_out = fdopen(fd, "w");
+  if (!shadow_out)
+    {
+      close(fd);
+      unlink(PATH_SHADOW_TMP);
+      goto cleanup;
+    }
   shadow_in = fopen(PATH_SHADOW, "r");
-  fchmod(fileno(shadow_out), S_IRWXU);
-  if (!shadow_out || !shadow_in)
+  if (!shadow_in)
     goto cleanup;
 
-  while (al__read_line(shadow_in, &buf, &bufsize) == 0)
+  while ((retval = al__read_line(shadow_in, &buf, &bufsize)) == 0)
     {
       if (strncmp(username, buf, len) != 0 || buf[len] != ':')
 	{
@@ -324,6 +368,8 @@ int al__remove_from_passwd(const char *username, struct al_record *record)
 	  fputs("\n", shadow_out);
 	}
     }
+  if (retval == -1)
+    goto cleanup;
   retval = fclose(shadow_out);
   shadow_out = NULL;
   if (retval)
@@ -370,21 +416,27 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
   char *ptr1, *buf;
 
   out = lock_passwd();
+  if (!out)
+    return AL_EPASSWD;
   in = fopen(PATH_PASSWD, "r");
-  if (!out || !in)
-    goto cleanup;
+  if (!in)
+    {
+      discard_passwd_lockfile(out);
+      return AL_EPASSWD;
+    }
   len = strlen(username);
 
-  while (al__read_line(in, &buf, &bufsize) == 0)
+  while ((retval = al__read_line(in, &buf, &bufsize)) == 0)
     {
       if (strncmp(username, buf, len) == 0 && buf[len] == ':')
 	{
-	  /* Skip to homedir field. */
+	  /* Skip to colon before homedir field (the fifth colon; we start
+	   * at the first one and skip four more). */
 	  for (ptr1 = buf + len, i = 0; ptr1 && i < 4;
 	       ptr1 = strchr(ptr1 + 1, ':'), i++)
 	      ;
-	  if (!ptr1)		/* Invalid passwd line; bail out. */
-	    goto cleanup;
+	  if (!ptr1)
+	    continue;
 	  fwrite(buf, sizeof(char), ptr1 + 1 - buf, out);
 	  fputs(homedir, out);
 	  ptr1 = strchr(ptr1 + 1, ':');
@@ -398,19 +450,16 @@ int al__change_passwd_homedir(const char *username, const char *homedir)
 	  fputs("\n", out);
 	}
     }
-  retval = fclose(in);
-  in = NULL;
-  if (retval)
-    goto cleanup;
+  if (bufsize)
+    free(buf);
+  fclose(in);
+  if (retval == -1)
+    {
+      discard_passwd_lockfile(out);
+      return AL_EPASSWD;
+    }
 
   return update_passwd(out);
-
-cleanup:
-  if (out)
-    discard_passwd_lockfile(out);
-  if (in)
-    fclose(in);
-  return AL_EPASSWD;
 }
 
 /* This is an internal function.  Its contract is to update the
@@ -423,9 +472,7 @@ int al__update_cryptpw(const char *username, struct al_record *record,
 		       const char *cryptpw)
 {
   FILE *in, *out, *lock;
-  char *line;
-  int have_nocrack, linesize = 0, len = strlen(username);
-  const char *p;
+  int have_nocrack, status;
 
   /* Check whether we really want to update the password field. */
   have_nocrack = !access(PATH_NOCRACK, F_OK);
@@ -458,16 +505,50 @@ int al__update_cryptpw(const char *username, struct al_record *record,
       return AL_SUCCESS;
     }
 
+  status = copy_changing_cryptpw(in, out, username, cryptpw);
+
+  fclose(in);
+#ifdef HAVE_SHADOW
+  status = ferror(out) || status;
+  if (fclose(out) || status)
+    rename(PATH_SHADOW_TMP, PATH_SHADOW);
+  else
+    unlink(PATH_SHADOW_TMP);
+  discard_passwd_lockfile(lock);
+#else
+  if (status)
+    update_passwd(lock);
+  else
+    discard_passwd_lockfile(lock);
+#endif
+  return AL_SUCCESS;
+}
+
+/* Copy lines from a passwd, master.passwd, or shadow file from in to out,
+ * changing the encrypted passwd field for username to cryptpw.  Return 1
+ * if we found and changed one or more lines matching username, 0 if we
+ * found none, and -1 if we detected an error.
+ */
+
+static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
+				 const char *cryptpw)
+{
+  char *line;
+  int linesize = 0, len = strlen(username), found = 0, status;
+  const char *p;
+
   /* Copy input to output, substituting cryptpw for the passwd field of
    * a line matching username. */
-  while (al__read_line(in, &line, &linesize) == 0)
+  while ((status = al__read_line(in, &line, &linesize)) == 0)
     {
       if (strncmp(username, line, len) == 0 && line[len] == ':')
 	{
+	  /* Find the field after the encrypted password. */
 	  p = strchr(line + len + 1, ':');
 	  if (!p)
 	    continue;
 	  fprintf(out, "%s:%s%s\n", username, cryptpw, p);
+	  found = 1;
 	}
       else
 	fprintf(out, "%s\n", line);
@@ -475,13 +556,5 @@ int al__update_cryptpw(const char *username, struct al_record *record,
 
   if (linesize)
     free(line);
-  fclose(in);
-#ifdef HAVE_SHADOW
-  fclose(out);
-  rename(PATH_SHADOW_TMP, PATH_SHADOW);
-  discard_passwd_lockfile(lock);
-#else
-  update_passwd(lock);
-#endif
-  return AL_SUCCESS;
+  return (status == -1) ? -1 : found;
 }
