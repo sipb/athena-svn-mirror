@@ -33,7 +33,7 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 "
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/unsupported/perl third/supported/tex third/unsupported/top third/unsupported/sysinfo"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/tcsh6 third/supported/emacs-18.59 third/unsupported/perl third/supported/tex third/unsupported/top third/unsupported/sysinfo"
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
 
@@ -111,6 +111,7 @@ if ($installman == 1) then
     echo "Installing man in $package" >>& $outfile
     switch($package)
       case third/supported/X11R4
+      case third/supported/xfonts
       case athena/lib/kerberos1
       case athena/lib/moira.dev
         breaksw
@@ -465,6 +466,26 @@ if ( $installonly == "0" ) then
 	(cd /build/$package ; make -k World >>& $outfile)
 endif # installonly
 	(cd /build/$package ; make -k install SUBDIRS="include lib extensions" DESTDIR=$SRVD >>& $outfile)
+	breaksw
+
+	case third/supported/xfonts
+	if ($machine == "decmips") then
+		echo In $package >>& $outfile
+if ($installonly == 0) then
+		((cd /build/$package; xmkmf . >>& $outfile) && \
+		(cd /build/$package; make Makefiles >>& $outfile) && \
+		(cd /build/$package; make all >>& $outfile))
+		if ($status == 1) then
+			echo "We bombed in $package" >>& $outfile
+			exit -1
+		endif
+endif # installonly
+		(cd /build/$package; make install DESTDIR=$SRVD >>& $outfile)
+		if ($status == 1) then
+			echo "We bombed in $package" >>& $outfile
+			exit -1
+		endif
+	endif
 	breaksw
 
 	case third/supported/motif
