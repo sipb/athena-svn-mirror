@@ -2,7 +2,7 @@
 /*
  * ftpsbr.c -- simple FTP client library
  *
- * $Id: ftpsbr.c,v 1.1.1.1 1999-02-07 18:14:13 danw Exp $
+ * $Id: ftpsbr.c,v 1.2 2003-03-20 17:19:30 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -35,7 +35,7 @@ extern int v_verbose;
 #define	inaddr_copy(hp,sin) \
     memcpy((char *) &((sin)->sin_addr), (hp)->h_addr, (hp)->h_length)
 
-extern int errno;
+#include <errno.h>
 
 #define	start_tcp_client(sock,priv) \
     	socket (AF_INET, SOCK_STREAM, 0)
