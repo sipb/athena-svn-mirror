@@ -5,20 +5,22 @@ dnl ===========================================================================
 ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=2.1.0
 BONOBO_REQUIRED=2.1.0
-BONOBO_UI_REQUIRED=2.0.0
-EEL_REQUIRED=2.2.3
+BONOBO_UI_REQUIRED=2.2.0
+EEL_REQUIRED=2.8.0
 ESOUND_REQUIRED=0.2.27
-GLIB_REQUIRED=2
+GLIB_REQUIRED=2.3.0
 GNOME_DESKTOP_REQUIRED=2.1.0
 GNOME_REQUIRED=2.1.1
-GNOME_UI_REQUIRED=2.1.1
-GNOME_VFS_REQUIRED=2.1.5
+GNOME_UI_REQUIRED=2.6.0
+GNOME_VFS_REQUIRED=2.5.1
 ORBIT_REQUIRED=2.4.0
 PANGO_REQUIRED=1.1.2
-GTK_REQUIRED=2.1.1
+GTK_REQUIRED=2.3.0
 MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
+STARTUP_NOTIFICATION_REQUIRED=0.5
+EXIF_REQUIRED=0.5.12
 
 AC_SUBST(ART_REQUIRED)
 AC_SUBST(BONOBO_ACTIVATION_REQUIRED)
@@ -37,10 +39,11 @@ AC_SUBST(GTK_REQUIRED)
 AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(XML_REQUIRED)
+AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.2.4)
+AM_INIT_AUTOMAKE(nautilus, 2.8.0)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -55,7 +58,23 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+
+if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_REQUIRED libstartup-notification-1.0; then
+  echo "Building with libstartup-notification"
+  AC_DEFINE(HAVE_STARTUP_NOTIFICATION)
+  with_startup_notification=yes
+  STARTUP_NOTIFICATION_PACKAGE=libstartup-notification-1.0
+  EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES libstartup-notification-1.0"
+else
+  echo "***** WARNING: Building without libstartup-notification"
+  with_startup_notification=no
+  STARTUP_NOTIFICATION_PACKAGE=
+fi
+
+AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
 PKG_CHECK_MODULES(ALL, \
 	esound >= $ESOUND_REQUIRED \
@@ -73,10 +92,11 @@ PKG_CHECK_MODULES(ALL, \
 	libgnome-2.0 >= $GNOME_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
-	libxml-2.0 >= $XML_REQUIRED)
+	libxml-2.0 >= $XML_REQUIRED \
+	$STARTUP_NOTIFICATION_PACKAGE)
 dnl ==========================================================================
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu it ja ko lt lv mk ml mn ms nl nn no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko li lt lv mi mk ml mn ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sr@ije sv ta th tk tr uk vi wa yi zh_CN zh_TW"
 
 GETTEXT_PACKAGE=nautilus
 AC_SUBST(GETTEXT_PACKAGE)
@@ -106,6 +126,15 @@ AC_SUBST(ENABLE_PROFILER)
 AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
 
 dnl ==========================================================================
+dnl Check for popt
+    
+AC_CHECK_LIB(popt, poptGetArg, POPT_LIBS=-lpopt,
+        [AC_CHECK_HEADER(popt.h, , AC_MSG_ERROR([[
+*** Couldn't find popt. Please download and install from
+*** ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/ and try again.]]))])
+AC_SUBST(POPT_LIBS)
+	
+dnl ==========================================================================
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
@@ -117,8 +146,8 @@ AC_SUBST(ORBIT_IDL)
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h)
-
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h fstab.h)
+			      
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setenv unsetenv putenv)
@@ -195,6 +224,17 @@ if test "x$have_medusa" = "xyes"; then
   EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES medusa-2.0"
 fi
 
+dnl exif checking
+
+AC_MSG_CHECKING(for libExif)
+
+PKG_CHECK_MODULES(EXIF, libexif >= $EXIF_REQUIRED, have_exif=yes, have_exif=no)
+if test "x$have_exif" = "xyes"; then
+  AC_DEFINE(HAVE_EXIF,1)
+  AC_SUBST(EXIF_CFLAGS)
+  AC_SUBST(EXIF_LIBS)
+fi
+
 dnl ==========================================================================
 
 dnl libjpeg
@@ -240,9 +280,9 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Werror \
 	$CFLAGS"
 
-	for option in -Wsign-promo -Wno-sign-compare; do
+	for option in -Wno-strict-aliasing -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$option $CFLAGS"
+		CFLAGS="$CFLAGS $option"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
@@ -266,6 +306,11 @@ GIMPHWRAPBOX_MODULES="gtk+-2.0"
 GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
 AC_SUBST(GIMPHWRAPBOX_CFLAGS)
 
+dnl gsequence
+GSEQUENCE_MODULES="glib-2.0"
+GSEQUENCE_CFLAGS="`$PKG_CONFIG --cflags $GSEQUENCE_MODULES`"
+AC_SUBST(GSEQUENCE_CFLAGS)
+	
 dnl libegg
 LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
 LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
@@ -279,6 +324,13 @@ LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
 AC_SUBST(LIBNAUTILUS_LIBS)
 LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
+
+dnl libnautilus-extension
+LIBNAUTILUS_EXTENSION_MODULES="glib-2.0 gtk+-2.0 gnome-vfs-2.0"
+LIBNAUTILUS_EXTENSION_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_EXTENSION_MODULES`"
+AC_SUBST(LIBNAUTILUS_EXTENSION_CFLAGS)
+LIBNAUTILUS_EXTENSION_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_EXTENSION_MODULES`"
+AC_SUBST(LIBNAUTILUS_EXTENSION_LIBS)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
 CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
@@ -303,30 +355,19 @@ AC_SUBST(EMBLEM_COMPONENT_CFLAGS)
 EMBLEM_COMPONENT_LIBS="`$PKG_CONFIG --libs $EMBLEM_COMPONENT_MODULES`"
 AC_SUBST(EMBLEM_COMPONENT_LIBS)
 
-DISABLE_DEPRECATED_CFLAGS=" \
-	-DG_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED"
+DISABLE_DEPRECATED_CFLAGS=""
+
+
+dnl Taken out for now
+dnl	-DGDK_DISABLE_DEPRECATED \
+dnl	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+dnl	-DGTK_DISABLE_DEPRECATED \
+dnl	-DGNOME_DISABLE_DEPRECATED"
 
 dnl FIXME: put this back once the registration_id stuff is cleared up.
 dnl	-DBONOBO_DISABLE_DEPRECATED
 
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
-
-dnl
-dnl disable (broken) hardware view
-dnl
-hw_view=disabled
-AC_ARG_ENABLE(hardware,
-[  --enable-hardware		Enable (broken, Linux only) hardware view],
-hw_view=enabled)
-if test "x`(uname -s) 2>/dev/null`" != "xLinux"; then
-	hw_view=disabled
-fi
-AM_CONDITIONAL(ENABLE_HARDWARE_VIEW, test "$hw_view" = "enabled")
-
 
 dnl libbackground
 PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
@@ -348,18 +389,15 @@ AC_OUTPUT([
 Makefile
 components/Makefile
 components/adapter/Makefile
-components/hardware/Makefile
-components/hardware/icons/Makefile
 components/history/Makefile
 components/notes/Makefile
 components/text/Makefile
-components/text/services/Makefile
 components/throbber/Makefile
-components/tree/Makefile
 components/emblem/Makefile
 components/image_properties/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/libegg/Makefile
+cut-n-paste-code/gsequence/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/gimphwrapbox/Makefile
 data/Makefile
@@ -367,20 +405,18 @@ data/patterns/Makefile
 docs/Makefile
 icons/Makefile
 icons/crux_eggplant/Makefile
-icons/crux_eggplant/throbber/Makefile
 icons/crux_teal/Makefile
-icons/crux_teal/throbber/Makefile
 icons/default/Makefile
 icons/gnome/Makefile
-icons/gnome/throbber/Makefile
 icons/sierra/Makefile
 icons/tahoe/Makefile
-icons/throbber/Makefile
 libbackground/Makefile
 libnautilus-adapter/Makefile
 libnautilus-private/Makefile
 libnautilus/Makefile
 libnautilus/libnautilus.pc
+libnautilus-extension/Makefile
+libnautilus-extension/libnautilus-extension.pc
 nautilus.spec
 po/Makefile.in
 src/Makefile
@@ -396,6 +432,5 @@ nautilus-$VERSION:
 	source code location:	${srcdir}
 	compiler:		${CC}
 
-	hardware view:          ${hw_view}
 	profiling support:      ${profiling_support}
 "
