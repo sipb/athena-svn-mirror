@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.36 1991-02-10 14:43:23 lwvanels Exp $
+ *	$Id: olcd.c,v 1.37 1991-03-07 13:35:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.36 1991-02-10 14:43:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.37 1991-03-07 13:35:51 lwvanels Exp $";
 #endif
 #endif
 
@@ -190,6 +190,10 @@ main (argc, argv)
 	    return 1;
 	}
     }
+
+#ifdef KERBEROS
+    setenv("KRBTKFILE",TICKET_FILE,TRUE);
+#endif /* KERBEROS */
 
 #ifdef ZEPHYR
 	/** We must ZInitialize now, *before* we use "log_error" **/
@@ -389,10 +393,6 @@ restart:
 	return 1;
 #endif
     }
-
-#ifdef KERBEROS
-    setenv("KRBTKFILE",TICKET_FILE,TRUE);
-#endif /* KERBEROS */
 
     log_status (fmt ("%s Daemon startup....", DaemonInst));
 
@@ -756,7 +756,7 @@ start_profile(sig)
  *
  */
 
-
+int
 authenticate(request, addr)
     REQUEST *request;
     unsigned long addr;
