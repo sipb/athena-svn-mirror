@@ -41,7 +41,7 @@ page=${PAGER-more}
 echo "Please make sure the following says the signature is good and that"
 echo "the message is addressed to you."
 
-/mit/pgp/bin/pgp $msgfile -o $outfile +verbose=0
+@PATH@ $msgfile -o $outfile +verbose=0
 if [ $? = 0 ]; then
 	echo ""
 	echo $N "The message follows. Press ENTER to continue... $C"
