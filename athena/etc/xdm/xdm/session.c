@@ -87,12 +87,7 @@ static
 IOErrorHandler (dpy)
     Display *dpy;
 {
-    extern char *sys_errlist[];
-    extern int sys_nerr;
-    char *s = ((errno >= 0 && errno < sys_nerr) ? sys_errlist[errno]
-						: "unknown error");
-
-    LogError("fatal IO error %d (%s)\n", errno, s);
+    LogError("fatal IO error %d (%s)\n", errno, strerror(errno));
     UnVerify();
     exit(RESERVER_DISPLAY);
 }
