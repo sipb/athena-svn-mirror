@@ -1,27 +1,28 @@
-#!/bin/sh 
+#!/bin/sh
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.2 1995-02-20 23:37:16 cfields Exp $
+# $Id: Xsession.sgi,v 1.3 1995-03-18 23:52:33 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
 initlib="/usr/athena/lib/init"
-defsession=$1
+defsession=1
+#defsession=$1
 defsessioncmd="$2"
 
 attach -q $USER
 
 host=`hostname`
-dotdesktop=.desktop-indy
+dotdesktop=.desktop_indy
 hostdir=$dotdesktop/athenahosts
 ldesktop=.desktop-$host
 
-if [ ! -r $hostdir ]
+if [ ! -r $hostdir ]; then
   mkdir -p $hostdir
 fi
 
-if [ ! -r $ldesktop ]
+if [ ! -r $ldesktop ]; then
   ln -s $dotdesktop $ldesktop
   echo "" > $hostdir/$host
 fi
@@ -68,9 +69,8 @@ else
   stty sane 0<&1 2>/dev/null
 fi
 
-
 if [ "${hosttype}" = "sgi" ]; then
-  stty intr ^C
+  stty intr \^C 0<&1 2>/dev/null
 fi
 
 # Make random Athena modifications to keymap if required.
@@ -87,7 +87,14 @@ if [ $status != 0 ]; then
 		echo ""
 		echo 'Select the login option to "Ignore your customizations"'
 		echo 'to login and repair your dot files.'
+
+		if [ -r $dotdesktop/athenahosts/$host ]; then
+		  rm $ldesktop && rm $hostdir/$host
+		fi
 		kdestroy			# destroy tickets.
+		cd /tmp
+		unlog
+		fsid -u -f $USER > /dev/null 2>&1
 		sleep 10
 		exit $status
 fi
@@ -96,7 +103,7 @@ fi
 # Cannot detach homedir here, since this script is executed in the users
 # homedir.
 
-if [ -r $dotdesktop/athenahosts/$host ]
+if [ -r $dotdesktop/athenahosts/$host ]; then
   rm $ldesktop && rm $hostdir/$host
 fi
 
