@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.8 1997-02-15 20:04:58 ghudson Exp $
+# $Id: do-update.sh,v 1.9 1997-02-22 18:42:08 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -16,7 +16,7 @@
 # without express or implied warranty.
 
 export CONFCHG CONFVARS AUXDEVS OLDBINS DEADFILES CONFDIR LIBDIR SERVERDIR PATH
-export HOSTTYPE
+export HOSTTYPE CPUTYPE
 
 CONFCHG=/tmp/conf.list
 CONFVARS=/tmp/update.conf
@@ -26,8 +26,9 @@ DEADFILES=/tmp/dead.list
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 SERVERDIR=/var/server
-PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
+PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/srvd/bin/athena/machtype`
+CPUTYPE=`/srvd/bin/athena/machtype -c`
 
 echo "Starting update"
 
@@ -164,7 +165,6 @@ sgi)
 	fi
 	;;
 esac
-echo "done"
 
 if [ -s "$OLDBINS" ]; then
 	echo "Making copies of OS binaries we need"
@@ -227,7 +227,6 @@ if [ "$NEWUNIX" = true ] ; then
 		cp -p /srvd/kernel/drv/* /kernel/drv/
 		cp -p /srvd/kernel/fs/* /kernel/fs/
 		cp -p /srvd/kernel/strmod/* /kernel/strmod/
-		cp -p /os/kadb /kadb
 		;;
 	sgi)
 		/install/install/update
@@ -244,11 +243,21 @@ fi
 
 if [ "$NEWBOOT" = true ]; then
 	echo "Copying new bootstraps"
+
 	case "$HOSTTYPE" in
 	sun4)
-		cp -p /os/ufsboot /
+		case "$VERSION" in
+		7*|8.0*)
+			# uname -i doesn't work with kernels prior to Solaris
+			# 2.5.1.  `uname -m` works for now.
+			platform=`uname -m`
+			;;
+		*)
+			platform=`uname -i`
+			;;
+		esac
 		/usr/sbin/installboot \
-			/usr/platform/`uname -i`/lib/fs/ufs/bootblk \
+			"/usr/platform/$platform/lib/fs/ufs/bootblk" \
 			/dev/rdsk/c0t3d0s0
 		;;
 	esac
