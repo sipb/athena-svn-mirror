@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.5 1999-03-02 19:59:17 danw Exp $
+# $Id: sendmail.cf,v 1.6 1999-03-08 16:46:05 danw Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -7,9 +7,11 @@
 ###   Local information   ###
 #############################
 
-# official hostname and domain
+# Configuration syntax version (8 = Sendmail 8.9)
+V8/Berkeley
+
+# our domain
 DDMIT.EDU
-Dj$w
 
 # who I masquerade as (null for no masquerading)
 DMMIT.EDU
@@ -21,20 +23,8 @@ CEroot daemon MAILER-DAEMON
 # names that are considered local
 Cwlocalhost $w
 
-##########################
-###   Special macros   ###
-##########################
-
-# my name
-DnMAILER-DAEMON
-# UNIX header format
-DlFrom $g  $d
-# delimiter (operator) characters
-Do.:%@!^=/[]
-# format of a total name
-Dq$?x$x $.<$g>
-# SMTP login message
-De$j Sendmail $v ready at $b
+# hosts we will relay mail for (other than localhost)
+CR
 
 ###################
 ###   Options   ###
@@ -42,17 +32,18 @@ De$j Sendmail $v ready at $b
 
 O AliasFile=/etc/mail/aliases
 O DefaultUser=daemon:daemon
+# where do errors that occur when sending errors get sent?
+O DoubleBounceAddress=postmaster
 O HelpFile=/usr/lib/sendmail.hf
 # send message to sender too (only affects local mailing lists)
 O MeToo
+O OperatorChars=.:%@!^=/[]
 O QueueDirectory=/var/spool/mqueue
+O SmtpGreetingMessage=$j Sendmail $v; $b
 O StatusFile=/usr/lib/sendmail.st
 # queue up everything before starting transmission
 O SuperSafe
 O TempFileMode=0640
-
-# Use name server; must set this to use MX records in Solaris sendmail.
-OI
 
 ###############################
 ###   Message precedences   ###
@@ -77,11 +68,12 @@ Tuucp
 #############################
 
 H?P?Return-Path: <$g>
-HReceived: $?sfrom $s $.by $j ($v/$V) id $i; $b
+HReceived: $?sfrom $s $.$?_($?s$|from $.$_) $.by $j ($v)$?r with $r$.
+	id $i; $b
 H?D?Resent-Date: $a
 H?D?Date: $a
-H?F?Resent-From: $q
-H?F?From: $q
+H?F?Resent-From: $?x$x <$g>$|$g$.
+H?F?From: $?x$x <$g>$|$g$.
 H?x?Full-Name: $x
 HSubject:
 H?M?Resent-Message-Id: <$t.$i@$j>
@@ -200,19 +192,40 @@ R$*<@$j>$*LOCAL$*	$#local$:$1			Local mail
 R$*<@$j>$*		$#local$:$1			(yet) More local mail
 R$*			$#smtp$@ATHENA.$D$:$1		All else to ATHENA
 
+#####################
+###   Anti-spam   ###
+#####################
+
+Kdequote dequote
+
+# Check incoming smtp mail
+Scheck_rcpt
+
+# OK if addressed to a local recipient
+R<$+@$=w>		$@ OK
+
+# OK if originated locally, or from a friendly address
+R$*			$: $(dequote "" $&{client_name} $)
+R$=w			$@ OK
+R$=R			$@ OK
+R$@			$@ OK
+
+# Otherwise bad
+R$*			$#error $: "550 Relaying Denied"
+
+
 #################################
 ###   Mailer specifications   ###
 #################################
 
-Mpop,	P=/usr/athena/etc/spop,	F=nlsmFDM,	S=10, R=20, A=pop $u
-Mlocal,	P=/bin/mail,		F=flsDFMmn,	S=10, R=20, A=mail -d $u
-Mprog,	P=/bin/sh,		F=lsDFMeu,	S=10, R=20, A=sh -c $u
-Msmtp,	P=[IPC],		F=msDFMueCX,	S=11, R=21, A=IPC $h
+Mlocal,		P=/bin/mail, F=lsDFMAw5:/|@qSnE9, S=10, R=20, A=mail -d $u
+Mprog,		P=/bin/sh, F=lsDFMoqeu9, S=10, R=20, A=sh -c $u
+Msmtp,		P=[IPC], F=mDFMuCX, S=11, R=21, A=IPC $h
 
 S10
-R@			MAILER-DAEMON			errors to mailer-daemon
+
+S20
 
 S11
 
 S21
-
