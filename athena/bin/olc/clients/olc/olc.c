@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.28 1991-04-08 20:51:59 lwvanels Exp $
+ *	$Id: olc.c,v 1.29 1991-04-08 23:43:22 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.28 1991-04-08 20:51:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.29 1991-04-08 23:43:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -162,9 +162,10 @@ main(argc, argv)
      int argc;
      char **argv;
 {
-  char *tty;		       
   char *prompt;
+#ifdef PUTENV
   char buf[BUFSIZ];
+#endif
   ERRCODE status;
 
 /*

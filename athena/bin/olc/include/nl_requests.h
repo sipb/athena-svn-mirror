@@ -1,10 +1,6 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/nl_requests.h,v 1.1 1991-03-11 13:45:39 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/nl_requests.h,v 1.2 1991-04-08 23:36:35 lwvanels Exp $
  */
-
-#ifdef KERBEROS
-#define K_SERVICE "olc"
-#endif
 
 /* Current version number */
 #define VERSION 1

@@ -3,14 +3,14 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.1 1991-04-05 15:51:10 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.2 1991-04-08 23:40:18 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.1 1991-04-05 15:51:10 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.2 1991-04-08 23:40:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,7 +36,6 @@ log_startup(type,log_host)
   char buf[BUFSIZ];
   char hostnm[MAXHOSTNAMELEN];
   char *t,*p;
-  char *ws_type;
   struct hostent *hp, *gethostbyname();
   time_t now;
   fd_set readfds;

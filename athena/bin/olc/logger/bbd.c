@@ -3,14 +3,14 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.1 1991-04-05 15:50:01 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.2 1991-04-08 23:41:41 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.1 1991-04-05 15:50:01 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.2 1991-04-08 23:41:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -89,7 +89,7 @@ main(argc, argv)
      int argc;
      char *argv[];
 {
-  char *logfile;
+  char *logfile=NULL;
   int nofork = 0;
   int fd;
   struct sockaddr_in name,from;
@@ -103,6 +103,11 @@ main(argc, argv)
       continue;
     }
     logfile = argv[i];
+  }
+
+  if (logfile == NULL) {
+    fprintf(stderr,"usage: bbd [-nofork] logfile\n");
+    exit(1);
   }
 
 #ifdef SABER

@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.6 1991-04-08 21:17:09 lwvanels Exp $
+ *	$Id: polld.c,v 1.7 1991-04-08 23:47:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.6 1991-04-08 21:17:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.7 1991-04-08 23:47:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -57,6 +57,7 @@ clean_up(sig)
   close(listening_fd);
   syslog(LOG_INFO,"Exiting on signal %d",sig);
   exit(1);
+  return(0);
 }
 
 /*
@@ -73,7 +74,7 @@ clean_up(sig)
 
 main(argc, argv)
      int argc;
-     char *argv[];
+     char **argv;
 {
   int nofork = 0;
   int i;
