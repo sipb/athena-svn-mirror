@@ -1,13 +1,13 @@
 /*	Created by:  Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v $
- *	$Author: miki $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.5 1994-03-25 15:56:54 miki Exp $";
+static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.6 1998-03-17 03:57:51 cfields Exp $";
 #endif
 
 #include "attach.h"
@@ -20,10 +20,11 @@ static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/
  * Attach an Unix filesystem
  */
 
-ufs_attach(at, mopt, errorout)
+ufs_attach(at, mopt, errorout, mountpoint_list)
 	struct _attachtab *at;
 	struct mntopts	*mopt;
 	int errorout;
+	string_list **mountpoint_list;
 {
     if (at->mode == 'w' && !skip_fsck) {
 	    if (perform_fsck(at->hostdir, at->hesiodname, 1) == FAILURE)
@@ -67,10 +68,11 @@ ufs_detach(at)
  * (Print an error message and go away; always fails)
  * Not strictly UFS, but it's a good place to sneak it in...
  */
-err_attach(at, mopt, errorout)
+err_attach(at, mopt, errorout, mountpoint_list)
 	struct _attachtab *at;
 	struct mntopts	*mopt;
 	int errorout;		/* ignored */
+	string_list **mountpoint_list;
 {
 	fprintf(stderr, "%s: error: %s\n", at->hesiodname, at->hostdir);
 	return(FAILURE);
