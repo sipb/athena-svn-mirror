@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.10 1992-05-06 13:01:30 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.11 1992-06-11 17:25:49 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -434,6 +434,7 @@ void createCB (w, string, callback_data)
   if (!strcmp(string, "save_dlg")) {
     w_dlg_save = w;
     XtDestroyWidget(XmSelectionBoxGetChild(w,XmDIALOG_HELP_BUTTON));
+    MuSetEmacsBindings(XmSelectionBoxGetChild(w,XmDIALOG_TEXT));
     return;
   }
 
