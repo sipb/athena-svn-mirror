@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/crypto/bignum/Imakefile,v 1.1 1993-05-25 15:56:28 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/crypto/bignum/Imakefile,v 1.2 1995-07-20 22:10:25 cfields Exp $ */
 
 OBJECT = o/KerN.o o/bnInit.o o/bnMult.o o/bnDivide.o o/bnCmp.o o/bzf.o o/bz.o 
 DEFINES = -DDIGITon32BIT -I./h
@@ -11,7 +11,7 @@ all:: $(OBJECT)
 o/KerN.o: c/KerN.c
 	as s/vaxKerN.s -o o/KerN.o
 #else
-#ifdef mips
+#if defined(mips) && !defined(sgi)
 o/KerN.o: c/KerN.c
 	as -w s/mipsKerN.s -o o/KerN.o
 #else
