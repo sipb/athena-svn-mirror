@@ -93,9 +93,6 @@ if [ "${AFSCLIENT}" != "false" ]; then
 	fi
 	AFSOPTS="${AFSOPTS} -daemons ${AFSCLIENT}"
 	/etc/afsd ${AFSOPTS}
-	if [ -f  /afs/athena/service/aklog ]; then
-          cp -p /afs/athena.mit.edu/service/aklog /bin/athena/aklog
-	fi
 	sh /etc/athena/config_afs
 fi
 
