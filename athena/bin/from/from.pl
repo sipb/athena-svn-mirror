@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: from.pl,v 1.4 2003-09-12 18:55:46 rbasch Exp $
+# $Id: from.pl,v 1.5 2004-05-25 18:34:43 rbasch Exp $
 
 # This is an implementation of the Athena "from" utility using the
 # Perl interface to the Cyrus imclient IMAP library.
@@ -105,7 +105,7 @@ $client->addcallback({-trigger => 'EXISTS', -flags => $cb_numbered,
 $client->addcallback({-trigger => 'RECENT', -flags => $cb_numbered,
 		      -callback => \&number_callback,
 		      -rock => \$recentmsgcount});
-send_command "EXAMINE $mbox";
+send_command "EXAMINE \"$mbox\"";
 
 if ($totalmsgcount && !($checknew && !$recentmsgcount)) {
     # Search the mailbox to obtain the message UID's.

@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mailquota.pl,v 1.2 2003-11-07 22:49:23 rbasch Exp $
+# $Id: mailquota.pl,v 1.3 2004-05-25 18:34:43 rbasch Exp $
 
 # Display the IMAP resource usage on the user's post office server.
 
@@ -87,7 +87,7 @@ $client->addcallback({-trigger => 'QUOTA',
 		      -callback => \&quota_callback});
 $client->addcallback({-trigger => 'QUOTAROOT',
 		      -callback => \&quotaroot_callback});
-send_command "GETQUOTAROOT $mbox";
+send_command "GETQUOTAROOT \"$mbox\"";
 
 # We are done talking to the IMAP server; close down the connection.
 close_connection();

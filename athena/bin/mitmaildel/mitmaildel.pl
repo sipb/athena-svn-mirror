@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmaildel.pl,v 1.1 2004-01-21 23:15:10 rbasch Exp $
+# $Id: mitmaildel.pl,v 1.2 2004-05-25 18:34:43 rbasch Exp $
 
 # Delete (or undelete) messages in an IMAP folder.
 
@@ -91,7 +91,7 @@ $client->addcallback({-trigger => 'OK',
 			  return unless ($cb{-text} =~ m/UIDNEXT\s+(\d+)/io);
 			  $uidnext = $1;
 		      }});
-send_command "SELECT $opt_mailbox";
+send_command "SELECT \"$opt_mailbox\"";
 
 # If we're operating on UIDs, and did not get the UIDNEXT value above,
 # use the STATUS command to get it explicitly.
@@ -105,7 +105,7 @@ if ($opt_by_uid && !$uidnext) {
 				  unless ($cb{-text} =~ m/UIDNEXT\s+(\d+)/io);
 			      $uidnext = $1;
 			  }});
-    send_command "STATUS $opt_mailbox (UIDNEXT)";
+    send_command "STATUS \"$opt_mailbox\" (UIDNEXT)";
 }
 
 # Note that the STORE command returns success even when the given

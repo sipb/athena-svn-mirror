@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailshow.pl,v 1.1 2004-01-21 23:08:35 rbasch Exp $
+# $Id: mitmailshow.pl,v 1.2 2004-05-25 18:34:44 rbasch Exp $
 
 # Show messages in an IMAP folder.
 
@@ -74,7 +74,7 @@ $client->authenticate(-authz => $username) ||
 
 # Select (or examine, if in no-mark mode) the mailbox.
 my $select_cmd = ($opt_no_mark ? 'EXAMINE' : 'SELECT');
-send_command "$select_cmd $opt_mailbox";
+send_command "$select_cmd \"$opt_mailbox\"";
 
 # Fetch the messages.  The message body will be displayed by the
 # fetch_callback subroutine.

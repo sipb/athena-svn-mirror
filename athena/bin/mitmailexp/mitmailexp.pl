@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailexp.pl,v 1.1 2004-01-21 23:17:19 rbasch Exp $
+# $Id: mitmailexp.pl,v 1.2 2004-05-25 18:34:43 rbasch Exp $
 
 # Expunge an IMAP folder.
 
@@ -61,7 +61,7 @@ unless ($client->authenticate(-authz => $username)) {
 }
 
 # Access the mailbox.  Make sure we have read-write access.
-send_command "SELECT $opt_mailbox";
+send_command "SELECT \"$opt_mailbox\"";
 
 # Close the mailbox, thereby expunging deleted messages.
 send_command "CLOSE";

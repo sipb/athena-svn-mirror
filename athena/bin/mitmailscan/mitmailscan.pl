@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailscan.pl,v 1.1 2004-01-21 18:29:14 rbasch Exp $
+# $Id: mitmailscan.pl,v 1.2 2004-05-25 18:34:44 rbasch Exp $
 
 # Scan messages in an IMAP folder.
 
@@ -166,7 +166,7 @@ my $cb_numbered = Cyrus::IMAP::CALLBACK_NUMBERED;
 $client->addcallback({-trigger => 'EXISTS', -flags => $cb_numbered,
 		      -callback => \&number_callback,
 		      -rock => \$totalmsgcount});
-send_command "EXAMINE $opt_mailbox";
+send_command "EXAMINE \"$opt_mailbox\"";
 
 if ($totalmsgcount) {
     # Search the mailbox to obtain the desired message numbers.
