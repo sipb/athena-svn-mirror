@@ -1,8 +1,0 @@
-#
-# Configuration file for using the gnome-vfs library with the pthread
-# asynchronous backend.
-#
-VFSPTHREAD_LIBDIR="@VFSPTHREAD_LIBDIR@"
-VFSPTHREAD_LIBS="@VFSPTHREAD_LIBS@"
-VFSPTHREAD_INCLUDEDIR="@VFSPTHREAD_INCLUDEDIR@"
-MODULE_VERSION="gnome-vfs-@VERSION@"
