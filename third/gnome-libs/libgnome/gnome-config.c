@@ -587,6 +587,10 @@ access_config_extended (access_type mode, const char *section_name,
 			g_assert (ret_val == NULL);
 		}
 
+		/* Athena mod (thus the broken indentation) to disable homedir
+		 * configs when NOCALLS is set. */
+		if (!getenv("NOCALLS")) {
+
 		/* fall through to the user config section */
 		filename = gnome_util_home_file (rel_file);
 		ret_val = access_config (mode, section_name, key_name, NULL,
@@ -598,6 +602,8 @@ access_config_extended (access_type mode, const char *section_name,
 			return ret_val;
 		}
 		g_assert (ret_val == NULL);
+
+		}
 
 		/* fall through to the system wide config default tree */
 		if (cache_global_filename) {
@@ -731,7 +737,9 @@ dump_profile (TProfile *p, int one_only)
 	FILE *profile;
 	struct stat sb;
 	int err;
-    
+
+	if (getenv("NOCALLS"))
+		return;
 	if (!p)
 		return;
 	if(!one_only)
