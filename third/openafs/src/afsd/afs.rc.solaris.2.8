@@ -63,7 +63,7 @@ fi
 # Make sure afs exists in /etc/name_to_sysnum
 #
 if grep -s "afs" /etc/name_to_sysnum > /dev/null; then
-    echo "Entry for afs already exists in /etc/name_to_sysnum"
+    :
 else
     echo "Creating entry for afs in /etc/name_to_sysnum"
     cp /etc/name_to_sysnum /etc/name_to_sysnum.orig
