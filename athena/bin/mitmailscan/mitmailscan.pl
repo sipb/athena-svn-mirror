@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailscan.pl,v 1.2 2004-05-25 18:34:44 rbasch Exp $
+# $Id: mitmailscan.pl,v 1.3 2004-07-29 19:11:53 rbasch Exp $
 
 # Scan messages in an IMAP folder.
 
@@ -380,7 +380,12 @@ sub close_and_errorout($) {
 # Logout from the IMAP server, and close the connection.
 sub close_connection() {
     $client->send('', '', "LOGOUT");
-    $client->DESTROY();
+    # Set the client reference to undef, so that perl invokes the
+    # destructor, which closes the connection.  Note that if we invoke
+    # the destructor explicitly here, then perl will still invoke it
+    # again when the program exits, thus touching memory which has
+    # already been freed.
+    $client = undef;
 }
 
 sub errorout($) {

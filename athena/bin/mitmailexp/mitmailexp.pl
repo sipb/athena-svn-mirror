@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailexp.pl,v 1.2 2004-05-25 18:34:43 rbasch Exp $
+# $Id: mitmailexp.pl,v 1.3 2004-07-29 19:11:53 rbasch Exp $
 
 # Expunge an IMAP folder.
 
@@ -87,7 +87,12 @@ sub send_command($) {
 # Logout from the IMAP server, and close the connection.
 sub close_connection() {
     $client->send('', '', "LOGOUT");
-    $client->DESTROY();
+    # Set the client reference to undef, so that perl invokes the
+    # destructor, which closes the connection.  Note that if we invoke
+    # the destructor explicitly here, then perl will still invoke it
+    # again when the program exits, thus touching memory which has
+    # already been freed.
+    $client = undef;
 }
 
 sub errorout($) {

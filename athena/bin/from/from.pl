@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: from.pl,v 1.5 2004-05-25 18:34:43 rbasch Exp $
+# $Id: from.pl,v 1.6 2004-07-29 19:11:51 rbasch Exp $
 
 # This is an implementation of the Athena "from" utility using the
 # Perl interface to the Cyrus imclient IMAP library.
@@ -280,7 +280,12 @@ sub make_msgspecs(@) {
 # Logout from the IMAP server, and close the connection.
 sub close_connection() {
     $client->send('', '', "LOGOUT");
-    $client->DESTROY();
+    # Set the client reference to undef, so that perl invokes the
+    # destructor, which closes the connection.  Note that if we invoke
+    # the destructor explicitly here, then perl will still invoke it
+    # again when the program exits, thus touching memory which has
+    # already been freed.
+    $client = undef;
 }
 
 # Get mail from the local ("Unix") mail drop.

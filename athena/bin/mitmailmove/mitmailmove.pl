@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mitmailmove.pl,v 1.1 2004-06-07 19:13:53 rbasch Exp $
+# $Id: mitmailmove.pl,v 1.2 2004-07-29 19:11:53 rbasch Exp $
 
 # Move or copy messages between IMAP folders.
 
@@ -170,7 +170,12 @@ sub close_and_errorout($) {
 # Logout from the IMAP server, and close the connection.
 sub close_connection() {
     $client->send('', '', "LOGOUT");
-    $client->DESTROY();
+    # Set the client reference to undef, so that perl invokes the
+    # destructor, which closes the connection.  Note that if we invoke
+    # the destructor explicitly here, then perl will still invoke it
+    # again when the program exits, thus touching memory which has
+    # already been freed.
+    $client = undef;
 }
 
 sub errorout($) {
