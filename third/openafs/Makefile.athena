@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.11 2004-03-11 04:14:34 zacheiss Exp $
+# $Id: Makefile.athena,v 1.12 2004-04-04 19:17:05 rbasch Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -287,6 +287,7 @@ install:
 	   mkdir -p $$SRVD${VICE}/modload ; \
 	   mkdir -p $$SRVD/etc/sysconfig ; \
 	   mkdir -p $$SRVD/usr/vice/cache ; \
+	   chmod 700 $$SRVD/usr/vice/cache ; \
 	   mkdir -p $$SRVD/etc/rc.d/init.d ; \
            install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/osi_vfs.h \
 		$$SRVD${WS}/include/afs ; \
@@ -304,6 +305,7 @@ install:
 	sun4) \
 	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
 	   mkdir -p $$SRVD/usr/vice/cache ; \
+	   chmod 700 $$SRVD/usr/vice/cache ; \
 	   mkdir -p $$SRVD/etc/init.d ; \
 	   mkdir -p $$SRVD/etc/rc0.d ; \
 	   mkdir -p $$SRVD/etc/rc2.d ; \
