@@ -57,9 +57,9 @@ stamp-vti: m4.texinfo ../configure.in
 	date > $(srcdir)/stamp-vti
 
 install: all
-	$(srcdir)/../mkinstalldirs $(infodir)
+	$(srcdir)/../mkinstalldirs ${DESTDIR}$(infodir)
 	cd $(srcdir) && for file in m4.info*; do \
-	  $(INSTALL_DATA) $$file $(infodir)/$$file; \
+	  $(INSTALL_DATA) $$file ${DESTDIR}$(infodir)/$$file; \
 	done
 
 uninstall:
