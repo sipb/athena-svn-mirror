@@ -1,0 +1,26 @@
+[Desktop Entry]
+Name=Deluxe
+Name[de]=Deluxe
+Name[es]=Deluxe
+Name[fr]=Deluxe
+Name[ja]=¥Ç¥é¥Ã¥¯¥¹
+Name[no]=Deluxe
+Name[sk]=Deluxe
+Name[sv]=Deluxe
+Comment=Display nice stuff 
+Comment[de]=Hübsche Dinge anzeigen 
+Comment[fi]=Piirrä jotakin kivaa
+Comment[fr]=Affiche des chose sympa 
+Comment[ja]=¤¹¤Æ¤­¤Ê¤â¤Î¤òÉ½¼¨
+Comment[no]=Vis pene ting
+Comment[sk]=Zobrazuje pekné veci
+Comment[sv]=Visa schyssta grejor
+Exec=xscreensaver-command -activate
+TryExec=deluxe
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=deluxe

@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Mountain
+Name[ca]=Muntanyes
+Name[da]=Bjerg
+Name[de]=Berg
+Name[es]=MontaÒas
+Name[eu]=Mendiak
+Name[fi]=Vuori
+Name[fr]=Montagnes
+Name[ja]=ª≥
+Name[no]=Fjell
+Name[ru]=Áœ“Ÿ
+Name[sk]=Hora
+Name[sv]=Berg
+Name[wa]=Montagne
+Comment=
+Exec=xscreensaver-command -activate
+TryExec=mountain
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=mountain.png
+Author=
+ExtendedComment=
+Demo=mountain -delay 2

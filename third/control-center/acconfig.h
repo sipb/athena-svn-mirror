@@ -21,5 +21,5 @@
 
 #undef WITH_SYMBOL_UNDERSCORE
 
-#undef HAVE_PUTENV
-#undef HAVE_SETENV
+#undef GNOME_ICONDIR
+

@@ -1,0 +1,26 @@
+[Desktop Entry]
+Name=Sphere
+Name[ca]=Esfera
+Name[da]=Sfære
+Name[de]=Sphäre
+Name[es]=Esfera
+Name[fi]=Pallot
+Name[fr]=Sphère
+Name[ja]=µåÂÎ
+Name[no]=Sfære
+Name[ru]=óÆÅÒÙ
+Name[sk]=Guµa
+Name[sv]=Sfär
+Comment=
+Exec=xscreensaver-command -activate
+TryExec=sphere
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=sphere.png
+Author=
+ExtendedComment=
+Demo=sphere -delay 2

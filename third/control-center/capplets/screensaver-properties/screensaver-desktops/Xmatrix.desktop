@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Xmatrix
+Name[da]=Xmatrix
+Name[de]=Xmatrix
+Name[fi]=Xmatrix
+Name[fr]=Xmatrix
+Name[no]=Xmatrix
+Name[sk]=Matrix
+Name[sv]=Xmatrix
+Comment=Screens from the movie The Matrix
+Comment[da]=Skærmen fra filmen The Matrix
+Comment[de]=Bildschirm vom Kinofilm `Die Matrix'
+Comment[fi]=Ruutu elokuvan Matrix tapaan.
+Comment[no]=Scener fra filmen Matrix
+Comment[sk]=Obrazovky z filmu The Matrix
+Comment[sv]=Skärm från filmen \"Matrix\"
+Exec=xscreensaver-command -activate
+TryExec=xmatrix
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=xroger.png
+Author=
+ExtendedComment=
+Demo=xmatrix -delay 2

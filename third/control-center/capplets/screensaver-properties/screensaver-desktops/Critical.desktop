@@ -1,0 +1,25 @@
+[Desktop Entry]
+Name=Critical
+Name[de]=Kritisch
+Name[es]=Critical
+Name[fi]=Kriittinen
+Name[fr]=Critique
+Name[ja]=¥¯¥ê¥Æ¥£¥«¥ë
+Name[no]=Kritisk
+Name[sk]=Kry¹tál
+Name[sv]=Kritisk
+Comment=Display coloured polylines
+Comment[fi]=Piirtää värillisiä viivoja.
+Comment[ja]=¿§¤Î¤Ä¤¤¤¿Â¿ÀþÊ¬
+Comment[no]=Vis fargede polilinjer
+Comment[sk]=Zobrazuje farebné èiary
+Comment[sv]=Visar färgade polygoner
+Exec=xscreensaver-command -activate
+TryExec=critical
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=critical

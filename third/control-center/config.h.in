@@ -61,8 +61,7 @@
 #undef HAVE_ESD
 #undef HAVE_LIBESD
 
-#undef HAVE_PUTENV
-#undef HAVE_SETENV
+#undef GNOME_ICONDIR
 
 /* Define if you have the __argz_count function.  */
 #undef HAVE___ARGZ_COUNT
@@ -79,8 +78,14 @@
 /* Define if you have the dlopen function.  */
 #undef HAVE_DLOPEN
 
+/* Define if you have the flockfile function.  */
+#undef HAVE_FLOCKFILE
+
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
+
+/* Define if you have the getline function.  */
+#undef HAVE_GETLINE
 
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
@@ -111,6 +116,9 @@
 
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
+
+/* Define if you have the <X11/SM/SMlib.h> header file.  */
+#undef HAVE_X11_SM_SMLIB_H
 
 /* Define if you have the <X11/extensions/xf86misc.h> header file.  */
 #undef HAVE_X11_EXTENSIONS_XF86MISC_H
@@ -144,6 +152,9 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the gnomeui library (-lgnomeui).  */
+#undef HAVE_LIBGNOMEUI
 
 /* Define if you have the i library (-li).  */
 #undef HAVE_LIBI

@@ -15,5 +15,6 @@ module GNOME {
                 void state_changed (in long id, in boolean undoable);
                 void register_capplet_new (in capplet cap, in string name, in long capid, out unsigned long xid, out long newid);
                 void show_control_center ();
+		void changes_are_immediate (in long id);
 	};
 };

@@ -1,14 +1,19 @@
 [Desktop Entry]
 Name=Window Maker
-Name[pt_BR]=Window Maker
-Name[sl]=Window Maker
-Name[da]=Window Maker
-Name[cs]=Window Maker
-Name[el]=Window Maker
-Name[ko]=À©µµ¿ì ¸ÞÀÌÄ¿
+Name[da]=WindowMaker
+Name[de]=Window Maker
+Name[es]=Window Maker
+Name[fi]=Window Maker
 Name[fr]=Window Maker
+Name[gl]=WindowMaker
+Name[ja]=Window Maker
+Name[ko]=À©µµ¿ì ¸ÞÀÌÄ¿
+Name[no]=Window Maker
 Name[pl]=Window Maker
-Comment[cs]=Pomìrnì dobrý správce oken s podporou Gnome.
+Name[sk]=Window Maker
+Name[sv]=Window Maker
+Name[tr]=Window Maker
+Name[wa]=Window Maker
 Exec=wmaker
 TryExec=wmaker
 

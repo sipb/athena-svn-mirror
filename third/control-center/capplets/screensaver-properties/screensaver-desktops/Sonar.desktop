@@ -1,0 +1,30 @@
+[Desktop Entry]
+Name=Sonar
+Name[ca]=Sonar
+Name[da]=Sonar
+Name[de]=Sonar
+Name[es]=Sonar
+Name[fi]=Tutka
+Name[fr]=Sonar
+Name[ja]=¥½¥Ê¡¼
+Name[no]=Sonar
+Name[sk]=Sonar
+Name[sv]=Sonar
+Comment=Display a Sonar scope.
+Comment[ca]=Mostra un visor de sonar.
+Comment[da]=Viser et sonarbillede.
+Comment[fi]=Näyttää tutkan näytön
+Comment[fr]=Affiche un écran sonar.
+Comment[ja]=¥½¥Ê¡¼¥¹¥³¡¼¥×¤òÉ½¼¨
+Comment[no]=Viser et sonarbilde.
+Comment[sk]=Zobrazuje sonar
+Comment[sv]=Visar en sonarskärm.
+Exec=xscreensaver-command -activate
+TryExec=sonar
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=sonar

@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=GLPlanet
+Name[da]=GLPlanet
+Name[fi]=GLPlaneetta
+Name[fr]=GLPlanet
+Name[ja]=GL ÏÇÀ±
+Name[no]=GLPlanet
+Name[sk]=GLPlanéta
+Name[sv]=GLPlanet
+Comment=A 3d globe
+Comment[da]=En 3d globus
+Comment[fi]=3D-planeetta
+Comment[fr]=Un globe 3D
+Comment[ja]=3 ¼¡¸µ¤ÎÃÏµå
+Comment[no]=En 3D globus
+Comment[sk]=3D glóbus
+Comment[sv]=Ett 3D-jordklot
+Exec=xscreensaver-command -activate
+TryExec=glplanet
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=glplanet
+
+

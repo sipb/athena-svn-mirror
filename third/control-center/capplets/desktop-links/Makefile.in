@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -46,10 +46,9 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -81,14 +80,15 @@ GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
 GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
-GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_CONFIG = @GTK_CONFIG@
+GTK_LIBS = @GTK_LIBS@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 IMLIB_CFLAGS = @IMLIB_CFLAGS@
@@ -101,9 +101,6 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
-LIBGLADE_CFLAGS = @LIBGLADE_CFLAGS@
-LIBGLADE_CONFIG = @LIBGLADE_CONFIG@
-LIBGLADE_LIBS = @LIBGLADE_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -114,15 +111,26 @@ ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
+ORB_CFLAGS = @ORB_CFLAGS@
+ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
+PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VFS_CFLAGS = @VFS_CFLAGS@
+VFS_LIBS = @VFS_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-XML_CFLAGS = @XML_CFLAGS@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
+XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -134,26 +142,34 @@ Multimediadir = $(ccenterdir)/Multimedia
 Desktopdir = $(ccenterdir)/Desktop
 UIOptionsdir = $(ccenterdir)/UIOptions
 Peripheralsdir = $(ccenterdir)/Peripherals
+Sessiondir = $(ccenterdir)/Session
+Documentsdir = $(ccenterdir)/Documents
 
 paneldir = $(datadir)/gnome/apps/Settings
 Multimediadirp = $(paneldir)/Multimedia
 Desktopdirp = $(paneldir)/Desktop
 UIOptionsdirp = $(paneldir)/UIOptions
 Peripheralsdirp = $(paneldir)/Peripherals
-Directory_files =  	Gnome.directory			Desktop.directory		Peripherals.directory   	Multimedia.directory		UIOptions.directory
+Sessiondirp = $(paneldir)/Session
+Documentsdirp = $(paneldir)/Documents
+
+directory_in_files =  	Gnome.directory.in				Desktop.directory.in				Peripherals.directory.in			Multimedia.directory.in				Session.directory.in				Documents.directory.in				UIOptions.directory.in
 
 
-EXTRA_DIST =  	Gnome.directory			Desktop.directory		Peripherals.directory   	Multimedia.directory		UIOptions.directory
+noinst_DATA = $(directory_in_files:.directory.in=.directory)
 
+EXTRA_DIST = $(directory_in_files) $(noinst_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+DATA =  $(noinst_DATA)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -202,10 +218,10 @@ install-am: all-am
 install: install-am
 uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 
 
@@ -244,25 +260,34 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+@XML_I18N_MERGE_DIRECTORY_RULE@
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(Desktopdir)
 	$(mkinstalldirs) $(DESTDIR)$(Multimediadir)
 	$(mkinstalldirs) $(DESTDIR)$(UIOptionsdir)
 	$(mkinstalldirs) $(DESTDIR)$(Peripheralsdir)
+	$(mkinstalldirs) $(DESTDIR)$(Sessiondir)
+	$(mkinstalldirs) $(DESTDIR)$(Documentsdir)
 	$(INSTALL_DATA) $(srcdir)/Gnome.directory $(DESTDIR)$(ccenterdir)/.directory
 	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
 	$(INSTALL_DATA) $(srcdir)/Desktop.directory $(DESTDIR)$(Desktopdir)/.directory
 	$(INSTALL_DATA) $(srcdir)/UIOptions.directory $(DESTDIR)$(UIOptionsdir)/.directory
 	$(INSTALL_DATA) $(srcdir)/Peripherals.directory $(DESTDIR)$(Peripheralsdir)/.directory
+	$(INSTALL_DATA) $(srcdir)/Session.directory $(DESTDIR)$(Sessiondir)/.directory
+	$(INSTALL_DATA) $(srcdir)/Documents.directory $(DESTDIR)$(Documentsdir)/.directory
 	$(mkinstalldirs) $(DESTDIR)$(Desktopdirp)
 	$(mkinstalldirs) $(DESTDIR)$(Multimediadirp)
 	$(mkinstalldirs) $(DESTDIR)$(UIOptionsdirp)
 	$(mkinstalldirs) $(DESTDIR)$(Peripheralsdirp)
+	$(mkinstalldirs) $(DESTDIR)$(Sessiondirp)
+	$(mkinstalldirs) $(DESTDIR)$(Documentsdirp)
 	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadirp)/.directory
 	$(INSTALL_DATA) $(srcdir)/Desktop.directory $(DESTDIR)$(Desktopdirp)/.directory
 	$(INSTALL_DATA) $(srcdir)/UIOptions.directory $(DESTDIR)$(UIOptionsdirp)/.directory
 	$(INSTALL_DATA) $(srcdir)/Peripherals.directory $(DESTDIR)$(Peripheralsdirp)/.directory
+	$(INSTALL_DATA) $(srcdir)/Session.directory $(DESTDIR)$(Sessiondirp)/.directory
+	$(INSTALL_DATA) $(srcdir)/Documents.directory $(DESTDIR)$(Documentsdirp)/.directory
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,0 +1,23 @@
+[Desktop Entry]
+Name=Lissie
+Name[ca]=Lissie
+Name[da]=Lissie
+Name[es]=Lissie
+Name[fi]=Vieteri
+Name[fr]=Lissie
+Name[no]=Lissie
+Name[sk]=Lissie
+Name[sv]=Lissie
+Comment=
+Exec=xscreensaver-command -activate
+TryExec=lissie
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Icon=lissie.png
+Author=
+ExtendedComment=
+Demo=lissie -delay 2

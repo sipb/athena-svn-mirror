@@ -1,0 +1,25 @@
+[Desktop Entry]
+Name=MDI
+Name[ca]=Multidocument
+Name[da]=Multidokument
+Name[de]=MDI
+Name[el]=Διασύνδεση Πολλαπλών Εγγράφων
+Name[es]=MDI
+Name[et]=Multidokument
+Name[fi]=Usean asiakirjan kδyttφ
+Name[fr]=Multi-document
+Name[gl]=Multi-Documento
+Name[ja]=MDI
+Name[ko]=Ώ©·―Ή®Ό­
+Name[lt]=MDI
+Name[no]=MDI
+Name[pl]=MDI
+Name[pt]=MDI
+Name[sk]=MDI
+Name[sv]=MDI
+Name[tr]=ΗDY
+Name[wa]=MDI
+Exec=ui-properties --cap-id=2
+Icon=gnome-mdi.png
+Terminal=0
+Type=Application

@@ -4,16 +4,13 @@
  * Authors: Jonathan Blandford <jrb@redhat.com>
  *          Owen Taylor <otaylor@redhat.com>
  */
-
-#ifdef HAVE_CONFIG_H
-#   include <config.h>
-#endif
-
 #include <ctype.h>
-#include <parser.h>
+#include <config.h>
+#include <locale.h>
 #include "wm-properties.h"
 #include "capplet-widget.h"
-#include "gnome.h"
+#include <gnome.h>
+#include <libgnomeui/gnome-window-icon.h>
 
 /* prototypes */
 static void restart         (gboolean force);
@@ -384,6 +381,10 @@ restart_finalize ()
                 break;
                 
         case STATE_OK:
+                wm_list_save ();
+                update_session ();
+                
+                /* Fall through */
         case STATE_CANCEL:
                 if (quit_pending)
                         gtk_main_quit();
@@ -548,8 +549,8 @@ restart_finish (void)
         case STATE_OK:
         case STATE_CANCEL:
                 hide_restart_dialog();
-                show_restart_info();
                 restart_finalize();
+                show_restart_info();
                 break;
 
         case STATE_TRY_REVERT:
@@ -586,12 +587,16 @@ restart (gboolean force)
         WindowManager *current_wm = wm_list_get_current(), *mywm;
         static gboolean last_try_was_twm = FALSE;
         const char *twm_argv[] = {"twm", NULL};
-        const GnomeDesktopEntry twm_dentry = {"twm", "twm",
-                                              1, (char **)twm_argv, NULL,
+        GnomeDesktopEntry twm_dentry = {"twm", "twm",
+                                              1, NULL, NULL,
                                               NULL, NULL, 0, NULL,
                                               NULL, NULL, 0, 0};
-        const WindowManager twm_fallback = {(GnomeDesktopEntry*)&twm_dentry, "twm", "twm", 0, 0, 1, 0};
+        const WindowManager twm_fallback = {NULL, "twm", "twm", 0, 0, 1, 0};
 
+        twm_dentry.exec = twm_argv;
+        twm_fallback.dentry = &twm_dentry;
+   
+   
         if(selected_wm) {
                 last_try_was_twm = FALSE;
                 mywm = selected_wm;
@@ -634,7 +639,7 @@ help_callback (void)
 {
   gchar *tmp;
 
-  tmp = gnome_help_file_find_file ("users-guide", "gccdesktop.html#GCCWM");
+  tmp = gnome_help_file_find_file ("control-center", "desktop-intro.html#GCCWM");
   if (tmp) {
     gnome_help_goto(0, tmp);
     g_free(tmp);
@@ -713,6 +718,8 @@ cancel_callback (void)
         case STATE_TRY_CANCEL:
                 wm_list_revert();
                 selected_wm = wm_list_get_revert();
+		/* If we don't know which window manager should be running (are there none in my list?) bail out */
+		if (selected_wm == NULL) return;
                 state = STATE_CANCEL;
 
                 restart (old_state == STATE_TRY_CANCEL);
@@ -748,7 +755,9 @@ create_dialog (gchar *title)
         dialog = g_new (WMDialog, 1);
         
         dialog->dialog = gnome_dialog_new (_("Add New Window Manager"),
-                                           _("OK"), _("Cancel"), NULL);
+                                           GNOME_STOCK_BUTTON_OK,
+                                           GNOME_STOCK_BUTTON_CANCEL,
+                                           NULL);
 
         gnome_dialog_set_default (GNOME_DIALOG (dialog->dialog), 0);
         gnome_dialog_close_hides (GNOME_DIALOG (dialog->dialog), TRUE);
@@ -1108,47 +1117,19 @@ wm_setup (void)
         update_gui();
 }
 
-static void do_get_xml (void) 
-{
-        xmlDocPtr doc;
-
-        doc = wm_list_write_to_xml ();
-        xmlDocDump (stdout, doc);
-}
-
-static void do_set_xml (void) 
-{
-        xmlDocPtr doc;
-	char *buffer;
-	int len = 0;
-
-	while (!feof (stdin)) {
-		if (!len) buffer = g_new (char, 16384);
-		else buffer = g_renew (char, buffer, len + 16384);
-		fread (buffer + len, 1, 16384, stdin);
-		len += 16384;
-	}
-
-	doc = xmlParseMemory (buffer, strlen (buffer));
-
-        init_session ();
-	wm_list_read_from_xml (doc);
-        wm_list_save ();
-        update_session ();
-}
-
 int
 main (int argc, char **argv)
 {
         gint init_results;
 
+				setlocale(LC_ALL, "");
         bindtextdomain (PACKAGE, GNOMELOCALEDIR);
         textdomain (PACKAGE);
 
         argv0 = g_strdup (argv[0]);
 	init_results = gnome_capplet_init("wm-properties", VERSION,
 					  argc, argv, NULL, 0, NULL);
-        
+        gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-ccwindowmanager.png");
 	if (init_results < 0) {
                 g_warning (_("an initialization error occurred while "
                              "starting 'wm-properties-capplet'.\n"
@@ -1185,19 +1166,7 @@ main (int argc, char **argv)
                         gtk_main();
                 }
 
-                if (state == STATE_OK) {
-                        wm_list_save ();
-                        update_session ();
-                }
-                
-        } 
-        else if (init_results == 3) {
-                do_get_xml ();
-        }
-        else if (init_results == 4) {
-                do_set_xml ();
-        }
-        else {
+        } else {
                 if (selected_wm && 
                     !selected_wm->session_managed && 
                     !wm_is_running()) {

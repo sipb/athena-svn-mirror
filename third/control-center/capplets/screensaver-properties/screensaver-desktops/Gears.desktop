@@ -1,0 +1,26 @@
+[Desktop Entry]
+Name=Gears
+Name[da]=Gears
+Name[fi]=Rattaat
+Name[fr]=Engrenages
+Name[ja]=»õ¼Ö
+Name[no]=Gir
+Name[sk]=Prevody
+Name[sv]=Kugghjul
+Comment=The 3d mesa demo, of gears
+Comment[fi]=Mesan 3d-ratasnäytös
+Comment[fr]=La démo Mesa 3d d'engrenages
+Comment[ja]=3 ¼¡¸µ MESA ¤Î»õ¼Ö¤Î¥Ç¥â
+Comment[sk]=mesa 3D demo, prevody
+Comment[sv]=Kugghjulsdemot från Mesa
+Exec=xscreensaver-command -activate
+TryExec=gears
+Terminal=0
+Type=Application
+
+[Screensaver Data]
+WindowIdCommand=-window-id
+RootCommand=-root
+Demo=gears
+
+
