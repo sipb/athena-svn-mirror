@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v $
- *	$Id: p_utils.c,v 1.13 1991-01-15 17:47:52 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_utils.c,v 1.14 1993-08-27 13:00:13 thorne Exp $
+ *	$Author: thorne $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.13 1991-01-15 17:47:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.14 1993-08-27 13:00:13 thorne Exp $";
 #endif
 #endif
 
@@ -104,7 +104,7 @@ handle_argument(args, req, status)
 	    *status = ERROR;
 	    return((char **) NULL);
 	  }
-	  (void) strcpy(req->target.username,*args);
+	  (void) strncpy(req->target.username,*args,LOGIN_SIZE);
 	  num_of_args++;
 	  if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
 	     (*args[1] != '>'))
