@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.2 1990-01-17 02:53:39 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.3 1990-01-17 05:41:53 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -54,7 +54,7 @@ command_loop(Command_Table, prompt)
      char *prompt;
 {
   REQUEST Request;
-  char command_line[COMMAND_SIZE]; 
+  char command_line[COMMAND_LENGTH]; 
   char *comm_ptr;		
   char *arguments[MAX_ARGS];
   char arglist[MAX_ARGS][MAX_ARG_LENGTH];	
