@@ -11,13 +11,13 @@
 
 DESTDIR=
 CFLAGS=	-O
-LIBDIR=	/usr/lib/lpdfilters
+LIBDIR=	usr/lib/lpdfilters
 CXREF=	/usr/ucb/ctags -x
 SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c vpltdmp.c \
 	vplotf.c vfontinfo.c vwidth.c vfw.c fcvt.c rotate.c rotprt.c \
-	ln01filter.l ln03filter.c
-PRINTER=lpf necf ln01filter ln03filter ln01raw staff_ln03filter
+	ln01filter.l staff_ln03filter.c
+PRINTER=lpf necf ln01filter ln01raw staff_ln03filter
 LN01FILTERS= ln01l ln01p
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
@@ -27,6 +27,41 @@ all:	printer
 printer: ${PRINTER}
 
 varian:	${VARIAN}
+
+install: printer
+	-mkdir ${DESTDIR}/${LIBDIR}
+	-rm -f ${DESTDIR}/${LIBDIR}/ln03filter
+	for i in ${PRINTER}; do install -s $$i ${DESTDIR}/${LIBDIR}/$$i; done
+	for i in ${LN01FILTERS}; do \
+		rm -f ${DESTDIR}/${LIBDIR}/$$i; \
+		ln -s ln01filter ${DESTDIR}/${LIBDIR}/$$i; \
+	done
+installv: varian
+	-mkdir ${DESTDIR}/${LIBDIR}
+	install -s vfontinfo ${DESTDIR}/${LIBDIR}/vfontinfo
+	install -s vwidth ${DESTDIR}/${LIBDIR}/vwidth
+	install -s vfw ${DESTDIR}/${LIBDIR}/vfw
+	install -s fcvt ${DESTDIR}/${LIBDIR}/fcvt
+	install -s rotate ${DESTDIR}/${LIBDIR}/rotate
+	install -s rotprt ${DESTDIR}/${LIBDIR}/rotprt
+	install -s rvsort ${DESTDIR}/${LIBDIR}/rvsort
+	install -s rvcat ${DESTDIR}/${LIBDIR}/rvcat
+	install -s vsort ${DESTDIR}/${LIBDIR}/vsort
+	install -s vcat ${DESTDIR}/${LIBDIR}/vcat
+	install -s vpf ${DESTDIR}/${LIBDIR}/vpf
+	ln ${DESTDIR}/${LIBDIR}/vpf ${DESTDIR}/${LIBDIR}/vpfW
+	install -s vpsf ${DESTDIR}/${LIBDIR}/vpsf
+	install -s vdmp ${DESTDIR}/${LIBDIR}/vdmp
+	install -s vpltdmp ${DESTDIR}/${LIBDIR}/vpltdmp
+	install -s vplotf ${DESTDIR}/${LIBDIR}/vplotf
+
+clean:
+	rm -f ${PRINTER} ${VARIAN} *.o ln01filter.c
+
+print:
+	@pr makefile
+	@${CXREF} *.c | pr -h XREF
+	@pr *.h *.c
 
 lpf:	lpf.c
 	${CC} -o lpf ${CFLAGS} lpf.c
@@ -94,42 +129,3 @@ staff_ln03filter: staff_ln03filter.o
 
 ln01raw: ln01raw.o
 	${CC} ${CFLAGS} -o ln01raw ln01raw.o
-	
-install: printer
-	-mkdir ${DESTDIR}/${LIBDIR}
-	install -s lpf ${DESTDIR}/${LIBDIR}/lpf
-	install -s necf ${DESTDIR}/${LIBDIR}/necf
-	install -s ln01filter ${DESTDIR}/${LIBDIR}/ln01filter
-	for i in ${LN01FILTERS}; do \
-		rm -f ${DESTDIR}${LIBDIR}/$$i; \
-		ln -s ln01filter ${DESTDIR}${LIBDIR}/$$i; \
-	done
-	install -s ln03filter ${DESTDIR}/${LIBDIR}/ln03filter
-	install -s staff_ln03filter ${DESTDIR}/${LIBDIR}/staff_ln03filter
-	install -s ln01raw ${DESTDIR}/${LIBDIR}/ln01raw
-installv: varian
-	-mkdir ${DESTDIR}/${LIBDIR}
-	install -s vfontinfo ${DESTDIR}/${LIBDIR}/vfontinfo
-	install -s vwidth ${DESTDIR}/${LIBDIR}/vwidth
-	install -s vfw ${DESTDIR}/${LIBDIR}/vfw
-	install -s fcvt ${DESTDIR}/${LIBDIR}/fcvt
-	install -s rotate ${DESTDIR}/${LIBDIR}/rotate
-	install -s rotprt ${DESTDIR}/${LIBDIR}/rotprt
-	install -s rvsort ${DESTDIR}/${LIBDIR}/rvsort
-	install -s rvcat ${DESTDIR}/${LIBDIR}/rvcat
-	install -s vsort ${DESTDIR}/${LIBDIR}/vsort
-	install -s vcat ${DESTDIR}/${LIBDIR}/vcat
-	install -s vpf ${DESTDIR}/${LIBDIR}/vpf
-	ln ${DESTDIR}/${LIBDIR}/vpf ${DESTDIR}/${LIBDIR}/vpfW
-	install -s vpsf ${DESTDIR}/${LIBDIR}/vpsf
-	install -s vdmp ${DESTDIR}/${LIBDIR}/vdmp
-	install -s vpltdmp ${DESTDIR}/${LIBDIR}/vpltdmp
-	install -s vplotf ${DESTDIR}/${LIBDIR}/vplotf
-
-clean:
-	rm -f ${PRINTER} ${VARIAN} *.o ln01filter.c
-
-print:
-	@pr makefile
-	@${CXREF} *.c | pr -h XREF
-	@pr *.h *.c
