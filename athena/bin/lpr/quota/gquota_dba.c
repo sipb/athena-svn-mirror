@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.1 1990-07-10 03:21:53 ilham Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.2 1990-11-14 16:42:27 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.1 1990-07-10 03:21:53 ilham Exp $";
+static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_dba.c,v 1.2 1990-11-14 16:42:27 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -83,8 +83,8 @@ encode_group_key(key, account, service)
     static char keystring[4 + SERV_SZ];   /* Account and service */
 
     bzero(keystring, 4 + SERV_SZ);
-    bcopy(&account, keystring, 4);
-    strncpy(&keystring[4], service, SERV_SZ);
+    bcopy((char *) &account, keystring, 4);
+    (void) strncpy(&keystring[4], service, SERV_SZ);
     key->dsize = 4 + SERV_SZ;
     key->dptr = keystring;
 }
@@ -95,8 +95,8 @@ decode_group_key(key, account, service)
     long   *account;
     char   *service;
 {
-    bcopy(key->dptr, account, 4);
-    strncpy(service, key->dptr + 4, SERV_SZ);
+    bcopy(key->dptr, (char *) account, 4);
+    (void) strncpy(service, key->dptr + 4, SERV_SZ);
     
     service[SERV_SZ -1] = '\0';
 }
@@ -131,9 +131,9 @@ static char *gen_gdbsuffix(db_name, sfx)
     if (sfx == NULL)
 	sfx = ".ok";
 
-    dbsuffix = malloc (strlen(db_name) + strlen(sfx) + 1);
-    strcpy(dbsuffix, db_name);
-    strcat(dbsuffix, sfx);
+    dbsuffix = malloc ((unsigned) strlen(db_name) + strlen(sfx) + 1);
+    (void) strcpy(dbsuffix, db_name);
+    (void) strcat(dbsuffix, sfx);
     return dbsuffix;
 }
 
@@ -245,10 +245,12 @@ long gquota_end_update(db_name, age)
 	    tv[1].tv_sec = age;
 	    tv[1].tv_usec = 0;
 	    /* set times.. */
-	    utimes (new_okname, tv);
-	    fsync(fd);
+	    if(utimes (new_okname, tv))
+		syslog(LOG_INFO, "gquota_dba: utimes() failed");
+	    if(fsync(fd))
+		syslog(LOG_INFO, "gquota_dba: fsync() failed");
 	}
-	close(fd);
+	(void) close(fd);
 	if (rename (new_okname, okname) < 0)
 	    retval = errno;
     }
@@ -299,12 +301,12 @@ gquota_db_create(db_name)
     if (fd < 0)
 	ret = errno;
     else {
-	close(fd);
+	(void) close(fd);
 	fd = open (pagname, O_RDWR|O_CREAT|O_EXCL, 0600);
 	if (fd < 0)
 	    ret = errno;
 	else
-	    close(fd);
+	    (void) close(fd);
     }
     if (dbminit(db_name) < 0)
 	ret = errno;
@@ -379,13 +381,15 @@ gquota_db_get_group(account, serv, qrec, max, more)
     DBM    *db;
 
     if (!init)
-	gquota_db_init();		/* initialize database routines */
+	(void) gquota_db_init();	/* initialize database routines */
 
     for (try = 0; try < GQUOTA_DB_MAX_RETRY; try++) {
 	trans = gquota_start_read();
 
-	if (gquota_dbl_lock(GQUOTA_DBL_SHARED) != 0)
+	if (gquota_dbl_lock(GQUOTA_DBL_SHARED) != 0) {
+	    gquota_dbl_fini(); 	/* Attempt to fix the problem of old locks */
 	    return -1;
+	}
 
 	db = dbm_open(current_gdb_name, O_RDONLY, 0600);
 
@@ -449,7 +453,7 @@ gquota_db_get_group(account, serv, qrec, max, more)
 	dbm_close(db);
 	if (gquota_end_read(trans) == 0)
 	    break;
-	found = -1;
+	found = -2;
 	if (!non_blocking)
 	    sleep(1);
     }
@@ -473,10 +477,10 @@ gquota_db_put_group(qrec, max)
     datum   key, contents;
     DBM    *db;
 
-    gettimeofday(&timestamp, NULL);
+    (void) gettimeofday(&timestamp, (struct timezone *) NULL);
 
     if (!init)
-	gquota_db_init();
+	(void) gquota_db_init();
 
     if (gquota_dbl_lock(GQUOTA_DBL_EXCLUSIVE) != 0)
 	return -1;
@@ -493,8 +497,8 @@ gquota_db_put_group(qrec, max)
     for (i = 0; i < max; i++) {
 	encode_group_contents(&contents, qrec);
 	encode_group_key(&key, qrec->account, qrec->service);
-	if (dbm_store(db, key, contents, DBM_REPLACE) < 0)
-	    return(-1);
+	if (dbm_store(db, key, contents, DBM_REPLACE) < 0) 
+	    syslog(LOG_ERR, "gquota_dba_put_principal: dbm_store failed");
 #ifdef DEBUG
 	if (gquota_debug & 1) {
 	    fprintf(stderr, "\n put %l %s\n",
@@ -549,7 +553,7 @@ static gquota_dbl_init()
 	char *filename = gen_gdbsuffix (current_gdb_name, ".ok");
 	if ((dblfd = open(filename, 0)) < 0) {
 	    fprintf(stderr, "gquota_dbl_init: couldn't open %s\n", filename);
-	    fflush(stderr);
+	    (void) fflush(stderr);
 	    perror("open");
 	    exit(1);
 	}
@@ -561,7 +565,7 @@ static gquota_dbl_init()
 
 static void gquota_dbl_fini()
 {
-    close(dblfd);
+    if (dblfd != -1) (void) close(dblfd);
     dblfd = -1;
     inited = 0;
     mylock = 0;
@@ -573,11 +577,11 @@ static int gquota_dbl_lock(mode)
     int flock_mode=0;
     
     if (!inited)
-	gquota_dbl_init();
+	(void) gquota_dbl_init();
     if (mylock) {		/* Detect lock call when lock already
 				 * locked */
 	fprintf(stderr, "gquota locking error (mylock)\n");
-	fflush(stderr);
+	(void) fflush(stderr);
 	exit(1);
     }
     switch (mode) {
@@ -604,7 +608,7 @@ static void gquota_dbl_unlock()
 {
     if (!mylock) {		/* lock already unlocked */
 	fprintf(stderr, "gquota database lock not locked when unlocking.\n");
-	fflush(stderr);
+	(void) fflush(stderr);
 	exit(1);
     }
     if (flock(dblfd, LOCK_UN) < 0) {
