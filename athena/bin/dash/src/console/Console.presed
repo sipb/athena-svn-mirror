@@ -18,6 +18,14 @@
 *window.mapped:			False
 *window.cursorCode:		132
 
+!
+! console is specified here because we really only want this resource
+! set when the console program is actually the console window. The
+! resource itself is specified rather than a command line option at
+! invocation so that the user can override it.
+!
+console*window*global:		true
+
 *scrollBarWindow.backgroundPixmap: /etc/athena/login/bitmaps/gray
 
 *scrollBar.changeProc:		newvalue()
