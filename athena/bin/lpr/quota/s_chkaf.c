@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.5 1990-07-10 21:37:54 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.6 1990-07-11 11:03:58 ilham Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.5 1990-07-10 21:37:54 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.6 1990-07-11 11:03:58 ilham Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -296,6 +296,18 @@ init() {
 	    cnt++;
 	}
     } /* while */
+    
+    /* Now we have all the positions in memory
+     * check all entries with pos=0 and if an accounting
+     * file already exists, set the position to the end
+     * of that file 
+     */
+    for (i = 0; i < cnt; i++) {
+	if ((p_stat[i].pos == (long)0) && 
+	    (!fstat(fileno(p_stat[i].fp), &sbuf))) 
+	    p_stat[i].pos = sbuf.st_size;
+    }
+
     if(ret == -1) {
 	syslog(LOG_ERR, "s_chkaf: printcap file not found");
 	fprintf(stderr, "s_chkaf: printcap file not found\n");
