@@ -1,4 +1,4 @@
-.\" $Id: dm.8,v 1.9 1999-07-21 01:45:39 ghudson Exp $
+.\" $Id: dm.8,v 1.10 1999-07-30 17:57:24 ghudson Exp $
 .TH DM 8 "30 April 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -19,16 +19,11 @@ comment.  \fIDm\fR recognizes one command line option from this file,
 -display. If it is not specified, \fIdm\fR will default to :0.
 .PP
 The X server will be started first, using the SIGUSR1 handshake
-present in X11R4.  For security reasons, \fIdm\fR will then
-immediately open the X display and remove all hosts from the server's
-access control list, unless the file /etc/X*.hosts exists and has
-nonzero length (* represents the display number).  This serves to
-prevent any possible connections from other than the Unix domain socket.
-\fIDm\fR will keep this connection open to prevent the X server from
-inadvertently resetting should the user at some point have closed all
-X connections temporarily.  Next the console will be started, reading
-from the master side of the pseudo-tty specified as the
-\fIlogintty\fR.  If \fIlogintty\fR is already in use, another
+present in X11R4.  \fIDm\fR will keep a connection open to prevent the
+X server from inadvertently resetting should the user at some point
+have closed all X connections temporarily.  Next the console will be
+started, reading from the master side of the pseudo-tty specified as
+the \fIlogintty\fR.  If \fIlogintty\fR is already in use, another
 pseudo-tty will be chosen.  Then the login will be started, with stdin
 set to \fI/dev/null\fR and stdout and stderr set to \fIlogintty\fR.
 The display manager then waits for a change in the status of its
@@ -43,9 +38,9 @@ that a raw console login be started.  If the display manager receives
 SIGFPE, it will kill its children and sleep forever (this is a way to
 shutdown the display during updates).
 .PP
-If the \fB-noconsole\fR switch is given, it will not do the special
-console handling.  This is necessary if more than one display manager
-is running on a machine.
+If the \fB-noconsole\fR switch is given, it will not redirect system
+console output to the console process.  This is necessary if more than
+one display manager is running on a machine.
 .SH FILES
 /etc/utmp, /usr/adm/wtmp, /etc/passwd, /etc/ptmp, /etc/X*.hosts,
 /var/athena/X*.pid, /var/athena/console.pid, /var/athena/dm.pid, /dev/mouse,
