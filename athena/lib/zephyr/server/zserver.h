@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.10 1987-07-15 16:33:07 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.11 1987-07-16 16:51:40 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -161,19 +161,18 @@ extern void hostm_transfer();
 /* found in server_s.c */
 extern void server_timo(), server_dispatch(), server_recover();
 extern void server_adispatch(), server_init(), server_shutdown();
-extern void server_forward();
+extern void server_forward(), server_kill_clt();
 extern int is_server();
 extern ZServerDesc_t *server_which_server();
 
 /* found in subscr_s.c */
-extern Code_t subscr_cancel(), subscr_subscribe();
+extern Code_t subscr_cancel(), subscr_subscribe(), subscr_send_subs();;
 extern ZClientList_t *subscr_match_list();
 extern void subscr_list_free(), subscr_cancel_client(), subscr_sendlist();
-extern void subscr_send_subs();
 
 /* found in uloc_s.c */
 extern void ulogin_dispatch(), ulocate_dispatch(), uloc_hflush();
-extern void uloc_send_locations();
+extern Code_t uloc_send_locations();
 
 /* found in zctl.c */
 extern void control_dispatch();
@@ -238,6 +237,7 @@ extern char *pktypes[];			/* names of the packet types */
 					   is complete */
 #define	ADMIN_NEWCLT	"NEXT_CLIENT"	/* Opcode: this is a new client */
 #define	ADMIN_LOST_CLT	"LOST_CLIENT"	/* Opcode: client not ack'ing */
+#define	ADMIN_KILL_CLT	"KILL_CLIENT"	/* Opcode: client is dead, remove */
 
 #define	ADMIN_LIMBO	"LIMBO"		/* Class inst: please send limbo info*/
 #define	ADMIN_YOU	"YOUR_STATE"	/* Class inst: please send your state*/
