@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.21 2003-07-16 02:51:27 ghudson Exp $
+;; $Id: site-init.jl,v 1.22 2003-07-16 02:54:22 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -52,7 +52,7 @@
 
 ;; Workaround for Maple, which otherwise comes up with no border
 ;; for some reason.
-(add-window-matcher 'WM_CLASS "maple" '(frame-type . normal))
+(add-window-matcher 'WM_CLASS "^Maple" '(frame-type . normal))
 
 ;; Menu customizations
 (require 'sawfish.wm.menus)
