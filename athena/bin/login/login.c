@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.19 1988-05-31 14:42:00 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.20 1988-07-11 10:09:11 jtkohl Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.19 1988-05-31 14:42:00 shanzer Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.20 1988-07-11 10:09:11 jtkohl Exp $";
 #endif	lint
 
 /*
@@ -55,13 +55,8 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <krb.h>	
 #include <netdb.h>
 #include <sys/types.h>
-#ifndef ZEPHYR
 #include <netinet/in.h>
-#endif ZEPHYR
 #include <grp.h>
-#ifdef ZEPHYR
-#include <zephyr/zephyr.h>
-#endif ZEPHYR
 typedef struct in_addr inaddr_t;
 #include <attach.h>
 
@@ -1037,9 +1032,6 @@ setenv(var, value, clobber)
 dofork()
 {
     int child,retval,i;
-#ifdef ZEPHYR
-    int wgcpid;
-#endif ZEPHYR
 
     if(!(child=fork()))
 	    return; /* Child process */
@@ -1047,13 +1039,6 @@ dofork()
     /* Setup stuff?  This would be things we could do in parallel with login */
     chdir("/");	/* Let's not keep the fs busy... */
     
-#ifdef ZEPHYR
-    if (pwd->pw_uid && !(wgcpid = fork())) {
-	    setuid(pwd->pw_uid);
-	    execl("/usr/etc/zwgc","zwgc",0);
-	    exit (1);
-    }
-#endif ZEPHYR
     
     /* If we're the parent, watch the child until it dies */
     while(wait(0) != child)
@@ -1064,10 +1049,6 @@ dofork()
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
 
-#ifdef ZEPHYR
-    if (pwd->pw_uid && wgcpid > 0)
-	    kill(wgcpid, SIGTERM);
-#endif ZEPHYR
     
     /* Detach home directory if previously attached */
     if (attachedflag)
