@@ -59,17 +59,6 @@ if [ "${TIMECLIENT}" = "true" ]; then
 	fi
 fi
 
-if [ "${AFSSRV}" = "true" ]; then
-	echo ""							>/dev/console
-	echo "AFS server: \c"					>/dev/console
-	if [ -f /usr/afs/bin/bosserver ]; then
-		/usr/afs/bin/bosserver &
-		echo "started."					>/dev/console
-	else
-		echo "Can't start AFS server!"
-	fi
-fi
-
 # afsd is started by init.d/afs. We just do our little additions here.
 if [ "${AFSCLIENT}" != "false" ]; then
 	sh /etc/athena/config_afs
