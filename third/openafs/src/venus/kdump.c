@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.6 2005-03-11 23:41:01 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.7 2005-03-14 08:44:07 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -186,8 +186,6 @@ typedef struct adaptive_mutex2 adaptive_mutex2_t;
 #endif
 #endif
 
-#include <sys/file.h>
-
 #ifdef AFS_SGI62_ENV
 #include <sys/fcntl.h>
 #ifndef L_SET
@@ -203,6 +201,10 @@ typedef struct adaptive_mutex2 adaptive_mutex2_t;
 
 #ifndef AFS_LINUX20_ENV
 #include <sys/socket.h>
+#endif
+
+#ifndef AFS_LINUX26_ENV
+#include <sys/file.h>
 #endif
 
 /*
@@ -258,7 +260,9 @@ typedef struct adaptive_mutex2 adaptive_mutex2_t;
 #undef LONG_MAX
 #undef ULONG_MAX
 #define _LINUX_TIME_H
+#ifndef AFS_LINUX26_ENV
 #define _LINUX_FCNTL_H
+#endif
 #ifdef AFS_IA64_LINUX24_ENV
 #define flock64  flock
 #endif /* AFS_IA64_LINUX24_ENV */
