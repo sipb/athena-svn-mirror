@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.4 1991-11-13 16:39:13 jis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.5 1992-05-13 13:07:08 jis Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -18,32 +18,34 @@
 static RSAKeyStorage gdss_pubkey;
 static int gdss_have_key;
 
-int GDSS_Sig_Info(Signature, SignatureLen, aSigInfo)
+int GDSS_Sig_Info(Signature, aSigInfo)
 unsigned char *Signature;
-unsigned int SignatureLen;
 SigInfo *aSigInfo;
 {
   int status;
   static int fetchkey();
   unsigned char hash[16];
+  unsigned char *cp;
 
+  cp = aSigInfo->rawsig;
   bzero(aSigInfo, sizeof(SigInfo));
+  aSigInfo->rawsig = cp;
   aSigInfo->SigInfoVersion = 0;
   do {
     status = fetchkey();
     if (status) break;
-    status = gdss_rverify(Signature, SignatureLen, hash, &(*aSigInfo).pname,
+    status = gdss_rverify(Signature, hash, &(*aSigInfo).pname,
 			  &(*aSigInfo).pinst, &(*aSigInfo).prealm,
-			  &gdss_pubkey, &(*aSigInfo).timestamp);
+			  &gdss_pubkey, &(*aSigInfo).timestamp,
+			  aSigInfo->rawsig);
   } while(0);
   return (status);
 }
 
-int GDSS_Verify(Data, DataLen, Signature, SignatureLen)
+int GDSS_Verify(Data, DataLen, Signature)
 unsigned char *Data;
 unsigned int DataLen;
 unsigned char *Signature;
-unsigned char SignatureLen;
 {
   unsigned char hash[16], digest[16];
   SigInfo aSigInfo;
@@ -51,13 +53,13 @@ unsigned char SignatureLen;
   status = fetchkey();
   if (status) return (status);
 
-  status = gdss_rverify(Signature, SignatureLen, hash, &aSigInfo.pname,
+  status = gdss_rverify(Signature, hash, &aSigInfo.pname,
 			&aSigInfo.pinst, &aSigInfo.prealm,
-			&gdss_pubkey, &aSigInfo.timestamp);
+			&gdss_pubkey, &aSigInfo.timestamp, NULL);
   if (status) return (status);
   RSA_MD2(Data, DataLen, digest);
-  if(bcmp(digest, hash, 16)) return (-1);
-  return (0);
+  if(bcmp(digest, hash, 16)) return (GDSS_E_BADSIG);
+  return (GDSS_SUCCESS);
 }
 
 int GDSS_Sig_Size()
@@ -67,7 +69,7 @@ int GDSS_Sig_Size()
   int retval;
   status = fetchkey();
   if (status) retval = 512;	/* No provision for errors, so default value */
-  retval = sizeof(SigInfo) + (gdss_pubkey.nl)*4;
+  retval = sizeof(SigInfo) + (gdss_pubkey.nl)*4 + GDSS_PAD + 5;
   return (retval);
 }
 
@@ -78,12 +80,12 @@ static int fetchkey()
 
   if (gdss_have_key) return (0);
   keyf = fopen("/etc/athena/gdss_public_key", "r");
-  if (keyf == NULL) return (-1);
+  if (keyf == NULL) return (GDSS_E_NOPUBKEY);
   fread(buffer, 1, 512, keyf);
   fclose(keyf);
   DecodePublic(buffer, &gdss_pubkey);
   gdss_have_key++;
-  return (0);
+  return (GDSS_SUCCESS);
 }
 
 #include <sys/types.h>
@@ -93,11 +95,10 @@ static int fetchkey()
 #include <sys/time.h>
 
 static struct timeval timeout = { CLIENT_KRB_TIMEOUT, 0 };
-GDSS_Sign(Data, DataLen, Signature, SignatureLen)
+GDSS_Sign(Data, DataLen, Signature)
 unsigned char *Data;
 unsigned int DataLen;
 unsigned char *Signature;
-unsigned int *SignatureLen;
 {
   KTEXT_ST authent;
   char lrealm[REALM_SZ];
@@ -138,7 +139,7 @@ unsigned int *SignatureLen;
   if(hp == NULL) return (-1);	/* Could not find host, you lose */
 
   status = krb_mk_req(&authent, "gdss", "big-screw", lrealm, cksum);
-  if (status != KSUCCESS) return (status);
+  if (status != KSUCCESS) return (GDSS_E_KRBFAIL);
   packet[0] = 0;		/* Version 0 of protocol */
   (void) bcopy((char *)hash, (char *)&packet[1], 16);
   (void) bcopy((char *)&authent, (char *)&packet[17], sizeof(authent));
@@ -148,20 +149,20 @@ unsigned int *SignatureLen;
   do {
     s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s < 0) {
-      status = -1;
+      status = GDSS_E_NOSOCKET;
       break;
     }
     bzero(&sin, sizeof(sin));
     sin.sin_family = hp->h_addrtype;
     (void) bcopy((char *)hp->h_addr, (char *)&sin.sin_addr,
 		 sizeof(hp->h_addr));
-    sin.sin_port = htons(7200);	/* Should get this from services or Hesiod */
+    sin.sin_port = htons(7201);	/* Should get this from services or Hesiod */
     if (connect(s, &sin, sizeof(sin)) < 0) {
-      status = -1;
+      status = GDSS_E_NOCONNECT;
       break;
     }
     trys = 3;
-    status = -1;
+    status = GDSS_E_TIMEDOUT;
     while (trys > 0) {
       if(send(s, packet, plen, 0) < 0) break;
       FD_ZERO(&readfds);
@@ -172,15 +173,13 @@ unsigned int *SignatureLen;
 	continue;
       }
       if((iplen = recv(s, (char *)ipacket, 2048, 0)) < 0) break;
-      status = 0;
+      status = GDSS_SUCCESS;
       break;
     }
   } while (0);
   shutdown(s);
   close(s);
-  if (status != 0) return (-1);
+  if (status != GDSS_SUCCESS) return (status);
   (void) bcopy((char *)ipacket, (char *)Signature, iplen);
-  *SignatureLen = iplen;
-  return (0);
+  return (GDSS_SUCCESS);
 }
-
