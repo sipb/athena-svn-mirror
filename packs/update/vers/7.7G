@@ -10,7 +10,7 @@ RSAIX)
 	;;
 SUN*)
         cp -p /srvd/etc/minor_perm /etc/minor_perm
-        if [ ! -f /dev/audio ]; then
+        if [ -c /dev/audio ]; then
           chmod 0666 /dev/audio
         fi
 	;;
