@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.11 1990-05-25 15:13:49 vanharen Exp $
+ *	$Id: olc.h,v 1.12 1990-07-16 09:50:06 vanharen Exp $
  *	$Author: vanharen $
  */
 
@@ -75,7 +75,7 @@ void expand_hostname ();
 };
 #endif
     
-#define VERSION_STRING "3.0a"
+#define VERSION_STRING "3.0b"
 
 /* 
  * service definitions 
