@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm.c,v 1.61 2000-04-05 14:57:36 ghudson Exp $
+ *      $Id: zhm.c,v 1.62 2000-05-19 23:19:21 zacheiss Exp $
  *
  *      Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -12,7 +12,7 @@
 
 #include "zhm.h"
 
-static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.61 2000-04-05 14:57:36 ghudson Exp $";
+static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.62 2000-05-19 23:19:21 zacheiss Exp $";
 
 #ifdef HAVE_HESIOD
 int use_hesiod = 0;
@@ -107,7 +107,8 @@ char *argv[];
 	    break;
 	}
     if (errflg) {
-	fprintf(stderr, "Usage: %s [-d] [-h] [-r] [-n] [server]\n", argv[0]);
+	fprintf(stderr, "Usage: %s [-d] [-h] [-r] [-n] [-f] [server]\n", 
+		argv[0]);	
 	exit(2);
     }
 
