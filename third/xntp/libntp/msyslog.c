@@ -4,8 +4,9 @@
  *
  * Converted to use varargs, much better ... jks
  */
+
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -16,26 +17,15 @@
 #endif
 
 #include <stdio.h>
-#include <errno.h>
-
-/* alternative, as Solaris 2.x defines __STDC__ as 0 in a largely standard
-   conforming environment
-   #if __STDC__ || (defined(SYS_SOLARIS) && defined(__STDC__))
-*/
-#ifdef __STDC__
-# include <stdarg.h>
-#else
-# include <varargs.h>
-#endif
 
 #include "ntp_types.h"
 #include "ntp_string.h"
-#include "ntp_stdlib.h"
 #include "ntp_syslog.h"
+#include "ntp_stdlib.h"
 
 #ifdef SYS_WINNT
-# include "log.h"
-# include "messages.h"
+# include "..\ports\winnt\libntp\log.h"
+# include "..\ports\winnt\libntp\messages.h"
 #endif
 
 int syslogit = 1;
@@ -44,10 +34,7 @@ FILE *syslog_file = NULL;
 
 u_long ntp_syslogmask =  ~ (u_long) 0;
 
-#ifndef VMS
-#ifndef SYS_WINNT
-extern	int errno;
-#else
+#ifdef SYS_WINNT
 HANDLE  hEventSource;
 LPTSTR lpszStrings[1];
 static WORD event_type[] = {
@@ -56,18 +43,18 @@ static WORD event_type[] = {
 	EVENTLOG_INFORMATION_TYPE, EVENTLOG_INFORMATION_TYPE, EVENTLOG_INFORMATION_TYPE,
 };
 #endif /* SYS_WINNT */
-#endif /* VMS */
 extern	char *progname;
 
-#if defined(__STDC__)
+#if defined(__STDC__) || defined(HAVE_STDARG_H)
 void msyslog(int level, const char *fmt, ...)
-#else
-/*VARARGS*/
-void msyslog(va_alist)
-	va_dcl
-#endif
+#else /* defined(__STDC__) || defined(HAVE_STDARG_H) */
+     /*VARARGS*/
+     void msyslog(va_alist)
+     va_dcl
+#endif /* defined(__STDC__) || defined(HAVE_STDARG_H) */
 {
-#ifndef __STDC__
+#if defined(__STDC__) || defined(HAVE_STDARG_H)
+#else
 	int level;
 	const char *fmt;
 #endif
@@ -83,12 +70,10 @@ void msyslog(va_alist)
 	extern int sys_nerr;
 	extern char *sys_errlist[];
 #endif
-	register int l;
 	int olderrno;
-	const char *err;
+	char *err;
 
-
-#ifdef __STDC__
+#if defined(__STDC__) || defined(HAVE_STDARG_H)
 	va_start(ap, fmt);
 #else
 	va_start(ap);
@@ -113,14 +98,14 @@ void msyslog(va_alist)
 		err = 0;
 #if !defined(VMS) && !defined(SYS_WINNT) && !defined (SYS_VXWORKS)
 		if ((unsigned)olderrno > sys_nerr)
-			sprintf((char *)(err = xerr), "error %d", olderrno);
+		    sprintf((char *)(err = xerr), "error %d", olderrno);
 		else
-			err = sys_errlist[olderrno];
+		    err = (char*)sys_errlist[olderrno];
 #elif defined(VMS) || defined (SYS_VXWORKS)
 		err = strerror(olderrno);
 #else  /* SYS_WINNT */
 		err = xerr;
- 		FormatMessage( 
+		FormatMessage( 
 			FORMAT_MESSAGE_FROM_SYSTEM,
 			NULL,
 			GetLastError(),
@@ -130,7 +115,7 @@ void msyslog(va_alist)
 			NULL);
 
 #endif /* VMS && SYS_WINNT */
-		if (n + (l = strlen(err)) < &nfmt[254]) {
+		if ((n + strlen(err)) < &nfmt[254]) {
 			strcpy(n, err);
 			n += strlen(err);
 		}
@@ -138,56 +123,47 @@ void msyslog(va_alist)
 #if !defined(VMS)
 	if (!syslogit)
 #endif /* VMS */
-	  *n++ = '\n';
+	    *n++ = '\n';
 	*n = '\0';
 
 	vsprintf(buf, nfmt, ap);
 #if !defined(VMS) && !defined (SYS_VXWORKS)
 	if (syslogit)
 #ifndef SYS_WINNT
-		syslog(level, "%s", buf);
+	    syslog(level, "%s", buf);
 #else
 	{
 		lpszStrings[0] = buf;
  
 		switch (event_type[level])
 		{
-		case EVENTLOG_ERROR_TYPE       :
-			{
+		    case EVENTLOG_ERROR_TYPE:
 			reportAnEEvent(NTP_ERROR,1,lpszStrings);
 			break;
-			}
-		case EVENTLOG_INFORMATION_TYPE :
-			{
+		    case EVENTLOG_INFORMATION_TYPE:
 			reportAnIEvent(NTP_INFO,1,lpszStrings);
 			break;
-			}  
-		case EVENTLOG_WARNING_TYPE     :
-			{
+		    case EVENTLOG_WARNING_TYPE:
 			reportAnWEvent(NTP_WARNING,1,lpszStrings);
 			break;
-			}
 		} /* switch end */
 
 	} 
 #endif /* SYS_WINNT */
-	else {
-#else
-	{
+	else
 #endif /* VMS  && SYS_VXWORKS*/
-		extern char * humanlogtime P((void));
-
-	        FILE *out_file = syslog_file ? syslog_file
-  	                                  : level <= LOG_ERR ? stderr : stdout;
-  	        /* syslog() provides the timestamp, so if we're not using
-  	           syslog, we must provide it. */
+	{
+		FILE *out_file = syslog_file ? syslog_file
+			: level <= LOG_ERR ? stderr : stdout;
+		/* syslog() provides the timestamp, so if we're not using
+		   syslog, we must provide it. */
 		prog = strrchr(progname, '/');
 		if (prog == NULL)
-		  prog = progname;
+		    prog = progname;
 		else
-		  prog++;
+		    prog++;
 		(void) fprintf(out_file, "%s ", humanlogtime ());
-                (void) fprintf(out_file, "%s[%d]: %s", prog, (int)getpid(), buf);
+		(void) fprintf(out_file, "%s[%d]: %s", prog, (int)getpid(), buf);
 		fflush (out_file);
 	}
 	va_end(ap);

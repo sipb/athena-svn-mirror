@@ -5,10 +5,6 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_PROTOTYPES
-#define P(x) x
-#else
-#define P(x) ()
-#endif
-
+#define NTP_MAXFREQ	500e-6
+ 
 #endif /* __ntp_proto_h */

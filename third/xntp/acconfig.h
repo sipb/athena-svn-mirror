@@ -7,41 +7,128 @@
 /* debugging code */
 #undef DEBUG
 
+/* Minutes per DST adjustment */
+#undef DSTMINUTES
+
 /* MD5 authentication */
 #undef MD5
 
-/* DFS authentication (COCOM only) */
+/* DES authentication (COCOM only) */
 #undef DES
+
+/* time_t */
+#undef time_t
 
 /* reference clock interface */
 #undef REFCLOCK
 
+/* Audio CHU? */
+#undef AUDIO_CHU
+
+/* PARSE kernel PLL PPS support */
+#undef PPS_SYNC
+
 /* ACTS modem service */
-#undef ACTS
+#undef CLOCK_ACTS
 
 /* Arbiter 1088A/B GPS receiver */
-#undef ARBITER
+#undef CLOCK_ARBITER
 
 /* DHD19970505: ARCRON support. */
-#undef ARCRON_MSF
+#undef CLOCK_ARCRON_MSF
 
 /* Austron 2200A/2201A GPS receiver */
-#undef AS2201
+#undef CLOCK_AS2201
 
 /* PPS interface */
-#undef ATOM
+#undef CLOCK_ATOM
+
+/* PPS auxiliary interface for ATOM */
+#undef PPS_SAMPLE
 
 /* Datum/Bancomm bc635/VME interface */
-#undef BANC
+#undef CLOCK_BANC
+
+/* Diems Computime Radio Clock */
+#undef CLOCK_COMPUTIME
+
+/* Chronolog K-series WWVB receiver */
+#undef CLOCK_CHRONOLOG
+
+/* Datum Programmable Time System */
+#undef CLOCK_DATUM
 
 /* ELV/DCF7000 clock */
 #undef CLOCK_DCF7000
 
+/* Dumb generic hh:mm:ss local clock */
+#undef CLOCK_DUMBCLOCK
+
+/* Forum Graphic GPS datating station driver */
+#undef CLOCK_FG
+
+/* TrueTime GPS receiver/VME interface */
+#undef CLOCK_GPSVME
+
+/* Heath GC-1000 WWV/WWVH receiver */
+#undef CLOCK_HEATH
+
 /* HOPF 6021 clock */
 #undef CLOCK_HOPF6021
 
+/* HOPF PCI clock device */
+#undef CLOCK_HOPF_PCI
+
+/* HOPF serial clock device*/
+#undef CLOCK_HOPF_SERIAL
+
+/* HP 58503A GPS receiver */
+#undef CLOCK_HPGPS
+
+/* Sun IRIG audio decoder */
+#undef CLOCK_IRIG
+
+/* Rockwell Jupiter GPS clock */
+#undef CLOCK_JUPITER
+
+/* Leitch CSD 5300 Master Clock System Driver */
+#undef CLOCK_LEITCH
+
+/* local clock reference */
+#undef CLOCK_LOCAL
+
 /* Meinberg clocks */
 #undef CLOCK_MEINBERG
+
+/* EES M201 MSF receiver */
+#undef CLOCK_MSFEES
+
+/* Magnavox MX4200 GPS receiver */
+#undef CLOCK_MX4200
+
+/* NMEA GPS receiver */
+#undef CLOCK_NMEA
+
+/* Motorola UT Oncore GPS */
+#undef CLOCK_ONCORE
+
+/* Palisade clock */
+#undef CLOCK_PALISADE
+
+/* PARSE driver interface */
+#undef CLOCK_PARSE
+
+/* Conrad parallel port radio clock */
+#undef CLOCK_PCF
+
+/* PCL 720 clock support */
+#undef CLOCK_PPS720
+
+/* PST/Traconex 1020 WWV/WWVH receiver */
+#undef CLOCK_PST
+
+/* PTB modem service */
+#undef CLOCK_PTBACTS
 
 /* DCF77 raw time code */
 #undef CLOCK_RAWDCF
@@ -52,77 +139,47 @@
 /* Schmid DCF77 clock */
 #undef CLOCK_SCHMID
 
+/* clock thru shared memory */
+#undef CLOCK_SHM
+
+/* Spectracom 8170/Netclock/2 WWVB receiver */
+#undef CLOCK_SPECTRACOM
+
+/* KSI/Odetics TPRO/S GPS receiver/IRIG interface */
+#undef CLOCK_TPRO
+
+/* TRAK 8810 GPS receiver */
+#undef CLOCK_TRAK
+
 /* Trimble GPS receiver/TAIP protocol */
 #undef CLOCK_TRIMTAIP
 
 /* Trimble GPS receiver/TSIP protocol */
 #undef CLOCK_TRIMTSIP
 
-/* Diems Computime Radio Clock */
-#undef CLOCK_COMPUTIME
-
-/* Datum Programmable Time System */
-#undef DATUM
-
-/* TrueTime GPS receiver/VME interface */
-#undef GPSVME
-
-/* Heath GC-1000 WWV/WWVH receiver */
-#undef HEATH
-
-/* HP 58503A GPS receiver */
-#undef HPGPS
-
-/* Sun IRIG audio decoder */
-#undef IRIG
-
-/* Leitch CSD 5300 Master Clock System Driver */
-#undef LEITCH
-
-/* local clock reference */
-#undef LOCAL_CLOCK
-
-/* EES M201 MSF receiver */
-#undef MSFEES
-
-/* Magnavox MX4200 GPS receiver */
-#undef MX4200
-
-/* NMEA GPS receiver */
-#undef NMEA
-
-/* PARSE driver interface */
-#undef PARSE
-
-/* PARSE kernel PLL PPS support */
-#undef PPS_SYNC
-
-/* PCL 720 clock support */
-#undef PPS720
-
-/* PST/Traconex 1020 WWV/WWVH receiver */
-#undef PST
-
-/* PTB modem service */
-#undef PTBACTS
-
-/* clock thru shared memory */
-#undef SHM_CLOCK
-
-/* KSI/Odetics TPRO/S GPS receiver/IRIG interface */
-#undef TPRO
-
-/* TRAK 8810 GPS receiver */
-#undef TRAK
-
 /* Kinemetrics/TrueTime receivers */
-#undef TRUETIME
+#undef CLOCK_TRUETIME
+
+/* Ultralink M320 WWVB receiver */
+#undef CLOCK_ULINK
 
 /* USNO modem service */
-#undef USNO
+#undef CLOCK_USNO
 
-/* Spectracom 8170/Netclock/2 WWVB receiver */
-#undef WWVB
+/* WHARTON 400A Series protocol */
+#undef CLOCK_WHARTON_400A
+
+/* WWV audio driver */
+#undef CLOCK_WWV
+
+/* VARITEXT protocol */
+#undef CLOCK_VARITEXT
+
+/* define if we need to declare int errno; */
+#undef DECL_ERRNO
+
+/* define if we may declare int h_errno; */
+#undef DECL_H_ERRNO
 
 /* define if it's OK to declare char *sys_errlist[]; */
 #undef CHAR_SYS_ERRLIST
@@ -145,6 +202,9 @@
 /* canonical system (cpu-vendor-os) string */
 #undef STR_SYSTEM
 
+/* define if NetInfo support is available */
+#undef HAVE_NETINFO
+
 /* define if [gs]ettimeofday() only takes 1 argument */
 #undef SYSV_TIMEOFDAY
 
@@ -154,8 +214,17 @@
 /* define if struct clockinfo has hz */
 #undef HAVE_HZ_IN_STRUCT_CLOCKINFO
 
+/* define if struct sigaction has sa_sigaction */
+#undef HAVE_SA_SIGACTION_IN_STRUCT_SIGACTION
+
 /* define if struct clockinfo has tickadj */
-#undef 	HAVE_TICKADJ_IN_STRUCT_CLOCKINFO
+#undef HAVE_TICKADJ_IN_STRUCT_CLOCKINFO
+
+/* define if struct ntptimeval uses time.tv_nsec instead of time.tv_usec */ 
+#undef HAVE_TV_NSEC_IN_NTPTIMEVAL 
+
+/* Does a system header defind struct ppsclockev? */
+#undef HAVE_STRUCT_PPSCLOCKEV
 
 /* define if function prototypes are OK */
 #undef HAVE_PROTOTYPES
@@ -208,8 +277,8 @@
 /* should we use clock_settime()? */
 #undef USE_CLOCK_SETTIME
 
-/* do we have the chu_clk line discipline/streams module? */
-#undef CHUCLK
+/* do we want the CHU driver? */
+#undef CLOCK_CHU
 
 /* do we have the ppsclock streams module? */
 #undef PPS
@@ -265,6 +334,10 @@
 /* Might nlist() values require an extra level of indirection (AIX)? */
 #undef NLIST_EXTRA_INDIRECTION
 
+/* Other needed NLIST stuff */
+#undef NLIST_STRUCT
+#undef NLIST_NAME_UNION
+
 /* Should we recommend a minimum value for tickadj? */
 #undef MIN_REC_TICKADJ
 
@@ -273,9 +346,6 @@
 
 /* Should we not IGNPAR (Linux)? */
 #undef RAWDCF_NO_IGNPAR
-
-/* Does DTR power the DCF77 (Linux)? */
-#undef RAWDCF_SETDTR
 
 /* Does the compiler like "volatile"? */
 #undef volatile
@@ -289,11 +359,35 @@
 /* Do we need to override the system's idea of HZ? */
 #undef OVERRIDE_HZ
 
-/* Do we want the SCO3 tickadj hacks? */
-#undef SCO3_TICKADJ
+/* Do we want the SCO clock hacks? */
+#undef SCO5_CLOCK
 
-/* Do we want the SCO5 tickadj hacks? */
-#undef SCO5_TICKADJ
+/* Do we want the ReliantUNIX clock hacks? */
+#undef RELIANTUNIX_CLOCK
+
+/* Does the kernel have an FLL bug? */
+#undef KERNEL_FLL_BUG
+
+/* Define if you have the TIOCGPPSEV ioctl (Solaris) */
+#undef HAVE_TIOCGPPSEV
+
+/* Define if you have the TIOCSPPS ioctl (Solaris) */
+#undef HAVE_TIOCSPPS
+
+/* Define if you have the CIOGETEV ioctl (SunOS, Linux) */
+#undef HAVE_CIOGETEV
+
+/* Define if you have the TIOCGSERIAL, TIOCSSERIAL, ASYNC_PPS_CD_POS, and ASYNC_PPS_CD_NEG ioctls (linux) */
+#undef HAVE_TIO_SERIAL_STUFF
+
+/* Define if you have the interface in the Draft RFC */
+#undef HAVE_PPSAPI
+
+/* Do we need to #define _SVID3 when we #include <termios.h>? */
+#undef TERMIOS_NEEDS__SVID3
+
+/* Do we have support for SHMEM_STATUS? */
+#undef ONCORE_SHMEM_STATUS
 
 /***/
 
@@ -307,6 +401,9 @@
 
 /* bzero()? */
 #undef DECL_BZERO_0
+
+/* cfset[io]speed()? */
+#undef DECL_CFSETISPEED_0
 
 /* ioctl()? */
 #undef DECL_IOCTL_0
@@ -325,6 +422,12 @@
 
 /* mktemp()? */
 #undef DECL_MKTEMP_0
+
+/* mrand48()? */
+#undef DECL_MRAND48_0
+
+/* nlist()? */
+#undef DECL_NLIST_0
 
 /* plock()? */
 #undef DECL_PLOCK_0
@@ -345,8 +448,15 @@
 /* sigvec()? */
 #undef DECL_SIGVEC_0
 
+/* srand48()? */
+#undef DECL_SRAND48_0
+
 /* stdio stuff? */
 #undef DECL_STDIO_0
+
+/* stime()? */
+#undef DECL_STIME_0
+#undef DECL_STIME_1
 
 /* strtol()? */
 #undef DECL_STRTOL_0
@@ -363,3 +473,7 @@
 /* tolower()? */
 #undef DECL_TOLOWER_0
 
+/* toupper()? */
+#undef DECL_TOUPPER_0
+
+#undef ULONG_CONST

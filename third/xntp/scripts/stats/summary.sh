@@ -6,7 +6,7 @@
 # runs the file-specific summary script and appends the summary data to 
 # designated files.
 #
-DATE=`date +19%y%m%d`
+DATE=`date +20%y%m%d`
 S=/usr/local/bin/S
 SIN=S.in
 SOUT=S.out
@@ -19,7 +19,7 @@ rm -f $SIN $SOUT
 #
 # Summarize loopstats files
 #
-for f in loopstats.199[4-9][0-1][0-9][0-3][0-9]; do
+for f in loopstats.[12][0-9][0-9][0-9][0-1][0-9][0-3][0-9]; do
 	d=`echo $f | cut -f2 -d.`
 	if [ -f $f ] && [ $DATE != $d ]; then
 		echo " " >>$LOOP

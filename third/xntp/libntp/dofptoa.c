@@ -9,11 +9,12 @@
 #include "ntp_stdlib.h"
 
 char *
-dofptoa(fpv, neg, ndec, msec)
-	u_fp fpv;
-	int neg;
-	int ndec;
-	int msec;
+dofptoa(
+	u_fp fpv,
+	int neg,
+	int ndec,
+	int msec
+	)
 {
 	register u_char *cp, *cpend;
 	register u_long val;
@@ -44,7 +45,7 @@ dofptoa(fpv, neg, ndec, msec)
 	 * If we have to, decode the integral part
 	 */
 	if (!(val & 0xffff0000))
-		cp--;
+	    cp--;
 	else {
 		register u_short sv = (u_short)(val >> 16);
 		register u_short tmp;
@@ -63,7 +64,7 @@ dofptoa(fpv, neg, ndec, msec)
 	if (msec) {
 		dec = ndec + 3;
 		if (dec < 3)
-			dec = 3;
+		    dec = 3;
 		cpdec = &cbuf[8];
 	} else {
 		dec = ndec;
@@ -71,7 +72,7 @@ dofptoa(fpv, neg, ndec, msec)
 	}
 
 	if (dec > 6)
-		dec = 6;
+	    dec = 6;
 	
 	if (dec > 0) {
 		do {
@@ -98,18 +99,18 @@ dofptoa(fpv, neg, ndec, msec)
 	 * Remove leading zeroes if necessary
 	 */
 	while (cp < (cpdec -1) && *cp == 0)
-		cp++;
+	    cp++;
 	
 	/*
 	 * Copy it into the buffer, asciizing as we go.
 	 */
 	bp = buf;
 	if (neg)
-		*bp++ = '-';
+	    *bp++ = '-';
 	
 	while (cp < cpend) {
 		if (cp == cpdec)
-			*bp++ = '.';
+		    *bp++ = '.';
 		*bp++ = (char)(*cp++ + '0');
 	}
 	*bp = '\0';

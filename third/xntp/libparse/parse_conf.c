@@ -1,7 +1,7 @@
 /*
- * /src/NTP/REPOSITORY/v4/libparse/parse_conf.c,v 3.24 1997/01/19 12:44:45 kardel Exp
+ * /src/NTP/ntp-4/libparse/parse_conf.c,v 4.5 1999/11/28 09:13:53 kardel RELEASE_19991128_A
  *  
- * parse_conf.c,v 3.24 1997/01/19 12:44:45 kardel Exp
+ * parse_conf.c,v 4.5 1999/11/28 09:13:53 kardel RELEASE_19991128_A
  *
  * Parser configuration module for reference clocks
  *
@@ -11,8 +11,8 @@
  * a struct timeval.
  * when STREAM is not defined NTP time stamps will be used.
  *
- * Copyright (C) 1992,1993,1994,1995,1996 by Frank Kardel
- * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
+ * Copyright (C) 1995-1998 by Frank Kardel
+ * Copyright (C) 1992-1994 by Frank Kardel, Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,14 +21,11 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS))
+#if defined(REFCLOCK) && defined(CLOCK_PARSE)
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/errno.h>
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
@@ -71,119 +68,82 @@ extern clockformat_t clock_hopf6021;
 extern clockformat_t clock_computime;
 #endif
 
+#ifdef CLOCK_WHARTON_400A
+extern clockformat_t clock_wharton_400a;
+#endif
+
+#ifdef CLOCK_VARITEXT
+extern clockformat_t clock_varitext;
+#endif
+
 /*
  * format definitions
  */
 clockformat_t *clockformats[] =
 {
 #ifdef CLOCK_MEINBERG
-  &clock_meinberg[0],
-  &clock_meinberg[1],
-  &clock_meinberg[2],
+	&clock_meinberg[0],
+	&clock_meinberg[1],
+	&clock_meinberg[2],
 #endif
 #ifdef CLOCK_DCF7000
-  &clock_dcf7000,
+	&clock_dcf7000,
 #endif
 #ifdef CLOCK_SCHMID
-  &clock_schmid,
+	&clock_schmid,
 #endif
 #ifdef CLOCK_RAWDCF
-  &clock_rawdcf,
+	&clock_rawdcf,
 #endif
 #ifdef CLOCK_TRIMTAIP
-  &clock_trimtaip,
+	&clock_trimtaip,
 #endif
-#if defined(CLOCK_TRIMTSIP) && !defined(PARSESTREAM)
-  &clock_trimtsip,
+#ifdef CLOCK_TRIMTSIP
+	&clock_trimtsip,
 #endif
 #ifdef CLOCK_RCC8000
-  &clock_rcc8000,
+	&clock_rcc8000,
 #endif
 #ifdef CLOCK_HOPF6021
-  &clock_hopf6021,
+	&clock_hopf6021,
 #endif
 #ifdef CLOCK_COMPUTIME
-  &clock_computime,
+	&clock_computime,
 #endif
-0};
+#ifdef CLOCK_WHARTON_400A
+	&clock_wharton_400a,
+#endif
+#ifdef CLOCK_VARITEXT
+        &clock_varitext,
+#endif
+	0};
 
 unsigned short nformats = sizeof(clockformats) / sizeof(clockformats[0]) - 1;
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS)) */
+#else /* not (REFCLOCK && CLOCK_PARSE) */
 int parse_conf_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS)) */
+#endif /* not (REFCLOCK && CLOCK_PARSE) */
 
 /*
  * History:
  *
  * parse_conf.c,v
- * Revision 3.24  1997/01/19 12:44:45  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.5  1999/11/28 09:13:53  kardel
+ * RECON_4_0_98F
  *
- * Revision 3.23  1996/12/01 16:04:17  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.4  1999/02/28 15:27:25  kardel
+ * wharton clock integration
  *
- * Revision 3.22  1996/11/30 20:45:19  kardel
- * initial compilable SunOS 4 version of parse autoconfigure
+ * Revision 4.3  1998/08/16 18:52:15  kardel
+ * (clockformats): Trimble TSIP driver now also
+ * available for kernel operation
  *
- * Revision 3.21  1996/11/24 20:09:49  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.2  1998/06/12 09:13:48  kardel
+ * conditional compile macros fixed
  *
- * Revision 3.20  1996/11/16 19:12:51  kardel
- * Added DIEM receiver
+ * Revision 4.1  1998/05/24 09:40:49  kardel
+ * adjustments of log messages
  *
- * Revision 3.19  1996/10/05 13:30:22  kardel
- * general update
  *
- * Revision 3.18  1995/12/17  18:08:54  kardel
- * Hopf 6021 added - base code
- *
- * Revision 3.17  1994/10/03  21:59:35  kardel
- * 3.4e cleanup/integration
- *
- * Revision 3.16  1994/10/03  10:04:16  kardel
- * 3.4e reconcilation
- *
- * Revision 3.15  1994/02/02  17:45:32  kardel
- * rcs ids fixed
- *
- * Revision 3.13  1994/01/25  19:05:23  kardel
- * 94/01/23 reconcilation
- *
- * Revision 3.12  1994/01/23  17:22:02  kardel
- * 1994 reconcilation
- *
- * Revision 3.11  1993/11/01  20:00:24  kardel
- * parse Solaris support (initial version)
- *
- * Revision 3.10  1993/10/09  15:01:37  kardel
- * file structure unified
- *
- * Revision 3.9  1993/09/26  23:40:19  kardel
- * new parse driver logic
- *
- * Revision 3.8  1993/09/02  23:20:57  kardel
- * dragon extiction
- *
- * Revision 3.7  1993/09/01  21:44:52  kardel
- * conditional cleanup
- *
- * Revision 3.6  1993/09/01  11:25:09  kardel
- * patch accident 8-(
- *
- * Revision 3.5  1993/08/31  22:31:14  kardel
- * SINIX-M SysVR4 integration
- *
- * Revision 3.4  1993/08/27  00:29:42  kardel
- * compilation cleanup
- *
- * Revision 3.3  1993/07/14  09:04:45  kardel
- * only when REFCLOCK && PARSE is defined
- *
- * Revision 3.2  1993/07/09  11:37:13  kardel
- * Initial restructured version + GPS support
- *
- * Revision 3.1  1993/07/06  10:00:11  kardel
- * DCF77 driver goes generic...
- *
+ * from V3 3.24 log info deleted 1998/04/11 kardel
  */

@@ -3,13 +3,18 @@
  * actual code segments from modified kernel distributions for SunOS,
  * Ultrix and OSF/1 kernels. These segments do not use any licensed code.
  */
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
 #include <sys/time.h>
 
 #ifdef HAVE_TIMEX_H
-#include "timex.h"
+# include "timex.h"
 #endif
 
 /*
@@ -61,13 +66,17 @@ long poll_interval = 0;		/* poll counter */
 /*
  * Simulation test program
  */
-void main()
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	tick = 1000000 / HZ;
 	fixtick = 1000000 % HZ;
 	timex.tv_sec = 0;
 	timex.tv_usec = MAXPHASE;
- 	time_freq = 0;
+	time_freq = 0;
 	time_constant = TAU;
 	printf("tick %d us, fixtick %d us\n", tick, fixtick);
 	printf("      time    offset      freq   _offset     _freq      _adj\n");
@@ -78,7 +87,7 @@ void main()
 	while (1) {
 		timey += (double)(1000000) / HZ;
 		if (timey >= 1000000)
-			timey -= 1000000;
+		    timey -= 1000000;
 		hardclock();
 		if (timex.tv_usec >= 1000000) {
 			timex.tv_usec -= 1000000;
@@ -88,14 +97,14 @@ void main()
 			if (!(poll_interval % POLL)) {
 				timez = (long)timey - timex.tv_usec;
 				if (timez > 500000)
-					timez -= 1000000;
+				    timez -= 1000000;
 				if (timez < -500000)
-					timez += 1000000;
+				    timez += 1000000;
 				hardupdate(timez);
 				printf("%10li%10li%10.2f  %08lx  %08lx  %08lx\n",
-				    timex.tv_sec, timez,
-				    (double)time_freq / (1 << SHIFT_KF),
-				    time_offset, time_freq, time_adj);
+				       timex.tv_sec, timez,
+				       (double)time_freq / (1 << SHIFT_KF),
+				       time_offset, time_freq, time_adj);
 			}
 		}
 	}
@@ -108,8 +117,10 @@ void main()
  * maximum interval between updates is 4096 s and the maximum frequency
  * offset is +-31.25 ms/s.
  */
-void hardupdate(offset)
-long offset;
+void
+hardupdate(
+	long offset
+	)
 {
 	long ltemp, mtemp;
 
@@ -117,28 +128,29 @@ long offset;
 	mtemp = timex.tv_sec - time_reftime;
 	time_reftime = timex.tv_sec;
 	if (mtemp > MAXSEC)
-		mtemp = 0;
+	    mtemp = 0;
 
 	/* ugly multiply should be replaced */
 	if (offset < 0)
-		time_freq -= (-offset * mtemp) >>
+	    time_freq -= (-offset * mtemp) >>
 		    (time_constant + time_constant);
 	else
-		time_freq += (offset * mtemp) >>
+	    time_freq += (offset * mtemp) >>
 		    (time_constant + time_constant);
 	ltemp = time_tolerance << SHIFT_KF;
 	if (time_freq > ltemp)
-		time_freq = ltemp;
+	    time_freq = ltemp;
 	else if (time_freq < -ltemp)
-		time_freq = -ltemp;
+	    time_freq = -ltemp;
 	if (time_status == TIME_BAD)
-		time_status = TIME_OK;
+	    time_status = TIME_OK;
 }
 
 /*
  * This routine simulates the timer interrupt
  */
-void hardclock()
+void
+hardclock(void)
 {
 	int ltemp, time_update;
 
@@ -166,45 +178,46 @@ void hardclock()
  * contribution is a right shift. Thus, overflow is prevented if the
  * frequency contribution is limited to half the maximum or 15.625 ms/s.
  */
-void second_overflow()
+void
+second_overflow(void)
 {
 	int ltemp;
 
 	time_maxerror += time_tolerance;
 	if (time_offset < 0) {
 		ltemp = -time_offset >>
-		    (SHIFT_KG + time_constant);
+			(SHIFT_KG + time_constant);
 		time_offset += ltemp;
 		time_adj = -(ltemp <<
-		    (SHIFT_SCALE - SHIFT_HZ - SHIFT_UPDATE));
+			     (SHIFT_SCALE - SHIFT_HZ - SHIFT_UPDATE));
 	} else {
 		ltemp = time_offset >>
-		    (SHIFT_KG + time_constant);
+			(SHIFT_KG + time_constant);
 		time_offset -= ltemp;
 		time_adj = ltemp <<
-		    (SHIFT_SCALE - SHIFT_HZ - SHIFT_UPDATE);
+			(SHIFT_SCALE - SHIFT_HZ - SHIFT_UPDATE);
 	}
 	if (time_freq < 0)
-		time_adj -= -time_freq >> (SHIFT_KF + SHIFT_HZ - SHIFT_SCALE);
+	    time_adj -= -time_freq >> (SHIFT_KF + SHIFT_HZ - SHIFT_SCALE);
 	else
-		time_adj += time_freq >> (SHIFT_KF + SHIFT_HZ - SHIFT_SCALE);
+	    time_adj += time_freq >> (SHIFT_KF + SHIFT_HZ - SHIFT_SCALE);
 	time_adj += fixtick << (SHIFT_SCALE - SHIFT_HZ);
 
 	/* ugly divide should be replaced */
 	if (timex.tv_sec % 86400 == 0) {
 		switch (time_status) {
 
-			case TIME_INS:
+		    case TIME_INS:
 			timex.tv_sec--; /* !! */
 			time_status = TIME_OOP;
 			break;
 
-			case TIME_DEL:
+		    case TIME_DEL:
 			timex.tv_sec++;
 			time_status = TIME_OK;
 			break;
 
-			case TIME_OOP:
+		    case TIME_OOP:
 			time_status = TIME_OK;
 			break;
 		}

@@ -8,13 +8,12 @@
 #include "ntp_unixtime.h"
 #include "lib_strbuf.h"
 #include "ntp_stdlib.h"
-#ifndef TM_IN_SYS_TIME
-#include <time.h>
-#endif
+
 
 char *
-uglydate(ts)
-	l_fp *ts;
+uglydate(
+	l_fp *ts
+	)
 {
 	char *bp;
 	char *timep;
@@ -40,10 +39,10 @@ uglydate(ts)
 	} else {
 		year = tm->tm_year;
 		while (year >= 100)
-			year -= 100;
+		    year -= 100;
 	}
 	(void) sprintf(bp, "%17s %02d:%03d:%02d:%02d:%02d.%03ld",
-	    timep, year, tm->tm_yday, tm->tm_hour, tm->tm_min,
-	    tm->tm_sec, msec);
+		       timep, year, tm->tm_yday, tm->tm_hour, tm->tm_min,
+		       tm->tm_sec, msec);
 	return bp;
 }

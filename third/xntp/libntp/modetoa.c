@@ -7,8 +7,9 @@
 #include "ntp_stdlib.h"
 
 const char *
-modetoa(mode)
-	int mode;
+modetoa(
+	int mode
+	)
 {
 	char *bp;
 	static const char *modestrings[] = {

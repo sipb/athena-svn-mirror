@@ -34,9 +34,10 @@ static const char	*prog = "amnesia";
  * Print message about a bad option.
  */
 static int
-badopt(mess, ch)
-	char *mess;
-	int ch;
+badopt(
+	const char *mess,
+	int ch
+	)
 {
 	if (ntp_opterr) {
 		fputs(prog, stderr);
@@ -48,13 +49,14 @@ badopt(mess, ch)
 }
 
 int
-ntp_getopt(argc, argv, optstring)
-	int argc;
-	char *argv[];
-	char *optstring;
+ntp_getopt(
+	int argc,
+	char *argv[],
+	const char *optstring
+	)
 {
 	register char c;
-	register char *place;
+	register const char *place;
 
 	prog = argv[0];
 	ntp_optarg = NULL;
@@ -82,8 +84,8 @@ ntp_getopt(argc, argv, optstring)
 	c = *scan++;
 	ntp_optopt = c & 0377;
 	for (place = optstring; place != NULL && *place != '\0'; ++place)
-		if (*place == c)
-			break;
+	    if (*place == c)
+		break;
 
 	if (place == NULL || *place == '\0' || c == ':' || c == '?') {
 		return (badopt(": unknown option -", c));

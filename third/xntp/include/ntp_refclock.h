@@ -2,6 +2,9 @@
  * ntp_refclock.h - definitions for reference clock support
  */
 
+#ifndef NTP_REFCLOCK_H
+#define NTP_REFCLOCK_H
+
 #include "ntp_types.h"
 
 #if defined(HAVE_BSD_TTYS)
@@ -13,23 +16,38 @@
 #endif /* HAVE_SYSV_TTYS */
 
 #if defined(HAVE_TERMIOS)
-#include <termios.h>
+# ifdef TERMIOS_NEEDS__SVID3
+#  define _SVID3
+# endif
+# include <termios.h>
+# ifdef TERMIOS_NEEDS__SVID3
+#  undef _SVID3
+# endif
 #endif
 
 #if defined(HAVE_SYS_MODEM_H)
 #include <sys/modem.h>
 #endif
 
+#if 0 /* If you need that, include ntp_io.h instead */
 #if defined(STREAM)
 #include <stropts.h>
-#if defined(CLK)
+#if defined(CLK) /* This is never defined, except perhaps by a system header file */
 #include <sys/clkdefs.h>
 #endif /* CLK */
 #endif /* STREAM */
+#endif
+
+#include "recvbuff.h"
 
 #if !defined(SYSV_TTYS) && !defined(STREAM) & !defined(BSD_TTYS)
 #define BSD_TTYS
 #endif /* SYSV_TTYS STREAM BSD_TTYS */
+
+#define SAMPLE(x)	if ((pp->coderecv + 1) % MAXSTAGE !=		\
+			    pp->codeproc % MAXSTAGE)			\
+				pp->filter[pp->coderecv++ % MAXSTAGE] =	\
+				    (x);
 
 /*
  * Macros to determine the clock type and unit numbers from a
@@ -40,12 +58,12 @@
 
 /*
  * List of reference clock names and descriptions. These must agree with
- * lib/clocktypes.c and xntpd/refclock_conf.c.
+ * lib/clocktypes.c and ntpd/refclock_conf.c.
  */
 struct clktype {
-  int code;			/* driver "major" number */
-  const char *clocktype;	/* long description */
-  const char *abbrev;		/* short description */
+	int code;		/* driver "major" number */
+	const char *clocktype;	/* long description */
+	const char *abbrev;	/* short description */
 };
 
 /*
@@ -80,21 +98,21 @@ struct refclockstat {
 	u_char	type;		/* clock type */
 	u_char	flags;		/* clock flags */
 	u_char	haveflags;	/* bit array of valid flags */
-	u_short	lencode;	/* length of last timecode (may be longer than a char!) */
-	char	*p_lastcode;	/* last timecode received */
+	u_short	lencode;	/* length of last timecode */
+	const char *p_lastcode;	/* last timecode received */
 	u_int32	polls;		/* transmit polls */
 	u_int32	noresponse;	/* no response to poll */
 	u_int32	badformat;	/* bad format timecode received */
 	u_int32	baddata;	/* invalid data timecode received */
 	u_int32	timereset;	/* driver resets */
-	char	*clockdesc;	/* ASCII description */
-	l_fp	fudgetime1;	/* configure fudge time1 */
-	l_fp	fudgetime2;	/* configure fudge time2 */
+	const char *clockdesc;	/* ASCII description */
+	double	fudgetime1;	/* configure fudge time1 */
+	double	fudgetime2;	/* configure fudge time2 */
 	int32	fudgeval1;	/* configure fudge value1 */
 	int32	fudgeval2;	/* configure fudge value2 */
 	u_char	currentstatus;	/* clock status */
 	u_char	lastevent;	/* last exception event */
-	u_char	unused;		/* spare */
+	u_char	leap;		/* leap bits */
 	struct	ctl_var *kv_list; /* additional variables */
 };
 
@@ -104,7 +122,11 @@ struct refclockstat {
  */
 struct refclockio {
 	struct	refclockio *next; /* link to next structure */
-	void	(*clock_recv)P((struct recvbuf *)); /* completion routine */
+	void	(*clock_recv) P((struct recvbuf *)); /* completion routine */
+	int 	(*io_input)   P((struct recvbuf *)); /* input routine -
+				to avoid excessive buffer use
+				due to small bursts
+				of refclock input data */
 	caddr_t	srcclock;	/* pointer to clock structure */
 	int	datalen;	/* lenth of data */
 	int	fd;		/* file descriptor */
@@ -130,7 +152,8 @@ struct refclockbug {
  * Structure interface between the reference clock support
  * ntp_refclock.c and the driver utility routines
  */
-#define MAXSTAGE	64	/* max stages in shift register */
+#define MAXSTAGE	60	/* max median filter stages  */
+#define NSTAGE		5	/* default median filter stages */
 #define BMAX		128	/* max timecode length */
 #define GMT		0	/* I hope nobody sees this */
 #define MAXDIAL		60	/* max length of modem dial strings */
@@ -144,20 +167,21 @@ struct refclockbug {
 #define LDISC_CLK	0x1	/* tty_clk \n intercept */
 #define LDISC_CLKPPS	0x2	/* tty_clk \377 intercept */
 #define LDISC_ACTS	0x4	/* tty_clk #* intercept */
-#define LDISC_CHU	0x8	/* tty_chu */
-#define LDISC_PPS	0x10	/* ppsclock */
+#define LDISC_CHU	0x8	/* depredated */
+#define LDISC_PPS	0x10	/* ppsclock, ppsapi */
+#define LDISC_RAW	0x20	/* raw binary */
 
 struct refclockproc {
 	struct	refclockio io;	/* I/O handler structure */
 	caddr_t	unitptr;	/* pointer to unit structure */
-	u_long	lasttime;	/* last clock update time */
 	u_char	leap;		/* leap/synchronization code */
 	u_char	currentstatus;	/* clock status */
 	u_char	lastevent;	/* last exception event */
 	u_char	type;		/* clock type */
-	char	*clockdesc;	/* clock description */
+	const char *clockdesc;	/* clock description */
+
 	char	a_lastcode[BMAX]; /* last timecode received */
-	u_short	lencode;	/* length of last timecode (allow for more than 256 chars !) */
+	u_short	lencode;	/* length of last timecode */
 
 	int	year;		/* year of eternity */
 	int	day;		/* day of year */
@@ -166,22 +190,23 @@ struct refclockproc {
 	int	second;		/* second of minute */
 	int	msec;		/* millisecond of second */
 	long	usec;		/* microsecond of second (alt) */
-	u_int	nstages;	/* median filter stages */
 	u_long	yearstart;	/* beginning of year */
-	u_long	coderecv;	/* sample counter */
-	l_fp	lastref;	/* last reference timestamp */
-	l_fp	lastrec;	/* last local timestamp */
-	l_fp	offset;		/* median offset */
-	u_fp	dispersion;	/* sample dispersion */
-	l_fp	filter[MAXSTAGE]; /* median filter */
+	int	coderecv;	/* put pointer */
+	int	codeproc;	/* get pointer */
+	l_fp	lastref;	/* timecode timestamp */
+	l_fp	lastrec;	/* local timestamp */
+	double	offset;		/* mean offset */
+	double	disp;		/* sample dispersion */
+	double	jitter;		/* jitter (mean squares) */
+	double	filter[MAXSTAGE]; /* median filter */
 
 	/*
 	 * Configuration data
 	 */
-	l_fp	fudgetime1;	/* fudge time1 */
-	l_fp	fudgetime2;	/* fudge time2 */
+	double	fudgetime1;	/* fudge time1 */
+	double	fudgetime2;	/* fudge time2 */
 	u_int32	refid;		/* reference identifier */
-	u_long	sloppyclockflag; /* fudge flags */
+	u_char	sloppyclockflag; /* fudge flags */
 
 	/*
 	 * Status tallies
@@ -206,15 +231,19 @@ struct refclock {
 	void (*clock_shutdown)	P((int, struct peer *));
 	void (*clock_poll)	P((int, struct peer *));
 	void (*clock_control)	P((int, struct refclockstat *,
-				    struct refclockstat *));
+				    struct refclockstat *, struct peer *));
 	void (*clock_init)	P((void));
-	void (*clock_buginfo)	P((int, struct refclockbug *));
+	void (*clock_buginfo)	P((int, struct refclockbug *, struct peer *));
 	u_long clock_flags;
 };
 
 /*
  * Function prototypes
  */
+/*
+ * auxiliary PPS interface (implemented by refclock_atom())
+ */
+extern	int	pps_sample P((l_fp *));
 extern	int	io_addclock_simple P((struct refclockio *));
 extern	int	io_addclock	P((struct refclockio *));
 extern	void	io_closeclock	P((struct refclockio *));
@@ -228,9 +257,11 @@ extern	void	refclock_control P((struct sockaddr_in *,
 extern	int	refclock_open	P((char *, int, int));
 extern	void	refclock_transmit P((struct peer *));
 extern	int	refclock_ioctl	P((int, int));
-extern 	int	refclock_process P((struct refclockproc *, int, int));
-extern 	int	refclock_sample P((l_fp *, struct refclockproc *, int, int));
-extern	void	refclock_report	P((struct peer *, u_int));
+extern 	int	refclock_process P((struct refclockproc *));
+extern 	void	refclock_process_offset P((struct refclockproc *, l_fp, l_fp, double));
+extern	void	refclock_report	P((struct peer *, int));
 extern	int	refclock_gtlin	P((struct recvbuf *, char *, int,
 				    l_fp *));
 #endif /* REFCLOCK */
+
+#endif /* NTP_REFCLOCK_H */

@@ -9,7 +9,7 @@
 ;#
 ;#
 ;#############################################################
-$0 =~ s!^.*/([^/]+)$!\1!;		# strip to filename
+$0 =~ s!^.*/([^/]+)$!$1!;		# strip to filename
 ;# enforce STDOUT and STDERR to be line buffered
 $| = 1;
 select((select(STDERR),$|=1)[$[]);
@@ -18,13 +18,15 @@ select((select(STDERR),$|=1)[$[]);
 ;# load utility routines and definitions
 ;#
 require('ntp.pl');			# implementation of the NTP protocol
-eval { require('sys/socket.ph'); require('netinet/in.ph') unless defined(&INADDR_ANY); } ||
-do {
-  die("$0: $@") unless $[ == index($@, "Can't locate ");
-  warn "$0: $@";
-  warn "$0: supplying some default definitions\n";
-  eval 'sub INADDR_ANY { 0; } sub AF_INET {2;} sub SOCK_DGRAM {2;} 1;' || die "$0: $@";
-};
+use Socket;
+
+#eval { require('sys/socket.ph'); require('netinet/in.ph') unless defined(&INADDR_ANY); } ||
+#do {
+  #die("$0: $@") unless $[ == index($@, "Can't locate ");
+  #warn "$0: $@";
+  #warn "$0: supplying some default definitions\n";
+  #eval 'sub INADDR_ANY { 0; } sub AF_INET {2;} sub SOCK_DGRAM {2;} 1;' || die "$0: $@";
+#};
 require('getopts.pl');			# option parsing
 require('ctime.pl');			# date/time formatting
 
@@ -36,6 +38,7 @@ $FRAG_TIMEOUT=10;
 $MAX_TRY = 5;
 $REFRESH_TIME=60*15;		# 15 minutes (server uses 1 hour)
 $ntp'timeout = $FRAG_TIMEOUT; #';
+$ntp'timeout if 0;
 
 ;######################################
 ;# now process options
@@ -82,7 +85,7 @@ $ntp_port = (getservbyname('ntp','udp'))[$[+2] ||
 socket(S, &AF_INET, &SOCK_DGRAM, $proto_udp) || die("Cannot open socket: $!\n");
 
 ;# 
-bind(S, pack("S n N x8", &AF_INET, $opt_p, &INADDR_ANY)) ||
+bind(S, pack("S n a4 x8", &AF_INET, $opt_p, &INADDR_ANY)) ||
     die("Cannot bind: $!\n");
 
 ($my_port, $my_addr) = (unpack("S n a4 x8",getsockname(S)))[$[+1,$[+2];
@@ -96,7 +99,12 @@ sub cleanup
 
     foreach (@Hosts)
     {
-	&ntp'send(S,31,0,"",pack("Sna4x8",&AF_INET,$ntp_port,$Hosts{$_})); #';
+	if ( ! defined($Host{$_}) )
+	{
+		print "no info for host '$_'\n";
+		next;
+	}
+	&ntp'send(S,31,0,"",pack("Sna4x8",&AF_INET,$ntp_port,$Host{$_})); #';
     }
     close(S);
     exit(2);
@@ -143,6 +151,7 @@ sub timeouts			# sort timeout id array
 	}
 	next if defined($Host{$name});
 	$Host{$name} = $addr;
+	$Host{$_} = $addr;
 	push(@Requests,pack("a4SC",$addr,0,6));	# schedule a set trap request for $name
     }
 }
@@ -303,7 +312,7 @@ sub clear_timeout
 0 && &refresh;
 sub refresh
 {
-    local($addr) = @_;
+    local($addr) = @_[$[];
     $addr = pack("H*",$addr);
     &debug(sprintf("Refreshing trap for %s", &hostname($addr)));
     push(@Requests,pack("a4SC",$addr,0,6));
@@ -350,7 +359,8 @@ sub process_response
 	    $msg .= "stratum=$stratum refid=$refid";
 	    if ($refid =~ /\[?(\d+)\.(\d+)\.(\d+)\.(\d+)/)
 	    {
-		$msg .= " " . (gethostbyaddr(pack("C4",$1,$2,$3,$4),&AF_INET))[$[];
+		local($x) = (gethostbyaddr(pack("C4",$1,$2,$3,$4),&AF_INET));
+		$msg .= " " . $x if defined($x)
 	    }
 	    if ($evnt eq "event_sync_chg")
 	    {

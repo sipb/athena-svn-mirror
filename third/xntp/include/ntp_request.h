@@ -1,5 +1,5 @@
 /*
- * ntp_request.h - definitions for the xntpd remote query facility
+ * ntp_request.h - definitions for the ntpd remote query facility
  */
 
 #include "ntp_types.h"
@@ -111,6 +111,10 @@
 /*
  * A request packet.  These are almost a fixed length.
  */
+
+#define MAXFILENAME	128		/* max key file name length */
+					/* NOTE: also in ntp.h */
+
 struct req_pkt {
 	u_char rm_vn_mode;		/* response, more, version, mode */
 	u_char auth_seq;		/* key, sequence number */
@@ -118,9 +122,9 @@ struct req_pkt {
 	u_char request;			/* request number */
 	u_short err_nitems;		/* error code/number of data items */
 	u_short mbz_itemsize;		/* item size */
-	char data[32];			/* data area */
+	char data[MAXFILENAME + 16];	/* data area [32 prev](144 byte max) */
 	l_fp tstamp;			/* time stamp, for authentication */
-	u_int32 keyid;			/* encryption key */
+	keyid_t keyid;			/* encryption key */
 	char mac[MAX_MAC_LEN-sizeof(u_int32)]; /* (optional) 8 byte auth code */
 };
 
@@ -176,9 +180,10 @@ struct resp_pkt {
 #define INFO_VERSION(rm_vn_mode) ((u_char)(((rm_vn_mode)>>3)&0x7))
 #define	INFO_MODE(rm_vn_mode)	((rm_vn_mode)&0x7)
 
-#define	RM_VN_MODE(resp, more)	((u_char)(((resp)?RESP_BIT:0)\
+#define	RM_VN_MODE(resp, more, version)		\
+				((u_char)(((resp)?RESP_BIT:0)\
 				|((more)?MORE_BIT:0)\
-				|((NTP_VERSION)<<3)\
+				|((version?version:(NTP_OLDVERSION+1))<<3)\
 				|(MODE_PRIVATE)))
 
 #define	INFO_IS_AUTH(auth_seq)	(((auth_seq) & 0x80) != 0)
@@ -196,7 +201,7 @@ struct resp_pkt {
 
 
 /*
- * Implementation numbers.  One for universal use and one for xntpd.
+ * Implementation numbers.  One for universal use and one for ntpd.
  */
 #define	IMPL_UNIV	0
 #define	IMPL_XNTPD	2
@@ -206,14 +211,14 @@ struct resp_pkt {
  * authenticated must include a time stamp which differs from
  * the receive time stamp by no more than 10 seconds.
  */
-#define	INFO_TS_MAXSKEW_UI	10
+#define	INFO_TS_MAXSKEW	10.
 
 /*
  * Universal request codes go here.  There aren't any.
  */
 
 /*
- * XNTPD request codes go here.
+ * NTPD request codes go here.
  */
 #define	REQ_PEER_LIST		0	/* return list of peers */
 #define	REQ_PEER_LIST_SUM	1	/* return summary info for all peers */
@@ -250,20 +255,21 @@ struct resp_pkt {
 #define	REQ_REQUEST_KEY		32	/* define a new request keyid */
 #define	REQ_CONTROL_KEY		33	/* define a new control keyid */
 #define	REQ_GET_CTLSTATS	34	/* get stats from the control module */
-#define	REQ_GET_LEAPINFO	35	/* get leap information */
+#define	REQ_GET_LEAPINFO	35	/* (not used) */
 #define	REQ_GET_CLOCKINFO	36	/* get clock information */
 #define	REQ_SET_CLKFUDGE	37	/* set clock fudge factors */
 #define REQ_GET_KERNEL		38	/* get kernel pll/pps information */
 #define	REQ_GET_CLKBUGINFO	39	/* get clock debugging info */
 #define	REQ_SET_PRECISION	41	/* (not used) */
-#define	REQ_MON_GETLIST_1	42	/* return data collected by monitor v1 */
+#define	REQ_MON_GETLIST_1	42	/* return collected v1 monitor data */
+#define	REQ_HOSTNAME_ASSOCID	43	/* Here is a hostname + assoc_id */
 
 /*
  * Flags in the peer information returns
  */
 #define	INFO_FLAG_CONFIG	0x1
 #define	INFO_FLAG_SYSPEER	0x2
-#define INFO_FLAG_UNUSED	0x4
+#define INFO_FLAG_BURST		0x4
 #define	INFO_FLAG_REFCLOCK	0x8
 #define	INFO_FLAG_PREFER	0x10
 #define	INFO_FLAG_AUTHENABLE	0x20
@@ -275,16 +281,17 @@ struct resp_pkt {
  */
 #define INFO_FLAG_BCLIENT	0x1
 #define INFO_FLAG_AUTHENTICATE	0x2
-#define INFO_FLAG_PLL		0x4
-#define INFO_FLAG_PPS		0x8
-#define INFO_FLAG_PLL_SYNC	0x10
-#define INFO_FLAG_PPS_SYNC	0x20
+#define INFO_FLAG_NTP		0x4
+#define INFO_FLAG_KERNEL	0x8
 #define INFO_FLAG_MONITOR	0x40
 #define INFO_FLAG_FILEGEN	0x80
+#define INFO_FLAG_PLL_SYNC	0x10
+#define INFO_FLAG_PPS_SYNC	0x20
 
 /*
  * Peer list structure.  Used to return raw lists of peers.  It goes
  * without saying that everything returned is in network byte order.
+ * Well, it *would* have gone without saying, but somebody said it.
  */
 struct info_peer_list {
 	u_int32 address;	/* address of peer */
@@ -329,16 +336,15 @@ struct info_peer {
 	u_char hpoll;		/* peer.hpoll */
 	s_char precision;	/* peer.precision */
 	u_char version;		/* peer.version */
-	u_char valid;		/* peer.valid */
+	u_char unused8;
 	u_char reach;		/* peer.reach */
 	u_char unreach;		/* peer.unreach */
-	u_char flash;		/* peer.flash */
+	u_char flash;		/* old peer.flash */
 	u_char ttl;		/* peer.ttl */
-	u_char unused8;		/* (obsolete) */
-	u_char unused9;
-	u_short associd;	/* association ID */
-	u_int32 keyid;		/* auth key in use */
-	u_int32 pkeyid;		/* peer.pkeyid */
+	u_short flash2;		/* new peer.flash */
+	associd_t associd;	/* association ID */
+	keyid_t keyid;		/* peer.keyid */
+	u_int32 pkeyid;		/* unused */
 	u_int32 refid;		/* peer.refid */
 	u_int32 timer;		/* peer.timer */
 	s_fp rootdelay;		/* peer.distance */
@@ -524,11 +530,16 @@ struct conf_peer {
 	u_char flags;		/* flags for this request */
 	u_char ttl;		/* time to live (multicast) or refclock mode */
 	u_short unused;		/* unused */
-	u_int32 keyid;		/* key to use for this association */
+	keyid_t keyid;		/* key to use for this association */
+	char keystr[MAXFILENAME]; /* public key file name*/
 };
 
-#define	CONF_FLAG_AUTHENABLE	0x1
-#define CONF_FLAG_PREFER	0x2
+#define	CONF_FLAG_AUTHENABLE	0x01
+#define CONF_FLAG_PREFER	0x02
+#define CONF_FLAG_BURST		0x04
+#define CONF_FLAG_IBURST	0x08
+#define CONF_FLAG_NOSELECT	0x10
+#define CONF_FLAG_SKEY		0x20
 
 /*
  * Structure for passing peer deletion information.  Currently
@@ -550,9 +561,9 @@ struct conf_sys_flags {
  * System flags we can set/clear
  */
 #define	SYS_FLAG_BCLIENT	0x1
-#define	SYS_FLAG_AUTHENTICATE	0x2
-#define SYS_FLAG_PLL		0x4
-#define SYS_FLAG_PPS		0x8
+#define	SYS_FLAG_PPS		0x2
+#define SYS_FLAG_NTP		0x4
+#define SYS_FLAG_KERNEL		0x8
 #define SYS_FLAG_MONITOR	0x10
 #define SYS_FLAG_FILEGEN	0x20
 
@@ -654,7 +665,7 @@ struct info_auth {
 	u_int32 keynotfound;	/* requested key unknown */
 	u_int32 encryptions;	/* number of encryptions */
 	u_int32 decryptions;	/* number of decryptions */
-	u_int32 unused;		/* (unused) */
+	u_int32 expired;	/* number of expired keys */
 	u_int32 keyuncached;	/* calls to encrypt/decrypt with uncached key */
 };
 
@@ -705,27 +716,6 @@ struct info_control {
 	u_int32 numasyncmsgs;		/* # async messages we've sent */
 };
 
-
-/*
- * Structure used to return leap information.
- */
-struct info_leap {
-	u_char sys_leap;	/* current sys_leap */
-	u_char leap_indicator;	/* current leap indicator */
-	u_char leap_warning;	/* current leap warning */
-	u_char leap_bits;	/* leap flags */
-	u_int32 leap_timer;	/* seconds to next interrupt */
-	u_int32 leap_processcalls;	/* calls to the leap process */
-	u_int32 leap_notclose;	/* found leap was not close */
-	u_int32 leap_monthofleap;	/* in month of leap */
-	u_int32 leap_dayofleap;	/* in day of leap */
-	u_int32 leap_hoursfromleap;	/* leap within two hours */
-	u_int32 leap_happened;	/* leap second happened */
-};
-
-#define	INFO_LEAP_MASK	        0x3	/* flag for leap_bits */
-#define	INFO_LEAP_SEENSTRATUM1	0x4	/* server has seen stratum 1 */
-#define	INFO_LEAP_OVERRIDE	0x8	/* server will override the leap information */
 
 /*
  * Structure used to return clock information
@@ -805,4 +795,15 @@ struct info_kernel {
 	int32 calcnt;
 	int32 errcnt;
 	int32 stbcnt;
+};
+
+/*
+ * Info returned with IP -> hostname lookup
+ */
+/* 144 might need to become 32, matching data[] member of req_pkt */
+#define NTP_MAXHOSTNAME (32 - sizeof(u_int32) - sizeof(u_short))
+struct info_dns_assoc {
+	u_int32 peeraddr;	/* peer address (HMS: being careful...) */
+	associd_t associd;	/* association ID */
+	char hostname[NTP_MAXHOSTNAME];	/* hostname */
 };

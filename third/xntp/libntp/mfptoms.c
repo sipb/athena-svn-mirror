@@ -5,10 +5,11 @@
 #include "ntp_stdlib.h"
 
 char *
-mfptoms(fpi, fpf, ndec)
-	u_long fpi;
-	u_long fpf;
-	int ndec;
+mfptoms(
+	u_long fpi,
+	u_long fpf,
+	int ndec
+	)
 {
 	int isneg;
 
@@ -16,7 +17,7 @@ mfptoms(fpi, fpf, ndec)
 		isneg = 1;
 		M_NEG(fpi, fpf);
 	} else
-		isneg = 0;
+	    isneg = 0;
 
 	return dolfptoa(fpi, fpf, isneg, ndec, 1);
 }

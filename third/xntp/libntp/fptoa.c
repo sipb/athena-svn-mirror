@@ -5,9 +5,10 @@
 #include "ntp_stdlib.h"
 
 char *
-fptoa(fpv, ndec)
-	s_fp fpv;
-	int ndec;
+fptoa(
+	s_fp fpv,
+	int ndec
+	)
 {
 	u_fp plusfp;
 	int neg;

@@ -1,19 +1,33 @@
 /*
  * Proto types for machines that are not ANSI and POSIX	 compliant.
- * This is optionaly
+ * This is optional
  */
 
 #ifndef _l_stdlib_h
 #define _l_stdlib_h
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+#include <config.h>
 #endif
 
 #ifdef HAVE_STDLIB_H
 # include <stdlib.h>
 #endif
 
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+/* Needed for speed_t. */
+#ifdef HAVE_TERMIOS_H
+# include <termios.h>
+#endif
+
+#ifdef HAVE_ERRNO_H
+# include <errno.h>
+#endif
+
+#include "ntp_types.h"
 #include "ntp_proto.h"
 
 /* Let's try to keep this more or less alphabetized... */
@@ -24,21 +38,32 @@ extern	int	adjtime		P((struct timeval *, struct timeval *));
 #endif
 
 #ifdef DECL_BCOPY_0
-# ifndef bcopy
-extern	void	bcopy		P((char *, char *, int));
-# endif
+#ifndef bcopy
+extern	void	bcopy		P((const char *, char *, int));
+#endif
 #endif
 
 #ifdef DECL_BZERO_0
-# ifndef bzero
+#ifndef bzero
 extern	void	bzero		P((char *, int));
-# endif
+#endif
+#endif
+
+#ifdef DECL_CFSETISPEED_0
+struct termios;
+extern	int	cfsetispeed	P((struct termios *, speed_t));
+extern	int	cfsetospeed	P((struct termios *, speed_t));
 #endif
 
 extern	char *	getpass		P((const char *));
 
+#ifdef DECL_INET_NTOA_0
+struct in_addr;
+extern	char *	inet_ntoa	P((struct in_addr));
+#endif
+
 #ifdef DECL_IOCTL_0
-extern	int	ioctl		P((int, int, char *));
+extern	int	ioctl		P((int, u_long, char *));
 #endif
 
 #ifdef DECL_IPC_0
@@ -47,7 +72,7 @@ extern	int	bind		P((int, struct sockaddr *, int));
 extern	int	connect		P((int, struct sockaddr *, int));
 extern	int	recv		P((int, char *, int, int));
 extern	int	recvfrom	P((int, char *, int, int, struct sockaddr *, int *));
-extern	int	send		P((int, char *, int,int));
+extern	int	send		P((int, char *, int, int));
 extern	int	sendto		P((int, char *, int, int, struct sockaddr *, int));
 extern	int	setsockopt	P((int, int, int, char *, int));
 extern	int	socket		P((int, int, int));
@@ -69,6 +94,15 @@ extern	int	mkstemp		P((char *));
 extern	char   *mktemp		P((char *));	
 #endif
 
+#ifdef DECL_MRAND48_0
+extern	long	mrand48		P((void));
+#endif
+
+#ifdef DECL_NLIST_0
+struct nlist;
+extern int	nlist		P((const char *, struct nlist *));
+#endif
+
 #ifdef DECL_PLOCK_0
 extern	int	plock		P((int));
 #endif
@@ -78,9 +112,9 @@ extern	int	rename		P((const char *, const char *));
 #endif
 
 #ifdef DECL_SELECT_0
-# ifdef _ntp_select_h
+#ifdef _ntp_select_h
 extern	int	select		P((int, fd_set *, fd_set *, fd_set *, struct timeval *));
-# endif
+#endif
 #endif
 
 #ifdef DECL_SETITIMER_0
@@ -89,21 +123,30 @@ extern	int	setitimer	P((int , struct itimerval *, struct itimerval *));
 #endif
 
 #ifdef PRIO_PROCESS
-# ifdef DECL_SETPRIORITY_0
+#ifdef DECL_SETPRIORITY_0
 extern	int	setpriority	P((int, int, int));
-# endif
-# ifdef DECL_SETPRIORITY_1
+#endif
+#ifdef DECL_SETPRIORITY_1
 extern	int	setpriority	P((int, id_t, int));
-# endif
+#endif
 #endif
 
 #ifdef DECL_SIGVEC_0
 struct sigvec;
-extern	int	sigvec		P((int, struct sigvec *, struct sigvec*));
+extern	int	sigvec		P((int, struct sigvec *, struct sigvec *));
+#endif
+
+#ifndef HAVE_SNPRINTF
+/* PRINTFLIKE3 */
+extern	int	snprintf	P((char *, size_t, const char *, ...));
+#endif
+
+#ifdef DECL_SRAND48_0
+extern	void	srand48		P((long));
 #endif
 
 #ifdef DECL_STDIO_0
-# if defined(FILE) || defined(BUFSIZ)
+#if defined(FILE) || defined(BUFSIZ)
 extern	int	_flsbuf		P((int, FILE *));
 extern	int	_filbuf		P((FILE *));
 extern	int	fclose		P((FILE *));
@@ -116,26 +159,46 @@ extern	int	fread		P((char *, int, int, FILE *));
 extern	void	perror		P((const char *));
 extern	int	printf		P((const char *, ...));
 extern	int	setbuf		P((FILE *, char *));
-#  ifdef HAVE_SETLINEBUF
+# ifdef HAVE_SETLINEBUF
 extern	int	setlinebuf	P((FILE *));
-#  endif
+# endif
 extern	int	setvbuf		P((FILE *, char *, int, int));
 extern	int	scanf		P((const char *, ...));
 extern	int	sscanf		P((const char *, const char *, ...));
 extern	int	vfprintf	P((FILE *, const char *, ...));
 extern	int	vsprintf	P((char *, const char *, ...));
-# endif
+#endif
+#endif
+
+#ifdef DECL_STIME_0
+extern	int	stime		P((const time_t *));
+#endif
+
+#ifdef DECL_STIME_1
+extern	int	stime		P((long *));
+#endif
+
+#ifdef DECL_STRERROR_0
+extern	char *	strerror		P((int errnum));
 #endif
 
 #ifdef DECL_STRTOL_0
 extern	long	strtol		P((const char *, char **, int));
 #endif
 
+#ifdef DECL_SYSCALL
+extern	int	syscall		P((int, ...));
+#endif
+
 #ifdef DECL_SYSLOG_0
 extern	void	closelog	P((void));
-extern	void	openlog		P((char *, int, int));
+#ifndef LOG_DAEMON
+extern	void	openlog		P((const char *, int));
+#else
+extern	void	openlog		P((const char *, int, int));
+#endif
 extern	int	setlogmask	P((int));
-extern	void	syslog		P((int, char *, ...));
+extern	void	syslog		P((int, const char *, ...));
 #endif
 
 #ifdef DECL_TIME_0
@@ -143,18 +206,33 @@ extern	time_t	time		P((time_t *));
 #endif
 
 #ifdef DECL_TIMEOFDAY_0
-# ifdef SYSV_TIMEOFDAY
+#ifdef SYSV_TIMEOFDAY
 extern	int	gettimeofday	P((struct timeval *));
 extern	int	settimeofday	P((struct timeval *));
-# else /* not SYSV_TIMEOFDAY */
+#else /* not SYSV_TIMEOFDAY */
 struct timezone;
 extern	int	gettimeofday	P((struct timeval *, struct timezone *));
-extern	int	settimeofday	P((struct timeval *, struct timezone *));
-# endif /* not SYSV_TIMEOFDAY */
+extern	int	settimeofday	P((struct timeval *, void *));
+#endif /* not SYSV_TIMEOFDAY */
 #endif
 
 #ifdef DECL_TOLOWER_0
 extern	int	tolower		P((int));
+#endif
+
+#ifdef DECL_TOUPPER_0
+extern	int	toupper		P((int));
+#endif
+
+/*
+ * Necessary variable declarations.
+ */
+#ifdef DECL_ERRNO
+extern	int	errno;
+#endif
+
+#ifdef DECL_H_ERRNO
+extern	int	h_errno;
 #endif
 
 /*******************************************************/
@@ -181,18 +259,19 @@ extern	int	dup2		P((int, int));
 extern	int	execve		P((char *, char **,char **));
 extern	int	fork		P((void));
 extern	int	getdtablesize	P((void));
-extern	int	qsort		P((void *, int , int,
-				   int (*compar)(void *, void *)));
-extern	int	rand		P((void));
+extern	int	qsort		(void *, int , int,
+				   int P((*compar)(void *, void *)));
+extern	long	random		P((void));
+extern	long	mrand48		P((void));
 extern	int	setpgrp		P((int, int));
-extern	void	srand		P((unsigned int));
-extern	void	bcopy		P((char *, char *, int));
+extern	void	srandom		P((unsigned int));
+extern	void	bcopy		P((const char *, char *, int));
 #endif
 
 #ifndef bzero			/* XXX macro prototyping clash */
 extern	void	bzero		P((char *, int));
 extern	int	bcmp		P((char *, char *, int));
-extern	void	bcopy		P((char *, char *, int));
+extern	void	bcopy		P((const char *, char *, int));
 #endif
 extern	char   *mktemp		P((char *));	
 
@@ -242,9 +321,9 @@ extern	int	setlinebuf	P((FILE *));
 #ifdef	_ntp_string_h
 #ifdef	NTP_POSIX_SOURCE	/* these are builtins */
 #ifndef NTP_NEED_BOPS		/* but may be emulated by bops */
-extern	char	*memcpy();
-extern	char	*memset();
-extern	int	memcmp();
+extern	char	*memcpy P(());
+extern	char	*memset P(());
+extern	int	memcmp P(());
 #endif
 #endif
 #endif
@@ -375,14 +454,14 @@ extern int	nlist		P((char *, struct nlist *));
 #ifndef bzero			/* XXX macro prototyping clash */
 extern	void	bzero		P((char *, int));
 extern	int	bcmp		P((char *, char *, int));
-extern	void	bcopy		P((char *, char *, int));
+extern	void	bcopy		P((const char *, char *, int));
 #endif
 
 #ifndef NTP_POSIX_SOURCE
 extern	int	atoi		P((char *));
 extern	void	bzero		P((char *, int));
 extern	int	bcmp		P((char *, char *, int));
-extern	void	bcopy		P((char *, char *, int));
+extern	void	bcopy		P((const char *, char *, int));
 extern	int	execve		P((char *, char **,char **));
 extern	int	fork		P((void));
 extern	int	getdtablesize	P((void));
@@ -423,4 +502,3 @@ extern	char *	getpass		P((char *));
 
 #endif /* 0 */
 #endif /* l_stdlib_h */
-

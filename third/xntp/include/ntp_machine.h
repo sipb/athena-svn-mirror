@@ -6,7 +6,18 @@
 #define __ntp_machine
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
+#endif
+
+#ifdef TIME_WITH_SYS_TIME
+# include <sys/time.h>
+# include <time.h>
+#else
+# ifdef HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# else
+#  include <time.h>
+# endif
 #endif
 
 #include "ntp_proto.h"
@@ -31,9 +42,9 @@
 
 INFO ON NEW KERNEL PLL SYS CALLS
 
-  NTP_SYSCALLS_STD  - use the "normal" ones
-  NTP_SYSCALL_GET   - SYS_ntp_gettime id
-  NTP_SYSCALL_ADJ   - SYS_ntp_adjtime id
+  NTP_SYSCALLS_STD	- use the "normal" ones
+  NTP_SYSCALL_GET	- SYS_ntp_gettime id
+  NTP_SYSCALL_ADJ	- SYS_ntp_adjtime id
   NTP_SYSCALLS_LIBC - ntp_adjtime() and ntp_gettime() are in libc.
 
 HOW TO GET IP INTERFACE INFORMATION
@@ -51,8 +62,8 @@ WHAT DOES IOCTL(SIOCGIFCONF) RETURN IN THE BUFFER
   When requesting the IP interface configuration with an ioctl(2) calll,
   an array of ifreq structures are placed in the provided buffer.  Some
   implementations also place the length of the buffer information in
-  the first integer position of the buffer.  
-  
+  the first integer position of the buffer.
+
   SIZE_RETURNED_IN_BUFFER - size integer is in the buffer
 
 WILL IOCTL(SIOCGIFCONF) WORK ON A SOCKET
@@ -63,20 +74,31 @@ WILL IOCTL(SIOCGIFCONF) WORK ON A SOCKET
 
   USE_STREAMS_DEVICE_FOR_IF_CONFIG - use the /dev/ip device for configuration
 
-MISC  
+MISC
 
-  USE_PROTOTYPES    - Prototype functions
-  DOSYNCTODR        - Resync TODR clock  every hour.
-  RETSIGTYPE        - Define signal function type.
+  HAVE_PROTOTYPES	- Prototype functions
+  DOSYNCTODR		- Resync TODR clock  every hour.
+  RETSIGTYPE		- Define signal function type.
   NO_SIGNED_CHAR_DECL - No "signed char" see include/ntp.h
-  LOCK_PROCESS      - Have plock.
+  LOCK_PROCESS		- Have plock.
   UDP_WILDCARD_DELIVERY
-		    - these systems deliver broadcast packets to the wildcard
-		      port instead to a port bound to the interface bound
-		      to the correct broadcast address - are these
-		      implementations broken or did the spec change ?
+			- these systems deliver broadcast packets to the wildcard
+			  port instead to a port bound to the interface bound
+			  to the correct broadcast address - are these
+			  implementations broken or did the spec change ?
 */
-  
+
+/*
+ * Set up for prototyping (duplicated from ntp_types.h)
+ */
+#ifndef P
+#if defined(__STDC__) || defined(HAVE_PROTOTYPES)
+#define P(x)    x
+#else /* not __STDC__ and not HAVE_PROTOTYPES */
+#define P(x)    ()
+#endif /* not __STDC__ and not HAVE_PROTOTYPES */
+#endif /* P */
+
 #if 0
 
 /*
@@ -150,7 +172,7 @@ MISC
  */
 #if defined(SYS_PTX)
 # define LOCK_PROCESS
-struct timezone { int __0; };   /* unused placebo */
+struct timezone { int __0; };	/* unused placebo */
 /*
  * no comment !@!
  */
@@ -162,7 +184,7 @@ typedef unsigned long u_long;
 # endif
 #endif
 
-/* 
+/*
  * UNIX V.4 on and NCR 3000
  */
 #if defined(SYS_SVR4)
@@ -178,7 +200,7 @@ typedef unsigned long u_long;
 /* #define _POSIX_SOURCE */
 # define STREAM
 # define STREAMS
-# undef STEP_SLEW 		/* TWO step */
+# undef STEP_SLEW		/* TWO step */
 # define LOCK_PROCESS
 # define SIZE_RETURNED_IN_BUFFER
 # include <sys/sockio.h>
@@ -194,7 +216,7 @@ typedef unsigned long u_long;
 /* older versions of domain/os don't have class D */
 # ifndef IN_CLASSD
 #  define IN_CLASSD(i)		(((long)(i) & 0xf0000000) == 0xe0000000)
-#  define IN_CLASSD_NET		0xf0000000
+#  define IN_CLASSD_NET 	0xf0000000
 #  define IN_CLASSD_NSHIFT	28
 #  define IN_CLASSD_HOST	0xfffffff
 #  define IN_MULTICAST(i)	IN_CLASSD(i)
@@ -208,80 +230,67 @@ typedef unsigned long u_long;
 # define LOCK_PROCESS
 # define SIZE_RETURNED_IN_BUFFER
 #endif
-#endif
 
-/* 
+
+#endif /* 0 */
+
+/*
  * Windows NT
  */
 #if defined(SYS_WINNT)
-# define MCAST			/* Enable Multicast Support */
-# define REFCLOCK		/* from xntpd.mak */
-# define LOCAL_CLOCK		/* from xntpd.mak */
-# define SHM_CLOCK		/* from xntpd.mak */
-# define DES			/* from libntp.mak */
-# define MD5			/* from libntp.mak */
-# define NTP_LITTLE_ENDIAN	/* from libntp.mak */
-# define SYSLOG_FILE		/* from libntp.mak */
-# define HAVE_PROTOTYPES	/* from ntpq.mak */
-# define SIZEOF_INT 4		/* for ntp_types.h */
-# define SYSV_TIMEOFDAY		/* for ntp_unixtime.h */
-# define HAVE_NET_IF_H
-# define QSORT_USES_VOID_P
-# define HAVE_MEMMOVE
-# define volatile
-# define STDC_HEADERS
-# define NEED_S_CHAR_TYPEDEF
-# define SIZEOF_SIGNED_CHAR 1
-# define HAVE_NO_NICE
-# define NOKMEM
-# define PRESET_TICK (every / 10)
-# define PRESET_TICKADJ 50
-# define RETSIGTYPE void
-# define NTP_POSIX_SOURCE
-# define HAVE_SETVBUF
-# define HAVE_VSPRINTF
-# ifndef STR_SYSTEM
-#  define STR_SYSTEM "WINDOWS/NT"
-# endif
-/* winsock.h contains macros for class A,B,C only */
-# define IN_CLASSD(i)		(((long)(i) & 0xf0000000) == 0xe0000000)
-# define IN_CLASSD_NET		0xf0000000
-# define IN_CLASSD_NSHIFT	28
-# define IN_CLASSD_HOST		0xfffffff
-# define IN_MULTICAST(i)	IN_CLASSD(i)
+# if !defined(HAVE_CONFIG_H)  || !defined(__config)
+    error "NT requires config.h to be included"
+# endif /* HAVE_CONFIG_H) */
+
+#if defined SYS_WINNT
+# define ifreq _INTERFACE_INFO
+# define ifr_flags iiFlags
+# define ifr_addr iiAddress.AddressIn
+# define ifr_broadaddr iiBroadcastAddress.AddressIn
+# define ifr_mask iiNetmask.AddressIn
+#endif /* SYS_WINNT */
+
 # define isascii __isascii
 # define isatty _isatty
-# define fileno _fileno
 # define mktemp _mktemp
 # define getpid GetCurrentProcessId
-# include <winsock.h>
 # include <windows.h>
-# include <winbase.h>
+# include <ws2tcpip.h>
 # undef interface
-typedef char *caddr_t;
+ typedef char *caddr_t;
+#endif /* SYS_WINNT */
+
+int ntp_set_tod P((struct timeval *tvp, void *tzp));
+
+#if defined (SYS_CYGWIN32)
+#include <windows.h>
+#define __int64 long long
 #endif
 
 /*casey Tue May 27 15:45:25 SAT 1997*/
 #ifdef SYS_VXWORKS
 
 /* casey's new defines */
-#define NO_MAIN_ALLOWED     1
-#define NO_NETDB            1
-#define NO_RENAME           1
+#define NO_MAIN_ALLOWED 	1
+#define NO_NETDB			1
+#define NO_RENAME			1
 
 /* in vxWorks we use FIONBIO, but the others are defined for old systems, so
- * all hell breaks loose if we leave them defined we define USE_FIONBIO to 
- * undefine O_NONBLOCK FNDELAY O_NDELAY where necessary. 
+ * all hell breaks loose if we leave them defined we define USE_FIONBIO to
+ * undefine O_NONBLOCK FNDELAY O_NDELAY where necessary.
  */
-#define USE_FIONBIO         1
+#define USE_FIONBIO 		1
 /* end my new defines */
-    
-#define TIMEOFDAY           0x0     /* system wide realtime clock */
-#define HAVE_GETCLOCK       1       /* configure does not set this ... */
-#define HAVE_NO_NICE        1       /* configure does not set this ... */
-#define NODETACH            1
 
-/* vxWorks specific additions to take care of its 
+#define TIMEOFDAY		0x0 	/* system wide realtime clock */
+#define HAVE_GETCLOCK		1	/* configure does not set this ... */
+#define HAVE_NO_NICE		1	/* configure does not set this ... */
+#define HAVE_RANDOM		1	/* configure does not set this ...  */
+#define HAVE_SRANDOM		1	/* configure does not set this ... */
+
+#define NODETACH		1
+
+/* vxWorks specific additions to take care of its
  * unix (non)complicance
  */
 
@@ -290,34 +299,36 @@ typedef char *caddr_t;
 #include "taskLib.h"
 #include "time.h"
 
-extern int sysClkRateGet();
+extern int sysClkRateGet P(());
 
-/* usrtime.h 
+/* usrtime.h
  * Bob Herlien's excellent time code find it at:
  * ftp://ftp.atd.ucar.edu/pub/vxworks/vx/usrTime.shar
  * I would recommend this instead of clock_[g|s]ettime() plus you get
  * adjtime() too ... casey
  */
 /*
-extern int    gettimeofday( struct timeval *tp, struct timezone *tzp );
-extern int    settimeofday(struct timeval *, struct timezone *);
-extern int    adjtime( struct timeval *delta, struct timeval *olddelta );
+extern int	  gettimeofday P(( struct timeval *tp, struct timezone *tzp ));
+extern int	  settimeofday P((struct timeval *, struct timezone *));
+extern int	  adjtime P(( struct timeval *delta, struct timeval *olddelta ));
  */
 
 /* in  machines.c */
-extern void sleep (int seconds);
-extern void alarm (int seconds);
+extern void sleep P((int seconds));
+extern void alarm P((int seconds));
 /* machines.c */
 
 
-/*      this is really this     */
-#define getpid      taskIdSelf
-#define getclock    clock_gettime
-#define fcntl       ioctl
-#define _getch      getchar
+/*		this is really this 	*/
+#define getpid		taskIdSelf
+#define getclock	clock_gettime
+#define fcntl		ioctl
+#define _getch		getchar
+#define random 		rand
+#define srandom		srand
 
 /* define this away for vxWorks */
-#define openlog(x,y) 
+#define openlog(x,y)
 /* use local defines for these */
 #undef min
 #undef max
@@ -328,72 +339,72 @@ extern void alarm (int seconds);
 /* These structures are needed for gethostbyname() etc... */
 /* structures used by netdb.h */
 struct	hostent {
-	char	*h_name;	            /* official name of host */
-	char	**h_aliases;	        /* alias list */
-	int	h_addrtype;	                /* host address type */
-	int	h_length;	                /* length of address */
-	char	**h_addr_list;	        /* list of addresses from name server */
-#define		h_addr h_addr_list[0]   /* address, for backward compatibility */
+	char	*h_name;				/* official name of host */
+	char	**h_aliases;			/* alias list */
+	int h_addrtype; 				/* host address type */
+	int h_length;					/* length of address */
+	char	**h_addr_list;			/* list of addresses from name server */
+#define 	h_addr h_addr_list[0]	/* address, for backward compatibility */
 };
 
 struct	servent {
-	char	*s_name;	            /* official service name */
-	char	**s_aliases;	        /* alias list */
-	int	s_port;		                /* port # */
-	char	*s_proto;	            /* protocol to use */
+	char	*s_name;				/* official service name */
+	char	**s_aliases;			/* alias list */
+	int s_port; 					/* port # */
+	char	*s_proto;				/* protocol to use */
 };
 extern int h_errno;
 
 #define TRY_AGAIN	2
 
-struct hostent *gethostbyname(char * netnum);
-struct hostent *gethostbyaddr(char * netnum, int size, int addr_type);
+struct hostent *gethostbyname P((char * netnum));
+struct hostent *gethostbyaddr P((char * netnum, int size, int addr_type));
 /* type is the protocol */
-struct servent *getservbyname (char *name, char *type);
-#endif  /* NO_NETDB */
+struct servent *getservbyname P((char *name, char *type));
+#endif	/* NO_NETDB */
 
 #ifdef NO_MAIN_ALLOWED
 /* we have no main routines so lets make a plan */
 #define CALL(callname, progname, callmain) \
-    extern void callmain(int,char**); \
-    void callname(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) \
-        char *a0;  \
-        char *a1;  \
-        char *a2;  \
-        char *a3;  \
-        char *a4;  \
-        char *a5;  \
-        char *a6;  \
-        char *a7;  \
-        char *a8;  \
-        char *a9;  \
-        char *a10; \
-    { \
-      char *x[11]; \
-      int argc; \
-      char *argv[] = {progname,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL}; \
-      int i; \
-      for (i=0;i<11;i++) \
-       x[i] = NULL; \
-      x[0] = a0; \
-      x[1] = a1; \
-      x[2] = a2; \
-      x[3] = a3; \
-      x[4] = a4; \
-      x[5] = a5; \
-      x[6] = a6; \
-      x[7] = a7; \
-      x[8] = a8; \
-      x[9] = a9; \
-      x[10] = a10; \
-      argc=1; \
-      for (i=0; i<11;i++) \
-        if (x[i]) \
-        { \
-          argv[argc++] = x[i];  \
-        } \
-     callmain(argc,argv);  \
-    }
+	extern int callmain (int,char**); \
+	void callname (a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) \
+		char *a0;  \
+		char *a1;  \
+		char *a2;  \
+		char *a3;  \
+		char *a4;  \
+		char *a5;  \
+		char *a6;  \
+		char *a7;  \
+		char *a8;  \
+		char *a9;  \
+		char *a10; \
+	{ \
+	  char *x[11]; \
+	  int argc; \
+	  char *argv[] = {progname,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL}; \
+	  int i; \
+	  for (i=0;i<11;i++) \
+	   x[i] = NULL; \
+	  x[0] = a0; \
+	  x[1] = a1; \
+	  x[2] = a2; \
+	  x[3] = a3; \
+	  x[4] = a4; \
+	  x[5] = a5; \
+	  x[6] = a6; \
+	  x[7] = a7; \
+	  x[8] = a8; \
+	  x[9] = a9; \
+	  x[10] = a10; \
+	  argc=1; \
+	  for (i=0; i<11;i++) \
+		if (x[i]) \
+		{ \
+		  argv[argc++] = x[i];	\
+		} \
+	 callmain(argc,argv);  \
+	}
 #endif /* NO_MAIN_ALLOWED */
 /*casey Tue May 27 15:45:25 SAT 1997*/
 
@@ -401,16 +412,12 @@ struct servent *getservbyname (char *name, char *type);
  * Here's where autoconfig starts to take over
  */
 #ifdef HAVE_SYS_STROPTS_H
-# define STREAM
-#endif
-
-#ifdef STREAM			/* STREAM implies TERMIOS */
-# ifndef HAVE_TERMIOS
-#  define HAVE_TERMIOS
+# ifdef HAVE_SYS_STREAM_H
+#  define STREAM
 # endif
 #endif
 
-#ifndef	RETSIGTYPE
+#ifndef RETSIGTYPE
 # if defined(NTP_POSIX_SOURCE)
 #  define	RETSIGTYPE	void
 # else
@@ -420,10 +427,10 @@ struct servent *getservbyname (char *name, char *type);
 
 #ifdef	NTP_SYSCALLS_STD
 # ifndef	NTP_SYSCALL_GET
-#  define	NTP_SYSCALL_GET	235
+#  define	NTP_SYSCALL_GET 235
 # endif
 # ifndef	NTP_SYSCALL_ADJ
-#  define	NTP_SYSCALL_ADJ	236
+#  define	NTP_SYSCALL_ADJ 236
 # endif
 #endif	/* NTP_SYSCALLS_STD */
 
@@ -434,12 +441,12 @@ struct servent *getservbyname (char *name, char *type);
 #  define HAVE_BSD_NICE
 # else
 #  ifdef HAVE_NICE
-#   define HAVE_ATT_NICE
+#	define HAVE_ATT_NICE
 #  endif
 # endif
 #endif
 
-#if	!defined(HAVE_ATT_NICE) \
+#if !defined(HAVE_ATT_NICE) \
 	&& !defined(HAVE_BSD_NICE) \
 	&& !defined(HAVE_NO_NICE) \
 	&& !defined(SYS_WINNT)
@@ -459,7 +466,7 @@ struct servent *getservbyname (char *name, char *type);
 #  define HAVE_SYSV_TTYS
 # else
 #  ifdef HAVE_SGTTY_H
-#   define HAVE_BSD_TTYS
+#	define HAVE_BSD_TTYS
 #  endif
 # endif
 #endif
@@ -479,10 +486,10 @@ struct servent *getservbyname (char *name, char *type);
 	&& !defined(HAVE_TERMIOS)
 #include "ERROR: no tty type defined!"
 # endif
-#endif /* SYS_WINNT || VMS  || SYS_VXWORKS*/
+#endif /* SYS_WINNT || VMS	|| SYS_VXWORKS*/
 
 #ifdef	WORDS_BIGENDIAN
-# define	XNTP_BIG_ENDIAN	1
+# define	XNTP_BIG_ENDIAN 1
 #else
 # define	XNTP_LITTLE_ENDIAN	1
 #endif

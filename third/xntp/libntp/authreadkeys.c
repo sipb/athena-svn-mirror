@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "ntp_stdlib.h"
+#include "ntp_fp.h"
+#include "ntp.h"
 #include "ntp_syslog.h"
+#include "ntp_stdlib.h"
 
 #ifdef	DES
 /*
@@ -20,12 +22,10 @@
 #define	KEY_TYPE_ASCII	3
 #endif
 
-#ifdef	MD5
 /*
  *  Arbitrary long string of ASCII characters.
  */
 #define	KEY_TYPE_MD5	4
-#endif
 
 /* Forwards */
 static char *nexttok P((char **));
@@ -34,8 +34,9 @@ static char *nexttok P((char **));
  * nexttok - basic internal tokenizing routine
  */
 static char *
-nexttok(str)
-	char **str;
+nexttok(
+	char **str
+	)
 {
 	register char *cp;
 	char *starttok;
@@ -46,27 +47,27 @@ nexttok(str)
 	 * Space past white space
 	 */
 	while (*cp == ' ' || *cp == '\t')
-		cp++;
+	    cp++;
 	
 	/*
 	 * Save this and space to end of token
 	 */
 	starttok = cp;
 	while (*cp != '\0' && *cp != '\n' && *cp != ' '
-	    && *cp != '\t' && *cp != '#')
-		cp++;
+	       && *cp != '\t' && *cp != '#')
+	    cp++;
 	
 	/*
 	 * If token length is zero return an error, else set end of
 	 * token to zero and return start.
 	 */
 	if (starttok == cp)
-		return 0;
+	    return 0;
 	
 	if (*cp == ' ' || *cp == '\t')
-		*cp++ = '\0';
+	    *cp++ = '\0';
 	else
-		*cp = '\0';
+	    *cp = '\0';
 	
 	*str = cp;
 	return starttok;
@@ -77,19 +78,16 @@ nexttok(str)
  * authreadkeys - (re)read keys from a file.
  */
 int
-authreadkeys(file)
-	const char *file;
+authreadkeys(
+	const char *file
+	)
 {
 	FILE *fp;
 	char *line;
 	char *token;
-	u_int32 keyno;
+	u_long keyno;
 	int keytype;
-	char buf[512];		/* lots of room for line? */
-#if !defined(VMS)   /* wjm - what are these lines doing here? */
-extern	FILE *	fopen		P((const char *filename, const char *type));
-extern	int	fclose		P((FILE *stream));
-#endif /* !VMS */
+	char buf[512];		/* lots of room for line */
 
 	/*
 	 * Open file.  Complain and return if it can't be opened.
@@ -111,7 +109,7 @@ extern	int	fclose		P((FILE *stream));
 	while ((line = fgets(buf, sizeof buf, fp)) != NULL) {
 		token = nexttok(&line);
 		if (token == 0)
-			continue;
+		    continue;
 		
 		/*
 		 * First is key number.  See if it is okay.
@@ -119,8 +117,15 @@ extern	int	fclose		P((FILE *stream));
 		keyno = atoi(token);
 		if (keyno == 0) {
 			msyslog(LOG_ERR,
-			    "cannot change keyid 0, key entry `%s' ignored",
-			    token);
+				"cannot change keyid 0, key entry `%s' ignored",
+				token);
+			continue;
+		}
+
+		if (keyno > NTP_MAXKEY) {
+			msyslog(LOG_ERR,
+				"keyid's > %d reserved for autokey, key entry `%s' ignored",
+				NTP_MAXKEY, token);
 			continue;
 		}
 
@@ -130,34 +135,32 @@ extern	int	fclose		P((FILE *stream));
 		token = nexttok(&line);
 		if (token == 0) {
 			msyslog(LOG_ERR,
-			    "no key type for key number %ld, entry ignored",
-			    keyno);
+				"no key type for key number %ld, entry ignored",
+				keyno);
 			continue;
 		}
 		switch (*token) {
 #ifdef	DES
-		case 'S':
-		case 's':
-		    keytype = KEY_TYPE_STD; break;
+		    case 'S':
+		    case 's':
+			keytype = KEY_TYPE_STD; break;
 
-		case 'N':
-		case 'n':
-		    keytype = KEY_TYPE_NTP; break;
+		    case 'N':
+		    case 'n':
+			keytype = KEY_TYPE_NTP; break;
 
-		case 'A':
-		case 'a':
-		    keytype = KEY_TYPE_ASCII; break;
+		    case 'A':
+		    case 'a':
+			keytype = KEY_TYPE_ASCII; break;
 #endif
-#ifdef	MD5
-		case 'M':
-		case 'm':
-		    keytype = KEY_TYPE_MD5; break;
-#endif
-		default:
-		    msyslog(LOG_ERR,
-			   "invalid key type for key number %ld, entry ignored",
-			   keyno);
-		    continue;
+		    case 'M':
+		    case 'm':
+			keytype = KEY_TYPE_MD5; break;
+		    default:
+			msyslog(LOG_ERR,
+				"invalid key type for key number %ld, entry ignored",
+				keyno);
+			continue;
 		}
 
 		/*
@@ -166,29 +169,29 @@ extern	int	fclose		P((FILE *stream));
 		token = nexttok(&line);
 		if (token == 0) {
 			msyslog(LOG_ERR,
-			    "no key for number %ld entry, entry ignored",
-			    keyno);
+				"no key for number %ld entry, entry ignored",
+				keyno);
 		} else {
-		    switch(keytype) {
+			switch(keytype) {
 #ifdef	DES
-		    case KEY_TYPE_STD:
-		    case KEY_TYPE_NTP:
-		    case KEY_TYPE_ASCII:
-			if (!authusekey(keyno, keytype, token))
-			    msyslog(LOG_ERR,
-				 "format/parity error for DES key %ld, not used",
-				   keyno);
-			break;
+			    case KEY_TYPE_STD:
+			    case KEY_TYPE_NTP:
+			    case KEY_TYPE_ASCII:
+				if (!authusekey(keyno, keytype,
+						(u_char *)token))
+				    msyslog(LOG_ERR,
+					    "format/parity error for DES key %ld, not used",
+					    keyno);
+				break;
 #endif
-#ifdef	MD5
-		    case KEY_TYPE_MD5:
-			if (!authusekey(keyno, keytype, token))
-			    msyslog(LOG_ERR,
-				 "format/parity error for MD5 key %ld, not used",
-				   keyno);
-			break;
-#endif
-		    }
+			    case KEY_TYPE_MD5:
+				if (!authusekey(keyno, keytype,
+						(u_char *)token))
+				    msyslog(LOG_ERR,
+					    "format/parity error for MD5 key %ld, not used",
+					    keyno);
+				break;
+			}
 		}
 	}
 	(void) fclose(fp);

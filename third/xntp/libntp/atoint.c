@@ -8,9 +8,10 @@
 #include "ntp_stdlib.h"
 
 int
-atoint(str, ival)
-	const char *str;
-	long *ival;
+atoint(
+	const char *str,
+	long *ival
+	)
 {
 	register long u;
 	register const char *cp;
@@ -29,21 +30,21 @@ atoint(str, ival)
 	}
 
 	if (*cp == '\0')
-		return 0;
+	    return 0;
 
 	u = 0;
 	while (*cp != '\0') {
-		if (!isdigit(*cp))
-			return 0;
+		if (!isdigit((int)*cp))
+		    return 0;
 		if (u > 214748364 || (u == 214748364 && *cp > oflow_digit))
-			return 0;	/* overflow */
+		    return 0;	/* overflow */
 		u = (u << 3) + (u << 1);
 		u += *cp++ - '0';	/* ascii dependent */
 	}
 
 	if (isneg)
-		*ival = -u;
+	    *ival = -u;
 	else 
-		*ival = u;
+	    *ival = u;
 	return 1;
 }

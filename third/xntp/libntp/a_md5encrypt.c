@@ -1,73 +1,84 @@
 /*
- *  md5crypt - MD5 based authentication routines
+ *	MD5 interface for rsaref2.0
+ *
+ * These routines implement an interface for the RSA Laboratories
+ * implementation of the Message Digest 5 (MD5) algorithm. This
+ * algorithm is included in the rsaref2.0 package available from RSA in
+ * the US and foreign countries. Further information is available at
+ * www.rsa.com.
  */
+
+#include "ntp_machine.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <stdio.h>
 
 #include "ntp_types.h"
 #include "ntp_string.h"
+#include "global.h"
 #include "md5.h"
 #include "ntp_stdlib.h"
 
-extern u_int32 cache_keyid;
-extern char *cache_key;
-extern int cache_keylen;
+#define BLOCK_OCTETS	16	/* message digest size */
 
-#ifndef HAVE_MEMMOVE
-extern void *memmove P((void *, const void *, size_t));
-#endif
 
 /*
- * Stat counters, imported from data base module
- */
-extern u_int32 authencryptions;
-extern u_int32 authdecryptions;
-extern u_int32 authkeyuncached;
-extern u_int32 authnokey;
-
-/*
- * For our purposes an NTP packet looks like:
+ * MD5authencrypt - generate MD5 message authenticator
  *
- *	a variable amount of encrypted data, multiple of 8 bytes, followed by:
- *	NOCRYPT_OCTETS worth of unencrypted data, followed by:
- *	BLOCK_OCTETS worth of ciphered checksum.
- */ 
-#define	NOCRYPT_OCTETS	4
-#define	BLOCK_OCTETS	16
-
-#define	NOCRYPT_int32S	((NOCRYPT_OCTETS)/sizeof(u_int32))
-#define	BLOCK_int32S	((BLOCK_OCTETS)/sizeof(u_int32))
-
-
+ * Returns length of authenticator field.
+ */
 int
-MD5authencrypt(keyno, pkt, length)
-    u_int32 keyno;
-    u_int32 *pkt;
-    int length;		/* length of encrypted portion of packet */
+MD5authencrypt(
+	u_char *key,		/* key pointer */
+	u_int32 *pkt,		/* packet pointer */
+	int length		/* packet length */
+	)
 {
-    MD5_CTX ctx;
-    int len;		/* in 4 byte quantities */
+	MD5_CTX ctx;
+	u_char digest[BLOCK_OCTETS];
+	int i;
 
-    authencryptions++;
+	/*
+	 * MD5 with key identifier concatenated with packet.
+	 */
+	MD5Init(&ctx);
+	MD5Update(&ctx, key, (u_int)cache_keylen);
+	MD5Update(&ctx, (u_char *)pkt, (u_int)length);
+	MD5Final(digest, &ctx);
+	i = length / 4;
+	memmove((char *)&pkt[i + 1], (char *)digest, BLOCK_OCTETS);
+	return (BLOCK_OCTETS + 4);
+}
 
-    if (keyno != cache_keyid) {
-	authkeyuncached++;
-	if (!authhavekey(keyno)) {
-	    authnokey++;
-	    return 0;
-	}
-    }
 
-    len = length / sizeof(u_int32);
+/*
+ * MD5authdecrypt - verify MD5 message authenticator
+ *
+ * Returns one if authenticator valid, zero if invalid.
+ */
+int
+MD5authdecrypt(
+	u_char *key,		/* key pointer */
+	u_int32 *pkt,		/* packet pointer */
+	int length, 	/* packet length */
+	int size		/* MAC size */
+	)
+{
+	MD5_CTX ctx;
+	u_char digest[BLOCK_OCTETS];
 
-    /*
-     *  Generate the authenticator.
-     */
-    MD5Init(&ctx);
-    MD5Update(&ctx, (unsigned const char *)cache_key, cache_keylen);
-    MD5Update(&ctx, (unsigned const char *)pkt, length);
-    MD5Final(&ctx);
-
-    memmove((char *)&pkt[NOCRYPT_int32S + len],
-	    (char *)ctx.digest,
-	    BLOCK_OCTETS);
-    return (4 + BLOCK_OCTETS);	/* return size of key and MAC  */
+	/*
+	 * MD5 with key identifier concatenated with packet.
+	 */
+	if (size != BLOCK_OCTETS + 4)
+		return (0);
+	MD5Init(&ctx);
+	MD5Update(&ctx, key, (u_int)cache_keylen);
+	MD5Update(&ctx, (u_char *)pkt, (u_int)length);
+	MD5Final(digest, &ctx);
+	return (!memcmp((char *)digest, (char *)pkt + length + 4,
+		BLOCK_OCTETS));
 }

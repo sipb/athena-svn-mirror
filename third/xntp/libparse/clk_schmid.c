@@ -1,11 +1,11 @@
 /*
- * /src/NTP/REPOSITORY/v4/libparse/clk_schmid.c,v 3.22 1997/01/19 12:44:41 kardel Exp
+ * /src/NTP/ntp-4/libparse/clk_schmid.c,v 4.5 1999/11/28 09:13:51 kardel RELEASE_19991128_A
  *  
- * clk_schmid.c,v 3.22 1997/01/19 12:44:41 kardel Exp
+ * clk_schmid.c,v 4.5 1999/11/28 09:13:51 kardel RELEASE_19991128_A
  *
  * Schmid clock support
  *
- * Copyright (C) 1992,1993,1994,1995,1996 by Frank Kardel
+ * Copyright (C) 1992-1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
@@ -15,19 +15,24 @@
  */
 
 #if HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS)) && defined(CLOCK_SCHMID)
+#if defined(REFCLOCK) && defined(CLOCK_PARSE) && defined(CLOCK_SCHMID)
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/errno.h>
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
 
 #include "parse.h"
+
+#ifndef PARSESTREAM
+#include "ntp_stdlib.h"
+#include <stdio.h>
+#else
+#include "sys/parsestreams.h"
+extern void printf P((const char *, ...));
+#endif
 
 /*
  * Description courtesy of Adam W. Feigin et. al (Swisstime iis.ethz.ch)
@@ -63,181 +68,164 @@
 #define   WS_MEST	0x04
 #define WS_LEAP		0x10
 
-static u_long cvt_schmid();
+static u_long cvt_schmid P((unsigned char *, int, struct format *, clocktime_t *, void *));
+static unsigned long inp_schmid P((parse_t *, unsigned int, timestamp_t *));
 
 clockformat_t clock_schmid =
 {
-  (unsigned long (*)())0,	/* no input handling */
+  inp_schmid,			/* no input handling */
   cvt_schmid,			/* Schmid conversion */
-  syn_simple,			/* easy time stamps */
-  (u_long (*)())0,		/* not direct PPS monitoring */
-  (u_long (*)())0,		/* no time code synthesizer monitoring */
-  (void *)0,			/* conversion configuration */
+  0,				/* not direct PPS monitoring */
+  0,				/* conversion configuration */
   "Schmid",			/* Schmid receiver */
   12,				/* binary data buffer */
-  F_END|SYNC_START,		/* END packet delimiter / synchronisation */
   0,				/* no private data (complete messages) */
-  { 0, 0},
-  '\0',
-  (unsigned char)'\375',
-  '\0'
 };
 
 
 static u_long
-cvt_schmid(buffer, size, format, clock)
-  register unsigned char *buffer;
-  register int            size;
-  register struct format *format;
-  register clocktime_t   *clock;
+cvt_schmid(
+	   unsigned char *buffer,
+	   int            size,
+	   struct format *format,
+	   clocktime_t   *clock_time,
+	   void          *local
+	)
 {
-  if ((size != 11) || (buffer[10] != (unsigned char)'\375'))
-    {
-      return CVT_NONE;
-    }
-  else
-    {
-      if (buffer[0] > 23 || buffer[1] > 59 || buffer[2] > 59 || buffer[3] >  9) /* Time */
+	if ((size != 11) || (buffer[10] != (unsigned char)'\375'))
 	{
-	  return CVT_FAIL|CVT_BADTIME;
+		return CVT_NONE;
 	}
-      else
-	if (buffer[4] <  1 || buffer[4] > 31 || buffer[5] <  1 || buffer[5] > 12
-	    ||  buffer[6] > 99)
-	  {
-	    return CVT_FAIL|CVT_BADDATE;
-	  }
 	else
-	  {
-	    clock->hour    = buffer[0];
-	    clock->minute  = buffer[1];
-	    clock->second  = buffer[2];
-	    clock->usecond = buffer[3] * 100000;
-	    clock->day     = buffer[4];
-	    clock->month   = buffer[5];
-	    clock->year    = buffer[6];
+	{
+		if (buffer[0] > 23 || buffer[1] > 59 || buffer[2] > 59 || buffer[3] >  9) /* Time */
+		{
+			return CVT_FAIL|CVT_BADTIME;
+		}
+		else
+		    if (buffer[4] <  1 || buffer[4] > 31 || buffer[5] <  1 || buffer[5] > 12
+			||  buffer[6] > 99)
+		    {
+			    return CVT_FAIL|CVT_BADDATE;
+		    }
+		    else
+		    {
+			    clock_time->hour    = buffer[0];
+			    clock_time->minute  = buffer[1];
+			    clock_time->second  = buffer[2];
+			    clock_time->usecond = buffer[3] * 100000;
+			    clock_time->day     = buffer[4];
+			    clock_time->month   = buffer[5];
+			    clock_time->year    = buffer[6];
 
-	    clock->flags   = 0;
+			    clock_time->flags   = 0;
 
-	    switch (buffer[8] & WS_TZ)
-	      {
-	      case WS_MET:
-		clock->utcoffset = -1*60*60;
-		break;
+			    switch (buffer[8] & WS_TZ)
+			    {
+				case WS_MET:
+				    clock_time->utcoffset = -1*60*60;
+				    break;
 
-	      case WS_MEST:
-		clock->utcoffset = -2*60*60;
-		clock->flags    |= PARSEB_DST;
-		break;
+				case WS_MEST:
+				    clock_time->utcoffset = -2*60*60;
+				    clock_time->flags    |= PARSEB_DST;
+				    break;
 
-	      default:
-		return CVT_FAIL|CVT_BADFMT;
-	      }
+				default:
+				    return CVT_FAIL|CVT_BADFMT;
+			    }
 	  
-	    if (!(buffer[7] & WS_TIME))
-	      {
-		clock->flags |= PARSEB_POWERUP;
-	      }
+			    if (!(buffer[7] & WS_TIME))
+			    {
+				    clock_time->flags |= PARSEB_POWERUP;
+			    }
 
-	    if (!(buffer[7] & WS_SIGNAL))
-	      {
-		clock->flags |= PARSEB_NOSYNC;
-	      }
+			    if (!(buffer[7] & WS_SIGNAL))
+			    {
+				    clock_time->flags |= PARSEB_NOSYNC;
+			    }
 
-	    if (buffer[7] & WS_SIGNAL)
-	      {
-		if (buffer[8] & WS_ALTERNATE)
-		  {
-		    clock->flags |= PARSEB_ALTERNATE;
-		  }
+			    if (buffer[7] & WS_SIGNAL)
+			    {
+				    if (buffer[8] & WS_ALTERNATE)
+				    {
+					    clock_time->flags |= PARSEB_ALTERNATE;
+				    }
 
-		if (buffer[8] & WS_ANNOUNCE)
-		  {
-		    clock->flags |= PARSEB_ANNOUNCE;
-		  }
+				    if (buffer[8] & WS_ANNOUNCE)
+				    {
+					    clock_time->flags |= PARSEB_ANNOUNCE;
+				    }
 
-		if (buffer[8] & WS_LEAP)
-		  {
-		    clock->flags |= PARSEB_LEAPADD; /* default: DCF77 data format deficiency */
-		  }
-	      }
+				    if (buffer[8] & WS_LEAP)
+				    {
+					    clock_time->flags |= PARSEB_LEAPADD; /* default: DCF77 data format deficiency */
+				    }
+			    }
 
-	    clock->flags |= PARSEB_S_LEAP|PARSEB_S_ANTENNA;
+			    clock_time->flags |= PARSEB_S_LEAP|PARSEB_S_ANTENNA;
 	  
-	    return CVT_OK;
-	  }
-    }
+			    return CVT_OK;
+		    }
+	}
 }
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_SCHMID) */
+/*
+ * inp_schmid
+ *
+ * grep data from input stream
+ */
+static u_long
+inp_schmid(
+	  parse_t      *parseio,
+	  unsigned int  ch,
+	  timestamp_t  *tstamp
+	  )
+{
+	unsigned int rtc;
+	
+	parseprintf(DD_PARSE, ("inp_schmid(0x%x, 0x%x, ...)\n", (int)parseio, (int)ch));
+	
+	switch (ch)
+	{
+	case 0xFD:		/*  */
+		parseprintf(DD_PARSE, ("mbg_input: ETX seen\n"));
+		if ((rtc = parse_addchar(parseio, ch)) == PARSE_INP_SKIP)
+			return parse_end(parseio);
+		else
+			return rtc;
+
+	default:
+		return parse_addchar(parseio, ch);
+	}
+}
+
+#else /* not (REFCLOCK && CLOCK_PARSE && CLOCK_SCHMID) */
 int clk_schmid_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_SCHMID) */
+#endif /* not (REFCLOCK && CLOCK_PARSE && CLOCK_SCHMID) */
 
 /*
  * History:
  *
  * clk_schmid.c,v
- * Revision 3.22  1997/01/19 12:44:41  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.5  1999/11/28 09:13:51  kardel
+ * RECON_4_0_98F
  *
- * Revision 3.21  1996/12/01 16:04:15  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.4  1998/06/13 12:06:03  kardel
+ * fix SYSV clock name clash
  *
- * Revision 3.20  1996/11/24 20:09:46  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.3  1998/06/12 15:22:29  kardel
+ * fix prototypes
  *
- * Revision 3.19  1996/10/05 13:30:21  kardel
- * general update
+ * Revision 4.2  1998/06/12 09:13:26  kardel
+ * conditional compile macros fixed
+ * printf prototype
  *
- * Revision 3.18  1994/10/03  21:59:26  kardel
- * 3.4e cleanup/integration
+ * Revision 4.1  1998/05/24 09:39:53  kardel
+ * implementation of the new IO handling model
  *
- * Revision 3.17  1994/10/03  10:04:09  kardel
- * 3.4e reconcilation
+ * Revision 4.0  1998/04/10 19:45:31  kardel
+ * Start 4.0 release version numbering
  *
- * Revision 3.16  1994/05/30  10:20:03  kardel
- * LONG cleanup
- *
- * Revision 3.15  1994/05/12  12:34:48  kardel
- * data type cleanup
- *
- * Revision 3.14  1994/04/12  14:56:31  kardel
- * fix declaration
- *
- * Revision 3.13  1994/02/20  13:04:41  kardel
- * parse add/delete second support
- *
- * Revision 3.12  1994/02/02  17:45:25  kardel
- * rcs ids fixed
- *
- * Revision 3.10  1994/01/25  19:05:15  kardel
- * 94/01/23 reconcilation
- *
- * Revision 3.9  1994/01/23  17:21:56  kardel
- * 1994 reconcilation
- *
- * Revision 3.8  1993/11/01  20:00:18  kardel
- * parse Solaris support (initial version)
- *
- * Revision 3.7  1993/10/30  09:44:43  kardel
- * conditional compilation flag cleanup
- *
- * Revision 3.6  1993/10/09  15:01:32  kardel
- * file structure unified
- *
- * Revision 3.5  1993/10/03  19:10:47  kardel
- * restructured I/O handling
- *
- * Revision 3.4  1993/09/27  21:08:09  kardel
- * utcoffset now in seconds
- *
- * Revision 3.3  1993/09/26  23:40:27  kardel
- * new parse driver logic
- *
- * Revision 3.2  1993/07/09  11:37:19  kardel
- * Initial restructured version + GPS support
- *
- * Revision 3.1  1993/07/06  10:00:22  kardel
- * DCF77 driver goes generic...
- *
+ * from V3 3.22 log info deleted 1998/04/11 kardel
  */

@@ -34,12 +34,15 @@
  * SUCH DAMAGE.
  */
 
+#ifndef TIOCGPPSEV
 #define PPSCLOCKSTR	"ppsclock"
 
+#ifndef HAVE_STRUCT_PPSCLOCKEV
 struct ppsclockev {
 	struct timeval tv;
 	u_int serial;
 };
+#endif
 
 #if defined(__STDC__) || defined(SYS_HPUX)
 #ifdef	_IOR
@@ -56,3 +59,6 @@ struct ppsclockev {
 #define CIOGETEV        (CIO|0)		/* get last pps event */
 #endif	/* _IOR */
 #endif	/* __STDC__ */
+#else
+#define CIOGETEV TIOCGPPSEV
+#endif

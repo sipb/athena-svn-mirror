@@ -1,23 +1,30 @@
 /*
- * /src/NTP/REPOSITORY/v4/libparse/clk_trimtaip.c,v 1.4 1997/01/19 12:44:41 kardel Exp
+ * /src/NTP/ntp-4/libparse/clk_trimtaip.c,v 4.7 1999/11/28 09:13:51 kardel RELEASE_19991128_A
  *
- * Trimble SV6 clock support
+ * clk_trimtaip.c,v 4.7 1999/11/28 09:13:51 kardel RELEASE_19991128_A
+ *
+ * Trimble SV6 clock support - several collected codepieces
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS)) && defined(CLOCK_TRIMTAIP)
+#if defined(REFCLOCK) && defined(CLOCK_PARSE) && defined(CLOCK_TRIMTAIP)
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/errno.h>
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
 
 #include "parse.h"
+
+#ifndef PARSESTREAM
+#include "ntp_stdlib.h"
+#include <stdio.h>
+#else
+#include "sys/parsestreams.h"
+extern void printf P((const char *, ...));
+#endif
 
 /*	0000000000111111111122222222223333333	/ char
  *	0123456789012345678901234567890123456	\ posn
@@ -27,134 +34,156 @@
  */
 
 #define	hexval(x) (('0' <= (x) && (x) <= '9') ? (x) - '0' : \
-	('a' <= (x) && (x) <= 'f') ? (x) - 'a' + 10 : \
-	('A' <= (x) && (x) <= 'F') ? (x) - 'A' + 10 : \
-	-1)
+		   ('a' <= (x) && (x) <= 'f') ? (x) - 'a' + 10 : \
+		   ('A' <= (x) && (x) <= 'F') ? (x) - 'A' + 10 : \
+		   -1)
 #define	O_USEC		O_WDAY
 #define	O_GPSFIX	O_FLAGS
 #define	O_CHKSUM	O_UTCHOFFSET
-static struct format trimsv6_fmt =
+     static struct format trimsv6_fmt =
 { { { 13, 2 }, {15, 2}, { 17, 4}, /* Day, Month, Year */
     {  4, 2 }, { 6, 2}, {  8, 2}, /* Hour, Minute, Second */
     { 10, 3 }, {23, 1}, {  0, 0}, /* uSec, FIXes (WeekDAY, FLAGS, ZONE) */
     { 34, 2 }, { 0, 0}, { 21, 2}, /* cksum, -, utcS (UTC[HMS]OFFSET) */
-  },
-  ">RTM                      1     ;*  <",
+},
+  (const unsigned char *)">RTM                      1     ;*  <",
   0
 };
 
-static unsigned long cvt_trimtaip();
+static unsigned long cvt_trimtaip P((unsigned char *, int, struct format *, clocktime_t *, void *));
+static unsigned long inp_trimtaip P((parse_t *, unsigned int, timestamp_t *));
 
 clockformat_t clock_trimtaip =
 {
-  (unsigned long (*)())0,	/* no input handling */
+  inp_trimtaip,			/* no input handling */
   cvt_trimtaip,			/* Trimble conversion */
-  syn_simple,			/* easy time stamps for RS232 (fallback) */
-  pps_simple,			/* easy PPS monitoring */
-  (unsigned long (*)())0,	/* no time code synthesizer monitoring */
+  pps_one,			/* easy PPS monitoring */
   (void *)&trimsv6_fmt,		/* conversion configuration */
-  "Trimble SV6/TAIP",
+  "Trimble TAIP",
   37,				/* string buffer */
-  F_START|F_END|SYNC_START|SYNC_ONE, /* paket START/END delimiter, START synchronisation, PPS ONE sampling */
-  0,				/* no private data */
-  { 0, 0},
-  '>',
-  '<',
-  '\0'
+  0				/* no private data */
 };
 
 static unsigned long
-cvt_trimtaip(buffer, size, format, clock)
-  register char          *buffer;
-  register int            size;
-  register struct format *format;
-  register clocktime_t   *clock;
+cvt_trimtaip(
+	     unsigned char *buffer,
+	     int            size,
+	     struct format *format,
+	     clocktime_t   *clock_time,
+	     void          *local
+	     )
 {
-  long gpsfix;
-  u_char calc_csum = 0;
-  long   recv_csum;
-  int	 i;
+	long gpsfix;
+	u_char calc_csum = 0;
+	long   recv_csum;
+	int	 i;
 
-  if (!Strok(buffer, format->fixed_string)) return CVT_NONE;
+	if (!Strok(buffer, format->fixed_string)) return CVT_NONE;
 #define	OFFS(x) format->field_offsets[(x)].offset
 #define	STOI(x, y) \
 	Stoi(&buffer[OFFS(x)], y, \
-	       format->field_offsets[(x)].length)
-  if (	STOI(O_DAY,	&clock->day)	||
-	STOI(O_MONTH,	&clock->month)	||
-	STOI(O_YEAR,	&clock->year)	||
-	STOI(O_HOUR,	&clock->hour)	||
-	STOI(O_MIN,	&clock->minute)	||
-	STOI(O_SEC,	&clock->second)	||
-	STOI(O_USEC,	&clock->usecond)||
-	STOI(O_GPSFIX,	&gpsfix)
-     ) return CVT_FAIL|CVT_BADFMT;
+	     format->field_offsets[(x)].length)
+		if (	STOI(O_DAY,	&clock_time->day)	||
+			STOI(O_MONTH,	&clock_time->month)	||
+			STOI(O_YEAR,	&clock_time->year)	||
+			STOI(O_HOUR,	&clock_time->hour)	||
+			STOI(O_MIN,	&clock_time->minute)	||
+			STOI(O_SEC,	&clock_time->second)	||
+			STOI(O_USEC,	&clock_time->usecond)||
+			STOI(O_GPSFIX,	&gpsfix)
+			) return CVT_FAIL|CVT_BADFMT;
 
-  clock->usecond *= 1000;
-  /* Check that the checksum is right */
-  for (i=OFFS(O_CHKSUM)-1; i >= 0; i--) calc_csum ^= buffer[i];
-  recv_csum =	(hexval(buffer[OFFS(O_CHKSUM)]) << 4) |
-	 hexval(buffer[OFFS(O_CHKSUM)+1]);
-  if (recv_csum < 0) return CVT_FAIL|CVT_BADTIME;
-  if (((u_char) recv_csum) != calc_csum) return CVT_FAIL|CVT_BADTIME;
+	clock_time->usecond *= 1000;
+	/* Check that the checksum is right */
+	for (i=OFFS(O_CHKSUM)-1; i >= 0; i--) calc_csum ^= buffer[i];
+	recv_csum =	(hexval(buffer[OFFS(O_CHKSUM)]) << 4) |
+		hexval(buffer[OFFS(O_CHKSUM)+1]);
+	if (recv_csum < 0) return CVT_FAIL|CVT_BADTIME;
+	if (((u_char) recv_csum) != calc_csum) return CVT_FAIL|CVT_BADTIME;
 
-  clock->utcoffset = 0;
+	clock_time->utcoffset = 0;
 
-  /* What should flags be set to ? */
-  clock->flags = PARSEB_UTC;
+	/* What should flags be set to ? */
+	clock_time->flags = PARSEB_UTC;
 
-  /* if the current GPS fix is 9 (unknown), reject */
-  if (0 > gpsfix || gpsfix > 9) clock->flags |= PARSEB_POWERUP;
+	/* if the current GPS fix is 9 (unknown), reject */
+	if (0 > gpsfix || gpsfix > 9) clock_time->flags |= PARSEB_POWERUP;
 
-  return CVT_OK;
+	return CVT_OK;
 }
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_TRIMTAIP) */
+/*
+ * inp_trimtaip
+ *
+ * grep data from input stream
+ */
+static u_long
+inp_trimtaip(
+	     parse_t      *parseio,
+	     unsigned int  ch,
+	     timestamp_t  *tstamp
+	  )
+{
+	unsigned int rtc;
+	
+	parseprintf(DD_PARSE, ("inp_trimtaip(0x%x, 0x%x, ...)\n", (int)parseio, (int)ch));
+	
+	switch (ch)
+	{
+	case '>':
+		parseprintf(DD_PARSE, ("inp_trimptaip: START seen\n"));
+		
+		parseio->parse_index = 1;
+		parseio->parse_data[0] = ch;
+		parseio->parse_dtime.parse_stime = *tstamp; /* collect timestamp */
+		return PARSE_INP_SKIP;
+	  
+	case '<':
+		parseprintf(DD_PARSE, ("inp_trimtaip: END seen\n"));
+		if ((rtc = parse_addchar(parseio, ch)) == PARSE_INP_SKIP)
+			return parse_end(parseio);
+		else
+			return rtc;
+
+
+	default:
+		return parse_addchar(parseio, ch);
+	}
+}
+
+#else /* not (REFCLOCK && CLOCK_PARSE && CLOCK_TRIMTAIP) */
 int clk_trimtaip_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_TRIMTAIP) */
+#endif /* not (REFCLOCK && CLOCK_PARSE && CLOCK_TRIMTAIP) */
 
 /*
  * History:
  *
  * clk_trimtaip.c,v
- * Revision 1.4  1997/01/19 12:44:41  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.7  1999/11/28 09:13:51  kardel
+ * RECON_4_0_98F
  *
- * Revision 1.3  1996/11/24 20:09:47  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.6  1998/08/16 18:46:27  kardel
+ * (clock_trimtaip =): changed format name
  *
- * Revision 1.2  1994/10/03 21:59:29  kardel
- * 3.4e cleanup/integration
+ * Revision 4.5  1998/06/14 21:09:38  kardel
+ * Sun acc cleanup
  *
- * Revision 1.1.1.1  1994/08/15  11:23:00  kardel
- * Release 4b of August 14th, 1994
+ * Revision 4.4  1998/06/13 12:06:57  kardel
+ * fix SYSV clock name clash
  *
- * Revision 3.9  1994/02/02  17:45:27  kardel
- * rcs ids fixed
+ * Revision 4.3  1998/06/12 15:22:29  kardel
+ * fix prototypes
  *
- * Revision 3.7  1994/01/25  19:05:17  kardel
- * 94/01/23 reconcilation
+ * Revision 4.2  1998/06/12 09:13:26  kardel
+ * conditional compile macros fixed
+ * printf prototype
  *
- * Revision 3.6  1993/10/30  09:44:45  kardel
- * conditional compilation flag cleanup
+ * Revision 4.1  1998/05/24 09:39:54  kardel
+ * implementation of the new IO handling model
  *
- * Revision 3.5  1993/10/09  15:01:35  kardel
- * file structure unified
+ * Revision 4.0  1998/04/10 19:45:31  kardel
+ * Start 4.0 release version numbering
  *
- * revision 3.4
- * date: 1993/10/08 14:44:51;  author: kardel;
- * trimble - initial working version
- *
- * revision 3.3
- * date: 1993/10/03 19:10:50;  author: kardel;
- * restructured I/O handling
- *
- * revision 3.2
- * date: 1993/09/27 21:07:17;  author: kardel;
- * Trimble alpha integration
- *
- * revision 3.1
- * date: 1993/09/26 23:40:29;  author: kardel;
- * new parse driver logic
- *
+ * from V3 1.4 log info deleted 1998/04/11 kardel
  */
+

@@ -8,9 +8,10 @@
 #include "ntp_stdlib.h"
 
 int
-mstolfp(str, lfp)
-	const char *str;
-	l_fp *lfp;
+mstolfp(
+	const char *str,
+	l_fp *lfp
+	)
 {
 	register const char *cp;
 	register char *bp;
@@ -30,24 +31,24 @@ mstolfp(str, lfp)
 	 */
 	bp = buf;
 	cp = str;
-	while (isspace(*cp))
-		cp++;
+	while (isspace((int)*cp))
+	    cp++;
 	
 	if (*cp == '-') {
 		*bp++ = '-';
 		cp++;
 	}
 
-	if (*cp != '.' && !isdigit(*cp))
-		return 0;
+	if (*cp != '.' && !isdigit((int)*cp))
+	    return 0;
 
 
 	/*
 	 * Search forward for the decimal point or the end of the string.
 	 */
 	cpdec = cp;
-	while (isdigit(*cpdec))
-		cpdec++;
+	while (isdigit((int)*cpdec))
+	    cpdec++;
 
 	/*
 	 * Found something.  If we have more than three digits copy the
@@ -80,12 +81,12 @@ mstolfp(str, lfp)
 	 * is pointing at a decimal point, copy in the trailing number too.
 	 */
 	while (cp < cpdec)
-		*bp++ = (char)*cp++;
+	    *bp++ = (char)*cp++;
 	
 	if (*cp == '.') {
 		cp++;
-		while (isdigit(*cp))
-			*bp++ = (char)*cp++;
+		while (isdigit((int)*cp))
+		    *bp++ = (char)*cp++;
 	}
 	*bp = '\0';
 
@@ -93,7 +94,7 @@ mstolfp(str, lfp)
 	 * Check to make sure the string is properly terminated.  If
 	 * so, give the buffer to the decoding routine.
 	 */
-	if (*cp != '\0' && !isspace(*cp))
-		return 0;
+	if (*cp != '\0' && !isspace((int)*cp))
+	    return 0;
 	return atolfp(buf, lfp);
 }

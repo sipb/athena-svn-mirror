@@ -5,9 +5,10 @@
 #include "ntp_stdlib.h"
 
 int
-tsftomsu(tsf, round)
-	u_long tsf;
-	int round;
+tsftomsu(
+	u_long tsf,
+	int round
+	)
 {
 	register long val_ui, val_uf;
 	register long tmp_ui, tmp_uf;
@@ -32,6 +33,6 @@ tsftomsu(tsf, round)
 	 * Round the value if need be, then return it.
 	 */
 	if (round && (val_uf & 0x80000000))
-		val_ui++;
+	    val_ui++;
 	return (int)val_ui;
 }

@@ -29,7 +29,7 @@
 
 #ifndef STREAM
 #ifndef CLKLDISC
-	CLOCK_LINE_DISCIPLINE_NEEDED_BY_THIS_PROGRAM;
+CLOCK_LINE_DISCIPLINE_NEEDED_BY_THIS_PROGRAM;
 #endif
 #endif
 
@@ -62,14 +62,16 @@ int debug;
 #define	DEFMAGIC	'\r'
 #endif
 
-#ifdef STREAM
-# include <stropts.h>
-# ifdef HAVE_SYS_CLKDEFS_H
-#  include <sys/clkdefs.h>
+#ifdef CLKLDISC
+# ifdef STREAM
+#  include <stropts.h>
+#  ifdef HAVE_SYS_CLKDEFS_H
+#   include <sys/clkdefs.h>
+#  endif
+#  define DEFMAGIC	"\r"
 # endif
-# define DEFMAGIC	"\r"
 #endif
-
+ 
 struct timeval timeout = { 0 };
 char *cmd = NULL;
 int cmdlen;
@@ -96,9 +98,11 @@ extern u_long ustotshi[];
 /*
  * main - parse arguments and handle options
  */
-main(argc, argv)
-int argc;
-char *argv[];
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	int c;
 	int errflg = 0;
@@ -117,93 +121,93 @@ char *argv[];
 	magic[0] = 0;
 #endif
 	while ((c = ntp_getopt(argc, argv, "a:b:c:dfs:t:")) != EOF)
-		switch (c) {
+	    switch (c) {
 #ifdef CLKLDISC
 		case 'a':
 #endif
 		case 'c':
-			if (!atouint(ntp_optarg, &tmp)) {
-				(void) fprintf(stderr,
-				    "%s: argument for -%c must be integer\n",
-				    progname, c);
-				errflg++;
-				break;
-			}
+		    if (!atouint(ntp_optarg, &tmp)) {
+			    (void) fprintf(stderr,
+					   "%s: argument for -%c must be integer\n",
+					   progname, c);
+			    errflg++;
+			    break;
+		    }
 #ifdef CLKLDISC
-			if (c == 'c')
-				magic1 = tmp;
-			else
-				magic2 = tmp;
+		    if (c == 'c')
+			magic1 = tmp;
+		    else
+			magic2 = tmp;
 #endif
 #ifdef STREAM
-			magic[strlen(magic)+1] = '\0';
-			magic[strlen(magic)] = tmp;
+		    magic[strlen(magic)+1] = '\0';
+		    magic[strlen(magic)] = tmp;
 #endif
-			break;
+		    break;
 		case 'b':
-			if (!atouint(ntp_optarg, &tmp)) {
-				errflg++;
-				break;
-			}
-			spd = speedtab;
-			while (spd->bps != 0)
-				if ((int)tmp == spd->bps)
-					break;
-			if (spd->bps == 0) {
-				(void) fprintf(stderr,
-				    "%s: speed %lu is unsupported\n",
-				    progname, tmp);
-				errflg++;
-			} else {
-				speed = spd->rate;
-			}
-			break;
+		    if (!atouint(ntp_optarg, &tmp)) {
+			    errflg++;
+			    break;
+		    }
+		    spd = speedtab;
+		    while (spd->bps != 0)
+			if ((int)tmp == spd->bps)
+			    break;
+		    if (spd->bps == 0) {
+			    (void) fprintf(stderr,
+					   "%s: speed %lu is unsupported\n",
+					   progname, tmp);
+			    errflg++;
+		    } else {
+			    speed = spd->rate;
+		    }
+		    break;
 		case 'd':
-			++debug;
-			break;
+		    ++debug;
+		    break;
 		case 'f':
-			ttflags |= CRMOD;
-			break;
+		    ttflags |= CRMOD;
+		    break;
 		case 's':
-			cmdlen = strlen(ntp_optarg);
-			if (cmdlen == 0)
-				errflg++;
-			else
-				cmd = ntp_optarg;
-			break;
-		case 't':
-			if (!atouint(ntp_optarg, &tmp))
-				errflg++;
-			else {
-				timeout.tv_sec = (long)tmp;
-				docmd = 1;
-			}
-			break;
-		default:
+		    cmdlen = strlen(ntp_optarg);
+		    if (cmdlen == 0)
 			errflg++;
-			break;
-		}
+		    else
+			cmd = ntp_optarg;
+		    break;
+		case 't':
+		    if (!atouint(ntp_optarg, &tmp))
+			errflg++;
+		    else {
+			    timeout.tv_sec = (long)tmp;
+			    docmd = 1;
+		    }
+		    break;
+		default:
+		    errflg++;
+		    break;
+	    }
 	if (errflg || ntp_optind+1 != argc) {
 		(void) fprintf(stderr,
 #ifdef CLKLDISC
-"usage: %s [-b bps] [-c magic1] [-a magic2] [-f] [-s cmd] [-t timeo]  tty_device\n",
+			       "usage: %s [-b bps] [-c magic1] [-a magic2] [-f] [-s cmd] [-t timeo]  tty_device\n",
 #endif
 #ifdef STREAM
-"usage: %s [-b bps] [-c magic1] [-c magic2]... [-f] [-s cmd] [-t timeo]  tty_device\n",
+			       "usage: %s [-b bps] [-c magic1] [-c magic2]... [-f] [-s cmd] [-t timeo]  tty_device\n",
 #endif
-		    progname);
+			       progname);
 		exit(2);
 	}
 
 #ifdef STREAM
 	if (!strlen(magic))
-		strcpy(magic,DEFMAGIC);
+	    strcpy(magic,DEFMAGIC);
 #endif
 
 	if (docmd)
-		fd = open(argv[ntp_optind], O_RDWR, 0777);
+	    fd = open(argv[ntp_optind], O_RDWR, 0777);
 	else
-		fd = open(argv[ntp_optind], O_RDONLY, 0777);
+	    fd = open(argv[ntp_optind], O_RDONLY, 0777);
 	if (fd == -1) {
 		(void) fprintf(stderr, "%s: open(%s): ", progname,
 			       argv[ntp_optind]);
@@ -241,13 +245,13 @@ char *argv[];
 
 #ifdef CLKLDISC
 	{
-	int ldisc;
-	ldisc = CLKLDISC;
-	if (ioctl(fd, TIOCSETD, (char *)&ldisc) < 0) {
-		(void) fprintf(stderr, "%s: ioctl(TIOCSETD): ", progname);
-		perror("");
-		exit(1);
-	}
+		int ldisc;
+		ldisc = CLKLDISC;
+		if (ioctl(fd, TIOCSETD, (char *)&ldisc) < 0) {
+			(void) fprintf(stderr, "%s: ioctl(TIOCSETD): ", progname);
+			perror("");
+			exit(1);
+		}
 	}
 #endif
 #ifdef STREAM
@@ -274,7 +278,7 @@ char *argv[];
 		(void) signal(SIGIO, ioready);
 		if (fcntl(fd, F_SETFL, FNDELAY|FASYNC) < 0) {
 			(void) fprintf(stderr, "%s: fcntl(F_SETFL): ",
-			progname);
+				       progname);
 			perror("");
 			exit(1);
 		}
@@ -285,7 +289,7 @@ char *argv[];
 		wasalarmed = 0;
 		(void) signal(SIGALRM, alarming);
 		itimer.it_interval = itimer.it_value = timeout;
-	setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
+		setitimer(ITIMER_REAL, &itimer, (struct itimerval *)0);
 		doboth(fd);
 	}
 	doioonly(fd);
@@ -295,8 +299,10 @@ char *argv[];
 /*
  * doboth - handle both I/O and alarms via SIGIO
  */
-doboth(fd)
-	int fd;
+int
+doboth(
+	int fd
+	)
 {
 	int n;
 	int sawalarm;
@@ -341,14 +347,14 @@ doboth(fd)
 				tvzero.tv_sec = tvzero.tv_usec = 0;
 				FD_SET(fd, &fds);
 				n = select(fd+1, &fds, (fd_set *)0,
-				    (fd_set *)0, &tvzero);
+					   (fd_set *)0, &tvzero);
 				if (n > 0)
-					doio(fd);
+				    doio(fd);
 			} while (n > 0);
 
 			if (n == -1) {
 				(void) fprintf(stderr, "%s: select: ",
-				    progname);
+					       progname);
 				perror("");
 				exit(1);
 			}
@@ -365,8 +371,10 @@ doboth(fd)
 /*
  * doioonly - do I/O.  This avoids the use of signals
  */
-doioonly(fd)
-	int fd;
+int
+doioonly(
+	int fd
+	)
 {
 	int n;
 	fd_set fds;
@@ -375,9 +383,9 @@ doioonly(fd)
 	for (;;) {
 		FD_SET(fd, &fds);
 		n = select(fd+1, &fds, (fd_set *)0, (fd_set *)0,
-		    (struct timeval *)0);
+			   (struct timeval *)0);
 		if (n > 0)
-			doio(fd);
+		    doio(fd);
 	}
 }
 
@@ -385,8 +393,10 @@ doioonly(fd)
 /*
  * doio - read a buffer full of stuff and print it out
  */
-doio(fd)
-	int fd;
+int
+doio(
+	int fd
+	)
 {
 	register char *rp, *rpend;
 	register char *cp;
@@ -417,25 +427,27 @@ doio(fd)
 	while (rp < rpend) {
 		ind = 1;
 		if (isprint(*rp))
-			*cp++ = *rp;
+		    *cp++ = *rp;
 		else {
 			*cp++ = '<';
 			*cp++ = digits[((*rp)>>4) & 0xf];
 			*cp++ = digits[*rp & 0xf];
 			*cp++ = '>';
 		}
+		if (
 #ifdef CLKLDISC
-		if (*rp == (char)magic1 || *rp == (char)magic2) {
+			(*rp == (char)magic1 || *rp == (char)magic2)
 #else
-		if ( strchr( magic, *rp) != NULL ) {
+			( strchr( magic, *rp) != NULL )
 #endif
+			) {
 			rp++;
 			ind = 0;
 			*cp = '\0';
 			if ((rpend - rp) < sizeof(struct timeval)) {
 				(void)printf(
-				    "Too little data (%d): %s\n",
-				    rpend-rp, cooked);
+					"Too little data (%d): %s\n",
+					rpend-rp, cooked);
 				return;
 			}
 
@@ -458,8 +470,8 @@ doio(fd)
 			}
 
 			(void)printf("%lu.%06lu %lu.%06lu %s\n",
-			    tv.tv_sec, tv.tv_usec, tvd.tv_sec, tvd.tv_usec,
-			    cooked);
+				     tv.tv_sec, tv.tv_usec, tvd.tv_sec, tvd.tv_usec,
+				     cooked);
 			lasttv = tv;
 		} else {
 			rp++;
@@ -476,13 +488,15 @@ doio(fd)
 /*
  * doalarm - send a string out the port, if we have one.
  */
-doalarm(fd)
-	int fd;
+int
+doalarm(
+	int fd
+	)
 {
 	int n;
 
 	if (cmd == NULL || cmdlen <= 0)
-		return;
+	    return;
 
 	n = write(fd, cmd, cmdlen);
 
@@ -491,7 +505,7 @@ doalarm(fd)
 		perror("");
 	} else if (n < cmdlen) {
 		(void) printf("Short write (%d bytes, should be %d)\n",
-		    n, cmdlen);
+			      n, cmdlen);
 	}
 }
 
@@ -499,7 +513,8 @@ doalarm(fd)
 /*
  * alarming - receive alarm interupt
  */
-alarming()
+void
+alarming(void)
 {
 	wasalarmed = 1;
 }
@@ -507,7 +522,8 @@ alarming()
 /*
  * ioready - handle SIGIO interrupt
  */
-ioready()
+void
+ioready(void)
 {
 	iosig = 1;
 }

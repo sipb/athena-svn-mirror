@@ -1,4 +1,5 @@
-#AUTOMAKE_OPTIONS = no-dependencies
+#AUTOMAKE_OPTIONS = ../ansi2knr no-dependencies
+AUTOMAKE_OPTIONS = ../util/ansi2knr
 noinst_PROGRAMS = @PROPDELAY@ @CHUTEST@ @CLKTEST@
 EXTRA_PROGRAMS = propdelay chutest clktest
 
@@ -13,4 +14,3 @@ ETAGS_ARGS = Makefile.am
 chutest: ../libntp/libntp.a
 
 clktest: ../libntp/libntp.a
-

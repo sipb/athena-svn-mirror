@@ -4,7 +4,7 @@
  *	Copyright 1988 by Rayan S. Zachariassen, all rights reserved.
  *	This will be free software, but only when it is finished.
  *
- * Used in xntp by permission of the author.  If copyright is
+ * Used in ntp by permission of the author.  If copyright is
  * annoying to you, read no further.  Instead, look up the reference,
  * write me an equivalent to this and send it back to me.
  */
@@ -44,17 +44,18 @@ static int ran_k;
  * ranp2 - return a random integer in the range 0 .. (1 << m) - 1
  */
 u_long
-ranp2(m)
-	int m;
+ranp2(
+	int m
+	)
 {
 	time_t r;
 
 	ran_y[ran_k] += ran_y[ran_j];	/* overflow does a mod */
 	r = ran_y[ran_k];
 	if (ran_k-- == 0)
-		ran_k = 54;
+	    ran_k = 54;
 	if (ran_j-- == 0)
-		ran_j = 54;
+	    ran_j = 54;
 	return (u_long)(r & ((1 << m ) - 1));
 }
 
@@ -62,7 +63,7 @@ ranp2(m)
  * init_random - do initialization of random number routine
  */
 void
-init_random()
+init_random(void)
 {
 	register int i;
 	register time_t now;
@@ -77,5 +78,5 @@ init_random()
 	now = time((time_t *)0) | 01;
 
 	for (i = 0; i < 55; ++i)
-		ran_y[i] = now * init_ran_y[i];	/* overflow does a mod */
+	    ran_y[i] = now * init_ran_y[i];	/* overflow does a mod */
 }

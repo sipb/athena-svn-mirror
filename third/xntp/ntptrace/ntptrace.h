@@ -20,7 +20,7 @@ struct server {
 	l_fp reftime;			/* time of peer's last update */
 	l_fp org;			/* peer's originate time stamp */
 	l_fp xmt;			/* transmit time stamp */
-	u_fp delay;			/* filter estimated delay */
+	s_fp delay;			/* filter estimated delay */
 	u_fp dispersion;		/* filter estimated dispersion */
 	l_fp offset;			/* filter estimated clock offset */
 };

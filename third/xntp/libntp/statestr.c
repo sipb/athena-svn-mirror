@@ -1,6 +1,9 @@
 /*
  * pretty printing of status information
  */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include <stdio.h>
 #include "ntp_stdlib.h"
 #include "ntp_fp.h"
@@ -54,13 +57,14 @@ struct codestring sync_codes[] = {
  */
 static
 struct codestring select_codes[] = {
-	{ CTL_PST_SEL_REJECT,	"sel_reject" },
-	{ CTL_PST_SEL_SANE,	"sel_sane" },
-	{ CTL_PST_SEL_CORRECT,	"sel_correct" },
-	{ CTL_PST_SEL_SELCAND,	"sel_candidate" },
-	{ CTL_PST_SEL_SYNCCAND,	"sel_sync" },
-	{ CTL_PST_SEL_DISTSYSPEER, "sel_sys.peer, hi_dist" },
+	{ CTL_PST_SEL_REJECT,	"selreject" },
+	{ CTL_PST_SEL_SANE,	"sel_falsetick" },
+	{ CTL_PST_SEL_CORRECT,	"sel_excess" },
+	{ CTL_PST_SEL_SELCAND,	"sel_outlyer" },
+	{ CTL_PST_SEL_SYNCCAND,	"sel_candidat" },
+	{ CTL_PST_SEL_DISTSYSPEER, "sel_selected" },
 	{ CTL_PST_SEL_SYSPEER,	"sel_sys.peer" },
+	{ CTL_PST_SEL_PPS,	"sel_pps.peer" },
 	{ -1,			"sel" }
 };
 
@@ -74,7 +78,7 @@ struct codestring clock_codes[] = {
 	{ CTL_CLK_NOREPLY,	"clk_noreply" },
 	{ CTL_CLK_BADFORMAT,	"clk_badformat" },
 	{ CTL_CLK_FAULT,	"clk_fault" },
-	{ CTL_CLK_PROPAGATION,	"clk_propagation" },
+	{ CTL_CLK_PROPAGATION,	"clk_badsignal" },
 	{ CTL_CLK_BADDATE,	"clk_baddate" },
 	{ CTL_CLK_BADTIME,	"clk_badtime" },
 	{ -1,			"clk" }
@@ -115,22 +119,23 @@ struct codestring peer_codes[] = {
 };
 
 /* Forwards */
-static char *getcode P((int, struct codestring *));
-static char *getevents P((int));
+static const char *getcode P((int, struct codestring *));
+static const char *getevents P((int));
 
 /*
  * getcode - return string corresponding to code
  */
-static char *
-getcode(code, codetab)
-	int code;
-	struct codestring *codetab;
+static const char *
+getcode(
+	int code,
+	struct codestring *codetab
+	)
 {
 	static char buf[30];
 
 	while (codetab->code != -1) {
 		if (codetab->code == code)
-			return codetab->string;
+		    return codetab->string;
 		codetab++;
 	}
 	(void) sprintf(buf, "%s_%d", codetab->string, code);
@@ -140,14 +145,15 @@ getcode(code, codetab)
 /*
  * getevents - return a descriptive string for the event count
  */
-static char *
-getevents(cnt)
-	int cnt;
+static const char *
+getevents(
+	int cnt
+	)
 {
 	static char buf[20];
 
 	if (cnt == 0)
-		return "no events";
+	    return "no events";
 	(void) sprintf(buf, "%d event%s", cnt, (cnt==1) ? "" : "s");
 	return buf;
 }
@@ -156,9 +162,10 @@ getevents(cnt)
  * statustoa - return a descriptive string for a peer status
  */
 char *
-statustoa(type, st)
-	int type;
-	int st;
+statustoa(
+	int type,
+	int st
+	)
 {
 	char *cb;
 	u_char pst;
@@ -166,23 +173,23 @@ statustoa(type, st)
 	LIB_GETBUF(cb);
 
 	switch (type) {
-	case TYPE_SYS:
+	    case TYPE_SYS:
 		(void)strcpy(cb, getcode(CTL_SYS_LI(st), leap_codes));
 		(void)strcat(cb, ", ");
 		(void)strcat(cb, getcode(CTL_SYS_SOURCE(st) & ~CTL_SST_TS_PPS, sync_codes));
 		if (CTL_SYS_SOURCE(st) & CTL_SST_TS_PPS)
-			(void)strcat(cb, "/PPS");
+		    (void)strcat(cb, "/PPS");
 		(void)strcat(cb, ", ");
 		(void)strcat(cb, getevents(CTL_SYS_NEVNT(st)));
 		(void)strcat(cb, ", ");
 		(void)strcat(cb, getcode(CTL_SYS_EVENT(st), sys_codes));
 		break;
 	
-	case TYPE_PEER:
+	    case TYPE_PEER:
 		/*
 		 * Handcraft the bits
 		 */
-		pst = CTL_PEER_STATVAL(st);
+		pst = (u_char) CTL_PEER_STATVAL(st);
 		if (!(pst & CTL_PST_REACH)) {
 			(void)strcpy(cb, "unreach");
 		} else {
@@ -190,12 +197,12 @@ statustoa(type, st)
 
 		}
 		if (pst & CTL_PST_CONFIG)
-			(void)strcat(cb, ", conf");
+		    (void)strcat(cb, ", conf");
 		if (pst & CTL_PST_AUTHENABLE) {
 			if (!(pst & CTL_PST_REACH) || (pst & CTL_PST_AUTHENTIC))
-				(void)strcat(cb, ", auth");
+			    (void)strcat(cb, ", auth");
 			else
-				(void)strcat(cb, ", unauth");
+			    (void)strcat(cb, ", unauth");
 		}
 
 		/*
@@ -210,11 +217,11 @@ statustoa(type, st)
 		if (CTL_PEER_EVENT(st) != EVNT_UNSPEC) {
 			(void)strcat(cb, ", ");
 			(void)strcat(cb, getcode(CTL_PEER_EVENT(st),
-			    peer_codes));
+						 peer_codes));
 		}
 		break;
 	
-	case TYPE_CLOCK:
+	    case TYPE_CLOCK:
 		(void)strcpy(cb, getcode(((st)>>8) & 0xff, clock_codes));
 		(void)strcat(cb, ", last_");
 		(void)strcat(cb, getcode((st) & 0xff, clock_codes));
@@ -224,37 +231,41 @@ statustoa(type, st)
 }
 
 const char *
-eventstr(num)
-     int num;
+eventstr(
+	int num
+	)
 {
-  return getcode(num & ~PEER_EVENT, (num & PEER_EVENT) ? peer_codes : sys_codes);
+	return getcode(num & ~PEER_EVENT, (num & PEER_EVENT) ? peer_codes : sys_codes);
 }
 
 const char *
-ceventstr(num)
-     int num;
+ceventstr(
+	int num
+	)
 {
-  return getcode(num, clock_codes);
+	return getcode(num, clock_codes);
 }
 
 const char *
-sysstatstr(status)
-     int status;
+sysstatstr(
+	int status
+	)
 {
-  return statustoa(TYPE_SYS, status);
+	return statustoa(TYPE_SYS, status);
 }
 
 const char *
-peerstatstr(status)
-     int status;
+peerstatstr(
+	int status
+	)
 {
-  return statustoa(TYPE_PEER, status);
+	return statustoa(TYPE_PEER, status);
 }
 
 const char *
-clockstatstr(status)
-     int status;
+clockstatstr(
+	int status
+	)
 {
-  return statustoa(TYPE_CLOCK, status);
+	return statustoa(TYPE_CLOCK, status);
 }
-

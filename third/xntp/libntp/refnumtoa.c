@@ -8,8 +8,9 @@
 #include "ntp_stdlib.h"
 
 char *
-refnumtoa(num)
-	u_int32 num;
+refnumtoa(
+	u_int32 num
+	)
 {
 	register u_int32 netnum;
 	register char *buf;
@@ -22,9 +23,9 @@ refnumtoa(num)
 	rclock = clockname((int)((u_long)netnum >> 8) & 0xff);
 
 	if (rclock != NULL)
-		(void)sprintf(buf, "%s(%lu)", rclock, (u_long)netnum & 0xff);
+	    (void)sprintf(buf, "%s(%lu)", rclock, (u_long)netnum & 0xff);
 	else
-		(void)sprintf(buf, "REFCLK(%lu,%lu)",
-		    ((u_long)netnum >> 8) & 0xff, (u_long)netnum & 0xff);
+	    (void)sprintf(buf, "REFCLK(%lu,%lu)",
+			  ((u_long)netnum >> 8) & 0xff, (u_long)netnum & 0xff);
 	return buf;
 }

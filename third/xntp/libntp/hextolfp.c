@@ -9,9 +9,10 @@
 #include "ntp_stdlib.h"
 
 int
-hextolfp(str, lfp)
-	const char *str;
-	l_fp *lfp;
+hextolfp(
+	const char *str,
+	l_fp *lfp
+	)
 {
 	register const char *cp;
 	register const char *cpstart;
@@ -28,37 +29,37 @@ hextolfp(str, lfp)
 	 *
 	 * [spaces]8_hex_digits[.]8_hex_digits[spaces|\n|\0]
 	 */
-	while (isspace(*cp))
-		cp++;
+	while (isspace((int)*cp))
+	    cp++;
 	
 	cpstart = cp;
 	while (*cp != '\0' && (cp - cpstart) < 8 &&
-	    (ind = strchr(digits, *cp)) != NULL) {
+	       (ind = strchr(digits, *cp)) != NULL) {
 		dec_i = dec_i << 4;	/* multiply by 16 */
 		dec_i += ((ind - digits) > 15) ? (ind - digits) - 6
-		    : (ind - digits);
+			: (ind - digits);
 		cp++;
 	}
 
 	if ((cp - cpstart) < 8 || ind == NULL)
-		return 0;
+	    return 0;
 	if (*cp == '.')
-		cp++;
+	    cp++;
 
 	cpstart = cp;
 	while (*cp != '\0' && (cp - cpstart) < 8 &&
-	    (ind = strchr(digits, *cp)) != NULL) {
+	       (ind = strchr(digits, *cp)) != NULL) {
 		dec_f = dec_f << 4;	/* multiply by 16 */
 		dec_f += ((ind - digits) > 15) ? (ind - digits) - 6
-		    : (ind - digits);
+			: (ind - digits);
 		cp++;
 	}
 
 	if ((cp - cpstart) < 8 || ind == NULL)
-		return 0;
+	    return 0;
 	
-	if (*cp != '\0' && !isspace(*cp))
-		return 0;
+	if (*cp != '\0' && !isspace((int)*cp))
+	    return 0;
 
 	lfp->l_ui = dec_i;
 	lfp->l_uf = dec_f;

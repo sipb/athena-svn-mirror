@@ -1,11 +1,18 @@
 /*
  * auth_parity - set parity on a key/check for odd parity
  */
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#ifdef DES
 #include "ntp_stdlib.h"
 
 int
-DESauth_parity(key)
-	u_int32 *key;
+DESauth_parity(
+	u_int32 *key
+	)
 {
 	u_int32 mask;
 	int parity_err;
@@ -26,7 +33,7 @@ DESauth_parity(key)
 			bitcount = 0;
 			for (i = 0; i < 7; i++) {	/* 7 data bits / byte */
 				if (key[half] & mask)
-					bitcount++;
+				    bitcount++;
 				mask >>= 1;
 			}
 
@@ -54,5 +61,6 @@ DESauth_parity(key)
 	 */
 	return (parity_err == 0);
 }
-
-
+#else
+int authparity_bs;
+#endif /* DES */

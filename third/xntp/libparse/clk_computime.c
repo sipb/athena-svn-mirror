@@ -1,10 +1,12 @@
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS)) && defined(CLOCK_COMPUTIME)
+#if defined(REFCLOCK) && defined(CLOCK_PARSE) && defined(CLOCK_COMPUTIME)
 /*
- * clk_computime.c,v 1.8 1997/01/19 12:44:35 kardel Exp
+ * /src/NTP/ntp-4/libparse/clk_computime.c,v 4.6 1999/11/28 09:13:49 kardel RELEASE_19991128_A
+ *
+ * clk_computime.c,v 4.6 1999/11/28 09:13:49 kardel RELEASE_19991128_A
  * 
  * Supports Diem's Computime Radio Clock
  * 
@@ -12,7 +14,7 @@
  *
  * adapted by Alois Camenzind <alois.camenzind@ubs.ch>
  * 
- * Copyright (C) 1992-1996 by Frank Kardel
+ * Copyright (C) 1992-1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  * 
  * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -21,16 +23,19 @@
  * 
  */
 
-
-#include "sys/types.h"
-#include "sys/time.h"
-#include "sys/errno.h"
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
-
+#include "ntp_stdlib.h"
 
 #include "parse.h"
+
+#ifndef PARSESTREAM
+#include <stdio.h>
+#else
+#include "sys/parsestreams.h"
+extern void printf P((const char *, ...));
+#endif
 
 /*
  * The Computime receiver sends a datagram in the following format every minute
@@ -59,28 +64,22 @@ static struct format computime_fmt =
 		{14, 2}, {17, 2}, {20, 2},	/* hour, minute, second */
 		{11, 2},                        /* dayofweek,  */
 	},
-	"T:  :  :  :  :  :  :  \r\n",
+	(const unsigned char *)"T:  :  :  :  :  :  :  \r\n",
 	0
 };
 
-static u_long   cvt_computime();
+static u_long cvt_computime P((unsigned char *, int, struct format *, clocktime_t *, void *));
+static unsigned long inp_computime P((parse_t *, unsigned int, timestamp_t *));
 
 clockformat_t   clock_computime =
 {
-	(unsigned long (*) ()) 0,	/* no input handling */
-	cvt_computime,			/* Computime conversion */
-	syn_simple,			/* easy time stamps for RS232 (fallback) */
-	(u_long (*)())0,		/* no PPS monitoring */
-	(u_long(*) ())0,		/* no time code synthesizer monitoring */
-	(void *)&computime_fmt,		/* conversion configuration */
+	inp_computime,		/* Computime input handling */
+	cvt_computime,		/* Computime conversion */
+	0,			/* no PPS monitoring */
+	(void *)&computime_fmt,	/* conversion configuration */
 	"Diem's Computime Radio Clock",	/* Computime Radio Clock */
-	24,				/* string buffer */
-	F_START|F_END|SYNC_START,	/* START/END delimiter, START synchronisation */
-	0,				/* no private data (complete pakets) */
-	{0, 0},
-	'T',
-	'\n',
-	'0'
+	24,			/* string buffer */
+	0			/* no private data (complete pakets) */
 };
 
 /*
@@ -89,61 +88,106 @@ clockformat_t   clock_computime =
  * convert simple type format
  */
 static          u_long
-cvt_computime(buffer, size, format, clock)
-	register char  *buffer;
-	register int    size;
-	register struct format *format;
-	register clocktime_t *clock;
+cvt_computime(
+	unsigned char *buffer,
+	int            size,
+	struct format *format,
+	clocktime_t   *clock_time,
+	void          *local
+	)
 {
 
 	if (!Strok(buffer, format->fixed_string)) { 
 		return CVT_NONE;
 	} else {
-		if (Stoi(&buffer[format->field_offsets[O_DAY].offset], &clock->day,
-				format->field_offsets[O_DAY].length) ||
-			Stoi(&buffer[format->field_offsets[O_MONTH].offset], &clock->month,
-				format->field_offsets[O_MONTH].length) ||
-			Stoi(&buffer[format->field_offsets[O_YEAR].offset], &clock->year,
-				format->field_offsets[O_YEAR].length) ||
-			Stoi(&buffer[format->field_offsets[O_HOUR].offset], &clock->hour,
-				format->field_offsets[O_HOUR].length) ||
-			Stoi(&buffer[format->field_offsets[O_MIN].offset], &clock->minute,
-				format->field_offsets[O_MIN].length) ||
-			Stoi(&buffer[format->field_offsets[O_SEC].offset], &clock->second,
-				format->field_offsets[O_SEC].length)) { 
+		if (Stoi(&buffer[format->field_offsets[O_DAY].offset], &clock_time->day,
+			 format->field_offsets[O_DAY].length) ||
+		    Stoi(&buffer[format->field_offsets[O_MONTH].offset], &clock_time->month,
+			 format->field_offsets[O_MONTH].length) ||
+		    Stoi(&buffer[format->field_offsets[O_YEAR].offset], &clock_time->year,
+			 format->field_offsets[O_YEAR].length) ||
+		    Stoi(&buffer[format->field_offsets[O_HOUR].offset], &clock_time->hour,
+			 format->field_offsets[O_HOUR].length) ||
+		    Stoi(&buffer[format->field_offsets[O_MIN].offset], &clock_time->minute,
+			 format->field_offsets[O_MIN].length) ||
+		    Stoi(&buffer[format->field_offsets[O_SEC].offset], &clock_time->second,
+			 format->field_offsets[O_SEC].length)) { 
 			return CVT_FAIL | CVT_BADFMT;
 		} else {
 
-			clock->flags = 0;
-			clock->utcoffset = 0;	/* We have UTC time */
+			clock_time->flags = 0;
+			clock_time->utcoffset = 0;	/* We have UTC time */
 
 			return CVT_OK;
 		}
 	}
 }
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_COMPUTIME) */
+/*
+ * inp_computime
+ *
+ * grep data from input stream
+ */
+static u_long
+inp_computime(
+	      parse_t      *parseio,
+	      unsigned int  ch,
+	      timestamp_t  *tstamp
+	      )
+{
+	unsigned int rtc;
+	
+	parseprintf(DD_PARSE, ("inp_computime(0x%x, 0x%x, ...)\n", (int)parseio, (int)ch));
+	
+	switch (ch)
+	{
+	case 'T':
+		parseprintf(DD_PARSE, ("inp_computime: START seen\n"));
+		
+		parseio->parse_index = 1;
+		parseio->parse_data[0] = ch;
+		parseio->parse_dtime.parse_stime = *tstamp; /* collect timestamp */
+		return PARSE_INP_SKIP;
+	  
+	case '\n':
+		parseprintf(DD_PARSE, ("inp_computime: END seen\n"));
+		if ((rtc = parse_addchar(parseio, ch)) == PARSE_INP_SKIP)
+			return parse_end(parseio);
+		else
+			return rtc;
+
+	default:
+		return parse_addchar(parseio, ch);
+	}
+}
+
+#else /* not (REFCLOCK && CLOCK_PARSE && CLOCK_COMPUTIME) */
 int clk_computime_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_COMPUTIME) */
+#endif /* not (REFCLOCK && CLOCK_PARSE && CLOCK_COMPUTIME) */
 
 /*
  * clk_computime.c,v
- * Revision 1.8  1997/01/19 12:44:35  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.6  1999/11/28 09:13:49  kardel
+ * RECON_4_0_98F
  *
- * Revision 1.7  1996/12/01 16:04:12  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.5  1998/06/14 21:09:34  kardel
+ * Sun acc cleanup
  *
- * Revision 1.6  1996/12/01 12:57:26  kardel
- * more standard string escapes
+ * Revision 4.4  1998/06/13 12:00:38  kardel
+ * fix SYSV clock name clash
  *
- * Revision 1.5  1996/11/24 23:16:30  kardel
- * checkpoint - partial autoconfigure update for parse modules
+ * Revision 4.3  1998/06/12 15:22:26  kardel
+ * fix prototypes
  *
- * Revision 1.4  1996/11/24 17:34:43  kardel
- * updated copyright
+ * Revision 4.2  1998/06/12 09:13:24  kardel
+ * conditional compile macros fixed
+ * printf prototype
  *
- * Revision 1.3  1996/11/16 19:44:36  kardel
- * Log entry added
+ * Revision 4.1  1998/05/24 09:39:51  kardel
+ * implementation of the new IO handling model
  *
+ * Revision 4.0  1998/04/10 19:45:27  kardel
+ * Start 4.0 release version numbering
+ *
+ * from V3 1.8 log info deleted 1998/04/11 kardel
  */

@@ -8,23 +8,24 @@
 #include "ntp_stdlib.h"
 
 int
-atouint(str, uval)
-	const char *str;
-	u_long *uval;
+atouint(
+	const char *str,
+	u_long *uval
+	)
 {
 	register u_long u;
 	register const char *cp;
 
 	cp = str;
 	if (*cp == '\0')
-		return 0;
+	    return 0;
 
 	u = 0;
 	while (*cp != '\0') {
-		if (!isdigit(*cp))
-			return 0;
+		if (!isdigit((int)*cp))
+		    return 0;
 		if (u > 429496729 || (u == 429496729 && *cp >= '6'))
-			return 0;	/* overflow */
+		    return 0;	/* overflow */
 		u = (u << 3) + (u << 1);
 		u += *cp++ - '0';	/* ascii dependent */
 	}

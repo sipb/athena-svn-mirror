@@ -73,7 +73,7 @@ The structure of the parse reference clock driver is as follows:
 
 		    The upper bit of x specifies that all samples delivered
 		    from the clock should be used to discipline the NTP
-		    loppfilter. For clock with accurate once a second time
+		    loopfilter. For clock with accurate once a second time
 		    information this means big improvements for time keeping.
 		    A prerequisite for passing on the time stamps to
 		    the loopfilter is, that the clock is in synchronised state.

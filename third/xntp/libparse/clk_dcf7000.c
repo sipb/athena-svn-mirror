@@ -1,11 +1,11 @@
 /*
- * /src/NTP/REPOSITORY/v4/libparse/clk_dcf7000.c,v 3.18 1997/01/19 12:44:36 kardel Exp
+ * /src/NTP/ntp-4/libparse/clk_dcf7000.c,v 4.6 1999/11/28 09:13:49 kardel RELEASE_19991128_A
  *  
- * clk_dcf7000.c,v 3.18 1997/01/19 12:44:36 kardel Exp
+ * clk_dcf7000.c,v 4.6 1999/11/28 09:13:49 kardel RELEASE_19991128_A
  *
  * ELV DCF7000 module
  *
- * Copyright (C) 1992,1993,1994,1995,1996 by Frank Kardel
+ * Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
@@ -15,49 +15,47 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS)) && defined(CLOCK_DCF7000)
+#if defined(REFCLOCK) && defined(CLOCK_PARSE) && defined(CLOCK_DCF7000)
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/errno.h>
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
 
 #include "parse.h"
 
+#ifndef PARSESTREAM
+#include "ntp_stdlib.h"
+#include <stdio.h>
+#else
+#include "sys/parsestreams.h"
+extern void printf P((const char *, ...));
+#endif
+
 static struct format dcf7000_fmt =
 {				/* ELV DCF7000 */
-  {
-    {  6, 2}, {  3, 2}, {  0, 2},
-    { 12, 2}, { 15, 2}, { 18, 2},
-    {  9, 2}, { 21, 2},
-  },
-  "  -  -  -  -  -  -  -  \r",
-  0
+	{
+		{  6, 2}, {  3, 2}, {  0, 2},
+		{ 12, 2}, { 15, 2}, { 18, 2},
+		{  9, 2}, { 21, 2},
+	},
+	(const unsigned char *)"  -  -  -  -  -  -  -  \r",
+	0
 };    
-
-static u_long cvt_dcf7000();
+static u_long cvt_dcf7000 P((unsigned char *, int, struct format *, clocktime_t *, void *));
+static unsigned long inp_dcf7000 P((parse_t *, unsigned int, timestamp_t *));
 
 clockformat_t clock_dcf7000 =
 {
-  (unsigned long (*)())0,	/* no input handling */
+  inp_dcf7000,			/* DCF7000 input handling */
   cvt_dcf7000,			/* ELV DCF77 conversion */
-  syn_simple,			/* easy time stamps */
-  (u_long (*)())0,		/* no direct PPS monitoring */
-  (u_long (*)())0,		/* no time code synthesizer monitoring */
+  0,				/* no direct PPS monitoring */
   (void *)&dcf7000_fmt,		/* conversion configuration */
   "ELV DCF7000",		/* ELV clock */
   24,				/* string buffer */
-  F_END|SYNC_END,		/* END packet delimiter / synchronisation */
-  0,				/* no private data (complete pakets) */
-  { 0, 0},
-  '\0',
-  '\r',
-  '\0'
+  0				/* no private data (complete pakets) */
 };
 
 /*
@@ -66,111 +64,125 @@ clockformat_t clock_dcf7000 =
  * convert dcf7000 type format
  */
 static u_long
-cvt_dcf7000(buffer, size, format, clock)
-  register char          *buffer;
-  register int            size;
-  register struct format *format;
-  register clocktime_t   *clock;
+cvt_dcf7000(
+	    unsigned char *buffer,
+	    int            size,
+	    struct format *format,
+	    clocktime_t   *clock_time,
+	    void          *local
+	    )
 {
-  if (!Strok(buffer, format->fixed_string))
-    {
-      return CVT_NONE;
-    }
-  else
-    {
-      if (Stoi(&buffer[format->field_offsets[O_DAY].offset], &clock->day,
-	       format->field_offsets[O_DAY].length) ||
-	  Stoi(&buffer[format->field_offsets[O_MONTH].offset], &clock->month,
-	       format->field_offsets[O_MONTH].length) ||
-	  Stoi(&buffer[format->field_offsets[O_YEAR].offset], &clock->year,
-	       format->field_offsets[O_YEAR].length) ||
-	  Stoi(&buffer[format->field_offsets[O_HOUR].offset], &clock->hour,
-	       format->field_offsets[O_HOUR].length) ||
-	  Stoi(&buffer[format->field_offsets[O_MIN].offset], &clock->minute,
-	       format->field_offsets[O_MIN].length) ||
-	  Stoi(&buffer[format->field_offsets[O_SEC].offset], &clock->second,
-	       format->field_offsets[O_SEC].length))
+	if (!Strok(buffer, format->fixed_string))
 	{
-	  return CVT_FAIL|CVT_BADFMT;
+		return CVT_NONE;
 	}
-      else
+	else
 	{
-	  char *f = &buffer[format->field_offsets[O_FLAGS].offset];
-	  long flags;
+		if (Stoi(&buffer[format->field_offsets[O_DAY].offset], &clock_time->day,
+			 format->field_offsets[O_DAY].length) ||
+		    Stoi(&buffer[format->field_offsets[O_MONTH].offset], &clock_time->month,
+			 format->field_offsets[O_MONTH].length) ||
+		    Stoi(&buffer[format->field_offsets[O_YEAR].offset], &clock_time->year,
+			 format->field_offsets[O_YEAR].length) ||
+		    Stoi(&buffer[format->field_offsets[O_HOUR].offset], &clock_time->hour,
+			 format->field_offsets[O_HOUR].length) ||
+		    Stoi(&buffer[format->field_offsets[O_MIN].offset], &clock_time->minute,
+			 format->field_offsets[O_MIN].length) ||
+		    Stoi(&buffer[format->field_offsets[O_SEC].offset], &clock_time->second,
+			 format->field_offsets[O_SEC].length))
+		{
+			return CVT_FAIL|CVT_BADFMT;
+		}
+		else
+		{
+			unsigned char *f = &buffer[format->field_offsets[O_FLAGS].offset];
+			long flags;
 	  
-	  clock->flags = 0;
-	  clock->usecond = 0;
+			clock_time->flags = 0;
+			clock_time->usecond = 0;
 
-	  if (Stoi(f, &flags, format->field_offsets[O_FLAGS].length))
-	    {
-	      return CVT_FAIL|CVT_BADFMT;
-	    }
-	  else
-	    {
-	      if (flags & 0x1)
-		clock->utcoffset = -2*60*60;
-	      else
-		clock->utcoffset = -1*60*60;
+			if (Stoi(f, &flags, format->field_offsets[O_FLAGS].length))
+			{
+				return CVT_FAIL|CVT_BADFMT;
+			}
+			else
+			{
+				if (flags & 0x1)
+				    clock_time->utcoffset = -2*60*60;
+				else
+				    clock_time->utcoffset = -1*60*60;
 
-	      if (flags & 0x2)
-		clock->flags |= PARSEB_ANNOUNCE;
+				if (flags & 0x2)
+				    clock_time->flags |= PARSEB_ANNOUNCE;
 
-	      if (flags & 0x4)
-		clock->flags |= PARSEB_NOSYNC;
-	    }
-	  return CVT_OK;
+				if (flags & 0x4)
+				    clock_time->flags |= PARSEB_NOSYNC;
+			}
+			return CVT_OK;
+		}
 	}
-    }
 }
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_DCF7000) */
+/*
+ * inp_dcf700
+ *
+ * grep data from input stream
+ */
+static u_long
+inp_dcf7000(
+	  parse_t      *parseio,
+	  unsigned int  ch,
+	  timestamp_t  *tstamp
+	  )
+{
+	unsigned int rtc;
+	
+	parseprintf(DD_PARSE, ("inp_dcf7000(0x%x, 0x%x, ...)\n", (int)parseio, (int)ch));
+	
+	switch (ch)
+	{
+	case '\r':
+		parseprintf(DD_PARSE, ("inp_dcf7000: EOL seen\n"));
+		parseio->parse_dtime.parse_stime = *tstamp; /* collect timestamp */
+		if ((rtc = parse_addchar(parseio, ch)) == PARSE_INP_SKIP)
+			return parse_end(parseio);
+		else
+			return rtc;
+
+	default:
+		return parse_addchar(parseio, ch);
+	}
+}
+
+#else /* not (REFCLOCK && CLOCK_PARSE && CLOCK_DCF7000) */
 int clk_dcf7000_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_DCF7000) */
+#endif /* not (REFCLOCK && CLOCK_PARSE && CLOCK_DCF7000) */
 
 /*
  * History:
  *
  * clk_dcf7000.c,v
- * Revision 3.18  1997/01/19 12:44:36  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.6  1999/11/28 09:13:49  kardel
+ * RECON_4_0_98F
  *
- * Revision 3.17  1996/12/01 16:04:13  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.5  1998/06/14 21:09:34  kardel
+ * Sun acc cleanup
  *
- * Revision 3.16  1996/11/24 20:09:42  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.4  1998/06/13 12:01:59  kardel
+ * fix SYSV clock name clash
  *
- * Revision 3.15  1996/10/05 13:30:19  kardel
- * general update
+ * Revision 4.3  1998/06/12 15:22:27  kardel
+ * fix prototypes
  *
- * Revision 3.14  1994/10/03  21:59:18  kardel
- * 3.4e cleanup/integration
+ * Revision 4.2  1998/06/12 09:13:24  kardel
+ * conditional compile macros fixed
+ * printf prototype
  *
- * Revision 3.13  1994/10/03  10:04:02  kardel
- * 3.4e reconcilation
+ * Revision 4.1  1998/05/24 09:39:51  kardel
+ * implementation of the new IO handling model
  *
- * Revision 3.12  1994/05/30  10:19:57  kardel
- * LONG cleanup
+ * Revision 4.0  1998/04/10 19:45:28  kardel
+ * Start 4.0 release version numbering
  *
- * Revision 3.11  1994/02/02  17:45:14  kardel
- * rcs ids fixed
- *
- * Revision 3.6  1993/10/09  15:01:27  kardel
- * file structure unified
- *
- * Revision 3.5  1993/10/03  19:10:41  kardel
- * restructured I/O handling
- *
- * Revision 3.4  1993/09/27  21:08:02  kardel
- * utcoffset now in seconds
- *
- * Revision 3.3  1993/09/26  23:40:20  kardel
- * new parse driver logic
- *
- * Revision 3.2  1993/07/09  11:37:15  kardel
- * Initial restructured version + GPS support
- *
- * Revision 3.1  1993/07/06  10:00:14  kardel
- * DCF77 driver goes generic...
- *
+ * from V3 3.18 log info deleted 1998/04/11 kardel
  */

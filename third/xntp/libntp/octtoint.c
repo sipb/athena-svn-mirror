@@ -8,9 +8,10 @@
 #include "ntp_stdlib.h"
 
 int
-octtoint(str, ival)
-	const char *str;
-	u_long *ival;
+octtoint(
+	const char *str,
+	u_long *ival
+	)
 {
 	register u_long u;
 	register const char *cp;
@@ -18,14 +19,14 @@ octtoint(str, ival)
 	cp = str;
 
 	if (*cp == '\0')
-		return 0;
+	    return 0;
 
 	u = 0;
 	while (*cp != '\0') {
-		if (!isdigit(*cp) || *cp == '8' || *cp == '9')
-			return 0;
+		if (!isdigit((int)*cp) || *cp == '8' || *cp == '9')
+		    return 0;
 		if (u >= 0x20000000)
-			return 0;	/* overflow */
+		    return 0;	/* overflow */
 		u <<= 3;
 		u += *cp++ - '0';	/* ascii dependent */
 	}

@@ -1,9 +1,9 @@
 /*
- * /src/NTP/REPOSITORY/v4/include/parse_conf.h,v 3.8 1996/12/01 16:02:47 kardel Exp
+ * /src/NTP/ntp-4/include/parse_conf.h,v 4.2 1998/06/14 21:09:28 kardel RELEASE_19990228_A
  *
- * parse_conf.h,v 3.8 1996/12/01 16:02:47 kardel Exp
+ * parse_conf.h,v 4.2 1998/06/14 21:09:28 kardel RELEASE_19990228_A
  *
- * Copyright (c) 1993,1994,1995,1996 by Frank Kardel
+ * Copyright (c) 1993, 1994, 1995, 1996, 1997, 1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
@@ -15,11 +15,11 @@
 #ifndef __PARSE_CONF_H__
 #define __PARSE_CONF_H__
 #if	!(defined(lint) || defined(__GNUC__))
-  static char dcfhrcsid[]="parse_conf.h,v 3.8 1996/12/01 16:02:47 kardel Exp";
+  static char prshrcsid[] = "parse_conf.h,v 4.2 1998/06/14 21:09:28 kardel RELEASE_19990228_A";
 #endif
 
 /*
- * field location structure (Meinberg clocks/simple format)
+ * field location structure
  */
 #define O_DAY	0
 #define O_MONTH 1
@@ -45,10 +45,10 @@ struct format
 {
   struct foff
     {
-      char offset;		/* offset into buffer */
-      char length;		/* length of field */
-    } field_offsets[O_COUNT];
-  char *fixed_string;		/* string with must be chars (blanks = wildcards) */
-  u_long flags;
+      unsigned short offset;		/* offset into buffer */
+      unsigned short length;		/* length of field */
+    }         field_offsets[O_COUNT];
+  const unsigned char *fixed_string;		/* string with must be chars (blanks = wildcards) */
+  u_long      flags;
 };
 #endif
