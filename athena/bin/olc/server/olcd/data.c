@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: data.c,v 1.23 1993-05-14 14:29:48 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.23 1993-05-14 14:29:48 vanharen Exp $";
 #endif
 #endif
 
@@ -76,6 +76,21 @@ PROC Proc_List[] =
 #ifdef ZEPHYR
   OLC_TOGGLE_ZEPHYR,   olc_toggle_zephyr,    "olc toggle zephyr",
 #endif
+#ifdef __STDC__
+  UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
+#else
+  UNKNOWN_REQUEST,     (ERRCODE(*)()) NULL,  (char *) NULL,
+#endif
+};
+
+PROC Maint_Proc_List[] = 
+{
+  OLC_STARTUP,         olc_startup,	     "olc startup",
+  OLC_MOTD,            olc_motd,             "olc motd",
+  OLC_CHANGE_MOTD,     olc_change_motd,      "olc change motd",
+  OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
+  OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
+  OLC_VERSION,	       olc_version,          "olc version",
 #ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
 #else
