@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.15 1989-01-29 21:16:26 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.16 1989-03-08 09:57:54 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -89,7 +89,7 @@ char *argv[];
 		    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
 			    whoami);
 		    usage();
-		    exit(1);
+		    exit(! force);
 	       }
 	       break;
 	  case 'f':
@@ -110,7 +110,7 @@ char *argv[];
 		    fprintf(stderr, "%s: -F and -D are mutually exclusive.\n",
 			    whoami);
 		    usage();
-		    exit(1);
+		    exit(! force);
 	       }
 	       break;
 	  case 'D':
@@ -119,30 +119,30 @@ char *argv[];
 		    fprintf(stderr, "%s: -r and -D are mutually exclusive.\n",
 			    whoami);
 		    usage();
-		    exit(1);
+		    exit(! force);
 	       }
 	       if (filesonly) {
 		    fprintf(stderr, "%s: -F and -D are mutually exclusive.\n",
 			    whoami);
 		    usage();
-		    exit(1);
+		    exit(! force);
 	       }
 	       break;
 	  default:
 	       usage();
-	       exit(1);
+	       exit(! force);
 	  }
      }
      if (optind == argc) {
 	  fprintf(stderr, "%s: no files specified.\n", whoami);
 	  usage();
-	  exit(1);
+	  exit(! force);
      }
      while (optind < argc) {
 	  status = status | delete(argv[optind], 0);
 	  optind++;
      }
-     exit(status & ERROR_MASK);
+     exit((! force) && (status & ERROR_MASK));
 }
 
 
