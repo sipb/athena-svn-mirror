@@ -1,0 +1,294 @@
+#!/bin/sh
+
+# Build a standard Athena package into a Solaris package.
+
+usage="build-package [-s srcdir] [-d destdir] [-v version] [-r release]"
+usage="$usage source pkgname"
+
+sourcedir=/mit/source
+destdir=/build
+
+while getopts s:d:v:r: opt; do
+  case "$opt" in
+  s)
+    sourcedir="$OPTARG"
+    ;;
+  d)
+    destdir="$OPTARG"
+    ;;
+  v)
+    version="$OPTARG"
+    ;;
+  r)
+    release="$OPTARG"
+    ;;
+  \?)
+    echo "$usage" 1>&2
+    exit 1
+    ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+
+if [ $# -ne 2 ]; then
+  echo "$usage" 1>&2
+  exit 1
+fi
+
+athena_dir=$1
+# Sun package names cannot contain underscore, so we change those to
+# hyphen.
+package_name=`echo $2 | tr '_' '-'`
+
+# XXX sigh.
+if [ third/krb5/src/appl = "$athena_dir" ]; then
+  athena_dir=third/krb5
+fi
+
+. $sourcedir/packs/build/version
+if [ "${version+set}" != set ]; then 
+  version=$major.$minor
+fi
+if [ "${release+set}" != set ]; then
+  release="${ATHENA_PATCH_VERSION-$patch}"
+fi
+pkg_version=$version.$release
+
+source_name=$package_name-$pkg_version
+
+# Check that we are where we ought to be, and set up the environment.
+case `uname -s` in
+SunOS)
+  OS=solaris
+  PATH=/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
+  arch=sparc
+  ;;
+*)
+  echo "build-package must be run on a Solaris machine" 1>&2
+  exit 1
+  ;;
+esac
+PATH=/usr/athena/bin:$PATH
+export PATH OS
+
+
+echo "==== create top-level build directories"
+
+mkdir -p \
+  $destdir/BUILD \
+  $destdir/INSTALL \
+  $destdir/PKG \
+  $destdir/athtools 
+
+
+echo "==== prepare sources"
+
+# Copy in the sources.
+rm -rf $destdir/BUILD/$source_name
+mkdir $destdir/BUILD/$source_name
+cd $destdir/BUILD
+(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
+
+
+echo "==== build package objects from source"
+
+rm -rf $destdir/INSTALL/$source_name
+mkdir $destdir/INSTALL/$source_name
+
+for op in dist prepare all install ; do
+  (cd $source_name && \
+      $sourcedir/packs/build/do.sh -s $sourcedir \
+      -d $destdir/INSTALL/$source_name $op) || exit 1
+done
+
+# Install any "extra" files (config files, etc.) that belong to this package.
+if [ -f $sourcedir/packs/build/sunpkg/extra/$package_name ]; then
+  echo "==== build \"extra\" package objects"
+  (cd $source_name && \
+     sh -e $sourcedir/packs/build/sunpkg/extra/$package_name \
+       $sourcedir $destdir/INSTALL/$source_name) || exit 1
+fi
+
+# Copy the built package into athtools now.
+echo "==== save tools"
+(cd $destdir/INSTALL/$source_name; tar cf - .) | \
+  (cd $destdir/athtools; tar xfp - .)
+
+echo "==== create the package prototype"
+
+# Generate the prototype file.  We remove most directory entries from
+# the output, to avoid conflicting with OS directories.  Such conflicts
+# can lead to our blowing away symlinked directories, such as /bin.
+# However, we need to have entries for directories in which we will
+# create symbolic links, as pkgadd creates those from the pkgmap.
+# So, the awk hack below tries to remove all entries for directories
+# that belong to the OS, but keep directories that we own.  Note that
+# usr/vice is not included, because it is a symlink to /var/usr/vice.
+prototype=/tmp/prototype$$
+rm -f $prototype
+(cd $destdir/INSTALL/$source_name && pkgproto . | nawk '{
+    if ($1 != "d" || ($3 ~ "/athena(/|$)" ||
+                      $3 ~ "^usr/afsws(/|$)" ||
+                      $3 ~ "^usr/gcc(/|$)" ||
+                      $3 ~ "^usr/prototype_user(/|$)"))
+      print $0;
+  }' > $prototype) || exit 1
+
+# If this package has a filter for editing the prototype, run it.
+if [ -f $sourcedir/packs/build/sunpkg/prototype/$package_name ]; then
+  echo "==== edit the generated prototype"
+  sh -e $sourcedir/packs/build/sunpkg/prototype/$package_name < $prototype \
+    > $prototype.new
+  if [ -s $prototype.new ]; then
+    if cmp -s $prototype $prototype.new ; then
+      echo "Warning: prototype filter for $package_name made no changes"
+    else
+      mv $prototype.new $prototype
+    fi
+  else
+    echo "prototype filter failed for $package_name"
+    exit 1
+  fi
+fi
+
+echo "==== create pkginfo"
+
+# Create the pkginfo file.
+pkginfo_source=$sourcedir/packs/build/sunpkg/pkginfo/$package_name
+
+# Prepend the pkginfo stub from the source tree.
+# The stub must contain settings for PKG and NAME; others are defaulted
+# as follows.
+cp $pkginfo_source $destdir/INSTALL/$source_name/pkginfo
+
+grep -q '^ARCH=' $pkginfo_source || \
+  echo "ARCH=$arch" >> $destdir/INSTALL/$source_name/pkginfo
+
+grep -q '^VERSION=' $pkginfo_source || \
+  echo "VERSION=$pkg_version" >> $destdir/INSTALL/$source_name/pkginfo
+
+grep -q '^CATEGORY=' $pkginfo_source || \
+  echo "CATEGORY=system" >> $destdir/INSTALL/$source_name/pkginfo
+
+grep -q '^BASEDIR=' $pkginfo_source || \
+  echo "BASEDIR=/" >> $destdir/INSTALL/$source_name/pkginfo
+
+# Get the CLASSES setting.  The order here defines the order in which
+# the class is processed at install time.  If the stub does not set
+# CLASSES, we find all classes specified in the prototype.
+# "none" is the default class, and must be listed in pkginfo.  
+grep -q '^CLASSES=' $pkginfo_source || {
+  # Find the non-default classes in the prototype.  Note that the following
+  # assumes that the prototype does not contain a "part number" field.
+  classes=`awk '$1 != "i" && $2 != "none" { print $2; }' $prototype | sort -u`
+  # Always list class "none" first.
+  echo CLASSES=none $classes >> $destdir/INSTALL/$source_name/pkginfo
+}
+
+# The following three settings are used in creating a compressed
+# archive for the "none" class in the package, speeding install time.
+# We assume that no package requires any other kind of processing for
+# this default class.
+
+# At install time, do not check for files in the package's reloc directory.
+grep -q '^PKG_SRC_NOVERIFY=' $pkginfo_source || \
+  echo "PKG_SRC_NOVERIFY=none" >> $destdir/INSTALL/$source_name/pkginfo
+
+# Do a "quick" verify after installation, i.e. skip the checksum check.
+grep -q '^PKG_DST_QKVERIFY=' $pkginfo_source || \
+  echo "PKG_DST_QKVERIFY=none" >> $destdir/INSTALL/$source_name/pkginfo
+
+# Pass package location and destination paths to the class action script,
+# instead of source/destination path pairs.
+grep -q '^PKG_CAS_PASSRELATIVE=' $pkginfo_source || \
+  echo "PKG_CAS_PASSRELATIVE=none" >> $destdir/INSTALL/$source_name/pkginfo
+
+echo "i pkginfo" >> $prototype
+
+echo "==== add other package files"
+
+# Add any other package files to the prototype.
+
+# If this package has a copyright file, copy it in.  The copyright is
+# apparently displayed only at install time by pkgadd.
+if [ -f $sourcedir/packs/build/sunpkg/copyright/$package_name ]; then
+  cp $sourcedir/packs/build/sunpkg/copyright/$package_name \
+    $destdir/INSTALL/$source_name/copyright
+  echo "i copyright" >> $prototype
+fi
+
+# Create the depend file; every package depends on MIT-base, except
+# MIT-base itself.
+if [ "$package_name" = MIT-base ]; then
+  rm -f $destdir/INSTALL/$source_name/depend
+else
+  echo "P MIT-base  A few base files needed by any Athena package" \
+    > $destdir/INSTALL/$source_name/depend
+fi
+if [ -f $sourcedir/packs/build/sunpkg/depend/$package_name ]; then
+  # Append this package's other dependencies.
+  cat $sourcedir/packs/build/sunpkg/depend/$package_name \
+    >> $destdir/INSTALL/$source_name/depend
+fi
+if [ -f $destdir/INSTALL/$source_name/depend ]; then
+  echo "i depend" >> $prototype
+fi
+
+# Copy in any procedure scripts (postinstall, etc.)
+for proc in checkinstall preinstall postinstall preremove postremove ; do
+  if [ -f $sourcedir/packs/build/sunpkg/$proc/$package_name ]; then
+    cp $sourcedir/packs/build/sunpkg/$proc/$package_name \
+      $destdir/INSTALL/$source_name/$proc
+    echo "i $proc" >> $prototype
+  fi
+done
+
+# Copy in the class action scripts.  Every package should have at
+# least class "none".
+classes=`grep '^CLASSES=' $destdir/INSTALL/$source_name/pkginfo | \
+	    sed -e 's|^CLASSES=||'`
+for class in $classes ; do
+  for type in i r ; do
+    if [ -f $sourcedir/packs/build/sunpkg/class/$type.$class ]; then
+      cp $sourcedir/packs/build/sunpkg/class/$type.$class \
+	$destdir/INSTALL/$source_name
+      echo "i $type.$class" >> $prototype
+    fi
+  done
+done
+
+# We have completed the prototype, so copy it in.
+cp $prototype $destdir/INSTALL/$source_name/prototype
+
+
+echo "==== generate the installable package"
+
+# Make the package.
+rm -rf $destdir/PKG/$package_name
+(cd $destdir/INSTALL/$source_name && \
+  pkgmk -d $destdir/PKG -b $destdir/INSTALL/$source_name) || exit 1
+
+echo "==== build a compressed archive of the package files"
+
+# Build a compressed cpio archive of the package's files in class "none".
+filelist=/tmp/filelist$$
+mkdir -p $destdir/PKG/$package_name/archive
+rm -rf $filelist
+awk '(($2 == "f" || $2 == "v" || $2 == "e") && $3 == "none") { print $4; }' \
+  $destdir/PKG/$package_name/pkgmap > $filelist
+if [ -s $filelist ]; then
+  (cd $destdir/PKG/$package_name/reloc && cpio -oc -C 512 < $filelist) | \
+    bzip2 -c > $destdir/PKG/$package_name/archive/none.bz2 || exit 1
+  if [ ! -s $destdir/PKG/$package_name/archive/none.bz2 ]; then
+    echo "Failed to create compressed archive" 1>&2
+    exit 1
+  fi
+  # The archived files are no longer needed in the package reloc directory.
+  (cd $destdir/PKG/$package_name/reloc && cat $filelist | xargs rm -f)
+fi
+
+# Clean up.
+rm -f $prototype
+rm -f $filelist
+
+exit 0
