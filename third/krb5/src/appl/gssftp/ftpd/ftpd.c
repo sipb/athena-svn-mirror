@@ -152,6 +152,8 @@ int authorized;		/* Auth succeeded and was accepted by krb4 or gssapi */
 int have_creds;		/* User has credentials on disk */
 
 #include <al.h>
+#include <locker.h>
+int ftp_locker_errfun(void *data, char *fmt, va_list arg);
 #include <krb5.h>
 krb5_context kcontext;
 krb5_ccache ccache;
@@ -2747,68 +2749,87 @@ attach(pw, locker)
 	struct passwd *pw;
 	char *locker;
 {
-	int fd, status;
-	struct sigaction sa, osa;
-	sigset_t smask, osmask;
+	locker_context context;
+	int status;
 
-	sigemptyset(&smask);
-	sigaddset(&smask, SIGCHLD);
-	sigprocmask(SIG_BLOCK, &smask, &osmask);
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sa.sa_handler = SIG_DFL;
-	sigaction(SIGCHLD, &sa, &osa);
-
-	switch (fork()) {
-		case -1:
-			reply(550, "Couldn't fork to attach");
-			break;
-			
-		case 0:
-			seteuid(0);
-			if (setgid(pw->pw_gid) == -1 ||
-			    setuid(pw->pw_uid) == -1)
-				_exit(1);
-
-			close(STDOUT_FILENO);
-			close(STDERR_FILENO);
-			execl("/bin/athena/attach", "attach", "-nozephyr",
-			      locker, NULL);
-			_exit(1);
-
-		default:
-			while (waitpid(-1, &status, 0) < 0 && errno == EINTR)
-				;
-			if ((WIFEXITED(status) && WEXITSTATUS(status) != 0))
-				switch(WEXITSTATUS(status)) {
-					case 11:
-						reply(550, "Attach failed: Server not responding.");
-						break;
-					case 12:
-						reply(550, "Attach failed: Authentication failure.");
-						break;
-					case 20:
-						reply(550, "Attach failed: Filesystem does not exist.");
-						break;
-					case 24:
-						reply(550, "Attach failed: You are not allowed to attach this filesystem.");
-						break;
-					case 25:
-						reply(550, "Attach failed: You are not allowed to attach a filesystem here.");
-						break;
-					default:
-						reply(550, "Attach failed: Error %d", WEXITSTATUS(status));
-						break;
-				}
-			else if (!WIFEXITED(status))
-				reply(550, "Attach failed.");
-			else
-				ack("ATCH");
-			break;
+	seteuid(0);
+	if (locker_init(&context, pw->pw_uid, ftp_locker_errfun, NULL) !=
+	    LOCKER_SUCCESS) {
+		reply(550, "Couldn't initialize locker library to attach.");
+		seteuid(pw->pw_uid);
+		return;
 	}
 
-	sigaction(SIGCHLD, &osa, NULL);
-	sigprocmask(SIG_SETMASK, &osmask, NULL);
+	if (locker_attach(context, locker, NULL, LOCKER_AUTH_DEFAULT,
+			  0, NULL, NULL) == LOCKER_SUCCESS)
+		ack("ATCH");
+	else
+		reply(550, "Attach failed.");
+
+	locker_end(context);
+	seteuid(pw->pw_uid);
+}
+
+aklog(pw, cell)
+	struct passwd *pw;
+	char *cell;
+{
+	locker_context context;
+	int status;
+
+	seteuid(0);
+	if (locker_init(&context, pw->pw_uid, ftp_locker_errfun, NULL) !=
+	    LOCKER_SUCCESS) {
+		reply(550, "Couldn't initialize locker library to attach.");
+		seteuid(pw->pw_uid);
+		return;
+	}
+
+	if (locker_auth_to_cell(context, "aklog", cell,
+				LOCKER_AUTH_AUTHENTICATE) == LOCKER_SUCCESS)
+		ack("AKLG");
+	else
+		reply(550, "Authentication failed.");
+
+	locker_end(context);
+	seteuid(pw->pw_uid);
+}
+
+int ftp_locker_errfun(void *data, char *fmt, va_list arg)
+{
+  char *buf;
+  int bufsiz;
+
+  bufsiz = 512;
+  buf = malloc(bufsiz + 1);
+  if (!buf)
+    return 0;
+  buf[bufsiz] = '\0';
+
+  while (1)
+    {
+      vsnprintf(buf, bufsiz, fmt, arg);
+      if (strlen(buf) == bufsiz)
+	{
+	  char *nbuf;
+
+	  bufsiz *= 2;
+	  nbuf = realloc(buf, bufsiz + 1);
+	  if (!nbuf)
+	    {
+	      free(buf);
+	      return 0;
+	    }
+	  buf = nbuf;
+	  buf[bufsiz] = '\0';
+	}
+      else
+	{
+	  lreply(550, "%s", buf);
+	  free(buf);
+	  return 0;
+	}
+    }
 }
 
 #ifdef SIGSYS
