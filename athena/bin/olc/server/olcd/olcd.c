@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.52 1992-02-05 02:52:26 lwvanels Exp $
+ *	$Id: olcd.c,v 1.53 1992-03-10 23:31:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.52 1992-02-05 02:52:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.53 1992-03-10 23:31:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -82,7 +82,7 @@ struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 int request_count = 0;
 int request_counts[OLC_NUM_REQUESTS];
 long start_time;
-int select_timeout = 60;
+int select_timeout = 30;
 char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
 
 #ifdef KERBEROS
