@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.5 1993-06-09 13:17:07 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.6 1993-06-10 16:13:57 miki Exp $
 	.:::
 		*4c
 		ufsboot
@@ -252,7 +252,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> u*
 		-> v*
 		-> w*
-		-> x*
+		-> xview
 		:		
 	/usr/openwin/share:::
 		-> bugform
