@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.35 1991-11-06 15:44:35 lwvanels Exp $
+ *	$Id: notify.c,v 1.36 1992-06-23 14:35:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.35 1991-11-06 15:44:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.36 1992-06-23 14:35:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -114,6 +114,10 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 
 	if (touser == (char *)NULL) /* User sanity check. */
 		return(ERROR);
+
+#ifdef SILENT
+	return(SUCCESS);
+#endif
 
 #ifdef ZEPHYR
  	/* First try using Zephyr write.  If return status is anything
