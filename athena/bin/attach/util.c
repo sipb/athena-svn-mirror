@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.17 1992-07-31 13:25:49 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.18 1992-08-02 11:32:55 epeisach Exp $";
 
 #include "attach.h"
 
@@ -68,15 +68,15 @@ sig_catch sig_trap()
 start_critical_code()
 {
 #ifdef POSIX
-    sigset_t sigmask;
+    sigset_t mysigmask;
 
-    sigemptyset(&sigmask);
-    sigaddset(&sigmask, SIGTSTP);
-    sigaddset(&sigmask, SIGTTIN);
-    sigaddset(&sigmask, SIGTTOU);
+    sigemptyset(&mysigmask);
+    sigaddset(&mysigmask, SIGTSTP);
+    sigaddset(&mysigmask, SIGTTIN);
+    sigaddset(&mysigmask, SIGTTOU);
 
     if (in_critical_code_p++ == 0)
-	sigprocmask(SIG_BLOCK, &sigmask, &osigmask);
+	sigprocmask(SIG_BLOCK, &mysigmask, &osigmask);
 #else
     if (in_critical_code_p++ == 0)
 	osigmask=sigblock(sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU));
