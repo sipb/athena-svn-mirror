@@ -2241,8 +2241,7 @@ int rootterm(tty)
 	}
 #endif
 #ifdef HAVE_TTYENT_H
-	if (access(_PATH_TTYS, R_OK) >= 0)
-		return((t = getttynam(tty)) && t->ty_status&TTY_SECURE);
+	return((t = getttynam(tty)) && t->ty_status&TTY_SECURE);
 #endif
 
 	return(root_tty_security);
