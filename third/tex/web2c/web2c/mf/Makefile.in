@@ -113,7 +113,7 @@ run-trap: trapmf
 # Make base files automatically.
 bases: $(bases)
 
-mf.base: inimf
+mf.base: inimf mf.pool
 	$(inimf) 'plain; input $(localmodes); dump'
 	mv plain.base mf.base
 	mv plain.log mf.log
@@ -226,7 +226,7 @@ mostlyclean::
 	rm -f *.o $(program) $(lib) $(programs)
 
 clean:: mostlyclean
-	rm -f *.dvi *.pool
+	rm -f *.dvi *.pool *.p
 
 distclean:: clean
 	rm -f Makefile config.status c-auto.h
