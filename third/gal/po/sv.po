@@ -3,12 +3,12 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001.
 # Richard Hult <rhult@codefactory.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.7 2002-12-19 15:18:21 ghudson Exp $
+# $Id: sv.po,v 1.1.1.8 2003-03-15 15:31:55 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-12-12 01:28+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -265,13 +265,13 @@ msgstr "Formatera kolumner..."
 msgid "Customize Current View..."
 msgstr "Anpassa aktuell vy..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "Definiera vyer för \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "Definiera vyer för \"%s\""
@@ -305,12 +305,12 @@ msgstr "_Ny..."
 msgid "Table"
 msgstr "Tabell"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "Anpassa aktuell vy"
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Nyckelkund"

@@ -47,7 +47,7 @@ glade_DATA = 					\
 
 imagesdir = $(datadir)/gal/$(VERSION)/pixmaps/categories
 
-libwidgetsincludedir = $(includedir)/gal/widgets
+libwidgetsincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/widgets
 
 libwidgetsinclude_HEADERS = 			\
 	color-group.h				\

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.19.0.1\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-12-28 14:33+0000\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -284,13 +284,13 @@ msgstr "Μορ_φοποίηση Κελιών..."
 msgid "Customize Current View..."
 msgstr "Κλείσιμο τρέχουσας προβολής"
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "Καθορισμός Προβολών"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "Καθορισμός Προβολών"
@@ -325,13 +325,13 @@ msgstr "_Νέο..."
 msgid "Table"
 msgstr "Πίνακας"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "_Τρέχουσα Προβολή"
 
 # Translation of "custom" sucks!  ("kata paraggelia"???  nah!)
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Ορισμένο από το χρήστη"

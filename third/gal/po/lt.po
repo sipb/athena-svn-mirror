@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.11.2\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-09-11 18:44+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -262,13 +262,13 @@ msgstr "Formatuoti stulpelius..."
 msgid "Customize Current View..."
 msgstr "Prisitaikyti esamà vaizdà..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "Apibrëþti ¥%s´ vaizdus"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "Apibrëþti ¥%s´ vaizdus"
@@ -302,12 +302,12 @@ msgstr "_Naujas..."
 msgid "Table"
 msgstr "Lentelë"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "Prisitaikyti esamà vaizdà..."
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Svarbus klientas"

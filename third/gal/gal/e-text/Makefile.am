@@ -18,7 +18,7 @@ libetext_la_SOURCES = 		\
 	e-text-model-uri.c                      \
 	e-text.c
 
-libetextincludedir = $(includedir)/gal/e-text
+libetextincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/e-text
 
 libetextinclude_HEADERS = 			\
 	e-entry.h				\

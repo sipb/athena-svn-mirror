@@ -1203,17 +1203,17 @@ ect_max_width (ECellView *ecell_view,
 
 	for (row = 0; row < number_of_rows; row++) {
 		CurrentCell cell;
-		struct line *line;
-		int width;
 
 		build_current_cell (&cell, text_view, model_col, view_col, row);
 		split_into_lines (&cell);
 		calc_line_widths (&cell);
-		
-		line = (struct line *)cell.breaks->lines;
-		width = e_font_utf8_text_width (font, cell.style,
-						line->text, line->length);
-		max_width = MAX (max_width, width);
+
+		if (cell.breaks->lines) {
+			struct line *line = (struct line *)cell.breaks->lines;
+			int width = e_font_utf8_text_width (font, cell.style,
+							    line->text, line->length);
+			max_width = MAX (max_width, width);
+		}
 		unref_lines (&cell);
 		unbuild_current_cell (&cell);
 	}
@@ -1230,8 +1230,7 @@ ect_max_width_by_row (ECellView *ecell_view,
 	/* New ECellText */
 	ECellTextView *text_view = (ECellTextView *) ecell_view;
 	CurrentCell cell;
-	struct line *line;
-	int width;
+	int width = 0;
 
 	if (row >= e_table_model_row_count (ecell_view->e_table_model))
 		return 0;
@@ -1240,9 +1239,11 @@ ect_max_width_by_row (ECellView *ecell_view,
 	split_into_lines (&cell);
 	calc_line_widths (&cell);
 
-	line = (struct line *)cell.breaks->lines;
-	width = e_font_utf8_text_width (text_view->font, cell.style,
-					line->text, line->length);
+	if (cell.breaks->lines) {
+		struct line *line = (struct line *)cell.breaks->lines;
+		width = e_font_utf8_text_width (text_view->font, cell.style,
+						line->text, line->length);
+	}
 	unref_lines (&cell);
 	unbuild_current_cell (&cell);
 	
@@ -1659,19 +1660,21 @@ static int
 get_line_xpos (CurrentCell *cell, struct line *line)
 {
 	int x;
+	int line_width;
 	
 	ECellTextView *text_view = cell->text_view;
 	ECellText *ect = E_CELL_TEXT (((ECellView *)cell->text_view)->ecell);
+	line_width = line ? line->width : 0;
 	
 	x = text_view->xofs + ect->x;
 
 	switch (ect->justify) {
 	case GTK_JUSTIFY_RIGHT:
-		x += cell->width - line->width;
+		x += cell->width - line_width;
 		break;
 
 	case GTK_JUSTIFY_CENTER:
-		x += (cell->width - line->width) / 2;
+		x += (cell->width - line_width) / 2;
 		break;
 
 	default:
@@ -1729,17 +1732,18 @@ _get_xy_from_position (CurrentCell *cell, gint position, gint *xp, gint *yp)
 
 		x = get_line_xpos (cell, lines);
 		y = get_line_ypos (cell, lines);
-		for (j = 0, lines = linebreaks->lines; j < linebreaks->num_lines; lines++, j++) {
-			if (lines->text > cell->text + position)
-				break;
-			y += e_font_height (font);
+		if (linebreaks->lines) {
+			for (j = 0, lines = linebreaks->lines; j < linebreaks->num_lines; lines++, j++) {
+				if (lines->text > cell->text + position)
+					break;
+				y += e_font_height (font);
+			}
+			lines --;
+			x += e_font_utf8_text_width (font, cell->style,
+						     lines->text,
+						     position - (lines->text - cell->text));
 		}
-		lines --;
 		y -= e_font_descent (font);
-		
-		x += e_font_utf8_text_width (font, cell->style,
-					     lines->text,
-					     position - (lines->text - cell->text));
 		if ((CellEdit *) cell == cell->text_view->edit){
 			x -= ((CellEdit *)cell)->xofs_edit;
 			y -= ((CellEdit *)cell)->yofs_edit;
@@ -2260,25 +2264,26 @@ e_cell_text_view_command (ETextEventProcessor *tep, ETextEventProcessorCommand *
 	}
 
 	if (!edit->button_down) {
-		int x;
+		int x = 0;
 		int i;
-		struct line *lines;
 		ECellTextLineBreaks *linebreaks;
 		
 		split_into_lines (cell);
 		
 		linebreaks = cell->breaks;
 	
-		for (lines = linebreaks->lines, i = 0; i < linebreaks->num_lines ; i++, lines ++) {
-			if ((lines->text - cell->text) > edit->selection_end) {
-				break;
+		if (linebreaks->lines) {
+			struct line *lines;
+			for (lines = linebreaks->lines, i = 0; i < linebreaks->num_lines ; i++, lines ++) {
+				if ((lines->text - cell->text) > edit->selection_end) {
+					break;
+				}
 			}
+			lines --;
+			x = e_font_utf8_text_width (font, cell->style,
+						    lines->text,
+						    edit->selection_end - (lines->text - cell->text));
 		}
-		lines --;
-		x = e_font_utf8_text_width (font, cell->style,
-					    lines->text,
-					    edit->selection_end - (lines->text - cell->text));
-		
 
 		if (x < edit->xofs_edit) {
 			edit->xofs_edit = x;

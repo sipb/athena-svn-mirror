@@ -27,7 +27,7 @@ libgalmenus_la_SOURCES = 			\
 	gal-view-new-dialog.c			\
 	gal-view.c
 
-libgalmenusincludedir = $(includedir)/gal/menus
+libgalmenusincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/menus
 
 libgalmenusinclude_HEADERS = 			\
 	gal-define-views-dialog.h		\

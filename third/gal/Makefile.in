@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -159,28 +160,23 @@ SUBDIRS = gal po intl tests docs art macros
 confexecdir = $(libdir)
 confexec_DATA = galConf.sh 
 
-EXTRA_DIST = \
-	gal.spec.in		\
-	galConf.sh.in		\
-	MAINTAINERS		\
-	AUTHORS			\
-	iconv-detect.c		\
-	xml-i18n-extract.in	\
-	xml-i18n-merge.in	\
-	xml-i18n-update.in	
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gal.pc
+
+EXTRA_DIST =  	gal.pc.in			gal.spec.in			galConf.sh.in			MAINTAINERS			AUTHORS				iconv-detect.c			xml-i18n-extract.in		xml-i18n-merge.in		xml-i18n-update.in	
 
 
 CLEANFILES = galConf.sh 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  gal.spec stamp.h
-DATA =  $(confexec_DATA)
+CONFIG_CLEAN_FILES =  gal.spec gal.pc stamp.h
+DATA =  $(confexec_DATA) $(pkgconfig_DATA)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
 ChangeLog INSTALL Makefile.am Makefile.in NEWS acconfig.h aclocal.m4 \
-config.guess config.h.in config.sub configure configure.in gal.spec.in \
-install-sh ltmain.sh missing mkinstalldirs stamp.h.in
+config.guess config.h.in config.sub configure configure.in gal.pc.in \
+gal.spec.in install-sh ltmain.sh missing mkinstalldirs stamp.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -233,6 +229,8 @@ distclean-hdr:
 maintainer-clean-hdr:
 gal.spec: $(top_builddir)/config.status gal.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+gal.pc: $(top_builddir)/config.status gal.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 stamp.h: $(top_builddir)/config.status stamp.h.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -253,6 +251,25 @@ uninstall-confexecDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(confexec_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(confexecdir)/$$p; \
+	done
+
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -417,13 +434,13 @@ all-recursive-am: config.h
 install-exec-am: install-confexecDATA
 install-exec: install-exec-recursive
 
-install-data-am:
+install-data-am: install-pkgconfigDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-confexecDATA
+uninstall-am: uninstall-confexecDATA uninstall-pkgconfigDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
@@ -431,7 +448,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(confexecdir)
+	$(mkinstalldirs)  $(DESTDIR)$(confexecdir) $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -467,11 +484,12 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-uninstall-confexecDATA install-confexecDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-confexecDATA install-confexecDATA uninstall-pkgconfigDATA \
+install-pkgconfigDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \

@@ -10,7 +10,7 @@ libepaned_la_SOURCES = 		\
 	e-paned.c		\
 	e-vpaned.c
 
-libepanedincludedir = $(includedir)/gal/e-paned
+libepanedincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/e-paned
 
 libepanedinclude_HEADERS = 			\
 	e-hpaned.h		\

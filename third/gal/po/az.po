@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.12.99.1\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-09-26 17:39GMT +0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
@@ -262,13 +262,13 @@ msgstr "Sütunları Şəkilləndir..."
 msgid "Customize Current View..."
 msgstr "Görünüşü Xüsusiləşdir..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "\"%s\" Nümayişlərini Təsvir Et"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "\"%s\" Nümayişlərini Təsvir Et"
@@ -302,12 +302,12 @@ msgstr "_Yeni..."
 msgid "Table"
 msgstr "Cədvəl"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "Görünüşü Xüsusiləşdir..."
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Satıcı"

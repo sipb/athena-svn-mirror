@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -153,26 +154,16 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = \
-	-I$(top_srcdir)                         \
-	-I$(top_srcdir)/gal                     \
-	$(EXTRA_GNOME_CFLAGS)			\
-	$(GNOME_BONOBO_CFLAGS)			\
-	$(GNOME_VFS_CFLAGS)			\
-	$(GNOME_INCLUDEDIR)			\
-	-DETABLE_GLADEDIR=\"$(gladedir)\"	\
-        -DG_LOG_DOMAIN=\"e-table\"
+INCLUDES =  	-I$(top_srcdir)                         	-I$(top_srcdir)/gal                     	$(EXTRA_GNOME_CFLAGS)				$(GNOME_BONOBO_CFLAGS)				$(GNOME_VFS_CFLAGS)				$(GNOME_INCLUDEDIR)				-DETABLE_GLADEDIR=\"$(gladedir)\"	        -DG_LOG_DOMAIN=\"e-table\"
 
 
 LDFLAGS = `gnome-config --libs gdk_pixbuf`
-LDADD = $(top_builddir)/gal/libgal.la \
-	$(EXTRA_GNOME_LIBS) $(ICONV_LIBS)
+LDADD = $(top_builddir)/gal/libgal.la 	$(EXTRA_GNOME_LIBS) $(ICONV_LIBS)
 
 
-@GAL_HAVE_VFS_TRUE@vfs_programs = @GAL_HAVE_VFS_TRUE@# test-tree-2
+@GAL_HAVE_VFS_TRUE@vfs_programs = # test-tree-2
 
-noinst_PROGRAMS = \
-	test-table-1 test-tree-1 $(vfs_programs) test-tree-3 test-shortcut-bar test-define-views test-unicode
+noinst_PROGRAMS =  	test-table-1 test-tree-1 $(vfs_programs) test-tree-3 test-shortcut-bar test-define-views test-unicode
 
 
 test_table_1_LDADD = $(LDADD)
@@ -191,12 +182,10 @@ test_shortcut_bar_LDADD = $(LDADD)
 test_tree_3_LDFLAGS = $(LDFLAGS)
 test_tree_3_LDADD = $(LDADD) 
 
-test_shortcut_bar_SOURCES = \
-	test-shortcut-bar.c
+test_shortcut_bar_SOURCES =  	test-shortcut-bar.c
 
 
-test_define_views_SOURCES = \
-	test-define-views.c
+test_define_views_SOURCES =  	test-define-views.c
 
 
 test_define_views_LDFLAGS = $(LDFLAGS)

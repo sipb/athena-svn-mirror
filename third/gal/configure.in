@@ -1,28 +1,29 @@
 AC_INIT(README)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gal,0.22)
+AM_INIT_AUTOMAKE(gal,0.23)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
+dnl version to mangle into lib names and header installation dir
+GAL_API_VERSION=1.0
+AC_SUBST(GAL_API_VERSION)
+
 dnl libtool versioning
 
-dnl gal-0.22 = 1
+dnl gal-0.23 = 1
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
-dnl AKA Micro
 GAL_AGE=1
 
-dnl gal-0.22 = 0
+dnl gal-0.23 = 1
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
-dnl AKA Minor
-GAL_REVISION=0
+GAL_REVISION=1
 
-dnl gal-0.22 = 22
+dnl gal-0.23 = 22
 dnl increment if the interface has additions, changes, removals.
-dnl AKA Major
 GAL_CURRENT=22
 
 AC_SUBST(GAL_CURRENT)
@@ -343,7 +344,7 @@ dnl
 dnl For the various galConf.sh scripts generation.
 dnl
 GAL_LIBDIR='-L${libdir}'
-GAL_INCLUDEDIR=" -I${includedir} `$GNOME_CONFIG --cflags gnomeui gdk_pixbuf print libglade gnomecanvaspixbuf` $ICONV_CFLAGS"
+GAL_INCLUDEDIR=" -I${includedir}/gal-1.0 `$GNOME_CONFIG --cflags gnomeui gdk_pixbuf print libglade gnomecanvaspixbuf` $ICONV_CFLAGS"
 GAL_LIBS="-lgal `$GNOME_CONFIG --libs gnomeui gdk_pixbuf print libglade gnomecanvaspixbuf` $ICONV_LIBS"
 AC_SUBST(GAL_LIBDIR)
 AC_SUBST(GAL_INCLUDEDIR)
@@ -374,5 +375,6 @@ tests/Makefile
 docs/Makefile
 art/Makefile
 gal.spec
+gal.pc
 stamp.h
 ],[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile])

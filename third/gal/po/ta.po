@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.8.99.0\n"
-"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"POT-Creation-Date: 2003-02-03 11:15-0600\n"
 "PO-Revision-Date: 2001-06-16 09:06+0300\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil GNOME <tamillinux.com>\n"
@@ -263,13 +263,13 @@ msgstr "¦¿ÎÅ¡¢¨º¸¨Ç ÅÊÅ¨Á..."
 msgid "Customize Current View..."
 msgstr "¾ü§À¡¨¾Â ¸¡ğº¢¨Â ¾É¢ôÀÂÉ¡ìÌ..."
 
-#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views-dialog.c:291
 #: gal/menus/gal-define-views.glade.h:4
 #, fuzzy, no-c-format
 msgid "Define Views for %s"
 msgstr "\"%s\"ìÌ ¸¡ğº¢¸¨Ç Å¨ÃÂÚ"
 
-#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
 #, fuzzy
 msgid "Define Views"
 msgstr "\"%s\"ìÌ ¸¡ğº¢¸¨Ç Å¨ÃÂÚ"
@@ -303,12 +303,12 @@ msgstr "_Ò¾¢ÂĞ..."
 msgid "Table"
 msgstr "«ğ¼Å¨½"
 
-#: gal/menus/gal-view-instance.c:580
+#: gal/menus/gal-view-instance.c:583
 #, fuzzy
 msgid "Custom View"
 msgstr "¾ü§À¡¨¾Â ¸¡ğº¢¨Â ¾É¢ôÀÂÉ¡ìÌ..."
 
-#: gal/menus/gal-view-instance.c:581
+#: gal/menus/gal-view-instance.c:584
 msgid "Save Custom View"
 msgstr ""
 

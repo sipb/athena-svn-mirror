@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -73,6 +73,7 @@ EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
 GAL_AGE = @GAL_AGE@
+GAL_API_VERSION = @GAL_API_VERSION@
 GAL_CURRENT = @GAL_CURRENT@
 GAL_HAVE_ALLOCA_H = @GAL_HAVE_ALLOCA_H@
 GAL_INCLUDEDIR = @GAL_INCLUDEDIR@
@@ -156,31 +157,18 @@ l = @l@
 
 noinst_LTLIBRARIES = libunicode.la
 
-libunicode_la_SOURCES = \
-	gunibreak.c			\
-	gunicollate.c			\
-	gunidecomp.c			\
-	guniprop.c			\
-	gutf8.c
+libunicode_la_SOURCES =  	gunibreak.c				gunicollate.c				gunidecomp.c				guniprop.c				gutf8.c
 
 
-libunicodeincludedir = $(includedir)/gal/unicode
+libunicodeincludedir = $(includedir)/gal-$(GAL_API_VERSION)/gal/unicode
 
-libunicodeinclude_HEADERS = \
-	gunicode.h
-
-
-noinst_HEADERS = \
-	gunibreak.h			\
-	gunichartables.h		\
-	gunicomp.h			\
-	gunidecomp.h
+libunicodeinclude_HEADERS =  	gunicode.h
 
 
-INCLUDES = \
-	-I$(top_srcdir)			\
-	$(GNOME_INCLUDEDIR)		\
-	$(ICONV_CFLAGS)
+noinst_HEADERS =  	gunibreak.h				gunichartables.h			gunicomp.h				gunidecomp.h
+
+
+INCLUDES =  	-I$(top_srcdir)				$(GNOME_INCLUDEDIR)			$(ICONV_CFLAGS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
