@@ -1,14 +1,14 @@
 Summary: Library providing the Gnome XSLT engine
 Name: libxslt
-Version: 1.0.24
+Version: 1.0.27
 Release: 1
 License: MIT
 Group: Development/Libraries
 Source: ftp://xmlsoft.org/XSLT/libxslt-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 URL: http://xmlsoft.org/XSLT/
-Requires: libxml2 >= 2.4.23
-BuildRequires: libxml2-devel >= 2.4.23
+Requires: libxml2 >= 2.5.4
+BuildRequires: libxml2-devel >= 2.5.4
 BuildRequires: python python-devel
 BuildRequires: libxml2-python
 Prefix: %{_prefix}
@@ -17,26 +17,26 @@ Docdir: %{_docdir}
 %description
 This C library allows to transform XML files into other XML files
 (or HTML, text, ...) using the standard XSLT stylesheet transformation
-mechanism. To use it you need to have a version of libxml2 >= 2.3.8
+mechanism. To use it you need to have a version of libxml2 >= 2.5.4
 installed. The xsltproc command is a command line interface to the XSLT engine
 
 %package devel
 Summary: Libraries, includes, etc. to embed the Gnome XSLT engine
 Group: Development/Libraries
 Requires: libxslt = %{version}
-Requires: libxml2-devel >= 2.4.23
+Requires: libxml2-devel >= 2.5.4
 
 %description devel
 This C library allows to transform XML files into other XML files
 (or HTML, text, ...) using the standard XSLT stylesheet transformation
-mechanism. To use it you need to have a version of libxml2 >= 2.3.8
+mechanism. To use it you need to have a version of libxml2 >= 2.5.4
 installed.
 
 %package python
 Summary: Python bindings for the libxslt library
 Group: Development/Libraries
 Requires: libxslt = %{version}
-Requires: libxml2 >= 2.4.23
+Requires: libxml2 >= 2.5.4
 Requires: python
 
 %description python
@@ -127,8 +127,8 @@ rm -fr %{buildroot}
 %doc python/tests/*.xsl
 
 %changelog
-* Tue Jan 14 2003 Daniel Veillard <veillard@redhat.com>
-- upstream release 1.0.24 see http://xmlsoft.org/XSLT/news.html
+* Mon Feb 24 2003 Daniel Veillard <veillard@redhat.com>
+- upstream release 1.0.27 see http://xmlsoft.org/XSLT/news.html
 
 * Wed Oct 23 2002 Daniel Veillard <veillard@redhat.com>
 - revamped the spec file, cleaned up some rpm building problems

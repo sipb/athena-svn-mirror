@@ -140,7 +140,7 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
     
     if (xsltdoc == NULL) {
 	if ((URI == NULL) ||
-	    (URI[0] = '#') ||
+	    (URI[0] == '#') ||
 	    (xmlStrEqual(tctxt->style->doc->URL, URI))) {
 	    doc = tctxt->style->doc;
 	} else {
@@ -151,8 +151,8 @@ xsltDocumentFunctionLoadDocument(xmlXPathParserContextPtr ctxt, xmlChar* URI)
 
 	    return;
 	}
-    }
-    doc = xsltdoc->doc;
+    } else
+	doc = xsltdoc->doc;
 
     if ( fragment == NULL ) {
 	valuePush(ctxt,
@@ -519,6 +519,11 @@ xsltFormatNumberFunction(xmlXPathParserContextPtr ctxt, int nargs)
 	CAST_TO_STRING;
 	decimalObj = valuePop(ctxt);
 	formatValues = xsltDecimalFormatGetByName(sheet, decimalObj->stringval);
+	if (formatValues == NULL) {
+	    xsltTransformError(tctxt, NULL, NULL,
+		    "format-number() : undeclared decimal format '%s'\n", 
+		    decimalObj->stringval);
+	}
 	/* Intentional fall-through */
     case 2:
 	CAST_TO_STRING;
@@ -530,14 +535,16 @@ xsltFormatNumberFunction(xmlXPathParserContextPtr ctxt, int nargs)
 	XP_ERROR(XPATH_INVALID_ARITY);
     }
 
-    if (xsltFormatNumberConversion(formatValues,
-				   formatObj->stringval,
-				   numberObj->floatval,
-				   &result) == XPATH_EXPRESSION_OK) {
-	valuePush(ctxt, xmlXPathNewString(result));
-	xmlFree(result);
+    if (formatValues != NULL) {
+	if (xsltFormatNumberConversion(formatValues,
+				       formatObj->stringval,
+				       numberObj->floatval,
+				       &result) == XPATH_EXPRESSION_OK) {
+	    valuePush(ctxt, xmlXPathNewString(result));
+	    xmlFree(result);
+	}
     }
-    
+
     xmlXPathFreeObject(numberObj);
     xmlXPathFreeObject(formatObj);
     xmlXPathFreeObject(decimalObj);

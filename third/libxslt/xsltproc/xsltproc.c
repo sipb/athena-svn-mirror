@@ -548,12 +548,10 @@ main(int argc, char **argv)
                    (!strcmp(argv[i], "--output"))) {
             i++;
 #if defined(WIN32) || defined (__CYGWIN__)
-	    output = xmlNormalizeWindowsPath(argv[i]);
+	    output = xmlCanonicPath(argv[i]);
             if (output == NULL)
-		output = xmlStrdup(argv[i]);
-#else
-            output = argv[i];
 #endif
+		output = xmlStrdup(argv[i]);
         } else if ((!strcmp(argv[i], "-V")) ||
                    (!strcmp(argv[i], "-version")) ||
                    (!strcmp(argv[i], "--version"))) {
@@ -765,6 +763,7 @@ main(int argc, char **argv)
 		    /* it is an embedded stylesheet */
 		    xsltProcess(style, cur, argv[i]);
 		    xsltFreeStylesheet(cur);
+		    cur = NULL;
 		    goto done;
 		}
 		cur = xsltParseStylesheetDoc(style);
@@ -773,10 +772,6 @@ main(int argc, char **argv)
 			errorno = 5;
 			goto done;
 		    }
-		    if (cur->indent == 1)
-			xmlIndentTreeOutput = 1;
-		    else
-			xmlIndentTreeOutput = 0;
 		    i++;
 		} else {
 		    xmlFreeDoc(style);
@@ -826,10 +821,8 @@ done:
         xsltFreeStylesheet(cur);
     for (i = 0;i < nbstrparams;i++)
 	xmlFree(strparams[i]);
-#if defined(WIN32) || defined (__CYGWIN__)
     if (output != NULL)
 	xmlFree(output);
-#endif
     xsltFreeSecurityPrefs(sec);
     xsltCleanupGlobals();
     xmlCleanupParser();

@@ -1,3 +1,114 @@
+Mon Feb 24 23:49:01 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xsltproc/xsltproc.c: had to comment out Igor last change
+	  since it made libxslt-1.0.27 depends on libxml2 newly 
+	  API extension which hasn't propagated yet :-(
+
+Mon Feb 24 22:21:09 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in: preparing release 1.0.27
+	* doc/*: updated and rebuilt the docs
+
+Mon Feb 24 19:43:15 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/namespaces.c: fixed #106554 for spurious xmlns:nsX=""
+	  generation
+
+Sun Feb 23 14:52:57 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* tests/docs/Makefile.am tests/docs/bug-105.xml
+	  tests/general/Makefile.am tests/general/bug-105*: added the
+	  example for bug #106788 from James Clark in the regression tests,
+	  the bug fix is actually in libxml2
+
+Sun Feb 23 14:25:13 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/namespaces.c libxslt/transform.c: fixed bug #106789 from
+	  James Clark and a bit of cleanup
+	* tests/docs/Makefile.am tests/docs/bug-104.xml
+	  tests/general/Makefile.am tests/general/bug-104*: added the
+	  example in the regression tests for this case
+
+Fri Feb 21 17:07:59 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt.spec.in: fixed RH#84801 wrong prereqs in the spec file
+
+Wed Feb 19 18:51:06 CET 2003 Igor Zlatkovic <igor@zlatkovic.com>
+
+	* libxslt/functions.c libxslt/xslt.c: fixed bug 106251
+
+Wed Feb 19 15:52:33 CET 2003 Igor Zlatkovic <igor@zlatkovic.com>
+
+	* xsltproc/xsltproc.c: obsoleted xmlNormalizeWindowsPath
+	* win32/configure.js: included handling of the trio option
+
+Mon Feb 10 17:34:32 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in doc/*: preparing release 1.0.26
+
+Fri Feb  7 15:47:20 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/functions.c: fixing another bug in document(), bug #105450
+	* tests/documents/test_bad.result: Slight change to the output
+
+Fri Feb  7 15:34:24 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/functions.c: fixing a segfault in document(), bug #105418
+	* tests/documents/Makefile.am tests/documents/test_bad: add the
+	  specific test as suggested by Jean T Anderson
+
+Fri Feb  7 14:18:40 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/extensions.c libxslt/keys.c libxslt/pattern.c
+	  libxslt/preproc.c libxslt/transform.c libxslt/variables.c
+	  libxslt/xslt.c: tried to fix 105387 and all similar cases
+	  in the library sources.
+
+Wed Feb  5 16:04:10 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* doc/* configure.in: preparing for release of 1.0.25
+
+Wed Feb  5 00:07:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xsltproc/xsltproc.c: fixed bug #99623
+
+Tue Feb  4 22:10:17 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: fixing bug #105116 sometimes one need
+	  to generate a default namespace reset xmlns="" in the output
+	* tests/docs/Makefile.am tests/docs/bug-103.xml
+	  tests/general/Makefile.am tests/general/bug-103*: added the
+	  example in the regression tests for this case
+
+Tue Feb  4 18:39:35 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/pattern.c libxslt/transform.c: changed the way the
+	  root element of value tree are handled to fix bug #104123
+
+Tue Feb  4 18:15:01 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* README: change of policy w.r.t. mails
+	* configure.in: small cleanup
+	* libxslt/transform.c libxslt/xslt.c libxslt/variables.c: fixed
+	  a couple of bugs raised by Eric van der Vlist in #104114
+	* tests/exslt/*/*.out: slight change to the tests
+
+Tue Feb  4 17:18:54 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* doc/xsltproc.1 doc/xsltproc.xml: fixing bug #104096, put
+	  emphasis on the fact that --docbook should not be used
+	  for XML.
+
+Wed Jan 22 16:43:49 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* python/libxslt.c: fixed a couple of return error #104150
+	  reported by Peter O'Shea 
+
+Fri Jan 17 17:43:43 CET 2003 Daniel Veillard <daniel@veillard.com>
+
+	* xsltproc/xsltproc.c: fixed a double free of stylesheet
+	  when applied to a standalone stylesheet
+
 Tue Jan 14 16:22:48 CET 2003 Daniel Veillard <daniel@veillard.com>
 
 	* configure.in: preparing release 2.0.24
