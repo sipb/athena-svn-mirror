@@ -1,5 +1,5 @@
 #
-#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.2 1993-06-30 17:36:48 vrt Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.3 1994-03-07 15:10:59 vrt Exp $
 #
 #  Makefile for SNMPD
 #
@@ -10,7 +10,7 @@
 #  in config.h
 #
 
-DEPEND=makedepend
+DEPEND=makedepend ${CFLAGS}
 
 OBJS = ext.o main.o snmp.o var_tree.o debug.o config.o if_grp.o \
 	ip_grp.o icmp_grp.o sys_grp.o tcp_grp.o udp_grp.o \
