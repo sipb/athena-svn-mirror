@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.3 2003-02-13 00:07:51 ghudson Exp $
+# $Id: import.sh,v 1.4 2003-02-14 21:42:36 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -66,15 +66,15 @@ oldver=$2
 case $tarfile in
 *.tar.gz)
   dcmd='gzip -cd'
-  dirname=`basename "$tarfile" .tar.gz`
+  base=`basename "$tarfile" .tar.gz`
   ;;
 *.tgz)
   dcmd='gzip -cd'
-  dirname=`basename "$tarfile" .tgz`
+  base=`basename "$tarfile" .tgz`
   ;;
 *.tar.bz2)
   dcmd='bzip2 -cd'
-  dirname=`basename "$tarfile" .tar.bz2`
+  base=`basename "$tarfile" .tar.bz2`
   ;;
 *)
   echo "Unrecognized tarfile extension for $tarfile." >&2;
@@ -83,17 +83,24 @@ case $tarfile in
 esac
 
 # Compute package name, package version, tag, and repository directory.
-: ${pkgname=`expr "$dirname" : '\(.*\)-[0-9\.]*$'`}
-: ${pkgver=`expr "$dirname" : '.*-\([0-9\.]*\)$'`}
+: ${pkgname=`expr "$base" : '\(.*\)-[0-9\.]*$'`}
+: ${pkgver=`expr "$base" : '.*-\([0-9\.]*\)$'`}
 : ${repdir=third/$pkgname}
 tag=${pkgname}-`echo "$pkgver" | sed -e 's/\./_/g'`
 if [ -n "$oldver" ]; then
   oldtag=${pkgname}-`echo "$oldver" | sed -e 's/\./_/g'`
 fi
 
+# Figure out what this tarfile unpacks into.
+tardir=`$dcmd "$tarfile" | tar -tf - | sed -e 's|/.*$||' | uniq`
+if [ `echo "$tardir" | wc -l` -ne 1 ]; then
+  printf "%s unpacks into multiple dirs:\n%s\n" "$tarfile" "$tardir" >&2
+fi
+
 # Confirm parameters.
 echo "Package name:         $pkgname"
 echo "Package version:      $pkgver"
+echo "Tarfile unpacks into: $tardir"
 echo "Repository directory: $repdir"
 echo "Release tag:          $tag"
 echo "Old release tag:      $oldtag"
@@ -112,8 +119,9 @@ cd "$tmpdir"
 
 # Extract the tarfile and massage it.
 $dcmd "$tarfile" | tar -xf -
-cd "$dirname"
+cd "$tardir"
 find . -name .cvsignore -exec rm {} \;
+find . -name CVS -type d -exec rm -rf {} \; -prune
 perl "$CVSROOT/CVSROOT/timestamps.pl"
 
 # Do the import.
