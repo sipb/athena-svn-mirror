@@ -17,7 +17,7 @@
  * appropriate scripts during the update process.
  */
 
-static char rcsid[] = "$Id: upvers.c,v 1.14 1998-02-24 22:32:17 cfields Exp $";
+static char rcsid[] = "$Id: upvers.c,v 1.15 1998-04-13 19:28:10 ghudson Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -32,6 +32,7 @@ struct verfile {
 };
 
 static int version_compare(const void *arg1, const void *arg2);
+static void usage(void);
 
 int main(int argc, char **argv)
 {
@@ -39,18 +40,32 @@ int main(int argc, char **argv)
   DIR *dp;
   struct dirent *dirp;
   int n = 0, i, start, end;
-  char filename[1024], scratch;
+  char command[1024], *args = "", scratch;
+  int ch;
+  extern int optind;
+  extern char *optarg;
 
-  if (argc < 4)
+  while ((ch = getopt(argc, argv, "a:")) != -1)
     {
-      fprintf(stderr, "Usage: upvers <old-vers> <new-vers> <libdir>\n");
-      return 1;
+      switch (ch)
+	{
+	case 'a':
+	  args = optarg;
+	  break;
+	default:
+	  usage();
+	}
     }
+  argc -= optind;
+  argv += optind;
+
+  if (argc < 3)
+      usage();
 
   /* Parse old-vers and new-vers. */
-  if (sscanf(argv[1], "%d.%d.%d%c", &oldv.major, &oldv.minor, &oldv.patch,
+  if (sscanf(argv[0], "%d.%d.%d%c", &oldv.major, &oldv.minor, &oldv.patch,
 	     &scratch) != 3
-      || sscanf(argv[2], "%d.%d.%d%c", &newv.major, &newv.minor,
+      || sscanf(argv[1], "%d.%d.%d%c", &newv.major, &newv.minor,
 		&newv.patch, &scratch) != 3)
     {
       fprintf(stderr, "First two arguments must be dotted triplets.\n");
@@ -58,7 +73,7 @@ int main(int argc, char **argv)
     }
 
   /* Get the names of all the version files in libdir. */
-  dp = opendir(argv[3]);
+  dp = opendir(argv[2]);
   if (!dp)
     {
       perror("opendir");
@@ -87,15 +102,15 @@ int main(int argc, char **argv)
   /* Now run the appropriate files. */
   for (i = start; i < end; i++)
     {
-      sprintf(filename, "%s/%d.%d.%d", argv[3], vf[i].major, vf[i].minor,
-	      vf[i].patch);
-      printf("Running %s\n", filename);
-      system(filename); 
+      sprintf(command, "%s/%d.%d.%d %s", argv[2], vf[i].major, vf[i].minor,
+	      vf[i].patch, args);
+      printf("Running %s\n", command);
+      system(command);
     }
 
   return 0;
 }
-		
+
 static int version_compare(const void *arg1, const void *arg2)
 {
   const struct verfile *v1 = (const struct verfile *) arg1;
@@ -105,4 +120,10 @@ static int version_compare(const void *arg1, const void *arg2)
   return (v1->major != v2->major) ? v1->major - v2->major
     : (v1->minor != v2->minor) ? v1->minor - v2->minor
     : v1->patch - v2->patch;
+}
+
+static void usage(void)
+{
+  fprintf(stderr, "Usage: upvers [-a arg] <old-vers> <new-vers> <libdir>\n");
+  exit(1);
 }
