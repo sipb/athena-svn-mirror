@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Id: listen.c,v 1.9 1999-01-22 23:18:21 ghudson Exp $
+ *	$Id: listen.c,v 1.10 1999-05-06 22:01:19 kcr Exp $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -17,22 +17,13 @@
 #include <termios.h>
 #include <unistd.h>
 
-static const char rcsid[] = "$Id: listen.c,v 1.9 1999-01-22 23:18:21 ghudson Exp $";
+#include <readline/readline.h>
+#include <readline/history.h>
+
+static const char rcsid[] = "$Id: listen.c,v 1.10 1999-05-06 22:01:19 kcr Exp $";
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;
-
-static void print_prompt()
-{
-    struct termios termbuf;
-
-    if (tcgetattr(STDIN_FILENO, &termbuf) == 0) {
-	termbuf.c_lflag |= ICANON|ISIG|ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &termbuf);
-    }
-    (void) fputs(current_info->prompt, stdout);
-    (void) fflush(stdout);
-}
 
 static void listen_int_handler()
 {
@@ -45,8 +36,7 @@ int ss_listen (sci_idx)
 {
     register char *cp;
     register ss_data *info;
-    char input[BUFSIZ];
-    char expanded_input[BUFSIZ];
+    char *input;
     char buffer[BUFSIZ];
     char *end = buffer;
     int code;
@@ -76,7 +66,6 @@ int ss_listen (sci_idx)
     sigprocmask(SIG_SETMASK, &omask, NULL);
 
     while(!info->abort) {
-	print_prompt();
 	*end = '\0';
 
 	nsig.sa_handler = listen_int_handler;	/* fgets is not signal-safe */
@@ -85,17 +74,16 @@ int ss_listen (sci_idx)
 	if (csig.sa_handler == listen_int_handler)
 	    csig = osig;
 
-	if (fgets(input, BUFSIZ, stdin) != input) {
+	input = readline(current_info->prompt);
+	if (input == NULL) {
 	    code = SS_ET_EOF;
 	    goto egress;
 	}
-	cp = strchr(input, '\n');
-	if (cp) {
-	    *cp = '\0';
-	    if (cp == input)
-		continue;
-	}
+	if (*input == '\0')
+            continue;
 	sigaction(SIGCONT, &csig, NULL);
+	add_history(input);
+
 	for (end = input; *end; end++)
 	    ;
 
