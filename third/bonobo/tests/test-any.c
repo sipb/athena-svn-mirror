@@ -8,12 +8,6 @@
 #include <bonobo.h>
 #include <bonobo/bonobo-property-bag-xml.h>
 
-#ifdef DynamicAny_DynArray_rewind
-#	define HAVE_DYNANY
-#endif
-
-#ifdef HAVE_DYNANY
-
 #define CHECK_OK(ev) g_assert ((ev)->_major == CORBA_NO_EXCEPTION)
 
 static const CORBA_TypeCode
@@ -105,12 +99,10 @@ TC_England_Unions_Struct_struct = {
       NULL,
       CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
-#endif /* HAVE_DYNANY */
 
 int
 main (int argc, char *argv [])
 {
-#ifdef HAVE_DYNANY
 	DynamicAny_DynAny dyn_any;
 	CORBA_Environment real_ev, *ev;
 	CORBA_any   *any, *any2;
@@ -118,6 +110,8 @@ main (int argc, char *argv [])
 	const char  *test_str = "one is not amused";
 
 	free (malloc (8));
+
+	fprintf (stderr, "Testing DynamicAny\n");
 
 	ev = &real_ev;
 	CORBA_exception_init (ev);
@@ -180,7 +174,41 @@ main (int argc, char *argv [])
 	CORBA_Object_release ((CORBA_Object) dyn_any, ev);
 	CHECK_OK (ev);
 
-#endif /* HAVE_DYNANY */
+	fprintf (stderr, "Testing BonoboArg\n");
+	{
+		int            i;
+		CORBA_TypeCode tcs [] = {
+			TC_null,
+			TC_void,
+			TC_string,
+			TC_short,
+			TC_long,
+			TC_ushort,
+			TC_ulong,
+			TC_float,
+			TC_double,
+			TC_longdouble,
+			TC_boolean,
+			TC_char,
+			TC_wchar,
+			TC_octet,
+			TC_any,
+			TC_TypeCode,
+			TC_Object,
+			TC_wstring,
+			TC_longlong,
+			TC_ulonglong,
+			(CORBA_TypeCode) & TC_org_fish_packers_Fishy_struct,
+			(CORBA_TypeCode) & TC_CORBA_sequence_CORBA_octet_struct,
+			(CORBA_TypeCode) &TC_England_Unions_Struct_struct
+		};
+		for (i = 0; i < sizeof (tcs)/sizeof(CORBA_TypeCode); i++) {
+			BonoboArg *arg;
+
+			arg = bonobo_arg_new (tcs [i]);
+			bonobo_arg_release (arg);
+		}
+	}
 
 	return 0;
 }
