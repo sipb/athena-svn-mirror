@@ -1,5 +1,5 @@
 #
-#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.6 1997-03-19 00:38:48 jweiss Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.7 1998-04-16 22:32:15 ghudson Exp $
 #
 #  Makefile for SNMPD
 #
@@ -70,7 +70,8 @@ LIBS = -lsnmp -lsocket -lnsl -ldl -lelf -lkvm
 #endif
 
 build_program(snmpd,${OBJS},$(LLFLAGS),$(LIBS))
-install_program(snmpd,-g sys -m 2755,${ATHRETCDIR}/snmpd)
+install_program(snmpd,-s -g sys -m 2755,${ATHRETCDIR}/snmpd)
+install_program(snmpd,-g sys -m 2755,${ATHRETCDIR}/snmpd.unstripped)
 
 compile_time.h: $(SRCS)
 	${RM} compile_time.h
