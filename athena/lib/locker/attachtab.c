@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.3 1999-03-19 16:25:54 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.4 1999-03-22 21:04:50 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -438,6 +438,7 @@ static int get_attachent(locker_context context, char *name,
   int status;
   char *path = NULL;
   struct flock fl;
+  mode_t omask;
 
   /* Try opening an existing file */
   if (mountpoint)
@@ -495,7 +496,9 @@ static int get_attachent(locker_context context, char *name,
   if (!path)
     return LOCKER_ENOMEM;
 
+  omask = umask(0);
   fd = open(path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  umask(omask);
   if (fd == -1)
     {
       locker__error(context, "Could not create attachtab file %s:\n%s.\n",

@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.1 1999-02-26 19:04:52 danw Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.2 1999-03-22 21:04:51 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -462,6 +462,8 @@ static int mountpoint_mkdir(locker_context context, locker_attachent *at,
 {
   char *file;
   struct stat st;
+  mode_t omask;
+  int status;
 
   file = locker__attachtab_pathname(context, LOCKER_DIRECTORY, path);
   if (!file)
@@ -491,7 +493,10 @@ static int mountpoint_mkdir(locker_context context, locker_attachent *at,
       close(fd);
 
       /* Make directory. */
-      if (mkdir(path, LOCKER_DIR_MODE) == -1)
+      omask = umask(0);
+      status = mkdir(path, LOCKER_DIR_MODE);
+      umask(omask);
+      if (status == -1)
 	{
 	  if (errno == EEXIST)
 	    {
