@@ -1,4 +1,20 @@
 ----------------------
+gal-1.99.9  2003-07-28
+----------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+	#46380 - crash in Tasks Define View field picker. (Mike)
+	#44904 - crash in e_utf8_strftime (Mike)
+
+Other bugs and changes:
+
+	- remove EPaned, EVPaned, EHPaned, EVScrollbar, EHScrollbar, and EScrollFrame
+	- leak fixes (DanW and Chris)
+	- Updated translations: ms (Hasbullah Bin Pit), nl (Vincent van Adrighem), pl (Artur Flinta)
+
+
+----------------------
 gal-1.99.8  2003-06-25
 ----------------------
 

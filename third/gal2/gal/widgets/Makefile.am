@@ -18,19 +18,16 @@ libwidgets_la_SOURCES = 			\
 	e-cursors.c				\
 	e-file-selection.c			\
 	e-gui-utils.c				\
-	e-hscrollbar.c				\
 	e-hsv-utils.c				\
 	e-option-menu.c				\
 	e-popup-menu.c				\
 	e-printable.c				\
 	e-reflow-model.c			\
 	e-reflow.c				\
-	e-scroll-frame.c			\
 	e-selection-model-array.c		\
 	e-selection-model-simple.c		\
 	e-selection-model.c			\
 	e-unicode.c				\
-	e-vscrollbar.c				\
 	gtk-combo-box.c				\
 	gtk-combo-stack.c			\
 	gtk-combo-text.c			\
@@ -66,19 +63,16 @@ libwidgetsinclude_HEADERS = 			\
 	e-cursors.h				\
 	e-file-selection.h			\
 	e-gui-utils.h				\
-	e-hscrollbar.h				\
 	e-hsv-utils.h				\
 	e-option-menu.h				\
 	e-popup-menu.h				\
 	e-printable.h				\
 	e-reflow-model.h			\
 	e-reflow.h				\
-	e-scroll-frame.h			\
 	e-selection-model-array.h		\
 	e-selection-model-simple.h		\
 	e-selection-model.h			\
 	e-unicode.h				\
-	e-vscrollbar.h				\
 	gtk-combo-box.h				\
 	gtk-combo-stack.h			\
 	gtk-combo-text.h			\

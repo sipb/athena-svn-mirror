@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal VERSION\n"
-"POT-Creation-Date: 2003-06-25 10:34-0500\n"
-"PO-Revision-Date: 2003-06-18 11:54+0200\n"
+"POT-Creation-Date: 2003-07-28 11:55-0500\n"
+"PO-Revision-Date: 2003-07-12 22:52+0200\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,7 @@ msgid "Header"
 msgstr "Fejléc"
 
 #: gal/e-table/e-table-click-to-add.c:463
-#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3258
 #: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
 #: gal/e-text/e-text.c:3312
 msgid "Model"
@@ -328,12 +328,12 @@ msgid "Selection model"
 msgstr "Kijelölési modell"
 
 #: gal/e-table/e-table-group-container.c:948
-#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3230
 msgid "Length Threshold"
 msgstr "Hosszúsági küszöb"
 
 #: gal/e-table/e-table-group-container.c:955
-#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3237
 msgid "Uniform row height"
 msgstr "Egységes sormagasság"
 
@@ -415,11 +415,11 @@ msgstr "Táblázat"
 msgid "Tree"
 msgstr "Fa"
 
-#: gal/e-table/e-table.c:3242
+#: gal/e-table/e-table.c:3244
 msgid "Always Search"
 msgstr "Mindig keres"
 
-#: gal/e-table/e-table.c:3249
+#: gal/e-table/e-table.c:3251
 msgid "Use click to add"
 msgstr "Kattintás a hozzáadáshoz"
 
@@ -549,7 +549,7 @@ msgstr "aranybarna"
 
 #: gal/widgets/color-palette.c:579
 msgid "dark green #2"
-msgstr "sötétkét #2"
+msgstr "sötétzöld #2"
 
 #: gal/widgets/color-palette.c:580
 msgid "navy"
@@ -561,7 +561,7 @@ msgstr "sötétkék"
 
 #: gal/widgets/color-palette.c:582
 msgid "purple #2"
-msgstr "bíbor #2"
+msgstr "lila #2"
 
 #: gal/widgets/color-palette.c:583
 msgid "very dark gray"
@@ -625,7 +625,7 @@ msgstr "égszínkék #2"
 
 #: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
 msgid "purple"
-msgstr "bíbor"
+msgstr "lila"
 
 #: gal/widgets/color-palette.c:603
 msgid "gray"
@@ -797,7 +797,7 @@ msgstr "Kiemelt ügyfél"
 
 #: gal/widgets/e-categories-master-list-array.c:79
 msgid "Miscellaneous"
-msgstr "Egyéb"
+msgstr "Egyebek"
 
 #: gal/widgets/e-categories-master-list-array.c:80
 msgid "Personal"
@@ -893,7 +893,7 @@ msgstr "Mindent kijelöl"
 
 #: gal/e-text/e-text.c:2573
 msgid "Input Methods"
-msgstr "Beviteli metódusok"
+msgstr "Beviteli módok"
 
 #: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
 msgid "Event Processor"
@@ -1011,164 +1011,3 @@ msgstr "IM-kontextus"
 #: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
 msgid "Handle Popup"
 msgstr "xxxHandle Popup"
-
-#~ msgid "Late Yesterday %l:%M %p"
-#~ msgstr "Tegnap későn %l:%M %p"
-
-#~ msgid "Modify a Category"
-#~ msgstr "Kategória módosítása"
-
-#~ msgid "Remove"
-#~ msgstr "Eltávolítás"
-
-#~ msgid "_Category to Add:"
-#~ msgstr "_Hozzáadandó kategória:"
-
-#~ msgid "_Category to Modify:"
-#~ msgstr "_Módosítandó kategória:"
-
-#, fuzzy
-#~ msgid "FIll stipple"
-#~ msgstr "fakólila"
-
-#~ msgid "Re_set to Factory Defaults..."
-#~ msgstr "_Alapértelmezett beállítások visszaállítása..."
-
-#~ msgid "_Copy..."
-#~ msgstr "_Másolás..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Törlés..."
-
-#~ msgid "_New..."
-#~ msgstr "Ú_j..."
-
-#~ msgid "<< Remove"
-#~ msgstr "<< Eltávolítás"
-
-#~ msgid "Add >>"
-#~ msgstr "Hozzáadás >>"
-
-#~ msgid "Available fields"
-#~ msgstr "Rendelkezésre álló mezők"
-
-#~ msgid "Show in this order"
-#~ msgstr "Megjelenítési sorrend"
-
-#~ msgid "Views for \"%s\""
-#~ msgstr "\"%s\" nézetei"
-
-#~ msgid "Add..."
-#~ msgstr "Hozzáadás..."
-
-#~ msgid "Modify..."
-#~ msgstr "Módosítás..."
-
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Nézet beállításai: FIXME"
-
-#~ msgid "Unknown"
-#~ msgstr "Ismeretlen"
-
-#~ msgid "Baltic"
-#~ msgstr "Balti"
-
-#~ msgid "Central European"
-#~ msgstr "Közép-európai"
-
-#~ msgid "Chinese"
-#~ msgstr "Kínai"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Cirill"
-
-#~ msgid "Japanese"
-#~ msgstr "Japán"
-
-#~ msgid "Korean"
-#~ msgstr "Koreai"
-
-#~ msgid "Turkish"
-#~ msgstr "Török"
-
-#~ msgid "Western European"
-#~ msgstr "Nyugat-európai"
-
-#~ msgid "Traditional"
-#~ msgstr "Hagyományos"
-
-#~ msgid "Simplified"
-#~ msgstr "Egyszerűsített"
-
-#~ msgid "Ukrainian"
-#~ msgstr "Ukrán"
-
-#~ msgid "New"
-#~ msgstr "Új"
-
-#~ msgid "Enter the character set to use"
-#~ msgstr "Add meg a használandó karakterkészletet"
-
-#~ msgid "Unknown character set: %s"
-#~ msgstr "Ismeretlen karakterkészlet: %s"
-
-#~ msgid "Other..."
-#~ msgstr "Egyéb..."
-
-#~ msgid "label20"
-#~ msgstr "label20"
-
-#~ msgid "Table HERE"
-#~ msgstr "Táblázat ITT"
-
-#~ msgid "&lt;- _Remove"
-#~ msgstr "&lt;- _Eltávolítás"
-
-#~ msgid "_Add -&gt;"
-#~ msgstr "_Hozzáadás -&gt;"
-
-#~ msgid "&lt;&lt; Remove"
-#~ msgstr "&lt;&lt; Eltávolítás"
-
-#~ msgid "Add &gt;&gt;"
-#~ msgstr "Hozzáadás &gt;&gt;"
-
-#~ msgid "label1"
-#~ msgstr "label1"
-
-#~ msgid "label2"
-#~ msgstr "label2"
-
-#~ msgid "window1"
-#~ msgstr "window1"
-
-#~ msgid "label5"
-#~ msgstr "label5"
-
-#~ msgid "Group By"
-#~ msgstr "Csoportosítás"
-
-#~ msgid "View Summary"
-#~ msgstr "Adatlap megtekintése"
-
-#~ msgid "Sort..."
-#~ msgstr "Rendezés..."
-
-#~ msgid "Group By..."
-#~ msgstr "Csoportosítás"
-
-#~ msgid ""
-#~ "Icon, Attachment, Flag Status,\n"
-#~ "Full Name, Company, "
-#~ msgstr ""
-#~ "Ikon, Csatolt állomány, Állapotjelző,\n"
-#~ "Teljes név, Cégnév, "
-
-#~ msgid "None"
-#~ msgstr "Semmi"
-
-#~ msgid "File As (ascending)"
-#~ msgstr "Rendszerezés (növekvő)"
-
-#~ msgid "File By"
-#~ msgstr "Rendszerezés"
