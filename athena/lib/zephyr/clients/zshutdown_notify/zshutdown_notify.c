@@ -5,7 +5,7 @@
  *	Created by:	C. Anthony Della Fera
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -23,7 +23,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.6 1989-07-28 16:38:24 jtkohl Exp $";
+static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.7 1990-10-19 08:22:52 raeburn Exp $";
 #endif SABER
 #endif lint
 
@@ -67,11 +67,6 @@ main(argc,argv)
     msg[1] = message;
     msg[2] = warning;
 
-    if ((retval = ZInitialize()) != ZERR_NONE) {
-	com_err(argv[0], retval, "while initializing");
-	exit(1);
-    } 
-
     if (gethostname(hostname, MAXHOSTNAMELEN) < 0) {
 	com_err(argv[0], errno, "while finding hostname");
 	exit(1);
@@ -104,6 +99,11 @@ main(argc,argv)
 	exit(1);
     }
 #endif
+
+    if ((retval = ZInitialize()) != ZERR_NONE) {
+	com_err(argv[0], retval, "while initializing");
+	exit(1);
+    } 
 
     ptr = message;
 
