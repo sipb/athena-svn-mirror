@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "108434-10"					>> "$PATCHES"
+  echo "108435-10"					>> "$PATCHES"
+  echo "108528-17"					>> "$PATCHES"
+  echo "108987-12"					>> "$PATCHES"
+  echo "109147-21"					>> "$PATCHES"
+  echo "111111-03"					>> "$PATCHES"
+  echo "111697-04"					>> "$PATCHES"
+  echo "112396-02"					>> "$PATCHES"
+  ;;
+
+sgi)
+  ;;
+esac
