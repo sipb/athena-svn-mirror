@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.14 1991-01-15 17:43:29 lwvanels Exp $
+ *	$Id: t_send.c,v 1.15 1991-01-21 01:12:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.14 1991-01-15 17:43:29 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.15 1991-01-21 01:12:06 lwvanels Exp $";
 #endif
 #endif
 
@@ -276,7 +276,7 @@ t_mail(Request,file,editor,smargs, check,noedit)
 	fd1 = open(tmp_file,O_WRONLY,0644);
 	fd2 = open(file,O_RDONLY,0644);
 	if (fd2 < 0) {
-	  fprintf(stderr,"No such file %s. . . aborting\n");
+	  fprintf(stderr,"No such file %s. . . aborting\n",file);
 	  close(fd1);
 	  return(ERROR);
 	}
