@@ -1,12 +1,17 @@
-# $Id: Makefile.athena,v 1.7 1997-02-18 06:30:02 ghudson Exp $
+# $Id: Makefile.athena,v 1.8 1997-09-29 08:57:14 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
 ATHINCDIR=/usr/athena/include
 
+# We can't use the Athena config.site file because it specifies
+# with_krb4, and we want krb5 to use its built-in krb4
+# compatibility.
 prepare:
 	rm -f src/config.cache
-	cd src && ./configure
+	cd src && CONFIG_SITE= ./configure --prefix=/usr/athena \
+	 --datadir=/usr/athena/lib --sbindir=/usr/athena/etc \
+	 --sysconfdir=/etc/athena
 
 clean:
 	cd src && ${MAKE} clean
