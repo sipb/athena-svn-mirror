@@ -109,7 +109,7 @@ Distribution sites for software under third
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
 	tcp_wrappers	ftp.win.tue.nl:/pub/security
-	tcsh		ftp.deshaw.com:pub/tcsh
+	tcsh		ftp.astron.com:pub/tcsh
 			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
 	top		ftp.groupsys.com:pub/top
