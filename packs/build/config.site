@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.6 1996-12-26 18:58:26 ghudson Exp $
+# $Id: config.site,v 1.7 1996-12-31 23:15:39 ghudson Exp $
 #
 
 athena=true
@@ -31,6 +31,9 @@ case "${HOSTTYPE}" in
 		with_motif=yes
 		;;
 esac
+
+# Set location of AFS includes and libraries.
+with_afs=/usr/afsws
 
 prefix=/usr/athena
 datadir='${exec_prefix}/lib'
