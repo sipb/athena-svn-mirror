@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gedit 2.1.91\n"
-"POT-Creation-Date: 2003-01-27 11:53+0100\n"
+"POT-Creation-Date: 2003-02-04 12:35+0100\n"
 "PO-Revision-Date: 2003-01-26 17:47+0100\n"
 "Last-Translator: Yann Laviolette <borisgazoo@hotmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
