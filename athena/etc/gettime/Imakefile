@@ -3,7 +3,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v $
 #	$Author: probe $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.3 1990-11-18 21:12:51 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.4 1990-11-18 21:45:08 probe Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR} -DX11
@@ -19,8 +19,8 @@ SUBDIR= nip rvd track xdm
 
 # Shell scripts that need only be installed and are never removed.
 #
-SCRIPT= activate backup backuperr clean_tmp_areas cppart csh_commands_path \
-	cut_msgs deactivate dumptape sh_commands_path shutdown_notify \
+SCRIPT= backup backuperr clean_tmp_areas cppart csh_commands_path \
+	cut_msgs dumptape sh_commands_path shutdown_notify \
 	stop_mailer suid_afs_cells rti_users $(CONSGETTY)
 
 # C programs that live in the current directory and do not need
