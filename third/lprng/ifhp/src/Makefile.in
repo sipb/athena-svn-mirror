@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.8 1999-12-06 15:03:19 danw Exp $
+#* $Id: Makefile.in,v 1.9 2000-07-18 01:33:27 ghudson Exp $
 #
 
 
@@ -105,9 +105,10 @@ install: all
 	for i in $(COMMANDS) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR); \
 	done ;
-	for i in $(INSTALL) ; do \
-		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR)/`basename $$i`; \
-	done ;
+# Commented out locally by ghudson 2000-06-23; duplicated in lprng
+#	for i in $(INSTALL) ; do \
+#		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR)/`basename $$i`; \
+#	done ;
 	${SRC}/mkinstalldirs $(DESTDIR)$(DATAINSTDIR)
 	for i in $(DATAINSTALL) ; do \
 		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(DATAINSTDIR)/`basename $$i`; \
