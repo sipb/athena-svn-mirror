@@ -110,7 +110,6 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -133,15 +132,7 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -403,50 +394,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-e-cache.o: e-cache.c e-cache.h
-e-http-client.o: e-http-client.c e-http-client.h
-ebrowser-history.o: ebrowser-history.c ../../config.h ebrowser-history.h
-ebrowser-stream.o: ebrowser-stream.c ../../src/gtkhtml-stream.h \
-	../../src/gtkhtml-types.h ../../src/gtkhtml-enums.h \
-	ebrowser-widget.h ../../src/gtkhtml.h ../../src/htmltypes.h \
-	../../src/htmlenums.h ebrowser-history.h ebrowser-stream.h
-ebrowser-ui.o: ebrowser-ui.c ../../config.h ebrowser.h ebrowser-ui.h \
-	ebrowser-widget.h ../../src/gtkhtml.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ../../src/htmltypes.h \
-	../../src/htmlenums.h ebrowser-history.h
-ebrowser-widget.o: ebrowser-widget.c eloader-http.h eloader.h \
-	../../src/gtkhtml-stream.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ebrowser-widget.h ../../src/gtkhtml.h \
-	../../src/htmltypes.h ../../src/htmlenums.h ebrowser-history.h \
-	e-http-client.h eloader-file.h eloader-moniker.h
-ebrowser.o: ebrowser.c ../../config.h ebrowser-widget.h \
-	../../src/gtkhtml.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ../../src/htmltypes.h \
-	../../src/htmlenums.h ebrowser-history.h ebrowser-stream.h \
-	ebrowser.h ebrowser-ui.h
-eloader-file.o: eloader-file.c eloader-file.h eloader.h \
-	../../src/gtkhtml-stream.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ebrowser-widget.h ../../src/gtkhtml.h \
-	../../src/htmltypes.h ../../src/htmlenums.h ebrowser-history.h
-eloader-http.o: eloader-http.c e-cache.h eloader-http.h eloader.h \
-	../../src/gtkhtml-stream.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ebrowser-widget.h ../../src/gtkhtml.h \
-	../../src/htmltypes.h ../../src/htmlenums.h ebrowser-history.h \
-	e-http-client.h
-eloader-moniker.o: eloader-moniker.c eloader-moniker.h eloader.h \
-	../../src/gtkhtml-stream.h ../../src/gtkhtml-types.h \
-	../../src/gtkhtml-enums.h ebrowser-widget.h ../../src/gtkhtml.h \
-	../../src/htmltypes.h ../../src/htmlenums.h ebrowser-history.h
-eloader.o: eloader.c eloader.h ../../src/gtkhtml-stream.h \
-	../../src/gtkhtml-types.h ../../src/gtkhtml-enums.h \
-	ebrowser-widget.h ../../src/gtkhtml.h ../../src/htmltypes.h \
-	../../src/htmlenums.h ebrowser-history.h
-test-ebrowser.o: test-ebrowser.c ebrowser.h test-ebrowser.h
-test-history.o: test-history.c ebrowser-history.h
-test.o: test.c ebrowser-widget.h ../../src/gtkhtml.h \
-	../../src/gtkhtml-types.h ../../src/gtkhtml-enums.h \
-	../../src/htmltypes.h ../../src/htmlenums.h ebrowser-history.h \
-	test.h
 
 info-am:
 info: info-am

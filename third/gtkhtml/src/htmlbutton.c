@@ -25,6 +25,9 @@
 #include "htmlbutton.h"
 #include "htmlform.h"
 #include <string.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <gal/widgets/e-unicode.h>
 
 HTMLButtonClass html_button_class;
 
@@ -130,18 +133,23 @@ html_button_init (HTMLButton *button,
 
 	html_embedded_init (element, HTML_EMBEDDED_CLASS (klass), parent, name, value);
 	
-	if( strlen (element->value))
-		widget = gtk_button_new_with_label (element->value);
-	else {
+	if( strlen (element->value)) {
+		char *gtk_str;
+
+		gtk_str = e_utf8_to_gtk_string (parent, element->value);
+		widget = gtk_button_new_with_label (gtk_str);
+		g_free (gtk_str);
+
+	} else {
 		switch(type) {
 		case BUTTON_NORMAL:
 			widget = gtk_button_new ();
 			break;
 		case BUTTON_SUBMIT:
-			widget = gtk_button_new_with_label ("Submit Query");
+			widget = gtk_button_new_with_label (_("Submit Query"));
 			break;
 		case BUTTON_RESET:
-			widget = gtk_button_new_with_label ("Reset");
+			widget = gtk_button_new_with_label (_("Reset"));
 			break;
 		default:
 			g_assert_not_reached ();

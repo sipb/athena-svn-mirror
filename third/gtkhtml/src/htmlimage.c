@@ -357,6 +357,8 @@ draw (HTMLObject *o,
 	guint pixel_size;
 	ArtIRect paint;
 
+	/* printf ("Image::draw\n"); */
+
 	html_object_calc_intersection (o, &paint, x, y, width, height);
 	if (art_irect_empty (&paint))
 		return;
@@ -1036,6 +1038,7 @@ html_image_animation_timeout (HTMLImage *image)
 	HTMLEngine        *engine;
 	gint nx, ny, nex, ney;
 
+	/* printf ("animation_timeout\n"); */
 	anim->cur_frame = anim->cur_frame->next;
 	if (!anim->cur_frame)
 		anim->cur_frame = gdk_pixbuf_animation_get_frames (image->image_ptr->animation);
@@ -1068,8 +1071,8 @@ html_image_animation_timeout (HTMLImage *image)
 		}
 		
 	}
-
-	anim->timeout = g_timeout_add (10 * (gdk_pixbuf_frame_get_delay_time (frame)
+	/* printf ("timeout: %d\n", gdk_pixbuf_frame_get_delay_time (frame)); */
+	anim->timeout = g_timeout_add (10 * (gdk_pixbuf_frame_get_delay_time (frame) > 0
 					     ? gdk_pixbuf_frame_get_delay_time (frame) : 1),
 				       (GtkFunction) html_image_animation_timeout, (gpointer) image);
 
@@ -1107,6 +1110,8 @@ html_image_animation_stop (HTMLImageAnimation *anim)
 static void
 html_image_factory_frame_done (GdkPixbufLoader *loader, GdkPixbufFrame *frame, HTMLImagePointer *ip)
 {
+	/* printf ("frame done\n"); */
+
 	if (!ip->animation) {
 		ip->animation = gdk_pixbuf_loader_get_animation (loader);
 		gdk_pixbuf_animation_ref (ip->animation);

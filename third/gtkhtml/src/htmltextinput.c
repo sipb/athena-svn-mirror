@@ -24,6 +24,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkentry.h>
 #include <string.h>
+#include <gal/widgets/e-unicode.h>
 
 #include "htmltextinput.h"
 #include "htmlform.h"
@@ -65,7 +66,7 @@ copy (HTMLObject *self,
 static void
 reset (HTMLEmbedded *e)
 {
-	gtk_entry_set_text (GTK_ENTRY(e->widget), HTML_TEXTINPUT(e)->default_text);
+	e_utf8_gtk_entry_set_text (GTK_ENTRY(e->widget), HTML_TEXTINPUT(e)->default_text);
 }
 
 static gboolean
@@ -121,7 +122,7 @@ encode (HTMLEmbedded *e)
 
 		encoding = g_string_append_c (encoding, '=');
 
-		ptr = html_embedded_encode_string (gtk_entry_get_text (GTK_ENTRY (e->widget)));
+		ptr = html_embedded_encode_string (e_utf8_gtk_entry_get_text (GTK_ENTRY (e->widget)));
 		encoding = g_string_append (encoding, ptr);
 		g_free (ptr);
 	}
@@ -193,7 +194,7 @@ html_text_input_init (HTMLTextInput *ti,
 				  element);
 
 	if (strlen (element->value))	
-		gtk_entry_set_text (GTK_ENTRY(element->widget), element->value);
+		e_utf8_gtk_entry_set_text (GTK_ENTRY(element->widget), element->value);
 
 	ti->default_text = g_strdup (element->value);
 

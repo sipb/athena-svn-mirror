@@ -1,3 +1,42 @@
+2002-03-05  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselect.c: convert from utf8 properly and use needs_update
+	boolean to postpone setting the popdown strings until they are
+	needed.  Because of how GtkCombo is implemented setting popdown
+	strings is extremely expensive.
+
+	* htmlselect.h: add update boolean.
+
+	* htmltextinput.c: handle utf8 strings correctly.
+
+	* htmltextarea.c (html_textarea_set_text): convert string to gtk
+	charset before setting gtk widget.
+
+	* htmlbutton.c (html_button_init): convert to gtk string before
+	creating label.
+
+2002-02-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (write_list_finish_tags): new helper method,
+	takes care about writing right list ending tags
+	(write_pre_tags): use write_list_finish_tags
+	(write_post_tags): ditto
+	(get_end_tag_item): extracted helper function
+	(get_end_tag): use get_end_tag_item
+
+	* htmlimage.c (html_image_animation_timeout): test if delay is >
+	0 (before we have been testing for != 0)
+
+2002-02-11  Larry Ewing  <lewing@ximian.com>
+
+	* htmltokenizer.c (in_script_or_style): fix obvious error in
+	growing the scriptCode buffer, use g_realloc instead.
+
+2002-01-14  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine-edit-cursor.c (html_engine_draw_cursor_in_area): wrap
+	im call in #ifdef GTK_HTML_USE_XIM
+
 2001-12-18  Radek Doulik  <rodo@ximian.com>
 
 	* htmlengine-edit-clueflowstyle.c (set_clueflow_style_in_region):
