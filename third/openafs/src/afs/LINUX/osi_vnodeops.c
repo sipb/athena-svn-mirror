@@ -23,7 +23,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.3 2002-07-20 19:33:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.4 2002-07-22 19:24:52 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -41,6 +41,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/o
 #endif
 
 extern struct vcache *afs_globalVp;
+extern afs_rwlock_t afs_xvcache;
 
 extern struct dentry_operations *afs_dops;
 #if defined(AFS_LINUX24_ENV)
@@ -665,20 +666,33 @@ static int afs_linux_revalidate(struct dentry *dp)
     cred_t *credp;
     struct vrequest treq;
     struct vcache *vcp = (struct vcache*)dp->d_inode;
+    struct vcache *rootvp = NULL;
 
     AFS_GLOCK();
+ 
+    if (afs_fakestat_enable && vcp->mvstat == 1 && vcp->mvid &&
+	(vcp->states & CMValid) && (vcp->states & CStatd)) {
+      ObtainSharedLock(&afs_xvcache, 680);
+      rootvp = afs_FindVCache(vcp->mvid, 0, 0, 0, 0);
+      ReleaseSharedLock(&afs_xvcache);
+    }
+
 #ifdef AFS_LINUX24_ENV
     lock_kernel();
 #endif
 
     /* Make this a fast path (no crref), since it's called so often. */
     if (vcp->states & CStatd) {
-        if (*dp->d_name.name != '/' && vcp->mvstat == 2) /* root vnode */
-	    check_bad_parent(dp); /* check and correct mvid */
+      if (*dp->d_name.name != '/' && vcp->mvstat == 2) /* root vnode */
+	check_bad_parent(dp); /* check and correct mvid */
+      if (rootvp)
+	vcache2fakeinode(rootvp, vcp);
+      else
 	vcache2inode(vcp);
 #ifdef AFS_LINUX24_ENV
 	unlock_kernel();
 #endif
+	if (rootvp) afs_PutVCache(rootvp);
 	AFS_GUNLOCK();
 	return 0;
     }
