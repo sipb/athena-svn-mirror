@@ -16,8 +16,9 @@ extern int heading_printed;
 #define user_and_groups (!uflag && !gflag)
 
 void *
-getafsquota(ap)
+getafsquota(ap, explicit)
     struct _attachtab *ap;
+    int explicit;
 {
     static struct VolumeStatus vs;
     struct ViceIoctl ibuf;
@@ -28,8 +29,10 @@ getafsquota(ap)
     ibuf.out=(caddr_t) &vs;
     code = pioctl(ap->mntpt,VIOCGETVOLSTAT,&ibuf,1);
     if (code) {
-	fprintf(stderr, "Error getting AFS quota:");
-	perror(ap->mntpt);
+	if (explicit || (errno != EACCES)) {
+	    fprintf(stderr, "Error getting AFS quota: ");
+	    perror(ap->mntpt);
+	}
 	return(NULL);
     }
     return((void *)&vs);

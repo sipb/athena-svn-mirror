@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.15 1991-07-10 13:07:12 lwvanels Exp $
+ *   $Id: quota.c,v 1.16 1991-07-19 07:06:14 probe Exp $
  *   
  *   Uses the rcquota rpc call for group and user quotas
  */
@@ -457,7 +457,7 @@ showquotas(id,name)
 	    if (i == fsind) continue;	/* Punt filesystems not in fslist */
 	}
     
-	if ((v = getafsquota(p)) == NULL)
+	if ((v = getafsquota(p, fsind)) == NULL)
 	    continue;
 	if (vflag) prafsquota(p, v, id, name);      
 	if (user_and_groups || !vflag) afswarn(p,v,name);
