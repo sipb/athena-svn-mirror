@@ -3,7 +3,7 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.14 1998-01-28 04:25:08 danw Exp $
+# $Id: save_cluster_info.sh,v 1.15 1998-04-02 18:20:53 ghudson Exp $
 #
 # Use old data from last session if getcluster fails.
 
@@ -23,14 +23,16 @@ if [ -s /var/athena/clusterinfo.bsh ]; then
 	. /var/athena/clusterinfo.bsh
 fi
 
-/bin/athena/getcluster -b ${HOST} ${VERSION} > /var/athena/clusterinfo.bsh.new
+/bin/athena/getcluster -b -l /etc/athena/cluster.local ${HOST} ${VERSION} \
+	> /var/athena/clusterinfo.bsh.new
 if [ $? -eq 0 -a -s /var/athena/clusterinfo.bsh.new ]
 then
 	rm -f /var/athena/clusterinfo.bsh
 	mv /var/athena/clusterinfo.bsh.new /var/athena/clusterinfo.bsh
 	chmod 644 /var/athena/clusterinfo.bsh
 fi
-/bin/athena/getcluster ${HOST} ${VERSION} > /var/athena/clusterinfo.new
+/bin/athena/getcluster -l /etc/athena/cluster.local ${HOST} ${VERSION} \
+	> /var/athena/clusterinfo.new
 if [ $? -eq 0 -a -s /var/athena/clusterinfo.new ]
 then
 	rm -f /var/athena/clusterinfo
