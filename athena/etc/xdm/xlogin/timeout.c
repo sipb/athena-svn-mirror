@@ -1,15 +1,24 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.7 1994-04-26 10:41:36 root Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.8 1994-05-02 11:01:00 vrt Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#ifdef _AIX
+#define _POSIX_SOURCE
+#undef _BSD
+#endif
+#include <sys/wait.h>
+#ifdef _AIX
+#undef _POSIX_SOURCE
+#endif
 
+#ifndef FALSE
 #define FALSE 0
 #define TRUE (!FALSE)
+#endif
 
 #ifndef __STDC__
 #define volatile
