@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.1 1990-11-27 11:51:34 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.2 1990-11-27 14:09:06 lwvanels Exp $";
 #endif
 #endif
 
@@ -32,6 +32,7 @@ handle_request(fd, from)
   int ltr;
   int auth;
   char instance_buffer[INST_SZ];
+  char principal_buffer[ANAME_SZ+INST_SZ+REALM_SZ];
 #endif /* KERBEROS */
 
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
@@ -94,6 +95,18 @@ handle_request(fd, from)
     /* Twit! */
     fprintf(stderr,"Kerberos error: %s\n",krb_err_txt[auth]);
     output_len = htonl(-auth);
+    write(fd,&output_len,sizeof(long));
+    punt_connection(fd,from);
+    return;
+  }
+
+  sprintf(principal_buffer,"%s.%s@%s",their_info.pname, their_info.pinst,
+	  their_info.prealm);
+  if (!acl_check(MONITOR_ACL,principal_buffer)) {
+    /* Twit! */
+    fprintf(stderr,"Request from %s@%s who is not on the acl\n",
+	    principal_buffer, inet_ntoa(from.sin_addr));
+    output_len = htonl(-255);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
