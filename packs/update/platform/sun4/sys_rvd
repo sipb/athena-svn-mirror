@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.7 1993-09-14 15:43:31 vrt Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.8 1994-01-05 12:04:41 miki Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -60,7 +60,6 @@ GLOBAL : *.CKP *.local *.pid :
 		dfs/sharetab
 			# The following are symbolic links; no update is
 			# needed
-		-> clri
 		-> dump
 		-> gateways
 		-> lp
