@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.24 2004-12-24 18:39:16 ghudson Exp $
+# $Id: Makefile.athena,v 1.25 2004-12-27 22:01:14 ghudson Exp $
 
 dist:
 
@@ -6,7 +6,7 @@ dist:
 # cc to be gcc, and because we're installing into /usr/gcc.
 prepare:
 	rm -f config.cache
-	CC=$$sprobin/cc PATH=/usr/gcc/bin:$$PATH ./configure \
+	CC=$$sprobin/cc INSTALL=`pwd`/install-sh' -c' ./configure \
 	  --prefix=/usr/gcc --disable-shared --with-gnu-ld
 
 clean:
