@@ -3,7 +3,7 @@ Summary: Runs panel and confirms user desire to logout
 License: GPL
 Group: User Interface/Desktops
 
-Requires: athena-gnome-core
+Requires: athena-gnome-panel
 
 %description
 The panel-wrapper program runs panel (from athena-gnome-core) as a
