@@ -128,14 +128,15 @@ start)
 
 		echo "finished update-os"		    
 
+		platform=`uname -m`
 		echo "Installing bootblocks on root "
 		installboot \
-		    "/os/usr/platform/$SUNPLATFORM/lib/fs/ufs/bootblk" \
+		    "/os/usr/platform/$platform/lib/fs/ufs/bootblk" \
 		    "$rrootdrive"
 
 		echo "restore the boot-device in the prom"
 		boot=`cat /etc/boot-device`
-		/os/usr/platform/$SUNPLATFORM/sbin/eeprom "$boot"
+		/os/usr/platform/$platform/sbin/eeprom "$boot"
 
 
 		echo "Updating version for reboot"
