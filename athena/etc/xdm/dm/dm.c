@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.24 1992-07-13 16:46:16 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.25 1992-07-17 15:38:48 miki Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -12,6 +12,9 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#if defined(sun)
+#include <fcntl.h>
+#endif
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -43,7 +46,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.24 1992-07-13 16:46:16 lwvanels Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.25 1992-07-17 15:38:48 miki Exp $";
 #endif
 
 #ifndef NULL
