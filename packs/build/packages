@@ -1,4 +1,4 @@
-# $Id: packages,v 1.152 2002-02-17 19:35:04 ghudson Exp $
+# $Id: packages,v 1.153 2002-02-18 15:27:51 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -40,6 +40,7 @@ third/binutils			on solaris early
 third/m4			early
 third/autoconf			early
 athena/bin/install		on solaris,irix early
+third/pkgconfig			early
 
 # Initial packs setup
 packs/build/setup		early except linux
