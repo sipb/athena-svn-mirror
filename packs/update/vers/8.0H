@@ -1,0 +1,11 @@
+#!/bin/sh -
+# Version-specific update script for 8.0H
+
+case ${MACH} in
+SUN*)
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	;;
+
+INDY)
+	;;
+esac
