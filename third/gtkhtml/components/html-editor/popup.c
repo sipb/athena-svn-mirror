@@ -496,6 +496,7 @@ prepare_properties_and_menu (GtkHTMLControlData *cd, guint *items)
 			ADD_PROP (PARAGRAPH);
 			break;
 		default:
+			break;
 		}
 		if (obj->parent && obj->parent->parent && HTML_IS_TABLE_CELL (obj->parent->parent)) {
 			if (cd->format_html) {
