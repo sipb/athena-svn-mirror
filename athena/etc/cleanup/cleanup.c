@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.3 1990-07-24 13:40:49 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.4 1990-11-18 14:59:20 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -31,7 +31,7 @@
 #include <nlist.h>
 #include <hesiod.h>
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.3 1990-07-24 13:40:49 mar Exp $";
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.4 1990-11-18 14:59:20 mar Exp $";
 
 extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
@@ -44,9 +44,12 @@ struct nlist nl[] =
   { ""}
 };
 
-#define MAXUSERS 64
+#define MAXUSERS 1024
 #define ROOTUID 0
 #define DAEMONUID 1
+
+#define LOGGED_IN 1
+#define PASSWD 2
 
 /* static const char *nologin_msg = "Try again in a few seconds...\n"; */
 static const char *nologin_msg = "This machine is down for cleanup; try again in a few seconds.\n";
@@ -57,27 +60,39 @@ int main(int argc,char *argv[])
 {
   int fd, r, i, nuid;
   int status = 0;
+  int mode = LOGGED_IN;
   struct utmp u;
+  struct passwd *pwd;
   uid_t uids[MAXUSERS];
   char plist[MAXUSERS][16];
   FILE *lockf;
 
-  if(argc > 1)
-    fprintf(stderr, "Warning...cleanup program takes no arguments.\n");
+  if (argc == 1)
+    mode = LOGGED_IN;
+  else if (argc == 2 && !strcmp(argv[1], "-loggedin"))
+    mode = LOGGED_IN;
+  else if (argc == 2 && !strcmp(argv[1], "-passwd"))
+    mode = PASSWD;
+  else {
+      fprintf(stderr, "usage: %s [-loggedin | -passwd]\n", argv[0]);
+      exit(1);
+  }
 
   /* First create /etc/nologin */
   fd = open(nologin_fn ,O_RDWR | O_EXCL | O_CREAT, 0664);
-  if(fd < 0)
-    if(errno == EEXIST)
-      {
-	if(getuid())
+  if(fd < 0) {
+    if (errno == EEXIST) {
+	if (getuid())
 	  fprintf(stderr, "%s exists.  Failing.\n", nologin_fn);
+	else
+	  fprintf(stderr, "%s already exists, not performing cleanup.\n",
+		  nologin_fn);
 	exit(2);
-      } else {
-	fprintf(stderr, "Can't create %s, %s.\n", nologin_fn, 
-		sys_errlist[errno]);
+    } else {
+	fprintf("Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
 	exit(3);
-      }
+    }
+  }
   (void)write(fd, nologin_msg, strlen(nologin_msg));
   (void)close(fd);
 
@@ -96,49 +111,64 @@ int main(int argc,char *argv[])
     fprintf(lockf, "%d\n", getpid());
   fclose(lockf);
 
-  /* Get the list of current users */
-  fd = open("/etc/utmp", O_RDONLY);
-  if(fd < 0)
-    {
-      fprintf(stderr, "Couldn't open /etc/utmp, %s.\n", sys_errlist[errno]);
-      status = 4;
-      goto done;
-    }
-
-  uids[0] = ROOTUID;	/* Always count root... */
-  uids[1] = DAEMONUID;  /* ...and daemon. */
-  for(i=2;(r = read(fd, &u, sizeof (u))) > 0 && i < MAXUSERS;i++)
-    {
-      register struct passwd *p;
-      char buf[9];
-      if(u.ut_name[0] == '\0')
+  if (mode == LOGGED_IN) {
+      /* Get the list of current users */
+      fd = open("/etc/utmp", O_RDONLY);
+      if(fd < 0)
 	{
-	  i--;
-	  continue;
+	    fprintf(stderr, "Couldn't open /etc/utmp, %s.\n",
+		    sys_errlist[errno]);
+	    status = 4;
+	    goto done;
 	}
-      bcopy(u.ut_name, buf, 8);
-      buf[8] = '\0';
-      p = getpwnam(buf);
-      if(p == 0)
+      
+      uids[0] = ROOTUID;	/* Always count root... */
+      uids[1] = DAEMONUID;  /* ...and daemon. */
+      for(i=2;(r = read(fd, &u, sizeof (u))) > 0 && i < MAXUSERS;i++)
 	{
-	  fprintf(stderr, "Warning...could not get uid for user \"%s\".\n", buf);
-	  i--;
-	} else {
-	  int j;
-	  for(j = 0;j < i;j++)
-	    if(p->pw_uid == uids[j])
-	      break;
-	  if(i != j) {
-	      i--;
-	      continue;	/* duplicate */
-	  }
-	  (void) strncpy(plist[i], p->pw_passwd, sizeof(plist[i]));
-	  uids[i] = p->pw_uid;
+	    register struct passwd *p;
+	    char buf[9];
+	    if(u.ut_name[0] == '\0')
+	      {
+		  i--;
+		  continue;
+	      }
+	    bcopy(u.ut_name, buf, 8);
+	    buf[8] = '\0';
+	    p = getpwnam(buf);
+	    if(p == 0)
+	      {
+		  fprintf(stderr, "Warning...could not get uid for user \"%s\".\n", buf);
+		  i--;
+	      } else {
+		  int j;
+		  for(j = 0;j < i;j++)
+		    if(p->pw_uid == uids[j])
+		      break;
+		  if(i != j) {
+		      i--;
+		      continue;	/* duplicate */
+		  }
+		  (void) strncpy(plist[i], p->pw_passwd, sizeof(plist[i]));
+		  uids[i] = p->pw_uid;
+	      }
 	}
-    }
+      nuid = i;
+  } else /* mode == PASSWD */ {
+      /* Get the list of users in /etc/passwd */
+      setpwent();
+      nuid = 0;
+      while ((pwd = getpwent()) != NULL)
+	uids[nuid++] = pwd->pw_uid;
+      if (nuid > MAXUSERS) {
+	  fprintf(stderr, "Too many users in /etc/passwd for cleanup\n");
+	  status = 2;
+	  goto done;
+      }
+  }
 
-  nuid = i;
 #ifdef DEBUG
+  i = nuid;
   while(--i>=0)
       printf("uids[%d] = %d\n", i, uids[i]);
 #endif
@@ -154,7 +184,8 @@ int main(int argc,char *argv[])
   if (status = kill_uids(nuid, uids, 0, SIGKILL))
     goto done;
 
-  make_passwd(nuid, uids, plist);
+  if (mode == LOGGED_IN)
+    make_passwd(nuid, uids, plist);
   make_group(nuid, uids);
   
  done:
