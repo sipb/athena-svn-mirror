@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.13 1997-02-19 17:38:14 ghudson Exp $
+# $Id: update_ws.sh,v 1.14 1997-02-22 18:43:41 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -26,13 +26,17 @@ trap "" 1 15
 export CONFDIR LIBDIR PATH HOSTTYPE AUTO
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
-PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
+PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/srvd/bin/athena/machtype`
-if [ `expr $0 : '.*auto_update'` != "0" ]; then
+
+case "$0" in
+*auto_update)
 	AUTO=true
-else
+	;;
+*)
 	AUTO=false
-fi
+	;;
+esac
 
 if [ "`whoami`" != "root" ];  then
 	echo "You are not root.  This update script must be run as root."
