@@ -1,16 +1,14 @@
 DEFINES=-DRVD -DNAMESERVER -DVFS -DKRB5 -I$(KRB5DIR)/include $(MACHDEP)
 
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -llwp
 
 #if defined(SOLARIS)
 MACHDEP = -DINITTAB
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a 
-LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
+OSLIBS = -lbsd
 #endif
 
 #ifdef sgi
 MACHDEP = -DINITTAB
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 #endif
 
 #ifdef ultrix
@@ -24,7 +22,8 @@ MACHDEP=-DPOSIX -Olimit 600
 MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
 #endif
 
-LIBS=-lknet -lkrb -ldes -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err -lhesiod
+LIBS=-lknet -lkrb -ldes -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err -lhesiod \
+	$(OSLIBS)
 
 #ifdef ultrix
 build_program(login,login.o,,$(AFSLIBS) -lnsyslog $(LIBS))
