@@ -18,8 +18,10 @@
 #	@(#)newvers.sh	5.3 (Berkeley) 10/31/88
 #
 if [ ! -r version ]; then echo 0 > version; fi
-touch version
+/bin/rm -f vers.c
+/bin/mv -f version version.old
 awk '	{	version = $1 + 1; }\
 END	{	printf "char version[] = \"Version 4.%d ", version > "vers.c";\
-		printf "%d\n", version > "version"; }' < version
+		printf "%d\n", version > "version"; }' < version.old
+/bin/rm -f version.old
 echo `date`'";' >> vers.c
