@@ -1182,9 +1182,9 @@ typedef char *rpc_$mp_t;
     if (src_drep.char_rep == dst_drep.char_rep)\
         rpc_$unmarshall_char(mp, dst);\
     else if (dst_drep.char_rep == rpc_$drep_char_ascii)\
-        (ndr_$char)dst = rpc_$ebcdic_to_ascii [*(ndr_$char *)mp];\
+        dst = rpc_$ebcdic_to_ascii [*(ndr_$char *)mp];\
     else\
-        (ndr_$char)dst = rpc_$ascii_to_ebcdic [*(ndr_$char *)mp]
+        dst = rpc_$ascii_to_ebcdic [*(ndr_$char *)mp]
 
 
 
@@ -1231,7 +1231,7 @@ typedef char *rpc_$mp_t;
     *(ndr_$ushort_int *)mp = (ndr_$ushort_int)src
 
 #define rpc_$unmarshall_ushort_int(mp, dst)\
-    (ndr_$ushort_int)dst = *(ndr_$ushort_int *)mp
+    dst = *(ndr_$ushort_int *)mp
 
 #define rpc_$convert_ushort_int(src_drep, dst_drep, mp, dst)\
     if (src_drep.int_rep == dst_drep.int_rep)\
@@ -1265,7 +1265,7 @@ typedef char *rpc_$mp_t;
     *(ndr_$ulong_int *)mp = (ndr_$ulong_int)src
 
 #define rpc_$unmarshall_ulong_int(mp, dst)\
-    (ndr_$ulong_int)dst = *(ndr_$ulong_int *)mp
+    dst = *(ndr_$ulong_int *)mp
 
 #define rpc_$convert_ulong_int(src_drep, dst_drep, mp, dst)\
     if (src_drep.int_rep == dst_drep.int_rep)\
