@@ -1,4 +1,4 @@
-.\" $Id: dustbuster.1,v 1.1 2001-04-30 15:25:42 ghudson Exp $
+.\" $Id: dustbuster.1,v 1.2 2001-05-30 04:37:51 ghudson Exp $
 .\"
 .\" Copyright 2001 by the Massachusetts Institute of Technology.
 .\"
@@ -17,11 +17,12 @@
 .SH NAME
 dustbuster \- Limit a command to the lifetime of the current login session
 .SH SYNOPSIS
-.B dustbuster \fIprogname\fP \fIarguments\fP ...
+.B dustbuster \fIprogname\fP [ \fB\-s\fP \fIsigname\fP ] \fIarguments\fP ...
 .SH DESCRIPTION
 .B dustbuster
 runs the specified command, and ensures that the resulting process
-receives a SIGHUP when the current login session is over.
+receives a specified signal when the current login session is over.
+The default signal is SIGHUP.
 .PP
 If the environment variable XSESSION is set (it is set by the Athena
 default xsession script), then
@@ -32,6 +33,18 @@ If the environment variable XSESSION is not set, then
 .B dustbuster
 periodically (once every five seconds) checks to see whether the
 controlling tty can be opened.
+.PP
+The
+.B \-s
+option specifies which signal to send when the login session is over.
+The signal may be specified by number or by name; if specified by
+name, the name may be given with or without leading "SIG", and case is
+ignored.
+.SH BUGS
+Because Unix provides no portable way to map a signal name to signal
+number, only the signal names defined by the 1996 POSIX.1 standard are
+understood: ABRT, ALRM, FPE, HUP, ILL, INT, KILL, PIPE, QUIT, SEGV,
+TERM, USR1, USR2, CHLD, CONT, STOP, TSTP, TTIN, TTOU, BUS.
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br
