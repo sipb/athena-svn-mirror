@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.1.1.3 2003-05-01 01:12:43 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.1.1.3.2.1 2003-09-22 03:04:45 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -8769,7 +8769,7 @@ display_parameters(params)
 
     for(p = params; p; p = p->next)	/* ok if we include *'s */
       if(p->attribute && (n = strlen(p->attribute)) > longest)
-	longest = n;
+	longest = min(32, n);   /* shouldn't be any bigger than 32 */
 
     d = tmp_20k_buf;
     if(parmlist = rfc2231_newparmlist(params)){

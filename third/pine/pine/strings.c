@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.1.1.3 2003-05-01 01:13:08 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.1.1.3.2.1 2003-09-22 03:05:07 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -4099,7 +4099,8 @@ rfc2231_get_param(parms, name, charset, lang)
     char      *name, **charset, **lang;
 {
     char *buf, *p;
-    int	  decode = 0, name_len, i, n;
+    int	  decode = 0, name_len, i;
+    unsigned n;
 
     name_len = strlen(name);
     for(; parms ; parms = parms->next)
@@ -4120,15 +4121,19 @@ rfc2231_get_param(parms, name, charset, lang)
 		    n = 0;
 		    do
 		      n = (n * 10) + (*p - '0');
-		    while(isdigit(*++p));
+		    while(isdigit(*++p) && n < RFC2231_MAX);
 
 		    if(n < RFC2231_MAX){
 			pieces[n] = parms->value;
 			if(n > count)
 			  count = n;
 		    }
-		    else
+		    else {
+			q_status_message1(SM_ORDER | SM_DING, 0, 3,
+			"Invalid attachment parameter segment number: %.25s",
+					 name);
 		      return(NULL);		/* Too many segments! */
+		    }
 
 		    while(parms = parms->next)
 		      if(!struncmp(name, parms->attribute, name_len)){
@@ -4143,8 +4148,12 @@ rfc2231_get_param(parms, name, charset, lang)
 		for(i = len = 0; i <= count; i++)
 		  if(pieces[i])
 		    len += strlen(pieces[i]);
-		  else
+		  else{
+		      q_status_message1(SM_ORDER | SM_DING, 0, 3,
+			     "Missing attachment parameter sequence: %.25s",
+					 name);
 		    return(NULL);		/* hole! */
+		  }
 
 		buf = (char *) fs_get((len + 1) * sizeof(char));
 
@@ -4320,7 +4329,7 @@ rfc2231_list_params(plist)
     if(plist->value)
       fs_give((void **) &plist->value);
 
-    for(pp = plist->list; pp; pp = pp->next)
+    for(pp = plist->list; pp; pp = pp->next){
       /* get a name */
       for(i = 0; i < 32; i++)
 	if(!(plist->attrib[i] = pp->attribute[i]) ||  pp->attribute[i] == '*'){
@@ -4341,6 +4350,11 @@ rfc2231_list_params(plist)
 
 	    break;
 	}
+      if(i >= 32)
+	q_status_message1(SM_ORDER | SM_DING, 0, 3,
+			  "Overly long attachment parameter ignored: %.25s...",
+			  pp->attribute);
+    }
 
     return(FALSE);
 }
