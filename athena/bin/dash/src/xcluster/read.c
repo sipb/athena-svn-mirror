@@ -7,12 +7,13 @@
 
 #include "xcluster.h"		/* global include file. */
 #include "net.h"
+#include <ctype.h>
 
 /*
  * GLOBAL VARIABLES
  */
 struct cluster *cluster_list;	/* Pointer to list of clusters */
-static char *config[] = {"configplease2"};
+static char *config[] = {"configplease3"};
 char machtypes[10][25];
 int num_machtypes;
 
@@ -26,6 +27,8 @@ void read_clusters()
   struct cluster *new, *current = NULL;
   FILE *f;
   int s;
+  char buf[25];
+  char *ptr;
 
   s = net(progname, 1, config);
   if (s < 1)
@@ -44,6 +47,7 @@ void read_clusters()
     {
       fscanf(f, "%s", machtypes[i]);
     }
+  strcpy(machtypes[i], "Totals");
 
   cluster_list = (struct cluster *)malloc ((unsigned)sizeof(struct cluster));
   while(fscanf(f, "%d", &num) != EOF)
@@ -59,13 +63,20 @@ void read_clusters()
         }
       new->cluster_number = num;
 
-      fgets(new->button_name, 25, f);
+      fgets(buf, 25, f);
+      ptr = buf;
+
+      while (isspace(*ptr))
+	ptr++;
+      ptr[strlen(ptr) - 1] = '\0';
+      strcpy(new->button_name, ptr);
 
       for (i=0; TRUE; i++)
 	{
 	  fscanf(f, "%s", new->cluster_names[i]);
 	  if(!strcmp(new->cluster_names[i], "XXXXX"))
 	    break;
+	  fscanf(f, "%s", new->phone_num[i]);
 	}
 
       fscanf(f, "%d%d", &new->x_coord, &new->y_coord);

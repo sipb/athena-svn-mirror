@@ -39,6 +39,7 @@
 *map.exposeProc:		expose()
 *map.eventProc:			map_hit()
 
+*text.resizeProc:		text_resize()
 *text.exposeProc:		check_cluster()
 *text.eventProc:		text_hit()
 
@@ -111,9 +112,9 @@
 *helpDialog*line4.label:		\
   you are interested in.  Or, click on one of the buttons below the map.
 *helpDialog*line5.label:		\
-  Information on the status of printers in that cluster will also be
+  Information on the status of printers in that cluster will be
 *helpDialog*line6.label:		\
-  displayed, if available.
+  displayed, as well as phone number(s), if available.
 
 *helpDialog*close.activateProc:		unmapTree("helpDialog")
 *helpDialog*close.label:		Close Help Window

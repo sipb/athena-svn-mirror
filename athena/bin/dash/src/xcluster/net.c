@@ -28,7 +28,7 @@ int net(progname, num, names)
       serv = hes_resolve("cview","sloc"); 
 
       if (serv == NULL)
-	host = "noc.mit.edu";	/* fall back if hesiod is broken... */
+	host = "doghouse.mit.edu";	/* fall back if hesiod is broken... */
       else
 	host = *serv;
 #endif

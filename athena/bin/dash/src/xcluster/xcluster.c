@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v $
- * $Author: epeisach $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.3 1991-07-17 11:04:16 epeisach Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.4 1992-04-29 14:09:35 cfields Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -32,7 +32,6 @@ static char rcsid[] =
 #include "Window.h"
 #include "Button.h"
 #include "Label.h"
-#include "Icon.h"
 #include "Form.h"
 #include "Tree.h"
 #include "Drawing.h"
@@ -53,7 +52,7 @@ char *progname;
 char form[BUFSIZ];
 struct cluster *Current;
 
-
+int set_auto();
 
 
 
@@ -90,11 +89,13 @@ static XrmOptionDescRec opTable[] = {
 {"-f",		".appDefs",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-userdefs",	".userDefs",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-inactive",	".inactive",	XrmoptionSepArg,	(caddr_t) 60},
+{"-auto",	".auto",	XrmoptionSepArg,	(caddr_t) 60},
 };
 
 typedef struct _MyResources
 {
   int inactive;
+  int automatic;
 } MyResources;
 
 typedef struct _MyResources *MyResourcesPtr;
@@ -107,6 +108,8 @@ static XjResource appResources[] =
 {
   { "inactive", "Inactive", XjRInt, sizeof(int),
       offset(inactive), XjRInt, (caddr_t) 0 },
+  { "auto", "Auto", XjRInt, sizeof(int),
+      offset(automatic), XjRInt, (caddr_t) 0 },
 };
 
 #undef offset
@@ -171,7 +174,7 @@ int resize(draw, foo, data)
 void draw_circle(c)
      struct cluster *c;
 {
-  if (circled != NULL  &&  circled != c)
+  if (circled != NULL  &&  circled != c  &&  map_gc != NULL)
     {
       XCopyArea(XjDisplay(map), pixmap_off, XjWindow(map),
 		((DrawingJet) map)->drawing.foreground_gc,
@@ -180,7 +183,7 @@ void draw_circle(c)
 		(circled->y_coord-400)/div+yleft-1);
     }
 
-  if (c != NULL  &&  circled != c)
+  if (c != NULL  &&  circled != c  &&  map_gc != NULL)
     {
       XCopyArea(XjDisplay(map), XjWindow(map), pixmap_off,
 		((DrawingJet) map)->drawing.foreground_gc,
@@ -204,7 +207,9 @@ void draw_circle(c)
 
       XFlush(XjDisplay(map));
     }
-  circled = c;
+
+  if (map_gc != NULL)
+    circled = c;
 }
 
 
@@ -355,23 +360,30 @@ fatal(display)
 }
 
 
+int timeout(data, id)
+     int data, id;
+{
+  exit(0);
+}
 
 void reset_timer()
 {
-  static int timerid= -1;
+  static int timerid = -1;
 
   if (parms.inactive != 0)
     {
       if (timerid != -1)
 	(void) XjRemoveWakeup(timerid);
-      timerid = XjAddWakeup(quit, 0, 1000 * parms.inactive);
+      timerid = XjAddWakeup(timeout, 0, 1000 * parms.inactive);
     }
 }
 
 
-void set_curr(c)
+void set_curr(c, id)
      struct cluster *c;
+     int id;
 {
+  static int timerid = -1;
   Current = c;
 
   for(c=cluster_list; c != NULL; c=c->next)
@@ -383,6 +395,26 @@ void set_curr(c)
   XjCallCallbacks(text, ((DrawingJet) text)->drawing.exposeProc, NULL);
   draw_circle(Current);
   reset_timer();
+  if (parms.automatic != 0)
+    {
+      if (timerid != -1  &&  timerid != id)
+	(void) XjRemoveWakeup(timerid);
+      timerid = XjAddWakeup(set_auto, 0, 1000 * parms.automatic);
+    }
+}
+
+
+int set_auto(data, id)
+     int data, id;
+{
+  static struct cluster *automatic = NULL;
+
+  if (automatic == NULL)
+    automatic = cluster_list;
+
+  set_curr(automatic, id);
+  automatic = Current->next;
+  return 0;
 }
 
 
@@ -395,7 +427,7 @@ int btn(me, curr, data)
   struct cluster *c;
 
   for(c=cluster_list, n=0; c != NULL  &&  n < curr; c=c->next, n++);
-  set_curr(c);
+  set_curr(c, -1);
   return 0;
 }
 
@@ -450,15 +482,19 @@ int map_hit(me, curr, event)
 
   if (event->type == ButtonPress)
     {
-/*
-      printf("%d %d\n",
-	     (event->xbutton.x-xleft)*div,
-	     (event->xbutton.y-yleft)*div);
-*/
       c = find_cluster(event->xbutton.x, event->xbutton.y);
-      set_curr(c);
+      set_curr(c, -1);
     }
   return 0;
+}
+
+
+int text_resize(draw, foo, data)
+     DrawingJet draw;
+     int foo;
+     caddr_t data;
+{
+  XClearWindow(XjDisplay(draw), XjWindow(draw));
 }
 
 
@@ -467,14 +503,13 @@ int text_hit(me, curr, event)
      int curr;
      XEvent *event;
 {
-  int n;
   struct cluster *c;
   extern struct cluster *find_text();
 
   if (event->type == ButtonPress)
     {
       c = find_text(event->xbutton.x, event->xbutton.y);
-      set_curr(c);
+      set_curr(c, -1);
     }
   return 0;
 }
@@ -482,10 +517,8 @@ int text_hit(me, curr, event)
 
 int state = 0;
 
-int flash(fromJet, what, data)
-     caddr_t fromJet;
-     int what;
-     caddr_t data;
+int flash(data, id)
+     int data, id;
 {
   if (circled != NULL)
     {
@@ -522,6 +555,7 @@ XjCallbackRec callbacks[] =
   { "unset", unset },
   { "map_hit", map_hit },
   { "text_hit", text_hit },
+  { "text_resize", text_resize },
 };
 
 
@@ -562,7 +596,6 @@ main(argc, argv)
 int argc;
 char **argv;
 {
-  Display *display;
   Jet xclusterWindow, xclusterForm, label1, mapwin;
   Jet qw, qb, ql,  hw, hb, hl;
   Jet twin;
@@ -584,7 +617,6 @@ char **argv;
 		      (caddr_t) &parms);
 
   progname = programName;
-  display = root->core.display;
 
   XjRegisterCallbacks(callbacks, XjNumber(callbacks));
 
@@ -612,13 +644,17 @@ char **argv;
 	  help: - - quit twin  mapwin: 1 label1 99 quit");
 
   read_clusters();
+
   make_btns(xclusterForm);
 
   setForm(xclusterForm, form);
 
   XjRealizeJet(root);
-  flash();
+  flash(NULL, NULL);
   reset_timer();
+
+  if (parms.automatic != 0)
+    set_auto(0, -1);
 
   XjEventLoop(root);
 }
