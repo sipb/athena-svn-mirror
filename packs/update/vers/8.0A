@@ -11,7 +11,7 @@ SUN*)
 	echo "/etc/shells"			>> ${CONFCHG}
 
 	# Add gettime entry to root crontab.
-	cronentry="45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
+	cronentry='45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB'
 	if [ `grep -ic "gettime" /var/spool/cron/crontabs/root` = 0 ]; then
 		echo "$cronentry" >> /var/spool/cron/crontabs/root
 	fi
