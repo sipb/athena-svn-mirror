@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.17 1991-01-27 15:04:23 lwvanels Exp $
+ *	$Id: list.c,v 1.18 1991-02-01 23:20:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.17 1991-01-27 15:04:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.18 1991-02-01 23:20:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -178,25 +178,31 @@ void
 dump_list()
 {
   KNUCKLE **k_ptr;
-  static D_LIST *pending_q, *pickup_q, *refer_q;
-  static int mx_pending, mx_pickup, mx_refer;
-  int n_pending, n_pickup, n_refer;
+  static D_LIST *active_q, *unseen_q, *pending_q, *pickup_q, *refer_q,*on_q;
+  static int mx_active, mx_unseen, mx_pending, mx_pickup, mx_refer,mx_on;
+  int n_active, n_unseen, n_pending, n_pickup, n_refer, n_on;
   FILE *f;
 
   /* Allocate initial space for queues */
   /* Make some good guesses about sizes- can't hurt to overguess a little */
 
   if (mx_pending == 0) {
+    mx_active = 30;
+    mx_unseen = 50;
     mx_pending = 50;
     mx_pickup = 50;
     mx_refer = 10;
-
+    mx_on = 20;
+    
+    active_q = calloc(mx_active,sizeof(D_LIST));
+    unseen_q = calloc(mx_unseen,sizeof(D_LIST));
     pending_q = calloc(mx_pending,sizeof(D_LIST));
     pickup_q = calloc(mx_pickup,sizeof(D_LIST));
     refer_q = calloc(mx_refer,sizeof(D_LIST));
+    on_q = calloc(mx_on,sizeof(D_LIST));
   }
 
-  n_pending = n_pickup = n_refer = 0;
+  n_active = n_unseen = n_pending = n_pickup = n_refer = n_on =0;
 
   if ((pending_q == NULL) || (pickup_q == NULL) || (refer_q == NULL)) {
     log_error("dump_list: calloc failed");
@@ -206,7 +212,43 @@ dump_list()
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(!list_redundant((*k_ptr)) && is_active((*k_ptr)))
       {
-	if ((*k_ptr)->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED |
+	if ((*k_ptr)->connected != NULL) {
+	  get_dlist_info(&active_q[n_active],*k_ptr);
+	  n_active++;
+	  if (n_active == mx_active) {
+	    mx_active *= 2;
+	    active_q = realloc(active_q,mx_active);
+	    if (active_q == NULL) {
+	      log_error("dump_list: realloc failed");
+	      return;
+	    }
+	  }
+	}
+	else if ((*k_ptr)->question == NULL) {
+	  get_dlist_info(&on_q[n_on],*k_ptr);
+	  n_on++;
+	  if (n_on == mx_on) {
+	    mx_on *= 2;
+	    on_q = realloc(on_q,mx_on);
+	    if (on_q == NULL) {
+	      log_error("dump_list: realloc failed");
+	      return;
+	    }
+	  }
+	}
+	else if ((*k_ptr)->question->nseen == 0) {
+	  get_dlist_info(&unseen_q[n_unseen],*k_ptr);
+	  n_unseen++;
+	  if (n_unseen == mx_unseen) {
+	    mx_unseen *= 2;
+	    unseen_q = realloc(unseen_q,mx_unseen);
+	    if (unseen_q == NULL) {
+	      log_error("dump_list: realloc failed");
+	      return;
+	    }
+	  }
+	}
+	else if ((*k_ptr)->status & (PENDING | NOT_SEEN | ACTIVE | SERVICED |
 				DONE | CANCEL)) {
 	  get_dlist_info(&pending_q[n_pending],*k_ptr);
 	  n_pending++;
@@ -251,9 +293,14 @@ dump_list()
     log_error("dump_list: unable to open list file");
     return;
   }
-  put_queue(f,pending_q,n_pending,"active");
+  /* number of queues */
+  fprintf(f,"6\n");
+  put_queue(f,active_q,n_active,"active");
+  put_queue(f,pending_q,n_pending,"pending");
+  put_queue(f,unseen_q,n_unseen,"unseen");
   put_queue(f,pickup_q,n_pickup,"pickup");
   put_queue(f,refer_q,n_refer,"refer");
+  put_queue(f,on_q,n_on,"on-duty");
   fclose(f);
   rename(LIST_TMP_NAME,LIST_FILE_NAME);
   return;
