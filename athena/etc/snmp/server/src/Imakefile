@@ -1,5 +1,5 @@
 #
-#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.4 1994-08-15 15:06:56 cfields Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/Imakefile,v 1.5 1997-02-27 06:49:06 ghudson Exp $
 #
 #  Makefile for SNMPD
 #
@@ -65,8 +65,8 @@ DEFINES   = -I./include -DMIT -DATHENA -DAFS  $(MACHFLAGS)
 LINTFLAGS = $(CFLAGS) -achx
 
 #if defined(SOLARIS)
-DEFINES = -I./include -I/usr/athena/include -I/usr/ucbinclude -DMIT -DATHENA -DAFS  $(MACHFLAGS)
-LIBS = -lsnmp -lsocket -lnsl -ldl -lelf -lkvm /usr/ucblib/libucb.a
+DEFINES = -I./include -I/usr/athena/include -DMIT -DATHENA -DAFS  $(MACHFLAGS)
+LIBS = -lsnmp -lsocket -lnsl -ldl -lelf -lkvm
 #endif
 
 build_program(snmpd,${OBJS},$(LLFLAGS),$(LIBS))
@@ -82,7 +82,7 @@ stat_grp.o: compile_time.h
 /* ugen bug prevents compiling otherwise */
 SpecialObject(at_grp.o,at_grp.c,-O1)
 #endif
-	
+
 clean::
 	${RM} snmpd *.o *~ core linterrs compile_time.h
 
