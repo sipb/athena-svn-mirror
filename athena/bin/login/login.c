@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.49 1992-05-18 17:02:18 epeisach Exp $
+ * $Id: login.c,v 1.50 1992-05-19 13:54:00 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.49 1992-05-18 17:02:18 epeisach Exp $";
+static char *rcsid = "$Id: login.c,v 1.50 1992-05-19 13:54:00 cfields Exp $";
 #endif
 
 /*
@@ -126,6 +126,7 @@ char	maildir[30] =	"/usr/spool/mail/";
 char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
+char	noremote[] =	"/etc/noremote";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
 
@@ -221,6 +222,7 @@ int	inhibitflag = FALSE;	/* inhibit account creation on the fly */
 int	attachable = FALSE;	/* True if /etc/noattach doesn't exist */
 int	attachedflag = FALSE;	/* True if homedir attached */
 int	errorprtflag = FALSE;	/* True if login error already printed */
+int	no_remote = FALSE;	/*True if /etc/noremote exists */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -241,6 +243,7 @@ main(argc, argv)
     long salt;
     int ldisc = 0, zero = 0, found = 0, i, j;
     char **envnew;
+    FILE *nrfd;
 #ifdef POSIX
     struct termios tio;
 #endif
@@ -405,6 +408,7 @@ main(argc, argv)
     invalid = FALSE;
     inhibitflag = !access(inhibit,F_OK);
     attachable = access(noattach, F_OK);
+    no_remote = !access(noremote, F_OK);
     do {
 	    errorprtflag = 0;
 	    ldisc = 0;
@@ -469,11 +473,24 @@ main(argc, argv)
 	    setpriority(PRIO_PROCESS, 0, -4);
 	    pp = getlongpass("Password:");
 	    
-	    if (!found) /* check if we can create an entry */
-		    if (inhibitflag)
-			invalid = TRUE;
-		    else /* we are allowed to create an entry */
-			pwd = &nouser;
+	    if (!found) { /* check if we can create an entry */
+	      if (inhibitflag) {
+		invalid = TRUE;
+	      } else if (no_remote && (hflag || rflag || kflag || Kflag)) {
+		invalid = TRUE;
+		fprintf(stderr, "You are not allowed to log in here.\n");
+		if ((nrfd = fopen(noremote,"r")) != NULL) {
+		  while ((c = getc(nrfd)) != EOF)
+		    putchar(c);
+		  fflush(stdout);
+		  fclose(nrfd);
+		}
+		errorprtflag = TRUE;
+		goto leavethis;
+	      }
+	      else /* we are allowed to create an entry */
+		pwd = &nouser;
+	    }
 
 	    /* Modifications for Kerberos authentication -- asp */
 	    SCPYN(pp2, pp);
