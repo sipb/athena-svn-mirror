@@ -81,6 +81,14 @@ case "$1" in
 		echo
 	fi
 
+	if [ -e /etc/DIR_COLORS ]; then
+		echo -n "Fixing permissions on /etc/DIR_COLORS"
+		chmod 644 /etc/DIR_COLORS \
+			 && success "DIR_COLORS chmod" \
+				 || failure "DIR_COLORS chmod"
+		echo
+	fi
+
 	if [ "$PUBLIC" = true ] && grep /dev/cdrom /etc/fstab | \
 	    grep -vq user; then
 		echo -n "Fixing mount options for CDROM"
