@@ -191,19 +191,7 @@ $(FTDEBUG_OBJ): $(FTDEBUG_SRC) $(FREETYPE_H)
 
 # Include all rule files from FreeType components.
 #
-include $(TOP)/src/autohint/rules.mk
-include $(TOP)/src/base/rules.mk
-include $(TOP)/src/cache/rules.mk
-include $(TOP)/src/cff/rules.mk
-include $(TOP)/src/cid/rules.mk
-include $(TOP)/src/psaux/rules.mk
-include $(TOP)/src/psnames/rules.mk
-include $(TOP)/src/raster/rules.mk
-include $(TOP)/src/sfnt/rules.mk
-include $(TOP)/src/smooth/rules.mk
-include $(TOP)/src/truetype/rules.mk
-include $(TOP)/src/type1/rules.mk
-include $(TOP)/src/winfonts/rules.mk
+include $(wildcard $(SRC)/*/rules.mk)
 
 
 # ftinit component
