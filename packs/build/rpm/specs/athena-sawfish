@@ -14,13 +14,6 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
-# control-center can only see desktop files in the default GNOME
-# prefix for now.  This will make us conflict with the native sawfish
-# RPM, unfortunately.
-mkdir -p $RPM_BUILD_ROOT/usr/share/gnome/wm-properties
-mv $RPM_BUILD_ROOT/usr/athena/share/gnome/wm-properties/Sawfish.desktop \
-  $RPM_BUILD_ROOT/usr/share/gnome/wm-properties/Sawfish.desktop
-
 # Don't try to install a /usr/athena/info/dir file.
 rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
 
