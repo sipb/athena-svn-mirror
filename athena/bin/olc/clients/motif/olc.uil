@@ -23,15 +23,16 @@ include file 'XmAppl.uil';
 !
 
 procedure
-	olc_send	(string);
-	olc_done	(string);
-	olc_cancel	(string);
-	olc_save_log	(string);
-	olc_stock	(string);
-	olc_motd	(string);
-	olc_help	(string);
-	olc_quit	(string);
-	olc_general	(string);
+	olc_send	();
+	olc_done	();
+	olc_cancel	();
+	olc_save_log	();
+	olc_stock	();
+	olc_motd	();
+	olc_help	();
+	olc_quit	();
+	helpbox_create	(integer);
+	replay_create	();
 	Scroll		();
 
 !
@@ -43,12 +44,16 @@ value
 ! Fonts
 
 	TitleFont:	font('*-times-bold-i-*-*-*-240-*');
-	ButtonFont:	font('*-times-medium-i-*-*-*-140-*');
-	Courier:	font('*-courier-medium-r-*-*-*-140-*');
+	ButtonFont1:	font('*-times-medium-i-*-*-*-140-*');
+	ButtonFont2:	font('*-times-bold-i-*-*-*-140-*');
+	LabelFont:	font('*-times-medium-r-*-*-*-140-*');
+	Courier12:	font('*-courier-medium-r-*-*-*-120-*');
+	Courier14:	font('*-courier-medium-r-*-*-*-140-*');
+	Fixed:		font('fixed');
 
 ! Integers
 
-	Default_width:		486;
+	Default_width:		530;
 	Default_height:		318;
 	Vert_spacing:		5;
 	Horiz_spacing:		10;
@@ -57,36 +62,36 @@ value
 	Menu_border:		1;
 	Toggle_border:		1;
 	Menu_spacing:		2;
-	Inner_horiz_spacing:	5;
-	Inner_vert_spacing:	0;
-	Inner_form_width:	200;
-	Inner_form_height:	25;
-	Bottom_form_spacing:	25;
+	Quit_help_spacing:	5;
 	Text_columns:		40;
 	Normal_spacing:		5;
-	Max_file_name_len:	190;
-	Max_ptr_name_len:	20;
-	Max_pgs_len:		4;
 
 ! Labels
 
 	Title_label:	"OLC";
-	Send_label:	"Send message to consultant";
-	Done_label:	"Mark the question DONE";
-	Cancel_label:	"Cancel your question";
-	Save_label:	"Save this conversation in a file...";
-	Stock_label:	"Browse the stock answers";
-	Motd_label:	"Display the message of the day";
+	Send_label:	"Send message";
+	Done_label:	"Done question";
+	Cancel_label:	"Cancel question";
+	Save_label:	"Save log...";
+	Stock_label:	"Stock";
+	Motd_label:	"MOTD";
+!	Send_label:	"Send message to consultant";
+!	Done_label:	"Mark the question DONE";
+!	Cancel_label:	"Cancel your question";
+!	Save_label:	"Save this conversation in a file...";
+!	Stock_label:	"Browse the stock answers";
+!	Motd_label:	"Display the message of the day";
 	Quit_label:	"QUIT OLC";
 	Help_label:	"HELP";
 	Help_text:	"Help is not yet implemented.";
+	Topic_text:	"Your question topic is: ";
 
 ! Colors and color tables
 
 	yellow:		color('yellow', foreground);
 	red:		color('red', background);
 
-	ct:	color_table(	yellow='o',
+	ct:		color_table(	yellow='o',
 					red='.',
 					background color=' ');
 	ct_hilite:	color_table(	yellow='.',
@@ -141,7 +146,7 @@ value
 
 ! The main form of the interface
 
-object main:			form {
+object main:	form {
 	arguments {
 		width = Default_width;
 		height = Default_height;
@@ -151,18 +156,25 @@ object main:			form {
 		border_width = Normal_border;
 	};
 	controls {
-		label title;
-		separator title_separator;
-		frame replay_window;
-		separator bottom_separator;
-		row_column options_menu;
+		label		title_label;
+		separator	title_separator;
+		form		status_form;
+		separator	status_separator;
+		frame		replay_frame;
+		separator	bottom_separator;
+		row_column	options_menu;
+		form		quit_help_form;
+		unmanaged message_dialog	helpbox;
+		unmanaged error_dialog		errorbox;
 	};
 };
 
-object title:			label {
+object title_label:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_FORM;
+		alignment = XmALIGNMENT_CENTER;
 		font_list = TitleFont;
 		label_label = Title_label;
 	};
@@ -173,18 +185,77 @@ object title_separator:		separator {
 		orientation = XmHORIZONTAL;
 		separator_type = XmSHADOW_ETCHED_IN;
 	        top_attachment = XmATTACH_WIDGET;
-		top_widget = label title;
+		top_widget = label title_label;
 		left_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
 	};
 };
 
-object replay_window:		frame {
+object status_form:		form {
 	arguments {
 		right_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
 		top_attachment = XmATTACH_WIDGET;
 		top_widget = separator title_separator;
+	};
+	controls {
+		label connect_status;
+		label topic_text;
+		label current_topic;
+	};
+};
+
+object connect_status:		label {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		alignment = XmALIGNMENT_CENTER;
+		font_list = LabelFont;
+		label_label = "You are connected to Joe Consultant";
+	};
+};
+
+object topic_text:		label {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_WIDGET;
+		right_widget = label current_topic;
+		alignment = XmALIGNMENT_CENTER;
+		font_list = LabelFont;
+		label_label = Topic_text;
+	};
+};
+
+object current_topic:			label {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_FORM;
+		alignment = XmALIGNMENT_CENTER;
+		font_list = ButtonFont1;
+		label_label = "other";
+	};
+};
+
+object status_separator:	separator {
+	arguments {
+		orientation = XmHORIZONTAL;
+		separator_type = XmSHADOW_ETCHED_IN;
+	        top_attachment = XmATTACH_WIDGET;
+		top_widget = form status_form;
+		left_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_FORM;
+	};
+};
+
+object replay_frame:		frame {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		top_attachment = XmATTACH_WIDGET;
+		top_widget = separator status_separator;
 		bottom_attachment = XmATTACH_WIDGET;
 		bottom_widget = separator bottom_separator;
 	};
@@ -199,9 +270,11 @@ object replaybox:		scroll_window  {
 		visual_policy = XmVARIABLE;
 		update_slider_size = true;
 		scroll_bar_display_policy = XmSTATIC;
+		scroll_bar_placement = XmBOTTOM_LEFT;
 		vertical_scroll_bar = scroll_bar scrbar;
 		work_window = text replbox;
-		scroll_bar_placement = XmBOTTOM_LEFT;
+		border_width = 0;
+		spacing = 2;
 	};
 	controls {
 		scroll_bar scrbar;
@@ -226,9 +299,12 @@ object replbox:			text {
 	arguments{
 		editable = false;
 		unit_type = 0;
-		text_value = "This is where the replay would go...";
-		font_list = Courier;
+		text_value = "This text is exactly 80 characters long.  I fear the first char is being lost...\n";
+		font_list = Fixed;
 		word_wrap = true;
+	};
+	callbacks {
+		create = procedure replay_create();
 	};
 };
 
@@ -236,8 +312,6 @@ object bottom_separator:	separator {
 	arguments {
 		orientation = XmHORIZONTAL;
 		separator_type = XmSHADOW_ETCHED_IN;
-!!	        top_attachment = XmATTACH_WIDGET;
-!!		top_widget = frame replay_window;
 	        bottom_attachment = XmATTACH_WIDGET;
 		bottom_widget = row_column options_menu;
 		left_attachment = XmATTACH_FORM;
@@ -249,9 +323,8 @@ object options_menu:		row_column {
 	arguments {
 		left_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
-		bottom_attachment = XmATTACH_FORM;
-!!		top_attachment = XmATTACH_WIDGET;
-!!		top_widget = separator bottom_separator;
+		bottom_attachment = XmATTACH_WIDGET;
+		bottom_widget = form quit_help_form;
 		orientation = XmHORIZONTAL;
 		packing = XmPACK_TIGHT;
 	};
@@ -260,109 +333,136 @@ object options_menu:		row_column {
 		push_button done;
 		push_button cancel;
 		push_button save_log;
-		push_button stock;
 		push_button motd;
-		push_button quit;
-		push_button help;
 	};
 };
 
 object send:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Send_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Send");
+		activate = procedure olc_send ();
 	};
 };
 
 object done:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Done_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Done");
+		activate = procedure olc_done ();
 	};
 };
 
 object cancel:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Cancel_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Cancel");
+		activate = procedure olc_cancel ();
 	};
 };
 
 object save_log:	push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Save_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Save");
+		activate = procedure olc_save_log ();
 	};
 };
 
 object stock:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Stock_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Stock");
+		activate = procedure olc_stock ();
 	};
 };
 
 object motd:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		font_list = ButtonFont1;
 		label_string = Motd_label;
 	};
 	callbacks {
-		activate = procedure olc_general ("Motd");
+		activate = procedure olc_motd ();
+	};
+};
+
+object quit_help_form:	form {
+	arguments {
+		horizontal_spacing = Quit_help_spacing;
+		right_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+	};
+	controls {
+		push_button quit;
+		push_button help;
 	};
 };
 
 object quit:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		top_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		font_list = ButtonFont2;
 		label_string = Quit_label;
+		margin_bottom = 2;
 	};
 	callbacks {
-		activate = procedure olc_general ("Quit");
+		activate = procedure olc_quit ();
 	};
 };
 
 object help:		push_button {
 	arguments {
-		font_list = ButtonFont;
+		top_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_WIDGET;
+		left_widget = push_button quit;
+		font_list = ButtonFont2;
 		label_string = Help_label;
+		margin_bottom = 2;
 	};
 	callbacks {
-		activate = procedure olc_general ("Help");
+		activate = procedure olc_help ();
 	};
 };
 
-object help_dialog  :  information_dialog {
+object helpbox:		message_dialog {
 	arguments {
-		dialog_style = XmDIALOG_APPLICATION_MODAL;
-		message_string = Help_text;
-		default_button_type = XmDIALOG_OK_BUTTON;
+		dialog_style = XmDIALOG_MODELESS;
+		button_font_list = ButtonFont1;
+		text_font_list = LabelFont;
+		message_alignment = XmALIGNMENT_BEGINNING;
 		border_width = Normal_border;
-		shadow_thickness = Normal_shadow;
+!!!!!!!!!	message_string = Help_text;
+	};
+	callbacks {
+		create = procedure helpbox_create(1);
 	};
 };
 
-object errorbox  :  error_dialog {
+object errorbox:	error_dialog {
 	arguments {
 		dialog_style = XmDIALOG_APPLICATION_MODAL;
+		button_font_list = ButtonFont1;
+		text_font_list = LabelFont;
+		message_alignment = XmALIGNMENT_BEGINNING;
 		default_button_type = XmDIALOG_OK_BUTTON;
 		border_width = Normal_border;
-		shadow_thickness = Normal_shadow;
+	};
+	callbacks {
+		create = procedure helpbox_create(2);
 	};
 };
 
