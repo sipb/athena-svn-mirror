@@ -19,13 +19,13 @@ operation of the line printer system.
 For each line printer configured in /etc/printcap,
 .I lpc
 may be used to:
-.IP \(bu
+.IP +
 disable or enable a printer,
-.IP \(bu
+.IP +
 disable or enable a printer's spooling queue,
-.IP \(bu
+.IP +
 rearrange the order of jobs in a spooling queue,
-.IP \(bu
+.IP +
 find the status of printers, and their associated
 spooling queues and printer dameons.
 .PP
@@ -91,6 +91,15 @@ quit
 .br
 Exit from lpc.
 .TP
+flush { all | printer ... }
+.br
+Remove all data, control and temporary files in a specified printer
+queue on the local machine.
+.TP
+lookat { all | printer ... }
+.br
+Display the contents of printer queues using /usr/ucb/lpq.
+.TP
 restart { all | printer ... }
 .br
 Attempt to start a new printer daemon. 
@@ -133,7 +142,9 @@ lpd(8),
 lpr(1),
 lpq(1),
 lprm(1),
-printcap(5)
+printcap(5),
+clustertab(5),
+gci(5)
 .SH DIAGNOSTICS
 .nf
 .ta \w'?Ambiguous command      'u
