@@ -43,6 +43,4 @@ typedef int Code_t;
 
 #define BFSZ 1024
 
-char *malloc(), *realloc();
-
 #endif /* __GLOBALMESSAGE_H__ */
