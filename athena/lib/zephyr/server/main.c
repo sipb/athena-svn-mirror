@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.28 1988-06-25 16:53:05 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.29 1988-07-08 15:19:30 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987,1988 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
@@ -25,9 +25,9 @@ char concurrent[] = "no brain-dump concurrency";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 3.0";
+char version[] = "Zephyr Server (DEBUG) 3.1";
 #else
-char version[] = "Zephyr Server 3.0";
+char version[] = "Zephyr Server 3.1";
 #endif DEBUG
 /*
  * Server loop for Zephyr.
