@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.66 2004-03-23 19:36:29 rbasch Exp $
+# $Id: update_ws.sh,v 1.67 2004-05-04 20:12:20 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -246,89 +246,45 @@ esac
 
 case "$HOSTTYPE" in
 sun4)
-
-  # Set required filesystem sizes 9.2 release, and required filesystem
-  # space for the 9.2 update.  Filesystem overhead consumes about 7% of
-  # a partition, so we check for a filesystem size 10% less than the
-  # partition size we want.  We get some extra margin from minfree,
-  # but we don't deliberately rely on that.
-
-  if [ -h /usr/athena ]; then
-    # Multi-partition Sun.
-    reqrootsize=184320	# 200MB partition; measured use 92698K
-    requsrsize=184320	# 200MB partition; measured use 160819K
-    reqrootspace=30720	# 30MB; measured space increase 26338K
-    requsrspace=10240	# 10MB; measured space increase 3582K
-  else
-    # Single-partition Sun.
-    reqrootsize=2097152	# 2GB partition; measured use 1021038K
-    requsrsize=0
-    reqrootspace=819200	# 800MB; measured space increase 708325K
-    requsrspace=0
-  fi
-
-  # Check filesystem sizes.
-  rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
-  usrsize=`df -k /usr | awk '{ x = $2; } END { print x; }'`
-  if [ "$reqrootsize" -gt "$rootsize" -o "$requsrsize" -gt "$usrsize" ]; then
-    echo "Your / or /usr partition is not big enough for Athena release 9.1"
-    echo "and higher.  You must reinstall to take this update."
-    logger -t "$HOST" -p user.notice / or /usr too small to take update
+  # Don't allow the update on multi-partition Suns.
+  if [ "`df /usr | awk '{print $1}'`" = /usr ]; then
+    echo "This machine has a separate /usr partition from the root partition,"
+    echo "which is not supported by Athena release 9.3.  You must reinstall"
+    echo "in order to take this update.  (If you have a 4GB or smaller disk,"
+    echo "you cannot take this update at all.)"
     failupdate
   fi
 
-  # Check free space if this is a full update to 9.1.
+  # Set required filesystem size for the 9.3 release, and required
+  # filesystem space for the 9.3 update.  Filesystem overhead consumes
+  # about 7% of a partition, so we check for a filesystem size 10%
+  # less than the partition size we want.  We get some extra margin
+  # from minfree, but we don't deliberately rely on that.
+  reqsize=4718592	# 5GB partition; measured use 3447108K
+  reqspace=2621440	# 2.5GB; measured space increase 2257525K
+
+  # Check filesystem size.
+  rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
+  if [ "$reqsize" -gt "$rootsize" ]; then
+    echo "Your root filesystem is not big enough for Athena release 9.3"
+    echo "and higher.  You cannot take this update."
+    logger -t "$HOST" -p user.notice / too small to take update
+    failupdate
+  fi
+
+  # Check free space if this is a full update to 9.3.
   case $version in
-  9.1.*)
+  9.2.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
-    usrspace=`df -k /usr | awk '{ x = $4; } END { print x; }'`
-    if [ "$reqrootspace" -gt "$rootspace" \
-	 -o "$requsrspace" -gt "$usrspace" ]; then
-      echo "The / partition must have ${reqrootspace}K free and the /usr"
-      echo "partition must have ${requsrspace}K free for this update.  Please"
-      echo "reinstall or clean local files off the / and /usr partitions."
-      logger -t "$HOST" -p user.notice / or /usr too full to take update
+    if [ "$reqspace" -gt "$rootspace" ]; then
+      echo "The / partition must have ${reqspace}K free for this update."
+      echo "Please reinstall or clean local files off the / partition."
+      logger -t "$HOST" -p user.notice / too full to take update
       failupdate
-    fi
-    ;;
-  9.2.?)
-    # 9.2.10 introduced 172MB of new data on srvd.big machines.
-    if [ -h /usr/athena ]; then
-      rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
-      if [ 204800 -gt "$rootspace" ]; then
-        echo "The / partition must have ${reqrootspace}K free for this update."
-        echo "Please clean local files off the disk."
-        logger -t "$HOST" -p user.notice / too full to take update
-        failupdate
-      fi
     fi
     ;;
   esac
 
-  # Ultras with old enough OBP versions aren't able to boot the 64 bit
-  # Solaris kernel without a firmware upgrade.  They will fail the 
-  # update ungracefully, since the miniroot can only boot the 64 bit
-  # kernel on Ultras.  Check the version of OBP here so we can bomb out
-  # gracefully.
-  #
-  # We must be running version 3.11.1 or greater in order to be able to
-  # boot the 64 bit kernel.
-  if [ sun4u = `uname -m` ]; then
-    eval `prtconf -V | awk '{print $2}' \
-      | awk -F. '{print "obpmajor=" $1, "obpminor=" $2}'`
-    if [ ! "$obpmajor" -gt 3 -a ! "$obpminor" -ge 11 ]; then
-      echo "This machine requires a firmware upgrade for this update."
-      logger -t "$HOST" -p user.notice firmware too old to take update
-      failupdate
-    fi
-  fi
-
-  # Athena 9.1 does not support sun4m hardware.
-  if [ sun4m = `uname -m` ]; then
-    echo "This machine is no longer supported and is too old for this update."
-    logger -t "$HOST" -p user.notice sun4m hardware unable to take update
-    failupdate
-  fi
   ;;
 esac
 
