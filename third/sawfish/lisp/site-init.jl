@@ -1,8 +1,11 @@
-;; $Id: site-init.jl,v 1.4 2001-01-13 15:03:12 ghudson Exp $
+;; $Id: site-init.jl,v 1.5 2001-03-30 20:57:55 ghudson Exp $
 ;; Site initialization for Athena
 
+;; Pick a nice readable default font.
+(setq default-font "-adobe-helvetica-bold-r-normal-*-*-140-*-*-p-*-iso8859-1")
+
 ;; Set the default theme.
-(setq default-frame-style 'Eazel)
+(setq default-frame-style 'Crux-athena)
 
 ;; Load gnome stuff even if we start before any gnome properties are set.
 (require 'sawfish.wm.state.gnome)
