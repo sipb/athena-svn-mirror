@@ -2,7 +2,7 @@
  * GNOME panel utils
  * (C) 1997, 1998, 1999, 2000 The Free Software Foundation
  * Copyright 2000 Helix Code, Inc.
- * Copyright 2000 Eazel, Inc.
+ * Copyright 2000,2001 Eazel, Inc.
  *
  * Authors: George Lebl
  *          Jacob Berkman
@@ -17,33 +17,122 @@
 
 #include "panel-include.h"
 
+#include "icon-entry-hack.h"
+
 extern GlobalConfig global_config;
 
+extern GSList *applets;
+extern GSList *applets_last;
+
 void
-panel_pbox_help_cb (GtkWidget *w, gint tab, gpointer path)
+panel_show_help (const char *path)
 {
 	GnomeHelpMenuEntry help_entry = { "panel" };
-	help_entry.path = path;
-	gnome_help_display(NULL, &help_entry);
+	help_entry.path = (char *)path;
+	gnome_help_display (NULL, &help_entry);
+}
+
+static char *
+panel_gnome_help_path (const char *docpath)
+{
+	char *fullpath, *app, *p, *path, *uri;
+
+	app = g_strdup (docpath);
+
+	p = strchr (app, '/');
+
+	if (p == NULL) {
+		g_free (app);
+		return NULL;
+	}
+
+	path = p+1;
+	*p = '\0';
+
+	fullpath = gnome_help_file_path (app, path);
+
+	g_free (app);
+
+	if ( ! panel_file_exists (fullpath)) {
+		g_free (fullpath);
+		fullpath = NULL;
+	}
+
+	uri = g_strconcat ("ghelp:", fullpath, NULL);
+	g_free (fullpath);
+
+	return uri;
+}
+
+static char *
+panel_kde_help_path (const char *docpath)
+{
+	GList *li;
+
+	if ( ! panel_file_exists (KDE_DOCDIR))
+		return NULL;
+
+	for (li = gnome_i18n_get_language_list ("LC_MESSAGES");
+	     li != NULL;
+	     li = li->next) {
+		char *fullpath = g_strdup_printf ("%s/HTML/%s/%s",
+						  KDE_DOCDIR,
+						  li->data,
+						  docpath);
+		if (panel_file_exists (fullpath)) {
+			char *uri = g_strconcat ("ghelp:", fullpath, NULL);
+			g_free (fullpath);
+			return uri;
+		}
+		g_free (fullpath);
+	}
+	return NULL;
+}
+
+char *
+panel_gnome_kde_help_path (const char *docpath)
+{
+	char *path;
+
+	if (string_empty (docpath))
+		return NULL;
+
+	if (panel_is_url (docpath))
+		return g_strdup (docpath);
+
+	path = panel_gnome_help_path (docpath);
+
+	if (path == NULL)
+		path = panel_kde_help_path (docpath);
+
+	return path;
 }
 
 gboolean
-string_is_in_list(GSList *list,char *text)
+string_is_in_list(const GSList *list, const char *text)
 {
-	for(;list!=NULL;list=g_slist_next(list))
-		if(strcmp(text,(char *)list->data)==0)
+	for(;list != NULL; list = list->next)
+		if(strcmp(text,(char *)list->data) == 0)
 			return TRUE;
 	return FALSE;
 }
 
+static void
+updated (GtkWidget *w, gpointer data)
+{
+	UpdateFunction func = gtk_object_get_data (GTK_OBJECT (w), "update_function");
+
+	func (data);
+}
 
 GtkWidget *
 create_text_entry(GtkWidget *table,
-		  char *history_id,
+		  const char *history_id,
 		  int row,
-		  char *label,
-		  char *text,
-		  GtkWidget *w)
+		  const char *label,
+		  const char *text,
+		  UpdateFunction func,
+		  gpointer data)
 {
 	GtkWidget *wlabel;
 	GtkWidget *entry;
@@ -68,63 +157,24 @@ create_text_entry(GtkWidget *table,
 			 GTK_FILL | GTK_SHRINK,
 			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
-	if(w) {
-		gtk_signal_connect_object_while_alive (GTK_OBJECT (t), "changed",
-						       GTK_SIGNAL_FUNC(gnome_property_box_changed), 
-						       GTK_OBJECT(w));
-	}
-	return entry;
-}
-
-GtkWidget *
-create_pixmap_entry(GtkWidget *table,
-		    char *history_id,
-		    int row,
-		    char *label,
-		    char *text,
-		    GtkWidget *w,
-		    int pw, int ph /*preview size*/)
-{
-	GtkWidget *wlabel;
-	GtkWidget *entry;
-	GtkWidget *t;
-
-	wlabel = gtk_label_new(label);
-	gtk_misc_set_alignment(GTK_MISC(wlabel), 0.0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), wlabel,
-			 0, 1, row, row + 1,
-			 GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			 GTK_FILL | GTK_SHRINK,
-			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
-	gtk_widget_show(wlabel);
-
-	entry = gnome_pixmap_entry_new(history_id,_("Browse"),TRUE);
-	gnome_pixmap_entry_set_preview_size(GNOME_PIXMAP_ENTRY(entry),pw,ph);
-	t = gnome_pixmap_entry_gtk_entry (GNOME_PIXMAP_ENTRY (entry));
-	if (text)
-		gtk_entry_set_text(GTK_ENTRY(t), text);
-	gtk_table_attach(GTK_TABLE(table), entry,
-			 1, 2, row, row + 1,
-			 GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			 GTK_FILL | GTK_SHRINK,
-			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
-
-	if(w) {
-		gtk_signal_connect_object_while_alive (GTK_OBJECT (t), "changed",
-						       GTK_SIGNAL_FUNC(gnome_property_box_changed), 
-						       GTK_OBJECT(w));
+	if(func) {
+		gtk_object_set_data (GTK_OBJECT (t), "update_function", func);
+		gtk_signal_connect (GTK_OBJECT (t), "changed",
+				    GTK_SIGNAL_FUNC (updated), 
+				    data);
 	}
 	return entry;
 }
 
 GtkWidget *
 create_icon_entry(GtkWidget *table,
-		  char *history_id,
+		  const char *history_id,
 		  int cols, int cole,
-		  char *label,
-		  char *subdir,
-		  char *text,
-		  GtkWidget *w)
+		  const char *label,
+		  const char *subdir,
+		  const char *text,
+		  UpdateFunction func,
+		  gpointer data)
 {
 	GtkWidget *wlabel;
 	GtkWidget *entry;
@@ -140,6 +190,7 @@ create_icon_entry(GtkWidget *table,
 	gtk_widget_show(wlabel);
 
 	entry = gnome_icon_entry_new(history_id,_("Browse"));
+	hack_icon_entry (GNOME_ICON_ENTRY (entry));
 	gnome_icon_entry_set_pixmap_subdir(GNOME_ICON_ENTRY(entry), subdir);
 	if (text)
 		gnome_icon_entry_set_icon(GNOME_ICON_ENTRY(entry),text);
@@ -151,56 +202,18 @@ create_icon_entry(GtkWidget *table,
 			 GTK_FILL | GTK_SHRINK,
 			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
-	if(w) {
-		gtk_signal_connect_object_while_alive (GTK_OBJECT (t), "changed",
-						       GTK_SIGNAL_FUNC(gnome_property_box_changed), 
-						       GTK_OBJECT(w));
+	if(func) {
+		gtk_object_set_data (GTK_OBJECT (t), "update_function", func);
+		gtk_signal_connect (GTK_OBJECT (t), "changed",
+				    GTK_SIGNAL_FUNC (updated), 
+				    data);
 	}
+
 	return entry;
 }
-
-GtkWidget *
-create_file_entry(GtkWidget *table,
-		  char *history_id,
-		  int row,
-		  char *label,
-		  char *text,
-		  GtkWidget *w)
-{
-	GtkWidget *wlabel;
-	GtkWidget *entry;
-	GtkWidget *t;
-
-	wlabel = gtk_label_new(label);
-	gtk_misc_set_alignment(GTK_MISC(wlabel), 0.0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), wlabel,
-			 0, 1, row, row + 1,
-			 GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			 GTK_FILL | GTK_SHRINK,
-			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
-	gtk_widget_show(wlabel);
-
-	entry = gnome_file_entry_new(history_id,_("Browse"));
-	t = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (entry));
-	if (text)
-		gtk_entry_set_text(GTK_ENTRY(t), text);
-	gtk_table_attach(GTK_TABLE(table), entry,
-			 1, 2, row, row + 1,
-			 GTK_EXPAND | GTK_FILL | GTK_SHRINK,
-			 GTK_FILL | GTK_SHRINK,
-			 GNOME_PAD_SMALL, GNOME_PAD_SMALL);
-
-	if(w) {
-		gtk_signal_connect_object_while_alive (GTK_OBJECT (t), "changed",
-						       GTK_SIGNAL_FUNC(gnome_property_box_changed), 
-						       GTK_OBJECT(w));
-	}
-	return entry;
-}
-
 
 GList *
-my_g_list_swap_next(GList *list, GList *dl)
+my_g_list_swap_next (GList *list, GList *dl)
 {
 	GList *t;
 
@@ -223,7 +236,7 @@ my_g_list_swap_next(GList *list, GList *dl)
 }
 
 GList *
-my_g_list_swap_prev(GList *list, GList *dl)
+my_g_list_swap_prev (GList *list, GList *dl)
 {
 	GList *t;
 
@@ -457,13 +470,13 @@ gtk_style_shade (GdkColor *a,
 #define DARKNESS_MULT   0.7
 
 static void
-set_color_back(GtkWidget *widget, PanelWidget *panel)
+set_color_back (GtkWidget *widget, PanelWidget *panel)
 {
 	GtkStyle *ns;
 	int i;
 
-	ns = gtk_style_copy(widget->style);
-	gtk_style_ref(ns);
+	gtk_widget_set_rc_style (widget);
+	ns = gtk_style_copy (gtk_widget_get_style (widget));
 
 	ns->bg[GTK_STATE_NORMAL] =
 		panel->back_color;
@@ -482,32 +495,33 @@ set_color_back(GtkWidget *widget, PanelWidget *panel)
 		ns->mid[i].green = (ns->light[i].green + ns->dark[i].green) / 2;
 		ns->mid[i].blue = (ns->light[i].blue + ns->dark[i].blue) / 2;
 	}
-	gtk_widget_set_style(widget, ns);
-	gtk_style_unref(ns);
+	gtk_widget_set_style (widget, ns);
+	gtk_style_unref (ns);
 }
 
 void
-set_frame_colors(PanelWidget *panel, GtkWidget *frame,
-		 GtkWidget *but1, GtkWidget *but2, GtkWidget *but3, GtkWidget *but4)
+set_frame_colors (PanelWidget *panel, GtkWidget *frame,
+		  GtkWidget *but1, GtkWidget *but2,
+		  GtkWidget *but3, GtkWidget *but4)
 {
-	if(panel->back_type == PANEL_BACK_COLOR) {
-		set_color_back(frame,panel);
-		set_color_back(but1,panel);
-		set_color_back(but2,panel);
-		set_color_back(but3,panel);
-		set_color_back(but4,panel);
+	if (panel->back_type == PANEL_BACK_COLOR) {
+		set_color_back (frame, panel);
+		set_color_back (but1, panel);
+		set_color_back (but2, panel);
+		set_color_back (but3, panel);
+		set_color_back (but4, panel);
 	} else {
-		gtk_widget_set_rc_style(frame);
-		gtk_widget_set_rc_style(but1);
-		gtk_widget_set_rc_style(but2);
-		gtk_widget_set_rc_style(but3);
-		gtk_widget_set_rc_style(but4);
+		gtk_widget_set_rc_style (frame);
+		gtk_widget_set_rc_style (but1);
+		gtk_widget_set_rc_style (but2);
+		gtk_widget_set_rc_style (but3);
+		gtk_widget_set_rc_style (but4);
 	}
 }
 
 
 void
-remove_directory(char *dirname, gboolean just_clean)
+remove_directory(const char *dirname, gboolean just_clean)
 {
 	DIR *dir;
 	struct dirent *dent;
@@ -606,27 +620,29 @@ escape_string(const char *string, const char *special)
 }
 
 gboolean
-convert_string_to_keysym_state(char *string,
+convert_string_to_keysym_state(const char *string,
 			       guint *keysym,
 			       guint *state)
 {
 	char *s, *p;
 
-	g_return_val_if_fail(keysym != NULL, FALSE);
-	g_return_val_if_fail(state != NULL, FALSE);
+	g_return_val_if_fail (keysym != NULL, FALSE);
+	g_return_val_if_fail (state != NULL, FALSE);
 	
 	*state = 0;
 	*keysym = 0;
 
-	if(!string || !*string || strcmp(string, _("Disabled"))==0)
+	if(string_empty (string) ||
+	   strcmp (string, "Disabled") == 0 ||
+	   strcmp (string, _("Disabled")) == 0)
 		return FALSE;
 
-	s = g_strdup(string);
+	s = g_strdup (string);
 
-	gdk_error_trap_push();
+	gdk_error_trap_push ();
 
-	p = strtok(s, "-");
-	while(p) {
+	p = strtok (s, "-");
+	while (p != NULL) {
 		if(strcmp(p, "Control")==0) {
 			*state |= GDK_CONTROL_MASK;
 		} else if(strcmp(p, "Lock")==0) {
@@ -655,12 +671,12 @@ convert_string_to_keysym_state(char *string,
 		p = strtok(NULL, "-");
 	}
 
-	gdk_flush();
-	gdk_error_trap_pop();
+	gdk_flush ();
+	gdk_error_trap_pop ();
 
-	g_free(s);
+	g_free (s);
 
-	if(*keysym == 0)
+	if (*keysym == 0)
 		return FALSE;
 
 	return TRUE;
@@ -736,43 +752,220 @@ convert_keysym_state_to_string(guint keysym,
 	}
 }
 
+static GSList *layered_dialogs = NULL;
+
 static void
-panel_dialog_realized(GtkWidget *dialog)
+panel_dialog_realized (GtkWidget *dialog)
 {
-	if(!global_config.keep_bottom)
+	if ( ! global_config.keep_bottom &&
+	     ! global_config.normal_layer)
 		gnome_win_hints_set_layer (GTK_WIDGET(dialog),
 					   WIN_LAYER_ABOVE_DOCK);
+	else
+		gnome_win_hints_set_layer (GTK_WIDGET (dialog),
+					   WIN_LAYER_NORMAL);
+}
+
+static void
+remove_from_layered (GtkWidget *w)
+{
+	layered_dialogs = g_slist_remove (layered_dialogs, w);
 }
 
 void
-panel_set_dialog_layer(GtkWidget *dialog)
+panel_set_dialog_layer (GtkWidget *dialog)
 {
-	if(GTK_WIDGET_REALIZED(dialog) &&
-	   !global_config.keep_bottom)
-		gnome_win_hints_set_layer (GTK_WIDGET(dialog),
+	if (g_slist_find (layered_dialogs, dialog) == NULL) {
+		layered_dialogs = g_slist_prepend (layered_dialogs, dialog);
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+				    GTK_SIGNAL_FUNC (remove_from_layered),
+				    NULL);
+	}
+
+	if (GTK_WIDGET_REALIZED (dialog) &&
+	    ! global_config.normal_layer &&
+	    ! global_config.keep_bottom)
+		gnome_win_hints_set_layer (GTK_WIDGET (dialog),
 					   WIN_LAYER_ABOVE_DOCK);
 
-	gtk_signal_connect(GTK_OBJECT(dialog), "realize",
-			   GTK_SIGNAL_FUNC(panel_dialog_realized),
-			   NULL);
+	gtk_signal_connect (GTK_OBJECT (dialog), "realize",
+			    GTK_SIGNAL_FUNC (panel_dialog_realized),
+			    NULL);
+}
+
+void
+panel_reset_dialog_layers (void)
+{
+	GSList *li;
+
+	for (li = layered_dialogs; li != NULL; li = li->next) {
+		GtkWidget *dialog = li->data;
+
+		if ( ! GTK_WIDGET_REALIZED (dialog))
+			continue;
+
+		if ( ! global_config.normal_layer &&
+		     ! global_config.keep_bottom)
+			gnome_win_hints_set_layer (GTK_WIDGET (dialog),
+						   WIN_LAYER_ABOVE_DOCK);
+		else
+			gnome_win_hints_set_layer (GTK_WIDGET (dialog),
+						   WIN_LAYER_NORMAL);
+	}
 }
 
 GtkWidget *
-panel_error_dialog(char *format, ...)
+panel_error_dialog (const char *format, ...)
 {
 	GtkWidget *w;
 	char *s;
 	va_list ap;
 
-	va_start(ap, format);
-	s = g_strdup_vprintf(format, ap);
-	va_end(ap);
+	va_start (ap, format);
+	s = g_strdup_vprintf (format, ap);
+	va_end (ap);
 
-	w = gnome_error_dialog(s);
-	g_free(s);
+	w = gnome_error_dialog (s);
+	g_free (s);
 
-	panel_set_dialog_layer(w);
+	panel_set_dialog_layer (w);
 
 	return w;
 }
 
+gboolean
+string_empty (const char *string)
+{
+	if (string == NULL ||
+	    string[0] == '\0')
+		return TRUE;
+	else
+		return FALSE;
+}
+
+gboolean
+is_ext (const char *file, const char *ext)
+{
+	const char *p = strrchr (file, '.');
+
+	if (p != NULL &&
+	    strcmp (p, ext) == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+/* Do strcasecmp but ignore locale */
+int
+strcasecmp_no_locale (const char *s1, const char *s2)
+{
+	int i;
+
+	/* Error, but don't make them equal then */
+	g_return_val_if_fail (s1 != NULL, G_MAXINT);
+	g_return_val_if_fail (s2 != NULL, G_MININT);
+
+	for (i = 0; s1[i] != '\0' && s2[i] != '\0'; i++) {
+		char a = s1[i];
+		char b = s2[i];
+
+		if (a >= 'A' && a <= 'Z')
+			a -= 'A' - 'a';
+		if (b >= 'A' && b <= 'Z')
+			b -= 'A' - 'a';
+
+		if (a < b)
+			return -1;
+		else if (a > b)
+			return 1;
+	}
+
+	/* find out which string is smaller */
+	if (s2[i] != '\0')
+		return -1; /* s1 is smaller */
+	else if (s1[i] != '\0')
+		return 1; /* s2 is smaller */
+	else
+		return 0; /* equal */
+}
+
+/* stolen from gnome-libs head as they are faster and don't use "stat" */
+gboolean
+panel_file_exists (const char *filename)
+{
+	g_return_val_if_fail (filename != NULL, FALSE);
+	
+	return (access (filename, F_OK) == 0);
+}
+
+char *
+panel_is_program_in_path (const char *program)
+{
+	static char **paths = NULL;
+	char **p;
+	
+	if (paths == NULL)
+		paths = g_strsplit(g_getenv("PATH"), ":", -1);
+
+	for (p = paths; *p != NULL; p++){
+		char *f = g_strconcat (*p, "/", program, NULL);
+		if (panel_file_exists (f))
+			return f;
+		g_free (f);
+	}
+	return 0;
+}
+
+int
+find_applet (GtkWidget *widget)
+{
+	int i;
+	GSList *li;
+
+	for (i = 0, li = applets; li != NULL; i++, li = li->next) {
+		AppletInfo *info = li->data;
+
+		if (info->widget == widget)
+			return i;
+	}
+
+	return i;
+}
+
+int
+get_requisition_width (GtkWidget *widget)
+{
+	GtkRequisition req;
+
+	gtk_widget_get_child_requisition (widget, &req);
+
+	return req.width;
+}
+
+int
+get_requisition_height (GtkWidget *widget)
+{
+	GtkRequisition req;
+
+	gtk_widget_get_child_requisition (widget, &req);
+
+	return req.height;
+}
+
+/* is url showable by gnome_url_show */
+gboolean
+panel_is_url (const char *url)
+{
+	if (strncmp (url, "http://", strlen ("http://")) == 0 ||
+	    strncmp (url, "https://", strlen ("https://")) == 0 ||
+	    strncmp (url, "gopher://", strlen ("gopher://")) == 0 ||
+	    strncmp (url, "ftp://", strlen ("ftp://")) == 0 ||
+	    strncmp (url, "file:", strlen ("file:")) == 0 ||
+	    strncmp (url, "ghelp:", strlen ("ghelp:")) == 0 ||
+	    strncmp (url, "help:", strlen ("help:")) == 0 ||
+	    strncmp (url, "man:", strlen ("man:")) == 0 ||
+	    strncmp (url, "info:", strlen ("info:")) == 0)
+		return TRUE;
+	else
+		return FALSE;
+}

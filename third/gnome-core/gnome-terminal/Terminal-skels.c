@@ -26,8 +26,7 @@ _ORBIT_skel_GNOME_Terminal_TerminalFactory_create_terminal
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 geometry = (void *) _ORBIT_curptr;
@@ -90,10 +89,7 @@ POA_GNOME_Terminal_Terminal__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Terminal_Terminal,
-	 "IDL:GNOME/Terminal/Terminal:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_Terminal_Terminal
-
-      };
+"IDL:GNOME/Terminal/Terminal:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Terminal_Terminal };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
@@ -144,8 +140,8 @@ get_skel_GNOME_Terminal_TerminalFactory(POA_GNOME_Terminal_TerminalFactory *
 					   break;
 					case 't':
 					   if (strcmp
-					       ((opname + 8),
-						"erminal")) break;
+					       ((opname + 8), "erminal"))
+					      break;
 					   *impl =
 					      (gpointer) servant->vepv->
 					      GNOME_Terminal_TerminalFactory_epv->
@@ -210,10 +206,8 @@ POA_GNOME_Terminal_TerminalFactory__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Terminal_TerminalFactory,
-	 "IDL:GNOME/Terminal/TerminalFactory:1.0",
-	 (ORBit_local_objref_init) &
-
-	 init_local_objref_GNOME_Terminal_TerminalFactory };
+"IDL:GNOME/Terminal/TerminalFactory:1.0",
+(ORBit_local_objref_init) & init_local_objref_GNOME_Terminal_TerminalFactory };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_GNOME_GenericFactory__init(servant, env);

@@ -385,7 +385,7 @@ get_typed_property_data (Display *xdisplay,
       requested_type != AnyPropertyType &&
       requested_type != type_returned)
     {
-      /* g_warning (G_GNUC_PRETTY_FUNCTION "(): Property has wrong type, probably on crack"); */
+      /* aparently this can happen for some properties of broken apps, be silent */
       abort++;
     }
   if (!abort && bytes_after_return)

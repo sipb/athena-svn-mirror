@@ -17,54 +17,70 @@ doc_DATA =	\
 
 sgml_files = \
 	$(sgml_ents)		\
-	$(applet)-applet.sgml
+	$(applet)_applet.sgml
+
+#Scrollkeeper related stuff
+omf_dir=$(top_srcdir)/omf-install
 
 # automake does not know anything about .sgml files yet -> EXTRA_DIST
-EXTRA_DIST = $(sgml_files) $(doc_DATA)
+EXTRA_DIST = $(sgml_files) $(doc_DATA) $(omffiles)
 
-all: index.html
+all: index.html omf
 
-index.html: $(applet)-applet/index.html
-	-cp $(applet)-applet/index.html .
+omf: $(omffiles)
+	-for omffile in $(omffiles); do \
+	  which scrollkeeper-preinstall >/dev/null 2>&1 && scrollkeeper-preinstall $(DESTDIR)$(docdir)/$(applet)_applet.sgml $$omffile $(omf_dir)/$$omffile; \
+	done
 
-$(applet)-applet.sgml: $(sgml_ents)
+index.html: $(applet)_applet/index.html
+	-cp $(applet)_applet/index.html .
+	
+$(applet)_applet.sgml: $(sgml_ents)
 	-ourdir=`pwd`;	\
 	cd $(srcdir);	\
 	cp $(sgml_ents) $$ourdir
 
-$(applet)-applet/index.html: $(applet)-applet.sgml
+$(applet)_applet/index.html: $(applet)_applet.sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2html $$srcdir/$(applet)-applet.sgml
+	db2html $$srcdir/$(applet)_applet.sgml
 
 applet-dist-hook: index.html
-	-$(mkinstalldirs) $(distdir)/$(applet)-applet/stylesheet-images
-	-cp $(srcdir)/$(applet)-applet/*.html $(distdir)/$(applet)-applet
-	-cp $(srcdir)/$(applet)-applet/*.css  $(distdir)/$(applet)-applet
-	-cp $(srcdir)/$(applet)-applet/*.png  $(distdir)/$(applet)-applet
-	-cp $(srcdir)/$(applet)-applet/stylesheet-images/*.png \
-		$(distdir)/$(applet)-applet/stylesheet-images
+	-$(mkinstalldirs) $(distdir)/$(applet)_applet/stylesheet-images
+	-cp $(srcdir)/$(applet)_applet/*.html $(distdir)/$(applet)_applet
+	-cp $(srcdir)/$(applet)_applet/*.css  $(distdir)/$(applet)_applet
+	-cp $(srcdir)/$(applet)_applet/*.png  $(distdir)/$(applet)_applet
+	-cp $(srcdir)/$(applet)_applet/stylesheet-images/*.png \
+		$(distdir)/$(applet)_applet/stylesheet-images
+	-cp $(srcdir)/$(applet)_applet/stylesheet-images/*.gif \
+		$(distdir)/$(applet)_applet/stylesheet-images
 
 install-data-am: index.html
 	-$(mkinstalldirs) $(DESTDIR)$(docdir)/stylesheet-images
-	-cp $(srcdir)/topic.dat $(DESTDIR)$(helpdir)
+	-cp $(srcdir)/topic.dat $(DESTDIR)$(docdir)
+	-cp $(srcdir)/$(sgml_files) $(DESTDIR)$(docdir)
 	-for file in \
-		$(applet)-applet/*.html	\
-		$(applet)-applet/*.css	\
+		$(applet)_applet/*.html	\
+		$(applet)_applet/*.css	\
 		$(srcdir)/*.png; do\
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$$basefile; \
 	done
 	-for file in \
-		$(applet)-applet/stylesheet-images/*.png; do \
+		$(applet)_applet/stylesheet-images/*.png; do \
+	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
+	done
+	-for file in \
+		$(applet)_applet/stylesheet-images/*.gif; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
 	done
 
-$(applet)-applet.ps: $(srcdir)/$(applet)-applet.sgml $(srcdir)/$(applet).sgml
+$(applet)_applet.ps: $(srcdir)/$(applet)_applet.sgml $(srcdir)/$(applet).sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/$(applet)-applet.sgml
+	db2ps $$srcdir/$(applet)_applet.sgml
 
-$(applet)-applet.rtf: $(srcdir)/$(applet)-applet.sgml $(srcdir)/$(applet).sgml
+$(applet)_applet.rtf: $(srcdir)/$(applet)_applet.sgml $(srcdir)/$(applet).sgml
 	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/$(applet)-applet.sgml
+	db2ps $$srcdir/$(applet)_applet.sgml
 

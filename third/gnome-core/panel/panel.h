@@ -15,6 +15,9 @@ struct _PanelData {
 	int menu_age;
 };
 
+void freeze_changes (AppletInfo *info);
+void thaw_changes (AppletInfo *info);
+
 void orientation_change(AppletInfo *info, PanelWidget *panel);
 void size_change(AppletInfo *info, PanelWidget *panel);
 void back_change(AppletInfo *info, PanelWidget *panel);
@@ -32,6 +35,12 @@ void panel_freeze_changes(PanelWidget *panel);
 void panel_thaw_changes(PanelWidget *panel);
 
 GtkWidget * make_popup_panel_menu (PanelWidget *panel);
+
+PanelData * panel_data_by_id (int id);
+void panel_set_id (GtkWidget *widget, int id);
+
+void status_unparent (GtkWidget *widget);
+
 
 
 #define get_panel_parent(appletw) \

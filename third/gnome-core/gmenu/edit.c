@@ -8,6 +8,7 @@
  */
 
 #include "gmenu.h"
+#include "icon-entry-hack.h"
 
 typedef struct _Edit_Area Edit_Area;
 struct _Edit_Area
@@ -273,6 +274,7 @@ static Edit_Area *edit_area_new(void)
 	gtk_widget_show(notebook);
 
 	ea->dee = gnome_dentry_edit_new_notebook (GTK_NOTEBOOK(notebook));
+	hack_dentry_edit (GNOME_DENTRY_EDIT (ea->dee));
 	gtk_signal_connect(GTK_OBJECT(ea->dee), "changed", GTK_SIGNAL_FUNC(edit_area_changed_cb), ea);
 
 	types = g_list_append(types, "Application");
@@ -353,10 +355,10 @@ GtkWidget * edit_area_create(void)
 
 void edit_area_set_to(const Desktop_Data *dd)
 {
-	edit_area_sync_to(dd, edit);
-
 	if (!dd)
 		return;
+
+	edit_area_sync_to(dd, edit);
 
 	/* do not allow user to change the USER/SYSTEM menu name/comment, since
 	 * the panel does not seem to honor them, only the icon.

@@ -1,6 +1,46 @@
-2000-11-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+Thu Mar  1 05:21:04 2001  Tim Janik  <timj@gtk.org>
 
-	* Merge from HEAD:
+	* gwmdesktop.c (thumb_queue_step): don't do thumbnail shooting on
+	iconified or shaded windows.
+
+	* gwmh.h (struct _GwmhTask): made width/height/x/y 32bit ints,
+	to avoid crashes with excessive window sizes.
+
+	* gwmdesktop.c (task_remove_thumb): fixed thumb_queue cleanup
+	code (a bug that could cause segfaults after thumbnailing was
+	turned back on).
+
+	* gwmthumbnail.c (gwm_thumb_nail_destroy): pass the thumbnail in the
+	destroy function.
+
+2001-01-31  Jason Leach  <jasonleach@usa.net>
+
+	* deskguide_applet.c: Added a boolean config option for "Show
+	tasklist arrow", default to true.  Also renamed the "Switch
+	tasklist arrow" to a more descriptive "Switch horizontal/vertical
+	position of tasklist arrow".
+
+Tue Dec 05 20:08:49 2000  George Lebl <jirka@5z.com>
+
+	* deskguide_applet.c: bind signals on applet-widget BEFORE
+	  we call applet_widget_add, as otherwise there is a race where
+	  we may not get them.
+
+Wed Nov 29 13:01:34 2000  Tim Janik  <timj@gtk.org>
+
+	* gwmdesktop.c (gwm_desktop_button_press): take deco window movement
+	setting into account for double clicks.
+
+	* deskguide_applet.c: sawfish doesn't move decoration window anymore.
+
+2000-11-28 John Fleck <jfleck@inkstain.net>
+
+	* update help/C/desk-guide.sgml based on user feedback
+
+Fri Nov 17 08:20:11 2000  Tim Janik  <timj@gtk.org>
+
+	* deskguide_applet.[hc]: update all relevant places where a VERSION
+	number is required, introduced DESKGUIDE_VERSION define.
 
 2000-11-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
@@ -46,20 +86,24 @@ Tue Nov 14 04:23:58 2000  Tim Janik  <timj@gtk.org>
 	* deskguide_applet.c: disable thumbnails by default since this
 	eats CPU on slow machines and seems to crash for quite a few
 	people
-	
+
 2000-10-25  Karl Eichwalder  <ke@suse.de>
 
 	* deskguide_applet.c: s/Sawmill/Sawfish/.
 
-Thu Oct 12 09:58:39 CEST 2000  Stanislav Brabec  <utx@penguin.cz>
+Sat Oct 14 15:27:47 2000  George Lebl <jirka@5z.com>
 
-	* deskguide_applet.desktop: cs typo fix.
+	* gstc.c (gstc_parent_add_watch)
+	  gwmh.c (gwmh_init) (get_typed_property_data)
+	  (get_task_root_and_frame) (gwmh_desk_update) (gwmh_task_update)
+	  (gwmh_task_get_mini_icon):  Correct sigedness problems
+	  (gint vs. guint) when passing pointers.
 
-2000-10-02  Kjartan Maraas  <kmaraas@gnome.org>
+Mon Oct 9 John Fleck <jfleck@inkstain.net> 
 
-	* help/*/*.sgml: Fixed warnings and minor things from
-	the GDP changes doc.
-	
+	* updating desk-guide.sgml desk-guide-applet.sgml for Nautilus 
+	compatibility
+
 Mon Aug 14 17:38:07 2000  Tim Janik  <timj@gtk.org>
 
 	* gwmthumbnail.c (gdk_image_new_shared_with_pixmap): check whether we

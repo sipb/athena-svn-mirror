@@ -47,7 +47,8 @@ transport( docObj obj, DataCache cache )
 	    /* short lifespan of obj will probably save us.       */
 
 	    docObjSetRawData(obj, p, len, FALSE);	
-	    g_warning("cache hit has content type: %s\n", s );
+	    if (s)
+		    g_warning("cache hit has content type: %s\n", s );
 	    docObjSetMimeType(obj, s);
 	    return 0;
 	}

@@ -1,14 +1,587 @@
+Mon Mar 12 15:28:53 2001  George Lebl <jirka@5z.com>
+
+	* extern.c:  fix the loading extern applet icon to work again
+
+Sun Mar 11 16:33:44 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, xstuff.[ch], main.c, session.c: when recalcing
+	  borders, call xstuff to set up a property on the root window about
+	  a rectengular area that's ok for usage by things like nautilus
+	  icons.
+
+	* foobar-widget.c: queue recalc on size_allocate
+
+Sat Mar 10 07:57:16 2001  George Lebl <jirka@5z.com>
+
+	* floating-widget.c: apply patch from Brian Warner <warner@lothar.com>
+	  to fix hide size.
+
+Thu Mar 08 2001 Yukihiro Nakai <ynakai@redhat.com>
+
+	* Add Japanese help translation from Yusuke NOGUCHI.
+
+Wed Mar 07 2001 John Fleck <jfleck@inkstain.net>
+
+	* updating bug referece to bugzilla.gnome.org in all the docs"
+	help/C/panel.sgml, it/panel.sgml, de/panel.sgml and no/panel.sgml
+	
+Wed Mar 07 01:21:52 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c, panel-util.[ch], menu.c, applet.c: make a general url
+	  checking function and when a docpath is a full url, just display
+	  it.
+
+	* basep-widget.c, foobar-widget.c: warning fixes
+
+Wed Mar 07 00:45:42 2001  George Lebl <jirka@5z.com>
+
+	* main.c, menu.c, panel.[ch]:  kill orphan drawers, fixes crashes
+	  later on
+
+	* basep-widget.c: play the expand sound on autoshow
+
+Tue Mar 06 23:02:53 2001  George Lebl <jirka@5z.com>
+
+	* panel.c: when a directory is dropped and it's not a menu make
+	  a launcher that opens a new filemanager window (whatever the
+	  filemanager happens to be)
+
+Tue Mar 06 22:33:01 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, foobar-widget.c: when we get a configure event
+	  and it ain't what we like we go back to where we belong.  Prevents
+	  things from moving us.
+
+Tue Mar 06 18:56:43 2001  George Lebl <jirka@5z.com>
+
+	* launcher.c: correctly translate "%c" and %c in the kde command line
+	  perhaps this code should be smarter
+
+Tue Mar 06 18:39:05 2001  George Lebl <jirka@5z.com>
+
+	* panel-util.c: support KDE documentation for the launcher and
+	  menu help thingies. So we can read KDE's DocPath thingies.
+
+Tue Mar 06 16:20:26 2001  George Lebl <jirka@5z.com>
+
+	* launcher.[ch], menu.c, applet.c, gnome-panel-properties.desktop,
+	  panel-utils.c:  Understand the DocPath field.  Now we can start
+	  using it in other .desktops.  Still doesn't understand the kde
+	  paths, though that should not be hard if we can guess the KDE
+	  documentation path.
+
+Tue Mar 06 11:08:45 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c: don't show the panel if hidebuttons are disabled
+	  for the drawers case.  I suppose this is not the best fix and it
+	  should be in the respecitve panels. Fixes #21963
+
+Sun Mar 04 22:43:22 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: find and set envariomental variables for exec
+	  shell style.  Fix a small leak, enable command completion on
+	  Ctrl-Tab, if it were on tab it would make keyboard navigation
+	  impossible.
+
+Sun Mar 04 14:19:15 2001  George Lebl <jirka@5z.com>
+
+	* global-keys.c: clean up the modifiers patch to actually compile
+	  and be more in the panel style of coding.
+
+2001-03-02  Valek Filippov  <frob@df.ru>
+
+	* panel/global-keys.c: patch from Vlad Harchev <hvv@hippo.ru> for
+	  popup menu and "run" dialog independancy from the state of Scroll/Numlock.
+
+Thu Mar 01 03:29:01 2001  George Lebl <jirka@5z.com>
+
+	* icon-entry-hack.[ch], menu.c, drawer.c, panel-util.c,
+	  menu-properties.c, launcher.c:  Fix icon selection bugs.  One
+	  icon doesn't change when just selected,  second notice the change
+	  when the first time an icon is set from no icon.
+
+Tue Feb 27 20:57:52 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, drawer-widget.c: remove some dead code.
+
+Tue Feb 27 20:56:32 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: a bit of cleanup and set the file selection box
+	  as a transient of the runbox.
+
+2001-02-25  jacob berkman  <jacob@ximian.com>
+
+	* xstuff.c (try_checking_swallows): pass in a gwmhtask instead of
+	winid.  this prevents some BadWindows i was getting and maybe
+	saves a server round trip.
+
+Sun Feb 25 00:12:08 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: correctly set the custom_icon_file member, to fix #51348
+
+Sat Feb 24 23:49:15 2001  George Lebl <jirka@5z.com>
+
+	* applet.c, foobar-widget.c, gnome-run.c, menu.c, swallow.c,
+	  launcher.c: use g_get_home_dir () as the current directory for the
+	  gnome_execute_* call, and push pop the home directory for
+	  dentry launch.
+
+	* menu.c: validate only the base of the filename so that adding new
+	  items to menus actually works
+
+Sat Feb 24 20:54:31 2001  George Lebl <jirka@5z.com>
+
+	* foobar-widget.c,menu-util.[ch]: check for nautilus desktop each time
+	  we show the menu, this prevents a race when nautilus started later
+	  then the panel.
+
+	* applet-widget.c: minor leak fix.
+
+Sat Feb 24 19:26:42 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, floating-widget.c, panel-util.[ch],
+	  sliding-widget.c:  use hidebutton requisition rather then
+	  allocation, as that's not really available yet sometimes.
+
+	* floating-widget.c: Fixed #7552, autohiding floating panel
+	  without hidebuttons needs to use the autohide size.  Limit hidden
+	  size to 3 pixels, as 1 would make it impossible to manipulate.
+
+Thu Feb 22 18:02:51 2001  George Lebl <jirka@5z.com>
+
+	* xstuff.[ch], foobar-widget.c: detect presence of nautilus desktop
+	  and don't show the gmc menus if this is the case.
+
+Tue Feb 20 02:42:31 2001  George Lebl <jirka@5z.com>
+
+	* drawer.c: make sure panels are synced when new one is created
+
+	* panel.c, basep-widget.c: don't sync panels on every statechange
+	  sync only when explicit state is set.
+
+	* basep-widget.c: when autohide mode is on, the default layer is
+	  always DOCK not the global default.  This is because it doesn't
+	  really make sense to have autohide panels that go below windows
+
+Sun Feb 18 01:53:46 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: the main menu has a title of "Main Menu" not "Panel"
+
+Sun Feb 18 01:06:15 2001  George Lebl <jirka@5z.com>
+
+	* floating-widget.[ch]: fix some PanelOrientation PanelOrientType
+	  confusion, remove unused var
+
+	* applet-widget.c: correct prototype for change_position method
+
+Sat Feb 17 20:03:37 2001  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: recognize help: as a url as well.
+
+Fri Feb 16 23:25:39 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: when access fails check for null in sim->mf since this
+	  would normally be NULL, for menuitems.
+
+Fri Feb 16 21:35:14 2001  George Lebl <jirka@5z.com>
+
+	* menu-fentry.[ch], menu.c:  Fix menu merging in the respect that
+	  only directories are merged and if a dir is in the .order file
+	  it is not neccesairly on disk, so don't merge it until you find
+	  it.  When directory disappears make sure to reread the
+	  whole menu, and stat everything at most every 3 seconds.
+	  fix dir_list corruption, and other cleanups
+
+Fri Feb 16 00:42:53 2001  George Lebl <jirka@5z.com>
+
+	* floating-widget.c: The menu position function follows the 
+	  menu orientation
+
+Wed Feb 14 01:51:32 2001  George Lebl <jirka@5z.com>
+
+	* panel-widget.[ch], session.c, panel.[ch], drawer.c, menu.c:  Use
+	  unique id's on panels to avoid the confusion bugs that sometimes
+	  arise with drawers.  The panel numbers are not guaranteed to stay
+	  the same and this played havoc with drawers.
+
+	* scroll-menu.c: cast to GTK_OBJECT properly
+
+Tue Feb 13 05:27:26 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: when removing a menu item from a torn off menu, hide it for
+	  this to look like the change has been made.
+
+Tue Feb 13 04:43:48 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: in remove_menuitem, apply fix suggested in #12564 by
+	  johne@bellatlantic.net
+
+Mon Feb 12 00:39:50 2001  George Lebl <jirka@5z.com>
+
+	* panel.c, extern.[ch]: export ref/unref and do some more checking.
+	  there was a race when applet died during registration.
+
+Sun Feb 11 23:28:20 2001  George Lebl <jirka@5z.com>
+
+	* menu-fentry.c: sanity check in get_applet_goad_id_from_dentry
+
+Sun Feb 11 21:53:47 2001  George Lebl <jirka@5z.com>
+
+	* drawer.c: fix a bug where a corrupted config could crash the panel
+
+2001-02-11  Julian Missig  <julian@jabber.org>
+
+	* status.c: (load_status_applet): I had set the wrong object for the
+	gtk_signal_connect_after if the fixed container existed.
+
+Fri Feb 09 21:44:41 2001  George Lebl <jirka@5z.com>
+
+	* session.c, extern.c: int->gboolean cleanup, and increase cookie
+	  when applet not responding in non interactive mode
+
+Fri Feb 09 00:18:30 2001  George Lebl <jirka@5z.com>
+
+	* gnome-panel-properties.c: Apply patch from Havoc Pennington
+	  <hp@redhat.com> to fix grabbing of global keys.
+
+Thu Feb 08 23:29:26 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.[ch], panel.c, floating-widget.c, sliding-widget.c:
+	  remember the position of the click offsets for panel moving, so
+	  that moving floating and sliding panels is more natural, that is
+	  it holds onto the same point on the panel rather then moving when
+	  over the edge which felt too weird.  Also simplifies the code a
+	  bit.
+
+Tue Feb 06 18:34:05 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, foobar-widget.c: Set wmname/wmclass to
+	  panel_window/Panel on the panel windows.
+
+2001-01-29  John Harper  <jsh@eazel.com>
+
+	* session.c (panel_session_save): deleted the code to hide
+	panels after responding to a save-yourself message (that is
+	before a session shutdown). The reason is that if the shutdown
+	is later cancelled the panels are left hidden
+
+	(An alternative fix would be to reshow the panels if a
+	shutdown-cancelled message is received, but I can't see the
+	point of hiding the panels anyway - they will be destroyed if
+	the panel exits?)
+
+2001-01-30  jacob berkman  <jacob@ximian.com>
+
+	* foobar-widget.c (task_notify): hide the menu item when the task
+	is destroyed
+
+	* scroll-menu.c (scroll_menu_init): sink the scroll buttons so
+	they don't leak
+
+Sat Feb 03 19:39:40 2001  Julian Missig <julian@jabber.org>
+
+	* status.c: Status Dock now fits in a 'tiny' sized panel.
+
+Thu Feb 01 20:10:55 2001  George Lebl <jirka@5z.com>
+
+	* panel_config.c:  How did this ever build for me before, fix
+	  typos
+
+Wed Jan 31 00:06:50 2001  George Lebl <jirka@5z.com>
+
+	* panel_config.[ch]: keep a flag around to see if we are updating the
+	  panel ourselves, in which case do not update ourselves.
+
+Wed Jan 31 03:03:40 2001  George Lebl <jirka@5z.com>
+
+	* panel-util.c:  Fix setting of background colors in different
+	  themes.  So that changing themes effects things.
+
+	* doc/Makefile.am, doc/panel.sgml:  Fix build problem.
+
+Tue Jan 30 22:30:26 2001  George Lebl <jirka@5z.com>
+
+	* panel_config.c: prevent infinite loop with background pixmap
+	  setting, but this needs more work
+
+	* basep-widget.c: follow style_set signal and reset styles on the
+	  subwidgets to follow theme
+
+	* panel.c: make sure button #3 gets through on panels, so that menu
+	  gets displayed
+
+Thu Jan 25 04:10:03 2001  George Lebl <jirka@5z.com>
+
+	* panel.c: 1st button click on  the panel space also starts a panel
+	  drag
+
+Thu Jan 25 03:01:19 2001  George Lebl <jirka@5z.com>
+
+	* panel_config.[ch], drawer.c: added the level to all other panel
+	  and drawer configurations
+
+Wed Jan 24 00:31:52 2001  George Lebl <jirka@5z.com>
+
+	* global-keys.c: actually make this work, apperently we don't get
+	  things out of events now in filters, we must use the raw xevents
+
+Sat Jan 06 18:18:57 2001  George Lebl <jirka@5z.com>
+
+	* extern.c: some cleanups, recycle the exception when fail to
+	  add_applet on a booter
+
+	* foobar-widget.c, basep-widget.c:  queue_resize after a realize
+	  so that if the WM misplaces us we will replace ourselves back.
+
+Tue Jan 02 20:44:47 2001  George Lebl <jirka@5z.com>
+
+	* extern.c:  Implement launch_an_applet.  It's very simple really,
+	  activate the applet, and then if we get an applet with such a
+	  goad_id, use the PanelAppletBooter interface to bootstrap it, and
+	  leave the rest to whatever wanted the applet in the first place.
+
+	* button-widget.c: fix warning 
+
+Sun Dec 31 19:14:47 2000  George Lebl <jirka@5z.com>
+
+	* panel-widget.[ch], applet.c, extern.c, panel.c:  Allow
+	  the drag_start to be started off at a specific drag offset,
+	  and pass the current drag offset when going over to another
+	  panel.  Also for move from the menu, make the offset the center of
+	  the applet.
+
+Sun Dec 31 18:43:24 2000  George Lebl <jirka@5z.com>
+
+	* panel-widget.c:  Use the new movememnt style for both switch and
+	  push move.  Instead of waiting until the boundary is crossed, the
+	  applet is sortof being held onto on the place you clicked on it.
+
+Sun Dec 31 17:41:21 2000  George Lebl <jirka@5z.com>
+
+	* panel-widget.[ch], extern.c:  minor cleanup, and use initial
+	  cursor position for free movement for nicer moving.
+
+Sat Dec 30 23:00:47 2000  George Lebl <jirka@5z.com>
+
+	* panel.c, main.c, panel-util.[ch], menu.c, session.c, drawer.c:
+	  Various cleanups, use of string_empty and sure_string, also relayer
+	  dialogs after change of default layer and don't put dialogs
+	  in dock when panels are in normal layer.
+
+Sat Dec 30 05:27:19 2000  George Lebl <jirka@5z.com>
+
+	* xstuff.[ch], global-keys.c, swallow.c:  Use gwmh for everything
+	  here, this greatly reduces the X traffic as the way things were
+	  done before was actually quite wasteful.
+
+	* menu-rh.c:  remove ampersand from the commands.
+
+Fri Dec 29 17:45:12 2000  George Lebl <jirka@5z.com>
+
+	* menu-fentry.h, menu.[ch], foobar-widget.c:  Add a menu for adding
+	  launchers from a menu.  This is more discoverable then right click
+	  or DnD, but somewhat of a pain to use.  For the lovers of menu.c,
+	  this adds some more convoluted hacks.
+
+Thu Dec 21 14:54:46 2000  George Lebl <jirka@5z.com>
+
+	* extern.c: put in the size allocate hack again, since YES it IS
+	  needed, we however need to set up the requisition on the ebox in
+	  a different way to avoid a hang.
+
+Tue Dec 19 21:34:41 2000  George Lebl <jirka@5z.com>
+
+	* panel-util.[ch], gnome-panel-properties.c, menu.c, drawer.c,
+	  gnome-run.c, panel.c, logout.c:  Add DND to drawer, menu and run.
+	  unfortunately menu won't drag due to the fact that a button down
+	  grabs the mouse.  Also drawer is only "MOVE" able and not
+	  "COPY"able and that's not likely to change.
+
+Tue Dec 19 20:52:17 2000  George Lebl <jirka@5z.com>
+
+	* logout.c, panel.c:  Make logout and lock also draggable, and move
+	  by default.
+
+Tue Dec 19 17:34:35 2000  George Lebl <jirka@5z.com>
+
+	* panel.c, launcher.[ch]:  Allow _MOVE of icons under a special
+	  type of mime type.  And thus remove the "same panel drop"
+	  restriction.
+
+Tue Dec 19 14:24:43 2000  George Lebl <jirka@5z.com>
+
+	* xstuff.[ch], foobar-widget.c, basep-widget.c:  On panel windows,	
+	  unset the input hint thing as well as requested by jsh.
+
+Tue Dec 19 01:32:56 2000  George Lebl <jirka@5z.com>
+
+	* aligned-widget.[ch], basep-widget.[ch], border-widget.[ch],
+	  drawer-widget.[ch], drawer.c, edge-widget.[ch],
+	  floating-widget.[ch], menu.c, panel.c, panel_config.[ch],
+	  session.c, sliding-widget.[ch]:  Implement avoid on maximize
+	  thing as a property of a panel, and implement per panel ability
+	  to set layering (or use the default).  Also fix updating of
+	  hidebutton properties on the dialog if they are changed from
+	  the menu.
+
+	* gnome-panel-properties.c, session.c:  Fix default layering
+	  properties.  Also fix some fragmented senteces and layout
+	  issues as pointed out by Karl Eichwalder <keichwa@gmx.net>
+
+Mon Dec 18 15:08:07 2000  George Lebl <jirka@5z.com>
+
+	* extern.c: when an applet is being loaded, put in a small pic
+	  in it's place to indicate it's being loaded.  Right now using
+	  gnome-unknown.png, but it needs to be changed to something
+	  nicer.  Needs to have no transparent spots.
+
+Sun Dec 17 00:04:20 2000  George Lebl <jirka@5z.com>
+
+	* extern.c: always check if ext->applet isn't by any chance %NULL.
+	  I think it can happen when an applet dies too quickly, but it's
+	  just a guess.  Anyway, it's good to be paranoid.
+
+Tue Dec 05 20:03:09 2000  George Lebl <jirka@5z.com>
+
+	* applet-widget.c: initialize frozen stuff, just being fussy, that
+	  it worked before, but it's not more explicit.
+
+	* extern.c, panel.[ch]: freeze change info on initial send, to
+	  make things not jump around so much.
+
+Sun Dec 03 15:41:33 2000  George Lebl <jirka@5z.com>
+
+	* menu-fentry.c, menu.c, drawer.[ch]:  Fix leak pointed out by
+	  Juan Pablo Mendoza <pablo_juan@yahoo.com>, plus several other minor
+	  memleaks.  Also a bunch of cleanup and some sanity fixes.  Also
+	  some constization.
+
+Sat Dec 02 23:34:09 2000  George Lebl <jirka@5z.com>
+
+	* panel.c, menu.c: fix the unref ugliness by removing the signal
+	  connection when creating the root panel menu.
+
+Sat Dec 02 23:16:29 2000  George Lebl <jirka@5z.com>
+
+	* launcher.c, panel.c: a bit of cleanup. use gnome-globe.png for
+	  links and not netscape.png, accept info:, man: and ghelp: as
+	  url's as well.
+
+	* panel.c: when a panel is removed the applets are removed cleanly,
+	  so that we don't get the "reload this applet" dialog in that case.
+
+Sat Dec 02 21:49:34 2000  George Lebl <jirka@5z.com>
+
+	* session.c:  apparently reading /proc/apm can crash on some
+	  laptops with rh7, so since that would be mucho bad, we fork
+	  during the check.  Ugly you say?  Yes, but it works.
+
+Thu Nov 30 14:05:56 2000  George Lebl <jirka@5z.com>
+
+	* panel.hints: Translate two entries to Czech while trying to
+	  procrastinate and not do homework which I need to get done.
+
+Tue Nov 28 02:19:34 2000  George Lebl <jirka@5z.com>
+
+	* session.c, menu.c, gnome-panel-properties.c, panel_config_global.h,
+	  menu-fentry.c:  Add an option for automatic rereading of menus for
+	  slower machines, and add a menu item for rereading menus if it's
+	  turned off.
+
+Tue Nov 28 00:45:55 2000  George Lebl <jirka@5z.com>
+
+	* applet.c, distribution.c, foobar-widget.c, gnome-run.c,
+	  launcher.c, main.c, menu-fentry.[ch], panel-util.[ch],
+	  menu-properties.c, menu-rh.c, menu-util.c, menu.c,
+	  panel-widget.c, panel.c, session.c, swallow.c:  Check for
+	  try execs on menu reread so that we notice newly installed
+	  software.  Might have to make this whole checking thing an
+	  option for people on slower machines.  Also put in routines
+	  stolen from gnome-libs head for checking for programs and file
+	  existance as they are faster.
+
+Fri Nov 24 22:24:04 2000  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, foobar-widget.c: fixup basep to use default
+	  handlers instead of signal connection.  Add autoraise to foobar.
+
+Tue Nov 21 21:28:00 2000  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: add support for launching "man:" "info:", "file:"
+	  and "ghelp:" URLs directly from the runbox
+
+2000-11-19  Karl Eichwalder  <ke@suse.de>
+
+	* extern.c (extern_before_remove): Adjust message string.
+	* swallow.c (before_remove): Fix typo.
+
+Thu Nov 16 21:45:38 2000  George Lebl <jirka@5z.com>
+
+	* applet.c, session.c, swallow.[ch]:  Remove bits of cruft.  Add the
+	  applet like reload hack for swallowed thingies.  Also fix a
+	  destruction crash by refcounting the swallow structure.
+
+	* panel.c: Accept the nautilus background reset ugly ugly ugly hack
+
+	* session.c: cleanup, remove some cruft, and set the clock format
+	  default to use the space padded hour format as that's more correct.
+
 2000-11-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
-	* Makefile.am: we don't really need panelrc, do we?
+	* Makefile.am: remove some cruft, yo
 
-2000-11-11  Gediminas Paulauskas  <menesis@delfi.lt>
+	* foobar-widget.c (add_task): add a divider which seperates tasks
+	on the current desktop from tasks on other desktops.
 
-	* extern.c: Fixed three typos in one string.
+	* tasklist_icon.c (tasklist_icon_check_x): pass the window when
+	creating the mask
 
-Sat Nov 11 00:33:32 2000  George Lebl <jirka@5z.com>
+Wed Nov 15 00:13:38 2000  George Lebl <jirka@5z.com>
 
-	* Ported the following from HEAD
+	* Makefile.am, gwmthumbnail.c:  We don't actually need gwmdesktop
+	  and gwmthumbnail, they are not used anywhere int he panel, thus
+	  they are now gone, this removes some weirdness
+
+	* extern.c: Whoever heard of the "mail menu" it's "main menu" :)
+	  /me beats self
+
+	* foobar-widget.c:  cleanup, set the icon even for skiplist windows
+	  so that the icon is better up to date to the actual focused window,
+	  only set up the tasklist stuff after foobar was realized, also
+	  don't use the pixmap menu item here, but just a normal item with an
+	  alignment in it.  Only check for the default icon once and avoid
+	  warnings if it doesn't exist.  On setup of the tasklist menu, set
+	  the current focused icon
+
+	* taslkist_icon.c: cleanup, and use the existing
+	  get_typed_property_data routine from xstuff.  Also fix leaks
+	  in the mini icon handling, and fix a possible crash.  Also
+	  push error traps for both functions
+
+2000-11-14  Darin Adler  <darin@eazel.com>
+
+	* gwmthumbnail.c: (gwm_thumb_nail_new): Changed the code to match
+	the header so it compiles. Sadly, it seems there are some things
+	newer in this copy of gwmthumbnail.c and some things newer in the
+	desk-guide copy -- changes need to be propogated in both directions
+	or perhaps we can get rid of the duplication.
+
+Tue Nov 14 00:47:51 2000  George Lebl <jirka@5z.com>
+
+	* basep-widget.c: set the panel hints on drawers again (doh!)
+
+	* applet.[ch], menu-properties.c:  A bunch of cleanup, also in
+	  the apply function we only do things when they are really
+	  neccessary, also reduce the amount of statting on each apply by
+	  caching the availability of gmenu
+
+	* foobar-widget.c: use %l and not %I for the 12 hour format hour
+	  thing, this will not zero pad the hours which is wrong (it looks
+	  like 24 hour format then)
+
+Sat Nov 11 17:27:10 2000  George Lebl <jirka@5z.com>
+
+	* applet.c: minor cleanup
 
 Wed Nov 08 21:40:46 2000  George Lebl <jirka@5z.com>
 
@@ -21,44 +594,255 @@ Wed Nov 08 21:40:46 2000  George Lebl <jirka@5z.com>
 	  should reduce the "where did my <insert name of applet>" go and
 	  how do I get it back.
 
-2000-11-09  Yukihiro Nakai  <nakai@gnome.gr.jp>
+Mon Nov 06 02:06:57 2000  George Lebl <jirka@5z.com>
 
-	* panel.soundlist: Update Slovak translation from
-	  Stanislav Visnovsky.
+	* menu.c: some cleanup, mostly cosmetic
 
-2000-10-23  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+Sun Nov 05 05:22:45 2000  George Lebl <jirka@5z.com>
 
-	* drawer-widget.h: 
-	* drawer.c: fixes from HEAD
+	* gnome-run.c: warning fixes
 
-Tue Oct 17 18:49:30 2000  George Lebl <jirka@5z.com>
+	* session.c, panel_config_global.h, basep-widget.c, foobar-widget.c,
+	  gnome-panel-properties.c:  Imlement a normal layer panel setting.
+	  this will be the future default as it seems that almost everybody
+	  hates both always on top and always on bottom settings.
 
-	* launcher.c, menu.c:  The dentry types should NOT be translated
+Sat Nov 04 22:59:52 2000  George Lebl <jirka@5z.com>
+
+	* gnome-run.c, foobar-widget.[ch]:  minor cleanup and some evilness
+
+Thu Nov 02 22:19:18 2000  George Lebl <jirka@5z.com>
+
+	* session.c: only check for /proc/apm on linux.  Also read the
+	  thing and see if the percentage is >= 0, otherwise it's -1
+	  and that means there is no battery.  So don't add the battery
+	  applet by default in that case.
+
+Thu Nov 02 21:27:28 2000  George Lebl <jirka@5z.com>
+
+	* extern.c, panel.gnorba: Implement the Panel2 interface.
+
+	* applet.c, panel-widget.c, panel.c: minor cosmetic cleanup
+
+	* Makefile.am, gnome-panel-add-launcher.c:  Add a proggie to add
+	  launchers externally.  Let's not doc this so that that many
+	  people don't use it as it could become annoying, but major apps
+	  may want to use it to optionally add their launcher to the panel.
+	  note here, it should be OPTIONAL! in the installer, otherwise I'm
+	  going to go after each and every dumbass who made it install an
+	  icon without asking the user with a chainsaw.  If it becomes a
+	  bother I'll stick in a confirmation dialog in these funcs.
+
+2000-11-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-panel-properties.desktop: Added "no" translation.
+	
+Thu Nov 02 02:37:27 2000  George Lebl <jirka@5z.com>
+
+	* panel.c, launcher.c:  move the drag status call during motion below
+	  the is_drag_ok to avoid some "race" like problems, suggested by
+	  Eric BRAYEUR <eb@ibelgique.com>
 
 Tue Oct 17 18:40:38 2000  George Lebl <jirka@5z.com>
 
 	* menu.c: Fix cast to BaseP for FooBar on panel removal
 
-2000-10-03  Kjartan Maraas  <kmaraas@gnome.org>
+Tue Oct 17 18:15:10 2000  George Lebl <jirka@5z.com>
 
-	* help/*/*.sgml: Fix some warnings and move towards
-	being compliant with the 1.4 changes doc.
+	* basep-widget.c: Fix the recalc on destroy.  /me smacks
+	  head against wall for committing a broken thingie.
+
+Tue Oct 17 10:38:49 2000  George Lebl <jirka@5z.com>
+
+	* penel.c, applet.c, basep-widget.c:  cleanup, recalc borders
+	  when a border panel is killed.
+
+Sat Oct 14 15:11:24 2000  George Lebl <jirka@5z.com>
+
+	* gnome-panel-properties.c, session.c, panel_config_global.h,
+	  panel-widget.[ch]:  Apply patch from Chris Leith <cleith@home.com>
+	  to add border padding for applets.  By default this is 0 which
+	  was the previous behaviour.  I however did s/applet_applet/applet/
+	  on the patch, since we don't want to change current configuration
+	  names.
+
+Sat Oct 14 14:17:49 2000  George Lebl <jirka@5z.com>
+
+	* panel_config.c, applet-widget.c, gwmthumbnail.c, panel-util.[ch],
+	  panel.c, status-docklet.c:  Random cleanup related to some
+	  -pedantic -ansi, also added a no_locale version of strcasecmp
+	  and use it appropriately.  Also "localhost.localdomain" is also
+	  a local host.
+
+Sat Oct 14 14:50:18 2000  George Lebl <jirka@5z.com>
+
+	* main.c: cleanups, remove unused extern
+
+Fri Oct 13 19:39:53 2000  George Lebl <jirka@5z.com>
+
+	* panel_config_global.h, session.c, gnome-panel-properties.c,
+	  basep-widget.c:  add a global option to turn off the collision
+	  avoidance (it's on by default of course though)
+
+	* basep-widget.c, foobar-widget.c: panel_list is a GSList not
+	  a GList.
+
+Fri Oct 13 17:26:25 2000  George Lebl <jirka@5z.com>
+
+	* aligned-widget.c, basep-widget.[ch], border-widget.h,
+	  panel-types.h, edge-widget.c:  Add simple panel collision
+	  avoidance.  Bottom/Top panels take preference over left/right
+	  panels.  We also assume only 1 panel per position, so we don't
+	  overlap only panels at right angles to each other.
+
+Wed Oct 11 18:09:40 2000  George Lebl <jirka@5z.com>
+
+	* xstuff.c: don't assume return from XGetWMHints is allways non-null,
+	  though it's really overly paranoid.
+
+Wed Oct 11 00:23:31 2000  George Lebl <jirka@5z.com>
+
+	* launcher.[ch], menu.c:  Add revert button to desktop entry property
+	  editors, and use an enum instead of button numbers to avoid future
+	  fuckups.  Again some completely random cosmetic cleanup as well.
+
+Sat Oct 07 23:44:48 2000  George Lebl <jirka@5z.com>
+
+	* applet-widget.c, applet.c, panel-util.[ch], launcher.[ch],
+	  menu.[ch], menu-properties.[ch], panel_config.c:  General cleanup
+	  and some const-ization of things.  But mostly cosmetic things.
+
+	* panel_config.c, launcher.c, menu.c, menu-properties.c:  Make sure
+	  a widget is focused after a dialog is shown
+
+	* menu.c: Always make the properties item sensitive, but if the
+	  item is not writable make the entire dialog unsensitive, so this
+	  way the user can inspect the info in the dentry, but not change it
+
+Sat Oct 07 21:59:28 2000  George Lebl <jirka@5z.com>
+
+	* gnome-run.c: add ability to launch certain urls
+	  (http://,https://,gopher:// and ftp://) from the run box
+
+Sat Oct 07 21:03:40 2000  George Lebl <jirka@5z.com>
+
+	* launcher.c, menu.c, panel-util.[ch]: cleanup, minor leak fixes,
+	  some hack-explanatory comments
+
+	* menu.c: replace the property-box with a normal dialog that
+	  has immediate effect.  This is the last property dialog
+
+Sat Sep 30 00:33:16 2000  George Lebl <jirka@5z.com>
+
+	* menu-properties.c, menu.[ch]: fixup the menu properties to do
+	  immediate update and use a structure instead of the object
+	  data for some nicer code.
+
+	* drawer.c: remove unused var
+
+	* launcher.c: make dialog creation not seg and add the _set_close
+	  call to the dialog (to false)
+
+2000-09-29  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* logout.c (logout): 
+	* launcher.c (launch): pass a GtkWidget
+
+	* extern.c (extern_unref): this function returns void
+
+	* drawer.c (drawer_click): don't case to a BaseP
+	(load_drawer_applet): only autoshow if it is a BaseP
+
+	* drawer-widget.h: update API to use GtkWidgets
+
+	* drawer-widget.c (drawer_widget_open_drawer):
+	(drawer_widget_close_drawer): take a GtkWidget as the second
+	parameter since a foobar is not a basep
+	(drawer_pos_hidebutton_click): pass a GtkWidget and not a BaseP
+
+	* panel_config.c (update_config_edge):
+	(update_config_anchor):
+	(border_set_edge):
+	(border_set_align): if we aren't changing the align or edge,
+	return early so we don't have stack crashes
+	(panel_config): append the button list with a NULL so we don't get
+	a seg fault
+
+Fri Sep 29 00:17:17 2000  George Lebl <jirka@5z.com>
+
+	* panel_config.c: fix crash during properties by nulling the
+	  PerPanelConfig structure properly.
+
+Thu Sep 28 22:04:34 2000  George Lebl <jirka@5z.com>
+
+	* drawer.[ch], panel_config.[ch], gnome-panel-properties.c,
+	  panel-util.[ch]:  More GnomePropertyBox code killing.  This makes
+	  the drawer properties actually work.
+
+	* menu-fentry.[ch], menu.c:  Fix adding drawers from menus with
+	  merging on.  And other various cleanups.
+
+Thu Sep 28 19:50:25 2000  George Lebl <jirka@5z.com>
+
+	* applet-widget.c: cleaner checking for if a child was added,
+	  to know when to call abort load, and some other minor cleanups
+
+	* applet.c, launcher.[ch], session.[ch]: store launchers in better
+	  paths, and keep the filename constant.  Also allows us to save a
+	  .desktop file without having to save the entire session.  This
+	  reduces the need for temporary file mess and reduces races.  The
+	  downside is no code for per-session panel config, but that's
+	  mostly broken anyway
+
+	* applet.[ch], launcher.c, drawer.c, logout.c, menu.c, gnome-run.c,
+	  status.c, swallow.c:  Add a destroy notify to the AppletInfo.
+	  use it to destroy the per applet structures.
+	  
+Thu Sep 28 01:01:41 2000  George Lebl <jirka@5z.com>
+
+	* panel_config.[ch], drawer.c, launcher.[ch]: Make, property
+	  dialogs (the panel one and launcher one only for now) not modal
+	  and make them have immediate effect.  This is the way nautilus
+	  and actually most of the new apps work.
+
+	* launcher.[ch], session.[ch]: only schedule syncs, never force
+	  them.  This way syncs from launchers won't come closer together
+	  then 30 seconds.  Deal with the drag case where the launcher wasn't
+	  saved yet.
+
+Wed Sep 27 22:34:21 2000  George Lebl <jirka@5z.com>
+
+	* foobar-widget.c: make a bunch of code #if 0'ed out as it's not
+	  currently used pending some dumping action
+
+	* tasklist_icon.[ch]: added a header and #if 0'ed out an unused
+	  function
+
+	* foobar-widget.c, menu.[ch], main.c: warning fixes
+
+2000-09-27  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* gwmthumbnail.c (gdk_image_get): the visual seems to be NULL for
+	tasklist icons, so comment out part of a check in here for now
+
+	* menu.c (gtk_menu_position): make it non-static since the new
+	foobar code needs this
 	
-Thu Sep 28 22:09:35 2000  George Lebl <jirka@5z.com>
+	* main.c (main): call gwmh_init()
 
-	* menu.c:  Fix segfault in adding drawers from merged menus
+	* basep-widget.c (basep_widget_explicit_show): use the expand sound
 
-	* menu-fentry.c:  fix leak in the getting of presorted list
-	  with merged items
+	* foobar-widget.[ch]: mac-style tasklist in the upper right corner
+	instead of the lame gnome menu.  not finished but good enough for
+	unstable gnome
 
-Thu Sep 28 19:08:14 2000  George Lebl <jirka@5z.com>
+	* Makefile.am (GWMH_SRCLIST): symlink in stuff from desk-guide for now
 
-	* applet.c, drawer.c: quick fix for a crash bug.  A much better
-	  solution is being implemented in HEAD
+Mon Sep 25 18:43:05 2000  George Lebl <jirka@5z.com>
 
-Mon Sep 25 18:21:07 2000  George Lebl <jirka@5z.com>
-
-	* button-widget.c: fixed an error where tiles became empty squares
+	* button-widget.c: fix the black squares problem and a bunch
+	  of cleanup which doesn't do anything (such as some consting
+	  etc...)
 
 Tue Sep 19 17:29:08 2000  George Lebl <jirka@5z.com>
 

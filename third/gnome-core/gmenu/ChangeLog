@@ -1,3 +1,20 @@
+Thu Mar 01 03:32:56 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, edit.c:  Fix the icon entry by copying the icon hack
+	  code from the panel directory ala gwmh
+
+Sun Feb 11 21:19:41 2001  George Lebl <jirka@5z.com>
+
+	* edit.c: fix a possible segfault
+
+Wed Jan 10 20:24:48 2001  George Lebl <jirka@5z.com>
+
+	* main.c: Only make the merge path the merge path
+
+Wed Jan 10 12:28:34 2001  George Lebl <jirka@5z.com>
+
+	* main.c, order.c, treeutil.c, utils.c: cleanups and minor fixes
+
 2000-11-02  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
 	* main.c (main): support debian and suse menu things too

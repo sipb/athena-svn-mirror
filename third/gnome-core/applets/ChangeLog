@@ -1,8 +1,92 @@
-2000-10-02  Kjartan Maraas  <kmaraas@gnome.org>
+Tue Mar 06 16:07:41 2001  George Lebl <jirka@5z.com>
 
-	* */help/*/*.sgml: Fixed warnings and moved docs towards
-	compliance with the changes doc for 1.4.
+	* gen_util/popcheck.[ch], gen_util/mailcheck.[ch],
+	  gen_util/remote-helper.[ch]:  Instead of doing network stuff
+	  in the main proccess which could (and would) frequently hang
+	  the panel (which is mucho bad), fork off a process and do things
+	  there, Fixes a couple of bugs on bugzilla which I'm too lazy to
+	  look for now.
+
+Wed Feb 28 09:04:02 2001  Manuel de Vega Barreiro <barreiro@arrakis.es>
 	
+	* applets/gen_util/help/Makefile.am: Included es for printer
+	  Spanish Translation.
+	* applets/gen_util/help/es/printer: Spanish Translation
+
+Sat Feb 24 22:26:14 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/mailcheck.c:  prevent the possibility of an uninitialized
+	  pointer being sent from the password dialog and use
+	  gnome_dialog_run_and_close to run the dialog.  Also some more
+	  minor cleanup.
+
+Mon Feb 12 20:44:49 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/help/C/printer/Makfile.am: fix typo referring to
+	  mailcheck, not printer
+
+Fri Feb 09 12:05:13 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/popcheck.c: fix pop login, and check for NULL after
+	  each read_line in the imap code to deal with buggy code.
+
+Thu Feb 08 23:44:01 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/clock.c: ability to copy out a full timestamp, plus add
+	  year to date copying.
+
+Thu Feb 08 21:04:06 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/clock.c: Fix strftime usage, be paranoid about nulling
+	  things and add menuitems to copy time/date into selection
+
+Mon Feb 05 18:56:02 2001  George Lebl <jirka@5z.com>
+
+	* gen_util/popcheck.c: Get rid of some sprintf's and quote login info
+	  for IMAP servers.
+
+2001-01-22  jacob berkman  <jacob@ximian.com>
+
+	* fish/*.c:
+	* gen_util/*.c: manually set the wmclass for the property and
+	about dialogs, since these are shlib applets and get the panel's
+	window class, which sawmill likes to do funky stuff with
+
+Thu Dec 21 17:51:37 2000  George Lebl <jirka@5z.com>
+
+	* gen_util/clock.c:  Apply patch from Tobias Bengtsson <tobbe@tobbe.nu>
+	  for adding an Internet time mode
+
+2000-10-15 John Fleck <jfleck@inkstain.net>
+	* tasklist/help/C/tasklist.sgml, tasklist-applet.sgml - update
+	docs for Nautilus/1.4 compatibility (patch from Greg Leblanc)
+
+Sat Oct 14 12:39:53 2000  George Lebl <jirka@5z.com>
+
+	* gen_util/mail_check.c: Sanity, fix minor mem leak and some
+	  cleanups, god does this code suck.
+
+2000-10-14 Dirk-Jan C. Binnema <dirkjan@gnome.org>
+
+        * gen_util/mail_check.c: have the mailcheck applet check the
+	  mail immediately at startup time
+
+2000-10-14 John Fleck <jfleck@inkstain.net>
+
+	* gen_util/help/C/printer/printer-applet.sgml, printer.sgml -
+	update to docs for Nautilus 1.4 compatibility (patch from Greg Leblanc)
+
+2000-10-11 John Fleck <jfleck@inkstain.net>
+
+	* gen_util/help/C/mailcheck/mailcheck-applet.sgml and
+	mailcheck.sgml - updating docs for 1.4 compatibility (patch from
+	Greg Leblanc)
+	
+2000-10-10 John Fleck <jfleck@inkstain.net>
+
+	* gen_util/help/C/clock/clock-applet.sgml and clock.sgml
+	updating for Nautilus help browser (patch from Greg Leblanc)
+
 2000-09-23  Jaka Mocnik  <jaka.mocnik@kiss.uni-lj.si>
 
 	* gen_util/mailcheck.c (mail_check_timeout): improve text-only mail

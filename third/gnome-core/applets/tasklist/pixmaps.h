@@ -76,7 +76,7 @@ static char * tasklist_restore_xpm[] = {
 " .............. ",
 "                "};
 /* XPM */
-static char * tasklist_send_to_desktop_xpm[] = {
+static char * tasklist_send_to_desktop_xpm[] G_GNUC_UNUSED = {
 "16 16 11 1",
 " 	c None",
 ".	c #000000",

@@ -1,7 +1,149 @@
-2000-10-02  Kjartan Maraas  <kmaraas@gnome.org>
+Mon Mar 12 15:07:40 2001  George Lebl <jirka@5z.com>
 
-	* help/*/*.sgml: s/entity/ENTITY/g and more warning fixes.
-	
+	* tasklist_applet.gnorba: make it exe not shlib, so that it loads
+	  now again.
+
+Mon Mar 12 14:52:32 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c: when sorting tasks and the groups are the same
+	  sort by the x window id to make sure tasks don't jump around.
+
+2001-03-12  Anders Carlsson  <andersca@codefactory.se>
+
+	* tasklist_applet.gnorba: change location_info to point to
+	  the process instead of the shlib.
+
+	* tasklist_applet.c: define APPLET_COMPILE_AS_PROCESS and make
+	  it actually compile.
+	  (tasklist_destroy): "Fix" a warning.
+
+	* Makefile.am: Make the tasklist a process again, since the
+	  shlib version currently leaks and is weird.
+
+Mon Mar 12 01:27:24 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_properties.c, tasklist_icon.c:
+	  Don't crash on remove from panel, don't redraw tasks when just
+	  geometry changed, redraw only when needed, change size when it has
+	  actually changed, not depending on random stack data, fix some
+	  leaks when removing tasklist but it still leaks quite horribly.
+	  Null things when freed to avoid crashes.  Notice icon changes
+	  again.  Add sarcastic #warning.
+
+2001-03-09  Jaka Mocnik  <jaka@gnu.org>
+
+	* tasklist/tasklist_applet.c (tasklist_task_get_label): return
+	empty string if task name is NULL. this prevents occasional
+	segfaults.
+
+2001-03-04 John Fleck <jfleck@inkstain.net>
+
+	* help/C/tasklist.sgml, help/C/tasklist_applet.sgml, plus
+	screenshots - add discussion of task grouping to docs, update
+	screenshots 
+
+2001-03-02  Anders Carlsson  <andersca@codefactory.se>
+
+	* tasklist_applet.h: Add about box to Tasklist struct.
+
+	* tasklist_applet.c (cb_about): Use tasklist->about_dialog here.
+	(tasklist_destroy): Destroy the property and about dialogs.
+
+Sun Feb 25 21:27:25 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c: Use destroy not unref for menu, since it needs
+	  to be actually destroyed in case there was another refcount.  When
+	  a task is destroyed, set the "task" data on the menuitem to NULL,
+	  and hide it.  (destroying makes thing go nuts a bit)
+
+	* tasklist_menu.c: handle cases where "task" is NULL, and make sure
+	  to update ->menuitem on task after the item is destroyed.  Also
+	  don't leak the pixmaps
+
+2001-02-14  Anders Carlsson  <andersca@codefactory.se>
+
+	* tasklist_menu.c (do_action): Don't segfault when trying to
+	kill programs that have already been killed once. 
+	This fixes bugzilla bug #10874.
+
+Tue Feb 13 05:00:44 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_menu.c: make sure menu doesn't go off screen.
+
+Mon Feb 12 21:25:33 2001  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_menu.c, pixmaps.h: Remove some
+	  unused code, fix warnings, remove function casts (they are evil)
+	  and add wrappers instead.  Compiles without warning now.
+
+	* tasklist_applet.c: In a fit of vanity, added self to the about box,
+	  though at the bottom, so I don't feel like a total asshole.  While
+	  I was looking through the function added my own touch of anality
+	  and some null checking.
+
+2001-02-04  Anders Carlsson  <andersca@codefactory.se>
+
+	* tasklist_menu.c (cb_activate_task): Add function.
+	(create_task_item): Make it possible to click-drag in a menu
+	to activate a task.
+
+	* tasklist_applet.c (real_layout_tasklist): If width > specified,
+	set width = specified.
+
+2001-01-30  jacob berkman  <jacob@ximian.com>
+
+	* tasklist_menu.c (tasklist_group_popup):
+	(create_task_item): add a seperator to the menu; tasks on the
+	current desktop are before, tasks not on after (like that foobar
+	task list)
+
+2001-01-24  jacob berkman  <jacob@ximian.com>
+
+	* tasklist*.[ch]: add shlibification and grouping by wmclass
+
+2000-12-21  Richard Hult  <rhult@codefactory.se>
+
+	* tasklist_applet.c (lexographic_compare_func): Sort correctly
+	even if one of the tasks has no name (instead of just crashing).
+
+Wed Dec 20 15:25:02 2000  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_config.c, tasklist_properties.c:
+	  Add an option so that the re-size never pushes other applets if
+	  dynamic mode is on.
+
+Wed Dec 20 14:27:54 2000  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.[ch], tasklist_config.c, tasklist_properties.c:
+	  Fixups, optimizations of X traffic (this still needs work).  Add
+	  BeOS like deskbar (I think) sort of mode.  In vertical mode you can
+	  have the width be that of the longest window title.  So all you
+	  have to do to achieve this is to smack an aligned vertical
+	  panel there, make height dynamic and use this setting and voila!
+
+Wed Dec 13 19:17:27 2000  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c, tasklist_applet.h, tasklist_config.c,
+	  tasklist_properties.c:  Apply a very slightly modified patch
+	  from John Heidemann <johnh@isi.edu> to keep tasks sorted
+	  optionally, and turn it on by default since it's pretty cool
+	  to do so actually.
+
+Tue Dec 05 20:09:51 2000  George Lebl <jirka@5z.com>
+
+	* tasklist_applet.c: bind signals on applet-widget before we call
+	  applet_widget_add to avoid a race.
+
+Wed Nov 15 00:14:47 2000  George Lebl <jirka@5z.com>
+
+	* tasklist_icon.c:  Fixed possible crash and a leak and push/pop trap
+	  which fixes crashes with non-gnome-wm
+
+2000-10-22  Anders Carlsson  <andersca@gnu.org>
+
+	* tasklist_applet.c: Add patch from Eric Brayeur that gives
+	 tasks focus on drag-and-drop.
+
 Wed Sep 27 21:10:23 2000  George Lebl <jirka@5z.com>
 
 	* tasklist_applet.c: fix leaks from the get_visible_tasks.  Fix

@@ -1,3 +1,23 @@
+2001-02-26  jacob berkman  <jacob@ximian.com>
+
+	* reverting previous patch
+
+x2001-02-25  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* htmlurl.h: removed an enum which is in gtkhtml/htmlenums.h. include
+	that.
+	* window.c: gtkhtml include fixes, shut a couple of warnings.
+
+Sun Feb 04 20:35:16 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am: Apply patch from "Adam J. Richter" <adam@yggdrasil.com>
+	  to fix some automake foo
+
+2001-01-29  jacob berkman  <jacob@ximian.com>
+
+	* transport.c (transport): seg fault fix for solaris from Laszlo
+	PETER <Laszlo.Peter@ireland.sun.com>
+
 2000-09-18  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
 	* gnome-help-browser.c (main): 

@@ -75,8 +75,10 @@ static gchar		*DESK_GUIDE_NAME = NULL;
 static ConfigItem gp_config_items[] = {
   CONFIG_PAGE (N_ ("Display")),
   CONFIG_SECTION (sect_layout,					N_ ("Layout")),
+  CONFIG_BOOL (show_arrow,      TRUE,
+	       N_ ("Show tasklist arrow")),
   CONFIG_BOOL (switch_arrow,	FALSE,
-	       N_ ("Switch tasklist arrow")),
+	       N_ ("Switch horizontal/vertical position of tasklist arrow")),
   CONFIG_BOOL (current_only,	FALSE,
 	       N_ ("Only show current desktop in pager")),
   CONFIG_BOOL (raise_grid,	FALSE,
@@ -134,9 +136,9 @@ static ConfigItem gp_config_items[] = {
 
   CONFIG_PAGE (N_ ("Advanced")),
   CONFIG_SECTION (sect_workarounds,			N_ ("Window Manager Workarounds")),
-  CONFIG_BOOL (skip_movement_offset,		TRUE,
+  CONFIG_BOOL (skip_movement_offset,		FALSE,
 	       N_ ("Window manager moves decoration window instead\n"
-		   "(AfterStep, Enlightenment, FVWM, IceWM, Sawfish)")),
+		   "(AfterStep, Enlightenment, FVWM, IceWM)")),
   CONFIG_BOOL (unified_areas,			TRUE,
 	       N_ ("Window manager changes active area on all desktops\n"
 		   "(FVWM, Sawfish)")),
@@ -162,7 +164,7 @@ main (gint   argc,
   textdomain (PACKAGE);
   
   applet_widget_init ("deskguide_applet",
-		      VERSION,
+		      DESKGUIDE_VERSION,
 		      argc, argv,
 		      NULL, 0, NULL);
   
@@ -212,8 +214,6 @@ main (gint   argc,
 				 "signal::destroy", gtk_widget_destroyed, &gp_container,
 				 "child", gtk_type_new (GTK_TYPE_WIDGET),
 				 NULL);
-  applet_widget_add (APPLET_WIDGET (gp_applet), gp_container);
-  
   /* notifiers and callbacks
    */
   gwmh_desk_notifier_add (gp_desk_notifier, NULL);
@@ -226,6 +226,12 @@ main (gint   argc,
 		  "object_signal::save-session", gp_save_session, NULL,
 		  "signal::destroy", gtk_main_quit, NULL,
 		  NULL);
+
+  /* add container to applet, note that this MUST come after binding
+   * the change-* signals otherwise we have a race */
+  applet_widget_add (APPLET_WIDGET (gp_applet), gp_container);
+  
+
   applet_widget_register_stock_callback (APPLET_WIDGET (gp_applet),
 					 "properties",
 					 GNOME_STOCK_MENU_PROP,
@@ -763,7 +769,9 @@ gp_init_gui (void)
   GtkWidget *button, *abox, *arrow;
   gboolean arrow_at_end = FALSE;
   GtkWidget *main_box;
-  
+
+  abox = NULL;
+
   gtk_widget_set_usize (gp_container, 0, 0);
   gp_panel_size = applet_widget_get_panel_pixel_size (APPLET_WIDGET (gp_applet));
   gp_panel_size = MAX (gp_panel_size, 12);
@@ -828,13 +836,17 @@ gp_init_gui (void)
   
   /* provide box for arrow and button
    */
-  abox = gtk_widget_new (GP_TYPE_VBOX,
-			 "visible", TRUE,
-			 "spacing", 0,
-			 NULL);
-  (BOOL_CONFIG (switch_arrow)
-   ? gtk_box_pack_end
-   : gtk_box_pack_start) (GTK_BOX (main_box), abox, FALSE, TRUE, 0);
+  if (BOOL_CONFIG (show_arrow))
+  {
+    abox = gtk_widget_new (GP_TYPE_VBOX,
+			   "visible", TRUE,
+			   "spacing", 0,
+			   NULL);
+
+    (BOOL_CONFIG (switch_arrow)
+     ? gtk_box_pack_end
+     : gtk_box_pack_start) (GTK_BOX (main_box), abox, FALSE, TRUE, 0);
+  }
 
   /* provide desktop widget container
    */
@@ -852,26 +864,29 @@ gp_init_gui (void)
   
   /* add arrow and button
    */
-  arrow = gtk_widget_new (GTK_TYPE_ARROW,
-			  "visible", TRUE,
-			  "arrow_type", GP_ARROW_DIR,
+  if (BOOL_CONFIG (show_arrow))
+  {
+    arrow = gtk_widget_new (GTK_TYPE_ARROW,
+			    "visible", TRUE,
+			    "arrow_type", GP_ARROW_DIR,
+			    NULL);
+    button = gtk_widget_new (GTK_TYPE_BUTTON,
+			     "visible", TRUE,
+			     "can_focus", FALSE,
+			     "child", arrow,
+			     "signal::clicked", gp_widget_button_toggle_task_list, NULL,
+			     "signal::event", gp_widget_ignore_button, GUINT_TO_POINTER (2),
+			     "signal::event", gp_widget_ignore_button, GUINT_TO_POINTER (3),
+			     NULL);
+    gtk_tooltips_set_tip (gp_tooltips,
+			  button,
+			  DESK_GUIDE_NAME,
 			  NULL);
-  button = gtk_widget_new (GTK_TYPE_BUTTON,
-			   "visible", TRUE,
-			   "can_focus", FALSE,
-			   "child", arrow,
-			   "signal::clicked", gp_widget_button_toggle_task_list, NULL,
-			   "signal::event", gp_widget_ignore_button, GUINT_TO_POINTER (2),
-			   "signal::event", gp_widget_ignore_button, GUINT_TO_POINTER (3),
-			   NULL);
-  gtk_tooltips_set_tip (gp_tooltips,
-			button,
-			DESK_GUIDE_NAME,
-			NULL);
-  (arrow_at_end
-   ? gtk_box_pack_end
-   : gtk_box_pack_start) (GTK_BOX (abox), button, TRUE, TRUE, 0);
-  
+    (arrow_at_end
+     ? gtk_box_pack_end
+     : gtk_box_pack_start) (GTK_BOX (abox), button, TRUE, TRUE, 0);
+  }
+
   /* desktop pagers
    */
   gp_create_desk_widgets ();
@@ -893,7 +908,7 @@ gp_about (void)
       };
       
       dialog = gnome_about_new ("Desk Guide",
-				"0.4",
+				DESKGUIDE_VERSION,
 				"Copyright (C) 1999 Tim Janik",
 				authors,
 				DESK_GUIDE_NAME,
@@ -936,6 +951,10 @@ gp_config_check (GtkWidget *widget)
 			    !BOOL_TMP_CONFIG (abandon_area_width));
   gtk_widget_set_sensitive (CONFIG_WIDGET (toplevel, thumb_nail_delay),
 			    BOOL_TMP_CONFIG (enable_thumb_nails));
+  gtk_widget_set_sensitive (CONFIG_WIDGET (toplevel, switch_arrow),
+			    BOOL_TMP_CONFIG (show_arrow));
+  gtk_widget_set_sensitive (CONFIG_WIDGET (toplevel, task_view_popdown_request),
+			    BOOL_TMP_CONFIG (show_arrow));
 }
 
 static void

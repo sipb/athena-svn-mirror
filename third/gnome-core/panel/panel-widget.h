@@ -41,7 +41,7 @@ typedef enum {
 	PANEL_VERTICAL
 } PanelOrientation;
 typedef enum {
-	PANEL_SWITCH_MOVE=0,
+	PANEL_SWITCH_MOVE = 0,
 	PANEL_FREE_MOVE,
 	PANEL_PUSH_MOVE
 } PanelMovementType;
@@ -53,15 +53,19 @@ struct _AppletData
 	int		cells;
 	gboolean	dirty;
 
+	int		drag_off; /* offset on the applet where drag
+				     was started */
+
 	int		no_die; /* if >0 never send the about to die
 				   signal, an int and not a bool for
 				   nesting reasons */
-
 };
 
 struct _PanelWidget
 {
 	GtkFixed		fixed;
+
+	guint32			unique_id;
 	
 	GList			*applet_list;
 	GList			*no_window_applet_list;
@@ -99,7 +103,7 @@ struct _PanelWidget
 	GtkWidget		*panel_parent;
 	
 	GdkPixbuf		*backpix;	/* background pixmap unscaled */
-	int			scale_w,scale_h;
+	int			scale_w, scale_h;
 	
 	GdkPixmap		*backpixmap;	/* if a background pixmap
 						   was set, this is used
@@ -151,6 +155,10 @@ int		panel_widget_add_full		(PanelWidget *panel,
 						 gboolean insert_at_pos);
 #define panel_widget_add(panel,applet,pos) (panel_widget_add_full(panel,applet,pos,TRUE,FALSE))
 
+PanelWidget *	panel_widget_get_by_id		(gint32 id);
+void		panel_widget_set_id		(PanelWidget *panel,
+						 gint32 id);
+
 /*needs to be called for drawers after add*/
 void		panel_widget_add_forbidden	(PanelWidget *panel);
 
@@ -173,14 +181,20 @@ int		panel_widget_get_pos		(PanelWidget *panel,
 int		panel_widget_get_free_space	(PanelWidget *panel,
 						 GtkWidget *applet);
 
+/* use these for drag_off for special cases */
+#define PW_DRAG_OFF_CURSOR -1
+#define PW_DRAG_OFF_CENTER -2
+
 /*drag*/
 void		panel_widget_applet_drag_start	(PanelWidget *panel,
-						 GtkWidget *applet);
+						 GtkWidget *applet,
+						 int drag_off);
 void		panel_widget_applet_drag_end	(PanelWidget *panel);
 
 /* needed for corba */
 void		panel_widget_applet_drag_start_no_grab(PanelWidget *panel,
-						       GtkWidget *applet);
+						       GtkWidget *applet,
+						       int drag_off);
 void		panel_widget_applet_drag_end_no_grab(PanelWidget *panel);
 
 /* changing parameters */
@@ -207,7 +221,8 @@ void		panel_widget_change_global	(int explicit_step,
 						 int minimize_delay,
 						 PanelMovementType move_type,
 						 gboolean disable_animations,
-						 int applet_padding);
+						 int applet_padding,
+						 int applet_border_padding);
 
 void		panel_widget_set_back_pixmap	(PanelWidget *panel,
 						 char *file);
@@ -246,10 +261,7 @@ void panel_widget_get_applet_rgb_bg(PanelWidget *panel,
 				    gboolean color_only,
 				    int *r, int *g, int *b);
 
-/*extern GSList *panels;*/
-
 extern gboolean panel_applet_in_drag;
-
 
 END_GNOME_DECLS
 

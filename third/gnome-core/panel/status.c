@@ -299,9 +299,11 @@ ignore_1st_click(GtkWidget *widget, GdkEvent *event)
 }
 
 static void
-applet_destroy(GtkWidget *w, StatusApplet *s)
+free_status (gpointer data)
 {
+	StatusApplet *s = data;
 	g_free(s);
+
 	the_status = NULL;
 }
 
@@ -319,32 +321,32 @@ gboolean
 load_status_applet(PanelWidget *panel, int pos, gboolean exactpos)
 {
 	GtkWidget *ebox;
-	GtkWidget *frame;
 	if(the_status)
 		return FALSE;
 
 	DPUTS("LOAD_STATUS_APPLET");
 	
 	the_status = g_new0(StatusApplet,1);
-	frame = gtk_frame_new(NULL);
 	the_status->orient = panel->orient;
 	the_status->size = panel->sz;
-	gtk_frame_set_shadow_type(GTK_FRAME(frame),
-				  GTK_SHADOW_IN);
 	the_status->handle = gtk_handle_box_new();
+	gtk_handle_box_set_shadow_type(GTK_HANDLE_BOX(the_status->handle),
+				       GTK_SHADOW_IN);
+	gtk_container_set_border_width(GTK_CONTAINER(the_status->handle),
+				       1);
 	gtk_signal_connect(GTK_OBJECT(the_status->handle), "event",
 			   GTK_SIGNAL_FUNC(ignore_1st_click), NULL);
-	gtk_container_add(GTK_CONTAINER(the_status->handle),
-			  frame);
 
 	if(!fixed) {
 		DPUTS("NO FIXED");
 		fixed = gtk_fixed_new();
+		gtk_container_set_border_width(GTK_CONTAINER(fixed),
+					       0);
 		gtk_widget_show(fixed);
 
-		gtk_container_add(GTK_CONTAINER(frame), fixed);
+		gtk_container_add(GTK_CONTAINER(the_status->handle), fixed);
 	} else {
-		gtk_signal_connect_after(GTK_OBJECT(frame), "realize",
+		gtk_signal_connect_after(GTK_OBJECT(the_status->handle), "realize",
 					 GTK_SIGNAL_FUNC(reparent_fixed),
 					 NULL);
 	}
@@ -352,12 +354,12 @@ load_status_applet(PanelWidget *panel, int pos, gboolean exactpos)
 	status_applet_update(the_status);
 	
 	ebox = gtk_event_box_new();
+	gtk_container_set_border_width(GTK_CONTAINER(ebox),
+				       0);
 	gtk_widget_show(ebox);
-	gtk_signal_connect(GTK_OBJECT(ebox), "destroy",
-			   GTK_SIGNAL_FUNC(applet_destroy), the_status);
 	gtk_container_add(GTK_CONTAINER(ebox),the_status->handle);
 
-	if(!register_toy(ebox, the_status,
+	if(!register_toy(ebox, the_status, free_status,
 			 panel, pos, exactpos, APPLET_STATUS))
 		return TRUE;
 	the_status->info = applets_last->data;

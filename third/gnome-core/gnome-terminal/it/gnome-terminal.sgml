@@ -1,8 +1,8 @@
-<!DOCTYPE BOOK PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!DOCTYPE BOOK PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
 <!ENTITY GNOME-APPS SYSTEM "gnome-terminal.sgml">] >
 
 
-<Book id="index" lang="it">
+<book id="index" lang="it">
   <title>Guida utente per l'emulatore di terminale di Gnome</title>
   <bookinfo>
     <authorgroup>
@@ -16,7 +16,7 @@
       </author>
     </authorgroup>
     <releaseinfo>documentazione in via di sviluppo</releaseinfo>
-     <legalnotice>
+     <legalnotice id="legalnotice">
       <para>
 	Questo documento può essere liberamente distribuito entro
 	i termini della Licenza Pubblica Generale GNU. Traduzione 
@@ -715,7 +715,7 @@
 	      di modificare questo valore se la vostra applicazione
 	      non visualizza correttamente i colori. Può essere impostata
 	      anche attraverso l'opzione --termname alla <link
-	      linkend="Options">linea di comando</link>.
+       linkend="Options">linea di comando</link>.
 	    </para>
 	  </listitem>
 

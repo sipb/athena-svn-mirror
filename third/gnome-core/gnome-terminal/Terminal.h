@@ -83,12 +83,10 @@ extern "C"
    typedef struct
    {
       void *_private;
-      
-	 GNOME_Terminal_Terminal(*create_terminal) (PortableServer_Servant
-						    _servant,
-						    const CORBA_char *
-						    geometry,
-						    CORBA_Environment * ev);
+       GNOME_Terminal_Terminal(*create_terminal) (PortableServer_Servant
+						  _servant,
+						  const CORBA_char * geometry,
+						  CORBA_Environment * ev);
    }
    POA_GNOME_Terminal_TerminalFactory__epv;
    typedef struct

@@ -16,6 +16,9 @@ struct _AppletWidgetPrivate
 {
 	/* CORBA stuff */
         gpointer                corbadat;
+
+	/* something was added */
+	gboolean		added_child;
 	
 	/*change freezing*/
 	int			frozen_level;
@@ -194,8 +197,9 @@ applet_widget_get_type (void)
 			sizeof (AppletWidgetClass),
 			(GtkClassInitFunc) applet_widget_class_init,
 			(GtkObjectInitFunc) wapplet_widget_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL,
+			NULL,
+			NULL,
+			NULL
 		};
 
 		applet_widget_type = gtk_type_unique (gtk_plug_get_type (), &applet_widget_info);
@@ -375,6 +379,12 @@ wapplet_widget_init (AppletWidget *applet)
 	applet->size = PIXEL_SIZE_STANDARD;
 	applet->_priv = g_new0(AppletWidgetPrivate, 1);
 	applet->_priv->corbadat = NULL;
+	applet->_priv->added_child = FALSE;
+	applet->_priv->frozen_level = 0;
+	applet->_priv->frozen_got_orient = FALSE;
+	applet->_priv->frozen_got_size = FALSE;
+	applet->_priv->frozen_got_back = FALSE;
+	applet->_priv->frozen_got_position = FALSE;
 }
 
 static void
@@ -387,21 +397,30 @@ applet_servant_destroy(CustomAppletServant *servant)
 	for(list = servant->callbacks; list; list = g_slist_next(list)) {
 		CallbackInfo *info = (CallbackInfo *)list->data;
 		g_free(info->name);
+		info->name = NULL;
 		g_free(info);
+
+		list->data = NULL;
 	}
 	g_slist_free(servant->callbacks);
+	servant->callbacks = NULL;
 
 	CORBA_exception_init(&ev);
 	poa = servant->poa;
+	servant->poa = NULL;
 	PortableServer_POA_deactivate_object(poa, servant->objid, &ev);
 	CORBA_free(servant->objid);
+	servant->objid = NULL;
 
-	goad_server_unregister(CORBA_OBJECT_NIL,servant->goad_id,
+	goad_server_unregister(CORBA_OBJECT_NIL, servant->goad_id,
 			       "server", &ev);
 	g_free(servant->goad_id);
+	servant->goad_id = NULL;
 
 	CORBA_Object_release(servant->pspot, &ev);
+	servant->pspot = NULL;
 	CORBA_Object_release(servant->obj, &ev);
+	servant->obj = NULL;
 	POA_GNOME_Applet__fini((PortableServer_Servant) servant, &ev);
 	g_free(servant);
 	CORBA_Object_release((CORBA_Object)poa, &ev);
@@ -460,12 +479,13 @@ applet_widget_destroy(GtkWidget *w, gpointer data)
 		/* if nothing has been added as our child, this means we have
 		   not yet fully completed load, so notify the panel that we
 		   are going to die */
-		if(GTK_BIN(w)->child == NULL)
+		if( ! applet->_priv->added_child)
 			GNOME_PanelSpot_abort_load(CD(applet)->pspot, &ev);
 		CORBA_exception_free(&ev);
 	}
 
 	applet_servant_destroy(applet->_priv->corbadat);
+	applet->_priv->corbadat = NULL;
 
 	applet_count--;
 
@@ -473,6 +493,7 @@ applet_widget_destroy(GtkWidget *w, gpointer data)
 		applet_widget_gtk_main_quit();
 
 	g_free(applet->_priv);
+	applet->_priv = NULL;
 }
 
 /**
@@ -910,10 +931,10 @@ gnome_panel_applet_corba_init(AppletWidget *applet, const char *goad_id)
 
 		if(panel_client == CORBA_OBJECT_NIL) {
 			g_warning(_("Cannot activate a panel object"));
+			g_free (applet_servant);
 			return NULL;
 		}
 	}
-
 
 	/*{  static volatile int stop_here = 0;
 		while(stop_here);}*/
@@ -1187,6 +1208,8 @@ applet_widget_add_full(AppletWidget *applet, GtkWidget *widget,
 		else
 			bind_applet_events(GTK_WIDGET(applet), applet);
 	}
+
+	applet->_priv->added_child = TRUE;
 }
 
 /**
@@ -1608,7 +1631,7 @@ server_applet_change_orient(PortableServer_Servant _servant,
 {
 	CustomAppletServant *servant = (CustomAppletServant *)_servant;
 	servant->appwidget->orient = orient;
-	if(servant->appwidget->_priv->frozen_level>0) {
+	if (servant->appwidget->_priv->frozen_level > 0) {
 		servant->appwidget->_priv->frozen_got_orient = TRUE;
 		servant->appwidget->_priv->frozen_orient = (GNOME_Panel_OrientType)orient;
 	} else {
@@ -1619,13 +1642,13 @@ server_applet_change_orient(PortableServer_Servant _servant,
 }
 
 static void
-server_applet_change_size(PortableServer_Servant _servant,
-			  const CORBA_short size,
-			  CORBA_Environment *ev)
+server_applet_change_size (PortableServer_Servant _servant,
+			   const CORBA_short size,
+			   CORBA_Environment *ev)
 {
 	CustomAppletServant *servant = (CustomAppletServant *)_servant;
 	servant->appwidget->size = size;
-	if(servant->appwidget->_priv->frozen_level>0) {
+	if (servant->appwidget->_priv->frozen_level > 0) {
 		servant->appwidget->_priv->frozen_got_size = TRUE;
 		servant->appwidget->_priv->frozen_size = size;
 	} else {
@@ -1780,8 +1803,8 @@ server_applet_set_tooltips_state(PortableServer_Servant _servant,
 
 static void
 server_applet_change_position(PortableServer_Servant _servant,
-			      CORBA_short x,
-			      CORBA_short y,
+			      const CORBA_short x,
+			      const CORBA_short y,
 			      CORBA_Environment *ev)
 {
 	CustomAppletServant *servant = (CustomAppletServant *)_servant;

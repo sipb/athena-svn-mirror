@@ -1,6 +1,6 @@
 /*
  * GNOME menu editor revision 2
- * (C)1999
+ * (C)2000
  *
  * Authors: John Ellis <johne@bellatlantic.net>
  *          Nat Friedman <nat@nat.org>
@@ -20,6 +20,7 @@
 #include <errno.h>
 
 #include <gnome.h>
+
 
 typedef struct _Desktop_Data Desktop_Data;
 struct _Desktop_Data

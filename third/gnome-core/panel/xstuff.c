@@ -1,6 +1,6 @@
 /*
  * GNOME panel x stuff
- * Copyright 2000 Eazel, Inc.
+ * Copyright 2000,2001 Eazel, Inc.
  *
  * Authors: George Lebl
  */
@@ -15,69 +15,22 @@
 #include "panel-include.h"
 #include "gnome-panel.h"
 #include "global-keys.h"
+#include "gwmh.h"
 
 #include "xstuff.h"
 
-GdkAtom KWM_MODULE = 0;
-GdkAtom KWM_MODULE_DOCKWIN_ADD = 0;
-GdkAtom KWM_MODULE_DOCKWIN_REMOVE = 0;
-GdkAtom KWM_DOCKWINDOW = 0;
-GdkAtom _WIN_CLIENT_LIST = 0;
-GdkAtom _WIN_SUPPORTING_WM_CHECK = 0;
+static GdkAtom KWM_MODULE = 0;
+static GdkAtom KWM_MODULE_DOCKWIN_ADD = 0;
+static GdkAtom KWM_MODULE_DOCKWIN_REMOVE = 0;
+static GdkAtom KWM_DOCKWINDOW = 0;
+static GdkAtom NAUTILUS_DESKTOP_WINDOW_ID = 0;
+static GdkAtom _NET_WM_DESKTOP = 0;
+static GdkAtom GNOME_PANEL_DESKTOP_AREA = 0;
 
 extern GList *check_swallows;
 
-static guint32 *client_list = NULL;
-static int client_list_size = 0;
-
-/* if wm_restart is TRUE, then we should reget the wm check */
-static gboolean wm_restart = TRUE;
-/* cached value */
-static gboolean compliant_wm = FALSE;
-/* the wm window thingie */
-static Window compliant_wm_win = None;
-
 /*list of all panel widgets created*/
 extern GSList *panel_list;
-
-gboolean
-get_window_id(guint32 window, char *title, guint32 *wid, gboolean depth)
-{
-	Window win = window;
-	Window root_return;
-	Window parent_return;
-	Window *children = NULL;
-	unsigned int nchildren;
-	unsigned int i;
-	char *tit;
-	gboolean ret = FALSE;
-
-	if(XFetchName(GDK_DISPLAY(), win, &tit) && tit) {
-		if(strstr(tit, title)!=NULL) {
-			if(wid) *wid = win;
-			ret = TRUE;
-		}
-		XFree(tit);
-	}
-
-	if(!depth || ret)
-		return ret;
-
-	XQueryTree(GDK_DISPLAY(),
-		   win,
-		   &root_return,
-		   &parent_return,
-		   &children,
-		   &nchildren);
-	
-	/*otherwise we got a problem*/
-	if(children) {
-		for(i=0;!ret && i<nchildren;i++)
-			ret=get_window_id(children[i], title, wid, depth);
-		XFree(children);
-	}
-	return ret;
-}
 
 static void
 steal_statusspot(StatusSpot *ss, Window winid)
@@ -97,10 +50,10 @@ try_adding_status(guint32 winid)
 	guint32 *data;
 	int size;
 
-	if(status_applet_get_ss(winid))
+	if (status_applet_get_ss (winid))
 		return;
 
-	data = get_typed_property_data (GDK_DISPLAY(),
+	data = get_typed_property_data (GDK_DISPLAY (),
 					winid,
 					KWM_DOCKWINDOW,
 					KWM_DOCKWINDOW,
@@ -108,250 +61,174 @@ try_adding_status(guint32 winid)
 
 	if(data && *data) {
 		StatusSpot *ss;
-		ss = new_status_spot();
-		if(ss)
-			steal_statusspot(ss, winid);
+		ss = new_status_spot ();
+		if (ss != NULL)
+			steal_statusspot (ss, winid);
 	}
 	g_free(data);
 }
 
 static void
-try_checking_swallows(guint32 winid)
+try_checking_swallows (GwmhTask *task)
 {
-	char *tit = NULL;
-	if(XFetchName(GDK_DISPLAY(), winid, &tit) &&
-	   tit) {
-		GList *li;
-		for(li = check_swallows; li;
-		    li = g_list_next(li)) {
-			Swallow *swallow = li->data;
-			if(strstr(tit,swallow->title)!=NULL) {
-				swallow->wid = winid;
-				gtk_socket_steal(GTK_SOCKET(swallow->socket),
-						 swallow->wid);
-				check_swallows = 
-					g_list_remove(check_swallows, swallow);
-				xstuff_reset_need_substructure();
-				break;
-			}
+	GList *li;
+
+	if (!task->name)
+		return;
+
+	for (li = check_swallows; li; li = li->next) {	     
+		Swallow *swallow = li->data;
+		if (strstr (task->name, swallow->title) != NULL) {
+			swallow->wid = task->xwin;
+			gtk_socket_steal (GTK_SOCKET (swallow->socket),
+					  swallow->wid);
+			check_swallows = 
+				g_list_remove (check_swallows, swallow);
+			break;
 		}
-		XFree(tit);
 	}
 }
 
-static void
-go_through_client_list(void)
+void
+xstuff_go_through_client_list (void)
 {
-	int i;
+	GList *li;
+
 	gdk_error_trap_push ();
 	/* just for status dock stuff for now */
-	for(i=0;i<client_list_size;i++) {
-		if(check_swallows)
-			try_checking_swallows(client_list[i]);
-		try_adding_status(client_list[i]);
+	for (li = gwmh_task_list_get (); li != NULL; li = li->next) {
+		GwmhTask *task = li->data;
+		if (check_swallows != NULL)
+			try_checking_swallows (task);
+		try_adding_status (task->xwin);
 	}
 	gdk_flush();
 	gdk_error_trap_pop ();
-}
-
-static int redo_interface_timeout_handle = 0;
-
-static gboolean
-redo_interface_timeout(gpointer data)
-{
-	gboolean old_compliant = compliant_wm;
-
-	redo_interface_timeout_handle = 0;
-
-	wm_restart = TRUE;
-	/* redo the compliancy stuff */
-	if(old_compliant != xstuff_is_compliant_wm()) {
-		GSList *li;
-		for(li = panel_list; li != NULL; li = g_slist_next(li)) {
-			PanelData *pd = li->data;
-			if(IS_BASEP_WIDGET(pd->panel))
-				basep_widget_redo_window(BASEP_WIDGET(pd->panel));
-			else if(IS_FOOBAR_WIDGET(pd->panel))
-				foobar_widget_redo_window(FOOBAR_WIDGET(pd->panel));
-		}
-	}
-
-	return FALSE;
 }
 
 static void
-redo_interface(void)
+redo_interface (void)
 {
-	if(redo_interface_timeout_handle)
-		gtk_timeout_remove(redo_interface_timeout_handle);
-
-	redo_interface_timeout_handle = 
-		gtk_timeout_add(1000,redo_interface_timeout,NULL);
-}
-
-static GdkFilterReturn
-wm_event_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
-{
-	XEvent *xevent;
-
-	xevent = (XEvent *)gdk_xevent;
-
-	if(xevent->type == DestroyNotify) {
-		if(compliant_wm_win != None &&
-		   compliant_wm_win == xevent->xdestroywindow.window)
-			redo_interface();
+	GSList *li;
+	for (li = panel_list; li != NULL; li = li->next) {
+		PanelData *pd = li->data;
+		if (IS_BASEP_WIDGET (pd->panel))
+			basep_widget_redo_window (BASEP_WIDGET (pd->panel));
+		else if (IS_FOOBAR_WIDGET (pd->panel))
+			foobar_widget_redo_window (FOOBAR_WIDGET (pd->panel));
 	}
-
-	return GDK_FILTER_CONTINUE;
 }
 
-static GdkFilterReturn
-event_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
+/* some deskguide code borrowed */
+static gboolean
+desk_notifier (gpointer func_data,
+	       GwmhDesk *desk,
+	       GwmhDeskInfoMask change_mask)
 {
-	XEvent *xevent;
+	if (change_mask & GWMH_DESK_INFO_BOOTUP)
+		redo_interface ();
 
-	xevent = (XEvent *)gdk_xevent;
+	/* we should maybe notice desk changes here */
 
-	switch(xevent->type) {
-	case KeyPress:
-	case KeyRelease:
-		return panel_global_keys_filter(gdk_xevent, event);
-	case PropertyNotify:
-		if(xevent->xproperty.atom == _WIN_CLIENT_LIST) {
-			g_free(client_list);
-			client_list = get_typed_property_data (GDK_DISPLAY(),
-							       GDK_ROOT_WINDOW(),
-							       _WIN_CLIENT_LIST,
-							       XA_CARDINAL,
-							       &client_list_size, 32);
-			/* size returned is the number of bytes */
-			client_list_size /= 4;
-			go_through_client_list();
-		} else if(xevent->xproperty.atom == _WIN_SUPPORTING_WM_CHECK) {
-			redo_interface();
-		}
+	return TRUE;
+}
+
+static gboolean
+task_notifier (gpointer func_data,
+	       GwmhTask *task,
+	       GwmhTaskNotifyType ntype,
+	       GwmhTaskInfoMask imask)
+{
+	switch (ntype) {
+	case GWMH_NOTIFY_INFO_CHANGED:
+	case GWMH_NOTIFY_NEW:
+		if (check_swallows != NULL)
+			try_checking_swallows (task);
+		try_adding_status (task->xwin);
 		break;
-	case MapNotify:
-		if (check_swallows) {
-			GList *li;
-			int remove; /* counts the number of NULLs we
-				       should remove from the
-				       check_swallows_list */
-
-			gdk_error_trap_push ();
-
-			remove = 0;
-			for(li = check_swallows; li; li = g_list_next(li)) {
-				Swallow *swallow = li->data;
-				if(get_window_id(xevent->xmap.window,
-						 swallow->title,
-						 &(swallow->wid),
-						 FALSE)) {
-					gtk_socket_steal(GTK_SOCKET(swallow->socket),swallow->wid);
-					li->data = NULL;
-					remove++;
-				}
-			}
-			while(remove--)
-				check_swallows = g_list_remove(check_swallows,NULL);
-			if(!check_swallows)
-				xstuff_reset_need_substructure();
-
-			gdk_flush();
-			gdk_error_trap_pop ();
-		}
+	default:
+		break;
 	}
-	/*if ((event->any.window) &&
-	    (gdk_window_get_type(event->any.window) == GDK_WINDOW_FOREIGN))
-		return GDK_FILTER_REMOVE;
-	else*/
-	return GDK_FILTER_CONTINUE;
+
+	return TRUE;
 }
 
 void
-xstuff_reset_need_substructure(void)
+xstuff_init (void)
 {
-	XWindowAttributes attribs = { 0 };
-
-	gdk_error_trap_push ();
-
-	/* select events, we need to trap the kde status thingies anyway */
-	XGetWindowAttributes (GDK_DISPLAY (),
-			      GDK_ROOT_WINDOW (),
-			      &attribs);
-	if (check_swallows) {
-		XSelectInput (GDK_DISPLAY (),
-			      GDK_ROOT_WINDOW (),
-			      attribs.your_event_mask |
-			      SubstructureNotifyMask);
-	} else {
-		XSelectInput (GDK_DISPLAY (),
-			      GDK_ROOT_WINDOW (),
-			      attribs.your_event_mask &
-			      ~SubstructureNotifyMask);
-	}
-	gdk_flush ();
-
-	gdk_error_trap_pop ();
-}
-
-void
-xstuff_init(void)
-{
-	XWindowAttributes attribs = { 0 };
-
-	KWM_MODULE = gdk_atom_intern("KWM_MODULE",FALSE);
+	KWM_MODULE = gdk_atom_intern ("KWM_MODULE", FALSE);
 	KWM_MODULE_DOCKWIN_ADD =
-		gdk_atom_intern("KWM_MODULE_DOCKWIN_ADD",FALSE);
+		gdk_atom_intern ("KWM_MODULE_DOCKWIN_ADD", FALSE);
 	KWM_MODULE_DOCKWIN_REMOVE =
-		gdk_atom_intern("KWM_MODULE_DOCKWIN_REMOVE",FALSE);
-	KWM_DOCKWINDOW = gdk_atom_intern("KWM_DOCKWINDOW", FALSE);
-	_WIN_CLIENT_LIST = gdk_atom_intern("_WIN_CLIENT_LIST",FALSE);
-	_WIN_SUPPORTING_WM_CHECK = gdk_atom_intern("_WIN_SUPPORTING_WM_CHECK",FALSE);
+		gdk_atom_intern ("KWM_MODULE_DOCKWIN_REMOVE", FALSE);
+	KWM_DOCKWINDOW = gdk_atom_intern ("KWM_DOCKWINDOW", FALSE);
+	NAUTILUS_DESKTOP_WINDOW_ID =
+		gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE);
+	_NET_WM_DESKTOP =
+		gdk_atom_intern ("_NET_WM_DESKTOP", FALSE);
+	GNOME_PANEL_DESKTOP_AREA =
+		gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA", FALSE);
 
-	/* set up a filter on the root window to get map requests */
-	/* we will select the events later when we actually need them */
-	gdk_window_add_filter(GDK_ROOT_PARENT(), event_filter, NULL);
+	gwmh_init ();
+
+	gwmh_desk_notifier_add (desk_notifier, NULL);
+	gwmh_task_notifier_add (task_notifier, NULL);
+
+	/* setup the keys filter */
+	gdk_window_add_filter (GDK_ROOT_PARENT(),
+			       panel_global_keys_filter,
+			       NULL);
+
+	xstuff_setup_desktop_area (0, 0, 0, 0);
+
+	xstuff_go_through_client_list ();
+}
+
+gboolean
+xstuff_nautilus_desktop_present (void)
+{
+	gboolean ret = FALSE;
+	guint32 *data;
+	int size;
 
 	gdk_error_trap_push ();
+	data = get_typed_property_data (GDK_DISPLAY (),
+					GDK_ROOT_WINDOW (),
+					NAUTILUS_DESKTOP_WINDOW_ID,
+					XA_WINDOW,
+					&size, 32);
+	if (data != NULL &&
+	    *data != 0) {
+		guint32 *desktop;
+		desktop = get_typed_property_data (GDK_DISPLAY (),
+						   *data,
+						   _NET_WM_DESKTOP,
+						   XA_CARDINAL,
+						   &size, 32);
+		if (size > 0)
+			ret = TRUE;
+		g_free (desktop);
+	}
+	g_free (data);
 
-	/* select events, we need to trap the kde status thingies anyway */
-	XGetWindowAttributes (GDK_DISPLAY (),
-			      GDK_ROOT_WINDOW (),
-			      &attribs);
-	XSelectInput (GDK_DISPLAY (),
-		      GDK_ROOT_WINDOW (),
-		      attribs.your_event_mask |
-		      SubstructureNotifyMask |
-		      StructureNotifyMask |
-		      PropertyChangeMask);
 	gdk_flush ();
-
 	gdk_error_trap_pop ();
 
-	client_list = get_typed_property_data (GDK_DISPLAY(),
-					       GDK_ROOT_WINDOW(),
-					       _WIN_CLIENT_LIST,
-					       XA_CARDINAL,
-					       &client_list_size, 32);
-	/* size returned is the number of bytes */
-	client_list_size /= 4;
-
-	go_through_client_list();
+	return ret;
 }
 
 void
-xstuff_set_simple_hint(GdkWindow *w, GdkAtom atom, int val)
+xstuff_set_simple_hint (GdkWindow *w, GdkAtom atom, long val)
 {
-	gdk_error_trap_push();
-	XChangeProperty(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(w), atom, atom,
-			32, PropModeReplace, (unsigned char*)&val, 1);
-	gdk_flush();
-	gdk_error_trap_pop();
+	gdk_error_trap_push ();
+	XChangeProperty (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (w), atom, atom,
+			 32, PropModeReplace, (unsigned char*)&val, 1);
+	gdk_flush ();
+	gdk_error_trap_pop ();
 }
 
 static GdkFilterReturn
-status_event_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
+status_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 {
 	XEvent *xevent;
 
@@ -362,15 +239,15 @@ status_event_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 		   !status_applet_get_ss(xevent->xclient.data.l[0])) {
 			Window w = xevent->xclient.data.l[0];
 			StatusSpot *ss;
-			ss = new_status_spot();
-			if(ss)
-				steal_statusspot(ss, w);
+			ss = new_status_spot ();
+			if (ss != NULL)
+				steal_statusspot (ss, w);
 		} else if(xevent->xclient.message_type ==
 			  KWM_MODULE_DOCKWIN_REMOVE) {
 			StatusSpot *ss;
-			ss = status_applet_get_ss(xevent->xclient.data.l[0]);
-			if(ss)
-				status_spot_remove(ss,TRUE);
+			ss = status_applet_get_ss (xevent->xclient.data.l[0]);
+			if (ss != NULL)
+				status_spot_remove (ss, TRUE);
 		}
 	}
 
@@ -378,13 +255,13 @@ status_event_filter(GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 }
 
 void
-xstuff_setup_kde_dock_thingie(GdkWindow *w)
+xstuff_setup_kde_dock_thingie (GdkWindow *w)
 {
-	xstuff_set_simple_hint(w,KWM_MODULE,2);
-	gdk_window_add_filter(w, status_event_filter, NULL);
-	send_client_message_1L(GDK_ROOT_WINDOW(),GDK_WINDOW_XWINDOW(w),
-			       KWM_MODULE,SubstructureNotifyMask,
-			       GDK_WINDOW_XWINDOW(w));
+	xstuff_set_simple_hint (w, KWM_MODULE, 2);
+	gdk_window_add_filter (w, status_event_filter, NULL);
+	send_client_message_1L (GDK_ROOT_WINDOW (), GDK_WINDOW_XWINDOW (w),
+				KWM_MODULE, SubstructureNotifyMask,
+				GDK_WINDOW_XWINDOW (w));
 }
 
 /* Stolen from deskguide */
@@ -508,84 +385,82 @@ send_client_message_1L (Window recipient,
   return !gdk_error_trap_pop ();
 }
 
-/* also quite stolen from deskguide */
 gboolean
-xstuff_is_compliant_wm(void)
+xstuff_is_compliant_wm (void)
 {
-	guint32 *prop_data;
-	int size;
+	GwmhDesk *desk;
 
-	if(!wm_restart)
-		return compliant_wm;
+	desk = gwmh_desk_get_config ();
 
-	compliant_wm_win = None;
-
-	prop_data = get_typed_property_data (GDK_DISPLAY (),
-					     GDK_ROOT_WINDOW (),
-					     _WIN_SUPPORTING_WM_CHECK,
-					     XA_CARDINAL,
-					     &size, 32);
-	if(prop_data) {
-		Window check_window = prop_data[0];
-		guint32 *wm_check_data;
-
-		wm_check_data = get_typed_property_data (GDK_DISPLAY (),
-							 check_window,
-							 _WIN_SUPPORTING_WM_CHECK,
-							 XA_CARDINAL,
-							 &size, 32);
-		if (wm_check_data &&
-		    wm_check_data[0] == check_window)
-			compliant_wm_win = check_window;
-		g_free (prop_data);
-		g_free (wm_check_data);
-	}
-	compliant_wm = (compliant_wm_win!=None);
-
-	if(compliant_wm_win) {
-		XWindowAttributes attribs = { 0 };
-		GdkWindow *win;
-
-		win = gdk_window_foreign_new(compliant_wm_win);
-
-		gdk_window_add_filter(win, wm_event_filter, NULL);
-
-		gdk_error_trap_push ();
-
-		XGetWindowAttributes(GDK_DISPLAY (),
-				     compliant_wm_win,
-				     &attribs);
-		XSelectInput(GDK_DISPLAY (),
-			     compliant_wm_win,
-			     attribs.your_event_mask |
-			     StructureNotifyMask);
-		gdk_flush ();
-
-		gdk_error_trap_pop ();
-	}
-
-	wm_restart = FALSE;
-
-	return compliant_wm;
+	return desk->detected_gnome_wm;
 }
 
 void
-xstuff_set_no_group(GdkWindow *win)
+xstuff_set_no_group_and_no_input (GdkWindow *win)
 {
-	XWMHints *wmhints;
+	XWMHints *old_wmhints;
+	XWMHints wmhints = {0};
 	static GdkAtom wm_client_leader_atom = GDK_NONE;
 
-	if (!wm_client_leader_atom)
+	if (wm_client_leader_atom == GDK_NONE)
 		wm_client_leader_atom = gdk_atom_intern ("WM_CLIENT_LEADER",
 							 FALSE);
 
-	gdk_property_delete(win, wm_client_leader_atom);
+	gdk_property_delete (win, wm_client_leader_atom);
 
-	wmhints = XGetWMHints(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(win));
-	wmhints->flags &= ~WindowGroupHint;
-	wmhints->window_group = 0;
-	XSetWMHints(GDK_DISPLAY(),
-		    GDK_WINDOW_XWINDOW(win),
-		    wmhints);
-	XFree(wmhints);
+	old_wmhints = XGetWMHints (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (win));
+	/* General paranoia */
+	if (old_wmhints != NULL) {
+		memcpy (&wmhints, old_wmhints, sizeof (XWMHints));
+		XFree (old_wmhints);
+
+		wmhints.flags &= ~WindowGroupHint;
+		wmhints.flags |= InputHint;
+		wmhints.input = False;
+		wmhints.window_group = 0;
+	} else {
+		/* General paranoia */
+		wmhints.flags = InputHint | StateHint;
+		wmhints.window_group = 0;
+		wmhints.input = False;
+		wmhints.initial_state = NormalState;
+	}
+	XSetWMHints (GDK_DISPLAY (),
+		     GDK_WINDOW_XWINDOW (win),
+		     &wmhints);
+}
+
+void
+xstuff_setup_desktop_area (int left, int right, int top, int bottom)
+{
+	long vals[4];
+	static int old_left = -1, old_right = -1, old_top = -1, old_bottom = -1;
+
+	if (old_left == left &&
+	    old_right == right &&
+	    old_top == top &&
+	    old_bottom == bottom)
+		return;
+
+	vals[0] = left;
+	vals[1] = right;
+	vals[2] = top;
+	vals[3] = bottom;
+
+	gdk_error_trap_push ();
+	XChangeProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (), 
+			 GNOME_PANEL_DESKTOP_AREA, XA_CARDINAL,
+			 32, PropModeReplace, (unsigned char*)vals, 4);
+	gdk_flush ();
+	gdk_error_trap_pop ();
+}
+
+void
+xstuff_unsetup_desktop_area (void)
+{
+	gdk_error_trap_push ();
+	XDeleteProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+			 GNOME_PANEL_DESKTOP_AREA);
+	gdk_flush ();
+	gdk_error_trap_pop ();
 }

@@ -1,11 +1,300 @@
-2000-11-10  Robert Brady  <robert@suse.co.uk>
+2001-03-09  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* configure.in: Added Tamil to ALL_LINGUAS.
+	* configure.in: Generate Makefile for the japanese panel docs.
 	
-2000-11-08  Yukihiro Nakai  <nakai@gnome.gr.jp>
+2001-03-07  jacob berkman  <jacob@ximian.com>
 
-	* */*.desktop: Add Slovak translations from Stanislav Visnovsky.
-	* */*.directory: Add Slovak translations from Stanislav Visnovsky.
+	* pixmaps: use some of tigert's nice icons
+
+Tue Mar 06 18:36:33 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h:  Add a with argument for the KDE
+	  documentation path
+
+2001-03-02  Christian Schaller <Uraeus@linuxrising.org>
+	* Norwegian Nynorsk translation
+
+2001-02-28  Martin Baulig  <baulig@suse.de>
+
+	* configure.in (configure.in): Added applets/gen_util/help/es.
+
+Tue Feb 27 02:15:15 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: give a useful message when the canvas gdkpixbuf
+	  thingie isn't found
+
+2001-02-26  Dan Mueth  <dan@eazel.com>
+
+	Include FDL as required by the FDL, and l10n of categories for
+	OMF metadata.
+
+	* COPYING-DOCS: Added this file - the FDL
+	* Makefile.am: Include COPYING-DOCS
+	* applets/fish/help/no/fish_applet-no.omf: l10n of category
+	* applets/gen_util/help/no/gen_util_applet-no.omf: l10n of category
+
+2001-02-25  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: don't create grdb Makefiles.
+
+2001-02-19  Dan Mueth   <dan@eazel.com>
+
+	* Localized categories in OMF metadata for:
+		applets/fish/help/da/fish_applet-da.omf
+		applets/gen_util/help/da/clock/clock_applet-da.omf
+		applets/gen_util/help/da/mailcheck/mailcheck_applet-da.omf
+		applets/gen_util/help/da/printer/printer_applet-da.omf
+		gnome-terminal/es/gnome-termainal-es.omf
+
+Sat Feb 17 23:28:01 2001  George Lebl <jirka@5z.com>
+
+	* gnome-core.spec.in:  update so that /var/lib files are installed
+	  properly
+
+2001-02-15  Dan Mueth   <dan@eazel.com>
+
+        * omf-install/Makefile.am: Changed to install under
+          $(datadir)/omf/ instead of $(prefix)/doc/omf because
+          this is The Right Way, and scrollkeeper was recently fixed
+          to work this way.
+
+2001-02-14  Christophe Merlet  <redfox@eikonex.org>
+
+	* */*.desktop: Updated French translations.
+
+2001-02-13  Dan Mueth   <dan@eazel.com>
+
+	* core-docs/lgpl/C/lgpl.sgml: Added a </para> to make it
+	  validate with nsgmls and produce a valid TOC.  Now it has
+	  an extra <para> somewhere, which is lame, but at least
+	  it validates and makes a good TOC. Finding the extra
+	  <para> and removing it is left as an excercise for the reader.
+
+	* applet-docs.make: Less broken OMF bits than before
+
+2001-02-13  Dan Mueth   <dan@eazel.com>
+
+	* app-docs.make: Fixed(TM)
+	* applet-docs.make: Fixed(TM)
+
+2001-02-13  Dan Mueth   <dan@eazel.com>
+
+	* applet-docs.make: fixing previous non-fix
+	* app-docs.make: fixing previous non-fix
+
+2001-02-13  Dan Mueth   <dan@eazel.com>
+
+	* OMF files: Updated to new category list in scrollkeeper-0.0.6
+
+2001-02-12  Dan Mueth   <dan@eazel.com>
+
+	* applet-docs.make: Fixed to do directories without OMF files
+	  correctly.
+
+2001-02-12  Dan Mueth   <dan@eazel.com>
+
+	* app-docs.make: Fixed to do directories without OMF files
+	  correctly.
+
+2001-02-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added Norwegian (nynorsk) to ALL_LINGUAS.
+	
+2001-02-06  Dan Mueth   <dan@eazel.com>
+
+	* Commented out the OMF files for 3 translations of gnome-terminal
+	  because the SGML is broken, preventing TOC extraction
+
+2001-02-06  Dan Mueth   <dan@eazel.com>
+
+	* Modified Makefile.am's to register the new OMF files
+	* Added many OMF files:
+		applets/desk-guide/help/C/desk-guide_applet-C.omf
+		applets/desk-guide/help/de/desk-guide_applet-de.omf
+		applets/fish/help/C/fish_applet-C.omf
+		applets/fish/help/da/fish_applet-da.omf
+		applets/fish/help/no/fish_applet-no.omf
+		applets/gen_util/help/C/clock/clock_applet-C.omf
+		applets/gen_util/help/C/mailcheck/mailcheck_applet-C.omf
+		applets/gen_util/help/C/printer/printer_applet-C.omf
+		applets/gen_util/help/da/clock/clock_applet-da.omf
+		applets/gen_util/help/da/mailcheck/mailcheck_applet-da.omf
+		applets/gen_util/help/da/printer/printer_applet-da.omf
+		applets/gen_util/help/de/clock-de.omf
+		applets/gen_util/help/de/gen_util_applet-de.omf
+		applets/gen_util/help/de/mailcheck-de.omf
+		applets/gen_util/help/no/mailcheck-no.omf
+		applets/gen_util/help/no/gen_util_applet-no.omf
+		applets/tasklist/help/C/tasklist_applet-C.omf
+		core-docs/fdl/C/fdl-C.omf
+		core-docs/gpl/C/gpl-C.omf
+		core-docs/lgpl/C/lgpl-C.omf
+		gnome-terminal/C/gnome-terminal-C.omf
+		gnome-terminal/da/gnome-terminal-da.omf
+		gnome-terminal/de/gnome-terminal-de.omf
+		gnome-terminal/es/gnome-terminal-es.omf
+		gnome-terminal/it/gnome-terminal-it.omf
+		gnome-terminal/no/gnome-terminal-no.omf
+		gsm/help/C/session-C.omf
+		panel/help/C/panel-C.omf
+		panel/help/de/panel-de.omf
+		panel/help/it/panel-it.omf
+		panel/help/no/panel-no.omf
+
+
+2001-02-06  Dan Mueth   <dan@eazel.com>
+
+	* po/POTFILES.in: Removed lines for mini-commander.  It seems that
+	  mini-commander is now in gnome-applets, so having these two lines
+	  was breaking the build.
+
+2001-02-06  Dan Mueth   <dan@eazel.com>
+
+	(initial setup of SK - just doing for Panel Manual for now)
+	* omf-install/: created this directory
+	* omf-install/Makefile.am: new
+	* app-docs.make: updated for scrollkeeper(SK)
+	* applet-docs.make: updated for scrollkeeper(SK)
+	* configure.in: updated for scrollkeeper(SK)
+	* Makefile.am: updated for scrollkeeper(SK)
+	* panel/help/C/panel-C.omf: added
+	* panel/help/C/Makefile.am: updated for SK
+
+2001-02-05  Eric Baudais  <baudais@okstate.edu>
+
+	* configure.in: Added core-docs/lgpl/Makefile and 
+	core-docs/lgpl/C/Makefile to AC_OUPUT.
+
+2001-02-04  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am:
+	* configure.in:
+	* grdb: remove grdb
+
+Sat Feb 03 19:36:34 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am:  Cleanup some OOOOOOOLD cruft
+
+	* configure.in, Makefile.am, po/POTFILES.in, grdb/**/*:
+	  Integrate grdb.  The author fell of the face of the planet and
+	  didn't integrate it as was planned apparently, so here it goes,
+	  still needs to get called from gsm, and either control-center
+	  or something else monitoring theme changes
+
+Wed Jan 31 20:36:25 2001  George Lebl <jirka@5z.com>
+
+	* configure.in:  s/Gnumeric/gnome-core/  fix some cut'n'paste fun
+
+2001-01-26  Marius Andreiana  <mandreiana@yahoo.com>
+	
+	* configure.in: Added ro (Romanian) to ALL_LINGUAS.
+
+2001-01-18  Gregory Leblanc  <gleblanc@cu-portland.edu>
+
+	* applets/desk-guide/help/C/desk-guide.sgml:
+	* applets/desk-guide/help/de/desk-guide.sgml:
+	* applets/fish/help/C/fish.sgml:
+	* applets/fish/help/da/fish.sgml:
+	* applets/fish/help/da/fish_applet.sgml:
+	* applets/fish/help/no/fish_applet.sgml:
+	* applets/gen_util/help/C/clock/clock.sgml:
+	* applets/gen_util/help/C/mailcheck/mailcheck.sgml:
+	* applets/gen_util/help/da/clock/clock.sgml:
+	* applets/gen_util/help/da/mailcheck/mailcheck.sgml:
+	* applets/gen_util/help/da/mailcheck/mailcheck_applet.sgml:
+	* applets/gen_util/help/da/printer/printer.sgml:
+	* applets/gen_util/help/da/printer/printer_applet.sgml:
+	* applets/gen_util/help/de/clock.sgml:
+	* applets/gen_util/help/de/gen_util_applet.sgml:
+	* applets/gen_util/help/de/mailcheck.sgml:
+	* applets/gen_util/help/no/gen_util_applet.sgml:
+	* applets/gen_util/help/no/mailcheck.sgml:
+	* applets/tasklist/help/C/tasklist.sgml:
+	* gnome-terminal/C/gnome-terminal.sgml:
+	* gnome-terminal/de/gnome-terminal.sgml:
+	* gnome-terminal/es/gnome-terminal.sgml:
+	* gsm/help/C/session.sgml:
+	* panel/help/C/panel.sgml:
+	* panel/help/de/panel.sgml:
+	* panel/help/it/panel.sgml:
+	* panel/help/no/panel.sgml: Final pass of nautilizing.  I can't
+	wait for Alan to get back and help out with this some more.
+
+2001-01-11  Miguel de Icaza  <miguel@ximian.com>
+
+	* configure.in: Add glade detection.  Customize the gnome-terminal
+	ldflags/cflags to be perfect.
+
+Wed Jan 10 11:15:02 2001  George Lebl <jirka@5z.com>
+
+	* configure.in:  Make sure GNOME_ICONDIR gets expand it to the
+	  datadir corectly
+
+2000-12-11  Marius Andreiana <mandreiana@yahoo.com>
+
+	* *.desktop, *.directory: Added Romanian (ro) translations
+
+2000-12-08  John E. Gotts  <jgotts@linuxsavvy.com>
+
+	* pixmaps/gnome-gnomoku.png: Extracted from Red Hat Linux 7.0.
+
+	* pixmaps/Makefile.am: Updated.
+
+2000-11-20  Dan Mueth <d-mueth@uchicago.edu>
+
+	* applet-docs.make: Have it install GIF's in stylesheet-images/
+	* app-docs.make: Have it install GIF's in stylesheet-images/
+	  (I'm not sure why it is trying to install PNG's and leaving
+	   out the GIF's which these normally are.  However we need
+	   this to work both for people who like their system to work
+	   properly and also so that we can actually test that other 
+	   parts of the system and the help browser are not broken.)
+
+2000-11-10  Gregory Leblanc  <gleblanc@cu-portland.edu>
+
+	* *.sgml: Updates to all docs for compliance with the doc
+	standards for GNOME 1.4
+
+2000-11-09  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* *.desktop, *.directory: Add Slovak translation from
+	  Stanislav Visnovsky.
+
+Mon Nov  6 13:08:18 2000  Jonathan Blandford  <jrb@redhat.com>
+
+	* *-applet.sgml: Removed all these files, and renamed them to
+	_applet.sgml on the server.
+
+2000-11-06  Dan Mueth <d-mueth@uchicago.edu>
+
+        * Nautilus requires that the doc names match the directory names:
+          .../gnome/help/<appname>/<lang>/<appname>.sgml where one would
+          type "gnome-help:<appname>" in Nautilus.  It is currently broken
+          for all applets, since we use
+          .../gnome/help/<name>_applet/<lang>/<name>-applet.sgml.
+          Thus, we have to change all <name>-applet.sgml to
+          <name>_applet.sgml.
+        * First, jrb is renaming the files as described above:
+                applets/gen_util/help/C/clock/clock-applet.sgml
+                applets/gen_util/help/da/clock/clock-applet.sgml
+                applets/desk-guide/help/C/desk-guide-applet.sgml
+                applets/desk-guide/help/de/desk-guide-applet.sgml
+                applets/fish/help/C/fish-applet.sgml
+                applets/fish/help/da/fish-applet.sgml
+                applets/fish/help/no/fish-applet.sgml
+                applets/gen_util/help/de/gen_util-applet.sgml
+                applets/gen_util/help/no/gen_util-applet.sgml
+                applets/gen_util/help/C/mailcheck/mailcheck-applet.sgml
+                applets/gen_util/help/da/mailcheck/mailcheck-applet.sgml
+                applets/gen_util/help/C/printer/printer-applet.sgml
+                applets/gen_util/help/da/printer/printer-applet.sgml
+                applets/tasklist/help/C/tasklist-applet.sgml
+        * applet-docs.make: Change all "-applet" to "_applet"
+
+2000-11-04  Dan Mueth <d-mueth@uchicago.edu>
+
+	* app-docs.make: Have it install $(app).sgml
+	* applet-docs.make: Fixed one bug.  Have it install $(sgml_files).
 
 2000-11-03  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
@@ -13,17 +302,25 @@
 
 2000-11-03  Jarkko Ranta  <jjranta@cc.joensuu.fi>
 
-	* Finnish update on files:
-	  /desktop-links/GIMP.desktop
-	  /desktop-links/gaspell.desktop
-	  /desktop-links/SettingsSession.directory
-	  /applets/gen_util/mailcheck.soundlist
-	  /applets/fish/fish_applet.desktop
+	* applets/fish/fish_applet.desktop
+	* applets/gen_util/mailcheck.soundlist
+	* desktop-links/GIMP.desktop
+	* desktop-links/gaspell.desktop
+	Finnish entries added or changed.
 
-2000-11-02  Kjartan Maraas  <kmaraas@gnome.org>
+2000-10-26  Robert Brady  <robert@suse.co.uk>
 
-	* configure.in: Added Norwegian nynorsk to ALL_LINGUAS.
-	
+	* configure.in: Added ta (Tamil).
+
+2000-10-21  Dan Mueth <d-mueth@uchicago.edu>
+
+	* Reactivating core-docs with FSF licenses in it
+
+2000-09-26  Jacob Berkman  <jacob@helixcode.com>
+
+	* core-docs/:
+	* gemvt/: remove these obsolete directories
+
 2000-09-25  Christophe Merlet  <christophe@merlet.net>
 
 	* applets/applet-dirs/*,desktop-links/*,gnome-hint/*.desktop,

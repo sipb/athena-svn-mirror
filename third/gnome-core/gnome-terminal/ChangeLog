@@ -1,10 +1,86 @@
+Mon Mar 12 15:31:03 2001  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.desktop:  Add DocPath
+
+2001-02-14  Christophe Merlet  <redfox@eikonex.org>
+
+	* gnome-terminal.c: Marqued string for translation.
+
+2001-01-16  jacob berkman  <jacob@ximian.com>
+
+	* gnome-terminal.glade: cosmetic improvements
+
+	* gnome-terminal.c (new_terminal_cmd): switch the args to
+	_set_wmclass(), as they were not being set correctly.
+
+2001-01-12  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-terminal.1: Include manual page for the gnome terminal.
+	
+	* Makefile.am (EXTRA_DIST): Distribute documentation.
+
+	* gnome-terminal.c: Rename --scroll and --noscroll to --bgscroll
+	and --bgnoscroll
+
+2000-06-03  Matt Bissiri  <bissiri@eecs.umich.edu>
+
+	* gnome-terminal.glade, gnome-terminal.glade.h: New files.  
+
+	* gnome-terminal.c (preferences_cmd): Use gnome-terminal.glade
+	instead of hardcoding the preferences dialog.
+	(aligned_label): Removed this function, no longer needed.
+	(create_option_menu_data, create_option_menu): Add option menu
+	argument, because option menu widget is created by libglade now.
+	(terminal_kill): Fix warning.
+	(main): Add glade_gnome_init ()
+
+	* Makefile.am: Add gnome-terminal.glade, gnome-terminal.glade.h,
+	and libglade support.
+
+
+2000-08-04 Hans-Andreas Engel  <Hans-A.Engel@unibas.ch>
+
+        * gnome-terminal.c: Added command line options for choosing
+        the background type (solid/pixmap/transparent). Fixed behavior
+        when only one of the --foreground/--background options is used.
+        Now only the specified color is overridden.
+
+Sun Dec 17 17:42:53 2000  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.c:  Make the icon selectable and savable just as the
+	  window title is with an --icon option.  Based on a patch from Jason
+	  Petrone <jpetrone@cnri.reston.va.us>
+
+Sun Dec 17 15:27:40 2000  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.c: plug a leak and fix some stuff up based on a
+	  patch from "Juan Pablo Mendoza M." <pablo_juan@yahoo.com>
+
+Thu Nov 30 15:06:33 2000  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.c: actually make the background dropping work
+	  (finally on a machine where nautilus works).  Also add the
+	  filename from uri extraction routine stolen from panel.
+
+Thu Nov 30 11:40:59 2000  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.[ch], corba.c:  Warning fixes.  Support bgimage
+	  drops so that this works with nautilus and support the incredible
+	  reset hack of nautilus while adding a comment about how ugly
+	  that hack is.  Oh well, we need to work with nautilus.
+
 2000-10-27  John B Tunison <jtunison@andrew.cmu.edu>
 
-	* gnome-terminal.c: Make the dingus url accept %NN characters	
+	* gnome-terminal.c: Make the dingus url accept %NN characters
 
-2000-10-03  Kjartan Maraas  <kmaraas@gnome.org>
+2000-10-19  Christophe Merlet  <christophe@merlet.net>
 
-	* */*.sgml: Fixed warnings. Changed to use the GNOME DTD.
+	* gnome-terminal.desktop: Updated French translation.
+
+2000-10-15 John Fleck <jfleck@inkstain.net>
+
+	* C/gnome-terminal.sgml: update for Nautilus compatibility, patch
+	from Greg Leblanc
 	
 2000-07-19  Alexander Kirillov  <kirillov@math.sunysb.edu>
 

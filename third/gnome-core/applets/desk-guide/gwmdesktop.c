@@ -614,9 +614,14 @@ gwm_desktop_button_press (GtkWidget      *widget,
 		  desktop->grab_task = NULL;
 		  x = (task->win_x - (task->win_x < 0) * w + task->win_width / 2) / w;
 		  y = (task->win_y - (task->win_y < 0) * h + task->win_height / 2) / h;
-		  gdk_window_move (task->gdkwindow,
-				   x * w + (task->win_x - task->frame_x),
-				   y * h + (task->win_y - task->frame_y));
+		  if (gwm_desktop_class->move_to_frame_offset)
+		    gdk_window_move (task->gdkwindow,
+				     x * w + (task->win_x - task->frame_x),
+				     y * h + (task->win_y - task->frame_y));
+		  else
+		    gdk_window_move (task->gdkwindow,
+				     x * w,
+				     y * h);
 		  gdk_flush ();
 		}
             }
@@ -703,6 +708,7 @@ thumb_queue_step (gpointer data)
 	  new_queue = node;
 	  
 	  if (task->desktop == desk->current_desktop &&
+	      !GWMH_TASK_ICONIFIED (task) && !GWMH_TASK_SHADED (task) &&
 	      gwm_thumb_nail_update_drawable (nail, task->gdkwindow, task->win_x, task->win_y))
 	    {
 	      GSList *slist;
@@ -739,17 +745,18 @@ thumb_nail_destroy (gpointer data)
 {
   GwmThumbNail *nail = data;
   
-  if (!g_slist_find (thumb_queue, nail)) /* FIXME */
-    g_error ("removing thumbnail from queue failed");
-  thumb_queue = g_slist_remove (thumb_queue, nail);
   gwm_thumb_nail_destroy (nail);
 }
 
 static void
-task_remove_thumb (gpointer data)
+task_remove_thumb (gpointer      data,
+		   GwmThumbNail *nail)
 {
   GwmhTask *task = data;
 
+  if (!g_slist_find (thumb_queue, nail)) /* FIXME */
+    g_error ("removing thumbnail from queue failed");
+  thumb_queue = g_slist_remove (thumb_queue, nail);
   gwmh_task_steal_qdata (task, quark_thumb_nail);
 }
 

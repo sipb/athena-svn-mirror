@@ -16,30 +16,42 @@
 #include "panel_config_global.h"
 #include "foobar-widget.h"
 #include "drawer-widget.h"
+#include "border-widget.h"
+#include "edge-widget.h"
+#include "aligned-widget.h"
 #include "xstuff.h"
 
-extern int panel_applet_in_drag;
+extern gboolean panel_applet_in_drag;
+extern GSList *panel_list;
 
-static void basep_widget_class_init	(BasePWidgetClass *klass);
-static void basep_widget_init		(BasePWidget      *basep);
+extern int applets_to_sync;
+extern int panels_to_sync;
+extern int need_complete_save;
 
-static void basep_pos_class_init (BasePPosClass *klass);
-static void basep_pos_init (BasePPos *pos);
-
-static void basep_widget_destroy (GtkObject *o);
-
-static GtkWindowClass *basep_widget_parent_class = NULL;
-static GtkObjectClass *basep_pos_parent_class = NULL;
 /*global settings*/
 extern int pw_explicit_step;
 extern int pw_drawer_step;
 extern int pw_auto_step;
 extern int pw_minimized_size;
 extern int pw_minimize_delay;
-extern int pw_disable_animations;
+extern gboolean pw_disable_animations;
 extern PanelMovementType pw_movement_type;
 
 extern GlobalConfig global_config;
+
+static void basep_widget_class_init	(BasePWidgetClass *klass);
+static void basep_widget_init		(BasePWidget      *basep);
+
+static void basep_pos_class_init (BasePPosClass *klass);
+static void basep_pos_init (BasePPos *pos);
+static gboolean basep_leave_notify (GtkWidget *widget, GdkEventCrossing *event);
+static gboolean basep_enter_notify (GtkWidget *widget, GdkEventCrossing *event);
+static void basep_style_set (GtkWidget *widget, GtkStyle *previous_style);
+
+static void basep_widget_destroy (GtkObject *o);
+
+static GtkWindowClass *basep_widget_parent_class = NULL;
+static GtkObjectClass *basep_pos_parent_class = NULL;
 
 /************************
  widget core
@@ -57,8 +69,9 @@ basep_widget_get_type (void)
 			sizeof (BasePWidgetClass),
 			(GtkClassInitFunc) basep_widget_class_init,
 			(GtkObjectInitFunc) basep_widget_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL,
+			NULL,
+			NULL,
+			NULL
 		};
 
 		basep_widget_type = gtk_type_unique (gtk_window_get_type (),
@@ -92,29 +105,50 @@ basep_widget_get_pos_class (BasePWidget *basep) {
 }
 
 static void
-basep_widget_realize(GtkWidget *w)
+basep_widget_realize (GtkWidget *w)
 {
-	BasePWidget *basep = BASEP_WIDGET(w);
+	BasePWidget *basep = BASEP_WIDGET (w);
 	BasePPosClass *klass;
 
-	g_return_if_fail(IS_BASEP_WIDGET(basep));
-	GTK_WIDGET_CLASS(basep_widget_parent_class)->realize(w);
+	g_return_if_fail (IS_BASEP_WIDGET (basep));
+
+	gtk_window_set_wmclass (GTK_WINDOW (basep),
+				"panel_window", "Panel");
+
+	GTK_WIDGET_CLASS (basep_widget_parent_class)->realize (w);
 
 	basep_widget_update_winhints (basep);
-	xstuff_set_no_group(w->window);
+	xstuff_set_no_group_and_no_input (w->window);
 
-	set_frame_colors(PANEL_WIDGET(basep->panel),
-			 basep->frame,
-			 basep->hidebutton_n,
-			 basep->hidebutton_e,
-			 basep->hidebutton_w,
-			 basep->hidebutton_s);
+	set_frame_colors (PANEL_WIDGET (basep->panel),
+			  basep->frame,
+			  basep->hidebutton_n,
+			  basep->hidebutton_e,
+			  basep->hidebutton_w,
+			  basep->hidebutton_s);
 
 	
 	klass = basep_widget_get_pos_class (basep);
 	g_return_if_fail (klass);
-	if (klass->realize)	
-		klass->realize(w);
+	if (klass->realize != NULL)
+		klass->realize (w);
+}
+
+static gboolean
+basep_widget_configure_event (GtkWidget *w, GdkEventConfigure *event)
+{
+	g_return_val_if_fail (IS_BASEP_WIDGET (w), FALSE);
+
+	if (event->x != w->allocation.x ||
+	    event->y != w->allocation.y ||
+	    event->width != w->allocation.width ||
+	    event->height != w->allocation.height)
+		gtk_widget_queue_resize (w);
+
+	if (GTK_WIDGET_CLASS (basep_widget_parent_class)->configure_event != NULL)
+		return GTK_WIDGET_CLASS (basep_widget_parent_class)->configure_event (w, event);
+	else
+		return FALSE;
 }
 
 static void
@@ -259,6 +293,20 @@ basep_widget_size_allocate (GtkWidget *widget,
 }
 
 static void
+basep_widget_mode_change (BasePWidget *basep, BasePMode mode)
+{
+	if (IS_BORDER_WIDGET (basep))
+		basep_border_queue_recalc ();
+}
+
+static void
+basep_widget_state_change (BasePWidget *basep, BasePState state)
+{
+	if (IS_BORDER_WIDGET (basep))
+		basep_border_queue_recalc ();
+}
+
+static void
 basep_widget_class_init (BasePWidgetClass *klass)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass);
@@ -300,9 +348,16 @@ basep_widget_class_init (BasePWidgetClass *klass)
 				     basep_widget_signals,
 				     WIDGET_LAST_SIGNAL);
 
+	klass->mode_change = basep_widget_mode_change;
+	klass->state_change = basep_widget_state_change;
+
 	widget_class->size_request = basep_widget_size_request;
 	widget_class->size_allocate = basep_widget_size_allocate;
 	widget_class->realize = basep_widget_realize;
+	widget_class->configure_event = basep_widget_configure_event;
+	widget_class->enter_notify_event = basep_enter_notify;
+	widget_class->leave_notify_event = basep_leave_notify;
+	widget_class->style_set = basep_style_set;
 
 	object_class->destroy = basep_widget_destroy;
 }
@@ -349,13 +404,13 @@ basep_pos_get_hide_size (BasePWidget *basep,
 	case ORIENT_DOWN:
 		*h = (basep->state == BASEP_AUTO_HIDDEN)
 			? pw_minimized_size
-			: basep->hidebutton_n->allocation.height;
+			: get_requisition_height (basep->hidebutton_n);
 		break;
 	case ORIENT_RIGHT:
 	case ORIENT_LEFT:
 		*w = (basep->state == BASEP_AUTO_HIDDEN)
 			? pw_minimized_size
-			: basep->hidebutton_e->allocation.width;
+			: get_requisition_width (basep->hidebutton_e);
 		break;
 	}
 	*w = MAX (*w, 1);
@@ -374,11 +429,13 @@ basep_pos_get_hide_pos (BasePWidget *basep,
 		break;
 	case ORIENT_RIGHT:
 		*x += w - ((basep->state == BASEP_AUTO_HIDDEN)
-			    ? pw_minimized_size : basep->hidebutton_w->allocation.width);
+			   ? pw_minimized_size
+			   : get_requisition_width (basep->hidebutton_w));
 		break;
 	case ORIENT_DOWN:
 		*y += h - ((basep->state == BASEP_AUTO_HIDDEN)
-			   ? pw_minimized_size : basep->hidebutton_s->allocation.height);
+			   ? pw_minimized_size
+			   : get_requisition_width (basep->hidebutton_s));
 		break;
 	}
 }
@@ -401,11 +458,12 @@ basep_pos_init (BasePPos *pos)
 	return;
 }
 
-static int
-basep_leave_notify(BasePWidget *basep,
-		   GdkEventCrossing *event,
-		   gpointer data)
+static gboolean
+basep_leave_notify (GtkWidget *widget,
+		    GdkEventCrossing *event)
 {
+	BasePWidget *basep = BASEP_WIDGET (widget);
+
 #ifdef PANEL_DEBUG
 	if (basep->state == BASEP_MOVING)
 		g_warning ("moving in leave_notify");
@@ -418,14 +476,18 @@ basep_leave_notify(BasePWidget *basep,
 	
 	basep_widget_queue_autohide (basep);
 
-	return FALSE;
+	if (GTK_WIDGET_CLASS (basep_widget_parent_class)->leave_notify_event)
+		return GTK_WIDGET_CLASS (basep_widget_parent_class)->leave_notify_event (widget, event);
+	else
+		return FALSE;
 }
 
-static int
-basep_enter_notify(BasePWidget *basep, 
-		   GdkEventCrossing *event,
-		   gpointer data)
+static gboolean
+basep_enter_notify (GtkWidget *widget,
+		    GdkEventCrossing *event)
 {
+	BasePWidget *basep = BASEP_WIDGET (widget);
+
 	if (basep->state == BASEP_AUTO_HIDDEN &&
 	    event->detail != GDK_NOTIFY_INFERIOR) {
 
@@ -442,9 +504,12 @@ basep_enter_notify(BasePWidget *basep,
 	}  
 
 	if (global_config.autoraise)
-		gdk_window_raise(GTK_WIDGET(basep)->window);
+		gdk_window_raise (GTK_WIDGET(basep)->window);
 
-	return FALSE;
+	if (GTK_WIDGET_CLASS (basep_widget_parent_class)->enter_notify_event)
+		return GTK_WIDGET_CLASS (basep_widget_parent_class)->enter_notify_event (widget, event);
+	else
+		return FALSE;
 }
 
 void
@@ -791,11 +856,16 @@ make_hidebutton(BasePWidget *basep,
 static void
 basep_widget_destroy (GtkObject *o)
 {
-	BasePWidget *basep = BASEP_WIDGET(o);
+	BasePWidget *basep = BASEP_WIDGET (o);
         /* check if there's a timeout set, and delete it if 
 	 * there was */
 	if (basep->leave_notify_timer_tag != 0)
 		gtk_timeout_remove (basep->leave_notify_timer_tag);
+	basep->leave_notify_timer_tag = 0;
+
+	if (IS_BORDER_WIDGET (basep))
+		basep_border_queue_recalc ();
+
 	gtk_object_unref (GTK_OBJECT (basep->pos));
 	basep->pos = NULL;
 
@@ -872,7 +942,7 @@ basep_widget_redo_window(BasePWidget *basep)
 	newwin = gdk_window_new(NULL, &attributes, attributes_mask);
 	gdk_window_set_user_data(newwin, window);
 
-	xstuff_set_no_group(newwin);
+	xstuff_set_no_group_and_no_input (newwin);
 
 	/* reparent our main panel window */
 	gdk_window_reparent(basep->ebox->window, newwin, 0, 0);
@@ -953,23 +1023,13 @@ basep_widget_init (BasePWidget *basep)
 			 GTK_FILL|GTK_EXPAND|GTK_SHRINK,
 			 0,0);
 
-	gtk_signal_connect(GTK_OBJECT(basep), "enter_notify_event",
-			   GTK_SIGNAL_FUNC(basep_enter_notify),
-			   NULL);
-
-	gtk_signal_connect(GTK_OBJECT(basep), "leave_notify_event",
-			   GTK_SIGNAL_FUNC(basep_leave_notify),
-			   NULL);
-
-#if 0
-/* these are all 0... */
 	basep->mode = BASEP_EXPLICIT_HIDE;
 	basep->state = BASEP_SHOWN;
-	basep->leave_notify_event = 0;
+	basep->level = BASEP_LEVEL_DEFAULT;
+	basep->avoid_on_maximize = TRUE;
+	basep->leave_notify_timer_tag = 0;
 	basep->autohide_inhibit = FALSE;
 	basep->drawers_open = 0;
-	basep->moving = FALSE;
-#endif /*0*/
 
 	basep->hidebuttons_enabled = TRUE;
 	basep->hidebutton_pixmaps_enabled = TRUE;
@@ -1004,30 +1064,62 @@ void
 basep_widget_update_winhints (BasePWidget *basep)
 {
 	GtkWidget *w = GTK_WIDGET (basep);
-	if (!basep->compliant_wm)
+	GnomeWinLayer layer;
+	guint coverhint;
+
+	if ( ! basep->compliant_wm)
 		return;
 
 	gnome_win_hints_set_expanded_size (w, 0, 0, 0, 0);
-	gdk_window_set_decorations(w->window, 0);
+	gdk_window_set_decorations (w->window, 0);
 	gnome_win_hints_set_state (w, WIN_STATE_STICKY |
 				   WIN_STATE_FIXED_POSITION);
-	
+
+	if (basep->avoid_on_maximize) {
+		coverhint = WIN_HINTS_DO_NOT_COVER;
+	} else {
+		coverhint = 0;
+	}
+
+	if (basep->level == BASEP_LEVEL_DEFAULT) {
+		if (global_config.normal_layer) {
+			layer = WIN_LAYER_NORMAL;
+		} else if (global_config.keep_bottom) {
+			layer = WIN_LAYER_BELOW;
+		} else {
+			layer = WIN_LAYER_DOCK;
+		}
+
+		/* drawers are always in DOCK, or NORMAL */
+		if ( IS_DRAWER_WIDGET(w) &&
+		     ! global_config.normal_layer)
+			layer = WIN_LAYER_DOCK;
+
+		/* if in autohiding mode, then we always want dock by default
+		 */
+		if (basep->mode == BASEP_AUTO_HIDE)
+			layer = WIN_LAYER_DOCK;
+
+	} else if (basep->level == BASEP_LEVEL_BELOW) {
+		layer = WIN_LAYER_BELOW;
+	} else if (basep->level == BASEP_LEVEL_NORMAL) {
+		layer = WIN_LAYER_NORMAL;
+	} else /* if (basep->level == BASEP_LEVEL_ABOVE) */ {
+		layer = WIN_LAYER_DOCK;
+	} 
+
 	switch (basep->state) {
 	case BASEP_SHOWN:
 	case BASEP_MOVING:
+
+		gnome_win_hints_set_layer (w, layer);
 		gnome_win_hints_set_hints (w, GNOME_PANEL_HINTS |
-					   WIN_HINTS_DO_NOT_COVER);
-		/* drawers are always in DOCK */
-		if(IS_DRAWER_WIDGET(w))
-			gnome_win_hints_set_layer (w, WIN_LAYER_DOCK);
-		else
-			gnome_win_hints_set_layer (w, global_config.keep_bottom
-						   ? WIN_LAYER_BELOW
-						   : WIN_LAYER_DOCK);
+					   coverhint);
 		break;
 	default: /* all of the hidden states */
 		gnome_win_hints_set_hints (w, GNOME_PANEL_HINTS);
-		gnome_win_hints_set_layer (w, global_config.keep_bottom
+		gnome_win_hints_set_layer (w, (global_config.keep_bottom ||
+					       global_config.normal_layer)
 					   ? WIN_LAYER_ONTOP 
 					   : WIN_LAYER_ABOVE_DOCK);
 		break;
@@ -1052,20 +1144,47 @@ basep_update_frame (BasePWidget *basep)
 }
 
 static void
-basep_back_change(PanelWidget *panel,
-		  PanelBackType type,
-		  char *pixmap,
-		  GdkColor *color,
-		  BasePWidget *basep)
+basep_back_change (PanelWidget *panel,
+		   PanelBackType type,
+		   char *pixmap,
+		   GdkColor *color,
+		   BasePWidget *basep)
 {
 	basep_update_frame (basep);
 
-	set_frame_colors(panel,
-			 basep->frame,
-			 basep->hidebutton_n,
-			 basep->hidebutton_e,
-			 basep->hidebutton_w,
-			 basep->hidebutton_s);
+	set_frame_colors (panel,
+			  basep->frame,
+			  basep->hidebutton_n,
+			  basep->hidebutton_e,
+			  basep->hidebutton_w,
+			  basep->hidebutton_s);
+}
+
+static void
+basep_style_set (GtkWidget *widget, GtkStyle *previous_style)
+{
+	BasePWidget *basep;
+	PanelWidget *panel;
+
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (IS_BASEP_WIDGET (widget));
+
+	basep = BASEP_WIDGET (widget);
+
+	g_return_if_fail (basep->panel != NULL);
+	g_return_if_fail (IS_PANEL_WIDGET (basep->panel));
+
+	panel = PANEL_WIDGET (basep->panel);
+
+	if (GTK_WIDGET_CLASS (basep_widget_parent_class)->style_set)
+		GTK_WIDGET_CLASS (basep_widget_parent_class)->style_set (widget, previous_style);
+
+	set_frame_colors (panel,
+			  basep->frame,
+			  basep->hidebutton_n,
+			  basep->hidebutton_e,
+			  basep->hidebutton_w,
+			  basep->hidebutton_s);
 }
 
 static void
@@ -1132,6 +1251,8 @@ basep_widget_construct (BasePWidget *basep,
 			int sz,
 			BasePMode mode,
 			BasePState state,
+			BasePLevel level,
+			gboolean avoid_on_maximize,
 			gboolean hidebuttons_enabled,
 			gboolean hidebutton_pixmaps_enabled,
 			PanelBackType back_type,
@@ -1208,22 +1329,25 @@ basep_widget_construct (BasePWidget *basep,
 			    GTK_SIGNAL_FUNC (basep_widget_east_clicked),
 			    basep);
 	/*SOUTH*/
-	basep->hidebutton_s = make_hidebutton(basep,
-					      reverse_arrows?
-					      "panel-arrow-up.png":
+	basep->hidebutton_s = make_hidebutton (basep,
+					      reverse_arrows ?
+					      "panel-arrow-up.png" :
 					      "panel-arrow-down.png",
 					      FALSE);
-	gtk_table_attach(GTK_TABLE(basep->table),basep->hidebutton_s,
-			 1,2,2,3,GTK_FILL,GTK_FILL,0,0);
+	gtk_table_attach(GTK_TABLE(basep->table), basep->hidebutton_s,
+			 1, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_signal_connect (GTK_OBJECT(basep->hidebutton_s), "clicked",
 			    GTK_SIGNAL_FUNC (basep_widget_south_clicked),
 			    basep);
 
+	basep->level = level;
+	basep->avoid_on_maximize = avoid_on_maximize;
+
 	basep->hidebuttons_enabled = hidebuttons_enabled;
 	basep->hidebutton_pixmaps_enabled = hidebutton_pixmaps_enabled;
 
-	basep_widget_set_hidebuttons(basep);
-	basep_widget_show_hidebutton_pixmaps(basep);
+	basep_widget_set_hidebuttons (basep);
+	basep_widget_show_hidebutton_pixmaps (basep);
 
 	basep->mode = mode;
 	basep->state = state;
@@ -1240,23 +1364,25 @@ basep_widget_construct (BasePWidget *basep,
 				PANEL_MINIMUM_WIDTH);
 	gtk_widget_set_uposition (GTK_WIDGET (basep), x, y);
 	
-	return GTK_WIDGET(basep);
+	return GTK_WIDGET (basep);
 }
 
 void
-basep_widget_change_params(BasePWidget *basep,
-			   PanelOrientation orient,
-			   int sz,
-			   BasePMode mode,
-			   BasePState state,
-			   gboolean hidebuttons_enabled,
-			   gboolean hidebutton_pixmaps_enabled,
-			   PanelBackType back_type,
-			   char *pixmap_name,
-			   gboolean fit_pixmap_bg,
-			   gboolean strech_pixmap_bg,
-			   gboolean rotate_pixmap_bg,
-			   GdkColor *back_color)
+basep_widget_change_params (BasePWidget *basep,
+			    PanelOrientation orient,
+			    int sz,
+			    BasePMode mode,
+			    BasePState state,
+			    BasePLevel level,
+			    gboolean avoid_on_maximize,
+			    gboolean hidebuttons_enabled,
+			    gboolean hidebutton_pixmaps_enabled,
+			    PanelBackType back_type,
+			    char *pixmap_name,
+			    gboolean fit_pixmap_bg,
+			    gboolean strech_pixmap_bg,
+			    gboolean rotate_pixmap_bg,
+			    GdkColor *back_color)
 {
 	g_return_if_fail(basep);
 	g_return_if_fail(GTK_WIDGET_REALIZED(GTK_WIDGET(basep)));
@@ -1292,6 +1418,7 @@ basep_widget_change_params(BasePWidget *basep,
 		gtk_signal_emit(GTK_OBJECT(basep),
 				basep_widget_signals[STATE_CHANGE_SIGNAL],
 				state);
+		panels_to_sync = TRUE;
 	}
 
 	panel_widget_change_params(PANEL_WIDGET(basep->panel),
@@ -1306,6 +1433,14 @@ basep_widget_change_params(BasePWidget *basep,
 				     do no padding on the sides */
 				   !hidebuttons_enabled,
 				   back_color);
+
+	if (basep->level != level ||
+	    basep->avoid_on_maximize != avoid_on_maximize) {
+		basep->level = level;
+		basep->avoid_on_maximize = avoid_on_maximize;
+		basep_widget_update_winhints (basep);
+	}
+
 
 	basep_widget_set_hidebuttons(basep);
 	basep_widget_show_hidebutton_pixmaps(basep);
@@ -1382,8 +1517,11 @@ basep_widget_set_hidebuttons (BasePWidget *basep)
 		gtk_widget_hide(basep->hidebutton_w);
 		gtk_widget_hide(basep->hidebutton_s);	
 
-		if (basep->state == BASEP_HIDDEN_LEFT ||
-		    basep->state == BASEP_HIDDEN_RIGHT)
+		/* if we removed hidebuttons we need to show ourselves,
+		 * except for the drawers case that is */
+		if ((basep->state == BASEP_HIDDEN_LEFT ||
+		     basep->state == BASEP_HIDDEN_RIGHT) &&
+		    ! IS_DRAWER_WIDGET (basep))
 			basep_widget_explicit_show (basep);
 	} else {
 		g_return_if_fail (klass && klass->set_hidebuttons);
@@ -1414,6 +1552,7 @@ basep_widget_explicit_hide (BasePWidget *basep, BasePState state)
 	gtk_signal_emit(GTK_OBJECT(basep),
 			basep_widget_signals[STATE_CHANGE_SIGNAL],
 			state);
+	panels_to_sync = TRUE;
 
 	/* if the app did any updating of the interface, flush that for us*/
 	gdk_flush();
@@ -1448,7 +1587,7 @@ basep_widget_explicit_hide (BasePWidget *basep, BasePState state)
 void
 basep_widget_explicit_show (BasePWidget *basep)
 {
-	static const char *supinfo[] = {"panel", "collapse", NULL};
+	static const char *supinfo[] = {"panel", "expand", NULL};
 
 	if ( (basep->state != BASEP_HIDDEN_LEFT &&
 	      basep->state != BASEP_HIDDEN_RIGHT))
@@ -1490,11 +1629,14 @@ basep_widget_explicit_show (BasePWidget *basep)
 	gtk_signal_emit(GTK_OBJECT(basep),
 			basep_widget_signals[STATE_CHANGE_SIGNAL],
 			BASEP_SHOWN);
+	panels_to_sync = TRUE;
 }
 
 void
 basep_widget_autoshow (BasePWidget *basep)
 {
+	static const char *supinfo[] = {"panel", "expand", NULL};
+
 	g_return_if_fail (IS_BASEP_WIDGET(basep));
 
 	if (basep->state == BASEP_MOVING) {
@@ -1512,6 +1654,8 @@ basep_widget_autoshow (BasePWidget *basep)
 		BasePPosClass *klass = basep_widget_get_pos_class (basep);
 		PanelOrientType hide_orient;
 		int w, h, size;
+
+		gnome_triggers_vdo("", NULL, supinfo);
 
 		hide_orient = klass->get_hide_orient (basep);
 		basep_widget_get_size (basep, &w, &h);
@@ -1769,13 +1913,24 @@ basep_widget_get_pos (BasePWidget *basep,
 
 	basep_widget_get_size (basep, &w, &h);
 	klass->get_pos(basep, x, y, w, h);
+}
 
-#if 0
-	/* sanity check, may not be desired */
-	*x = CLAMP (*x, 0, gdk_screen_width () - w);
-	*y = CLAMP (*y, 0, gdk_screen_height () - h);
-#endif
+void
+basep_widget_init_offsets (BasePWidget *basep)
+{
+	g_return_if_fail (basep != NULL);
+	g_return_if_fail (IS_BASEP_WIDGET (basep));
 
+	if (GTK_WIDGET (basep)->window != NULL) {
+		int x, y;
+		gdk_window_get_pointer (GTK_WIDGET (basep)->window,
+					&x, &y, NULL);
+		basep->offset_x = x;
+		basep->offset_y = y;
+	} else {
+		basep->offset_x = GTK_WIDGET (basep)->requisition.width / 2;
+		basep->offset_y = GTK_WIDGET (basep)->requisition.height / 2;
+	}
 }
 
 void
@@ -1814,4 +1969,178 @@ basep_widget_set_state (BasePWidget *basep, BasePState state,
 		gtk_signal_emit(GTK_OBJECT(basep),
 				basep_widget_signals[STATE_CHANGE_SIGNAL],
 				state);
+	panels_to_sync = TRUE;
+}
+
+/*****
+ * Collision avoidance stuff
+ *****/
+typedef struct {
+	int left;
+	int center;
+	int right;
+} Border;
+
+static Border borders[4] = {{0}};
+
+static void
+basep_calculate_borders (void)
+{
+	GSList *li;
+
+	for (li = panel_list; li != NULL; li = li->next) {
+		PanelData *pd = li->data;
+		BasePWidget *basep;
+		GtkRequisition chreq;
+		BorderEdge edge;
+
+		g_assert (pd != NULL);
+
+		if ( ! IS_EDGE_WIDGET (pd->panel) &&
+		     ! IS_ALIGNED_WIDGET (pd->panel))
+			continue;
+
+		basep = BASEP_WIDGET (pd->panel);
+
+		if (basep->mode == BASEP_AUTO_HIDE)
+			continue;
+
+		gtk_widget_get_child_requisition (basep->ebox, &chreq);
+
+		edge = BORDER_POS (basep->pos)->edge;
+
+		if (IS_EDGE_WIDGET (basep)) {
+			BasePState state = basep->state;
+			if (PANEL_WIDGET (basep->panel)->orient ==
+			    PANEL_VERTICAL) {
+				if (borders[edge].left < chreq.width &&
+				    state != BASEP_HIDDEN_RIGHT)
+					borders[edge].left = chreq.width;
+				if (borders[edge].center < chreq.width &&
+				    state != BASEP_HIDDEN_RIGHT &&
+				    state != BASEP_HIDDEN_LEFT)
+					borders[edge].center = chreq.width;
+				if (borders[edge].right < chreq.width &&
+				    state != BASEP_HIDDEN_LEFT)
+					borders[edge].right = chreq.width;
+			} else {
+				if (borders[edge].left < chreq.height &&
+				    state != BASEP_HIDDEN_RIGHT)
+					borders[edge].left = chreq.height;
+				if (borders[edge].center < chreq.height &&
+				    state != BASEP_HIDDEN_RIGHT &&
+				    state != BASEP_HIDDEN_LEFT)
+					borders[edge].center = chreq.height;
+				if (borders[edge].right < chreq.height &&
+				    state != BASEP_HIDDEN_LEFT)
+					borders[edge].right = chreq.height;
+			}
+		} else /* ALIGNED */ {
+			AlignedAlignment align = ALIGNED_POS(basep->pos)->align;
+			if (PANEL_WIDGET (basep->panel)->orient ==
+			    PANEL_VERTICAL) {
+				if (align == ALIGNED_LEFT &&
+				    borders[edge].left < chreq.width)
+					borders[edge].left = chreq.width;
+				else if (align == ALIGNED_CENTER &&
+					 borders[edge].center < chreq.width)
+					borders[edge].center = chreq.width;
+				else if (align == ALIGNED_RIGHT &&
+					 borders[edge].right < chreq.width)
+					borders[edge].right = chreq.width;
+			} else {
+				if (align == ALIGNED_LEFT &&
+				    borders[edge].left < chreq.height)
+					borders[edge].left = chreq.height;
+				else if (align == ALIGNED_CENTER &&
+					 borders[edge].center < chreq.height)
+					borders[edge].center = chreq.height;
+				else if (align == ALIGNED_RIGHT &&
+					 borders[edge].right < chreq.height)
+					borders[edge].right = chreq.height;
+			}
+		}
+	}
+}
+
+static int
+border_max (BorderEdge edge)
+{
+	return MAX (borders[edge].center,
+		    MAX (borders[edge].left, borders[edge].right));
+}
+
+void
+basep_border_recalc (void)
+{
+	int i;
+	GSList *li;
+	Border old[4];
+
+	memcpy (old, borders, 4 * sizeof (Border));
+
+	for (i = 0; i < 4; i++) {
+		borders[i].left = 0;
+		borders[i].center = 0;
+		borders[i].right = 0;
+	}
+
+	/* if not avoiding collisions, keeping things at 0 is a safe bet */
+	if (global_config.avoid_collisions) {
+		basep_calculate_borders ();
+	}
+
+	if (memcmp (old, borders, 4 * sizeof (Border)) != 0) {
+		for (li = panel_list; li != NULL; li = li->next) {
+			PanelData *pd = li->data;
+			GtkWidget *panel;
+
+			g_assert (pd != NULL);
+
+			panel = pd->panel;
+
+			if (IS_BORDER_WIDGET (panel))
+				gtk_widget_queue_resize (panel);
+		}
+	}
+
+	/* this does not generate xtraffic if not needed */
+	xstuff_setup_desktop_area (border_max (BORDER_LEFT),
+				   border_max (BORDER_RIGHT),
+				   border_max (BORDER_TOP) +
+				     foobar_widget_get_height (),
+				   border_max (BORDER_BOTTOM));
+}
+
+static guint queue_recalc_id = 0;
+
+static gboolean
+queue_recalc_handler (gpointer data)
+{
+	queue_recalc_id = 0;
+
+	basep_border_recalc ();
+
+	return FALSE;
+}
+
+void
+basep_border_queue_recalc (void)
+{
+	if (queue_recalc_id == 0) {
+		queue_recalc_id = gtk_idle_add (queue_recalc_handler, NULL);
+	}
+}
+
+void
+basep_border_get (BorderEdge edge, int *left, int *center, int *right)
+{
+	g_assert (edge >=0 && edge <= 3);
+
+	if (left != NULL)
+		*left = borders[edge].left;
+	if (center != NULL)
+		*center = borders[edge].center;
+	if (right != NULL)
+		*right = borders[edge].right;
 }

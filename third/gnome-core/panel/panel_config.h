@@ -7,6 +7,8 @@
 #include "sliding-widget.h"
 #include "drawer-widget.h"
 
+#include "panel-util.h"
+
 #define NUMBER_OF_SIZES 5
 
 /* used to temporarily store config values until the 'Apply'
@@ -15,10 +17,15 @@ typedef struct _PerPanelConfig PerPanelConfig;
 struct _PerPanelConfig {
 	GtkWidget		*panel;
 
+	UpdateFunction		update_function;
+	gpointer		update_data;
+
 	/*basep types*/
-	int			hidebuttons;
-	int			hidebutton_pixmaps;
+	gboolean		hidebuttons;
+	gboolean		hidebutton_pixmaps;
 	BasePMode               mode;
+	BasePLevel		level;
+	gboolean		avoid_on_maximize;
 
 	/*floating widget*/
 	PanelOrientation        orient;
@@ -41,6 +48,11 @@ struct _PerPanelConfig {
 	GdkColor		back_color;
 	
 	gboolean		register_changes; /*used for startup*/
+	gboolean		ppc_origin_change; /* if true then the dialog
+						      will NOT be updated on changes,
+						      so that we don't get into infinite
+						      loops, set before we ourselves
+						      apply changes. */
 	GtkWidget		*config_window;
 	GtkWidget		*type_tab; /* the type specific tab of
 					      the notebook, this is just
@@ -50,6 +62,17 @@ struct _PerPanelConfig {
 	GtkWidget		*type_tab_label;
 
 	GtkWidget		*pix_entry;
+
+	/*levels*/
+	GtkWidget               *level_menu;
+
+	/*avoid_on_maximize*/
+	GtkWidget               *avoid_on_maximize_button;
+
+	/*hiding stuff*/
+	GtkWidget               *autohide_button;
+	GtkWidget               *hidebuttons_button;
+	GtkWidget               *hidebutton_pixmaps_button;
 
 	/*size*/
 	GtkWidget               *size_menu;
@@ -76,8 +99,14 @@ struct _PerPanelConfig {
 	GtkWidget               *offset_spin;
 };
 
+void panel_config_register_changes (PerPanelConfig *ppc);
+
 void panel_config (GtkWidget *panel);
 void update_config_size (GtkWidget *panel);
+void update_config_level (BasePWidget *panel);
+void update_config_avoid_on_maximize (BasePWidget *panel);
+void update_config_mode (BasePWidget *panel);
+void update_config_hidebuttons (BasePWidget *panel);
 void update_config_back (PanelWidget *panel);
 void update_config_edge (BasePWidget *w);
 void update_config_anchor (BasePWidget *w);
@@ -89,4 +118,9 @@ void update_config_floating_orient (BasePWidget *panel);
 void update_config_floating_pos_limits (BasePWidget *panel);
 void update_config_type (BasePWidget *panel);
 void kill_config_dialog (GtkWidget *panel);
+
+GtkWidget *make_level_widget (PerPanelConfig *ppc);
+GtkWidget *make_size_widget (PerPanelConfig *ppc);
+
+
 #endif /* PANEL_CONFIG_H */

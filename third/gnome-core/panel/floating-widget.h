@@ -46,12 +46,14 @@ struct _FloatingPosClass {
 
 GtkType floating_pos_get_type (void) G_GNUC_CONST;
 GtkWidget *floating_widget_new (gint16 x, gint16 y,
-				PanelOrientType orient,
+				PanelOrientation orient,
 				BasePMode mode,
 				BasePState state,
+				BasePLevel level,
+				gboolean avoid_on_maximize,
 				int sz,
-				int hidebuttons_enabled,
-				int hidebutton_pixmap_enabled,
+				gboolean hidebuttons_enabled,
+				gboolean hidebutton_pixmap_enabled,
 				PanelBackType back_type,
 				char *back_pixmap,
 				gboolean fit_pixmap_bg,
@@ -61,12 +63,14 @@ GtkWidget *floating_widget_new (gint16 x, gint16 y,
 
 void floating_widget_change_params (FloatingWidget *floating,
 				    gint16 x, gint16 y,
-				    PanelOrientType orient,
+				    PanelOrientation orient,
 				    BasePMode mode,
 				    BasePState state,
+				    BasePLevel level,
+				    gboolean avoid_on_maximize,
 				    int sz,
-				    int hidebuttons_enabled,
-				    int hidebutton_pixmap_enabled,
+				    gboolean hidebuttons_enabled,
+				    gboolean hidebutton_pixmap_enabled,
 				    PanelBackType back_type,
 				    char *back_pixmap,
 				    gboolean fit_pixmap_bg,
@@ -78,7 +82,7 @@ void floating_widget_change_coords (FloatingWidget *floating,
 				    gint16 x, gint16 y);
 
 void floating_widget_change_orient (FloatingWidget *floating,
-				    PanelOrientType orient);
+				    PanelOrientation orient);
 
 END_GNOME_DECLS
 

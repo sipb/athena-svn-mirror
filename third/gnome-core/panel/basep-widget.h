@@ -42,6 +42,13 @@ typedef enum {
 	BASEP_HIDDEN_RIGHT
 } BasePState;
 
+typedef enum {
+	BASEP_LEVEL_DEFAULT,
+	BASEP_LEVEL_ABOVE,
+	BASEP_LEVEL_NORMAL,
+	BASEP_LEVEL_BELOW
+} BasePLevel;
+
 struct _BasePWidget
 {
 	GtkWindow		window;
@@ -64,6 +71,8 @@ struct _BasePWidget
 
 	BasePMode               mode;
 	BasePState              state;
+	BasePLevel		level;
+	gboolean		avoid_on_maximize;
 
 	gboolean		hidebuttons_enabled;
 	gboolean		hidebutton_pixmaps_enabled;
@@ -78,6 +87,11 @@ struct _BasePWidget
 	guint32                 autohide_complete;
 
 	gboolean		compliant_wm;
+
+	/* drag offsets, where the panel was clicked when started
+	 * to be moved */
+	int			offset_x;
+	int			offset_y;
 };
 
 struct _BasePWidgetClass
@@ -165,6 +179,8 @@ GtkWidget*	basep_widget_construct		(BasePWidget *basep,
 						 int sz,
 						 BasePMode mode,
 						 BasePState state,
+						 BasePLevel level,
+						 gboolean avoid_on_maximize,
 						 gboolean hidebuttons_enabled,
 						 gboolean hidebutton_pixmaps_enabled,
 						 PanelBackType back_type,
@@ -180,6 +196,8 @@ void		basep_widget_change_params	(BasePWidget *basep,
 						 int sz,
 						 BasePMode mode,
 						 BasePState state,
+						 BasePLevel level,
+						 gboolean avoid_on_maximize,
 						 gboolean hidebuttons_enabled,
 						 gboolean hidebutton_pixmaps_enabled,
 						 PanelBackType back_type,
@@ -239,6 +257,9 @@ void            basep_widget_get_menu_pos  (BasePWidget *basep,
 
 PanelOrientType basep_widget_get_applet_orient (BasePWidget *basep);
 
+/* initialize drag offsets according to cursor */
+void            basep_widget_init_offsets      (BasePWidget *basep);
+
 void            basep_widget_set_pos           (BasePWidget *basep,
 						int x, int y);
 
@@ -270,6 +291,15 @@ void            basep_update_frame             (BasePWidget *basep);
 
 /* redo the widget->window based on new compliancy setting */
 void		basep_widget_redo_window	(BasePWidget *basep);
+
+/* -1 means don't set, caller will not get queue resized as optimization */
+
+void		basep_border_recalc		(void);
+void		basep_border_queue_recalc	(void);
+void		basep_border_get		(BorderEdge edge,
+						 int *left,
+						 int *center,
+						 int *right);
 
 #define GNOME_PANEL_HINTS (WIN_HINTS_SKIP_FOCUS|WIN_HINTS_SKIP_WINLIST|WIN_HINTS_SKIP_TASKBAR)
 
