@@ -14,6 +14,7 @@ galConf.sh: $(top_srcdir)/galConf.sh.in Makefile
 EXTRA_DIST = 			\
 	gal.spec.in		\
 	galConf.sh.in		\
+	iconv-detect.c		\
 	MAINTAINERS		\
 	AUTHORS			\
 	xml-i18n-extract.in	\

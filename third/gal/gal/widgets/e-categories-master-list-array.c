@@ -26,9 +26,9 @@
 
 #include <gal/util/e-i18n.h>
 #include <gal/util/e-xml-utils.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <tree.h>
+#include <parser.h>
+#include <xmlmemory.h>
 #include "e-unicode.h"
 #include <string.h>
 
