@@ -16,7 +16,7 @@
 /* This is zinit, which is run by zwgc to get subs for lockers that
    were attached before zwgc started. */
 
-static const char rcsid[] = "$Id: zinit.c,v 1.3 1999-03-23 18:24:40 danw Exp $";
+static const char rcsid[] = "$Id: zinit.c,v 1.4 1999-03-29 17:35:40 danw Exp $";
 
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +42,7 @@ static struct agetopt_option zinit_options[] = {
 int zinit_main(int argc, char **argv)
 {
   locker_context context;
-  int opt, all = 0, op = LOCKER_ZEPHYR_SUBSCRIBE;
+  int opt, all = 0;
   uid_t uid = getuid();
 
   if (locker_init(&context, uid, NULL, NULL))
@@ -76,19 +76,22 @@ int zinit_main(int argc, char **argv)
     usage();
 
   if (all)
-    locker_iterate_attachtab(context, NULL, NULL, zinit_attachent, &op);
+    locker_iterate_attachtab(context, NULL, NULL, zinit_attachent, NULL);
   else
     {
       locker_iterate_attachtab(context, locker_check_owner, &uid,
-			       zinit_attachent, &op);
+			       zinit_attachent, NULL);
     }
+
+  locker_do_zsubs(context, LOCKER_ZEPHYR_SUBSCRIBE);
+  locker_end(context);
   return 0;
 }
 
 static int zinit_attachent(locker_context context, locker_attachent *at,
-			   void *opp)
+			   void *arg)
 {
-  return at->fs->zsubs(context, at, *(int *)opp);
+  return at->fs->zsubs(context, at);
 }
 
 static void usage(void)

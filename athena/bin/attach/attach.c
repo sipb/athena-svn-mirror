@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.27 1999-03-24 16:02:33 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.28 1999-03-29 17:35:37 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -282,8 +282,11 @@ int attach_main(int argc, char **argv)
 	usage();
     }
 
+  locker_do_zsubs(context, LOCKER_ZEPHYR_SUBSCRIBE);
   locker_end(context);
-  return(estatus);
+
+  /* Must be return, not exit, since it might be returning to add_main. */
+  return estatus;
 }
 
 

@@ -15,7 +15,7 @@
 
 /* This is attachandrun, used to attach a locker and run a program in it. */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.2 1999-03-23 18:24:38 danw Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.3 1999-03-29 17:35:38 danw Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -54,6 +54,7 @@ int attachandrun_main(int argc, char **argv)
       exit(1);
     }
   locker_free_attachent(context, at);
+  locker_do_zsubs(context, LOCKER_ZEPHYR_SUBSCRIBE);
   locker_end(context);
 
   if (setuid(uid))

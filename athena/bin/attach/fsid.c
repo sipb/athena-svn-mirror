@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.3 1999-03-23 18:24:39 danw Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.4 1999-03-29 17:35:40 danw Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -160,6 +160,7 @@ int fsid_main(int argc, char **argv)
 
   if (!gotname)
     usage();
+  locker_end(context);
   exit(estatus);
 }
 
