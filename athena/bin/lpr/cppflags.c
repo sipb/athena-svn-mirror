@@ -17,5 +17,8 @@ main()
     printf("-Dultrix -DULTRIX40");
 #endif
 #endif
+#if defined(_IBMR2) && defined(_AIX)
+    printf("-D_IBMR2 -D_AIX");
+#endif
     exit(0);
 }
