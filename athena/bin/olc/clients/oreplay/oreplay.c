@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.14 1991-01-21 01:35:45 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.15 1991-01-21 15:51:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -338,8 +338,8 @@ redo:
 	for(j=0;j<7;j++)   /* Skip rest of information for this user */
 	  p1 = index(p1,'\n')+1;
       }
-      write(output_fd,"off\n",4);
     }
+    write(output_fd,"off\n",4);
   }
 
  done: 
