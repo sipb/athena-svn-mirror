@@ -71,6 +71,7 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
+CONTROL_CENTER_REQUIRED = @CONTROL_CENTER_REQUIRED@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
@@ -78,6 +79,7 @@ DL_LIB = @DL_LIB@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -90,6 +92,7 @@ GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
+GNOME_LIBS_REQUIRED = @GNOME_LIBS_REQUIRED@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
 GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
 GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
@@ -103,6 +106,7 @@ GTK_CFLAGS = @GTK_CFLAGS@
 GTK_CONFIG = @GTK_CONFIG@
 GTK_HTML_PREFIX = @GTK_HTML_PREFIX@
 GTK_LIBS = @GTK_LIBS@
+GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
@@ -113,6 +117,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
+LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LIBWRAP_LIBS = @LIBWRAP_LIBS@
 LN_S = @LN_S@
@@ -124,6 +129,7 @@ ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
@@ -206,7 +212,7 @@ GWMH_SRCLIST =  	gwmh.c			gwmh.h			gstc.c			gstc.h
 
 BUILT_SOURCES = $(CORBA_SRCLIST) $(GWMH_SRCLIST)
 
-panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h
+panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h		multiscreen-stuff.c		multiscreen-stuff.h
 
 
 panel_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(GNOMEUI_LIBS)			$(INTLLIBS)			@PIXBUF_LIBS@
@@ -279,7 +285,7 @@ swallow.o drawer.o panel-widget.o basep-widget.o border-widget.o \
 edge-widget.o aligned-widget.o sliding-widget.o floating-widget.o \
 drawer-widget.o button-widget.o panel-util.o tearoffitem.o rgb-stuff.o \
 global-keys.o gnome-run.o xstuff.o foobar-widget.o tasklist_icon.o \
-title-item.o scroll-menu.o icon-entry-hack.o
+title-item.o scroll-menu.o icon-entry-hack.o multiscreen-stuff.o
 panel_DEPENDENCIES =  libpanel_applet.la
 gnome_panel_properties_capplet_OBJECTS =  gnome-panel-properties.o \
 panel-util.o icon-entry-hack.o gnome-panel-stubs.o gnome-panel-skels.o \

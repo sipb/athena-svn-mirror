@@ -27,7 +27,7 @@
 #include "scroll-menu.h"
 #include "gwmh.h"
 #include "tasklist_icon.h"
-#include "scroll-menu.h"
+#include "multiscreen-stuff.h"
 
 #define SMALL_ICON_SIZE 20
 
@@ -39,8 +39,6 @@ extern GtkTooltips *panel_tooltips;
 static void foobar_widget_class_init	(FoobarWidgetClass	*klass);
 static void foobar_widget_init		(FoobarWidget		*foo);
 static void foobar_widget_realize	(GtkWidget		*w);
-static gboolean foobar_widget_configure_event (GtkWidget        *w,
-					       GdkEventConfigure *event);
 static void foobar_widget_destroy	(GtkObject		*o);
 static void foobar_widget_size_allocate	(GtkWidget		*w,
 					 GtkAllocation		*alloc);
@@ -93,7 +91,6 @@ foobar_widget_class_init (FoobarWidgetClass *klass)
 	object_class->destroy = foobar_widget_destroy;
 
 	widget_class->realize = foobar_widget_realize;
-	widget_class->configure_event = foobar_widget_configure_event;
 	widget_class->size_allocate = foobar_widget_size_allocate;
 	widget_class->enter_notify_event = foobar_enter_notify;
 	widget_class->leave_notify_event = foobar_leave_notify;
@@ -617,7 +614,9 @@ foobar_widget_update_winhints (FoobarWidget *foo)
 	if ( ! foo->compliant_wm)
 		return;
 
-	gdk_window_set_hints (w->window, 0, 0, 
+	gdk_window_set_hints (w->window, 
+			      multiscreen_x (foo->screen),
+			      multiscreen_y (foo->screen),
 			      0, 0, 0, 0, GDK_HINT_POS);
 
 	gnome_win_hints_set_expanded_size (w, 0, 0, 0, 0);
@@ -652,21 +651,6 @@ foobar_widget_realize (GtkWidget *w)
 	setup_task_menu (FOOBAR_WIDGET (w));
 }
 
-static gboolean
-foobar_widget_configure_event (GtkWidget *w, GdkEventConfigure *event)
-{
-	g_return_val_if_fail (IS_FOOBAR_WIDGET (w), FALSE);
-
-	if (event->x != 0 ||
-	    event->y != 0)
-		gdk_window_move (w->window, 0, 0);
-
-	if (GTK_WIDGET_CLASS (parent_class)->configure_event != NULL)
-		return GTK_WIDGET_CLASS (parent_class)->configure_event (w, event);
-	else
-		return FALSE;
-}
-
 static void
 programs_menu_to_display(GtkWidget *menu)
 {
@@ -697,6 +681,8 @@ static void
 focus_task (GtkWidget *w, GwmhTask *task)
 {
 	gwmh_desk_set_current_area (task->desktop, task->harea, task->varea);
+	if (GWMH_TASK_ICONIFIED (task)) 
+		gwmh_task_deiconify (task);
 	gwmh_task_show  (task);
 	gwmh_task_raise (task);
 	gwmh_task_focus (task);
@@ -709,6 +695,7 @@ add_task (GwmhTask *task, FoobarWidget *foo)
 	char *title = NULL;
 	int slen;
 	GtkWidget *pixmap  = NULL;
+	char *name;
 
 	static GwmhDesk *desk = NULL;
 
@@ -716,10 +703,25 @@ add_task (GwmhTask *task, FoobarWidget *foo)
 
 	if (GWMH_TASK_SKIP_WINLIST (task))
 		return;
-	/*g_message ("task: %s", task->name);*/
-	slen = strlen (task->name);
-	if (slen > 43)
-		title = g_strdup_printf ("%.20s...%s", task->name, task->name+slen-20);
+	if (task->name != NULL) {
+		slen = strlen (task->name);
+		if (slen > 443)
+			title = g_strdup_printf ("%.420s...%s", task->name, task->name+slen-20);
+		else
+			title = g_strdup (task->name);
+	} else {
+		/* Translators: Task with no name, should not really happen, so
+		 * this should signal that the panel is confused by this task
+		 * (thus question marks) */
+		title = g_strdup (_("???"));
+	}
+
+	if (GWMH_TASK_ICONIFIED (task)) {
+		char *tmp = title;
+		title = g_strdup_printf ("[%s]", title);
+		g_free (tmp);
+	}
+	
 	item = gtk_pixmap_menu_item_new ();
 	pixmap = get_task_icon (task, GTK_WIDGET (foo));
 	if (pixmap != NULL) {
@@ -728,7 +730,7 @@ add_task (GwmhTask *task, FoobarWidget *foo)
 						 pixmap);
 	}
 
-	label = gtk_label_new (title ? title : task->name);
+	label = gtk_label_new (title);
 	g_free (title);
 
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -755,13 +757,24 @@ create_task_menu (GtkWidget *w, gpointer data)
 {
 	FoobarWidget *foo = FOOBAR_WIDGET (data);
 	GList *tasks = gwmh_task_list_get ();
+	GList *list;
+	GtkWidget *separator;
 
 	/*g_message ("creating...");*/
 	foo->tasks = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	add_menu_separator (foo->task_menu);
+	separator = add_menu_separator (foo->task_menu);
 
 	g_list_foreach (tasks, (GFunc)add_task, foo);
+
+	list = g_list_last (GTK_MENU_SHELL (foo->task_menu)->children);
+
+	if (list != NULL &&
+	    separator == list->data) {
+		/* if the separator is the last item wipe it.
+		 * We leave it as the first though */
+		gtk_widget_destroy (separator);
+	}
 
 	/* Owen: don't read the next line */
 	GTK_MENU_SHELL (GTK_MENU_ITEM (w)->submenu)->active = 1;
@@ -826,12 +839,16 @@ set_das_pixmap (FoobarWidget *foo, GwmhTask *task)
 	if (!GTK_WIDGET_REALIZED (foo))
 		return;
 
+	foo->icon_task = NULL;
+
 	if (foo->task_pixmap != NULL)
 		gtk_widget_destroy (foo->task_pixmap);
 	foo->task_pixmap = NULL;
 
-	if (task != NULL)
+	if (task != NULL) {
 		foo->task_pixmap = get_task_icon (task, GTK_WIDGET (foo));
+		foo->icon_task = task;
+	}
 
 	if (foo->task_pixmap == NULL) {
 		foo->task_pixmap = get_default_pixmap ();
@@ -844,7 +861,8 @@ set_das_pixmap (FoobarWidget *foo, GwmhTask *task)
 }
 
 static gboolean
-task_notify (gpointer data, GwmhTask *task,
+task_notify (gpointer data,
+	     GwmhTask *task,
 	     GwmhTaskNotifyType ntype,
 	     GwmhTaskInfoMask imask)
 {
@@ -853,19 +871,32 @@ task_notify (gpointer data, GwmhTask *task,
 
 	switch (ntype) {
 	case GWMH_NOTIFY_INFO_CHANGED:
-		if (imask & GWMH_TASK_INFO_FOCUSED &&
-		    GWMH_TASK_FOCUSED (task)) {
-			set_das_pixmap (foo, task);
-		}
 		if (imask & GWMH_TASK_INFO_WM_HINTS &&
-		    GWMH_TASK_FOCUSED (task))
+		    GWMH_TASK_FOCUSED (task)) {
+			/* icon might have changed */
 			set_das_pixmap (foo, task);
+		} else if (imask & GWMH_TASK_INFO_FOCUSED) {
+			if (GWMH_TASK_FOCUSED (task) &&
+			    foo->icon_task != task) {
+				/* Focused and not set in the top thingie,
+				 * so setup */
+				set_das_pixmap (foo, task);
+			} else if ( ! GWMH_TASK_FOCUSED (task) &&
+				   task == foo->icon_task) {
+				/* Just un-focused and currently the
+				 * icon_task, so set the pixmap to
+				 * the default (nothing) */
+				set_das_pixmap (foo, NULL);
+			}
+		}
 		break;
 	case GWMH_NOTIFY_NEW:
 		if (foo->tasks != NULL)
 			add_task (task, foo);
 		break;
 	case GWMH_NOTIFY_DESTROY:
+		if (task == foo->icon_task)
+			set_das_pixmap (foo, NULL);
 		/* FIXME: Whoa; leak? */
 		if (foo->tasks != NULL) {
 			item = g_hash_table_lookup (foo->tasks, task);
@@ -874,7 +905,7 @@ task_notify (gpointer data, GwmhTask *task,
 				gtk_widget_hide (item);
 			} else {
 				g_warning ("Could not find item for task '%s'",
-					   task->name);
+					   sure_string (task->name));
 			}
 		}
 		break;
@@ -938,6 +969,14 @@ foobar_widget_init (FoobarWidget *foo)
 	/*GtkWidget *align;*/
 	gint flags;
 
+	foo->screen = 0;
+
+	foo->task_item = NULL;
+	foo->task_menu = NULL;
+	foo->task_pixmap = NULL;
+	foo->task_bin = NULL;
+	foo->icon_task = NULL;
+
 	foo->clock_format = g_strdup (_("%H:%M"));
 	foo->clock_timeout = 0;
 	foo->clock_label = NULL;
@@ -955,9 +994,11 @@ foobar_widget_init (FoobarWidget *foo)
 	gtk_signal_connect (GTK_OBJECT (foo), "delete_event",
 			    GTK_SIGNAL_FUNC (gtk_true), NULL);
 
-	gtk_widget_set_uposition (GTK_WIDGET (foo), 0, 0);
+	gtk_widget_set_uposition (GTK_WIDGET (foo),
+				  multiscreen_x (foo->screen),
+				  multiscreen_y (foo->screen));
 	gtk_widget_set_usize (GTK_WIDGET (foo),
-			      gdk_screen_width (), -2);
+			      multiscreen_width (foo->screen), -2);
 
 	foo->ebox = gtk_event_box_new ();
 	foo->hbox = gtk_hbox_new (FALSE, 0);
@@ -977,7 +1018,8 @@ foobar_widget_init (FoobarWidget *foo)
 				      GTK_SHADOW_NONE);
 	
 	
-	menuitem = pixmap_menu_item_new (_("Programs"), GNOME_STOCK_MENU_ABOUT);
+	menuitem = pixmap_menu_item_new (_("Programs"),
+					 "gnome-logo-icon-transparent.png");
 	flags = (get_default_menu_flags() & 
 		 ~(MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER | MAIN_MENU_USER_SUB |
 		   MAIN_MENU_PANEL | MAIN_MENU_PANEL_SUB | MAIN_MENU_DESKTOP |
@@ -1107,7 +1149,7 @@ foobar_widget_new (void)
 }
 
 gboolean
-foobar_widget_exists (void)
+foobar_widget_exists (int screen)
 {
 	return (das_global_foobar != NULL);
 }
@@ -1133,10 +1175,14 @@ foobar_widget_force_menu_remake (void)
 }
 
 gint
-foobar_widget_get_height (void)
+foobar_widget_get_height (int screen)
 {
-	return (das_global_foobar && GTK_WIDGET_REALIZED (das_global_foobar)) 
-		? das_global_foobar->allocation.height : 0; 
+	if (das_global_foobar != NULL &&
+	    GTK_WIDGET_REALIZED (das_global_foobar) &&
+	    FOOBAR_WIDGET (das_global_foobar)->screen == screen) 
+		return das_global_foobar->allocation.height;
+	else
+		return 0; 
 }
 
 static void

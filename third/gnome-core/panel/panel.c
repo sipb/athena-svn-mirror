@@ -596,12 +596,14 @@ clean_kill_applets (PanelWidget *panel)
 					     "applet_info");
 		if (info->type == APPLET_EXTERN) {
 			Extern *ext = info->data;
+			extern_save_last_position (ext, FALSE /* sync */);
 			ext->clean_remove = TRUE;
 		} else if (info->type == APPLET_SWALLOW) {
 			Swallow *swallow = info->data;
 			swallow->clean_remove = TRUE;
 		}
 	}
+	gnome_config_sync ();
 }
 
 static void
@@ -642,6 +644,8 @@ panel_destroy (GtkWidget *widget, gpointer data)
 	if (pd->menu != NULL)
 		gtk_widget_unref (pd->menu);
 	pd->menu = NULL;
+
+	pd->panel = NULL;
 
 	panel_list = g_slist_remove (panel_list, pd);
 	g_free (pd);
@@ -938,12 +942,16 @@ extract_filename (const gchar* uri)
 }
 
 static void
-drop_url(PanelWidget *panel, int pos, char *url)
+drop_url(PanelWidget *panel, int pos, const char *url)
 {
-	char *p = g_strdup_printf (_("Open URL: %s"), url);
+	char *p;
+
+	g_return_if_fail (url != NULL);
+
+	p = g_strdup_printf (_("Open URL: %s"), url);
 	load_launcher_applet_from_info_url (url, p, url, "gnome-globe.png",
 					    panel, pos, TRUE);
-	g_free(p);
+	g_free (p);
 }
 
 static void
