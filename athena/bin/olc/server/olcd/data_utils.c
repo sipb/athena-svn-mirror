@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.14 1990-02-20 04:47:51 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.15 1990-02-23 19:40:31 vanharen Exp $";
 #endif
 
 
@@ -703,17 +703,19 @@ get_knuckle(name,instance,knuckle,active)
       }
 
 
+#ifdef TEST
   sprintf(mesg,
 	  "get_knuckle: matched on %s, incomplete instance %d (%d)",
 	  name,instance,status);
   log_status(mesg);
+#endif
 
   if(status) 
     return(INSTANCE_NOT_FOUND);
 
 #ifdef TEST
   printf("get_knuckle: no match for %s\n",name);
-#endif TEST
+#endif
 
   return(USER_NOT_FOUND);
 }	
