@@ -1,4 +1,4 @@
-# $Id: root.login,v 1.2 1997-12-28 17:45:48 ghudson Exp $
+# $Id: root.login,v 1.3 1998-06-08 14:13:21 ghudson Exp $
 
 if (! $?ENVONLY) then
 	# Set the interrupt character to Ctrl-c and do clean backspacing.
@@ -12,7 +12,7 @@ if (! $?ENVONLY) then
 	    if ($?L0) then
 		if ("$L0" == NOGRAPHICS) set term="iris-tp"
 	    endif
-	    eval `tset -h -s -Q`
+	    eval `tset -s -Q`
 	endif
 
 	# save tty state in a file where wsh can find it
