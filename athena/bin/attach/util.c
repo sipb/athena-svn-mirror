@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.24 1997-06-02 07:43:58 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.25 1997-06-06 20:39:06 ghudson Exp $";
 
 #include "attach.h"
 
@@ -231,8 +231,10 @@ struct _attachtab *build_hesiod_line(name, count)
 	    if (!hes || !*hes)
 		    hes = hes_resolve(name, "filsys");
 #endif
-	    if (!hes || !*hes)
+	    if (!hes || !*hes) {
 		    fprintf(stderr, "%s: Can't resolve name\n", name);
+		    return (NULL);
+	    }
     } else {
 	    fsp = get_fs(filsys_type ? filsys_type : "NFS");
 	    if (!fsp)
