@@ -6,7 +6,7 @@
 
 # Query		Command
 
-uname		uname -aR
+uname		uname -apR
 machtype	/bin/athena/machtype
 sysname		/bin/athena/machtype -S
 cputype		/bin/athena/machtype -v -c
@@ -21,5 +21,8 @@ date		date
 uptime		uptime
 partitions	prtvtoc /dev/root
 routes		netstat -rn
-listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
+listeners	netstat -an -f inet | awk '$NF == "LISTEN"'
 login		test ! -f /etc/nologin; echo $?
+hinv		/sbin/hinv -v
+instmach	cat /var/inst/.machine_inventory
+chkconfig	/sbin/chkconfig
