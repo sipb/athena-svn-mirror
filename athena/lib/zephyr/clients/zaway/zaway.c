@@ -6,7 +6,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
  *	$Author: jtkohl $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
@@ -17,9 +17,10 @@
 
 #include <pwd.h>
 #include <string.h>
+#include <signal.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.5 1988-06-28 16:21:41 jtkohl Exp $";
+static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.6 1988-12-05 16:31:25 jtkohl Exp $";
 #endif lint
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -28,6 +29,14 @@ static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 extern char *getenv(), *malloc();
 extern uid_t getuid();
 
+#ifdef ULTRIX30
+void cleanup();
+#else
+int cleanup();
+#endif
+
+u_short port;
+
 main(argc,argv)
 	int argc;
 	char *argv[];
@@ -35,7 +44,6 @@ main(argc,argv)
 	FILE *fp;
 	ZNotice_t notice;
 	ZSubscription_t sub;
-	u_short port;
 	int retval;
 	struct passwd *pw;
 	char awayfile[BUFSIZ],*ptr,*msg[2],*envptr;
@@ -77,6 +85,10 @@ main(argc,argv)
 		exit(1);
 	} 
 	
+	(void) signal(SIGINT, cleanup);
+	(void) signal(SIGTERM, cleanup);
+	(void) signal(SIGHUP, cleanup);
+
 	if ((retval = ZSubscribeTo(&sub,1,port)) != ZERR_NONE) {
 		com_err(argv[0],retval,"while subscribing");
 		exit(1);
@@ -168,4 +180,15 @@ char *find_message(notice,fp)
 	}
 
 	return (ptr);
+}
+
+#ifdef ULTRIX30
+void
+#else
+int
+#endif
+cleanup()
+{
+    ZCancelSubscriptions(port);
+    exit(1);
 }
