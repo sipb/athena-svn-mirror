@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/acl_files.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,8 +14,8 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.3 1989-12-13 11:17:56 jtkohl Exp $";
-#endif lint
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.4 1990-12-22 17:38:12 jfc Exp $";
+#endif
 
 /*** Routines for manipulating access control list files ***/
 
@@ -44,8 +44,10 @@ static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.3 1989-12-13 11:17:56 jt
 				/* Each acl costs 1 open file descriptor */
 #define ACL_LEN 16		/* Twice a reasonable acl length */
 
+#ifndef MAX
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define MIN(a,b) (((a)<(b))?(a):(b))
+#endif
 
 #define COR(a,b) ((a!=NULL)?(a):(b))
 
@@ -494,7 +496,7 @@ char *principal;
     /* It isn't there yet, copy the file and put it in */
     for(i = 0; i < acl_cache[idx].acl->size; i++) {
 	if(acl_cache[idx].acl->tbl[i] != NULL) {
-	    if(fputs(acl_cache[idx].acl->tbl[i], new) == NULL
+	    if(fputs(acl_cache[idx].acl->tbl[i], new) == 0
 	       || putc('\n', new) != '\n') {
 		   acl_abort(acl, new);
 		   return(-1);
