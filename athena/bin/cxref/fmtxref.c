@@ -127,18 +127,18 @@ static int breakup(char *text)
 		id[i] = '\0';
 		j++;	/* skip close quote */
 
-		while(isspace((int)text[j]))
+		while(isspace((unsigned char)text[j]))
 			j++;
 		
-		for(i = 0; !isspace((int)text[j]); i++, j++)
+		for(i = 0; !isspace((unsigned char)text[j]); i++, j++)
 			file[i] = text[j];
 		file[i] = '\0';
 
 
-		while(isspace((int)text[j]))
+		while(isspace((unsigned char)text[j]))
 			j++;
 
-		for(i = 0; !isspace((int)text[j]) && text[j] != '\0'; i++, j++)
+		for(i = 0; !isspace((unsigned char)text[j]) && text[j] != '\0'; i++, j++)
 			line[i] = text[j];
 		line[i] = '\0';
 	}

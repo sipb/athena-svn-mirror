@@ -119,10 +119,10 @@ int main(int argc, char **argv)
 					break;
 				
 				case 'w':
-					if (isdigit((int)argv[0][i+1]))
+					if (isdigit((unsigned char)argv[0][i+1]))
 					{
 						width = 0;
-						for(i++; isdigit((int)argv[0][i]); i++)
+						for(i++; isdigit((unsigned char)argv[0][i]); i++)
 							width = width * 10 + argv[0][i] - '0';
 						i--;
 					}

@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.24 1999-09-21 01:40:06 danw Exp $
+ * $Id: from.c,v 1.25 1999-09-28 22:16:17 danw Exp $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -7,7 +7,7 @@
  * and the old UCB from functionality.
  */
 
-static const char rcsid[] = "$Id: from.c,v 1.24 1999-09-21 01:40:06 danw Exp $";
+static const char rcsid[] = "$Id: from.c,v 1.25 1999-09-28 22:16:17 danw Exp $";
 
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -317,7 +317,7 @@ static void header_scan(char *line, int *last_header)
 	char	*keyword, **search_list;
 	register int	i;
 	
-	if (*last_header && isspace((int)*line)) {
+	if (*last_header && isspace((unsigned char)*line)) {
 		headers[num_headers++] = strdup(line);
 		return;
 	}
@@ -419,7 +419,7 @@ static char *parse_from_field(char *str)
 	char		*stored;
 	
 	stored = scr = strdup(str);
-	while (*scr && isspace((int)*scr))
+	while (*scr && isspace((unsigned char)*scr))
 		scr++;
 	cp = strchr(scr, '<');
 	if (cp)

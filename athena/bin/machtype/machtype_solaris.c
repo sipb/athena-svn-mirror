@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_solaris.c,v 1.1 1999-09-22 00:26:50 danw Exp $
+ *    $Id: machtype_solaris.c,v 1.2 1999-09-28 22:16:18 danw Exp $
  */
 
 #define volatile 
@@ -189,7 +189,7 @@ void do_dpy(int verbose)
   }
   buf[count] = 0;
   p = buf + count;
-  while (p > buf && isdigit((int)*(p - 1)))
+  while (p > buf && isdigit((unsigned char)*(p - 1)))
     *--p = 0;
   p = strrchr(buf, ':');
   if (!p) {
