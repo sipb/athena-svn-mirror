@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.20 2003-10-22 06:48:19 jweiss Exp $
+# $Id: sendmail.cf,v 1.21 2003-10-26 19:46:43 ghudson Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -197,11 +197,11 @@ R$*<@$+>$*		$#smtp$@$(athconf relay $&{f}$:$2$)$:$1<@$2>$3
 ###             $2: {server_addr}
 ######################################################################
 Sauthinfo
-R$*                    $: <$(authinfo AuthInfo:$&{server_name} $: ? $)>
-R<?>                   $: <$(authinfo AuthInfo:$&{server_addr} $: ? $)>
-R<?>                   $: <$(authinfo AuthInfo: $: ? $)>
-R<?>                   $@ no                       no authinfo available
-R<$*>                  $# $1
+R$*			$: <$(authinfo AuthInfo:$&{server_name} $: ? $)>
+R<?>			$: <$(authinfo AuthInfo:$&{server_addr} $: ? $)>
+R<?>			$: <$(authinfo AuthInfo: $: ? $)>
+R<?>			$@ no			    no authinfo available
+R<$*>			$# $1
 
 #####################
 ###   Anti-spam   ###
