@@ -4,6 +4,7 @@ scrollkeeper-gen-seriesid \- generate a unique id for a document
 series for use in an OMF metadata file
 .SH SYNOPSIS
 .B "scrollkeeper-gen-seriesid"
+[--help]
 
 .SH DESCRIPTION
 This generates a unique id for use as the
@@ -28,6 +29,12 @@ list, ScrollKeeper must identify if two documents are in the same
 series in order to display the most complete set of documents on the system,
 using locale fallback for documents which may not be translated into
 a given locale, without displaying the same document in two locales.
+
+.SH OPTIONS
+.TP
+.I \--help
+Show usage (help) information.
+
 
 .SH AUTHOR
 Laszlo Kovacs   <laszlo.kovacs@sun.com>

@@ -8,7 +8,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
         $(XSLT_LIBS) \
-        $(top_builddir)/libs/libscrollkeeper.la
+        $(top_builddir)/libs/libscrollkeeper.la \
+	@LTLIBINTL@
 
 scrollkeeper_extract_SOURCES = \
         scrollkeeper-extract.c

@@ -1,101 +1,137 @@
 # Danish messages for scrollkeeper.
-# Copyright (C) 2001, 02 Free Software Foundation, Inc.
+# Copyright (C) 2001, 02, 03 Free Software Foundation, Inc.
 # Kenneth Christiansen <kenneth@gnu.org>, 2001.
-# Ole Laursen <olau@hardworking.dk>, 2001, 02.
+# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: scrollkeeper\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2002-02-23 17:04+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-01-24 20:32+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
 #, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
-msgstr "Brug: scrollkeeper-install [-p <SCROLLKEEPER-DBKAT>] <OMF-FIL>\n"
-
-#: cl/src/scrollkeeper-install.c:95
-msgid "Could not create database.  Aborting install.\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
+"Brug: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER-DBMAPPE>] <OMF-FIL>\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:104
+msgid "Could not create database.  Aborting install.\n"
+msgstr "Kunne ikke oprette database. Afbryder installation.\n"
+
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
-msgstr ""
+msgstr "Registrerer %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
-msgstr ""
+msgstr "Kunne ikke registrere %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr "Brug: scrollkeeper-preinstall <DOKUMENTFIL> <OMF-FIL> <NY OMF-FIL>\n"
 
-#: cl/src/preinstall.c:68
-#, fuzzy, c-format
+#: cl/src/preinstall.c:85
+#, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
-msgstr "URL-opdatering i OMF-filen %s mislykkedes\n"
+msgstr "Kunne ikke opdatere URL i OMF-filen %s. Kopierer OMF-fil unændret.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
-msgstr "Brug: scrollkeeper-uninstall [-p <SCROLLKEEPER-DBKAT>] <OMF-FIL>\n"
+msgstr ""
+"Brug: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER-DBMAPPE>] <OMF-"
+"FIL>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
-msgstr ""
+msgstr "Afregistrerer %s\n"
 
-#: cl/src/update.c:108
+#: cl/src/update.c:109
 #, fuzzy, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
-msgstr "Brug: %s [-v] [-p <SCROLLKEEPER-DBKAT>] [-o <OMF-KAT>]\n"
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr "Brug: %s [-v] [-q] [-p <SCROLLKEEPER-DBMAPPE>] [-o <OMF-MAPPE>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
 msgstr "%s: advarsel: %s lægger sig i stedet for %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
-msgstr ""
+msgstr "Kunne ikke oprette database. Afbryder opdatering.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
-msgstr "%s: %s: er ikke et katalog\n"
+msgstr "%s: %s: er ikke en mappe\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
-msgstr ""
+msgstr "Opdaterer %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
+msgstr "Kunne ikke fuldføre opdatering. Kunne ikk registrere %s\n"
+
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "Kan ikke få oplysninger om fil: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
 msgstr ""
 
-#: cl/src/get-cl.c:55
-#, fuzzy
-msgid "Cannot open temporary file.\n"
-msgstr "Kan ikke åbne midlertidig fil\n"
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "Kunne ikke registrere %s\n"
+
+#: cl/src/get-cl.c:139
+msgid "Cannot open temporary file.\n"
+msgstr "Kan ikke åbne midlertidig fil.\n"
+
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Kan ikke åbne midlertidig fil.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
-msgstr "Brug: %s [-v] <REGION> <KATEGORI TRE-FILNAVN>\n"
+msgstr "Brug: %s [-v] <REGION> <KATEGORI TRÆ-FILNAVN>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
 msgstr "Ingen indholdsliste for denne region!\n"
 
 #: libs/error.c:114
@@ -106,53 +142,61 @@ msgstr "%s: ikke mere hukommelse: %s\n"
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr ""
+msgstr "OMF-valideringsfejl: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
+"Indholdsfortegnelsesfil eksisterer ikke, kan ikke læses eller er ikke "
+"korrekt udformet XML: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
+"OMF-fil eksisterer ikke, kan ikke læses eller er ikke korrekt udformet XML: %"
+"s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Kunne ikke fortolke ScrollKeeper-OMF DTD: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "OMF-filen [%s] validerer ikke mod ScrollKeeper-OMF DTD: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr ""
+msgstr "Kunne ikke finde et <OMF>-element.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
-msgstr ""
+msgstr "<OMF>-element har ingen afkom.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
+"Indholdslistefil eksisterer ikke, kan ikke læses eller er ikke korrekt "
+"udformet XML: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
+"Udvidet indholdsliste-fil eksisterer ikke, kan ikke læses eller er ikke "
+"korrekt udformet XML: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
@@ -164,31 +208,36 @@ msgstr "forkert indholdslistefil %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "forkert udvidet indholdsliste-fil %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "%s mangler\n"
 
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Kan ikke oprette midlertidig fil: %s : %s\n"
+
 #: libs/database.c:41
 #, c-format
 msgid "Could not create directory %s : %s\n"
-msgstr ""
+msgstr "Kunne ikke oprette mappen %s: %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr ""
+msgstr "OMF-fil var ikke korrekt udformet.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr ""
+msgstr "Kunne ikke finde rodelementet for OMF-fil.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr ""
+msgstr "Rodelement i OMF-fil er ikke <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr ""
+msgstr "OMF-fil har ikke et <resource>-element.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
@@ -199,9 +248,9 @@ msgstr ""
 "<uddatafil 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
-#, fuzzy, c-format
+#, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr "Ukendt filtype\n"
+msgstr "Ukendt filtype: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
@@ -217,12 +266,11 @@ msgstr "Ada"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Tilgængelighed"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Processor"
+msgstr "Tilbehør"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -234,7 +282,7 @@ msgstr "Underholdning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:8
 msgid "Analysis"
-msgstr "Analysering"
+msgstr "Analyse"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:9
 msgid "AppleTalk"
@@ -338,7 +386,7 @@ msgstr "Kemi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:34
 msgid "Clock"
-msgstr "Ure"
+msgstr "Ur"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:35
 msgid "Clocks"
@@ -374,7 +422,7 @@ msgstr "Konvertering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
 msgid "Core Desktop"
-msgstr "Grundskrivebordet"
+msgstr "Grundskrivebord"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:44
 msgid "Cryptography"
@@ -405,13 +453,12 @@ msgid "Debuggers"
 msgstr "Fejlsøgning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
-msgstr "Grundskrivebordet"
+msgstr "Skrivebord"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Skrivebordsindstillinger"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -423,7 +470,7 @@ msgstr "Udviklingsværktøjer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:55
 msgid "Display"
-msgstr "Afspilning"
+msgstr "Fremvisning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:56
 msgid "Distributions"
@@ -487,11 +534,11 @@ msgstr "Finansielt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:71
 msgid "Firewall"
-msgstr "Dørvogter"
+msgstr "Brandmur"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:72
 msgid "First Person Shooters"
-msgstr "1.-persons-skydespil"
+msgstr "1. persons-skydespil"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:73
 msgid "Fonts"
@@ -535,7 +582,7 @@ msgstr "HTTP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:83
 msgid "Hardware"
-msgstr "Maskinel"
+msgstr "Udstyr"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:84
 msgid "IDEs"
@@ -543,7 +590,7 @@ msgstr "Integrerede udviklingsmiljøer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:85
 msgid "Input Devices"
-msgstr "Fødningsenheder"
+msgstr "Pege-/indtastningsenheder"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:86
 msgid "Internet"
@@ -551,11 +598,11 @@ msgstr "Internet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:87
 msgid "Internet Phone"
-msgstr "Internet-telefoni"
+msgstr "Internettelefoni"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:88
 msgid "Introductory"
-msgstr "Introduktioner"
+msgstr "Introduktion"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:89
 msgid "Intrusion Detection"
@@ -599,7 +646,7 @@ msgstr "Logind-håndteringer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:99
 msgid "MIDI"
-msgstr "Midi"
+msgstr "MIDI"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:100
 msgid "Mandrake"
@@ -619,7 +666,7 @@ msgstr "Meddeling"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:104
 msgid "Mixers"
-msgstr "Mixere"
+msgstr "Miksere"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:105
 msgid "Monitors"
@@ -695,7 +742,7 @@ msgstr "Plotning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Indstillinger"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -714,9 +761,8 @@ msgid "Profiling"
 msgstr "Profilering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Programmer"
+msgstr "Programmering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -776,7 +822,7 @@ msgstr "Videnskab"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:143
 msgid "Scientific"
-msgstr "Videnskab"
+msgstr "Videnskabeligt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:144
 msgid "Screensavers"
@@ -808,7 +854,7 @@ msgstr "Lyd"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Lyd og video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -835,18 +881,16 @@ msgid "System"
 msgstr "System"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Administration"
+msgstr "Systemadministration"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Systemkald"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Systemkald"
+msgstr "Systemværktøjer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -885,9 +929,8 @@ msgid "Tutorials"
 msgstr "Selvstudier"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Brugere"
+msgstr "Brugervejledninger"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
@@ -899,7 +942,7 @@ msgstr "Værktøjer"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:173
 msgid "Utility"
-msgstr "Værktøjer"
+msgstr "Værktøj"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:174
 msgid "Version Control"
@@ -957,15 +1000,75 @@ msgstr "X"
 msgid "gtk++"
 msgstr "gtk++"
 
-#~ msgid "error while parsing %s\n"
-#~ msgstr "fejl ved tolkning af %s\n"
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Ugyldig kategorifil.\n"
 
-#~ msgid ""
-#~ "Usage:  toc <filename>\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Brug: toc <filnavn>\n"
-#~ "\n"
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr "Brug: scrollkeeper-tree-separate <træfil> <uddatamappe>\n"
 
-#~ msgid "wrong omf file %s\n"
-#~ msgstr "forkert omf-fil %s\n"
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "Fil indeholder ikke korrekt udformet XML\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "træseparering mislykkedes\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Kunne ikke oprette lokaliseret kategorifil: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Opretter lokaliseret kategorifil: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Kan ikke oprette alle lokaliserede kategorifiler.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Kan ikke oprette midlertidig fil: %s : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Kan ikke læse fil: %s : %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "Dokument indeholder ikke korrekt udformet XML: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Kan ikke få oplysninger om fil: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "Kan ikke anvende stilark på dokument af typen: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "Kan ikke åbne uddatafil: %s : %s\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "Kan ikke få oplysninger om stilarksfil: %s : %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, fuzzy, c-format
+msgid "Usage: %s\n"
+msgstr "Opdaterer %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: Kan ikke oprette midlertidig fil: %s\n"

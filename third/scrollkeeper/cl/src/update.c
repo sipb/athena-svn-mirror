@@ -32,6 +32,7 @@
 
 static char **av;
 static char config_omf_dir[PATHLEN];
+static xmlExternalEntityLoader defaultEntityLoader = NULL;
 
 static void add_element(char ***elem_tab, int *elem_num, char *elem)
 {
@@ -105,7 +106,7 @@ bn_compare (const void *elem1, const void *elem2)
 static void
 usage (char **argv)
 {
-    printf(_("Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
+    printf(_("Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
 	    *argv);
 }
 
@@ -304,7 +305,7 @@ static void read_config_file()
 
 	config_omf_dir[0] = '\0';
 
-	fid = fopen("/etc/scrollkeeper.conf", "r");
+	fid = fopen(SCROLLKEEPER_SYSCONFDIR "/scrollkeeper.conf", "r");
 	if (fid == NULL) {
 		return;
 	}
@@ -336,6 +337,8 @@ static void read_config_file()
 			strncpy(config_omf_dir, ptr, PATHLEN);
 		}			
 	}
+	
+	fclose (fid);
 }
 
 int main(int argc, char **argv)
@@ -364,8 +367,11 @@ int main(int argc, char **argv)
 
     scrollkeeper_dir[0] = '\0';
     omf_dir[0] = '\0';
+
+    defaultEntityLoader = xmlGetExternalEntityLoader();
+    xmlSetExternalEntityLoader(xmlNoNetExternalEntityLoader);
     
-    while ((i = getopt (argc, argv, "p:o:vq")) != -1)
+    while ((i = getopt (argc, argv, "p:o:vqn")) != -1)
     {
 	switch (i)
 	{
@@ -383,6 +389,10 @@ int main(int argc, char **argv)
 
 	case 'q':
 	    outputprefs = outputprefs | SKOUT_STD_QUIET;
+	    break;
+
+	case 'n':
+	    xmlSetExternalEntityLoader(defaultEntityLoader);
 	    break;
 
 	default:
@@ -521,13 +531,13 @@ int main(int argc, char **argv)
             sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", _("Unable to register %s\n"), install_tab[i]);
         } else
        {
-	    sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Registering %s\n"), install_tab[i]);
+	    sk_message(outputprefs, SKOUT_VERBOSE, SKOUT_QUIET, "scrollkeeper-update",_("Registering %s\n"), install_tab[i]);
         }
     }
     
     for(i = 0; i < upgrade_num; i++)
     {
-	sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Updating %s\n"), upgrade_tab[i]);
+	sk_message(outputprefs, SKOUT_VERBOSE, SKOUT_QUIET, "scrollkeeper-update",_("Updating %s\n"), upgrade_tab[i]);
 	uninstall(upgrade_tab[i], scrollkeeper_dir, outputprefs);
         if (! install(upgrade_tab[i], scrollkeeper_dir, scrollkeeper_data_dir, outputprefs)) {
         sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update", _("Unable to complete update.  Could not register %s\n"), upgrade_tab[i]);
@@ -536,7 +546,7 @@ int main(int argc, char **argv)
     
     for(i = 0; i < uninstall_num; i++)
     {
-	sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "scrollkeeper-update",_("Unregistering %s\n"), uninstall_tab[i]);
+	sk_message(outputprefs, SKOUT_VERBOSE, SKOUT_QUIET, "scrollkeeper-update",_("Unregistering %s\n"), uninstall_tab[i]);
     	uninstall(uninstall_tab[i], scrollkeeper_dir, outputprefs);
     }
     

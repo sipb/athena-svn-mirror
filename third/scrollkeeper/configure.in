@@ -30,17 +30,16 @@ AC_ISC_POSIX
 AC_CANONICAL_SYSTEM
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(scrollkeeper,0.3.11)
+AM_INIT_AUTOMAKE(scrollkeeper,0.3.14)
 AM_PROG_LIBTOOL
+AC_PROG_INTLTOOL([0.28])
 
-ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk vi zh_TW"
+ALL_LINGUAS="am az be ca cs da de el es fr hu it ja kn ko nl no pl pt_BR ro ru sk sl sr sr@Latn sv tr uk vi zh_CN zh_TW"
 
 dnl ====================================
 dnl = Begin checks for typedefs, structures, and compiler characteristics.
 dnl ====================================
 AC_C_CONST
-AC_C_INLINE
-AC_TYPE_SIZE_T
 dnl ====================================
 dnl = End checks for typedefs, structures, and compiler characteristics.
 dnl ====================================
@@ -48,8 +47,6 @@ dnl ====================================
 dnl ====================================
 dnl = Begin checks for library functions.
 dnl ====================================
-AC_FUNC_ALLOCA
-AC_FUNC_MMAP
 AC_CHECK_FUNCS(getcwd getwd putenv strdup)
 dnl ====================================
 dnl = End checks for library functions.
@@ -71,28 +68,6 @@ AC_MSG_RESULT($OMFDIRS)
 AC_SUBST(OMFDIRS)
 dnl ====================================
 dnl = End check for paths to search for OMF files.
-dnl ====================================
-
-dnl ====================================
-dnl = Begin tests for intltool
-dnl ====================================
-AC_PATH_PROG(INTLTOOL,intltool-extract,no)
-if test x$INTLTOOL = xno; then
-  AC_MSG_ERROR(Couldn't find intltool-extract. Please install the intltool package: ftp://ftp.gnome.org/pub/GNOME/stable/sources/intltool/)
-fi
-AC_MSG_CHECKING(intltool version)
-intltool_version=`$INTLTOOL --version | awk 'NR==1{print $3;}'`
-AC_MSG_RESULT($intltool_version)
-intltool_version=`echo $intltool_version | awk -F. '{print $1 * 10000 + $2 * 100 + $3;}'`
-if test 0$intltool_version -lt 804; then
-        AC_MSG_ERROR(intltool 0.8.4 or later required)
-fi
-INTLTOOL_REQUIRED=0.8.4
-AC_SUBST(INTLTOOL_REQUIRED)
-
-AC_PROG_INTLTOOL
-dnl ====================================
-dnl = End tests for intltool
 dnl ====================================
 
 dnl ====================================
@@ -134,8 +109,35 @@ dnl ====================================
 dnl = End tests for libxslt
 dnl ====================================
 
+dnl
+dnl Some systems have the XML catalog in different locations from others
+dnl (particularly those acting as servers for huge networked setups). Usually,
+dnl /etc/xml/catalog is correct (and depending on $prefix is always wrong), but
+dnl we allow customisation if it is wanted.
+dnl
+
+default_xml_catalog="/etc/xml/catalog"
+AC_MSG_CHECKING(which XML catalog to use)
+AC_ARG_WITH(xml-catalog,
+   [AC_HELP_STRING([--with-xml-catalog], [The location of the system XML catalog])],
+   [xml_catalog="$withval"],
+   [xml_catalog="auto"])
+
+   case "$xml_catalog" in
+   yes | no)
+      AC_MSG_ERROR([Specifying --with-xml-catalog requires a subdirectory as an argument.])
+      ;;
+   auto)
+      XML_CATALOG=$default_xml_catalog
+      ;;
+   *)
+      XML_CATALOG=$xml_catalog
+   esac
+AC_SUBST(XML_CATALOG)
+AC_MSG_RESULT($XML_CATALOG)
+
 dnl ====================================
-dnl = Begin tests for docbook-dtd412-xml
+dnl = Begin tests for DocBook XML DTD
 dnl ====================================
 case "$host_os" in
    solaris*)
@@ -143,22 +145,38 @@ case "$host_os" in
 	AC_SUBST(HOST_TYPE)
         ;;
    *)
-	AC_MSG_CHECKING(for docbook-dtd412-xml)
-	if xmlcatalog /etc/xml/catalog "-//OASIS//DTD DocBook XML V4.1.2//EN" | grep "No entry" >/dev/null ; then
-		echo "* ERROR * "
-		echo " "
-		echo "Couldn't find the DocBook XML V4.1.2 DTD.  Please make sure that you have the docbook-dtd412-xml package installed. If it is installed, the package probably did not register the DTD in the catalog properly. Consult http://scrollkeeper.sourceforge.net/docbook.shtml for more information."
-		echo " "
-		AC_MSG_ERROR(DocBook XML V4.1.2 DTD not present in /etc/xml/catalog. Make sure docbook-dtd412-xml is installed and registers DTD in catalog.)
+	AC_MSG_CHECKING(for DocBook XML DTD)
+	db_found=
+	for vers in 4.2 4.1.2; do
+	   if xmlcatalog $XML_CATALOG "-//OASIS//DTD DocBook XML V$vers//EN" >/dev/null ; then
+	      db_found=$vers
+	      break
+	   fi
+	done
+	if test -z $db_found; then
+	   AC_MSG_ERROR(not found. Make sure you have the DocBook DTD installed and ensure that it is registered in $XML_CATALOG.)
 	fi
-	AC_MSG_RESULT(found)
+	AC_MSG_RESULT(found version $vers)
+	AC_DEFINE_UNQUOTED(DB_PUBLIC_ID, "-//OASIS//DTD DocBook XML V$db_found//EN", [Public identifier for the DocBook DTD])
+	AC_DEFINE_UNQUOTED(DB_SYSTEM_ID, "http://www.oasis-open.org/docbook/xml/$db_found/docbookx.dtd", [System identifier for the DocBook DTD])
 	;;
 esac
 dnl ====================================
-dnl = End tests for docbook-dtd412-xml
+dnl = End tests for DocBook XML DTD
 dnl ====================================
 
 AM_GNU_GETTEXT
+AC_SUBST(LTLIBINTL)
+AC_SUBST(LIBINTL)
+GETTEXT_PACKAGE=scrollkeeper
+AC_SUBST(GETTEXT_PACKAGE)
+
+if test "x$prefix" = "xNONE"; then
+   SKLOCALEDIR=$ac_default_prefix/${DATADIRNAME}/locale
+else
+   SKLOCALEDIR=$prefix/${DATADIRNAME}/locale
+fi
+AC_DEFINE_UNQUOTED(SCROLLKEEPERLOCALEDIR, "$SKLOCALEDIR", [The locale dir to use])
 
 dnl Turn on more warnings and make them errors for cvs version
 dnl to force contributors to pay attention to warnings.
@@ -197,25 +215,47 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         unset option
 fi
 
+dnl
+dnl The "partial database directory" is the last portion of the directory path
+dnl to the Scrollkeeper database. The database will always go under
+dnl $localstatedir (typically /var/), but the last bit is OS dependent. We
+dnl make a few good guesses here and provide customisation as an option if all
+dnl else fails.
+dnl
 AC_MSG_RESULT(setting up partial database directory ...)
-case "$host_os" in
-   freebsd*)
-	SCROLLKEEPER_PARTIAL_DB_DIR=db/scrollkeeper
-	;;
-   *)
+default_partial_db_dir="lib/scrollkeeper"
+AC_ARG_WITH(partial-db-dir,
+   [AC_HELP_STRING([--with-partial-db-dir], [The subdirectory under localstatedir to put the scrollkeeper database (lib/scrollkeeper by default).])],
+   [partial_db_dir="$withval"],
+   [partial_db_dir="auto"])
+
+   case "$partial_db_dir" in
+   yes | no)
+      AC_MSG_ERROR([Specifying the --with-partial-db-dir flag requires a subdirectory as an argument.])
+      ;;
+   auto)
+      case "$host_os" in
+      freebsd* | netbsd* | openbsd*)
+   	SCROLLKEEPER_PARTIAL_DB_DIR=db/scrollkeeper
+   	;;
+      *)
         SCROLLKEEPER_PARTIAL_DB_DIR=lib/scrollkeeper
-	;;
-esac
+   	;;
+      esac
+      ;;
+   *)
+      SCROLLKEEPER_PARTIAL_DB_DIR=$partial_db_dir
+      ;;
+   esac
 AC_SUBST(SCROLLKEEPER_PARTIAL_DB_DIR)
 AC_MSG_RESULT(partial database directory is $SCROLLKEEPER_PARTIAL_DB_DIR)
 
 AC_OUTPUT(
 libs/Makefile
-libs/scrollkeeper.h
 libuuid/Makefile
+buildtools/Makefile
 cl/Makefile
 cl/src/Makefile
-buildtools/Makefile
 cl/templates/Makefile
 extract/Makefile
 extract/src/Makefile
@@ -237,6 +277,7 @@ man/man8/Makefile
 config/scrollkeeper.conf
 config/Makefile
 intl/Makefile
+m4/Makefile
 po/Makefile.in
 doc/Makefile
 doc/writing_scrollkeeper_omf_files/Makefile
@@ -244,10 +285,11 @@ doc/writing_scrollkeeper_omf_files/C/Makefile
 Makefile
 scrollkeeper.spec)
 
-echo "
+AC_MSG_NOTICE([
+   Default OMF search paths (in $sysconfdir/scrollkeeper.conf):
+      $OMFDIRS
 
-Default OMF search paths (in $sysconfdir/scrollkeeper.conf): $OMFDIRS
+   Scrollkeeper database directory:
+      $localstatedir/$SCROLLKEEPER_PARTIAL_DB_DIR
 
-Scrollkeeper database directory: $localstatedir/$SCROLLKEEPER_PARTIAL_DB_DIR
-
-"
+   Now type 'make' to build scrollkeeper.])

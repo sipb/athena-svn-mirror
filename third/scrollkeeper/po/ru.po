@@ -4,46 +4,52 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Scrollkeeper\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2002-06-06 10:04+04:00\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2002-12-05 12:56+0300\n"
 "Last-Translator: Dmitry Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <RU@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8BIT\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
+#, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
 "Использование: scrollkeeper_install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] "
-"<OMF ФАЙЛ>\n"
+"<OMF-ФАЙЛ>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr "Не удалось создать базу данных. Установка прерывается.\n"
+msgstr "Не удалось создать базу данных. Установка прервана.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
 msgstr "Идёт регистрация %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
 msgstr "Невозможно зарегестрировать %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
-"Использование: scrollkeeper_preinstall <DOC ФАЙЛ> <OMF ФАЙЛ> <НОВЫЙ OMF "
+"Использование: scrollkeeper_preinstall <DOC-ФАЙЛ> <OMF-ФАЙЛ> <НОВЫЙ OMF-"
 "ФАЙЛ>\n"
 
-#: cl/src/preinstall.c:68
+#: cl/src/preinstall.c:85
 #, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
 msgstr ""
-"Невозможно обновить URL в файле OMF %s. Файл OMF копируется неизменённым.\n"
+"Невозможно обновить ссылку (URL) в файле формата OMF %s. Файл формата OMF "
+"копируется неизменённым.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
 msgid ""
@@ -51,56 +57,87 @@ msgid ""
 "FILE>\n"
 msgstr ""
 "Использование: scrollkeeper_uninstall [-v] -q] [-p <SCROLLKEEPER_DB_DIR>] "
-"<OMF ФАЙЛ>\n"
+"<OMF-ФАЙЛ>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
 msgstr "Идёт отмена регистрации %s\n"
 
-#: cl/src/update.c:108
-#, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+#: cl/src/update.c:109
+#, fuzzy, c-format
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 msgstr ""
 "Использование: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
 msgstr "%s: внимание: %s перезаписывает %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
 msgstr "Не удалось создать базу данных. Обновление прерывается.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
 msgstr "%s: %s: не является каталогом\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
 msgstr "Идёт обновление %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
 msgstr ""
 "Невозможно полностью выполнить обновление. не удалось зарегестрировать %s\n"
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "Невозможно обновить файл: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "Невозможно зарегестрировать %s\n"
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
 msgstr "Невозможно открыть временный файл.\n"
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Невозможно открыть временный файл.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
 msgstr "Использование: %s [-v] <ЛОКАЛЬ> <ИМЯ ФАЙЛА С ДЕРЕВОМ КАТЕГОРИЙ>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
-msgstr "Нет Списка содержимого для этой локали!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "Список содержимого для этой локали отсутствует!!!\n"
 
 #: libs/error.c:114
 #, c-format
@@ -110,63 +147,63 @@ msgstr "%s: не хватает памяти: %s\n"
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr "Ошибка проверки OMF на допустимость: %s"
+msgstr "Ошибка проверки структуры OMF на допустимость: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
-"Файл TOC не существует, нечитаем или не является правильным документом XML: %"
-"s\n"
+"Файл формата TOC не существует, нечитаем или не является правильным "
+"документом формата XML: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
 msgstr ""
-"Файл OMF не существует, нечитаем или не является правильным документом XML: %"
-"s\n"
+"Файл формата OMF не существует, нечитаем или не является правильным "
+"документом формата XML: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr "Не удалось разобрать ScrollKeeper-OMF DTD: %s\n"
+msgstr "Не удалось разобрать описание ScrollKeeper-OMF DTD: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
 msgstr ""
-"Файл OMF [%s] не является допустимым с точки зрения ScrollKeeper-OMF DTD: %"
-"s\n"
+"Файл формата OMF [%s] не является допустимым с точки зрения описания "
+"ScrollKeeper-OMF DTD: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr "Сбой при попытке перейти на элемент <OMF>.\n"
+msgstr "Произошёл сбой при попытке перейти на элемент <OMF>.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
 msgstr "Узел <OMF> не имеет потомков.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
 "Файл списка содержимого не существует, нечитаем или не является правильным "
-"документом XML: %s\n"
+"документом формата XML: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
 "Расширенный файл списка содержимого не существует, нечитаем или не является "
-"правильным документом XML: %s\n"
+"правильным документом формата XML: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
@@ -178,10 +215,15 @@ msgstr "неверный файл списка содержимого %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "неверный расширенный файла списка содержимого %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "%s отсутствует\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Невозможно создать временный файл: %s : %s\n"
 
 #: libs/database.c:41
 #, c-format
@@ -190,40 +232,40 @@ msgstr "Не удалось создать каталог %s : %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr "Файл OMF не является правильным.\n"
+msgstr "Файл формата OMF не является правильным.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr "Не удалось найти корневой элемент в файле OMF.\n"
+msgstr "Не удалось найти корневой элемент в файле формата OMF.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr "Корневой элемент в файле OMF не является <omf>.\n"
+msgstr "Корневой элемент в файле формата OMF не является элементом <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr "Файл OMF не имеет элемента <resource>.\n"
+msgstr "Файл формата OMF не имеет элемента <resource>.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
 "Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
 "<stylesheet 2> <output file 2> ...\n"
 msgstr ""
-"Использование: scrollkeeper-extract <файл xml> <стилевой файл 1> <выходной "
-"файл 1> <стилевой файл 2> <выходной вайл 2> ...\n"
+"Использование: scrollkeeper-extract <xml-файл> <стилевой файл 1> <выходной "
+"файл 1> <стилевой файл 2> <выходной файл 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
 #, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr "Нераспознанный тип файла: %s\n"
+msgstr "Тип файла не распознан: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
-msgstr "3D Моделирование"
+msgstr "Трёхмерное (3D) Моделирование"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:2
 msgid "3D Rendering"
-msgstr "Трёхмерный Рендеринг"
+msgstr "Трёхмерный (3D) Рендеринг"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:3
 msgid "ADA"
@@ -231,12 +273,11 @@ msgstr "Язык программирования ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Специальные возможности"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Процессор"
+msgstr "Стандартные"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -244,7 +285,7 @@ msgstr "Администрирование"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:7
 msgid "Amusement"
-msgstr "Развлечения"
+msgstr "Развлечение"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:8
 msgid "Analysis"
@@ -404,7 +445,7 @@ msgstr "Обработка данных"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:47
 msgid "Database"
-msgstr "Обработка данных"
+msgstr "База данных"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:48
 msgid "Databases"
@@ -419,13 +460,12 @@ msgid "Debuggers"
 msgstr "Отладчики"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
-msgstr "Ядро среды"
+msgstr "Рабочий стол"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Настройки рабочего стола"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -605,7 +645,7 @@ msgstr "Linux"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:97
 msgid "Local"
-msgstr "Локальное"
+msgstr "Локальные"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:98
 msgid "Login Managers"
@@ -709,7 +749,7 @@ msgstr "Plotting"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Настройки"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -728,9 +768,8 @@ msgid "Profiling"
 msgstr "Профилирование"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Программы"
+msgstr "Программирование"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -822,7 +861,7 @@ msgstr "Звук"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Звук и видео"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -849,18 +888,16 @@ msgid "System"
 msgstr "Система"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Администрирование"
+msgstr "Системное администрирование"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Системные вызовы"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Системные вызовы"
+msgstr "Системные инструменты"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -899,9 +936,8 @@ msgid "Tutorials"
 msgstr "Обучение"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Пользователи"
+msgstr "Руководства пользователя"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
@@ -971,6 +1007,81 @@ msgstr "X"
 msgid "gtk++"
 msgstr "Пакет gtk++"
 
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Файл категории недопустим.\n"
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+"Использование: scrollkeeper-tree-separate <файл дерева> <выходной каталог>\n"
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "Файл формата OMF не содержит правильных данных формата XML.\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "Произошёл сбой при разделении дерева.\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Невозможно создать локализованный файл категорий: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Идёт создание локализованного файла категорий: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Невозможно создать все локализованные файлы категорий: %s\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Невозможно создать временный файл: %s : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Невозможно прочитать файл %s : %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr ""
+"Документ не является правильно сформированным документом формата XML: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Невозможно обновить файл: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "Невозможно применить стилевую таблицу к документу типа %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "Невозможно открыть выходной файл: %s : %s\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "Невозможно обновить файл стилевой таблицы: %s : %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, fuzzy, c-format
+msgid "Usage: %s\n"
+msgstr "Идёт обновление %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: невозможно открыть временный файл: %s\n"
+
 #~ msgid "wrong omf file %s\n"
 #~ msgstr "неверный omf файл %s\n"
 
@@ -983,9 +1094,6 @@ msgstr "Пакет gtk++"
 #~ msgstr ""
 #~ "Использование:  toc <имя файла>\n"
 #~ "\n"
-
-#~ msgid "scrollkeeper-install: out of memory: %s\n"
-#~ msgstr "scrollkeeper-install: не хватает памяти: %s\n"
 
 #~ msgid "%s: warning: replacing %s with %s\n"
 #~ msgstr "%s: внимание: замена %s на %s\n"

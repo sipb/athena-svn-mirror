@@ -4,102 +4,137 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: scrollkeeper VERSION\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2002-05-03 17:41-0400\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-01-24 11:47+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
 #, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
-"Cách dùng: scrollkeeper-install [-v] [-p <SCROLLKEEPER_DB_DIR>] <TẬP TIN "
-"OMF>\n"
+"Cách dùng: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <TẬP "
+"TIN OMF>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr ""
+msgstr "Không thể tạo cơ sở dữ liệu. Ngừng cài đặt.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
-msgstr ""
+msgstr "Đang đăng ký %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
-msgstr ""
+msgstr "Không thể đăng ký %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
 "Cách dùng: scrollkeeper-preinstall <DOC FILE> <TẬP TIN OMF> <TẬP TIN OMF "
 "MỚI>\n"
 
-#: cl/src/preinstall.c:68
-#, fuzzy, c-format
+#: cl/src/preinstall.c:85
+#, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
-msgstr "lỗi khi cập nhật url trong tập tin OMF %s\n"
+msgstr ""
+"Không thể cập nhậtURL trong tập tin OMF %s. Tập tin OMF không thay đổi.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
 msgstr ""
-"Cách dùng: scrollkeeper-uninstall [-v] [-p <SCROLLKEEPER_DB_DIR>] <TẬP TIN "
-"OMF>\n"
+"Cách dùng: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <TẬP "
+"TIN OMF>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
-msgstr ""
+msgstr "Đang hủy đăng ký %s\n"
 
-#: cl/src/update.c:108
+#: cl/src/update.c:109
 #, fuzzy, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
-msgstr "Cách dùng: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <THƯ MỤC OMF>]\n"
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr ""
+"Cách dùng: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <THƯ MỤC OMF>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
 msgstr "%s: cảnh báo: %s override %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
-msgstr ""
+msgstr "Không thể tạo cơ sở dữ liệu. Ngừng cập nhật.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
 msgstr "%s: %s: không phải là thư mục\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
-msgstr ""
+msgstr "Đang cập nhật %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
+msgstr "Không thể hoàn tất cập nhật. Không thể đăng ký %s\n"
+
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "Không thể stat tập tin: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
 msgstr ""
 
-#: cl/src/get-cl.c:55
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
 #, fuzzy
+msgid "Unable to determine username."
+msgstr "Không thể đăng ký %s\n"
+
+#: cl/src/get-cl.c:139
 msgid "Cannot open temporary file.\n"
 msgstr "Không thể mở tập tin tạm.\n"
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Không thể mở tập tin tạm.\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
 msgstr "Cách dùng: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
 msgstr "Không có Danh sách Nội dung cho locale này!!!\n"
 
 #: libs/error.c:114
@@ -110,53 +145,54 @@ msgstr "%s: hết bộ nhớ: %s\n"
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr ""
+msgstr "Lỗi xác định tính hợp lệ của OMF: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
-msgstr ""
+msgstr "Tập tin TOC không có, không thể đọc, hoặc bị hư: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
-msgstr ""
+msgstr "Tập tin OMF không có, không thể đọc, hoặc bị hư: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Không thể phân tích Scrollkeeper-OMF DTD: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Tập tin OMF [%s] không hợp lệ với Scrollkeeper-OMF DTD: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr ""
+msgstr "Lỗi định vị phần tử <OMF>.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
-msgstr ""
+msgstr "<OMF> không có con.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
-msgstr ""
+msgstr "Tập tin danh sách nội dung không có, không thể đọc, hoặc bị hư: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
+"Tập tin danh sách nội dung mở rộng không có, không thể đọc, hoặc bị hư: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
@@ -168,31 +204,36 @@ msgstr "tập tin Danh sách Nội dung sai %s\n"
 msgid "wrong extended content list file %s\n"
 msgstr "Tập tin Danh sách Nội dung Mở rộng sai %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "Thiếu %s\n"
 
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Không thể tạo tập tin tạm: %s  : %s\n"
+
 #: libs/database.c:41
 #, c-format
 msgid "Could not create directory %s : %s\n"
-msgstr ""
+msgstr "Không thể tạo thư mục %s: %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr ""
+msgstr "Tập tin OMF bị hư.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr ""
+msgstr "Không thể tìm thấy phần tử gốc trong tập tin OMF.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr ""
+msgstr "Phần tử gốc trong tập tin OMF không phải là <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr ""
+msgstr "Tập tin OMF không có phần tử <resource>.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
@@ -203,17 +244,17 @@ msgstr ""
 "<stylesheet 2> <output file 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
-#, fuzzy, c-format
+#, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr "Kiểu tập tin lạ\n"
+msgstr "Kiểu tập tin lạ: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
-msgstr ""
+msgstr "Mô hình hóa 3D"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:2
 msgid "3D Rendering"
-msgstr ""
+msgstr "Vẽ 3D"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:3
 msgid "ADA"
@@ -224,9 +265,8 @@ msgid "Accessibility"
 msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Bộ xử lý"
+msgstr "Phụ tùng"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -334,7 +374,7 @@ msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:32
 msgid "Chat"
-msgstr ""
+msgstr "Tán gẫu"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:33
 msgid "Chemistry"
@@ -378,7 +418,7 @@ msgstr "Chuyển đổi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
 msgid "Core Desktop"
-msgstr ""
+msgstr "Lõi Desktop"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:44
 msgid "Cryptography"
@@ -410,11 +450,11 @@ msgstr "Debugger"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
 msgid "Desktop"
-msgstr ""
+msgstr "Desktop"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Thông số Desktop"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -574,7 +614,7 @@ msgstr "KDE"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:92
 msgid "Kernels"
-msgstr ""
+msgstr "Hạt nhân"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:93
 msgid "Language"
@@ -618,11 +658,11 @@ msgstr "Toán học"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:103
 msgid "Messaging"
-msgstr ""
+msgstr "Truyền thông điệp"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:104
 msgid "Mixers"
-msgstr ""
+msgstr "Bộ trộn"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:105
 msgid "Monitors"
@@ -630,7 +670,7 @@ msgstr "Bộ theo dõi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:106
 msgid "Multimedia"
-msgstr ""
+msgstr "Multimedia"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:107
 msgid "Music"
@@ -694,11 +734,11 @@ msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:122
 msgid "Plotting"
-msgstr ""
+msgstr "Vẽ (plotting)"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Thông số"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -717,9 +757,8 @@ msgid "Profiling"
 msgstr "Lập hồ sơ"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Chương trình"
+msgstr "Lập trình"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -747,7 +786,7 @@ msgstr "RAD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:135
 msgid "Recording"
-msgstr ""
+msgstr "Thu"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:136
 msgid "Red Flag"
@@ -782,8 +821,9 @@ msgid "Scientific"
 msgstr "Khoa học"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:144
+#, fuzzy
 msgid "Screensavers"
-msgstr ""
+msgstr "Giấy phép"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:145
 msgid "Security"
@@ -811,7 +851,7 @@ msgstr "Âm thanh"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Âm thanh và hình ảnh"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -838,18 +878,16 @@ msgid "System"
 msgstr "Hệ thống"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Quản trị"
+msgstr "Quản trị hệ thống"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Lệnh gọi hệ thống"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Lệnh gọi hệ thống"
+msgstr "Công cụ hệ thống"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -885,7 +923,7 @@ msgstr "Tiện ích text"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:169
 msgid "Tutorials"
-msgstr ""
+msgstr "Tài liệu hướng dẫn"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
 #, fuzzy
@@ -910,23 +948,24 @@ msgstr ""
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:175
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:176
 msgid "Video Conferencing"
-msgstr ""
+msgstr "Hội thảo video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:177
 msgid "Viewing"
-msgstr ""
+msgstr "Xem"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:178
 msgid "Virus"
 msgstr "Virus"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:179
+#, fuzzy
 msgid "Visualisation"
-msgstr ""
+msgstr "Mô phỏng"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:180
 msgid "Web"
@@ -949,8 +988,9 @@ msgid "Window Managers"
 msgstr "Bộ quản lý cửa sổ"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:185
+#, fuzzy
 msgid "Word Processing"
-msgstr ""
+msgstr "Xử lý dữ liệu"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:186
 msgid "X"
@@ -959,6 +999,83 @@ msgstr "X"
 #: cl/templates/scrollkeeper_cl.xml.in.h:187
 msgid "gtk++"
 msgstr "gtk++"
+
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Tập tin phân loại không hợp lệ.\n"
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr "Cách dùng: scrollkeeper-tree-separate <tree file> <output directory>\n"
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "Tập tin XML bị hư.\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "phân cây thất bại\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Không thể tạo tập tin phân loại bản địa hóa: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Đang tạo tập tin phân loại bản địa hóa: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Không thể tạo mọi tập tin phân loại bản địa hóa.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Không thể tạo tập tin tạm: %s  : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Không thể đọc tập tin %s: %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr ""
+"Tài liệu không đúng dạng XML: %s\n"
+"\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Không thể stat tập tin: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "Không thể áp dụng stylesheet cho tài liệu loại: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr ""
+"Không thể mở tập tin xuất: %s : %s \n"
+"\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "Không thể stat tập tin stylesheet: %s : %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, fuzzy, c-format
+msgid "Usage: %s\n"
+msgstr "Đang cập nhật %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: Không thể mở tập tin tạm: %s\n"
 
 #~ msgid "error while parsing %s\n"
 #~ msgstr "lỗi khi phân tích %s\n"

@@ -11,7 +11,7 @@
     <date>
       2002-02-17
     </date>
-    <version identifier="1.0.0" date="2002-02-17" description="First release"/>
+    <version identifier="1.1" date="2003-06-24" description="Update for recent releases"/>
     <subject category="System|Other"/>
     <description>
       Describes the OMF and how to write OMF files for use with ScrollKeeper.

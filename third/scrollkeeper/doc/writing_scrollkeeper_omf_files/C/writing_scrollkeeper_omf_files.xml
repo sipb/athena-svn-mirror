@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "0.3.5">
-  <!ENTITY manrevision "1.0">
-  <!ENTITY date "Feb 2002">
+  <!ENTITY appversion "0.3.13">
+  <!ENTITY manrevision "1.1">
+  <!ENTITY date "Jun 2003">
   <!-- Information about the entities
        The legal.xml file contains legal information, there is no need to edit the file. 
        Use the appversion entity to specify the version of the application.
@@ -78,11 +78,23 @@
 <!-- than the current revision. -->
     <revhistory>
       <revision> 
-	<revnumber>Writing ScrollKeeper OMF Files V&manrevision;</revnumber> 
-	<date>&date;</date> 
+	<revnumber>Writing ScrollKeeper OMF Files V1.0</revnumber> 
+	<date>Feb 2002</date> 
 	<revdescription> 
 	  <para role="author">Dan Mueth
 	    <email>muet@alumni.uchicago.edu</email>
+	  </para>
+	</revdescription> 
+      </revision> 
+      <revision> 
+	<revnumber>Writing ScrollKeeper OMF Files V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Malcolm Tredinnick
+	    <email>malcolm@commsecure.com.au</email>
+	  </para>
+	  <para>
+	    Brought up to date for recent releases.
 	  </para>
 	</revdescription> 
       </revision> 
@@ -1232,29 +1244,11 @@ the resource described in RIGHTS.license.
           </para>
         </listitem>
         <listitem>
-          <para>
-            <ulink type="http" url="http://www.scrollserver.org/">
-            ScrollServer</ulink>.
-            "ScrollServer is a Python based http server that provides 
-            access to a ScrollKeeper database with any web browser. 
-            You can use ScrollServer to browse and search help files 
-            that are installed in the ScrollKeeper database on your 
-            computer. Someday you will also be able to view online 
-            ScrollServer databases."
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            <ulink type="http" url="http://kbreit.dyndns.org:8080/omfgen/">
-            omfgen</ulink>.  omfgen is a tool for creating OMF files.
-          </para>
-        </listitem>
-        <listitem>
          <para>
            db2omf.  db2omf extracts OMF metadata from DocBook documents.  It can
            be obtained from the <ulink type="http" 
-           url="http://www.linuxdoc.org/">LDP (Linux Documentation 
-           Project)</ulink> CVS.
+           url="http://tldp.org/downloads/">LDP (Linux Documentation 
+           Project)</ulink>.
          </para>
         </listitem>
       </itemizedlist>

@@ -1,15 +1,14 @@
 Fixing Broken Stuff
 -------------------
-* Fix bug where category must be localized. (It should do translation for
-  non-localized categories in OMF files using category id's.)
+* Use glib to handle as much of the portability layer as possible.
 * Write tool for validating one or more OMF files, and man page for it.
 * Fix bugs in the bug system: 
     https://sourceforge.net/tracker/?group_id=11543&atid=111543
-* Change temporary and log files in extract.c to follow @localstatedir@
-* If somebody does a scrollkeeper-install of a document which is already installed,
-  it installs a second copy.  It should really uninstall it and then do the install.
-* If the identifier url is incorrect, the document is added to scrollkeeper_docs 
-  even though the document does not exist.
+* If somebody does a scrollkeeper-install of a document which is already
+  installed, it installs a second copy.  It should really uninstall it and then
+  do the install.
+* If the identifier url is incorrect, the document is added to
+  scrollkeeper_docs even though the document does not exist.
 * ScrollKeeper should check that a given DTD is installed before trying to
   apply a stylesheet to it, or it will fail.  When this is done, we can
   consider taking the explicit requirement out of configure.in.
@@ -18,9 +17,19 @@ Fixing Broken Stuff
   Having the pre-processor will fix this.
 * Fix bug where a bad XML doc (eg. one with 2 legalnotice sections) will
   cause an RPM upgrade to spew an error to STDOUT.
+* Make sure omf.make passes 'make distcheck' and make sure it is in sync
+  with GNOME's make distcheck
+* Resolve en_US vs. C issue
+* Fix configure.in to remove deprecated features (including removing
+  acconfig.h).
+* Update the web page (http://scrollkeeper.sourceforge.net)!!
+* Add a flag so that the installation process doesn't try to write an
+  installation log.
 
 Adding/Enriching Features
 -------------------------
+* Add optional <shorttitle> attribute to OMF
+* Resolve issues in sk-devel thread "Translated TOC list"
 * Add feature which allows promotion of documents from an obsolete category
   to a specified non-obsolete category.
 * Consider making category an optional attribute.
@@ -31,6 +40,8 @@ Adding/Enriching Features
 * Try to capture any errors which libxml2 dumps and send them to the log file
   instead of STDOUT
 * Write DTDs for the ScrollKeeper XML data files
+* Make sure omf.make and xmldocs.make are in-sync b/tw gdp-example2 and
+  sk-example2... Jacob updated gdp-example2
 * Write a script which finds all sectioning (and maybe some others?) tags
   and inserts id's if they are missing. eg: "scrollkeeper-addids <infile>
   <outfile>".  It just runs xsltproc with a stylesheet that adds a generic
@@ -60,10 +71,17 @@ Adding/Enriching Features
   file is put under the build root when making RPMs.
 * Consider having ScrollKeeper validate documents before trying to process them
   (DV seems to oppose this idea.)
+* Review GNOME bug 73497 which is about ScrollKeeper.
+* Review performance issues and, for a future release, add feature for 
+  pre-compiling metadata at build time.
 
 Documentation
 -------------
-* Update/finish 0.4 specifications.
+* Put info on l10n into OMF doc
+* Make list of changes in 0.3/0.4 and new features in 0.5/0.6
+* Update/finish 0.4 specifications.  Get features/changes from email
+  and add that categories for the next SK-OMF DTD should break up the
+  category into proper XML form (possibly)
 * Write a document about anything with DocBook/XML or DocBook/SGML that
   ScrollKeeper is picky about.  For example, ScrollKeeper currently requires that
   a section have an id to be included in the TOC (since it needs an anchor to
@@ -76,6 +94,8 @@ Testing
   and with various locales.
 * Make sure that docs with invalid categories are placed into the most 
   appropriate "Other" section.
+* Make sure that docs in categories which are not translated go into "Other"
+  section.
 * Make sure that documents with missing document id's all get treated as 
   unique documents.
 * Test locale fallback for documents

@@ -29,9 +29,11 @@
 #include <dirent.h>
 #include <scrollkeeper.h>
 
+static xmlExternalEntityLoader defaultEntityLoader = NULL;
+
 static void usage()
 {
-    printf(_("Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
+    printf(_("Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
     exit(EXIT_FAILURE);
 }
 
@@ -52,9 +54,12 @@ main (int argc, char *argv[])
     if (argc == 1) {
 	usage();
     }
-	
+
+    defaultEntityLoader = xmlGetExternalEntityLoader();
+    xmlSetExternalEntityLoader(xmlNoNetExternalEntityLoader);
+
     scrollkeeper_dir[0] = '\0';
-    while ((i = getopt (argc, argv, "p:vq")) != -1)
+    while ((i = getopt (argc, argv, "p:vqn")) != -1)
     {
         switch (i)
         {
@@ -64,6 +69,10 @@ main (int argc, char *argv[])
 
         case 'v':
             outputprefs = outputprefs | SKOUT_STD_VERBOSE | SKOUT_LOG_VERBOSE;
+            break;
+
+        case 'n':
+	    xmlSetExternalEntityLoader(defaultEntityLoader);
             break;
 
         case 'q':

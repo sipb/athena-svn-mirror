@@ -11,6 +11,9 @@ files and update the scrollkeeper databases
 .B \-q
 ]
 [
+.B \-n
+]
+[
 .B \-p
 .I database-directory
 ]
@@ -53,10 +56,14 @@ Run in quiet mode, suppressing output of all but the most serious warning and
 error messages to STDOUT.  Note that most output to the log file will be
 unchanged.
 .TP
+.B \-n
+Use the network to retrieve the DTD if it is not available via the system's XML
+catalog.
+.TP
 \fB\-p\fP \fIdatabase-directory\fP 
 Use \fIdatabase-directory\fP as the directory for the scrollkeeper database
 rather than the usual one obtained by running
-.B omf-config
+.B scrollkeeper-config
 .BR \-\-pkglocalstatedir .
 .TP
 \fB\-o\fP \fIomf-directories\fP

@@ -1,5 +1,8 @@
 This is the Scrollkeeper Open Documentation Cataloging System. 
 
+For information about Scrollkeeper in general, please visit the project's home
+page at http://scrollkeeper.sourceforge.net/ .
+
 The following modules are included:
 
 Scrollkeeper_cl, the Content List handling system in the cl subdir.
@@ -11,15 +14,13 @@ Installation
 ------------
 For installation instructions, see the INSTALL file.
 
-Notes
------
+Reporting Problems
+------------------
+Any bug reports or feature requests should be filed in the Sourceforge bug
+tracker for this project. Go to 
 
-1) PROBLEM WITH RPM POST-INSTALL SCRIPTS FOR SCROLLKEEPER < 0.3.3
-Note that RPM's from 0.2 to 0.3.1 shipped with a post-install script to remove
-the ScrollKeeper database when ScrollKeeper is uninstalled.  However, due to
-the order in which RPM executes its scripts, the database is removed after the
-new database is built.  Thus, the user is left without a database.  This 
-problem is fixed starting with ScrollKeeper 0.3.3.  However, any upgrade where
-the old RPM has version 0.2 to 0.3.1 will exhibit this problem.  One solution
-is to execute "scrollkeeper-rebuilddb" after the upgrade is finished.
+   http://sourceforge.net/tracker/?func=browse&group_id=11543&atid=111543
 
+and enter any details. It would be a good idea to log into your Sourceforge
+account (create one if you do not already have one) if you would like to
+receive updates about the bug's resolution.

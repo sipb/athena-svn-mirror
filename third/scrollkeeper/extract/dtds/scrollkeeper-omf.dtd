@@ -3,7 +3,7 @@ Open Source Metadata Framework (OMF XML DTD) Version 1.1
 
 Copyright (C) 1999, 2000  Kendall Grant Clark. All rights reserved.
 
-$Id: scrollkeeper-omf.dtd,v 1.1.1.1 2002-12-26 06:54:07 ghudson Exp $
+$Id: scrollkeeper-omf.dtd,v 1.1.1.2 2004-09-27 20:37:58 ghudson Exp $
 
 To use the OMF.dtd, an FPI like the following works:
 
@@ -111,7 +111,7 @@ status     CDATA                              #IMPLIED"              >
 <!ELEMENT  resource     (creator+, maintainer*, contributor*, title, 
                          date, version*, subject*, description?, 
                          type*, coverage*, format, identifier, 
-                         language, relation, source*, rights*)       >
+                         language, relation*, source*, rights*)      >
 
 <!ATTLIST  resource
              %core.attribute.set;                                    >

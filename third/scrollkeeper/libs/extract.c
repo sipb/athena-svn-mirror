@@ -25,6 +25,7 @@
 #include <libxslt/xsltutils.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/DOCBparser.h>
+#include <libxml/xinclude.h>
 #include <scrollkeeper.h>
 #include <string.h>
 #include <stdlib.h>
@@ -43,16 +44,16 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 	int i;
 	int returnval = 1;
 	FILE *fid;
+	struct stat buf;
 #ifndef SOLARIS
 	char line[1024], *start, *end;
 	int num;
 	FILE *res_fid;
 	char *doctype;
 	char command[1024];
-	pid_t pid;
 	char temp1[PATHLEN], temp2[PATHLEN], errors[PATHLEN];
+	int temp1_fd, temp2_fd, errors_fd;
 #endif
-	struct stat buf;
 
 	if (input_file == NULL ||
 	    stylesheets == NULL ||
@@ -64,16 +65,28 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 	xmlLoadExtDtdDefaultValue = 1;
 	xmlIndentTreeOutput = 1;
 
-	if (!strcmp(type, "sgml")) {
+	if (strcmp(type, "sgml") == 0) {
 		
 #ifdef SOLARIS
 		doc = docbParseFile(input_file, NULL);
 #else
-		pid = getpid();		
-		
-		snprintf(temp1, PATHLEN, "/var/tmp/scrollkeeper-extract-1-%ld.xml", (long)pid);
-		snprintf(temp2, PATHLEN, "/var/tmp/scrollkeeper-extract-2-%ld.xml", (long)pid);
-		snprintf(errors, PATHLEN, "/var/tmp/scrollkeeper-extract-errors-%ld", (long)pid);		
+		snprintf(temp1, PATHLEN, SCROLLKEEPER_STATEDIR "/tmp/scrollkeeper-extract-1.xml.XXXXXX");
+		snprintf(temp2, PATHLEN, SCROLLKEEPER_STATEDIR "/tmp/scrollkeeper-extract-2.xml.XXXXXX");
+		snprintf(errors, PATHLEN, SCROLLKEEPER_STATEDIR "/tmp/scrollkeeper-extract-errors.XXXXXX");
+
+		temp1_fd = mkstemp(temp1);
+		printf ("%s\n", temp1);
+		if (temp1_fd == -1) {
+			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Cannot create temporary file: %s : %s\n"),temp1, strerror(errno));
+			return 0;
+		}
+		  
+		errors_fd = mkstemp(errors);
+		if (errors_fd == -1) {
+			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Cannot create temporary file: %s : %s\n"),errors, strerror(errno));
+			return 0;
+		}
+		close(errors_fd);
 
 		snprintf(command, 1024, "sgml2xml -xlower -f%s %s > %s", errors, input_file, temp1);
 		system(command);
@@ -83,6 +96,7 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 		fid = fopen(input_file, "r");
 		if (fid == NULL) {
 			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Cannot read file: %s : %s\n"),input_file, strerror(errno));
+		        close(temp1_fd);
 			return 0;
 		}
 
@@ -104,17 +118,34 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 				break;
 			}
 		}
-		
+
+		fclose (fid);
+
 		if (doctype == NULL) {
+		        close(temp1_fd);
 			unlink(temp1);
 			return 0;		
 		}
-		
-		fid = fopen(temp1, "r");
-		res_fid = fopen(temp2, "w");
-		if (fid == NULL || res_fid == NULL) {
+
+		temp2_fd = mkstemp(temp2);
+		if (temp2_fd == -1) {
+		        close(temp1_fd);
 			unlink(temp1);
+			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Cannot create temporary file: %s : %s\n"),temp2, strerror(errno));
+			return 0;
+		}
+
+		fid = fdopen(temp1_fd, "r");
+		res_fid = fdopen(temp2_fd, "w");
+		if (fid == NULL || res_fid == NULL) {
+		        close(temp1_fd);
+			unlink(temp1);
+		        close(temp2_fd);
 			unlink(temp2);
+			if (fid)
+				fclose (fid);
+			if (res_fid)
+				fclose (res_fid);
 			return 0;
 		}
 		
@@ -123,7 +154,7 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 			fputs(line, res_fid);
 			if (num == 0) {
 				num = 1;
-				fprintf(res_fid, "<!DOCTYPE %s PUBLIC \"-//OASIS//DTD DocBook V4.1.2//EN\" \"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd\">\n", doctype);
+				fprintf(res_fid, "<!DOCTYPE %s PUBLIC " DB_PUBLIC_ID DB_SYSTEM_ID ">\n", doctype);
 			}
 		}
 		fclose(fid);
@@ -139,13 +170,14 @@ int apply_stylesheets (char *input_file, char *type, int stylesheet_num,
 #endif /*SOLARIS */
 		
 	}
-	else if (!strcmp(type, "xml")) {
+	else if (strcmp(type, "xml") == 0) {
 		if (stat(input_file, &buf) == -1) {
 			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Cannot stat file: %s : %s\n"), input_file, strerror(errno));
 			return 0;
 		}
 
 		doc = xmlParseFile(input_file);
+		xmlXIncludeProcess(doc);
 		if (doc == NULL) {
 			sk_message(outputprefs, SKOUT_DEFAULT, SKOUT_QUIET, "(apply_stylesheets)", _("Document is not well-formed XML: %s\n"), input_file);
 			return 0;

@@ -27,42 +27,59 @@
 #include <locale.h>
 #include <scrollkeeper.h>
 
-static int validate_args(int argc)
+static xmlExternalEntityLoader defaultEntityLoader = NULL;
+
+static void usage()
 {
-    if (argc == 4)
-	return 1;
-	    
-    printf(_("Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"));
-    return 0;
+    printf(_("Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"));
+    exit(EXIT_FAILURE);
 }
 
 int
 main (int argc, char *argv[])
 {
     char *omf_name, *url, *omf_new_name;
+    int i;
     
     setlocale (LC_ALL, "");
     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
     textdomain (PACKAGE);
     
-    if (!validate_args(argc))
-        return 1;
-        
-    omf_name = argv[2];
 	
-    if (!strncmp("file:", argv[1], 5))
+    if (argc < 3) {
+	usage();    
+    }
+
+    defaultEntityLoader = xmlGetExternalEntityLoader();
+    xmlSetExternalEntityLoader(xmlNoNetExternalEntityLoader);
+
+    while ((i = getopt (argc, argv, "n")) != -1) 
+     {
+        switch (i)
+         {
+           case 'n': 
+		xmlSetExternalEntityLoader(defaultEntityLoader);
+                break;
+	   default : usage ();
+                     break;
+         }
+    }
+
+    omf_name = argv[argc - 2];
+
+    if (!strncmp("file:", argv[argc - 3], 5))
     {
-	url = argv[1];
+	url = argv[argc - 3];
     }
     else
     {
-	url = calloc(strlen(argv[1]) + 7, sizeof(char));
+	url = calloc(strlen(argv[argc - 3]) + 7, sizeof(char));
 	check_ptr(url, argv[0]);
 	strcpy(url, "file:");
-	strcat(url, argv[1]); 
+	strcat(url, argv[argc - 3]); 
     }
     
-    omf_new_name = argv[3];
+    omf_new_name = argv[argc - 1];
 
     if (!update_doc_url_in_omf_file(omf_name, url, omf_new_name)) {
     	fprintf(stderr, _("Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"), omf_name);

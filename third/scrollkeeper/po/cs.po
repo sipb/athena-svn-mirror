@@ -1,0 +1,1076 @@
+# Czech translation of scrollkeeper
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Miloslav Trmac <mitr@volny.cz>, 2002, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: scrollkeeper VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-05-01 18:15+0200\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
+"Language-Team: Czech <sc@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cl/src/scrollkeeper-install.c:36
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
+msgstr ""
+"Použití: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_ADR>] <SOUBOR "
+"OMF>\n"
+
+#: cl/src/scrollkeeper-install.c:104
+msgid "Could not create database.  Aborting install.\n"
+msgstr "Nemohu vytvořit databázi. Přerušuji instalaci.\n"
+
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
+#, c-format
+msgid "Registering %s\n"
+msgstr "Registruji %s\n"
+
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
+#, c-format
+msgid "Unable to register %s\n"
+msgstr "Nemohu zaregistrovat %s\n"
+
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+msgstr ""
+"Použití: scrollkeeper-preinstall <SOUBOR DOC> <SOUBOR OMF> <NOVÝ SOUBOR "
+"OMF>\n"
+
+#: cl/src/preinstall.c:85
+#, c-format
+msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
+msgstr ""
+"Nemohu aktualizovat URL v souboru OMF %s. Kopíruji nezměněný soubor OMF.\n"
+
+#: cl/src/scrollkeeper-uninstall.c:32
+msgid ""
+"Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
+msgstr ""
+"Použití: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_ADR>] <SOUBOR "
+"OMF>\n"
+
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
+#, c-format
+msgid "Unregistering %s\n"
+msgstr "Ruším registraci %s\n"
+
+#: cl/src/update.c:109
+#, fuzzy, c-format
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgstr "Použití: %s [-v] [-q] [-p <SCROLLKEEPER_DB_ADR>] [-o <OMF_ADR>]\n"
+
+#: cl/src/update.c:221
+#, c-format
+msgid "%s: warning: %s overrides %s\n"
+msgstr "%s: varování: %s přebíjí %s\n"
+
+#: cl/src/update.c:420
+msgid "Could not create database.  Aborting update.\n"
+msgstr "Nemohu vytvořit databázi. Přerušuji aktualizaci.\n"
+
+#: cl/src/update.c:515
+#, c-format
+msgid "%s: %s: is not a directory\n"
+msgstr "%s: %s: není adresář\n"
+
+#: cl/src/update.c:540
+#, c-format
+msgid "Updating %s\n"
+msgstr "Aktualizuji %s\n"
+
+#: cl/src/update.c:543
+#, c-format
+msgid "Unable to complete update.  Could not register %s\n"
+msgstr "Nemohu dokončit aktualizaci. Nemohu zaregistrovat %s\n"
+
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "Nemohu stat soubor: %s : %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
+msgstr ""
+
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
+
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "Nemohu zaregistrovat %s\n"
+
+#: cl/src/get-cl.c:139
+msgid "Cannot open temporary file.\n"
+msgstr "Nemohu otevřít dočasný soubor.\n"
+
+#: cl/src/get-cl.c:175
+#, fuzzy, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "Nemohu otevřít dočasný soubor.\n"
+
+#: cl/src/get-cl.c:188
+#, c-format
+msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
+msgstr "Použití: %s [-v] <LOCALE> <JMÉNO SOUBORU STROMU KATEGORIÍ>\n"
+
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "Pro tototo locale není seznam obsahu!!!\n"
+
+#: libs/error.c:114
+#, c-format
+msgid "%s: out of memory: %s\n"
+msgstr "%s: nedostatek paměti: %s\n"
+
+#: libs/error.c:262
+#, c-format
+msgid "OMF validation error: %s"
+msgstr "Chyba ověření platnosti OMF: %s"
+
+#: libs/install.c:136
+#, c-format
+msgid ""
+"TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
+msgstr ""
+"Soubor TOC neexistuje, nelze jej číst, nebo není správně vytvořené XML: %s\n"
+
+#: libs/install.c:177
+#, c-format
+msgid ""
+"OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
+msgstr ""
+"Soubor OMF neexistuje, nelze jej číst, nebo není správně vytvořené XML: %s\n"
+
+#: libs/install.c:186
+#, c-format
+msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
+msgstr "Nemohu parsovat DTD ScrollKeeper-OMF: %s\n"
+
+#: libs/install.c:194
+#, c-format
+msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
+msgstr "Soubor OMF [%s] neodpovídá DTD ScrollKeeper-OMF: %s\n"
+
+#. This should not happen
+#: libs/install.c:211
+msgid "Failed to locate an <OMF> element.\n"
+msgstr "Nemohu nalézt element <OMF>.\n"
+
+#. This should not happen
+#: libs/install.c:216
+msgid "<OMF> node has no children.\n"
+msgstr "Uzel <OMF> nemá potomky.\n"
+
+#: libs/install.c:245
+#, c-format
+msgid ""
+"Content list file does not exist, is not readable, or is not well-formed "
+"XML: %s\n"
+msgstr ""
+"Soubor seznamu obsahu neexistuje, nelze jej číst, nebo není správně "
+"vytvořené XML: %s\n"
+
+#: libs/install.c:252
+#, c-format
+msgid ""
+"Extended content list file does not exist, is not readable, or is not well-"
+"formed XML: %s\n"
+msgstr ""
+"Soubor rozšířeného seznamu obsahu neexistuje, nelze jej číst, nebo není "
+"správně vytvořené XML: %s\n"
+
+#: libs/uninstall.c:97
+#, c-format
+msgid "wrong content list file %s\n"
+msgstr "špatný soubor seznamu obsahu %s\n"
+
+#: libs/uninstall.c:104
+#, c-format
+msgid "wrong extended content list file %s\n"
+msgstr "špatný rozšířený soubor seznamu obsahu %s\n"
+
+#: libs/uninstall.c:202
+#, c-format
+msgid "%s missing\n"
+msgstr "%s chybí\n"
+
+#: libs/uninstall.c:211
+#, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Nemohu vytvořit dočasný soubor: %s : %s\n"
+
+#: libs/database.c:41
+#, c-format
+msgid "Could not create directory %s : %s\n"
+msgstr "Nemohu vytvořit adresář %s : %s\n"
+
+#: libs/update-url.c:40
+msgid "OMF file was not well-formed.\n"
+msgstr "Soubor OMF nebyl správně vytvořen.\n"
+
+#: libs/update-url.c:48
+msgid "Could not find root element of OMF file.\n"
+msgstr "Nemohu najít kořenový element souboru OMF.\n"
+
+#: libs/update-url.c:52
+msgid "Root element of OMF file is not <omf>.\n"
+msgstr "Kořenový element souboru OMF není <omf>.\n"
+
+#: libs/update-url.c:64
+msgid "OMF file does not have <resource> element.\n"
+msgstr "Soubor OMF nemá element <resource>.\n"
+
+#: extract/src/scrollkeeper-extract.c:30
+msgid ""
+"Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
+"<stylesheet 2> <output file 2> ...\n"
+msgstr ""
+"Použití: scrollkeeper-extract <soubor xml> <stylesheet 1> <výstupní soubor "
+"1> <stylesheet 2> <výstupní soubor 2> ...\n"
+
+#: extract/src/scrollkeeper-extract.c:61
+#, c-format
+msgid "Unrecognized file type: %s\n"
+msgstr "Nerozpoznaný typ souboru: %s\n"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:1
+msgid "3D Modelling"
+msgstr "3D modelování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:2
+msgid "3D Rendering"
+msgstr "3D renderování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:3
+msgid "ADA"
+msgstr "ADA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:4
+msgid "Accessibility"
+msgstr "Zpřístupnění"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:5
+msgid "Accessories"
+msgstr "Příslušenství"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:6
+msgid "Administration"
+msgstr "Administrace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:7
+msgid "Amusement"
+msgstr "Zábava"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:8
+msgid "Analysis"
+msgstr "Analýza"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:9
+msgid "AppleTalk"
+msgstr "AppleTalk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:10
+msgid "Applets"
+msgstr "Applety"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:11
+msgid "Applications"
+msgstr "Aplikace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:12
+msgid "Arcade"
+msgstr "Arkády"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:13
+msgid "Archiving"
+msgstr "Archivování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:14
+msgid "Arts"
+msgstr "Umění"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:15
+msgid "Astronomy"
+msgstr "Astronomie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:16
+msgid "Astrophysics"
+msgstr "Astrofyzika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:17
+msgid "BIND"
+msgstr "BIND"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:18
+msgid "Backups"
+msgstr "Zálohy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:19
+msgid "Biology"
+msgstr "Biologie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:20
+msgid "Board"
+msgstr "Deskové"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:21
+msgid "Build Tools"
+msgstr "Nástroje pro překlad"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:22
+msgid "C"
+msgstr "C"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:23
+msgid "C++"
+msgstr "C++"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:24
+msgid "CAD"
+msgstr "CAD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:25
+msgid "CD Mastering"
+msgstr "Vytváření CD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:26
+msgid "CDE"
+msgstr "CDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:27
+msgid "CLI"
+msgstr "CLI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:28
+msgid "Calculating"
+msgstr "Výpočty"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:29
+msgid "Caldera"
+msgstr "Caldera"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:30
+msgid "Calendar"
+msgstr "Kalendář"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:31
+msgid "Capture"
+msgstr "Zachycení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:32
+msgid "Chat"
+msgstr "Chat"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:33
+msgid "Chemistry"
+msgstr "Chemie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:34
+msgid "Clock"
+msgstr "Hodiny"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:35
+msgid "Clocks"
+msgstr "Hodiny"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:36
+msgid "Code Generators"
+msgstr "Generátory kódu"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:37
+msgid "Compression"
+msgstr "Komprese"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:38
+msgid "Computer Science"
+msgstr "Informatika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:39
+msgid "Config Files"
+msgstr "Konfigurační souboru"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:40
+msgid "Configuration"
+msgstr "Konfigurace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:41
+msgid "Configuration Tools"
+msgstr "Konfigurační nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:42
+msgid "Conversion"
+msgstr "Konverze"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:43
+msgid "Core Desktop"
+msgstr "Základní prostředí pracovní plochy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:44
+msgid "Cryptography"
+msgstr "Kryptografie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:45
+msgid "DNS"
+msgstr "DNS"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:46
+msgid "Data Processing"
+msgstr "Zpracování dat"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:47
+msgid "Database"
+msgstr "Databáze"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:48
+msgid "Databases"
+msgstr "Databáze"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:49
+msgid "Debian"
+msgstr "Debian"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:50
+msgid "Debuggers"
+msgstr "Debuggery"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:51
+msgid "Desktop"
+msgstr "Pracovní plocha"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:52
+msgid "Desktop Preferences"
+msgstr "Nastavení pracovní plochy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:53
+msgid "Development"
+msgstr "Vývoj"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:54
+msgid "Development Tools"
+msgstr "Vývojové nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:55
+msgid "Display"
+msgstr "Zobrazení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:56
+msgid "Distributions"
+msgstr "Distribuce"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:57
+msgid "Drawing"
+msgstr "Kreslení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:58
+msgid "EDA"
+msgstr "EDA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:59
+msgid "Editing"
+msgstr "Úpravy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:60
+msgid "Education"
+msgstr "Vzdělání"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:61
+msgid "Email"
+msgstr "E-mail"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:62
+msgid "English"
+msgstr "Angličtina"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:63
+msgid "Environments"
+msgstr "Prostředí"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:64
+msgid "FTP"
+msgstr "FTP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:65
+msgid "Fax"
+msgstr "Fax"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:66
+msgid "Fighting"
+msgstr "Bojové"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:67
+msgid "File Sharing"
+msgstr "Sdílení souborů"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:68
+msgid "File Utilities"
+msgstr "Souborové nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:69
+msgid "Filesystems"
+msgstr "Souborové systémy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:70
+msgid "Financial"
+msgstr "Finanční"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:71
+msgid "Firewall"
+msgstr "Firewall"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:72
+msgid "First Person Shooters"
+msgstr "Střílečky v první osobě"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:73
+msgid "Fonts"
+msgstr "Písma"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:74
+msgid "FreeBSD"
+msgstr "FreeBSD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:75
+msgid "GNOME"
+msgstr "GNOME"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:76
+msgid "GTK+"
+msgstr "GTK+"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:77
+msgid "GUI"
+msgstr "GUI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:78
+msgid "Games"
+msgstr "Hry"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:79
+msgid "General"
+msgstr "Obecné"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:80
+msgid "Genetics"
+msgstr "Genetika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:81
+msgid "Graphics"
+msgstr "Grafika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:82
+msgid "HTTP"
+msgstr "HTTP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:83
+msgid "Hardware"
+msgstr "Hardware"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:84
+msgid "IDEs"
+msgstr "IDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:85
+msgid "Input Devices"
+msgstr "Vstupní zařízení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:86
+msgid "Internet"
+msgstr "Internet"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:87
+msgid "Internet Phone"
+msgstr "Internetový telefon"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:88
+msgid "Introductory"
+msgstr "Úvodní"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:89
+msgid "Intrusion Detection"
+msgstr "Detekce průniku"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:90
+msgid "Java"
+msgstr "Java"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:91
+msgid "KDE"
+msgstr "KDE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:92
+msgid "Kernels"
+msgstr "Jádra"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:93
+msgid "Language"
+msgstr "Jazyk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:94
+msgid "Libraries"
+msgstr "Knihovny"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:95
+msgid "Licenses"
+msgstr "Licence"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:96
+msgid "Linux"
+msgstr "Linuc"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:97
+msgid "Local"
+msgstr "Místní"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:98
+msgid "Login Managers"
+msgstr "Správci přihlášení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:99
+msgid "MIDI"
+msgstr "MIDI"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:100
+msgid "Mandrake"
+msgstr "Mandrake"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:101
+msgid "Math"
+msgstr "Matematika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:102
+msgid "Maths"
+msgstr "Matematika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:103
+msgid "Messaging"
+msgstr "Posílání zpráv"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:104
+msgid "Mixers"
+msgstr "Mixéry"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:105
+msgid "Monitors"
+msgstr "Monitory"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:106
+msgid "Multimedia"
+msgstr "Multimédia"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:107
+msgid "Music"
+msgstr "Hudba"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:108
+msgid "NetBSD"
+msgstr "NetBSD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:109
+msgid "Network"
+msgstr "Síť"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:110
+msgid "Networking"
+msgstr "Sítě"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:111
+msgid "News"
+msgstr "News"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:112
+msgid "Office"
+msgstr "Kancelář"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:113
+msgid "Other"
+msgstr "Ostatní"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:114
+msgid "PCI/ISA/PCMCIA"
+msgstr "PCI/ISA/PCMCIA"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:115
+msgid "PIM"
+msgstr "PIM"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:116
+msgid "PPP"
+msgstr "PPP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:117
+msgid "Package Management"
+msgstr "Správa balíčků"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:118
+msgid "Packaging"
+msgstr "Balení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:119
+msgid "Perl"
+msgstr "Perl"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:120
+msgid "Physics"
+msgstr "Fyzika"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:121
+msgid "Players"
+msgstr "Přehrávače"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:122
+msgid "Plotting"
+msgstr "Kreslení grafů"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:123
+msgid "Preferences"
+msgstr "Nastavení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:124
+msgid "Presentation"
+msgstr "Prezentace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:125
+msgid "Printing"
+msgstr "Tisk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:126
+msgid "Processor"
+msgstr "Procesor"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:127
+msgid "Profiling"
+msgstr "Profilování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:128
+msgid "Programming"
+msgstr "Programování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:129
+msgid "Programs"
+msgstr "Programy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:130
+msgid "Publishing"
+msgstr "Publikování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:131
+msgid "Puzzles"
+msgstr "Hádanky"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:132
+msgid "Python"
+msgstr "Python"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:133
+msgid "Qt"
+msgstr "Qt"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:134
+msgid "RAD"
+msgstr "RAD"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:135
+msgid "Recording"
+msgstr "Záznam"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:136
+msgid "Red Flag"
+msgstr "Red Flag"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:137
+msgid "Red Hat"
+msgstr "Red Hat"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:138
+msgid "Remote"
+msgstr "Vzdálený"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:139
+msgid "Role-Playing"
+msgstr "Hry na hrdiny"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:140
+msgid "SMB"
+msgstr "SMB"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:141
+msgid "SSH"
+msgstr "SSH"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:142
+msgid "Science"
+msgstr "Věda"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:143
+msgid "Scientific"
+msgstr "Vědecký"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:144
+msgid "Screensavers"
+msgstr "Šetřiče obrazovky"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:145
+msgid "Security"
+msgstr "Bezpečnost"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:146
+msgid "Services"
+msgstr "Služby"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:147
+msgid "Settings"
+msgstr "Nastavení"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:148
+msgid "Simulation"
+msgstr "Simlace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:149
+msgid "Slackware"
+msgstr "Slackware"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:150
+msgid "Sound"
+msgstr "Zvuk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:151
+msgid "Sound and Video"
+msgstr "Zvuk a video"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:152
+msgid "Speech"
+msgstr "Řeč"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:153
+msgid "Storage"
+msgstr "Ukládání"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:154
+msgid "Strategy"
+msgstr "Strategie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:155
+msgid "SuSE"
+msgstr "SuSE"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:156
+msgid "Syslog"
+msgstr "Syslog"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:157
+msgid "System"
+msgstr "Systém"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:158
+msgid "System Administration"
+msgstr "Správa systému"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:159
+msgid "System Calls"
+msgstr "Systémová volání"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:160
+msgid "System Tools"
+msgstr "Systémové nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:161
+msgid "TCP/IP"
+msgstr "TCP/IP"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:162
+msgid "Tcl/Tk"
+msgstr "Tcl/Tk"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:163
+msgid "Technology"
+msgstr "Technologie"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:164
+msgid "Telnet"
+msgstr "Telnet"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:165
+msgid "Terminals"
+msgstr "Terminály"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:166
+msgid "Testing"
+msgstr "Testování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:167
+msgid "Text Editors"
+msgstr "Textové editory"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:168
+msgid "Text Utilities"
+msgstr "Textové nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:169
+msgid "Tutorials"
+msgstr "Úvodní kurzy"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:170
+msgid "User Guides"
+msgstr "Uživatelské příručky"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:171
+msgid "Users"
+msgstr "Uživatelé"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:172
+msgid "Utilities"
+msgstr "Nástroje"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:173
+msgid "Utility"
+msgstr "Nástroj"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:174
+msgid "Version Control"
+msgstr "Správa verzí"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:175
+msgid "Video"
+msgstr "Video"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:176
+msgid "Video Conferencing"
+msgstr "Videokonference"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:177
+msgid "Viewing"
+msgstr "Zpobrazování"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:178
+msgid "Virus"
+msgstr "Vir"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:179
+msgid "Visualisation"
+msgstr "Vizualizace"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:180
+msgid "Web"
+msgstr "WWW"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:181
+msgid "Web Publishing"
+msgstr "Publikování na WWW"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:182
+msgid "WebML"
+msgstr "WebML"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:183
+msgid "White Papers"
+msgstr "White Papers"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:184
+msgid "Window Managers"
+msgstr "Manažeři oken"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:185
+msgid "Word Processing"
+msgstr "Zpracování textu"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:186
+msgid "X"
+msgstr "X"
+
+#: cl/templates/scrollkeeper_cl.xml.in.h:187
+msgid "gtk++"
+msgstr "gtk++"
+
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Neplatný soubor kategorií.\n"
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr ""
+"Použití: scrollkeeper-tree-separate <soubor stromu> <výstupní adresář>\n"
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "Soubor neobsahuje správně vytvořené XML\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "rozdělení stromu selhalo\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Nemohu vytvočit lokalizovaný soubor kategorií: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Vytvářím lokalizovaný soubor kategorií: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Nemohu vytvočit všechny lokalizované soubory kategorií.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Nemohu vytvořit dočasný soubor: %s : %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Nemohu číst soubor: %s : %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "Dokument není správně vytvořené XML: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Nemohu stat soubor: %s : %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "Nemohu aplikovat stylesheet na dokument typu: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "Nemohu otevřít výstupní soubor: %s : %s \n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "Nemohu stat soubor stylesheetu: %s: %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr "Použití: %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: Nemohu otevřít dočasný soubor: %s\n"

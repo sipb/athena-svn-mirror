@@ -1,214 +1,257 @@
 # Swedish messages for scrollkeeper.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Christian Rose <menthos@menthos.com>, 2001.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+# Christian Rose <menthos@menthos.com>, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.4 2003-03-24 05:07:30 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2004-09-27 20:39:27 ghudson Exp $
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: scrollkeeper\n"
-"POT-Creation-Date: 2002-07-24 21:27-0500\n"
-"PO-Revision-Date: 2001-12-14 21:54+0100\n"
+"Project-Id-Version: scrollkeeper 0.3.13-pre1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-06 19:22+1100\n"
+"PO-Revision-Date: 2003-07-10 15:17+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cl/src/scrollkeeper-install.c:34
+#: cl/src/scrollkeeper-install.c:36
 #, fuzzy
 msgid ""
-"Usage: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"
+"Usage: scrollkeeper-install [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
+"FILE>\n"
 msgstr ""
-"Anv‰ndning: scrollkeeper-install [-v] [-p <SCROLLKEEPER-DATABASKAT>] <OMF-"
-"FIL>\n"
+"Anv√§ndning: scrollkeeper-install [-v] [-q] [-p <SCROLLKEEPER-DATABASKAT>] "
+"<OMF-FIL>\n"
 
-#: cl/src/scrollkeeper-install.c:95
+#: cl/src/scrollkeeper-install.c:104
 msgid "Could not create database.  Aborting install.\n"
-msgstr ""
+msgstr "Kunde inte skapa databas. Avbryter installation.\n"
 
-#: cl/src/scrollkeeper-install.c:99 cl/src/update.c:524
+#: cl/src/scrollkeeper-install.c:108 cl/src/update.c:534
 #, c-format
 msgid "Registering %s\n"
-msgstr ""
+msgstr "Registrerar %s\n"
 
-#: cl/src/scrollkeeper-install.c:101 cl/src/update.c:521
+#: cl/src/scrollkeeper-install.c:110 cl/src/update.c:531
 #, c-format
 msgid "Unable to register %s\n"
-msgstr ""
+msgstr "Kan inte registrera %s\n"
 
-#: cl/src/preinstall.c:35
-msgid "Usage: scrollkeeper-preinstall <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
+#: cl/src/preinstall.c:34
+#, fuzzy
+msgid ""
+"Usage: scrollkeeper-preinstall [-n] <DOC FILE> <OMF FILE> <NEW OMF FILE>\n"
 msgstr ""
-"Anv‰ndning: scrollkeeper-preinstall <DOKUMENTFIL> <OMF-FIL> <NY OMF-FIL>\n"
+"Anv√§ndning: scrollkeeper-preinstall <DOKUMENTFIL> <OMF-FIL> <NY OMF-FIL>\n"
 
-#: cl/src/preinstall.c:68
-#, fuzzy, c-format
+#: cl/src/preinstall.c:85
+#, c-format
 msgid "Unable to update URL in OMF file %s.  Copying OMF file unchanged.\n"
-msgstr "url-uppdatering i OMF-filen %s misslyckades\n"
+msgstr ""
+"Kan inte uppdatera URL i OMF-filen %s. Kopierande OMF-fil of√∂r√§ndrad.\n"
 
 #: cl/src/scrollkeeper-uninstall.c:32
-#, fuzzy
 msgid ""
 "Usage: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] <OMF "
 "FILE>\n"
 msgstr ""
-"Anv‰ndning: scrollkeeper-uninstall [-v] [-p <SCROLLKEEPER-DATABASKAT>] <OMF-"
-"FIL>\n"
+"Anv√§ndning: scrollkeeper-uninstall [-v] [-q] [-p <SCROLLKEEPER-DATABASKAT>] "
+"<OMF-FIL>\n"
 
-#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:539
+#: cl/src/scrollkeeper-uninstall.c:86 cl/src/update.c:549
 #, c-format
 msgid "Unregistering %s\n"
-msgstr ""
+msgstr "Avregistrerar %s\n"
 
-#: cl/src/update.c:108
+#: cl/src/update.c:109
 #, fuzzy, c-format
-msgid "Usage: %s [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
+msgid "Usage: %s [-n] [-v] [-q] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"
 msgstr ""
-"Anv‰ndning: %s [-v] [-p <SCROLLKEEPER-DATABASKATALOG>] [-o <OMF-KATALOG>]\n"
+"Anv√§ndning: %s [-v] [-q] [-p <SCROLLKEEPER-DATABASKATALOG>] [-o <OMF-"
+"KATALOG>]\n"
 
-#: cl/src/update.c:220
+#: cl/src/update.c:221
 #, c-format
 msgid "%s: warning: %s overrides %s\n"
-msgstr "%s: varning: %s Âsidos‰tter %s\n"
+msgstr "%s: varning: %s √•sidos√§tter %s\n"
 
-#: cl/src/update.c:410
+#: cl/src/update.c:420
 msgid "Could not create database.  Aborting update.\n"
-msgstr ""
+msgstr "Kunde inte skapa databas. Avbryter uppdatering.\n"
 
-#: cl/src/update.c:505
+#: cl/src/update.c:515
 #, c-format
 msgid "%s: %s: is not a directory\n"
-msgstr "%s: %s: ‰r inte en katalog\n"
+msgstr "%s: %s: √§r inte en katalog\n"
 
-#: cl/src/update.c:530
+#: cl/src/update.c:540
 #, c-format
 msgid "Updating %s\n"
-msgstr ""
+msgstr "Uppdaterar %s\n"
 
-#: cl/src/update.c:533
+#: cl/src/update.c:543
 #, c-format
 msgid "Unable to complete update.  Could not register %s\n"
+msgstr "Kan inte f√§rdigst√§lla uppdatering. Kunde inte registrera %s\n"
+
+#: cl/src/get-cl.c:63
+#, fuzzy, c-format
+msgid "Cannot stat %s\n"
+msgstr "Kan inte ta status p√• fil: %s: %s\n"
+
+#: cl/src/get-cl.c:69
+#, c-format
+msgid "Owner of %s is not the current user\n"
 msgstr ""
 
-#: cl/src/get-cl.c:55
-#, fuzzy
-msgid "Cannot open temporary file.\n"
-msgstr "Kan inte ˆppna tempor‰r fil\n"
+#: cl/src/get-cl.c:75
+#, c-format
+msgid "Wrong permissions for %s\n"
+msgstr ""
 
-#: cl/src/get-cl.c:93
+#: cl/src/get-cl.c:83
+#, c-format
+msgid "Unknown error on directory creation of %s (%s)\n"
+msgstr ""
+
+#: cl/src/get-cl.c:122
+#, fuzzy
+msgid "Unable to determine username."
+msgstr "Kan inte registrera %s\n"
+
+#: cl/src/get-cl.c:139
+msgid "Cannot open temporary file.\n"
+msgstr "Kan inte √∂ppna tempor√§r fil.\n"
+
+#: cl/src/get-cl.c:175
+#, c-format
+msgid "%s: Cannot open temp file: %s\n"
+msgstr "%s: Kan inte √∂ppna tempor√§r fil: %s\n"
+
+#: cl/src/get-cl.c:188
 #, c-format
 msgid "Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"
-msgstr "Anv‰ndning: %s [-v] <LOKAL> <KATEGORITRƒDETS FILNAMN>\n"
+msgstr "Anv√§ndning: %s [-v] <LOKAL> <KATEGORITR√ÑDETS FILNAMN>\n"
 
-#: cl/src/get-cl.c:133
-msgid "No Content List for this locale!!!\n"
-msgstr "Ingen innehÂllslista fˆr denna lokal!!!\n"
+#: cl/src/get-cl.c:228
+#, fuzzy
+msgid "No Content List for this locale.\n"
+msgstr "Ingen inneh√•llslista f√∂r denna lokal!!!\n"
 
 #: libs/error.c:114
 #, c-format
 msgid "%s: out of memory: %s\n"
-msgstr "%s: slut pÂ minne: %s\n"
+msgstr "%s: slut p√• minne: %s\n"
 
 #: libs/error.c:262
 #, c-format
 msgid "OMF validation error: %s"
-msgstr ""
+msgstr "OMF-valideringsfel: %s"
 
-#: libs/install.c:132
+#: libs/install.c:136
 #, c-format
 msgid ""
 "TOC file does not exist, is not readable, or is not well-formed XML: %s\n"
-msgstr ""
+msgstr "TOC-filen finns inte, √§r inte l√§sbar, eller √§r inte korrekt XML: %s\n"
 
-#: libs/install.c:173
+#: libs/install.c:177
 #, c-format
 msgid ""
 "OMF file does not exist, is not readable, or is not well-formed XML: %s\n"
-msgstr ""
+msgstr "OMF-filen finns inte, √§r inte l√§sbar, eller √§r inte korrekt XML: %s\n"
 
-#: libs/install.c:182
+#: libs/install.c:186
 #, c-format
 msgid "Could not parse ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "Kunde inte tolka Scrollkeeper-OMF DTD: %s\n"
 
-#: libs/install.c:190
+#: libs/install.c:194
 #, c-format
 msgid "OMF file [%s] does not validate against ScrollKeeper-OMF DTD: %s\n"
-msgstr ""
+msgstr "OMF-filen [%s] validerar inte mot ScrollKeeper-OMF DTD: %s\n"
 
 #. This should not happen
-#: libs/install.c:207
+#: libs/install.c:211
 msgid "Failed to locate an <OMF> element.\n"
-msgstr ""
+msgstr "Misslyckades med att lokalisera ett <OMF>-element.\n"
 
 #. This should not happen
-#: libs/install.c:212
+#: libs/install.c:216
 msgid "<OMF> node has no children.\n"
-msgstr ""
+msgstr "<OMF>-noden har inga barn.\n"
 
-#: libs/install.c:236
+#: libs/install.c:245
 #, c-format
 msgid ""
 "Content list file does not exist, is not readable, or is not well-formed "
 "XML: %s\n"
 msgstr ""
+"Inneh√•llslistefil finns inte, √§r inte l√§sbar, eller √§r inte korrekt XML: %s\n"
 
-#: libs/install.c:243
+#: libs/install.c:252
 #, c-format
 msgid ""
 "Extended content list file does not exist, is not readable, or is not well-"
 "formed XML: %s\n"
 msgstr ""
+"Ut√∂kad inneh√•llslistefil finns inte, √§r inte l√§sbar, eller √§r inte korrekt "
+"XML: %s\n"
 
 #: libs/uninstall.c:97
 #, c-format
 msgid "wrong content list file %s\n"
-msgstr "felaktig fil med innehÂllslista %s\n"
+msgstr "felaktig fil med inneh√•llslista %s\n"
 
 #: libs/uninstall.c:104
 #, c-format
 msgid "wrong extended content list file %s\n"
-msgstr "felaktig fil med utˆkad innehÂllslista %s\n"
+msgstr "felaktig fil med ut√∂kad inneh√•llslista %s\n"
 
-#: libs/uninstall.c:201
+#: libs/uninstall.c:202
 #, c-format
 msgid "%s missing\n"
 msgstr "%s saknas\n"
 
-#: libs/database.c:41
+#: libs/uninstall.c:211
 #, fuzzy, c-format
+msgid "cannot create temporary file %s\n"
+msgstr "Kan inte skapa tempor√§r fil: %s: %s\n"
+
+#: libs/database.c:41
+#, c-format
 msgid "Could not create directory %s : %s\n"
-msgstr "kunde inte l‰sa katalogen %s!!!\n"
+msgstr "Kunde inte skapa katalogen %s: %s\n"
 
 #: libs/update-url.c:40
 msgid "OMF file was not well-formed.\n"
-msgstr ""
+msgstr "OMF-filen var inte korrekt.\n"
 
 #: libs/update-url.c:48
 msgid "Could not find root element of OMF file.\n"
-msgstr ""
+msgstr "Kunde inte hitta rotelementet i OMF-filen.\n"
 
 #: libs/update-url.c:52
 msgid "Root element of OMF file is not <omf>.\n"
-msgstr ""
+msgstr "Rotelementet i OMF-filen √§r inte <omf>.\n"
 
 #: libs/update-url.c:64
 msgid "OMF file does not have <resource> element.\n"
-msgstr ""
+msgstr "OMF-filen har inte <resource>-element.\n"
 
 #: extract/src/scrollkeeper-extract.c:30
 msgid ""
 "Usage: scrollkeeper-extract <xml file> <stylesheet 1> <output file 1> "
 "<stylesheet 2> <output file 2> ...\n"
 msgstr ""
-"Anv‰ndning: scrollkeeper-extract <xml-fil> <stilmall 1> <utdatafil 1> "
+"Anv√§ndning: scrollkeeper-extract <xml-fil> <stilmall 1> <utdatafil 1> "
 "<stilmall 2> <utdatafil 2> ...\n"
 
 #: extract/src/scrollkeeper-extract.c:61
-#, fuzzy, c-format
+#, c-format
 msgid "Unrecognized file type: %s\n"
-msgstr "Ok‰nd filtyp\n"
+msgstr "Ok√§nd filtyp: %s\n"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:1
 msgid "3D Modelling"
@@ -224,12 +267,11 @@ msgstr "ADA"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:4
 msgid "Accessibility"
-msgstr ""
+msgstr "Tillg√§nglighet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:5
-#, fuzzy
 msgid "Accessories"
-msgstr "Processor"
+msgstr "Tillbeh√∂r"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:6
 msgid "Administration"
@@ -237,7 +279,7 @@ msgstr "Administration"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:7
 msgid "Amusement"
-msgstr "UnderhÂllning"
+msgstr "Underh√•llning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:8
 msgid "Analysis"
@@ -281,7 +323,7 @@ msgstr "BIND"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:18
 msgid "Backups"
-msgstr "S‰kerhetskopior"
+msgstr "S√§kerhetskopior"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:19
 msgid "Biology"
@@ -289,7 +331,7 @@ msgstr "Biologi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:20
 msgid "Board"
-msgstr "Br‰de"
+msgstr "Br√§de"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:21
 msgid "Build Tools"
@@ -309,7 +351,7 @@ msgstr "CAD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:25
 msgid "CD Mastering"
-msgstr "CD-mastering"
+msgstr "CD-skapande"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:26
 msgid "CDE"
@@ -321,7 +363,7 @@ msgstr "Konsollbaserade"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:28
 msgid "Calculating"
-msgstr "Ber‰kning"
+msgstr "Ber√§kning"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:29
 msgid "Caldera"
@@ -333,7 +375,7 @@ msgstr "Kalender"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:31
 msgid "Capture"
-msgstr "FÂngande"
+msgstr "F√•ngande"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:32
 msgid "Chat"
@@ -345,7 +387,7 @@ msgstr "Kemi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:34
 msgid "Clock"
-msgstr "Klockor"
+msgstr "Klocka"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:35
 msgid "Clocks"
@@ -381,11 +423,11 @@ msgstr "Omvandling"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:43
 msgid "Core Desktop"
-msgstr "K‰rnskrivbordet"
+msgstr "K√§rnskrivbordet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:44
 msgid "Cryptography"
-msgstr "Kryptoteknik"
+msgstr "Kryptografi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:45
 msgid "DNS"
@@ -409,16 +451,15 @@ msgstr "Debian"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:50
 msgid "Debuggers"
-msgstr "Felsˆkare"
+msgstr "Fels√∂kare"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:51
-#, fuzzy
 msgid "Desktop"
-msgstr "K‰rnskrivbordet"
+msgstr "Skrivbord"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:52
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "Skrivbordsinst√§llningar"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:53
 msgid "Development"
@@ -462,7 +503,7 @@ msgstr "Engelska"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:63
 msgid "Environments"
-msgstr "Miljˆer"
+msgstr "Milj√∂er"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:64
 msgid "FTP"
@@ -494,7 +535,7 @@ msgstr "Ekonomi"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:71
 msgid "Firewall"
-msgstr "Brandv‰gg"
+msgstr "Brandv√§gg"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:72
 msgid "First Person Shooters"
@@ -526,7 +567,7 @@ msgstr "Spel"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:79
 msgid "General"
-msgstr "Allm‰nt"
+msgstr "Allm√§nt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:80
 msgid "Genetics"
@@ -542,7 +583,7 @@ msgstr "HTTP"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:83
 msgid "Hardware"
-msgstr "HÂrdvara"
+msgstr "H√•rdvara"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:84
 msgid "IDEs"
@@ -566,7 +607,7 @@ msgstr "Introduktion"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:89
 msgid "Intrusion Detection"
-msgstr "IntrÂngsuppt‰ckt"
+msgstr "Intr√•ngsuppt√§ckt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:90
 msgid "Java"
@@ -578,11 +619,11 @@ msgstr "KDE"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:92
 msgid "Kernels"
-msgstr "K‰rnor"
+msgstr "K√§rnor"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:93
 msgid "Language"
-msgstr "SprÂk"
+msgstr "Spr√•k"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:94
 msgid "Libraries"
@@ -598,7 +639,7 @@ msgstr "Linux"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:97
 msgid "Local"
-msgstr "Lokala"
+msgstr "Lokal"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:98
 msgid "Login Managers"
@@ -630,7 +671,7 @@ msgstr "Mixers"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:105
 msgid "Monitors"
-msgstr "÷vervakare"
+msgstr "√ñvervakare"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:106
 msgid "Multimedia"
@@ -646,11 +687,11 @@ msgstr "NetBSD"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:109
 msgid "Network"
-msgstr "N‰tverk"
+msgstr "N√§tverk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:110
 msgid "Networking"
-msgstr "N‰tverk"
+msgstr "N√§tverk"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:111
 msgid "News"
@@ -702,7 +743,7 @@ msgstr "Grafritande"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:123
 msgid "Preferences"
-msgstr ""
+msgstr "Inst√§llningar"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:124
 msgid "Presentation"
@@ -721,9 +762,8 @@ msgid "Profiling"
 msgstr "Profilering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:128
-#, fuzzy
 msgid "Programming"
-msgstr "Program"
+msgstr "Programmering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:129
 msgid "Programs"
@@ -735,7 +775,7 @@ msgstr "Publicering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:131
 msgid "Puzzles"
-msgstr "GÂtor"
+msgstr "G√•tor"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:132
 msgid "Python"
@@ -763,7 +803,7 @@ msgstr "Red Hat"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:138
 msgid "Remote"
-msgstr "Fj‰rr"
+msgstr "Fj√§rr"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:139
 msgid "Role-Playing"
@@ -787,19 +827,19 @@ msgstr "Vetenskapligt"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:144
 msgid "Screensavers"
-msgstr "Sk‰rmsl‰ckare"
+msgstr "Sk√§rmsl√§ckare"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:145
 msgid "Security"
-msgstr "S‰kerhet"
+msgstr "S√§kerhet"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:146
 msgid "Services"
-msgstr "Tj‰nster"
+msgstr "Tj√§nster"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:147
 msgid "Settings"
-msgstr "Inst‰llningar"
+msgstr "Inst√§llningar"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:148
 msgid "Simulation"
@@ -815,7 +855,7 @@ msgstr "Ljud"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:151
 msgid "Sound and Video"
-msgstr ""
+msgstr "Ljud och video"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:152
 msgid "Speech"
@@ -842,18 +882,16 @@ msgid "System"
 msgstr "System"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:158
-#, fuzzy
 msgid "System Administration"
-msgstr "Administration"
+msgstr "Systemadministration"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:159
 msgid "System Calls"
 msgstr "Systemanrop"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:160
-#, fuzzy
 msgid "System Tools"
-msgstr "Systemanrop"
+msgstr "Systemverktyg"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:161
 msgid "TCP/IP"
@@ -892,13 +930,12 @@ msgid "Tutorials"
 msgstr "Guider"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:170
-#, fuzzy
 msgid "User Guides"
-msgstr "Anv‰ndare"
+msgstr "Anv√§ndarguider"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:171
 msgid "Users"
-msgstr "Anv‰ndare"
+msgstr "Anv√§ndare"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:172
 msgid "Utilities"
@@ -910,7 +947,7 @@ msgstr "Verktyg"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:174
 msgid "Version Control"
-msgstr "Versionskontroll"
+msgstr "Versionshantering"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:175
 msgid "Video"
@@ -950,7 +987,7 @@ msgstr "Beskrivningar"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:184
 msgid "Window Managers"
-msgstr "Fˆnsterhanterare"
+msgstr "F√∂nsterhanterare"
 
 #: cl/templates/scrollkeeper_cl.xml.in.h:185
 msgid "Word Processing"
@@ -964,6 +1001,100 @@ msgstr "X"
 msgid "gtk++"
 msgstr "gtk++"
 
+#: buildtools/separate.c:63 buildtools/separate.c:75 buildtools/separate.c:88
+msgid "Invalid category file.\n"
+msgstr "Ogiltig kategorifil.\n"
+
+#: buildtools/separate.c:298
+msgid "Usage: scrollkeeper-tree-separate <tree file> <output directory>\n"
+msgstr "Anv√§ndning: scrollkeeper-tree-separate <tr√§dfil> <utdatakatalog>\n"
+
+#: buildtools/separate.c:320
+msgid "File does not contain well-formed XML\n"
+msgstr "Filen inneh√•ller inte korrekt XML\n"
+
+#: buildtools/separate.c:325
+msgid "tree separation failed\n"
+msgstr "tr√§dseparering misslyckades\n"
+
+#: buildtools/separate.c:333
+#, c-format
+msgid "Unable to create localized category file: %s\n"
+msgstr "Kan inte skapa lokaliserad kategorifil: %s\n"
+
+#: buildtools/separate.c:337
+#, c-format
+msgid "Creating localized category file: %s\n"
+msgstr "Skapar lokaliserad kategorifil: %s\n"
+
+#: buildtools/separate.c:348
+msgid "Unable to create all localized category files.\n"
+msgstr "Kan inte skapa alla lokaliserade kategorifiler.\n"
+
+#: libs/extract.c:80 libs/extract.c:86 libs/extract.c:134
+#, c-format
+msgid "Cannot create temporary file: %s : %s\n"
+msgstr "Kan inte skapa tempor√§r fil: %s: %s\n"
+
+#: libs/extract.c:98
+#, c-format
+msgid "Cannot read file: %s : %s\n"
+msgstr "Kan inte l√§sa fil: %s: %s\n"
+
+#: libs/extract.c:167 libs/extract.c:182
+#, c-format
+msgid "Document is not well-formed XML: %s\n"
+msgstr "Dokumentet √§r inte korrekt XML: %s\n"
+
+#: libs/extract.c:175
+#, c-format
+msgid "Cannot stat file: %s : %s\n"
+msgstr "Kan inte ta status p√• fil: %s: %s\n"
+
+#: libs/extract.c:186
+#, c-format
+msgid "Cannot apply stylesheet to document of type: %s\n"
+msgstr "Kan inte till√§mpa stilmall p√• dokument av typen: %s\n"
+
+#: libs/extract.c:198
+#, c-format
+msgid "Cannot open output file: %s : %s \n"
+msgstr "Kan inte √∂ppna utdatafil: %s: %s\n"
+
+#: libs/extract.c:204
+#, c-format
+msgid "Cannot stat stylesheet file: %s : %s\n"
+msgstr "Kan inte ta status p√• stilmallsfil: %s: %s\n"
+
+#: scripts/gen-docuid.c:41 scripts/gen-docuid.c:44
+#, c-format
+msgid "Usage: %s\n"
+msgstr "Anv√§ndning: %s\n"
+
+#~ msgid "scrollkeeper-get-cl: Cannot open temp file: %s\n"
+#~ msgstr "scrollkeeper-get-cl: Kan inte √∂ppna tempor√§r fil: %s\n"
+
+#~ msgid "Tree separation failed\n"
+#~ msgstr "Tr√§dseparering misslyckades\n"
+
+#~ msgid "Cannot read file: %s: %s\n"
+#~ msgstr "Kan inte l√§sa fil: %s: %s\n"
+
+#~ msgid "Cannot open output file: %s: %s \n"
+#~ msgstr "Kan inte √∂ppna utdatafil: %s: %s\n"
+
+#~ msgid "Cannot open output file: %s : %s\n"
+#~ msgstr "Kan inte √∂ppna utdatafil: %s: %s\n"
+
+#~ msgid "Cannot open output file: %s: %s\n"
+#~ msgstr "Kan inte √∂ppna utdatafil: %s: %s\n"
+
+#~ msgid "Cannot stat stylesheet file: %s: %s\n"
+#~ msgstr "Kan inte ta status p√• stilmallsfil: %s: %s\n"
+
+#~ msgid "Could not create directory %s: %s\n"
+#~ msgstr "Kunde inte skapa katalogen %s: %s\n"
+
 #~ msgid "error while parsing %s\n"
 #~ msgstr "fel vid tolkning av %s\n"
 
@@ -971,17 +1102,14 @@ msgstr "gtk++"
 #~ "Usage:  toc <filename>\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Anv‰ndning: toc <filnamn>\n"
+#~ "Anv√§ndning: toc <filnamn>\n"
 #~ "\n"
 
 #~ msgid "wrong omf file %s\n"
 #~ msgstr "felaktig omf-fil %s\n"
 
-#~ msgid "scrollkeeper-install: out of memory: %s\n"
-#~ msgstr "scrollkeeper-install: slut pÂ minne: %s\n"
-
 #~ msgid "%s: warning: replacing %s with %s\n"
-#~ msgstr "%s: varning: ers‰tter %s med %s\n"
+#~ msgstr "%s: varning: ers√§tter %s med %s\n"
 
 #~ msgid "Usage: scrollkeeper_update [-p <SCROLLKEEPER_DB_DIR>]\n"
-#~ msgstr "Anv‰ndning: scrollkeeper_update [-p <SCROLLKEEPER-DATABASKAT>]\n"
+#~ msgstr "Anv√§ndning: scrollkeeper_update [-p <SCROLLKEEPER-DATABASKAT>]\n"

@@ -4,6 +4,9 @@ scrollkeeper-preinstall \- generate on OMF file, based on an existing
 OMF file, which has the correct URL for a document
 .SH SYNOPSIS
 .B "scrollkeeper-preinstall"
+[
+.B \-n
+]
 .IR url 
 .IR input-omf-file 
 .IR output-omf-file
@@ -30,6 +33,12 @@ The
 is typically the "file:" URI followed by the absolute path
 to a document which is (or will be) installed. 
 (eg. "file:/usr/doc/scrollkeeper/scrollkeeper.sgml") 
+
+.SH OPTIONS
+.TP
+.I \-n
+Use the network to retrieve the DTD if it is not available via the system's XML
+catalog.
 
 .SH AUTHOR
 Laszlo Kovacs   <laszlo.kovacs@sun.com>

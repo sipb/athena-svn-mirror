@@ -14,21 +14,23 @@ omf: omf_timestamp
 
 omf_timestamp: $(omffile)
 	-for file in $(omffile); do \
-	  $(top_builddir)/cl/src/scrollkeeper-preinstall $(docdir)/$(docname).xml $(srcdir)/$$file $(srcdir)/$$file.out; \
+	  $(top_builddir)/cl/src/scrollkeeper-preinstall $(docdir)/$(docname).xml $(srcdir)/$$file $$file.out; \
 	done
 	touch omf_timestamp
 
+# Install the OMF files
 install-data-hook-omf:
-	# Install the OMF files
 	$(mkinstalldirs) $(DESTDIR)$(omf_dest_dir)
 	for file in $(omffile); do \
-		$(INSTALL_DATA) $(srcdir)/$$file.out $(DESTDIR)$(omf_dest_dir)/$$file; \
+		$(INSTALL_DATA) $$file.out $(DESTDIR)$(omf_dest_dir)/$$file; \
 	done
 
+# Remove our OMF files and directory
 uninstall-local-omf:
-	# Remove our OMF files and directory
 	-for file in $(srcdir)/*.omf; do \
 		basefile=`basename $$file`; \
 		rm -f $(omf_dest_dir)/$$basefile; \
 	done
 	-rmdir $(omf_dest_dir)
+
+CLEANFILES+=*.out
