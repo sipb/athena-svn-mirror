@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.5 1993-07-17 01:22:30 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.6 1993-07-18 01:53:42 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -70,6 +70,7 @@ static XrmOptionDescRec opTable[] = {
 {"+map",        "*window.mapped", XrmoptionNoArg, 	(caddr_t) "False"},
 {"-input",	".input",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-inputfd",	".inputfd",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-nostdin",	".nostdin",	XrmoptionNoArg,		(caddr_t) "True"},
 {"-iconic",	"*window.iconic", XrmoptionNoArg,	(caddr_t) "True"},
 {"+iconic",	"*window.iconic", XrmoptionNoArg,	(caddr_t) "False"},
 {"-notimestamp",".timestamp",	XrmoptionNoArg,		(caddr_t) "False"},
@@ -90,7 +91,7 @@ typedef struct _MyResources
   int frequency, autoUnmap;
   char *input;
   int inputfd;
-  Boolean timestamp, autoscroll;
+  Boolean timestamp, autoscroll, nostdin;
   char *file;
   Boolean debug;
 } MyResources;
@@ -111,6 +112,8 @@ static XjResource appResources[] =
       offset(input), XjRString, (caddr_t)"" },
   { "inputfd", "Inputfd", XjRInt, sizeof(int),
       offset(inputfd), XjRInt, (caddr_t)0 },
+  { "nostdin", "Nostdin", XjRBoolean, sizeof(Boolean),
+      offset(nostdin), XjRBoolean, (caddr_t) False },
   { "timestamp", "Timestamp", XjRBoolean, sizeof(Boolean),
       offset(timestamp), XjRBoolean, (caddr_t) True },
   { "autoscroll", "Autoscroll", XjRBoolean, sizeof(Boolean),
@@ -793,8 +796,10 @@ main(argc, argv)
       SetScrollBar(sj, 0, MAX(cl - 1, 0), vl, val);
       SetLine(tj, val);
     }
-      
-  XjReadCallback((XjCallbackProc)input, zero, (caddr_t) &zero);
+
+  if (parms.nostdin == False)
+    XjReadCallback((XjCallbackProc)input, zero, (caddr_t) &zero);
+
   if (auxinput != -1)
     XjReadCallback((XjCallbackProc)input, auxinput, (caddr_t) &auxinput);
 
