@@ -1,3 +1,17 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains the main routine of the user program, "olc".
+ *
+ *      Chris VanHaren
+ *	Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1991 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/buttons.h,v $
+ *      $Author: lwvanels $
+ */
+
 #define	NEWQ_BTN	1
 #define	CONTQ_BTN	2
 #define	STOCK_BTN	3

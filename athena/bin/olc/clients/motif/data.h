@@ -1,3 +1,17 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains the constant defintions for xolc
+ *
+ *      Chris VanHaren
+ *	Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1991 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/data.h,v $
+ *      $Author: lwvanels $
+ */
+
 #define ICON_FILE	"xolc.xbm"
 
 #define HELP_INIT_NEWQ	"olc.init.newq"
