@@ -31,6 +31,7 @@ many)
 esac
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
+ln -s /var/usr/vice /root/usr/vice
 mkdir /root/var/tmp
 mkdir /root/var/rtmp
 chmod 1777 /root/var/tmp
@@ -97,7 +98,6 @@ cp /dev/null /root/reconfigure
 cd /root
 echo "Creating other files/directories on the pack's root..."
 mkdir afs mit 
-ln -s /var/usr/vice usr/vice
 chmod 1777 /root/tmp 
 
 echo "Finishing etc"
