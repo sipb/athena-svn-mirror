@@ -34,7 +34,7 @@ This interface is subject to change, so nothing other than the
 necessary system software should depend on it.
 .SH OPTIONS
 When run, \fInanny\fR checks to see if there is already a nanny
-running by attempting to communicate with it via a socket in /tmp. If
+running by attempting to communicate with it via a socket in /var/athena. If
 there is a response, \fInanny\fR just sends it the appropriate
 commands. If not, the invoked \fInanny\fR forks and the child becomes
 the running \fInanny\fR. Each of the following options is equivalent
@@ -128,7 +128,7 @@ This variable indicates how much debugging information \fInanny\fR
 spews through \fIsyslog\fR. Zero is none; five is all.
 .SH FILES
 .PP
-/tmp/.nanny/nanny         communications socket
+/var/athena/nanny         communications socket
 .br
 /var/X11/xdm/Xlogin       location of -xup call to nanny
 .br
