@@ -36,10 +36,10 @@
 ftpd \- DARPA Internet File Transfer Protocol server
 .SH SYNOPSIS
 .B ftpd
-[\fB\-d\fP] [\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP
-\fImaxtimeout\fP] [\fB\-p\fP \fIport\fP] [\fB\-a\fP] [\fB\-A\fP]
-[\fB\-r\fP \fIrealm-file\fP]
-[\fB\-s\fP \fIsrvtab\fP] [\fB\-E\fP] [\fB\-C\fP]
+[\fB\-a \fP|\fB -A\fP] [\fB\-c\fP] [\fB\-C\fP] [\fB\-d\fP] [\fB\-E\fP]
+[\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP \fImaxtimeout\fP]
+[\fB\-p\fP \fIport\fP] [\fB\-u\fP \fIumask\fP]
+[\fB\-r\fP \fIrealm-file\fP] [\fB\-s\fP \fIsrvtab\fP]
 [\fB\-w\fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]]]
 .SH DESCRIPTION
 .B Ftpd
@@ -53,8 +53,32 @@ specification; see
 .PP
 Available options:
 .TP
+.B \-A
+Connections are only allowed for users who can authenticate via the
+ftp AUTH mechanism. (Anonymous ftp may also be allowed if it is 
+configured.) Ftpd will ask the user for a password if one is
+required.
+.TP
+.B \-a
+Connections are only allowed for users who can authenticate (via the
+ftp AUTH mechanism) and who are authorized to connect to the named 
+account without a password. (Anonymous ftp may also be allowed if it is 
+configured.)
+.TP
+.B \-C
+Non-anonymous users need local credentials (for example, to authenticate
+to remote fileservers), and so they should be prompted for a password
+unless they forwarded credentials as part of authentication.
+.TP
+.B \-c
+Allow the CCC (Clear Command Channel) command to be used. This allows
+less secure connections, and should probably only be used when debugging.
+.TP
 .B \-d
 Debugging information is written to the syslog.
+.TP
+.B \-E
+Don't allow passwords to be typed across unencrypted connections.
 .TP
 .B \-l
 Each
@@ -74,43 +98,26 @@ seconds with the
 .B \-T
 option.  The default limit is 2 hours.
 .TP
-.B \-A
-Connections are only allowed for users who can authenticate via the
-ftp AUTH mechanism. (Anonymous ftp may also be allowed if it is 
-configured.) Ftpd will ask the user for a password if one is
-required.
-.TP
-.B \-a
-Connections are only allowed for users who can authenticate (via the
-ftp AUTH mechanism) and who are authorized to connect to the named 
-account without a password. (Anonymous ftp may also be allowed if it is 
-configured.)
-.TP
-.B \-C
-Non-anonymous users need local credentials (for example, to authenticate
-to remote fileservers), and so they should be prompted for a password
-unless they forwarded credentials as part of authentication.
-.TP
-.B \-E
-Don't allow passwords to be typed across unencrypted connections.
-.TP
 \fB\-p\fP \fIport\fP
 Run as a server and accept a connection on
 .IR port .
 Normally the ftp server is invoked by
 .IR inetd (8).
 .TP
+\fB\-u\fP \fIumask\fP
+Sets the umask for the ftpd process.  The default value is normally 027.
+.TP
 \fB\-r\fP \fIrealm-file\fP
 Sets the name of the
 .I krb.conf
-file to use.  The default value is normally
-.IR /usr/kerberos/lib/krb.conf .
+file to use.  The default value is normally set by
+.IR /etc/krb5.conf .
 .TP
 \fB\-s\fP \fIsrvtab\fP
 Sets the name of the
 .I srvtab
-file to use.  The default value is normally
-.IR /etc/krb-srvtab .
+file to use for Kerberos V4 authentication.  The default value is normally
+.IR /etc/srvtab .
 .TP
 \fB\-w \fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]]
 Controls the form of the remote hostname passed to login(1).
@@ -153,6 +160,11 @@ append to a file
 .TP
 AUTH
 specify an authentication protocol to be performed
+.sp -1
+.TP
+CCC
+set the command channel protection mode to "Clear" (no protection).
+Only available if the \fB-c\fP command-line option was given.
 .sp -1
 .TP
 CDUP
