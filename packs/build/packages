@@ -1,4 +1,4 @@
-# $Id: packages,v 1.90 1999-10-11 02:34:47 ghudson Exp $
+# $Id: packages,v 1.91 1999-10-16 20:13:59 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -88,6 +88,7 @@ athena/etc/newsyslog
 athena/etc/rkinitd		requires krb5,athena/lib/rkinit
 athena/etc/synctree
 athena/etc/track
+athena/etc/writed
 athena/etc/xdm			requires krb5,al,wcl,larv,Mu
 
 athena/lib/Mu
