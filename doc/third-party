@@ -19,6 +19,14 @@ Third-party stuff not under third
 		the master copy is inaccessible.  This should be
 		updated at release time.
 
+	* athena/etc/xdm/xlogin/bitmaps/menu16
+
+		This is from the X11 release; it probably never
+		changes.  We have a copy of it here because xlogin
+		needs all its bitmaps locally in /etc/athena/login,
+		and fetching it out of the vendor X distribution at
+		build time is contrary to principles.
+
 Distribution sites for software under third
 -------------------------------------------
 
