@@ -1,0 +1,563 @@
+# Danish translation of nautilus-cd-burner.
+# Copyright (C) 2003, 04 Free Software Foundation, Inc.
+# This file is distributed under the same license as the nautilus-cd-burner package.
+# Kenneth Christiansen <kenneth@gnu.org>, 2003.
+# Ole Laursen <olau@hardworking.dk>, 2003, 04.
+# Martin Willemoes Hansen <mwh@sysrq.dk>, 2004.
+#
+# Konventioner:
+#
+#   blank -> tom, tomt
+#   image -> aftryk
+#   creator -> brænder
+#   recorder -> brænder
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-cd-burner 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"PO-Revision-Date: 2004-08-02 00:40+0200\n"
+"Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
+"Language-Team: Danish <dansk@klid.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: bacon-cd-selection.c:187
+msgid "Unnamed CDROM"
+msgstr "Cd-rom uden navn"
+
+#: burn-extension.c:64
+msgid "Unable to launch the cd burner application"
+msgstr "Kan ikke starte cd-brænder-programmet"
+
+#: burn-extension.c:66
+msgid "Can't launch cd burner"
+msgstr "Kan ikke starte cd-brænder"
+
+#: burn-extension.c:146 burn-extension.c:173
+msgid "_Write to Disc..."
+msgstr "_Skriv på disk..."
+
+#: burn-extension.c:147
+msgid "Write disc image to a CD or DVD disc"
+msgstr "Skriv diskaftryk til en cd- eller en dvd-disk"
+
+#: burn-extension.c:174 burn-extension.c:203
+msgid "Write contents to a CD or DVD disc"
+msgstr "Skriv indholdet til en cd eller en dvd disk"
+
+#: burn-extension.c:202 cdburn.glade.h:15
+msgid "Write to Disc"
+msgstr "Skriv på disk"
+
+#: cd-drive.c:744
+#, c-format
+msgid "Unnamed SCSI Drive (%s)"
+msgstr "SCSI-drev (%s) uden navn"
+
+#: cd-drive.c:1304
+msgid "File image"
+msgstr "Filaftryk"
+
+#. This fits the "open64" and "open"-like messages
+#: cd-recorder.c:313
+msgid "The recorder could not be accessed"
+msgstr "Optageren kunne ikke tilgås"
+
+#: cd-recorder.c:316
+msgid "Not enough space available on the disc"
+msgstr "Ikke tilstrækkeligt plads tilgængeligt på disken"
+
+#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+msgid "The files selected did not fit on the CD"
+msgstr "De valgte filer kunne ikke være på cd'en"
+
+#: cd-recorder.c:330
+msgid "Unhandled error, aborting"
+msgstr "Ikke-håndteret fejl, afbryder"
+
+#: cd-recorder.c:367
+msgid "The CD has already been recorded"
+msgstr "Cd'en er allerede brændt"
+
+#: cd-recorder.c:377
+msgid ""
+"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr ""
+"Alle musikfiler skal være stereo 16 bit digital lyd med 44100Hz samples"
+
+#: cd-recorder.c:384
+msgid ""
+"The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr ""
+"Systemet er for langsom til at skrive cd'en ved denne hastighed. Prøv en "
+"langsommere hastighed."
+
+#: cd-recorder.c:503
+msgid "You can only burn 99 tracks on one disc"
+msgstr "Du kan kun brænde 99 spor på en disk"
+
+#: cdburn.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: cdburn.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: cdburn.glade.h:3
+msgid "<b>After Writing</b>"
+msgstr "<b>Efter skrivning</b>"
+
+#: cdburn.glade.h:4
+msgid "<b>Information</b>"
+msgstr "<b>Information</b>"
+
+#: cdburn.glade.h:5
+msgid "<b>Write Options</b>"
+msgstr "<b>Skriveindstillinger</b>"
+
+#: cdburn.glade.h:6
+msgid "<big><b>Writing files to disc progress</b></big>"
+msgstr "<big><b>Fremgang for diskskrivning</b></big>"
+
+#: cdburn.glade.h:7
+msgid "<i>Initializing...</i>"
+msgstr "<i>Klargør...</i>"
+
+#: cdburn.glade.h:8
+msgid "Data size:"
+msgstr "Datastørrelse:"
+
+#: cdburn.glade.h:9
+msgid "Disc _name:"
+msgstr "Disk_navn:"
+
+#: cdburn.glade.h:10
+msgid "E_ject disc"
+msgstr "_Skub disk ud"
+
+#: cdburn.glade.h:11
+msgid "Label to identify disc"
+msgstr "Tekst til at identificere disk"
+
+#: cdburn.glade.h:12
+msgid "Select the speed to use for the write"
+msgstr "Vælg hastigheden der skal bruges til at skrive med"
+
+#: cdburn.glade.h:13
+msgid ""
+"Selected files are to be written to a CD or DVD disc. This operation may "
+"take a long time, depending on data size and write speed."
+msgstr ""
+"De valgte filer vil blive skrevet til en cd eller dvd disk. Denne operation "
+"kan tage lang tid, alt efter datastørrelse og skrivehastighed"
+
+#: cdburn.glade.h:14
+msgid "Write _speed:"
+msgstr "_Skrivehastighed:"
+
+#: cdburn.glade.h:16
+msgid "Writing Files to Disc Progress"
+msgstr "Fremgang for diskskrivning"
+
+#: cdburn.glade.h:17
+msgid "_Dummy write"
+msgstr "_Attrapskrivning"
+
+#: cdburn.glade.h:18
+msgid "_Reuse these files for another disc"
+msgstr "Genb_rug disse filer til en anden disk"
+
+#: cdburn.glade.h:19
+msgid "_Write"
+msgstr "_Skriv"
+
+#: cdburn.glade.h:20
+msgid "_Write disc to:"
+msgstr "_Skriv disk til:"
+
+#: make-iso.c:251
+msgid ""
+"Some files don't have a suitable name for a Windows-compatible CD.\n"
+"Do you want to continue with Windows compatibility disabled?"
+msgstr ""
+"Nogle filer har ikke et passende navn til en Windows-kompatibel cd.\n"
+"Ønsker du at fortsætte med Windows-kompabitilitet deaktiveret?"
+
+#: make-iso.c:252
+msgid "Windows compatibility"
+msgstr "Windows-kompatibilitet"
+
+#: make-iso.c:576
+msgid "No files selected to write to CD."
+msgstr "Ingen filer valgt til skrivning til cd."
+
+#: make-iso.c:578 nautilus-cd-burner.c:1134
+msgid "No files selected"
+msgstr "Ingen filer valgt"
+
+#: make-iso.c:659
+#, c-format
+msgid "Not enough space to store CD image (%ld Megabyte needed)"
+msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
+msgstr[0] "Ikke nok plads til at gemme cd-aftrykket (%ld megabyte krævet)"
+msgstr[1] "Ikke nok plads til at gemme cd-aftrykket (%ld megabyte krævet)"
+
+#: make-iso.c:664
+msgid "Not enough space"
+msgstr "Ikke nok plads"
+
+#: make-iso.c:700
+msgid "Creating CD image"
+msgstr "Opretter cd-aftryk"
+
+#: nautilus-cd-burner.c:137
+msgid " (invalid Unicode)"
+msgstr " (ugyldig Unicode)"
+
+#: nautilus-cd-burner.c:283
+msgid "Preparing to write CD"
+msgstr "Forbereder skrivning til cd"
+
+#: nautilus-cd-burner.c:285
+msgid "Preparing to write DVD"
+msgstr "Forbereder skrivning til dvd"
+
+#: nautilus-cd-burner.c:290
+msgid "Writing CD"
+msgstr "Skriver cd"
+
+#: nautilus-cd-burner.c:292
+msgid "Writing DVD"
+msgstr "Skriver dvd"
+
+#: nautilus-cd-burner.c:297
+msgid "Fixating CD"
+msgstr "Fikserer cd"
+
+#: nautilus-cd-burner.c:299
+msgid "Fixating DVD"
+msgstr "Fikserer dvd"
+
+#: nautilus-cd-burner.c:304
+msgid "Erasing CD"
+msgstr "Rydder cd"
+
+#: nautilus-cd-burner.c:306
+msgid "Erasing DVD"
+msgstr "Rydder dvd"
+
+#: nautilus-cd-burner.c:332
+msgid "Please make sure another application is not using the disc."
+msgstr "Kontrollér venligst, at intet andet program bruger disken."
+
+#: nautilus-cd-burner.c:333
+msgid "Disc is busy"
+msgstr "Disken er i brug"
+
+#: nautilus-cd-burner.c:335
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr "Indsæt venligst et genskrivbart eller tomt medie i drevet."
+
+#: nautilus-cd-burner.c:336
+msgid "Insert rewritable or blank media"
+msgstr "Indsæt genskrivbart eller tomt medie"
+
+#: nautilus-cd-burner.c:338
+msgid "Please insert a blank media in the drive tray."
+msgstr "Indsæt venligst et tomt medie i drevet."
+
+#: nautilus-cd-burner.c:339
+msgid "Insert blank media"
+msgstr "Indsæt tomt medie"
+
+#: nautilus-cd-burner.c:341
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr "Erstart venligst mediet i drevet med et genskrivbart eller tomt medie."
+
+#: nautilus-cd-burner.c:342
+msgid "Reload rewritable or blank media"
+msgstr "Genindsæt genskrivbart eller tomt medie"
+
+#: nautilus-cd-burner.c:344
+msgid "Please replace the in-drive media by a blank media."
+msgstr "Erstart venligst mediet i drevet med et tomt medie."
+
+#: nautilus-cd-burner.c:345
+msgid "Reload blank media"
+msgstr "Genindsæt tomt medie"
+
+#: nautilus-cd-burner.c:373
+msgid "Disc writing error details"
+msgstr "Detaljer om disk-skrivningsfejl"
+
+#: nautilus-cd-burner.c:379
+msgid "Detailed error output from cdrecord:"
+msgstr "Detaljeret fejluddata fra cdrecord:"
+
+#: nautilus-cd-burner.c:420
+#, c-format
+msgid ""
+"There was an error writing to the CD:\n"
+"%s"
+msgstr ""
+"Der opstod en fejl under skrivningen til cd'en:\n"
+"%s"
+
+#: nautilus-cd-burner.c:421
+msgid "There was an error writing to the CD"
+msgstr "Der opstod en fejl under skrivningen til cd'en"
+
+#: nautilus-cd-burner.c:422
+msgid "Error writing to CD"
+msgstr "Fejl under skrivning til cd"
+
+#: nautilus-cd-burner.c:428
+msgid "_Details"
+msgstr "_Detaljer"
+
+#: nautilus-cd-burner.c:501
+#, c-format
+msgid ""
+"A file named \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"En fil med navnet \"%s\" eksisterer allerede.\n"
+"Ønsker du at overskrive den?"
+
+#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+msgid "_Overwrite"
+msgstr "_Overskriv"
+
+#: nautilus-cd-burner.c:530
+msgid "Choose a filename for the cdrom image"
+msgstr "Vælg et filnavn til cd-aftrykket"
+
+#: nautilus-cd-burner.c:585
+#, c-format
+msgid "You do not have permissions to overwrite that file (%s)."
+msgstr "Du har ikke rettighed til at overskrive filen (%s)."
+
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+msgid "File image creation failed"
+msgstr "Oprettelse af filaftryk mislykkedes"
+
+#: nautilus-cd-burner.c:598
+#, c-format
+msgid "You do not have permissions to create that file (%s)."
+msgstr "Du har ikke rettighed til at oprette filen (%s)."
+
+#: nautilus-cd-burner.c:661
+#, c-format
+msgid "Completed writing %s"
+msgstr "Færdig med skrivning af %s"
+
+#: nautilus-cd-burner.c:719
+msgid "Complete"
+msgstr "Fuldført"
+
+#: nautilus-cd-burner.c:782
+msgid "Maximum Possible"
+msgstr "Størst mulig"
+
+#: nautilus-cd-burner.c:859
+#, c-format
+msgid "%d MB"
+msgstr "%d MB"
+
+#.
+#. translators: see strftime man page for meaning of %b, %d and %Y
+#. the maximum length for this field is 32 bytes
+#.
+#: nautilus-cd-burner.c:887
+msgid "Personal Data, %b %d, %Y"
+msgstr "Personlige data, %d. %b., %Y"
+
+#: nautilus-cd-burner.c:920
+msgid "Cancel write"
+msgstr "Annullér skrivning"
+
+#: nautilus-cd-burner.c:921
+msgid ""
+"Are you sure you want to cancel the disc write operation?\n"
+"Some optical media drives may require that you restart the machine to get it "
+"working again."
+msgstr ""
+"Er du sikker på at du vil annullere disk-skrivningen?\n"
+"Nogle optiske drev kræver at man genstarter maskinen for at få det til at "
+"virke igen."
+
+#: nautilus-cd-burner.c:925
+msgid "Continue"
+msgstr "Fortsæt"
+
+#: nautilus-cd-burner.c:977
+#, c-format
+msgid "There was a problem displaying the help contents: %s."
+msgstr "Der opstod en fejl under visningen af indholdet af hjælp: %s."
+
+#: nautilus-cd-burner.c:978
+msgid "Cannot display help"
+msgstr "Kan ikke vise hjælp"
+
+#: nautilus-cd-burner.c:1093
+msgid "Too many parameters"
+msgstr "For mange parametre"
+
+#: nautilus-cd-burner.c:1094
+msgid "Too many parameters were passed to the application."
+msgstr "Programmet fik for mange parametre."
+
+#: nautilus-cd-burner.c:1116
+#, c-format
+msgid "The file '%s' is not a valid CD image."
+msgstr "Filen '%s' er ikke et gyldigt cd-aftryk."
+
+#: nautilus-cd-burner.c:1119
+msgid "Not a valid CD image"
+msgstr "Ikke et gyldig cd-aftryk"
+
+#: nautilus-cd-burner.c:1135
+msgid ""
+"You need to copy the files you want to write to disc to the CD/DVD Creator "
+"window. Would you like to open it now?"
+msgstr ""
+"Du skal kopiere de filer du ønsker at skrive til disken til cd/dvd-"
+"brændingsvinduet. Vil du åbne det nu?"
+
+#: nautilus-cd-burner.c:1137
+msgid "Open CD/DVD Creator"
+msgstr "Åbn cd/dvd-brænder"
+
+#: ncb.schemas.in.h:1
+msgid "Default burn speed"
+msgstr "Standardhastighed"
+
+#: ncb.schemas.in.h:2
+msgid "Default speed at which the media will be written."
+msgstr "Standardhastighed som mediet vil blive skrevet med."
+
+#: ncb.schemas.in.h:3
+msgid "Directory for the temporary ISO images"
+msgstr "Mappe til de midlertidige ISO-aftryk"
+
+#: ncb.schemas.in.h:4
+msgid ""
+"Directory used for the temporary ISO images, leave blank to use the default "
+"system temporary directory."
+msgstr ""
+"Mappe til de midlertidige ISO-aftryk, efterlad tom for at benytte systemets "
+"standardmappe til midlertidige filer"
+
+#: ncb.schemas.in.h:5
+msgid "Enable Burnproof option"
+msgstr "Aktivér fejlbrændingssikring"
+
+#: ncb.schemas.in.h:6
+msgid "Enable debug"
+msgstr "Aktivér fejlfinding"
+
+#: ncb.schemas.in.h:7
+msgid "Enable overburn"
+msgstr "Aktivér overbrænding"
+
+#: ncb.schemas.in.h:8
+msgid "Whether to allow the data to exceed the size of the physical medium."
+msgstr "Om data må overstige størrelsen af det fysiske medium."
+
+#: ncb.schemas.in.h:9
+msgid "Whether to enable the debugging for CD Recording."
+msgstr "Om fejlfinding for cdbrænding er aktiveret."
+
+#: ncb.schemas.in.h:10
+msgid "Whether to use the Burnproof option available on some recorders."
+msgstr "Om fejlbrændingssikring, tilgængelig på nogle brændere, skal bruges"
+
+#~ msgid "<b>Writing to CD. Please wait.</b>"
+#~ msgstr "<b>Skriver til cd'en. Vent venligst.</b>"
+
+#~ msgid "Dummy write (debug build)"
+#~ msgstr "Attrapskrivning (fejlretningstilstand)"
+
+#~ msgid "Eject CD when done"
+#~ msgstr "Skub cd'en ud når brændingen er færdig"
+
+#~ msgid "Erase CD"
+#~ msgstr "Ryd cd"
+
+#~ msgid "Erase entire contents of CD before writing"
+#~ msgstr "Ryd hele indholdet af cd'en før skrivning"
+
+#~ msgid "Keep the selected files so that you can use them for another CD"
+#~ msgstr "Bevar de markerede filer så du kan bruge dem til en anden cd"
+
+#~ msgid "Select a CD writer or image file"
+#~ msgstr "Vælg en cd-brænder eller en aftryksfil"
+
+#~ msgid "Target to write to:"
+#~ msgstr "Destination at skrive til:"
+
+#~ msgid "When the write is done, eject the CD tray"
+#~ msgstr "Skub cd'en ud når skrivningen er færdig"
+
+#~ msgid "Please reload the CD in the CD writer."
+#~ msgstr "Genindsæt venligst cd'en i cd-brænderen."
+
+#~ msgid "Reload CD"
+#~ msgstr "Genindsæt cd"
+
+#~ msgid "Please insert a blank CD in the CD writer."
+#~ msgstr "Indsæt venligst en tom cd i cd-brænderen."
+
+#~ msgid "Insert blank CD"
+#~ msgstr "Indsæt tom cd"
+
+#~ msgid "Please insert a blank CD-RW in the CD writer."
+#~ msgstr "Indsæt venligst en tom cd-rw i cd-brænderen."
+
+#~ msgid "Insert blank CD-RW"
+#~ msgstr "Indsæt tom cd-rw"
+
+#~ msgid "You have selected %d megabyte of files to be written to the CD."
+#~ msgstr "Du har valgt %d megabyte filer til skrivning til cd."
+
+#~ msgid "Are you sure you want to cancel?"
+#~ msgstr "Er du sikker på at du vil afbryde?"
+
+#~ msgid "Too many parameters to nautilus-cd-burner"
+#~ msgstr "For mange parametre til nautilus-cd-burner"
+
+#~ msgid ""
+#~ "You do not seem to have any CD recorder in your machine. Please verify "
+#~ "your setup."
+#~ msgstr ""
+#~ "Det lader ikke til at der sidder en cd-brænder i din maskine. Kontroller "
+#~ "din opsætning."
+
+#~ msgid "No CD recorder available"
+#~ msgstr "Ingen cd-brænder tilgængelig"
+
+#~ msgid "Create a CD that you can use with ordinary stereo equipment"
+#~ msgstr "Opret en cd som du kan bruge med almindeligt stereo-udstyr"
+
+#~ msgid "Create a music CD"
+#~ msgstr "Opret en musik-cd"
+
+#~ msgid "Factory for the nautilus-cd-burner context menu"
+#~ msgstr "Fabrik til nautilus-cd-burner-kontekstmenuen"
+
+#~ msgid "Nautilus context menu entries for CD burning"
+#~ msgstr "Nautilus-kontekstmenupunkter til cd-brænding"
+
+#~ msgid "nautilus-cd-burner context menu"
+#~ msgstr "Kontekstmenu til nautilus-cd-burner "
+
+#~ msgid "nautilus-cd-burner context menu factory"
+#~ msgstr "Kontekstmenufabrik til nautilus-cd-burner"
+
+#~ msgid "CD burning context menu items"
+#~ msgstr "Kontekstmenupunkter til cd-brænding"

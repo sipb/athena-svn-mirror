@@ -1,0 +1,466 @@
+# This file is distributed under the same license as the PACKAGE package.
+# Young-Ho, Cha <ganadist@mizi.com>, 2003.
+# Changwoo Ryu <cwryu@debian.org>, 2004.
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-cd-burner 0.6.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"PO-Revision-Date: 2004-08-01 01:29+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: bacon-cd-selection.c:187
+msgid "Unnamed CDROM"
+msgstr "이름 없는 CDROM"
+
+#: burn-extension.c:64
+msgid "Unable to launch the cd burner application"
+msgstr "CD 굽기 프로그램을 실행할 수 없습니다"
+
+#: burn-extension.c:66
+msgid "Can't launch cd burner"
+msgstr "CD 굽기를 실행할 수 없습니다"
+
+#: burn-extension.c:146 burn-extension.c:173
+msgid "_Write to Disc..."
+msgstr "디스크에 쓰기(_W)..."
+
+#: burn-extension.c:147
+msgid "Write disc image to a CD or DVD disc"
+msgstr "디스크 이미지를 CD/DVD 디스크에 쓰기"
+
+#: burn-extension.c:174 burn-extension.c:203
+msgid "Write contents to a CD or DVD disc"
+msgstr "내용을 CD/DVD 디스크에 쓰기"
+
+#: burn-extension.c:202 cdburn.glade.h:15
+msgid "Write to Disc"
+msgstr "디스크에 쓰기"
+
+#: cd-drive.c:744
+#, c-format
+msgid "Unnamed SCSI Drive (%s)"
+msgstr "이름 없는 SCSI 드라이브 (%s)"
+
+#: cd-drive.c:1304
+msgid "File image"
+msgstr "파일 이미지"
+
+#. This fits the "open64" and "open"-like messages
+#: cd-recorder.c:313
+msgid "The recorder could not be accessed"
+msgstr "레코더에 접근할 수 없습니다"
+
+#: cd-recorder.c:316
+msgid "Not enough space available on the disc"
+msgstr "디스크에 충분한 공간이 남아 있지 않습니다"
+
+#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+msgid "The files selected did not fit on the CD"
+msgstr "선택한 파일이 CD에 맞지 않습니다"
+
+#: cd-recorder.c:330
+msgid "Unhandled error, aborting"
+msgstr "처리되지 않는 오류, 중지합니다"
+
+#: cd-recorder.c:367
+msgid "The CD has already been recorded"
+msgstr "CD를 이미 기록했습니다"
+
+#: cd-recorder.c:377
+msgid ""
+"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr ""
+"모든 음악파일은 스테레오, 44100 샘플링된 16비트 디지털 오디오여야 합니다."
+
+#: cd-recorder.c:384
+msgid ""
+"The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr ""
+"이 속도로 CD를 쓰기에는 시스템이 너무 느립니다. 더 낮은 속도로 해 보십시오."
+
+#: cd-recorder.c:503
+msgid "You can only burn 99 tracks on one disc"
+msgstr "한 디스크에 99개까지의 트랙만 구울 수 있습니다"
+
+#: cdburn.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: cdburn.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: cdburn.glade.h:3
+msgid "<b>After Writing</b>"
+msgstr "<b>쓴 후에</b>"
+
+#: cdburn.glade.h:4
+msgid "<b>Information</b>"
+msgstr "<b>정보</b>"
+
+#: cdburn.glade.h:5
+msgid "<b>Write Options</b>"
+msgstr "<b>쓰기 옵션</b>"
+
+#: cdburn.glade.h:6
+msgid "<big><b>Writing files to disc progress</b></big>"
+msgstr "<big><b>디스크에 파일 쓰기 진행 상태</b></big>"
+
+#: cdburn.glade.h:7
+msgid "<i>Initializing...</i>"
+msgstr "<i>초기화하는 중입니다...</i>"
+
+#: cdburn.glade.h:8
+msgid "Data size:"
+msgstr "데이터 크기:"
+
+#: cdburn.glade.h:9
+msgid "Disc _name:"
+msgstr "디스크 이름(_N):"
+
+#: cdburn.glade.h:10
+msgid "E_ject disc"
+msgstr "디스크 빼기(_J)"
+
+#: cdburn.glade.h:11
+msgid "Label to identify disc"
+msgstr "디스크를 구분하는 레이블"
+
+#: cdburn.glade.h:12
+msgid "Select the speed to use for the write"
+msgstr "구울 속도를 선택하십시오"
+
+#: cdburn.glade.h:13
+msgid ""
+"Selected files are to be written to a CD or DVD disc. This operation may "
+"take a long time, depending on data size and write speed."
+msgstr ""
+"선택한 파일을 CD/DVD 디스크에 씁니다. 이 작업은 시간이 데이터의 크기와 쓰기 "
+"속도에 따라 오래 걸릴 수도 있습니다."
+
+#: cdburn.glade.h:14
+msgid "Write _speed:"
+msgstr "쓰기 속도(_S):"
+
+#: cdburn.glade.h:16
+msgid "Writing Files to Disc Progress"
+msgstr "디스크에 파일 쓰기 진행 상태"
+
+#: cdburn.glade.h:17
+msgid "_Dummy write"
+msgstr "가짜로 쓰기(_D)"
+
+#: cdburn.glade.h:18
+msgid "_Reuse these files for another disc"
+msgstr "파일을 다른 디스크에서 다시 쓰기(_R)"
+
+#: cdburn.glade.h:19
+msgid "_Write"
+msgstr "쓰기(_W)"
+
+#: cdburn.glade.h:20
+msgid "_Write disc to:"
+msgstr "디스크 쓰기(_W):"
+
+#: make-iso.c:251
+msgid ""
+"Some files don't have a suitable name for a Windows-compatible CD.\n"
+"Do you want to continue with Windows compatibility disabled?"
+msgstr ""
+"몇몇 파일의 파일이름이 Windows 호환 CD에서 쓸 수 없는 이름입니다.\n"
+"Windows 호환을 사용하지 않고 계속 하시겠습니까?"
+
+#: make-iso.c:252
+msgid "Windows compatibility"
+msgstr "Windows 호환"
+
+#: make-iso.c:576
+msgid "No files selected to write to CD."
+msgstr "CD에 쓸 파일이 선택되지 않았습니다."
+
+#: make-iso.c:578 nautilus-cd-burner.c:1134
+msgid "No files selected"
+msgstr "파일 선택되지 않음"
+
+#: make-iso.c:659
+#, c-format
+msgid "Not enough space to store CD image (%ld Megabyte needed)"
+msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
+msgstr[0] "CD 이미지에 저장할 공간이 없습니다 (%ld MB 필요함)"
+
+#: make-iso.c:664
+msgid "Not enough space"
+msgstr "공간이 모자랍니다"
+
+#: make-iso.c:700
+msgid "Creating CD image"
+msgstr "CD 이미지 만드는 중"
+
+#: nautilus-cd-burner.c:137
+msgid " (invalid Unicode)"
+msgstr " (잘못된 유니코드)"
+
+#: nautilus-cd-burner.c:283
+msgid "Preparing to write CD"
+msgstr "CD 쓰기 준비 중"
+
+#: nautilus-cd-burner.c:285
+msgid "Preparing to write DVD"
+msgstr "VDV 쓰기 준비 중"
+
+#: nautilus-cd-burner.c:290
+msgid "Writing CD"
+msgstr "CD 쓰기"
+
+#: nautilus-cd-burner.c:292
+msgid "Writing DVD"
+msgstr "DVD 쓰기"
+
+#: nautilus-cd-burner.c:297
+msgid "Fixating CD"
+msgstr "CD 고정 시키는 중"
+
+#: nautilus-cd-burner.c:299
+msgid "Fixating DVD"
+msgstr "DVD 고정 시키는 중"
+
+#: nautilus-cd-burner.c:304
+msgid "Erasing CD"
+msgstr "CD 지우는 중"
+
+#: nautilus-cd-burner.c:306
+msgid "Erasing DVD"
+msgstr "DVD 지우는 중"
+
+#: nautilus-cd-burner.c:332
+msgid "Please make sure another application is not using the disc."
+msgstr "다른 프로그램에서 이 디스크를 사용하지 않도록 하십시오."
+
+#: nautilus-cd-burner.c:333
+msgid "Disc is busy"
+msgstr "디스크를 사용중입니다"
+
+#: nautilus-cd-burner.c:335
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr "드라이브 트레이에 반복해서 쓸 수 있거나 비어 있는 미디어를 넣으십시오."
+
+#: nautilus-cd-burner.c:336
+msgid "Insert rewritable or blank media"
+msgstr "반복해서 쓸 수 있거나 비어 있는 미디어를 넣으십시오"
+
+#: nautilus-cd-burner.c:338
+msgid "Please insert a blank media in the drive tray."
+msgstr "드라이브 트레이에 빈 미디어를 넣으십시오."
+
+#: nautilus-cd-burner.c:339
+msgid "Insert blank media"
+msgstr "빈 미디어를 넣으십시오"
+
+#: nautilus-cd-burner.c:341
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr ""
+"드라이브에 있는 미디어를 반복해서 쓸 수 있거나 비어 있는 미디어로 바꾸십시오."
+
+#: nautilus-cd-burner.c:342
+msgid "Reload rewritable or blank media"
+msgstr "반복해서 쓸 수 있거나 비어 있는 미디어로 바꾸기"
+
+#: nautilus-cd-burner.c:344
+msgid "Please replace the in-drive media by a blank media."
+msgstr "드라이브에 있는 미디어를 반복해서 빈 미디어로 바꾸십시오."
+
+#: nautilus-cd-burner.c:345
+msgid "Reload blank media"
+msgstr "빈 미디어로 바꾸기"
+
+#: nautilus-cd-burner.c:373
+msgid "Disc writing error details"
+msgstr "디스크 쓰기 오류 상세 정보"
+
+#: nautilus-cd-burner.c:379
+msgid "Detailed error output from cdrecord:"
+msgstr "CD 레코더에서 나온 자세한 오류 출력:"
+
+#: nautilus-cd-burner.c:420
+#, c-format
+msgid ""
+"There was an error writing to the CD:\n"
+"%s"
+msgstr ""
+"CD를 굽는중 오류가 생겼습니다:\n"
+"%s"
+
+#: nautilus-cd-burner.c:421
+msgid "There was an error writing to the CD"
+msgstr "CD를 굽는중 오류가 생겼습니다"
+
+#: nautilus-cd-burner.c:422
+msgid "Error writing to CD"
+msgstr "CD 굽는중 오류"
+
+#: nautilus-cd-burner.c:428
+msgid "_Details"
+msgstr "자세히 보기(_D)"
+
+#: nautilus-cd-burner.c:501
+#, c-format
+msgid ""
+"A file named \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"이름이 \"%s\"인 파일이 이미 있습니다.\n"
+"덮어 쓰시겠습니까?"
+
+#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+msgid "_Overwrite"
+msgstr "덮어쓰기(_O)"
+
+#: nautilus-cd-burner.c:530
+msgid "Choose a filename for the cdrom image"
+msgstr "CDROM 이미지의 파일이름 선택"
+
+#: nautilus-cd-burner.c:585
+#, c-format
+msgid "You do not have permissions to overwrite that file (%s)."
+msgstr "그 파일을 (%s) 덮어 쓸 권한이 없습니다."
+
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+msgid "File image creation failed"
+msgstr "파일 이미지 만들기가 실패했습니다"
+
+#: nautilus-cd-burner.c:598
+#, c-format
+msgid "You do not have permissions to create that file (%s)."
+msgstr "그 파일을 (%s) 만들 권한이 없습니다."
+
+#: nautilus-cd-burner.c:661
+#, c-format
+msgid "Completed writing %s"
+msgstr "%s 쓰기 완료"
+
+#: nautilus-cd-burner.c:719
+msgid "Complete"
+msgstr "완료"
+
+#: nautilus-cd-burner.c:782
+msgid "Maximum Possible"
+msgstr "가능한 최대 속도"
+
+#: nautilus-cd-burner.c:859
+#, c-format
+msgid "%d MB"
+msgstr "%d MB"
+
+#.
+#. translators: see strftime man page for meaning of %b, %d and %Y
+#. the maximum length for this field is 32 bytes
+#.
+#: nautilus-cd-burner.c:887
+msgid "Personal Data, %b %d, %Y"
+msgstr "내 CD, %Y년 %b %e일"
+
+#: nautilus-cd-burner.c:920
+msgid "Cancel write"
+msgstr "쓰기 취소"
+
+#: nautilus-cd-burner.c:921
+msgid ""
+"Are you sure you want to cancel the disc write operation?\n"
+"Some optical media drives may require that you restart the machine to get it "
+"working again."
+msgstr ""
+"CD 쓰기를 정말로 취소하시겠습니까?\n"
+"일부 광학 미디어 장치는 컴퓨터를 다시 시작해야 작동합니다."
+
+#: nautilus-cd-burner.c:925
+msgid "Continue"
+msgstr "계속"
+
+#: nautilus-cd-burner.c:977
+#, c-format
+msgid "There was a problem displaying the help contents: %s."
+msgstr "도움말 내용을 표시하는 데 문제가 발생했습니다: %s."
+
+#: nautilus-cd-burner.c:978
+msgid "Cannot display help"
+msgstr "도움말을 표시할 수 없습니다"
+
+#: nautilus-cd-burner.c:1093
+msgid "Too many parameters"
+msgstr "너무 많은 파라미터"
+
+#: nautilus-cd-burner.c:1094
+msgid "Too many parameters were passed to the application."
+msgstr "프로그램에 넘긴 파라미터가 너무 많습니다."
+
+#: nautilus-cd-burner.c:1116
+#, c-format
+msgid "The file '%s' is not a valid CD image."
+msgstr "파일 '%s'은(는) 올바른 CD 이미지가 아닙니다."
+
+#: nautilus-cd-burner.c:1119
+msgid "Not a valid CD image"
+msgstr "올바른 CD 이미지 아님"
+
+#: nautilus-cd-burner.c:1135
+msgid ""
+"You need to copy the files you want to write to disc to the CD/DVD Creator "
+"window. Would you like to open it now?"
+msgstr ""
+"CD/DVD 만들기 창에서 디스크에 쓸 파일을 파일을 복사해야 합니다. 지금 열겠습니"
+"까?"
+
+#: nautilus-cd-burner.c:1137
+msgid "Open CD/DVD Creator"
+msgstr "CD/DVD 만들기 열기"
+
+#: ncb.schemas.in.h:1
+msgid "Default burn speed"
+msgstr "기본 굽기 속도"
+
+#: ncb.schemas.in.h:2
+msgid "Default speed at which the media will be written."
+msgstr "미디어를 쓸 기본 속도."
+
+#: ncb.schemas.in.h:3
+msgid "Directory for the temporary ISO images"
+msgstr "임시 ISO 이미지를 만들 디렉토리"
+
+#: ncb.schemas.in.h:4
+msgid ""
+"Directory used for the temporary ISO images, leave blank to use the default "
+"system temporary directory."
+msgstr ""
+"임시 ISO 이미지를 만드는 데 쓸 디렉토리. 시스템 임시 디렉토리 기본값을 사용하"
+"려면 비워 두십시오."
+
+#: ncb.schemas.in.h:5
+msgid "Enable Burnproof option"
+msgstr "번프루프(BurnProof) 기능 사용"
+
+#: ncb.schemas.in.h:6
+msgid "Enable debug"
+msgstr "디버깅 사용"
+
+#: ncb.schemas.in.h:7
+msgid "Enable overburn"
+msgstr "용량 초과 굽기 사용"
+
+#: ncb.schemas.in.h:8
+msgid "Whether to allow the data to exceed the size of the physical medium."
+msgstr "물리적인 미디어 크기를 넘어가는 데이터를 쓰도록 허용할 지 여부."
+
+#: ncb.schemas.in.h:9
+msgid "Whether to enable the debugging for CD Recording."
+msgstr "CD 리코딩 디버깅을 사용할 지 여부."
+
+#: ncb.schemas.in.h:10
+msgid "Whether to use the Burnproof option available on some recorders."
+msgstr ""
+"일부 리코더에서 사용할 수 있는 번프루프(BurnProof) 기능을 사용할 지 여부."

@@ -1,0 +1,570 @@
+# Catalan translation of nautilus-cd-burner.
+# Copyright © 2003, 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the nautilus-cd-burner package.
+# Jordi Mallach <jordi@sindominio.net>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-cd-burner 0.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"PO-Revision-Date: 2004-08-21 16:39+0200\n"
+"Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
+"Language-Team: Catalan <tradgnome@softcatala.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+
+#: bacon-cd-selection.c:187
+msgid "Unnamed CDROM"
+msgstr "CDROM sense nom"
+
+#: burn-extension.c:64
+msgid "Unable to launch the cd burner application"
+msgstr "No es pot iniciar l'aplicació de gravació de CD"
+
+#: burn-extension.c:66
+msgid "Can't launch cd burner"
+msgstr "No es pot iniciar el gravador de CD"
+
+#: burn-extension.c:146 burn-extension.c:173
+msgid "_Write to Disc..."
+msgstr "_Escriu a disc..."
+
+#: burn-extension.c:147
+msgid "Write disc image to a CD or DVD disc"
+msgstr "Escriu la imatge ISO a un disc CD o DVD"
+
+#: burn-extension.c:174 burn-extension.c:203
+msgid "Write contents to a CD or DVD disc"
+msgstr "Escriu els continguts a un disc CD o DVD"
+
+#: burn-extension.c:202 cdburn.glade.h:15
+msgid "Write to Disc"
+msgstr "Escriu a disc"
+
+#: cd-drive.c:744
+#, c-format
+msgid "Unnamed SCSI Drive (%s)"
+msgstr "Unitat SCSI sense nom (%s)"
+
+#: cd-drive.c:1304
+msgid "File image"
+msgstr "Fitxer d'imatge"
+
+#. This fits the "open64" and "open"-like messages
+#: cd-recorder.c:313
+msgid "The recorder could not be accessed"
+msgstr "No s'ha pogut accedir a la gravadora"
+
+#: cd-recorder.c:316
+msgid "Not enough space available on the disc"
+msgstr "No hi ha suficient espai disponible en el disc"
+
+#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+msgid "The files selected did not fit on the CD"
+msgstr "Els fitxers seleccionats no han cabut al CD"
+
+#: cd-recorder.c:330
+msgid "Unhandled error, aborting"
+msgstr "S'ha produït un error no gestionat, s'està avortant"
+
+#: cd-recorder.c:367
+msgid "The CD has already been recorded"
+msgstr "El CD ja ha estat gravat"
+
+#: cd-recorder.c:377
+msgid ""
+"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr ""
+"Tots els fitxers d'àudio han de ser àudio digital de 16 bits, estèreo i amb "
+"mostres de 55100Hz"
+
+#: cd-recorder.c:384
+msgid ""
+"The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr ""
+"El sistema és massa lent per a gravar en CD a aquesta velocitat. Proveu amb "
+"una velocitat inferior."
+
+#: cd-recorder.c:503
+msgid "You can only burn 99 tracks on one disc"
+msgstr "Només podeu escriure 99 pistes en un disc"
+
+#: cdburn.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: cdburn.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: cdburn.glade.h:3
+msgid "<b>After Writing</b>"
+msgstr "<b>Després d'escriure</b>"
+
+#: cdburn.glade.h:4
+msgid "<b>Information</b>"
+msgstr "<b>Informació</b>"
+
+#: cdburn.glade.h:5
+msgid "<b>Write Options</b>"
+msgstr "<b>Opcions d'escriptura</b>"
+
+#: cdburn.glade.h:6
+msgid "<big><b>Writing files to disc progress</b></big>"
+msgstr "<big><b>Progrés d'escriptura dels fitxers al disc</b></big>"
+
+#: cdburn.glade.h:7
+msgid "<i>Initializing...</i>"
+msgstr "<i>S'està inicialitzant...</i>"
+
+#: cdburn.glade.h:8
+msgid "Data size:"
+msgstr "Mida de les dades:"
+
+#: cdburn.glade.h:9
+msgid "Disc _name:"
+msgstr "_Nom del disc:"
+
+#: cdburn.glade.h:10
+msgid "E_ject disc"
+msgstr "E_xpulsa el disc"
+
+#: cdburn.glade.h:11
+msgid "Label to identify disc"
+msgstr "Etiqueta per a identificar el disc"
+
+#: cdburn.glade.h:12
+msgid "Select the speed to use for the write"
+msgstr "Seleccioneu la velocitat a utilitzar per a l'escriptura"
+
+#: cdburn.glade.h:13
+msgid ""
+"Selected files are to be written to a CD or DVD disc. This operation may "
+"take a long time, depending on data size and write speed."
+msgstr ""
+"Es van a escriure els fitxers seleccionats a un disc CD o DVD. Aquesta "
+"operació pot trigar molt de temps, depenent de la mida de les dades i la "
+"velocitat d'escriptura."
+
+#: cdburn.glade.h:14
+msgid "Write _speed:"
+msgstr "Velocitat d'e_scriptura:"
+
+#: cdburn.glade.h:16
+msgid "Writing Files to Disc Progress"
+msgstr "Progrés d'escriptura dels fitxers al disc"
+
+#: cdburn.glade.h:17
+msgid "_Dummy write"
+msgstr "Escriptura simula_da"
+
+#: cdburn.glade.h:18
+msgid "_Reuse these files for another disc"
+msgstr "_Reutilitza aquests fitxers per un altre disc"
+
+#: cdburn.glade.h:19
+msgid "_Write"
+msgstr "_Escriu"
+
+#: cdburn.glade.h:20
+msgid "_Write disc to:"
+msgstr "_Escriu el disc a:"
+
+#: make-iso.c:251
+msgid ""
+"Some files don't have a suitable name for a Windows-compatible CD.\n"
+"Do you want to continue with Windows compatibility disabled?"
+msgstr ""
+"Alguns fitxers no tenen noms adeqüats per a un CD compatible amb Windows.\n"
+"Voleu continuar amb la compatibilitat amb Windows inhabilitada?"
+
+#: make-iso.c:252
+msgid "Windows compatibility"
+msgstr "Compatibilitat amb Windows"
+
+#: make-iso.c:576
+msgid "No files selected to write to CD."
+msgstr "No s'ha seleccionat cap fitxer per a escriure al CD."
+
+#: make-iso.c:578 nautilus-cd-burner.c:1134
+msgid "No files selected"
+msgstr "No s'ha seleccionat cap fitxer"
+
+#: make-iso.c:659
+#, c-format
+msgid "Not enough space to store CD image (%ld Megabyte needed)"
+msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
+msgstr[0] ""
+"No hi ha espai suficient per a desar la imatge del CD (es necessita %ld "
+"megabyte)"
+msgstr[1] ""
+"No hi ha espai suficient per a desar la imatge del CD (es necessiten %ld "
+"megabytes)"
+
+#: make-iso.c:664
+msgid "Not enough space"
+msgstr "No hi ha espai suficient"
+
+#: make-iso.c:700
+msgid "Creating CD image"
+msgstr "S'està creant una imatge del CD"
+
+#: nautilus-cd-burner.c:137
+msgid " (invalid Unicode)"
+msgstr " (Unicode invàlid)"
+
+#: nautilus-cd-burner.c:283
+msgid "Preparing to write CD"
+msgstr "S'està preparant per a escriure el CD"
+
+#: nautilus-cd-burner.c:285
+msgid "Preparing to write DVD"
+msgstr "S'està preparant per a escriure el DVD"
+
+#: nautilus-cd-burner.c:290
+msgid "Writing CD"
+msgstr "S'està escrivint el CD"
+
+#: nautilus-cd-burner.c:292
+msgid "Writing DVD"
+msgstr "S'està escrivint el DVD"
+
+#: nautilus-cd-burner.c:297
+msgid "Fixating CD"
+msgstr "S'està fixant el CD"
+
+#: nautilus-cd-burner.c:299
+msgid "Fixating DVD"
+msgstr "S'està fixant el DVD"
+
+#: nautilus-cd-burner.c:304
+msgid "Erasing CD"
+msgstr "S'està esborrant el CD"
+
+#: nautilus-cd-burner.c:306
+msgid "Erasing DVD"
+msgstr "S'està esborrant el DVD"
+
+#: nautilus-cd-burner.c:332
+msgid "Please make sure another application is not using the disc."
+msgstr "Assegureu-vos que cap altra aplicació està utilitzant el disc."
+
+#: nautilus-cd-burner.c:333
+msgid "Disc is busy"
+msgstr "El disc està ocupat"
+
+#: nautilus-cd-burner.c:335
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr ""
+"Si us plau, inseriu un medi regravable o en blanc a la safata de la unitat."
+
+#: nautilus-cd-burner.c:336
+msgid "Insert rewritable or blank media"
+msgstr "Inseriu un medi regravable o en blanc"
+
+#: nautilus-cd-burner.c:338
+msgid "Please insert a blank media in the drive tray."
+msgstr "Si us plau, inseriu un medi en blanc a la safata de la unitat."
+
+#: nautilus-cd-burner.c:339
+msgid "Insert blank media"
+msgstr "Inseriu un medi en blanc"
+
+#: nautilus-cd-burner.c:341
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr ""
+"Si us plau, reemplaceu el medi de dins de l'unitat per un medi regravable o "
+"en blanc."
+
+#: nautilus-cd-burner.c:342
+msgid "Reload rewritable or blank media"
+msgstr "Torna a carregar el medi regravable o en blanc"
+
+#: nautilus-cd-burner.c:344
+msgid "Please replace the in-drive media by a blank media."
+msgstr ""
+"Si us plau, reemplaceu el medi de dins de la unitat per un medi en blanc."
+
+#: nautilus-cd-burner.c:345
+msgid "Reload blank media"
+msgstr "Torneu a introduir el medi en blanc"
+
+#: nautilus-cd-burner.c:373
+msgid "Disc writing error details"
+msgstr "Detalls dels errors d'escriptura del disc"
+
+#: nautilus-cd-burner.c:379
+msgid "Detailed error output from cdrecord:"
+msgstr "Sortida d'error detallada del cdrecord:"
+
+#: nautilus-cd-burner.c:420
+#, c-format
+msgid ""
+"There was an error writing to the CD:\n"
+"%s"
+msgstr ""
+"S'ha produït un error en escriure al CD:\n"
+"%s"
+
+#: nautilus-cd-burner.c:421
+msgid "There was an error writing to the CD"
+msgstr "S'ha produït un error en escriure al CD"
+
+#: nautilus-cd-burner.c:422
+msgid "Error writing to CD"
+msgstr "S'ha produït un error en escriure al CD"
+
+#: nautilus-cd-burner.c:428
+msgid "_Details"
+msgstr "_Detalls"
+
+#: nautilus-cd-burner.c:501
+#, c-format
+msgid ""
+"A file named \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Ja existeix un fitxer amb el nom «%s».\n"
+"Voleu sobreescriure'l?"
+
+#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+msgid "_Overwrite"
+msgstr "S_obreescriu"
+
+#: nautilus-cd-burner.c:530
+msgid "Choose a filename for the cdrom image"
+msgstr "Seleccioneu un nom de fitxer per a la imatge del CD-ROM"
+
+#: nautilus-cd-burner.c:585
+#, c-format
+msgid "You do not have permissions to overwrite that file (%s)."
+msgstr "No teniu permissos per a sobreescriure eixe fitxer (%s)."
+
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+msgid "File image creation failed"
+msgstr "La creació de la imatge ha fallat"
+
+#: nautilus-cd-burner.c:598
+#, c-format
+msgid "You do not have permissions to create that file (%s)."
+msgstr "No teniu permissos per a crear eixe fitxer (%s)."
+
+#: nautilus-cd-burner.c:661
+#, c-format
+msgid "Completed writing %s"
+msgstr "S'ha completat l'escriptura de %s"
+
+#: nautilus-cd-burner.c:719
+msgid "Complete"
+msgstr "Completat"
+
+# Es refereix a la velocitat. jm
+#: nautilus-cd-burner.c:782
+msgid "Maximum Possible"
+msgstr "Màxima possible"
+
+#: nautilus-cd-burner.c:859
+#, c-format
+msgid "%d MB"
+msgstr "%d MB"
+
+#.
+#. translators: see strftime man page for meaning of %b, %d and %Y
+#. the maximum length for this field is 32 bytes
+#.
+#: nautilus-cd-burner.c:887
+msgid "Personal Data, %b %d, %Y"
+msgstr "Dades personals, %d %b, %Y"
+
+#: nautilus-cd-burner.c:920
+msgid "Cancel write"
+msgstr "Cancel·la l'escriptura"
+
+#: nautilus-cd-burner.c:921
+msgid ""
+"Are you sure you want to cancel the disc write operation?\n"
+"Some optical media drives may require that you restart the machine to get it "
+"working again."
+msgstr ""
+"Esteu segur de voler cancel·lar l'operació d'escriptura de disc?\n"
+"Algunes unitats de medis òptics requereixen que es torne a arrencar "
+"l'ordinador per què tornen a funcionar."
+
+#: nautilus-cd-burner.c:925
+msgid "Continue"
+msgstr "Continua"
+
+#: nautilus-cd-burner.c:977
+#, c-format
+msgid "There was a problem displaying the help contents: %s."
+msgstr "S'ha produït un error en mostrar els continguts de l'ajuda: %s."
+
+#: nautilus-cd-burner.c:978
+msgid "Cannot display help"
+msgstr "No es pot mostrar l'ajuda"
+
+#: nautilus-cd-burner.c:1093
+msgid "Too many parameters"
+msgstr "S'han donat massa paràmetres"
+
+#: nautilus-cd-burner.c:1094
+msgid "Too many parameters were passed to the application."
+msgstr "S'han donat massa paràmetres a l'aplicació."
+
+#: nautilus-cd-burner.c:1116
+#, c-format
+msgid "The file '%s' is not a valid CD image."
+msgstr "El fitxer «%s» no és una imatge de CD vàlida."
+
+#: nautilus-cd-burner.c:1119
+msgid "Not a valid CD image"
+msgstr "No és una imatge de CD vàlida"
+
+#: nautilus-cd-burner.c:1135
+msgid ""
+"You need to copy the files you want to write to disc to the CD/DVD Creator "
+"window. Would you like to open it now?"
+msgstr ""
+"Heu de copiar els fitxers que voleu escriure al disc a la finestra de "
+"creació de CD/DVD. Voleu obrir-la ara?"
+
+#: nautilus-cd-burner.c:1137
+msgid "Open CD/DVD Creator"
+msgstr "Obre el creador de CD/DVD"
+
+#: ncb.schemas.in.h:1
+msgid "Default burn speed"
+msgstr "Velocitat de gravació predeterminada"
+
+#: ncb.schemas.in.h:2
+msgid "Default speed at which the media will be written."
+msgstr "Velocitat de gravació predeterminada a la que s'escriuran els medis."
+
+#: ncb.schemas.in.h:3
+msgid "Directory for the temporary ISO images"
+msgstr "Directori per a les imatges ISO temporals"
+
+#: ncb.schemas.in.h:4
+msgid ""
+"Directory used for the temporary ISO images, leave blank to use the default "
+"system temporary directory."
+msgstr ""
+"Directori utilitzat per a les imatges ISO temporals, deixeu-ho en blanc per "
+"a utilitzar el directori temporal predeterminat del sistema."
+
+#: ncb.schemas.in.h:5
+msgid "Enable Burnproof option"
+msgstr "Habilita l'opció «Burnproof»"
+
+#: ncb.schemas.in.h:6
+msgid "Enable debug"
+msgstr "Habilita la depuració"
+
+#: ncb.schemas.in.h:7
+msgid "Enable overburn"
+msgstr "Habilita la gravació per damunt del límit"
+
+#: ncb.schemas.in.h:8
+msgid "Whether to allow the data to exceed the size of the physical medium."
+msgstr ""
+"Si s'hauria de permetre que les dades excedeixen la mida del medi físic."
+
+#: ncb.schemas.in.h:9
+msgid "Whether to enable the debugging for CD Recording."
+msgstr "Si s'hauria d'habilitar la depuració per a la gravació de CD."
+
+#: ncb.schemas.in.h:10
+msgid "Whether to use the Burnproof option available on some recorders."
+msgstr ""
+"Si s'hauria d'utilitzar l'opció «Burnproof» disponible en algunes gravadores."
+
+#~ msgid "<b>Writing to CD. Please wait.</b>"
+#~ msgstr "<b>S'està escrivint al CD. Si us plau, espereu.</b>"
+
+#~ msgid "Dummy write (debug build)"
+#~ msgstr "Prova d'escriptura (muntatge de depuració)"
+
+#~ msgid "Eject CD when done"
+#~ msgstr "Expulsa el CD quan es finalitze"
+
+#~ msgid "Erase CD"
+#~ msgstr "Esborra el CD"
+
+#~ msgid "Erase entire contents of CD before writing"
+#~ msgstr "Esborra tots els continguts del CD abans d'escriure"
+
+#~ msgid "Keep the selected files so that you can use them for another CD"
+#~ msgstr ""
+#~ "Manté els fitxers seleccionats per què els pogueu utilitzar per un altre "
+#~ "CD"
+
+#~ msgid "Select a CD writer or image file"
+#~ msgstr "Seleccioneu una gravadora de CD o fitxer d'imatge"
+
+#~ msgid "Target to write to:"
+#~ msgstr "Gravadora on voleu escriure:"
+
+#~ msgid "When the write is done, eject the CD tray"
+#~ msgstr "Quan es finalitza l'escriptura, expulsa la safata de CD"
+
+#~ msgid "Please reload the CD in the CD writer."
+#~ msgstr "Si us plau, torneu a introduir el CD a la gravadora de CD."
+
+#~ msgid "Reload CD"
+#~ msgstr "Torneu a introduir el CD"
+
+#~ msgid "Please insert a blank CD in the CD writer."
+#~ msgstr "Si us plau, inseriu un CD en blanc a la gravadora de CD."
+
+#~ msgid "Insert blank CD"
+#~ msgstr "Inseriu un CD en blanc"
+
+#~ msgid "Please insert a blank CD-RW in the CD writer."
+#~ msgstr "Si us plau, inseriu un CD-RW en blanc en la gravadora de CD."
+
+#~ msgid "Insert blank CD-RW"
+#~ msgstr "Inseriu un CD-RW en blanc"
+
+#~ msgid "You have selected %d megabyte of files to be written to the CD."
+#~ msgstr "Heu seleccionat %d megabytes de fitxers que s'escriuran al CD."
+
+#~ msgid "Are you sure you want to cancel?"
+#~ msgstr "Esteu segur de voler cancel·lar?"
+
+#~ msgid "Too many parameters to nautilus-cd-burner"
+#~ msgstr "S'han donat massa paràmetres a nautilus-cd-burner"
+
+#~ msgid ""
+#~ "You do not seem to have any CD recorder in your machine. Please verify "
+#~ "your setup."
+#~ msgstr ""
+#~ "Sembla que no teniu cap gravadora de CD al vostre ordinador. Verifiqueu "
+#~ "la vostra configuració."
+
+#~ msgid "No CD recorder available"
+#~ msgstr "No hi ha cap gravadora disponible"
+
+#~ msgid "Create a CD that you can use with ordinary stereo equipment"
+#~ msgstr "Crea un CD que puga ser utilitzat amb equipament estèreo ordinari"
+
+#~ msgid "Create a music CD"
+#~ msgstr "Crea un CD de música"
+
+#~ msgid "Factory for the nautilus-cd-burner context menu"
+#~ msgstr "Factoria per al menú de context de nautilus-cd-burner"
+
+#~ msgid "Nautilus context menu entries for CD burning"
+#~ msgstr "Entrades del menú de context de Nautilus per a gravar CD"
+
+# Mai sé si ficar menú contextual o menú de context... jm
+#~ msgid "nautilus-cd-burner context menu"
+#~ msgstr "menú de context de nautilus-cd-burner"
+
+#~ msgid "nautilus-cd-burner context menu factory"
+#~ msgstr "factoria de menús de context de nautilus-cd-burner"
+
+#~ msgid "CD burning context menu items"
+#~ msgstr "elements del menú de context de gravació de CD"
