@@ -1,4 +1,4 @@
 X		/etc/athena/xwrapper -fp /usr/openwin/lib/X11/fonts/75dpi,/usr/openwin/lib/X11/fonts/misc :0 -nobanner -ar1 333 -ar2 45
 console		/etc/athena/console -f /etc/athena/login/Console -display :0.0 -nosession
-login		/etc/athena/xlogin -config /etc/athena/login -display :0.0  -fp /usr/openwin/lib/X11/fonts/100dpi/,/usr/openwin/lib/X11/fonts/F3,/usr/openwin/lib/X11/fonts/F3bitmaps/,/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/intlfonts
+login		/etc/athena/xlogin -config /etc/athena/login -display :0.0  -fp /usr/openwin/lib/X11/fonts/100dpi,/usr/openwin/lib/X11/fonts/F3,/usr/openwin/lib/X11/fonts/F3bitmaps,/usr/openwin/lib/X11/fonts/Type1,/usr/openwin/lib/X11/fonts/Type1/sun,/usr/openwin/lib/X11/fonts/Speedo,/usr/athena/lib/X11/fonts/misc,/usr/athena/lib/X11/fonts/intlfonts
 ttylogin	/usr/lib/saf/ttymon -g -h -T sun -d /dev/console -l console -m ldterm,ttcompat
