@@ -1,3 +1,67 @@
+2004-10-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.1.
+
+2004-10-03  Elijah Newren  <newren@math.utah.edu>
+
+	Don't highlight a sticky window on all workspaces when it has
+	focus; only highlight it for the current workspace.  (fixes
+	#104486)
+
+	* src/pager.c (draw_window): take an on_current_workspace
+	parameter and use it to determine whether to highlight the given
+	window as being focused, (wnck_pager_draw_workspace): pass whether
+	the workspace to be drawn is the current one to draw_window,
+	(wnck_pager_expose_event): determine whether the the workspace to
+	be drawn is the current one and pass the info along
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.0.1.
+
+==================== 2.8.0.1 ====================
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.0.1.
+
+2004-09-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix some runtime warning spew reported in bug #149313
+
+	* libwnck/tasklist.c:
+	(wnck_task_get_demands_attention): impl. handling task
+	groups as well as individual tasks.
+	(wnck_task_update_visible_state),
+	(wnck_task_create_widgets): use get_demands_attention()
+	
+	* libwnck/window.[ch]: (update_actions): handle the minimize
+	and fullscreen actions.
+
+2004-09-21  Ross Burton  <ross@burtonini.com>
+
+	* libwnck/window.h: Add prototypes for wnck_window_set_fullscreen
+	and wnck_window_is_fullscreen() (fixes bug #153201)
+
+2004-09-17  Juerg Billeter  <j@bitron.ch>
+
+	* libwnck/tasklist.c: only show windows which are on the same
+	monitor	as the tasklist (fixes bug #98698)
+
+2004-09-15  Elijah Newren  <newren@math.utah.edu>
+
+	Don't use the pager for window raising and focusing (fixes bug
+	#100470)
+
+	* src/pager.c (wnck_pager_button_release): Don't call
+	wnck_window_activate on the window clicked on.
+
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0 ====================
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.
