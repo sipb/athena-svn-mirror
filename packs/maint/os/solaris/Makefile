@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2002-08-27 17:33:08 zacheiss Exp $
+# $Id: Makefile,v 1.13 2003-10-23 22:34:51 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 ATHETCDIR=/usr/athena/etc
@@ -45,9 +45,10 @@ install:
 	install -c -m 0755 syncconf.rc ${DESTDIR}${INITD}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
-	install -c -m 0755 ../../os-checkfiles ${DESTDIR}${ATHETCDIR}
 	install -c -m 0755 zephyrd.rc ${DESTDIR}${INITD}/zephyrd
 	install -c -m 0755 zhm.rc ${DESTDIR}${INITD}/zhm
+	install -c -m 0755 ../../os-checkfiles ${DESTDIR}${ATHETCDIR}
+	install -c -m 0555 ../../sendmail.sh ${DESTDIR}${USRLIBDIR}/sendmail
 	rm -f ${DESTDIR}${RC0}/K90athena-ws
 	ln -s ../init.d/athena-ws ${DESTDIR}${RC0}/K90athena-ws
 	rm -f ${DESTDIR}${RC0}/K91athena-inetd

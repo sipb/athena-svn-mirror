@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.16 2003-07-25 05:16:55 zacheiss Exp $
+# $Id: Makefile,v 1.17 2003-10-23 22:35:27 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -32,7 +32,6 @@ install:
 		${DESTDIR}${ATHRETCDIR}/save_cluster_info
 	install -c -m 0444 save_cluster_info.8 ${DESTDIR}${ATHMANDIR}/man8
 	install -c -m 0555 sendmail-relay-select ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0555 sendmail.sh ${DESTDIR}${USRLIBDIR}/sendmail
 	install -c -m 0555 shutdown_notify.sh \
 		${DESTDIR}${ATHRETCDIR}/shutdown_notify
 	install -c -m 0444 syncconf.8 ${DESTDIR}${ATHMANDIR}/man8
