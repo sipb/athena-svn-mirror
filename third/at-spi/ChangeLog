@@ -1,3 +1,954 @@
+2002-12-17  Bill Haneman <bill.haneman@sun.com
+
+        Fix for 100944, [API addition approved by Gman and murrayc].
+	
+	* NEWS: updated.
+	
+	* configure.in:
+	Revved to 1.1.8.
+
+	* idl/Accessibility_Text.idl:
+	(Text::Range, Text::RangeList, TEXT_CLIP_TYPE): New typedefs
+	(Text::getRangeExtents): New method for efficient 
+	bounds query of a text range.
+	(Text::getBoundedRanges): New method for efficient
+	clipping of text to bounding boxes.
+	(unImplemented7, unImplemented8): 
+	Removed these padding methods to preserve bincompat.
+
+	* libspi/text.c:
+	(impl_getRangeExtents): implementation of new IDL.
+	(impl_getBoundedRanges): implementation of new IDL.
+	(SpiTextRect): Internal use struct.
+	(_spi_text_rect_union): internal method, calculates union of two
+	SpiTextRect bounding rects.
+	(_spi_text_range_seq_from_gslist): internal method, allows us
+	to build our sequence efficiently as a gslist then convert it
+	to a CORBA seq.
+	(_spi_bounds_contain): internal method, determines whether
+	a text character is "in" or "out" of a clip rect according to
+	values of TEXT_CLIP_TYPE.
+	(spi_text_class_init): Initialize the new methods in the epv.
+	
+	* cspi/spi.h:
+	(AccessibleTextClipType): New enum used by screen review api.
+	(AccessibleTextRange): New struct used by screen review api.
+	(AccessibleText_getRangeExtents): 
+	cspi binding for Accessibility_Text_getRangeExtents.
+	(AccessibleText_getBoundedRanges):
+	cspi binding for Accessibility_Text_getBoundedRanges.
+	(AccessibleTextRange_freeRanges): convenience method.
+	
+	* cspi/spi_text.c:
+	(AccessibleText_getRangeExtents): 
+	cspi binding for Accessibility_Text_getRangeExtents.
+	(AccessibleText_getBoundedRanges):
+	cspi binding for Accessibility_Text_getBoundedRanges.
+	(AccessibleTextRange_freeRanges): convenience method.
+	(get_accessible_text_clip_type): internal conversion method.
+	(get_accessible_text_ranges_from_range_seq): internal conversion method.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_dec_mouse_check):
+	Improved behavior for mouse:abs events 
+	[same granularity as mouse:rel events, and no
+	events when mouse is idle].	
+	
+2002-12-16  Michael Meeks  <michael@ximian.com>
+
+	* cspi/spi_accessible.c (spi_state_to_corba): rename.
+
+	* libspi/stateset.c (state_spi_to_atk): split out
+	( fix several remote array bounds nasties )
+	(spi_atk_state_set_from_sequence, impl_contains, impl_add),
+	(impl_remove): make safe from array bounds issues.
+	(spi_atk_state_from_spi_state): impl.
+
+	* libspi/stateset.h (spi_state_set_cache_is_empty): 
+	add a set of wrapper defines to get layering right.
+
+	* cspi/spi_accessible.c: update state set stuff to
+	use it.
+
+2002-12-14  Michael Meeks  <michael@ximian.com>
+
+	* atk-bridge/bridge.c (spi_atk_bridget_get_dec): impl.
+	to avoid 2 roundtrips to the registry per key event
+	(spi_atk_bridge_key_listener): upd.
+	(deregister_application): release the dec.
+
+	* registryd/registry.c (notify_listeners_cb):
+	bin lots of re-enterant complexity - we no longer
+	do a round-trip bonobo ref here, ensure that a single
+	listener's exception failure won't poison all other
+	notifications.
+	(impl_registry_notify_event): bin obvious memory leak.
+
+2002-12-13  Michael Meeks  <michael@ximian.com>
+
+	* atk-bridge/bridge.c (spi_atk_bridge_focus_tracker):
+	init the ev so the error is meaningful.
+	(spi_atk_bridge_key_listener): ditto.
+
+	* cspi/spi_main.c (cspi_ev): init the ev so we start
+	with a clean slate, otherwise the first exception
+	kills us completely.
+
+	* cspi/spi_text.c (get_accessible_text_boundary_type): 
+	add a fallthrough for no warnings.
+
+	* cspi/spi_registry.c: prune unused warnings.
+
+	* cspi/spi_main.c (cspi_object_take): fix
+	mind-blowing brokenness ( by watching the compile
+	warnings )
+
+	* cspi/spi_accessible.c (Accessible_getStateSet):
+	re-impl. to use an AtkStateSet.
+	(spi_state_type_from_accessible_state),
+	(init_state_table): bin these.
+
+	* libspi/stateset.c (spi_atk_state_set_from_sequence):
+	split out from
+	(atk_state_set_from_accessibility_state_set): here.
+
+	* cspi/spi_accessible.c (spi_state_to_atk): impl.
+	(AccessibleStateSet_contains, AccessibleStateSet_ref),
+	(AccessibleStateSet_unref, AccessibleStateSet_contains),
+	(AccessibleStateSet_add, AccessibleStateSet_remove),
+	(AccessibleStateSet_equals, AccessibleStateSet_compare),
+	(AccessibleStateSet_isEmpty): re-write to use a local
+	AtkStateSet object.
+
+2002-12-13  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.1.7 (new keymask vals).
+
+2002-12-10  Bill Haneman <bill.haneman@sun.com>
+
+	* libspi/keymasks.h:
+	Added SPI_KEYMASK_MOD4 and SPI_KEYMASK_MOD5.
+
+2002-12-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* cspi/spi_event.c 
+	(cspi_internal_event_get_object): Use CORBA_TypeCode_Equivalent() 
+	to compare two CORBA_TypeCodes.
+	(cspi_internal_event_add): Silence warning from FORTE compiler.
+
+	* cspi/bonobo/cspi_bonobo-listener.h: Add function declarations to 
+	avoid implicit declaration of functions.
+	
+2002-12-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_init_event_type_consts): Store signal id for
+	active-descendant-changed signal.
+	(spi_atk_register_event_listeners): Add signal listener for
+	active-descendant-changed signal,
+	(spi_atk_bridge_signal_listener): Move code in function 
+	spi_atk-signal_emit_event() into this function.
+	Add support for active-descendant-changed
+	Update support for child-changed signal.
+	(spi_bridge_window_event_listener): Silence warning.
+
+	* libspi/spi_private.[ch]:
+	(spi_init_any_object): Change second parameter from CORBA_Object to
+	CORBA_Object*.
+	Omit call to CORBA_Object_duplicate(). 
+	Set CORBA_any's _value to CORBA_Object*.	
+
+2002-12-06  Bill Haneman  <bill.haneman@sun.com>
+
+	* configure.in:
+	Revved to 1.1.6.
+	
+	* cspi/spi.h: 
+	(AccessibleEvent_ref, AccessibleEvent_unref):
+	New methods, for persisting an event outside the emission context.
+	Must be used if the new accessor methods are to be called
+	outside of the event listener's callback.
+
+	* cspi/bonobo/cspi-bonobo.c:
+	(cspi_dup_ref): Pass 'ev' to bonobo_object_dup_ref
+	as second parameter instead of NULL, so we can call
+	cspi_check_ev afterwards.
+	
+	* cspi/spi_main.c:
+	(cspi_object_take): New internal method, 
+	converts a CORBA_Object reference to a hard ref on
+	an Accessible if possible, returning NULL if the object
+	reference is invalid or an Accessible * otherwise.
+
+	* cspi/spi_event.c:
+	(AccessibleEvent_ref): 
+	Increment the event's internal private refcount, and 
+	add the event's internal struct to an internal cache 
+	if it's not already there.
+	(AccessibleEvent_unref): 
+	Decrement the event's refcount and remove it from
+	the cspi event cache if refcount==0.
+	(cspi_event_compare): New private method.
+	Compares two event structs via their ids. Used 
+	for queue lookup.
+	(cspi_internal_event_lookup): New private method.
+	(cspi_internal_event_check): New private method,
+	a 0-order sanity check for events to make sure their
+	private data is intact.
+	(cspi_internal_event_add, cspi_internal_event_remove):
+	New private methods for managiing the event cache.
+
+	* cspi/bonobo/cspi-bonobo-listener.c:
+	(cspi_event):
+	Initialize the new private data elements (id, magic, ref_count).
+	
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_signal_listener):
+	Fixed bug #100530, passing wrong params to emission func.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_dec_button_update_and_emit): 
+	Fixed type in mask bit operations; fix for #99799.
+	
+2002-12-02  Bill Haneman  <bill.haneman@sun.com>
+
+	Removed some of the more dangerous workarounds from
+	previous commit; they are only needed by GOK, which
+	in reality should be using another method to accomplish
+	the goals.  So on reconsideration some of the workarounds
+	need to be reverted:
+	
+	* registryd/deviceeventcontroller.c:
+	(spi_keycodes_contain, spi_dec_init_keycode_list): 
+	Removed these methods, used only by a nasty hack to try
+	and detect whether a key synthesis should be allowed
+	to reset the XKB latch state or not. This code was only
+	required to work around an interaction between GOK,
+	button events, and XKB.
+	(impl_generate_key_event):
+	Removed hack at end of key generation that tried to
+	"do the right thing" if XKB latch keys were generated
+	in the midst of button press/release pairs.  
+
+	* configure.in:
+	Added a check for HAVE_XINPUT.  Not normally used yet.
+
+2002-11-25  Bill Haneman  <bill.haneman@sun.com>
+
+        Workarounds and fixes for mouse event/XKB interaction.
+	
+	* registryd/deviceeventcontroller.c:
+	(spi_keycodes_contain, spi_dec_init_keycode_list): 
+	New internal methods.
+	(spi_dec_set_unlatch_pending):
+	Split the method that tells XKB to expect an
+	unlatch (and revert it) out of the rest of the
+	event handling code.  This method is called by the
+	two mouse event handlers (the poll and the filter).
+	(spi_dec_update_and_emit, spi_dec_mouse_check): 
+	New methods split from spi_dec_poll_mouse_moved.
+	The second one is now called from inside the filterFn
+	when an XKB delatch event is received, to determine 
+	whether to revert the delatch or not.
+	(spi_poll_mouse_moved):	Refactor; also we can now
+	properly handle the case where multiple button states
+	have changed between polling cycles and we didn't get
+	notified due to another client's grab.
+	(global_filter_fn): 
+	Synchronize the server while handling an XKB notification.
+	Ugly, but apparently necessary to avoid nasty races.
+	Check the mouse state on receipt of an XKB latch change,
+	to decide whether to revert the latch or not. (Latches are
+	reverted if there is an immediately preceding mouse button
+	event that a client has consumed, in which case we don't want
+	the user to see the side-effect of the event).
+	(spi_device_event_controller_forward_mouse_event):
+	Check for modifier events and fire before resetting mouse_mask_state,
+	prevents losing modifier events.
+
+	(impl_generate_keyboard_event):
+	If we've just generated a keyboard event for a non-shift key,
+	we don't want to revert the pending XKB latch. 
+	Otherwise, check the modifier state (via a call to 
+	spi_dev_mouse_check) and set the relatch mask to 
+	that state before returning.
+	
+2002-11-24  Bill Haneman  <bill.haneman@sun.com>
+
+        * NEWS: 
+	Updated NEWS (accidentally didn't make it into 1.1.5 tarball,
+	retagged).
+	
+	* atk-bridge/bridge.c:
+	(spi_atk_register_event_listeners):
+	Don't re-register for ATK events if the registry has died
+	and the app needs to re-register; the ATK listeners are in
+	process and doing so will cause duplicate emission.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_poll_mouse_moved):
+	Reformat the source, detect and emit multiple button-change
+	events (i.e. if multiple buttons have changed between poll
+	intervals).
+	Add code to detect mouse-down events even when the pointer
+	is grabbed; workaround for GOK bug 98420.
+	(spi_controller_register_with_devices):
+	Call XTestGrabControl with 'impervious' flag set to True,
+	allows us to synthesize events and query the pointer even during
+	an active grab by another client.
+	(spi_device_event_controller_forward_mouse_event):
+	Set the mouse_mask_state to the mouse_button_state from
+	the intercepted event, to synchronize the grab listener with
+	the poll state.
+	
+2002-11-20  Bill Haneman  <bill.haneman@sun.com>
+
+	* cspi/spi_accessible.c:
+	(AccessibleRole_getName):
+	Added necessary strings for making this (deprecated) 
+	method work with the new role types. 
+	(init_role_table, role_table):
+	Added definition of SPI_ROLE_APPLICATION.
+
+	* libspi/spi-roletypes.h:
+	Added SPI_ROLE_APPLICATION.
+
+	* idl/Accessibility_Role.idl:
+	Added ROLE_APPLICATION.	
+
+	* docs/reference/cspi/at-spi-cspi-decl.txt:
+	Added SPI_ROLE_APPLICATION to docs.
+
+2002-11-20  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* cspi/spi_accessible.c
+	(cspi_init_role_table): Do not write beyond end of role_table.
+	(Accessible_getRole): Use correct type for value returned by
+	Accessibility_Accessible_getRole().
+
+	* libspi/accessible.c (spi_init_role_lookup_table): Do not write
+	beyond end of role_table. (This fixes bug #98269)
+
+	* libspi/application.c: Add include file spi-private.h for 
+	definition of spi_init_any_nil.
+
+2002-11-19 Bill Haneman <bill.haneman@sun.com>
+
+        FIX for bug 99024.
+	
+	* libspi/spi-private.h:
+	Added DGB() macro, and extern int _dbg declaration.
+	
+	* registryd/registry.c:
+	(definitions) storage for _dbg.
+	(spi_registry_init):
+	Get environment variable "AT_SPI_DEBUG".
+	(spi_registry_set_debug):
+	New method, to initialize _dbg value.
+	(spi_listener_struct_new, spi_registry_object_finalize):
+	(notify_listeners_cb):
+	Changed fprintfs to use DBG and g_warning().
+
+	* registryd/deviceeventcontroller.c:
+	(_deregister_keygrab, spi_controller_register_device_listener):
+	Changed debug/warning messages to use DBG macro.
+
+	* libspi/listener.c:
+	(impl_notify_event):
+	Changed warning messages to use DBG macro and g_warning().
+
+	* atk-bridge/bridge.c:
+	(atk_bridge_init, spi_atk_bridge_get_registry):
+	(spi_atk_bridge_exit_func):
+	(spi_atk_bridge_property_event_listener):
+	Changed status, warning, and error messages to use
+	g_warning, g_message, and DBG macros.
+
+	(atk_bridge_init):
+	Read the state of the AT_SPI_DEBUG environment variable
+	and set a local '_dbg' accordingly.
+	
+2002-11-19 Bill Haneman <bill.haneman@sun.com>
+
+        FIXES for 98836, 98842, other bugs.
+	
+	* configure.in:
+	Revved to 1.1.4, interface-age=4, binary-age=4.
+
+	* registryd/deviceeventcontroller.c:
+	(statics):
+	Fixed crasher bug in last_mouse_pos initialization.
+
+	* registryd/registry.c:
+	(desktop_add_application, desktop_remove_application):
+	Added (and then commented out) some support for
+	object context marshalling. [TODO]
+
+	* atk-bridge/bridge.c:
+	(spi_atk_bridge_event_context_create):
+	Commented out object context creation until it can
+	be properly tested and debugged.
+
+	* registryd/registry.c:
+	(impl_registry_notify_event):
+	Fixed crasher bug, we were calling 
+	spi_re_entrant_list_foreach () with an empty list.
+
+2002-11-18  Bill Haneman <bill.haneman@sun.com>
+	
+	* idl/Accessibility_Action.idl:
+	* idl/Accessibility_Component.idl:
+	* idl/Accessibility_Desktop.idl:
+	* idl/Accessibility_Event.idl:
+	* idl/Accessibility_Hyperlink.idl:
+	* idl/Accessibility_Image.idl:
+	* idl/Accessibility_Relation.idl:
+	* idl/Accessibility_Selection.idl:
+	* idl/Accessibility_State.idl:
+	* idl/Accessibility_Value.idl:
+	Updated unimplemented slot count to minimum of
+	four for all interfaces, for ABI freeze. 
+
+	* idl/Accessibility_EditableText.idl:
+	* idl/Accessibility_Text.idl:
+	Updated unimplemented slot count to six
+	for ABI freeze. 
+	
+	* idl/Accessibility_Registry.idl:
+	Updated unimplemented slot count to six
+	(also for DeviceEventController), 
+	for ABI freeze. 
+
+	* idl/Accessibility_Table.idl:
+	Updated unimplemented slot count to eight,
+	for ABI freeze. 
+
+	* idl/Accessibility_Event.idl:
+	Added CORBA_any "any_data" member to Event struct.
+
+	* idl/Accessibility_Event.idl:
+	Added CORBA_any "any_data" member to Event struct.
+
+	* atk-bridge/bridge.c:
+	(statics):
+	atk_signal_text_changed, atk_signal_child_changed,
+	signal ids queried from gtype system.
+	(AtkBridgeEventContextType): New enum.
+	(AtkBridgeEventContextData): New struct.
+	(AtkBridgeEventContext): New struct.
+	(atk_bridge_init_event_type_consts):
+	New method, initializes type contants for comparison 
+	prior to emit_eventv.
+	(atk_bridge_event_context_init): New method,
+	initializes a CORBA_any from an AtkBridgeEventContext.
+	(atk_bridge_focus_tracker): Call spi_init_any_nil to
+	initialize the event.any_data struct.
+	(spi_atk_bridge_event_context_create): New method,
+	creates an AtkBridgeEventContext from signal/event info.
+	(spi_atk_bridge_event_context_free): New method.
+	(spi_atk_emit_eventv): Changed to take an 
+	AtkBridgeEventContext parameter. We now initialize
+	the event.any_data member prior to notifying the 
+	Registry, via the AtkBridgeEventContext.
+	(spi_atk_bridge_property_event_listener):
+	(spi_atk_bridge_state_event_listener):
+	Match emit_eventv signature.
+	(spi_atk_bridge_object_event_listener):
+	Match emit_eventv signature, and create an
+	event context from the event details.
+	Free the event context afterwards.
+	(spi_atk_bridge_window_event_listener):
+	Create an event context, pass it to the
+	emit_eventv call.
+	
+	* cspi/spi_event.c:
+	(AccessibleEvent_getContextString):
+	(AccessibleEvent_getContextObject):
+	New methods, allow query of AccessibleEvent objects
+	for more context details (via the "any_data" member 
+	of the Event struct, above).
+	
+	* cspi/spi.h:
+	Definitions for AccessibleEvent_getContextString
+	and AccessibleEvent_getContextObject.
+
+	* cspi/spi_listener.h:
+	(InternalEvent): New struct.
+
+	* cspi/spi_event.c:
+	(AccessibleEvent_getContextString):
+	(AccessibleEvent_getContextObject):
+	Implementations of new methods, for obtaining
+	additional context information from some event types.
+
+	* cspi/spi_registry.c:
+	(SPI_registerGlobalEventListener):
+	Added mention of active-descendant-changed event in docs.
+
+	* cspi/cspi-bonobo-listener.c:
+	(cspi_event):
+	Marshal the any into the AccessibleEvent via
+	InternalEvent.
+	
+	* libspi/spi-private.h:
+	#include <orbit/orbit.h>
+	(spi_init_any_nil):
+	(spi_init_any_string):
+	(spi_init_any_object):
+	New convenience function declarations.
+
+	* libspi/util.c:
+	(spi_init_any_nil):
+	(spi_init_any_string):
+	(spi_init_any_object):
+	New convenience function implementations.
+
+	* registryd/deviceeventcontroller.c:
+	(spi_poll_dec_mouse_moved):
+	(spi_device_event_controller_forward_mous_event):
+	Initialize any_data member of event.
+	(spi_deregister_controller_device_listener):
+	Fix incorrect param pass which was preventing deregistration.
+
+	* registryd/registry.c:
+	(desktop_add_application):
+	(desktop_remove_application):
+	Add object data to event's any_data before dispatch.
+	(parse_event_type):
+	Fix for error messages from GAIL.
+	
+	* test/event-listener-test.c:
+	Test new ContextString and "any_data" API:
+	(report_text_event): New method query and output context string.
+	(main): register a new text listener with report_text_event
+	callback.
+
+2002-11-19  Darren Kenny  <darren.kenny@sun.com>
+
+	Fixes for bugs 98127 and 97914.
+	* cspi/spi-roletypes.h:
+	Added SPI_ROLE_HEADER, SPI_ROLE_FOOTER, SPI_ROLE_PARAGRAPH,
+	SPI_ROLE_RULER
+	* cspi/spi-statetypes.h:
+	Added SPI_STATE_MANAGES_DESCENDANTS
+	* cspi/spi.h:
+	Added SPI_RELATION_FLOWS_TO, SPI_RELATIONS_FLOWS_FROM,
+	SPI_RELATION_SUBWINDOW_OF, SPI_RELATION_EMBEDS, SPI_RELATION_EMBEDDED_BY
+	* cspi/spi_accessible.c:
+	Added mapping in role_table from new Accessibility_ROLE_* to SPI_ROLE_*
+	Added mapping from SPI_STATE_MANAGES_DESCENDANTS to 
+	Accessibility_STATE_MANAGES_DESCENDANTS
+	* libspi/accessible.c:
+	Added Mapping from ATK_ROLE_{FOOTER,HEADER,PARAGRAPH,RULER} to
+	Accessibility_ROLE_{FOOTER,HEADER,PARAGRAPH,RULER} 
+	As requested by Bill, I also cleaned up the alignment.
+	* libspi/relation.c:
+	Added mapping of the ATK_RELATION_{FLOWS_TO,FLOWS_FROM,SUBWINDOW_OF,
+	EMBEDS,EMBEDDED_BY} to equivalend Accessibility_RELATION_*
+	* libspi/stateset.c:
+	Added mappings between ATK_STATE_MANAGES_DESCENDANTS and
+	Accessibility_STATE_MANAGES_DESCENDANTS
+	* docs/reference/cspi/tmpl/spi_accessible.sgml:
+	Document changes reflecting modifications to roles.
+	* docs/reference/cspi/tmpl/spi_relation.sgml:
+	Document changes reflecting modifications to relations.
+	* docs/reference/cspi/tmpl/spi_stateset.sgml:
+	Document changes reflecting modifications to states.
+
+2002-11-17  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Revved to 1.1.3, interface-age=3, binary-age=3.
+	Added REBUILD macro.
+
+	* test/Makefile.am:
+	Removed accessx-gui from the tests, since we have a nice
+	keyboard accessibility capplet now :-)
+
+	* test/keysynth-demo.c:
+	(increment_scan): removed do-nothing default: case,
+	silences warning.
+
+	* test/visual-bell.c:
+	(main) : removed do-nothing default: case, 
+	silences warning.
+
+	* cspi/spi_action.c:
+	(AccessibleAction_getKeyBinding_): 
+	Documented keybinding string format.
+	FIX for bug 97916.
+
+	* cspi/spi_text.c:
+	(AccessibleText_getAttributes):
+	Documented the text attribute string format.
+	It's changed to use semicolon delimiters also,
+	to prevent clashes with CSS attributes, but the old
+	trick of looking for ", " strings will still work
+	(as unreliably as ever).  Fix for bug related to 97916.
+
+	* cspi/spi_event.c:
+	Include <cspi/bonobo/cspi-bonobo-listener.h>
+	Fixes build warning.
+	(SPI_freeAccessibleKeySet):
+	(AccessibleKeystrokeListener_addCallback):
+	(AccessibleKeystrokeListener_removeCallback):
+	Modify to use AccessibleDeviceListener API internally,
+	instead of AccessibleKeystrokeListener.
+	
+	* idl/Accessibility_Event.idl:
+	Added two more empty slots to EventListener (for a total of four).
+
+	* idl/Accessibility_Accessible.idl:
+	Added four empty slots to Accessible interface.
+
+2002-11-15  Bill Haneman <bill.haneman@sun.com>
+
+	* idl/Accessibility_Registry.idl:
+	(KeyEventType, EventType):
+	Marked KeyEventType as deprecated; it duplicates
+	functionality of EventType, which has been extended to
+	include Mouse-button events.
+	(KeyEventTypeSeq): defined in terms of EventType.
+	(registerDeviceEventListener, deregisterDeviceEventListener):
+	New methods, for managing listeners to device events,
+	which potentially may consume them.	
+	
+	* cspi/spi-impl.h:
+	Added definition for AccessibleDeviceListener.
+
+	* cspi/spi-listener.h:
+	(enum AccessibleDeviceEventType):
+	Added SPI_BUTTON_PRESSED and SPI_BUTTON_RELEASED.
+	Typedef'd AccessibleKeyEventType to AccessibleDeviceEventType
+	for backwards compat.
+	(AccessibleKeystroke): Renamed AccessibleKeystroke to AccessibleDeviceEvent,
+	and typedef'd AccessibleKeystroke to it for back-compat.
+	(AccessibleDeviceListenerCB):
+	New function prototype typedef.
+
+	* cspi/spi.h:
+	(AccessibleDeviceEventMask): New typedef.
+	(AccessibleModifierMaskType): New typedef (renamed from AccessibleKeyMaskType).
+	(AccessibleKeyMaskType): 
+	Set equivalent to AccessibleModifierMaskType for back-compat.	
+	(SPI_createAccessibleKeystrokeListener):
+	(AccessibleKeystrokeListener_unref):
+	Deprecated in favor of equivalent (better-named) new API below..
+	keystroke listeners are like all device listeners.
+	(SPI_createAccessibleDeviceListener, AccessibleDeviceListener_unref)
+	New API names for old features :-).
+	(AccessibleDeviceListener_addCallback):
+	(AccessibleDeviceListener_removeCallback): 
+	(SPI_registerDeviceEventListener): 
+	(SPI_deregisterDeviceEventListener): 
+	New methods.
+	
+	* cspi/spi_event.c:
+	(SPI_createAccessibleKeystrokeListener):
+	Use new preferred API, cspi_device_listener_new() and
+	cspi_device_listener_add_cb().
+	(AccessibleKeystrokeListener_removeCallback):
+	Use new preferred API, cspi_device_listener_remove_cb().
+	(AccessibleKeystrokeListener_unref):
+	Use new preferred API, cspi_device_listener_unref().
+	(SPI_createAccessibleDeviceListener):
+	(AccessibleDeviceListener_addCallback):
+	(AccessibleDeviceListener_removeCallback):
+	Implementation of new API.
+
+	* cspi/spi_registry.c:
+	(SPI_registerDeviceEventListener):
+	(SPI_deregisterDeviceEventListener):
+	Implementation of new API.  Fixed memory leak and removed need to
+	allocate EventTypeSeq (thanks Michael for catching this).
+	Squashed a wayward CORBA_exception_free that shouldn't get called.
+
+	* cspi/bonobo/cspi-bonobo-listener.c:
+	(EventHandler):
+	Changed union (bin-and-api-compatibly) to refer to AccessibleDeviceListenerCB.
+	(cspi_key_event): renamed to cspi_device_event().
+	Internal use of CSpiKeystrokeListener changed to CSpiDeviceListener.
+	Extended to handle mouse button events as well as key events.
+	(CSpiKeystrokeListener):
+	Class superceded by CSpiDeviceListener.
+	(cspi_keystroke_listener_add_callback, cspi_keystroke_listener_get_corba):
+	These internal APIs changed to "*device_listener" from "*keystroke_listener".
+
+	* cspi/bonobo/cspi-bonobo-listener.h:
+	(CSpiKeystrokeListener):
+	Class superceded by CSpiDeviceListener.
+	(cspi_keystroke_listener_add_callback, cspi_keystroke_listener_get_corba):
+	These internal APIs changed to "*device_listener" from "*keystroke_listener".
+
+	* libspi/Makefile.am:
+	Replaced keystrokelistener.h and keystrokelistener.c
+	with devicelistener.h and devicelistener.c; keystrokelisener.h
+	stub retained for back-compat.
+
+	* libspi/keystrokelistener.c:
+	Removed file.
+
+	* libspi/libspi.h:
+	Replaced inclusion of keystrokelistener.h with devicelistener.h.	
+
+	* registryd/deviceeventcontroller.c:
+	(DEControllerListener): Added Accessibility_EventTypeSeq member.
+	(DEControllerKeyListener): Removed Accessibility_KeyEventTypeSeq member.
+	(DEControllerPrivateData): Added xkb settings data.
+	(spi_dec_poll_mouse_moved): Changed to dispatch device events for
+	button release events (which can't be captured via XGrabButton).
+	Don't dispatch via the 'normal' event mechanism if the device event was
+	consumed.
+	(spi_dec_key_listener_new, spi_key_listener_clone, spi_key_listener_data_free):
+	Handle the typeseq data in its new location (see above).
+	(spi_dec_listener_new, spi_listener_clone, spi_listener_clone_free):
+	New methods, for "generic" device listeners.
+	(spi_controller_register_device_listener):
+	Now handle mouse event listeners as well as key listeners.
+	(spi_controller_notify_mouselisteners):
+	New internal method.
+	(spi_device_event_controller_forward_mouse_event):
+	Now we notify mouse device listeners as well as generating the
+	non-consumable "mouse:" events.  
+	(global_filter_fn):
+	We must check and restore the XKB
+	modifier map if we consume the event, since the act of triggering
+	a mouse event will normally reset the XKB latch.  This is required for 
+	instance by GOK.
+	(spi_controller_register_with_devices):
+	Load the XKB settings when registering, and register for XKB 
+	state notify events. 
+	(spi_key_eventtype_seq_contains_event):
+	Renamed spi_eventtype_seq_contains_event, since it's used
+	internally for all device event types now.
+	(spi_key_event_matches_listener):
+	Uses spi_eventtype_seq_contains_event now.
+	(spi_device_event_controller_object_finalize):
+	Free the private data and the XkbKeyboard struct.
+	(impl_register_device_listener, impl_deregister_device_listener):
+	Implementation of new IDL.
+	(spi_deregister_controller_device_listener):
+	New internal method.
+	(dec_xkb_get_slowkeys_delay dec_xkb_get_bouncekeys_delay):
+	More efficient implementation, we don't have to create a new
+	XkbControls structure every time we query.
+	(spi_device_event_controller_class_init):
+	Initialize the epv entries for the new IDL.  Assign the 
+	"spi-dec-private" quark.
+	(spi_device_event_controller_init):
+	Initialize the private data.
+	(spi_device_event_controller_forward_key_event):
+	Removed a bogus CORBA_exception_free() call.
+	
+	* registryd/deviceeventcontroller.h:
+	Replaced inclusion of keystrokelistener.h with
+	devicelistener.h.
+
+	* test/event-listener-test.c:
+	(report_mouse_event):
+	New method.
+	(main):
+	Added mouse-event device listener.
+
+	* test/test-simple.c:
+	(create_test_window):
+	Fixed regression (we were instantiating a GtkRange,
+	which is now an abstract class).  Also fixed to match
+	existing AtkRole names, this seems to have changed in ATK
+	awhile ago; too late now I think, and the new
+	mechanism is at least elegant and consistent with the
+	glib enum "nick" APIs.	
+
+2002-11-15  Darren Kenny  <darren.kenny@sun.com>
+
+	* idl/Accessibility_Relation.idl:
+	add RELATION_FLOWS_TO,RELATION_FLOWS_FROM,RELATION_SUBWINDOW_OF,
+	RELATION_EMBEDS,RELATION_EMBEDDED_BY
+	* idl/Accessibility_Role.idl:
+	add ROLE_HEADER, ROLE_FOOTER, ROLE_PARAGRAPH, ROLE_RULER
+	* idl/Accessibility_State.idl:
+	add STATE_MANAGES_DESCENDANTS
+	* test/event-listener-test.c:
+	Added a listener for active-descendant events.
+
+2002-11-15  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* atk-bridge/bridge.c
+	(atk_bridge_init): If application is Bonobo component wait until top
+	level is added before registering
+	(spi_atk_bridge_do_registration): New function which contains code, 
+	formerly in atk_bridge_init, to do application registration.
+	(spi_atk_bridge_toplevel_added): Signal called when top level
+	added to Bonobo component
+
+	This fixes bug #83134.
+
+2002-10-23  Vitaly Tishkov  <tvv@sparc.spb.su>
+
+	* registryd/deviceeventcontroller.c
+        Fixed compilation error caused by calling gettimeofday() 
+        with 1 parameter
+
+2002-10-18  Bill Haneman  <bill.haneman@sun.com>
+
+	BUGFIX for #95828.
+
+	* acconfig.h:
+	Added template for HAVE_XKB.
+	
+	* configure.in:
+	Changes to check for XKB, and to set the HAVE_XKB #define if it 
+	is available.
+	
+	* libspi/listener.c:
+	()impl_notify_event): Make failure to get event source name
+	nonfatal.
+
+	* registryd/deviceeventcontroller.c:
+	(#include): include X11/XKBlib.h.
+	(DEControllerPrivateData) : New struct.
+	(dec_xkb_get_slowkeys_delay) (dec_xkb_get_boucekeys_delay) : 
+	New methods.
+	(dec_synth_keycode_press) (dec_synth_keycode_release):
+	New methods; split the key synthesis code into these methods.
+	They check XKB settings before determining the "time" values to
+	pass to Xtest; this fixes bug #95828.
+	(impl_generate_keyboard_event): Changed to use methods above,
+	instead of callng Xtest directly.
+	(spi_device_event_controller_init): Initialize new privae struct s
+	above.
+	(spi_device_event_controllr_object_finalize):
+	Free the (new) private data.
+
+	* registryd/deviceeventcontroller.h:
+	Add new gpointer to end of struct data.
+
+2002-10-16  Bill Haneman  <bill.haneman@sun.com>
+
+	* configure.in:
+	Incremented revision to 1.1.2, SONAME is still '.so', library
+	extensions are ".so.0.0.2".
+
+	* registryd/deviceeventcontroller.c:
+	FIXES FOR #93592 and #95940.
+	(statics):  renamed mouse_button_state to mouse_mask_state, 
+	added key_modifier_mask.
+   	(spi_dec_poll_mouse_moved): 
+	Added key modifier checks, and emit "keyboard:modifiers"
+	events when the key modifiers currently in use change.
+	Also generate "mouse:abs" events periodically, even if the mouse
+	is stationary (should we?).
+	Alternatively we could generate "mouse:abs" events for either all
+	mouse movements, or every 'nth' mouse movement, or at the
+	beginning and end of every "active" mouse period.
+	
+	* test/event-listener-test.c:
+	(main): Added listener for "keyboard:modifiers" events.
+	
+2002-10-15  Bill Haneman  <bill.haneman@sun.com>
+
+	* libspi/keymasks.h:
+	Added key mask #defines for mouse buttons; e.g.
+	SPI_KEYMASK_BUTTON1, etc.
+
+	* configure.in:
+	Incremented dependency on ATK to version 1.1.0. (This dependency
+	is probably premature but will soon be real enough).
+
+2002-10-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libspi/hyperlink.[ch]
+	(spi_hyperlink_new): Change parameter from AtkObject to AtkHyperlink.
+	(get_hyperlink_from_servant): Check object is AtkHyperlink not 
+	AtkObject.
+
+	* libspi/hypertext.c (impl_getLink): Remove cast of AtkHyperlink to
+	AtkObject.
+
+	Fixes bug #95517.
+
+2002-10-10  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c
+	(global_filter_fn): Correct typo which caused KeyPress and KeyRelease
+	events to be ignored.
+	(spi_controller_update_key_grabs): Use GrabModeSync for pointer_mode
+	keyboard_mode so that XAllowEvents() can be called.
+
+	Fixes bug #93658.
+
+2002-10-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* cspi/spi-accessible.c: Correct names of roles returned by
+	AccessibleRole_getName(). Fixes bug #95055.
+
+2002-10-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* cspi/spi_main.c (report_leaked_ref): Report address of leaked
+	object.
+
+	* registryd/registry.c
+	(desktop_remove_application: Write diagnostic message to stderr for
+	consistency.
+
+	(impl_accessibility_registry_deregister_global_event_listener):
+	Correct size of lists array. This addresses bug #94555).
+
+2002-09-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libspi/accessible.c (spi_init_role_lookup_table): Correct typos
+	in some role names.
+
+2002-09-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* registryd/Makefile: Add CLEANFILES so that .server file is removed
+	on make clean
+
+	* registryd/registry.c (impl_registry_notify_event): Remove
+	unnecessary call to parser_event_type().
+
+	* docs/reference/cspi/tmpl/spi_component.sgml:
+	Add reference to SPI_LAYER_WINDOW.
+
+2002-09-17  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* registryd/registry.c
+	(desktop_add_application): Remove leak.
+	(desktop_remove_application): Remove leak.
+	(parser_event_type): Remove leak.
+
+2002-09-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* registryd/deviceeventcontroller.c (spi_dec_mouse_moved): Removed
+	bogus call to CORBA_string_dup(). Also removed unnecessary
+	g_string_dup/g_free calls.
+	
+2002-09-13  Bill Haneman <bill.haneman@sun.com>
+
+	* registryd/deviceeventcontroller.c:
+	spi_dec_mouse_moved: Fixed memory leaks and reordered 2 code blocks.
+
+	* test/event-listener-test.c:
+	main: commented out three redundant listeners, to reduce output
+	noise. (They still are potentially useful for testing).
+	
+
+2002-09-13  Michael Meeks  <michael@ximian.com>
+
+	* Update all the copyrights to include Ximian.
+
+2002-09-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* cspi/spi.h: add SPI_LAYER_WINDOW.
+
+	* cspi/spi_component.c: (AccessibleComponent_getLayer):
+	add Accessibility_LAYER_WINDOW case.
+
+	* idl/Accessibility_Component.idl: add LAYER_WINDOW.
+
+	* libspi/component.c: (impl_accessibility_component_get_layer):
+	add ATK_LAYER_WINDOW case.
+
 2002-08-28  Bill Haneman <bill.haneman@sun.com>
 
 	* configure.in: incremented micro version.

@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,7 +27,7 @@
 #include <cspi/spi-impl.h>
 /*
  * Definitions for AccessibleRole, AccessibleState,
- * AccessibleEvent, and event listeners.
+ * and event listeners.
  */
 #include <cspi/spi-roletypes.h>
 #include <cspi/spi-statetypes.h>
@@ -58,6 +59,17 @@ typedef enum
 } AccessibleTextBoundaryType;
 
 /*
+ * Enumerated type for text bounds clipping types
+ */
+typedef enum
+{
+  SPI_TEXT_CLIP_NONE,
+  SPI_TEXT_CLIP_MIN,
+  SPI_TEXT_CLIP_MAX,
+  SPI_TEXT_CLIP_BOTH
+} AccessibleTextClipType;
+
+/*
  *
  * Enumerated type for relation types
  *
@@ -73,6 +85,11 @@ typedef enum
   SPI_RELATION_MEMBER_OF,
   SPI_RELATION_NODE_CHILD_OF,
   SPI_RELATION_EXTENDED,
+  SPI_RELATION_FLOWS_TO,
+  SPI_RELATION_FLOWS_FROM,
+  SPI_RELATION_SUBWINDOW_OF,
+  SPI_RELATION_EMBEDS,
+  SPI_RELATION_EMBEDDED_BY,
   SPI_RELATION_LAST_DEFINED
 } AccessibleRelationType;
 
@@ -99,6 +116,7 @@ typedef enum {
 } AccessibleKeyListenerSyncType;
 
 typedef unsigned long AccessibleKeyEventMask;
+typedef unsigned long AccessibleDeviceEventMask;
 
 /**
  * AccessibleComponentLayer:
@@ -112,6 +130,8 @@ typedef unsigned long AccessibleKeyEventMask;
  *                          MDI components.
  * @SPI_LAYER_OVERLAY: Component is in the overlay plane - this value is reserved
  *                          for future use.
+ * @SPI_LAYER_WINDOW: Component is in the window layer and have valid Z-information
+ *                    relative to other window-layer components.
  * @SPI_LAYER_LAST_DEFINED: Used to determine the last valid value in the enum,
  *                          should not be encountered.	
  **/
@@ -123,9 +143,26 @@ typedef enum {
     SPI_LAYER_MDI,
     SPI_LAYER_POPUP,
     SPI_LAYER_OVERLAY,
+    SPI_LAYER_WINDOW,
     SPI_LAYER_LAST_DEFINED	
 } AccessibleComponentLayer;
 
+
+/**
+ * AccessibleTextRange:
+ * @start: the first nominal character position within the range.
+ * @end: the first nominal character position following the range.
+ * @content: The actual text content between @start and @end, as a UTF-8 string.
+ *
+ * Structure which encapsulates a text range - must be associated with an
+ *          AccessibleText-implementing object.
+ **/
+typedef struct _AccessibleTextRange
+{
+  long int        start;
+  long int        end;
+  char           *contents;
+} AccessibleTextRange;
 
 /**
  * AccessibleKeySet:
@@ -151,8 +188,8 @@ typedef struct _AccessibleKeySet
  **/
 #define SPI_KEYSET_ALL_KEYS NULL
 
-typedef unsigned long AccessibleKeyMaskType;
-
+typedef unsigned long AccessibleModifierMaskType;
+typedef AccessibleModifierMaskType AccessibleKeyMaskType;
 
 /* Basic SPI initialization and event loop function prototypes */
 
@@ -185,7 +222,9 @@ SPIBoolean                AccessibleEventListener_removeCallback (
 void                      AccessibleEventListener_unref (
 	                                           AccessibleEventListener  *listener);
 
-/* Keystroke Listener creation and support.  */
+/* Device Event Listener creation and support.  */
+
+/* First four are deprecated in favor of the last four; really just a re-name */
 
 AccessibleKeystrokeListener * SPI_createAccessibleKeystrokeListener (
 	                                AccessibleKeystrokeListenerCB callback,
@@ -199,6 +238,19 @@ SPIBoolean                    AccessibleKeystrokeListener_removeCallback (
 					AccessibleKeystrokeListenerCB callback);
 void                          AccessibleKeystrokeListener_unref (
 	                                AccessibleKeystrokeListener *listener);
+
+AccessibleDeviceListener   * SPI_createAccessibleDeviceListener (
+	                                AccessibleDeviceListenerCB callback,
+					void                      *user_data);
+SPIBoolean                    AccessibleDeviceListener_addCallback (
+	                                AccessibleDeviceListener  *listener,
+					AccessibleDeviceListenerCB callback,
+					void                      *user_data);
+SPIBoolean                    AccessibleDeviceListener_removeCallback (
+	                                AccessibleDeviceListener  *listener,
+					AccessibleDeviceListenerCB callback);
+void                          AccessibleDeviceListener_unref (
+	                                AccessibleDeviceListener *listener);
 
 /* Global functions serviced by the registry */
 
@@ -219,6 +271,14 @@ SPIBoolean SPI_registerAccessibleKeystrokeListener   (
 SPIBoolean SPI_deregisterAccessibleKeystrokeListener (
 	                               AccessibleKeystrokeListener *listener,
 				       AccessibleKeyMaskType        modmask);
+
+SPIBoolean SPI_registerDeviceEventListener   (
+                                       AccessibleDeviceListener   *listener,
+				       AccessibleDeviceEventMask   eventmask,
+				       void                       *filter);
+SPIBoolean SPI_deregisterDeviceEventListener (
+				       AccessibleDeviceListener   *listener,
+				       void                       *filter);
 
 int         SPI_getDesktopCount                  (void);
 Accessible *SPI_getDesktop                       (int i);
@@ -719,6 +779,29 @@ AccessibleText_getCharacterExtents (AccessibleText *obj,
                                     long int *height,
 				    AccessibleCoordType type);
 
+void
+AccessibleText_getRangeExtents (AccessibleText *obj,
+				long int startOffset,
+				long int endOffset,
+				long int *x,
+				long int *y,
+				long int *width,
+				long int *height,
+				AccessibleCoordType type);
+
+AccessibleTextRange **
+AccessibleText_getBoundedRanges (AccessibleText *obj,
+				 long int x,
+				 long int y,
+				 long int width,
+				 long int height,
+				 AccessibleCoordType type,
+				 AccessibleTextClipType clipTypeX,
+				 AccessibleTextClipType clipTypeY);
+
+void
+AccessibleTextRange_freeRanges (AccessibleTextRange **ranges);
+
 long
 AccessibleText_getOffsetAtPoint (AccessibleText *obj,
                                  long int x,
@@ -759,6 +842,40 @@ double     AccessibleValue_getCurrentValue (AccessibleValue *obj);
 double     AccessibleValue_getMaximumValue (AccessibleValue *obj);
 SPIBoolean AccessibleValue_setCurrentValue (AccessibleValue *obj,
 					    double           newValue);
+
+/* Persistance and lifecycle control for AccessibleEvents. */
+SPIBoolean AccessibleEvent_ref (const AccessibleEvent *e);
+void AccessibleEvent_unref (const AccessibleEvent *e);
+
+/*
+ * Prototypes for accessor functions, to obtain context
+ * information for accessible events.
+ */
+
+char*        AccessibleTextChangedEvent_getChangeString (const AccessibleEvent *e);
+Accessible * AccessibleChildChangedEvent_getChildAccessible (const AccessibleEvent *e);
+
+Accessible * AccessibleParentChangedEvent_getParentAccessible (const AccessibleEvent *e);
+
+char*        AccessibleTextSelectionChangedEvent_getSelectionString (const AccessibleEvent *e);
+
+char*        AccessibleWindowEvent_getTitleString (const AccessibleEvent *e);
+
+Accessible * AccessibleActiveDescendantChangedEvent_getActiveDescendant (const AccessibleEvent *e);
+
+Accessible * AccessibleTableSummaryChangedEvent_getSummaryAccessible (const AccessibleEvent *e); 
+
+Accessible * AccessibleTableHeaderChangedEvent_getHeaderAccessible (const AccessibleEvent *e);
+
+char *       AccessibleTableCaptionChangedEvent_getCaptionString (const AccessibleEvent *e);
+
+char *       AccessibleTableRowDescriptionChangedEvent_getDescriptionString (const AccessibleEvent *e);
+
+char *       AccessibleTableColumnDescriptionChangedEvent_getDescriptionString (const AccessibleEvent *e);
+
+char *       AccessibleDescriptionChangedEvent_getDescriptionString (const AccessibleEvent *e);
+
+char *       AccessibleNameChangedEvent_getNameString (const AccessibleEvent *e);
 
 /* Misc methods */
 void SPI_freeString (char *s);

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -92,6 +92,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -116,6 +117,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -123,6 +125,7 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
@@ -130,16 +133,28 @@ cxxflags_set = @cxxflags_set@
 moduledir = $(libdir)/gtk-2.0/modules
 module_LTLIBRARIES = libatk-bridge.la
 
-libatk_bridge_la_SOURCES =  	bridge.c
+libatk_bridge_la_SOURCES = \
+	bridge.c
 
 
-libatk_bridge_la_DEPENDENCIES =  	$(top_srcdir)/libspi/application.h
+libatk_bridge_la_DEPENDENCIES = \
+	$(top_srcdir)/libspi/application.h
 
 
-INCLUDES = -I $(top_srcdir)            -I $(top_builddir)         		   -I $(top_srcdir)/libspi		   -I $(top_builddir)/libspi	           -I $(top_builddir)/atk-bridge            $(ATK_BRIDGE_CFLAGS)
+INCLUDES = -I $(top_srcdir) \
+           -I $(top_builddir)         	\
+	   -I $(top_srcdir)/libspi	\
+	   -I $(top_builddir)/libspi	\
+           -I $(top_builddir)/atk-bridge \
+           $(ATK_BRIDGE_CFLAGS)
 
 
-DEPS =  	$(libatk)		$(libbonobo-2)		$(liboaf-2)		$(libORBit-2)		$(libat-spi)
+DEPS = \
+	$(libatk)	\
+	$(libbonobo-2)	\
+	$(liboaf-2)	\
+	$(libORBit-2)	\
+	$(libat-spi)
 
 
 LDFLAGS = @LDFLAGS@ -no-undefined -module -avoid-version
@@ -302,7 +317,8 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 bridge.lo bridge.o : bridge.c ../libspi/Accessibility.h \
-	../libspi/accessible.h ../libspi/base.h ../libspi/application.h
+	../libspi/spi-private.h ../libspi/accessible.h ../libspi/base.h \
+	../libspi/application.h
 
 info-am:
 info: info-am

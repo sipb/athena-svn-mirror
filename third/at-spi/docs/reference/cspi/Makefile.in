@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -93,6 +93,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -118,6 +119,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -125,11 +127,18 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
-EXTRA_DIST =  	$(content_files)			$(extra_files)				$(HTML_IMAGES)				$(DOC_MAIN_SGML_FILE)			$(DOC_MODULE)-sections.txt		$(DOC_MODULE)-overrides.txt
+EXTRA_DIST = \
+	$(content_files)		\
+	$(extra_files)			\
+	$(HTML_IMAGES)			\
+	$(DOC_MAIN_SGML_FILE)		\
+	$(DOC_MODULE)-sections.txt	\
+	$(DOC_MODULE)-overrides.txt
 
 
 # Files whose declarations are to be ignored (private)
@@ -172,7 +181,10 @@ GPATH = $(srcdir)
 
 DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
-SCANOBJ_FILES =  	$(DOC_MODULE).args		$(DOC_MODULE).hierarchy 	$(DOC_MODULE).signals
+SCANOBJ_FILES = \
+	$(DOC_MODULE).args	\
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).signals
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h

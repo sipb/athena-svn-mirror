@@ -1,10 +1,10 @@
 AC_INIT(idl/Accessibility.idl)
 
 AT_SPI_MAJOR_VERSION=1
-AT_SPI_MINOR_VERSION=0
-AT_SPI_MICRO_VERSION=2
-AT_SPI_INTERFACE_AGE=1
-AT_SPI_BINARY_AGE=1
+AT_SPI_MINOR_VERSION=1
+AT_SPI_MICRO_VERSION=8
+AT_SPI_INTERFACE_AGE=0
+AT_SPI_BINARY_AGE=8
 AT_SPI_VERSION="$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION.$AT_SPI_MICRO_VERSION"
 AM_INIT_AUTOMAKE(at-spi, $AT_SPI_VERSION)
 AC_SUBST(AT_SPI_MAJOR_VERSION)
@@ -57,8 +57,16 @@ if $GTKDOC ; then
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
     if perl <<EOF ; then
-	exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
-            ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
+my @installed = split /\./, "$gtk_doc_version";
+my @required = split /\./, "$gtk_doc_min_version";
+
+while (scalar @required) {
+    my \$installed_ver = (shift @installed || 0);
+    my \$required_ver = shift @required;
+    exit 1 if (\$installed_ver < \$required_ver);
+    exit 0 if (\$installed_ver > \$required_ver);
+}
+exit 0;
 EOF
       AC_MSG_RESULT(yes)
    else
@@ -95,7 +103,7 @@ AC_SUBST(X_LIBS)
 dnl Checks for libraries
 PKG_CHECK_MODULES(LIBSPI, \
 	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.0.2 \
+	atk >= 1.1.0 \
 	gtk+-2.0 > 2.0.0 \
 	gail >= 0.16)
 AC_SUBST(LIBSPI_LIBS)
@@ -104,13 +112,13 @@ AC_SUBST(LIBSPI_CFLAGS)
 PKG_CHECK_MODULES(REGISTRYD, \
 	libbonobo-2.0 >= 1.107.0 \
 	gtk+-2.0 > 2.0.0 \
-	atk >= 1.0.2)
+	atk >= 1.1.0)
 AC_SUBST(REGISTRYD_LIBS)
 AC_SUBST(REGISTRYD_CFLAGS)
 
 PKG_CHECK_MODULES(TESTS, \
 	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.0.2 \
+	atk >= 1.1.0 \
 	gtk+-2.0 > 2.0.0 \
 	gail >= 0.16)
 AC_SUBST(TESTS_LIBS)
@@ -118,13 +126,13 @@ AC_SUBST(TESTS_CFLAGS)
 
 PKG_CHECK_MODULES(ATK_BRIDGE, \
 	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.0.2)
+	atk >= 1.1.0)
 AC_SUBST(ATK_BRIDGE_LIBS)
 AC_SUBST(ATK_BRIDGE_CFLAGS)
 
 PKG_CHECK_MODULES(LIBCSPI, \
 	libbonobo-2.0 >= 1.107.0 \
-	atk >= 1.0.2)
+	atk >= 1.1.0)
 AC_SUBST(LIBCSPI_LIBS)
 AC_SUBST(LIBCSPI_CFLAGS)
 
@@ -160,6 +168,39 @@ if test "x$XTST_LIBS" = x; then
 fi
 AC_SUBST(XTST_LIBS)
 
+have_xkb=
+AC_CHECK_LIB(X11, XkbQueryExtension, have_xkb="maybe",,$X_LIBS)
+if test "x$have_xkb" = "xmaybe"; then 
+  AC_CHECK_HEADER(X11/XKBlib.h, have_xkb=yes)
+fi
+if test "x$have_xkb" = "xyes"; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(HAVE_XKB)
+fi
+
+have_xinput=
+AC_CHECK_LIB(Xi, XOpenDevice, XINPUT_LIBS=-lXi)
+if test "x$XINPUT_LIBS" = x; then
+  save_LIBS="$LIBS"
+  for xinputpath in /usr/X11R6/lib /usr/openwin/lib; do
+    LIBS="-L$xinputpath -lXi"
+    case "$host" in
+    *solaris*) XINPUT_RPATH_FLAGS="-R$xinputpath" ;;
+    esac
+    AC_MSG_CHECKING(for -lXi in $xinputpath)
+    AC_TRY_LINK([], [XOpenDisplay()], [
+	AC_MSG_RESULT(yes)
+	XINPUT_LIBS="$XINPUT_RPATH_FLAGS -L$xinputpath -lXi"
+        LIBS="$save_LIBS"
+	break],[AC_MSG_RESULT(no)])
+  done
+  if test "x$XINPUT_LIBS" = x; then
+    AC_MSG_ERROR(Couldn't find the XInput library. Check config.log for details)
+  fi			       
+    AC_CHECK_HEADER(X11/extensions/XInput.h, have_xinput=yes)
+fi
+AC_SUBST(XINPUT_LIBS)
+
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
@@ -177,6 +218,15 @@ AC_TRY_CPP([#include <popt.h>
   AC_MSG_ERROR([A newer version of popt is required to build at-spi.
 You can download the latest version from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x/])
 ])
+
+REBUILD=\#
+if test "x$enable_rebuilds" = "xyes" && \
+	test -n "$PERL" && \
+	$PERL -e 'exit !($] >= 5.002)' > /dev/null 2>&1 && \
+     test -n "$AWK" ; then
+  REBUILD=
+fi
+AC_SUBST(REBUILD)
 
 AC_OUTPUT([
 Makefile

@@ -49,6 +49,8 @@ void        <link linkend="AccessibleEditableText-unref">AccessibleEditableText_
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -67,15 +69,11 @@ Increment the reference count for an <link linkend="AccessibleEditableText">Acce
       this is the same as <link linkend="AccessibleText-ref">AccessibleText_ref</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-unref">AccessibleEditableText_unref ()</title>
 <programlisting>void        AccessibleEditableText_unref    (<link linkend="AccessibleEditableText">AccessibleEditableText</link> *obj);</programlisting>
@@ -85,15 +83,11 @@ Decrement the reference count for an <link linkend="AccessibleEdiitableText">Acc
       this is the same as <link linkend="AccessibleText-unref">AccessibleText_unref</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-copyText">AccessibleEditableText_copyText ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_copyText (<link linkend="AccessibleText">AccessibleText</link> *obj,
@@ -106,25 +100,21 @@ Copy text from an <link linkend="AccessibleEditableText">AccessibleEditableText<
 <parameter>see</parameter>: AccessibleEditableText_pasteText</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>startPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the starting character offset
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the starting character offset
       of the text to copy.
-</entry></row>
-<row><entry align="right"><parameter>endPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the offset of the first character
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the offset of the first character
       past the end of the text section to be copied.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-deleteText">AccessibleEditableText_deleteText ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_deleteText
@@ -139,25 +129,21 @@ Delete text from an <link linkend="AccessibleEditableText">AccessibleEditableTex
 <parameter>see</parameter>: AccessibleEditableText_cutText</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>startPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the starting character offset
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the starting character offset
       of the text to delete.
-</entry></row>
-<row><entry align="right"><parameter>endPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the offset of the first character
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the offset of the first character
       past the end of the text section to be deleted.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-insertText">AccessibleEditableText_insertText ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_insertText
@@ -172,27 +158,23 @@ As with all character offsets, the specified <parameter>position</parameter> may
       variable-width encoding.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
-<entry> an integer indicating the character offset at which to insert
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the character offset at which to insert
       the new text.  
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry> a char* pointer to the text to insert, in UTF-8 encoding.
-</entry></row>
-<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
-<entry> (frankly I'm not sure this parameter should be here)
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara> a char* pointer to the text to insert, in UTF-8 encoding.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara> (frankly I'm not sure this parameter should be here)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-cutText">AccessibleEditableText_cutText ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_cutText  (<link linkend="AccessibleEditableText">AccessibleEditableText</link> *obj,
@@ -206,25 +188,21 @@ Delete text from an <link linkend="AccessibleEditableText">AccessibleEditableTex
 <parameter>see</parameter>: AccessibleEditableText_pasteText</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>startPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the starting character offset
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the starting character offset
       of the text to cut.
-</entry></row>
-<row><entry align="right"><parameter>endPos</parameter>&nbsp;:</entry>
-<entry> an integer indicating the offset of the first character
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endPos</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the offset of the first character
       past the end of the text section to be cut.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if operation was successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if operation was successful, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-pasteText">AccessibleEditableText_pasteText ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_pasteText
@@ -237,21 +215,17 @@ As with all character offsets, the specified <parameter>position</parameter> may
       variable-width encoding.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
-<entry> an integer indicating the character offset at which to insert
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>position</parameter>&nbsp;:</term>
+<listitem><simpara> an integer indicating the character offset at which to insert
       the new text.  
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-setTextContents">AccessibleEditableText_setTextContents ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_setTextContents
@@ -261,21 +235,17 @@ As with all character offsets, the specified <parameter>position</parameter> may
 Replace the entire text contents of an <link linkend="AccessibleEditableText">AccessibleEditableText</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>newContents</parameter>&nbsp;:</entry>
-<entry> a character string, encoded in UTF-8, which is to
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>newContents</parameter>&nbsp;:</term>
+<listitem><simpara> a character string, encoded in UTF-8, which is to
      become the new text contents of the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleEditableText-setAttributes">AccessibleEditableText_setAttributes ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleEditableText_setAttributes
@@ -288,27 +258,23 @@ Set the attributes applied to a range of text from an <link linkend="AccessibleE
          object, and the bounds of the range.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
-</entry></row>
-<row><entry align="right"><parameter>attributes</parameter>&nbsp;:</entry>
-<entry> a character string indicating the attributes to apply to the range,
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleEditableText">AccessibleEditableText</link> object to modify.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>attributes</parameter>&nbsp;:</term>
+<listitem><simpara> a character string indicating the attributes to apply to the range,
        delimited by ':'.
-</entry></row>
-<row><entry align="right"><parameter>startOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the start of the desired text range.
-</entry></row>
-<row><entry align="right"><parameter>endOffset</parameter>&nbsp;:</entry>
-<entry> a <link linkend="long">long</link> indicating the first character past the desired range.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the start of the desired text range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endOffset</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="long">long</link> indicating the first character past the desired range.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> if the operation was successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

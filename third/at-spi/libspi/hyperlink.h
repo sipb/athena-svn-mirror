@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -47,7 +48,7 @@ struct _HyperlinkClass {
 };
 
 GType         spi_hyperlink_get_type (void);
-SpiHyperlink *spi_hyperlink_new      (AtkObject *object);
+SpiHyperlink *spi_hyperlink_new      (AtkHyperlink *object);
 
 G_END_DECLS
 

@@ -4,7 +4,8 @@
 >State and StateSets</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
 REL="HOME"
 TITLE="AT-SPI C Bindings Reference Manual"
 HREF="book1.html"><LINK
@@ -117,12 +118,12 @@ SIZE="3"
 ><H1
 ><A
 NAME="AT-SPI-CSPI-STATE-AND-STATESETS"
->State and StateSets</A
-></H1
+></A
+>State and StateSets</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2649"
+NAME="AEN2601"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +131,7 @@ NAME="AEN2649"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2652"
+NAME="AEN2604"
 ></A
 ><H2
 >Synopsis</H2
@@ -203,7 +204,7 @@ HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2681"
+NAME="AEN2633"
 ></A
 ><H2
 >Description</H2
@@ -213,14 +214,14 @@ NAME="AEN2681"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2684"
+NAME="AEN2636"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2686"
+NAME="AEN2638"
 ></A
 ><H3
 ><A
@@ -318,6 +319,13 @@ CLASS="PROGRAMLISTING"
   SPI_STATE_VERTICAL,
   /* Indicates this object is visible */
   SPI_STATE_VISIBLE,
+  /*
+   * Indicates that "active-descendant-changed" event is sent when children
+   * become 'active' (i.e. are selected or navigated to onscreen).  Used to
+   * prevent need to enumerate all children in very large containers, like
+   * tables.
+   */
+  SPI_STATE_MANAGES_DESCENDANTS, 
   SPI_STATE_LAST_DEFINED
 } AccessibleState;</PRE
 ></TD
@@ -329,7 +337,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2691"
+NAME="AEN2643"
 ></A
 ><H3
 ><A
@@ -353,48 +361,46 @@ CLASS="PROGRAMLISTING"
 >Increment the reference count for an AccessibleStateSet object.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2699"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2652"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2709"
+NAME="AEN2658"
 ></A
 ><H3
 ><A
@@ -418,48 +424,46 @@ CLASS="PROGRAMLISTING"
 >Decrement the reference count for an AccessibleStateSet object.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2717"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2667"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2727"
+NAME="AEN2673"
 ></A
 ><H3
 ><A
@@ -489,72 +493,76 @@ HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 >AccessibleState</A
 > to an AccessibleStateSet (i.e. set the
       given state to <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> in the stateset.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2738"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2685"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2691"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >state</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 >AccessibleState</A
-> to be added to the specified AccessibleStateSet</TD
+> to be added to the specified AccessibleStateSet</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2754"
+NAME="AEN2698"
 ></A
 ><H3
 ><A
@@ -591,81 +599,94 @@ HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-EQUALS"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2766"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2711"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the first AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the first AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2717"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj2</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the second AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the second AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2723"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an AccessibleStateSet object containing all states contained on one of
-         the two sets but not the other.&#13;</TD
+         the two sets but not the other.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2786"
+NAME="AEN2729"
 ></A
 ><H3
 ><A
@@ -699,74 +720,89 @@ CLASS="PARAMETER"
 > is true for the stateset in question.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2797"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2741"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2747"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >state</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 >AccessibleState</A
 > for which the specified AccessibleStateSet
-      will be queried.</TD
+      will be queried.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2754"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if <TT
 CLASS="PARAMETER"
 ><I
@@ -774,19 +810,17 @@ CLASS="PARAMETER"
 ></TT
 > is true/included in the given AccessibleStateSet,
          otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.&#13;</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2821"
+NAME="AEN2763"
 ></A
 ><H3
 ><A
@@ -823,85 +857,98 @@ HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-COMPARE"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2835"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2778"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the first AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the first AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2784"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj2</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the second AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the second AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2790"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if the two AccessibleStateSets are equivalent,
          otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.&#13;</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2857"
+NAME="AEN2798"
 ></A
 ><H3
 ><A
@@ -925,68 +972,75 @@ CLASS="PROGRAMLISTING"
 >Determine whether a given AccessibleStateSet is the empty set.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2866"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2808"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2814"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if the given AccessibleStateSet contains no (true) states,
          otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.&#13;</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2883"
+NAME="AEN2822"
 ></A
 ><H3
 ><A
@@ -1016,67 +1070,71 @@ HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 >AccessibleState</A
 > to an AccessibleStateSet (i.e. set the
       given state to <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
 >FALSE</A> in the stateset.)</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2894"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2834"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >obj</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleStateSet object on which to operate.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleStateSet object on which to operate.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN2840"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >state</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
 >AccessibleState</A
-> to be removed from the specified AccessibleStateSet</TD
+> to be removed from the specified AccessibleStateSet</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ></DIV
 ><DIV

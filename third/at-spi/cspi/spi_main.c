@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -125,6 +126,7 @@ cspi_get_live_refs (void)
 CORBA_Environment *
 cspi_ev (void)
 {
+  CORBA_exception_init (&ev);
   return &ev;
 }
 
@@ -240,6 +242,27 @@ cspi_object_return (Accessible *accessible)
       accessible->objref = cspi_dup_ref (accessible->objref);
       accessible->ref_count--;
     }
+}
+
+Accessible *
+cspi_object_take (CORBA_Object corba_object)
+{
+  Accessible *accessible;
+  accessible = cspi_object_borrow (corba_object);
+
+  cspi_object_ref (accessible);
+  /* 
+   * if the remote object is dead, 
+   * cspi_object_return will throw an exception. 
+   * FIXME: what clears that exception context ever ?
+   */
+  cspi_object_return (accessible);
+  if (cspi_exception ()) 
+    {
+      cspi_object_unref (accessible);
+      accessible = NULL;
+    }
+  return accessible;
 }
 
 void
@@ -391,8 +414,8 @@ report_leaked_ref (gpointer key, gpointer val, gpointer user_data)
       role = NULL;
     }
 
-  fprintf (stderr, "leaked %d references to object %s, role %s\n",
-	   a->ref_count, name ? name : "<?>", role ? role : "<?>");
+  fprintf (stderr, "leaked %d references to object %s, role %s %p\n",
+	   a->ref_count, name ? name : "<?>", role ? role : "<?>", a);
 
   SPI_freeString (name);
 }

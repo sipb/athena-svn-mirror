@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -42,15 +43,16 @@ typedef Accessible AccessibleHypertext;
 typedef Accessible AccessibleImage;
 typedef Accessible AccessibleRelation;
 typedef Accessible AccessibleSelection;
-typedef Accessible AccessibleStateSet;
 typedef Accessible AccessibleStreamableContent;
 typedef Accessible AccessibleTable;
 typedef Accessible AccessibleText;
 typedef Accessible AccessibleValue;
 typedef Accessible AccessibilityRegistry;
 
+typedef void AccessibleStateSet;
 typedef void AccessibleEventListener;
 typedef void AccessibleKeystrokeListener;
+typedef void AccessibleDeviceListener;
 
 typedef unsigned int SPIBoolean;
 

@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,6 +32,8 @@ typedef struct {
 } Iteration;
 
 static GSList *working_list = NULL; /* of Iteration */
+
+static char *spi_atk_bridge_null_string = "";
 
 /*
  *   deletes an element from the list - in a re-entrant
@@ -80,7 +83,7 @@ spi_re_entrant_list_foreach (GList         **list,
 {
 	Iteration i;
 
-	if (!list)
+	if (!list || !*list)
 	  {
             return;
 	  }
@@ -100,4 +103,35 @@ spi_re_entrant_list_foreach (GList         **list,
 	}
 
 	working_list = g_slist_remove (working_list, &i);
+}
+
+void 
+spi_init_any_nil (CORBA_any *any)
+{
+  any->_type = TC_null;
+  any->_value = NULL;
+  any->_release = FALSE;
+}
+
+void 
+spi_init_any_object (CORBA_any *any, CORBA_Object *o)
+{
+  CORBA_Environment ev;
+  CORBA_exception_init (&ev);
+  
+  any->_type = TC_CORBA_Object;
+  any->_value = o;
+  any->_release = FALSE;
+  CORBA_exception_free (&ev);
+}
+
+void
+spi_init_any_string (CORBA_any *any, char **string_pointer)
+{  
+  any->_type = (CORBA_TypeCode) TC_CORBA_string;
+  if (string_pointer && *string_pointer)
+    any->_value = string_pointer;
+  else
+    any->_value = &spi_atk_bridge_null_string;
+  any->_release = FALSE;
 }

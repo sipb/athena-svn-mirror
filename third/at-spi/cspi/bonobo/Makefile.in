@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -93,6 +93,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -118,6 +119,7 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
+REBUILD = @REBUILD@
 REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
 REGISTRYD_LIBS = @REGISTRYD_LIBS@
 STRIP = @STRIP@
@@ -125,16 +127,23 @@ TESTS_CFLAGS = @TESTS_CFLAGS@
 TESTS_LIBS = @TESTS_LIBS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
+XINPUT_LIBS = @XINPUT_LIBS@
 XTST_LIBS = @XTST_LIBS@
 X_LIBS = @X_LIBS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES = -I $(top_srcdir)                      -I $(top_builddir)                    $(X_CFLAGS)                           $(LIBCSPI_CFLAGS)
+INCLUDES = -I $(top_srcdir)           \
+           -I $(top_builddir)         \
+           $(X_CFLAGS)                \
+           $(LIBCSPI_CFLAGS)
 
 
 noinst_LTLIBRARIES = libcspi-bonobo.la
 
-libcspi_bonobo_la_SOURCES =  	cspi-bonobo.c			cspi-bonobo-listener.c		cspi-bonobo-listener.h
+libcspi_bonobo_la_SOURCES = \
+	cspi-bonobo.c		\
+	cspi-bonobo-listener.c	\
+	cspi-bonobo-listener.h
 
 
 libcspi_bonobo_la_LIBADD = $(LIBCSPI_LIBS) $(X_LIBS)
@@ -284,7 +293,7 @@ cspi-bonobo-listener.lo cspi-bonobo-listener.o : cspi-bonobo-listener.c \
 	../../libspi/keymasks.h ../../cspi/cspi-lowlevel.h \
 	../../cspi/spi-private.h cspi-bonobo-listener.h \
 	../../libspi/eventlistener.h ../../libspi/listener.h \
-	../../libspi/keystrokelistener.h
+	../../libspi/devicelistener.h
 cspi-bonobo.lo cspi-bonobo.o : cspi-bonobo.c ../cspi-lowlevel.h \
 	../../cspi/spi-private.h ../../libspi/Accessibility.h \
 	../../cspi/spi.h ../../cspi/spi-impl.h \

@@ -2,7 +2,8 @@
  * AT-SPI - Assistive Technology Service Provider Interface
  * (Gnome Accessibility Project; http://developer.gnome.org/projects/gap)
  *
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002 Sun Microsystems Inc.,
+ * Copyright 2001, 2002 Ximian, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -267,6 +268,9 @@ AccessibleComponent_getLayer (AccessibleComponent *obj)
     case Accessibility_LAYER_OVERLAY:	  
       retval = SPI_LAYER_OVERLAY;
       break;
+    case Accessibility_LAYER_WINDOW:	  
+      retval = SPI_LAYER_WINDOW;
+      break;
     default:
       retval = SPI_LAYER_INVALID;
       break;
@@ -279,8 +283,8 @@ AccessibleComponent_getLayer (AccessibleComponent *obj)
  * AccessibleComponent_getMDIZOrder:
  * @obj: a pointer to the #AccessibleComponent to query.
  *
- * Query the z stacking order of a component which is in the MDI layer.
- *       (Bigger z-order numbers mean nearer the top)
+ * Query the z stacking order of a component which is in the MDI or window
+ *       layer. (Bigger z-order numbers mean nearer the top)
  *
  * Returns: a short integer indicating the stacking order of the component 
  *       in the MDI layer, or -1 if the component is not in the MDI layer.

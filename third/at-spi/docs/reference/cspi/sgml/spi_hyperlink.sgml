@@ -33,6 +33,8 @@ char*       <link linkend="AccessibleHyperlink-getURI">AccessibleHyperlink_getUR
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -49,15 +51,11 @@ char*       <link linkend="AccessibleHyperlink-getURI">AccessibleHyperlink_getUR
 Increment the reference count for an <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-unref">AccessibleHyperlink_unref ()</title>
 <programlisting>void        AccessibleHyperlink_unref       (<link linkend="AccessibleHyperlink">AccessibleHyperlink</link> *obj);</programlisting>
@@ -65,15 +63,11 @@ Increment the reference count for an <link linkend="AccessibleHyperlink">Accessi
 Decrement the reference count for an <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-getNAnchors">AccessibleHyperlink_getNAnchors ()</title>
 <programlisting><link linkend="long">long</link>        AccessibleHyperlink_getNAnchors (<link linkend="AccessibleHyperlink">AccessibleHyperlink</link> *obj);</programlisting>
@@ -85,17 +79,13 @@ Get the total number of anchors which an <link linkend="AccessibleHyperlink">Acc
 <parameter>see</parameter> <link linkend="AccessibleHyperlink-getURI">AccessibleHyperlink_getURI</link>() and <link linkend="AccessibleHyperlink-getObject">AccessibleHyperlink_getObject</link>().</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a <link linkend="long">long</link> indicating the number of anchors in this hyperlink.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> object on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="long">long</link> indicating the number of anchors in this hyperlink.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-getIndexRange">AccessibleHyperlink_getIndexRange ()</title>
 <programlisting>void        AccessibleHyperlink_getIndexRange
@@ -107,23 +97,19 @@ Get the starting and ending character offsets of the text range associated with
       a <link linkend="AccessibleHyperlink">AccessibleHyperlink</link>, in its originating <link linkend="AccessibleHypertext">AccessibleHypertext</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>startIndex</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the starting
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>startIndex</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the starting
       offset of the text associated with this <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> is returned.
-</entry></row>
-<row><entry align="right"><parameter>endIndex</parameter>&nbsp;:</entry>
-<entry> a pointer to a long integer into which the offset of the first character
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>endIndex</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to a long integer into which the offset of the first character
       after the text associated with this <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> is returned.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-getObject">AccessibleHyperlink_getObject ()</title>
 <programlisting><link linkend="Accessible">Accessible</link>* AccessibleHyperlink_getObject   (<link linkend="AccessibleHyperlink">AccessibleHyperlink</link> *obj,
@@ -132,21 +118,17 @@ Get the starting and ending character offsets of the text range associated with
 Get the object associated with a particular hyperlink anchor, as an <link linkend="Accessible">Accessible</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
-<entry> a (zero-index) long integer indicating which hyperlink anchor to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an <link linkend="Accessible">Accessible</link> that represents the object associated with the <parameter>ith</parameter> anchor
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>i</parameter>&nbsp;:</term>
+<listitem><simpara> a (zero-index) long integer indicating which hyperlink anchor to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="Accessible">Accessible</link> that represents the object associated with the <parameter>ith</parameter> anchor
        of the specified <link linkend="AccessibleHyperlink">AccessibleHyperlink</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-getURI">AccessibleHyperlink_getURI ()</title>
 <programlisting>char*       AccessibleHyperlink_getURI      (<link linkend="AccessibleHyperlink">AccessibleHyperlink</link> *obj,
@@ -155,20 +137,16 @@ Get the object associated with a particular hyperlink anchor, as an <link linken
 Get the URI associated with a particular hyperlink anchor.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
-</entry></row>
-<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
-<entry> a (zero-index) long integer indicating which hyperlink anchor to query.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a UTF-8 string giving the URI of the <parameter>ith</parameter> hyperlink anchor.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> implementor on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>i</parameter>&nbsp;:</term>
+<listitem><simpara> a (zero-index) long integer indicating which hyperlink anchor to query.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a UTF-8 string giving the URI of the <parameter>ith</parameter> hyperlink anchor.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="AccessibleHyperlink-isValid">AccessibleHyperlink_isValid ()</title>
 <programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleHyperlink_isValid     (<link linkend="AccessibleHyperlink">AccessibleHyperlink</link> *obj);</programlisting>
@@ -177,18 +155,14 @@ Tell whether an <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> o
          originating hypertext object.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
-<entry> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> on which to operate.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> of the specified <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> is still valid with respect
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> on which to operate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS">TRUE</link> of the specified <link linkend="AccessibleHyperlink">AccessibleHyperlink</link> is still valid with respect
          to its originating <link linkend="AccessibleHypertext">AccessibleHypertext</link> object, <link linkend="FALSE-CAPS">FALSE</link> otherwise.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

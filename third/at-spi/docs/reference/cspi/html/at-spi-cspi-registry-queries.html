@@ -4,7 +4,8 @@
 >Registry queries</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
 REL="HOME"
 TITLE="AT-SPI C Bindings Reference Manual"
 HREF="book1.html"><LINK
@@ -117,12 +118,12 @@ SIZE="3"
 ><H1
 ><A
 NAME="AT-SPI-CSPI-REGISTRY-QUERIES"
->Registry queries</A
-></H1
+></A
+>Registry queries</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN313"
+NAME="AEN292"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +131,7 @@ NAME="AEN313"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN316"
+NAME="AEN295"
 ></A
 ><H2
 >Synopsis</H2
@@ -192,7 +193,7 @@ typedef     <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYMASKTYPE"
 >AccessibleKeyMaskType</A
 >;
-enum        <A
+typedef     <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYEVENTTYPE"
 >AccessibleKeyEventType</A
 >;
@@ -318,7 +319,7 @@ HREF="at-spi-cspi-registry-queries.html#SPI-GENERATEMOUSEEVENT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN382"
+NAME="AEN361"
 ></A
 ><H2
 >Description</H2
@@ -328,14 +329,14 @@ NAME="AEN382"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN385"
+NAME="AEN364"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN387"
+NAME="AEN366"
 ></A
 ><H3
 ><A
@@ -367,7 +368,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN392"
+NAME="AEN371"
 ></A
 ><H3
 ><A
@@ -393,46 +394,47 @@ NOTE: currently multiple virtual desktops are not implemented, this
       function always returns '1'.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN398"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN378"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> an integer indicating the number of active virtual desktops.</TD
+WIDTH="80%"
+><P
+> an integer indicating the number of active virtual desktops.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN407"
+NAME="AEN383"
 ></A
 ><H3
 ><A
@@ -466,66 +468,73 @@ NOTE: currently multiple virtual desktops are not implemented, this
       function always returns '1'.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN415"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN392"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >i</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> an integer indicating which of the accessible desktops is to be returned.</TD
+WIDTH="80%"
+><P
+> an integer indicating which of the accessible desktops is to be returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN397"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a pointer to the 'i-th' virtual desktop's <A
 HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
 >Accessible</A
-> representation.</TD
+> representation.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN429"
+NAME="AEN403"
 ></A
 ><H3
 ><A
@@ -567,72 +576,79 @@ HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
 > desktop.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN439"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN414"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >desktop_list</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a pointer to an array of <A
 HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
 >Accessible</A
-> references.</TD
+> references.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN420"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an integer indicating how many virtual desktops have been
          placed in the list pointed to by parameter <TT
 CLASS="PARAMETER"
 ><I
 >list</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN454"
+NAME="AEN426"
 ></A
 ><H3
 ><A
@@ -659,36 +675,36 @@ HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
 >This routine frees the memory associated with the list.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN461"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN434"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >desktop_list</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a pointer to an array of <A
 HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
 >Accessible</A
@@ -698,18 +714,16 @@ CLASS="PARAMETER"
 ><I
 >SPI_getDesktopList</I
 ></TT
+></P
 ></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN472"
+NAME="AEN441"
 ></A
 ><H3
 ><A
@@ -736,80 +750,93 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKE"
 ></TABLE
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN479"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN449"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >stroke</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+WIDTH="80%"
+><P
+></P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN454"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >user_data</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+WIDTH="80%"
+><P
+></P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN459"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->&nbsp;</TD
+WIDTH="80%"
+><P
+>&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN496"
+NAME="AEN464"
 ></A
 ><H3
 ><A
@@ -835,7 +862,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN501"
+NAME="AEN469"
 ></A
 ><H3
 ><A
@@ -851,7 +878,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef unsigned long AccessibleKeyMaskType;</PRE
+>typedef AccessibleModifierMaskType AccessibleKeyMaskType;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -861,13 +888,13 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN506"
+NAME="AEN474"
 ></A
 ><H3
 ><A
 NAME="ACCESSIBLEKEYEVENTTYPE"
 ></A
->enum AccessibleKeyEventType</H3
+>AccessibleKeyEventType</H3
 ><TABLE
 BORDER="0"
 BGCOLOR="#D6E8FF"
@@ -877,10 +904,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef enum {
-  SPI_KEY_PRESSED  = 1&lt;&lt;0,
-  SPI_KEY_RELEASED = 1&lt;&lt;1
-} AccessibleKeyEventType;</PRE
+>typedef AccessibleDeviceEventType AccessibleKeyEventType;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -890,7 +914,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN511"
+NAME="AEN479"
 ></A
 ><H3
 ><A
@@ -921,7 +945,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN516"
+NAME="AEN484"
 ></A
 ><H3
 ><A
@@ -937,15 +961,7 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct {
-  long                   keyID;
-  short                  keycode;
-  char *                 keystring;
-  long                   timestamp;
-  AccessibleKeyEventType type;
-  unsigned short         modifiers;
-  SPIBoolean             is_text;	
-} AccessibleKeystroke;</PRE
+>typedef AccessibleDeviceEvent AccessibleKeystroke;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -955,7 +971,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN521"
+NAME="AEN489"
 ></A
 ><H3
 ><A
@@ -983,7 +999,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN527"
+NAME="AEN495"
 ></A
 ><H3
 ><A
@@ -1017,119 +1033,144 @@ forced, thus the match for keysym=0, keycode=0, keystring=NULL is
 keycode 0.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN536"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN505"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >len</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the number of key values in the key set.</TD
+WIDTH="80%"
+><P
+> the number of key values in the key set.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN510"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keysyms</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a UTF-8 string containing symbolic key values to be matched, or NULL if
-          matching is performed against other key values instead.</TD
+          matching is performed against other key values instead.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN515"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keycodes</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an array of unsigned short values which are the hardware keycodes
           to be matched, or NULL if the keyset is specified solely by keysyms
-          and/or keystrings.</TD
+          and/or keystrings.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN520"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keystrings</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an array of null-terminated character strings which specify key
             name values to match, or NULL if the keyset is specified solely by
-            keycodes and/or keysyms.</TD
+            keycodes and/or keysyms.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN525"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to a newly-created AccessibleKeySet.&#13;</TD
+WIDTH="80%"
+><P
+> a pointer to a newly-created AccessibleKeySet.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN562"
+NAME="AEN531"
 ></A
 ><H3
 ><A
@@ -1153,48 +1194,46 @@ CLASS="PROGRAMLISTING"
 >Release the memory used by an AccessibleKeySet.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN569"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN539"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keyset</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> An AccessibleKeyset to free.</TD
+WIDTH="80%"
+><P
+> An AccessibleKeyset to free.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN578"
+NAME="AEN544"
 ></A
 ><H3
 ><A
@@ -1223,83 +1262,96 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >Create a new AccessibleKeystrokeListener with a specified callback function.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN587"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN554"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >callback</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >AccessibleKeystrokeListenerCB</A
-> callback function, or NULL.</TD
+> callback function, or NULL.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN560"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >user_data</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to data which will be passed to the callback when invoked.</TD
+WIDTH="80%"
+><P
+> a pointer to data which will be passed to the callback when invoked.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN565"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to a newly-created AccessibleKeystrokeListener.&#13;</TD
+WIDTH="80%"
+><P
+> a pointer to a newly-created AccessibleKeystrokeListener.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN606"
+NAME="AEN571"
 ></A
 ><H3
 ><A
@@ -1353,7 +1405,8 @@ CLASS="PROGRAMLISTING"
            object:column-inserted
            object:column-reordered
            object:column-deleted
-           object:model-changed</P
+           object:model-changed
+           object:active-descendant-changed</P
 ><P
 > (window events)</P
 ><P
@@ -1396,91 +1449,104 @@ CLASS="PROGRAMLISTING"
 >Add an in-process callback function to an existing AccessibleEventListener.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN624"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN590"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > the AccessibleEventListener to be registered against an
-           event type.</TD
+           event type.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN596"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >eventType</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a character string indicating the type of events for which
            notification is requested.  Format is
            EventClass:major_type:minor_type:detail
            where all subfields other than EventClass are optional.
            EventClasses include "object", "window", "mouse",
            and toolkit events (e.g. "Gtk", "AWT").
-           Examples: "focus:", "Gtk:GtkWidget:button_press_event".</TD
+           Examples: "focus:", "Gtk:GtkWidget:button_press_event".</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN601"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN644"
+NAME="AEN608"
 ></A
 ><H3
 ><A
@@ -1507,85 +1573,98 @@ CLASS="PROGRAMLISTING"
             event type.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN652"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN617"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the AccessibleEventListener registered against an event type.</TD
+WIDTH="80%"
+><P
+> the AccessibleEventListener registered against an event type.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN623"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >eventType</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a string specifying the event type for which this
-            listener is to be deregistered.</TD
+            listener is to be deregistered.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN628"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN672"
+NAME="AEN635"
 ></A
 ><H3
 ><A
@@ -1613,68 +1692,75 @@ CLASS="PROGRAMLISTING"
            listener reference.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN680"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN644"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > the AccessibleEventListener to be registered against
-           an event type.</TD
+           an event type.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN650"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN696"
+NAME="AEN657"
 ></A
 ><H3
 ><A
@@ -1715,72 +1801,84 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYLISTENERSYNCTYPE"
             ( Other sync_type values may be available in the future.)</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN708"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN670"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 >  a pointer to the AccessibleKeystrokeListener for which
-            keystroke events are requested.</TD
+            keystroke events are requested.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN676"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keys</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 >      a pointer to the AccessibleKeySet indicating which
-            keystroke events are requested, or CSPI_KEYSET_ALL_KEYS.</TD
+            keystroke events are requested, or CSPI_KEYSET_ALL_KEYS.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN683"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >modmask</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 >   an <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYMASKTYPE"
 >AccessibleKeyMaskType</A
@@ -1799,79 +1897,98 @@ CLASS="PARAMETER"
 ></TT
 > are set.  If you wish to listen for
             events with multiple modifier combinations you must call
-            registerAccessibleKeystrokeListener() once for each combination.</TD
+            registerAccessibleKeystrokeListener() once for each combination.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN692"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >eventmask</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYMASKTYPE"
 >AccessibleKeyMaskType</A
 > mask indicating which
-            types of key events are requested (SPI_KEY_PRESSED, etc.).</TD
+            types of key events are requested (SPI_KEY_PRESSED, etc.).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN699"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >sync_type</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYLISTENERSYNCTYPE"
 >AccessibleKeyListenerSyncType</A
 > parameter indicating
-            the behavior of the notification/listener transaction.</TD
+            the behavior of the notification/listener transaction.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN705"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN749"
+NAME="AEN712"
 ></A
 ><H3
 ><A
@@ -1906,86 +2023,99 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN759"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN723"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a pointer to the AccessibleKeystrokeListener for which
-           keystroke events are requested.</TD
+           keystroke events are requested.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN729"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >modmask</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 >  the key modifier mask for which this listener is to be
-           'deregistered' (of type AccessibleeyMaskType).</TD
+           'deregistered' (of type AccessibleeyMaskType).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN735"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN780"
+NAME="AEN742"
 ></A
 ><H3
 ><A
@@ -2010,48 +2140,46 @@ CLASS="PROGRAMLISTING"
 >Decrements an AccessibleKeystrokeListener's reference count.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN788"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN751"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to the AccessibleKeystrokeListener being operated on.</TD
+WIDTH="80%"
+><P
+> a pointer to the AccessibleKeystrokeListener being operated on.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN798"
+NAME="AEN757"
 ></A
 ><H3
 ><A
@@ -2080,87 +2208,100 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >Remove an in-process callback function from an existing AccessibleKeystrokeListener.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN808"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN768"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the AccessibleKeystrokeListener instance to modify.</TD
+WIDTH="80%"
+><P
+> the AccessibleKeystrokeListener instance to modify.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN774"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >callback</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >AccessibleKeystrokeListenerCB</A
-> function pointer.</TD
+> function pointer.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN780"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.&#13;</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN829"
+NAME="AEN787"
 ></A
 ><H3
 ><A
@@ -2190,104 +2331,123 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >Add an in-process callback function to an existing AccessibleKeystrokeListener.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN839"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN798"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >listener</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> the AccessibleKeystrokeListener instance to modify.</TD
+WIDTH="80%"
+><P
+> the AccessibleKeystrokeListener instance to modify.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN804"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >callback</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSTROKELISTENERCB"
 >AccessibleKeystrokeListenerCB</A
-> function pointer.</TD
+> function pointer.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN810"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >user_data</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a pointer to data which will be passed to the callback when invoked.</TD
+WIDTH="80%"
+><P
+> a pointer to data which will be passed to the callback when invoked.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN815"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.&#13;</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN864"
+NAME="AEN822"
 ></A
 ><H3
 ><A
@@ -2317,54 +2477,60 @@ HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSYNTHTYPE"
 current UI context).</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN873"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN832"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keyval</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a long integer indicating the keycode or keysym of the key event
-          being synthesized.</TD
+          being synthesized.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN837"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >keystring</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > an (optional) UTF-8 string which, if <TT
 CLASS="PARAMETER"
 ><I
@@ -2374,23 +2540,29 @@ CLASS="PARAMETER"
           indicates a 'composed' keyboard input string which is 
           being synthesized; this type of keyboard event synthesis does
           not emulate hardware keypresses but injects the string 
-          as though a composing input method (such as XIM) were used.</TD
+          as though a composing input method (such as XIM) were used.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN843"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >synth_type</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a <A
 HREF="at-spi-cspi-registry-queries.html#ACCESSIBLEKEYSYNTHTYPE"
 >AccessibleKeySynthType</A
@@ -2402,37 +2574,44 @@ CLASS="PARAMETER"
 >
           is to be interpreted as a keysym rather than a keycode
           (CSPI_KEYSYM), or whether to synthesize
-          SPI_KEY_PRESS, SPI_KEY_RELEASE, or both (SPI_KEY_PRESSRELEASE).</TD
+          SPI_KEY_PRESS, SPI_KEY_RELEASE, or both (SPI_KEY_PRESSRELEASE).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN850"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN899"
+NAME="AEN857"
 ></A
 ><H3
 ><A
@@ -2463,97 +2642,116 @@ Event names: b1p = button 1 press; b2r = button 2 release;
              abs = absolute motion; rel = relative motion.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN909"
-></A
 ><P
 ></P
 ><TABLE
+CLASS="VARIABLELIST"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN868"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >x</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a long indicating the screen x coordinate of the mouse event.</TD
+WIDTH="80%"
+><P
+> a long indicating the screen x coordinate of the mouse event.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN874"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >y</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> a long indicating the screen y coordinate of the mouse event.</TD
+WIDTH="80%"
+><P
+> a long indicating the screen y coordinate of the mouse event.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN880"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > a string indicating which mouse event to be synthesized
-       (e.g. "b1p", "b1c", "b2r", "rel", "abs").</TD
+       (e.g. "b1p", "b1c", "b2r", "rel", "abs").</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="RIGHT"
 VALIGN="TOP"
+WIDTH="20%"
+><A
+NAME="AEN885"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
-> :</TD
+></SPAN
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+WIDTH="80%"
+><P
 > <A
-HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+HREF=../glib/glib-Standard-Macros.html#TRUE-CAPS
 >TRUE</A> if successful, otherwise <A
-HREF=../glib/glib-standard-macros.html#FALSE-CAPS
->FALSE</A>.</TD
+HREF=../glib/glib-Standard-Macros.html#FALSE-CAPS
+>FALSE</A>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ></DIV
 ><DIV
