@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.5 1990-07-17 12:33:53 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.6 1990-07-17 13:06:27 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v $
 #  $Author: qjb $
 #
@@ -8,6 +8,8 @@
 
 DESTDIR		=
 ATHLIBDIR	= /usr/athena/lib
+
+RANLIB		= ranlib
 
 DFLAGS		= -O
 INCLUDES	= -I../include
@@ -25,7 +27,7 @@ all: librkinit.a
 librkinit.a: $(LOBJS)
 	-rm -f librkinit.a
 	ar cru librkinit.a $(LOBJS)
-	ranlib librkinit.a
+	$(RANLIB) librkinit.a
 
 $(LOBJS): $(HEADERS)
 
