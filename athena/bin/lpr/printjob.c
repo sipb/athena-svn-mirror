@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.4 1990-04-16 22:38:59 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.5 1990-04-17 08:56:18 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.4 1990-04-16 22:38:59 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.5 1990-04-17 08:56:18 epeisach Exp $";
 #endif lint
 
 /*
@@ -466,6 +466,8 @@ printit(file)
 		case 'U':
 		case 'M':
 		case 'Z':
+		case 'E':	/* From multics days */
+	        case 'A':	       /* Account numbers not implemented yet */
 			continue;
 		}
 
@@ -642,11 +644,6 @@ print(format, file)
 		av[2] = pxlength;
 		n = 3;
 		break;
-	case 'E':	/* This is supposed to suppress tail pages */
-		        /* It appears to have been used on multics for */
-		        /* Multiple copies - we ignore */
-		(void) close(fi);
-		return(OK);
 	default:
 		(void) close(fi);
 		syslog(LOG_ERR, "%s: illegal format character '%c'",
