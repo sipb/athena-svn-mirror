@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.22 2001-07-25 15:07:45 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.23 2001-08-04 21:31:53 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -94,6 +94,7 @@ gid_t def_grplist[] = { 101 };		/* default group list */
 /* Function declarations. */
 
 static void move_instructions(XtPointer data, XtIntervalId *timerid);
+static void idle_check(void);
 static void screensave(XtPointer data, XtIntervalId *timerid);
 static void unsave(Widget w, XtPointer popdown, XEvent *event, Boolean *bool);
 static void blinkOwl(XtPointer data, XtIntervalId *intervalid);
@@ -277,7 +278,7 @@ int owlNumBitmaps, isNumBitmaps;
 /* unsigned */ int owlWidth, owlHeight, isWidth, isHeight;
 int owlState, owlDelta, isDelta, owlTimeout, isTimeout;
 Pixmap owlBitmaps[20], isBitmaps[20];
-struct timeval starttime;
+time_t starttime;
 pid_t attach_pid, attachhelp_pid, quota_pid;
 int attach_state, attachhelp_state;
 int exiting = FALSE;
@@ -527,7 +528,7 @@ int main(int argc, char **argv)
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000, screensave, NULL);
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
   is_timerid = XtAddTimeOut(1000, blinkIs, NULL);
-  gettimeofday(&starttime, NULL);
+  time(&starttime);
   resetCB(namew, NULL, NULL);
 
   psetenv("PATH", defaultpath, 1);
@@ -603,6 +604,31 @@ int main(int argc, char **argv)
     }
 }
 
+#define MOTD_CHECK_TIME (10 * 60)
+static time_t motd_last_check = 0;
+
+/* Perform periodic miscellaneous checks while idle. */
+static void idle_check()
+{
+  time_t now;
+
+  time(&now);
+
+  /* Restart the X server once in a while. */
+  if (now - starttime > resources.restart_timeout)
+    {
+      fprintf(stderr, "Restarting X Server\n");
+      exit(0);
+    }
+
+  /* Check for a new motd file. */
+  if (now - motd_last_check > MOTD_CHECK_TIME)
+    {
+      motd_last_check = now;
+      do_motd();
+    }
+}
+
 static Dimension x_max = 0, y_max = 0;
 
 static void move_instructions(XtPointer data, XtIntervalId *timerid)
@@ -635,6 +661,7 @@ static void move_instructions(XtPointer data, XtIntervalId *timerid)
 
   if (is_reactivating() == 0)
     {
+      idle_check();
       XRaiseWindow(XtDisplay(ins), XtWindow(ins));
       wins[0] = XtWindow(ins);
       wins[1] = XtWindow(saver);
@@ -688,6 +715,8 @@ static void screensave(XtPointer data, XtIntervalId *timerid)
     XtPopup(savershell[i], XtGrabNone);
 
   do_motd();
+  time(&motd_last_check);
+
   XtPopup(ins, XtGrabNone);
   XRaiseWindow(XtDisplay(ins), XtWindow(ins));
   unfocus();
