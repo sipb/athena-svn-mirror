@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
- * $Id: Imakefile,v 1.5 1990-12-12 13:23:06 lwvanels Exp $
+ * $Id: Imakefile,v 1.6 1990-12-31 21:27:31 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -10,9 +10,9 @@ LIBSUFFIX=_p
 EXTRA_LOAD_FLAGS=-pg
 #endif
 
-S_SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c kopt.c
+S_SRCS=	rpd.c fdcache.c handle_request.c io.c acl_files.c kopt.c get_nm.c
 
-S_OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o kopt.o
+S_OBJS=	rpd.o fdcache.o handle_request.o io.o acl_files.o kopt.o get_nm.o
 
 C_SRCS=	oreplay.c io.c
 
@@ -27,15 +27,15 @@ DEFINES=
 #endif /* Profiling */
 
 
-OREPLAY_LIBRARIES=	$(HesiodLib) $(KerberosLib)
+CLIENT_LIBRARIES=	$(HesiodLib) $(KerberosLib)
 SERVER_LIBRARIES=	$(KerberosLib)
 
 INCLUDES= -I.
 
-NormalProgramTarget(oreplay,$(C_OBJS),,$(OREPLAY_LIBRARIES),)
+NormalProgramTarget(oreplay,$(C_OBJS),,$(CLIENT_LIBRARIES),)
 NormalProgramTarget(rpd,$(S_OBJS),,$(SERVER_LIBRARIES),)
 
-SaberProgramTarget(oreplay,$(C_SRCS),$(C_OBJS),$(OREPLAY_LIBRARIES),)
+SaberProgramTarget(oreplay,$(C_SRCS),$(C_OBJS),$(CLIENT_LIBRARIES),)
 SaberProgramTarget(rpd,$(S_SRCS),$(S_OBJS),$(SERVER_LIBRARIES),)
 
 DependSrcs()
@@ -45,4 +45,14 @@ olist::
 	$(RM) olist
 	$(LN) oreplay olist
 
-AllTarget(oreplay rpd olist)
+clean::
+	$(RM) olist
+
+oshow::
+	$(RM) oshow
+	$(LN) oreplay oshow
+
+clean::
+	$(RM) oshow
+
+AllTarget(oreplay rpd olist oshow)
