@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eog.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"POT-Creation-Date: 2004-12-01 20:56+0100\n"
 "PO-Revision-Date: 2004-08-01 15:58+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -440,20 +440,20 @@ msgstr "सेकण्ड"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:321
+#: shell/eog-window.c:314
 msgid "translator-credits"
 msgstr "रविशंकर श्रीवास्तव <raviratlami@yahoo.com>"
 
-#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
-#: shell/main.c:498
+#: shell/eog-window.c:319 shell/eog-window.c:2167 shell/eog-window.c:2482
+#: shell/main.c:497
 msgid "Eye of Gnome"
 msgstr "गनोम की आँख"
 
-#: shell/eog-window.c:329
+#: shell/eog-window.c:322
 msgid "The GNOME image viewing and cataloging program."
 msgstr "गनोम का छवि प्रदर्शक तथा केटलॉग बनाने का प्रोग्राम"
 
-#: shell/eog-window.c:366
+#: shell/eog-window.c:359
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -462,233 +462,226 @@ msgstr ""
 "गनोम की आँख हेतु मदद नहीं दिखा सकता.\n"
 "%s"
 
-#: shell/eog-window.c:635
+#: shell/eog-window.c:626
 #, c-format
 msgid "Overwrite file %s?"
 msgstr "फ़ाइलों को मिटाकर लिखें %s?"
 
-#: shell/eog-window.c:636
+#: shell/eog-window.c:627
 msgid "File exists. Do you want to overwrite it?"
 msgstr "फ़ाइल मौजूद है क्या आप इसे मिटाकर लिखना चाहते हैं?"
 
-#: shell/eog-window.c:646 shell/eog-window.c:659
+#: shell/eog-window.c:636 shell/eog-window.c:649
 msgid "Skip"
 msgstr "छोडें"
 
-#: shell/eog-window.c:647
+#: shell/eog-window.c:637
 msgid "Overwrite"
 msgstr "मिटाकर लिखें"
 
-#: shell/eog-window.c:652
+#: shell/eog-window.c:642
 #, c-format
 msgid "Error on saving %s."
 msgstr "सहेजने में त्रुटि %s"
 
-#: shell/eog-window.c:660 shell/eog-window.c:1044
+#: shell/eog-window.c:650 shell/eog-window.c:1034
 msgid "Retry"
 msgstr "पुनः कोशिश करें"
 
-#: shell/eog-window.c:1033
+#: shell/eog-window.c:1023
 #, c-format
 msgid "Couldn't determine file format of %s"
 msgstr "%s का फ़ाइल प्रारूप निर्धारित नहीं कर सका"
 
-#: shell/eog-window.c:1034
+#: shell/eog-window.c:1024
 msgid "Please use an appropriate filename suffix or select a file format."
 msgstr "कृपया एक अनुरूप फ़ाइलनाम उपसर्ग उपयोग करें या एक फ़ाइल फ़ॉर्मेट चुनें."
 
-#: shell/eog-window.c:1176
+#: shell/eog-window.c:1166
 msgid "Error on saving images."
 msgstr "छवि सहेजने में त्रुटि."
 
-#: shell/eog-window.c:1409
+#: shell/eog-window.c:1399
 #, fuzzy, c-format
 msgid "Do you really want to move %i image to trash?"
 msgid_plural "Do you really want to move %i images to trash?"
 msgstr[0] "क्या आप %i छवियों को रद्दी में भेजना चाहते हैं ?"
 msgstr[1] "क्या आप %i छवियों को रद्दी में भेजना चाहते हैं ?"
 
-#: shell/eog-window.c:1447
+#: shell/eog-window.c:1437
 msgid "Couldn't access trash."
 msgstr "रद्दी पर पंहुच नहीं सका."
 
-#: shell/eog-window.c:1521
+#: shell/eog-window.c:1511
 #, c-format
 msgid "Error on deleting image %s"
 msgstr "छवि %s मिटाने में त्रुटि"
 
-#. Images: (n_selected_images) / (n_total_images)
-#: shell/eog-window.c:2114
+#  [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#. [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#: shell/eog-window.c:2096
 #, c-format
-msgid "Images: %i/%i"
-msgstr "छवियाँ: %i/%i"
+msgid "%i x %i pixel  %s    %i%%"
+msgstr "%i x %i पिक्सेल  %s    %i%%"
 
-#: shell/eog-window.c:2193
+#: shell/eog-window.c:2233
 msgid "_File"
 msgstr "फ़ाइल (_F)"
 
-#: shell/eog-window.c:2194
+#: shell/eog-window.c:2234
 msgid "_Edit"
 msgstr "संपादन (_E)"
 
-#: shell/eog-window.c:2195
+#: shell/eog-window.c:2235
 msgid "_View"
 msgstr "देखें (_V)"
 
-#: shell/eog-window.c:2196
+#: shell/eog-window.c:2236
 msgid "_Help"
 msgstr "मदद (_H)"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "_New"
 msgstr "नया (_N)"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "Open a new window"
 msgstr "एक नया विंडो खोलें"
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "_Open..."
 msgstr "खोलें (_O) ..."
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "Open a file"
 msgstr "एक फ़ाइल खोलें"
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open _Directory..."
 msgstr "डिरेक्ट्री खोलें...(_D)"
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open a directory"
 msgstr "एक डिरेक्ट्री खोलें"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "_Close"
 msgstr "बंद करें (_C)"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "Close window"
 msgstr "विंडो बंद करें"
 
-#: shell/eog-window.c:2201
-msgid "_Quit"
-msgstr "बाहर जाएँ (_Q)"
-
-#: shell/eog-window.c:2201
-msgid "Close all windows and quit"
-msgstr "सभी विंडो बंद करें और बाहर जाएँ"
-
 # libgnomeui/gnome-app-helper.c:211
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Prefere_nces"
 msgstr "वरीयताएँ (_n)"
 
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Preferences for Eye of Gnome"
 msgstr "ग्नोम की आँख हेतु वरीयताएँ"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "_Contents"
 msgstr "विषय सूची (_C)"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "Help On this application"
 msgstr "इस अनुप्रयोग पर मदद"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "_About"
 msgstr "के बारे में (_A)"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "About this application"
 msgstr "इस अनुप्रयोग के बारे में"
 
-#: shell/eog-window.c:2209
+#: shell/eog-window.c:2248
 msgid "_Toolbar"
 msgstr "उपकरण-पट्टी (_T)"
 
-#: shell/eog-window.c:2210
+#: shell/eog-window.c:2249
 msgid "_Statusbar"
 msgstr "स्थिति-पट्टी (_S)"
 
 # libgnomeui/gnome-app-helper.c:114
-#: shell/eog-window.c:2215
+#: shell/eog-window.c:2254
 msgid "_Save"
 msgstr "सहेजें (_S)"
 
-#: shell/eog-window.c:2216
+#: shell/eog-window.c:2255
 msgid "Save _As"
 msgstr "इस रूप में सहेजें..(_A)"
 
-#: shell/eog-window.c:2218
+#: shell/eog-window.c:2257
 msgid "_Undo"
 msgstr "पूर्ववत् करें (_U)"
 
-#: shell/eog-window.c:2220
+#: shell/eog-window.c:2259
 msgid "Flip _Horizontal"
 msgstr "आड़ा पलटें (_H)"
 
-#: shell/eog-window.c:2221
+#: shell/eog-window.c:2260
 msgid "Flip _Vertical"
 msgstr "खड़ा पलटें (_V)"
 
-#: shell/eog-window.c:2223
+#: shell/eog-window.c:2262
 msgid "_Rotate Clockwise"
 msgstr "घड़ी की दिशा में घुमाएँ (_R)"
 
-#: shell/eog-window.c:2224
+#: shell/eog-window.c:2263
 msgid "Rotate Counter C_lockwise"
 msgstr "घड़ी की विपरीत दिशा में घुमाएँ (_l)"
 
-#: shell/eog-window.c:2225
+#: shell/eog-window.c:2264
 msgid "Rotat_e 180°"
 msgstr "180 अंश घुमाएँ (_e)"
 
-#: shell/eog-window.c:2227
+#: shell/eog-window.c:2266
 msgid "Delete"
 msgstr "मिटाएँ"
 
-#: shell/eog-window.c:2229
+#: shell/eog-window.c:2268
 msgid "_Full Screen"
 msgstr "पूर्ण स्क्रीन (_F)"
 
-#: shell/eog-window.c:2230
+#: shell/eog-window.c:2269
 msgid "_Zoom In"
 msgstr "बड़ा आकार (_Z)"
 
-#: shell/eog-window.c:2231
+#: shell/eog-window.c:2270
 msgid "Zoom _Out"
 msgstr "छोटा आकार (_O)"
 
-#: shell/eog-window.c:2232
+#: shell/eog-window.c:2271
 msgid "_Normal Size"
 msgstr "सामान्य आकार (_N)"
 
-#: shell/eog-window.c:2233
+#: shell/eog-window.c:2272
 msgid "Best _Fit"
 msgstr "सर्वोत्तम अनुरूप (_F)"
 
-#: shell/main.c:236
+#: shell/main.c:235
 #, fuzzy, c-format
 msgid ""
 "You are about to open %i windows simultaneously. Do you want to open them in "
 "a collection instead?"
 msgstr "आप एक साथ %i विंडो खोलने जा रहे हैं. क्या आप बदले में उन्हें संग्रह में खोलना चाहेंगे?"
 
-#: shell/main.c:240
+#: shell/main.c:239
 msgid "Open multiple single windows?"
 msgstr "बहुत से एकल विंडो खोलें?"
 
-#: shell/main.c:244
+#: shell/main.c:243
 msgid "Single Windows"
 msgstr "एकल विंडो"
 
-#: shell/main.c:246
+#: shell/main.c:245
 msgid "Collection"
 msgstr "संग्रह"
 
-#: shell/main.c:298
+#: shell/main.c:297
 msgid "File not found."
 msgid_plural "Files not found."
 msgstr[0] "फ़ाइल नहीं मिला."
@@ -753,6 +746,9 @@ msgstr "'%s' को खोल नही पाया"
 #~ msgid "Collection View"
 #~ msgstr "संग्रह दृश्य"
 
+#~ msgid "Images: %i/%i"
+#~ msgstr "छवियाँ: %i/%i"
+
 #~ msgid "Window Title"
 #~ msgstr "विंडो शीर्षक"
 
@@ -779,6 +775,12 @@ msgstr "'%s' को खोल नही पाया"
 
 #~ msgid "Image"
 #~ msgstr "छवि"
+
+#~ msgid "_Quit"
+#~ msgstr "बाहर जाएँ (_Q)"
+
+#~ msgid "Close all windows and quit"
+#~ msgstr "सभी विंडो बंद करें और बाहर जाएँ"
 
 #~ msgid "Fit"
 #~ msgstr "अनुरूप"
@@ -824,10 +826,6 @@ msgstr "'%s' को खोल नही पाया"
 
 #~ msgid "Preview"
 #~ msgstr "पूर्वावलोकन"
-
-#  [image width] x [image height] pixel  [bytes]    [zoom in percent]
-#~ msgid "%i x %i pixel  %s    %i%%"
-#~ msgstr "%i x %i पिक्सेल  %s    %i%%"
 
 #~ msgid "/Rotate C_lockwise"
 #~ msgstr "/घड़ी की दिशा में घुमाएँ (_l)"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"POT-Creation-Date: 2004-12-01 20:56+0100\n"
 "PO-Revision-Date: 2004-08-30 20:38+0000\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -437,23 +437,23 @@ msgstr "Sekund"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:321
+#: shell/eog-window.c:314
 msgid "translator-credits"
 msgstr ""
 "Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Gaute Hvoslef Kvalnes <gaute@verdsveven.com>\n"
 "Kjartan Maraas <kmaraas@gnome.org>"
 
-#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
-#: shell/main.c:498
+#: shell/eog-window.c:319 shell/eog-window.c:2167 shell/eog-window.c:2482
+#: shell/main.c:497
 msgid "Eye of Gnome"
 msgstr "Eye of Gnome"
 
-#: shell/eog-window.c:329
+#: shell/eog-window.c:322
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Biletevisar og katalogprogram for GNOME"
 
-#: shell/eog-window.c:366
+#: shell/eog-window.c:359
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -462,212 +462,204 @@ msgstr ""
 "Kan ikkje visa hjelp for Eye of Gnome.\n"
 "%s"
 
-#: shell/eog-window.c:635
+#: shell/eog-window.c:626
 #, c-format
 msgid "Overwrite file %s?"
 msgstr "Skriva over fila «%s»?"
 
-#: shell/eog-window.c:636
+#: shell/eog-window.c:627
 msgid "File exists. Do you want to overwrite it?"
 msgstr "Fila finst. Vil du skriva over henne?"
 
-#: shell/eog-window.c:646 shell/eog-window.c:659
+#: shell/eog-window.c:636 shell/eog-window.c:649
 msgid "Skip"
 msgstr "Hopp over"
 
-#: shell/eog-window.c:647
+#: shell/eog-window.c:637
 msgid "Overwrite"
 msgstr "Skriv over"
 
-#: shell/eog-window.c:652
+#: shell/eog-window.c:642
 #, c-format
 msgid "Error on saving %s."
 msgstr "Feil under lagring av «%s»."
 
-#: shell/eog-window.c:660 shell/eog-window.c:1044
+#: shell/eog-window.c:650 shell/eog-window.c:1034
 msgid "Retry"
 msgstr "Prøv igjen"
 
-#: shell/eog-window.c:1033
+#: shell/eog-window.c:1023
 #, c-format
 msgid "Couldn't determine file format of %s"
 msgstr "Klarte ikkje fastslå filformatet til «%s»."
 
-#: shell/eog-window.c:1034
+#: shell/eog-window.c:1024
 msgid "Please use an appropriate filename suffix or select a file format."
 msgstr "Bruk eit høveleg etternamn på fila eller vel eit bileteformat."
 
-#: shell/eog-window.c:1176
+#: shell/eog-window.c:1166
 msgid "Error on saving images."
 msgstr "Fil under lagring av bilete."
 
-#: shell/eog-window.c:1409
+#: shell/eog-window.c:1399
 #, c-format
 msgid "Do you really want to move %i image to trash?"
 msgid_plural "Do you really want to move %i images to trash?"
 msgstr[0] "Vil du flytta %i bilete til papirkorga?"
 msgstr[1] "Vil du flytta %i bilete til papirkorga?"
 
-#: shell/eog-window.c:1447
+#: shell/eog-window.c:1437
 msgid "Couldn't access trash."
 msgstr "Klarte ikkje aksessera papirkorga."
 
-#: shell/eog-window.c:1521
+#: shell/eog-window.c:1511
 #, c-format
 msgid "Error on deleting image %s"
 msgstr "Feil under sletting av biletet «%s»"
 
-#. Images: (n_selected_images) / (n_total_images)
-#: shell/eog-window.c:2114
+#. [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#: shell/eog-window.c:2096
 #, c-format
-msgid "Images: %i/%i"
-msgstr "Bilete: %i/%i"
+msgid "%i x %i pixel  %s    %i%%"
+msgstr "%i × %i pikslar %s    %i %%"
 
-#: shell/eog-window.c:2193
+#: shell/eog-window.c:2233
 msgid "_File"
 msgstr "_Fil"
 
-#: shell/eog-window.c:2194
+#: shell/eog-window.c:2234
 msgid "_Edit"
 msgstr "_Rediger"
 
-#: shell/eog-window.c:2195
+#: shell/eog-window.c:2235
 msgid "_View"
 msgstr "_Vis"
 
-#: shell/eog-window.c:2196
+#: shell/eog-window.c:2236
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "_New"
 msgstr "_Ny"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "Open a new window"
 msgstr "Opna eit nytt vindauge"
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "_Open..."
 msgstr "_Opna ..."
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "Open a file"
 msgstr "Opna ei fil"
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open _Directory..."
 msgstr "_Opna mappe ..."
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open a directory"
 msgstr "Opna ei mappe"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "_Close"
 msgstr "_Lukk"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "Close window"
 msgstr "Lukk vindauge"
 
-#: shell/eog-window.c:2201
-msgid "_Quit"
-msgstr "_Avslutt"
-
-#: shell/eog-window.c:2201
-msgid "Close all windows and quit"
-msgstr "Lukk alle vindauga og avslutt"
-
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Prefere_nces"
 msgstr "_Oppsett"
 
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Preferences for Eye of Gnome"
 msgstr "Brukarval for Eye of Gnome"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "_Contents"
 msgstr "_Innhald"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "Help On this application"
 msgstr "Hjelp om dette programmet"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "_About"
 msgstr "_Om"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "About this application"
 msgstr "Om dette programmet"
 
-#: shell/eog-window.c:2209
+#: shell/eog-window.c:2248
 msgid "_Toolbar"
 msgstr "_Verktøylinje"
 
-#: shell/eog-window.c:2210
+#: shell/eog-window.c:2249
 msgid "_Statusbar"
 msgstr "_Statuslinje"
 
-#: shell/eog-window.c:2215
+#: shell/eog-window.c:2254
 msgid "_Save"
 msgstr "_Lagra"
 
-#: shell/eog-window.c:2216
+#: shell/eog-window.c:2255
 msgid "Save _As"
 msgstr "L_agra som"
 
-#: shell/eog-window.c:2218
+#: shell/eog-window.c:2257
 msgid "_Undo"
 msgstr "_Angra"
 
-#: shell/eog-window.c:2220
+#: shell/eog-window.c:2259
 msgid "Flip _Horizontal"
 msgstr "Vend _vassrett"
 
-#: shell/eog-window.c:2221
+#: shell/eog-window.c:2260
 msgid "Flip _Vertical"
 msgstr "Vend _loddrett"
 
-#: shell/eog-window.c:2223
+#: shell/eog-window.c:2262
 msgid "_Rotate Clockwise"
 msgstr "Roter med _klokka"
 
-#: shell/eog-window.c:2224
+#: shell/eog-window.c:2263
 msgid "Rotate Counter C_lockwise"
 msgstr "Roter _mot klokka"
 
-#: shell/eog-window.c:2225
+#: shell/eog-window.c:2264
 msgid "Rotat_e 180°"
 msgstr "_Roter 180 °"
 
-#: shell/eog-window.c:2227
+#: shell/eog-window.c:2266
 msgid "Delete"
 msgstr "Slett"
 
-#: shell/eog-window.c:2229
+#: shell/eog-window.c:2268
 msgid "_Full Screen"
 msgstr "_Fullskjerm"
 
-#: shell/eog-window.c:2230
+#: shell/eog-window.c:2269
 msgid "_Zoom In"
 msgstr "For_størr"
 
-#: shell/eog-window.c:2231
+#: shell/eog-window.c:2270
 msgid "Zoom _Out"
 msgstr "For_minsk"
 
-#: shell/eog-window.c:2232
+#: shell/eog-window.c:2271
 msgid "_Normal Size"
 msgstr "V_anleg storleik"
 
-#: shell/eog-window.c:2233
+#: shell/eog-window.c:2272
 msgid "Best _Fit"
 msgstr "Tilpass til _vindauget"
 
-#: shell/main.c:236
+#: shell/main.c:235
 #, c-format
 msgid ""
 "You are about to open %i windows simultaneously. Do you want to open them in "
@@ -676,19 +668,19 @@ msgstr ""
 "Du er i ferd med å opna %i vindauge samstundes. Vil du opna dei i ei samling "
 "i staden?"
 
-#: shell/main.c:240
+#: shell/main.c:239
 msgid "Open multiple single windows?"
 msgstr "Opna fleire enkle vindauge?"
 
-#: shell/main.c:244
+#: shell/main.c:243
 msgid "Single Windows"
 msgstr "Enkle vindauge"
 
-#: shell/main.c:246
+#: shell/main.c:245
 msgid "Collection"
 msgstr "Samling"
 
-#: shell/main.c:298
+#: shell/main.c:297
 msgid "File not found."
 msgid_plural "Files not found."
 msgstr[0] "Fila ikkje funnen."
@@ -698,3 +690,12 @@ msgstr[1] "Filer ikkje funne."
 #, c-format
 msgid "Could not open `%s'"
 msgstr "Klarte ikkje å opna «%s»"
+
+#~ msgid "Images: %i/%i"
+#~ msgstr "Bilete: %i/%i"
+
+#~ msgid "_Quit"
+#~ msgstr "_Avslutt"
+
+#~ msgid "Close all windows and quit"
+#~ msgstr "Lukk alle vindauga og avslutt"

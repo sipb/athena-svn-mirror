@@ -9,7 +9,6 @@
 #include <libgnomeui/gnome-thumbnail.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <eel/eel-vfs-extensions.h>
 #if HAVE_EXIF
 #include <libexif/exif-data.h>
 #include <libexif/exif-utils.h>
@@ -23,6 +22,7 @@
 #include "eog-image-cache.h"
 #include "eog-metadata-reader.h"
 #include "eog-image-save-info.h"
+#include "eog-util.h"
 #if HAVE_JPEG
 #include "eog-image-jpeg.h"
 #endif
@@ -1675,7 +1675,7 @@ eog_image_get_caption (EogImage *img)
 			name = g_strdup ("[Invalid Unicode]");
 		}
 		else {
-			utf8_name = eel_make_valid_utf8 (name);
+			utf8_name = eog_util_make_valid_utf8 (name);
 			g_free (name);
 			name = utf8_name;
 		}
@@ -1865,4 +1865,26 @@ eog_image_modified (EogImage *img)
 	g_return_if_fail (EOG_IS_IMAGE (img));
 
 	g_signal_emit (G_OBJECT (img), eog_image_signals [SIGNAL_IMAGE_CHANGED], 0);
+}
+
+gchar*
+eog_image_get_uri_for_display (EogImage *img)
+{
+	EogImagePrivate *priv;
+	gchar *uri_str = NULL;
+	gchar *str = NULL;
+
+	g_return_val_if_fail (EOG_IS_IMAGE (img), NULL);
+	
+	priv = img->priv;
+
+	if (priv->uri != NULL) {
+		uri_str = gnome_vfs_uri_to_string (priv->uri, GNOME_VFS_URI_HIDE_NONE);
+		if (uri_str != NULL) {
+			str = gnome_vfs_format_uri_for_display (uri_str);
+			g_free (uri_str);
+		}
+	}
+
+	return str;
 }

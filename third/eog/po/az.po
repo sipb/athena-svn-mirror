@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eog.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"POT-Creation-Date: 2004-12-01 20:56+0100\n"
 "PO-Revision-Date: 2004-02-14 15:22+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
@@ -449,20 +449,20 @@ msgstr "saniyə"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:321
+#: shell/eog-window.c:314
 msgid "translator-credits"
 msgstr ""
 
-#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
-#: shell/main.c:498
+#: shell/eog-window.c:319 shell/eog-window.c:2167 shell/eog-window.c:2482
+#: shell/main.c:497
 msgid "Eye of Gnome"
 msgstr "Eye of Gnome"
 
-#: shell/eog-window.c:329
+#: shell/eog-window.c:322
 msgid "The GNOME image viewing and cataloging program."
 msgstr "GNOME rəsm nümayiş və kataloqlama proqramı"
 
-#: shell/eog-window.c:366
+#: shell/eog-window.c:359
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -471,220 +471,211 @@ msgstr ""
 "Eye of Gnome üçün yardım göstərilə bilmədi.\n"
 "%s"
 
-#: shell/eog-window.c:635
+#: shell/eog-window.c:626
 #, c-format
 msgid "Overwrite file %s?"
 msgstr ""
 
-#: shell/eog-window.c:636
+#: shell/eog-window.c:627
 #, fuzzy
 msgid "File exists. Do you want to overwrite it?"
 msgstr "%s faylının üstünə yazmaq istəyirsiniz?"
 
-#: shell/eog-window.c:646 shell/eog-window.c:659
+#: shell/eog-window.c:636 shell/eog-window.c:649
 msgid "Skip"
 msgstr ""
 
-#: shell/eog-window.c:647
+#: shell/eog-window.c:637
 msgid "Overwrite"
 msgstr ""
 
-#: shell/eog-window.c:652
+#: shell/eog-window.c:642
 #, c-format
 msgid "Error on saving %s."
 msgstr ""
 
-#: shell/eog-window.c:660 shell/eog-window.c:1044
+#: shell/eog-window.c:650 shell/eog-window.c:1034
 msgid "Retry"
 msgstr ""
 
-#: shell/eog-window.c:1033
+#: shell/eog-window.c:1023
 #, fuzzy, c-format
 msgid "Couldn't determine file format of %s"
 msgstr "Qeyd etmək üçün müvəqqəti fayl yaradıla bilmədi: %s"
 
-#: shell/eog-window.c:1034
+#: shell/eog-window.c:1024
 msgid "Please use an appropriate filename suffix or select a file format."
 msgstr ""
 
-#: shell/eog-window.c:1176
+#: shell/eog-window.c:1166
 #, fuzzy
 msgid "Error on saving images."
 msgstr "Rəsm qeyd edilir"
 
-#: shell/eog-window.c:1409
+#: shell/eog-window.c:1399
 #, fuzzy, c-format
 msgid "Do you really want to move %i image to trash?"
 msgid_plural "Do you really want to move %i images to trash?"
 msgstr[0] "%s faylının üstünə yazmaq istəyirsiniz?"
 msgstr[1] "%s faylının üstünə yazmaq istəyirsiniz?"
 
-#: shell/eog-window.c:1447
+#: shell/eog-window.c:1437
 msgid "Couldn't access trash."
 msgstr ""
 
-#: shell/eog-window.c:1521
+#: shell/eog-window.c:1511
 #, c-format
 msgid "Error on deleting image %s"
 msgstr ""
 
-#. Images: (n_selected_images) / (n_total_images)
-#: shell/eog-window.c:2114
+#. [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#: shell/eog-window.c:2096
 #, c-format
-msgid "Images: %i/%i"
-msgstr "Rəsmlər: %i/%i"
+msgid "%i x %i pixel  %s    %i%%"
+msgstr "%i x %i piksel  %s    %i%%"
 
-#: shell/eog-window.c:2193
+#: shell/eog-window.c:2233
 msgid "_File"
 msgstr "_Fayl"
 
-#: shell/eog-window.c:2194
+#: shell/eog-window.c:2234
 msgid "_Edit"
 msgstr "_Düzəlt"
 
-#: shell/eog-window.c:2195
+#: shell/eog-window.c:2235
 msgid "_View"
 msgstr "_Görünüş"
 
-#: shell/eog-window.c:2196
+#: shell/eog-window.c:2236
 msgid "_Help"
 msgstr "_Yardım"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "_New"
 msgstr "_Yeni"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "Open a new window"
 msgstr "Yeni pəncərə aç"
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "_Open..."
 msgstr "_Aç..."
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "Open a file"
 msgstr "Bir fayl aç"
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 #, fuzzy
 msgid "Open _Directory..."
 msgstr "_Qovluğu Aç..."
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open a directory"
 msgstr "Qovluq aç"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "_Close"
 msgstr "_Bağla"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "Close window"
 msgstr "Pəncərəni bağla"
 
-#: shell/eog-window.c:2201
-msgid "_Quit"
-msgstr "Çı_x"
-
-#: shell/eog-window.c:2201
-#, fuzzy
-msgid "Close all windows and quit"
-msgstr "Pəncərəni bağla"
-
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Prefere_nces"
 msgstr "Seçi_mlər"
 
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Preferences for Eye of Gnome"
 msgstr "Eye of Gnome Seçimləri"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "_Contents"
 msgstr "_Məzmun"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "Help On this application"
 msgstr "Bu proqram haqqında yardım"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "_About"
 msgstr "_Haqqında"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "About this application"
 msgstr "Bu proqram haqqında"
 
-#: shell/eog-window.c:2209
+#: shell/eog-window.c:2248
 msgid "_Toolbar"
 msgstr "_Vasitə Çubuğu"
 
-#: shell/eog-window.c:2210
+#: shell/eog-window.c:2249
 msgid "_Statusbar"
 msgstr "Və_ziyyət Çubuğu"
 
-#: shell/eog-window.c:2215
+#: shell/eog-window.c:2254
 msgid "_Save"
 msgstr "_Qeyd Et"
 
-#: shell/eog-window.c:2216
+#: shell/eog-window.c:2255
 #, fuzzy
 msgid "Save _As"
 msgstr "_Fərqli Qeyd Et"
 
-#: shell/eog-window.c:2218
+#: shell/eog-window.c:2257
 msgid "_Undo"
 msgstr "_Geri Al"
 
-#: shell/eog-window.c:2220
+#: shell/eog-window.c:2259
 msgid "Flip _Horizontal"
 msgstr "_Üfüqi İstiqamətdə Çevir"
 
-#: shell/eog-window.c:2221
+#: shell/eog-window.c:2260
 msgid "Flip _Vertical"
 msgstr "_Şaquli İstiqamətdə Çevir"
 
-#: shell/eog-window.c:2223
+#: shell/eog-window.c:2262
 #, fuzzy
 msgid "_Rotate Clockwise"
 msgstr "Saat Əqrəbi _İstiqamətində Çevir"
 
-#: shell/eog-window.c:2224
+#: shell/eog-window.c:2263
 #, fuzzy
 msgid "Rotate Counter C_lockwise"
 msgstr "Saat Əqrəbinin _Tərs İstiqamətində Çevir"
 
-#: shell/eog-window.c:2225
+#: shell/eog-window.c:2264
 #, fuzzy
 msgid "Rotat_e 180°"
 msgstr "180 _Dərəcə Çevir"
 
-#: shell/eog-window.c:2227
+#: shell/eog-window.c:2266
 msgid "Delete"
 msgstr ""
 
-#: shell/eog-window.c:2229
+#: shell/eog-window.c:2268
 msgid "_Full Screen"
 msgstr "_Tam Ekran"
 
-#: shell/eog-window.c:2230
+#: shell/eog-window.c:2269
 msgid "_Zoom In"
 msgstr "_Yaxınlaşdır"
 
-#: shell/eog-window.c:2231
+#: shell/eog-window.c:2270
 msgid "Zoom _Out"
 msgstr "_Uzaqlaşdır"
 
-#: shell/eog-window.c:2232
+#: shell/eog-window.c:2271
 msgid "_Normal Size"
 msgstr "_Normal Böyüklük"
 
-#: shell/eog-window.c:2233
+#: shell/eog-window.c:2272
 msgid "Best _Fit"
 msgstr "Ən _Uyğun"
 
-#: shell/main.c:236
+#: shell/main.c:235
 #, fuzzy, c-format
 msgid ""
 "You are about to open %i windows simultaneously. Do you want to open them in "
@@ -693,19 +684,19 @@ msgstr ""
 "Eyni anda %i pəncərə açacaqsınız. Bunun əvəzinə onları yığcam olaraq açmaq "
 "istəyirsiniz?"
 
-#: shell/main.c:240
+#: shell/main.c:239
 msgid "Open multiple single windows?"
 msgstr "Birdən çox ayrı pəncərə açılsın?"
 
-#: shell/main.c:244
+#: shell/main.c:243
 msgid "Single Windows"
 msgstr "Tək Pəncərələr"
 
-#: shell/main.c:246
+#: shell/main.c:245
 msgid "Collection"
 msgstr "Kolleksiya"
 
-#: shell/main.c:298
+#: shell/main.c:297
 #, fuzzy
 msgid "File not found."
 msgid_plural "Files not found."
@@ -752,6 +743,9 @@ msgstr "`%s' açıla bilmədi"
 
 #~ msgid "Collection View"
 #~ msgstr "Yığcam Nümayiş"
+
+#~ msgid "Images: %i/%i"
+#~ msgstr "Rəsmlər: %i/%i"
 
 #~ msgid "Window Title"
 #~ msgstr "Pəncərə Başlığı"
@@ -874,6 +868,9 @@ msgstr "`%s' açıla bilmədi"
 #~ msgid "Quit the program"
 #~ msgstr "Proqramdan çıx"
 
+#~ msgid "_Quit"
+#~ msgstr "Çı_x"
+
 #~ msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 #~ msgstr ""
 #~ "Vasif İsmailoğlu <linuxaz@azerimail.net>\n"
@@ -920,9 +917,6 @@ msgstr "`%s' açıla bilmədi"
 
 #~ msgid "_Print..."
 #~ msgstr "Ç_ap Et..."
-
-#~ msgid "%i x %i pixel  %s    %i%%"
-#~ msgstr "%i x %i piksel  %s    %i%%"
 
 #~ msgid "/Rotate C_lockwise"
 #~ msgstr "/Saat Əqrəbi _İstiqamətində Çevir"

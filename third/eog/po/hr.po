@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eog 0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"POT-Creation-Date: 2004-12-01 20:56+0100\n"
 "PO-Revision-Date: 2004-03-14 23:30+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -445,20 +445,20 @@ msgstr "proizvod loše kvalitete"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:321
+#: shell/eog-window.c:314
 msgid "translator-credits"
 msgstr ""
 
-#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
-#: shell/main.c:498
+#: shell/eog-window.c:319 shell/eog-window.c:2167 shell/eog-window.c:2482
+#: shell/main.c:497
 msgid "Eye of Gnome"
 msgstr "Eye of Gnome"
 
-#: shell/eog-window.c:329
+#: shell/eog-window.c:322
 msgid "The GNOME image viewing and cataloging program."
 msgstr "GNOME program za pregled i katalogiziranje slika"
 
-#: shell/eog-window.c:366
+#: shell/eog-window.c:359
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -467,220 +467,211 @@ msgstr ""
 "Ne mogu prikazati pomoć za Eye of Gnome.\n"
 "%s"
 
-#: shell/eog-window.c:635
+#: shell/eog-window.c:626
 #, c-format
 msgid "Overwrite file %s?"
 msgstr ""
 
-#: shell/eog-window.c:636
+#: shell/eog-window.c:627
 #, fuzzy
 msgid "File exists. Do you want to overwrite it?"
 msgstr "Želite li pisati preko %s?"
 
-#: shell/eog-window.c:646 shell/eog-window.c:659
+#: shell/eog-window.c:636 shell/eog-window.c:649
 msgid "Skip"
 msgstr ""
 
-#: shell/eog-window.c:647
+#: shell/eog-window.c:637
 msgid "Overwrite"
 msgstr ""
 
-#: shell/eog-window.c:652
+#: shell/eog-window.c:642
 #, c-format
 msgid "Error on saving %s."
 msgstr ""
 
-#: shell/eog-window.c:660 shell/eog-window.c:1044
+#: shell/eog-window.c:650 shell/eog-window.c:1034
 msgid "Retry"
 msgstr ""
 
-#: shell/eog-window.c:1033
+#: shell/eog-window.c:1023
 #, fuzzy, c-format
 msgid "Couldn't determine file format of %s"
 msgstr "Nisam mogao stvoriti privremenu datoteku za spremanje: %s"
 
-#: shell/eog-window.c:1034
+#: shell/eog-window.c:1024
 msgid "Please use an appropriate filename suffix or select a file format."
 msgstr ""
 
-#: shell/eog-window.c:1176
+#: shell/eog-window.c:1166
 #, fuzzy
 msgid "Error on saving images."
 msgstr "Spremanje slike"
 
-#: shell/eog-window.c:1409
+#: shell/eog-window.c:1399
 #, fuzzy, c-format
 msgid "Do you really want to move %i image to trash?"
 msgid_plural "Do you really want to move %i images to trash?"
 msgstr[0] "Želite li pisati preko %s?"
 msgstr[1] "Želite li pisati preko %s?"
 
-#: shell/eog-window.c:1447
+#: shell/eog-window.c:1437
 msgid "Couldn't access trash."
 msgstr ""
 
-#: shell/eog-window.c:1521
+#: shell/eog-window.c:1511
 #, c-format
 msgid "Error on deleting image %s"
 msgstr ""
 
-#. Images: (n_selected_images) / (n_total_images)
-#: shell/eog-window.c:2114
+#. [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#: shell/eog-window.c:2096
 #, c-format
-msgid "Images: %i/%i"
-msgstr "Slike: %i/%i"
+msgid "%i x %i pixel  %s    %i%%"
+msgstr "%i x %i točaka  %s    %i%%"
 
-#: shell/eog-window.c:2193
+#: shell/eog-window.c:2233
 msgid "_File"
 msgstr "_Datoteka"
 
-#: shell/eog-window.c:2194
+#: shell/eog-window.c:2234
 msgid "_Edit"
 msgstr "_Uredi"
 
-#: shell/eog-window.c:2195
+#: shell/eog-window.c:2235
 msgid "_View"
 msgstr "P_ogled"
 
-#: shell/eog-window.c:2196
+#: shell/eog-window.c:2236
 msgid "_Help"
 msgstr "_Pomoć"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "_New"
 msgstr "_Novi"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "Open a new window"
 msgstr "Otvori novi prozor"
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "_Open..."
 msgstr "_Otvori..."
 
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "Open a file"
 msgstr "Otvori datoteku"
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 #, fuzzy
 msgid "Open _Directory..."
 msgstr "_Otvori mapu..."
 
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open a directory"
 msgstr "Otvori mapu"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "_Close"
 msgstr "_Zatvori"
 
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "Close window"
 msgstr "Zatvori prozor"
 
-#: shell/eog-window.c:2201
-msgid "_Quit"
-msgstr "_Završi"
-
-#: shell/eog-window.c:2201
-#, fuzzy
-msgid "Close all windows and quit"
-msgstr "Zatvori prozor"
-
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Prefere_nces"
 msgstr "_Postavke"
 
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Preferences for Eye of Gnome"
 msgstr "Postavke za Gnome Eye"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "_Contents"
 msgstr "_Sadržaj"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "Help On this application"
 msgstr "Pomoć za ovu aplikaciju"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "_About"
 msgstr "_O"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "About this application"
 msgstr "O ovoj aplikaciji"
 
-#: shell/eog-window.c:2209
+#: shell/eog-window.c:2248
 msgid "_Toolbar"
 msgstr "_Alatna traka"
 
-#: shell/eog-window.c:2210
+#: shell/eog-window.c:2249
 msgid "_Statusbar"
 msgstr "_Statusna traka"
 
-#: shell/eog-window.c:2215
+#: shell/eog-window.c:2254
 msgid "_Save"
 msgstr "_Spremi"
 
-#: shell/eog-window.c:2216
+#: shell/eog-window.c:2255
 #, fuzzy
 msgid "Save _As"
 msgstr "_Spremi Kao..."
 
-#: shell/eog-window.c:2218
+#: shell/eog-window.c:2257
 msgid "_Undo"
 msgstr "_Vrati"
 
-#: shell/eog-window.c:2220
+#: shell/eog-window.c:2259
 msgid "Flip _Horizontal"
 msgstr "Zrcali _vodoravno"
 
-#: shell/eog-window.c:2221
+#: shell/eog-window.c:2260
 msgid "Flip _Vertical"
 msgstr "Zrcali _okomito"
 
-#: shell/eog-window.c:2223
+#: shell/eog-window.c:2262
 #, fuzzy
 msgid "_Rotate Clockwise"
 msgstr "Rotacija u smjeru kazaljke na satu"
 
-#: shell/eog-window.c:2224
+#: shell/eog-window.c:2263
 #, fuzzy
 msgid "Rotate Counter C_lockwise"
 msgstr "Rotacija u smjeru suprotnom od kazaljke na satu"
 
-#: shell/eog-window.c:2225
+#: shell/eog-window.c:2264
 #, fuzzy
 msgid "Rotat_e 180°"
 msgstr "Rotacija za 180 _stupnjeva"
 
-#: shell/eog-window.c:2227
+#: shell/eog-window.c:2266
 msgid "Delete"
 msgstr ""
 
-#: shell/eog-window.c:2229
+#: shell/eog-window.c:2268
 msgid "_Full Screen"
 msgstr "_Puni zaslon"
 
-#: shell/eog-window.c:2230
+#: shell/eog-window.c:2269
 msgid "_Zoom In"
 msgstr "_Uvećaj"
 
-#: shell/eog-window.c:2231
+#: shell/eog-window.c:2270
 msgid "Zoom _Out"
 msgstr "U_manji"
 
-#: shell/eog-window.c:2232
+#: shell/eog-window.c:2271
 msgid "_Normal Size"
 msgstr "_Normalna Veličina"
 
-#: shell/eog-window.c:2233
+#: shell/eog-window.c:2272
 msgid "Best _Fit"
 msgstr "_Najbolje pristajanje"
 
-#: shell/main.c:236
+#: shell/main.c:235
 #, fuzzy, c-format
 msgid ""
 "You are about to open %i windows simultaneously. Do you want to open them in "
@@ -689,19 +680,19 @@ msgstr ""
 "Pred istovremenim ste otvaranjem %i prozora. Želite li umjesto toga otvoriti "
 "kolekciju?"
 
-#: shell/main.c:240
+#: shell/main.c:239
 msgid "Open multiple single windows?"
 msgstr "Otvoriti više pojedinih prozora?"
 
-#: shell/main.c:244
+#: shell/main.c:243
 msgid "Single Windows"
 msgstr "Jedan prozor"
 
-#: shell/main.c:246
+#: shell/main.c:245
 msgid "Collection"
 msgstr "Kolekcija"
 
-#: shell/main.c:298
+#: shell/main.c:297
 #, fuzzy
 msgid "File not found."
 msgid_plural "Files not found."
@@ -748,6 +739,9 @@ msgstr "Ne mogu otvoriti `%s'"
 
 #~ msgid "Collection View"
 #~ msgstr "Pogled kolekcije"
+
+#~ msgid "Images: %i/%i"
+#~ msgstr "Slike: %i/%i"
 
 #~ msgid "Window Title"
 #~ msgstr "Naslov prozora"
@@ -869,6 +863,9 @@ msgstr "Ne mogu otvoriti `%s'"
 #~ msgid "Quit the program"
 #~ msgstr "Završi program"
 
+#~ msgid "_Quit"
+#~ msgstr "_Završi"
+
 #~ msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 #~ msgstr "lokalizacija@linux.hr"
 
@@ -910,9 +907,6 @@ msgstr "Ne mogu otvoriti `%s'"
 
 #~ msgid "_Print..."
 #~ msgstr "_Ispis..."
-
-#~ msgid "%i x %i pixel  %s    %i%%"
-#~ msgstr "%i x %i točaka  %s    %i%%"
 
 #~ msgid "/Rotate C_lockwise"
 #~ msgstr "/Rotacija u smjeru kazaljke na satu"
