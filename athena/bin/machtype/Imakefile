@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.9 1993-06-07 12:50:20 vrt Exp $
+ * $Id: Imakefile,v 1.10 1994-06-13 07:05:10 cfields Exp $
  */
 
 #ifdef ULTRIX40
@@ -8,7 +8,7 @@ DEFINES=-DULTRIX_40 -I/usr/include/sys
 
 #if defined(_IBMR2)
 #define DONE
-machtype_rios.o:
+machtype_rios.o: $(ATHVERS)
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
@@ -17,7 +17,7 @@ SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
 #endif
 #if defined(SOLARIS)
 #define DONE
-machtype_sol.o:
+machtype_sol.o: $(ATHVERS)
         $(RM) $@
         . $(ATHVERS); \
         $(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
@@ -25,7 +25,7 @@ SimpleProgram(machtype, machtype_sol.o,-lkvm,$(ATHRBINDIR))
 install_program(machtype,-m 4755 -o root,$(ATHRBINDIR))
 #endif
 #ifndef DONE
-machtype_std.o:
+machtype_std.o: $(ATHVERS)
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
