@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.19 1997-05-24 21:32:42 ghudson Exp $
+# $Id: do-update.sh,v 1.20 1997-12-06 21:30:06 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -38,21 +38,24 @@ sun4)
 	;;
 esac
 
-# We get one argument, the method by which the machine was rebooted.
-# Possible values are Auto, Manual, and Remote.
+# We get three arguments: the method by which the machine was rebooted.
+# (possible values are Auto, Manual, and Remote), the current workstation
+# version, and the new version.
 method="$1"
+version="$2"
+newvers="$3"
 
 echo "Starting update"
 
 echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
 	"$CONFDIR/version"
 
-if [ "$VERSION" != "$NEWVERS" ]; then
+if [ "$version" != "$newvers" ]; then
 	echo "Version-specific updating.."
 	cp /dev/null $CONFCHG
 	cp /dev/null $CONFVARS
 	cp /dev/null $OLDBINS
-	upvers "$VERSION" "$NEWVERS" "$LIBDIR"
+	upvers "$version" "$newvers" "$LIBDIR"
 fi
 
 . $CONFDIR/rc.conf
@@ -263,15 +266,30 @@ if [ "$NEWBOOT" = true ]; then
 	esac
 fi
 
-case "$HOSTTYPE" in
-sgi)
-	echo "Suppressing network daemons for reboot"
-	chkconfig -f suppress-network-daemons on
-	;;
-esac
+if [ "$NEWOS" = true ]; then
+	# Reboot to finish update.
 
-echo "Updating version for reboot"
-echo "Athena Workstation ($HOSTTYPE) Version Reboot $method $NEWVERS `date`" \
-	>> "$CONFDIR/version"
+	case "$HOSTTYPE" in
+	sgi)
+		echo "Suppressing network daemons for reboot"
+		chkconfig -f suppress-network-daemons on
+		;;
+	esac
 
-sync
+	echo "Updating version for reboot"
+	echo "Athena Workstation ($HOSTTYPE) Version Reboot" \
+		"$method $newvers `date`" >> "$CONFDIR/version"
+
+	echo "Update partially completed, system will reboot in 15 seconds."
+	sync
+	sleep 15
+	exec reboot
+else
+	sh /srvd/usr/athena/lib/update/finish-update.sh "$newvers"
+	if [ "$method" = Auto ]; then
+		echo "Automatic update done; system will reboot in 15 seconds."
+		sync
+		sleep 15
+		exec reboot
+	fi
+fi
