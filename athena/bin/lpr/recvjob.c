@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.1 1990-04-16 12:18:40 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.2 1990-04-16 12:18:56 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.1 1990-04-16 12:18:40 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.2 1990-04-16 12:18:56 epeisach Exp $";
 #endif lint
 
 /*
@@ -30,6 +30,10 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
 #else
 #include <sys/fs.h>
 #endif VFS
+#ifdef PQUOTA
+#include "quota.h"
+#include <sys/time.h>
+#endif
 
 char	*sp = "";
 #define ack()	(void) write(1, sp, 1);
@@ -37,9 +41,15 @@ char	*sp = "";
 int 	lflag;			/* should we log a trace? */
 char    tfname[40];		/* tmp copy of cf before linking */
 char    dfname[40];		/* data files */
+char    cfname[40];             /* control fle - fix compiler bug */
 int	minfree;		/* keep at least minfree blocks available */
 char	*ddev;			/* disk device (for checking free space) */
 int	dfd;			/* file system device descriptor */
+#ifdef KERBEROS
+char    tempfile[40];           /* Same size as used for cfname and tfname */
+extern int kflag;
+#endif KERBEROS
+
 
 char	*find_dev();
 
@@ -73,7 +83,11 @@ recvjob()
 		SD = DEFSPOOL;
 	if ((LO = pgetstr("lo", &bp)) == NULL)
 		LO = DEFLOCK;
-
+#ifdef PQUOTA
+	RQ = pgetstr("rq", &bp);
+	QS = pgetstr("qs", &bp);
+#endif PQUOTA	    
+	    
 	(void) close(2);			/* set up log file */
 	if (open(LF, O_WRONLY|O_APPEND, 0664) < 0) {
 		syslog(LOG_ERR, "%s: %m", LF);
@@ -94,7 +108,6 @@ recvjob()
 	ddev = find_dev(stb.st_dev, S_IFBLK);
 	if ((dfd = open(ddev, O_RDONLY)) < 0)
 		syslog(LOG_WARNING, "%s: %s: %m", printer, ddev);
-
 
 	signal(SIGTERM, rcleanup);
 	signal(SIGPIPE, rcleanup);
@@ -146,6 +159,9 @@ readjob()
 {
 	register int size, nfiles;
 	register char *cp;
+#ifdef PQUOTA
+	char *cret, *check_quota();
+#endif
 
 	if (lflag) syslog(LOG_INFO, "In readjob");
 	ack();
@@ -183,17 +199,50 @@ readjob()
 			 * returns
 			 */
 			strcpy(cp + 6, from);
+			strcpy(cfname, cp);
 			strcpy(tfname, cp);
 			tfname[0] = 't';
+#ifdef KERBEROS
+			strcpy(tempfile, tfname);
+			tempfile[0] = 'T';
+#endif KERBEROS
 			if (!chksize(size)) {
 				(void) write(1, "\2", 1);
 				continue;
 			}
-			if (!readfile(tfname, size)) {
+			    
+			/* Don't send final acknowledge beacuse we may wish to 
+			   send error below */
+			if (!readfile(tfname, size, 0)) {
+			    syslog(LOG_DEBUG, "Failed read");
 				rcleanup();
 				continue;
 			}
-			if (link(tfname, cp) < 0)
+
+#ifdef PQUOTA
+			if(kerberos_cf && (RQ != NULL) && 
+			   (cret = check_quota(tfname)) != 0) {
+			    /* We return !=0 for error. Old clients
+			       stupidly don't print any error in this sit.
+			       We do a cleanup cause we can't expect 
+			       client to do so. */
+			    (void) write(1, cret, 1);
+			    syslog(LOG_DEBUG, "Got %s", cret);
+			    rcleanup();
+			    continue;
+			}
+#endif PQUOTA
+
+			/* Send acknowldege, cause we didn't before */
+			ack();
+
+#ifdef KERBEROS
+			if (kerberos_cf && (!kerberize_cf(tfname, tempfile))) {
+				rcleanup();
+				continue;
+			}
+#endif KERBEROS
+			if (link(tfname, cfname) < 0)
 				frecverr("%s: %m", tfname);
 			(void) UNLINK(tfname);
 			tfname[0] = '\0';
@@ -210,8 +259,9 @@ readjob()
 				(void) write(1, "\2", 1);
 				continue;
 			}
+
 			strcpy(dfname, cp);
-			(void) readfile(dfname, size);
+			(void) readfile(dfname, size, 1);
 			continue;
 		}
 		frecverr("protocol screwup");
@@ -221,9 +271,10 @@ readjob()
 /*
  * Read files send by lpd and copy them to the spooling directory.
  */
-readfile(file, size)
+readfile(file, size, acknowledge)
 	char *file;
 	int size;
+        int acknowledge;
 {
 	register char *cp;
 	char buf[BUFSIZ];
@@ -260,11 +311,83 @@ readfile(file, size)
 		frecverr("%s: write error", file);
 	if (noresponse()) {		/* file sent had bad data in it */
 		(void) UNLINK(file);
-		return(0);
-	}
-	ack();
+		return(0);	
+	    }
+	if(acknowledge)
+	    ack();
 	return(1);
 }
+
+#ifdef KERBEROS
+kerberize_cf(file, tfile)
+char *file, *tfile;
+{
+	FILE *cfp, *tfp;
+	char kname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
+	char oldname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
+
+	oldname[0] = '\0';
+
+	/* Form a complete string name consisting of principal, 
+	 * instance and realm
+	 */
+	make_kname(kprincipal, kinstance, krealm, kname);
+
+	/* If we cannot open tf file, then return error */
+	if ((cfp = fopen(file, "r")) == NULL)
+		return (0);
+
+	/* Read the control file for the person sending the job */
+	while (getline(cfp)) {
+		if (line[0] == 'P') {
+			strncpy(oldname, line+1, sizeof(oldname)-1);
+			break;
+		}
+	}
+	fclose(cfp);
+
+	/* Have we got a name in oldname, if not, then return error */
+	if (oldname[0] == '\0')
+		return(0);
+
+	/* Does kname match oldname. If so do nothing */
+	if (!strcmp(kname, oldname))
+		return(1); /* all a-okay */
+
+	/* hmm, doesnt match, guess we have to change the name in
+	 * the control file by doing the following :
+	 *
+	 * (1) Move 'file' to 'tfile'
+	 * (2) Copy all of 'tfile' back to 'file' but
+	 *     changing the persons name
+	 */
+	if (link(file, tfile) < 0)
+		return(0);
+	(void) UNLINK(file);
+
+	/* If we cannot open tf file, then return error */
+	if ((tfp = fopen(tfile, "r")) == NULL)
+		return (0);
+	if ((cfp = fopen(file, "w")) == NULL) {
+		(void) fclose(tfp);
+		return (0);
+	}
+
+	while (getline(tfp)) {
+		if (line[0] == 'P')
+			strcpy(&line[1], kname);
+		else if (line[0] == 'L')
+		    strcpy(&line[1], kname);
+		fprintf(cfp, "%s\n", line);
+	}
+
+	(void) fclose(cfp);
+	(void) fclose(tfp);
+	(void) UNLINK(tfile);
+
+	return(1);
+}
+#endif KERBEROS
 
 noresponse()
 {
@@ -284,8 +407,6 @@ noresponse()
 chksize(size)
 	int size;
 {
-	struct stat stb;
-	register char *ddev;
 	int spacefree;
 	struct fs fs;
 
@@ -327,8 +448,13 @@ rcleanup()
 	/* This was cretinous code.. which regularly walked off the end
 	 * of the name space...  I changed the != to a >=..
 	 */
+
 	if (tfname[0])
 		(void) UNLINK(tfname);
+#ifdef KERBEROS
+	if (tempfile[0])
+		(void) UNLINK(tempfile);
+#endif KERBEROS
 	if (dfname[0])
 		do {
 			do
@@ -339,6 +465,7 @@ rcleanup()
 	dfname[0] = '\0';
 }
 
+/* VARARGS1 */
 frecverr(msg, a1, a2)
 	char *msg;
 {
@@ -347,3 +474,153 @@ frecverr(msg, a1, a2)
 	putchar('\1');		/* return error code */
 	exit(1);
 }
+
+#ifdef PQUOTA
+
+char* check_quota(file)
+char file[];
+    {
+        struct hostent *hp;
+	char outbuf[BUFSIZ], inbuf[BUFSIZ];
+	int t, act, s1;
+	FILE *cfp;
+	struct sockaddr_in sin_c;
+	int fd, retry;
+	struct servent *servname;
+	struct timeval tp;
+	fd_set set;
+
+	if(RQ == NULL) 
+	    return 0;
+	if((hp = gethostbyname(RQ)) == NULL) {
+	    syslog(LOG_WARNING, "Cannot resolve quota servername %s", RQ);
+	    return 0;
+	}
+
+	/* Setup output buffer.... */
+	outbuf[0] = (char) UDPPROTOCOL;
+
+	/* Generate a sequence number... Since we fork the only realistic
+	   thing to use is the time... */
+	t = htonl(time((char *) 0));
+	bcopy(&t, outbuf + 1, 4);
+	strncpy(outbuf + 4, printer, 30);
+
+
+	if(QS == NULL) 
+	    outbuf[39] = '\0';
+	else 
+	    strncpy(outbuf + 39, QS, 20);
+/* If can't open the control file, then there is some error...
+	   We'll return allowed to print, but somewhere else it will be caught.
+	   Is this proper? XXX
+	   */
+
+	if ((cfp = fopen(file, "r")) == NULL)
+		return 0;
+
+	/* Read the control file for the person sending the job */
+	while (getline(cfp)) {
+		if (line[0] == 'A') {
+		    if(sscanf(line[0], "%d", &act) != 1) act=0;
+		    break;
+		}
+	}
+	fclose(cfp);
+
+
+       	act = htonl(act);
+	bcopy(outbuf + 35, &act, 4);
+
+	strncpy(outbuf + 59, kprincipal, ANAME_SZ);
+	strncpy(outbuf + 59 + ANAME_SZ, kinstance, INST_SZ);
+	strncpy(outbuf + 59 + ANAME_SZ + INST_SZ, krealm, REALM_SZ);
+
+	if((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	    syslog(LOG_WARNING, "Could not create UDP socket\n");
+	    /* Allow print */
+	    return 0;
+	}
+
+	bzero((char *)&sin_c, sizeof(sin_c));
+	sin_c.sin_family = AF_INET;
+	servname = getservbyname(QUOTASERVENTNAME,"udp");
+	if(!servname) 
+	    sin_c.sin_port = htons(QUOTASERVENT);
+	else 
+	    sin_c.sin_port = servname->s_port;
+
+	bcopy(hp->h_addr_list[0], &sin_c.sin_addr,hp->h_length);
+
+	if(connect(fd, &sin_c, sizeof(sin_c)) < 0) {
+	    syslog(LOG_WARNING, "Could not connect with UDP - quota server down?");
+	    /* This means that the quota serve is down */
+	    /* Allow printing */
+	    return 0;
+	}
+
+	for(retry = 0; retry < RETRY_COUNT; retry++) {
+	    if(send(fd, outbuf, 59+ANAME_SZ+REALM_SZ+INST_SZ+1,0)<
+	       59+ANAME_SZ+REALM_SZ+INST_SZ+1) {
+		syslog(LOG_WARNING, "Send failed to quota");
+		continue;
+	    }
+
+	    FD_ZERO(&set);
+	    FD_SET(fd, &set);
+	    tp.tv_sec = UDPTIMEOUT;
+	    tp.tv_usec = 0;
+
+	    /* So, select and wait for reply */
+	    if((s1=select(fd+1, &set, 0, 0, &tp))==0) {
+		/*Time out, retry */
+		continue;
+	    }
+
+	    if(s1 < 0) {
+		/* Error, which makes no sense. Oh well, display */
+		syslog(LOG_WARNING, "Error in UDP return errno=%d", errno);
+		/* Allow print */
+		return 0;
+	    }
+
+	    if((s1=recv(fd, inbuf, 36)) != 36) {
+		syslog(LOG_WARNING, "Receive error in UDP contacting quota");
+		/* Retry */
+		continue;
+	    }
+
+	    if(bcmp(inbuf, outbuf, 35)) {
+		/* Wrong packet */
+#ifdef DEBUG
+		syslog(LOG_DEBUG, "Packet not for me on UDP");
+#endif
+		continue;
+	    }
+
+	    /* Packet good, send response */
+	    switch ((int) inbuf[35]) {
+	    case ALLOWEDTOPRINT:
+#ifdef DEBUG
+		syslog(LOG_DEBUG, "Allowed to print!!");
+#endif
+		return 0;
+	    case NOALLOWEDTOPRINT:
+		return "\4";
+	    case UNKNOWNUSER:
+		return "\3";
+	    default:
+		break;
+		/* Bogus, retry */
+	    }
+		    
+	}
+
+	if(retry == RETRY_COUNT) {
+	    /* We timed out in contacting... Allow printing*/
+	    return 0;
+	}
+	return 0;
+    }
+
+#endif
