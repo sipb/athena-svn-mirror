@@ -1,0 +1,8 @@
+Name: athena-zlib
+Summary: The zlib compression and decompression library, for Athena
+Copyright: BSD
+Group: System Environment/Libraries
+
+%description
+Zlib is a general-purpose, patent-free, lossless data compression
+library which is used by many different programs.

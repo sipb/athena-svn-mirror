@@ -1,0 +1,16 @@
+Name: athena-gettext
+Summary: GNU library for producing multi-lingual messages, for Athena
+Copyright: GPL/LGPL
+Group: Development/Tools
+
+%description
+The GNU gettext package provides a set of tools and documentation for
+producing multi-lingual messages in programs. Tools include a set of
+conventions about how programs should be written to support message
+catalogs, a directory and file naming organization for the message
+catalogs, a runtime library which supports the retrieval of translated
+messages, and stand-alone programs for handling the translatable and
+the already translated strings. Gettext provides an easy to use
+library and tools for creating, using, and modifying natural language
+catalogs and is a powerful and simple method for internationalizing
+programs.

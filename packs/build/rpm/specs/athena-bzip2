@@ -1,0 +1,13 @@
+Name: athena-bzip2
+Summary: A file compression utility, for Athena
+Copyright: BSD
+Group: Applications/File
+
+%description
+Bzip2 is a freely available, patent-free, high quality data compressor.
+Bzip2 compresses files to within 10 to 15 percent of the capabilities
+of the best techniques available.  However, bzip2 has the added benefit
+of being approximately two times faster at compression and six times
+faster at decompression than those techniques.  Bzip2 is not the
+fastest compression utility, but it does strike a balance between speed
+and compression capability.

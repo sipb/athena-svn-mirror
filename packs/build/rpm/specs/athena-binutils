@@ -1,0 +1,8 @@
+Name: athena-binutils
+Summary: GNU ld, for Athena
+Copyright: GPL
+Group: Development/Tools
+
+%description
+Binutils is a collection of binary utilities.  This package only
+installs gnu ld into gcc's tools directory.

@@ -1,0 +1,8 @@
+Name: athena-xpm
+Summary: The X Pixmap Library, for Athena
+Copyright: MITish
+Group: Development/Libraries
+
+%description
+The X Pixmap Library allows programs to load and save X pixmaps in XPM
+format.

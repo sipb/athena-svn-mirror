@@ -1,0 +1,9 @@
+Name: athena-mwm
+Summary: The mwm window manager, for Athena
+Copyright: OSF
+Group: User Interface/Desktops
+
+%description
+mwm is the Motif Window Manager, which was the default window manager
+on Athena until version 9.0 and is still supported for those who
+prefer the old desktop interface.

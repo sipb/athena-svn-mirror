@@ -1,0 +1,8 @@
+Name: athena-top
+Summary: Process table monitoring utility, for Athena
+Copyright: GPL
+Group: Applications/System
+
+%description
+The top command provides a repetitive update of the statuses of
+running processes.

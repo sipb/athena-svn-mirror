@@ -1,0 +1,10 @@
+Name: athena-install
+Summary: BSD-compatible install program, for Athena
+Copyright: UCB
+Group: Applications/File
+
+%description
+The install program is used to copy files from one location to another
+with specified ownership and permissions.  This package contains a
+BSD-compatible version of install for use on operating systems such as
+Solaris.

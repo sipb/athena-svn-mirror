@@ -1,0 +1,9 @@
+Name: athena-tcp_wrappers
+Summary: A security tool which acts as a wrapper for TCP daemons, for Athena
+Copyright: Distributable
+Group: System Environment/Daemons
+
+%description
+The tcp_wrappers package provides small daemon programs which can
+monitor and filter incoming requests for systat, finger, FTP, telnet,
+rlogin, rsh, exec, tftp, talk and other network services.

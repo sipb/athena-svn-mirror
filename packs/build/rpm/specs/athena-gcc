@@ -1,0 +1,10 @@
+Name: athena-gcc
+Summary: Various compilers, for Athena
+Copyright: GPL
+Group: Development/Languages
+
+%description
+The gcc package contains the GNU Compiler Collection, including
+compilers for C, C++, and other languages.  It is intended primarily
+for building the rest of the Athena release, and is not a supported
+part of the Athena environment.

@@ -1,0 +1,11 @@
+Name: athena-patch
+Summary: The GNU patch command for modifying/upgrading files, for Athena
+Copyright: GPL
+Group: Development/Tools
+
+%description
+The patch program applies diff files to originals.  The diff command
+is used to compare an original to a changed file.  Diff lists the
+changes made to the file.  A person who has the original file can then
+use the patch command with the diff file to add the changes to their
+original file (patching the file).
