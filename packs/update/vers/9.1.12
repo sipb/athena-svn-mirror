@@ -1,0 +1,20 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  # Patch to fix the Sun X server from crashing on julia, penrose
+  # xscreensaver hacks.
+  echo "108606-22"					>> "$PATCHES"
+
+  # Remove the package containing the vulnerable apache daemon.
+  if [ -d /var/sadm/pkg/SUNWapchu ]; then
+    pkgrm -n -a $LIBDIR/noask SUNWapchu
+  fi
+
+  # Clean up some dead symlinks to /os.a
+  cat "$LIBDIR/deadfiles-9.1.12"			>> $DEADFILES
+  ;;
+
+sgi)
+  ;;
+esac
