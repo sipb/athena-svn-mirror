@@ -26,7 +26,7 @@
       <title>Desktop-Überblick</title>
       <screenshot>
 	<screeninfo>Desktop-Überblick</screeninfo>
-	<graphic format="png" fileref="deskguide-fig" srccredit="John Fleck">
+	<graphic format="png" fileref="figures/deskguide-fig" srccredit="John Fleck">
 	</graphic>
       </screenshot>
     </figure>
@@ -95,7 +95,7 @@
 	<title>Desktop-Überblick Taskliste</title>
 	<screenshot>
 	  <screeninfo>Desktop-Überblick Taskliste</screeninfo>
-	  <graphic format="png" fileref="deskguide-tasklist-fig" srccredit="John Fleck">
+	  <graphic format="png" fileref="figures/deskguide-tasklist-fig" srccredit="John Fleck">
 	  </graphic>
 	</screenshot>
       </figure>
@@ -160,7 +160,7 @@
 	    <title>Eigenschaften-Dialog</title>
 	    <screenshot>
 	      <screeninfo>Eigenschaften-Dialog</screeninfo> 
-	      <graphic format="png" fileref="deskguide-properties"
+	      <graphic format="png" fileref="figures/deskguide-properties"
 		srccredit="John Fleck">
 	      </graphic>
 	    </screenshot>
@@ -255,7 +255,7 @@
 	  <title>Eigenschaften-Dialog - Tasks</title>
 	  <screenshot>
 	    <screeninfo>Eigenschaften-Dialog - Tasks</screeninfo> 
-	    <graphic format="png" fileref="deskguide-properties-tasks-fig"
+	    <graphic format="png" fileref="figures/deskguide-properties-tasks-fig"
 	      srccredit="John Fleck">
 	    </graphic>
 	  </screenshot>
@@ -290,7 +290,7 @@
 	  <title>Eigenschaften-Dialog - Geometrie</title>
 	  <screenshot>
 	    <screeninfo>Eigenschaften-Dialog - Geometrie</screeninfo> 
-	    <graphic format="png" fileref="deskguide-properties-geometry-fig"
+	    <graphic format="png" fileref="figures/deskguide-properties-geometry-fig"
 	      srccredit="John Fleck">
 	    </graphic>
 	  </screenshot>
@@ -365,7 +365,7 @@
 	  <title>Eigenschaften - Komplex</title>
 	  <screenshot>
 	    <screeninfo>Eigenschaften-Dialog - Komplex</screeninfo> 
-	    <graphic format="png" fileref="deskguide-properties-advanced-fig"
+	    <graphic format="png" fileref="figures/deskguide-properties-advanced-fig"
 	      srccredit="John Fleck">
 	    </graphic>
 	  </screenshot>

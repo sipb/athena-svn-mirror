@@ -27,6 +27,7 @@
 #include "scroll-menu.h"
 #include "gwmh.h"
 #include "tasklist_icon.h"
+#include "scroll-menu.h"
 
 #define SMALL_ICON_SIZE 20
 
@@ -687,7 +688,7 @@ programs_menu_to_display(GtkWidget *menu)
 static void
 set_the_task_submenu (FoobarWidget *foo, GtkWidget *item)
 {
-	foo->task_menu = gtk_menu_new ();
+	foo->task_menu = scroll_menu_new ();
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), foo->task_menu);
 	/*g_message ("setting...");*/
 }
@@ -865,7 +866,7 @@ task_notify (gpointer data, GwmhTask *task,
 			add_task (task, foo);
 		break;
 	case GWMH_NOTIFY_DESTROY:
-#warning Whoa; leak?
+		/* FIXME: Whoa; leak? */
 		if (foo->tasks != NULL) {
 			item = g_hash_table_lookup (foo->tasks, task);
 			if (item) {

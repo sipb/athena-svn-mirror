@@ -18,7 +18,6 @@
 	betingelserne givet i GNU General Public License.</para>
     </legalnotice>
   </bookinfo>
-  <toc></toc>
   
   <chapter id="terminal">
     <title>Gnome terminal brugermanual.</title>
@@ -358,7 +357,7 @@
 	</para>
    </sect2>
 
-      <sect2 id="pointer-dnd"
+      <sect2 id="pointer-dnd">
         <Title>Træk-og-slip</title>
 	<para>
 	  Træk-og-slip kan bruges til en række operationer indeni
@@ -498,7 +497,7 @@
 	</variablelist>
       </sect2>
       
-      <sect2 id="menu-help"
+      <sect2 id="menu-help">
         <title>Hjælpemenuen</title>
 	<variablelist>
 	  <varlistentry>

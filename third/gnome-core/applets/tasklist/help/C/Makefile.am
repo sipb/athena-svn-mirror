@@ -1,9 +1,12 @@
 figs = \
-	tasklist-fig.png              tasklist-properties.png	\
-	tasklist-properties-size.png  tasklist-rightclick-fig.png
-applet = tasklist
+	figures/tasklist-fig.png		\
+	figures/tasklist-properties.png		\
+	figures/tasklist-properties-size.png	\
+	figures/tasklist-rightclick-fig.png
+docname = tasklist_applet
 lang = C
-omffiles = tasklist_applet-C.omf
-sgml_ents = $(applet).sgml
-include $(top_srcdir)/applet-docs.make
-dist-hook: applet-dist-hook
+omffile = tasklist_applet-C.omf
+sgml_ents = tasklist.sgml
+include $(top_srcdir)/sgmldocs.make
+dist-hook: app-dist-hook
+
