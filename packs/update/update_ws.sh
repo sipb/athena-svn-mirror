@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.24.2.2 1997-07-04 01:04:07 ghudson Exp $
+# $Id: update_ws.sh,v 1.24.2.3 1998-02-26 23:39:41 cfields Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -117,7 +117,12 @@ fi
 rm -f /var/athena/clusterinfo.bsh.update
 
 # Check if we're already in the middle of an update.
-if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
+case "$VERSION" in
+[0-9]*)
+	# If this field starts with a digit, we're running a proper
+	# release. Otherwise...
+	;;
+*)
 	if [ ! -f /var/tmp/update.check ]; then
 		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
 		touch /var/tmp/update.check
@@ -126,7 +131,8 @@ if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
 	echo "This system is in the middle of an update.  Please contact"
 	echo "Athena Hotline at x3-1410. Thank you. -Athena Operations"
 	exit 1
-fi
+	;;
+esac
 
 # Find out if the version in /srvd/.rvdinfo is newer than
 # /etc/athena/version.  Distinguish between major, minor, and patch
@@ -226,7 +232,7 @@ sgi)
 	fi
 esac
 
-# If this is a private workstations, make sure we can recreate the mkserv
+# If this is a private workstation, make sure we can recreate the mkserv
 # state of the machine after the update.
 if [ -d /var/server ] ; then
 	/srvd/usr/athena/bin/mkserv updatetest
@@ -237,9 +243,7 @@ if [ -d /var/server ] ; then
 	fi
 fi
 
-# On SGIs, make sure /install exists.  (This should hopefully go away if
-# SGIs are ever brought back to the normal /srvd vs. /os way of doing
-# things.)
+# On SGIs, make sure /install exists.
 case "$HOSTTYPE" in
 sgi)
 	if [ ! -n "$INSTLIB" ]; then
@@ -249,7 +253,8 @@ sgi)
 	fi
 
 	/bin/athena/attach -q -h -n -o hard $INSTLIB
-	if [ ! -d /install/install ]; then
+	if [ $? -ne 0 -o ! -d /install/install \
+		-a ! -d /install/selections ]; then
 		echo "Installation directory can't be found, aborting update."
 		exit 1
 	fi
