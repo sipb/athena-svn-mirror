@@ -175,12 +175,18 @@ MotifLibDir	=	-L/usr/dt/lib -Xlinker -R/usr/dt/lib
 /* Define these to use $(LIBSUFFIX) or not, absolute pathnames or not,
    depending on what you have installed.  */
 
-MotifWCLLib	=	-lWc
+#ifdef UseWclFromLocker
+/*For development builds, you can just say "IMAKE_DEFINES=-DUseWclFromLocker"*/
+MotifWCLInclude	=	-I/mit/wcl/include
+MotifWCLLibDir	=	-L/mit/wcl/lib
+#endif
+
+MotifWCLLib	=	$(MotifWCLLibDir) -lWc
 MotifUtilLib	=	-lMu
 
 CursesLib	=	-lcurses$(LIBSUFFIX) -ltermcap$(LIBSUFFIX)
 ComErrLib	=	-lcom_err$(LIBSUFFIX)
-MotifIncludes   =	$(MotifInclude)
+MotifIncludes   =	$(MotifInclude) $(MotifWCLInclude)
 MotifResLib	=	$(MotifLibDir) -lMrm
 MotifLib	=	$(MotifLibDir) -lXm
 MotifToolLib	=	 -lXt
