@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.8 1990-02-15 18:27:33 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.9 1990-04-25 16:26:43 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,8 +31,8 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 
 #define STOCK_DIR "stock_answers"
-#define BROWSER "/usr/athena/lib/olc/stock/browser"
-#define MAGIC  "/usr/athena/lib/olc/stock/MAGIC"
+#define BROWSER "/mit/olc-stock/browser"
+#define MAGIC  "/mit/olc-stock/MAGIC"
 
 /*
  * Function:  do_olcr_stock() allows a consultant to examine the
@@ -47,12 +47,12 @@ do_olc_stock(arguments)
       char **arguments;
 {
   REQUEST Request;
-  char file[NAME_SIZE]; /* Temporary file for text. */
-  char bfile[NAME_SIZE];     /* Name of browser file. */
-  struct stat statbuf;        /* Ptr. to file status buffer. */
-  char *topic;                /* Topic from daemon. */
-  char dtopic[TOPIC_SIZE];         /* default topic */
-  int status;                 /* Status returned by whatnow */
+  char file[NAME_SIZE];		/* Temporary file for text. */
+  char bfile[NAME_SIZE];	/* Name of browser file. */
+  struct stat statbuf;		/* Ptr. to file status buffer. */
+  char *topic;			/* Topic from daemon. */
+  char dtopic[TOPIC_SIZE];	/* default topic */
+  int status;			/* Status returned by whatnow */
   int find_topic=0;
   
   dtopic[0] = '\0';
@@ -60,8 +60,6 @@ do_olc_stock(arguments)
   if (stat(MAGIC, &statbuf) < 0) 
     {
       call_program("/bin/athena/attach","olc-stock");
-      if (stat(MAGIC, &statbuf) < 0)
-	call_program("/bin/athena/attach","olc-stock_backup");
       if (stat(MAGIC, &statbuf) < 0)
 	{
 	  fprintf(stderr,"Unable to attach olc-stock file system.\n");
@@ -71,7 +69,8 @@ do_olc_stock(arguments)
  
   OFillRequest(&Request);
 
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if(string_equiv(*arguments,"-t",2))
 	{
@@ -82,17 +81,18 @@ do_olc_stock(arguments)
               break;   
             }
 	  else
-	    strcpy(dtopic,*arguments);
+	    {
+	      strcpy(dtopic,*arguments);
+	      arguments++;
+	    }
 	  continue;
 	}
 
       arguments = handle_argument(arguments, &Request);
       if(arguments == (char **) NULL)   /* error */
 	return(ERROR);
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
     }
-    
+
   topic = &dtopic[0];
 
   if(find_topic)
@@ -107,8 +107,11 @@ do_olc_stock(arguments)
     }
 
   strcpy(bfile, STOCK_DIR);
-  strcat(bfile, "/");
-  strcat(bfile, topic);
+  if (topic[0] != NULL)  {
+    strcat(bfile, "/");
+    strcat(bfile, topic);
+  }
+
   make_temp_name(file);
   
   switch(fork()) 
@@ -185,5 +188,3 @@ do_olc_stock(arguments)
 
   return(status);
 }
-
-
