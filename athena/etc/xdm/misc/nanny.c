@@ -141,6 +141,36 @@ void clear_utmp(disp_state *ds)
    care about losing in this case. */
 }
 
+/* Clear the utmp entry for the console port, called when a console
+ * session ends.  Note that getty and login take care of initializing it.
+ */
+void clear_consutmp(disp_state *ds)
+{
+  struct utmpx consinfo;
+  struct utmpx *oldinfo;
+  
+  /* Initialize the utmpx entry data. */
+  memset(&consinfo, 0, sizeof(consinfo));
+  strncpy(consinfo.ut_user, NANNYNAME, sizeof(consinfo.ut_user));
+  strncpy(consinfo.ut_line, dpy_consline(ds->dpy), sizeof(consinfo.ut_line));
+  consinfo.ut_type = DEAD_PROCESS;
+  gettimeofday(&consinfo.ut_tv, NULL);
+
+  /* Position the utmpx file to the current (old) entry for the line.
+   * Copy the ID field, to ensure that the old entry is overwritten.
+   */
+  setutxent();
+  oldinfo = getutxline(&consinfo);
+  if (oldinfo) 
+    strncpy(consinfo.ut_id, oldinfo->ut_id, sizeof(consinfo.ut_id));
+  else if (debug > 3)
+    syslog(LOG_INFO, "Couldn't find console utmp entry");
+  pututxline(&consinfo);
+  endutxent();
+
+  updwtmpx(WTMPX_FILE, &consinfo);
+}
+
 char *do_login(char *uname, disp_state *ds)
 {
   char *tty = cons_name(ds->cs);
@@ -916,16 +946,23 @@ int main(int argc, char **argv)
 	case PC_SIGNAL:
 	  if (numc) /* then there are numc children signals */
 	    {
+	      int cons_session_end;
+
 	      /* Needed to detect and log when the console dies. */
 	      ds.consoleStatus = cons_status(ds.cs);
+
+	      cons_session_end = 0;
 
 	      sigprocmask(SIG_BLOCK, &mask, &omask);
 	      while (numc)
 		{
 		  if (cons_child(ds.cs, cstack[numc-1].pid,
 				 &cstack[numc-1].status))
-		    dpy_child(ds.dpy, cstack[numc-1].pid,
-			      &cstack[numc-1].status);
+		    {
+		      if (dpy_child(ds.dpy, cstack[numc-1].pid,
+				    &cstack[numc-1].status) == 0)
+			++cons_session_end;
+		    }
 		  numc--;
 		}
 	      sigprocmask(SIG_SETMASK, &omask, NULL);
@@ -949,6 +986,8 @@ int main(int argc, char **argv)
 		  break;
 		}
 
+	      if (cons_session_end)
+		clear_consutmp(&ds);
 	      if (dpy_status(ds.dpy) == DPY_NONE)
 		update_dpy(&ds);
 	    }

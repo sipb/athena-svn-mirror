@@ -16,5 +16,6 @@ int		dpy_startCons(dpy_state *);
 int		dpy_stopCons(dpy_state *);
 int		dpy_status(dpy_state *);
 int		dpy_child(dpy_state *, pid_t, void *);
+char *		dpy_consline(dpy_state *);
 
 #endif /* _DPY_H_ */

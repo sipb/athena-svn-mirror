@@ -14,7 +14,7 @@
 #define WS "windowsystem "
 #define KILLALL "/etc/killall "
 
-#define CONSDEV "/dev/tport"
+#define CONSLINE "tport"
 #define XDM "axdm"
 #define XDMCMD "/etc/athena/" XDM " -config /etc/athena/login/xdm/xdm-config"
 extern int debug;
@@ -143,7 +143,7 @@ int dpy_startCons(dpy_state *dpy)
   if ((dpy->login = fork()) == 0)
     {
       /* remove DISPLAY... */
-      execl("/sbin/getty", "getty", "tport", "co_9600", 0);
+      execl("/sbin/getty", "getty", CONSLINE, "co_9600", 0);
       exit(1);
     }
 
@@ -163,6 +163,12 @@ int dpy_stopCons(dpy_state *dpy)
      to take any cleanup signals, so we can't usefully kill it off
      to get rid of the user under it. */
   return 1;
+}
+
+/* Return the name of the console tty line in /dev */
+char *dpy_consline(dpy_state *dpy)
+{
+  return CONSLINE;
 }
 
 int dpy_status(dpy_state *dpy)
