@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,13 +16,13 @@
 #include <sys/socket.h>
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zlocate_c[] = "$Id: zlocate.c,v 1.9 1991-06-30 00:11:46 jfc Exp $";
+static char rcsid_zlocate_c[] = "$Id: zlocate.c,v 1.10 1993-09-24 21:28:10 probe Exp $";
 #endif
 
 int numusers=0, numleft=0, parallel=0, oneline=0;
 char *whoami;
 
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
 void
 #endif
 timeout(sig)
