@@ -21,7 +21,7 @@ mhstore-store-application/msword: %m%P.doc
 mhshow-show-application/postscript: %l/usr/athena/libexec/show-postscript '%f'
 mhstore-store-application/postscript: %m%P.ps
 mhshow-show-application/pdf: %l/usr/athena/libexec/show-pdf '%f'
-mhshow-show--application/mac-binhex40: %l/usr/athena/libexec/show-binhex '%f'
+mhshow-show-application/mac-binhex40: %l/usr/athena/libexec/show-binhex '%f'
 mhstore-store-application/mac-binhex40: | /usr/athena/libexec/store-binhex %m%P
 mhshow-show-application: %l/usr/athena/libexec/show-application '%s' '%F' '%a'
 mhstore-store-application/x-framemaker: %m%P.doc
