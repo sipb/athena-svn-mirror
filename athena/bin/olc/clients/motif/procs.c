@@ -9,16 +9,27 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.6 1989-12-01 20:59:23 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.7 1991-03-06 15:34:19 lwvanels Exp $";
 #endif
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/param.h>
+
+#include <Xm/List.h>
+#include <Xm/Text.h>
+#include <Xm/ScrollBar.h>
 
 #include "xolc.h"
 #include "data.h"
 #include "buttons.h"
+
+#define STANDARD_CURSOR	SetCursor(0)
+#define WAIT_CURSOR	SetCursor(1)
 
 char current_topic[TOPIC_SIZE] = "unknown";
 
@@ -33,7 +44,7 @@ void Help(w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   char message[BUF_SIZE];
-  char help_filename[NAME_LENGTH * 2];
+  char help_filename[MAXPATHLEN];
 
   (void) strcpy(help_filename, HELP_PATH);
 
@@ -63,7 +74,7 @@ void olc_new_ques (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
   int status;
 
   if (fill_request(&Request) != SUCCESS)
@@ -87,7 +98,7 @@ void olc_new_ques (w, tag, callback_data)
     {
       unlink(file);
       if (MuGetBoolean("Unable to get list of topics.\nWould you like to try again?\n\nIf not, you will exit this program.", "Yes", "No",
-		       NULL, TRUE, Mu_Popup_Center))
+		       NULL, TRUE))
 	goto list_try_again;
     }
   else
@@ -116,7 +127,7 @@ void olc_send_newq (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  Widget wl[2];
+  char buf[BUFSIZ];
 
   if (fill_request(&Request) != SUCCESS)
     {
@@ -126,17 +137,19 @@ void olc_send_newq (w, tag, callback_data)
 
 #ifdef TEST
   XtSetSensitive(w_send_newq_btn, FALSE);
-#endif TEST
+#endif
   MuSetWaitCursor(toplevel);
 
   if ((current_topic[0] == '\0') &&
       (strlen(XmTextGetString(w_newq_scrl)) == 0))
     {
-      MuErrorSync("You must select a topic for your question from the list in the\ntop half of this window.  Simply click on the line that most\nclosely matches the topic of your question.\n\nYou must also type in the text of your question in the area in\nthe bottom half of this window.  Move the mouse into that\narea and type your question.");
+      strcpy(buf,"You must select a topic for your question from the list in the\ntop half of this window.  Simply click on the line that most\nclosely matches the topic of your question.\n\n");
+      strcat(buf,"You must also type in the text of your question in the area in\nthe bottom half of this window.  Move the mouse into that\narea and type your question.");
+      MuErrorSync(buf);
       MuSetStandardCursor(toplevel);
 #ifdef TEST
       XtSetSensitive(w_send_newq_btn, TRUE);
-#endif TEST
+#endif
       return;
     }
   
@@ -146,7 +159,7 @@ void olc_send_newq (w, tag, callback_data)
       MuSetStandardCursor(toplevel);
 #ifdef TEST
       XtSetSensitive(w_send_newq_btn, TRUE);
-#endif TEST
+#endif
       return;
     }
   
@@ -156,7 +169,7 @@ void olc_send_newq (w, tag, callback_data)
       MuSetStandardCursor(toplevel);
 #ifdef TEST
       XtSetSensitive(w_send_newq_btn, TRUE);
-#endif TEST
+#endif
       return;
     }
 
@@ -315,11 +328,14 @@ olc_status()
 olc_replay()
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
   int status;
   struct stat statbuf;
   char *log;
   int fd;
+  Arg Args[2];
+  Widget w,sb;
+  int sb_value, sb_slider_size, sb_inc, sb_pinc, sb_max;
 
   if (fill_request(&Request) != SUCCESS)
     {
@@ -367,6 +383,14 @@ olc_replay()
 
       log[statbuf.st_size] = '\0';
       XmTextSetString(w_replay_scrl, log);
+      w = XtParent(w_replay_scrl);
+      XtSetArg(Args[0],XmNverticalScrollBar, &sb);
+      XtGetValues(w,Args,1);
+      XmScrollBarGetValues(sb,&sb_value,&sb_slider_size,&sb_inc,&sb_pinc);
+      XtSetArg(Args[0],XmNmaximum, &sb_max);
+      XtGetValues(sb,Args,1);
+      XmScrollBarSetValues(sb,sb_max,sb_slider_size,sb_inc,sb_pinc,TRUE);
+
       close(fd);
       free(log);
       
@@ -403,15 +427,11 @@ void olc_done (w, tag, callback_data)
 {
   REQUEST Request;
   int status;
-  Widget wl[2];
-
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
 
 #ifdef TEST
   XtSetSensitive(w_done_btn, FALSE);
-#endif TEST
-  MuSetCursors(wl, 2, XC_watch);
+#endif
+  WAIT_CURSOR;
   if (fill_request(&Request) != SUCCESS)
     {
       MuError("done: Unable to fill request struct.");
@@ -419,10 +439,10 @@ void olc_done (w, tag, callback_data)
   else {
     status = x_done(&Request);
   }
-  MuSetCursors(wl, 2, XC_top_left_arrow);
+  STANDARD_CURSOR;
 #ifdef TEST
   XtSetSensitive(w_done_btn, TRUE);
-#endif TEST
+#endif
 }
   
 void olc_cancel (w, tag, callback_data)
@@ -432,15 +452,11 @@ void olc_cancel (w, tag, callback_data)
 {
   REQUEST Request;
   int status;
-  Widget wl[2];
-
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
 
 #ifdef TEST
   XtSetSensitive(w_cancel_btn, FALSE);
-#endif TEST
-  MuSetCursors(wl, 2, XC_watch);
+#endif
+  WAIT_CURSOR;
   if (fill_request(&Request) != SUCCESS)
     {
       MuError("cancel: Unable to fill request struct.");
@@ -448,10 +464,10 @@ void olc_cancel (w, tag, callback_data)
   else {
     status = x_cancel(&Request);
   }
-  MuSetCursors(wl, 2, XC_top_left_arrow);
+  STANDARD_CURSOR;
 #ifdef TEST
   XtSetSensitive(w_cancel_btn, TRUE);
-#endif TEST
+#endif
 }
   
 void olc_savelog (w, tag, callback_data)
@@ -463,15 +479,11 @@ void olc_savelog (w, tag, callback_data)
   char file[BUF_SIZE];
   REQUEST Request;
   int status;
-  Widget wl[2];
-
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
 
   homedir = (char *) getenv("HOME");
   sprintf(file, "%s/%s.%s", homedir, "OLC.log", current_topic);
   if (MuGetString("Please enter the name of a file to save the log in:\n",
-		  file, BUF_SIZE, NULL, Mu_Popup_Center))
+		  file, BUF_SIZE, NULL))
     {
       if (fill_request(&Request) != SUCCESS)
 	{
@@ -479,9 +491,9 @@ void olc_savelog (w, tag, callback_data)
 	  return;
 	}
 
-      MuSetCursors(wl, 2, XC_watch);
+      WAIT_CURSOR;
       status = OReplayLog(&Request,file);
-      MuSetCursors(wl, 2, XC_top_left_arrow);
+      STANDARD_CURSOR;
 
       switch (status)
 	{
@@ -524,13 +536,13 @@ void olc_motd (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
 
   if (! XtIsManaged(w_motd_dlg) )
     {
 #ifdef TEST
       XtSetSensitive(w_motd_btn, FALSE);
-#endif TEST
+#endif
       
       if (fill_request(&Request) != SUCCESS)
 	{
@@ -547,7 +559,7 @@ void olc_motd (w, tag, callback_data)
 	  goto motd_try_again;
 	case ERROR:
 	  exit(ERROR);
-	deafult:
+	default:
 	  break;
 	}
 
@@ -562,22 +574,18 @@ void olc_update (w, tag, callback_data)
      caddr_t *tag;
      XmAnyCallbackStruct *callback_data;
 {
-  Widget wl[2];
-
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
 
 #ifdef TEST
   XtSetSensitive(w_update_btn, FALSE);
-#endif TEST
-  MuSetCursors(wl, 2, XC_watch);
+#endif
+  WAIT_CURSOR;
   olc_status();
 /*  olc_topic(); */
   olc_replay();
-  MuSetCursors(wl, 2, XC_top_left_arrow);
+  STANDARD_CURSOR;
 #ifdef TEST
   XtSetSensitive(w_update_btn, TRUE);
-#endif TEST
+#endif
 }
   
 void olc_help (w, tag, callback_data)
@@ -588,12 +596,8 @@ void olc_help (w, tag, callback_data)
   Arg arg;
   struct stat statbuf;
   char *help;
-  char help_filename[NAME_LENGTH * 2];
+  char help_filename[MAXPATHLEN];
   int fd;
-  Widget wl[2];
-
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
 
   (void) strcpy(help_filename, HELP_PATH);
 
@@ -615,16 +619,16 @@ void olc_help (w, tag, callback_data)
     {
 #ifdef TEST
       XtSetSensitive(w_help_btn, FALSE);
-#endif TEST
-      MuSetCursors(wl, 2, XC_watch);
+#endif
+      WAIT_CURSOR;
 
       if (stat(help_filename, &statbuf))
 	{
 	  MuError("help: unable to stat help file.");
 #ifdef TEST
 	  XtSetSensitive(w_help_btn, TRUE);
-#endif TEST
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+#endif
+	  STANDARD_CURSOR;
 	  return;
 	}
 
@@ -635,8 +639,8 @@ void olc_help (w, tag, callback_data)
 	  MuError("help: unable to malloc space for help.");
 #ifdef TEST
 	  XtSetSensitive(w_help_btn, TRUE);
-#endif TEST
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+#endif
+	  STANDARD_CURSOR;
 	  return;
 	}
 
@@ -646,8 +650,8 @@ void olc_help (w, tag, callback_data)
 	  MuError("help: unable to open help file for read.");
 #ifdef TEST
 	  XtSetSensitive(w_help_btn, TRUE);
-#endif TEST	
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+#endif
+	  STANDARD_CURSOR;
 	  return;
 	}
 
@@ -657,8 +661,8 @@ void olc_help (w, tag, callback_data)
 	  MuError("help: unable to read help correctly.");
 #ifdef TEST
 	  XtSetSensitive(w_help_btn, TRUE);
-#endif TEST
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+#endif
+	  STANDARD_CURSOR;
 	  return;
 	}
 
@@ -671,8 +675,8 @@ void olc_help (w, tag, callback_data)
       free(help);
 #ifdef TEST
       XtSetSensitive(w_help_btn, TRUE);
-#endif TEST
-      MuSetCursors(wl, 2, XC_top_left_arrow);
+#endif
+      STANDARD_CURSOR;
     }
 }
 
@@ -683,21 +687,21 @@ void olc_quit (w, tag, callback_data)
 {
 #ifdef TEST
   XtSetSensitive(w_quit_btn, FALSE);
-#endif TEST
+#endif
   if (has_question)
     {
-      if (MuGetBoolean(QUIT_MESSAGE, "Yes", "No",
-		       NULL, FALSE, Mu_Popup_Center))
+      if (MuGetBoolean(QUIT_MESSAGE, "Yes", "No", NULL, FALSE))
 	exit(0);
     }
   else
     {
-      if (MuGetBoolean("You have not yet entered a question.\n\nAre you sure you want to quit OLC?", "Yes", "No", NULL, FALSE, Mu_Popup_Center))
+      if (MuGetBoolean("You have not yet entered a question.\n\nAre you sure you want to quit OLC?",
+		       "Yes", "No", NULL, FALSE))
 	exit(0);
     }
 #ifdef TEST
   XtSetSensitive(w_quit_btn, TRUE);
-#endif TEST
+#endif
 }
 
 
@@ -711,12 +715,12 @@ void dlg_ok (w, tag, callback_data)
     case MOTD_BTN:
 #ifdef TEST
       XtSetSensitive(w_motd_btn, TRUE);
-#endif TEST
+#endif
       break;
     case HELP_BTN:
 #ifdef TEST
       XtSetSensitive(w_help_btn, TRUE);
-#endif TEST
+#endif
       break;
     }
 }
@@ -740,7 +744,7 @@ void olc_send (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   XtSetSensitive(w_send_btn, FALSE);
-  CalcXandY(Mu_Popup_Bottom, w_send_form);
+/*  CalcXandY(Mu_Popup_Bottom, w_send_form); */
   XtManageChild(w_send_form);
 }
   
@@ -759,22 +763,18 @@ void olc_send_msg (w, tag, callback_data)
 {
   REQUEST Request;
   int status;
-  Widget wl[2];
 
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
-
-  MuSetCursors(wl, 2, XC_watch);
+  WAIT_CURSOR;
 
   if(fill_request(&Request) != SUCCESS)
     {
       MuError("olc_send_msg: Unable to fill request struct.");
-      MuSetCursors(wl, 2, XC_top_left_arrow);
+      STANDARD_CURSOR;
       return;
     }
 
   status = x_reply(&Request, XmTextGetString(w_send_scrl));
-  MuSetCursors(wl, 2, XC_top_left_arrow);
+  STANDARD_CURSOR;
 
   if (status == SUCCESS)
     XmTextSetString(w_send_scrl, "");   
