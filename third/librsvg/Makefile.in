@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -66,13 +66,8 @@ CPP = @CPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
-GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GLIB_REQUIRED = @GLIB_REQUIRED@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_LIBS = @GTK_LIBS@
-GTK_VERSION = @GTK_VERSION@
 LIBART_REQUIRED = @LIBART_REQUIRED@
 LIBRSVG_CFLAGS = @LIBRSVG_CFLAGS@
 LIBRSVG_LIBS = @LIBRSVG_LIBS@
@@ -91,17 +86,12 @@ PANGOFT2_REQUIRED = @PANGOFT2_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POPT_LIBS = @POPT_LIBS@
 POPT_REQUIRED = @POPT_REQUIRED@
-QUERYLOADERS = @QUERYLOADERS@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
 
-SUBDIRS = . gtk-engine gdk-pixbuf-loader
-
-bin_PROGRAMS = rsvg
-
-noinst_PROGRAMS = test-performance test-display
+noinst_PROGRAMS = test-rsvg test-performance
 
 EXTRA_DIST =  	COPYING.LIB 	librsvg.spec.in 	librsvg-2.0.pc.in
 
@@ -117,27 +107,22 @@ librsvgincdir = $(includedir)/librsvg-2/librsvg
 librsvginc_HEADERS =  	rsvg.h 	librsvg-features.h
 
 
-INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	$(LIBRSVG_CFLAGS) 	$(GTK_CFLAGS)		-DG_LOG_DOMAIN=\"librsvg\" 	-DG_DISABLE_DEPRECATED 	-DPANGO_DISABLE_DEPRECATED 	-DGDK_DISABLE_DEPRECATED 	-DGDK_PIXBUF_DISABLE_DEPRECATED 	-DGTK_DISABLE_DEPRECATED 	-DDATADIR="\"$(datadir)\""
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	$(LIBRSVG_CFLAGS) 	-DG_LOG_DOMAIN=\"librsvg\" 	-DG_DISABLE_DEPRECATED 	-DPANGO_DISABLE_DEPRECATED 	-DGDK_DISABLE_DEPRECATED 	-DGDK_PIXBUF_DISABLE_DEPRECATED 	-DGTK_DISABLE_DEPRECATED 	-DDATADIR="\"$(datadir)\""
 
 
 DEPS = $(top_builddir)/librsvg-2.la
 LDADDS = $(top_builddir)/librsvg-2.la 	$(LIBRSVG_LIBS) 	$(POPT_LIBS)
 
 
-rsvg_SOURCES = test-rsvg.c
-rsvg_LDFLAGS = 
-rsvg_DEPENDENCIES = $(DEPS)
-rsvg_LDADD = $(LDADDS) -lm
+test_rsvg_SOURCES = test-rsvg.c
+test_rsvg_LDFLAGS = 
+test_rsvg_DEPENDENCIES = $(DEPS)
+test_rsvg_LDADD = $(LDADDS) -lm
 
 test_performance_SOURCES = test-performance.c
 test_performance_LDFLAGS = 
 test_performance_DEPENDENCIES = $(DEPS)
 test_performance_LDADD = $(LDADDS) -lm
-
-test_display_SOURCES = test-display.c
-test_display_LDFLAGS = 
-test_display_DEPENDENCIES = $(DEPS)
-test_display_LDADD = $(LDADDS) $(GTK_LIBS) -lm
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = librsvg-2.0.pc
@@ -155,13 +140,11 @@ LIBS = @LIBS@
 librsvg_2_la_LIBADD = 
 librsvg_2_la_OBJECTS =  librsvg-features.lo rsvg-bpath-util.lo \
 rsvg-css.lo rsvg-defs.lo rsvg-paint-server.lo rsvg-path.lo rsvg.lo
-bin_PROGRAMS =  rsvg$(EXEEXT)
-noinst_PROGRAMS =  test-performance$(EXEEXT) test-display$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
+noinst_PROGRAMS =  test-rsvg$(EXEEXT) test-performance$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS)
 
-rsvg_OBJECTS =  test-rsvg.$(OBJEXT)
+test_rsvg_OBJECTS =  test-rsvg.$(OBJEXT)
 test_performance_OBJECTS =  test-performance.$(OBJEXT)
-test_display_OBJECTS =  test-display.$(OBJEXT)
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -182,8 +165,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(librsvg_2_la_SOURCES) $(rsvg_SOURCES) $(test_performance_SOURCES) $(test_display_SOURCES)
-OBJECTS = $(librsvg_2_la_OBJECTS) $(rsvg_OBJECTS) $(test_performance_OBJECTS) $(test_display_OBJECTS)
+SOURCES = $(librsvg_2_la_SOURCES) $(test_rsvg_SOURCES) $(test_performance_SOURCES)
+OBJECTS = $(librsvg_2_la_OBJECTS) $(test_rsvg_OBJECTS) $(test_performance_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -309,31 +292,6 @@ maintainer-clean-libtool:
 librsvg-2.la: $(librsvg_2_la_OBJECTS) $(librsvg_2_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(librsvg_2_la_LDFLAGS) $(librsvg_2_la_OBJECTS) $(librsvg_2_la_LIBADD) $(LIBS)
 
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
-
 mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
@@ -343,17 +301,13 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-rsvg$(EXEEXT): $(rsvg_OBJECTS) $(rsvg_DEPENDENCIES)
-	@rm -f rsvg$(EXEEXT)
-	$(LINK) $(rsvg_LDFLAGS) $(rsvg_OBJECTS) $(rsvg_LDADD) $(LIBS)
+test-rsvg$(EXEEXT): $(test_rsvg_OBJECTS) $(test_rsvg_DEPENDENCIES)
+	@rm -f test-rsvg$(EXEEXT)
+	$(LINK) $(test_rsvg_LDFLAGS) $(test_rsvg_OBJECTS) $(test_rsvg_LDADD) $(LIBS)
 
 test-performance$(EXEEXT): $(test_performance_OBJECTS) $(test_performance_DEPENDENCIES)
 	@rm -f test-performance$(EXEEXT)
 	$(LINK) $(test_performance_LDFLAGS) $(test_performance_OBJECTS) $(test_performance_LDADD) $(LIBS)
-
-test-display$(EXEEXT): $(test_display_OBJECTS) $(test_display_DEPENDENCIES)
-	@rm -f test-display$(EXEEXT)
-	$(LINK) $(test_display_LDFLAGS) $(test_display_OBJECTS) $(test_display_LDADD) $(LIBS)
 
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
@@ -389,61 +343,6 @@ uninstall-librsvgincHEADERS:
 	  rm -f $(DESTDIR)$(librsvgincdir)/$$p; \
 	done
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-
-@SET_MAKE@
-
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
-	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
-	done; \
-	test "$$dot_seen" = "no" && rev=". $$rev"; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -454,14 +353,9 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-   if test "$$subdir" = .; then :; else \
-	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-   fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -526,16 +420,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(SUBDIRS); do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    chmod 777 $(distdir)/$$subdir; \
-	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 art_render_mask.lo art_render_mask.o : art_render_mask.c \
 	art_render_mask.h
@@ -552,43 +436,41 @@ rsvg-path.lo rsvg-path.o : rsvg-path.c config.h rsvg-path.h \
 	rsvg-bpath-util.h
 rsvg.lo rsvg.o : rsvg.c config.h rsvg.h rsvg-bpath-util.h rsvg-path.h \
 	rsvg-css.h rsvg-paint-server.h rsvg-defs.h
-test-display.o: test-display.c config.h rsvg.h
 test-ft-gtk.o: test-ft-gtk.c art_render_mask.h rsvg.h rsvg-ft.h
 test-ft.o: test-ft.c art_render_mask.h rsvg.h rsvg-ft.h
 test-performance.o: test-performance.c config.h rsvg.h
 test-rsvg.o: test-rsvg.c config.h rsvg.h
 
 info-am:
-info: info-recursive
+info: info-am
 dvi-am:
-dvi: dvi-recursive
+dvi: dvi-am
 check-am: all-am
-check: check-recursive
+check: check-am
 installcheck-am:
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 all-recursive-am: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
-install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
-install-exec: install-exec-recursive
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
 
 install-data-am: install-pkgconfigDATA install-librsvgincHEADERS
-install-data: install-data-recursive
+install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-recursive
-uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-pkgconfigDATA uninstall-librsvgincHEADERS
-uninstall: uninstall-recursive
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
+		uninstall-librsvgincHEADERS
+uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS) config.h
-all-redirect: all-recursive-am
+all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs: installdirs-recursive
-installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(librsvgincdir)
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgconfigdir) \
+		$(DESTDIR)$(librsvgincdir)
 
 
 mostlyclean-generic:
@@ -602,36 +484,34 @@ distclean-generic:
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
 		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-binPROGRAMS mostlyclean-noinstPROGRAMS \
-		mostlyclean-tags mostlyclean-generic
+		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-noinstPROGRAMS clean-tags \
-		clean-generic mostlyclean-am
+		clean-noinstPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
 
-clean: clean-recursive
+clean: clean-am
 
 distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS \
-		distclean-noinstPROGRAMS distclean-tags \
-		distclean-generic clean-am
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
-distclean: distclean-recursive
+distclean: distclean-am
 	-rm -f config.status
 
 maintainer-clean-am:  maintainer-clean-hdr \
 		maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 	-rm -f config.status
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
@@ -640,26 +520,20 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
-clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
-uninstall-pkgconfigDATA install-pkgconfigDATA \
-uninstall-librsvgincHEADERS install-librsvgincHEADERS \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
-maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs-am \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-pkgconfigDATA \
+install-pkgconfigDATA uninstall-librsvgincHEADERS \
+install-librsvgincHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck all-recursive-am install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-tests: rsvg
+tests: test-rsvg
 
 dist-hook: librsvg.spec
 	cp librsvg.spec $(distdir)

@@ -1,23 +1,12 @@
-TODO:
-
- * Clipping paths
-
- * Masks
-
- * Fixing image transforms
-
- * Image effects/filters
-
- * Fill patterns
 
  * Add actual GError support in the loader, rather then the g_warnings
    that we currently use.
 
- * Allow affine's other than scaling (we do this already, da?)
-
-On the back burner:
+Post 2.0
 
  * Consider storing the paths so that the file can be rerendered
    multiple times without reparsing.
+
+ * Allow affine's other than scaling.
 
  * Make error messages translatable (requires adding gettext).
