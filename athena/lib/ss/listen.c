@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Id: listen.c,v 1.11 1999-06-04 17:35:28 ghudson Exp $
+ *	$Id: listen.c,v 1.12 1999-07-12 20:35:56 mwhitson Exp $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -20,12 +20,13 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-static const char rcsid[] = "$Id: listen.c,v 1.11 1999-06-04 17:35:28 ghudson Exp $";
+static const char rcsid[] = "$Id: listen.c,v 1.12 1999-07-12 20:35:56 mwhitson Exp $";
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;
 
-static void listen_int_handler()
+static void listen_int_handler(sig)
+    int sig;
 {
     putc('\n', stdout);
     longjmp(listen_jmpb, 1);
