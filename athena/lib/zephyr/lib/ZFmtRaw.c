@@ -4,24 +4,22 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v $
- *	$Author: jtkohl $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.6 1988-06-23 10:29:22 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.7 1991-06-20 14:29:34 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRaw.c,v 1.6 1988-06-23 10:29:22 jtkohl Exp $";
-#endif lint
-
-#include <zephyr/mit-copyright.h>
+static char rcsid_ZFormatRawNotice_c[] = "$Id: ZFmtRaw.c,v 1.7 1991-06-20 14:29:34 jfc Exp $";
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZFormatRawNotice(notice, buffer, ret_len)
-    ZNotice_t *notice;
+    register ZNotice_t *notice;
     char **buffer;
     int *ret_len;
 {
@@ -35,6 +33,7 @@ Code_t ZFormatRawNotice(notice, buffer, ret_len)
 
     *ret_len = hdrlen+notice->z_message_len;
 
+    /* *ret_len is never 0, don't have to worry about malloc(0) */
     if (!(*buffer = malloc((unsigned) *ret_len)))
 	return (ENOMEM);
 

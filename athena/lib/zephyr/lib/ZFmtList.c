@@ -4,34 +4,33 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v $
- *	$Author: raeburn $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.10 1991-03-15 11:09:27 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.11 1991-06-20 14:31:36 jfc Exp $ */
 
 #ifndef lint
 static char rcsid_ZFormatNoticeList_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.10 1991-03-15 11:09:27 raeburn Exp $";
+    "$Id: ZFmtList.c,v 1.11 1991-06-20 14:31:36 jfc Exp $";
 #endif
-
-#include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
 Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len, 
 			 cert_routine)
     ZNotice_t *notice;
-    char **list;
+    register char **list;
     int nitems;
     char **buffer;
     int *ret_len;
     Z_AuthProc cert_routine;
 {
     char header[Z_MAXHEADERLEN];
-    int hdrlen, i, size;
+    register int i;
+    int hdrlen, size;
     char *ptr;
     Code_t retval;
 
@@ -44,7 +43,8 @@ Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len,
 	size += strlen(list[i])+1;
 
     *ret_len = hdrlen+size;
-    
+
+    /* *ret_len can never be zero here, no need to worry about malloc(0). */
     if (!(*buffer = malloc((unsigned)*ret_len)))
 	return (ENOMEM);
 

@@ -4,19 +4,18 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v $
- *	$Author: raeburn $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Id: ZMkAuth.c,v 1.11 1990-09-04 09:56:48 raeburn Exp $ */
+/* $Id: ZMkAuth.c,v 1.12 1991-06-20 14:31:12 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.11 1990-09-04 09:56:48 raeburn Exp $";
-#endif lint
+static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.12 1991-06-20 14:31:12 jfc Exp $";
+#endif
 
-#include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr_internal.h>
 #ifdef KERBEROS
 #include "krb_err.h"
@@ -32,7 +31,7 @@ Code_t ZResetAuthentication () {
 }
 
 Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
-    ZNotice_t *notice;
+    register ZNotice_t *notice;
     char *buffer;
     int buffer_len;
     int *len;
@@ -59,6 +58,7 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     notice->z_auth = 1;
     notice->z_authent_len = authent.length;
     notice->z_ascii_authent = (char *)malloc((unsigned)authent.length*3);
+    /* zero length authent is an error, so malloc(0) is not a problem */
     if (!notice->z_ascii_authent)
 	return (ENOMEM);
     if ((retval = ZMakeAscii(notice->z_ascii_authent, 
