@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.7 1990-11-30 16:49:39 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.8 1990-12-04 15:25:07 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -197,6 +197,23 @@ xlogin.Geometry: 		580x325+205+75
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	<Key>F1:	callbackACT(*lmenuEntry1) \n\
+	<Key>F2:	callbackACT(*lmenuEntry2) \n\
+	<Key>F3:	callbackACT(*lmenuEntry3) \n\
+	<Key>F4:	callbackACT(*lmenuEntry4) \n\
+	<Key>F5:	callbackACT(*lmenuEntry5) \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
 	<Key>Return:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: white) \
@@ -260,6 +277,23 @@ xlogin.Geometry: 		580x325+205+75
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	<Key>F1:	callbackACT(*lmenuEntry1) \n\
+	<Key>F2:	callbackACT(*lmenuEntry2) \n\
+	<Key>F3:	callbackACT(*lmenuEntry3) \n\
+	<Key>F4:	callbackACT(*lmenuEntry4) \n\
+	<Key>F5:	callbackACT(*lmenuEntry5) \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
 	<Key>Return:	WcSetValueACT(this.borderColor: white) \
 			login() \n\
@@ -358,7 +392,7 @@ xlogin.Geometry: 		580x325+205+75
 				omenuEntry4, omenuEntry5, omenuEntry6, \
 				omenuEntry6a, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
-				omenuEntry10, omenuEntry11
+				omenuEntry10, omenuEntry10a, omenuEntry11
 
 *menuLine.wcClass:		smeLineObjectClass
 *omenuEntry1.wcClass:		smeBSBObjectClass
@@ -372,6 +406,7 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry8.wcClass:		smeBSBObjectClass
 *omenuEntry9.wcClass:		smeBSBObjectClass
 *omenuEntry10.wcClass:		smeBSBObjectClass
+*omenuEntry10a.wcClass:		smeBSBObjectClass
 *omenuEntry11.wcClass:		smeBSBObjectClass
 
 *omenuEntry1.label:		Information
@@ -398,6 +433,8 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry9.callback:		runCB(/usr/athena/lib/login/moira)
 *omenuEntry10.label:		Electronic Ombudsman (Lucy)
 *omenuEntry10.callback:		runCB(/usr/athena/lib/login/lucy)
+*omenuEntry10a.label:		Display Console Window
+*omenuEntry10a.callback:	signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
 *omenuEntry11.callback:		WcExitCB(3)
 
@@ -451,6 +488,18 @@ xlogin.Geometry: 		580x325+205+75
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
 	<Key>Return:	WcPopdownACT(*getSessionShell) \
 			setCorrectFocus(*name_input) \
@@ -535,4 +584,3 @@ xlogin.Geometry: 		580x325+205+75
 *continue.wcClass:		commandWidgetClass
 *continue.callback:		WcPopdownCB(*warningShell), \
 				resetCB()
-
