@@ -16,7 +16,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.57 2001-02-27 04:57:13 zacheiss Exp $";
+static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.58 2001-03-01 00:47:05 zacheiss Exp $";
 #endif
 #endif
 
@@ -164,26 +164,24 @@ add_subscriptions(who, subs, notice, server)
 		&& subs->dest.recip->string[0] != '@') {
 		syslog(LOG_WARNING, "subscr unauth %s recipient %s",
 		       sender->string, subs->dest.recip->string);
-		free_subscriptions(subs);
-		free_string(sender);
-		return ZSRV_CLASSRESTRICTED;
+		free_subscription(subs); /* free this one - denied */
+		continue; /* the for loop */
 	    }
 	    acl = class_get_acl(subs->dest.classname);
 	    if (acl && !realm) {
 		if (!access_check(sender->string, acl, SUBSCRIBE)) {
 		    syslog(LOG_WARNING, "subscr unauth %s class %s",
 			   sender->string, subs->dest.classname->string);
-		    free_subscriptions(subs);
-		    free_string(sender);
-		    return ZSRV_CLASSRESTRICTED;
+		    free_subscription(subs); /* free this one - denied */
+		    continue; /* the for loop */
 		}
 		if (wildcard_instance == subs->dest.inst) {
 		    if (!access_check(sender->string, acl, INSTWILD)) {
 			syslog(LOG_WARNING,
 			       "subscr unauth %s class %s wild inst",
 			       sender->string, subs->dest.classname->string);
-			free_subscriptions(subs);
-			return ZSRV_CLASSRESTRICTED;
+			free_subscription(subs); /* free this one - denied */
+			continue; /* the for loop */
 		    }
 		}
 	    }
@@ -194,6 +192,8 @@ add_subscriptions(who, subs, notice, server)
 		free_subscriptions(subs);
 		free_string(sender);
 		return(retval);
+	    } else {
+	      free_subscription(subs); /* free this one, will get from ADD */
 	    }
 	} else {
 	  retval = triplet_register(who, &subs->dest, NULL);
