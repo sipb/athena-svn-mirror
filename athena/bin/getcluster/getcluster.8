@@ -40,6 +40,18 @@ the maintainer of an auto-update machine must update manually to
 testing releases, but the machine will update automatically to
 production releases.
 
+If any cluster entries were discarded because they had versions higher
+than the current workstation version (either because AUTOUPDATE was
+not set or because they were marked with the t flag),
+.I Getcluster
+will output a variable definition for NEW_TESTING_RELEASE,
+NEW_PRODUCTION_RELEASE, or both, giving the highest discarded version
+with the t flag set and without the t flag set, respectively.  This
+allows
+.I reactivate
+to display a console message indicating the presence of a new testing
+or production release (or, in some cases, both).
+
 If the -d flag is present,
 .I Getcluster
 will ignore the hostname argument and instead read lines from standard
@@ -47,8 +59,9 @@ input, treating each line as if it were an entry in the Hesiod
 database for the host's cluster information.
 
 .I Getcluster
-is usually invoked from save_cluster_info(8), which places its output
-in the files
+is usually invoked from
+.I save_cluster_info (8),
+which places its output in the files
 .I /etc/athena/clusterinfo
 and
 .I /etc/athena/clusterinfo.bsh
