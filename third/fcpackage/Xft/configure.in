@@ -43,9 +43,9 @@ AC_PATH_X
 PACKAGE_VERSION=2.0.0
 
 # Set major version
-PACKAGE_MAJOR=`echo $PACKAGE_VERSION | awk -F . '{ print $1 }'`
-PACKAGE_MINOR=`echo $PACKAGE_VERSION | awk -F . '{ print $2 }'`
-PACKAGE_REVISION=`echo $PACKAGE_VERSION | awk -F . '{ print $3 }'`
+PACKAGE_MAJOR=`echo $PACKAGE_VERSION | awk -F. '{ print $1 }'`
+PACKAGE_MINOR=`echo $PACKAGE_VERSION | awk -F. '{ print $2 }'`
+PACKAGE_REVISION=`echo $PACKAGE_VERSION | awk -F. '{ print $3 }'`
 AC_SUBST(PACKAGE_VERSION)
 AC_SUBST(PACKAGE_MAJOR)
 AC_SUBST(PACKAGE_MINOR)
