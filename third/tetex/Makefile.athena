@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 2000-05-31 19:08:27 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 2000-05-31 19:25:58 ghudson Exp $
 
 TEXMFDIR=/usr/athena/share/texmf
 TEXCONFIG=${DESTDIR}/usr/athena/bin/texconfig
@@ -37,7 +37,7 @@ install:
 	rm -f $$SRVD${TEXMFDIR}/dvips/base/psfonts.map
 	ln -s ../config/psfonts.map $$SRVD${TEXMFDIR}/dvips/base/psfonts.map
 	cd src && ${MAKE} install DESTDIR="$$SRVD"
-	TEXMFMAIN=${DESTDIR}${TEXMFDIR} ${TEXCONFIG} dvips paper letter
-	TEXMFMAIN=${DESTDIR}${TEXMFDIR} ${TEXCONFIG} xdvi us
-	TEXMFMAIN=${DESTDIR}${TEXMFDIR} ${DESTDIR}/usr/athena/bin/allcm
-	TEXMFMAIN=${DESTDIR}${TEXMFDIR} ${DESTDIR}/usr/athena/bin/allec
+	TEXMFMAIN=$$SRVD${TEXMFDIR} ${TEXCONFIG} dvips paper letter
+	TEXMFMAIN=$$SRVD${TEXMFDIR} ${TEXCONFIG} xdvi us
+	TEXMFMAIN=$$SRVD${TEXMFDIR} $$SRVD/usr/athena/bin/allcm
+	TEXMFMAIN=$$SRVD${TEXMFDIR} $$SRVD/usr/athena/bin/allec
