@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.21 1998-05-13 00:20:46 ghudson Exp $
+ * $Id: from.c,v 1.22 1998-06-17 18:01:36 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: ghudson $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.21 1998-05-13 00:20:46 ghudson Exp $";
+static char *rcsid = "$Id: from.c,v 1.22 1998-06-17 18:01:36 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -454,6 +454,7 @@ getmail_unix(user)
 	register char *name;
 	char *getlogin();
 	char *maildrop;
+	char *maildir;
 
 	if (sender != NULL)
 	  for (name = sender; *name; name++)
@@ -469,13 +470,17 @@ getmail_unix(user)
 		return -1;
 	    }
 	} else {
-	    if (chdir(MAILDIR) < 0) {
-		unixmail = 0;
-		return -1;
+	    maildir = "/var/spool/mail";
+	    if (chdir(maildir) < 0) {
+		maildir = "/var/mail";
+		if (chdir(maildir) < 0) {
+		    unixmail = 0;
+		    return -1;
+		}
 	    }
 	    if (freopen(user, "r", stdin) == NULL) {
 		if (!popmail)
-		    fprintf(stderr, "Can't open /usr/spool/mail/%s.\n", user);
+		    fprintf(stderr, "Can't open %s/%s.\n", maildir, user);
 		unixmail = 0;
 		return -1;
 	    }
