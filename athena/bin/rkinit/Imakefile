@@ -1,27 +1,27 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/Imakefile,v 1.1 1989-11-13 16:22:46 qjb Exp $
+# $Id: Imakefile,v 1.2 1990-07-17 13:46:33 qjb Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/Imakefile,v $
 # $Author: qjb $
 #
-# Makefile for all of rkinit
+# Imakefile for all of rkinit
 #
 
 DESTDIR= 
 DIRS= include lib rkinitd rkinit man
 
-all: depend
+all:: depend
 	for i in $(DIRS); do \
 		(cd $$i; make ${MFLAGS} all); done
 
-depend:
+install:: all
 	for i in $(DIRS); do \
-		(cd $$i; make ${MFLAGS} depend); done
+		(cd $$i; make ${MFLAGS} RANLIB=$(RANLIB) ATHLIBDIR=$(ATHLIBDIR) DESTDIR=$(DESTDIR) install); done
 
-install: all
-	for i in $(DIRS); do \
-		(cd $$i; make ${MFLAGS} DESTDIR=$(DESTDIR) install); done
-
-clean:
-	rm -f core *~; \
+clean::
+	rm -f core *~ *.bak; \
 	for i in $(DIRS); do \
 		(cd $$i; make ${MFLAGS} clean); done
+
+depend::
+	for i in $(DIRS); do \
+		(cd $$i; make ${MFLAGS} depend); done
