@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: request.c,v 1.1.1.2 2002-02-03 04:25:09 ghudson Exp $ */
+/* $Id: request.c,v 1.1.1.2.4.1 2003-07-03 15:45:48 ghudson Exp $ */
 
 #include <config.h>
 
@@ -429,6 +429,9 @@ req_send(dns_request_t *request, isc_task_t *task, isc_sockaddr_t *address) {
 	isc_buffer_usedregion(request->query, &r);
 	result = isc_socket_sendto(socket, &r, task, req_senddone,
 				  request, address, NULL);
+	/* We need to ignore NetUnreachable messages here */
+	if (result == ISC_R_NETUNREACH)
+		result = ISC_R_SUCCESS;
 	if (result == ISC_R_SUCCESS)
 		request->flags |= DNS_REQUEST_F_SENDING;
 	return (result);

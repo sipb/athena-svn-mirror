@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: socket.c,v 1.1.1.3 2002-06-07 05:28:59 ghudson Exp $ */
+/* $Id: socket.c,v 1.1.1.3.2.1 2003-07-03 15:45:36 ghudson Exp $ */
 
 #include <config.h>
 
@@ -2619,6 +2619,10 @@ socket_send(isc_socket_t *sock, isc_socketevent_t *dev, isc_task_t *task,
 		}
 
 	case DOIO_HARD:
+		if (dev->result == ISC_R_NETUNREACH)
+			result = ISC_R_NETUNREACH;
+
+		/* FALLTHROUGH */
 	case DOIO_SUCCESS:
 		if ((flags & ISC_SOCKFLAG_IMMEDIATE) == 0)
 			send_senddone_event(sock, &dev);

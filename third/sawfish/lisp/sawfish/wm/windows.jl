@@ -1,6 +1,6 @@
 #| windows.jl -- miscellaneous window mgmt functions
 
-   $Id: windows.jl,v 1.1.1.4 2003-01-05 00:33:29 ghudson Exp $
+   $Id: windows.jl,v 1.1.1.4.2.1 2003-07-03 15:45:50 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -320,7 +320,7 @@ If HINTS is non-nil, then it is the size hints structure to use. Otherwise
 	    (t x))))
 
   (define (adjust-position-for-gravity/y w grav y #!key inverse)
-    (let* ((tl-off (window-frame-offset w))
+    (let* ((tl-off (cdr (window-frame-offset w)))
 	   (br-off (- (cdr (window-frame-dimensions w))
 		      (cdr (window-dimensions w))))
 	   (sign (if inverse -1 +1)))
