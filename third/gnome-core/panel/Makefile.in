@@ -249,7 +249,10 @@ sys_DATA = gnome-panel-properties.desktop
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
 
-athenadir = $(datadir)/gnome/athena/
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = info.png logout-icon-menu.png
+
+athenadir = $(datadir)/gnome/athena
 athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
 athena_SCRIPTS = mail-script browser-script terminal-script editor-script
 AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
@@ -297,7 +300,7 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(athena_DATA) $(confexec_DATA) $(desk_DATA) $(hints_DATA) \
-$(panelgnorba_DATA) $(soundlist_DATA) $(sys_DATA)
+$(panelgnorba_DATA) $(pixmap_DATA) $(soundlist_DATA) $(sys_DATA)
 
 HEADERS =  $(libpanel_appletinclude_HEADERS) \
 $(libpanel_statusinclude_HEADERS)
@@ -556,6 +559,25 @@ uninstall-panelgnorbaDATA:
 	  rm -f $(DESTDIR)$(panelgnorbadir)/$$p; \
 	done
 
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
+	@list='$(pixmap_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pixmap_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
+	done
+
 install-soundlistDATA: $(soundlist_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(soundlistdir)
@@ -752,8 +774,9 @@ install-exec: install-exec-recursive
 
 install-data-am: install-athenaSCRIPTS install-athenaDATA \
 		install-deskDATA install-hintsDATA \
-		install-panelgnorbaDATA install-soundlistDATA \
-		install-sysDATA install-libpanel_appletincludeHEADERS \
+		install-panelgnorbaDATA install-pixmapDATA \
+		install-soundlistDATA install-sysDATA \
+		install-libpanel_appletincludeHEADERS \
 		install-libpanel_statusincludeHEADERS \
 		install-data-local
 install-data: install-data-recursive
@@ -765,7 +788,8 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
 		uninstall-athenaSCRIPTS uninstall-athenaDATA \
 		uninstall-confexecDATA uninstall-deskDATA \
 		uninstall-hintsDATA uninstall-panelgnorbaDATA \
-		uninstall-soundlistDATA uninstall-sysDATA \
+		uninstall-pixmapDATA uninstall-soundlistDATA \
+		uninstall-sysDATA \
 		uninstall-libpanel_appletincludeHEADERS \
 		uninstall-libpanel_statusincludeHEADERS
 uninstall: uninstall-recursive
@@ -780,7 +804,8 @@ installdirs-am:
 		$(DESTDIR)$(athenadir) $(DESTDIR)$(athenadir) \
 		$(DESTDIR)$(confexecdir) $(DESTDIR)$(deskdir) \
 		$(DESTDIR)$(hintsdir) $(DESTDIR)$(panelgnorbadir) \
-		$(DESTDIR)$(soundlistdir) $(DESTDIR)$(sysdir) \
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(soundlistdir) \
+		$(DESTDIR)$(sysdir) \
 		$(DESTDIR)$(libpanel_appletincludedir) \
 		$(DESTDIR)$(libpanel_statusincludedir)
 
@@ -840,8 +865,9 @@ uninstall-athenaSCRIPTS install-athenaSCRIPTS uninstall-athenaDATA \
 install-athenaDATA uninstall-confexecDATA install-confexecDATA \
 uninstall-deskDATA install-deskDATA uninstall-hintsDATA \
 install-hintsDATA uninstall-panelgnorbaDATA install-panelgnorbaDATA \
-uninstall-soundlistDATA install-soundlistDATA uninstall-sysDATA \
-install-sysDATA uninstall-libpanel_appletincludeHEADERS \
+uninstall-pixmapDATA install-pixmapDATA uninstall-soundlistDATA \
+install-soundlistDATA uninstall-sysDATA install-sysDATA \
+uninstall-libpanel_appletincludeHEADERS \
 install-libpanel_appletincludeHEADERS \
 uninstall-libpanel_statusincludeHEADERS \
 install-libpanel_statusincludeHEADERS install-data-recursive \

@@ -264,6 +264,9 @@ sys_DATA = gnome-panel-properties.desktop
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
 
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = info.png logout-icon-menu.png
+
 athenadir = $(datadir)/gnome/athena
 athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
 athena_SCRIPTS = mail-script browser-script terminal-script editor-script
