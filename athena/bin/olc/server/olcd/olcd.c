@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.33 1991-01-01 14:32:35 lwvanels Exp $
+ *	$Id: olcd.c,v 1.34 1991-01-03 16:30:17 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.33 1991-01-01 14:32:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.34 1991-01-03 16:30:17 lwvanels Exp $";
 #endif
 #endif
 
@@ -72,9 +72,8 @@ char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
 
 #ifdef KERBEROS
 static long ticket_time = 0L;	/* Timer on kerberos ticket */
-extern char SERVER_REALM[];
-extern char *DFLT_SERVER_REALM;
-extern char *TICKET_FILE;
+char SERVER_REALM[REALM_SZ];
+char K_INSTANCEbuf[INST_SZ];
 extern int krb_ap_req_debug;
 #endif /* KERBEROS */
 
