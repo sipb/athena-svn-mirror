@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.63 2003-05-13 22:05:46 ghudson Exp $
+# $Id: update_ws.sh,v 1.64 2003-07-15 05:42:00 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -320,58 +320,6 @@ sun4)
   ;;
 esac
 
-# Ensure that we have enough disk space on the IRIX root partition
-# for an upgrade to 9.1.
-# We also require a minimum of 64MB of memory on all SGI's.
-case $HOSTTYPE in
-sgi)
-  case `uname -r` in
-  6.2)
-    rootneeded=150
-    ;;
-  6.3)
-    rootneeded=90
-    ;;
-  6.5)
-    case "`uname -R | awk '{ print $2; }'`" in
-    6.5.3m)
-      rootneeded=50
-      ;;
-    *)
-      case $version in
-      9.1.*)
-	rootneeded=0
-	;;
-      *)
-	rootneeded=20
-	;;
-      esac
-      ;;
-    esac
-    ;;
-  *)
-    rootneeded=0
-    ;;
-  esac
-
-  rootfree=`df -k / | awk '$NF == "/" { print int($5 / 1024); }'`
-  if [ "$rootfree" -lt "$rootneeded" ]; then
-    echo "Root partition low on space (less than ${rootneeded}MB); not"
-    echo "performing update.  Please reinstall or clean local files off root"
-    echo "partition."
-    logger -t "$HOST" -p user.notice / too full to take update
-    failupdate
-  fi
-
-  if [ 64 -gt "`hinv -t memory | awk '{ print $4; }'`" ]; then
-    echo "Insufficient memory (less than 64MB); not performing update.  Please"
-    echo "add more memory or reinstall."
-    logger -t "$HOST" -p user.notice insufficient memory to take update
-    failupdate
-  fi
-  ;;
-esac
-
 # If this is a private workstation, make sure we can recreate the mkserv
 # state of the machine after the update.
 if [ -d /var/server ] ; then
@@ -399,9 +347,6 @@ if [ Auto = "$method" -a reactivate = "$why" ]; then
   fi
 
   sleep 2
-  if [ sgi = "$HOSTTYPE" ]; then
-   exec 1>/dev/tport 2>&1
-  fi
 fi
 
 # Everything is all set; do the actual update.
