@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.2 1987-07-01 04:31:43 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.3 1987-07-01 18:26:50 jtkohl Exp $";
 static char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 static char version[] = "Zephyr Server (Prerelease) 0.1";
 #endif SABER
@@ -431,7 +431,11 @@ struct in_addr *addr;
 static void
 usage()
 {
+#ifdef DEBUG
 	fprintf(stderr,"Usage: %s [-d]\n",programname);
+#else
+	fprintf(stderr,"Usage: %s\n",programname);
+#endif DEBUG
 	exit(2);
 }
 
