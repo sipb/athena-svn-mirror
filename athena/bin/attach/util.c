@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.3 1990-04-19 12:53:48 jfc Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.4 1990-04-21 17:57:15 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -898,6 +898,21 @@ int is_an_owner(at,uid)
 			return 1;
 	return 0;
 }
+
+#ifdef ZEPHYR
+int wants_to_subscribe(at, uid, zero_too)
+	uid_t uid;
+	struct _attachtab *at;
+	int zero_too;		/* also true if root ? */
+{
+	register int i;
+
+	for(i = 0;i < at->nowners;i++)
+		if((zero_too && at->owners[i] == 0) || at->owners[i] == uid)
+			return 1;
+	return 0;
+}
+#endif
 
 int del_an_owner(at,uid)
         uid_t uid;
