@@ -15,4 +15,5 @@ error_code PCerrNoData,		"no data to be sent"
 error_code PCerrWriteFailed,	"write failed"
 error_code PCerrReadFailed,	"read failed"
 error_code PCerrAcceptFailed,	"accept failed"
+error_code PCerrSelectFailed,	"select failed"
 end
