@@ -1,7 +1,7 @@
 /* 
- * $Id: rkinit_private.h,v 1.5 1994-03-30 15:52:19 cfields Exp $
+ * $Id: rkinit_private.h,v 1.6 1998-05-07 16:57:26 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v $
- * $Author: cfields $
+ * $Author: ghudson $
  *
  * Header file for rkinit library and server internal use
  */
@@ -10,7 +10,7 @@
 #define __RKINIT_PRIVATE_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.5 1994-03-30 15:52:19 cfields Exp $";
+static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.6 1998-05-07 16:57:26 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <sys/types.h>
@@ -24,7 +24,7 @@ static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.5 1994-03-30 15
 
 /* Lowest and highest versions supported */
 #define RKINIT_LVERSION 3
-#define RKINIT_HVERSION 3
+#define RKINIT_HVERSION 4
 
 /* Service to be used; port number to fall back on if service isn't found */
 #define SERVENT "rkinit"
