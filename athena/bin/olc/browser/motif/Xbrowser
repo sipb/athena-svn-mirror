@@ -56,7 +56,6 @@ Xbrowser.wcChildren:		main
 *top_form.wcClassName:		XmForm
 *top_form.wcChildren:		top_lbl, up, list_frame
 *bottom_form.wcClassName:	XmForm
-*bottom_form.wcChildren:	bottom_lbl
 *bottom_form.wcChildren:	bottom_lbl, save, help, quit, text_frame
 *top_lbl.wcClassName:		XmLabelGadget
 *up.wcClassName:		XmPushButton
@@ -93,7 +92,9 @@ Xbrowser.wcChildren:		main
 *help_dlg.wcCallback:		createCB(help)
 *help_dlg.okCallback:		WcSetSensitiveCB(*help)
 *list.wcCallback:		createCB(list)
+*list_frame.wcCallback:		createCB(list_frame)
 *text.wcCallback:		createCB(text)
+*text_frame.wcCallback:		createCB(text_frame)
 *bottom_lbl.wcCallback:		createCB(bottom_lbl)
 *top_lbl.wcCallback:		createCB(top_lbl)
 !
@@ -131,11 +132,11 @@ Xbrowser.wcChildren:		main
 *up.rightAttachment:		ATTACH_FORM
 !
 *list_frame.topAttachment:	ATTACH_WIDGET
-*list_frame.topWidget:		top_lbl
+!*list_frame.topWidget:		top_lbl
 *list_frame.leftAttachment:	ATTACH_FORM
 *list_frame.rightAttachment:	ATTACH_FORM
 *list_frame.bottomAttachment:	ATTACH_WIDGET
-*list_frame.bottomWidget:	up
+!*list_frame.bottomWidget:	up
 !
 *list.topAttachment:		ATTACH_FORM
 *list.leftAttachment:		ATTACH_FORM
@@ -150,18 +151,20 @@ Xbrowser.wcChildren:		main
 *save.bottomAttachment:		ATTACH_FORM
 !
 *help.rightAttachment:		ATTACH_FORM
-*help.bottomAttachment:		ATTACH_FORM
+*help.topAttachment:		ATTACH_FORM
 !
 *quit.bottomAttachment:		ATTACH_FORM
-*quit.rightAttachment:		ATTACH_WIDGET
-*quit.rightWidget:		help
+!*quit.rightAttachment:		ATTACH_WIDGET
+!*quit.rightWidget:		help
+*quit.rightAttachment:		ATTACH_FORM
 !
-*text_frame.topAttachment:	ATTACH_WIDGET
-*text_frame.topWidget:		bottom_lbl
 *text_frame.leftAttachment:	ATTACH_FORM
 *text_frame.rightAttachment:	ATTACH_FORM
+! These two never did work (till I hardcoded them into callbacks.c)
+*text_frame.topAttachment:	ATTACH_WIDGET
+! *text_frame.topWidget:	bottom_lbl
 *text_frame.bottomAttachment:	ATTACH_WIDGET
-*text_frame.bottomWidget:	save
+! *text_frame.bottomWidget:	save
 !
 *text.editable:			FALSE
 *text.editMode:			MULTI_LINE_EDIT
