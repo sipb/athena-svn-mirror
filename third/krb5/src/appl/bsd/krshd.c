@@ -738,10 +738,18 @@ void doit(f, fromp)
 		       fromp->sin_family);
     if (hp){
 	hostname = malloc(strlen(hp->h_name) + 1);
+	if (hostname == NULL) {
+	    perror("malloc");
+	    exit(1);
+	}
 	strcpy(hostname,hp->h_name);
     }
     else {
 	hostname = malloc(strlen((char *)inet_ntoa(fromp->sin_addr)) + 1);
+	if (hostname == NULL) {
+	    perror("malloc");
+	    exit(1);
+	}
 	strcpy(hostname,(char *)inet_ntoa(fromp->sin_addr));
     }
 
