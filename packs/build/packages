@@ -1,4 +1,4 @@
-# $Id: packages,v 1.42 1998-07-23 16:30:20 danw Exp $
+# $Id: packages,v 1.43 1998-07-23 16:36:44 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -26,6 +26,7 @@ third/krb5
 athena/etc/synctree
 athena/lib/Mu
 third/wcl
+third/tcp_wrappers
 third/tcsh
 third/emacs
 third/tex
@@ -52,6 +53,7 @@ third/xntp
 third/bind
 third/kpasswd
 third/ksrvutil
+third/inetd
 athena/lib/acl
 athena/lib/zephyr
 athena/lib/neos
