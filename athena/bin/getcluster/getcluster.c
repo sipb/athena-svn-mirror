@@ -1,6 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <hesiod.h>
+
+extern int optind;
+
+static void usage(void);
+static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
+		     int bourneshell);
+static void upper(char *v);
+static int vercmp(const char *v1, const char *v2);
 
 /*
  * Make a hesiod cluster query
@@ -13,69 +22,152 @@
  * and return an exit status.
  */
 
-main(argc, argv)
-char *argv[];
+int main(int argc, char **argv)
 {
-  register char **hp;
-  int bourneshell = 0;
-  char myself[80];
+  char **hp, *envp, buf[256], **hpp;
+  int debug = 0, bourneshell = 0, autoupdate = 0, ch;
 
-  if (argc < 3 || argc > 4)
-    {
-      fprintf(stderr, "usage: getcluster [-b] hostname version\n");
-      exit(-1);
+  while ((ch = getopt(argc, argv, "bd")) != -1) {
+    switch (ch) {
+    case 'd':
+      debug = 1;
+      break;
+    case 'b':
+      bourneshell = 1;
+      break;
+    default:
+      usage();
     }
-  if (argc == 4 && strcmp(argv[1], "-b") == 0)
-    {
-      bourneshell++;
-      argv++;
-    }
+  }
+  argc -= optind;
+  argv += optind;
+
+  if (argc != 2)
+    usage();
+
+  envp = getenv("AUTOUPDATE");
+  if (envp && strcmp(envp, "true") == 0)
+    autoupdate = 1;
 	
-  hp = hes_resolve(argv[1], "cluster");
+  if (debug) {
+    hp = (char **) malloc(100 * sizeof(char *));
+    hpp = hp;
+    while (fgets(buf, sizeof(buf), stdin) != NULL)
+      {
+	*hpp = malloc(strlen(buf) + 1);
+	strcpy(*hpp, buf);
+	(*hpp)[strlen(buf) - 1] = 0;
+	hpp++;
+      }
+    *hpp = NULL;
+    shellenv(hp, argv[1], autoupdate, bourneshell);
+    return(0);
+  }
+
+  hp = hes_resolve(argv[0], "cluster");
   if (hp == NULL)
     {
       fprintf(stderr, "No Hesiod information available for %s\n", argv[1]);
-      exit(-1);
+      return(1);
     }
-  shellenv(hp, bourneshell, argv[2]);
+  shellenv(hp, argv[1], autoupdate, bourneshell);
+
+  return(0);
 }
 
-shellenv(hp, bourneshell, version)
-char **hp;
-int bourneshell;
-char *version;
+static void usage()
 {
-  char var[80], val[80], vers[80], **hp_save=hp;
-  int specific = 0;
+  fprintf(stderr, "Usage: getcluster [-b] [-d] hostname version\n");
+  exit(1);
+}
 
-  while (specific < 2)
+/* Cluster information will come in entries of the form:
+ *		variable value version flags
+ * There may be multiple entries for the same variable, but not multiple
+ * entries with the same variable and version.  There may be at most one
+ * entry for a given variable that does not list a version.
+ *
+ * If autoupdate is false, output variable definitions for entries which
+ * have a version matching the workstation major and minor version.
+ *
+ * If autoupdate is true, output a variable definition for each variable,
+ * using the entry with the highest version, BUT discarding entries which:
+ *		- have 't' listed in the flags string (for "testing"), and
+ *		- do not match the current workstation major and minor
+ *		  version
+ *
+ * If we would not otherwise output a definition for a variable, and
+ * there is an entry with no version number, output a definition using
+ * that entry. */
+static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
+		     int bourneshell)
+{
+  int *seen, count, i, j;
+  char var[80], val[80], vers[80], flags[80], compvar[80], compval[80];
+  char compvers[80], defaultval[80];
+
+  count = 0;
+  while (hp[count])
+    count++;
+
+  seen = (int *) calloc(count, sizeof(int));
+  if (seen == NULL)
+    exit(1);
+
+  /* The outer loop is for the purpose of "considering each variable."  We skip
+   * entries for variables which had a previous entry. */
+  for (i = 0; i < count; i++)
     {
-      while(*hp)
+      if (seen[i])
+	continue;
+      sscanf(hp[i], "%s", var);
+
+      /* Consider each entry for this variable (including hp[i]). */
+      strcpy(vers, "0.0");
+      *defaultval = 0;
+      for (j = i; j < count; j++)
 	{
-	  vers[0] = '\0';
-	  sscanf(*hp++, "%s %s %s", var, val, vers);
-	  if ((specific && !vers[0]) || (!specific && vers[0])
-	      || (vers[0] != '\0' && vercmp(vers, version)))
+	  *compvers = *flags = 0;
+	  sscanf(hp[j], "%s %s %s %s", compvar, compval, compvers, flags);
+	  if (strcmp(compvar, var) != 0)
 	    continue;
+	  seen[j] = 1;
+
+	  /* If there's no version, keep this as the default value in case we
+	   * don't come up with anything else to print.  If there is a version,
+	   * discard it if it doesn't match the current workstation version and
+	   * (a) we're not autoupdate, or (b) it's a testing version.  If we
+	   * do consider the entry, and its version is greater than the current
+	   * best version we have, update the current best version and its
+	   * value. */
+	  if (!*compvers)
+	    {
+	      strcpy(defaultval, compval);
+	    }
+	  else if (((autoupdate && !strchr(flags, 't')) ||
+		    (vercmp(compvers, ws_version) == 0)) &&
+		   vercmp(compvers, vers) >= 0)
+	    {
+	      strcpy(val, compval);
+	      strcpy(vers, compvers);
+	    }
+	}
+      if (*vers != '0' || *defaultval)
+	{
+	  if (*vers == '0')
+	    strcpy(val, defaultval);
 	  upper(var);
 	  if (bourneshell)
 	    printf("%s=%s ; export %s\n", var, val, var);
 	  else
 	    printf("setenv %s %s\n", var, val);
 	}
+    }
 
-      specific++;
-      hp = hp_save;
-    }
-  if (ferror(stdout))
-    {
-      ftruncate(fileno(stdout), 0L);
-      exit(-1);
-    }
+    free(seen);
 }
 
-upper(v)
-register char *v;
+static void upper(char *v)
 {
   while(*v)
     {
@@ -84,14 +176,11 @@ register char *v;
     }
 }
 
-/*
- * Compare as many characters in the version as Hesiod provides, and
- * no more. This allows "8.0" to mean "attach these packs if you're
- * running any version of 8.0" and "8.0A" to mean "attach these packs
- * only if you're running 8.0A."
- */
-int vercmp(hesvers, ourvers)
-     char *hesvers, *ourvers;
+static int vercmp(const char *v1, const char *v2)
 {
-  return strncmp(hesvers, ourvers, strlen(hesvers));
+  int major1 = 0, minor1 = 0, major2 =0, minor2 = 0;
+
+  sscanf(v1, "%d.%d", &major1, &minor1);
+  sscanf(v2, "%d.%d", &major2, &minor2);
+  return((major1 != major2) ? (major1 - major2) : (minor1 - minor2));
 }
