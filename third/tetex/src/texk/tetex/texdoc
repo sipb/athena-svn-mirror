@@ -28,8 +28,8 @@ unset RUNNING_BSH
 # override or add to them by setting environment variables).
 : ${TEXDOCVIEW_dvi='xdvi %s &'}
 : ${TEXDOCVIEW_pdf='acroread %s &'}
-: ${TEXDOCVIEW_ps='ghostview %s &'}
-: ${TEXDOCVIEW_html='netscape -remote openURL'"'(%s)'"' 2>/dev/null || netscape %s &'}
+: ${TEXDOCVIEW_ps='gv %s &'}
+: ${TEXDOCVIEW_html='htmlview %s'}
 : ${TEXDOCVIEW_txt="${PAGER-more} %s"}
 : ${TEXDOCVIEW_="${PAGER-more} %s"} # no extension, default to pager
 
