@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2000-03-31 00:15:57 miki Exp $
+# $Id: Makefile,v 1.8 2000-03-31 15:59:57 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
@@ -55,7 +55,7 @@ install:
 	rm -f ${DESTDIR}${RCS}/K41rpc
 	ln -s ../init.d/rpc ${DESTDIR}${RCS}/K41rpc
 	rm -f ${DESTDIR}${RC0}/K41rpc
-	ln -s ../init.d/rpc ${DESTDIR}${RCS}/K41rpc
+	ln -s ../init.d/rpc ${DESTDIR}${RC0}/K41rpc
 	rm -f ${DESTDIR}${RC1}/K41rpc
 	ln -s ../init.d/rpc ${DESTDIR}${RC1}/K41rpc
 	rm -f ${DESTDIR}${RC2}/S71rpc
