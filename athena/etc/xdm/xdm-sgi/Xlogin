@@ -48,14 +48,17 @@ if [ -x /etc/athena/xlogin ] ; then
 	# time comparison and counter.
 	while true; do
 		sleep 10 &
-		sleeper=$!	
-		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+		sleeper=$!
+		opts="-config /etc/athena/login -display :0.0"
+		opts="$opts -fp /usr/andrew/X11fonts/"
+		opts="$opts,/usr/athena/lib/X11/fonts/misc/"
+		if /etc/athena/xlogin $opts;
 			then exit 0
 		fi
-		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+		if /etc/athena/xlogin $opts;
 			then exit 0
 		fi
-		if /etc/athena/xlogin -config /etc/athena/login -display :0.0;
+		if /etc/athena/xlogin $opts;
 			then exit 0
 		fi
 		if kill -0 $sleeper 2>/dev/null ;
