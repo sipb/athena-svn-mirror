@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.26 1997-12-31 22:36:00 danw Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.27 1998-02-25 22:27:23 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -49,11 +49,7 @@ int *num1, *num2;
      
      *array1 = (char **) realloc((char *) *array1, (unsigned)
 				 (sizeof(char *) * (*num1 + *num2)));
-#ifdef MALLOC_0_RETURNS_NULL
      if ((! *array1) && (*num1 + *num2))
-#else
-     if (! *array1)
-#endif
      {
 	  set_error(errno);
 	  error("realloc");
@@ -224,13 +220,6 @@ int options;
      
      if (options & RECURS) {
 	  return_files = (char **) Malloc(0);
-#ifndef MALLOC_0_RETURNS_NULL
-	  if (! return_files) {
-	       set_error(errno);
-	       error("Malloc");
-	       return error_code;
-	  }
-#endif
 	  num_return_files = 0;
 
 	  for (i = 0; i < num_matched_files; i++) {
@@ -434,16 +423,6 @@ Boolean match_undeleted, match_deleted;
 	  *base = '\0';
 
      *found = (char **) Malloc(0);
-#ifndef MALLOC_0_RETURNS_NULL
-     if (! *found) {
-	  set_error(errno);
-	  error("Malloc");
-#ifdef PATTERN_DEBUG
-	  fprintf(stderr, "do_match: return 1.\n");
-#endif
-	  return error_code;
-     }
-#endif
      *num_found = 0;
      
      dirp = Opendir(base);
@@ -775,13 +754,6 @@ int options;
      /* start: */
      
      *found = (char **) Malloc(0);
-#ifndef MALLOC_0_RETURNS_NULL
-     if (! *found) {
-	  set_error(errno);
-	  error("Malloc");
-	  return error_code;
-     }
-#endif
      *num_found = 0;
      strcpy(base, name);
 

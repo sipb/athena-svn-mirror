@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.21 1997-12-31 22:35:59 danw Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.22 1998-02-25 22:27:22 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -365,11 +365,7 @@ int *number;
      *number -= offset;
      files = (char **) realloc((char *) files,
 			       (unsigned) (sizeof(char *) * *number));
-#ifdef MALLOC_0_RETURNS_NULL
      if ((! files) && *number)
-#else
-     if (! files)
-#endif
      {
 	  set_error(errno);
 	  error("realloc");

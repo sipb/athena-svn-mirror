@@ -4,7 +4,7 @@
  *     For copying and distribution information, see the file
  *     "mit-copying.h".
  *
- *     $Id: Imakefile,v 1.19 1997-11-22 19:23:40 ghudson Exp $
+ *     $Id: Imakefile,v 1.20 1998-02-25 22:27:21 ghudson Exp $
  */
 
 /*
@@ -13,15 +13,7 @@
  * blocks taken up by the file, add -DUSE_BLOCKS to the DEFINES
  * variable below.  If you don't know whether or not to define it,
  * run "make block-test".
- * 
- * If you are using a system where malloc(0) returns 0 even when it
- * succeeds, then set MALLOC below to -DMALLOC_0_RETURNS_NULL.  If you
- * don't know whether or not to define it, run "make malloc-test".
  */
-
-#ifdef _IBMR2
-OSDEFS=		-DMALLOC_0_RETURNS_NULL -DPOSIX
-#endif
 
 INSTALLDIR=	$(ATHBINDIR)
 TMPDIR=		/tmp
@@ -73,7 +65,7 @@ MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
 
 ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(MANS)\
-		$(ETSRCS) block-test.sh malloc-test.c
+		$(ETSRCS) block-test.sh
 ARCHIVEDIRS= 	man1
 
 DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
@@ -131,8 +123,3 @@ patch: $(ARCHIVE)
 
 block-test: block-test.sh
 	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . ./block-test.sh
-
-malloc-test: malloc-test.c
-	@$(CC) -o malloc-test malloc-test.c
-	@./malloc-test
-	@rm malloc-test

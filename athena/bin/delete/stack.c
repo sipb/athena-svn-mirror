@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.11 1997-12-31 22:36:01 danw Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.12 1998-02-25 22:27:24 ghudson Exp $";
 #endif
 
 #include <sys/types.h>
@@ -60,11 +60,7 @@ int op, bytes;
 	       stack = (caddr_t) (stack ? realloc((char *) stack,
 						  (unsigned) size) :
 				  Malloc((unsigned) size));
-#ifdef MALLOC_0_RETURNS_NULL
 	       if ((! stack) && size)
-#else
-	       if (! stack)
-#endif
 	       {
 		    size = count = 0;
 		    set_error(errno);
@@ -113,11 +109,7 @@ int op, bytes;
 	       if (newsize < size) {
 		    size = newsize;
 		    stack = (caddr_t) realloc((char *) stack, (unsigned) size);
-#ifdef MALLOC_0_RETURNS_NULL
 		    if ((! stack) && size)
-#else
-		    if (! stack)
-#endif
 	            {
 			 set_error(errno);
 			 error("realloc");

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v $
- * $Author: danw $
+ * $Author: ghudson $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.26 1997-12-31 22:36:01 danw Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.27 1998-02-25 22:27:24 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -258,11 +258,7 @@ int num;
      int retval;
      
      filelist = (listrec *) Malloc((unsigned) (sizeof(listrec) * num));
-#ifdef MALLOC_0_RETURNS_NULL
      if ((! filelist) && num)
-#else
-     if (! filelist)
-#endif
      {
 	  set_error(errno);
 	  error("process_files");
@@ -482,11 +478,7 @@ int *number;
      *number -= offset;
      files = (listrec *) realloc((char *) files,
 				 (unsigned) (sizeof(listrec) * *number));
-#ifdef MALLOC_0_RETURNS_NULL
      if ((! files) && *number)
-#else
-     if (! files)
-#endif
      {
 	  set_error(errno);
 	  error("realloc");
