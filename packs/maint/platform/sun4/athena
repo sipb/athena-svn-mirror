@@ -128,6 +128,7 @@ EOF
 		cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
 		cp -p /srvd/etc/inetd.conf /etc/inetd.conf
 		cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
+		cp -p /srvd/etc/minor_perm /etc/minor_perm
 		cp -p /srvd/etc/passwd.std /etc/passwd.local
 		cp -p /etc/passwd.local /etc/passwd
 		cp -p /srvd/etc/shadow.std /etc/shadow.local
