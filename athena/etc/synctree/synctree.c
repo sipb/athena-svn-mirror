@@ -2,7 +2,12 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef SOLARIS
+#undef POSIX
+#include "/usr/ucbinclude/sys/dir.h"
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <sys/time.h>
