@@ -22,6 +22,13 @@ if [ "$TRACKOS" = true ]; then
 	# Bring this architecture's /platform directory local.
 	rm -rf "/platform/$SUNPLATFORM"
 	cp -rp "/os/platform/$SUNPLATFORM" "/platform/$SUNPLATFORM"
+	if [ sun4u = "$SUNPLATFORM" ]; then
+		rm -rf /platform/SUNW,Ultra-250 /platform/SUNW,Ultra-4
+		rm -rf /platform/SUNW,Ultra-Enterpris*
+		cp -rp /os/platform/SUNW,Ultra-250 /platform
+		cp -rp /os/platform/SUNW,Ultra-4 /platform
+		cp -rp /os/platform/SUNW,Ultra-Enterpris* /platform
+	fi
 fi
 
 track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
