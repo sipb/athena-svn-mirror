@@ -22,12 +22,20 @@
  * POSIXJOBS	This system supports the optional IEEE Std 1003.1-1988 (POSIX)
  *		job control facilities.
  */
-#undef POSIXJOBS
+#ifdef mips
+# define POSIXJOBS
+#else
+# undef POSIXJOBS
+#endif
 
 /*
  * POSIXSIGS	Use the POSIX signal facilities to emulate BSD signals.
  */
-#undef POSIXSIGS
+#ifdef mips
+# define POSIXSIGS
+#else
+# undef POSIXSIGS
+#endif
 
 /*
  * VFORK	This machine has a vfork().  
@@ -66,7 +74,11 @@
  *		This may or may not be true.  For example, Apple Unix
  *		(OREO) has BSDJOBS and BSDSIGS but not BSDTIMES.
  */
+#ifdef mips
+# define BSDTIMES
+#else
 # undef BSDTIMES
+#endif
 
 /*
  * BSDLIMIT	You have BSD-style resource limit stuff (getrlimit/setrlimit)
