@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_load.c	4.38 (Berkeley) 3/2/91";
-static char rcsid[] = "$Id: db_load.c,v 1.1.1.3 1999-03-16 19:44:58 danw Exp $";
+static char rcsid[] = "$Id: db_load.c,v 1.2 1999-06-10 21:25:19 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -528,14 +528,6 @@ db_load(const char *filename, const char *in_origin,
 
 			/* Parse class (IN, etc) */
 			someclass = sym_ston(__p_class_syms, buf, &success);
-			if (someclass != zp->z_class) {
-				ns_info(ns_log_load,
-					"%s: Line %d: wrong class: %s.",
-					filename, lineno,
-					p_class(someclass));
-				errs++;
-				break;
-			}
 			if (success && someclass != C_ANY) {
 				class = someclass;
 				(void) getword(buf, sizeof buf, fp, 0);
