@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.6 1998-04-08 02:15:32 ghudson Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.7 1998-05-05 21:56:02 ghudson Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -32,9 +32,10 @@ static const char rcsid[] = "$Id: allowed.c,v 1.6 1998-04-08 02:15:32 ghudson Ex
 #include "al.h"
 #include "al_private.h"
 
-static int try_access(const char *username, int isremote, int *local_acct,
-		      char **text, int *retval);
+static int try_access(const char *username, int isremote, int haslocalpwd,
+		      int *local_acct, char **text, int *retval);
 static int good_hesiod(const char *username, int *retval);
+static int first_field_match(const char *line, const char *s);
 
 /* The al_login_allowed() function determines whether a user is allowed
  * to log in.  The calling process provides an indication of whether the
@@ -68,7 +69,8 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
   FILE *retfile;
 
   /* Make sure *text gets set to NULL if we don't give it a value
-   * later.  Also, assume account is non-local for now. */
+   * later.  Also, assume account is non-local for now.
+   */
   if (text)
     *text = NULL;
   *local_acct = 0;
@@ -76,7 +78,7 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
   if (!al__username_valid(username))
     return AL_ENOUSER;
 
-  /* root is always authorized to log in and is always a local account.. */
+  /* root is always authorized to log in and is always a local account. */
   local_pwd = al__getpwnam(username);
   if (local_pwd && local_pwd->pw_uid == 0)
     {
@@ -93,16 +95,19 @@ int al_login_allowed(const char *username, int isremote, int *local_acct,
     }
 
   /* Those without local passwd information must have Hesiod passwd
-   * information or they don't exist. */
+   * information or they don't exist.
+   */
   if (!local_pwd && !good_hesiod(username, &retval))
     goto cleanup;
 
   /* Try the access control file. */
-  if (try_access(username, isremote, local_acct, text, &retval))
+  if (try_access(username, isremote, (local_pwd != NULL), local_acct, text,
+		 &retval))
     goto cleanup;
 
   /* There is no access control file.  Look at the nocreate and noremote
-   * files if the user has no local passwd information. */
+   * files if the user has no local passwd information.
+   */
   if (!local_pwd)
     {
       if (!access(PATH_NOCREATE, F_OK))
@@ -145,11 +150,11 @@ cleanup:
   return retval;
 }
 
-static int try_access(const char *username, int isremote, int *local_acct,
-		      char **text, int *retval)
+static int try_access(const char *username, int isremote, int haslocalpwd,
+		      int *local_acct, char **text, int *retval)
 {
   FILE *fp;
-  int linesize, len;
+  int linesize;
   char *line = NULL;
   const char *p;
 
@@ -161,19 +166,20 @@ static int try_access(const char *username, int isremote, int *local_acct,
    *
    *	username	access-bits	text
    *
-   * Where a star matches any username, the access bits 'l' and 'r'
-   * set local and remote access, and text (if specified) gives a
-   * message to return if the user is denied access.
+   * Where "*" matches any username, "*inpasswd" matches any username with
+   * local password information, the access bits 'l' and 'r' set local and
+   * remote access, and text (if specified) gives a message to return if
+   * the user is denied access.
    */
   *retval = AL_ENOCREATE;
-  len = strlen(username);
   while (al__read_line(fp, &line, &linesize) == 0)
     {
       p = line;
 
       /* Ignore comment lines and lines which don't match the username. */
-      if (*p == '#' || (!(strncmp(username, p, len) == 0 && isspace(p[len]))
-			&& !(*p == '*' && isspace(p[1]))))
+      if (*p == '#' || (!first_field_match(p, username)
+			&& !(first_field_match(p, "*inpasswd") && haslocalpwd)
+			&& !first_field_match(p, "*")))
 	continue;
 
       while (*p && !isspace(*p))
@@ -182,7 +188,8 @@ static int try_access(const char *username, int isremote, int *local_acct,
 	p++;
 
       /* Read the access bits to determine if this user is allowed to
-       * log in. */
+       * log in.
+       */
       for (; *p && !isspace(*p); p++)
 	{
 	  if ((*p == 'l' && !isremote) || (*p == 'r' && isremote))
@@ -195,7 +202,8 @@ static int try_access(const char *username, int isremote, int *local_acct,
 
       /* If the user is not allowed to log in and there is text specified,
        * set text.  Add a newline so that it's consistent with text one
-       * might read from a file. */
+       * might read from a file.
+       */
       if (*retval != AL_SUCCESS && text)
 	{
 	  while (isspace(*p))
@@ -218,7 +226,8 @@ static int try_access(const char *username, int isremote, int *local_acct,
 }
 
 /* Check whether a user has Hesiod information which doesn't conflict
- * with a local uid. */
+ * with a local uid.
+ */
 static int good_hesiod(const char *username, int *retval)
 {
   void *hescontext = NULL;
@@ -247,4 +256,14 @@ static int good_hesiod(const char *username, int *retval)
   else
     *retval = (errno == ENOMEM) ? AL_ENOMEM : AL_ENOUSER;
   return ok;
+}
+
+/* Return true if the first field of line (terminated by whitespace or the
+ * end of the string) matches s.
+ */
+static int first_field_match(const char *line, const char *s)
+{
+  int len = strlen(s);
+
+  return (strncmp(line, s, len) == 0 && (isspace(line[len]) || !line[len]));
 }
