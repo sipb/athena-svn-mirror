@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.15 2001-05-08 03:27:50 ghudson Exp $
+# $Id: xsession,v 1.16 2001-05-11 22:54:49 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -23,7 +23,7 @@ switch ($#argv)
             echo "with NO user configuration files..."
             setenv NOCALLS
 	    setenv SHELL /bin/athena/tcsh
-	else if ($1 == dash)
+	else if ($1 == dash) then
 	    echo -n "xsession: Running standard xsession "
 	    echo "with dash-based interface..."
 	    setenv ATHENA_DASH_INTERFACE
