@@ -193,17 +193,14 @@ To set up the wash on a machine:
 Imake templates
 ---------------
 
-We don't like imake, but we maintain two sets of imake templates:
+We don't like imake, but we have two sets of imake templates:
 
 	* packs/build/config
 
 		These templates are the legacy Athena build system.
-		They are specific to software in the athena hierarchy,
-		and one glorious day in the future they will no longer
-		be necessary.
-
-		For these templates, you should define TOPDIR to the
-		top-level source directory.
+		They are no longer used by any software in the
+		release; we install them in case someone wants to
+		build some very old software.
 
 	* packs/build/xconfig
 
@@ -213,9 +210,6 @@ We don't like imake, but we maintain two sets of imake templates:
 		templates are full of a lot of hacks, mostly because
 		the imake model isn't really adequate for dealing with
 		third-party software and local site customizations.
-
-		For these templates, you should define TOPDIR to "."
-		and SRCDIR to the top-level source directory.
 
 Release notes
 -------------
