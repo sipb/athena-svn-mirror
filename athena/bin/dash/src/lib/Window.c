@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.2 1991-09-04 10:14:13 vanharen Exp $";
-#endif	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.c,v 1.3 1993-07-01 23:38:44 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -68,7 +68,7 @@ static XjResource resources[] = {
   { XjNrootTransient, XjCRootTransient, XjRBoolean, sizeof(Boolean),
      offset(window.rootTransient), XjRBoolean, (caddr_t)False },
   { XjNcursorCode, XjCCursorCode, XjRInt, sizeof(int),
-     offset(window.cursorCode), XjRString, XjDefaultValue },
+     offset(window.cursorCode), XjRInt, (caddr_t) 132 /* top_left_arrow */ },
   { XjNmapped, XjCMapped, XjRBoolean, sizeof(Boolean),
      offset(window.mapped), XjRBoolean, (caddr_t)True },
   { XjNiconic, XjCIconic, XjRBoolean, sizeof(Boolean),
@@ -89,19 +89,21 @@ static XjResource resources[] = {
 
 WindowClassRec windowClassRec = {
   {
-    /* class name */	"Window",
-    /* jet size   */	sizeof(WindowRec),
-    /* initialize */	initialize,
-    /* prerealize */    prerealize,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	NULL,
-    /* querySize */	querysize,
-    /* move */		move,
-    /* resize */	resize,
-    /* destroy */	destroy,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"Window",
+    /* jet size   */		sizeof(WindowRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	prerealize,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		NULL,
+    /* querySize */		querysize,
+    /* move */			move,
+    /* resize */		resize,
+    /* destroy */		destroy,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
@@ -112,7 +114,7 @@ static void querysize(me, size)
      XjSize *size;
 {
   if (DEBUG)
-    printf ("QS(window)");
+    printf ("QS(window) '%s'\n", me->core.name);
 
   if (me->core.child)
     XjQuerySize(me->core.child, size);
@@ -123,7 +125,7 @@ static void move(me, x, y)
      int x, y;
 {
   if (DEBUG)
-    printf ("MV(window)");
+    printf ("MV(window) '%s' x=%d,y=%d\n", me->core.name, x, y);
 
   me->core.x = x;
   me->core.y = y;
@@ -139,7 +141,8 @@ static void resize(me, size)
   Jet child;
 
   if (DEBUG)
-    printf ("RSZ(window)");
+    printf ("RS(window) '%s' w=%d,h=%d\n", me->core.name,
+	    size->width, size->height);
 
   me->core.width = (size->width) ? size->width : 1;
   me->core.height = (size->height) ? size->height : 1;
@@ -283,7 +286,7 @@ static void realize(me)
      WindowJet me;
 {
   Window parentwindow;
-  Pixmap p = NULL;
+  Pixmap p = (Pixmap) NULL;
   unsigned long valuemask;
   XGCValues values;
   GC gc;
@@ -366,17 +369,17 @@ static void realize(me)
       valuemask = ( GCForeground | GCBackground | GCFunction
 		   | GCGraphicsExposures );
 
-      gc = XCreateGC(me->core.display,
-		     me->core.window,
-		     valuemask,
-		     &values);
+      gc = XjCreateGC(me->core.display,
+		      me->core.window,
+		      valuemask,
+		      &values);
 
-      p = XCreatePixmap(me->core.display,
-			parentwindow,
-			me->window.pixmap->width,
-			me->window.pixmap->height,
-			DefaultDepth(me->core.display, /* wrong... sigh. */
-				     DefaultScreen(me->core.display)));
+      p = XjCreatePixmap(me->core.display,
+			 parentwindow,
+			 me->window.pixmap->width,
+			 me->window.pixmap->height,
+			 DefaultDepth(me->core.display, /* wrong... sigh. */
+				      DefaultScreen(me->core.display)));
 
       XCopyPlane(me->core.display,
 		 me->window.pixmap->pixmap,
@@ -387,7 +390,7 @@ static void realize(me)
 		 me->window.pixmap->height,
 		 0, 0, 1);
 
-      XFreeGC(me->core.display, gc);
+      XjFreeGC(me->core.display, gc);
 
       attribs.background_pixmap = p;
       attribsMask |= CWBackPixmap;
@@ -407,7 +410,7 @@ static void realize(me)
 				  &attribs);
 
   if (me->window.pixmap != NULL)
-    XFreePixmap(me->core.display, p);
+    XjFreePixmap(me->core.display, p);
 
   XSetWMProperties(me->core.display,
 		   me->core.window,
@@ -435,12 +438,12 @@ static void realize(me)
 
   if (me->window.cursorCode != -1)
     {
-      me->window.cursor = XCreateFontCursor(me->core.display,
-					    me->window.cursorCode);
+      me->window.cursor = XjCreateFontCursor(me->core.display,
+					     me->window.cursorCode);
       XDefineCursor(me->core.display, me->core.window, me->window.cursor);
     }
   else
-    me->window.cursor = NULL;
+    me->window.cursor = (Cursor) NULL;
 
   if (me->core.child != NULL)
     {
@@ -461,8 +464,8 @@ static void destroy(me)
   XjUnregisterWindow(me->core.window, (Jet) me);
   XDestroyWindow(me->core.display, me->core.window);
 
-  if (me->window.cursor != NULL)
-    XFreeCursor(me->core.display, me->window.cursor);
+  if (me->window.cursor != (Cursor) NULL)
+    XjFreeCursor(me->core.display, me->window.cursor);
 }
 
 #define X1  event->xexpose.x
@@ -487,21 +490,9 @@ static Boolean event_handler(me, event)
     {
     case GraphicsExpose:
     case Expose:
-      if (DEBUG)
-	printf("Window:event_handler  expose_count: %d\n",
-	       event->xexpose.count);
-
       for (child = me->core.child; child != (Jet) NULL;
 	   child = child->core.sibling)
 	{
-	  if (DEBUG)
-	    {
-	      printf("name: %s  need: %d  overlap: %d\n",
-		     child->core.name, child->core.need_expose,
-		     OVERLAP(X1,Y1,X2,Y2, X3,Y3,X4,Y4));
-	      printf("exp: %d,%d %d,%d  jet: %d,%d %d,%d\n",
-		     X1,Y1,X2,Y2, X3,Y3,X4,Y4);
-	    }
 	  if (!child->core.need_expose
 	      && child->core.classRec->core_class.expose != NULL
 	      && OVERLAP(X1,Y1,X2,Y2, X3,Y3,X4,Y4))
@@ -514,18 +505,27 @@ static Boolean event_handler(me, event)
 	{
 	  for (child = me->core.child; child != (Jet) NULL;
 	       child = child->core.sibling)
+	    if (child->core.need_expose)
+	      {
+		XjExpose(child, event);
+		child->core.need_expose = False;
+	      }
+#ifdef notdefined
 	    if (child->core.need_expose
 		&& child->core.classRec->core_class.expose != NULL)
 	      {
 		child->core.classRec->core_class.expose(child, event);
 		child->core.need_expose = False;
 	      }
+#endif
 	}
       break;
 
     case MapNotify:
       me->window.mapped = True;
-      XjCallCallbacks((caddr_t) me, me->window.mapNotifyProc, event);
+      XjCallCallbacks((caddr_t) me,
+		      me->window.mapNotifyProc,
+		      (caddr_t) event);
       break;
 
     case UnmapNotify:
@@ -563,7 +563,9 @@ static Boolean event_handler(me, event)
     case ClientMessage:
       if (event->xclient.data.l[0] == wm_delete_window)
 	{
-	  XjCallCallbacks((caddr_t) me, me->window.deleteProc, event);
+	  XjCallCallbacks((caddr_t) me,
+			  me->window.deleteProc,
+			  (caddr_t) event);
 	  break;
 	}
       else
@@ -571,7 +573,8 @@ static Boolean event_handler(me, event)
 	  info.window = me;
 	  info.event = event;
 	  XjCallCallbacks((caddr_t) &info,
-			  me->window.clientMessageProc, event);
+			  me->window.clientMessageProc,
+			  (caddr_t) event);
 	}
       break;
 
