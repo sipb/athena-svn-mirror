@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.3 1990-01-03 23:24:02 raeburn Exp $
+ * $Id: Imakefile,v 1.4 1990-01-04 14:59:59 raeburn Exp $
  */
 
 #define UseCPlusPlus
@@ -14,9 +14,7 @@
 misc=-lg++
 
 .c.o:
-	@rm -f $@ $<c
-	ln -s $< $<c
-	$(C++) $(C++FLAGS) -c $<c
+	$(C++) $(C++FLAGS) -c $<
 #else
 misc=
 #endif
