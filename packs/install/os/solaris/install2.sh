@@ -38,21 +38,12 @@ chmod 1777 /root/var/tmp
 chmod 1777 /root/var/rtmp
 
 
-date >/tmp/start
 echo "installing the os packages"
 case `uname -m` in
 sun4u)
-    for i in `cat /cdrom/install-local-u`
+    for i in `cat /cdrom/.order.install`
       do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i ; done 2>/dev/null
-    for i in `cat /cdrom/install-nolocal-u`      
-      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom/cdrom.link $i; done   2>/dev/null;
 	;;
-sun4m)
-    for i in `cat /cdrom/install-local-m`
-      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom $i; done 2>/dev/null
-    for i in `cat /cdrom/install-nolocal-m`      
-      do echo $i; cat /util/yes-file | pkgadd -R /root -d /cdrom/cdrom.link $i; done 2>/dev/null  
- 	;;
 *)
     echo "unsupported architecture - contact Athena administration"
       exit 1
@@ -61,9 +52,7 @@ esac
 
 
 echo "correction to pkg installation"
-cp /cdrom/I* /root/var/sadm/system/admin/
-# /var/etc needed by SUNWski, whose postinstall script doesn't use BASEDIR
-mkdir /root/var/etc
+cp /cdrom/INST_RELEASE /root/var/sadm/system/admin/
 
 echo "make it appear as  configured"
 rm /root/etc/.UNC*
@@ -76,19 +65,16 @@ echo "Installing Requested and Security patches for OS "
 
 echo "add/remove osfiles as needed\n"
 sh /srvd/install/oschanges 2>/dev/null
-date >/tmp/end
 echo "the os part is installed"
 
 echo "tracking the srvd"
 /srvd/usr/athena/lib/update/track-srvd
 echo "copying kernel modules from /srvd/kernel"
 cp -p -r /srvd/kernel/fs/* /root/kernel/fs/
-
+cp -p -r /srvd/kernel/fs/sparcv9/afs /root/kernel/fs/sparcv9/
 echo "Create devices and dev"
 cd /root
-/usr/sbin/drvconfig  -r devices -p /root/etc/path_to_inst
-/usr/sbin/devlinks -t /root/etc/devlink.tab -r /root 
-/usr/sbin/disks -r /root
+/usr/sbin/devfsadm -r /root -t /root/etc/devlink.tab -p /root/etc/path-to_inst
 
 chmod 755 /root/dev
 chmod 755 /root/devices
@@ -200,6 +186,8 @@ cp /dev/null /root/var/adm/lastlog
 cp /dev/null /root/var/adm/utmpx
 cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/adm/sulog
+mkdir /root/var/spool/mqueue
+chmod 750 /root/var/spool/mqueue
 cp /dev/null /root/var/spool/mqueue/syslog
 chmod 600 /root/var/adm/sulog /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
@@ -207,11 +195,7 @@ echo "Installing bootblocks on root "
 installboot "/os/usr/platform/$platform/lib/fs/ufs/bootblk" "$rrootdrive"
 
 echo "setting the boot device"
-if [ $CUSTOM = Y ]; then
-	/os/usr/platform/$platform/sbin/eeprom boot-device="$bootdevice"
-else
-	/os/usr/platform/$platform/sbin/eeprom boot-device="disk net"
-fi
+luxadm set_boot_dev -y $rootdrive
 
 cd /root
 cp /tmp/install.log /root/var/athena/install.log
