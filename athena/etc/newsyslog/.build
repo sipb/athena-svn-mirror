@@ -1,0 +1,35 @@
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/.build,v 1.1 1996-04-30 00:05:24 bert Exp $
+
+set rule = skip
+
+cd $BUILD/$package
+
+set make=make
+
+### under Solaris, set the C compiler path explicitly, so feet won't get shot!
+if ( $machine == "sun4" )   setenv CC "$BUILD/bin/gcc"
+
+if ( "$installonly" == "0" ) then
+	### If not just installing, configure, clean and build...
+	((echo "Configuring in $package..." ; \
+	./configure --config-cache=/dev/null) >>& $outfile && \
+	(echo "Cleaning in $package..." ; \
+	$make clean) >>& $outfile && \
+	(echo "Building in $package..." ; \
+	$make) >>& $outfile)
+
+	### ...and whine if we fail.
+	if ( $status == 1 ) then
+        	echo "We bombed in $package" >> & $outfile
+        	exit -1
+	endif
+endif
+
+### Finally, install.
+(echo "Installing in $package..." ; \
+$make install) >>& $outfile
+
+if ( $status == 1 ) then
+       	echo "We bombed in $package" >> & $outfile
+       	exit -1
+endif
