@@ -88,7 +88,8 @@ void _wnck_iconify   (Window xwindow);
 void _wnck_deiconify (Window xwindow);
 
 void _wnck_close     (Screen *screen,
-		      Window  xwindow);
+		      Window  xwindow,
+		      Time    timestamp);
 
 void _wnck_change_state     (Screen  *screen,
 			     Window   xwindow,
@@ -102,6 +103,9 @@ void _wnck_activate         (Screen  *screen,
 			     Window   xwindow);
 void _wnck_activate_workspace (Screen *screen,
 			       int     new_active_space);
+void _wnck_change_viewport (Screen *screen,
+			    int     x,
+			    int     y);
 
 Window _wnck_get_group_leader   (Window xwindow);
 char*  _wnck_get_session_id     (Window xwindow);

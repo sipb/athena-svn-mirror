@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-WnckApplication">
+<refmeta>
+<refentrytitle>WnckApplication</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WnckApplication</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="WnckApplicationPrivate">WnckApplicationPrivate</link>;
+<link linkend="WnckApplication">WnckApplication</link>* <link linkend="wnck-application-get">wnck_application_get</link>       (<link linkend="gulong">gulong</link> xwindow);
+<link linkend="gulong">gulong</link>      <link linkend="wnck-application-get-xid">wnck_application_get_xid</link>        (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="GList">GList</link>*      <link linkend="wnck-application-get-windows">wnck_application_get_windows</link>    (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="int">int</link>         <link linkend="wnck-application-get-n-windows">wnck_application_get_n_windows</link>  (<link linkend="WnckApplication">WnckApplication</link> *app);
+const <link linkend="char">char</link>* <link linkend="wnck-application-get-name">wnck_application_get_name</link>       (<link linkend="WnckApplication">WnckApplication</link> *app);
+const <link linkend="char">char</link>* <link linkend="wnck-application-get-icon-name">wnck_application_get_icon_name</link>  (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="int">int</link>         <link linkend="wnck-application-get-pid">wnck_application_get_pid</link>        (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="wnck-application-get-icon">wnck_application_get_icon</link>       (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="wnck-application-get-mini-icon">wnck_application_get_mini_icon</link>  (<link linkend="WnckApplication">WnckApplication</link> *app);
+<link linkend="gboolean">gboolean</link>    <link linkend="wnck-application-get-icon-is-fallback">wnck_application_get_icon_is_fallback</link>
+                                            (<link linkend="WnckApplication">WnckApplication</link> *app);
+const <link linkend="char">char</link>* <link linkend="wnck-application-get-startup-id">wnck_application_get_startup_id</link> (<link linkend="WnckApplication">WnckApplication</link> *app);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="WnckApplicationPrivate"/>struct WnckApplicationPrivate</title>
+<indexterm><primary>WnckApplicationPrivate</primary></indexterm><programlisting>struct WnckApplicationPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get"/>wnck_application_get ()</title>
+<indexterm><primary>wnck_application_get</primary></indexterm><programlisting><link linkend="WnckApplication">WnckApplication</link>* wnck_application_get       (<link linkend="gulong">gulong</link> xwindow);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>xwindow</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-xid"/>wnck_application_get_xid ()</title>
+<indexterm><primary>wnck_application_get_xid</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      wnck_application_get_xid        (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Gets the X id of the group leader window for the app.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckApplication"><type>WnckApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> X id for the app
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-windows"/>wnck_application_get_windows ()</title>
+<indexterm><primary>wnck_application_get_windows</primary></indexterm><programlisting><link linkend="GList">GList</link>*      wnck_application_get_windows    (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Gets a list of all windows belonging to <parameter>app</parameter>. The list
+is returned by reference and should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckApplication"><type>WnckApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> list of <link linkend="WnckWindow"><type>WnckWindow</type></link> in this app
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-n-windows"/>wnck_application_get_n_windows ()</title>
+<indexterm><primary>wnck_application_get_n_windows</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_application_get_n_windows  (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-name"/>wnck_application_get_name ()</title>
+<indexterm><primary>wnck_application_get_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* wnck_application_get_name       (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Gets the name of an application, employing various
+suboptimal heuristics to try to figure it out.
+Probably GTK should have a function to allow apps to
+set _NET_WM_NAME on the group leader as the app name,
+and the WM spec should say that's where the app name
+goes.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckApplication"><type>WnckApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> name of the application
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-icon-name"/>wnck_application_get_icon_name ()</title>
+<indexterm><primary>wnck_application_get_icon_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* wnck_application_get_icon_name  (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Gets the icon name of an application, employing various
+suboptimal heuristics to try to figure it out.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckApplication"><type>WnckApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> name of the application when minimized
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-pid"/>wnck_application_get_pid ()</title>
+<indexterm><primary>wnck_application_get_pid</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_application_get_pid        (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Gets the process ID of an application, or 0 if none
+is available.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckApplication"><type>WnckApplication</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process ID or 0
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-icon"/>wnck_application_get_icon ()</title>
+<indexterm><primary>wnck_application_get_icon</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  wnck_application_get_icon       (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-mini-icon"/>wnck_application_get_mini_icon ()</title>
+<indexterm><primary>wnck_application_get_mini_icon</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  wnck_application_get_mini_icon  (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-icon-is-fallback"/>wnck_application_get_icon_is_fallback ()</title>
+<indexterm><primary>wnck_application_get_icon_is_fallback</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    wnck_application_get_icon_is_fallback
+                                            (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+Checks if we are using a default fallback icon because
+none was set on the application.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if icon is a fallback
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-application-get-startup-id"/>wnck_application_get_startup_id ()</title>
+<indexterm><primary>wnck_application_get_startup_id</primary></indexterm><programlisting>const <link linkend="char">char</link>* wnck_application_get_startup_id (<link linkend="WnckApplication">WnckApplication</link> *app);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>app</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

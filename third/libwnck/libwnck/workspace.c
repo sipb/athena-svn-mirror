@@ -2,6 +2,8 @@
 
 /*
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Kim Woelders
+ * Copyright (C) 2003 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -31,6 +33,9 @@ struct _WnckWorkspacePrivate
   WnckScreen *screen;
   int number;
   char *name;
+  int width, height;            /* Workspace size */
+  int viewport_x, viewport_y;   /* Viewport origin */
+  gboolean is_virtual;
 };
 
 enum {
@@ -143,9 +148,6 @@ wnck_workspace_get_number (WnckWorkspace *space)
  * in the user interface. If the user hasn't set a special name,
  * will be something like "Workspace 3" - otherwise whatever name
  * the user set.
- *
- * FIXME haven't actually implemented reading the user-set
- * name from the window manager.
  * 
  * Return value: workspace name, never %NULL 
  **/
@@ -204,6 +206,14 @@ _wnck_workspace_create (int number, WnckScreen *screen)
 
   _wnck_workspace_update_name (space, NULL);
   
+  /* Just set reasonable defaults */
+  space->priv->width = wnck_screen_get_width (screen);
+  space->priv->height = wnck_screen_get_height (screen);
+  space->priv->is_virtual = FALSE;
+
+  space->priv->viewport_x = 0;
+  space->priv->viewport_y = 0;
+
   return space;
 }
 
@@ -236,4 +246,69 @@ emit_name_changed (WnckWorkspace *space)
   g_signal_emit (G_OBJECT (space),
                  signals[NAME_CHANGED],
                  0);
+}
+
+gboolean
+_wnck_workspace_set_geometry (WnckWorkspace *space,
+                              int            w,
+                              int            h)
+{
+  if (space->priv->width != w || space->priv->height != h)
+    {
+      space->priv->width = w;
+      space->priv->height = h;
+
+      space->priv->is_virtual = w > wnck_screen_get_width (space->priv->screen) ||
+				h > wnck_screen_get_height (space->priv->screen);
+
+      return TRUE;  /* change was made */
+    }
+  else
+    return FALSE; 
+}
+
+gboolean
+_wnck_workspace_set_viewport (WnckWorkspace *space,
+                              int            x,
+                              int            y)
+{
+  if (space->priv->viewport_x != x || space->priv->viewport_y != y)
+    {
+      space->priv->viewport_x = x;
+      space->priv->viewport_y = y;
+
+      return TRUE; /* change was made */
+    }
+  else
+    return FALSE;
+}
+
+int
+wnck_workspace_get_width (WnckWorkspace *space)
+{
+  return space->priv->width;
+}
+
+int
+wnck_workspace_get_height (WnckWorkspace *space)
+{
+  return space->priv->height;
+}
+
+int
+wnck_workspace_get_viewport_x (WnckWorkspace *space)
+{
+  return space->priv->viewport_x;
+}
+
+int
+wnck_workspace_get_viewport_y (WnckWorkspace *space)
+{
+  return space->priv->viewport_y;
+}
+
+gboolean
+wnck_workspace_is_virtual (WnckWorkspace *space)
+{
+  return space->priv->is_virtual;
 }

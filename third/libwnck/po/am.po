@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libwnck\n"
-"POT-Creation-Date: 2003-02-05 23:57-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:27+0100\n"
 "PO-Revision-Date: 2003-01-14 11:02+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libwnck/application.c:25
+#: libwnck/application.c:26
 msgid "untitled application"
 msgstr "ያልተሰየሙ መጠቀሚያ ፕሮግራም"
 
@@ -32,55 +33,87 @@ msgstr "መሥሪያ ቦታዌ መሥከል መቀያየሪያ መሣሪያ"
 msgid "Click this to switch to workspace %s"
 msgstr "ወደ መሥሪያ ቦታ %s ለመቀየር ይህንን ያቃጭሉ"
 
-#: libwnck/window-action-menu.c:191
-msgid "Un_minimize"
+#: libwnck/window-action-menu.c:209
+#, fuzzy
+msgid "Unmi_nimize"
 msgstr "መታሳንስ (_M)"
 
-#: libwnck/window-action-menu.c:198
-msgid "_Minimize"
+#: libwnck/window-action-menu.c:216
+#, fuzzy
+msgid "Mi_nimize"
 msgstr "መሳንስ (_M)"
 
-#: libwnck/window-action-menu.c:206
-msgid "_Unmaximize"
+#: libwnck/window-action-menu.c:224
+#, fuzzy
+msgid "Unma_ximize"
 msgstr "መታስተልቅ (_U)"
 
-#: libwnck/window-action-menu.c:213
+#: libwnck/window-action-menu.c:231
 msgid "Ma_ximize"
 msgstr "መተልቅ (_X)"
 
-#: libwnck/window-action-menu.c:221
+#: libwnck/window-action-menu.c:239
 msgid "_Unroll"
 msgstr "ማውረድ (U)"
 
-#: libwnck/window-action-menu.c:228
+#: libwnck/window-action-menu.c:246
 msgid "Roll _Up"
 msgstr "ማውጣት (_U)"
 
-#: libwnck/window-action-menu.c:236
+#: libwnck/window-action-menu.c:254
 msgid "Only on _This Workspace"
 msgstr "በዚህ የመሥሪያ ቦታ ላይ ብቻ (_T)"
 
-#: libwnck/window-action-menu.c:243
+#: libwnck/window-action-menu.c:261
 msgid "Put on _All Workspaces"
 msgstr "ሁሉም መሥሪይ ቦታዎች ላይ አድርግ (_A)"
 
-#: libwnck/window-action-menu.c:372
-msgid "Mo_ve"
-msgstr "መንቀሳቅስ (_V)"
-
-#: libwnck/window-action-menu.c:379
-msgid "_Resize"
-msgstr "እንደገና መጧን ማስተሥከል (_R)"
-
-#: libwnck/window-action-menu.c:392
-msgid "_Close"
-msgstr "ዝጋ (_C)"
-
-#: libwnck/window.c:29
-msgid "untitled window"
-msgstr "ያልተሰየመ መስኮት"
-
-#: libwnck/workspace.c:222
+#: libwnck/window-action-menu.c:376 libwnck/workspace.c:232
 #, c-format
 msgid "Workspace %d"
 msgstr "መሥሪያ ቦታ %d"
+
+#: libwnck/window-action-menu.c:384
+#, fuzzy
+msgid "Workspace 1_0"
+msgstr "መሥሪያ ቦታ %d"
+
+#: libwnck/window-action-menu.c:386
+#, fuzzy, c-format
+msgid "Workspace %s%d"
+msgstr "መሥሪያ ቦታ %d"
+
+#: libwnck/window-action-menu.c:483
+#, fuzzy
+msgid "_Move"
+msgstr "መንቀሳቅስ (_V)"
+
+#: libwnck/window-action-menu.c:490
+msgid "_Resize"
+msgstr "እንደገና መጧን ማስተሥከል (_R)"
+
+#: libwnck/window-action-menu.c:503
+msgid "_Close"
+msgstr "ዝጋ (_C)"
+
+#: libwnck/window-action-menu.c:516
+msgid "Move to Another _Workspace"
+msgstr ""
+
+#: libwnck/window-action-menu.c:540
+#, c-format
+msgid "%s"
+msgstr ""
+
+#: libwnck/window.c:32
+msgid "untitled window"
+msgstr "ያልተሰየመ መስኮት"
+
+#: libwnck/tasklist.c:507
+msgid "Window List"
+msgstr ""
+
+#: libwnck/tasklist.c:508
+#, fuzzy
+msgid "Tool to switch between visible windows"
+msgstr "መሥሪያ ቦታዌ መሥከል መቀያየሪያ መሣሪያ"

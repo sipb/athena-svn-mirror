@@ -1,14 +1,136 @@
-2.2.1
+2.7.92
 ===
 
-- Add support for StartupWMClass field in .desktop files, to 
-  allow us to do startup notification for legacy apps.
-- lots of new translations
+ Fixes
 
-2.2.0
+  - Setup gtk-doc to pull out API documentation (J.H.M. Dassen (Ray))
+
+ Translators
+
+  - Laszlo Dvornik (hu)
+  - Kjartan Maraas (nb)
+  - Laurent Dhima (sq)
+
+2.7.91
 ===
 
-- additional translations
+ Fixes
+
+  - Fix issue with AtkComponent co-ordinates (Arvind Samptur)
+  - Fix window minimization vs. activation for mouse focus (Elijah Newren)
+  - Resolve some no-focus-on-map issues (Elijah Newren)
+  - Regenerate stale built sources (Torsten Schoenfeld)
+
+ Translators
+
+  - Kemal Sanjta (bs)
+  - Pauli Virtanen (fi)
+  - Amanpreet Singh Alam (pa)
+
+2.7.90
+===
+
+ Fixes
+
+  - Add support for the _NET_WM_STATE_DEMANDS_ATTENTION hint (Rob Adams)
+  - Display shaded windows as "= <name> =" instead of "[ <name> ]" (James M. Cape)
+  - Desensitize "Move To Workspace" items for sticky windows (Arvind Samptur)
+
+ Translators
+
+  - Vladimir Petkov (bg)
+  - Laurent Dhima (sq)
+
+2.6.2.1
+===
+
+ Fixes
+
+ - Activate window in workspace switcher only if its on
+   the current workspace (Elijah Newren)
+ - Use timestamp with _NET_CLOSE_WINDOW (Anders Carlsson)
+
+ Translators
+
+ - John C Barstow (mi)
+ - Laurent Dhima (sq)
+
+2.6.2
+===
+
+ Fixes
+
+ - Don't show multi-workspace related menu items if there is only
+   a single workspace (Johan Persson)
+
+ Translators
+
+ - Vladimir Petkov (bg)
+ - Gil Osher (he)
+ - Kjartan Maraas (no)
+ - Mişu Moldovan (ro)
+ - Ivan Noris (sk)
+
+2.6.1
+===
+
+ Fixes
+
+ - Fix icon-reading crash when using enlightenment (Neil Muller)
+ - AIX portability fixes (Kjartan Maraas)
+ - Don't attempt to center the workspace on the mouse click (Kim Woelders)
+ 
+ Translators
+
+ - Iñaki Larrañaga Murgoitio (eu)
+ - Guntupalli Karunakar (gu)
+ - Mohammad DAMT (id)
+ - Samúel Jón Gunnarsson (is)
+ - Baris Cicek (tr)
+
+2.5.90
+===
+
+Thanks to Laszlo Peter, Leena Gunda Padraig O'Briain for fixes in
+this release
+
+  - allow building against an uninstalled libwnck build
+  - add "Move to Workspace" menu
+  - fix crash with updated allowed actions hint
+
+===
+2.4.0
+===
+
+Thanks to Arvind Samptur, Mariano Suarez-Alvarez, Kim Woelders for 
+fixes in this release.
+
+ - fix workspace name property handling
+ - fix updating of window/icon names
+ - fixes to viewport handling
+ - lots of new translations
+
+2.3.1
+===
+
+Thanks to Hidetoshi Tajima, Ross Burton, Masahiro Sakai, Kim Woelders,
+Arvind Samptur, Matt Wilson for fixes in this release.
+
+- put -lX11 in link flags
+- add API to manipulate window fullscreen state
+- use an icon from one of the windows in a group, rather than 
+  the "white piece of paper" icon, if a group doesn't set an icon
+- fixes for Cygwin compilation
+- add support for viewports in window list and workspace switcher
+- fix multihead glitches
+- set desktop layout properly on 64-bit platforms
+- new/updated translations
+
+2.3.0
+===
+
+- fixed fitt's law for window list applet (Mark McLoughlin)
+- incorporated fixes from stable branch
 
 2.1.90
 ===

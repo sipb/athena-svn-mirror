@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-02-05 23:57-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libwnck/application.c:25
+#: libwnck/application.c:26
 msgid "untitled application"
 msgstr ""
 
@@ -32,55 +33,81 @@ msgstr ""
 msgid "Click this to switch to workspace %s"
 msgstr ""
 
-#: libwnck/window-action-menu.c:191
-msgid "Un_minimize"
+#: libwnck/window-action-menu.c:209
+msgid "Unmi_nimize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:198
-msgid "_Minimize"
+#: libwnck/window-action-menu.c:216
+msgid "Mi_nimize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:206
-msgid "_Unmaximize"
+#: libwnck/window-action-menu.c:224
+msgid "Unma_ximize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:213
+#: libwnck/window-action-menu.c:231
 msgid "Ma_ximize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:221
+#: libwnck/window-action-menu.c:239
 msgid "_Unroll"
 msgstr ""
 
-#: libwnck/window-action-menu.c:228
+#: libwnck/window-action-menu.c:246
 msgid "Roll _Up"
 msgstr ""
 
-#: libwnck/window-action-menu.c:236
+#: libwnck/window-action-menu.c:254
 msgid "Only on _This Workspace"
 msgstr ""
 
-#: libwnck/window-action-menu.c:243
+#: libwnck/window-action-menu.c:261
 msgid "Put on _All Workspaces"
 msgstr ""
 
-#: libwnck/window-action-menu.c:372
-msgid "Mo_ve"
+#: libwnck/window-action-menu.c:376 libwnck/workspace.c:232
+#, c-format
+msgid "Workspace %d"
 msgstr ""
 
-#: libwnck/window-action-menu.c:379
+#: libwnck/window-action-menu.c:384
+msgid "Workspace 1_0"
+msgstr ""
+
+#: libwnck/window-action-menu.c:386
+#, c-format
+msgid "Workspace %s%d"
+msgstr ""
+
+#: libwnck/window-action-menu.c:483
+msgid "_Move"
+msgstr ""
+
+#: libwnck/window-action-menu.c:490
 msgid "_Resize"
 msgstr ""
 
-#: libwnck/window-action-menu.c:392
+#: libwnck/window-action-menu.c:503
 msgid "_Close"
 msgstr ""
 
-#: libwnck/window.c:29
+#: libwnck/window-action-menu.c:516
+msgid "Move to Another _Workspace"
+msgstr ""
+
+#: libwnck/window-action-menu.c:540
+#, c-format
+msgid "%s"
+msgstr ""
+
+#: libwnck/window.c:32
 msgid "untitled window"
 msgstr ""
 
-#: libwnck/workspace.c:222
-#, c-format
-msgid "Workspace %d"
+#: libwnck/tasklist.c:507
+msgid "Window List"
+msgstr ""
+
+#: libwnck/tasklist.c:508
+msgid "Tool to switch between visible windows"
 msgstr ""

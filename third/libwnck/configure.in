@@ -2,13 +2,13 @@ AC_INIT(libwnck/window.h)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(libwnck, 2.2.1)
+AM_INIT_AUTOMAKE(libwnck, 2.8.0)
 AM_MAINTAINER_MODE
 
 dnl libtool versioning for libwnck
 
 dnl increment if the interface has additions, changes, removals.
-LIBWNCK_CURRENT=9
+LIBWNCK_CURRENT=13
 
 dnl increment any time the source changes; set to
 dnl  0 if you increment CURRENT
@@ -17,7 +17,7 @@ LIBWNCK_REVISION=0
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has
 dnl  precedence over adding, so set to 0 if both happened.
-LIBWNCK_AGE=5
+LIBWNCK_AGE=9
 
 AC_SUBST(LIBWNCK_CURRENT)
 AC_SUBST(LIBWNCK_REVISION)
@@ -27,6 +27,7 @@ AC_PROG_CC
 AC_ISC_POSIX
 AC_HEADER_STDC
 AC_ARG_PROGRAM
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 changequote(,)dnl
@@ -55,7 +56,7 @@ GETTEXT_PACKAGE=libwnck
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fa fi fr gl he hi hu it ja ko lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko li lt lv mi mk ml mn mr ms nb nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 # AM_GLIB_GNU_GETTEXT above substs $DATADIRNAME
@@ -69,13 +70,48 @@ STARTUP_NOTIFICATION_REQUIRED=0.4
 if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_REQUIRED libstartup-notification-1.0; then
   echo "Building with libstartup-notification"
   AC_DEFINE(HAVE_STARTUP_NOTIFICATION)
-  with_startup_notification=yes
   STARTUP_NOTIFICATION_PACKAGE=libstartup-notification-1.0
 else
   echo "Building without libstartup-notification"
-  with_startup_notification=no
   STARTUP_NOTIFICATION_PACKAGE=
 fi
+
+dnl X development libraries check
+
+#
+# If Pango included the shared library dependencies from X11 in
+# the pkg-config output, then we use that (to avoid duplicates).
+# but if they were omitted to avoid binary compatibility problems
+# then we need to repeat the checks.
+#
+if $PKG_CONFIG --exists pangoxft ; then
+  PANGO_PACKAGES="pangox pangoxft"
+else
+  PANGO_PACKAGES="pangox"
+fi
+
+x_libs="`$PKG_CONFIG --libs $PANGO_PACKAGES`"
+case x_libs in
+  *-lX11*) pango_omitted_x_deps=no ;;
+  *)       pango_omitted_x_deps=yes ;;
+esac
+
+if test $pango_omitted_x_deps = yes ; then
+  AC_PATH_XTRA
+
+  if test x$no_x = xyes ; then
+    AC_MSG_ERROR([X development libraries not found])
+  else
+    X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+  fi
+fi
+
+## Check for XRes
+AC_CHECK_LIB(XRes, XResQueryExtension,
+             X_LIBS="$X_LIBS -lXRes -lXext" ; AC_DEFINE_UNQUOTED(HAVE_XRES, 1, [define if you have the XRes library]), ,
+             $X_LIBS -lXext)
+
+AC_SUBST(X_LIBS)
 
 AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
@@ -103,11 +139,16 @@ LDFLAGS=$save_LDFLAGS
 dnl Honor ACLOCAL_FLAGS for --enable-maintainer-mode
 ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 
+##################################################
+# Checks for gtk-doc and docbook-tools
+##################################################
+GTK_DOC_CHECK([1.0])
+
 AC_OUTPUT([
 Makefile
+doc/Makefile
 po/Makefile.in
 libwnck/Makefile
 libwnck-1.0.pc
+libwnck-1.0-uninstalled.pc
 ])
-
-
