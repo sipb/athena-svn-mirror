@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.2 1990-07-02 12:28:17 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.3 1990-07-24 13:40:49 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -31,7 +31,7 @@
 #include <nlist.h>
 #include <hesiod.h>
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.2 1990-07-02 12:28:17 mar Exp $";
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.3 1990-07-24 13:40:49 mar Exp $";
 
 extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
@@ -48,7 +48,8 @@ struct nlist nl[] =
 #define ROOTUID 0
 #define DAEMONUID 1
 
-static const char *nologin_msg = "Try again in a few seconds...\n";
+/* static const char *nologin_msg = "Try again in a few seconds...\n"; */
+static const char *nologin_msg = "This machine is down for cleanup; try again in a few seconds.\n";
 static const char *nologin_fn  = "/etc/nologin";
 
 int main(int argc,char *argv[])
