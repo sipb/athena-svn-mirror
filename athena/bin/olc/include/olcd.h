@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.27 1991-01-15 17:58:38 lwvanels Exp $
+ *	$Id: olcd.h,v 1.28 1991-01-21 01:21:00 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -128,6 +128,8 @@
 #define DEFAULT_TITLE   "user"
 #define DEFAULT_TITLE2  "consultant"
 #endif
+
+#define VERSION_INFO	"Version 3.0: $Id: olcd.h,v 1.28 1991-01-21 01:21:00 lwvanels Exp $"
 
 /* OLCD data definitions */
 
@@ -408,6 +410,7 @@ ERRCODE olc_get_accesses P((int fd , REQUEST *request ));
 ERRCODE olc_get_dbinfo P((int fd , REQUEST *request ));
 ERRCODE olc_change_dbinfo P((int fd , REQUEST *request ));
 ERRCODE olc_set_user_status P((int fd , REQUEST *request ));
+ERRCODE olc_version P((int fd , REQUEST *request ));
 
 /* requests_olc.c */
 ERRCODE olc_on P((int fd , REQUEST *request ));
