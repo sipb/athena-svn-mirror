@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.1 1989-11-17 14:19:36 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.2 1990-02-16 05:53:11 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,14 +31,20 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 
-ODump(Request,file)
+ODump(Request,type,file)
      REQUEST *Request;
+     int type;
      char *file;
 {
   int status;
   int fd;
 
-  Request->request_type = OLC_DUMP;
+  if ((type == OLC_DUMP)
+      || (type == OLC_DUMP_REQ_STATS)
+      || (type == OLC_DUMP_QUES_STATS))
+    Request->request_type = type;
+  else
+    Request->request_type = OLC_DUMP;
 
   status = open_connection_to_daemon(Request, &fd);
   if(status)
