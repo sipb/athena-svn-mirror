@@ -1,7 +1,7 @@
 /*
- * $XFree86: xc/lib/fontconfig/src/fcdir.c,v 1.10 2002/09/26 00:15:53 keithp Exp $
+ * $RCSId: xc/lib/fontconfig/src/fcdir.c,v 1.9 2002/08/31 22:17:32 keithp Exp $
  *
- * Copyright © 2000 Keith Packard, member of The XFree86 Project, Inc.
+ * Copyright © 2000 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -70,7 +70,7 @@ FcFileScan (FcFontSet	    *set,
 		/*
 		 * Found a cache entry for the file
 		 */
-		if (FcGlobalCacheCheckTime (&cache_file->info))
+		if (FcGlobalCacheCheckTime (file, &cache_file->info))
 		{
 		    name = cache_file->name;
 		    need_scan = FcFalse;
@@ -89,7 +89,8 @@ FcFileScan (FcFontSet	    *set,
 						       strlen ((const char *) file),
 						       FcFalse)))
 	    {
-		if (FcGlobalCacheCheckTime (&cache_dir->info))
+		if (FcGlobalCacheCheckTime (cache_dir->info.file, 
+					    &cache_dir->info))
 		{
 		    font = 0;
 		    need_scan = FcFalse;
@@ -117,8 +118,6 @@ FcFileScan (FcFontSet	    *set,
 	    {
 		isDir = FcTrue;
 		ret = FcStrSetAdd (dirs, file);
-		if (cache && ret)
-		    FcGlobalCacheUpdate (cache, file, 0, FC_FONT_FILE_DIR);
 	    }
 	    /*
 	     * Update the cache
@@ -154,6 +153,11 @@ FcFileScan (FcFontSet	    *set,
 
 #define FC_MAX_FILE_LEN	    4096
 
+/*
+ * Scan 'dir', adding font files to 'set' and
+ * subdirectories to 'dirs'
+ */
+
 FcBool
 FcDirScan (FcFontSet	    *set,
 	   FcStrSet	    *dirs,
@@ -174,7 +178,11 @@ FcDirScan (FcFontSet	    *set,
 	 * Check fonts.cache-<version> file
 	 */
 	if (FcDirCacheReadDir (set, dirs, dir))
+	{
+	    if (cache)
+		FcGlobalCacheReferenceSubdir (cache, dir);
 	    return FcTrue;
+	}
     
 	/*
 	 * Check ~/.fonts.cache-<version> file
@@ -192,6 +200,9 @@ FcDirScan (FcFontSet	    *set,
     strcat ((char *) file, "/");
     base = file + strlen ((char *) file);
     
+    if (FcDebug () & FC_DBG_SCAN)
+	printf ("\tScanning dir %s\n", dir);
+	
     d = opendir ((char *) dir);
     
     if (!d)
@@ -212,6 +223,10 @@ FcDirScan (FcFontSet	    *set,
     }
     free (file);
     closedir (d);
+    /*
+     * Now that the directory has been scanned,
+     * add the cache entry 
+     */
     if (ret && cache)
 	FcGlobalCacheUpdate (cache, dir, 0, 0);
 	

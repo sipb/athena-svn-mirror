@@ -1,7 +1,7 @@
 /*
- * $XFree86: xc/lib/fontconfig/src/fccfg.c,v 1.23 2002/08/31 22:17:32 keithp Exp $
+ * $RCSId: xc/lib/fontconfig/src/fccfg.c,v 1.23 2002/08/31 22:17:32 keithp Exp $
  *
- * Copyright © 2000 Keith Packard, member of The XFree86 Project, Inc.
+ * Copyright © 2000 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -23,6 +23,12 @@
  */
 
 #include "fcint.h"
+
+#if defined (_WIN32) && defined (PIC)
+#define STRICT
+#include <windows.h>
+#undef STRICT
+#endif
 
 FcConfig    *_fcConfig;
 
@@ -50,8 +56,9 @@ FcConfigCreate (void)
 	goto bail3;
     
     config->cache = 0;
-    if (!FcConfigSetCache (config, (FcChar8 *) ("~/" FC_USER_CACHE_FILE)))
-	goto bail4;
+    if (FcConfigHome())
+	if (!FcConfigSetCache (config, (FcChar8 *) ("~/" FC_USER_CACHE_FILE)))
+	    goto bail4;
 
     config->blanks = 0;
 
@@ -133,8 +140,10 @@ FcSubstDestroy (FcSubst *s)
     while (s)
     {
 	n = s->next;
-	FcTestDestroy (s->test);
-	FcEditDestroy (s->edit);
+	if (s->test)
+	    FcTestDestroy (s->test);
+	if (s->edit)
+	    FcEditDestroy (s->edit);
 	s = n;
     }
 }
@@ -483,11 +492,13 @@ FcConfigPromote (FcValue v, FcValue u)
 }
 
 FcBool
-FcConfigCompareValue (FcValue	m,
-		      FcOp	op,
-		      FcValue	v)
+FcConfigCompareValue (const FcValue	m_o,
+		      FcOp		op,
+		      const FcValue	v_o)
 {
-    FcBool    ret = FcFalse;
+    FcValue	m = m_o;
+    FcValue	v = v_o;
+    FcBool	ret = FcFalse;
     
     m = FcConfigPromote (m, v);
     v = FcConfigPromote (v, m);
@@ -587,10 +598,10 @@ FcConfigCompareValue (FcValue	m,
 	case FcTypeLangSet:
 	    switch (op) {
 	    case FcOpContains:
-		ret = FcLangSetCompare (v.u.l, m.u.l) != FcLangDifferentLang;
+		ret = FcLangSetContains (v.u.l, m.u.l);
 		break;
 	    case FcOpNotContains:
-		ret = FcLangSetCompare (v.u.l, m.u.l) == FcLangDifferentLang;
+		ret = FcLangSetContains (v.u.l, m.u.l);
 		break;
 	    case FcOpEqual:
 		ret = FcLangSetEqual (v.u.l, m.u.l);
@@ -636,6 +647,13 @@ FcConfigCompareValue (FcValue	m,
     return ret;
 }
 
+
+#define _FcDoubleFloor(d)	((int) (d))
+#define _FcDoubleCeil(d)	((double) (int) (d) == (d) ? (int) (d) : (int) ((d) + 1))
+#define FcDoubleFloor(d)	((d) >= 0 ? _FcDoubleFloor(d) : -_FcDoubleCeil(-(d)))
+#define FcDoubleCeil(d)		((d) >= 0 ? _FcDoubleCeil(d) : -_FcDoubleFloor(-(d)))
+#define FcDoubleRound(d)	FcDoubleFloor ((d) + 0.5)
+#define FcDoubleTrunc(d)	((d) >= 0 ? _FcDoubleFloor (d) : -_FcDoubleFloor (-(d)))
 
 static FcValue
 FcConfigEvaluate (FcPattern *p, FcExpr *e)
@@ -825,6 +843,70 @@ FcConfigEvaluate (FcPattern *p, FcExpr *e)
 	}
 	FcValueDestroy (vl);
 	break;
+    case FcOpFloor:
+	vl = FcConfigEvaluate (p, e->u.tree.left);
+	switch (vl.type) {
+	case FcTypeInteger:
+	    v = vl;
+	    break;
+	case FcTypeDouble:
+	    v.type = FcTypeInteger;
+	    v.u.i = FcDoubleFloor (vl.u.d);
+	    break;
+	default:
+	    v.type = FcTypeVoid;
+	    break;
+	}
+	FcValueDestroy (vl);
+	break;
+    case FcOpCeil:
+	vl = FcConfigEvaluate (p, e->u.tree.left);
+	switch (vl.type) {
+	case FcTypeInteger:
+	    v = vl;
+	    break;
+	case FcTypeDouble:
+	    v.type = FcTypeInteger;
+	    v.u.i = FcDoubleCeil (vl.u.d);
+	    break;
+	default:
+	    v.type = FcTypeVoid;
+	    break;
+	}
+	FcValueDestroy (vl);
+	break;
+    case FcOpRound:
+	vl = FcConfigEvaluate (p, e->u.tree.left);
+	switch (vl.type) {
+	case FcTypeInteger:
+	    v = vl;
+	    break;
+	case FcTypeDouble:
+	    v.type = FcTypeInteger;
+	    v.u.i = FcDoubleRound (vl.u.d);
+	    break;
+	default:
+	    v.type = FcTypeVoid;
+	    break;
+	}
+	FcValueDestroy (vl);
+	break;
+    case FcOpTrunc:
+	vl = FcConfigEvaluate (p, e->u.tree.left);
+	switch (vl.type) {
+	case FcTypeInteger:
+	    v = vl;
+	    break;
+	case FcTypeDouble:
+	    v.type = FcTypeInteger;
+	    v.u.i = FcDoubleTrunc (vl.u.d);
+	    break;
+	default:
+	    v.type = FcTypeVoid;
+	    break;
+	}
+	FcValueDestroy (vl);
+	break;
     default:
 	v.type = FcTypeVoid;
 	break;
@@ -915,8 +997,16 @@ FcConfigAdd (FcValueList    **head,
 	     FcBool	    append,
 	     FcValueList    *new)
 {
-    FcValueList    **prev, *last;
+    FcValueList	    **prev, *last, *v;
+    FcValueBinding  sameBinding;
     
+    if (position)
+	sameBinding = position->binding;
+    else
+	sameBinding = FcValueBindingWeak;
+    for (v = new; v; v = v->next)
+	if (v->binding == FcValueBindingSame)
+	    v->binding = sameBinding;
     if (append)
     {
 	if (position)
@@ -1141,7 +1231,11 @@ FcConfigSubstituteWithPat (FcConfig    *config,
 		if ((t->kind == FcMatchFont || kind == FcMatchPattern) &&
 		    !FcStrCmpIgnoreCase ((FcChar8 *) t->field, 
 					 (FcChar8 *) e->field))
+		{
+		    if (!st[i].elt)
+			t = 0;
 		    break;
+		}
 	    }
 	    switch (e->op) {
 	    case FcOpAssign:
@@ -1250,9 +1344,53 @@ FcConfigSubstitute (FcConfig	*config,
     return FcConfigSubstituteWithPat (config, p, 0, kind);
 }
 
-#ifndef FONTCONFIG_PATH
-#define FONTCONFIG_PATH	"/etc/fonts"
-#endif
+#if defined (_WIN32) && defined (PIC)
+
+static FcChar8 fontconfig_path[1000] = "";
+
+BOOL WINAPI
+DllMain (HINSTANCE hinstDLL,
+	 DWORD     fdwReason,
+	 LPVOID    lpvReserved)
+{
+  FcChar8 *p;
+
+  switch (fdwReason) {
+  case DLL_PROCESS_ATTACH:
+      if (!GetModuleFileName ((HMODULE) hinstDLL, fontconfig_path,
+			      sizeof (fontconfig_path)))
+	  break;
+
+      /* If the fontconfig DLL is in a "bin" or "lib" subfolder,
+       * assume it's a Unix-style installation tree, and use
+       * "etc/fonts" in there as FONTCONFIG_PATH. Otherwise use the
+       * folder where the DLL is as FONTCONFIG_PATH.
+       */
+      p = strrchr (fontconfig_path, '\\');
+      if (p)
+      {
+	  *p = '\0';
+	  p = strrchr (fontconfig_path, '\\');
+	  if (p && (FcStrCmpIgnoreCase (p + 1, "bin") == 0 ||
+		    FcStrCmpIgnoreCase (p + 1, "lib") == 0))
+	      *p = '\0';
+	  strcat (fontconfig_path, "\\etc\\fonts");
+      }
+      else
+          fontconfig_path[0] = '\0';
+      
+      break;
+  }
+
+  return TRUE;
+}
+
+#undef FONTCONFIG_PATH
+#define FONTCONFIG_PATH fontconfig_path
+
+#else /* !(_WIN32 && PIC) */
+
+#endif /* !(_WIN32 && PIC) */
 
 #ifndef FONTCONFIG_FILE
 #define FONTCONFIG_FILE	"fonts.conf"
@@ -1270,9 +1408,16 @@ FcConfigFileExists (const FcChar8 *dir, const FcChar8 *file)
 	return 0;
 
     strcpy ((char *) path, (const char *) dir);
-    /* make sure there's a single separating / */
+    /* make sure there's a single separator */
+#ifdef _WIN32
+    if ((!path[0] || (path[strlen((char *) path)-1] != '/' &&
+		      path[strlen((char *) path)-1] != '\\')) &&
+	 (file[0] != '/' && file[0] != '\\'))
+	strcat ((char *) path, "\\");
+#else
     if ((!path[0] || path[strlen((char *) path)-1] != '/') && file[0] != '/')
 	strcat ((char *) path, "/");
+#endif
     strcat ((char *) path, (char *) file);
 
     FcMemAlloc (FC_MEM_STRING, strlen ((char *) path) + 1);
@@ -1299,7 +1444,7 @@ FcConfigGetPath (void)
 	e = env;
 	npath++;
 	while (*e)
-	    if (*e++ == ':')
+	    if (*e++ == FC_SEARCH_PATH_SEPARATOR)
 		npath++;
     }
     path = calloc (npath, sizeof (FcChar8 *));
@@ -1312,7 +1457,7 @@ FcConfigGetPath (void)
 	e = env;
 	while (*e) 
 	{
-	    colon = (FcChar8 *) strchr ((char *) e, ':');
+	    colon = (FcChar8 *) strchr ((char *) e, FC_SEARCH_PATH_SEPARATOR);
 	    if (!colon)
 		colon = e + strlen ((char *) e);
 	    path[i] = malloc (colon - e + 1);
@@ -1353,6 +1498,33 @@ FcConfigFreePath (FcChar8 **path)
     free (path);
 }
 
+static FcBool	_FcConfigHomeEnabled = FcTrue;
+
+FcChar8 *
+FcConfigHome (void)
+{
+    if (_FcConfigHomeEnabled)
+    {
+        char *home = getenv ("HOME");
+
+#ifdef _WIN32
+	if (home == NULL)
+	    home = getenv ("USERPROFILE");
+#endif
+
+	return home;
+    }
+    return 0;
+}
+
+FcBool
+FcConfigEnableHome (FcBool enable)
+{
+    FcBool  prev = _FcConfigHomeEnabled;
+    _FcConfigHomeEnabled = enable;
+    return prev;
+}
+
 FcChar8 *
 FcConfigFilename (const FcChar8 *url)
 {
@@ -1365,14 +1537,26 @@ FcConfigFilename (const FcChar8 *url)
 	    url = (FcChar8 *) FONTCONFIG_FILE;
     }
     file = 0;
+
+#ifdef _WIN32
+    if (isalpha (*url) &&
+	url[1] == ':' &&
+	(url[2] == '/' || url[2] == '\\'))
+	goto absolute_path;
+#endif
+
     switch (*url) {
     case '~':
-	dir = (FcChar8 *) getenv ("HOME");
+	dir = FcConfigHome ();
 	if (dir)
 	    file = FcConfigFileExists (dir, url + 1);
 	else
 	    file = 0;
 	break;
+#ifdef _WIN32
+    case '\\':
+    absolute_path:
+#endif
     case '/':
 	file = FcConfigFileExists (0, url);
 	break;

@@ -1,5 +1,5 @@
 /*
- * $XFree86: xc/lib/fontconfig/src/fcmatrix.c,v 1.2 2002/07/28 10:50:59 keithp Exp $
+ * $RCSId: $
  *
  * Copyright © 2000 Tuomas J. Lukka
  *
