@@ -1,4 +1,4 @@
-.\" $Id: fsid.1,v 1.8 1999-04-13 21:06:11 ghudson Exp $
+.\" $Id: fsid.1,v 1.9 1999-05-12 17:35:12 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -78,8 +78,9 @@ Authenticate the user to the specified AFS cell.
 Authenticate the user to the specified NFS server host.
 .TP 8
 .I --all (-a)
-Perform the current mapping operation for all filesystems in the
-attachtab.
+Perform the current mapping operation for all filesystems attached by
+the user. (For "purge" and "purge user", the operation is performed
+for all filesystems in the attachtab.)
 
 .SH DIAGNOSTICS
 If \fIfsid\fP is unable to initalize the locker library, it will exist

@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.4 1999-03-29 17:35:40 danw Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.5 1999-05-12 17:35:13 danw Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -59,8 +59,9 @@ int fsid_main(int argc, char **argv)
   int mode = FSID_WHATEVER, op = LOCKER_AUTH_AUTHENTICATE;
   struct hostent *h;
   int status, estatus = 0, opt, gotname = 0;
+  uid_t uid = getuid();
 
-  if (locker_init(&context, getuid(), NULL, NULL))
+  if (locker_init(&context, uid, NULL, NULL))
     exit(1);
 
   while (optind < argc)
@@ -70,8 +71,17 @@ int fsid_main(int argc, char **argv)
 	  switch (opt)
 	    {
 	    case 'a':
-	      locker_iterate_attachtab(context, NULL, NULL,
-				       fsid_attachent, &op);
+	      if (op == LOCKER_AUTH_PURGE ||
+		  op == LOCKER_AUTH_PURGEUSER)
+		{
+		  locker_iterate_attachtab(context, NULL, NULL,
+					   fsid_attachent, &op);
+		}
+	      else
+		{
+		  locker_iterate_attachtab(context, locker_check_owner, &uid,
+					   fsid_attachent, &op);
+		}
 	      gotname++;
 	      break;
 
