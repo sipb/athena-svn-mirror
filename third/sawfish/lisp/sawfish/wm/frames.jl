@@ -1,5 +1,5 @@
 ;; frames.jl -- handle window framing
-;; $Id: frames.jl,v 1.1.1.3 2001-03-09 19:34:52 ghudson Exp $
+;; $Id: frames.jl,v 1.1.1.4 2002-03-20 04:59:36 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -23,8 +23,7 @@
 
     (compound-interface
      (structure-interface sawfish.wm.frames.subrs)
-     (export custom-set-frame-style
-	     after-setting-frame-option
+     (export after-setting-frame-option
 	     define-frame-type-mapper
 	     add-frame-style
 	     reload-frame-style
@@ -33,6 +32,8 @@
 	     rebuild-frames-with-style
 	     reframe-windows-with-style
 	     set-frame-style
+	     apply-frame-style
+	     apply-frame-style-and-save
 	     mark-frame-style-editable
 	     frame-style-editable-p
 	     window-type
@@ -338,6 +339,27 @@ deciding which frame type to ask a theme to generate.")
       (call-window-hook 'window-state-change-hook w (list '(frame-style)))
       (reframe-window w)))
 
+  ;; return true iff successful
+  (define (apply-frame-style style)
+    (let ((old-style default-frame-style))
+      (condition-case nil
+	  (progn
+	    (setq default-frame-style style)
+	    (after-setting-default-frame)
+	    t)
+	(error
+	 (setq default-frame-style old-style)
+	 (after-setting-frame-option)
+	 nil))))
+
+  (define (save-current-frame-style)
+    (require 'sawfish.wm.customize)
+    (customize-set 'default-frame-style default-frame-style))
+
+  (define (apply-frame-style-and-save style)
+    (when (apply-frame-style style)
+      (save-current-frame-style)))
+
 
 ;;; editable frame styles
 
@@ -582,8 +604,7 @@ deciding which frame type to ask a theme to generate.")
 	  ((top-left-corner) 'top_left_corner)
 	  ((top-right-corner) 'top_right_corner)
 	  ((bottom-left-corner) 'bottom_left_corner)
-	  ((bottom-right-corner) 'bottom_right_corner)
-	  ((title) 'hand2))
+	  ((bottom-right-corner) 'bottom_right_corner))
       nil))
 
 

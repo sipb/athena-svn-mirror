@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p1
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -11,7 +11,7 @@ dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
 dnl Configure paths for librep
-dnl $Id: aclocal.m4,v 1.1.1.1 2000-11-12 06:28:46 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.1.1.2 2002-03-20 04:56:29 ghudson Exp $
 dnl
 dnl AM_PATH_REP([MINIMUM_VERSION])
 dnl Test for librep, define REP_VERSION, REP_CFLAGS, REP_LIBS and REP_EXECDIR

@@ -1,6 +1,6 @@
 #| commands.jl -- managing the command database
 
-   $Id: commands.jl,v 1.1.1.1 2000-11-12 06:27:54 ghudson Exp $
+   $Id: commands.jl,v 1.1.1.2 2002-03-20 04:56:19 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -82,7 +82,7 @@ evaluated.")
     (when type
       (put name 'custom-command-args type))
     (when doc
-      (put name 'dommand-doc doc))
+      (put name 'command-doc doc))
     (when doc-key
       (put name 'command-doc-key doc-key))
     (when user-level
@@ -374,6 +374,8 @@ command called NAME (optionally whose arguments have custom-type TYPE)."
   (define-command 'quit quit)
   (define-command 'restart restart)
   (define-command 'destroy-window destroy-window #:spec "%W")
+  (define-command 'kill-client x-kill-client #:spec "%W")
+  (define-command 'no-operation nop)
 
   (define (call-command-with-output-to-screen command)
     "Prompt for a command, execute it, and print any output to the screen."

@@ -1,5 +1,5 @@
 ;; gnome.jl -- minimal GNOME compliance
-;; $Id: gnome.jl,v 1.1.1.3 2001-03-09 19:35:21 ghudson Exp $
+;; $Id: gnome.jl,v 1.1.1.4 2002-03-20 05:00:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -294,12 +294,34 @@
 	   (set-window-depth w (- (aref data 0) WIN_LAYER_NORMAL))
 	   t)))
 
+  (define (gnome-property-handler w prop)
+    (when (windowp w)
+      (case prop
+	((_WIN_WORKSPACE)                       
+	  (let ((space (get-x-property w '_WIN_WORKSPACE)))
+	    (when (and space (eq (car space) 'CARDINAL)
+		       (= (length (nth 2 space)) 1))
+	      (let ((count (aref (nth 2 space) 0)))
+		(unless (window-appears-in-workspace-p
+			 w (workspace-id-from-logical count))
+		  (send-window-to-workspace-from-first w count))))))
+
+	((_WIN_AREA)
+	 (let ((area (get-x-property w '_WIN_AREA)))
+	   (when (and area (eq (car area) 'CARDINAL)
+		      (= (length (nth 2 area)) 2))
+	     (let ((x (aref (nth 2 area) 0))
+		   (y (aref (nth 2 area) 1))
+		   (port (window-viewport w)))
+	       (unless (and (= (car port) x) (= (cdr port) y))
+		 (set-window-viewport w x y)))))))))
+
   (define (gnome-event-proxyer)
     (when (and (current-event) (eq (current-event-window) 'root))
       (let ((event (event-name (current-event))))
 	;; only proxy Click1 or Off events, and only if we don't have
 	;; a binding for an event that may follow in the same grab
-	(cond ((and (string-match "^(.*)-Click1$" event)
+	(cond ((and (string-match "^(.*)-Click\\d?$" event)
 		    (let ((mirror (lookup-event
 				   (expand-last-match "\\1-Off"))))
 		      (not (or (search-keymap mirror global-keymap)
@@ -307,7 +329,7 @@
 	       ;; send with SubstructureNotifyMask
 	       (proxy-current-event gnome-window-id (lsh 1 19))
 	       t)
-	      ((and (string-match "^(.*)-Off$" event)
+	      ((and (string-match "^(.*)-Off[123]?$" event)
 		    (let ((mirrors
 			   (mapcar (lambda (x)
 				     (lookup-event
@@ -374,6 +396,8 @@
     (call-after-state-changed '(window-list-skip) gnome-set-client-hints)
 
     (add-hook 'client-message-hook gnome-client-message-handler)
+    (add-hook 'property-notify-hook gnome-property-handler)
+
     (add-hook 'unbound-key-hook gnome-event-proxyer)
     (add-hook 'before-exit-hook gnome-exit))
 

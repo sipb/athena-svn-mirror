@@ -1,3 +1,69 @@
+2001-08-31  John Harper  <jsh@pixelslut.com>
+
+	Fixed 4235 (error in sawfish-ui -> sawfish-capplet livelocks):
+
+	* sawmill-capplet.c (ui_output_callback): check for eof or
+	errors when reading from the slave's output stream, and print a
+	message if it occurs
+
+2001-04-09  Christian Rose  <menthos@menthos.com>
+
+	* desktop-entries/sound-properties.desktop: Applied patch for the
+	sv entry by Peter Winnberg <petey@sdf.sbacka.pitea.se>.
+
+2001-04-05  John Harper  <jsh@eazel.com>
+
+	* desktop-entries/sound-properties.desktop: small change to
+	comment
+
+2001-03-11  Christian Meyer  <chrisime@gnome.org>
+
+	* desktop-entries/meta-properties.destop: Added German strings.
+
+2001-03-10  Christian Rose  <menthos@menthos.com>
+
+	* desktop-entries/.directory,
+	desktop-entries/appearance-properties.desktop,
+	desktop-entries/bindings-properties.desktop,
+	desktop-entries/focus-properties.desktop,
+	desktop-entries/match-properties.desktop,
+	desktop-entries/maximize-properties.desktop,
+	desktop-entries/meta-properties.desktop,
+	desktop-entries/misc-properties.desktop,
+	desktop-entries/move-properties.desktop,
+	desktop-entries/placement-properties.desktop,
+	desktop-entries/sound-properties.desktop,
+	desktop-entries/workspace-properties.desktop: Added Swedish (sv)
+	entries.
+
+2001-03-08  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* desktop-entries/*.desktop: Revised Galician entries.
+
+2001-03-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* desktop-entries/*.desktop: Fixed broken encoding.
+	Scream if this breaks anything.
+	
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* */*.desktop: Added Czech translation from Jiri Cerny
+	<jiri.cerny@epfl.ch>.
+
+2001-02-24  John Harper  <jsh@eazel.com>
+
+	* desktop-entries/bindings-properties.desktop: more revert
+	surgery
+
+2001-02-23  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* desktop-entries/move-properties.desktop,
+	desktop-entries/meta-properties.desktop,
+	desktop-entries/maximize-properties.desktop,
+	desktop-entries/match-properties.desktop,
+	desktop-entries/bindings-properties.desktop: re-added 
+	ro translations
+
 2001-02-19  John Harper  <jsh@eazel.com>
 
 	* version 0.37.3

@@ -1,5 +1,5 @@
 ;; smart-placement.jl -- ``intelligent'' window placement
-;; $Id: smart.jl,v 1.1.1.2 2001-01-13 14:58:46 ghudson Exp $
+;; $Id: smart.jl,v 1.1.1.3 2002-03-20 04:59:18 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -89,12 +89,12 @@
       (when with-root
 	(unless (memql 0 (car grid))
 	  (rplaca grid (cons 0 (car grid))))
-	(unless (memql (1- (screen-width)) (car grid))
-	  (rplaca grid (cons (1- (screen-width)) (car grid))))
+	(unless (memql (screen-width) (car grid))
+	  (rplaca grid (cons (screen-width) (car grid))))
 	(unless (memql 0 (cdr grid))
 	  (rplacd grid (cons 0 (cdr grid))))
-	(unless (memql (1- (screen-height)) (cdr grid))
-	  (rplacd grid (cons (1- (screen-height)) (cdr grid)))))
+	(unless (memql (screen-height) (cdr grid))
+	  (rplacd grid (cons (screen-height) (cdr grid)))))
       (rplaca grid (sort (sp-prune-points (car grid) sp-max-points
 					  (cons 0 (screen-width)))))
       (rplacd grid (sort (sp-prune-points (cdr grid) sp-max-points
@@ -103,7 +103,7 @@
 
   (define (sp-prune-points points maximum range)
     (setq points (delete-if-not (lambda (p)
-				  (and (>= p (car range)) (< p (cdr range))))
+				  (and (>= p (car range)) (<= p (cdr range))))
 				points))
     (let ((total (length points)))
       (cond ((> total maximum)

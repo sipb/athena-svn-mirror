@@ -1,3 +1,36 @@
+2001-09-07  John Harper  <jsh@pixelslut.com>
+
+	* layouts/keymaps.jl (layout-keymaps): fixed bug of keymap
+	popup menu being displayed even if there are no keymaps to
+	configure
+
+	* shell.jl (display-flattened): fixed bug of `--flatten
+	--single-level' combination not working properly
+
+2001-08-23  John Harper  <jsh@pixelslut.com>
+
+	* widgets/match-window.jl (make-match-window:matchers): search
+	the translated X properties for the real atom name when
+	grabbing properties, don't pass the (translated) property name
+
+2001-07-02  John Harper  <jsh@pixelslut.com>
+
+	* version 0.99
+
+2001-04-20  John Harper  <jsh@eazel.com>
+
+	Extra i18n work. Adapted from a patch by Vlad Harchev
+	<hvv@hippo.ru>
+
+	* layouts/keymaps.jl (beautify-keymap-name): try to localize
+	the name before returning it
+	* widgets/keymap.jl (beautify-symbol-name): ditto
+	* widgets/match-window.jl (beautify-symbol-name): ditto
+
+	* widgets/match-window.jl (make-match-window:matchers):
+	localizes all property names before starting, then uses that
+	list of properties
+
 2001-02-13  John Harper  <jsh@eazel.com>
 
 	* version 0.37

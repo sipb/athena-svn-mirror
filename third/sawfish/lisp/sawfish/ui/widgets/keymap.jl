@@ -1,6 +1,6 @@
 #| nokogiri-widgets/keymap.jl
 
-   $Id: keymap.jl,v 1.1.1.1 2000-11-12 06:27:24 ghudson Exp $
+   $Id: keymap.jl,v 1.1.1.2 2002-03-20 04:59:38 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -97,4 +97,4 @@
 	       (setq name (concat (substring name 0 (match-start))
 				  ?  (substring name (match-end)))))
 	     (aset name 0 (char-upcase (aref name 0)))
-	     name)))))
+	     (_ name))))))

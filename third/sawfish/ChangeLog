@@ -1,3 +1,355 @@
+2001-10-14  John Harper  <jsh@unfactored.org>
+
+	* configure.in: version 1.0.1
+
+	* configure.in: disabled dlmalloc on sparc platforms. Brian
+	Nitz <Brian.Nitz@Sun.COM> reports that this is necessary to
+	stop sawfish crashing in certain circumstances
+
+2001-10-07  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* po/pt.po: Renamed from po/pt_PT.po.
+
+2001-09-24  John Harper  <jsh@unfactored.org>
+
+	* po/it.po: update from Michele Campeotto <micampe@f2s.com>
+
+2001-09-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* po/pl.po: Updated Polish translation.
+
+2001-09-15  John Harper  <jsh@unfactored.org>
+
+	* config.h.in: removed spurious close-comment from after
+	`#undef HAVE_MEMORY_H'. From Ali Akcaagac
+	<ali.akcaagac@stud.fh-wilhelmshaven.de>
+
+2001-09-09  Wang Jian  <lark@linux.net.cn>
+
+	* po/zh_CN.po: Renamed from po/zh_CN.GB2312.po.
+
+2001-09-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* po/zh_TW.Big5.po: Rename to...
+	* po/zh_TW.po: this, to prevent future encoding naming problem.
+
+2001-09-03  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* po/es.po: Updated Spanish translation by Eneko
+	Lacunza <enlar@iname.com>
+
+2001-09-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* po/tr.po: Committed updated Turkish translation by
+		Ömer.
+
+2001-09-02  Christian Rose  <menthos@menthos.com>
+
+	* po/sv.po: Corrected Swedish translation. Thanks to
+	Göran Uddeborg <goeran@uddeborg.pp.se>.
+
+2001-09-01  Christian Rose  <menthos@menthos.com>
+
+	* po/sv.po: Updated Swedish translation.
+
+2001-08-27  Ole Laursen  <olau@hardworking.dk>
+
+	* po/da.po: Fixed a few strings in Danish translation.
+
+2001-08-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* po/zh_TW.Big5.po: Updated traditional Chinese translation, and
+	  intentionally disabled some translations to make both
+	  newer/older gettext work.
+
+2001-08-21  John Harper  <jsh@pixelslut.com>
+
+	* po/it.po: update from Michele Campeotto <micampe@f2s.com>
+
+2001-08-19  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* po/gl.po: Updated Galician translation.
+
+2001-08-15  Abel Cheung  <maddog@linux.org.hk>
+
+	* po/zh_TW.Big5.po: Updated traditional Chinese translation.
+
+2001-07-28  Abel Cheung  <maddog@linux.org.hk>
+
+	* po/zh_TW.Big5.po: msgmerge'd with sawfish.pot, marked all
+	  questionable strings with fuzzy, so that both newer and older
+	  gettext works.
+
+2001-07-12  Ole Laursen  <olau@hardworking.dk>
+
+	* capplet/desktop-entries/appearance-properties.desktop,
+	capplet/desktop-entries/move-properties.desktop, po/da.po: Fixed a
+	few things in Danish translation.
+
+2001-07-09  John Harper  <jsh@pixelslut.com>
+
+	* configure.in: version 1.0
+
+	* po/fr.po: update from Christian Marillat
+
+2001-07-02  John Harper  <jsh@pixelslut.com>
+
+	* configure.in: version 0.99
+
+	* THANKS, README, HACKING, BUGS, AUTHORS: updated
+
+	* po/ja.po: update from Sato Satoru
+
+2001-06-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2001-06-20  John Harper  <jsh@pixelslut.com>
+
+	* Makefile.in: fixed SUBDIRS commands to exit if an error
+	occurs
+
+2001-06-04  John Harper  <jsh@pixelslut.com>
+
+	* po/sawfish.pot: updated
+
+	* configure.in, sawfish.spec.in: require librep 0.14 (for the
+	compiler fix)
+
+2001-05-23  John Harper  <jsh@pixelslut.com>
+
+	* po/zh_TW.Big5.po: reverted to revsion 1.1, `pablo's commit
+	breaks on my version of gettext (Red Hat 7.1)
+
+2001-05-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* po/no.po: Updated Norwegian translation.
+	
+2001-05-21  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* po/es.po: Merged with sawfish.pot file
+
+2001-05-20  Antti Ahvensalmi  <aahven@mbnet.fi>
+
+	* po/fi.po: Updated Finnish translation.
+
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* po/cs.po: Updated translation from Jiri Cerny
+	<cerny@masg1.epfl.ch>.
+
+2001-05-12  John Harper  <jsh@pixelslut.com>
+
+	* po/fr.po: update from Christian Marillat
+
+2001-05-06  Matthias Warkus  <mawarkus@gnome.org>
+
+	* po/de.po: Conflicts detected. Commit.
+
+2001-05-03  Matthias Warkus  <mawarkus@gnome.org>
+
+	* po/de.po: Updated.
+
+2001-05-01  John Harper  <jsh@eazel.com>
+
+	* themes/Crux/theme.jl: don't include close buttons on
+	transient windows, since it may lead to confusion (ideally,
+	we'd only remove close buttons from dialogs with more than one
+	choice, but the wm can't determine that)
+
+	Also, moved all button theme definitions into the special
+	variable Crux:button-themes, then the button-theme function
+	just dereferences this
+
+2001-04-25  Ole Laursen  <olau@hardworking.dk>
+
+	* po/da.po: Updated Danish translation.
+
+	* po/update.sh: Added a convenient script for updating .po files.
+
+2001-04-22  John Harper  <jsh@eazel.com>
+
+	* configure.in: s/X11_CFLAGS/X_CFLAGS/
+
+2001-04-21  John Harper  <jsh@eazel.com>
+
+	* configure.in: temporarily set CPPFLAGS to include X11_CFLAGS
+	while looking for X header files
+
+2001-04-20  John Harper  <jsh@eazel.com>
+
+	Adapted from a patch by Vlad Harchev <hvv@hippo.ru>:
+
+	* po/sawfish-xgettext: extract beautified keymap names.
+	Consider i18n-defvar and i18n-define forms on a variable by
+	variable basis. Also add beautified command names
+
+	* po/sawfish.pot: updated
+
+2001-04-05  Ole Laursen  <olau@hardworking.dk>
+
+	* po/da.po: Updated Danish translation.
+
+2001-04-05  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* po/pl.po: Corrected charset header
+	* po/pt_BR.po: changed DOS end of lines to Unix ones
+
+2001-03-06  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* po/sk.po: Updated Slovak translation
+
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* po/cs.po: Added Czech translation from Jiri Cerny
+	<jiri.cerny@epfl.ch>.
+
+2001-03-03  Antti Ahvensalmi  <aahven@mbnet.fi>
+
+	* po/fi.po: Updated Finnish translation.
+
+2001-02-28  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* po/az.po: Added Azeri file
+	* po/{fi,it,pl,ro,sl}.po: corrected/enabled header
+
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* po/cs.po: Update from Jiri Cerny <jiri.cerny@epfl.ch>.
+
+2001-03-27  Ole Laursen  <olau@hardworking.dk>
+
+	* po/da.po: Minor fixes in Danish translation.
+
+2001-03-27  Matthias Warkus  <mawarkus@gnome.org>
+
+	* po/de.po: Huge update.
+
+2001-03-24  Matthias Warkus  <mawarkus@gnome.org>
+
+	* po/de.po: Commit this to be sure.
+
+2001-03-22  Fatih Demir <kabalak@gtranslator.org>
+
+	* po/tr.po: Committed updated Turkish translation
+		by Özgür.
+
+2001-03-19  John Harper  <jsh@eazel.com>
+
+	* configure.in: patch from albert chin
+	(china@thewrittenword.com):
+
+	1. No need to AC_MSG_CHECKING if the user has disabled the
+	feature
+
+	2. /usr/ccs/lib/cpp is a more portable location for cpp under
+	Solaris
+
+	3. Run some *-config scripts in a sub-process so we can handle
+	the case where the command is not found (else the shell outputs
+	<blah> command not found).
+
+2001-03-14  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.38
+
+2000-03-14  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* po/gl.po: Updated Galician translation.
+
+2001-03-13  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* po/sv.po: Made a big overhaul, and updated Swedish translation.
+
+2001-03-11  Matthias Warkus  <mawarkus@gnome.org>
+
+	* po/de.po: Patched in diff from Christian Meyer.
+
+2001-03-11  Timur Bakeyev  <mc@bat.ru>
+	
+	* capplet/desktop-entries/*.desktop:  added Russian translations
+	from Vlad Harchev <hvv@hippo.ru>	
+	
+2001-03-11  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* po/es.po: Updated Spanish translation by Joseba García
+	  Etxebarria <josebagar@euskalnet.net>
+
+2000-03-11  Christian Meyer  <chrisime@gnome.org>
+
+	* po/de.po: Cleaned up the file a little bit.
+
+2000-03-08  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* po/gl.po: Updated Galician translation.
+	* themes/Crux/README.gl: Added Galician description file.
+
+2001-03-06  John Harper  <jsh@eazel.com>
+
+	* po/ChangeLog: removed (po ChangeLog entries should go in the
+	top-level ChangeLog)
+
+2001-03-03  John Harper  <jsh@eazel.com>
+
+	* po/pl.po: update from Daniel Koæ <kocio@bigfoot.com>
+
+	* po/ru.po: update from Vlad Harchev <hvv@hippo.ru>
+
+2001-03-03  Antti Ahvensalmi  <aahven@mbnet.fi>
+
+	* po/fi.po: Updated Finnish translation.
+
+2001-03-02  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* po/sawfish.pot:
+	* po/sk.po:
+
+2001-02-28  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* po/az.po: Added Azeri file
+	* po/{fi,it,pl,ro,sl}.po: corrected/enabled header
+
+2001-03-05  Stanislav Brabec  <utx@penguin.cz>
+
+	* Sawfish.desktop: Added Czech translation from Jiri Cerny
+	<jiri.cerny@epfl.ch>.
+
+2001-02-28  John Harper  <jsh@eazel.com>
+
+	* themes/Crux/theme.jl (Crux:button-theme): default theme is
+	now `default'
+
+	* themes/Crux/theme.jl (button-theme): new button theme
+	`default'. Like `platinum' but show an iconify button on the
+	right in nomal windows
+
+2001-02-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* po/no.po: Updated Norwegian (bokmål) translation.
+
+2001-02-25  Simos Xenitellis  <simos@hellug.gr>
+
+	* po/el.po: Updated Greek translation.
+
+2001-02-24  John Harper  <jsh@eazel.com>
+
+	* po/it.po: update from Michele Campeotto <micampe@f2s.com>
+
+	* po/fr.po: update from Christian Marillat
+	<marillat.christian@wanadoo.fr>
+
+	* po/sawfish-xgettext (helper): extract choices from `:options'
+	and `:type (choice ..)' fields. Patch from Vlad Harchev
+	<hvv@hippo.ru>
+
+2001-02-23  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* po/ro.po: Updated
+
+2001-02-21  Fatih Demir	<kabalak@gtranslator.org>
+
+	* po/ko.po: Committed updated Korean translation.
+
 2001-02-19  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.37.3
@@ -25,7 +377,7 @@
 2001-02-12  John Harper  <jsh@eazel.com>
 
 	* po/sawfish.pot: committed the translation template (requested
-	by kmarass), will try to periodically update this
+	by kmaraas), will try to periodically update this
 	auto-generated file..
 
 2001-02-09  John Harper  <jsh@eazel.com>

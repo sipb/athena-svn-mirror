@@ -1,5 +1,5 @@
 /* cursor.c -- Cursor handling
-   $Id: cursors.c,v 1.1.1.1 2000-11-12 06:27:12 ghudson Exp $
+   $Id: cursors.c,v 1.1.1.2 2002-03-20 04:59:22 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -252,6 +252,8 @@ cursors_init (void)
     rep_ADD_SUBR(Scursorp);
     if (!batch_mode_p ())
 	Fdefault_cursor (Fget_cursor (rep_MAKE_INT (XC_left_ptr)));
+    else
+	default_cursor = Qnil;
     rep_mark_static (&default_cursor);
     rep_INTERN(cursor_shape);
     rep_pop_structure (tem);

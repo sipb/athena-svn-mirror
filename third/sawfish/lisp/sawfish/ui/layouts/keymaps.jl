@@ -1,6 +1,6 @@
 #| nokogiri-layouts/keymaps.jl -- shell for binding group
 
-   $Id: keymaps.jl,v 1.1.1.2 2001-01-13 14:58:11 ghudson Exp $
+   $Id: keymaps.jl,v 1.1.1.3 2002-03-20 05:00:34 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -36,6 +36,8 @@
     (string-match "-keymap$" (symbol-name (slot-name slot))))
 
   (define (layout-keymaps style slots)
+    (declare (unused style))
+
     (let* ((menu (gtk-menu-new))
 	   (omenu (gtk-option-menu-new))
 	   (hbox (gtk-hbox-new nil box-spacing))
@@ -45,37 +47,39 @@
 	   (other-slots (filter (lambda (x) (not (keymap-slot-p x))) slots))
 	   (active (car keymap-slots)))
 
-      (gtk-box-pack-start hbox (gtk-label-new (_ "Context:")))
-      (gtk-box-pack-start hbox omenu)
-      (gtk-box-pack-start vbox hbox)
+      (when keymap-slots
+	(gtk-box-pack-start hbox (gtk-label-new (_ "Context:")))
+	(gtk-box-pack-start hbox omenu)
+	(gtk-box-pack-start vbox hbox)
 
-      (let loop ((rest keymap-slots)
-		 (last nil))
-	(when rest
-	  (let* ((slot (car rest))
-		 (button (gtk-radio-menu-item-new-with-label-from-widget
-			  last (beautify-keymap-name (slot-name slot)))))
-	    (gtk-menu-append menu button)
-	    (gtk-widget-show button)
-	    (gtk-signal-connect button "toggled"
-				(lambda (w)
-				  (when (gtk-check-menu-item-active w)
-				    (when active
-				      (gtk-container-remove
-				       km-vbox (slot-gtk-widget active)))
-				    (setq active slot)
-				    (gtk-box-pack-start
-				     km-vbox (slot-gtk-widget active) t t))))
-	    (set-slot-layout slot (slot-gtk-widget slot))
-	    (loop (cdr rest) button))))
+	(let loop ((rest keymap-slots)
+		   (last nil))
+	  (when rest
+	    (let* ((slot (car rest))
+		   (button (gtk-radio-menu-item-new-with-label-from-widget
+			    last (beautify-keymap-name (slot-name slot)))))
+	      (gtk-menu-append menu button)
+	      (gtk-widget-show button)
+	      (gtk-signal-connect button "toggled"
+				  (lambda (w)
+				    (when (gtk-check-menu-item-active w)
+				      (when active
+					(gtk-container-remove
+					 km-vbox (slot-gtk-widget active)))
+				      (setq active slot)
+				      (gtk-box-pack-start
+				       km-vbox (slot-gtk-widget active) t t))))
+	      (set-slot-layout slot (slot-gtk-widget slot))
+	      (loop (cdr rest) button))))
 
-      (gtk-option-menu-set-menu omenu menu)
+	(gtk-option-menu-set-menu omenu menu)
 
-      (when active
-	(gtk-option-menu-set-history omenu 0)
-	(gtk-box-pack-start km-vbox (slot-gtk-widget active) t t))
+	(when active
+	  (gtk-option-menu-set-history omenu 0)
+	  (gtk-box-pack-start km-vbox (slot-gtk-widget active) t t))
 
-      (gtk-box-pack-start vbox km-vbox t t)
+	(gtk-box-pack-start vbox km-vbox t t))
+
       (gtk-box-pack-start vbox (layout-slots 'vbox other-slots))
 
       (gtk-widget-show-all vbox)
@@ -85,6 +89,7 @@
 
 ;;; utils
 
+  ;; also in sawfish-xgettext
   (define (beautify-keymap-name symbol)
     (cond ((stringp symbol) symbol)
 	  ((not (symbolp symbol)) (format "%s" symbol))
@@ -96,4 +101,4 @@
 	       (setq name (concat (substring name 0 (match-start))
 				  ?  (substring name (match-end)))))
 	     (aset name 0 (char-upcase (aref name 0)))
-	     name)))))
+	     (_ name))))))

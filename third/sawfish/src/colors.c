@@ -1,5 +1,5 @@
 /* colors.c -- Colour handling
-   $Id: colors.c,v 1.1.1.2 2001-03-09 19:35:09 ghudson Exp $
+   $Id: colors.c,v 1.1.1.3 2002-03-20 04:59:41 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -209,7 +209,12 @@ colors_init (void)
     rep_ADD_SUBR(Scolorp);
     rep_INTERN_SPECIAL(default_foreground);
     if (!batch_mode_p ())
-	Fset (Qdefault_foreground, Fget_color (rep_string_dup("black")));
+    {
+	repv black = Fget_color (rep_string_dup("#000000"));
+	if (black == rep_NULL)
+	    black = Qnil;
+	Fset (Qdefault_foreground, black);
+    }
     rep_pop_structure (tem);
 }
 

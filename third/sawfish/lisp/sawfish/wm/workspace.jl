@@ -1,5 +1,5 @@
 ;; workspace.jl -- similar to virtual desktops
-;; $Id: workspace.jl,v 1.1.1.2 2001-01-13 14:58:58 ghudson Exp $
+;; $Id: workspace.jl,v 1.1.1.3 2002-03-20 04:56:21 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -535,36 +535,51 @@
     "Activate workspace number SPACE (from zero)."
     (unless (= current-workspace space)
       (when current-workspace
-	(call-hook 'leave-workspace-hook (list current-workspace))
+	(call-hook 'leave-workspace-hook (list current-workspace)))
+      (let ((old-space current-workspace)
+	    (order (stacking-order)))
+
+	;; install the new workspace id
+	(setq current-workspace space)
+
+	;; this used to be called between unmapping old windows and
+	;; mapping new windows, but we don't do that anymore. This
+	;; should be ok though..
+	(when inner-thunk
+	  (inner-thunk))
+
 	;; the server grabs are just for optimisation (each call to
 	;; show-window or hide-window may also grab the server semaphore)
 	(with-server-grabbed
-	 (map-windows
-	  (lambda (w)
-	    (when (and (not (window-get w 'sticky))
-		       (window-in-workspace-p w current-workspace)
-		       (not (window-in-workspace-p w space))
-		       (window-get w 'placed))
-	      (hide-window w))))))
-      (setq current-workspace space)
-      (when inner-thunk
-	(inner-thunk))
-      (when current-workspace
-	(with-server-grabbed
-	 (map-windows
-	  (lambda (w)
-	    (when (or (window-get w 'sticky)
-		      (window-in-workspace-p w current-workspace))
-	      (swap-in w current-workspace))
-	    (when (and (not (window-get w 'sticky))
-		       (window-in-workspace-p w current-workspace)
-		       (window-get w 'placed))
-	      (if (window-get w 'iconified)
-		  (hide-window w)
-		(show-window w))))))
+
+	 ;; first map new windows top-to-bottom
+	 (mapc (lambda (w)
+		 (when (or (window-get w 'sticky)
+			   (window-in-workspace-p w current-workspace))
+		   (swap-in w current-workspace))
+		 (when (and (not (window-get w 'sticky))
+			    (window-in-workspace-p w current-workspace)
+			    (window-get w 'placed))
+		   (if (window-get w 'iconified)
+		       (hide-window w)
+		     (show-window w))))
+	       order)
+
+	 ;; then unmap old-windows bottom-to-top
+	 (mapc (lambda (w)
+		 (when (and (not (window-get w 'sticky))
+			    (window-in-workspace-p w old-space)
+			    (not (window-in-workspace-p w current-workspace))
+			    (window-get w 'placed))
+		   (hide-window w)))
+	       (nreverse order)))
+
+	;; focus the correct window in the new workspace
 	(unless (or dont-focus (eq focus-mode 'enter-exit))
 	  (require 'sawfish.wm.util.window-order)
 	  (window-order-focus-most-recent))
+
+	;; and call some hooks
 	(when current-workspace
 	  (call-hook 'enter-workspace-hook (list current-workspace)))
 	(call-hook 'workspace-state-change-hook))))
@@ -655,6 +670,7 @@
   (define (popup-window-list)
     "Display the menu of all managed windows."
     (require 'sawfish.wm.menus)
+    (declare (special window-menu))
     (popup-menu (window-menu)))
 
   (define-command 'popup-workspace-list popup-workspace-list)
@@ -815,7 +831,7 @@ previous workspace."
 			   current-workspace
 			 (car (window-workspaces w))))
 	   (new-space (workspace-id-from-logical count)))
-      (when orig-space
+      (when (and orig-space (/= orig-space new-space))
 	(copy-window-to-workspace w orig-space new-space was-focused)
 	(select-workspace new-space was-focused)
 	(unless copy
@@ -935,6 +951,11 @@ last instance remaining, then delete the actual window."
   (add-hook 'workspace-geometry-changed
 	    (lambda ()
 	      (setq preallocated-workspaces (car workspace-geometry))
+	      ;; XXX this isn't ideal, but it's better than getting
+	      ;; XXX workspaces that aren't deleted as the total
+	      ;; XXX number of workspaces is decreased...
+	      (setq first-interesting-workspace nil)
+	      (setq last-interesting-workspace nil)
 	      (call-hook 'workspace-state-change-hook)))
 
 

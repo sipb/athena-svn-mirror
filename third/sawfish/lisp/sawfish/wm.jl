@@ -1,6 +1,6 @@
 #| sawfish.wm bootstrap
 
-   $Id: wm.jl,v 1.1.1.3 2001-03-09 19:34:59 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.4 2002-03-20 04:56:17 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -47,6 +47,18 @@
       (require 'rep.i18n.gettext)
       (bindtextdomain "sawfish" sawfish-locale-directory)
       (textdomain "sawfish"))))
+
+;; ignore file errors on stdio streams
+(when (boundp 'set-file-ignore-errors)
+  (set-file-ignore-errors (stdin-file) t)
+  (set-file-ignore-errors (stdout-file) t)
+  (set-file-ignore-errors (stderr-file) t))
+
+;; used to mark variable declarations that need special attention
+;; from the sawfish-xgettext script
+(defmacro i18n-defvar args (cons 'defvar args))
+(defmacro i18n-define args (cons 'define args))
+(export-bindings '(i18n-defvar i18n-define))
 
 ;; add ~/.sawfish/lisp to load-path for user-code (canonicalize it
 ;; now to avoid calling tilde file-handler multiple times)

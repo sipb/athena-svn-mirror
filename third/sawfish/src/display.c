@@ -1,5 +1,5 @@
 /* display.c -- display handling
-   $Id: display.c,v 1.1.1.2 2001-03-09 19:35:31 ghudson Exp $
+   $Id: display.c,v 1.1.1.3 2002-03-20 05:00:02 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -337,7 +337,12 @@ sys_init(char *program_name)
 	    xa_wm_take_focus = XInternAtom (dpy, "WM_TAKE_FOCUS", False);
 	    xa_compound_text = XInternAtom (dpy, "COMPOUND_TEXT", False);
 
-	    XShapeQueryExtension (dpy, &shape_event_base, &shape_error_base);
+	    if (!XShapeQueryExtension (dpy, &shape_event_base,
+				       &shape_error_base))
+	    {
+		fprintf (stderr, "sawfish: your X server doesn't suppot the SHAPE extension; aborting\n");
+		return FALSE;
+	    }
 
 	    XSetErrorHandler (error_other_wm);
 	    XSelectInput (dpy, root_window, ROOT_EVENTS);

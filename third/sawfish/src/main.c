@@ -1,5 +1,5 @@
 /* main.c -- Entry point for sawmill
-   $Id: main.c,v 1.1.1.3 2001-03-09 19:35:00 ghudson Exp $
+   $Id: main.c,v 1.1.1.4 2002-03-20 05:00:04 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -330,9 +330,14 @@ int
 main(int argc, char **argv)
 {
     volatile int rc = 5;
-    char **old_argv = argv;
-    int old_argc = argc;
+    char **old_argv;
+    int old_argc;
     char *lang;
+
+    /* This will fork multiple copies, if necessary */
+    multihead_init (&argc, &argv);
+    old_argv = argv;
+    old_argc = argc;
 
     prog_name = *argv++; argc--;
     lang = setlocale(LC_ALL, "");
@@ -353,6 +358,7 @@ usage: %s [OPTIONS...]\n\
 where OPTIONS are any of:\n\
 \n\
     --display=DPY	Connect to X display DPY\n\
+    --multihead		Fork a copy of sawfish for each screen\n\
     --visual=VISUAL	Preferred visual type\n\
     --depth=DEPTH	Preferred color depth\n\
     --disable-nls	Disable internationalization of messages\n\

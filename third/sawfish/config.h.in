@@ -1,5 +1,5 @@
 /* config.h.in -- config.h configure input
-   $Id: config.h.in,v 1.1.1.2 2001-01-13 14:58:32 ghudson Exp $
+   $Id: config.h.in,v 1.1.1.3 2002-03-20 04:56:18 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -72,7 +72,7 @@
 #undef TIME_WITH_SYS_TIME
 
 /* Define if <memory.h> exists */
-#undef HAVE_MEMORY_H */
+#undef HAVE_MEMORY_H
 #ifdef HAVE_MEMORY_H
 # define NEED_MEMORY_H		/* backwards compatibility */
 #endif
