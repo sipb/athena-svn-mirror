@@ -1,6 +1,7 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains procedures for dealing with topics.
+ * It contains procedures for dumping information from the daemon to a
+ *   client.
  *
  *      Win Treese
  *      Dan Morgan
@@ -20,16 +21,10 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.2 1990-02-16 05:53:11 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.3 1990-04-25 16:14:26 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
-
-
-
-
-
-
 
 ODump(Request,type,file)
      REQUEST *Request;
