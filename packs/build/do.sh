@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.25 1999-02-19 17:13:41 danw Exp $
+# $Id: do.sh,v 1.26 1999-02-19 17:19:06 danw Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -113,6 +113,14 @@ Linux)
 	;;
 esac
 
+# Determine if gmake is available. (It should be, unless this is a
+# full build and we haven't built it yet.)
+if [ -x $athtoolroot/usr/athena/bin/gmake ]; then
+	make=$athtoolroot/usr/athena/bin/gmake
+else
+	make=make
+fi
+
 if [ -r Makefile.athena ]; then
 	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR ATHTOOLROOT
 	SRVD=$srvd
@@ -121,7 +129,7 @@ if [ -r Makefile.athena ]; then
 	CONFIGDIR=$source/packs/build/config
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
-	make $n -f Makefile.athena "$operation"
+	$make $n -f Makefile.athena "$operation"
 elif [ -x configure ]; then
 	export ATHTOOLROOT
 	ATHTOOLROOT=$athtoolroot
@@ -133,10 +141,10 @@ elif [ -x configure ]; then
 	case $operation in
 		prepare)	$maybe rm -f config.cache
 				$maybe ./$configure ;;
-		clean)		make $n clean ;;
-		all)		make $n all ;;
+		clean)		$make $n clean ;;
+		all)		$make $n all ;;
 		check)		;;
-		install)	make $n install "DESTDIR=$srvd" ;;
+		install)	$make $n install "DESTDIR=$srvd" ;;
 	esac
 elif [ -r Imakefile ]; then
 	case $operation in
@@ -144,22 +152,22 @@ elif [ -r Imakefile ]; then
 			$maybe imake "-I$source/packs/build/config" \
 				-DUseInstalled "-DTOPDIR=$source/packs/build" \
 				"-DTOOLROOT=$athtoolroot"
-			$maybe make Makefiles
-			$maybe make depend
+			$maybe $make Makefiles
+			$maybe $make depend
 			;;
-		clean)		make $n clean ;;
-		all)		make $n all ;;
+		clean)		$make $n clean ;;
+		all)		$make $n all ;;
 		check)		;;
-		install)	make $n install install.man "DESTDIR=$srvd" ;;
+		install)	$make $n install install.man "DESTDIR=$srvd" ;;
 	esac
 elif [ -r Makefile ]; then
 	case $operation in
 		prepare)	;;
-		clean)		make $n clean "ATHTOOLROOT=$athtoolroot";;
-		all)		make $n all CC="$compiler" \
+		clean)		$make $n clean "ATHTOOLROOT=$athtoolroot";;
+		all)		$make $n all CC="$compiler" \
 					"ATHTOOLROOT=$athtoolroot";;
 		check)		;;
-		install)	make $n install "DESTDIR=$srvd" \
+		install)	$make $n install "DESTDIR=$srvd" \
 					"ATHTOOLROOT=$athtoolroot";;
 	esac
 fi
