@@ -1,7 +1,6 @@
 #ifndef TEST_H
 #define TEST_H
 
-#include <eel/eel-text-caption.h>
 #include <gtk/gtkwindow.h>
 
 void       test_init                            (int                    *argc,
@@ -33,7 +32,6 @@ void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf              *pixbuf,
 						 int                     opacity);
 void       test_window_set_title_with_pid       (GtkWindow              *window,
 						 const char             *title);
-int        test_text_caption_get_text_as_int    (const EelTextCaption   *text_caption);
 char *     eel_pixmap_file                      (const char             *partial_path);
 
 // /* Preferences hacks */

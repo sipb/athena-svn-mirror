@@ -12,6 +12,7 @@
 #undef GETTEXT_PACKAGE
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 #undef HAVE_RENDER
+#define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec.c */
 
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.

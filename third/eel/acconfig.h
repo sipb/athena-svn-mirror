@@ -11,3 +11,4 @@
 #undef GETTEXT_PACKAGE
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
 #undef HAVE_RENDER
+#define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec.c */

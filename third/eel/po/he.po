@@ -1,18 +1,83 @@
+# translation of eel.HEAD.he.po to Hebrew
 # translation of eel.he.po to Hebrew
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # Gil Osher <dolfin@rpg.org.il>, 2002
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eel.he\n"
-"POT-Creation-Date: 2002-11-18 17:48-0500\n"
-"PO-Revision-Date: 2002-08-27 00:13+0300\n"
-"Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
+"Project-Id-Version: eel.HEAD.he\n"
+"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"PO-Revision-Date: 2002-11-27 14:06+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0beta2\n"
+
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "מלל"
+
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "מלל התוית."
+
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "יישור"
+
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"ישור הקוים במלל של התוית ביחס אחד לשני. זה לא משפיע על הישור של התוית בתוך "
+"השטח שלה. ראה GtkMisc::xalign לזה."
+
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr "גלישת שורות"
+
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr "אם נקבע, גלוש לשורה הבאה, אם המלל ניהיה רחב מידי."
+
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "מיקום הסמן"
+
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr "המיקום הנוכחי של סמן ההכנסה בתוים."
+
+#: eel/eel-editable-label.c:394
+msgid "Selection Bound"
+msgstr "תחום הבחירה"
+
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr "המיקום של סוף הבחירה הנגדי מהסמן בתוים."
+
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "בחר הכל"
+
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "שיטות קלט"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -56,11 +121,11 @@ msgstr "1/1/00, 1:00 AM"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 AM"
 
-#: eel/eel-gnome-extensions.c:611
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr "לא נבחרה תמונה.  יש ללחוץ על תמונה כדי לבחור אותה."
 
-#: eel/eel-gnome-extensions.c:612
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
 msgstr "לא נבחר דבר"
 
@@ -99,3 +164,6 @@ msgstr "שאלה"
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
 msgstr " (Unicode לא תקני)"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "_קטגוריות:"

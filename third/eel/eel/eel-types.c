@@ -25,6 +25,7 @@
 #include <config.h>
 #include <gtk/gtktypeutils.h>
 
+#define EEL_COMPILATION 1
 #include <eel/eel.h>
 
 #include "eel-type-builtins-vars.c"

@@ -1,18 +1,80 @@
+# translation of eel.HEAD.mk.po to Macedonian
 # eel.HEAD.pot.
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # Ivan Stojmirov <stojmir@linux.net.mk>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-11-18 17:48-0500\n"
-"PO-Revision-Date: 2002-05-17 11:25GMT +1\n"
+"Project-Id-Version: eel.HEAD.mk\n"
+"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"PO-Revision-Date: 2002-12-15 19:01+0100\n"
 "Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
-"Language-Team: Macedonian <gnomk-main@lists.sourceforge.net>\n"
+"Language-Team: Macedonian <mk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-5\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 1.0beta2\n"
+
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "–¢–µ–∫—Å—Ç"
+
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "–¢–µ–∫—Å—Ç–æ—Ç –Ω–∞ –æ–∑–Ω–∞–∫–∞—Ç–∞"
+
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "–ü–æ—Ä–∞–º–Ω—É–≤–∞—ö–µ"
+
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr ""
+
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "–ü–æ–∑–∏—Ü–∏—ò–∞ –Ω–∞ –ö—É—Ä—Å–æ—Ä–æ—Ç"
+
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr ""
+
+#: eel/eel-editable-label.c:394
+#, fuzzy
+msgid "Selection Bound"
+msgstr "–ù–µ –µ –Ω–∞–ø—Ä–∞–≤–µ–Ω –∏–∑–±–æ—Ä"
+
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "–°–µ–ª–µ–∫—Ç–∏—Ä–∞—ò –°–µ"
+
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "–ú–µ—Ç–æ–¥–∏ –Ω–∞ –í–Ω–µ—Å—É–≤–∞—ö–µ"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -20,7 +82,7 @@ msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"GConf ”‡’Ë⁄–:\n"
+"GConf –≥—Ä–µ—à–∫–∞:\n"
 "  %s"
 
 #: eel/eel-gconf-extensions.c:87
@@ -30,13 +92,13 @@ msgid ""
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"GConf ”‡’Ë⁄–:\n"
+"GConf –≥—Ä–µ—à–∫–∞:\n"
 "  %s\n"
-"¡ÿ‚’ ›–‡’‘›ÿ ”‡’Ë⁄ÿ ¸’ —ÿ‘–‚ ﬂ‡ÿ⁄–÷–›ÿ ·–‹ﬁ ›– ‚’‡‹ÿ›–€"
+"–°–∏—Ç–µ –Ω–∞—Ä–µ–¥–Ω–∏ –≥—Ä–µ—à–∫–∏ —ú–µ –±–∏–¥–∞—Ç –ø—Ä–∏–∫–∞–∂–∞–Ω–∏ —Å–∞–º–æ –Ω–∞ —Ç–µ—Ä–º–∏–Ω–∞–ª"
 
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "GConf ≥‡’Ë⁄–"
+msgstr "GConf –ì—Ä–µ—à–∫–∞"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
@@ -56,48 +118,51 @@ msgstr "1/1/00, 1:00 AM"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 AM"
 
-#: eel/eel-gnome-extensions.c:611
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"Ω’ ’ ﬁ—’€’÷–›– ›ÿ‚„ ’‘›– ·€ÿ⁄–.  ºﬁ‡– ‘– ⁄€ÿ⁄›’Ë ›– ›’⁄ﬁ¯– ·€ÿ⁄– ◊– ‘– ¯– "
-"ﬁ—’€’÷ÿË."
+"–ù–µ –µ –æ–±–µ–ª–µ–∂–∞–Ω–∞ –Ω–∏—Ç—É –µ–¥–Ω–∞ —Å–ª–∏–∫–∞.  –ú–æ—Ä–∞ –¥–∞ –∫–ª–∏–∫–Ω–µ—à –Ω–∞ –Ω–µ–∫–æ—ò–∞ —Å–ª–∏–∫–∞ –∑–∞ –¥–∞ —ò–∞ "
+"–æ–±–µ–ª–µ–∂–∏—à."
 
-#: eel/eel-gnome-extensions.c:612
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
-msgstr "Ω’ ’ ›–ﬂ‡–“’› ÿ◊—ﬁ‡"
+msgstr "–ù–µ –µ –Ω–∞–ø—Ä–∞–≤–µ–Ω –∏–∑–±–æ—Ä"
 
 #: eel/eel-password-dialog.c:203
 msgid "_Username:"
-msgstr "_∫ﬁ‡ÿ·›ÿÁ⁄ﬁ ÿ‹’:"
+msgstr "_–ö–æ—Ä–∏—Å–Ω–∏—á–∫–æ –∏–º–µ:"
 
 #: eel/eel-password-dialog.c:210
 msgid "_Password:"
-msgstr "_ªﬁ◊ÿ›⁄–:"
+msgstr "_–õ–æ–∑–∏–Ω–∫–∞:"
 
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
-msgstr "∑–ﬂ–‹’‚ÿ ¯– ﬁ“–– €ﬁ◊ÿ›⁄–"
+msgstr "–ó–∞–ø–∞–º–µ—Ç–∏ —ò–∞ –æ–≤–∞–∞ –ª–æ–∑–∏–Ω–∫–∞"
 
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
-msgstr "∏›‰ﬁ"
+msgstr "–ò–Ω—Ñ–æ"
 
 #: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "¥’‚–€ÿ"
+msgstr "–î–µ—Ç–∞–ª–∏"
 
 #: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "ø‡’‘„ﬂ‡’‘„“–˙’"
+msgstr "–ü—Ä–µ–¥—É–ø—Ä–µ–¥—É–≤–∞—ö–µ"
 
 #: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
-msgstr "≥‡’Ë⁄–"
+msgstr "–ì—Ä–µ—à–∫–∞"
 
 #: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "ø‡–Ë–˙’"
+msgstr "–ü—Ä–∞—à–∞—ö–µ"
 
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (–Ω–µ–≤–∞–∂–µ—á–∫–∏ Unicode)"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "–ö–∞—Ç_–µ–≥–æ—Ä–∏–∏:"

@@ -1,18 +1,85 @@
 # translation of eel to spanish
 # Copyright (C) 2000,2002 Free Software Foundation, Inc.
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000-2002.
-# Carlos PerellÃ³ MarÃ­n <carlos@hispalinux.es>, 2000
+# Carlos Perelló Marín <carlos@hispalinux.es>, 2000.
 msgid ""
 msgstr ""
 "Project-Id-Version: eel\n"
-"POT-Creation-Date: 2002-11-18 17:48-0500\n"
-"PO-Revision-Date: 2002-06-16 22:56GMT -03:00\n"
+"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"PO-Revision-Date: 2002-11-28 11:28-0300\n"
 "Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
-"Language-Team: español <traductores@es.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta1\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+msgid "X"
+msgstr "X"
+
+#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+msgid "Y"
+msgstr "Y"
+
+#: eel/eel-editable-label.c:360
+msgid "Text"
+msgstr "Texto"
+
+#: eel/eel-editable-label.c:361
+msgid "The text of the label."
+msgstr "El texto de la etiqueta."
+
+#: eel/eel-editable-label.c:367
+msgid "Justification"
+msgstr "Alineación"
+
+#: eel/eel-editable-label.c:368
+msgid ""
+"The alignment of the lines in the text of the label relative to each other. "
+"This does NOT affect the alignment of the label within its allocation. See "
+"GtkMisc::xalign for that."
+msgstr ""
+"La alineación de las líneas de texto de la etiqueta relativa a cada otra. "
+"Esto NO afecta la alineación de la etiqueta dentro de su asignación. Vea "
+"GtkMisc::xalign para hacer eso."
+
+#: eel/eel-editable-label.c:376
+msgid "Line wrap"
+msgstr "Ajuste de línea"
+
+#: eel/eel-editable-label.c:377
+msgid "If set, wrap lines if the text becomes too wide."
+msgstr ""
+"Si esta activado ajusta la líneas si el texto se vuelve demasiado ancho."
+
+# components/rpmview/nautilus-rpm-view.c:336
+#: eel/eel-editable-label.c:384
+msgid "Cursor Position"
+msgstr "Posición del cursor"
+
+#: eel/eel-editable-label.c:385
+msgid "The current position of the insertion cursor in chars."
+msgstr "La posición actual en caracteres del cursor de inserción."
+
+#: eel/eel-editable-label.c:394
+msgid "Selection Bound"
+msgstr "Límite de la selección"
+
+#: eel/eel-editable-label.c:395
+msgid ""
+"The position of the opposite end of the selection from the cursor in chars."
+msgstr ""
+"La posición en caracteres del extremo opuesto de la selección desde el "
+"cursor ."
+
+#: eel/eel-editable-label.c:3030
+msgid "Select All"
+msgstr "Seleccionar todo"
+
+#: eel/eel-editable-label.c:3041
+msgid "Input Methods"
+msgstr "Métodos de entrada"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -32,7 +99,7 @@ msgid ""
 msgstr ""
 "Error de GConf:\n"
 "  %s\n"
-"Todos los demás errores sólo aparecen en la terminal"
+"Todos los demás errores sólo se muestran en la terminal"
 
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
@@ -56,13 +123,13 @@ msgstr "1/1/00, 1:00 AM"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 AM"
 
-#: eel/eel-gnome-extensions.c:611
+#: eel/eel-gnome-extensions.c:285
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
 "No se ha seleccionado una imagen. Debe hacer clic sobre la imagen para "
 "seleccionarla."
 
-#: eel/eel-gnome-extensions.c:612
+#: eel/eel-gnome-extensions.c:286
 msgid "No selection made"
 msgstr "No se ha hecho ninguna selección"
 
@@ -93,7 +160,7 @@ msgstr "Detalles"
 
 #: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "Cuidado"
+msgstr "Advertencia"
 
 #: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
@@ -107,6 +174,9 @@ msgstr "Pregunta"
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
 msgstr " (Unicode inválido)"
+
+#~ msgid "Cat_egories:"
+#~ msgstr "Ca_tegorías:"
 
 #~ msgid "Pixbuf objects"
 #~ msgstr "Objetos Pixbuf"
@@ -126,18 +196,11 @@ msgstr " (Unicode inválido)"
 #~ msgid "the label"
 #~ msgstr "la etiqueta"
 
-# components/rpmview/nautilus-rpm-view.c:336
-#~ msgid "position"
-#~ msgstr "posiciÃ³n"
-
 #~ msgid "the label position"
 #~ msgstr "la posiciÃ³n de la etiqueta"
 
 #~ msgid "label visible"
 #~ msgstr "etiqueta visible"
-
-#~ msgid "whether to show the label"
-#~ msgstr "donde mostrar la etiqueta"
 
 #~ msgid "image visible"
 #~ msgstr "imagen visible"
@@ -206,9 +269,6 @@ msgstr " (Unicode inválido)"
 
 #~ msgid "Left, right, or center justification"
 #~ msgstr "AlineaciÃ³n izquierda, derecha o centrada"
-
-#~ msgid "vertical justification"
-#~ msgstr "alineaciÃ³n vertical"
 
 #~ msgid "Top, bottom, or middle justification"
 #~ msgstr "AlineaciÃ³n superior ,inferior o centrada"

@@ -364,7 +364,9 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 					  guint width,
 					  guint height)
 {
+	GdkScreen *screen;
 	int real_left, real_top;
+	int screen_width, screen_height;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 	g_return_if_fail (!(geometry_flags & EEL_GDK_WIDTH_VALUE) || width > 0);
@@ -380,6 +382,10 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 		real_left = left;
 		real_top = top;
 
+		screen = gtk_window_get_screen (window);
+		screen_width  = gdk_screen_get_width  (screen);
+		screen_height = gdk_screen_get_height (screen);
+
 		/* This is sub-optimal. GDK doesn't allow us to set win_gravity
 		 * to South/East types, which should be done if using negative
 		 * positions (so that the right or bottom edge of the window
@@ -387,10 +393,10 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
 		 * However it does seem to be consistent with other GNOME apps.
 		 */
 		if (geometry_flags & EEL_GDK_X_NEGATIVE) {
-			real_left = gdk_screen_width () - real_left;
+			real_left = screen_width - real_left;
 		}
 		if (geometry_flags & EEL_GDK_Y_NEGATIVE) {
-			real_top = gdk_screen_height () - real_top;
+			real_top = screen_height - real_top;
 		}
 
 		sanity_check_window_position (&real_left, &real_top);
@@ -413,7 +419,7 @@ eel_gtk_window_set_initial_geometry (GtkWindow *window,
  * some sanity-checking on the passed-in values.
  * 
  * @window: A non-visible GtkWindow
- * @geometry_string: A string suitable for use with gnome_parse_geometry
+ * @geometry_string: A string suitable for use with eel_gdk_parse_geometry
  * @minimum_width: If the width from the string is smaller than this,
  * use this for the width.
  * @minimum_height: If the height from the string is smaller than this,

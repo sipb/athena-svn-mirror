@@ -14,14 +14,21 @@ INCLUDES =						\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
 	-DGTK_DISABLE_DEPRECATED			\
 	-DGNOME_DISABLE_DEPRECATED			\
-	-DBONOBO_DISABLE_DEPRECATED			\
-	-DEEL_COMPILATION				\
 	$(NULL)
+
+# FIXME: put this back once the registration_id stuff is cleared up
+#	-DBONOBO_DISABLE_DEPRECATED
+
 
 libeel_2_la_LDFLAGS =				\
 	-version-info @EEL_VERSION_INFO@	\
 	$(EEL_LIBS)				\
 	$(RENDER_LIBS)				\
+	$(NULL)
+
+EGGFILES =                      \
+	egg-screen-exec.h       \
+	egg-screen-exec.c       \
 	$(NULL)
 
 libeel_2_la_SOURCES =				\
@@ -30,17 +37,19 @@ libeel_2_la_SOURCES =				\
 	eel-art-gtk-extensions.c		\
 	eel-background.c			\
 	eel-background-box.c                    \
-	eel-canvas-rect.c			\
+	eel-canvas.c				\
+	eel-canvas-util.c			\
+	eel-canvas-rect-ellipse.c		\
 	eel-caption-table.c			\
 	eel-caption.c				\
 	eel-cell-renderer-pixbuf-list.c		\
 	eel-dateedit-extensions.c		\
 	eel-debug-drawing.c			\
 	eel-debug.c				\
+	eel-editable-label.c			\
 	eel-ellipsizing-label.c			\
 	eel-enumeration.c			\
 	eel-features.c				\
-	eel-font-picker.c			\
 	eel-gconf-extensions.c			\
 	eel-gdk-extensions.c			\
 	eel-gdk-pixbuf-extensions.c		\
@@ -57,10 +66,7 @@ libeel_2_la_SOURCES =				\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
 	eel-password-dialog.c			\
-	eel-preferences-box.c			\
-	eel-preferences-group.c			\
-	eel-preferences-item.c			\
-	eel-preferences-pane.c			\
+	eel-preferences-glade.c			\
 	eel-preferences.c			\
 	eel-radio-button-group.c		\
 	eel-self-checks.c			\
@@ -68,12 +74,12 @@ libeel_2_la_SOURCES =				\
 	eel-string-list.c			\
 	eel-string-picker.c			\
 	eel-string.c				\
-	eel-text-caption.c			\
 	eel-types.c				\
 	eel-vfs-extensions.c			\
 	eel-wrap-table.c			\
 	eel-xml-extensions.c			\
 	eel-lib-self-check-functions.h		\
+	$(EGGFILES)				\
 	$(NULL)
 
 libeelincludedir = $(includedir)/eel-2/eel
@@ -84,17 +90,19 @@ eel_headers =					\
 	eel-art-gtk-extensions.h		\
 	eel-background.h			\
 	eel-background-box.h                    \
-	eel-canvas-rect.h			\
+	eel-canvas.h				\
+	eel-canvas-util.h			\
+	eel-canvas-rect-ellipse.h		\
 	eel-caption-table.h			\
 	eel-caption.h				\
 	eel-cell-renderer-pixbuf-list.h		\
 	eel-dateedit-extensions.h		\
 	eel-debug-drawing.h			\
 	eel-debug.h				\
+	eel-editable-label.h			\
 	eel-ellipsizing-label.h			\
 	eel-enumeration.h			\
 	eel-features.h				\
-	eel-font-picker.h			\
 	eel-gconf-extensions.h			\
 	eel-gdk-extensions.h			\
 	eel-gdk-pixbuf-extensions.h		\
@@ -111,10 +119,7 @@ eel_headers =					\
 	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
 	eel-password-dialog.h			\
-	eel-preferences-box.h			\
-	eel-preferences-group.h			\
-	eel-preferences-item.h			\
-	eel-preferences-pane.h			\
+	eel-preferences-glade.h			\
 	eel-preferences.h			\
 	eel-radio-button-group.h		\
 	eel-self-checks.h			\
@@ -122,7 +127,6 @@ eel_headers =					\
 	eel-string-list.h			\
 	eel-string-picker.h			\
 	eel-string.h				\
-	eel-text-caption.h			\
 	eel-types.h				\
 	eel-vfs-extensions.h			\
 	eel-wrap-table.h			\
@@ -185,7 +189,7 @@ noinst_PROGRAMS = check-program
 
 check_program_SOURCES = check-program.c
 check_program_DEPENDENCIES = libeel-2.la
-check_program_LDADD =
+check_program_LDADD = $(EEL_LIBS)
 check_program_LDFLAGS =	$(check_program_DEPENDENCIES) -lm
 
 TESTS = check-eel
@@ -195,6 +199,7 @@ EXTRA_DIST =					\
 	eelmarshal.list				\
 	makeenums.pl				\
 	maketypes.awk				\
+	update-from-egg.sh			\
 	$(NULL)
 
 $(libeel_2_la_OBJECTS): $(marshal_sources)
@@ -214,3 +219,8 @@ dist-hook:
 	for file in $(DONT_DIST_FILES) ; do \
 	    rm -f $(distdir)/$$file ; \
 	done
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh

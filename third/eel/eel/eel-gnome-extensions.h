@@ -29,100 +29,19 @@
 
 #include <glade/glade.h>
 #include <gtk/gtkwindow.h>
-#include <libgnomecanvas/gnome-canvas.h>
 #include <bonobo/bonobo-property-bag-client.h>
 
 /* icon selection callback function. */
 typedef void (* EelIconSelectionFunction) (const char *icon_path, gpointer callback_data);
 
-/* Causes an update as needed. The GnomeCanvas code says it does this, but it doesn't. */
-void          eel_gnome_canvas_set_scroll_region                      (GnomeCanvas              *canvas,
-								       double                    x1,
-								       double                    y1,
-								       double                    x2,
-								       double                    y2);
-
-/* Make the scroll region bigger so the code in GnomeCanvas won't center it. */
-void          eel_gnome_canvas_set_scroll_region_left_justify         (GnomeCanvas              *canvas,
-								       double                    x1,
-								       double                    y1,
-								       double                    x2,
-								       double                    y2);
-
-/* Set a new scroll region without eliminating any of the currently-visible area. */
-void          eel_gnome_canvas_set_scroll_region_include_visible_area (GnomeCanvas              *canvas,
-								       double                    x1,
-								       double                    y1,
-								       double                    x2,
-								       double                    y2);
-
-/* For cases where you need to get more than one item updated. */
-void          eel_gnome_canvas_request_update_all                     (GnomeCanvas              *canvas);
-void          eel_gnome_canvas_item_request_update_deep               (GnomeCanvasItem          *item);
-
-/* This is more handy than gnome_canvas_item_get_bounds because it
- * always returns the bounds * in world coordinates and it returns
- * them in a single rectangle.
- */
-ArtDRect      eel_gnome_canvas_item_get_world_bounds                  (GnomeCanvasItem          *item);
-
-/* This returns the current canvas bounds as computed by update.
- * It's not as "up to date" as get_bounds, which is accurate even
- * before an update happens.
- */
-ArtIRect      eel_gnome_canvas_item_get_current_canvas_bounds         (GnomeCanvasItem          *item);
-
-/* This returns the canvas bounds in a slower way that's always up to
- * date, even before an update.
- */
-ArtIRect      eel_gnome_canvas_item_get_canvas_bounds                 (GnomeCanvasItem          *item);
-
-/* Convenience functions for doing things with whole rectangles. */
-ArtIRect      eel_gnome_canvas_world_to_canvas_rectangle              (GnomeCanvas              *canvas,
-								       ArtDRect                  world_rectangle);
-void          eel_gnome_canvas_request_redraw_rectangle               (GnomeCanvas              *canvas,
-								       ArtIRect                  canvas_rectangle);
-
-/* Often, it's more useful to have coordinates in widget terms, rateher than world, canvas, or bin window terms. */
-void          eel_gnome_canvas_widget_to_world                        (GnomeCanvas              *canvas,
-								       int                       widget_x,
-								       int                       widget_y,
-								       double                   *world_x,
-								       double                   *world_y);
-void          eel_gnome_canvas_world_to_widget                        (GnomeCanvas              *canvas,
-								       double                    world_x,
-								       double                    world_y,
-								       int                      *widget_x,
-								       int                      *widget_y);
-ArtIRect      eel_gnome_canvas_world_to_widget_rectangle              (GnomeCanvas              *canvas,
-								       ArtDRect                  world_rectangle);
-
-/* Function for moving a canvas item relative to another existing item. */
-void          eel_gnome_canvas_item_send_behind                       (GnomeCanvasItem          *item,
-								       GnomeCanvasItem          *behind_item);
-
-/* Requests the entire object be redrawn.
- * Normally, you use request_update when calling from outside the canvas item
- * code. This is for within canvas item code.
- */
-void          eel_gnome_canvas_item_request_redraw                    (GnomeCanvasItem          *item);
-void          eel_gnome_canvas_draw_pixbuf                            (GnomeCanvasBuf           *buf,
-								       const GdkPixbuf          *pixbuf,
-								       int                       x,
-								       int                       y);
-void          eel_gnome_canvas_fill_rgb                               (GnomeCanvasBuf           *buf,
-								       art_u8                    r,
-								       art_u8                    g,
-								       art_u8                    b);
-
-/* Functions for dealing with Pango text in a canvas. */
-PangoContext *eel_gnome_canvas_get_pango_context                      (GnomeCanvas              *canvas);
 
 /* Return a command string containing the path to a terminal on this system. */
 char *        eel_gnome_make_terminal_command                         (const char               *command);
 
 /* Open up a new terminal, optionally passing in a command to execute */
 void          eel_gnome_open_terminal                                 (const char               *command);
+void          eel_gnome_open_terminal_on_screen                       (const char               *command,
+								       GdkScreen                *screen);
 
 /* Create an icon selection dialog */
 GtkWidget *   eel_gnome_icon_selector_new                             (const char               *title,
@@ -135,13 +54,10 @@ GtkWidget *   eel_gnome_icon_selector_new                             (const cha
  * protects against creating zombie processes.
  */
 void          eel_gnome_shell_execute                                 (const char               *command);
+void          eel_gnome_shell_execute_on_screen                       (const char               *command,
+								       GdkScreen                *screen);
 
 char         *eel_bonobo_make_registration_id                         (const char               *iid);
-
-void          eel_bonobo_pbclient_set_value_async                     (Bonobo_PropertyBag        bag,
-								       const char               *key,
-								       CORBA_any                *value,
-								       CORBA_Environment        *opt_ev);
 
 GladeXML     *eel_glade_get_file                                      (const char               *filename,
 								       const char               *root,

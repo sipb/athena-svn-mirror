@@ -6,11 +6,10 @@ ART_REQUIRED=2.3.8
 GCONF_REQUIRED=1.1.11
 GDK_PIXBUF_REQUIRED=2
 GLIB_REQUIRED=2
-GNOME_CANVAS_REQUIRED=2.0
 GNOME_REQUIRED=2.0
 GNOME_UI_REQUIRED=2.0
 GNOME_VFS_REQUIRED=1.9
-GTK_REQUIRED=2
+GTK_REQUIRED=2.1.0
 POPT_REQUIRED=1.5
 XML_REQUIRED=2.4.7
 GAIL_REQUIRED=0.16
@@ -20,7 +19,6 @@ AC_SUBST(ART_REQUIRED)
 AC_SUBST(GCONF_REQUIRED)
 AC_SUBST(GDK_PIXBUF_REQUIRED)
 AC_SUBST(GLIB_REQUIRED)
-AC_SUBST(GNOME_CANVAS_REQUIRED)
 AC_SUBST(GNOME_REQUIRED)
 AC_SUBST(GNOME_UI_REQUIRED)
 AC_SUBST(GNOME_VFS_REQUIRED)
@@ -33,9 +31,9 @@ AC_SUBST(LIBGLADE_REQUIRED)
 dnl ===========================================================================
 
 EEL_MAJOR_VERSION=2
-EEL_MINOR_VERSION=0
-EEL_MICRO_VERSION=8
-EEL_VERSION=$EEL_MAJOR_VERSION.$EEL_MINOR_VERSION.$EEL_MICRO_VERSION
+EEL_MINOR_VERSION=2
+EEL_MICRO_VERSION=0
+EEL_VERSION=$EEL_MAJOR_VERSION.$EEL_MINOR_VERSION.$EEL_MICRO_VERSION.2
 EEL_VERSION_INFO=`expr $EEL_MAJOR_VERSION + $EEL_MINOR_VERSION`:$EEL_MICRO_VERSION:$EEL_MINOR_VERSION
 
 AC_SUBST(EEL_MAJOR_VERSION)
@@ -68,13 +66,13 @@ AC_C_BIGENDIAN
 PKG_CHECK_MODULES(EEL, \
 	gconf-2.0 >= $GCONF_REQUIRED \
 	gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED \
+	gthread-2.0 >= $GLIB_REQUIRED \
 	glib-2.0 >= $GLIB_REQUIRED \
 	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED \
 	gtk+-2.0 >= $GTK_REQUIRED \
 	gail >= $GAIL_REQUIRED \
 	libart-2.0 >= $ART_REQUIRED \
 	libgnome-2.0 >= $GNOME_REQUIRED \
-	libgnomecanvas-2.0 >= $GNOME_CANVAS_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	libxml-2.0 >= $XML_REQUIRED \
 	libglade-2.0 >= $LIBGLADE_REQUIRED)
@@ -83,7 +81,7 @@ AC_SUBST(EEL_LIBS)
 
 dnl ===========================================================================
 
-ALL_LINGUAS="az ar be bg bs ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi wa zh_TW zh_CN"
+ALL_LINGUAS="am ar az be bg bs ca cs da de el en_GB es et eu fa fi fr ga gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi wa zh_CN zh_TW"
 
 GETTEXT_PACKAGE=eel-2.0
 AC_SUBST(GETTEXT_PACKAGE)
@@ -150,7 +148,7 @@ fi
 
 AC_SUBST(RENDER_LIBS)
 
-    
+
 dnl ===========================================================================
 
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
