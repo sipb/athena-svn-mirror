@@ -47,8 +47,7 @@ defBGdevs=/var/X11/xdm/DefaultDeviceList
 userenv_output=$HOME/$dotdesktop/.userenv
 desktopenv=$HOME/$dotdesktop/desktopenv
 wmsession=$HOME/$dotdesktop/0.0/4Dwmsession
-# assuming user will set screensaver for 0.0 if sets saver at all
-ssaverresources=$HOME/$dotdesktop/0.0/ScreenSaver
+ssaverresources=$HOME/$dotdesktop/ScreenSaver
 panelsession=$HOME/$dotdesktop/panelsession
 configchecks=$HOME/$dotdesktop/configchecks
 nodesktop=$HOME/$dotdesktop/nodesktop
@@ -453,12 +452,12 @@ audiostate -openfile $HOME/.audiopanelrc
 # Note: the loop is run in the background so that reaper will be run and will
 # reap the setPowerSaver program if logout occurs while it is still running.
 #
-(
-if [ -x $usrlibdesktop/setPowerSaver -a ! -r $ssaverresources ]
-then
-	$usrlibdesktop/setPowerSaver > /dev/null 2>&1 &
-fi
-) &
+#(
+#if [ -x $usrlibdesktop/setPowerSaver -a ! -r $ssaverresources ]
+#then
+#	$usrlibdesktop/setPowerSaver > /dev/null 2>&1 &
+#fi
+#) &
 
 
 # BEGIN FIRSTTIME program execution 
