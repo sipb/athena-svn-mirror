@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.12 2000-07-31 18:15:27 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.13 2000-12-30 11:58:53 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -387,6 +387,11 @@ int main(int argc, char **argv)
   XtGetApplicationResources(appShell, (caddr_t)&resources, 
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal)0);
+
+  /* No moires any more, I want them to be black. */
+  XSetWindowBackground(dpy, DefaultRootWindow(dpy),
+		       BlackPixel(dpy, DefaultScreen(dpy)));
+  XClearWindow(dpy, DefaultRootWindow(dpy));
 
 #ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
