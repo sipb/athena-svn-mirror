@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.4 1990-01-17 05:23:20 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.5 1990-02-07 02:59:08 vanharen Exp $";
 #endif
 
 #include <sys/types.h>             /* System type declarations. */
@@ -226,8 +226,7 @@ read_text_into_file(fd, filename)
   
   if ((filedes = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644)) < 0) 
     {
-      (void) sprintf(error, 
-		     "read_text_into_file: Unable to open file %s",
+      (void) sprintf(error, "read_text_into_file: Unable to open file %s",
 		     filename);
       perror(error);
       return(ERROR);
@@ -238,9 +237,12 @@ read_text_into_file(fd, filename)
       while (nbytes) 
 	{
 	  int n;
-	  if ((n=sread(fd, inbuf, MIN(BUFSIZ, nbytes))) == -1) 
+	  if ((n=sread(fd, inbuf, MIN(BUFSIZ, nbytes))) < 1)
 	    {
-	      perror("read_text_into_file: Error reading text");
+	      (void) sprintf(error,
+			     "read_text_into_file: Error reading text, n=%d",
+			     n);
+	      perror(error);
 #ifdef	TEST
 	      fprintf(stderr, "n=%d\n", n);
 #endif	TEST
@@ -251,7 +253,10 @@ read_text_into_file(fd, filename)
 	  
 	  if (swrite(filedes, inbuf, n) != n) 
 	    {
-	      perror("read_to_file: Error writing text");
+	      (void) sprintf(error, 
+		     "read_text_into_file: Error writing text to file %s",
+		     filename);
+	      perror(error);
 	      (void) unlink(filename);
 	      (void) close(filedes);
 	      return(ERROR);
@@ -259,8 +264,8 @@ read_text_into_file(fd, filename)
 	  nbytes -= n;
 	}
     }
-	close(filedes);
-	return(SUCCESS);
+  close(filedes);
+  return(SUCCESS);
 }
 
 
@@ -287,6 +292,7 @@ write_file_to_fd(fd, filename)
   int filedes;		/* Input file descriptor. */
   struct stat statbuf;	/* File status structure. */
   char inbuf[BUFSIZ];	/* Input buffer. */
+  char error[ERROR_SIZE];	/* Error message. */
 
 #ifdef	TEST
   printf("write_file_to_fd: fd %d, fn %s\n", fd, filename);
@@ -294,7 +300,9 @@ write_file_to_fd(fd, filename)
 
   if (stat(filename, &statbuf) != 0) 
     {
-      perror("write_file");
+      (void) sprintf(error, "write_file_to_fd: bad stat value on file %s",
+		     filename);
+      perror(error);
       nbytes = 0;
     }
   else
@@ -312,13 +320,15 @@ write_file_to_fd(fd, filename)
   
   if ((filedes = open(filename, O_RDONLY, 0)) < 0) 
     {
-      perror("write_file: Unable to open file.");
+      (void) sprintf(error, "write_file_to_fd: Unable to open file %s",
+		     filename);
+      perror(error);
       return(ERROR);
     }
   
   if (write_int_to_fd(fd, nbytes) != SUCCESS) 
     {
-      perror("write_file: Error writing size.");
+      perror("write_file_to_fd: Error writing size.");
       close(filedes);
       return(ERROR);
     }
@@ -327,17 +337,22 @@ write_file_to_fd(fd, filename)
     {
       int n_read, n_wrote;
 	
-      n_read = sread(filedes, inbuf, MIN(BUFSIZ, nbytes));
-      if (n_read == -1) 
+      if ((n_read = sread(filedes, inbuf, MIN(BUFSIZ, nbytes))) < 1)
 	{
-	  perror("write_file: Error reading text.");
+	  (void) sprintf(error,
+		 "write_file_to_fd: Error reading text from file %s, n=%d",
+		 filename, n_read);
+	  perror(error);
 	  (void) close(filedes);
 	  return(ERROR);
 	}
 
       if ((n_wrote=swrite(fd, inbuf, n_read)) != n_read) 
 	{
-	  perror("write_file: Error writing text");
+	  (void) sprintf(error,
+		 "write_file_to_fd: Error writing text, n_read=%d, n_wrote=%d",
+		 n_read, n_wrote);
+	  perror(error);
 
 #ifdef	TEST
 	  fprintf(stderr, "n_read = %d, n_wrote = %d\n", n_read, n_wrote);
@@ -505,6 +520,7 @@ read_chars_from_fd(fd, buf, nchars)
      int nchars;
 {
   int n;
+  char error[ERROR_SIZE];	/* Error message. */
 
 #ifdef	TEST
   printf("read_chars_from_fd(%d, 0x%x, %d)\n", fd, buf, nchars);
@@ -512,9 +528,11 @@ read_chars_from_fd(fd, buf, nchars)
   
   while (nchars) 
     {
-      if ((n = sread(fd, buf, MIN(BUFSIZ, nchars))) == -1) 
+      if ((n = sread(fd, buf, MIN(BUFSIZ, nchars))) < 1) 
 	{
-	  perror("read_chars: Error reading text.");
+	  (void) sprintf(error,
+			 "read_chars_from_fd: Error reading text, n=%d", n);
+	  perror(error);
 
 #ifdef	TEST
 	  fprintf(stderr, "sread=%d\n", n);
