@@ -1166,6 +1166,7 @@ main_loop (saver_info *si)
   saver_preferences *p = &si->prefs;
   Bool ok_to_unblank;
   pid_t lock_command_pid = 0;
+  pid_t unlock_command_pid = 0;
 
   while (1)
     {
@@ -1364,7 +1365,8 @@ main_loop (saver_info *si)
 	    }
 	  if (p->unlock_command && *p->unlock_command)
 	    {
-	      switch (lock_command_pid)
+	      unlock_command_pid = fork ();
+	      switch (unlock_command_pid)
 		{
 		case -1:
 		  fprintf (stderr, "%s: Could not fork to run unlock "
