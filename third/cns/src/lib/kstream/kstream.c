@@ -201,8 +201,9 @@ kstream_write (k, p_data, p_len)
 
   assert (k != 0);
 
+  /* Because of rcp lossage, translate fd 0 to 1 when writing. */
   if (!k->ctl)
-    return write (k->fd, p_data, p_len);
+    return write ((k->fd == 0) ? 1 : k->fd, p_data, p_len);
 
   while (len)
     {
