@@ -11,7 +11,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.2 1987-07-08 19:33:40 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.3 1987-07-09 03:31:42 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -67,7 +67,10 @@ Z_Subscriptions(sublist,nitems,port,opcode)
 	for (i=0;i<nitems;i++) {
 		list[i*3] = sublist[i].class;
 		list[i*3+1] = sublist[i].classinst;
-		list[i*3+2] = "";
+		if (sublist[i].recipient && *sublist[i].recipient)
+			list[i*3+2] = ZGetSender();
+		else
+			list[i*3+2] = "";
 	}
 	
 	retval = ZSendList(&notice,list,nitems*3,ZAUTH);
