@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.7 1990-07-24 14:45:30 qjb Exp $
+ * $Id: aklog_main.c,v 1.8 1990-07-24 15:14:16 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.7 1990-07-24 14:45:30 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.8 1990-07-24 15:14:16 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -121,11 +121,9 @@ static int get_cellconfig(cell, cellconfig)
 {
     int status = AKLOG_SUCCESS;
     char local_cell[MAXCELLCHARS + 1];
-
-    bzero(local_cell, sizeof(local_cell));
-
     struct afsconf_dir *configdir;
 
+    bzero(local_cell, sizeof(local_cell));
     bzero((char *)cellconfig, sizeof(*cellconfig));
 
     if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
