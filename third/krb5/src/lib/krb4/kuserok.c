@@ -15,6 +15,9 @@
 #include "krb5.h"
 #include "krb.h"
 
+
+#if !defined(_WINDOWS)
+
 #define OK 0
 #define NOTOK 1
 
@@ -39,9 +42,10 @@
  * one entry per line.
  */
 
+KRB5_DLLIMP int KRB5_CALLCONV
 kuserok(kdata, luser)
-    AUTH_DAT *kdata;
-    char   *luser;
+    AUTH_DAT	FAR *kdata;
+    char	FAR *luser;
 {
     krb5_context context;
     krb5_principal principal;
@@ -57,3 +61,5 @@ kuserok(kdata, luser)
     krb5_free_context(context);
     return status;
 }
+
+#endif

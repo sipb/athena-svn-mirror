@@ -21,7 +21,7 @@
 
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
-#ifdef HAS_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #else
 extern char *malloc(), *calloc(), *realloc();
@@ -222,7 +222,7 @@ send_to_kdc(pkt,rpkt,realm)
             retval = /*errno */SKDC_CANT;
             goto rtn;
         }
-        _fmemcpy(cp, host->h_addr, host->h_length);
+        memcpy(cp, host->h_addr, host->h_length);
 
 /* At least Sun OS version 3.2 (or worse) and Ultrix version 2.2
    (or worse) only return one name ... */
