@@ -113,7 +113,7 @@ void newownership(file, relative, name, newuid, newgid)
     *newuid = 0;
 
   if (file->st_gid == 101)
-    *newgid = 101;
+    *newgid = 0;
 
   sprintf(ospath, "/os/%s/%s", relative, name);
   if (S_ISDIR(file->st_mode) && lstat(ospath, &osfile) == 0
