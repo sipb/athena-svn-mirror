@@ -1,3 +1,5 @@
+AnsiCC()
+
 #ifdef _AUX_SOURCE
 XSRCS = emul_re.c
 XOBJS = emul_re.o
