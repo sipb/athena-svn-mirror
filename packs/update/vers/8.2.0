@@ -191,6 +191,415 @@ sgi)
 
 	case `uname -r` in
 	5.3)
+		# Boot up 6.2 miniroot to upgrade the OS.
+		echo "NEWOS=true"			>> "$CONFVARS"
+		echo "MINIROOT=true"			>> "$CONFVARS"
+
+		# 6.2 requires an up-to-date sash in the volume header.
+		echo "NEWBOOT=true"			>> "$CONFVARS"
+
+		# Remove all currently installed packages,
+		# and install all desired local packages
+		echo "di *"				>> "$LOCALPACKAGES"
+		echo "remove I"				>> "$LOCALPACKAGES"
+		echo "i c++_eoe.sw.lib"			>> "$LOCALPACKAGES"
+		echo "i c_eoe.sw.lib"			>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.lboot"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.lib"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.unix"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw32.unix"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.efs"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.gfx"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.irix_lib"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.unix"			>> "$LOCALPACKAGES"
+		echo "i dmedia_eoe.sw.midi"		>> "$LOCALPACKAGES"
+		echo "i isdn_eoe.sw.isdn"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.dlpi"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.ppp"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.uucp"			>> "$LOCALPACKAGES"
+		echo "i isdnadmin.sw.isdnadmin"		>> "$LOCALPACKAGES"
+		echo "i insight_base.sw.eoe"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.xfs"			>> "$LOCALPACKAGES"
+		echo "i dmedia_eoe.sw.video"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.gltools"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.named"			>> "$LOCALPACKAGES"
+		echo "i nfs.sw.nfs"			>> "$LOCALPACKAGES"
+		echo "i eoe.sw.terminfo"		>> "$LOCALPACKAGES"
+		echo "i eoe.sw.termbase"		>> "$LOCALPACKAGES"
+		echo "i desktop_eoe.sw"			>> "$LOCALPACKAGES"
+		echo "i ViewKit_eoe.sw.base"		>> "$LOCALPACKAGES"
+		echo "i desktop_base.sw"		>> "$LOCALPACKAGES"
+		echo "i motif_eoe.sw.eoe"		>> "$LOCALPACKAGES"
+		echo "i 4Dwm.sw"			>> "$LOCALPACKAGES"
+		echo "i cadmin.sw"			>> "$LOCALPACKAGES"
+		echo "i il_eoe.sw"			>> "$LOCALPACKAGES"
+		echo "i ifl_eoe.sw.c++"			>> "$LOCALPACKAGES"
+		echo "i x_eoe.sw"			>> "$LOCALPACKAGES"
+		echo "i dps_eoe.sw.dpsfonts"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.cpp"		>> "$LOCALPACKAGES"
+		echo "i patchSG0001227.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001270.compiler_eoe_sw.unix" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0001330.eoe_sw.efs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001397.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001482.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001535.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001537.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001598.desktop_base_sw.dso" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0001615.nfs_sw.nfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001639.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001723.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0001840.motif_eoe_sw.eoe" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0001982.x_eoe_sw.Server"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002000.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002009.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002069.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002070.eoe_sw.named"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002070.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002122.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002143.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002181.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002200.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002239.desktop_eoe_sw.envm" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002262.eoe_sw.irix_lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002262.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002278.nfs_sw.nfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002284.eoe_sw.irix_lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002284.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002284.eoe_sw.xfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002330.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002365.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002365.nfs_sw.nfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002420.eoe_sw.irix_lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002422.compiler_eoe_sw.lib" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002423.x_eoe_sw.Server"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002423.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002423.x_eoe_sw.pex"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002454.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002457.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002458.compiler_eoe_sw.unix" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002580.x_eoe_sw.Server"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002580.x_eoe_sw.eoe"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.c++_eoe_sw.lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.cpp" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.lib" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.unix" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002777.eoe_sw.unix"	>> "$LOCALPACKAGES"
+
+		# All other packages are installed in symlink mode
+		echo "i A"				>> "$LINKPACKAGES"
+
+		# Keep local packages as they are when installing links
+		echo "di c++_eoe.sw.lib"		>> "$LINKPACKAGES"
+		echo "di c_eoe.sw.lib"			>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.lboot"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.lib"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.unix"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw32.unix"	>> "$LINKPACKAGES"
+		echo "di eoe.sw.efs"			>> "$LINKPACKAGES"
+		echo "di eoe.sw.gfx"			>> "$LINKPACKAGES"
+		echo "di eoe.sw.irix_lib"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.unix"			>> "$LINKPACKAGES"
+		echo "di dmedia_eoe.sw.midi"		>> "$LINKPACKAGES"
+		echo "di isdn_eoe.sw.isdn"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.dlpi"			>> "$LINKPACKAGES"
+		echo "di eoe.sw.ppp"			>> "$LINKPACKAGES"
+		echo "di eoe.sw.uucp"			>> "$LINKPACKAGES"
+		echo "di isdnadmin.sw.isdnadmin"	>> "$LINKPACKAGES"
+		echo "di insight_base.sw.eoe"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.xfs"			>> "$LINKPACKAGES"
+		echo "di dmedia_eoe.sw.video"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.gltools"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.named"			>> "$LINKPACKAGES"
+		echo "di nfs.sw.nfs"			>> "$LINKPACKAGES"
+		echo "di eoe.sw.terminfo"		>> "$LINKPACKAGES"
+		echo "di eoe.sw.termbase"		>> "$LINKPACKAGES"
+		echo "di desktop_eoe.sw"		>> "$LINKPACKAGES"
+		echo "di ViewKit_eoe.sw.base"		>> "$LINKPACKAGES"
+		echo "di desktop_base.sw"		>> "$LINKPACKAGES"
+		echo "di motif_eoe.sw.eoe"		>> "$LINKPACKAGES"
+		echo "di 4Dwm.sw"			>> "$LINKPACKAGES"
+		echo "di cadmin.sw"			>> "$LINKPACKAGES"
+		echo "di il_eoe.sw"			>> "$LINKPACKAGES"
+		echo "di ifl_eoe.sw.c++"		>> "$LINKPACKAGES"
+		echo "di x_eoe.sw"			>> "$LINKPACKAGES"
+		echo "di dps_eoe.sw.dpsfonts"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.cpp"		>> "$LINKPACKAGES"
+		echo "di patchSG0001227.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001270.compiler_eoe_sw.unix" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001330.eoe_sw.efs"	>> "$LINKPACKAGES"
+		echo "di patchSG0001397.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001482.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001535.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0001537.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001598.desktop_base_sw.dso" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001615.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0001639.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001723.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001840.motif_eoe_sw.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001982.x_eoe_sw.Server" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002000.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002009.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002069.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002070.eoe_sw.named"	>> "$LINKPACKAGES"
+		echo "di patchSG0002070.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002122.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002143.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002181.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002200.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002239.desktop_eoe_sw.envm" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002262.eoe_sw.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002262.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002278.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002284.eoe_sw.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002284.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002284.eoe_sw.xfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002330.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002365.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002365.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002420.eoe_sw.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002422.compiler_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002423.x_eoe_sw.Server" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002423.x_eoe_sw.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0002423.x_eoe_sw.pex"	>> "$LINKPACKAGES"
+		echo "di patchSG0002454.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002457.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002458.compiler_eoe_sw.unix" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002580.x_eoe_sw.Server" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002580.x_eoe_sw.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.c++_eoe_sw.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.cpp" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.unix" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002777.eoe_sw.unix"	>> "$LINKPACKAGES"
+
+		# Packages that cause conflicts, or that we just
+		# don't want.
+		echo "di io4prom"			>> "$LINKPACKAGES"
+		echo "di mmail"				>> "$LINKPACKAGES"
+		echo "di RapidApp.sw.pre_6_2_only"	>> "$LINKPACKAGES"
+		echo "di SoftWindows2"			>> "$LINKPACKAGES"
+		echo "di acrobat"			>> "$LINKPACKAGES"
+		echo "di xpg4"				>> "$LINKPACKAGES"
+		echo "di SpeedShop.sw64"		>> "$LINKPACKAGES"
+		echo "di ViewKit_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di ViewKit_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di WV_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di WV_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di WorkShop.sw64"			>> "$LINKPACKAGES"
+		echo "di c++_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di c++_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di c_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di cms_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di compiler_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di desktop_base.sw64"		>> "$LINKPACKAGES"
+		echo "di dev.sw64"			>> "$LINKPACKAGES"
+		echo "di dmedia_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di ftn77_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di ftn90_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di ftn_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di ftn_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di gl_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di impr_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di insight.sw64"			>> "$LINKPACKAGES"
+		echo "di inventor_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di inventor_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di license_dev.lib64"		>> "$LINKPACKAGES"
+		echo "di molinv_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di molinv_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di motif_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di motif_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di performer_compat.sw64"		>> "$LINKPACKAGES"
+		echo "di performer_dev.sw64"		>> "$LINKPACKAGES"
+		echo "di performer_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di tooltalk_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di websupport_eoe.sw64"		>> "$LINKPACKAGES"
+		echo "di x_dev.sw64"			>> "$LINKPACKAGES"
+		echo "di x_eoe.sw64"			>> "$LINKPACKAGES"
+		echo "di complib.sw.sgimath_64"		>> "$LINKPACKAGES"
+		echo "di patchSG0001295.eoe1_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001336.compiler_eoe_sw32.unix"	\
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001472.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0001472.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0001472.eoe_sw32.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0001678.license_eoe_sw.license_eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001723.nfs_sw.dskless_client" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001961.gfe_sw.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0002030.impactdm_sw.common" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002030.impactdm_sw32.common" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002030.impactvideo_sw.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002030.impactvideo_sw32.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002070.netman_data_man.data" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002278"		>> "$LINKPACKAGES"
+		echo "di patchSG0002422.compiler_dev_sw32.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002458.compiler_eoe_hdr.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.compiler_dev_sw.speclib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw32.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn_dev_sw.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DFS_sw.server"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DFS_sw.kernel"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DFS_sw.base"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw64.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw32.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.security" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.ilogin"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.idl"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.gda"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.cds"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_sw.base"	>> "$LINKPACKAGES"
+		echo "di patchSG0002678.DCE_hdr.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.ftn77_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002777.dev_man.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002777.nfs_sw.dskless_client" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001038.SoftWindows2_sw.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001239.SoftWindows2_sw.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001472"		>> "$LINKPACKAGES"
+		echo "di patchSG0001413"		>> "$LINKPACKAGES"
+		echo "di patchSG0001295"		>> "$LINKPACKAGES"
+		echo "di patchSG0001270.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001336.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001447.eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0001472.eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0001535.eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0001840.motif_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0001932.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001935.eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002016.c++_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002016.c++_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002016.compiler_dev_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002016.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002016.ftn_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002016.ftn_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002262.dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002262.eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002360.ftn_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002422.compiler_dev_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002422.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002423.x_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002458.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002580.x_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002580.x_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.c++_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.c++_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_dev_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw64" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.ftn77_eoe_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.ftn_dev_sw64"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.ftn_eoe_sw64"	>> "$LINKPACKAGES"
+
+		# New or old versions of configuration files left by inst.
+		# These get removed on PUBLIC workstations.
+		# $CONFCHG files that are similarly versioned are handled
+		# separately, in update-os.
+		echo "/etc/init.d/network.O"		>> "$CONFIGVERS"
+		echo "/usr/include/make/makelib.mk.O"	>> "$CONFIGVERS"
+		echo "/usr/include/make/makelint.mk.O"	>> "$CONFIGVERS"
+		echo "/usr/include/make/po.mk.O"	>> "$CONFIGVERS"
+		echo "/usr/include/make/shx.mk.O"	>> "$CONFIGVERS"
+		echo "/usr/include/make/system.mk.O"	>> "$CONFIGVERS"
+		echo "/usr/lib/RapidApp/lib/icon.fti.O"	>> "$CONFIGVERS"
+		echo "/usr/lib/X11/app-defaults/4DWm.O"	>> "$CONFIGVERS"
+		echo "/usr/lib/X11/app-defaults/Mwm.N"	>> "$CONFIGVERS"
+		echo "/usr/lib/X11/system.chestrc.O"	>> "$CONFIGVERS"
+		echo "/usr/lib/X11/system.mwmrc.N"	>> "$CONFIGVERS"
+		echo "/var/X11/xdm/Xsession.dt.O"	>> "$CONFIGVERS"
+
+		# Static route handling has changed, nuke the
+		# old-style config files.
+		echo "/etc/config/staticroute"		>> "$DEADFILES"
+		echo "/etc/config/staticroute.options"	>> "$DEADFILES"
+		echo "/etc/config/staticroute.options.saved" \
+							>> "$DEADFILES"
+
+		# 5.3 installed these as links to the OS volume,
+		# and inst seems to leave them alone if present.
+		for i in /etc/config/isdnd /etc/config/isdnd.options ; do
+			if [ -l $i ] ; then
+				rm -f $i
+			fi
+		done
+
+		# 5.3 installed these as links to the OS volume,
+		# and inst saves them as ".O" files if present
+		oldlinks=" \
+		    /etc/fddi/smtd.conf \
+		    /etc/fddi/smtd.mib \
+		    /usr/lib/X11/app-defaults/InPerson \
+		    /usr/lib/X11/ja_JP.EUC/app-defaults/InPerson \
+		    /usr/local/lib/netscape/mailcap  \
+		    /usr/local/lib/netscape/mime.types \
+		    /usr/share/data/sounds/soundscheme/schemes/inperson.ss \
+		    /var/sysgen/master.d/isdnchan \
+		    /var/sysgen/master.d/isdnlib \
+		    /var/sysgen/master.d/isdnlib.exports \
+		    /var/sysgen/master.d/isdnsme \
+		    /var/sysgen/master.d/lapd \
+		    /var/sysgen/master.d/q931cc \
+		    /var/sysgen/master.d/q931pc"
+		for i in $oldlinks ; do
+			if [ -l $i ] ; then
+				rm -f $i
+			fi
+		done
+
 		echo "/etc/inetd.conf"		>> "$CONFCHG"
 		echo "/etc/services"		>> "$CONFCHG"
 		MACHINE=INDY
