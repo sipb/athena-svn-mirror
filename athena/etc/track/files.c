@@ -1,6 +1,6 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.6 1994-04-07 12:58:05 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.7 1995-05-14 00:57:26 cfields Exp $
  *
  *	$Log: not supported by cvs2svn $
  * Revision 4.5  91/07/16  15:08:26  probe
@@ -56,7 +56,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.6 1994-04-07 12:58:05 miki Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.7 1995-05-14 00:57:26 cfields Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -132,12 +132,7 @@ char *root, *name;
 		do_gripe();
 		return("");
 	}
-	if ( ! *home) 
-#ifdef POSIX
-	  getcwd( home, sizeof(home));
-#else
-	  getwd( home);
-#endif
+	if ( ! *home) getwd( home);
 
 	while ( 1) {
 		if ( lstat( path, &sbuf)) {
@@ -174,11 +169,7 @@ char *root, *name;
 		/* make relative path to parent
 		 */
 		*end = '\0';
-#ifdef POSIX
-		getcwd(path, sizeof(path));
-#else
 		getwd(  path);
-#endif	
 		strcat( path, "/");
 		strcat( path, linkval);
 		if ( chdir( path)) {
@@ -188,21 +179,13 @@ char *root, *name;
 			chdir( home);
 			return("");
 		}
-#ifdef POSIX
-		getcwd(path, sizeof(path));
-#else
 		getwd( path);
-#endif
 		*end = '/';
 		strcat( path, end);
 		linkval = path;
 	}
 	else {			/* path is linkval's parent */
-#ifdef POSIX
-		getcwd(path, sizeof(path));
-#else
 		getwd(  path);
-#endif
 		strcat( path, "/");
 		strcat( path, linkval);
 		linkval = path;
