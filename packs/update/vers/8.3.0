@@ -2,9 +2,15 @@
 
 case "$HOSTTYPE" in
 sun4)
+	echo "/etc/inet/services"			>> "$CONFCHG"
+	echo "/etc/mail/sendmail.cf"			>> "$CONFCHG"
 	;;
 
 sgi)
+	echo "/etc/services"				>> "$CONFCHG"
+	echo "/etc/sendmail.cf"				>> "$CONFCHG"
+	echo "/etc/compiler.defaults"			>> "$CONFCHG"
+
 	# Boot up 6.5 miniroot to upgrade the OS.
 	echo "NEWOS=true"				>> "$CONFVARS"
 	echo "MINIROOT=true"				>> "$CONFVARS"
@@ -252,11 +258,17 @@ sgi)
 	;;
 esac
 
+echo "/.cshrc"						>> "$CONFCHG"
+echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
+echo "/etc/athena/attach.conf"				>> "$CONFCHG"
+echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
+
 if [ -f /var/athena/attachtab ]; then
 	mv /var/athena/attachtab /var/athena/attachtab.old
 	mkdir /var/athena/attachtab
 	mkdir /var/athena/attachtab/locker
 	mkdir /var/athena/attachtab/mountpoint
 	mkdir /var/athena/attachtab/directory
+	echo "Ignore following messages about old attach.conf options."
 	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
 fi
