@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.17 2003-04-04 17:27:16 ghudson Exp $
+# $Id: makeroot.sh,v 1.18 2003-07-02 19:32:26 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -20,7 +20,7 @@ linux)
 
   cd "$sysprefix"
   list=`awk '{ x = $2; } END { print x; }' "$syscontrol"`
-  rpms=`awk '/^athena/ { next; } { print $1; }' $list`
+  rpms=`awk '/\/athena-/ { next; } { print $1; }' $list`
 
   mkdir -p "$root/var/lib/rpm" "$root/etc"
   touch "$root/etc/fstab"
