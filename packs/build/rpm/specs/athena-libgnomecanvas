@@ -1,0 +1,12 @@
+Name: athena-libgnomecanvas
+Summary: GNOME Canvas widget, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libgnomecanvas = 2.0.5
+
+Requires: athena-gtk2 athena-libart_lgpl athena-pango athena-libglade2
+Requires: athena-glib2
+
+%description
+The GNOME canvas widget allows you to create custom displays using
+stock items such as circles, lines, text, and so on.

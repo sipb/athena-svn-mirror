@@ -2,7 +2,7 @@ Name: athena-esound
 Summary: The Enlightened Sound Daemon, for Athena
 Copyright: GPL
 Group: System Environment/Daemons
-Provides: esound = 0.2.23
+Provides: esound = 0.2.29
 
 Requires: audiofile athena-dustbuster
 

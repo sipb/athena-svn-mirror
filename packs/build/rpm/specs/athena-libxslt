@@ -1,0 +1,12 @@
+Name: athena-libxslt
+Summary: Library providing the Gnome XSLT engine, for Athena
+Copyright: MIT
+Group: Development/Libraries
+Provides: libxslt = 1.0.23
+Requires: athena-libxml2
+
+%description
+This C library allows to transform XML files into other XML files
+(or HTML, text, ...) using the standard XSLT stylesheet transformation
+mechanism.  The xsltproc command is a command line interface to the
+XSLT engine.

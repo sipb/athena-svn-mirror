@@ -1,0 +1,12 @@
+Name: athena-gnome-terminal
+Summary: GNOME terminal, for Athena
+Copyright: GPL
+Group: User Interface/Desktops
+Provides: gnome-terminal = 2.0.2
+
+Requires: athena-gtk2 athena-GConf2 athena-libglade2 athena-libgnomeui
+Requires: athena-libzvt
+
+%description
+This package contains the GNOME terminal emulator application, which
+is the GNOME analog of xterm.

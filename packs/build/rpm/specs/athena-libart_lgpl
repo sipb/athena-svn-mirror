@@ -1,0 +1,9 @@
+Name: athena-libart_lgpl
+Summary: Library of graphics routines used by libgnomecanvas, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libart_lgpl = 2.3.11
+
+%description
+Graphics routines used by the GnomeCanvas widget and some other
+applications.  libart renders vector paths and the like.

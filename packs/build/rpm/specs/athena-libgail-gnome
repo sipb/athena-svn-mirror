@@ -1,0 +1,13 @@
+Name: athena-libgail-gnome
+Summary: Accessibility implementation for GTK+ and GNOME libraries, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libgail-gnome = 1.0.2
+
+Requires: athena-atk athena-gtk2 athena-libbonobo athena-libbonoboui
+Requires: athena-libgnomeui athena-at-spi
+
+%description
+GAIL implements the abstract interfaces found in ATK for GTK+ and
+GNOME libraries, enabling accessibility technologies such as at-spi to
+access those GUIs.  libgail-gnome contains the GNOME portions of GAIL.

@@ -1,0 +1,12 @@
+Name: athena-libglade2
+Summary: The Glade user interface library, version 2, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libglade2 = 2.0.1
+
+Requires: athena-gtk2 athena-libxml2 athena-atk
+
+%description
+This library allows you to load glade interface files in a program at
+runtime.  It doesn't require GLADE to be used, but GLADE is by far the
+easiest way to create the interface files.

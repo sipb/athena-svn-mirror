@@ -1,0 +1,9 @@
+Name: athena-bonobo-activation
+Summary: Bonobo object activation framework for GNOME, for Athena
+Copyright: LGPL/GPL
+Group: System Environment/Libraries
+Provides: bonobo-activation = 1.0.4
+Requires: athena-glib2 athena-ORBit2 athena-linc athena-libxml2
+
+%description
+Bonobo Activation is an object activation framework for GNOME.

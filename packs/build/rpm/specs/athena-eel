@@ -2,9 +2,11 @@ Name: athena-eel
 Summary: Eazel Extensions Library, for Athena
 Copyright: LGPL
 Group: System Environment/Libraries
-Provides: eel = 1.0.2
+Provides: eel2 = 2.0.8
 
-Requires: athena-librsvg
+Requires: athena-GConf2 athena-gtk2 athena-glib2 athena-gnome-vfs2 athena-gail
+Requires: athena-libart_lgpl athena-libgnome athena-libgnomeui athena-libxml2
+Requires: athena-libglade2
 
 %description 
 Eazel Extensions Library is a collection of widgets and functions for

@@ -1,0 +1,14 @@
+Name: athena-yelp
+Summary: A system documentation reader from the Gnome project, for Athena
+Copyright: GPL
+Group: Applications/System
+Provides: yelp = 1.0.7
+
+Requires: athena-ORBit2 athena-glib2 athena-libgnome athena-libxslt
+Requires: athena-gnome-vfs2 athena-libgnomeui athena-libbonobo
+Requires: athena-GConf2 athena-libgtkhtml
+
+%description
+Yelp is the Gnome 2 help/documentation browser. It is designed
+to help you browse all the documentation on your system in
+one central tool.

@@ -1,0 +1,15 @@
+Name: athena-libgnome
+Summary: GNOME base library, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libgnome = 2.0.6
+
+Requires: athena-esound athena-GConf2 athena-glib2 athena-gnome-vfs2
+Requires: athena-libbonobo athena-libxml2 athena-libxslt
+
+%description
+GNOME (GNU Network Object Model Environment) is a user-friendly set of
+GUI applications and desktop tools to be used in conjunction with a
+window manager for the X Window System.  The libgnome package includes
+non-GUI-related libraries that are needed to run GNOME.  The
+libgnomeui package contains X11-dependent GNOME library features.

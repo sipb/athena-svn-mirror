@@ -2,13 +2,14 @@ Name: athena-nautilus
 Summary: A file manager and graphical shell, for Athena
 Copyright: GPL
 Group: User Interface/Desktop
-Provides: nautilus = 1.0.6
+Provides: nautilus = 2.0.8
 
-Requires: athena-freetype athena-bonobo athena-gnome-vfs
+Requires: athena-libart_lgpl athena-bonobo-activation athena-libbonobo
+Requires: athena-libbonoboui athena-eel athena-esound athena-glib2
+Requires: athena-libgnomecanvas athena-gnome-desktop athena-libgnome
+Requires: athena-libgnomeui athena-gnome-vfs2 athena-gtk2 athena-librsvg
+Requires: athena-libxml2 athena-pango
 
 %description
-Nautilus is an open-source file manager and graphical shell being
-developed by Eazel, Inc. and others.  It is part of the GNOME project,
-and its source code can be found in the GNOME CVS repository.
-Nautilus is still in the early stages of development.  It will become
-an integral part of the GNOME desktop environment when it is finished.
+Nautilus integrates access to files, applications, media, Internet-
+based resources and the Web.

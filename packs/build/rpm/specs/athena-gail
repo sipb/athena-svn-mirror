@@ -1,0 +1,12 @@
+Name: athena-gail
+Summary: Accessibility implementation for GTK+ and GNOME libraries
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: gail = 0.17
+
+Requires: athena-atk athena-gtk2 athena-libgnomecanvas
+
+%description
+GAIL implements the abstract interfaces found in ATK for GTK+ and
+GNOME libraries, enabling accessibility technologies such as at-spi to
+access those GUIs.

@@ -1,0 +1,16 @@
+Name: athena-gnome-applets
+Summary: Small applications for the GNOME panel, for Athena
+Copyright: GPL
+Group: User Interface/Desktops
+Provides: gnome-applets = 2.0.4
+
+Requires: athena-gtk2 athena-libgnome athena-libgnomeui athena-libxml2
+Requires: athena-gnome-vfs2 athena-GConf2 athena-scrollkeeper
+Requires: athena-gnome-panel athena-libgtop athena-libwnck
+Requires: athena-libglade2 athena-gail athena-esound
+
+%description
+GNOME (GNU Network Object Model Environment) is a user-friendly set of
+applications and desktop tools to be used in conjunction with a window
+manager for the X Window System. The gnome-applets package provides
+small utilities for the GNOME panel.

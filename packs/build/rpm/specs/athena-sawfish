@@ -2,9 +2,10 @@ Name: athena-sawfish
 Summary: The sawfish window manager, for Athena
 Copyright: GPL
 Group: User Interface/Desktops
-Provides: sawfish = 0.37.3
+Provides: sawfish = 1.2-gtk2
 
-Requires: athena-rep-gtk athena-gnome-libs athena-control-center
+Requires: athena-librep athena-rep-gtk athena-gtk2 athena-esound
+Requires: athena-control-center
 
 %description
 Sawfish is an extensible window manager using an Emacs Lisp-like

@@ -1,0 +1,14 @@
+Name: athena-libbonoboui
+Summary: Bonobo user interface components
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: libbonoboui = 2.0.3.3
+
+Requires: athena-libgnomecanvas athena-libbonobo athena-libgnome
+Requires: athena-bonobo-activation athena-libxml2 athena-GConf2
+Requires: athena-libglade2 athena-glib2
+
+%description
+Bonobo is a component system based on CORBA, used by the GNOME
+desktop.  libbonoboui contains the user interface related components
+that come with Bonobo.

@@ -2,13 +2,15 @@ Name: athena-gnome-utils
 Summary: GNOME utility programs, for Athena
 Copyright: GPL
 Group: Applications/System
-Provides: gnome-utils = 1.4.1.2
+Provides: gnome-utils = 2.0.6
 
-Requires: athena-gnome-libs athena-libxml athena-libglade athena-gnome-core
+Requires: athena-libgnome athena-libgnomeui athena-libglade2 athena-libbonoboui
+Requires: athena-gnome-vfs2 athena-gnome-panel athena-popt athena-pango
+Requires: athena-scrollkeeper
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
 GUI applications and desktop tools to be used in conjunction with a
 window manager for the X Window System. The gnome-utils package
-includes a set of utilities for GNOME, including Gcalc, Gdialog,
-Gdiskfree, and many others.
+includes a set of small "desk accessory" utility applications for GNOME
+such as a calculator.

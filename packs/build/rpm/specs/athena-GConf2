@@ -1,0 +1,10 @@
+Name: athena-GConf2
+Summary: The GNOME configuration database system, for Athena
+Copyright: LGPL
+Group: System Environment/Base
+Provides: GConf2 = 1.2.1
+
+Requires: athena-glib2 athena-libxml2 athena-gtk2 athena-ORBit2
+
+%description
+GConf is the GNOME Configuration database system.

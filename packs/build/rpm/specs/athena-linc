@@ -1,0 +1,11 @@
+Name: athena-linc
+Summary: Library for writing network programs, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+Provides: linc = 0.7.0
+Requires: athena-glib2 athena-openssl
+
+%description
+linc is a library that eases the task of writing networked servers and
+clients.  It takes care of connection initiation and maintainance, and
+the details of various transports.

@@ -1,0 +1,11 @@
+Name: athena-gnome2-user-docs
+Summary: GNOME user documentation, for Athena
+Copyright: FDL
+Group: Documentation
+Provides: gnome-user-docs = 2.0.1
+
+Requires: athena-scrollkeeper
+
+%description
+This package contains end user documentation for the GNOME desktop
+environment.

@@ -1,15 +1,18 @@
 Name: athena-control-center
-Summary: The GNOME Control Center, for Athena
-Copyright: GPL
+Summary: GNOME Control Center, for Athena
+Copyright: GPL/LGPL
 Group: User Interface/Desktops
-Provides: control-center = 1.4.0.4
+Provides: control-center = 2.0.3.2
 
-Requires: athena-gnome-libs athena-libglade athena-gdk-pixbuf athena-dustbuster athena-esound libxml
+Requires: athena-gtk2 athena-GConf2 athena-libgnomeui athena-libglade2
+Requires: athena-libbonobo athena-libbonoboui athena-bonobo-activation
+Requires: athena-libglade2 athena-gnome-desktop athena-libxml2
+Requires: athena-gnome-vfs2 athena-esound
 
 %description
 GNOME (the GNU Network Object Model Environment) is an attractive and
-easy-to-use GUI desktop environment.  The athena-control-center
-package provides the GNOME Control Center utilities, which allow you
-to setup and configure your system's GNOME environment (things like
-the desktop background and theme, the screensaver, the window manager,
-system sounds, and mouse behavior).
+easy-to-use GUI desktop environment. The control-center package
+provides the GNOME Control Center utilities that allow you to setup
+and configure your system's GNOME environment (things like the desktop
+background and theme, the screensaver, the window manager, system
+sounds, and mouse behavior).
