@@ -226,7 +226,7 @@ mostlyclean::
 	rm -f *.o $(program) $(lib) $(programs)
 
 clean:: mostlyclean
-	rm -f *.dvi *.pool *.p
+	rm -f *.dvi *.pool
 
 distclean:: clean
 	rm -f Makefile config.status c-auto.h
