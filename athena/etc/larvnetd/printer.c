@@ -17,7 +17,7 @@
  * functions for querying the printers for queue status information.
  */
 
-static const char rcsid[] = "$Id: printer.c,v 1.1 1998-09-01 20:57:46 ghudson Exp $";
+static const char rcsid[] = "$Id: printer.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -153,7 +153,6 @@ failure:
 static void printer_host_callback(void *arg, int status, struct hostent *host)
 {
   struct printer_poll_args *pargs = (struct printer_poll_args *) arg;
-  struct serverstate *state = pargs->state;
   struct printer *printer = pargs->printer;
   int s = -1, lport = IPPORT_RESERVED - 1, flags;
   unsigned short port;

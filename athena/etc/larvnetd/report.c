@@ -17,10 +17,11 @@
  * the generation of reports.
  */
 
-static const char rcsid[] = "$Id: report.c,v 1.1 1998-09-01 20:57:46 ghudson Exp $";
+static const char rcsid[] = "$Id: report.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <syslog.h>
 #include "larvnetd.h"
 #include "larvnet.h"
@@ -38,6 +39,7 @@ struct outof {
 static void report_cgroups(struct config *config);
 static void report_clusters(struct config *config);
 static void report_printers(struct config *config);
+static int find_arch(struct config *config, const char *archname);
 
 void report(void *arg)
 {
@@ -107,6 +109,8 @@ static void report_clusters(struct config *config)
   /* For each cluster and architecture, we need to compute the number
    * of free machines and total number of machines.  Allocate and
    * initialize a matrix of outof structures to store the data.
+   * Leave an extra two entries at the end of each row for other and
+   * unknown architectures.
    */
   entries = emalloc(config->nclusters * sizeof(struct outof *));
   for (i = 0; i < config->nclusters; i++)
@@ -120,13 +124,12 @@ static void report_clusters(struct config *config)
     }
 
   /* Now compute the free machines and total machines for each cluster
-   * and architecture.  We "know" here that machine->arch might be -2
-   * or -1 for other or unknown architectures.
+   * and architecture.
    */
   for (i = 0; i < config->nmachines; i++)
     {
       machine = &config->machines[i];
-      ent = &entries[machine->cluster][machine->arch + 2];
+      ent = &entries[machine->cluster][find_arch(config, machine->arch)];
       if (machine->busy == FREE)
 	ent->nfree++;
       ent->total++;
@@ -156,19 +159,16 @@ static void report_clusters(struct config *config)
 
 	  /* Write out the totals for each defined architecture. */
 	  for (j = 0; j < config->narch; j++)
-	    {
-	      fprintf(fp, " %d %d", entries[i][j + 2].nfree,
-		      entries[i][j + 2].total);
-	    }
+	    fprintf(fp, " %d %d", entries[i][j].nfree, entries[i][j].total);
 	  if (config->report_other)
 	    {
-	      fprintf(fp, " %d %d", entries[i][OTHER_ARCH + 2].nfree,
-		      entries[i][OTHER_ARCH + 2].total);
+	      fprintf(fp, " %d %d", entries[i][config->narch].nfree,
+		      entries[i][config->narch].total);
 	    }
 	  if (config->report_unknown)
 	    {
-	      fprintf(fp, " %d %d", entries[i][UNKNOWN_ARCH + 2].nfree,
-		      entries[i][UNKNOWN_ARCH + 2].total);
+	      fprintf(fp, " %d %d", entries[i][config->narch + 1].nfree,
+		      entries[i][config->narch + 1].total);
 	    }
 	  fprintf(fp, "\n");
 	}
@@ -219,4 +219,30 @@ static void report_printers(struct config *config)
       syslog(LOG_ERR, "report: can't open %s for writing: %m",
 	     PATH_PRINTERS_NEW);
     }
+}
+
+static int find_arch(struct config *config, const char *archname)
+{
+  int i, j;
+  struct archname *arch;
+
+  /* If the workstation has not reported an architecture or reported
+   * an empty string, return config->narch + 1 for "unknown".
+   */
+  if (!archname || !*archname)
+    return config->narch + 1;
+
+  /* Look for the name in the list of defined architectures. */
+  for (i = 0; i < config->narch; i++)
+    {
+      arch = &config->arches[i];
+      for (j = 0; j < arch->nnetnames; j++)
+	{
+	  if (strcmp(arch->netnames[j], archname) == 0)
+	    return i;
+	}
+    }
+
+  /* Return config->narch for "other". */
+  return config->narch;
 }

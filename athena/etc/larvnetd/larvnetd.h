@@ -1,4 +1,4 @@
-/* $Id: larvnetd.h,v 1.1 1998-09-01 20:57:45 ghudson Exp $ */
+/* $Id: larvnetd.h,v 1.2 1998-10-13 17:12:58 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -25,9 +25,6 @@
 #include <ares.h>
 #include "timer.h"
 
-#define UNKNOWN_ARCH	-1
-#define OTHER_ARCH	-2
-
 enum busystate { BUSY, FREE, UNKNOWN_BUSYSTATE };
 
 struct cluster {
@@ -37,8 +34,9 @@ struct cluster {
 };
 
 struct archname {
-  char *netname;
   char *reportname;
+  char **netnames;
+  int nnetnames;
 };
 
 struct machine {
@@ -48,7 +46,7 @@ struct machine {
 
   /* State information */
   enum busystate busy;
-  int arch;			/* Index into config.arches */
+  char *arch;			/* Architecture name reported in status */
   time_t laststatus;		/* Time of last status report */
   time_t lastpoll;		/* Time of last poll we sent */
   int numpolls;			/* Number of polls since laststatus */

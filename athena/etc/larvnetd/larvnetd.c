@@ -17,7 +17,7 @@
  * the main loop.
  */
 
-static const char rcsid[] = "$Id: larvnetd.c,v 1.2 1998-09-17 23:17:55 ghudson Exp $";
+static const char rcsid[] = "$Id: larvnetd.c,v 1.3 1998-10-13 17:12:58 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,6 +32,7 @@ static const char rcsid[] = "$Id: larvnetd.c,v 1.2 1998-09-17 23:17:55 ghudson E
 #include <errno.h>
 #include <netdb.h>
 #include <syslog.h>
+#include <hesiod.h>
 #include "larvnetd.h"
 #include "larvnet.h"
 #include "timer.h"

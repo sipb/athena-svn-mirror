@@ -17,7 +17,7 @@
  * functions to read and reread the configuration file.
  */
 
-static const char rcsid[] = "$Id: config.c,v 1.1 1998-09-01 20:57:40 ghudson Exp $";
+static const char rcsid[] = "$Id: config.c,v 1.2 1998-10-13 17:12:57 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -40,8 +40,6 @@ static int find_numeric_range(const char *name, const char **start,
 static void add_machine(struct config *config, int *machsize, const char *name,
 			int cluster_index);
 static void freeconfig(struct config *config);
-static int translate_arch(struct config *oldconfig, struct config *newconfig,
-			  int archnum);
 static char *skip_spaces(char *p);
 static char *skip_nonspaces(char *p);
 
@@ -81,12 +79,10 @@ void reread_config(struct serverstate *state)
 	  machine->laststatus = state->config.machines[i].laststatus;
 	  machine->lastpoll = state->config.machines[i].lastpoll;
 	  machine->numpolls = state->config.machines[i].numpolls;
-
-	  /* We have to be careful with the architecture, since the names
-	   * might have changed.
-	   */
-	  machine->arch = translate_arch(&state->config, &newconf,
-					 state->config.machines[i].arch);
+	  if (state->config.machines[i].arch)
+	    machine->arch = estrdup(state->config.machines[i].arch);
+	  else
+	    machine->arch = NULL;
 	}
     }
 
@@ -175,10 +171,30 @@ static int read_config(const char *configfile, struct config *config)
 				    archsize * sizeof(struct archname));
 	}
       arch = &config->arches[config->narch];
-      arch->netname = estrndup(p, q - p);
+      arch->reportname = estrndup(p, q - p);
+
+      /* Read in the net names for this architecture type. */
+      arch->netnames = NULL;
+      arch->nnetnames = 0;
       p = skip_spaces(q);
-      q = skip_nonspaces(p);
-      arch->reportname = (*p) ? estrndup(p, q - p) : estrdup(arch->netname);
+      while (*p)
+	{
+	  q = skip_nonspaces(p);
+	  arch->netnames = erealloc(arch->netnames,
+				    (arch->nnetnames + 1) * sizeof(char *));
+	  arch->netnames[arch->nnetnames] = estrndup(p, q - p);
+	  arch->nnetnames++;
+	  p = skip_spaces(q);
+	}
+
+      /* If no net names were specified, default to the report name. */
+      if (!arch->nnetnames)
+	{
+	  arch->netnames = emalloc(sizeof(char *));
+	  arch->netnames[0] = estrdup(arch->reportname);
+	  arch->nnetnames = 1;
+	}
+
       config->narch++;
     }
   if (status == -1)
@@ -397,7 +413,7 @@ static int find_numeric_range(const char *name, const char **start,
   p++;
   if (!isdigit(*p))
     return 0;
-  *first = strtol(p, &p, 0);
+  *first = strtol(p, (char **) &p, 0);
 
   /* Skip the dash in the middle. */
   if (*p != '-')
@@ -407,7 +423,7 @@ static int find_numeric_range(const char *name, const char **start,
   /* Read the range end. */
   if (!isdigit(*p))
     return 0;
-  *last = strtol(p, &p, 0);
+  *last = strtol(p, (char **) &p, 0);
 
   /* Make sure we close with a square bracket. */
   if (*p != ']')
@@ -435,7 +451,7 @@ static void add_machine(struct config *config, int *machsize, const char *name,
 
   /* Initialize state variables. */
   machine->busy = UNKNOWN_BUSYSTATE;
-  machine->arch = UNKNOWN_ARCH;
+  machine->arch = NULL;
   machine->laststatus = 0;
   machine->lastpoll = 0;
   machine->numpolls = 0;
@@ -445,8 +461,13 @@ static void add_machine(struct config *config, int *machsize, const char *name,
 
 static void freeconfig(struct config *config)
 {
-  int i;
+  int i, j;
 
+  for (i = 0; i < config->nmachines; i++)
+    {
+      free(config->machines[i].name);
+      free(config->machines[i].arch);
+    }
   for (i = 0; i < config->nprinters; i++)
     {
       free(config->printers[i].name);
@@ -462,8 +483,10 @@ static void freeconfig(struct config *config)
     }
   for (i = 0; i < config->narch; i++)
     {
-      free(config->arches[i].netname);
       free(config->arches[i].reportname);
+      for (j = 0; j < config->arches[i].nnetnames; j++)
+	free(config->arches[i].netnames[j]);
+      free(config->arches[i].netnames);
     }
   for (i = 0; i < config->ncgroups; i++)
     free(config->cgroups[i].name);
@@ -474,28 +497,6 @@ static void freeconfig(struct config *config)
   free(config->cgroups);
   free(config->report_other);
   free(config->report_unknown);
-}
-
-static int translate_arch(struct config *oldconfig, struct config *newconfig,
-			  int archnum)
-{
-  const char *archname;
-  int i;
-
-  /* Pass through special architecture numbers. */
-  if (archnum == UNKNOWN_ARCH || archnum == OTHER_ARCH)
-    return archnum;
-
-  /* Find the architecture name in newconfig->arches, if it's there. */
-  archname = oldconfig->arches[archnum].netname;
-  for (i = 0; i < newconfig->narch; i++)
-    {
-      if (strcmp(newconfig->arches[i].netname, archname) == 0)
-	return i;
-    }
-
-  /* It's not there; fall back to OTHER_ARCH. */
-  return OTHER_ARCH;
 }
 
 static char *skip_spaces(char *p)

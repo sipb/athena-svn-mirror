@@ -17,7 +17,7 @@
  * functions to poll and receive notifications of workstation status.
  */
 
-static const char rcsid[] = "$Id: ws.c,v 1.1 1998-09-01 20:57:48 ghudson Exp $";
+static const char rcsid[] = "$Id: ws.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -134,7 +134,7 @@ void ws_poll(void *arg)
 void ws_handle_status(int s, struct config *config)
 {
   struct sockaddr_in sin;
-  int sz = sizeof(sin), count, archindex;
+  int sz = sizeof(sin), count;
   char buf[LARVNET_MAX_PACKET + 1];
   const char *name, *arch;
   struct machine *machine;
@@ -170,19 +170,6 @@ void ws_handle_status(int s, struct config *config)
   syslog(LOG_DEBUG, "ws_handle_status: addr %s busy %c name %s arch %s",
 	 inet_ntoa(sin.sin_addr), buf[0], name, arch);
 
-  if (*arch)
-    {
-      for (archindex = 0; archindex < config->narch; archindex++)
-	{
-	  if (strcmp(arch, config->arches[archindex].netname) == 0)
-	    break;
-	}
-      if (archindex == config->narch)
-	archindex = OTHER_ARCH;
-    }
-  else
-    archindex = UNKNOWN_ARCH;
-
   /* We could, at this point, resolve the given name and see if
    * sin.sin_addr is one of its interface addresses.  That would make
    * it a little harder to spoof, but not much, so we won't bother.
@@ -193,12 +180,11 @@ void ws_handle_status(int s, struct config *config)
     {
       syslog(LOG_DEBUG, "ws_handle_status: machine %s set to state %s arch %s",
 	     machine->name, (busystate == BUSY) ? "busy"
-	     : (busystate == FREE) ? "free" : "unknown",
-	     (archindex == OTHER_ARCH) ? "other"
-	     : (archindex == UNKNOWN_ARCH) ? "unknown"
-	     : config->arches[archindex].netname);
+	     : (busystate == FREE) ? "free" : "unknown", arch);
       machine->busy = busystate;
-      machine->arch = archindex;
+      if (machine->arch)
+	free(machine->arch);
+      machine->arch = estrdup(arch);
       time(&machine->laststatus);
       machine->numpolls = 0;
     }
@@ -222,7 +208,7 @@ static void poll_callback(void *arg, int status, struct hostent *host)
   struct serverstate *state = wsarg->state;
   struct machine *machine = wsarg->machine;
   struct sockaddr_in sin;
-  char dummy, *errmem;
+  char dummy = 0, *errmem;
 
   free(wsarg);
   if (status != ARES_SUCCESS)
@@ -243,7 +229,7 @@ static void poll_callback(void *arg, int status, struct hostent *host)
   /* Send a poll. */
   memset(&sin, 0, sizeof(sin));
   sin.sin_family = AF_INET;
-  memcpy(&sin.sin_addr, host->h_addr, sizeof(sin));
+  memcpy(&sin.sin_addr, host->h_addr, sizeof(sin.sin_addr));
   sin.sin_port = state->poll_port;
   sendto(state->server_socket, &dummy, 1, 0,
 	 (struct sockaddr *) &sin, sizeof(sin));
