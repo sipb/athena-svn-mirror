@@ -33,7 +33,7 @@
 
 #define create_dir(dir)							@@\
 install_dirs:: $(DESTDIR)dir						@@\
-$(DESTDIR)dir:								@@\
+$(DESTDIR)dir::								@@\
 	$(MKDIRHIER) $(DESTDIR)dir
 
 #define build_program(prog,objs,ldflags,libs)				@@\
