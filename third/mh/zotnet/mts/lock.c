@@ -1,6 +1,6 @@
 /* lock.c - universal locking routines */
 #ifndef	lint
-static char ident[] = "@(#)$Id: lock.c,v 1.1.1.1 1996-10-07 07:14:31 ghudson Exp $";
+static char ident[] = "@(#)$Id: lock.c,v 1.2 1996-10-13 18:48:12 ghudson Exp $";
 #endif
 /* compile-time priority:
  *	LOCKF	use if defined
@@ -112,7 +112,7 @@ register int     access;
     for (i = 0;;)
 	switch (lockit (tmplock, curlock)) {
 	    case OK: 
-		if ((i = open (file, access)) == NOTOK) {
+		if ((i = open (file, access, 0)) == NOTOK) {
 		    j = errno;
 		    (void) unlink (curlock);
 		    errno = j;
@@ -244,8 +244,8 @@ register int     access;
 #endif	/* LOCKF || FCNTL */
 	if ((fd = open (file, access | O_NDELAY)) == NOTOK)
 	    return NOTOK;
-#ifndef	LOCKF
-#ifndef	FLOCK
+#if !defined(LOCKF) || defined(FCNTL)
+#if !defined(FLOCK) || defined(FCNTL)
 #ifndef	FCNTL
 	/* should be an error? */
 #else /* FCNTL */

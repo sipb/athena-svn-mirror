@@ -20,17 +20,16 @@
 ################################################################################
 
 configdirs="util util/et util/makedepend util/ss include lib lib/acl \
-lib/des lib/kadm lib/kdb lib/krb lib/kstream POP admin appl \
+lib/des lib/kadm lib/kdb lib/knet lib/krb lib/kstream POP admin appl \
 appl/bsd appl/sample appl/tftp appl/tftp/doc appl/x5dm \
 kadmin kuser man movemail pfrom server slave tests"
 configdirs=""
 x11subdirs="appl/x5dm"
 xdmsubdirs="appl/x5dm appl/x5dm/config"
-utilsubdirs="util util/makedepend util/et util/ss"
-libsubdirs="include lib lib/des lib/krb lib/kdb lib/kadm lib/acl lib/kstream"
-othersubdirs="kuser kadmin server slave admin appl appl/bsd man tests appl/tftp appl/sample appl/telnet appl/telnet/libtelnet appl/telnet/telnet appl/telnet/telnetd appl/ftp appl/ftp/ftp appl/ftp/ftpd"
-emailsubdirs="email email/movemail email/pfrom email/POP"
-subdirs="$utilsubdirs $libsubdirs $othersubdirs $emailsubdirs"
+utilsubdirs="util util/makedepend"
+libsubdirs="include lib lib/des lib/krb lib/kdb lib/kadm lib/knet lib/acl lib/kstream"
+othersubdirs="kuser kadmin server slave admin appl appl/bsd man appl/tftp appl/sample"
+subdirs="$utilsubdirs $libsubdirs $othersubdirs"
 
 # for makefile substitution
 extrasubdirs=
@@ -105,62 +104,6 @@ esac
 if [ x"${host}" != x"${target}" ] ; then
 	echo "Cross build not supported yet" ; exit 1
 fi	
-
-# Configure appl/rdist subdirectory.  Simply setting configdirs doesn't help,
-# because Cygnus configure assumes the subdirectory is only one level down,
-# and it would get $newsrcdir wrong that way if $srcdir is relative.
-case "${host}" in
-  *-*-macos* | *-*-mpw* | \
-  *-*-windows* )
-    # Not supported, and probably never will be.
-    ;;
-  *-*-sco* | *-*-sysv3* | m68k-next-bsd* | i960-*-vxworks* | \
-  *-*-ultrix3* | rs6000-ibm-aix4* | powerpc-ibm-aix4* | mips*-pyramid-osx* | \
-  i[345]86-*-*bsd*)
-    # Not supported yet, but it probably wouldn't take much work.
-    ;;
-  *)
-    if test -f $srcdir/appl/rdist/configure ; then
-      extrasubdirs="$extrasubdirs appl/rdist"
-      echo Configuring appl/rdist...
-      for d in appl appl/rdist ; do
-	if test -d $d || mkdir $d ; then true; else
-	 echo "Can't create $d subdir." 1>&2 ; exit 1 ; fi
-      done
-      # Need to pass $CC on to rdist configure.
-      if test "${CC}" = "" ; then
-	eval `cat ${srcdir}/${package_makefile_frag} \
-			${srcdir}/${target_makefile_frag} \
-		| egrep '^CC=' \
-		| sed 's/^CC=\(.*\)$/CC="\1"/' `
-	export CC
-      fi
-      popdir=`pwd`
-      case "${srcdir}" in
-      .)	newsrcdir=. ;;
-      /*)	newsrcdir=${srcdir}/appl/rdist ;;
-      *)	newsrcdir=../../${srcdir}/appl/rdist ;;
-      esac
-      case "${newsrcdir}" in
-      .)	srcdiroption= ;;
-      *)	srcdiroption="--srcdir=$newsrcdir" ;;
-      esac
-      cd appl/rdist
-      if eval ${config_shell} ${newsrcdir}/configure ${verbose} \
-	    ${buildopt} --host=${host_alias} --target=${target_alias} \
-	    ${prefixoption} ${tmpdiroption} ${exec_prefixoption} \
-	    ${srcdiroption} ${site_option} ${withoptions} ${withoutoptions} \
-	    ${enableoptions} ${disableoptions} ${other_options} ${redirect}
-      then
-	true
-      else
-	echo Configure in `pwd` failed, exiting. 1>&2
-	exit 1
-      fi
-      cd $popdir
-    fi
-    ;;
-esac
 
 # post-target:
 

@@ -1,10 +1,10 @@
 .TH PSPLOT 1 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psplot.1p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psplot.1p,v 1.2 1996-10-14 05:09:49 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .SH NAME
-psplot\(emconvert plot(5) files to \*(PS language format
+psplot \- convert plot(5) files to PostScript language format
 .SH SYNOPSIS
 .B psplot
 [
@@ -41,11 +41,7 @@ prologue file
 XPSLIBDIRX/psplot.pro
 default prologue file
 .SH "SEE ALSO"
-transcript(1), ps4014(1).
-.br
-BSD: graph(1), plot(1), plot(3), plot(5), lpr(1).
-.br
-System V: lp(1).
+transcript(1), ps4014(1), graph(1), plot(1), plot(3), plot(5), lpr(1).
 .SH AUTHOR
 Adobe Systems Incorporated
 .SH BUGS

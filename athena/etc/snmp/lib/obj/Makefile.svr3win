@@ -1,0 +1,23 @@
+#
+# Makefile to build RPI snmp library
+#
+PARSEOBJS=	snmpparse.o prsepdus.o prselen.o prselst.o prseprim.o msgparse.o
+BUILDOBJS=	snmpbld.o bldpdus.o bldlst.o bldlen.o bldprim.o msgbld.o
+COMMOBJS=	snmpsend.o snmprecv.o termcomm.o
+UTLOBJS=	auth.o commtbl.o varcvt.o error.o valprint.o oidutil.o
+SRVOBJS=	snmpservsend.o snmpdecipher.o
+
+all: $(BUILDOBJS) $(PARSEOBJS) $(COMMOBJS) $(UTLOBJS) $(SERVOBJS)
+	-ar rv libsnmp.a $(BUILDOBJS) $(PARSEOBJS) $(COMMOBJS) $(UTLOBJS) $(SRVOBJS)
+
+install: all
+	-cp libsnmp.a $(LIB)/libsnmp.a
+
+clean:
+	-/bin/rm -f libsnmp.a
+	-/bin/rm -f $(BUILDOBJS) 
+	-/bin/rm -f $(PARSEOBJS) 
+	-/bin/rm -f $(COMMOBJS) 
+	-/bin/rm -f $(UTLOBJS)
+	-/bin/rm -f $(SRVOBJS)
+

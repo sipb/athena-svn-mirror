@@ -19,11 +19,13 @@
 /* Include the external definitions */
 #include "kerberos.h"
 
+#define MAX_KRB_ERRORS 256
+
 /* Text describing error codes */
 #ifdef MULTIDIMENSIONAL_ERR_TXT
- extern const char krb_err_txt[256][60];
+ extern const char krb_err_txt[MAX_KRB_ERRORS][60];
 #else 
- extern const char *const krb_err_txt [256];
+ extern const char *const krb_err_txt [MAX_KRB_ERRORS];
 #endif
 
 /* Debugging printfs shouldn't even be compiled on many systems that don't
@@ -70,6 +72,8 @@ typedef unsigned short gid_t;
 #define		VERSION_SZ	1
 #define		MSG_TYPE_SZ	1
 #define		DATE_SZ		26	/* RTI date output */
+
+#define		MAX_HSTNM	100
 
 #ifndef DEFAULT_TKT_LIFE		/* allow compile-time override */
 #define		DEFAULT_TKT_LIFE	120 /* default lifetime 10 hrs */

@@ -1,0 +1,85 @@
+!
+! Some generally used resources...
+!
+*borderWidth:				1
+*Button.borderWidth:			0
+
+*timer.padding:		10
+*timer.Center:		True
+*timer.font:		-adobe-new century schoolbook-*-*-*-*-*-350-*-*-*-*-*-*
+*timer.format:		%02m:%02s
+*timerForm*form:	timer: 0 0 100 100
+*timerWindow.defGeometry:		TIMERGEOMETRY
+!*timerWindow.title:			xclock
+*timerWindow.deleteProc:		deleteParent()
+
+*snooper.eventProc:			event()
+
+! Turn off overrideRedirect at your peril.
+*timerWindow.overrideRedirect:		true
+
+!
+! Global bugging configuration
+!
+*tree:								\
+{								\
+  Window bugWindow;						\
+    {								\
+      Form bugForm;						\
+        {							\
+	  Label question;					\
+	  Window bugOK; { Button bugOK; { Label yes; } }	\
+        }							\
+    }								\
+}
+
+*bugForm*form:				bugOK: 45 - 55 95	\
+					question: 0 20 100 -
+*bugForm.padding:			2
+
+*bugWindow.geometry:			DIALOGGEOMETRY
+*bugWindow.title:			QuickStation
+*bugWindow*window.rootTransient:	True
+*bugWindow*question.font:		*-times-medium-i-*--24-*
+*bugWindow*question.Center:		True
+*bugWindow*Label.font:			*-times-medium-r-*--18-*
+*bugOK*yes.label:			OK
+*bugOK.activateProc:			deleteAncestor(3)
+
+!
+! Specific bugging instances
+!
+*bugnames:	first second third nth
+
+*first*question.label:			You have two more minutes.
+*first*timeout:				480
+
+*second*question.label:			You have one minute left.
+*second*timeout:			540
+
+*third*question.label:			Please logout now.
+*third*timeout:				600
+
+*nth*question.label:			You should logout immediately.
+*nth*timeout:				660 30
+
+! ***************************** WARNING *************************************
+! The Console program and Dash contain a color converter which is NON-STANDARD.
+! The syntax for the following resources should not be used when specifying
+! resources for other programs, as it will generate a warning from that
+! program.
+!
+! Also, the color converter does not deal with the "reverseVideo" resource,
+! for reasons too complicated to explain here.
+!
+! Having said all that...  when writing a color spec, you can use up to three
+! comma-separated colors, which are applied as follows:
+!   - if three colors are given, they specify the color to use on mono,
+!     grayscale and color monitors, respectively.
+!   - if only two colors are given, the first is used for both mono and
+!     grayscale, and the second is for color.
+!   - if only one color is given, it is used for all three visual classes.
+!
+
+*foreground:			black
+*background:			white

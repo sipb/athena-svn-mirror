@@ -1,0 +1,456 @@
+%pascal
+
+{ SOCKET - Subroutines that manipulate socket address data structures }
+
+{*
+ * These routines exist to allow sockaddr's (socket_$addr_t's), and their
+ * friends to be manipulated in an address-family independent way.  This
+ * something that's not really possibly just with what Berkeley supplies.
+ * Typically, you would end up having to #include address-family dependent
+ * include files like <netinet/in.h> and declare things to be of
+ * address-family dependent data types like "struct sockaddr_in".  This
+ * would make it hard to write code that's able to run over multiple
+ * address/protocol familes.  The routines declared in this interface fix
+ * this problem.
+ *}
+
+[LOCAL] INTERFACE socket_;
+
+
+IMPORT
+    'nbase.idl';
+
+
+    { An enumeration of the different kinds of well-known ports.  An element from
+      this enumeration is the 2nd argument to the "set_wk_port" procedure. }
+
+TYPE
+    socket_$wk_ports_t = (
+        socket_$wk_fwd          { Port of forwarding agent }
+        );
+
+    socket_$string_t = ARRAY [1..100] OF char;
+
+    socket_$addr_list_t = ARRAY[1..*] OF socket_$addr_t ;
+    socket_$len_list_t  = ARRAY[1..*] OF unsigned32 ;
+
+    { This is just here for the benefit of the to/from_local_rep interface
+      definitions (since we can't say "struct sockaddr"). The interfaces don't 
+      really care how big the structure is since it is only passed by reference.
+      This type should NOT be used elsewhere! }
+
+    socket_$local_sockaddr_t = ARRAY [1..50] OF char;
+
+
+CONST
+    { Flags for "socket_$equal" }
+
+    socket_$eq_hostid  = 16#00000001;
+    socket_$eq_netaddr = 16#00000002;
+    socket_$eq_port    = 16#00000004;
+    socket_$eq_network = 16#00000008;
+
+CONST
+    socket_$addr_module_code = 16#10020000;
+
+    socket_$buff_too_large            = 16#10020001;
+    socket_$buff_too_small            = 16#10020002;
+    socket_$bad_numeric_name          = 16#10020003;
+    socket_$cant_find_name            = 16#10020004;
+    socket_$cant_cvrt_addr_to_name    = 16#10020005;
+    socket_$cant_get_local_name       = 16#10020006;
+    socket_$cant_create_socket        = 16#10020007;
+    socket_$cant_get_if_config        = 16#10020008;
+    socket_$internal_error            = 16#10020009;
+    socket_$family_not_valid          = 16#1002000a;
+    socket_$invalid_name_format       = 16#1002000b;
+
+
+{*
+ * S O C K E T _ $ V A L I D _ F A M I L Y
+ *
+ * Return whether an address/protocol family is OK to use.
+ *}
+
+FUNCTION socket_$valid_family(
+    IN family:          unsigned32;
+    OUT st:             status_$t 
+    ): boolean;
+
+
+{*
+ * S O C K E T _ $ V A L I D _ F A M I L I E S
+ *
+ * Return the list of valid address/protocol families.  The status variable is
+ * set if there is not enough room in the output array for all the valid families.
+ *}
+
+PROCEDURE socket_$valid_families(
+    IN OUT num:         unsigned32;
+    OUT families:       [ last_is(num), max_is(num) ] 
+                        array [ 1..* ] of socket_$addr_family_t;
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ I N Q _ P O R T
+ *
+ * Return the port field in a sockaddr.
+ *}
+
+FUNCTION socket_$inq_port(
+    IN REF saddr:       socket_$addr_t;
+    IN slen:            unsigned32;
+    OUT st:             status_$t 
+    ): unsigned32;
+
+
+{*
+ * S O C K E T _ $ S E T _ P O R T
+ *
+ * Set the port field in a sockaddr to the specified value.
+ *}
+
+PROCEDURE socket_$set_port(
+    IN OUT saddr:       socket_$addr_t;
+    IN OUT slen:        unsigned32;
+    IN port:            unsigned32;
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ S E T _ W K _ P O R T    
+ *
+ * Set a sockaddr's port to a well-known value.
+ *}
+
+PROCEDURE socket_$set_wk_port(
+    IN OUT saddr:       socket_$addr_t;
+    IN OUT slen:        unsigned32; 
+    IN port:            unsigned32 {socket_$wk_ports_t};
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ E Q U A L      
+ *
+ * Compare two sockaddrs.  The "flags" argument (see "socket_$eq_..." constants
+ * defined above) determines how much of the sockaddrs are compared.
+ *}
+
+FUNCTION socket_$equal(
+    IN REF saddr1:      socket_$addr_t;
+    IN slen1:           unsigned32;
+    IN REF saddr2:      socket_$addr_t;
+    IN slen2:           unsigned32;
+    IN flags:           unsigned32;
+    OUT st:             status_$t 
+    ): boolean;
+
+
+{*
+ * S O C K E T _ $ F R O M _ N A M E
+ *
+ * Convert a text name and a port to a sockaddr.  If the family argument is
+ * "socket_$unspec" (AF_UNSPEC, 0), then the name is scanned for a prefix of
+ * "familyname:" (e.g. "ip:").  If name ends with "[nnn]", "nnn" is taken
+ * to be the port number; otherwise, the port argument is used as the port
+ * number.  If the host name is missing (e.g. "ip:[37] or "ip:"), the local
+ * host name is assumed.  A leading "#" in the host name can be used to
+ * indicate that the host name is in the standard numeric form.
+ *}
+
+PROCEDURE socket_$from_name(
+    IN family:          unsigned32;
+    IN REF name:        socket_$string_t;
+    IN namelen:         unsigned32;
+    IN port:            unsigned32; 
+    OUT saddr:          socket_$addr_t;
+    IN OUT slen:        unsigned32;
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ F A M I L Y _ F R O M _ N A M E
+ * 
+ * Convert a text name of a protocol/address family to an integer family
+ *}
+
+FUNCTION socket_$family_from_name(
+    IN REF name:        socket_$string_t;
+    IN namelen:         unsigned32;
+    OUT st:             status_$t 
+    ): unsigned32;
+
+
+{*
+ * S O C K E T _ $ F A M I L Y _ T O _ N A M E
+ * 
+ * Convert a protocol/address family to a text name.
+ *}
+
+PROCEDURE socket_$family_to_name(
+    IN family:          unsigned32;
+    OUT name:           socket_$string_t;
+    IN OUT namelen:     unsigned32;
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ T O _ N A M E
+ *
+ * Convert a sockaddr to a text name and a port.  The next name will have
+ * the form "familyname:hostname".  "hostname" may be of the standard numeric
+ * form if a more useful name can not be divined.
+ *}
+
+PROCEDURE socket_$to_name(
+    IN REF saddr:       socket_$addr_t;
+    IN slen:            unsigned32;
+    OUT name:           socket_$string_t;
+    IN OUT namelen:     unsigned32;
+    OUT port:           unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ T O _ N U M E R I C _ N A M E
+ *
+ * Like "socket_$to_name", except the hostname string will be of the standard
+ * numeric form for the family (e.g. "10.2.0.9" for IP and "29C27.809C" for
+ * DDS).
+ *}
+
+PROCEDURE socket_$to_numeric_name(
+    IN REF saddr:       socket_$addr_t;
+    IN slen:            unsigned32;
+    OUT name:           socket_$string_t;
+    IN OUT namelen:     unsigned32;
+    OUT port:           unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ S E T _ B R O A D C A S T
+ *
+ * Set a sockaddr so that sends on it will broadcast.
+ *}
+
+PROCEDURE socket_$set_broadcast(
+    IN OUT saddr:       socket_$addr_t;
+    IN OUT slen:        unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ M A X _ P K T _ S I Z E
+ *
+ * Return the max pkt size for a protocol family.
+ *}
+
+FUNCTION socket_$max_pkt_size(
+    IN family:          unsigned32; 
+    OUT st:             status_$t 
+    ): unsigned32;
+
+
+{*
+ * S O C K E T _ $ I N Q _ M Y _ N E T A D D R
+ *
+ * Return the primary network address for the specified family.
+ *}
+
+PROCEDURE socket_$inq_my_netaddr(
+    IN family:          unsigned32;
+    OUT naddr:          socket_$net_addr_t;
+    IN OUT nlen:        unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ I N Q _ N E T A D D R
+ *
+ * Return the network address part of a sockaddr.
+ *}
+
+PROCEDURE socket_$inq_netaddr(
+    IN REF saddr:       socket_$addr_t;
+    IN slen:            unsigned32;
+    OUT naddr:          socket_$net_addr_t;
+    IN OUT nlen:        unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ S E T _ N E T A D D R
+ *
+ * Set the network address part of a sockaddr.
+ *}
+
+PROCEDURE socket_$set_netaddr(
+    IN OUT saddr:       socket_$addr_t;
+    IN OUT slen:        unsigned32;
+    IN REF naddr:       socket_$net_addr_t;
+    IN nlen:            unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ I N Q _ H O S T I D  
+ *
+ * Return the host ID part of a sockaddr.
+ *}
+
+PROCEDURE socket_$inq_hostid(
+    IN REF saddr:       socket_$addr_t;
+    IN slen:            unsigned32;
+    OUT hid:            socket_$host_id_t;
+    IN OUT hlen:        unsigned32; 
+    OUT st:             status_$t 
+    );
+
+
+{*
+ * S O C K E T _ $ S E T _ H O S T I D  
+ *
+ * Set the host ID part of a sockaddr.
+ *}
+
+PROCEDURE socket_$set_hostid(
+    IN OUT saddr:       socket_$addr_t;
+    IN OUT slen:        unsigned32;
+    IN REF hid:         socket_$host_id_t;
+    IN hlen:            unsigned32; 
+    OUT st:             status_$t 
+    );
+
+{*
+ * S O C K E T _ $ I N Q _ B R O A D _ A D D R S
+ *
+ * Inquire the supported broadcast addresses supported by
+ * family denoted by saddr.
+ *}
+
+PROCEDURE socket_$inq_broad_addrs(  
+    IN      family:     unsigned32;
+    IN      port:       unsigned32;
+    OUT     brd_addrs:  socket_$addr_list_t;
+    OUT     brd_lens:   socket_$len_list_t;
+    IN OUT  len:        unsigned32;
+    OUT     st:         status_$t
+    ) ;
+
+{*
+ * S O C K E T _ $ T O _ L O C A L _ R E P
+ *
+ * Convert a NCS socket_$addr_t to a "local" sockaddr type.
+ * This is really only useful/necessary on systems with
+ * non-standard sockaddr structure layouts (e.g. cray unicos)
+ * and even then, only if NCS based applications need to
+ * use a system's socket primitives with NCS socket_$addr_t's.
+ *}
+
+PROCEDURE socket_$to_local_rep(  
+    IN REF  saddr:      socket_$addr_t;
+    IN OUT  lcl_saddr:  socket_$local_sockaddr_t;
+    OUT     st:         status_$t
+    ) ;
+
+{*
+ * S O C K E T _ $ F R O M _ L O C A L _ R E P
+ *
+ * Convert a "local" sockaddr type to a NCS socket_$addr_t.
+ * This is really only useful/necessary on systems with
+ * non-standard sockaddr structure layouts (e.g. cray unicos)
+ * and even then, only if NCS based applications need to
+ * use a system's socket primitives with NCS socket_$addr_t's.
+ *}
+
+PROCEDURE socket_$from_local_rep(  
+    IN OUT  saddr:      socket_$addr_t;
+    IN REF  lcl_saddr:  socket_$local_sockaddr_t;
+    OUT     st:         status_$t
+    ) ;
+
+END;
+
+{*
+ * Apologia on socket address lengths, or How sockaddr lengths did me in:
+ *
+ * In the beginning, I decided that NCS interfaces, both local (e.g.
+ * "socket.idl") and remote (e.g. "glb.idl") should pass around socket
+ * addresses as a pair of arguments -- "sockaddr" (by reference) and
+ * "sockaddr length".  The motivation for this was that this is the way
+ * the Berkeley socket calls (e.g. "recvfrom(2)") worked and I thought
+ * I'd be a good guy by doing it just like Berkeley.  My model of why
+ * Berkeley did things the way they did was to allow for the possibility
+ * of address families that had variable length sockaddrs.  (AF_UNIX has
+ * this property.)  For cleanliness, I defined my own data type --
+ * "socket_$addr_t" (see "nbase.idl") -- which is supposed to be just like
+ * a "struct sockaddr" (see "/usr/include/sys/socket.h").
+ * 
+ * Note that the way NCS is structured, it turns out that we've precluded
+ * the possibility of passing around "large sockaddrs" -- i.e. sockaddrs
+ * that are bigger than a "socket_$addr_t" (or "struct sockaddr") -- because
+ * various internal data structures have fields that are declared to be
+ * "socket_$addr_t"s, not pointers to variable length allocated storage,
+ * which would be required to really support variable length sockaddrs (and
+ * would be a nightmare to manage in the code).  Presumably, this could
+ * be fixed, but I think I'll wait until the first sockaddr that big shows
+ * up.
+ * 
+ * So, no one actually liked the fact that they had to pass this stupid
+ * extra argument (the sockaddr length) to all the calls and they said "Why
+ * didn't you just make the length a field in the sockaddr?" but I said,
+ * "I'm just trying to be a good Unix guy".  This was a satisfactory state
+ * of affairs until we ran into our first Cray.  The smallest naturally
+ * addressible unit on a Cray is a 64-bit word.  (Arrays of chars are packed,
+ * but that doesn't turn out to help enough.)  The problem that arose was
+ * this:
+ * 
+ * Some network interfaces (e.g. "glb.idl") pass sockaddrs and sockaddr
+ * lengths over the network.  Unfortunately, the length of sockaddrs on
+ * the Cray is not the same as the length of sockaddrs on your vanilla 8-bit
+ * addressible machines.  (Cray could have made this not happen, but they
+ * happened not to and besides, there would be other problems.) So, suppose
+ * you get a sockaddr from the system (e.g. "recvfrom(2)") and you want
+ * to pass it over the network via NCA/RPC.  The problem is that you're
+ * passing the "Cray length", not the "real length".  This leads to much
+ * confusion, trust me.
+ * 
+ * The way we decided to "solve" this problem is to declare that wherever
+ * a sockaddr length appears, what it should be understood to mean is:
+ * 
+ *       2 + "the number of meaningful bytes in the 'data' field 
+ *            of the corresponding sockaddr"
+ * 
+ * not to exceed 16 total.
+ * 
+ * (Note that for AF_INET sockaddr lengths are always 16 because the size
+ * of "struct sockaddr_in" on an 8-bit machine is actually 16 because it's
+ * padded out.)
+ * 
+ * The above definition turns out to have very little impact in reality
+ * for two reasons:  (1) it yields a sensible number on 8-bit machines,
+ * and (2) the fact of the matter is that no one really uses sockaddr lengths
+ * anyway because there are no interesting address families that have variable
+ * length sockaddrs.  Thus, the way the NCS code is written, as long as
+ * a sockaddr length is larger than number of meaning data field bytes,
+ * the code simply does the logical comparison of the fields (i.e. by casting
+ * the sockaddr to a structure that declares the meaning of the fields),
+ * not by doing (say) bcmp's (memcmp's) using the supplied sockaddr lengths.
+ * 
+ * Live and learn.
+ *  
+ *}

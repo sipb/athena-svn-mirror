@@ -67,18 +67,18 @@ quad_cksum PROTOTYPE ((
 			unsigned KRB_INT32 *out,/* optional longer output */
 			long length,		/* original length in bytes */
 			int out_count,		/* number of iterations */
-			des_cblock *c_seed));	/* secret seed, 8 bytes */
+			des_cblock c_seed));	/* secret seed, 8 bytes */
 
 int INTERFACE
 des_key_sched PROTOTYPE ((des_cblock FAR, des_key_schedule FAR));
 
 int INTERFACE
-des_ecb_encrypt PROTOTYPE ((des_cblock FAR *, des_cblock FAR *,
+des_ecb_encrypt PROTOTYPE ((des_cblock FAR, des_cblock FAR,
 			    des_key_schedule FAR, int));
 
 int INTERFACE
-des_pcbc_encrypt PROTOTYPE ((des_cblock FAR *, des_cblock FAR *, long,
-			     des_key_schedule FAR, des_cblock FAR *, int));
+des_pcbc_encrypt PROTOTYPE ((des_cblock FAR, des_cblock FAR, long,
+			     des_key_schedule FAR, des_cblock FAR, int));
 
 int INTERFACE
 des_is_weak_key PROTOTYPE ((des_cblock FAR));

@@ -1,0 +1,41 @@
+#include "../Xj.defs"
+
+BUGME		=	bugme
+BUGMERESOURCES	=	Bugme
+
+SRCS		=	bugme.c Snoop.c
+OBJS		=	bugme.o Snoop.o
+
+XJLIB		=	../lib/libXj.a
+
+C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} ${OS_LIBS}
+
+DEFINES         =       ${G_DEFINES} -DQUICK_FILE=\"${QUICK_FILE}\"
+
+INCLUDES	=	-I../lib ${LOCAL_INCLUDES}
+
+AllTarget(${BUGME})
+AllTarget(${BUGMERESOURCES})
+NormalProgramTarget(${BUGME},${OBJS},${XJLIB},,${C_LIBS})
+InstallProgram(${BUGME},${BUGME_BIN_DIR})
+
+InstallNonExec(${BUGME}.1,${MAN_DIR}/man1/${BUGME}.1)
+InstallNonExec(${BUGMERESOURCES},${BUGME_APP_DIR}/${BUGMERESOURCES})
+
+DependTarget()
+
+#ifdef SOLARIS
+TIMERGEOMETRY=110x40+0-0
+DIALOGGEOMETRY=450x150+350+326
+#else
+TIMERGEOMETRY=150x50+0-0
+DIALOGGEOMETRY=450x150+415+326
+#endif
+
+${BUGMERESOURCES}: ${BUGMERESOURCES}.pre-sed
+	${RM} ${BUGMERESOURCES}
+	sed -e "s,TIMERGEOMETRY,${TIMERGEOMETRY}," ${BUGMERESOURCES}.pre-sed | \
+	sed -e "s,DIALOGGEOMETRY,${DIALOGGEOMETRY}," > ${BUGMERESOURCES}
+
+clean::
+	${RM} ${BUGMERESOURCES}

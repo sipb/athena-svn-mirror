@@ -1,0 +1,33 @@
+To create a whatsup INGRES database, execute the following quel
+commands:
+
+
+
+create default:highwater   (
+	mark        =i4
+)
+append highwater (mark = 1)
+\p\g
+create default:caltimes    (
+	uniq        =i4,
+	date        =i4,
+	time        =i4
+)
+\p\g
+modify caltimes     to isam on date        
+\p\g
+create default:calitems    (
+	uniq        =i4,
+	type        =c16,
+	place       =text(60),
+	title       =text(70),
+	comments    =text(800)
+)
+\p\g
+modify calitems     to chash on uniq        
+\p\g
+index on calitems     is calindex    (
+	type        )
+\p\g
+modify calindex     to hash on type        
+\p\g

@@ -1,0 +1,14 @@
+#
+# Makefile for communications functions
+#
+SRVOBJS=	snmpservsend.o snmpdecipher.o
+
+all:: $(SRVOBJS)
+	cp $(SRVOBJS) ../obj
+
+clean::
+	$(RM)  $(SRVOBJS)
+
+snmpservsend.o: snmpservsend.c
+
+snmpdecipher.o: snmpdecipher.c

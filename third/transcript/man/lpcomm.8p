@@ -1,18 +1,17 @@
 .TH LPCOMM 8 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/lpcomm.8p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/lpcomm.8p,v 1.2 1996-10-14 05:09:42 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-lpcomm\(emT\s-2RAN\s+2S\s-2CRIPT\s+2 Centronix parallel communications
+lpcomm \- TranScript Centronix parallel communications
 filter for x86 hosts
 .SH "SYNOPSIS"
 .B XPSLIBDIRX/lpcomm
 .SH "DESCRIPTION"
 This is the low-level \*(TS Centronix parallel communication filter for use
-by the  
-System V or BSD line printer spooling system on an x86 host. It is called
+by the line printer spooling system on an x86 host. It is called
 from the 
 printer interface script for the printer.
 The program 
@@ -33,8 +32,6 @@ printer log file
 .SH "SEE ALSO"
 transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8),
 psint(8) 
-.br
-.I System V Line Printer Spooling Utilities
 .br
 .I 4.2BSD Line Printer Spooler Manual
 .SH AUTHOR

@@ -1,0 +1,175 @@
+.TH LOCKERS 7 "2 December 1994"
+.ds ]W MIT Athena
+.SH NAME
+lockers - description of Athena locker organization conventions
+.SH DESCRIPTION
+
+There are many possible ways to provide binaries for multiple
+architectures in some organization under a single filesystem. Athena
+suggests and supports a particular convention for doing this.
+
+The primary purpose of this convention is to provide a standard way of
+separating machine dependent binaries into different directories for
+ease of use and maintenance. Generality, backwards compatibility, and
+neatness also count.
+
+.SH MACHINE DEPENDENT FILES
+
+In order to avoid any sort of clutter in the top level directory of a
+locker, all machine dependent directories are placed under a directory
+called \fIarch\fR. Under \fIarch\fR is one directory, for each
+supported platform, named after the AFS "@sys" values (pmax_ul4,
+sun4m_53, etc.). Under each of these directories are directories
+containing a specific type of machine dependent data, such as binaries
+or libraries (bin, lib, etc.).
+
+For example, a locker containing libraries and binaries might look
+like:
+
+/mit/locker/arch/
+                 pmax_ul4/
+                          bin/
+                          lib/
+                 rs_aix32/
+                          bin/
+                          lib/
+                 sgi_52/
+                        bin/
+                        lib/
+                 sun4m_53/
+                          bin/
+                          lib/
+
+Possibilities for data subdirectories include bin, lib, etc, man, and
+build.
+
+Note that due to the fact there is binary compatibility across
+multiple AFS "@sys" values, there will also be many symbolic links:
+
+/mit/locker/arch/
+                 sun4c_51 -> sun4m_53
+                 sun4c_53 -> sun4m_53
+                 sun4m_51 -> sun4m_53
+
+Note also that the string "@sys" should never be used literally,
+except in convenience symlinks described below; the string
+"$ATHENA_SYS" should be used instead. Continue reading for more
+details.
+
+.SH MACHINE INDEPENDENT FILES
+
+Many files, such as manual pages or data files, may be the same for
+all machine architectures. Currently, the only defined convention for
+such files applies only to manual pages. That convention is simply
+that, in the top level directory of a locker there is a directory
+called "man" that follows the conventions for manual directories
+followed by most flavors of Unix.
+
+Note that the \fIadd\fR command also supports the possibility of
+machine specific manual pages when modifying the MANPATH, in that it
+first checks for the existence of the directory arch/@sys/man prior
+to falling back on man itself.
+
+.SH CONVENIENCE SYMLINKS
+
+While the \fIadd\fR command deals for the user with finding the
+appropriate binary directory for their platform, some users sometimes
+do not use \fIadd\fR, instead typing explicit paths on their own.
+This could become tedious when they need to type "cd
+/mit/lockername/arch/pmax_ul4/bin." For the user's convenience then,
+we suggest that you make a link "bin -> arch/@sys/bin" and possibly
+others (for lib, etc.) as it makes sense. This is the \fIonly\fR case
+where we suggest using the explicit string "@sys." See the end of the
+section \fIUSER SUPPORT\fR, below, for the reasons.
+
+.SH BACKWARDS COMPATIBILITY AND BINARY LAYOUT
+
+The previous file layout conventions included only standards for
+binary and manual directories, and no suggestions for hierarchies to
+avoid clutter or other general hints. The main convention was that the
+output from \fImachtype\fR(1) be used to generate a binary directory
+for a given platform, e.g. `machtype`bin (decmipsbin, sun4bin, etc.).
+Because of the inflexibility of the shell \fIbindir\fR variable, we
+cannot simply tell everyone to begin using arch/@sys/bin for their
+binary directories. Old lockers may still be using `machtype`bin and
+not the new convention, and there is no practical way to update the
+entire world simultaneously. Therefore, lockers should contain
+structures such as
+
+/mit/locker/
+            arch/pmax_ul4/bin
+            decmipsbin -> arch/pmax_ul4/bin
+
+That is, there should be compatibility symlinks provided from the old
+convention to the new convention, for such platforms as were supported
+under the old convention. Those platforms are vax, rt, decmips, sun4,
+and rsaix. New platforms, such as SGI, need not provide these symlinks
+as they don't have an old bindir value to worry about.
+
+.SH USER SUPPORT
+
+There are four forms of support provided to the user for handling
+locker conventions: the \fIadd\fR command, the \fIathdir\fR command,
+the \fIbindir\fR C shell variable, and the \fIATHENA_SYS\fR
+environment variable.
+
+The \fIadd\fR command (see \fIadd\fR(1) for details on use), for
+binary directories, initially checks for the existence of the new
+style binary directory. If it finds it, it adds that to the user's
+search path. If not, it falls back to the old \fImachtype\fR based
+convention. Similiarly, in order to more easily support machine
+dependent manual pages, it checks for an arch/@sys/man directory
+before falling back to the traditional man directory.
+
+The \fIathdir\fR command is in some ways a generalization of the
+\fIadd\fR command. The most important functionality it provides is as
+a replacement for the use of the /mit/locker/`machtype`bin string.
+`athdir /mit/locker` should now be used instead, and will work
+correctly whether old or new directory conventions are in use in
+that locker. \fIathdir\fR is also potentially useful for finding
+library or include directories from inside of makefiles. See
+\fIathdir\fR(1) for details.
+
+The \fIbindir\fR variable, on older platforms, is set to the value
+`machtype`bin. On newer platforms, it is set to arch/@sys/bin. Note
+that it is not set literally to arch/@sys/bin, but to arch/(the value
+of @sys)/bin; the literal string @sys should never be used except in
+convenience symlinks.
+
+The \fIATHENA_SYS\fR environment variable is used lieu of the AFS
+string @sys. In all cases, it should be equal to what @sys resolves to
+for any particular platform. So in shell scripts, makefiles, etc., one
+should never attempt to find one's libraries with a string such as
+"arch/@sys/lib" but rather "arch/$ATHENA_SYS/lib." It is usually
+preferable to use \fIathdir\fR, however.
+
+\fIATHENA_SYS\fR is derived in the global cshrc from the output of
+``machtype -S''.
+
+Avoidance of the literal string ``@sys'' is done in order to keep the
+locker conventions filesystem independent. If for some reason a locker
+is copied to (or is maintained in) NFS space, it will still work
+correctly.  If AFS is translated through some other medium which does
+not magically know how to cope with the "@sys" string properly, it
+will also still work correctly. If Athena migrates to another kind of
+filesystem that does not support the use of "@sys," nothing will need
+to be done to update lockers and everything will still work.
+
+.SH MAINTENANCE SUPPORT
+
+The \fIlockers\fR locker contains tools to aid in the maintenance of
+lockers. "add lockers; man lockertools" for more information.
+
+.SH SUGGESTIONS ON VOLUME MANAGEMENT
+
+The three levels of arch/@sys/bin provide various possibilities for
+AFS volume management. This is mainly of concern only for large
+(>100M) lockers. First, you can separate all of the architecture
+dependent information (bins, libs, etc.) from the rest of the locker
+(src, man, etc.) Second, you can separate the architecture dependent
+information into different volumes on a platform-by-platform basis.
+
+.SH SEE ALSO
+
+add(1), athdir(1), machtype(1), athena-ws discuss meeting, txns
+1932-1961 more or less

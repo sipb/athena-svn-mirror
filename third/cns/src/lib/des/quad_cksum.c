@@ -102,7 +102,7 @@ des_quad_cksum(in,out,length,out_count,c_seed)
     unsigned KRB_INT32 *out;		/* optional longer output */
     long length;		/* original length in bytes */
     int out_count;		/* number of iterations */
-    des_cblock *c_seed;		/* secret seed, 8 bytes */
+    des_cblock c_seed;		/* secret seed, 8 bytes */
 {
 
     /*

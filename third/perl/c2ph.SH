@@ -6,7 +6,7 @@ case $CONFIG in
 	ln ../../../config.sh . || \
 	(echo "Can't find config.sh."; exit 1)
     fi
-    . config.sh
+    . ./config.sh
     ;;
 esac
 : This forces SH files to create target in same directory as SH file.
@@ -37,7 +37,7 @@ $spitshell >>c2ph <<'!NO!SUBS!'
 #   See the usage message for more.  If this isn't enough, read the code.
 #
 
-$RCSID = '$RCSfile: c2ph.SH,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:39:58 $';
+$RCSID = '$RCSfile: c2ph.SH,v $$Revision: 1.2 $$Date: 1996-10-05 18:29:15 $';
 
 
 ######################################################################

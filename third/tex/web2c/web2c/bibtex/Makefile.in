@@ -73,7 +73,7 @@ c-sources: bibtex.c openinout.c
 .PHONY: c-sources
 
 install install-exec: all
-	$(INSTALL_PROGRAM) $(program) $(bindir)/$(program)
+	$(INSTALL_PROGRAM) $(program) ${DESTDIR}$(bindir)/$(program)
 install-data:
 
 

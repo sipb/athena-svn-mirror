@@ -1,0 +1,15 @@
+map * $
+
+link * -f
+copy *;d
+copy *;l
+
+ignore *.o
+ignore *.a
+ignore .#*
+ignore *,v
+ignore RCS
+ignore *~
+ignore *.orig
+ignore *.bak
+ignore *.rej

@@ -1,0 +1,3 @@
+	{	version = $1 + 1; }
+END	{	printf "char version[] = \"Version 4.%d ", version > "vers.c";
+		printf "%d\n", version > "version"; }

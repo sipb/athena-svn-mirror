@@ -1,0 +1,15 @@
+#!/bin/csh -f
+set name=$1
+shift
+if ($#argv) then
+  set files="$*"
+else
+  set files="RCS/*,v"
+endif
+foreach filename ($files)
+  echo "Checking in file " $filename "..."
+  set rev=`rlog -h $filename|sed -n '/^head:/s/^head:[^0-9]*\([0-9]*\.[0-9]*\)$/\1/p'`
+  rcs -N$name":"$rev $filename
+  echo "Done processing " $filename "..."
+end
+echo "Done."

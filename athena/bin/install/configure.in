@@ -1,0 +1,8 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(install.c)
+
+AC_PROG_CC
+AC_PATH_PROG(STRIP, strip, strip)
+AC_SUBST(STRIP)
+
+AC_OUTPUT(Makefile)

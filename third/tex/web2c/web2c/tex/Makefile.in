@@ -122,46 +122,54 @@ fmts: $(fmts)
 # 4) a ``preload'' file, (I use preload.ori),
 # 5) and a ``basefont'' file.  (I use basefont).
 # How automatic, huh?  I can hardly wait for LaTeX 3.
-amslatex.fmt: initex
+
+# Gross manual build procedures require gross hacks.
+amslatex.fmt: initex tex.pool
+	rm -f lfonts.tex fontdef.tex preload.tex xxxlfont.sty
+	cp ../../../lib/tex/macros/amslatex/fontsel/lfonts.new lfonts.tex
+	cp ../../../lib/tex/macros/amslatex/inputs/fontdef.ams fontdef.tex
+	cp ../../../lib/tex/macros/amslatex/fontsel/preload.ori preload.tex
+	cp ../../../lib/tex/macros/amslatex/fontsel/basefont.tex xxxlfont.sty
 	$(initex) lplain \\dump
+	rm -f lfonts.tex fontdef.tex preload.tex xxxlfont.sty
 	mv lplain.fmt amslatex.fmt
 	mv lplain.log amslatex.log
 
 # As of AMSTeX 2.1, the initialization file is named `amstex.ini'.
 # Because it explicitly reads plain.tex, we cannot use &./tex; that
 # produces a `Too late for \patterns' error.
-amstex.fmt: initex
+amstex.fmt: initex tex.pool
 	$(initex) amstex.ini
 
-etex.fmt: tex.fmt
+etex.fmt: tex.fmt tex.pool
 	touch eplain.aux # Makes cross-reference warnings work right.
 	$(initex) \&./tex eplain \\dump
 	mv eplain.fmt etex.fmt
 	mv eplain.log etex.log
 
-inrstex.fmt: initex
+inrstex.fmt: initex tex.pool
 	$(initex) inrstex \\dump
 
-latex.fmt: initex
+latex.fmt: initex tex.pool
 	$(initex) lplain \\dump
 	mv lplain.fmt latex.fmt
 	mv lplain.log latex.log
 
-picplus.fmt: tex.fmt
+picplus.fmt: tex.fmt tex.pool
 	$(initex) \&./tex picplus \\dump
 
-slitex.fmt: initex
+slitex.fmt: initex tex.pool
 	$(initex) splain \\dump
 	mv splain.fmt slitex.fmt
 	mv splain.log slitex.log
 
-tex.fmt: initex
+tex.fmt: initex tex.pool
 	$(initex) plain \\dump
 	mv plain.fmt tex.fmt
 	mv plain.log tex.log
 
 # Texinfo changes the escape character from `\' to `@'.
-texinfo.fmt: tex.fmt
+texinfo.fmt: tex.fmt tex.pool
 	$(initex) \&./tex texinfo @dump
 
 
@@ -183,7 +191,7 @@ clean-trip:
 	if grep 'memmax 2999' texd.h.bak >/dev/null 2>&1; then \
           rm -f texd.h*; else mv texd.h.bak texd.h; fi
 
-tex.p: tex.web ctex.ch
+tex.p tex.pool: tex.web ctex.ch
 	../web/tangle tex.web ctex.ch
 
 # If you're building mltex, reportedly have to add:
@@ -257,18 +265,22 @@ c-sources: texd.h patgen.c
 install: install-exec install-data
 
 install-exec: all
-	$(srcdir)/../../mkdirchain $(texpooldir) $(texdatadir) $(fontdir)
-	for p in $(program); do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
+	$(srcdir)/../../mkdirchain ${DESTDIR}$(bindir)
+	for p in $(program); do \
+	  $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/$$p; done
 
 # The dependency should really be tex.pool, but can't do that in suffix rules.
 install-data: tex0.c
-	$(SHELL) $(srcdir)/../../mkdirchain $(texpooldir) $(fontdir)
+	$(SHELL) $(srcdir)/../../mkdirchain ${DESTDIR}$(texpooldir) \
+	  ${DESTDIR}$(fontdir)
 	-if test -s tex.pool; then \
-	  $(INSTALL_DATA) tex.pool $(texpooldir)/tex.pool; else true; fi
-	if test ! -f $(fontdir)/texfonts.map				\
-	   || grep 'original texfonts.map --' $(fontdir)/texfonts.map	\
-              >/dev/null 2>&1; then					\
-         $(INSTALL_DATA) $(texsrcdir)/texfonts.map $(fontdir)/texfonts.map;\
+	  $(INSTALL_DATA) tex.pool ${DESTDIR}$(texpooldir)/tex.pool; \
+	  else true; fi
+	if test ! -f ${DESTDIR}$(fontdir)/texfonts.map			\
+	   || grep 'original texfonts.map --'				\
+              ${DESTDIR}$(fontdir)/texfonts.map >/dev/null 2>&1; then	\
+         $(INSTALL_DATA) $(texsrcdir)/texfonts.map 			\
+	   ${DESTDIR}$(fontdir)/texfonts.map;				\
         else true; fi
 
 TAGS: *.c *.h

@@ -281,7 +281,7 @@ extern int errno;
 					   passsword */
 #endif
 
-#ifdef __SVR4
+#if defined(__SVR4) || defined(sgi)
 #define NO_MOTD
 #define NO_MAILCHECK
 #endif
@@ -482,7 +482,7 @@ void k_init (ttyn)
 
     /* Set up the credential cache environment variable */
     if (!getenv(KRB5_ENV_CCNAME)) {
-	sprintf(ccfile, "FILE:/tmp/krb5cc_%s", strrchr(ttyn, '/')+1);
+	sprintf(ccfile, "FILE:/tmp/krb5cc_p%d", getpid());
 	setenv(KRB5_ENV_CCNAME, ccfile, 1);
 	unlink(ccfile+strlen("FILE:"));
     } else {
@@ -1327,6 +1327,12 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	 */
 	if (eflag)
 	    	lgetstr(term, sizeof(term), "Terminal type");
+	else if (!(kflag || Kflag ))  /*Preserve terminal if not read over net */
+	  {
+	    if (getenv("TERM"))
+	      strncpy(term, getenv("TERM"), sizeof(term));
+	  }
+	
 	term_init (rflag || kflag || Kflag || eflag);
 
 	for (cnt = getdtablesize(); cnt > 2; cnt--)
@@ -1829,16 +1835,16 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	read_env_vars_from_file ("/etc/TIMEZONE");
 #else
 	if (tz)
-	    setenv ("TZ", tz, 0);
+	    setenv ("TZ", tz, 1);
 #endif
 
 	if (ccname)
-		setenv("KRB5CCNAME", ccname, 0);
+		setenv("KRB5CCNAME", ccname, 1);
 
-	setenv("HOME", pwd->pw_dir, 0);
-	setenv("PATH", LPATH, 0);
-	setenv("USER", pwd->pw_name, 0);
-	setenv("SHELL", pwd->pw_shell, 0);
+	setenv("HOME", pwd->pw_dir, 1);
+	setenv("PATH", LPATH, 1);
+	setenv("USER", pwd->pw_name, 1);
+	setenv("SHELL", pwd->pw_shell, 1);
 
 	if (term[0] == '\0')
 		(void) strncpy(term, stypeof(tty), sizeof(term));

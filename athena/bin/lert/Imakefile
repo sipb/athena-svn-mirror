@@ -1,0 +1,62 @@
+/*
+ *  Imakefile for lert
+ *  Copyright (c) 1995, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/lert/Imakefile,v $
+ *   $Author: cfields $ 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+/*
+ *#include "mit-copyright.h"
+ */
+
+LERT		=	lert
+
+LERTLOAD		=	lertload
+
+LERTDUMP		=	lertdump
+
+LERTSTOP		=	lertstop
+
+LERTSAID		=	lertsaid
+
+LERTUSED		=	lertused
+
+LERTSRV		=	lertsrv
+
+LERTOBJS		=	lert.o
+
+LERTLOADOBJS	=	lertload.o
+
+LERTDUMPOBJS	=	lertdump.o
+
+LERTSTOPOBJS	=	lertstop.o
+
+LERTSAIDOBJS	=	lertsaid.o
+
+LERTUSEDOBJS	=	lertused.o
+
+LERTSRVOBJS	=	lertsrv.o
+
+CFILES	=	lert.c lertload.c lertdump.c lertstop.c lertsaid.c lertused.c lertsrv.c
+
+LIBS		=	-lkrb -ldes -lhesiod
+
+DEFINES		=	
+
+AnsiCC()
+
+SimpleProgram(${LERT},${LERTOBJS},${LIBS},${ATHBINDIR}/${LERT})
+build_program(${LERTSRV},${LERTSRVOBJS},,${LIBS})
+build_program(${LERTLOAD},${LERTLOADOBJS},,${LIBS})
+build_program(${LERTDUMP},${LERTDUMPOBJS},,${LIBS})
+build_program(${LERTSTOP},${LERTSTOPOBJS},,${LIBS})
+build_program(${LERTSAID},${LERTSAIDOBJS},,${LIBS})
+build_program(${LERTUSED},${LERTUSEDOBJS},,${LIBS})
+install_man(${LERT}.1,${LERT}.1)
+
+create_depend(${CFILES})

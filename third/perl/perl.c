@@ -1,4 +1,4 @@
-char rcsid[] = "$RCSfile: perl.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:39:56 $\nPatch level: ###\n";
+char rcsid[] = "$RCSfile: perl.c,v $$Revision: 1.2 $$Date: 1996-10-05 18:34:24 $\nPatch level: ###\n";
 /*
  *    Copyright (c) 1991, Larry Wall
  *
@@ -6,6 +6,9 @@ char rcsid[] = "$RCSfile: perl.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:39:
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1996/10/02 06:39:56  ghudson
+ * Import of perl 4.036
+ *
  * Revision 4.0.1.8  1993/02/05  19:39:30  lwall
  * patch36: the taintanyway code wasn't tainting anyway
  * patch36: Malformed cmd links core dump apparently fixed
@@ -113,7 +116,7 @@ setuid perl scripts securely.\n");
     euid = (int)geteuid();
     gid = (int)getgid();
     egid = (int)getegid();
-    sprintf(patchlevel,"%3.3s%2.2d", index(rcsid,'4'), PATCHLEVEL);
+    sprintf(patchlevel,"4.0%2.2d", PATCHLEVEL);
 #ifdef MSDOS
     /*
      * There is no way we can refer to them from Perl so close them to save

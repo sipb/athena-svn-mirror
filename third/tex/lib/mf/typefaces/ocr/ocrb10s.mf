@@ -1,5 +1,6 @@
 % This is OCRB10S_mf   (sharp edges)
 %
+mode_setup;
 
 font_identifier:="OCRB10S";
 font_size 10pt#;

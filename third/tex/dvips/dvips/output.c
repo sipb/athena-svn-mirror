@@ -82,7 +82,7 @@ static struct papsiz defpapsiz = {
    0, 40258437L, 52099154L, "letter", ""
 } ;
 #ifdef CREATIONDATE
-#if (!defined(VMS) && !defined(MSDOS) && !(defined(OS2) && defined(_MSC_VER)) && !defined(ATARIST)
+#if (!defined(VMS) && !defined(MSDOS) && !(defined(OS2) && defined(_MSC_VER)) && !defined(ATARIST))
  /* VAXC/MSDOS don't like/need this !! */
 #include <sys/types.h>
 #include <sys/time.h> /* time(), at least on BSD Unix */

@@ -18,13 +18,13 @@ kpropd: kpropd.o ${DEPLIBS}
 install::
 	$(INSTALLPROG) kprop ${DESTDIR}$(SVRDIR)/kprop
 	$(INSTALLPROG) kpropd ${DESTDIR}$(SVRDIR)/kpropd
-	$(INSTALLPROG) $(srcdir)/start-kpropd.sh ${DESTDIR}${SVRDIR}/start-kpropd
+	$(INSTALLSCRIPT) $(srcdir)/start-kpropd.sh ${DESTDIR}${SVRDIR}/start-kpropd
 	chmod a+x ${DESTDIR}${SVRDIR}/start-kpropd
-	$(INSTALLPROG) $(srcdir)/push-kprop.sh ${DESTDIR}${SVRDIR}/push-kprop
+	$(INSTALLSCRIPT) $(srcdir)/push-kprop.sh ${DESTDIR}${SVRDIR}/push-kprop
 	chmod a+x ${DESTDIR}${SVRDIR}/push-kprop
-	$(INSTALLPROG) $(srcdir)/run-kpropd.sh ${DESTDIR}${SVRDIR}/run-kpropd
+	$(INSTALLSCRIPT) $(srcdir)/run-kpropd.sh ${DESTDIR}${SVRDIR}/run-kpropd
 	chmod a+x ${DESTDIR}${SVRDIR}/run-kpropd
-	$(INSTALLPROG) $(srcdir)/in-kpropd.sh ${DESTDIR}${SVRDIR}/in.kpropd
+	$(INSTALLSCRIPT) $(srcdir)/in-kpropd.sh ${DESTDIR}${SVRDIR}/in.kpropd
 	chmod a+x ${DESTDIR}${SVRDIR}/in.kpropd
 
 clean::

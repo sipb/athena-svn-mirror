@@ -1,0 +1,71 @@
+#========================================================================#
+#                                                                       |
+#                        bulkpost.longform                              |
+#                                                                       |
+#      This is the 'long' version of the blank form used for entering   |
+#      events into the bulkpost program.  This long version has lots    |
+#      of comments to help you remember how to fill in the fields.      |
+#                                                                       |
+#      Remember: bulkpost ignores any lines beginning with #, so        |
+#                you may use such lines or not as you please.           |
+#                                                                       |
+#                                                                       |
+#      INSTRUCTIONS                                                     |
+#                                                                       |
+#      1) Fill in all fields for each events, duplicating the $when:    |
+#         line as appropriate for events which occur at more than one   |
+#         time.                                                         |
+#                                                                       |
+#      2) You may list as many events as you like using just this one   |
+#         form.  Just copy all the fields beginning with $BeginEvent:   |
+#         and ending with the $Comment: field.  You may copy the        |
+#         # comment lines or not as you prefer.                         |
+#                                                                       |
+#      3) When you are done, save the filled in form file on disk       |
+#         and supply it to the bulkpost program.  Bulkpost will read    |
+#         through giving you a chance to verify that each entry is      |
+#         correct before updating the calendar.                         |
+#                                                                       |
+#      HINTS                                                            |
+#                                                                       |
+#      1) There is also a bulkpost.shortform file which serves the      |
+#         same purpose as this but leaves out most of the comments.     |
+#         This may be more convenient for users who are already         |
+#         comfortable with bulkpost.                                    |
+#                                                                       |
+#      2) For all you GNUEmacs experts out there.  If you               |
+#         M-X Load  the file named /usr/unsupported/postit.elc          |
+#         it will define the same handy tabbing macros that you         |
+#         get when postit and bulkpost invoke GNUEmacs.                 |
+#                                                                       |
+#========================================================================#
+
+$BeginEvent:   DO NOT CHANGE THIS LINE.  REPEAT FROM HERE FOR EXTRA EVENTS.
+
+#========================================================================
+#         Supply a one word type code.  See postit man page or existing |
+#         whatsup entries for suggestions.  (Future versions of         |
+#         postit and whatsup will give help choosing types.)            |
+#========================================================================
+$Type:
+#========================================================================
+#         Specify event title (70 chars max) and place where event will |
+#         be held (45 chars max).                                       |
+#========================================================================
+$Title:
+$Place:
+#========================================================================
+#          The correct form for "When" is MM/DD/YY HH:MM(A or P)        |
+#          You may repeat the When line as often as you like, e.g.:     |
+#                $When: 02/04/87  3:30P                                 |
+#                $When: 02/04/87 15:30                                  |
+#                $When: 02/05/87  8:00A                                 |
+#         will list the event twice on Feb. 4, and once on Feb. 5       |
+#========================================================================
+$When:
+#========================================================================
+#         Comments may extend over approx. 10 lines (800) chars.        |
+#         You may start a new line anytime; postit will re-wrap         |
+#         the information you supply into a single paragraph.           |
+#========================================================================
+$Comments:

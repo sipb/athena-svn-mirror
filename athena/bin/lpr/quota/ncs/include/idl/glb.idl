@@ -1,0 +1,119 @@
+{ GLB - Global Location Broker }
+
+[
+        uuid(333b2e690000.0d.00.00.87.84.00.00.00),
+        version(4)
+] 
+interface glb_;
+
+import 
+        'nbase.idl';
+
+
+const
+        lb_$mod = 16#1C020000;                  {* LB module code *}
+
+        lb_$database_invalid    = 16#1C020001;  {* lb_$mod + 1; *} {* database format out of date *}
+        lb_$database_busy       = 16#1C020002;  {* lb_$mod + 2; *} {* database in use in an incompatible manner *}
+        lb_$not_registered      = 16#1C020003;  {* lb_$mod + 3; *} {* no matching entry available *}
+        lb_$update_failed       = 16#1C020004;  {* lb_$mod + 4; *} {* unable to complete registration operation *}
+        lb_$cant_access         = 16#1C020005;  {* lb_$mod + 5; *} {* can't access database *}
+        lb_$server_unavailable  = 16#1C020006;  {* lb_$mod + 6; *} {* can't reach location broker *}
+        lb_$bad_entry           = 16#1C020007;  {* lb_$mod + 7; *} {* bad socket address *}
+		
+type
+        lb_$server_flag_t = unsigned32;
+
+const 
+        lb_$server_flag_local          = 16#00001;
+        lb_$server_flag_reserved_02    = 16#00002;
+        lb_$server_flag_reserved_04    = 16#00004;
+        lb_$server_flag_reserved_08    = 16#00008;
+        lb_$server_flag_reserved_10    = 16#00010;
+        lb_$server_flag_reserved_20    = 16#00020;
+        lb_$server_flag_reserved_40    = 16#00040;
+        lb_$server_flag_reserved_80    = 16#00080;
+        lb_$server_flag_reserved_0100  = 16#00100;
+        lb_$server_flag_reserved_0200  = 16#00200;
+        lb_$server_flag_reserved_0400  = 16#00400;
+        lb_$server_flag_reserved_0800  = 16#00800;
+        lb_$server_flag_reserved_1000  = 16#01000;
+        lb_$server_flag_reserved_2000  = 16#02000;
+        lb_$server_flag_reserved_4000  = 16#04000;
+        lb_$server_flag_reserved_8000  = 16#08000;
+        lb_$server_flag_reserved_10000 = 16#10000;
+        lb_$server_flag_reserved_20000 = 16#20000;
+        lb_$server_flag_reserved_40000 = 16#40000;
+        lb_$server_flag_reserved_80000 = 16#80000;
+
+type
+        lb_$lookup_handle_t = unsigned32;
+
+const
+        lb_$default_lookup_handle = 0; 
+
+type
+        lb_$entry_t = record 
+        {* uuid_$nil == wildcard in each of the object_spec fields *}
+                object          : uuid_$t;
+                obj_type        : uuid_$t;
+                obj_interface   : uuid_$t;
+                flags           : lb_$server_flag_t;
+                annotation      : array [0..63] of char;
+                saddr_len       : unsigned32;
+                saddr           : socket_$addr_t;
+                end;
+
+{*
+** glb_$insert - add the specified entry to the global database.
+*}
+procedure
+    glb_$insert (
+        in      h       : handle_t;
+        in ref  xentry  : lb_$entry_t;
+        out     status  : status_$t
+    );
+
+{*
+** glb_$delete - remove the specified entry from the global database.
+*}
+procedure
+    glb_$delete (
+        in      h       : handle_t;
+        in ref  xentry  : lb_$entry_t;
+        out     status  : status_$t
+    );
+
+const
+        glb_$max_lookup_results = 400; {* max size of the result_entries array in lookup *}
+
+{*
+** glb_$lookup - perform a lookup operation on the global database.  Due to current
+**              restrictions on the maximum packet size used by the rpc runtime, 
+**              the maximum number of results is defined in glb_$max_lookup_results
+*}
+[ idempotent ] procedure 
+    glb_$lookup (
+        in      h               : handle_t;
+        in ref  object          : uuid_$t;
+        in ref  obj_type        : uuid_$t;
+        in ref  obj_interface   : uuid_$t;
+        in out  entry_handle    : lb_$lookup_handle_t;
+        in      max_num_results : unsigned32;
+        out     num_results     : unsigned32;
+        out     result_entries  : [ last_is(num_results), max_is(max_num_results) ] 
+                                      array [ 1..* ] of lb_$entry_t;
+        out     status          : status_$t
+    );
+
+{*
+** glb_$find_server - this routine is used by the location server client
+**              agent to find a global server that is in service.  It is
+**              normally implemented as an empty stub.
+*}
+[ broadcast ] procedure
+    glb_$find_server (
+        in      h       : handle_t
+    );
+
+end;

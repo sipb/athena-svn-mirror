@@ -1,0 +1,21 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/crypto/algorithm/Imakefile,v 1.1 1993-05-25 15:55:12 mar Exp $ */
+
+OBJS = 	random.o \
+	random_BigNum.o \
+	bigrsacode.o \
+	bigkeygen.o \
+	bigsignverify.o
+
+DEFINES = -I. -I../../../include -I../bignum/h
+
+
+all:: tables.h
+
+build_library(algorithm,$(OBJS))
+build_program(gentables,gentables.o,,)
+
+endian.h tables.h: gentables
+	./gentables
+
+clean::
+	$(RM) tables.h endian.h

@@ -1,6 +1,6 @@
 /* mhn.c - multi-media MH */
 #ifndef	lint
-static char ident[] = "@(#)$Id: mhn.c,v 1.1.1.1 1996-10-07 07:14:17 ghudson Exp $";
+static char ident[] = "@(#)$Id: mhn.c,v 1.2 1996-10-13 18:45:40 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -1016,7 +1016,7 @@ int	i;
 
 struct str2init {
     char   *si_key;
-    int	    si_value;
+    int	    si_val;
     int   (*si_init) ();
 };
 
@@ -1154,7 +1154,7 @@ int	toplevel;
 			    break;
 		    if (!s2i -> si_key && !uprf (ci -> ci_type, "X-"))
 			s2i++;
-		    ct -> c_type = s2i -> si_value;
+		    ct -> c_type = s2i -> si_val;
 		    ct -> c_ctinitfnx = s2i -> si_init;
 		    goto got_header;
 		}
@@ -1193,7 +1193,7 @@ int	toplevel;
 		    if (!s2i -> si_key && !uprf (cp, "X-"))
 			s2i++;
 		    *dp = c;
-		    ct -> c_encoding = s2i -> si_value;
+		    ct -> c_encoding = s2i -> si_val;
 		    if (s2i -> si_init && (*s2i -> si_init) (ct) == NOTOK)
 			goto out;
 		    goto got_header;
@@ -3645,7 +3645,7 @@ int	composing;
 		continue;
 	    }
 	    e -> eb_access = s2i -> si_key;
-	    e -> eb_flags = s2i -> si_value;
+	    e -> eb_flags = s2i -> si_val;
 	    p -> c_encoding = CE_EXTERNAL;
 	    if (init_encoding (p, s2i -> si_init) == NOTOK)
 		return NOTOK;
@@ -5857,7 +5857,7 @@ rock_and_roll: ;
 		break;
 	if (!s2i -> si_key && !uprf (ci -> ci_type, "X-"))
 	    s2i++;
-	switch (ct -> c_type = s2i -> si_value) {
+	switch (ct -> c_type = s2i -> si_val) {
 	    case CT_MESSAGE:
 	        if (uleq (ci -> ci_subtype, "rfc822")) {
 		    ct -> c_encoding = CE_7BIT;		/* XXX */
@@ -5893,7 +5893,7 @@ call_init: ;
 	if (!ci -> ci_subtype)
 	    adios (NULLCP, "missing subtype in \"#%s\"", ci -> ci_type);
 
-	switch (ct -> c_type = s2i -> si_value) {
+	switch (ct -> c_type = s2i -> si_val) {
 	    case CT_MULTIPART:
 	        adios (NULLCP, "use \"#begin ... #end\" instead of \"#%s/%s\"",
 		       ci -> ci_type, ci -> ci_subtype);

@@ -1,0 +1,36 @@
+/*
+ *
+ *				Makefile
+ *
+ *
+ *	Makefile for the Whatsup Calendar documentation files.
+ *
+ *	Copyright 1987 by the Massachusetts Institute of Technology.
+ *	For copying and distribution information, see the file
+ *	"mit-copyright.h".
+ *
+ *
+ *	$Id: Imakefile,v 1.1 1993-10-12 05:35:32 probe Exp $
+ */
+
+
+.SUFFIXES: .1 .2 .3 .4 .5 .6 .7 .8 .man .mss .PS 
+MAN1FILES=whatsup.1 postit.1 bulkpost.1
+
+.mss.PS:
+	scribe $*.mss
+	scribe $*.mss
+
+.1.man:
+	nroff -man $*.1 > $*.man
+.3.man:
+	nroff -man $*.3 > $*.man
+
+install_man(whatsup.1,whatsup.1)
+install_man(postit.1,postit.1)
+install_man(bulkpost.1,bulkpost.1)
+
+clean::
+	rm -f a.out core *.s *.o *~ *.PS *.err *.man *.otl *.aux
+
+lint::

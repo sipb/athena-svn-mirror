@@ -1,0 +1,243 @@
+
+cmds.c,687
+abort(32,713
+abortpr(77,1569
+		(void) chmod(951,19574
+clean(136,2976
+cleanpr(227,4820
+disable(361,7285
+disablepr(406,8147
+doarg(972,20015
+down(442,9001
+enable(290,5929
+enablepr(335,6787
+flushpr(1225,24873
+flushq(1176,23957
+	for 932,19137
+	for 939,19284
+	} else if 477,9713
+	} else if 911,18719
+	if 919,18885
+	if 923,18969
+	if 928,19068
+	if 950,19535
+lookat(1094,22432
+lookatpr 1139,23319
+	printf(921,18941
+prstat(738,14975
+putmsg(485,9842
+quit(552,11358
+restart(561,11444
+select(192,4153
+sortq(206,4443
+start(615,12523
+startpr(664,13497
+status(694,14179
+stop(801,16519
+stoppr(846,17369
+topq(885,18221
+touch(958,19714
+unlinkf(278,5739
+up(1045,21538
+
+cmdtab.c,28
+int	NCMDS = sizeof 56,2112
+
+common.c,83
+compar(215,5569
+fatal(226,5748
+getline(124,3635
+getport(69,2452
+getq(153,4116
+
+displayq.c,336
+	RM 82,2109
+blankfill(394,8845
+displayq(45,1332
+dump(404,8969
+	for 258,6337
+header(282,6746
+	} else if 69,1767
+	if 74,1886
+	if 76,1940
+	if 78,1997
+	if 80,2053
+	 if 90,2302
+	if 165,4182
+	if 180,4509
+	if 202,5100
+	if 208,5225
+inform(290,6836
+inlist(355,8108
+ldump(435,9554
+prank(457,9968
+show(380,8587
+warn(270,6536
+
+lpc.c,123
+cmdscanner(112,1861
+getcmd(153,2533
+help(211,3499
+intr(102,1773
+log_cmdline(267,4641
+main(60,1074
+makeargv(184,3123
+
+lpd.c,104
+chkhost(395,8735
+doit(263,6231
+main(65,1935
+mcleanup(235,5653
+reapchild(227,5571
+startup(362,8250
+
+lpdchar.c,0
+
+lpq.c,83
+main(58,1569
+putch(208,4270
+standout(152,3230
+termcap(185,3776
+usage(142,3067
+
+lpr.c,301
+	RG 648,13667
+	SC 655,13836
+card(458,10198
+chkprinter(623,13125
+cleanup(507,11025
+copy(382,8833
+fatal(715,14978
+	else if 641,13482
+	if 646,13611
+	if 651,13738
+	if 653,13790
+itoa(607,12931
+linked(424,9653
+main(92,2662
+mktemp(701,14744
+mktemps(661,13892
+nfile(477,10465
+test(539,11594
+
+lprm.c,44
+log(128,2880
+main(55,1503
+usage(122,2779
+
+lptest.c,13
+main(23,517
+
+pac.c,259
+account(164,3398
+any(345,6630
+chkprinter(382,7261
+dumpit(207,4139
+enter(286,5670
+hash(330,6447
+	} else if 399,7558
+	if 409,7869
+lookup(312,6141
+main(68,1773
+qucmp(363,6904
+rewrite(246,5013
+	sumfile = (char *) calloc(sizeof(char), strlen(408,7807
+
+printcap.c,239
+endprent(185,4038
+getclus(96,2577
+getprent(144,3429
+hpgetent(122,3066
+int pralias(71,2027
+tdecode(463,9458
+tgetent(197,4233
+tgetflag(411,8577
+tgetnum(378,7996
+tgetstr(438,9066
+tnamatch(332,7087
+tnchktc(281,5918
+tskip(359,7626
+
+printjob.c,557
+#define TRC(885,21330
+abortpr(1044,24381
+banner(802,19307
+dofork(1010,23854
+dropit(920,22126
+	} else if 1067,24753
+	if 1072,24877
+	if 1074,24931
+	if 1076,24987
+	if 1078,25043
+	if 1080,25099
+	if 1082,25156
+	if 1084,25202
+	if 1086,25256
+        if 1107,25788
+init(1055,24518
+openpr(1170,27419
+print(430,10988
+printit(234,6350
+printjob(71,2129
+response(788,19129
+scan_out(887,21363
+scnline(872,21149
+sendfile(723,17445
+sendit(638,15792
+sendmail(944,22398
+setty(1283,29762
+	sprintf(1088,25304
+	sprintf(1091,25384
+status(1337,30928
+
+recvjob.c,366
+#define ack(35,765
+chksize(282,5981
+find_dev(110,2598
+frecverr(340,7092
+ 	else if 65,1538
+	if 70,1675
+	if 72,1732
+	if 76,1831
+	if 81,1952
+	if 83,2011
+	} else if 89,2152
+	if(100,2447
+	if 101,2491
+noresponse(267,5745
+	if ((dfd = open(93,2297
+rcleanup(322,6753
+read_number(303,6454
+readfile(222,4978
+readjob(143,3333
+recvjob(46,1126
+	(void)75,1789
+
+rmjob.c,265
+	RM 69,1688
+chk(188,4238
+chkremote(259,5914
+	} else if 58,1402
+	if 63,1521
+	if 65,1577
+	if 67,1634
+	if 75,1846
+	if 90,2140
+	if 95,2301
+	if 116,2815
+iscf(336,7734
+isowner(242,5490
+lockchk(126,3087
+process(161,3696
+rmjob(44,1117
+	if (!strcmp(83,1979
+
+startdaemon.c,34
+perr(61,1236
+startdaemon(21,483
+
+lp.h,0
+
+lp.local.h,0
+
+lpc.h,0

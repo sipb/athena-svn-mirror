@@ -1,0 +1,35 @@
+%pascal 
+[uuid(33c382898000.0d.00.00.80.9c.00.00.00), version(1)] 
+interface rproc_;
+
+import 
+    'nbase.idl';
+
+const
+    rproc_$cant_run_prog    = 16#1c060001;  { Can't run specified program }
+    rproc_$cant_create_proc = 16#1c060002;  { Can't create a new process for program }
+    rproc_$internal_error   = 16#1c060003;  { Server is messed up }
+    rproc_$too_many_args    = 16#1c060004;  { Too many arguments specified }
+    rproc_$not_allowed      = 16#1c060005;  { Server won't create a process (for you / now) }
+    rproc_$cant_set_id      = 16#1c060006;  { Server can't change identity of new process }
+
+type
+    rproc_$t =
+        integer32;
+
+    rproc_$arg_t =
+        string0[128];
+
+    rproc_$args_t =
+        array[1..*] of rproc_$arg_t;
+
+procedure rproc_$create_simple(
+    in      h:          handle_t;
+    in      pname:      string0[256];       { Pathname of program to run }
+    in      argc:       integer32;          { # of program arguments }
+    in      argv:       [last_is(argc)] rproc_$args_t;
+    out     proc:       rproc_$t;           { Handle on the created process }
+    out     st:         status_$t
+    );
+
+end;

@@ -1,0 +1,22 @@
+map * $
+
+link * -f
+copy *;d
+copy *;l
+
+ignore */Makefile
+ignore Makefile
+ignore */*,v
+link RCS
+link */RCS
+ignore */*~
+ignore *~
+ignore *.orig
+ignore *.bak
+ignore *.rej
+ignore TAGS*
+
+; link lib
+; link man
+; link */include
+; link config

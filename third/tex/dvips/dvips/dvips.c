@@ -460,6 +460,7 @@ void main(argc, argv)
    int firstext = -1 ;
 #endif
    register sectiontype *sects ;
+   char *p, newoname[128];
 
 #ifdef __THINK__
    argc = dcommand(&argv) ; /* do I/O stream redirection */
@@ -861,6 +862,14 @@ default:
       }
    } while (queryoptions != 0) ;
 #endif
+   p = strstr(oname, "%P");
+   if (p) {
+      strncpy(newoname, oname, p - oname);
+      oname[p - oname] = 0;
+      if (printer && strlen(oname) + strlen(printer) - 1 <= sizeof(newoname))
+	 strcat(newoname, printer);
+      strcat(newoname, p + 2);
+   }
    checkenv(1) ;
 /*
  *   The logic here is a bit convoluted.  Since all `additional'

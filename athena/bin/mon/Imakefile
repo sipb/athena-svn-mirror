@@ -1,0 +1,17 @@
+/*
+ *	$Id: Imakefile,v 1.1 1993-10-12 05:30:39 probe Exp $
+ */
+
+/* Beware dependencies on mon.h are not properly stated. */
+
+OBJS = mon.o io.o vm.o netif.o display.o readnames.o
+
+#if defined(ibm032) || (defined(vax) && !defined(ultrix))
+build_program(mon,$(OBJS),,-lcurses -ltermlib)
+install_program(mon,-g kmem -m 2755,$(ATHBINDIR)/mon)
+#else
+all::
+	@echo mon is not available on this platform
+#endif
+mon: mon.h
+
