@@ -7,9 +7,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libetext.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libetext_la_SOURCES = 		\
 	e-entry.c				\
 	e-completion-match.c			\
@@ -39,7 +36,7 @@ noinst_PROGRAMS =	\
 #	e-text-model-test \
 #
 #	e-text-test	\
-#	e-entry-test	\
+#	e-entry-test	
 
 
 
@@ -81,7 +78,7 @@ e_completion_test_LDADD = \
 	libetext.la 		\
 	$(top_builddir)/gal/e-table/libetable.la \
 	$(top_builddir)/gal/widgets/libwidgets.la \
-	$(top_builddir)/gal/unicode/libunicode.la \
 	$(top_builddir)/gal/util/libutil.la \
+	$(top_builddir)/gal/unicode/libunicode.la \
 	$(ICONV_LIBS)		\
 	$(EXTRA_GNOME_LIBS)

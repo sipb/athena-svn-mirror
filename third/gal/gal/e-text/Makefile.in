@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -135,7 +136,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -145,28 +154,49 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(top_srcdir)					$(GNOME_INCLUDEDIR)				$(ICONV_CFLAGS)					-DG_LOG_DOMAIN=\"e-text\"			$(EXTRA_GNOME_CFLAGS)
+INCLUDES = \
+	-I$(top_srcdir)				\
+	$(GNOME_INCLUDEDIR)			\
+	$(ICONV_CFLAGS)				\
+	-DG_LOG_DOMAIN=\"e-text\"		\
+	$(EXTRA_GNOME_CFLAGS)
 
 
 noinst_LTLIBRARIES = libetext.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
-libetext_la_SOURCES =  	e-entry.c					e-completion-match.c				e-completion.c					e-completion-view.c				e-table-text-model.c				e-text-model-repos.c				e-text-model.c					e-text-model-uri.c                      	e-text.c
+libetext_la_SOURCES = \
+	e-entry.c				\
+	e-completion-match.c			\
+	e-completion.c				\
+	e-completion-view.c			\
+	e-table-text-model.c			\
+	e-text-model-repos.c			\
+	e-text-model.c				\
+	e-text-model-uri.c                      \
+	e-text.c
 
 
 libetextincludedir = $(includedir)/gal/e-text
 
-libetextinclude_HEADERS =  	e-entry.h					e-completion-match.h				e-completion.h					e-completion-view.h				e-table-text-model.h				e-text-model-repos.h				e-text-model.h					e-text-model-uri.h				e-text.h
+libetextinclude_HEADERS = \
+	e-entry.h				\
+	e-completion-match.h			\
+	e-completion.h				\
+	e-completion-view.h			\
+	e-table-text-model.h			\
+	e-text-model-repos.h			\
+	e-text-model.h				\
+	e-text-model-uri.h			\
+	e-text.h
 
 
-noinst_PROGRAMS =  	e-completion-test
+noinst_PROGRAMS = \
+	e-completion-test
 
 #	e-text-model-test \
 #
 #	e-text-test	\
-#	e-entry-test	\
+#	e-entry-test	
 
 #e_text_test_SOURCES =	\
 #	 e-text-test.c
@@ -199,10 +229,18 @@ noinst_PROGRAMS =  	e-completion-test
 #	 $(top_builddir)/gal/unicode/libunicode.la \
 #	 $(top_builddir)/gal/util/libutil.la
 
-e_completion_test_SOURCES =  	e-completion-test.c
+e_completion_test_SOURCES = \
+	e-completion-test.c
 
 
-e_completion_test_LDADD =  	libetext.la 			$(top_builddir)/gal/e-table/libetable.la 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS)			$(EXTRA_GNOME_LIBS)
+e_completion_test_LDADD = \
+	libetext.la 		\
+	$(top_builddir)/gal/e-table/libetable.la \
+	$(top_builddir)/gal/widgets/libwidgets.la \
+	$(top_builddir)/gal/util/libutil.la \
+	$(top_builddir)/gal/unicode/libunicode.la \
+	$(ICONV_LIBS)		\
+	$(EXTRA_GNOME_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -224,8 +262,8 @@ e_completion_test_OBJECTS =  e-completion-test.$(OBJEXT)
 e_completion_test_DEPENDENCIES =  libetext.la \
 $(top_builddir)/gal/e-table/libetable.la \
 $(top_builddir)/gal/widgets/libwidgets.la \
-$(top_builddir)/gal/unicode/libunicode.la \
-$(top_builddir)/gal/util/libutil.la
+$(top_builddir)/gal/util/libutil.la \
+$(top_builddir)/gal/unicode/libunicode.la
 e_completion_test_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -382,7 +420,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:

@@ -31,11 +31,16 @@
 #endif
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <errno.h>
 #include <iconv.h>
 #include "gal/util/e-cache.h"
 #include "e-font.h"
 #include "e-unicode.h"
 #include "gal/util/e-iconv.h"
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 
 #ifdef HAVE_CODESET
 #include <langinfo.h>
@@ -45,7 +50,7 @@ static int e_font_verbose = 0;
 
 #define E_FONT_VERBOSE
 #define E_FONT_CACHE_SIZE 32
-
+#define E_ALLOCA_MAX 2048
 enum {
 	E_XF_FOUNDRY,
 	E_XF_FAMILY,
@@ -78,7 +83,7 @@ static void split_name (gchar * c[], gchar * name);
 static gboolean find_variants (gchar **namelist, gint length,
 			       gchar *base_weight, gchar **light,
 			       gchar **bold);
-static gint         e_font_to_native   (EFont *font, gchar *native, const gchar *utf, gint bytes);
+static int e_font_to_native (EFont *font, char **native, const char *in, int inlen);
 #ifdef E_FONT_VERBOSE
 static void e_font_print_gdk_font_name (const GdkFont * font);
 #endif
@@ -175,20 +180,60 @@ static void
 set_nbsp_zero_width_flag (EFont *efont)
 {
 	guchar *nbsp = "\xc2\xa0";
-	guchar native_nbsp [8];
-
+	guchar *native;
+	int nlen;
+	
 	efont->nbsp_zero_width = FALSE;
-	efont->nbsp_zero_width = gdk_text_width (efont->font, native_nbsp, e_font_to_native (efont, native_nbsp, nbsp, 2))
-		? FALSE : TRUE;
+	
+	nlen = e_font_to_native (efont, (char **) &native, nbsp, 2);
+	efont->nbsp_zero_width = gdk_text_width (efont->font, native, nlen) ? FALSE : TRUE;
+	g_free (native);
 }
 
 /*
- * Creates EFont from existing GdkFont.
- * 1. Use cache
- * 2. Analyze, whether we need font or fontset. For fontset use e_font_from_gdk_fontset
- * 3. Try, if we can simply use iso-10646 variant of font
- * 4. Determine bold or light variant
+ * Simplified version used for gtkhtml library to reduce resources usage
  */
+
+EFont *
+e_font_from_gdk_font_gtkhtml (GdkFont *gdk_font)
+{
+	EFont *font;
+	XFontStruct *xfs;
+
+#ifdef E_FONT_VERBOSE
+	if (e_font_verbose) {
+		g_print ("(e_font_from_gdk_font_gtkhtml): ");
+		e_font_print_gdk_font_name (gdk_font);
+	}
+#endif
+
+	g_return_val_if_fail (gdk_font != NULL, NULL);
+
+	font = g_new (EFont, 1);
+
+	xfs = GDK_FONT_XFONT (gdk_font);
+
+	font->refcount = 1;
+	gdk_font_ref (gdk_font);
+	gdk_font_ref (gdk_font);
+	font->font = gdk_font;
+	font->bold = gdk_font;
+	font->twobyte = (gdk_font->type == GDK_FONT_FONTSET || ((xfs->min_byte1 != 0) || (xfs->max_byte1 != 0)));
+	font->to = e_iconv_to_gdk_font (font->font);
+	font->from = e_iconv_from_gdk_font (font->font);
+	set_nbsp_zero_width_flag (font);
+
+	return font;
+
+}
+
+ /*
+  * Creates EFont from existing GdkFont.
+  * 1. Use cache
+  * 2. Analyze, whether we need font or fontset. For fontset use e_font_from_gdk_fontset
+  * 3. Try, if we can simply use iso-10646 variant of font
+  * 4. Determine bold or light variant
+  */
 
 EFont *
 e_font_from_gdk_font (GdkFont *gdkfont)
@@ -678,144 +723,270 @@ no_conv_wrapper (EFont *font, gchar *native, const gchar *utf, gint bytes)
 	return len;
 }
 
-static guchar *
-replace_nbsp_with_spaces (const guchar *orig, gint *bytes)
-{
-	guchar *rv, *p;
-	gboolean nbsp1;
-	gint remains = *bytes;
+static gboolean
+e_font_normalize_punctuation (gunichar uc, char **buf, gint *len) {
+	char *rbuf = NULL;
+	gint rlen = 1;
 
-	if (!orig)
-		return NULL;
-
-	/* printf ("bytes: %d orig\n%s\n", *bytes, orig); */
-
-	p = rv = (guchar *) g_malloc (strlen (orig) + 1);
-	nbsp1  = FALSE;
-
-	while (remains) {
-		if (*orig == 0xc2)
-			nbsp1 = TRUE;
-		else if (nbsp1) {
-			if (*orig == 0xa0) {
-				*p = ' ';   p ++;
-				(*bytes) --;
-			} else {
-				*p = 0xc2;  p ++;
-				*p = *orig; p ++;
-			}
-			nbsp1 = FALSE;
-		} else {
-			*p = *orig;
-			p ++;
+	/*
+	 * We should really try to do a compatabilty normalization
+	 * here and try to convert again, but gal's g_utf8 stuff
+	 * doesn't have include the glib normalization function
+	 * so we'll just try for some basic punctuation so that we
+	 * see something.
+	 */
+	if (uc >= 0x2000 && uc <= 0x200a) { /* SPACES */
+		rbuf = " ";
+	} else if (uc >= 0x200c && uc <= 0x200f) { /* FORMATTING CHARS */
+		rbuf = "";
+		rlen = 0;
+#ifdef NORMALIZE_BE_STRICT
+	} else if (uc >= 0x2010 && uc <= 0x2012) { /* DASHES */
+#else 
+	} else if (uc >= 0x2010 && uc <= 0x2015) { /* DASHES */
+#endif
+		rbuf = "-";
+	} else {        
+		switch (uc) {
+		case 0x0000: 
+			break;
+		case 0x00a0: /* NBSP */
+		case 0x202f: /* NARROW NO-BREAK SPACE */
+			rbuf = " ";
+			break;
+		case 0x200b: /* ZERO WIDTH SPACE */
+			rbuf = "";
+			rlen = 0;
+			break;
+		case 0x2017: /* DOUBLE LOW LINE */
+			rbuf = "_";
+			break;
+		case 0x2018: /* LEFT SINGLE QUOTATION MARK */
+		case 0x2019: /* RIGHT SINGLE QUOTATION MARK */
+		case 0x2032: /* PRIME */ 
+			rbuf = "'";
+			break;
+		case 0x201c: /* LEFT DOUBLE QUOTATION MARK */
+		case 0x201d: /* RIGHT DOUBLE QUOTATION MARK */
+		case 0x2033: /* DOUBLE PRIME */ 
+			rbuf = "\"";
+			break;
+		case 0x2024: /* ONE DOT LEADER */
+			rbuf = ".";
+			break;
+		case 0x2025: /* TWO DOT LEADER */
+			rbuf = "..";
+			rlen = 2;
+			break;
+		case 0x2026: /* HORIZONTAL ELLIPSES */
+			rbuf = "...";
+			rlen = 3;
+			break;
+		case 0x2030: /* PER MILLE SIGN */
+		case 0x2031: /* PER TEN THOUSAND SIGN */
+			rbuf = "%";
+			break;
+		case 0x2034: /* TRIPLE PRIME */
+			rbuf = "'''";
+			rlen = 3;
+			break;
+#ifndef NORMALIZE_BE_STRICT
+		case 0x2035: /* REVERSED PRIME */
+		rbuf = "`";
+			break;
+		case 0x2036: /* REVERSED DUOBLE PRIME */
+			rbuf = "``";
+			rlen = 2;
+			break;
+		case 0x2037: /* REVERSED TRIPLE PRIME */
+			rbuf = "```";
+			rlen = 3;
+			break;
+#endif
+		case 0x2038: /* CARET */
+			rbuf = "^";
+			break;
+		case 0x2039: /* SINGLE LEFT-POINTING ANGLE QUOTATION MARK */
+			rbuf = "<";
+			break;
+		case 0x203a: /* SINGLE RIGHT-POINTING ANGLE QUOTATION MARK */
+			rbuf = ">";
+			break;
+		case 0x203c: /* DOUBLE EXCLAMATION MARK */
+			rbuf = "!!";
+			rlen = 3;
+			break;
+		case 0x203d: /* INTERROBANG */
+			rbuf = "!";
+			break;
+		case 0x2044: /* FRACTION SLASH */
+			rbuf = "/";
+			break;
+		case 0x2048: /* QUESTION EXCLAMATION MARK */
+			rbuf = "?!";
+			rlen = 2;
+			break;
+		case 0x2049: /* EXCLAMATION QUESTION MARK */
+			rbuf = "!?";
+			rlen = 2;
+			break;
+		default:
+			return FALSE;
+			break;
 		}
-		orig ++;
-		remains --;
 	}
-
-	if (nbsp1) {
-		*p = 0xc2; p ++;
-	}
-	*p = 0;
-
-	/* printf ("rv: %s\n", rv); */
-
-	return rv;
+	*buf = rbuf;
+	*len = rlen;
+	return TRUE;
 }
 
-static gint
-e_font_to_native (EFont *font, gchar *native, const gchar *utf, gint bytes)
+static int
+e_font_to_native (EFont *font, char **native, const char *in, int inlen)
 {
-	const char *ib;
-	char *ob;
-	size_t ibl, obl;
-	gint rv;
-
-	if (font->nbsp_zero_width)
-		utf = replace_nbsp_with_spaces (utf, &bytes);
+	size_t inleft, outleft, converted = 0;
+	char *out, *outbuf, *buf = NULL;
+	const char *inbuf, *tmp;
+	size_t outlen;
+	int rv;
+	
+	outlen = inlen * 2 + 16;
+	out = g_malloc (outlen + 2);
 
 	if (font->to == (iconv_t) -1)
-		rv = no_conv_wrapper (font, native, utf, bytes);
-	else {
-		ib = utf;
-		ibl = bytes;
-		ob = native;
-		obl = bytes * 4;
+		goto noop;
+	
+	inbuf = in;
+	inleft = inlen;
 
-		while (ibl > 0) {
-			e_iconv (font->to, &ib, &ibl, &ob, &obl);
-			if (ibl > 0) {
-				ib = g_utf8_next_char (ib);
+	do {
+		outbuf = out + converted;
+		outleft = outlen - converted;
+		
+		converted = e_iconv (font->to, (const char **) &inbuf, &inleft, &outbuf, &outleft);
+		if (converted == (size_t) -1) {
+			if (errno == E2BIG) {
+				/*
+				 * E2BIG   There is not sufficient room at *outbuf.
+				 *
+				 * We just need to grow our outbuffer and try again.
+				 */
+				converted = outbuf - (char *) out;
+				outlen += inleft * 2 + 16;
+				out = g_realloc (out, outlen + 2);
+				outbuf = out + converted;
+			} else if (errno == EILSEQ) {
+				/*
+				 * EILSEQ An invalid multibyte sequence has been  encountered
+				 *        in the input.
+				 *
+				 * An illegal multibyte sequence has been encountered.
+				 */
+				gunichar uc;
+				size_t rlen = 1;
+				char *rbuf = NULL;
+				
+				uc = g_utf8_get_char (inbuf);
+				
+#if 0
+				g_warning ("failed trying to convert unichar=%x", uc);
+#endif
 
-				ibl = bytes - (ib - utf);
-				if (ibl > bytes) ibl = 0;
-				if (!font->twobyte) {
-					*ob++ = '_';
-					obl--;
-				} else {
-					*((guint16 *) ob) = '_';
-					ob += 2;
-					obl -= 2;
-				}
+				if (!e_font_normalize_punctuation (uc, &rbuf, &rlen))
+					rbuf = "_"; /* put something so that we know it was here */
+				
+				/* we don't really care about errors here we've done our best */
+				if (rlen)
+					e_iconv (font->to, (const char **) &rbuf, &rlen, &outbuf, &outleft);
+
+				tmp = g_utf8_next_char (inbuf);
+				inleft -= (tmp - inbuf);
+				inbuf = tmp;
+			} else if (errno == EINVAL) {
+				/*
+				 * EINVAL  An  incomplete  multibyte sequence has been encoun­
+				 *         tered in the input.
+				 *
+				 * We'll just have to ignore it...
+				 */
+				break;
+			} else {
+				/* Invalid error code */
+				goto noop;
 			}
 		}
-		rv = ob - native;
-	}
-
-	if (font->nbsp_zero_width)
-		g_free ((void *) utf);
-
+		converted = outbuf - (char *) out;
+		
+	} while (((int) inleft) > 0);
+	
+	/* flush and reset the iconv conversion */
+	e_iconv (font->to, NULL, NULL, &outbuf, &outleft);
+	
+	*native = out;
+	
+	return outbuf - out;
+	
+ noop:
+	
+	/* reset the cd */
+	if (font->to != (iconv_t) -1)
+		e_iconv (font->to, NULL, NULL, NULL, NULL);
+	
+	out = g_realloc (out, inlen * 2);
+	
+	rv = no_conv_wrapper (font, out, in, inlen);
+	
+	*native = out;
+	g_free (buf);
+	
 	return rv;
 }
 
 void
-e_font_draw_utf8_text (GdkDrawable *drawable, EFont *font, EFontStyle style, GdkGC *gc, gint x, gint y, const gchar *text, gint numbytes)
+e_font_draw_utf8_text (GdkDrawable *drawable, EFont *font, EFontStyle style, GdkGC *gc,
+		       gint x, gint y, const gchar *text, gint numbytes)
 {
-	gchar *native;
-	gint native_bytes;
-
-	g_return_if_fail (drawable != NULL);
+	char *native;
+	int nlen;
+	
 	g_return_if_fail (font != NULL);
-	g_return_if_fail (gc != NULL);
 	g_return_if_fail (text != NULL);
+	
+	if (numbytes < 1)
+		return;
 
-	if (numbytes < 1) return;
-
-	native = alloca (numbytes * 4);
-
-	native_bytes = e_font_to_native (font, native, text, numbytes);
+	nlen = e_font_to_native (font, &native, text, numbytes);
 	
 	if ((style & E_FONT_BOLD) && (font->bold)) {
-		gdk_draw_text (drawable, font->bold, gc, x, y, native, native_bytes);
+		gdk_draw_text (drawable, font->bold, gc, x, y, native, nlen);
 	} else {
-		gdk_draw_text (drawable, font->font, gc, x, y, native, native_bytes);
+		gdk_draw_text (drawable, font->font, gc, x, y, native, nlen);
 		if (style & E_FONT_BOLD)
-			gdk_draw_text (drawable, font->font, gc, x + 1, y, native, native_bytes);
+			gdk_draw_text (drawable, font->font, gc, x + 1, y, native, nlen);
 	}
+	g_free (native);
 }
 
 gint
 e_font_utf8_text_width (EFont *font, EFontStyle style, const char *text, int numbytes)
 {
-	gchar *native;
-	gint native_bytes;
-	gint width;
-
+	char *native;
+	int width, nlen;
+	
 	g_return_val_if_fail (font != NULL, 0);
 	g_return_val_if_fail (text != NULL, 0);
+	
+	if (numbytes < 1)
+		return 0;
 
-	if (numbytes < 1) return 0;
-
-	native = alloca (numbytes * 4);
-
-	native_bytes = e_font_to_native (font, native, text, numbytes);
-
+	nlen = e_font_to_native (font, &native, text, numbytes);
+	
 	if ((style & E_FONT_BOLD) && (font->bold)) {
-		width = gdk_text_width (font->bold, native, native_bytes);
+		width = gdk_text_width (font->bold, native, nlen);
 	} else {
-		width = gdk_text_width (font->font, native, native_bytes);
+		width = gdk_text_width (font->font, native, nlen);
 	}
-
+	
+	g_free (native);
 	return width;
 }
 

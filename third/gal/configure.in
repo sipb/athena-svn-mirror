@@ -1,29 +1,29 @@
 AC_INIT(README)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gal,0.19.2)
+AM_INIT_AUTOMAKE(gal,0.22)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
 dnl libtool versioning
 
-dnl gal-0.19.2 = 0
+dnl gal-0.22 = 1
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
 dnl AKA Micro
-GAL_AGE=0
+GAL_AGE=1
 
-dnl gal-0.19.2 = 1
+dnl gal-0.22 = 0
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
 dnl AKA Minor
-GAL_REVISION=2
+GAL_REVISION=0
 
-dnl gal-0.19.2 = 19
+dnl gal-0.22 = 22
 dnl increment if the interface has additions, changes, removals.
 dnl AKA Major
-GAL_CURRENT=19
+GAL_CURRENT=22
 
 AC_SUBST(GAL_CURRENT)
 AC_SUBST(GAL_REVISION)
@@ -41,18 +41,30 @@ AM_PROG_XML_I18N_TOOLS
 
 GNOME_INIT
 
+if test -f $srcdir/po/Makefile.in.in ; then
+   cp $srcdir/po/Makefile.in.in $srcdir/po/Makefile.in.in.bak
+   sed -e  "s/\$(PACKAGE).mo/\$(PACKAGE)-\$(VERSION).mo/" $srcdir/po/Makefile.in.in.bak > $srcdir/po/Makefile.in.in
+else
+    AC_MSG_ERROR([
+""
+"Can not find Makefile: $srcdir/po/Makefile.in.in"])
+fi
+
 ## this should come after `AC_PROG_CC'
 GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 GNOME_XML_CHECK
 
-AC_DEFINE_UNQUOTED(GNOME_EXPLICIT_TRANSLATION_DOMAIN, "gal")
+AC_DEFINE_UNQUOTED(GNOME_EXPLICIT_TRANSLATION_DOMAIN, "${PACKAGE}-${VERSION}")
 
 dnl
 dnl alloca tests
+dnl test for both ac_cv_header_alloca_h and ac_cv_working_alloca_h so
+dnl we're compatible with both autoconf 2.1X and autoconf >= 2.50
 dnl;
 AC_FUNC_ALLOCA
-if test $ac_cv_header_alloca_h = yes; then
+if	test X$ac_cv_working_alloca_h = Xyes || \
+	test X$ac_cv_header_alloca_h = Xyes ; then
         GAL_HAVE_ALLOCA_H=1
 else
         GAL_HAVE_ALLOCA_H=0
@@ -63,7 +75,7 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-ALL_LINGUAS="az ca cs da de en_GB es fi fr gl hu it ja ko lt nn no pl pt pt_BR ro ru sk sv ta tr uk zh_TW"
+ALL_LINGUAS="az ca cs da de el en_GB es eu fi fr gl hu it ja ko lt ms nn no pl pt pt_BR ro ru sk sv ta tr uk zh_CN zh_TW"
 AM_GNOME_GETTEXT
 
 gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
@@ -147,7 +159,7 @@ int main (int argc, char **argv)
 #endif
 
 	cd = iconv_open ("UTF-8", "ISO-2022-JP");
-	if (!cd)
+	if (cd == (iconv_t) -1)
 		exit (1);
 	if (iconv (cd, &jp, &jp_len, &trans, &utf8_len) == -1 || jp_len != 0)
 		exit (1);
@@ -159,7 +171,7 @@ int main (int argc, char **argv)
 fi
 
 if test "$have_iconv" = no; then
-	AC_MSG_ERROR([You need to install a working iconv implementation, such as http://clisp.cons.org/~haible/packages-libiconv.html])
+	AC_MSG_ERROR([You need to install a working iconv implementation, such as ftp://ftp.gnu.org/pub/gnu/libiconv])
 fi
 AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(ICONV_LIBS)
@@ -174,7 +186,7 @@ AC_TRY_RUN([
 	AC_MSG_RESULT(found)
 ],[
 	AC_MSG_RESULT(not found)
-	AC_ERROR([
+	AC_WARN([
 	*** The iconv-detect program was unable to determine the
 	*** preferred charset formats recognized by your system
 	*** iconv library. It is suggested that you install a
@@ -203,7 +215,7 @@ int main(int argc, char **argv)
 	timeinfo=localtime(&rawtime);
 	strftime(buf, 10, "%l %k", timeinfo);
 
-	if (strstr(buf, "%l") || strstr(buf, "%k"))
+	if (strstr(buf, "l") || strstr(buf, "k"))
 		exit(1);
 	else
 		exit(0);
@@ -337,10 +349,12 @@ AC_SUBST(GAL_LIBDIR)
 AC_SUBST(GAL_INCLUDEDIR)
 AC_SUBST(GAL_LIBS)
 
-EXTRA_GNOME_LIBS="`gnome-config --libs gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf` `imlib-config --libs-gdk`"
-EXTRA_GNOME_CFLAGS="`gnome-config --cflags gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf` `imlib-config --cflags-gdk`"
+EXTRA_GNOME_LIBS=`gnome-config --libs gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf`
+EXTRA_GNOME_CFLAGS=`gnome-config --cflags gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf`
 AC_SUBST(EXTRA_GNOME_LIBS)
 AC_SUBST(EXTRA_GNOME_CFLAGS)
+
+CFLAGS="$CFLAGS -D_REENTRANT"
 
 AC_OUTPUT([
 Makefile
@@ -354,7 +368,6 @@ gal/widgets/Makefile
 gal/e-text/Makefile
 gal/e-paned/Makefile
 gal/e-table/Makefile
-gal/shortcut-bar/Makefile
 gal/menus/Makefile
 gal/shortcut-bar/Makefile
 tests/Makefile
