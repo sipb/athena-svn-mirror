@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v $
- *	$Id: p_instance.c,v 1.11 1991-09-10 11:29:01 lwvanels Exp $
+ *	$Id: p_instance.c,v 1.12 1992-02-14 19:12:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.11 1991-09-10 11:29:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.12 1992-02-14 19:12:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,8 +53,14 @@ do_olc_instance(arguments)
 	 string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
 	{
           ++arguments;
-	  if(*arguments != (char *) NULL)
+	  if(*arguments != (char *) NULL) {
+	    if (!isdigit(**arguments)) {
+	      printf("Instance specified must be numeric; %s is not.\n",
+		     *arguments);
+	      return(ERROR);
+	    }
 	    instance = atoi(*arguments);
+	  }
 	  else
 	    instance = -2;
 	  continue;
