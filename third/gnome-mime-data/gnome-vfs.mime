@@ -41,6 +41,9 @@ application/octet-stream
 application/oda
 	ext: oda
 
+application/ogg
+	ext: ogg
+
 application/pdf
 	ext: pdf
 
@@ -55,6 +58,9 @@ application/qif
 
 application/rtf
 	ext: rtf
+
+application/vnd.corel-draw
+	ext: cdr
 
 application/vnd.lotus-1-2-3
 	ext: 123 wk1 wk3 wk4 wks
@@ -107,6 +113,12 @@ application/vnd.sun.xml.writer.template
 application/x-abiword
 	ext: abw
 
+application/x-ape
+	ext: ape
+
+application/x-applix-presents
+	ext: ap
+
 application/x-applix-spreadsheet
 	ext: as
 
@@ -125,6 +137,12 @@ application/x-backup
 application/x-bcpio
 	ext: bcpio
 
+application/x-bittorrent
+	ext: torrent
+
+application/x-blender
+	ext: blender blend BLEND
+
 application/x-bzip
 	ext: bz2 bz
 
@@ -136,6 +154,9 @@ application/x-cgi
 
 application/x-chess-pgn
 	ext: pgn
+
+application/x-cinelerra
+	ext:
 
 application/x-compress
 	ext: Z
@@ -151,7 +172,7 @@ application/x-cpio
 	ext: cpio
 
 application/x-cpio-compressed
-	regex: \.cpio\.gz$
+	regex,2: \.cpio\.gz$
 
 application/x-dc-rom
 	ext: dc
@@ -167,9 +188,6 @@ application/x-dvi
 
 application/x-e-theme
 	ext: etheme ETHEME
-
-application/x-flac
-	ext: flac
 
 application/x-font-afm
 	ext: afm
@@ -187,13 +205,19 @@ application/x-font-speedo
 	ext: spd
 
 application/x-font-ttf
-	ext: ttf TTF
+	ext: ttf TTF ttc TTC
 
 application/x-font-type1
 	ext: pfa pfb
 
 application/x-gameboy-rom
 	ext: gb
+
+application/x-gchempaint
+	ext: gchempaint
+
+application/x-gcrystal
+	ext: gcrystal
 
 application/x-genesis-rom
 	ext: gen md
@@ -222,6 +246,9 @@ application/x-hdf
 application/x-iso-image
 	ext:iso
 
+application/x-java-archive
+	ext: jar
+
 application/x-java-byte-code
 	ext: class
 
@@ -249,11 +276,14 @@ application/x-lha
 application/x-lhz
 	ext: lhz
 
+application/x-magicpoint
+	ext: mgp
+
 application/x-mif
 	ext: mif
 
 application/x-mrproject
-	ext: mrp
+	ext: mrp mrproject
 
 application/x-ms-dos-executable
 	ext: exe
@@ -271,10 +301,7 @@ application/x-netcdf
 	ext: cdf nc
 
 application/x-object-file
-	ext: o
-
-application/x-ogg
-	ext: ogg
+	ext: o lo
 
 application/x-oleo
 	ext: oleo
@@ -356,6 +383,9 @@ application/x-xbase
 application/x-zoo
 	ext: zoo
 
+application/xbel
+	ext: xbel
+
 application/zip
 	ext: zip
 
@@ -366,7 +396,7 @@ audio/basic
 	ext: snd
 
 audio/mpeg
-	ext: mp1
+	ext: mp1 mp3
 
 audio/prs.sid
 	ext: sid psid
@@ -374,8 +404,14 @@ audio/prs.sid
 audio/x-aiff
 	ext: aif aifc aiff
 
+audio/x-flac
+	ext: flac
+
 audio/x-it
 	ext: it IT
+
+audio/x-m4a
+	ext: m4a
 
 audio/x-midi
 	ext: midi mid
@@ -383,17 +419,17 @@ audio/x-midi
 audio/x-mod
 	ext: mod MOD
 
-audio/x-mp3
-	ext: mp3
-
 audio/x-mpegurl
 	ext: m3u
 
 audio/x-ms-asx
-	ext: asx
+	ext: asx wax
+
+audio/x-pn-realaudio
+	ext: ram
 
 audio/x-real-audio
-	ext: rm ra ram
+	ext: rm ra rv
 
 audio/x-s3m
 	ext: S3M s3m
@@ -419,7 +455,6 @@ audio/x-xi
 audio/x-xm
 	ext: xm XM
 
-
 image/bmp
 	ext: bmp
 
@@ -438,11 +473,14 @@ image/jpeg
 image/png
 	ext: png
 
-image/svg
+image/svg+xml
 	ext: svg svgz
 
 image/tiff
 	ext: tif tiff
+
+image/vnd.djvu
+	ext: djvu djv
 
 image/vnd.dwg
 	ext: dwg
@@ -566,7 +604,7 @@ model/vrml
 
 
 text/abiword
-	ext:
+	ext: abw
 
 text/bib
 	ext: bib
@@ -597,6 +635,9 @@ text/spreadsheet
 
 text/tab-separated-values
 	ext: tsv
+
+text/x-asm
+	ext: s
 
 text/x-authors
 	regex: AUTHORS
@@ -652,6 +693,9 @@ text/x-install
 text/x-java
 	ext: java
 
+text/x-javascript
+	ext: js
+
 text/x-literate-haskell
 	ext: lhs
 
@@ -661,8 +705,20 @@ text/x-lyx
 text/x-makefile
 	regex: [Mm]akefile
 
+text/x-objc
+	ext: m
+
+text/x-pascal
+	ext: p pascal
+
+text/x-patch
+	ext: diff patch
+
 text/x-perl
-	ext: pl perl
+	ext: pl perl pm
+
+text/x-po
+	ext: po
 
 text/x-python
 	ext: py
@@ -687,7 +743,7 @@ text/x-tcl
 	ext: tcl
 
 text/x-tex
-	ext: tex cls sty
+	ext: tex cls sty ltx
 
 text/x-texinfo
 	ext: texi texinfo
@@ -716,6 +772,9 @@ text/x-vcalendar
 text/x-vcard
 	ext: gcrd
 
+text/x-yacc
+	ext: yacc y
+
 text/xml
 	ext: xml
 
@@ -724,6 +783,9 @@ video/mpeg
 
 video/quicktime
 	ext: mov qt
+
+video/vnd.vivo
+	ext: viv vivo
 
 video/x-anim
 	regex: \.anim[1-9j]$
@@ -740,8 +802,14 @@ video/x-ms-asf
 video/x-ms-wmv
 	ext: wmv
 
+video/x-ms-wvx
+	ext: wvx
+
 video/x-msvideo
 	ext: avi
+
+video/x-nsv
+	ext: nsv NSV
 
 video/x-sgi-movie
 	ext: movie

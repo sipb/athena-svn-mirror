@@ -83,6 +83,7 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -95,7 +96,7 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 
-SUBDIRS = icons man po
+SUBDIRS = man po
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-mime-data-2.0.pc
@@ -113,7 +114,15 @@ applications_DATA = gnome-vfs.applications
 
 sysconf_DATA = gnome-vfs-mime-magic
 
-EXTRA_DIST =  	autogen.sh					check-mime.pl					gnome-mime-data.spec				gnome-mime-data-2.0.pc.in			intltool-extract.in				intltool-merge.in				intltool-update.in				$(keys_in_files) $(mime_DATA) $(sysconf_DATA) $(applications_DATA)
+EXTRA_DIST = \
+	autogen.sh				\
+	check-mime.pl				\
+	gnome-mime-data.spec			\
+	gnome-mime-data-2.0.pc.in		\
+	intltool-extract.in			\
+	intltool-merge.in			\
+	intltool-update.in			\
+	$(keys_in_files) $(mime_DATA) $(sysconf_DATA) $(applications_DATA)
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -269,7 +278,7 @@ uninstall-sysconfDATA:
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
 check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
+	@set fnord $$MAKEFLAGS; amf=$$2; \
 	dot_seen=no; \
 	target=`echo $@ | sed s/-recursive//`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
@@ -289,7 +298,7 @@ check-recursive installcheck-recursive info-recursive dvi-recursive:
 
 mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
+	@set fnord $$MAKEFLAGS; amf=$$2; \
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \

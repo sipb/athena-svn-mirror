@@ -1,1628 +1,1906 @@
 # Turkish translation of gnome-mime-data.
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002-2003 Free Software Foundation, Inc.
 # Sinan Imamoglu <sinan@myrealbox.com>, 2002.
+# erkaN <erkaN@linux-sevenler.de>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 1.1\n"
-"POT-Creation-Date: 2003-02-04 01:07-0800\n"
-"PO-Revision-Date: 2002-11-22 21:12+0200\n"
-"Last-Translator: Sinan İmamoğlu <sinan@myrealbox.com>\n"
+"Project-Id-Version: gnome-vfs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-22 19:09+0000\n"
+"PO-Revision-Date: 2003-02-07 09:57+0000\n"
+"Last-Translator: erkaN <erkaN@linux-sevenler.de>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# data/mime/gnome-vfs.keys.in.h:1
 #: gnome-vfs.keys.in.h:1
+msgid "2D chemical structure"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:1
+#: gnome-vfs.keys.in.h:2
 msgid "3D Studio image"
 msgstr "3D Studio görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:2
-#: gnome-vfs.keys.in.h:2
+#: gnome-vfs.keys.in.h:3
 msgid "AIFC audio"
 msgstr "AIFC sesi"
 
 # data/mime/gnome-vfs.keys.in.h:3
-#: gnome-vfs.keys.in.h:3
+#: gnome-vfs.keys.in.h:4
 msgid "AIFF audio"
 msgstr "AIFF sesi"
 
 # data/mime/gnome-vfs.keys.in.h:4
-#: gnome-vfs.keys.in.h:4
+#: gnome-vfs.keys.in.h:5
 msgid "ANIM animation"
 msgstr "ANIM animasyonu"
 
+# data/mime/gnome-vfs.keys.in.h:118
+#: gnome-vfs.keys.in.h:6
+#, fuzzy
+msgid "ARJ archive"
+msgstr "RAR arşivi"
+
 # data/mime/gnome-vfs.keys.in.h:5
-#: gnome-vfs.keys.in.h:5
+#: gnome-vfs.keys.in.h:7
 msgid "AVI video"
 msgstr "AVI videosu"
 
 # data/mime/gnome-vfs.keys.in.h:6
-#: gnome-vfs.keys.in.h:6
+#: gnome-vfs.keys.in.h:8
 msgid "AbiWord document"
 msgstr "AbiWord belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:175
+#: gnome-vfs.keys.in.h:9
+#, fuzzy
+msgid "Active Server page"
+msgstr "etkin sunucu sayfası"
+
+# data/mime/gnome-vfs.keys.in.h:176
+#: gnome-vfs.keys.in.h:10
+#, fuzzy
+msgid "Address card"
+msgstr "adres kartı"
+
 # data/mime/gnome-vfs.keys.in.h:7
-#: gnome-vfs.keys.in.h:7
+#: gnome-vfs.keys.in.h:11
 msgid "Adobe FrameMaker font"
 msgstr "Adobe FrameMaker yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:8
-#: gnome-vfs.keys.in.h:8
+#: gnome-vfs.keys.in.h:12
 msgid "Adobe font metrics"
 msgstr "Adobe yazıtipi ölçüleri"
 
 # data/mime/gnome-vfs.keys.in.h:9
-#: gnome-vfs.keys.in.h:9
+#: gnome-vfs.keys.in.h:13
 msgid "Andrew Toolkit inset"
-msgstr ""
+msgstr "Andrew Araçtakımı Elementi"
+
+# data/mime/gnome-vfs.keys.in.h:62
+#: gnome-vfs.keys.in.h:14
+#, fuzzy
+msgid "Application launcher"
+msgstr "uygulama başlatıcı"
 
 # data/mime/gnome-vfs.keys.in.h:10
-#: gnome-vfs.keys.in.h:10
+#: gnome-vfs.keys.in.h:15
 msgid "ApplixWare Graphics image"
 msgstr "ApplixWare Graphics görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:11
-#: gnome-vfs.keys.in.h:11
+#: gnome-vfs.keys.in.h:16
 msgid "Applixware Words document"
 msgstr "Applixware Words belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:12
-#: gnome-vfs.keys.in.h:12
+#: gnome-vfs.keys.in.h:17
+#, fuzzy
+msgid "Applixware presentation"
+msgstr "Applixware hesap tablosu"
+
+# data/mime/gnome-vfs.keys.in.h:12
+#: gnome-vfs.keys.in.h:18
 msgid "Applixware spreadsheet"
 msgstr "Applixware hesap tablosu"
 
+# data/mime/gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:19
+#, fuzzy
+msgid "Ar archive"
+msgstr "ar arşivi"
+
+# data/mime/gnome-vfs.keys.in.h:134
+#: gnome-vfs.keys.in.h:20
+#, fuzzy
+msgid "Assembly source code"
+msgstr "Scheme kaynak kodu"
+
 # data/mime/gnome-vfs.keys.in.h:3
-#: gnome-vfs.keys.in.h:13
+#: gnome-vfs.keys.in.h:21
 msgid "Audio"
 msgstr "Ses"
 
+# data/mime/gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:22
+#, fuzzy
+msgid "Authors list"
+msgstr "yazar listesi"
+
 # data/mime/gnome-vfs.keys.in.h:13
-#: gnome-vfs.keys.in.h:14
+#: gnome-vfs.keys.in.h:23
 msgid "AutoCAD image"
 msgstr "AutoCAD görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:14
-#: gnome-vfs.keys.in.h:15
+#: gnome-vfs.keys.in.h:24
 msgid "BCPIO document"
 msgstr "BCPIO belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:15
-#: gnome-vfs.keys.in.h:16
+#: gnome-vfs.keys.in.h:25
 msgid "BDF font"
 msgstr "BDF yazıtipi"
 
+# data/mime/gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:26
+#, fuzzy
+msgid "Backup file"
+msgstr "yedek dosya"
+
+# data/mime/gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:27
+#, fuzzy
+msgid "Basic audio"
+msgstr "temel ses"
+
+# data/mime/gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:28
+#, fuzzy
+msgid "Bibliography record"
+msgstr "kaynakça kaydı"
+
+# data/mime/gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:29
+#, fuzzy
+msgid "Binary program"
+msgstr "ikili (makine dili) yazılım"
+
+# data/mime/gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:30
+#, fuzzy
+msgid "BitTorrent seed file"
+msgstr "gzip-sıkıştırmalı dosya"
+
+# data/mime/gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:31
+#, fuzzy
+msgid "Blender file"
+msgstr "takvim dosyası"
+
+# data/mime/gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:32
+#, fuzzy
+msgid "Block device"
+msgstr "blok aygıtı"
+
+# data/mime/gnome-vfs.keys.in.h:185
+#: gnome-vfs.keys.in.h:33
+#, fuzzy
+msgid "Bzip2 compressed file"
+msgstr "bzip-sıkıştırmalı dosya"
+
 # data/mime/gnome-vfs.keys.in.h:16
-#: gnome-vfs.keys.in.h:17
+#: gnome-vfs.keys.in.h:34
 msgid "C shell script"
 msgstr "C kabuk betiği"
 
 # data/mime/gnome-vfs.keys.in.h:17
-#: gnome-vfs.keys.in.h:18
+#: gnome-vfs.keys.in.h:35
 msgid "C source code"
 msgstr "C kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:17
-#: gnome-vfs.keys.in.h:19
+#: gnome-vfs.keys.in.h:36
 msgid "C source code header"
 msgstr "C kaynak kod başlığı"
 
 # data/mime/gnome-vfs.keys.in.h:18
-#: gnome-vfs.keys.in.h:20
+#: gnome-vfs.keys.in.h:37
 msgid "C++ source code"
 msgstr "C++ kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:19
-#: gnome-vfs.keys.in.h:21
+#: gnome-vfs.keys.in.h:38
 msgid "CGI program"
 msgstr "CGI yazılımı"
 
 # data/mime/gnome-vfs.keys.in.h:20
-#: gnome-vfs.keys.in.h:22
+#: gnome-vfs.keys.in.h:39
 msgid "CGM image"
 msgstr "CGM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:21
-#: gnome-vfs.keys.in.h:23
+#: gnome-vfs.keys.in.h:40
 msgid "CMU raster image"
 msgstr "CMU bit eşlem görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:22
-#: gnome-vfs.keys.in.h:24
+#: gnome-vfs.keys.in.h:41
 msgid "CPIO archive"
 msgstr "CPIO arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:23
-#: gnome-vfs.keys.in.h:25
-msgid "CPIO archive (gzip-compressed)"
+#: gnome-vfs.keys.in.h:42
+#, fuzzy
+msgid "CPIO archive (Gzip-compressed)"
 msgstr "CPIO arşivi (gzip-sıkıştırmalı)"
 
-#: gnome-vfs.keys.in.h:26
-msgid "Commodore 64 Audio"
+# data/mime/gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:43
+#, fuzzy
+msgid "Calendar file"
+msgstr "takvim dosyası"
+
+# data/mime/gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:44
+#, fuzzy
+msgid "Calendar or event document"
+msgstr "takvim ya da olay belgesi"
+
+# data/mime/gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:45
+#, fuzzy
+msgid "Character device"
+msgstr "karakter aygıtı"
+
+#: gnome-vfs.keys.in.h:46
+msgid "Cinelerra editing sheet"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:189
+#: gnome-vfs.keys.in.h:47
+#, fuzzy
+msgid "Comma-separated text document"
+msgstr "virgülle ayrılmış yazı belgesi"
+
+#: gnome-vfs.keys.in.h:48
+#, fuzzy
+msgid "Commodore 64 audio"
 msgstr "Commodore 64 Sesi"
 
+# data/mime/gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:49
+#, fuzzy
+msgid "Compound document"
+msgstr "birleşik belge"
+
+# data/mime/gnome-vfs.keys.in.h:191
+#: gnome-vfs.keys.in.h:50
+#, fuzzy
+msgid "Compress-compressed file"
+msgstr "compress-sıkıştırmalı dosya"
+
+# data/mime/gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:51
+#, fuzzy
+msgid "Compressed GIMP document"
+msgstr "sıkıştırılmış GIMP belgesi"
+
+#: gnome-vfs.keys.in.h:52
+#, fuzzy
+msgid "Corel Draw drawing"
+msgstr "StarDraw çizimi"
+
+#: gnome-vfs.keys.in.h:53
+msgid "Crystalline structure model"
+msgstr ""
+
 # data/mime/gnome-vfs.keys.in.h:24
-#: gnome-vfs.keys.in.h:27
+#: gnome-vfs.keys.in.h:54
 msgid "DCL script"
 msgstr "DCL betiği"
 
 # data/mime/gnome-vfs.keys.in.h:25
-#: gnome-vfs.keys.in.h:28
+#: gnome-vfs.keys.in.h:55
 msgid "DOS font"
 msgstr "DOS yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:26
-#: gnome-vfs.keys.in.h:29
+#: gnome-vfs.keys.in.h:56
 msgid "DOS/Windows program"
 msgstr "DOS/Windows yazılımı"
 
 # data/mime/gnome-vfs.keys.in.h:27
-#: gnome-vfs.keys.in.h:30
+#: gnome-vfs.keys.in.h:57
 msgid "DSSSL document"
 msgstr "DSSSL belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:5
+#: gnome-vfs.keys.in.h:58
+#, fuzzy
+msgid "DV video"
+msgstr "AVI videosu"
+
 # data/mime/gnome-vfs.keys.in.h:28
-#: gnome-vfs.keys.in.h:31
+#: gnome-vfs.keys.in.h:59
 msgid "DXF vector graphic"
 msgstr "DXF vektör çizimi"
 
 # data/mime/gnome-vfs.keys.in.h:29
-#: gnome-vfs.keys.in.h:32
+#: gnome-vfs.keys.in.h:60
 msgid "Debian package"
 msgstr "Debian paketi"
 
-#: gnome-vfs.keys.in.h:33
+#: gnome-vfs.keys.in.h:61
 msgid "Device Independant Bitmap"
 msgstr "Device Independant Bitmap (Aygıttan Bağımsız Bit Eşlem)"
 
 # data/mime/gnome-vfs.keys.in.h:30
-#: gnome-vfs.keys.in.h:34
+#: gnome-vfs.keys.in.h:62
 msgid "Dia diagram"
 msgstr "Dia çizgesi"
 
-#: gnome-vfs.keys.in.h:35
+#: gnome-vfs.keys.in.h:63
 msgid "Digital Imaging and Communications in Medicine image"
-msgstr ""
+msgstr "DICOM resim"
 
-#: gnome-vfs.keys.in.h:36
-msgid "Digital Moving Picture Exchange"
+#: gnome-vfs.keys.in.h:64
+#, fuzzy
+msgid "Digital Moving Picture Exchange image"
 msgstr "Digital Moving Picture Exchange (sayısal devingen görüntü alışverişi)"
 
+# data/mime/gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:65
+#, fuzzy
+msgid "Directory information file"
+msgstr "dizin bilgisi dosyası"
+
+# data/mime/gnome-vfs.keys.in.h:1
+#: gnome-vfs.keys.in.h:66
+#, fuzzy
+msgid "DjVu image"
+msgstr "3D Studio görüntüsü"
+
+# data/mime/gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:67
+#, fuzzy
+msgid "Document type definition"
+msgstr "belge tür tanımı"
+
 # data/mime/gnome-vfs.keys.in.h:96
-#: gnome-vfs.keys.in.h:37
+#: gnome-vfs.keys.in.h:68
 msgid "Documents"
 msgstr "Belge"
 
-#: gnome-vfs.keys.in.h:38
+#: gnome-vfs.keys.in.h:69
 msgid "Documents/Diagram"
 msgstr "Belge/Çizge"
 
-#: gnome-vfs.keys.in.h:39
+#: gnome-vfs.keys.in.h:70
 msgid "Documents/Extended Markup Language (XML)"
 msgstr "Belge/Genişletilmiş Biçimleme Dili (XML)"
 
-#: gnome-vfs.keys.in.h:40
+#: gnome-vfs.keys.in.h:71
 msgid "Documents/Numeric"
 msgstr "Belge/Sayısal"
 
-#: gnome-vfs.keys.in.h:41
+#: gnome-vfs.keys.in.h:72
 msgid "Documents/Plain Text"
 msgstr "Belge/Düz Metin"
 
 # data/mime/gnome-vfs.keys.in.h:64
-#: gnome-vfs.keys.in.h:42
+#: gnome-vfs.keys.in.h:73
 msgid "Documents/Presentation"
 msgstr "Belge/Sunum"
 
-#: gnome-vfs.keys.in.h:43
+#: gnome-vfs.keys.in.h:74
 msgid "Documents/Project Management"
 msgstr "Belge/Tasarı Yönetimi"
 
-#: gnome-vfs.keys.in.h:44
+#: gnome-vfs.keys.in.h:75
 msgid "Documents/Published Materials"
 msgstr "Belge/Yayımlanır Belgeler"
 
 # data/mime/gnome-vfs.keys.in.h:49
-#: gnome-vfs.keys.in.h:45
+#: gnome-vfs.keys.in.h:76
 msgid "Documents/Spreadsheet"
 msgstr "Belge/Hesap Tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:50
-#: gnome-vfs.keys.in.h:46
+#: gnome-vfs.keys.in.h:77
 msgid "Documents/TeX"
 msgstr "Belge/TeX"
 
-#: gnome-vfs.keys.in.h:47
+#: gnome-vfs.keys.in.h:78
 msgid "Documents/Text Markup"
 msgstr "Belge/Metin Biçimleme"
 
 # data/mime/gnome-vfs.keys.in.h:28
-#: gnome-vfs.keys.in.h:48
+#: gnome-vfs.keys.in.h:79
 msgid "Documents/Vector Graphics"
 msgstr "Belge/Vektör Çizimi"
 
-#: gnome-vfs.keys.in.h:49
+#: gnome-vfs.keys.in.h:80
 msgid "Documents/Word Processor"
 msgstr "Belge/Sözcük İşlemci"
 
-#: gnome-vfs.keys.in.h:50
+#: gnome-vfs.keys.in.h:81
 msgid "Documents/World Wide Web"
 msgstr "Belge/Dünyayı Saran Ağ (WWW)"
 
 # data/mime/gnome-vfs.keys.in.h:31
-#: gnome-vfs.keys.in.h:51
+#: gnome-vfs.keys.in.h:82
 msgid "Dolby Digital audio"
 msgstr "Dolby Digital sesi"
 
-#: gnome-vfs.keys.in.h:52
-msgid "Dreamcast rom"
+#: gnome-vfs.keys.in.h:83
+#, fuzzy
+msgid "Dreamcast ROM"
 msgstr "Dreamcast rom"
 
 # data/mime/gnome-vfs.keys.in.h:32
-#: gnome-vfs.keys.in.h:53
+#: gnome-vfs.keys.in.h:84
 msgid "Emacs Lisp source code"
 msgstr "Emacs Lisp kaynak kodu"
 
+# data/mime/gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:85
+#, fuzzy
+msgid "Email headers"
+msgstr "email başlıkları"
+
+# data/mime/gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:86
+#, fuzzy
+msgid "Email message/mailbox"
+msgstr "email iletisi/posta kutusu"
+
+# data/mime/gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:87
+#, fuzzy
+msgid "Encrypted message"
+msgstr "şifreli ileti"
+
 # data/mime/gnome-vfs.keys.in.h:33
-#: gnome-vfs.keys.in.h:54
+#: gnome-vfs.keys.in.h:88
 msgid "Enlightenment theme"
 msgstr "Enlightenment teması"
 
-# data/mime/gnome-vfs.keys.in.h:2
-#: gnome-vfs.keys.in.h:55
+# data/mime/gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:89
 #, fuzzy
+msgid "Enriched text document"
+msgstr "zengin yazı belgesi"
+
+#: gnome-vfs.keys.in.h:90
+msgid "Epiphany bookmarks file"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:2
+#: gnome-vfs.keys.in.h:91
 msgid "FLAC audio"
-msgstr "AIFC sesi"
+msgstr "FLAC sesi"
 
 # data/mime/gnome-vfs.keys.in.h:34
-#: gnome-vfs.keys.in.h:56
+#: gnome-vfs.keys.in.h:92
 msgid "FLC animation"
 msgstr "FLC animasyonu"
 
 # data/mime/gnome-vfs.keys.in.h:35
-#: gnome-vfs.keys.in.h:57
+#: gnome-vfs.keys.in.h:93
 msgid "FLI animation"
 msgstr "FLI animasyonu"
 
 # data/mime/gnome-vfs.keys.in.h:36
-#: gnome-vfs.keys.in.h:58
+#: gnome-vfs.keys.in.h:94
 msgid "FastTracker II audio"
 msgstr "FastTracker II sesi"
 
-#: gnome-vfs.keys.in.h:59
+#: gnome-vfs.keys.in.h:95
 msgid "FlashPix Image"
 msgstr "FlashPix Görüntüsü"
 
-#: gnome-vfs.keys.in.h:60
+#: gnome-vfs.keys.in.h:96
 msgid "Flexible Image Transport System"
 msgstr "Flexible Image Transport System (esnek görüntü aktarım dizgesi)"
 
+# data/mime/gnome-vfs.keys.in.h:199
+#: gnome-vfs.keys.in.h:97
+#, fuzzy
+msgid "Folder"
+msgstr "klasör"
+
 # data/mime/gnome-vfs.keys.in.h:37
-#: gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:98
 msgid "Fortran source code"
 msgstr "Fortran kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:38
-#: gnome-vfs.keys.in.h:62
+#: gnome-vfs.keys.in.h:99
 msgid "FrameMaker interchange document"
 msgstr "FrameMaker değiş tokuş belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:39
-#: gnome-vfs.keys.in.h:63
+#: gnome-vfs.keys.in.h:100
 msgid "G3 fax image"
 msgstr "G3 faks görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:40
-#: gnome-vfs.keys.in.h:64
+#: gnome-vfs.keys.in.h:101
 msgid "GIF image"
 msgstr "GIF görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:41
-#: gnome-vfs.keys.in.h:65
+#: gnome-vfs.keys.in.h:102
 msgid "GIMP document"
 msgstr "GIMP belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:42
-#: gnome-vfs.keys.in.h:66
+#: gnome-vfs.keys.in.h:103
 msgid "GMC link"
 msgstr "GMC bağlantısı"
 
+#: gnome-vfs.keys.in.h:104
+msgid "GNOME desktop theme"
+msgstr ""
+
 # data/mime/gnome-vfs.keys.in.h:44
-#: gnome-vfs.keys.in.h:67
+#: gnome-vfs.keys.in.h:105
 msgid "GNU Oleo Spreadsheet"
 msgstr "GNU Oleo Hesap tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:45
-#: gnome-vfs.keys.in.h:68
+#: gnome-vfs.keys.in.h:106
 msgid "GNU mail message"
 msgstr "GNU posta iletisi"
 
 # data/mime/gnome-vfs.keys.in.h:46
-#: gnome-vfs.keys.in.h:69
+#: gnome-vfs.keys.in.h:107
 msgid "GTK configuration"
 msgstr "GTK ayarları"
 
-#: gnome-vfs.keys.in.h:70
-msgid "Game Boy rom"
+#: gnome-vfs.keys.in.h:108
+#, fuzzy
+msgid "Game Boy ROM"
 msgstr "Game Boy rom"
 
 # libgnomevfs/gnome-vfs-result.c:41
-#: gnome-vfs.keys.in.h:71
-msgid "Genesis rom"
+#: gnome-vfs.keys.in.h:109
+#, fuzzy
+msgid "Genesis ROM"
 msgstr "Genesis rom"
 
 # data/mime/gnome-vfs.keys.in.h:47
-#: gnome-vfs.keys.in.h:72
+#: gnome-vfs.keys.in.h:110
 msgid "Glade project"
 msgstr "Glade tasarısı"
 
 # data/mime/gnome-vfs.keys.in.h:48
-#: gnome-vfs.keys.in.h:73
-msgid "GnuCash Workbook"
+#: gnome-vfs.keys.in.h:111
+#, fuzzy
+msgid "GnuCash workbook"
 msgstr "GnuCash Çalışma defteri"
 
 # data/mime/gnome-vfs.keys.in.h:49
-#: gnome-vfs.keys.in.h:74
+#: gnome-vfs.keys.in.h:112
 msgid "Gnumeric spreadsheet"
 msgstr "Gnumeric hesap tablosu"
 
-#: gnome-vfs.keys.in.h:75
+# data/mime/gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:113
+#, fuzzy
+msgid "Gtar archive"
+msgstr "tar arşivi"
+
+#: gnome-vfs.keys.in.h:114
 msgid "Gtktalog Catalogue"
-msgstr ""
+msgstr "Gtktalog Kataloğu"
+
+# data/mime/gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:115
+#, fuzzy
+msgid "Gzip-compressed file"
+msgstr "gzip-sıkıştırmalı dosya"
 
 # data/mime/gnome-vfs.keys.in.h:50
-#: gnome-vfs.keys.in.h:76
+#: gnome-vfs.keys.in.h:116
 msgid "HDF document"
 msgstr "HDF belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:51
-#: gnome-vfs.keys.in.h:77
+#: gnome-vfs.keys.in.h:117
 msgid "HTML page"
 msgstr "HTML sayfası"
 
 # data/mime/gnome-vfs.keys.in.h:17
-#: gnome-vfs.keys.in.h:78
+#: gnome-vfs.keys.in.h:118
 msgid "Haskell source code"
 msgstr "Haskell kaynak kodu"
 
+# data/mime/gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:119
+#, fuzzy
+msgid "Help page"
+msgstr "yardım sayfası"
+
 # data/mime/gnome-vfs.keys.in.h:52
-#: gnome-vfs.keys.in.h:79
+#: gnome-vfs.keys.in.h:120
 msgid "IDL document"
 msgstr "IDL belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:53
-#: gnome-vfs.keys.in.h:80
+#: gnome-vfs.keys.in.h:121
 msgid "IEF image"
 msgstr "IEF görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:54
-#: gnome-vfs.keys.in.h:81
+#: gnome-vfs.keys.in.h:122
 msgid "IFF image"
 msgstr "IFF görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:55
-#: gnome-vfs.keys.in.h:82
+#: gnome-vfs.keys.in.h:123
 msgid "ILBM image"
 msgstr "ILBM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:56
-#: gnome-vfs.keys.in.h:83
+#: gnome-vfs.keys.in.h:124
 msgid "ISI video"
 msgstr "ISI videosu"
 
 # data/mime/gnome-vfs.keys.in.h:40
-#: gnome-vfs.keys.in.h:84
-#, fuzzy
+#: gnome-vfs.keys.in.h:125
 msgid "ISO image"
-msgstr "GIF görüntüsü"
+msgstr "ISO imgesi"
 
 # data/mime/gnome-vfs.keys.in.h:54
-#: gnome-vfs.keys.in.h:85
+#: gnome-vfs.keys.in.h:126
 msgid "Images"
 msgstr "Görüntüler"
 
 # data/mime/gnome-vfs.keys.in.h:57
-#: gnome-vfs.keys.in.h:86
+#: gnome-vfs.keys.in.h:127
 msgid "Impulse Tracker audio"
 msgstr "Impulse Tracker sesi"
 
 # data/mime/gnome-vfs.keys.in.h:35
-#: gnome-vfs.keys.in.h:87
+#: gnome-vfs.keys.in.h:128
 msgid "Information"
 msgstr "Bilgi"
 
-#: gnome-vfs.keys.in.h:88
+#: gnome-vfs.keys.in.h:129
 msgid "Information/Calendar"
 msgstr "Bilgi/Takvim"
 
-#: gnome-vfs.keys.in.h:89
+#: gnome-vfs.keys.in.h:130
 msgid "Information/Financial"
 msgstr "Bilgi/İktisâdî"
 
+#: gnome-vfs.keys.in.h:131
+msgid "Installed GNOME desktop theme"
+msgstr ""
+
 # data/mime/gnome-vfs.keys.in.h:58
-#: gnome-vfs.keys.in.h:90
+#: gnome-vfs.keys.in.h:132
 msgid "JBuilder Project"
 msgstr "JBuilder Tasarısı"
 
 # data/mime/gnome-vfs.keys.in.h:59
-#: gnome-vfs.keys.in.h:91
+#: gnome-vfs.keys.in.h:133
 msgid "JPEG image"
 msgstr "JPEG görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:60
-#: gnome-vfs.keys.in.h:92
+#: gnome-vfs.keys.in.h:134
 msgid "Java byte code"
 msgstr "Java derlenmiş kodu"
 
+# data/mime/gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:135
+#, fuzzy
+msgid "Java code archive"
+msgstr "ar arşivi"
+
 # data/mime/gnome-vfs.keys.in.h:61
-#: gnome-vfs.keys.in.h:93
+#: gnome-vfs.keys.in.h:136
 msgid "Java source code"
 msgstr "Java kaynak kodu"
 
+# data/mime/gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:137
+#, fuzzy
+msgid "JavaScript source code"
+msgstr "Java kaynak kodu"
+
 # data/mime/gnome-vfs.keys.in.h:62
-#: gnome-vfs.keys.in.h:94
+#: gnome-vfs.keys.in.h:138
 msgid "KDE application details"
 msgstr "KDE uygulama ayrıntıları"
 
 # data/mime/gnome-vfs.keys.in.h:63
-#: gnome-vfs.keys.in.h:95
+#: gnome-vfs.keys.in.h:139
 msgid "KIllustrator document"
 msgstr "KIllustrator belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:64
-#: gnome-vfs.keys.in.h:96
+#: gnome-vfs.keys.in.h:140
 msgid "KPresenter presentation"
 msgstr "KPresenter sunumu"
 
 # data/mime/gnome-vfs.keys.in.h:65
-#: gnome-vfs.keys.in.h:97
+#: gnome-vfs.keys.in.h:141
 msgid "KSpread spreadsheet"
 msgstr "KSpread hesap tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:66
-#: gnome-vfs.keys.in.h:98
+#: gnome-vfs.keys.in.h:142
 msgid "KWord document"
 msgstr "KWord belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:67
-#: gnome-vfs.keys.in.h:99
+#: gnome-vfs.keys.in.h:143
 msgid "Korn shell script"
 msgstr "Korn kabuk betiği"
 
 # data/mime/gnome-vfs.keys.in.h:68
-#: gnome-vfs.keys.in.h:100
+#: gnome-vfs.keys.in.h:144
 msgid "LHA archive"
 msgstr "LHA arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:69
-#: gnome-vfs.keys.in.h:101
+#: gnome-vfs.keys.in.h:145
 msgid "LHARC archive"
 msgstr "LHARC arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:70
-#: gnome-vfs.keys.in.h:102
+#: gnome-vfs.keys.in.h:146
 msgid "LIBGRX font"
 msgstr "LIBGRX yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:71
-#: gnome-vfs.keys.in.h:103
+#: gnome-vfs.keys.in.h:147
 msgid "LightWave object"
 msgstr "LightWave nesnesi"
 
 # data/mime/gnome-vfs.keys.in.h:72
-#: gnome-vfs.keys.in.h:104
+#: gnome-vfs.keys.in.h:148
 msgid "LightWave scene"
 msgstr "LightWave ortamı"
 
 # data/mime/gnome-vfs.keys.in.h:73
-#: gnome-vfs.keys.in.h:105
+#: gnome-vfs.keys.in.h:149
 msgid "Linux PSF console font"
 msgstr "Linux PSF konsol yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:37
-#: gnome-vfs.keys.in.h:106
+#: gnome-vfs.keys.in.h:150
 msgid "Literate haskell source code"
 msgstr "Literate Haskell kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:74
-#: gnome-vfs.keys.in.h:107
+#: gnome-vfs.keys.in.h:151
 msgid "Lotus 1-2-3 spreadsheet"
 msgstr "Lotus 1-2-3 hesap tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:52
-#: gnome-vfs.keys.in.h:108
-msgid "LyX Document"
+#: gnome-vfs.keys.in.h:152
+#, fuzzy
+msgid "LyX document"
 msgstr "LyX belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:76
-#: gnome-vfs.keys.in.h:109
+#: gnome-vfs.keys.in.h:153
 msgid "MIDI audio"
 msgstr "MIDI sesi"
 
 # data/mime/gnome-vfs.keys.in.h:77
-#: gnome-vfs.keys.in.h:110
+#: gnome-vfs.keys.in.h:154
 msgid "MOD audio"
 msgstr "MOD sesi"
 
 # data/mime/gnome-vfs.keys.in.h:78
-#: gnome-vfs.keys.in.h:111
+#: gnome-vfs.keys.in.h:155
 msgid "MP3 audio"
 msgstr "MP3 sesi"
 
 # data/mime/gnome-vfs.keys.in.h:79
-#: gnome-vfs.keys.in.h:112
+#: gnome-vfs.keys.in.h:156
 msgid "MP3 audio playlist"
 msgstr "MP3 sesi çalma listesi"
 
-# data/mime/gnome-vfs.keys.in.h:78
-#: gnome-vfs.keys.in.h:113
-msgid "MPEG audio"
-msgstr "MPEG sesi"
-
 # data/mime/gnome-vfs.keys.in.h:80
-#: gnome-vfs.keys.in.h:114
+#: gnome-vfs.keys.in.h:157
 msgid "MPEG video"
 msgstr "MPEG videosu"
 
+# data/mime/gnome-vfs.keys.in.h:78
+#: gnome-vfs.keys.in.h:158
+#, fuzzy
+msgid "MPEG-4 audio"
+msgstr "MPEG sesi"
+
 # data/mime/gnome-vfs.keys.in.h:81
-#: gnome-vfs.keys.in.h:115
+#: gnome-vfs.keys.in.h:159
+#, fuzzy
+msgid "MS ASF audio"
+msgstr "MS ASF videosu"
+
+# data/mime/gnome-vfs.keys.in.h:81
+#: gnome-vfs.keys.in.h:160
 msgid "MS ASF video"
 msgstr "MS ASF videosu"
 
 # data/mime/gnome-vfs.keys.in.h:82
-#: gnome-vfs.keys.in.h:116
+#: gnome-vfs.keys.in.h:161
 msgid "MS video"
 msgstr "MS videosu"
 
-#: gnome-vfs.keys.in.h:117
-msgid "MSX rom"
-msgstr "MSX rom"
+#: gnome-vfs.keys.in.h:162
+msgid "MSX ROM"
+msgstr ""
 
 # data/mime/gnome-vfs.keys.in.h:186
-#: gnome-vfs.keys.in.h:118
+#: gnome-vfs.keys.in.h:163
 msgid "MacBinary file"
 msgstr "MacBinary dosyası"
 
 # data/mime/gnome-vfs.keys.in.h:83
-#: gnome-vfs.keys.in.h:119
+#: gnome-vfs.keys.in.h:164
 msgid "Macintosh AppleDouble-encoded file"
 msgstr "Macintosh AppleDouble-şifreli dosya"
 
 # data/mime/gnome-vfs.keys.in.h:84
-#: gnome-vfs.keys.in.h:120
+#: gnome-vfs.keys.in.h:165
 msgid "Macintosh BinHex-encoded file"
 msgstr "Macintosh BinHex-şifreli dosya"
 
 # data/mime/gnome-vfs.keys.in.h:85
-#: gnome-vfs.keys.in.h:121
+#: gnome-vfs.keys.in.h:166
 msgid "Macintosh StuffIt archive"
 msgstr "Macintosh StuffIt arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:86
-#: gnome-vfs.keys.in.h:122
+#: gnome-vfs.keys.in.h:167
 msgid "Macromedia Flash file"
 msgstr "Macromedia Flash dosyası"
 
-#: gnome-vfs.keys.in.h:123
+# data/mime/gnome-vfs.keys.in.h:64
+#: gnome-vfs.keys.in.h:168
+#, fuzzy
+msgid "MagicPoint presentation"
+msgstr "KPresenter sunumu"
+
+#: gnome-vfs.keys.in.h:169
 msgid "Magick image format"
 msgstr "Magick görüntü biçemi"
 
+# data/mime/gnome-vfs.keys.in.h:203
+#: gnome-vfs.keys.in.h:170
+#, fuzzy
+msgid "Mail delivery report"
+msgstr "posta iletim sonuçları"
+
+# data/mime/gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:171
+#, fuzzy
+msgid "Mail disposition report"
+msgstr "posta dağıtım raporu"
+
+# data/mime/gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:172
+#, fuzzy
+msgid "Mail system report"
+msgstr "posta sistem raporu"
+
+# data/mime/gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:173
+#, fuzzy
+msgid "Makefile"
+msgstr "makefile"
+
+# data/mime/gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:174
+#, fuzzy
+msgid "Manual page"
+msgstr "kılavuz sayfası"
+
+# data/mime/gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:175
+#, fuzzy
+msgid "Manual page (compressed)"
+msgstr "kılavuz dosyası (sıkıştırılmış)"
+
+#: gnome-vfs.keys.in.h:176
+#, fuzzy
+msgid "Master System or Game Gear ROM"
+msgstr "SMS ya da Game Gear rom"
+
 # data/mime/gnome-vfs.keys.in.h:87
-#: gnome-vfs.keys.in.h:124
+#: gnome-vfs.keys.in.h:177
 msgid "MathML document"
 msgstr "MathML belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:178
+#, fuzzy
+msgid "Memory dump"
+msgstr "bellek dökümü"
+
 # data/mime/gnome-vfs.keys.in.h:101
-#: gnome-vfs.keys.in.h:125
+#: gnome-vfs.keys.in.h:179
 msgid "Message"
 msgstr "İleti"
 
+# data/mime/gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:180
+#, fuzzy
+msgid "Message digest"
+msgstr "toplu ileti"
+
+# data/mime/gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:181
+#, fuzzy
+msgid "Message in several formats"
+msgstr "birçok biçimde ileti"
+
 # data/mime/gnome-vfs.keys.in.h:88
-#: gnome-vfs.keys.in.h:126
+#: gnome-vfs.keys.in.h:182
 msgid "Microsoft Excel spreadsheet"
 msgstr "Microsoft Excel hesap tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:89
-#: gnome-vfs.keys.in.h:127
+#: gnome-vfs.keys.in.h:183
 msgid "Microsoft PowerPoint document"
 msgstr "Microsoft PowerPoint belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:91
-#: gnome-vfs.keys.in.h:128
+#: gnome-vfs.keys.in.h:184
+#, fuzzy
+msgid "Microsoft WMV playlist"
+msgstr "Microsoft WMV videosu"
+
+# data/mime/gnome-vfs.keys.in.h:91
+#: gnome-vfs.keys.in.h:185
 msgid "Microsoft WMV video"
 msgstr "Microsoft WMV videosu"
 
 # data/mime/gnome-vfs.keys.in.h:90
-#: gnome-vfs.keys.in.h:129
+#: gnome-vfs.keys.in.h:186
 msgid "Microsoft Word document"
 msgstr "Microsoft Word belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:91
-#: gnome-vfs.keys.in.h:130
+#: gnome-vfs.keys.in.h:187
 msgid "Microsoft video"
 msgstr "Microsoft video"
 
-#: gnome-vfs.keys.in.h:131
-msgid "NES rom"
-msgstr "NES rom"
+# data/mime/gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:188
+#, fuzzy
+msgid "Monkey audio"
+msgstr "ogg sesi"
+
+#: gnome-vfs.keys.in.h:189
+msgid "Mozilla bookmarks file"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:190
+#, fuzzy
+msgid "Multi-part message"
+msgstr "çok bölümlü ileti"
+
+#: gnome-vfs.keys.in.h:191
+msgid "NES ROM"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:192
+#, fuzzy
+msgid "Named pipe"
+msgstr "adlandırılmış boru"
 
 # data/mime/gnome-vfs.keys.in.h:92
-#: gnome-vfs.keys.in.h:132
+#: gnome-vfs.keys.in.h:193
 msgid "Nautilus link"
 msgstr "Nautilus bağlantısı"
 
-#: gnome-vfs.keys.in.h:133
-msgid "Nintendo64 rom"
+#: gnome-vfs.keys.in.h:194
+msgid "Netscape bookmarks file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:195
+#, fuzzy
+msgid "Nintendo64 ROM"
 msgstr "Nintendo64 rom"
 
+# data/mime/gnome-vfs.keys.in.h:91
+#: gnome-vfs.keys.in.h:196
+#, fuzzy
+msgid "Nullsoft video"
+msgstr "Microsoft video"
+
 # data/mime/gnome-vfs.keys.in.h:93
-#: gnome-vfs.keys.in.h:134
+#: gnome-vfs.keys.in.h:197
 msgid "ODA document"
 msgstr "ODA belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:198
+#, fuzzy
+msgid "Object code"
+msgstr "nesne kodu"
+
+# data/mime/gnome-vfs.keys.in.h:17
+#: gnome-vfs.keys.in.h:199
+#, fuzzy
+msgid "Objective C source code"
+msgstr "C kaynak kodu"
+
+# data/mime/gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:200
+#, fuzzy
+msgid "Ogg audio"
+msgstr "ogg sesi"
+
 # data/mime/gnome-vfs.keys.in.h:144
-#: gnome-vfs.keys.in.h:135
+#: gnome-vfs.keys.in.h:201
 msgid "OpenOffice.org Impress presentation"
 msgstr "OpenOffice.org Impress sunumu"
 
 # data/mime/gnome-vfs.keys.in.h:144
-#: gnome-vfs.keys.in.h:136
+#: gnome-vfs.keys.in.h:202
 msgid "OpenOffice.org Impress presentation template"
 msgstr "OpenOffice.org Impress sunum şablonu"
 
 # data/mime/gnome-vfs.keys.in.h:198
-#: gnome-vfs.keys.in.h:137
+#: gnome-vfs.keys.in.h:203
 msgid "OpenOffice.org Math document"
 msgstr "OpenOffice.org Math belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:143
-#: gnome-vfs.keys.in.h:138
+#: gnome-vfs.keys.in.h:204
 msgid "OpenOffice.org Writer document"
 msgstr "OpenOffice.org Writer belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:143
-#: gnome-vfs.keys.in.h:139
+#: gnome-vfs.keys.in.h:205
 msgid "OpenOffice.org Writer global document"
 msgstr "OpenOffice.org Writer Global belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:143
-#: gnome-vfs.keys.in.h:140
+#: gnome-vfs.keys.in.h:206
 msgid "OpenOffice.org Writer template"
 msgstr "OpenOffice.org Writer şablonu"
 
 # data/mime/gnome-vfs.keys.in.h:144
-#: gnome-vfs.keys.in.h:141
+#: gnome-vfs.keys.in.h:207
 msgid "OpenOffice.org drawing"
 msgstr "OpenOffice.org çizimi"
 
 # data/mime/gnome-vfs.keys.in.h:143
-#: gnome-vfs.keys.in.h:142
+#: gnome-vfs.keys.in.h:208
 msgid "OpenOffice.org drawing template"
 msgstr "OpenOffice.org çizim şablonu"
 
 # data/mime/gnome-vfs.keys.in.h:145
-#: gnome-vfs.keys.in.h:143
+#: gnome-vfs.keys.in.h:209
 msgid "OpenOffice.org spreadsheet"
 msgstr "OpenOffice.org hesap tablosu"
 
 # data/mime/gnome-vfs.keys.in.h:145
-#: gnome-vfs.keys.in.h:144
+#: gnome-vfs.keys.in.h:210
 msgid "OpenOffice.org spreadsheet template"
 msgstr "OpenOffice.org hesap tablosu şablonu"
 
 # data/mime/gnome-vfs.keys.in.h:157
-#: gnome-vfs.keys.in.h:145
-#, fuzzy
+#: gnome-vfs.keys.in.h:211
 msgid "OpenType font"
-msgstr "TrueType yazıtipi"
+msgstr "TrueType yazıtipi aç"
 
 # data/mime/gnome-vfs.keys.in.h:94
-#: gnome-vfs.keys.in.h:146
+#: gnome-vfs.keys.in.h:212
 msgid "PBM image"
 msgstr "PBM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:21
-#: gnome-vfs.keys.in.h:147
+#: gnome-vfs.keys.in.h:213
 msgid "PC Paintbrush image"
 msgstr "PC Paintbrush görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:95
-#: gnome-vfs.keys.in.h:148
+#: gnome-vfs.keys.in.h:214
 msgid "PCF font"
 msgstr "PCF yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:96
-#: gnome-vfs.keys.in.h:149
+#: gnome-vfs.keys.in.h:215
 msgid "PDF document"
 msgstr "PDF belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:97
-#: gnome-vfs.keys.in.h:150
+#: gnome-vfs.keys.in.h:216
 msgid "PEF program"
 msgstr "PEF yazılımı"
 
 # data/mime/gnome-vfs.keys.in.h:98
-#: gnome-vfs.keys.in.h:151
+#: gnome-vfs.keys.in.h:217
 msgid "PGM image"
 msgstr "PGM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:99
-#: gnome-vfs.keys.in.h:152
+#: gnome-vfs.keys.in.h:218
 msgid "PGN chess game"
 msgstr "PGN satranç oyunu"
 
 # data/mime/gnome-vfs.keys.in.h:100
-#: gnome-vfs.keys.in.h:153
+#: gnome-vfs.keys.in.h:219
 msgid "PGP keys"
 msgstr "PGP anahtarları"
 
 # data/mime/gnome-vfs.keys.in.h:101
-#: gnome-vfs.keys.in.h:154
+#: gnome-vfs.keys.in.h:220
 msgid "PGP message"
 msgstr "PGP iletisi"
 
 # data/mime/gnome-vfs.keys.in.h:102
-#: gnome-vfs.keys.in.h:155
+#: gnome-vfs.keys.in.h:221
 msgid "PGP signature"
 msgstr "PGP imzası"
 
 # data/mime/gnome-vfs.keys.in.h:103
-#: gnome-vfs.keys.in.h:156
+#: gnome-vfs.keys.in.h:222
 msgid "PGP-encrypted file"
 msgstr "PGP-şifreli dosya"
 
 # data/mime/gnome-vfs.keys.in.h:104
-#: gnome-vfs.keys.in.h:157
+#: gnome-vfs.keys.in.h:223
 msgid "PHP script"
 msgstr "PHP betiği"
 
 # data/mime/gnome-vfs.keys.in.h:173
-#: gnome-vfs.keys.in.h:158
+#: gnome-vfs.keys.in.h:224
 msgid "PICT image"
 msgstr "PICT görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:106
-#: gnome-vfs.keys.in.h:159
+#: gnome-vfs.keys.in.h:225
 msgid "PNG image"
 msgstr "PNG görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:107
-#: gnome-vfs.keys.in.h:160
+#: gnome-vfs.keys.in.h:226
 msgid "PNM image"
 msgstr "PNM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:108
-#: gnome-vfs.keys.in.h:161
+#: gnome-vfs.keys.in.h:227
 msgid "PPM image"
 msgstr "PPM görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:122
-#: gnome-vfs.keys.in.h:162
+#: gnome-vfs.keys.in.h:228
 msgid "Packages"
 msgstr "Paketler"
 
 # data/mime/gnome-vfs.keys.in.h:109
-#: gnome-vfs.keys.in.h:163
+#: gnome-vfs.keys.in.h:229
 msgid "Palm OS database"
 msgstr "Palm OS veritabanı"
 
 # data/mime/gnome-vfs.keys.in.h:170
-#: gnome-vfs.keys.in.h:164
+#: gnome-vfs.keys.in.h:230
 msgid "Palm Pixmap image"
 msgstr "Avuçiçi Pixmap görüntüsü"
 
+# data/mime/gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:231
+#, fuzzy
+msgid "Partial email message"
+msgstr "email ileti bölümü"
+
+# data/mime/gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:232
+#, fuzzy
+msgid "Pascal source code"
+msgstr "Java kaynak kodu"
+
 # data/mime/gnome-vfs.keys.in.h:110
-#: gnome-vfs.keys.in.h:165
+#: gnome-vfs.keys.in.h:233
 msgid "Perl script"
 msgstr "Perl betiği"
 
 # data/mime/gnome-vfs.keys.in.h:13
-#: gnome-vfs.keys.in.h:166
+#: gnome-vfs.keys.in.h:234
 msgid "Photo CD image"
 msgstr "Photo CD görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:111
-#: gnome-vfs.keys.in.h:167
+#: gnome-vfs.keys.in.h:235
 msgid "Photoshop document"
 msgstr "Photoshop belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:236
+#, fuzzy
+msgid "Plain text document"
+msgstr "düz yazı belgesi"
+
 # data/mime/gnome-vfs.keys.in.h:79
-#: gnome-vfs.keys.in.h:168
+#: gnome-vfs.keys.in.h:237
 msgid "Playlist"
 msgstr "Çalma listesi"
 
 # data/mime/gnome-vfs.keys.in.h:112
-#: gnome-vfs.keys.in.h:169
+#: gnome-vfs.keys.in.h:238
 msgid "PostScript Type 1 font"
 msgstr "PostScript Type 1 yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:113
-#: gnome-vfs.keys.in.h:170
+#: gnome-vfs.keys.in.h:239
 msgid "PostScript document"
 msgstr "PostScript belgesi"
 
-#: gnome-vfs.keys.in.h:171
+# data/mime/gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:240
+#, fuzzy
+msgid "Profiler results"
+msgstr "başarım ölçümü"
+
+#: gnome-vfs.keys.in.h:241
 msgid "Project Plan"
 msgstr "Tasarı izlencesi (proje planı)"
 
 # data/mime/gnome-vfs.keys.in.h:114
-#: gnome-vfs.keys.in.h:172
+#: gnome-vfs.keys.in.h:242
+#, fuzzy
+msgid "Python byte code"
+msgstr "python bayt kodu"
+
+# data/mime/gnome-vfs.keys.in.h:114
+#: gnome-vfs.keys.in.h:243
 msgid "Python source code"
 msgstr "Python kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:115
-#: gnome-vfs.keys.in.h:173
+#: gnome-vfs.keys.in.h:244
 msgid "QuickTime movie"
 msgstr "QuickTime filmi"
 
 # data/mime/gnome-vfs.keys.in.h:116
-#: gnome-vfs.keys.in.h:174
+#: gnome-vfs.keys.in.h:245
 msgid "Quicken document"
 msgstr "Quicken belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:117
-#: gnome-vfs.keys.in.h:175
+#: gnome-vfs.keys.in.h:246
 msgid "Quicken for Windows document"
 msgstr "Windows için Quicken belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:118
-#: gnome-vfs.keys.in.h:176
+#: gnome-vfs.keys.in.h:247
 msgid "RAR archive"
 msgstr "RAR arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:119
-#: gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:248
 msgid "README document"
 msgstr "BENİOKU belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:120
-#: gnome-vfs.keys.in.h:178
+#: gnome-vfs.keys.in.h:249
 msgid "RGB image"
 msgstr "RGB görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:121
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:250
 msgid "RIFF audio"
 msgstr "RIFF sesi"
 
 # data/mime/gnome-vfs.keys.in.h:122
-#: gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:251
 msgid "RPM package"
 msgstr "RPM paketi"
 
-#: gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:252
 msgid "Raw Gray Sample"
 msgstr "Raw Gray Sample (Ham Boz Örnek)"
 
 # data/mime/gnome-vfs.keys.in.h:105
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:253
 msgid "RealAudio document"
 msgstr "RealAudio belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:123
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:254
 msgid "RealAudio/Video document"
 msgstr "RealAudio/Video belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:124
-#: gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:255
 msgid "RealVideo video"
 msgstr "RealVideo videosu"
 
+# data/mime/gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:256
+#, fuzzy
+msgid "Reference to remote file"
+msgstr "uzaktaki dosyaya başvuru"
+
+# data/mime/gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:257
+#, fuzzy
+msgid "Rejected patch file"
+msgstr "reddedilmiş yama dosyası"
+
+# data/mime/gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:258
+#, fuzzy
+msgid "Rich text document"
+msgstr "zengin yazı belgesi"
+
 # data/mime/gnome-vfs.keys.in.h:125
-#: gnome-vfs.keys.in.h:185
+#: gnome-vfs.keys.in.h:259
 msgid "S/MIME file"
 msgstr "S/MIME dosyası"
 
 # data/mime/gnome-vfs.keys.in.h:126
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:260
 msgid "S/MIME signature"
 msgstr "S/MIME imzası"
 
 # data/mime/gnome-vfs.keys.in.h:127
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:261
 msgid "SGI video"
 msgstr "SGI videosu"
 
 # data/mime/gnome-vfs.keys.in.h:128
-#: gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:262
 msgid "SGML document"
 msgstr "SGML belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:79
-#: gnome-vfs.keys.in.h:189
-msgid "SHOUTcast Playlist"
+#: gnome-vfs.keys.in.h:263
+#, fuzzy
+msgid "SHOUTcast playlist"
 msgstr "SHOUTcast çalma listesi"
 
 # data/mime/gnome-vfs.keys.in.h:129
-#: gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:264
 msgid "SMIL script"
 msgstr "SMIL betiği"
 
-#: gnome-vfs.keys.in.h:191
-msgid "SMS or Game Gear rom"
-msgstr "SMS ya da Game Gear rom"
-
 # data/mime/gnome-vfs.keys.in.h:130
-#: gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:265
 msgid "SQL code"
 msgstr "SQL kodu"
 
 # data/mime/gnome-vfs.keys.in.h:21
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:266
 msgid "SUN Rasterfile"
 msgstr "SUN raster (bit eşlem) görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:131
-#: gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:267
 msgid "SV4 CPIO archive"
 msgstr "SV4 CPIO arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:132
-#: gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:268
 msgid "SV4 CPIP archive (with CRC)"
 msgstr "SV4 CPIP arşivi (CRC'li)"
 
 # data/mime/gnome-vfs.keys.in.h:133
-#: gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:269
 msgid "SVG art"
 msgstr "SVG sanatı"
 
+#: gnome-vfs.keys.in.h:270
+msgid "Samba share"
+msgstr ""
+
 # data/mime/gnome-vfs.keys.in.h:134
-#: gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:271
 msgid "Scheme source code"
 msgstr "Scheme kaynak kodu"
 
 # data/mime/gnome-vfs.keys.in.h:135
-#: gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:272
 msgid "Scream Tracker 3 audio"
 msgstr "Scream Tracker 3 sesi"
 
 # data/mime/gnome-vfs.keys.in.h:136
-#: gnome-vfs.keys.in.h:199
+#: gnome-vfs.keys.in.h:273
 msgid "Scream Tracker audio"
 msgstr "Scream Tracker sesi"
 
 # data/mime/gnome-vfs.keys.in.h:137
-#: gnome-vfs.keys.in.h:200
+#: gnome-vfs.keys.in.h:274
 msgid "Scream Tracker instrument"
 msgstr "Scream Tracker çalgısı"
 
-#: gnome-vfs.keys.in.h:201
+# data/mime/gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:275
+#, fuzzy
+msgid "Search results"
+msgstr "arama sonuçları"
+
+#: gnome-vfs.keys.in.h:276
 msgid "Security"
 msgstr "Güvenlik"
 
 # data/mime/gnome-vfs.keys.in.h:138
-#: gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:277
 msgid "Setext document"
 msgstr "Setext document"
 
+#: gnome-vfs.keys.in.h:278
+msgid "Shared Printer"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:279
+#, fuzzy
+msgid "Shared library"
+msgstr "paylaşılmış kütüphane"
+
+# data/mime/gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:280
+#, fuzzy
+msgid "Shell archive"
+msgstr "kabuk arşivi"
+
+# data/mime/gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:281
+#, fuzzy
+msgid "Shell script"
+msgstr "kabuk betiği"
+
+# data/mime/gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:282
+#, fuzzy
+msgid "Signed message"
+msgstr "imzalı ileti"
+
 # data/mime/gnome-vfs.keys.in.h:10
-#: gnome-vfs.keys.in.h:203
-msgid "Silicon Graphics Image"
+#: gnome-vfs.keys.in.h:283
+#, fuzzy
+msgid "Silicon Graphics image"
 msgstr "Silicon Graphics görüntüsü"
 
-#: gnome-vfs.keys.in.h:204
+# data/mime/gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:284
+#, fuzzy
+msgid "Socket"
+msgstr "soket"
+
+#: gnome-vfs.keys.in.h:285
 msgid "Software Development"
 msgstr "Yazılım Geliştirme"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:286
 msgid "Software Development/ROM Images"
 msgstr "Yazılım Geliştirme/ROM Görüntüleri"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:287
 msgid "Software Development/Source Code"
 msgstr "Yazılım Geliştirme/Kaynak Kod"
 
+# data/mime/gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:288
+#, fuzzy
+msgid "Software author credits"
+msgstr "yazılım yazarı bilgileri"
+
+# data/mime/gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:289
+#, fuzzy
+msgid "Software installation instructions"
+msgstr "yazılım yükleme eğitimi"
+
+# data/mime/gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:290
+#, fuzzy
+msgid "Software license terms"
+msgstr "yazılım antlaşma koşulları"
+
+# data/mime/gnome-vfs.keys.in.h:231
+#: gnome-vfs.keys.in.h:291
+#, fuzzy
+msgid "Source code patch"
+msgstr "kaynak kod yaması"
+
 # data/mime/gnome-vfs.keys.in.h:139
-#: gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:292
 msgid "Speech document"
 msgstr "Speech document"
 
 # data/mime/gnome-vfs.keys.in.h:140
-#: gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:293
 msgid "Speedo font"
 msgstr "Speedo yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:141
-#: gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:294
 msgid "Spreadsheet Interchange document"
 msgstr "Hesap tablosu Değiş tokuş belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:142
-#: gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:295
 msgid "Stampede package"
 msgstr "Stampede paketi"
 
 # data/mime/gnome-vfs.keys.in.h:145
-#: gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:296
 msgid "StarCalc spreadsheet"
 msgstr "StarCalc hesap tablosu"
 
-#: gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:297
 msgid "StarChart chart"
 msgstr "StarChart çizgesi"
 
-#: gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:298
 msgid "StarDraw drawing"
 msgstr "StarDraw çizimi"
 
 # data/mime/gnome-vfs.keys.in.h:144
-#: gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:299
 msgid "StarImpress presentation"
 msgstr "StarImpress sunumu"
 
-#: gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:300
 msgid "StarMail file"
 msgstr "StarMail dosyası"
 
 # data/mime/gnome-vfs.keys.in.h:87
-#: gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:301
 msgid "StarMath document"
 msgstr "StarMath belgesi"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:302
 msgid "StarOffice extended metafile image"
 msgstr "StarOffice genişletilmiş metafile görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:143
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:303
 msgid "StarWriter document"
 msgstr "StarWriter belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:232
+#: gnome-vfs.keys.in.h:304
+#, fuzzy
+msgid "Style sheet"
+msgstr "biçim tanımları"
+
 # data/mime/gnome-vfs.keys.in.h:146
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:305
 msgid "Sun mu-law audio"
 msgstr "Sun mu-law sesi"
 
 # data/mime/gnome-vfs.keys.in.h:147
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:306
 msgid "SunOS News font"
 msgstr "SunOS News yazıtipi"
 
-#: gnome-vfs.keys.in.h:221
+# data/mime/gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:307
+#, fuzzy
+msgid "Symbolic link"
+msgstr "sembolik bağlantı"
+
+#: gnome-vfs.keys.in.h:308
 msgid "System"
 msgstr "System"
 
 # data/mime/gnome-vfs.keys.in.h:148
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:309
 msgid "TIFF image"
 msgstr "TIFF görüntüsü"
 
+# data/mime/gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:310
+#, fuzzy
+msgid "Tab-separated text document"
+msgstr "tab ile ayrılmış yazı belgesi"
+
+# data/mime/gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:311
+#, fuzzy
+msgid "Tar archive"
+msgstr "ar arşivi"
+
+# data/mime/gnome-vfs.keys.in.h:236
+#: gnome-vfs.keys.in.h:312
+#, fuzzy
+msgid "Tar archive (Bzip2-compressed)"
+msgstr "tar arşivi (bzip2-sıkıştırmalı)"
+
+# data/mime/gnome-vfs.keys.in.h:237
+#: gnome-vfs.keys.in.h:313
+#, fuzzy
+msgid "Tar archive (Gzip-compressed)"
+msgstr "tar arşivi (gzip-sıkıştırmalı)"
+
 # data/mime/gnome-vfs.keys.in.h:149
-#: gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:314
 msgid "TarGA image"
 msgstr "TarGA görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:150
-#: gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:315
 msgid "Tcl script"
 msgstr "Tcl betiği"
 
 # data/mime/gnome-vfs.keys.in.h:151
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:316
 msgid "TeX document"
 msgstr "TeX belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:152
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:317
 msgid "TeX dvi document"
 msgstr "TeX dvi belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:153
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:318
 msgid "TeX font"
 msgstr "TeX yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:154
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:319
 msgid "TeX font metrics"
 msgstr "TeX yazıtipi ölçüleri"
 
 # data/mime/gnome-vfs.keys.in.h:155
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:320
 msgid "TeXInfo document"
 msgstr "TeXInfo belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:321
+#, fuzzy
+msgid "Theme"
+msgstr "tema"
+
 # data/mime/gnome-vfs.keys.in.h:156
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:322
 msgid "ToutDoux document"
 msgstr "ToutDoux belgesi"
 
+# data/mime/gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:323
+#, fuzzy
+msgid "Troff document"
+msgstr "troff belgesi"
+
+# data/mime/gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:324
+#, fuzzy
+msgid "Troff me input document"
+msgstr "troff me giriş belgesi"
+
+# data/mime/gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:325
+#, fuzzy
+msgid "Troff mm input document"
+msgstr "troff mm giriş belgesi"
+
+# data/mime/gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:326
+#, fuzzy
+msgid "Troff ms input document"
+msgstr "troff ms giriş belgesi"
+
 # data/mime/gnome-vfs.keys.in.h:157
-#: gnome-vfs.keys.in.h:231
+#: gnome-vfs.keys.in.h:327
 msgid "TrueType font"
 msgstr "TrueType yazıtipi"
 
-#: gnome-vfs.keys.in.h:232
+#: gnome-vfs.keys.in.h:328
 msgid "Truevision Targa image"
 msgstr "Truevision Targa görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:158
-#: gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:329
 msgid "USENET news message"
 msgstr "USENET haber iletisi"
 
 # data/mime/gnome-vfs.keys.in.h:159
-#: gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:330
 msgid "Unidata netCDF document"
 msgstr "Unidata netCDF belgesi"
 
-#: gnome-vfs.keys.in.h:235
+# data/mime/gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:331
+#, fuzzy
+msgid "Unknown type"
+msgstr "bilinmeyen tür"
+
+#: gnome-vfs.keys.in.h:332
 msgid "User Interface"
 msgstr "Kullanıcı arabirimi"
 
-#: gnome-vfs.keys.in.h:236
+#: gnome-vfs.keys.in.h:333
 msgid "User Interface/Fonts"
 msgstr "Kullanıcı arabirimi/Yazıtipleri"
 
+# data/mime/gnome-vfs.keys.in.h:244
+#: gnome-vfs.keys.in.h:334
+#, fuzzy
+msgid "Ustar archive"
+msgstr "ustar arşivi"
+
 # data/mime/gnome-vfs.keys.in.h:160
-#: gnome-vfs.keys.in.h:237
+#: gnome-vfs.keys.in.h:335
 msgid "V font"
 msgstr "V yazıtipi"
 
 # data/mime/gnome-vfs.keys.in.h:161
-#: gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:336
 msgid "VOC audio"
 msgstr "VOC sesi"
 
 # data/mime/gnome-vfs.keys.in.h:162
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:337
 msgid "VRML document"
 msgstr "VRML belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:5
-#: gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:338
 msgid "Video"
 msgstr "Video"
 
 # data/mime/gnome-vfs.keys.in.h:163
-#: gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:339
 msgid "Vivo video"
 msgstr "Vivo videosu"
 
 # data/mime/gnome-vfs.keys.in.h:164
-#: gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:340
 msgid "WAIS source code"
 msgstr "WAIS kaynak kodu"
 
+# data/mime/gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:341
+#, fuzzy
+msgid "Wave audio"
+msgstr "dalgasal ses"
+
 # data/mime/gnome-vfs.keys.in.h:165
-#: gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:342
 msgid "Wavelet video"
 msgstr "Wavelet videosu"
 
+# data/mime/gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:343
+#, fuzzy
+msgid "Web folder"
+msgstr "web klasörü"
+
 # data/mime/gnome-vfs.keys.in.h:166
-#: gnome-vfs.keys.in.h:244
+#: gnome-vfs.keys.in.h:344
 msgid "Windows bitmap image"
 msgstr "Window bit eşlem görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:167
-#: gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:345
 msgid "Windows icon image"
 msgstr "Windows simge görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:168
-#: gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:346
 msgid "Windows metafile graphics"
 msgstr "Windows metafile görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:169
-#: gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:347
 msgid "WordPerfect document"
 msgstr "WordPerfect belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:170
-#: gnome-vfs.keys.in.h:248
+#: gnome-vfs.keys.in.h:348
 msgid "X bitmap image"
 msgstr "X bit eşlem görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:171
-#: gnome-vfs.keys.in.h:249
+#: gnome-vfs.keys.in.h:349
 msgid "X window image"
 msgstr "X pencere görüntüsü"
 
+#: gnome-vfs.keys.in.h:350
+msgid "XBEL bookmarks file"
+msgstr ""
+
 # data/mime/gnome-vfs.keys.in.h:172
-#: gnome-vfs.keys.in.h:250
+#: gnome-vfs.keys.in.h:351
 msgid "XML document"
 msgstr "XML belgesi"
 
 # data/mime/gnome-vfs.keys.in.h:173
-#: gnome-vfs.keys.in.h:251
+#: gnome-vfs.keys.in.h:352
 msgid "XPM image"
 msgstr "XPM  görüntüsü"
 
 # data/mime/gnome-vfs.keys.in.h:174
-#: gnome-vfs.keys.in.h:252
+#: gnome-vfs.keys.in.h:353
 msgid "Xbase database"
 msgstr "Xbase veritabanı"
 
+# data/mime/gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:354
+#, fuzzy
+msgid "Yacc grammar source code"
+msgstr "Java kaynak kodu"
+
 # data/mime/gnome-vfs.keys.in.h:16
-#: gnome-vfs.keys.in.h:253
+#: gnome-vfs.keys.in.h:355
 msgid "Z shell script"
 msgstr "Z kabuk betiği"
 
-# data/mime/gnome-vfs.keys.in.h:175
-#: gnome-vfs.keys.in.h:254
-msgid "active server page"
-msgstr "etkin sunucu sayfası"
-
-# data/mime/gnome-vfs.keys.in.h:176
-#: gnome-vfs.keys.in.h:255
-msgid "address card"
-msgstr "adres kartı"
-
-# data/mime/gnome-vfs.keys.in.h:62
-#: gnome-vfs.keys.in.h:256
-msgid "application launcher"
-msgstr "uygulama başlatıcı"
-
-# data/mime/gnome-vfs.keys.in.h:177
-#: gnome-vfs.keys.in.h:257
-msgid "ar archive"
-msgstr "ar arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:178
-#: gnome-vfs.keys.in.h:258
-msgid "arj archive"
-msgstr "arj arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:179
-#: gnome-vfs.keys.in.h:259
-msgid "authors list"
-msgstr "yazar listesi"
-
-# data/mime/gnome-vfs.keys.in.h:180
-#: gnome-vfs.keys.in.h:260
-msgid "backup file"
-msgstr "yedek dosya"
-
-# data/mime/gnome-vfs.keys.in.h:181
-#: gnome-vfs.keys.in.h:261
-msgid "basic audio"
-msgstr "temel ses"
-
-# data/mime/gnome-vfs.keys.in.h:182
-#: gnome-vfs.keys.in.h:262
-msgid "bibliography record"
-msgstr "kaynakça kaydı"
-
-# data/mime/gnome-vfs.keys.in.h:183
-#: gnome-vfs.keys.in.h:263
-msgid "binary program"
-msgstr "ikili (makine dili) yazılım"
-
-# data/mime/gnome-vfs.keys.in.h:184
-#: gnome-vfs.keys.in.h:264
-msgid "block device"
-msgstr "blok aygıtı"
-
-# data/mime/gnome-vfs.keys.in.h:185
-#: gnome-vfs.keys.in.h:265
-msgid "bzip-compressed file"
-msgstr "bzip-sıkıştırmalı dosya"
-
-# data/mime/gnome-vfs.keys.in.h:186
-#: gnome-vfs.keys.in.h:266
-msgid "calendar file"
-msgstr "takvim dosyası"
-
-# data/mime/gnome-vfs.keys.in.h:187
-#: gnome-vfs.keys.in.h:267
-msgid "calendar or event document"
-msgstr "takvim ya da olay belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:188
-#: gnome-vfs.keys.in.h:268
-msgid "character device"
-msgstr "karakter aygıtı"
-
-# data/mime/gnome-vfs.keys.in.h:189
-#: gnome-vfs.keys.in.h:269
-msgid "comma-separated text document"
-msgstr "virgülle ayrılmış yazı belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:190
-#: gnome-vfs.keys.in.h:270
-msgid "compound document"
-msgstr "birleşik belge"
-
-# data/mime/gnome-vfs.keys.in.h:191
-#: gnome-vfs.keys.in.h:271
-msgid "compress-compressed file"
-msgstr "compress-sıkıştırmalı dosya"
-
-# data/mime/gnome-vfs.keys.in.h:192
-#: gnome-vfs.keys.in.h:272
-msgid "compressed GIMP document"
-msgstr "sıkıştırılmış GIMP belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:193
-#: gnome-vfs.keys.in.h:273
-msgid "directory information file"
-msgstr "dizin bilgisi dosyası"
-
-# data/mime/gnome-vfs.keys.in.h:194
-#: gnome-vfs.keys.in.h:274
-msgid "document type definition"
-msgstr "belge tür tanımı"
-
-# data/mime/gnome-vfs.keys.in.h:195
-#: gnome-vfs.keys.in.h:275
-msgid "email headers"
-msgstr "email başlıkları"
-
-# data/mime/gnome-vfs.keys.in.h:196
-#: gnome-vfs.keys.in.h:276
-msgid "email message/mailbox"
-msgstr "email iletisi/posta kutusu"
-
-# data/mime/gnome-vfs.keys.in.h:197
-#: gnome-vfs.keys.in.h:277
-msgid "encrypted message"
-msgstr "şifreli ileti"
-
-# data/mime/gnome-vfs.keys.in.h:198
-#: gnome-vfs.keys.in.h:278
-msgid "enriched text document"
-msgstr "zengin yazı belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:199
-#: gnome-vfs.keys.in.h:279
-msgid "folder"
-msgstr "klasör"
-
-# data/mime/gnome-vfs.keys.in.h:200
-#: gnome-vfs.keys.in.h:280
-msgid "gtar archive"
-msgstr "gtar arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:201
-#: gnome-vfs.keys.in.h:281
-msgid "gzip-compressed file"
-msgstr "gzip-sıkıştırmalı dosya"
-
-# data/mime/gnome-vfs.keys.in.h:202
-#: gnome-vfs.keys.in.h:282
-msgid "help page"
-msgstr "yardım sayfası"
-
-# data/mime/gnome-vfs.keys.in.h:203
-#: gnome-vfs.keys.in.h:283
-msgid "mail delivery report"
-msgstr "posta iletim sonuçları"
-
-# data/mime/gnome-vfs.keys.in.h:204
-#: gnome-vfs.keys.in.h:284
-msgid "mail disposition report"
-msgstr "posta dağıtım raporu"
-
-# data/mime/gnome-vfs.keys.in.h:205
-#: gnome-vfs.keys.in.h:285
-msgid "mail system report"
-msgstr "posta sistem raporu"
-
-# data/mime/gnome-vfs.keys.in.h:206
-#: gnome-vfs.keys.in.h:286
-msgid "makefile"
-msgstr "makefile"
-
-# data/mime/gnome-vfs.keys.in.h:207
-#: gnome-vfs.keys.in.h:287
-msgid "manual page"
-msgstr "kılavuz sayfası"
-
-# data/mime/gnome-vfs.keys.in.h:208
-#: gnome-vfs.keys.in.h:288
-msgid "manual page (compressed)"
-msgstr "kılavuz dosyası (sıkıştırılmış)"
-
-# data/mime/gnome-vfs.keys.in.h:209
-#: gnome-vfs.keys.in.h:289
-msgid "memory dump"
-msgstr "bellek dökümü"
-
-# data/mime/gnome-vfs.keys.in.h:210
-#: gnome-vfs.keys.in.h:290
-msgid "message digest"
-msgstr "toplu ileti"
-
-# data/mime/gnome-vfs.keys.in.h:211
-#: gnome-vfs.keys.in.h:291
-msgid "message in several formats"
-msgstr "birçok biçimde ileti"
-
-# data/mime/gnome-vfs.keys.in.h:212
-#: gnome-vfs.keys.in.h:292
-msgid "multi-part message"
-msgstr "çok bölümlü ileti"
-
-# data/mime/gnome-vfs.keys.in.h:213
-#: gnome-vfs.keys.in.h:293
-msgid "named pipe"
-msgstr "adlandırılmış boru"
-
-# data/mime/gnome-vfs.keys.in.h:214
-#: gnome-vfs.keys.in.h:294
-msgid "object code"
-msgstr "nesne kodu"
-
-# data/mime/gnome-vfs.keys.in.h:215
-#: gnome-vfs.keys.in.h:295
-msgid "ogg audio"
-msgstr "ogg sesi"
-
-# data/mime/gnome-vfs.keys.in.h:216
-#: gnome-vfs.keys.in.h:296
-msgid "partial email message"
-msgstr "email ileti bölümü"
-
-# data/mime/gnome-vfs.keys.in.h:217
-#: gnome-vfs.keys.in.h:297
-msgid "plain text document"
-msgstr "düz yazı belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:218
-#: gnome-vfs.keys.in.h:298
-msgid "profiler results"
-msgstr "başarım ölçümü"
-
-# data/mime/gnome-vfs.keys.in.h:114
-#: gnome-vfs.keys.in.h:299
-msgid "python byte code"
-msgstr "python bayt kodu"
-
-# data/mime/gnome-vfs.keys.in.h:219
-#: gnome-vfs.keys.in.h:300
-msgid "reference to remote file"
-msgstr "uzaktaki dosyaya başvuru"
-
-# data/mime/gnome-vfs.keys.in.h:220
-#: gnome-vfs.keys.in.h:301
-msgid "rejected patch file"
-msgstr "reddedilmiş yama dosyası"
-
-# data/mime/gnome-vfs.keys.in.h:221
-#: gnome-vfs.keys.in.h:302
-msgid "rich text document"
-msgstr "zengin yazı belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:222
-#: gnome-vfs.keys.in.h:303
-msgid "search results"
-msgstr "arama sonuçları"
-
-# data/mime/gnome-vfs.keys.in.h:223
-#: gnome-vfs.keys.in.h:304
-msgid "shared library"
-msgstr "paylaşılmış kütüphane"
-
-# data/mime/gnome-vfs.keys.in.h:224
-#: gnome-vfs.keys.in.h:305
-msgid "shell archive"
-msgstr "kabuk arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:225
-#: gnome-vfs.keys.in.h:306
-msgid "shell script"
-msgstr "kabuk betiği"
-
-# data/mime/gnome-vfs.keys.in.h:226
-#: gnome-vfs.keys.in.h:307
-msgid "signed message"
-msgstr "imzalı ileti"
-
-# data/mime/gnome-vfs.keys.in.h:227
-#: gnome-vfs.keys.in.h:308
-msgid "socket"
-msgstr "soket"
-
-# data/mime/gnome-vfs.keys.in.h:228
-#: gnome-vfs.keys.in.h:309
-msgid "software author credits"
-msgstr "yazılım yazarı bilgileri"
-
-# data/mime/gnome-vfs.keys.in.h:229
-#: gnome-vfs.keys.in.h:310
-msgid "software installation instructions"
-msgstr "yazılım yükleme eğitimi"
-
-# data/mime/gnome-vfs.keys.in.h:230
-#: gnome-vfs.keys.in.h:311
-msgid "software license terms"
-msgstr "yazılım antlaşma koşulları"
-
-# data/mime/gnome-vfs.keys.in.h:231
-#: gnome-vfs.keys.in.h:312
-msgid "source code patch"
-msgstr "kaynak kod yaması"
-
-# data/mime/gnome-vfs.keys.in.h:232
-#: gnome-vfs.keys.in.h:313
-msgid "style sheet"
-msgstr "biçim tanımları"
-
-# data/mime/gnome-vfs.keys.in.h:233
-#: gnome-vfs.keys.in.h:314
-msgid "symbolic link"
-msgstr "sembolik bağlantı"
-
-# data/mime/gnome-vfs.keys.in.h:234
-#: gnome-vfs.keys.in.h:315
-msgid "tab-separated text document"
-msgstr "tab ile ayrılmış yazı belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:235
-#: gnome-vfs.keys.in.h:316
-msgid "tar archive"
-msgstr "tar arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:236
-#: gnome-vfs.keys.in.h:317
-msgid "tar archive (bzip2-compressed)"
-msgstr "tar arşivi (bzip2-sıkıştırmalı)"
-
-# data/mime/gnome-vfs.keys.in.h:237
-#: gnome-vfs.keys.in.h:318
-msgid "tar archive (gzip-compressed)"
-msgstr "tar arşivi (gzip-sıkıştırmalı)"
-
-# data/mime/gnome-vfs.keys.in.h:238
-#: gnome-vfs.keys.in.h:319
-msgid "theme"
-msgstr "tema"
-
-# data/mime/gnome-vfs.keys.in.h:239
-#: gnome-vfs.keys.in.h:320
-msgid "troff document"
-msgstr "troff belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:240
-#: gnome-vfs.keys.in.h:321
-msgid "troff me input document"
-msgstr "troff me giriş belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:241
-#: gnome-vfs.keys.in.h:322
-msgid "troff mm input document"
-msgstr "troff mm giriş belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:242
-#: gnome-vfs.keys.in.h:323
-msgid "troff ms input document"
-msgstr "troff ms giriş belgesi"
-
-# data/mime/gnome-vfs.keys.in.h:243
-#: gnome-vfs.keys.in.h:324
-msgid "unknown type"
-msgstr "bilinmeyen tür"
-
-# data/mime/gnome-vfs.keys.in.h:244
-#: gnome-vfs.keys.in.h:325
-msgid "ustar archive"
-msgstr "ustar arşivi"
-
-# data/mime/gnome-vfs.keys.in.h:245
-#: gnome-vfs.keys.in.h:326
-msgid "wave audio"
-msgstr "dalgasal ses"
-
-# data/mime/gnome-vfs.keys.in.h:246
-#: gnome-vfs.keys.in.h:327
-msgid "web folder"
-msgstr "web klasörü"
-
-# data/mime/gnome-vfs.keys.in.h:247
-#: gnome-vfs.keys.in.h:328
-msgid "xfig vector graphic"
-msgstr "xfig vektör çizimi"
-
 # data/mime/gnome-vfs.keys.in.h:248
-#: gnome-vfs.keys.in.h:329
-msgid "zip archive"
+#: gnome-vfs.keys.in.h:356
+#, fuzzy
+msgid "Zip archive"
 msgstr "zip arşivi"
 
 # data/mime/gnome-vfs.keys.in.h:249
-#: gnome-vfs.keys.in.h:330
-msgid "zoo archive"
+#: gnome-vfs.keys.in.h:357
+#, fuzzy
+msgid "Zoo archive"
 msgstr "zoo arşivi"
+
+#: gnome-vfs.keys.in.h:358
+msgid "gettext translation"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:359
+msgid "iPod software"
+msgstr ""
+
+# data/mime/gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:360
+msgid "xfig vector graphic"
+msgstr "xfig vektör çizimi"
+
+# data/mime/gnome-vfs.keys.in.h:142
+#, fuzzy
+#~ msgid "GNOME theme package"
+#~ msgstr "Stampede paketi"
+
+#~ msgid "MSX rom"
+#~ msgstr "MSX rom"
+
+#~ msgid "NES rom"
+#~ msgstr "NES rom"
+
+#, fuzzy
+#~ msgid "Software Development/ROM image"
+#~ msgstr "Yazılım Geliştirme/ROM Görüntüleri"
+
+#, fuzzy
+#~ msgid "Software Development/Source"
+#~ msgstr "Yazılım Geliştirme/Kaynak Kod"
+
+# data/mime/gnome-vfs.keys.in.h:61
+#, fuzzy
+#~ msgid "Yacc source file"
+#~ msgstr "Java kaynak kodu"
+
+# data/mime/gnome-vfs.keys.in.h:178
+#~ msgid "arj archive"
+#~ msgstr "arj arşivi"
+
+# data/mime/gnome-vfs.keys.in.h:3
+#, fuzzy
+#~ msgid "audio"
+#~ msgstr "Ses"
+
+# data/mime/gnome-vfs.keys.in.h:200
+#~ msgid "gtar archive"
+#~ msgstr "gtar arşivi"

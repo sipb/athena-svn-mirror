@@ -80,6 +80,7 @@ print "Reading gnome-vfs.keys.in.\n";
    "can_be_executable",
    "_category",
    "default_action_type",
+   "default_application_id",
    "icon_filename",
    "open",
    "short_list_application_ids_for_advanced_user_level",
@@ -89,6 +90,7 @@ print "Reading gnome-vfs.keys.in.\n";
    "short_list_component_iids_for_advanced_user_level",
    "short_list_component_iids_for_intermediate_user_level",
    "short_list_component_iids_for_novice_user_level",
+   "startup_notify",
    "use_category_default",
    "vfs_method",
   );
@@ -363,6 +365,7 @@ print "Reading gnome-vfs.applications.\n";
    "name",
    "requires_terminal",
    "supported_uri_schemes",
+   "uses_gnomevfs",
   );
 @expected_keys{@expected_keys} = (1) x @expected_keys;
 

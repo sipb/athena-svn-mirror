@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-mime-data\n"
-"POT-Creation-Date: 2003-02-04 01:07-0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-22 19:09+0000\n"
 "PO-Revision-Date: 2003-02-03 10:16+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
@@ -16,1321 +17,1535 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-vfs.keys.in.h:1
+msgid "2D chemical structure"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:2
 msgid "3D Studio image"
 msgstr "የ3D Studio ምስል"
 
-#: gnome-vfs.keys.in.h:2
+#: gnome-vfs.keys.in.h:3
 msgid "AIFC audio"
 msgstr "የAIFC ድምፅ"
 
-#: gnome-vfs.keys.in.h:3
+#: gnome-vfs.keys.in.h:4
 msgid "AIFF audio"
 msgstr "የAIFF ድምፅ"
 
-#: gnome-vfs.keys.in.h:4
+#: gnome-vfs.keys.in.h:5
 msgid "ANIM animation"
 msgstr ""
 
-#: gnome-vfs.keys.in.h:5
+#: gnome-vfs.keys.in.h:6
+#, fuzzy
+msgid "ARJ archive"
+msgstr "የRAR መዝገብ ቤት"
+
+#: gnome-vfs.keys.in.h:7
 msgid "AVI video"
 msgstr "የAVI ቪዲዮ"
 
-#: gnome-vfs.keys.in.h:6
+#: gnome-vfs.keys.in.h:8
 msgid "AbiWord document"
 msgstr "የአቢወርድ ሰንደ"
 
-#: gnome-vfs.keys.in.h:7
-msgid "Adobe FrameMaker font"
-msgstr "የAdobe FrameMaker  የፊደል ቅርጽ"
-
-#: gnome-vfs.keys.in.h:8
-msgid "Adobe font metrics"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:9
-msgid "Andrew Toolkit inset"
+msgid "Active Server page"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:10
-msgid "ApplixWare Graphics image"
-msgstr "የApplixWare Graphics ምስል"
+msgid "Address card"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:11
-msgid "Applixware Words document"
-msgstr "የApplixWare Words ሰንደ"
+msgid "Adobe FrameMaker font"
+msgstr "የAdobe FrameMaker  የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:12
-msgid "Applixware spreadsheet"
+msgid "Adobe font metrics"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:13
-msgid "Audio"
-msgstr "ድምፅ"
+msgid "Andrew Toolkit inset"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:14
-msgid "AutoCAD image"
-msgstr "የAutoCAD ምስል"
+msgid "Application launcher"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:15
-msgid "BCPIO document"
-msgstr "የBCPIO ሰንደ"
+msgid "ApplixWare Graphics image"
+msgstr "የApplixWare Graphics ምስል"
 
 #: gnome-vfs.keys.in.h:16
-msgid "BDF font"
-msgstr "የBDF የፊደል ቅርጽ"
+msgid "Applixware Words document"
+msgstr "የApplixWare Words ሰንደ"
 
 #: gnome-vfs.keys.in.h:17
-msgid "C shell script"
-msgstr "የC ሼል ጽሑፍ"
+#, fuzzy
+msgid "Applixware presentation"
+msgstr "የApplixWare Words ሰንደ"
 
 #: gnome-vfs.keys.in.h:18
-msgid "C source code"
+msgid "Applixware spreadsheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:19
-msgid "C source code header"
-msgstr ""
+#, fuzzy
+msgid "Ar archive"
+msgstr "የar መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:20
-msgid "C++ source code"
+msgid "Assembly source code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:21
-msgid "CGI program"
-msgstr "የCGI ፕሮግራም"
+msgid "Audio"
+msgstr "ድምፅ"
 
 #: gnome-vfs.keys.in.h:22
-msgid "CGM image"
-msgstr "የCGM ምስል"
+#, fuzzy
+msgid "Authors list"
+msgstr "የደራሲው ዝርዝር"
 
 #: gnome-vfs.keys.in.h:23
-msgid "CMU raster image"
-msgstr "የCMU raster ምስል"
+msgid "AutoCAD image"
+msgstr "የAutoCAD ምስል"
 
 #: gnome-vfs.keys.in.h:24
-msgid "CPIO archive"
-msgstr "የCPIO መዝገብ ቤት"
+msgid "BCPIO document"
+msgstr "የBCPIO ሰንደ"
 
 #: gnome-vfs.keys.in.h:25
-msgid "CPIO archive (gzip-compressed)"
-msgstr "የCPIO መዝገብ ቤት (gzip-compressed)"
+msgid "BDF font"
+msgstr "የBDF የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:26
-msgid "Commodore 64 Audio"
-msgstr "የCommodore 64 ድምፅ"
-
-#: gnome-vfs.keys.in.h:27
-msgid "DCL script"
-msgstr "የDCL ሼል ጽሑፍ"
-
-#: gnome-vfs.keys.in.h:28
-msgid "DOS font"
-msgstr "የDOS የፊደል ቅርጽ"
-
-#: gnome-vfs.keys.in.h:29
-msgid "DOS/Windows program"
-msgstr "የDOS/Windows ፕሮግራም"
-
-#: gnome-vfs.keys.in.h:30
-msgid "DSSSL document"
-msgstr "የDSSL ሰነድ"
-
-#: gnome-vfs.keys.in.h:31
-msgid "DXF vector graphic"
+msgid "Backup file"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:27
+#, fuzzy
+msgid "Basic audio"
+msgstr "ቃላል ድምፅ"
+
+#: gnome-vfs.keys.in.h:28
+msgid "Bibliography record"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:29
+#, fuzzy
+msgid "Binary program"
+msgstr "የCGI ፕሮግራም"
+
+#: gnome-vfs.keys.in.h:30
+msgid "BitTorrent seed file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:31
+#, fuzzy
+msgid "Blender file"
+msgstr "የቀን መቁጠሪያ ፋይል"
+
 #: gnome-vfs.keys.in.h:32
-msgid "Debian package"
-msgstr "የDebian መዝገብ ቤት"
+msgid "Block device"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:33
-msgid "Device Independant Bitmap"
+msgid "Bzip2 compressed file"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:34
-msgid "Dia diagram"
-msgstr ""
+msgid "C shell script"
+msgstr "የC ሼል ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:35
-msgid "Digital Imaging and Communications in Medicine image"
+msgid "C source code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:36
-msgid "Digital Moving Picture Exchange"
+msgid "C source code header"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:37
-msgid "Documents"
-msgstr "ሰነዶች"
+msgid "C++ source code"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:38
-msgid "Documents/Diagram"
-msgstr "ሰነዶች/Diagram"
+msgid "CGI program"
+msgstr "የCGI ፕሮግራም"
 
 #: gnome-vfs.keys.in.h:39
-msgid "Documents/Extended Markup Language (XML)"
-msgstr "ሰነዶች/Extended Markup Language (XML)"
+msgid "CGM image"
+msgstr "የCGM ምስል"
 
 #: gnome-vfs.keys.in.h:40
-msgid "Documents/Numeric"
-msgstr "ሰነዶች/Numeric"
+msgid "CMU raster image"
+msgstr "የCMU raster ምስል"
 
 #: gnome-vfs.keys.in.h:41
-msgid "Documents/Plain Text"
-msgstr "ሰነዶች/ቀላል ጽሑፍ"
+msgid "CPIO archive"
+msgstr "የCPIO መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:42
-msgid "Documents/Presentation"
-msgstr "ሰነዶች/Presentation"
+#, fuzzy
+msgid "CPIO archive (Gzip-compressed)"
+msgstr "የCPIO መዝገብ ቤት (gzip-compressed)"
 
 #: gnome-vfs.keys.in.h:43
-msgid "Documents/Project Management"
-msgstr "ሰነዶች/Project Management"
+#, fuzzy
+msgid "Calendar file"
+msgstr "የቀን መቁጠሪያ ፋይል"
 
 #: gnome-vfs.keys.in.h:44
-msgid "Documents/Published Materials"
-msgstr "ሰነዶች/Published Materials"
+#, fuzzy
+msgid "Calendar or event document"
+msgstr "የUnidata netCDF ሰነድ"
 
 #: gnome-vfs.keys.in.h:45
-msgid "Documents/Spreadsheet"
-msgstr "ሰነዶች/Spreadsheet"
+msgid "Character device"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:46
-msgid "Documents/TeX"
-msgstr "ሰነዶች/TeX"
+msgid "Cinelerra editing sheet"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:47
-msgid "Documents/Text Markup"
-msgstr "ሰነዶች/Text Markup"
+#, fuzzy
+msgid "Comma-separated text document"
+msgstr "የSetext ሰነድ"
 
 #: gnome-vfs.keys.in.h:48
-msgid "Documents/Vector Graphics"
-msgstr "ሰነዶች/Vector ንድፍ"
+#, fuzzy
+msgid "Commodore 64 audio"
+msgstr "የCommodore 64 ድምፅ"
 
 #: gnome-vfs.keys.in.h:49
-msgid "Documents/Word Processor"
-msgstr "ሰነዶች/Word Processor"
+#, fuzzy
+msgid "Compound document"
+msgstr "የKWord ሰነድ"
 
 #: gnome-vfs.keys.in.h:50
-msgid "Documents/World Wide Web"
-msgstr "ሰነዶች/World Wide Web"
+msgid "Compress-compressed file"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:51
-msgid "Dolby Digital audio"
-msgstr "የDolby Digital ድምፅ"
+#, fuzzy
+msgid "Compressed GIMP document"
+msgstr "የGIMP ሰነድ"
 
 #: gnome-vfs.keys.in.h:52
-msgid "Dreamcast rom"
-msgstr "የDreamcast ሮም"
+msgid "Corel Draw drawing"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:53
-msgid "Emacs Lisp source code"
+msgid "Crystalline structure model"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:54
-msgid "Enlightenment theme"
-msgstr "የEnglightenment ጭብጥ"
+msgid "DCL script"
+msgstr "የDCL ሼል ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:55
-msgid "FLAC audio"
-msgstr "የFLAC ድምፅ"
+msgid "DOS font"
+msgstr "የDOS የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:56
-msgid "FLC animation"
-msgstr ""
+msgid "DOS/Windows program"
+msgstr "የDOS/Windows ፕሮግራም"
 
 #: gnome-vfs.keys.in.h:57
-msgid "FLI animation"
-msgstr ""
+msgid "DSSSL document"
+msgstr "የDSSL ሰነድ"
 
 #: gnome-vfs.keys.in.h:58
-msgid "FastTracker II audio"
-msgstr "የFastTracker II ድምፅ"
+#, fuzzy
+msgid "DV video"
+msgstr "የAVI ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:59
-msgid "FlashPix Image"
-msgstr "የFlashPix ምስል"
-
-#: gnome-vfs.keys.in.h:60
-msgid "Flexible Image Transport System"
+msgid "DXF vector graphic"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:60
+msgid "Debian package"
+msgstr "የDebian መዝገብ ቤት"
+
 #: gnome-vfs.keys.in.h:61
-msgid "Fortran source code"
+msgid "Device Independant Bitmap"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:62
-msgid "FrameMaker interchange document"
+msgid "Dia diagram"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:63
-msgid "G3 fax image"
-msgstr "የG3 የፋክስ ምስል"
+msgid "Digital Imaging and Communications in Medicine image"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:64
-msgid "GIF image"
-msgstr "የGIF ምስል"
+msgid "Digital Moving Picture Exchange image"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:65
-msgid "GIMP document"
-msgstr "የGIMP ሰነድ"
+msgid "Directory information file"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:66
-msgid "GMC link"
-msgstr "የGMC አያያዝ"
+#, fuzzy
+msgid "DjVu image"
+msgstr "የ3D Studio ምስል"
 
 #: gnome-vfs.keys.in.h:67
-msgid "GNU Oleo Spreadsheet"
-msgstr ""
+#, fuzzy
+msgid "Document type definition"
+msgstr "ሰነዶች/Presentation"
 
 #: gnome-vfs.keys.in.h:68
-msgid "GNU mail message"
-msgstr "የGNU የኢሜል መልዕክት"
+msgid "Documents"
+msgstr "ሰነዶች"
 
 #: gnome-vfs.keys.in.h:69
-msgid "GTK configuration"
-msgstr "የGTK ምርጫዎች"
+msgid "Documents/Diagram"
+msgstr "ሰነዶች/Diagram"
 
 #: gnome-vfs.keys.in.h:70
-msgid "Game Boy rom"
-msgstr "የGame Boy ሮም"
+msgid "Documents/Extended Markup Language (XML)"
+msgstr "ሰነዶች/Extended Markup Language (XML)"
 
 #: gnome-vfs.keys.in.h:71
-msgid "Genesis rom"
-msgstr "የGenesis ሮም"
+msgid "Documents/Numeric"
+msgstr "ሰነዶች/Numeric"
 
 #: gnome-vfs.keys.in.h:72
-msgid "Glade project"
-msgstr ""
+msgid "Documents/Plain Text"
+msgstr "ሰነዶች/ቀላል ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:73
-msgid "GnuCash Workbook"
-msgstr ""
+msgid "Documents/Presentation"
+msgstr "ሰነዶች/Presentation"
 
 #: gnome-vfs.keys.in.h:74
-msgid "Gnumeric spreadsheet"
-msgstr ""
+msgid "Documents/Project Management"
+msgstr "ሰነዶች/Project Management"
 
 #: gnome-vfs.keys.in.h:75
-msgid "Gtktalog Catalogue"
-msgstr ""
+msgid "Documents/Published Materials"
+msgstr "ሰነዶች/Published Materials"
 
 #: gnome-vfs.keys.in.h:76
-msgid "HDF document"
-msgstr "የHDF ሰነድ"
+msgid "Documents/Spreadsheet"
+msgstr "ሰነዶች/Spreadsheet"
 
 #: gnome-vfs.keys.in.h:77
-msgid "HTML page"
-msgstr "የHTML ገጽ"
+msgid "Documents/TeX"
+msgstr "ሰነዶች/TeX"
 
 #: gnome-vfs.keys.in.h:78
-msgid "Haskell source code"
-msgstr ""
+msgid "Documents/Text Markup"
+msgstr "ሰነዶች/Text Markup"
 
 #: gnome-vfs.keys.in.h:79
-msgid "IDL document"
-msgstr "የIDL ሰነድ"
+msgid "Documents/Vector Graphics"
+msgstr "ሰነዶች/Vector ንድፍ"
 
 #: gnome-vfs.keys.in.h:80
-msgid "IEF image"
-msgstr "የIEF ምስል"
+msgid "Documents/Word Processor"
+msgstr "ሰነዶች/Word Processor"
 
 #: gnome-vfs.keys.in.h:81
-msgid "IFF image"
-msgstr "የIFF ምስል"
+msgid "Documents/World Wide Web"
+msgstr "ሰነዶች/World Wide Web"
 
 #: gnome-vfs.keys.in.h:82
-msgid "ILBM image"
-msgstr "የILBM ምስል"
+msgid "Dolby Digital audio"
+msgstr "የDolby Digital ድምፅ"
 
 #: gnome-vfs.keys.in.h:83
-msgid "ISI video"
-msgstr "የISI ቪዲዮ"
+#, fuzzy
+msgid "Dreamcast ROM"
+msgstr "የDreamcast ሮም"
 
 #: gnome-vfs.keys.in.h:84
-msgid "ISO image"
-msgstr "የISO ምስል"
-
-#: gnome-vfs.keys.in.h:85
-msgid "Images"
-msgstr "ምስሎች"
-
-#: gnome-vfs.keys.in.h:86
-msgid "Impulse Tracker audio"
-msgstr "የImpulse Trackerድምፅ"
-
-#: gnome-vfs.keys.in.h:87
-msgid "Information"
-msgstr "መረጃ"
-
-#: gnome-vfs.keys.in.h:88
-msgid "Information/Calendar"
-msgstr "መረጃ/ቀን መቁጠሪያ"
-
-#: gnome-vfs.keys.in.h:89
-msgid "Information/Financial"
+msgid "Emacs Lisp source code"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:85
+msgid "Email headers"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:86
+#, fuzzy
+msgid "Email message/mailbox"
+msgstr "የGNU የኢሜል መልዕክት"
+
+#: gnome-vfs.keys.in.h:87
+#, fuzzy
+msgid "Encrypted message"
+msgstr "የUSENET ዜና መልዕክት"
+
+#: gnome-vfs.keys.in.h:88
+msgid "Enlightenment theme"
+msgstr "የEnglightenment ጭብጥ"
+
+#: gnome-vfs.keys.in.h:89
+#, fuzzy
+msgid "Enriched text document"
+msgstr "የSetext ሰነድ"
+
 #: gnome-vfs.keys.in.h:90
-msgid "JBuilder Project"
+msgid "Epiphany bookmarks file"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:91
-msgid "JPEG image"
-msgstr "የJPEG ምስል"
+msgid "FLAC audio"
+msgstr "የFLAC ድምፅ"
 
 #: gnome-vfs.keys.in.h:92
-msgid "Java byte code"
+msgid "FLC animation"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:93
-msgid "Java source code"
+msgid "FLI animation"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:94
-msgid "KDE application details"
-msgstr "የኬዲኢ መጠቀሚያ ፕሮግራሙ ዝርዝሮች"
+msgid "FastTracker II audio"
+msgstr "የFastTracker II ድምፅ"
 
 #: gnome-vfs.keys.in.h:95
-msgid "KIllustrator document"
-msgstr "የKIllustrator ሰነድ"
+msgid "FlashPix Image"
+msgstr "የFlashPix ምስል"
 
 #: gnome-vfs.keys.in.h:96
-msgid "KPresenter presentation"
+msgid "Flexible Image Transport System"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:97
-msgid "KSpread spreadsheet"
-msgstr ""
+#, fuzzy
+msgid "Folder"
+msgstr "ዶሴ"
 
 #: gnome-vfs.keys.in.h:98
-msgid "KWord document"
-msgstr "የKWord ሰነድ"
-
-#: gnome-vfs.keys.in.h:99
-msgid "Korn shell script"
-msgstr "የKorn ሼል ጽሑፍ"
-
-#: gnome-vfs.keys.in.h:100
-msgid "LHA archive"
-msgstr "የLHA መዝገብ ቤት"
-
-#: gnome-vfs.keys.in.h:101
-msgid "LHARC archive"
-msgstr "የLHARC መዝገብ ቤት"
-
-#: gnome-vfs.keys.in.h:102
-msgid "LIBGRX font"
-msgstr "የLIBGRX የፊደል ቅርጽ"
-
-#: gnome-vfs.keys.in.h:103
-msgid "LightWave object"
+msgid "Fortran source code"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:99
+msgid "FrameMaker interchange document"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:100
+msgid "G3 fax image"
+msgstr "የG3 የፋክስ ምስል"
+
+#: gnome-vfs.keys.in.h:101
+msgid "GIF image"
+msgstr "የGIF ምስል"
+
+#: gnome-vfs.keys.in.h:102
+msgid "GIMP document"
+msgstr "የGIMP ሰነድ"
+
+#: gnome-vfs.keys.in.h:103
+msgid "GMC link"
+msgstr "የGMC አያያዝ"
+
 #: gnome-vfs.keys.in.h:104
-msgid "LightWave scene"
+msgid "GNOME desktop theme"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:105
-msgid "Linux PSF console font"
-msgstr "የሊኑክስ PSF console የፊደል ቅርጽ"
+msgid "GNU Oleo Spreadsheet"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:106
-msgid "Literate haskell source code"
-msgstr ""
+msgid "GNU mail message"
+msgstr "የGNU የኢሜል መልዕክት"
 
 #: gnome-vfs.keys.in.h:107
-msgid "Lotus 1-2-3 spreadsheet"
-msgstr ""
+msgid "GTK configuration"
+msgstr "የGTK ምርጫዎች"
 
 #: gnome-vfs.keys.in.h:108
-msgid "LyX Document"
-msgstr "የLyX ሰነድ"
+#, fuzzy
+msgid "Game Boy ROM"
+msgstr "የGame Boy ሮም"
 
 #: gnome-vfs.keys.in.h:109
-msgid "MIDI audio"
-msgstr "የMIDI ድምፅ"
+#, fuzzy
+msgid "Genesis ROM"
+msgstr "የGenesis ሮም"
 
 #: gnome-vfs.keys.in.h:110
-msgid "MOD audio"
-msgstr "የMOD ድምፅ"
+msgid "Glade project"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:111
-msgid "MP3 audio"
-msgstr "የMP3 ድምፅ"
+msgid "GnuCash workbook"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:112
-msgid "MP3 audio playlist"
+msgid "Gnumeric spreadsheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:113
-msgid "MPEG audio"
-msgstr "የMPEG ድምፅ"
+#, fuzzy
+msgid "Gtar archive"
+msgstr "የtar መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:114
-msgid "MPEG video"
-msgstr "የMPEG ቪዲዮ"
+msgid "Gtktalog Catalogue"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:115
-msgid "MS ASF video"
-msgstr "የMS ASF ቪዲዮ"
+msgid "Gzip-compressed file"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:116
-msgid "MS video"
-msgstr "የMS ቪዲዮ"
+msgid "HDF document"
+msgstr "የHDF ሰነድ"
 
 #: gnome-vfs.keys.in.h:117
-msgid "MSX rom"
-msgstr "የMSX ሮም"
+msgid "HTML page"
+msgstr "የHTML ገጽ"
 
 #: gnome-vfs.keys.in.h:118
-msgid "MacBinary file"
-msgstr "የMacBinary ፋይል"
+msgid "Haskell source code"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:119
-msgid "Macintosh AppleDouble-encoded file"
-msgstr ""
+#, fuzzy
+msgid "Help page"
+msgstr "የመረጃ ገጽ"
 
 #: gnome-vfs.keys.in.h:120
-msgid "Macintosh BinHex-encoded file"
-msgstr ""
+msgid "IDL document"
+msgstr "የIDL ሰነድ"
 
 #: gnome-vfs.keys.in.h:121
-msgid "Macintosh StuffIt archive"
-msgstr "የMacintosh StuffIt መዝገብ ቤት"
+msgid "IEF image"
+msgstr "የIEF ምስል"
 
 #: gnome-vfs.keys.in.h:122
-msgid "Macromedia Flash file"
-msgstr "የMacromedia Flash ምስል"
+msgid "IFF image"
+msgstr "የIFF ምስል"
 
 #: gnome-vfs.keys.in.h:123
-msgid "Magick image format"
-msgstr ""
+msgid "ILBM image"
+msgstr "የILBM ምስል"
 
 #: gnome-vfs.keys.in.h:124
-msgid "MathML document"
-msgstr "የMathML ሰነድ"
+msgid "ISI video"
+msgstr "የISI ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:125
-msgid "Message"
-msgstr "መልዕክት"
+msgid "ISO image"
+msgstr "የISO ምስል"
 
 #: gnome-vfs.keys.in.h:126
-msgid "Microsoft Excel spreadsheet"
-msgstr ""
+msgid "Images"
+msgstr "ምስሎች"
 
 #: gnome-vfs.keys.in.h:127
-msgid "Microsoft PowerPoint document"
-msgstr "የMicrosoft PowerPoint ሰነድ"
+msgid "Impulse Tracker audio"
+msgstr "የImpulse Trackerድምፅ"
 
 #: gnome-vfs.keys.in.h:128
-msgid "Microsoft WMV video"
-msgstr "የMicrosoft WMV ቪዲዮ"
+msgid "Information"
+msgstr "መረጃ"
 
 #: gnome-vfs.keys.in.h:129
-msgid "Microsoft Word document"
-msgstr "የMicrosoft Word ሰነድ"
+msgid "Information/Calendar"
+msgstr "መረጃ/ቀን መቁጠሪያ"
 
 #: gnome-vfs.keys.in.h:130
-msgid "Microsoft video"
-msgstr "የMicrosoft ቪዲዮ"
-
-#: gnome-vfs.keys.in.h:131
-msgid "NES rom"
-msgstr "የNES ሮም"
-
-#: gnome-vfs.keys.in.h:132
-msgid "Nautilus link"
-msgstr "የNautilus አያያዝ"
-
-#: gnome-vfs.keys.in.h:133
-msgid "Nintendo64 rom"
-msgstr "የNintendo64 ሮም"
-
-#: gnome-vfs.keys.in.h:134
-msgid "ODA document"
-msgstr "የODA ሰነድ"
-
-#: gnome-vfs.keys.in.h:135
-msgid "OpenOffice.org Impress presentation"
+msgid "Information/Financial"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:131
+msgid "Installed GNOME desktop theme"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:132
+msgid "JBuilder Project"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:133
+msgid "JPEG image"
+msgstr "የJPEG ምስል"
+
+#: gnome-vfs.keys.in.h:134
+msgid "Java byte code"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:135
+#, fuzzy
+msgid "Java code archive"
+msgstr "የar መዝገብ ቤት"
+
 #: gnome-vfs.keys.in.h:136
-msgid "OpenOffice.org Impress presentation template"
+msgid "Java source code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:137
-msgid "OpenOffice.org Math document"
-msgstr "የOpenOffice.org Math ሰነድ"
-
-#: gnome-vfs.keys.in.h:138
-msgid "OpenOffice.org Writer document"
-msgstr "የOpenOffice.org Writer ሰነድ"
-
-#: gnome-vfs.keys.in.h:139
-msgid "OpenOffice.org Writer global document"
+msgid "JavaScript source code"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:138
+msgid "KDE application details"
+msgstr "የኬዲኢ መጠቀሚያ ፕሮግራሙ ዝርዝሮች"
+
+#: gnome-vfs.keys.in.h:139
+msgid "KIllustrator document"
+msgstr "የKIllustrator ሰነድ"
+
 #: gnome-vfs.keys.in.h:140
-msgid "OpenOffice.org Writer template"
-msgstr "OpenOffice.org Writer ቲምፕሌት"
+msgid "KPresenter presentation"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:141
-msgid "OpenOffice.org drawing"
+msgid "KSpread spreadsheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:142
-msgid "OpenOffice.org drawing template"
-msgstr ""
+msgid "KWord document"
+msgstr "የKWord ሰነድ"
 
 #: gnome-vfs.keys.in.h:143
-msgid "OpenOffice.org spreadsheet"
-msgstr ""
+msgid "Korn shell script"
+msgstr "የKorn ሼል ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:144
-msgid "OpenOffice.org spreadsheet template"
-msgstr ""
+msgid "LHA archive"
+msgstr "የLHA መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:145
-msgid "OpenType font"
-msgstr "የOpenType የፊደል ቅርጽ"
+msgid "LHARC archive"
+msgstr "የLHARC መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:146
-msgid "PBM image"
-msgstr "PBM ምስል"
+msgid "LIBGRX font"
+msgstr "የLIBGRX የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:147
-msgid "PC Paintbrush image"
-msgstr "PC Paintbrush ምስል"
+msgid "LightWave object"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:148
-msgid "PCF font"
-msgstr "የPCF የፊደል ቅርጽ"
+msgid "LightWave scene"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:149
-msgid "PDF document"
-msgstr "የPDF ሰነድ"
+msgid "Linux PSF console font"
+msgstr "የሊኑክስ PSF console የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:150
-msgid "PEF program"
-msgstr "የPEF ፕሮግራም"
+msgid "Literate haskell source code"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:151
-msgid "PGM image"
-msgstr "የPGM ምስል"
+msgid "Lotus 1-2-3 spreadsheet"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:152
-msgid "PGN chess game"
-msgstr ""
+#, fuzzy
+msgid "LyX document"
+msgstr "የLyX ሰነድ"
 
 #: gnome-vfs.keys.in.h:153
-msgid "PGP keys"
-msgstr "የPGP ቁልፍ"
+msgid "MIDI audio"
+msgstr "የMIDI ድምፅ"
 
 #: gnome-vfs.keys.in.h:154
-msgid "PGP message"
-msgstr "የPGP መልዕክት"
+msgid "MOD audio"
+msgstr "የMOD ድምፅ"
 
 #: gnome-vfs.keys.in.h:155
-msgid "PGP signature"
-msgstr ""
+msgid "MP3 audio"
+msgstr "የMP3 ድምፅ"
 
 #: gnome-vfs.keys.in.h:156
-msgid "PGP-encrypted file"
+msgid "MP3 audio playlist"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:157
-msgid "PHP script"
-msgstr "የPHP ጽሑፍ"
+msgid "MPEG video"
+msgstr "የMPEG ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:158
-msgid "PICT image"
-msgstr "የPICT ምስል"
+#, fuzzy
+msgid "MPEG-4 audio"
+msgstr "የMPEG ድምፅ"
 
 #: gnome-vfs.keys.in.h:159
-msgid "PNG image"
-msgstr "የPNG ምስል"
+#, fuzzy
+msgid "MS ASF audio"
+msgstr "የMS ASF ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:160
-msgid "PNM image"
-msgstr "የPNM ምስል"
+msgid "MS ASF video"
+msgstr "የMS ASF ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:161
-msgid "PPM image"
-msgstr "የPPM ምስል"
+msgid "MS video"
+msgstr "የMS ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:162
-msgid "Packages"
-msgstr "ጥቅሎች"
-
-#: gnome-vfs.keys.in.h:163
-msgid "Palm OS database"
-msgstr "የPalm OS ዳታቤዝ"
-
-#: gnome-vfs.keys.in.h:164
-msgid "Palm Pixmap image"
-msgstr "የPalm Pixmap ምስል"
-
-#: gnome-vfs.keys.in.h:165
-msgid "Perl script"
-msgstr "የPerl ጽሑፍ"
-
-#: gnome-vfs.keys.in.h:166
-msgid "Photo CD image"
-msgstr "የPhoto CD ፋይል"
-
-#: gnome-vfs.keys.in.h:167
-msgid "Photoshop document"
-msgstr "የPhotoshop ሰነድ"
-
-#: gnome-vfs.keys.in.h:168
-msgid "Playlist"
+msgid "MSX ROM"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:163
+msgid "MacBinary file"
+msgstr "የMacBinary ፋይል"
+
+#: gnome-vfs.keys.in.h:164
+msgid "Macintosh AppleDouble-encoded file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:165
+msgid "Macintosh BinHex-encoded file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:166
+msgid "Macintosh StuffIt archive"
+msgstr "የMacintosh StuffIt መዝገብ ቤት"
+
+#: gnome-vfs.keys.in.h:167
+msgid "Macromedia Flash file"
+msgstr "የMacromedia Flash ምስል"
+
+#: gnome-vfs.keys.in.h:168
+#, fuzzy
+msgid "MagicPoint presentation"
+msgstr "ሰነዶች/Presentation"
+
 #: gnome-vfs.keys.in.h:169
-msgid "PostScript Type 1 font"
-msgstr "የPostScript Type 1 የፊደል ቅርጽ"
+msgid "Magick image format"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:170
-msgid "PostScript document"
-msgstr "የPostScript ሰነድ"
+msgid "Mail delivery report"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:171
-msgid "Project Plan"
+msgid "Mail disposition report"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:172
-msgid "Python source code"
+msgid "Mail system report"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:173
-msgid "QuickTime movie"
+msgid "Makefile"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:174
-msgid "Quicken document"
-msgstr "የQuicken ሰነድ"
+#, fuzzy
+msgid "Manual page"
+msgstr "የመረጃ ገጽ"
 
 #: gnome-vfs.keys.in.h:175
-msgid "Quicken for Windows document"
-msgstr ""
+#, fuzzy
+msgid "Manual page (compressed)"
+msgstr "የtar መዝገብ ቤት (gzip-compressed)"
 
 #: gnome-vfs.keys.in.h:176
-msgid "RAR archive"
-msgstr "የRAR መዝገብ ቤት"
+#, fuzzy
+msgid "Master System or Game Gear ROM"
+msgstr "የSMS ወይስ Game Gear ሮም"
 
 #: gnome-vfs.keys.in.h:177
-msgid "README document"
-msgstr "የREADME ሰነድ"
+msgid "MathML document"
+msgstr "የMathML ሰነድ"
 
 #: gnome-vfs.keys.in.h:178
-msgid "RGB image"
-msgstr "የRGB ፋይል"
+msgid "Memory dump"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:179
-msgid "RIFF audio"
-msgstr "የRIFF ድምፅ"
+msgid "Message"
+msgstr "መልዕክት"
 
 #: gnome-vfs.keys.in.h:180
-msgid "RPM package"
-msgstr "የRPM መዝገብ ቤት"
+#, fuzzy
+msgid "Message digest"
+msgstr "መልዕክት"
 
 #: gnome-vfs.keys.in.h:181
-msgid "Raw Gray Sample"
+msgid "Message in several formats"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:182
-msgid "RealAudio document"
-msgstr "የRealAudio ሰነድ"
-
-#: gnome-vfs.keys.in.h:183
-msgid "RealAudio/Video document"
-msgstr "የRealAudio/Video ሰነድ"
-
-#: gnome-vfs.keys.in.h:184
-msgid "RealVideo video"
-msgstr "የRealVideo ቪዲዮ"
-
-#: gnome-vfs.keys.in.h:185
-msgid "S/MIME file"
-msgstr "የS/MIME ፋይል"
-
-#: gnome-vfs.keys.in.h:186
-msgid "S/MIME signature"
+msgid "Microsoft Excel spreadsheet"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:183
+msgid "Microsoft PowerPoint document"
+msgstr "የMicrosoft PowerPoint ሰነድ"
+
+#: gnome-vfs.keys.in.h:184
+#, fuzzy
+msgid "Microsoft WMV playlist"
+msgstr "የMicrosoft WMV ቪዲዮ"
+
+#: gnome-vfs.keys.in.h:185
+msgid "Microsoft WMV video"
+msgstr "የMicrosoft WMV ቪዲዮ"
+
+#: gnome-vfs.keys.in.h:186
+msgid "Microsoft Word document"
+msgstr "የMicrosoft Word ሰነድ"
+
 #: gnome-vfs.keys.in.h:187
-msgid "SGI video"
-msgstr "የSGI ቪዲዮ"
+msgid "Microsoft video"
+msgstr "የMicrosoft ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:188
-msgid "SGML document"
-msgstr "የSGML ሰነድ"
+#, fuzzy
+msgid "Monkey audio"
+msgstr "የogg ድምፅ"
 
 #: gnome-vfs.keys.in.h:189
-msgid "SHOUTcast Playlist"
+msgid "Mozilla bookmarks file"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:190
-msgid "SMIL script"
-msgstr "የSMIL ጽሑፍ"
+msgid "Multi-part message"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:191
-msgid "SMS or Game Gear rom"
-msgstr "የSMS ወይስ Game Gear ሮም"
+msgid "NES ROM"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:192
-msgid "SQL code"
-msgstr "የSQL ኮድ"
+msgid "Named pipe"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:193
-msgid "SUN Rasterfile"
-msgstr ""
+msgid "Nautilus link"
+msgstr "የNautilus አያያዝ"
 
 #: gnome-vfs.keys.in.h:194
-msgid "SV4 CPIO archive"
-msgstr "የSV4 CPIO መዝገብ ቤት"
+msgid "Netscape bookmarks file"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:195
-msgid "SV4 CPIP archive (with CRC)"
-msgstr "የSV4 CPIO መዝገብ ቤት (በCRC)"
+#, fuzzy
+msgid "Nintendo64 ROM"
+msgstr "የNintendo64 ሮም"
 
 #: gnome-vfs.keys.in.h:196
-msgid "SVG art"
-msgstr "የSVG ሥዕል"
+#, fuzzy
+msgid "Nullsoft video"
+msgstr "የMicrosoft ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:197
-msgid "Scheme source code"
-msgstr ""
+msgid "ODA document"
+msgstr "የODA ሰነድ"
 
 #: gnome-vfs.keys.in.h:198
-msgid "Scream Tracker 3 audio"
-msgstr "የScream Tracker 3 ድምፅ"
-
-#: gnome-vfs.keys.in.h:199
-msgid "Scream Tracker audio"
-msgstr "የScream Tracker ድምፅ"
-
-#: gnome-vfs.keys.in.h:200
-msgid "Scream Tracker instrument"
+msgid "Object code"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:199
+msgid "Objective C source code"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:200
+#, fuzzy
+msgid "Ogg audio"
+msgstr "የogg ድምፅ"
+
 #: gnome-vfs.keys.in.h:201
-msgid "Security"
-msgstr "ደህነት"
+msgid "OpenOffice.org Impress presentation"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:202
-msgid "Setext document"
-msgstr "የSetext ሰነድ"
+msgid "OpenOffice.org Impress presentation template"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:203
-msgid "Silicon Graphics Image"
-msgstr "የSilicon Graphics ምስል"
+msgid "OpenOffice.org Math document"
+msgstr "የOpenOffice.org Math ሰነድ"
 
 #: gnome-vfs.keys.in.h:204
-msgid "Software Development"
-msgstr "ሶፍትዌር መሻሻል"
+msgid "OpenOffice.org Writer document"
+msgstr "የOpenOffice.org Writer ሰነድ"
 
 #: gnome-vfs.keys.in.h:205
-msgid "Software Development/ROM Images"
+msgid "OpenOffice.org Writer global document"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:206
-msgid "Software Development/Source Code"
-msgstr ""
+msgid "OpenOffice.org Writer template"
+msgstr "OpenOffice.org Writer ቲምፕሌት"
 
 #: gnome-vfs.keys.in.h:207
-msgid "Speech document"
-msgstr "የSpeech ሰነድ"
+msgid "OpenOffice.org drawing"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:208
-msgid "Speedo font"
-msgstr "የSpeedo የፊደል ቅርጽ"
+msgid "OpenOffice.org drawing template"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:209
-msgid "Spreadsheet Interchange document"
+msgid "OpenOffice.org spreadsheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:210
-msgid "Stampede package"
-msgstr "የStampede መዝገብ ቤት"
+msgid "OpenOffice.org spreadsheet template"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:211
-msgid "StarCalc spreadsheet"
-msgstr ""
+msgid "OpenType font"
+msgstr "የOpenType የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:212
-msgid "StarChart chart"
-msgstr ""
+msgid "PBM image"
+msgstr "PBM ምስል"
 
 #: gnome-vfs.keys.in.h:213
-msgid "StarDraw drawing"
-msgstr ""
+msgid "PC Paintbrush image"
+msgstr "PC Paintbrush ምስል"
 
 #: gnome-vfs.keys.in.h:214
-msgid "StarImpress presentation"
-msgstr ""
+msgid "PCF font"
+msgstr "የPCF የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:215
-msgid "StarMail file"
-msgstr "የStarMail ፋይል"
+msgid "PDF document"
+msgstr "የPDF ሰነድ"
 
 #: gnome-vfs.keys.in.h:216
-msgid "StarMath document"
-msgstr "የStarMath ሰነድ"
+msgid "PEF program"
+msgstr "የPEF ፕሮግራም"
 
 #: gnome-vfs.keys.in.h:217
-msgid "StarOffice extended metafile image"
-msgstr ""
+msgid "PGM image"
+msgstr "የPGM ምስል"
 
 #: gnome-vfs.keys.in.h:218
-msgid "StarWriter document"
-msgstr "የStarWriter ሰነድ"
-
-#: gnome-vfs.keys.in.h:219
-msgid "Sun mu-law audio"
-msgstr "የSun mu-law ድምፅ"
-
-#: gnome-vfs.keys.in.h:220
-msgid "SunOS News font"
-msgstr "የSunOS News የፊደል ቅርጽ"
-
-#: gnome-vfs.keys.in.h:221
-msgid "System"
-msgstr "ሲስተም"
-
-#: gnome-vfs.keys.in.h:222
-msgid "TIFF image"
-msgstr "የTIFF ምስል"
-
-#: gnome-vfs.keys.in.h:223
-msgid "TarGA image"
-msgstr "የTarGA ምስል"
-
-#: gnome-vfs.keys.in.h:224
-msgid "Tcl script"
-msgstr "የTcl ጽሑፍ"
-
-#: gnome-vfs.keys.in.h:225
-msgid "TeX document"
-msgstr "የTeX ሰነድ"
-
-#: gnome-vfs.keys.in.h:226
-msgid "TeX dvi document"
-msgstr "የTeX dvi ሰነድ"
-
-#: gnome-vfs.keys.in.h:227
-msgid "TeX font"
-msgstr "የTeX የፊደል ቅርጽ"
-
-#: gnome-vfs.keys.in.h:228
-msgid "TeX font metrics"
+msgid "PGN chess game"
 msgstr ""
 
+#: gnome-vfs.keys.in.h:219
+msgid "PGP keys"
+msgstr "የPGP ቁልፍ"
+
+#: gnome-vfs.keys.in.h:220
+msgid "PGP message"
+msgstr "የPGP መልዕክት"
+
+#: gnome-vfs.keys.in.h:221
+msgid "PGP signature"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:222
+msgid "PGP-encrypted file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:223
+msgid "PHP script"
+msgstr "የPHP ጽሑፍ"
+
+#: gnome-vfs.keys.in.h:224
+msgid "PICT image"
+msgstr "የPICT ምስል"
+
+#: gnome-vfs.keys.in.h:225
+msgid "PNG image"
+msgstr "የPNG ምስል"
+
+#: gnome-vfs.keys.in.h:226
+msgid "PNM image"
+msgstr "የPNM ምስል"
+
+#: gnome-vfs.keys.in.h:227
+msgid "PPM image"
+msgstr "የPPM ምስል"
+
+#: gnome-vfs.keys.in.h:228
+msgid "Packages"
+msgstr "ጥቅሎች"
+
 #: gnome-vfs.keys.in.h:229
-msgid "TeXInfo document"
-msgstr "የTeXInfo ሰነድ"
+msgid "Palm OS database"
+msgstr "የPalm OS ዳታቤዝ"
 
 #: gnome-vfs.keys.in.h:230
-msgid "ToutDoux document"
-msgstr "የToutDoux ሰነድ"
+msgid "Palm Pixmap image"
+msgstr "የPalm Pixmap ምስል"
 
 #: gnome-vfs.keys.in.h:231
-msgid "TrueType font"
-msgstr "የTrueType የፊደል ቅርጽ"
+#, fuzzy
+msgid "Partial email message"
+msgstr "የGNU የኢሜል መልዕክት"
 
 #: gnome-vfs.keys.in.h:232
-msgid "Truevision Targa image"
-msgstr "የTruevision Targa ምስል"
+msgid "Pascal source code"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:233
-msgid "USENET news message"
-msgstr "የUSENET ዜና መልዕክት"
+msgid "Perl script"
+msgstr "የPerl ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:234
-msgid "Unidata netCDF document"
-msgstr "የUnidata netCDF ሰነድ"
+msgid "Photo CD image"
+msgstr "የPhoto CD ፋይል"
 
 #: gnome-vfs.keys.in.h:235
-msgid "User Interface"
-msgstr "የተጠቃሚው ዕይታ"
+msgid "Photoshop document"
+msgstr "የPhotoshop ሰነድ"
 
 #: gnome-vfs.keys.in.h:236
-msgid "User Interface/Fonts"
-msgstr "የተጠቃሚው ዕይታ/የፊደል ቅርጽ"
+#, fuzzy
+msgid "Plain text document"
+msgstr "የSetext ሰነድ"
 
 #: gnome-vfs.keys.in.h:237
-msgid "V font"
-msgstr "የV የፊደል ቅርጽ"
+msgid "Playlist"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:238
-msgid "VOC audio"
-msgstr "የVOC ድምፅ"
+msgid "PostScript Type 1 font"
+msgstr "የPostScript Type 1 የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:239
-msgid "VRML document"
-msgstr "የVRML ሰነድ"
+msgid "PostScript document"
+msgstr "የPostScript ሰነድ"
 
 #: gnome-vfs.keys.in.h:240
-msgid "Video"
-msgstr "ቪዲዮ"
+#, fuzzy
+msgid "Profiler results"
+msgstr "የአሰሳ ውጤቶች"
 
 #: gnome-vfs.keys.in.h:241
-msgid "Vivo video"
-msgstr "የVivo ቪዲዮ"
+msgid "Project Plan"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:242
-msgid "WAIS source code"
+msgid "Python byte code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:243
-msgid "Wavelet video"
-msgstr "የWavelet ቪዲዮ"
+msgid "Python source code"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:244
-msgid "Windows bitmap image"
-msgstr "የWindows bitmap ምስል"
+msgid "QuickTime movie"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:245
-msgid "Windows icon image"
-msgstr "የWindows ምልክት ምስል"
+msgid "Quicken document"
+msgstr "የQuicken ሰነድ"
 
 #: gnome-vfs.keys.in.h:246
-msgid "Windows metafile graphics"
+msgid "Quicken for Windows document"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:247
-msgid "WordPerfect document"
-msgstr "የWordPerfect ሰነድ"
+msgid "RAR archive"
+msgstr "የRAR መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:248
-msgid "X bitmap image"
-msgstr "የX bitmap ምስል"
+msgid "README document"
+msgstr "የREADME ሰነድ"
 
 #: gnome-vfs.keys.in.h:249
-msgid "X window image"
-msgstr "የX መስኮት ምስል"
+msgid "RGB image"
+msgstr "የRGB ፋይል"
 
 #: gnome-vfs.keys.in.h:250
-msgid "XML document"
-msgstr "የXML ሰነድ"
+msgid "RIFF audio"
+msgstr "የRIFF ድምፅ"
 
 #: gnome-vfs.keys.in.h:251
-msgid "XPM image"
-msgstr "የXPM ምስል"
+msgid "RPM package"
+msgstr "የRPM መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:252
-msgid "Xbase database"
-msgstr "የXbase ዳታቤዝ"
+msgid "Raw Gray Sample"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:253
-msgid "Z shell script"
-msgstr "የZ ሼል ጽሑፍ"
+msgid "RealAudio document"
+msgstr "የRealAudio ሰነድ"
 
 #: gnome-vfs.keys.in.h:254
-msgid "active server page"
-msgstr ""
+msgid "RealAudio/Video document"
+msgstr "የRealAudio/Video ሰነድ"
 
 #: gnome-vfs.keys.in.h:255
-msgid "address card"
-msgstr ""
+msgid "RealVideo video"
+msgstr "የRealVideo ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:256
-msgid "application launcher"
+msgid "Reference to remote file"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:257
-msgid "ar archive"
-msgstr "የar መዝገብ ቤት"
+msgid "Rejected patch file"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:258
-msgid "arj archive"
-msgstr "የarj መዝገብ ቤት"
+#, fuzzy
+msgid "Rich text document"
+msgstr "የSetext ሰነድ"
 
 #: gnome-vfs.keys.in.h:259
-msgid "authors list"
-msgstr "የደራሲው ዝርዝር"
+msgid "S/MIME file"
+msgstr "የS/MIME ፋይል"
 
 #: gnome-vfs.keys.in.h:260
-msgid "backup file"
+msgid "S/MIME signature"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:261
-msgid "basic audio"
-msgstr "ቃላል ድምፅ"
+msgid "SGI video"
+msgstr "የSGI ቪዲዮ"
 
 #: gnome-vfs.keys.in.h:262
-msgid "bibliography record"
-msgstr ""
+msgid "SGML document"
+msgstr "የSGML ሰነድ"
 
 #: gnome-vfs.keys.in.h:263
-msgid "binary program"
+msgid "SHOUTcast playlist"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:264
-msgid "block device"
-msgstr ""
+msgid "SMIL script"
+msgstr "የSMIL ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:265
-msgid "bzip-compressed file"
-msgstr ""
+msgid "SQL code"
+msgstr "የSQL ኮድ"
 
 #: gnome-vfs.keys.in.h:266
-msgid "calendar file"
-msgstr "የቀን መቁጠሪያ ፋይል"
+msgid "SUN Rasterfile"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:267
-msgid "calendar or event document"
-msgstr ""
+msgid "SV4 CPIO archive"
+msgstr "የSV4 CPIO መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:268
-msgid "character device"
-msgstr ""
+msgid "SV4 CPIP archive (with CRC)"
+msgstr "የSV4 CPIO መዝገብ ቤት (በCRC)"
 
 #: gnome-vfs.keys.in.h:269
-msgid "comma-separated text document"
-msgstr ""
+msgid "SVG art"
+msgstr "የSVG ሥዕል"
 
 #: gnome-vfs.keys.in.h:270
-msgid "compound document"
+msgid "Samba share"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:271
-msgid "compress-compressed file"
+msgid "Scheme source code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:272
-msgid "compressed GIMP document"
-msgstr ""
+msgid "Scream Tracker 3 audio"
+msgstr "የScream Tracker 3 ድምፅ"
 
 #: gnome-vfs.keys.in.h:273
-msgid "directory information file"
-msgstr ""
+msgid "Scream Tracker audio"
+msgstr "የScream Tracker ድምፅ"
 
 #: gnome-vfs.keys.in.h:274
-msgid "document type definition"
+msgid "Scream Tracker instrument"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:275
-msgid "email headers"
-msgstr ""
+#, fuzzy
+msgid "Search results"
+msgstr "የአሰሳ ውጤቶች"
 
 #: gnome-vfs.keys.in.h:276
-msgid "email message/mailbox"
-msgstr ""
+msgid "Security"
+msgstr "ደህነት"
 
 #: gnome-vfs.keys.in.h:277
-msgid "encrypted message"
-msgstr ""
+msgid "Setext document"
+msgstr "የSetext ሰነድ"
 
 #: gnome-vfs.keys.in.h:278
-msgid "enriched text document"
+msgid "Shared Printer"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:279
-msgid "folder"
-msgstr "ዶሴ"
+msgid "Shared library"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:280
-msgid "gtar archive"
-msgstr "የgtar መዝገብ ቤት"
+#, fuzzy
+msgid "Shell archive"
+msgstr "የሼል መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:281
-msgid "gzip-compressed file"
-msgstr ""
+#, fuzzy
+msgid "Shell script"
+msgstr "የሼል ጽሑፍ"
 
 #: gnome-vfs.keys.in.h:282
-msgid "help page"
-msgstr "የመረጃ ገጽ"
+#, fuzzy
+msgid "Signed message"
+msgstr "የUSENET ዜና መልዕክት"
 
 #: gnome-vfs.keys.in.h:283
-msgid "mail delivery report"
-msgstr ""
+#, fuzzy
+msgid "Silicon Graphics image"
+msgstr "የSilicon Graphics ምስል"
 
 #: gnome-vfs.keys.in.h:284
-msgid "mail disposition report"
-msgstr ""
+#, fuzzy
+msgid "Socket"
+msgstr "ሶከት "
 
 #: gnome-vfs.keys.in.h:285
-msgid "mail system report"
-msgstr ""
+msgid "Software Development"
+msgstr "ሶፍትዌር መሻሻል"
 
 #: gnome-vfs.keys.in.h:286
-msgid "makefile"
+msgid "Software Development/ROM Images"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:287
-msgid "manual page"
+msgid "Software Development/Source Code"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:288
-msgid "manual page (compressed)"
+msgid "Software author credits"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:289
-msgid "memory dump"
+msgid "Software installation instructions"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:290
-msgid "message digest"
-msgstr ""
+#, fuzzy
+msgid "Software license terms"
+msgstr "ሶፍትዌር መሻሻል"
 
 #: gnome-vfs.keys.in.h:291
-msgid "message in several formats"
+msgid "Source code patch"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:292
-msgid "multi-part message"
-msgstr ""
+msgid "Speech document"
+msgstr "የSpeech ሰነድ"
 
 #: gnome-vfs.keys.in.h:293
-msgid "named pipe"
-msgstr ""
+msgid "Speedo font"
+msgstr "የSpeedo የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:294
-msgid "object code"
+msgid "Spreadsheet Interchange document"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:295
-msgid "ogg audio"
-msgstr "የogg ድምፅ"
+msgid "Stampede package"
+msgstr "የStampede መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:296
-msgid "partial email message"
+msgid "StarCalc spreadsheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:297
-msgid "plain text document"
+msgid "StarChart chart"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:298
-msgid "profiler results"
+msgid "StarDraw drawing"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:299
-msgid "python byte code"
+msgid "StarImpress presentation"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:300
-msgid "reference to remote file"
-msgstr ""
+msgid "StarMail file"
+msgstr "የStarMail ፋይል"
 
 #: gnome-vfs.keys.in.h:301
-msgid "rejected patch file"
-msgstr ""
+msgid "StarMath document"
+msgstr "የStarMath ሰነድ"
 
 #: gnome-vfs.keys.in.h:302
-msgid "rich text document"
+msgid "StarOffice extended metafile image"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:303
-msgid "search results"
-msgstr "የአሰሳ ውጤቶች"
+msgid "StarWriter document"
+msgstr "የStarWriter ሰነድ"
 
 #: gnome-vfs.keys.in.h:304
-msgid "shared library"
+msgid "Style sheet"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:305
-msgid "shell archive"
-msgstr "የሼል መዝገብ ቤት"
+msgid "Sun mu-law audio"
+msgstr "የSun mu-law ድምፅ"
 
 #: gnome-vfs.keys.in.h:306
-msgid "shell script"
-msgstr "የሼል ጽሑፍ"
+msgid "SunOS News font"
+msgstr "የSunOS News የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:307
-msgid "signed message"
+msgid "Symbolic link"
 msgstr ""
 
 #: gnome-vfs.keys.in.h:308
-msgid "socket"
-msgstr "ሶከት "
+msgid "System"
+msgstr "ሲስተም"
 
 #: gnome-vfs.keys.in.h:309
-msgid "software author credits"
-msgstr ""
+msgid "TIFF image"
+msgstr "የTIFF ምስል"
 
 #: gnome-vfs.keys.in.h:310
-msgid "software installation instructions"
-msgstr ""
+#, fuzzy
+msgid "Tab-separated text document"
+msgstr "የSetext ሰነድ"
 
 #: gnome-vfs.keys.in.h:311
-msgid "software license terms"
-msgstr ""
+#, fuzzy
+msgid "Tar archive"
+msgstr "የar መዝገብ ቤት"
 
 #: gnome-vfs.keys.in.h:312
-msgid "source code patch"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:313
-msgid "style sheet"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:314
-msgid "symbolic link"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:315
-msgid "tab-separated text document"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:316
-msgid "tar archive"
-msgstr "የtar መዝገብ ቤት"
-
-#: gnome-vfs.keys.in.h:317
-msgid "tar archive (bzip2-compressed)"
+#, fuzzy
+msgid "Tar archive (Bzip2-compressed)"
 msgstr "የtar መዝገብ ቤት (bzip2-compressed)"
 
-#: gnome-vfs.keys.in.h:318
-msgid "tar archive (gzip-compressed)"
+#: gnome-vfs.keys.in.h:313
+#, fuzzy
+msgid "Tar archive (Gzip-compressed)"
 msgstr "የtar መዝገብ ቤት (gzip-compressed)"
 
+#: gnome-vfs.keys.in.h:314
+msgid "TarGA image"
+msgstr "የTarGA ምስል"
+
+#: gnome-vfs.keys.in.h:315
+msgid "Tcl script"
+msgstr "የTcl ጽሑፍ"
+
+#: gnome-vfs.keys.in.h:316
+msgid "TeX document"
+msgstr "የTeX ሰነድ"
+
+#: gnome-vfs.keys.in.h:317
+msgid "TeX dvi document"
+msgstr "የTeX dvi ሰነድ"
+
+#: gnome-vfs.keys.in.h:318
+msgid "TeX font"
+msgstr "የTeX የፊደል ቅርጽ"
+
 #: gnome-vfs.keys.in.h:319
-msgid "theme"
-msgstr "ጭብጥ"
+msgid "TeX font metrics"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:320
-msgid "troff document"
-msgstr "የtroff ሰነድ"
+msgid "TeXInfo document"
+msgstr "የTeXInfo ሰነድ"
 
 #: gnome-vfs.keys.in.h:321
-msgid "troff me input document"
-msgstr ""
+#, fuzzy
+msgid "Theme"
+msgstr "ጭብጥ"
 
 #: gnome-vfs.keys.in.h:322
-msgid "troff mm input document"
-msgstr ""
+msgid "ToutDoux document"
+msgstr "የToutDoux ሰነድ"
 
 #: gnome-vfs.keys.in.h:323
-msgid "troff ms input document"
-msgstr ""
+#, fuzzy
+msgid "Troff document"
+msgstr "የtroff ሰነድ"
 
 #: gnome-vfs.keys.in.h:324
-msgid "unknown type"
-msgstr "ያልታወቀ ዓይነት"
+#, fuzzy
+msgid "Troff me input document"
+msgstr "የtroff ሰነድ"
 
 #: gnome-vfs.keys.in.h:325
-msgid "ustar archive"
-msgstr "የustar መዝገብ ቤት"
+#, fuzzy
+msgid "Troff mm input document"
+msgstr "የtroff ሰነድ"
 
 #: gnome-vfs.keys.in.h:326
-msgid "wave audio"
-msgstr "የwave ድምፅ"
+#, fuzzy
+msgid "Troff ms input document"
+msgstr "የtroff ሰነድ"
 
 #: gnome-vfs.keys.in.h:327
-msgid "web folder"
-msgstr "የዌብ ዶሴ"
+msgid "TrueType font"
+msgstr "የTrueType የፊደል ቅርጽ"
 
 #: gnome-vfs.keys.in.h:328
+msgid "Truevision Targa image"
+msgstr "የTruevision Targa ምስል"
+
+#: gnome-vfs.keys.in.h:329
+msgid "USENET news message"
+msgstr "የUSENET ዜና መልዕክት"
+
+#: gnome-vfs.keys.in.h:330
+msgid "Unidata netCDF document"
+msgstr "የUnidata netCDF ሰነድ"
+
+#: gnome-vfs.keys.in.h:331
+#, fuzzy
+msgid "Unknown type"
+msgstr "ያልታወቀ ዓይነት"
+
+#: gnome-vfs.keys.in.h:332
+msgid "User Interface"
+msgstr "የተጠቃሚው ዕይታ"
+
+#: gnome-vfs.keys.in.h:333
+msgid "User Interface/Fonts"
+msgstr "የተጠቃሚው ዕይታ/የፊደል ቅርጽ"
+
+#: gnome-vfs.keys.in.h:334
+#, fuzzy
+msgid "Ustar archive"
+msgstr "የustar መዝገብ ቤት"
+
+#: gnome-vfs.keys.in.h:335
+msgid "V font"
+msgstr "የV የፊደል ቅርጽ"
+
+#: gnome-vfs.keys.in.h:336
+msgid "VOC audio"
+msgstr "የVOC ድምፅ"
+
+#: gnome-vfs.keys.in.h:337
+msgid "VRML document"
+msgstr "የVRML ሰነድ"
+
+#: gnome-vfs.keys.in.h:338
+msgid "Video"
+msgstr "ቪዲዮ"
+
+#: gnome-vfs.keys.in.h:339
+msgid "Vivo video"
+msgstr "የVivo ቪዲዮ"
+
+#: gnome-vfs.keys.in.h:340
+msgid "WAIS source code"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:341
+#, fuzzy
+msgid "Wave audio"
+msgstr "የwave ድምፅ"
+
+#: gnome-vfs.keys.in.h:342
+msgid "Wavelet video"
+msgstr "የWavelet ቪዲዮ"
+
+#: gnome-vfs.keys.in.h:343
+#, fuzzy
+msgid "Web folder"
+msgstr "የዌብ ዶሴ"
+
+#: gnome-vfs.keys.in.h:344
+msgid "Windows bitmap image"
+msgstr "የWindows bitmap ምስል"
+
+#: gnome-vfs.keys.in.h:345
+msgid "Windows icon image"
+msgstr "የWindows ምልክት ምስል"
+
+#: gnome-vfs.keys.in.h:346
+msgid "Windows metafile graphics"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:347
+msgid "WordPerfect document"
+msgstr "የWordPerfect ሰነድ"
+
+#: gnome-vfs.keys.in.h:348
+msgid "X bitmap image"
+msgstr "የX bitmap ምስል"
+
+#: gnome-vfs.keys.in.h:349
+msgid "X window image"
+msgstr "የX መስኮት ምስል"
+
+#: gnome-vfs.keys.in.h:350
+msgid "XBEL bookmarks file"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:351
+msgid "XML document"
+msgstr "የXML ሰነድ"
+
+#: gnome-vfs.keys.in.h:352
+msgid "XPM image"
+msgstr "የXPM ምስል"
+
+#: gnome-vfs.keys.in.h:353
+msgid "Xbase database"
+msgstr "የXbase ዳታቤዝ"
+
+#: gnome-vfs.keys.in.h:354
+msgid "Yacc grammar source code"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:355
+msgid "Z shell script"
+msgstr "የZ ሼል ጽሑፍ"
+
+#: gnome-vfs.keys.in.h:356
+#, fuzzy
+msgid "Zip archive"
+msgstr "የzip መዝገብ ቤት"
+
+#: gnome-vfs.keys.in.h:357
+#, fuzzy
+msgid "Zoo archive"
+msgstr "የzoo መዝገብ ቤት"
+
+#: gnome-vfs.keys.in.h:358
+msgid "gettext translation"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:359
+msgid "iPod software"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:360
 msgid "xfig vector graphic"
 msgstr "የxfig vector ንድፍ"
 
-#: gnome-vfs.keys.in.h:329
-msgid "zip archive"
-msgstr "የzip መዝገብ ቤት"
+#, fuzzy
+#~ msgid "GNOME theme package"
+#~ msgstr "የStampede መዝገብ ቤት"
 
-#: gnome-vfs.keys.in.h:330
-msgid "zoo archive"
-msgstr "የzoo መዝገብ ቤት"
+#~ msgid "MSX rom"
+#~ msgstr "የMSX ሮም"
+
+#~ msgid "NES rom"
+#~ msgstr "የNES ሮም"
+
+#, fuzzy
+#~ msgid "Software Development/ROM image"
+#~ msgstr "ሶፍትዌር መሻሻል"
+
+#, fuzzy
+#~ msgid "Software Development/Source"
+#~ msgstr "ሶፍትዌር መሻሻል"
+
+#~ msgid "arj archive"
+#~ msgstr "የarj መዝገብ ቤት"
+
+#, fuzzy
+#~ msgid "audio"
+#~ msgstr "ድምፅ"
+
+#~ msgid "gtar archive"
+#~ msgstr "የgtar መዝገብ ቤት"
