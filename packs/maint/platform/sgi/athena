@@ -1,4 +1,4 @@
-# $Id: athena,v 1.47 1998-11-03 19:05:19 ghudson Exp $
+# $Id: athena,v 1.48 1998-12-14 22:34:54 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -61,12 +61,11 @@ if [ "$AFSCLIENT" != false ]; then
 	sh /etc/athena/config_afs
 fi
 
-# fsid not working yet so next block commented out; still true???
-#if [ "$NFSCLIENT" != false ]; then
-#	$ECHO "Flushing old NFS connections... \c"
-#	/bin/athena/fsid -p -a
-#	$ECHO "done."
-#fi
+if [ "$NFSCLIENT" != false ]; then
+	$ECHO "Flushing old NFS connections... \c"
+	/bin/athena/fsid -p -q -a
+	$ECHO "done."
+fi
 
 $ECHO "Removing old attach mount points"
 /bin/athena/detach -L -O -n -h -a
