@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.44 1992-07-16 15:34:55 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: log.c,v 1.45 1993-08-05 19:09:24 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.44 1992-07-16 15:34:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.45 1993-08-05 19:09:24 vanharen Exp $";
 #endif
 #endif
 
@@ -126,7 +126,7 @@ log_log (knuckle, message, header, is_private)
 
   if ((log = fopen(knuckle->question->logfile, "a")) == (FILE *)NULL) 
     {
-      (void) sprintf(error, "log_log: can't open log %s\n",
+      (void) sprintf(error, "log_log: can't open log %s: %%m",
 		     knuckle->question->logfile);
       log_error(error);
       return(ERROR);
@@ -139,7 +139,7 @@ log_log (knuckle, message, header, is_private)
     sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
     if ((log = fopen(censored_filename, "a")) == (FILE *)NULL) 
       {
-	(void) sprintf(error, "log_log: can't open log %s\n",
+	(void) sprintf(error, "log_log: can't open log %s: %%m",
 		       knuckle->question->logfile);
 	log_error(error);
 	return(ERROR);
@@ -301,16 +301,16 @@ init_log(knuckle, question, machinfo)
 
   if ((logfile = fopen(knuckle->question->logfile, "w")) == (FILE *)NULL) 
     {
-      (void) sprintf(error, "init_log: can't open log file %s",
-	      knuckle->question->logfile);
+      (void) sprintf(error, "init_log: can't open log file %s: %%m",
+		     knuckle->question->logfile);
       log_error(error);
       return(ERROR);
     }
 
   if ((clogfile = fopen(censored_filename, "w+")) == (FILE *)NULL) 
     {
-      (void) sprintf(error, "init_log: can't open log file %s",
-	      knuckle->question->logfile);
+      (void) sprintf(error, "init_log: can't open log file %s: %%m",
+		     knuckle->question->logfile);
       log_error(error);
       return(ERROR);
     }
@@ -375,7 +375,7 @@ terminate_log_answered(knuckle)
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
       (void) sprintf(error,
-		     "terminate_log_answered: can't open temporary log %s: %m",
+		     "terminate_log_answered: can't open temporary log %s: %%m",
 		     question->logfile);
       log_error(error);
       return(ERROR);
@@ -416,7 +416,7 @@ terminate_log_unanswered(knuckle)
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
     (void) sprintf(error,
-		   "terminate_log_unanswered: can't open temp. log %s: %m",
+		   "terminate_log_unanswered: can't open temp. log %s: %%m",
 		   question->logfile);
     log_error(error);
     return(ERROR);
@@ -455,7 +455,7 @@ terminate_log_crash(knuckle)
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
       (void) sprintf(error,
-		     "terminate_log_crash: can't open temp log %s", 
+		     "terminate_log_crash: can't open temp log %s: %%m",
 		     question->logfile);
       log_error(error);
       return(ERROR);
@@ -589,7 +589,12 @@ char *os;
     /* Load translations */
     trans_file = fopen(MACH_TRANS_FILE,"r");
     if (trans_file == NULL)
-      log_error("trans_m_i: could not open translation file %m");
+      {
+	(void) sprintf(tmp_buf,
+		       "trans_m_i: could not open translation file %s: %%m",
+		       MACH_TRANS_FILE);
+	log_error(tmp_buf);
+      }
     else {
       fscanf(trans_file,"%d\n",&n_mach);
       mach = (TRANS *) calloc(n_mach,sizeof(TRANS));
