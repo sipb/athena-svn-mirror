@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.13 1999-05-04 19:33:46 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.14 2001-03-17 16:50:36 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -265,7 +265,7 @@ static int add_callback(locker_context context, locker_attachent *at,
     {
       for (ptr = found; *ptr; ptr++)
 	{
-	  if (!remove_from_path && !athdir_native(*ptr, NULL) && !quiet)
+	  if (!remove_from_path && !athdir_native(*ptr, NULL) && give_warnings)
 	    {
 	      fprintf(stderr, "%s: warning: using compatibility for %s\n",
 		      whoami, at->mountpoint);
