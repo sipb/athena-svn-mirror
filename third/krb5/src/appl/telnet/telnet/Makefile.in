@@ -25,6 +25,8 @@ OTHERDEFS=-DLINEMODE -DKLUDGELINEMODE -DDIAGNOSTICS -DENV_HACK -DOLD_ENVIRON
 LOCALINCLUDES=-I.. -I$(srcdir)/..
 CFLAGS = $(CCOPTS) $(AUTH_DEF) $(OTHERDEFS) $(DEFS) $(LOCALINCLUDES)
 ARPA_TELNET= $(srcdir)/../arpa/telnet.h
+EXTRALIBS=@EXTRALIBS@
+LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 
 SRCS=	authenc.c commands.c main.c network.c ring.c \
 	sys_bsd.c telnet.c terminal.c \
@@ -39,7 +41,8 @@ OBJS=	authenc.o commands.o main.o network.o ring.o sys_bsd.o \
 all:: telnet
 
 telnet:	$(OBJS) $(DEPLIBS) ../libtelnet/libtelnet.a
-	$(LD) -o $@ $(LDFLAGS) $(LDARGS) $(OBJS) ../libtelnet/libtelnet.a $(LIBS)
+	$(LD) -o $@ $(LDFLAGS) $(LDARGS) $(OBJS) ../libtelnet/libtelnet.a \
+	$(LOCAL_LIBRARIES) $(LIBS)
 
 clean::
 	$(RM) telnet
