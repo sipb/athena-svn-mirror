@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.22 1992-05-03 19:37:48 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.23 1992-05-08 16:21:58 epeisach Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -21,6 +21,10 @@
 #include <strings.h>
 #include <errno.h>
 
+#if defined(ultrix) && defined(POSIX)
+#undef POSIX
+#endif
+
 #ifdef POSIX
 #include <termios.h>
 #else
@@ -39,7 +43,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.22 1992-05-03 19:37:48 epeisach Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.23 1992-05-08 16:21:58 epeisach Exp $";
 #endif
 
 #ifndef NULL
