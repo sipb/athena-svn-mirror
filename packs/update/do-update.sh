@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.15 1997-04-11 20:20:56 ghudson Exp $
+# $Id: do-update.sh,v 1.16 1997-04-17 17:49:42 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -27,8 +27,8 @@ CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 SERVERDIR=/var/server
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
-HOSTTYPE=`/srvd/bin/athena/machtype`
-CPUTYPE=`/srvd/bin/athena/machtype -c`
+HOSTTYPE=`/bin/athena/machtype`
+CPUTYPE=`/bin/athena/machtype -c`
 
 echo "Starting update"
 
