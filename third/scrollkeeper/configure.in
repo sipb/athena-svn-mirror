@@ -1,11 +1,16 @@
 # copyright (c) 2000 Sun Microsystems, Inc.
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(toc/src/toc.h)
+AC_INIT(libs/error.c)
 
-AC_ISC_POSIX
+dnl ==========================================================================
+dnl
+dnl If you add a version number here, you *must* add an AC_SUBST line for
+dnl it too, or it will never make it into the spec file!
+dnl
+dnl ==========================================================================
 
-AC_CANONICAL_SYSTEM
+dnl ==========================================================================
 
 dnl Checks for programs.
 AC_PROG_AWK
@@ -20,32 +25,138 @@ dnl Checks for libraries.
 dnl Checks for header files.
 AC_HEADER_STDC
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+AC_ISC_POSIX
+
+AC_CANONICAL_SYSTEM
+
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(scrollkeeper,0.3.9)
+AM_PROG_LIBTOOL
+
+ALL_LINGUAS="az ca da de el es fr hu it ja ko nb nl no pl pt_BR ru sk sl sv tr uk zh_TW"
+
+dnl ====================================
+dnl = Begin checks for typedefs, structures, and compiler characteristics.
+dnl ====================================
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
+dnl ====================================
+dnl = End checks for typedefs, structures, and compiler characteristics.
+dnl ====================================
 
-dnl Checks for library functions.
+dnl ====================================
+dnl = Begin checks for library functions.
+dnl ====================================
 AC_FUNC_ALLOCA
 AC_FUNC_MMAP
 AC_CHECK_FUNCS(getcwd getwd putenv strdup)
+dnl ====================================
+dnl = End checks for library functions.
+dnl ====================================
 
-AC_CHECK_LIB(intl, gettext)
+dnl ====================================
+dnl = Check for paths to search for OMF files.
+dnl ====================================
+AC_MSG_CHECKING(for --with-omfdirs)
+AC_ARG_WITH(omfdirs, dnl
+[  --with-omfdirs          colon-seperated paths to search for OMF files])
 
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(scrollkeeper,0.2)
-AM_PROG_LIBTOOL
+if test -z "$with_omfdirs"
+then
+        with_omfdirs="/usr/share/omf:/usr/local/share/omf:/opt/gnome/share/omf:/opt/gnome-2.0/share/omf:/opt/kde/omf"
+fi
+OMFDIRS=$with_omfdirs
+AC_MSG_RESULT($OMFDIRS)
+AC_SUBST(OMFDIRS)
+dnl ====================================
+dnl = End check for paths to search for OMF files.
+dnl ====================================
 
-ALL_LINGUAS="da de el es fr hu ja ko nl no pt_BR ru sk sl sv tr uk"
+dnl ====================================
+dnl = Begin tests for intltool
+dnl ====================================
+AC_PATH_PROG(INTLTOOL,intltool-extract,no)
+if test x$INTLTOOL = xno; then
+  AC_MSG_ERROR(Couldn't find intltool-extract. Please install the intltool package: ftp://ftp.gnome.org/pub/GNOME/stable/sources/intltool/)
+fi
+AC_MSG_CHECKING(intltool version)
+intltool_version=`$INTLTOOL --version | awk 'NR==1{print $3;}'`
+AC_MSG_RESULT($intltool_version)
+intltool_version=`echo $intltool_version | awk -F. '{print $1 * 10000 + $2 * 100 + $3;}'`
+if test 0$intltool_version -lt 804; then
+        AC_MSG_ERROR(intltool 0.8.4 or later required)
+fi
+INTLTOOL_REQUIRED=0.8.4
+AC_SUBST(INTLTOOL_REQUIRED)
 
-AC_PATH_PROG(XML_CONFIG,xml-config,no)
+AC_PROG_INTLTOOL
+dnl ====================================
+dnl = End tests for intltool
+dnl ====================================
+
+dnl ====================================
+dnl = Begin tests for libxml2
+dnl ====================================
+AC_PATH_PROG(XML_CONFIG,xml2-config,no)
 if test x$XML_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find xml-config please install the libxml package)
+  AC_MSG_ERROR(Couldn't find xml2-config please install the libxml2 and libxml2-devel packages)
+fi
+AC_MSG_CHECKING(libxml2 version)
+libxml2_version=`$XML_CONFIG --version | awk '{print $1;}'`
+AC_MSG_RESULT($libxml2_version)
+libxml2_version=`echo $libxml2_version | awk -F. '{print $1 * 10000 + $2 * 100 + $3;}'`
+if test 0$libxml2_version -lt 20419; then
+        AC_MSG_ERROR(libxml2 2.4.19 or later required)
 fi
 XML_LIBS=`$XML_CONFIG --libs`
 XML_CFLAGS=`$XML_CONFIG --cflags`
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
+LIBXML2_REQUIRED=2.4.19
+AC_SUBST(LIBXML2_REQUIRED)
+dnl ====================================
+dnl = End tests for libxml2
+dnl ====================================
+
+dnl ====================================
+dnl = Begin tests for libxslt
+dnl ====================================
+AC_PATH_PROG(XSLT_CONFIG,xslt-config,no)
+if test x$XSLT_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find xslt-config please install the libxslt package)
+fi
+XSLT_LIBS=`$XSLT_CONFIG --libs`
+XSLT_CFLAGS=`$XSLT_CONFIG --cflags`
+AC_SUBST(XSLT_LIBS)
+AC_SUBST(XSLT_CFLAGS)
+dnl ====================================
+dnl = End tests for libxslt
+dnl ====================================
+
+dnl ====================================
+dnl = Begin tests for docbook-dtd412-xml
+dnl ====================================
+case "$host_os" in
+   solaris*)
+	HOST_TYPE=-DSOLARIS
+	AC_SUBST(HOST_TYPE)
+        ;;
+   *)
+	AC_MSG_CHECKING(for docbook-dtd412-xml)
+	if xmlcatalog /etc/xml/catalog "-//OASIS//DTD DocBook XML V4.1.2//EN" | grep "No entry" >/dev/null ; then
+		echo "* ERROR * "
+		echo " "
+		echo "Couldn't find the DocBook XML V4.1.2 DTD.  Please make sure that you have the docbook-dtd412-xml package installed. If it is installed, the package probably did not register the DTD in the catalog properly. Consult http://scrollkeeper.sourceforge.net/docbook.shtml for more information."
+		echo " "
+		AC_MSG_ERROR(DocBook XML V4.1.2 DTD not present in /etc/xml/catalog. Make sure docbook-dtd412-xml is installed and registers DTD in catalog.)
+	fi
+	AC_MSG_RESULT(found)
+	;;
+esac
+dnl ====================================
+dnl = End tests for docbook-dtd412-xml
+dnl ====================================
 
 AM_GNU_GETTEXT
 
@@ -66,8 +177,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
         CFLAGS="$CFLAGS \
         -Wall \
         -Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
-        -Wnested-externs -Wpointer-arith \
-        -Werror"
+        -Wnested-externs -Wpointer-arith"
 
         for option in -Wsign-promo -Wno-sign-compare; do
                 SAVE_CFLAGS="$CFLAGS"
@@ -101,120 +211,42 @@ AC_MSG_RESULT(partial database directory is $SCROLLKEEPER_PARTIAL_DB_DIR)
 
 AC_OUTPUT(
 libs/Makefile
+libs/scrollkeeper.h
+libuuid/Makefile
 cl/Makefile
 cl/src/Makefile
+buildtools/Makefile
 cl/templates/Makefile
-cl/templates/C/Makefile
-cl/templates/af/Makefile
-cl/templates/ar/Makefile
-cl/templates/az/Makefile
-cl/templates/bg/Makefile
-cl/templates/bg_BG/Makefile
-cl/templates/bg_BG.cp1251/Makefile
-cl/templates/bo/Makefile
-cl/templates/br/Makefile
-cl/templates/bs/Makefile
-cl/templates/ca/Makefile
-cl/templates/cs/Makefile
-cl/templates/cy/Makefile
-cl/templates/da/Makefile
-cl/templates/de/Makefile
-cl/templates/de_AT/Makefile
-cl/templates/el/Makefile
-cl/templates/en/Makefile
-cl/templates/en_AU/Makefile
-cl/templates/en_GB/Makefile
-cl/templates/en_SE/Makefile
-cl/templates/en_UK/Makefile
-cl/templates/en_US/Makefile
-cl/templates/eo/Makefile
-cl/templates/es/Makefile
-cl/templates/es_DO/Makefile
-cl/templates/es_ES/Makefile
-cl/templates/es_GT/Makefile
-cl/templates/es_HN/Makefile
-cl/templates/es_MX/Makefile
-cl/templates/es_PA/Makefile
-cl/templates/es_PE/Makefile
-cl/templates/es_SV/Makefile
-cl/templates/et/Makefile
-cl/templates/eu/Makefile
-cl/templates/fi/Makefile
-cl/templates/fr/Makefile
-cl/templates/ga/Makefile
-cl/templates/gd/Makefile
-cl/templates/gl/Makefile
-cl/templates/gu/Makefile
-cl/templates/gv/Makefile
-cl/templates/he/Makefile
-cl/templates/hi/Makefile
-cl/templates/hr/Makefile
-cl/templates/hs/Makefile
-cl/templates/hu/Makefile
-cl/templates/id/Makefile
-cl/templates/is/Makefile
-cl/templates/it/Makefile
-cl/templates/ja/Makefile
-cl/templates/ja_JP.eucJP/Makefile
-cl/templates/km/Makefile
-cl/templates/ko/Makefile
-cl/templates/kw/Makefile
-cl/templates/li/Makefile
-cl/templates/lt/Makefile
-cl/templates/mi/Makefile
-cl/templates/mk/Makefile
-cl/templates/mr/Makefile
-cl/templates/nb/Makefile
-cl/templates/nl/Makefile
-cl/templates/nn/Makefile
-cl/templates/no/Makefile
-cl/templates/no_NY/Makefile
-cl/templates/oc/Makefile
-cl/templates/pl/Makefile
-cl/templates/pt/Makefile
-cl/templates/pt_BR/Makefile
-cl/templates/pt_PT/Makefile
-cl/templates/ro/Makefile
-cl/templates/ru/Makefile
-cl/templates/se/Makefile
-cl/templates/sk/Makefile
-cl/templates/sl/Makefile
-cl/templates/sp/Makefile
-cl/templates/sr/Makefile
-cl/templates/sr_YU/Makefile
-cl/templates/sv/Makefile
-cl/templates/sv_SE/Makefile
-cl/templates/ta/Makefile
-cl/templates/th/Makefile
-cl/templates/tr/Makefile
-cl/templates/uk/Makefile
-cl/templates/wa/Makefile
-cl/templates/zh/Makefile
-cl/templates/zh_CN/Makefile
-cl/templates/zh_CN.GB2312/Makefile
-cl/templates/zh_TW/Makefile
-cl/templates/zh_TW.Big5/Makefile
-toc/Makefile
-toc/src/Makefile
+extract/Makefile
+extract/src/Makefile
+extract/stylesheets/Makefile
+extract/dtds/Makefile
 scripts/scrollkeeper-config
 scripts/scrollkeeper-get-content-list
 scripts/scrollkeeper-get-extended-content-list
 scripts/scrollkeeper-get-toc-from-id
 scripts/scrollkeeper-get-toc-from-docpath
+scripts/scrollkeeper-get-index-from-docpath
 scripts/scrollkeeper-rebuilddb
 scripts/Makefile
 man/Makefile
+man/man1/Makefile
+man/man5/Makefile
+man/man7/Makefile
 man/man8/Makefile
-doc/Makefile
-doc/scrollkeeper_manual/Makefile
-doc/scrollkeeper_manual/C/Makefile
-omf-install/Makefile
+config/scrollkeeper.conf
+config/Makefile
 intl/Makefile
 po/Makefile.in
+doc/Makefile
+doc/writing_scrollkeeper_omf_files/Makefile
+doc/writing_scrollkeeper_omf_files/C/Makefile
 Makefile
 scrollkeeper.spec)
 
 echo "
+
+Default OMF search paths (in $sysconfdir/scrollkeeper.conf): $OMFDIRS
 
 Scrollkeeper database directory: $localstatedir/$SCROLLKEEPER_PARTIAL_DB_DIR
 

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -67,66 +67,104 @@ target_alias = @target_alias@
 target_triplet = @target@
 AS = @AS@
 AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+HOST_TYPE = @HOST_TYPE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
+INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL = @INTLTOOL@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_REQUIRED = @INTLTOOL_REQUIRED@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+LIBICONV = @LIBICONV@
 LIBTOOL = @LIBTOOL@
+LIBXML2_REQUIRED = @LIBXML2_REQUIRED@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OMFDIRS = @OMFDIRS@
 PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SCROLLKEEPER_PARTIAL_DB_DIR = @SCROLLKEEPER_PARTIAL_DB_DIR@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_LIBS = @XML_LIBS@
-l = @l@
+XSLT_CFLAGS = @XSLT_CFLAGS@
+XSLT_CONFIG = @XSLT_CONFIG@
+XSLT_LIBS = @XSLT_LIBS@
 
-INCLUDES =  	-I$(top_srcdir)/libs         $(XML_CFLAGS)
+INCLUDES = \
+	-I$(top_srcdir)/libs \
+        $(XML_CFLAGS)
 
 
-LDADD =          $(XML_LIBS) 	$(top_builddir)/libs/libscrollkeeper.la
+LDADD = \
+        $(XML_LIBS) \
+	$(XSLT_LIBS) \
+	$(top_builddir)/libs/libscrollkeeper.la
 
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
 
-scrollkeeper_preinstall_SOURCES =  	preinstall.c
+scrollkeeper_preinstall_SOURCES = \
+	preinstall.c
 
 
-scrollkeeper_update_SOURCES =  	update.c
+scrollkeeper_update_SOURCES = \
+	update.c
 
 
-scrollkeeper_install_SOURCES =  	install.c
+scrollkeeper_install_SOURCES = \
+	scrollkeeper-install.c
 
 
-scrollkeeper_uninstall_SOURCES =  	uninstall.c
+scrollkeeper_uninstall_SOURCES = \
+	scrollkeeper-uninstall.c
 
 
-scrollkeeper_get_cl_SOURCES =  	get-cl.c
+scrollkeeper_get_cl_SOURCES = \
+	get-cl.c
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  scrollkeeper-preinstall$(EXEEXT) \
+scrollkeeper-update$(EXEEXT) scrollkeeper-install$(EXEEXT) \
+scrollkeeper-uninstall$(EXEEXT) scrollkeeper-get-cl$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -134,27 +172,27 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-scrollkeeper_preinstall_OBJECTS =  preinstall.o
+scrollkeeper_preinstall_OBJECTS =  preinstall.$(OBJEXT)
 scrollkeeper_preinstall_LDADD = $(LDADD)
 scrollkeeper_preinstall_DEPENDENCIES =  \
 $(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_preinstall_LDFLAGS = 
-scrollkeeper_update_OBJECTS =  update.o
+scrollkeeper_update_OBJECTS =  update.$(OBJEXT)
 scrollkeeper_update_LDADD = $(LDADD)
 scrollkeeper_update_DEPENDENCIES =  \
 $(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_update_LDFLAGS = 
-scrollkeeper_install_OBJECTS =  install.o
+scrollkeeper_install_OBJECTS =  scrollkeeper-install.$(OBJEXT)
 scrollkeeper_install_LDADD = $(LDADD)
 scrollkeeper_install_DEPENDENCIES =  \
 $(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_install_LDFLAGS = 
-scrollkeeper_uninstall_OBJECTS =  uninstall.o
+scrollkeeper_uninstall_OBJECTS =  scrollkeeper-uninstall.$(OBJEXT)
 scrollkeeper_uninstall_LDADD = $(LDADD)
 scrollkeeper_uninstall_DEPENDENCIES =  \
 $(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_uninstall_LDFLAGS = 
-scrollkeeper_get_cl_OBJECTS =  get-cl.o
+scrollkeeper_get_cl_OBJECTS =  get-cl.$(OBJEXT)
 scrollkeeper_get_cl_LDADD = $(LDADD)
 scrollkeeper_get_cl_DEPENDENCIES =  \
 $(top_builddir)/libs/libscrollkeeper.la
@@ -176,7 +214,7 @@ OBJECTS = $(scrollkeeper_preinstall_OBJECTS) $(scrollkeeper_update_OBJECTS) $(sc
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps cl/src/Makefile
 
@@ -213,6 +251,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -221,6 +264,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -248,24 +292,24 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-scrollkeeper-preinstall: $(scrollkeeper_preinstall_OBJECTS) $(scrollkeeper_preinstall_DEPENDENCIES)
-	@rm -f scrollkeeper-preinstall
+scrollkeeper-preinstall$(EXEEXT): $(scrollkeeper_preinstall_OBJECTS) $(scrollkeeper_preinstall_DEPENDENCIES)
+	@rm -f scrollkeeper-preinstall$(EXEEXT)
 	$(LINK) $(scrollkeeper_preinstall_LDFLAGS) $(scrollkeeper_preinstall_OBJECTS) $(scrollkeeper_preinstall_LDADD) $(LIBS)
 
-scrollkeeper-update: $(scrollkeeper_update_OBJECTS) $(scrollkeeper_update_DEPENDENCIES)
-	@rm -f scrollkeeper-update
+scrollkeeper-update$(EXEEXT): $(scrollkeeper_update_OBJECTS) $(scrollkeeper_update_DEPENDENCIES)
+	@rm -f scrollkeeper-update$(EXEEXT)
 	$(LINK) $(scrollkeeper_update_LDFLAGS) $(scrollkeeper_update_OBJECTS) $(scrollkeeper_update_LDADD) $(LIBS)
 
-scrollkeeper-install: $(scrollkeeper_install_OBJECTS) $(scrollkeeper_install_DEPENDENCIES)
-	@rm -f scrollkeeper-install
+scrollkeeper-install$(EXEEXT): $(scrollkeeper_install_OBJECTS) $(scrollkeeper_install_DEPENDENCIES)
+	@rm -f scrollkeeper-install$(EXEEXT)
 	$(LINK) $(scrollkeeper_install_LDFLAGS) $(scrollkeeper_install_OBJECTS) $(scrollkeeper_install_LDADD) $(LIBS)
 
-scrollkeeper-uninstall: $(scrollkeeper_uninstall_OBJECTS) $(scrollkeeper_uninstall_DEPENDENCIES)
-	@rm -f scrollkeeper-uninstall
+scrollkeeper-uninstall$(EXEEXT): $(scrollkeeper_uninstall_OBJECTS) $(scrollkeeper_uninstall_DEPENDENCIES)
+	@rm -f scrollkeeper-uninstall$(EXEEXT)
 	$(LINK) $(scrollkeeper_uninstall_LDFLAGS) $(scrollkeeper_uninstall_OBJECTS) $(scrollkeeper_uninstall_LDADD) $(LIBS)
 
-scrollkeeper-get-cl: $(scrollkeeper_get_cl_OBJECTS) $(scrollkeeper_get_cl_DEPENDENCIES)
-	@rm -f scrollkeeper-get-cl
+scrollkeeper-get-cl$(EXEEXT): $(scrollkeeper_get_cl_OBJECTS) $(scrollkeeper_get_cl_DEPENDENCIES)
+	@rm -f scrollkeeper-get-cl$(EXEEXT)
 	$(LINK) $(scrollkeeper_get_cl_LDFLAGS) $(scrollkeeper_get_cl_OBJECTS) $(scrollkeeper_get_cl_LDADD) $(LIBS)
 
 tags: TAGS
@@ -312,6 +356,14 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+get-cl.o: get-cl.c ../../config.h ../../libs/scrollkeeper.h
+preinstall.o: preinstall.c ../../config.h ../../libs/scrollkeeper.h
+scrollkeeper-install.o: scrollkeeper-install.c ../../config.h \
+	../../libs/scrollkeeper.h
+scrollkeeper-uninstall.o: scrollkeeper-uninstall.c ../../config.h \
+	../../libs/scrollkeeper.h
+update.o: update.c ../../config.h ../../libs/scrollkeeper.h
+
 info-am:
 info: info-am
 dvi-am:

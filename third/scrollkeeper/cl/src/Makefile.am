@@ -6,6 +6,7 @@ INCLUDES = \
 
 LDADD = \
         $(XML_LIBS) \
+	$(XSLT_LIBS) \
 	$(top_builddir)/libs/libscrollkeeper.la
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
@@ -17,10 +18,10 @@ scrollkeeper_update_SOURCES = \
 	update.c
 
 scrollkeeper_install_SOURCES = \
-	install.c
+	scrollkeeper-install.c
 
 scrollkeeper_uninstall_SOURCES = \
-	uninstall.c
+	scrollkeeper-uninstall.c
 
 scrollkeeper_get_cl_SOURCES = \
 	get-cl.c
