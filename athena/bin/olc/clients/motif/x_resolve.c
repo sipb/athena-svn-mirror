@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v $
- *      $Id: x_resolve.c,v 1.3 1991-03-24 14:30:00 lwvanels Exp $
+ *      $Id: x_resolve.c,v 1.4 1991-09-10 14:50:27 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.3 1991-03-24 14:30:00 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.4 1991-09-10 14:50:27 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -95,7 +95,7 @@ x_done(Request)
       break;
 
     case OK:
-      MuHelp("The consultant has been notified that you are finished with your question.\n\nThank you for using OLC!");
+      MuWarningSync("The consultant has been notified that you are finished with your question.\n\nThank you for using OLC!");
      if(OLC)
        {
 	 exit(0);
@@ -129,7 +129,7 @@ x_done(Request)
       sprintf(error, "%s (%d) has been deactivated.  You are %s (%d).",
 	      Request->requester.username, instance,
 	      Request->requester.username, Request->requester.instance);
-      MuHelp(error);
+      MuError(error);
     }
 
   return;
@@ -178,7 +178,8 @@ x_cancel(Request)
       break;
 
     case OK:
-      MuHelp("Your question has been cancelled.\n\nThank you for using OLC!");
+      MuWarningSync(
+  	  "Your question has been cancelled.\nThank you for using OLC!");
       if(OLC)
          exit(0);
 
