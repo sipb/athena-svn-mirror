@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.20 1993-04-23 16:57:30 miki Exp $
+# $Id: Imakefile,v 1.21 1993-07-22 21:19:23 vrt Exp $
 
 USRSCRIPTS=mitvma
 
@@ -13,10 +13,11 @@ create_dir(/usr/athena/lib/login)
 
 #ifdef SOLARIS
 install_file(config.solaris,/etc/athena/login/config)
+install_script(Xsession.sun4,,/etc/athena/login/Xsession)
 #else
 install_file(config,/etc/athena/login/config)
-#endif
 install_script(Xsession,,/etc/athena/login/Xsession)
+#endif
 
 install::
 	-for i in $(USRSCRIPTS); do \
