@@ -10,8 +10,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.13 1996-08-10 21:27:53 cfields Exp $
- *      $Author: cfields $
+ *      $Id: xolc.h,v 1.14 1997-04-30 17:42:04 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 #include <mit-copyright.h>
@@ -126,28 +126,27 @@ int main P_((int argc, char *argv[]));
 int olc_init P_((void));
 
 /* procs.c */
-void olc_new_ques P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_clear_newq P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_send_newq P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_topic_select P_((Widget w, caddr_t *tag, XmListCallbackStruct *callback_data));
-void olc_cont_ques P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_new_ques     P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_clear_newq   P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_send_newq    P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_topic_select P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_cont_ques    P_((Widget w, XtPointer tag, XtPointer callback_data));
 void olc_status P_((void));
 void olc_replay P_((void));
-void olc_done P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_cancel P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_savelog P_((Widget w, caddr_t *tag, XmAnyCallbackStruct
-		     *callback_data));
-void save_cbk P_((Widget w, caddr_t *tag, XmSelectionBoxCallbackStruct *callback_data));
-void olc_stock P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_motd P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_update P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_help P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_quit P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void dlg_ok P_((Widget w, int tag, XmAnyCallbackStruct *callback_data));
-void olc_send P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_clear_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_send_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
-void olc_close_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_done         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_cancel       P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_savelog      P_((Widget w, XtPointer tag, XtPointer callback_data));
+void save_cbk         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_stock        P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_motd         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_update       P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_help         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_quit         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void dlg_ok           P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_send         P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_clear_msg    P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_send_msg     P_((Widget w, XtPointer tag, XtPointer callback_data));
+void olc_close_msg    P_((Widget w, XtPointer tag, XtPointer callback_data));
 
 /* visual.c */
 void MakeInterface P_((void));
