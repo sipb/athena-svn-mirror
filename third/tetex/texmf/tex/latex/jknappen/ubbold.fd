@@ -1,0 +1,17 @@
+%% Ubbold.fd
+%%
+%% (c) Copyleft 1995, 1996 J"org Knappen
+%% Licence: GNU licence version 2
+%%
+\ProvidesFile{Ubbold.fd}[1996/01/01 Blackboard Bold Font Definition File (jk)]
+%%
+\providecommand{\sauter@family}[5]{%
+  \DeclareFontShape{#1}{#2}{#4}{#5}
+  { <5> #35 <6> #36 <7> #37 <8> #38 <9> #39 <10> #310 <10.95> #311 
+  <12> #312 <14.4> #314 <17.28> #317 <20.74> #320 <24.88> #325
+  }{}%
+}
+%%
+\DeclareFontFamily{U}{bbold}{}
+\sauter@family{U}{bbold}{bbold}{m}{n}
+\endinput

@@ -1,0 +1,21 @@
+This is the supertabular bundle. It defines the supertabular and
+supertabular* environments. They make it possible to have a tabular
+that spans multiple pages. Each page is its own tabular environment,
+thus the various parts may have different widths. If that is not what
+you want you should check out longtable.sty, written by David
+Carlisle. It is part of the array bundle.
+
+For a more elaborate description of supertabular and a comparison with
+longtable, see The LaTeX Companion, by Goossens, Mittelbach and
+Samarin, ISBN 0-201-54199-8.
+
+The files contained in this bundle are listed in the file MANIFEST
+
+Supertabular can be used with LaTeX2e as a package.
+
+Copyright (C) 1999 Johannes L. Braams JLBraams@cistron.nl
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.

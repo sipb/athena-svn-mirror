@@ -1,0 +1,568 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 1</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:13 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_0.html">previous</A>, <A HREF="texfaq_2.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC1">The Background</A></H1>
+
+
+<H2><A NAME="QU1">What is TeX?</A></H2>
+
+<P>
+TeX is a typesetting system written by Donald E. Knuth, who
+says in the Preface to his book on TeX
+(see <A HREF="texfaq_2.html#QU19">TeX-related books</A>)
+that it is ``<EM>intended for the creation of beautiful books -and especially for books that contain a lot of mathematics</EM>''.
+
+<P>
+Knuth developed a system of `literate programming' to write TeX,
+and he provides the literate (WEB) source of TeX free of charge,
+together with tools for processing the <CODE>web</CODE> source into something
+that can be compiled and something that can be printed; there's never
+any mystery about what TeX does.  Furthermore, the WEB system
+provides mechanisms to port TeX to new operating systems and
+computers; in order that one may have some confidence in the ports,
+Knuth supplied a test by means of which one may judge the fidelity of
+a TeX system.  TeX and its documents are therefore highly
+portable.
+
+<P>
+TeX is a macro processor, and offers its users a powerful
+programming capability.  For this reason, TeX on its own is a
+pretty difficult beast to deal with, so Knuth provided a package of
+macros for use with TeX called <CODE>plain</CODE> TeX; <CODE>plain</CODE> TeX is
+effectively the minimum set of macros one can usefully employ with
+TeX, together with some demonstration versions of higher-level
+commands (the latter are better regarded as models than used as-is).
+When people say they're ``programming in TeX'', they usually mean
+they're programming in <CODE>plain</CODE> TeX.
+
+
+<H2><A NAME="QU2">How should I pronounce ``TeX''?</A></H2>
+
+<P>
+The `X' stands for the Greek letter
+Chi,
+and is pronounced by English-speakers either a bit like the `ch' in
+`loch' ([x] in the IPA) or like `k'.  It definitely is not pronounced
+`ks'.
+
+
+<H2><A NAME="QU3">What is METAFONT?</A></H2>
+
+<P>
+METAFONT was written by Knuth as a companion to TeX; whereas TeX
+defines the layout of glyphs on a page, METAFONT defines the shapes of
+the glyphs and the relations between them.  METAFONT details the sizes of
+glyphs, for TeX's benefit, and details the rasters used to
+represent the glyphs, for the benefit of programs that will produce
+printed output as post processes after a run of TeX.
+
+<P>
+METAFONT's language for defining fonts permits the expression of several
+classes of things: first (of course), the simple geometry of the
+glyphs; second, the properties of the print engine for which the
+output is intended; and third, `meta'-information which can
+distinguish different design sizes of the same font, or the difference
+between two fonts that belong to the same (or related) families.
+
+<P>
+Knuth (and others) have designed a fair range of fonts using METAFONT,
+but font design using METAFONT is much more of a minority skill than is
+TeX macro-writing.  The complete TeX-user nevertheless needs to
+be aware of METAFONT, and to be able to run METAFONT to generate personal
+copies of new fonts.
+
+
+<H2><A NAME="QU4">What is MetaPost?</A></H2>
+
+<P>
+The MetaPost system implements a picture-drawing language very much like
+that of METAFONT except that it outputs PostScript commands instead of
+run-length-encoded bitmaps.  MetaPost is a powerful language for
+producing figures for documents to be printed on PostScript printers.
+It provides access to all the features of PostScript and it includes
+facilities for integrating text and graphics.  (Knuth tells us that he
+uses nothing else for diagrams in text that he is writing.)
+
+<P>
+Much of MetaPost's source code was copied from METAFONT's sources with
+Knuth's permission.
+
+
+
+<H2><A NAME="QU5">How can I be sure it's really TeX?</A></H2>
+
+<P>
+TeX (and METAFONT and MetaPost) are written in a
+  <A HREF="texfaq_8.html#QU48">`literate' programming</A> language called Web
+which is designed to be portable across a wide range of computer
+systems.  How, then, is a new version of TeX checked?
+
+<P>
+Of course, any sensible software implementor will have his own suite
+of tests to check that his software runs: those who port TeX and
+its friends to other platforms do indeed perform such tests.
+
+<P>
+Knuth, however, provides a `conformance test' for both TeX
+(<CODE>trip</CODE>) and METAFONT (<CODE>trap</CODE>).
+He characterises these as `torture tests': they are designed not to
+check the obvious things that ordinary typeset documents, or font
+designs, will exercise, but rather to explore small alleyways off the
+main path through the code of TeX.  They are, to the casual reader,
+pretty incomprehensible!
+
+<P>
+Once an implementation of TeX has passed its <CODE>trip</CODE>, or and
+implementation of METAFONT has passed its <CODE>trap</CODE>, test it may
+reasonably be distributed as a working version.
+
+
+
+<H2><A NAME="QU6">Are TeX and friends Y2K compliant?</A></H2>
+
+
+<DL>
+<DT>Crashing:
+<DD>None of TeX, METAFONT or MetaPost can themselves crash
+  due to any change whatever in the date of any sort.
+<DT>Timestamps:
+<DD>As Knuth delivers the sources, a 2-digit year is
+  stored as the creation time for format files and that value is
+  printed in logfiles.  These items should not be of general concern,
+  since the only use of the date format file is to produce the log
+  output, and the log file is designed for human readers only.
+
+<P>
+  Knuth's distributed source does not designate the code, which
+  generates this 2-digit date, as a valid area where implementations
+  may differ.  However, he announced in 1998 that implementators can
+  alter this code without fear of being accused of non-compliance.
+  Nearly all implementations that are being actively maintained had
+  been modified to generate 4-digit years in the format file and the
+  log, by the end of 1998.
+<DT>The <CODE>\year</CODE> primitive:
+<DD>Certification of a TeX
+  implementation (see <A HREF="texfaq_1.html#QU5">trip/trap testing</A>)
+  does not require that <CODE>\year</CODE> return a meaningful value (which
+  means that TeX can, in principle, be implemented on platforms
+  that don't make the value of the clock available to user programs).
+  The <EM>TeXbook</EM> (see
+  <A HREF="texfaq_2.html#QU19">TeX-related books</A>) defines <CODE>\year</CODE> as
+  ``the current year of our Lord'', which is the only correct meaning
+  for <CODE>\year</CODE> for those implementations which can supply a
+  meaningful value, which is to say nearly all of them.
+
+<P>
+  In short, TeX implementations should provide a value in <CODE>\year</CODE>
+  giving the 4-digit year Anno Domini, or the value 1776 if the
+  platform does not support a date function.
+
+<P>
+  Note that if the system itself fails to deliver a correct date to
+  TeX, then <CODE>\year</CODE> will of course return an incorrect value.
+  TeX cannot be considered Y2K compliant, in this sense, on a
+  system that is not itself Y2K compliant.
+<DT>Macros:
+<DD>TeX macros can in principle perform calculations on
+  the basis of the value of <CODE>\year</CODE>.
+  The <A HREF="texfaq_1.html#QU7">LaTeX</A> suite
+  performs such calculations in a small number of places; the
+  calculations performed in the current (supported) version of LaTeX are
+  known to be Y2K compliant.
+
+<P>
+  Other macros and macro packages should be individually checked.
+<DT>External software:
+<DD>Software such as DVI translators
+  needs to be individually checked.
+</DL>
+
+
+
+<H2><A NAME="QU7">What is LaTeX?</A></H2>
+
+<P>
+LaTeX is a TeX macro package, originally written by Leslie Lamport, that
+provides a document processing system.  LaTeX allows markup to
+describe the structure of a document, so that the user
+need not think about presentation. By using document classes and
+add-on packages, the same document can be produced in a variety of
+different layouts.
+
+<P>
+Lamport says that LaTeX
+``<EM>represents a balance between functionality and ease of use</EM>''.
+This shows itself as a continual conflict that leads to
+the need for such as the present article: LaTeX <EM>can</EM> 
+meet most user requirements, but finding out <EM>how</EM> is often
+tricky.
+
+
+<H2><A NAME="QU8">How should I pronounce ``LaTeX(2e)''?</A></H2>
+
+<P>
+Lamport never recommended how one should pronounce LaTeX, but a lot
+of people pronounce it `Lay TeX' or perhaps `Lah TeX' (with
+TeX pronounced as the program itself; see
+<A HREF="texfaq_1.html#QU2">the rules for TeX</A>).
+
+<P>
+The `epsilon' in `LaTeX2e' is supposed to be suggestive of a small
+improvement over the old LaTeX 2.09.  Nevertheless, most people
+pronounce the name as `LaTeX-two-ee'.
+
+
+<H2><A NAME="QU9">Should I use <CODE>plain</CODE> TeX or LaTeX?</A></H2>
+
+<P>
+There's no straightforward answer to this question.  Many people swear
+by <CODE>plain</CODE> TeX, and produce highly respectable documents using it
+(Knuth is an example of this, of course).  But equally, many people
+are happy to let someone else take the design decisions for them,
+accepting a small loss of flexibility in exchange for a saving of
+brain power.
+
+<P>
+The arguments around this topic can provoke huge amounts of noise and
+heat, without offering much by way of light; your best bet is to find
+out what those around you are using, and to go with the crowd.  Later
+on, you can always switch your allegiance; don't bother about it.
+
+<P>
+If you are preparing a manuscript for a publisher or journal, ask them
+what markup they want before you
+develop your own; many big publishers have developed their own
+LaTeX styles for journals and books, and insist that authors stick
+closely to their markup.
+
+
+<H2><A NAME="QU10">What are the AMS packages (AMS-TeX, <EM>etc</EM>.)?</A></H2>
+
+<P>
+AMS-TeX is a TeX macro package, originally written by Michael Spivak for
+the American Mathematical Society (AMS) during 1983-1985. It
+is described in
+``<EM>The Joy of TeX</EM>'' by Michael D. Spivak (second edition,
+AMS, 1990, ISBN 0-821-82997-1).  It is based on <CODE>plain</CODE> TeX, but
+provides many
+features for producing more professional-looking maths formulas with
+less burden on authors.  It pays attention to the finer details of
+sizing and positioning that mathematical publishers care about. The
+aspects covered include multi-line displayed equations, equation
+numbering, ellipsis dots, matrices, double accents, multi-line
+subscripts, syntax checking (faster processing on initial
+error-checking TeX runs), and other things.
+
+<P>
+As LaTeX increased in popularity, authors asked to submit papers to
+the AMS in LaTeX, and so the AMS developed
+AMS-LaTeX, which is a
+collection of LaTeX packages and classes that offer authors most of
+the functionality of AMS-TeX.
+
+
+<H2><A NAME="QU11">What is Eplain?</A></H2>
+
+<P>
+The Eplain macro package expands on and extends the
+definitions in <CODE>plain</CODE> TeX.  Eplain is not intended to provide
+``generic typesetting capabilities'', as do LaTeX or
+<A HREF="texfaq_1.html#QU13">Texinfo</A>.
+Instead, it provides definitions that are intended to be useful
+regardless of the high-level commands that you use when you actually
+prepare your manuscript.
+
+<P>
+For example, Eplain does not have a command <CODE>\section</CODE>,
+which would format section headings in an ``appropriate'' way, as
+LaTeX's <CODE>\section</CODE>.  The philosophy of Eplain is that
+some people will always need or want to go beyond the macro designer's
+idea of ``appropriate''.  Such canned macros are fine - as long as you
+are willing to accept the resulting output.  If you don't like the
+results, or if you are trying to match a different format, you are out
+of luck.
+
+<P>
+On the other hand, almost everyone would like capabilities such as
+cross-referencing by labels, so that you don't have to put actual page
+numbers in the manuscript.  Karl Berry, the author of Eplain, says
+he is not aware of any generally available macro packages that do
+not force their typographic style on an author, and yet provide
+such capabilities.
+
+
+<H2><A NAME="QU12">What is Lollipop?</A></H2>
+
+<P>
+Lollipop is a macro package written by Victor Eijkhout; it was used in
+the production of his book ``<EM>TeX by Topic</EM>'' (see
+<A HREF="texfaq_2.html#QU19">Tex-related books</A>).  The manual says of
+it:
+<BLOCKQUOTE>
+  Lollipop is `TeX made easy'. Lollipop is a macro package that
+  functions as a toolbox for writing TeX macros.  It was my
+  intention to make macro writing so easy that implementing a fully
+  new layout in TeX would become a matter of less than an hour for
+  an average document, and that it would be a task that could be
+  accomplished by someone with only a very basic training in TeX
+  programming.
+
+<P>
+  Lollipop is an attempt to make structured text formatting available
+  for environments where previously only WYSIWYG packages could be
+  used because adapting the layout is so much more easy with them than
+  with traditional TeX macro packages.
+</BLOCKQUOTE>
+
+<P>
+The manual goes on to talk of ambitions to ``capture some of the
+LaTeX market share''; it's a very witty package, but little sign of
+it taking over from LaTeX is detectable...
+An article about Lollipop appeared in <CITE>TUGboat</CITE> 13(3).
+
+
+<H2><A NAME="QU13">What is Texinfo?</A></H2>
+
+<P>
+Texinfo is a documentation system that uses one source file to
+produce both on-line information and printed output.  So
+instead of writing two different documents, one for the on-line help
+and the other for a typeset manual, you need write only one
+document source file.  When the work
+is revised, you need only revise one document.  You can read the
+on-line information, known as an ``Info file'', with an Info
+documentation-reading program.  By convention, Texinfo source file
+names end with a <CODE>.texi</CODE> or <CODE>.texinfo</CODE> extension.
+You can write and format Texinfo files into Info files within GNU
+<I>emacs</I>, and read them using the <I>emacs</I> Info
+reader.  If you do not have <I>emacs</I>, you can format Texinfo
+files into Info files using <I>makeinfo</I> and read them using
+<I>info</I>.
+
+<P>
+The Texinfo distribution, including a set of TeX macros for
+formatting Texinfo files is available as <A HREF="ftp://ftp.dante.de/tex-archive/macros/texinfo/texinfo.tar.gz"><TT>macros/texinfo/texinfo.tar.gz</TT></A>
+
+
+<H2><A NAME="QU14">If TeX is so good, how come it's free?</A></H2>
+
+<P>
+It's free because Knuth chose to make it so.  He is nevertheless
+apparently happy
+that others should earn money by selling TeX-based services and
+products. While several valuable TeX-related tools and packages are
+offered subject to restrictions imposed by the GNU General Public
+Licence (`Copyleft'), TeX itself is not subject to Copyleft.
+
+<P>
+There are commercial versions of TeX available; for some users,
+it's reassuring to have paid support.  What is more, some of the
+commercial implementations
+have features that are not available in free versions.  (The
+reverse is also true: some free implementations have features
+not available commercially.)
+
+<P>
+Usually, this article does not describe commercial
+versions; see <A HREF="texfaq_5.html#QU40">major vendors</A> for some details.
+
+
+<H2><A NAME="QU15">What is the future of TeX?</A></H2>
+
+<P>
+Knuth has declared that he will do no further development of TeX;
+he will continue to fix any bugs that are reported to him (though
+bugs are rare).  This decision was made soon after
+TeX version 3.0 was released; at each bug-fix release
+the version number acquires one more digit, so that it tends to the
+limit <I>pi</I> (at the time of writing, Knuth's latest release is version
+3.14159).  Knuth wants TeX to be frozen at version <I>pi</I> when he
+dies; thereafter, no further changes may be made to Knuth's source.
+(A similar rule is applied to METAFONT; its version number tends to the
+limit <I>e</I>, and currently stands at 2.718.)
+
+<P>
+There are projects (some of them long-term
+projects: see, for example,
+<A HREF="texfaq_16.html#QU117">the LaTeX3 project</A>)
+to build substantial
+new macro packages based on TeX.  For the even longer term, there
+are various projects to build a <EM>successor</EM> to TeX; see
+<A HREF="texfaq_16.html#QU118">the Omega project</A> and <A HREF="texfaq_16.html#QU119">NTS</A>.
+
+
+<H2><A NAME="QU16">What are TUG and <CITE>TUGboat</CITE>?</A></H2>
+
+<P>
+TUG is the TeX Users Group.  <CITE>TUGboat</CITE> is
+TUG's main journal,
+containing useful articles about TeX and METAFONT. TUG also produces a
+newsletter for members (TeX and TUG News), organises a yearly
+conference, runs training courses, sells almost all TeX-related
+books, and distributes TeX-related microcomputer software on disk. 
+TUG has a Technical Council to  coordinate TeX-related developments
+(<A HREF="texfaq_1.html#QU18">TUG Technical Working Groups</A>).
+Enquiries should be directed to:
+<BLOCKQUOTE>
+  TeX Users Group<BR>
+  1466 NW Front Avenue, Suite 3141<BR>
+  Portland, OR 97209<BR>
+  USA<BR>
+  Tel: (+1) 503-223-9994<BR>
+  Fax: (+1) 503-223-3960<BR>
+  Email: <A HREF="mailto://tug@mail.tug.org"><TT>tug@mail.tug.org</TT></A><BR>
+  Web: <A HREF="http://www.tug.org/"><TT>http://www.tug.org/</TT></A><BR>
+  CTAN details: <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/tug"><TT>usergrps/tug</TT></A>
+</BLOCKQUOTE>
+
+
+<H2><A NAME="QU17">Are there nationally-based user groups, too?</A></H2>
+
+<P>
+The following groups publish their membership (<EM>etc</EM>.) information
+electronically on CTAN archives:
+
+
+<BLOCKQUOTE>
+  DANTE, Deutschsprachige Anwendervereinigung TeX e.V.<BR>
+  Postfach 101840<BR>
+  D-69008 Heidelberg<BR>
+  Germany<BR>
+  Tel: (+49) 06221 29766<BR>
+  Fax: (+49) 06221 167906<BR>
+  Email: <A HREF="mailto://dante@dante.de"><TT>dante@dante.de</TT></A><BR>
+  Web: <A HREF="http://www.dante.de/"><TT>http://www.dante.de/</TT></A><BR>
+  CTAN details: <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/dante"><TT>usergrps/dante</TT></A>
+</BLOCKQUOTE>
+
+
+<BLOCKQUOTE>
+  Association GUTenberg,<BR>
+  BP 10,<BR>
+  93220 Gagny principal,<BR>
+  France<BR>
+  Email: <A HREF="mailto://gut@irisa.fr"><TT>gut@irisa.fr</TT></A><BR>
+  Web: <A HREF="http://www.ens.fr/gut/"><TT>http://www.ens.fr/gut/</TT></A><BR>
+  CTAN details: <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/gut"><TT>usergrps/gut</TT></A>
+</BLOCKQUOTE>
+
+<P>
+  <BLOCKQUOTE>
+  NTG <BR>
+  Postbus 394, 1740AJ  Schagen,<BR>
+  The Netherlands<BR>
+  Email: <A HREF="mailto://ntg@nic.surfnet.nl"><TT>ntg@nic.surfnet.nl</TT></A><BR>
+  Web: <A HREF="http://www.ntg.nl/"><TT>http://www.ntg.nl/</TT></A><BR>
+  CTAN details: <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/ntg"><TT>usergrps/ntg</TT></A>
+  </BLOCKQUOTE>
+
+
+<BLOCKQUOTE>
+  UK TeX Users' Group,<BR>
+  c/o Peter Abbott,<BR>
+  1 Eymore Close,<BR>
+  Selly Oak,<BR>
+  Birmingham B29 4LB<BR>
+  UK<BR>
+  Tel: (+44) 0121 476 2159<BR>
+  Email: <A HREF="mailto://UKTuG-Enquiries@tex.ac.uk"><TT>UKTuG-Enquiries@tex.ac.uk</TT></A><BR>
+  Web: <A HREF="http://uk.tug.org/uk-tug"><TT>http://uk.tug.org/uk-tug</TT></A><BR>
+  CTAN details: <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/uktug"><TT>usergrps/uktug</TT></A>
+</BLOCKQUOTE>
+
+<P>
+A listing of all known groups is available as <A HREF="ftp://ftp.dante.de/tex-archive/usergrps/info/usergrps.tex"><TT>usergrps/info/usergrps.tex</TT></A>
+
+
+<H2><A NAME="QU18">TUG Technical Working Groups</A></H2>
+
+<P>
+  <A HREF="texfaq_1.html#QU16">TUG</A>
+has an autonomous Technical Council which can appoint 
+Technical Working Groups related to the specific areas of interest 
+to the TeX community. 
+Each group has a chair/contact person and establishes its own working 
+methods and membership; anyone interested in taking part should contact 
+the group's chair person. Suggestions for new groups should be addressed to 
+<SAMP>tech-council@tug.org</SAMP>;
+a list of members of the Technical Council can be found
+at <A HREF="http://tug.org/committees.html"><TT>http://tug.org/committees.html</TT></A>
+
+<P>
+Below is a brief list of currently active groups:
+
+
+<DL>
+<DT>WG-92-01
+<DD><EM>TeX Extended Mathematics Font Encoding.</EM><BR>
+To create font encoding standards for Mathematical fonts
+used in TeX systems.
+
+<P>
+Contact: Barbara Beeton (<SAMP>bnb@math.ams.org</SAMP>)
+
+
+<DT>WG-92-05
+<DD><EM>TeX Archive Guidelines.</EM><BR>
+To develop
+guidelines for the effective management and utilisation of major TeX
+archives, and to initiate communication among the maintainers of the
+existing archives for the purpose of coordination and synchronisation.
+
+<P>
+Contact: Sebastian Rahtz (<SAMP>s.rahtz@elsevier.co.uk</SAMP>)
+
+
+<DT>WG-94-07
+<DD><EM>TeX Directory Structure.</EM><BR>
+To identify a universal directory
+structure for macros, fonts and other related TeX software so that
+recommendations can be made to all suppliers of TeX software.
+
+<P>
+The group's current set of proposals are to be found on CTAN at <A HREF="ftp://ftp.dante.de/tex-archive/tds/draft-standard"><TT>tds/draft-standard</TT></A>
+
+<P>
+Contact: Karl Berry (<SAMP>kb@cs.umb.edu</SAMP>)
+
+
+<DT>WG-94-08
+<DD><EM>DVI Driver Implementation and Standardisation Issues.</EM><BR>
+To study the issues in
+the requirements of DVI Drivers imposed by changing needs and
+technologies, and to make recommendations for implementation and
+standardisation of such drivers to enhance the uniformity of their use.
+Work will include, but not be limited to, the examination of the use,
+syntax, and semantics of <CODE>\special{..}</CODE> commands.
+
+<P>
+Contact: Michael Sofka (<SAMP>sofkam@rpi.edu</SAMP>)
+
+
+<DT>WG-94-10
+<DD><EM>TeX and Linguistics.</EM><BR>
+To study and discuss the
+requirements for typesetting linguistics in TeX and as a means of
+identifying, examining, testing, and comparing macros, fonts, style files
+and other aids for typesetting linguistics.
+
+<P>
+Contact: Christina Thiele (<SAMP>cthiele@ccs.carleton.ca</SAMP>)
+</DL>
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_0.html">previous</A>, <A HREF="texfaq_2.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

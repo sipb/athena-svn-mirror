@@ -1,0 +1,50 @@
+% setup catcode/uccode/lccode/sfcode/mathcode values for LCY font encoding
+
+\def\letter#1 #2 {%\catcode#1=11 \catcode#2=11 % do not break inputenc
+\uccode#1=#1 \uccode#2=#1
+\lccode#1=#2 \lccode#2=#2
+\sfcode#1=999 \sfcode#2=1000
+\count255=#1 \advance\count255 "7000 \mathcode#1=\count255
+\count255=#2 \advance\count255 "7000 \mathcode#2=\count255
+}
+
+\letter 128 160
+\letter 129 161
+\letter 130 162
+\letter 131 163
+\letter 132 164
+\letter 133 165
+\letter 134 166
+\letter 135 167
+\letter 136 168
+\letter 137 169
+\letter 138 170
+\letter 139 171
+\letter 140 172
+\letter 141 173
+\letter 142 174
+\letter 143 175
+\letter 144 224
+\letter 145 225
+\letter 146 226
+\letter 147 227
+\letter 148 228
+\letter 149 229
+\letter 150 230
+\letter 151 231
+\letter 152 232
+\letter 153 233
+\letter 154 234
+\letter 155 235
+\letter 156 236
+\letter 157 237
+\letter 158 238
+\letter 159 239
+\letter 240 241
+\letter 242 243
+\letter 244 245
+\letter 246 247
+\letter 248 249
+\letter 250 251
+
+\let\letter\undefined

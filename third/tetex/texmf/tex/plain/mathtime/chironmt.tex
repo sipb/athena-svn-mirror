@@ -1,0 +1,144 @@
+% This is a test file containing both math and text. Run in plain TeX
+
+\nopagenumbers
+
+% Make sure that `encode.tex' is set up for the encoding used by
+% your DVI driver for the Times-Roman text fonts.
+
+% \input stanacce.tex		% deal with Standard Encoding in text fonts
+\input ansiacce.tex		% deal with Windows ANSI encoding in text 
+\input mtplain.tex		% load Times-Roman macros
+
+%% NOTE: also change the definition of \qtr (ring accent) if encoding changed!
+
+\ifnum\the\ss=251\def\qtr#1{{\rm\mathaccent202#1}}\fi	% standard (Adobe SE)
+\ifnum\the\ss=223\def\qtr#1{{\rm\mathaccent176#1}}\fi	% ansinew (Windows ANSI)
+\ifnum\the\ss=25\def\qtr#1{{\rm\mathaccent23#1}}\fi	% textext (TeX text)
+\ifnum\the\ss=255\def\qtr#1{{\rm\mathaccent6#1}}\fi	% tex256  (Cork DC)
+\ifnum\the\ss=167\def\qtr#1{{\rm\mathaccent251#1}}\fi	% mac  (standard roman)
+\ifnum\the\ss=222\def\qtr#1{{\rm\mathaccent176#1}}\fi	% texannew
+
+\def\vct#1{{\bf #1}}		% vector (bold)
+\def\uvct#1{{\bf\hat#1}}	% unit vector (bold and hat)
+\def\bvct#1{{\bf\overline#1}}	% barred vector (bold and overlined) 
+\def\mat#1{{\bf#1}}		% perhaps a bit too heavy for matrix?
+
+\def\qand{\quad{\rm and}\quad}		% \quad AND \quad
+\def\qqand{\qquad{\rm and}\qquad}	% \quad\quad AND \quad\quad
+
+\newdimen\bthick % thickness of lines used in constructing stencils
+\bthick=0.48pt % 2 pixels at 300 dpi
+
+\def\boxit#1{\vbox{\hrule height\bthick\hbox{\vrule width\bthick\kern6pt
+	\vbox{\kern6pt#1\kern6pt}\kern6pt\vrule width\bthick}\hrule height\bthick}}
+
+\def\boldify#1{\hbox{\rlap{$#1$}\kern .6pt{$#1$}}}	% moby kludge!
+
+\def\sumi{\sum_{i=1}^n}
+\def\sumiw{\sumi w_i}
+
+\def\qq{\qtr{q}}
+\def\qd{\qtr{d}}
+\def\ql{\qtr{\ell}}
+\def\qr{\qtr{r}}
+\def\qzero{0} % \def\qzero{\qtr{0}}
+
+\def\qa{\qtr{a}}
+\def\qb{\qtr{b}}
+
+\def\qs{\qtr{s}}
+\def\qt{\qtr{t}}
+\def\qe{\qtr{e}}
+
+\def\tc{\vec c}
+
+\def\dqq{\delta\qq}
+\def\dqd{\delta\qd}
+
+\def\vl{\boldify{\ell}}
+\def\vr{\vct{r}}
+\def\vb{\vct{b}}
+\def\vc{\vct{c}}
+\def\vd{\vct{d}}
+\def\vq{\vct{q}}
+
+\def\vf{\vct{f}}
+\def\vg{\vct{g}}
+\def\vh{\vct{h}}
+
+\def\vx{\vct{x}}
+\def\vy{\vct{y}}
+
+\def\dlambda{\delta\lambda}
+\def\dvx{\delta\vx}
+\def\jac{{d\vh\over d\vx}}
+
+\centerline{\twelvebf Symmetry in the Coplanarity Condition}
+
+\vskip .1in
+
+\noindent
+We can rewrite the triple product 
+in $\qr$, $\qd$, and $\ql$ using
+$$t = \qr\qd\cdot\qq\ql=\qr\cdot\qq\ql\qd^*=\qq^*\qr\cdot\ql\qd^*.\eqno{(1)}$$
+Noting that $\ql^*=-\ql$ and $\qr^*=-\qr$, since
+$\qr$ and $\ql$ are quaternions with zero scalar parts, 
+% we can rewrite the coplanarity condition in the form
+we obtain, perhaps surprisingly,
+$$\boxit{\hbox{$\displaystyle{ t = \qr\qq\cdot\qd\ql }$}}\eqno{(2)}$$
+The symmetry between $\qq$ and $\qd$ 
+can perhaps be seen in more detail if the
+dot-product for $t$ is expanded out 
+% Now expand the dot-product for $t$ 
+in terms of the scalar and vector
+components of $\qq=(q,\vq)$ and $\qd=(d,\vd)$: 
+$$ t = (\vd\cdot\vr)\,(\vq\cdot\vl)  + (\vq\cdot\vr)\,(\vd\cdot\vl) 
++ (dq - \vd\cdot\vq)\,(\vl\cdot\vr)
++ d\,[\vr\ \vq\ \vl] + q\,[\vr\ \vd\ \vl].\eqno{(3)}$$
+At this point we remember that
+$$\qs = \sumiw e_i \,(\qr_i\qd\ql_i^*) 
+\qand % \quad {\rm and} \quad
+  \qt = \sumiw e_i \,(\qr_i^*\qq\ql_i).\eqno{(4)}$$
+% 
+We also still have the three constraint equations
+$$\qq\cdot\dqq = 0, \quad \qd\cdot\dqd = 0,  \qand
+\qq\cdot\dqd+\qd\cdot\dqq=0,\eqno{(5)}$$
+%
+all of which we can combine in the matrix form
+%
+$$\pmatrix{
+A & B & \qq & \qzero & \qd \cr
+B^T & C & \qzero & \qd & \qq \cr
+\qq^T & \qzero^T & 0 & 0 & 0 \cr
+\qzero^T & \qd^T & 0 & 0 & 0 \cr
+\qd^T & \qq^T & 0 & 0 & 0 \cr}
+\pmatrix{\dqd \cr \dqq \cr \lambda \cr \mu \cr \nu \cr}
+=
+-\pmatrix{\qs \cr \qt \cr 0 \cr 0 \cr 0 \cr},\eqno{(6)}$$
+Overall, we have a system of 11 equations in 11 unknowns, 
+four of which are the components of $\qq$, 
+four are the components of $\qd$, and three are Lagrangian multipliers.
+% \noindent 
+Note that the upper left $8\times8$ sub-matrix is the weighted sum of
+dyadic products  
+$$\sumiw \tc_i\tc_i{}^T,\eqno{(6)}$$
+where the eight-component vector $\tc_i$ is given by
+$$\tc_i = \pmatrix{ \qr_i\qd \ql_i^* \cr \qr_i^*\qq\ql_i \cr}
+  = -\pmatrix{\qr_i\qq\ql_i \cr \qr_i\strut\qd \ql_i \cr}.\eqno{(7)}$$
+%
+We conclude that the special system of equations has 
+the number of solutions that is equal to the number of ways of 
+partitioning the set of variables, in the indicated manner, namely
+$${n+m-2\choose n-1}= {n+m-2\choose m-1}= {(n+m-2)!\over(n-1)!\,(m-1)!}\eqno{(8)}$$
+This typically is {\it much\/} less than the number of solutions of
+a general homogeneous system of $(n+m-2)$
+second degree equations namely $2^{n+m-2}$.
+
+The continuation method involves taking a small step 
+$\dlambda$ in $\lambda$ and solving for the increment $\dvx$ in 
+$${d\vh\over d\lambda}\,\dlambda + \jac\,\dvx =0,\eqno{(9)}$$
+where $J=(d\vh/d\vx)$ is the Jacobian of $\vh$ with respect to $\vx$.
+The updated solutions $\vx'=\vx+\dvx$ will not be exact if we are taking
+finite steps, so one needs to use Newton's method to improve their accuracy. 
+
+\end

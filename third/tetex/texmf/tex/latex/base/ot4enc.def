@@ -1,0 +1,105 @@
+%%
+%% This is file `ot4enc.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ltoutenc.dtx  (with options: `OT4')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%% From File: ltoutenc.dtx
+\ProvidesFile{ot4enc.def}
+ [1999/02/24 v1.9t
+         Standard LaTeX file]
+\DeclareFontEncoding{OT4}{}{}
+\DeclareFontSubstitution{OT4}{cmr}{m}{n}
+\DeclareTextAccent{\"}{OT4}{127}
+\DeclareTextAccent{\'}{OT4}{19}
+\DeclareTextAccent{\.}{OT4}{95}
+\DeclareTextAccent{\=}{OT4}{22}
+\DeclareTextAccent{\^}{OT4}{94}
+\DeclareTextAccent{\`}{OT4}{18}
+\DeclareTextAccent{\~}{OT4}{126}
+\DeclareTextAccent{\H}{OT4}{125}
+\DeclareTextAccent{\u}{OT4}{21}
+\DeclareTextAccent{\v}{OT4}{20}
+\DeclareTextAccent{\r}{OT4}{23}
+\DeclareTextCommand{\k}{OT4}[1]{%
+    \TextSymbolUnavailable{\k{#1}}#1}
+\DeclareTextCommand{\b}{OT4}[1]
+   {{\o@lign{\relax#1\crcr\hidewidth\sh@ft{29}%
+     \vbox to.2ex{\hbox{\char22}\vss}\hidewidth}}}
+\DeclareTextCommand{\c}{OT4}[1]
+   {\leavevmode\setbox\z@\hbox{#1}\ifdim\ht\z@=1ex\accent24 #1%
+    \else{\ooalign{\unhbox\z@\crcr\hidewidth\char24\hidewidth}}\fi}
+\DeclareTextCommand{\d}{OT4}[1]
+   {{\o@lign{\relax#1\crcr\hidewidth\sh@ft{10}.\hidewidth}}}
+\DeclareTextSymbol{\AE}{OT4}{29}
+\DeclareTextSymbol{\OE}{OT4}{30}
+\DeclareTextSymbol{\O}{OT4}{31}
+\DeclareTextSymbol{\L}{OT4}{138}
+\DeclareTextSymbol{\ae}{OT4}{26}
+\DeclareTextSymbol{\guillemotleft}{OT4}{174}
+\DeclareTextSymbol{\guillemotright}{OT4}{175}
+\DeclareTextSymbol{\i}{OT4}{16}
+\DeclareTextSymbol{\j}{OT4}{17}
+\DeclareTextSymbol{\l}{OT4}{170}
+\DeclareTextSymbol{\o}{OT4}{28}
+\DeclareTextSymbol{\oe}{OT4}{27}
+\DeclareTextSymbol{\quotedblbase}{OT4}{255}
+\DeclareTextSymbol{\ss}{OT4}{25}
+\DeclareTextSymbol{\textemdash}{OT4}{124}
+\DeclareTextSymbol{\textendash}{OT4}{123}
+\DeclareTextSymbol{\textexclamdown}{OT4}{60}
+\DeclareTextSymbol{\textquestiondown}{OT4}{62}
+\DeclareTextSymbol{\textquotedblleft}{OT4}{92}
+\DeclareTextSymbol{\textquotedblright}{OT4}{`\"}
+\DeclareTextSymbol{\textquoteleft}{OT4}{`\`}
+\DeclareTextSymbol{\textquoteright}{OT4}{`\'}
+\DeclareTextCompositeCommand{\r}{OT4}{A}
+   {\leavevmode\setbox\z@\hbox{h}\dimen@\ht\z@\advance\dimen@-1ex%
+    \rlap{\raise.67\dimen@\hbox{\char23}}A}
+\DeclareTextCommand{\textdollar}{OT4}{{%
+   \ifdim \fontdimen\@ne\font >\z@
+      \slshape
+   \else
+      \upshape
+   \fi
+   \char`\$}}
+\DeclareTextCommand{\textsterling}{OT4}{{%
+   \ifdim \fontdimen\@ne\font >\z@
+      \itshape
+   \else
+      \fontshape{ui}\selectfont
+   \fi
+   \char`\$}}
+\DeclareTextComposite{\k}{OT4}{A}{129}
+\DeclareTextComposite{\'}{OT4}{C}{130}
+\DeclareTextComposite{\k}{OT4}{E}{134}
+\DeclareTextComposite{\'}{OT4}{N}{139}
+\DeclareTextComposite{\'}{OT4}{S}{145}
+\DeclareTextComposite{\'}{OT4}{Z}{153}
+\DeclareTextComposite{\.}{OT4}{Z}{155}
+\DeclareTextComposite{\k}{OT4}{a}{161}
+\DeclareTextComposite{\'}{OT4}{c}{162}
+\DeclareTextComposite{\k}{OT4}{e}{166}
+\DeclareTextComposite{\'}{OT4}{n}{171}
+\DeclareTextComposite{\'}{OT4}{s}{177}
+\DeclareTextComposite{\'}{OT4}{z}{185}
+\DeclareTextComposite{\.}{OT4}{z}{187}
+\DeclareTextComposite{\'}{OT4}{O}{211}
+\DeclareTextComposite{\'}{OT4}{o}{243}
+\endinput
+%%
+%% End of file `ot4enc.def'.

@@ -1,0 +1,192 @@
+%%
+%% This is file `mac.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% umlaute.dtx  (with options: `mac')
+%% 
+%% Copyright (C) 1994-95 Harald Axel Sommerfeldt
+%% 
+\ProvidesFile{mac.def}[1995/02/03 %
+  Input encoding file (Harald_Sommerfeldt@w.maus.de)]
+\chardef\atcode=\catcode`\@
+\catcode`\@=11
+\providecommand*{\@as@active}[1]{%
+  \ifx\protect\relax\else\ifx\protect\empty\else%
+  \expandafter\expandafter\expandafter\protect\fi\fi%
+  \as@active{#1}}
+\providecommand*{\as@active}[1]{\csname @as@@#1\endcsname}
+\def\@as@@aa{\aa}\def\@as@@AA{\AA}
+\def\@as@@ae{\ae}\def\@as@@AE{\AE}
+\def\@as@@ic{\^{\i}}\def\@as@@IC{\^I}
+\def\@as@@id{\'{\i}}\def\@as@@ID{\'I}
+\def\@as@@ig{\`{\i}}\def\@as@@IG{\`I}
+\def\@as@@iq{\"{\i}}\def\@as@@IQ{\"I}
+\def\@as@@o{\o}\def\@as@@O{\O}
+\def\@as@@ss{\ss}\def\@as@@SS{\SS}
+\def\@as@@oe{\oe}\def\@as@@OE{\OE}
+\def\@as@@dh{\dh}\def\@as@@DH{\DH}
+\def\@as@@th{\th}\def\@as@@TH{\TH}
+\ProvideTextCommandDefault{\textonequarter}{$\frac14$}
+\ProvideTextCommandDefault{\textonehalf}{$\frac12$}
+\ProvideTextCommandDefault{\textthreequarters}{$\frac34$}
+\ProvideTextCommandDefault{\texttrademark}{$^\mathrm{TM}$}
+\def\as@msa#1{{\fontencoding{U}\fontfamily{msa}\selectfont\char#1}}
+\ProvideTextCommandDefault{\textblacksquare}{\as@msa{4}}
+\ProvideTextCommandDefault{\textyen}{\as@msa{85}}
+\ProvideTextCommandDefault{\textulcorner}{\as@msa{112}}
+\ProvideTextCommandDefault{\texturcorner}{\as@msa{113}}
+\ProvideTextCommandDefault{\textregistered}{\as@msa{114}}
+\ProvideTextCommandDefault{\textllcorner}{\as@msa{120}}
+\ProvideTextCommandDefault{\textlrcorner}{\as@msa{121}}
+\def\as@wasy#1{{\fontencoding{U}\fontfamily{wasy}\selectfont\char#1}}
+\ProvideTextCommandDefault{\textcurrency}{\as@wasy{27}}
+\ProvideTextCommandDefault{\textcent}{\as@wasy{103}}
+\ProvideTextCommandDefault{\textpermil}{\as@wasy{104}}
+\ProvideTextCommandDefault{\textbrokenbar}{\as@wasy{124}}
+\providecommand*{\mathbullet}{{{}^\bullet}}
+\providecommand*{\mathdegree}{{{}^\circ}}
+\providecommand*{\mathordmasculine}{{{}^a}}
+\providecommand*{\mathordfeminine}{{{}^o}}
+\providecommand*{\mathonesuperior}{{{}^1}}
+\providecommand*{\mathtwosuperior}{{{}^2}}
+\providecommand*{\maththreesuperior}{{{}^3}}
+\providecommand*{\DeclareInputTextEx}[4]{%
+  \DeclareInputText{#1}{#2}%
+  \lccode#1=#3\uccode#1=#4}
+\providecommand*{\DeclareInputMathEx}[2]{%
+  \DeclareInputMath{#1}{#2}%
+  \lccode#1=#1\uccode#1=#1}
+\DeclareInputTextEx{"80}{\"A}{"8A}{"80}
+\DeclareInputTextEx{"81}{\@as@active{AA}}{"8C}{"81}
+\DeclareInputTextEx{"82}{\c C}{"8D}{"82}
+\DeclareInputTextEx{"83}{\'E}{"8E}{"83}
+\DeclareInputTextEx{"84}{\~N}{"96}{"84}
+\DeclareInputTextEx{"85}{\"O}{"9A}{"85}
+\DeclareInputTextEx{"86}{\"U}{"9F}{"86}
+\DeclareInputTextEx{"87}{\'a}{"87}{"0E7}
+\DeclareInputTextEx{"88}{\`a}{"88}{"0CB}
+\DeclareInputTextEx{"89}{\^a}{"89}{"0E5}
+\DeclareInputTextEx{"8A}{\"a}{"8A}{"80}
+\DeclareInputTextEx{"8B}{\~a}{"8B}{"0CC}
+\DeclareInputTextEx{"8C}{\@as@active{aa}}{"8C}{"81}
+\DeclareInputTextEx{"8D}{\c c}{"8D}{"82}
+\DeclareInputTextEx{"8E}{\'e}{"8E}{"83}
+\DeclareInputTextEx{"8F}{\`e}{"8F}{"0E9}
+\DeclareInputTextEx{"90}{\^e}{"90}{"0E6}
+\DeclareInputTextEx{"91}{\"e}{"91}{"0E8}
+\DeclareInputTextEx{"92}{\@as@active{id}}{"92}{"0EA}
+\DeclareInputTextEx{"93}{\@as@active{ig}}{"93}{"0ED}
+\DeclareInputTextEx{"94}{\@as@active{ic}}{"94}{"0EB}
+\DeclareInputTextEx{"95}{\@as@active{iq}}{"95}{"0EC}
+\DeclareInputTextEx{"96}{\~n}{"96}{"84}
+\DeclareInputTextEx{"97}{\'o}{"97}{"0EE}
+\DeclareInputTextEx{"98}{\`o}{"98}{"0F1}
+\DeclareInputTextEx{"99}{\^o}{"99}{"0EF}
+\DeclareInputTextEx{"9A}{\"o}{"9A}{"85}
+\DeclareInputTextEx{"9B}{\~o}{"9B}{"0CD}
+\DeclareInputTextEx{"9C}{\'u}{"9C}{"0F2}
+\DeclareInputTextEx{"9D}{\`u}{"9D}{"0F4}
+\DeclareInputTextEx{"9E}{\^u}{"9E}{"0F3}
+\DeclareInputTextEx{"9F}{\"u}{"9F}{"86}
+\DeclareInputTextEx{"0A0}{\dag}{"0A0}{"0A0}
+\DeclareInputMathEx{"0A1}{\mathdegree}
+\DeclareInputTextEx{"0A2}{\textcent}{"0A2}{"0A2}
+\DeclareInputTextEx{"0A3}{\textsterling}{"0A3}{"0A3}
+\DeclareInputTextEx{"0A4}{\S}{"0A4}{"0A4}
+\DeclareInputTextEx{"0A5}{\textbullet}{"0A5}{"0A5}
+\DeclareInputTextEx{"0A6}{\P}{"0A6}{"0A6}
+\DeclareInputTextEx{"0A7}{\@as@active{ss}}{"0A7}{"0F0}
+\DeclareInputTextEx{"0A8}{\textregistered}{"0A8}{"0A8}
+\DeclareInputTextEx{"0A9}{\copyright}{"0A9}{"0A9}
+\DeclareInputTextEx{"0AA}{\texttrademark}{"0AA}{"0AA}
+\DeclareInputTextEx{"0AB}{\'{}}{"0AB}{"0AB}
+\DeclareInputTextEx{"0AC}{\"{}}{"0AC}{"0AC}
+\DeclareInputMathEx{"0AD}{\neq}
+\DeclareInputTextEx{"0AE}{\@as@active{AE}}{"0BE}{"0AE}
+\DeclareInputTextEx{"0AF}{\@as@active{O}}{"0BF}{"0AF}
+\DeclareInputMathEx{"0B0}{\infty}
+\DeclareInputMathEx{"0B1}{\pm}
+\DeclareInputMathEx{"0B2}{\le}
+\DeclareInputMathEx{"0B3}{\ge}
+\DeclareInputTextEx{"0B4}{\textyen}{"0B4}{"0B4}
+\DeclareInputMathEx{"0B5}{\mu}
+\DeclareInputMathEx{"0B6}{\partial}
+\DeclareInputMathEx{"0B7}{\Sigma}
+\DeclareInputMathEx{"0B8}{\Pi}
+\DeclareInputMathEx{"0B9}{\pi}
+\DeclareInputMathEx{"0BA}{\int}
+\DeclareInputMathEx{"0BB}{\mathordmasculine}
+\DeclareInputMathEx{"0BC}{\mathordfeminine}
+\DeclareInputMathEx{"0BD}{\Omega}
+\DeclareInputTextEx{"0BE}{\@as@active{ae}}{"0BE}{"0AE}
+\DeclareInputTextEx{"0BF}{\@as@active{o}}{"0BF}{"0AF}
+\DeclareInputTextEx{"0C0}{\textquestiondown}{"0C0}{"0C0}
+\DeclareInputTextEx{"0C1}{\textexclamdown}{"0C1}{"0C1}
+\DeclareInputMathEx{"0C2}{\neg}
+\DeclareInputMathEx{"0C3}{\protect\sqrt{}}
+\DeclareInputMathEx{"0C4}{\NotImplemented}
+\DeclareInputMathEx{"0C5}{\approx}
+\DeclareInputMathEx{"0C6}{\Delta}
+\DeclareInputTextEx{"0C7}{\guillemotleft}{"0C7}{"0C7}
+\DeclareInputTextEx{"0C8}{\guillemotright}{"0C8}{"0C8}
+\DeclareInputTextEx{"0C9}{\ldots}{"0C9}{"0C9}
+\DeclareInputTextEx{"0CA}{\space}{"0CA}{"0CA}
+\DeclareInputTextEx{"0CB}{\`A}{"88}{"0CB}
+\DeclareInputTextEx{"0CC}{\~A}{"8B}{"0CC}
+\DeclareInputTextEx{"0CD}{\~O}{"9B}{"0CD}
+\DeclareInputTextEx{"0CE}{\@as@active{OE}}{"0CF}{"0CE}
+\DeclareInputTextEx{"0CF}{\@as@active{oe}}{"0CF}{"0CE}
+\DeclareInputTextEx{"0D0}{\textendash}{"0D0}{"0D0}
+\DeclareInputTextEx{"0D1}{\textemdash}{"0D1}{"0D1}
+\DeclareInputTextEx{"0D2}{\NotImplemented}{"0D2}{"0D2}
+\DeclareInputTextEx{"0D3}{\NotImplemented}{"0D3}{"0D3}
+\DeclareInputTextEx{"0D4}{\NotImplemented}{"0D4}{"0D4}
+\DeclareInputTextEx{"0D5}{\NotImplemented}{"0D5}{"0D5}
+\DeclareInputMathEx{"0D6}{\div}
+\DeclareInputTextEx{"0D7}{\NotImplemented}{"0D7}{"0D7}
+\DeclareInputTextEx{"0D8}{\"y}{"0D8}{"0D9}
+\DeclareInputTextEx{"0D9}{\"Y}{"0D8}{"0D9}
+\DeclareInputTextEx{"0DA}{/}{"0DA}{"0DA}
+\DeclareInputTextEx{"0DB}{\textcurrency}{"0DB}{"0DB}
+\DeclareInputTextEx{"0DC}{\guilsinglleft}{"0DC}{"0DC}
+\DeclareInputTextEx{"0DD}{\guilsinglright}{"0DD}{"0DD}
+\DeclareInputTextEx{"0DE}{fi}{"0DE}{"0DE}
+\DeclareInputTextEx{"0DF}{fl}{"0DF}{"0DF}
+\DeclareInputTextEx{"0E0}{\ddag}{"0E0}{"0E0}
+\DeclareInputTextEx{"0E1}{\textperiodcentered}{"0E1}{"0E1}
+\DeclareInputTextEx{"0E2}{\quotesinglbase}{"0E2}{"0E2}
+\DeclareInputTextEx{"0E3}{\quotedblbase}{"0E3}{"0E3}
+\DeclareInputTextEx{"0E4}{\textpermil}{"0E4}{"0E4}
+\DeclareInputTextEx{"0E5}{\^A}{"89}{"0E5}
+\DeclareInputTextEx{"0E6}{\^E}{"90}{"0E6}
+\DeclareInputTextEx{"0E7}{\'A}{"87}{"0E7}
+\DeclareInputTextEx{"0E8}{\"E}{"91}{"0E8}
+\DeclareInputTextEx{"0E9}{\`E}{"8F}{"0E9}
+\DeclareInputTextEx{"0EA}{\@as@active{ID}}{"92}{"0EA}
+\DeclareInputTextEx{"0EB}{\@as@active{IC}}{"94}{"0EB}
+\DeclareInputTextEx{"0EC}{\@as@active{IQ}}{"95}{"0EC}
+\DeclareInputTextEx{"0ED}{\@as@active{IG}}{"93}{"0ED}
+\DeclareInputTextEx{"0EE}{\'O}{"97}{"0EE}
+\DeclareInputTextEx{"0EF}{\^O}{"99}{"0EF}
+\DeclareInputTextEx{"0F0}{\@as@active{SS}}{"0A7}{"0F0}
+\DeclareInputTextEx{"0F1}{\`O}{"98}{"0F1}
+\DeclareInputTextEx{"0F2}{\'U}{"9C}{"0F2}
+\DeclareInputTextEx{"0F3}{\^U}{"9E}{"0F3}
+\DeclareInputTextEx{"0F4}{\`U}{"9D}{"0F4}
+\DeclareInputTextEx{"0F5}{\i}{"0F5}{"0F5} %"49
+\DeclareInputTextEx{"0F6}{\^{}}{"0F6}{"0F6}
+\DeclareInputTextEx{"0F7}{\~{}}{"0F7}{"0F7}
+\DeclareInputTextEx{"0F8}{\={}}{"0F8}{"0F8}
+\DeclareInputTextEx{"0F9}{\NotImplemented}{"0F9}{"0F9}
+\DeclareInputTextEx{"0FA}{\NotImplemented}{"0FA}{"0FA}
+\DeclareInputMathEx{"0FB}{\mathdegree}
+\DeclareInputTextEx{"0FC}{\c{}}{"0FC}{"0FC}
+\DeclareInputTextEx{"0FD}{\~{}}{"0FD}{"0FD}
+\DeclareInputTextEx{"0FE}{\NotImplemented}{"0FE}{"0FE}
+\DeclareInputTextEx{"0FF}{\NotImplemented}{"0FF}{"0FF}
+\catcode`\@=\atcode
+\endinput
+%%
+%% End of file `mac.def'.

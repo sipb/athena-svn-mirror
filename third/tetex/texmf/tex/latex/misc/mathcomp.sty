@@ -1,0 +1,40 @@
+%%
+%% This is file `mathcomp.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mathcomp.dtx 
+%% 
+%% File `mathcomp.dtx'.
+%% Copyright (C) 1996-1998 Tilmann B{\"o}{\ss}.
+%% Please mail suggestions, enhancements ... to the author.
+%% Feel free to modify this file if required by your installation, but do
+%% not distribute modified versions of this file under its original name.
+
+\def\fileversion{v0.1e}
+\def\filedate{1998/08/27}
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{mathcomp}[\filedate\space\fileversion\space(TBo)]
+\RequirePackage{textcomp}
+\DeclareSymbolFont{TC}{TS1}{cmr}{m}{n}
+\SetSymbolFont{TC}{bold}{TS1}{cmr}{bx}{n}
+\DeclareOption{rmdefault}{
+\DeclareSymbolFont{TC}{TS1}{\rmdefault}{m}{n}
+\SetSymbolFont{TC}{bold}{TS1}{\rmdefault}{bx}{n}
+}
+\DeclareOption*{
+\DeclareSymbolFont{TC}{TS1}{\CurrentOption}{m}{n}
+\SetSymbolFont{TC}{bold}{TS1}{\CurrentOption}{bx}{n}
+}
+\DeclareSymbolFontAlphabet{\tcdigitoldstyle}{TC}
+\DeclareMathSymbol{\tcohm}{\mathord}{TC}{'127}
+\DeclareMathSymbol{\tcperthousand}{\mathord}{TC}{'207}
+\DeclareMathSymbol{\tccentigrade}{\mathord}{TC}{'211}
+\DeclareMathSymbol{\tcpertenthousand}{\mathord}{TC}{'230}
+\DeclareMathSymbol{\tcmu}{\mathord}{TC}{'265}
+\ProcessOptions
+\endinput
+%%
+%% End of file `mathcomp.sty'.

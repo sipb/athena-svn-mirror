@@ -1,0 +1,81 @@
+------------ README - MLTeX support files for LaTeX ------------
+
+This directory contains the following files to be used with
+MLTeX v2.2 and LaTeX2e:
+
+ - README	This file you are currently reading
+ - mltex.txt	``How to use MLTeX with LaTeX'', the end-user
+		documentation---please read it!
+ - mltex.sty	This LaTeX package is the simplest way how to enable
+		the MLTeX extensions within LaTeX; it automatically
+		loads all needed files and contains all necessary
+		declarations.
+
+ - lo1enc.def	Font encoding definition for the new LaTeX font
+		encoding ``LO1'' aka ``mLtex's Ot1''.
+ - mlltxchg.def	This file contains all LaTeX NFSS kernel macro
+		redefinitions.
+
+ - testmlft.tex
+   testmlsw.tex	Two LaTeX documents to test MLTeX, the MLTeX package
+		and definition files.
+
+
+The package ``mltex'' can be also used with standard TeX, in which
+case the result should be the same as without this package.  To make
+full use of all the capabilities of this package, you have to use an
+MLTeX extended TeX (which can not be called ``TeX'' anymore).
+
+
+Installation:
+-------------
+
+Put the files
+
+	mltex.sty
+	lo1enc.def
+	mlltxchg.def
+
+in a place where TeX will look for macros files.
+
+If you TeX system uses the TeX Directory Structure (TDS) standard you
+have to create a new directory
+
+	texmf/tex/latex/mltex/
+
+and move the three files into this directory.  After you have done it,
+don't forget to update the file lookup cache files on some TeX
+systems!
+
+
+Error Reports:
+--------------
+ 
+Error Reports in case of UNCHANGED versions to 
+ 
+        Bernd Raichle 
+        Stettener Str. 73 
+        73732 Esslingen 
+        Federal Republic of Germany 
+ Email: raichle@Informatik.Uni-Stuttgart.DE 
+
+Please apply the test file ``mltextst.tex'' to your MLTeX binary to
+make sure that your are using the newest version of MLTeX.  If you are
+using an old version, update to the newest version before reporting an
+error.
+ 
+Include a _short_ TeX input file and the output of the log file in
+your error report.  Add a note about your environment: TeX version,
+implementation, operating system.
+
+
+
+MLTeX is copyright (C) 1990-1992 by Michael J. Ferguson;
+MLTeX Version 2.2 is copyright (C) 1995-1998 by B. Raichle;
+all rights are reserved.
+
+--- Copyright (C) 1996-1998 Bernd Raichle.  All rights reserved ---
+This file can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt; either
+version 1 of the License, or any later version.

@@ -1,0 +1,44 @@
+%%
+%% This is file `omlcmm.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% cmfonts.fdd  (with options: `fd,OMLcmm')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+\ProvidesFile{omlcmm.fd}
+        [1998/03/27 v2.5g Standard LaTeX font definitions]
+\DeclareFontFamily{OML}{cmm}{\skewchar\font127 }
+\DeclareFontShape{OML}{cmm}{m}{it}%
+     {<5><6><7><8><9>gen*cmmi%
+      <10><10.95>cmmi10%
+      <12><14.4><17.28><20.74><24.88>cmmi12%
+      }{}
+\DeclareFontShape{OML}{cmm}{b}{it}{%
+      <5><6><7><8><9>gen*cmmib%
+      <10><10.95><12><14.4><17.28><20.74><24.88>cmmib10%
+      }{}
+\DeclareFontShape{OML}{cmm}{bx}{it}%
+   {<->ssub*cmm/b/it}{}
+\endinput
+%%
+%% End of file `omlcmm.fd'.

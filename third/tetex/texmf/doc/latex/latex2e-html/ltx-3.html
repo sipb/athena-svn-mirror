@@ -1,0 +1,88 @@
+<html>
+<head><title>Help On LaTeX Counters</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Counters</font></h1>
+<p>
+ Everything LaTeX numbers for you has a counter associated with it. The
+ name  of the counter  is the same  as the name  of the environment  or
+ command that produces  the number,  except with no <tt>\.</tt>  Below is a list
+ of some of the counters  used in  LaTeX's  standard  document  styles  to control
+ numbering.
+<pre>
+ part            paragraph       figure          enumi
+ chapter         subparagraph    table           enumii
+ section         page            footnote        enumiii
+ subsection      equation        mpfootnote      enumiv
+ subsubsection
+</pre>
+
+<h2>Manipulating the way counters are printed</h2>
+Counters are printed in LaTeX by using a command generated as
+"<tt>\the</tt>" suffixed with the name of the counter.  Thus, equation
+numbers are printed by the <tt>\theequation</tt> command, and
+section numbers by the <tt>\thesection</tt> command.
+If you want to change the way such numbers are printed, for example, 
+change from arabic to Roman numerals, you need to redefine the 
+appropriate command, using the 
+<tt><a href="ltx-18.html">\renewcommand</a></tt> command.
+<p>
+As an example, to number equations in an appendix as <tt>A-1</tt>, 
+<tt>A-2</tt>, ... , use <pre>
+  <tt>\renewcommand{\theequation}{A-<a href="ltx-201.html">\arabic</a>{equation}}</tt></pre>
+The second argument implies that the text produced by the renewed 
+<tt>\theequation</tt> command will be "A-" followed by the output from 
+the <tt>\arabic{equation}</tt> command, which is the value of the 
+equation counter, printed as an arabic number.
+<p>
+In <a href="lists.html">List Environments</a> the format for the 
+item labels is given by commands like <tt>\labelitemi</tt> and 
+<tt>\labelitemii</tt> (for the first two levels of the 
+<a href="ltx-250.html">Itemize Environment</a>), and like <tt>\labelenumi</tt>
+(for the <a href="ltx-222.html">Enumerate Environment</a>), and these may 
+also be redefined.
+<p>
+There is an <a href="ltx-260.html#example">example</a> of manipulating such 
+counters in the discussion of the List Environment.
+See also the discussions in the <a href="ltx-250.html">Itemize Environment</a>
+and in the <a href="ltx-222.html#example">Enumerate Environment</a>.
+<p>
+You can force a change in the number produced by any of the counters.  For
+example, if you wanted to produce a single page numbered 13, you could use
+<pre>
+  <tt><a href="ltx-310.html">\setcounter</a>{page}{13}</tt></pre>
+A variety of commands for manipulating counters this way are given below.
+
+<H2>Related topics</H2>
+<ul>
+<li>Commands that manupulate counters
+<ul>
+<li><A href="ltx-195.html">\addtocounter</A>
+<li><A href="ltx-271.html">\newcounter</A>
+<li><A href="ltx-310.html">\setcounter</A>
+<li><A href="ltx-338.html">\usecounter</A>
+<li><A href="ltx-339.html">\value</A>
+<li><a href="ltx-18.html">\renewcommand</a>
+</ul>
+<li>Commands that print the value of a counter in various formats
+<ul>
+<li><A href="ltx-201.html">\arabic</A>
+<li><A href="ltx-199.html">\alph \Alph</A>
+<li><A href="ltx-305.html">\roman \Roman</A>
+<li><A href="ltx-230.html">\fnsymbol</A>
+</ul>
+<li>For some examples of usage in list environments, see
+<ul>
+<li><a href="ltx-260.html#example">List Enviroment</a>
+<li><a href="ltx-250.html">Itemize Environment</a>
+<li><a href="ltx-222.html">Enumerate Environment</a>
+</ul>
+</ul>
+<hr>
+See also <a href="ltx-141.html">Sectioning</a><br>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 25 Oct 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,111 @@
+%%
+%% This is file `finnish.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% finnish.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{finnish}
+        [1999/04/13 v1.3m Finnish support from the babel system]
+%% File `finnish.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit{finnish}\captionsfinnish
+\ifx\l@finnish\@undefined
+    \@nopatterns{Finnish}
+    \adddialect\l@finnish0\fi
+\addto\captionsfinnish{%
+  \def\prefacename{Esipuhe}%
+  \def\refname{Viitteet}%
+  \def\abstractname{Tiivistelm\"a}
+  \def\bibname{Kirjallisuutta}%
+  \def\chaptername{Luku}%
+  \def\appendixname{Liite}%
+  \def\contentsname{Sis\"alt\"o}%   /* Could be "Sis\"allys" as well */
+  \def\listfigurename{Kuvat}%
+  \def\listtablename{Taulukot}%
+  \def\indexname{Hakemisto}%
+  \def\figurename{Kuva}%
+  \def\tablename{Taulukko}%
+  \def\partname{Osa}%
+  \def\enclname{Liitteet}%
+  \def\ccname{Jakelu}%
+  \def\headtoname{Vastaanottaja}%
+  \def\pagename{Sivu}%
+  \def\seename{katso}%
+  \def\alsoname{katso my\"os}%
+  \def\proofname{Todistus}%
+  }%
+\def\datefinnish{%
+  \def\today{\number\day.~\ifcase\month\or
+    tammikuuta\or helmikuuta\or maaliskuuta\or huhtikuuta\or
+    toukokuuta\or kes\"akuuta\or hein\"akuuta\or elokuuta\or
+    syyskuuta\or lokakuuta\or marraskuuta\or joulukuuta\fi
+    \space\number\year}}
+\addto\extrasfinnish{%
+  \babel@savevariable\hyphenpenalty\hyphenpenalty=30%
+  \babel@savevariable\exhyphenpenalty\exhyphenpenalty=30%
+  \babel@savevariable\doublehyphendemerits\doublehyphendemerits=5000%
+  \babel@savevariable\finalhyphendemerits\finalhyphendemerits=5000%
+  }
+\addto\noextrasfinnish{}
+\addto\extrasfinnish{\bbl@frenchspacing}
+\addto\noextrasfinnish{\bbl@nonfrenchspacing}
+\initiate@active@char{"}
+\addto\extrasfinnish{\languageshorthands{finnish}}
+\addto\extrasfinnish{\bbl@activate{"}}
+\addto\extrasfinnish{\umlautlow\umlautelow}
+\addto\noextrasfinnish{\umlauthigh}
+\declare@shorthand{finnish}{"`}{%
+  \textormath{\quotedblbase}{\mbox{\quotedblbase}}}
+\declare@shorthand{finnish}{"'}{%
+  \textormath{\textquotedblright}{\mbox{\textquotedblright}}}
+\declare@shorthand{finnish}{"<}{%
+  \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
+\declare@shorthand{finnish}{">}{%
+  \textormath{\guillemotright}{\mbox{\guillemotright}}}
+\declare@shorthand{finnish}{"-}{\nobreak-\bbl@allowhyphens}
+\declare@shorthand{finnish}{""}{\hskip\z@skip}
+\declare@shorthand{finnish}{"=}{\hbox{-}\allowhyphens}
+\declare@shorthand{finnish}{"|}{%
+  \textormath{\discretionary{-}{}{\kern.03em}}{}}
+\addto\extrasfinnish{\babel@save\-}
+\addto\extrasfinnish{\def\-{\allowhyphens
+                          \discretionary{-}{}{}\allowhyphens}}
+\def\finnishhyphenmins{\tw@\tw@}
+\ldf@finish{finnish}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `finnish.ldf'.

@@ -1,0 +1,78 @@
+The Sauter parameter package for computer modern fonts, Version 2.4
+
+            Ten point type is different from magnified five-point type.
+                                              D. E. Knuth, The TeXbook
+
+John Sauter has prepared a bunch of ``alternate parameter files'' that 
+make it possible to generate the Computer Modern fonts at any point size. 
+I have looked at some of them and think they are pretty good (better than 
+the magnified versions). With the Sauter fonts you also get things like
+{\Huge $\longrightarrow$} right. The Sauter parameters are usefull in the 
+range from 4 to approximately 40 pt, but become unreliable at larger sizes.
+
+  For the design_sizes D. E. Knuth provided and described in Computers 
+and Typesetting, Volume E (Computer Modern Typefaces) and for the 
+additional Computer Modern math fonts supported by the AMS, the Sauter 
+parameter files give exactly the same font metrics as the original
+parameter files. 
+
+  You can use the Sauter tools to interpolate between the given font sizes,
+e.g. to create a cmr0950 font at 9.5pt, or to extrapolate above and below
+the original sizes (and generate e.g. cmr4 or cmr25). For the nominal sizes
+11, 14, 17, 20, 25, 30 and 36 we follow the ``magstep'' philosophy, i.e.
+the true size is given by 10pt times an appropriate power of 1.2. If you 
+prefer to create a font at 14 true pt, please name it cmr1400 to keep the
+distinction. On the other hand, if you prefer magstep sizes even below 10pt
+(like the msdos batch file suggests), name your font e.g. cmr0579 instead 
+of cmr6. 
+
+  No attempt is made to match the variant Computer Modern parameter files
+distributed with the text1 macro package, nor any other variant parameter 
+set, this includes the variants to be found in the directory knuth/local.
+
+  In the directory mf you find the Sauter parameter files. To use them, the
+following method is suggested:
+(1) Create a small METAFONT file cmr0950.mf, containing the one line
+
+design_size:=9.5; input b-cmr
+
+(2) Run METAFONT on this file, a typical call looks like
+mf "\mode=localfont; input cmr0950"
+
+(3) Create a pk file from the gf file produced by METAFONT
+
+With the system dependent files, this procedure can be automated.
+
+  In the directory latex you find support for the current latex version
+fonttext.cfg, fontmath.cfg, sautmath.fd, and sauttext.fd 
+for LaTeX2e; they should work with any version of LaTeX2e.
+
+  LaTeX2.09 support is found in directory obsolete:
+lfonts.true is for LaTeX 2.09 with the Old Font Selection Scheme
+fontdef.sau is for LaTeX 2.09 with the New Font Selection Scheme (NFSS-1)
+
+You need to rebuild your LaTeX format in order to use the true size fonts.
+
+  For the LaTeX fonts, the wasy symbol fonts, Alan Jeffrey's bbold fonts
+and the cmcyr fonts there are additional Sauterised parameter files. The
+programme files aren't bundled into this distribution, please find them 
+on the TeX archive site close to you.
+ 
+  The directories msdos, unix and vms contain support files for the 
+respective operating systems, those are provided ,,as is''. In case of 
+questions about them, contact the respective authors.
+
+  The directory holin contains sauterised versions of the AMS symbol fonts 
+(msam and msbm), the Ralph Smith Formal Script fonts (rsfs) and the 
+Blackbord Bold Modern (bbm) fonts provided by Hubert Holin. They are 
+included as they are, in case of questions contact the original author
+holin@mathp7.jussieu.fr
+
+  The Sauter package is currently maintained by Jeroen Nijhof
+J.H.B.Nijhof@aston.ac.uk; send comments, bugs and questions to that 
+address. However, the package comes with absolutely NO WARRANTY, not even 
+the fitness for a given purpose (see the GNU licence for the juristic limbo
+to be inserted here).
+
+                                     Murphy says: Scalable fonts aren't.
+                                                              J\"org Knappen

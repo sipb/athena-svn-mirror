@@ -1,0 +1,34 @@
+Problem:
+LaTeX complains with
+! Font OT1/mvs/m/n/10=fmvr8x at 10.0pt not loadable: Bad metric (TFM) file.
+<to be read again> 
+
+Possible cause:
+File fmvr8x.tfm was not downloaded in BINARY mode.
+
+Solution:
+Download all files again, this time in BINARY mode.
+
+
+Problem:
+New version of dvips (e.g. 5.76) complains with error message
+<marvosym.pfb> Second number not found ...
+or similar
+
+Possible cause:
+There is a problem with partial font downloading feature of dvips
+
+Solution:
+Turn off partial font downloading with
+dvips -j0 <dvi-file>
+
+
+Problem:
+Ghostscript complains. No errors with LaTeX or dvips.
+
+Possible cause:
+Spelling error in psfonts.map.
+
+Solution:
+Check line (especially the spaces)
+fmvr8x Martin_Vogels_Symbole <marvosym.pfb

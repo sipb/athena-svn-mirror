@@ -1,0 +1,43 @@
+%%
+%% This is file `bplain.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% bbplain.dtx  (with options: `bplain')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% File `bbplain.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\catcode`\#=6 % hash mark is macro parameter character
+\openin 0 hyphen.cfg
+\ifeof0
+\else
+  \let\a\input
+  \def\input #1 {%
+    \let\input\a
+    \a hyphen.cfg
+    \let\a\undefined
+  }
+\fi
+\a plain.tex
+\def\fmtname{babel-plain}
+\endinput
+%%
+%% End of file `bplain.tex'.

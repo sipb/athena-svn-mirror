@@ -1,0 +1,383 @@
+<HTML>
+<HEAD>
+<TITLE>TeX Frequently Asked Questions - Section 11</TITLE>
+<!-- File version: 2.2n -->
+<!-- File date: 1999/06/05 -->
+
+<!-- Creator: faq2html.el, running on XEmacs 20.4 "Em -->
+<!-- CreationDate: Sat Jun  5 14:50:14 1999  te -->
+</HEAD>
+
+<BODY>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_10.html">previous</A>, <A HREF="texfaq_12.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+<HR>
+
+<H1><A NAME="SEC11">PostScript and TeX</A></H1>
+
+
+<H2><A NAME="QU59">Using PostScript fonts with TeX</A></H2>
+
+<P>
+In order to use PostScript fonts, TeX needs
+<EM>metric</EM> (called TFM) files. Several sets of metrics are
+available from the archives; for mechanisms for generating new ones,
+see <A HREF="texfaq_11.html#QU61">metrics for PostScript fonts</A>.  You
+also need the fonts themselves; PostScript printers come with a set of
+fonts built in, but to extend your repertoire you almost invariably
+need to buy from one of the many commercial font vendors (see, for
+example, <A HREF="texfaq_11.html#QU63">choice of fonts</A>).
+
+<P>
+If you use LaTeX2e, the best way to get PostScript fonts into your
+document is to use the PSNFSS package maintained by Sebastian Rahtz
+and Alan Jeffrey (available in <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/required/psnfss"><TT>macros/latex/required/psnfss</TT></A>); it's supported by
+the LaTeX3 project team, so bug reports can and should be submitted. 
+PSNFSS gives you a set of packages for changing the default
+roman, sans-serif and typewriter fonts; <EM>e.g</EM>., <TT>times.sty</TT> will set
+up Times Roman, Helvetica and Courier in place of Computer Modern,
+while <TT>avant.sty</TT> just changes the sans-serif family to
+AvantGarde. To go with these packages, you will need the font metric
+files (watch out for encoding problems! see
+<A HREF="texfaq_11.html#QU61">metrics for PostScript fonts</A>)
+and font description (<CODE>.fd</CODE>) files for each font family you
+want to use. These can be obtained from <A HREF="ftp://ftp.dante.de/tex-archive/fonts/psfonts"><TT>fonts/psfonts</TT></A>, arranged by
+vendor (<EM>e.g</EM>., Adobe, Monotype, <EM>etc</EM>.). For convenience,
+metrics for the common `35' PostScript fonts found in most printers
+are provided with PSNFSS, packaged as <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/packages/psnfss/lw35nfss.zip"><TT>macros/latex/packages/psnfss/lw35nfss.zip</TT></A>
+
+<P>
+For older versions of LaTeX there are various schemes, of which the
+simplest to use is probably the PSLaTeX macros distributed with
+<I>dvips</I>.
+
+<P>
+For <CODE>plain</CODE> TeX, you load whatever fonts you like; if the encoding of
+the fonts is not the same as Computer Modern it will be up to you to
+redefine various macros and accents, or you can use the font
+re-encoding mechanisms available in many drivers and in
+<I>ps2pk</I> and <I>afm2tfm</I>.
+
+<P>
+Victor Eijkhout's sophisticated Lollipop package (<A HREF="ftp://ftp.dante.de/tex-archive/macros/lollipop"><TT>macros/lollipop</TT></A>)
+supports declaration of font families and styles in a similar way to
+LaTeX's NFSS, and so is easy to use with PostScript fonts.
+
+<P>
+Some common problems encountered are discussed elsewhere
+(see <A HREF="texfaq_11.html#QU62">problems with PS fonts</A>).
+
+
+<H2><A NAME="QU60">Previewing files using PostScript fonts</A></H2>
+
+<P>
+Most TeX previewers only display bitmap PK fonts. If you want to
+preview documents using PostScript fonts, you have three choices:
+<OL>
+<LI> Convert the DVI file to PostScript and use a
+  PostScript previewer. Some modern Unix X implementations have this
+  built in (as does NeXT-step); (X11) Unix, Windows, OS/2, and MS-DOS
+  users can use the free <I>GhostScript</I> (<A HREF="ftp://ftp.dante.de/tex-archive/support/ghostscript"><TT>support/ghostscript</TT></A>), a
+  complete level 2 implementation.
+<LI> Under Windows on a PC, or on a Macintosh, let Adobe Type Manager
+  display the fonts. Textures (Macintosh) works like this, and under
+  Windows you can use Y&Y's <I>dviwindo</I> for bitmap-free
+  previewing.
+    (See <A HREF="texfaq_5.html#QU40">commercial suppliers</A> for details.)
+<LI> If you have the PostScript fonts in Type 1 format,
+  use <I>ps2pk</I> (<A HREF="ftp://ftp.dante.de/tex-archive/fonts/utilities/ps2pk"><TT>fonts/utilities/ps2pk</TT></A>) or <I>gsftopk</I>
+  (designed for use with the <I>GhostScript</I> fonts;
+  <A HREF="ftp://ftp.dante.de/tex-archive/fonts/utilities/gsftopk"><TT>fonts/utilities/gsftopk</TT></A>) to make PK bitmap fonts which your previewer
+  will understand. This can produce excellent results, also suitable
+  for printing with non-PostScript devices. Check the legalities of
+  this if you have purchased the fonts. The very commonest PostScript
+  fonts such as Times and Courier come in Type 1 format on disk with
+  Adobe Type Manager (often bundled with Windows, and part of OS/2).
+</OL>
+
+
+<H2><A NAME="QU61">TeX font metric files for PostScript fonts</A></H2>
+
+<P>
+Font vendors such as Adobe supply metric files for each font, in AFM
+(Adobe Font Metric) form; these can be converted to TFM
+(TeX Font Metric) form. The CTAN archives have prebuilt metrics
+which will be more than enough for many people (<A HREF="ftp://ftp.dante.de/tex-archive/fonts/psfonts"><TT>fonts/psfonts</TT></A>;
+beware - this directory is at the root of a huge tree), but you may
+need to do the conversion yourself if you have special needs or
+acquire a new font. One important question is the <EM>encoding</EM> of
+(Latin character) fonts; while we all more or less agree about the
+position of about 96 characters in fonts (the basic ASCII set), the
+rest of the (typically) 256 vary. The most obvious problems are with
+floating accents and special characters such as the `pounds sterling'
+sign. There are three ways of dealing with this: either you change the
+TeX macros which reference the characters (not much fun, and
+error-prone); or you change the encoding of the font (easier than you
+might think); or you use
+<A HREF="texfaq_3.html#QU30">virtual fonts</A>
+to <EM>pretend</EM> to
+TeX that the encoding is the same as it is used to. If you use
+LaTeX2e, it allows for changing the encoding in TeX; read the
+<EM>LaTeX Companion</EM>
+(see <A HREF="texfaq_2.html#QU19">TeX-related books</A>) for more details. 
+In practice, if you do much non-English (but Latin script)
+typesetting, you are strongly recommended to use the <CODE>fontenc</CODE>
+package with option `<CODE>T1</CODE>' to select T1
+  (<A HREF="texfaq_3.html#QU33">`Cork'</A>)
+encoding. 
+
+<P>
+Alan Jeffrey's <I>fontinst</I> package (<A HREF="ftp://ftp.dante.de/tex-archive/fonts/utilities/fontinst"><TT>fonts/utilities/fontinst</TT></A>) is an
+AFM to TFM converter written in TeX; it is used to
+generate the
+files used by LaTeX2e's PSNFSS package 
+to support use of PostScript fonts. It is a sophisticated package, not
+for the faint-hearted, but is powerful enough to cope with most needs.
+Much of its power relies on the use of
+<A HREF="texfaq_3.html#QU30">virtual fonts</A>.
+
+<P>
+For slightly simpler problems, Rokicki's <I>afm2tfm</I>,
+distributed with <I>dvips</I> (<A HREF="ftp://ftp.dante.de/tex-archive/dviware/dvips"><TT>dviware/dvips</TT></A>), is fast and
+efficient; note that the metrics and styles that come with
+<I>dvips</I> are <EM>not</EM> currently LaTeX2e compatible, but
+Karl Berry plans to distribute metrics directly compatible with PSNFSS
+in his <I>dvipsk</I> package.
+
+<P>
+For the Macintosh, there is a program called <I>EdMetrics</I> which does
+the job (and more).  It comes with the Textures distribution, but is
+in fact free software, available as <A HREF="ftp://ftp.dante.de/tex-archive/systems/mac/textures/utilities/EdMetrics.sea.hqx"><TT>systems/mac/textures/utilities/EdMetrics.sea.hqx</TT></A>
+
+<P>
+MS-DOS users can buy
+(see <A HREF="texfaq_5.html#QU40">commercial implementations</A>)
+Y&Y's Font Manipulation Tools package which includes a powerful
+<I>afmtotfm</I> program among many other goodies.
+
+
+<H2><A NAME="QU62">Problems using PostScript fonts</A></H2>
+
+<P>
+For the typical LaTeX user trying to use the
+<A HREF="texfaq_11.html#QU59">PSNFSS</A>
+package, three questions often arise.
+First, you have to declare to the DVI driver that you are using
+PostScript fonts; in the case of <I>dvips</I>, this means adding
+lines to the <CODE>psfonts.map</CODE> file. Otherwise, <I>dvips</I> will try
+to find PK 
+files. If the font isn't built into the printer, you have to acquire
+it (in many cases this means buying it from a commercial supplier!).
+You then have to instruct the driver to download it with each job (the
+mechanism depends on your driver). So it's no
+good just installing the <EM>metrics</EM> for Optima and expecting it to
+work. You have to pay hard cash for the font itself, which will come
+(for Unix and MS-DOS users) in <CODE>pfb</CODE> (Printer Font Binary) form.
+
+<P>
+Second, you cannot expect your previewer to suddenly start displaying
+PostScript fonts; most of them only know about PK bitmap fonts
+such as Computer Modern. <I>ps2pk</I> (<A HREF="ftp://ftp.dante.de/tex-archive/fonts/utilities/ps2pk"><TT>fonts/utilities/ps2pk</TT></A>) can create
+these from the <CODE>pfb</CODE> file you have bought; this would also let you use
+the fonts with non-PostScript device drivers such as the emTeX
+ones.  You are responsible for making sure you are not breaking the
+licence restrictions on font you bought.
+
+<P>
+Third, the stretch and shrink between words is a function of the
+font metric; it is not specified in AFM files, so different converters
+choose different values. The PostScript metrics that come with PSNFSS 
+used to produce quite tight setting, but they were revised in mid 1995
+to produce a compromise between American and European practice. Really
+sophisticated users may not find even the new the values to their taste, and
+want to override them. Even the casual user may find  more
+hyphenation or overfull boxes than CMR produces; but CMR
+is extremely generous. 
+
+
+<H2><A NAME="QU63">Choice of scalable outline fonts</A></H2>
+
+<P>
+If you are interested in text alone, you can use any of over 20,000
+fonts(!) in Adobe Type 1 format (called `PostScript fonts' in the
+TeX world and `ATM fonts' in the DTP world), or any of several
+hundred fonts in TrueType format.  That is, provided of course, that
+your previewer and printer driver support scalable outline fonts.
+
+<P>
+TeX itself <EM>only</EM> cares about metrics, not the actual
+character programs.  You just need to create a TeX metric file
+TFM using some tool such as <I>afm2tfm</I>, <I>afmtotfm</I>
+(from Y&Y, see <A HREF="texfaq_5.html#QU40">commercial implementations</A>)
+or <I>fontinst</I>.  For the previewer or printer driver you need the
+actual outline font files themselves (<CODE>pfa</CODE> for Display PostScript, <CODE>pfb</CODE>
+for ATM on IBM PC, Mac outline font files on Macintosh).
+
+<P>
+If you also need mathematics, then you are severely limited by the
+demands that TeX makes of maths fonts (for details, see the paper by B.K.P. 
+Horn in <CITE>TUGboat</CITE> 14(3)).
+For maths, then, there are relatively few choices:
+<DL>
+<DT><EM>Computer Modern</EM>
+<DD>(75 fonts - optical scaling) Donald E. Knuth<BR>
+    Note that CM <EM>is</EM> available in scalable outline form.
+    There are commercial as well as public domain versions, and
+    there are both Adobe Type 1 and TrueType versions.
+    Some of these are `commercial grade,' with full hand-tuned hinting,
+    some render very poorly, while others are merely incompatible with 
+    Adobe Type Manager (ATM).
+<DT><EM>Lucida Bright <EM>with</EM> Lucida New Math</EM>
+<DD>(25 fonts) Chuck Bigelow and
+  Kris Holmes<BR>
+    Lucida is a family of related fonts including seriffed, sans serif,
+    sans serif fixed width, calligraphic, blackletter, fax,
+    Kris Holmes' connected handwriting font, <EM>etc</EM>; they're
+    not as `spindly' as Computer Modern, with a large x-height, and
+    include a larger set of maths symbols, operators, relations and
+    delimiters than CM (over 800 instead of 384: among others, it also
+    includes the AMS <CODE>msam</CODE> and <CODE>msbm</CODE> symbol sets).
+    The planned `Lucida Bright Expert' (14 fonts)
+    adds seriffed fixed width, another handwriting font,
+    smallcaps, bold maths, upright `maths italic', <EM>etc</EM>., to the set
+    The distribution includes support for use with <CODE>plain</CODE> TeX and
+    LaTeX 2.09.  Support under LaTeX2e is provided in
+    <A HREF="texfaq_11.html#QU59">PSNFSS</A>
+    thanks to Sebastian Rahtz.
+<DT><EM>MathTime 1.1</EM>
+<DD>(3 fonts) TeXplorators (Michael Spivak)<BR>
+    The set contains maths italic, symbol, and extension
+    fonts, designed to work well with Times-Roman.  These are
+    typically used with Times, Helvetica and Courier (which are
+    resident on many printers, and which are supplied with
+    some PC versions).  In addition you may want to complement this
+    basic set with Adobe's Times Smallcap, and perhaps the set of
+    Adobe `Math Pi' fonts, which include blackboard bold, blackletter,
+    and script faces.  The distribution includes support for use with
+    <CODE>plain</CODE> TeX and LaTeX 2.09 (including code to link in Adobe Math
+    Pi 2 and Math Pi 6).
+    Support under LaTeX2e is provided in
+    <A HREF="texfaq_11.html#QU59">PSNFSS</A>
+    thanks to Sebastian Rahtz.
+<DT><EM>Adobe Lucida, LucidaSans <EM>and</EM> LucidaMath</EM>
+<DD>(12 fonts)<BR>
+    Lucida and LucidaMath are generally considered to be a bit heavy.
+    The three maths fonts contain only the glyphs in the CM
+    maths italic, symbol, and extension fonts.
+    Support for using LucidaMath with TeX is not very good;
+    you will need to do some work reencoding fonts <EM>etc</EM>.
+    (In some sense this set is the ancestor of the LucidaBright
+    plus LucidaNewMath font set.)
+<DT><EM>Concrete, <EM>the</EM> AMS maths fonts <EM>etc</EM>.</EM>
+<DD>Donald
+  E. Knuth and the AMS.<BR>
+    These are sometimes mentioned as alternatives to CM, but they are
+    really adjuncts, in that you need to use at least the basic CM
+    maths fonts with them.
+<DT><EM>Proprietary fonts</EM>
+<DD>Various sources.<BR>
+    Since having a high quality font set in scalable outline form that
+    works with TeX can give a publisher a real competitive advantage, there
+    are some publishers that have paid (a lot) to have such font sets made
+    for them.  Unfortunately, these sets are not available on the open
+    market, despite the likelihood that they're more complete than
+    those that are.
+<DT><EM>Mathptm</EM>
+<DD>(4 fonts) Alan Jeffrey.<BR>
+   This set contains maths italic, symbol, extension, and roman 
+   virtual fonts, built from Adobe Times, Symbol, Zapf Chancery, and
+   the Computer Modern fonts.  The Mathptm fonts are free, and
+   the resulting PostScript files can be freely exchanged.
+   Contains most of the CM math symbols. 
+   Support under LaTeX2e in
+    <A HREF="texfaq_11.html#QU59">PSNFSS</A>
+    thanks to Alan Jeffrey and Sebastian Rahtz.  
+
+<P>
+    (A similar development by Thomas Esser, using the Adobe Palatino
+    fonts, is available from <A HREF="ftp://ftp.dante.de/tex-archive/systems/unix/teTeX/updates/texmf/mathppl.sh"><TT>systems/unix/teTeX/updates/texmf/mathppl.sh</TT></A>)
+</DL>
+
+<P>
+All of the first three font sets are available in formats suitable for
+IBM PC/Windows, Macintosh and Unix/NeXT from Y&Y and from Blue Sky
+Research (see <A HREF="texfaq_5.html#QU40">commercial suppliers</A> for
+details).  The MathTime fonts are also available from:
+<BLOCKQUOTE>
+  TeXplorators<BR>
+  1572 West Gray #377<BR>
+  Houston TX 77019<BR>
+  USA
+</BLOCKQUOTE>
+The very limited selection of maths font sets is a direct result of
+the fact that a maths font has to be explicitly designed for use with
+TeX and as a result it is likely to lose some of its appeal in
+other markets. Furthermore, the TeX market for commercial fonts is
+minute (in comparison, for example, to Microsoft TrueType font pack
+#1, which sold something like 10 million copies in a few weeks after
+release of Windows 3.1!).
+
+<P>
+Text fonts in Type 1 format are available from many vendors including
+Adobe, Monotype, Bitstream.  Avoid cheap rip-offs: not only are you
+rewarding unethical behaviour, destroying the cottage industry of
+innovative type design, but you are <EM>also</EM> very likely to get junk.
+The fonts may not render well (or at all under ATM), may not have the
+`standard' complement of 228 glyphs, or may not include metric files
+(needed to make TFM files). Also, avoid TrueType fonts from all but
+the major vendors.  TrueType fonts are an order of magnitude harder to
+`hint' properly than Type 1 fonts and hence TrueType fonts from places
+other than Microsoft and Apple may be suspect.  In any case you may
+find other problems with TrueType fonts such as service bureaux not
+accepting jobs calling for them.
+
+
+<H2><A NAME="QU64">Including a PostScript figure in LaTeX</A></H2>
+
+<P>
+<A HREF="texfaq_16.html#QU116">LaTeX2e</A>
+has a standard package
+for graphics inclusion, rotation, colour, and other driver-related
+features. The package is documented in the second edition of the
+Lamport's LaTeX book
+(see <A HREF="texfaq_2.html#QU19">TeX-related books</A>), and is available
+in <A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/required/graphics"><TT>macros/latex/required/graphics</TT></A>
+
+<P>
+If you don't use LaTeX2e, perhaps the best method is to use
+the <CODE>psfig</CODE> macros written by Trevor Darrell, available in
+<A HREF="ftp://ftp.dante.de/tex-archive/graphics/psfig"><TT>graphics/psfig</TT></A>
+
+<P>
+You will also need a DVI to PostScript conversion program that
+supports the <CODE>\special</CODE>s. The drivers mentioned in
+<A HREF="texfaq_6.html#QU41">DVI to PostScript programs</A> do, and come
+with a version of <CODE>psfig</CODE> ready to use with them. The <CODE>psfig</CODE> macros
+work best with Encapsulated PostScript Files (EPS). In particular,
+<CODE>psfig</CODE> will need the file to have a BoundingBox (see Appendix H of
+the
+<EM>PostScript Language Reference Manual</EM>). If you don't have an EPS
+file, life can be difficult.
+
+<P>
+One point to note about including PostScript figures is that they
+are not part of the DVI file, but are only included when you
+use a DVI
+to PostScript conversion program. As a result, most DVI previewers
+will simply show the blank space TeX has reserved for your figure,
+not the figure itself. 
+
+<P>
+There are two rather good documents on CTAN addressing of figure
+production with rather different emphasis.  Anil K. Goel's,
+<A HREF="ftp://ftp.dante.de/tex-archive/info/figsinltx.ps"><TT>info/figsinltx.ps</TT></A> covers the different ways in which you might
+generate figures, and one the old (LaTeX 2.09) ways of including them
+into documents.  Keith Reckdahl's, <A HREF="ftp://ftp.dante.de/tex-archive/info/epslatex.ps"><TT>info/epslatex.ps</TT></A>, covers the
+standard LaTeX2e facilities, as well as some of the supporting
+packages, notably <I>subfigure</I> (<A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/subfigure"><TT>macros/latex/contrib/supported/subfigure</TT></A>) and
+<I>psfrag</I> (<A HREF="ftp://ftp.dante.de/tex-archive/macros/latex/contrib/supported/psfrag"><TT>macros/latex/contrib/supported/psfrag</TT></A>).
+
+
+<HR>
+Go to the <A HREF="texfaq_0.html">first</A>, <A HREF="texfaq_10.html">previous</A>, <A HREF="texfaq_12.html">next</A>, <A HREF="texfaq_17.html">last</A> section, <A HREF="texfaq_toc.html">table of contents</A>.
+</BODY>
+</HTML>

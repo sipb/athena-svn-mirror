@@ -1,0 +1,50 @@
+<html>
+<head><title>Help On LaTeX \newenvironment</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\newenvironment</font></h1>
+
+ <tt>\newenvironment{nam}[args]{begdef}{enddef}</tt>
+ <tt>\renewenvironment{nam}[args]{begdef}{enddef}</tt>
+<p>
+ These commands define or redefine an environment.
+<p>
+<ul>
+<li><TT>nam</TT> The name of the  environment.   
+     For  <tt>\newenvironment</tt>  there
+     must  be  no  currently defined environment by that name, nor may the
+     command  <tt>\nam</tt>  be currently defined.   For  
+     <tt>\renewenvironment</tt>  the
+     environment "<tt>nam</tt>" must already be defined. <tt>nam</tt>
+     may contain letters, numbers, and asterisks; it may <strong>not</strong>
+     begin with "end...". 
+<p>
+<li><TT>args</TT> An integer from 1 to 9 denoting the number of arguments of
+     the newly-defined environment.  The default is no arguments.
+<p>
+<li><TT>begdef</TT>  The  text   substituted   for   every   occurrence   of
+     <tt>\begin{nam}</tt>;  a  parameter  of the form <tt>#n</tt> in 
+     <tt>begdef</tt> is replaced by
+     the text of the nth argument when this substitution takes place.
+<p>
+<li><TT>enddef</TT> The text substituted for every occurrence of  
+     <tt>\end{nam}</tt>. It may not contain any argument parameters.
+</ul>
+<h2>Changes in <a href="versions.html">LaTeX2e</a></h2>
+It is possible to have an optional argument, the form of the command being
+<pre>
+  <tt>\newenvironment{nam}[args][opt]{begdef}{enddef}
+  \renewenvironment{nam}[args][opt]{begdef}{enddef}</tt>
+</pre>
+If <tt>opt</tt> is present, the first of the <tt>args</tt> arguments
+is optional with default value <tt>opt</tt>.  If it is absent all 
+arguments are mandatory. 
+<hr>
+See also <a href="ltx-17.html">Defining commands</a>,
+<a href="ltx-27.html">Environments</a><br>
+Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 16 Nov 1995.
+</address>
+</body>
+</html>

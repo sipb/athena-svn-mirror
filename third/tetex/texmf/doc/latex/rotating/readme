@@ -1,0 +1,9 @@
+A package built on the standard \LaTeX\ graphics package, and performs
+all the different sorts of rotation one might like, including complete
+figures and captions. The commented source contains the manual, and
+there is a set of tests in examples.tex. 
+
+Install by running \TeX\ on rotating.ins and place `rotating.sty'
+where \LaTeX\ can find it.
+
+

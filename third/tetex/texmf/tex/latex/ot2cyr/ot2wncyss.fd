@@ -1,0 +1,22 @@
+\ProvidesFile{OT2wncyss.fd}[1999/01/14 Washington Cyrillic Sans. 
+                                                  S. Rahtz./Th. B.]
+\DeclareFontFamily{OT2}{wncyss}{}
+\@ifundefined{pdfoutput}%
+ {\def\DeclareThatWNSSFontShape#1#2#3#4#5#6{%
+        \DeclareFontShape{#1}{#2}{#3}{#4}{%
+          <5> <6> <7> <8> #58 <9> #59
+          <10> <10.95> <12> <14.4> <17.28><20.74><24.88>#510}{#6}}}
+ {\ifnum\pdfoutput=1
+  \def\DeclareThatWNFontShape#1#2#3#4#5#6{%
+        \DeclareFontShape{#1}{#2}{#3}{#4}{<->#510}{#6}}
+  \else
+  \def\DeclareThatWNSSFontShape#1#2#3#4#5#6{%
+        \DeclareFontShape{#1}{#2}{#3}{#4}{%
+          <5> <6> <7> <8> #58 <9> #59
+          <10> <10.95> <12> <14.4><17.28><20.74><24.88>#510}{#6}}
+  \fi}
+\DeclareThatWNSSFontShape{OT2}{wncyss}{m}{n}{wncyss}{}{}
+\DeclareFontShape{OT2}{wncyss}{bx}{n}{<->sub * wncyss/m/n}{}
+\DeclareFontShape{OT2}{wncyss}{m}{i}{<->sub * wncyss/m/n}{}
+\endinput
+%%%

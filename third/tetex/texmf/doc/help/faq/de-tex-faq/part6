@@ -1,0 +1,723 @@
+Path: senator-bedfellow.mit.edu!bloom-beacon.mit.edu!news.kodak.com!news-nysernet-16.sprintlink.net!news-east1.sprintlink.net!news-peer1.sprintlink.net!news.sprintlink.net!news.maxwell.syr.edu!bignews.mediaways.net!newsfeed.germany.net!fu-berlin.de!news.uni-stuttgart.de!news.urz.uni-heidelberg.de!german
+From: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+Newsgroups: de.comp.text.tex,de.answers,news.answers
+Subject: TeX, LaTeX, DANTE e.V.: FAQ - Fragen und Antworten (Part 6 of 11)
+Supersedes: <de-tex-faq-6-922970460@dante.de>
+Followup-To: de.comp.text.tex
+Date: 11 May 1999 15:39:55 GMT
+Organization: DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+Lines: 696
+Approved: news-answers-request@MIT.EDU
+Distribution: world
+Expires: 25 Jun 99 17:39:26
+Message-ID: <de-tex-faq-6-926437166@dante.de>
+References: <de-tex-faq-1-926437166@dante.de>
+Reply-To: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+NNTP-Posting-Host: sun.dante.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Summary: This posting contains a list of Frequently Asked Questions
+         (and their answers) about the typesetting system TeX and
+         about DANTE e.V., the german-speaking TeX users group.
+         It is in German and uses the ISO Latin-1 character set.
+Keywords: FAQ TYPESETTING TeX USERGROUP DANTE
+Originator: german@sun.dante.de
+Xref: senator-bedfellow.mit.edu de.comp.text.tex:16694 de.answers:3305 news.answers:157710
+
+Posted-By: auto-faq 3.3 (Perl 5.003)
+Archive-name: de-tex-faq/part6
+Posting-Frequency: monthly
+Copyright-Notice: siehe Abschnitt 1.1/see Section 1.1
+URL: http://www.dante.de/faq/de-tex-faq/
+
+--- DE-TeX-FAQ Beginn Teil 6 ---
+
+
+  Fragen und Antworten (FAQ) über das Textsatzsystem TeX und DANTE,
+            Deutschsprachige Anwendervereinigung TeX e.V.
+                                   
+           Bernd Raichle, Thomas Hafner und Rolf Niepraschk
+                                   
+                      (Version 51 vom Mai 1999)
+  _________________________________________________________________
+
+6 TeX, LaTeX, Makros etc. (II)
+                                    
+6.1 Abbildungen und Tafeln (+)
+
+6.1.1 Wieso werden die meisten meiner Abbildungen an das Ende des
+      Kapitels oder Dokuments verschoben? (*)
+
+Das optionale Argument der `figure'- oder `table'-Umgebung _schränkt_
+die Plazierungsmöglichkeiten auf die angegebenen Orte ein. Mit dem
+optionalen Argument gibt man also _nicht_, wie oft fälschlich geglaubt
+und weiterverbreitet wird, die Plazierung für weitere Orte an. Deshalb
+nie Plazierungsangaben nur auf [h] einschränken, sondern mindestens
+einen weiteren Ort mit angeben! Grund: Kann die Abbildung nicht `h'ier
+plaziert werden, darf sie nirgendwo anders gesetzt werden und wird
+nach hinten an das Ende des Kapitels bzw. des Dokuments geschoben. Da
+LaTeX die Reihenfolge der Abbildungen bzw. der Tafeln nicht verändert,
+werden alle nachfolgenden Abbildungen bzw. Tafeln mit dieser nicht
+plazierbaren Abbildung oder Tafel nach hinten verschoben. Genau
+dasselbe kann passieren, wenn die Plazierungsbeschränkung mit [p]
+angegeben wird, das Bild kleiner als \floatpagefraction ist und das
+nächste Bild nicht zusammen mit diesem auf eine Seite paßt. Ebenso bei
+einer Beschränkung auf [t] und einem Bild, das größer als
+\textfraction ist, dto. für [b] und \bottomfraction.
+
+Tip: Lassen Sie zu Beginn das optionale Argument der `figure'- oder
+`table'-Umgebung weg - es ist nicht ohne Grund ein _optionales_
+Argument dieser Umgebungen! Fügen Sie später für eine Endfassung Ihres
+Dokuments nur an den Stellen ein optionales Argument mit
+Plazierungseinschränkungen ein, wenn z.B. eine bestimmte Abbildung
+oder Tafel auf einer eigenen Seite oder auf einer Seite oben
+erscheinen sollte.
+
+Weitere Hinweise finden Sie in
+  * Axel Reichert: ``Gleitobjekte - die richtige Schmierung''
+    CTAN: info/german/gleitobjekte/
+  * Axel Reichert: ``Satz von Tabellen''
+    CTAN: info/german/tabsatz/
+  * Piet van Oostrum: ``Floats in LaTeX''
+    http://www.cs.ruu.nl/~piet/floats/
+    
+6.1.2 Wie kann ich die Default-Plazierungseinschränkungen ändern? Ich
+      möchte meine Abbildungen auch `h'ier plazieren, ohne jedesmal das
+      optionale Argument angeben zu müssen.
+
+In LaTeX werden diese Angaben, die sogenannten `float placement
+specifier' für die `figure'- und `table'-Umgebungen in den Makros
+\fps@figure und \fps@table abgelegt. Durch die Redefinitionen
+\renewcommand{\fps@figure}{htbp}
+\renewcommand{\fps@table}{htbp}
+
+(Zeilen mit \makeatletter ... \makeatother klammern oder in eine
+sty-Datei schreiben!) fügt man noch die `h'ier-Plazierung hinzu.
+
+Die Standard-LaTeX-Klassen setzen die Default-Plazierungen auf `tbp',
+untersagen also die `h'ier-Plazierung einer Abbildung bzw. Tafel. Dies
+ist in den meisten Fällen auch sinnvoll, da Abbildungen und Tafeln nur
+dazu dienen, die Aussagen im Text durch beispielsweise eine
+anschaulichere Darstellung oder kompakte Übersicht zu unterstützen.
+Die Abbildung oder Tafel ist damit _nicht_ integraler Bestandteil des
+Textes, sondern ein dem Text noch zusätzlich zugeordneter Bestandteil
+des Dokuments. Daher sollten diese den Text nicht unterbrechen, was
+eine `h'ier-Plazierung zweifellos tun würde. Somit ist der Default
+`tbp' in den meisten Fällen sinnvoll.
+
+6.1.3 Wie muß ich die `float'-Parameter ändern, so daß die Abbildungen
+      und Tabellen dort erscheinen, wo ich will?
+
+Der Plazierungsalgorithmus von LaTeX erledigt diese Aufgabe eigentlich
+sehr gut, wenn man einmal selbst durchzuspielen versucht, wohin man
+selbst unter den gegebenen Bedingungen und Wechselwirkungen eine
+Abbildung oder eine Tabelle hinsetzen bzw. schieben würde. Ist man mit
+dem Ergebnis dennoch nicht ganz zufrieden, kann man einmal folgendes
+probieren:
+
+Zuerst sollte man die Plazierungsbeschraenkungen an allen `figure'-
+und `table'-Umgebungen entfernen. Anschließend kann man die Parameter
+des Plazierungsalgorithmus ändern:
+\renewcommand{\floatpagefraction}{.6}% vorher: .5
+
+Eine oder mehrere Abbildungen kommen erst auf eine eigene Seite, eine
+sogenannte `float page', wenn diese mindestens 60% der Seite
+einnehmen. Damit gibt es weniger `float pages', die nur halbvoll sind.
+Empfehlenswert ist ein Wert zwischen 50% und 80%, je nachdem wie viele
+Abbildungen existieren, wie groß und wie unterschiedlich groß diese
+Abbildungen sind.
+\renewcommand{\textfraction}{.15} % vorher: .2
+
+Von einer Seite muß neben den Abbildungen, die `h'ere, `t'op und
+`b'ottom plaziert werden, noch mindestens 15% Text erscheinen. Diesen
+Wert sollte man nicht zu klein wählen, um nicht nur Seiten zu
+erzeugen, bei denen man den Text suchen muß. Bei vielen Bildern lieber
+den Wert von \floatpagefraction kleiner wählen. Empfehlenswert ist ein
+Wert zwischen 10% und 30%.
+\renewcommand{\topfraction}{.8}     % vorher: .7
+\renewcommand{\bottomfraction}{.5}  % vorher: .3
+
+Maximaler Anteil der Seite, die für Abbildungen, die `t'op bzw.
+`b'ottom plaziert werden, verwendet werden darf. Diese Werte sollte
+man nicht zu groß wählen, bei vielen Abbildungen lieber den Wert von
+\floatpagefraction kleiner wählen. Insbesondere \bottomfraction sollte
+man klein halten, da Abbildungen gewöhnlich auf einer Seite oben
+vermutet werden. Empfehlenswert sind Werte zwischen 50% und 85% für
+\topfraction und 20% bis 50% für \bottomfraction. Einer dieser beiden
+Werte sollte stets größer als \floatpagefraction sein! (\topfraction
+sollte nie auf 1.0, \textfraction nie auf 0.0 gesetzt werden!)
+\setcounter{topnumber}{3} % vorher: 2
+\setcounter{bottomnumber}{1} % vorher: 1
+\setcounter{totalnumber}{5} % vorher: 3
+
+Maximale Anzahl der Abbildungen und Tabellen, die auf einer Seite
+`t'op bzw. `b'ottom bzw. insgesamt auf der Seite plaziert werden. Hat
+man viele kleine Abbildungen sollte man diese Werte erhöhen. Will man
+Abbildungen möglichst auf eine `float page' setzen, sollte man
+`topnumber' und `bottomnumber' auf 0 setzen und \floatpagefraction bis
+auf 0.01 erniedrigen.
+
+Nachdem man mit den geänderten Plazierungsparametern ein
+zufriedenstellendes Ergebnis erzielt hat, kann man durch gezielten
+Einsatz des optionalen Arguments der `figure'- bzw. `table'-Umgebung
+einzelne ungünstig plazierte Abbildungen und Tabellen entsprechend
+verschieben. Hierbei sollte man nur die nicht erwünschte Plazierung
+entfernen, also z.B. [bp] angeben, falls eine `t'op-Plazierung
+ungünstig ist.
+
+Die Bedeutung dieser Parameter wird anschaulich in bildlicher Form in
+dem Artikel `The layouts package: User manual' (`layman') von Peter R.
+Wilson beschrieben. Die für die verwendete Dokumentenklasse geltenden
+Werte können mit dem zugehörigen LaTeX-Paket `layouts' angezeigt und
+einfach testweise geändert werden. `layouts' zeigt darüberhinaus auch
+viele weitere für das Layout eines Dokumentes wichtigen Parameter an.
+
+layouts:  CTAN: macros/latex/contrib/supported/layouts
+layman:  CTAN: macros/latex/contrib/supported/layouts/layman.tex
+
+6.1.4 Wie kann ich die Fehlermeldung `! LaTeX Error: Too many unprocessed
+      floats.' vermeiden?
+
+LaTeX allokiert für alle `floats', also `figure'- und
+`table'-Umgebungen, eines Dokuments 18 Insertion-Registertupel. Der
+genannte Fehler taucht auf, wenn alle 18 Registertupel belegt sind.
+Eigentlich sollte der Speicherplatz für 18 noch zu plazierende
+`floats' für alle Gegebenheiten ausreichen, so daß dieser Fehler nur
+auftreten kann, wenn a) ein `float' beispielsweise aufgrund von zu
+restriktiven Plazierungsangaben (siehe Abschnitt 6.1.1) nicht auf eine
+Seite gesetzt werden kann oder b) sehr viele, meist unterschiedlich
+große `floats' mit sehr wenig Text auftreten. In Fall a) kann man
+durch andere Plazierungseinschränkungen oder Änderungen der
+`float'-Parameter den Überlauf vermeiden. In Fall b) sollte man mehr
+erläuternden Text schreiben, eine eigene nicht fließende Umgebung
+definieren (da ja die Abbildungen im Vordergrund stehen und eher der
+Text zwischen die Abbildungen `fließt') oder das Paket `morefloats'
+verwenden. Letzteres allokiert weitere 18 Insertion-Registertupel, so
+daß man jetzt insgesamt 36 `floats' zwischenspeichern kann, bevor der
+Fehler auftritt. Leider hat man dadurch 18 Savebox-, Zähler-, Längen-
+und Glue-Register weniger, so daß man jetzt evtl. auf den Fehler `No
+room for a new ...' stößt.
+
+morefloats:  CTAN: macros/latex209/contrib/misc/morefloats.sty
+
+6.1.5 Wie kann ich es erreichen, daß zwei Abbildungen nicht auf
+      verschiedenen Seiten, sondern möglichst direkt untereinander
+      plaziert werden?
+
+In eine einzige `figure'- bzw. `table'-Umgebung können auch mehrere
+Abbildungen oder Tafeln gesetzt und mit eigenen Unterschriften
+versehen werden:
+\begin{figure}
+ erstes Bild
+\caption{erstes Bild}
+\vspace{\floatsep}    % zusätzlicher Abstand zwischen zwei `floats'
+ zweites Bild
+\caption{zweites Bild}
+\end{figure}
+
+Alle Abbildungen oder Tafeln einer Umgebung werden dann nicht mehr
+getrennt. Aus diesem Grund sollte man auch darauf achten, daß eine
+`figure'- oder `table'-Umgebung durch zu viele Abbildungen und Tafeln
+nicht zu hoch wird.
+
+6.1.6 Wie kann ich in einer Abbildung zwei Bilder nebeneinander setzen?
+
+Man kann zum Beispiel zwei `minipage'-Umgebungen verwenden, wobei man
+dann auch mit deren optionalem Argument die Ausrichtung der beiden
+Bilder angeben kann:
+\begin{figure}
+\begin{minipage}[b]{.4\linewidth} % [b] => Ausrichtung an \caption
+  Bild links
+  \caption{Bildunterschrift links}
+\end{minipage}
+\hspace{.1\linewidth}% Abstand zwischen Bilder
+\begin{minipage}[b]{.4\linewidth} % [b] => Ausrichtung an \caption
+  Bild rechts
+  \caption{Bildunterschrift rechts}
+\end{minipage}
+\end{figure}
+
+6.1.7 Wie kann ich eine Abbildung (`figure') und eine Tafel (`table')
+      nebeneinander setzen?
+
+Dies funktioniert leider nicht ohne einen nicht ganz `sauberen' Trick.
+Man benötigt die folgende Definition
+\newcommand{\setfloattype}[1]{\renewcommand{\@captype}{#1}}
+
+die man wegen des internen Makronamens \@captype in eine .sty-Datei
+schreiben oder im Dokumentkopf mit \makeatletter ... \makeatother
+klammern muß. Danach kann man mit
+\begin{figure} \begin{minipage}{.5\linewidth} Abbildung
+\caption{Abbildung} \end{minipage}% \begin{minipage}{.5\linewidth}
+\setfloattype{table} %% <<=== Tafel \caption{Tafel} \end{minipage}
+\end{figure}
+
+eine Abbildung und eine Tafel nebeneinander setzen, wobei die
+Unterschriften auch in das jeweilige Verzeichnis gelangen.
+
+6.1.8 Wie kann ich mehrere zusammengehörige Abbildungen bzw. Tafeln
+      entsprechend mit 1a, 1b etc. numerieren? (+)
+
+Das Paket `subfigure' bietet die Anweisung \subfigure an, mit der man
+dies innerhalb der gewohnten `figure'- oder `table'-Umgebung erreichen
+kann.
+
+subfigure:  CTAN: macros/latex/contrib/supported/subfigure/
+
+6.1.9 Gibt es bei der Option `twocolumn' die Möglichkeit, Abbildungen
+      (`figure') und Tafeln (`table') über beide Spalten, also die
+      gesamte Textbreite einer Seite zu setzen?
+
+Statt `figure'- die `figure*'-, statt `table'- die `table*'-Umgebung
+verwenden.
+
+6.1.10 Wieso bekomme ich den Fehler `! LaTeX Error: Not in outer par
+       mode.', wenn ich z.B. die Breite einer Abbildung begrenzen will?
+
+Eine `figure'- oder `table'-Umgebung ist ein sogenannter `float', d.h.
+der Inhalt `fließt' an eine andere Stelle. Deshalb darf diese Umgebung
+nicht innerhalb einer anderen, wie `minipage', \parbox o.ä. verwendet
+werden. Die Eingabe
+\begin{minipage}{5cm}   %% FALSCH!
+\begin{figure}
+  Bild
+  \caption{text}
+\end{figure}
+\end{minipage}
+
+ist daher falsch und erzeugt den in der Frage genannten Fehler.
+Korrekt und auch logisch einsichtiger ist es, wenn man den Inhalt der
+`figure'-Umgebung in eine `minipage' packt, also diese _in_ die
+`figure'-Umgebung setzt:
+\begin{figure}
+  \begin{minipage}{5cm}   %% KORREKT!
+    Bild
+    \caption{text}
+  \end{minipage}
+\end{figure}
+
+6.1.11 Wie kann ich das Layout der Bildunterschriften (\caption)
+       verändern?
+
+LaTeX verwendet die interne Anweisung \@makecaption{Bild Nr}{Text}, um
+die Bildunterschrift inkl. Bildnummer zu setzen. Durch Umdefinieren
+dieser Anweisung, die in der Dokumentklasse definiert wird, kann man
+das Layout ändern. Will man nur die Bildnummer (z.B. ``Abbildung 1'')
+ändern, so reicht es oftmals aus, die interne Anweisung \fnum@figure
+bzw. für Tafeln \fnum@table entsprechend umzudefinieren.
+
+Zur Erleichterung gibt es einige leicht zu verwendende Pakete:
+`caption' bzw. `caption2' haben viele Optionen; diese Pakete
+ermöglichen die Variation der Schriftart und -größe und des Layouts
+(zentriert, überhängend, Absatz mit Einrückung usw.). Beispiel:
+\usepackage[bf]{caption2}
+\renewcommand{\captionfont}{\small\itshape}
+
+für einen etwas kleineren und kursiv gesetzten Unterschriftentext,
+wobei die Bildnummer weiterhin fett gesetzt wird.
+
+Um die Benennung zu ändern, wenn man also statt ``Abbildung''
+beispielsweise ``Abb.'' vewenden möchte, erreicht man dies durch
+\renewcommand{\figurename}{Abb.}
+
+Im Falle einer Tabelle muß analog dazu \tablename umdefiniert werden.
+
+Speziellere Lösungen existieren natürlich auch oder sind teilweise in
+einigen Dokumentklassen enthalten. So enthalten die NTG-Klassen
+beispielsweise Befehle, um alle Fonts (Sections, Captions, Running
+Heads) zu verändern.
+
+caption/caption2:  CTAN: macros/latex/contrib/supported/caption
+NTG-Klassen:  CTAN: macros/latex/contrib/supported/ntgclass
+hangcaption:  CTAN: macros/latex209/contrib/misc/hangcaption.sty
+isucaption:  CTAN: macros/latex209/contrib/misc/isucaption.sty
+
+6.1.12 Wie kann man neue Typen von Gleitumgebungen (`floats') z.B. für
+       weitere Arten von Tabellen oder Programm-Code erzeugen?
+
+Prinzipiell muß man für einen neuen Typ von Gleitumgebung einige
+Makros definieren. Beispielsweise sind für die zu definierenden
+Umgebungen `faqtable' und `faqtable*' die folgenden Anweisungen (in
+eine .sty-Datei schreiben, da interne Anweisungen!) notwendig,
+\newcounter{faqtable}[section]
+%\renewcommand{\thefaqtable}{\thesection.\arabic{table}}
+%% \thefaqtable wird bereits durch \newcounter definiert
+\renewcommand{\fps@faqtable}{tp}  % nicht `h' bzw. `b'
+\renewcommand{\ftype@faqtable}{4} % type is a power of two!
+\renewcommand{\ext@faqtable}{lot} % Endung der Hilfsdatei
+\renewcommand{\fnum@faqtable}{FAQ-Tabelle~\thefaqtable}
+\newenvironment{faqtable}{\@float{faqtable}}{\end@float}
+\newenvironment{faqtable*}{\@dblfloat{faqtable}}{\end@dblfloat}
+
+wobei damit noch keine Anpassungen des Inhaltsverzeichnisses, ein
+eigenes Inhaltsverzeichnis oder sonstige Anpassungen des Layouts
+durchgeführt sind. Mehr Informationen dazu findet man im Buch `Der
+LaTeX-Begleiter'.
+
+Sehr viel einfacher geht dies mit dem `float'-Paket, mit dem z.B.
+obiges auch der normale LaTeX-Benutzer mit der simplen Anweisung
+
+  \newfloat{faqtable}{tp}{lot}[section]
+  
+definieren kann. Daneben sind auch schon einige `float'-Layouts
+vordefiniert und können ebenso einfach verwendet werden.
+
+float:  CTAN: macros/latex/contrib/supported/float
+
+6.1.13 Abbildungen und Tafeln sollen _immer_ nach dem ersten Verweis auf
+       sie gesetzt werden. Wie? Es ist möglich, daß LaTeX sie vor der
+       Abschnittsüberschrift plaziert. Wie unterbinde ich das?
+
+Mit dem LaTeX2e-Paket `flafter' werden Abbildungen und Tafeln nie vor
+dem Text plaziert, in dem sie im Dokument angegeben werden. Damit
+LaTeX2e sie also nie vor dem ersten Verweis plaziert, schiebt man die
+entsprechende `figure'- bzw. `table'-Umgebung einfach hinter die erste
+\ref- bzw. \pageref-Anweisung.
+
+flafter:  CTAN: macros/latex/base/
+CTAN: macros/latex/unpacked/
+
+6.1.14 Gibt es eine einfache Möglichkeit, eine Abbildung oder Tafel
+       innerhalb des normalen Textes zu setzen, sie also mit dem normalen
+       Text umfließen zu lassen?
+
+Hierfür gibt es mittlerweile eine große Anzahl von Paketen mit
+unterschiedlichen Beschränkungen und Vor- und Nachteilen, die Piet van
+Oostrum in einer Liste, die er unregelmäßig nach `comp.text.tex'
+postet, aufzählt:
+
+  `flow', `floatflt' (für LaTeX2e, Vorgänger `floatfig' ist für LaTeX
+  2.09), `picinpar' (veraltet), `picins', `window', `wrapfig'.
+  
+Empfohlen werden: `picins' (funktioniert auch in Listen-Umgebungen),
+`floatflt' und `wrapfig' (unterstützen neben `figure'- auch
+`table'-Umgebungen), da diese am meisten können und die wenigsten
+Fehler aufweisen.
+
+picins:  CTAN: macros/latex209/contrib/picins
+floatflt:  CTAN: macros/latex/contrib/other/floatflt
+wrapfig:  CTAN: macros/latex/contrib/other/misc/wrapfig.sty
+
+6.1.15 Wieso erhalte ich bei einigen Abbildungen falsche Querverweise,
+       obwohl ich doch die \label-Anweisung innerhalb der
+       `figure'-Umgebung verwendet habe?
+
+Die \label-Anweisung muß _nach_ der Anweisung folgen, die für die
+Numerierung und damit auch für die `Verankerung' des Verweises sorgt.
+Solche Verankerungsanweisungen sind z.B. \section oder \caption, die
+`figure'-Umgebung dagegen ist keine. Daher muß das \label _nach_ der
+entsprechenden \caption folgen:
+\begin{figure}
+  ... Abbildung ...
+  \caption{Dies ist eine Abbildung}
+  \label{fig:beispielabbildung}
+\end{figure}
+
+6.1.16 Wie erhalte ich eine Fußnote innerhalb einer `figure' oder
+       `table'? Es erscheint zwar eine Markierung, aber kein
+       Fußnotentext.
+
+In Gleitumgebungen funktionieren keine Fußnoten, da diese mitgleiten
+müßten, was ohne sehr viel Aufwand nicht möglich ist. Abhilfe kann man
+dadurch schaffen, daß man Fußnoten innerhalb einer \caption vermeidet
+und den Fußnotentext in die Unterschrift mit einbindet. Ansonsten kann
+man die Abbildung oder Tafel in eine `minipage'-Umgebung einklammern,
+so daß der Fußnotentext mit in die Gleitumgebung gesetzt wird und
+somit mitgleiten kann. Die dann meist störende Abgrenzungslinie kann
+man mit \renewcommand{\footnoterule}{} innerhalb der
+`minipage'-Umgebung vermeiden.
+\begin{figure}
+\begin{minipage}{\linewidth}
+  \renewcommand{\footnoterule}{}
+  ... Abbildung mit \footnote{...} ...
+\end{minipage}
+\caption{ ... }
+\end{figure}
+
+6.1.17 Wie kann ich erreichen, daß sich eine Tabelle über mehrere Seiten
+       erstreckt?
+
+Zu diesem Zweck gibt es die beiden Pakete `longtable' und
+`supertabular' sowie `ltxtable', welches die Möglichkeiten von
+`longtable' und `tabularx' in sich vereinigt.
+
+`longtable' benutzt auf jeder Seite die gleiche Spaltenbreite, während
+`supertabular' auf jeder Seite die Spaltenbreite neu berechnet.
+`supertabular' funktioniert im Gegensatz zu `longtable' auch mit der
+Klassenoption `twocolumn'. `tabularx' ist nicht direkt für mehrseitige
+Tabellen gedacht, sondern zum Austreiben einer Tabelle auf eine
+bestimmte Breite. Eine mehrseitige Tabelle kann mit `ltxtable' auf
+eine bestimme Breite ausgetrieben werden, wofür auch die Pakete
+`longtable' und `tabularx' erforderlich sind.
+
+longtable:  CTAN: macros/latex/required/tools/
+tabularx:  CTAN: macros/latex/required/tools/
+supertabular:  CTAN: macros/latex/contrib/supported/supertabular
+ltxtable:  CTAN: macros/latex/contrib/supported/carlisle
+
+6.1.18 Wie kann ich einzelne Felder oder größere Bereiche einer Tabelle
+       farbig oder grau hinterlegen?
+
+Zu diesem Zweck gibt es die beiden Pakete `colortbl' und `colortab'.
+Nähere Hinweise sind den beiliegenden Dokumentationen oder dem Buch
+``The LaTeX Graphics Companion'' (siehe Abschnitt 2.4.1) zu entnehmen.
+
+colortbl:  CTAN: macros/latex/contrib/supported/carlisle
+colortab:  CTAN: macros/generic/colortab/
+
+6.2 Fußnoten, Endnoten etc.
+
+6.2.1 Die Fußnoten sollen gesammelt am Ende des Kapitels erscheinen.
+
+endnotes:  CTAN: macros/latex209/contrib/misc/endnotes.sty
+
+6.2.2 Ich möchte meine Fußnoten auf jeder Seite neu beginnend
+      durchzählen, d.h. auf jeder Seite soll mit `1' begonnen werden.
+
+footnpag:  CTAN: macros/latex/contrib/supported/footnpag
+
+6.2.3 Ich möchte den maximal von den Fußnoten eingenommenen Platz auf 10
+      Zeilen beschränken. Wie?
+
+Das Längenregister \dimen\footins gibt die maximale Höhe der Box mit
+den Fußnoten für eine Seite an. Nach
+\setlength{\dimen\footins}{10\baselineskip}
+
+wird dieser Platz von normalerweise 8 Inch (ca. 20,5 cm) auf ca. 10
+Zeilen beschränkt.
+
+6.2.4 Wie erreiche ich eine andere Formatierung der Fußnoten?
+
+Mit dem Paket `footmisc' von Robin Fairbairns (hatte bis Januar 1998
+noch den Namen `footnote') kann man sehr einfach einige andere
+Formatierungen auswählen. Ansonsten findet man im Buch `Der
+LaTeX-Begleiter' nähere Informationen.
+
+footmisc:  CTAN: macros/latex/contrib/supported/footmisc/
+
+6.3 Grafiken, Bilder, Farbe und andere Effekte (+)
+
+6.3.1 Wie kann ich Grafiken in mein (La)TeX-Dokument einfügen?
+
+Die LaTeX-Pakete `graphics' bzw. `graphicx' definieren die Anweisung
+\includegraphics, welche einen einfachen Weg darstellt, die Einbindung
+von Grafiken in ein LaTeX-Dokument in einer weitgehend
+systemunabhängigen Syntax anzugeben. Die früher für denselben Zweck
+verwendeten Anweisungen \psfig, \epsfig, \epsfbox u.s.w. (enthalten in
+den Paketen `psfig', `epsf' und `epsfig') sollten nicht mehr verwendet
+werden, da sie teilweise fehlerhaft sind, nur für ausgewählte Treiber
+funktionieren und auch nicht weiterentwickelt werden.
+
+Neben \includegraphics werden weitere nützliche Befehle zum Skalieren
+und Rotieren definiert. Die Größe der Grafik, die von LaTeX benötigt
+wird, um entsprechend Platz für die Grafik zu lassen, wird bei
+Encapsulated-PostScript-(EPS-)Dateien direkt aus dem
+`BoundingBox'-Kommentar in der EPS-Datei gelesen. Bei anderen,
+insbesondere bei binär vorliegenden Grafikformaten wie `gif' oder
+`pcx' kann die Größe in einer begleitenden Textdatei bzw. im
+optionalen Argument der Anweisung \includegraphics angegeben werden.
+Mit dem Paketparameter `draft' des Paketes `graphics' kann man LaTeX
+veranlassen, in die dvi-Datei nur einen Rahmen in der Größe der Grafik
+statt des Verweises auf die Grafikdatei einzufügen, was das Betrachten
+beschleunigt und zum Korrekturlesen manchmal hilfreich ist.
+
+Die Grafikinformation kann bei EPS-Dateien sowohl als Vektoren als
+auch in Form von Angaben zur Position der einzelnen Grapkikpunkte
+(Pixelgrafik) enthalten sein. Wenn möglich, sollte man immer
+Vektorgrafiken bevorzugen, da sie ohne Qualitätsverluste skaliert
+werden können. Ist man, wie bei gescannten Bildern, auf Pixelgrafiken
+angewiesen, so sollte man zur Vermeidung von Qualitätsverlusten darauf
+achten, daß die Auflösung der Grafik derjenigen des Druckers
+entspricht. Man bedenke auch, daß Grautöne nur mit besser auflösenden
+Ausgabegeräten (mind. 600dpi, besser mehr) gut wiedergegeben werden.
+
+Um vorhandene Pixelgrafiken nach EPS zu wandeln, kann man die
+Exportfunktion etlicher Grafikprogramme nutzen. Es gibt darüberhinaus
+die beiden Programme `jpeg2ps' und `tiff2ps', die sehr kompakte
+EPS-Dateien erzeugen. Sie erfordern Ausgabegeräte, die `Postscript
+Level 2' beherrschen, wie z.B. alle modernen PS-Drucker und neue
+Ghostscript-Versionen. Da die meisten dvi-Preview-Programme enthaltene
+EPS-Grafiken nicht darstellen können, empfiehlt es sich, die dvi-Datei
+nach PostScript zu wandeln und dann einen PostScript-Preview-Programm
+(gv, gsview, ghostview, gs, ...) zu verwenden.
+
+Sehr ausführliche und gut verständliche Hinweise zu diesem Thema
+enthält Keith Reckdahls Artikel `Using Imported Graphics in LaTeX2e'
+(epslatex) und das Buch `The LaTeX Graphics Companion' von Michel
+Goossens u.a. (siehe Abschnitte 2.4.1 und 2.4.2).
+
+graphics/graphicx:  CTAN: macros/latex/required/graphics/
+graphicx (Plain-TeX):  CTAN: macros/plain/graphics/
+epslatex:  CTAN: info/epslatex.ps
+CTAN: info/epslatex.pdf
+jpeg2ps:  http://www.ifconnection.de/~tm/
+CTAN: support/jpeg2ps/
+tiff2ps:  CTAN: graphics/tiff/
+tiff2ps:  CTAN: support/pstools/tiff2ps/
+
+6.3.2 Wie kann ich Teile meines Dokumentes im Querformat setzen? Wie kann
+      ich beispielsweise eine Tabelle mit Unterschrift um 90 Grad drehen,
+      die Kopf- und Fußzeile der Seite sollen aber ihre Ausrichtung
+      behalten?
+
+Dokumentteile können nur gedreht werden, wenn dies auch vom
+verwendeten dvi-Gerätetreiber unterstützt wird.
+
+Das LaTeX2e-Bundle `graphics' enthält das Paket `lscape', das eine
+`landscape'-Umgebung zur Verfügung stellt. Der Inhalt dieser Umgebung
+wird um 90 Grad gegen den Uhrzeigersinn gedreht und auf eine eigene
+Seite plaziert. Zu Beginn und am Ende der Umgebung wird ein \clearpage
+ausgeführt:
+\usepackage{lscape}
+% etc.
+\begin{landscape}
+  \begin{figure}
+    gedrehte Abbildung
+    \caption{gedrehte Unterschrift}
+  \end{figure}
+  % evtl. noch weitere Abbildungen/normaler Text/etc.
+\end{landscape}
+% etc.
+
+Will man nicht ganze Seiten drehen oder stören die implizit
+ausgeführten \clearpage-Anweisungen, so kann man auch nur die
+Anweisung \rotatebox aus dem Paket `graphics' verwenden:
+\usepackage{graphics} % oder `graphicx'
+% etc.
+\begin{figure}
+  \rotatebox{90}{%
+    \begin{minipage}{.6\textheight}
+    gedrehte Abbildung
+    \caption{gedrehte Unterschrift}
+    \end{minipage}%
+  }
+\end{figure}
+
+Das Paket `rotating' bietet statt der einfachen \rotatebox-Anweisung
+mit all ihren Nachteilen (Stichwort: `verbatim'!) die Umgebungen
+`rotate', `turn' und `sideways', innerhalb der man (fast) beliebigen
+Text plazieren kann. Für den Spezialfall, daß eine Abbildung bzw.
+Tafel wie mit der Umgebung `landscape' eine komplette Seite füllt und
+um 90 Grad gegen den Uhrzeigersinn gedreht werden soll, gibt es die
+den `figure'- und `table'- entsprechenden `sidewaysfigure'- und
+`sidewaystable'-Umgebungen. Außerdem ist eine ältere Version dieses
+Pakets auch für LaTeX 2.09 verfügbar.
+
+Mehr über diese Pakete findet man in der Dokumentation
+``grfguide.tex'' des `graphics'-Bundle, der mit `rotating'
+mitgelieferten Dokumentation und dem Buch `Der LaTeX-Begleiter' sowie
+in Keith Reckdahls Artikel `Using Imported Graphics in LaTeX2e' (siehe
+Abschnitt 2.4.2).
+
+lscape:  CTAN: macros/latex/required/graphics/
+rotating:  CTAN: macros/latex/contrib/supported/rotating
+
+6.3.3 Wie kann ich mit TeX farbigen Text setzen?
+
+Das LaTeX2e-Bundle `graphics' enthält das Paket `color', das Befehle
+zur Verfügung stellt, mit denen man Textteile einfärben, eine Box oder
+den Hintergrund einer Seite farbig hinterlegen kann. Dies funktioniert
+natürlich nur, wenn das Ausgabegerät (Drucker, Bildschirm) dazu in der
+Lage ist und der dvi-Treiber die dazu notwendige Funktionalität hat,
+entsprechende \special-Anweisungen mit den Farbbefehlen auszuwerten.
+Um das Paket `color' an verschiedene Ausgabegeräte und dvi-Treiber
+anzupassen, muß eine entsprechende Definitionsdatei für den jeweiligen
+Treiber vorhanden sein bzw. noch erstellt werden. Auf jedem System
+sollte in der Datei ``color.cfg'' eine dvi-Treiber-Definition als
+Default angegeben sein. Das Paket `color' läßt sich dann wie folgt
+verwenden:
+\usepackage{color}
+
+Will man in einem Dokument eine vom Default abweichenden dvi-Treiber
+verwenden, so kann man den Namen der dvi-Treiber-Definition als
+Paket-Option angeben:
+
+\usepackage[dvips]{color}
+
+erzeugt eine dvi-Datei mit Farb-\special-Anweisungen für den
+dvi-PostScript-Treiber `dvips'. Danach kann man die entstehende
+dvi-Datei auch mit anderen dvi-Treibern übersetzen bzw. ausdrucken,
+jedoch werden in den meisten Fällen die Farb-\special-Anweisungen
+nicht erkannt und mit einer Warnung ignoriert.
+
+Eine genauere Beschreibung der einzelnen Anweisungen und der
+vorhandenen Definitionsdateien findet man in der Anleitung `grfguide'
+im Paket `graphics'.
+
+graphics/color:  CTAN: macros/latex/required/graphics/
+
+6.3.4 Bei mit XFig erstellten und exportierten Zeichnungen erhalte ich
+      bei der Einbindung in LaTeX den Fehler, daß \SetFigFont nicht
+      definiert ist. Was ist falsch?
+
+Das Programm `fig2dev', das XFig zum Wandeln und Exportieren von
+Fig-Bildern aufruft, hat in den Versionen vor Version 3.1pl1 einen
+Fehler, der dazu führt, daß das Makro \SetFigFont nicht immer
+definiert ist. Nach einem Update des Paketes `Transfig', das `fig2dev'
+enthält, verschwindet der Fehler. Kann man auf den Update nicht
+warten, bietet sich auch als Einfachstlösung die Definition
+\newcommand{\SetFigFont}[3]{} in der Dokumentpräambel an.
+
+transfig/fig2dev:  CTAN: graphics/transfig/
+
+6.3.5 Bei Verwendung von PiCTeX erhalte ich die Meldung `No room for a
+      new \dimen'. Wie kann ich das vermeiden?
+
+PiCTeX verwendet sehr viele von TeXs Zähler- und Längenregistern und
+wenn noch weitere Pakete hinzugeladen werden, die ebenso Register
+benötigen, gehen die jeweils 256 vorhandenen, von denen LaTeX bereits
+nicht wenige benötigt, aus. Die erste Lösung besteht in der Verwendung
+des ConTeXt-Moduls `m-pictex' von Hans Hagen, das beim Laden von
+PiCTeX dafür sorgt, daß statt Längen- an einigen Stellen Glue-Register
+verwendet werden. Eine alternative Lösung besteht in der Verwendung
+des Paketes `pictexwd', eines von Andreas Schrell veränderten PiCTeX,
+das weniger Längenregister benutzt.
+
+m-pictex:  CTAN: macros/context/pictex/
+pictexwd:  CTAN: graphics/pictex/addon/
+
+6.3.6 Was kann ich tun, wenn eine Grafik im EPS-Format beim Einfügen in
+      ein LaTeX-Dokument aufgrund einer falschen `Boundingbox'-Zeile
+      Probleme bereitet? (+)
+
+Nicht selten erzeugen Grafikprogramme beim Speichern der Ergebnisse im
+PostScript-Code keine oder eine fehlerhafte
+Boundingbox-Kommentarzeile. Diese Angabe ist jedoch beim Einfügen der
+Grafik in ein LaTeX-Dokument unbedingt erforderlich, da sonst der
+benötigte Platz nicht korrekt berechnet werden kann. Ist die
+Boundingbox-Zeile fehlerhaft, kann folgendermaßen vorgegangen werden:
+
+Manueller Weg:
+       Man lade die EPS-Datei in einen PostScript-Viewer und notiere
+       sich die Koordinaten der linken unteren (ll,lr) und der rechten
+       oberen (ul,ur) Ecke des interessierenden Teils der Grafik,
+       wobei die Maßeinheit bp (big points) sein muß. Diese Werte
+       trage man nun mit Hilfe eines ASCII-Editors in die EPS-Datei
+       ein:
+       
+%%BoundingBox: ll lr ul ur
+
+
+       Statt des Eintrags in die EPS-Datei können die Werte auch als
+       optionaler Parameter der -Anweisung angegeben werden:
+       
+\includegraphics[bb= ll lr ul ur]{dateiname}
+
+
+Automatischer Weg:
+       Man verwende das Programm in der folgenden Weise:
+       
+epstool -b -c -oausgabedatei.eps eingabedatei.eps
+
+
+       In der Datei ``eingabedatei.eps'' befinde sich die fehlerhafte
+       Grafik, danach enthält ``ausgabedatei.eps'' die korrigierte
+       Grafik. `epstool' erfordert die vorherige Installation des
+       PostScript-Interpreters Ghostscript.
+       
+epstool:  CTAN: support/ghostscript/rjl/
+ghostscript:  CTAN: support/ghostscript/aladdin/
+
+
+--- DE-TeX-FAQ Ende Teil 6 ---

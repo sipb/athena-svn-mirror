@@ -1,0 +1,29 @@
+% LH FONT FAMILY - Cyrillic font package, as used by Babel
+%
+% font v 2.2, sauterised v 1.0 27/04/1997
+%
+% Author :        Olga Lapko
+% sauterisation : Hubert HOLIN
+
+if unknown cmbase: input cmbase fi
+
+font_identifier:="LHITT"; font_size design_size * pt#;
+wncoding:=1;
+
+% The parameters of this font are a modification of those of Computer Modern Typewriter Text
+
+input c-cmtt;
+
+letter_fit#:=      % extra space added to all sidebars
+  ((letter_fit#*360pt#) + (design_size * 15))/360pt#;
+
+jut#:=             % protrusion of lowercase serifs
+  ((jut#*360pt#) + (design_size * 6))/360pt#;
+
+slant:=            % tilt ratio $(\Delta x/\Delta y)$
+    0.25;
+
+variant_g:=        % should an italic-style g be used?
+    true;
+
+generate ldrifont      % switch to the driver file

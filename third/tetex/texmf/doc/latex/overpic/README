@@ -1,0 +1,28 @@
+
+This small LaTeX package defines the overpic environment which is
+a combination between a picture environment and an includegraphics
+command (defined in graphicx). The resulting picture environment has
+the same dimension as the included eps graphic. Now it is easy possible
+to put any LaTeX output above the graphic on defined positions. A grid
+to aid is also possible.
+
+This directory contains the following files:
+
+README       - This file.
+README.de    - The same in german.
+overpic.sty  - The definition of overpic. Required graphicx.sty and epic.sty.
+opic-rel.tex
+and
+opic-abs.tex - Two demos that shows all the features. You need the eps graphic 
+               file golfer.ps. This file is part of ghostscript´s  examples 
+	       directory.      
+               
+Please send comments and suggestions to niepraschk@ptb.de
+
+Happy TeXing...
+
+                                  Rolf Niepraschk, 11/97
+				  
+
+				  
+                                                 

@@ -1,0 +1,20 @@
+%!PS
+%%BoundingBox: 0 -1 44 9 
+%%Creator: MetaPost
+%%CreationDate: 1998.05.31:1928
+%%Pages: 1
+%*Font: cmsy10 9.96265 9.96265 02:8
+%*Font: cmr10 9.96265 9.96265 2e:b88
+%*Font: cmr7 6.97385 6.97385 32:c
+%%EndProlog
+%%Page: 1 1
+0 0 moveto
+(6.02) cmr10 9.96265 fshow
+17.71143 0 moveto
+(\002) cmsy10 9.96265 fshow
+25.46013 0 moveto
+(10) cmr10 9.96265 fshow
+35.42282 3.6154 moveto
+(23) cmr7 6.97385 fshow
+showpage
+%%EOF

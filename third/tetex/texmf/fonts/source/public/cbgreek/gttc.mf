@@ -1,0 +1,88 @@
+% Copyright (C) 1997, 1999 Claudio Beccari
+% file gttc v.1.0
+% 256 character typewriter type upright greek caps and small caps font 
+% mainly after Silvio Levy
+%
+if unknown cmbase: input cmbase fi;
+if unknown cbbase: input cbbase fi;
+font_identifier:="GTTC";
+small_caps:=true; sclc:=1.19;
+font_size (gensize*pt#);
+basedef                           (      8,     10,       12);
+gendef [1/36pt#]( u#             )(     17,     21,     24.7);
+gendef [1/36pt#]( width_adj#     )(      0,      0,        0);
+gendef [1/36pt#]( serif_fit#     )(      0,      0,     [-9]);
+gendef [1/36pt#]( cap_serif_fit# )(      0,      0,    [-13]);
+gendef [1/36pt#]( letter_fit#    )(      0,      0,        0);
+gendef [1/36pt#]( body_height#   )(    200,    250,      300);
+gendef [1/36pt#]( asc_height#    )(    180,    230,      274);
+gendef [1/36pt#]( cap_height#    )(    180,    230,      274);
+gendef [1/36pt#]( fig_height#    )(    180,    230,      274);
+gendef [1/36pt#]( x_height#      )(    124,    155,      186);
+gendef [1/36pt#]( math_axis#     )(     88,    110,      132);
+gendef [1/36pt#]( bar_height#    )(     63,     79,       95);
+gendef [1/36pt#]( comma_depth#   )(     40,     50,       60);
+gendef [1/36pt#]( desc_depth#    )(     64,     80,       96);
+gendef [1/36pt#](acc_ht#         )(    210,    250,      300);
+gendef [1/36pt#](circ_ht#        )(    210,    250,      300);
+gendef [1/36pt#](Circ_ht#        )(    210,    250,      300);
+gendef [1/36pt#](iota_dp#        )(   57.6,     64,     86.4);
+gendef [1/36pt#]( crisp#         )(     19,     22,       25);
+gendef [1/36pt#]( tiny#          )(     19,     22,       25);
+gendef [1/36pt#]( fine#          )(     18,     21,       22);
+gendef [1/36pt#]( thin_join#     )(     18,     21,       22);
+gendef [1/36pt#]( hair#          )(     22,     24,       27);
+gendef [1/36pt#]( stem#          )(     22,     24,       27);
+gendef [1/36pt#]( curve#         )(     22,     24,       27);
+gendef [1/36pt#]( ess#           )(     19,     22,       25);
+gendef [1/36pt#]( flare#         )(     22,     24,       27);
+gendef [1/36pt#]( dot_size#      )(     31,     36,       39);
+gendef [1/36pt#]( cap_hair#      )(     22,     25,       28);
+gendef [1/36pt#]( cap_stem#      )(     22,     25,       28);
+gendef [1/36pt#]( cap_curve#     )(     22,     25,       28);
+gendef [1/36pt#]( cap_ess#       )(     22,     25,       28);
+gendef [1/36pt#]( rule_thickness#)(     22,     25,       28);
+gendef [1/36pt#]( dish#          )(      0,      0,        0);
+gendef [1/36pt#]( bracket#       )(      0,      0,        0);
+gendef [1/36pt#]( jut#           )(     27,     34,       39);
+gendef [1/36pt#]( cap_jut#       )(     27,     34,       39);
+gendef [1/36pt#]( beak_jut#      )(      0,      0,        0);
+gendef [1/36pt#]( beak#          )(     27,     34,       39);
+gendef [1/36pt#]( vair#          )(     19,     22,       25);
+gendef [1/36pt#]( notch_cut#     )(     22,     25,       28);
+gendef [1/36pt#]( bar#           )(     19,     22,       25);
+gendef [1/36pt#]( slab#          )(     19,     22,       25);
+gendef [1/36pt#]( cap_bar#       )(     19,     22,       25);
+gendef [1/36pt#]( cap_band#      )(     19,     22,       25);
+gendef [1/36pt#]( cap_notch_cut# )(     22,     25,       28);
+gendef [1/36pt#]( serif_drop#    )(      0,      0,        0);
+gendef [1/36pt#]( stem_corr#     )(      0,      0,        0);
+gendef [1/36pt#]( vair_corr#     )(      0,      0,        0);
+gendef [1/36pt#]( apex_corr#     )(      8,     10,       11);
+gendef [1/36pt#]( o#             )(      3,      4,        5);
+gendef [1/36pt#]( apex_o#        )(      3,      3,        4);
+%slant:=sind 12/cosd 12;
+slant:=0;
+gendef          ( fudge          )(    .81,    .81,      .81);
+gendef          ( math_spread    )(   [-1],   [-1],     [-1]);
+otilt:=.2;
+superness:=1/sqrt 2;
+superpull:=0;
+beak_darkness:=0;    
+square_dots:=false; 
+hefty:=true; 
+serifs:=true;
+monospace:=true;
+variant_g:=false; 
+low_asterisk:=true;
+math_fitting:=false;
+straight:=true;      
+monowidth:=true;     
+slitex:=false;
+clear_extra_memory;
+
+generate cbgreek;
+endinput;
+
+
+

@@ -1,0 +1,27 @@
+This is the beta version of fancyhdr, a replacement for fancyheadings. 
+
+There are no known bugs, and the only reason that this is not a real
+release is that I want to make a real .dtx of it, including the minimal
+documentation. The current documentation is in fancyhdr.tex, but this
+contains much more material than the fancyhdr doc. When the fancyhdr.dtx is
+ready, I will rename fancyhdr.tex into something like pagelay.tex to get it
+more in line with the title (Page Layout in LaTeX).
+
+fancyhdr is 99% compatible with fancyheadings. The only incompatibility is
+that \headrulewidth and \footrulewidth and their \plain.. versions are no
+longer length parameters, but normal macros (to be changed with
+\renewcommand rather than \setlength).
+
+Although all the other old fancyheadings commands continue to work you are
+advised to use the new syntax as described in fancyhdr.tex, because this is
+much easier to use in complicated cases. The old way of doing is no longer
+described in the manual, except for the simplest use of \lhead etc.
+
+In order to latex the documentation you need to install a copy of
+tex-archive/macros/latex209/contrib/misc/boxedminipage.sty
+-- 
+Piet van Oostrum.
+<piet@cs.ruu.nl>
+http://www.cs.ruu.nl/~piet
+
+

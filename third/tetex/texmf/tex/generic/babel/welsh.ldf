@@ -1,0 +1,84 @@
+%%
+%% This is file `welsh.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% welsh.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{welsh}
+        [1999/04/18 v1.0b Welsh support from the babel system]
+%% File `welsh.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 -- 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit{welsh}{captionswelsh}
+\ifx\undefined\l@welsh
+  \@nopatterns{welsh}
+  \adddialect\l@welsh0\fi
+\def\welshhyphenmins{23}
+\def\captionswelsh{%
+  \def\prefacename{Rhagair}%
+  \def\refname{Cyfeiriadau}%
+  \def\abstractname{Crynodeb}%
+  \def\bibname{Llyfryddiaeth}%
+  \def\chaptername{Pennod}%
+  \def\appendixname{Atodiad}%
+  \def\contentsname{Cynnwys}%
+  \def\listfigurename{Rhestr Ddarluniau}%
+  \def\listtablename{Rhestr Dablau}%
+  \def\indexname{Mynegai}%
+  \def\figurename{Darlun}%
+  \def\tablename{Taflen}%
+  \def\partname{Rhan}%
+  \def\enclname{amgae\"edig}%
+  \def\ccname{cop\"\i au}%
+  \def\headtoname{At}%  % `at' on letters meaning `to ( a person)'
+                        % `to (a place)' is `i' in Welsh
+  \def\pagename{tudalen}%
+  \def\seename{gweler}%
+  \def\alsoname{gweler hefyd}%
+  \def\proofname{Prawf}%
+  }
+\def\datewelsh{%
+  \def\today{\ifnum\day=1\relax 1\/$^{\mathrm{a\tilde{n}}}$\else
+    \number\day\fi \space a\space viz\space\ifcase\month\or
+    Ionawr\or Chwefror\or Mawrth\or Ebrill\or
+    Mai\or Mehefin\or Gorffennaf\or Awst\or
+    Medi\or Hydref\or Tachwedd\or Rhagfyr\fi
+  \space\number\year}}
+\addto\extraswelsh{}
+\addto\noextraswelsh{}
+\ldf@finish{welsh}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `welsh.ldf'.

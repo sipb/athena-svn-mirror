@@ -1,0 +1,103 @@
+%%
+%% This is file `italian.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% italian.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{italian}
+        [1999/05/01 v1.2l Italian support from the babel system]
+%% File `italian.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit{italian}{captionsitalian}
+\ifx\l@italian\@undefined
+    \@nopatterns{Italian}
+    \adddialect\l@italian0\fi
+\addto\captionsitalian{%
+  \def\prefacename{Prefazione}%
+  \def\refname{Riferimenti bibliografici}%
+  \def\abstractname{Sommario}%
+  \def\bibname{Bibliografia}%
+  \def\chaptername{Capitolo}%
+  \def\appendixname{Appendice}%
+  \def\contentsname{Indice}%
+  \def\listfigurename{Elenco delle figure}%
+  \def\listtablename{Elenco delle tabelle}%
+  \def\indexname{Indice analitico}%
+  \def\figurename{Figura}%
+  \def\tablename{Tabella}%
+  \def\partname{Parte}%
+  \def\enclname{Allegati}%
+  \def\ccname{e~p.~c.}%
+  \def\headtoname{Per}%
+  \def\pagename{Pag.}%    % in Italian abbreviation is preferred
+  \def\seename{vedi}%
+  \def\alsoname{vedi anche}%
+  \def\proofname{Dimostrazione}%
+  }
+\def\dateitalian{%
+  \def\today{\number\day~\ifcase\month\or
+    gennaio\or febbraio\or marzo\or aprile\or maggio\or giugno\or
+    luglio\or agosto\or settembre\or ottobre\or novembre\or dicembre\fi
+    \space \number\year}}
+\def\italianhyphenmins{\tw@\tw@}
+\addto\extrasitalian{%
+  \babel@savevariable\clubpenalty
+  \babel@savevariable\widowpenalty
+  \clubpenalty3000\widowpenalty3000}
+\addto\extrasitalian{%
+  \babel@savevariable\finalhyphendemerits
+  \finalhyphendemerits50000000}
+\addto\extrasitalian{%
+  \lccode`'=`'}
+\addto\noextrasitalian{%
+  \lccode`'=0}
+\DeclareRobustCommand*{\bbl@unit}[1]{%
+  \textormath{\,\mbox{#1}}{\,\mathrm{#1}}}%
+\DeclareRobustCommand*{\bbl@ap}[1]{%
+  \textormath{\textsuperscript{#1}}{^{\mathrm{#1}}}}%
+\DeclareRobustCommand*{\bbl@ped}[1]{%
+  \textormath{$_{\mbox{\fontshape{n}\fontsize\sf@size\z@
+          \selectfont#1}}$}{_\mathrm{#1}}}%
+\addto\extrasitalian{%
+  \babel@save\unit\let\unit\bbl@unit
+  \babel@save\ap\let\ap\bbl@ap
+  \babel@save\ped\let\ped\bbl@ped
+  }%
+\ldf@finish{italian}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `italian.ldf'.

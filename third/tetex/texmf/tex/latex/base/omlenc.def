@@ -1,0 +1,31 @@
+%%
+%% This is file `omlenc.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ltoutenc.dtx  (with options: `OML')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%% From File: ltoutenc.dtx
+\ProvidesFile{omlenc.def}
+ [1999/02/24 v1.9t
+         Standard LaTeX file]
+\DeclareFontEncoding{OML}{}{}
+\DeclareTextSymbol{\textless}{OML}{`\<}
+\DeclareTextSymbol{\textgreater}{OML}{`\>}
+\DeclareTextAccent{\t}{OML}{127}  % "7F
+\endinput
+%%
+%% End of file `omlenc.def'.

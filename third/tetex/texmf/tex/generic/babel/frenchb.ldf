@@ -1,0 +1,517 @@
+%%
+%% This is file `frenchb.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% frenchb.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{frenchb}
+         [1999/01/14 v1.3e French support from the babel system]
+%% File `frenchb.dtx'
+%%    Babel package for LaTeX version 2e
+%%    Copyright (C) 1989 - 1999
+%%              by Johannes Braams, TeXniek
+%%    Frenchb language Definition File
+%%    Copyright (C) 1989 - 1999
+%%              by Johannes Braams, TeXniek
+%%                 Daniel Flipo, GUTenberg
+%%    Please report errors to: Daniel Flipo, GUTenberg
+%%                             Daniel.Flipo@univ-lille1.fr
+%% Please report errors to: Daniel Flipo, GUTenberg
+%%                          Daniel.Flipo@univ-lille1.fr
+%%
+\LdfInit{frenchb}\NoAutoSpaceBeforeFDP
+\ifx\l@french\@undefined
+  \ifx\l@francais\@undefined
+    \@nopatterns{French}
+    \adddialect\l@french0
+  \fi
+\fi
+\def\CurrentOption{frenchb}
+\ifx\l@francais\@undefined
+  \let\l@francais\l@french
+\else
+  \let\l@french\l@francais
+\fi
+\let\l@frenchb\l@french
+\def\PlainFmtName{plain}
+\def\LaTeXeFmtName{LaTeX2e}
+\newif\if@Two@E \@Two@Etrue
+\def\@FI@{\fi}
+\ifx\@compatibilitytrue\@undefined
+  \@Two@Efalse \def\@FI@{\relax}
+\else
+  \if@compatibility \@Two@Efalse \fi
+\@FI@
+\@namedef{extras\CurrentOption}{\lccode`\'=`\'}
+\@namedef{noextras\CurrentOption}{\lccode`\'=0}
+\def\extrasfrancais{\extrasfrenchb}
+\def\extrasfrench{\extrasfrenchb}
+\def\noextrasfrancais{\noextrasfrenchb}
+\def\noextrasfrench{\noextrasfrenchb}
+\ifx\scshape\@undefined
+  \ifx\sc\@undefined
+     \let\scshape\relax
+  \else
+     \let\scshape\sc
+  \fi
+\fi
+\ifx\emph\@undefined
+  \ifx\em\@undefined
+     \let\emph\relax
+  \else
+     \def\emph#1{\em #1}
+  \fi
+\fi
+\def\CaptionSeparator{\string:\space}
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{#1\CaptionSeparator #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    #1\CaptionSeparator #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+  \def\CaptionSeparator{\string:\space}}
+\ifx\fmtname\PlainFmtName
+\else
+\@namedef{captions\CurrentOption}{%
+   \def\refname{R\'ef\'erences}%
+   \def\abstractname{R\'esum\'e}%
+   \def\bibname{Bibliographie}%
+   \def\prefacename{Pr\'eface}%
+   \def\chaptername{Chapitre}%
+   \def\appendixname{Annexe}%
+   \def\contentsname{Table des mati\`eres}%
+   \def\listfigurename{Table des figures}%
+   \def\listtablename{Liste des tableaux}%
+   \def\indexname{Index}%
+   \def\figurename{{\scshape Fig.}}%
+   \def\tablename{{\scshape Tab.}}%
+   \def\CaptionSeparator{\space--\space}%
+   \def\partname{\protect\@Fpt partie}%
+   \def\@Fpt{{\ifcase\value{part}\or Premi\`ere\or Deuxi\`eme\or
+   Troisi\`eme\or Quatri\`eme\or Cinqui\`eme\or Sixi\`eme\or
+   Septi\`eme\or Huiti\`eme\or Neuvi\`eme\or Dixi\`eme\or Onzi\`eme\or
+   Douzi\`eme\or Treizi\`eme\or Quatorzi\`eme\or Quinzi\`eme\or
+   Seizi\`eme\or Dix-septi\`eme\or Dix-huiti\`eme\or Dix-neuvi\`eme\or
+   Vingti\`eme\fi}\space\def\thepart{}}%
+   \def\pagename{page}%
+   \def\seename{{\emph{voir}}}%
+   \def\alsoname{{\emph{voir aussi}}}%
+   \def\enclname{P.~J. }%
+   \def\ccname{Copie \`a }%
+   \def\headtoname{}%
+   \def\proofname{D\'emonstration}% for AMS-\LaTeX
+   }
+   \def\captionsfrench{\captionsfrenchb}
+   \def\captionsfrancais{\captionsfrenchb}
+\fi
+\initiate@active@char{:}
+\initiate@active@char{;}
+\initiate@active@char{!}
+\initiate@active@char{?}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+  \languageshorthands{frenchb}}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+  \bbl@activate{:}\bbl@activate{;}%
+  \bbl@activate{!}\bbl@activate{?}}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+  \bbl@deactivate{:}\bbl@deactivate{;}%
+  \bbl@deactivate{!}\bbl@deactivate{?}}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+  \bbl@frenchspacing}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+  \bbl@nonfrenchspacing}
+\declare@shorthand{frenchb}{;}{%
+    \ifhmode
+      \ifdim\lastskip>\z@
+        \unskip\penalty\@M\thinspace
+      \else
+        \FDP@thinspace
+      \fi
+    \fi
+    \string;}
+\declare@shorthand{frenchb}{!}{%
+    \ifhmode
+      \ifdim\lastskip>\z@
+        \unskip\penalty\@M\thinspace
+      \else
+        \FDP@thinspace
+      \fi
+    \fi
+    \string!}
+\declare@shorthand{frenchb}{?}{%
+    \ifhmode
+      \ifdim\lastskip>\z@
+        \unskip\penalty\@M\thinspace
+      \else
+        \FDP@thinspace
+      \fi
+    \fi
+    \string?}
+\declare@shorthand{frenchb}{:}{%
+    \ifhmode
+      \ifdim\lastskip>\z@
+        \unskip\penalty\@M\
+      \else
+        \FDP@space
+      \fi
+    \fi
+    \string:}
+\def\AutoSpaceBeforeFDP{%
+      \def\FDP@thinspace{\penalty\@M\thinspace}%
+      \def\FDP@space{\penalty\@M\ }}
+\def\NoAutoSpaceBeforeFDP{\let\FDP@thinspace\@empty
+                          \let\FDP@space\@empty}
+\AutoSpaceBeforeFDP
+\declare@shorthand{system}{:}{\string:}
+\declare@shorthand{system}{!}{\string!}
+\declare@shorthand{system}{?}{\string?}
+\declare@shorthand{system}{;}{\string;}
+\ifx\fmtname\LaTeXeFmtName
+   \def\CyrillicGuillemets{\DeclareFontEncoding{OT2}{}{}%
+     \DeclareFontSubstitution{OT2}{wncyr}{m}{n}%
+     \DeclareTextCommand{\guillemotleft}{OT1}{%
+        {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char60}}%
+     \DeclareTextCommand{\guillemotright}{OT1}{%
+        {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char62}}}
+   \def\LasyGuillemets{%
+     \DeclareTextCommand{\guillemotleft}{OT1}{\hbox{%
+        \fontencoding{U}\fontfamily{lasy}\selectfont(\kern-0.20em(}}%
+     \DeclareTextCommand{\guillemotright}{OT1}{\hbox{%
+        \fontencoding{U}\fontfamily{lasy}\selectfont)\kern-0.20em)}}}
+   \IfFileExists{ot2wncyr.fd}{\CyrillicGuillemets}{\LasyGuillemets}
+   \DeclareTextSymbolDefault{\guillemotleft}{OT1}
+   \DeclareTextSymbolDefault{\guillemotright}{OT1}
+   \def\guill@spacing{\penalty\@M\hskip.8\fontdimen2\font
+                               plus.3\fontdimen3\font
+                               minus.8\fontdimen4\font}
+   \newcommand{\og}{\@empty}
+   \newcommand{\fg}{\@empty}
+   \DeclareRobustCommand*{\begin@guill}{\leavevmode
+                             \guillemotleft\penalty\@M\guill@spacing}
+   \DeclareRobustCommand*{\end@guill}{\ifdim\lastskip>\z@\unskip\fi
+                     \penalty\@M\guill@spacing\guillemotright\xspace}
+   \AtBeginDocument{\ifx\xspace\@undefined\let\xspace\relax\fi}
+\else
+   \def\begin@guill{\leavevmode\raise0.25ex%
+                    \hbox{$\scriptscriptstyle\ll$}%
+                    \penalty\@M\hskip.8\fontdimen2\font
+                                plus.3\fontdimen3\font
+                                minus.3\fontdimen4\font}
+   \def\end@guill{\ifdim\lastskip>\z@\unskip\penalty\@M\fi
+                  \penalty\@M\hskip.8\fontdimen2\font
+                  plus.3\fontdimen3\font minus.3\fontdimen4\font
+                  \raise0.25ex\hbox{$\scriptscriptstyle\gg$}}
+   \let\xspace\relax
+\fi
+\def\bbl@frenchguillemets{\let\og\begin@guill
+                          \let\fg\end@guill}
+\def\bbl@nonfrenchguillemets{\def\og{``}%
+                             \def\fg{\ifdim\lastskip>\z@\unskip\fi ''}}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+  \bbl@frenchguillemets}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+  \bbl@nonfrenchguillemets}
+\newif\ifFrenchListSpacing \FrenchListSpacingtrue
+\ifx\fmtname\PlainFmtName
+\else
+  \let\@trivlistORI\@trivlist
+  \def\bbl@frenchlistspacing{%
+    \ifFrenchListSpacing
+      \def\@trivlist{%
+          \setlength{\itemsep}{0.4ex plus 0.2ex minus 0.2ex}%
+          \setlength{\parsep}{0.4ex plus 0.2ex minus 0.2ex}%
+          \setlength{\topsep}{0.8ex plus 0.4ex minus 0.4ex}%
+          \setlength{\partopsep}{0.4ex plus 0.2ex minus 0.2ex}%
+          \addtolength{\topsep}{-\parskip}%
+          \addtolength{\partopsep}{\parskip}%
+          \@trivlistORI}%
+    \fi}
+  \def\bbl@nonfrenchlistspacing{\let\@trivlist\@trivlistORI}
+  \expandafter\addto\csname extras\CurrentOption\endcsname{%
+    \bbl@frenchlistspacing}
+  \expandafter\addto\csname noextras\CurrentOption\endcsname{%
+    \bbl@nonfrenchlistspacing}
+\fi
+\newif\ifFrenchItemizeSpacing \FrenchItemizeSpacingtrue
+\ifx\fmtname\PlainFmtName
+\else
+  \let\@ltiORI\labelitemi
+  \let\@ltiiORI\labelitemii
+  \let\@ltiiiORI\labelitemiii
+  \let\@ltivORI\labelitemiv
+  \let\itemizeORI\itemize
+  \let\enditemizeORI\enditemize
+  \def\bbl@frenchitemize{%
+    \ifFrenchItemizeSpacing
+      \renewenvironment{itemize}%
+        {\begin{list}{\textendash}%
+          {\let\@trivlist\@trivlistORI
+             \settowidth{\labelwidth}{\textendash}%
+             \setlength{\leftmargin}{\labelwidth}%
+             \addtolength{\leftmargin}{\labelsep}%
+             \ifnum\@listdepth=0
+               \setlength{\itemindent}{\parindent}%
+             \else
+               \addtolength{\leftmargin}{\parindent}%
+             \fi
+             \setlength{\itemsep}{\z@}%
+             \setlength{\parsep}{\z@}%
+             \setlength{\topsep}{\z@}%
+             \setlength{\partopsep}{\z@}%
+             \addtolength{\topsep}{-\parskip}%
+             \addtolength{\partopsep}{\parskip}%
+          }%
+        }%
+        {\end{list}}%
+    \else
+      \def\labelitemi{\textendash}%
+      \def\labelitemii{\textendash}%
+      \def\labelitemiii{\textendash}%
+      \def\labelitemiv{\textendash}%
+    \fi}
+  \def\bbl@nonfrenchitemize{\let\labelitemi\@ltiORI
+                            \let\labelitemii\@ltiiORI
+                            \let\labelitemiii\@ltiiiORI
+                            \let\labelitemiv\@ltivORI
+                            \let\itemize\itemizeORI
+                            \let\enditemize\enditemizeORI}
+  \expandafter\addto\csname extras\CurrentOption\endcsname{%
+    \bbl@frenchitemize}
+  \expandafter\addto\csname noextras\CurrentOption\endcsname{%
+    \bbl@nonfrenchitemize}
+\fi
+\ifx\fmtname\PlainFmtName
+\else
+  \let\@aifORI\@afterindentfalse
+  \def\bbl@frenchindent{\let\@afterindentfalse\@afterindenttrue
+                        \@afterindenttrue}
+  \def\bbl@nonfrenchindent{\let\@afterindentfalse\@aifORI
+                          \@afterindentfalse}
+  \expandafter\addto\csname extras\CurrentOption\endcsname{%
+    \bbl@frenchindent}
+  \expandafter\addto\csname noextras\CurrentOption\endcsname{%
+    \bbl@nonfrenchindent}
+\fi
+\mathchardef\m@comma="013B
+\def\@comma@{\ifmmode\m@comma\else,\fi}
+\def\f@thousandsep{\ifmmode\mskip5.5mu\else\penalty\@M\kern.3em\fi}
+\newcommand{\decimalsep}{.}
+\newcommand{\thousandsep}{\@comma@}
+\expandafter\addto\csname extras\CurrentOption\endcsname{%
+            \def\decimalsep{\@comma@}%
+            \def\thousandsep{\f@thousandsep}}
+\expandafter\addto\csname noextras\CurrentOption\endcsname{%
+            \def\decimalsep{.}%
+            \def\thousandsep{\@comma@}}
+\providecommand{\textminus}{\textendash}%
+\providecommand{\textplusminus}{\ensuremath{\pm}}
+\providecommand{\textminusplus}{\ensuremath{\mp}}
+\def\fb@minus{\ifmmode-\else\textminus\fi}
+\def\fb@plusminus{\ifmmode\pm\else\textplusminus\fi}
+\def\fb@minusplus{\ifmmode\mp\else\textminusplus\fi}
+\if@Two@E
+  \newcommand{\nombre}[2][\decimalsep]{\def\@decimalsep{#1}%
+         \@@nombre#2\@empty,\@empty,\@nil}
+\else
+  \def\@decimalsep{\decimalsep}
+  \newcommand{\nombre}[1]{\@nombre#1\@empty,\@empty,\@nil}
+\fi
+\def\@firstofmany#1#2,{#1}
+\def\@@nombre#1,#2,#3\@nil{%
+       \def\nb@sign{}%
+       \edef\nb@first{\@firstofmany #1\@empty,}%
+       \edef\nb@suite{\@secondoftwo #1\@empty,}%
+       \if+\nb@first   \def\nb@sign{+}\fi
+       \if-\nb@first   \def\nb@sign{\fb@minus}\fi
+       \expandafter\ifx\nb@first\pm \def\nb@sign{\fb@plusminus}\fi
+       \expandafter\ifx\nb@first\mp \def\nb@sign{\fb@minusplus}\fi
+       \ifx\@empty\nb@sign
+         \let\@tmp\nb@suite\edef\nb@suite{\nb@first\@tmp}%
+       \fi
+    \nb@sign\expandafter\@nombre\nb@suite#2,#3\@nil}
+\def\@nombre#1,#2,#3\@nil{%
+       \ifx\@empty#2%
+         \@integerpart{#1}%
+       \else
+         \@integerpart{#1}\@decimalsep\@decimalpart{#2}%
+       \fi}
+\def\@decimalpart#1{\@@decimalpart#1\@empty\@empty\@empty}
+\def\@@decimalpart#1#2#3#4{#1#2#3%
+  \ifx\@empty#4%
+  \else
+    \thousandsep\expandafter\@@decimalpart\expandafter#4%
+  \fi}
+\def\@integerpart#1{\@@integerpart{}#1\@empty\@empty\@empty}
+\def\@@integerpart#1#2#3#4{%
+  \ifx\@empty#2%
+    \@addthousandsep#1\relax
+  \else
+    \ifx\@empty#3%
+      \@addthousandsep\@empty\@empty#1#2\relax
+    \else
+      \ifx\@empty#4%
+        \@addthousandsep\@empty#1#2#3\relax
+      \else
+        \@@integerpartafterfi{#1#2#3#4}%
+      \fi
+    \fi
+  \fi}
+\def\@@integerpartafterfi#1\fi\fi\fi{\fi\fi\fi\@@integerpart{#1}}
+\def\@addthousandsep#1#2#3#4{#1#2#3%
+  \if#4\relax
+  \else
+    \thousandsep\expandafter\@addthousandsep\expandafter#4%
+  \fi}
+\ifx\fmtname\LaTeXeFmtName
+  \let\textellipsisORI\textellipsis
+  \AtBeginDocument{\ifx\tdots@ORI\@undefined\let\tdots@ORI\tdots@\fi}
+  \DeclareTextCommandDefault{\Frtextellipsis}{%
+    .\kern\fontdimen3\font.\kern\fontdimen3\font.\xspace}
+  \def\bbl@frenchdots{\let\textellipsis\Frtextellipsis
+                      \let\tdots@ORI\tdots@
+                      \let\tdots@\Frtextellipsis}
+  \def\bbl@nonfrenchdots{\let\textellipsis\textellipsisORI
+           \ifx\tdots@ORI\@undefined\else\let\tdots@\tdots@ORI\fi}
+  \expandafter\addto\csname extras\CurrentOption\endcsname{%
+    \bbl@frenchdots}
+  \expandafter\addto\csname noextras\CurrentOption\endcsname{%
+    \bbl@nonfrenchdots}
+\fi
+\ifx\sevenrm\@undefined
+  \ifx\@ptsize\@undefined
+    \let\up@size\small
+  \else
+    \ifx\selectfont\@undefined
+      \ifcase\@ptsize
+        \let\up@size\ixpt\or
+        \let\up@size\xpt\or
+        \let\up@size\xipt
+      \fi
+    \else
+      \ifcase\@ptsize
+        \def\up@size{\fontsize\@ixpt{10pt}\selectfont}\or
+        \def\up@size{\fontsize\@xpt{11pt}\selectfont}\or
+        \def\up@size{\fontsize\@xipt{12pt}\selectfont}
+      \fi
+    \fi
+  \fi
+\else
+    \let\up@size\sevenrm
+\fi
+\if@Two@E
+  \DeclareRobustCommand*{\up}[1]{\textsuperscript{#1}}
+\else
+  \DeclareRobustCommand*{\up}[1]{\leavevmode\raise1ex\hbox{\up@size#1}}
+\fi
+\def\ieme{\up{\lowercase{e}}\xspace}
+\def\iemes{\up{\lowercase{es}}\xspace}
+\def\ier{\up{\lowercase{er}}\xspace}
+\def\iers{\up{\lowercase{ers}}\xspace}
+\def\iere{\up{\lowercase{re}}\xspace}
+\def\ieres{\up{\lowercase{res}}\xspace}
+\DeclareRobustCommand*{\FrenchEnumerate}[1]{%
+                       #1\up{\lowercase{o}}\kern+.3em}
+\DeclareRobustCommand*{\FrenchPopularEnumerate}[1]{%
+                       #1\up{\lowercase{o}})\kern+.3em}
+\def\primo{\FrenchEnumerate1}
+\def\secundo{\FrenchEnumerate2}
+\def\tertio{\FrenchEnumerate3}
+\def\quarto{\FrenchEnumerate4}
+\def\fprimo){\FrenchPopularEnumerate1}
+\def\fsecundo){\FrenchPopularEnumerate2}
+\def\ftertio){\FrenchPopularEnumerate3}
+\def\fquarto){\FrenchPopularEnumerate4}
+\DeclareRobustCommand*{\No}{N\up{\lowercase{o}}\kern+.2em}
+\DeclareRobustCommand*{\no}{n\up{\lowercase{o}}\kern+.2em}
+\DeclareRobustCommand*{\bsc}[1]{\leavevmode\hbox{\scshape #1}}
+\ifx\fmtname\LaTeXeFmtName
+  \DeclareTextSymbol{\ae}{T1}{230}
+  \DeclareTextSymbol{\ae}{OT1}{26}
+  \DeclareTextSymbol{\oe}{T1}{247}
+  \DeclareTextSymbol{\oe}{OT1}{27}
+  \DeclareTextSymbol{\AE}{T1}{198}
+  \DeclareTextSymbol{\AE}{OT1}{29}
+  \DeclareTextSymbol{\OE}{T1}{215}
+  \DeclareTextSymbol{\OE}{OT1}{30}
+  \DeclareTextSymbol{\at}{T1}{64}
+  \DeclareTextSymbol{\at}{OT1}{64}
+  \DeclareTextSymbol{\circonflexe}{T1}{94}
+  \DeclareTextSymbol{\circonflexe}{OT1}{94}
+  \DeclareTextSymbol{\tild}{T1}{126}
+  \DeclareTextSymbol{\tild}{OT1}{126}
+  \DeclareRobustCommand*{\boi}{\textbackslash}
+  \DeclareRobustCommand*{\degre}{\r{}}
+\else
+  \def\T@one{T1}
+  \ifx\f@encoding\T@one
+    \newcommand{\degre}{\char6}
+  \else
+    \newcommand{\degre}{\char23}
+  \fi
+  \newcommand{\at}{\char64}
+  \newcommand{\circonflexe}{\char94}
+  \newcommand{\tild}{\char126}
+  \newcommand{\boi}{{$\backslash$}}
+\fi
+\DeclareRobustCommand*{\degres}{%
+                       \leavevmode\hbox to 0.3em{\hss\degre\hss}}
+\ifx\fmtname\LaTeXeFmtName
+  \AtBeginDocument{%
+    \ifx\csubinverse\@undefined
+      \DeclareTextCompositeCommand{\^}{OT1}{i}{\^\i}%
+      \DeclareTextCompositeCommand{\"}{OT1}{i}{\"\i}%
+    \fi}
+\fi
+\@namedef{date\CurrentOption}{%
+  \edef\today{\number\day
+    \ifnum1=\day \noexpand\ier\fi
+    \space \ifcase\month
+    \or janvier\or f\'evrier\or mars\or avril\or mai\or juin\or
+    juillet\or ao\^ut\or septembre\or octobre\or novembre\or
+    d\'ecembre\fi
+    \space \number\year}}
+\def\datefrench{\datefrenchb}
+\def\datefrancais{\datefrenchb}
+\let\T@one\relax
+\let\@FI@\relax
+\let\PlainFmtName\relax
+\let\LaTeXeFmtName\relax
+\ldf@finish\CurrentOption
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `frenchb.ldf'.

@@ -1,0 +1,44 @@
+<html>
+<head><title>Help On LaTeX \appendix</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\appendix</font></h1>
+ <tt>\appendix</tt>
+<p>
+ The <tt>\appendix</tt>  command changes  the way sectional  units are numbered.
+ The <tt>\appendix</tt>  command  generates  no text  and does  not  affect  the
+ numbering of parts.
+<p>Thus, if you want your appendix to be set off with a section-like
+label you need something like<pre>
+  <tt>\begin{<a href="ltx-29.html">center</a>}
+    {<a href="ltx-204.html">\bf</a> APPENDIX}
+  \end{center}</tt>
+</pre>
+<hr>
+I have found the <tt>\appendix</tt> command to sometimes cause 
+problems since <em>everything</em> which follows it is treated as part of 
+the appendix, for example, a list of figures, which I generally 
+want to place after an appendix is labeled "Appendix: List of Figures".
+<p>
+One can create a section labeled "APPENDIX" with distinctive numbering
+by using the <a href="ltx-141.html"><tt>\section</tt></a> command 
+with suitably redefined commands for the <a href="ltx-3.html">Counters</a>.
+The following example generates a single "Appendix" with equations numbered
+A-1, A-2, ...  <pre>
+  <tt><a href="ltx-18.html">\renewcommand</a>{\theequation}{A-\arabic{equation}}
+  % redefine the command that creates the equation no.
+  <a href="ltx-310.html">\setcounter</a>{equation}{0}  % reset counter 
+  <a href="ltx-141.html">\section*</a>{APPENDIX}  % use *-form to suppress numbering</tt>
+</pre>
+If one had several appendices, appropriate numbering could be obtained by
+redefining the <tt>\thesection</tt> command and resetting the section
+counter in an analogous manner.
+<hr>
+See also: <A href="ltx-141.html">Sectioning</A>,
+  <a href="ltx-3.html">Counters</a><br> 
+Return to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 14 Jul 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<html>
+<head><title>Help On LaTeX \verb</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\verb</font></h1>
+<p>
+ <tt>\verb char literal_text char</tt><br>
+or<br>
+ <tt>\verb*char literal_text char</tt><p>
+
+ Typesets <tt>literal_text</tt>  exactly as typed, 
+ including  special characters
+ and spaces,  using a typewriter  (<tt>\tt</tt>) font.   There  may be no
+ space between  <tt>\verb</tt> or <tt>\verb*</tt>
+ and <tt>char</tt> (space  is shown here only for
+ clarity).  The *-form differs only in that spaces are printed
+ as "visual" spaces, i.e., a short, squat "u".
+<p>
+ Any <tt>char</tt> except a space (or a <tt>*</tt> for the <tt>\verb</tt>
+ form) may be chosen as the delimiter.  Thus, the input
+<pre>
+ \verb1This!is?the##1 verbatim  ...
+</pre>
+would produce<p>
+
+<tt>This!is?the##</tt> verbatim ...
+<p>
+The <tt>\verb</tt> command may <strong>not</strong> be used in the argument
+of another command.  For example, it cannot be used in the text of a 
+<a href="ltx-141.html">sectioning command</a>.
+<hr>
+See also <A href="ltx-27.html">Environments</A>, 
+             <A href="ltx-79.html">verbatim</A><br>
+Back to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 20 Oct 1995.
+</address>
+</body>
+</html>

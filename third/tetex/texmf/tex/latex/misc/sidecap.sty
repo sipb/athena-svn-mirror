@@ -1,0 +1,164 @@
+%%
+%% This is file `sidecap.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% sidecap.dtx  (with options: `package')
+%% 
+%% Copyright  1999 Rolf Niepraschk  (niepraschk@ptb.de) and
+%% Hubert G"a"slein (Hubert.Gaesslein@VirtualPhotonics.COM)
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN
+%% archives in directory macros/latex/base/lppl.txt; either
+%% version 1 of the License, or any later version.
+%% 
+%% Error Reports in case of UNCHANGED versions to
+%% 
+%%                         Rolf Niepraschk
+%%             Internet:  <niepraschk@ptb.de>
+%% or
+%%                         Hubert.Gaesslein
+%%             Internet:  <Hubert.Gaesslein@VirtualPhotonics.COM>
+%% 
+%% 
+%% File: sidecap.dtx Copyright (C) 1997-98 Rolf Niepraschk/Hubert G"a"slein
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sidecap}
+         [1999/05/11 v1.4d SideCap Package (RN/HjG)]
+%% \CharacterTable
+%% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%  Digits        \0\1\2\3\4\5\6\7\8\9
+%%  Exclamation   \!     Double quote  \"     Hash (number) \#
+%%  Dollar        \$     Percent       \%     Ampersand     \&
+%%  Acute accent  \'     Left paren    \(     Right paren   \)
+%%  Asterisk      \*     Plus          \+     Comma         \,
+%%  Minus         \-     Point         \.     Solidus       \/
+%%  Colon         \:     Semicolon     \;     Less than     \<
+%%  Equals        \=     Greater than  \>     Question mark \?
+%%  Commercial at \@     Left bracket  \[     Backslash     \\
+%%  Right bracket \]     Circumflex    \^     Underscore    \_
+%%  Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%  Right brace   \}     Tilde         \~}
+%%
+%% \iffalse meta-comment
+%% ===================================================================
+%%  @LaTeX-package-file{
+%%     author          = {Rolf Niepraschk, Hubert G\"{a}\ss{}lein}
+%%     version         = "1.4d",
+%%     date            = "05 June 1998",
+%%     filename        = "sidecap.sty",
+%%     email           = "niepraschk@ptb.de (INTERNET)",
+%%     codetable       = "ISO/ASCII",
+%%     keywords        = "LaTeX2e, sideways caption, \SCfigure, \SCtable",
+%%     supported       = "yes",
+%%     docstring       = "LaTeX package which defines new environments
+%%                        for easy typesetting sideways captions".
+%%  }
+%% ===================================================================
+%% \fi
+
+\typeout{Package: SideCap v1.4d <1999/05/11> (RN/HjG)}
+
+\RequirePackage{ifthen}
+
+\newlength{\SC@BOXWD} \newlength{\SC@CAPWD}
+\newcounter{SC@C}
+\newsavebox{\SC@BOX} \newcommand\SC@FLOAT{}
+
+\newcommand\SC@LABEL{SC@LABEL:\number\value{SC@C}}
+
+\DeclareOption{innercaption}{%
+  \renewcommand\SC@FLOAT[3]{\ifthenelse{\isodd{\pageref{#1}}}
+    {{#2}\hspace{\columnsep}{#3}} {{#3}\hspace{\columnsep}{#2}}}}
+
+\DeclareOption{outercaption}{%
+  \renewcommand\SC@FLOAT[3]{\ifthenelse{\isodd{\pageref{#1}}}
+    {{#3}\hspace{\columnsep}{#2}} {{#2}\hspace{\columnsep}{#3}}}}
+
+\DeclareOption{rightcaption}{%
+  \renewcommand\SC@FLOAT[3]{{#3}\hspace{\columnsep}{#2}}}
+
+\DeclareOption{leftcaption}{%
+  \renewcommand\SC@FLOAT[3]{{#2}\hspace{\columnsep}{#3}}}
+
+\ExecuteOptions{outercaption} \ProcessOptions
+
+
+\newenvironment{SCfigure}{\SC@float[b]{figure}}{\endSC@float}
+\newenvironment{SCfigure*}{\SC@dblfloat[b]{figure}}{\endSC@dblfloat}
+
+
+\newenvironment{SCtable}{\SC@float[t]{table}}{\endSC@float}
+\newenvironment{SCtable*}{\SC@dblfloat[t]{table}}{\endSC@dblfloat}
+
+\def\SC@float{\@ifnextchar[\SC@xfloat{\SC@xfloat[c]}}
+\def\SC@xfloat[#1]#2{\@ifnextchar[%
+  {\SC@yfloat{#1}{#2}}%
+  {\SC@zfloat{#1}{#2}{1.0}[\@nameuse{fps@#2}]}}
+\def\SC@yfloat#1#2[#3]{\@ifnextchar[%
+  {\SC@zfloat{#1}{#2}{#3}}%
+  {\SC@zfloat{#1}{#2}{#3}[\@nameuse{fps@#2}]}}
+\def\SC@zfloat#1#2#3[#4]{%
+  \def\SC@pos{#1}%
+  \expandafter\edef\csname fps@#2\endcsname{#4}%
+  \def\SC@captype{#2}%
+  \ifx#3\@empty\def\SC@fraction{1}\else\def\SC@fraction{#3}\fi%
+  \let\SC@caption\caption \let\SC@label\label%
+  \let\SC@CAPtext\@empty \let\SC@OPTCAPtext\@empty \let\SC@LABtext\@empty%
+  \renewcommand\caption[2][]{\gdef\SC@OPTCAPtext{##1}\gdef\SC@CAPtext{##2}}%
+  \renewcommand\label[1]{\gdef\SC@LABtext{##1}}%
+  \@namedef{fnum@#2}{\mbox{\@nameuse{#2name}~\@nameuse{the#2}}}%
+  \begin{lrbox}{\SC@BOX}%
+}%
+
+\def\SC@dblfloat{%
+  \if@twocolumn\let\reserved@a\SC@dbflt\else\let\reserved@a\SC@float\fi
+  \reserved@a}
+\def\SC@dbflt{%
+  \SC@float}
+\def\endSC@float{%
+  \end{lrbox}%
+    \def\@FLOAT{\@float}\def\end@FLOAT{\end@float}\endSC@FLOAT{\columnwidth}}%
+\def\endSC@dblfloat{%
+  \end{lrbox}%
+    \def\@FLOAT{\@dblfloat}\def\end@FLOAT{\end@dblfloat}\endSC@FLOAT{\textwidth}}%
+\def\endSC@FLOAT#1{%
+  \settowidth\SC@BOXWD{\usebox\SC@BOX}%
+  \setlength\SC@CAPWD{\SC@fraction\SC@BOXWD}%
+  \setlength\@tempdima{\SC@BOXWD}%
+  \addtolength\@tempdima{\SC@CAPWD}%
+  \addtolength\@tempdima{\columnsep}%
+  \ifthenelse{\lengthtest{\@tempdima>#1}}%
+    {\addtolength\SC@CAPWD{-\@tempdima}%
+     \addtolength\SC@CAPWD{#1}}{}%
+
+  \@FLOAT{\SC@captype}%
+    \abovecaptionskip\z@skip
+    \belowcaptionskip\z@skip
+    \stepcounter{SC@C}\SC@label{\SC@LABEL}%
+    \begin{minipage}[b]{#1}%
+      \centering%
+      \SC@FLOAT{\SC@LABEL}%
+        {\begin{minipage}[\SC@pos]{\SC@CAPWD}%
+           \ifthenelse{\equal{\SC@OPTCAPtext}{\@empty}}%
+             {\SC@caption{\expandafter\protect\SC@CAPtext}}%
+             {\SC@caption[\expandafter\protect\SC@OPTCAPtext]%
+                            {\expandafter\protect\SC@CAPtext}}%
+           \unskip%
+           \ifthenelse{\equal{\SC@LABtext}{\@empty}}%
+             {}{\SC@label{\expandafter\protect\SC@LABtext}}%
+         \end{minipage}}%
+        {\begin{minipage}[\SC@pos]{\SC@BOXWD}%
+           \offinterlineskip%
+           \kern0pt\relax
+           \usebox{\SC@BOX}%
+         \end{minipage}}%
+    \end{minipage}%
+  \end@FLOAT%
+}
+\endinput
+%%
+%% End of file `sidecap.sty'.

@@ -1,0 +1,1 @@
+\input mfmp.ini

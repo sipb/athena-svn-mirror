@@ -1,0 +1,20 @@
+%Filename: t1pzc.fd
+%Created by: tex Fam_1181
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1pzc.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for T1/pzc.]
+
+\DeclareFontFamily{T1}{pzc}{}
+
+\DeclareFontShape{T1}{pzc}{mb}{it}{
+   <-> pzcmi8t
+}{}
+
+\DeclareFontShape{T1}{pzc}{m}{it}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{T1}{pzc}{mb}{sl}{<->ssub * pzc/mb/it}{}
+\DeclareFontShape{T1}{pzc}{m}{sl}{<->ssub * pzc/mb/sl}{}
+
+\endinput

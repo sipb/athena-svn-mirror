@@ -1,0 +1,31 @@
+%Filename: ot1hlcf.fd
+%Created by: tex Fam_14760
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1hlcf.fd}
+   [1998/07/06 Fontinst v1.800 font definitions for OT1/hlcf.]
+
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+\DeclareFontFamily{OT1}{hlcf}{}
+
+\DeclareLucidaFontShape{OT1}{hlcf}{m}{n}{
+hlcrf7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlcf}{m}{sc}{
+hlcrcf7t
+}{}
+
+\DeclareLucidaFontShape{OT1}{hlcf}{m}{sl}{
+hlcrof7t
+}{}
+
+\DeclareFontShape{OT1}{hlcf}{m}{it}{<->ssub * hlcf/m/sl}{}
+
+\DeclareFontShape{OT1}{hlcf}{m}{ui}{<->ssub * hlcf/m/it}{}
+\DeclareFontShape{OT1}{hlcf}{b}{ui}{<->ssub * hlcf/b/it}{}
+\endinput

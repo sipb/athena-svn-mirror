@@ -1,0 +1,854 @@
+
+This lists changes to the LaTeX2e files in reverse chronological order.
+
+NOTE:  This file is based on the developers' personal change-log files
+and is provided for convenience only.  It therefore makes no claims to
+completeness or accuracy and it contains some references to files that
+are not part of the distribution.
+
+=======================================================================
+
+
+1999-03-22 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: re-add \cs{mark} command which was commented out
+	by mistake at some point in 1998 (pr/2978)
+
+1999-03-05 David Carlisle <latex-bugs@latex-project.org>
+
+	* enumerate.dtx: extension hook tools/2916}
+
+1999-03-04 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* manifest.txt: Corrected typo.
+
+1999-03-03 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* tools.ins: New copyright info and preamble.
+
+1999-02-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: fixed reference to ltx3info.tex in license
+
+1999-02-13 David Carlisle <latex-bugs@latex-project.org>
+
+	* readme.txt: lppl
+
+1999-02-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: changed license text
+
+1998-12-31 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: Added \noexpand in front of \ialign
+	to guard against interesting :-) changes to \halign done to support
+	text glyphs in math
+
+1998-12-03 Johannes Braams <latex-bugs@latex-project.org>
+
+	* ftnright.dtx (section{The Implementation}): Made \@makecol
+	colorsafe by adding \color@begingroup, \color@endgroup and
+	\normalcolor. 
+
+1998-11-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: taken out fix for (pr/1866) as it produce undesired
+	results (see comments in doc of \vref)      (pr/2909)
+
+	* varioref.dtx: Added two new user commands \vrefrange and
+	\vpagerefrange to support referencing a range of labels.
+	Also added customising commands \reftextlabelrange and
+	\reftextpagerange to support the above commands.
+	Added draft and final option (draft will turn errors into warnings).
+	Added austrian defaults (same a german).
+	Added greek defaults.
+	Removed incorrect warning for italian.
+	Added hungarian defaults.
+	Added russian defaults.
+	Added utility command \vrefpagenum and used it to shorten code
+	this will also fix a problem that in certain circumstances varioref
+	was not warning that another run was needed.
+
+1998-09-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: test if document ends in middle of multicols
+	and if so issue an error message instead of dying with an OR loop
+	pr/2873
+
+1998-08-17 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: new logic for dealing with \@footnotetext macro:
+	instead of redefining its definition completely, thereby possibly
+	overwriting a class change, we locally set \columnwidth to \textwidth
+	and then call the original definition. this will also solves a problem
+	with the situation of a footnote inside multicols inside a minipage
+	would vanish.
+
+	* varioref.dtx: added defaults for greek contributed by
+	Apostolos Syropoulos <apostolo@obelix.ee.duth.gr>
+
+1998-06-22 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* layout.dtx: renamed \bs to \LayOutbs to avoid possible conflicts
+	with other packages using this command. Originally the package
+	redefined \bs in case it already had a definition.
+	Also rename \type to \LayOuttype for the same reason.
+
+1998-05-13 David Carlisle <latex-bugs@latex-project.org>
+
+	* tabularx.dtx:  Use \setlength so calc syntax may be used in 
+	the width argument. tools/2793.
+
+	* longtable.dtx: Use \setlength so calc syntax may be used in p
+	arguments. tools/2793.
+
+1998-05-13 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: also allow calc syntax in first arg of tabular* 
+        (pr/2793)
+
+1998-05-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: set the \hsize for p columns (and others) via
+	\setlength so that calc syntax can be applied (pr/2793)
+
+1998-05-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: support for amsmath displays (pr2175)
+	Actually this probably should be fixed in amsmath instead.
+
+1998-04-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added galician defaults contributed by Matthias
+	Moebius.
+
+1998-03-09 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: replace ~ by \nobreak\space so that \vref obeys
+	setting of \frenchspacing  (pr/1866)
+
+1998-01-29 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: Removed group around contents of optional argument
+	to \begin{multicols}{2}[...] so that the use of \section within
+	this argument works better.
+
+	* array.dtx: made \multicolumn long to match kernel change for
+	pr/2180 (forgotten at that time)
+
+1998-01-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{Not balancing the columns}): 
+	added support for a version of multicols (star form) that doesn't
+	balance the columns on the last page.
+	Fixed a bit of the documentation (so that a toc is possible).
+
+1997-12-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: moving a docstrip guard. this doesn't change
+	the style but prevents some code being added at the end of
+	the driver file
+
+1997-12-14 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: redefine \@footnotetext only within environment
+	not globally any longer. pr/2689 + some docu updates
+
+	* fileerr.dtx: fixed file date. pr/2689
+
+1997-12-06 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added default for polish language.
+
+1997-11-22 David Carlisle <latex-bugs@latex-project.org>
+
+	* bm.dtx: Make \bm{\hat{A}} work like \bm{\hat A} (from c.t.t).
+
+1997-11-18 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: now finally set \columnwidth to width of column
+	  pr2664
+
+1997-11-16 David Carlisle <latex-bugs@latex-project.org>
+
+	* bm.dtx: support mathcode hex 8000 (like prime) properly.
+	Support null delimiter \left. constructions.
+	Support breqn package.
+
+1997-11-11 David Carlisle <latex-bugs@latex-project.org>
+
+	* calc.dtx: Fix error message inserted at the weekend.
+
+1997-11-08 David Carlisle <latex-bugs@latex-project.org>
+
+	* manifest.txt: add calc.
+
+	* Makefile (FILES): add calc
+
+	* tools.ins: add calc.
+
+	* calc.dtx: Contributed to the distribution by 
+	Kresten Krab Thorup and Frank Jensen. One minor change, use
+	\PackageError rather than the primitive \errormessge.
+
+1997-10-16 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: avoid using % in aux file. tools/2631
+
+1997-10-13 David Carlisle <latex-bugs@latex-project.org>
+
+	* xspace.dtx: test for space token added for tools/2632
+
+1997-10-09 David Carlisle <latex-bugs@latex-project.org>
+
+	* bm.dtx: Add extra braces around group code so \bm{\frac..} does
+	the right thing. (Spotted on c.t.t)
+
+1997-10-06 David Carlisle <latex-bugs@latex-project.org>
+
+	* dcolumn.dtx: Document use of math mode. tools/2616.
+
+1997-09-18 David Carlisle <latex-bugs@latex-project.org>
+
+	* tabularx.dtx: Fix \write catch for tools/2607.
+ 	(Fix page 401 of TeXBook at same time...)
+
+1997-07-09 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* tabularx.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* showkeys.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* multicol.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* longtable.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* layout.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* delarray.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+	* array.dtx: Documentation fixes by Andreas Schwab
+ 	<schwab@issan.informatik.uni-dortmund.de>.
+
+1997-07-07 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* tools.ins:  added q.tex and r.tex files so that "run" and
+	  "quit" mode is now also supported.
+
+	* fileerr.dtx: added q.tex and r.tex files so that "run" and
+	  "quit" mode is now also supported.
+
+1997-06-28 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: New email address for David K.
+
+1997-06-13 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: support cite package for tools/2490
+
+1997-06-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added support for catalan
+
+1997-06-05 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* multicol.dtx: Applied improvement of documentation, kindly done
+ 	by Robin Fairbairns.
+
+1997-05-13 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* fontsmpl.dtx: Replaced \@changed@x@err by
+ 	\TextSymbolUnavailable, according to the change in ltoutenc.dtx.
+
+1997-04-30 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx (\verbatiminput): Added code to check for
+	existence of file to be input and print error message if not.
+
+1997-04-14 David Carlisle <latex-bugs@latex-project.org>
+
+	* tools.ins: add bm
+
+	* bm.dtx: Add to tools bundle.
+	Add \boldsymbol as alias for \bm
+
+1997-02-26 David Carlisle <latex-bugs@latex-project.org>
+
+	* tabularx.dtx: Spurious brace removed. Jean-Pierre Drucbert.
+
+1997-02-20 David Carlisle <latex-bugs@latex-project.org>
+
+	* tabularx.dtx: improve behaviour in case table too wide.
+
+1996-12-06 David Carlisle <latex-bugs@latex-project.org>
+
+	* xspace.dtx: alltt support. tools/2322.
+
+1996-11-21 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: new page break control.
+
+1996-11-02 David Carlisle <latex-bugs@latex-project.org>
+
+	* readme.txt: Add old docstrip note.
+
+1996-11-01 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: colour option.  tools/2297.
+
+	* tools.ins: new style.
+
+1996-10-24 David Carlisle <latex-bugs@latex-project.org>
+
+	* xspace.dtx: Fix guards for driver document. tools/2206
+
+1996-09-25 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx (\verbatiminput): Added \@addtofilelist and
+ 	\ProvidesFile so that the name of the file read in appears in the
+ 	\listfiles output.
+
+1996-09-23 David Carlisle <latex-bugs@latex-project.org>
+
+* dcolumn.dtx: Fix case where no decimal point is used
+        in the `new' case of a the third argument being n.m.
+ 
+Fri Sep  6 15:24:17 1996  David Carlisle  <carlisle@cs.man.ac.uk>
+ 
+        * showkeys.dtx: more changes following from /2252.
+ 
+Fri Aug 30 18:09:48 1996  David Carlisle  <carlisle@cs.man.ac.uk>
+ 
+        * showkeys.dtx: more fudges for AMS tools/2252, and extra
+        group from Donald A. tools/2147
+ 
+Wed Jul 10 11:15:30 1996  David Carlisle  <carlisle@cs.man.ac.uk>
+ 
+        * showkeys.dtx: Missing percent added for tools/2215
+
+1996-06-14 David Carlisle <latex-bugs@latex-project.org>
+
+	* array.dtx: change \kern\z@ to \hskip1sp for latex/2160
+	A few long lines wrapped.
+
+1996-06-04 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: \verbatim@noligs@list now processed after
+	\dospecials (PR 2138).
+
+1996-05-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx (subsection{Support for 
+          \texttt{\textbackslash firsthline} and ): 
+	  Complete reimplementation after Mark Wooding pointed out that
+	  they were everything else than correct --- hope i got it 
+	  right this time :-)
+
+1996-05-24 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Add a warning to re run LaTeX \AtEndDocument if
+	any longtable has failed to align on this run.
+
+1996-05-17 David Carlisle <latex-bugs@latex-project.org>
+
+	* xspace.dtx: Add / to list of punctuation characters.
+
+	* showkeys.dtx: use \protected@edef rather than \def
+	so that the expansion of any macros is printed. tools/2147
+
+1996-05-07 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: add \hfil to match array package change.
+
+	* array.dtx: add \hfil to \@endpbox for tools/2120 (and to match
+	kernel version).
+
+1996-04-22 David Carlisle <latex-bugs@latex-project.org>
+
+	* array.dtx: Extra \kern\z@ for empty l colummns. latex/2122
+
+1996-04-16 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Version 4.02 using new algorithm of David Kastrup
+	to align tables without \setlongtables command.
+
+1996-02-28 David Carlisle <latex-bugs@latex-project.org>
+
+	* dcolumn.dtx: New feature (tools/2093) D{.}{.}{3.2} specifies a
+	column of figures that should be centred, assuming 3 places to
+	the left of the decimal point and 2 to the right.
+
+1996-02-01 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: allow \multicolumn and \hline to work inside
+	tabulars inside longtables. tools/2068
+
+1996-01-13 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx:
+	Explain why with \OnlyDescription there will be an unresolved
+	reference pr/2047.
+
+1996-01-03 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: (Martin Schr"oder) remove ! which causes a
+	makeindex error in \changes entry. tools/2035
+
+1996-01-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ftnright.dtx:
+	Finally got around to take out ltxdoc and use article for
+        documentation. pr/536
+	Also cleaned up use of ProvidesPackage.
+
+1995-12-28 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx:
+	Fixed section headings so that a toc is possible. pr/2033.
+
+	* multicol.dtx:
+	Fixed index entries. pr/2036
+
+1995-12-12 David Carlisle <latex-bugs@latex-project.org>
+
+	* tools.dst: Add trap for old docstrip.
+
+1995-11-23 David Carlisle <latex-bugs@latex-project.org>
+
+	* theorem.dtx: Fix \@newctr usage (Ulrik Vieth)
+
+	* layout.dtx: Documentation fixes (J"org Knappen).
+
+	* indentfirst.dtx: (Ulrik Vieth) Fix \GetFileInfo usage.
+          In the documentation.
+
+1995-11-22 David Carlisle <latex-bugs@latex-project.org>
+
+	* tools.dst: New style concurrent generation.
+
+	* showkeys.dtx: Fix \harvarditem: add SK code after the implicit
+	  \item (as for \cite) not before.
+
+1995-11-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* theorem.dtx:
+	Ensure that there is an error message if one of the counters
+	in newtheorem are undefined pr/1861.
+
+	* array.dtx (subsection{Getting the spacing around rules right}):
+	ensure that the space between \hline\hline is visually \doublerulesep
+	and does not depend of the rulewidth (as it does with standard latex)
+	pr/1945
+	Added some documentation about rule handling concepts.
+
+1995-11-09 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: (Anil K Goel) Really measure the size of the
+	  first row of the table not `assume' the size from the array
+	  strut. (Avoids really bad first page break with two headings)
+
+	* showkeys.dtx: Take more care over redefining \protect commands
+
+1995-11-02 David Carlisle <latex-bugs@latex-project.org>
+
+	* array.dtx: Minor doc changes, no more ooverfull hboxes...
+
+1995-10-30 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : Added command \layout* which recomputes the values
+	it needs before making the picture of the layout. (PR 1465)
+
+1995-10-30 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: Fix for tools/1744 (notref/varioref case)
+          Add final and draft options
+          Fix inner vmode case which could cause extra white space
+          to be added.
+
+1995-10-29 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx (section{The implementation}): Added the options
+	spanish, braziolian and portugues, as provided by 
+	Ausberto S. Castro V. <ascv@inf.ufrgs.br> (PR 1837)
+
+1995-10-27 David Carlisle <latex-bugs@latex-project.org>
+
+	* afterpage.dtx: tools/1579/1880/1884
+
+1995-10-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Added defaults for Italian pr/1888
+
+	* multicol.dtx:
+	Added \@largefloatcheck so that floats being too large
+        will produce a warning.  pr/1890
+
+1995-09-22 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Corrected vertical spacing if verbatim is nested
+ 	in quote (and other) environment. This error was introduced with
+	version v1.3c (1990/02/26). Clarified documentation on how to
+	define new verbatim-like environments.
+
+1995-08-06 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* tools.dst: 
+	Updated copying conditions so that it is allowed to distribute
+	unpacked files together with the sources.
+
+1995-08-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx:
+	Changed class used for documentation from 
+	article to ltxdoc. pr/1788
+
+1995-06-25 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : The june 1995 release of LaTeX no longer needs two
+	hash marks when defining a newcommand inside the argument of
+	\DeclareOption.
+
+1995-06-15 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: replace ## by # in \DeclareOption, latex/1557
+
+1995-05-25 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Modify Caption handling again.
+
+1995-05-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: 
+	Updated \DeclareOption declarations to reflect ##1 -> #1 change. pr/1557
+
+1995-05-07 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* fontsmpl.dtx:
+	Removed \pagestyle{empty} so that all pages produced by fontsmpl.tex
+	are numbered. pr/1559
+
+1995-05-03 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Removed extra backslash in argument to \cs.
+
+1995-05-02 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Explitly reset page height for tools/1584.
+        Modify caption handling.
+
+1995-04-26 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Removed \fileversion and \filedate.
+
+1995-04-25 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Modify brace hacks cf tools/1571
+        Allow 1100 longtables in a single document---A bug reported on a
+	`real document' by Mike Van Geest!
+
+	* showkeys.dtx: Fix inner horz mode case.
+        Add option handling: notref and notcite to stop the
+        redefinitions of those commands.
+
+1995-04-23 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx (section{The line separator \\}):
+	Fixed a serious bug that was present right from the beginning:
+        in some cases the last column of an array line could get an extra
+	math ord messing up the spacing. pr/1571.
+	(subsection{Bugs and Features}):
+	Added comment about the fact that a column (execpt for the first) refers to
+	the column specifier plus intercolumn material to the *right*.
+	Therefore \multicolumn{2}{|c|} is normally incorrect. pr/1443
+
+1995-04-08 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : Added the options 'integers' and 'reals'. The
+	default is the option 'integers'; this results in the 'old'
+	behaviour, where the values of parameters are presented
+	truncated. Using the option 'reals' will switch to presenting the
+	real val;ues of the parameters. This also affects the definition
+	of \Show and \Type.
+
+1995-04-06 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx (subsection{Options}):
+	Added norsk and nynorsk strings.
+	Modified Warning message about undefined Option texts.
+
+1995-04-03 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : Simplified the definition of \Show and \Type, the
+	effect is that now the complete value is shown (PR #1520)
+
+1995-03-20 David Carlisle <latex-bugs@latex-project.org>
+
+	* tabularx.dtx: Allow \tabularx to be used inside
+          \newenvironment definitions
+
+1995-03-17 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: Fix for tools/1434  (showkeys affecting footnote
+	  placement)
+
+1995-03-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx:
+	Fixed colour support (thanks to David)
+	Clarified copyright notice.
+	Updated driver file.
+
+1995-03-16 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: Fix for tools/1181 (Bad placement in with \item
+	  and \bibitem) and tools/1496  (Working with new ams*)
+
+1995-03-14 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : Added the options french and francais (thanks to
+	Eric Picheral <Eric.Picheral@univ-rennes1.fr> who provided the
+	translations); introduced \notshown
+
+1995-01-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Added swedish strings.
+
+1994-12-08 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Add \tabularnewline.
+
+	* array.dtx: Add \tabularnewline.
+
+1994-11-22 David Carlisle <latex-bugs@latex-project.org>
+
+	* tools.dst: Avoid generating error messages on `.tex'.
+
+1994-11-15 David Carlisle <latex-bugs@latex-project.org>
+
+	* xspace.dtx: Make robust, add !
+
+1994-10-29 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx : Some of the dutch words should really be one word
+	instead of two (PR #1078)
+
+1994-10-25 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Changed code for handling verbatim as first thing
+	after an \item command. (This change had already been done in the
+	LaTeX2e kernel.)
+
+	* verbatim.dtx: Removed extra \typeout lines.
+
+1994-10-15 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx (subsection{Support for ...):
+	Added \firsthline and \lasthline from Companion. 
+
+1994-10-03 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx:
+	Correct change from 26 of August. Leave old code only add the new
+	one.
+
+1994-09-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Added strings for breton language, this also means adding a new option.
+
+1994-09-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: 
+	Added danish strings.
+
+1994-09-23 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx (subsection{Options}):
+	Added finnish strings.
+
+1994-09-09 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: add \citefullauthor for (forthcoming) natbib.
+
+1994-09-08 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx: Stored texts in control sequences to allow the use
+of other languages. Added the options english (default) and dutch.
+
+	* tools.dst: Added the layout package
+
+1994-09-07 David Carlisle <latex-bugs@latex-project.org>
+
+	* showkeys.dtx: Version 3, supports varioref ref styles, and
+	  natbib and harvard citation styles.
+	  Also modify `internal vertical mode' case, to cope with modified
+	  \caption behaviour in the LaTeX2e classes.
+	  Modify \GetFileInfo usage, as suggested by Patrick Daly.
+
+1994-08-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{The output routines}]):
+ 	Check explicitly for void boxes before assigning the current column
+	   width to their width, because void boxes will not change.
+	Extract the kept marks before adding a penalty -10000 to the output box
+	  when balancing, otherwise no marks will be found. (This bug was
+	  introduced recently.
+
+1994-08-08 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* tools.dst:
+	Added a better informational message about the problems
+	that can arise when LaTeX tries to generate the file `.tex'
+
+1994-07-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx (subsection{Options}):
+	Added dutch defaults as suggested by Frank Poppe.
+	Explicitly expand label argument before passing it to \label, so that
+	varioref will work with babel.
+	Correct misspelling in spanish option.
+
+1994-07-14 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx: Moved the identification code to the front of the
+	file.
+	Needed to interchange to calls to \ttfamily and \footnotsize as
+	\footnotesize calls \normalfont in compatibility mode.
+	Added a check for negative arrowlength to \InsideHArrow
+
+1994-06-30 David Carlisle <latex-bugs@latex-project.org>
+
+	* longtable.dtx: Obey a \nofiles declaration. Remove special
+	  handling of letter class, not needed for the latex2e version of
+	  letter.
+
+	* showkeys.dtx: Correct \ProvidesPackage usage (previously had two
+	  \providesPackage commands),
+
+1994-06-21 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx (subsection{Options}):
+	Added french defaults as suggested by Daniel Flippo.
+
+1994-06-20 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Correction was buggy, brace placed incorrectly.
+
+1994-06-11 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	\vpageref[above][one ]{one} didn't work because first
+	optional argument wasn't passed (found by Patrick Daly).
+
+1994-06-07 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (section{New macros and hacks for version 1.2}]):
+	Updated float commands to contain \color@endgroup etc. so
+	that they work together with the color.sty package.
+	(Found by SPQR)
+
+1994-06-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx:
+	Added  \null to the end of \multicolumn. This fixes
+	a bug that was long fixed in the original but never made it
+	into array.sty.
+	Use PackageError/Warning interface.
+
+1994-06-01 David Carlisle <latex-bugs@latex-project.org>
+
+	* somedefs.dtx: Use new style error commands.
+
+1994-05-28 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx:
+	Do not alloc \col@number any longer.
+	Use Standard Warning/info messages.
+
+	* fileerr.dtx:
+	Added file to the collection.
+
+1994-05-28 David Carlisle <latex-bugs@latex-project.org>
+
+	* manifest.txt: First draft.
+
+	* readme.txt: First draft.
+1994-05-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Warning about looping pages displayed in wrong order
+	(found by Wolfgang Christen).
+	(subsection{Defining the main macros}): 
+	Added help message for loop error.
+	Use PackageError rather than \errmessage.
+	Use DeclareRobustCommand.
+	Added \NeedTeXFormat.
+
+1994-05-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{Starting and ): 
+	fixed bug with "premulticols" not being a register
+	(tried to \the a string in tracing mode)
+
+1994-05-18 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx:
+	Added defaults for brazil.
+
+1994-05-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx (section{The macros \texttt{\protect):
+	Use \@finalstrut in \@endpbox
+
+1994-03-23 Braams J.L. <latex-bugs@latex-project.org>
+
+	* layout.dtx : repaired bug in twosided mode.
+
+	Changed vertical positioning of the arrows identifying
+	\amrginparsep and \marginparwidth
+
+	Repaired bug in the preparation of the table of dimensions.
+
+	Produce two pages in twoside mode
+
+	Removed use of \wlog
+
+1994-03-14 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: 
+	Removed identification \typeout's.
+	Removed the check for the old version of the \@tfor macro.
+
+1994-02-28 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* array.dtx: 
+	Moved the driver code in front so that the documentation can be
+        processed by simply running the file through LaTeX2e.
+
+	* ftnright.dtx: 
+	Moved the driver code in front so that the documentation can be
+        processed by simply running the file through LaTeX2e.
+
+	* multicol.dtx: 
+	Balance code rewritten; many changes to documentation etc.
+	Changed driver code slightly.
+	Moved the driver code in front so that the documentation can be
+        processed by simply running the file through LaTeX2e.
+
+	* theorem.dtx: 
+	Changed driver code slightly.
+	Moved the driver code in front so that the documentation can be
+        processed by simply running the file through LaTeX2e.
+

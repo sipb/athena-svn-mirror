@@ -1,0 +1,33 @@
+Showlabels: put the names of \labels into the margins of a draft document
+--------------------------------------------------------------------------
+
+Version 1.2
+
+This class option introduces no new commands, it just helps you keep
+track of all the labels by putting the name of the new label into the
+margin whenever either the |\label| command is used, or an equation is
+automatically numbered (by replacing the internal |\@eqnnum| command).
+There are therefore no usage instructions.  You invoke this package
+with the command |\usepackage{showlabels}| in the preamble, and you
+may give the options \Lopt{inner} or \Lopt{outer} (the default) to
+have the labels placed in the inner or outer margin of the text.
+
+The package will also work in the presence of the \Lopt{twocolumn}
+option.  In this case, the options \Lopt{inner} and \Lopt{outer} will
+be ignored, and the label will be placed in the nearer margin.
+
+The package has (finally) been modified to deal with the slightly
+different mechanism that AMS-\LaTeX\ uses to produce equation numbers.
+I don't habitually use AMS-\LaTeX, so I won't discover any bugs or
+weaknesses with its support here, and I'd consequently be glad to be
+informed of any that appear.  The |\usepackage{showlabels}| must
+appear \emph{after} any AMS stuff is loaded.
+
+For reasonably obvious reasons, this package will \emph{not} work at
+all well with the \pstyle{multicol} package, and for possibly less
+obvious reasons, it won't work with the \Lopt{leqno} option either (at
+some point it should be modified to at least recognise and warn of the
+conflict in either case).
+
+
+Norman Gray <norman@astro.gla.ac.uk>

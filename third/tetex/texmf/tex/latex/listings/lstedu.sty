@@ -1,0 +1,76 @@
+%%
+%% This is file `lstedu.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lstdrvrs.dtx  (with options: `comal,elan,logo')
+%% 
+%% (w)(c) 1996,1997,1998 Carsten Heinz and/or any other author mentioned
+%% elsewhere in this file.
+%% 
+%% This file is distributed freely. You are not allowed to take money for
+%% the use or distribution of this file, except for a nominal charge for
+%% copying etc..
+%% 
+%% This file is distributed without any warranty, express or implied, as
+%% to merchantability or fitness for any particular purpose.
+%% 
+%% Permission is granted to change this file. You are not allowed to
+%% distribute any changed version this file, neither under the same name
+%% nor under a different one.
+%% 
+\lstdefinedrvlanguage{Comal 80}%
+  {keywords={AND,AUTO,CASE,DATA,DEL,DIM,DIV,DO,ELSE,ENDCASE,ENDIF,%
+      ENDPROC,ENDWHILE,EOD,EXEC,FALSE,FOR,GOTO,IF,INPUT,INT,LIST,LOAD,%
+      MOD,NEW,NEXT,NOT,OF,OR,PRINT,PROC,RANDOM,RENUM,REPEAT,RND,RUN,%
+      SAVE,SELECT,STOP,TAB,THEN,TRUE,UNTIL,WHILE,ZONE},%
+   sensitive=false,% ???
+   commentline={//},%
+   stringizer={"}%
+  }%
+\lstdefinedrvlanguage{Elan}%
+  {keywords={ABS,AND,BOOL,CAND,CASE,CAT,COLUMNS,CONCR,CONJ,CONST,COR,%
+      DECR,DEFINES,DET,DIV,DOWNTO,ELIF,ELSE,END,ENDIF,ENDOP,ENDPACKET,%
+      ENDPROC,ENDREP,ENDSELECT,FALSE,FI,FILE,FOR,FROM,IF,INCR,INT,INV,%
+      LEAVE,LENGTH,LET,MOD,NOT,OF,OP,OR,OTHERWISE,PACKET,PROC,REAL,REP,%
+      REPEAT,ROW,ROWS,SELECT,SIGN,STRUCT,SUB,TEXT,THEN,TRANSP,TRUE,%
+      TYPE,UNTIL,UPTO,VAR,WHILE,WITH,XOR,%
+      maxint,sign,abs,min,max,random,initializerandom,subtext,code,%
+      replace,text,laenge,pos,compress,change,maxreal,smallreal,floor,%
+      pi,e,ln,log2,log10,sqrt,exp,tan,tand,sin,sind,cos,cosd,arctan,%
+      arctand,int,real,lastconversionok,put,putline,line,page,get,%
+      getline,input,output,sequentialfile,maxlinelaenge,reset,eof,%
+      close,complexzero,complexone,complexi,complex,realpart,imagpart,%
+      dphi,phi,vector,norm,replace,matrix,idn,row,column,sub,%
+      replacerow,replacecolumn,replaceelement,transp,errorsstop,stop},%
+   sensitive=true,%
+   stringizer=[d]{"}%
+  }%
+\lstdefinedrvlanguage{Logo}%
+  {keywords={and,atan,arctan,both,break,bf,bl,butfirst,butlast,%
+      cbreak, close,co,continue,cos,count,clearscreen,cs,debquit,%
+      describe,diff,difference,ed,edit,either,emptyp,equalp,er,erase,%
+      errpause,errquit,fifp,filefprint,fifty,fileftype,fip,fileprint,%
+      fird,fileread,fity,filetype,fiwd,fileword,f,first,or,fp,fprint,%
+      fput,fty,ftype,full,fullscreen,go,bye,goodbye,gprop,greaterp,%
+      help,if,iff,iffalse,ift,iftrue,nth,item,keyp,llast,lessp,list,%
+      local,lput,make,max,maximum,memberp,memtrace,min,minimum,namep,%
+      not,numberp,oflush,openr,openread,openw,openwrite,op,output,%
+      pause,plist,pots,pow,pprop,pps,pr,print,product,quotient,random,%
+      rc,readchar,rl,readlist,remprop,repcount,repeat,request,rnd,run,%
+      se,sentence,sentencep,setc,setcolor,setipause,setqpause,po,show,%
+      sin,split,splitscreen,sqrt,stop,sum,test,text,textscreen,thing,%
+      to,tone,top,toplevel,type,untrace,wait,word,wordp,yaccdebug,is,%
+      mod,remainder,trace,zerop,back,bk,bto,btouch,fd,forward,fto,%
+      ftouch,getpen,heading,hit,hitoot,ht,hideturtle,loff,lampoff,lon,%
+      lampon,lt,left,lot,lotoot,lto,ltouch,penc,pencolor,pd,pendown,pe,%
+      penerase,penmode,pu,penup,px,penreverse,rt,right,rto,rtouch,%
+      scrunch,seth,setheading,setscrun,setscrunch,setxy,shownp,st,%
+      showturtle,towardsxy,clean,wipeclean,xcor,ycor,tur,turtle,%
+      display,dpy},%
+   sensitive=false% ???
+  }%
+\endinput
+%%
+%% End of file `lstedu.sty'.

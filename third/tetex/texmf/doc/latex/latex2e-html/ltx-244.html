@@ -1,0 +1,30 @@
+<html>
+<head><title>Help On LaTeX \hyphenation</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\hyphenation</font></h1>
+<p>
+ <tt>\hyphenation{words}</tt>
+<p>
+ The <tt>\hyphenation</tt>  command declares  allowed hyphenation  points, where
+ words  is  a list  of  words,  separated  by  spaces,  in  which  each
+ hyphenation point is indicated by a - character. For example
+<pre>
+    <tt>\hyphenation{fortran,er-go-no-mic}</tt></pre>
+indicates that "fortran" cannot be hyphenated and indicates allowed
+hyphenation points for "ergonomic".
+<p>
+This argument to this command should contain words composed only of normal 
+letters.  To suggest hyphenation points for strings containing nonletters
+or <a href="ltx-401.html">accented letters</a>, use 
+the <a href="ltx-182.html"><tt>\-</tt></a> command in the input text.
+<p>
+This command is normally given in the <a href="input.html#structure">preamble</a>.
+<hr>
+See also <A href="ltx-99.html">Line and Page Breaking</A><br>
+Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 5 Jun 1995.
+</address>
+</body>
+</html>

@@ -1,0 +1,88 @@
+%%
+%% This is file `backref.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% backref.dtx  (with options: `package')
+%% 
+\def\fileversion{1.16}
+\def\filedate{1999/04/12}
+%% File: backref.dtx Copyright (C) 1995, 1996, 1997, 1999 David Carlisle, Sebastian Rahtz
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesPackage{backref}[\filedate:
+  bibliographical back referencing, \fileversion]
+
+\long\def\page@backref#1#2#3{#1}
+\long\def\section@backref#1#2#3{#2}
+\long\def\hyper@section@backref#1#2#3{\hyperlink{#3}{#2}}
+\long\def\hyper@page@backref#1#2#3{\hyperlink{page.#1}{#1}}
+\DeclareOption{pageref}{%
+  \def\backref{pages }%
+  \let\backrefxxx\page@backref
+}
+\DeclareOption{ref}{%
+  \def\backref{sections }%
+  \let\backrefxxx\section@backref
+}
+\DeclareOption{hyperref}{%
+  \def\backref{}\let\backrefxxx\hyper@section@backref
+}
+\DeclareOption{hyperpageref}{%
+  \def\backref{}\let\backrefxxx\hyper@page@backref
+}
+\ExecuteOptions{pageref}
+\ProcessOptions
+\@ifundefined{newblock}{\def\newblock{\par}}{}
+\def\xbibitem{\@ifnextchar[{\@xlbibitem}{\@xbibitem}}
+\def\@xlbibitem[#1]#2#3\par{%
+ \oldb[#1]{#2}#3
+ \newblock
+ \backref{\csname br@#2\endcsname}%
+ \par
+}%
+\def\@xbibitem#1#2\par{%
+ \oldb{#1}#2
+ \newblock
+ \backref{\csname br@#1\endcsname}%
+ \par
+}
+\def\backcite#1#2{%
+  \@for\x:=#1\do{%
+   \edef\x{\expandafter\@firstofone\x\@empty}%
+   \expandafter\protected@xdef\csname br@\x\endcsname{%
+   \expandafter\ifx\csname br@\x\endcsname\relax\else
+     \csname br@\x\endcsname, \fi\protect\backrefxxx#2}}}
+\def\@currentHref{}
+\AtBeginDocument{%
+  \let\oldb\bibitem
+  \let\bibitem\xbibitem
+  \let\oldbibl\thebibliography
+  \def\thebibliography{\@starttoc{brf}{}\oldbibl}
+  \@ifundefined{NAT@parse}{%
+   \global\let\old@citex\@citex
+   \global\let\@citex\x@citex
+   }{\typeout{** backref set up for natbib ***}}
+}
+\def\x@citex[#1]#2{%
+  \old@citex[#1]{#2}%
+  \hy@backout{#2}%
+}
+\def\hy@backout#1{%
+  \@bsphack
+  \ifx\@empty\@currentlabel
+    \protected@write\@auxout{}%
+    {\string\@writefile{brf}%
+      {\string\backcite{#1}{{\thepage}{(document)}{Doc-Start}}}}%
+  \else
+   \protected@write\@auxout{}%
+   {\string\@writefile{brf}%
+     {\string\backcite{#1}{{\thepage}{\@currentlabel}{\@currentHref}}}}%
+  \fi
+   \@esphack
+}
+\endinput
+%%
+%% End of file `backref.sty'.

@@ -1,0 +1,261 @@
+            PSTricks changes since announcement of April 18, 1997
+                               (May 3, 1999)
+	    -----------------------------------------------------
+
+
+pstricks:
+--------
+
+  * 97/05/21 Add the VERSIONS file
+
+  * 97/05/30 Add this CHANGES file
+
+
+pstricks/generic:
+----------------
+
+  * 97/04/16 pst-plot.tex (97 patch 1): Problem in the \pst@hlabels macro
+(reported by Akos Valentinyi <akos@indigo.econ.soton.ac.uk>)
+
+  * 97/04/25 pstricks.con (97 patch 1): Correction of pstricks.con to work
+with "old" LaTeX - typically distribution of 1994
+(reported by Philippe Esperet <esperet@marie.polytechnique.fr>)
+
+  * 97/04/28 pstricks.tex (97 patch 1): The \psbezier macro doesn't work
+correctly inside \pscustom
+(reported by Ralf Hetzel <R.Hetzel@physik.tu-dresden.de>)
+
+  * 97/04/28 pst-grad.tex (97 patch 1): Work only in LaTeX and not in
+plain TeX, due to missing @ catcode change
+(reported by Ralf Hetzel <R.Hetzel@physik.tu-dresden.de>)
+
+  * 97/05/05 pst-eps.tex (97 patch 1): \TeXtoEPS ... \endTeXtoEPS
+doesn't work. The PostScript header files were not loaded, as LaTeX 2e
+require now a specific mechanism
+(reported by Greg Byrd <gbyrd@Umunhum.Stanford.edu>)
+
+  * 97/05/12 pstricks.tex (97 patch 2): The \translate macro doesn't work
+correctly
+(reported by Hilmar Schlegel <100.143869@germany.net>)
+
+  * 97/05/14 pst-coil.tex (97 patch 1): The \nczigzag and \nccoil macros
+doesn't work, even if those from pst-node.tex were correct
+(reported by Tomer Kol <tkol@psl-palm.technion.ac.il>)
+
+  * 97/05/14 pst-tree.tex (97 patch 1): The levelsep=*dim parameter
+doesn't work correctly
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/07/11 pstricks.tex (97 patch 3): dotscale parameter inefficient
+with \psdot and \psdots macros
+(reported by Ivan Maio <maio@polito.it>)
+
+  * 97/07/22 pst-node.tex (97 patch 1): `dot' node is undefined
+in the psmatrix environment, but documented
+(reported by Jean-Francois Mertens <jfm@core.ucl.ac.be>)
+
+  * 97/07/30 pst-node.tex (97 patch 2): C node type doesn't work
+in the psmatrix environment
+(reported by Kostas Oikonomou <ko@surya.ho.att.com>)
+
+  * 97/08/08 pstricks.tex (97 patch 4): Suppress a spurious blank in
+the definition of \psk@dotangle in the \psset@dotangle macro definition
+(reported by Raymond Toy <toy@rtp.ericsson.se>)
+
+  * 97/09/02 pst-node.tex (97 patch 3): Add a \leavevmode command
+for \dianode, \ovalnode and \trinode which were missing
+(reported by Wolfgang May <may@informatik.uni-freiburg.de>)
+
+  * 97/09/24 pst-tree.tex (97 patch 2): The \pstree@horizlevelsepadjust
+doesn't require an argument - definition was falsely copied from
+\pstree@vertlevelsepadjust, which require one
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/09/24 pst-tree.tex (97 patch 3): The levelsep=*dim parameter
+give wrong result for treemode=R, because all leaves were positioned on the top
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/09/26 pst-node.tex (97 patch 4): Correct a bug which made
+that \thput and \tvput didn't work (it generate a PostScript error)
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/10/14 pstricks.bug (97 patch 2) : Add description of the problem of
+the change the way the curves are drawn when arrows are required and the
+problem of the \savedata macro that doesn't work inside another macro.
+
+  * 97/10/17 pstricks.tex (97 patch 5): dotscale parameter doesn't
+work correctly in some cases. I remove the change of patch 3 and introduce
+another change.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/10/27 pstricks.tex (97 patch 6): The (coor1|coor2) special
+coordinates produce an error, due to a bug in 0.93a version, which correction
+in pstricks.bug was not reported in PST 97.
+(reported by Ivan Maio <maio@polito.it>)
+
+  * 97/10/27 pstricks.tex (97 patch 7): The | and B| dots were not
+properly scaled when using the dotsize parameter (and the tbarsize has
+no effect, despite what documentation says).
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/03/20 pst-fill.tex (97 patch 1): There can be a division by 0 in the
+\pst@ManualFillCycle macro.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/12/12 pst-fill.tex (97 patch 2): Extensive modifications to
+improve the "automatic" mode, when the "tiling" one (added by me) is selected.
+(by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 98/01/07 pstricks.tex (97 patch 8): The \movepath macro doesn't
+work, due to a typo.
+(reported by Jin-Hwan Cho <chofchof@math.kaist.ac.kr>)
+
+  * 98/01/07 pstricks.tex (97 patch 9): The \scale macro doesn't work,
+due to a bug correction from the 0.93 pstricks.bug file not reported in
+PSTricks 97.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 98/03/19 pst-node.tex (97 patch 5): The \nccoil and \nczigzag macros
+are drawn in the wrong direction, from the ending to the starting point.
+So the arrows, when defined, appear exchanged.
+(reported by Wolfgang May <may@informatik.uni-freiburg.de>)
+
+  * 98/03/19 pst-coil.tex (97 patch 2): Same problem than above.
+
+  * 98/04/28 pst-node.tex (97 patch 6): The refpoint parameter of the \rnode
+macro is not used if it is specified.
+(reported by Pierre Basso <Pierre.Basso@lim.univ-mrs.fr>)
+
+  * 98/07/03 pst-char.tex (97 patch 1): In the \pscharpath macro, the
+PostScript code is not reset after it inclusion, which cause problem when
+this macro is used inside another one.
+(reported by Martin Giese <giese@ira.uka.de>)
+
+  * 98/09/23 pst-node.tex (97 patch 7): There are two typos in validation
+tests, which avoid to print an error message for wrong values of tpos.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 98/11/26 pst-char.tex (97 patch 2): In the \pscharpath@ii macro, the
+\begin@ClosedObj macro execute the \solid@star macro, but as the star
+convention has another meaning for \pscharpath and \pscharclip, it can execute 
+wrong code inside \solid@star.
+(reported by To Thanh Binh <binh@atlantis.ET.Uni-Magdeburg.De>)
+
+  * 99/03/11 pst-char.tex (97 patch 3): A spurious blank was introduced in the
+\pscharpath@ii macro by the patch 1 correction.
+(reported by Stanislav Brabec <utx@k332.feld.cvut.cz>)
+
+  * 98/11/27 pst-node.tex (97 patch 8): The \multispan "plain" macro is broken
+by a change made in PSTricks 97 for LaTeX 2e compatibility. And in any case
+the \psspan macro of the "psmatrix" environment doesn't work because an
+undefined \iterate macro is required.
+(reported by Stanislav Brabec <utx@k332.feld.cvut.cz> and
+Denis Girou <Denis.Girou@idris.fr>)
+
+  * 99/03/24 pstricks.tex (97 patch 10): The * convention doesn't work
+in the \uput* macro, due to a broken definition in the code of pst-beta.tex
+used in PSTricks 97.
+(reported by Bob Howlett <bobh@maths.usyd.edu.au>)
+
+  * 99/04/14 pstricks.tex (97 patch 9): The \ncLine doesn't position
+correctly it content, due to an erroneous order of the used coordinates 
+in the code of pst-beta.tex used in PSTricks 97.
+(reported by Frank Mueller <meckccef@sp.zrz.tu-berlin.de>)
+
+
+pstricks/latex:
+--------------
+
+  * 97/05/28 pst-all.sty: remove a comment since there are no dependancies
+between pst-node.tex and pst-coil.tex
+
+  * 98/07/02 pst-all.sty: add the "tiling" option for `pst-fill' as default
+
+
+pstricks/dvips:
+--------------
+
+  * 97/05/09 pst-node.pro (97 patch 1): The \nccircle and \Tcircle
+macros of pst-node.tex doesn't work
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/11/07 pstricks.pro (97 patch 1): There is a typo in Grid macro
+definition which make \psgrid used with griddots to generate a wrong number
+of dots if xunit differ from yunit.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 97/12/12 pstricks.pro (97 patch 2): Hachures change of starting
+point according the position of the area hatched, which is a problem for
+special cases, where we need to align them in several contiguous regions.
+(reported by Denis Girou <Denis.Girou@idris.fr>)
+
+  * 98/06/01 pstricks.pro (97 patch 3): Corrections in the LineFill and
+Triangle macros suggested by Michael Vulis to don't leave unused operands
+on the stack, which is essential for some drivers.
+(reported by Michael Vulis <support@micropress-inc.com>)
+
+  * 98/06/02 pst-grad.pro (97 patch 1): Correction in the Coil macro
+suggested by Michael Vulis to don't leave unused operands on the stack,
+which is essential for some drivers.
+(reported by Michael Vulis <support@micropress-inc.com>)
+
+
+pstricks/doc:
+------------
+
+  * 98/07/10 test-pst.tex: Version 1.1: this file require
+\usepackage[latin1]{inputenc} definition as one example (calligramme of
+4-5-13) use 8 bits characters.
+(reported by Jean-Francois Mertens <jfm@core.ucl.ac.be>)
+
+  * 98/07/10 lgc/4-5-13.inl: Change the values for one verse (adding 1mm on
+both left and rigth sides) to allow correct typesetting in T1 encoding
+as well as OT1.
+(reported by Jean-Francois Mertens <jfm@core.ucl.ac.be>)
+
+  * 98/07/10 test-pst.tex: Version 1.2: change the sizes used by subfigures
+4-5-5 and 4-5-6 to take into account the real size used by 4-5-5 after
+correction of the bug in pst-key.tex 1.10 (see below).
+
+  * 98/09/09 test-pst.tex: Version 1.3: add explicit page breaks to require
+less memory to be compiled (only 180000 bytes now).
+
+  * 99/03/24 pstricks.bug: Version 1.4: document the problem with the
+\psspan macro of `pst-node'.
+
+
+pstricks/obsolete/doc/src:
+-------------------------
+
+  * 97/07/01 tp-test.tex: The tp-test.tex file didn't work (in fact it was not
+compatible with LaTeX 2e)
+(reported and updated by Steffen Klupsch
+<steffen@vlsi.informatik.th-darmstadt.de>)
+
+
+pstricks/contrib:
+----------------
+
+  * 97/05/30 Reorganization using subdirectories
+
+  * 97/05/30 Add the pst-ghsb subdirectory and relative files
+
+  * 98/02/25 Migrate the palette subdirectory in the obsolete one
+
+  * 98/02/25 Add the pst-poly subdirectory and relative files
+
+  * 98/02/25 Add the misc subdirectory and relative files
+
+  * 98/07/23 Version 1.11 of misc/pst-key.tex to correct a bug in the
+definition of the \use@par macro.
+(reported by Michael Vulis <support@micropress-inc.com>)
+
+  * 98/09/15 declare pst-ghsb as superceded by the pst-slpe package
+
+  * 98/09/15 Add the pst-blur subdirectory and relative files
+(from Martin Giese)
+
+  * 98/09/15 Add the pst-slpe subdirectory and relative files
+(from Martin Giese)
+
+  * 98/09/16 Add the pst-gr3d subdirectory and relative files

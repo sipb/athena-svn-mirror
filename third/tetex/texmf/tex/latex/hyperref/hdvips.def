@@ -1,0 +1,81 @@
+%%
+%% This is file `hdvips.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hyperref.dtx  (with options: `dvips')
+%% 
+%% File: hyperref.dtx Copyright (C) 1995-1999 Sebastian Rahtz
+%%
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+\input{pdfmark.def}%
+\def\@pdfborder{0 0 12}
+\providecommand\@pdfview{XYZ}
+\providecommand\@pdfviewparams{ pdf@hoff pdf@voff null}
+\def\literalps@out#1{\special{ps:SDict begin #1 end}}%
+\def\pdf@setheight{\literalps@out{%
+  \strip@pt@and@otherjunk\baselineskip
+  \space 2 sub dup
+  /HyperBasePt exch def
+  PDFToDvips /HyperBaseDvips exch def
+  }%
+}
+\def\PSHyperAnchorStart{\literalps@out{HyperStart }}
+\def\PSHyperAnchorEnd{%
+  \pdf@setheight
+  \literalps@out{HyperAutoEnd HyperAutoVoff }%
+}
+\def\PSHyperLinkStart{\literalps@out{HyperStart }}
+\def\PSHyperLinkEnd{%
+  \pdf@setheight
+  \literalps@out{HyperAutoEnd}%
+}
+\def\PSHyperRectStart{\literalps@out{HyperStart }}
+\def\PSHyperRectEnd{\literalps@out{HyperEnd HyperVoff }}
+\AtBeginDvi{\special{!
+/DvipsToPDF { 72.27 mul Resolution div } def
+/PDFToDvips { 72.27 div Resolution mul } def
+/HyperBorder  { 1 PDFToDvips } def
+/HyperVoff {
+   currentpoint exch pop vsize 72 sub
+   exch DvipsToPDF sub /pdf@voff exch def
+ } def
+/HyperAutoVoff {
+   currentpoint exch pop
+    vsize 72 sub exch DvipsToPDF
+    HyperBasePt sub % baseline skip
+    sub /pdf@voff exch def
+ } def
+/HyperStart {
+   currentpoint
+    HyperBorder add /pdf@lly exch def
+    dup DvipsToPDF  /pdf@hoff exch def
+    HyperBorder sub /pdf@llx exch def
+} def
+/HyperAutoEnd  {
+   currentpoint
+    HyperBaseDvips sub /pdf@ury exch def
+    /pdf@urx exch def
+} def
+ /HyperEnd  {
+   currentpoint
+    HyperBorder sub /pdf@ury exch def
+    HyperBorder add /pdf@urx exch def
+ } def
+ systemdict
+ /pdfmark known not
+ {userdict /pdfmark systemdict /cleartomark get put} if
+}}
+\AtBeginDocument{%
+  \ifhy@colorlinks
+   \def\@pdfborder{0 0 0}%
+  \fi
+  \special{papersize=\special@paper}%
+}
+\endinput
+%%
+%% End of file `hdvips.def'.

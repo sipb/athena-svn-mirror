@@ -1,0 +1,17 @@
+I'd like to announce the availability of 
+my LaTeX2e acronym Package from CTAN.
+
+When writing a paper on cellular mobile radio I started to used a lot
+of acronyms. This can be very disturbing for the reader, as he might
+not know all the used acronyms. To help the reader I kept a list of
+all the acronyms at the end of my paper.
+
+This package makes sure, that all acronyms used in the text are
+spelled out in full at least once. And it provides an environment to
+keep a list of acronyms. Somewhere in the document.
+
+Version 1.2 (August 1996) features a new command: \acl to print the
+expanded acronym with out even mentioning that there is an acronym for
+this word.
+
+Tobias Oetiker <oetiker@dmu.ac.uk>

@@ -1,0 +1,555 @@
+%D \module
+%D   [       file=supp-mrk,
+%D        version=1995.10.10,
+%D          title=\CONTEXT\ Support Macros,
+%D       subtitle=Marks,
+%D         author=Jim Fox / Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+%D Remark: due to the lack of \type {\clearmark}, the \ETEX\ 
+%D dedicated mechanism is not yet operational. 
+
+%D There are 256 \COUNTERS, \DIMENSIONS, \SKIPS, \MUSKIPS\ and
+%D \BOXES, 16~in- and output buffers, but there is only one
+%D \MARK. In TugBoat~8 (1987, no~1) Jim Fox presents a set of
+%D macros that can be used to mimmick multiple marks. We
+%D gladly adopt them here.
+%D
+%D This module was changed on behalf of \ETEX. The main
+%D extension is that \type{\get..} and alike is used instead of
+%D direct calls. The \TEX\ based multiple marks needs to store
+%D the mark data but \ETEX\ uses a different approach.
+
+\writestatus{loading}{Context Support Macros / Marks}
+
+\unprotect
+
+%% \beginTEX
+
+%D This implementation is more or less compatible with the
+%D other \type {\new} macros in \PLAIN\ \TEX. A mark is
+%D defined by:
+%D
+%D \starttypen
+%D \newmark\name
+%D \stoptypen
+%D
+%D and can be called upon with:
+%D
+%D \starttypen
+%D \gettopmark  \name  % or \topname
+%D \getbotmark  \name  % or \botname
+%D \getfirstmark\name  % or \firstname
+%D \stoptypen
+%D
+%D The only drawback of his approach is that the marks must be
+%D preloaded in the output routine. This is accomplished by
+%D means of:
+%D
+%D \starttypen
+%D \getmarks\name
+%D \stoptypen
+%D
+%D The macros presented here are in most aspects copies of
+%D those presented by Jim Fox. We've taken the freedom to
+%D change a few things for more or less obvious reasons:
+%D
+%D \startopsomming
+%D \som  Because the original macros look quite complicated,
+%D       which is mainly due to extensive use of
+%D       \type{\expandafter}'s and \type{\csname}'s, we changed
+%D       those in favor of \type{\getvalue}.
+%D \som  To be more in line with the rest of \CONTEXT, we've
+%D       changed some of the names of macros.
+%D \som  Because we are already short on \COUNTERS\ we use
+%D       macros when possible.
+%D \som  We maintain a list of defined marks and use one
+%D       call for getting them all at once.
+%D \som  We have extended the mechanism to splitmarks (not
+%D       perfected yet).
+%D \som  We've introduced optional expansion of the contents
+%D       of marks.
+%D \stopopsomming
+%D
+%D Whatever changes we've made, the credits still go to Jim,
+%D whatever goes wrong is due to me. The method is described
+%D in the TugBoat mentioned before, so we won't go into
+%D details. All marks belonging to a group are packed in a
+%D list. In this list they are preceded by a macro that can
+%D be defined at will and a number concerning the position at
+%D which it was defined.
+%D
+%D \starttypen
+%D \def\somelist{... \domark5{this} ... \domark31{that} ...}
+%D \stoptypen
+%D
+%D The original \type{\mark} keeps track of the number and
+%D \type{\topmark} and \type{\botmark} are used to extract the
+%D actual marks from the list. The counting is done by
+%D
+%D \starttypen
+%D \currentmarker
+%D \stoptypen
+%D
+%D In \CONTEXT\ we use the mark mechanism to keep track of
+%D colors. In a complicated documents with many colors per
+%D page, \type{\currentmarker} can therefore get pretty high.
+%D (Well, this is not completely true, because we don't
+%D always have to use marks.)
+
+\newcount\currentmarker
+
+%D The original implementation used a few more \COUNTERS. Two
+%D have been substituted by macros, one has been replaced by
+%D our scratch counter.
+%D
+%D \starttypen
+%D % \newcount\topmarker
+%D % \newcount\botmarker
+%D % \newcount\foundmarker
+%D \stoptypen
+%D
+%D We've also introduced some constants, one for the lists and
+%D three for composing the mark commands.
+
+\def\@@marklist@@  {marklist}
+\def\@@marktop@@   {top}
+\def\@@markbot@@   {bot}
+\def\@@markfirst@@ {first}
+
+%D The next one is new too. All defined marks are packed in a
+%D comma seperated list. This could of course have been a token
+%D list but \CONTEXT\ has some preference for comma lists.
+
+\let\allmarks=\empty
+
+%D \macros
+%D   {expandmarks}
+%D
+%D There are two booleans. The first one handles the first
+%D marks, the second concerns expansion. This second one is
+%D new.
+
+\newif\ifnofirstmarker
+\newif\ifexpandmarks     \expandmarkstrue
+
+%D We use an indirect call to the mark mechanism.
+
+\let\normalmark           = \mark
+\let\normaltopmark        = \topmark
+\let\normalbotmark        = \botmark
+\let\normalfirstmark      = \firstmark
+\let\normalsplitbotmark   = \splitbotmark
+\let\normalsplitfirstmark = \splitfirstmark
+
+%D The next macro replaces the multiple step expansion and
+%D command name constructors of Jim. This alternative leads to
+%D a more readable source (we hope).
+
+\def\makemarknames#1%
+  {\bgroup
+   \escapechar=-1
+   \xdef\markname{\string#1}%
+   \xdef\marklist{\@@marklist@@\string#1}%
+   \egroup}
+
+%D \macros
+%D   {newmark,resetmark}
+%D
+%D A mark is defined by \type{\newmark}. At the same time,
+%D the name of the mark is added to a commalist. The
+%D three initializations were not in the original design, but
+%D make calls from outside the output routine a bit more
+%D robust.
+
+\def\definenewmark#1#2%
+  {\bgroup
+   \makemarknames{#1}%
+   #2%
+   \global\letvalue{\@@marktop@@  \markname}\empty
+   \global\letvalue{\@@markfirst@@\markname}\empty
+   \global\letvalue{\@@markbot@@  \markname}\empty
+   \setgvalue{\marklist}{\domark0{}}% beware of halfway definitions
+   \long\gdef#1{\addmarker#1}%
+   \egroup}
+
+\def\newmark#1%
+  {\definenewmark#1{\doglobal\addtocommalist\markname\allmarks}}
+
+\let\setmark\empty
+\let\resetmark\newmark
+
+%D Some more natural interfacing macros:
+
+\def\gettopmark        #1{\getvalue{\@@marktop@@  \strippedcsname#1}}
+\def\getbottommark     #1{\getvalue{\@@markbot@@  \strippedcsname#1}}
+\def\getfirstmark      #1{\getvalue{\@@markfirst@@\strippedcsname#1}}
+\def\getsplitbottommark#1{\getvalue{\@@markbot@@  \strippedcsname#1}}
+\def\getsplitfirstmark #1{\getvalue{\@@markfirst@@\strippedcsname#1}}
+
+\let\getbotmark     \getbottommark
+\let\getsplitbotmark\getsplitbottommark
+\let\getsplittopmark\getsplitfirstmark
+
+%D Don't ask me, but sometimes we need more control over
+%D updating the marks, thereby we have:
+
+\def\newpersistentmark#1% for an example see core-grd.tex
+  {\definenewmark#1\relax}
+
+%D \macros
+%D   {setmark}
+%D
+%D Setting a new mark and adding a mark to the designated
+%D list is done by \type{\addmarker}. This is an internal
+%D command, the user set a marks bij calling it's name:
+%D
+%D \starttypen
+%D \setmark\mymark{some text} % or \mymark{some text}
+%D \stoptypen
+%D
+%D Where \type{\mymark} is previously defined by
+%D \type{\newmark}.
+
+\long\def\addmarker#1#2%
+  {\bgroup
+   \makemarknames{#1}%
+   \global\advance\currentmarker by 1
+   \normalmark{\the\currentmarker}%
+   \@EA\!!toksa\@EA=\@EA\@EA\@EA{\csname\marklist\endcsname}%
+   \ifexpandmarks
+     \setxvalue{\marklist}%
+       {\the\!!toksa
+        \noexpand\domark
+        \the\currentmarker{#2}}%
+   \else
+     \!!toksb=\@EA{#2}% one level
+     \setxvalue{\marklist}%
+       {\the\!!toksa
+        \noexpand\domark
+        \the\currentmarker{\the\!!toksb}}%
+   \fi
+   \egroup}
+
+%D \macros
+%D   {getmarks,getallmarks,
+%D    getsplitmarks,getallsplitmarks}
+%D
+%D In fact, marks make only sense in the output routine. Marks
+%D are derived from their list by means of \type{\getmarks}.
+%D Only one call per mark is permitted in the output routine.
+%D Therefore, it's far more easy to get them all at once, by
+%D means of \type{\getallmarks}, which is not part of the
+%D original design.
+%D
+%D This grabbing is done by processing the list using the
+%D embedded \type{\domark} macros. When a relevant mark is
+%D found, this macro is reassigned and from then on serves
+%D in building the new list.
+
+\def\getmarks#1%
+  {\bgroup
+   \makemarknames{#1}%
+   \edef\topmarker{0\normaltopmark}%
+   \edef\botmarker{0\normalbotmark}%
+   \!!toksb={}%
+   \nofirstmarkertrue
+   \let\@fi=\fi     \let\fi=\relax
+   \let\@or=\or     \let\or=\relax
+   \let\@else=\else \let\else=\relax
+   \let\domark=\doscanmarks
+   \getvalue{\marklist}\lastmark
+   %\message{markstatus : [\the\!!toksa\the\!!toksb\the\!!toksc]}%
+   \long\setxvalue{\marklist}{\the\!!toksa\the\!!toksb\the\!!toksc}%
+   \egroup}
+
+\def\getallmarks%
+  {\processcommacommand[\allmarks]\getmarks}
+
+\def\getsplitmarks#1%
+  {\bgroup
+   \makemarknames{#1}%
+%   \@EA\let\@EA\savedmarklist\@EA=\csname\marklist\endcsname
+   \edef\topmarker{0\normalsplitfirstmark}%
+   \edef\botmarker{0\normalsplitbotmark}%
+   \!!toksb={}%
+   \nofirstmarkertrue
+   \let\@fi=\fi     \let\fi=\relax
+   \let\@or=\or     \let\or=\relax
+   \let\@else=\else \let\else=\relax
+   \let\domark=\doscanmarks
+   \getvalue{\marklist}\lastmark
+%   \@EA\global\@EA\let\csname\marklist\endcsname=\savedmarklist
+   \egroup}
+
+\def\getallsplitmarks%
+  {\processcommacommand[\allmarks]\getsplitmarks}
+
+\long\def\dodoscanmarks#1%
+  {\ifnum\scratchcounter>\topmarker\relax
+   \@else
+     \long\setgvalue{\@@marktop@@\markname}{#1}%
+   \@fi
+   \ifnum\scratchcounter>\botmarker\relax
+     \let\domark=\dorecovermarks
+     \!!toksb=\@EA{\@EA\domark\the\scratchcounter{#1}}%
+   \@else
+     \ifnofirstmarker
+       \long\setgvalue{\@@markfirst@@\markname}{#1}%
+       \ifnum\scratchcounter>\topmarker\relax
+         \nofirstmarkerfalse
+       \@fi
+     \@fi
+     \long\setgvalue{\@@markbot@@\markname}{#1}%
+     \!!toksa=\@EA{\@EA\domark\the\scratchcounter{#1}}%
+   \@fi}
+
+\def\doscanmarks%
+  {\afterassignment\dodoscanmarks\scratchcounter=}
+
+\long\def\dorecovermarks#1\lastmark%
+  {\!!toksc={\domark#1}}
+
+\def\lastmark%
+  {\!!toksc={}}
+
+%D \macros
+%D   {noninterferingmarks}
+%D
+%D Marks can interfere badly with for instance postprocessing
+%D paragraphs, for instance when we want to grab the last box
+%D using \type {\lastbox}, when at the same time using colors.
+
+\def\noninterferingmarks%
+  {\let\savednormalmark\normalmark
+   \let\noninterferingmarks\relax
+   \def\normalmark##1%
+     {\ifhmode\prewordbreak\hbox\fi{\savednormalmark{##1}}}}
+
+%D This macro is for instance used in the inline headings
+%D postprocessing, as needed when we want to make those
+%D clickable.
+
+%% \endTEX
+
+\protect \endinput 
+
+%D Right from the beginning, \CONTEXT\ supported more than one
+%D mark, using an extended version of Jim Fox multiple mark
+%D mechanism. In \ETEX\ we can however directly access more
+%D marks than we will ever need.
+
+\beginETEX \marks \topmarks \botmarks \firstmarks
+
+\let\normalmark           = \mark
+\let\normaltopmark        = \topmark
+\let\normalbotmark        = \botmark
+\let\normalfirstmark      = \firstmark
+\let\normalsplitbotmark   = \splitbotmark
+\let\normalsplitfirstmark = \splitfirstmark
+
+\let\normalmarks\marks
+
+%D The 100\% compatible solution is:
+%D
+%D \starttypen
+%D \def\@@marktop@@        {top}
+%D \def\@@markbot@@        {bot}
+%D \def\@@markfirst@@      {first}
+%D \def\@@marksplitbot@@   {splitbot}
+%D \def\@@marksplitfirst@@ {splitfirst}
+%D 
+%D \def\newmark#1% temporary 5 \cs's, will be rewritten ; global needed
+%D   {\newmarks#1%
+%D    \setxvalue{\@@marktop@@       \strippedcsname#1}{\noexpand\topmarks  \the#1 }%
+%D    \setxvalue{\@@markbot@@       \strippedcsname#1}{\noexpand\botmarks  \the#1 }%
+%D    \setxvalue{\@@markfirst@@     \strippedcsname#1}{\noexpand\firstmarks\the#1 }%
+%D    \setxvalue{\@@marksplitbot@@  \strippedcsname#1}{\noexpand\splitbotmarks  \the#1 }%
+%D    \setxvalue{\@@marksplitfirst@@\strippedcsname#1}{\noexpand\splitfirstmarks\the#1 }%
+%D    \xdef#1{\noexpand\donormalmarks{\the#1}}}
+%D
+%D \def\gettopmark        #1{\getvalue{\@@marktop@@       \strippedcsname#1}}
+%D \def\getbottommark     #1{\getvalue{\@@markbot@@       \strippedcsname#1}}
+%D \def\getfirstmark      #1{\getvalue{\@@markfirst@@     \strippedcsname#1}}
+%D \def\getsplitbottommark#1{\getvalue{\@@marksplitbot@@  \strippedcsname#1}}
+%D \def\getsplitfirstmark #1{\getvalue{\@@marksplitfirst@@\strippedcsname#1}}
+%D
+%D \def\getsplitmarks#1%
+%D   {\setvalue{\@@markbot@@\strippedcsname#1}%
+%D      {\getvalue{\@@marksplitbot@@\strippedcsname#1}}%
+%D    \setvalue{\@@marktop@@\strippedcsname#1}%
+%D      {\getvalue{\@@marksplitfirst@@\strippedcsname#1}}%
+%D    \setvalue{\@@markfirst@@\strippedcsname#1}%
+%D      {\getvalue{\@@marksplitfirst@@\strippedcsname#1}}}
+%D
+%D \def\noninterferingmarks%
+%D   {\let\saveddonormalmarks\donormalmarks
+%D    \let\noninterferingmarks\relax
+%D    \long\def\donormalmarks##1##2%
+%D      {\ifhmode\prewordbreak\hbox\fi{\saveddonormalmarks{##1}{##2}}}}
+%D 
+%D \long\def\donormalmarks#1#2%
+%D   {\bgroup
+%D    \scratchcounter=#1\relax
+%D    \ifexpandmarks
+%D      \expanded{\normalmarks\scratchcounter{#2}}%
+%D    \else
+%D      \normalmarks\scratchcounter{#2}%
+%D    \fi
+%D    \egroup}
+%D
+%D \let\setmark\empty
+%D \def\resetmark#1{#1{}}
+%D \stoptypen
+%D
+%D However, I prefer the less \type{\cs} hungry ones. Beware, 
+%D these ones (and the next) do no longer support direct marks. 
+%D 
+%D \starttypen 
+%D \newif\ifexpandmarks   \expandmarkstrue
+%D 
+%D \let\newmark           \newmarks
+%D \let\gettopmark        \topmarks
+%D \let\getbottommark     \botmarks
+%D \let\getfirstmark      \firstmarks
+%D \let\getsplitbottommark\splitbotmarks
+%D \let\getsplitfirstmark \splitfirstmarks
+%D 
+%D \let\getbotmark        \botmarks
+%D \let\getsplitbotmark   \splitbotmarks
+%D \let\getsplittopmark   \splitfirstmarks
+%D 
+%D \long\def\setmark#1#2%
+%D   {\ifexpandmarks
+%D      \expanded{\normalmarks#1{#2}}%
+%D    \else
+%D      \normalmarks#1{#2}%
+%D    \fi}
+%D \stoptypen
+
+%D Resetting marks in not compatible with the old method. 
+%D Here a node is inserted, which can interfere badly. In 
+%D fact, a real \type {\clearmarks\name} is needed. 
+%D
+%D \starttypen 
+%D \def\resetmark#1% 
+%D   {\marks#1{}}
+%D \stoptypen
+
+%D A possible macro solution is presented here. When discussing
+%D \type {\clearmarks} on the \ETEX\ discussion list, Chris
+%D Rowley suggested to use a reset flag. Although suitable, a
+%D more natural low level solution would be better. So, for the
+%D moment, we could end up with a solution similar to the macro 
+%D based multiple marks as implemented before. Alas, this 
+%D alternative is useless too, because it does not synchronize 
+%D well with previous values. 
+
+\def\@m@{@m@}
+
+\def\newmark#1%
+  {\newmarks#1%
+   \expandafter\gdef\csname\@m@\number#1\endcsname{0}}
+
+\long\def\setmark#1#2%
+  {\expandafter\gdef\csname\@m@\number#1\endcsname{1}%
+   \ifexpandmarks
+     \expanded{\normalmarks#1{#2}}%
+   \else
+     \normalmarks#1{#2}%
+   \fi}
+
+\def\gettopmark        {\getsomemark\topmarks}
+\def\getbottommark     {\getsomemark\botmarks}
+\def\getfirstmark      {\getsomemark\firstmarks}
+\def\getsplitbottommark{\getsomemark\splitbotmarks}
+\def\getsplitfirstmark {\getsomemark\splitfirstmarks}
+
+\def\getsomemark#1#2%
+  {\ifnum\csname\@m@\number#2\endcsname=1 #1#2\fi}
+
+\def\clearmarks#1%
+  {\expandafter\gdef\csname\@m@\number#1\endcsname{0}}
+
+\def\resetmark% 
+  {\clearmarks}
+
+\let\getbotmark      \getbottommark
+\let\getsplitbotmark \getsplitbottommark
+\let\getsplittopmark \getsplitfirstmark
+
+%D Hm. 
+
+\def\noninterferingmarks%
+  {\let\savedsetmark\setmark
+   \let\noninterferingmarks\relax
+   \long\def\setmark##1##2%
+     {\ifhmode\prewordbreak\hbox\fi{\savedsetmark{##1}{##2}}}}
+
+\let\getmarks        \gobbleoneargument
+\let\getallmarks     \relax
+\let\getsplitmarks   \gobbleoneargument
+\let\getallsplitmarks\relax
+
+\let\newpersistentmark \newmark          % checken
+\newif\ifnofirstmarker                   % checken
+
+\endETEX
+
+%D For those who want to know the story behind resetting 
+%D marks, here are some examples of interference 
+%D 
+%D \startbuffer
+%D \setbox0=\vbox{test}
+%D \unvbox0\setbox0=\lastbox
+%D \ruledhbox{\unhbox0}
+%D \stopbuffer
+%D
+%D \typebuffer\blanko\haalbuffer\blanko
+%D
+%D \startbuffer
+%D \setbox0=\vbox{test\normalmark{}}
+%D \unvbox0\setbox0=\lastbox
+%D \ruledhbox{\unhbox0}
+%D \stopbuffer
+%D
+%D \typebuffer\blanko\haalbuffer\blanko
+%D
+%D \startbuffer
+%D \setbox0=\vbox{test\hbox{\normalmark{}}}
+%D \unvbox0\setbox0=\lastbox
+%D \ruledhbox{\unhbox0}
+%D \stopbuffer
+%D
+%D \typebuffer\blanko\haalbuffer\blanko
+%D
+%D \startbuffer
+%D \setbox0=\vbox{test\vbox{\normalmark{}}}
+%D \unvbox0\setbox0=\lastbox
+%D \ruledhbox{\unhbox0}
+%D \stopbuffer
+%D
+%D \typebuffer\blanko\haalbuffer\blanko
+
+%D Because we used an indirect call to the mark mechanism 
+%D we can redefine the original \type{\mark} command.
+
+\beginTEX
+
+\newmark\mark
+
+\endTEX
+
+%D One final advice. Use marks with care. When used in globally
+%D assigned boxes, the list can grow quite big, and processing
+%D can slow down considerably. This drawback is removed in 
+%D \ETEX\ mode.  
+
+\protect
+
+\endinput

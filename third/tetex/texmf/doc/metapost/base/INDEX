@@ -1,0 +1,33 @@
+INDEX of texmf/doc/metapost:
+============================
+
+Manuals:
+--------
+mpman.ps	- John D. Hobby: "A User's Manual for MetaPost" 
+mpman.dvi	  (AT&T Bell Labs, CSTR 162)
+mpgraph.ps	- John D. Hobby: "Drawing Graphs with MetaPost"
+mpgraph.dvi	  (AT&T Bell Labs, CSTR 164)
+
+manfig.mp	- MetaPost source of figures in mpman.ps
+mpgraph.mp	- MetaPost source of figures in mpgraph.ps
+
+agepop91.d	- data files used in plots in mpgraph.mp
+agepopm.d
+matmul.d
+lead.d
+timepop.d
+countries.d
+energy.d
+
+Troff example:
+--------------
+grdemo.ps 	- example document: "MetaPost with groff"
+grdemo.ms	- groff -mgs source (adapted for tmac.pspic)
+
+demo.ms		_ troff -ms source (requires tmac.pictures,
+		  which is not to be found outside Bell Labs)
+
+figs.mp		- MetaPost source of figures in demo.ps
+figs.1		  (needs to be processed with: mp -T figs,
+		  which may work if you have a SYSV-ish troff)
+

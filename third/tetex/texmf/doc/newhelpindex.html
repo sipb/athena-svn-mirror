@@ -1,0 +1,828 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html> <head>
+    <title>Guide to teTeX Documentation</title>
+  </head>
+
+  <body>
+    <h1><img src="tetex.gif" alt="teTeX"> A Documentation Guide</h1>
+
+    This page is an attempt at a guided tour around the huge amount of TeX
+    and LaTeX documentation which comes as part of teT<sub>E</sub>X, the
+    unix TeX and LaTeX system assembled by Thomas Esser.  It is
+    contributed by <a href="mailto:Keith.Refson@earth.ox.ac.uk">Keith
+      Refson</a> and all comments, suggestions and flames should be directed
+    to <a href="mailto:Keith.Refson@earth.ox.ac.uk">him</a>.  Queries
+    about installing and maintaining the teT<sub>E</sub>X installation
+    itself should be directed to the <em>teT<sub>E</sub>X mailing
+      list</em>: (See the <a
+      href="http://www.tug.org/tetex/">teT<sub>E</sub>X Homepage</a> for
+    instructions) --- but check the <a
+      href="tetex/teTeX-FAQ">frequently-asked questions</a> list first.
+    Questions about <em>using</em> LaTeX, TeX etc are best posted to the
+    usenet newsgroup <a href="news:comp.text.tex">comp.text.tex</a> where
+    they will receive attention from a worldwide readership.
+
+    <p>Much of the documentation is in the form of dvi and PostScript
+      files which should display using <em>xdvi</em> or ghostscript front
+      ends such as <A
+	HREF="http://www.cs.wisc.edu/~ghost/ghostview/index.html">ghostview</A>
+      or <A HREF="http://wwwthep.physik.uni-mainz.de/~plass/gv/">gv</A>
+      from a properly configured web browser.  Alternatively you may
+      download and print them. The original LaTeX sources can be found in
+      the documentation tree which is rooted at <a
+	href="./">$TEXMFMAIN/doc</a>.  The command <kbd>texdoc</kbd>
+      <em>[package-name]</em> will attempt to display documentation for that
+      package from the shell command line.
+
+    <h2>What's New in teT<sub>E</sub>X 1.0</h2>
+    <ul>
+      <li>New TeX-like programs, <a href="#newprogs">e-tex, omega,
+	  pdftex</a> and their LaTeX variants.
+      <li>New format <a href="#newprogs">ConTeXt</a>
+      <li>Computer Modern fonts in Adobe Postscript Type 1 form (courtesy
+	of Blue Sky Research.) See the entry for <a href="#dvips">dvips</a>.
+      <li>Based on Web2C 7.3.  This allows the size of TeX's tables to
+	be set in the configuration file <a
+	  href="../web2c/texmf.cnf">texmf.cnf</a> and easily adjusted.
+      <li>Updated release of LaTeX and many of its packages. See the
+	<a href="latex/base/">release notes</a>.
+      <li>Xdvi is now hypertext-capable when. Especially useful in
+	conjunction with the new <a href="#hyperref">hyperref</a>
+	package. 
+      <li>Many new packages including <a href="#bm">bm</a>,
+	<a href="#colortbl">colortbl</a>,
+	<a href="#fancyvrb">fancyvrb</a>, <a href="#hyperref">hyperref</a>,
+	<a href="#prettyref">prettyref</a>, <a href="#picins">picins</a>, <a
+	  href="#sidecap">sidecap</a>, <a href="#footmisc">footmisc</a>, and
+	the <a href="#mdwtools">MDW tools</a>.
+      <li>T2 font encoding, support for <a
+      href="#cyrillic">Cyrillic</a> and LH fonts.
+      <li>Better support for <a name="newfonts">installing new fonts</a>
+    </ul>
+
+
+    <h2>Guides to TeX and LaTeX</h2>
+
+    <P>
+      LaTeX2e is the recommended version of LaTeX, and the older version
+      LaTeX 2.09 is obsolete.  If you know LaTeX2.09 read about <a
+	href="latex/base/usrguide.dvi">LaTeX2e vs LaTeX2.09</a> and why you
+      should switch.  There are two manuals describing the LaTeX language
+      itself, which may at a pinch substitute for a book,  a concise manual
+      entitled <a href="latex/general/essential.dvi">Essential LaTeX</a> an a
+      fuller "not so short" <a href="latex/general/lshort.dvi">Introduction
+	to LaTeX2e</a>. There is also a <a
+	href="latex/latex2e-html/index.html">full reference manual</a>
+      of LaTeX2e commands -- ideal for looking up a particular piece of
+      formatting while writing a document (also available in <a
+	href="latex/general/latex2e.dvi">dvi</a> format) and a table of
+      <a href="latex/general/symbols.dvi">available mathematical symbols</a>.
+
+    <P>Useful information in a questions and answers format is provided by
+      the UK TeX users group <a
+	href="help/faq/uktug-faq/index.html">Frequently Asked Questions</a>
+      list.
+
+    <P> Most LaTeX books refer to a <em>local guide</em> to describe
+      operating-system and implementation-dependent aspects, notably the
+      commands to invoke LaTeX and how to preview and print documents.  The
+      document <a href="latex/general/guide.dvi">Running LaTeX and utilities
+	on a Unix system</a> (also in <a
+	href="latex/general/guide.ps">PostScript</a> form) is a good
+      introduction to most of these topics.
+
+    <P>There are <em>errata lists</em> available for two well-known books,
+      the <a href="latex/base/manual.err">LaTeX Book</a> and the <a
+	href="latex/base/compan.err">LaTeX Companion</a>.  (A complete <a
+	href="ftp://ftp.tex.ac.uk/tex-archive/info/companion-rev/ch8.ps">revision of
+	Chapter 8</a> of <cite>The LaTeX Companion</cite> is also available
+      from CTAN courtesy of the publisher, Addison-Wesley.)
+
+    <h2>Graphics and Colour</h2> <P>A very common requirement is to
+      include some kind of graphics as an external file (usually PostScript)
+      into a LaTeX document.  The definitive manual on how to do this is
+      Keith Reckdahl's excellent <a href="latex/graphics/epslatex.ps">Using
+	EPS graphics in LaTeX2e</a>.  The document 
+
+      <a href="latex/graphics/grfguide.ps">Packages in the <em>graphics</em>
+	bundle</a><a name="graphics">&nbsp;</a> is the documentation on the
+      recommended LaTeX2e <em>graphics</em> package, which includes
+      information on how to use colours in the output.
+
+    <P>A very powerful additional capability is provided by the <a
+	href="latex/psfrag/pfgguide.ps">psfrag</a> system.  This allows you to
+      import PostScript figures from any other package, but use LaTeX's
+      power for all of the mathematical and textual annotations.  (But note
+      that <em>xfig</em>(1) allows you to do this anyway).
+
+
+    <h2>Graph and Diagram Drawing</h2>
+
+    Probably the best way to draw a simple diagram is to use the
+    <em>xfig</em> program (see the unix man page for details). However
+    there are programmatic ways for more sophisticated work.  These are
+    <dl>
+      <dt><a href="latex/eepic/eepic.dvi">eepic</a>
+      <dd>A macro package for a much enhanced LaTeX "picture mode". Requires driver support
+	for tpic <kbd>\special</kbd>s.  Some drawing programs such as
+	<em>xfig</em> can write their output as <b>eepic</b> macros.
+      <dt><a href="latex/styles/curves.dvi">curves</a>
+      <dd>An enhancement of LaTeX's picture mode to improve curve drawing.
+      <dt><a href="generic/xypic/xyguide.ps">xypic</a>
+      <dd>there is also a <a href="generic/xypic/xyrefer.ps">reference manual</a>.
+      <dt><a href="generic/texdraw/texdraw.ps">texdraw</a>
+      <dd>There are examples in the directory <a
+	  href="generic/texdraw/">generic/texdraw/</a>.
+      <dt><a href="latex/carlisle/pspicture.dvi">pspicture</a> 
+      <dd>Extend LaTeX <kbd>picture</kbd> drawing environment using PostScript \specials.
+      <dt>Pstricks
+      <dd>a set of macros for performing fancy twiddles
+	using PostScript, such as drawing of geometrical objects, diagrams,
+	fancy boxes, grayscales etc.  There is a <em>User Guide</em> (
+	<a href="generic/pstricks/obsolete/pst-usr1.ps">part 1</a>,
+	<a href="generic/pstricks/obsolete/pst-usr2.ps">part 2</a>,
+	<a href="generic/pstricks/obsolete/pst-usr3.ps">part 3</a>,
+	<a href="generic/pstricks/obsolete/pst-usr4.ps">part 4</a>),
+	and a <a href="generic/pstricks/obsolete/pst-quik.ps">quick
+	  reference</a> card. 
+      <dt><em>METAPOST</em>
+      <dd>a development of Donald Knuth's METAFONT program
+	which produces PostScript rendition of fonts, diagrams etc rather than
+	bitmapped versions. Documentation includes a <a
+	  href="metapost/base/mpman.ps">manual</a> and a guide to <a
+	  href="metapost/base/mpgraph.ps">plotting graphs</a> (<a
+	  href="metapost/base/mpgraph.dvi">dvi</a>)  using <EM>METAPOST</EM>.
+      <dt><a href="latex/styles/treedoc.dvi">trees</a>
+      <dd>Macros for drawing "tree" diagrams.
+      <dt><strong>overpic</strong>
+      <dd>This package defines the <kbd>overpic</kbd> environment for
+	overlaying a picture environment on top of an included graphic
+	defined by an includegraphics command.
+	Examples in
+	<a href="latex/overpic/opic-abs.tex">opic-abs.tex</a> and
+	<a href="latex/overpic/opic-rel.tex">opic-rel.tex</a>.
+    </dl>
+
+
+
+    <h2>LaTeX Packages</h2> <p> These packages control the visual
+      appearance and formatting of LaTeX documents. Many of them are
+      described in the book <a
+	href="http://cseng.awl.com/bookdetail.qry?ISBN=0-201-54199-8&ptype=0"><cite>The
+	  LaTeX Companion</cite></a> and they are grouped here in accordance with
+      the headings defined there.  
+
+    <p>
+      This installation contains the packages listed below.  Many more
+      have been written to provide additional capabilities and are
+      available for download from the Comprehensive TeX Archive
+      Network server, abbreviated to <a
+      href="http://www.ucc.ie/cgi-bin/ctan">CTAN</a>.  Here is the <a
+      href="help/Catalogue/catalogue.html">Catalogue</a> of packages
+      available from CTAN.  LaTeX itself and most of these packages
+      are released under the <a href="latex/base/lppl.txt">LaTeX
+      Project Public License</a>.
+
+    <h3>Document Structure</h3>
+    <dl>
+      <dt><a href="latex/tools/xr.dvi">xr</a>
+      <dd> Page references to external documents.
+      <dt><a href="latex/tools/varioref.dvi">varioref</a>
+      <dd> "Intelligent" page references.
+      <dt><a href="latex/styles/lastpage.dvi">lastpage</a>
+      <dd> Reference the number of pages in your LaTeX document (as in a
+	page footer that says: Page N of M)
+      <dt><a href="latex/hyperref/manual.pdf">hyperref</a><a
+	  name="hyperref">&nbsp;</a> 
+      <dd>Create hypertext documents in dvi, postscript or PDF form.
+	Contents listings, references, bibliographic citations and URLs are
+	converted to hyperlinks.
+      <dt><a href="latex/dinbrief/dinbrief.dvi">dinbrief</a>
+      <dd>The <kbd>dinbrief</kbd> document class (in German).
+      <dt><a href="generic/styles/gerdoc.dvi">german</a>
+      <dd>The <kbd>german</kbd> and <kbd>ngerman</kbd> document classes.
+      <dt><a href="latex/ntgclass/ntgclass.dvi">ntgclass</a>
+      <dd>Dutch document classes.
+      <dt><a href="latex/minitoc/minitoc.dvi">minitoc</a>
+      <dd>Package to add a mini-"table of contents" to each chapter.
+	<a href="latex/minitoc/mini-art.tex">Example 1</a>,
+	<a href="latex/minitoc/minitoc-ex.tex">example 2</a>.
+      <dt><a href="latex/styles/titlesec.dvi">titlesec</a> 
+      <dd>Customize the sectioning format of a document. 
+      <dt><a href="latex/styles/sectsty.dvi">sectsty</a> 
+      <dd>Macros to customize sectional headings (section, chapter etc)
+      <dt><a href="latex/styles/tocloft.dvi">tocloft</a> 
+      <dd>Customize the table of contents or lists of figures or tables.
+      <dt><a href="latex/tocbibind/tocbibind.dvi">tocbibind</a>  
+      <dd>Add document elements such as a bibliography or index to the table of contents.
+    </dl>
+    <h3>Formatting Tools</h3>
+    <dl>
+      <dt><a href="latex/tools/bm.dvi">bm</a><a name="bm">&nbsp;</a>
+      <dd>The <strong>right</strong> way to make bold mathematical symbols.
+      <dt><a href="latex/tools/xspace.dvi">xspace</a>
+      <dd>Define commands that don't eat spaces.  
+      <dt><a href="latex/tools/verbatim.dvi">verbatim</a><a
+	  name="verbatim">&nbsp;</a>
+      <dd>A more robust implementation of the <kbd>verbatim</kbd> environment. 
+      <dt><a href="latex/styles/moreverb.dvi">moreverb</a>
+      <dd>An extension to the <a href="#verbatim">verbatim</a> package that
+	can handle <kbd>TAB</kbd> expansion, can number lines in an
+	included file, can produce boxed verbatims, etc.
+      <dt><a href="latex/fancyvrb/fancyvrb.ps">fancyvrb</a><a
+	  name="fancyvrb">&nbsp;</a>
+      <dd>A comprehensive and customizable re-implementation of the
+	<kbd>verbatim</kbd> environment.  Allows specification of fonts,
+	colours <em>etc.</em>, line numbering, framing, <kbd>TAB</kbd>
+	handling and conditional processing. 
+      <dt><a href="latex/fancyvrb/fvrb-ex.dvi">fvrb-ex</a>
+      <dd>An extension to <a href="#fancyvrb">fancyvrb</a>.
+      <dt><a href="latex/styles/prettyref.dvi">prettyref</a>
+	<a name="prettyref">&nbsp;</a> 
+      <dd>Improved formatting of references.
+      <dt><a href="latex/tools/enumerate.dvi">enumerate</a>
+      <dd>Adds an optional argument to the enumerate environment which
+	determines the style in which the counter is printed.
+      <dt><kbd>comma</kbd>
+      <dd><kbd>\usepackage{comma}</kbd> defines the command
+	<kbd>\commaform{<em>number</em>}</kbd> which typesets
+	<em>number</em> with a comma every third digit. If you want
+	something other than a comma, for instance a thin 
+	space, or a full word space, redefine <kbd>\commaformtoken</kbd>
+	for instance <kbd>\renewcommand\commaformtoken{\,}</kbd>.
+      <dt><a href="latex/tools/indentfirst.dvi">indentfirst</a>
+      <dd>Indent first paragraph after section header.
+      <dt><a href="latex/styles/algorithms.dvi">algorithms</a>
+      <dd>Defines a floating algorithm environment designed to work with
+	the algorithmic package. 
+      <dt><a href="latex/program/program.txt">program</a>
+      <dd>This package is for typesetting computer programs and
+	algorithms. There is an example in
+	<a href="latex/program/program-demo.tex">program-demo.tex</a>.
+      <dt><a href="latex/styles/listings.dvi">listings</a> 
+      <dd>Typeset source code listings.
+      <dt><a href="latex/styles/textfit.dvi">textfit</a>
+      <dd>Package to support fitting of text to a given width of height
+	by scaling the font. 
+      <dt><a href="latex/carlisle/typehtml.dvi">typehtml</a>
+      <dd>Typeset HTML (i.e., World Wide Web documents) directly from
+	LaTeX.
+      <dt><a href="latex/carlisle/plain.txt">plain</a>
+      <dd>Allows the inclusion of plain tex markup in a LaTeX document. It
+	defines the LaTeX environment <kbd>plain</kbd> which is used to
+	enclose the plain tex to be included. 
+      <dt><a href="latex/natbib/natbib.dvi">natbib</a><a name="natbib">&nbsp;</a>
+      <dd>Customizable citations.  Can do almost any variant of
+	numerical or author-date style citations.  There's also a <a
+	  href="latex/natbib/natnotes.dvi">quick reference</a>
+      <dt><a href="latex/natbib/bibentry.dvi">bibentry</a>
+      <dd>Insert formatted bibliographic references inline in the text.
+      <dt><a href="latex/styles/footbib.dvi">footbib</a> 
+      <dd>Set bibliographic references as footnotes.
+      <dd><a href="latex/styles/paralist.dvi">paralist</a>
+      <dt>Typeset lists within paragraphs.
+      <dt><a href="latex/mdwtools/README">MDW tools</a><a
+	  name="mdwtools">&nbsp;</a> 
+      <dd>A collection of packages written by Mark Wooding
+	<dl>
+	  <dt><a href="latex/mdwtools/at.dvi">at.sty</a>
+	  <dd>Allows you to use `@' as a sort of `command-introducing'
+	    character, a bit like `\' is already.
+	  <dt><a href="latex/mdwtools/cmtt.dvi">cmtt.sty</a>
+	  <dd>Provides an `mTT' encoding for the Computer Modern
+	    Typewriter font, which solves lots of messy problems.
+	  <dt><a href="latex/mdwtools/doafter.dvi">doafter.sty</a>
+	  <dd>Provides a TeX programmer's utility \doafter &lt;token&gt;
+	    &lt;group&gt; which does the &lt;token&gt; after the group
+	    is complete, including any \aftergroup things.
+	  <dt><a href="latex/mdwtools/mdwtab.dvi">mathenv.sty</a>
+	  <dd>A collection of mathematical environments with
+	    a theme of aligning things in columns.
+	  <dt><a href="latex/mdwtools/mdwmath.dvi">mdwmath.sty</a>
+	  <dd>Contains a few trivial definitions for mathematical
+	    things.  The main thing is that the \sqrt command for
+	    doing square roots has been improved
+	  <dt><a href="latex/mdwtools/mdwlist.dvi">mdwlist.sty</a>
+	  <dd>Various list related environments.  There's a more
+	    versatile `description' environment, and some stuff for
+	    making `compacted' lists (with no extra space between
+	    items).
+	  <dt><a href="latex/mdwtools/mdwtab.dvi">mdwtab.sty</a>
+	  <dd>A complete ground-up rewrite of LaTeX's `tabular' and
+	    `array' environments.  Has lots of advantages over
+	    the standard version, and over the version in `array.sty'.
+	  <dt><a href="latex/mdwtools/footnote.dvi">footnote.sty</a>
+	  <dd>Provides commands for saving executing footnotes.
+	  <dt><a href="latex/mdwtools/sverb.dvi">sverb.sty</a>
+	  <dd>A bunch of macros for doing verbatim things.
+	  <dt><a href="latex/mdwtools/syntax.dvi">syntax.sty</a>
+	  <dd>A load of commands for describing syntax.  There's an
+	    environment for typesetting BNF grammars. 
+	</dl>
+      <dt><a href="latex/acronym/acronym.dvi">acronym</a>	
+      <dd>Make sure all acronyms used are spelt out at least once.
+      <dt><a href="latex/styles/hyphenat.dvi">hyphenat</a>
+      <dd>Improved control over hyphenation.
+      <dt><a href="latex/ms/ragged2e.dvi">ragged2e</a>
+      <dd>Provides commands and environments for setting ragged text
+	which are easy to configure to allow hyphenation.
+      <dt><a href="latex/nomencl/nomencl.dvi">nomencl</a>
+      <dd>Package for preparing tables of nomenclature or glossaries.
+      <dt><a href="latex/styles/SIunits.dvi">SIunits</a> 
+      <dd>Macros for typesetting SI units.
+      <dt><a href="latex/units/units.dvi">units</a>
+      <dd>Typesetting of physical/metric units.
+      <dt><a href="latex/styles/soul.dvi">soul</a> 
+      <dd>Typeset text in a spaced-out or underlined fashion.
+    </dl>
+    <h3>Page Layout</h3>
+    <dl>
+      <dt><a href="latex/geometry/geometry.dvi">geometry</a><a
+	  name="geometry">&nbsp;</a>
+      <dd>Customize page layout (page sizes) using an easy and flexible
+	user interface.  Example  <a
+	  href="latex/geometry/gtest.tex">gtest.tex</a> generates
+	a testpage.
+      <dt><kbd>fancyheadings</kbd>
+      <dd>This package has been renamed to <a
+	  href="#fancyhdr">fancyhdr</a>. 
+      <dt><a href="latex/fancyhdr/fancyhdr.dvi">fancyhdr</a><a name="fancyhdr">&nbsp;</a>
+      <dd>Support for sophisticated control of page headers and footers
+	in LaTeX2e. It supercedes fancyheadings.
+      <dt><a href="latex/footmisc/footmisc.dvi">footmisc</a><a
+	  name="footmisc">&nbsp;</a> 
+      <dd>Customize footnote numbering, style and presentation. 
+      <dt><a href="latex/styles/footnpag-user.dvi">footnpag</a>
+      <dd>Allows footnotes on individual pages to be numbered from 1,
+	rather than being numbered sequentially through the document.
+      <dt><kbd>nopageno</kbd>
+      <dd><kbd>\usepackage{nopageno}</kbd> suppresses <strong>all</strong>
+	page numbering including that on title and frontmatter pages.
+      <dt><a href="latex/styles/chappg.txt">chappg</a>
+      <dd>The <kbd>chappg</kbd> package causes pages to be numbered
+	in the style <em>chapter</em>-<em>pagenumber</em>. So the pages
+	of chapter 3 will be numbered 3-1, 3-2, ..., and the pages of
+	appendix B will be numbered B-1, B-2, ...
+      <dt><a href="latex/tools/layout.dvi">layout</a>
+      <dd>Generate a test page showing the page layout.
+      <dt><a href="latex/styles/layman.dvi">layouts</a> 
+      <dd>Draw display of page layout parameters.
+      <dt><a href="latex/styles/a4.dvi">a4</a>
+      <dd>Mostly superceded by LaTeX2e support for a4 paper but defines
+	the extra option of widemargins. The <a
+	  href="#geometry">geometry</a> package is much
+	more flexible.
+      <dt><a href="latex/scale/scale.dvi">scale</a>
+      <dd>Rescales an entire document by 1.414 for photographic reduction.
+      <dt><a href="latex/styles/anysize.dvi">anysize</a>
+      <dd>Another package to set page sizes. Superceded by <a
+	  href="#geometry">geometry</a>.
+      <dt><a href="latex/carlisle/fix2col.dvi">fix2col</a>
+      <dd>Improves some deficiencies in LaTeX's built-in two column output.
+      <dt><a href="latex/tools/multicol.dvi">multicol</a>
+      <dd>LaTeX package to mix single and multiple columns. Allows you
+	to shift between two and one columns anywhere.
+      <dt><a href="latex/ms/multitoc.dvi">multitoc.dvi</a>
+      <dd>Typeset tables of contents and lists of figures and tables
+	in multi-column mode.
+      <dt><a href="latex/tools/ftnright.dvi">ftnright</a>
+      <dd>Customize placement of footnotes in two column documents.
+      <dt><a href="latex/styles/picinpar.dvi">picinpar</a>
+      <dd>Insert pictures into paragraphs. (NOTE: Piet van Oostrum does
+	not recommend this package. <a href="#picins">Picins</a> is
+	recommended instead. 
+      <dt><a href="latex/styles/picins.txt">picins</a><a name="picins">&nbsp;</a>
+      <dd>Insert pictures into paragraphs.
+      <dt><a href="latex/rotating/rotating.dvi">rotating</a><a name="rotating">&nbsp;</a>
+      <dd>Environment to rotate text, figures etc. There are examples, as
+	<a href="latex/rotating/examples.tex">LaTeX</a> source and
+	<a href="latex/rotating/examples.dvi">dvi</a> or 
+	<a href="latex/rotating/examples.ps">PostScript</a> output.
+      <dt><a href="latex/ms/eso-pic.dvi">eso-pic</a>
+      <dd>This package makes it easy to add some picture commands to every page.
+    </dl>
+    <h3>Modifying document appearance</h3>
+    <dl>
+      <dt><a href="latex/tools/showkeys.dvi">showkeys</a>
+      <dd>Print label, ref, cite and bib keys.
+      <dt><a href="latex/showlabels/showlabels.dvi">showlabels</a>
+      <dd>Print <kbd>\label</kbd> arguments or equation numbers in margin
+	at point of definition.
+      <dt><a href="latex/changebar/changebar.dvi">changebar</a>
+      <dd>Add "change bars" in a document margin using dvi \specials.
+      <dt><a href="latex/styles/crop.dvi">crop</a> 
+      <dd>Print crop marks.
+      <dt><a href="latex/draftcopy/draftcopy.dvi">draftcopy</a>
+      <dd>Overprint <kbd>DRAFT</kbd> on each page of document to
+	indicate draft copy. The directory
+	<a href="latex/draftcopy">latex/draftcopy/</a> has a number of
+	examples.
+      <dt><a href="latex/ms/count1to.dvi">count1to</a>
+      <dd>Sets some new counters for section selection.
+      <dt><a href="latex/ms/prelim2e.dvi">prelim2e.dvi</a>
+      <dd>Allows marking of preliminary versions of a document in the
+	output. 
+      <dt><a href="pdftex/thumbpdf/readme.txt">thumbpdf</a> 
+      <dd>Support of thumbnails with pdfTeX, plain/LaTeX formats.
+    </dl>
+
+    <h3>Tables</h3>
+    <dl>
+      <dt><a href="latex/tools/array.dvi">array</a>
+      <dd>An extended implementation of the array and tabular
+	environments which implements options to format columns. 
+      <dt><a href="latex/tools/longtable.dvi">longtable</a>
+      <dd>Support for tables longer than a page
+      <dt><a href="latex/tools/delarray.dvi">delarray</a>
+      <dd>Add delimiters (parentheses etc.) around arrays.
+      <dt><a href="latex/supertab/supertabular.dvi">supertabular</a>
+      <dd>A multi-page tables package. 
+      <dt><a href="latex/tools/dcolumn.dvi">dcolumn</a>
+      <dd>Align on the decimal point of numbers in tabulars. 
+      <dt><a href="latex/tools/hhline.dvi">hhline</a>
+      <dd>Better horizontal lines in tabulars and arrays. 
+      <dt><a href="latex/tools/tabularx.dvi">tabularx</a>
+      <dd>Tabulars that widen automatically. 
+      <dt><a href="latex/carlisle/ltxtable.dvi">ltxtable</a>
+      <dd>Longtable combined with tabularx.
+      <dt><a href="latex/carlisle/colortbl.ps">colortbl</a><a name="colortbl">&nbsp;</a>
+      <dd>Add colour to LaTeX tables.
+      <dt><a href="latex/booktabs/booktabs.dvi">booktabs</a>
+      <dd>A package to lay out tables in high-quality (according to the
+	author's opinion) book form. 
+      <dt><a href="latex/styles/slashbox.tex">slashbox</a> 
+      <dd>Typeset a box with a diagonal divider for table headings.
+    </dl>
+    <h3>Floats</h3>
+    <em>Floats</em> are environments like <kbd>figure</kbd> and
+    <kbd>table</kbd> which move text <em>etc</em> around in the document.
+
+    <dl>
+      <dt><a href="latex/tools/afterpage.dvi">afterpage</a>
+      <dd>Implements a command that causes the commands specified in its
+	argument to be expanded after the current page is
+	output. Useful to flush floats, for example 
+      <dt><a href="latex/styles/float.dvi">float</a><a name="float">&nbsp;</a>
+      <dd>Improves the interface for defining floating objects such as
+	figures and tables. Introduces the boxed float and the ruled float.
+      <dt><a href="latex/styles/fltpage.dvi">fltpage</a> 
+      <dd>Put captions to floats on neighbouring page if space is tight.
+      <dt><a href="latex/styles/subfigure.dvi">subfigure</a>
+      <dd>Figures divided into subfigures. 
+      <dt><a href="latex/styles/endfloat.dvi">endfloat</a>
+      <dd>Place all figures on pages by themselves at the end of the document.
+      <dt><a href="latex/styles/placeins.txt">placeins</a>
+      <dd>Keeps floats `in their place', preventing them from
+	floating past a <kbd>\FloatBarrier</kbd> command into another
+	section. 
+      <dt><a href="latex/styles/caption.dvi">caption</a>
+      <dd>Extends caption capabilities for figures and tables, such as
+	the caption width, style, font.
+      <dt><a href="latex/sidecap/sidecap.dvi">sidecap</a><a
+	  name="sidecap">&nbsp;</a> 
+      <dd>Defines new LaTeX environments called SCfigure and SCtable
+	(analogous to figure and table), to typeset captions sideways.
+	leftcaption and rightcaption.
+      <dt><a href="latex/floatflt/floatflt.dvi">floatflt</a> 
+      <dd>Float text around figures and tables which do not span the
+      full width of a page. This is an improved version of floatfig.
+	<a href="latex/floatflt/floatexm.dvi">Examples</a>, latex 
+	<a href="latex/floatflt/floatexm.tex">source</a>,precursor package
+	<a href="latex/floatflt/floatfge.dvi">floatfig</a>.
+      <dt><a href="latex/rotfloat/rotfloat.dvi">rotfloat</a>
+      <dd>Combines <a href="#rotating"><kbd>rotating</kbd></a> package
+	with enhanced float facilities of <a href="#float"><kbd>float</kbd></a>.
+	Examples:
+	<a href="latex/rotfloat/examples.tex">LaTeX</a> source and
+	<a href="latex/rotfloat/examples.ps">output</a>.
+    </dl>
+
+    <h3>Fonts and Supporting Packages</h3> In addition to the
+    preinstalled fonts, see the section on using <a
+    href="fontinst/base/fontinst.dvi">fontinst</a><a
+    name="#fontinst">&nbsp;</a> to install new fonts, especially
+    PostScript Type 1 fonts and the <a
+    href="fonts/fontname/fontname.dvi">font naming conventions</a>.
+    <dl>
+      <dt><a href="fonts/ae/README">ae</a>
+      <dd>A set of virtual fonts designed to be a close approximation to
+	a T1-encoded set based on the CM fonts.  This should make it
+	possible to use the existing Type1 versions of the CM fonts to
+	produce PDF files even when one needs hyphenation patterns other
+	than English. See also <a href="fonts/ae/README2">aecompl</a>
+      <dt><a href="latex/tools/fontsmpl.dvi">fontsmpl</a>
+      <dd>Print a sample of a font. 
+      <dt><a href="latex/tools/rawfonts.dvi">rawfonts</a>
+      <dd>Emulation of LaTeX 2.09 low-level font commands, eg \tenrm.
+      <dt><a href="latex/styles/beton.dvi">beton</a><a name="beton">&nbsp;</a>
+      <dd>Typeset a LaTeX2e document with the Concrete fonts designed by
+	Don Knuth and used in his book ``Concrete Mathematics''.
+      <dt><a href="latex/ccfonts/ccfonts.dvi">ccfonts</a>
+      <dd>LaTeX font definition files for the Concrete fonts and a LaTeX
+	package for typesetting documents using Concrete as the
+	default font family.
+      <dt><a href="fonts/cmbright/cmbright.dvi">cmbright</a>
+      <dd>Use the "Computer Modern bright" font family.
+      <dt><a href="latex/mathtime/mathtime.dvi">mathtime</a>
+      <dd>Package to support the <kbd>mathtime</kbd> fonts, a mathematical
+	font set complementary to Times-Roman.  N.B. These fonts are not
+	included in teTeX.
+      <dt><a href="latex/styles/lucidabr.txt">lucidabr</a>
+      <dd>Package to use the Lucidea Bright font set from Y & Y.  N.B.  The
+	    fonts are not part of teTeX and must be purchased
+	    separately.
+      <dt><a href="fonts/lucidabr/ly1.txt">LY1</a> <dd>This font
+	encoding package supports the `texnansi' encoding as used by
+	default in the Y&Y TeX system. There is also an option to
+	support the `ansinew' encoding that is the default encoding in
+	Microsoft Windows.
+      <dt><a href="fonts/dstroke/dsdoc.dvi">dsfont</a>
+      <dd>Double-stroke maths fonts. Declares the macro
+      <kbd>\mathds{}</kbd> to use double-stroke roman fonts. Package
+      option <kbd>sans</kbd> uses sans-serif version.
+      <dt><kbd>dotlessj</kbd> <dd>This package declares the macros
+      <kbd>\j</kbd> and <kbd>\jmath</kbd> to insert a dotless j in
+      text and math mode.  <dt><a
+      href="latex/styles/mflogo.dvi">mflogo</a> <dd>LaTeX package and
+      font definition file to access the Knuthian `logo' fonts
+      described in `The MetaFontbook' and the MetaFont and logos in
+      LaTeX documents.  <dt><a
+      href="latex/styles/concmath.dvi">Concrete Math</a> fonts <dd>A
+      set of math fonts for use with Donald Knuth's <a
+      href="#beton">concrete</a> text fonts.  <dt><kbd>concrete</kbd>
+      <dd>This package simply includes the <a href="#beton">beton</a>
+      and <a href="#euler">euler</a> packages for an approximation of
+      the style in <cite>Concrete Mathematics</cite>.  <dt><a
+      href="latex/styles/mathcomp.dvi">mathcomp</a> <dd>A package for
+      using the <em>Text Companion</em> fonts in math mode. (For
+      example to get an upright "mu".)  <dt><a
+      href="latex/styles/type1cm.txt">type1cm</a> <dd>Allows the use
+      of Computer Modern fonts at arbitrary type sizes instead of the
+      usual discrete magsteps.  <dt><a
+      href="latex/mfnfss/pandora.dvi">pandora</a> <dd>The Pandora
+      fonts.  <dt><a href="latex/yfonts/readme">yfonts</a> <dd>A LaTeX
+      interface to the old-german fonts designed by Yannis
+      Haralambous.  <dt><a href="latex/mfnfss/oldgerm.dvi">oldgerm</a>
+      <dd>Old German fonts.  <dt><a
+      href="fonts/oldgerman/suet.dvi">suet</a> <dd>German handwriting
+      fonts.  <dt><a href="latex/wasysym/wasysym.dvi">wasysym</a>
+      <dd>This package defines LaTeX commands to insert the symbols in
+      the <a href="latex/wasysym/wasydoc.dvi">wasysym</a> font set.
+      <dt><a href="latex/styles/stmaryrd.dvi">stmaryrd</a> <dd>The "St
+      Mary's Road" symbol fonts.  <dt><a
+      href="fonts/marvosym/marvodoc.dvi">marvodoc</a> <dd>The martin
+      Vogel symbol fonts.
+    </dl>
+    <h3>AMS Maths</h3>
+
+    A very useful guide to the American Mathematical Society extensions to
+    LaTeX is provided in Chapter 8 of
+    <a href="http://cseng.awl.com/bookdetail.qry?ISBN=0-201-54199-8&ptype=0"><cite>The
+	LaTeX Companion</cite></a>. A revised version is available online from
+    a <a href="http://www.ucc.ie/cgi-bin/ctan">CTAN archive</a> in
+    directory <kbd>info/companion-rev/</kbd> as <a
+      href="ftp://ftp.tex.ac.uk/tex-archive/info/companion-rev/ch8.ps">PostScript</a>
+    or <a
+      href="ftp://ftp.tex.ac.uk/tex-archive/info/companion-rev/ch8.pdf">PDF</a>
+    courtesy of the publisher, <a
+      href="http://www2.awl.com/corp/">Addison-Wesley</a>.)  
+
+    <dl>
+      <dt><a href="latex/amslatex/amsldoc.dvi">amslatex</a>
+      <dd>User guide for AMS-LaTeX as implemented in the amsmath
+	package.
+	<br>
+	Also see the <a
+	  href="latex/amslatex/amslatex.faq">frequently-asked-questions</a>
+	list , various Tex and LaTeX examples in the directory <a
+	  href="latex/amslatex/">latex/amslatex/</a>.
+      <dt><a href="latex/tools/theorem.dvi">theorem</a>
+      <dd>Enhancements to the theorem environments, giving more choice
+	in theorem layout.  
+      <dt><a href="latex/styles/bbm.dvi">bbm</a>
+      <dd>Blackboard variant fonts for Computer Modern, with LaTeX support .
+	<a href="latex/styles/bbold.dvi">Font sample</a>
+      <dt><a href="latex/styles/euler.dvi">euler</a><a name="euler">&nbsp;</a> 
+      <dd>Provides a setup for using the AMS Euler family of fonts for
+	math in LaTeX documents. 
+      <dt><a href="fonts/amsfonts/eufrak.dvi">eufrak</a>
+      <dd>Use the Euler Fraktur symbols.
+      <dt><a href="fonts/amsfonts/euscript.dvi">euscript</a>
+      <dd>Substitute the usual math calligraphic characters with Euler
+	script equivalents.
+      <dt><a href="latex/jknappen/mathrsfs.rme">mathrsfs</a>
+      <dd>This package defines the command <kbd>\mathscr{ABC}</kbd>
+	which typesets symbols such as Hamiltonians using the Ralph
+	Smith Formal Script (rsfs) calligraphic fonts.
+      <dt><a href="amstex/amsguide.dvi">amsguide</a>
+      <dd>User guide for AMS-TeX (the original plain TeX maths package).
+      <dt><a href="amstex/joyerr.tex">joyerr.tex</a>
+      <dd>Errata for <em>The Joy of TeX</em>.
+      <dt><a href="fonts/amsfonts/amsfndoc.dvi">AMS Fonts</a>
+      <dd>Documentation for the AMS mathematical font set.  See also
+	the <a href="fonts/amsfonts/amsfonts.dvi">package
+	documentation</a>, the <a
+	href="fonts/amsfonts/amsfonts.bug">bug list</a> and the <a
+	href="fonts/amsfonts/amsfonts.faq">frequently-asked questions
+	list</a>.
+    </dl>
+
+    <h3>Multilingual LaTeX</h3>
+    Multilingual support for LaTeX.
+    <dl>
+      <dt><a href="generic/babel/user.dvi">babel</a> 
+      <dd>This package supports multilingual documents in many
+      language.
+      <dt><a href="latex/base/inputenc.dvi">inputenc</a>
+      <dd>Allows use of 8-bit character sets in source documents.
+      <dt><a href="generic/babel/tb1202.dvi">tb1202</a>, <a
+	  href="generic/babel/tb1401.dvi">tb1401</a>, <a href="generic/babel/tb1604.dvi">tb1604</a>
+      <dd>Some articles on Babel which appeared in <em>tugboat</em>.
+      <dt><a href="latex/base/cyrguide.dvi">cyrillic</a><a name="cyrillic">&nbsp;</a>
+      <dd>Package for using cyrillic fonts.  <dt>T2 <dd>Another font
+      encoding for Cyrillic.  
+      <dt><b>MLTeX</b>
+      <dd>MLTeX is a modification of TeX version that allows
+      the hyphenation of words with accented letters using ordinary
+      Computer Modern (CM) fonts.  There are instructions on <a
+      href="latex/mltex/mltex.txt">how to use MLTeX's \charsubdef
+      extension with LaTeX</a> . 
+    </dl>
+
+    <h3>Additional or alternative "document" types</h3>
+    <dl>
+      <dt><a href="latex/seminar/sem-user.dvi">seminar</a><a
+	  name="seminar">&nbsp;</a> 
+      <dd>A LaTeX style for overhead
+	transparencies and notes.  <a
+	  href="latex/seminar/semsamp1.tex">Example 1</a>, <a
+	  href="latex/seminar/semsamp2.tex">Example 2</a>. List of <a
+	  href="latex/seminar/Seminar-FAQ.html">frequently asked
+	  questions</a>. List of 
+	<a href="latex/seminar/Seminar-Bugs.html">known bugs</a>.
+      <dt><a href="latex/styles/examdoc.dvi">examdoc</a>
+      <dd>Style for preparing examination papers.
+      <dt><a href="latex/styles/labels.dvi">labels</a>
+      <dd>A package for making sticky labels in LaTeX.
+      <dt><a href="latex/textmerg/textmerg.dvi">textmerg</a>
+      <dd>Package for creating "text merges" (like wordprocessor mail
+	merge letters) in LaTeX. The directory
+	<a href="latex/textmerg/">latex/textmerg</a>
+	contains examples.
+      <dt><a href="eplain/eplain.dvi">eplain</a>
+      <dd>Extended plain text format.
+    </dl>
+
+    <h3>Programming and Package Authoring</h3>
+    <dl>
+      <dt><a href="latex/base/ifthen.dvi">ifthen</a>
+      <dd>Defines <em>if/then/else</em> macros for conditional text.
+      <dt><a href="latex/tools/calc.dvi">calc</a>
+      <dd>Package for infix arithmetic notation in LaTeX.
+      <dt><a href="latex/styles/readme.fp">fp</a> 
+      <dd>Fixed-point arithmetic package forTeX and LaTeX
+      <dt><a href="latex/graphics/keyval.dvi">keyval</a>
+      <dd>Provides support for writing keyword-style arguments to
+	packages.  Used by <a href="#graphics">graphics</a>.
+      <dt><a href="latex/tools/somedefs.dvi">somedefs</a>
+      <dd>A "programmer's toolkit" for package writers.
+      <dt><a href="latex/tools/fileerr.dvi">fileerr</a>
+      <dd>Implementation of an error handler for "file-not-found"
+	errors.
+      <dt><a href="generic/localloc/localloc.dvi">localloc</a>
+      <dd>Enhanced register-allocation macros.
+      <dt><a href="latex/base/doc.dvi">doc</a>
+      <dd>Literate Programming for package writers --
+	The combined LaTeX package-code/documentation suite.
+      <dt><a href="latex/base/docstrip.dvi">docstrip</a>
+      <dd>Package to build stripped-down version of package files for
+	speed.
+      <dt><a href="latex/ms/everysel.dvi">everysel</a>
+      <dd>This package provides hooks into the NFSS command
+	\selectfont called \EverySelectfont and \AtNextSelectfont
+	analogous to \AtBeginDocument.
+      <dt><a href="latex/ms/everyshi.dvi">everyshi</a>
+      <dd>This package defines a new command \EveryShipout analogous to \AtBeginDocument.
+      <dt><a href="latex/styles/stdclsdv.dvi">stdclsdv</a> 
+      <dd>Macros to interact with sectional divisions of standard LaTeX classes.
+    </dl>
+
+    <h2>Web2C implementation</h2>
+    teT<sub>E</sub>X is based on the <em>web2c</em>
+    implementation of TeX, metafont <em>etc.</em>
+    Information on running the various programs is contained in <a
+      href="programs/web2c.dvi">web2c.dvi</a>. All programs use a
+    common, configurable, library for searching for files. The file <a
+      href="programs/kpathsea.dvi">kpathsea.dvi</a> gives details. The 
+    file tree is built in compliance with the <a
+    href="help/tds.dvi">TeX directory structure</a>
+
+    <h2>Ancillary Programs</h2> <h3>Bibtex</h3> <em>Bibtex</em> is a
+    separate program for managing databases of bibliographic references
+    and selecting for citation in a LaTeX document.  It is described in
+    chapter 13 of <a
+      href="http://cseng.awl.com/bookdetail.qry?ISBN=0-201-54199-8&ptype=0"><em>The
+	LaTeX Companion</em></a> and online in the documents entitled <a
+      href="bibtex/base/btxdoc.dvi">BibTexing</a> and <a
+      href="bibtex/base/btxhak.dvi">Designing BibTeX Styles</a>.
+
+    <p>
+      The latter document, <a
+	href="bibtex/base/btxhak.dvi">Designing BibTeX Styles</a> is a guide
+      to customizing the format of the reference list.  The non-expert may
+      find it more useful to use the ancillary program <a
+	href="latex/custom-bib/makebst.dvi">makebst</a> which
+      semi-automates the design of a new bibliography style.
+
+    <p>
+      <a href="#natbib">natbib</a> is a LaTeX package which
+      allows customization of the citation style in the text (rather than
+      the format of the reference list).  It works with almost all
+      bibliography styles, even those which define their own citation
+      macros.
+
+    <h3>Makeindex</h3>
+    The <em>makeindex</em> program which provides facilities for
+    generating an index is described in the documents
+    <a href="makeindex/ind.dvi">Index Preparation and Processing</a> and the
+    <a href="makeindex/makeindex.dvi">Makeindex  user guide</a>.
+
+    <h3><a name="dvips">Dvips</a></h3>
+    The full documentation for the 
+    <a href="programs/dvips.dvi">dvips</a> DVI -&gt; PostScript
+    translator. N.B. The advice concerning including PostScript graphics
+    has been superceded by the standard LaTeX2e
+    <a href="latex/graphics/grfguide.ps">graphics</a> package.
+
+    <p>
+      To use the new Type I versions of the computer-modern fonts, use dvips
+      with the extra argument <kbd>-Pcmz</kbd> or (<kbd>-Pcm</kbd> which
+      does not download the fonts in the PostScript output.) Mathematical
+      documents will probably also require <kbd>-Pamz</kbd> (or
+      <kbd>-Pams</kbd>) for the AMS math fonts.  eg
+
+    <pre>dvips -Pcmz -Pamz -P myprinter mydoc.dvi</pre>
+
+    Type 1 fonts are scaleable so the resulting PostScript does not
+    include bitmapped fonts and is therefore resolution-independent.
+    This is very useful if the postscript is to be scaled up or down
+    or the final destination printer is not known.
+
+    <h3>Xdvi</h3>
+
+    The online documentation for <kbd>xdvi</kbd> only available as a unix
+    "man" page and is not accessible through this WWW page. Use <kbd>man
+      xdvi</kbd> to read it.
+
+    <h3>Texinfo</h3>
+
+    <a href="programs/texinfo.dvi">Texinfo</a> is a macro package for TeX
+    used by the GNU system for producing printed manuals.
+
+    <h2><a name="newprogs">TeX and LaTeX Variants</a></h2>
+    This distribution includes several new developments of TeX (which are
+    also supplied with LaTeX macros.
+    <dl>
+      <dt><strong>pdftex</strong> and <strong>pdflatex</strong>
+      <dd>Han the Thanth's variant which can generate output in Adobe PDF
+	format as well as the usual DVI.  Documentation is in the <a
+	  href="pdftex/base/pdftexman.pdf">PDFTeX manual</a> and there is a list
+	of <a href="pdftex/base/pdfTeX-FAQ.pdf">frequently-asked questions</a>.
+      <dt><strong>omega</strong> and <strong>lambda</strong>
+      <dd>The <a href="omega/base/omega-manual.dvi">Omega</a> system extends TeX
+	for mixed multi-lingual typesetting using unicode. See the <a
+	  href="http://www.ens.fr/omega/">omega home page</a>.
+      <dt><strong>etex</strong> and <strong>elatex</strong>
+      <dd> <a href="etex/base/etex-man.dvi">e-TeX</a> adds several extensions
+           to TeX notably right-to-left typesetting.
+      <dt><a href="context/base/ms-cb-en.pdf">ConTeXt</a> <dd>A new
+      macro package for TeX.  See also the <a
+      href="context/base/setup-en.pdf">full list of commands</a>.
+    </dl>
+
+    <h1>Local Additions</h1> Your system administrator may have added <a
+      href="../../texmf.local/doc/">additional packages and documentation</a> 
+    as well as those which come with teT<sub>E</sub>X.
+
+    <h2>Other sources of Information</h2>
+
+    Here are some other useful sources of information on LaTeX, TeX and
+    related program on the World-Wide Web.
+
+    <ul>
+      <li>The <a href="http://www.tug.org/tetex/">teT<sub>E</sub>X home page</a>.
+      <li>The <a href="http://www.tug.org/">TeX user's group</a>.
+      <li>Cambridge university's <a
+	  href="http://www-h.eng.cam.ac.uk/help/tpl/textprocessing/">Text
+	  Processing using LaTeX</a> site.  This contains a mine of useful
+	information.
+      <li>The <a
+	  href="http://www.loria.fr/services/tex/english/index.html">LaTeX
+	  Navigator</a>.
+    </ul>
+
+    <hr>
+    <!-- hhmts start -->
+Last modified: Mon Apr 19 14:42:32 BST 1999
+<!-- hhmts end -->
+  </body> </html>

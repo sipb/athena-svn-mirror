@@ -1,0 +1,31 @@
+<html>
+<head><title>Help On LaTeX \baselineskip and \baselinestretch</title>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\baselineskip \baselinestretch</font></h1>
+<tt>\baselineskip</tt> is a <a href="ltx-86.html#lencmd">length command</a>
+which specifies the minimum space between the botton of two successive
+lines in a paragraph.  
+Its value may be automatically reset by LaTeX, for example, by font changes 
+in the text. 
+The value used for an entire paragraph is the value
+in effect at the blank line or command which ends the paragraph unit.  
+<p>
+<tt>\baselinestretch</tt> scales the value of <tt>\baselineskip</tt>.  Its
+default value is 1.0 but it may be reset with a 
+<a href="ltx-18.html"><tt>\renewcommand</tt></a> command.  If one wants
+to change the spacing in a document one should reset <tt>\baselinestretch</tt>
+and <strong>not</strong> <tt>\baselineskip</tt> as the latter may be reset 
+automatically by LaTeX to account for local variations in the text, but it
+is always scaled by the former.  In principle, "double spacing" can be obtained
+by <tt>\renewcommand{\baselinestretch}{2}</tt>.
+
+<hr>
+See also: <A href="ltx-86.html">Lengths</A><br> 
+Return to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 23 Jun 1995.
+</address>
+</body>
+</html>

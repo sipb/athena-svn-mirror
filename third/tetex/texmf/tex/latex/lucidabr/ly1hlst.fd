@@ -1,0 +1,45 @@
+%%
+%% This is file `ly1hlst.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lucidabr.fdd  (with options: `LY1hlst,yy')
+%% This is a generated file for Lucidabr.  Permission is granted to to
+%% customize the declarations in this file to serve the needs of your
+%% installation.  However, no permission is granted to distribute a
+%% modified version of this file under its original name.
+%% 
+%%
+%% Copyright 1995 1996 Sebastian Rahtz
+%% Copyright 1997 Sebastian Rahtz, David Carlisle
+%%
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+\ProvidesFile{ly1hlst.fd}
+ [1997/09/07 v4.2 %
+ Lucida Bright Sans Typewriter
+ (Y&Y Names)
+ (SPQR/DPC)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlst}{\hyphenchar \font\m@ne}%
+\DeclareLucidaFontShape{LY1}{hlst}{m}{n}{lstr}{}
+\DeclareFontShape{LY1}{hlst}{m}{sc}{<->ssub * hlst/m/n}{}
+\DeclareLucidaFontShape{LY1}{hlst}{m}{it}{lsto}{}
+\DeclareFontShape{LY1}{hlst}{m}{sl}{<->ssub * hlst/m/it}{}
+\DeclareLucidaFontShape{LY1}{hlst}{b}{n}{lstb}{}
+\DeclareLucidaFontShape{LY1}{hlst}{b}{it}{lstbo}{}
+\DeclareFontShape{LY1}{hlst}{b}{sc} {<->ssub * hlst/m/sc}{}
+\DeclareFontShape{LY1}{hlst}{b}{sl} {<->ssub * hlst/b/it}{}
+\DeclareFontShape{LY1}{hlst}{m}{sl} {<->ssub * hlst/m/it}{}
+\DeclareFontShape{LY1}{hlst}{bx}{n} {<->ssub * hlst/b/n}{}
+\DeclareFontShape{LY1}{hlst}{bx}{it}{<->ssub * hlst/b/it}{}
+\DeclareFontShape{LY1}{hlst}{bx}{sc}{<->ssub * hlst/b/sc}{}
+\DeclareFontShape{LY1}{hlst}{bx}{sl}{<->ssub * hlst/m/sl}{}
+
+\endinput
+%%
+%% End of file `ly1hlst.fd'.

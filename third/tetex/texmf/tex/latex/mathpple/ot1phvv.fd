@@ -1,0 +1,82 @@
+%Filename: ot1phvv.fd
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{ot1phvv.fd}
+   [1999/02/07 font def. for Helvetica scaled 950 (WaS)]
+
+\DeclareFontFamily{OT1}{phvv}{}
+
+\DeclareFontShape{OT1}{phvv}{m}{n}{
+   <-> s * [0.95] phvr7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{m}{sc}{
+   <-> s * [0.95] phvrc7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{m}{sl}{
+   <-> s * [0.95] phvro7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{mc}{n}{
+   <-> s * [0.95] phvr7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{mc}{sc}{
+   <-> s * [0.95] phvrc7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{mc}{sl}{
+   <-> s * [0.95] phvro7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{b}{n}{
+   <-> s * [0.95] phvb7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{b}{sc}{
+   <-> s * [0.95] phvbc7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{b}{sl}{
+   <-> s * [0.95] phvbo7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{bc}{n}{
+   <-> s * [0.95] phvb7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{bc}{sc}{
+   <-> s * [0.95] phvbc7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{bc}{sl}{
+   <-> s * [0.95] phvbo7tn
+}{}
+
+\DeclareFontShape{OT1}{phvv}{l}{n}{
+   <-> s * [0.95] phvl7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{l}{sc}{
+   <-> s * [0.95] phvlc7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{l}{sl}{
+   <-> s * [0.95] phvlo7t
+}{}
+
+\DeclareFontShape{OT1}{phvv}{m}{it}{<->ssub * phvv/m/sl}{}
+\DeclareFontShape{OT1}{phvv}{mc}{it}{<->ssub * phvv/mc/sl}{}
+\DeclareFontShape{OT1}{phvv}{bx}{n}{<->ssub * phvv/b/n}{}
+\DeclareFontShape{OT1}{phvv}{bx}{sc}{<->ssub * phvv/b/sc}{}
+\DeclareFontShape{OT1}{phvv}{bx}{sl}{<->ssub * phvv/b/sl}{}
+\DeclareFontShape{OT1}{phvv}{b}{it}{<->ssub * phvv/b/sl}{}
+\DeclareFontShape{OT1}{phvv}{bx}{it}{<->ssub * phvv/b/it}{}
+\DeclareFontShape{OT1}{phvv}{bc}{it}{<->ssub * phvv/bc/sl}{}
+\DeclareFontShape{OT1}{phvv}{l}{it}{<->ssub * phvv/l/sl}{}
+
+\DeclareFontShape{OT1}{phvv}{m}{ui}{<->ssub * phvv/m/it}{}
+\DeclareFontShape{OT1}{phvv}{b}{ui}{<->ssub * phvv/b/it}{}
+\endinput

@@ -1,0 +1,48 @@
+%%
+%% This is file `birthday.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% scrlettr.dtx  (with options: `birthday,tex')
+%% 
+%% Interactive BibTeX-Driver to scrletter converter
+%% by Markus Kohm 1996/11/13
+%% 
+%% This is only something like a dummy-file to get an `aux'-file.
+%% 
+\catcode`\@=11
+\newlinechar`\^^J
+\message{%
+ Now you have to typein the name of the BibTeX addressfile, you want to^^J%
+ convert to script-address-file-format (without extension `.bib'):^^J%
+ Geben Sie nun den Namen der BibTeX-Adressdatei ein, die sie in das^^J%
+ Script-Adressdateiformat konvertieren wollen (ohne `.bib'):^^J%
+ ^^J%
+ addressfile=%
+}
+\def\skiplastspace#1 \@e@o@l@{#1}
+\read-1 to \addressfile
+\edef\addressfile{\expandafter\skiplastspace\addressfile\@e@o@l@}
+\newwrite\auxfile
+\immediate\openout\auxfile=\addressfile.aux
+\immediate\write\auxfile{%
+ \string\citation{*}^^J%
+ \string\bibstyle{birthday}^^J%
+ \string\bibdata{\addressfile}%
+}
+\immediate\closeout\auxfile
+\message{%
+ After running BibTeX rename file `\addressfile.bbl' to
+ `\addressfile.adr'!^^J%
+ Run LaTeX with e. g. `dir.tex' after that.^^J%
+ Nach dem BibTeX-Lauf benennen Sie bitte die Datei `\addressfile.bbl' in^^J%
+ `\addressfile.adr' um!^^J%
+ Sie koennen die Datei dann z. B. mit `dir.tex'
+ weiterbearbeiten.^^J%
+}
+\ifx\@@end\undefined\let\@@end\end\fi
+\@@end
+%% 
+%%
+%% End of file `birthday.tex'.

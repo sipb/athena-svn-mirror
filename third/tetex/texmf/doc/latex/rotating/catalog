@@ -1,0 +1,8 @@
+Name: rotating
+Problems-To: s.rahtz@elsevier.co.uk
+Author: Sebastian Rahtz <s.rahtz@elsevier.co.uk> and Leonor Barroca
+Version: 2.8
+Date: 1995/04/02
+Description:  `rotating.sty' builds on the standard \LaTeX\ graphics
+ package, and performs all the different sorts of
+ rotation one might like, including complete figures and captions

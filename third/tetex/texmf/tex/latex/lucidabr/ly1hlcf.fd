@@ -1,0 +1,36 @@
+%%
+%% This is file `ly1hlcf.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% lucidabr.fdd  (with options: `LY1hlcf,yy')
+%% This is a generated file for Lucidabr.  Permission is granted to to
+%% customize the declarations in this file to serve the needs of your
+%% installation.  However, no permission is granted to distribute a
+%% modified version of this file under its original name.
+%% 
+%%
+%% Copyright 1995 1996 Sebastian Rahtz
+%% Copyright 1997 Sebastian Rahtz, David Carlisle
+%%
+%% This package may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%%
+\ProvidesFile{ly1hlcf.fd}
+ [1997/09/07 v4.2 %
+ Lucida Black Letter
+ (Y&Y Names)
+ (SPQR/DPC)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlcf}{}
+\DeclareLucidaFontShape{LY1}{hlcf}{m}{n}{lbl}{}
+\DeclareFontShape{LY1}{hlcf}{m}{it}{<-> ssub * hlcf/m/n}{}
+\DeclareFontShape{LY1}{hlcf}{b}{n}{<-> ssub * hlcf/m/n}{}
+\DeclareFontShape{LY1}{hlcf}{b}{it}{<-> ssub * hlcf/m/n}{}
+
+\endinput
+%%
+%% End of file `ly1hlcf.fd'.

@@ -1,0 +1,17 @@
+%Filename: omspzccm.fd
+%Created by: tex fontptcm
+%Created using fontinst v1.800
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{omspzccm.fd}
+   [1998/07/01 Fontinst v1.800 font definitions for OMS/pzccm.]
+
+\DeclareFontFamily{OMS}{pzccm}{}
+
+\DeclareFontShape{OMS}{pzccm}{m}{n}{
+   <-> zpzccmry
+}{}
+
+
+\endinput

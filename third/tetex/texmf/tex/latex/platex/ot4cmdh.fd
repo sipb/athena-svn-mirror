@@ -1,0 +1,38 @@
+%%
+%% This is file `ot4cmdh.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% plfonts.fdd  (with options: `fd,ori,OT4,cmdh')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from ot4cmdh.fd.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file plfonts.fdd.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\ProvidesFile{ot4cmdh.fd}
+    [1997/11/07 v1.0 Font defs for `pl' fonts (MOl).]
+\DeclareFontFamily
+           {OT4}
+               {cmdh}
+                             {}
+\DeclareFontShape
+           {OT4}
+               {cmdh}
+                             {m}{n}
+    {
+      <10> pldunh10
+    }{}
+\endinput
+%%
+%% End of file `ot4cmdh.fd'.

@@ -1,0 +1,11 @@
+\relax
+
+\metrics
+
+\let\savedsetkern=\setkern
+
+\setcommand\restorekerns{\let\setkern=\savedsetkern}
+
+\resetcommand\setkern#1#2#3{}
+
+\endmetrics

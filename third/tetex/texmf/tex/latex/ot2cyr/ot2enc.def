@@ -1,0 +1,109 @@
+\ProvidesFile{OT2enc.def}[1996/03/08 OT2 encoding setup. 
+ S Rahtz, M Ellert, F Widmann]
+%%
+%%
+\DeclareFontEncoding{OT2}{}{}
+\DeclareFontSubstitution{OT2}{wncyr}{m}{n}
+\DeclareTextAccent{\"}{OT2}{'040}
+\DeclareTextAccent{\'}{OT2}{'046}
+\DeclareTextAccent{\u}{OT2}{'100}
+\DeclareTextAccent{\U}{OT2}{'044}
+\DeclareTextCommand{\=}{OT2}[1]
+     {\PackageError{OT2enc}{accent \string\= not defined in cyrillic}#1}
+\DeclareTextCommand{\`}{OT2}[1]
+     {\PackageError{OT2enc}{accent \string\` not defined in cyrillic}#1}
+%%
+%%  I've added a \U accent for the wide Cyrillic breve in addition
+%%  to the \u accent used for the smaller breve. I recommend using
+%%  \U accent for \U{i} and \U{u}. \U{i} has a composite declared
+%%  below.
+%%
+%% Text symbols and composites
+%%
+%\DeclareTextCommandDefault{\Cdprime}{{\mathsurround=0pt$\ubar{\hbox{$''$}}$}}
+\DeclareTextCommandDefault{\Cdprime}{{\mathsurround=0pt\b{\hbox{$''$}}}}
+\DeclareTextCommandDefault{\Cprime}{{\mathsurround=0pt$'$}}
+\DeclareTextCommandDefault{\Dbar}{Dj}
+\DeclareTextCommandDefault{\Dzh}{Dzh{\cydot}}
+\DeclareTextCommandDefault{\Dz}{Dz}
+\DeclareTextCommandDefault{\cdprime}{\/{\mathsurround=0pt$''$}}
+\DeclareTextCommandDefault{\cprime}{\/{\mathsurround=0pt$'$}}
+\DeclareTextCommandDefault{\cydot}{{\mathsurround=0pt$\cdot$}}
+\DeclareTextCommandDefault{\dbar}{dj}
+\DeclareTextCommandDefault{\dzh}{dzh{\cydot}}
+\DeclareTextCommandDefault{\dz}{dz}
+\DeclareTextCommand{\Dbar}{OT2}{Dj}
+\DeclareTextCommand{\cydot}{OT2}{{\kern0pt}}
+\DeclareTextCommand{\dbar}{OT2}{dj}
+\DeclareTextCompositeCommand{\"}{OT2}{I}{{\accent'40\char'004}}
+\DeclareTextCompositeCommand{\"}{OT2}{\i}{\"\dotlessi}
+\DeclareTextCompositeCommand{\"}{OT2}{\i}{{\accent'40\char'075}}
+\DeclareTextCompositeCommand{\'}{OT2}{\i}{\'\dotlessi}
+\DeclareTextCompositeCommand{\U}{OT2}{\i}{\U\dotlessi}
+\DeclareTextCompositeCommand{\u}{OT2}{U}{{\accent'44U}}
+\DeclareTextCompositeCommand{\u}{OT2}{\i}{\u\dotlessi}
+\DeclareTextCompositeCommand{\u}{OT2}{u}{{\accent'44u}}
+\DeclareTextComposite{\"}{OT2}{E}{'023}
+\DeclareTextComposite{\"}{OT2}{e}{'033}
+\DeclareTextComposite{\'}{OT2}{C}{'007}
+\DeclareTextComposite{\'}{OT2}{c}{'017}
+\DeclareTextComposite{\=}{OT2}{E}{'05}
+\DeclareTextComposite{\=}{OT2}{I}{'04}
+\DeclareTextComposite{\=}{OT2}{\i}{'14}
+\DeclareTextComposite{\=}{OT2}{e}{'15}
+\DeclareTextComposite{\U}{OT2}{I}{'022}
+\DeclareTextComposite{\U}{OT2}{i}{'032}
+\DeclareTextComposite{\`}{OT2}{E}{'03}
+\DeclareTextComposite{\`}{OT2}{e}{'13}
+\DeclareTextComposite{\u}{OT2}{I}{'22}
+\DeclareTextComposite{\u}{OT2}{\i}{'32}
+\DeclareTextSymbol{\Cdprime}{OT2}{'137}
+\DeclareTextSymbol{\Cprime}{OT2}{'136}
+\DeclareTextSymbol{\DZH}{OT2}{'002}
+\DeclareTextSymbol{\DZ}{OT2}{'026}
+\DeclareTextSymbol{\Dzh}{OT2}{'002}
+\DeclareTextSymbol{\Dz}{OT2}{'026}
+\DeclareTextSymbol{\EE}{OT2}{'005}
+\DeclareTextSymbol{\Ee}{OT2}{'005}
+\DeclareTextSymbol{\E}{OT2}{'003}
+\DeclareTextSymbol{\Fita}{OT2}{'025}
+\DeclareTextSymbol{\Hard}{OT2}{'137}
+\DeclareTextSymbol{\Izhitza}{OT2}{'024}
+\DeclareTextSymbol{\I}{OT2}{'004}
+\DeclareTextSymbol{\Soft}{OT2}{'136}
+\DeclareTextSymbol{\Yatz}{OT2}{'043}
+\DeclareTextSymbol{\cdprime}{OT2}{'177}
+\DeclareTextSymbol{\cprime}{OT2}{'176}
+\DeclareTextSymbol{\dotlessi}{OT2}{'075}
+\DeclareTextSymbol{\dzh}{OT2}{'012}
+\DeclareTextSymbol{\dz}{OT2}{'036}
+\DeclareTextSymbol{\ee}{OT2}{'015}
+\DeclareTextSymbol{\e}{OT2}{'013}
+\DeclareTextSymbol{\fita}{OT2}{'035}
+\DeclareTextSymbol{\hard}{OT2}{'177}
+\DeclareTextSymbol{\izhitza}{OT2}{'034}
+\DeclareTextSymbol{\i}{OT2}{'014}
+\DeclareTextSymbol{\soft}{OT2}{'176}
+\DeclareTextSymbol{\yatz}{OT2}{'053}
+%%
+%%  There is a problem when puting accent on letters treated
+%%  as ligatures. In ordinary text yu and ya is rendered as
+%%  soft u and soft a, but \'{yu} does not produce a soft u
+%%  with an accent, but a y with an accent followed by an a.
+%%  Therefore I've declared the following text symbols to be
+%%  used when putting accent these letters. (Is there a need
+%%  for putting accents on other ligature characters, such as
+%%  sh, shch, ch, lj, nj, dj, kh, ts, zh?)
+%%
+\DeclareTextSymbol{\YU}{OT2}{'020}
+\DeclareTextSymbol{\Yu}{OT2}{'020}
+\DeclareTextSymbol{\yu}{OT2}{'030}
+\DeclareTextSymbol{\YA}{OT2}{'027}
+\DeclareTextSymbol{\Ya}{OT2}{'027}
+\DeclareTextSymbol{\ya}{OT2}{'037}
+%%
+\endinput
+%%
+%% End of file `OT2enc.def'.
+
+

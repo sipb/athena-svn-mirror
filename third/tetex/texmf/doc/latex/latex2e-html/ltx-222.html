@@ -1,0 +1,52 @@
+<html>
+<head><title>Help On LaTeX enumerate</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">enumerate</font></h1>
+<p>
+<p><pre>
+ \begin{enumerate}
+ \item First item
+ \item Second item
+ ....
+ \end{enumerate}
+</pre>
+<p>
+ The enumerate environment produces a numbered list.  Enumerations  can
+ be nested within one another,  up to four levels deep.   They can also
+ be nested within other paragraph-making environments.
+<p>
+There must be at least one <tt>\item</tt> command within the environment.
+<p>
+ Each item of an enumerated  list begins with an 
+ <a href="item.html"><tt>\item</tt></a> command. The optional <tt>label</tt>
+ argument of the <tt>\item</tt> command, if given, suppresses incrementing
+ the <a href="ltx-3.html">counter</a>. If not given the default labels are
+ taken from the counters, <tt>enumi, enumii, enumiii, enumiv</tt> for the
+ four allowed levels of nesting, respectively.   
+<p>
+<a name="example">The</a> numbering style for the enumeration is determined by 
+the commands, <tt>\labelenumi</tt>, <tt>\labelenumii</tt>, etc., for 
+the nested levels.  These may be redefined with the 
+<a href="ltx-18.html"><tt>\renewcommand</tt></a> command.
+<p>
+For example, to use upper case letters for the first level and lower
+case letters for the second level of enumeration:
+<pre>
+  <tt>\renewcommand{\labelenumi}{<a href="ltx-199.html">\Alph</a>{enumi}}
+  \renewcommand{\labelenumii}{<a href="ltx-199.html">\alph</a>{enumii}}</tt>
+</pre>
+<hr>
+
+See also <A href="ltx-27.html">Environments</A>,
+  <a href="lists.html">Lists</a>, 
+  <a href="ltx-3.html">Counters</a><br>
+See also <a href="item.html"><tt>\item</tt></a><br>
+Back to the <a href="ltx-2.html">Table of Contents</a>
+<hr>
+<address>
+Thanks to Robert Biddle, Robert.Biddle@Comp.VUW.AC.NZ, for info on 
+the <tt>\labelenumi</tt> commands.<br>
+Revised: Sheldon Green, 10 Oct 1995.
+</address>
+</body>
+</html>

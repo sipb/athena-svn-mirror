@@ -1,0 +1,112 @@
+%%
+%% This is file `english.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% english.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{english}
+        [1999/04/11 v3.3i English support from the babel system]
+%% File 'english.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit\CurrentOption{date\CurrentOption}
+\ifx\l@english\@undefined
+  \ifx\l@UKenglish\@undefined
+    \ifx\l@british\@undefined
+      \@nopatterns{English}
+      \adddialect\l@english0
+    \else
+      \let\l@english\l@british
+    \fi
+  \else
+    \let\l@english\l@UKenglish
+  \fi
+\fi
+\ifx\l@british\@undefined
+  \let\l@british\l@english
+\fi
+\ifx\l@american\@undefined
+  \ifx\l@USenglish\@undefined
+    \adddialect\l@american\l@english
+  \else
+    \let\l@american\l@USenglish
+  \fi
+\fi
+\@namedef{captions\CurrentOption}{%
+  \def\prefacename{Preface}%
+  \def\refname{References}%
+  \def\abstractname{Abstract}%
+  \def\bibname{Bibliography}%
+  \def\chaptername{Chapter}%
+  \def\appendixname{Appendix}%
+  \def\contentsname{Contents}%
+  \def\listfigurename{List of Figures}%
+  \def\listtablename{List of Tables}%
+  \def\indexname{Index}%
+  \def\figurename{Figure}%
+  \def\tablename{Table}%
+  \def\partname{Part}%
+  \def\enclname{encl}%
+  \def\ccname{cc}%
+  \def\headtoname{To}%
+  \def\pagename{Page}%
+  \def\seename{see}%
+  \def\alsoname{see also}%
+  \def\proofname{Proof}%
+  }
+\@namedef{date\CurrentOption}{%
+  \def\today{\ifcase\day\or
+    1st\or 2nd\or 3rd\or 4th\or 5th\or
+    6th\or 7th\or 8th\or 9th\or 10th\or
+    11th\or 12th\or 13th\or 14th\or 15th\or
+    16th\or 17th\or 18th\or 19th\or 20th\or
+    21st\or 22nd\or 23rd\or 24th\or 25th\or
+    26th\or 27th\or 28th\or 29th\or 30th\or
+    31st\fi~\ifcase\month\or
+    January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December\fi
+    \space \number\year}}
+\def\dateamerican{%
+  \def\today{\ifcase\month\or
+    January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December\fi
+    \space\number\day, \number\year}}
+\@namedef{extras\CurrentOption}{}
+\@namedef{noextras\CurrentOption}{}
+\ldf@finish\CurrentOption
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `english.ldf'.

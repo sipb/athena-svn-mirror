@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>Delimiters</title>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Delimiters</font></h1>
+Delimiters are objects which act logically like parentheses. These can 
+be used only in math mode.
+<p> 
+The delimiters recognized by LaTeX include
+<ul>
+<li><tt>(</tt> (left parenthesis)
+<li><tt>)</tt> (right parenthesis)
+<li><tt>[</tt> (left bracket)
+<li><tt>]</tt> (right bracket)
+<li><tt>\{</tt> (left brace)
+<li><tt>\}</tt> (right brace)
+<li><tt>|</tt>  (vertical line)
+<li><tt>\vert</tt> (vertical line)
+<li><tt>\|</tt> (double vertical lines)
+<li><tt>\Vert</tt> (double vertical lines) 
+<li><tt>/</tt> (slash)
+<li><tt><a href="ltx-164.html">\backslash</a></tt> (backslash)
+<li><tt>\langle</tt> (left angle bracket)
+<li><tt>\rangle</tt> (right angle bracket)
+<li><tt>\uparrow</tt> (uparrow)
+<li><tt>\downarrow</tt> (down arrow) 
+<li><tt>\updownarrow</tt> (up/down arrow) 
+</ul>
+
+<h2><a name="big">Making delimiters the right size</a></h2>
+Delimiters in formulas should be big enough to "fit" around the formulas
+they delimit (for example arround arrays).  
+To obtain "stretchable" delimiters (LaTeX makes them the
+appropriate size) type a <tt>\left</tt> or <tt>\right</tt> command before
+the delimiter.  <tt>\left</tt> and <tt>\right</tt> commands must come in
+matching pairs, although the delimiters themselves need not be the same. 
+Thus, <pre> \left \{ ... \right \[ </pre> produces a legal pair.  
+In cases where only one delimiter is desired, it
+is possible to make the matching delimiter "invisible" by typing a
+period (<tt>.</tt>) after the command, i.e.,  
+<tt>\left.</tt> or <tt>\right.</tt>.
+<p>
+In an <a href="ltx-223.html">eqnarray environment</a> the matching <tt>\left</tt>
+and <tt>\right</tt> cannot be split between lines and it may be necessary to
+use an "invisible" <tt>\right.</tt> and <tt>\left.</tt> to terminate and 
+begin parts on different lines.  In this case a second problem may arise, 
+since the size of the delimiters will be chosen only for the 
+<strong>local part</strong>, so that the size of the <strong>visible</strong>
+"left" and "right" delimiters might not match.  
+The solution is to trick LaTeX into thinking 
+that both parts have the same vertical height.  This can be done by placing 
+a strut, that is a zero-width <a href="ltx-306.html"><tt>\rule</tt></a>.  It
+can also be accomplished with the <tt>\vphantom</tt> command, which I have 
+not found documented, but which appears to work.
+<p>
+<pre><tt>\vphantom{construct}</tt></pre>
+creates a zero-width object with the height of <tt>construct</tt>.  The 
+argument can contain things such as <a href="ltx-235.html"><tt>\frac</tt></a>
+or the <a href="ltx-408.html">variable size math symbols</a> and should 
+be chosen according to what is in the section with the delimiter you want to match.
+
+<h2>Some examples</h2>
+<h3>A six-j symbol</h3>
+<pre>
+  <tt>\[ \left<a href="ltx-164.html">\{</a> 
+   \begin{<a href="ltx-202.html">array</a>}{ccc} 
+    a &amp; b &amp; c <a href="ltx-181.html">\\</a> 
+    d &amp; e &amp; f \end{array}
+   \right<a href="ltx-164.html">\}</a> \]</tt>
+</pre>
+This should be displayed something like (insofar as it can be rendered in 
+"ascii art"):
+<pre>
+         ( a b c )
+         -       -
+         ( d e f )
+</pre>
+Note that the <tt>\[ ... \]</tt> set this off as <a href="ltx-421.html">
+Display Math</a>, and that the <a href="ltx-202.html">Array Environment</a>
+is used to generate the three centered columns inside the braces.
+<h3>A "multiple choice" equation</h3> 
+<pre>
+ <tt>\[ f(x) = 
+   \left\{ \begin{array}{l} 
+       0, x &lt; 0 \\ 1, x = 0 \\
+       2, x &gt; 0 \end{array} \right. \]</tt>
+</pre>
+will be displayed as
+<pre>
+<tt>             ( 0, x &lt; 0
+     f(x) =  - 1, x = 0
+             ( 2, x &gt; 0</tt>
+</pre>
+Note that the "invisible" <tt>\right</tt> delimiter is specified using
+a "period".
+<hr>
+See also:
+See also <a href="ltx-115.html">Math Formulas</a>, 
+  <a href="ltx-117.html">Math Symbols</a>
+<ul>
+<li><a href="ltx-404.html">Binary and relational operators</a>
+<li><a href="ltx-115.html">Math formulas</a>,
+<li><a href="ltx-202.html">Arrays</a>
+<li><a href="ltx-406.html">Arrows</a>
+<li><a href="ltx-408.html">Variable size symbols (sums, integrals, etc.)</a>
+</ul>
+<hr>
+Back to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 28 Nov 1995.
+</address>
+</body>
+</html>
+

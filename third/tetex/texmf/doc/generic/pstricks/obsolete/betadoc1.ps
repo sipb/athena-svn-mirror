@@ -1,0 +1,3617 @@
+%!PS-Adobe-2.0
+%%Creator: dvips 5.491 Copyright 1986, 1992 Radical Eye Software
+%%Title: doc.dvi
+%%Pages: 25 1
+%%BoundingBox: 0 0 612 792
+%%DocumentFonts: Helvetica-Bold Times-Roman Helvetica Helvetica-Oblique
+%%+ Helvetica-BoldOblique Symbol Times-Bold Times-Italic
+%%EndComments
+%DVIPSCommandLine: dvips -l25 -Pport doc -o pst-doc1.ps
+%%BeginProcSet: tex.pro
+%!
+/TeXDict 250 dict def TeXDict begin /N{def}def /B{bind def}N /S{exch}N /X{S N}
+B /TR{translate}N /isls false N /vsize 11 72 mul N /@rigin{isls{[0 -1 1 0 0 0]
+concat}if 72 Resolution div 72 VResolution div neg scale isls{Resolution hsize
+-72 div mul 0 TR}if Resolution VResolution vsize -72 div 1 add mul TR matrix
+currentmatrix dup dup 4 get round 4 exch put dup dup 5 get round 5 exch put
+setmatrix}N /@landscape{/isls true N}B /@manualfeed{statusdict /manualfeed
+true put}B /@copies{/#copies X}B /FMat[1 0 0 -1 0 0]N /FBB[0 0 0 0]N /nn 0 N
+/IE 0 N /ctr 0 N /df-tail{/nn 8 dict N nn begin /FontType 3 N /FontMatrix
+fntrx N /FontBBox FBB N string /base X array /BitMaps X /BuildChar{
+CharBuilder}N /Encoding IE N end dup{/foo setfont}2 array copy cvx N load 0 nn
+put /ctr 0 N[}B /df{/sf 1 N /fntrx FMat N df-tail}B /dfs{div /sf X /fntrx[sf 0
+0 sf neg 0 0]N df-tail}B /E{pop nn dup definefont setfont}B /ch-width{ch-data
+dup length 5 sub get}B /ch-height{ch-data dup length 4 sub get}B /ch-xoff{128
+ch-data dup length 3 sub get sub}B /ch-yoff{ch-data dup length 2 sub get 127
+sub}B /ch-dx{ch-data dup length 1 sub get}B /ch-image{ch-data dup type
+/stringtype ne{ctr get /ctr ctr 1 add N}if}B /id 0 N /rw 0 N /rc 0 N /gp 0 N
+/cp 0 N /G 0 N /sf 0 N /CharBuilder{save 3 1 roll S dup /base get 2 index get
+S /BitMaps get S get /ch-data X pop /ctr 0 N ch-dx 0 ch-xoff ch-yoff ch-height
+sub ch-xoff ch-width add ch-yoff setcachedevice ch-width ch-height true[1 0 0
+-1 -.1 ch-xoff sub ch-yoff .1 add]{ch-image}imagemask restore}B /D{/cc X dup
+type /stringtype ne{]}if nn /base get cc ctr put nn /BitMaps get S ctr S sf 1
+ne{dup dup length 1 sub dup 2 index S get sf div put}if put /ctr ctr 1 add N}
+B /I{cc 1 add D}B /bop{userdict /bop-hook known{bop-hook}if /SI save N @rigin
+0 0 moveto /V matrix currentmatrix dup 1 get dup mul exch 0 get dup mul add
+.99 lt{/FV}{/RV}ifelse load def pop}N /eop{SI restore showpage userdict
+/eop-hook known{eop-hook}if}N /@start{userdict /start-hook known{start-hook}
+if /VResolution X /Resolution X 1000 div /DVImag X /IE 256 array N 0 1 255{IE
+S 1 string dup 0 3 index put cvn put}for 65781.76 div /vsize X 65781.76 div
+/hsize X}N /p{show}N /RMat[1 0 0 -1 0 0]N /BDot 260 string N /rulex 0 N /ruley
+0 N /v{/ruley X /rulex X V}B /V{}B /RV statusdict begin /product where{pop
+product dup length 7 ge{0 7 getinterval dup(Display)eq exch 0 4 getinterval
+(NeXT)eq or}{pop false}ifelse}{false}ifelse end{{gsave TR -.1 -.1 TR 1 1 scale
+rulex ruley false RMat{BDot}imagemask grestore}}{{gsave TR -.1 -.1 TR rulex
+ruley scale 1 1 false RMat{BDot}imagemask grestore}}ifelse B /FV{gsave
+transform round exch round exch itransform moveto rulex 0 rlineto 0 ruley neg
+rlineto rulex neg 0 rlineto fill grestore}B /a{moveto}B /delta 0 N /tail{dup
+/delta X 0 rmoveto}B /M{S p delta add tail}B /b{S p tail}B /c{-4 M}B /d{-3 M}
+B /e{-2 M}B /f{-1 M}B /g{0 M}B /h{1 M}B /i{2 M}B /j{3 M}B /k{4 M}B /w{0
+rmoveto}B /l{p -4 w}B /m{p -3 w}B /n{p -2 w}B /o{p -1 w}B /q{p 1 w}B /r{p 2 w}
+B /s{p 3 w}B /t{p 4 w}B /x{0 S rmoveto}B /y{3 2 roll p a}B /bos{/SS save N}B
+/eos{SS restore}B end
+%%EndProcSet
+%%BeginProcSet: pstricks.pro
+%!
+% PostScript prologue for pstricks.tex.
+% Created 1993/3/12. Source file was pstricks.doc
+% Version 0.93a, 93/03/12.
+% For use with Rokicki's dvips.
+/tx@Dict 200 dict def tx@Dict begin
+/ADict 25 dict def
+/CM { matrix currentmatrix } bind def
+/SLW /setlinewidth load def
+/CLW /currentlinewidth load def
+/CP /currentpoint load def
+/ED { exch def } bind def
+/L /lineto load def
+/T /translate load def
+/Atan { /atan load stopped { pop pop 0 } if } def
+/Div { dup 0 eq { pop } { div } ifelse } def
+/NET { neg exch neg exch T } def
+/Pyth { dup mul exch dup mul add sqrt } def
+/PtoC { 2 copy cos mul 3 1 roll sin mul } def
+/PathLength@ { /z z y y1 sub x x1 sub Pyth add def /y1 y def /x1 x def }
+def
+/PathLength { flattenpath /z 0 def { /y1 ED /x1 ED /y2 y1 def /x2 x1 def
+} { /y ED /x ED PathLength@ } {} { /y y2 def /x x2 def PathLength@ }
+pathforall z } def
+/STP { .996264 dup scale } def
+/STV { SDict begin normalscale end STP  } def
+/DashLine { dup 0 gt { /a .5 def PathLength exch div } { pop /a 1 def
+PathLength } ifelse /b ED /x ED /y ED /z y x add def b a .5 sub 2 mul y
+mul sub z Div round z mul a .5 sub 2 mul y mul add b exch Div dup y mul
+/y ED x mul /x ED x 0 eq y 0 eq and { /x 1 def /y 1 def } if [ y x ] 1 a
+sub y mul setdash stroke } def
+/DotLine { /b PathLength def /a ED /z ED /y CLW def /z y z add def a 0 gt
+{ /b b a div def } { a 0 eq { /b b y sub def } { a -3 eq { /b b y add
+def } if } ifelse } ifelse [ 0 b b z Div round Div dup 0 le { pop 1 } if
+] a 0 gt { 0 } { y 2 div a -2 gt { neg } if } ifelse setdash 1
+setlinecap stroke } def
+/LineFill { abs CLW add /a ED gsave clip pathbbox a Div ceiling /y2 ED
+/x2 ED a Div floor /y1 ED /x1 ED /n y2 y1 sub 1 add cvi def /y1 a y1 mul
+def newpath 2 setlinecap n { currentstrokeadjust == x1 y1 moveto x2 y1 L
+stroke /y1 y1 a add def } repeat grestore } def
+/LineFill { abs CLW add /a ED gsave clip pathbbox a Div ceiling /y2 ED
+/x2 ED a Div floor /y1 ED /x1 ED /n y2 y1 sub 1 add cvi def /y1 a y1 mul
+def newpath 2 setlinecap systemdict /currentstrokeadjust known {
+currentstrokeadjust } { false } ifelse { /t { } def } { /t { transform
+0.25 sub round 0.25 add exch 0.25 sub round 0.25 add exch itransform }
+bind def } ifelse n { x1 y1 t moveto x2 y1 t L stroke /y1 y1 a add def }
+repeat grestore } def
+/BeginArrow { ADict begin /@mtrx CM def gsave 2 copy T 2 index sub neg
+exch 3 index sub exch Atan rotate newpath } def
+/EndArrow { @mtrx setmatrix CP grestore end } def
+/Arrow { CLW mul add dup 2 div /w ED mul dup /h ED mul /a ED { 0 h T 1 -1
+scale } if w neg h moveto 0 0 L w h L w neg a neg rlineto gsave fill
+grestore } def
+/Tbar { CLW mul add /z ED z -2 div CLW 2 div moveto z 0 rlineto stroke 0
+CLW moveto } def
+/Bracket { CLW mul add dup CLW sub 2 div /x ED mul CLW add /y ED /z CLW 2
+div def x neg y moveto x neg CLW 2 div L x CLW 2 div L x y L stroke 0
+CLW moveto } def
+/RoundBracket { CLW mul add dup 2 div /x ED mul /y ED /mtrx CM def 0 CLW
+2 div T x y mul 0 ne { x y scale } if 1 1 moveto .85 .5 .35 0 0 0
+curveto -.35 0 -.85 .5 -1 1 curveto mtrx setmatrix stroke 0 CLW moveto }
+def
+/Shadow { [ { /moveto load } { /lineto load } { /curveto load } {
+/closepath load } pathforall ] cvx newpath 3 1 roll T exec } def
+/SD { 0 360 arc fill } def
+/SQ { /r ED r r moveto r r neg L r neg r neg L r neg r L fill } def
+/ST { /y ED /x ED x y moveto x neg y L 0 x L fill } def
+/SP { /r ED gsave 0 r moveto 4 { 72 rotate 0 r L } repeat fill grestore }
+def
+/NArray { aload length 2 div dup dup cvi eq not { exch pop } if /n exch
+cvi def } def
+/NArray { /f ED counttomark 2 div dup cvi /n ED n eq not { exch pop } if
+f { ] aload /Points ED } { n 2 mul 1 add -1 roll pop } ifelse } def
+/Line { NArray n 0 eq not { n 1 eq { 0 0 /n 2 def } if ArrowA /n n 2 sub
+def n { Lineto } repeat CP 4 2 roll ArrowB L pop pop } if } def
+/Arcto { /a [ 6 -2 roll ] cvx def a r /arcto load stopped { 5 } { 4 }
+ifelse { pop } repeat a } def
+/CheckClosed { dup n 2 mul 1 sub index eq 2 index n 2 mul 1 add index eq
+and { pop pop /n n 1 sub def } if } def
+/Polygon { NArray n 2 eq { 0 0 /n 3 def } if n 3 lt { n { pop pop }
+repeat } { n 3 gt { CheckClosed } if n 2 mul -2 roll /y0 ED /x0 ED /y1
+ED /x1 ED x1 y1 /x1 x0 x1 add 2 div def /y1 y0 y1 add 2 div def x1 y1
+moveto /n n 2 sub def n { Lineto } repeat x1 y1 x0 y0 6 4 roll Lineto
+Lineto pop pop closepath } ifelse } def
+/CCA { /y ED /x ED 2 copy y sub /dy1 ED x sub /dx1 ED /l1 dx1 dy1 Pyth
+def } def
+/CCA { /y ED /x ED 2 copy y sub /dy1 ED x sub /dx1 ED /l1 dx1 dy1 Pyth
+def } def
+/CC { /l0 l1 def /x1 x dx sub def /y1 y dy sub def /dx0 dx1 def /dy0 dy1
+def CCA /dx dx0 l1 c exp mul dx1 l0 c exp mul add def /dy dy0 l1 c exp
+mul dy1 l0 c exp mul add def /m dx0 dy0 Atan dx1 dy1 Atan sub 2 div cos
+abs b exp a mul dx dy Pyth Div 2 div def /x2 x l0 dx mul m mul sub def
+/y2 y l0 dy mul m mul sub def /dx l1 dx mul m mul neg def /dy l1 dy mul
+m mul neg def } def
+/IC { /c c 1 add def c 0 lt { /c 0 def } { c 3 gt { /c 3 def } if }
+ifelse /a a 2 mul 3 div 45 cos b exp div def CCA /dx 0 def /dy 0 def }
+def
+/BOC { IC CC x2 y2 x1 y1 ArrowA CP 4 2 roll x y curveto } def
+/NC { CC x1 y1 x2 y2 x y curveto } def
+/EOC { x dx sub y dy sub 4 2 roll ArrowB 2 copy curveto } def
+/BAC { IC CC x y moveto CC x1 y1 CP ArrowA } def
+/NAC { x2 y2 x y curveto CC x1 y1 } def
+/EAC { x2 y2 x y ArrowB curveto pop pop } def
+/OpenCurve { NArray n 3 lt { n { pop pop } repeat } { BOC /n n 3 sub def
+n { NC } repeat EOC } ifelse } def
+/AltCurve { { false NArray n 2 mul 2 roll [ n 2 mul 3 sub 1 roll ] aload
+/Points ED n 2 mul -2 roll } { false NArray } ifelse n 4 lt { n { pop
+pop } repeat } { BAC /n n 4 sub def n { NAC } repeat EAC } ifelse } def
+/ClosedCurve { NArray n 3 lt { n { pop pop } repeat } { n 3 gt {
+CheckClosed } if 6 copy n 2 mul 6 add 6 roll IC CC x y moveto n { NC }
+repeat closepath pop pop } ifelse } def
+/EndDot { { /z DS def } { /z 0 def } ifelse /b ED 0 z DS SD b { 0 z DS
+CLW sub SD } if 0 DS z add CLW 4 div sub moveto } def
+/Rect { x1 y1 y2 add 2 div moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto
+x1 y1 lineto closepath } def
+/OvalFrame { x1 x2 eq y1 y2 eq or { pop pop x1 y1 moveto x2 y2 L } { y1
+y2 sub abs x1 x2 sub abs 2 copy gt { exch pop } { pop } ifelse 2 div
+exch { dup 3 1 roll mul exch } if 2 copy lt { pop } { exch pop } ifelse
+/b ED x1 y1 y2 add 2 div moveto x1 y2 x2 y2 b arcto x2 y2 x2 y1 b arcto
+x2 y1 x1 y1 b arcto x1 y1 x1 y2 b arcto 16 { pop } repeat closepath }
+ifelse } def
+/Frame { CLW mul /a ED 3 -1 roll 2 copy gt { exch } if a sub /y2 ED a add
+/y1 ED 2 copy gt { exch } if a sub /x2 ED a add /x1 ED 1 index 0 eq {
+pop pop Rect } { OvalFrame } ifelse } def
+/Parab { /y0 exch def /x0 exch def /y1 exch def /x1 exch def /dx x0 x1
+sub 3 div def /dy y0 y1 sub 3 div def x0 dx sub y0 dy add x1 y1 ArrowA
+x0 dx add y0 dy add x0 2 mul x1 sub y1 ArrowB curveto /Points [ x1 y1 x0
+y0 x0 2 mul x1 sub y1 ] def } def
+/Grid { /a 4 string def /b ED /d ED /n ED cvi dup 1 lt { pop 1 } if /c ED
+c div dup 0 eq { pop 1 } if /cy ED c div dup 0 eq { pop 1 } if /cx ED cy
+div cvi /y ED cx div cvi /x ED cy div cvi /y2 ED cx div cvi /x2 ED cy
+div cvi /y1 ED cx div cvi /x1 ED /h y2 y1 sub 0 gt { 1 } { -1 } ifelse
+def /w x2 x1 sub 0 gt { 1 } { -1 } ifelse def b 0 gt { /z1 b 4 div CLW 2
+div add def /Helvetica findfont b scalefont setfont /b b .95 mul CLW 2
+div add def } if gsave n 0 gt { 1 setlinecap [ 0 cy n div ] 0 setdash }
+{ 2 setlinecap } ifelse /c x1 def /i 500 w mul x1 add def /e y cy mul
+def /f y1 cy mul def /g y2 cy mul def x1 cx mul 0 T { newpath 0 e moveto
+b 0 gt { gsave d c a cvs dup stringwidth pop /z2 ED w 0 gt {z1} {z1 z2
+add neg} ifelse h 0 gt {b neg} {z1} ifelse rmoveto show grestore } if 0
+f moveto 0 g L stroke cx w mul 0 T c x2 eq c i eq or {exit} if /c c w
+add def } loop grestore gsave n 0 gt { 1 setlinecap [ 0 cx n div ] 0
+setdash } { 2 setlinecap } ifelse /c y1 def /i 500 h mul y1 add def /e x
+cx mul def /f x1 cx mul def /g x2 cx mul def 0 y1 cy mul T { newpath e 0
+moveto b 0 gt { gsave d c a cvs dup stringwidth pop /z2 ED w 0 gt {z1 z2
+add neg} {z1} ifelse h 0 gt {z1} {b neg} ifelse rmoveto show grestore }
+if f 0 moveto g 0 L stroke 0 cy h mul T c y2 eq c i eq or {exit} if /c c
+h add def } loop grestore } def
+/ArcArrow { /d ED /b ED /a ED gsave newpath 0 -1000 moveto clip newpath 0
+1 0 0 b grestore c mul /e ED pop pop pop r a e d PtoC y add exch x add
+exch r a PtoC y add exch x add exch b pop pop pop pop a e d CLW 8 div c
+mul neg d } def
+/Ellipse { /mtrx CM def T scale 0 0 1 5 3 roll arc mtrx setmatrix } def
+/Rot { CP CP translate 3 -1 roll neg rotate NET  } def
+/PutCoor { gsave CP T CM STV exch exec moveto setmatrix CP grestore } def
+/PutBegin { /lmtrx [ tx@Dict /lmtrx known { lmtrx aload pop } if CM ] def
+CP 4 2 roll T moveto } def
+/PutEnd { CP /lmtrx [ lmtrx aload pop setmatrix ] def moveto } def
+/Uput { /a ED add 2 div /h ED 2 div /w ED /s a sin def /c a cos def /b s
+abs c abs 2 copy gt dup /q ED { pop } { exch pop } ifelse def /w1 c b
+div w mul def /h1 s b div h mul def q { w1 abs w sub dup c mul abs } {
+h1 abs h sub dup s mul abs } ifelse } def
+/UUput { /z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div s
+mul abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add } { q
+{ x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch w1 add
+exch } def
+/BeginOL { dup (all) eq exch TheOL eq or { IfVisible not { CP OLUnit T
+moveto /IfVisible true def } if } { IfVisible { CP OLUnit NET moveto
+/IfVisible false def } if } ifelse } def
+/InitOL { /OLUnit [ gsave CM STV 2890.79999 dup moveto setmatrix CP
+grestore ] cvx def /BOL { BeginOL } def /IfVisible true def } def
+end
+%%EndProcSet
+%%BeginProcSet: psn-beta.pro
+%!
+% PostScript prologue for psn-beta.tex.
+% Created 1993/4/16. Source file was psn-beta.doc
+% Version 0.93a, 93/03/12.
+% For use with Rokicki's dvips.
+/tx@NodeDict 400 dict def tx@NodeDict begin
+tx@Dict begin /T /translate load def end
+/NewNode { dict dup 3 -1 roll ED begin /NodeMtrx CM def } def
+/InitPnode { /Y ED /X ED /NodePos { Nodesep Cos mul Nodesep Sin mul } def
+} def
+/InitCnode { /r ED /Y ED /X ED /NodePos { Nodesep r add dup Cos mul exch
+Sin mul } def } def
+/GetRnodePos { Cos 0 gt { /dx r Nodesep add def } { /dx l Nodesep sub def
+} ifelse Sin 0 gt { /dy u Nodesep add def } { /dy d Nodesep sub def }
+ifelse dx Sin mul abs dy Cos mul abs gt { dy Cos mul Sin div dy } { dx
+dup Sin mul Cos Div } ifelse } def
+/InitRnode { /Y ED /X ED X sub /r ED /l X neg def Y add neg /d ED Y sub
+/u ED /NodePos { GetRnodePos } def } def
+/DiaNodePos { w h mul w Sin mul abs h Cos mul abs add Div Nodesep add dup
+Cos mul exch Sin mul } def
+/TriNodePos { Sin s lt { d Nodesep sub dup Cos mul Sin Div exch } { w h
+mul w Sin mul h Cos abs mul add Div Nodesep add dup Cos mul exch Sin mul
+} ifelse } def
+/InitTriNode { sub 2 div exch 2 div exch 2 copy T 2 copy 4 index index /d
+ED pop pop pop pop -90 mul rotate /NodeMtrx CM def /X 0 def /Y 0 def d
+sub abs neg /d ED d add /h ED 2 div h mul h d sub Div /w ED /s d w Atan
+sin def /NodePos { TriNodePos } def } def
+/OvalNodePos { /ww w Nodesep add def /hh h Nodesep add def Sin ww mul Cos
+hh mul Atan dup cos ww mul exch sin hh mul } def
+/GetCenter { begin X Y NodeMtrx transform CM itransform end } def
+/AddOffset { 1 index 0 eq { pop pop } { 2 copy 5 2 roll cos mul add 4 1
+roll sin mul sub exch } ifelse } def
+/GetEdge { begin /Nodesep ED dup 1 0 NodeMtrx dtransform CM idtransform
+exch atan sub dup sin /Sin ED cos /Cos ED Nodesep 0 ge { NodePos } {
+Nodesep neg dup Cos mul exch Sin mul } ifelse Y add exch X add exch
+NodeMtrx transform CM itransform end 4 2 roll AddOffset  } def
+/GetPos { OffsetA AngleA NodesepA nodeA GetEdge /y1 ED /x1 ED OffsetB
+AngleB NodesepB nodeB GetEdge /y2 ED /x2 ED } def
+/GetArmA { armA 0 lt { xA yA OffsetA AngleA AddOffset } { x1 y1 } ifelse
+armA abs AngleA sin mul add /y1a ED armA abs AngleA cos mul add /x1a ED
+} def
+/GetArmB { armB 0 lt { xB yB OffsetB AngleB AddOffset } { x2 y2 } ifelse
+armB abs AngleB sin mul add /y2a ED armB abs AngleB cos mul add /x2a ED
+} def
+/InitNC { /b ED /a ED /NodesepB ED /NodesepA ED /OffsetB ED /OffsetA ED
+tx@NodeDict a known tx@NodeDict b known and dup { /nodeA a load def
+/nodeB b load def nodeA GetCenter /yA ED /xA ED nodeB GetCenter /yB ED
+/xB ED } if } def
+/LPutLine { 4 copy 3 -1 roll sub neg 3 1 roll sub Atan /NAngle ED 1 t sub
+mul 3 1 roll 1 t sub mul 4 1 roll t mul add /Y ED t mul add /X ED } def
+/LPutLines { mark LPutVar counttomark 2 div 1 sub /n ED t floor dup n gt
+{ pop n 1 sub /t 1 def } { dup t sub neg /t ED } ifelse cvi 2 mul { pop
+} repeat LPutLine cleartomark } def
+/BezierMidpoint { /y3 ED /x3 ED /y2 ED /x2 ED /y1 ED /x1 ED /y0 ED /x0 ED
+/t ED /cx x1 x0 sub 3 mul def /cy y1 y0 sub 3 mul def /bx x2 x1 sub 3
+mul cx sub def /by y2 y1 sub 3 mul cy sub def /ax x3 x0 sub cx sub bx
+sub def /ay y3 y0 sub cy sub by sub def ax t 3 exp mul bx t t mul mul
+add cx t mul add x0 add ay t 3 exp mul by t t mul mul add cy t mul add
+y0 add 3 ay t t mul mul mul 2 by t mul mul add cy add 3 ax t t mul mul
+mul 2 bx t mul mul add cx add atan /NAngle ED /Y ED /X ED } def
+/HPosBegin { yB yA ge { /t 1 t sub def } if /Y yB yA sub t mul yA add def
+} def
+/HPosEnd { /X Y yA sub yB yA sub Div xB xA sub mul xA add def /NAngle yB
+yA sub xB xA sub Atan def } def
+/HPutLine { HPosBegin /yA ED /xA ED /yB ED /xB ED HPosEnd  } def
+/HPutLines { HPosBegin yB yA ge { /check { ge } def } { /check { lt } def
+} ifelse mark xB yB LPutVar { dup Y check { exit } { /yA ED /xA ED }
+ifelse } loop /yB ED /xB ED cleartomark HPosEnd  } def
+/VPosBegin { xB xA lt { /t 1 t sub def } if /X xB xA sub t mul xA add def
+} def
+/VPosEnd { /Y X xA sub xB xA sub Div yB yA sub mul yA add def /NAngle yB
+yA sub xB xA sub Atan def } def
+/VPutLine { VPosBegin /yA ED /xA ED /yB ED /xB ED VPosEnd  } def
+/VPutLines { VPosBegin xB xA ge { /check { ge } def } { /check { lt } def
+} ifelse mark xB yB LPutVar { 1 index X check { exit } { /yA ED /xA ED }
+ifelse } loop /yB ED /xB ED cleartomark VPosEnd  } def
+/HPutCurve { gsave newpath /SaveLPutVar /LPutVar load def LPutVar 8 -2
+roll moveto curveto flattenpath /LPutVar [ {} {} {} {} pathforall ] cvx
+def grestore exec /LPutVar /SaveLPutVar load def } def
+/NCCoor { /AngleA yB yA sub xB xA sub Atan def /AngleB AngleA 180 add def
+GetPos /LPutVar [ x2 y2 x1 y1 ] cvx def /LPutPos { LPutVar LPutLine }
+def /HPutPos { LPutVar HPutLine } def /VPutPos { LPutVar VPutLine } def
+LPutVar } def
+/NCLine { NCCoor tx@Dict begin ArrowA CP 4 2 roll ArrowB lineto pop pop
+end } def
+/NCCurve { GetPos x1 x2 sub y1 y2 sub Pyth 2 div dup 3 -1 roll mul /armA
+ED mul /armB ED GetArmA GetArmB x1a y1a x1 y1 tx@Dict begin ArrowA end
+x2a y2a x2 y2 tx@Dict begin ArrowB end curveto /LPutVar [ x1 y1 x1a y1a
+x2a y2a x2 y2 ] cvx def /LPutPos { t LPutVar BezierMidpoint } def
+/HPutPos { { HPutLines } HPutCurve } def /VPutPos { { VPutLines }
+HPutCurve } def } def
+/NCAngles { GetPos GetArmA GetArmB /mtrx AngleA matrix rotate def x1a y1a
+mtrx transform pop x2a y2a mtrx transform exch pop mtrx itransform /y0
+ED /x0 ED mark armB 0 ne { x2 y2 } if x2a y2a x0 y0 x1a y1a armA 0 ne {
+x1 y1 } if tx@Dict begin false Line end /LPutVar [ x2 y2 x2a y2a x0 y0
+x1a y1a x1 y1 ] cvx def /LPutPos { LPutLines } def /HPutPos { HPutLines
+} def /VPutPos { VPutLines } def } def
+/NCAngle { GetPos GetArmB /mtrx AngleA matrix rotate def x2a y2a mtrx
+itransform pop x1 y1 mtrx itransform exch pop mtrx transform /y0 ED /x0
+ED mark armB 0 ne { x2 y2 } if x2a y2a x0 y0 x1 y1 tx@Dict begin false
+Line end /LPutVar [ x2 y2 x2a y2a x0 y0 x1 y1 ] cvx def /LPutPos {
+LPutLines } def /HPutPos { HPutLines } def /VPutPos { VPutLines } def }
+def
+/NCBar { GetPos GetArmA GetArmB /mtrx AngleA matrix rotate def x1a y1a
+mtrx itransform pop x2a y2a mtrx itransform pop sub dup 0 mtrx transform
+3 -1 roll 0 gt { /y2a exch y2a add def /x2a exch x2a add def } { /y1a
+exch neg y1a add def /x1a exch neg x1a add def } ifelse mark armB 0 ne {
+x2 y2 } if x2a y2a x1a y1a armA 0 ne { x1 y1 } if tx@Dict begin false
+Line end /LPutVar [ x2 y2 x2a y2a x1a y1a x1 y1 ] cvx def /LPutPos {
+LPutVar LPutLines } def /HPutPos { HPutLines } def /VPutPos { VPutLines
+} def } def
+/NCDiag { GetPos GetArmA GetArmB mark armB 0 ne { x2 y2 } if x2a y2a x1a
+y1a armA 0 ne { x1 y1 } if tx@Dict begin false Line end /LPutVar [ x2 y2
+x2a y2a x1a y1a x1 y1 ] cvx def /LPutPos { LPutLines } def /HPutPos {
+HPutLines } def /VPutPos { VPutLines } def } def
+/NCDiagg { OffsetA AngleA NodesepA nodeA GetEdge /y1 ED /x1 ED GetArmA yB
+y1a sub xB x1a sub Atan 180 add /AngleB ED OffsetB AngleB NodesepB nodeB
+GetEdge /y2 ED /x2 ED mark x2 y2 x1a y1a armA 0 ne { x1 y1 } if tx@Dict
+begin false Line end /LPutVar [ x2 y2 x1a y1a x1 y1] cvx def /LPutPos {
+LPutLines } def /HPutPos { HPutLines } def /VPutPos { VPutLines } def }
+def
+/NCLoop { GetPos GetArmA GetArmB /mtrx AngleA matrix rotate def x1a y1a
+mtrx transform loopsize add /y1b ED /x1b ED /x2b x2a y2a mtrx transform
+pop def x2b y1b mtrx itransform /y2b ED /x2b ED x1b y1b mtrx itransform
+/y1b ED /x1b ED mark armB 0 ne { x2 y2 } if x2a y2a x2b y2b x1b y1b x1a
+y1a armA 0 ne { x1 y1 } if tx@Dict begin false Line end /LPutVar [ x2 y2
+x2a y2a x2b y2b x1b y1b x1a y1a x1 y1 ] cvx def /LPutPos { LPutLines }
+def /HPutPos { HPutLines } def /VPutPos { VPutLines } def } def
+/NCCircle { 0 0 NodesepA nodeA GetEdge pop xA sub 2 div dup 2 exp r r mul
+sub abs sqrt atan 2 mul /a ED r AngleA 90 add PtoC yA add exch xA add
+exch 2 copy /LPutVar [ 4 2 roll r a ] def /LPutPos { LPutVar aload pop t
+360 mul add dup 5 1 roll 90 sub PtoC 3 -1 roll add 3 1 roll add exch 3
+-1 roll } def /HPutPos { LPutPos } def /VPutPos { LPutPos } def r AngleA
+90 sub a add AngleA 270 add a sub tx@Dict begin /angleB ED /angleA ED /r
+ED /c 57.2957 r Div def /y ED /x ED } def
+/NCBox { /d ED /h ED /AngleB yB yA sub xB xA sub Atan def /AngleA AngleB
+180 add def GetPos /dx d AngleB sin mul def /dy d AngleB cos mul neg def
+/hx h AngleB sin mul neg def /hy h AngleB cos mul def /LPutVar [ x1 hx
+add y1 hy add x2 hx add y2 hy add x2 dx add y2 dy add x1 dx add y1 dy
+add ] cvx def /LPutPos { LPutLines } def /HPutPos { xB yB xA yA LPutLine
+} def /VPutPos { HPutPos } def mark LPutVar tx@Dict begin false Polygon
+end } def
+/NCArcBox { /l ED neg /d ED /h ED /a ED /AngleA yB yA sub xB xA sub Atan
+def /AngleB AngleA 180 add def /tA AngleA a sub 90 add def /tB tA a 2
+mul add def /r xB xA sub tA cos tB cos sub Div dup 0 eq { pop 1 } if def
+/x0 xA r tA cos mul add def /y0 yA r tA sin mul add def /c 57.2958 r div
+def /AngleA AngleA a sub 180 add def /AngleB AngleB a add 180 add def
+GetPos /AngleA tA 180 add yA y1 sub xA x1 sub Pyth c mul sub def /AngleB
+tB 180 add yB y2 sub xB x2 sub Pyth c mul add def l 0 eq { x0 y0 r h add
+AngleA AngleB arc x0 y0 r d add AngleB AngleA arcn } { x0 y0 translate
+/tA AngleA l c mul add def /tB AngleB l c mul sub def 0 0 r h add tA tB
+arc r h add AngleB PtoC r d add AngleB PtoC 2 copy 6 2 roll l arcto 4 {
+pop } repeat r d add tB PtoC l arcto 4 { pop } repeat 0 0 r d add tB tA
+arcn r d add AngleA PtoC r h add AngleA PtoC 2 copy 6 2 roll l arcto 4 {
+pop } repeat r h add tA PtoC l arcto 4 { pop } repeat } ifelse closepath
+/LPutVar [ x0 y0 r AngleA AngleB h d ] cvx def /LPutPos { LPutVar /d ED
+/h ED /AngleB ED /AngleA ED /r ED /y0 ED /x0 ED t 1 le { r h add AngleA
+1 t sub mul AngleB t mul add dup 90 add /NAngle ED PtoC } { t 2 lt {
+/NAngle AngleB 180 add def r 2 t sub h mul t 1 sub d mul add add AngleB
+PtoC } { t 3 lt { r d add AngleB 3 t sub mul AngleA 2 t sub mul add dup
+90 sub /NAngle ED PtoC } { /NAngle AngleA 180 add def r 4 t sub d mul t
+3 sub h mul add add AngleA PtoC } ifelse } ifelse } ifelse y0 add /Y ED
+x0 add /X ED } def /HPutPos { LPutPos } def /VPutPos { LPutPos } def }
+def
+/Tfan { /AngleA yB yA sub xB xA sub Atan def OffsetA AngleA NodesepA
+nodeA GetEdge /y1 ED /x1 ED w x1 xB sub y1 yB sub Pyth Pyth w Div CLW 2
+div mul 2 div dup AngleA sin mul y1 add /y1 ED AngleA cos mul x1 add /x1
+ED /LPutVar [ x1 y1 m { xB w add yB xB w sub yB } { xB yB w sub xB yB w
+add } ifelse x1 y1 ] cvx def /LPutPos { LPutLines } def /VPutPos@ {
+LPutVar flag { 8 4 roll pop pop pop pop } { pop pop pop pop 4 2 roll }
+ifelse } def /VPutPos { VPutPos@ VPutLine } def /HPutPos { VPutPos@
+HPutLine } def mark LPutVar tx@Dict begin /ArrowA { moveto } def /ArrowB
+{ } def false Line closepath end } def
+/LPutCoor { NAngle tx@Dict begin /NAngle ED end gsave CM STV CP Y sub neg
+exch X sub neg exch moveto setmatrix CP grestore } def
+/LPut { tx@NodeDict /LPutPos known { LPutPos } { CP /Y ED /X ED /NAngle 0
+def } ifelse LPutCoor  } def
+/HPutAdjust { Sin Cos mul 0 eq { 0 } { d Cos mul Sin div flag not { neg }
+if h Cos mul Sin div flag { neg } if 2 copy gt { pop } { exch pop }
+ifelse } ifelse s add flag { r add neg } { l add } ifelse X add /X ED }
+def
+/VPutAdjust { Sin Cos mul 0 eq { 0 } { l Sin mul Cos div flag { neg } if
+r Sin mul Cos div flag not { neg } if 2 copy gt { pop } { exch pop }
+ifelse } ifelse s add flag { d add } { h add neg } ifelse Y add /Y ED }
+def
+end
+%%EndProcSet
+%%BeginProcSet: texps.pro
+%!
+TeXDict begin /rf{findfont dup length 1 add dict begin{1 index /FID ne 2 index
+/UniqueID ne and{def}{pop pop}ifelse}forall[1 index 0 6 -1 roll exec 0 exch 5
+-1 roll VResolution Resolution div mul neg 0 0]/Metrics exch def dict begin
+Encoding{exch dup type /integertype ne{pop pop 1 sub dup 0 le{pop}{[}ifelse}{
+FontMatrix 0 get div Metrics 0 get div def}ifelse}forall Metrics /Metrics
+currentdict end def[2 index currentdict end definefont 3 -1 roll makefont
+/setfont load]cvx def}def /ObliqueSlant{dup sin S cos div neg}B /SlantFont{4
+index mul add}def /ExtendFont{3 -1 roll mul exch}def /ReEncodeFont{/Encoding
+exch def}def end
+%%EndProcSet
+%%BeginProcSet: special.pro
+%!
+TeXDict begin /SDict 200 dict N SDict begin /@SpecialDefaults{/hs 612 N /vs
+792 N /ho 0 N /vo 0 N /hsc 1 N /vsc 1 N /ang 0 N /CLIP 0 N /rwiSeen false N
+/rhiSeen false N /letter{}N /note{}N /a4{}N /legal{}N}B /@scaleunit 100 N
+/@hscale{@scaleunit div /hsc X}B /@vscale{@scaleunit div /vsc X}B /@hsize{/hs
+X /CLIP 1 N}B /@vsize{/vs X /CLIP 1 N}B /@clip{/CLIP 2 N}B /@hoffset{/ho X}B
+/@voffset{/vo X}B /@angle{/ang X}B /@rwi{10 div /rwi X /rwiSeen true N}B /@rhi
+{10 div /rhi X /rhiSeen true N}B /@llx{/llx X}B /@lly{/lly X}B /@urx{/urx X}B
+/@ury{/ury X}B /magscale true def end /@MacSetUp{userdict /md known{userdict
+/md get type /dicttype eq{userdict begin md length 10 add md maxlength ge{/md
+md dup length 20 add dict copy def}if end md begin /letter{}N /note{}N /legal{
+}N /od{txpose 1 0 mtx defaultmatrix dtransform S atan/pa X newpath clippath
+mark{transform{itransform moveto}}{transform{itransform lineto}}{6 -2 roll
+transform 6 -2 roll transform 6 -2 roll transform{itransform 6 2 roll
+itransform 6 2 roll itransform 6 2 roll curveto}}{{closepath}}pathforall
+newpath counttomark array astore /gc xdf pop ct 39 0 put 10 fz 0 fs 2
+F/|______Courier fnt invertflag{PaintBlack}if}N /txpose{pxs pys scale ppr
+aload pop por{noflips{pop S neg S TR pop 1 -1 scale}if xflip yflip and{pop S
+neg S TR 180 rotate 1 -1 scale ppr 3 get ppr 1 get neg sub neg ppr 2 get ppr 0
+get neg sub neg TR}if xflip yflip not and{pop S neg S TR pop 180 rotate ppr 3
+get ppr 1 get neg sub neg 0 TR}if yflip xflip not and{ppr 1 get neg ppr 0 get
+neg TR}if}{noflips{TR pop pop 270 rotate 1 -1 scale}if xflip yflip and{TR pop
+pop 90 rotate 1 -1 scale ppr 3 get ppr 1 get neg sub neg ppr 2 get ppr 0 get
+neg sub neg TR}if xflip yflip not and{TR pop pop 90 rotate ppr 3 get ppr 1 get
+neg sub neg 0 TR}if yflip xflip not and{TR pop pop 270 rotate ppr 2 get ppr 0
+get neg sub neg 0 S TR}if}ifelse scaleby96{ppr aload pop 4 -1 roll add 2 div 3
+1 roll add 2 div 2 copy TR .96 dup scale neg S neg S TR}if}N /cp{pop pop
+showpage pm restore}N end}if}if}N /normalscale{Resolution 72 div VResolution
+72 div neg scale magscale{DVImag dup scale}if 0 setgray}N /psfts{S 65781.76
+div N}N /startTexFig{/psf$SavedState save N userdict maxlength dict begin
+/magscale false def normalscale currentpoint TR /psf$ury psfts /psf$urx psfts
+/psf$lly psfts /psf$llx psfts /psf$y psfts /psf$x psfts currentpoint /psf$cy X
+/psf$cx X /psf$sx psf$x psf$urx psf$llx sub div N /psf$sy psf$y psf$ury
+psf$lly sub div N psf$sx psf$sy scale psf$cx psf$sx div psf$llx sub psf$cy
+psf$sy div psf$ury sub TR /showpage{}N /erasepage{}N /copypage{}N /p 3 def
+@MacSetUp}N /doclip{psf$llx psf$lly psf$urx psf$ury currentpoint 6 2 roll
+newpath 4 copy 4 2 roll moveto 6 -1 roll S lineto S lineto S lineto closepath
+clip newpath moveto}N /endTexFig{end psf$SavedState restore}N /@beginspecial{
+SDict begin /SpecialSave save N gsave normalscale currentpoint TR
+@SpecialDefaults count /ocount X /dcount countdictstack N}N /@setspecial{CLIP
+1 eq{newpath 0 0 moveto hs 0 rlineto 0 vs rlineto hs neg 0 rlineto closepath
+clip}if ho vo TR hsc vsc scale ang rotate rwiSeen{rwi urx llx sub div rhiSeen{
+rhi ury lly sub div}{dup}ifelse scale llx neg lly neg TR}{rhiSeen{rhi ury lly
+sub div dup scale llx neg lly neg TR}if}ifelse CLIP 2 eq{newpath llx lly
+moveto urx lly lineto urx ury lineto llx ury lineto closepath clip}if
+/showpage{}N /erasepage{}N /copypage{}N newpath}N /@endspecial{count ocount
+sub{pop}repeat countdictstack dcount sub{end}repeat grestore SpecialSave
+restore end}N /@defspecial{SDict begin}N /@fedspecial{end}B /li{lineto}B /rl{
+rlineto}B /rc{rcurveto}B /np{/SaveX currentpoint /SaveY X N 1 setlinecap
+newpath}N /st{stroke SaveX SaveY moveto}N /fil{fill SaveX SaveY moveto}N
+/ellipse{/endangle X /startangle X /yrad X /xrad X /savematrix matrix
+currentmatrix N TR xrad yrad scale 0 0 1 startangle endangle arc savematrix
+setmatrix}N end
+%%EndProcSet
+TeXDict begin 40258431 52099146 1000 300 300 @start /Fa 137[21
+1[12 21 14 1[23 3[10 6[21 1[21 23 21 4[10 5[25 86[{}12 37.412769
+/Helvetica-Bold rf /Fb 137[22 22 12 17 15 2[22 22 34 3[12 22
+2[19 22 19 1[19 12[27 15[32 9[12 11[11 46[{}18 43.800289 /Times-Roman
+rf /Fc 138[16 1[12 12 15[16 98[{}4 32.000225 /Times-Italic
+rf /Fd 60[11 77[19 9 17 2[19 19 19 8[19 19 17 1[19 1[19 2[9
+92[{}13 34.166969 /Helvetica rf /Fe 192[20 63[{}1 40.000278
+/Times-Bold rf /Ff 137[19 21 11 19 13 1[21 21 21 30 9 19 2[21
+21 1[19 1[19 21 19 4[9 8[23 4[25 28 10[25 25 65[{}23 34.166969
+/Helvetica-Bold rf /Fg 80[22 52[18 20 20 29 20 20 11 16 13
+1[20 20 20 31 11 20 1[11 20 20 13 18 20 18 20 18 7[29 29 38
+2[24 1[27 3[29 3[16 1[29 2[24 22[10 13 10 44[{}37 40.000278
+/Times-Roman rf /Fh 200[14 14 14 14 14 14 14 49[{}7 28.000196
+/Times-Roman rf /Fi 200[16 16 16 16 16 1[16 49[{}6 32.000225
+/Times-Roman rf /Fj 72[22 19[26 163[{}2 48.249817 /Symbol rf
+/Fk 139[19 27 2[34 6[19 38[46 66[{}5 69.120476 /Times-Roman
+rf /Fl 139[28 47 3[52 52 4[24 3[47 52 47 1[47 18[61 10[61 67[{}11
+85.007408 /Helvetica-Bold rf /Fm 182[102 73[{}1 368.041595
+/Helvetica-Bold rf /Fn 143[50 50 50 1[28 2[28 1[50 1[44 3[44
+24[72 5[66 72 65[{}11 99.520683 /Times-Roman rf /Fo 134[34
+8[38 1[38 4[19 1[34 1[31 3[34 24[54 5[46 2[34 63[{}10 69.120476
+/Times-Bold rf /Fp 134[19 19 27 1[21 10 19 12 1[21 21 21 31
+8 2[8 21 21 1[21 21 19 21 21 17[29 27 31 21 2[10 2[23 2[27
+1[25 6[10 21 21 21 21 21 21 21 21 21 21 48[{}39 37.412769 /Helvetica
+rf /Fq 81[27 57[16 19 3[24 27 1[13 27 1[13 3[21 27 21 27 24
+18[35 14[24 63[{}15 48.000336 /Times-Bold rf /Fr 134[20 20
+29 1[23 11 20 14 1[23 23 23 34 9 2[9 1[23 11 23 23 20 1[23
+30[27 27 14[23 23 23 48[{}24 41.000366 /Helvetica-Oblique rf
+/Fs 60[14 20[20 48[14 11 14 20 20 20 29 20 23 11 20 14 23 23
+23 23 34 9 20 1[9 23 23 11 23 23 20 23 23 1[23 1[11 11 11 1[27
+27 39 1[29 25 1[29 2[32 29 1[23 2[11 29 2[27 29 29 27 27 1[23
+24 24 24 1[11 23 23 23 23 23 23 23 23 23 23 1[11 14 11 24 16
+14 14 1[27 36 23 2[11 33[{}76 41.000366 /Helvetica rf /Ft 55[16
+77[19 21 21 32 21 24 13 19 19 1[24 24 24 35 13 2[13 24 24 13
+21 24 21 24 24 8[29 1[29 2[24 29 1[29 1[32 8[29 35 32 29 29
+5[16 16 11[12 46[{}38 48.000336 /Times-Italic rf /Fu 81[25
+51[20 1[23 32 23 25 14 23 16 1[25 25 25 36 11 2[11 25 25 14
+23 25 23 25 23 4[11 9[29 15[29 29 3[24 11[23 23 2[14 45[{}31
+41.000366 /Helvetica-Bold rf /Fv 138[32 19 5[32 1[16 2[16 1[29
+19 25 32 2[29 27[38 41 1[38 7[19 58[{}14 57.600342 /Times-Bold
+rf /Fw 67[58 188[{}1 57.899727 /Symbol rf /Fx 134[27 27 38
+1[30 16 27 19 2[30 30 44 14 2[14 30 30 16 27 30 27 30 27 14
+10[35 2[35 5[30 7[35 1[35 35 3[29 8[27 27 27 27 1[14 4[19 2[14
+39[{}35 49.200378 /Helvetica-BoldOblique rf /Fy 134[25 25 35
+2[14 25 16 1[27 27 27 1[11 2[11 1[27 14 27 3[27 46[27 27 27
+48[{}18 49.200378 /Helvetica-Oblique rf /Fz 130[16 1[16 29[14
+1[14 46[14 1[19 16 16 40[{}8 49.200378 /Helvetica rf /FA 130[19
+1[19 25 27 27 38 27 30 16 27 19 1[30 30 30 44 14 27 1[14 30
+30 16 27 30 27 30 27 4[14 6[35 30 33 35 3[35 41 9[35 5[29 4[27
+27 27 27 27 1[27 27 27 1[14 16 14 1[19 16 16 40[{}49 49.200378
+/Helvetica-Bold rf /FB 59[16 9[21 8[24 1[27 27 3[21 44[23 10
+23 21 24 24 35 24 24 13 19 16 24 24 24 24 37 13 24 13 13 24
+24 16 21 24 21 24 21 16 6[35 35 45 2[29 27 32 1[27 35 35 43
+29 2[16 35 35 27 29 35 32 32 35 3[27 1[13 13 24 24 24 24 24
+24 24 24 24 24 13 12 16 12 27 1[16 16 16 5[16 33[{}78 48.000336
+/Times-Roman rf /FC 134[39 39 55 1[43 24 39 27 1[43 43 43 63
+20 2[20 43 43 1[39 43 39 43 39 17[55 51 59 43 2[20 2[43 1[51
+2[51 6[24 39 39 39 39 39 39 39 39 39 39 48[{}39 70.862267 /Helvetica-Bold
+rf end
+%%EndProlog
+%%BeginSetup
+%%Feature: *Resolution 300dpi
+TeXDict begin
+
+%%EndSetup
+%%Page: 1 1
+0 bop 366 51 a FC(1)70 b(Dots)591 172 y FB(The)12 b(graphics)g(objects)712
+315 y FA(\\psdot)p Fz(*[)p Fy(par)5 b Fz(]\()p Fy(x1)p Fz(,)p
+Fy(y1)p Fz(\))712 390 y FA(\\psdots)p Fz(*[)p Fy(par)g Fz(])p
+FA(\()p Fx(x1)p FA(,)p Fx(y1)p FA(\))p Fz(\()p Fy(x2)s Fz(,)p
+Fy(y2)s Fz(\))q Fw(\274)s Fz(\()p Fy(xn)q Fz(,)p Fy(yn)q Fz(\))591
+518 y FB(put)12 b(a)g(dot)g(at)g(each)h(coordinate.)591 607
+y(What)f(a)g(\252dot\272)h(is)f(depends)f(on)h(the)g(value)h(of)f(the)712
+736 y FA(dotstyle=)p Fx(style)671 b Fv(Default:)20 b FA(*)591
+864 y FB(parameter)m(.)d(This)7 b(also)g(determines)g(the)g(dots)g(you)g(get)
+g(when)g Fu(showpoints=true)p FB(.)591 953 y(The)12 b(dot)g(styles)g(are)g
+(also)g(pretty)h(intuitive:)759 1087 y Ft(Style)75 b(Example)798
+1167 y Fs(*)112 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <B7> /Symbol 0. [2.77778 0.0 0.0 2.77778
+-0.638889 -0.813889] DS 2 mul dup matrix scale matrix concatmatrix
+exch matrix rotate matrix concatmatrix exch findfont exch makefont
+setfont { moveto 0 show } dup 1 4 -1 roll put bind /Dot ED  newpath
+n { Dot } repeat end
+
+@endspecial 794
+1239 a(o)d @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /r2 DS CLW sub def /Dot { gsave T 0 0
+DS 0 360 arc fill 1. setgray 0 0 r2 0 360 arc fill  grestore } def
+ newpath n { Dot } repeat end
+
+@endspecial 794 1312
+a(+)f @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <2B> /Symbol 0. [2.2 0.0 0.0 2.2 -0.6039
+-0.5863] DS 2 mul dup matrix scale matrix concatmatrix exch matrix
+rotate matrix concatmatrix exch findfont exch makefont setfont { moveto
+0 show } dup 1 4 -1 roll put bind /Dot ED  newpath n { Dot } repeat
+end
+
+@endspecial 795 1384 a(x)j
+@beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <B4> /Symbol 0. [1.8 0.0 0.0 1.8 -0.495
+-0.4788] DS 2 mul dup matrix scale matrix concatmatrix exch matrix
+rotate matrix concatmatrix exch findfont exch makefont setfont { moveto
+0 show } dup 1 4 -1 roll put bind /Dot ED  newpath n { Dot } repeat
+end
+
+@endspecial 735 1456 a(asterisk)51
+b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <2A> /Symbol 0. [2.39808 0.0 0.0 2.39808
+-0.589928 -0.821343] DS 2 mul dup matrix scale matrix concatmatrix
+exch matrix rotate matrix concatmatrix exch findfont exch makefont
+setfont { moveto 0 show } dup 1 4 -1 roll put bind /Dot ED  newpath
+n { Dot } repeat end
+
+@endspecial 757 1528 a(oplus)71
+b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <C5> /Symbol 0. [1.44928 0.0 0.0 1.44928
+-0.562319 -0.478261] DS 2 mul dup matrix scale matrix concatmatrix
+exch matrix rotate matrix concatmatrix exch findfont exch makefont
+setfont { moveto 0 show } dup 1 4 -1 roll put bind /Dot ED  newpath
+n { Dot } repeat end
+
+@endspecial 746 1600 a(otimes)60
+b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <C4> /Symbol 0. [1.44928 0.0 0.0 1.44928
+-0.562319 -0.475362] DS 2 mul dup matrix scale matrix concatmatrix
+exch matrix rotate matrix concatmatrix exch findfont exch makefont
+setfont { moveto 0 show } dup 1 4 -1 roll put bind /Dot ED  newpath
+n { Dot } repeat end
+
+@endspecial 800 1673 a(|)115 b
+@beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def 2.0 5. CLW mul add 2 div /DS ED /Dot {
+gsave T 0 DS moveto 0 DS neg L stroke grestore } def  newpath n { Dot
+} repeat end
+
+@endspecial 1378 1087 a Ft(Style)98
+b(Example)1362 1167 y Fs(square)80 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /r1 DS .886 mul def /r2 r1 CLW sub def
+/Dot { gsave T r1 /r ED r r moveto r r neg L r neg r neg L r neg r
+L fill 1. setgray r2 /r ED r r moveto r r neg L r neg r neg L r neg
+r L fill  grestore } def  newpath n { Dot } repeat end
+
+
+@endspecial 1355 1239 a(square*)71 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /r1 DS .886 mul def /Dot { gsave T r1
+/r ED r r moveto r r neg L r neg r neg L r neg r L fill  grestore }
+def  newpath n { Dot } repeat end
+
+
+@endspecial 1347 1312 a(diamond)63 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <A8> /Symbol 0. [2.3 0.0 0.0 2.3 -0.8533
+-0.5336] DS 2 mul dup matrix scale matrix concatmatrix exch matrix
+rotate matrix concatmatrix exch findfont exch makefont setfont { moveto
+0 show } dup 1 4 -1 roll put bind /Dot ED  newpath n { Dot } repeat
+end
+
+
+@endspecial 1339 1384 a(diamond*)55 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def <E0> /Symbol 0. [1.9 0.0 0.0 1.9 -0.4598
+-0.70775] DS 2 mul dup matrix scale matrix concatmatrix exch matrix
+rotate matrix concatmatrix exch findfont exch makefont setfont { moveto
+0 show } dup 1 4 -1 roll put bind /Dot ED  newpath n { Dot } repeat
+end
+
+
+@endspecial 1358 1456 a(triangle)75 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /y1 DS .778 mul neg def /x1 y1 1.732 mul
+neg def /y2 y1 CLW add def /x2 y2 1.732 mul neg def /Dot { gsave T
+x1 y1 /y ED /x ED x y moveto x neg y L 0 x L fill 1. setgray x2 y2
+/y ED /x ED x y moveto x neg y L 0 x L fill  grestore } def  newpath
+n { Dot } repeat end
+
+
+@endspecial 1350 1528 a(triangle*)67 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /y1 DS .778 mul neg def /x1 y1 1.732 mul
+neg def /Dot { gsave T x1 y1 /y ED /x ED x y moveto x neg y L 0 x L
+fill  grestore } def  newpath n { Dot } repeat end
+
+
+@endspecial 1340 1600 a(pentagon)56 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def DS .93 mul dup 1.236 mul /r1 ED CLW sub
+1.236 mul /r2 ED /Dot { gsave T r1 /r ED gsave 0 r moveto 4 { 72 rotate
+0 r L } repeat fill grestore 1. setgray r2 /r ED gsave 0 r moveto 4
+{ 72 rotate 0 r L } repeat fill grestore  grestore } def  newpath n
+{ Dot } repeat end
+
+
+@endspecial 1332 1673 a(pentagon*)48 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 54.06003 5.161 41.25638
+5.161 28.45274 5.161 15.6491 5.161 2.84544 5.161  false NArray /DS
+2.0 2. CLW mul add 2 div def /r1 DS 1.149 mul def /Dot { gsave T r1
+/r ED gsave 0 r moveto 4 { 72 rotate 0 r L } repeat fill grestore
+grestore } def  newpath n { Dot } repeat end
+
+
+@endspecial 591 1799 a FB(Except)19 b(for)g Fs(diamond)p FB(,)g(the)g
+(center)h(of)f(dot)g(styles)g(with)f(a)i(hollow)e(center)i(is)591
+1859 y(colored)12 b Fu(\256llcolor)p FB(.)591 1948 y(Here)c(are)i(the)f
+(parameters)h(for)f(changing)g(the)g(size)h(and)e(orientation)j(of)d(the)i
+(dots:)591 2077 y FA(dotsize=)p Fx(dim)i(`num')594 b Fv(Default:)19
+b FA(2pt)c(2)712 2157 y FB(The)g(diameter)h(of)e(a)g(circle)i(or)e(disc)g(is)
+g Fr(dim)h FB(plus)f Fr(num)h FB(times)g Fu(linewidth)712 2218
+y FB(\(if)d(the)f(optional)h Fr(num)f FB(is)g(included\).)17
+b(The)12 b(size)f(of)g(the)g(other)g(dots)g(styles)712 2278
+y(is)g(similar)h(\(except)g(for)e(the)h(size)h(of)e(the)1382
+2267 y Ft(\310)1392 2278 y FB(|)g(dot)h(style,)g(which)g(is)g(set)g(by)f(the)
+712 2338 y Fu(tbarsize)i FB(parameter)h(described)f(on)g(page)g
+Fq(??)p FB(\).)591 2439 y FA(dotscale=)p Fx(num1)h(`num2')581
+b Fv(Default:)20 b FA(1)712 2520 y FB(The)12 b(dots)e(are)i(scaled)f
+(horizontally)h(by)f Fr(num1)f FB(and)h(vertically)h(by)f Fr(num2)s
+FB(.)712 2580 y(If)i(you)g(only)g(include)g Fr(num1)p FB(,)f(the)i(arrows)e
+(are)h(scaled)g(by)g Fr(num1)f FB(in)h(both)712 2640 y(directions.)1928
+2828 y Fp(1)p eop
+%%Page: 2 2
+1 bop 591 50 a FA(dotangle=)p Fx(angle)750 b Fv(Default:)20
+b FA(0)712 130 y FB(After)12 b(setting)h(the)f(size)g(and)g(scaling)h(the)f
+(dots,)g(the)g(dots)g(are)g(rotated)h(by)712 190 y Fr(angle)q
+FB(.)366 386 y FC(2)70 b(Arrowheads)22 b(and)e(such)591 507
+y FB(New)11 b(arrows:)809 628 y Ft(V)-5 b(alue)54 b(Example)36
+b(Name)820 708 y Fs(|<->|)65 b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar 0 CLW 2 div T newpath false 0.4 1.4 1.5 2. Arrow  EndArrow
+ moveto } def /ArrowB { BeginArrow 2.0 5. Tbar 0 CLW 2 div T newpath
+false 0.4 1.4 1.5 2. Arrow  EndArrow  } def [ 36.98865 5.161 0.0 5.161
+ /Lineto /lineto load def false Line  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+203 w FB(T)l(-bars)11 b(and)h(arrowheads.)805 780 y Fs(|<*->|*)48
+b @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+0 CLW -2 div T 2.0 5. Tbar 0 CLW 2 div T newpath false 0.4 1.4 1.5
+2. Arrow  EndArrow  moveto } def /ArrowB { BeginArrow 0 CLW -2 div
+T 2.0 5. Tbar 0 CLW 2 div T newpath false 0.4 1.4 1.5 2. Arrow  EndArrow
+ } def [ 36.98865 5.161 0.0 5.161  /Lineto /lineto load def false Line
+ gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 203 w FB(T)l(-bars)11
+b(and)h(arrowheads,)g(\257ush.)591 904 y(The)e(size)g(of)f(these)h(line)h
+(terminators)f(is)g(controlled)h(by)e(the)h(following)g(parame-)591
+964 y(ters.)17 b(In)11 b(the)h(description)f(of)h(the)f(parameters,)i(the)e
+(width)h(always)f(refers)g(to)g(the)591 1025 y(dimension)g(perpendicular)h
+(to)g(the)g(line,)g(and)f(length)h(refers)f(to)h(a)f(dimension)h(in)591
+1085 y(the)g(direction)h(of)f(the)g(line.)591 1211 y FA(arrowsize=)p
+Fx(dim)g(`num')496 b Fv(Default:)20 b FA(1.5pt)14 b(2)712 1291
+y FB(The)g(width)g(of)g(arrowheads)f(is)g Fr(dim)h FB(plus)g
+Fr(num)g FB(times)g Fu(linewidth)g FB(\(if)f(the)712 1351 y(optional)g(`num')
+f(is)g(inclued\).)18 b(See)12 b(the)g(diagram)h(below)m(.)591
+1451 y FA(arrowlength=)p Fx(num)744 b Fv(Default:)712 1532
+y FB(Length)11 b(of)f(arrowheads,)f(as)h(a)g(fraction)h(of)e(the)i(width,)f
+(as)f(shown)g(below)m(.)591 1632 y FA(arrowinset=)p Fx(num)777
+b Fv(Default:)712 1712 y FB(Size)12 b(of)f(inset)g(for)f(arrowheads,)h(as)g
+(a)g(fraction)g(of)g(the)h(length,)f(as)g(shown)712 1772 y(below)m(.)925
+2129 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  [ 0.0 14.22636 28.45273
+0.0 0.0 56.90546 -28.45273 0.0  /Lineto /lineto load def false Polygon
+ gsave 0. setgray fill  grestore end
+
+@endspecial @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar  EndArrow  moveto } def /ArrowB { BeginArrow 2.0 5. Tbar
+ EndArrow  } def [ -35.5659 56.90546 -35.5659 0.0  /Lineto /lineto
+load def false Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+grestore end
+
+@endspecial 706 2023 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 5.39041
+neg 31.80019 10.93733 .5 Frame  gsave 1. setgray fill  grestore end
+
+
+@endspecial Ft(length)925 2129 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar  EndArrow  moveto } def /ArrowB { BeginArrow 2.0 5. Tbar
+ EndArrow  } def [ 28.45273 -7.11317 -28.45273 -7.11317  /Lineto /lineto
+load def false Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+grestore end
+
+
+@endspecial 872 2175 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 3.11519
+neg 28.60912 10.93733 .5 Frame  gsave 1. setgray fill  grestore end
+
+@endspecial(width)925
+2129 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar  EndArrow  moveto } def /ArrowB { BeginArrow 2.0 5. Tbar
+ EndArrow  } def [ 35.5659 14.22636 35.5659 0.0  /Lineto /lineto load
+def false Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial 1090 2113 a(inset)1178
+1919 y Fs(arrowsize)50 b FB(=)f Fr(dim)12 b(num)1247 1992 y
+Ft(width)50 b FB(=)f Fr(num)13 b FB(x)e Fu(linewidth)h FB(+)g
+Fr(dim1)1233 2064 y Ft(length)51 b FB(=)e Fu(arrowlength)11
+b FB(x)h Ft(width)1262 2136 y(inset)51 b FB(=)e Fu(arrowinset)11
+b FB(x)h Ft(height)591 2319 y FA(tbarsize=)p Fx(dim)g(`num')711
+b Fv(Default:)712 2399 y FB(The)18 b(width)f(of)g(a)h(t-bar)n(,)h(square)e
+(bracket)h(or)f(rounded)g(bracket)h(is)f Fr(dim)712 2459 y
+FB(plus)12 b Fr(num)g FB(times)h Fu(linewidth)f FB(\(if)g(the)g(optional)h
+(`num')f(is)g(included\).)591 2560 y FA(bracketlength=)p Fx(num)704
+b Fv(Default:)712 2640 y FB(The)13 b(height)f(of)g(a)g(square)g(bracket)h(is)
+f Fr(num)g FB(times)g(its)h(width.)591 2828 y Fp(Arrowheads)c(and)g(such)976
+b(2)p eop
+%%Page: 3 3
+2 bop 591 50 a FA(rbracketlength=)p Fx(num)685 b Fv(Default:)712
+131 y FB(The)13 b(height)f(of)g(a)g(round)g(bracket)h(is)e
+Fr(num)i FB(times)f(its)g(width.)591 232 y FA(arrowscale=)p
+Fx(arrowscale=num1)i(`num2')285 b Fv(Default:)712 313 y FB(Imagine)14
+b(that)g(arrows)e(and)h(such)g(point)g(down.)20 b(This)13 b(scales)g(the)h
+(width)712 374 y(of)h(the)h(arrows)e(by)h Fr(num1)f FB(and)h(the)g(length)h
+(\(height\))f(by)g Fr(num2)s FB(.)25 b(If)15 b(you)712 434
+y(only)e(include)h(one)e(number)n(,)h(the)h(arrows)d(are)j(scaled)f(the)g
+(same)g(in)g(both)712 494 y(directions.)18 b(Changing)11 b
+Fu(arrowscale)f FB(can)h(give)h(you)f(special)h(ef)o(fects)g(not)712
+554 y(possible)i(by)f(changing)h(the)g(parameters)h(described)f(above.)22
+b(E.g.,)14 b(you)712 614 y(can)f(change)f(the)h(width)e(of)h(lines)h(used)e
+(to)h(draw)g(brackets.)591 745 y(The)g(size)g(of)g(dots)g(is)f(controlled)i
+(by)f(the)h Fu(dotsize)e FB(parameter)m(.)366 942 y FC(3)70
+b(Lines)20 b(and)h(polygons)591 1055 y FA(\\psdiamond)p Fz(*[)p
+Fy(par)p Fz(]\()p Fy(x0)r Fz(,)t Fy(y0)r Fz(\))p FA(\()p Fx(x1)p
+FA(,)t Fx(y1)p FA(\))712 1136 y Fu(\\psdiamond)c FB(draws)f(a)h(diamond)g
+(centered)h(at)f Fs(\()p Fr(x0)r Fs(,)t Fr(y0)r Fs(\))p FB(,)g(and)g(with)f
+(the)712 1196 y(half)d(width)f(and)g(height)g(equal)h(to)f
+Fr(x1)g FB(and)g Fr(y1)p FB(,)g(respectively)m(.)118 1509 y
+@beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  gsave 0.8 SLW 0. setgray
+0.0 0.0 113.81097 56.90549 0.0 0.0 28.45274 28.45274 1 10 { 0. setgray
+} 7.0 Grid grestore end
+
+@endspecial @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 42.67911 28.45274 0. 56.90549 28.45274 /mtrx CM def
+T rotate /h ED /w ED dup 0 eq { pop } { CLW mul neg /d ED /a w h Atan
+def /h d a sin Div h add def /w d a cos Div w add def } ifelse mark
+w 2 div h 2 div w 0 0 h neg w neg 0 0 h w 2 div h 2 div /ArrowA { moveto
+} def /ArrowB { } def false Line closepath mtrx setmatrix  gsave 0.75
+setgray fill  grestore gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+
+@endspecial 712 1372 a Fs(\\psdiamond[framearc=.3,\256llstyle=solid,)758
+1432 y(\256llcolor=lightgray]\(2,1\)\(1.5,1\))712 1632 y FB(The)h(diamond)f
+(is)g(rotated)h(about)f(the)g(center)h(by)820 1734 y FA(gangle=)p
+Fx(gangle)537 b Fv(Default:)20 b FA(0)591 1835 y(\\pstriangle)p
+Fz(*[)p Fy(par)p Fz(]\()p Fy(x0)r Fz(,)t Fy(y0)r Fz(\))p FA(\()p
+Fx(x1)p FA(,)t Fx(y1)p FA(\))712 1916 y Fu(\\pstriangle)14
+b FB(draws)g(an)h(isosceles)f(triangle)h(with)g(the)g(base)f(centered)h(at)
+712 1976 y Fs(\()p Fr(x0)r Fs(,)t Fr(y0)r Fs(\))p FB(,)21 b(and)f(with)f
+(width)g(\(base\))h(and)f(height)h(equal)g(to)g Fr(x1)f FB(and)h
+Fr(y1)p FB(,)712 2037 y(respectively)m(.)118 2350 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  gsave 0.8 SLW 0. setgray
+0.0 0.0 113.81097 56.90549 0.0 0.0 28.45274 28.45274 1 10 { 0. setgray
+} 7.0 Grid grestore end
+
+@endspecial @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 113.81097 28.45274 10. 56.90549 14.22636 /mtrx CM
+def translate rotate /h ED 2 div /w ED dup 0 eq { pop } { CLW mul /d
+ED /h h d w h Atan sin Div sub def /w w d h w Atan 2 div dup cos exch
+sin Div mul sub def } ifelse mark 0 d w neg d 0 h w d 0 d /ArrowA {
+moveto } def /ArrowB { } def false Line closepath mtrx setmatrix  gsave
+0. setgray fill  grestore end
+
+@endspecial
+712 2242 a Fs(\\pstriangle*[gangle=10]\(2,.5\)\(4,1\))591 2828
+y Fp(Lines)9 b(and)h(polygons)1014 b(3)p eop
+%%Page: 4 4
+3 bop 366 51 a FC(4)70 b(Framed)21 b(boxes)591 164 y FA(\\psdiabox)p
+Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(stuf)o(f)6 b FA(})712 244
+y Fu(\\psdiabox)12 b FB(draws)f(a)h(diamond.)206 416 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 30.80476 2 mul 9.98157 2 mul 0 28.11816 3.79471 /mtrx
+CM def T rotate /h ED /w ED dup 0 eq { pop } { CLW mul neg /d ED /a
+w h Atan def /h d a sin Div h add def /w d a cos Div w add def } ifelse
+mark w 2 div h 2 div w 0 0 h neg w neg 0 0 h w 2 div h 2 div /ArrowA
+{ moveto } def /ArrowB { } def false Line closepath mtrx setmatrix
+ gsave 3.0 -45. PtoC Shadow 0.25 setgray gsave fill grestore stroke
+grestore gsave 1. setgray gsave fill grestore stroke grestore gsave
+0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial Fo(Happy?)712 411 y Fs
+(\\psdiabox[shadow=true]{\\Large\\bf)22 b(Happy?})591 604 y
+FA(\\pstribox)p Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(stuf)o(f)6
+b FA(})712 684 y Fu(\\pstribox)12 b FB(draws)f(a)h(triangle.)196
+878 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 97.90497 49.93228 exch 1 -90 mul -5.8 3.79471 /mtrx
+CM def translate rotate /h ED 2 div /w ED dup 0 eq { pop } { CLW mul
+/d ED /h h d w h Atan sin Div sub def /w w d h w Atan 2 div dup cos
+exch sin Div mul sub def } ifelse mark 0 d w neg d 0 h w d 0 d /ArrowA
+{ moveto } def /ArrowB { } def false Line closepath mtrx setmatrix
+ gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial Fo(Begin)712 873
+y Fs(\\pstribox[trimode=R,framesep=5pt]{\\Large\\bf)22 b(Begin})712
+1086 y FB(The)13 b(triangle)g(points)f(in)g(the)g(direction:)820
+1188 y FA(trimode=)p Fx(*U/D/R/L)469 b Fv(Default:)19 b FA(U)712
+1289 y FB(If)10 b(you)g(include)h(the)f(optional)h Fs(*)p FB(,)f(then)g(an)h
+(equilateral)g(triangle)g(is)f(drawn,)712 1349 y(otherwise,)i(you)g(get)g
+(the)h(minimum-area)g(isosceles)f(triangle.)263 1727 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 94.80983 82.10822 0 -90 mul 28.53056 -8.95914 /mtrx
+CM def translate rotate /h ED 2 div /w ED dup 0 eq { pop } { CLW mul
+/d ED /h h d w h Atan sin Div sub def /w w d h w Atan 2 div dup cos
+exch sin Div mul sub def } ifelse mark 0 d w neg d 0 h w d 0 d /ArrowA
+{ moveto } def /ArrowB { } def false Line closepath mtrx setmatrix
+ gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial Fn(Begin)712 1604 y Fs
+(\\pstribox[trimode=*U]{\\Huge)23 b(Begin})366 1961 y FC(5)70
+b(Obsolete)20 b(put)g(commands)591 2082 y FB(There)13 b(is)h(an)f(obsolete)h
+(command)g Fu(\\Rput)g FB(that)g(has)f(the)h(same)g(syntax)f(as)g
+Fu(\\uput)591 2142 y FB(and)g(that)i(works)e(almost)h(the)g(same)g(way)m(,)g
+(except)h(the)f Fr(refangle)f FB(ar)o(gument)i(has)591 2202
+y(the)10 b(syntax)h(of)f Fu(\\rput)p FB(')m(s)g Fr(refpoint)j
+FB(ar)o(gument,)f(and)e(it)h(gives)g(the)g(point)f(in)h Fr(stuff)17
+b FB(that)591 2262 y(should)11 b(be)h(aligned)h(with)f Fs(\()p
+Fr(x)s Fs(,)t Fr(y)t Fs(\))p FB(.)18 b(E.g.,)712 2391 y Fs
+(\\qdisk\(4,0\){2pt})p @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  113.81097 0.0 2.0 0
+360 arc fill  end
+
+@endspecial
+1480 2444 a FB(\()p Ft(x;)9 b(y)p FB(\))712 2451 y Fs
+(\\Rput[tl]\(4,0\){$\(x,y\)$})591 2580 y FB(Here)22 b(is)g(the)h(equivalence)
+h(between)f Fu(\\uput)p FB(')m(s)f Fr(refangle)h FB(abbreviations)g(and)591
+2640 y Fu(\\Rput)p FB(')m(s)12 b Fr(refpoint)j FB(abbreviations:)591
+2828 y Fp(Framed)9 b(boxes)1098 b(4)p eop
+%%Page: 5 5
+4 bop 916 51 a Fu(\\uput)50 b Fs(r)f(u)j(l)g(d)e(ur)h(ul)h(dr)d(dl)912
+123 y Fu(\\Rput)j Fs(l)g(b)e(r)55 b(t)j(bl)52 b(br)j(tr)60
+b(rl)591 251 y FB(Some)16 b(people)i(prefer)f Fu(\\Rput)p FB(')m(s)g
+(convention)g(for)g(specifying)g(the)g(position)g(of)591 312
+y Fr(stuff)h FB(over)12 b Fu(\\uput)p FB(')m(s.)591 401 y(Once)g(upon)g(a)g
+(time)h(there)g(was)f Fs(\\psput)h FB(instead)f(of)g Fu(\\nput)p
+FB(.)19 b(This)12 b(feature)h(is)f(still)591 461 y(supported)f(for)h
+(backwards)f(compatibility)m(.)591 2828 y Fp(Obsolete)e(put)h(commands)932
+b(5)p eop
+%%Page: 6 6
+5 bop 393 265 a Fm(I)591 182 y Fl(Nodes)23 b(and)g(Node)g(Connections)591
+566 y FB(All)16 b(the)h(commands)g(described)g(in)f(this)h(part)g(are)g
+(contained)g(in)g(the)g(\256le)g Fs(pst-)207 649 y
+ tx@Dict begin gsave STV CP T 34.14319 0.0 56.90549 28.45274 17.0716
+ tx@NodeDict begin /TheNodefile 16 NewNode InitRnode  end end grestore
+end
+ 325 590
+a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 31.29819 -15.6491
+31.29819 14.22636 -6.25954 14.22636 -6.25954 18.4941 -25.03864 18.4941
+-25.03864 14.22636 -31.29819 14.22636 -31.29819 -15.6491  /r 2.0 def
+/Lineto { Arcto } def false Polygon  gsave 3.0 45. PtoC Shadow 0.25
+setgray gsave fill grestore stroke grestore gsave 1. setgray gsave
+fill grestore stroke grestore gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 221 608 a FA(pst-node)591
+627 y Fs(node.tex)p FB(/)p Fs(pst-node.sty)p FB(.)591 716 y(The)k(node)f(and)
+h(node)g(connection)h(macros)e(let)i(you)f(connect)g(information)591
+776 y(and)15 b(place)i(labels,)g(without)f(knowing)g(the)g(exact)h(position)e
+(of)h(what)g(you)f(are)591 836 y(connecting)e(or)f(where)g(the)g(lines)h
+(should)e(connect.)19 b(These)12 b(macros)g(are)h(useful)591
+896 y(for)g(making)i(graphs)e(and)h(trees,)h(mathematical)h(diagrams,)f
+(linguistic)g(syntax)591 957 y(diagrams,)10 b(and)f(connecting)i(ideas)f(of)f
+(any)h(kind.)16 b(They)10 b(are)g(the)g(trickiest)h(tricks)591
+1017 y(in)h(PST)n(ricks!)591 1106 y(There)g(are)g(three)h(components)f(to)g
+(the)h(node)e(macros:)591 1237 y Fq(Node)g(de\256nitions)23
+b FB(The)10 b(node)h(de\256nitions)f(let)h(you)f(assign)f(a)i(name)g(and)f
+(shape)712 1297 y(to)j(an)f(object.)18 b(See)12 b(Section)g(6.)591
+1399 y Fq(Node)f(connections)23 b FB(The)10 b(node)f(connections)h(connect)g
+(two)f(nodes,)g(identi\256ed)712 1459 y(by)j(their)h(names.)k(See)12
+b(Section)h(7.)591 1561 y Fq(Node)e(labels)24 b FB(The)13 b(node)f(label)i
+(commands)e(let)i(you)e(af)o(\256x)g(labels)h(to)g(the)g(node)712
+1621 y(connections.)18 b(See)12 b(Section)h(8.)591 1752 y(Y)-5
+b(ou)8 b(can)i(use)f(these)h(macros)f(just)g(about)h(anywhere.)16
+b(The)10 b(best)f(way)g(to)h(position)591 1812 y(them)f(depends)g(on)f(the)h
+(application.)18 b(For)8 b(greatest)i(\257exibility)m(,)g(you)f(can)g(use)f
+(the)591 1872 y(nodes)h(in)i(a)g Fu(\\pspicture)p FB(,)e(positioning)i(and)g
+(rotating)g(them)g(with)f Fu(\\rput)p FB(.)17 b(Y)-5 b(ou)9
+b(can)591 1932 y(also)f(use)g(them)h(in)g(alignment)g(environments.)17
+b Fs(pst-node.tex)8 b FB(contains)g(a)h(special)591 1992 y(alignment)19
+b(environment,)h Fu(\\psmatrix)p FB(,)g(which)e(is)g(designed)g(for)g
+(positioning)591 2053 y(nodes)e(in)i(a)g(grid,)g(such)f(as)g(in)h
+(mathematical)i(diagrams)e(and)f(some)g(graphs.)591 2113 y
+Fu(\\psmatrix)e FB(is)h(described)h(in)f(Section)h Fq(??)p
+FB(.)29 b Fs(pst-node.tex)16 b FB(also)g(contains)h(high-)591
+2173 y(level)12 b(macros)h(for)e(trees.)18 b(These)12 b(are)g(described)g(in)
+h(Part)f Fq(??)p FB(.)591 2262 y(But)g(don')o(t)g(restrict)g(yourself)g(to)g
+(these)g(more)h(obvious)e(uses.)17 b(For)11 b(example:)106
+2500 y
+ tx@Dict begin gsave STV CP T 35.96866 29.96866 113.81102 56.9055 3.0
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ -117 x FB(I)h(made)h(the)f(\256le)g(symbol)g(a)106 2443
+y(node.)17 b(Now)11 b(I)h(can)g(draw)106 2503 y(an)g(arrow)g(so)f(that)i(you)
+106 2563 y(know)e(what)h(I)g(am)h(talking)106 2623 y(about.)591
+2500 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 8.0 8.0 /TheNodeA /TheNodefile
+InitNC { yB yA sub xB xA sub Atan dup 8.  add /AngleA ED 8.  sub 180
+add /AngleB ED 0.67  0.67  NCCurve  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 712 2377 a Fs(\\rnode{A}{\045)758 2437 y(\\parbox{4cm}{\\raggedr)o
+(ight)803 2498 y(I)23 b(made)f(the)h(\256le)g(symbol)g(a)f(node.)g(Now)h(I)h
+(can)e(draw)g(an)803 2558 y(arrow)g(so)h(that)g(you)f(know)h(what)g(I)h(am)e
+(talking)h(about.}})712 2618 y(\\ncarc[nodesep=8pt]{->}{A}{\256le})591
+2828 y Fp(Nodes)9 b(and)g(Node)h(Connections)838 b(6)p eop
+%%Page: 7 7
+6 bop 366 51 a FC(6)70 b(Nodes)591 172 y FB(Nodes)11 b(have)h(a)g(name.)18
+b(a)12 b(boundary)g(and)g(a)g(center)m(.)314 327 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 0.0 24.0 .5 CLW
+mul sub 0 360 arc closepath gsave 0.5 setgray fill  grestore gsave
+0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 314 327 a
+ tx@Dict begin 45.  tx@Dict /TMatrix known not { /TMatrix { } def /RAngle
+{ 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot /RAngle
+[ RAngle dup a add ] cvx def  end
+ 239 375 a
+ tx@Dict begin CP CP translate 3.04861 3.04861 scale NET  end
+ FB(PS)239 375
+y
+ tx@Dict begin CP CP translate 1 3.04861 div 1 3.04861 div scale NET
+ end
+ 314 327 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  0 360 6.0 1.19998 .5
+CLW mul dup 4 -1 roll sub neg 3 1 roll sub 0.0 22.80002 /mtrx CM def
+T scale 0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0. setgray
+fill  grestore end
+
+@endspecial @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  0 360 6.0 1.19998 .5
+CLW mul dup 4 -1 roll sub neg 3 1 roll sub 0.0 33.0 /mtrx CM def T
+scale 0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0. setgray
+fill  grestore end
+
+@endspecial @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  0. true -6.0 22.80002
+6.0 33.0 .5 Frame  gsave 0. setgray fill  grestore end
+
+@endspecial
+@beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def  0.0 42.0 0.0 33.0 ArrowA 6.0 48.0 21.0 48.0 ArrowB
+curveto gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin 0.0  tx@Dict /TMatrix known not { /TMatrix { } def /RAngle
+{ 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot /RAngle
+[ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 40.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 80.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 120.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 160.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 200.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 240.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 280.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 401 127 a
+ tx@Dict begin 320.0  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ 2.39996 0.0 0.0 0.0  /Lineto /lineto load def false
+Line  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 401 127 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 591 247 a FB(The)e(name)g(is)f(for)h
+(refering)g(to)f(the)h(node)g(when)f(making)h(node)g(connections)g(and)591
+307 y(labels.)28 b(Y)-5 b(ou)16 b(specify)f(the)h(name)h(as)e(an)h(ar)o
+(gument)g(to)g(the)g(node)g(commands.)591 368 y(The)d(name)h(must)f(contain)h
+(only)f(letters)h(and)g(numbers,)f(and)g(must)g(begin)h(with)591
+428 y(a)e(letter)m(.)19 b(Bad)12 b(node)g(names)g(can)g(cause)g(PostScript)g
+(errors.)591 527 y(The)f(center)h(of)f(a)h(node)f(is)g(where)g(node)g
+(connections)h(point)f(to.)18 b(The)11 b(boundary)591 587 y(is)16
+b(for)h(determining)h(where)f(to)g(connect)h(a)f(node)g(connection.)34
+b(The)17 b(various)591 647 y(nodes)11 b(dif)o(fer)i(in)f(how)g(they)g
+(determine)h(the)g(center)g(and)f(boundary)m(.)17 b(They)c(also)591
+707 y(dif)o(fer)f(in)g(what)g(kind)g(of)g(visable)g(object)h(they)f(create.)
+591 796 y(Here)f(are)i(the)f(nodes:)591 935 y FA(\\rnode)p
+Fz([)p Fy(refpoint)t Fz(])p FA({)p Fx(name)r FA(}{)p Fx(stuf)o(f)6
+b FA(})712 1016 y Fu(\\rnode)j FB(puts)g Fr(stuff)16 b FB(in)9
+b(a)g(box.)16 b(The)9 b(center)h(of)f(the)g(node)g(is)g Fr(refpoint)t
+FB(,)f(which)712 1076 y(you)k(can)h(specify)f(the)g(same)g(way)g(as)g(for)f
+Fu(\\rput)p FB(.)591 1177 y FA(\\Rnode)p Fz(*[)p Fy(par)p Fz(])p
+FA({)p Fx(name)r FA(}{)p Fx(stuf)o(f)6 b FA(})712 1257 y Fu(\\Rnode)20
+b FB(also)f(makes)g(a)h(box,)g(but)f(the)h(center)g(is)e(set)i(dif)o
+(ferently)m(.)39 b(If)712 1317 y(you)11 b(align)h Fu(\\rnode)p
+FB(')m(s)f(by)g(their)h(baseline,)g(dif)o(ferences)g(in)f(the)h(height)g(and)
+712 1377 y(depth)20 b(of)e(the)i(nodes)e(can)i(cause)f(connecting)h(lines)f
+(to)g(be)g(not)g(quite)712 1438 y(parallel,)14 b(such)d(as)h(in)g(the)h
+(following)f(example:)174 1606 y
+ tx@Dict begin gsave STV CP T 7.606 3.58319 14.74753 7.37376 2.0114
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ Fk(sp)489 1606 y
+ tx@Dict begin gsave STV CP T 11.2058 0.141 20.28821 10.1441 5.5324
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ Fk(Bit)591
+1606 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 712 1541 a Fs(\\Large)712 1601 y(\\rnode{A}{sp})21 b(\\hskip)i(2cm)g
+(\\rnode{B}{Bit})712 1661 y(\\ncline{A}{B})712 1789 y FB(W)n(ith)13
+b Fu(\\Rnode)p FB(,)g(the)f(center)h(is)f(determined)h(relative)g(to)f(the)h
+(baseline:)174 1955 y
+ tx@Dict begin gsave STV CP T 7.606 3.58319 14.74753 7.37376 5.20224
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ Fk(sp)489 1955 y
+ tx@Dict begin gsave STV CP T 11.2058 0.141 20.28821 10.1441 5.20224
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ Fk(Bit)591 1955 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 712
+1889 a Fs(\\Large)712 1949 y(\\Rnode{A}{sp})22 b(\\hskip)h(2cm)g
+(\\Rnode{B}{Bit})712 2010 y(\\ncline{A}{B})712 2138 y FB(Y)-5
+b(ou)11 b(can)g(usually)g(get)g(by)f(without)h(\256ddling)g(with)f(the)h
+(center)h(the)f(center)712 2198 y(of)h(the)h(node,)f(but)g(to)g(modify)g(it)g
+(you)g(set)g(the)820 2298 y FA(href=)p Fx(num)657 b Fv(Default:)20
+b FA(0)820 2359 y(vref=)p Fx(dim)608 b Fv(Default:)19 b FA(.7ex)712
+2459 y FB(parameters.)46 b(In)21 b(the)h(horizontal)g(direction,)i(the)e
+(center)g(is)f(located)712 2520 y(fraction)f Fu(href)e FB(from)h(the)g
+(center)h(to)f(the)g(edge.)39 b(E.g,)20 b(if)f Fu(href=-1)p
+FB(,)g(the)712 2580 y(center)f(is)g(on)f(the)g(left)h(edge)f(of)g(the)h(box.)
+33 b(In)17 b(the)g(vertical)i(direction,)712 2640 y(the)f(center)h(is)e
+(located)h(distance)g Fu(vref)f FB(from)g(the)h(baseline.)34
+b(The)18 b Fu(vref)591 2828 y Fp(Nodes)1228 b(7)p eop
+%%Page: 8 8
+7 bop 712 50 a FB(parameter)14 b(is)e(evaluated)i(each)f(time)g
+Fu(\\Rnode)g FB(is)f(used,)g(so)f(that)i(you)f(can)712 110
+y(use)17 b Fs(ex)g FB(units)f(to)h(have)g(the)g(distance)g(adjust)g(itself)g
+(to)g(the)g(size)g(of)f(the)712 170 y(current)c(font)f(\(but)f(without)h
+(being)h(sensitive)f(to)g(dif)o(ferences)g(in)g(the)g(size)712
+230 y(of)h(letters)h(within)f(the)h(current)f(font\).)591 332
+y FA(\\pnode)p Fz(\()p Fy(x)t Fz(,)t Fy(y)t Fz(\))p FA({)p
+Fx(name)r FA(})712 413 y FB(This)g(creates)h(a)f(zero)h(dimensional)f(node)g
+(at)h Fs(\()p Fr(x)s Fs(,)t Fr(y)t Fs(\))p FB(.)591 515 y FA(\\cnode)p
+Fz(*[)p Fy(par)p Fz(]\()p Fy(x)t Fz(,)t Fy(y)t Fz(\))p FA({)p
+Fx(radius)r FA(}{)p Fx(name)r FA(})712 596 y FB(This)f(draws)f(a)h(circle.)18
+b(Here)11 b(is)h(an)g(example)g(with)g Fu(\\pnode)f FB(and)h
+Fu(\\cnode)p FB(:)236 825 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 28.45274 7.11317
+.5 CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+236 825 a
+ tx@Dict begin gsave STV CP T 0.0 28.45274 7.11317  tx@NodeDict begin
+/TheNodeA 11 NewNode InitCnode  end end grestore end
+ 236 825 a
+ tx@Dict begin gsave STV CP T 85.35823 0.0  tx@NodeDict begin /TheNodeB
+10 NewNode InitPnode  end end grestore end
+ 236 825 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  moveto } def /ArrowB { } def
+/NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0 0.0 /TheNodeA /TheNodeB
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 712 702 a Fs(\\cnode\(0,1\){.25}{A})712
+763 y(\\pnode\(3,0\){B})712 823 y(\\ncline{<-}{A}{B})591 954
+y FA(\\Cnode)p Fz(*[)p Fy(par)p Fz(]\()p Fy(x)t Fz(,)t Fy(y)t
+Fz(\))p FA({)p Fx(name)r FA(})712 1035 y FB(This)g(is)g(like)h
+Fu(\\cnode)p FB(,)f(but)g(the)g(radius)g(is)g(the)g(value)h(of)820
+1137 y FA(radius=)p Fx(dim)571 b Fv(Default:)20 b FA(2pt)712
+1238 y FB(This)11 b(is)g(convenient)h(when)f(you)f(want)h(many)h(circle)g
+(nodes)e(of)h(the)h(same)712 1298 y(radius.)591 1400 y FA(\\circlenode)p
+Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(name)r FA(}{)p Fx(stuf)o(f)6
+b FA(})712 1481 y FB(This)14 b(is)e(a)i(variant)f(of)g Fu(\\pscirclebox)g
+FB(that)g(gives)g(the)h(node)f(the)g(shape)g(of)712 1541 y(the)g(circle.)591
+1643 y FA(\\cnodeput)p Fz(*[)p Fy(par)p Fz(]{)p Fy(angle)q
+Fz(}\()p Fy(x)t Fz(,)t Fy(y)t Fz(\))p FA({)p Fx(name)r FA(}{)p
+Fx(stuf)o(f)6 b FA(})712 1724 y FB(This)19 b(is)f(a)h(variant)g(of)f
+Fu(\\cput)g FB(that)h(gives)f(the)h(node)f(the)h(shape)f(of)g(the)712
+1784 y(circle.)h(That)13 b(is,)e(it)i(is)f(like)820 1886 y
+Fs(\\rput{)p Fr(angle)q Fs(}\()p Fr(x)s Fs(,)p Fr(y)t Fs(\){\\circlenode{)p
+Fr(na)o(me)q Fs(}{)o Fr(stuff)6 b Fs(})591 1988 y FA(\\ovalnode)p
+Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(name)r FA(}{)p Fx(stuf)o(f)g
+FA(})712 2069 y FB(This)11 b(is)f(a)h(variant)g(of)f Fu(\\psovalbox)g
+FB(that)i(gives)e(the)h(node)f(the)h(shape)f(of)h(an)712 2129
+y(ellipse.)19 b(Here)11 b(is)h(an)g(example)h(with)f Fu(\\circlenode)g
+FB(and)g Fu(\\ovalnode)p FB(:)186 2299 y
+ tx@Dict begin gsave STV CP T 28.15504 2 div 7.7818 0.15552 add 2 div
+2 copy 0.15552 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin
+/TheNodeA 11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  28.15504 2 div 7.7818
+0.15552 add 2 div 2 copy 0.15552 sub 4 2 roll Pyth 3.0 add CLW 2 div
+add 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+
+@endspecial FB(Circle)33 b(and)451 2299 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 11.19751 def /Y 3.81314 def /w 19.63329 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 19.63329 CLW 2
+div sub 9.41168 CLW 2 div sub 11.19751 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial FB(Oval)591 2299 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 90. def /AngleB 90. def /armA 10.0 def /armB
+10.0 def /AngleB 90. def NCBar  } if end gsave 0.8 SLW 0. setgray 0
+setlinecap stroke  grestore  grestore end
+ 712 2264 a Fs(\\circlenode{A}{Circle})22
+b(and)g(\\ovalnode{B}{Oval})712 2324 y(\\ncbar[angle=90]{A}{B})591
+2483 y FA(\\dianode)p Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(name)r
+FA(}{)p Fx(stuf)o(f)6 b FA(})712 2564 y FB(This)12 b(is)g(like)h
+Fu(\\diabox)p FB(.)591 2828 y Fp(Nodes)1228 b(8)p eop
+%%Page: 9 9
+8 bop 591 50 a FA(\\trinode)p Fz(*[)p Fy(par)p Fz(])p FA({)p
+Fx(name)r FA(}{)p Fx(stuf)o(f)6 b FA(})712 130 y FB(This)12
+b(is)g(like)h Fu(\\tribox)p FB(.)229 270 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeA 14 NewNode
+/X 21.43886 def /Y 3.81314 def /w 24.12546 2 mul def /h 6.65526 2 mul
+def /NodePos { DiaNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 24.12546 2 mul 6.65526 2 mul 0 21.43886 3.81314 /mtrx
+CM def T rotate /h ED /w ED dup 0 eq { pop } { CLW mul neg /d ED /a
+w h Atan def /h d a sin Div h add def /w d a cos Div w add def } ifelse
+mark w 2 div h 2 div w 0 0 h neg w neg 0 0 h w 2 div h 2 div /ArrowA
+{ moveto } def /ArrowB { } def false Line closepath mtrx setmatrix
+ gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+
+@endspecial FB(Diamond)414 493 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+88.25082 34.13666 exch 42.42679 3 38.62679 7.7818 2.48833 InitTriNode
+ end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /Lineto /lineto load
+def false pop .5 88.25082 34.13666 exch 3 -90 mul 42.42679 2.64673
+/mtrx CM def translate rotate /h ED 2 div /w ED dup 0 eq { pop } {
+CLW mul /d ED /h h d w h Atan sin Div sub def /w w d h w Atan 2 div
+dup cos exch sin Div mul sub def } ifelse mark 0 d w neg d 0 h w d
+0 d /ArrowA { moveto } def /ArrowB { } def false Line closepath mtrx
+setmatrix  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore end
+
+
+@endspecial FB(T)n(riangle)118 553 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { /AngleA -135.  def /AngleB 90.  def
+0.67  0.67  NCCurve  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 326 a Fs
+(\\rput[tl]\(0,3\){\\dianode{A}{Diamond}})712 386 y
+(\\rput[br]\(4,0\){\\trinode[trimode=L]{B}{T)n(rian)o(gle})o(})712
+446 y(\\nccurve[angleA=-135,angleB=90]{A}{B})591 677 y FA(\\dotnode)p
+Fz(*[)p Fy(par)p Fz(]\()p Fy(x)t Fz(,)t Fy(y)t Fz(\))p FA({)p
+Fx(name)r FA(})712 757 y FB(This)f(is)g(a)h(variant)f(of)g
+Fu(\\psdot)p FB(.)17 b(For)11 b(example:)236 1061 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeA 14 NewNode
+0.0 0.0 /Y ED /X ED /w 3.6 def /h 1.8 def /NodePos { OvalNodePos }
+def end end grestore end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /DS 2.0 2. CLW mul add
+2 div def /y1 DS .778 mul neg def /x1 y1 1.732 mul neg def /Dot { gsave
+T 2.  1.  scale x1 y1 /y ED /x ED x y moveto x neg y L 0 x L fill
+grestore } def 0.0 0.0 Dot end
+
+@endspecial 236 1061 a
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+85.35823 56.90549 /Y ED /X ED /w 1.8 def /h 1.8 def /NodePos { OvalNodePos
+} def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /DS 2.0 2. CLW mul add
+2 div def <2B> /Symbol 0. [2.2 0.0 0.0 2.2 -0.6039 -0.5863] DS 2 mul
+dup matrix scale matrix concatmatrix exch matrix rotate matrix concatmatrix
+exch findfont exch makefont setfont { moveto 0 show } dup 1 4 -1 roll
+put bind /Dot ED 85.35823 56.90549 Dot end
+
+
+@endspecial 236 1061 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNodeA /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 712 893 a Fs(\\dotnode[dotstyle=triangle*,dotscale=2)
+22 b(1]\(0,0\){A})712 954 y(\\dotnode[dotstyle=+]\(3,2\){B})712
+1014 y(\\ncline[nodesep=3pt]{A}{B})591 1175 y FA(\\fnode)p
+Fz(*[)p Fy(par)p Fz(]\()p Fy(x)t Fz(,)t Fy(y)t Fz(\))p FA({)p
+Fx(name)r FA(})712 1255 y FB(The)15 b Fs(f)g FB(stands)f(for)g
+(\252frame\272.)26 b(This)15 b(is)f(like,)i(but)e(easier)h(than,)h(putting)f
+(a)712 1315 y Fu(\\psframe)d FB(in)g(an)g Fu(\\rnode)p FB(.)236
+1618 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeA 14 NewNode
+0.0 0.0 /Y ED /X ED /d .5 .5 sub CLW mul neg def /r 5.0 d add def /l
+r neg def /u 5.0 d add def /d u neg def /NodePos { GetRnodePos } def
+end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /x2 5.0 CLW .5 mul sub
+def /y2 5.0 CLW .5 mul sub def 0.0 0.0 2 copy y2 sub /y1 ED x2 sub
+/x1 ED y2 add /y2 ED x2 add /x2 ED 0. true 1 index 0 eq { pop pop Rect
+} { OvalFrame } ifelse gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial 236 1618 a
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+56.90549 56.90549 /Y ED /X ED /d .5 .5 sub CLW mul neg def /r 14.22636
+d add def /l r neg def /u 2.5 d add def /d u neg def /NodePos { GetRnodePos
+} def end end grestore end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.0 SLW 0. setgray  /x2 14.22636 CLW .5
+mul sub def /y2 2.5 CLW .5 mul sub def 56.90549 56.90549 2 copy y2
+sub /y1 ED x2 sub /x1 ED y2 add /y2 ED x2 add /x2 ED 0. true 1 index
+0 eq { pop pop Rect } { OvalFrame } ifelse gsave 0. setgray fill  grestore
+end
+
+@endspecial 236 1618 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNodeA /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 712 1451 a Fs(\\fnode{A})712
+1511 y(\\fnode*[framesize=1)23 b(5pt]\(2,2\){B})712 1571 y
+(\\ncline[nodesep=3pt]{A}{B})712 1732 y FB(There)13 b(are)f(two)g(dif)o
+(ferences)h(between)f Fu(\\fnode)f FB(and)h Fu(\\psframe)p
+FB(:)772 1832 y Fj(\267)26 b FB(There)12 b(is)g(a)g(single)g(\(optional\))h
+(coordinate)g(ar)o(gument,)f(that)h(gives)820 1892 y(the)f
+Ft(center)h FB(of)e(the)i(frame.)772 1970 y Fj(\267)26 b FB(The)12
+b(width)g(and)g(height)h(of)e(the)i(frame)f(are)h(set)f(by)f(the)911
+2049 y FA(framesize=)p Fx(dim1)i(`dim2')191 b Fv(Default:)20
+b FA(10pt)820 2128 y FB(parameter)m(.)f(If)11 b(you)h(omit)h
+Fr(dim2)s FB(,)e(you)g(get)i(a)f(square)g(frame.)366 2322 y
+FC(7)70 b(Node)21 b(connections)591 2442 y FB(All)11 b(the)g(node)h
+(connection)g(commands)f(begin)g(with)h Fs(nc)p FB(,)f(and)g(they)h(all)g
+(have)f(the)591 2503 y(same)h(syntax:)839 2484 y Fi(1)p 591
+2545 544 2 v 646 2575 a Fh(1)662 2590 y Fg(The)h(node)f(connections)e(can)i
+(be)g(used)g(with)g Ff(\\pscustom)p Fg(.)22 b(The)13 b(beginning)f(of)g(the)g
+(node)591 2640 y(connection)c(is)i(attached)f(to)h(the)f(current)h(point)g
+(by)g(a)f(straight)h(line,)g(as)f(with)h Ff(\\psarc)p Fg(.)1790
+2625 y Fh(2)591 2828 y Fp(Node)f(connections)1037 b(9)p eop
+%%Page: 10 10
+9 bop 712 50 a Fs(\\)p Fr(nodeconnection)q Fs([)p Fr(par)t
+Fs(]{)p Fr(arrows)q Fs(}{)p Fr(nod)o(eA)p Fs(}{)p Fr(n)o(ode)o(B)r
+Fs(})591 158 y FB(A)14 b(line)h(of)g(some)g(sort)g(is)f(drawn)h(from)f
+Fr(nodeA)g FB(to)h Fr(nodeB)r FB(.)f(Some)h(of)g(the)g(node)591
+218 y(connection)10 b(commands)h(are)f(a)g(little)i(confusing,)e(but)g(with)g
+(a)g(little)i(experimen-)591 279 y(tation)k(you)g(will)g(\256gure)f(them)i
+(out,)g(and)f(you)f(will)h(be)g(amazed)h(at)g(the)f(things)591
+339 y(you)10 b(can)g(do.)17 b(When)10 b(we)h(refer)f(to)h(the)g
+Fs(A)f FB(and)h Fs(B)f FB(nodes)g(below)m(,)h(we)f(are)h(referring)591
+399 y(only)f(to)h(the)g(order)g(in)g(which)g(the)g(names)g(are)g(given)g(as)g
+(ar)o(guments)g(to)g(the)g(node)591 459 y(connection)h(macros.)962
+441 y Fi(3)591 545 y FB(The)h(node)g(connections)g(use)g(many)g(of)g(the)g
+(usual)g(graphics)g(parameters,)h(plus)591 605 y(a)k(few)g(special)h(ones.)37
+b(Let')m(s)19 b(start)f(with)h(one)f(that)h(applies)g(to)g(all)g(the)g(node)
+591 666 y(connections:)712 774 y FA(nodesep=)p Fx(dim)625 b
+Fv(Default:)20 b FA(0pt)591 882 y Fu(nodesep)10 b FB(is)h(the)h(border)g
+(around)f(the)h(nodes)f(that)h(is)f(added)h(for)f(the)h(purpose)f(of)591
+943 y(determining)i(where)e(to)i(connect)f(the)h(lines.)591
+1029 y(For)j(this)i(and)f(other)h(node)g(connection)g(parameters,)h(you)f
+(can)f(set)h(dif)o(ferent)591 1089 y(values)i(for)f(the)h(two)g(ends)f(of)h
+(the)g(node)g(connection.)41 b(Set)20 b(the)h(parameter)591
+1149 y Fu(nodesepA)11 b FB(for)h(the)g(\256rst)f(node,)h(and)g(set)g
+Fu(nodesepB)g FB(for)g(the)g(second)g(node.)591 1235 y(The)i(\256rst)f(two)g
+(node)h(connections)h(draw)e(a)h(line)g(or)g(arc)g(directly)h(between)f(the)
+591 1295 y(two)d(nodes:)591 1404 y FA(\\ncline)p Fz(*[)p Fy(par)p
+Fz(]{)p Fy(arrows)q Fz(})p FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r
+FA(})712 1481 y FB(This)h(draws)g(a)g(straight)g(line)h(between)f(the)h
+(nodes.)j(For)c(example:)118 1889 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 28.46611 14.23305 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ FB(Idea)g(1)472 1568 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 28.46611 14.23305 3.81314
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+
+FB(Idea)h(2)118 1890 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  moveto } def /ArrowB { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  } def /NCLW CLW def tx@NodeDict
+begin 0.0 0.0 neg 3.0 3.0 /TheNodeA /TheNodeB InitNC { NCLine  } if
+end gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore  grestore
+end
+ 712 1663 a Fs(\\rput[bl]\(0,0\){\\rnode{A}{Idea)20
+b(1}})712 1723 y(\\rput[tr]\(4,3\){\\rnode{B}{Idea)g(2}})712
+1784 y(\\ncline[nodesep=3pt]{<->}{A}{B})591 1990 y FA(\\ncarc)p
+Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p FA({)p Fx(nodeA)p
+FA(}{)p Fx(nodeB)r FA(})712 2068 y FB(This)12 b(connects)h(the)f(two)g(nodes)
+f(with)h(an)g(arc.)160 2424 y
+ tx@Dict begin gsave STV CP T 8.31749 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeA
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  8.31749 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial
+FB(X)514 2188 y
+ tx@Dict begin gsave STV CP T 8.31749 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeB
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  8.31749 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial FB(Y)177
+2408 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0 3.0 /TheNodeA /TheNodeB
+InitNC { yB yA sub xB xA sub Atan dup 8.  add /AngleA ED 8.  sub 180
+add /AngleB ED 0.67  0.67  NCCurve  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 177 2408 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0 3.0 /TheNodeB /TheNodeA
+InitNC { yB yA sub xB xA sub Atan dup 8.  add /AngleA ED 8.  sub 180
+add /AngleB ED 0.67  0.67  NCCurve  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 712 2180 a Fs(\\cnodeput\(0,0\){A}{X})712
+2240 y(\\cnodeput\(3,2\){B}{Y})712 2300 y(\\psset{nodesep=3pt})712
+2361 y(\\ncarc{->}{A}{B})712 2421 y(\\ncarc{->}{B}{A})p 591
+2495 544 2 v 646 2525 a Fh(3)662 2540 y Fg(When)h(a)h(node)f(name)g(cannot)g
+(be)h(found)f(on)h(the)f(same)g(page)g(as)g(the)h(node)f(connection)591
+2590 y(command,)6 b(you)h(get)g(either)g(no)g(node)f(conne)o(ction)h(or)f(a)h
+(no)o(nsens)o(e)f(node)g(conne)o(ction.)k(However)n(,)591 2640
+y(T)608 2649 y(E)628 2640 y(X)f(will)h(not)g(report)g(any)g(errors.)591
+2828 y Fp(Node)f(connections)1016 b(10)p eop
+%%Page: 11 11
+10 bop 712 50 a FB(The)12 b(angle)f(between)h(the)f(arc)h(and)f(the)g(line)h
+(between)f(the)h(two)e(nodes)h(is)1931 32 y Fi(4)820 152 y
+FA(arcangle=)p Fx(angle)524 b Fv(Default:)20 b FA(8)591 282
+y Fu(\\ncline)13 b FB(and)h Fu(\\ncarc)e FB(both)i(determine)g(the)g(angle)g
+(at)g(which)f(the)h(node)f(connec-)591 342 y(tions)d(join)i(by)e(the)i
+(relative)g(position)f(of)g(the)g(two)g(nodes.)16 b(W)n(ith)c(the)f(next)g
+(group)591 403 y(of)i(node)h(connections,)g(you)g(specify)f(one)h(or)f(both)h
+(of)g(the)g(angles)g(in)f(absolute)591 463 y(terms,)f(by)f(setting)i(the)712
+594 y FA(angle=)p Fx(angle)705 b Fv(Default:)20 b FA(0)591
+724 y FB(\(and)11 b Fu(angleA)i FB(and)f Fu(angleB)p FB(\))g(parameter)m(.)
+591 814 y(Y)-5 b(ou)11 b(also)g(specify)h(the)g(length)g(of)f(the)h(line)h
+(segment)f(where)f(the)h(node)f(connec-)591 874 y(tion)h(joins)g(at)g(one)g
+(or)g(both)g(of)g(the)g(ends)g(\(the)g(\252arms\272\))h(by)e(setting)i(the)
+712 1005 y FA(arm=)p Fx(dim)709 b Fv(Default:)20 b FA(10pt)591
+1135 y FB(\(and)11 b Fu(armA)i FB(and)f Fu(armB)p FB(\))g(parameter)m(.)591
+1225 y(These)i(node)f(connections)h(all)h(consist)f(of)f(several)h(line)h
+(segments,)f(including)591 1285 y(the)e(arms.)17 b(The)12 b(value)h(of)f
+Fu(linearc)f FB(is)h(used)g(for)g(rounding)f(the)i(corners.)591
+1374 y(Here)e(they)i(are,)f(starting)g(with)g(the)h(simplest)f(one:)591
+1517 y FA(\\ncdiag)p Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p
+FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712 1598 y FB(An)18
+b(arm)g(is)f(drawn)h(at)g(each)g(node,)h(joining)g(at)f(angle)g
+Fu(angleA)g FB(or)g Fu(an-)712 1658 y(gleB)p FB(,)13 b(and)g(with)f(a)h
+(length)g(of)f Fu(armA)h FB(or)f Fu(armB)p FB(.)h(Then)f(the)h(two)f(arms)g
+(are)712 1719 y(connected)i(by)f(a)g(straight)g(line,)h(so)e(that)i(the)f
+(whole)g(line)g(has)g(three)g(line)712 1779 y(segments.)18
+b(For)11 b(example:)118 1904 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+
+@endspecial FB(Node)g(A)397 2187 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial FB(Node)g(B)118 2210 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /r 5.69046 def /Lineto
+{ Arcto } def false pop end /AngleA -90. def /AngleB 90. def /armA
+14.22636 def /armB 14.22636 def NCDiag  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 712 1983 a Fs
+(\\rput[tl]\(0,3\){\\rnode{A}{\\psframebox{Node)20 b(A}}})712
+2043 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712 2103
+y(\\ncdiag[angleA=-90,)j(angleB=90,)f(arm=.5,)h(linearc=.2]{A}{B})p
+591 2244 544 2 v 646 2274 a Fh(4)662 2290 y Fg(Rather)13 b(than)g(using)g(a)g
+(true)g(arc,)h Ff(\\ncarc)g Fg(actually)e(draws)h(a)g(bezier)f(curve.)24
+b(When)13 b(con-)591 2339 y(necting)j(two)i(circular)f(nodes)g(using)g(the)g
+(default)g(parameter)g(values,)h(the)g(curve)f(will)g(be)591
+2389 y(indistinguishable)10 b(from)i(a)g(true)g(arc.)20 b(However)n(,)12
+b Ff(\\ncarc)g Fg(is)g(more)f(\257exible)h(than)g(an)f(arc,)h(and)591
+2439 y(works)g(right)h(connecting)f(nodes)h(of)g(dif)o(ferent)g(shapes)f(and)
+g(sizes.)23 b(Y)l(ou)12 b(can)h(set)f Ff(arcangleA)591 2489
+y Fg(and)c Ff(arcangleB)g Fg(separately)m(,)f(and)i(you)f(can)g(control)g
+(the)g(curvature)g(with)h(the)f Ff(ncurv)g Fg(parameter)n(,)591
+2539 y(which)h(is)g(described)g(on)h(page)f Fe(??)p Fg(.)591
+2828 y Fp(Node)g(connections)1019 b(1)m(1)p eop
+%%Page: 12 12
+11 bop 712 50 a FB(Y)-5 b(ou)10 b(can)f(also)h(set)g(one)f(or)h(both)f(of)g
+(the)h(arms)g(to)g(zero)f(length.)17 b(For)9 b(exam-)712 110
+y(ple,)14 b(if)g(you)f(set)g Fu(arm=0)p FB(,)g(the)h(nodes)f(are)h(connected)
+g(by)f(a)g(straight)h(line,)712 170 y(but)8 b(you)g(get)g(to)g(determine)g
+(where)g(the)g(line)g(connects)g(\(whereas)g(the)g(con-)712
+230 y(nection)15 b(point)g(is)f(determined)i(automatically)g(by)e
+Fu(\\ncline)p FB(\).)25 b(Compare)712 291 y(this)13 b(use)e(of)h
+Fu(\\ncdiag)g FB(with)g Fu(\\ncline)g FB(in)g(the)h(following)f(example:)463
+560 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeR 14 NewNode
+/X 11.20326 def /Y 3.84193 def /w 19.64143 def /h 9.37096 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 19.64143 CLW 2
+div sub 9.37096 CLW 2 div sub 11.20326 3.84193 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial FB(Root)202 443
+y
+ tx@Dict begin gsave STV CP T 16.63498 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeA
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  16.63498 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial FB(XX)202 679 y
+ tx@Dict begin gsave STV CP T 16.63498 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeB
+11 NewNode InitCnode  end end grestore end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  16.63498 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial FB(YY)118 663 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  moveto } def /ArrowB { } def
+/NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0 0.0 /TheNodeA /TheNodeR
+InitNC { tx@Dict begin /Lineto /lineto load def false pop end /AngleA
+0. def /AngleB 180. def /armA 0.0 def /armB 0.0 def NCDiag  } if end
+gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore  grestore end
+ 118 663 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  moveto } def /ArrowB { } def
+/NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0 0.0 /TheNodeB /TheNodeR
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 712 435
+a Fs(\\rput[r]\(4,1\){\\ovalnode{R}{Root}})712 495 y
+(\\cnodeput\(1,2\){A}{XX})712 555 y(\\cnodeput\(1,0\){B}{YY})712
+615 y(\\ncdiag[angleB=180,)22 b(arm=0]{<-}{A}{R})712 675 y
+(\\ncline{<-}{B}{R})712 844 y FB(\(Note)12 b(that)h(in)f(this)g(example,)h
+(the)g(default)f(value)h Fu(angleA=0)f FB(is)f(used.\))591
+946 y FA(\\ncdiagg)p Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p
+FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712 1027 y Fu(\\ncdiagg)18
+b FB(is)g(similar)h(to)f Fu(\\ncdiag)p FB(,)i(but)e(only)g(the)g(arm)h(for)e
+(node)h(A)g(is)712 1087 y(drawn.)f(The)c(end)f(of)g(this)g(arm)g(is)g(then)h
+(connected)g(directly)g(to)f(node)g(B.)712 1147 y(Compare)h
+Fu(\\ncdiagg)f FB(with)g Fu(\\ncdiag)g FB(when)f Fu(armB=0)p
+FB(:)177 1364 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 0.0 12.0 .5 CLW
+mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial 177
+1364 a
+ tx@Dict begin gsave STV CP T 0.0 0.0 12.0  tx@NodeDict begin /TheNodea
+11 NewNode InitCnode  end end grestore end
+ 531 1262 a
+ tx@Dict begin gsave STV CP T 7.7818 0.0 8.31749 4.15874 3.8909  tx@NodeDict
+begin /TheNodeb 16 NewNode InitRnode  end end grestore end
+ FB(H)531 1498 y
+ tx@Dict begin gsave STV CP T 7.7818 0.0 7.03876 3.51938 3.8909  tx@NodeDict
+begin /TheNodec 16 NewNode InitRnode  end end grestore end
+ FB(T)177 1364 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+0.0 /TheNodeb /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 180. def /AngleB 0. def /armA 42.67911 def
+/armB 10.0 def NCDiagg  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 177 1364
+a
+ tx@Dict begin tx@NodeDict begin /t 1.2 def LPut end PutBegin  end
+ 177 1364 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 37.1955 7.21277
+2.15988 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 100 1374 a Fs(\\ncdiagg)177 1364 y
+ tx@Dict begin PutEnd  end
+ 177 1364 a
+ tx@Dict begin PutEnd  end
+
+177 1364 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+0.0 /TheNodec /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 180. def /AngleB 0. def /armA 42.67911 def
+/armB 0.0 def NCDiag  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 177 1364 a
+ tx@Dict begin tx@NodeDict begin /t 1.2 def LPut end PutBegin  end
+ 177 1364 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 31.72441 7.21277
+2.15988 NAngle 90 add  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 111 1374 a Fs(\\ncdiag)177
+1364 y
+ tx@Dict begin PutEnd  end
+ 177 1364 a
+ tx@Dict begin PutEnd  end
+ 712 1254 a Fs(\\cnode\(0,0\){12pt}{a})712
+1314 y(\\rput[l]\(3,1\){\\rnode{b}{H}})712 1374 y
+(\\rput[l]\(3,-1\){\\rnode{c}{T}})712 1434 y(\\ncdiagg[angleA=180,)21
+b(armA=1.5,)i(nodesepA=3pt]{b}{a})712 1495 y(\\ncdiag[angleA=180,)f
+(armA=1.5,)g(armB=0,)g(nodesepA=3pt]{c}{a})712 1626 y FB(Y)-5
+b(ou)10 b(can)h(use)f Fu(\\ncdiagg)g FB(with)g Fu(armA=0)g
+FB(if)h(you)f(want)g(a)g(straight)h(line)g(that)712 1686 y(joins)f(to)h(node)
+e(A)h(at)g(the)h(angle)f(you)g(specify)m(,)g(and)g(to)g(node)g(B)g(at)g(an)g
+(angle)712 1746 y(that)j(is)f(determined)h(automatically)m(.)591
+1848 y FA(\\ncbar)p Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p
+FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712 1929 y FB(This)24
+b(node)g(connection)h(consists)e(of)g(a)h(line)h(with)e(arms)h(dropping)712
+1989 y(\252down\272,)17 b(at)e(right)h(angles,)h(to)e(meet)i(two)e(nodes)g
+(at)h(an)g(angle)g Fu(angleA)p FB(.)712 2049 y(Each)11 b(arm)g(is)f(at)h
+(least)g(of)f(length)h Fu(armA)g FB(or)f Fu(armB)p FB(,)h(but)f(one)g(may)h
+(be)g(need)712 2110 y(to)i(be)f(longer)m(.)156 2282 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 38.39641 19.1982 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ FB(Connect)h(some)440
+2282 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 28.15506 14.07753 3.81314
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ FB(words)o(!)591 2282 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+false 0.4 1.4 1.5 2. Arrow  EndArrow  moveto } def /ArrowB { BeginArrow
+{false} true /DS 2.0 2. CLW mul add 2 div def EndDot  EndArrow  } def
+/NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0 3.0 /TheNodeA /TheNodeB
+InitNC { tx@Dict begin /Lineto /lineto load def false pop end /AngleA
+-90. def /AngleB -90. def /armA 10.0 def /armB 10.0 def /AngleB -90.
+def NCBar  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+ grestore end
+ 591 2282 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 70. def /AngleB 70. def /armA 10.0 def /armB
+10.0 def /AngleB 70. def NCBar  } if end gsave 0.8 SLW 0. setgray 0
+setlinecap stroke  grestore  grestore end
+ 712 2216 a Fs(\\rnode{A}{Connect})
+21 b(some)i(\\rnode{B}{words}!)712 2276 y(\\ncbar[nodesep=3pt,angle=-90]{<-)o
+(**}{)o(A}{B})712 2337 y(\\ncbar[nodesep=3pt,angle=70]{A}{B})712
+2468 y FB(Generally)m(,)13 b(the)f(whole)g(line)h(has)e(three)i(straight)f
+(segments.)591 2828 y Fp(Node)d(connections)1016 b(12)p eop
+%%Page: 13 13
+12 bop 591 50 a FA(\\ncangle)p Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q
+Fz(})p FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712 131 y
+FB(Now)16 b(we)f(get)i(to)f(a)g(more)h(complicated)h(node)e(connection.)30
+b Fu(\\ncangle)712 191 y FB(typically)10 b(draws)d(three)i(line)g(segments,)f
+(like)h Fu(\\ncdiag)p FB(.)16 b(However)n(,)8 b(rather)712
+251 y(than)14 b(\256xing)e(the)i(length)f(of)g(arm)g(A,)f(we)h(adjust)g(arm)g
+(A)g(so)f(that)i(the)f(line)712 311 y(joining)g(the)f(two)g(arms)g(meets)g
+(arm)h(A)e(at)i(a)f(right)g(angle.)18 b(For)11 b(example:)118
+436 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial FB(Node)g(A)397
+719 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial FB(Node)g(B)118
+742 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA -90. def /AngleB 90. def /armA 10.0 def /armB
+28.45274 def NCAngle  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 516 a Fs(\\rput[tl]\(0,3\){\\rnode{A}{\\psframebox{Node)20
+b(A}}})712 576 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712
+636 y(\\ncangle[angleA=-90,angleB=90,armB=1cm]{A}{B})712 865
+y FB(Now)11 b(watch)i(what)e(happens)h(when)g(we)f(change)i
+Fu(angleA)p FB(:)118 990 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial
+FB(Node)e(A)118 1296 y
+ tx@Dict begin { tx@NodeDict begin tx@NodeDict /TheNodeA known { 0.0
+-70. 0.0 /TheNodeA load GetEdge } { CP } ifelse end } PutCoor PutBegin
+ end
+ 118 1296 a
+ tx@Dict begin { 0.0 0.0 0.0 0.0 -70.  /a ED add 2 div /h ED 2 div
+/w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED
+{ pop } { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h
+mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs
+} ifelse /z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div
+s mul abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add
+} { q { x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch
+w1 add exch } PutCoor PutBegin  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def 0.0 0.0 /y ED /x ED /r 11.38092 def /c 57.2957 r Div
+def /angleA 0. 0.0 c mul 2 div sub def /angleB -70. 0.0 c mul 2 div
+add def x y r angleA angleB arcn  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+
+@endspecial 118 1296 a
+ tx@Dict begin { 11.38092 30.63216 7.21277 2.15988 -35.  /a ED add
+2 div /h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2
+copy gt dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul
+def /h1 s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs
+h sub dup s mul abs } ifelse /z ED abs /y ED /x ED q { x s div c mul
+abs y gt } { x c div s mul abs y gt } ifelse { x x mul y y mul sub
+z z mul add sqrt z add } { q { x s div } { x c div } ifelse abs } ifelse
+a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 55 1306 a Fs(angleA)118 1296 y
+ tx@Dict begin PutEnd  end
+ 118
+1296 a
+ tx@Dict begin PutEnd  end
+ 118 1296 a
+ tx@Dict begin PutEnd  end
+ 397 1273 a
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial
+FB(Node)g(B)118 1296 y
+ tx@Dict begin gsave STV newpath 1.2 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA -70. def /AngleB 90. def /armA 10.0 def /armB
+28.45274 def NCAngle  } if end gsave 1.2 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 118 1296 a
+ tx@Dict begin { tx@NodeDict begin tx@NodeDict /TheNodeB known { 0.0
+90. 0.0 /TheNodeB load GetEdge } { CP } ifelse end } PutCoor PutBegin
+ end
+ 118 1296 a
+ tx@Dict begin { 0.0 0.0 0.0 0.0 90.  /a ED add 2 div /h ED 2 div /w
+ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED { pop
+} { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h mul def
+q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse
+/z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div s mul
+abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add } {
+q { x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch w1
+add exch } PutCoor PutBegin  end
+ 126 1270 a
+ tx@Dict begin CP CP translate 1.54375 2.79187 scale NET  end
+ FB(})126
+1270 y
+ tx@Dict begin CP CP translate 1 1.54375 div 1 2.79187 div scale NET
+ end
+ 166 1250 a Fs(armB)118 1296 y
+ tx@Dict begin PutEnd  end
+ 118 1296 a
+ tx@Dict begin PutEnd  end
+ 118 1296 a
+ tx@Dict begin tx@NodeDict begin /t 1. def LPut end PutBegin  end
+
+118 1296 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 0.0 0.0 9.95863
+9.95863 0 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial 118 1296
+a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 1296 a
+ tx@Dict begin PutEnd  end
+ 712 1069 a Fs(\\rput[tl]\(0,3\){\\rnode{A}{\\psframebox{Node)20
+b(A}}})712 1129 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712
+1189 y(\\ncangle[angleA=-70,angleB=90,armB=1cm,linewidth=1.2pt]{A}{B})712
+1418 y Fu(\\ncangle)14 b FB(is)g(also)g(a)g(good)g(way)f(to)i(join)f(nodes)g
+(by)f(a)h(right)h(angle,)g(with)712 1479 y(just)e(two)e(line)i(segments,)f
+(as)g(in)g(this)g(example:)118 1603 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+
+@endspecial FB(Node)f(A)397 1768 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial FB(Node)g(B)118 1792 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /r 14.22636 def /Lineto
+{ Arcto } def false pop end /AngleA 0. def /AngleB 90. def /armA 10.0
+def /armB 0.0 def NCAngle  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 1624 a Fs
+(\\rput[tl]\(0,2\){\\rnode{A}{\\psframebox{Node)20 b(A}}})712
+1684 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712 1744
+y(\\ncangle[angleB=90,)j(armB=0,)g(linearc=.5]{A}{B})591 1914
+y FA(\\ncangles)p Fz(*[)p Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p
+FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712 1995 y Fu(\\ncangles)13
+b FB(is)f(similar)i(to)f Fu(\\ncangle)p FB(,)f(but)h(the)g(length)h(of)e(arm)
+h(A)g(is)f(\256xed)712 2055 y(by)f(the)g Fu(armA)g FB(parameter)m(.)18
+b(Arm)10 b(A)g(is)g(connected)i(to)e(arm)h(B)g(by)f(two)g(line)712
+2115 y(segments)17 b(that)g(meet)h(arm)f(A)f(and)g(each)i(other)e(at)h(right)
+g(angles.)31 b(The)712 2176 y(angle)14 b(at)f(which)f(they)h(join)g(arm)g(B,)
+g(and)f(the)h(length)h(of)e(the)h(connecting)712 2236 y(segments,)j(depends)f
+(on)g(the)g(positions)g(of)g(the)g(two)g(arms.)26 b Fu(\\ncangles)712
+2296 y FB(generally)13 b(draws)f(a)g(total)h(of)e(four)h(line)h(segments.)
+1576 2278 y Fi(5)1611 2296 y FB(For)e(example:)p 591 2340 544
+2 v 646 2371 a Fh(5)662 2386 y Fg(Hence)e(there)h(is)f(one)h(more)g(angle)f
+(than)g Ff(\\ncangle)p Fg(,)h(and)g(hence)f(the)h Fd(s)f Fg(in)h
+Ff(\\ncangles)p Fg(.)591 2828 y Fp(Node)f(connections)1016
+b(13)p eop
+%%Page: 14 14
+13 bop 118 48 a
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial
+FB(Node)11 b(A)397 449 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial
+FB(Node)g(B)118 472 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /r 4.26773 def /Lineto
+{ Arcto } def false pop end /AngleA -90. def /AngleB 0. def /armA 28.45274
+def /armB 14.22636 def NCAngles  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 712 187 a Fs
+(\\rput[tl]\(0,4\){\\rnode{A}{\\psframebox{Node)20 b(A}}})712
+247 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712 307 y
+(\\ncangles[angleA=-90,)j(armA=1cm,)g(armB=.5cm,)h(linearc=.15]{A}{B})712
+595 y FB(Let')m(s)12 b(see)g(what)f(happens)g(to)g(the)h(previous)f(example)h
+(when)f(we)g(change)712 655 y Fu(angleB)p FB(:)118 779 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16
+w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial FB(Node)g(A)397 1180
+y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial FB(Node)g(B)118 1203
+y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /r 4.26773 def /Lineto
+{ Arcto } def false pop end /AngleA -90. def /AngleB 135. def /armA
+28.45274 def /armB 14.22636 def NCAngles  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 118 1203 a
+ tx@Dict begin { tx@NodeDict begin tx@NodeDict /TheNodeA known { 0.0
+-90. 0.0 /TheNodeA load GetEdge } { CP } ifelse end } PutCoor PutBegin
+ end
+ 118 1203 a
+ tx@Dict begin { 0.0 0.0 0.0 0.0 -90.  /a ED add 2 div /h ED 2 div
+/w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED
+{ pop } { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h
+mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs
+} ifelse /z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div
+s mul abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add
+} { q { x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch
+w1 add exch } PutCoor PutBegin  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def 0.0 0.0 /y ED /x ED /r 11.38092 def /c 57.2957 r Div
+def /angleA 0. 0.0 c mul 2 div sub def /angleB -90. 0.0 c mul 2 div
+add def x y r angleA angleB arcn  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+118 1203 a
+ tx@Dict begin { 11.38092 30.63216 7.21277 2.15988 -45.  /a ED add
+2 div /h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2
+copy gt dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul
+def /h1 s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs
+h sub dup s mul abs } ifelse /z ED abs /y ED /x ED q { x s div c mul
+abs y gt } { x c div s mul abs y gt } ifelse { x x mul y y mul sub
+z z mul add sqrt z add } { q { x s div } { x c div } ifelse abs } ifelse
+a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 55 1213 a Fs(angleA)118 1203 y
+ tx@Dict begin PutEnd  end
+ -25 1274 a Fs(armA)77
+1293 y
+ tx@Dict begin CP CP translate 1.44075 2.79187 scale NET  end
+ FB({)77 1293 y
+ tx@Dict begin CP CP translate 1 1.44075 div 1 2.79187 div scale NET
+ end
+ 118 1203 a
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin { tx@NodeDict begin tx@NodeDict /TheNodeB known { 0.0
+135. 0.0 /TheNodeB load GetEdge } { CP } ifelse end } PutCoor PutBegin
+ end
+ 118
+1203 a
+ tx@Dict begin { 0.0 0.0 0.0 0.0 135.  /a ED add 2 div /h ED 2 div
+/w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED
+{ pop } { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h
+mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs
+} ifelse /z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div
+s mul abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add
+} { q { x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch
+w1 add exch } PutCoor PutBegin  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def 0.0 0.0 /y ED /x ED /r 11.38092 def /c 57.2957 r Div
+def /angleA 0. 0.0 c mul 2 div add def /angleB 133. 0.0 c mul 2 div
+sub def x y r angleA angleB arc  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 118 1203 a
+ tx@Dict begin { 11.38092 30.63216 7.21277 2.15988 50.5  /a ED add
+2 div /h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2
+copy gt dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul
+def /h1 s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs
+h sub dup s mul abs } ifelse /z ED abs /y ED /x ED q { x s div c mul
+abs y gt } { x c div s mul abs y gt } ifelse { x x mul y y mul sub
+z z mul add sqrt z add } { q { x s div } { x c div } ifelse abs } ifelse
+a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 55
+1213 a Fs(angleB)118 1203 y
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin PutEnd  end
+ 118 1203
+a
+ tx@Dict begin tx@NodeDict begin /t 2. def LPut end PutBegin  end
+ 118 1203 a
+ tx@Dict begin NAngle 90 add  tx@Dict /TMatrix known not { /TMatrix
+{ } def /RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED
+a Rot /RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def [ -9.95863 0.0 -9.95863 -9.95863 0.0 -9.95863  /Lineto
+/lineto load def false Line  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 118 1203
+a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 1203 a
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin tx@NodeDict begin /t 3.5 def LPut end PutBegin  end
+ -74 1217 a
+ tx@Dict begin gsave STV CP T 7.21277 0.23123 23.50795 11.75397 3.49077
+ tx@NodeDict begin /TheNodearm 16 NewNode InitRnode  end end grestore
+end
+ Fs(armB)118 1203 y
+ tx@Dict begin gsave STV CP T 0.0 0.0  tx@NodeDict begin /TheNodebrak
+10 NewNode InitPnode  end end grestore end
+ 118 1203
+a
+ tx@Dict begin PutEnd  end
+ 118 1203 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0 3.0 /TheNodearm
+/TheNodebrak InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 887 a Fs(\\rput[tl]\(0,4\){\\rnode{A}{\\psframebox{Node)20
+b(A}}})712 947 y(\\rput[br]\(4,0\){\\ovalnode{B}{Node)f(B}})712
+1007 y(\\ncangles[angleA=-90,)j(angleB=135,)f(armA=1cm,)i(armB=.5cm,)781
+1068 y(linearc=.15]{A}{B})591 1325 y FA(\\ncloop)p Fz(*[)p
+Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p FA({)p Fx(nodeA)p FA(}{)p
+Fx(nodeB)r FA(})712 1406 y Fu(\\ncloop)12 b FB(is)g(also)f(in)h(the)g(same)g
+(family)g(as)g Fu(\\ncangle)f FB(and)h Fu(\\ncangles)p FB(,)f(but)712
+1467 y(now)18 b(typically)h(5)e(line)i(segments)e(are)h(drawn.)34
+b(Hence,)20 b Fu(\\ncloop)d FB(can)712 1527 y(reach)f(around)e(to)h(opposite)
+g(sides)f(of)h(the)g(nodes.)25 b(The)15 b(lengths)g(of)f(the)712
+1587 y(arms)19 b(are)f(\256xed)g(by)g Fu(armA)g FB(and)h Fu(armB)p
+FB(.)f(Starting)h(at)f(arm)h(A,)f Fu(\\ncloop)712 1647 y FB(makes)13
+b(a)f(90)g(degree)g(turn)g(to)g(the)h(left,)f(drawing)g(a)g(segment)g(of)g
+(length)820 1749 y FA(loopsize=)p Fx(dim)497 b Fv(Default:)20
+b FA(1cm)712 1851 y FB(This)13 b(segment)h(connects)f(to)g(arm)g(B)g(the)h
+(way)e(arm)i(A)e(connects)h(to)g(arm)712 1911 y(B)f(with)g
+Fu(\\ncline)p FB(;)h(that)g(is,)f(two)f(more)i(segments)f(are)g(drawn,)g
+(which)f(join)712 1971 y(the)h(\256rst)e(segment)h(and)g(each)g(other)h(at)f
+(right)g(angles,)g(and)g(then)g(join)g(arm)712 2031 y(B.)h(For)g(example:)215
+2226 y
+ tx@Dict begin gsave STV CP T 19.93428 8.95914 73.28362 36.6418 5.48756
+ tx@NodeDict begin /TheNodea 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 8.95914
+neg 69.48361 19.93428 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial Fn(A)24
+b(loop)531 2226 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0 0.0 /TheNodea /TheNodea
+InitNC { tx@Dict begin /r 5.69046 def /Lineto { Arcto } def false pop
+end /AngleA 0. def /AngleB 180. def /armA 14.22636 def /armB 14.22636
+def /loopsize 28.45274 def NCLoop  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 531 2226 a
+ tx@Dict begin tx@NodeDict begin /t 3.5 def LPut end PutBegin  end
+ 531 2226 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar 0 CLW 2 div T newpath false 0.4 1.4 1.5 2. Arrow  EndArrow
+ moveto } def /ArrowB { BeginArrow 2.0 5. Tbar 0 CLW 2 div T newpath
+false 0.4 1.4 1.5 2. Arrow  EndArrow  } def [ -14.22636 -5.69046 14.22636
+-5.69046  /Lineto /lineto load def false Line  gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial 531 2226 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 531 2226 a
+ tx@Dict begin PutEnd  end
+ 531 2226 a
+ tx@Dict begin tx@NodeDict begin /t 3.5 def LPut end PutBegin  end
+ 531 2226 a
+ tx@Dict begin NAngle 180 add  tx@Dict /TMatrix known not { /TMatrix
+{ } def /RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED
+a Rot /RAngle [ RAngle dup a add ] cvx def  end
+ 531
+2226 a
+ tx@Dict begin { 9.95863 tx@Dict /NCLW known { NCLW add } if 36.09341
+7.21277 2.15988 NAngle 90 sub  NAngle 180 add  sub /a ED add 2 div
+/h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt
+dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul def /h1
+s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup
+s mul abs } ifelse exch pop add a PtoC h1 add exch w1 add exch } PutCoor
+PutBegin  end
+ 456 2236 a Fs(loopsize)531 2226 y
+ tx@Dict begin PutEnd  end
+ 531 2226 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 531 2226
+a
+ tx@Dict begin PutEnd  end
+ 712 2166 a Fs(\\rnode{a}{\\psframebox{\\Huge)c(A)j(loop}})712
+2226 y(\\ncloop[angleB=180,loopsize=1,arm=.5,linearc=.2]{->}{)o(a}{)o(a})712
+2386 y FB(In)12 b(this)h(example,)g(node)f(A)g(and)g(node)g(B)g(are)h(the)f
+(same)h(node!)18 b(Y)-5 b(ou)11 b(can)712 2446 y(do)h(this)f(with)h(all)g
+(the)g(node)g(connections)g(\(but)f(it)h(doesn')o(t)g(always)f(make)712
+2506 y(sense\).)712 2587 y(Here)h(is)g(an)g(example)h(where)f
+Fu(\\ncloop)g FB(connects)h(two)e(dif)o(ferent)i(nodes:)591
+2828 y Fp(Node)c(connections)1016 b(14)p eop
+%%Page: 15 15
+14 bop 165 56 a
+ tx@Dict begin gsave STV CP T 13.0414 6.71689 41.39984 20.69992 3.16225
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 6.71689
+neg 37.59984 13.0414 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+Fv(Begin)374 261 y
+ tx@Dict begin gsave STV CP T 13.0414 4.0281 32.19301 16.0965 4.50664
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 4.0281
+neg 28.393 13.0414 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+Fv(End)520 261 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0 0.0 /TheNodeA /TheNodeB
+InitNC { tx@Dict begin /r 5.69046 def /Lineto { Arcto } def false pop
+end /AngleA 180. def /AngleB 0. def /armA 14.22636 def /armB 14.22636
+def /loopsize 25.60728 def NCLoop  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 531 152 a
+ tx@Dict begin tx@NodeDict begin /t 1.5 def LPut end PutBegin  end
+ 531 152 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar 0 CLW 2 div T newpath false 0.4 1.4 1.5 2. Arrow  EndArrow
+ moveto } def /ArrowB { BeginArrow 2.0 5. Tbar 0 CLW 2 div T newpath
+false 0.4 1.4 1.5 2. Arrow  EndArrow  } def [ -12.80363 -5.69046 12.80363
+-5.69046  /Lineto /lineto load def false Line  gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial 531 152 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 531 152 a
+ tx@Dict begin PutEnd  end
+ 531 152 a
+ tx@Dict begin tx@NodeDict begin /t 1.5 def LPut end PutBegin  end
+ 531 152 a
+ tx@Dict begin NAngle 180 add  tx@Dict /TMatrix known not { /TMatrix
+{ } def /RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED
+a Rot /RAngle [ RAngle dup a add ] cvx def  end
+ 531 152
+a
+ tx@Dict begin { 9.95863 tx@Dict /NCLW known { NCLW add } if 36.09341
+7.21277 2.15988 NAngle 90 sub  NAngle 180 add  sub /a ED add 2 div
+/h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt
+dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul def /h1
+s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup
+s mul abs } ifelse exch pop add a PtoC h1 add exch w1 add exch } PutCoor
+PutBegin  end
+ 457 163 a Fs(loopsize)531 152 y
+ tx@Dict begin PutEnd  end
+ 531 152 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 531 152 a
+ tx@Dict begin PutEnd  end
+ 712 30
+a Fs(\\parbox{3cm}{\045)712 90 y(\\rnode{A}{\\psframebox{\\large\\bf)20
+b(Begin}})712 150 y(\\vspace{1cm}\\hspace*{\\\256ll})712 211
+y(\\rnode{B}{\\psframebox{\\large\\bf)g(End}})712 271 y
+(\\ncloop[angleA=180,loopsize=.9,arm=.5,linearc=.2]{->}{A}{)o(B}})591
+423 y FB(The)12 b(next)g(two)g(node)g(connections)g(are)h(a)f(little)h(dif)o
+(ferent)g(from)f(the)g(rest.)591 566 y FA(\\nccurve)p Fz(*[)p
+Fy(par)p Fz(]{)p Fy(arrows)q Fz(})p FA({)p Fx(nodeA)p FA(}{)p
+Fx(nodeB)r FA(})712 647 y Fu(\\nccurve)f FB(draws)h(a)g(bezier)h(curve)f
+(between)g(the)g(nodes.)118 1052 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+
+@endspecial FB(Node)f(A)397 769 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+
+@endspecial FB(Node)g(B)118 1069 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { /AngleA 0.  def /AngleB 180.  def
+0.67  0.67  NCCurve  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 842 a Fs
+(\\rput[bl]\(0,0\){\\rnode{A}{\\psframebox{Node)19 b(A}}})712
+902 y(\\rput[tr]\(4,3\){\\ovalnode{B}{Node)h(B}})712 962 y
+(\\nccurve[angleB=180]{A}{B})712 1191 y FB(Y)-5 b(ou)9 b(specify)g(the)g
+(angle)g(at)g(which)g(the)g(curve)g(joins)f(the)i(nodes)e(by)g(setting)712
+1251 y(the)17 b Fu(angle)f FB(\(and)g Fu(angleA)h FB(and)f
+Fu(angleB)p FB(\))g(parameter)m(.)32 b(The)17 b(distance)g(to)712
+1312 y(the)c(control)f(points)g(is)g(set)g(with)g(the)820 1413
+y FA(ncurv=)p Fx(num)575 b Fv(Default:)20 b FA(.67)712 1515
+y FB(\(and)e Fu(ncurvA)f FB(and)g Fu(ncurvB)p FB(\))g(parameter)m(.)36
+b(A)16 b(lower)i(number)f(gives)h(a)712 1575 y(tighter)h(curve.)36
+b(\(The)19 b(distance)g(between)f(the)h(beginning)f(of)g(the)g(arc)712
+1635 y(and)e(the)f(\256rst)f(control)i(point)f(is)g(one-half)g
+Fu(ncurvA)g FB(times)h(the)f(distance)712 1696 y(between)e(the)f(two)g
+(endpoints.\))591 1797 y FA(\\nccircle)p Fz(*[)p Fy(par)p Fz(]{)p
+Fy(arrows)q Fz(})p FA({)p Fx(node)r FA(}{)p Fx(radius)r FA(})712
+1878 y Fu(\\nccircle)d FB(draws)e(a)i(circle,)h(or)e(part)h(of)f(a)h(circle,)
+h(that,)g(if)f(complete,)h(would)712 1938 y(pass)h(through)f(the)i(center)f
+(of)g(the)g(node)g(counterclockwise,)h(at)f(an)g(angle)712
+1999 y(of)h Fu(angleA)p FB(.)460 2239 y
+ tx@Dict begin gsave STV CP T 7.70117 0.19008 23.68526 11.84262 3.75554
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ Fq(back)570 2239 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0 3.0 /TheNodeA /TheNodeA
+InitNC { /AngleA 0. def /r 19.91684 def NCCircle x y r angleA angleB
+{ ArrowB } { sub } ArcArrow arc end } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+
+712 2107 a Fs(\\rnode{A}{\\bf)22 b(back})712 2168 y
+(\\nccircle[nodesep=3pt]{->}{A}{.7cm})712 2228 y(\\kern)h(5pt)712
+2363 y Fu(\\nccircle)18 b FB(can)g(only)g(connect)g(a)g(node)g(to)g(itself;)j
+(it)d(is)g(the)g(only)g(node)712 2423 y(connection)c(with)e(this)g(property)m
+(.)18 b Fu(\\nccircle)12 b FB(is)g(also)h(special)g(because)f(it)712
+2483 y(has)e(an)g(additional)h(ar)o(gument,)g(for)e(specifying)h(the)g
+(radius)g(of)f(the)i(circle.)591 2828 y Fp(Node)e(connections)1016
+b(15)p eop
+%%Page: 16 16
+15 bop 591 50 a FB(The)12 b(last)g(two)g(node)g(connections)g(are)g(also)g
+(special.)18 b(Rather)13 b(than)f(connecting)591 110 y(the)f(nodes)f(with)h
+(an)g(open)g(curve,)g(they)g(enclose)g(the)g(nodes)g(in)g(a)g(box)f(or)h
+(curved)591 170 y(box.)24 b(Y)-5 b(ou)14 b(can)h(think)g(of)g(them)g(as)f
+(variants)h(of)g Fu(\\ncline)f FB(and)h Fu(\\ncarc)p FB(.)24
+b(In)15 b(both)591 230 y(cases,)c(the)i(half)f(the)g(width)g(of)g(the)h(box)e
+(is)712 361 y FA(boxsize=)p Fx(dim)608 b Fv(Default:)20 b FA(.4cm)591
+492 y FB(Y)-5 b(ou)19 b(have)h(to)g(set)g(this)f(yourself)h(to)g(the)g(right)
+g(size,)i(so)d(that)i(the)f(nodes)f(\256t)591 552 y(inside)13
+b(the)h(box.)21 b(The)13 b Fu(boxsize)g FB(parameter)i(actually)g(sets)e(the)
+g Fu(boxheight)g FB(and)591 612 y Fu(boxdepth)f FB(parameters.)22
+b(The)14 b(ends)f(of)g(the)h(boxes)f(extend)h(beyond)f(the)h(nodes)591
+672 y(by)d Fu(nodesepA)h FB(and)g Fu(nodesepB)p FB(.)591 816
+y FA(\\ncbox)p Fz(*[)p Fy(par)p Fz(])p FA({)p Fx(nodeA)p FA(}{)p
+Fx(nodeB)r FA(})712 897 y Fu(\\ncbox)22 b FB(encloses)f(the)h(nodes)f(in)h(a)
+g(box)f(with)h(straight)g(sides.)45 b(For)712 957 y(example:)177
+1328 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 28.46611 14.23305 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ FB(Idea)12 b(1)413 1125 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 28.46611 14.23305 3.81314
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ FB(Idea)h(2)118 1329 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /NCLW CLW def
+tx@NodeDict begin 0.0 0.0 neg 14.22636 14.22636 /TheNodeA /TheNodeB
+InitNC { tx@Dict begin /r 5.69046 def /Lineto { Arcto } def false pop
+end 17.07181 17.07181 NCBox  } if end gsave 0.8 SLW 0. setgray 5.0
+3.0 2 DashLine  grestore  grestore end
+ 712
+1131 a Fs(\\rput[bl]\(.5,0\){\\rnode{A}{Idea)20 b(1}})712 1191
+y(\\rput[tr]\(3.5,2\){\\rnode{B}{Idea)g(2}})712 1251 y
+(\\ncbox[nodesep=.5cm,boxsize=.6,linearc=.2,)758 1312 y
+(linestyle=dashed]{A}{B})591 1510 y FA(\\ncarcbox)p Fz(*[)p
+Fy(par)p Fz(])p FA({)p Fx(nodeA)p FA(}{)p Fx(nodeB)r FA(})712
+1591 y Fu(\\ncarcbox)14 b FB(encloses)h(the)h(nodes)e(in)i(a)f(curved)g(box)g
+(that)g(is)g Fu(arcangleA)712 1652 y FB(away)d(from)g(the)h(line)f
+(connecting)h(the)g(two)e(nodes.)177 2024 y
+ tx@Dict begin gsave STV CP T 7.7818 0.0 5.76004 2.88002 3.8909  tx@NodeDict
+begin /TheNodeA 16 NewNode InitRnode  end end grestore end
+ FB(1)508 1820 y
+ tx@Dict begin gsave STV CP T 7.7818 0.0 5.76004 2.88002 3.8909  tx@NodeDict
+begin /TheNodeB 16 NewNode InitRnode  end end grestore end
+
+FB(2)118 2024 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /NCLW CLW def
+tx@NodeDict begin 0.0 0.0 neg 5.69046 5.69046 /TheNodeA /TheNodeB InitNC
+{ 50. 11.38092 11.38092 11.38092 NCArcBox  } if end gsave 0.8 SLW 0.
+setgray 0 setlinecap stroke  grestore  grestore end
+ 712 1826 a Fs(\\rput[bl]\(.5,0\){\\rnode{A}{1}})712
+1886 y(\\rput[tr]\(3.5,2\){\\rnode{B}{2}})712 1946 y
+(\\ncarcbox[nodesep=.2cm,boxsize=.4,linearc=.4,)758 2006 y
+(arcangle=50]{<->}{)o(A}{B})712 2205 y FB(The)i(arc)f(is)g(drawn)f
+(counterclockwise)i(from)f(node)g(A)f(to)i(node)e(B.)591 2348
+y(There)e(is)g(one)g(other)h(node)f(connection)h(parameter)g(that)g(applies)g
+(to)f(all)h(the)g(node)591 2408 y(connections,)i(except)h Fu(\\ncarcbox)p
+FB(:)712 2539 y FA(offset=)p Fx(dim)694 b Fv(Default:)20 b
+FA(0pt)591 2828 y Fp(Node)9 b(connections)1016 b(16)p eop
+%%Page: 17 17
+16 bop 591 50 a FB(\(Y)-5 b(ou)15 b(can)i(also)f(set)g Fu(offsetA)f
+FB(and)h Fu(offsetB)f FB(independently)m(.\))30 b(This)17 b(shifts)e(the)591
+110 y(point)f(where)g(the)g(connection)h(joins)f(up)g(by)g
+Fr(dim)h FB(\(given)f(the)h(convention)f(that)591 170 y(connections)e(go)g
+(from)g(left)g(to)h(right\).)591 259 y(There)g(are)g(two)g(main)g(uses)f(for)
+h(this)g(parameter)m(.)21 b(First,)13 b(it)g(lets)g(you)g(make)g(two)591
+320 y(parallel)g(lines)f(with)g Fu(\\ncline)p FB(,)h(as)e(in)h(the)h
+(following)f(example:)160 716 y
+ tx@Dict begin gsave STV CP T 8.31749 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeA
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  8.31749 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial
+FB(X)514 480 y
+ tx@Dict begin gsave STV CP T 8.31749 2 div 7.7818 0.0 add 2 div 2
+copy 0.0 sub 4 2 roll Pyth 3.0 add 0.8 add tx@NodeDict begin /TheNodeB
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  8.31749 2 div 7.7818
+0.0 add 2 div 2 copy 0.0 sub 4 2 roll Pyth 3.0 add CLW 2 div add 0
+360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+@endspecial FB(Y)177
+700 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 4.0 4.0 neg 3.0 3.0 /TheNodeA /TheNodeB
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 177 700 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 4.0 4.0 neg 3.0 3.0 /TheNodeB /TheNodeA
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 712 472 a Fs(\\cnodeput\(0,0\){A}{X})712 532
+y(\\cnodeput\(3,2\){B}{Y})712 592 y(\\psset{nodesep=3pt,of)o
+(fset=4pt,arrows=->})712 653 y(\\ncline{A}{B})712 713 y(\\ncline{B}{A})591
+890 y FB(Second,)17 b(it)h(lets)f(you)g(join)g(a)g(node)g(connection)g(to)g
+(a)g(rectangular)h(node)f(at)h(a)591 950 y(right)9 b(angle,)i(without)f
+(limiting)h(yourself)e(to)h(positions)f(that)i(lie)f(directly)h(above,)591
+1010 y(below)m(,)17 b(or)g(to)f(either)i(side)f(of)f(the)h(center)h(of)e(the)
+h(node.)31 b(This)17 b(is)f(useful,)i(for)591 1070 y(example,)12
+b(if)g(you)g(are)g(making)g(several)h(connections)f(to)g(the)g(same)g(node,)g
+(as)g(in)591 1131 y(the)g(following)g(example:)6 1311 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 31.06964 15.53482 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ FB(W)l(ord1)g(and)228
+1311 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 31.06964 15.53482 3.81314
+ tx@NodeDict begin /TheNodeB 16 NewNode InitRnode  end end grestore
+end
+ FB(W)l(ord2)g(and)450 1311 y
+ tx@Dict begin gsave STV CP T 7.7818 0.15552 31.06964 15.53482 3.81314
+ tx@NodeDict begin /TheNodeC 16 NewNode InitRnode  end end grestore
+end
+ FB(W)l(ord3)591 1311 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 4.0 neg 3.0 3.0 /TheNodeA /TheNodeB
+InitNC { tx@Dict begin /Lineto /lineto load def false pop end /AngleA
+-90. def /AngleB 0. def /armA 10.0 def /armB 10.0 def /AngleB -90.
+def NCBar  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+ grestore end
+
+591 1311 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 4.0 0.0 neg 3.0 3.0 /TheNodeB /TheNodeC
+InitNC { tx@Dict begin /Lineto /lineto load def false pop end /AngleA
+-90. def /AngleB 0. def /armA 10.0 def /armB 10.0 def /AngleB -90.
+def NCBar  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+ grestore end
+ 712 1246 a Fs(\\rnode{A}{W)o(ord1})19 b(and)j(\\rnode{B}{W)o
+(ord2})d(and)j(\\rnode{C}{W)o(ord3})712 1306 y(\\ncbar[of)o
+(fsetB=4pt,angleA=-90,nodesep=3pt]{->}{A}{B})712 1366 y(\\ncbar[of)o
+(fsetA=4pt,angleA=-90,nodesep=3pt]{->}{B}{C})591 1506 y FB(Sometimes)14
+b(you)f(might)h(be)g(aligning)g(several)g(nodes,)f(such)g(as)h(in)f(a)h
+(tree,)h(and)591 1566 y(you)e(want)h(to)g(ends)g(or)g(the)g(arms)g(of)g(the)g
+(node)g(connections)g(to)g(line)h(up.)23 b(This)591 1626 y(won')o(t)11
+b(happen)h(naturally)h(if)f(the)g(nodes)f(are)h(of)g(dif)o(ferent)g(size,)h
+(as)e(you)h(can)g(see)591 1686 y(in)g(this)g(example:)177 2148
+y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  25.60728 76.82185 4.0
+.5 CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 177 2148 a
+ tx@Dict begin gsave STV CP T 25.60728 76.82185 4.0  tx@NodeDict begin
+/TheNodea 11 NewNode InitCnode  end end grestore end
+ 141 2148
+a
+ tx@Dict begin gsave STV CP T 16.13428 0.0 17.24493 8.62247 7.49028
+ tx@NodeDict begin /TheNodeb 16 NewNode InitRnode  end end grestore
+end
+ Fn(H)368 2148 y
+ tx@Dict begin gsave STV CP T 10.38997 0.20302 10.60492 5.30246 7.49028
+ tx@NodeDict begin /TheNodec 16 NewNode InitRnode  end end grestore
+end
+ Fn(a)177 2148 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+0.0 /TheNodeb /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 90. def /AngleB 0. def /armA 25.60728 def
+/armB 10.0 def NCDiagg  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 177 2148 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+0.0 /TheNodec /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 90. def /AngleB 0. def /armA 25.60728 def
+/armB 10.0 def NCDiagg  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712 1801 a Fs(\\Huge)712
+1861 y(\\cnode\(1,3\){4pt}{a})712 1922 y(\\rput[B]\(0,0\){\\Rnode{b}{H}})712
+1982 y(\\rput[B]\(2,0\){\\Rnode{c}{a}})712 2042 y
+(\\psset{angleA=90,armA=1,nodesepA=3pt})712 2102 y(\\ncdiagg{b}{a})712
+2162 y(\\ncdiagg{c}{a})591 2302 y FB(If)h(you)g(set)g(the)h
+Fu(nodesep)e FB(or)h Fu(arm)g FB(parameter)i(to)e(a)h(negative)g(value,)g
+(PST)n(ricks)591 2362 y(will)e(measure)g(the)h(distance)g(to)f(the)g
+(beginning)h(of)e(the)i(node)f(connection)h(or)f(to)591 2422
+y(the)g(end)f(of)h(the)g(arm)f(relative)i(to)f(the)g(center)h(of)e(the)h
+(node,)f(rather)i(than)e(relative)591 2483 y(to)j(the)h(boundary)f(of)g(the)g
+(node)h(or)f(the)g(beginning)h(of)f(the)h(arm.)24 b(Here)14
+b(is)g(how)591 2543 y(we)d(\256x)h(the)g(previous)g(example:)591
+2828 y Fp(Node)d(connections)1016 b(17)p eop
+%%Page: 18 18
+17 bop 177 377 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  25.60728 76.82185 4.0
+.5 CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 177
+377 a
+ tx@Dict begin gsave STV CP T 25.60728 76.82185 4.0  tx@NodeDict begin
+/TheNodea 11 NewNode InitCnode  end end grestore end
+ 141 377 a
+ tx@Dict begin gsave STV CP T 16.13428 0.0 17.24493 8.62247 7.49028
+ tx@NodeDict begin /TheNodeb 16 NewNode InitRnode  end end grestore
+end
+ Fn(H)368 377 y
+ tx@Dict begin gsave STV CP T 10.38997 0.20302 10.60492 5.30246 7.49028
+ tx@NodeDict begin /TheNodec 16 NewNode InitRnode  end end grestore
+end
+ Fn(a)177 377 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg -12.0
+0.0 /TheNodeb /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 90. def /AngleB 0. def /armA 25.60728 def
+/armB 10.0 def NCDiagg  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 177 377 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg -12.0
+0.0 /TheNodec /TheNodea InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA 90. def /AngleB 0. def /armA 25.60728 def
+/armB 10.0 def NCDiagg  } if end gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 712
+30 a Fs(\\Huge)712 90 y(\\cnode\(1,3\){4pt}{a})712 150 y
+(\\rput[B]\(0,0\){\\Rnode{b}{H}})712 211 y(\\rput[B]\(2,0\){\\Rnode{c}{a}})
+712 271 y(\\psset{angleA=90,armA=1,nodesepA=-12pt})712 331
+y(\\ncdiagg{b}{a})712 391 y(\\ncdiagg{c}{a})591 517 y FB(Note)11
+b(also)h(the)h(use)f(of)f Fu(\\Rnode)p FB(.)591 605 y(One)d(more)i(paramter)g
+(trick:)17 b(By)9 b(using)g(the)h Fu(border)e FB(parameter)n(,)j(you)e(can)h
+(create)591 665 y(the)i(impression)g(that)g(one)g(node)g(connection)h(passes)
+e(over)h(another)m(.)591 752 y(The)d(node)h(connection)g(commands)g(make)f
+(interesting)i(drawing)e(tools)g(as)h(well,)591 812 y(as)f(an)i(alternative)h
+(to)e Fu(\\psline)g FB(for)g(connecting)h(two)f(points.)16
+b(There)11 b(are)f(variants)591 872 y(of)k(the)h(node)g(connection)g
+(commands)g(for)f(this)h(purpose.)24 b(Each)15 b(begins)g(with)591
+933 y Fs(pc)d FB(\(for)f(\252point)i(connection\272\))g(rather)f(than)h
+Fs(nc)p FB(.)k(E.g.,)712 1050 y Fs(\\pcarc{<->}\(3,4\)\(6,9\))591
+1167 y FB(gives)11 b(the)i(same)f(result)g(as)712 1284 y Fs
+(\\pnode\(3,4\){A})712 1345 y(\\pnode\(6,9\){B})712 1405 y
+(\\pcarc{<->}{A}{B})591 1522 y FB(Only)f Fu(\\nccircle)h FB(does)f(not)i
+(have)f(a)g Fs(pc)g FB(variant:)702 1644 y Ft(Command)627 b(Corr)n(esponds)10
+b(to:)702 1716 y FA(\\pcline)p Fz({)p Fy(arrows)q Fz(})p FA(\()p
+Fx(x1)p FA(,)t Fx(y1)p FA(\)\()p Fx(x2)5 b FA(,)t Fx(y2)t FA(\))165
+b Fu(\\ncline)702 1789 y FA(\\pccurve)p Fz({)p Fy(arrows)q
+Fz(})p FA(\()p Fx(x1)p FA(,)t Fx(y1)q FA(\)\()p Fx(x)q(2)t
+FA(,)t Fx(y2)t FA(\))119 b Fu(\\nccurve)702 1861 y FA(\\pcarc)p
+Fz({)p Fy(arrows)q Fz(})p FA(\()p Fx(x1)p FA(,)t Fx(y1)q FA(\)\()p
+Fx(x2)5 b FA(,)t Fx(y2)t FA(\))176 b Fu(\\ncarc)702 1933 y
+FA(\\pcbar)p Fz({)p Fy(arrows)q Fz(})p FA(\()p Fx(x1)p FA(,)t
+Fx(y1)p FA(\))q(\()p Fx(x2)t FA(,)t Fx(y2)t FA(\))e Fu(\\ncbar)702
+2005 y FA(\\pcdiag)p Fz({)p Fy(arrows)q Fz(})p FA(\()p Fx(x1)p
+FA(,)t Fx(y1)p FA(\)\()p Fx(x)q(2)t FA(,)t Fx(y2)t FA(\))149
+b Fu(\\ncdiag)702 2077 y FA(\\pcangle)p Fz({)p Fy(arrows)q
+Fz(})p FA(\()p Fx(x1)p FA(,)t Fx(y1)p FA(\)\()q Fx(x2)t FA(,)t
+Fx(y2)t FA(\))122 b Fu(\\ncangle)702 2150 y FA(\\pcloop)p Fz({)p
+Fy(arrows)q Fz(})p FA(\()p Fx(x1)p FA(,)t Fx(y1)p FA(\)\()p
+Fx(x2)5 b FA(,)t Fx(y2)t FA(\))146 b Fu(\\ncloop)702 2222 y
+FA(\\pcbox\()p Fx(x1)p FA(,)t Fx(y1)p FA(\)\()p Fx(x2)t FA(,)t
+Fx(y2)t FA(\))343 b Fu(\\ncbox)702 2294 y FA(\\pcarcbox\()p
+Fx(x1)p FA(,)t Fx(y1)p FA(\)\()p Fx(x2)t FA(,)t Fx(y2)t FA(\))270
+b Fu(\\ncarcbox)366 2460 y FC(8)70 b(Node)21 b(connections)f(labels:)27
+b(I)591 2580 y FB(Now)9 b(we)g(come)i(to)f(the)h(commands)f(for)g(attaching)h
+(labels)g(to)f(the)g(node)g(connec-)591 2640 y(tions.)16 b(The)11
+b(label)h(command)g(must)e(come)i(right)f(after)g(the)g(node)g(connection)h
+(to)591 2828 y Fp(Node)d(connections)f(labels:)14 b(I)876 b(18)p
+eop
+%%Page: 19 19
+18 bop 591 50 a FB(which)11 b(the)h(label)g(is)g(to)f(be)h(attached.)18
+b(Y)-5 b(ou)11 b(can)h(attach)h(more)f(than)g(one)f(label)i(to)591
+110 y(a)f(node)g(connection,)g(and)g(a)h(label)g(can)f(include)h(more)f
+(nodes.)591 198 y(The)k(node)g(label)h(commands)f(must)g(end)g(up)g(on)g(the)
+h(same)f(T)1654 209 y(E)1678 198 y(X)f(page)h(as)g(the)591
+258 y(node)11 b(connection)i(to)f(which)g(the)h(label)g(corresponds.)591
+346 y(There)k(are)h(two)e(groups)h(of)g(connection)h(labels,)g(which)f(dif)o
+(fer)h(in)f(how)f(they)591 407 y(select)d(the)f(point)h(on)f(the)h(node)f
+(connection.)19 b(In)12 b(this)h(section)g(we)f(describe)g(the)591
+467 y(\256rst)f(group:)712 604 y FA(\\ncput)p Fz(*[)p Fy(par)5
+b Fz(])p FA({)p Fx(stuf)o(f)h FA(})712 679 y(\\naput)p Fz(*[)p
+Fy(par)f Fz(])p FA({)p Fx(stuf)o(f)h FA(})712 754 y(\\nbput)p
+Fz(*[)p Fy(par)f Fz(])p FA({)p Fx(stuf)o(f)h FA(})591 876 y
+FB(These)13 b(three)g(command)h(dif)o(fer)f(in)g(where)g(the)h(labels)f(end)g
+(up)g(with)g(respect)h(to)591 937 y(the)e(line:)737 1055 y
+Fu(\\ncput)52 b Ft(on)12 b FB(the)g(line)737 1127 y Fu(\\naput)52
+b Ft(above)12 b FB(the)h(line)737 1199 y Fu(\\nbput)50 b Ft(below)12
+b FB(the)h(line)591 1320 y(\(using)e(the)h(convention)h(that)g(node)f
+(connections)g(go)g(from)g(left)g(to)g(right\).)591 1408 y(Here)f(is)h(an)g
+(example:)177 1805 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 0.0 14.22636 .5
+CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial
+177 1805 a
+ tx@Dict begin gsave STV CP T 0.0 0.0 14.22636  tx@NodeDict begin /TheNoderoot
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 42.67911 4.0
+0 360 arc fill  end
+
+@endspecial 177 1805
+a
+ tx@Dict begin gsave STV CP T 85.35823 42.67911 4.0  tx@NodeDict begin
+/TheNodeA 11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 0.0 4.0 0 360
+arc fill  end
+
+@endspecial 177 1805 a
+ tx@Dict begin gsave STV CP T 85.35823 0.0 4.0  tx@NodeDict begin /TheNodeB
+11 NewNode InitCnode  end end grestore end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 -42.67911 4.0
+0 360 arc fill  end
+
+@endspecial 177 1805 a
+ tx@Dict begin gsave STV CP T 85.35823 -42.67911 4.0  tx@NodeDict begin
+/TheNodeC 11 NewNode InitCnode  end end grestore end
+ 177 1805 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeA InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1805 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177
+1805 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 27.50995 7.7818
+0.09792 NAngle 90 add  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 120 1821 a FB(above)177 1805 y
+ tx@Dict begin PutEnd  end
+ 177 1805 a
+ tx@Dict begin PutEnd  end
+ 177 1805 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+
+177 1805 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 153 1816 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 3.09792
+neg 14.52008 8.01123 .5 Frame  gsave 1. setgray fill  grestore end
+
+@endspecial
+FB(on)177 1805 y
+ tx@Dict begin PutEnd  end
+ 177 1805 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeC InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1805 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177 1805 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 28.15506 7.7818
+0.09792 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 119 1821
+a FB(below)177 1805 y
+ tx@Dict begin PutEnd  end
+ 177 1805 a
+ tx@Dict begin PutEnd  end
+ 712 1515 a Fs(\\cnode\(0,0\){.5cm}{root})712
+1575 y(\\cnode*\(3,1.5\){4pt}{A})712 1635 y(\\cnode*\(3,0\){4pt}{B})712
+1695 y(\\cnode*\(3,-1.5\){4pt}{C})712 1756 y(\\psset{nodesep=3pt})712
+1816 y(\\ncline{root}{A})712 1876 y(\\naput{above})712 1936
+y(\\ncline{root}{B})712 1996 y(\\ncput*{on})712 2057 y(\\ncline{root}{C})712
+2117 y(\\nbput{below})591 2249 y Fu(\\naput)k FB(and)h Fu(\\nbput)f
+FB(use)h(the)g(same)g(algorithm)h(as)f Fu(\\uput)f FB(for)h(displacing)g(the)
+591 2309 y(labels,)12 b(and)g(the)g(distance)g(beteen)h(the)f(line)g(and)g
+(labels)g(is)g Fu(labelsep)f FB(\(at)h(least)h(if)591 2369
+y(the)f(lines)g(are)h(straight\).)591 2457 y Fu(\\ncput)c FB(uses)g(the)i
+(same)f(system)g(as)f Fu(\\rput)h FB(for)g(setting)g(the)h(reference)f
+(point.)17 b(Y)-5 b(ou)591 2517 y(change)12 b(the)g(reference)h(point)f(by)g
+(setting)h(the)712 2640 y FA(ref=)p Fx(ref)837 b Fv(Default:)20
+b FA(c)591 2828 y Fp(Node)9 b(connections)f(labels:)14 b(I)876
+b(19)p eop
+%%Page: 20 20
+19 bop 591 50 a FB(parameter)m(.)591 139 y(Rotation)12 b(is)g(also)g
+(controlled)h(by)f(a)g(graphics)g(parameter:)712 270 y FA(nrot=)p
+Fx(rot)801 b Fv(Default:)20 b FA(0)591 401 y Fr(rot)e FB(can)d(be)g(in)g(any)
+g(of)g(the)g(forms)g(suitable)g(for)g Fu(\\rput)p FB(,)g(and)g(you)g(can)g
+(also)g(use)591 461 y(the)d(form)712 592 y Fs({:)p Fr(angle)q
+Fs(})591 722 y FB(The)i(angle)g(is)g(then)h(measured)f(with)g(respect)g(to)g
+(the)h(node)f(connection.)24 b(E.g.,)591 782 y(if)14 b(the)h(angle)f(is)g
+Fs({:U})p FB(,)h(then)g(the)g(label)g(runs)e(parallel)j(to)e(the)h(node)f
+(connection.)591 843 y(Since)g(the)h(label)g(can)g(include)g(other)f(put)h
+(commands,)g(you)f(really)h(have)g(a)f(lot)591 903 y(of)d(control)i(over)f
+(the)g(label)h(position.)591 992 y(The)h(next)g(example)h(illustrates)g(the)f
+(use)g Fs({:)p Fr(angle)q Fs(})p FB(,)f(the)h Fu(offset)e FB(parameter)n(,)k
+(and)591 1052 y Fu(\\pcline)p FB(:)118 1408 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  [ 113.81097 0.0 113.81097
+56.90549 0.0 0.0  /Lineto /lineto load def false Polygon  gsave 0.8
+SLW 0. setgray 0 setlinecap stroke  grestore end
+
+@endspecial 118 1408 a
+ tx@Dict begin gsave STV CP T 0.0 0.0  tx@NodeDict begin /TheNode@@A
+10 NewNode InitPnode  end end grestore end
+ 118 1408 a
+ tx@Dict begin gsave STV CP T 113.81097 56.90549  tx@NodeDict begin
+/TheNode@@B 10 NewNode InitPnode  end end grestore end
+ 118 1408 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { BeginArrow
+2.0 5. Tbar  EndArrow  moveto } def /ArrowB { BeginArrow 2.0 5. Tbar
+ EndArrow  } def /NCLW CLW def tx@NodeDict begin 12.0 12.0 neg 0.0
+0.0 /TheNode@@A /TheNode@@B InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 118
+1408 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 118 1408 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ 50 1419 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 5.48833
+neg 35.63637 10.7818 .5 Frame  gsave 1. setgray fill  grestore end
+
+@endspecial
+FB(Length)118 1408 y
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 1408 a
+ tx@Dict begin PutEnd  end
+ 712 1222 a Fs
+(\\pspolygon\(0,0\)\(4,2\)\(4,0\))712 1282 y(\\pcline[of)o
+(fset=12pt]{|-|}\(0,0\)\(4,2\))712 1343 y(\\ncput*[nrot=:U]{Length})591
+1538 y FB(Here)11 b(is)h(a)g(repeat)h(of)f(an)g(earlier)h(example,)g(now)e
+(using)h Fs({:)p Fr(angle)q Fs(})p FB(:)177 1944 y @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 0.0 14.22636 .5
+CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 177 1944 a
+ tx@Dict begin gsave STV CP T 0.0 0.0 14.22636  tx@NodeDict begin /TheNoderoot
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 42.67911 4.0
+0 360 arc fill  end
+
+
+@endspecial 177 1944 a
+ tx@Dict begin gsave STV CP T 85.35823 42.67911 4.0  tx@NodeDict begin
+/TheNodeA 11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 0.0 4.0 0 360
+arc fill  end
+
+@endspecial
+177 1944 a
+ tx@Dict begin gsave STV CP T 85.35823 0.0 4.0  tx@NodeDict begin /TheNodeB
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 -42.67911 4.0
+0 360 arc fill  end
+
+@endspecial 177 1944
+a
+ tx@Dict begin gsave STV CP T 85.35823 -42.67911 4.0  tx@NodeDict begin
+/TheNodeC 11 NewNode InitCnode  end end grestore end
+ 177 1944 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeA InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1944 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177 1944 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ 177 1944 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 27.50995 7.7818
+0.09792 NAngle 90 add  NAngle  sub /a ED add 2 div /h ED 2 div /w ED
+/s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED { pop
+} { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h mul def
+q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse
+exch pop add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 120 1960 a FB(above)177
+1944 y
+ tx@Dict begin PutEnd  end
+ 177 1944 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 177 1944 a
+ tx@Dict begin PutEnd  end
+ 177 1944 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeB InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1944 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177 1944
+a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ 153 1954 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 3.09792
+neg 14.52008 8.01123 .5 Frame  gsave 1. setgray fill  grestore end
+
+@endspecial FB(on)177
+1944 y
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 177 1944 a
+ tx@Dict begin PutEnd  end
+ 177 1944 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeC InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1944 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177 1944 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ 177 1944
+a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 28.15506 7.7818
+0.09792 NAngle 90 sub  NAngle  sub /a ED add 2 div /h ED 2 div /w ED
+/s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED { pop
+} { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h mul def
+q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse
+exch pop add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 119 1960 a FB(below)177 1944 y
+ tx@Dict begin PutEnd  end
+ 177 1944 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 177 1944 a
+ tx@Dict begin PutEnd  end
+ 712
+1653 a Fs(\\cnode\(0,0\){.5cm}{root})712 1714 y(\\cnode*\(3,1.5\){4pt}{A})712
+1774 y(\\cnode*\(3,0\){4pt}{B})712 1834 y(\\cnode*\(3,-1.5\){4pt}{C})712
+1894 y(\\psset{nodesep=3pt,nrot=:U})712 1954 y(\\ncline{root}{A})712
+2015 y(\\naput{above})712 2075 y(\\ncline{root}{B})712 2135
+y(\\ncput*{on})712 2195 y(\\ncline{root}{C})712 2255 y(\\nbput{below})591
+2395 y FB(The)g(position)g(on)g(the)g(node)g(connection)h(is)f(set)g(by)g
+(the)712 2526 y FA(npos=)p Fx(num)767 b Fv(Default:)591 2828
+y Fp(Node)9 b(connections)f(labels:)14 b(I)876 b(20)p eop
+%%Page: 21 21
+20 bop 591 50 a FB(parameter)n(,)12 b(roughly)f(according)h(to)g(the)g
+(following)f(scheme:)18 b(Each)12 b(node)f(con-)591 110 y(nection)k(has)g
+(potentially)i(one)e(or)g(more)g(segments,)h(including)f(the)h(arms)f(and)591
+170 y(connecting)e(lines.)18 b(A)12 b(number)g Fu(npos)g FB(between)h(0)f
+(and)g(1)g(picks)g(a)h(point)f(on)g(the)591 230 y(\256rst)e(segment)i(from)f
+(node)g Fs(A)h FB(to)f Fs(B)h FB(\(fraction)g Fu(npos)e FB(from)i(the)f
+(beginning)h(to)f(the)591 291 y(end)i(of)g(the)h(segment\),)f(a)h(number)f
+(between)h(1)f(and)g(2)g(picks)h(a)f(number)g(on)g(the)591
+351 y(second)e(segment,)i(and)f(so)f(on.)591 440 y(Each)j(node)g(connection)h
+(has)f(its)g(own)g(default)h(value)f(of)g Fu(npos)p FB(.)23
+b(If)14 b(you)g(leave)591 500 y(the)f Fu(npos)f FB(parameter)i(value)f(empty)
+g(\(e.g.,)g Fs([npos=])p FB(\),)g(then)g(the)g(default)h(is)e(sub-)591
+560 y(stituted.)18 b(This)12 b(is)f(the)i(default)g(mode.)591
+650 y(Here)e(are)i(the)f(details)h(for)f(each)g(node)g(connection:)837
+776 y Ft(Connection)50 b(Segments)74 b(Range)h(Default)837
+856 y Fu(\\ncline)219 b FB(1)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r
+FB(1)93 b Fs(0.5)837 928 y Fu(\\nccurve)179 b FB(1)128 b(0)q
+Fj(\243)r Ft(pos)q Fj(\243)r FB(1)93 b Fs(0.5)837 1001 y Fu(\\ncarc)227
+b FB(1)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r FB(1)93 b Fs(0.5)837
+1073 y Fu(\\ncbar)225 b FB(3)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r
+FB(3)93 b Fs(1.5)837 1145 y Fu(\\ncdiag)205 b FB(3)128 b(0)q
+Fj(\243)r Ft(pos)q Fj(\243)r FB(3)93 b Fs(1.5)837 1217 y Fu(\\ncdiagg)180
+b FB(2)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r FB(2)93 b Fs(0.5)837
+1289 y Fu(\\ncangle)182 b FB(3)128 b(0)q Fj(\243)r Ft(pos)q
+Fj(\243)r FB(3)93 b Fs(1.5)837 1362 y Fu(\\ncangles)159 b FB(4)128
+b(0)q Fj(\243)r Ft(pos)q Fj(\243)r FB(4)93 b Fs(1.5)837 1434
+y Fu(\\ncloop)203 b FB(5)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r
+FB(5)93 b Fs(2.5)837 1506 y Fu(\\nccircle)182 b FB(1)128 b(0)q
+Fj(\243)r Ft(pos)q Fj(\243)r FB(1)93 b Fs(0.5)837 1578 y Fu(\\ncbox)216
+b FB(4)128 b(0)q Fj(\243)r Ft(pos)q Fj(\243)r FB(4)93 b Fs(0.5)837
+1651 y Fu(\\ncarcbox)154 b FB(4)128 b(0)q Fj(\243)r Ft(pos)q
+Fj(\243)r FB(4)93 b Fs(0.5)591 1779 y FB(Here)11 b(is)h(an)g(example:)118
+1912 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial FB(Node)f(A)338
+2195 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial FB(Node)g(B)118
+2219 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /r 4.26773 def /Lineto
+{ Arcto } def false pop end /AngleA -90. def /AngleB 0. def /armA 11.38092
+def /armB 11.38092 def NCAngles  } if end gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore  grestore end
+ 118 2219 a
+ tx@Dict begin tx@NodeDict begin /t 1.5 def LPut end PutBegin  end
+ 106 2235 a @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.0 SLW 1. setgray  0. true 3.0 neg 3.15552
+neg 8.76004 10.7818 .5 Frame  gsave 1. setgray fill  grestore end
+
+@endspecial
+FB(d)118 2219 y
+ tx@Dict begin PutEnd  end
+ 118 2219 a
+ tx@Dict begin tx@NodeDict begin /t 2.5 def LPut end PutBegin  end
+ 118 2219 a
+ tx@Dict begin NAngle 180 add  tx@Dict /TMatrix known not { /TMatrix
+{ } def /RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED
+a Rot /RAngle [ RAngle dup a add ] cvx def  end
+ 118 2219 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 14.71114 5.28195
+2.48833 NAngle 90 sub  NAngle 180 add  sub /a ED add 2 div /h ED 2
+div /w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q
+ED { pop } { exch pop } ifelse def /w1 c b div w mul def /h1 s b div
+h mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul
+abs } ifelse exch pop add a PtoC h1 add exch w1 add exch } PutCoor
+PutBegin  end
+ 87 2225 a
+FB(par)118 2219 y
+ tx@Dict begin PutEnd  end
+ 118 2219 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 2219 a
+ tx@Dict begin PutEnd  end
+ 712 1932 a Fs
+(\\rput[tl]\(0,3\){\\rnode{A}{\\psframebox{Node)20 b(A}}})712
+1992 y(\\rput[br]\(3.5,0\){\\ovalnode{B}{Node)g(B}})712 2052
+y(\\ncangles[angleA=-90,arm=.4cm,linearc=.15]{A}{B})712 2112
+y(\\ncput*{d})712 2172 y(\\nbput[nrot=:D,npos=2.5]{par})591
+2349 y FB(W)n(ith)9 b Fu(\\ncbox)f FB(and)g Fu(\\ncarcbox)p
+FB(,)g(the)h(segments)f(run)h(counterclockwise,)g(starting)591
+2410 y(with)15 b(the)h(lower)g(side)f(of)h(the)g(box.)28 b(Hence,)16
+b(with)g Fu(\\nbput)f FB(the)h(label)h(ends)e(up)591 2470 y(outside)d(the)g
+(box,)g(and)g(with)g Fu(\\naput)f FB(the)i(label)f(ends)g(up)g(inside)g(the)g
+(box.)591 2828 y Fp(Node)d(connections)f(labels:)14 b(I)876
+b(21)p eop
+%%Page: 22 22
+21 bop 177 295 a
+ tx@Dict begin gsave STV CP T 7.7818 0.0 5.76004 2.88002 3.8909  tx@NodeDict
+begin /TheNodeA 16 NewNode InitRnode  end end grestore end
+ FB(1)508 91 y
+ tx@Dict begin gsave STV CP T 7.7818 0.0 5.76004 2.88002 3.8909  tx@NodeDict
+begin /TheNodeB 16 NewNode InitRnode  end end grestore end
+ FB(2)118 295 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /NCLW CLW def
+tx@NodeDict begin 0.0 0.0 neg 5.69046 5.69046 /TheNodeA /TheNodeB InitNC
+{ 50. 11.38092 11.38092 11.38092 NCArcBox  } if end gsave 0.8 SLW 0.
+setgray 5.0 3.0 1 DashLine  grestore  grestore end
+ 118 295 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 118
+295 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ 118 295 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 12.7988 6.79684
+0.09792 NAngle 90 sub  NAngle  sub /a ED add 2 div /h ED 2 div /w ED
+/s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED { pop
+} { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h mul def
+q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse
+exch pop add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 91 309 a FB(set)118 295 y
+ tx@Dict begin PutEnd  end
+ 118 295 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 295
+a
+ tx@Dict begin PutEnd  end
+ 118 295 a
+ tx@Dict begin tx@NodeDict begin /t 2. def LPut end PutBegin  end
+ 118 295 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 7.67236 7.7818
+0.0 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def /c
+a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop } ifelse
+def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs w sub dup
+c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop add a PtoC
+h1 add exch w1 add exch } PutCoor PutBegin  end
+ 102 311 a FB(II)118 295 y
+ tx@Dict begin PutEnd  end
+ 118 295 a
+ tx@Dict begin PutEnd  end
+ 712
+37 a Fs(\\rput[bl]\(.5,0\){\\rnode{A}{1}})712 97 y
+(\\rput[tr]\(3.5,2\){\\rnode{B}{2}})712 158 y
+(\\ncarcbox[nodesep=.2cm,boxsize=.4,linearc=.4,)758 218 y
+(arcangle=50,linestyle=dashed]{<->}{)o(A}{B})712 278 y(\\nbput[nrot=:U]{set})
+712 338 y(\\nbput[npos=2]{II})591 485 y FB(If)11 b(you)h(set)g(the)h
+(parameter)712 616 y FA(shortput=)p Fx(none/nab/tablr/tab)248
+b Fv(Default:)20 b FA(none)591 747 y FB(to)13 b Fs(nab)p FB(,)g(then)g
+(immediately)j(following)d(a)h(node)f(connection)h(or)f(another)h(node)591
+807 y(connection)d(label)h(you)e(can)h(use)f Fs(\303)h FB(instead)g(of)f
+Fu(\\naput)g FB(and)h Fs(_)f FB(instead)i(of)e Fu(\\nbput)p
+FB(.)177 1069 y @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0.0 0.0 14.22636 .5
+CLW mul sub 0 360 arc closepath gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 177
+1069 a
+ tx@Dict begin gsave STV CP T 0.0 0.0 14.22636  tx@NodeDict begin /TheNoderoot
+11 NewNode InitCnode  end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 42.67911 4.0
+0 360 arc fill  end
+
+@endspecial 177 1069 a
+ tx@Dict begin gsave STV CP T 85.35823 42.67911 4.0  tx@NodeDict begin
+/TheNodeA 11 NewNode InitCnode  end end grestore end
+ @beginspecial
+@setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  85.35823 -42.67911 4.0
+0 360 arc fill  end
+
+@endspecial 177 1069 a
+ tx@Dict begin gsave STV CP T 85.35823 -42.67911 4.0  tx@NodeDict begin
+/TheNodeC 11 NewNode InitCnode  end end grestore end
+ 177 1069 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeA InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177 1069 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177
+1069 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 5.18402 5.0285
+0.11519 NAngle 90 add  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 166 1079 a Ft(x)177 1069 y
+ tx@Dict begin PutEnd  end
+ 177 1069 a
+ tx@Dict begin PutEnd  end
+ 177 1069 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 3.0
+3.0 /TheNoderoot /TheNodeC InitNC { NCLine  } if end gsave 0.8 SLW
+0. setgray 0 setlinecap stroke  grestore  grestore end
+ 177
+1069 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 177 1069 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 5.11491 5.0285
+2.39041 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 166 1074 a Ft(y)177 1069 y
+ tx@Dict begin PutEnd  end
+ 177 1069 a
+ tx@Dict begin PutEnd  end
+ 712
+929 a Fs(\\cnode\(0,0\){.5cm}{root})712 989 y(\\cnode*\(3,1.5\){4pt}{A})712
+1049 y(\\cnode*\(3,-1.5\){4pt}{C})712 1110 y
+(\\psset{nodesep=3pt,shortput=nab})712 1170 y(\\ncline{root}{A}\303{$x$})712
+1230 y(\\ncline{root}{C}_{$y$})591 1377 y FB(Y)-5 b(ou)19 b(can)h(still)h
+(have)f(parameter)h(changes)f(with)g(the)h(short)e Fs(\303)h
+FB(and)g Fs(_)f FB(forms.)591 1437 y(Another)11 b(example)i(is)f(given)g(on)g
+(page)g(27.)591 1526 y(If)k(you)g(have)h(set)f Fu(shortput=nab)p
+FB(,)g(and)h(then)g(you)f(want)g(to)h(use)f(a)h(true)g Fs(\303)f
+FB(or)g Fs(_)591 1587 y FB(character)e(right)g(after)g(a)f(node)g
+(connection,)i(you)e(must)g(precede)h(the)g Fs(\303)f FB(or)g
+Fs(_)g FB(by)591 1647 y Fs({})e FB(so)g(that)i(PST)n(ricks)f(does)f(not)h
+(convert)h(it)f(to)g Fs(\\naput)g FB(or)g Fs(\\nbput)p FB(.)591
+1736 y(Y)-5 b(ou)11 b(can)h(change)h(the)f(characters)h(that)g(you)e(use)h
+(for)g(the)g(short)g(form)g(with)g(the)712 1881 y FA(\\MakeShortNab{)p
+Fx(char1)p FA(}{)p Fx(char2)t FA(})591 2012 y FB(command.)791
+1994 y Fi(6)591 2101 y FB(The)f Fu(shortput=tablr)e FB(and)i
+Fu(shortput=tab)e FB(options)i(are)g(described)g(on)g(pages)g(24)591
+2161 y(and)h Fq(??)p FB(,)f(respectively)m(.)366 2359 y FC(9)70
+b(Node)21 b(connection)f(labels:)27 b(II)591 2480 y FB(Now)10
+b(the)j(second)f(group)f(of)h(node)g(connections:)p 591 2524
+544 2 v 646 2555 a Fh(6)662 2570 y Fg(Y)l(ou)h(can)g(also)g(use)g
+Ff(\\MakeShortNab)g Fg(if)h(you)f(want)g(to)g(use)g Fd(\303)h
+Fg(and)f Fd(_)g Fg(with)h(non-standard)591 2620 y(category)7
+b(codes.)13 b(Just)8 b(invoke)g(the)g(command)g(after)h(you)f(have)g(made)g
+(your)h Fd(\\catcode)g Fg(changes.)591 2828 y Fp(Node)g(connection)g(labels:)
+14 b(II)884 b(22)p eop
+%%Page: 23 23
+22 bop 712 50 a FA(\\tvput)p Fz(*[)p Fy(par)5 b Fz(])p FA({)p
+Fx(stuf)o(f)h FA(})712 125 y(\\tlput)p Fz(*[)p Fy(par)f Fz(])p
+FA({)p Fx(stuf)o(f)h FA(})712 199 y(\\trput)p Fz(*[)p Fy(par)f
+Fz(])p FA({)p Fx(stuf)o(f)h FA(})712 274 y(\\thput)p Fz(*[)p
+Fy(par)f Fz(])p FA({)p Fx(stuf)o(f)h FA(})712 349 y(\\taput)p
+Fz(*[)p Fy(par)f Fz(])p FA({)p Fx(stuf)o(f)h FA(})712 423 y(\\tbput)p
+Fz(*[)p Fy(par)f Fz(])p FA({)p Fx(stuf)o(f)h FA(})591 549 y
+FB(The)15 b(dif)o(ference)h(between)f(between)g(these)g(commands)h(and)f(the)
+g Fs(\\n*put)g FB(com-)591 609 y(mands)8 b(is)h(that)g(these)g(\256nd)f(the)h
+(position)g(as)g(an)g(intermediate)h(point)f(between)g(the)591
+669 y(centers)i(of)f(the)h(nodes,)f(either)i(in)f(the)g(horizontal)g(or)g
+(vertical)h(direction.)18 b(These)591 729 y(are)13 b(good)g(for)f(trees)h
+(and)g(mathematical)j(diagrams,)e(where)e(it)i(can)f(sometimes)591
+789 y(be)i(nice)i(to)f(have)g(the)g(labels)g(be)g(horizontally)g(or)g
+(vertically)h(aligned.)29 b(The)16 b Fs(t)591 850 y FB(stands)11
+b(for)h(\252tree\272.)591 938 y(Y)-5 b(ou)11 b(specify)h(the)h(position)f(by)
+f(setting)i(the)712 1063 y FA(tpos=)p Fx(num)740 b Fv(Default:)20
+b FA(.5)591 1189 y FB(parameter)m(.)591 1277 y Fu(\\tvput)p
+FB(,)e Fu(\\tlput)f FB(and)h Fu(\\trput)f FB(\256nd)h(the)g(position)g(that)g
+(lies)g(fraction)h Fr(tpos)f FB(in)g(the)591 1337 y Ft(vertical)13
+b FB(direction)g(from)g(the)g(upper)f(node)g(to)h(the)g(lower)f(node.)19
+b Fu(\\thput)p FB(,)12 b Fu(\\taput)591 1398 y FB(and)21 b
+Fu(\\tbput)f FB(\256nd)h(the)g(position)g(that)h(lies)g(fraction)f
+Fr(tpos)h FB(in)g(the)f Ft(horizontal)591 1458 y FB(direction)14
+b(from)f(the)g(left)h(node)f(to)g(the)h(right)f(node.)21 b(Then)13
+b(the)g(commands)h(put)591 1518 y(the)e(label)h(on)f(or)f(next)i(to)f(the)g
+(line,)h(as)f(follows:)924 1645 y Ft(Command)48 b(Dir)n(ection)63
+b(Placement)924 1729 y Fu(\\tvput)134 b FB(vertical)102 b(middle)924
+1802 y Fu(\\tlput)146 b FB(vertical)102 b(left)924 1874 y Fu(\\trput)141
+b FB(vertical)102 b(right)924 1946 y Fu(\\thput)132 b FB(horizontal)51
+b(middle)924 2018 y Fu(\\taput)134 b FB(horizontal)51 b(above)924
+2091 y Fu(\\tbput)132 b FB(horizontal)51 b(below)591 2214 y(Here)11
+b(is)h(an)g(example:)712 2339 y Fs(\\[)758 2399 y
+(\\setlength{\\arraycolsep}{1.1cm})758 2459 y(\\begin{array}{cc})803
+2520 y(\\Rnode{a}{\(X-A\)})20 b(&)j(\\Rnode{b}{A})e(\\\\[1.5cm])803
+2580 y(\\Rnode{c}{x})h(&)h(\\Rnode{d}{\\tilde{X}})758 2640
+y(\\end{array})591 2828 y Fp(Node)9 b(connection)g(labels:)h(II)888
+b(23)p eop
+%%Page: 24 24
+23 bop 758 50 a Fs(\\psset{nodesep=5pt,arrows=->})758 110 y
+(\\everypsbox{\\scriptstyle})758 170 y(\\ncline{a}{c}\\tlput{r})758
+230 y(\\ncline{a}{b}\\taput{u})758 291 y
+(\\ncline[linestyle=dashed]{c}{d}\\tbput{b})758 351 y
+(\\ncline{b}{d}\\trput{s})712 411 y(\\])720 585 y
+ tx@Dict begin gsave STV CP T 7.7818 2.03905 33.17723 16.58861 3.61267
+ tx@NodeDict begin /TheNodea 16 NewNode InitRnode  end end grestore
+end
+ FB(\()p Ft(X)13
+b FB(\261)e Ft(A)p FB(\))1119 585 y
+ tx@Dict begin gsave STV CP T 7.55716 0.0 7.03876 3.51938 3.61267
+tx@NodeDict begin /TheNodeb 16 NewNode InitRnode  end end grestore
+end
+ Ft(A)779 835 y
+ tx@Dict begin gsave STV CP T 5.0285 0.11519 5.18402 2.59201 3.61267
+ tx@NodeDict begin /TheNodec 16 NewNode InitRnode  end end grestore
+end
+ Ft(x)1118
+835 y
+ tx@Dict begin gsave STV CP T 9.65956 0.0 7.29219 3.64609 3.61267
+tx@NodeDict begin /TheNoded 16 NewNode InitRnode  end end grestore
+end
+ 1125 825 a FB(\304)1118 835 y Ft(X)1278 708 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodea /TheNodec
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1278 708
+a
+ tx@Dict begin tx@NodeDict begin /t 0.5 def tx@NodeDict /HPutPos known
+{ HPutPos } { CP /Y ED /X ED /NAngle 0 def /NCLW 0 def } ifelse /Sin
+NAngle sin def /Cos NAngle cos def /s 5.0 NCLW add def /l 1.50528 def
+/r 1.50528 def /h -0.26035 def /d 3.61267 def /flag true def HPutAdjust
+LPutCoor end PutBegin  end
+ 1272 723 a Fc(r)1278 708 y
+ tx@Dict begin PutEnd  end
+ 1278 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodea /TheNodeb
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1278 708 a
+ tx@Dict begin tx@NodeDict begin /t 0.5 def tx@NodeDict /HPutPos known
+{ VPutPos } { CP /Y ED /X ED /NAngle 0 def /NCLW 0 def } ifelse /Sin
+NAngle sin def /Cos NAngle cos def /s 5.0 NCLW add def /l 1.92001 def
+/r 1.92001 def /h -0.26035 def /d 3.68947 def /flag true def VPutAdjust
+LPutCoor end PutBegin  end
+ 1270 723
+a Fc(u)1278 708 y
+ tx@Dict begin PutEnd  end
+ 1278 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodec /TheNoded
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 5.0 3.0 -2 0 add
+DashLine  grestore  grestore end
+ 1278 708 a
+ tx@Dict begin tx@NodeDict begin /t 0.5 def tx@NodeDict /HPutPos known
+{ VPutPos } { CP /Y ED /X ED /NAngle 0 def /NCLW 0 def } ifelse /Sin
+NAngle sin def /Cos NAngle cos def /s 5.0 NCLW add def /l 1.92001 def
+/r 1.92001 def /h 1.67888 def /d 3.68947 def /flag false def VPutAdjust
+LPutCoor end PutBegin  end
+ 1270 723 a Fc(b)1278
+708 y
+ tx@Dict begin PutEnd  end
+ 1278 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodeb /TheNoded
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1278 708 a
+ tx@Dict begin tx@NodeDict begin /t 0.5 def tx@NodeDict /HPutPos known
+{ HPutPos } { CP /Y ED /X ED /NAngle 0 def /NCLW 0 def } ifelse /Sin
+NAngle sin def /Cos NAngle cos def /s 5.0 NCLW add def /l 1.49376 def
+/r 1.49376 def /h -0.26035 def /d 3.68947 def /flag false def HPutAdjust
+LPutCoor end PutBegin  end
+ 1272 723 a Fc(s)1278 708 y
+ tx@Dict begin PutEnd  end
+ 1408
+585 a
+ tx@Dict begin gsave STV CP T 7.7818 2.03905 33.17723 16.58861 2.87137
+ tx@NodeDict begin /TheNodea 16 NewNode InitRnode  end end grestore
+end
+ FB(\()p Ft(X)h FB(\261)g Ft(A)p FB(\))1809 585 y
+ tx@Dict begin gsave STV CP T 5.0285 0.11519 5.76004 2.88002 2.45665
+ tx@NodeDict begin /TheNodeb 16 NewNode InitRnode  end end grestore
+end
+ Ft(a)1466
+835 y
+ tx@Dict begin gsave STV CP T 5.0285 0.11519 5.18402 2.59201 2.45665
+ tx@NodeDict begin /TheNodec 16 NewNode InitRnode  end end grestore
+end
+ Ft(x)1806 835 y
+ tx@Dict begin gsave STV CP T 9.65956 0.0 7.29219 3.64609 4.82977
+tx@NodeDict begin /TheNoded 16 NewNode InitRnode  end end grestore
+end
+ 1813 825 a FB(\304)1806 835 y Ft(X)1966
+708 y
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodea /TheNodec
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1966 708 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 1966 708 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 3.01057 3.35233
+0.0 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def /c
+a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop } ifelse
+def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs w sub dup
+c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop add a PtoC
+h1 add exch w1 add exch } PutCoor PutBegin  end
+ 1960 715 a Fc(r)1966 708 y
+ tx@Dict begin PutEnd  end
+ 1966
+708 a
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodea /TheNodeb
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1966 708 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 1966 708 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 3.84003 3.35233
+0.0768 NAngle 90 add  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 1958 715 a Fc(u)1966
+708 y
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodec /TheNoded
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 5.0 3.0 -2 0 add
+DashLine  grestore  grestore end
+ 1966 708 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 1966 708 a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 3.84003 5.29155
+0.0768 NAngle 90 sub  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 1958 719
+a Fc(b)1966 708 y
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin gsave STV newpath 0.8 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { BeginArrow false 0.4 1.4 1.5 2. Arrow  EndArrow  }
+def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 5.0 5.0 /TheNodeb /TheNoded
+InitNC { NCLine  } if end gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore  grestore end
+ 1966 708 a
+ tx@Dict begin tx@NodeDict begin /t .5 def LPut end PutBegin  end
+ 1966 708
+a
+ tx@Dict begin { 5.0 tx@Dict /NCLW known { NCLW add } if 2.98753 3.35233
+0.0768 NAngle 90 add  /a ED add 2 div /h ED 2 div /w ED /s a sin def
+/c a cos def /b s abs c abs 2 copy gt dup /q ED { pop } { exch pop
+} ifelse def /w1 c b div w mul def /h1 s b div h mul def q { w1 abs
+w sub dup c mul abs } { h1 abs h sub dup s mul abs } ifelse exch pop
+add a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 1960 715 a Fc(s)1966 708 y
+ tx@Dict begin PutEnd  end
+ 1966 708 a
+ tx@Dict begin PutEnd  end
+ 599 938 a FB(On)d(the)g(left)g(is)g
+(the)g(diagram)h(with)e Fu(\\tlput)p FB(,)h Fu(\\trput)17 b(\\tbput)8
+b FB(and)h Fu(\\Rnode)p FB(,)g(as)g(shown)591 998 y(in)14 b(the)h(code.)24
+b(On)13 b(the)i(right)f(is)g(the)h(same)f(diagram,)i(but)e(with)g
+Fu(\\naput)22 b(\\nbput)591 1058 y FB(and)12 b Fu(\\rnode)p
+FB(.)591 1147 y(These)f(do)g(not)h(have)g(a)f(rotation)h(ar)o(gument)h(or)e
+(parameter)m(.)18 b(However)n(,)11 b(you)g(can)591 1207 y(rotate)e
+Fr(stuff)16 b FB(in)9 b(90)g(degree)h(increments)g(using)e(box)h(rotations)g
+(\(e.g.,)h Fu(\\rotateleft)p FB(\).)591 1296 y(If)e(you)g(set)g
+Fu(shortput=t)o(ablr)p FB(,)e(then)i(you)g(can)g(use)g(the)g(following)g
+(single-character)591 1356 y(abbreviations)k(for)g(the)g Fs(t)h
+FB(put)f(commands:)1099 1487 y Ft(Char)-5 b(.)48 b(Short)12
+b(for:)1190 1567 y Fs(\303)49 b Fu(\\taput)1181 1640 y Fs(_)g
+Fu(\\tbput)1180 1712 y Fs(<)g Fu(\\tlput)1180 1784 y Fs(>)g
+Fu(\\trput)591 1908 y FB(Y)-5 b(ou)11 b(can)h(change)h(the)f(character)h
+(abbreviations)g(with)712 2049 y FA(\\MakeShortT)l(ablr{)p
+Fx(char1)p FA(}{)p Fx(char2)t FA(}{)p Fx(char3)s FA(}{)p Fx(char)q(4)r
+FA(})591 2175 y FB(The)i Fs(t)h FB(put)f(commands,)i(including)f(an)f
+(example)i(of)e Fu(shortput=tablr)p FB(,)f(will)i(be)591 2235
+y(shown)10 b(further)i(when)g(we)g(get)g(to)g(mathematical)j(diagrams)d(and)g
+(trees.)591 2324 y Fb(Driver)d(notes:)44 b(The)11 b(node)g(macros)g(use)g
+Fa(\\pstV)n(erb)g Fb(and)g Fa(\\pstverbscale)p Fb(.)366 2519
+y FC(10)71 b(Attaching)19 b(labels)h(to)f(nodes)591 2640 y
+FB(The)12 b(command)591 2828 y Fp(Attaching)d(labels)h(to)g(nodes)899
+b(24)p eop
+%%Page: 25 25
+24 bop 712 50 a FA(\\nput)p Fz(*[)p Fy(par)5 b Fz(])p FA({)p
+Fx(refangle)r FA(}{)p Fx(name)r FA(}{)p Fx(stuf)o(f)h FA(})591
+171 y FB(af)o(\256xes)14 b Fr(stuff)21 b FB(to)15 b(node)g
+Fr(name)q FB(.)24 b(It)15 b(is)f(positioned)h(distance)h Fu(labelsep)e
+FB(from)g(the)591 231 y(node,)8 b(in)h(the)g(direction)g Fr(refangle)f
+FB(from)g(the)g(center)i(of)e(the)g(node.)16 b(The)9 b(algorithm)591
+291 y(is)i(the)i(same)f(as)g(for)g Fu(\\uput)p FB(.)17 b(If)11
+b(you)h(want)g(to)g(rotate)h(the)f(node,)g(set)g(the)712 413
+y FA(rot=)p Fx(rot)831 b Fv(Default:)20 b FA(0)591 534 y FB(parameter)n(,)e
+(where)d Fr(rot)k FB(is)d(a)g(rotation)h(that)f(would)g(be)g(valid)g(for)g
+Fu(\\rput)p FB(.)1828 516 y Fi(7)1874 534 y FB(The)591 594
+y(position)f(of)h(the)f(label)i(also)e(takes)h(into)g(account)g(the)g
+Fu(offsetA)f FB(parameter)m(.)29 b(If)591 654 y Fu(labelsep)16
+b FB(is)g(negative,)j(then)e(the)g(distance)g(is)f(from)h(the)g(center)g(of)g
+(the)g(node)591 714 y(rather)12 b(than)g(from)g(the)h(boundary)m(,)e(as)h
+(with)g Fu(nodesep)p FB(.)591 802 y(Here)f(is)h(how)g(I)f(used)h
+Fu(\\nput)g FB(to)g(mark)g(an)g(angle)h(in)f(a)g(previous)g(example:)397
+1232 y
+ tx@Dict begin gsave STV CP T  tx@NodeDict begin /TheNodeB 14 NewNode
+/X 17.7582 def /Y 3.81314 def /w 28.91011 def /h 9.41168 def /NodePos
+{ OvalNodePos } def end end grestore end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0 360 28.91011 CLW 2
+div sub 9.41168 CLW 2 div sub 17.7582 3.81314 /mtrx CM def T scale
+0 0 1 5 3 roll arc mtrx setmatrix closepath gsave 0.8 SLW 0. setgray
+0 setlinecap stroke  grestore end
+
+@endspecial FB(Node)f(B)118
+949 y
+ tx@Dict begin gsave STV CP T 11.5818 3.95552 43.75 21.875 3.81314
+ tx@NodeDict begin /TheNodeA 16 NewNode InitRnode  end end grestore
+end
+ 16 w @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 3.8 neg 3.95552
+neg 39.95 11.5818 .5 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke
+ grestore end
+
+@endspecial FB(Node)g(A)118
+1255 y
+ tx@Dict begin { tx@NodeDict begin tx@NodeDict /TheNodeA known { 0.0
+-70. 0.0 /TheNodeA load GetEdge } { CP } ifelse end } PutCoor PutBegin
+ end
+ 118 1255 a
+ tx@Dict begin { 0.0 0.0 0.0 0.0 -70.  /a ED add 2 div /h ED 2 div
+/w ED /s a sin def /c a cos def /b s abs c abs 2 copy gt dup /q ED
+{ pop } { exch pop } ifelse def /w1 c b div w mul def /h1 s b div h
+mul def q { w1 abs w sub dup c mul abs } { h1 abs h sub dup s mul abs
+} ifelse /z ED abs /y ED /x ED q { x s div c mul abs y gt } { x c div
+s mul abs y gt } ifelse { x x mul y y mul sub z z mul add sqrt z add
+} { q { x s div } { x c div } ifelse abs } ifelse a PtoC h1 add exch
+w1 add exch } PutCoor PutBegin  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  /ArrowA { moveto } def
+/ArrowB { } def 0.0 0.0 /y ED /x ED /r 11.38092 def /c 57.2957 r Div
+def /angleA 0. 0.0 c mul 2 div sub def /angleB -70. 0.0 c mul 2 div
+add def x y r angleA angleB arcn  gsave 0.8 SLW 0. setgray 0 setlinecap
+stroke  grestore end
+
+@endspecial 118
+1255 a
+ tx@Dict begin { 11.38092 30.63216 7.21277 2.15988 -35.  /a ED add
+2 div /h ED 2 div /w ED /s a sin def /c a cos def /b s abs c abs 2
+copy gt dup /q ED { pop } { exch pop } ifelse def /w1 c b div w mul
+def /h1 s b div h mul def q { w1 abs w sub dup c mul abs } { h1 abs
+h sub dup s mul abs } ifelse /z ED abs /y ED /x ED q { x s div c mul
+abs y gt } { x c div s mul abs y gt } ifelse { x x mul y y mul sub
+z z mul add sqrt z add } { q { x s div } { x c div } ifelse abs } ifelse
+a PtoC h1 add exch w1 add exch } PutCoor PutBegin  end
+ 55 1265 a Fs(angleA)118 1255 y
+ tx@Dict begin PutEnd  end
+ 118 1255 a
+ tx@Dict begin PutEnd  end
+ 118 1255 a
+ tx@Dict begin PutEnd  end
+
+118 1255 a
+ tx@Dict begin gsave STV newpath 1.2 SLW 0. setgray  /ArrowA { moveto
+} def /ArrowB { } def /NCLW CLW def tx@NodeDict begin 0.0 0.0 neg 0.0
+0.0 /TheNodeA /TheNodeB InitNC { tx@Dict begin /Lineto /lineto load
+def false pop end /AngleA -70. def /AngleB 90. def /armA 10.0 def /armB
+28.45274 def NCAngle  } if end gsave 1.2 SLW 0. setgray 0 setlinecap
+stroke  grestore  grestore end
+ 118 1255 a
+ tx@Dict begin tx@NodeDict begin /t 1. def LPut end PutBegin  end
+ 118 1255 a
+ tx@Dict begin NAngle  tx@Dict /TMatrix known not { /TMatrix { } def
+/RAngle { 0 } def } if /TMatrix [ TMatrix CM ] cvx def /a ED a Rot
+/RAngle [ RAngle dup a add ] cvx def  end
+ @beginspecial @setspecial
+ tx@Dict begin STP newpath 0.8 SLW 0. setgray  0. true 0.0 0.0 9.95863
+9.95863 0 Frame  gsave 0.8 SLW 0. setgray 0 setlinecap stroke  grestore
+end
+
+
+@endspecial 118 1255 a
+ tx@Dict begin /TMatrix [ TMatrix setmatrix ] cvx def /RAngle [ RAngle
+pop ] cvx def  end
+ 118 1255 a
+ tx@Dict begin PutEnd  end
+ 712 908 a Fs
+(\\rput[br]\(4,0\){\\ovalnode{B}{Node)19 b(B}})712 968 y
+(\\rput[tl]\(0,3\){\\rnode{A}{\\psframebox{Node)h(A}}})712
+1028 y(\\nput[labelsep=0]{-70}{A}{\045)758 1088 y
+(\\psarcn\(0,0\){.4cm}{0}{-70)o(})758 1148 y(\\uput{.4cm}[-35]\(0,0\){{\\tt)h
+(angleA}}})712 1209 y
+(\\ncangle[angleA=-70,angleB=90,armB=1cm,linewidth=1.2pt]{A}{B})712
+1269 y(\\ncput[nrot=:U,npos=1]{\\psframe[dimen=middle]\(0,0\)\(.35,.35\)})366
+1472 y FC(1)l(1)71 b(Mathematical)19 b(diagrams)h(and)g(graphs)591
+1592 y FB(For)c(some)g(applications,)j(such)d(as)h(mathematical)i(diagrams)e
+(and)g(graphs,)g(it)591 1652 y(is)e(useful)h(to)h(arrange)f(nodes)g(on)g(a)g
+(grid.)29 b(Y)-5 b(ou)16 b(can)g(do)g(this)g(with)h(alignment)591
+1713 y(environments,)g(such)f(as)g(T)1061 1723 y(E)1085 1713
+y(X')m(s)f Fs(\\halign)p FB(primitive,)j(L)1504 1707 y(a)1518
+1713 y(T)1539 1728 y(E)1563 1713 y(X')m(s)e Fs(tabular)f FB(environ-)591
+1773 y(ment,)d(and)f(AMS-T)932 1783 y(E)954 1773 y(X')m(s)g
+Fs(\\matrix)p FB(,)h(but)g(PST)n(ricks)f(contains)h(its)g(own)f(alignment)591
+1833 y(environment)h(that)h(is)f(especially)h(adapted)g(for)e(this)h
+(purpose:)712 1969 y FA(\\psmatrix)i(...)k(\\endpsmatrix)591
+2090 y FB(Here)11 b(is)h(an)g(example)397 2202 y
+ tx@Dict begin gsave STV CP T 7.55716 0.0 7.03876 3.51938 3.61267
+tx@NodeDict begin /TheNodeM-1-1-2 16 NewNode InitRnode  end end grestore
+end
+ Ft(A)247 2380
+y
+ tx@Dict begin gsave STV CP T 7.55716 0.0 7.03876 3.51938 3.61267
+tx@NodeDict begin /TheNodeM-1-2-1 16 NewNode InitRnode  end end grestore
+end
+ Ft(B)397 2380 y
+ tx@Dict begin gsave STV CP T 7.55716 0.0 7.03876 3.51938 3.61267
+tx@NodeDict begin /TheNodeM-1-2-2 16 NewNode InitRnode  end end grestore
+end
+ Ft(E)547 2380 y
+ tx@Dict begin gsave STV CP T 7.55716 0.21887 7.68388 3.84193 3.61267
+ tx@NodeDict begin /TheNodeM-1-2-3 16 NewNode InitRnode  end end grestore
+end
+ Ft(C)394 2558 y
+ tx@Dict begin gsave STV CP T 7.55716 0.0 8.31749 4.15874 3.61267
+tx@NodeDict begin /TheNodeM-1-3-2 16 NewNode InitRnode  end end grestore
+end
+ Ft(D)712
+2197 y Fs($)712 2257 y(\\psmatrix[colsep=1cm,rowsep=1cm])803
+2317 y(&)23 b(A)g(\\\\)758 2377 y(B)g(&)g(E)g(&)g(C)g(\\\\)803
+2438 y(&)g(D)g(&)712 2498 y(\\endpsmatrix)712 2558 y($)p 591
+2594 544 2 v 646 2625 a Fh(7)662 2640 y Fg(Not)10 b(to)g(be)g(confused)e
+(with)i(the)g Fd(nput)g Fg(parameter)n(.)591 2828 y Fp(Mathematical)g
+(diagrams)f(and)h(graphs)733 b(25)p eop
+%%Trailer
+end
+userdict /end-hook known{end-hook}if
+%%EOF

@@ -1,0 +1,22 @@
+#!/bin/sh
+# make patterns for the cyryo by repeating patterns for cyre
+
+TMP=.cyryo-tmp
+
+cat $1 | awk '/^\\patterns{/ {p=1;next} /^}/ {p=0;next} p {print}' > $TMP
+cat $TMP | grep 'Å' | grep -v 'Å[^Å]*Å' > ${TMP}1
+cat $TMP | grep 'Å[^Å]*Å' | grep -v 'Å[^Å]*Å[^Å]*Å' > ${TMP}2
+cat $TMP | grep 'Å[^Å]*Å[^Å]*Å' > ${TMP}3
+test ! -s ${TMP}3 || { echo "*** triple cyre detected in $1:" 1>&2; cat ${TMP}3 1>&2 }
+
+{
+echo "% accompanying patterns for cyryo generated from $1"
+echo "\patterns{ % just type <return> if you're not using INITEX"
+cat ${TMP}1 | sed 's,Å,£,'
+cat ${TMP}2 | sed 'y,Å,£,'
+cat ${TMP}2 | sed 's,Å,£,'
+cat ${TMP}2 | sed 's,Å,£,2'
+echo "}"
+} | perl sorthyph
+
+rm -f $TMP ${TMP}[123]

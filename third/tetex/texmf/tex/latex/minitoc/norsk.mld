@@ -1,0 +1,13 @@
+% Norsk titles for minitoc.sty
+% Thanks to Dag Langmyhr (dag@ifi.uio.no)
+\def\mtctitle{Innhold}%
+\def\mlftitle{Figurer}% or Figurliste
+\def\mlttitle{Tabeller}% or Tabelliste
+
+\def\ptctitle{Innhold}%
+\def\plftitle{Figurer}% or Figurliste
+\def\plttitle{Tabeller}% or Tabelliste
+
+\def\stctitle{Innhold}%
+\def\slftitle{Figurer}% or Figurliste
+\def\slttitle{Tabeller}% or Tabelliste

@@ -1,0 +1,506 @@
+%%
+%% This is file `typearea.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% scrclass.dtx  (with options: `typearea')
+%% 
+%% Copyright 1994-1997 Markus Kohm and Frank Neukam.
+%% All rights reserved. For further copyright information see the file
+%% readme.txt or liesmich.txt, and any other copyright indicated in this
+%% file.
+%% 
+%% This file is part of the LaTeX2e KOMA-Script bundle.
+%% ----------------------------------------------------
+%% 
+%% The KOMA-Script bundle bases on the Script-family created by
+%% Frank Neukam 1993 and the standard documents classes created
+%% by the LaTeX3-Team 1994-1996.
+%% -------------------------------------------------------------
+%% 
+%%  This system is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For error reports in case of UNCHANGED versions see documentation.
+%% 
+%% Please do not request updates from us directly. Distribution is
+%% done through Mail-Servers, Mailboxes and TeX organizations.
+%% 
+%% You are not allowed to change this file.
+%% 
+%% You are allowed to distribute this file under the condition that
+%% it is distributed together with all files mentioned in readme.txt
+%% and liesmich.txt.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% You are NOT ALLOWED to distribute this file alone.  You are NOT
+%% ALLOWED to take money for the distribution or use of either this
+%% file or a changed version, except for a nominal charge for copying
+%% etc.
+%% 
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{typearea}
+              [1998/07/17 v2.5e LaTeX2e KOMA
+               package]
+\typeout{Package: typearea, Copyright (C) Frank Neukam, 1992-1994
+      ^^J\space\space\space\space\space\space\space\space\space
+         \space\space\space\space\space\space\space\space\space\space
+                            Copyright (C) Markus Kohm, 1994-1997}
+\newif\if@hincl
+\newif\if@fincl
+\newcommand*\SetDIVList[1]{\def\ta@divlist{#1}}
+\newdimen\ta@bcor
+\newcommand\ifnumber[3]{
+ \begingroup\@tempswafalse\let\next\test@number
+ \expandafter\next#1\next
+ \if@tempswa\endgroup#2\else\endgroup#3\fi
+}
+\def\test@number#1{
+ \ifx \next#1
+  \let\next\relax
+ \else
+  \@tempcnta=\expandafter\expandafter\expandafter\number\expandafter`#1\relax
+  \ifnum \@tempcnta>47\relax
+   \ifnum \@tempcnta<58\relax
+    \@tempswatrue
+   \else\@tempswafalse\fi
+  \else\@tempswafalse\fi
+  \if@tempswa\else\let\next\gobble@till@next\fi\fi
+ \next}
+\def\gobble@till@next#1\next{}
+\newcommand\ifdimen[3]{
+ \begingroup\@tempswatrue\let\next\test@posdimen
+ \expandafter\test@dimen#1\next
+ \if@tempswa\endgroup#2\else\endgroup#3\fi
+}
+\def\test@dimen#1{\ifx -#1\else\ifx +#1\else
+   \def\next{\let\next\test@posdimen\next#1}\fi\fi\next}
+\def\test@posdimen#1{
+ \ifx \next#1
+  \@tempswafalse\let\next\relax
+ \else
+  \if .#1\else\if ,#1\else
+    \@tempcnta=%
+     \expandafter\expandafter\expandafter\number\expandafter`#1\relax
+    \ifnum \@tempcnta>47\relax
+     \ifnum \@tempcnta<58\relax
+     \else\def\next{\test@dimunt#1}\fi
+    \else\def\next{\test@dimunt#1}\fi\fi\fi\fi
+ \next}
+\def\test@dimunt#1\next{\expandafter\test@trueunt#1truetrue\test@trueunt}
+\def\test@trueunt#1true#2true#3\test@trueunt{
+ \edef\@tempa{#1}
+ \ifx\@tempa\@empty\test@@ifdimunt{#2}\else\test@@ifdimunt{#1}\fi}
+\newcommand*\test@@ifdimunt[1]{
+ \@tempswafalse
+ \ifstr{#1}{pt}{\@tempswatrue}{}
+ \ifstr{#1}{pc}{\@tempswatrue}{}
+ \ifstr{#1}{in}{\@tempswatrue}{}
+ \ifstr{#1}{bp}{\@tempswatrue}{}
+ \ifstr{#1}{cm}{\@tempswatrue}{}
+ \ifstr{#1}{mm}{\@tempswatrue}{}
+ \ifstr{#1}{dd}{\@tempswatrue}{}
+ \ifstr{#1}{cc}{\@tempswatrue}{}
+ \ifstr{#1}{sp}{\@tempswatrue}{}}
+\newcommand\ifstr[4]{
+ \begingroup\edef\@tempa{#1}\edef\@tempb{#2}
+ \ifx\@tempa\@tempb\endgroup#3\else\endgroup#4\fi}
+\def\@BCOR{\expandafter\@@BCOR\CurrentOption BCORBCOR\@@BCOR}
+\def\@@BCOR #1BCOR#2BCOR#3\@@BCOR{
+ \edef\@tempa{#1}\ifx\@tempa\@empty
+  \edef\@tempa{#3}\def\@tempb{BCOR}\ifx\@tempa\@tempb
+   \ifdimen{#2}{\setlength{\ta@bcor}{#2}}{\ta@opt@err}
+  \else\ta@opt@err\fi
+ \else\ta@opt@err\fi}
+\newcount\ta@div
+\def\@DIV{\expandafter\@@DIV\CurrentOption DIVDIV\@@DIV}
+\def\@@DIV #1DIV#2DIV#3\@@DIV{
+ \edef\@tempa{#1}\ifx\@tempa\@empty
+  \edef\@tempa{#3}\def\@tempb{DIV}\ifx\@tempa\@tempb
+   \ifnumber{#2}{\ta@div=#2\relax}{\ta@opt@err}
+  \else\ta@opt@err\fi
+ \else\@BCOR\fi}
+\newcommand\isopaper[2][a]{%
+ \ifx a#1
+  \setlength{\paperwidth}{841sp}\setlength{\paperheight}{1189sp}
+ \else\ifx b#1
+  \setlength{\paperwidth}{1000sp}\setlength{\paperheight}{1414sp}
+ \else\ifx c#1
+  \setlength{\paperwidth}{917sp}\setlength{\paperheight}{1297sp}
+ \else\ifx d#1
+  \setlength{\paperwidth}{771sp}\setlength{\paperheight}{1090sp}
+ \else
+  \PackageError{typearea}
+   {Unknown ISO/DIN-papersize-letter #1}
+   {There are only four defined paperscalings:\MessageBreak
+    a = ISO/DIN-A, b = ISO/DIN-B, c = ISO/DIN-C, d = ISO/DIN-D\MessageBreak
+    Read KOMA-Script-documentation for further information.}
+  \setlength{\paperwidth}{841sp}\setlength{\paperheight}{1189sp}
+ \fi\fi\fi\fi
+ \@tempcnta=#2\relax
+ \@whilenum\@tempcnta>0
+  \do{\setlength{\@tempdima}{\paperwidth}
+      \setlength{\paperwidth}{.5\paperheight}
+      \setlength{\paperheight}{\@tempdima}
+      \advance\@tempcnta by-\@ne}
+ \multiply\paperwidth by186468\relax
+ \multiply\paperheight by186468\relax}
+\def\x@paper{\expandafter\x@@paper\CurrentOption paper\x@@paper}
+\def\x@@paper #1#2paper#3\x@@paper{
+ \edef\@tempa{paper}\edef\@tempb{#3}\ifx\@tempa\@tempb
+  \ifnumber{#2}{
+   \ifx a#1\isopaper[a]{#2}
+   \else\ifx b#1\isopaper[b]{#2}
+   \else\ifx c#1\isopaper[c]{#2}
+   \else\ifx d#1\isopaper[d]{#2}
+   \else\ta@opt@err\fi\fi\fi\fi
+  }{\ta@opt@err}
+ \else\@DIV\fi}
+\def\ta@opt@err{
+ \PackageError{typearea}
+              {Unknown option \CurrentOption}
+              {You've used an unknown option.\MessageBreak
+              Read the KOMA-Script-documentation for further
+              information.}}
+\DeclareOption{headinclude}{\@hincltrue}
+\DeclareOption{headexclude}{\@hinclfalse}
+\DeclareOption{footinclude}{\@fincltrue}
+\DeclareOption{footexclude}{\@finclfalse}
+\DeclareOption{a4paper}{\isopaper{4}}
+\DeclareOption{a5paper}{\isopaper{5}}
+\DeclareOption{letterpaper}
+   {\setlength\paperheight {11in}%
+    \setlength\paperwidth  {8.5in}}
+\DeclareOption{legalpaper}
+   {\setlength\paperheight {14in}%
+    \setlength\paperwidth  {8.5in}}
+\DeclareOption{executivepaper}
+   {\setlength\paperheight {10.5in}%
+    \setlength\paperwidth  {7.25in}}
+\newif\if@landscape
+\DeclareOption{landscape}{\@landscapetrue}
+\DeclareOption{DIVcalc}{\providecommand\ta@divlist{{1}{1}{1}}}
+\DeclareOption{DIVclassic}{\providecommand\ta@divlist{{3}{3}{3}}}
+\DeclareOption*{\x@paper}
+\InputIfFileExists{typearea.cfg}
+           {\typeout{***************************************^^J%
+                     * Local config file typearea.cfg used^^J%
+                     ***************************************}}
+           {}
+\ExecuteOptions{headexclude,footexclude,a4paper}
+\ProcessOptions\relax
+\if@landscape
+ \setlength\@tempdima   {\paperheight}
+ \setlength\paperheight {\paperwidth}
+ \setlength\paperwidth  {\@tempdima}
+\fi
+\providecommand\ta@divlist{{8}{10}{12}}
+\newdimen\ta@hblk
+\newdimen\ta@vblk
+\newdimen\ta@temp
+\newcommand*\@typearea{
+ \ta@hblk \paperwidth
+ \advance \ta@hblk by -\ta@bcor
+ \divide\ta@hblk by \ta@div
+ \oddsidemargin -1in
+ \evensidemargin -1in
+ \if@twoside
+  \advance\oddsidemargin by \ta@hblk
+  \advance\oddsidemargin by \ta@bcor
+  \advance\evensidemargin by 2\ta@hblk
+ \else
+  \advance\oddsidemargin by 1.5\ta@hblk
+  \advance\oddsidemargin by \ta@bcor
+  \evensidemargin\oddsidemargin
+ \fi
+ \textwidth \paperwidth
+ \advance\textwidth by -\ta@bcor
+ \advance\textwidth by -3\ta@hblk
+ \ta@vblk \paperheight
+ \divide\ta@vblk by \ta@div
+ \topmargin -1in
+ \advance\topmargin by \ta@vblk
+ \if@hincl \else
+  \advance\topmargin by -\headheight
+  \advance\topmargin by -\headsep
+ \fi
+ \ta@temp \paperheight
+ \advance\ta@temp by -3\ta@vblk
+ \if@hincl
+  \advance\ta@temp by -\headheight
+  \advance\ta@temp by -\headsep
+ \fi
+ \if@fincl
+  \advance\ta@temp by -\footskip
+ \fi
+ \textheight \topskip
+ \@whiledim\textheight<\ta@temp
+  \do{\advance\textheight by \baselineskip}
+ \if@twoside
+  \marginparwidth 1.5\ta@hblk
+ \else
+  \marginparwidth \ta@hblk
+ \fi
+}
+\newcommand*\ta@modiv[2]{
+ \setlength{\@tempdima}{#1}
+ \divide\@tempdima by#2\relax
+ \ta@div\@tempdima
+ \ifnum \ta@div<4\relax
+  \ta@div=4\relax
+ \else
+  \setlength{\@tempdimb}{#1}
+  \divide\@tempdimb\ta@div
+  \addtolength{\@tempdima}{\@tempdima}
+  \addtolength{\@tempdima}{-\@tempdimb}
+  \advance\ta@div\@ne
+  \setlength{\@tempdimb}{#1}
+  \divide\@tempdimb\ta@div
+  \ifdim \@tempdima<\@tempdimb
+   \advance\ta@div by-\@ne
+  \fi
+ \fi
+}
+\newcommand*\ta@temp@goodwidth{
+  \settowidth{\ta@temp}{abcdefghijklmnopqrstuvwxyz}
+  \multiply\ta@temp by 66
+  \settowidth{\@tempdima}{ABCDEFGHIJKLMNOPQRSTUVWXYZ}
+  \multiply\@tempdima by 3
+  \addtolength{\ta@temp}{\@tempdima}
+  \divide\ta@temp by 26
+}
+\newcommand*\typearea[2][\z@]{
+ \ta@bcor #1
+ \ta@div=#2
+ \@ifundefined{ta@hh}{\headheight 1.25\baselineskip}{\headheight\ta@hh}
+ \headsep 1.5\baselineskip
+ \footskip 3.5\baselineskip
+ \marginparsep 1cc
+ \marginparpush 0.45\baselineskip
+ \ifnum\ta@div=\z@
+  \@ifundefined{@ptsize}{%
+   \PackageWarningNoLine{typearea}{\string\@ptsize not defined!\MessageBreak
+                                   Using calculated DIV}
+  }{%
+   \ta@divfor{\@ptsize}
+  }
+ \fi
+ \ifnum\ta@div=3
+  \typeout{DIV calculation for classic typearea.}
+  \setlength{\ta@temp}{\paperwidth}
+  \addtolength{\ta@temp}{-\ta@bcor}
+  \if@hincl\else
+   \addtolength{\ta@temp}{\headheight}
+   \addtolength{\ta@temp}{\headsep}
+  \fi
+  \if@fincl\else
+   \addtolength{\ta@temp}{\footskip}
+  \fi
+  \ifdim \ta@temp>\paperheight
+   \PackageWarningNoLine{typearea}
+    {No classic typearea with this papersize!\MessageBreak
+     Using calculated DIV}
+   \ta@div=\@ne
+  \else
+   \setlength{\ta@temp}{\paperheight}
+   \addtolength{\ta@temp}{-\paperwidth}
+   \addtolength{\ta@temp}{\ta@bcor}
+   \divide\ta@temp 3\relax
+   \ta@modiv{\paperheight}{\ta@temp}
+  \fi
+ \fi
+ \ifnum\ta@div<4
+  \typeout{DIV calculation for typearea with good linewidth.}
+  \setlength{\textwidth}{\paperwidth}
+  \addtolength{\textwidth}{-\ta@bcor}
+  \ta@temp@goodwidth
+  \if@twocolumn
+    \addtolength{\ta@temp}{\ta@hblk}
+    \addtolength{\ta@temp}{\columnsep}
+  \fi
+  \setlength{\ta@hblk}{\paperwidth}
+  \addtolength{\ta@hblk}{-\ta@temp}
+  \divide\ta@hblk by 3
+  \ifdim \ta@hblk<\z@\relax
+    \setlength{\ta@hblk}{5mm}
+  \fi
+  \ta@modiv{\paperwidth}{\ta@hblk}
+  \@typearea
+  \setlength{\ta@temp}{-1in}
+  \addtolength{\ta@temp}{5mm}
+  \ifdim\topmargin<\ta@temp
+   \setlength{\ta@temp}{15mm}
+   \if@hincl\else
+    \addtolength{\ta@temp}{\headheight}
+    \addtolength{\ta@temp}{\headsep}
+   \fi
+   \if@fincl\else
+    \addtolength{\ta@temp}{\footskip}
+   \fi
+   \divide\ta@temp by3\relax
+   \ta@modiv{\paperheight}{\ta@temp}
+  \fi
+ \fi
+ \@typearea
+ \ta@temp@goodwidth
+ \setlength{\@tempdima}{\ta@temp}
+ \addtolength{\ta@temp}{-\textwidth}
+ \divide\@tempdima 100\relax
+ \divide\ta@temp\@tempdima
+ \@tempcnta\ta@temp
+ \ifnum\@tempcnta<5\relax
+  \ifnum\@tempcnta>-5\relax
+   \@tempcnta=0
+  \else
+   \advance\@tempcnta 4
+  \fi
+ \else
+  \advance\@tempcnta -4
+ \fi
+ \ifnum\@tempcnta<-15\relax
+  \PackageWarningNoLine{typearea}
+   {Bad DIV-value!\MessageBreak
+    You should decrease DIV, increase fontsize or\MessageBreak
+    change papersize}
+ \else\ifnum\@tempcnta>15\relax
+  \PackageWarningNoLine{typearea}
+   {Bad DIV-value!\MessageBreak
+    You should increase DIV, decrease fontsize or\MessageBreak
+    change papersize}
+ \fi\fi
+ \ifnum\ta@div<6\relax
+  \PackageWarningNoLine{typearea}
+   {Very low DIV-value!\MessageBreak
+    DIV-values less than 6 result in textwidth/-height\MessageBreak
+    smaller than total marginwidth/-height.\MessageBreak
+    You should increase DIV, increase fontsize or\MessageBreak
+    change papersize}
+ \fi
+ \PackageInfo{typearea}{%
+    These are the values describing the layout:\MessageBreak
+    DIV\space\space=\space\number\ta@div\MessageBreak
+    BCOR\space=\space\the\ta@bcor\MessageBreak
+    \string\paperwidth\space\space\space\space\space\space=%
+                         \space\the\paperwidth\MessageBreak
+    \space\string\textwidth\space\space\space\space\space\space=%
+                         \space\the\textwidth\MessageBreak
+    \space DIV-departure\space\space\space=%
+                         \space\the\@tempcnta/100\MessageBreak
+    \space\string\evensidemargin\space=%
+                         \space\the\evensidemargin\MessageBreak
+    \space\string\oddsidemargin\space\space=%
+                         \space\the\oddsidemargin\MessageBreak
+    \string\paperheight\space\space\space\space\space=%
+                         \space\the\paperheight\MessageBreak
+    \space\string\textheight\space\space\space\space\space=%
+                         \space\the\textheight\MessageBreak
+    \space\string\topmargin\space\space\space\space\space\space=%
+                         \space\the\topmargin\MessageBreak
+    \space\string\headheight\space\space\space\space\space=%
+                         \space\the\headheight\MessageBreak
+    \space\string\headsep\space\space\space\space\space\space\space\space=%
+                         \space\the\headsep\MessageBreak
+    \space\string\topskip\space\space\space\space\space\space\space\space=%
+                         \space\the\topskip\MessageBreak
+    \space\string\footskip\space\space\space\space\space\space\space=%
+                         \space\the\footskip\MessageBreak
+    \space\string\baselineskip\space\space\space=%
+                         \space\the\baselineskip\MessageBreak
+  }
+  \@typearea@end}
+\newcommand\@typearea@end{}
+\AtBeginDocument{%
+ \renewcommand\@typearea@end{%
+  \PackageWarning{typearea}
+   {Typearea changed!\MessageBreak
+    You should do this only at preamble, because only\MessageBreak
+    \protect\begin{document} calculates output dimensions!\MessageBreak
+    Trying to calculate new output dimensions, but\MessageBreak
+    this is only a dirty hack}
+  \clearpage
+  \@colht\textheight
+  \@colroom\textheight \vsize\textheight
+  \columnwidth\textwidth
+  \if@twocolumn
+    \advance\columnwidth -\columnsep
+    \divide\columnwidth\tw@ \hsize\columnwidth \@firstcolumntrue
+  \fi
+  \hsize\columnwidth \linewidth\hsize
+ }}
+\newcommand*\areaset[3][\z@]{
+ \ta@bcor #1
+ \textwidth #2
+ \textheight #3
+ \ta@hblk \paperwidth
+ \advance\ta@hblk by -\ta@bcor
+ \advance\ta@hblk by -\textwidth
+ \divide\ta@hblk by 3
+ \oddsidemargin -1in
+ \evensidemargin -1in
+ \if@twoside
+  \advance\oddsidemargin by \ta@hblk
+  \advance\oddsidemargin by \ta@bcor
+  \advance\evensidemargin by 2\ta@hblk
+ \else
+  \advance\oddsidemargin by 1.5\ta@hblk
+  \advance\oddsidemargin by \ta@bcor
+  \evensidemargin\oddsidemargin
+ \fi
+ \headheight 15\p@
+ \advance\headheight \@ptsize\p@
+ \headsep 1.5\baselineskip
+ \footskip 3.5\baselineskip
+ \ta@vblk \paperheight
+ \advance\ta@vblk by -\textheight
+ \divide\ta@vblk by 3
+ \if@hincl
+  \advance\textheight by -\headheight
+  \advance\textheight by -\headsep
+ \fi
+ \if@fincl
+  \advance\textheight by -\footskip
+ \fi
+ \topmargin \ta@vblk
+ \advance\topmargin by -1in
+ \if@hincl \else
+  \advance\topmargin by -\headheight
+  \advance\topmargin by -\headsep
+ \fi
+ \if@twoside
+  \marginparwidth 1.5\ta@hblk
+ \else
+  \marginparwidth \ta@hblk
+ \fi
+ \marginparsep 1cc
+ \marginparpush 0.45\baselineskip
+ \@areaset@end}
+\newcommand\@areaset@end{\@typearea@end}
+\def\ta@divfor#1{
+ \xdef\@tempa{\ta@divlist{}}
+ \ta@div=#1\relax
+ \@whilenum \ta@div >0 \do {%
+  \ifx\@tempa\empty \relax%
+   \else \xdef\@tempa{\expandafter\@cdr\@tempa\@nil}%
+  \fi
+  \advance\ta@div by -1 %
+ }
+ \ifx\@tempa\empty %
+  \PackageWarningNoLine{typearea}{%
+              DIV for 1#1pt and used papersize\MessageBreak
+              not defined!\MessageBreak
+              Using calculated DIV}
+  \ta@div=1
+ \else %
+  \xdef\@tempa{\expandafter\@car\@tempa\@nil}
+  \ta@div=\@tempa\relax
+ \fi}
+\typearea[\ta@bcor]{\ta@div}
+\endinput
+%%
+%% End of file `typearea.sty'.

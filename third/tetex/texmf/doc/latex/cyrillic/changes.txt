@@ -1,0 +1,22 @@
+
+This lists changes to the LaTeX2e files in reverse chronological order.
+
+NOTE:  This file is based on the developers' personal change-log files
+and is provided for convenience only.  It therefore makes no claims to
+completeness or accuracy and it contains some references to files that
+are not part of the distribution.
+
+=======================================================================
+
+
+1999-02-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* cyrlatex.ins: do not generate too many files in parallel
+
+1999-01-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* readme.txt: small changes to "reporting bugs" section
+
+1999-01-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* cyrlatex.ins: added copyrights etc

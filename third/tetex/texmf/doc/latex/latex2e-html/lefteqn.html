@@ -1,0 +1,41 @@
+<html>
+<head><title>Help On LaTeX \lefteqn</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\lefteqn</font></h1>
+<p>
+<p><pre>
+ <tt>\lefteqn{eqn}</tt>
+</pre>
+ prints <tt>eqn</tt> in display math style, but pretends that it has
+ zero width.  It is typicaly used within an 
+ <a href="ltx-223.html"><tt>Eqnarray</tt></a> environment for
+ displaying long equations that require multiple lines.
+<p>
+A typical use might be
+<pre>
+  <tt>\begin{eqnarray}
+  \lefteqn{\int_0^<a href="ltx-407.html">\infty</a> some expression =} \\
+  & & some terms <a href="ltx-181.html">\\</a>
+  & & <a href="ltx-265.html">\mbox{}</a> + more terms
+  \end{eqnarray}</tt>
+</pre>
+Note that the empty <a href="ltx-265.html"><tt>\mbox{}</tt></a> is so LaTeX
+knows that the following <tt>+</tt> is a binary operator, and is not
+attached to the first of the "more terms" as a unary operator.
+<hr>
+Related topics
+<ul>
+<li><A href="ltx-27.html">Environments</A>
+<li><a href="ltx-202.html">Array Environment</a>
+<li><a href="ltx-223.html">Eqnarray Environment</a>
+<li><a href="ltx-224.html">Equation Environment</a>
+<li><a href="ltx-421.html">Displaymath Environment</a> 
+<li><a href="ltx-115.html">Math Formulas</a>
+</ul>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 29 Jun 1995.
+</address>
+</body>
+</html>

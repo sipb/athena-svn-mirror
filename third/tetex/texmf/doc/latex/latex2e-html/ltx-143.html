@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>Help On LaTeX Spaces and Boxes</title>
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Spaces and Boxes</font></h1>
+
+<h2>"Visible" Spaces</h2>
+You can generate a "visible" space, generally indicated as a small, squat
+"u," and useful in didactic material by using the 
+<a href="ltx-342.html"><tt>\verb</tt></a> command or the 
+<a href="ltx-79.html"><tt>verbatim</tt></a> environment.
+
+<h2>Non-breaking Spaces</h2>
+To generate a space where you do not want to allow a break for a new line use a
+<tt>~</tt>. For example,
+<pre>
+  <tt>... in Table~2 and Fig.~3 ...</tt>
+</pre>
+
+<h2>Controlling Space in Text</h2>
+
+The ends of words and sentences are marked 
+in the input by one or more spaces.  LaTeX
+treats multiple spaces as if they were a single space.  An end of line
+is also equivalent to a space; however, you can end a line 
+<em>without</em> a space by using a 
+<a href="ltx-434.html"><tt>%</tt></a> (anything following the 
+<tt>%</tt> is considered to be 
+a comment).  LaTeX generally ignores spaces at the beginning of lines.
+<p>
+Paragraphs are
+delineated by a <em>blank line</em> -- one which does not contain even
+comments (anything following a 
+<a href="ltx-434.html"><tt>%</tt></a> until the end of a line is
+a comment).  See also the <a href="ltx-293.html"><tt>\par</tt></a>
+command.
+<p>
+LaTeX leaves extra space after punctuation, such as the period which
+ends a sentence, 
+but, it uses a very simple rule (periods end sentences unless
+they follow a capital letter) so
+sometimes it needs a little help in determining when
+this is required. (However, see 
+<a href="frenchsp.html"><tt>\frenchspacing</tt></a>.)
+Use 
+<ul>
+<li><a href="ltx-431.html"><tt>\&lt;space&gt;</tt></a> to create an ordinary
+    interword space
+<li><a href="ltx-432.html"><tt>\@</tt></a> before punctuation to force an "end of
+    sentence" space
+</ul>
+<p>
+It is sometimes necessary to add a little additional space, such as between
+consecutive single and double <a href="ltx-433.html">quotation marks</a>. 
+The <a href="ltx-185.html"><tt>\,</tt></a> command can be used for this purpose.
+<p>
+Also see
+<ul>
+<li><a href="ltx-430.html">Dashes</a>
+<li><a href="ellipses.html">Ellipses</a>
+<li><a href="ltx-433.html">Quotation Marks</a>
+<li><a href="ltx-118.html">Spacing in Math Mode</a>
+</ul>
+
+<h2>Spaces after Commands</h2>
+
+Most LaTeX commands consist of a <tt>\</tt> followed by a string of 
+letters. The end of such commands is indicated by a nonletter, i.e., 
+a number, a punctuation mark, a space, or the end of the line.  If the
+command produces text and you want a space to follow this text, you cannot
+just leave a space after the command; that space is treated as the 
+end-of-command signal and several spaces are equivalent to one in LaTeX.
+To generate a space after a text-producing command you can use 
+<a href="ltx-431.html"><tt>\&lt;space&gt;</tt></a>.
+<p>
+For example  
+<pre>
+   <tt>I wrote this on <a href="ltx-330.html">\today</a>   .</tt>
+</pre>
+generates "I wrote this on Jul 7, 1995."  Note that the spaces
+between <tt>\today</tt> and the period in the input do not generate
+any space in the output.  On the other hand,
+<pre>
+  <tt>\today\ was a good day.</tt>
+</pre>
+or
+<pre>
+  <tt>\today  \  was a good day.</tt>
+</pre>
+will both produce "Jul 7, 1995 was a good day." The 
+<a href="ltx-431.html"><tt>\&lt;space&gt;</tt></a> 
+here is necessary to produce space between the date and "was."
+<p>
+An alternatative is to use braces to terminate the command.  For
+example, <tt>\today{} was ...</tt> is equivalent to the above.
+
+<h3>Invisible commands</h3>
+Some commands do not produce any output text.  LaTeX treats these as
+words of zero length and may try to leave spaces both before and 
+after this "word" which will generally produce an undesirable gap.
+This can be avoided by attaching these commands directly to the
+preceding word, i.e., leaving no spaces.
+
+<H2>Some commands which create or manipulate space</H2>
+<ul>
+<li><A href="ltx-198.html">\addvspace</A>
+<li><A href="ltx-206.html">\bigskip</A>
+<li><A href="ltx-220.html">\dotfill</A>
+<li><A href="ltx-238.html">\hfill</A>
+<li><A href="ltx-240.html">\hrulefill</A>
+<li><A href="ltx-241.html">\hspace</A>
+<li><A href="ltx-266.html">\medskip</A>
+<li><A href="ltx-306.html">\rule</A>
+<li><A href="ltx-318.html">\smallskip</A>
+<li><A href="ltx-345.html">\vfill</A>
+<li><A href="ltx-347.html">\vspace</A>
+</ul>
+See also
+<ul>
+<li><a href="ltx-118.html">spacing in math mode</a>
+</ul>
+
+<h2>Boxes</h2>
+A box is an object which TeX treats as a single character; it is therefore
+not broken across lines or pages.
+<p>
+The following commands create or manipulate boxes
+<ul>
+<li><A href="ltx-226.html">\fbox</A>
+<li><A href="ltx-237.html">\framebox</A>
+<li><A href="ltx-262.html">\makebox</A>
+<li><A href="ltx-265.html">\mbox</A>
+<li><A href="ltx-277.html">\newsavebox</A>
+<li><A href="ltx-294.html">\parbox</A>
+<li><A href="ltx-302.html">\raisebox</A>
+<li><A href="ltx-307.html">\savebox</A>
+<li><A href="ltx-307.html">\sbox</A>
+<li><A href="ltx-337.html">\usebox</A>
+</ul>
+
+<hr>
+Back to the <a href="ltx-2.html">Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 29 Sep 1995.
+</address>
+</body>
+</html>

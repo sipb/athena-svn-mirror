@@ -1,0 +1,530 @@
+Path: senator-bedfellow.mit.edu!bloom-beacon.mit.edu!newsfeed.sgi.net!nntp.abs.net!isdnet!newsfeed.tli.de!newsfeed.nacamar.de!rz.uni-karlsruhe.de!news.uni-stuttgart.de!news.urz.uni-heidelberg.de!german
+From: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+Newsgroups: de.comp.text.tex,de.answers,news.answers
+Subject: TeX, LaTeX, DANTE e.V.: FAQ - Fragen und Antworten (Part 1 of 11)
+Supersedes: <de-tex-faq-1-922970460@dante.de>
+Followup-To: de.comp.text.tex
+Date: 11 May 1999 15:39:26 GMT
+Organization: DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+Lines: 504
+Approved: news-answers-request@MIT.EDU
+Distribution: world
+Expires: 25 Jun 99 17:39:26
+Message-ID: <de-tex-faq-1-926437166@dante.de>
+Reply-To: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+NNTP-Posting-Host: sun.dante.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Summary: This posting contains a list of Frequently Asked Questions
+         (and their answers) about the typesetting system TeX and
+         about DANTE e.V., the german-speaking TeX users group.
+         It is in German and uses the ISO Latin-1 character set.
+Keywords: FAQ TYPESETTING TeX USERGROUP DANTE
+Originator: german@sun.dante.de
+Xref: senator-bedfellow.mit.edu de.comp.text.tex:16697 de.answers:3307 news.answers:157712
+
+Posted-By: auto-faq 3.3 (Perl 5.003)
+Archive-name: de-tex-faq/part1
+Posting-Frequency: monthly
+Copyright-Notice: siehe Abschnitt 1.1/see Section 1.1
+URL: http://www.dante.de/faq/de-tex-faq/
+
+--- DE-TeX-FAQ Beginn Teil 1 ---
+
+  Fragen und Antworten (FAQ) über das Textsatzsystem TeX und DANTE,
+            Deutschsprachige Anwendervereinigung TeX e.V.
+                                   
+           Bernd Raichle, Thomas Hafner und Rolf Niepraschk
+                                   
+                      (Version 51 vom Mai 1999)
+    ______________________________________________________________
+  
+  Dieser Text enthält häufig gestellte Fragen und passende Antworten
+  zum Textsatzsystem TeX und zu DANTE e.V.
+  
+  Er kann über beliebige Medien frei verteilt werden, solange er
+  unverändert bleibt (inkl. diesem Hinweis) und keine Gebühr für das
+  Verteilen verlangt wird. Die Autoren bitten bei Verteilung über
+  gedruckte Medien, Datenträger wie CD-ROM u.ä. um Zusendung von
+  mindestens drei Belegexemplaren.
+  
+  Anregungen, Ergänzungen, Kommentare und Bemerkungen per E-Mail an
+  `detexfaq@dante.de'
+    ______________________________________________________________
+  
+Inhalt
+
+1 Allgemeines
+  1.1 Über diese FAQ (*)
+  1.2 Newsgroups und Diskussionslisten (*)
+  1.3 Mitwirkende an dieser FAQ (*)
+2 TeX-Anwendervereinigungen, TeX-Literatur, Tagungen
+  2.1 DANTE e.V.
+  2.2 Wie werde ich Mitglied bei DANTE e.V.? (*)
+  2.3 TeX-Nutzergruppen und Tagungskalender
+  2.4 Literatur (*)
+3 Textsatzsystem TeX - Übersicht
+  3.1 Was ist TeX, METAFONT, TDS etc.?
+  3.2 Welche TeX-Formate gibt es? Was ist LaTeX?
+  3.3 Welche TeX-Weiterentwicklungen gibt es? (*)
+4 Textsatzsystem TeX - Bezugsquellen
+  4.1 Wie bekomme ich ein TeX-System?
+  4.2 CTAN, das `Comprehensive TeX Archive Network'
+  4.3 TeX-Implementierungen (*)
+  4.4 Editoren, Frontend-/GUI-Programme (*)
+5 TeX, LaTeX, Makros etc. (I)
+  5.1 LaTeX2e - Grundlegendes (*)
+  5.2 LaTeX2e - Probleme beim Umstieg von LaTeX 2.09
+  5.3 (Silben-)Trennung, Absatz-, Seitenumbruch
+  5.4 Seitenlayout, Layout allgemein, Kopf- und Fußzeilen
+6 TeX, LaTeX, Makros etc. (II)
+  6.1 Abbildungen und Tafeln (+)
+  6.2 Fußnoten, Endnoten etc.
+  6.3 Grafiken, Bilder, Farbe und andere Effekte (+)
+7 TeX, LaTeX, Makros etc. (III)
+  7.1 Gliederung, Inhalts-, Abbildungs- und andere Verzeichnisse
+  7.2 Literaturzitate, -verzeichnis, BibTeX
+  7.3 \verb-Anweisung, verbatim- und Kommentar-Umgebungen (*)
+  7.4 Zerbrechliche Anweisungen in `moving arguments'
+8 TeX, LaTeX, Makros etc. (IV)
+  8.1 Mathematischer Formelsatz
+  8.2 Verschiedene sonstige Zeichen
+  8.3 Chemischer Struktur- und Formelsatz
+  8.4 Notensatz
+  8.5 Verschiedenes
+9 METAFONT und Schriften
+  9.1 METAFONT und METAFONT-Tools
+  9.2 Schriften - allgemein (+)
+10 METAFONT und Schriften (Fortsetzung)
+   10.1 Die EC-Schriftfamilie und andere T1-kodierte Schriften
+   10.2 PostScript-Schriften (*)
+   10.3 TrueType-Schriften (*)
+11 Tools und Utilities
+   11.1 Tools zur Manipulation von dvi-Dateien
+   11.2 Syntax-Checker
+   11.3 Dokument-Konverter von bzw. in das (La)TeX-Markup-Format
+   11.4 TeX-Benutzungsoberflächen und Editoren
+   11.5 dvi-Treiber - Druckertreiber und Previewer
+   11.6 Zeichenprogramme
+  _________________________________________________________________
+
+Neu hinzugekommene Abschnitte oder Abschnitte mit neuen Fragen und
+Antworten sind durch ein Plus-Zeichen (+), Abschnitte mit geänderten
+Fragen und Antworten sind durch ein Sternchen (*) markiert.
+Geringfügige Textänderungen durch Korrektur von Ausdrucks- oder
+Rechtschreibfehlern sind nicht markiert.
+
+
+
+1 Allgemeines
+                                    
+1.1 Über diese FAQ (*)
+
+Diese deutschsprachige FAQ (`frequently asked questions' = Liste mit
+den häufig gestellten Fragen und Antworten) wurde durch die in der
+Newsgroup `de.comp.tex', dem Vorgänger von `de.comp.text.tex',
+regelmäßig auftauchende Fragen ``Was ist DANTE e.V., was ist ``Die
+TeXnische Komödie'', wie kann ich Mitglied werden, was kostet eine
+Mitgliedschaft?'' geboren. Aus diesem Grund besteht ein Teil der FAQ
+aus Fragen über DANTE e.V. und den entsprechenden Antworten. Aus der
+ca. 14KB großen, zweiteiligen ersten Version vom 6. November 1995 ist
+innerhalb von zwei Monaten zuerst eine vier-, dann eine achtteilige,
+ca. 90KB große FAQ-Liste entstanden, die mittlerweile auf eine Größe
+von ca. 280KB Text in nunmehr elf Teilen (ab Oktober 1996) angewachsen
+ist.
+
+Im Oktober 1997 hat Rolf Niepraschk den Text der FAQ zur weiteren
+Verarbeitung mit Hyperlatex umgesetzt, so daß daraus sowohl die
+Textversion der FAQ als auch Versionen in HTML- und anderen Formaten
+generiert werden können. Die Hyperlatex-Eingabe wurde in den
+Folgemonaten von Fehlern befreit und erste Testversionen ab Februar
+1998 veröffentlicht. Im April 1999 stand schließlich die 50. Ausgabe
+dieser FAQ der Öffentlichkeit in verschiedenen Formaten zur Verfügung.
+
+1.1.1 Erscheinungsweise
+
+Die Textversion der FAQ wird regelmäßig monatlich zum Monatsbeginn in
+die Newsgroup `de.comp.text.tex', `de.answers' und `news.answers'
+gepostet. Die FAQ besteht aus mehreren Teilen, wobei jeder Teil ohne
+News-Header nicht länger als ca. 32KB sein sollte.
+
+1.1.2 Copyright
+
+Copyright © 1995-1999 B. Raichle, Th. Hafner, R. Niepraschk
+
+Diser Text kann über beliebige Medien frei verteilt werden, solange er
+unverändert bleibt (inkl. diesem Hinweis) und keine Gebühr für das
+Verteilen verlangt wird. Die Autoren bitten bei Verteilung über
+gedruckte Medien, Datenträger wie CD-ROM u.ä. um Zusendung von
+mindestens drei Belegexemplaren.
+
+1.1.3 Archivierung
+
+Eine Kopie kann man über das World-Wide-Web (WWW) in
+
+  http://www.dante.de/faq/de-tex-faq/
+  
+finden.
+
+Die FAQ wird in die Newsgroups `de.answers' und `news.answers'
+gepostet, so daß man die neueste Version auf dem weltweiten FAQ-Archiv
+ftp://rtfm.mit.edu/pub/usenet/news.answers/de-tex-faq/ und allen
+Spiegeln dieses Archivs (u.a. den ftp-Servern des CTAN in
+CTAN: help/de-tex-faq/) finden kann. Die Dateien auf diesen
+ftp-Servern kann man sich auch mit Hilfe eines ftp-Mailer über E-Mail
+zuschicken lassen.
+
+1.1.4 Verwendete Kodierung:
+
+Die Autoren schreiben den Text in ISO Latin-1 (ISO 8859-1) und
+verschicken ihn mit entsprechendem MIME-Mail-Header, so daß er von
+korrekt konfigurierten Programmen problemlos und automatisch in andere
+Kodierungen konvertiert werden kann.
+
+Erhalten Sie diesen Text mit unlesbaren Umlauten und trägt ein
+fehlerhaft konfiguriertes Gateway die Schuld daran, könnten Sie dies
+zum Anlaß nehmen, die Verwalter der Gateways zu überreden, deren
+Konfiguration zu korrigieren. Und bitte vorher überprüfen, ob nicht
+die eigene Software, beispielsweise der eigene Newsreader an den
+unlesbaren Umlauten Schuld trägt! Einen Artikel mit fehlerhaft
+kodierten Umlauten kann man mit Hilfsprogrammen, wie `recode' (in
+jedem guten GNU-Archiv zu finden) oder `charconv' in vielen Fällen
+korrigieren. Dazu folgt hier eine Referenzliste der Umlaute und des
+scharfen s:
+
+Ae Oe Ue ae oe ue ss  ('e 'i 'o)
+Ä  Ö  Ü  "a  ö  ü  ß   ( é  í  ó)
+
+1.1.5 Weitere FAQ-Listen (*)
+
+  * TeX-FAQ der Newsgroup `comp.text.tex' (in englisch)
+    Erhältlich in allen `news.answers'-Archiven in der Datei
+    ``.../usenet/news.answers/tex-faq''. Diese FAQ ist mittlerweile
+    hoffnungslos veraltet und sollte daher nur unter Vorbehalt gelesen
+    werden. Die UK TUG TeX-FAQ ist eine erweiterte und überarbeitete
+    Version dieser FAQ.
+  * UK TUG TeX FAQ - Your 100+x Questions answered (in englisch)
+    Von der UK TUG neu bearbeitet zur Veröffentlichung in
+    `Baskerville' (siehe Abschnitt 2.3.2), dvi-, ps- und pdf-Dateien
+    sind in CTAN: usergrps/uktug/faq/ zu finden (jedoch nicht immer
+    die neueste Version), außerdem gibt es eine HTML-Version, die nach
+    Begriffen durchsucht werden kann:
+    http://www.cogs.susx.ac.uk/cgi-bin/texfaq2html?introduction=yes
+  * Oft gestellte Fragen und deren Antworten (OGFUDA)
+    Von Michael Hoppe (Version 1.0 vom 1. Februar 1993), in der einige
+    der oft gestellten Fragen zu LaTeX 2.09 aufgegriffen und
+    beantwortet werden. Die OGFUDA stellt einen Vorläufer einer
+    deutschen FAQ in einer etwas ungewöhnlichen Form dar und ist
+    mittlerweile in ihren größten Teilen _veraltet_. Der Inhalt der
+    OGFUDA wird mittlerweile durch das Buch `Der LaTeX-Begleiter' von
+    Goossens, Mittelbach und Samarin und durch diese FAQ abgedeckt.
+    (CTAN: info/german/ogfuda/)
+  * LaTeX-FAQ der Newsgroup `fr.comp.text.tex' (in französisch)
+    Diese FAQ wird monatlich gepostet und ist ca. 150KB groß. Sie wird
+    (noch) nicht nach `*.answers' crossgepostet, man kann sie daher
+    nicht in den FAQ-Archiven finden. Über WWW und CTAN ist aber eine
+    Kopie verfügbar: http://www.loria.fr/tex/divers.html und
+    CTAN: help/LaTeX-FAQ-francaise/FAQ_LaTeX_francaise_V<x>.<y>
+  * Seminar-FAQ (englisch)
+    Oft gestellte Fragen zum LaTeX-Paket `seminar', welches eine
+    Vielzahl von Möglichkeiten zum Erstellen von Folien bietet.
+    http://tug.cs.umb.edu/applications/Seminar/
+  * PPCHTeX-FAQ (deutsch)
+    Oft gestellte Fragen zum PPCHTeX-Paket, welches chemischen
+    Formelsatz mit TeX ermöglicht.
+    http://www.ntg.nl/context/document/general/faqs/fh-ch-de.htm
+    
+1.2 Newsgroups und Diskussionslisten (*)
+
+1.2.1 Was ist `de.comp.text.tex' (bzw. dessen Vorgänger `de.comp.tex')?
+
+`de.comp.text.tex' ist die Newsgroup im deutschsprachigen Teil des
+Usenet (bitte nicht mit Internet verwechseln!) zur Diskussion über
+TeX. Sie dient für Diskussionen, für den Erfahrungsaustausch und für
+Fragen zum Satzsystem TeX. Die Newsgroup `de.comp.text.tex' wird in
+anderen Netzen (durch sogenannten Import) auch angeboten. Um
+entsprechende Rücksichtname (keine Binaries, kurze Postings u.ä.) wird
+gebeten. Die Newsgroup `de.comp.tex' war der Vorgänger von
+`de.comp.text.tex' und wurde von dieser Anfang Dezember 1996 abgelöst
+und Anfang Januar 1997 gelöscht.
+
+1.2.2 Was ist TeX-D-L?
+
+TeX-D-L ist die deutschsprachige E-Mail-Diskussionsliste, die zur
+Kommunikation zwischen Benutzern des Satzsystems TeX vor vielen Jahren
+eingerichtet wurde.
+
+Man kann sich auf dieser Diskussionsliste mit einer E-Mail an
+
+  `listserv@listserv.gmd.de'
+  
+eintragen. Diese Mail sollte die Zeile
+     subscribe tex-d-l <Vorname> <Nachname>
+
+enthalten, wobei man für <Vorname> <Nachname> den eigenen Namen
+mitteilen muß. Die Diskussionsliste kann man verlassen, indem man in
+einer Mail die Zeile `unsubscribe tex-d-l' an die Adresse
+`listserv@listserv.gmd.de' schickt. Eine kurze Befehlsübersicht erhält
+man mit der Zeile `help', eine längere Beschreibung mit `info'. Die
+Beiträge zur Diskussionsliste sind in Teilen unter
+CTAN: digests/tex-d-l/ archiviert.
+
+1.2.3 Was ist `#tex'?
+
+`#tex' ist ein Channel im `Internet Relay Chat' (IRC), in dem
+interaktiv über TeX, LaTeX und alles, was dazu gehört, diskutiert
+wird. Meist wird deutsch gesprochen, Diskussionen auf englisch sind
+jedoch kein Problem. Der Channel ist im allgemeinen rund um die Uhr
+besetzt, wenn auch nicht immer mit der gleichen Aktivität.
+
+1.2.4 Gibt es noch weitere interessante Newsgroups oder Diskussionslisten
+      zum Satzsystem TeX? (*)
+
+Ja, darunter sind solche, die sich nur mit dem Satzsystem TeX
+beschäftigen oder sich nur auf eine bestimmte Implementierung,
+Verteilung oder einen bestimmten Teil konzentrieren. Weiterhin gibt es
+natürlich Diskussionslisten und Newsgroups, die auf das engere und
+weitere Umfeld, wie z.B. Schriften, PostScript, Design, Desktop
+Publishing (DTP) etc., eingehen (in allen unten genannten Newsgroups
+und Diskussionslisten wird in englisch geschrieben).
+
+ Satzsystem TeX:
+ 
+Newsgroups:
+       
+       + `comp.text.tex'
+         
+Diskussionslisten:
+       
+       + CTAN-Ann - Ankündigungen zu Neuerwerbungen auf dem
+         Comprehensive TeX Archive Network CTAN
+         (`listserv@urz.uni-heidelberg.de')
+       + TeX-Euro - europäische TeX-Diskussionsliste
+         (`listserv@urz.uni-heidelberg.de')
+       + TeXhax - TeX-Diskussionsliste in Digest-Form
+         (`TeXhax-Request@tex.ac.uk' - subscribe texhax) Archiviert
+         u.a. unter http://www.tex.ac.uk/tex-archive/digests/hyper/
+       + LaTeX-L - über die Entwicklung von LaTeX3, jedoch _nicht_ für
+         Fragen zu LaTeX2e oder gar LaTeX 2.09!
+         (`listserv@urz.uni-heidelberg.de')
+       + Metafont - METAFONT, METAPOST and meta-fonts
+         (`listserv@ens.fr')
+       + NTS-L - über die Idee eines `New Typesetting System', einem
+         Nachfolger des TeX-Systems (`listserv@urz.uni-heidelberg.de')
+       + ntg-toekomsttex - Liste der niederländischen `TeX future
+         group', in der über Erweiterungen am TeX-System diskutiert
+         wird (`majordomo@let.uu.nl')
+       + pdftex - über die Entwicklung und Benutzung von PDFTeX
+         (`majordomo@tug.org')
+       + Omega - über Omega, ein weiterer TeX-Nachfolger
+         (`listserv@ens.fr')
+       + pstricks - über PSTricks, ein TeX-Makro-Paket, welches die
+         Nutzung vieler Möglichkeiten der PostScript-Sprache in einer
+         TeX-Syntax anbietet (`pstricks-request@mail.tug.org' oder
+         über http://www.tug.org/cgi-bin/lwgate/pstricks)
+       + mutex - Notensatz mit TeX (MuTeX, MusicTeX, MusiXTeX, ...)
+         (`majordomo@gmd.de')
+       + ntg-context - ConTeXt-Forum: Fragen, Ankündigungen, Fehler
+         (`majordomo@ntg.nl')
+       + ntg-ppchtex - Chemischer Formelsatz mit PPCHTeX
+         (`majordomo@ntg.nl')
+       + Ling-TeX - Linguistik und TeX (`Ling-TeX-request@ifi.uio.no')
+         siehe auch: http://www.ifi.uio.no/~dag/ling-tex.html
+         
+ TeX-Implementierungen und -Verteilungen:
+ 
+Diskussionslisten:
+       
+       + tetex-announce - teTeX Users: nur Ankündigungen, keine
+         Diskussion, besonders geeignet für diejenigen, die ohnehin
+         schon genug Mail bekommen, bzw. Fragen und Antworten lieber
+         in Newsgroups wie `de.comp.text.tex' diskutieren möchten.
+         (`majordomo@informatik.uni-hannover.de')
+       + tetex - Ankündigungen, Fragen und Antworten zu teTeX
+         (`majordomo@informatik.uni-hannover.de')
+       + tetex-pretest - Fragen und Antworten zur neuesten, noch nicht
+         offiziellen Version von teTeX
+         (`majordomo@informatik.uni-hannover.de')
+       + fptex - Ankündigungen, Fragen und Antworten zu fpTeX (Win32)
+         (`majordomo@tug.org')
+       + miktex - Ankündigungen, Fragen und Antworten zu MikTeX
+         (Win32) (`majordomo@dsts.dk')
+       + 4TeX - 4TeX/4allTeX: a TeX workbench for MS-DOS PC's
+         (`listserv@nic.surfnet.nl')
+       + emtex-user - Diskussionen über emTeX
+         (`Majordomo@Physik.TU-Berlin.de')
+       + oztex-info - OzTeX, a TeX System for Apple Macintosh
+         (`majordomo@maths.adelaide.edu.au')
+       + oztex-announce - OzTeX: nur Ankündigungen neuer Versionen
+         (`majordomo@maths.adelaide.edu.au')
+       + ntex - NTeX, a TeX System for Linux and other Unix Systems
+         (`ntex-request@machnix.mathematik.uni-stuttgart.de')
+       + tex-k - Support für web2c/kpathsea/xdvik/dvipsk/dviljk Users
+         (`tex-k-requests@cs.umb.edu')
+       + lyx-users - Support für LyX-Nutzer (LyX: WYSIWYG-ähnliche
+         Oberfläche mit LaTeX als Satzsystem;
+         `lyx-users-request@kde.org')
+       + lyx-announce - Ankündigungen zu Neuerungen bei LyX
+         (`majordomo@via.ecp.fr')
+       + lyx - Diskussion zur Weiterentwicklung von LyX
+         (`majordomo@via.ecp.fr')
+       + klyx - Support für KLyX-Nutzer (wie LyX, aber an KDE-Desktop
+         angepaßt; `klyx-request@kde.org')
+       + ntg-vtex - Diskussionen zum kommerziellen TeX-System `VTeX';
+         (`majordomo@ntg.nl')
+         
+ Umfeld:
+ 
+Newsgroups:
+       
+       + `comp.fonts'
+       + `comp.programming.literate'
+       + `comp.lang.postscript'
+       + `comp.text.sgml'
+         
+und vieles mehr.
+
+In die angegebenen Diskussionslisten trägt man sich mit einer Mail mit
+`subscribe <Listenname> <Vorname> <Nachname>' an die angegebene
+Adresse ein, falls dies ein `listserv@...' ist. Für Adressen der Art
+`majordomo@...' muß die Angabe des eigenen <Vornamen> und <Nachnamen>
+unterbleiben, in Ihrer Mail sollte also nur die Zeile `subscribe
+<Listenname>' stehen. Aus einer Liste kann man sich mit der Mail
+`unsubscribe <Listenname>' an die Adresse `listserv@...' bzw.
+`majordomo@...' austragen. Achtung: Diese Anweisungen nicht an die
+Liste selbst schreiben!
+
+1.2.5 Was sollte ich gelesen haben, bevor ich eine Frage in
+      `de.comp.text.tex' oder der Diskussionsliste TeX-D-L stelle?
+
+Zuerst: Die Kenntnis der `Netiquette' wird vorausgesetzt; sie ist in
+`de.newusers.infos', `de.newusers.questions' oder ersatzweise bei
+Ihrem Provider zu erhalten.
+
+Die Abschnitte `Bücherliste' und `frei verfügbare
+(La)TeX-Einführungen' (siehe Abschnitte 2.4.1 und 2.4.2) enthalten
+einige Empfehlungen für Bücher und kostenfrei erhältliche Einführungen
+und Übersichten, die sehr viele der häufig gestellten Fragen
+beantworten. Wenn Sie sich vorläufig keine Bücher zulegen wollen,
+sollten Sie dieses Angebot der kostenfrei erhältlichen Artikel nutzen!
+
+Jedes TeX-System enthält einen Satz Dokumentation, in dem meist nur
+sehr kurz ein Überblick über das Satzsystem TeX gegeben wird, bevor
+auf spezifische Besonderheiten dieses TeX-Systems eingegangen wird.
+Bevor Sie Fragen zu Problemen mit diesem speziellen System stellen,
+sollten Sie sicherstellen, ob diese nicht schon durch die
+mitgelieferte Dokumentation beantwortet werden. Für einige
+TeX-Systeme, wie beispielsweise emTeX, 4TeX/4allTeX (beide OS/2,
+MS-DOS, Windows), teTeX, NTeX, web2c/kpathsea (Unix/Linux u.a.) gibt
+es eigene Diskussionslisten. Haben Sie ein spezielles Problem mit
+einem dieser Systeme, sollten Sie Ihre Frage in der zugehörigen
+Diskussionsliste stellen.
+
+Bei Problemen mit LaTeX(2e) sollten Sie vorher auf alle Fälle den
+`User Guide' gelesen haben, der als Datei ``usrguide.tex'' jedem
+LaTeX2e-Paket beiliegen muß. Auch die anderen im LaTeX2e-Paket
+enthaltenen `Guides' enthalten wertvolle Informationen über das
+sogenannte NFSS zur Schriftauswahl und Einbindung neuer Schriften
+(`LaTeX2e font selection', Datei ``fntguide.tex''), die Erstellung und
+Änderung von Klassen und Paketen (`LaTeX2e for class and package
+writers', Datei ``clsguide.tex''), die Konfiguration (`Configuration
+options for LaTeX2e', Datei ``cfgguide.tex'') und erlaubten Änderungen
+und Anpassungen (`Modifying LaTeX2e', Datei ``modguide.tex''), weitere
+Pakete und Neuerungen (`LaTeX News', Dateien ``ltnews*.tex'').
+
+Für LaTeX(2e) finden Sie außerdem noch sehr viele Informationen und
+Hinweise auf Makro-Pakete im Buch `Der LaTeX-Begleiter' von Goossens,
+Mittelbach und Samarin (siehe Abschnitt 2.4.1) bzw. dem englischen
+Original `The LaTeX Companion'. Schlagen Sie bitte zuerst dort nach -
+Sie werden feststellen, daß sich dadurch sehr viele Fragen beantworten
+lassen. Neben dem Buch `The LaTeX Companion' gibt es auch `The LaTeX
+Graphics Companion', in dem Sie wertvolle Hinweise zu
+Graphikeinbindung, PostScript-Graphiken, Verwendung von Farbe, der
+Einbindung von PostScript-Schriften und Paketen wie XY-Pic oder
+PSTricks nachlesen können.
+
+Finden Sie in der verfügbaren Literatur keine Antwort, vergessen Sie
+nicht, in Ihrer Frage an die Newsgroup bzw. die Diskussionsliste auch
+Ihr Rechnersystem, Betriebssystem, Name der TeX-Implementierung bzw.
+-Verteilung, Version der verwendeten Programme, Makros u.ä. zu nennen.
+Halten Sie Ihre Frage kurz. Geben Sie ein kurzes, aber vollständiges
+Eingabebeispiel, das nur auf die notwendigsten Dateien zugreift.
+Entfernen Sie z.B. in einem LaTeX-Dokument prinzipiell _alle_ Pakete;
+belassen Sie dabei nur die Pakete, mit denen Ihr Problem auftritt;
+verwenden Sie möglichst nur Standard- oder weit verbreitete Pakete. So
+kann man Ihr Problem mit möglichst geringem Aufwand nachvollziehen,
+und damit erhöht sich die Wahrscheinlichkeit, daß Ihre Frage auch
+beantwortet wird!
+
+1.3 Mitwirkende an dieser FAQ (*)
+
+1.3.1 Dank an alle Mitwirkende (*)
+
+Aktiv mitgewirkt haben bisher:
+
+  Bernd Raichle, Thomas Hafner, Luzia Dietsche, Ulrik Vieth, Matthias
+  G. Berberich, Olaf Kummer, Michael Wolf, Martin Schröder, Markus
+  Kohm, Marion Neubauer, em, Petra Humann, Ulrich Kuckert, Martin
+  Mattel, Wilfried Hennings, Karl Eichwalder, Anselm Lingnau, Jörg
+  Knappen, Werner Icking, Heinz Kusznier, Alexander Bugl, Jürgen
+  Dollinger, Tilmann Böß, Sebastian Kirsch, Ralph Schleicher, Marcus
+  Otto, Ralf Gärtner, Rolf Herzog, Reinhard Zierke, Klaus Höppner,
+  Rainer Dorsch, Marcus Ohlhaut, Günter Partosch, Andreas Schlechte,
+  Heiko Nock, Tilman Raible, Hartmut Goebel, Werner Liebscher, Lutz
+  Pogrell, Hartmut Schirmer, Andreas Frick, Tobias Burnus, Walter
+  Schmidt, Christine Waigl, Helmut Geyer, Karl F. Banke, Heinrich
+  Goetzger, Peter Wyzlic, Rolf Niepraschk, Björn Lorenz, Ronald G.
+  Wichern, Thomas Behrens, Thomas Neumann, Stefan Ulrich, Christoph
+  Wutzke, Jörg Schulz, Klaus Dahlenberg, Axel Reichert, Karl Heinz
+  Marbaise, Karsten Tinnefeld, Schorsch Slickers, Martin Sander,
+  Thomas Pothmann, Hans Steffani, Werner Lemberg.
+  
+Herzlichen Dank für die bisher eingesandten Fragen und Korrekturen!
+Wir hoffen, daß wir niemanden vergessen haben. Dank auch an
+diejenigen, die uns etwas geschickt haben und die ihre Einsendung noch
+nicht in dieser FAQ wiederfinden. Wir bitten dafür um Verständis; wir
+haben leider nie die notwendige Zeit, sofort alle Einsendungen zu
+bearbeiten.
+
+1.3.2 >>>>>>>>>> Aufruf zur Mitarbeit <<<<<<<<<<
+
+Eine FAQ ist nie fertiggestellt, es gibt immer etwas zu tun:
+  * Korrekturlesen
+    Finden Sie falsche, fehlerhafte oder fehlende Querbezüge oder
+    Verweise auf ftp-Server, Literatur u.ä, korrigieren Sie
+    fehlerhafte oder unvollständige Antworten, verbessern Sie
+    Rechtschreib- und Ausdrucksfehler.
+  * Neuerungen/Updates
+    Überprüfen und ergänzen Sie die Listen, wie beispielsweise die
+    Übersicht der verfügbaren TeX-CD-ROM-Angebote, der
+    TeX-Implementierungen etc. Stimmen die Angaben, gibt es neuere
+    Versionen oder neue Angebote, sind Angebote veraltet bzw. vom
+    Markt genommen worden?
+  * Erweiterungen
+    Haben Sie eine neue Frage und die dazugehörige Antwort? Haben Sie
+    einen Vorschlag, wie man eine Antwort kürzer bzw. knapper
+    formulieren kann? Hinweise auf andere FAQs, Artikel, Übersichten
+    etc.
+    
+Bitte senden Sie uns _keine_ Fragen ohne Antworten! Wir bekommen
+relativ häufig Fragen zu verschiedenen Dingen zugeschickt, da einige
+Leser hoffen, daß wir diese beantworten können. Meist lautet unsere
+Antwort: ``Wende Dich an `de.comp.text.tex' oder eine der vielen
+anderen Newsgroups oder Diskussionslisten!''. Es ist auch keine
+Lösung, uns dann zu bitten, diese Frage weiterzuleiten - dies kann
+jeder ebensogut selbst tun.
+
+Anregungen, Ergänzungen, Korrekturen, Verbesserungsvorschläge, neue
+Fragen und Antworten per E-Mail bitte an
+
+  `detexfaq@dante.de'
+  
+Danke schon jetzt im voraus!
+
+  Bernd Raichle
+  Thomas Hafner
+  Rolf Niepraschk
+  
+
+--- DE-TeX-FAQ Ende Teil 1 ---

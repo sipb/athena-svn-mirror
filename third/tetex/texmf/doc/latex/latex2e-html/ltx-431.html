@@ -1,0 +1,47 @@
+<html>
+<head><title>Help On LaTeX \&lt;space&gt;</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\&lt;space&gt;</font></h1>
+LaTeX normally leaves a little extra space after sentences.  However, it
+uses a rather simple rule for determining whether a period ends a 
+sentence: it assumes that periods end sentences <em>unless</em> they
+follow an upper case letter. To let LaTeX know that a period does
+<em>not</em> end a sentence after, for example, an abbreviation, use:
+<p>
+ <tt>\&lt;space&gt;</tt>
+<p>
+For example,
+<pre>
+  <tt>Jones, et al.\ (1993) ...</tt>
+</pre>
+Such a space may also be needed after a text-producing command,
+such as one defined with <a href="ltx-18.html"><tt>\newcommand</tt></a>.
+As an example, consider
+<pre>
+  <tt>\newcommand{\water}{H$_2$O}
+  \water, \water\ everywhere, but not a drop ...</tt>
+</pre>
+The first <tt>\water</tt> command is terminated by the comma;
+note that LaTeX does not leave a space between the first <tt>\water</tt>
+and the comma -- as desired -- and the trailing space is treated as an 
+interword space.  However, the second <tt>\water</tt> command
+is terminated by the space, but LaTeX  would not leave an extra space after
+this, running "H<sub>2</sub>Owater" into one word, except for  the
+trailing <tt>\ </tt>. 
+<p>
+An alternate way to indicate the end of a command so that a trailing
+space is interpreted as an interword space is to use braces:
+<pre>
+  <tt>\water, \water{} everywhere, ...</tt>
+</pre>
+<hr>
+See <a href="ltx-432.html"><tt>\@.</tt></a> for the opposite case<br>
+See also <A href="ltx-99.html">Line and Page Breaking</A>,
+  <a href="ltx-143.html">Spaces and Boxes</a><br> 
+Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 26 Jun 1995.
+</address>
+</body>
+</html>

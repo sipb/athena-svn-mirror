@@ -1,0 +1,192 @@
+%D \module
+%D   [       file=supp-new,
+%D        version=1997.01.03,
+%D          title=\CONTEXT\ Support Macros,
+%D       subtitle=New Ones,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+\unprotect
+
+% \buildarray[test][aa,bb,cc,dd,ee,ff]
+% \setarrayelement{test}{1}{qq}
+% \arrayelement{test}{1}
+% \arraylength{test}
+% 
+% \def\buildarray[#1][#2]%
+%   {\scratchcounter=0  
+%    \def\docommando##1%
+%      {\advance\scratchcounter by 1   
+%       \setvalue{@@aa#1\the\scratchcounter}{##1}}%
+%    \processcommalist[#2]\docommando
+%    \setevalue{@@aa#1}{\the\scratchcounter}}%
+% 
+% \def\setarrayelement#1#2{\setvalue{@@aa#1#2}}
+% \def\arrayelement   #1#2{\getvalue{@@aa#1#2}}
+% \def\arraylength      #1{\getvalue{@@aa#1}}
+
+% \newsignal\junksignal
+% 
+% \def\setjunksignal%
+%   {\ifhmode
+%      \hskip\junksignal
+%      \let\removejunkspaces\doremovejunkspaces
+%    \else
+%      \let\removejunkspaces\relax
+%    \fi}
+% 
+% \def\doremovejunkspaces%
+%   {\doloop{\ifdim\lastskip=\junksignal\unskip\else\exitloop\fi}}
+
+% \def\doifnonzeropositiveelse#1#2#3%
+%   {\bgroup
+%    \setbox\scratchbox=\hbox{\scratchcounter=0#1}%
+%    \ifdim\wd\scratchbox=\!!zeropoint\egroup#2\else\egroup#3\fi}
+%
+% \def\dodoifnonzeropositiveelse#1#2\end#3#4%
+%   {\egroup
+%    \ifx#1\relax#3\else#4\fi}
+%
+% \def\doifnonzeropositiveelse#1%
+%   {\bgroup
+%    \afterassignment\dodoifnonzeropositiveelse\scratchcounter=0#1\relax\empty\end}
+
+\def\dodoifnonzeropositiveelse#1#2\end#3#4%
+  {\ifx#1\relax\ifcase\scratchcounter\egroup#4\else\egroup#3\fi\else\egroup#4\fi}
+
+\def\doifnonzeropositiveelse#1%
+  {\bgroup\afterassignment\dodoifnonzeropositiveelse\scratchcounter=0#1\relax\empty\end}
+
+\def\splitskip#1%
+  {\scratchskip=0pt plus 1pt minus 1pt
+   \advance\scratchskip by #1
+   \expandafter\SPLITSKIP\the\scratchskip}
+
+{\catcode`\.=\@@other
+ \catcode`\p=\@@other
+ \catcode`\l=\@@other
+ \catcode`\u=\@@other
+ \catcode`\s=\@@other
+ \catcode`\m=\@@other
+ \catcode`\i=\@@other
+ \catcode`\n=\@@other
+ \catcode`\t=\@@other
+ \gdef\SPLITSKIP#1pt plus #2pt minus #3pt%
+   {\DOSPLITSKIP#1 #2 #3 }}
+
+\def\DOSPLITSKIP#1 #2 #3
+  {\dimen0=#1pt\dimen2=#2pt\dimen4=#3pt
+   \advance\dimen2 by -1pt%
+   \advance\dimen4 by -1pt}
+
+% \def\minimaxskip#1#2%
+%   {\splitskip#2\relax
+%    \scratchdimen=#2\relax
+%    #2=\scratchdimen   
+%    \advance#2 by #1\relax}
+% 
+% \def\maximizeskip%
+%   {\minimaxskip{-\dimen4}}
+% 
+% \def\maximizeskip%
+%   {\minimaxskip{\dimen2}}
+% 
+% \def\maximizespacing%
+%   {\maximizeskip\blankoskipamount
+%    \maximizeskip\parskip
+%    \maximizeskip\tussenwit
+%    \maximizeskip\baselineskip
+%    \maximizeskip\bigskipamount
+%    \maximizeskip\medskipamount
+%    \maximizeskip\smallskipamount}
+
+\newcount\modcounter
+
+\def\DoMod #1by#2to#3%
+  {\modcounter=#1\relax
+   \divide\modcounter by #2\relax
+   \multiply\modcounter by #2\relax
+   #3=#1\relax
+   \advance#3 by -\modcounter}
+
+\def\DoDiv #1by#2to#3%
+  {#3=#1\relax
+   \divide#3 by #2\relax}
+
+\def\dounprotected#1\par%
+  {#1\protect}
+
+\def\unprotected%
+  {\unprotect\dounprotected}
+
+%D Standaard kan een spatie (zoals ~) uitrekken. Dit is in
+%D overzichten niet altijd de bedoeling, vandaar:
+
+\def\fixedspace%
+  {\hskip\fontdimen2\font\relax}
+
+%\def\ExpandSecondAfter#1#2#3%
+%  {\!!toksa={#2}%
+%   \edef\!!stringa{#3}%
+%   \edef\expanded%
+%     {\noexpand#1{\the\!!toksa}{\!!stringa}}%
+%   \expanded}
+%
+%\def\ExpandThirdAfter#1#2#3#4%
+%  {\!!toksa={#2}%
+%   \!!toksb={#3}%
+%   \edef\!!stringa{#4}%
+%   \edef\expanded%
+%     {\noexpand#1{\the\!!toksa}{\the\!!toksb}{\!!stringa}}%
+%   \expanded}
+
+%\def\indirect#1#2#3%
+%  {\@EA#1\@EA#2\@EA{\@EA#3\csname\s!do\string#2\endcsname}%
+%   \@EA#1\csname\s!do\string#2\endcsname}
+%
+%\def\doubleemptied#1#2#3%
+%  {\indirect#1#2\dodoublempty}
+%
+%\indirect\def\stelietsin\dodoubleempty[#1][#2]%
+%  {...}
+%
+%\doubleemptied\def\stelietsin[#1][#2]%
+%  {...}
+
+% in mult-set
+%
+%\def\defaultsetup{def}
+%
+%\def\selectdefaultsetup#1#2%
+%  {\writestatus{setup}{choose #1 setupfile}%
+%   \bgroup
+%   \endlinechar=-1
+%   \global\read16 to \usersetup
+%   \egroup
+%   \ifx\usersetup\empty
+%     \let\usersetup=\defaultsetup
+%   \fi
+%   \readfile{#2\usersetup}{}{}%
+%   \writestatus{setup}{loading #1 setupfile #2\usersetup}}
+
+\newcount\featuretest
+
+\def\testfeature#1#2%
+  {\def\dotestfeature%
+     {\advance\featuretest 1
+      \ifnum\featuretest<#1\relax#2\expandafter\dotestfeature\fi}%
+   \retestfeature}
+
+\def\retestfeature%
+  {\message{starting feature test}\wait
+   \featuretest=-1 \dotestfeature
+   \message{feature test done}\wait}
+
+\protect
+
+\endinput

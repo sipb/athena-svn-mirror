@@ -1,0 +1,262 @@
+%%%%%%%%%%%%%%%%%%%%% A example file (differs from previous versions)
+% mini-art.tex
+% This file contains a set of tests for the minitoc.sty version #27
+% style option file. You can alter most of parameters to test.
+% article (\section must be defined)
+\documentclass[12pt,a4paper]{article}
+\usepackage{minitoc}
+\setcounter{secnumdepth}{5}   % depth of numbering of sectionning commands
+\setcounter{tocdepth}{3}           % depth of table of contents
+\setlength{\stcindent}{24pt}       % indentation of secttocs, default
+\renewcommand{\stcfont}{\small\rm} % font for secttocs, default
+%\renewcommand{\stcSSfont}{\small\sf} % font for secttocs, subsections
+% you can make experiments with \stcSSSfont, \stcPfont and \stcSPfont
+% but it is ``fontomania''...
+\raggedbottom                   % or \flushbottom, at your choice
+%\parskip=12pt                  % a bug about \parskip has been fixed
+%%% TEST: uncomment the 3 next lines to test
+%%% resetting section number in each part
+%\makeatletter
+%\@addtoreset{section}{part}
+%\makeatother
+%%% END TEST
+\begin{document}
+\dosecttoc
+\dosectlof[c]                   % center title of sectlof's
+\doparttoc                      % test of parttoc/partlof stuff
+\dopartlof                      % added in version #15
+\faketableofcontents            % or \tableofcontents
+\fakelistoffigures              % to check compatibility
+\part{First Part}
+\parttoc
+\partlof[r]
+\twocolumn                      % the secttoc in twocolumn layout is ugly,
+                                % but works. Ideas to make it better?
+\section{AAAAA}                 % a section with a lot of sections
+\secttoc[r]                     % secttoc title on the right
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S2}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S3}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection*{S4}
+\addcontentsline{toc}{starsubsection}{*S4*}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S5}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S6}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S7}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S8}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S9}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S10}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S11}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S12}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S13}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S14}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S15}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S16}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S17}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S18}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S19}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S20}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S21}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S22}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S23}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S24}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S26}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S27}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S28}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S29}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{S30}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\onecolumn                              % back to one column
+\section{BBBBB}
+\secttoc
+\bigskip                                % put some skip here
+\sectlof                                % a sectlof
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{T1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t]        % tests compatibility with floating bodies
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,50)
+\end{picture}
+\caption{F1}             % (I have not tested tables, but it is similar)
+\end{figure}
+\clearpage
+\subsubsection[tt1]{TT1}    % tests optionnal arg. of a sectionning command
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\paragraph{TTT1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subparagraph{TTTT1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,50)
+\end{picture}
+\caption[f2]{F2}         % tests optionnal arg. of a caption
+\end{figure}
+\subsection{T2}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\section*{CCCCC}         % tests a pseudo-section. should have no secttoc
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{U1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsubsection{UU1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\paragraph{UUU1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subparagraph{UUUU1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{U2}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\part{Second Part}
+\parttoc
+\partlof[c]
+%                        % the following section should have no secttoc,
+\section{DDDDD}          % but if you uncomment \secttoc,
+%\secttoc
+                         % the secttoc appears
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{V1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsubsection{VV1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\paragraph{VVV1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subparagraph{VVVV1}
+bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t]        % tests compatibility with floating bodies
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,50)
+\end{picture}
+\caption{F3}             % (I have not tested tables, but it is similar)
+\end{figure}
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{V2}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\section{EEEEE}                 % this section should have a secttoc
+{%                              % left brace, see below
+\setcounter{secttocdepth}{3}    % depth of sect table of contents;
+                                % try with different values.
+\secttoc
+}                               % right brace
+% this pair of braces is used to keep local the change
+% on secttocdepth.
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{W1}                    % with the given depth
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsubsection{WW1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\paragraph{WWW1}
+bla bla bla bla bla bla bla bla bla bla bla
+\begin{figure}[t]        % tests compatibility with floating bodies
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,50)
+\end{picture}
+\caption{F4}             % (I have not tested tables, but it is similar)
+\end{figure}
+bla bla bla bla bla bla bla bla bla bla bla
+\subparagraph{WWWW1}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\subsection{W2}
+bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla
+\appendix
+\section{Comments}
+\secttoc
+\subsection{C1}
+\subsection{C2}
+\subsection{C3}
+\begin{figure}[t]        % tests compatibility with floating bodies
+\setlength{\unitlength}{1mm}
+\begin{picture}(100,50)
+\end{picture}
+\caption{F5}             % (I have not tested tables, but it is similar)
+\end{figure}
+\subsection{C4}
+\section{Evolution}
+\secttoc
+\subsection{D1}
+\subsection{D2}
+\subsection{D3}
+\subsection{D4}
+\end{document}

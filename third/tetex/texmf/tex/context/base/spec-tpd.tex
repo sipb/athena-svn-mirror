@@ -1,0 +1,661 @@
+%D \module
+%D   [       file=spec-tpd,
+%D        version=1996.01.25,
+%D          title=\CONTEXT\ Special Macros,
+%D       subtitle=\PDFTEX,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+% funny things: negative height by \pdfannot
+%               immediate versus deferred
+
+%D \macros
+%D   {jobsuffix}
+%D
+%D Being one of the first typographical systems able to support
+%D advances \PDF\ support, \TEX\ is also one of the first
+%D systems to produce high quality \PDF\ code directly. Thanks
+%D to Han The Thanh c.s. the \TEX\ community can leap forward
+%D once again.
+%D
+%D One important characteristic of \PDFTEX\ is that is can
+%D produce standard \DVI\ code as well as \PDF\ code. This
+%D enables us to use one format file to support both output
+%D formats.
+
+%D All modules in this group use specials to tell drivers what
+%D non||\TEX\ actions to take. Because from the \TEX\ point of
+%D view, there is no difference between \DVI\ and \PDF, we
+%D therefore only have to bend the \DVI\ driver support into
+%D \PDF\ support. Technically spoken, specials no longer serve
+%D a purpose, except from ending up as comment in the \PDF\
+%D file.
+%D
+%D Before we continue we need to make sure if indeed those
+%D \PDFTEX\ primitives are permitted. If no primitives are
+%D available, we just stop reading any further.
+
+\ifx\pdftexversion\undefined \endinput \else \unprotect \fi
+
+%D For the time being \type {\pdfimage} is redefined in 
+%D versions older than 12s. In the new syntax, the filename 
+%D is surrounded by braces. 
+
+\ifnum\pdftexversion<13
+  \let\normalpdfimage\pdfimage
+  \def\grabpdfimage#1#2{\normalpdfimage#1 #2\relax}
+  \def\pdfimage#1#{\grabpdfimage{#1}}
+\fi
+
+%D We default to 300 dots per inch image resolution. 
+
+\ifx\pdfimageresolution\undefined % < version 14
+  \newcount\pdfimageresolution
+\fi
+
+\pdfimageresolution=300
+
+%D Once we are sure that we're indeed supporting \PDFTEX, we
+%D force \PDF\ output at the highest compression. For debugging
+%D purposes one can set the compresslevel to~0. We also have to
+%D make sure no other specials are supported, else \PDFTEX\
+%D will keep on telling us that we're wrong. We also load the
+%D general \PDF\ macros that are shared between this driver and
+%D the \ACROBAT\ one. 
+
+\startspecials[tpd][reset,fdf] 
+
+%D This means that by saying
+%D
+%D \starttypen
+%D \usespecials[tpd]
+%D \stoptypen
+%D
+%D we get ourselves full \PDF\ output.
+
+%D For some internal testing we need to know the output 
+%D suffix. 
+
+\def\jobsuffix{pdf} 
+
+%D We don't use specials here, which means that we must flush
+%D settings before the page is shipped out. 
+
+\specialbasedsettingsfalse
+
+%D Some more internal settings. 
+
+\appendtoks \pdfoutput=0               \to \everyresetspecials
+
+\pdfoutput       =1 % we reset that one with \everyresetspecials
+\pdfcompresslevel=9 % apart from debugging, no reason for value 0
+
+% \pdfthreadhoffset=\maxdimen
+% \pdfthreadvoffset=\maxdimen
+
+%D Just in case we mimmick specials, we have to make sure no
+%D default specials end up in the process.
+
+\let\defaultspecial=\gobbleoneargument
+
+\appendtoks \let\defaultspecial\normalspecial \to \everyresetspecials
+
+\let\PDFcode=\pdfliteral
+
+%D \macros
+%D   {dosetuppaper}
+%D
+%D If we don't set the paper size, \PDFTEX\ will certainly do
+%D it in a way we don't want, therefore we need:
+
+\definespecial\dosetuppaper#1#2#3%
+  {\global\pdfpagewidth =#2\relax
+   \global\pdfpageheight=#3\relax} 
+
+%D \macros
+%D   {doinsertfile}
+%D
+%D Graphics are not part of \TEX\ and therefore not part of the
+%D \DVI\ standard. \PDF\ on the other hand has several graphic
+%D primitives. During the multi||step process \TEX\
+%D $\rightarrow$ \DVI\ $\rightarrow$ \POSTSCRIPT\ $\rightarrow$
+%D \PDF\ one can insert graphics using specials. In \PDFTEX\
+%D however there is only one step! This means that \PDFTEX\
+%D itself has to do the inclusion.
+%D
+%D At the moment \PDFTEX\ supports inclusion of bitmap \PNG\
+%D graphics as well as not too complicated \PDF\ code. Using
+%D this last option, we are able to include both \METAPOST\ and
+%D \PDF\ output produced by \GHOSTSCRIPT.
+%D
+%D We fall back on the generic \CONTEXT\ module supp-pdf to
+%D accomplish \PDF\ inclusion. The methods implemented there
+%D are hooked into both the figure placement mechanisms of
+%D \CONTEXT\ and the specials inclusion mechanism.
+
+\definespecial\doinsertfile#1#2#3#4#5#6#7#8#9%
+  {\bgroup
+   \dodoinsertfile{tpd}{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}{#9}%
+   \egroup}
+
+%D Currently we support \type{pdf} for \PDF\ files, \type{mps}
+%D for \METAPOST\ graphics, \type{png} and \type{jpg} for 
+%D bitmap graphics.
+
+\definefileinsertion{tpd}{mps}#1#2#3#4#5#6#7#8#9%
+  {\hbox
+     {\convertMPcolors{#1}%
+      \scratchdimen=#3pt \PointsToReal{.01\scratchdimen}\xscale
+      \scratchdimen=#4pt \PointsToReal{.01\scratchdimen}\yscale
+      \convertMPtoPDF{#1}\xscale\yscale}}
+
+%D The old, \TEX\ base \PDF\ insertion macro:
+%D 
+%D \starttypen
+%D \def\dotpdinsertpdf#1#2#3#4#5#6#7#8#9%
+%D   {\beforesplitstring#1\at.\to\filename
+%D    \scratchdimen=#3pt \PointsToReal{.01\scratchdimen}\xscale
+%D    \scratchdimen=#4pt \PointsToReal{.01\scratchdimen}\yscale
+%D    \convertPDFtoPDF{\filename.pdf}\xscale\yscale{#5sp}{#6sp}{#7sp}{#8sp}}
+%D \stoptypen
+%D 
+%D superseded by
+
+\definefileinsertion{tpd}{pdf}{\dopdfimage}
+\definefileinsertion{tpd}{png}{\dopdfimage}
+\definefileinsertion{tpd}{jpg}{\dopdfimage}
+% \definefileinsertion{tpd}{tif}{\dopdfimage} % unstable 
+
+%D The main file insertion macro is as follows. Because 
+%D \PDFTEX\ does not support arbitrary suffixes, we double 
+%D check on a user supplied filename, because \PDFTEX\ chokes 
+%D on unknown suffixes.
+
+\def\doifvalidpdfimagefileelse#1%
+  {\edef\filesuffix{#1}%
+   \doloop
+     {\@EA\aftersplitstring\filesuffix\at.\to\temp
+      \ifx\temp\empty
+        \exitloop
+      \else
+        \let\filesuffix\temp
+      \fi}%
+   \doiffileinsertionsupportedelse{\filesuffix}}
+
+\def\dopdfimage#1#2#3#4#5#6#7#8#9%
+  {\doiffileelse{#1}
+     {\bgroup
+      \doifvalidpdfimagefileelse{#1}
+        {\pdfimage 
+           \ifcase#7 \else \!!width  #7sp\fi
+           \ifcase#8 \else \!!height #8sp\fi
+           {#1}}
+        {\framed[\c!breedte=#7sp,\c!hoogte=#8sp]{#1}}% 
+      \egroup}
+     {\framed[\c!breedte=#7sp,\c!hoogte=#8sp]{#1}}}
+
+%D As we will see now, \PDFTEX\ not only directly supports 
+%D \type{mps}, \type{png}, \type{pdf}, \type{jpg} but also 
+%D \type{mov}. In \CONTEXT\ we support movie inserts in a way
+%D similar to figure inclusion. The next macro calls the 
+%D general \PDF\ one.
+
+\def\setcurrentmovie#1%
+  {\doglobal\increment\currentmovie}
+
+\definefileinsertion{tpd}{mov}{\doPDFinsertmov}
+
+%D \macros 
+%D   {measureTPDfiguresizetrue}
+%D
+%D Because \PDFTEX\ measures the figure itself, we can use 
+%D this feature to bypass the normal prescan. Watch the 
+%D double check on the suffix. Else \PDFTEX\ would choke. 
+
+\newif\ifmeasureTPDfiguresize \measureTPDfiguresizetrue 
+
+\def\dogetTPDfiguresize#1#2#3#4#5#6%
+  {\ifmeasureTPDfiguresize
+      #3=\!!zeropoint
+      #4=\!!zeropoint
+      \doifvalidpdfimagefileelse{#2}
+        {\global\setbox\foundexternalfigure=\vbox{\pdfimage{#2}}%
+         #5=\wd\foundexternalfigure 
+         #6=\ht\foundexternalfigure}
+        {#5=\!!zeropoint
+         #6=\!!zeropoint}%
+   \else
+     #1{#2}{#3}{#4}{#5}{#6}% \normaldogetfiguresize...
+   \fi}
+
+\let\normaldogetfiguresizepdf=\dogetfiguresizepdf
+\let\normaldogetfiguresizepng=\dogetfiguresizepng
+\let\normaldogetfiguresizetif=\dogetfiguresizetif
+\let\normaldogetfiguresizejpg=\dogetfiguresizejpg
+
+\def\dogetfiguresizepdf{\dogetTPDfiguresize\normaldogetfiguresizepdf}
+\def\dogetfiguresizepng{\dogetTPDfiguresize\normaldogetfiguresizepng}
+\def\dogetfiguresizetif{\dogetTPDfiguresize\normaldogetfiguresizetif}
+\def\dogetfiguresizejpg{\dogetTPDfiguresize\normaldogetfiguresizejpg}
+
+%D \macros
+%D  {doovalbox}
+%D
+%D Drawing frames with round corners is inherited from the 
+%D main module. 
+
+\definespecial\doovalbox%
+  {\doPDFovalbox}
+
+%D \macros
+%D   {dostartgraymode,dostopgraymode,
+%D    dostartrgbcolormode,dostartcmykcolormode,dostartgraycolormode,
+%D    dostopcolormode,
+%D    dostartrotation,dostoprotation,
+%D    dostartscaling,dostopscaling,        
+%D    dostartmirroring,dostopmirroring,      
+%D    dostartnegative,dostopnegative}       
+%D
+%D These are implemented in the main \PDF\ module. 
+
+\definespecial\dostartgraymode      {\doPDFstartgraymode}
+\definespecial\dostopgraymode       {\doPDFstopgraymode}
+\definespecial\dostartrgbcolormode  {\doPDFstartrgbcolormode}
+\definespecial\dostartcmykcolormode {\doPDFstartcmykcolormode}
+\definespecial\dostartgraycolormode {\doPDFstartgraycolormode}
+\definespecial\dostopcolormode      {\doPDFstopcolormode}
+\definespecial\dostartrotation      {\doPDFstartrotation}      
+\definespecial\dostoprotation       {\doPDFstoprotation}       
+\definespecial\dostartscaling       {\doPDFstartscaling}       
+\definespecial\dostopscaling        {\doPDFstopscaling}        
+\definespecial\dostartmirroring     {\doPDFstartmirroring}     
+\definespecial\dostopmirroring      {\doPDFstopmirroring}      
+\definespecial\dostartnegative      {\doPDFstartnegative}      
+\definespecial\dostopnegative       {\doPDFstopnegative}       
+
+%D \macros
+%D   {dosetupinteraction,
+%D    dosetupopenaction,dosetupcloseaction}
+%D
+%D Nothing special is needed to enable \PDF\ commands and
+%D interaction. We stick with a message.
+
+\definespecial\dosetupinteraction%
+  {\showmessage{\m!interactions}{21}{pdftex}}
+
+\definespecial\dosetupopenaction {\doPDFsetupopenaction}
+\definespecial\dosetupcloseaction{\doPDFsetupcloseaction}
+
+%D \macros
+%D   {doresetgotowhereever,
+%D    dostartthisisrealpage,dostartthisislocation,
+%D    dostartgotorealpage,dostartgotolocation,dostartgotoJS}
+%D
+%D The interactions macros are the core of this module. We
+%D support both page destinations and named ones. We don't
+%D need the \type{\stop}||alternatives. We also don't need
+%D to set the special that sets the real page number.
+
+\definespecial\doresetgotowhereever {\doPDFresetgotowhereever}
+\definespecial\dostartthisislocation{\doPDFstartthisislocation}
+
+%D When going to a location, we obey the time and space saving
+%D boolean \type{\ifusepagedestination}. Named destinations are
+%D stripped and made robust. This all happens in the macros
+%D called for.
+
+\definespecial\dostartgotolocation{\doPDFstartgotolocation}
+\definespecial\dostartgotorealpage{\doPDFstartgotorealpage}
+\definespecial\dostartgotoJS      {\doPDFstartgotoJS}
+
+%D \macros
+%D   {doflushJSpreamble}
+%D
+%D It does not make sense to duplicate common \JAVASCRIPT\
+%D functions, and therefore they can be predefined and must be
+%D output separately. Currently this special is not shared
+%D with the \ACROBAT\ one, simply because \DISTILLER\ does not
+%D yet support something \type{\pdfnames}.
+
+% \oneJSpreamblefalse  % buggy in acrobat 
+
+\definespecial\doflushJSpreamble#1% 
+  {\bgroup
+   \let\compositeJScode=\empty
+   \def\docommando##1%
+     {\edef\sanitizedJScode{\getJSpreamble{##1}}%
+      \@EA\doPSsanitizeJScode\sanitizedJScode\to\sanitizedJScode
+      \pdfobj {<< /S /JavaScript /JS (\sanitizedJScode) >>}%
+      \edef\compositeJScode%
+        {\compositeJScode\space (##1) \the\pdflastobj\space 0 R}}%
+   \processcommalist[#1]\docommando
+   \pdfobj{<< /Names [ \compositeJScode ] >>}%
+   \pdfnames{/JavaScript \the\pdflastobj\space 0 R}%
+   \egroup}
+
+%D \macros
+%D   {dostarthide,dostophide}
+%D
+%D Hiding parts of the document for printing is not yet
+%D supported by \PDF\ and therefore \PDFTEX.
+
+\definespecial\dostarthide{}
+\definespecial\dostophide {}
+
+%D \macros
+%D   {dosetupscreen}
+%D
+%D Setting of the screen boundingbox involves some
+%D calculations. Here we also take care of (non) full screen
+%D startup. The dimensions are rounded. Because \PDFTEX\ and
+%D \ACROBAT\ handle setting the page dimensions in a
+%D different way, we do not share this special.
+
+\definespecial\dosetupscreen{\doPDFsetupscreen\pdfpageheight}
+
+%D \macros
+%D   {dostartexecutecommand}
+%D
+%D \PDF\ viewers enable us to navigate using menus and shortcut
+%D keys. These navigational tools can also be accessed by using
+%D annotations. The next special takes care of inserting them.
+
+\definespecial\dostartexecutecommand{\doPDFstartexecutecommand}
+
+%D \macros
+%D   {dosetupidentity}
+%D
+%D Documents can be tagged with an application accessible title
+%D and subtitle, the authorname, a date, the creator, keywords
+%D etc. For the moment \PDFTEX\ only supports the first three
+%D of these.
+
+\definespecial\dosetupidentity#1#2#3#4#5%
+  {\bgroup
+   \enablePDFdocencoding
+   \pdfinfo
+     {/Title (#1)
+      /Subject (#2)
+      /Author (#3)
+      /Creator (#4)
+      /Producer (pdfTeX)}%
+   \egroup}
+
+%D \macros
+%D   {dostartrunprogam}
+%D
+%D We can run a program form within a document, although this
+%D feature is rather weak, due to path problems and buggy
+%D argument passing.
+
+\definespecial\dostartrunprogram{\doPDFstartrunprogram}
+
+%D \macros
+%D   {dostartgotoprofile, dostopgotoprofile,
+%D    dobeginofprofile, doendofprofile}
+%D
+%D \CONTEXT\ user profiles and version control fall back on
+%D \PDF\ article threads. Unfortunately one cannot influence
+%D the view yet in an (for me) acceptable way.
+
+\definespecial\dostartgotoprofile{\doPDFstartgotoprofile}
+
+%D Some day, I'll reimplement threading in a useful way.
+%D Currently the viewers handle threads rather diffuse.
+
+\definespecial\dobeginofprofile#1#2#3#4%
+  {\setPDFdestination{#1}%
+   \doifsomething{\PDFdestination}
+     {\pdfthread name {\PDFdestination}}}
+
+\definespecial\doendofprofile%
+  {\pdfendthread}
+
+%D \macros
+%D  {doinsertbookmark}
+%D
+%D In \PDF\ bookmarks are the building blocks of a viewer
+%D provided sort of table of contents. \TEX\ has to provide
+%D the entry as well as the number of child entries. Strings
+%D need to be sanatized as good as possible to suit the default
+%D encoding. In \CONTEXT\ users can overrule this string by
+%D supplying an alternative one. Look at the macro called for
+%D to see how funny these bookmarks are defined.
+
+\definespecial\doinsertbookmark{\doPDFinsertbookmark}
+
+%D \macros
+%D  {dostartobject,dostopobject,doinsertobject}
+%D
+%D Due to \PDF's object oriented character, we can include and
+%D reuse objects. These can be compared with \TEX's boxes. The
+%D \TEX\ counterpart is defined in the module \type{spec-dvi}.
+%D We don't use the dimensions here.
+
+% Forms can interfere with page dimension settings. Therefore
+% calling macros can best postpone flushing.
+
+\definespecial\dostartobject#1#2#3#4#5%
+  {\bgroup
+   \setbox\nextbox=\vbox\bgroup
+     \def\dodostopobject%
+       {\egroup
+        %\immediate 
+        \pdfform\nextbox
+        \dosetobjectreference{#1}{#2}{\the\pdflastform}}}%
+
+\definespecial\dostopobject%
+  {\dodostopobject
+   \egroup}
+
+\definespecial\doinsertobject#1#2%
+  {\bgroup
+   \dogetobjectreference{#1}{#2}\PDFobjectreference
+   \pdfrefform\PDFobjectreference
+   \egroup}
+
+%D \macros
+%D   {dosetpagetransition}
+%D
+%D Page transitions only make sence in presentations. They are
+%D passed as raw \PDF\ code to the page object. Take a look
+%D at the implementation to get an impression of the rubish
+%D passed on.
+
+\definespecial\dosetpagetransition{\doPDFsetpagetransition}
+
+%D The expansion is needed because else the \type{\pdfpageattr}
+%D token list flushes an unexpanded \type{\csname}. The
+%D \type{\global} is needed because the assignment can take
+%D place deeply buried (for instance in the \type{\shipout}
+%D box.
+
+%D \macros 
+%D   {doinsertcomment}
+%D
+%D Text annotation, or comments, are provided too:
+
+\definespecial\doinsertcomment{\doPDFinsertcomment}
+
+%D \macros
+%D   {dopresetlinefield,dopresettextfield,
+%D    dopresetchoicefield,dopresetpopupfield,dopresetcombofield,
+%D    dopresetpushfield,dopresetcheckfield,
+%D    dopresetradiofield,dopresetradiorecord}
+%D
+%D \PDF\ offers extensive field support. The next bunch of
+%D definitions map the specials.
+
+\definespecial\dopresetlinefield  {\doFDFpresetlinefield}
+\definespecial\dopresettextfield  {\doFDFpresettextfield}
+\definespecial\dopresetchoicefield{\doFDFpresetchoicefield}
+\definespecial\dopresetpopupfield {\doFDFpresetpopupfield}
+\definespecial\dopresetcombofield {\doFDFpresetcombofield}
+\definespecial\dopresetpushfield  {\doFDFpresetpushfield}
+\definespecial\dopresetcheckfield {\doFDFpresetcheckfield}
+\definespecial\dopresetradiofield {\doFDFpresetradiofield}
+\definespecial\dopresetradiorecord{\doFDFpresetradiorecord}
+
+%D \macros
+%D   {dodefinefieldset,dogetfieldset,doiffieldset}
+%D 
+%D Field sets, needed for reset and submit handling, are 
+%D taken care of by:
+
+\definespecial\dodefinefieldset{\doFDFdefinefieldset}
+\definespecial\dogetfieldset   {\doFDFgetfieldset}
+\definespecial\doiffieldset    {\doFDFiffieldset}
+
+%D \macros 
+%D   {doPDFdestination}
+%D
+%D Finally we implement some low level macros to deal with
+%D flushing \PDF\ code. First we handle the named destinations.
+
+\def\doPDFdestination name #1%
+  {\pdfdest name {#1}\PDFpageviewkey}
+
+%D \macros 
+%D   {doPDFaction,doPDFannotation,doPDFtextannotation,
+%D    ifsharePDFactions} 
+%D 
+%D Next we handle annotations. All link annotations are
+%D implemented using the action dictionary. This enables us to
+%D use multiple actions. The second macro is for instance 
+%D used for movie inclusion. 
+
+\newif\ifsharePDFactions \sharePDFactionstrue
+
+% \def\doPDFaction width #1 height #2 action #3%
+%   {\ifnum\similarreference=1
+%      \ifsharePDFactions
+%        \pdfobj{<<#3>>}\xdef\ lastPDFaction{\the\pdflastobj\space0 R}%
+%      \else
+%        \xdef\lastPDFaction{<<#3>>}%
+%      \fi
+%    \fi
+%    \pdfannotlink
+%      width #1sp height #2sp depth 0sp
+%      user {/Subtype /Link 
+%            /Border [0 0 0] 
+%            /A \ifcase\similarreference<<#3>>\else\lastPDFaction\fi}%
+%    \pdfendlink}
+
+\def\doPDFaction width #1 height #2 action #3%
+  {\ifcase\similarreference\relax
+     \xdef\lastPDFaction{<<#3>>}%
+   \or
+     \ifsharePDFactions
+       \pdfobj{<<#3>>}\xdef\lastPDFaction{\the\pdflastobj\space0 R}%
+     \else
+       \xdef\lastPDFaction{<<#3>>}%
+     \fi
+   \fi
+   \ifcollectreferenceactions \else
+     \pdfannotlink
+       width #1sp height #2sp depth 0sp
+       user {/Subtype /Link 
+             /Border [0 0 0] 
+             /A \lastPDFaction}%
+     \pdfendlink
+   \fi}
+
+\def\doPDFannotation width #1 height #2 data #3%
+  {\pdfannot width #1sp height -#2sp depth 0sp {#3}}
+
+\def\doPDFtextannotation width #1 height #2 data #3%
+  {\pdfannot width #1sp height #2sp depth 0sp {#3}}
+
+%D \macros 
+%D   {doPDFannotationobject} 
+%D
+%D For field support we need annotation objects. Although in
+%D many cases we can do without indirect references (and use
+%D the last annotation object number directly), we take the 
+%D save route. 
+
+\def\doPDFannotationobject class #1 name #2 width #3 height #4 data #5%
+  {\pdfannot width #3sp height -#4sp depth 0sp {#5}%
+   \dosetobjectreference{#1}{#2}{\the\pdflastannot}}
+
+%D \macros 
+%D   {doPDFaddtocatalog,doPDFpageattribute,doPDFpagesattribute}
+%D
+%D Next some simple ones. Watch the global directive and the 
+%D expansion in the page attribute macro. 
+
+\def\doPDFaddtocatalog%
+  {\pdfcatalog}
+
+\def\doPDFpageattribute#1%
+  {\expanded{\global\pdfpageattr{\the\pdfpageattr#1}}}
+
+\def\doPDFpagesattribute#1%
+  {\expanded{\global\pdfpagesattr{\the\pdfpagesattr#1}}}
+
+\def\doPDFresetattributes%
+  {\global\pdfpageattr{}%
+   \global\pdfpagesattr{}}
+
+\appendtoks\doPDFresetattributes\to\everyaftershipout
+
+%D \macros 
+%D   {doPDFbookmark} 
+%D
+%D Well, isn't the next one ugly? Thanks to the \PDF\ 
+%D standard. 
+
+% obsolete cq. buggy in pdfTeX
+%
+% \def\doPDFbookmark level #1 n #2 text #3 page #4 open #5%
+%   {\pdfoutline
+%      goto page #4\space
+%      \ifcase#2 \else count \ifcase#5-\fi#2 \fi
+%      {#3}}
+
+\def\doPDFbookmark level #1 n #2 text #3 page #4 open #5%
+  {\pdfoutline
+     user {<</S /GoTo /D [#4\PDFpageviewwrd]>>}%
+     \ifcase#2 \else count \ifcase#5-\fi#2 \fi
+     {#3}}
+
+%D \macros 
+%D   {doPDFdictionaryobject,doPDFarrayobject}
+%D
+%D Where \PDFTEX\ has only one object primitive, optionally a
+%D stream one, \ACROBAT\ has several operators. 
+
+\def\doPDFdictionaryobject class #1 name #2 data #3%
+  {\flushatshipout
+     {\pdfobj{<< #3 >>}\dosetobjectreference{#1}{#2}{\the\pdflastobj}}}
+
+\def\doPDFarrayobject class #1 name #2 data #3%
+  {\flushatshipout
+     {\pdfobj{[ #3 ]}\dosetobjectreference{#1}{#2}{\the\pdflastobj}}}
+
+%D \macros 
+%D   {defaultobjectreference,doPDFgetobjectreference}
+%D
+%D Because in \PDFTEX\ we have to construct the object
+%D references \type{N 0 R}, we can default to the non existing 
+%D zero object number. 
+
+\def\defaultobjectreference#1#2%
+  {0}
+
+\def\doPDFgetobjectreference#1#2#3%
+  {\dogetobjectreference{#1}{#2}#3%
+   \edef#3{\ifx#3\empty null\else#3\space0 R\fi}}
+
+%D Now we can finish this module. 
+
+\stopspecials
+
+\protect
+
+\endinput

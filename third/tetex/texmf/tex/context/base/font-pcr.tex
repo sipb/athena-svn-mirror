@@ -1,0 +1,32 @@
+%D \module
+%D   [       file=font-pcr,
+%D        version=1995.1.1,
+%D          title=\CONTEXT\ Font Macros,
+%D       subtitle=Adobe Courier,
+%D         author=Hans Hagen,
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C details. 
+
+%D This module defines the Standard Adobe Courier fonts.
+
+\definefontsynonym [Mono]            [Courier]
+\definefontsynonym [MonoBold]        [Courier]
+\definefontsynonym [MonoItalic]      [Courier-Oblique]
+\definefontsynonym [MonoSlanted]     [Courier-Oblique]
+\definefontsynonym [MonoBoldItalic]  [Courier]
+\definefontsynonym [MonoBoldSlanted] [Courier]
+\definefontsynonym [MonoCaps]        [Courier]
+
+\definebodyfont [14.4pt,12pt,11pt,10pt,9pt,8pt,7pt,6pt,5pt] [tt] [default]
+
+%D The Courier font does not contain \TEX's visual space. The
+%D next definition offers an alternative at bodyfont size.
+
+\def\controlspace%
+  {\hbox{\font\next=cmtt10 at \bodyfontsize\next\char32}}
+
+\endinput

@@ -1,0 +1,73 @@
+%%
+%% This is file `t1lcmss.fd',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slifonts.fdd  (with options: `lcmss,fd,ec')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% 
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
+\ProvidesFile{t1lcmss.fd}
+        [1998/06/12 v2.2e Standard LaTeX slide font definitions]
+  \DeclareFontFamily{T1}{lcmss}{}
+  \DeclareFontShape{T1}{lcmss}{m}{n}{%
+  <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  eclq8%
+       }{}
+  \DeclareFontShape{T1}{lcmss}{m}{In}{%
+ <7><8><10><12><13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ieclq8%
+       }{}
+  \DeclareFontShape{T1}{lcmss}{m}{sl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ecli8%
+      }{}
+ \DeclareFontShape{T1}{lcmss}{m}{Isl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  iecli8%
+      }{}
+  \DeclareFontShape{T1}{lcmss}{m}{it}{%
+      <->sub*lcmss/m/sl}{}
+  \DeclareFontShape{T1}{lcmss}{m}{Iit}{%
+      <->sub*lcmss/m/Isl}{}
+  \DeclareFontShape{T1}{lcmss}{bx}{n}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  eclb8%
+      }{}
+  \DeclareFontShape{T1}{lcmss}{bx}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ieclb8%
+      }{}
+\DeclareFontShape{T1}{lcmss}{bx}{sl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+   eclo8%
+      }{}
+\DeclareFontShape{T1}{lcmss}{bx}{Isl}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>%
+  ieclo8%
+      }{}
+\DeclareFontShape{T1}{lcmss}{bx}{it}{%
+      <->sub*lcmss/bx/sl}{}
+\DeclareFontShape{T1}{lcmss}{bx}{Iit}{%
+      <->sub*lcmss/bx/Isl}{}
+\endinput
+%%
+%% End of file `t1lcmss.fd'.

@@ -1,0 +1,159 @@
+                  The Greek fonts of the cbgreek bundle
+
+
+Copyright  1999 Claudio Beccari
+
+The programs contained in this bundle can be redistributed 
+and/or modified under the terms of the LaTeX Project Public 
+License Distributed from CTAN archives in directory 
+macros/latex/base/lppl.txt; 
+either version 1 of the License, or any later version.
+
+
+The cbgreek bundle comprises the METAFONT files necessary to create the tfm (TeX font metrics) and the pk (raster) files in order to use such fonts for the composition of Greek text.
+
+This collection of fonts forms a complete set of families, series and shapes, at least in the sense as the EC fonts by J. Knappen do; even wider, because the cbgreek bundle includes also the outline family that is not available with the EC fonts.
+
+The names of the fonts are formed (similarly to the EC fonts) with a string comprising four letters and four digits:
+
+
+lllldddd.mf             lllldddd.tfm      lllldddd.pk
+
+but, differently from the EC fonts, the four letters have special meanings:
+
+1) the first letter is always "g" to remind the word Greek
+2) the second letter identifies the family:
+   r: regular
+   s: sans serif
+   t: typewriter type
+   l: font for slides
+   o: outline
+3) the third letter identifies the series:
+   m: medium
+   x: bold extended
+   t: monospaced
+   i: invisible (proportional) font for slides
+   j: invisible (monospaced) font for slides
+   w: invisible (white) bold extended font for slides
+4) the fourth letter identifies the shape:
+   n: normal
+   o: oblique (or slanted)
+   i: italic (or cursive)
+   u: upright italic
+   c: caps and small caps
+
+Not every family has all shapes and series, as, for example, the monospaced family lacks the bold extended series, and the slides font family lacks the "serifed" normal series; in total there are 66 (predefined) combinations.
+
+The digits represent the design size multiplied by 100, rounded to four digits and left padded with zeros; a design size of 5pt corresponds to 0500; a design size of 19.907pt corresponds to 1990 or 1991 depending on what you decide (I prefer 1991).
+
+The standard sizes for normal text typesetting are:
+
+5pt 6pt 7pt 8pt 9pt 10pt 10.95pt 12pt 14.4pt 17.28pt 20.74pt 24.88pt 29.86pt 35.83pt
+
+At least these are the sizes declared in the T1????.fd files.
+
+For what concerns the slide fonts, the standard sizes as defined in the corresponding fd files are:
+
+13.82pt 16.59pt 19.907pt 23.89pt 28.66pt 34.4pt 41.28pt
+
+although with the EC fonts the "normal" default font is specified for several other smaller sizes not used by the slides.cls and slides.def files. The standard size is 19.907 pt, and this is where I prefer to specify 1991 as the digit sequence of the corresponding font name. The New Font Selection Scheme NFSS used by LaTeX won't complain and will chose the four digit font closest to the one it requires; the NFSS issues a warning message only when the discrepancy is significant.
+
+As anybody can verify in the /knappen/ec branch of the TeX directory tree, the number of EC fonts specified by the four letter-four digit scheme is tremendous, because METAFONT requires the full name in order to generate every font.
+
+The cbgreek bundle does not contain all such font driver files for every usable font for two reasons:
+1) Apostolos Syropoulos already produced them in the sense that he produced a LaTeX script that generates all the necessary driver files; this LaTeX script is available in the same location of the CTAN archive.
+2) The users of MS-DOS, Windows 3.x, Windows 9x with a FAT16 file allocation table may get in trouble with disk occupation if they had all those small font driver files (more or less 600 files).
+
+I managed to have such driver files reduced to only one statement, that is all those font driver files contain just the line
+
+input cbgreek
+
+You can add comments before and/or after that only line, but that is the only line that METAFONT and the font driver file require in order to generate both the tfm and the pk files. Therefore if you are one of those unfortunate FAT16 users, you might as well generate yourself just those driver files you really need.
+
+As an example suppose you want to generate the regular medium normal 10 point Greek font: you just prepare one file containing only the above magic line and you save it with the name 
+
+grmn1000.mf
+
+Afterwards you run (directly or indirectly) METAFONT and your tfm and pk file get generated with the proper extensions and possibly are moved to the proper directories/folders.
+
+If you use one of those TeX systems that generates the necessary tfm and pk files on the fly, you only need to prepare the mf file as described above; if you have available the makeTeXtfm (or maketfm) and the makeTeXpk (or makepk) applications/executables, once you have created the above simple file grmn1000.mf, you might create the tfm and pk files directly by issuing such commands as
+
+makeTeXtfm grmn1000      or           maketfm grmn1000
+
+and 
+
+makeTeXpk grmn1000       or           makepk grmn1000
+
+and if your system is well configured you get the desired files in the correct directories/folders without any more work.
+
+
+The cbgreek fonts have already been used to typeset a number of books in Greece and the newsletter "Eutupon", which is the bulletin of the Ellenic Association of the Friends of TeX. The BABEL version 3.7 should have these fonts as the default ones. Nevertheless no guarantee of any kind can be given concerning the fitness and merchantability of these fonts for any specific task; you use them as they are and you are responsible of the results you get. At the same time criticism is welcomed so that new versions may satisfy more users.
+
+As long as I can, I try to maintain these fonts; address your criticism and your suggestions to 
+
+beccari@polito.it
+
+and I see what I can do in order to satisfy you the largest part of the Greek typesetting community.
+
+
+     ===================================================================
+
+Acknowledgments
+
+I have to thank many people and I can't list all of them here, but some are so important that I have to specify:
+
+Silvio Levy produced the first Greek font files I started with; if I had to start from scratch my fonts wouldn't even exist.
+
+Yannis Haralambous wrote other METAFONT files after those of Levy; I got suggestions also from Yannis files. He gave me also very fine advice and suggestions, for which I thank him in a special way.
+
+Jorge Knappen produced the EC fonts from which I got the whole idea of extending that approach to the Greek fonts; for compatibility reasons, therefore, I extracted his METAFONT interpolation routines from his files and put them in the file cbspline.mf; the merit of generating fonts of any size between 5pt and 99.99pt comes directly from Jorge.
+
+Apostolos Syropoulos, the president of the Ellenic Association of the Friends of TeX assisted me with patience and countless suggestions, criticism and time spent in testing the various versions of the fonts. He also was the first one who dared using my fonts, and, he told me, he started with the slides for a speech he gave a couple of years ago, when no other Greek slide fonts were available. He also wrote the experimental versions of the BABEL extensions for the Greek language and defined the font definition files that go with version 3.7 of BABEL.
+
+Dimitri Filippou tested my fonts and sent me a conspicuous number of suggestions and criticism for which I thank him very much.
+
+The many unknown Ellenic Friends of TeX who, with the intermediation of Apostolos, let me know the bugs of the METAFONT code I wrote, so that I can correct it and possibly eliminate such bugs.
+
+ ===========================================================================
+
+File list:
+
+1) METAFONT CODE USED BY THE ALL THE FONT DRIVER FILES
+
+cbaccent.mf
+cbbase.mf
+cbdigits.mf
+cbgreek.mf
+cblig.mf
+cbligit.mf
+cbligsc.mf
+cbligtt.mf
+cblower.mf
+cbpunct.mf
+cbspline.mf
+cbupper.mf
+
+2) METAFONT CODE USED BY SPECIFIC BASE FONT DRIVER FILES
+
+glic.mf 	glii.mf 	glin.mf 	glio.mf 	gliu.mf 
+gljc.mf 	 		gljn.mf 	gljo.mf 	 
+glmc.mf 	glmi.mf 	glmn.mf 	glmo.mf 	glmu.mf 
+gltc.mf 	 		gltn.mf 	glto.mf 	
+glic.mf 	glii.mf 	glin.mf 	glio.mf 	gliu.mf 
+glwc.mf 	glwi.mf 	glwn.mf 	glwo.mf 	glwu.mf 
+glxc.mf 	glxi.mf 	glxn.mf 	glxo.mf 	glxu.mf
+gomc.mf 	gomi.mf 	gomn.mf 	gomo.mf 	gomu.mf 
+goxc.mf 	goxi.mf 	goxn.mf 	goxo.mf 	goxu.mf 
+grmc.mf 	grmi.mf 	grmn.mf 	grmo.mf 	grmu.mf 
+grxc.mf 	grxi.mf 	grxn.mf 	grxo.mf 	grxu.mf 
+gsmc.mf 	gsmi.mf 	gsmn.mf 	gsmo.mf 	gsmu.mf 
+gsxc.mf 	gsxi.mf 	gsxn.mf 	gsxo.mf 	gsxu.mf 
+gttc.mf 	gtti.mf 	gttn.mf 	gtto.mf 	gttu.mf 
+
+
+ 
+ 
+
+
+
+

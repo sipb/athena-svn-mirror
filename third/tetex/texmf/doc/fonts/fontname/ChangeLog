@@ -1,0 +1,489 @@
+1999-01-03  Karl Berry  <karl@tug.org>
+
+	* supplier.map: @& is a mistake, should just be &.
+
+Mon Jan  5 15:33:24 1998  Karl Berry  <karl@cs.umb.edu>
+
+	* special.map: Include feta.
+
+Tue Feb  4 13:09:57 1997  Karl Berry  <karl@cs.umb.edu>
+
+	* special.map: Include ec/jknappen/ec.
+
+Mon Aug  5 16:47:15 1996  Karl Berry  <karl@cs.umb.edu>
+
+	* texfonts.map: No softkey.map any more.
+
+Fri Jul  5 14:35:54 1996  Karl Berry  <karl@laurie>
+
+	* Version 2.1.
+
+Thu Jul  4 15:19:14 1996  Karl Berry  <karl@laurie>
+
+	* variant.map (9s): Define as SF for SuperFont.
+	(n): Add Schlbk as another meaning.
+	* typeface.map (yg): Define as CenturyGothic.
+	* monotype.map: Add entries for Arial and Times SF's,
+	CenturyGothic fonts, Bembo/GS/Plantin Schoolbook, etc.
+	From: alanje@cogs.susx.ac.uk (Alan Jeffrey).
+	
+	* supplier.map (f): Let's generalize this to `small' foundries,
+        instead of copying terms.  Suggested by Pierre.
+
+	* variant.map (82): Define as GreekKeys.
+	From: mackay@cs.washington.edu (Pierre MacKay)
+
+	* typeface.map (an): Define as Anna.
+	From: wls@astro.umd.edu (William L. Sebok)
+
+Fri Jun 21 14:43:04 1996  Karl Berry  <karl@laurie>
+
+	* variant.map (h): Oops, need shadow after all.
+	* typeface.map, monotype.map: Many new definitions per Alan's list.
+
+Thu Jun 20 16:12:54 1996  Karl Berry  <karl@laurie>
+
+	* variant.map (g): Define as SmallText, as this is different than
+        SmallCaps. (Alan actually looked at a font.)
+
+	* monotype.map (LatinMT-Condensed): Use l0, not li.
+	Add the pi fonts as listed by Alan.
+
+	* typeface.map (li): Remove redundant definition of Latin, let's
+        stick with l0.
+        (ou): Columbus.
+        (f1): Fournier.
+
+Sun Jun 16 16:55:09 1996  Karl Berry  <karl@laurie>
+
+	* monotype.map (mg2rw): Giddyup.
+	(mpi300): Giddyup-Thangs.
+	(mpi301): Petrucchio.
+	(meb*): BaskervilleBe*.
+	* typeface.map (g2): Giddyup.
+	(eb): BaskervilleBE.
+        From: wls@astro.umd.edu.
+
+	* variant.map (6): Define as Cyrillic extension character.
+	6[bdikmw]: Define for Cyrillic needs.
+	* supplier.map (t): Define as ParaGraph, a maker of Cyrillic fonts.
+	From: "Andrey F. Slepuhin" <pooh@shade.msu.ru>.
+
+Fri May 17 13:49:23 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * typeface.map: Add entries for Boton, Boulevard, PopplLaudatio.
+        * monotype.map: Ditto, for the actual fonts.
+	From: wls@astro.umd.edu.
+
+Tue Apr 23 17:57:14 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * ad.enc: New file, from lesenko@mx.ihep.su (Sergey Lesenko), as
+        the default base vector for partial T1 downloading.
+
+Thu Mar 21 10:31:00 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * typeface.map (ol): Define to be Colmcille.
+        From: Bernard Treves Brown <MCNBJTB@fs4.in.umist.ac.uk>.
+
+Sun Mar  3 10:48:01 1996  Karl Berry  <karl@cs.umb.edu>
+
+        * variant.map (9o, 9d): Define to Cork/TeX text with oldstyle
+        digits and expert.
+        (j): Define this to be `oldstyle digits' in general.
+
+        * typeface.map (pc): Define to be Poetica.
+        (s9): Remove. Scriptoria is a clone.
+        From Thierry.
+
+        * special.map: Changes from Ulrik:
+        a) Knuth's local cm variants (must be listed by name exactly)
+	b) gftodvi utility fonts (black,gray,slant)
+	c) Computer concrete math fonts (concmath)
+	d) A fix for the pandora entry from Thomas Esser that was 
+           already in my previous copy of special.map (from teTeX).
+
+        * dtc.map, linotype.map, apple.map: Use the 8r names, as we do
+        with Adobe, Monotype, etc.
+
+        * urw.map: New file.
+        * texfonts.map: Include it.
+        * typeface.map: Add aliases for URW.
+
+Mon Oct 16 15:23:12 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * variant.map (7k): Assign this to OT2Cyrillic for Sebastian.
+
+Sat Oct  7 17:10:36 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * special.map: Add sauter, fc, tc, and bashkirian.
+        * supplier.map (jknappen): Add this.
+
+Fri Sep 29 11:12:28 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * variant.map (8c, 9c): For Jorg's new TS1 fonts.
+
+Fri Sep 22 16:11:26 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * adobe.map: 8a should be 7a in most places.
+        
+        * *.map: Use 8r for the sake of aliases.
+
+Sat Aug 12 11:43:33 1995  Karl Berry  <karl@cs.umb.edu>
+
+	* Version 2.0.
+        * variant.map (8u, 8z): Add these for Sojka.
+        * xl2.enc, xt2.enc: New files.
+
+Thu Aug  3 13:38:41 1995  Karl Berry  <karl@cs.umb.edu>
+
+	* supplier.map: k = Softkey.
+        * typeface.map. s9 = Scriptor, g9 = GaramondRetrospective.
+        * softkey.map: New file.
+        * special.map: New cases for MusicTeX, etc.
+        From Thierry.
+
+Fri May  5 11:33:25 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bitstrea.aka: New file from bitti@cs.tut.fi, from
+        mark@sdd.hp.com and pastor@vfl.paramax.com.
+
+        * bitstrea.map: bgyrf, not bgyf.
+
+Sun Apr 30 13:33:07 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * monotype.map: Avoid duplicates.
+        * bitstrea.map: Add missing i to btvb for ...Bold-Italic.
+
+        * special.map (stmary): Add this, from da@dcs.ed.ac.uk.
+
+Tue Apr 25 10:16:34 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bitstrea.map: Freeform721 is Auriol, says bitti@cs.tut.fi.
+
+Thu Apr 20 15:19:07 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bitstrea.map: Modern735 is Bodoni Campanile.
+        * typeface.map (bp): Use it.
+
+        * Amasis should be a2, exchange with Alternate Gothic (now a4).
+
+        * typeface.map: Arial gets its own code (a1) after all, since Monotype
+        also distributes Helvetica now.  Move Adsans to a9.
+        * monotype.map: Likewise.
+        * fontname.texi: Don't mention Arial as the prototypical alias.
+
+        * variant.map: Use 9e and 9t, per Sebastian's likings.
+
+Sun Apr 16 19:12:58 1995  Karl Berry  <karl@cs.umb.edu>
+
+	From Jorg Knappen:
+        * variant.map (81, 82, 85): Remove these ISO encodings, as there's
+        no fonts using them at the moment.
+        (5): Make this an escape for phonetic encodings.
+        (1, 6): Remove these and give `Rotis Semi' a typeface abbreviation.
+
+Sat Apr 15 19:19:27 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * fontname.texi: Reorganization and rewrite.
+        (Variants): Define 9c and 9t.
+
+Sun Apr  9 16:29:04 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bitstrea.map: Assign the rest, except for the obvious Bitstream
+        names Freeform 721 and Modern 735, for which I'm waiting
+        to hear what they really are. (I can't find them in any of font
+        catalogs, unfortunately.)
+
+        * monotype.more: The giant file from Nelson with 2000+ fonts.
+        Can't face it now.
+
+Fri Apr  7 16:48:25 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * bitstrea.map: Use hr for Swiss721BT-BlackRounded, not hv.
+        Orator*: Include weight codes.
+        * adobe.map: Use ns for TimesNewRomanPS, not nt, for consistency
+        with Monotype.
+
+	* variant.map: Change 3 (fraction) to 7f.
+        * adobe.map, monotype.map: Likewise.
+	
+Tue Apr  4 11:44:49 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * supplier.map: Add o for Corel, from Andreas Schell.
+
+Mon Apr  3 14:16:58 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Various clarifications from Damian.
+
+Sun Apr  2 14:47:13 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * variant.map: Abandon g for now.
+        Mark k and z obsolete.
+
+        * monotype.map: Add pi fonts from Pierre.
+
+        * btstream.map: Rename to bitstream.map, for meaningless
+        compatibility with supplier.map.
+        
+        * width.map: Abandon by-hand vs. automatic distinction.
+        * fontname.texi (Widths): Document the reality.''
+
+Tue Mar 28 13:02:00 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * typeface.map: cb => Cooper, not CooperBlack.
+        * adobe.map: Corresponding changes.
+
+Mon Mar 27 19:49:47 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * typeface.map: Use FontName's instead of pseudo-English, and add
+        different FontName's from other foundries that use the same
+        abbreviation.
+
+        * These fixes from Damian:
+        * Missing weights, variants, and other typos in various places.
+        * Use w for swash in Fairfield and Centaur, not y.
+        * Use m for medium in AmericanTypewriter-Medium*.
+        * OldEnglish is blackletter in EngraversOldEnglish.
+        * Thin mistaken for a width in Glypha, HelveticaNeue, VAGRounded.
+        Also h sometimes used for thin instead of a.
+        * Gothic means sans in ClearfaceGothic, AvantGardeGothic,
+        TypewriterGothic. Have to use s for Clearface, since regular
+        Clearface is a serif font.
+
+        * Change alt fonts from a to 8c,
+          dfr fonts from 2 to 7c,
+          osf fonts from 9 to 7d,
+          expert fonts from x to 8x
+
+        * {monotype,adobe,linotype,dtc}.map: Rename from *.txt.
+
+Sun Mar 26 16:44:06 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * @include the *.map files, new text explaining the changes, etc., etc.
+
+Sat Jul  2 17:17:10 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * adobe.txt (Frutiger-LightItalic): Correction from klaus@tdr.dk.
+
+Wed Mar 30 15:01:12 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Version 1.6.
+
+Thu Mar 24 08:19:35 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Typefaces: m0 for monospace.
+
+Wed Mar 16 12:02:34 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Variant: 8 for escape, then ISO Latin [125], Windows ANSI, and
+        Mac standard.
+
+Thu Feb 17 11:00:24 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Typeface families: mg for Marigold.
+
+Sun Jun  6 11:28:15 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Typefaces: wi for Wingdings.
+
+	* Aliases: Omega == Optima.
+
+Thu Jun  3 14:53:05 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Makefile (info, dvi): Do here as with others.
+	* Don't need to set @paragraphindent here any more.
+
+Sat May 22 11:23:53 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 1.5.
+
+	* Makefile (dist): Run gzip -9.
+
+Thu May 20 11:02:59 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Sources: u for URW, not user.
+	* Typefaces: aq for Antiqua, nm for Nimbus.
+
+Tue May 18 10:59:16 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Typefaces: Change Plantin to pn from pi.
+	* adobe.txt: Likewise.
+
+Tue May  4 10:06:55 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* adobe.txt (ppiro, ppirc): Rename from ppn*.
+
+Fri Apr 30 14:16:40 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Various doc fixes from Nelson.
+
+Fri Apr  9 15:42:39 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* Version 1.4.
+
+	* fnget.c: Don't bother to include fnget.h.
+        * fnget.h: Don't declare the routine as a prototype unless we are
+        __STDC__.
+
+	* (Variants): `6' for semi serif.
+
+	* (Typefaces): `dl' for Dolores.
+
+Tue Apr  6 16:50:40 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* (Typefaces): `eo' for Amerigo, `va' for Activa.
+
+	* (Sources): `d' for DTC, from Pierre.
+        * dtc.txt: New file.
+
+Tue Feb 23 16:47:23 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* (Top): Add version number.
+
+	* Version 1.3 (a few days ago, actually).
+
+Sun Feb  7 14:13:49 1993  Karl Berry  (karl@cs.umb.edu)
+
+	* (Typefaces): Many new families.
+        (Variants): `5' for phonetic.
+        * monotype.txt, linotype.txt: New families.
+
+Mon Dec 14 17:46:51 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* (Sources): `9' for unknown.
+
+Mon Nov 30 17:11:53 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* (Sources): `y' for Y&Y.
+
+Thu Oct 29 07:54:52 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* (The naming scheme): Rename to `Naming scheme'.  Also, had W
+	twice in the schematic.
+
+	* (Weight): Use demibold and semibold, for consistency with the
+	list below.
+
+Mon Oct 26 06:09:08 1992  Karl Berry  (karl@cs.umb.edu)
+
+	* (Variant): Make `q' be the Cork encoding.
+
+Tue Aug 18 19:30:14 1992  Karl Berry  (karl@hayley)
+
+        * fontname.texi: change to title to `Filenames for TeX fonts'.
+
+Wed Jul 15 14:38:54 1992  Karl Berry  (karl@hayley)
+
+        * Version 1.2.
+
+Sat Jul 11 11:51:37 1992  Karl Berry  (karl@hayley)
+
+        * adobe.txt: many changes and additions to reflect new Adobe
+          fonts.  Why don't they just do the world a favor and go out of
+          business?
+        (Families, Foundries): corresponding changes.
+
+Mon Jun 15 18:03:15 1992  Karl Berry  (karl@hayley)
+
+        * Add variant `q' for GNU text complement.  I guess.
+
+Thu Jun  4 19:46:54 1992  Karl Berry  (karl@hayley)
+
+        * Add family `ti' for TechPhonetic, a freely distributable font of
+          IPA phonetic symbols designed at MIT by Rob Kassel.
+
+Sun May 24 14:57:57 1992  Karl Berry  (karl@hayley)
+
+        * Add recommended `dir' line (as a comment).
+
+Wed Apr 29 07:56:32 1992  Karl Berry  (karl@hayley)
+
+        * Change ``foundry'' to ``source'', as Damian (implicitly) suggests.
+
+        * (Long names): toss the script.
+
+        * Fix @item syntax, so it runs through Makeinfo.
+
+Sun Apr 26 07:36:48 1992  Karl Berry  (karl@hayley)
+
+        * remove @TeX{} from node title, sigh.
+
+Sun Apr 19 10:41:55 1992  Karl Berry  (karl@hayley)
+
+        * (Typeface families): `mv' is Malvern.
+
+Mon Apr  6 15:05:44 1992  Karl Berry  (karl@hayley)
+
+        * fontname.texi (Variant): `9' means oldstyle figures.
+        * adobe.txt: can now define the various OsF's.
+
+        * fontname.texi: alphabetization etc. updates from jmr.
+
+Tue Mar 31 09:47:37 1992  Karl Berry  (karl at hayley)
+
+        * Version 1.1.
+
+        * Update for new Adobe fonts.
+
+Fri Jan  3 12:20:59 1992  Karl Berry  (karl at hayley)
+
+        * (Variant): `0' means the Adobe standard encoding now.  Ugh.
+
+Thu Oct 24 07:03:18 1991  Karl Berry  (karl at hayley)
+
+        * (Typeface families): assign `gg' to Garth Graphic, and `sh' to
+          Shannon.
+
+Sun Aug 18 09:36:06 1991  Karl Berry  (karl at hayley)
+
+        * (Foundries): assign `x' to the AMS.
+
+Tue Aug 13 06:48:09 1991  Karl Berry  (karl at hayley)
+
+        * Change `Expansion' to `width' throughout.
+
+Sat Jul 20 06:35:27 1991  Karl Berry  (karl at hayley)
+
+        * (Local variables): remove this, since now it's standard (as of
+          texinfo 2.07).
+
+Thu Jul 18 07:51:26 1991  Karl Berry  (karl at hayley)
+
+        * (Foundries): assign `n' to IBM.
+
+Sun Jul  7 08:50:27 1991  Karl Berry  (karl at hayley)
+
+        * (Typeface families): assign `ul' to Universal.
+        * adobe.txt: now we can Universal-GreekwithMathPi, and some of
+          Universal-NewswithCommPi.
+          (from J.L.Braams@pttrnl.nl)
+
+Thu Jun 27 08:49:53 1991  Karl Berry  (karl at hayley)
+
+        * (Foundries): point out that the vendor is not necessarily the
+          source (from rivlinj@watson.ibm.com).
+
+Fri Jun 14 13:49:32 1991  Karl Berry  (karl at hayley)
+
+        * *.txt: put our filename first, before the fontname.  (from
+          rocky@watson.ibm.com)
+
+        * Change %-comments to @c comments, even though they're at the top
+          of the file.  (from simon@liasun6.epfl.ch)
+
+Sun Jun  9 08:51:14 1991  Karl Berry  (karl at hayley)
+
+        * (Foundries): remove reference to mims-iris, since that font
+          archive is disappearing.
+
+        * These changes from johnm@afsc-bmo.af.mil:
+
+        * (Foundries): remove spurious \strut from `r'.
+
+        * (Univers): explain that there's no foundry letter.
+
+        * (Foundries): correct `p' to `f' for public domain fonts.
+
+Fri Jun  7 17:47:36 1991  Karl Berry  (karl at hayley)
+
+        * (Variant): Add `z' as the variant for Cyrillic.

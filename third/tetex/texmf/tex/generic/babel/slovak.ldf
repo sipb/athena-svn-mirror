@@ -1,0 +1,85 @@
+%%
+%% This is file `slovak.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slovak.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{slovak}
+        [1999/04/18 v1.2k Slovak support from the babel system]
+%% File `slovak.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Slovak Language Definition File
+%% Copyright (C) 1989 - 1999
+%%           by Jana Chlebikova
+%% Please report errors to: J.L. Braams  <JLBraams@cistron.nl>
+%%                          Chlebikova Jana <chlebikj@mff.uniba.cs>
+\LdfInit{slovak}\captionsslovak
+\ifx\l@slovak\@undefined
+    \@nopatterns{Slovak}
+    \adddialect\l@slovak0\fi
+\addto\captionsslovak{%
+  \def\prefacename{\'Uvod}%
+  \def\refname{Referencie}%
+  \def\abstractname{Abstrakt}%
+  \def\bibname{Literat\'ura}%
+  \def\chaptername{Kapitola}%
+  \def\appendixname{Dodatok}%
+  \def\contentsname{Obsah}%
+  \def\listfigurename{Zoznam obr\'azkov}%
+  \def\listtablename{Zoznam tabuliek}%
+  \def\indexname{Index}%
+  \def\figurename{Obr\'azok}%
+  \def\tablename{Tabu\q lka}%%% special letter l with hook
+  \def\partname{\v{C}as\q t}%%% special letter t with hook
+  \def\enclname{Pr\'{\i}lohy}%
+  \def\ccname{CC}%
+  \def\headtoname{Komu}%
+  \def\pagename{Strana}%
+  \def\seename{vi\q d}%%%  Special letter d with hook
+  \def\alsoname{vi\q d tie\v z}%%%  Special letter d with hook
+  \def\proofname{D\^okaz}%
+  }
+\def\dateslovak{%
+  \def\today{\number\day.~\ifcase\month\or
+    janu\'ara\or febru\'ara\or marca\or apr\'{\i}la\or m\'aja\or
+    j\'una\or j\'ula\or augusta\or septembra\or okt\'obra\or
+    novembra\or decembra\fi
+    \space \number\year}}
+\addto\extrasslovak{\babel@save\q\let\q\v}
+\def\slovakhyphenmins{\tw@\tw@}
+\ldf@finish{slovak}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `slovak.ldf'.

@@ -1,0 +1,22 @@
+Main features of the teTeX distribution:
+
+- Main program packages: web2c, pdfTeX, e-TeX, Omega, xdvi, dvips, dvilj,
+  ps2pk, makeinfo, texinfo, texconfig
+- TDS (TeX Directory Structure) compliant large support tree
+  with fonts / macros
+- run-time configuration files for dvi-drivers and tex+friends
+- very easy to install and customize (install.sh and texconfig utility)
+- documentation for all packages included
+- automatic font generation with support for read-only inputs tree
+  (i.e. possibility to use alternate destination for newly created fonts)
+- ready for a multi-platform setup
+- fast file searching
+- ready for producing resolution independent (bitmap free) postscript or
+  pdf documents
+- the whole distribution can be installed anywhere in the
+  filesystem (e.g. /usr/TeX or /usr/local/tex). You do not
+  need to set any environment variable as long as you keep
+  the original structure of the package.
+- mailing lists
+    for discussion:    tetex@informatik.uni-hannover.de
+    for announcements: tetex-announce@informatik.uni-hannover.de

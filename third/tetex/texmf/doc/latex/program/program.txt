@@ -1,0 +1,22 @@
+
+Here's a copy of my LaTeX2e style file for typesetting programs and
+algorithms in my favourite style without having to type in endless tabbing
+commands. Each line is set in math mode so all the indentation and spacing
+is done automatically. The notation |variable_name| can be used within
+normal text, maths expressions or programs to indicate a variable name.
+Use \origbar to get a normal | symbol in a program. The commands \A, \B, \R, \T
+and \Z typeset the corresponding bold letter with the next object as a
+substript (eg \S1 typesets {\bf S$_1$} etc). They now cope with primes as
+well, (eg \S'''). The program.sty file can be
+easily edited to reflect your favoured style. See the program-demo.tex file 
+for examples.
+
+The file should work with or without AMSLaTeX and the new font selection
+scheme.
+
+                        Martin.
+
+JANET: Martin.Ward@uk.ac.durham    Internet (eg US): Martin.Ward@durham.ac.uk
+or if that fails:  Martin.Ward%uk.ac.durham@nsfnet-relay.ac.uk  
+or even: Martin.Ward%DURHAM.AC.UK@CUNYVM.CUNY.EDU
+BITNET: Martin.Ward%durham.ac.uk@UKACRL UUCP:...!ukc!durham!Martin.Ward

@@ -1,0 +1,95 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Text -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; pst-doc.err --- Various errors in PSTricks documentation for 0.93a version
+;;             from 12 March 1993 and in betadoc1/betadoc2 documentation
+;; 
+;; Author          : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+;; Created the     : Wed Mar 12 20:08:54 1997
+;; Last mod. by    : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+;; Last mod. the   : Wed Mar 12 21:14:49 1997
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+In PSTricks documentation for 0.93a version from 12 March 1993:
+--------------------------------------------------------------
+
+* Page 20 : \plotfile must be read \fileplot (four times)
+
+* Page 20 : \dataplot[origin=(0,1)]{\bar}
+            must be read
+            \dataplot[origin={0,1}]{\bar}
+
+* Page 22 : sin(x)cos((x=2)^2)
+            must be read
+            sin(x)cos((x/2)^2)
+
+* Page 31 : \newpsobject{\mygrid}{etc.}
+            must be read
+            \newpsobject{mygrid}{etc.}
+
+* Page 51 : \psxlabel
+            \psylabel
+            .........
+            \def\psxlabel#1{\small #1}
+            must be read
+            \pshlabel
+            \psvlabel
+            .........
+            \def\pshlabel#1{\small #1}
+
+* Page 54 : for retarc or linearc
+            must be read
+            for linearc
+            (retarc is no longer a defined parameter)
+
+* Page 70 : \pscoiland must be read \pscoil and
+
+* Page 79 : dvipsfoo:dvi -E -ofoo:eps
+            must be read
+            dvips foo:dvi -E -ofoo:eps
+            or "dvips foo.dvi -E -ofoo.eps" on some systems
+
+
+In betadoc1/betadoc2 documentation
+-----------------------------------
+
+* Page  1 : results for diamond and diamond* are inverted
+
+* Page  7 : the center the center
+            must be read
+            the center
+
+* Page  8 : \rput{angle}(x,y){\circlenode{name}{stuff}
+            must be read
+            \rput{angle}(x,y){\circlenode{name}{stuff}}
+
+* Page 18 : One more paramter trick:
+            must be read
+            One more parameter trick:
+
+* Page 23 : between between
+            must be read
+            between
+
+* Page 24 : right "a" in the second diagram must be read "A"
+
+* Page 26 : shortput=tab is the default within a \psmatrix
+            must be read
+            shortput=tablr is the default within a \psmatrix
+
+* Page 28 : the precede it by {}
+            must be read
+            then precede it by {}
+
+* Page 29 : a fixed with
+            must be read
+            a fixed width
+
+* Page 29 : the c mnode (corresponding to \cnode)
+            must be read
+            the C mnode (corresponding to \Cnode)
+
+* Page 29 : use \multispan{int}
+            must be read
+            use \psspan{int}
+

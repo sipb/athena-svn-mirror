@@ -1,0 +1,100 @@
+%%
+%% This is file `slovene.ldf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slovene.dtx  (with options: `code')
+%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% For further copyright information see any other copyright notices in
+%% this file.
+%% 
+%% This file is part of the Babel system release 3.6.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.0 or, at your option, any later version.
+\ProvidesLanguage{slovene}
+        [1999/04/19 v1.2k Slovene support from the babel system]
+%% File `slovene.dtx'
+%% Babel package for LaTeX version 2e
+%% Copyright (C) 1989 - 1999
+%%           by Johannes Braams, TeXniek
+%% Please report errors to: J.L. Braams
+%%                          JLBraams@cistron.nl
+\LdfInit{slovene}\captionsslovene
+\ifx\l@slovene\@undefined
+    \@nopatterns{Slovene}
+    \adddialect\l@slovene0\fi
+\addto\captionsslovene{%
+  \def\prefacename{Predgovor}%
+  \def\refname{Literatura}%
+  \def\abstractname{Povzetek}%
+  \def\bibname{Literatura}%
+  \def\chaptername{Poglavje}%
+  \def\appendixname{Dodatek}%
+  \def\contentsname{Kazalo}%
+  \def\listfigurename{Slike}%
+  \def\listtablename{Tabele}%
+  \def\indexname{Stvarno kazalo}% used to be Indeks
+  \def\figurename{Slika}%
+  \def\tablename{Tabela}%
+  \def\partname{Del}%
+  \def\enclname{Priloge}%
+  \def\ccname{Kopije}%
+  \def\headtoname{Prejme}%
+  \def\pagename{Stran}%
+  \def\seename{glej}%
+  \def\alsoname{glej tudi}%
+  \def\proofname{Dokaz}%
+  }%
+\def\dateslovene{%
+  \def\today{\number\day.~\ifcase\month\or
+    januar\or februar\or marec\or april\or maj\or junij\or
+    julij\or avgust\or september\or oktober\or november\or december\fi
+    \space \number\year}}
+\initiate@active@char{"}
+\addto\extrasslovene{\languageshorthands{slovene}}
+\addto\extrasslovene{\bbl@activate{"}}
+\declare@shorthand{slovene}{"c}{\textormath{\v c}{\check c}}
+\declare@shorthand{slovene}{"s}{\textormath{\v s}{\check s}}
+\declare@shorthand{slovene}{"z}{\textormath{\v z}{\check z}}
+\declare@shorthand{slovene}{"C}{\textormath{\v C}{\check C}}
+\declare@shorthand{slovene}{"S}{\textormath{\v S}{\check S}}
+\declare@shorthand{slovene}{"Z}{\textormath{\v Z}{\check Z}}
+\declare@shorthand{slovene}{"`}{%
+  \textormath{\quotedblbase}{\mbox{\quotedblbase}}}
+\declare@shorthand{slovene}{"'}{%
+  \textormath{\textquotedblleft}{\mbox{\textquotedblleft}}}
+\declare@shorthand{slovene}{"<}{%
+  \textormath{\guillemotleft}{\mbox{\guillemotleft}}}
+\declare@shorthand{slovene}{">}{%
+  \textormath{\guillemotright}{\mbox{\guillemotright}}}
+\declare@shorthand{slovene}{"-}{\nobreak-\bbl@allowhyphens}
+\declare@shorthand{slovene}{""}{\hskip\z@skip}
+\declare@shorthand{slovene}{"|}{%
+  \textormath{\discretionary{-}{}{\kern.03em}}{}}
+\ldf@finish{slovene}
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\endinput
+%%
+%% End of file `slovene.ldf'.

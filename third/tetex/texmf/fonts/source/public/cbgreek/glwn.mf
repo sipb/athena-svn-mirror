@@ -1,0 +1,9 @@
+% Copyright (C) 1997, 1999 Claudio Beccari
+%% file glwn v.1.0
+%
+% creates the invisible slide font glxn by redefining extra_endchar
+%
+extra_endchar:=extra_endchar & "clearit";
+input glxn;
+endinput;
+

@@ -1,0 +1,311 @@
+% psfonts.map: maintained by the script updmap in $TEXMFMAIN/dvips/config.
+%   The preferred way to add things to this file is to put the extra lines
+%   into a separate file and add that filename to the updmap script. Then,
+%   run the updmap script to recreate this file.
+bchb8r CharterBT-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc <bchb8a.pfb
+bchbi8r CharterBT-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <bchbi8a.pfb
+bchbo8r CharterBT-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <bchb8a.pfb
+bchr8r CharterBT-Roman "TeXBase1Encoding ReEncodeFont" <8r.enc <bchr8a.pfb
+bchri8r CharterBT-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <bchri8a.pfb
+bchro8r CharterBT-Roman ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <bchr8a.pfb
+cob Courier-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+cobo Courier-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+com Courier "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+contnav  ContextNavigation  <contnav.pfb
+coo Courier-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+eurbo10 EURB10 " .167 SlantFont " <eurb10.pfb
+eurmo10 EURM10 " .167 SlantFont " <eurm10.pfb
+fmvr8x  Martin_Vogels_Symbole                   <marvosym.pfb
+fmvri8x Martin_Vogels_Symbole " .167 SlantFont" <marvosym.pfb
+hlcbot8r LucidaTypewriterBoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtbo.pfb
+hlcbot8rn LucidaTypewriterBoldOblique "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtbo.pfb 
+hlcbt8r LucidaTypewriterBold "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtb.pfb
+hlcbt8rn LucidaTypewriterBold "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtb.pfb 
+hlcda LucidaNewMath-Arrows-Demi <lbmad.pfb
+hlcdim LucidaNewMath-DemiItalic <lbmdi.pfb
+hlcdima LucidaNewMath-AltDemiItalic <lbmdo.pfb
+hlcdm LucidaNewMath-Demibold <lbmd.pfb
+hlcdy LucidaNewMath-Symbol-Demi <lbmsd.pfb
+hlcra LucidaNewMath-Arrows <lbma.pfb
+hlcrf8r LucidaBlackletter "TeXBase1Encoding ReEncodeFont" <8r.enc <lbl.pfb
+hlcrie8r LucidaCalligraphy-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lbc.pfb
+hlcrim LucidaNewMath-Italic <lbmi.pfb
+hlcrima LucidaNewMath-AltItalic <lbmo.pfb
+hlcrin8r LucidaCasual-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lbki.pfb
+hlcriw8r LucidaHandwriting-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lbh.pfb
+hlcrm LucidaNewMath-Roman <lbmr.pfb
+hlcrn8r LucidaCasual "TeXBase1Encoding ReEncodeFont" <8r.enc <lbkr.pfb
+hlcrof8r LucidaBlackletter ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbl.pfb 
+hlcron8r LucidaCasual ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbkr.pfb 
+hlcrot8r LucidaTypewriterOblique "TeXBase1Encoding ReEncodeFont" <8r.enc <lbto.pfb
+hlcrot8rn LucidaTypewriterOblique "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbto.pfb 
+hlcrt8r LucidaTypewriter "TeXBase1Encoding ReEncodeFont" <8r.enc <lbtr.pfb
+hlcrt8rn LucidaTypewriter "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbtr.pfb 
+hlcrv LucidaNewMath-Extension <lbme.pfb
+hlcry LucidaNewMath-Symbol <lbms.pfb
+hlhb8r LucidaBright-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc <lbd.pfb
+hlhbc8r LucidaBrightSmallcaps-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc <lbdsc.pfb
+hlhbi8r LucidaBright-DemiItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <lbdi.pfb
+hlhbo8r LucidaBright-Demi ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lbd.pfb 
+hlhr8r LucidaBright "TeXBase1Encoding ReEncodeFont" <8r.enc <lbr.pfb
+hlhrc8r LucidaBrightSmallcaps "TeXBase1Encoding ReEncodeFont" <8r.enc <lbrsc.pfb
+hlhri8r LucidaBright-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lbi.pfb
+hlhro8r LucidaBright-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc <lbsl.pfb 
+hlsb8r LucidaSans-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc <lsd.pfb
+hlsbi8r LucidaSans-DemiItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <lsdi.pfb
+hlsbot8r LucidaSans-TypewriterBoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc <lstbo.pfb
+hlsbot8rn LucidaSans-TypewriterBoldOblique "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstbo.pfb 
+hlsbt8r LucidaSans-TypewriterBold "TeXBase1Encoding ReEncodeFont" <8r.enc <lstb.pfb
+hlsbt8rn LucidaSans-TypewriterBold "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstb.pfb 
+hlsr8r LucidaSans "TeXBase1Encoding ReEncodeFont" <8r.enc <lsr.pfb
+hlsri8r LucidaSans-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lsi.pfb
+hlsro8r LucidaSans ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsr.pfb 
+hlsrot8r LucidaSans-TypewriterOblique "TeXBase1Encoding ReEncodeFont" <8r.enc <lsto.pfb
+hlsrot8rn LucidaSans-TypewriterOblique "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsto.pfb 
+hlsrt8r LucidaSans-Typewriter "TeXBase1Encoding ReEncodeFont" <8r.enc <lstr.pfb
+hlsrt8rn LucidaSans-Typewriter "850 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc <lstr.pfb 
+hlsu8r LucidaSans-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc <lsb.pfb
+hlsui8r LucidaSans-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <lsbi.pfb
+hlsuo8r LucidaSans-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lsb.pfb 
+hlxb8r LucidaFax-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc <lfd.pfb
+hlxbi8r LucidaFax-DemiItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <lfdi.pfb
+hlxbo8r LucidaFax-Demi ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lfd.pfb 
+hlxr8r LucidaFax "TeXBase1Encoding ReEncodeFont" <8r.enc <lfr.pfb
+hlxri8r LucidaFax-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <lfi.pfb
+hlxro8r LucidaFax ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <lfr.pfb 
+hv Helvetica "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvb Helvetica-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvbo Helvetica-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+hvo Helvetica-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+lbc LucidaCalligraphy-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbc.pfb
+lbd LucidaBright-Demi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbd.pfb
+lbdi LucidaBright-DemiItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbdi.pfb
+lbdsc LucidaBrightSmallcaps-Demi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbdsc.pfb
+lbh LucidaHandwriting-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbh.pfb
+lbi LucidaBright-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbi.pfb
+lbki LucidaCasual-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbki.pfb
+lbkr LucidaCasual "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbkr.pfb
+lbl LucidaBlackletter "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbl.pfb
+lbma LucidaNewMath-Arrows <lbma.pfb
+lbmad LucidaNewMath-Arrows-Demi <lbmad.pfb
+lbmd LucidaNewMath-Demibold <lbmd.pfb
+lbmdi LucidaNewMath-DemiItalic <lbmdi.pfb
+lbmdo LucidaNewMath-AltDemiItalic <lbmdo.pfb
+lbme LucidaNewMath-Extension <lbme.pfb
+lbmi LucidaNewMath-Italic <lbmi.pfb
+lbmo LucidaNewMath-AltItalic <lbmo.pfb
+lbmr LucidaNewMath-Roman <lbmr.pfb
+lbms LucidaNewMath-Symbol <lbms.pfb
+lbmsd LucidaNewMath-Symbol-Demi <lbmsd.pfb
+lbr LucidaBright "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbr.pfb
+lbrsc LucidaBrightSmallcaps "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbrsc.pfb
+lbsl LucidaBright-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbsl.pfb 
+lbtb LucidaTypewriterBold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtb.pfb
+lbtbo LucidaTypewriterBoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtbo.pfb
+lbto LucidaTypewriterOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbto.pfb
+lbtr LucidaTypewriter "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbtr.pfb
+lfd LucidaFax-Demi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfd.pfb
+lfdi LucidaFax-DemiItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfdi.pfb
+lfi LucidaFax-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfi.pfb
+lfr LucidaFax "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lfr.pfb
+lsb LucidaSans-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsb.pfb
+lsbi LucidaSans-BoldItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsbi.pfb
+lsd LucidaSans-Demi "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsd.pfb
+lsdi LucidaSans-DemiItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsdi.pfb
+lsi LucidaSans-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsi.pfb
+lsr LucidaSans "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsr.pfb
+lstb LucidaSans-TypewriterBold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstb.pfb
+lstbo LucidaSans-TypewriterBoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstbo.pfb
+lsto LucidaSans-TypewriterOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lsto.pfb
+lstr LucidaSans-Typewriter "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lstr.pfb
+mh2 MathematicalPi-Two <mh2.pfb
+mh6 MathematicalPi-Six <mh6.pfb
+mtex MTEX <mtex.pfb
+mtexb MTEXB <mtexb.pfb
+mtexh MTEXH <mtexh.pfb
+mtgu MTGU <mtgu.pfb
+mtgub MTGUB <mtgub.pfb
+mtls MTLS <mtls.pfb
+mtlsb MTLSB <mtlsb.pfb
+mtms MTMS <mtms.pfb
+mtmsb MTMSB <mtmsb.pfb
+mtsy MTSY <mtsy.pfb
+mtsyb MTSYB <mtsyb.pfb
+mtsyh MTSYH <mtsyh.pfb
+mtsyn MTSYN <mtsyn.pfb
+omsea1 OmegaSerifArabicOne <omsea1.pfb
+omsea1b OmegaSerifArabicOne-Bold <omsea1b.pfb
+omsea2 OmegaSerifArabicTwo <omsea2.pfb
+omsea2b OmegaSerifArabicTwo-Bold <omsea2b.pfb
+omsea3 OmegaSerifArabicThree <omsea3.pfb
+omsea3b OmegaSerifArabicThree-Bold <omsea3b.pfb
+omseco OmegaSerifCommon <omseco.pfb
+omsecob OmegaSerifCommon-Bold <omsecob.pfb
+omsecobi OmegaSerifCommon-BoldItalic <omsecobi.pfb
+omsecoi OmegaSerifCommon-Italic <omsecoi.pfb
+omsecx OmegaSerifCyrillicExtended <omsecx.pfb
+omsecy OmegaSerifCyrillic <omsecy.pfb
+omsegr OmegaSerifGreek <omsegr.pfb
+omsegrb OmegaSerifGreek-Bold <omsegrb.pfb
+omsegrbi OmegaSerifGreek-BoldItalic <omsegrbi.pfb
+omsegri OmegaSerifGreek-Italic <omsegri.pfb
+omseha OmegaSerifArmenian <omseha.pfb
+omsehe OmegaSerifHebrew <omsehe.pfb
+omseip OmegaSerifIPA <omseip.pfb
+omsela OmegaSerifLatin <omsela.pfb
+omselab OmegaSerifLatin-Bold <omselab.pfb
+omselabi OmegaSerifLatin-BoldItalic <omselabi.pfb
+omselai OmegaSerifLatin-Italic <omselai.pfb
+omseti OmegaSerifTifinagh <omseti.pfb
+pagd8r AvantGarde-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc
+pagdo8r AvantGarde-DemiOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pagk8r AvantGarde-Book "TeXBase1Encoding ReEncodeFont" <8r.enc
+pagko8r AvantGarde-BookOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pbkd8r Bookman-Demi "TeXBase1Encoding ReEncodeFont" <8r.enc
+pbkdi8r Bookman-DemiItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pbkdo8r Bookman-Demi ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pbkl8r Bookman-Light "TeXBase1Encoding ReEncodeFont" <8r.enc
+pbkli8r Bookman-LightItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pbklo8r Bookman-Light ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrb8r Courier-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrb8y Courier-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrbo8r Courier-BoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrbo8y Courier-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrr8r Courier "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrr8rn Courier ".85 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrr8y Courier "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pcrro8r Courier-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+pcrro8y Courier-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvb8r Helvetica-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvb8rn Helvetica-Narrow-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvb8y Helvetica-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvbo8r Helvetica-BoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvbo8rn Helvetica-Narrow-BoldOblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvbo8y Helvetica-BoldOblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvr8r Helvetica "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvr8rn Helvetica-Narrow "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvr8y Helvetica "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+phvro8r Helvetica-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvro8rn Helvetica-Narrow-Oblique "TeXBase1Encoding ReEncodeFont" <8r.enc
+phvro8y Helvetica-Oblique "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+pncb8r NewCenturySchlbk-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+pncbi8r NewCenturySchlbk-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pncbo8r NewCenturySchlbk-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pncr8r NewCenturySchlbk-Roman "TeXBase1Encoding ReEncodeFont" <8r.enc
+pncri8r NewCenturySchlbk-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pncro8r NewCenturySchlbk-Roman ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+ppi020 MathematicalPi-Two <mh2.pfb
+ppi025 MathematicalPi-Six <mh6.pfb
+pplb8r Palatino-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+pplbi8r Palatino-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pplbo8r Palatino-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pplbu8r Palatino-BoldItalic "-.1763 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pplr8r Palatino-Roman "TeXBase1Encoding ReEncodeFont" <8r.enc
+pplr8rn Palatino-Roman ".82 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pplri8r Palatino-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pplro8r Palatino-Roman ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pplrr8re Palatino-Roman "1.2 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc
+pplru8r Palatino-Italic "-.1763 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+psyr Symbol
+psyro Symbol ".167 SlantFont"
+ptmb8r Times-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmb8y Times-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmbi8r Times-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmbi8y Times-BoldItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmbo8r Times-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmbo8y Times-Bold ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmr8r Times-Roman "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmr8rn Times-Roman ".82 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmr8y Times-Roman "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmri8r Times-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmri8y Times-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmro8r Times-Roman ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc
+ptmro8y Times-Roman ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+ptmrr8re Times-Roman "1.2 ExtendFont TeXBase1Encoding ReEncodeFont" <8r.enc
+putb8r Utopia-Bold "TeXBase1Encoding ReEncodeFont" <8r.enc <putb8a.pfb
+putbi8r Utopia-BoldItalic "TeXBase1Encoding ReEncodeFont" <8r.enc <putbi8a.pfb
+putbo8r Utopia-Bold ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <putb8a.pfb
+putr8r Utopia-Regular "TeXBase1Encoding ReEncodeFont" <8r.enc <putr8a.pfb
+putri8r Utopia-Italic "TeXBase1Encoding ReEncodeFont" <8r.enc <putri8a.pfb
+putro8r Utopia-Regular ".167 SlantFont TeXBase1Encoding ReEncodeFont" <8r.enc <putr8a.pfb
+pzcmi8r ZapfChancery-MediumItalic "TeXBase1Encoding ReEncodeFont" <8r.enc
+pzdr ZapfDingbats
+rmtmi RMTMI <rmtmi.pfb
+rmtmib RMTMIB <rmtmib.pfb
+rmtmih RMTMIH <rmtmih.pfb
+rmtmub RMTMUB <rmtmub.pfb
+rmtmuh RMTMUH <rmtmuh.pfb
+rpagd AvantGarde-Demi
+rpagdo AvantGarde-DemiOblique
+rpagk AvantGarde-Book
+rpagko AvantGarde-BookOblique
+rpbkd Bookman-Demi
+rpbkdi Bookman-DemiItalic
+rpbkl Bookman-Light
+rpbkli Bookman-LightItalic
+rpcrb Courier-Bold
+rpcrbo Courier-BoldOblique
+rpcrr Courier
+rpcrro Courier-Oblique
+rphvb Helvetica-Bold
+rphvbo Helvetica-BoldOblique
+rphvbon Helvetica-BoldOblique ".82 ExtendFont"
+rphvbrn Helvetica-Bold ".82 ExtendFont"
+rphvr Helvetica
+rphvro Helvetica-Oblique
+rphvron Helvetica-Oblique ".82 ExtendFont"
+rphvrrn Helvetica ".82 ExtendFont"
+rpncb NewCenturySchlbk-Bold
+rpncbi NewCenturySchlbk-BoldItalic
+rpncr NewCenturySchlbk-Roman
+rpncri NewCenturySchlbk-Italic
+rpplb Palatino-Bold
+rpplbi Palatino-BoldItalic
+rpplbu Palatino-BoldItalic "-.1763 SlantFont"
+rpplr Palatino-Roman
+rpplri Palatino-Italic
+rpplro Palatino-Roman ".167 SlantFont"
+rpplrre Palatino-Roman "1.2 ExtendFont"
+rpplrrn Palatino-Roman ".82 ExtendFont"
+rpplru Palatino-Italic "-.1763 SlantFont"
+rpsyr Symbol
+rpsyro Symbol ".167 SlantFont"
+rptmb Times-Bold
+rptmbi Times-BoldItalic
+rptmbo Times-Bold ".167 SlantFont"
+rptmr Times-Roman
+rptmri Times-Italic
+rptmro Times-Roman ".167 SlantFont"
+rptmrre Times-Roman "1.2 ExtendFont"
+rptmrrn Times-Roman ".82 ExtendFont"
+rpzcmi ZapfChancery-MediumItalic
+rpzdr ZapfDingbats
+sy Symbol
+tib Times-Bold "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tibi Times-BoldItalic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tibo Times-Bold ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tii Times-Italic "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tio Times-Roman ".167 SlantFont TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+tir Times-Roman "TeXnANSIEncoding ReEncodeFont" <texnansi.enc
+xyatip10 XYATIP10 <xyatip10.pfb
+xyatip11 XYATIP10 "1.1 ExtendFont" <xyatip10.pfb
+xyatip12 XYATIP10 "1.2 ExtendFont" <xyatip10.pfb
+xybsql10 XYBSQL10 <xybsql10.pfb
+xybtip10 XYBTIP10 <xybtip10.pfb
+xybtip11 XYBTIP10 "1.1 ExtendFont" <xybtip10.pfb
+xybtip12 XYBTIP10 "1.2 ExtendFont" <xybtip10.pfb
+xycirc10 XYCIRC10 <xycirc10.pfb
+xycmat10 XYCMAT10 <xycmat10.pfb
+xycmat11 XYCMAT10 "1.1 ExtendFont" <xycmat10.pfb
+xycmat12 XYCMAT10 "1.2 ExtendFont" <xycmat10.pfb
+xycmbt10 XYCMBT10 <xycmbt10.pfb
+xycmbt11 XYCMBT10 "1.1 ExtendFont" <xycmbt10.pfb
+xycmbt12 XYCMBT10 "1.2 ExtendFont" <xycmbt10.pfb
+xydash10 XYDASH10 <xydash10.pfb
+xyeuat10 XYEUAT10 <xyeuat10.pfb
+xyeuat11 XYEUAT10 "1.1 ExtendFont" <xyeuat10.pfb
+xyeuat12 XYEUAT10 "1.2 ExtendFont" <xyeuat10.pfb
+xyeubt10 XYEUBT10 <xyeubt10.pfb
+xyeubt11 XYEUBT10 "1.1 ExtendFont" <xyeubt10.pfb
+xyeubt12 XYEUBT10 "1.2 ExtendFont" <xyeubt10.pfb
+zd ZapfDingbats

@@ -1,0 +1,111 @@
+<html>
+<head><title>Help On LaTeX Lengths</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">Lengths</font></h1>
+<p>
+ A length is a measure of distance.   Many LaTeX commands take a length
+ as an argument.
+ A length of one inch is specified by typing <tt>1in</tt> or, to specify
+ the same length using metric units, by typing <tt>2.54cm</tt>.
+
+<h2>Units</h2>
+ LaTeX knows about the following common units.
+<ul>
+<li><tt>in</tt> - inches
+<li><tt>mm</tt> - millimeters
+<li><tt>cm</tt> - centimeters
+<li><tt>pt</tt> - points (about 1/72 inch)
+<li><tt>em</tt> - approximately the width of an "M" 
+     <em>in the current font</em>
+<li><tt>ex</tt> - approximately the height of an "x" 
+     <em>in the current font</em>
+</ul>
+ And the following less common units
+<ul>
+<li><tt>pc</tt> - pica (12pt/pc)
+<li><tt>bp</tt> - big pt (72bp/in)
+<li><tt>dd</tt> - did&ocirc;t (1157dd=1238pt)
+<li><tt>cc</tt> - c&icirc;cero (12dd/cc)
+<li><tt>sp</tt> - scaled point (65536sp/pt)
+</ul>
+ Lengths may also be negative, for example, <tt>-1.5em</tt>.<br>
+ Note that the number <tt>0</tt> by itself is not a length; 
+ it must be specified as <tt>0in</tt> or <tt>0pt</tt>, for example.<br>
+
+<h2><a name="lencmd">Length commands</a></h2>
+ A length may also be specified by a <em>length command</em>. An example 
+ is <tt>\parindent</tt>
+ whose value specifies the current width of the indentation
+ which begins paragraphs.  Multiples of such length commands may be specified,
+ for example by writing <tt>2.5\parindent</tt> or <tt>-0.1\parindent</tt>.
+<p>
+ Some length commands are
+<ul>
+<li><tt>\parindent</tt> - normal paragraph indentation
+<li><a href="baselineskip.html"><tt>\baselineskip</tt></a> - 
+   normal vertical distance between lines in a paragraph
+<ul><li><a href="baselineskip.html"><tt>\baselinestretch</tt></a> - multiplies
+    <tt>\baselineskip</tt></ul>
+<li><a href="parskip.html"><tt>\parskip</tt></a> - 
+    the <strong>extra</strong> vertical space between
+    paragraphs
+<li><a href="textwidth.html"><tt>\textwidth</tt></a> - 
+    the width of text on the page
+<li><a href="textwidth.html"><tt>\linewidth</tt></a> - 
+    width of a line in the <strong>local</strong>
+     environment
+<li><tt>\textheight</tt> - the height of text on the page
+<li><a href="unitlength.html"><tt>\unitlength</tt></a> - units of 
+  lenght in <a href="ltx-43.html">Picture</a> Environment
+</ul>
+All length commands are robust and <strong>should not</strong> be preceded
+by a <tt>\protect</tt> command.
+
+<h2><a name="rubber">Rubber lengths</a></h2>
+Most lengths have a fixed value.  However, LaTeX also allows for "rubber"
+lengths; these have a natural length plus a degree of elasticity.  For
+example, the <tt>\fill</tt> length command has a natural length of zero 
+but is infinitely stretchable, so that a space of width <tt>\fill</tt> will
+try to stretch as much as possible.  Multiplying a rubber length by a fixed
+factor destroys its elasticity: <tt>0.5\fill</tt> becomes a rigid length 
+with a value of zero.
+
+<h2>Setting values for length commands</h2>
+The following LaTeX commands define and manipulate the value of length 
+commands
+<ul>
+<li><A href="ltx-87.html"><tt>\newlength</tt></A> - define a new length command
+<p>
+<li><A href="ltx-88.html"><tt>\setlength</tt></A>
+<li><A href="ltx-89.html"><tt>\addtolength</tt></A>
+<p>
+<li><A href="ltx-90.html"><tt>\settowidth</tt></A>
+<li><A href="ltx-311.html"><tt>\settoheight</tt></A>
+<li><A href="ltx-312.html"><tt>\settodepth</tt></A>
+</ul>
+
+<h2>Commands that add space</h2>
+<ul>
+<li>Horizontal space
+ <ul>
+ <li><a href="ltx-238.html"><tt>\hfill</tt></a>
+ <li><a href="ltx-241.html"><tt>\hspace</tt></a>
+ </ul>
+<li>Vertical Space
+ <ul>
+ <li><a href="ltx-198.html"><tt>\addvspace</tt></a>
+ <li><a href="ltx-318.html"><tt>\smallskip</tt></a>
+ <li><a href="ltx-266.html"><tt>\medskip</tt></a>
+ <li><a href="ltx-206.html"><tt>\bigskip</tt></a>
+ <li><a href="ltx-345.html"><tt>\vfill</tt></a>
+ <li><a href="ltx-347.html"><tt>\vspace</tt></a>
+ </ul>
+</ul>
+<hr>
+Back to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 23 Oct 1995.
+</address>
+</body>
+</html>

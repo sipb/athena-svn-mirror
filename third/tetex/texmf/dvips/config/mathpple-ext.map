@@ -1,0 +1,9 @@
+% mathpple-ext.map: extra euler entries used by the mathppl
+%   package.
+%
+% Copyright 1998--1999 Walter Schmidt.
+%
+% This file was changed by Thomas Esser since the standard entries
+% for eurb10 and eurm10 are already contained in other map files.
+eurmo10 EURM10 " .167 SlantFont " <eurm10.pfb
+eurbo10 EURB10 " .167 SlantFont " <eurb10.pfb

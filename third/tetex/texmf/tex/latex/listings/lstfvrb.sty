@@ -1,0 +1,134 @@
+%%
+%% This is file `lstfvrb.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% listings.dtx  (with options: `fancyvrb')
+%% 
+%% (w)(c) 1996-1998 Carsten Heinz
+%% 
+%% Please read the software license in listings.dtx or listings.dvi.
+%% 
+%% This file is distributed freely. You are not allowed to take money for
+%% the distribution of this file, except for a nominal charge for copying
+%% etc..
+%% 
+%% This file is free for any non-commercial use. Commercial use needs (i)
+%% explicit permission of the author of this package and (ii) the payment
+%% of a license fee. This fee is to be determined in each instance by the
+%% commercial user and the package author and is to be payed as donation
+%% to the LaTeX3 project.
+%% 
+%% This file is distributed without any warranty, express or implied, as
+%% to merchantability or fitness for any particular purpose.
+%% 
+%% Permission is granted to change this file. You are not allowed to
+%% distribute any changed version this file, neither under the same name
+%% nor under a different one.
+%% 
+\begingroup \makeatletter
+\gdef\lstFV@Def#1{\lccode`\~=#1\lowercase{\def~}}%
+\gdef\lstFV@Let#1{\lccode`\~=#1\lowercase{\let~}}%
+\gdef\lstFV@Use#1#2#3{%
+    \ifnum#2=\z@ %
+        \expandafter\@gobbletwo %
+    \else %
+        \lccode`\~=#2\lowercase{\def~}{#1#3}%
+    \fi %
+    \lstFV@Use#1}%
+\gdef\lstFV@ECUse#1#2{%
+    \ifnum`#2=\z@ %
+        \expandafter\@gobbletwo %
+    \else %
+        \ifnum\catcode`#2=\active %
+            \lccode`\~=`#2\lccode`\/=`#2\lowercase{\lstCC@ECUse@#1~/}%
+        \else %
+            \lccode`\~=`#2\lowercase{\def~}{#1#2}%
+        \fi %
+    \fi %
+    \lstFV@ECUse#1}%
+\gdef\lstFV@Tabulator#1{\lstFV@Let{#1}\lstCC@ProcessTabulator}%
+\gdef\lstFV@Space#1{\lstFV@Let{#1}\lstCC@ProcessSpace}%
+\gdef\lstFV@Stringizer@#1#2{%
+    \ifx\@empty#2%
+        \expandafter\@gobbletwo %
+    \else %
+        \lccode`\~=`#2\lccode`\/=`#2%
+        \lowercase{%
+            \expandafter\let\csname lsts@s/\endcsname~%
+            \def~{#1/}}%
+    \fi %
+    \lstFV@Stringizer@#1}%
+\gdef\lstFV@FancyVerbFormatLine#1{%
+    \let\lstenv@arg\@empty\lstenv@AddArg{#1}%
+    \lstenv@arg \lst@PrintToken\lst@EOLUpdate}%
+\gdef\lstfancyvrb@{%
+    \ifx\FV@VerbatimBegin\lstFV@VerbatimBegin\else %
+        \let\lstFV@OldVB\FV@VerbatimBegin %
+        \let\lstFV@OldVE\FV@VerbatimEnd %
+        \let\FV@VerbatimBegin\lstFV@VerbatimBegin %
+        \let\FV@VerbatimEnd\lstFV@VerbatimEnd %
+    \fi %
+    \lst@iffancyvrb %
+        \ifx\FancyVerbFormatLine\lstFV@FancyVerbFormatLine\else %
+            \let\lstFV@FVFL\FancyVerbFormatLine %
+            \let\FancyVerbFormatLine\lstFV@FancyVerbFormatLine %
+        \fi %
+    \else %
+        \ifx\lstFV@FVFL\@undefined\else %
+            \let\FancyVerbFormatLine\lstFV@FVFL %
+        \fi %
+    \fi}%
+\gdef\lstFV@VerbatimBegin{%
+    \lstFV@OldVB %
+    \ifx\FancyVerbFormatLine\lstFV@FancyVerbFormatLine %
+        \lst@DontEscapeToLaTeX %
+        \let\smallbreak\relax \let\normalbaselines\relax %
+        \let\lst@prelisting\relax \let\lst@postlisting\relax %
+        \def\lst@firstline{1}\def\lst@lastline{999999}%
+        \let\lstCC@Use\lstFV@Use %
+        \let\lstCC@ECUse\lstFV@ECUse %
+        \let\lstCC@Tabulator\lstFV@Tabulator %
+        \let\lstCC@Space\lstFV@Space %
+        \let\lstCC@Stringizer@\lstFV@Stringizer@ %
+        \def\lst@next{%
+            \lst@Init\relax %
+            \everypar{}\global\let\lst@NewLine\relax}%
+        \expandafter\lst@next %
+    \fi}%
+\gdef\lstFV@VerbatimEnd{%
+    \ifx\FancyVerbFormatLine\lstFV@FancyVerbFormatLine %
+        \global\setbox\lstFV@gtempboxa\box\@tempboxa %
+        \global\let\@gtempa\FV@ProcessLine %
+        \lst@DeInit %
+        \let\FV@ProcessLine\@gtempa %
+        \setbox\@tempboxa\box\lstFV@gtempboxa %
+    \fi %
+    \lstFV@OldVE}%
+\newbox\lstFV@gtempboxa %
+\gdef\lstFV@FancyVerbFormatLine#1{%
+    \let\lst@arg\@empty\lstFV@Convert#1@%
+    \lst@arg \lst@PrintToken\lst@EOLUpdate}%
+\gdef\lstFV@Convert{%
+    \@ifnextchar\bgroup{\lstFV@Convert@Arg}{\lstFV@Convert@}}%
+\gdef\lstFV@Convert@Arg#1{%
+    {\let\lst@arg\@empty \lstFV@Convert#1@\global\let\@gtempa\lst@arg}%
+    \expandafter\lst@lAddTo\expandafter\lst@arg\expandafter{%
+    \expandafter{\@gtempa\lst@PrintToken}}%
+    \lstFV@Convert}%
+\gdef\lstFV@Convert@#1{%
+    \ifx @#1\else %
+        \expandafter\lstFV@Convert@@\string#1\@empty\@empty\relax{#1}%
+        \expandafter\lstFV@Convert %
+    \fi}%
+\gdef\lstFV@Convert@@#1#2#3\relax#4{%
+    \ifx\@empty#2%
+        \lccode`\~=`#4\lowercase{\lst@lAddTo\lst@arg~}%
+    \else %
+        \lst@lAddTo\lst@arg{\lst@UseLostSpace\lst@PrintToken#4}%
+    \fi}%
+\endgroup %
+\endinput
+%%
+%% End of file `lstfvrb.sty'.

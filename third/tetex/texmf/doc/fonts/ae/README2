@@ -1,0 +1,10 @@
+Thomas Esser, (C) 1998. Public domain.
+
+By loading the ae package (\usepackage{ae}), you loose some characters
+as mentioned in README. The package aecompl by Denis Roegel restores
+these characters which are taken from the ec fonts. If you use pdftex,
+you will get these characters as bitmaps, but this might be better than
+not having them at all.
+
+To use it, just
+  \usepackage{ae,aecompl}

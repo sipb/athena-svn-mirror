@@ -1,0 +1,42 @@
+<html>
+<head><title>Help On LaTeX \bibitem</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">\bibitem</font></h1>
+<p>
+ <tt>\bibitem[label]{cite_key}</tt>
+<p>
+
+ The <tt>\bibitem</tt>  command  generates  an entry labeled  by <tt>label</tt>.
+ If the <tt>label</tt> 
+ argument is missing,  a number is generated  as the label, using
+ the <tt>enumiv</tt> 
+ <a href="ltx-3.html">counter</a>.   
+ The <tt>cite_key</tt> is a mnemonic consisting of any  sequence of letters, 
+ numbers, and punctuation  symbols not containing  a comma.  
+<p>
+ <tt>\bibitem</tt> and <a href="ltx-211.html"><tt>\cite</tt></a> are used
+ together much as <a href="ltx-252.html"><tt>\label</tt></a> and
+ <a href="ltx-303.html"><tt>\ref</tt></a> to produce a correspondence 
+ between items in the Reference or Bibliography 
+ (<a href="ltx-73.html"><tt>thebibliography</tt></a> environment).
+<p>
+ This command writes
+ an entry  on the aux file containing  <tt>cite_key</tt>  and the item's  
+ <tt>label</tt>.
+ When this aux file is read by the 
+ <a href="ltx-169.html"><tt>\begin{document}</tt></a> command, the item's
+ <tt>label</tt> is associated  with <tt>cite_key</tt>, 
+ causing the reference  to <tt>cite_key</tt> by a 
+ <a href="ltx-211.html"><tt>\cite</tt></a> command to produce the 
+ associated <tt>label</tt>.
+<hr>
+See also <A href="ltx-27.html">Environments</A><br>
+See also <A href="ltx-73.html"><tt>thebibliography</tt></A>,
+         <a href="ltx-211.html"><tt>\cite</tt></a><br>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr> 
+<address>
+Revised: Sheldon Green, 17 May 1995.
+</address>
+</body>
+</html>

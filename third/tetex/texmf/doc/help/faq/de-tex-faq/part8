@@ -1,0 +1,745 @@
+Path: senator-bedfellow.mit.edu!bloom-beacon.mit.edu!news.kodak.com!news-nysernet-16.sprintlink.net!news-east1.sprintlink.net!news-peer1.sprintlink.net!netnews.com!news-peer-europe.sprintlink.net!news.sprintlink.net!news.algonet.se!algonet!feed2.news.luth.se!luth.se!fu-berlin.de!news.uni-stuttgart.de!news.urz.uni-heidelberg.de!german
+From: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+Newsgroups: de.comp.text.tex,de.answers,news.answers
+Subject: TeX, LaTeX, DANTE e.V.: FAQ - Fragen und Antworten (Part 8 of 11)
+Supersedes: <de-tex-faq-8-922970460@dante.de>
+Followup-To: de.comp.text.tex
+Date: 11 May 1999 15:40:15 GMT
+Organization: DANTE, Deutschsprachige Anwendervereinigung TeX e.V.
+Lines: 718
+Approved: news-answers-request@MIT.EDU
+Distribution: world
+Expires: 25 Jun 99 17:39:26
+Message-ID: <de-tex-faq-8-926437166@dante.de>
+References: <de-tex-faq-1-926437166@dante.de>
+Reply-To: dantefaq@dante.de (DE-TeX-FAQ-Maintainer)
+NNTP-Posting-Host: sun.dante.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Summary: This posting contains a list of Frequently Asked Questions
+         (and their answers) about the typesetting system TeX and
+         about DANTE e.V., the german-speaking TeX users group.
+         It is in German and uses the ISO Latin-1 character set.
+Keywords: FAQ TYPESETTING TeX USERGROUP DANTE
+Originator: german@sun.dante.de
+Xref: senator-bedfellow.mit.edu de.comp.text.tex:16693 de.answers:3304 news.answers:157709
+
+Posted-By: auto-faq 3.3 (Perl 5.003)
+Archive-name: de-tex-faq/part8
+Posting-Frequency: monthly
+Copyright-Notice: siehe Abschnitt 1.1/see Section 1.1
+URL: http://www.dante.de/faq/de-tex-faq/
+
+--- DE-TeX-FAQ Beginn Teil 8 ---
+
+
+  Fragen und Antworten (FAQ) über das Textsatzsystem TeX und DANTE,
+            Deutschsprachige Anwendervereinigung TeX e.V.
+                                   
+           Bernd Raichle, Thomas Hafner und Rolf Niepraschk
+                                   
+                      (Version 51 vom Mai 1999)
+  _________________________________________________________________
+
+8 TeX, LaTeX, Makros etc. (IV)
+                                    
+8.1 Mathematischer Formelsatz
+
+8.1.1 Für Zahlenbereiche möchte ich die Symbole für N, Z, Q, R, C mit
+      Doppelstrich verwenden. Wie bekomme ich diese Zeichen?
+
+Ursprünglich wurden diese Symbole mit fetten Buchstaben geschrieben.
+Da dies mit Kreide auf einer Tafel (`blackboard') sehr umständlich
+wäre, hat man die Schreibweise mit den Doppelstrichen erfunden.
+
+Die einfachste Möglichkeit ist daher, die Symbole einfach fett zu
+drucken, also \mathbf{N} (bzw. {\bf N} in Plain-TeX/LaTeX 2.09).
+
+So auf die Schnelle ist auch die `poor man's solution' mit
+\(\mathsf{I\!\!\:N}\) ausreichend. Jedoch wird diese Lösung spätestens
+für die ganzen, rationalen und komplexen Zahlen (Z, Q, C) schwieriger.
+
+Ansonsten könnte man auch auf \mathcal (\cal in LaTeX 2.09) und bei
+Verwendung von AMS-(La)TeX auf \mathbb bzw. \Bbb ausweichen.
+
+Es gibt aber auch folgende Schriften, die Buchstaben mehr oder weniger
+so wie `an der Tafel geschrieben' enthalten:
+  * bbold (von Alain Jeffrey)
+    ohne Serifen, zwei dünne Striche, vollständiger Zeichensatz.
+  * mathbbol (von Jörg Knappen)
+    definiert AMS-(La)TeXs \mathbb-Anweisung so um, daß statt der
+    Original-AMS- die `bbold'-Schriften verwendet werden.
+  * doublestroke (von Olaf Kummer)
+    mit Serifen (ein dicker und ein dünner Strich) und in neuer
+    Version ohne Serifen (gleichmäßige Dicke), nur Großbuchstaben und
+    1, k, h.
+  * bbm (von Gilles F. Robert)
+    sollte allen Wünschen gerecht werden, alle Varianten, wie fett,
+    mit oder ohne Serifen etc.
+    
+Die Auswahl einer dieser Schriften ist reine Geschmackssache. Eine
+Hilfe dazu bietet die Übersicht in der PostScript-Datei
+``blackboard.ps''.
+
+bbold:  CTAN: fonts/bbold/
+mathbbol:  CTAN: macros/latex/contrib/supported/jknappen/
+doublestroke:  CTAN: fonts/doublestroke/
+bbm:  CTAN: fonts/cm/bbm/
+CTAN: fonts/cm/sauter/holin/bbm/
+CTAN: macros/latex/contrib/supported/bbm
+blackboard.ps:  CTAN: documentation/blackboard/blackboard.ps
+
+8.1.2 Für Lagrange-Dichten hätte ich gern ein geschwungenes L;
+      \mathcal{L} ist nicht das, was ich wünsche!
+
+Schreibschriftbuchstaben für den Mathematiksatz (nur Großbuchstaben)
+sind in den rsfs-Schriften (Ralph Smith Formal Script) enthalten. Sie
+können mit dem Paket `mathrsfs' und dem Befehl \mathscr{L} eingebunden
+werden. Das Paket `calrsfs' ergibt Schreibschriftbuchstaben anstelle
+der kalligraphischen Buchstaben mit dem Befehl \mathcal{L}.
+
+rsfs:  CTAN: fonts/rsfs/
+CTAN: fonts/cm/sauter/holin/rsfs/b-rsfs.mf
+mathrsfs:  CTAN: macros/latex/contrib/supported/jknappen/
+calrsfs:  CTAN: macros/latex/contrib/other/calrsfs/
+
+8.1.3 Ich suche das Zeichen ... für den Formelsatz, und kann es nicht in
+      den Standardfonts finden?
+
+Zeichen, die in den CM-Fonts fehlen, sind mit wirklich sehr großer
+Wahrscheinlichkeit in den AMS-Fonts `msam' oder `msbm' vorhanden. Die
+Einbindung in LaTeX erfolgt mit dem Paket `amsfonts', die Einbindung
+in Plain-TeX mit ``\input amssym.tex''.
+
+amsfonts:  CTAN: fonts/amsfonts/
+amssym:  CTAN: fonts/amsfonts/plaintex/amssym.tex
+
+8.1.4 Warum fügt TeX in einer mathematischen Formel hinter einem
+      Dezimalkomma einen kleinen Zwischenraum ein?
+
+Die meisten TeX-Makropakete und -Formate gehen davon aus, daß man
+einen Dezimalpunkt statt eines -kommas verwendet. Für den
+Dezimalpunkt, der in einer mathematischen Formel die Bedeutung eines
+`Ordinary'-Symbols hat, wird daher zwischen Ziffern kein zusätzlicher
+Zwischenraum eingefügt. Das Komma hat in Formeln die Bedeutung eines
+`Punctuation'-Symbols, man kann es daher als Trennzeichen in einer
+Aufzählung verwenden, da TeX mit einem kleinen Zwischenraum dafür
+sorgt, daß Formeln wie `f(x, y)' gut aussehen.
+
+Das Problem des falschen Abstandes für ein Dezimalkomma kann man auf
+verschiedene Arten beheben. Für einzelne Fälle mag es reichen, das
+Komma einfach mit {...} zu klammern, da geklammerte Formelteile
+diesselben Abstände wie ein `Ordinary'-Symbol bekommen:
+$\pi = 3{,}1415\ldots$
+
+Eine andere Methode erklärt das Komma zu einem `Ordinary'-Symbol statt
+eines Trennzeichens:
+%%%% alte Definition:
+%% \mathcode`\,="613B
+%%%% neue Definition:
+\mathcode`\,="013B
+
+und wenn man statt der \mathcode-Zuweisung die Anweisung
+\DeclareMathSymbol in LaTeX2e verwendet:
+%%%% alte Definition:
+%% \DeclareMathSymbol{,}{\mathpunct}{letters}{"3B}
+%%%% neue Definition:
+\DeclareMathSymbol{,}{\mathord}{letters}{"3B}
+
+Der Preis hierfür ist natürlich, daß in `f(x,y)' der zusätzliche
+Zwischenraum fehlt. Aber auch das läßt sich in den Griff bekommen,
+etwa mit Definitionen wie
+% make ',' an ordinary Symbol in decimal numbers
+\mathchardef\CommaOrdinary="013B
+\mathchardef\CommaPunct   ="613B
+\mathcode`,="8000   % , im Math-Mode aktiv ("8000) machen
+{\catcode`\,=\active
+ \gdef ,{\obeyspaces\futurelet\next\CommaCheck}}
+\def\CommaCheck{\if\space\next\CommaPunct\else\CommaOrdinary\fi}
+
+Hiermit ist es möglich, zwischen `3,1415' und `f(x, y)' zu
+unterscheiden; steht hinter dem Komma ein Leerzeichen, ist das
+Trennzeichen gemeint, sonst das Dezimalkomma.
+
+8.1.5 AmS-LaTeX: Was ist der Unterschied zwischen dem Paket `amstex' und
+      `amsmath'?
+
+Dies wird in der Datei ``diff12.tex'' des AmS-LaTeX-Packages
+erläutert: In AmS-LaTeX Version 1.0 und 1.1, beide nur für LaTeX 2.09,
+war `amstex' das Hauptpaket, das mehr oder weniger direkt aus Michael
+Spivaks AmS-TeX-Makros entstanden ist. AmS-LaTeX Version 1.2 für
+LaTeX2e enthält nun neben `amstex' ein neues Paket namens `amsmath',
+das nun unabhängig von `amstex' weiterentwickelt werden kann. `amstex'
+kann dadurch eingefroren werden, so daß alte Dokumente weiterhin
+unverändert formatiert werden können. Für neue Dokumente sollte man
+`amsmath' verwenden, da nur noch dieses Paket unterstützt und
+weiterentwickelt wird. Die Unterschiede zwischen `amsmath' und
+`amstex' sind der Dokumentation in der Datei ``diff12.tex'' zu
+entnehmen.
+
+amslatex:  CTAN: macros/latex/required/amslatex/
+diff12.tex:  CTAN: macros/latex/required/amslatex/math/diff12.tex
+
+8.1.6 AMS-Fonts: Ein altes Dokument benutzt die Fonts `msxm' und `msym'.
+      Wo kann ich diese finden?
+
+Die Fonts `msxm' und `msym' sind veraltet und wurden vor einigen
+Jahren durch die Fonts namens `msam' und `msbm' ersetzt. Beide Fonts
+sind im AMS-Font-Paket enthalten.
+
+Selbst wenn man die Quellprogramme für die beiden veralteten Fonts
+`msxm' und `msym' hätte, könnte man aus diesen keine gf- oder
+pk-Dateien erzeugen, da die Fonts `msxm' und `msym' mit dem Vorgänger
+des aktuellen METAFONT-Programmes namens `MF79' in der Sprache `SAIL'
+geschrieben waren. Aus diesem Grund wurden die beiden Fonts auch nur
+als pxl- oder pk-Dateien verteilt.
+
+msxm/msym: CTAN: fonts/vf-files/msx2msa/
+(enthält virtuelle Fonts für `msxm' und
+`msym', die die realen Fonts `msam' und
+`msbm' verwenden)
+
+8.1.7 Das Integral- und Summationszeichen ist für Dokumente, die in 11pt
+      oder gar 12pt gesetzt sind, zu klein.
+
+Den Math-Extension-Font `cmex10', aus dem die `großen' Symbole
+stammen, sollte man nicht einfach vergrößern, da einige Parameter
+dieses besonderen Fonts den mathematischen Formelsatz in TeX
+bestimmen. Da es bisher für 11pt und 12pt keine speziellen
+Math-Extension-Fonts gibt, verwendet LaTeX2e für alle Schriftgrößen
+den 10pt-Font `cmex10'.
+
+Mit dem Paket `exscale' verwendet LaTeX2e skalierte `cmex10'-Fonts und
+paßt die Anweisungen \big, \bigg etc. entsprechend an.
+
+exscale.sty:  CTAN: macros/latex/base/exscale.sty
+
+8.1.8 Wie vermeide ich den Fehler `! Double superscript.', den ich für
+      $a^b^c$ erhalte?
+
+Der Term a hoch b hoch c ist nicht eindeutig, da er entweder als
+(a^b)^c oder als a^(b^c) interpretiert werden kann. Anstatt nun eine
+möglicherweise falsche Interpretation des Terms anzunehmen, meldet TeX
+obigen Fehler. Diesen muß man durch explizite Klammerung ${a^b}^c$
+bzw. $a^{b^c}$ auflösen, was dann zu Unterschieden in den
+Schriftgrößen führt.
+
+Das gleiche Problem stellt sich auch bei mehrfacher Indizierung
+$a_b_c$, wo man die Mehrdeutigkeit ebenso durch Klammerung auflösen
+muß.
+
+8.1.9 Wie setzt man physikalische Einheiten, etwa Längenangaben?
+
+Es gelten einigen Grundregeln, von denen die meisten das Paket `units'
+automatisch korrekt erledigt:
+  * In wissenschaftlichen Werken werden Einheiten aufrecht und vor
+    allem bei längeren Ausdrücken, etwa $F = 400\,\mathrm{kN}$, im
+    Mathe-Modus gesetzt.
+  * Falls die Integration etwa in einen halbfetten Textteil wichtiger
+    als die physikalische Korrektheit ist, sollte Textmodus, etwa
+    \textbf{... 3\,m ...}, verwendet werden. Hinweis: Der Unterschied
+    zwischen Text- und Mathemodus wird deutlicher, wenn man mittels
+    \renewcommand{\familydefault}{cmss} eine Serifenlose verwendet.
+  * Zwischen Zahl und Dimension findet kein Zeilenumbruch statt.
+  * Als Abstand zwischen Zahl und Dimension wählt man \,. Dagegen
+    sehen die Richtlinien des Springer-Verlags ~ als Abstand vor.
+  * Einheiten werden _nicht_ in eckige Klammern, wie etwa [N],
+    gesetzt. Die richtige Schreibweise ist $[F] = \mathrm{N}$.
+  * In Tabellen stehen Einheiten in runden Klammern in einer eigenen
+    Zeile im Tabellenkopf, nicht etwa in jeder Zelle:
+========================
+Erhöhte Reduktion  Druck
+bei Rolle 44
+(mm)               (MPa)
+------------------------
+5                  8
+...
+    
+units:  CTAN: macros/latex/contrib/supported/units
+
+8.2 Verschiedene sonstige Zeichen
+
+8.2.1 Wie bekomme ich ein Gradzeichen?
+
+Das Gradzeichen erhält man am einfachsten mit LaTeX2e mittels
+
+\newcommand{\grad}{\ensuremath{^\circ}}
+
+Da die Anweisung \ensuremath in LaTeX 2.09 nicht existiert, muß man
+hier den konventionellen Weg wählen (der auch in LaTeX2e
+funktioniert):
+\newcommand{\grad}{\mbox{\(\mathsurround=0pt{}^\circ\)}}
+
+Hat man schon die Text-Companion-Schrift der EC-Schriftfamilie
+installiert, kann man mit dem Paket `textcomp', das seit Dezember 1997
+Bestandteil von LaTeX2e ist, auf ein Gradzeichen mit \textdegree und
+auf ein fertig zusammengesetztes Grad-Celsius-Zeichen mit \textcelcius
+zugreifen. In der mittlerweile veralteten Testversion von `textcomp'
+mußte statt \textcelcius noch \textcentigrade verwendet werden.
+
+ec/tc-fonts:  CTAN: fonts/ec/
+
+8.2.2 Wo finde ich ein Promillezeichen? Ich möchte endlich 1,1\,Promille
+      statt 0,11\,\% eingeben können.
+
+``Die TeXnische Komödie'' vom Dezember 1993 enthielt folgende Lösung,
+die auf der TeXbook-Lösung zu Übung 11.6, S. 67+311, basiert (an
+LaTeX2e angepaßt [br]):
+\newcommand{\promille}{%
+  \relax\ifmmode\promillezeichen
+        \else\leavevmode\(\mathsurround=0pt\promillezeichen\)\fi}
+\newcommand{\promillezeichen}{%
+  \kern-.05em%
+  \raise.5ex\hbox{\the\scriptfont0 0}%
+  \kern-.15em/\kern-.15em%
+  \lower.25ex\hbox{\the\scriptfont0 00}}
+
+Die zusätzliche \(..\)-Umgebung im Makro \promille ist für LaTeX2e
+zwingend notwendig, da sonst in einigen Fällen Zeichen fehlen könnten.
+(Man könnte auch die Anweisung \ensuremath aus LaTeX2e verwenden.)
+Leider paßt das erzeugte Promillezeichen von der Form her nicht zum
+Prozentzeichen.
+
+Ein viel bessere Lösung in Form von fertigen Lettern bieten die
+`wasy'- und die Text- bzw. Text-Companion-Schriften der EC-Schriften:
+
+Promillezeichen aus den `wasy'-Schriften:
+\usepackage{wasysym}
+\permil
+
+Promillezeichen aus der Text-Companion-(tc)-Schrift der EC-Schriften:
+\usepackage{textcomp}
+\textperthousand
+
+Diese Lösungen haben den Vorteil, daß sie auch von der Form zum
+üblichen Prozentzeichen passen.
+
+textcomp:  CTAN: macros/latex/base/textcomp.sty
+ec/tc-fonts:  CTAN: fonts/ec/
+wasy:  CTAN: fonts/wasy2/
+CTAN: fonts/wasy2/ps-type1/hoekwater/
+wasysym:  CTAN: macros/latex/contrib/supported/wasysym/
+
+8.2.3 Ich benötige einen liegenden bzw. gedrehten `dagger' oder ein
+      ähnliches liegendes Zeichen. Wie?
+
+Entweder sucht man nach einem fertigen Font mit einem solchen Symbol
+oder ändert die Quelle eines Fonts, falls dieser beispielweise als
+mf-Datei vorliegt, und fügt in die Quelle eine Operation zum Drehen
+eines Zeichens ein.
+
+Falls der dvi-Gerätetreiber in der Lage ist, Teile der Ausgabe zu
+drehen, kann man unter LaTeX2e die Anweisung \rotatebox aus dem
+`graphicx'-Package verwenden:
+\rotatebox[origin=c]{90}{\(\dagger\)}
+
+graphicx:  CTAN: macros/latex/required/graphics/
+
+8.2.4 Wie erzeuge ich ein Zeichen für `trademark' (TM), `registered
+      trademark' (R) oder `copyright' (C)?
+
+Diese Zeichen durch Box-Konstruktionen zusammenzubauen, ergibt in den
+meisten Fällen sehr unbefriedigende Ergebnisse. Unter LaTeX2e hat man
+mit der Anweisung \textcircled{<Zeichen>} eine sehr einfache
+Möglichkeit dafür, jedoch erhält man nur für einzelne Zeichen, wie für
+das `c' im Copyright-Zeichen \copyright, ein einigermaßen gutes
+Ergebnis. Eine erste Näherung für das Trademark-Zeichen (TM) ist
+\DeclareRobustCommand{\trademark}{\ensuremath{^{\mathrm{TM}}}}.
+
+Sehr viel einfacher und besser sind die fertigen Zeichen, wie
+\texttrademark, aus den Text-Companion-Fonts `tc...' aus dem
+EC-Schrift-Paket. Unter LaTeX2e gibt es zur einfachen Einbindung das
+`textcomp'-Package.
+
+Beginnend mit LaTeX2e von Dezember 1995 gibt es standardmäßig neben
+der Definition für das Copyright-Zeichen auch Definitionen für die
+Zeichen `trademark' und `registered trademark' (\texttrademark,
+\textregistered). Seit LaTeX2e vom Dezember 1997 ist das Paket
+`textcomp' in der LaTeX2e-Verteilung enthalten.
+
+tc-Fonts:  CTAN: fonts/ec/
+
+8.2.5 Wie kann man ein nicht kursives griechisches mu erzeugen?
+
+In den Text-Companion-Fonts befindet sich ein aufrechtes mu, das man
+beispielsweise für Mengenangaben benötigt.
+\usepackage{textcomp} % seit 1997/12/01 in der Standardverteilung
+\textmu
+
+8.2.6 Wie bekomme ich das Währungssymbol für den Euro?
+
+Die Text-Companion-Fonts enthalten das Euro-Symbol, wobei dieses nicht
+der offiziell festgelegten Version entspricht.
+\usepackage{textcomp}
+\texteuro
+{\sffamily\texteuro}
+
+Ebenso kann man sich notfalls ein eigenes, ebenso nicht konformes
+Euro-Symbol zusammensetzen:
+\newcommand\euro{{\sffamily C%
+\makebox[0pt][l]{\kern-.70em\mbox{--}}%
+\makebox[0pt][l]{\kern-.68em\raisebox{.25ex}{--}}}}
+
+Mit dem Paket `eurosym' gibt es einen Satz an Fonts mit dem
+Euro-Symbol, das der offiziell festgelegten Form des Symbols
+entspricht. Mitgeliefert wird ein LaTeX-Paket zur Einbindung, so daß
+man mit \euro ein offizielles zur Schriftgröße passendes Euro-Symbol
+erhält. Abweichend von der offiziellen Vorgabe wird es, um ein
+besseres Schriftbild zu erreichen, auch fett und schräg gesetzt.
+
+Dieselbe Anweisung \euro unterstützt auch das Paket `europs'. Es
+erfordert die bei Adobe verfügbaren Postscript-Fonts mit dem
+Euro-Symbol. Daneben existiert mit dem Paket `eurosans' eine weitere
+LaTeX-Einbindung, das das Euro-Symbol aus der von Adobe erstellten
+PostScript-Font-Familie `EuroSans' verwendet.
+
+Daneben enthält auch die im PostScript-Type-1-Format vorliegende
+Schrift `Martin Vogels Symbole (marvosym)' ein Euro-Symbol. In dieser
+Schrift ist außerdem jeweils ein Euro-Symbol, das zu den Schriften
+Times, Helvetica und Courier paßt, enthalten.
+\usepackage{marvosym} % bei der Schrift enthalten
+\EUR
+\EURtm \EURhv \EURcr
+
+Und auch das Paket `China2e', mit dem chinesische Kalendersymbole
+erzeugt werden können, enthält Fonts mit dem Euro-Symbol, das man mit
+der Anweisung \Euro bekommt.
+
+eurosym:  CTAN: fonts/eurosym/
+europs:  CTAN: fonts/europs/
+http://www.adobe.com/
+eurosans:  CTAN: macros/latex/contrib/supported/eurosans/
+marvosym:  CTAN: fonts/psfonts/marvosym/
+china2e:  CTAN: macros/latex/contrib/supported/china2e/
+
+8.2.7 Wie bekomme ich ein Entspricht-Symbol?
+
+Ein Entspricht-Symbol kann man sich entweder mit
+\newcommand{\entspricht}{\mathrel{\widehat{=}}}
+
+oder mit
+\newcommand{\entspricht}{\stackrel{\wedge}{=}}
+
+definieren. Die Anweisung \mathrel{}, die in \stackrel implizit
+bereits enthalten ist, sorgt dafür, daß korrekte Abstände vor und nach
+einem so definierten Symbol verwendet werden.
+
+8.2.8 Wie bekomme ich das Symbol für Durchmesser?
+
+Die einfachste Lösung ist \O{}. Empfehlenswerter ist jedoch ein Symbol
+aus den AMS-Schriften:
+\usepackage{amssymb}
+\(\varnothing\)
+
+AMS-Fonts:  CTAN: fonts/amsfonts/
+amssymb:  CTAN: fonts/amsfonts/latex/
+
+8.2.9 Wie kann ich ``\'', ``<'', ``>'' und weitere Sonderzeichen im Text
+      benutzen?
+
+Die Zeichen, die in LaTeX eine besondere Bedeutung haben, und andere
+Sonderzeichen mußten früher mehr oder weniger kompliziert erzeugt
+werden oder man mußte auf den Formelsatz ausweichen. Unter LaTeX2e
+gibt es nun einfachere Anweisungen, wobei man eine LaTeX2e-Version vom
+Dezember 1995 oder neuer verwenden sollte. Unter anderem sind folgende
+Symbole definiert:
+
+Text-Anweisung Formelsatz Symbol oder Symbol-Beschreibung
+\textbackslash \backslash \
+\textbar \mid |
+\textless < <
+\textgreater > >
+\textasciicircum \hat ^
+\textasciitilde \tilde ~
+\textbullet \bullet gefüllter Kreis auf halber Höhe
+\textperiodcentered \cdot Punkt auf halber Höhe (`Malzeichen')
+\textvisiblespace (n.v.) sichtbares Leerzeichen
+
+Näheres findet man in der Datei ``usrguide.tex'' (``LaTeX2e for
+authors'').
+
+usrguide:  CTAN: macros/latex/base/usrguide.tex
+
+8.3 Chemischer Struktur- und Formelsatz
+
+8.3.1 Wie kann ich chemische Strukturformeln mit LaTeX setzen?
+
+Die folgenden Pakete sind eine unvollständige Auswahl (Freiwillige?!).
+Ob sie unter LaTeX2e, LaTeX 2.09 oder Plain-TeX verwendbar sind, muß,
+falls dies nicht vermerkt ist, selbst getestet werden.
+  * PPCHTeX: Typesetting Chemical Formulas in TeX, von J. Hagen und
+    A.F. Otten
+    Auf PiCTeX oder PSTricks basierendes Paket, mittlerweile das
+    flexibelste und umfangreichste Paket. PPCHTeX ist für das bisher
+    nur in Teilen veröffentlichte TeX-Format ConTeXt entwickelt
+    worden, kann aber auch mit Plain-TeX und LaTeX (2e und 2.09)
+    eingesetzt werden. Eine ältere Version ist in den Proceedings of
+    the 9th European TeX Conference EuroTeX'95, Arnhem, S. 197-222 und
+    TUGboat 17(1), März 1996, S. 54-66 beschrieben. Für PPCHTeX gibt
+    es eine mail-basierte Diskussionsliste, siehe Frage 1.2.4.
+  * XymTeX: A Macro Package for Typsetting Chemical Structural
+    Formulas, von Shinsaku Fujita Dieses System ist nach PPCHTeX das
+    umfangreichste. Es verwendet vorgefertigte Molekülklassen, in
+    denen die Atompositionen vom Anwender belegt werden können. Durch
+    die `Kondensation' solcher Klassen lassen sich so ziemlich alle
+    denkbaren Moleküle zaubern. Ohne Handbuch (127 Seiten) und Zeit
+    aber eher unbrauchbar, weil sehr kompliziert. Eine Beschreibung
+    findet sich auch in der Tugboat 16/1, S. 81-88.
+  * Chemstruct: Chemische Strukturformeln mit TeX, von Michael Ramek
+    Hier gibt man im wesentlichen von einem Bezugsatom ausgehend die
+    Art und die Himmelsrichtung der Bindung an und gelangt so recht
+    schnell zu brauchbaren Ergebnissen. So hangelt man sich von Atom
+    zu Atom... (Handbuch mit 18 S.)
+  * ChemTeX: Typesetting Chemical Equations using LaTeX
+    Scheint auch mit Molekülklassen zu arbeiten, wenn auch längst
+    nicht so komplex wie XymTeX, damit anwendungsfreundlicher, aber
+    auch nur für einen begrenzten Satz an Strukturen geeignet...
+    (Handbuch mit 42 S.)
+  * Chemsym - Chemical Symbols, von Mats Dahlgren
+    Vereinfacht die Eingabe und den Satz von chemischen
+    Reaktionsformeln, indem eine große Menge von chemischen Symbolen
+    vordefiniert werden. Für LaTeX2e, mit Dokumentation.
+  * streeTeX - One more Macro Package for typesetting Structural
+    Formulae with LaTeX
+    streeTeX, ein Kunstwort aus `structure' und `tree', verwendet
+    emTeX-Specials zum Zeichnen der Moleküle. Molekülbindungen werden
+    dabei von einem Atom ausgehend in 12 verschiedene Richtungen
+    gezeichnet. Außerdem können NMR-Massenspektren gezeichnet werden.
+    (Handbuch mit 20 Seiten, englisch oder russisch)
+    
+Daneben gibt es noch Programme wie ChemDraw, ChemWindow o.ä., bei
+denen man die erstellte Strukturformel als PS-Datei ausgeben und dann
+in (La)TeX einbinden kann.
+
+PPCHTeX:  CTAN: macros/context/ppchtex/
+PPCHTeX-Datenbank:  http://www.caw.de/walram/ppchtex/
+XymTeX:  CTAN: macros/latex/contrib/other/xymtex/
+chemstruct:  CTAN: macros/latex209/contrib/chemstruct/
+chemtex:  CTAN: macros/latex209/contrib/chemtex/
+chemsym:  CTAN: macros/latex/contrib/supported/chemsym/
+streeTeX:  CTAN: macros/latex/contrib/supported/streetex/
+
+8.3.2 Bei der Verwendung des Paketes `chemtex' mit LaTeX2e erhalte ich
+      bei der Zuweisung \textfont1=\tenrm einen Fehler. Abhilfen?
+
+\tenrm ist ein alter, nur intern in LaTeX 2.09 zu verwendender Name
+eines Font (siehe auch Abschnitt 5.2 ``LaTeX2e - Probleme beim
+Umstieg'').
+
+Mit dem Package `rawfonts' kann man diese Namen (nach-)definieren:
+
+\usepackage[only,tenrm]{rawfonts}
+
+rawfonts:  CTAN: macros/latex/required/
+
+8.3.3 Das Makro \chemical, das u.a. auch in Helmut Kopka, ``LaTeX - eine
+      Einführung'' beschrieben wird, funktioniert ebenso nicht mehr. Was
+      muß man ändern?
+
+Der im Makro (das aus dem TeXbook stammt!) verwendete Name \tensy des
+Math-Symbol-Font ist nur in Plain-TeX und LaTeX 2.09 definiert.
+LaTeX2e lädt darüber hinaus die für den mathematischen Formelsatz
+notwendigen Fonts erst zu Beginn der ersten zu setzenden Formel, so
+daß man auch durch Nachdefinition mit Hilfe des Paketes `rawfonts' in
+bestimmten Situationen einen Fehler bekommen kann.
+
+Hier ist eine für LaTeX2e verwendbare Definition von \chemical (die
+man in eine .sty-Datei schreiben oder mit \makeatletter ...
+\makeatother klammern muss):
+\DeclareRobustCommand{\chemical}[1]{%
+ {\(\m@th
+  \edef\resetfontdimens{\noexpand\)%
+      \fontdimen16\textfont2=\the\fontdimen16\textfont2
+      \fontdimen17\textfont2=\the\fontdimen17\textfont2\relax}%
+  \fontdimen16\textfont2=2.7pt \fontdimen17\textfont2=2.7pt
+  \mathrm{#1}%
+  \resetfontdimens}}
+
+8.4 Notensatz
+
+8.4.1 Wie kann ich mit TeX Noten setzen?
+
+Notensatz mit TeX begann vor vielen Jahren mit dem Paket MuTeX, mit
+dem einstimmiger Notensatz möglich war. Auf dessen Basis entwickelte
+Daniel Taupin MusicTeX, das durch Ergänzungen insbesondere von Ross
+Mitchell und Andreas Egler zu MusiXTeX wurde. Von Egler gibt es auch
+noch eine Testversion namens OpusTeX. Die MuTeX-Entwicklung wurde
+schon vor der endgültigen Fertigstellung eingestellt. MusicTeX wird
+gewartet, MusiXTeX wird gewartet und weiterentwickelt.
+
+MuTeX, MusicTeX und MusiXTeX sind auf CTAN verfügbar. Dorthin kommen
+Sie von http://www.gmd.de/Misc/Music/, wo Sie auch zusätzliche
+Erweiterungen, Preprozessoren etc. finden. Neue Benutzer sollten
+ausschließlich MusiXTeX verwenden und möglichst auch einen der
+Preprozessoren wie beispielsweise `PMX' oder speziell für Chor- und
+Liedsatz `M-Tx'. Zu diesen drei Paketen gibt es in LaTeX geschriebene
+Dokumentation: MusiXTeX 116 Seiten, PMX 18 Seiten, M-Tx 34 Seiten.
+
+8.4.2 Wer kann mir bei Fragen zu Notensatz mit TeX helfen?
+
+Hilfe findet man oft in der MuTeX-Mailing-Liste und im Archiv dieser
+Mailing-Liste: http://www.gmd.de/Mail/mutex-archive/
+
+8.5 Verschiedenes
+
+8.5.1 Wie kann ich in einer tabular-Umgebung eine Spalte speziell setzen,
+      ohne dies in jedem Eintrag zu wiederholen?
+
+Das Paket `array' erweitert die Umgebungen `array' und `tabular' um
+weitere Deklarationen, wie >, <, !, m oder p, in der Tabellenpräambel.
+So wird bei ``>{text}'' der Teil ``text'' direkt vor die folgende
+Spalte eingefügt, so daß beispielsweise nach
+\begin{tabular}{c>{\scshape}cc}
+
+die zweite der drei Spalten in Kapitälchen gesetzt.
+
+array:  CTAN: macros/latex/required/
+
+8.5.2 Wieso kann ich in einer tabular-Umgebung die letzte Spalte nicht
+      mit \raggedright rechtsbündig setzen?
+
+\raggedright definiert die Anweisung \\ um, die in den Umgebungen
+`tabular' und `array' zur Markierung des Zeilenendes benutzt wird. In
+LaTeX2e und den Paketen `array' und `longtable' existiert daher seit
+Dezember 1994 die neue Anweisung \tabularnewline, die man für diesen
+Zweck anstelle von \\ verwenden kann.
+
+Für andere Pakete und ältere Versionen kann man auch folgenden Trick
+aus dem Buch `Der LaTeX-Begleiter' anwenden:
+\newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}
+
+Statt einem einfachen \raggedright verwendet man in einer Tabelle dann
+\PreserveBackSlash{\raggedright}.
+
+8.5.3 Wie erreiche ich, daß mit `tabular' erstellte Tabellen bündig mit
+      dem linken Rand gesetzt werden?
+
+Zwischen den Spalten einer `tabular', aber auch links von der ersten
+und rechts von der letzten Spalte, wird üblicherweise ein Zwischenraum
+der Breite \tabcolsep eingefügt. Um diesen zu unterdrücken, muß man in
+die Tabellenpräambel die Anweisung ``@{}'' einfügen, also
+beispielsweise
+\begin{tabular}{@{}ll@{}}
+...           % ^^^  ^^^
+\end{tabular}
+
+Die Anweisung ``@{text}'' sorgt dafür, daß ``text'' _statt_ eines
+Spaltenzwischenraums eingefügt wird. ``@{}'' unterdrückt also, daß
+zwischen zwei Spalten Zwischenraum eingefügt wird. Daran sollte man
+auch bei \multicolumn-Anweisungen denken, die sich über die erste bzw.
+letzte Spalte etwa einer dreispaltigen Tabelle erstrecken:
+\multicolumn{2}{@{}l}{Spalten 1 und 2} & bla \\
+
+bzw.
+bla & \multicolumn{2}{l@{}}{Spalten 2 und 3} \\
+
+8.5.4 Ich erhalte die Fehlermeldung `! You can't use \spacefactor in
+      vertical mode.' oder `Command \@ already defined.'. Mache ich etwas
+      falsch?
+
+In den meisten Fällen liegt die Schuld an der (Re-)Definition eines
+internen Makros, also eines Makros mit einem At-Zeichen `@' am Anfang
+des Namens. Beispielsweise tritt der erstgenannte Fehler nach der
+Definition
+\renewcommand{section}{%
+  \@startsection {section}{1}{\z@}{-3.5ex plus-1ex minus-.2ex}%
+                 {2.3ex plus.2ex}{\normalfont\Large\bfseries}}
+
+in der Dokumentpräambel auf. Man beachte, dass sowohl `\@startsection'
+neben `\z@' ein At-Zeichen im Namen haben und daher normalerweise als
+Folge der Tokens `\@', `s', `t', ... `n' und nicht als ein Token
+`\@startsection' gelesen wird.
+
+Vermeiden kann man diesen Fehler, indem man die Definition einfach in
+einer .sty-Datei vornimmt oder in der Präambel mit \makeatletter ...
+\makeatother klammert.
+
+8.5.5 Wie kann ich erreichen, daß ein Zähler bei Erhöhung eines anderen
+      Zählers zurückgesetzt bzw. nicht zurückgesetzt wird?
+
+Mit der Deklaration \@addtoreset{equation}{section} kann man
+erreichen, daß der Gleichungszähler immer dann auf Null zurückgesetzt
+wird, wenn der Abschnittszähler erhöht wird. Diese Deklaration wird
+implizit aufgerufen, wenn man in der Deklaration des Gleichungszählers
+das optionale Argument verwendet, also \newcounter{equation}[section].
+Soll das Gegenteil erreicht werden, so wird das Paket `remreset'
+benötigt, das die Deklaration \@removefromreset implementiert, mit der
+man durch \@removefromreset{equation}{section} obiges nachträglich
+wieder rückgängig machen kann.
+
+remreset:  CTAN: macros/latex/contrib/supported/carlisle/remreset.sty
+
+8.5.6 Kann ich auch auf meinem System Umlaute und andere Sonderzeichen
+      direkt mit der Tastatur in mein LaTeX-Dokument eingeben?
+
+Ja. Zu diesem Zweck dient das Standard-LaTeX-Paket `inputenc'. Es
+setzt die leider nicht standardisierten Zeichen mit einem Code > 127
+in eine einheitliche für TeX verständliche Kodierung um. Damit dies so
+wie gewünscht erfolgt, muß als Paketoption die zutreffende Kodierung
+des jeweiligen Betriebssystems angegeben werden:
+
+  \usepackage[Kodierung]{inputenc}
+  
+Die folgenden Angaben und weitere sind für `Kodierung' möglich:
+
+latin1 - Die meisten Unix-Systeme und VMS.
+ansinew - Windows 3.x, 9x, NT. Geringe Abweichungen zu `latin1'.
+cp437de - MSDOS.
+cp850 - OS/2, auch mit MSDOS, falls explizit
+die Codepage IBM-850 benutzt wird.
+applemac - Apple-Macintosh.
+
+Dokumente, die unter Verwendung von `inputenc' geschrieben sind,
+können trotz unterschiedlicher Zeichenkodierung in den meisten Fällen
+auch auf fremden Systemen übersetzt werden. Eine Mischung
+unterschiedlicher Kodierungen ist allerdings nicht möglich. Siehe dazu
+auch
+
+http://members.gaponline.de/werdenfels.gym/tex/umlaute.html
+
+8.5.7 Wie kann ich Umlaute in Texinfo-Dokumenten verwenden? Gibt es eine
+      deutsche/internationalisierte Version von Texinfo?
+
+Mit der aktuellen Version 3.12 (Texinfo Version 2.253) können Umlaute
+mit dem Makro @" (Bsp: @"A), Akzente mit @' (Bsp: @'e) usw. eingegeben
+werden. Darüberhinaus existieren auch die Lettern wie @ss{}, die
+Ligaturen @AE{}, @ae{}, @OE{} und @oe{}, die Lettern mit Ring @AA{}
+und @aa{}, die durchgestrichenen Lettern @O{} und @o{} und einige
+mehr.
+
+8.5.8 Wie kann ich die Fehlermeldung `Text line contains an invalid
+      character' abstellen, die ich unter emTeX bekomme, sobald ich
+      Umlaute verwende?
+
+Um Umlaute verwenden zu können, muß man unter emTeX eine Formatdatei
+``8-bit clean'' erzeugen, da sonst alle Zeichen mit Code > 127 auf das
+Zeichen 127 (= ^^?) abgebildet werden, das in TeX normalerweise als
+`invalid' deklariert ist. ``8-bit clean'' werden Formatdateien mit
+makefmt 8bit ...
+
+(bzw. `tex -i -8 ...') erstellt.
+
+8.5.9 Wie kann man mit LaTeX Serienbriefe erstellen?
+
+Die Klasse `scrlettr' des KOMA-Script-Paketes und die Klasse
+`akletter', beide zur Erstellung von Briefen gedacht, unterstützen die
+Erstellung von Serienbriefen. Neben diesen gibt es mit den
+LaTeX-Paketen `mailing', `textmerg', `finder' und `formletter' noch
+weitere Pakete für Serienbriefe.
+
+Für eine kleinere Anzahl von Serienbriefen kann man den Text des
+Briefes auch in einem Makro mit \newcommand definieren, wobei man die
+für jeden Empfänger unterschiedlichen Textteile diesem Makro als
+Parameter übergibt. Anschließend wird dieses Makro dann mehrmals mit
+jeweiliger Anrede, Name, Straße, Ort usw. aufgerufen.
+
+koma:  CTAN: macros/latex/contrib/supported/koma-script/
+akletter:  CTAN: macros/latex/contrib/supported/akletter/
+mailing:  CTAN: macros/latex/contrib/supported/mailing/
+textmerg:  CTAN: macros/latex/contrib/supported/textmerg/
+finder:  CTAN: macros/latex209/contrib/letter/finder/
+formletter:  CTAN: macros/generic/formlett.sty
+
+
+--- DE-TeX-FAQ Ende Teil 8 ---

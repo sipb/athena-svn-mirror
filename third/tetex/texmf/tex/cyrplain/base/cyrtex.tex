@@ -1,0 +1,25 @@
+\catcode`\{=1
+\catcode`\}=2
+\catcode`\#=6
+\def\Encoding{lcy}
+%\def\Pattern{al}
+\def\fontprefix{lh}
+
+\let\next\font\long\def\font#1\undefined{\let\font\next\input cyrfonts
+  \let\next\lefthyphenmin\def\lefthyphenmin##1hyphen{\let\lefthyphenmin\next
+  \let\next\undefined\input hyphen.cfg}}
+\input plain
+\edef\fmtversion{\fmtversion-Cyr}
+
+\input\Encoding defs
+\iftrue
+  \input plainenc
+  \fontencoding\Encoding
+  \inputencoding{koi8-r}
+\fi
+
+\ifx\PROTECT\undefined\let\PROTECT\relax\let\UNPROTECT\relax\fi
+\catcode`\@=11
+\def\Russian{\set@hyphenmins22\language\l@russian}\let\Rus\Russian
+\def\English{\set@hyphenmins23\language\l@english}\let\Eng\English
+\catcode`\@=12

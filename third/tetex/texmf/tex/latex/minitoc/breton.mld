@@ -1,0 +1,13 @@
+% Breton titles for minitoc.sty
+\def\mtctitle{Taolenn}
+\def\mlftitle{Listenn ar Figurenno\`u}
+\def\mlttitle{Listenn an taolenno\`u}
+
+\def\ptctitle{Taolenn}
+\def\plftitle{Listenn ar Figurenno\`u}
+\def\plttitle{Listenn an taolenno\`u}
+
+\def\stctitle{Taolenn}
+\def\slftitle{Listenn ar Figurenno\`u}
+\def\slttitle{Listenn an taolenno\`u}
+

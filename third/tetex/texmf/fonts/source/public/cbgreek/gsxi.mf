@@ -1,0 +1,88 @@
+% Copyright (C) 1998, 1999 Claudio Beccari
+% file gsxi v.1.0
+% 256 character sans serif bold cursive greek font
+%
+if unknown cmbase: input cmbase fi;
+if unknown cbbase: input cbbase fi;
+font_identifier:="GSXI";
+font_size (gensize*pt#);
+basedef                           (       5,      8,     10,       12);
+gendef [1/36pt#]( u#             )(    12.5,   17.6,     22,       27);
+gendef [1/36pt#]( width_adj#     )(      12,     18,     22,       19);
+gendef [1/36pt#]( serif_fit#     )(    [-5],   [-8],   [-9],    [-10]);
+gendef [1/36pt#]( cap_serif_fit# )(    [-6],   [-9],  [-11],    [-15]);
+gendef [1/36pt#]( letter_fit#    )(       0,      0,      0,        0);
+gendef [1/36pt#]( body_height#   )(     135,    216,    270,      324);
+gendef [1/36pt#]( asc_height#    )(     130,    200,    250,      315);
+gendef [1/36pt#]( cap_height#    )(     125,    198,    247,      300);
+gendef [1/36pt#]( fig_height#    )(     125,    186,    232,      283);
+gendef [1/36pt#]( x_height#      )(      83,    149,    165,      198);
+gendef [1/36pt#]( math_axis#     )(      45,     80,     90,      108);
+gendef [1/36pt#]( bar_height#    )(      45,     80,     90,      108);
+gendef [1/36pt#]( comma_depth#   )(      19,     34,     38,       54);
+gendef [1/36pt#]( desc_depth#    )(      35,     62,     90,      120);
+gendef [1/36pt#](acc_ht#         )(     130,    210,    250,      300);
+gendef [1/36pt#](circ_ht#        )(     114,    184,    230,      275);
+gendef [1/36pt#](Circ_ht#        )(     130,    200,    250,      300);
+gendef [1/36pt#](iota_dp#        )(      37,   57.6,     72,     86.4);
+gendef [1/36pt#]( crisp#         )(      12,     23,     26,       26);
+gendef [1/36pt#]( tiny#          )(      12,     23,     26,       26);
+gendef [1/36pt#]( fine#          )(       5,      7,      9,        9);
+gendef [1/36pt#]( thin_join#     )(      11,     17,     19,       21);
+gendef [1/36pt#]( hair#          )(      18,     31,     35,       39);
+gendef [1/36pt#]( stem#          )(      18,     31,     35,       39);
+gendef [1/36pt#]( curve#         )(      18,     31,     35,       39);
+gendef [1/36pt#]( ess#           )(      17,     27,     34,       37);
+gendef [1/36pt#]( flare#         )(      17,     27,     34,       37);
+gendef [1/36pt#]( dot_size#      )(      24,     34,     47,       48);
+gendef [1/36pt#]( cap_hair#      )(      24,     39,     48,       50);
+gendef [1/36pt#]( cap_stem#      )(      26,     41,     51,       54);
+gendef [1/36pt#]( cap_curve#     )(      26,     41,     51,       54);
+gendef [1/36pt#]( cap_ess#       )(      26,     41,     51,       52);
+gendef [1/36pt#]( rule_thickness#)(      16,     27,     30,       31);
+gendef [1/36pt#]( dish#          )(       0,      0,      0,        0);
+gendef [1/36pt#]( bracket#       )(       0,      0,      0,        0);
+gendef [1/36pt#]( jut#           )(       0,      0,      0,        0);
+gendef [1/36pt#]( cap_jut#       )(       0,      0,      0,        0);
+gendef [1/36pt#]( beak_jut#      )(       0,      0,      0,        0);
+gendef [1/36pt#]( beak#          )(     .75,    1.1,    1.5,      1.8);
+gendef [1/36pt#]( vair#          )(      15,     20,     21,       27);
+gendef [1/36pt#]( notch_cut#     )(      25,     40,     49,       50);
+gendef [1/36pt#]( bar#           )(      13,     24,     26,       27);
+gendef [1/36pt#]( slab#          )(      18,     33,     36,       37);
+gendef [1/36pt#]( cap_bar#       )(      17,     31,     34,       35);
+gendef [1/36pt#]( cap_band#      )(      16,     28,     31,       32);
+gendef [1/36pt#]( cap_notch_cut# )(      23,     42,     45,       46);
+gendef [1/36pt#]( serif_drop#    )(       2,      2,      2,        2);
+gendef [1/36pt#]( stem_corr#     )(       1,      1,      1,        1);
+gendef [1/36pt#]( vair_corr#     )(       2,      2,      2,        2);
+gendef [1/36pt#]( apex_corr#     )(      15,     17,     18,       19);
+gendef [1/36pt#]( o#             )(       5,      7,      8,        9);
+gendef [1/36pt#]( apex_o#        )(       0,      0,      0,        0);
+slant:=sind 12/cosd 12;	            
+%slant:=0;			            
+gendef          ( fudge          )(     .88,    .88,    .88,      .88);
+gendef          ( math_spread    )(     .45,    .45,     .5,       .5);
+otilt:=.2;
+superness:=3/4;     
+superpull:=1/18;
+beak_darkness:=0;    
+square_dots:=false; 
+hefty:=true; 
+serifs:=false;
+monospace:=false;
+variant_g:=false; 
+low_asterisk:=false;
+math_fitting:=false;
+slitex:=false;
+straight:=false;      
+monowidth:=false;     
+cursive:=true;
+clear_extra_memory;
+
+generate cbgreek;
+endinput;
+
+
+
+

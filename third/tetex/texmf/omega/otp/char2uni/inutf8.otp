@@ -1,0 +1,20 @@
+% File inutf8.otp
+% Conversion to Unicode from UTF-8 
+% Copyright (c) 1999 John Plaice and Yannis Haralambous
+% This file is part of the Omega project.
+%
+% The information was provided by Martin Duerst.
+%
+
+input:  1;
+output: 2;
+
+expressions:
+
+@"00-@"7F
+  => \1;
+(@"C0-@"DF)(@"80-@"BF)
+  => #(((\1-@"C0)*@"40) + (\2-@"80));
+(@"E0-@"EF)(@"80-@"BF)(@"80-@"BF)
+  => #(((\1-@"E0)*@"1000) + ((\2-@"80)*@"40) + (\3-@"80));
+. => @"FFFD;

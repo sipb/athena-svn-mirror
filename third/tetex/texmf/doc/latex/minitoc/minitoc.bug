@@ -1,0 +1,73 @@
+%%%%%%%%%%%%%%%%%% minitoc.bug
+There is a list of problems and frequently asked questions about
+minitoc.sty. If your version is < 27, please upgrade.
+(1)  How avoid a page break near the rules before and after
+     the minitoc?
+     > This problem seemed solved since version #8,
+     > but version #12 adds better fixes.
+(2)  How about impementing others layouts for the minitoc?
+(3)  \\ in a contents line makes an error.
+     > Use \protect\linebreak
+(4)  If you reorder chapters, havoc follows... minitocs going in wrong
+     chapters.
+     > the best way seems to make one run with the mtcoff
+       option in place of the minitoc option, then restore
+       the minitoc option and re-execute LaTeX three times
+       (yes, it is time consuming...). The mtcoff option
+       cleans the auxiliary files from spurious commands
+       added by minitoc.
+(5)  Compatible with toch.sty, but minitoc option must come
+     AFTER toch option (is it a bug or a ``feature'' ?).
+(6)  If you have an operating system which tolerates only
+     short file name extensions (of 3 characters, like MS-DOS),
+     you must edit minitoc.sty: find the line containing
+     ``%\def\SHORTEXT'' and remove the leading percent sign.
+     No other modification is needed: all is automatic!
+(7)  Do not cheat with the ``chapter'' counter, i.e. do not
+     write things like \setcounter{chapter}{6}. The mechanism
+     would be broken. It is better to add \chapter commands,
+     to create empty (but numbered in a legal way) chapters.
+     Since version #10, minitoc.sty works with appendices.
+(8)  minitoc.sty is restricted to document styles which define
+     chapters in the standard way, like `book' and `report'.
+     Do not ask me to make minitocs for sections in articles.
+     There are ``parttocs'' if the document style defines
+     the \part command.
+(9)  Some users have failed to make minitoc to work. They got
+     a message like:
+       Undefined command ... \@inputcheck ...
+     or:
+       Undefined command ... \reset@font ...
+     The \reset@font command has been added to latex.tex
+     on 29 September 1991 and the \@inputcheck command 
+     on 18 March 1992 and this version of latex.tex has been
+     released on 25 March 1992. If you have this message, you
+     have an old version of latex.tex. Get a recent one from
+     the archives and regenerate a latex format via initex.
+(10) Some demanding users want to have minilof, minilot and
+     minibbl. First, minibbl is an other problem, strongly
+     related to the BibTeX's dealing with .aux files. Look
+     at chapterbib.sty. To make `minilof' (minilot is the
+     same problem), we could apply the same method as for
+     minitoc, but we need to add marks in the .lof (or .lot)
+     file. It should be possible to do from minitoc.sty, but
+     long to test. Version #13 implements basic minilofs
+     and minilots. Minibbls are not the aim of this option file.
+(11) This option creates a lot of auxiliary files and some users
+     argue that it is too many. A deep redesign would be
+     necessary to avoid that. Using only one big auxiliary file
+     (or one for all minitocs, one for all minilofs, ...)
+     would make the reading of such file very slow, and it must
+     be read for each \minixxx macro!
+(12) How to do minitocs (minilofs and minilots) at levels other
+     than chapter? Here also, some redesign needed.
+     From version #15, there are parttocs, partlofs and
+     partlots for the part level in book-like documents.
+(13) The more recent version of latex-2e adds a \protect
+     before \contentsline in the .toc, .lof and .lof
+     files. Minitoc version #17 attempts to be compatible
+     with latex-2e and latex-2.09. This will be the LAST
+     version usable with latex-2.09. Versions #18 and later are
+     latex-2e specific.
+(14) From version #23, works with document classes resetting
+     chapter (or section) number at each part.

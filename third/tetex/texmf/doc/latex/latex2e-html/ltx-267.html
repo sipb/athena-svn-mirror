@@ -1,0 +1,52 @@
+<html>
+<head><title>Help On LaTeX minipage</title></head>
+<body bgcolor="#ffffff" text="#000000" link="#000099" vlink="#cc0000" alink="#cc0000">
+<h1><font size="-2">Hypertext Help with LaTeX</font><br><font color="#cc0000">minipage</font></h1>
+<pre>
+ \begin{minipage}[position]{width}
+  text
+ \end{minipage}
+</pre>
+ The minipage  environment  is similar to a 
+ <a href="ltx-294.html"><tt>\parbox</tt></a> command.   It takes
+ the same optional position argument and mandatory width argument.  You
+ may use other paragraph-making environments such as the 
+ <a href="lists.html">list-making</a> and 
+ <a href="ltx-68.html">tabular</a> environments inside a minipage.  You can
+ also use the minipage environment or 
+ <a href="ltx-294.html"><tt>\parbox</tt></a> command to put one or 
+ more paragraphs  
+ inside of a <a href="ltx-43.html">picture environment</a> or as a 
+ <a href="ltx-67.html">table item</a>, for example.
+<p>
+ There is no paragraph indentation in the minipage environment.  That is,
+ LaTeX sets <a href="ltx-86.html#lencmd"><tt>\parindent</tt></a> to zero;
+ however, you may override this with a 
+ <a href="ltx-88.html"><tt>\setlength</tt></a> command.
+<p>
+ Footnotes  in a minipage  environment  are handled  in a way  that  is
+ particularly  useful for putting footnotes  in figures  or tables.   A
+ <a href="ltx-231.html"><tt>\footnote</tt></a>  command puts the 
+ footnote at the bottom of
+ the minipage  instead  of at the bottom  of the page,  and it uses the
+ <tt>mpfootnote</tt> <a href="ltx-3.html">counter</a> instead of the ordinary 
+ footnote counter.  If you want the footnote in a minipage environment
+ to be placed at the bottom of the actual page, in the usual fashion,
+ use the <a href="ltx-232.html"><tt>\footnotemark</tt></a> and  
+ <a href="ltx-234.html"><tt>\footnotetext</tt></a> commands.
+<p>
+ <strong>Note</strong>: if you  put  one  minipage  inside  another  
+ and if  you  are  using
+ footnotes, they may wind up at the bottom of the wrong minipage.
+
+<hr>
+See also <A href="ltx-27.html">Environments</A>, 
+  <a href="ltx-143.html">Spaces and Boxes</a><br>
+See also <a href="ltx-294.html"><tt>\parbox</tt></a><br>
+Return to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+<hr>
+<address>
+Revised: Sheldon Green, 22Nov 1995.
+</address>
+</body>
+</html>

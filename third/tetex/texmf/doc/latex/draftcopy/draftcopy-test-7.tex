@@ -1,0 +1,50 @@
+%%
+%% This is file `draftcopy-test-7.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% draftcopy.doc  (with options: `test7')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from draftcopy-test-7.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file draftcopy.doc.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\iffalse
+\fi
+
+
+
+
+
+
+
+\documentclass[a4paper,norsk]{article}
+\usepackage[light,bottomafter]{draftcopy}
+\newcommand{\xx}{
+Test7: This is a test page \thepage \vfill
+This is a testpage \thepage \newpage
+}
+\draftcopyFirstPage{2}
+\draftcopyLastPage{3}
+\begin{document}
+Should print UTKAST on the on the pages 2 and 3, light.\\
+Should print UTKAST on bottom of the page after the third page.\\
+\verb|\usepackage[light,bottomafter]{draftcopy}|\\
+\verb|\draftcopyFirstPage{2}|\\
+\verb|\draftcopyLastPage{3}|\\
+\xx\xx\xx\xx
+\end{document}
+\endinput
+%%
+%% End of file `draftcopy-test-7.tex'.
