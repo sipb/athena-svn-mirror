@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.28 1990-12-12 15:30:00 lwvanels Exp $
+ *	$Id: notify.c,v 1.29 1991-01-03 15:52:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.28 1990-12-12 15:30:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.29 1991-01-03 15:52:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -246,7 +246,7 @@ write_message_to_user(k, message, flags)
   if (k == (KNUCKLE *) NULL)
     return(ERROR);
 
-  if (namebuf[0] == 0)  sprintf(namebuf,"%s Service",DaemonInst);
+  if (namebuf[0] == 0)  sprintf(namebuf,"%s_Service",DaemonInst);
 
   if(k->user->no_knuckles > 1)
     {
