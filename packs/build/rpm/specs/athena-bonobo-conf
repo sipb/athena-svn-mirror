@@ -1,9 +1,0 @@
-Name: athena-bonobo-conf
-Summary: The bonobo-conf configuration moniker, for Athena
-Copyright: GPL
-Group: System Environment/Libraries
-
-Requires: athena-bonobo
-
-%description
-Bonobo-conf is a Bonobo moniker for configuration.
