@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.83 2005-03-14 19:41:24 zacheiss Exp $
+# $Id: do.sh,v 1.84 2005-03-15 21:26:13 rbasch Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -52,6 +52,11 @@ export ATHENA_SYS ATHENA_SYS_COMPAT ATHENA_HOSTTYPE OS PATH
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
+"SunOS 5.10 sun4"*)
+  ATHENA_SYS=sun4x_510
+  ATHENA_SYS_COMPAT=sun4x_59:sun4x_58:sun4x_57:sun4x_56:sun4x_55:sun4m_54
+  ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:sun4m_53:sun4m_412
+  ;;
 "SunOS 5.9 sun4"*)
   ATHENA_SYS=sun4x_59
   ATHENA_SYS_COMPAT=sun4x_58:sun4x_57:sun4x_56:sun4x_55:sun4m_54:sun4m_53
