@@ -25,7 +25,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.7 1989-12-01 16:22:06 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.8 1989-12-01 20:58:55 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -154,10 +154,10 @@ main(argc, argv)
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
-  MuSetAppPath(APP_DEF_DIR);
+  MuSetAppPath(AD_PATH);
   toplevel = XtInitialize(NULL, "Xolc", NULL, 0, &argc, argv);
 
-  MuSetIconPixmap(toplevel, ICON_PATH, ICON_FILE);
+  MuSetIconPixmap(toplevel, XBM_PATH, ICON_FILE);
 
   n=0;
   XtSetArg(args[n], XmNallowShellResize, TRUE); n++;

@@ -20,11 +20,10 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.1 1989-10-11 16:30:03 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.2 1989-12-01 20:59:53 vanharen Exp $";
 #endif
 
-#include <olc/olc.h>
-#include <olc/olc_tty.h>
+#include "xolc.h"
 
 /*
 t_instance(Request,instance)

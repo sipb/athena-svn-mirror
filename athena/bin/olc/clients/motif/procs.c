@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.5 1989-12-01 16:27:06 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.6 1989-12-01 20:59:23 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -35,8 +35,7 @@ void Help(w, tag, callback_data)
   char message[BUF_SIZE];
   char help_filename[NAME_LENGTH * 2];
 
-  (void) strcpy(help_filename, HELP_DIR);
-  (void) strcat(help_filename, "/");
+  (void) strcpy(help_filename, HELP_PATH);
 
   switch( (int) tag)
     {
@@ -469,7 +468,7 @@ void olc_savelog (w, tag, callback_data)
   wl[0] = toplevel;
   wl[1] = w_send_form;
 
-  homedir = getenv("HOME");
+  homedir = (char *) getenv("HOME");
   sprintf(file, "%s/%s.%s", homedir, "OLC.log", current_topic);
   if (MuGetString("Please enter the name of a file to save the log in:\n",
 		  file, BUF_SIZE, NULL, Mu_Popup_Center))
@@ -596,8 +595,7 @@ void olc_help (w, tag, callback_data)
   wl[0] = toplevel;
   wl[1] = w_send_form;
 
-  (void) strcpy(help_filename, HELP_DIR);
-  (void) strcat(help_filename, "/");
+  (void) strcpy(help_filename, HELP_PATH);
 
   if (replay_screen)
     (void) strcat(help_filename, HELP_REPLAY);

@@ -1,10 +1,5 @@
-#define APP_DEF_DIR	"/afs/athena/astaff/project/motifdev/projects/olc/"
+#define ICON_FILE	"xolc.xbm"
 
-#define ICON_FILENAME	"/afs/athena/astaff/project/motifdev/projects/olc/olc.icon"
-#define ICON_PATH	"/afs/athena/astaff/project/motifdev/projects/olc/"
-#define ICON_FILE	"olc.icon"
-
-#define HELP_DIR	"/afs/athena/astaff/project/motifdev/projects/olc/help"
 #define HELP_INIT_NEWQ	"olc.init.newq"
 #define HELP_INIT_CONTQ	"olc.init.contq"
 #define HELP_ASK	"olc.ask"
