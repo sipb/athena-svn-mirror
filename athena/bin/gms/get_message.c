@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.1 1988-09-27 00:42:58 eichin Exp $";
+static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.2 1988-09-28 23:40:24 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -29,7 +29,7 @@ main (argc, argv)
   int xargc = argc;
   Code_t status;
   char *message;
-  int zephyr_p = 0, new_p = 0;
+  int zephyr_p = 0, new_p = 0, login_p = 0;
   
   openlog(argv[0], LOG_PID, LOG_USER);
   syslog(LOG_INFO, "GMS client started...");
@@ -49,6 +49,8 @@ main (argc, argv)
       zephyr_p = 1;
     } else if((!strcmp(xargv[0],"-new"))||(!strcmp(xargv[0],"-n"))) {
       new_p = 1;
+    } else if((!strcmp(xargv[0],"-login"))||(!strcmp(xargv[0],"-l"))) {
+      login_p = 1;
     } else {
       Usage(argv[0], xargv[0]);
       exit(1);
@@ -58,7 +60,7 @@ main (argc, argv)
   status = get_a_message(&message);
   if(!status) {
     /* check if the user has seen it already */
-    status = check_viewable(message, new_p);
+    status = check_viewable(message, new_p, !login_p);
     if(status) {
       syslog(LOG_INFO, "GMS not showing.");
       exit(0);
