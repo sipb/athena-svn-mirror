@@ -48,10 +48,10 @@
 ; for line-number-mode; this seems to be an oversight in the defaults
 ; (understandable since line-number-mode wasn't on by default until 19.30).
 ; We set gnus-use-long-filename to t to force consistent filenames on all
-; platforms, overriding the backward-compatible default for usg-unix-v (Solaris)
-; We set nnmail-crosspost-link-function to 'copy-file because AFS does not
-; support hard links.  We set nnmail-spool-file to retrieve mail from the
-; same place rmail does.
+; platforms, overriding the backward-compatible default for usg-unix-v
+; (Solaris).  We set nnmail-crosspost-link-function to 'copy-file because
+; AFS does not support hard links.  We set nnmail-spool-file to retrieve
+; mail from the same place rmail does.
 (setq news-inews-program "/afs/sipb.mit.edu/project/sipb/bin/inews"
       gnus-default-nntp-server "news.mit.edu"
       gnus-local-organization "Massachusetts Institute of Technology"
