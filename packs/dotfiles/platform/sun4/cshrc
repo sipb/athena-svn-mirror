@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.11 1994-12-14 04:50:47 cfields Exp $
+# $Id: cshrc,v 1.12 1994-12-21 11:34:30 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -23,7 +23,7 @@ set hosttype=sun4
 set bindir=${hosttype}bin
 
 # Set standard path of directories for man command to search:
-set athena_manpath=/usr/openwin/man:/usr/athena/man:/usr/man
+set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/man
 
 
 # Set up standard system/user environment configuration (including setup of
@@ -45,8 +45,14 @@ if (! $?ENV_SET) then
 
 	setenv MANPATH $athena_manpath
 
+	setenv ATHENA_SYS `machtype -S`
+	if ( $ATHENA_SYS == "" ) then
+		  unsetenv ATHENA_SYS
+	endif
+
 	setenv LD_LIBRARY_PATH /usr/openwin/lib
-# Reset the "home" and HOME variables to correspond to the
+
+	# Reset the "home" and HOME variables to correspond to the
 	# actual location of the user's home directory.  This will
 	# avoid having long pathnames being printed when /mit/<user>
 	# is a symlink to a path within AFS.
@@ -69,6 +75,10 @@ if (! $?ENV_SET) then
 	# Special version of add alias that will work in your ~/.environment
 	# file.  This is replaced further down with the version that works
 	# when you are logged in.
+
+	# This "extend" alias and friends have been left in for backwards
+	# compatibility with old .environment files, just in case. The new
+	# add alias does not use them.
 	alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
 	if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
 	if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
@@ -81,16 +91,8 @@ if (! $?ENV_SET) then
 	if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
 	if ($?extendyes) set \!:1=${\!:1}:\!:2 && \\
 	unset extendyes'
-	alias add 'set locker=\!:1 && \\
-	if ("x\!:$" == x-v) set verboseadd locker=\!:1 && \\
-	if ("x\!:1" == x-v) set verboseadd locker=\!:$ && \\
-	if $?verboseadd attach -n -h $locker &&\\
-	set dir = `attach -p $locker` && \\
-	if ("$PATH" =~ *"$dir/$bindir"*) rehash && \\
-	sextend athena_path $dir/$bindir && \\
-	textend athena_manpath $dir/man && \\
-	extend MANPATH $dir/man && \\
-	unset dir verboseadd locker'
+
+	alias add 'set add_opts = (-e \!:*); source $initdir/add'
 
 	# Run user environment customizations identified in your ~/.environment
 	# file.  This is the place to include your own environment variables,
@@ -162,20 +164,13 @@ if ($?XSESSION) then
 endif
 
 #   aliases dealing with adding locker programs
-#   'add -v locker' will be verbose about it
+#   extend remains for other software; add no longer uses the extend alias
 alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
 	if ($?extendyes && $?verboseadd) echo \!:2 added to end of \$\!:1 && \\
 	if ($?extendyes) setenv \!:1 ${\!:1}:\!:2 && \\
 	unset extendyes'
-alias add 'set locker=\!:1 && \\
-	if ("x\!:$" == x-v) set verboseadd locker=\!:1 && \\
-	if ("x\!:1" == x-v) set verboseadd locker=\!:$ && \\
-	if $?verboseadd attach -n -h $locker &&\\
-	set dir = `attach -p $locker` && \\
-	if ("$PATH" =~ *"$dir/$bindir"*) rehash && \\
-	extend PATH $dir/$bindir && \\
-	extend MANPATH $dir/man && \\
-	unset dir verboseadd locker'
+
+alias add 'set add_opts = (\!:*); source $initdir/add'
 
 #   aliases dealing with subjects
 alias setup_X '( setenv SUBJECT \!:1 ; ( xterm -title \!* & ) )'
