@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.2 1996-05-10 04:02:21 ghudson Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.3 1996-05-14 03:10:35 ghudson Exp $
 	.:::
 		dev
 		devices
@@ -51,6 +51,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> remote
 		-> security
 		shadow
+		syslog.conf
 		system
 		-> skel
 		-> servers
