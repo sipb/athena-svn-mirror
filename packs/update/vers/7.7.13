@@ -1,9 +1,0 @@
-#!/bin/sh
-
-case "$HOSTTYPE" in
-sun4)
-	if [ ! -f /etc/group.local ]; then
-	  cp -p /srvd/etc/group /etc/group.local
-	fi
-	;;
-esac
