@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.2 1987-07-01 04:16:12 jtkohl Exp $";
+static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v 1.3 1987-07-07 13:55:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -27,6 +27,13 @@ static char rcsid_acl_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athen
  *	ZNotice_t *notice;
  *	ZAcl_t *acl;
  *	ZAccess_t accesstype;
+ */
+
+/*
+ * Each restricted class has two ACL's associated with it, one
+ * governing subscriptions and one governing transmission.
+ * This module provides the 'glue' between the standard Athena ACL
+ * routines and the support needed by the Zephyr server.
  */
 
 #include "zserver.h"
