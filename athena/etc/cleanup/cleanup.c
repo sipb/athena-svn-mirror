@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.20 1997-09-08 03:58:33 danw Exp $
+/* $Id: cleanup.c,v 2.21 1997-10-13 17:12:45 danw Exp $
  *
  * Cleanup program for stray processes
  *
@@ -50,7 +50,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.20 1997-09-08 03:58:33 danw Exp $";
+char *version = "$Id: cleanup.c,v 2.21 1997-10-13 17:12:45 danw Exp $";
 
 
 
@@ -800,7 +800,7 @@ int *users;
 make_group(uids)
 int *uids;
 {
-    int i, n, match, nuid;
+    int i, n, match, nuid, len;
     char buf[10240], *p, *p1;
     char llist[MAXUSERS][9];
     struct passwd *pw;
@@ -873,31 +873,40 @@ int *uids;
 	    continue;
 	}
 	match = 0;
-	if (p) p++;
+	p++;
 
-	/* loop over each member of the group */
-	while (p != NULL) {
-	    p1 = strchr(p, ',');
-	    if (p1)
-		n = p1 - p;
-	    else
-		n = strlen(p);
-	    /* compare against each user in the passwd file */
-	    for (i = 0; i < nuid; i++) {
-		if (!strncmp(p, llist[i], n)) {
-		    match = 1;
-		    break;
+	/* if existing group has no members, keep it */
+	if (!*p)
+	    fprintf(new, "%s\n", buf);
+	else {
+	    len = p - buf;
+
+	    /* loop over each member of the group */
+	    while (p != NULL) {
+		p1 = strchr(p, ',');
+		if (p1)
+		    n = p1 - p;
+		else
+		    n = strlen(p);
+		/* compare against each user in the passwd file */
+		for (i = 0; i < nuid; i++) {
+		    if (!strncmp(p, llist[i], n)) {
+			if (!match) {
+			    fprintf(new, "%.*s%s", len, buf, llist[i]);
+			    match = 1;
+			} else
+			    fprintf(new, ",%s", llist[i]);
+			break;
+		    }
 		}
+		if (p1)
+		    p = p1 + 1;
+		else
+		    p = NULL;
 	    }
-	    if (match)
-		break;
-	    if (p1)
-		p = p1 + 1;
-	    else
-		p = NULL;
 	}
 	if (match)
-	    fprintf(new, "%s\n", buf);
+	    fprintf(new, "\n");
 #ifdef DEBUG
 	else
 	    printf("<<<%s\n", buf);
