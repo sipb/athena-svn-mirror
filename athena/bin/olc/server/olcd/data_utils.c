@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.2 1989-08-08 14:40:14 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.3 1989-08-22 14:02:02 tjcoppet Exp $";
 #endif
 
 
@@ -686,7 +686,10 @@ find_knuckle(person,knuckle)
     }
   else
     if(status == SUCCESS)
-      (*knuckle)->user->status = ACTIVE;
+      {
+        strcpy((*knuckle)->user->machine,person->machine);
+        (*knuckle)->user->status = ACTIVE;
+      }
 
   return(status);
 }
@@ -784,16 +787,13 @@ connect_knuckles(a,b)
      KNUCKLE *a, *b;
 {
   char msg[BUFSIZ];
-  int astatus, bstatus;
-
-  astatus = a->status;
-  bstatus = b->status;
 
   if(is_connected(a) || is_connected(b))
     {
       log_error("connect: users already connected");
       return(FAILURE);
     }
+
   if(a->question == (QUESTION *) NULL)
     {
       if(b->question == (QUESTION *) NULL)
@@ -801,8 +801,6 @@ connect_knuckles(a,b)
 	  log_error("connect: connectee has no question");
 	  return(ERROR);
 	}
-/*      add_status(a,BUSY);*/
-      set_status(b, SERVICED);
       a->question = b->question;
       strcpy(a->title,a->user->title2);
       strcpy(b->title,b->user->title1);
@@ -814,8 +812,6 @@ connect_knuckles(a,b)
 	  log_error("connect: connectee already has question");
 	  return(ERROR);
 	}
-/*      add_status(b,BUSY);*/
-      set_status(a, SERVICED);
       b->question = a->question;
       strcpy(a->title,a->user->title1);
       strcpy(b->title,b->user->title2);
@@ -834,8 +830,6 @@ connect_knuckles(a,b)
     {
 /*      a->connected = (KNUCKLE *) NULL;
       b->connected = (KNUCKLE *) NULL;
-      a->status = astatus;
-      b->status = bstatus;
       return(FAILURE);*/
     }
       
@@ -847,10 +841,9 @@ connect_knuckles(a,b)
       write_message_to_user(b,msg,0);
       a->connected = (KNUCKLE *) NULL;
       b->connected = (KNUCKLE *) NULL;
-      a->status = astatus;
-      b->status = bstatus;
       return(FAILURE);*/
     }
+
   a->question->nseen++;
   return(SUCCESS);
 }

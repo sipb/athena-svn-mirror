@@ -29,6 +29,7 @@ char *SPECIALTY_DIR = "/usr/lib/olc/specialties";
 char *ACL_DIR       = "/usr/lib/olc/acls";
 char *LOG_DIR       = "/usr/spool/olc";
 char *BACKUP_FILE   = "/usr/spool/olc/backup.dat";
+char *BACKUP_TEMP   = "/usr/spool/olc/backup.temp";
 char *ERROR_LOG     = "/usr/adm/olc/errors";
 char *STATUS_LOG    = "/usr/adm/olc/status";
 char *STDERR_LOG    = "/usr/adm/olc/errors";
