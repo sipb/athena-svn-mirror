@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.2 1988-09-19 20:25:17 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.3 1991-02-28 11:28:42 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  88/09/19  20:25:17  don
+ * bellcore copyright.
+ * 
  * Revision 4.1  88/05/17  18:59:17  don
  * fixed another bug in GLOBAL handling, by simplifying pattern-list
  * traversal. now, global-list is chained onto end of each entry's list.
@@ -52,7 +55,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.2 1988-09-19 20:25:17 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.3 1991-02-28 11:28:42 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -73,7 +76,7 @@ printmsg( filep) FILE *filep;
 	if ( filep);
 	else if ( nopullflag) return;
 	else if ( logfile = fopen( logfilepath, "w+")) {
-		fchmod( logfile, 0664);
+		(void) fchmod( logfile, 0664);
 		filep = logfile;
 	}
 	else {
@@ -192,4 +195,83 @@ char **to, *from;
 		do_panic();
 	}
 	strcpy(*to,from);
+}
+
+/* Convert mode (file type) bits to a string */
+
+char *mode_to_string(mode)
+int mode;
+{
+  switch(mode & S_IFMT)
+    {
+    case S_IFDIR:
+      return "directory";
+    case S_IFCHR:
+      return "char-device";
+    case S_IFBLK:
+      return "block-device";
+    case S_IFREG:
+      return "file";
+#ifdef S_IFIFO
+    case S_IFIFO:
+      return "fifo";
+#endif
+    case S_IFLNK:
+      return "symlink";
+    case S_IFSOCK:
+      return "socket";
+#ifdef S_IFMPX
+    case S_IFMPX:
+      return "multi char-device";
+#endif
+    default:
+      return "nonexistent";
+    }
+}
+
+char *mode_to_fmt(mode)
+int mode;
+{
+  switch(mode & S_IFMT)
+    {
+    case S_IFDIR:
+      return "d%s %c%d(%d.%d.%o)\n";
+#ifdef S_IFMPX
+    case S_IFMPX:
+#endif
+    case S_IFCHR:
+      return "c%s %c%d(%d.%d.%o)\n";
+    case S_IFBLK:
+      return "b%s %c%d(%d.%d.%o)\n";
+    case S_IFREG:
+      return "f%s %c%x(%d.%d.%o)%ld\n";
+    case S_IFLNK:
+      return "l%s %c%s\n";
+#ifdef S_IFIFO
+    case S_IFIFO:
+#endif
+    case S_IFSOCK:
+      return "*ERROR (write_statline): can't track socket %s.\n";
+    default:
+      return "*ERROR (write_statline): %s's file type is unknown.\n";
+    }
+}
+
+char *mode_to_rfmt(mode)
+int mode;
+{
+  switch(mode & S_IFMT)
+    {
+#ifdef S_IFMPX
+    case S_IFMPX:
+#endif
+    case S_IFDIR:
+    case S_IFCHR:
+    case S_IFBLK:
+      return "%d(%d.%d.%o)\n";
+    case S_IFREG:
+      return "%x(%d.%d.%o)%ld\n";
+    default:
+      return "";
+    }
 }
