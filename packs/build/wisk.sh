@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.46 $
+# $Revision: 1.47 $
 
 umask 2
 
@@ -152,7 +152,7 @@ switch ( $machine )
     breaksw
 
   case decmips
-    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc athena/etc/fpuverify $end)
+    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc athena/etc/checkfpu $end)
 
     breaksw
 
