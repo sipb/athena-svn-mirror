@@ -5,11 +5,11 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v 1.3 1988-09-14 16:22:20 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v 1.4 1988-10-05 10:18:06 jtkohl Exp $
 /**/#
 SRCS= zhm.c zhm_server.c zhm_client.c queue.c
 LIBS= ${COMERR_LIB} ${ZEPHYR_LIB} ${KRB_LIB} ${HES_LIB}
-LINTLIBS= ${COMERR_LIB} ${ZEPHYR_LINTLIB} ${KRB_LIB} ${HES_LIB}
+LINTLIBS= ${COMERR_LINTLIB} ${ZEPHYR_LINTLIB} ${KRB_LINTLIB} ${HES_LINTLIB}
 OBJS= zhm.o zhm_server.o zhm_client.o queue.o
 
 normal_obj_rule()
