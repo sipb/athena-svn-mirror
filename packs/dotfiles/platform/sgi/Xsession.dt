@@ -133,15 +133,6 @@ then
 	(echo "1" > $chestrccheck)
 fi
 
-
-if [ -x $userenv ]; then
-	#
-	# Find user's environment as set up during a login
-	#  shell, and add that to current environment.
-	#
-	eval `$userenv`
-fi
-
 #if there is a desktop environment file, load it
 if [ -r $desktopenv ]; then
 	. $desktopenv
