@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.6 1989-07-16 17:09:45 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.7 1989-08-04 11:03:42 tjcoppet Exp $";
 #endif 
 
 
@@ -54,6 +54,7 @@ extern do_olc_cancel();
 extern do_olc_ask();
 extern do_olc_list();
 extern do_olc_comment();
+extern do_olc_describe();
 extern do_olc_topic();
 extern do_olc_instance();
 extern do_olc_grab();
@@ -70,6 +71,7 @@ extern do_olc_load_user();
 extern do_olc_who();
 
 extern int krb_ap_req_debug;
+
 
 
 /*
@@ -99,7 +101,7 @@ COMMAND OLC_Command_Table[] = {
   "show",       do_olc_show,	"Show any new messages",
   "topic",      do_olc_topic,   "Find question topic",
   "motd",       do_olc_motd,    "See message of the day",
-  "answers",    do_olc_stock,   "Stock answer browser",
+  "answers",    do_olc_stock,   "Browse thru answers to common questions",
   "status",     do_olc_status,  "Print your status",
   "who",        do_olc_who,     "Find name of connected consultant",
   (char *) NULL, (int(*)()) NULL,	""
@@ -107,40 +109,30 @@ COMMAND OLC_Command_Table[] = {
   
 COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,"List available commands",
-  "help",	do_olc_help,	"Describe the various commands",
-  "quit",	do_quit,	"Temporarily exit OLC",
-  "send",	do_olc_send,	"Send a message",                     
-  "done",	do_olc_done,	"Resolve question",               
-  "cancel",     do_olc_cancel,  "Cancel your question",
-  "replay",	do_olc_replay, 	"Replay the conversation",        
-  "show",       do_olc_show,	"Show any new messages",
-  "list",       do_olc_list,    "List the world",
-  "comment",    do_olc_comment, "Make a comment",
-  "mail",       do_olc_mail,    "Mail a message",
-  "topic",      do_olc_topic,   "Find question topic",
-  "instance",   do_olc_instance, "Change default instance",
-  "on",         do_olc_on,      "Sign on",
-  "off",        do_olc_off,     "Sign off",
-  "grab",       do_olc_grab,    "Grab a user",
-  "forward",    do_olc_forward, "Forward a question",
-  "motd",       do_olc_motd,    "See motd",
-  "stock",      do_olc_stock,   "Stock answer browser",
-  "status",     do_olc_status,  "Find your status",
-  "who",        do_olc_who,     "Find status for current instance",
+  "help",	do_olc_help,	 "Describe the various commands",
+  "quit",	do_quit,	 "Temporarily exit OLC",
+  "send",	do_olc_send,	 "Send a message",                     
+  "done",	do_olc_done,	 "Resolve question",               
+  "cancel",     do_olc_cancel,   "Cancel your question",
+  "replay",	do_olc_replay,   "Replay the conversation",        
+  "show",       do_olc_show,	 "Show any new messages",
+  "list",       do_olc_list,     "List the world",
+  "comment",    do_olc_comment,  "Make a comment",
+  "describe",   do_olc_describe, "Show/Change summary info",
+  "mail",       do_olc_mail,     "Mail a message",
+  "topic",      do_olc_topic,    "Show/Change question topic",
+  "instance",   do_olc_instance, "Show/Change default instance",
+  "on",         do_olc_on,       "Sign on",
+  "off",        do_olc_off,      "Sign off",
+  "grab",       do_olc_grab,     "Grab a user",
+  "forward",    do_olc_forward,  "Forward a question",
+  "motd",       do_olc_motd,     "See motd",
+  "stock",      do_olc_stock,    "Browse thru stock answers",
+  "status",     do_olc_status,   "Find your status",
+  "who",        do_olc_who,      "Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
   };
 
-
-COMMAND OLCA_Command_Table[] = {
-  "?",		do_olc_list_cmds,"List available commands",
-  "help",	do_olc_help,	"Describe the various commands.",
-  "quit",	do_quit,	"Temporarily exit OLC.",
-  "list",       do_olc_list,    "List the world.",
-  "motd",       do_olc_motd,    "see motd",
-  "reload",  do_olc_load_user, "load user",
-  "stock",      do_olc_stock,   "stock answer browser",
-  (char *) NULL, (int(*)()) NULL,	""
-  };
 
 COMMAND *Command_Table;
 
@@ -150,7 +142,7 @@ PERSON User;				/* Structure describing user. */
 char DaemonHost[LINE_LENGTH];		/* Name of the daemon's machine. */
 char *program;
 
-int OLCR=0,OLCA=0,OLC=0;
+int OLCR=0,OLC=0;
 
 /*
  * Function:	main() is the startup for OLC.  It initializes the
@@ -202,33 +194,23 @@ main(argc, argv)
   if(*program == '/')
      ++program;
 
-  if(string_eq(program,"olcr"))
+  if(string_eq(program,"olc"))
     {
-      Command_Table = OLCR_Command_Table;
-      prompt=OLCR_PROMPT;
-      HELP_FILE = OLCR_HELP_FILE;
-      HELP_DIR =  OLCR_HELP_DIR;
-      HELP_EXT =  OLCR_HELP_EXT;
-      OLCR=1;
-    }
-  else
-    if(string_eq(program,"olca"))
-      {
-	Command_Table = OLCA_Command_Table;
-	prompt = OLCA_PROMPT;
-	HELP_FILE = OLCA_HELP_FILE;
-	HELP_DIR =  OLCA_HELP_DIR;
-	HELP_EXT =  OLCR_HELP_EXT;
-	OLCA=1;
-      }
-  else
-    {       /* give them olc by default */
       Command_Table = OLC_Command_Table;
       prompt=OLC_PROMPT;
       HELP_FILE = OLC_HELP_FILE;
       HELP_DIR =  OLC_HELP_DIR;
       HELP_EXT =  OLC_HELP_EXT;
       OLC=1;
+    }
+  else
+    {       
+      Command_Table = OLCR_Command_Table;
+      prompt=OLCR_PROMPT;
+      HELP_FILE = OLCR_HELP_FILE;
+      HELP_DIR =  OLCR_HELP_DIR;
+      HELP_EXT =  OLCR_HELP_EXT;
+      OLCR=1;
     }
 
   if ((tty = ttyname(fileno(stdin))) == (char *)NULL) 
@@ -327,15 +309,22 @@ olc_init()
   RESPONSE response;	        /* Response code from daemon. */
   REQUEST Request;
   ERRCODE errcode=0;	        /* Error code to return. */
+  FILE *stdstr;
   int n,first=0;
   char file[NAME_LENGTH];
   char topic[TOPIC_SIZE];
+  int status;
 
   fill_request(&Request);
   Request.request_type = OLC_STARTUP;
 
   fd = open_connection_to_daemon();
-  send_request(fd, &Request);
+  status = send_request(fd, &Request);
+  if(status)
+    {
+      handle_response(status, &Request);
+      exit(ERROR);
+    }
   read_response(fd, &response);
 
 #ifdef TEST
@@ -383,17 +372,13 @@ olc_init()
     }
 
   (void) close(fd);
-  fflush(stdout);
 
-  if(OLC)
-    {
-      get_key_input("\nPress any key to continue...");
-      newline();
-      system("clear");
-      make_temp_name(file);
-      t_get_motd(&Request,OLC,file,TRUE);
-      unlink(file);
-    }
+  get_key_input("\nPress any key to continue...");
+  newline();
+
+  make_temp_name(file);
+  t_get_motd(&Request,OLC,file,TRUE);
+  unlink(file);
 
   if(OLC && first)
     {
