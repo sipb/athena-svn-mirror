@@ -1,7 +1,7 @@
 /* #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v $
   #	$Author: epeisach $
   #	$Locker:  $
-  #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.3 1990-11-15 19:34:38 epeisach Exp $
+  #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.4 1991-01-11 10:18:31 epeisach Exp $
   #
   #
   #     Copyright 1990 Massachusetts Institute of Technology.
@@ -32,6 +32,11 @@ DBMLIB=-ldbm
 #endif
 
 #ifdef i386
+OPTLIBFLAGS=-L/usr/athena/lib 
+POSTLIBFLAGS=-lbsd
+#endif
+
+#ifdef _IBMR2
 OPTLIBFLAGS=-L/usr/athena/lib 
 POSTLIBFLAGS=-lbsd
 #endif
@@ -111,8 +116,14 @@ Makefile: Imakefile ../cppflags
 ./ncs/nidl/nidl:
 	(cd ncs/nidl; make MFLAGS=$(MFLAGS) )
 
+#if defined(_IBMR2) && defined(_AIX)
+./ncs/nck/libnck.a:
+	(cd ncs/nck; make MFLAGS=$(MFLAGS) rmakefile CC=/lib/cpp DEFS="-D_IBMR2 -D_AIX")
+	(cd ncs/nck; make MFLAGS=$(MFLAGS))
+#else
 ./ncs/nck/libnck.a:
 	(cd ncs/nck; make MFLAGS=$(MFLAGS) )
+#endif
 
 s_chkaf: ${SOBJS}
 	${CC} -o s_chkaf ${SOBJS} ${LIBS}
@@ -136,8 +147,15 @@ dump_logs: dump_logs.o journal.o user.o parser.o strings.o
 	${CC} -o dump_logs dump_logs.o journal.o user.o parser.o strings.o \
 			${LIBS}
 
+lrestore: lrestore.o periodic.o user.o strings.o journal.o parser.o quotacap.o
+	${CC} -o lrestore lrestore.o periodic.o user.o strings.o \
+	journal.o parser.o quotacap.o ${LIBS}
+
 consist: consist.o journal.o user.o strings.o
 	${CC} -o consist consist.o journal.o user.o strings.o ${LIBS}
+
+consist1: consist1.o journal.o user.o strings.o parser.o
+	${CC} -o consist1 consist1.o journal.o user.o strings.o parser.o ${LIBS}
 
 dump_user: dump_user.o user.o strings.o
 	${CC} -o dump_user dump_user.o user.o strings.o ${LIBS}
@@ -195,8 +213,7 @@ clean:
 	   $(DBOBJS) $(DBPROGRAMS)
 
 depend: ${SRCS} ${CSRCS} ${LSRCS}
-	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS} \
-	${CSRCS} ${LSRCS} ${DBSRCS}
+	makedepend {CFLAGS} ${SRCS} ${CSRCS} ${LSRCS} ${DBSRCS}
 
 printcap.c:
 	rm -f printcap.c
