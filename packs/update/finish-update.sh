@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.10 1998-04-08 17:06:56 ghudson Exp $
+# $Id: finish-update.sh,v 1.11 1998-04-24 19:10:51 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -30,9 +30,18 @@ if [ -s "$AUXDEVS" ]; then
 	done
 fi
 
+# For a public workstation, remove old and new copies of
+# config files left behind by inst (Irix only).
+# Currently, these are hard-coded in the version script.
+if [ "$PUBLIC" = "true" -a -s "$CONFIGVERS" ]; then
+	for i in `cat "$CONFIGVERS"` ; do
+		rm -f $i
+	done
+fi
+
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$LOCALPACKAGES" "$LINKPACKAGES"
+rm -f "$LOCALPACKAGES" "$LINKPACKAGES" "$CONFIGVERS"
 
 echo "Updating version"
 echo "Athena Workstation ($HOSTTYPE) Version $newvers `date`" >> \

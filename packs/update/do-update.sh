@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.23 1998-04-08 17:06:30 ghudson Exp $
+# $Id: do-update.sh,v 1.24 1998-04-24 19:10:51 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -79,6 +79,8 @@ fi
 #	$DEADFILES	A list of local files to be removed
 #	$LOCALPACKAGES	A list of local OS packages to be de/installed
 #	$LINKPACKAGES	A list of linked OS packages to be de/installed
+#	$CONFIGVERS	A list of new/old versions of config files,
+#			left behind by OS installation (Irix only)
 #	$CONFVARS	Can set variables to "true", including:
 #		NEWUNIX		Update kernel
 #		NEWBOOT		Boot blocks have changed
@@ -201,6 +203,14 @@ if [ "$MINIROOT" = true ]; then
 
 	echo "Suppressing network daemons for reboot"
 	chkconfig -f suppress-network-daemons on
+
+	# Note the volume header must be updated before the miniroot
+	# can boot (Irix only).
+	if [ "$NEWBOOT" = true ]; then
+		# Make sure the volume header has an up-to-date sash.
+		echo "Updating sash volume directory entry..."
+		dvhtool -v creat /install/lib/sash sash
+	fi
 
 	sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" "$newvers"
 	case "$?" in

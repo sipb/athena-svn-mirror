@@ -1,5 +1,5 @@
 export CONFCHG CONFVARS AUXDEVS OLDBINS OLDLIBS DEADFILES LOCALPACKAGES
-export LINKPACKAGES CONFDIR LIBDIR SERVERDIR PATH HOSTTYPE CPUTYPE
+export LINKPACKAGES CONFDIR LIBDIR SERVERDIR PATH HOSTTYPE CPUTYPE CONFIGVERS
 
 CONFCHG=$UPDATE_ROOT/var/athena/update.confchg
 CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
@@ -15,3 +15,4 @@ SERVERDIR=$UPDATE_ROOT/var/server
 PATH=/bin:/etc:/usr/sbin:/sbin:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`$UPDATE_ROOT/bin/athena/machtype`
 CPUTYPE=`$UPDATE_ROOT/bin/athena/machtype -c`
+CONFIGVERS=$UPDATE_ROOT/var/athena/update.configvers

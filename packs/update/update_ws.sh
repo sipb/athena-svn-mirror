@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.34 1998-04-15 19:58:20 ghudson Exp $
+# $Id: update_ws.sh,v 1.35 1998-04-24 19:10:52 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -254,6 +254,21 @@ sun4,8.[01].*|sun4,7.*)
 		echo "Root partition low on space (less than 3MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off root partition."
+		exit 1
+	fi
+	;;
+esac
+
+# The Irix 5.3 -> 6.2 update requires at least 64 MB of memory,
+# and, since it is done in the miniroot, cannot use swap.
+# Since all supported machines should now have at least that
+# much memory, require it.
+case "$HOSTTYPE" in
+sgi)
+	if [ "`hinv -t memory | awk '{ print $4; }'`" -lt 64 ]; then
+		echo "Insufficient memory (less than 64MB); not"
+		echo "performing update.  Please add more memory"
+		echo "or reinstall."
 		exit 1
 	fi
 	;;
