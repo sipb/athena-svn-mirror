@@ -37,6 +37,7 @@ typedef struct {
 #define PC_CHMOD 4
 
 extern long		pc_init(pc_state **);
+extern long		pc_destroy(pc_state *);
 extern long 		pc_addport(pc_state *, pc_port *);
 extern long		pc_removeport(pc_state *, pc_port *);
 extern long 		pc_addfd(pc_state *, pc_fd *);
