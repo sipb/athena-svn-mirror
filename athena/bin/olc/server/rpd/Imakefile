@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
- * $Id: Imakefile,v 1.6 1990-12-31 21:27:31 lwvanels Exp $
+ * $Id: Imakefile,v 1.7 1991-01-08 16:44:57 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -38,7 +38,9 @@ NormalProgramTarget(rpd,$(S_OBJS),,$(SERVER_LIBRARIES),)
 SaberProgramTarget(oreplay,$(C_SRCS),$(C_OBJS),$(CLIENT_LIBRARIES),)
 SaberProgramTarget(rpd,$(S_SRCS),$(S_OBJS),$(SERVER_LIBRARIES),)
 
-DependSrcs()
+depend: Makefile
+	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[c] *.[h]
+
 LintTarget()
 
 olist::
