@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.14 1991-03-27 15:44:12 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.15 1991-04-17 17:40:08 mar Exp $
  */
 
 #include <stdio.h>
@@ -269,6 +269,11 @@ char *display;
 #if defined(_AIX) && defined(i386)
     environment[i++] = "hosttype=ps2";
 #endif
+    msg = getenv("TZ");
+    if (msg) {		/* Pass along timezone */
+	sprintf(errbuf, "TZ=%s", msg);
+	environment[i++] = strsave(errbuf);
+    }
     environment[i++] = NULL;
 
     add_utmp(user, tty, display);
