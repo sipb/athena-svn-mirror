@@ -1,4 +1,4 @@
-# $Id: packages,v 1.202 2003-02-01 05:47:51 ghudson Exp $
+# $Id: packages,v 1.203 2003-02-01 06:42:21 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -174,6 +174,7 @@ third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,gnome-vf
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
+third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
 third/gnome-mime-data		requires gettext
 third/gnome-panel		requires gettext,intltool,glib2,GConf2,gnome-desktop,gtk2,libglade2,libgnome,libgnomeui,ORBit2,gnome-vfs2,libwnck,libbonoboui,pango,libpng
 third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype,tetex
@@ -183,6 +184,7 @@ third/gnome-themes		requires gettext,intltool
 third/gnome-utils		requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
 third/gnome-vfs2		requires gettext,glib2,libxml2,GConf2,libbonobo,bonobo-activation,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
+third/gstreamer			requires glib2,libxml2,popt
 third/gtk-engines		requires gtk2
 third/gtk			requires glib,gettext
 third/gtk2			requires glib2,pango,atk,tiff,libpng,jpeg
@@ -235,6 +237,7 @@ third/metacity			requires gettext,intltool,gtk2,GConf2,startup-notification
 third/mingetty			on linux
 third/motif/clients/mwm		on solaris
 third/nautilus			requires gettext,intltool,libart_lgpl,bonobo-activation,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
+third/nautilus-media		requires gstreamer,libgnome,libgnomeui,eel,nautilus
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
