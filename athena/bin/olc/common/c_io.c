@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.11 1990-12-17 08:53:09 lwvanels Exp $
+ *	$Id: c_io.c,v 1.12 1991-02-24 11:26:19 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.11 1990-12-17 08:53:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.12 1991-02-24 11:26:19 lwvanels Exp $";
 #endif
 #endif
 
@@ -55,6 +55,17 @@ struct hostent *gethostbyname(); /* Get host entry of a host. */
 #if __STDC__
 static ERRCODE write_chars_to_fd (int, char *, int);
 static ERRCODE read_chars_from_fd (int, char *, int);
+#endif
+
+#ifdef m68k
+#define NBBY    8 /* number of bits in a byte */
+#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
+
+#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
+
 #endif
 
 extern int select_timeout;
