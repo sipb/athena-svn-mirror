@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Make sure the window system is configured on.
+/sbin/chkconfig -f windowsystem on
+
 # Give people a way to disable the wrapper if it's annoying.
 if [ -f /etc/athena/x-no-wrapper ]; then
 	exec /usr/bin/X11/X "$@"
