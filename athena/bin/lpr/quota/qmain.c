@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.5 1990-07-11 13:25:52 ilham Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.6 1990-07-11 15:22:14 ilham Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.5 1990-07-11 13:25:52 ilham Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.6 1990-07-11 15:22:14 ilham Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -241,19 +241,17 @@ read_quotacap()
 	    syslog(LOG_ERR, "Configuration file not found");
 	    return(1);
 	}
-	strncpy(quota_name, buf, 256);	    
-    } else {
-	if ((status = qgetent(buf, quota_name)) < 0) {
-	    syslog(LOG_ERR, "Unable to open quotacap file");
-	    return(1);
-	} else if (status == 0) {
-	    syslog(LOG_ERR, "Unknown quota server (%s) in quotacap", quota_name);
-	    return(1);
-	}
+	strncpy(quota_name, buf, 256);
+    }
+    if ((status = qgetent(buf, quota_name)) < 0) {
+	syslog(LOG_ERR, "Unable to open quotacap file");
+	return(1);
+    } else if (status == 0) {
+	syslog(LOG_ERR, "Unknown quota server (%s) in quotacap", quota_name);
+	return(1);
     }
 
     /* Now we have the right quotacap entry, now get all the info */
-
     bp = buf;
 
     KA = qgetnum("ka");
