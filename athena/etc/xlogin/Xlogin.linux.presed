@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.8 2000-07-17 21:15:31 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.9 2000-08-01 18:53:18 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -51,7 +51,7 @@ xlogin*left:			ChainLeft
 !		General Resources.
 ! ------------------------------------------------------------
 
-xlogin.Geometry: 		580x325+205+105
+xlogin.Geometry: 		580x325
 *bitmapFilePath:		/etc/athena/login/bitmaps:/etc/athena/login
 *BorderWidth:			0
 *saveUnder:			False
