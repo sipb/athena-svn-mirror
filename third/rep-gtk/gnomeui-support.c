@@ -1,5 +1,5 @@
 /* gnomeui-support.c -- helper functions for GNOME binding
-   $Id: gnomeui-support.c,v 1.1.1.1 2000-11-12 06:16:30 ghudson Exp $ */
+   $Id: gnomeui-support.c,v 1.1.1.2 2003-01-05 00:30:04 ghudson Exp $ */
 
 #include <config.h>
 #include <assert.h>
@@ -265,13 +265,8 @@ sgtk_gnome_init (const char *app_id, const char *app_version)
 repv
 rep_dl_init (void)
 {
-    repv s = rep_push_structure ("gui.gnome.ui");
+    repv s = rep_push_structure ("gui.gtk-2.gnome-ui");
     repv id, version;
-
-    /* ::alias:gnomeui gui.gnome.ui::
-       ::alias:gui.gnome gui.gnome.ui:: */
-    rep_alias_structure ("gui.gnome");
-    rep_alias_structure ("gnomeui");
 
     sgtk_gnome_init_gnomeui_glue ();
     rep_ADD_SUBR (Sgnome_client_set_clone_command);

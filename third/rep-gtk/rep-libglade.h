@@ -1,5 +1,5 @@
 /* rep-libglade.h -- 
-   $Id: rep-libglade.h,v 1.1.1.1 2000-11-12 06:16:17 ghudson Exp $
+   $Id: rep-libglade.h,v 1.1.1.2 2003-01-05 00:30:02 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -32,8 +32,6 @@ extern void sgtk_glade_xml_signal_autoconnect (GladeXML *self);
 
 extern GladeXML *sgtk_glade_xml_new_from_string (repv text, const char *root,
 						 const char *domain);
-
-extern char *sgtk_glade_xml_textdomain (GladeXML *xml);
 
 extern void sgtk_init_gtk_libglade_glue (void);
 

@@ -1,5 +1,7 @@
 ;; -*- scheme -*-
 
+(import "glib.defs")
+
 ;;; Gdk enums
 
 (define-enum GdkWindowType
@@ -8,7 +10,7 @@
   (child GDK_WINDOW_CHILD)
   (dialog GDK_WINDOW_DIALOG)
   (temp GDK_WINDOW_TEMP)
-  (pixmap GDK_WINDOW_PIXMAP))
+  (pixmap GDK_WINDOW_FOREIGN))
 
 (define-enum GdkWindowClass
   (input-output GDK_INPUT_OUTPUT)
@@ -186,8 +188,9 @@
   (join-style GDK_GC_JOIN_STYLE))
 
 (define-enum GdkSelection
-  (primary GDK_SELECTION_PRIMARY)
-  (secondary GDK_SELECTION_SECONDARY))
+  ;; FIXME: these are atoms (pointers) not integers
+  (primary "(int) GDK_SELECTION_PRIMARY")
+  (secondary "(int) GDK_SELECTION_SECONDARY"))
 
 (define-enum GdkPropertyState
   (new-value GDK_PROPERTY_NEW_VALUE)
@@ -241,9 +244,10 @@
   (copy gdk_colormap_ref)
   (free gdk_colormap_unref))
 
+;;; XXX FIXME
 (define-boxed GdkVisual
-  (copy gdk_visual_ref)
-  (free gdk_visual_unref))
+  (copy g_object_ref)
+  (free g_object_unref))
 
 (define-boxed GdkFont
   (copy gdk_font_ref)
@@ -607,4 +611,4 @@
 (options
  (includes "#include <gdk/gdk.h>")
  (init-func "sgtk_init_gtk_gdk_glue")
- (other-inits "sgtk_init_gtk_gtk_glue"))
+ (other-inits "sgtk_init_gtk_glib_glue"))
