@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.12 1990-12-12 15:14:12 lwvanels Exp $
+ *	$Id: db.c,v 1.13 1991-03-28 13:28:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.12 1990-12-12 15:14:12 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.13 1991-03-28 13:28:44 lwvanels Exp $";
 #endif
 #endif
 
@@ -88,7 +88,10 @@ get_acls(user)
   ACL *a_ptr;
   char buf[BUFSIZ];
 
-  sprintf(buf,"%s@%s",user->username,user->realm);
+  if ((user->realm != NULL) && (user->realm[0] != '\0'))
+    sprintf(buf,"%s@%s",user->username,user->realm);
+  else
+    strcpy(buf,user->username);
 
   for(a_ptr = Acl_List; a_ptr->code > 0; a_ptr++)
     {
