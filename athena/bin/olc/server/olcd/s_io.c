@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.11 1990-02-18 06:50:54 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.12 1990-02-27 10:35:09 vanharen Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -102,7 +102,7 @@ read_request(fd, request)
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
-  if ((request->version > VERSION_5) || (request->version < VERSION_3))
+  if ((request->version != VERSION_4) || (request->version != VERSION_3))
     {
       sprintf(msgbuf,
 	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
