@@ -9,7 +9,7 @@
 # AFS	Start and stop AFS components
 # 
 # 
-# chkconfig: 35 60 20
+# chkconfig: 35 46 20
 # description:  AFS is a distributed file system which provides location
 #		transparency, caching and secure authentication.
 #		Additional configuration can be done in the /etc/sysconfig/afs
@@ -58,7 +58,7 @@ runcmd() {
    echo
 }
 
-SYSCNF=/etc/sysconfig/afs
+SYSCNF=/etc/sysconfig/openafs
 
 # Gather up options and post startup script name, if present
 if [ -f $SYSCNF ] ; then
@@ -68,6 +68,27 @@ fi
 CACHEINFO=${CACHEINFO:-/usr/vice/etc/cacheinfo}
 CACHE=${CACHEDIR:-/usr/vice/cache}
 AFS=${AFSDIR:-/afs}
+# Athena additions
+if [ "${OPTIONS+set}" != set ]; then
+	OPTIONS="-stat 2000 -dcache 800 -daemons 4 -volumes 70 -afsdb -dynroot"
+fi
+AFS_POST_INIT=/etc/athena/config_afs
+athena_afsadjust () {
+        . /etc/athena/rc.conf
+        if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
+                df -k /usr/vice/cache | awk '
+                  (NR == 2) {
+                    printf "/afs:/usr/vice/cache:";
+                    print int($2 * 3 / 4);
+                  }' > /usr/vice/etc/cacheinfo.new
+                  
+                if df -k /usr/vice/cache | grep -q /usr/vice/cache ; then
+                        mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
+                else
+                        rm /usr/vice/etc/cacheinfo.new
+                fi
+        fi
+}
 
 # is_on returns 1 if value of arg is "on"
 is_on() {
@@ -106,7 +127,11 @@ choose_client() {
 	# For now, just use uname -r to get the module version. 
 	VERSION=`uname -r`
 
-	LIBAFS=libafs-$VERSION$MP.o
+	# Kernels compiled for different machine types may have
+        # different symbol versions.  Yay Linux.
+        MACHINE=`uname -m`
+
+	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
 
 #
@@ -222,8 +247,12 @@ choose_afsdoptions() {
 
 case "$1" in 
   start)
-    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/afs ]; then
+    if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
 	on_network || exit 1
+
+	athena_afsadjust
+	choose_afsdoptions
+
 	# Load kernel extensions
 	if  load_client  ; then :
 	else
@@ -235,22 +264,25 @@ case "$1" in
 	# Start bosserver, it if exists
 	if  is_on $AFS_SERVER && test -x /usr/afs/bin/bosserver  ; then
 		/usr/afs/bin/bosserver 
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 	fi
 
 	# Start AFS client
 	if  is_on $AFS_CLIENT && test -x /usr/vice/etc/afsd  ; then
-		generate_cacheinfo
-		choose_afsdoptions
 		/usr/vice/etc/afsd ${AFSD_OPTIONS}
-		test "$afs_rh" && touch /var/lock/subsys/afs
+		test "$afs_rh" && touch /var/lock/subsys/openafs
 		$AFS_POST_INIT
+		if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+			/bin/athena/fs setcrypt on
+		else
+			/bin/athena/fs setcrypt off
+		fi
 	fi
     fi
 	;;
 
   stop)
-    if [ ! "$afs_rh" -o -f /var/lock/subsys/afs ]; then
+    if [ ! "$afs_rh" -o -f /var/lock/subsys/openafs ]; then
 	# Stop AFS
 	echo "Stopping AFS services..... "
 
@@ -274,7 +306,7 @@ case "$1" in
 		/sbin/rmmod $LIBAFS
 	fi
 
-	rm -f /var/lock/subsys/afs
+	rm -f /var/lock/subsys/openafs
     fi
 	;;
 

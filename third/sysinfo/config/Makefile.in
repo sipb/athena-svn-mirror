@@ -1,5 +1,5 @@
 #
-# $Revision: 1.1.1.1 $
+# $Revision: 1.2 $
 #
 # Makefile for SysInfo config files
 #
@@ -32,10 +32,10 @@ mcdall:
 	done
 
 install:
-	@$(MKDIRHIER) $(CFDIR); \
+	@$(MKDIRHIER) $(DESTDIR)$(CFDIR); \
 	for f in $(topsrcdir)/config/*.cf $(topsrcdir)/config/*.rcf $(topsrcdir)/config/*.ddb ; do \
 		cf=`echo $$f | sed -e 's;.*/;;'`; \
-		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(CFDIR)/$$cf"; \
+		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(DESTDIR)$(CFDIR)/$$cf"; \
 		echo $$cmd; \
 		$$cmd; \
 	done

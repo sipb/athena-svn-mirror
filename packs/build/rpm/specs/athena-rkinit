@@ -1,0 +1,12 @@
+Name: athena-rkinit
+Summary: An Athena client to safely establish kerberos tickets on a remote host
+Copyright: MIT
+Group: Applications/Internet
+
+Requires: athena-krb5 
+
+%description
+rkinit is a program that allows a user to establish kerberos tickets
+on a remote host registered for rlogin service.  This can be done
+without the user's kerberos password ever leaving the client machine.
+

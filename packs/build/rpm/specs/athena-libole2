@@ -1,0 +1,9 @@
+Name: athena-libole2
+Summary: Structured Storage OLE2 library, for Athena
+Copyright: GPL
+Group: System Environment/Libraries
+
+%description
+A library containing functionality to manipulate OLE2 Structured
+Storage files.  It is used by Gnumeric from Gnome, AbiWord from
+AbiSuite and by other programs.

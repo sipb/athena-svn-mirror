@@ -8,7 +8,7 @@ XCOMM @OSF_COPYRIGHT@
 XCOMM 
 XCOMM HISTORY
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:47 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:47:18 $
 #define DoNormalLib NormalLibXm
 #define DoSharedLib SharedLibXm
 #define DoDebugLib DebugLibXm
@@ -39,7 +39,7 @@ BINDINGS_DEF = -DXMBINDDIR_FALLBACK=\"$(USRLIBDIR)/Xm/bindings\"
 
 /*** Begin non-OSF stuff ***/
 
-#if !defined(SunArchitecture)
+#if 0
 #SUBDIRS = bindings mkcatdefs
 SUBDIRS = mkcatdefs
 
@@ -104,6 +104,11 @@ VENDOR_DEFINES = -DIBM_MOTIF -UXT_HAS_TRANS_FIX -DIC_PER_SHELL \
 #if defined(SCOArchitecture)
  MOTIF_MSG_DEF = -DI18N_MSG
 VENDOR_DEFINES = -DNO_REGCOMP 
+#endif
+
+#if defined(LinuxArchitecture)
+VENDOR_DEFINES = -UNOT_SUPPORT_READDIR_R -DHAS_MODERN_READDIR_R \
+		 -DHAS_WIDECHAR_FUNCTIONS
 #endif
 
 /*** End non-OSF stuff ***/
@@ -215,7 +220,7 @@ OBJS2 = Primitive.o     Manager.o       DialogS.o       DialogSE.o \
  *
  */
 
-#if !defined(SunArchitecture)
+#if 0
 all:: XmMsgI.h
 XmMsgI.h: Xm.msg
 	$(RM) XmMsgI.h Xm.cat

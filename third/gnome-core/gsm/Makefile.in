@@ -233,7 +233,7 @@ desktopdir = $(datadir)/gnome/apps/Settings/Session/
 desktop_DATA = save-session.desktop session.desktop
 
 @SESSION_TRUE@sys_in_files = @SESSION_TRUE@session-properties.desktop.in
-@SESSION_TRUE@sys_DATA = @SESSION_TRUE@$(sys_in_files:.desktop.in=.desktop)
+#@SESSION_TRUE@sys_DATA = @SESSION_TRUE@$(sys_in_files:.desktop.in=.desktop)
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session
 
@@ -320,7 +320,7 @@ MANS = $(man_MANS)
 
 NROFF = nroff
 DATA =  $(default_DATA) $(desktop_DATA) $(noinst_DATA) $(pixmap_DATA) \
-$(settings_DATA) $(sys_DATA)
+$(settings_DATA)
 
 DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO \
 default.session.5.in gnome-session.1.in
@@ -608,25 +608,6 @@ uninstall-settingsDATA:
 	  rm -f $(DESTDIR)$(settingsdir)/$$p; \
 	done
 
-install-sysDATA: $(sys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-sysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
-	done
-
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
 # To change the values of `make' variables: instead of editing Makefiles,
@@ -788,7 +769,7 @@ install-exec-am: install-binPROGRAMS install-binSCRIPTS
 install-exec: install-exec-recursive
 
 install-data-am: install-man install-defaultDATA install-desktopDATA \
-		install-pixmapDATA install-settingsDATA install-sysDATA
+		install-pixmapDATA install-settingsDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -796,8 +777,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS uninstall-man \
 		uninstall-defaultDATA uninstall-desktopDATA \
-		uninstall-pixmapDATA uninstall-settingsDATA \
-		uninstall-sysDATA
+		uninstall-pixmapDATA uninstall-settingsDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA)
 all-redirect: all-recursive
@@ -808,8 +788,7 @@ installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(mandir)/man5 \
 		$(DESTDIR)$(defaultdir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(settingsdir) \
-		$(DESTDIR)$(sysdir)
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(settingsdir)
 
 
 mostlyclean-generic:
@@ -856,11 +835,11 @@ install-binSCRIPTS install-man1 uninstall-man1 install-man5 \
 uninstall-man5 install-man uninstall-man uninstall-defaultDATA \
 install-defaultDATA uninstall-desktopDATA install-desktopDATA \
 uninstall-pixmapDATA install-pixmapDATA uninstall-settingsDATA \
-install-settingsDATA uninstall-sysDATA install-sysDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+install-settingsDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

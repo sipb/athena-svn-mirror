@@ -97,7 +97,7 @@ EMACSSOURCES= \
 	${srcdir}/glossary.texi \
 	${srcdir}/ack.texi
 
-info: $(INFO_TARGETS)
+info:
 
 dvi: $(DVI_TARGETS)
 

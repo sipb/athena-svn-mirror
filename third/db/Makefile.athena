@@ -1,0 +1,26 @@
+# $Id: Makefile.athena,v 1.5 2002-02-18 15:35:46 ghudson Exp $
+
+.PHONY: dist
+
+dist:
+	cp ${CONFIG_SITE} ./config.site.athena
+
+prepare:
+	rm -f build_unix/config.cache
+	cd build_unix && CONFIG_SITE=`pwd`/../config.site.athena \
+	  ../dist/configure --enable-compat185 --enable-shared
+
+check:
+	# Do nothing for check.
+
+clean:
+	cd build_unix && ${MAKE} clean
+
+all:
+	cd build_unix && ${MAKE} all libdb.a
+
+install:
+	cd build_unix && \
+	  ${MAKE} prefix="$$SRVD/usr/athena" install install_static
+	mkdir "$$SRVD/usr/athena/include/db3"
+	ln -s ../db.h "$$SRVD/usr/athena/include/db3/db.h"

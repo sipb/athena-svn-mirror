@@ -19,7 +19,7 @@ pkgdatadir=${datadir}/@PACKAGE@
 pkglibdir=${libdir}/@PACKAGE@
 pkgincludedir=${includedir}/@PACKAGE@
 MODULE_VERSION=@PACKAGE@-@VERSION@
-module_dirs="$libdir"
+module_dirs="${libdir}:/usr/lib"
 
 # stolen from autoconf
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then

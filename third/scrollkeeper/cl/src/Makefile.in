@@ -312,12 +312,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-get-cl.o: get-cl.c ../../config.h ../../libs/scrollkeeper.h
-install.o: install.c ../../config.h ../../libs/scrollkeeper.h
-preinstall.o: preinstall.c ../../config.h ../../libs/scrollkeeper.h
-uninstall.o: uninstall.c ../../config.h ../../libs/scrollkeeper.h
-update.o: update.c ../../config.h ../../libs/scrollkeeper.h
-
 info-am:
 info: info-am
 dvi-am:

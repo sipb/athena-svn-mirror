@@ -1,0 +1,9 @@
+Name: athena-libxml
+Summary: An XML library used by GNOME, for Athena
+Copyright: LGPL
+Group: System Environment/Libraries
+
+%description
+The athena-libxml package contains an XML library, which allows you to
+manipulate XML files.  XML (eXtensible Markup Language) is a data
+format for structured document interchange.

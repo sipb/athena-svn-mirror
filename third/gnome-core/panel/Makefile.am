@@ -307,4 +307,29 @@ desk_in_files = gnome-panel-properties.desktop.in
 desk_DATA = $(desk_in_files:.desktop.in=.desktop)
 @XML_I18N_MERGE_DESKTOP_RULE@
 
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = info.png logout-icon-menu.png
+
+athenadir = $(datadir)/gnome/athena
+athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
+athena_SCRIPTS = mail-script browser-script terminal-script editor-script setup
+AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
+
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	install -c -m 644 mail.png $(DESTDIR)$(athenadir)/mail-icon
+	install -c -m 644 browser.png $(DESTDIR)$(athenadir)/browser-icon
+	install -c -m 644 terminal.png $(DESTDIR)$(athenadir)/terminal-icon
+	install -c -m 644 editor.png $(DESTDIR)$(athenadir)/editor-icon
+	install -c -m 644 logout.png $(DESTDIR)$(athenadir)/logout-icon
+	install -c -m 644 menu.png $(DESTDIR)$(athenadir)/menu-icon
+	rm -f $(DESTDIR)$(athenadir)/menus
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
+		$(DESTDIR)$(athenadir)/menus
+	rm -f $(DESTDIR)$(athenadir)/menus.tar
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION).tar \
+		$(DESTDIR)$(athenadir)/menus.tar
+
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
+
+applet-widget.o applet.o extern.o panel.o status-docklet.o status.o xstuff.o applet-widget.lo applet.lo extern.lo panel.lo status-docklet.lo status.lo xstuff.lo: gnome-panel.h

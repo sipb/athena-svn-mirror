@@ -187,11 +187,11 @@ applet_callback_callback(GtkWidget *widget, gpointer data)
 		if (strcmp (menu->name, "help") == 0)
 			panel_show_help ("specialobjects.html#LOCKBUTTON");
 		else if (!strcmp (menu->name, "restart")) {
-			command = "xscreensaver-command -exit ; xscreensaver &";
+			command = "xss-command -exit ; xss &";
 		} else if (!strcmp (menu->name, "prefs")) {
-			command = "xscreensaver-demo";
+			command = "xss-demo";
 		} else {
-			command = g_strdup_printf ("xscreensaver-command -%s",
+			command = g_strdup_printf ("xss-command -%s",
 						   menu->name);
 			freeit = TRUE;
 		}

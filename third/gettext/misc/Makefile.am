@@ -21,6 +21,8 @@ AUTOMAKE_OPTIONS = 1.2 gnits
 
 EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl po-mode.el
 DISTCLEANFILES = gettextize
-lisp_LISP = po-mode.el
+
+hackdir = $(datadir)/emacs/site-lisp
+hack_DATA = po-mode.el
 
 bin_SCRIPTS = gettextize

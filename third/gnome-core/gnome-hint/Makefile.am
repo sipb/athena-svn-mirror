@@ -1,5 +1,4 @@
 INCLUDES = 			\
-	-I$(includedir)		\
 	-I$(top_srcdir)/intl	\
 	-I$(top_builddir)/intl	\
 	$(GNOME_INCLUDEDIR)	\
@@ -32,7 +31,7 @@ util_DATA = $(util_in_files:.desktop.in=.desktop)
 
 sysdir = $(datadir)/control-center/Session/
 sys_in_files = gnome-hint-properties.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+#sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 @XML_I18N_MERGE_DESKTOP_RULE@
 
 pixmapsdir = $(datadir)/pixmaps
@@ -42,7 +41,6 @@ EXTRA_DIST = \
 	$(util_in_files)	\
 	$(util_DATA)		\
 	$(sys_in_files)		\
-	$(sys_DATA)		\
 	gnome-hint.png		\
 	$(man_MANS)
 

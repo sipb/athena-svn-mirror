@@ -1,4 +1,4 @@
-/* $Id: acconfig.h,v 1.1.1.2 2002-02-13 00:08:01 zacheiss Exp $ */
+/* $Id: acconfig.h,v 1.4 2002-02-15 19:46:58 zacheiss Exp $ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
@@ -184,11 +184,23 @@
 /* Define if libc defines __progname */
 #undef HAVE___PROGNAME
 
+/* Define this is you want GSSAPI support in the version 2 protocol */
+#undef GSSAPI
+
+/* Define if you want Kerberos 5 support */
+#undef KRB5
+
+/* Define this if you are using Heimdal version of Kerberos V5 */
+#undef HEIMDAL
+
 /* Define if you want Kerberos 4 support */
 #undef KRB4
 
 /* Define if you want AFS support */
 #undef AFS
+
+/* Define if you want GSI/Globus authentication support */
+#undef GSI
 
 /* Define if you want S/Key support */
 #undef SKEY

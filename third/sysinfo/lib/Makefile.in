@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.1.1.1 2001-03-20 18:03:59 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-03-22 00:12:13 ghudson Exp $
 #
 # Makefile.in for "lib"
 #
@@ -201,7 +201,7 @@ mcdall: $(LibStatic)
 install: $(LibStatic)
 	@$(MKDIRHIER) $(LIBDIR); \
 	RTPLATFORM=`$(BUILDINFO) -rtplatform -cfdir ${srcdir}/../config`; \
-	PLdir=$(LIBDIR)/platform/$${RTPLATFORM}; \
+	PLdir=$(DESTDIR)$(LIBDIR)/platform/$${RTPLATFORM}; \
 	Target=$$PLdir/$(INSTALLNAME); \
 	$(MKDIRHIER) $$PLdir; \
 	cmd="$(INSTALLPROG) -c ${INSTALLOWN} -m 444 ${LibStatic} $$Target"; \

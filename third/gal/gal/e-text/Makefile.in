@@ -202,7 +202,7 @@ noinst_PROGRAMS =  	e-completion-test
 e_completion_test_SOURCES =  	e-completion-test.c
 
 
-e_completion_test_LDADD =  	libetext.la 			$(top_builddir)/gal/e-table/libetable.la 	$(EXTRA_GNOME_LIBS)		$(ICONV_LIBS)			$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la
+e_completion_test_LDADD =  	libetext.la 			$(top_builddir)/gal/e-table/libetable.la 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS)			$(EXTRA_GNOME_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -238,7 +238,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libetext_la_SOURCES) $(e_completion_test_SOURCES)
 OBJECTS = $(libetext_la_OBJECTS) $(e_completion_test_OBJECTS)

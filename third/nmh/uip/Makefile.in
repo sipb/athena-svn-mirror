@@ -1,7 +1,7 @@
 #
 # Makefile for uip subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:18 danw Exp $
+# $Id: Makefile.in,v 1.6 1999-09-02 14:42:21 ghudson Exp $
 #
 
 SHELL = /bin/sh
@@ -34,7 +34,7 @@ TERMLIB = @TERMLIB@
 LEXLIB  = @LEXLIB@
 POPLIB  = @POPLIB@
 
-COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS)
 LINK    = $(CC) $(LDFLAGS) -o $@
 LN = ln
 
@@ -242,38 +242,50 @@ install: install-cmds install-lcmds install-misc
 
 # install commands
 install-cmds:
-	$(top_srcdir)/mkinstalldirs $(bindir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for cmd in $(CMDS); do \
-	  $(INSTALL_PROGRAM) $$cmd $(bindir)/$$cmd; \
+	  $(INSTALL_PROGRAM) $$cmd $(DESTDIR)$(bindir)/$$cmd; \
 	done
 
 # install links
 install-lcmds:
-	rm -f $(bindir)/flists
-	rm -f $(bindir)/folders
-	rm -f $(bindir)/prev
-	rm -f $(bindir)/next
-	$(LN) $(bindir)/flist  $(bindir)/flists
-	$(LN) $(bindir)/folder $(bindir)/folders
-	$(LN) $(bindir)/show   $(bindir)/prev
-	$(LN) $(bindir)/show   $(bindir)/next
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)/usr/athena/etc
+	rm -f $(DESTDIR)$(bindir)/flists
+	rm -f $(DESTDIR)$(bindir)/folders
+	rm -f $(DESTDIR)$(bindir)/prev
+	rm -f $(DESTDIR)$(bindir)/next
+	$(LN) $(DESTDIR)$(bindir)/flist  $(DESTDIR)$(bindir)/flists
+	$(LN) $(DESTDIR)$(bindir)/folder $(DESTDIR)$(bindir)/folders
+	$(LN) $(DESTDIR)$(bindir)/show   $(DESTDIR)$(bindir)/prev
+	$(LN) $(DESTDIR)$(bindir)/show   $(DESTDIR)$(bindir)/next
+	rm -f $(DESTDIR)/usr/athena/etc/rcvdist
+	rm -f $(DESTDIR)/usr/athena/etc/rcvpack
+	rm -f $(DESTDIR)/usr/athena/etc/rcvstore
+	rm -f $(DESTDIR)/usr/athena/etc/rcvtty
+	rm -f $(DESTDIR)/usr/athena/etc/slocal
+	ln -s ../libexec/rcvdist $(DESTDIR)/usr/athena/etc/rcvdist
+	ln -s ../libexec/rcvpack $(DESTDIR)/usr/athena/etc/rcvpack
+	ln -s ../libexec/rcvstore $(DESTDIR)/usr/athena/etc/rcvstore
+	ln -s ../libexec/rcvtty $(DESTDIR)/usr/athena/etc/rcvtty
+	ln -s ../libexec/slocal $(DESTDIR)/usr/athena/etc/slocal
 
 # install misc support binaries
 install-misc:
-	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	for misc in $(MISC); do \
-	  $(INSTALL_PROGRAM) $$misc $(libdir)/$$misc; \
+	  $(INSTALL_PROGRAM) $$misc $(DESTDIR)$(libdir)/$$misc; \
 	done
 
 uninstall:
 	for cmd in $(CMDS); do \
-	  rm -f $(bindir)/$$cmd; \
+	  rm -f $(DESTDIR)$(bindir)/$$cmd; \
 	done
 	for lcmd in $(LCMDS); do \
-	  rm -f $(bindir)/$$lcmd; \
+	  rm -f $(DESTDIR)$(bindir)/$$lcmd; \
 	done
 	for misc in $(MISC); do \
-	  rm -f $(libdir)/$$misc; \
+	  rm -f $(DESTDIR)$(libdir)/$$misc; \
 	done
 
 # ========== DEPENDENCIES FOR CLEANUP ==========

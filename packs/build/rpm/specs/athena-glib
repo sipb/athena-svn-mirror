@@ -1,0 +1,8 @@
+Name: athena-glib
+Summary: The glib utility library, for Athena
+Copyright: GPL
+Group: System Environment/Libraries
+
+%description
+glib is a library of utility and portability functions.  It is a basic
+component of the GNOME (GNU Network Object Model Environment) system.

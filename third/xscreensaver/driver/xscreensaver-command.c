@@ -43,9 +43,9 @@ char *progname;
 Atom XA_VROOT;
 Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_RESPONSE;
 Atom XA_SCREENSAVER_ID, XA_SCREENSAVER_STATUS, XA_SELECT, XA_DEMO, XA_EXIT;
-Atom XA_BLANK, XA_LOCK;
+Atom XA_BLANK, XA_LOCK, XA_RESTART;
 static Atom XA_ACTIVATE, XA_DEACTIVATE, XA_CYCLE, XA_NEXT, XA_PREV;
-static Atom XA_RESTART, XA_PREFS, XA_THROTTLE, XA_UNTHROTTLE;
+static Atom XA_PREFS, XA_THROTTLE, XA_UNTHROTTLE;
 
 static char *screensaver_version;
 static char *usage = "\n\
@@ -230,7 +230,7 @@ main (int argc, char **argv)
       (cmd == &XA_DEMO && arg == 0))
     {
       char buf [512];
-      char *new_argv[] = { "xscreensaver-demo", 0, 0, 0, 0, 0 };
+      char *new_argv[] = { "xss-demo", 0, 0, 0, 0, 0 };
       int ac = 1;
 
       if (dpyname)

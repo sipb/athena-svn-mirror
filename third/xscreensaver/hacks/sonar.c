@@ -38,7 +38,7 @@
  * software for any purpose.  It is provided "as is" without express or 
  * implied warranty.
  *
- * $Revision: 1.1.1.3 $
+ * $Revision: 1.2 $
  *
  * Version 1.0 April 27, 1998.
  * - Initial version
@@ -1747,7 +1747,10 @@ parse_mode (Bool ping_works_p)
       char d;
 
       for (next = token;
-           *next != ',' && *next != ' ' && *next != '\t' && *next != '\n';
+           *next && *next != ',' &&
+                    *next != ' ' &&
+                    *next != '\t' &&
+                    *next != '\n';
            next++)
         ;
       *next = 0;

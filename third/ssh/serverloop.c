@@ -14,8 +14,17 @@ Server main loop for handling the interactive session.
 */
 
 /*
- * $Id: serverloop.c,v 1.1.1.3 1999-03-08 17:43:09 danw Exp $
+ * $Id: serverloop.c,v 1.3 1999-03-08 18:20:08 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1999/01/21 23:10:47  ghudson
+ * From amu: if possible, wait specifically for child_pid.  And don't block.
+ *
+ * Revision 1.1.1.2  1998/05/13 19:11:16  danw
+ * Import of ssh 1.2.23
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:09  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.17  1998/05/23  20:37:21  kivinen
  * 	Changed () -> (void).
  *
@@ -119,8 +128,12 @@ RETSIGTYPE sigchld_handler(int sig)
 {
   int wait_pid;
   debug("Received SIGCHLD.");
+#ifdef HAVE_WAITPID
+  wait_pid = waitpid(child_pid, (int *)&child_wait_status, WNOHANG);
+#else
   wait_pid = wait((int *)&child_wait_status);
-  if (wait_pid != -1)
+#endif
+  if (wait_pid > 0)
     {
       if (wait_pid != child_pid)
 	error("Strange, got SIGCHLD and wait returned pid %d but child is %d",

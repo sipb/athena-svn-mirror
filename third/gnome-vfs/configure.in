@@ -399,6 +399,7 @@ AC_MSG_RESULT($av_struct_linger)
 
 AC_CHECK_LIB(nsl, t_accept)
 AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(rt, sem_init)
 
 have_socket=no
 AC_CHECK_FUNCS(socket, have_socket=yes)

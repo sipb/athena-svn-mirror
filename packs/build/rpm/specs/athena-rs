@@ -1,0 +1,7 @@
+Name: athena-rs
+Summary: Reshape a data array
+Copyright: BSD
+Group: Applications/Text
+
+%description
+rs reshapes data arrys according to various transform possibilities.

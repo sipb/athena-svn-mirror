@@ -2,7 +2,7 @@
 /*
  * repl.c -- reply to a message
  *
- * $Id: repl.c,v 1.1.1.1 1999-02-07 18:14:16 danw Exp $
+ * $Id: repl.c,v 1.3 1999-05-14 13:51:51 danw Exp $
  */
 
 #include <h/mh.h>
@@ -108,9 +108,9 @@ static struct swit aqrl[] = {
     { NULL, 0 }
 };
 
-short ccto = 1;		/* global for replsbr */
-short cccc = 1;
-short ccme = 1;
+short ccto = 0;		/* global for replsbr */
+short cccc = 0;
+short ccme = 0;
 short querysw = 0;
 
 short outputlinelen = OUTPUTLINELEN;
@@ -177,6 +177,7 @@ main (int argc, char **argv)
 
 		case GROUPSW:
 		    groupreply++;
+		    ccto = cccc = ccme = 1;
 		    continue;
 		case NGROUPSW:
 		    groupreply = 0;
@@ -193,6 +194,7 @@ main (int argc, char **argv)
 		    if (!(cp = *argp++) || *cp == '-')
 			adios (NULL, "missing argument to %s", argp[-2]);
 		    docc (cp, 1);
+		    groupreply = 1;
 		    continue;
 		case NCCSW: 
 		    if (!(cp = *argp++) || *cp == '-')
@@ -417,9 +419,6 @@ try_it_again:
 
     /* find form (components) file */
     if (!form) {
-	if (groupreply)
-	    form = etcpath (replgroupcomps);
-	else
 	    form = etcpath (replcomps);
     }
 

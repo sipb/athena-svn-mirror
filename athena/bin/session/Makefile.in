@@ -1,0 +1,46 @@
+# $Id: Makefile.in,v 1.1 1999-09-21 20:09:48 danw Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT=@INSTALL_SCRIPT@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS}
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+all: session_gate
+
+session_gate: session_gate.o
+	${CC} ${LDFLAGS} -o session_gate session_gate.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} session_gate ${DESTDIR}${bindir}
+	${INSTALL_SCRIPT} ${srcdir}/end_session.sh \
+		${DESTDIR}${bindir}/end_session
+	${INSTALL} -m 444 ${srcdir}/session_gate.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/end_session.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f session_gate.o session_gate
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

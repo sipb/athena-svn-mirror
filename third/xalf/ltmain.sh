@@ -832,6 +832,7 @@ compiler."
     export_symbols=
     export_symbols_regex=
     generated=
+    init_func=
     libobjs=
     link_against_libtool_libs=
     ltlibs=
@@ -945,6 +946,11 @@ compiler."
 	  prev=
 	  continue
 	  ;;
+	init)
+	  init_func="$arg"
+	  prev=
+	  continue;
+	  ;;
 	release)
 	  release="-$arg"
 	  prev=
@@ -1028,6 +1034,11 @@ compiler."
 	else
 	  prev=expsyms_regex
 	fi
+	continue
+	;;
+
+      -init)
+	prev=init
 	continue
 	;;
 

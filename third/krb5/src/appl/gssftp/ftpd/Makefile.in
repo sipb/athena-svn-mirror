@@ -25,12 +25,14 @@ SRCS	= $(srcdir)/ftpd.c ftpcmd.c $(srcdir)/popen.c \
 OBJS	= ftpd.o ftpcmd.o glob.o popen.o vers.o radix.o \
 	  secure.o $(LIBOBJS) $(SETENVOBJ)
 
+EXTRALIBS = @EXTRALIBS@
+ATHLIBS = -lal -lhesiod -llocker -lzephyr
 LOCALINCLUDES = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@
 
 all::	ftpd
 
 ftpd:	$(OBJS) $(PTY_DEPLIB) $(GSS_DEPLIBS) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(GSS_LIBS) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(GSS_LIBS) $(UTIL_LIB) $(ATHLIBS) $(EXTRALIBS) $(KRB4COMPAT_LIBS)
 
 clean::
 	$(RM) ftpd ftpcmd.c

@@ -1485,7 +1485,7 @@ request_paste (GtkWidget *widget, int type, gint32 time)
   GdkAtom string_atom;
 #ifdef ZVT_UTF
 #ifdef ZVT_MB
-  char *types[] = {"UTF-8", "COMPOUND_TEXT"};
+  char *types[] = {"UTF-8", "COMPOUND_TEXT", "STRING"};
 #else
   char *types[] = {"UTF-8", "STRING"};
 #endif /* ZVT_MB */
@@ -2757,7 +2757,11 @@ zvt_term_key_press (GtkWidget *widget, GdkEventKey *event)
     if (term->swap_del_key)
       *p++ = '\177';
     else
+#ifdef sgi
       *p++ = 8;
+#else
+      *p++ = '\177';
+#endif
     break;
   case GDK_KP_Right:
   case GDK_Right:

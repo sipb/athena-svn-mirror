@@ -49,7 +49,10 @@
    it is simpler to just do this in the source for each such file.  */
 
 #define GLOB_INTERFACE_VERSION 1
-#if !defined _LIBC && defined __GNU_LIBRARY__ && __GNU_LIBRARY__ > 1
+/* Athena wants to use this file even on Linux, since there is a libc bug
+ * in Red Hat 6.2. -- GBH 2000-02-18 */
+/* #if !defined _LIBC && defined __GNU_LIBRARY__ && __GNU_LIBRARY__ > 1 */
+#if 0
 # include <gnu-versions.h>
 # if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION
 #  define ELIDE_CODE
@@ -206,7 +209,9 @@ my_realloc (p, n)
 #endif /* __GNU_LIBRARY__ */
 
 
-#if !defined __alloca && !defined __GNU_LIBRARY__
+/* Second part commented out to make alloca work; I think they meant _LIBC.
+ * --GBH 2000-02-18. */
+#if !defined __alloca /* && !defined __GNU_LIBRARY__ */
 
 # ifdef	__GNUC__
 #  undef alloca

@@ -1,0 +1,10 @@
+Name: athena-hesiod
+Summary: The Athena Hesiod name service library
+Copyright: MIT
+Group: System Environment/Libraries
+
+%description
+This is release 3.0.2 of the Hesiod name service library.  Hesiod can
+provide general name service for a variety of applications and is
+based on the Berkeley Internet Name Daemon (BIND).
+

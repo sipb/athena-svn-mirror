@@ -524,6 +524,9 @@ empty_built: empty.idl $(ORBIT_IDL)
 check:
 	OAF_INFO_PATH="$(top_srcdir)/test:$$OAF_INFO_PATH" PATH="$(top_builddir)/test:$$PATH" $(top_builddir)/test/oaf-test-client
 
+oaf-run-query.o: empty.h
+oaf-run-query.lo: empty.h
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

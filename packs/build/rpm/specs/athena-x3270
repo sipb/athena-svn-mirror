@@ -1,0 +1,8 @@
+Name: athena-x3270
+Summary: Emulate an IBM 3270 terminal under X
+Copyright: Paul Mattes
+Group: Applications/Emulators
+
+%description
+Emulate an IBM 3270 terminal under X
+

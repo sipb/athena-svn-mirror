@@ -1050,7 +1050,7 @@ e_shortcuts_add_default_group (EShortcuts *shortcuts)
 	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/summary", utf, 0, "summary");
 	g_free (utf);
 	utf = e_utf8_from_locale_string (_("Inbox"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/local/Inbox", utf, 0, "mail");
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/MIT mail/INBOX", utf, 0, "mail");
 	g_free (utf);
 	utf = e_utf8_from_locale_string (_("Calendar"));
 	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/local/Calendar", utf, 0, "calendar");

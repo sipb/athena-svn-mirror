@@ -115,9 +115,11 @@ compat_datafellows(const char *version)
 		{ "^2\\.4$",		SSH_OLD_SESSIONID },	/* Van Dyke */
 		{ "^3\\.0 SecureCRT",	SSH_OLD_SESSIONID },
 		{ "^1\\.7 SecureFX",	SSH_OLD_SESSIONID },
-		{ "^1\\.2\\.1[89]",	SSH_BUG_IGNOREMSG },
-		{ "^1\\.2\\.2[012]",	SSH_BUG_IGNOREMSG },
-		{ "^1\\.3\\.2",		SSH_BUG_IGNOREMSG },	/* f-secure */
+		{ "^1\\.2\\.1[89]",	SSH_BUG_IGNOREMSG|SSH_OLD_KRB5 },
+		{ "^1\\.2\\.2[012]",	SSH_BUG_IGNOREMSG|SSH_OLD_KRB5 },
+		{ "^1\\.3\\.2",		SSH_BUG_IGNOREMSG|SSH_OLD_KRB5 },
+						/* f-secure */
+		{ "^1\\.",		SSH_OLD_KRB5 },
 		{ "^SSH Compatible Server",			/* Netscreen */
 					SSH_BUG_PASSWORDPAD },
 		{ "^OSU_0",		SSH_BUG_PASSWORDPAD },

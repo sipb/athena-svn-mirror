@@ -1,7 +1,8 @@
 # copyright (C) 2001 Sun Microsystems, Inc.
 
 scrollkeeper_data_dir=$(datadir)/scrollkeeper/Templates/no
-scrollkeeper_data_link_dir=$(datadir)/scrollkeeper/Templates/nb
+scrollkeeper_data_link_dir=../nb
 
 install-data-local:
-	$(LN_S) -f -n $(DESTDIR)$(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
+	rm -f $(DESTDIR)$(scrollkeeper_data_dir)
+	$(LN_S) -f $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)

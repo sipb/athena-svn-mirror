@@ -174,10 +174,10 @@ xalf_read (int type)
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (timeout_spinbutton), DEFAULT_TIMEOUT);
     
     if (type == REAL_SETTINGS)
-        gnome_config_get_vector ("/xalf/settings/options=-i", 
+        gnome_config_get_vector ("/xalf/settings/options=-c", 
                                  &real_argc, &real_argv);
     if (type == OLD_SETTINGS) 
-        gnome_config_get_vector ("/xalf/old_settings/options=-i", 
+        gnome_config_get_vector ("/xalf/old_settings/options=-c", 
                                  &real_argc, &real_argv);
     
     /* Did something fail? */

@@ -17,7 +17,10 @@
 # include "config.h"
 #endif
 
+#include <X11/Xproto.h>
+#include <X11/Xatom.h>
 #include <X11/Intrinsic.h>
+#include <signal.h>
 #include <X11/Xos.h>		/* for time() */
 #include "xscreensaver.h"
 #include "resources.h"
@@ -79,6 +82,7 @@ struct passwd_dialog_data {
   char typed_passwd [80];
   XtIntervalId timer;
   int i_beam;
+  Time idle_time;
 
   float ratio;
   Position x, y;
@@ -90,15 +94,21 @@ struct passwd_dialog_data {
   char *body_label;
   char *user_label;
   char *passwd_label;
+  char *idle_label;
+  char *logout_label;
   char *date_label;
   char *user_string;
   char *passwd_string;
+  char *idle_string;
+  char *logout_command;
 
   XFontStruct *heading_font;
   XFontStruct *body_font;
   XFontStruct *label_font;
   XFontStruct *passwd_font;
   XFontStruct *date_font;
+
+  Colormap cmap;
 
   Pixel foreground;
   Pixel background;
@@ -121,6 +131,9 @@ struct passwd_dialog_data {
   Dimension thermo_field_x, thermo_field_y;
   Dimension thermo_field_height;
 
+  Dimension logout_label_x, logout_label_y;
+  Dimension logout_label_width, logout_label_height;
+
   Pixmap logo_pixmap;
   int logo_npixels;
   unsigned long *logo_pixels;
@@ -140,22 +153,72 @@ make_passwd_window (saver_info *si)
 {
   struct passwd *p = getpwuid (getuid ());
   XSetWindowAttributes attrs;
+  XWindowAttributes wattrs;
   unsigned long attrmask = 0;
   Screen *screen = si->default_screen->screen;
   passwd_dialog_data *pw = (passwd_dialog_data *) calloc (1, sizeof(*pw));
-  Colormap cmap = DefaultColormapOfScreen (screen);
   char *f;
+  Atom type;
+  int format;
+  unsigned long nitems, bytesafter;
+  unsigned char *data = NULL;
+
+  /* Get ourselves a colormap that's compatible with the screensaver
+   * window's visual.  (That may not be compatible with the default
+   * visual, and its colormap may not be able to get us the colors we
+   * want.) */
+  pw->cmap = DefaultColormapOfScreen(screen);
+  if (XGetWindowAttributes(si->dpy, si->default_screen->screensaver_window,
+                           &wattrs))
+  {
+    pw->cmap = XCreateColormap(si->dpy,
+                               si->default_screen->screensaver_window,
+                               wattrs.visual, AllocNone);
+  }
+
+  /* Find out how long we've actually been screen saved. */
+  if (XGetWindowProperty (si->dpy, RootWindow (si->dpy, 0),
+                          XA_SCREENSAVER_STATUS,
+                          0, 2, False, XA_INTEGER,
+                          &type, &format, &nitems, &bytesafter,
+                          &data) == Success
+      && type == XA_INTEGER
+      && data)
+  {
+    CARD32 time32 = ((CARD32 *)data)[1];
+    time_t tt = (time_t) time32;
+    time_t now = time(NULL);
+    pw->idle_time = (now - tt) * 1000;
+  }
+  else
+  {
+    pw->idle_time = 0;
+  }
+
+  if (data != NULL)
+    XFree (data);
 
   pw->ratio = 1.0;
 
   pw->heading_label = get_string_resource ("passwd.heading.label",
 					   "Dialog.Label.Label");
-  pw->body_label = get_string_resource ("passwd.body.label",
-					"Dialog.Label.Label");
+  pw->body_label = NULL;
+  if (si->locked_due_to_idle_p)
+    pw->body_label = get_string_resource ("passwd.body.idleLabel",
+					  "Dialog.Label.Label");
+  if (pw->body_label == NULL)
+    pw->body_label = get_string_resource ("passwd.body.label",
+					  "Dialog.Label.Label");
   pw->user_label = get_string_resource ("passwd.user.label",
 					"Dialog.Label.Label");
   pw->passwd_label = get_string_resource ("passwd.passwd.label",
 					  "Dialog.Label.Label");
+  pw->idle_label = get_string_resource("passwd.idle.label",
+                                       "Dialog.Label.Label");
+  pw->logout_label = get_string_resource("passwd.logout.label",
+                                         "Dialog.Label.Label");
+  pw->logout_command = get_string_resource("logoutCommand",
+                                           "LogoutCommand");
   pw->date_label = get_string_resource ("dateFormat", "DateFormat");
 
   if (!pw->heading_label)
@@ -164,6 +227,9 @@ make_passwd_window (saver_info *si)
     pw->body_label = strdup("ERROR: REESOURCES NOT INSTALLED CORRECTLY");
   if (!pw->user_label) pw->user_label = strdup("ERROR");
   if (!pw->passwd_label) pw->passwd_label = strdup("ERROR");
+  if (!pw->idle_label) pw->idle_label = strdup("ERROR");
+  if (!pw->logout_label)
+    pw->logout_label = strdup("ERROR: REESOURCES NOT INSTALLED CORRECTLY");
   if (!pw->date_label) pw->date_label = strdup("ERROR");
 
   /* Put the version number in the label. */
@@ -176,6 +242,11 @@ make_passwd_window (saver_info *si)
 
   pw->user_string = (p && p->pw_name ? p->pw_name : "???");
   pw->passwd_string = strdup("");
+
+  /* Figure out the correct idle time. */
+  pw->idle_string = malloc(32);
+  sprintf(pw->idle_string, "%d:%02d:%02d", pw->idle_time / 3600000,
+           (pw->idle_time / 60000) % 60, (pw->idle_time / 1000) % 60);
 
   f = get_string_resource ("passwd.headingFont", "Dialog.Font");
   pw->heading_font = XLoadQueryFont (si->dpy, (f ? f : "fixed"));
@@ -204,10 +275,10 @@ make_passwd_window (saver_info *si)
 
   pw->foreground = get_pixel_resource ("passwd.foreground",
 				       "Dialog.Foreground",
-				       si->dpy, cmap);
+				       si->dpy, pw->cmap);
   pw->background = get_pixel_resource ("passwd.background",
 				       "Dialog.Background",
-				       si->dpy, cmap);
+				       si->dpy, pw->cmap);
 
   if (pw->foreground == pw->background)
     {
@@ -218,22 +289,22 @@ make_passwd_window (saver_info *si)
 
   pw->passwd_foreground = get_pixel_resource ("passwd.text.foreground",
 					      "Dialog.Text.Foreground",
-					      si->dpy, cmap);
+					      si->dpy, pw->cmap);
   pw->passwd_background = get_pixel_resource ("passwd.text.background",
 					      "Dialog.Text.Background",
-					      si->dpy, cmap);
+					      si->dpy, pw->cmap);
   pw->thermo_foreground = get_pixel_resource ("passwd.thermometer.foreground",
 					      "Dialog.Thermometer.Foreground",
-					      si->dpy, cmap);
+					      si->dpy, pw->cmap);
   pw->thermo_background = get_pixel_resource ("passwd.thermometer.background",
 					      "Dialog.Thermometer.Background",
-					      si->dpy, cmap);
+					      si->dpy, pw->cmap);
   pw->shadow_top = get_pixel_resource ("passwd.topShadowColor",
 				       "Dialog.Foreground",
-				       si->dpy, cmap);
+				       si->dpy, pw->cmap);
   pw->shadow_bottom = get_pixel_resource ("passwd.bottomShadowColor",
 					  "Dialog.Background",
-					  si->dpy, cmap);
+					  si->dpy, pw->cmap);
 
   pw->logo_width = get_integer_resource ("passwd.logo.width",
 					 "Dialog.Logo.Width");
@@ -292,6 +363,13 @@ make_passwd_window (saver_info *si)
       if (overall.width > w2)  w2 = overall.width;
       h2 += ascent + descent;
 
+      /* Measure the idle_label. */
+      XTextExtents (pw->label_font,
+		    pw->idle_label, strlen(pw->idle_label),
+		    &direction, &ascent, &descent, &overall);
+      if (overall.width > w2)  w2 = overall.width;
+      h2 += ascent + descent;
+
       /* Measure the user_string. */
       XTextExtents (pw->passwd_font,
 		    pw->user_string, strlen(pw->user_string),
@@ -310,8 +388,28 @@ make_passwd_window (saver_info *si)
       if (overall.width > w3)  w3 = overall.width;
       h3 += ascent + descent;
 
+      /* Measure the idle_string. */
+      XTextExtents (pw->passwd_font,
+		    pw->idle_string, strlen(pw->idle_string),
+		    &direction, &ascent, &descent, &overall);
+      overall.width += (pw->shadow_width * 4);
+      ascent += (pw->shadow_width * 4);
+      if (overall.width > w3)  w3 = overall.width;
+      h3 += ascent + descent;
+
+      /* Get the total width and height of the labels and text fields. */
       w2 = w2 + w3 + (pw->shadow_width * 2);
       h2 = MAX (h2, h3);
+
+      if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+      {
+        /* Measure the logout_label. */
+        XTextExtents (pw->label_font,
+                      pw->logout_label, strlen(pw->logout_label),
+                      &direction, &ascent, &descent, &overall);
+        if (overall.width > w2)  w2 = overall.width;
+        h2 += ascent + descent;
+      }
 
       if (w2 > pw->width)  pw->width  = w2;
       pw->height += h2;
@@ -350,14 +448,15 @@ make_passwd_window (saver_info *si)
 
   si->passwd_dialog =
     XCreateWindow (si->dpy,
-		   RootWindowOfScreen(screen),
+		   /* RootWindowOfScreen(screen), */
+		   si->default_screen->screensaver_window,
 		   pw->x, pw->y, pw->width, pw->height, pw->border_width,
-		   DefaultDepthOfScreen (screen), InputOutput,
-		   DefaultVisualOfScreen(screen),
+		   CopyFromParent, InputOutput, CopyFromParent,
 		   attrmask, &attrs);
   XSetWindowBackground (si->dpy, si->passwd_dialog, pw->background);
+  XSetWindowColormap (si->dpy, si->passwd_dialog, pw->cmap);
 
-  pw->logo_pixmap = xscreensaver_logo (si->dpy, si->passwd_dialog, cmap,
+  pw->logo_pixmap = xscreensaver_logo (si->dpy, si->passwd_dialog, pw->cmap,
                                        pw->background, 
                                        &pw->logo_pixels, &pw->logo_npixels,
                                        True);
@@ -412,11 +511,13 @@ draw_passwd_window (saver_info *si)
 
   height = (pw->heading_font->ascent + pw->heading_font->descent +
 	    pw->body_font->ascent + pw->body_font->descent +
-	    (2 * MAX ((pw->label_font->ascent + pw->label_font->descent),
+	    (3 * MAX ((pw->label_font->ascent + pw->label_font->descent),
 		      (pw->passwd_font->ascent + pw->passwd_font->descent +
 		       (pw->shadow_width * 4)))) +
             pw->date_font->ascent + pw->date_font->descent
             );
+  if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+    height += pw->label_font->ascent + pw->label_font->descent;
   spacing = ((pw->height - (2 * pw->shadow_width) -
 	      pw->internal_border - height)) / 8;
   if (spacing < 0) spacing = 0;
@@ -473,6 +574,14 @@ draw_passwd_window (saver_info *si)
 	       y1,
 	       pw->passwd_label, strlen(pw->passwd_label));
 
+  /* the "Idle time:" prompt
+   */
+  y1 += (spacing + tb_height);
+  XDrawString (si->dpy, si->passwd_dialog, gc1,
+               x2 - string_width (pw->label_font, pw->idle_label),
+               y1,
+               pw->idle_label, strlen(pw->idle_label));
+
 
   XSetForeground (si->dpy, gc2, pw->passwd_background);
 
@@ -504,6 +613,29 @@ draw_passwd_window (saver_info *si)
   pw->passwd_field_y = y1 - (pw->passwd_font->ascent +
 			     pw->passwd_font->descent);
 
+  /* the "idle time" text field
+   */
+  y1 += (spacing + tb_height);
+
+  XFillRectangle (si->dpy, si->passwd_dialog, gc2,
+		  x2 - pw->shadow_width,
+		  y1 - (pw->passwd_font->ascent + pw->passwd_font->descent),
+		  pw->passwd_field_width, pw->passwd_field_height);
+  XDrawString (si->dpy, si->passwd_dialog, gc1, x2, y1,
+	       pw->idle_string, strlen(pw->idle_string));
+
+  if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+  {
+    /* the "logout" label
+     */
+    y1 += spacing + pw->label_font->ascent + pw->label_font->descent;
+    XSetForeground (si->dpy, gc1, pw->foreground);
+    XSetFont (si->dpy, gc1, pw->label_font->fid);    
+    sw = string_width(pw->label_font, pw->logout_label);
+    XDrawString (si->dpy, si->passwd_dialog, gc1, x1 + (x3 - x1 - sw) / 2, y1,
+                 pw->logout_label, strlen(pw->logout_label));
+  }
+
   /* The shadow around the text fields
    */
   y1 = y2;
@@ -524,6 +656,12 @@ draw_passwd_window (saver_info *si)
 			 pw->shadow_width,
 			 pw->shadow_bottom, pw->shadow_top);
 
+  y1 += (spacing + pw->passwd_font->ascent + pw->passwd_font->descent +
+	 (pw->shadow_width * 4));
+  draw_shaded_rectangle (si->dpy, si->passwd_dialog,
+			 x1, y1, x2, y2,
+			 pw->shadow_width,
+			 pw->shadow_bottom, pw->shadow_top);
 
   /* The date, below the text fields
    */
@@ -535,6 +673,11 @@ draw_passwd_window (saver_info *si)
     strftime (buf, sizeof(buf)-1, pw->date_label, tm);
 
     XSetFont (si->dpy, gc1, pw->date_font->fid);
+
+    /* Position below the logout label, if necessary. */
+    if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+      y1 += pw->label_font->ascent + pw->label_font->descent;
+
     y1 += pw->shadow_width;
     y1 += (spacing + tb_height);
     y1 += spacing/2;
@@ -753,6 +896,9 @@ destroy_passwd_window (saver_info *si)
   if (pw->body_label)    free (pw->body_label);
   if (pw->user_label)    free (pw->user_label);
   if (pw->passwd_label)  free (pw->passwd_label);
+  if (pw->idle_label)    free (pw->idle_label);
+  if (pw->logout_label)  free (pw->logout_label);
+  if (pw->logout_command) free(pw->logout_command);
 
   if (pw->heading_font) XFreeFont (si->dpy, pw->heading_font);
   if (pw->body_font)    XFreeFont (si->dpy, pw->body_font);
@@ -760,28 +906,30 @@ destroy_passwd_window (saver_info *si)
   if (pw->passwd_font)  XFreeFont (si->dpy, pw->passwd_font);
 
   if (pw->foreground != black && pw->foreground != white)
-    XFreeColors (si->dpy, cmap, &pw->foreground, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->foreground, 1, 0L);
   if (pw->background != black && pw->background != white)
-    XFreeColors (si->dpy, cmap, &pw->background, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->background, 1, 0L);
   if (pw->passwd_foreground != black && pw->passwd_foreground != white)
-    XFreeColors (si->dpy, cmap, &pw->passwd_foreground, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->passwd_foreground, 1, 0L);
   if (pw->passwd_background != black && pw->passwd_background != white)
-    XFreeColors (si->dpy, cmap, &pw->passwd_background, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->passwd_background, 1, 0L);
   if (pw->thermo_foreground != black && pw->thermo_foreground != white)
-    XFreeColors (si->dpy, cmap, &pw->thermo_foreground, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->thermo_foreground, 1, 0L);
   if (pw->thermo_background != black && pw->thermo_background != white)
-    XFreeColors (si->dpy, cmap, &pw->thermo_background, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->thermo_background, 1, 0L);
   if (pw->shadow_top != black && pw->shadow_top != white)
-    XFreeColors (si->dpy, cmap, &pw->shadow_top, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->shadow_top, 1, 0L);
   if (pw->shadow_bottom != black && pw->shadow_bottom != white)
-    XFreeColors (si->dpy, cmap, &pw->shadow_bottom, 1, 0L);
+    XFreeColors (si->dpy, pw->cmap, &pw->shadow_bottom, 1, 0L);
 
   if (pw->logo_pixmap)
     XFreePixmap (si->dpy, pw->logo_pixmap);
   if (pw->logo_npixels && pw->logo_pixels)
-    XFreeColors (si->dpy, cmap, pw->logo_pixels, pw->logo_npixels, 0L);
+    XFreeColors (si->dpy, pw->cmap, pw->logo_pixels, pw->logo_npixels, 0L);
   if (pw->logo_pixels)
     free (pw->logo_pixels);
+
+  XFreeColormap(si->dpy, pw->cmap);
 
   memset (pw, 0, sizeof(*pw));
   free (pw);
@@ -1064,6 +1212,53 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
         }
       break;
 
+    case '\016':					/* Control-N */
+      /* (If keyboard is mapped to Dvorak, the key physically marked
+       *  `L' will generate an `N'.)
+       */
+    case '\014':					/* Control-L */
+      if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+      {
+	/* Try to find out what user we're running as, falling back to the
+	 * original uid we ran as if we can't.
+	 */
+	char *username;
+
+	username = getenv("USER");
+	if (!username)
+	  username = si->orig_uid;
+
+	openlog(progname, LOG_PID, LOG_AUTH);
+	syslog(LOG_NOTICE|LOG_AUTH, "%s forcibly logged out, %d seconds idle",
+	       username, (int) pw->idle_time / 1000);
+	closelog();
+
+        update_passwd_window (si, "Logging out...", pw->ratio);
+        XSync (si->dpy, False);
+
+        /* Let's try to use the strategy presented in SIPB's xscreensaver.
+         * Use a user-specified command to log out, if that exists, else
+         * kill -HUP $XSESSION. */
+
+        if (pw->logout_command)
+          system(pw->logout_command);
+        else
+        {
+          /* Try killing off the process named in $XSESSION. */
+          char *xsession;
+          int pid;
+          
+          xsession = getenv("XSESSION");
+          if (xsession)
+          {
+            pid = atoi(xsession);
+            if (pid)
+              kill(pid, SIGHUP);
+          }
+        }
+      }
+      break;
+
     default:
       i = strlen (typed_passwd);
       if (i >= pw_size-1)
@@ -1100,6 +1295,18 @@ passwd_event_loop (saver_info *si)
 	draw_passwd_window (si);
       else if (event.xany.type == KeyPress)
 	handle_passwd_key (si, &event.xkey);
+      else if (event.xany.type == VisibilityNotify)
+        {
+          int i;
+          
+          /* Something happened, and we're no longer the topmost window.
+           * Forcibly raise the root to solve this problem.  Then forcibly
+           * raise ourself so we're visible.  Note that we've made the
+           * password window a child of the screensaver window, so it
+           * will always be on top. */
+          for (i = 0; i < si->nscreens; i++)
+            XRaiseWindow(si->dpy, si->screens[i].screensaver_window);
+        }
       else
 	XtDispatchEvent (&event);
     }
@@ -1224,6 +1431,7 @@ handle_typeahead (saver_info *si)
 Bool
 unlock_p (saver_info *si)
 {
+  passwd_dialog_data *pw;
   saver_preferences *p = &si->prefs;
   Screen *screen = si->default_screen->screen;
   Colormap cmap = DefaultColormapOfScreen (screen);
@@ -1238,7 +1446,8 @@ unlock_p (saver_info *si)
     destroy_passwd_window (si);
 
   make_passwd_window (si);
-  if (cmap) XInstallColormap (si->dpy, cmap);
+  pw = si->pw_data;
+  if (pw->cmap) XInstallColormap (si->dpy, pw->cmap);
 
   compose_status = calloc (1, sizeof (*compose_status));
 

@@ -162,6 +162,8 @@ make_splash_dialog (saver_info *si)
   if (!si->prefs.splash_p ||
       si->prefs.splash_duration <= 0)
     return;
+  if (si->prefs.start_locked_p)
+    return;
 
   sp = (splash_dialog_data *) calloc (1, sizeof(*sp));
 
@@ -739,6 +741,7 @@ fork_and_exec (saver_info *si, const char *command, const char *desc)
 
     default:
       /* parent fork. */
+      (void) make_job (forked, command);
       break;
     }
 }

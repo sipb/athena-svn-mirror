@@ -85,7 +85,7 @@ dnl ====================================
 dnl = Check for different mount systems
 dnl ====================================
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
+AC_CHECK_HEADERS(mntent.h fstab.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
 
 dnl ====================================
 dnl = Method for changing environment
@@ -340,18 +340,18 @@ AC_ARG_WITH(libiconv, [ --with-libiconv     Use the libiconv library ],,with_lib
 
 found_iconv=no
 
-if test "x$with_libiconv" != "xyes" ; then
-   # 
-   # Check in the C library 
-   #
-   AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
-fi
-
 if test "x$with_libiconv" != "xno" ; then
    #
    # Check for libiconv
    #
    AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=yes; found_iconv=yes)
+fi
+
+if test "x$with_libiconv" != "xyes" ; then
+   # 
+   # Check in the C library 
+   #
+   AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
 fi
 
 if test "x$found_iconv" = "xno" ; then

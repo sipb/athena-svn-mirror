@@ -1,0 +1,13 @@
+Name: athena-cleanup
+Summary: An Athena program to restore a workstation to a clean state
+Copyright: MIT
+Group: System Environment/Base
+
+Requires: athena-libal
+
+%description
+The cleanup utility restores a workstation to its normal state by
+killing any processes for users not logged in, restoring the password
+file, and other such maintenance steps. 
+
+

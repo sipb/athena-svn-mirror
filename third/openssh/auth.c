@@ -36,6 +36,10 @@ RCSID("$OpenBSD: auth.c,v 1.29 2001/11/08 20:02:24 markus Exp $");
 #include <libgen.h>
 #endif
 
+#include <al.h>
+char *session_username;
+int is_local_acct;
+
 #include "xmalloc.h"
 #include "match.h"
 #include "groupaccess.h"
@@ -418,4 +422,9 @@ secure_filename(FILE *f, const char *file, struct passwd *pw,
 			break;
 	}
 	return 0;
+}
+
+void session_cleanup(void)
+{
+  al_acct_revert(session_username, getpid());
 }

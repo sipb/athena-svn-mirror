@@ -20,14 +20,14 @@ CC=gcc
 WARNMORE= # -g -DPNG_DEBUG=5
 CFLAGS=$(ABI) -I$(ZLIBINC) -O2 $(WARNMORE) -fPIC -mabi=n32
 LDFLAGS=$(ABI) -L. -L$(ZLIBLIB) -lpng -lz -lm
-LDSHARED=CC $(ABI) -shared
+LDSHARED=gcc $(ABI) -shared
 
 VER=1.2.1
 # See "man dso" for info about shared objects
 SONUM=3
 LIBS=libpng.so.$(SONUM).$(VER)
 SHAREDLIB=libpng.so
-libdir=$(prefix)/lib32
+libdir=$(prefix)/lib
 
 RANLIB=echo
 #RANLIB=ranlib
@@ -36,13 +36,13 @@ OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 	pngread.o pngrio.o pngwio.o pngwrite.o pngrtran.o \
 	pngwtran.o pngmem.o pngerror.o pngpread.o
 
-all: libpng.a $(SHAREDLIB).$(VER) pngtest
+all: libpng.a $(SHAREDLIB).$(SONUM).$(VER) pngtest
 
 libpng.a: $(OBJS)
 	ar rc $@  $(OBJS)
 	$(RANLIB) $@
 
-$(SHAREDLIB).$(VER): $(OBJS)
+$(SHAREDLIB).$(SONUM).$(VER): $(OBJS)
 	$(LDSHARED) -o $@ $(OBJS)
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM)
 	ln -s $@ $(SHAREDLIB)
@@ -55,21 +55,19 @@ test: pngtest
 	./pngtest
 
 install: libpng.a
-	-@mkdir $(prefix)/include
-	-@mkdir $(prefix)/lib
-	cp png.h $(prefix)/include
-	cp pngconf.h $(prefix)/include
-	chmod 644 $(prefix)/include/png.h
-	chmod 644 $(prefix)/include/pngconf.h
-	cp libpng.a $(prefix)/lib
-	chmod 644 $(prefix)/lib/libpng.a
-
-install-shared: $(SHAREDLIB).$(VER)
-	cp $(SHAREDLIB).$(VER) $(libdir); chmod 755 $(SHAREDLIB).$(VER)
-	(cd $(libdir); if test -f $(SHAREDLIB).$(VER); then \
+	-@mkdir $(DESTDIR)$(prefix)/include
+	-@mkdir $(DESTDIR)$(prefix)/lib
+	cp png.h $(DESTDIR)$(prefix)/include
+	cp pngconf.h $(DESTDIR)$(prefix)/include
+	chmod 644 $(DESTDIR)$(prefix)/include/png.h
+	chmod 644 $(DESTDIR)$(prefix)/include/pngconf.h
+	cp libpng.a $(DESTDIR)$(prefix)/lib
+	chmod 644 $(DESTDIR)$(prefix)/lib/libpng.a
+	cp $(SHAREDLIB).$(SONUM).$(VER) $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir)/$(SHAREDLIB).$(SONUM).$(VER)
+	(cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIB).$(SONUM).$(VER); then \
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM); \
-	ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB); \
-	ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB).$(SONUM); \
+	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB); \
+	ln -s $(SHAREDLIB).$(SONUM).$(VER) $(SHAREDLIB).$(SONUM); \
 	(ldconfig || true)  >/dev/null 2>&1; \
 	fi)
 

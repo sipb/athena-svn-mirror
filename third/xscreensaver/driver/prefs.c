@@ -86,9 +86,6 @@ chase_symlinks (const char *file)
       char buf [2048];
       if (realpath (file, buf))
         return strdup (buf);
-
-      sprintf (buf, "%s: realpath", blurb());
-      perror(buf);
     }
 # endif /* HAVE_REALPATH */
   return 0;
@@ -199,7 +196,11 @@ static const char * const prefs[] = {
   "lock",
   "lockVTs",
   "lockTimeout",
+  "startLocked",
+  "lockCommand",
+  "unlockCommand",
   "passwdTimeout",
+  "maxIdleTime",
   "visualID",
   "installColormap",
   "verbose",
@@ -236,6 +237,7 @@ static const char * const prefs[] = {
   "overlayTextBackground",	/* not saved -- X resources only */
   "overlayTextForeground",	/* not saved -- X resources only */
   "bourneShell",		/* not saved -- X resources only */
+  "passwd",
   0
 };
 
@@ -704,8 +706,12 @@ write_init_file (saver_preferences *p, const char *version_string,
 # else
       CHECK("lockVTs")		continue;  /* don't save */
 # endif
+      CHECK("startLocked")	type = pref_bool, b = p->start_locked_p;
+      CHECK("lockCommand")	type = pref_str,  s = p->lock_command;
+      CHECK("unlockCommand")	type = pref_str,  s = p->unlock_command;
       CHECK("lockTimeout")	type = pref_time, t = p->lock_timeout;
       CHECK("passwdTimeout")	type = pref_time, t = p->passwd_timeout;
+      CHECK("maxIdleTime")	type = pref_time, t = p->max_idle_time;
       CHECK("visualID")		type = pref_str,  s =    visual_name;
       CHECK("installColormap")	type = pref_bool, b = p->install_cmap_p;
       CHECK("verbose")		type = pref_bool, b = p->verbose_p;
@@ -740,6 +746,7 @@ write_init_file (saver_preferences *p, const char *version_string,
       CHECK("overlayTextBackground") continue;  /* don't save */
       CHECK("overlayTextForeground") continue;  /* don't save */
       CHECK("bourneShell")	continue;
+      CHECK("passwd")		type = pref_str,  s = p->passwd;
       else			abort();
 # undef CHECK
 
@@ -904,6 +911,9 @@ load_init_file (saver_preferences *p)
   p->timestamp_p    = get_boolean_resource ("timestamp", "Boolean");
   p->lock_p	    = get_boolean_resource ("lock", "Boolean");
   p->lock_vt_p	    = get_boolean_resource ("lockVTs", "Boolean");
+  p->start_locked_p = get_boolean_resource ("startLocked", "Boolean");
+  p->lock_command   = get_string_resource ("lockCommand", "LockCommand");
+  p->unlock_command = get_string_resource ("unlockCommand", "UnlockCommand");
   p->fade_p	    = get_boolean_resource ("fade", "Boolean");
   p->unfade_p	    = get_boolean_resource ("unfade", "Boolean");
   p->fade_seconds   = 1000 * get_seconds_resource ("fadeSeconds", "Time");
@@ -917,11 +927,13 @@ load_init_file (saver_preferences *p)
   p->splash_duration = 1000 * get_seconds_resource ("splashDuration", "Time");
   p->timeout         = 1000 * get_minutes_resource ("timeout", "Time");
   p->lock_timeout    = 1000 * get_minutes_resource ("lockTimeout", "Time");
+  p->max_idle_time   = 1000 * get_minutes_resource ("maxIdleTime", "Time");
   p->cycle           = 1000 * get_minutes_resource ("cycle", "Time");
   p->passwd_timeout  = 1000 * get_seconds_resource ("passwdTimeout", "Time");
   p->pointer_timeout = 1000 * get_seconds_resource ("pointerPollTime", "Time");
   p->notice_events_timeout = 1000*get_seconds_resource("windowCreationTimeout",
 						       "Time");
+  p->passwd = get_string_resource ("passwd", "Passwd");
 
   p->dpms_enabled_p  = get_boolean_resource ("dpmsEnabled", "Boolean");
   p->dpms_standby    = 1000 * get_seconds_resource ("dpmsStandby", "Time");
@@ -1049,7 +1061,7 @@ merge_system_screenhacks (saver_preferences *p,
               made_space = 10;
               p->screenhacks = (screenhack **)
                 realloc (p->screenhacks,
-                         (p->screenhacks_count + made_space) 
+                         (p->screenhacks_count + made_space + 1)
                          * sizeof(screenhack));
               if (!p->screenhacks) abort();
             }
@@ -1060,6 +1072,7 @@ merge_system_screenhacks (saver_preferences *p,
           nh->command   = oh->command ? strdup(oh->command) : 0;
 
           p->screenhacks[p->screenhacks_count++] = nh;
+          p->screenhacks[p->screenhacks_count] = 0;
           made_space--;
 
 #if 0
@@ -1287,7 +1300,7 @@ format_hack (screenhack *hack, Bool wrap_p)
 static void
 get_screenhacks (saver_preferences *p)
 {
-  int i = 0;
+  int i, j;
   int start = 0;
   int end = 0;
   int size;
@@ -1320,15 +1333,14 @@ get_screenhacks (saver_preferences *p)
 
 
   /* Count up the number of newlines (which will be equal to or larger than
-     the number of hacks.)
+     one less than the number of hacks.)
    */
-  i = 0;
-  for (i = 0; d[i]; i++)
+  for (i = j = 0; d[i]; i++)
     if (d[i] == '\n')
-      i++;
-  i++;
+      j++;
+  j++;
 
-  p->screenhacks = (screenhack **) calloc (sizeof (screenhack *), i+1);
+  p->screenhacks = (screenhack **) calloc (j + 1, sizeof (screenhack *));
 
   /* Iterate over the lines in `d' (the string with newlines)
      and make new strings to stuff into the `screenhacks' array.

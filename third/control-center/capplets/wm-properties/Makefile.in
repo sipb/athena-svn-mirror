@@ -179,7 +179,9 @@ SUBDIRS = wm-desktops
 
 sysdir = $(datadir)/control-center/Desktop
 sys_in_files = wm-properties.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+
+# Disable capplet listing, since Athena doesn't use gnome-wm by default.
+# sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 
 Setdir = $(datadir)/gnome/apps/Settings/Desktop
 
@@ -202,7 +204,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(Set_DATA) $(sys_DATA)
+DATA =  $(Set_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -315,25 +317,6 @@ uninstall-SetDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(Set_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(Setdir)/$$p; \
-	done
-
-install-sysDATA: $(sys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-sysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -450,11 +433,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-wm-exec.o: wm-exec.c wm-properties.h
-wm-list.o: wm-list.c wm-properties.h
-wm-properties-capplet.o: wm-properties-capplet.c ../../config.h \
-	wm-properties.h ../../control-center/capplet-widget.h
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -466,13 +444,13 @@ installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-SetDATA install-sysDATA
+install-data-am: install-SetDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binPROGRAMS uninstall-SetDATA uninstall-sysDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-SetDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-recursive
@@ -480,8 +458,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Setdir) \
-		$(DESTDIR)$(sysdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Setdir)
 
 
 mostlyclean-generic:
@@ -524,11 +501,11 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-SetDATA \
-install-SetDATA uninstall-sysDATA install-sysDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+install-SetDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

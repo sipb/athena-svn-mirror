@@ -83,8 +83,8 @@ libxalflaunch_la_SOURCES = xalflaunch.c
 libxalflaunch_la_LDFLAGS = -version-info 0:1:0
 
 CFLAGS = $(X_CFLAGS) -DLIBDIR=\""$(libdir)"\"
-
-LDFLAGS = -ldl
+@NEED_LD_INIT_OPTION_TRUE@LDFLAGS = -ldl -init _init
+@NEED_LD_INIT_OPTION_FALSE@LDFLAGS = -ldl
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

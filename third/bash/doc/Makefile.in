@@ -129,9 +129,6 @@ bashref.ps: bashref.dvi
 	$(RM) $@
 	$(DVIPS) bashref.dvi
 
-bashref.info: $(srcdir)/bashref.texi $(HSUSER) $(RLUSER)
-	$(MAKEINFO) --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
-
 bashref.html: bashref.texi $(HSUSER) $(RLUSER)
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/bashref.texi
 
@@ -209,21 +206,20 @@ maintainer-clean:	clean
 	$(RM) Makefile
 
 installdirs:
-	-test -d $(man1dir) || $(SHELL) ${MKDIRS} $(man1dir)
-	-test -d $(infodir) || $(SHELL) ${MKDIRS} $(infodir)
+	-test -d $(man1dir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(man1dir)
+	-test -d $(infodir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(infodir)
 	-if [ -n "$(htmldir)" ]; then \
-		test -d $(htmldir) || $(SHELL) ${MKDIRS} $(htmldir) ; \
+		test -d $(htmldir) || $(SHELL) ${MKDIRS} ${DESTDIR}$(htmldir) ; \
 	fi
 	
 install: info installdirs
-	-$(INSTALL_DATA) $(srcdir)/bash.1 $(man1dir)/bash.${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashbug.1 $(man1dir)/bashbug.${man1ext}
+	-$(INSTALL_DATA) $(srcdir)/bash.1 ${DESTDIR}$(man1dir)/bash.${man1ext}
 # uncomment the next line to install the builtins man page
-#	$(INSTALL_DATA) $(srcdir)/builtins.1 $(man1dir)/bash_builtins.${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashref.info $(infodir)/bash.info
+#	$(INSTALL_DATA) $(srcdir)/builtins.1 ${DESTDIR}$(man1dir)/bash_builtins.${man1ext}
+	-$(INSTALL_DATA) $(srcdir)/bashref.info ${DESTDIR}$(infodir)/bash.info
 # run install-info if it is present to update the info directory
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-		install-info --dir-file=$(infodir)/dir $(infodir)/bash.info; \
+		install-info --dir-file=$(infodir)/dir ${DESTDIR}$(infodir)/bash.info; \
 	else true; fi
 # if htmldir is set, install the html files into that directory
 	-if [ -n "${htmldir}" ]; then \

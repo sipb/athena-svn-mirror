@@ -1,0 +1,50 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:48:48 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+
+CC=@CC@
+PURIFY=
+LD=${PURIFY} ${CC}
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+SRCS=lumberjack.c tools.c
+OBJS=lumberjack.o tools.o
+
+all: lumberjack
+
+lumberjack: $(OBJS)
+	${LD} ${LDFLAGS} $(OBJS) ${LIBS} -o $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} lumberjack ${DESTDIR}${sbindir}
+
+clean:
+	rm -f $(OBJS) lumberjack
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

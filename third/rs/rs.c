@@ -89,16 +89,16 @@ int	propgutter;
 char	isep = ' ', osep = ' ';
 int	owidth = 80, gutter = 2;
 
-void	  usage __P((char *, char *));
-void	  getargs __P((int, char *[]));
-void	  getfile __P((void));
-int	  getline __P((void));
-char	 *getlist __P((short **, char *));
-char	 *getnum __P((int *, char *, int));
-char	**getptrs __P((char **));
-void	  prepfile __P((void));
-void	  prints __P((char *, int));
-void	  putfile __P((void));
+void	  usage(char *, char *);
+void	  getargs(int, char *[]);
+void	  getfile(void);
+int	  getline(void);
+char	 *getlist(short **, char *);
+char	 *getnum(int *, char *, int);
+char	**getptrs(char **);
+void	  prepfile(void);
+void	  prints(char *, int);
+void	  putfile(void);
 
 #define INCR(ep) do {			\
 	if (++ep >= endelem)		\
@@ -236,7 +236,8 @@ void
 usage(msg, s)
 	char *msg, *s;
 {
-	warnx(msg, s);
+	fprintf(stderr, "rs: ");
+	fprintf(stderr, msg, s);
 	fprintf(stderr,
 "Usage:  rs [ -[csCS][x][kKgGw][N]tTeEnyjhHm ] [ rows [ cols ] ]\n");
 	exit(1);
@@ -264,7 +265,7 @@ prepfile()
 	else if (orows == 0 && ocols == 0) {	/* decide rows and cols */
 		ocols = owidth / colw;
 		if (ocols == 0) {
-			warnx("Display width %d is less than column width %d\n", owidth, colw);
+			fprintf(stderr, "rs: Display width %d is less than column width %d\n", owidth, colw);
 			ocols = 1;
 		}
 		if (ocols > nelem)
@@ -285,8 +286,10 @@ prepfile()
 			*ep = *(ep - nelem);
 		nelem = lp - elem;
 	}
-	if (!(colwidths = (short *) malloc(ocols * sizeof(short))))
-		errx(1, "malloc:  No gutter space");
+	if (!(colwidths = (short *) malloc(ocols * sizeof(short)))) {
+		fprintf(stderr, "rs: malloc:  No gutter space\n");
+		exit(1);
+	}
 	if (flags & SQUEEZE) {
 		if (flags & TRANSPOSE)
 			for (ep = elem, i = 0; i < ocols; i++) {
@@ -354,8 +357,10 @@ getline()	/* get line; maintain curline, curlen; manage storage */
 	if (!putlength && endblock - curline < BUFSIZ) {   /* need storage */
 		/*ww = endblock-curline; tt += ww;*/
 		/*printf("#wasted %d total %d\n",ww,tt);*/
-		if (!(curline = (char *) malloc(BSIZE)))
-			errx(1, "File too large");
+		if (!(curline = (char *) malloc(BSIZE))) {
+			fprintf(stderr, "rs: File too large\n");
+			exit(1);
+		}
 		endblock = curline + BSIZE;
 		/*printf("#endb %d curline %d\n",endblock,curline);*/
 	}
@@ -375,8 +380,10 @@ getptrs(sp)
 
 	allocsize += allocsize;
 	p = (char **)realloc(elem, allocsize * sizeof(char *));
-	if (p == (char **)0)
-		err(1, "no memory");
+	if (p == (char **)0) {
+		fprintf(stderr, "rs: no memory\n");
+		exit(1);
+	}
 
 	sp += (p - elem);
 	endelem = (elem = p) + allocsize;
@@ -420,7 +427,7 @@ getargs(ac, av)
 			case 'w':		/* window width, default 80 */
 				p = getnum(&owidth, p, 0);
 				if (owidth <= 0)
-				usage("Width must be a positive integer", "");
+					usage("Width must be a positive %s", "integer");
 				break;
 			case 'K':			/* skip N lines */
 				flags |= SKIPPRINT;
@@ -490,7 +497,7 @@ getargs(ac, av)
 	case 0:
 		break;
 	default:
-		usage("Too many arguments.", "");
+		usage("Too many %s.", "arguments");
 	}
 }
 
@@ -511,8 +518,10 @@ getlist(list, p)
 		if (*t != ',')
 			break;
 	}
-	if (!(*list = (short *) malloc(count * sizeof(short))))
-		errx(1, "No list space");
+	if (!(*list = (short *) malloc(count * sizeof(short)))) {
+		fprintf(stderr, "rs: No list space\n");
+		exit(1);
+	}
 	count = 0;
 	for (t = p + 1; *t; t++) {
 		(*list)[count++] = atoi(t);

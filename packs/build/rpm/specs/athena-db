@@ -1,0 +1,9 @@
+Name: athena-db
+Summary: The Berkeley DB database library for C
+Copyright: BSDish
+Group: System Environment/Libraries
+
+%description
+The Berkeley Database (Berkeley DB) is a programmatic toolkit that
+provides embedded database support for both traditional and
+client/server applications.

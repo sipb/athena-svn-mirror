@@ -1,11 +1,12 @@
-/* config.h.in.  Generated from configure.ac by autoheader.  */
-/* $Id: config.h.in,v 1.1.1.2 2002-02-13 00:08:32 zacheiss Exp $ */
+/* config.h.in.  Generated automatically from configure.ac by autoheader.  */
+/* $Id: config.h.in,v 1.4 2002-02-15 19:46:58 zacheiss Exp $ */
 
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
 /* Generated automatically from acconfig.h by autoheader. */
 /* Please make your changes there */
+
 
 
 /* Define to a Set Process Title type if your system is */
@@ -184,11 +185,23 @@
 /* Define if libc defines __progname */
 #undef HAVE___PROGNAME
 
+/* Define this is you want GSSAPI support in the version 2 protocol */
+#undef GSSAPI
+
+/* Define if you want Kerberos 5 support */
+#undef KRB5
+
+/* Define this if you are using Heimdal version of Kerberos V5 */
+#undef HEIMDAL
+
 /* Define if you want Kerberos 4 support */
 #undef KRB4
 
 /* Define if you want AFS support */
 #undef AFS
+
+/* Define if you want GSI/Globus authentication support */
+#undef GSI
 
 /* Define if you want S/Key support */
 #undef SKEY
@@ -446,6 +459,9 @@
 
 /* Define if you have the <glob.h> header file. */
 #undef HAVE_GLOB_H
+
+/* Define if you have the <gssapi.h> header file. */
+#undef HAVE_GSSAPI_H
 
 /* Define if you have the `inet_aton' function. */
 #undef HAVE_INET_ATON

@@ -103,17 +103,17 @@ SHELL = /bin/sh
 @SET_MAKE@
 
 .PHONY: install installdirs install-exec
-install: install-exec $(mandir)/dialog.$(manext)
+install: install-exec ${DESTDIR}$(mandir)/dialog.$(manext)
 
-install-exec: installdirs $(bindir)/dialog
+install-exec: installdirs ${DESTDIR}$(bindir)/dialog
 
 installdirs:
-	$(SHELL) ${srcdir}/mkinstalldirs $(bindir) $(mandir)
+	$(SHELL) ${srcdir}/mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(mandir)
 
-$(bindir)/dialog: dialog
+${DESTDIR}$(bindir)/dialog: dialog
 	$(INSTALL_PROGRAM) dialog $@
 
-$(mandir)/dialog.$(manext): dialog.man
+${DESTDIR}$(mandir)/dialog.$(manext): dialog.man
 	$(INSTALL_DATA) $(srcdir)/dialog.man $@
 
 

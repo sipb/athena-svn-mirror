@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -134,8 +134,10 @@ JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -164,6 +166,7 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -224,7 +227,7 @@ etspec_DATA = e-calendar-table.etspec e-meeting-time-sel.etspec
 evolution_calendar_SOURCES =  	$(IDL_GENERATED)				cal-search-bar.c				cal-search-bar.h				calendar-config.c				calendar-config.h				calendar-commands.c				calendar-commands.h				calendar-model.c				calendar-model.h				calendar-offline-handler.c			calendar-offline-handler.h			calendar-view.c					calendar-view.h					calendar-view-factory.c				calendar-view-factory.h				comp-editor-factory.c				comp-editor-factory.h				comp-util.c					comp-util.h					control-factory.c				control-factory.h				component-factory.c				component-factory.h				e-calendar-table.h				e-calendar-table.c				e-cell-date-edit-text.h				e-cell-date-edit-text.c				e-day-view-layout.c				e-day-view-layout.h				e-day-view-main-item.c				e-day-view-main-item.h				e-day-view-time-item.c				e-day-view-time-item.h				e-day-view-top-item.c				e-day-view-top-item.h				e-day-view.c					e-day-view.h					e-itip-control.h				e-itip-control.c				e-meeting-attendee.c				e-meeting-attendee.h				e-meeting-model.c				e-meeting-model.h				e-meeting-time-sel.c				e-meeting-time-sel.h				e-meeting-time-sel-item.c			e-meeting-time-sel-item.h			e-meeting-types.h				e-meeting-utils.c				e-meeting-utils.h				e-week-view-event-item.c			e-week-view-event-item.h			e-week-view-layout.c				e-week-view-layout.h				e-week-view-main-item.c				e-week-view-main-item.h				e-week-view-titles-item.c			e-week-view-titles-item.h			e-week-view.c					e-week-view.h					e-tasks.c					e-tasks.h					e-timezone-entry.c				e-timezone-entry.h				gnome-cal.c					gnome-cal.h					goto.c						goto.h						itip-control-factory.c				itip-control-factory.h				itip-utils.c					itip-utils.h					main.c						misc.c						misc.h						print.c						print.h						tag-calendar.c					tag-calendar.h					tasks-control-factory.c				tasks-control-factory.h				tasks-control.c					tasks-control.h					tasks-migrate.c					tasks-migrate.h					weekday-picker.c				weekday-picker.h
 
 
-evolution_calendar_LDADD =  	alarm-notify/libalarm.a									$(DB3_LDADD)										$(top_builddir)/widgets/menus/libmenus.la						$(top_builddir)/shell/libeshell.la							$(top_builddir)/calendar/cal-client/libcal-client.la					$(top_builddir)/calendar/cal-util/libcal-util.la					$(top_builddir)/e-util/libeutil.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/libical/src/libical/libical-evolution.la				$(top_builddir)/libwombat/libwombat.la							$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/libibex/libibex.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/e-util/ename/libename.la						dialogs/libcal-dialogs.a								$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a				$(top_builddir)/widgets/misc/libemiscwidgets.a						$(EXTRA_GNOME_LIBS)									$(BONOBO_HTML_GNOME_LIBS)								$(GNOME_VFS_LIBS)									$(BONOBO_CONF_LIBS)									$(GAL_LIBS)										$(INTLLIBS)
+evolution_calendar_LDADD =  	alarm-notify/libalarm.a									dialogs/libcal-dialogs.a								$(DB3_LDADD)										$(top_builddir)/widgets/menus/libmenus.la						$(top_builddir)/shell/libeshell.la							$(top_builddir)/calendar/cal-client/libcal-client.la					$(top_builddir)/calendar/cal-util/libcal-util.la					$(top_builddir)/e-util/libeutil.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a				$(top_builddir)/libical/src/libical/libical-evolution.la				$(top_builddir)/libwombat/libwombat.la							$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/libibex/libibex.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/e-util/ename/libename.la						$(top_builddir)/widgets/misc/libemiscwidgets.a						$(EXTRA_GNOME_LIBS)									$(BONOBO_HTML_GNOME_LIBS)								$(GNOME_VFS_LIBS)									$(BONOBO_CONF_LIBS)									$(GAL_LIBS)										$(INTLLIBS)
 
 
 evolution_calendar_LDFLAGS = -export-dynamic
@@ -279,19 +282,19 @@ main.$(OBJEXT) misc.$(OBJEXT) print.$(OBJEXT) tag-calendar.$(OBJEXT) \
 tasks-control-factory.$(OBJEXT) tasks-control.$(OBJEXT) \
 tasks-migrate.$(OBJEXT) weekday-picker.$(OBJEXT)
 evolution_calendar_DEPENDENCIES =  alarm-notify/libalarm.a \
-$(top_builddir)/widgets/menus/libmenus.la \
+dialogs/libcal-dialogs.a $(top_builddir)/widgets/menus/libmenus.la \
 $(top_builddir)/shell/libeshell.la \
 $(top_builddir)/calendar/cal-client/libcal-client.la \
 $(top_builddir)/calendar/cal-util/libcal-util.la \
 $(top_builddir)/e-util/libeutil.la \
 $(top_builddir)/libversit/libversit.la \
+$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a \
 $(top_builddir)/libical/src/libical/libical-evolution.la \
 $(top_builddir)/libwombat/libwombat.la \
 $(top_builddir)/addressbook/backend/ebook/libebook.la \
 $(top_builddir)/camel/libcamel.la $(top_builddir)/libibex/libibex.la \
 $(top_builddir)/libversit/libversit.la \
-$(top_builddir)/e-util/ename/libename.la dialogs/libcal-dialogs.a \
-$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a \
+$(top_builddir)/e-util/ename/libename.la \
 $(top_builddir)/widgets/misc/libemiscwidgets.a
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -305,7 +308,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(evolution_calendar_SOURCES)
 OBJECTS = $(evolution_calendar_OBJECTS)

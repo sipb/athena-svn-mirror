@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#ifdef HAVE_VARARGS_H
+#if 0
 #include <varargs.h>
 #else
 #include <stdarg.h>
@@ -33,7 +33,7 @@ int GifQuietPrint = TRUE;
 /*****************************************************************************
 * Same as fprintf to stderr but with optional print.			     *
 *****************************************************************************/
-#ifdef HAVE_VARARGS_H
+#if 0
 void GifQprintf(int va_alist)
 {
     char *Format, Line[128];

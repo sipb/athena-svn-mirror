@@ -31,6 +31,6 @@ libcamelpop3include_HEADERS =			\
 
 libcamelpop3_la_LDFLAGS = $(KRB4_LDFLAGS) -version-info 0:0:0
 
-libcamelpop3_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+libcamelpop3_la_LIBADD = $(KRB4_LIBS) $(top_builddir)/e-util/libeutil.la
 
 EXTRA_DIST = libcamelpop3.urls

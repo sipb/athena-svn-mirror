@@ -1,0 +1,52 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sgi)
+	echo "/usr/ucb"				>> "$DEADFILES"
+	echo "/usr/lib/learn"			>> "$DEADFILES"
+	echo "/etc/sendmail.cf.Oct.28.16:34:09"	>> "$DEADFILES"
+	echo "/etc/config/athenalogin"		>> "$DEADFILES"
+	echo "/etc/config/syspack"		>> "$DEADFILES"
+	echo "/etc/config/syspack.options"	>> "$DEADFILES"
+	echo "/etc/config/zhm"			>> "$DEADFILES"
+	echo "/usr/bin/X11/xdm.sgi"		>> "$DEADFILES"
+	echo "/etc/athena/timed"		>> "$DEADFILES"
+	echo "/etc/athena/timedc"		>> "$DEADFILES"
+	echo "/etc/athena/reconfigure"		>> "$DEADFILES"
+	echo /var/X11/xdm/*.sgi			>> "$DEADFILES"
+
+	echo "/etc/athena/attach.conf"		>> "$CONFCHG"
+	echo "/etc/ftpusers"			>> "$CONFCHG"
+	echo "/var/spool/cron/crontabs/root"	>> "$CONFCHG"
+	echo "/etc/inetd.conf"			>> "$CONFCHG"
+	echo "/etc/athena/inetd.conf"           >> "$CONFCHG"
+	echo "/etc/shells"			>> "$CONFCHG"
+	echo "/.cshrc"				>> "$CONFCHG"
+	echo "/.login"				>> "$CONFCHG"
+	echo "/.profile"			>> "$CONFCHG"
+	echo "/.xsession"			>> "$CONFCHG"
+
+	echo "/sbin/find"			>> "$OLDBINS"
+	echo "/sbin/rm"				>> "$OLDBINS"
+	echo "/sbin/devnm"			>> "$OLDBINS"
+	echo "/sbin/ls"				>> "$OLDBINS"
+
+	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "TRACKOS=true"			>> "$CONFVARS"
+
+	hostname=`cat /etc/sys_id`
+	netaddress=`awk /$hostname'/{ print $1 }' /etc/hosts`
+	public=true
+	if /sbin/chkconfig private ; then
+		public=false
+	fi
+	rm -f /etc/config/private
+	sed -e  "s/^HOST=NONAME/HOST=$hostname/
+		s/^ADDR=NOADDR/ADDR=$netaddress/
+		s/^NETDEV=NODEV/NETDEV=ec0/
+		s/^MACHINE=[^;]*/MACHINE=$MACH/
+		s/^PUBLIC=true/PUBLIC=$public/" \
+	        < /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
+	;;
+esac
+

@@ -1,4 +1,4 @@
-This is ../info/emacs, produced by makeinfo version 4.0 from emacs.texi.
+This is ../info/emacs, produced by makeinfo version 4.2 from emacs.texi.
 
    This is the Fourteenth edition of the `GNU Emacs Manual', updated
 for Emacs version 21.1.
@@ -518,8 +518,8 @@ Variable Index
 * vc-initial-comment:                    Registering.
 * vc-keep-workfiles:                     General VC Options.
 * vc-log-mode-hook:                      Log Buffer.
-* vc-make-backup-files <1>:              Backup.
-* vc-make-backup-files:                  General VC Options.
+* vc-make-backup-files <1>:              General VC Options.
+* vc-make-backup-files:                  Backup.
 * vc-mistrust-permissions:               RCS and SCCS.
 * vc-path:                               General VC Options.
 * vc-rcs-diff-switches:                  Old Versions.

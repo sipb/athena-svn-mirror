@@ -1,0 +1,25 @@
+# $Id: Makefile.athena,v 1.16 2002-02-03 03:49:03 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+# We can't use the Athena config.site file because it specifies
+# cc to be gcc.
+prepare:
+	rm -f config.cache
+	. ./compiler && CC=$$cc ./configure --prefix=/usr/gcc --disable-shared
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} bootstrap
+
+check:
+
+install: force
+	mkdir -p "$$SRVD/usr"
+	${MAKE} install "prefix=$$SRVD/usr/gcc"
+
+force:

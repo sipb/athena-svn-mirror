@@ -161,6 +161,7 @@ evolution_calendar_SOURCES =			\
 
 evolution_calendar_LDADD =								\
 	alarm-notify/libalarm.a								\
+	dialogs/libcal-dialogs.a							\
 	$(DB3_LDADD)									\
 	$(top_builddir)/widgets/menus/libmenus.la					\
 	$(top_builddir)/shell/libeshell.la						\
@@ -168,6 +169,7 @@ evolution_calendar_LDADD =								\
 	$(top_builddir)/calendar/cal-util/libcal-util.la				\
 	$(top_builddir)/e-util/libeutil.la						\
 	$(top_builddir)/libversit/libversit.la						\
+	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a			\
 	$(top_builddir)/libical/src/libical/libical-evolution.la			\
 	$(top_builddir)/libwombat/libwombat.la						\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
@@ -175,8 +177,6 @@ evolution_calendar_LDADD =								\
 	$(top_builddir)/libibex/libibex.la						\
 	$(top_builddir)/libversit/libversit.la						\
 	$(top_builddir)/e-util/ename/libename.la					\
-	dialogs/libcal-dialogs.a							\
-	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a			\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a					\
 	$(EXTRA_GNOME_LIBS)								\
 	$(BONOBO_HTML_GNOME_LIBS)							\

@@ -36,11 +36,11 @@
 telnet \- user interface to the TELNET protocol
 .SH SYNOPSIS
 .B telnet
-[\fB\-8\fP] [\fB\-E\fP] [\fB\-F\fP] [\fB\-K\fP] [\fB\-L\fP] [\fB\-S\fP
-\fItos\fP] [\fB\-X\fP \fIauthtype\fP] [\fB\-a\fP] [\fB\-c\fP]
+[\fB\-8\fP] [\fB\-E\fP] [\fB\-F\fP] [\fB\-K\fP] [\fB\-L\fP] [\fB\-N\fP]
+[\fB\-S\fP \fItos\fP] [\fB\-X\fP \fIauthtype\fP] [\fB\-a\fP] [\fB\-c\fP]
 [\fB\-d\fP] [\fB\-e\fP \fIescapechar\fP] [\fB\-f\fP] [\fB\-k\fP
 \fIrealm\fP] [\fB\-l\fP \fIuser\fP] [\fB\-n\fP \fItracefile\fP]
-[\fB\-r\fP] [\fB\-x\fP] [\fIhost\fP [\fIport\fP]]
+[\fB\-r\fP] [\fB\-safe\fP] [\fB\-u\fP] [\fB\-x\fP] [\fIhost\fP [\fIport\fP]]
 .SH DESCRIPTION
 The 
 .B telnet
@@ -78,6 +78,11 @@ Specify no automatic login to the remote system.
 Specify an 8-bit data path on output.  This causes the BINARY option to
 be negotiated on output.
 .TP
+.TP
+\fB\-N\fP
+Don't fall back to an unencrypted connection if encryption fails.
+(This is the default behavior of the krb5 telnet, so this option is
+mostly for backward compatibility.)
 \fB\-S\fP \fItos\fP
 Set the IP type-of-service (TOS) option for the telnet connection to the
 value
@@ -160,6 +165,13 @@ In this mode, the escape character is set to the tilde (~) character,
 unless modified by the
 .B \-e
 option.
+.TP
+\fB\-safe\fP
+For MIT Athena, this option is equivalent to -axf.
+.TP
+\fB\-u\fP
+Don't attempt authentication or encryption, even if the server
+supports it.
 .TP
 \fB\-x\fP
 Turn on encryption of the data stream.  When this option is turned on,

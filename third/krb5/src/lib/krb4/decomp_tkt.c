@@ -229,7 +229,7 @@ dcmp_tkt_int(tkt, flags, pname, pinstance, prealm, paddress, session,
     if (tkt_swap_bytes)
         *time_sec = krb4_swab32(*time_sec);
 
-    if (strlen(ptr) >= ANAME_SZ)
+    if (strlen(ptr) >= SNAME_SZ)
 	return KFAILURE;
     (void) strcpy(sname,ptr);   /* service name */
     ptr += 1 + strlen(sname);

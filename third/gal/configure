@@ -2277,7 +2277,7 @@ else
   if { (eval echo configure:2278: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
     for file in conftest.*; do
       case $file in
-      *.$ac_ext | *.c | *.o | *.obj) ;;
+      *.c | *.o | *.obj) ;;
       *) ac_cv_exeext=`echo $file | sed -e s/conftest//` ;;
       esac
     done
@@ -8615,9 +8615,9 @@ case $withval in
 esac
 
 save_CFLAGS="$CFLAGS"
-save_LDFLAGS="$LDFLAGS"
+save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $ICONV_CFLAGS"
-LDFLAGS="$LDFLAGS $ICONV_LIBS -liconv"
+LIBS="$LIBS $ICONV_LIBS -liconv"
 echo $ac_n "checking for iconv in -liconv""... $ac_c" 1>&6
 echo "configure:8623: checking for iconv in -liconv" >&5
 if eval "test \"`echo '$''{'ac_cv_libiconv'+set}'`\" = set"; then
@@ -8654,7 +8654,7 @@ if test $ac_cv_libiconv = yes; then
 	have_iconv=yes
 else
 	CFLAGS="$save_CFLAGS"
-	LDFLAGS="$save_LDFLAGS"
+	LIBS="$save_LIBS"
 	echo $ac_n "checking for iconv""... $ac_c" 1>&6
 echo "configure:8660: checking for iconv" >&5
 if eval "test \"`echo '$''{'ac_cv_func_iconv'+set}'`\" = set"; then
@@ -8872,7 +8872,7 @@ fi
 
 
 CFLAGS="$save_CFLAGS"
-LDFLAGS="$save_LDFLAGS"
+LIBS="$save_LIBS"
 
 
 echo $ac_n "checking for %l and %k support in strftime""... $ac_c" 1>&6

@@ -5,7 +5,14 @@ XCOMM
 XCOMM 
 XCOMM Motif Release 1.2.1
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:17:14 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:48:37 $
+
+#ifdef LinuxArchitecture
+LEXLIB=-lfl
+#else
+LEXLIB=-ll
+#endif
+
 INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) -I$(MLIBSRC)
 LOCAL_LIBRARIES = BuildClientLibs
 DEPLIBS = BuildClientDepLibs
@@ -74,7 +81,7 @@ wmlparse.h::	wmlparse.y wmllex.l
  
 wmluiltok::	wmluiltok.l
 	lex wmluiltok.l
-	$(CC) $(CFLAGS) lex.yy.c -ll -o wmluiltok
+	$(CC) $(CFLAGS) lex.yy.c $(LEXLIB) -o wmluiltok
 
 $(TARGETS):	$(WMLTOOLS) $(TABLE)
 	$(RM) $(TARGETS) $(REPORT) wml-uil.mm

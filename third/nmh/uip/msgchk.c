@@ -2,7 +2,7 @@
 /*
  * msgchk.c -- check for mail
  *
- * $Id: msgchk.c,v 1.1.1.1 1999-02-07 18:14:15 danw Exp $
+ * $Id: msgchk.c,v 1.2 1999-02-13 00:39:50 danw Exp $
  */
 
 #include <h/mh.h>
@@ -217,7 +217,7 @@ main (int argc, char **argv)
     /*
      * If -host is not specified by user
      */
-    if (!host || !*host) {
+    if ((!host || !*host) && !getenv("MAILDROP")) {
 # ifdef HESIOD
 	/*
 	 * Scheme is:
@@ -322,15 +322,19 @@ static int
 checkmail (char *user, char *home, int datesw, int notifysw, int personal)
 {
     int mf, status;
-    char buffer[BUFSIZ];
+    char buffer[BUFSIZ], *maildrop;
     struct stat st;
 
-    snprintf (buffer, sizeof(buffer), "%s/%s", mmdfldir[0] ? mmdfldir : home, mmdflfil[0] ? mmdflfil : user);
+    maildrop = getenv("MAILDROP");
+    if (!maildrop) {
+	snprintf (buffer, sizeof(buffer), "%s/%s", mmdfldir[0] ? mmdfldir : home, mmdflfil[0] ? mmdflfil : user);
+	maildrop = buffer;
+    }
     if (datesw) {
 	st.st_size = 0;
 	st.st_atime = st.st_mtime = 0;
     }
-    mf = (stat (buffer, &st) == NOTOK || st.st_size == 0) ? NONEOK
+    mf = (stat (maildrop, &st) == NOTOK || st.st_size == 0) ? NONEOK
 	: st.st_atime <= st.st_mtime ? MMDFNEW : MMDFOLD;
 
     if ((mf & UUCPOK) || (mf & MMDFOK)) {

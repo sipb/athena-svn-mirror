@@ -41,7 +41,7 @@ ERROR! you must not include vroot.h in this file
 
 extern char *progname;
 extern Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_RESPONSE;
-extern Atom XA_SCREENSAVER_ID, XA_SCREENSAVER_STATUS, XA_EXIT;
+extern Atom XA_SCREENSAVER_ID, XA_SCREENSAVER_STATUS, XA_EXIT, XA_RESTART;
 extern Atom XA_VROOT, XA_SELECT, XA_DEMO, XA_BLANK, XA_LOCK;
 
 
@@ -473,7 +473,8 @@ xscreensaver_command (Display *dpy, Atom command, long arg, Bool verbose_p,
   int status = send_xscreensaver_command (dpy, command, arg, &w, error_ret);
   if (status == 0)
     status = xscreensaver_command_response (dpy, w, verbose_p,
-                                            (command == XA_EXIT),
+                                            (command == XA_EXIT ||
+					     command == XA_RESTART),
                                             error_ret);
 
   fflush (stdout);

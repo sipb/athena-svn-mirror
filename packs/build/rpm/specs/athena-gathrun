@@ -1,0 +1,11 @@
+Name: athena-gathrun
+Summary: An Athena utility to run GUI programs out of lockers from a menu
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-attachandrun athena-gnome-utils
+
+%description
+The gathrun utility allows a user to run a program from a specified
+locker.  If the program does not exist, a dialog box is displayed
+saying so (using gdialog).

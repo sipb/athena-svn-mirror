@@ -42,6 +42,7 @@ static CamelProvider mh_provider = {
 	N_("MH-format mail directories"),
 	N_("For storing local mail in MH-like mail directories."),
 	"mail",
+	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE |
 	CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
 	/* ... */

@@ -17,7 +17,7 @@ use strict;
 # for installation purposes.
 #
 my $file        = "thumbpdf.pl";
-my $program     = uc($file =~ /^(\w+)/, $1);
+my $program     = ($file =~ /^(\w+)/, uc($1));
 my $version     = "1.4";
 my $date        = "22.04.1999";
 my $author      = "Heiko Oberdiek";

@@ -30,47 +30,37 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     from: @(#)talkd.8	6.5 (Berkeley) 3/16/91
-.\"	$Id: talkd.8,v 1.1.1.1 1996-10-07 20:39:12 ghudson Exp $
+.\"	$Id: talkd.8,v 1.2 1996-10-13 07:09:18 ghudson Exp $
 .\"
-.Dd March 16, 1991
-.Dt TALKD 8
-.Os BSD 4.3
-.Sh NAME
-.Nm talkd
-.Nd remote user communication server
-.Sh SYNOPSIS
-.Nm talkd
-.Sh DESCRIPTION
-.Nm Talkd
+.TH TALKD 8 "March 16, 1991"
+.UC 4
+.SH NAME
+talkd \- remote user communication server
+.SH SYNOPSIS
+.B talkd
+.SH DESCRIPTION
+.I Talkd
 is the server that notifies a user that someone else wants to
 initiate a conversation.
 It acts a repository of invitations, responding to requests
 by clients wishing to rendezvous to hold a conversation.
 In normal operation, a client, the caller,
-initiates a rendezvous by sending a
-.Tn CTL_MSG
-to the server of
-type
-.Tn LOOK_UP
-(see
-.Aq Pa protocols/talkd.h ) .
+initiates a rendezvous by sending a CTL_MSG to the server of
+type LOOK_UP (see
+.RI < protocols/talkd.h >) .
 This causes the server to search its invitation
 tables to check if an invitation currently exists for the caller
 (to speak to the callee specified in the message).
 If the lookup fails,
-the caller then sends an
-.Tn ANNOUNCE
-message causing the server to
+the caller then sends an ANNOUNCE message causing the server to
 broadcast an announcement on the callee's login ports requesting contact.
 When the callee responds, the local server uses the
 recorded invitation to respond with the appropriate rendezvous
 address and the caller and callee client programs establish a
 stream connection through which the conversation takes place.
-.Sh SEE ALSO
-.Xr talk 1 ,
-.Xr write 1
-.Sh HISTORY
+.SH SEE ALSO
+talk(1), write(1)
+.SH HISTORY
 The
-.Nm
-command appeared in
-.Bx 4.3 .
+.I talk
+command appeared in 4.3BSD.

@@ -35,8 +35,8 @@ confdir = $(datadir)/stripchart
 conf_DATA = stripchart.conf stripchart.params
 
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_in_files = stripchart.desktop.in
-Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
+#Utilities_in_files = stripchart.desktop.in
+#Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 
 Appletdir = $(datadir)/applets/Monitors
 Applet_in_files = stripchart-applet.desktop.in
@@ -50,8 +50,6 @@ EXTRA_DIST = \
 	$(man_MANS) \
 	$(pixmap_DATA) \
 	$(conf_DATA) \
-	$(Utilities_DATA) \
-	$(Utilities_in_files) \
 	$(Applet_DATA) \
 	$(Applet_in_files) \
 	$(gnorba_DATA) \

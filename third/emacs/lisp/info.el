@@ -341,7 +341,8 @@ Do the right thing if the file has been compressed or zipped."
       (setq Info-directory-list
 	    (prune-directory-list
 	     (if path
-		 (split-string path (regexp-quote path-separator))
+		 (append (split-string path (regexp-quote path-separator))
+			 Info-default-directory-list)
 	       (if (and sibling (file-exists-p sibling))
 		   ;; Uninstalled, Emacs builddir != srcdir.
 		   (setq alternative sibling)

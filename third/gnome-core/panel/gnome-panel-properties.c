@@ -904,7 +904,7 @@ menu_notebook_page(void)
 
 
 	/* Menu frame */
-	frame = gtk_frame_new (_("Global menu"));
+	frame = gtk_frame_new (_("Context menu"));
 	gtk_container_set_border_width(GTK_CONTAINER (frame), GNOME_PAD_SMALL);
 	gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 0);
 	

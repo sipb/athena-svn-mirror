@@ -65,7 +65,7 @@
 
 #define PID_ENV_NAME "XALF_LAUNCH_PID"
 #define SAVED_PRELOAD_NAME "XALF_SAVED_PRELOAD"
-#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so"
 #define USAGE "\
 Usage: %s [options] command\n\
 options:\n\
@@ -141,6 +141,7 @@ int cursor_opt = FALSE;
 /* GTK timeout tags */
 int cursor_timeout_tag = 0;
 int exit_timeout_tag = 0;
+int child_timeout_tag = 0;
 /* Animated start */
 int anim_opt = FALSE;
 /* The number of MapEvents in mappingmode to detect before we are done. */
@@ -183,6 +184,108 @@ exit_gtk_handler (gpointer data)
 }    
 
 
+/* Handle a child that failed to launch successfully, by popping up
+   a window notifying the user of the error. */
+static void
+ok_callback (GtkWidget *widget, gpointer data)
+{
+    gtk_exit(0);
+}
+
+static gint
+delete_callback (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+    gtk_exit(0);
+    return TRUE;
+}
+
+static void
+destroy_callback (GtkWidget *widget, gpointer data)
+{
+    gtk_exit(0);
+}
+
+static gint
+child_gtk_handler (gpointer data)
+{
+    int status = (int) data;
+    GtkWidget *dialog;
+    GtkWidget *dialog_vbox;
+    GtkWidget *dialog_action_area;
+    GtkWidget *label;
+    GtkWidget *button;
+    char *label_string = NULL;
+    char *label_string1 = NULL;
+    char numbuf[32];
+
+    gtk_timeout_remove (child_timeout_tag);
+    remove_sighandlers ();
+    restore_cursor ();
+
+    /* Examine the child status.  Unless it exited with code 0, pop
+     * up a message for the user.
+     */
+    if (WIFEXITED (status) && WEXITSTATUS (status) == 0)
+        {
+            gtk_exit (0);
+            return FALSE;
+        }
+
+    label_string1 = g_strconcat (programname, ": Failed to launch ",
+                                 title, "\n", NULL);
+    if (WIFEXITED (status))
+        {
+            sprintf (numbuf, "%d", WEXITSTATUS (status));
+            label_string = g_strconcat (label_string1,
+                                        "child exited: status ",
+                                        numbuf, NULL);
+        }
+    else if (WIFSIGNALED (status))
+        label_string = g_strconcat (label_string1, "child died: ",
+                                    g_strsignal (WTERMSIG (status)), NULL);
+    else if (WIFSTOPPED (status))        /* Shouldn't happen */
+        label_string = g_strconcat (label_string1, "child stopped: ",
+                                    g_strsignal (WSTOPSIG (status)), NULL);
+    else                                /* "Impossible" case */
+        {
+            g_free (label_string1);
+            gtk_exit (0);
+            return FALSE;
+        }
+
+    /* Set up the dialog. */
+    dialog = gtk_dialog_new ();
+    gtk_window_set_title (GTK_WINDOW (dialog), "Application failed");
+    gtk_window_set_policy (GTK_WINDOW (dialog), TRUE, TRUE, FALSE);
+    gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+    gtk_signal_connect (GTK_OBJECT (dialog), "delete_event",
+                        GTK_SIGNAL_FUNC (delete_callback), NULL);
+    gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+                        GTK_SIGNAL_FUNC (destroy_callback), NULL);
+
+    dialog_vbox = GTK_DIALOG (dialog)->vbox;
+    gtk_container_set_border_width (GTK_CONTAINER (dialog_vbox), 10);
+    label = gtk_label_new (label_string);
+    gtk_box_pack_start (GTK_BOX (dialog_vbox), label, TRUE, TRUE, 10);
+    gtk_widget_show (label);
+
+    dialog_action_area = GTK_DIALOG (dialog)->action_area;
+    gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area), 10);
+    button = gtk_button_new_with_label ("OK");
+    gtk_box_pack_start (GTK_BOX (dialog_action_area), button, FALSE, FALSE, 0);
+    gtk_signal_connect(GTK_OBJECT (button), "clicked",
+                       GTK_SIGNAL_FUNC (ok_callback), NULL);
+    gtk_widget_show (button);
+
+    gtk_widget_show (dialog);
+
+    g_free (label_string1);
+    g_free (label_string);
+
+    return FALSE;
+}
+  
+
 void 
 mapped_sig_handler (int signo) 
 {      
@@ -197,6 +300,24 @@ terminate_sig_handler (int signo)
 {      
     DPRINTF((stderr, "%s: Got termination signal %d\n", programname, signo));
     exit_timeout_tag = gtk_timeout_add (50, exit_gtk_handler, NULL);
+}    
+
+void 
+child_sig_handler (int signo) 
+{      
+    pid_t ret;
+    int status;
+
+    DPRINTF((stderr, "%s: Got child signal %d\n", programname, signo));
+    ret = waitpid (-1, &status, WNOHANG);
+    if (ret == 0 || ret == -1)
+        {
+            /* Strange failure, just exit. */
+            terminate_sig_handler (SIGCHLD);
+            return;
+        }
+    child_timeout_tag = gtk_timeout_add (50, child_gtk_handler,
+                                         (gpointer) status);
 }    
 
 
@@ -252,7 +373,7 @@ static int
 forced_mappingmode(char **argv) {
     int mappingmode_opt = FALSE;
     
-#ifndef MULTI_PRELOAD
+#if !defined(MULTI_PRELOAD) && !defined(RLD_LIST)
     {
         char *preload_env;
         /* If LD_PRELOAD is alread set and this system does not support 
@@ -344,6 +465,18 @@ launch_application (int mappingmode_opt, char **argv)
     char *saved_preload_env = NULL;
     
     /* Set up preload_string */
+#ifdef RLD_LIST
+    saved_preload = getenv(RLD_LIST);
+    if (saved_preload != NULL)
+        {
+            preload_string = g_strconcat (RLD_LIST"=", PRELOAD_LIBRARY,
+                                          ":", saved_preload, NULL);
+            saved_preload_env = g_strconcat (SAVED_PRELOAD_NAME"=", saved_preload, NULL);
+        }
+    else
+        preload_string = g_strconcat (RLD_LIST"=", PRELOAD_LIBRARY,
+                                      ":DEFAULT", NULL);
+#else
 #ifdef MULTI_PRELOAD
     saved_preload = getenv("LD_PRELOAD");
     if (saved_preload != NULL)
@@ -356,6 +489,7 @@ launch_application (int mappingmode_opt, char **argv)
 #else 
     preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);    
 #endif /* MULTI_PRELOAD */
+#endif /* RLD_LIST */
 
     /* Make sure that the file descriptor is not passed to the client. */
     if (fcntl (ConnectionNumber (dpy), F_SETFD, 1L) == -1) {
@@ -502,10 +636,7 @@ main (int argc, char **argv)
 	}
     
     if (!invisiblewindow_opt && !splash_opt && !cursor_opt && !anim_opt) 
-        {
-            invisiblewindow_opt = TRUE;
-            pending_mapevents++;
-        }
+        cursor_opt = TRUE;
 	
     if (noxalf_opt)
 	execvp (argv[optind], argv+optind); 
@@ -737,6 +868,7 @@ install_sighandlers ()
     signal (SIGTERM, terminate_sig_handler);
     signal (SIGINT, terminate_sig_handler);
     signal (SIGQUIT, terminate_sig_handler);
+    signal (SIGCHLD, child_sig_handler);
 }
 
 
@@ -818,32 +950,12 @@ find_in_path (char *filename)
 	    
 	    if (!S_ISREG(statbuf.st_mode))
 		continue;      /* File is not a regular file */
+
+	    if (access(testpath, X_OK) == -1)
+		continue;      /* File is not executable */
 	    
-	    if (statbuf.st_uid == geteuid ())
-		{
-		    if (statbuf.st_mode & S_IXUSR)
-			{
-			    foundfile = g_strdup (testpath);
-			    break;
-			}
-		    continue;  /* No permission to execute; try next PATH-entry */
-		}
-
-	    if (statbuf.st_gid == getegid ())
-		{
-		    if (statbuf.st_mode & S_IXGRP)
-			{
-			    foundfile = g_strdup (testpath);
-			    break;
-			}
-		    continue;  /* No permission to execute; try next PATH-entry */
-		}
-
-	    if (statbuf.st_mode & S_IXOTH)
-		{
-		    foundfile = g_strdup (testpath);
-		    break;
-		}
+            foundfile = g_strdup (testpath);
+            break;
 	}
     g_free (testpath);
 

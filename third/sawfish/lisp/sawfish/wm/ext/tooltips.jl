@@ -1,5 +1,5 @@
 ;; tooltips.jl -- display frame-part keymap descriptions
-;; $Id: tooltips.jl,v 1.1.1.3 2002-03-20 04:59:31 ghudson Exp $
+;; $Id: tooltips.jl,v 1.3 2002-03-20 05:07:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 

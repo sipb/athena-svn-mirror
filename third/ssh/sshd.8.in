@@ -9,8 +9,11 @@
 .\"
 .\" Created: Sat Apr 22 21:55:14 1995 ylo
 .\"
-.\" $Id: sshd.8.in,v 1.1.1.4 1999-03-08 17:43:00 danw Exp $
+.\" $Id: sshd.8.in,v 1.2 2002-01-09 23:28:11 jweiss Exp $
 .\" $Log: not supported by cvs2svn $
+.\" Revision 1.1.1.4  1999/03/08 17:43:00  danw
+.\" Import of ssh 1.2.26
+.\"
 .\" Revision 1.21  1998/07/08 00:41:22  kivinen
 .\" 	Changed to do similar commercial #ifdef processing than other
 .\" 	files.
@@ -158,6 +161,9 @@ sshd \- secure shell daemon
 .B \-q \c
 ]
 [\c
+.B \-s | \-S \c
+]
+[\c
 .BI \-V \ version\fR\c
 ]
 .ad
@@ -300,6 +306,15 @@ Specifies the port on which the server listens for connections
 .B \-q
 Quiet mode.  Nothing is sent to the system log.  Normally the beginning,
 authentication, and termination of each connection is logged.
+.TP
+.B \-s
+Allows access_on/access_off to control whether sshd accepts
+connections.  It assumes that access is set to on when sshd is started
+and accepts connections immediately.
+.TP
+.B \-S
+This option is the same as \-s except it assumes access is set to off
+when sshd starts, and does not accept connections until access_on is run.
 .TP
 .B \-V
 SSH version 2 compatibility mode. Server assumes that SSH version 2
@@ -1141,4 +1156,6 @@ http://www.cs.hut.fi/ssh.
 .BR ssh-add (1),
 .BR scp (1),
 .BR rlogin (1),
-.BR rsh (1)
+.BR rsh (1),
+.BR access_off (1),
+.BR access_on (1)

@@ -231,18 +231,20 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
 	} else {
 		fd_set rdset;
-		int error, flags, fdmax;
+		int error, flags, fdmax, status;
 		
 		flags = fcntl (stream_fs->fd, F_GETFL);
 		fcntl (stream_fs->fd, F_SETFL, flags | O_NONBLOCK);
 		
 		do {
-			FD_ZERO (&rdset);
-			FD_SET (stream_fs->fd, &rdset);
-			FD_SET (cancel_fd, &rdset);
-			fdmax = MAX (stream_fs->fd, cancel_fd) + 1;
+			do {
+				FD_ZERO (&rdset);
+				FD_SET (stream_fs->fd, &rdset);
+				FD_SET (cancel_fd, &rdset);
+				fdmax = MAX (stream_fs->fd, cancel_fd) + 1;
 			
-			select (fdmax, &rdset, 0, 0, NULL);
+				status = select (fdmax, &rdset, 0, 0, NULL);
+			} while (status == -1 && errno == EINTR);
 			if (FD_ISSET (cancel_fd, &rdset)) {
 				fcntl (stream_fs->fd, F_SETFL, flags);
 				errno = EINTR;
@@ -295,19 +297,21 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 		} while (w != -1 && written < n);
 	} else {
 		fd_set rdset, wrset;
-		int error, flags, fdmax;
+		int error, flags, fdmax, status;
 		
 		flags = fcntl (stream_fs->fd, F_GETFL);
 		fcntl (stream_fs->fd, F_SETFL, flags | O_NONBLOCK);
 		
 		fdmax = MAX (stream_fs->fd, cancel_fd)+1;
 		do {
-			FD_ZERO (&rdset);
-			FD_ZERO (&wrset);
-			FD_SET (stream_fs->fd, &wrset);
-			FD_SET (cancel_fd, &rdset);
+			do {
+				FD_ZERO (&rdset);
+				FD_ZERO (&wrset);
+				FD_SET (stream_fs->fd, &wrset);
+				FD_SET (cancel_fd, &rdset);
 			
-			select (fdmax, &rdset, &wrset, 0, NULL);
+				status = select (fdmax, &rdset, &wrset, 0, NULL);
+			} while (status == -1 && errno == EINTR);
 			if (FD_ISSET (cancel_fd, &rdset)) {
 				fcntl (stream_fs->fd, F_SETFL, flags);
 				errno = EINTR;

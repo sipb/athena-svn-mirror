@@ -35,4 +35,9 @@
  *	@(#)pathnames.h	8.1 (Berkeley) 6/9/93
  */
 
+#ifdef sgi
+#define	_PATH_WORDS	"/usr/lib/dict/words"
+#else
 #define	_PATH_WORDS	"/usr/share/dict/words"
+#endif
+

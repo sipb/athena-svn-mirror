@@ -7,7 +7,7 @@
 */ 
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$RCSfile: WmFunction.c,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:33 $"
+static char rcsid[] = "$RCSfile: WmFunction.c,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:34:37 $"
 #endif
 #endif
 /*
@@ -821,7 +821,7 @@ Boolean F_Exec (String args, ClientData *pCD, XEvent *event)
     {
 
 #ifndef NO_SETPGRP
-#if defined(SVR4) || defined(__OSF1__)
+#if defined(SVR4) || defined(__OSF1__) || defined(__linux__)
 	setsid();
 #else
 #ifdef SYSV

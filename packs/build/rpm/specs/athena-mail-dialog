@@ -1,0 +1,12 @@
+Name: athena-mail-dialog
+Summary: Displays a dialog about the change in default mail client
+Copyright: GPL
+Group: User Interface/Desktops
+
+Requires: athena-gnome-libs
+
+%description
+The mail-dialog program displays a dialog about how the default mail
+client has changed, and lets the user select how to proceed.  This
+program is used by the panel mail script and isn't terribly useful
+aside from that.

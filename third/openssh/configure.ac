@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.1.1.1 2002-02-13 00:08:01 zacheiss Exp $
+# $Id: configure.ac,v 1.4 2002-04-08 15:08:51 ghudson Exp $
 
 AC_INIT
 AC_CONFIG_SRCDIR([ssh.c])
@@ -489,6 +489,92 @@ int main(void){struct dirent d;return(sizeof(d.d_name)<=sizeof(char));}
 		AC_DEFINE(BROKEN_ONE_BYTE_DIRENT_D_NAME)
 	]
 )
+
+# Check whether the user wants GSI (Globus) support
+gsi_path="no"
+AC_ARG_WITH(gsi,
+	[  --with-gsi=PATH         Enable GSI/Globus authentication support],
+	[
+		gsi_path="$withval"
+	]
+)
+
+AC_ARG_WITH(globus,
+	[  --with-globus=PATH      Enable GSI/Globus authentication support],
+	[
+		gsi_path="$withval"
+	]
+)
+
+if test "x$gsi_path" != "xno" ; then
+	# Globus GSSAPI configuration
+	AC_DEFINE(GSSAPI)
+	AC_DEFINE(GSI)
+
+	# Find GLOBUS/GSI installation Directory
+	AC_MSG_CHECKING(for Globus/GSI installation directory)
+
+	globus_install_dir=$gsi_path
+
+	if test "x$globus_install_dir" = "xyes" ; then
+		if test -n "$GLOBUS_INSTALL_PATH" ; then
+			globus_install_dir=$GLOBUS_INSTALL_PATH
+		elif test -n "$GSI_INSTALL_PATH" ; then
+			globus_install_dir=$GSI_INSTALL_PATH
+		elif test -d /usr/local/globus ; then
+			globus_install_dir="/usr/local/globus"
+		elif test -d /usr/local/gsi ; then
+			globus_install_dir="/usr/local/gsi"
+		else
+			AC_MSG_ERROR(Cannot find Globus/GSI installation directory)
+		fi	
+	fi
+	AC_MSG_RESULT($globus_install_dir)
+
+	# Find GLOBUS/GSI development directory
+	AC_MSG_CHECKING(for Globus/GSI development directory)
+
+	if test -d ${globus_install_dir}/lib ; then
+		# Looks like a flat directory structure from configure/make
+		# and not globus-install or gsi-install
+		globus_dev_dir=$globus_install_dir
+
+	else
+		# Assume a true globus installation with architecture
+		# directories and run globus-development-path to find
+		# the development directory
+
+		# Set GLOBUS_INSTALL_PATH
+		GLOBUS_INSTALL_PATH=$globus_install_dir
+		export GLOBUS_INSTALL_PATH
+
+		dev_path_program=${globus_install_dir}/bin/globus-development-path
+
+		if test ! -x ${dev_path_program} ; then
+			AC_MSG_ERROR(Cannot find Globus/GSI installation directory: program ${dev_path_program} does not exist or is not executable)
+		fi
+
+		globus_dev_dir=`${dev_path_program}`
+
+		if test -z "$globus_dev_dir" -o "X$globus_dev_dir" = "X<not found>" ; then
+				AC_MSG_ERROR(Cannot find Globus/GSI development directory)
+		fi
+
+		if test ! -d "$globus_dev_dir" ; then
+			AC_MSG_ERROR(Cannot find Globus/GSI development directory: $globus_dev_dir does not exist)
+		fi
+	fi
+	AC_MSG_RESULT($globus_dev_dir)
+
+	GSI_LIBS="-lglobus_gss_assist -lglobus_gss -lglobus_gaa -lssl -lcrypto"
+	GSI_LDFLAGS="-L${globus_dev_dir}/lib"
+	GSI_CFLAGS="-I${globus_dev_dir}/include"
+
+	LIBS="$LIBS $GSI_LIBS"
+	LDFLAGS="$LDFLAGS $GSI_LDFLAGS"
+	CFLAGS="$CFLAGS $GSI_CFLAGS"
+# End Globus/GSI section
+fi
 
 # Check whether user wants S/Key support
 SKEY_MSG="no" 
@@ -1443,7 +1529,68 @@ AC_ARG_WITH(smartcard,
 	]
 )
 
-# Check whether user wants Kerberos support
+# Check whether user wants Kerberos 5 support
+AC_ARG_WITH(kerberos5,
+        [  --with-kerberos5=PATH   Enable Kerberos 5 support],
+        [
+                if test "x$withval" != "xno" ; then
+                        if test "x$withval" = "xyes" ; then
+                                KRB5ROOT="/usr/local"
+                        else
+                                KRB5ROOT=${withval}
+                        fi
+			CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include"
+                        LDFLAGS="$LDFLAGS -L${KRB5ROOT}/lib"
+                        AC_DEFINE(KRB5)
+                        AC_MSG_CHECKING(whether we are using Heimdal)
+                        AC_TRY_COMPILE([ #include <krb5.h> ],
+                                       [ char *tmp = heimdal_version; ],
+                                       [ AC_MSG_RESULT(yes)
+                                         AC_DEFINE(HEIMDAL)
+                                         K5LIBS="-lkrb5 -lkrb524 -lkrb4 -ldes -lcom_err -lasn1 -lroken"
+                                       ],
+                                       [ AC_MSG_RESULT(no)
+                                         K5LIBS="-lkrb524 -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
+                                       ]
+                        )
+                        if test ! -z "$need_dash_r" ; then
+                                LDFLAGS="$LDFLAGS -R${KRB5ROOT}/lib"
+                        fi
+                        if test ! -z "$blibpath" ; then
+                                blibpath="$blibpath:${KRB5ROOT}/lib"
+                        fi
+                        AC_CHECK_LIB(resolv, dn_expand, , )
+
+			AC_CHECK_LIB(gssapi,gss_init_sec_context,
+				[ AC_DEFINE(GSSAPI)
+				  K5LIBS="-lgssapi $K5LIBS" ],
+				[ AC_CHECK_LIB(gssapi_krb5,gss_init_sec_context,
+					[ AC_DEFINE(GSSAPI)
+				  	  K5LIBS="-lgssapi_krb5 $K5LIBS" ],
+					AC_MSG_WARN([Cannot find any suitable gss-api library - build may fail]),
+					$K5LIBS)
+				],
+				$K5LIBS)
+			
+			AC_CHECK_HEADER(gssapi.h, ,
+				[ unset ac_cv_header_gssapi_h
+				  CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include/gssapi" 
+				  AC_CHECK_HEADERS(gssapi.h, ,
+					AC_MSG_WARN([Cannot find any suitable gss-api header - build may fail])
+				  ) 
+				]
+			)
+
+			oldCPP="$CPPFLAGS"
+			CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include/gssapi"
+			AC_CHECK_HEADER(gssapi_krb5.h, ,
+					[ CPPFLAGS="$oldCPP" ])
+
+                        KRB5=yes
+                fi
+        ]
+)
+# Check whether user wants Kerberos 4 support
 KRB4_MSG="no" 
 AC_ARG_WITH(kerberos4,
 	[  --with-kerberos4=PATH   Enable Kerberos 4 support],
@@ -1507,23 +1654,22 @@ AC_ARG_WITH(afs,
 
 			if test "x$withval" != "xyes" ; then
 				CPPFLAGS="$CPPFLAGS -I${withval}/include"
-				LDFLAGS="$LDFLAGS -L${withval}/lib"
+				LDFLAGS="$LDFLAGS -L${withval}/lib -L${withval}/lib/afs"
 			fi
 
 			if test -z "$KRB4" ; then
 				AC_MSG_WARN([AFS requires Kerberos IV support, build may fail])
 			fi
 
-			LIBS="-lkafs $LIBS"
+			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys $LIBS"
 			if test ! -z "$AFS_LIBS" ; then
 				LIBS="$LIBS $AFS_LIBS"
 			fi
-			AC_DEFINE(AFS)
 			AFS_MSG="yes" 
 		fi
 	]
 )
-LIBS="$LIBS $KLIBS"
+LIBS="$LIBS $KLIBS $K5LIBS"
 
 # Looking for programs, paths and files
 AC_ARG_WITH(rsh,

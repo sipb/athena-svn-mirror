@@ -12,6 +12,9 @@ PACKAGE=evolution
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AC_SUBST(VERSION)
 
+AC_CHECK_LIB(resolv, res_query, RESOLV_LIBS="-lresolv")
+AC_SUBST(RESOLV_LIBS)
+
 AC_CANONICAL_HOST
 
 AC_DEFINE_UNQUOTED(VERSION_COMMENT, "")
@@ -327,13 +330,15 @@ AC_CACHE_CHECK([db3 header version], ac_cv_db3_header_version,
 	ac_cv_db3_header_version=$evolution_db_version
 ])
 
+GNOME_PTHREAD_CHECK
+
 AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
 [
 	LIBS_save="$LIBS"
 	ac_cv_db3_ldadd=""
 
 	for name in db db3 db-3.1; do
-		LIBS="$LIBS_save $with_db3_libs/lib${name}.a"
+		LIBS="$LIBS_save $with_db3_libs/lib${name}.a $PTHREAD_LIB"
 		AC_TRY_LINK([
 			#ifdef HAVE_DB3_DB_H
 			#include <db3/db.h>
@@ -344,7 +349,7 @@ AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
 			DB *db;
 			db_create (&db, 0, 0);
 		], [
-			ac_cv_db3_ldadd="$with_db3_libs/lib${name}.a"
+			ac_cv_db3_ldadd="$with_db3_libs/lib${name}.a $PTHREAD_LIB"
 			break
 		])
 	done
@@ -610,8 +615,8 @@ BONOBO_CONF_LIBS="`gnome-config --libs bonobo_conf`"
 AC_SUBST(BONOBO_CONF_CFLAGS)
 AC_SUBST(BONOBO_CONF_LIBS)
 
-EXTRA_GNOME_LIBS="`gnome-config --libs libglade gdk_pixbuf libart gnomecanvaspixbuf gnomeui gal` $THREADS_LIBS"
-EXTRA_GNOME_CFLAGS="`gnome-config --cflags libglade gdk_pixbuf libart gnomecanvaspixbuf gnomeui gal` $THREADS_CFLAGS"
+EXTRA_GNOME_LIBS="`gnome-config --libs bonobo libglade gdk_pixbuf libart gnomecanvaspixbuf gnomeui gal` $THREADS_LIBS"
+EXTRA_GNOME_CFLAGS="`gnome-config --cflags bonobo libglade gdk_pixbuf libart gnomecanvaspixbuf gnomeui gal` $THREADS_CFLAGS"
 
 AC_SUBST(EXTRA_GNOME_LIBS)
 AC_SUBST(EXTRA_GNOME_CFLAGS)
@@ -715,29 +720,37 @@ fi
 dnl ********
 dnl Kerberos
 dnl ********
+AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_SEARCH_LIBS(socket, socket)
+
 AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes])
 AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes])
 msg_krb5=no
 if test ${with_krb5:=no} != no; then
 	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 
 	mitlibs="-lkrb5 -lk5crypto -lcom_err"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken"
 	AC_CACHE_CHECK([for Kerberos 5], ac_cv_lib_kerberos5,
 	[
-		LDFLAGS="$LDFLAGS -L$with_krb5/lib $mitlibs"
+		LDFLAGS="$LDFLAGS -L$with_krb5/lib"
+		LIBS="$LIBS $mitlibs"
 		AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$mitlibs",
 		[
-			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib $heimlibs"
+			LDFLAGS="$LDFLAGS_save -L$with_krb5/lib"
+			LIBS="$LIBS_save $heimlibs"
 			AC_TRY_LINK_FUNC(krb5_init_context, ac_cv_lib_kerberos5="$heimlibs", ac_cv_lib_kerberos5=no)
 		])
 		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
 	])
 	if test "$ac_cv_lib_kerberos5" != no; then
 		AC_DEFINE(HAVE_KRB5)
 		msg_krb5=yes
 		KRB5_CFLAGS="-I$with_krb5/include/krb5"
-		KRB5_LDFLAGS="-L$with_krb5/lib $ac_cv_lib_kerberos5"
+		KRB5_LDFLAGS="-L$with_krb5/lib"
+		KRB5_LIBS="$ac_cv_lib_kerberos5"
 	fi
 else
 	AC_MSG_CHECKING(for Kerberos 5)
@@ -747,6 +760,7 @@ fi
 msg_krb4=no
 if test x${with_krb4:=no} != xno; then
 	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 	AC_CACHE_CHECK(for Kerberos 4, ac_cv_lib_kerberos4,
 	[
 		ac_cv_lib_kerberos4=no
@@ -754,27 +768,35 @@ if test x${with_krb4:=no} != xno; then
 		case $ac_cv_lib_kerberos5 in
 		*k5crypto*)
 			# Look for MIT krb5 compat krb4
-			LDFLAGS="$LDFLAGS -L$with_krb4/lib -lkrb4 -ldes425 $KRB5_LDFLAGS"
-			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb4 -ldes425 $KRB5_LDFLAGS")
+			LDFLAGS="$LDFLAGS -L$with_krb4/lib $KRB5_LDFLAGS"
+			LIBS="$LIBS -lkrb4 -ldes425 $KRB5_LIBS"
+			AC_TRY_LINK_FUNC(krb_mk_req,
+			[
+				ac_cv_lib_kerberos4="-lkrb4 -ldes425 $KRB5_LIBS"
+				ac_cv_ldflag_kerberos4="$KRB5_LDFLAGS"
+			])
 			;;
 		esac
 
 		if test "$ac_cv_lib_kerberos4" = no; then
 			# Look for KTH krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb -lcrypto -lcom_err -lroken"
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
+			LIBS="$LIBS_save -lkrb -lcrypto -lcom_err -lroken"
 			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken")
 		fi
 		if test "$ac_cv_lib_kerberos4" = no; then
 			# Look for old MIT krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb"
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
+			LIBS="$LIBS_save -lkrb"
 			AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4=-lkrb,
 			[
-				LDFLAGS="$LDFLAGS -ldes"
+				LIBS="$LIBS -ldes"
 				AC_TRY_LINK_FUNC(krb_mk_req, ac_cv_lib_kerberos4="-lkrb -ldes")
 			])
 		fi
 	])
 	LDFLAGS="$LDFLAGS_save"
+	LIBS="$LIBS_save"
 	if test "$ac_cv_lib_kerberos4" != no; then
 		AC_DEFINE(HAVE_KRB4)
 		msg_krb4=yes
@@ -783,7 +805,8 @@ if test x${with_krb4:=no} != xno; then
 		else
 			KRB4_CFLAGS="-I$with_krb4/include/kerberosIV"
 		fi
-		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
+		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_ldflag_kerberos4"
+		KRB4_LIBS="$ac_cv_lib_kerberos4"
 
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
@@ -799,8 +822,10 @@ fi
 
 AC_SUBST(KRB5_CFLAGS)
 AC_SUBST(KRB5_LDFLAGS)
+AC_SUBST(KRB5_LIBS)
 AC_SUBST(KRB4_CFLAGS)
 AC_SUBST(KRB4_LDFLAGS)
+AC_SUBST(KRB4_LIBS)
 
 
 dnl ==========================

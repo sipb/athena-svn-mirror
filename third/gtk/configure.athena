@@ -1,0 +1,10 @@
+#!/bin/sh
+case $OS in
+irix)
+  options=--disable-xim
+  ;;
+*)
+  options=
+  ;;
+esac
+./configure --disable-rebuilds $options

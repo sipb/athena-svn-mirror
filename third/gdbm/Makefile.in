@@ -31,18 +31,16 @@ CFLAGS = -O
 LDFLAGS =
 
 # Common prefix for installation directories
-prefix = /usr/local
-exec_prefix = $(prefix)
-binprefix = $(exec_prefix)
-manprefix = $(prefix)
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
 # Directory in which to put libgdbm.a.
-libdir = $(exec_prefix)/lib
+libdir = @libdir@
 # The include directory for gdbm.h and dbm.h.
-includedir = $(prefix)/include
+includedir = @includedir@
 # Info and man directories.
-infodir = $(prefix)/info
-man3dir = $(prefix)/man/man3
+infodir = @infodir@
+man3dir = @mandir@/man3
 manext = 3
 
 #### End of system configuration section. ####
@@ -120,13 +118,11 @@ all: libgdbm.la
 progs: $(PROGS)
 
 install: libgdbm.la gdbm.h gdbm.info
-	$(srcdir)/mkinstalldirs $(libdir) $(includedir) $(man3dir) $(infodir)
-	$(LIBTOOL) install -c libgdbm.la $(libdir)/libgdbm.la
-	$(INSTALL_DATA) -o $(BINOWN) -g $(BINGRP) gdbm.h $(includedir)/gdbm.h
-	$(INSTALL_DATA) -o $(BINOWN) -g $(BINGRP) $(srcdir)/gdbm.3 \
-		$(man3dir)/gdbm.3
-	$(INSTALL_DATA) -o $(BINOWN) -g $(BINGRP) $(srcdir)/gdbm.info \
-		$(infodir)/gdbm.info
+	$(srcdir)/mkinstalldirs $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)$(man3dir) $(DESTDIR)$(infodir)
+	$(LIBTOOL) install -c libgdbm.la $(DESTDIR)$(libdir)/libgdbm.la
+	-$(INSTALL_DATA) gdbm.h $(DESTDIR)$(includedir)/gdbm.h
+	-$(INSTALL_DATA) $(srcdir)/gdbm.3 $(DESTDIR)$(man3dir)/gdbm.3
+	-$(INSTALL_DATA) $(srcdir)/gdbm.info $(DESTDIR)$(infodir)/gdbm.info
 
 install-compat:
 	$(srcdir)/mkinstalldirs $(includedir)

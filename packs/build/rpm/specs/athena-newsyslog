@@ -1,0 +1,8 @@
+Name: athena-newsyslog
+Summary: An Athena utility to maintain system log files at manageable sizes
+Copyright: MIT
+Group: Applications/File
+
+%description
+A program that archives and processes log files to turn them over and
+rotate them in accordance with a specified scheme.

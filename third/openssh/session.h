@@ -26,6 +26,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+int	 do_auth1_kerberos_tgt_pass(Authctxt *, int, int);
 void	 do_authenticated(Authctxt *);
 
 int	 session_open(Authctxt*, int);
@@ -33,5 +34,6 @@ void	 session_input_channel_req(int, void *);
 void	 session_close_by_pid(pid_t, int);
 void	 session_close_by_channel(int, void *);
 void	 session_destroy_all(void);
-
+void	 child_set_env(char ***envp, u_int *envsizep, const char *name,
+		       const char *value);
 #endif

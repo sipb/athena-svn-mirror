@@ -358,7 +358,7 @@ e_destination_is_valid (const EDestination *dest)
 		return TRUE;
 
 	email = e_destination_get_email (dest);
-	return email && *email && strchr (email, '@');
+	return email && *email;
 }
 
 gboolean

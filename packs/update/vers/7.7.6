@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+        cp -p /srvd/etc/minor_perm /etc/minor_perm
+        if [ -c /dev/audio ]; then
+          chmod 0666 /dev/audio
+        fi
+	;;
+esac

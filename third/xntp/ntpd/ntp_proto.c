@@ -348,11 +348,9 @@ receive(
 	}
 
 	/*
-	 * Discard broadcast packets received on the wildcard interface
-	 * or if not enabled as broadcast client.
+	 * Discard broadcast packets if not enabled as broadcast client.
 	 */
-	if (PKT_MODE(pkt->li_vn_mode) == MODE_BROADCAST &&
-	    (rbufp->dstadr == any_interface || !sys_bclient))
+	if (PKT_MODE(pkt->li_vn_mode) == MODE_BROADCAST && !sys_bclient)
 		return;
 
 	/*

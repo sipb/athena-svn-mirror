@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
+"$Id: lpd_status.c,v 1.7 2001-03-07 01:19:34 ghudson Exp $";
 
 
 #include "lp.h"
@@ -65,6 +65,19 @@
  *                                                                              
  ***************************************************************************/
 
+/* 
+ * Local modification: REQ_DSHORT changed from LPRng specification to
+ * give a more traditional BSDish queue listing, without the LPRng-ish
+ * spewing of the status files for lpq to parse.  This works because
+ * LPRng's lpq defaults to sending REQ_DLONG, whereas BSD (and Athena)
+ * default to REQ_DSHORT.  And we don't think the one-line-per-queue
+ * listing is very useful anyway.
+ *
+ * Todo: add status-file parsing to server, so that information can be
+ * displayed by old clients.
+ *         -mwhitson 2/17/99 
+ */
+
 #define RANKW 7
 #define OWNERW 29
 #define CLASSW 2
@@ -81,18 +94,15 @@ int Job_status( int *sock, char *input )
 	struct line_list l, listv;
 	struct line_list done_list;
 	char error[SMALLBUFFER];
-	int db, dbflag;
 
 	Init_line_list(&l);
 	Init_line_list(&listv);
 	Init_line_list(&done_list);
-	db = Debug;
-	dbflag = DbgFlag;
 
 	Name = "Job_status";
 
 	/* get the format */
-	if( (s = safestrchr(input, '\n' )) ) *s = 0;
+	if( (s = strchr(input, '\n' )) ) *s = 0;
 	displayformat = *input++;
 
 	/*
@@ -124,15 +134,15 @@ int Job_status( int *sock, char *input )
 		Split(&listv,Force_lpq_status_DYN,";",0,0,0,0,0);
 		for(i = 0; i < listv.count; ++i ){
 			s = listv.list[i];
-			if( (t = safestrpbrk(s,Value_sep)) ) *t++ = 0;
+			if( (t = strpbrk(s,Value_sep)) ) *t++ = 0;
 			Free_line_list(&l);
 			Split(&l,t,Value_sep,0,0,0,0,0);
 			DEBUGF(DLPQ1)("Job_status: Force_lpq_status '%s'='%s'", s,t);
 			if( Match_ipaddr_value( &l, &RemoteHost_IP ) == 0 ){
 				DEBUGF(DLPQ1)("Job_status: forcing status '%s'", s);
-				if( safestrcasecmp(s,"s") == 0 ){
+				if( strcasecmp(s,"s") == 0 ){
 					displayformat = REQ_DSHORT;
-				} else if( safestrcasecmp(s,"l") == 0 ){
+				} else if( strcasecmp(s,"l") == 0 ){
 					displayformat = REQ_DLONG;
 				}
 				status_lines = Short_status_length_DYN;
@@ -178,7 +188,7 @@ int Job_status( int *sock, char *input )
 	name = Printer_DYN;
 	setproctitle( "lpd %s '%s'", Name, name );
 	Remove_line_list(&l, 0 );
-	if( safestrcasecmp( name, ALL ) ){
+	if( strcasecmp( name, ALL ) ){
 		DEBUGF(DLPQ3)("Job_status: checking printcap entry '%s'",  name );
 		Get_queue_status( &l, sock, displayformat, status_lines,
 			&done_list, Max_status_size_DYN );
@@ -190,8 +200,6 @@ int Job_status( int *sock, char *input )
 		Get_all_printcap_entries();
 		for( i = 0; i < All_line_list.count; ++i ){
 			Set_DYN(&Printer_DYN, All_line_list.list[i] );
-			Debug = db;
-			DbgFlag = dbflag;
 			Get_queue_status( &l, sock, displayformat, status_lines,
 				&done_list, Max_status_size_DYN );
 		}
@@ -236,12 +244,12 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	char sizestr[SIZEW+TIMEW+32];
 	char *pr, *s, *path, *identifier,
 		*jobname, *joberror, *class, *priority, *d_identifier,
-		*job_time, *d_error, *d_dest, *openname, *hf_name, *filenames;
+		*job_time, *d_error, *d_dest, *openname, *hf_name;
 	struct line_list outbuf, info, lineinfo;
 	int status = 0, len, ix, nx, flag, count, held, move,
 		server_pid, unspooler_pid, fd, nodest,
 		printable, dcount, destinations = 0,
-		d_copies, d_copy_done, permission, jobsize, jobnumber, db, dbflag;
+		d_copies, d_copy_done, permission, jobsize, jobnumber;
 	struct stat statb;
 	struct job job;
 
@@ -265,20 +273,17 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	safestrncpy(buffer,Printer_DYN);
 	status = Setup_printer( Printer_DYN, error, sizeof(error));
 
-	db = Debug;
-	dbflag = DbgFlag;
+	ix = Debug;
+	nx = DbgFlag;
 	s = Find_str_value(&Spool_control,DEBUG,Value_sep);
 	if( !s ) s = New_debug_DYN;
 	Parse_debug( s, 0 );
 	if( !(DLPQMASK & DbgFlag) ){
-		Debug = db;
-		DbgFlag = dbflag;
-	} else {
-		int odb, odbf;
-		odb = Debug;
-		odbf = DbgFlag;
-		Debug = db;
-		DbgFlag = dbflag;
+		Debug = ix;
+		DbgFlag = nx;
+	}
+
+	DEBUGFC(DLPQ1){
 		if( Log_file_DYN ){
 			fd = Trim_status_file( Log_file_DYN, Max_log_file_size_DYN,
 				Min_log_file_size_DYN );
@@ -288,8 +293,6 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 				close(fd);
 			}
 		}
-		Debug = odb;
-		DbgFlag = odbf;
 	}
 
 	DEBUGF(DLPQ3)("Get_queue_status: Setup_printer status %d '%s'", status, error );
@@ -299,14 +302,12 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 	Add_line_list(done_list,Printer_DYN,Value_sep,1,1);
 
-	if( displayformat != REQ_DSHORT ){
-		plp_snprintf( header, sizeof(header), "%s: ",
-			Server_queue_name_DYN?"Server Printer":"Printer" );
-	}
+	plp_snprintf( header, sizeof(header), "%s: ",
+		      Server_queue_name_DYN?"Server Printer":"Printer" );
 	len = strlen(header);
 	plp_snprintf( header+len, sizeof(header)-len, "%s@%s ",
 		Printer_DYN, Report_server_as_DYN?Report_server_as_DYN:ShortHost_FQDN );
-	if( safestrcasecmp( buffer, Printer_DYN ) ){
+	if( strcasecmp( buffer, Printer_DYN ) ){
 		len = strlen(header);
 		plp_snprintf( header+len, sizeof(header)-len, _("(originally %s) "), buffer );
 	}
@@ -346,8 +347,8 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		Filterprintcap( &Perm_line_list, &Perm_filters_line_list,
 			Printer_DYN);
 	}
-	permission = Perms_check( &Perm_line_list, &Perm_check, 0, 0 );
-	DEBUGF(DLPQ1)("Job_status: permission '%s'", perm_str(permission));
+	permission = Perms_check( &Perm_line_list, &Perm_check, 0 );
+	DEBUGF(DLPQ2)("Job_status: permission '%s'", perm_str(permission));
 	if( permission == P_REJECT ){
 		plp_snprintf( error, sizeof(error),
 			_("%s: no permission to show status"), Printer_DYN );
@@ -371,7 +372,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 
 	/* set up the short format for folks */
 
-	if( displayformat == REQ_DLONG && Sort_order.count > 0 ){
+	if( (displayformat == REQ_DLONG || displayformat == REQ_DSHORT) && Sort_order.count > 0 ){
 		/*
 		 Rank  Owner/ID  Class Job Files   Size Time
 		*/
@@ -382,7 +383,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	error[0] = 0;
 
 	for( count = 0;
-		displayformat != REQ_DSHORT && count < Sort_order.count;
+		count < Sort_order.count;
 		++count ){
 
 		Free_job(&job);
@@ -391,7 +392,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		msg[0] = 0;
 		nodest = 0;
 		s = Sort_order.list[count];
-		if( (s = safestrchr(s,';')) ){
+		if( (s = strchr(s,';')) ){
 			Split(&job.info,s+1,";",1,Value_sep,1,1,0);
 		}
 		DEBUGFC(DLPQ4)Dump_job("Get_queue_status - info", &job );
@@ -417,7 +418,6 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		priority = Find_str_value(&job.info,PRIORITY,Value_sep);
 		class = Find_str_value(&job.info,CLASS,Value_sep);
 		jobname = Find_str_value(&job.info,JOBNAME,Value_sep);
-		filenames = Find_str_value(&job.info,FILENAMES,Value_sep);
 		jobnumber = Find_decimal_value(&job.info,NUMBER,Value_sep);
 		joberror = Find_str_value(&job.info,ERROR,Value_sep);
 		jobsize = Find_flag_value(&job.info,SIZE,Value_sep);
@@ -426,13 +426,11 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 
 		openname = Find_str_value(&job.info,OPENNAME,Value_sep);
 		if( !openname ){
-			DEBUGF(DLPQ4)("Get_queue_status: no openname");
-			continue;
+			fatal(LOG_ERR, "Get_queue_status: no openname");
 		}
 		hf_name = Find_str_value(&job.info,HF_NAME,Value_sep);
 		if( !hf_name ){
-			DEBUGF(DLPQ4)("Get_queue_status: no hf_name");
-			continue;
+			fatal(LOG_ERR, "Get_queue_status: no hf_name");
 		}
 
 		/* we report this jobs status */
@@ -445,7 +443,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			priority = class;
 		}
 
-		if( displayformat == REQ_DLONG ){
+		if( displayformat == REQ_DLONG || displayformat == REQ_DSHORT ){
 			plp_snprintf( msg, sizeof(msg),
 				"%-*s %-*s ", RANKW-1, number, OWNERW-1, identifier );
 			while( (len = strlen(msg)) > (RANKW+OWNERW)
@@ -459,7 +457,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			DEBUGF(DLPQ3)("Get_queue_status: RANKW %d, OWNERW %d, CLASSW %d, JOBW %d",
 				RANKW, OWNERW, CLASSW, JOBW );
 			s = buffer;
-			while( strlen(buffer) > CLASSW+JOBW && (s = safestrchr(s,' ')) ){
+			while( strlen(buffer) > CLASSW+JOBW && (s = strchr(s,' ')) ){
 				if( cval(s+1) == ' ' ){
 					memmove(s,s+1,strlen(s)+1);
 				} else {
@@ -476,7 +474,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			}
 			s = buffer;
 			while( strlen(msg) + strlen(buffer) > RANKW+OWNERW+CLASSW+JOBW
-				&& (s = safestrchr(s,' ')) ){
+				&& (s = strchr(s,' ')) ){
 				if( cval(s+1) == ' ' ){
 					memmove(s,s+1,strlen(s)+1);
 				} else {
@@ -494,11 +492,11 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 				DEBUGF(DLPQ3)("Get_queue_status: jobname '%s'", jobname );
 
 				len = strlen(msg);
-				plp_snprintf(msg+len,sizeof(msg)-len,"%-s",jobname?jobname:filenames);
+				plp_snprintf(msg+len,sizeof(msg)-len,"%-s",jobname);
 
 				DEBUGF(DLPQ3)("Get_queue_status: jobtime '%s'", job_time );
 				job_time = Time_str(1, Convert_to_time_t(job_time));
-				if( !Full_time_DYN && (s = safestrchr(job_time,'.')) ) *s = 0;
+				if( !Full_time_DYN && (s = strchr(job_time,'.')) ) *s = 0;
 
 				plp_snprintf( sizestr, sizeof(sizestr), "%*d %-s",
 					SIZEW-1,jobsize, job_time );
@@ -634,7 +632,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		}
 	}
 
-	if( displayformat != REQ_DSHORT ){
+	{
 		s = 0;
 		if( (s = Comment_tag_DYN) == 0 ){
 			if( (nx = PC_alias_line_list.count) > 1 ){
@@ -642,25 +640,17 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			}
 		}
 		if( s ){
-			s = Fix_str(s);
 			len = strlen( header );
 			if( displayformat == REQ_VERBOSE ){
 				plp_snprintf( header+len, sizeof(header) - len, _(" Comment: %s"), s );
 			} else {
 				plp_snprintf( header+len, sizeof(header) - len, " '%s'", s );
 			}
-			if(s) free(s); s = 0;
 		}
 	}
 
 	len = strlen( header );
-	if( displayformat == REQ_VERBOSE ){
-		plp_snprintf( header+len, sizeof(header) - len,
-			_("\n Printing: %s\n Aborted: %s\n Spooling: %s"),
-				Pr_disabled(&Spool_control)?"yes":"no",
-				Pr_aborted(&Spool_control)?"yes":"no",
-				Sp_disabled(&Spool_control)?"yes":"no");
-	} else if( displayformat == REQ_DLONG ){
+	{
 		flag = 0;
 		if( Pr_disabled(&Spool_control) || Sp_disabled(&Spool_control) || Pr_aborted(&Spool_control) ){
 			plp_snprintf( header+len, sizeof(header) - len, " (" );
@@ -684,6 +674,16 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			}
 			plp_snprintf( header+len, sizeof(header) - len, ")" );
 			len = strlen( header );
+		}
+	}
+	if( (s = Find_str_value( &Spool_control,MSG,Value_sep )) ){
+		len = strlen( header );
+		if( displayformat == REQ_VERBOSE ){
+			plp_snprintf( header+len, sizeof(header) - len,
+				_("\n Message: %s"), s );
+		} else {
+			plp_snprintf( header+len, sizeof(header) - len,
+				_(" (message: %s)"), s );
 		}
 	}
 	if( Bounce_queue_dest_DYN ){
@@ -715,7 +715,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			if ( Server_names_DYN ) {
 				s = "Subservers";
 			} else {
-				s = "Destinations";
+				s = "Destinations_DYN";
 			}
 			plp_snprintf( header+len, sizeof(header) - len,
 			_("\n %s: "), s );
@@ -771,31 +771,13 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		}
 	}
 
-	if( (s = Find_str_value( &Spool_control,MSG,Value_sep )) ){
-		len = strlen( header );
-		if( displayformat == REQ_VERBOSE ){
-			plp_snprintf( header+len, sizeof(header) - len,
-				_("\n Message: %s"), s );
-		} else {
-			plp_snprintf( header+len, sizeof(header) - len,
-				_(" (message: %s)"), s );
-		}
-	}
-
 	/* this gives a short 1 line format with minimum info */
-	if( displayformat == REQ_DSHORT ){
-		len = strlen( header );
-		plp_snprintf( header+len, sizeof(header) - len, _(" %d job%s"),
-			printable, (printable == 1)?"":"s" );
-	}
 	safestrncat( header, "\n" );
 	if( Write_fd_str( *sock, header ) < 0 ) cleanup(0);
 	header[0] = 0;
 
-	if( displayformat == REQ_DSHORT ) goto remote;
-
 	/* now check to see if there is a server and unspooler process active */
-	path = Make_pathname( Spool_dir_DYN, Queue_lock_file_DYN );
+	path = Make_pathname( Spool_dir_DYN, Printer_DYN );
 	server_pid = 0;
 	if( (fd = Checkread( path, &statb ) ) >= 0 ){
 		server_pid = Read_pid( fd, (char *)0, 0 );
@@ -808,13 +790,15 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		server_pid = 0;
 	}
 
-	path = Make_pathname( Spool_dir_DYN, Queue_unspooler_file_DYN );
+	s = safestrdup2( "unspooler.", Printer_DYN,__FILE__,__LINE__ );
+	path = Make_pathname( Spool_dir_DYN, s );
+	free(s);
 	unspooler_pid = 0;
 	if( (fd = Checkread( path, &statb ) ) >= 0 ){
 		unspooler_pid = Read_pid( fd, (char *)0, 0 );
 		close( fd );
 	}
-	if(path) free(path); path=0;
+	free(path);
 	DEBUGF(DLPQ3)("Get_queue_status: checking unspooler pid %d", unspooler_pid );
 	if( unspooler_pid > 0 && kill( unspooler_pid, 0 ) ){
 		DEBUGF(DLPQ3)("Get_queue_status: unspooler %d not active", unspooler_pid );
@@ -877,12 +861,21 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	/*
 	 * get the last status of the spooler
 	 */
-	Print_status_info( sock, Spool_dir_DYN, Queue_status_file_DYN,
-		_(" Status: "), status_lines, max_size );
+	if( displayformat != REQ_DSHORT ){
+		s = safestrdup2( "status.", Printer_DYN,__FILE__,__LINE__ );
+		Print_status_info( sock, Spool_dir_DYN, s, " Status: ",
+			status_lines, max_size );
+		if(s) free(s); s = 0;
 
-	if( Status_file_DYN ){
-		Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
-			_(" Filter_status: "), status_lines, max_size );
+		if( Status_file_DYN ){
+			if( Status_file_DYN[0] == '/' ){
+				Print_status_info( sock, "/", Status_file_DYN,
+					_(" Filter_status: "), status_lines, max_size );
+			} else {
+				Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
+					_(" Filter_status: "), status_lines, max_size );
+			}
+		}
 	}
 
 	s = Join_line_list(&outbuf,"\n");
@@ -940,9 +933,10 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	goto done;
 
  error:
-	plp_snprintf(header,sizeof(header),"Printer: %s@%s - ERROR: %s",
-		Printer_DYN, Report_server_as_DYN?Report_server_as_DYN:ShortHost_FQDN, error );
-	DEBUGF(DLPQ1)("Get_queue_status: error msg '%s'", header );
+	DEBUGF(DLPQ2)("Get_queue_status: error msg '%s'", error );
+	safestrncpy( header, _(" ERROR: ") );
+	safestrncat( header, error );
+	safestrncat( header, "\n" );
 	if( Write_fd_str( *sock, header ) < 0 ) cleanup(0);
  done:
 	Free_line_list(&info);
@@ -954,8 +948,8 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 void Print_status_info( int *sock, char *dir, char *file,
 	char *prefix, int status_lines, int max_size )
 {
+	char buffer[SMALLBUFFER];
 	char *image = Get_file_image(dir,file, max_size);
-	static char *atmsg = " at ";
 	struct line_list l;
 	int start, i;
 	Init_line_list(&l);
@@ -967,21 +961,8 @@ void Print_status_info( int *sock, char *dir, char *file,
 		if( start < 0 ) start = 0;
 	}
 	for( i = start; i < l.count; ++i ){
-		char *s, *t, *u;
-		s = l.list[i];
-		if( (t = strstr( s, " ## " )) ){
-			*t = 0;
-		}
-		/* make the date format short */
-		if( Short_status_date_DYN ){
-			for( u = s; (t = strstr(u,atmsg)); u = t+strlen(atmsg) );
-			if( u != s && (t = strrchr( u, '-' )) ){
-				memmove( u, t+1, strlen(t)+1 );
-			}
-		}
-		if( prefix && Write_fd_str(*sock,prefix) < 0 ) cleanup(0);
-		if( Write_fd_str(*sock,s) < 0 ) cleanup(0);
-		if( Write_fd_str(*sock,"\n") < 0 ) cleanup(0);
+		plp_snprintf(buffer,sizeof(buffer),"%s%s\n",prefix,l.list[i]);
+		if( Write_fd_str(*sock,buffer) < 0 ) cleanup(0);
 	}
 	Free_line_list(&l);
 	if( image) free(image); image = 0;
@@ -997,7 +978,7 @@ void Get_local_or_remote_status( struct line_list *tokens, int *sock,
 	/* we have to see if the host is on this machine */
 
 	DEBUGF(DLPQ1)("Get_local_or_remote_status: %s", Printer_DYN );
-	if( !safestrchr(Printer_DYN,'@') ){
+	if( !strchr(Printer_DYN,'@') ){
 		DEBUGF(DLPQ1)("Get_local_or_remote_status: doing local");
 		Get_queue_status( tokens, sock, displayformat, status_lines,
 			done_list, max_size );

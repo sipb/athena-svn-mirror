@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #include "camel-mh-store.h"
 #include "camel-mh-folder.h"
@@ -41,7 +42,9 @@ static CamelLocalStoreClass *parent_class = NULL;
 #define CMHF_CLASS(so) CAMEL_MH_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
 
 static CamelFolder *get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex);
+static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
 static void delete_folder(CamelStore * store, const char *folder_name, CamelException * ex);
+static CamelFolderInfo * get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
 
 static void camel_mh_store_class_init(CamelObjectClass * camel_mh_store_class)
 {
@@ -52,7 +55,9 @@ static void camel_mh_store_class_init(CamelObjectClass * camel_mh_store_class)
 
 	/* virtual method overload, use defaults for most */
 	camel_store_class->get_folder = get_folder;
+	camel_store_class->get_inbox = get_inbox;
 	camel_store_class->delete_folder = delete_folder;
+	camel_store_class->get_folder_info = get_folder_info;
 }
 
 CamelType camel_mh_store_get_type(void)
@@ -115,6 +120,12 @@ static CamelFolder *get_folder(CamelStore * store, const char *folder_name, guin
 	return camel_mh_folder_new(store, folder_name, flags, ex);
 }
 
+static CamelFolder *
+get_inbox (CamelStore *store, CamelException *ex)
+{
+	return get_folder (store, "inbox", 0, ex);
+}
+
 static void delete_folder(CamelStore * store, const char *folder_name, CamelException * ex)
 {
 	char *name;
@@ -132,4 +143,85 @@ static void delete_folder(CamelStore * store, const char *folder_name, CamelExce
 
 	/* and remove metadata */
 	((CamelStoreClass *)parent_class)->delete_folder(store, folder_name, ex);
+}
+
+static void add_folder(GPtrArray *folders, const char *root, const char *path)
+{
+	CamelFolderInfo *fi;
+	const char *base;
+
+	/* Get the last path component for the folder name. */
+	base = strrchr(path, '/');
+	base = (base == NULL) ? path : base + 1;
+
+	/* Build the folder info structure. */
+	fi = g_malloc(sizeof(*fi));
+	fi->parent = NULL;
+	fi->sibling = NULL;
+	fi->child = NULL;
+	fi->url = g_strdup_printf("mh:%s#%s", root, path);
+	fi->full_name = g_strdup(path);
+	fi->name = g_strdup(base);
+	fi->unread_message_count = 0;
+	camel_folder_info_build_path(fi, '/');
+
+	g_ptr_array_add(folders, fi);
+}
+
+/* Scan path, under root, for directories to add folders for.  Both
+ * root and path should have a trailing "/" if they aren't empty. */
+static void recursive_scan(GPtrArray *folders, const char *root, const char *path)
+{
+	char *fullpath, *end, *folderpath, *childpath;
+	DIR *dp;
+	struct dirent *d;
+	struct stat st;
+
+	/* Open the specified directory. */
+	fullpath = g_strconcat(root, path, NULL);
+	dp = opendir(fullpath);
+	g_free(fullpath);
+	if (!dp)
+		return;
+
+	/* Look for subdirectories to add and scan. */
+	while ((d = readdir(dp)) != NULL) {
+		/* Skip current and parent directory. */
+		if (strcmp(d->d_name, ".") == 0
+		    || strcmp(d->d_name, "..") == 0)
+			continue;
+
+		/* Don't even stat numeric entries, for speed. */
+		strtoul(d->d_name, &end, 10);
+		if (!*end)
+			continue;
+
+		fullpath = g_strconcat(root, path, d->d_name, NULL);
+		if (lstat(fullpath, &st) == 0 && S_ISDIR(st.st_mode)) {
+			/* Add this folder, and scan it for subfolders. */
+			folderpath = g_strconcat(path, d->d_name, NULL);
+			childpath = g_strconcat(folderpath, "/", NULL);
+			add_folder(folders, root, folderpath);
+			recursive_scan(folders, root, childpath);
+			g_free(folderpath);
+			g_free(childpath);
+		}
+		g_free(fullpath);
+	}
+	closedir(dp);
+}
+
+static CamelFolderInfo *
+get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex)
+{
+	GPtrArray *folders;
+	CamelFolderInfo *tree;
+	char *root;
+
+	root = CAMEL_LOCAL_STORE(store)->toplevel_dir;
+	folders = g_ptr_array_new();
+	recursive_scan(folders, root, "");
+	tree = camel_folder_info_build(folders, NULL, '/', TRUE);
+	g_ptr_array_free(folders, TRUE);
+	return tree;
 }

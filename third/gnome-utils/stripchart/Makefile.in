@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -224,8 +224,8 @@ confdir = $(datadir)/stripchart
 conf_DATA = stripchart.conf stripchart.params
 
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_in_files = stripchart.desktop.in
-Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
+#Utilities_in_files = stripchart.desktop.in
+#Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 
 Appletdir = $(datadir)/applets/Monitors
 Applet_in_files = stripchart-applet.desktop.in
@@ -234,7 +234,7 @@ Applet_DATA = $(Applet_in_files:.desktop.in=.desktop)
 gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA = stripchart-applet.gnorba
 
-EXTRA_DIST =  	$(man_MANS) 	$(pixmap_DATA) 	$(conf_DATA) 	$(Utilities_DATA) 	$(Utilities_in_files) 	$(Applet_DATA) 	$(Applet_in_files) 	$(gnorba_DATA) 	$(top_srcdir)/sgmldocs.make
+EXTRA_DIST =  	$(man_MANS) 	$(pixmap_DATA) 	$(conf_DATA) 	$(Applet_DATA) 	$(Applet_in_files) 	$(gnorba_DATA) 	$(top_srcdir)/sgmldocs.make
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -259,8 +259,7 @@ man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(Applet_DATA) $(Utilities_DATA) $(conf_DATA) $(gnorba_DATA) \
-$(pixmap_DATA)
+DATA =  $(Applet_DATA) $(conf_DATA) $(gnorba_DATA) $(pixmap_DATA)
 
 DIST_COMMON =  README ChangeLog Makefile.am Makefile.in TODO
 
@@ -393,25 +392,6 @@ uninstall-AppletDATA:
 	  rm -f $(DESTDIR)$(Appletdir)/$$p; \
 	done
 
-install-UtilitiesDATA: $(Utilities_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(Utilitiesdir)
-	@list='$(Utilities_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Utilitiesdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Utilitiesdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Utilitiesdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(Utilitiesdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-UtilitiesDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(Utilities_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(Utilitiesdir)/$$p; \
-	done
-
 install-confDATA: $(conf_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(confdir)
@@ -505,7 +485,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
+	  test "$$subdir" = "." && dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -584,24 +564,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-chart-app.o: chart-app.c chart-app.h ../config.h chart.h strip.h prefs.h \
-	params.h eval.h utils.h pen.h
-chart.o: chart.c chart.h
-eval.o: eval.c chart-app.h ../config.h chart.h strip.h prefs.h params.h \
-	eval.h utils.h
-params.o: params.c chart-app.h ../config.h chart.h strip.h prefs.h \
-	params.h eval.h utils.h
-pen.o: pen.c pen.h chart.h
-prefs.o: prefs.c chart-app.h ../config.h chart.h strip.h prefs.h \
-	params.h eval.h utils.h
-strip.o: strip.c strip.h chart.h
-stripchart-applet.o: stripchart-applet.c chart-app.h ../config.h chart.h \
-	strip.h prefs.h params.h eval.h utils.h pen.h
-stripchart.o: stripchart.c chart-app.h ../config.h chart.h strip.h \
-	prefs.h params.h eval.h utils.h
-utils.o: utils.c chart-app.h ../config.h chart.h strip.h prefs.h \
-	params.h eval.h utils.h
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -613,16 +575,16 @@ installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-man install-AppletDATA install-UtilitiesDATA \
-		install-confDATA install-gnorbaDATA install-pixmapDATA
+install-data-am: install-man install-AppletDATA install-confDATA \
+		install-gnorbaDATA install-pixmapDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-man uninstall-AppletDATA \
-		uninstall-UtilitiesDATA uninstall-confDATA \
-		uninstall-gnorbaDATA uninstall-pixmapDATA
+		uninstall-confDATA uninstall-gnorbaDATA \
+		uninstall-pixmapDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(MANS) $(DATA)
 all-redirect: all-recursive
@@ -631,9 +593,8 @@ install-strip:
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
-		$(DESTDIR)$(Appletdir) $(DESTDIR)$(Utilitiesdir) \
-		$(DESTDIR)$(confdir) $(DESTDIR)$(gnorbadir) \
-		$(DESTDIR)$(pixmapdir)
+		$(DESTDIR)$(Appletdir) $(DESTDIR)$(confdir) \
+		$(DESTDIR)$(gnorbadir) $(DESTDIR)$(pixmapdir)
 
 
 mostlyclean-generic:
@@ -673,10 +634,9 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile install-man1 uninstall-man1 install-man \
 uninstall-man uninstall-AppletDATA install-AppletDATA \
-uninstall-UtilitiesDATA install-UtilitiesDATA uninstall-confDATA \
-install-confDATA uninstall-gnorbaDATA install-gnorbaDATA \
-uninstall-pixmapDATA install-pixmapDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
+uninstall-confDATA install-confDATA uninstall-gnorbaDATA \
+install-gnorbaDATA uninstall-pixmapDATA install-pixmapDATA \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

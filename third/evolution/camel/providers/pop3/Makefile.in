@@ -134,8 +134,10 @@ JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -211,7 +213,7 @@ libcamelpop3include_HEADERS =  	camel-pop3-folder.h				camel-pop3-store.h
 
 libcamelpop3_la_LDFLAGS = $(KRB4_LDFLAGS) -version-info 0:0:0
 
-libcamelpop3_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+libcamelpop3_la_LIBADD = $(KRB4_LIBS) $(top_builddir)/e-util/libeutil.la
 
 EXTRA_DIST = libcamelpop3.urls
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

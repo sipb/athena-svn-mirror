@@ -44,6 +44,7 @@
 .Sh SYNOPSIS
 .Nm sshd
 .Op Fl deiqtD46
+.Op Fl s | S
 .Op Fl b Ar bits
 .Op Fl f Ar config_file
 .Op Fl g Ar login_grace_time
@@ -245,6 +246,13 @@ Quiet mode.
 Nothing is sent to the system log.
 Normally the beginning,
 authentication, and termination of each connection is logged.
+.It Fl s
+Allows 
+.Nm access_on/access_off 
+to control whether sshd accepts connections.  It assumes that access
+is set to on when 
+.Nm sshd
+is started and accepts connections immediately.
 .It Fl t
 Test mode.
 Only check the validity of the configuration file and sanity of the keys.
@@ -285,6 +293,14 @@ When this option is specified
 will not detach and does not become a daemon.
 This allows easy monitoring of
 .Nm sshd .
+.It Fl S
+This option is the same as
+.Fl s
+except it assumes access is set to off when
+.Nm sshd
+starts, and does not accept connections until
+.Nm access_on
+is run.
 .It Fl 4
 Forces
 .Nm
@@ -466,6 +482,25 @@ This option is similar to
 and applies to protocol version 2 only.
 The default is
 .Dq no .
+.It Cm GssapiAuthentication
+Specifies whether authentication based on GSSAPI may be used, either using
+the result of a successful key exchange, or using GSSAPI user
+authentication.
+The default is 
+.Dq yes .
+Note that this option applies to protocol version 2 only.
+.It Cm GssapiKeyExchange
+Specifies whether key exchange based on GSSAPI may be used. When using
+GSSAPI key exchange the server need not have a host key.
+The default is
+.Dq yes .
+Note that this option applies to protocol version 2 only.
+.It Cm GssapiUseSessionCredCache
+Specifies whether a unique credentials cache name should be generated per
+session for storing delegated credentials.
+The default is
+.Dq yes .
+Note that this option applies to protocol version 2 only.
 .It Cm HostKey
 Specifies the file containing the private host keys (default
 .Pa /etc/ssh_host_key )
@@ -530,6 +565,12 @@ This avoids infinitely hanging sessions.
 To disable keepalives, the value should be set to
 .Dq no
 in both the server and the client configuration files.
+.It Cm Kerberos524
+Specifies whether Kerberos 4 tickets should be obtained
+from Kerberos 5 tickets, similar to
+.Xr krb524init 1 .  
+Default is
+.Dq yes .
 .It Cm KerberosAuthentication
 Specifies whether Kerberos authentication is allowed.
 This can be in the form of a Kerberos ticket, or if
@@ -1294,6 +1335,8 @@ created OpenSSH.
 Markus Friedl contributed the support for SSH
 protocol versions 1.5 and 2.0.
 .Sh SEE ALSO
+.Xr access_on 1 ,
+.Xr access_off 1 ,
 .Xr scp 1 ,
 .Xr sftp 1 ,
 .Xr ssh 1 ,

@@ -18,8 +18,17 @@ using the --with-rsaref configure option.
 */
 
 /*
- * $Id: rsaglue.c,v 1.1.1.2 1999-03-08 17:43:18 danw Exp $
+ * $Id: rsaglue.c,v 1.4 2001-02-11 21:48:23 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2001/02/10 00:02:03  ghudson
+ * Fix argument order in previous rev.
+ *
+ * Revision 1.2  2001/02/09 00:05:56  ghudson
+ * Fix a vulnerability which could allow an attacker to get a server's session key.
+ *
+ * Revision 1.1.1.2  1999/03/08 17:43:18  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.5  1997/03/19  21:29:59  kivinen
  * 	Added missing &.
  *

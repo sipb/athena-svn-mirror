@@ -1,0 +1,240 @@
+# $Id: packages,v 1.173 2002-06-03 02:40:36 ghudson Exp $
+
+# This file gives the list of packages to build for the release.
+# Each line gives a package name and, optionally, additional
+# information about when and on what platforms to build the package.
+# The possible options are:
+#
+#	early		build the package early in the build
+#	late		build the package late in the build
+#	on platform	build the package only on the named platforms
+#	except platform	built the package only on platforms not named
+#	requires pkg	must be built after the named package
+#
+#
+# The "early" packages will be built first, in the order they appear
+# in the file. The "late" packages will be built last, also in the
+# order they appear in the file. Other packages may be reordered,
+# within the constraints imposed by the "requires" clauses. The "on",
+# and "except" options take a comma-separated list of platforms. The
+# "requires" option takes a comma-separated list of package names,
+# which can be abbreviated to the final pathname component if it is
+# unique among packages.
+#
+# One additional option gives information for building packages in
+# package management systems.
+#
+#	package	NAME	give the package the name athena-NAME
+# 
+# (The default package name is athena-DIR where DIR is the last
+# component of the source directory name.)
+#
+# Blank lines and lines beginning with '#' are ignored.
+
+# These tools are critical to the build process and need to be built
+# first, even before the packs are set up.  They have build systems
+# which don't assume that much of anything is ready.
+third/gmake			early except linux
+third/gcc			on solaris,irix early
+third/binutils			on solaris early
+third/m4			early
+third/autoconf			early
+athena/bin/install		on solaris,irix early
+third/pkgconfig			early
+third/sed			early on solaris
+
+# Initial packs setup
+packs/build/setup		early except linux
+
+# Athena software
+athena/bin/access
+athena/bin/aklog		requires krb5,afsbin,openafs,et
+athena/bin/athdir		requires athena/lib/athdir
+athena/bin/athinfo
+athena/bin/athrun
+athena/bin/attach		requires locker,athena/lib/athdir
+athena/bin/attachandrun		requires athena/lib/athdir
+athena/bin/authwatch		requires krb5,gnome-libs
+athena/bin/bugme		requires Xj
+athena/bin/config_console
+athena/bin/cxref
+athena/bin/dash			requires Xj,krb5,athena/lib/athdir
+athena/bin/delete		requires afsbin,openafs,et
+athena/bin/dent
+athena/bin/discuss		requires krb5,zephyr,ss,et
+athena/bin/dustbuster
+athena/bin/finger		requires hesiod,zephyr
+athena/bin/from			requires hesiod,krb5
+athena/bin/gathrun
+athena/bin/get_message		requires gms,hesiod
+athena/bin/getcluster		requires hesiod
+athena/bin/grenew		requires krb5,gtk
+athena/bin/hesinfo		requires hesiod
+athena/bin/hostinfo		requires bind,perl
+athena/bin/just
+athena/bin/lert			requires krb5,hesiod
+athena/bin/machtype
+athena/bin/mail-dialog		requires gnome-libs
+athena/bin/neos			requires fxcl,krb5,hesiod
+athena/bin/newpag		requires afsbin,openafs
+athena/bin/olc			requires krb5,hesiod,zephyr,et,openmotif,Mu,wcl
+athena/bin/panel-wrapper	requires gnome-libs
+athena/bin/passwd		requires krb5,al
+athena/bin/quota		requires locker,afsbin,openafs
+athena/bin/revert-to-dash
+athena/bin/rkinit		requires krb5,athena/lib/rkinit
+athena/bin/saferm
+athena/bin/sendbug
+athena/bin/syncupdate
+athena/bin/session
+athena/bin/write
+athena/bin/xcluster		requires Xj,hesiod
+athena/bin/xdsc			requires discuss
+
+athena/etc/athinfod
+athena/etc/busyd		requires larv
+athena/etc/cleanup		requires al,locker
+athena/etc/console		requires Xj
+athena/etc/cviewd		requires larv
+athena/etc/desync
+athena/etc/dm			requires al
+athena/etc/fxserver		requires fxcl,krb5,hesiod
+athena/etc/gettime
+athena/etc/larvnetd		requires larv,ares,hesiod
+athena/etc/listsuidcells	requires afsbin,openafs
+athena/etc/messaged		requires gms
+athena/etc/mkcred
+athena/etc/newsyslog		except linux
+athena/etc/rkinitd		requires krb5,athena/lib/rkinit
+athena/etc/rpmupdate		on linux
+athena/etc/synctree
+athena/etc/track
+athena/etc/writed
+athena/etc/xlogin		requires krb5,al,wcl,larv
+
+athena/lib/Mu			package libMu
+athena/lib/Xj			package libXj
+athena/lib/al			requires hesiod,afsbin,openafs package libal
+athena/lib/ares
+athena/lib/athdir		package libathdir
+athena/lib/et			package libet
+athena/lib/gms			requires et
+athena/lib/fxcl			requires krb5,hesiod package libfxcl
+athena/lib/hesiod
+athena/lib/larv			requires hesiod
+athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,openafs,et
+athena/lib/rkinit		requires krb5,et package librkinit
+athena/lib/ss			requires readline,et package libss
+athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
+
+# Third-party software
+third/afsbin			on irix
+third/audiofile			except linux
+third/bash
+third/bind
+third/bison			on solaris
+third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
+third/bonobo-conf		requires bonobo
+third/bzip2			except linux
+third/db
+third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
+third/diffutils			on solaris
+third/eel			requires librsvg
+third/emacs			requires hesiod,krb5
+third/enscript
+third/esound			requires audiofile
+third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,bison
+third/flex			on solaris
+third/freetype
+third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
+third/gal			requires gnome-vfs,libglade
+third/gdbm			except linux
+third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
+third/gettext			except linux requires libiconv
+third/glib
+third/gmp			except linux
+third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf,scrollkeeper
+third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound
+third/gnome-media		requires libghttp,esound,scrollkeeper,gettext
+third/gnome-mime-data		requires gettext
+third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf,freetype
+third/gnome-utils		requires gnome-libs,gnome-core,libxml,libglade
+third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
+third/gtk			requires glib,gettext
+third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
+third/imlib			requires libpng,libungif,jpeg,gtk
+third/inetd			requires tcp_wrappers
+third/intlfonts			requires emacs
+third/ispell			except linux
+third/jot
+third/jpeg			except linux,irix
+third/kermit
+third/kpasswd			requires krb5
+third/krb5			requires et,ss package krb5-prep
+third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
+third/ksrvutil			requires krb5
+third/lam
+third/libglade			requires gtk,gnome-libs,libxml
+third/libiconv			except linux
+third/libghttp			except linux
+third/libole2
+third/libpng			except linux requires zlib
+third/librep			requires gmp,gdbm
+third/librsvg			requires freetype,libpng
+third/libungif			except linux
+third/libxml
+third/libxml2
+third/look			on irix
+third/lprng/athena		package lprng-misc
+third/lprng/ifhp
+third/lprng/lprng		requires krb5,zephyr,hesiod
+third/mdoc
+third/mingetty			on linux
+third/motif/clients/mwm		on solaris
+third/nautilus			requires bonobo,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper,libghttp
+third/nmh			requires krb5,hesiod
+third/nvi			on linux
+third/oaf			requires libxml,ORBit,popt,flex
+third/openafs			except irix
+third/openmotif			on linux
+third/openssh			requires krb5,tcp_wrappers,openssl
+third/openssl			requires perl
+third/ORBit			requires glib,gettext
+third/patch			on solaris
+third/perl
+third/pine			requires krb5,hesiod
+third/popt			except linux
+third/rcs			on solaris
+third/read-edid			on linux
+third/readline			except linux
+third/rep-gtk			requires librep,libglade,gnome-libs
+third/rs
+third/sawfish			requires rep-gtk,gnome-libs,control-center
+third/scrollkeeper
+third/sendmail			requires hesiod,tcp_wrappers
+third/sysinfo			on solaris,irix,linux
+third/talk			on solaris,irix
+third/tcp_wrappers		except linux
+third/tcsh			requires hesiod
+third/tetex
+third/top			except irix,linux
+third/traceroute		on solaris
+third/wcl			requires openmotif
+third/whois			on irix
+third/x3270
+third/xalf			requires gtk,control-center
+third/xmh
+third/xntp			package ntp
+third/xpm			on solaris
+third/xscreensaver		requires krb5,control-center
+third/zlib			except linux
+
+# Final packs stuff
+packs/config			late except linux
+packs/dotfiles			late
+packs/glue			late
+packs/install			late package base
+packs/maint			late package ws
+packs/update			late except linux
+packs/build/config		late package imakecf
+packs/build/finish		late except linux

@@ -487,7 +487,11 @@ mlf_set_folder(MailLocalFolder *mlf, guint32 flags, CamelException *ex)
 	if (mlf->real_store == NULL)
 		return FALSE;
 
-	if (mlf->meta->indexed)
+	/* Athena mod: Do not write an index file.  As managed by libibex,
+	 * the file contains data in machine byte order, and the code
+	 * does not handle a corrupted file robustly.
+	 */
+	if (FALSE && mlf->meta->indexed)
 		flags |= CAMEL_STORE_FOLDER_BODY_INDEX;
 
 	/* mlf->real_folder = camel_store_get_folder(mlf->real_store, mlf->meta->name, flags, ex); */

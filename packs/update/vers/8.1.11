@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	# We applied some OS patches, including kernel changes.
+	echo "TRACKOS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
+	;;
+
+sgi)
+	;;
+esac

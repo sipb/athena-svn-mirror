@@ -2,7 +2,7 @@
 /*
  * replsbr.c -- routines to help repl along...
  *
- * $Id: replsbr.c,v 1.1.1.1 1999-02-07 18:14:16 danw Exp $
+ * $Id: replsbr.c,v 1.2 2000-03-15 20:52:38 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -201,6 +201,7 @@ finished:
 
     /*
      * if there's a "Subject" component, strip any "Re:"s off it
+     * and remove a trailing newline if present
      */
     FINDCOMP (cptr, "subject")
     if (cptr && (cp = cptr->c_text)) {
@@ -220,6 +221,9 @@ finished:
 	    cptr->c_text = getcpy (sp);
 	    free (cp);
 	}
+	cp = cptr->c_text + strlen(cptr->c_text);
+	if (cp > cptr->c_text && *(cp - 1) == '\n')
+	    *(cp - 1) = '\0';
     }
     i = format_len + char_read + 256;
     scanl = malloc ((size_t) i + 2);

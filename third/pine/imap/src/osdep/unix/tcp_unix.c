@@ -285,6 +285,20 @@ int tcp_socket_open (struct sockaddr_in *sin,char *tmp,int *ctr,char *hst,
       i = select (sock+1,0,&fds,&efds,ti ? &tmo : 0);
       now = time (0);
     } while (((i < 0) && (errno == EINTR)) || (ti && !i && (ti > now)));
+#ifdef KERBEROS
+    if (port == 1109) {
+      /* For kpop, we have to send kerberos authentication before we
+       * can read anything.  So we have to do it here instead of in
+       * the pop3 code. */
+      KTEXT_ST ticket;
+
+      if (krb_sendauth (0,sock,&ticket,"pop",hst,krb_realmofhost (hst),
+			0,NULL,NULL,NULL,NULL,NULL,"KPOPV0.1") != KSUCCESS) {
+	close (sock);
+	return -1;		/* failure */
+      }
+    }
+#endif  
     if (i > 0) {		/* success, make sure really connected */
       fcntl (sock,F_SETFL,flgs);/* restore blocking status */
       /* This used to be a zero-byte read(), but that crashes Solaris */

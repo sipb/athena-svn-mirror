@@ -25,9 +25,19 @@ RCSID("$OpenBSD: auth1.c,v 1.25 2001/06/26 16:15:23 dugsong Exp $");
 #include "session.h"
 #include "misc.h"
 #include "uidswap.h"
+#include "canohost.h"
+
+#include <al.h>
+extern char *session_username;
+extern int is_local_acct;
 
 /* import */
 extern ServerOptions options;
+extern int debug_flag;
+
+#ifdef WITH_AIXAUTHENTICATE
+extern char *aixloginmsg;
+#endif /* WITH_AIXAUTHENTICATE */
 
 /*
  * convert ssh auth msg type into description
@@ -64,7 +74,7 @@ get_authname(int type)
 static void
 do_authloop(Authctxt *authctxt)
 {
-	int authenticated = 0;
+	int authenticated = 0, nonauthentication = 0;
 	u_int bits;
 	RSA *client_host_key;
 	BIGNUM *n;
@@ -105,6 +115,7 @@ do_authloop(Authctxt *authctxt)
 	for (;;) {
 		/* default to fail */
 		authenticated = 0;
+		nonauthentication = 0;
 
 		info[0] = '\0';
 
@@ -158,10 +169,25 @@ do_authloop(Authctxt *authctxt)
 #endif /* KRB4 || KRB5 */
 			
 #if defined(AFS) || defined(KRB5)
-			/* XXX - punt on backward compatibility here. */
-		case SSH_CMSG_HAVE_KERBEROS_TGT:
-			packet_send_debug("Kerberos TGT passing disabled before authentication.");
+		case SSH_CMSG_HAVE_KERBEROS_TGT: {
+		   	/*
+		   	 * This is for backwards compatibility with SSH.COM's
+			 * implementation, which passes the TGT before
+			 * authenticating.
+			 *
+			 * Perhaps this should be disallowed from other
+			 * client versions?
+			 */
+		        int s;
+
+		  	s = do_auth1_kerberos_tgt_pass(authctxt, plen, type);
+			packet_start(s ? SSH_SMSG_SUCCESS : SSH_SMSG_FAILURE);
+			packet_send();
+			packet_write_wait();
+			nonauthentication = 1;
+		}
 			break;
+
 #ifdef AFS
 		case SSH_CMSG_HAVE_AFS_TOKEN:
 			packet_send_debug("AFS token passing disabled before authentication.");
@@ -329,6 +355,16 @@ do_authloop(Authctxt *authctxt)
 			authenticated = 0;
 #endif
 
+		/*
+		 * If we received a non-authentication message, right now
+		 * only possible for Kerberos 5 TGT passing 
+		 * support for SSH.COM compatibility, assume that the
+		 * FAILURE/SUCCESS return has already been handled, skip
+		 * the logging, and restart the loop.
+		 */
+		if (nonauthentication)
+			continue;
+
 		/* Log before sending the reply */
 		auth_log(authctxt, authenticated, get_authname(type), info);
 
@@ -337,6 +373,11 @@ do_authloop(Authctxt *authctxt)
 			client_user = NULL;
 		}
 
+		if (authctxt->pw->pw_uid == 0)
+		  {
+		    syslog(LOG_NOTICE, "ROOT LOGIN as '%s' from %s", authctxt->pw->pw_name, 
+			get_canonical_hostname(options.reverse_mapping_check));
+		  }
 		if (authenticated)
 			return;
 
@@ -364,9 +405,11 @@ do_authentication()
 {
 	Authctxt *authctxt;
 	struct passwd *pw;
-	int plen;
+	int plen, status;
 	u_int ulen;
 	char *p, *user, *style = NULL;
+	char *filetext, *errmem;
+	const char *err;
 
 	/* Get the name of the user that we wish to log in as. */
 	packet_read_expect(&plen, SSH_CMSG_USER);
@@ -385,6 +428,49 @@ do_authentication()
 	authctxt = authctxt_new();
 	authctxt->user = user;
 	authctxt->style = style;
+
+	status = al_login_allowed(user, 1, &is_local_acct, &filetext);
+	if (status != AL_SUCCESS)
+	  {
+	    /* We don't want to use `packet_disconnect', because it will syslog
+	       at LOG_ERR. Ssh doesn't provide a primitive way to give an
+	       informative message and disconnect without any bad 
+	       feelings... */
+
+	    char *buf;
+
+	    err = al_strerror(status, &errmem);
+	    if (filetext && *filetext)
+	      {
+		buf = xmalloc(40 + strlen(err) + strlen(filetext));
+		sprintf(buf, "You are not allowed to log in here: %s\n%s",
+			err, filetext);
+	      }
+	    else
+	      {
+		buf = xmalloc(40 + strlen(err));
+		sprintf(buf, "You are not allowed to log in here: %s\n", err);
+	      }
+	    packet_start(SSH_MSG_DISCONNECT);
+	    packet_put_string(buf, strlen(buf));
+	    packet_send();
+	    packet_write_wait();
+	    
+	    fatal("Login denied: %s", err);
+	  }
+	if (!is_local_acct)
+	  {
+	    status = al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+	    if (status != AL_SUCCESS && debug_flag)
+	      {
+		err = al_strerror(status, &errmem);
+		debug("al_acct_create failed for user %s: %s", user, 
+		      err);
+		al_free_errmem(errmem);
+	      }
+	    session_username = xstrdup(user);
+	    atexit(session_cleanup);
+	  }
 
 	/* Verify that the user is a valid user. */
 	pw = getpwnam(user);

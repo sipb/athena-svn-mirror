@@ -1,5 +1,5 @@
 ;; place-window.jl -- decide where to initially place a window
-;; $Id: placement.jl,v 1.1.1.4 2002-03-20 05:00:19 ghudson Exp $
+;; $Id: placement.jl,v 1.3 2002-03-20 05:07:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 

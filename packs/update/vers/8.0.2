@@ -1,0 +1,116 @@
+#!/bin/sh
+
+# What a mess.  Just before early release for Solaris, I managed to
+# overwrite the 8.0A script with 8.0B, so this script is basically
+# what should have gone in 8.0A.
+
+case "$HOSTTYPE" in
+sun4)
+	echo "NEWTTYS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"                     >> "$CONFVARS"
+	echo "NEWBOOT=true"                     >> "$CONFVARS"
+	echo "NEWOS=true"                       >> "$CONFVARS"
+	echo "/etc/athena/inetd.conf"           >> "$CONFCHG"
+	echo "/etc/shells"			>> "$CONFCHG"
+
+	# Fix /etc/hosts if it's broken.
+	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
+		echo "/etc/hosts was moved to /etc/hosts.old"
+		rm -f /etc/hosts.old
+		mv /etc/hosts /etc/hosts.old
+		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
+			/etc/hosts.old > /etc/hosts
+	fi
+
+	# This is taken care of in the 8.0 installation, but for a
+	# while Sparc 4s will be installing 7.7 and taking the update,
+	# so deal with it here.
+	if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
+		echo "Setting monitor resolution..."
+		eeprom output-device=screen:r1152x900x94
+		eeprom fcode-debug?=true
+	fi
+
+	# Remove obsolete files.
+	echo /etc/*.sun				>> "$DEADFILES"
+	echo /etc/TIMEZONE.temp			>> "$DEADFILES"
+	echo /etc/athena/*old			>> "$DEADFILES"
+	echo /etc/athena/login/fonts		>> "$DEADFILES"
+	echo /etc/init.d/*			>> "$DEADFILES"
+	echo /etc/lib/*old			>> "$DEADFILES"
+	echo /etc/lib/ld.so.1.old		>> "$DEADFILES"
+	echo /etc/lib/tcpip.so*			>> "$DEADFILES"
+	echo /etc/rc*.d/*			>> "$DEADFILES"
+	echo /include				>> "$DEADFILES"
+	echo /kernel/*				>> "$DEADFILES"
+	echo /sbin/bdconfig			>> "$DEADFILES"
+	echo /sbin/shutdown			>> "$DEADFILES"
+	echo /ups_data				>> "$DEADFILES"
+	echo /usr/bin/*.23			>> "$DEADFILES"
+	echo /usr/bin/*.sun			>> "$DEADFILES"
+	echo /usr/cancel			>> "$DEADFILES"
+	echo /usr/disable			>> "$DEADFILES"
+	echo /usr/enable			>> "$DEADFILES"
+	echo /usr/kernel/*			>> "$DEADFILES"
+	echo /usr/kvm/*				>> "$DEADFILES"
+	echo /usr/lib/ld.so.1.old		>> "$DEADFILES"
+	echo /usr/lib/libnisdb.so.1		>> "$DEADFILES"
+	echo /usr/lib/libthread_db.a		>> "$DEADFILES"
+	echo /usr/lib/lint			>> "$DEADFILES"
+	echo /usr/lib/switch.so			>> "$DEADFILES"
+	echo /usr/lib/switch.so.2		>> "$DEADFILES"
+	echo /usr/lib/tcpip.so			>> "$DEADFILES"
+	echo /usr/lib/tcpip.so.2		>> "$DEADFILES"
+	echo /usr/lp*				>> "$DEADFILES"
+	echo /usr/openwin/SUNWits		>> "$DEADFILES"
+	echo /usr/openwin/lib/C.ct		>> "$DEADFILES"
+	echo /usr/openwin/lib/X11/fonts/misc/3270.pcf.Z >> "$DEADFILES"
+	echo /usr/openwin/lib/X11/standardPS_xdps.VM >> "$DEADFILES"
+	echo /usr/openwin/lib/libPEX5.a		>> "$DEADFILES"
+	echo /usr/sbin/in.rlogind.21		>> "$DEADFILES"
+	echo /usr/sbin/in.rlogind.21		>> "$DEADFILES"
+	echo /usr/sbin/in.rlogind.23		>> "$DEADFILES"
+	echo /usr/sbin/in.routed.sun		>> "$DEADFILES"
+	echo /usr/sbin/in.telnetd.21		>> "$DEADFILES"
+	echo /usr/sbin/in.telnetd.23		>> "$DEADFILES"
+	echo /usr/sbin/inetplumb		>> "$DEADFILES"
+	echo /usr/sbin/kmacntl			>> "$DEADFILES"
+	echo /usr/sbin/kmamkdb			>> "$DEADFILES"
+	echo /usr/sbin/kmapr			>> "$DEADFILES"
+	echo /usr/sbin/swm			>> "$DEADFILES"
+	echo /usr/share/lib/keytables/layout_81	>> "$DEADFILES"
+	echo /usr/share/lib/keytables/layout_82	>> "$DEADFILES"
+	echo /usr/share/lib/terminfo/a/a.term	>> "$DEADFILES"
+	echo /usr/share/lib/terminfo/c/c.term	>> "$DEADFILES"
+	echo /usr/share/lib/terminfo/d/d.term	>> "$DEADFILES"
+	echo /usr/share/lib/zoneinfo/US/Yukon	>> "$DEADFILES"
+	echo /var/cron/log			>> "$DEADFILES"
+	echo /var/spool/cron/crontabs/sysadm	>> "$DEADFILES"
+	echo /var/uucp/.Workspace		>> "$DEADFILES"
+	echo /var/yp/Makefile			>> "$DEADFILES"
+	echo /var/yp/updaters			>> "$DEADFILES"
+	echo /usr/lib/libC.so.4			>> "$DEADFILES"
+	echo /etc/group.std			>> "$DEADFILES"
+	echo /etc/passwd.std			>> "$DEADFILES"
+	echo /etc/shadow.std			>> "$DEADFILES"
+	echo /auto_update			>> "$DEADFILES"
+	echo /patch				>> "$DEADFILES"
+	echo /sun4				>> "$DEADFILES"
+	echo /.cshrc.mine			>> "$DEADFILES"
+	echo /.tcshrc				>> "$DEADFILES"
+	echo /usr/lib/learn			>> "$DEADFILES"
+	echo /usr/lib/lint			>> "$DEADFILES"
+	echo /usr/etc				>> "$DEADFILES"
+	echo /usr/new				>> "$DEADFILES"
+
+	# Create new directories and files.
+	mkdir /var/audit /var/log
+	touch /var/log/authlog /var/log/syslog
+
+	;;
+
+sgi)
+	echo "/etc/athena/inetd.conf"           >> "$CONFCHG"
+	;;
+esac
+

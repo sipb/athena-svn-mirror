@@ -1,0 +1,22 @@
+# $Id: Makefile.athena,v 1.5 2001-07-09 21:47:49 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+prepare:
+	rm -f build/config.cache
+	cd build && CFLAGS='-g -I/usr/include/db1' LIBS=-ldb1 \
+		./configure --disable-curses --disable-db --prefix=/usr \
+		--bindir=/bin --mandir=/usr/share/man
+
+clean:
+	cd build && ${MAKE} clean
+
+all:
+	cd build && ${MAKE} all
+
+check:
+
+install:
+	cd build && ${MAKE} install DESTDIR="$$SRVD"

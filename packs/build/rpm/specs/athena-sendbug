@@ -1,0 +1,10 @@
+Name: athena-sendbug
+Summary: An Athena program to report bugs in a standardized format.
+Copyright: MIT
+Group: Applications/Communications
+
+%description
+The sendbug program reports bugs to the Athena developers in a
+standardized format, and should be used whenever bugs are reported in
+Athena software.
+

@@ -105,7 +105,8 @@ chan_rcvd_oclose1(Channel *c)
 	case CHAN_INPUT_WAIT_DRAIN:
 		/* both local read_failed and remote write_failed  */
 		log("channel %d: input drain -> closed", c->self);
-		chan_send_ieof1(c);
+		if (!datafellows)
+		  chan_send_ieof1(c);
 		c->istate = CHAN_INPUT_CLOSED;
 		break;
 	default:

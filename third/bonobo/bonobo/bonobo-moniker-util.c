@@ -678,8 +678,10 @@ async_activation_cb (CORBA_Object activated_object,
 				exceptions
 			};
 			CORBA_Object obj = CORBA_OBJECT_NIL;
-			gpointer arg_values [2] = { &obj, &ctx->name };
+			gpointer arg_values [2];
 	
+			arg_values[0] = &obj;
+			arg_values[1] = &ctx->name;
 			bonobo_async_invoke (&method, async_parse_cb, ctx,
 					     ctx->timeout_msec,
 					     ctx->moniker, arg_values, &ev);
@@ -811,9 +813,11 @@ bonobo_moniker_resolve_async (Bonobo_Moniker         moniker,
 		arguments,
 		exceptions
 	};
-	gpointer arg_values [2] = { &options, &interface_name };
+	gpointer arg_values [2];
 	resolve_async_ctx_t *ctx;
 	
+	arg_values[0] = &options;
+	arg_values[1] = &interface_name;
 	g_return_if_fail (ev != NULL);
 	g_return_if_fail (cb != NULL);
 	g_return_if_fail (moniker != CORBA_OBJECT_NIL);

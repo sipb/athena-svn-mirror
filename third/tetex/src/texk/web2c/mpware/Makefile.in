@@ -45,10 +45,10 @@ Makefile: Makefile.in ../config.status
 
 install: install-exec install-data
 install-exec: $(programs)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir)
-	for p in mpto newer; do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
-	$(INSTALL_LIBTOOL_PROG) $(bindir) dmp
-	$(INSTALL_SCRIPT) makempx $(scriptdir)/makempx
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(scriptdir)
+	for p in mpto newer; do $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/$$p; done
+	$(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) dmp
+	$(INSTALL_SCRIPT) makempx ${DESTDIR}$(scriptdir)/makempx
 install-data:
 
 ac_include ../make/tkpathsea.mk

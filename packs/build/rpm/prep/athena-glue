@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cp $1/packs/maint/os/linux/athena-update_server.rc $2

@@ -2,7 +2,7 @@
 /*
  * pidwait.c -- wait for child to exit
  *
- * $Id: pidwait.c,v 1.1.1.1 1999-02-07 18:14:09 danw Exp $
+ * $Id: pidwait.c,v 1.2 1999-05-11 18:10:58 danw Exp $
  */
 
 #include <h/mh.h>
@@ -18,6 +18,7 @@ pidwait (pid_t id, int sigsok)
 {
     pid_t pid;
     sigset_t set, oset;
+    SIGNAL_HANDLER istat, qstat;
 
 #ifdef WAITINT
     int status;
@@ -26,11 +27,9 @@ pidwait (pid_t id, int sigsok)
 #endif
 
     if (sigsok == -1) {
-	/* block a couple of signals */
-	sigemptyset (&set);
-	sigaddset (&set, SIGINT);
-	sigaddset (&set, SIGQUIT);
-	SIGPROCMASK (SIG_BLOCK, &set, &oset);
+	/* ignore a couple of signals */
+	istat = SIGNAL (SIGINT, SIG_IGN);
+	qstat = SIGNAL (SIGQUIT, SIG_IGN);
     }
 
 #ifdef HAVE_WAITPID
@@ -41,8 +40,9 @@ pidwait (pid_t id, int sigsok)
 #endif
 
     if (sigsok == -1) {
-	/* reset the signal mask */
-	SIGPROCMASK (SIG_SETMASK, &oset, &set);
+	/* reset the signal handlers */
+	SIGNAL (SIGINT, istat);
+	SIGNAL (SIGQUIT, qstat);
     }
 
 #ifdef WAITINT

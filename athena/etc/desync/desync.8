@@ -1,0 +1,109 @@
+.\" $Id: desync.8,v 1.3 2000-09-30 21:08:29 rbasch Exp $
+.\"
+.\" Copyright 1995, 1996, 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH DESYNC 1 "5 March 1997"
+.SH NAME
+desync \- desynchronize timed jobs on networks
+.SH SYNOPSIS
+.B desync
+[
+.B \-t
+timefile ] [ range ]
+.SH DESCRIPTION
+.I desync
+is a tool which sleeps a random (hostname seeded) period of time (up
+to an hour, by default) in order to skew the network load from several
+machines running
+.I cron
+jobs that would otherwise be synchronized.
+
+An invocation would appear something like
+
+.nf
+     42 * * * *          desync; /usr/lib/sendmail -q
+.fi
+
+in a crontab file.
+.SH OPTIONS
+.TP 8
+.B range
+This optional range specifies, in seconds, the maximum value for the
+randomly selected sleep time.  The default value is 3600.
+.TP 8
+.B \-h name
+Use
+.I name
+to seed the random number generator, instead of using the current host
+name.  This option is generally only useful in conjunction with the
+.B \-n
+option.
+.TP 8
+.B \-n
+Instead of sleeping, this option causes
+.I desync
+to write the number of seconds it would sleep to standard output, or,
+if the
+.B \-t
+option is also specified, the number of seconds remaining until the
+timer in
+.I timefile
+expires.
+.TP 8
+.B \-t timefile
+This option changes the behavior of
+.I desync
+to make it useful for desynchronizing jobs when sleeping is not
+appropriate.  If
+.I timefile
+does not exist,
+.I desync
+selects a random sleep time using the normal method, adds it to the
+current time value, writes the result into
+.IR timefile ,
+and exits with status 1.  If
+.I timefile
+does exist and the current time is less than the time value listed in
+.IR timefile ,
+then
+.I desync
+takes no action and exits with status 1.  If
+.I timefile
+exists and the current time is equal to or greater than the time value
+listed in
+.IR timefile ,
+then
+.I desync
+unlinks
+.I timefile
+and exits with status 0.  This feature can be used in shell code of
+the following form:
+
+.nf
+	if desync -t /tmp/mytimefile 3600; then
+		echo "Starting the job."
+	else
+		echo "Putting it off until later."
+	fi
+.fi
+
+.SH SEE ALSO
+cron(1)
+.SH AUTHOR
+Craig Fields, MIT Information Systems
+.br
+Greg Hudson, MIT Information Systems
+.br
+Copyright (c) 1995, 1996, 1997, Massachusetts Institute of Technology

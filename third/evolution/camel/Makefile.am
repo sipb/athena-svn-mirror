@@ -187,17 +187,17 @@ libcamelinclude_HEADERS =			\
 	hash-table-utils.h			\
 	string-utils.h
 
-libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
+libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir) $(KRB4_LDFLAGS)
 
 libcamel_la_LIBADD = $(top_builddir)/e-util/libeutil.la \
 	$(CAMEL_LIBS)				\
-	$(KRB4_LDFLAGS)				\
+	$(KRB4_LIBS)				\
 	$(NSPR_LDFLAGS)				\
-	$(NSS_LDFLAGS)
+	$(NSS_LDFLAGS) -lhesiod -lares $(RESOLV_LIBS)
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD  = $(libcamel_la_LIBADD)
-libcamel_static_la_LDFLAGS = --all-static
+libcamel_static_la_LDFLAGS = --all-static $(KRB4_LDFLAGS)
 
 camel_lock_helper_SOURCES = 			\
 	camel-lock-helper.c 			\

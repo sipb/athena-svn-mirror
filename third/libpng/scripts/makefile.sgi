@@ -63,23 +63,26 @@ pngtest: pngtest.o libpng.a
 test: pngtest
 	./pngtest
 
-install: libpng.a
-	-@mkdir $(INCPATH)
-	-@mkdir $(LIBPATH)
-	cp png.h $(INCPATH)
-	cp pngconf.h $(INCPATH)
-	chmod 644 $(INCPATH)/png.h
-	chmod 644 $(INCPATH)/pngconf.h
-	cp libpng.a $(LIBPATH)
-	chmod 644 $(LIBPATH)/libpng.a
+install: install-static install-shared
+
+install-static: libpng.a
+	-@mkdir $(DESTDIR)$(INCPATH)
+	-@mkdir $(DESTDIR)$(LIBPATH)
+	cp png.h $(DESTDIR)$(INCPATH)
+	cp pngconf.h $(DESTDIR)$(INCPATH)
+	chmod 644 $(DESTDIR)$(INCPATH)/png.h
+	chmod 644 $(DESTDIR)$(INCPATH)/pngconf.h
+	cp libpng.a $(DESTDIR)$(LIBPATH)
+	chmod 644 $(DESTDIR)$(LIBPATH)/libpng.a
 
 install-shared: $(SHAREDLIB).$(SONUM).$(VER)
-	cp $(SHAREDLIB).$(SONUM).$(VER) $(LIBPATH)
-	chmod 755 $(SHAREDLIB).$(SONUM).$(VER)
-	(cd $(LIBPATH); if test -f $(SHAREDLIB).$(SONUM).$(VER); then \
+	cp $(SHAREDLIB).$(SONUM).$(VER) $(DESTDIR)$(LIBPATH)
+	chmod 755 $(DESTDIR)$(LIBPATH)/$(SHAREDLIB).$(SONUM).$(VER)
+	(cd $(DESTDIR)$(LIBPATH); if test -f $(SHAREDLIB).$(SONUM).$(VER); then \
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM); \
 	ln -s $(SHAREDLIB).$(SONUM).$(VER) $(SHAREDLIB).$(SONUM); \
-	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB))
+	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB); \
+	fi)
 
 clean:
 	rm -f *.o libpng.a pngtest pngout.png $(SHAREDLIB) $(SHAREDLIB).$(SONUM)*

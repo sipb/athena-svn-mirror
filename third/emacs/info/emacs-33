@@ -1,4 +1,4 @@
-This is ../info/emacs, produced by makeinfo version 4.0 from emacs.texi.
+This is ../info/emacs, produced by makeinfo version 4.2 from emacs.texi.
 
    This is the Fourteenth edition of the `GNU Emacs Manual', updated
 for Emacs version 21.1.
@@ -227,8 +227,8 @@ Key (Character) Index
 * C-h:                                   Help.
 * C-h a:                                 Apropos.
 * C-h b:                                 Misc Help.
-* C-h C:                                 Coding Systems.
 * C-h c:                                 Key Help.
+* C-h C:                                 Coding Systems.
 * C-h C-\:                               Select Input Method.
 * C-h C-c:                               Misc Help.
 * C-h C-d:                               Misc Help.
@@ -238,18 +238,18 @@ Key (Character) Index
 * C-h C-k:                               Misc Help.
 * C-h C-p:                               Misc Help.
 * C-h C-w:                               Misc Help.
-* C-h f:                                 Name Help.
 * C-h F:                                 Misc Help.
+* C-h f:                                 Name Help.
 * C-h h:                                 International Chars.
 * C-h i:                                 Misc Help.
 * C-h I:                                 Select Input Method.
 * C-h k:                                 Key Help.
-* C-h l:                                 Misc Help.
 * C-h L:                                 Language Environments.
+* C-h l:                                 Misc Help.
 * C-h m:                                 Misc Help.
 * C-h n:                                 Misc Help.
-* C-h P:                                 Misc Help.
 * C-h p:                                 Library Keywords.
+* C-h P:                                 Misc Help.
 * C-h s:                                 Syntax.
 * C-h t:                                 Basic.
 * C-h w:                                 Name Help.
@@ -306,8 +306,8 @@ Key (Character) Index
 * C-Mouse-1:                             Menu Mouse Clicks.
 * C-Mouse-2:                             Menu Mouse Clicks.
 * C-mouse-2 (mode line):                 Mode Line Mouse.
-* C-Mouse-2 (scroll bar) <1>:            Split Window.
-* C-Mouse-2 (scroll bar):                Mode Line Mouse.
+* C-Mouse-2 (scroll bar) <1>:            Mode Line Mouse.
+* C-Mouse-2 (scroll bar):                Split Window.
 * C-Mouse-3:                             Menu Mouse Clicks.
 * C-Mouse-3 (when menu bar is disabled): Menu Bars.
 * C-n:                                   Moving Point.
@@ -464,8 +464,8 @@ Key (Character) Index
 * C-x RET k:                             Specify Coding.
 * C-x RET p:                             Specify Coding.
 * C-x RET t:                             Specify Coding.
-* C-x RET x:                             Specify Coding.
 * C-x RET X:                             Specify Coding.
+* C-x RET x:                             Specify Coding.
 * C-x s:                                 Saving.
 * C-x SPC:                               Commands of GUD.
 * C-x TAB:                               Indentation Commands.
@@ -556,8 +556,8 @@ Key (Character) Index
 * LEFT:                                  Moving Point.
 * M (Calendar mode):                     Lunar Phases.
 * m (Calendar mode):                     Diary Commands.
-* M (Dired):                             Operating on Files.
 * m (Dired):                             Marks vs Flags.
+* M (Dired):                             Operating on Files.
 * m (Rmail):                             Rmail Reply.
 * M-!:                                   Single Shell.
 * M-$:                                   Spelling.
@@ -670,8 +670,8 @@ Key (Character) Index
 * n (Rmail):                             Rmail Motion.
 * NEXT:                                  Scrolling.
 * o (Calendar mode):                     Specified Dates.
-* o (Dired):                             Dired Visiting.
 * O (Dired):                             Operating on Files.
+* o (Dired):                             Dired Visiting.
 * o (Rmail):                             Rmail Output.
 * p (Calendar mode):                     To Other Calendar.
 * P (Dired):                             Operating on Files.
@@ -694,10 +694,10 @@ Key (Character) Index
 * RET (Occur mode):                      Other Repeating Search.
 * RET (Shell mode):                      Shell Mode.
 * RIGHT:                                 Moving Point.
-* S (Calendar mode):                     Sunrise/Sunset.
 * s (Calendar mode):                     Diary Commands.
-* S (Dired):                             Operating on Files.
+* S (Calendar mode):                     Sunrise/Sunset.
 * s (Dired):                             Dired Updating.
+* S (Dired):                             Operating on Files.
 * s (Gnus Summary mode):                 Summary of Gnus.
 * s (Rmail):                             Rmail Basics.
 * S-<TAB> (Help mode):                   Help Mode.
@@ -794,7 +794,7 @@ Command-Line Options Index
 * -q:                                    Initial Options.
 * -r:                                    Colors X.
 * -rv:                                   Colors X.
-* -t:                                    Initial Options.
 * -T:                                    Title X.
+* -t:                                    Initial Options.
 * -u:                                    Initial Options.
 

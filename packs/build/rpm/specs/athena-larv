@@ -1,0 +1,10 @@
+Name: athena-larv
+Summary: Library routines to send and receive larvnet status packects
+Copyright: MIT
+Group: System Environment/Libraries
+
+Requires: athena-hesiod
+
+%description
+Library routines to send and receive larvnet status packects
+

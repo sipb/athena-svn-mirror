@@ -1,0 +1,15 @@
+Name: athena-saferm
+Summary: An Athena completely safe version of rm.
+Copyright: MIT
+Group: System Environment/Base
+
+%description
+saferm is a file removal program which can be used running as root to
+safely remove and optionally zero files or direc- tories from
+world-writable directories, such as /tmp.  It will refuse to change
+directories through symbolic links, and it will not zero files that
+have more than one hard link.  Files are zeroed only when the -z
+option is speci- fied.  If a directory is being removed, the -d flag
+must be specified.  The -q flag suppresses the error message for the
+case when a directory cannot be removed because it is not empty.
+

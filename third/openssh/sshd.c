@@ -73,6 +73,10 @@ RCSID("$OpenBSD: sshd.c,v 1.209 2001/11/10 13:19:45 markus Exp $");
 #include "dispatch.h"
 #include "channels.h"
 
+#ifdef GSSAPI
+#include "ssh-gss.h"
+#endif
+
 #ifdef LIBWRAP
 #include <tcpd.h>
 #include <syslog.h>
@@ -185,11 +189,30 @@ int session_id2_len = 0;
 /* record remote hostname or ip */
 u_int utmp_len = MAXHOSTNAMELEN;
 
+/* Whether the server should accept connections. */
+static int switched = 0;
+static int enabled = 1;
+
 /* Prototypes for various functions defined later in this file. */
 void destroy_sensitive_data(void);
 
 static void do_ssh1_kex(void);
 static void do_ssh2_kex(void);
+
+static void
+sigusr1_handler(int sig)
+{
+  enabled = 1;
+  signal(SIGUSR1, sigusr1_handler);
+}
+
+static void
+sigusr2_handler(int sig)
+{
+  if (switched)
+    enabled = 0;
+  signal(SIGUSR2, sigusr2_handler);
+}
 
 /*
  * Close all listening sockets
@@ -564,7 +587,7 @@ main(int ac, char **av)
 	initialize_server_options(&options);
 
 	/* Parse command-line arguments. */
-	while ((opt = getopt(ac, av, "f:p:b:k:h:g:V:u:dDeiqtQ46")) != -1) {
+	while ((opt = getopt(ac, av, "f:p:b:k:h:g:V:u:dDeiqtQ46sS")) != -1) {
 		switch (opt) {
 		case '4':
 			IPv4or6 = AF_INET;
@@ -635,6 +658,13 @@ main(int ac, char **av)
 			}
 			options.host_key_files[options.num_host_key_files++] = optarg;
 			break;
+		case 's':
+		  switched = 1;
+		  break;
+		case 'S':
+		  switched = 1;
+		  enabled = 0;
+		  break;
 		case 'V':
 			client_version_string = optarg;
 			/* only makes sense with inetd_flag, i.e. no listen() */
@@ -739,10 +769,13 @@ main(int ac, char **av)
 		log("Disabling protocol version 1. Could not load host key");
 		options.protocol &= ~SSH_PROTO_1;
 	}
+#ifndef GSSAPI
+	/* The GSSAPI key exchange can run without a host key */
 	if ((options.protocol & SSH_PROTO_2) && !sensitive_data.have_ssh2_key) {
 		log("Disabling protocol version 2. Could not load host key");
 		options.protocol &= ~SSH_PROTO_2;
 	}
+#endif
 	if (!(options.protocol & (SSH_PROTO_1|SSH_PROTO_2))) {
 		log("sshd: no hostkeys available -- exiting.");
 		exit(1);
@@ -907,6 +940,11 @@ main(int ac, char **av)
 
 		signal(SIGTERM, sigterm_handler);
 		signal(SIGQUIT, sigterm_handler);
+
+		/* Switch on and off on SIGUSR1 and SIGUSR2 (conditional on 
+		   switched). */
+		signal(SIGUSR1, sigusr1_handler);
+		signal(SIGUSR2, sigusr2_handler);
 
 		/* Arrange SIGCHLD to be caught. */
 		signal(SIGCHLD, main_sigchld_handler);
@@ -1142,7 +1180,7 @@ main(int ac, char **av)
 		request_init(&req, RQ_DAEMON, __progname, RQ_FILE, sock_in, 0);
 		fromhost(&req);
 
-		if (!hosts_access(&req)) {
+		if (!hosts_access(&req) || !enabled) {
 			debug("Connection refused by tcp wrapper");
 			refuse(&req);
 			/* NOTREACHED */
@@ -1462,6 +1500,45 @@ do_ssh2_kex(void)
 		myproposal[PROPOSAL_MAC_ALGS_STOC] = options.macs;
 	}
 	myproposal[PROPOSAL_SERVER_HOST_KEY_ALGS] = list_hostkey_types();
+
+#ifdef GSSAPI
+	{ 
+	char *orig;
+	char *gss = NULL;
+	char *newstr = NULL;
+       	orig = myproposal[PROPOSAL_KEX_ALGS];
+
+	/* If we don't have a host key, then all of the algorithms
+	 * currently in myproposal are useless */
+	if (strlen(myproposal[PROPOSAL_SERVER_HOST_KEY_ALGS])==0)
+		orig= NULL;
+		
+        if (options.gss_keyex)
+        	gss = ssh_gssapi_mechanisms(1,NULL);
+        else
+        	gss = NULL;
+        
+	if (gss && orig) {
+		int len = strlen(orig) + strlen(gss) +2;
+		newstr=xmalloc(len);
+		snprintf(newstr,len,"%s,%s",gss,orig);
+	} else if (gss) {
+		newstr=gss;
+	} else if (orig) {
+		newstr=orig;
+	}
+        /* If we've got GSSAPI mechanisms, then we've also got the 'null'
+	   host key algorithm, but we're not allowed to advertise it, unless
+	   its the only host key algorithm we're supporting */
+	if (gss && (strlen(myproposal[PROPOSAL_SERVER_HOST_KEY_ALGS])) == 0) {
+	  	myproposal[PROPOSAL_SERVER_HOST_KEY_ALGS]="null";
+	}
+	if (newstr)
+		myproposal[PROPOSAL_KEX_ALGS]=newstr;
+	else
+		fatal("No supported key exchange algorithms");
+        }
+#endif
 
 	/* start key exchange */
 	kex = kex_setup(myproposal);

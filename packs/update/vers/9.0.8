@@ -1,0 +1,19 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  if [ sun4u = "$SUNPLATFORM" ]; then
+    echo "SUNWifb.u"				>> $LOCALPACKAGES
+    echo "SUNWifbcf"				>> $LOCALPACKAGES
+    echo "SUNWifbr"				>> $LOCALPACKAGES
+    echo "SUNWifbw"				>> $LOCALPACKAGES
+    echo "SUNWifbx.u"				>> $LOCALPACKAGES
+    echo "SUNWifbgl"				>> $LINKPACKAGES
+    echo "SUNWifbgx"				>> $LINKPACKAGES
+  fi
+  ;;
+sgi)
+  ;;
+esac
+
+echo "/etc/named.conf"				>> $CONFCHG

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  # Public 9.0.10 machines managed to remove this file in oscheck due
+  # to inconsistent stats and OS volume.  The situation is repaired in
+  # 9.0.11, but 9.0.10 machines will die on reboot (before they get a
+  # chance to oscheck) unless we do something about it.
+  file=/platform/sun4u/kernel/cpu/sparcv9/SUNW,UltraSPARC
+  if [ sun4u = "$SUNPLATFORM" -a ! -f $file ]; then
+    cp -p /os$file $file
+  fi
+  ;;
+sgi)
+  ;;
+esac

@@ -1,0 +1,10 @@
+Name: athena-authwatch
+Summary: Warn user of expiring authentication
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-krb5 athena-gnome-libs
+
+%description
+This program runs in the background and warns the user if their
+Kerberos authentication is about to expire.

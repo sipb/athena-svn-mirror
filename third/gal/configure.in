@@ -101,9 +101,9 @@ case $withval in
 esac
 
 save_CFLAGS="$CFLAGS"
-save_LDFLAGS="$LDFLAGS"
+save_LIBS="$LIBS"
 CFLAGS="$CFLAGS $ICONV_CFLAGS"
-LDFLAGS="$LDFLAGS $ICONV_LIBS -liconv"
+LIBS="$LIBS $ICONV_LIBS -liconv"
 AC_CACHE_CHECK(for iconv in -liconv, ac_cv_libiconv, AC_TRY_LINK([
 #include <iconv.h>
 ], [
@@ -115,7 +115,7 @@ if test $ac_cv_libiconv = yes; then
 	have_iconv=yes
 else
 	CFLAGS="$save_CFLAGS"
-	LDFLAGS="$save_LDFLAGS"
+	LIBS="$save_LIBS"
 	AC_CHECK_FUNC(iconv, have_iconv=yes, have_iconv=no)
 fi
 
@@ -184,7 +184,7 @@ AC_TRY_RUN([
 ])
 
 CFLAGS="$save_CFLAGS"
-LDFLAGS="$save_LDFLAGS"
+LIBS="$save_LIBS"
 
 dnl Check to see if strftime supports the use of %l and %k
 

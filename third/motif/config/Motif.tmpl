@@ -5,7 +5,7 @@
 /* 
  * Motif Release 1.2.4
 */ 
-XCOMM   $RCSfile: Motif.tmpl,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:29 $
+XCOMM   $RCSfile: Motif.tmpl,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:43:13 $
 
 /* Include AFTER Project.tmpl */
 
@@ -363,7 +363,7 @@ XCOMM   $RCSfile: Motif.tmpl,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:29
 #else
 #ifdef UseInstalled
 #if AlternateIncRoot
-      TOP_INCLUDES = -I$(MINCLUDESRC) -I$(INCROOT) /* X installed; alt. root */
+      TOP_INCLUDES = -I$(MINCLUDESRC) -I/usr/X11R6/include
 #else
       TOP_INCLUDES = -I$(MINCLUDESRC)		/* X installed; std. root */
 #endif

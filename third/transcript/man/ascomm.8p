@@ -1,18 +1,18 @@
 .TH ASCOMM 8 "4 April 1994" "Adobe Systems"
 \" Copyright (c) 1994 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ascomm.8p,v 1.1.1.1 1996-10-07 20:25:40 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ascomm.8p,v 1.2 1996-10-14 05:09:40 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-ascomm\(em\*(TS AppSocket TCP/IP communication filter for \*(PS printers
+ascomm \- TranScript AppSocket TCP/IP communication filter for PostScript
+printers
 .SH "SYNOPSIS"
 .B XPSLIBDIRX/ascomm
 .SH "DESCRIPTION"
 This is the low-level \*(TS AppSocket TCP/IP communication filter for use
 by the 4.2BSD line printer spooling system through the printer description
-file /etc/printcap, or by the System V spooling system.
-For 4.2BSD, it is called from the
+file /etc/printcap.  It is called from the
 .I psint.sh
 shell script.  This script uses argv[0] (the name it was invoked under)
 to determine which action to take, which may involve invoking a translation
@@ -23,14 +23,6 @@ If a log file is specified in /etc/printcap,
 .ascomm
 will maintain a log of each job processed, as well as any error output from
 the printer.
-For System V, it is called from the 
-.I psinterface
-shell script.
-The program 
-.I ascomm
-is the lowest level filter.  It manages communication with the printer,
-error handling, status reporting, etc.  It also manages a printer log file
-named transcript/\fIprinter\fP-log (under the lp spooling directory). 
 .SH ENVIRONMENT
 .IP VERBOSELOG=\fInumber\fP
 print verbose log messages
@@ -42,7 +34,7 @@ if 1, query status during job on status port (default)
 .SH FILES
 .TP 2.2i
 \fIprinter\fP.acct
-printer accounting file  (4.2BSD)
+printer accounting file
 .TP 2.2i
 \fIprinter\fP-log
 printer log file
@@ -54,15 +46,9 @@ and
 .I ascomm
 (4.2BSD)
 .SH "SEE ALSO"
-lpr(1), lpc(8), lpd(8), printcap(5), psint(8) (4.2BSD)
-.br
-lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8) (SysV)
-.br
-transcript(1)
+lpr(1), lpc(8), lpd(8), printcap(5), psint(8), transcript(1)
 .br
 .I 4.2BSD Line Printer Spooler Manual
-.br
-.I System V Line Printer Spooling Utilities
 .SH AUTHOR
 Adobe Systems Incorporated
 .SH NOTES

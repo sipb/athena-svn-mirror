@@ -904,7 +904,7 @@ background_read ( BGState *state )
 	gint r, g, b;
 
 	gdk_color_parse
-		(gnome_config_get_string ("/Background/Default/color1=#005060"),
+		(gnome_config_get_string ("/Background/Default/color1=#5e738f"),
 		 &state->bgColor1);
 	r = state->bgColor1.red >> 8;
 	g = state->bgColor1.green >> 8;
@@ -921,7 +921,7 @@ background_read ( BGState *state )
 	state->bgColor2.pixel = gdk_imlib_best_color_match(&r, &g, &b);
   
 	state->enabled = gnome_config_get_bool
-		("/Background/Default/Enabled=True");
+		("/Background/Default/Enabled=False");
 	state->bgType = (strcasecmp
 		  (gnome_config_get_string
 		   ("/Background/Default/type=simple"),

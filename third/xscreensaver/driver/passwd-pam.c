@@ -55,14 +55,9 @@ extern char *blurb(void);
 
 #include <sys/stat.h>
 
-
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof(*(x)))

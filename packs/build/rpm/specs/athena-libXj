@@ -1,0 +1,8 @@
+Name: athena-libXj
+Summary: The Jets widget library on Athena
+Copyright: MIT
+Group: System Environment/Libraries
+
+%description
+An X11 widget library used by many Athena programs.
+

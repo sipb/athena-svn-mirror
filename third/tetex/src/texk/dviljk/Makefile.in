@@ -54,30 +54,30 @@ install: install-exec install-data
 uninstall: uninstall-exec uninstall-data
 
 install-exec:
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(scriptdir)
 	test ! -f $(program) \
-	  || $(INSTALL_LIBTOOL_PROG) $(bindir) $(program)
+	  || $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $(program)
 	test ! -f $(program2p) \
-	  || $(INSTALL_LIBTOOL_PROG) $(bindir) $(program2p)
+	  || $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $(program2p)
 	test ! -f $(program4) \
-	  || $(INSTALL_LIBTOOL_PROG) $(bindir) $(program4)
+	  || $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $(program4)
 	test ! -f $(program4l) \
-	  || $(INSTALL_LIBTOOL_PROG) $(bindir) $(program4l)
-	$(INSTALL_SCRIPT) $(srcdir)/dvihp $(scriptdir)/dvihp
-	rm -f $(bindir)/$(program6); $(LN) $(program4) $(bindir)/$(program6)
+	  || $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $(program4l)
+	$(INSTALL_SCRIPT) $(srcdir)/dvihp ${DESTDIR}$(scriptdir)/dvihp
+	rm -f ${DESTDIR}$(bindir)/$(program6); $(LN) $(program4) ${DESTDIR}$(bindir)/$(program6)
 uninstall-exec:
 	cd $(bindir); rm -f $(programs)
 
 install-data:
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir) $(dvilj_latex2e_macrodir) $(fontdir)
-	$(INSTALL_DATA) $(srcdir)/dvilj.man $(mandir)/dvilj.$(manext)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(mandir) ${DESTDIR}$(dvilj_latex2e_macrodir) ${DESTDIR}$(fontdir)
+	$(INSTALL_DATA) $(srcdir)/dvilj.man ${DESTDIR}$(mandir)/dvilj.$(manext)
 
 # It seems simplest to keep this separate. Use find and cpio instead of
 # just cp -r in case the source hierarchy is cvs- or rcs-ified.
 # Use "" to quote wildcards because backslash is a directory separator
 # on MS-DOS and MS-Windows.
 install-fonts:
-	find fonts -name \( "*.tfm" -o -name "*.vf" \) -print | cpio -pld $(texmf)
+	find fonts -name \( "*.tfm" -o -name "*.vf" \) -print | cpio -pld ${DESTDIR}$(texmf)
 
 uninstall-data:
 	rm -f $(mandir)/dvilj.$(manext)

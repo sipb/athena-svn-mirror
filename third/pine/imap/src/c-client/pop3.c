@@ -394,6 +394,23 @@ long pop3_auth (MAILSTREAM *stream,NETMBX *mb,char *tmp,char *usr)
   long flags = (stream->secure ? AU_SECURE : NIL) |
     (mb->authuser[0] ? AU_AUTHUSER : NIL);
 				/* get list of authenticators */
+
+#ifdef KERBEROS
+  if (mb->krbflag) {
+    /* We already took care of sending the ticket in tcp_unix.c, since
+     * that has to happen before the read of the server greeting.  So
+     * we just need to send the username here. */
+    if (mb->user && *mb->user)
+      strcpy (usr,mb->user);
+    else
+      strcpy (usr,myusername());
+    /* Send same PASS as USER. */
+    if (pop3_send (stream,"USER",usr) && pop3_send (stream,"PASS",usr))
+      return LONGT;		/* success */
+    else
+      return NIL;
+  }
+#endif
   if (pop3_send (stream,"AUTH",NIL)) {
     while ((t = net_getline (LOCAL->netstream)) && (t[1] || (*t != '.'))) {
       if (stream->debug) mm_dlog (t);

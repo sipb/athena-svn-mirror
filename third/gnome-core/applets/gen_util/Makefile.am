@@ -44,11 +44,11 @@ clocksys_DATA = $(clocksys_in_files:.desktop.in=.desktop)
 
 malchecksysdir = $(datadir)/applets/Network
 malchecksys_in_files = mailcheck_applet.desktop.in
-malchecksys_DATA = $(malchecksys_in_files:.desktop.in=.desktop)
+#malchecksys_DATA = $(malchecksys_in_files:.desktop.in=.desktop)
 
 printersysdir = $(datadir)/applets/Utility
 printersys_in_files = printer.desktop.in
-printersys_DATA = $(printersys_in_files:.desktop.in=.desktop)
+#printersys_DATA = $(printersys_in_files:.desktop.in=.desktop)
 
 genutilgnorbadir  = $(sysconfdir)/CORBA/servers
 genutilgnorba_DATA = gen_util.gnorba

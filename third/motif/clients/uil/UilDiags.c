@@ -7,7 +7,7 @@
 */ 
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$RCSfile: UilDiags.c,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:37 $"
+static char rcsid[] = "$RCSfile: UilDiags.c,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:39:13 $"
 #endif
 #endif
 
@@ -119,8 +119,10 @@ void    diag_store_handlers
  *                   calling signal for the Uil handlers
  */
     bus_handler = signal( SIGBUS, diag_handler );       /* access violations */
+#ifdef SIGSYS
     sys_handler = signal( SIGSYS, diag_handler );       /* bad arguments to sys
 calls */
+#endif
     fpe_handler = signal( SIGFPE, diag_handler );       /* overflows */
 /*
  * End Fix for CR 5534
@@ -728,7 +730,9 @@ diag_initialize_diagnostics()
  */
 
     signal( SIGBUS, diag_handler );	/* access violations */
+#ifdef SIGSYS
     signal( SIGSYS, diag_handler );	/* bad arguments to sys calls */
+#endif
     signal( SIGFPE, diag_handler );	/* overflows */
 
 
@@ -855,9 +859,11 @@ diag_handler( l_error )
 	case SIGBUS:
 	  error_text = "Access Violation";
 	  break;
+#ifdef SIGSYS
 	case SIGSYS:
 	  error_text = "Bad system call";
 	  break;
+#endif
 	case SIGFPE:
 	  error_text = "Overflow";
 	  break;
@@ -1251,7 +1257,9 @@ diag_restore_diagnostics()
  * Fix for CR 5534 - restore the old signal handlers
  */
     signal( SIGBUS, bus_handler );
+#ifdef SIGSYS
     signal( SIGSYS, sys_handler );
+#endif
     signal( SIGFPE, fpe_handler );
 /*
  * End Fix for CR 5534

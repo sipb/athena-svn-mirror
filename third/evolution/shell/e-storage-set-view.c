@@ -152,12 +152,13 @@ storage_sort_callback (ETreeMemory *etmm,
 	path1_local = ! strcmp (folder_path1, G_DIR_SEPARATOR_S E_LOCAL_STORAGE_NAME);
 	path2_local = ! strcmp (folder_path2, G_DIR_SEPARATOR_S E_LOCAL_STORAGE_NAME);
 
+	/* Athena local hack: put local folders last, not first. */
 	if (path1_local && path2_local)
 		return 0;
 	if (path1_local)
-		return -1;
-	if (path2_local)
 		return 1;
+	if (path2_local)
+		return -1;
 	
 	return g_utf8_collate (e_tree_model_value_at (E_TREE_MODEL (etmm), node1, 0),
 	                       e_tree_model_value_at (E_TREE_MODEL (etmm), node2, 0));

@@ -195,7 +195,7 @@ EXEEXT =
 # 	$(CC_LINK) -o $@ foo.o bar.o $(KRB5_BASE_LIBS)
 
 
-CC_LINK=@CC_LINK@
+CC_LINK=@CC_LINK@ $(LDFLAGS)
 
 # this gets set by configure to either $(STLIBEXT) or $(SHLIBEXT),
 # depending on whether we're building with shared libraries.
@@ -210,7 +210,7 @@ KRB4_DEPLIB	= @KRB4_DEPLIB@		# $(TOPLIBD)/libkrb4$(DEPLIBEXT)
 DES425_DEPLIB	= @DES425_DEPLIB@	# $(TOPLIBD)/libdes425$(DEPLIBEXT)
 KRB5_DEPLIB	= $(TOPLIBD)/libkrb5$(DEPLIBEXT)
 CRYPTO_DEPLIB	= $(TOPLIBD)/libk5crypto$(DEPLIBEXT)
-COM_ERR_DEPLIB	= $(TOPLIBD)/libcom_err$(DEPLIBEXT)
+COM_ERR_DEPLIB	=
 DYN_DEPLIB	= $(TOPLIBD)/libdyn$(DEPLIBEXT)
 
 PTY_DEPLIB	= $(TOPLIBD)/libpty$(DEPLIBEXT)
@@ -218,7 +218,7 @@ PTY_DEPLIB	= $(TOPLIBD)/libpty$(DEPLIBEXT)
 # These are forced to use ".a" as an extension because they're never
 # built shared.
 UTIL_DEPLIB	= $(TOPLIBD)/libkrb5util.a
-SS_DEPLIB	= $(TOPLIBD)/libss.a
+SS_DEPLIB	=
 DB_DEPLIB	= $(TOPLIBD)/libdb.a
 KRB524_DEPLIB	= @KRB524_DEPLIB@
 
@@ -237,7 +237,7 @@ KADMCLNT_DEPLIBS	= $(KADMCLNT_DEPLIB) $(KADM_COMM_DEPLIBS)
 GEN_LIB		= @GEN_LIB@
 
 DB_LIB		= $(TOPLIBD)/libdb.a
-SS_LIB		= $(TOPLIBD)/libss.a
+SS_LIB		= -lss -lreadline -lhistory -lcurses
 KDB5_LIB	= -lkdb5
 
 # KRB4_LIB is -lkrb4 if building --with-krb4
@@ -298,7 +298,7 @@ COMPILE_ET_C= $(AWK) -f $(SRCTOP)/util/et/et_c.awk outfile=$@
 
 # ss command table rules
 #
-MAKE_COMMANDS= $(BUILDTOP)/util/ss/mk_cmds
+MAKE_COMMANDS= mk_cmds
 
 .ct.c:
 	$(MAKE_COMMANDS) $<

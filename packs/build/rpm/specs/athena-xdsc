@@ -1,0 +1,12 @@
+Name: athena-xdsc
+Summary: X interface to the Discuss conferencing and mail archiving system
+Copyright: MIT
+Group: User Interface/X
+
+Requires: athena-discuss
+
+%description
+An X front-end to the discuss system.
+
+
+

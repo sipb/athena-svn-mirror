@@ -75,7 +75,7 @@ kept up to date if all packages which use chdir import it from Cwd.
 
 =cut
 
-use strict;
+## use strict;
 
 use Carp;
 
@@ -148,8 +148,12 @@ sub fastcwd {
 	    next if $direntry eq '.';
 	    next if $direntry eq '..';
 
-	    ($tdev, $tino) = lstat($direntry);
-	    last unless $tdev != $odev || $tino != $oino;
+	    if ($odev == $cdev) {
+		last unless $_INO != $oino;
+	    } else {
+		($tdev, $tino) = lstat($direntry);
+		last unless $tdev != $odev || $tino != $oino;
+	    }
 	}
 	closedir(DIR);
 	return undef unless defined $direntry; # should never happen
@@ -272,6 +276,19 @@ sub abs_path
 	if ($pst[0] == $cst[0] && $pst[1] == $cst[1])
 	{
 	    $dir = undef;
+	}
+	elsif ($pst[0] == $cst[0])
+	{
+	    do
+	    {
+		unless (defined ($dir = readdir(PARENT)))
+	        {
+		    warn "readdir($dotdots): $!";
+		    closedir(PARENT);
+		    return '';
+		}
+	    }
+	    while ($dir eq '.' || $dir eq '..' || $_INO != $pst[1]);
 	}
 	else
 	{

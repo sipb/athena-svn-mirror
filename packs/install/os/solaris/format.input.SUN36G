@@ -1,0 +1,61 @@
+# Disk geometry: <SUN36G cyl 24620 alt 2 hd 27 sec 107>
+#
+#Part      Tag    Flag     Cylinders         Size            Blocks
+#  0       root    wm       0 - 22866       31.50GB    (22867/0/0) 66062763
+#  1       swap    wu   22867 - 24318        2.00GB    (1452/0/0)   4194828
+#  2     backup    wu       0 - 24619       33.92GB    (24620/0/0) 71127180
+#  3 unassigned    wm   24319 - 24619      424.60MB    (301/0/0)     869589
+#  4 unassigned    wm       0                0         (0/0/0)            0
+#  5 unassigned    wm       0                0         (0/0/0)            0
+#  6 unassigned    wm       0                0         (0/0/0)            0
+#  7 unassigned    wm       0                0         (0/0/0)            0
+
+partition
+
+0
+root
+wm
+0
+22867c
+
+1
+swap
+wu
+22867
+1452c
+
+3
+unassigned
+wm
+24319
+301c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

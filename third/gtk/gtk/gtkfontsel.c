@@ -1674,6 +1674,12 @@ gtk_font_selection_select_size (GtkWidget      *w,
   
   /* Check if the font size has changed, and return if it hasn't. */
   new_size = atof(text);
+
+  /* Enforce a minimum size, to be consistent with the code in
+     gtk_font_selection_update_size(). */
+  if (new_size < 2.0)
+    new_size = 2.0;
+
   if (fontsel->metric == GTK_FONT_METRIC_POINTS)
     new_size *= 10;
   

@@ -1,4 +1,5 @@
-This is ../info/ediff, produced by makeinfo version 4.0 from ediff.texi.
+This is Info file ../info/ediff, produced by Makeinfo version 1.68 from
+the input file ediff.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -30,36 +31,36 @@ license to the document, as described in section 6 of the license.
 
 
 Indirect:
-ediff-1: 1307
-ediff-2: 50904
-ediff-3: 99853
+ediff-1: 1333
+ediff-2: 50931
+ediff-3: 99881
 
 Tag Table:
 (Indirect)
-Node: Top1307
-Node: Introduction1906
-Node: Major Entry Points4294
-Node: Session Commands13637
-Node: Quick Help Commands15154
-Node: Other Session Commands33482
-Node: Registry of Ediff Sessions35640
-Node: Session Groups37195
-Node: Remote and Compressed Files42427
-Node: Customization43658
-Node: Hooks45610
-Node: Quick Help Customization50904
-Node: Window and Frame Configuration51910
-Node: Selective Browsing57865
-Node: Highlighting Difference Regions62047
-Node: Narrowing66777
-Node: Refinement of Difference Regions68050
-Node: Patch and Diff Programs70978
-Node: Merging and diff375546
-Node: Support for Version Control85345
-Node: Customizing the Mode Line86958
-Node: Miscellaneous87803
-Node: Notes on Heavy-duty Customization92759
-Node: Credits95330
-Node: Index99853
+Node: Top1333
+Node: Introduction1932
+Node: Major Entry Points4320
+Node: Session Commands13663
+Node: Quick Help Commands15180
+Node: Other Session Commands33508
+Node: Registry of Ediff Sessions35666
+Node: Session Groups37222
+Node: Remote and Compressed Files42454
+Node: Customization43685
+Node: Hooks45637
+Node: Quick Help Customization50931
+Node: Window and Frame Configuration51937
+Node: Selective Browsing57893
+Node: Highlighting Difference Regions62075
+Node: Narrowing66805
+Node: Refinement of Difference Regions68078
+Node: Patch and Diff Programs71006
+Node: Merging and diff375574
+Node: Support for Version Control85373
+Node: Customizing the Mode Line86986
+Node: Miscellaneous87831
+Node: Notes on Heavy-duty Customization92787
+Node: Credits95358
+Node: Index99881
 
 End Tag Table

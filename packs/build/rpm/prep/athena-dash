@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cp $1/packs/config/os/linux/Dash $2
+cp $1/packs/config/Dash.fallback $2

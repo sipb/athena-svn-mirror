@@ -359,12 +359,6 @@ tangleboot.c tangleboot.h: stamp-tangle $(web2c_programs) $(web2c_aux)
 # tangleboot.p is in the distribution
 stamp-tangle: tangleboot.p
 	date >stamp-tangle
-# This is not run unless tangle.web or tangle.ch is changed.
-tangleboot.p: tangle.web tangle.ch
-	$(shared_env) ./tangle $(srcdir)/tangle.web $(srcdir)/tangle.ch
-	mv tangle.p tangleboot.p
-	date >stamp-tangle
-	$(MAKE) $(common_makeargs) tangle
 
 # Even web2c itself uses the library.
 # It's annoying to have to give all the filenames here, 
@@ -537,96 +531,96 @@ install-data:: install-dumps
 
 # The actual binary executables and pool files.
 install-programs: $(programs)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(texpooldir) \
-	  $(mfpooldir) $(mppooldir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) ${DESTDIR}$(texpooldir) \
+	  ${DESTDIR}$(mfpooldir) ${DESTDIR}$(mppooldir)
 	cd mpware && $(MAKE) $(install_makeargs) install-exec
-	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) $(bindir) $$p; done
+	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $$p; done
 @OMEGA@	cd otps && $(MAKE) $(install_makeargs) install-programs
 
 # The links to {mf,mp,tex} for each format and for {ini,vir}{mf,mp,tex},
 # plus the equivalents for e-TeX, Omega, pdfTeX, and pdfeTeX.
 install-links: install-programs
-@TEX@	cd $(bindir) && (rm -f initex virtex; \
+@TEX@	cd ${DESTDIR}$(bindir) && (rm -f initex virtex; \
 @TEX@	  $(LN) tex initex; $(LN) tex virtex)
-@ETEX@	cd $(bindir) && (rm -f einitex evirtex; \
+@ETEX@	cd ${DESTDIR}$(bindir) && (rm -f einitex evirtex; \
 @ETEX@	  $(LN) etex einitex; $(LN) etex evirtex)
-@CTEX@	cd $(bindir) && (rm -f tex initex virtex; \
+@CTEX@	cd ${DESTDIR}$(bindir) && (rm -f tex initex virtex; \
 @CTEX@	  $(LN) etex tex; $(LN) etex initex; $(LN) etex virtex)
-@OMEGA@	cd $(bindir) && (rm -f iniomega viromega; \
+@OMEGA@	cd ${DESTDIR}$(bindir) && (rm -f iniomega viromega; \
 @OMEGA@	  $(LN) omega iniomega; $(LN) omega viromega)
-@PTEX@	cd $(bindir) && (rm -f pdfinitex pdfvirtex; \
+@PTEX@	cd ${DESTDIR}$(bindir) && (rm -f pdfinitex pdfvirtex; \
 @PTEX@	  $(LN) pdftex pdfinitex; $(LN) pdftex pdfvirtex)
-@PETEX@	cd $(bindir) && (rm -f pdfeinitex pdfevirtex; \
+@PETEX@	cd ${DESTDIR}$(bindir) && (rm -f pdfeinitex pdfevirtex; \
 @PETEX@	  $(LN) pdfetex pdfeinitex; $(LN) pdfetex pdfevirtex)
-	cd $(bindir) && (rm -f inimf virmf; \
+	cd ${DESTDIR}$(bindir) && (rm -f inimf virmf; \
 	  $(LN) mf inimf; $(LN) mf virmf)
-	cd $(bindir) && (rm -f inimpost virmpost; \
+	cd ${DESTDIR}$(bindir) && (rm -f inimpost virmpost; \
 	  $(LN) mpost inimpost; $(LN) mpost virmpost)
 # The ugly "" avoids a syntax error in case the lists are empty.
 	test -z "$(fmts)" || \
 	  for f in ""$(fmts); do base=`basename $$f .fmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) tex $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) tex $$base)); done
 	test -z "$(efmts)" || \
 	  for f in ""$(efmts); do base=`basename $$f .efmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) etex $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) etex $$base)); done
 	test -z "$(cfmts)" || \
 	  for f in ""$(cfmts); do base=`basename $$f .efmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) etex $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) etex $$base)); done
 	test -z "$(ofmts)" || \
 	  for f in ""$(ofmts); do base=`basename $$f .fmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) omega $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) omega $$base)); done
 	test -z "$(pdffmts)" || \
 	  for f in ""$(pdffmts); do base=`basename $$f .fmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) pdftex $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) pdftex $$base)); done
 	test -z "$(pdfefmts)" || \
 	  for f in ""$(pdfefmts); do base=`basename $$f .efmt`; \
-	    (cd $(bindir) && (rm -f $$base; $(LN) pdfetex $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) pdfetex $$base)); done
 	test -z "$(bases)" || \
 	  for f in ""$(bases); do base=`basename $$f .base`;\
-	    (cd $(bindir) && (rm -f $$base; $(LN) mf $$base)); done
+	    (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) mf $$base)); done
 	test -z "$(mems)" || \
 	  for f in ""$(mems); do base=`basename $$f .mem`; \
-            (cd $(bindir) && (rm -f $$base; $(LN) mpost $$base)); done
+            (cd ${DESTDIR}$(bindir) && (rm -f $$base; $(LN) mpost $$base)); done
 
 # Always do plain.*, so examples from the TeXbook (etc.) will work.
 install-dumps: install-fmts install-bases install-mems
 install-fmts: $(all_formats)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(fmtdir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(fmtdir)
 	echo "$(all_formats)" | grep '^[ ]*$$' >/dev/null || \
-	  for f in ""$(all_formats); do $(INSTALL_DATA) $$f $(fmtdir)/$$f; done
+	  for f in ""$(all_formats); do $(INSTALL_DATA) $$f ${DESTDIR}$(fmtdir)/$$f; done
 @TEX@	#cd $(fmtdir) && (rm -f plain.fmt; $(LN) tex.fmt plain.fmt)
 @CTEX@	#cd $(fmtdir) && (rm -f plain.efmt; $(LN) tex.efmt plain.efmt)
 
 install-bases: $(all_bases)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(basedir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(basedir)
 	test -z "$(all_bases)" || \
-	  for f in ""$(all_bases); do $(INSTALL_DATA) $$f $(basedir)/$$f; done
+	  for f in ""$(all_bases); do $(INSTALL_DATA) $$f ${DESTDIR}$(basedir)/$$f; done
 	#cd $(basedir) && (rm -f plain.base; $(LN) mf.base plain.base)
 
 install-mems: $(all_mems)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(memdir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(memdir)
 	test -z "$(all_mems)" || \
-	  for f in ""$(all_mems); do $(INSTALL_DATA) $$f $(memdir)/$$f; done
+	  for f in ""$(all_mems); do $(INSTALL_DATA) $$f ${DESTDIR}$(memdir)/$$f; done
 	#cd $(memdir) && (rm -f plain.mem; $(LN) mpost.mem plain.mem)
 
 # Auxiliary files.
 install-data::
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(texpooldir) $(mfpooldir) $(mppooldir) $(web2cdir) $(fontnamedir)
-@TEX@	$(INSTALL_DATA) tex.pool $(texpooldir)/tex.pool
-@ETEX@	$(INSTALL_DATA) etex.pool $(texpooldir)/etex.pool
-@OMEGA@	$(INSTALL_DATA) omega.pool $(texpooldir)/omega.pool
-@PTEX@	$(INSTALL_DATA) pdftex.pool $(texpooldir)/pdftex.pool
-@PETEX@	$(INSTALL_DATA) pdfetex.pool $(texpooldir)/pdfetex.pool
-	$(INSTALL_DATA) mf.pool $(mfpooldir)/mf.pool
-	$(INSTALL_DATA) mp.pool $(mppooldir)/mp.pool
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(texpooldir) ${DESTDIR}$(mfpooldir) ${DESTDIR}$(mppooldir) ${DESTDIR}$(web2cdir) ${DESTDIR}$(fontnamedir)
+@TEX@	$(INSTALL_DATA) tex.pool ${DESTDIR}$(texpooldir)/tex.pool
+@ETEX@	$(INSTALL_DATA) etex.pool ${DESTDIR}$(texpooldir)/etex.pool
+@OMEGA@	$(INSTALL_DATA) omega.pool ${DESTDIR}$(texpooldir)/omega.pool
+@PTEX@	$(INSTALL_DATA) pdftex.pool ${DESTDIR}$(texpooldir)/pdftex.pool
+@PETEX@	$(INSTALL_DATA) pdfetex.pool ${DESTDIR}$(texpooldir)/pdfetex.pool
+	$(INSTALL_DATA) mf.pool ${DESTDIR}$(mfpooldir)/mf.pool
+	$(INSTALL_DATA) mp.pool ${DESTDIR}$(mppooldir)/mp.pool
 	cd $(srcdir)/share && for f in *.tcx; do \
-	  $(INSTALL_DATA) $$f $(web2cdir)/$$f; done
+	  $(INSTALL_DATA) $$f ${DESTDIR}$(web2cdir)/$$f; done
 	cd $(srcdir)/share && for f in *.map; do \
-	  $(INSTALL_DATA) $$f $(fontnamedir)/$$f; done
+	  $(INSTALL_DATA) $$f ${DESTDIR}$(fontnamedir)/$$f; done
 	cd doc && $(MAKE) $(install_makeargs) install-data
 	cd man && $(MAKE) $(install_makeargs) install-data
-	$(INSTALL_DATA) $(srcdir)/tiedir/tie.1 $(mandir)/tie.$(manext)
-	$(INSTALL_DATA) fmtutil.cnf $(web2cdir)/fmtutil.cnf
+	$(INSTALL_DATA) $(srcdir)/tiedir/tie.1 ${DESTDIR}$(mandir)/tie.$(manext)
+	$(INSTALL_DATA) fmtutil.cnf ${DESTDIR}$(web2cdir)/fmtutil.cnf
 
 # The distribution comes with up-to-date .info* files,
 # so this should never be used unless something goes wrong

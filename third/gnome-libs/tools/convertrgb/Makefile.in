@@ -299,9 +299,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-convertrgb.o: convertrgb.c convertrgb.h ../../config.h
-loadpng.o: loadpng.c convertrgb.h ../../config.h
-
 info-am:
 info: info-am
 dvi-am:

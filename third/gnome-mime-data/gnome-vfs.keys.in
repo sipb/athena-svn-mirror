@@ -22,9 +22,9 @@ application/mime-type-test
 application/msword
 	_description=Microsoft Word document
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=abiword,staroffice,applix
-	short_list_application_ids_for_intermediate_user_level=abiword,staroffice,applix
-	short_list_application_ids_for_advanced_user_level=abiword,staroffice,applix
+	short_list_application_ids_for_novice_user_level=abiword,staroffice,applix,frame,mswordview
+	short_list_application_ids_for_intermediate_user_level=abiword,staroffice,applix,frame,mswordview
+	short_list_application_ids_for_advanced_user_level=abiword,staroffice,applix,frame,mswordview
 
 application/octet-stream
 	can_be_executable=TRUE
@@ -94,9 +94,9 @@ application/vnd.ms-excel
 	_description=Microsoft Excel spreadsheet
 	icon_filename=i-spreadsheet
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=gnumeric,staroffice,applix
-	short_list_application_ids_for_intermediate_user_level=gnumeric,staroffice,applix
-	short_list_application_ids_for_advanced_user_level=gnumeric,staroffice,applix
+	short_list_application_ids_for_novice_user_level=xess,gnumeric,staroffice,applix
+	short_list_application_ids_for_intermediate_user_level=xess,gnumeric,staroffice,applix
+	short_list_application_ids_for_advanced_user_level=xess,gnumeric,staroffice,applix
 
 application/vnd.ms-powerpoint
 	_description=Microsoft PowerPoint document
@@ -287,6 +287,13 @@ application/x-font-type1
 
 application/x-font-vfont
 	_description=V font
+
+application/x-framemaker
+	_description=FrameMaker
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=frame
+	short_list_application_ids_for_intermediate_user_level=frame
+	short_list_application_ids_for_advanced_user_level=frame
 
 application/x-glade
 	_description=Glade project
@@ -607,17 +614,17 @@ audio/x-aifc
 audio/x-aiff
 	_description=AIFF audio
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=grecord
-	short_list_application_ids_for_intermediate_user_level=grecord
-	short_list_application_ids_for_advanced_user_level=grecord
+	short_list_application_ids_for_novice_user_level=grecord,playaifc
+	short_list_application_ids_for_intermediate_user_level=grecord,playaifc
+	short_list_application_ids_for_advanced_user_level=grecord,playaifc
 
 audio/x-aiffc
 	_description=AIFF audio
 	icon_filename=gnome-audio-x-aiff
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=grecord
-	short_list_application_ids_for_intermediate_user_level=grecord
-	short_list_application_ids_for_advanced_user_level=grecord
+	short_list_application_ids_for_novice_user_level=grecord,playaifc
+	short_list_application_ids_for_intermediate_user_level=grecord,playaifc
+	short_list_application_ids_for_advanced_user_level=grecord,playaifc
 
 audio/x-it
 	_description=Impulse Tracker audio
@@ -749,9 +756,9 @@ image/gif
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 
 image/ief
 	_description=IEF image
@@ -762,9 +769,9 @@ image/jpeg
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 
 # also image/x-png
 image/png
@@ -790,9 +797,9 @@ image/tiff
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 
 image/vnd.dwg
 	_description=AutoCAD image
@@ -817,9 +824,9 @@ image/x-bmp
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 	icon_filename=gnome-image-bmp
 
 image/x-cmu-raster
@@ -875,9 +882,9 @@ image/x-portable-bitmap
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 	icon_filename=gnome-image-pbm
 
 image/x-portable-graymap
@@ -886,9 +893,9 @@ image/x-portable-graymap
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 
 image/x-portable-pixmap
 	_description=PPM image
@@ -896,9 +903,9 @@ image/x-portable-pixmap
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 	icon_filename=gnome-image-ppm
 
 image/x-psd
@@ -912,6 +919,13 @@ image/x-psd
 image/x-rgb
 	_description=RGB image
 	icon_filename=gnome-image-rgb
+
+image/x-sgi-image
+	_description=SGI image
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=imgview
+	short_list_application_ids_for_intermediate_user_level=imgview
+	short_list_application_ids_for_advanced_user_level=imgview
 
 image/x-tga
 	_description=TarGA image
@@ -927,9 +941,9 @@ image/x-wmf
 image/x-xbitmap
 	_description=X bitmap image
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=eog,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,gimp
-	short_list_application_ids_for_advanced_user_level=eog,gimp
+	short_list_application_ids_for_novice_user_level=eog,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,gimp,xv
 	icon_filename=gnome-image-xbm
 
 image/x-xcf
@@ -953,9 +967,9 @@ image/x-xpixmap
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus-image-viewer:30686633-23d5-422b-83c6-4f1b06f8abcd
-	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
-	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp,xv
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp,xv
 
 image/x-xwindowdump
 	_description=X window image
@@ -1285,9 +1299,9 @@ video/msvideo
 video/quicktime
 	_description=QuickTime movie
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
+	short_list_application_ids_for_novice_user_level=mediaplayer,xanim
+	short_list_application_ids_for_intermediate_user_level=mediaplayer,xanim
+	short_list_application_ids_for_advanced_user_level=mediaplayer,xanim
 
 video/vivo
 	_description=Vivo video
@@ -1331,9 +1345,9 @@ video/x-ms-asf
 
 video/x-msvideo
 	_description=Microsoft video
-	short_list_application_ids_for_novice_user_level=xmps,omsomi,xanim
-	short_list_application_ids_for_intermediate_user_level=xmps,omsomi,xanim
-	short_list_application_ids_for_advanced_user_level=xmps,omsomi,xanim
+	short_list_application_ids_for_novice_user_level=mediaplayer,xmps,omsomi,xanim
+	short_list_application_ids_for_intermediate_user_level=mediaplayer,xmps,omsomi,xanim
+	short_list_application_ids_for_advanced_user_level=mediaplayer,xmps,omsomi,xanim
 
 video/x-real-video
 	_description=RealVideo video
@@ -1345,9 +1359,9 @@ video/x-real-video
 video/x-sgi-movie
 	_description=SGI video
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
+	short_list_application_ids_for_novice_user_level=mediaplayer,xanim
+	short_list_application_ids_for_intermediate_user_level=mediaplayer,xanim
+	short_list_application_ids_for_advanced_user_level=mediaplayer,xanim
 
 x-directory/normal
 	_description=folder

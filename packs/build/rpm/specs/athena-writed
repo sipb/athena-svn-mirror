@@ -1,0 +1,7 @@
+Name: athena-writed
+Summary: The server for the Athena remote `write' functionality.
+Copyright: MIT
+Group: System Environment/Daemons
+
+%description
+The server for the Athena remote `write' functionality.

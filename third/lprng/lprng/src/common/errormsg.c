@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: errormsg.c,v 1.1.1.4 2000-03-31 15:48:02 mwhitson Exp $";
+"$Id: errormsg.c,v 1.6 2001-03-07 21:23:02 ghudson Exp $";
 
 
 #include "lp.h"
@@ -149,14 +149,14 @@ const char * Errormsg ( int err )
         if (Name && *Name) {
 			s = Name;
 		}
-		if( Is_server ) Name = "lpd";
+		if (Is_server) s = "lpd";
 		openlog(s, LOG_PID | LOG_NOWAIT, SYSLOG_FACILITY);
         init = 1;
     }
-    (void) syslog(kind, msg);
+    (void) syslog(kind, "%s", msg);
 
 #else
-    (void) syslog(SYSLOG_FACILITY | kind, msg);
+    (void) syslog(SYSLOG_FACILITY | kind, "%s", msg);
 #endif							/* HAVE_OPENLOG */
 #endif                          /* HAVE_SYSLOG_H */
 }
@@ -181,9 +181,7 @@ const char * Errormsg ( int err )
 	stamp_buf[0] = 0;
 
 	if( Is_server || DEBUGL1 ){
-		if( kind > LOG_INFO ){
-			use_syslog(kind, log_buf);
-		}
+		use_syslog(kind, log_buf);
 		n = strlen(stamp_buf); s = stamp_buf+n; n = sizeof(stamp_buf)-n;
 		(void) plp_snprintf( s, n, "%s", Time_str(0,0) );
 		if (ShortHost_FQDN ) {

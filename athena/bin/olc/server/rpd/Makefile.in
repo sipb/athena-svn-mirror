@@ -1,0 +1,50 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:49:12 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+
+CC=@CC@
+PURIFY=
+LD=${PURIFY} ${CC}
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@HESIOD_LIBS@ @KRB4_LIBS@ @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+SRCS=rpd.c fdcache.c handle_request.c io.c acl_files.c get_nm.c
+OBJS=rpd.o fdcache.o handle_request.o io.o acl_files.o get_nm.o
+
+all: rpd
+
+rpd: $(OBJS)
+	${LD} ${LDFLAGS} $(OBJS) ${LIBS} -o $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} rpd ${DESTDIR}${sbindir}
+
+clean:
+	rm -f $(OBJS) rpd
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

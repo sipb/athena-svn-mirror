@@ -162,6 +162,8 @@ typedef sigtype (*handler)();
 #include "osconf.h"
 #endif /* KRB5_GET_TICKETS */
 
+#include <al.h>
+
 #ifdef KRB4_KLOGIN
 /* support for running under v4 klogind, -k -K flags */
 #define KRB4
@@ -225,6 +227,11 @@ static const char *krb_get_err_text(kerror)
 #include <sys/id.h>
 #endif
 
+#ifdef sgi
+#include <capability.h>
+#include <sys/capability.h>
+#endif
+
 #if defined(_AIX)
 #define PRIO_OFFSET 20
 #else
@@ -258,15 +265,11 @@ static const char *krb_get_err_text(kerror)
 #define BSHELL		"/bin/sh"
 #endif
 
-#if (defined(BSD) && (BSD >= 199103))	/* no /usr/ucb */
-#define QUOTAWARN	"/usr/bin/quota"
-#endif
-
 #define	MOTDFILE	"/etc/motd"
 #define	HUSHLOGIN	".hushlogin"
 
 #if !defined(OQUOTA) && !defined(QUOTAWARN)
-#define QUOTAWARN	"/usr/ucb/quota" /* warn user about quotas */
+#define QUOTAWARN	"/usr/athena/bin/quota" /* warn user about quotas */
 #endif
 
 #ifndef NO_UT_HOST
@@ -293,7 +296,7 @@ static const char *krb_get_err_text(kerror)
  */
 int	timeout = 300;
 
-char term[64], *hostname, *username;
+char term[64], *hostname, *username, *namep = NULL;
 
 extern int errno;
 
@@ -307,8 +310,7 @@ extern int errno;
 					   passsword */
 #endif
 
-#if defined(__SVR4) || defined(sgi)
-#define NO_MOTD
+#ifdef sgi
 #define NO_MAILCHECK
 #endif
 
@@ -318,6 +320,9 @@ void dofork();
 int doremotelogin(), do_krb_login(), rootterm();
 void lgetstr(), getloginname(), checknologin(), sleepexit();
 void dolastlog(), motd(), check_mail();
+
+void ensure_process_capabilities(void);
+void set_user_capabilities(const char *username);
 
 #ifndef HAVE_STRSAVE
 char * strsave();
@@ -443,7 +448,7 @@ void lookup_user (name)
 #ifdef HAVE_SHADOW
     spwd = getspnam (name);
     if (spwd)
-	salt = spwd->sp_pwdp;
+	salt = spwd->sp_pwdp[1] ? spwd->sp_pwdp : "xx";
 #endif
 }
 
@@ -461,7 +466,7 @@ int unix_needs_passwd ()
 int unix_passwd_okay (pass)
     char *pass;
 {
-    char user_pwcopy[9], *namep;
+    char user_pwcopy[9];
     char *crypt ();
 
     assert (pwd != 0);
@@ -704,6 +709,7 @@ try_convert524(kcontext, me, use_ccache)
 #endif
 
 #ifdef KRB4_GET_TICKETS
+#define KRB4_DEFAULT_LIFE 120 /* 10 hours */
 try_krb4 (me, user_pwstring)
     krb5_principal me;
     char *user_pwstring;
@@ -712,7 +718,7 @@ try_krb4 (me, user_pwstring)
 
     krbval = krb_get_pw_in_tkt(username, "", realm,
 			       "krbtgt", realm, 
-			       DEFAULT_TKT_LIFE,
+			       KRB4_DEFAULT_LIFE,
 			       user_pwstring);
 
     switch (krbval) {
@@ -1015,13 +1021,14 @@ int main(argc, argv)
     char *p;
     int fflag, hflag, pflag, rflag, cnt;
     int kflag, Kflag, eflag;
-    int quietlog, passwd_req, ioctlval;
+    int quietlog, passwd_req, ioctlval, *warnings;
     sigtype timedout();
-    char *domain, **envinit, *ttyn, *tty;
+    char *domain, **envinit, *ttyn, *tty, *errmem;
     char tbuf[MAXPATHLEN + 2];
     char *ttyname(), *stypeof(), *crypt(), *getpass();
     time_t login_time;
     int retval;
+    int local_acct;
     int rewrite_ccache = 1; /*try to write out ccache*/
 #ifdef KRB5_GET_TICKETS
     krb5_principal me;
@@ -1030,6 +1037,7 @@ int main(argc, argv)
 #endif
 #ifdef KRB4_GET_TICKETS
     CREDENTIALS save_v4creds;
+    char *v4_ccname = 0;
 #endif
     char *ccname = 0;   /* name of forwarded cache */
     char *tz = 0;
@@ -1233,13 +1241,33 @@ int main(argc, argv)
     for (cnt = 0;; username = NULL) {
 #ifdef KRB5_GET_TICKETS
 	int kpass_ok, lpass_ok;
-	char user_pwstring[MAXPWSIZE];
+	char user_pwstring[MAXPWSIZE],*altext;
 #endif /* KRB5_GET_TICKETS */
 
 	if (username == NULL) {
 	    fflag = 0;
-	    getloginname();
+	    getloginname((cnt == 0) ? 1 : 0);
 	}
+
+	retval = al_login_allowed(username,
+				  (hflag || rflag || kflag || Kflag),
+				  &local_acct, &altext);
+	if (retval != AL_SUCCESS) {
+		/* Paranoia says to call getpass() if fflag is false,
+		 * but we're not paranoid. */
+		printf("You are not allowed to log in here: %s\n",
+		       al_strerror(retval, &errmem));
+		al_free_errmem(errmem);
+		if (altext) {
+			fputs(altext, stdout);
+			free(altext);
+		}
+		goto bad_login;
+	}
+
+	/* Tentatively create the account prior to authentication. */
+	if (!local_acct)
+	    al_acct_create(username, NULL, getpid(), 0, 0, NULL);
 
 	lookup_user(username);	/* sets pwd */
 
@@ -1296,7 +1324,7 @@ int main(argc, argv)
 
 	    lpass_ok = unix_passwd_okay(user_pwstring);
 
-	    if (pwd->pw_uid != 0) { /* Don't get tickets for root */
+	    if (!local_acct) { /* Don't get tickets for root */
 		try_krb5(&me, user_pwstring);
 
 #ifdef KRB4_GET_TICKETS
@@ -1358,6 +1386,7 @@ int main(argc, argv)
 	    if (krbflag)
 		destroy_tickets(); /* clean up tickets if login fails */
 	}
+	al_acct_revert(username, getpid());
 #endif /* KRB5_GET_TICKETS */
 
 #ifdef OLD_PASSWD
@@ -1420,6 +1449,62 @@ int main(argc, argv)
 	sleepexit(0);
     }
 #endif
+
+#ifdef KRB5_GET_TICKETS
+	/* Maybe telnetd got tickets for us?  */
+	if (!got_v5_tickets && have_v5_tickets (&me))
+	    forwarded_v5_tickets = 1;
+#endif /* GET_KRB_TICKETS */
+
+#ifdef KRB4_GET_TICKETS
+	if ( login_krb4_convert && !got_v4_tickets) {
+	    if (got_v5_tickets || forwarded_v5_tickets)
+		try_convert524 (kcontext, me, forwarded_v5_tickets);
+	}
+#endif
+
+#ifdef SETPAG
+	try_setpag();
+#endif
+
+	if (!local_acct) {
+		retval = al_acct_create(username, namep, getpid(),
+					got_v4_tickets, 1, &warnings);
+		if (retval != AL_SUCCESS && retval != AL_WARNINGS) {
+			printf("%s!\n", al_strerror(retval, &errmem));
+			al_free_errmem(errmem);
+			sleepexit(0);
+		}
+		if (retval == AL_WARNINGS) {
+			for (cnt = 0; warnings[cnt] != AL_SUCCESS; cnt++) {
+				printf("Warning: %s\n",
+				       al_strerror(warnings[cnt], &errmem));
+				al_free_errmem(errmem);
+			}
+			free(warnings);
+		}
+		lookup_user(username);
+		if (!pwd) {
+			printf("Couldn't reread user passwd information!\n");
+			sleepexit(0);
+		}
+	}
+
+#if defined(KRB5_GET_TICKETS) || defined(KRB4_GET_TICKETS)
+#if defined(KRB5_GET_TICKETS) && defined(KRB4_GET_TICKETS)
+	if (login_krb4_get_tickets || login_krb5_get_tickets) {
+#elif defined(KRB4_GET_TICKETS)
+	if (login_krb4_get_tickets) {
+#else
+	if (login_krb5_get_tickets) {
+#endif
+	    /* Fork so that we can call kdestroy */
+	    dofork();
+	}
+#endif /* KRB4_GET_TICKETS */
+
+    /* Ensure that this process has the proper capabilities. */
+    ensure_process_capabilities();
 
     if (chdir(pwd->pw_dir) < 0) {
 	printf("No directory %s!\n", pwd->pw_dir);
@@ -1636,6 +1721,9 @@ int main(argc, argv)
 	sleepexit(1);
     }
 
+    /* Set process capabilities for the user. */
+    set_user_capabilities(username);
+
     /*
      * We are the user now.  Re-create the destroyed ccache and
      * ticket file.
@@ -1708,7 +1796,11 @@ int main(argc, argv)
     (void)ioctl(0, TIOCSETD, (char *)&ioctlval);
 #endif
 
-    ccname = getenv("KRB5CCNAME");  /* save cache */
+	/* The cache name environment variables get set in k_init(). */
+	ccname = getenv(KRB5_ENV_CCNAME);  /* save cache */
+#ifdef KRB4_GET_TICKETS
+	v4_ccname = getenv(KRB_ENVIRON);
+#endif
     tz = getenv("TZ");	/* and time zone */
 
     /* destroy environment unless user has requested preservation */
@@ -1739,7 +1831,11 @@ int main(argc, argv)
 #endif
 
     if (ccname)
-	setenv("KRB5CCNAME", ccname, 1);
+	setenv(KRB5_ENV_CCNAME, ccname, 1);
+#ifdef KRB4_GET_TICKETS
+	if (v4_ccname)
+		setenv(KRB_ENVIRON, v4_ccname, 1);
+#endif
 
     setenv("HOME", pwd->pw_dir, 1);
     setenv("PATH", LPATH, 1);
@@ -1752,20 +1848,6 @@ int main(argc, argv)
     }
     if (term[0])
 	(void)setenv("TERM", term, 0);
-
-#ifdef KRB4_GET_TICKETS
-    /* tkfile[0] is only set if we got tickets above */
-    if (login_krb4_get_tickets && tkfile[0])
-	(void) setenv(KRB_ENVIRON, tkfile, 1);
-#endif /* KRB4_GET_TICKETS */
-
-#ifdef KRB5_GET_TICKETS
-    /* ccfile[0] is only set if we got tickets above */
-    if (login_krb5_get_tickets && ccfile[0]) {
-	(void) setenv(KRB5_ENV_CCNAME, ccfile, 1);
-	krb5_cc_set_default_name(kcontext, ccfile);
-    }
-#endif /* KRB5_GET_TICKETS */
 
     if (tty[sizeof("tty")-1] == 'd')
 	syslog(LOG_INFO, "DIALUP %s, %s", tty, pwd->pw_name);
@@ -1810,8 +1892,6 @@ int main(argc, argv)
 		    syslog(LOG_NOTICE, "ROOT LOGIN %s", tty);
 		}
 	    }
-
-    afs_login();
 
     if (!quietlog) {
 #ifdef KRB4_KLOGIN
@@ -1989,14 +2069,18 @@ term_init (do_rlogin)
 #endif
 }
 
-void getloginname()
+void getloginname(firsttime)
+    int firsttime;
 {
     register int ch;
     register char *p;
     static char nbuf[UT_NAMESIZE + 1];
 
     for (;;) {
-	printf("login: ");
+	if (!firsttime || getenv("TTYPROMPT") == NULL)
+		printf("login: ");
+	else
+		firsttime = 0;
 	for (p = nbuf; (ch = getchar()) != '\n'; ) {
 	    if (ch == EOF)
 		exit(0);
@@ -2022,20 +2106,40 @@ timedout()
     exit(0);
 }
 
-#ifndef HAVE_TTYENT_H
 int root_tty_security = 1;
-#endif
 
 int rootterm(tty)
 	char *tty;
 {
-#ifndef HAVE_TTYENT_H
-    return(root_tty_security);
-#else
+#ifdef __linux__
+    FILE *securetty;
+    char buf[PATH_MAX+1];
+    int ok;
+#endif
+#ifdef HAVE_TTYENT_H
     struct ttyent *t;
+#endif
 
+#ifdef __linux__
+    securetty = fopen("/etc/securetty", "r");
+    if (securetty) {
+	ok = 0;
+	while (!feof(securetty)) {
+	    fgets(buf, sizeof(buf), securetty);
+	    if (buf[strlen(buf)-1] == '\n')
+		buf[strlen(buf)-1] = '\0';
+	    if (strcmp(buf, tty) == 0)
+		ok = 1;
+	}
+	fclose(securetty);
+	return ok;
+    }
+#endif
+#ifdef HAVE_TTYENT_H
     return((t = getttynam(tty)) && t->ty_status&TTY_SECURE);
-#endif /* HAVE_TTYENT_H */
+#endif
+
+    return(root_tty_security);
 }
 
 #ifndef NO_MOTD
@@ -2143,8 +2247,8 @@ void dolastlog(quiet, tty)
 }
 
 #undef	UNKNOWN
-#ifdef __hpux
-#define UNKNOWN 0
+#if defined(__hpux) || defined(sgi)
+#define UNKNOWN ""
 #else
 #define	UNKNOWN	"su"
 #endif
@@ -2306,6 +2410,8 @@ void sleepexit(eval)
     if (login_krb4_get_tickets && krbflag)
 	(void) destroy_tickets();
 #endif /* KRB4_GET_TICKETS */
+    if (username)
+	al_acct_revert(username, getpid());
     sleep((u_int)5);
     exit(eval);
 }
@@ -2337,34 +2443,6 @@ dofork()
 	return; /* Child process returns */
 
     /* The parent continues here */
-
-    /* Try and get rid of our controlling tty.  On SunOS, this may or may
-       not work depending on if our parent did a setsid before exec-ing
-       us. */
-#ifndef __linux__
-    /* On linux, TIOCNOTTY causes us to die on a
-       SIGHUP, so don't even try it. */
-#ifdef TIOCNOTTY
-    { 
-	int fd;
-
-	if ((fd = open("/dev/tty", O_RDWR)) >= 0) {
-	    ioctl(fd, TIOCNOTTY, 0);
-	    close(fd);
-	}
-    }
-#endif
-#endif /* __linux__ */
-
-#ifdef HAVE_SETSID
-    (void)setsid();
-#endif
-
-#ifdef SETPGRP_TWOARG
-    (void)setpgrp(0, 0);
-#else
-    (void)setpgrp();
-#endif
 
     /* Setup stuff?  This would be things we could do in parallel with login */
     (void) chdir("/");	/* Let's not keep the fs busy... */
@@ -2400,6 +2478,7 @@ dofork()
     /* Run destroy_tickets to destroy tickets */
     (void) destroy_tickets();		/* If this fails, we lose quietly */
     afs_cleanup ();
+    al_acct_revert(username, getpid());
 #ifdef _IBMR2
     update_ref_count(-1);
 #endif
@@ -2475,3 +2554,64 @@ update_ref_count(int adj)
     enduserdb();
 }
 #endif
+
+/* Ensure we can set process capabilities after we setuid().
+ * Currently implemented only on IRIX.
+ */
+void ensure_process_capabilities(void)
+{
+#ifdef sgi
+    if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1) {
+	fprintf(stderr, "Insufficient privilege\n");
+	sleepexit(1);
+    }
+#endif
+    return;
+}
+
+/* Set the POSIX capabilities for the user process.  This is called
+ * after we setuid() to the user.
+ * Currently implemented only on IRIX.
+ */
+void set_user_capabilities(const char *username)
+{
+#ifdef sgi
+    struct user_cap *user_cap;
+    char *def_cap;
+    cap_t cap, ocap;
+    cap_value_t capval;
+
+    /* If capabilities are supported, initialize the user's capability
+     * set, defaulting to an empty set if no default capabilities are
+     * defined for the user.
+     */
+    if (sysconf(_SC_CAP) > 0) {
+	user_cap = sgi_getcapabilitybyname(username);
+	def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
+	cap = cap_from_text(def_cap);
+	if (user_cap != NULL) {
+	    free(user_cap->ca_name);
+	    free(user_cap->ca_default);
+	    free(user_cap->ca_allowed);
+	    free(user_cap);
+	}
+	if (cap == NULL) {
+	    fprintf(stderr,
+		    "login: Cannot convert user capabilities: %s\n",
+		    strerror(errno));
+	    sleepexit(1);
+	}
+	capval = CAP_SETPCAP;
+	ocap = cap_acquire(1, &capval);
+	if (cap_set_proc(cap) == -1) {
+	    cap_surrender(ocap);
+	    perror("Cannot set process capabilities");
+	    cap_free(cap);
+	    sleepexit(1);
+	}
+	cap_free(cap);
+	cap_free(ocap);
+    }
+#endif
+    return;
+}

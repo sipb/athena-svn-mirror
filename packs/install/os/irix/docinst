@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# Get standard options from command line or defaults.
+. ais-options
+
+# This script installs symlink farms in IRIX documentation directories
+# to the corresponding files in /os, thus avoiding the use of inst
+# packages and their expensive exit commands.
+
+synctree=/srvd/usr/athena/etc/synctree
+synctreeopts=-q
+help=/usr/share/help
+books=/usr/share/Insight/library
+whatis=/usr/share/catman/whatis
+
+# Make a symlink to the whatis database in the /os volume
+if [ -f /os${whatis} -a ! -f ${AIS_ROOT}${whatis} ]; then
+    echo "Making symlink for $whatis ..."
+    rm -f ${AIS_ROOT}${whatis}
+    ln -s /os${whatis} ${AIS_ROOT}${whatis}
+fi
+
+# Sync /usr/share/help
+mkdir -p ${AIS_ROOT}${help}
+
+# Create directories, make links for all regular files,
+# copy symbolic links.
+rconfhelp=/tmp/rconf.help
+cat <<EOF > $rconfhelp
+link *;r
+copy *;dl
+EOF
+
+echo "Syncing $help ..."
+$synctree $synctreeopts -s /os${help} -d ${AIS_ROOT}${help} -a $rconfhelp
+
+# Sync Insight library books
+mkdir -p ${AIS_ROOT}${books}
+
+# Ignore all libidx directories for now.  They contain the indices used
+# by insight, and we'll link them later if needed.
+# Also ignore any SGIindex directory (contains infosearch indices).
+rconfbooks=/tmp/rconf.books
+cat <<EOF > $rconfbooks
+link *;r
+copy *;dl
+ignore *libidx
+ignore *SGIindex
+EOF
+
+echo "Syncing $books ..."
+$synctree $synctreeopts -s /os${books} -d ${AIS_ROOT}${books} -a $rconfbooks
+
+# Now link up the insight indices, if the directories do not yet exist.
+rconflibidx=/tmp/rconf.libidx
+cat <<EOF > $rconflibidx
+link *;r
+copy *;dl
+EOF
+
+idxlist=`( cd /os${books} ; find . -name libidx -print )`
+for idx in $idxlist ; do
+    idxdir=${books}/${idx}
+    if [ ! -d ${AIS_ROOT}${idxdir} ]; then
+	mkdir -p ${AIS_ROOT}${idxdir}
+	echo "Syncing $idxdir ..."
+	$synctree $synctreeopts -s /os${idxdir} -d ${AIS_ROOT}${idxdir} \
+	    -a $rconflibidx
+    fi
+done

@@ -421,12 +421,6 @@ crypto_exec_with_passwd (const char *path, char *argv[], const char *input, int 
 		
 		select_result = select (max + 1, &fdset, &write_fdset,
 					NULL, &timeout);
-		
-		if (cancel_fd != -1 && FD_ISSET (cancel_fd, &fdset)) {
-			/* user-cancelled */
-			break;
-		}
-		
 		if (select_result < 0) {
 			if (errno == EINTR)
 				continue;
@@ -434,6 +428,11 @@ crypto_exec_with_passwd (const char *path, char *argv[], const char *input, int 
 		}
 		if (select_result == 0) {
 			/* timeout */
+			break;
+		}
+		
+		if (cancel_fd != -1 && FD_ISSET (cancel_fd, &fdset)) {
+			/* user-cancelled */
 			break;
 		}
 		

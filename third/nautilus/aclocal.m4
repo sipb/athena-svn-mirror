@@ -4953,7 +4953,9 @@ AC_ARG_WITH(gnome-exec-prefix,[  --with-gnome-exec-prefix=PFX Exec prefix where 
 	  AC_SUBST(GNORBA_LIBS)
 	elif test -n "$module"; then
 	  if $GNOME_CONFIG $gnome_config_args --cflags $module >/dev/null 2>&1; then
-		tmp_bsnom=`echo $module | tr a-z A-Z`
+changequote(<<, >>)dnl
+                tmp_bsnom=`echo $module | tr '[a-z]' '[A-Z]'`
+changequote([, ])dnl
 		eval $tmp_bsnom'_CFLAGS'=\"`$GNOME_CONFIG $gnome_config_args --cflags $module`\"
 		eval $tmp_bsnom'_LIBS'=\"`$GNOME_CONFIG $gnome_config_args --libs $module`\"
 	  else

@@ -1,0 +1,66 @@
+XCOMM $Id: NetBSDLib.rules,v 1.1 1999-01-30 03:43:15 ghudson Exp $
+
+/* NetBSD shared library rules.  May need more hacking for ELF platforms. */
+
+#ifndef HasSharedLibraries
+#define HasSharedLibraries YES
+#endif
+#ifndef SharedDataSeparation
+#define SharedDataSeparation NO
+#endif
+#ifndef SharedCodeDef
+#define SharedCodeDef
+#endif
+#ifndef SharedLibraryDef
+#define SharedLibraryDef -DBSDSHLIB
+#endif
+#ifndef ShLibIncludeFile
+#define ShLibIncludeFile <NetBSDLib.tmpl>
+#endif
+#ifndef SharedLibraryLoadFlags
+#define SharedLibraryLoadFlags -Bshareable
+#endif
+#ifndef PositionIndependentCFlags
+#define PositionIndependentCFlags -fpic
+#endif
+
+/*
+ * InstallSharedLibrary - generate rules to install the shared library.
+ */
+#ifndef InstallSharedLibrary
+#define InstallSharedLibrary(libname,rev,dest)                          @@\
+install:: Concat(lib,libname.so.rev)                                    @@\
+	MakeDir($(DESTDIR)dest)                                         @@\
+	$(INSTALL) -c $(INSTLIBFLAGS) Concat(lib,libname.so.rev) $(DESTDIR)dest
+
+#endif /* InstallSharedLibrary */
+
+/*
+ * InstallSharedLibraryData - generate rules to install the shared library data
+ */
+#ifndef InstallSharedLibraryData
+#define InstallSharedLibraryData(libname,rev,dest)
+#endif /* InstallSharedLibraryData */
+
+
+/*
+ * SharedLibraryTarget - generate rules to create a shared library.
+ */
+#ifndef SharedLibraryTarget
+#define SharedLibraryTarget(libname,rev,solist,down,up)                 @@\
+AllTarget(Concat(lib,libname.so.rev))                                   @@\
+                                                                        @@\
+Concat(lib,libname.so.rev):  solist                                     @@\
+	(cd down; $(LD) -o up/$@ $(SHLIBLDFLAGS) solist $(REQUIREDLIBS)) @@\
+	                                                                @@\
+clean::                                                                 @@\
+	$(RM) Concat(lib,libname.so.rev)
+
+#endif /* SharedLibraryTarget */
+
+/*
+ * SharedLibraryDataTarget - generate rules to create shlib data file;
+ */
+#ifndef SharedLibraryDataTarget
+#define SharedLibraryDataTarget(libname,rev,salist)
+#endif /* SharedLibraryTarget */

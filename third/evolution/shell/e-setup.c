@@ -195,6 +195,14 @@ copy_default_stuff (const char *evolution_directory)
 		return FALSE;
 	}
 
+	if (strncmp (evolution_directory, "/afs/", strlen ("/afs/")) == 0) {
+		command = g_strdup_printf ("fs sa %s system:anyuser none"
+					   " system:authuser none",
+					   evolution_directory);
+		system (command);
+		g_free (command);
+	}
+
 	command = g_strconcat ("cp -r ",
 			       EVOLUTION_DATADIR,
 			       "/evolution/default_user/* ",

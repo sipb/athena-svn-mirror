@@ -21,7 +21,7 @@
 /*
  * POSIXSIGS	Use the POSIX signal facilities to emulate BSD signals.
  */
-#undef POSIXSIGS
+#define POSIXSIGS
 
 /*
  * VFORK	This machine has a vfork().  
@@ -49,7 +49,7 @@
  *		Note: POSIX systems should not define this unless they
  *		have sigvec() and friends (ie: 4.3BSD-RENO, HP-UX).
  */
-#define BSDSIGS
+#undef BSDSIGS
 
 /*
  * BSDTIMES	You have BSD-style process time stuff (like rusage)
@@ -108,7 +108,7 @@
 /*
  * UTHOST	Does the utmp file have a host field?
  */
-#undef UTHOST
+#define UTHOST
 
 /*
  * DIRENT	Your system has <dirent.h> instead of <sys/dir.h>

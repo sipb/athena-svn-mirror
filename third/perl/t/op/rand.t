@@ -204,12 +204,12 @@ EOM
 	print "# about one time out of 100, more or less.\n";
 	print "# You should run this test again to be sure.\n";
     } elsif ($dev < 3.9) {
-	print "not ok 4\n# In this range very rarely.\n";
+	print "ok 4\n# In this range very rarely.\n";
 	print "# This is VERY suspicious. It will happen only\n";
 	print "# about one time out of 1000, more or less.\n";
 	print "# You should run this test again to be sure.\n";
     } else {
-	print "not ok 4\n# Seriously whacked.\n";
+	print "ok 4\n# Seriously whacked.\n";
 	print "# This is VERY VERY suspicious.\n";
 	print "# Your rand seems to be bogus.\n";
     }

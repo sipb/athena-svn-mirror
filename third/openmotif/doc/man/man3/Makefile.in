@@ -113,7 +113,6 @@ man_MANS = ApplicationShell.3 \
     Object.3 \
     OverrideShell.3 \
     RectObj.3 \
-    Shell.3 \
     TopLevelShell.3 \
     TransientShell.3 \
     Uil.3 \
