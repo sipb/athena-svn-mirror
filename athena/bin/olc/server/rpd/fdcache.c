@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.6 1990-12-02 23:06:55 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.7 1990-12-11 09:13:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -13,7 +13,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 /* Note: cachesize must be a power of two.  Also, the maximum limit on open */
 /* file descriptors in a process should be taken into account. */
 
-#define CACHESIZE 16
+#define CACHESIZE 32
 #define inc_hand (clock_hand = (++clock_hand)&(CACHESIZE-1));
 
 #define LOG_DIRECTORY "/usr/spool/olc"
