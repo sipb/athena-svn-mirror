@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.8 1990-11-14 16:53:55 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.9 1991-01-23 15:13:41 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.8 1990-11-14 16:53:55 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.9 1991-01-23 15:13:41 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -29,6 +29,8 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
 long uid_add_string();
+void Quota_report_log(), Quota_report_group_log(), 
+    Quota_modify_log(), Quota_modify_group_log();
 
 quota_error_code QuotaReport(h, auth, qid, qreport, cks)
 handle_t h;
@@ -63,7 +65,7 @@ quota_report *qreport;
 
 	/* This machine is authorized to connect */
 
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
 	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
 	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
@@ -105,7 +107,7 @@ quota_report *qreport;
 		return QDBASEERROR;
 	    }
 
-	    QuotaReport_notify(qid, qreport, &quotarec);
+	    (void) QuotaReport_notify(qid, qreport, &quotarec);
 	    Quota_report_log(qid, qreport);
 
 	} else {
@@ -149,7 +151,7 @@ quota_report *qreport;
 	    }
 	    
 	    
-	    QuotaReport_group_notify(qid, qreport, &gquotarec, 
+	    (void) QuotaReport_group_notify(qid, qreport, &gquotarec, 
 				     is_group_admin(quotarec.uid, &gquotarec));
 
 	    Quota_report_group_log(qid, qreport);
@@ -165,7 +167,7 @@ quota_identifier *qid;
 quota_return *qret;
     {
 	AUTH_DAT ad;
-	char name[MAX_K_NAME_SZ];
+	unsigned char name[MAX_K_NAME_SZ];
 	char *service;
 	char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
 	char kprincipal[ANAME_SZ], kinstance[INST_SZ], krealm[REALM_SZ];
@@ -191,11 +193,11 @@ quota_return *qret;
 	if(check_krb_auth(h, auth, &ad))
 	    return QBADTKTS;
 
-	make_kname(ad.pname, ad.pinst, ad.prealm, name);
+	make_kname(ad.pname, ad.pinst, ad.prealm, (char *) name);
 
-	if(is_suser(name)) authuser = 1;
+	if(is_suser((char *) name)) authuser = 1;
 	if (QD && !authuser) return(QDBDOWN);
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
 	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
 	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
@@ -284,7 +286,7 @@ quota_value qamount;
 	if(qamount < 0) 
 	    return QNONEG;
 	
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 
 	/* Handle U_NEW special..., all others require the user to be
 	   present in the database, so get entry... */
@@ -439,7 +441,7 @@ quota_value qamount;
 	    return(QBADACCOUNT);
 
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
-        parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+        parse_username(qid->username, qprincipal, qinstance, qrealm);
 
 	/* If we are superuser we can do anything */
         if(is_suser(name)) authuser = 1;
