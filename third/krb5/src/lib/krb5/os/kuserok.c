@@ -28,6 +28,10 @@
 #if !defined(_MSDOS) && !defined(_WIN32) && !defined(_MACINTOSH)    /* Not yet for Windows */
 #include <stdio.h>
 #include <pwd.h>
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#include <kerberosIV/krb4-proto.h>
+#endif
 
 #if defined(_AIX) && defined(_IBMR2)
 #include <sys/access.h>
@@ -72,6 +76,11 @@ krb5_kuserok(context, principal, luser)
     char linebuf[BUFSIZ];
     char *newline;
     int gobble;
+#ifdef KRB5_KRB4_COMPAT
+    int v4klogin = 0;
+    krb5_principal converted;
+    char v4_name[ANAME_SZ], v4_inst[INST_SZ], v4_realm[REALM_SZ];
+#endif
 
     /* no account => no access */
     if ((pwd = getpwnam(luser)) == NULL) {
@@ -97,7 +106,16 @@ krb5_kuserok(context, principal, luser)
 	return(FALSE);			/* no hope of matching */
 
     /* open ~/.k5login */
-    if ((fp = fopen(pbuf, "r")) == NULL) {
+    fp = fopen(pbuf, "r");
+#ifdef KRB5_KRB4_COMPAT
+    if (fp == NULL) {
+	strcpy(pbuf, pwd->pw_dir);
+	strcat(pbuf, "/.klogin");
+	fp = fopen(pbuf, "r");
+	v4klogin = 1;
+    }
+#endif
+    if (fp == NULL) {
 	free(princname);
 	return(FALSE);
     }
@@ -124,13 +142,27 @@ krb5_kuserok(context, principal, luser)
 	/* nuke the newline if it exists */
 	if ((newline = strchr(linebuf, '\n')))
 	    *newline = '\0';
-	if (!strcmp(linebuf, princname)) {
-	    isok = TRUE;
+	else	/* clean up the rest of the line if necessary */
+	    while (((gobble = getc(fp)) != EOF) && gobble != '\n');
+#ifdef KRB5_KRB4_COMPAT
+	if (v4klogin) {
+	    if (kname_parse(v4_name, v4_inst, v4_realm, linebuf) == KSUCCESS) {
+		if (v4_realm[0] == '\0') {
+		    if (krb_get_lrealm(v4_realm, 1) != KSUCCESS)
+			continue;
+		}
+		if (krb5_425_conv_principal(context, v4_name, v4_inst,
+					    v4_realm, &converted) == 0) {
+		    if (krb5_principal_compare(context, principal, converted))
+			isok = TRUE;
+		    krb5_free_principal(context, converted);
+		}
+	    }
 	    continue;
 	}
-	/* clean up the rest of the line if necessary */
-	if (!newline)
-	    while (((gobble = getc(fp)) != EOF) && gobble != '\n');
+#endif
+	if (!strcmp(linebuf, princname))
+	    isok = TRUE;
     }
     free(princname);
     fclose(fp);
