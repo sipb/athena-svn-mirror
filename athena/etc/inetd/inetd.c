@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.4 1995-11-28 23:14:46 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.5 1996-01-14 15:44:44 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.4 1995-11-28 23:14:46 cfields Exp $";
+static char *rcsid_inetd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/inetd.c,v 1.5 1996-01-14 15:44:44 epeisach Exp $";
 #endif /* lint */
 
 /*
@@ -67,7 +67,9 @@ static char sccsid[] = "@(#)inetd.c	5.7 (Berkeley) 8/19/86";
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#ifndef ultrix
 #include <sys/fcntl.h>
+#endif
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
