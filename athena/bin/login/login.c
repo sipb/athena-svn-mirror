@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.42 1991-08-24 17:41:35 probe Exp $
+ * $Id: login.c,v 1.43 1992-04-15 11:09:57 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.42 1991-08-24 17:41:35 probe Exp $";
+static char *rcsid = "$Id: login.c,v 1.43 1992-04-15 11:09:57 epeisach Exp $";
 #endif
 
 /*
@@ -463,7 +463,7 @@ main(argc, argv)
 		    if (inhibitflag)
 			invalid = TRUE;
 		    else /* we are allowed to create an entry */
-			pwd = &newuser;
+			pwd = &nouser;
 
 	    /* Modifications for Kerberos authentication -- asp */
 	    SCPYN(pp2, pp);
@@ -519,14 +519,12 @@ main(argc, argv)
 					pwd->pw_gid = nspwd->pw_gid;
 					pwd->pw_gecos = nspwd->pw_gecos;
 					pwd->pw_shell = nspwd->pw_shell;
+					pwd->pw_dir = nspwd->pw_dir;
 				} else {
-					pwd->pw_uid = 200;
-					pwd->pw_gid = MIT_GID;
-					pwd->pw_gecos = "";
-					pwd->pw_shell = "/bin/csh";
+				    invalid = TRUE;
+				    goto leavethis;
 				}
 				strncpy(pwd->pw_name, utmp.ut_name, NMAX);
-				strncat(pwd->pw_dir, utmp.ut_name, NMAX);
 				(void) insert_pwent(pwd);
 				tmppwflag = TRUE;
 			}
@@ -1566,15 +1564,20 @@ insert_pwent(pwd)
 struct passwd *pwd;
 {
     FILE *pfile;
-    int cnt;
+    int cnt, fd;
 
     while (getpwuid(pwd->pw_uid))
       (pwd->pw_uid)++;
 
     cnt = 10;
-    while (!access("/etc/ptmp",0) && --cnt)
-	    sleep(1);
-    unlink("/etc/ptmp");
+    while (cnt-- > 0 &&
+	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
+      sleep(1);
+    if (fd < 0) {
+	syslog(LOG_CRIT, "failed to lock /etc/passwd for insert");
+	printf("Failed to add you to /etc/passwd\n");
+    }
+
     
     if((pfile=fopen("/etc/passwd", "a")) != NULL) {
 	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
@@ -1587,6 +1590,9 @@ struct passwd *pwd;
 		pwd->pw_shell);
 	fclose(pfile);
     }
+
+    close(fd);
+    unlink("/etc/ptmp");
 }
 
 remove_pwent(pwd)
@@ -1594,14 +1600,19 @@ struct passwd *pwd;
 {
     FILE *newfile;
     struct passwd *copypw;
-    int cnt;
+    struct stat statb;
+    int cnt, fd;
 
     cnt = 10;
-    while (!access("/etc/ptmp",0) && --cnt)
-	    sleep(1);
-    unlink("/etc/ptmp");
-    
-    if ((newfile = fopen("/etc/ptmp", "w")) != NULL) {
+    while (cnt-- > 0 &&
+	   (fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) < 0)
+      sleep(1);
+    if (fd < 0) {
+	syslog(LOG_CRIT, "failed to lock /etc/passwd for remove");
+	printf("Failed to remove you from /etc/passwd\n");
+    }
+
+    if ((newfile = fdopen(fd, "w")) != NULL) {
 	setpwent();
 	while ((copypw = getpwent()) != 0)
 	    if (copypw->pw_uid != pwd->pw_uid)
@@ -1615,7 +1626,22 @@ struct passwd *pwd;
 			    copypw->pw_shell);
 	endpwent();
 	fclose(newfile);
-	rename("/etc/ptmp", "/etc/passwd");
+	if (stat("/etc/ptmp", &statb) != 0 || statb.st_size < 80) {
+	    syslog(LOG_CRIT, "something stepped on /etc/ptmp");
+	    printf("Failed to cleanup login\n");
+	} else
+	  rename("/etc/ptmp", "/etc/passwd");
+	if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+	    syslog(LOG_CRIT, "something stepped on /etc/passwd");
+	    printf("Failed to cleanup login\n");
+	    sleep(12);
+	    if (stat("/etc/passwd", &statb) != 0 || statb.st_size < 80) {
+		syslog(LOG_CRIT, "/etc/passwd still empty, adding root");
+		newfile = fopen("/etc/passwd", "w");
+		fprintf(newfile, "root:*:0:1:System PRIVILEGED Account:/:/bin/csh\n");
+		fclose(newfile);
+	    }
+	}
 	return(0);
     } else return(1);
 }
