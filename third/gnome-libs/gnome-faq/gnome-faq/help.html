@@ -1,0 +1,673 @@
+<HTML
+><HEAD
+><TITLE
+>Help!!!!!!!!</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="How can I use WindowMaker with GNOME"
+HREF="x496.html"><LINK
+REL="NEXT"
+TITLE="Specific Compile Problems"
+HREF="compilehelp.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x496.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compilehelp.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="HELP"
+>Help!!!!!!!!</A
+></H1
+><P
+>Even if you have followed every instruction to the letter,
+    sometimes unforeseen problems arise.  Anything can go wrong, from a
+    misreading of the instructions, to a bug in the software, to a bug
+    in someone else's software.  Here, we try to address problems that
+    people have run into with GNOME.</P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN503"
+>General Help.</A
+></H1
+><P
+>Here are some more general questions that arise often.
+      Specific problems are later in this chapter.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN506"
+>Something is not working, I'm confused, what do I
+	do?</A
+></H2
+><P
+>OK, first thing you do is pause, relax, and take a deep
+	breath.  Next, look through this FAQ, the Users Guide, and any
+	other documentation you have handy and see if any of it comes
+	close to solving your problem.  Next, look through the mailing
+	list archives (instructions are given <A
+HREF="archives.html"
+>above</A
+>) to see if someone else talks
+	about your problem.  Then try whatever it was you were doing
+	<I
+CLASS="EMPHASIS"
+>one more time</I
+> to see if the solution
+	suddenly presents itself.  If none of that works, it's time to
+	ask on the list.</P
+><P
+>First of all, you are subscribed to gnome-list, right?
+	If you aren't, instructions on how to subscribe are given
+	<A
+HREF="mailinglist.html"
+>above</A
+>.  Now, when asking
+	for help on GNOME-list, <I
+CLASS="EMPHASIS"
+>give lots of
+	detail</I
+>.  Posting <SPAN
+CLASS="QUOTE"
+>"The panel doesn't work,
+	this sucks!"</SPAN
+> doesn't help you or us.  You still have
+	the problem, and we have a possible bug which we have no
+	information about.  It is more useful (but still not
+	sufficient) to say <SPAN
+CLASS="QUOTE"
+>"Whenever I select the foo item from
+	the Foot menu, the entire panel disappears suddenly; by the
+	way, what is this file that GNOME keeps putting in my home
+	directory, it's called <A
+HREF="help.html#CORE"
+>core</A
+>."</SPAN
+></P
+><P
+>Ideally, we need several pieces of information from
+	you. First, exactly what kind of system are you running on?
+	No, not everyone runs the same operating system you are using.
+	We need processor type: Sparc, MIPS, i386 (this includes
+	Pentiums, AMD, Cyrix, etc), PPC, Alpha, ARM, 680x0, et al; we
+	need operating system: Linux distribution, FreeBSD, HURD,
+	OpenBSD, Solaris, IRIX, CrayOS, OS/400, whatever.  Also
+	include the version of the operating system. For example, the
+	machine I'm on right now is a GNU/Linux RedHat/i386 Rawhide
+	machine, a friend of mine uses a Solaris Sparc 2.6
+	machine.</P
+><P
+>Next, we need some relevant vital statistics of what is
+	on your system.  On a GNU/Linux system, the kernel and libc
+	version numbers are almost always relevant.  On almost all
+	GNOME problems we need your glib, gtk+, Imlib, ORBit and
+	gnome-libs versions.  If you aren't sure if you need any of
+	the above, include them anyway.  Other things that are
+	sometimes relevant are versions of Perl, X11, Python, Guile
+	and libpng, unless you see an error message that mentions one
+	of them, you can leave them out.  Also important is how you
+	installed GNOME.  Did you use binaries, if so which ones?  Did
+	you use tarballs?  Did you use CVS, if so which dates and/or
+	tags?  If you used a mixture of the above, tell us.</P
+><P
+>Lastly, we need the problem itself.  We need to know
+	exactly what you did to get the problem.  We need to know if
+	the problem is consistent or intermittent.  We need to know if
+	the program output anything prior to the problem.  We need to
+	know exactly what happens when you run into the problem.  If
+	you want to get ambitious, try some of the diagnostic tools I
+	discuss below, such as a backtrace, and include the
+	information in the mail.</P
+><P
+>Now before you are ready to post, you need to come up
+	with a good subject line.  Gnome-list can have a lot of
+	messages on it, you want yours to stand out to the people you
+	need help from, and be safely passed over by people who can't
+	help.  A subject of "GNOME is broken" is likely to get passed
+	over; one of "GSM sucks" will get people in an angry mood, not
+	a helpful one; something like "Most panel icons on HP-UX are
+	just black squares" is likely to get the right sort of
+	attention.</P
+><P
+>Put this all together into one long email and post it
+	onto the list.  If you followed my advice, you are more likely
+	to get a quick, thoughtful response. If for some reason you
+	don't get a quick response, don't take it personally, the mail
+	probably just got lost in the volume.  Wait a couple of days,
+	see if there is any detail you can add, or perhaps a more
+	descriptive header, and post it again.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BUGREPORT"
+>How do I report a bug?</A
+></H2
+><P
+>If you find a bug, we want to know about it, we want to
+	track it, and we want to fix it.  To make this process as
+	efficient as possible, we borrowed Debian's excellent bug
+	tracking system.  Full instructions on how to use it can be
+	found at <A
+HREF="http://bugs.gnome.org/Reporting.html"
+TARGET="_top"
+>	http://bugs.gnome.org/Reporting.html</A
+>.</P
+><P
+>There are a few things to keep in mind in sending bugs
+	to the system.  First make sure to check the web front end at
+	<A
+HREF="http://bugs.gnome.org"
+TARGET="_top"
+>http://bugs.gnome.org</A
+> to make sure
+	that your bug isn't yet known to the system.  If it is a new
+	bug, send it to <A
+HREF="submit@bugs.gnome.org"
+TARGET="_top"
+>submit@bugs.gnome.org</A
+>.
+	Make sure you include the Package and Version headings as
+	described in the instructions, this will make sure it gets
+	routed quickly and automatically to the right people.  Make
+	sure you include full details.  See the previous question for
+	some suggestions on what is useful to include.  If a backtrace
+	or strace is appropriate, by all means include it.
+	Instructions on how to do this is given below.</P
+><P
+>After you submit the bug to the system.  You will get
+	feedback on the bug via email.  You also can track the status
+	of the bug through the bug tracking system's web front
+	end.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN530"
+>What is a prefix (or a $prefix, ${PREFIX}, or
+	&#60;prefix&#62;)?</A
+></H2
+><P
+>When GNOME is compiled, you need to specify where it is
+	located in the filesystem.  The option used to specify this is
+	called <TT
+CLASS="OPTION"
+>--prefix</TT
+>, so we call it the GNOME
+	Prefix, or prefix for short.  GNOME's file locations should be
+	the same from system to system, except for the prefix, so a
+	file in <TT
+CLASS="FILENAME"
+>/usr/share/gnome/pixmaps</TT
+> on one
+	system may be in
+	<TT
+CLASS="FILENAME"
+>/opt/gnome/share/gnome/pixmaps</TT
+> on
+	another, and we would refer to the location as
+	<TT
+CLASS="FILENAME"
+>$prefix/share/gnome/pixmaps</TT
+>.</P
+><P
+>If you installed from tarballs (or CVS), but never gave
+	<B
+CLASS="COMMAND"
+>configure</B
+> (or
+	<B
+CLASS="COMMAND"
+>autogen.sh</B
+>) a prefix, the default is
+	<TT
+CLASS="FILENAME"
+>/usr/local</TT
+>.  If you installed the RedHat
+	RPMS, they use a prefix of <TT
+CLASS="FILENAME"
+>/usr</TT
+>.  If you
+	still aren't sure, type <B
+CLASS="COMMAND"
+>which panel</B
+>, and
+	remove the <TT
+CLASS="COMPUTEROUTPUT"
+>/bin/panel</TT
+> from
+	the end.  What's left is your prefix. </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN544"
+>What does <TT
+CLASS="COMPUTEROUTPUT"
+>Segmentation
+	Fault</TT
+> mean?</A
+></H2
+><P
+>Most Unix and Unix like systems have a feature called
+	memory protection.  What this means is the program is allowed
+	to access some parts of memory (often called segments), but
+	not others.  If the program tries to access memory outside of
+	the segments it is permitted to access, the system detects the
+	problem and signals an error.  This error is called a
+	Segmentation Fault (abbreviated <SPAN
+CLASS="QUOTE"
+>"segv"</SPAN
+> on some
+	systems), and generally, the program will end suddenly, often
+	leaving behind a core dump (see below).</P
+><P
+>What it all boils down to is there is a bug in whatever
+	program you were running.  The bug might be in the GNOME
+	source code, it might be in the shared libraries your program
+	uses, or it might be in the way the program was compiled.  If
+	you are unsure whether it is a bug in GNOME or somewhere else,
+	ask about it on the list.  If you are sure the bug lies within
+	GNOME, please make sure it's on the bug tracking
+	system.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CORE"
+>What is a core dump?  What is this file named core that
+	I keep running into?</A
+></H2
+><P
+>In the early days of electronic computers, computer
+	memory was a bunch of magnetic rings called cores, mounted on
+	wires.  This type of memory was called core memory.  When a
+	programmer wanted to see what was going on in their program,
+	they would output a copy of what was in their core memory so
+	they could analyze it.  This output was called a core dump,
+	and the term has remained long after core memory became
+	obsolete.</P
+><P
+>In many Unix and Unix-like systems, the system will
+	automatically produce a core dump when a program fails
+	catastrophically, for example when it has a Segmentation Fault
+	(see above).  It generally puts the core dump into a file
+	named <TT
+CLASS="FILENAME"
+>core</TT
+> in the directory you were in
+	when you ran the program.  This file is very useful for
+	debugging why the program failed, and can be used to produce a
+	backtrace (see below).  On the other hand, this file can be
+	quite large, particularly if you aren't using it for
+	debugging.  If you can't afford to have core dumps, consult
+	your system documentation to find out how to disable this
+	feature.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BACKTRACE"
+>What is a backtrace?  Someone just asked me to send
+	them a backtrace, how do I do this?</A
+></H2
+><P
+>An incredibly useful debugging tool is the backtrace.
+	This is essentially a snapshot of exactly where in the program
+	you are.  It is most often done when a program crashes (exits
+	unexpectedly, often with a segmentation fault or other error)
+	or hangs (stops working but doesn't exit).  In this answer,
+	I'm going to have to assume you are using the GNU project's
+	GDB debugger, since that's the most common one used with
+	GNOME, and the one I've used.  If you use some other debugger,
+	consult your documentation.</P
+><P
+>There are two ways to do a backtrace.  You can use a
+	core file left when the program crashed, or you can run the
+	program from within the debugger.  I have found that running
+	the program within the debugger is more reliable, but I will
+	discuss using core files as well.</P
+><P
+>To run a program within GDB, go to an xterm (or
+	equivalent), and type <TT
+CLASS="USERINPUT"
+><B
+>gdb &#60;full name and
+	location of program&#62;</B
+></TT
+>, for example, to debug
+	gtalk, you might do <TT
+CLASS="USERINPUT"
+><B
+>gdb
+	/usr/local/bin/gtalk</B
+></TT
+>.  GDB does not search the
+	path, so you have to specify where the program is.  If you
+	want to run the program with arguments, <I
+CLASS="EMPHASIS"
+>don't put
+	them here</I
+>.  You can specify command like arguments
+	later.</P
+><P
+>GDB will then identify itself, and give you a
+	<TT
+CLASS="PROMPT"
+>(gdb)</TT
+> prompt.  From here, you type
+	<TT
+CLASS="USERINPUT"
+><B
+>run</B
+></TT
+> to start the program.  If you want
+	to run the program with arguments, put them here.  For
+	example, to debug gtalk with sound disabled, you would type
+	<TT
+CLASS="USERINPUT"
+><B
+>run --disable-sound</B
+></TT
+>.  The program will
+	then start.  Keep in mind the program will be slower than
+	normal, and it will use a lot more memory.</P
+><P
+>Now you try to recreate the problem you had.  Do
+	whatever it is that caused the problem before.  Once the
+	program crashes, you should immediately see stuff in the debug
+	session, and a <TT
+CLASS="PROMPT"
+>(gdb)</TT
+> prompt.  If the program
+	hangs, wait until you are sure it is hung in the right place,
+	and then hit Control-C in the debug session.  It too should
+	reply with a bunch of stuff, followed by a
+	<TT
+CLASS="PROMPT"
+>(gdb)</TT
+> prompt.  At this prompt (whichever way
+	you got to it), type <TT
+CLASS="USERINPUT"
+><B
+>bt</B
+></TT
+>.  It will then
+	reply with the actual backtrace.</P
+><P
+>Here's an example of a debug session.  If you are asked
+	for a backtrace, you should send in the whole
+	thing:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><TT
+CLASS="PROMPT"
+>$</TT
+> <TT
+CLASS="USERINPUT"
+><B
+>gdb /usr/local/bin/gtalk</B
+></TT
+>
+<TT
+CLASS="COMPUTEROUTPUT"
+>GNU gdb 4.17
+Copyright 1998 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i386-redhat-linux"...</TT
+>
+<TT
+CLASS="PROMPT"
+>(gdb)</TT
+> <TT
+CLASS="USERINPUT"
+><B
+>run --disable-sound</B
+></TT
+>
+<TT
+CLASS="COMPUTEROUTPUT"
+>Starting program: /usr/local/bin/gtalk --disable-sound
+
+Program received signal SIGINT, Interrupt.
+0x4049290d in __poll (fds=0x808c110, nfds=3, timeout=-1)
+    at ../sysdeps/unix/sysv/linux/poll.c:45
+../sysdeps/unix/sysv/linux/poll.c:45: No such file or directory.</TT
+>
+<TT
+CLASS="PROMPT"
+>(gdb)</TT
+> <TT
+CLASS="USERINPUT"
+><B
+>bt</B
+></TT
+>
+<TT
+CLASS="COMPUTEROUTPUT"
+>#0  0x4049290d in __poll (fds=0x808c110, nfds=3, timeout=-1)
+    at ../sysdeps/unix/sysv/linux/poll.c:45
+#1  0x403c54e9 in g_main_poll (timeout=-1, use_priority=0, priority=0)
+    at gmain.c:991
+#2  0x403c516e in g_main_iterate (block=1, dispatch=1) at gmain.c:789
+#3  0x403c58a1 in g_main_run (loop=0x80882e8) at gmain.c:912
+#4  0x401cbf1d in gtk_main () at gtkmain.c:475
+#5  0x804a629 in main (argc=2, argv=0xbffffaa4) at main.c:54
+#6  0x40407c77 in __libc_start_main (main=0x804a570 &#60;main&#62;, argc=2, 
+    argv=0xbffffaa4, init=0x8049e10 &#60;_init&#62;, fini=0x804c7dc &#60;_fini&#62;, 
+    rtld_fini=0x40009c10 &#60;_dl_fini&#62;, stack_end=0xbffffa9c)
+    at ../sysdeps/generic/libc-start.c:78</TT
+>
+<TT
+CLASS="PROMPT"
+>(gdb)</TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>To do a backtrace with a core dump is very similar.
+	Change directories to the one which has the core dump, and
+	then run <TT
+CLASS="USERINPUT"
+><B
+>gdb -c core &#60;full name and location of
+	program&#62;</B
+></TT
+>.  Again, GDB doesn't look at your
+	path, you have to specify where to find the program.  All you
+	then have to do is type <TT
+CLASS="USERINPUT"
+><B
+>bt</B
+></TT
+> at the
+	prompt, and send in the whole session.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN586"
+>What is an strace?  Someone asked me to send them one,
+	how do I do this?</A
+></H2
+><P
+>The <B
+CLASS="COMMAND"
+>strace</B
+> command performs a
+	"Signal Trace".  Using it will allow you to run a program while
+	outputting system calls and signals.  This is a much more
+	verbose debugging tool than the backtrace, but sometimes you
+	need the extra information an strace can give you.  Getting an
+	strace is easy, just type <TT
+CLASS="USERINPUT"
+><B
+>strace -o &#60;output
+	file&#62; &#60;command with args&#62;</B
+></TT
+> into an xterm.
+	For example, to do an strace on the gtalk program with sound
+	disabled, I might do <TT
+CLASS="USERINPUT"
+><B
+>strace -o /tmp/gtalk.strace
+	gtalk --disable-sound</B
+></TT
+>.  This will save the strace
+	output in <TT
+CLASS="FILENAME"
+>/tmp/gtalk.strace</TT
+>.  Strace does
+	make use of the path, and does accept program arguments on the
+	command line.</P
+><P
+>Warning, strace produces lots of output (the above
+	strace example came up with 5,498 lines in five seconds).
+	Don't send straces to the mailing lists, and only send them to
+	the developers if they specifically request it.</P
+><P
+>On Solaris systems, the <B
+CLASS="COMMAND"
+>strace</B
+>
+	command does something different.  The
+	<B
+CLASS="COMMAND"
+>truss</B
+> command is probably what the person
+	who asked for the strace is looking for.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x496.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compilehelp.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>How can I use WindowMaker with GNOME</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Specific Compile Problems</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

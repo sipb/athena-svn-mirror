@@ -1,0 +1,416 @@
+<HTML
+><HEAD
+><TITLE
+>Internationalization &#38; Localization (I18N &#38; L10N)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Architecture Components"
+HREF="architecture.html"><LINK
+REL="PREVIOUS"
+TITLE="DocBook"
+HREF="docbook.html"><LINK
+REL="NEXT"
+TITLE="Guile"
+HREF="guile.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="docbook.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Architecture Components</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guile.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="I18N"
+>Internationalization &#38; Localization (I18N &#38; L10N)</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN836"
+>What are Internationalization(I18N) and
+	Localization(L10N)?</A
+></H2
+><P
+>From the GNU gettext info page:</P
+><P
+>By <I
+CLASS="FIRSTTERM"
+>internationalization</I
+>, one
+	refers to the operation by which a program, or a set of
+	programs turned into a package, is made aware and able to
+	support multiple languages. This is a generalization process,
+	by which the programs are untied from using only English
+	strings or other English specific habits, and connected to
+	generic ways of doing the same, instead. Program developers
+	may use various techniques to internationalize their programs,
+	some of them have been standardized. GNU gettext offers one of
+	these standards.</P
+><P
+>By <I
+CLASS="FIRSTTERM"
+>localization</I
+>, one means the
+	operation by which, in a set of programs already
+	internationalized, one gives the program all needed
+	information so that it can bend itself to handle its input and
+	output in a fashion which is correct for some native language
+	and cultural habits. This is a particularisation process, by
+	which generic methods already implemented in an
+	internationalized program are used in specific ways. The
+	programming environment puts several functions to the
+	programmers disposal which allow this runtime
+	configuration. The formal description of specific set of
+	cultural habits for some country, together with all associated
+	translations targeted to the same native language, is called
+	the locale for this language or country. Users achieve
+	localization of programs by setting proper values to special
+	environment variables, prior to executing those programs,
+	identifying which locale should be used.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN843"
+>What I8N and L10N API does GNOME use?</A
+></H2
+><P
+>GNOME uses the Uniforum's internationalization
+	standard. This is the "standard" invented by Sun Microsystems
+	and adopted by the GNU project in their "gettext"
+	package. N.b., this is different from the competing X/Open
+	standard.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN846"
+>How do I program using I18N and L10N, or Where do I
+	find out more info on these topics?</A
+></H2
+><P
+>Take a look at the GNU gettext package's online manual
+        at <A
+HREF="http://gnu.org/manual/gettext/html_chapter/gettext_toc.html"
+TARGET="_top"
+>http://gnu.org/manual/gettext/html_chapter/gettext_toc.html</A
+>.  There also
+        is a very useful article from Linux Journal about
+        internationalization issues at <A
+HREF="http://www.linuxjournal.com/issue59/3286.html"
+TARGET="_top"
+>        http://www.linuxjournal.com/issue59/3286.html</A
+>.  Additionally, you may find
+        the I18N FAQ informative: <A
+HREF="http://www.vlsivie.tuwien.ac.at/mike/i18n.html"
+TARGET="_top"
+>http://www.vlsivie.tuwien.ac.at/mike/i18n.html</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN852"
+>How do I change the language of my GNOME
+	programs?</A
+></H2
+><P
+>To change the language that GNOME programs use, you just
+	need to set the environment variable <TT
+CLASS="ENVAR"
+>LANG</TT
+> to
+	the desired ISO 639 language code.  From that point forward,
+	any new GNOME apps you run will try use that language.</P
+><P
+>Let's say you wanted to see GNOME in Spanish.  In the
+	Bourne Shell and its derivatives (such as Bash), you use
+	<B
+CLASS="COMMAND"
+>set LANG="es"</B
+>.  If you were using the C
+	Shell (or tcsh), you would use <B
+CLASS="COMMAND"
+>setenv LANG
+	"es"</B
+> instead.  These commands are generally put in
+	the <TT
+CLASS="FILENAME"
+>.profile</TT
+> or
+	<TT
+CLASS="FILENAME"
+>.login</TT
+> file, so that your environment
+	starts up the same way each time.</P
+><P
+>Some languages (such as English and Spanish) need to be
+	handled differently depending on where you are.  In these
+	cases you can extend the language code with an underscore
+	followed by a ISO 3166 country code.  So, if you want to
+	select British English you would use "en_GB"; for Mexican
+	Spanish you would use "es_MX".</P
+><P
+>Keep in mind that GNOME apps that are already running
+	won't change languages while you change the
+	<TT
+CLASS="ENVAR"
+>LANG</TT
+> variable, you have to close the program
+	and reopen it for the new value to take effect.  Also note
+	that some languages are not offered by all applications.  You
+	might find some apps using the language you want, and others
+	using English.</P
+><P
+>You can find the list of all the ISO Language and
+	Country Codes at <A
+HREF="http://www.twics.com/~craig/writings/linux-nihongo/node93.html"
+TARGET="_top"
+>http://www.twics.com/~craig/writings/linux-nihongo/node93.html</A
+>.  Here's the list of the
+	codes currently supported by GNOME-core:</P
+><P
+></P
+><TABLE
+BORDER="0"
+><TR
+><TD
+>Catalan (ca)</TD
+></TR
+><TR
+><TD
+>Czech (cs)</TD
+></TR
+><TR
+><TD
+>Danish (da)</TD
+></TR
+><TR
+><TD
+>German (de)</TD
+></TR
+><TR
+><TD
+>English [USA] (en) [Yeah, life's not fair]</TD
+></TR
+><TR
+><TD
+>English [Great Britain] (en_GB)</TD
+></TR
+><TR
+><TD
+>Spanish [Spain] (es)</TD
+></TR
+><TR
+><TD
+>Spanish [Dominican Republic] (es_DO)</TD
+></TR
+><TR
+><TD
+>Spanish [Guatemala] (es_GT)</TD
+></TR
+><TR
+><TD
+>Spanish [Honduras] (es_HN)</TD
+></TR
+><TR
+><TD
+>Spanish [Mexico] (es_MX)</TD
+></TR
+><TR
+><TD
+>Spanish [Panama] (es_PA)</TD
+></TR
+><TR
+><TD
+>Spanish [Peru] (es_PE)</TD
+></TR
+><TR
+><TD
+>Spanish [Sweden?] (es_SV) [Should be es_SE if its Sweden]</TD
+></TR
+><TR
+><TD
+>Basque (eu)</TD
+></TR
+><TR
+><TD
+>Finnish (fi)</TD
+></TR
+><TR
+><TD
+>French (fr)</TD
+></TR
+><TR
+><TD
+>Irish (ga)</TD
+></TR
+><TR
+><TD
+>Hungarian (hu)</TD
+></TR
+><TR
+><TD
+>Italian (it)</TD
+></TR
+><TR
+><TD
+>Japanese (ja)</TD
+></TR
+><TR
+><TD
+>Korean (ko)</TD
+></TR
+><TR
+><TD
+>Dutch (nl)</TD
+></TR
+><TR
+><TD
+>Norwegian (no)</TD
+></TR
+><TR
+><TD
+>Polish (pl)</TD
+></TR
+><TR
+><TD
+>Portuguese (pt)</TD
+></TR
+><TR
+><TD
+>Russian (ru)</TD
+></TR
+><TR
+><TD
+>Slovak (sk)</TD
+></TR
+><TR
+><TD
+>Swedish (sv)</TD
+></TR
+><TR
+><TD
+>Waloon (wa)</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="docbook.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guile.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>DocBook</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="architecture.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Guile</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

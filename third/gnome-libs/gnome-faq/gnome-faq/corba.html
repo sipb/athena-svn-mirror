@@ -1,0 +1,596 @@
+<HTML
+><HEAD
+><TITLE
+>CORBA, ORBit and Bonobo</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Architecture Components"
+HREF="architecture.html"><LINK
+REL="PREVIOUS"
+TITLE="Architecture Components"
+HREF="architecture.html"><LINK
+REL="NEXT"
+TITLE="Graphics in GNOME"
+HREF="graphics.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="architecture.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Architecture Components</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="graphics.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CORBA"
+>CORBA, ORBit and Bonobo</A
+></H1
+><P
+>Network Objects is GNOME's middle name.  This is how they
+      work.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN673"
+>What is CORBA?</A
+></H2
+><P
+><A
+HREF="http://www.omg.org/news/begin.htm"
+TARGET="_top"
+>CORBA</A
+> is the
+	Common Object Request Broker Architecture.  From the Open
+	Management Group (OMG, the standards body which controls
+	CORBA) document <A
+HREF="http://www.omg.org/about/wicorba.htm"
+TARGET="_top"
+>What is
+	CORBA?</A
+> comes the following description:</P
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>The Common Object Request Broker Architecture (CORBA),
+	  is the Object Management Group's answer to the need for
+	  inter-operability among the rapidly proliferating number of
+	  hardware and software products available today. Simply
+	  stated, CORBA allows applications to communicate with one
+	  another no matter where they are located or who has designed
+	  them(...)</P
+><P
+>The (ORB) is the middleware that establishes the
+	  client-server relationships between objects. Using an ORB, a
+	  client can transparently invoke a method on a server object,
+	  which can be on the same machine or across a network. The
+	  ORB intercepts the call and is responsible for finding an
+	  object that can implement the request, pass it the
+	  parameters, invoke its method, and return the results. The
+	  client does not have to be aware of where the object is
+	  located, its programming language, its operating system, or
+	  any other system aspects that are not part of an object's
+	  interface. In so doing, the ORB provides inter-operability
+	  between applications on different machines in heterogeneous
+	  distributed environments and seamlessly interconnects
+	  multiple object systems.</P
+><P
+>In fielding typical client/server applications,
+	  developers use their own design or a recognized standard to
+	  define the protocol to be used between the devices. Protocol
+	  definition depends on the implementation language, network
+	  transport and a dozen other factors. ORBs simplify this
+	  process. With an ORB, the protocol is defined through the
+	  application interfaces via a single implementation
+	  language-independent specification, the IDL (Ed. Interface
+	  Description Language).  And ORBs provide flexibility. They
+	  let programmers choose the most appropriate operating
+	  system, execution environment and even programming language
+	  to use for each component of a system under
+	  construction. More importantly, they allow the integration
+	  of existing components. In an ORB-based solution, developers
+	  simply model the legacy component using the same IDL they
+	  use for creating new objects, then write "wrapper" code that
+	  translates between the standardized bus and the legacy
+	  interfaces.</P
+></BLOCKQUOTE
+><P
+>OK, enough of that stuff. Here's Todd's
+	explanation:</P
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>Do you remember RPC? You know, Remote Procedure Calls?
+	  Sun used them as the basis for NFS and NIS. Microsoft used
+	  the Distributed Computing Environment's RPC standard as the
+	  basis for DCOM.</P
+><P
+>Well, a remote procedure call is really pretty
+	  simple. First, you define the procedure in some standard
+	  format. What is there to a procedure definition?  Well,
+	  you've got the name of the procedure, the arguments which go
+	  into it, and the results which come out of it. Then you
+	  produce the client side, which tells clients how to feed in
+	  arguments and get back results, and then you build the
+	  server side, which takes in arguments and gives back
+	  results.</P
+><P
+>You can use this model to build pretty powerful
+	  systems. Just take the standard Unix file system interface,
+	  convert it to RPC, and bammo, you've got NFS. Note that as
+	  long as the inputs and outputs are thrown around in a
+	  standard way, the clients calling the procedure and the
+	  server servicing the procedure don't have to be written in
+	  the same language, running on the same machine, or even
+	  running on the same operating system or hardware. This is,
+	  truth be told, the killer feature of RPC.</P
+><P
+>However, as procedural programming (C, Perl) has been
+	  superseded by object-oriented programming (Objective C,
+	  Java, C++), you really need something more the procedures in
+	  RPC. You need something which supports objects: creating
+	  objects, accessing object data, accessing object methods,
+	  destroying objects. This is where CORBA comes in: think of
+	  CORBA as next-generation RPC, just extended to support
+	  object-oriented programming. Instead of having under RPC the
+	  following:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void foo(int bar); void baz(){return(-1);}</PRE
+></TD
+></TR
+></TABLE
+><P
+>you instead have under CORBA the following:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>interface bubba{ void foo(in int bar); void baz() raises (InValidContext); } </PRE
+></TD
+></TR
+></TABLE
+><P
+>The lesson of all of this? CORBA lets one program
+	  language-independent, location-transparent object-oriented
+	  interfaces between software components. It' s cool.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN692"
+>What are some CORBA components?</A
+></H2
+><P
+>I would like to include here definitions of some of the
+	more strange CORBA terminology, so that people can easily get
+	into the groove of what CORBA is and have a good
+	"beck-of-the-envelope" understanding of the components
+	involved.  Whenever I refer to a non-obvious CORBA term, I
+	intend to define it here.</P
+><P
+></P
+><UL
+><LI
+><P
+><I
+CLASS="FIRSTTERM"
+>Object Request Broker</I
+> - (or
+	    ORB) an ORB is a piece of "middleware", as it's called,
+	    which sits between clients and servers and makes easy
+	    communication between them possible. The ORB is a
+	    conceptual entity, which sometimes takes the form of a
+	    shared library and sometimes takes the form of an external
+	    program.  the ORB is responsible for establishing and
+	    destroying sessions between clients and servers and
+	    marshaling, unmarshaling, and transporting messages
+	    between them during a session.</P
+></LI
+><LI
+><P
+><I
+CLASS="FIRSTTERM"
+>Object Adaptor</I
+> - (or OA) an
+	    Object Adaptor provides the channel through which an
+	    object server (like the gnome panel) communicates with the
+	    Object Request Broker (ORBit).</P
+></LI
+><LI
+><P
+><I
+CLASS="FIRSTTERM"
+>GIOP/IIOP</I
+> - CORBA takes all
+	    of these object-oriented language-isms and handles
+	    carrying them between object-oriented software components
+	    (marshaling, transporting, and demarshaling). If the two
+	    pieces of software are in different locations, then it
+	    will use the GIOP protocol to move information between
+	    them. IIOP is a specification of GIOP for the Internet
+	    protocol suite; theoretically you could run GIOP over
+	    something other than IP, in which case it would be called
+	    something else. I for one can't figure out why you would
+	    want to. 8^) If any version of GIOP other than IIOP ever
+	    became important, then I'm sure that ORBit would support
+	    it, too. (Think of IIOP as HTML to GIOP's SGML.)</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN705"
+>What are CORBA Services?</A
+></H2
+><P
+>Additionally, there are really two parts to CORBA. There
+	is the part which I've already described, which tells you how
+	to do objectified RPC, how to marshal arguments, how to write
+	IDL files, how GIOP works, etc. and then there are the "CORBA
+	Services". These are services built on top of the basic CORBA
+	infrastructure which make distributed object programming
+	easier.</P
+><P
+>Perhaps the most important of these is the naming
+	service. E.g., say that you were a program which for some
+	reason needed spell-checking services. One really neat thing
+	that you can do (if your CORBA implementation is nifty enough)
+	is to call up your ORB and say "Hey! I need spell-check
+	service. Go find it for me." The ORB then uses the naming
+	service to see what objects are registered which provide
+	spell-check service. It can then wake up the calling program
+	and say "You can find the spell- check service at
+	#867-5309." You then call up 867-5309 and, lo and behold,
+	there's a spell check service there. Now, that might be a
+	shared library which got mapped into your address space and
+	you are now doing straight function calls into it, or it might
+	be a community spell-check service in Mongolia offered as a
+	public service by the Mongolian FreeBSD users' group over the
+	internet via IIOP. You don't know and, except for maybe a
+	little lag induced by the round-trip to Mongolia, you really
+	don't care. Cool, non?</P
+><P
+>The naming service, then, allows objects to register
+	themselves for future use. There are other CORBA services,
+	including a transaction service, a security service, a time
+	service, a "relationship service", which might or might not be
+	what you think it is, and more. My copy of the CORBAservices
+	document from March 1997 lists 14 of them.</P
+><P
+>You can find a copy of the CORBAservices specification
+	at the OMG web page at <A
+HREF="http://www.omg.org/corba/csindx.htm"
+TARGET="_top"
+>http://www.omg.org/corba/csindx.htm</A
+>.
+	If you are interested in implementing any of them, then I'm
+	sure that the ORBit developers would love to talk to you.
+	(See <A
+HREF="corba.html#ORBIT"
+>ORBit</A
+>)</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN713"
+>Which CORBA version does GNOME use?</A
+></H2
+><P
+>Work is presently underway within the OMG to develop
+	version 3.0, but for now GNOME is using CORBA version 2.2,
+	which is the present standard. I have not heard what GNOME
+	will do when 3.0 comes out.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN716"
+>Where can I find out more about CORBA?</A
+></H2
+><P
+>A good jumping-off page is Linas Vepstas's CORBA page at
+        <A
+HREF="http://linas.org/linux/corba.html"
+TARGET="_top"
+>        http://linas.org/linux/corba.html</A
+>.</P
+><P
+>Since there seems to be a lot of interest in the
+	difference between CORBA and COM, I'll just mention this one
+	other paper: <A
+HREF="http://www.research.att.com/~ymwang/papers/HTML/DCOMnCORBA/S.html"
+TARGET="_top"
+>http://www.research.att.com/~ymwang/papers/HTML/DCOMnCORBA/S.html</A
+>,
+	DCOM and CORBA Side by Side, Step by Step, and Layer by
+	Layer.</P
+><P
+>Finally, the TAO project at Washington University in
+	St. Louis has their own ORB, TAO. That group is led by
+	Dr. Douglas Schmidt. You can find a lot of good information on
+	his CORBA page: <A
+HREF="http://siesta.cs.wustl.edu/~schmidt/corba.html"
+TARGET="_top"
+>http://siesta.cs.wustl.edu/~schmidt/corba.html</A
+>.  Be sure to look
+	around at the ACE and TAO pages while you're there; they are
+	very good.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN724"
+>What role does CORBA play in GNOME?</A
+></H2
+><P
+>CORBA enables the component architecture of GNOME. It
+	serves a role similar to that of COM/DCOM under win32.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN727"
+>What CORBA implementation is GNOME using?</A
+></H2
+><P
+>In the beginning, the plan was to use <A
+HREF="ftp://parcftp.parc.xerox.com/pub/ilu/ilu.html"
+TARGET="_top"
+>	ILU</A
+>.  ILU had a number of benefits, foremost among
+	them that it supports several languages.  While ILU was (and
+	is) awfully neat, Xerox's attitude towards it was unclear, and
+	the licensing terms proved to be fatal: ILU is not free
+	software, and the GNOME team proved unable to get Xerox to
+	modify the license. The GNOME project won't adopt technology
+	which is not free software, and that was the end of
+	that.</P
+><P
+>The project then settled upon <A
+HREF="http://diamant-atm.vsb.cs.uni-frankfurt.de/~mico/"
+TARGET="_top"
+>	MICO</A
+>.  The main attractions of MICO are that it has an
+	Object Adaptor, it is IIOP-compliant, and it is licensed under
+	the terms of the GPL. However, it does not presently support
+	languages other than C++, and it used just an unbelievably
+	amount of memory.</P
+><P
+>Still dissatisfied, the GNOMErs began work on our own
+	ORB, called ORBit.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="ORBIT"
+>What is ORBit?</A
+></H2
+><P
+>ORBit is intended to be multilingual; ILU proves that
+	this is possible.  Right now it only supports C, but in the
+	future it will support other languages.  (Really, we mean it!
+	It is a very, very new project right now, which is the only
+	reason it is C only.) It also supports GIOP/IIOP, the OMG's
+	CORBA protocol which allows different ORBs to be able to talk
+	to each other.</P
+><P
+>Finally, ORBit is intended to be high performance. That
+	means low-memory and high-speed. Here, ORBit is taking a lot
+	of cues from <A
+HREF="http://www.cs.utah.edu/projects/flux/flick/"
+TARGET="_top"
+>	Flick</A
+>.  Elliot Lee, the instigator of the ORBit
+	project, thinks that he can, without violating the CORBA spec,
+	get the cost of a CORBA call darn close to that of a standard
+	library call, where a local implementation of the requested
+	service is available. We'll see.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN739"
+>Why has GNOME not made more use of CORBA?</A
+></H2
+><P
+>The big reason is that MICO was just unworkable. it took
+	too much memory, it was C++ only, etc. ad naus. With the
+	recent release of the GNOME ORBit, we can start deploying
+	CORBA in the GNOME.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BONOBO"
+>How will CORBA be used in GNOME, or, what is
+	Bonobo?</A
+></H2
+><P
+>(This section comes pretty much verbatim from Miguel de
+	Icaza, Chief of the GNOMErs.)</P
+><P
+>CORBA will be used in various contexts. A set of
+	interfaces and library routines called "Bonobo" are used to
+	simplify and integrate applications:</P
+><P
+></P
+><UL
+><LI
+><P
+>Components: There are pre-packaged libraries/servers
+	    that do provide some functionality that can be used by any
+	    application like spelling servers, calendaring services
+	    and other non-GUI services.</P
+></LI
+><LI
+><P
+>Application embedding and in-place activation:
+	    Bonobo is a set of interfaces for providing application
+	    embedding and in-place activation which are being defined.
+	    The Bonobo interfaces and interactions are modeled after
+	    the OLE2 and OpenDoc interfaces.</P
+></LI
+><LI
+><P
+>GNOME Applications as service providers: GNOME
+	    applications will export their inner workings through
+	    CORBA to allow anyone to reuse their functionality.  This
+	    allows scripting of the GNOME desktop as any CORBA-aware
+	    application or scripting language can invoke methods in a
+	    GNOME server (for example, a script in Perl can control
+	    remotely invoke a spreadsheet to make a graph or to make a
+	    sales report). Some people call this "Automation".  Unlike
+	    the COM world, the use of CORBA makes this transparent to
+	    the implementor of a server.</P
+></LI
+><LI
+><P
+>Reusable controls: Another set of Bonobo interfaces
+	    deal with reusable controls. This is similar to Sun's
+	    JavaBeans and Microsoft Active-X.</P
+></LI
+></UL
+><P
+>Bonobo doesn't stand for anything.  They are
+	Chimpanzees' less grouchy cousins.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="architecture.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="graphics.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Architecture Components</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="architecture.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Graphics in GNOME</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

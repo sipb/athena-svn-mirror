@@ -1,0 +1,396 @@
+<HTML
+><HEAD
+><TITLE
+>Graphics in GNOME</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Architecture Components"
+HREF="architecture.html"><LINK
+REL="PREVIOUS"
+TITLE="CORBA, ORBit and Bonobo"
+HREF="corba.html"><LINK
+REL="NEXT"
+TITLE="Session Management"
+HREF="sm.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="corba.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Architecture Components</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="sm.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GRAPHICS"
+>Graphics in GNOME</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GTK"
+>What is GTK+?</A
+></H2
+><P
+>GTK+ is the Gimp Toolkit.  It was originally written as
+	part of the Gimp project, but it has grown into an excellent
+	general purpose widget set.  Find out more at <A
+HREF="http://www.gtk.org"
+TARGET="_top"
+>http://www.gtk.org</A
+></P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN762"
+>What role does GTK+ play in GNOME?</A
+></H2
+><P
+>GTK+ is the interface which GNOME applications use to
+	interact with the user. It is similar to the role of Motif in
+	CDE, Qt in KDE or the-widget-set-which-has-no-name in
+	Win32.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN765"
+>What languages does GTK+ support?</A
+></H2
+><P
+>You can write GTK+ programs in tons of languages! Your
+	humble FAQ author knows of the following bindings:</P
+><P
+></P
+><TABLE
+BORDER="0"
+><TR
+><TD
+>C (original)</TD
+></TR
+><TR
+><TD
+>C++</TD
+></TR
+><TR
+><TD
+>Objective C</TD
+></TR
+><TR
+><TD
+>Python</TD
+></TR
+><TR
+><TD
+>Perl 5</TD
+></TR
+><TR
+><TD
+>Scheme (Guile)</TD
+></TR
+><TR
+><TD
+>TOM</TD
+></TR
+><TR
+><TD
+>Gwydion Dylan</TD
+></TR
+><TR
+><TD
+>Ada95</TD
+></TR
+><TR
+><TD
+>Pike</TD
+></TR
+><TR
+><TD
+>Pascal (Free Pascal Compiler)</TD
+></TR
+></TABLE
+><P
+></P
+><P
+>If there are others, then please let us know about
+	them. (See <A
+HREF="contactfaq.html"
+>Contact the FAQ
+	Maintainer</A
+>)</P
+><P
+>You are encouraged to add bindings to other languages
+	should the fancy strike you. N.b., that the Scheme bindings
+	already have a formalized representation of the API, so if you
+	want to start working on new bindings, then you might want to
+	start from here.</P
+><P
+>Having written that, I have to wonder if we can't
+	somehow use CORBA to cut this Gordian knot. If the ORBit
+	developers can get the cost of a local CORBA call down to that
+	of a normal shared-library call, then why not CORBify GTK and
+	work on adding bindings for new languages to ORBit? I know,
+	the conventional wisdom is that CORBA is too heavyweight for
+	high-volume stuff like X calls.  Hey, don't blame me for
+	throwing out crazy ideas: the reason I maintain the FAQ is
+	that I can't program!</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="IMLIB"
+>What is imlib?</A
+></H2
+><P
+>Along with GTK, GNOME uses imlib, an image library for X
+	which supports multiple image formats transparently to the
+	programmer. Imlib can even use external converter programs
+	like ImageMagick or pmbplus to convert unknown image formats
+	to known formats, so if a converter exists for an image type,
+	you can almost certainly use that image type in your
+	application! Imlib also supports multiple bit-depths, from
+	24-bit down to 1-bit monochrome, again transparently to the
+	programmer, and does intelligent color map allocation and
+	automatic dithering to get the best possible performance out
+	of your display. Anyone who has ever tried to do this in their
+	X apps, or who has had to endure their screen flashing when
+	apps have to allocate a private color map, you will especially
+	like this feature.</P
+><P
+>You can find out more about imlib at <A
+HREF="http://www.labs.redhat.com/imlib"
+TARGET="_top"
+>http://www.labs.redhat.com/imlib</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="THEMES"
+>What's the deal with themes?</A
+></H2
+><P
+>Themes let you change the look and feel of GTK+
+	applications without recompiling them.  With themes, you are
+	able to change the theme of all GTK+ apps on a given display
+	at the same time.</P
+><P
+>There are actually two parts of a theme in GTK+, the
+	engine and the configuration.  The engine is a specially
+	constructed shared library with instructions on the themes way
+	to draw the widgets (the controls of a window, like the
+	buttons, scrollbars and menus).  The configuration includes
+	information like fonts, colors, which engine to use, and
+	sometimes graphic images to incorporate into the theme.
+	Together, the two make the Theme, and give GTK+ its flexible
+	appearance.</P
+><P
+>To see some examples of what themed GTK+ apps look like,
+	take a look at: <A
+HREF="http://gtk.themes.org"
+TARGET="_top"
+>	http://gtk.themes.org</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN795"
+>How do I get themes working?</A
+></H2
+><P
+>First, you need a recent version of GTK+, I recommend
+	version 1.2.1 at the moment, but 1.2.0 works fine as well.
+	You then get the themes you want.  A good selection of themes
+	is available in the gtk-engines module.  Even more are
+	available at <A
+HREF="http://gtk.themes.org"
+TARGET="_top"
+>	http://gtk.themes.org</A
+>.</P
+><P
+>Many of the themes include an engine.  You need to
+	compile the engine, and install it.  In gtk-engines, this is
+	done the same way as any GNOME module.  The themes from the
+	website might have different instructions, check their
+	documentation.  Some of the themes on the website are merely
+	alternate configurations for another engine, many of them are
+	for the pixmap engine in gtk-engines.</P
+><P
+>Once the theme is installed, you can select them through
+	the GNOME Control Center, under Desktop-&#62;Theme Selector.  The
+	selector will allow you to choose between all the themes
+	installed on the fly, preview what the the theme will look
+	like, and in version 1.04 or later even let you select the
+	font.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="OPENGL"
+>What is OpenGL?</A
+></H2
+><P
+>OpenGL is a 2D and 3D rendering API developed by Silicon
+	Graphics that has become a de facto industry standard.
+	Basically, it is a tool to take a viewpoint of 3D space, and
+	produce a 2D image of it suitable for drawing on a screen. To
+	quote SGI's FAQ:</P
+><BLOCKQUOTE
+CLASS="BLOCKQUOTE"
+><P
+>OpenGL is a rendering only, vendor neutral API
+	  providing 2D and 3D graphics functions, including modeling,
+	  transformations, color, lighting, smooth shading, as well as
+	  advanced features like texture mapping, NURBS, fog, alpha
+	  blending and motion blur. OpenGL works in both immediate and
+	  retained (display list) graphics modes.</P
+></BLOCKQUOTE
+><P
+>GNOME uses an implementation of the OpenGL API called
+	Mesa.  Mesa is not OpenGL per se, since it is a Free Software
+	project that has not gone through the OpenGL trademark
+	licensing process, but it is a faithful representation of the
+	OpenGL API.  Mesa is not OpenGL(tm) in precisely the same way
+	that GNU/Linux and FreeBSD are not Unix(tm).</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="XDND"
+>What about Drag and Drop support?</A
+></H2
+><P
+>GNOME currently uses the Xde Drag and Drop protocol. XDE
+	is being replaced with an implementation of the X Windows
+	Drag-And-Drop Protocol to inter-operate with other toolkits.
+	Find out more at <A
+HREF="http://www.cco.caltech.edu/~jafl/xdnd/"
+TARGET="_top"
+>	http://www.cco.caltech.edu/~jafl/xdnd/</A
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="corba.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sm.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>CORBA, ORBit and Bonobo</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="architecture.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Session Management</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,190 @@
+<HTML
+><HEAD
+><TITLE
+>Internationalization.</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.33"><LINK
+REL="HOME"
+TITLE="Gnome Developers' Information"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="GNOME Developer's Tutorial."
+HREF="tutorial.html"><LINK
+REL="PREVIOUS"
+TITLE="Adding menus"
+HREF="tut-menus.html"><LINK
+REL="NEXT"
+TITLE="Parsing parameters."
+HREF="tut-parsing.html"></HEAD
+><BODY
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Gnome Developers' Information</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="tut-menus.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. GNOME Developer's Tutorial.</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="tut-parsing.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TUT-I18N"
+>Internationalization.</A
+></H1
+><P
+><IMG
+SRC="gnome-hello-2-i18n.jpg"></P
+><P
+>	  Internationalization (i18n for short) is very easy with GNOME. We
+	  use GNU gettext. You need to initialize it with a call to 
+	  <TT
+CLASS="FUNCTION"
+><B
+>bindtextdomain</B
+></TT
+> and
+	  <TT
+CLASS="FUNCTION"
+><B
+>textdomain</B
+></TT
+> in your main function.
+ 	  After it a _() to all the strings that need translation. 
+      	  </P
+><P
+>      	  You will need add your file to po/POTFILES.in. Then you can do
+      	  <TT
+CLASS="LITERAL"
+>make gnome-modulename.pot;make update-po</TT
+>, edit the .po file
+      	  corresponding to your language and do <TT
+CLASS="LITERAL"
+>make install</TT
+>.
+      	  Now try your program... Wow! It's speaking in Spanish/Finnish/Latin...
+      	  </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>      	  _() is a macro for the function gettext.  So it won't work
+      	  when initializing arrays of strings or structs.  You'll need
+      	  use the N_() macro around the strings instead.  If you want
+      	  know more about it read the info documentation of GNU
+      	  gettext.
+      	</P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="tut-menus.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="tut-parsing.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Adding menus</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="tutorial.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Parsing parameters.</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

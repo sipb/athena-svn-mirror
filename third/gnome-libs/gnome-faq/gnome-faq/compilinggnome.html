@@ -1,0 +1,224 @@
+<HTML
+><HEAD
+><TITLE
+>Compiling GNOME</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="GNOME Frequently Asked Questions"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="I'm running Microsoft Windows, can I get GNOME?"
+HREF="gettingwindows.html"><LINK
+REL="NEXT"
+TITLE="How do I configure the source code for my system?
+      (or... Where are the Makefiles hiding?)"
+HREF="x359.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>GNOME Frequently Asked Questions</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="gettingwindows.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x359.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="COMPILINGGNOME"
+>Compiling GNOME</A
+></H1
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN337"
+>What order do I compile the packages in?</A
+></H1
+><P
+>It is important that you compile and install the GNOME
+      packages in the proper orders.  There are some serious
+      dependencies within the GNOME tree.  Here is my suggested order,
+      you should compile and install each package before you move onto
+      the next.  On ELF-based systems (such as GNU/Linux and FreeBSD),
+      you should also run <B
+CLASS="COMMAND"
+>ldconfig</B
+> after each
+      package, just to be sure any new libraries are found.</P
+><P
+></P
+><TABLE
+BORDER="0"
+><TR
+><TD
+>glib</TD
+></TR
+><TR
+><TD
+>gtk+</TD
+></TR
+><TR
+><TD
+>imlib</TD
+></TR
+><TR
+><TD
+>orbit</TD
+></TR
+><TR
+><TD
+>gtk-doc</TD
+></TR
+><TR
+><TD
+>libgtop</TD
+></TR
+><TR
+><TD
+>gtk-engines</TD
+></TR
+><TR
+><TD
+>gnome-libs</TD
+></TR
+><TR
+><TD
+>gnome-core</TD
+></TR
+><TR
+><TD
+>control-center</TD
+></TR
+><TR
+><TD
+>gnome-print</TD
+></TR
+><TR
+><TD
+>mc</TD
+></TR
+><TR
+><TD
+>gnome-guile</TD
+></TR
+><TR
+><TD
+>gnome-python</TD
+></TR
+><TR
+><TD
+>gnome-objc</TD
+></TR
+><TR
+><TD
+>gtk--</TD
+></TR
+><TR
+><TD
+>anything else, as needed, in whatever order</TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="gettingwindows.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x359.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>I'm running Microsoft Windows, can I get GNOME?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How do I configure the source code for my system?
+      (or... Where are the Makefiles hiding?)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,241 @@
+<refentry id="GnomeGuru" revision="7 Jul 1999">
+<refmeta>
+<refentrytitle>GnomeGuru</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeGuru</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;gnome.h&gt;
+
+
+struct      <link linkend="GnomeGuru-struct">GnomeGuru</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-guru-new">gnome_guru_new</link>                  (const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *graphic,
+                                             <link linkend="GnomeDialog">GnomeDialog</link> *dialog);
+void        <link linkend="gnome-guru-construct">gnome_guru_construct</link>            (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *graphic,
+                                             <link linkend="GnomeDialog">GnomeDialog</link> *dialog);
+void        <link linkend="gnome-guru-append-page">gnome_guru_append_page</link>          (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *widget);
+void        <link linkend="gnome-guru-next-set-sensitive">gnome_guru_next_set_sensitive</link>   (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             <link linkend="gboolean">gboolean</link> sensitivity);
+void        <link linkend="gnome-guru-back-set-sensitive">gnome_guru_back_set_sensitive</link>   (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             <link linkend="gboolean">gboolean</link> sensitivity);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-guru-current-page">gnome_guru_current_page</link>         (<link linkend="GnomeGuru">GnomeGuru</link> *guru);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkBox">GtkBox</link>
+                     +----<link linkend="GtkVBox">GtkVBox</link>
+                           +----GnomeGuru
+</synopsis>
+
+</refsect1>
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeGuru-cancelled">cancelled</link>&quot; void        user_function      (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeGuru-finished">finished</link>&quot;  void        user_function      (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeGuru-struct">struct GnomeGuru</title>
+<programlisting>struct GnomeGuru;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-new">gnome_guru_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_guru_new                  (const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *graphic,
+                                             <link linkend="GnomeDialog">GnomeDialog</link> *dialog);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>graphic</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-construct">gnome_guru_construct ()</title>
+<programlisting>void        gnome_guru_construct            (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *graphic,
+                                             <link linkend="GnomeDialog">GnomeDialog</link> *dialog);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>graphic</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-append-page">gnome_guru_append_page ()</title>
+<programlisting>void        gnome_guru_append_page          (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             <link linkend="GtkWidget">GtkWidget</link> *widget);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-next-set-sensitive">gnome_guru_next_set_sensitive ()</title>
+<programlisting>void        gnome_guru_next_set_sensitive   (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             <link linkend="gboolean">gboolean</link> sensitivity);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>sensitivity</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-back-set-sensitive">gnome_guru_back_set_sensitive ()</title>
+<programlisting>void        gnome_guru_back_set_sensitive   (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                             <link linkend="gboolean">gboolean</link> sensitivity);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>sensitivity</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-guru-current-page">gnome_guru_current_page ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_guru_current_page         (<link linkend="GnomeGuru">GnomeGuru</link> *guru);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeGuru-cancelled">The &quot;cancelled&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GnomeGuru-finished">The &quot;finished&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GnomeGuru">GnomeGuru</link> *guru,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>guru</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+
+</refentry>
