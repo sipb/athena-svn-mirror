@@ -1,6 +1,6 @@
 # $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v $
 # $Author: jtkohl $
-# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.7 1989-04-11 11:50:37 jtkohl Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.8 1989-07-24 19:57:47 jtkohl Exp $
 #
 # Makefile for creating a Zephyr configuration
 #
@@ -17,7 +17,7 @@
 # make -f makeconfig SRCDIR=/u2/lockers/zephyr DESTDIR=myconfig
 
 DESTDIR	= .
-SRCDIR 	= /mit/zephyr/src
+SRCDIR 	= /afs/athena.mit.edu/mit/zephyr/src
 
 LN	= ln -s
 CP	= cp
