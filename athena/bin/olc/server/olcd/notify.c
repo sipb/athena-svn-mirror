@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: notify.c,v 1.43 1999-06-28 22:52:41 ghudson Exp $
+ *	$Id: notify.c,v 1.44 2002-07-05 21:34:02 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: notify.c,v 1.43 1999-06-28 22:52:41 ghudson Exp $";
+static char rcsid[] ="$Id: notify.c,v 1.44 2002-07-05 21:34:02 zacheiss Exp $";
 #endif
 #endif
 
@@ -39,7 +39,6 @@ static char rcsid[] ="$Id: notify.c,v 1.43 1999-06-28 22:52:41 ghudson Exp $";
 #include <pwd.h>                /* Directory defs. */
 #include <signal.h>             /* System signal definitions. */
 #include <sgtty.h>              /* Terminal param. definitions. */
-#include <setjmp.h>
 
 #include <netdb.h>              /* Net database defs. */
 #ifdef HAVE_ZEPHYR
@@ -59,7 +58,7 @@ static int punt_zephyr = 0;
 static long zpunt_time;
 static int zpunt_duration;
 
-static void notice_timeout (int a );
+static void notice_timeout (void);
 
 #ifdef HAVE_ZEPHYR
 static ERRCODE zwrite_message (char *username , char *message );
@@ -68,8 +67,6 @@ static ERRCODE zsend_message (char *c_class , char *instance ,
 			      char *message );
 static ERRCODE zsend (ZNotice_t *notice );
 #endif /* HAVE_ZEPHYR */
-
-static jmp_buf env;
 
 /*
  * Function:	write_message() uses the program "write" to send a message
@@ -183,23 +180,14 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	action.sa_handler = notice_timeout;
 	sigaction(SIGALRM, &action, NULL);
 
-        if(setjmp(env) != 0) {
-                log_status("Unable to contact writed on %s", tomachine);
-		if(tf!=NULL)
-		  fclose(tf);
-		close(fds);
-                alarm(0);
-		action.sa_handler = SIG_IGN; /* struct already initialized */
-		sigaction(SIGALRM, &action, NULL);
-                return(ERROR);
-        }
         alarm(OLCD_TIMEOUT);
-
 
 	if (connect(fds, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
 	  alarm(0);
 	  action.sa_handler = SIG_IGN;       /* struct already initialized */
 	  sigaction(SIGALRM, &action, NULL);
+	  if (tf)
+	    fclose(tf);
 	  close(fds);
 	  return(MACHINE_DOWN);
 	}
@@ -236,14 +224,8 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 
  
 static void
-notice_timeout(a)
-     int a;
+notice_timeout(void)
 {
-#ifdef SABER
-  a = a;  /* Rand lives! :-) */
-#endif
-    longjmp(env, 1);
-  /*NOTREACHED*/
   return;
 }
 
@@ -467,16 +449,6 @@ zsend(notice)
   sigaction(SIGALRM, &action, NULL);
 
   alarm(6 * OLCD_TIMEOUT);	/* Longer timeout than for "write". */
-
-  if(setjmp(env) != 0)
-    {
-      toggle_zephyr(1,ZEPHYR_PUNT_TIME);
-      log_zephyr_error("Unable to send message via zephyr.  Punting.");
-      alarm(0);
-      action.sa_handler = SIG_IGN;           /* struct already initialized */
-      sigaction(SIGALRM, &action, NULL);
-      return(ERROR);
-    }
 
   ret = ZSendNotice(notice, ZAUTH);
   if (ret != ZERR_NONE)
