@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20 2003-07-15 05:30:25 ghudson Exp $
+# $Id: Makefile,v 1.21 2004-03-10 01:23:11 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -34,6 +34,11 @@ install:
 	install -c -m 0555 vers/athena-deadfiles-9.2 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/noask ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.2-os-symlinks ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.2-patches ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.2-pkgs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.3-patches ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.3-pkgs ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris251-26 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris26-pkgs ${DESTDIR}${UPDATE}

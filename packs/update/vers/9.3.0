@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "MINIROOT=true"					>> $CONFVARS
+echo "NEWOS=true"					>> $CONFVARS
+echo "NEWDEVS=true"					>> $CONFVARS
+echo "OSCHANGES=true"					>> $CONFVARS
+
+cat $LIBDIR/solaris-9.2-pkgs				>> $OLDPKGS
+cat $LIBDIR/solaris-9.2-patches				>> $OLDPTCHS
+
+# This file will be inaccurate after we remove the pkgs and patches.
+echo "/var/sadm/install/contents"			>> $DEADFILES
+
+cat $LIBDIR/solaris-9.2-os-symlinks			>> $DEADFILES
+
+# Create the lists of packages and patches to install.
+cat $LIBDIR/solaris-9.3-pkgs				> $PACKAGES
+cat $LIBDIR/solaris-9.3-patches				> $PATCHES
+
+echo "/etc/minor_perm"					>> $CONFCHG
+echo "/etc/driver_aliases"				>> $CONFCHG
+echo "/etc/devlink.tab"					>> $CONFCHG
