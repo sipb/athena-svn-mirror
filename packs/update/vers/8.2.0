@@ -621,9 +621,13 @@ esac
 
 # We're going to fully-qualified hostnames.  If $HOST does not contain
 # a '.', tack on "mit.edu".
-if [ `expr "$HOST" : '\.'` -eq 0 ]; then
+case $HOST in
+*.*)
+	;;
+*)
 	HOST=$HOST.mit.edu
-fi
+	;;
+esac
 
 # Do a little rc.conf editing to take care of possible updates to HOST,
 # MACHINE, and SYSTEM.  We have to be careful with SYSTEM because it
