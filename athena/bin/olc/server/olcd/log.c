@@ -38,7 +38,7 @@ extern int errno;
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.17 1990-01-29 11:09:26 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.18 1990-01-30 03:57:01 vanharen Exp $";
 #endif
 
 #if __STDC__
@@ -347,7 +347,7 @@ init_log(knuckle, question) KNUCKLE *knuckle; char *question;
       log_error(error);
       (void) fclose(logfile);
       (void) strcpy(topic, knuckle->question->topic);
-      (void) sprintf(knuckle->question->topic, "crash");
+      (void) strcpy(knuckle->question->topic, "crash");
       terminate_log_crash(knuckle);
       (void) strcpy(knuckle->question->topic, topic);
     }
@@ -586,14 +586,10 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
       }
       execl("/usr/sipb/bin/dspipe", "dspipe", notesfile, "-t",topic, 0);
       perror("dispose_of_log: /usr/sipb/bin/dspipe");
-      (void) sprintf(error,
-		     "dispose_of_log: cannot exec /usr/sipb/bin/dspipe.\n");
-      log_error(error);
+      log_error("dispose_of_log: cannot exec /usr/sipb/bin/dspipe.\n");
       execl("/usr/local/dspipe", "dspipe", notesfile, "-t", topic, 0);
       perror("dispose_of_log: /usr/local/dspipe");
-      (void) sprintf(error, 
-		     "dispose_of_log: cannot exec /usr/local/dspipe, giving up.\n");
-      log_error(error);
+      log_error("dispose_of_log: cannot exec /usr/local/dspipe, giving up.\n");
       exit(0);
     }
   while ((pid2 = wait(0)) != pid) 
