@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.8 1998-02-28 17:58:31 danw Exp $
+ * $Id: sshd.c,v 1.9 1998-03-01 16:12:59 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  1998/02/28 17:58:31  danw
+ * Don't use packet_disconnect for `you are not allowed to log in here'
+ *
  * Revision 1.7  1998/02/02 23:20:15  danw
  * use our DEFAULT_PATH, not the OS's unless the builder overrides it on
  * the command line.
@@ -1849,13 +1852,13 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
       err = al_strerror(status, &errmem);
       if (filetext && *filetext)
 	{
-	  buf = malloc(40 + strlen(err) + strlen(filetext));
+	  buf = xmalloc(40 + strlen(err) + strlen(filetext));
 	  sprintf(buf, "You are not allowed to log in here: %s\n%s",
 		  err, filetext);
 	}
       else
 	{
-	  buf = malloc(40 + strlen(err));
+	  buf = xmalloc(40 + strlen(err));
 	  sprintf(buf, "You are not allowed to log in here: %s\n", err);
 	}
       packet_start(SSH_MSG_DISCONNECT);
