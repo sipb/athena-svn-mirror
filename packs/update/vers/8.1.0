@@ -2,20 +2,32 @@
 
 case "$HOSTTYPE" in
 sun4)
-	echo "/etc/athena/login/menu16" >> $DEADFILES
+	cat "$LIBDIR/solaris24-251"		>> "$DEADFILES"
+	echo "/etc/athena/login/menu16"		>> "$DEADFILES"
+	echo "/etc/athena/solaris_reconf"	>> "$DEADFILES"
+
+	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
+
+	echo "TRACKOS=true"			>> "$CONFVARS"
+	echo "NEWOS=true"			>> "$CONFVARS"
+	echo "NEWUNIX=true"			>> "$CONFVARS"
+	echo "NEWBOOT=true"			>> "$CONFVARS"
+
+	echo "appletalk"			> "$AUXDEVS"
 
 	# Convert /bin/csh to /bin/athena/tcsh in /etc/passwd.
 	rm -f /etc/passwd.old /etc/passwd.local.old
-	sed -e "s,:/bin/csh$,:/bin/athena/tcsh," /etc/passwd > /etc/passwd.new
+	sed -e 's,:/bin/csh$,:/bin/athena/tcsh,' /etc/passwd > /etc/passwd.new
 	ln /etc/passwd /etc/passwd.old
 	mv /etc/passwd.new /etc/passwd
-	sed -e "s,:/bin/csh$,:/bin/athena/tcsh," /etc/passwd.local \
+	sed -e 's,:/bin/csh$,:/bin/athena/tcsh,' /etc/passwd.local \
 		> /etc/passwd.local.new
 	ln /etc/passwd.local /etc/passwd.local.old
 	mv /etc/passwd.local.new /etc/passwd.local
-
 	;;
 
 sgi)
+	echo "/etc/sendmail.cf"			>> "$CONFCHG"
 	;;
+
 esac
