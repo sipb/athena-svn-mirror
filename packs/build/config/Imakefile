@@ -1,0 +1,23 @@
+/*
+ * 
+ * This is used to recreate imake.  Makefile.ini is used to generate imake
+ * the first time.
+ */
+
+DEPLIBS = 
+HEADERS = imakemdep.h 
+CFFILES = $(HEADERS) Imake.rules Imake.tmpl site.def *.bac *.cf
+DEFINES = $(SIGNAL_DEFINES)
+
+#undef ImakeDependency
+#define ImakeDependency(dummy) @@\
+Makefile::  imake
+
+imake: imake.o
+	${CC} ${CFLAGS} -o imake imake.o
+
+create_depend(imake.c)
+
+clean::
+	rm ccimake
+
