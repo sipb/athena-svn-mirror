@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
- *	$Author: vrt $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.10 1993-05-10 13:36:43 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.11 1993-10-09 18:22:58 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.10 1993-05-10 13:36:43 vrt Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.11 1993-10-09 18:22:58 probe Exp $";
 #endif lint
 
 /*
@@ -265,12 +265,10 @@ readjob()
 				continue;
 			}
 
-#ifdef KERBEROS
-			if (kerberos_cf && (!kerberize_cf(tfname, tempfile))) {
+			if (!fixup_cf(tfname, tempfile)) {
 				rcleanup();
 				continue;
 			}
-#endif KERBEROS
 
 #ifdef LACL
 			if(RA && ((cret = check_remhost()) != 0)) {
@@ -390,8 +388,7 @@ readfile(file, size, acknowledge)
 	return(1);
 }
 
-#ifdef KERBEROS
-kerberize_cf(file, tfile)
+fixup_cf(file, tfile)
 char *file, *tfile;
 {
 	FILE *cfp, *tfp;
@@ -446,12 +443,23 @@ char *file, *tfile;
 	}
 
 	while (getline(tfp)) {
-		if (line[0] == 'P')
+		/* Ignore any queue name that was specified in the original
+		 * .cf file -- we'll be adding it in shortly...
+		 */
+		if (line[0] == 'q') continue;
+
+#ifdef KERBEROS
+		if (kerberos_cf) {
+		    if (line[0] == 'P')
 			strcpy(&line[1], kname);
-		else if (line[0] == 'L')
-		    strcpy(&line[1], kname);
+		    else if (line[0] == 'L')
+			strcpy(&line[1], kname);
+		}
+#endif
 		fprintf(cfp, "%s\n", line);
+
 	}
+	fprintf(cfp, "q%s\n", printer);
 
 	(void) fclose(cfp);
 	(void) fclose(tfp);
@@ -459,7 +467,6 @@ char *file, *tfile;
 
 	return(1);
 }
-#endif KERBEROS
 
 noresponse()
 {
