@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: net-event.sh,v 1.1 2002-11-06 20:37:10 ghudson Exp $
+# $Id: net-event.sh,v 1.2 2003-01-14 17:10:11 ghudson Exp $
 #
 # net-event:	the network event script.  This script is called from a
 #		number of various system scripts.  The first argument is
@@ -73,10 +73,10 @@ set_hostname() {
   addr=`echo $line | sed -e 's/^.*inet addr:\([^ ]*\).*$/\1/'`
   if [ "$addr" != "$line" ]; then
     line=`host $addr`
-    if `echo "$line" | grep -c "domain name pointer"` = 1 ; then
+    if [ `echo "$line" | grep -c "domain name pointer"` = 1 ]; then
       host=`echo "$line" | sed 's#^.*domain name pointer \(.*\)$#\1#'`
       if [ ! -z "$host" -a "$host" != "$line" ]; then
-	  host=`echo $host | sed 's;\.*$;;'`
+	  host=`echo $host | sed 's;\.*$;;' | tr '[A-Z]' '[a-z]'`
 	  hostname $host
       fi
     fi
