@@ -148,6 +148,9 @@ gshell		3715/tcp			# gsh service
 slw		3716/udp			# software license wrapper
 lert		3717/udp			# login user notification
 klpc		49152/tcp			# kerberized lpc daemon
+larvnet		49153/udp			# cluster monitor server
+busypoll	49154/udp			# busy polling port for ws
+athinfo		49155/tcp			# workstation info server
 
 nqs		607/tcp				# Generic NQS batch system
 
