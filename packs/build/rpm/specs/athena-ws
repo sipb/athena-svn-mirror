@@ -371,6 +371,11 @@ rm -f /etc/sysconfig/network-scripts/*.saved
 # earlier releases.
 rm -rf /var/athena/infoagents /var/athena/rconf.infoagents
 
+if [ ! -f /etc/sysconfig/i18n ]; then
+  echo 'LANG="en_US.UTF-8"' > /etc/sysconfig/i18n
+  chmod 644 /etc/sysconfig/i18n
+fi
+
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-ws
