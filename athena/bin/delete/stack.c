@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.5 1989-12-11 03:32:37 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.6 1990-06-07 13:26:52 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -62,7 +62,11 @@ int op, bytes;
 		    return error_code;
 	       }
 	  }
+#if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
+	  memcpy(stack + count, data, bytes);
+#else
 	  bcopy(data, stack + count, bytes);
+#endif
 	  count += bytes;
 	  return 0;
      case STACK_POP:
@@ -76,7 +80,11 @@ int op, bytes;
 	       int newblocks, newsize;
 
 	       count -= bytes;
+#if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
+	       memcpy(stack + count, data, bytes);
+#else
 	       bcopy(stack + count, data, bytes);
+#endif
 	       newblocks = count / STACK_INC + ((count % STACK_INC) ? 1 : 0);
 	       newsize = newblocks * STACK_INC;
 	       if (newsize < size) {
