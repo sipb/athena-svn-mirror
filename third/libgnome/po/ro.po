@@ -1,18 +1,18 @@
-# Romanian translation for libgnome-2.0.1
+# libgnome 2.2
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # Mugurel Tudor <mugurelu@go.ro>, 2002.
+# Marius Andreiana <marius galuna.ro>, 2002, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 2.0.1\n"
-"POT-Creation-Date: 2002-11-20 15:51+0000\n"
-"PO-Revision-Date: 2002-09-02 21:22+0300\n"
-"Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
-"Language-Team: română <ro@li.org>\n"
+"Project-Id-Version: libgnome 2.2\n"
+"POT-Creation-Date: 2003-01-23 12:10+0100\n"
+"PO-Revision-Date: 2003-01-22 21:22+0300\n"
+"Last-Translator: Marius Andreiana <marius galuna.ro>\n"
+"Language-Team: Română <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
 msgid "Error Messages"
@@ -48,7 +48,7 @@ msgstr "Mesaje de avertizare"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
 msgid "Action button click"
-msgstr "Click al butonul de acţiune"
+msgstr "Clic al butonul de acţiune"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
 msgid "Check box toggled"
@@ -72,15 +72,15 @@ msgstr ""
 msgid "GNOME GConf Support"
 msgstr "Suport GNOME GConf"
 
-#: libgnome/gnome-help.c:167
+#: libgnome/gnome-help.c:159
 msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
 msgstr "Nu am putut găsi domeniul GNOME_FILE_DOMAIN_APP_HELP"
 
-#: libgnome/gnome-help.c:180
+#: libgnome/gnome-help.c:172
 msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
 msgstr "Nu am putut găsi domeniul GNOME_FILE_DOMAIN_HELP"
 
-#: libgnome/gnome-help.c:193 libgnome/gnome-help.c:208
+#: libgnome/gnome-help.c:185 libgnome/gnome-help.c:200
 #, c-format
 msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
@@ -89,7 +89,7 @@ msgstr ""
 "Nu am putut afişa ajutorul din moment ce %s nu este un director. Vă rugăm "
 "verificaţi instalarea."
 
-#: libgnome/gnome-help.c:217 libgnome/gnome-help.c:233
+#: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
 #, c-format
 msgid ""
 "Unable to find the help files in either %s or %s.  Please check your "
@@ -98,12 +98,12 @@ msgstr ""
 "Nu am putut găsi fişierele help nici în %s şi nici în %s. Vă rugăm "
 "verificaţi instalarea."
 
-#: libgnome/gnome-help.c:312
+#: libgnome/gnome-help.c:339
 #, c-format
 msgid "Unable to find doc_id %s in the help path"
 msgstr "Nu am putut găsi doc_id %s în calea de ajutor"
 
-#: libgnome/gnome-help.c:333
+#: libgnome/gnome-help.c:360
 #, c-format
 msgid "Help document %s/%s not found"
 msgstr "Documentul de ajutor %s/%s nu a fost găsit"
@@ -121,12 +121,12 @@ msgstr "Suport Bonobo"
 msgid "Bonobo activation Support"
 msgstr "Suport de activare Bonobo"
 
-#: libgnome/gnome-init.c:281 libgnome/gnome-init.c:295
+#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr "Nu am putut crea un director de configurare gnome per-user `%s': %s\n"
 
-#: libgnome/gnome-init.c:304
+#: libgnome/gnome-init.c:328
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
@@ -135,32 +135,32 @@ msgstr ""
 "Nu am putut seta modul 0700 pe directorul privat de configurare gnome per-"
 "user:`%s': %s\n"
 
-#: libgnome/gnome-init.c:311
+#: libgnome/gnome-init.c:335
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
 msgstr "Nu am putut crea directorul de acceleratori gnome `%s': %s\n"
 
-#: libgnome/gnome-init.c:367
+#: libgnome/gnome-init.c:391
 msgid "Disable sound server usage"
 msgstr "Dezactivează folosirea serverului de sunet"
 
-#: libgnome/gnome-init.c:370
+#: libgnome/gnome-init.c:394
 msgid "Enable sound server usage"
 msgstr "Activează folosirea serverului de sunet"
 
-#: libgnome/gnome-init.c:373
+#: libgnome/gnome-init.c:397
 msgid "Host:port on which the sound server to use is running"
 msgstr "Gazda:portul folosite de serverul de sunet la rulare"
 
-#: libgnome/gnome-init.c:375
+#: libgnome/gnome-init.c:399
 msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
-#: libgnome/gnome-init.c:393
+#: libgnome/gnome-init.c:417
 msgid "GNOME Virtual Filesystem"
 msgstr "Sistemul de fişiere virtuale GNOME"
 
-#: libgnome/gnome-init.c:414
+#: libgnome/gnome-init.c:438
 msgid "GNOME Library"
 msgstr "Librăria GNOME"
 
@@ -234,7 +234,7 @@ msgstr "Libdir GNOME"
 
 #: libgnome/gnome-program.c:499
 msgid "Library prefix where GNOME was installed"
-msgstr "Prefixul unde librăriile GNOME sunt instalate"
+msgstr "Prefixul unde sunt instalate bibliotecile GNOME"
 
 #: libgnome/gnome-program.c:508
 msgid "GNOME Datadir"
@@ -266,7 +266,7 @@ msgstr "Libdir aplicaţie GNOME"
 
 #: libgnome/gnome-program.c:539
 msgid "Library prefix where this application was installed"
-msgstr "Prefixul unde librăriile aplicaţiei sunt instalate"
+msgstr "Prefixul unde sunt instalate bibliotecile aplicaţiei"
 
 #: libgnome/gnome-program.c:548
 msgid "GNOME App Datadir"
@@ -336,7 +336,7 @@ msgstr "Moniker GConf"
 msgid "config indirect moniker"
 msgstr "configurează moniker indirect"
 
-#: monikers/bonobo-config-bag.c:230
+#: monikers/bonobo-config-bag.c:231
 msgid "Unknown type"
 msgstr "Tip necunoscut"
 
@@ -344,3 +344,660 @@ msgstr "Tip necunoscut"
 #, c-format
 msgid "Key %s not found in configuration"
 msgstr "Cheia %s nu a fost găsită în configuraţie"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:1
+msgid "Beep when a modifier is pressed"
+msgstr "Bip când un modificator este apăsat"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
+msgid "Disable if two keys are pressed at the same time."
+msgstr "Dezactivează dacă două taste sunt apăsate în acelaşi timp"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:3
+msgid ""
+"Do not accept a key as being pressed unless held for @delay milliseconds"
+msgstr ""
+"Nu accepta o tastă ca fiind apăsată decât dacă este ţinută @delay milisecunde"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:4
+msgid "How many milliseconds it takes to go from 0 to maximum speed"
+msgstr "În câte milisecunde să ajungă de la 0 la viteza maximă"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:5
+msgid ""
+"How many milliseconds to wait before mouse movement keys start to operate"
+msgstr ""
+"Câte milisecunde să aştept înainte ca tastele pentru mutarea mausului să fie "
+"operaţionale"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:6
+msgid "How many pixels per second to move at the maximum speed"
+msgstr "Câţi pixeli pe secundă să mut la viteza maximă"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:7
+msgid "Ignore multiple presses of the _same_ key within @delay milliseconds"
+msgstr "Ignoră apăsări multiple ale _aceleiaşi_ taste în @delay milisecunde"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:8
+msgid "how long to accelerate in milliseconds"
+msgstr "cât să accelerez în milisecunde"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:9
+msgid "initial delay in milliseconds"
+msgstr "pauza îniţială în milisecunde"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:10
+msgid "minimum interval in milliseconds"
+msgstr "intervalul minim în milisecunde"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:11
+msgid "pixels per seconds"
+msgstr "pixeli pe secundă"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:1
+msgid "Browser needs terminal"
+msgstr "Navigatorul are nevoie de terminal"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:2
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:1
+msgid "Browser understands remote"
+msgstr "Navigatorul poate să lucreze la distanţă"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:3
+msgid "Default browser"
+msgstr "Navigatorul implicit"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:4
+msgid "Default browser for all URLs"
+msgstr "Navigatorul implicit pentru toate URL-urile"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:5
+msgid "Whether the default browser needs a terminal to run"
+msgstr "Dacă navigatorul implicit are nevoie de terminal pentru a rula"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:6
+msgid "Whether the default browser understands netscape remote"
+msgstr "Dacă navigatorul implicit înţelege netscape la distanţă"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
+msgid "Default help viewer"
+msgstr "Vizualizatorul de ajutor implicit"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
+msgid "Help viewer needs terminal"
+msgstr "Vizualizatorul de ajutor are nevoie de terminal"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:4
+msgid "Whether the default help viewer accepts URLs"
+msgstr "Dacă vizualizatorul de ajutor implicit acceptă URL-uri"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:5
+msgid "Whether the default help viewer needs a terminal to run"
+msgstr ""
+"Dacă vizualizatorul de ajutor implicit are nevoie de un terminal pentru a "
+"rula"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
+msgid ""
+"Argument used to execute programs in the terminal defined by the 'exec' key."
+msgstr ""
+"Parametrul folosit pentru a executa programe în terminalul definit de tasta "
+"'exec'."
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
+msgid "Exec Arguments"
+msgstr "Parametrii exec"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:3
+msgid "Terminal application"
+msgstr "Aplicaţie terminal"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:4
+msgid "Terminal program to use when starting applications that require one"
+msgstr ""
+"Programul terminal folosit pentru a porni aplicaţiile care au nevoie de el"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:1
+msgid "A list with names of the first window manager workspaces."
+msgstr "O listă cu numele primelor spaţii de lucru"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:2
+msgid "Fallback window manager"
+msgstr "Administrator de ferestre secundar"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:3
+msgid "Fallback window manager if user window manager can't be found"
+msgstr ""
+"Administrator de ferestre secundar pornit în caz că cel principal nu este "
+"găsit"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:4
+msgid "Names of the workspaces"
+msgstr "Numele spaţiilor de lucru"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:5
+msgid "The number of workspaces"
+msgstr "Numărul spaţiilor de lucru"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:6
+msgid "The number of workspaces the window manager should use"
+msgstr "Numărul spaţiilor de lucru folosite de administratorul de ferestre"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:7
+msgid "User window manager"
+msgstr "Administrator de ferestre"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:8
+msgid "Window manager to try first"
+msgstr "Administrator de ferestre principal"
+
+#: schemas/desktop_gnome_background.schemas.in.h:1
+msgid "Color Shading Type"
+msgstr "Tipul umbrire culoare"
+
+#: schemas/desktop_gnome_background.schemas.in.h:2
+msgid ""
+"Determines how the image set by wallpaper_filename is rendered. Possible "
+"values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
+msgstr ""
+"Determină cum imaginea setată de nume_fişier_fundal este afişată. Valori "
+"posibile sunt \"niciuna\", \"fundal\", \"centrat\", \"scalat\", \"întins\"."
+
+#: schemas/desktop_gnome_background.schemas.in.h:3
+msgid "Draw Desktop Background"
+msgstr "Desenează fundal desktop"
+
+#: schemas/desktop_gnome_background.schemas.in.h:4
+msgid "File to use for the background image"
+msgstr "Fişierul folosit pentru imaginea de fundal"
+
+#: schemas/desktop_gnome_background.schemas.in.h:5
+msgid "Have GNOME draw the desktop background"
+msgstr "GNOME să deseneze fundalul desktop"
+
+#: schemas/desktop_gnome_background.schemas.in.h:6
+msgid ""
+"How to shade the background color. Possible values are \"horizontal-gradient"
+"\", \"vertical-gradient\", and \"solid\""
+msgstr ""
+"Cum să umbresc culoarea de fundal. Valori posibile sunt \"gradient-orizontal"
+"\", \"gradient-vertical\", and \"solid\""
+
+#: schemas/desktop_gnome_background.schemas.in.h:7
+msgid "Left or Top color when drawing gradients, or the solid color."
+msgstr ""
+"Culoarea din stânga sau sus când desenez gradienţi, sau culoarea solidă."
+
+#: schemas/desktop_gnome_background.schemas.in.h:8
+msgid "Opacity with which to draw the background picture"
+msgstr "Opacitatea cu care să desenez imaginea de fundal"
+
+#: schemas/desktop_gnome_background.schemas.in.h:9
+msgid "Picture Filename"
+msgstr "Numele fişierului imagine"
+
+#: schemas/desktop_gnome_background.schemas.in.h:10
+msgid "Picture Opacity"
+msgstr "Opacitate imagine"
+
+#: schemas/desktop_gnome_background.schemas.in.h:11
+msgid "Picture Options"
+msgstr "Opţiuni imagine"
+
+#: schemas/desktop_gnome_background.schemas.in.h:12
+msgid "Primary Color"
+msgstr "Culoare primară"
+
+#: schemas/desktop_gnome_background.schemas.in.h:13
+msgid "Right or Bottom color when drawing gradients, not used for solid color."
+msgstr ""
+"Culoarea din dreapta sau jos când desenez gradienţi, nefolosit pentru "
+"culoarea solidă."
+
+#: schemas/desktop_gnome_background.schemas.in.h:14
+msgid "Secondary Color"
+msgstr "Culoare secundară"
+
+#: schemas/desktop_gnome_file_views.schemas.in.h:1
+msgid "File Icon Theme"
+msgstr "Temă icon fişier"
+
+#: schemas/desktop_gnome_file_views.schemas.in.h:2
+msgid "Theme used for displaying file icons"
+msgstr "Temă folosită pentru a afişa iconurile fişierelor"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:1
+msgid "Basename of the default theme used by gtk+."
+msgstr "Numele de bază al temei implicite folosite de gtk+"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:2
+msgid "Can Change Accels"
+msgstr "Poate schimba acceleratorii"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:3
+msgid "Cursor Blink"
+msgstr "Cursor clipitor"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:4
+msgid "Cursor Blink Time"
+msgstr "Timpul de clipire al cursorului"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:5
+msgid "Default font"
+msgstr "Font implicit"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:6
+msgid "Enable Accessibility"
+msgstr "Activează accesibilitatea"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:7
+msgid "Enable Animations"
+msgstr "Activează animaţii"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:8
+msgid "GTK IM Preedit Style"
+msgstr "Stil preeditare GTK IM"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:9
+msgid "GTK IM Status Style"
+msgstr "Stil stare GTK IM"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:10
+msgid "Gtk+ Theme"
+msgstr "Temă Gtk+"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:11
+msgid "Icon Theme"
+msgstr "Temă icon"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:12
+msgid "Icon theme to use for the panel, nautilus etc."
+msgstr "Tema iconuri folosită pentru panou, nautilus etc."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:13
+msgid "Length of the cursor blink cycle, in milleseconds"
+msgstr "Lungimea ciclului de clipire al cursorului, în milisecunde"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:14
+msgid "Menubar Detachable"
+msgstr "Bara de meniu detaşabilă"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:15
+msgid "Menus Have Icons"
+msgstr "Meniurile au iconuri"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:16
+msgid "Menus Have Tearoff"
+msgstr "Meniurile au tearoff"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Name of the GTK+ input method Preedit Style used by gtk+."
+msgstr "Numele metodei de introducere date GTK+ în stilul pre-editare."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgstr "Numele metodei de introducere date GTK+ în stilul stare."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Name of the default font used by gtk+."
+msgstr "Numele fontului implicit folosit de GTK+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid "Status Bar on Right"
+msgstr "Bara de stare pe dreapta"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
+msgid "This specifies the size of icons displayed in toolbars"
+msgstr "Aceasta specifică mărimea iconurilor afişate în barele de unelte"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:22
+msgid "Toolbar Detachable"
+msgstr "Bara cu unelte detaşabilă"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:23
+msgid "Toolbar Icon Size"
+msgstr "Mărimea iconurilor din bara de unelte"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:24
+msgid "Toolbar Style"
+msgstr "Stilul bării de unelte"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:25
+msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
+msgstr ""
+"Stilul bării de unelte. Valori posibile sunt both, both_horiz, icon, şi text"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:26
+msgid "Use Custom Font"
+msgstr "Foloseşte font personalizat"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:27
+msgid "Whether Applications should have accessibility support"
+msgstr "Dacă aplicaţiile ar trebui să aibă suport pentru accesibilitate"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:28
+msgid ""
+"Whether animations should be displayed. Note: This is a global key, it "
+"changes the behaviour of the window manager, the panel etc."
+msgstr ""
+"Dacă animaţiile ar trebui să fie afişate. Notă: Aceasta este o cheie "
+"globală, va schimba aspectul administratorului de ferestre, panoului etc."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid "Whether menus may display an icon next to a menu entry"
+msgstr "Dacă meniurile pot afişa un icon lângă textul meniului"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:30
+msgid "Whether menus should have a tearoff"
+msgstr "Dacă meniurile pot fi detaşabile"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:31
+msgid ""
+"Whether the User can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr "Dacă utilizatorul poate tasta un accelerator când meniul este activat"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:32
+msgid "Whether the cursor should blink"
+msgstr "Dacă cursorul să clipească"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:33
+msgid "Whether the user can detach menubars and move them around"
+msgstr "Dacă utilizatorul poate detaşa şi muta barele de meniuri"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:34
+msgid "Whether the user can detach toolbars and move them around"
+msgstr "Dacă utilizatorul poate detaşa şi muta barele de unelte"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:35
+msgid "Whether to display a status bar meter on the right"
+msgstr "Dacă să afişez o bară de stare pe dreapta"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:36
+msgid "Whether to use a custom font in gtk+ applications."
+msgstr "Dacă aplicaţiile GTK+ folosesc un font personalizat."
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
+msgid "File name of the bell sound to be played"
+msgstr "Numele fişierului cu sunetul clopoţelului"
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:2
+msgid "Keyboard Bell Custom Filename"
+msgstr "Fişier personalizat pentru clopoţel tastatură"
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
+msgid "possible values are on, off, and custom."
+msgstr "valori posibile sunt on, off, şi custom."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
+msgid ""
+"Acceleration multiplier for mouse motion. A value of -1 is the system "
+"default."
+msgstr ""
+"Multiplicator accelerare pentru mişcarea mausului. O valoare de -1 este "
+"valoarea implicită a sistemului."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:2
+msgid "Cursor font"
+msgstr "Font cursor"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
+msgid "Cursor size"
+msgstr "Mărime cursor"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
+msgid "Cursor theme"
+msgstr "Temă cursor"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
+msgid ""
+"Cursor theme name. Used only by Xservers that support Xcursor, such as "
+"XFree86 4.3 and later. This value is only propagated to the X server start "
+"of each session, so changing it mid-session won't have an effect until the "
+"next time you log in."
+msgstr "Numele temei pentru cursor."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
+msgid "Distance before a drag is started"
+msgstr "Distanţa parcursă înainte de a începe o tragere de fişiere"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:7
+msgid ""
+"Distance in pixels the pointer must move before accelerated mouse motion is "
+"activated. A value of -1 is the system default."
+msgstr ""
+"Distanţa în pixeli parcursă de maus înainte de a activa accelerarea. O "
+"valoare de -1 este valoarea implicită a sistemului."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:8
+msgid "Double Click Time"
+msgstr "Timp dublu-clic"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:9
+msgid "Drag Threshold"
+msgstr "Prag tragere fişiere"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
+msgid ""
+"Font name of the cursor. If unset set, the default font is used. This value "
+"is only propagated to the X server start of each session, so changing it mid-"
+"session won't have an effect until the next time you log in."
+msgstr "Numele fontului pentru cursor."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
+msgid ""
+"Highlights the current location of the pointer when the Control key is "
+"pressed and released"
+msgstr ""
+"Luminează locaţia curentă a indicatorului mausului când tasta Ctrl este "
+"apăsată şi eliberată"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:12
+msgid "Length of a double click"
+msgstr "Lungimea unui dublu-clic"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:13
+msgid "Locate Pointer"
+msgstr "Localizează indicatorul"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:14
+msgid "Motion Threshold"
+msgstr "Prag mişcare"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:15
+msgid "Mouse button orientation"
+msgstr "Orientarea butoanelor mausului"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:16
+msgid "Single Click"
+msgstr "Un singur clic"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:17
+msgid "Single click to open icons"
+msgstr "Un singur clic pentru a deschide iconurile"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
+msgid ""
+"Size of the cursor referenced by cursor_theme. This value is only propagated "
+"to the X server start of each session, so changing it mid-session won't have "
+"an effect until the next time you log in."
+msgstr "Mărimea cursorului la care se referă cursor_theme."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
+msgid "Swap left and right mouse buttons for left-handed mice"
+msgstr "Schimbă butoanele stânga şi dreapta ale mausului pentru stângaci"
+
+#: schemas/desktop_gnome_sound.schemas.in.h:1
+msgid "Enable ESD"
+msgstr "Activează sunet"
+
+#: schemas/desktop_gnome_sound.schemas.in.h:2
+msgid "Enable sound server startup."
+msgstr "Activează folosirea serverului de sunet."
+
+#: schemas/desktop_gnome_sound.schemas.in.h:3
+msgid "Sounds for events"
+msgstr "Sunete pentru evenimente"
+
+#: schemas/desktop_gnome_sound.schemas.in.h:4
+msgid "Whether to play sounds on user events."
+msgstr "Dacă să redau un sunet la evenimentele utilizator."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
+msgid "Default URL show handler"
+msgstr "Cine se ocupă cu afişarea URL-urilor"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
+msgid "How to handle applications URLs"
+msgstr "Cine se ocupă cu URL-urile aplicaţiilor"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
+msgid "How to handle ghelp URLs"
+msgstr "Cum să mă ocup de URL-uri ghelp"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
+msgid "How to handle info URLs"
+msgstr "Cum să mă ocup de URL-uri info"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
+msgid "How to handle man URLs"
+msgstr "Cum să mă ocup de URL-uri man"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
+msgid "How to handle preferences URLs"
+msgstr "Cum să mă ocup de URL-uri preferinţe"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
+msgid "How to handle server-settings URLs"
+msgstr "Cum să mă ocup de URL-uri setări server"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
+msgid "How to handle start-here URLs"
+msgstr "Cum să mă ocup de URL-uri începeţi-aici"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
+msgid "How to handle system-settings URLs"
+msgstr "Cum să mă ocup de URL-uri setări sistem"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
+msgid "How to handle trash URLs"
+msgstr "Cum să mă ocup de URL-uri gunoi"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
+msgid "How to handle unknown URLs"
+msgstr "Cum să mă ocup de URL-uri necunoscute"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
+msgid "Run program in terminal"
+msgstr "Rulează programul în terminal"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+msgid ""
+"Set to true to have a program specified in applications/command handle "
+"applications URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-urile "
+"aplicaţiilor"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
+msgid ""
+"Set to true to have a program specified in preferences/command handle "
+"preferences URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri preferinţe"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
+msgid ""
+"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri ghelp"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
+msgid ""
+"Set to true to have a program specified in programs/info handle info URLs"
+msgstr "Setează pentru a specifica un program care să se ocupe de URL-uri info"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
+msgid "Set to true to have a program specified in programs/man handle man URLs"
+msgstr "Setează pentru a specifica un program care să se ocupe de URL-uri man"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
+msgid ""
+"Set to true to have a program specified in programs/unknown handle unknown "
+"URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri necunoscute"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
+msgid ""
+"Set to true to have a program specified in server-settings/command handle "
+"server-settings URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri setări-"
+"server"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
+msgid ""
+"Set to true to have a program specified in start-here/command handle start-"
+"here URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri începeţi-"
+"aici"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
+msgid ""
+"Set to true to have a program specified in system-settings/command handle "
+"system-settings URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri setări "
+"sistem"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
+msgid ""
+"Set to true to have a program specified in trash/command handle trash URLs"
+msgstr ""
+"Setează pentru a specifica un program care să se ocupe de URL-uri gunoi"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
+msgid "True if the program to handle this URL should be run in a terminal"
+msgstr ""
+"Setează dacă programul care se ocupă de acest URL ar trebui rulat în terminal"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
+msgid "URL handler for applications pages"
+msgstr "Cine se ocupă de pagini ale aplicaţiilor"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
+msgid "URL handler for ghelp pages"
+msgstr "Cine se ocupă de pagini ghelp"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
+msgid "URL handler for info pages"
+msgstr "Cine se ocupă de pagini info"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
+msgid "URL handler for man pages"
+msgstr "Cine se ocupă de pagini man"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
+msgid "URL handler for preferences pages"
+msgstr "Cine se ocupă de pagini preferinţe"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
+msgid "URL handler for server-settings pages"
+msgstr "Cine se ocupă de pagini setări-server"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
+msgid "URL handler for start-here pages"
+msgstr "Cine se ocupă de pagini începeţi-aici"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
+msgid "URL handler for system-settings pages"
+msgstr "Cine se ocupă de pagini setări-sistem"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
+msgid "URL handler for trash pages"
+msgstr "Cine se ocupă de pagini gunoi"
+
+#~ msgid "Name of icon theme"
+#~ msgstr "Numele temei iconuri"

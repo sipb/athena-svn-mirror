@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/left_handed</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/left_handed</key>
+      <applyto>/desktop/gnome/peripherals/mouse/left_handed</applyto>
       <owner>gnome</owner>
       <type>bool</type>
       <default>false</default>
@@ -11,10 +11,120 @@
         <short>Mouse button orientation</short>
         <long>Swap left and right mouse buttons for left-handed mice</long>
       </locale>
+
+      <locale name="bg">
+        <short>Ориентация на бутона на мишката</short>
+        <long>Размени левия и десния бутон за левичари.</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Orientace tlačítek myši</short>
+        <long>Přehodit levé a pravé tlačítko myši pro myši pro leváky</long>
+      </locale>
+
+      <locale name="da">
+        <short>Museknapsorientering</short>
+        <long>Ombyt venstre og højre museknapper til venstrehåndsmus.</long>
+      </locale>
+
+      <locale name="de">
+        <short>Ausrichtung der Mausknöpfe</short>
+        <long>Soll der rechte und der linke Mausknopf vertauscht werden, sodaß Linkshänder die Maus verwenden können?</long>
+      </locale>
+
+      <locale name="el">
+        <short>Προσανατολισμός πλήκτρου ποντικιού</short>
+        <long>Εναλλαγή αριστερού και δεξιού κουμπιού για αριστερόχειρα ποντίκια.</long>
+      </locale>
+
+      <locale name="es">
+        <short>Orientación del botón del ratón</short>
+        <long>Intercambia los botones derecho e izquierdo del ratón para crear un ratón zurdo</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Hiiren näppäimen asento</short>
+        <long>Vaihda hiiren vasen ja oikea painike vasenkätistä hiirtä varten</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Orientation du bouton de la souris</short>
+        <long>Inverse les boutons droite et gauche de la souris pour les gauchers</long>
+      </locale>
+
+      <locale name="he">
+        <short>סידור כפתורי העכבר</short>
+        <long>החלף בין כפתורי העכבר הימיני והשמאלי לעכברים ליד שמאל</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Peles pogas orientācija</short>
+        <long>Apmainīt labo un kreiso peles pogu vietām kreisās-rokas pelei</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Хулганын товчлуурын байрлал</short>
+        <long>Солгой хүнд зориулан хулганын товчлуурын байрлалыг солих эсэх</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Orientasi butang tetikus</short>
+        <long>Tukar butang kiri dan kanan bagi tetikus kidal</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Muisoriëntatie</short>
+        <long>Links en rechts omdraaien voor linkshandige muizen</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Orientação do botão do mouse</short>
+        <long>Trocar botões da direita e esquerda para canhotos</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Orientarea butoanelor mausului</short>
+        <long>Schimbă butoanele stânga şi dreapta ale mausului pentru stângaci</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Orientícia tlačidiel myši</short>
+        <long>Prehodiť ľavé a pravé tlačidlá myši pre ľavákov</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Usmerjenost gumbov miške</short>
+        <long>Zamenjaj levi in desni gumb miške za levičarsko miško</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Musknappsorientering</short>
+        <long>Byt vänster och höger musknapp för vänsterhänt mus</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Fare tuşları yapılandırması</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Hướng nút chuột</short>
+        <long>Hoán đổi nút trái, phải của chuột cho người dùng thuận tay trái</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>鼠标按钮方向</short>
+        <long>为左手鼠标交换左右鼠标按钮</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>左右手滑鼠模式</short>
+        <long>在左手滑鼠模式中，左右按鈕的功能會互換</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/single_click</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/single_click</key>
+      <applyto>/desktop/gnome/peripherals/mouse/single_click</applyto>
       <owner>gnome</owner>
       <type>bool</type>
       <default>true</default>
@@ -22,10 +132,130 @@
         <short>Single Click</short>
         <long>Single click to open icons</long>
       </locale>
+
+      <locale name="bg">
+        <short>Единично щракване</short>
+        <long>Иконите да се отварят с единично щракване</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Jednoduché kliknutí</short>
+        <long>Jednoduché kliknutí otevírá ikony</long>
+      </locale>
+
+      <locale name="da">
+        <short>Enkeltklik</short>
+        <long>Enkeltklik for at åbne ikoner</long>
+      </locale>
+
+      <locale name="de">
+        <short>Einfacher Klick</short>
+        <long>Einfacher Klick zum Öffnen von Symbolen</long>
+      </locale>
+
+      <locale name="el">
+        <short>Μονό κλίκ</short>
+        <long>Μονό κλίκ για το άνοιγμα εικονιδίων</long>
+      </locale>
+
+      <locale name="es">
+        <short>Un solo clic</short>
+        <long>Un solo clic para abrir iconos</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Yksöisnapsautus</short>
+        <long>Yksi napsautus avaa kuvakkeet</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Simple clic</short>
+        <long>Simple clic pour ouvrir les icônes</long>
+      </locale>
+
+      <locale name="he">
+        <short>לחיצה בודדת</short>
+        <long>לחיצה בודדת לפתיחת סמלים</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Viens Klikšķis</short>
+        <long>Viens klikšķis, lai atvērtu ikonas</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Дан товшилт</short>
+        <long>Эмблемийг нээхэд ганц товших</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Klik Tunggal</short>
+        <long>Klik tunggal untuk membuka ikon</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Enkele klik</short>
+        <long>Enkele klik om pictogrammen te openen</long>
+      </locale>
+
+      <locale name="no">
+        <short>Enkeltklikk</short>
+        <long>Enkeltklikk for å aktivere ikoner</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Pojedyncze kliknięcie</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Clique Único</short>
+        <long>Clique único para abrir ícones</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Un singur clic</short>
+        <long>Un singur clic pentru a deschide iconurile</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Jednoduché kliknutie</short>
+        <long>Jednoduché kliknutie na otvorenie ikon</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Enojni klik</short>
+        <long>Enojni klik za odpiranje ikon</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Enkelklick</short>
+        <long>Enkelklick för att öppna ikoner</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Tek Tıklama</short>
+        <long>Simgeleri açmak için bir kere tıklayın</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Nhấp đơn</short>
+        <long>Nhấp đơn để mở biểu tượng</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>单击</short>
+        <long>单击可打开图标</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>只按一下滑鼠按鈕</short>
+        <long>只按一下滑鼠按鈕就可以開啟圖示</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/motion_acceleration</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/motion_acceleration</key>
+      <applyto>/desktop/gnome/peripherals/mouse/motion_acceleration</applyto>
       <owner>gnome</owner>
       <type>float</type>
       <default>-1</default>
@@ -34,10 +264,130 @@
         <long>Acceleration multiplier for mouse motion.  A value of -1
         is the system default.</long>
       </locale>
+
+      <locale name="bg">
+        <short>Единично щракване</short>
+        <long>Множител на ускорението на движението на мишката. -1 е системната стойност по подразбиране.</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Jednoduché kliknutí</short>
+        <long>Násobitel zrychlení pohybu myši. Hodnota -1 je implicitní pro systém.</long>
+      </locale>
+
+      <locale name="da">
+        <short>Enkeltklik</short>
+        <long>Accelerationsfaktor for musebevægelser. En værdi på -1 er systemets standard.</long>
+      </locale>
+
+      <locale name="de">
+        <short>Einfacher Klick</short>
+        <long>Beschleunigungsmultiplikator für Mausbewegungen. Der Wert »-1« ist die Systemvorgabe.</long>
+      </locale>
+
+      <locale name="el">
+        <short>Μονό κλίκ</short>
+        <long>Πολλαπλασιαστής συντομεύσεως για την κίνηση του ποντικιού. Η τιμή -1 είναι η προεπιλεγμένη από το σύστημα.</long>
+      </locale>
+
+      <locale name="es">
+        <short>Un solo clic</short>
+        <long>Multiplicador de aceleración para el movimiento del ratón. Un valor de -1 es el predeterminado del sistema.</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Yksöisnapsautus</short>
+        <long>Hiiren kiihdytyskerroin. -1 tarkoittaa järjestelmän oletusarvoa.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Simple clic</short>
+        <long>Multiplicateur d&apos;accélération pour les mouvements de souris. Une valeur de -1 est la valeur par défaut du système.</long>
+      </locale>
+
+      <locale name="he">
+        <short>לחיצה בודדת</short>
+        
+      </locale>
+
+      <locale name="lv">
+        <short>Viens Klikšķis</short>
+        <long>Paātrinātāja reizinātājs peles kustībai. Vērtība -1 ir sistēmas noklusējums.</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Дан товшилт</short>
+        <long>Хулганын хөдөлгөөний хурдацыг үржүүлэгчУтга »-1« бол стандарт.</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Klik Tunggal</short>
+        <long>Pendarab pemecut bagi pergerakan tetikus. Nilai -1 adalah default sistem.</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Enkele klik</short>
+        <long>Versnellingsfactor voor muisbewegingen. Een waarde van -1 is de systeemstandaard.</long>
+      </locale>
+
+      <locale name="no">
+        <short>Enkeltklikk</short>
+        
+      </locale>
+
+      <locale name="pl">
+        <short>Pojedyncze kliknięcie</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Clique Único</short>
+        <long>Multiplicador de aceleração para a moção do mouse. Um valor de -1 é o padrão do sistema.</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Un singur clic</short>
+        <long>Multiplicator accelerare pentru mişcarea mausului. O valoare de -1 este valoarea implicită a sistemului.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Jednoduché kliknutie</short>
+        <long>Urýchľovací násobič pre pohyb myši. Hodnota -1 nastaví systémom predvolenú hodnotu</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Enojni klik</short>
+        <long>Pospeševalnik za premikanje miške. Privzeta vrednost je -1.</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Enkelklick</short>
+        <long>Accelerationsförstärkare för musrörelse. Ett värde på -1 är systemets standardalternativ.</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Tek Tıklama</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Nhấp đơn</short>
+        
+      </locale>
+
+      <locale name="zh_CN">
+        <short>单击</short>
+        <long>鼠标运动的加速倍数。系统的默认值是 -1。</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>只按一下滑鼠按鈕</short>
+        <long>滑鼠移動的加速度。-1 表示使用系統的預設值。</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/motion_threshold</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/motion_threshold</key>
+      <applyto>/desktop/gnome/peripherals/mouse/motion_threshold</applyto>
       <owner>gnome</owner>
       <type>int</type>
       <default>-1</default>
@@ -47,10 +397,115 @@
         accelerated mouse motion is activated.  A value of -1 is the
         system default.</long>
       </locale>
+
+      <locale name="bg">
+        <short>Праг на движение</short>
+        <long>Разстояние в пиксели, което показалецът трябва да измине преди включване не ускоряването. -1 е системната стойност по подразбиране.</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Práh pohybu</short>
+        <long>Vzdálenost v pixelech, o kterou se musí kurzor posunout, než je aktivován zrychlený pohyb myši. Hodnota -1 je implicitní pro systém</long>
+      </locale>
+
+      <locale name="da">
+        <short>Bevægelsestærskel</short>
+        <long>Afstand i punkter som markøren skal flytte sig før den accelererede musebevægelse aktiveres. En værdi på -1 er systemets standard.</long>
+      </locale>
+
+      <locale name="de">
+        <short>Bewegungsschwellwert</short>
+        <long>Die Distanz in Pixel, die der Mauszeiger bewegt werden muss, bevor eine beschleunigte Mausbewegung aktiviert wird. Der Wert -1 ist die Systemvorgabe.</long>
+      </locale>
+
+      <locale name="el">
+        <short>Κατώφλι κίνησης</short>
+        <long>Απόσταση σε εικονοστοιχεία την οποία θα πρέπει να διανύσει ο δρομέας πριν να ενεργοποιηθεί η κίνηση συντόμευσης του ποντικιού. Η τιμή -1 είναι η προεπιλεγμένη από το σύστημα.</long>
+      </locale>
+
+      <locale name="es">
+        <short>Umbral de movimiento</short>
+        <long>Distancia en píxeles que el puntero se debe mover antes de que la aceleración del ratón sea activada. Un valor de -1 es el predeterminado del sistema.</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Liikekynnys</short>
+        <long>Matka, jonka hiiren osoittimen täytyy liikkua, jotta liike alkaa kiihtyä. -1 tarkoittaa järjestelmän oletusarvoa.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Seuil du mouvement</short>
+        <long>Distance en pixels que le pointeur doit parcourir avant que l&apos;accélérateur de mouvement soit activé. Une valeur de -1 est la valeur par défaut du système.</long>
+      </locale>
+
+      <locale name="he">
+        <short>סף תנועה</short>
+        
+      </locale>
+
+      <locale name="lv">
+        <short>Kustības Slieksnis</short>
+        <long>Distance pikseļos, kas kursoram ir jānoiet, pirms paātrinātā peles kustība tiek aktivizēta. Vērtība -1 ir sistēmas noklusējums.</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Хөдөлгөөний хурдын хязгаар</short>
+        <long>Хулганын худавчилсан хөдөлгөөн эхэлтэл заагуурын хоцрох зайг цэгээр илэрхийлсэн нь.Утга  -1 нь стандарт.</long>
+      </locale>
+
+      <locale name="ms">
+        
+        <long>Jarak dalam piksel dimana pentuding mesti gerak sebelum pergerakan tetikus dipecut diaktifkan. Nilai -1 adalah default sistem</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Beweegdrempel</short>
+        <long>Afstand die de muisaanwijzer moet afleggen voordat de versnelling wordt ingeschakeld. Een waarde van -1 is de systeemstandaard.</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Limiar da Moção</short>
+        <long>Distância em pixels que o ponteiro deve andar antes da moção acelerada do mouse ser iniciada. Um valor de -1 é o padrão do sistema.</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Prag mişcare</short>
+        <long>Distanţa în pixeli parcursă de maus înainte de a activa accelerarea. O valoare de -1 este valoarea implicită a sistemului.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Hranica pohybu</short>
+        <long>Vzdialenosť v bodoch, o ktorú sa musí ukazovateľ posunúť, kým bude aktivovaný zrýchlený posun. Hodnota -1 nastaví systémom predvolenú hodnotu.</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Prag premikanja</short>
+        <long>Razdalja v pikslih, kolikor se mora premakniti kazalec preden je vključeno premikanje miške. Privzeta vrednost je -1.</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Rörelsetröskelvärde</short>
+        <long>Avstånd i bildpunkter som pekaren måste flyttas innan accelerererad musrörelse aktiveras. Ett värde på -1 är systemets standardalternativ.</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Ngưỡng di chuyển</short>
+        <long>Khoảng cách, tính theo pixel, mà con trỏ phải di chuyển trước khi kích hoạt chuyển động của con chuột. Giá trị -1 là mặc định hệ thống.</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>运动阈值</short>
+        <long>启动鼠标运动加速前鼠标必须移动的像素点数。系统默认的值是 -1。</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>臨界移動距離</short>
+        <long>鼠標加速前所需的移動距離 (像素)。-1 表示使用系統預設值。</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/drag_threshold</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/drag_threshold</key>
+      <applyto>/desktop/gnome/peripherals/mouse/drag_threshold</applyto>
       <owner>gnome</owner>
       <type>int</type>
       <default>8</default>
@@ -58,10 +513,125 @@
         <short>Drag Threshold</short>
         <long>Distance before a drag is started</long>
       </locale>
+
+      <locale name="bg">
+        <short>Праг за провлачване</short>
+        <long>Разстояние, след което започва провлачване</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Práh tažení</short>
+        <long>Vzdálenost, než začne tažení</long>
+      </locale>
+
+      <locale name="da">
+        <short>Trækketærskel</short>
+        <long>Afstand før en træk-og-slip påbegyndes</long>
+      </locale>
+
+      <locale name="de">
+        <short>Ziehen Schwellwert</short>
+        <long>Distanz bevor das Ziehen einsetzt</long>
+      </locale>
+
+      <locale name="el">
+        <short>Σύρσιμο αφετηρίας</short>
+        <long>Απόσταση πρίν από την έναρξη συρσίματος</long>
+      </locale>
+
+      <locale name="es">
+        <short>Umbral de arrastre</short>
+        <long>Distancia antes de que un arrastre sea iniciado</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Vetokynnys</short>
+        <long>Matka, jonka jälkeen vetäminen alkaa</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Seuil du glisser</short>
+        <long>Distance avant qu&apos;un glisser soit initié</long>
+      </locale>
+
+      <locale name="he">
+        <short>סף גרירה</short>
+        <long>מרחק לפני תחילת הגרירה</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Vilkšanas Slieksnis</short>
+        <long>Distance pirms sāk vilkšanu</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Чирэх хурдын хязгаар</short>
+        <long>Чирэх үед заагуурын хоцрох зай</long>
+      </locale>
+
+      <locale name="ms">
+        
+        <long>Jarak sebelum heretat dimulakan</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Sleepdrempel</short>
+        <long>Afstand voordat het wordt gezien als sleepactie</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Próg przeciągania</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Limiar do Arrasto</short>
+        <long>Distância antes que um arrasto seja iniciado</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Prag tragere fişiere</short>
+        <long>Distanţa parcursă înainte de a începe o tragere de fişiere</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Hranica ťahania</short>
+        <long>Vzdialenosť pred začatím ťahania</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Prag vlečenja</short>
+        <long>Razdalja preden se začne vlečenje</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Dragningströskelvärde</short>
+        <long>Avstånd innan en dragning startas</long>
+      </locale>
+
+      <locale name="tr">
+        
+        <long>Sürükleme başlamadan önceki aralık</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Ngưỡng kéo</short>
+        <long>Khoảng cách trước khi bắt đầu kéo</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>拖放阈值</short>
+        <long>判断拖放开始的距离</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>拖曳臨界距離</short>
+        <long>滑鼠移動作為拖曳計算所需的長度</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/double_click</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/double_click</key>
+      <applyto>/desktop/gnome/peripherals/mouse/double_click</applyto>
       <owner>gnome</owner>
       <type>int</type>
       <default>400</default>
@@ -69,10 +639,125 @@
         <short>Double Click Time</short>
         <long>Length of a double click</long>
       </locale>
+
+      <locale name="bg">
+        <short>Време за двойно щракване</short>
+        <long>Продължителност на двойното щракване</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Čas dvojitého kliknutí</short>
+        <long>Délka dvojitého kliknutí</long>
+      </locale>
+
+      <locale name="da">
+        <short>Dobbeltkliktid</short>
+        <long>Længden for et dobbeltklik</long>
+      </locale>
+
+      <locale name="de">
+        <short>Doppelklick-Verzögerung</short>
+        <long>Länge eines Doppelklicks</long>
+      </locale>
+
+      <locale name="el">
+        <short>Χρόνος διπλού κλίκ</short>
+        <long>Διάρκεια διπλού κλίκ</long>
+      </locale>
+
+      <locale name="es">
+        <short>Tiempo del doble clic</short>
+        <long>Duración de un doble clic</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Kaksoisnapsautuksen aika</short>
+        <long>Kaksoisnapsautuksen kesto</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Durée du double-clic</short>
+        <long>Longueur du double-clic</long>
+      </locale>
+
+      <locale name="he">
+        <short>זמן לחיצה כפולה</short>
+        <long>אורך לחיצה כפולה</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Dubultklikšķa Laiks</short>
+        <long>Dubultklikšķa gaums</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Давхар товшилтын хугацаа</short>
+        <long>Давхар товшилтын урт</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Masa Dwi-Klik</short>
+        <long>Panjang dwi-klik</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Dubbelkliktijd</short>
+        <long>Lengte van een dubbelklik</long>
+      </locale>
+
+      <locale name="no">
+        <short>Tid for dobbeltklikk</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Tempo de Duplo-Clique</short>
+        <long>Tamanho de um duplo-clique</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Timp dublu-clic</short>
+        <long>Lungimea unui dublu-clic</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Čas dvojitého kliknutia</short>
+        <long>Dĺžka dvojitého kliknutia</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Čas dvojnega klika</short>
+        <long>Dolžina dvojnega klika</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Dubbelklickstid</short>
+        <long>Längden på ett dubbelklick</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Çift tıklatmasüresi</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Thời gian nhấp đúp</short>
+        <long>Độ dài nhấp đúp</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>双击时间</short>
+        <long>鼠标双击的时间长度</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>Double Click 時間</short>
+        <long>表示 double click 的時限</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/locate_pointer</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/locate_pointer</key>
+      <applyto>/desktop/gnome/peripherals/mouse/locate_pointer</applyto>
       <owner>gnome</owner>
       <type>bool</type>
       <default>false</default>
@@ -81,10 +766,115 @@
         <long>Highlights the current location of the pointer when the
         Control key is pressed and released</long>
       </locale>
+
+      <locale name="bg">
+        <short>Показвай показалеца</short>
+        <long>Осветява текущото положение на показалеца при натискането на клавиш Control</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Nalézt ukazatel</short>
+        <long>Zvýrazní současné umístění ukazatele, když je stisknuta a uvolněna klávesa Control</long>
+      </locale>
+
+      <locale name="da">
+        <short>Lokalisér markør</short>
+        <long>Fremhæv den aktuelle placering af markøren når Ctrl-tasten trykkes ned og slippes</long>
+      </locale>
+
+      <locale name="de">
+        <short>Mauszeiger finden</short>
+        <long>Die aktuelle Position des Mauszeigers hervorheben, wenn die Strg-Taste gedrückt und wieder losgelassen wird?</long>
+      </locale>
+
+      <locale name="el">
+        <short>Εντοπισμός Δείκτη</short>
+        <long>Επισημαίνει την τρέχουσα θέση του δρομέα όταν έχει πατηθεί το πλήκτρο Control και απελευθερώνεται</long>
+      </locale>
+
+      <locale name="es">
+        <short>Localizar puntero</short>
+        <long>Resalta la posición actual del puntero cuando la tecla Control es presionada y soltada</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Paikanna osoitin</short>
+        <long>Korostaa osoittimen nykyisen sijainnin, kun control-näppäintä painetaan.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Localiser le pointeur</short>
+        <long>Mets en évidence l&apos;emplacement courant du pointeur lorsque la touche Ctrl est  pressée et relachée</long>
+      </locale>
+
+      <locale name="he">
+        <short>אתר סמן</short>
+        
+      </locale>
+
+      <locale name="lv">
+        <short>Sameklēt Kursoru</short>
+        <long>Izgaismo kursora lokāciju, kad Kontroles taustiņš tiek piespiests un atlaists</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Заагуурын байршил тогтоох</short>
+        <long>CTRL товчлуурыг дарахад хулганын заагуурын байрлалыг нааш нь товойлгож харуулах</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Muisaanwijzer localiseren</short>
+        <long>Geeft aan waar de muisaanwijzer zich bevindt wanneer de CTRL-toets wordt ingedrukt en losgelaten</long>
+      </locale>
+
+      <locale name="no">
+        <short>Lokaliser peker</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Localizar Ponteiro</short>
+        <long>Destaca a localização atual do ponteiro quando a tecla Control for pressionada e solta</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Localizează indicatorul</short>
+        <long>Luminează locaţia curentă a indicatorului mausului când tasta Ctrl este apăsată şi eliberată</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Nájsť ukazovateľ</short>
+        <long>Zvýrazní aktuálnu polohu ukazovateľa pri stlačení a uvoľnení klávesy Control</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Najdi kazalec</short>
+        <long>Osvetli trenutno mesto kazalca, kadar je pritisnjena in spuščena tipka Control</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Lokalisera pekare</short>
+        <long>Markera den aktuella positionen för pekaren när control-tangenten trycks och släpps</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Định vị con trỏ</short>
+        <long>Tô sáng vị trí hiện thời của con trỏ khi nhấn và nhả phím Control</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>定位指针</short>
+        <long>当控制键按下和放开时突出显示指针的当前位置</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>標示鼠標位置</short>
+        <long>當按下及放開 Control 鍵後，加強顯示目前鼠標的位置</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/peripherals/mouse/cursor_font</applyto>
       <key>/schemas/desktop/gnome/peripherals/mouse/cursor_font</key>
+      <applyto>/desktop/gnome/peripherals/mouse/cursor_font</applyto>
       <owner>gnome</owner>
       <type>string</type>
       <locale name="C">
@@ -95,6 +885,278 @@
 	  each session, so changing it mid-session won't have an effect
 	  until the next time you log in.
 	</long>
+      </locale>
+
+      <locale name="bg">
+	<short>Шрифт на курсора</short>
+	<long>Име на шрифта на курсора. Ако не е зададено се използва това по подразбиране. Стойността се дава в началото на X сесията, така че промяната няма да се използва до следващото влизане в X.</long>
+      </locale>
+
+      <locale name="cs">
+	<short>Písmo kurzoru</short>
+	<long>Název písma kurzoru. Není-li nastaveno, používá se implicitní písmo. Tato hodnota je předána X serveru jen při startu každého sezení, takže její změna v době sezení nebude mít vliv, dokud se znovu nepřihlásíte.</long>
+      </locale>
+
+      <locale name="da">
+	<short>Markørskrifttype</short>
+	<long>Skrifttypenavn for markøren. Hvis ikke sat, benyttes standardskrifttypen. Denne værdi bliver kun sendt til X-serveren ved begyndelsen af hver session så en ændring under en session træder først i kraft næste gang der logges på.</long>
+      </locale>
+
+      <locale name="de">
+	<short>Cursor-Schrift</short>
+	<long>Schriftname des Cursors. Falls dieser Schlüssel nicht gesetzt wird, wird die Vorgabe-Schrift verwendet. Dieser Wert wird dem X-Server lediglich am Anfang jeder Sitzung mitgeteilt, daher werden Änderungen an diesem Schlüssel erst ausgewertet, wenn Sie sich das nächste Mal anmelden.</long>
+      </locale>
+
+      <locale name="el">
+	<short>Γραμματοσειρά δρομέα</short>
+	<long>Όνομα γραμματοσειράς του δρομέα. Αν δεν ορισθεί χρησιμοποιείται η εξ ορισμού γραμματοσειρά. Αυτή η τιμή ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή X, έτσι η αλλαγή της στην μέση της συνεδρίας δεν θα έχει αποτέλεσμα μέχρι την επόμενη εισοδο σας στην συνεδρία.</long>
+      </locale>
+
+      <locale name="es">
+	<short>Tipografía del cursor</short>
+	<long>Nombre de la tipografía del cursor. Si no esta definida se utiliza la tipografía predeterminada. El valor sólo se propaga al servidor X al inicio de cada sesión, por lo cual si cambia este valor en medio de una sesión este no surtirá efecto hasta la próxima vez que inicie una sesión.</long>
+      </locale>
+
+      <locale name="fi">
+	<short>Osoittimen kirjasin</short>
+	<long>Osoittimen kirjasimen nimi. Jos ei ole asetettu, niin oletuskirjasin on käytössä. Tämä arvo siirtyy X-palvelimelle vain joka istunnon alussa, joten sen muuttaminen kesken istunnon ei vaikuta ennen uutta sisään kirjautumista.</long>
+      </locale>
+
+      <locale name="fr">
+	<short>Police du curseur</short>
+	<long>Nom de la police du curseur. Si non défini, la police par défaut sera utilisé. Cette valeur n&apos;est propagé qu&apos;au serveur X au démarrage de chaque session, aussi, changer cette valeur en cours de session n&apos;au ra aucun effet tant que vous vous ne serez pas reconnecter.</long>
+      </locale>
+
+      <locale name="he">
+	<short>גופן המצביע</short>
+	
+      </locale>
+
+      <locale name="lv">
+	<short>Kursora fonts</short>
+	<long>Kursora fonta nosaukums. Ja nieiestatīts, tiek lietots noklusētais fonts. Šī vērtība tiek piespēlēta X serverim tikai sāknējot katru sesiju, tāpēc, mainot to sesijas vidū, nedos panākumus līdz nākamajai reizei, kad jūs pieteiksieties.</long>
+      </locale>
+
+      <locale name="mn">
+	<short>Заагуурын бичгийн хэлбэр</short>
+	<long>Заагуурын бичгийн хэлбэр. Түүнийг тодорхойлж өгөөгүй тохиолдолд стандарт бичгийг хэрэглэнэ. Энэ утга нь бүртгүүлэх болгонд X-Server -т мэдэгдэж байдаг тул дараагийн удаа ортол ямар ч өөрчлөлт оруулахгүй.</long>
+      </locale>
+
+      <locale name="ms">
+	<short>Font kursor</short>
+	
+      </locale>
+
+      <locale name="nl">
+	<short>Cursorlettertype</short>
+	<long>Naam van het lettertype van de cursor. Als het ingesteld wordt op &apos;unset&apos;, dan zal het standaardlettertype gebruikt worden. Om veranderingen te activeren zult u zich opnieuw moeten aanmelden.</long>
+      </locale>
+
+      <locale name="no">
+	<short>Skrift for markør</short>
+	
+      </locale>
+
+      <locale name="pl">
+	<short>Czcionka kursora</short>
+	
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Fonte do cursor</short>
+	<long>Nome da fonte do cursor. Se desligado a fonte padrão é usada. Esse valor é propagado somente para a inicialização do servidor X de cada sessão, então mudá-la no meio da sessão não terá efeito até a próxima vez que você logar.</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Font cursor</short>
+	<long>Numele fontului pentru cursor.</long>
+      </locale>
+
+      <locale name="sk">
+	<short>Písmo kurzora</short>
+	<long>Názov písma pre kurzor. Ak je nenastavené, použije sa štandardné písmo. Táto hodnota je len odovzdaná X serveru pri štarte každého sedenia. Jej zmena počas sedenia sa prejaví až pri vašom ďalšom prihlásení.</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Pisava kazalca</short>
+	<long>Ime pisave kazalca. Če ni nastavljeno je uporabljena privzeta pisava. Ta vrednost se posreduje strežniku X le ob pričektu vsake seje, zato njeno spreminjanje med sejo ne bo imelo vpliva dokler se ne prijavite znova.</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Markörtypsnitt</short>
+	<long>Typsnittsnamn för markören. Om det inte är inställt används standardtypsnittet. Detta värde propageras endast till X-serverns start under varje session, så att ändra det mitt under en session kommer inte att ha någon effekt tills dess att du loggar in nästa gång.</long>
+      </locale>
+
+      <locale name="tr">
+	<short>İmleç yazıtipi</short>
+	
+      </locale>
+
+      <locale name="vi">
+	<short>Font con trỏ</short>
+	<long>Tên font của con trỏ. Nếu bỏ chọn, font mặc định sẽ được dùng. Giá trị này chỉ tác động khi khởi động X server mỗi session, vì thế thay đổi giá trị này khi đang chạy sẽ không tác động gì cho đến khi bạn đăng nhập lại.</long>
+      </locale>
+
+      <locale name="zh_CN">
+	<short>光标字体</short>
+	<long>光标字体的名称。如果未设置，则使用默认的字体。此设置只有在每次会话开始前传送给 X 服务器，因此在会话当中改变它不会有用，要等到您下次登录后才会起作用。</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>鼠標字型檔</short>
+	<long>鼠標使用的字型檔名稱。如果沒有設定，會使用預設的鼠標字型檔。本設定值只會在作業階段開始時傳送至 X 伺服程式，因此使用 X Window 時更改設定是不會生效的，必須登出再登入後才會生效。</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/mouse/cursor_theme</key>
+      <applyto>/desktop/gnome/peripherals/mouse/cursor_theme</applyto>
+      <owner>gnome</owner>
+      <type>string</type>
+      <locale name="C">
+	<short>Cursor theme</short>
+	<long>
+	  Cursor theme name.  Used only by Xservers that support
+	  Xcursor, such as XFree86 4.3 and later.  This value is only
+	  propagated to the X server start of each session, so changing
+	  it mid-session won't have an effect until the next time you
+	  log in.
+	</long>
+      </locale>
+
+      <locale name="cs">
+	<short>Téma kurzoru</short>
+	<long>Název tématu kurzoru. Je použit pouze X serverem podporujícím Xcursor, například XFree86 4.3 nebo pozdější. Tato hodnota je předána X serveru pouze při startu každého sezení, takže její změna uprostřed sezení nebude mít vliv do příštího přihlášení.</long>
+      </locale>
+
+      <locale name="da">
+	<short>Markørtema</short>
+	<long>Markørtemanavn. Benyttes kun af X-servere der understøtter Xcursor, såsom XFree86 4.3 og senere. Denne værdi bliver kun sendt til X-serveren ved begyndelsen af hver session så en ændring under en session træder først i kraft næste gang der logges på.</long>
+      </locale>
+
+      <locale name="de">
+	<short>Cursor-Thema</short>
+	<long>Name des Cursor-Themas. Wird nur durch XServer wie XFree86 4.3 unterstützt. Dieser Wert wird dem X-Server lediglich am Anfang jeder Sitzung mitgeteilt, daher werden Änderungen an diesem Schlüssel erst ausgewertet, wenn Sie sich das nächste Mal anmelden.</long>
+      </locale>
+
+      <locale name="es">
+	<short>Tema del cursor</short>
+	<long>Nombre del tema del cursor. Usado sólo por servidores X que soportan Xcursor, tal como XFree86 4.3 y posteriores. El valor sólo se propaga al servidor X al inicio de cada sesión, por lo cual si cambia este valor en medio de una sesión este no surtirá efecto hasta la próxima vez que inicie una sesión.</long>
+      </locale>
+
+      <locale name="lv">
+	<short>Kursora tēma</short>
+	<long>Kursora tēmas nosaukums. Tiek lietots Xserveros, kas atbalsta Xcursor, tādos kā XFree86 4.3 un vēlākos. Šī vērtība tiek piespēlēta X serverim tikai sāknējot katru sesiju, tāpēc, mainot to sesijas vidū, nedos panākumus līdz nākamajai reizei, kad jūs pieteiksieties.</long>
+      </locale>
+
+      <locale name="nl">
+	<short>Cursorthema</short>
+	<long>Naam van het cursorthema. Slechts voor X-servers die Xcursor ondersteunen, zoals XFree86 4.3 en latere versies. Deze waarde wordt alleen doorgegeven aan de X-server aan het begin van iedere sessie, dus een wijziging ervan tijdens een sessie heeft geen invloed totdat u zich opnieuw aanmeldt.</long>
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Tema do cursor</short>
+	<long>Nome da tema do cursor. Usado apenas por servidores X que suportam Xcursor, como o XFree86 4.3 ou mais recente. Este valor é propagado somente para a inicialização do servidor X de cada sessão, então mudá-la no meio da sessão não terá efeito até a próxima vez que você logar.</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Temă cursor</short>
+	<long>Numele temei pentru cursor.</long>
+      </locale>
+
+      <locale name="sk">
+	<short>Téma kurzora</short>
+	<long>Názov témy kurzora. Použité len Xserverami, ktoré podporujú Xcursor, ako napríklad XFree86 4.3 a novšie. Táto hodnota je len odovzdaná X serveru pri štarte každého sedenia. Jej zmena počas sedenia sa prejaví až pri vašom ďalšom prihlásení.</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Tema kazalca</short>
+	<long>Ime teme kazalca. Uporabljeno le za strežnike X, ki podpirajo Xcursor, kot npr XFree86 4.3 in kasnejši. Ta vrednost se posreduje strežniku X le ob pričektu seje, zato njeno spreminjanje med sejo ne bo imelo vpliva dokler se ne prijavite znova.</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Markörtema</short>
+	<long>Temanamn för markören. Används endast av Xservrar som stöder Xcursor, som till exempel XFree86 4.3 och senare. Detta värde propageras endast till X-serverns start under varje session, så att ändra det mitt under en session kommer inte att ha någon effekt tills dess att du loggar in nästa gång.</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>鼠標主題</short>
+	<long>鼠標主題的名稱。只會給支援 Xcursor 的 X 伺服程式使用，例如 XFree86 4.3 或以後的版本。本設定值只會在作業階段開始時傳送至 X 伺服程式，因此使用 X Window 時更改設定是不會生效的，必須登出再登入後才會生效。</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/mouse/cursor_size</key>
+      <applyto>/desktop/gnome/peripherals/mouse/cursor_size</applyto>
+      <owner>gnome</owner>
+      <type>int</type>
+      <default>18</default>
+      <locale name="C">
+	<short>Cursor size</short>
+	<long>
+	  Size of the cursor referenced by cursor_theme.  This value is
+	  only propagated to the X server start of each session, so
+	  changing it mid-session won't have an effect until the next
+	  time you log in.
+	</long>
+      </locale>
+
+      <locale name="cs">
+	<short>Velikost kurzoru</short>
+	<long>Velikost kurzoru odkazovaného přes cursor_theme. Tato hodnota je předána X serveru pouze při startu každého sezení, takže její změna uprostřed sezení nebude mít vliv do příštího přihlášení.</long>
+      </locale>
+
+      <locale name="da">
+	<short>Markørstørrelse</short>
+	<long>Størrelsen af markøren som er angivet af cursor_theme. Denne værdi bliver kun sendt til X-serveren ved begyndelsen af hver session så en ændring under en session træder først i kraft næste gang der logges på.</long>
+      </locale>
+
+      <locale name="de">
+	<short>Cursor-Größe</short>
+	<long>Größe des Cursors vorgegen durch cursor_theme. Dieser Wert wird dem X-Server lediglich am Anfang jeder Sitzung mitgeteilt, daher werden Änderungen an diesem Schlüssel erst ausgewertet, wenn Sie sich das nächste Mal anmelden.</long>
+      </locale>
+
+      <locale name="es">
+	<short>Tamaño del cursor</short>
+	<long>Tamaño del cursor definido por el _tema del cursor. El valor sólo se propaga al servidor X al inicio de cada sesión, por lo cual si cambia este valor en medio de una sesión este no surtirá efecto hasta la próxima vez que inicie una sesión.</long>
+      </locale>
+
+      <locale name="lv">
+	<short>Kursora izmērs</short>
+	<long>Kursora izmērs, ko norādījusi kursora tēmu. Šī vērtība tiek piespēlēta X serverim tikai sāknējot katru sesiju, tāpēc, mainot to sesijas vidū, nedos panākumus līdz nākamajai reizei, kad jūs pieteiksieties.</long>
+      </locale>
+
+      <locale name="nl">
+	<short>Cursorgrootte</short>
+	<long>Grootte van de door cursor_theme gerefereerde cursor. Deze waarde wordt alleen doorgegeven aan de X-server aan het begin van iedere sessie, dus een wijziging ervan tijdens een sessie heeft geen invloed totdat u zich opnieuw aanmeldt.</long>
+      </locale>
+
+      <locale name="pt_BR">
+	<short>Tamanho do cursor</short>
+	<long>Tamanho do cursor referenciado por cursor_theme. Esse valor é propagado somente para a inicialização do servidor X de cada sessão, então mudá-la no meio da sessão não terá efeito até a próxima vez que você logar.</long>
+      </locale>
+
+      <locale name="ro">
+	<short>Mărime cursor</short>
+	<long>Mărimea cursorului la care se referă cursor_theme.</long>
+      </locale>
+
+      <locale name="sk">
+	<short>Veľkosť kurzora</short>
+	<long>Veľkosť kurzora odkazovaného v cursor_theme. Táto hodnota je len odovzdaná X serveru pri štarte každého sedenia. Jej zmena počas sedenia sa prejaví až pri vašom ďalšom prihlásení.</long>
+      </locale>
+
+      <locale name="sl">
+	<short>Velikost kazalca</short>
+	<long>Velikost kazalca, ki ga navaja cursor_theme. Ta vrednost se posreduje strežniku X le ob pričetku vsake seje, zato njeno spreminjanje med sejo ne bo imelo vpliva dokler se ne prijavite znova.</long>
+      </locale>
+
+      <locale name="sv">
+	<short>Markörstorlek</short>
+	<long>Storleken för markören som anges av cursor_theme. Detta värde propageras endast till X-serverns start under varje session, så att ändra det mitt under en session kommer inte att ha någon effekt tills dess att du loggar in nästa gång.</long>
+      </locale>
+
+      <locale name="zh_TW">
+	<short>鼠標大小</short>
+	<long>cursor_theme 設定值中的鼠標的大小。本設定值只會在作業階段開始時傳送至 X 伺服程式，因此使用 X Window 時更改設定是不會生效的，必須登出再登入後才會生效。</long>
       </locale>
     </schema>
   </schemalist>

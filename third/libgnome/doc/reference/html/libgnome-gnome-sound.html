@@ -11,13 +11,46 @@ TITLE="GNOME Library Reference Manual"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Miscellaneous"
-HREF="x3341.html"><LINK
+HREF="x3411.html"><LINK
 REL="PREVIOUS"
 TITLE="gnome-util"
 HREF="libgnome-gnome-util.html"><LINK
 REL="NEXT"
 TITLE="gnome-triggers"
-HREF="libgnome-gnome-triggers.html"></HEAD
+HREF="libgnome-gnome-triggers.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -25,103 +58,73 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Library Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-util.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="u"
+HREF="x3411.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
 HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Library Reference Manual</TH
 ><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
-HREF="x3341.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-triggers.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
-NAME="LIBGNOME-GNOME-SOUND">gnome-sound</H1
+NAME="LIBGNOME-GNOME-SOUND"
+></A
+>gnome-sound</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3901"
+NAME="AEN3926"
 ></A
 ><H2
 >Name</H2
@@ -129,15 +132,10 @@ NAME="AEN3901"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3904"><H2
+NAME="AEN3929"
+></A
+><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;libgnome/libgnome.h&gt;
@@ -164,14 +162,11 @@ int         <A
 HREF="libgnome-gnome-sound.html#GNOME-SOUND-CONNECTION-GET"
 >gnome_sound_connection_get</A
 >      (void);</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3912"
+NAME="AEN3937"
 ></A
 ><H2
 >Description</H2
@@ -187,96 +182,72 @@ sounds and they will just quietly return if no action is possible.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3916"
+NAME="AEN3941"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3918"
+NAME="AEN3943"
 ></A
 ><H3
 ><A
 NAME="GNOME-SOUND-INIT"
 ></A
 >gnome_sound_init ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_sound_init                (const char *hostname);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Initialize the esd connection.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3924"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3950"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >hostname</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Hostname where esd daemon resides.</TD
+><P
+> Hostname where esd daemon resides.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3933"
+NAME="AEN3955"
 ></A
 ><H3
 ><A
 NAME="GNOME-SOUND-SHUTDOWN"
 ></A
 >gnome_sound_shutdown ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_sound_shutdown            (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Shuts down the gnome sound support.</P
 ><P
@@ -285,26 +256,16 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3939"
+NAME="AEN3961"
 ></A
 ><H3
 ><A
 NAME="GNOME-SOUND-PLAY"
 ></A
 >gnome_sound_play ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_sound_play                (const char *filename);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Plays the audio stored in <TT
 CLASS="PARAMETER"
@@ -315,66 +276,52 @@ CLASS="PARAMETER"
 not possible (due to missing sound support or for other reasons).</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3946"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3969"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >filename</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> File containing the sound sample.</TD
+><P
+> File containing the sound sample.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3955"
+NAME="AEN3974"
 ></A
 ><H3
 ><A
 NAME="GNOME-SOUND-SAMPLE-LOAD"
 ></A
 >gnome_sound_sample_load ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         gnome_sound_sample_load         (const char *sample_name,
                                              const char *filename);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Loads the audio from <TT
 CLASS="PARAMETER"
@@ -389,104 +336,98 @@ HREF="libgnome-gnome-sound.html#GNOME-SOUND-PLAY"
 >() instead for fire and forget sound playing.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3963"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3983"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >sample_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The name of the sample.</TD
+><P
+> The name of the sample.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3988"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >filename</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The filename where the audio is stored.</TD
+><P
+> The filename where the audio is stored.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3993"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The esound sample_id or <TT
 CLASS="LITERAL"
 >-1</TT
 > if the sample was unable to be cached
-for esound.</TD
+for esound.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3981"
+NAME="AEN3999"
 ></A
 ><H3
 ><A
 NAME="GNOME-SOUND-CONNECTION-GET"
 ></A
 >gnome_sound_connection_get ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >int         gnome_sound_connection_get      (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Rarely needed to by programs directly, this function may be useful if a
 program has cached a sample with <A
@@ -496,151 +437,72 @@ HREF="libgnome-gnome-sound.html#GNOME-SOUND-SAMPLE-LOAD"
 call esd_sample_play() to play the sample.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3989"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN4008"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > the file descriptor of our esound connection or <TT
 CLASS="LITERAL"
 >-1</TT
 >
-on error.</TD
+on error.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
 ></DIV
 ></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-util.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;gnome-util</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="x3341.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
 ><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-triggers.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->Next Page &#62;&#62;&#62;</B
-></FONT
+>gnome-triggers&nbsp;&gt;&gt;&gt;</B
 ></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-util</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-triggers</B
-></FONT
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

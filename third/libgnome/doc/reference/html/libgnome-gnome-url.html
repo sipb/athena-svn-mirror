@@ -11,13 +11,46 @@ TITLE="GNOME Library Reference Manual"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Displaying help and external info"
-HREF="x2881.html"><LINK
+HREF="x2754.html"><LINK
 REL="PREVIOUS"
 TITLE="gnome-help"
 HREF="libgnome-gnome-help.html"><LINK
 REL="NEXT"
 TITLE="gnome-score"
-HREF="libgnome-gnome-score.html"></HEAD
+HREF="libgnome-gnome-score.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -25,103 +58,73 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Library Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-help.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="u"
+HREF="x2754.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
 HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Library Reference Manual</TH
 ><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
-HREF="x2881.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-score.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
-NAME="LIBGNOME-GNOME-URL">gnome-url</H1
+NAME="LIBGNOME-GNOME-URL"
+></A
+>gnome-url</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3127"
+NAME="AEN3162"
 ></A
 ><H2
 >Name</H2
@@ -129,15 +132,10 @@ NAME="AEN3127"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3130"><H2
+NAME="AEN3165"
+></A
+><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;libgnome/libgnome.h&gt;
@@ -151,23 +149,22 @@ HREF="libgnome-gnome-url.html#GNOMEURLERROR"
 HREF="libgnome-gnome-url.html#GNOME-URL-ERROR-CAPS"
 >GNOME_URL_ERROR</A
 >
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+gboolean    <A
 HREF="libgnome-gnome-url.html#GNOME-URL-SHOW"
 >gnome_url_show</A
 >                  (const char *url,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **error);&#13;</PRE
-></TD
-></TR
-></TABLE
+                                             GError **error);
+gboolean    <A
+HREF="libgnome-gnome-url.html#GNOME-URL-SHOW-WITH-ENV"
+>gnome_url_show_with_env</A
+>         (const char *url,
+                                             char **envp,
+                                             GError **error);&#13;</PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3138"
+NAME="AEN3176"
 ></A
 ><H2
 >Description</H2
@@ -181,35 +178,25 @@ handle the job.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3141"
+NAME="AEN3179"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3143"
+NAME="AEN3181"
 ></A
 ><H3
 ><A
 NAME="GNOMEURLERROR"
 ></A
 >enum GnomeURLError</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >typedef enum {
   GNOME_URL_ERROR_PARSE
 } GnomeURLError;</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The errors that can be returned due to bad parameters being pass to
 <A
@@ -218,94 +205,66 @@ HREF="libgnome-gnome-url.html#GNOME-URL-SHOW"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3150"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#F0F0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3189"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="LITERAL"
 >GNOME_URL_ERROR_PARSE</TT
+></SPAN
 ></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The parsing of the handler failed.</TD
+><P
+> The parsing of the handler failed.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3159"
+NAME="AEN3194"
 ></A
 ><H3
 ><A
 NAME="GNOME-URL-ERROR-CAPS"
 ></A
 >GNOME_URL_ERROR</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define GNOME_URL_ERROR (gnome_url_error_quark ())</PRE
-></TD
-></TR
-></TABLE
 ><P
 >The class (domain) of errors raised by this module.</P
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3164"
+NAME="AEN3199"
 ></A
 ><H3
 ><A
 NAME="GNOME-URL-SHOW"
 ></A
 >gnome_url_show ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gnome_url_show                  (const char *url,
-                                             <A
-HREF=../glib/glib-error-reporting.html#GERROR
->GError</A> **error);</PRE
-></TD
-></TR
-></TABLE
+>gboolean    gnome_url_show                  (const char *url,
+                                             GError **error);</PRE
 ><P
 >Displays the given URL in an appropriate viewer. The appropriate viewer is
 user definable. It is determined by extracting the protocol from the <TT
@@ -347,75 +306,81 @@ CLASS="LITERAL"
 > domains.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN3180"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3216"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >url</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The url to display. Should begin with the protocol to use (e.g.
-"http:", "ghelp:", etc)</TD
+"http:", "ghelp:", etc)</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3221"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >error</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > Used to store any errors that result from trying to display the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN3227"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
@@ -428,118 +393,187 @@ CLASS="PARAMETER"
 ><I
 >error</I
 ></TT
-> will contain the actual error).</TD
+> will contain the actual error).</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3235"
+></A
+><H3
+><A
+NAME="GNOME-URL-SHOW-WITH-ENV"
+></A
+>gnome_url_show_with_env ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    gnome_url_show_with_env         (const char *url,
+                                             char **envp,
+                                             GError **error);</PRE
+><P
+>Like <A
+HREF="libgnome-gnome-url.html#GNOME-URL-SHOW"
+>gnome_url_show</A
+>(), but the the contents of <TT
+CLASS="PARAMETER"
+><I
+>envp</I
+></TT
+>
+will become the url viewer's environment rather than inheriting
+from the parents environment.</P
 ><P
 ></P
-></DIV
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
+><P
+></P
+><TABLE
+CLASS="variablelist"
 BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
 CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
 ><TR
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
+ALIGN="LEFT"
+VALIGN="TOP"
 ><A
-HREF="libgnome-gnome-help.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+NAME="AEN3246"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>url</I
+></TT
+>&nbsp;:</SPAN
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="x2881.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libgnome-gnome-score.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> The url to display. Should begin with the protocol to use (e.g.
+"http:", "ghelp:", etc)</P
 ></TD
 ></TR
 ><TR
 ><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-help</B
-></FONT
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3251"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>envp</I
+></TT
+>&nbsp;:</SPAN
 ></TD
 ><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> child's environment, or <TT
+CLASS="LITERAL"
+>NULL</TT
+> to inherit parent's.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3257"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>error</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> Used to store any errors that result from trying to display the <TT
+CLASS="PARAMETER"
+><I
+>url</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3263"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> <TT
+CLASS="LITERAL"
+>TRUE</TT
+> if everything went fine, <TT
+CLASS="LITERAL"
+>FALSE</TT
+> otherwise (in which case
+<TT
+CLASS="PARAMETER"
+><I
+>error</I
+></TT
+> will contain the actual error).</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="libgnome-gnome-help.html"
 ><B
->gnome-score</B
-></FONT
+>&lt;&lt;&lt;&nbsp;gnome-help</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="libgnome-gnome-score.html"
+><B
+>gnome-score&nbsp;&gt;&gt;&gt;</B
+></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

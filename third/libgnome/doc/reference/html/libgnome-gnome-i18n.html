@@ -11,13 +11,46 @@ TITLE="GNOME Library Reference Manual"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Configuration"
-HREF="x1311.html"><LINK
+HREF="x1296.html"><LINK
 REL="PREVIOUS"
 TITLE="gnome-config"
 HREF="libgnome-gnome-config.html"><LINK
 REL="NEXT"
 TITLE="Displaying help and external info"
-HREF="x2881.html"></HEAD
+HREF="x2754.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -25,103 +58,73 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Library Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-config.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="u"
+HREF="x1296.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
 HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Library Reference Manual</TH
 ><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
-HREF="x1311.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="x2881.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+ACCESSKEY="n"
+HREF="x2754.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
-NAME="LIBGNOME-GNOME-I18N">gnome-i18n</H1
+NAME="LIBGNOME-GNOME-I18N"
+></A
+>gnome-i18n</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2821"
+NAME="AEN2696"
 ></A
 ><H2
 >Name</H2
@@ -129,28 +132,19 @@ NAME="AEN2821"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2824"><H2
+NAME="AEN2699"
+></A
+><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;libgnome/libgnome.h&gt;
 
 
-const <A
-HREF=../glib/glib-doubly-linked-lists.html#GLIST
->GList</A>* <A
+const GList* <A
 HREF="libgnome-gnome-i18n.html#GNOME-I18N-GET-LANGUAGE-LIST"
 >gnome_i18n_get_language_list</A
->   (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *category_name);
+>   (const gchar *category_name);
 void        <A
 HREF="libgnome-gnome-i18n.html#GNOME-I18N-PUSH-C-NUMERIC-LOCALE"
 >gnome_i18n_push_c_numeric_locale</A
@@ -160,14 +154,11 @@ void        <A
 HREF="libgnome-gnome-i18n.html#GNOME-I18N-POP-C-NUMERIC-LOCALE"
 >gnome_i18n_pop_c_numeric_locale</A
 > (void);&#13;</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2832"
+NAME="AEN2707"
 ></A
 ><H2
 >Description</H2
@@ -184,14 +175,14 @@ CLASS="NOTE"
 ><B
 >Note: </B
 >  A lot of the internationalization functions which were in this module in
-  GNOME 1 have now moved to libbonobo for GNOME 2 (<A
-HREF=../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GETTEXT-MACRO
->_</A>(), <A
-HREF=../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#TEXTDOMAIN
->textdomain</A>(),
-  <A
-HREF=../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GETTEXT
->gettext</A>(), etc).
+  GNOME 1 have now moved to libbonobo for GNOME 2 (<a
+href="../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GETTEXT-MACRO"
+>_</a>(), <a
+href="../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#TEXTDOMAIN"
+>textdomain</a>(),
+  <a
+href="../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GETTEXT"
+>gettext</a>(), etc).
   </P
 ></BLOCKQUOTE
 ></DIV
@@ -199,37 +190,23 @@ HREF=../libgnomecanvas/libgnomecanvas-gnome-canvas-util.html#GETTEXT
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2840"
+NAME="AEN2715"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2842"
+NAME="AEN2717"
 ></A
 ><H3
 ><A
 NAME="GNOME-I18N-GET-LANGUAGE-LIST"
 ></A
 >gnome_i18n_get_language_list ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->const <A
-HREF=../glib/glib-doubly-linked-lists.html#GLIST
->GList</A>* gnome_i18n_get_language_list   (const <A
-HREF=../glib/glib-basic-types.html#GCHAR
->gchar</A> *category_name);</PRE
-></TD
-></TR
-></TABLE
+>const GList* gnome_i18n_get_language_list   (const gchar *category_name);</PRE
 ><P
 >This computes a list of language strings that the user wants.  It searches in
 the standard environment variables to find the list, which is sorted in order
@@ -249,85 +226,75 @@ CLASS="LITERAL"
 > is assumed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2853"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2729"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >category_name</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Name of category to look up, e.g. %"LC_MESSAGES".</TD
+><P
+> Name of category to look up, e.g. %"LC_MESSAGES".</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2734"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > the list of languages, this list should not be freed as it is
-owned by gnome-i18n.</TD
+owned by gnome-i18n.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2866"
+NAME="AEN2739"
 ></A
 ><H3
 ><A
 NAME="GNOME-I18N-PUSH-C-NUMERIC-LOCALE"
 ></A
 >gnome_i18n_push_c_numeric_locale ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_i18n_push_c_numeric_locale
                                             (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Saves the current LC_NUMERIC locale and sets it to "C"
 This way you can safely read write floating point numbers all in the
@@ -348,26 +315,16 @@ The calls can be nested.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2874"
+NAME="AEN2747"
 ></A
 ><H3
 ><A
 NAME="GNOME-I18N-POP-C-NUMERIC-LOCALE"
 ></A
 >gnome_i18n_pop_c_numeric_locale ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_i18n_pop_c_numeric_locale (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Restores the LC_NUMERIC locale to what it was 
 before the matching <A
@@ -381,109 +338,34 @@ to change the LC_NUMERIC locale or things may come out very strange.</P
 ></P
 ></DIV
 ></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-config.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;gnome-config</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="x1311.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
 ><A
-HREF="x2881.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
+ACCESSKEY="n"
+HREF="x2754.html"
 ><B
->Next Page &#62;&#62;&#62;</B
-></FONT
+>Displaying help and external info&nbsp;&gt;&gt;&gt;</B
 ></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-config</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Displaying help and external info</B
-></FONT
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

@@ -1,7 +1,35 @@
 AC_INIT(libgnome)
 
+# Making releases:
+#   LIBGNOME_MICRO_VERSION += 1;
+#   LIBGNOME_INTERFACE_AGE += 1;
+#   LIBGNOME_BINARY_AGE += 1;
+# if any functions have been added, set LIBGNOME_INTERFACE_AGE to 0.
+# if backwards compatibility has been broken,
+# set LIBGNOME_BINARY_AGE and LIBGNOME_INTERFACE_AGE to 0.
+#
+LIBGNOME_MAJOR_VERSION=2
+LIBGNOME_MINOR_VERSION=2
+LIBGNOME_MICRO_VERSION=0
+LIBGNOME_INTERFACE_AGE=0
+LIBGNOME_BINARY_AGE=200
+# If you need a modifier for the version number. 
+# Normally empty, but can be used to make "fixup" releases.
+LIBGNOME_EXTRAVERSION=.1
+
+dnl libtool versioning from libgnome
+
+LIBGNOME_CURRENT=`expr 100 '*' $LIBGNOME_MINOR_VERSION + $LIBGNOME_MICRO_VERSION - $LIBGNOME_INTERFACE_AGE`
+LIBGNOME_REVISION=$LIBGNOME_INTERFACE_AGE
+LIBGNOME_AGE=`expr $LIBGNOME_BINARY_AGE - $LIBGNOME_INTERFACE_AGE`
+LIBGNOME_VERSION=$LIBGNOME_MAJOR_VERSION.$LIBGNOME_MINOR_VERSION.$LIBGNOME_MICRO_VERSION$LIBGNOME_EXTRAVERSION
+
+AC_SUBST(LIBGNOME_CURRENT)
+AC_SUBST(LIBGNOME_REVISION)
+AC_SUBST(LIBGNOME_AGE)
+
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libgnome, 2.0.6)
+AM_INIT_AUTOMAKE(libgnome, $LIBGNOME_VERSION)
 
 AM_MAINTAINER_MODE
 
@@ -24,25 +52,8 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 
 GETTEXT_PACKAGE=libgnome-2.0
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [The gettext package])
 
-dnl libtool versioning from libgnome
-
-dnl increment if the interface has additions, changes, removals.
-LIBGNOME_CURRENT=0
-
-dnl increment any time the source you changes; set to
-dnl 0 if you uncrement CURRENT
-LIBGNOME_REVISION=0
-
-dnl increment if any interfaces have been added; set to 0
-dnl  if any interfaces have been removed. removasl has
-dnl  precedence over adding, so set to 0 if both happened.
-LIBGNOME_AGE=0
-
-AC_SUBST(LIBGNOME_CURRENT)
-AC_SUBST(LIBGNOME_REVISION)
-AC_SUBST(LIBGNOME_AGE)
 
 AC_CANONICAL_HOST
   case $host in
@@ -50,7 +61,7 @@ AC_CANONICAL_HOST
   *-solaris*) AC_DEFINE(HAVE_MAN_DEBUG, 1, [man(1) has a -d debug option]);;
   esac
 
-ALL_LINGUAS="am ar az be bg bs cs da de el es eu fi fr hi it ko ja lv ms nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bs ca cs da de el en_GB es et eu fa fi fr gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(gnomelocaledir)
@@ -99,8 +110,8 @@ dnl
 AUDIOFILE_MODULE="audiofile >= $AUDIOFILE_REQUIRED_VERSION"
 ESOUND_MODULE="esound >= $ESOUND_REQUIRED_VERSION"
 PKG_CHECK_MODULES(SOUND_TEST, $ESOUND_MODULE $AUDIOFILE_MODULE, [
-	AC_DEFINE(HAVE_LIBAUDIOFILE)
-	AC_DEFINE(HAVE_ESD)
+	AC_DEFINE(HAVE_LIBAUDIOFILE, 1, [Compile with audiofile support])
+	AC_DEFINE(HAVE_ESD, 1, [Compile with esd support])
 ],[
 	AUDIOFILE_MODULE=""
 	ESOUND_MODULE=""
@@ -136,10 +147,19 @@ gtk_doc_min_version=0.6
 if $GTKDOC ; then 
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-    if perl <<EOF ; then
-      exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
-            ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
-EOF
+
+    IFS="${IFS= 	}"; gtk_save_IFS="$IFS"; IFS="."
+    set $gtk_doc_version
+    for min in $gtk_doc_min_version ; do
+        cur=$1; shift
+        if test -z $min ; then break; fi
+        if test -z $cur ; then GTKDOC=false; break; fi
+        if test $cur -gt $min ; then break ; fi
+        if test $cur -lt $min ; then GTKDOC=false; break ; fi
+    done
+    IFS="$gtk_save_IFS"
+
+   if $GTKDOC ; then
       AC_MSG_RESULT(yes)
    else
       AC_MSG_RESULT(no)
@@ -200,23 +220,23 @@ dnl ====================================
 dnl = Bzip2, for the help converters
 dnl ====================================
 BZ_LIBS=
-AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2)
+AC_CHECK_LIB(bz2, bzread, [AC_DEFINE(HAVE_LIBBZ2, 1, [Compile with libbz2 suppot])
 			  BZ_LIBS="-lbz2"])
 dnl <= Check for bzip2 > 1.0.0
-    AC_CHECK_LIB(bz2, BZ2_bzread, [AC_DEFINE(HAVE_LIBBZ2)
+    AC_CHECK_LIB(bz2, BZ2_bzread, [AC_DEFINE(HAVE_LIBBZ2, 1, [Compile with libbz2 support])
 		      	  BZ_LIBS="-lbz2"
     dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
-	   AC_DEFINE(bzread,BZ2_bzread)
-	   AC_DEFINE(bzopen,BZ2_bzopen)
-	   AC_DEFINE(bzdopen,BZ2_bzdopen)
-	   AC_DEFINE(bzwrite,BZ2_bzwrite)
-	   AC_DEFINE(bzerror,BZ2_bzerror)
-	   AC_DEFINE(bzclose,BZ2_bzclose)
-	   AC_DEFINE(bzflush,BZ2_bzflush)
-	   AC_DEFINE(bzCompress,BZ2_bzCompress)
-	   AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
-	   AC_DEFINE(bzDecompress,BZ2_bzDecompress)
-	   AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
+	   AC_DEFINE(bzread,BZ2_bzread, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzopen,BZ2_bzopen, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzdopen,BZ2_bzdopen, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzwrite,BZ2_bzwrite, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzerror,BZ2_bzerror, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzclose,BZ2_bzclose, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzflush,BZ2_bzflush, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzCompress,BZ2_bzCompress, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzCompressInit,BZ2_bzCompressInit, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzDecompress,BZ2_bzDecompress, [Needed to get Bzip2 working])
+	   AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit, [Needed to get Bzip2 working])	
 	   ])
     dnl =>
 AC_SUBST(BZ_LIBS)

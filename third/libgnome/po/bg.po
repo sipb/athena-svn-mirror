@@ -1,18 +1,19 @@
 # Bulgarian translation of libgnome po file
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # Alexander Shopov <al_shopov@web.bg>, 2002.
+# small updates for completeness Yanko Kaneti <yaneti@declera.com>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GNOME 2.0 RC1\n"
-"POT-Creation-Date: 2002-11-20 15:51+0000\n"
-"PO-Revision-Date: 2002-06-23 20:23EET\n"
-"Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
+"POT-Creation-Date: 2003-01-23 12:10+0100\n"
+"PO-Revision-Date: 2002-12-11 00:55+0200\n"
+"Last-Translator: Alexander Shopov <al_shopov@web.bg>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
 msgid "Error Messages"
@@ -70,15 +71,15 @@ msgstr "Не мога да открия терминал, ще използва�
 msgid "GNOME GConf Support"
 msgstr "Поддръжка на ГНОМ GConf"
 
-#: libgnome/gnome-help.c:167
+#: libgnome/gnome-help.c:159
 msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
 msgstr "Не открих домейна GNOME_FILE_DOMAIN_APP_HELP"
 
-#: libgnome/gnome-help.c:180
+#: libgnome/gnome-help.c:172
 msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
 msgstr "Не успях да открия домейна NOME_FILE_DOMAIN_HELP"
 
-#: libgnome/gnome-help.c:193 libgnome/gnome-help.c:208
+#: libgnome/gnome-help.c:185 libgnome/gnome-help.c:200
 #, c-format
 msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
@@ -87,7 +88,7 @@ msgstr ""
 "Не мога да покажа помощта, защото %s не е директория. Проверете инсталацията "
 "си."
 
-#: libgnome/gnome-help.c:217 libgnome/gnome-help.c:233
+#: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
 #, c-format
 msgid ""
 "Unable to find the help files in either %s or %s.  Please check your "
@@ -96,12 +97,12 @@ msgstr ""
 "Не мога да намеря файловете с помощта нито в %s, нито в  %s. Проверете "
 "инсталацията си."
 
-#: libgnome/gnome-help.c:312
+#: libgnome/gnome-help.c:339
 #, c-format
 msgid "Unable to find doc_id %s in the help path"
-msgstr "Не мога да открия помощен документ %s в пътя за помощта"
+msgstr "Не мога да открия doc_id %s в пътя за помощта"
 
-#: libgnome/gnome-help.c:333
+#: libgnome/gnome-help.c:360
 #, c-format
 msgid "Help document %s/%s not found"
 msgstr "Не открих документа с помощ %s/%s"
@@ -119,14 +120,14 @@ msgstr "Поддръжка на бонобо"
 msgid "Bonobo activation Support"
 msgstr "Поддръжка на бонобо активиране"
 
-#: libgnome/gnome-init.c:281 libgnome/gnome-init.c:295
+#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr ""
 "Не мога да създам конфигурационна директория на ГНОМ за всеки потребител %"
 "s': %s\n"
 
-#: libgnome/gnome-init.c:304
+#: libgnome/gnome-init.c:328
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
@@ -135,32 +136,32 @@ msgstr ""
 "Не мога да установя права за достъп 0700 на тайната конфигурационна "
 "директория на ГНОМ за всеки потребител `%s': %s\n"
 
-#: libgnome/gnome-init.c:311
+#: libgnome/gnome-init.c:335
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
 msgstr "Не мога да създам директория с ускорители за ГНОМ `%s': %s\n"
 
-#: libgnome/gnome-init.c:367
+#: libgnome/gnome-init.c:391
 msgid "Disable sound server usage"
 msgstr "Преустанови да ползваш звуков сървър"
 
-#: libgnome/gnome-init.c:370
+#: libgnome/gnome-init.c:394
 msgid "Enable sound server usage"
 msgstr "Започни да ползваш звуков сървър"
 
-#: libgnome/gnome-init.c:373
+#: libgnome/gnome-init.c:397
 msgid "Host:port on which the sound server to use is running"
 msgstr "Хост:порт, на които работи звуковия сървър"
 
-#: libgnome/gnome-init.c:375
+#: libgnome/gnome-init.c:399
 msgid "HOSTNAME:PORT"
 msgstr "ИМЕ_НА_ХОСТ:ПОРТ"
 
-#: libgnome/gnome-init.c:393
+#: libgnome/gnome-init.c:417
 msgid "GNOME Virtual Filesystem"
 msgstr "Виртуална файлова система на ГНОМ"
 
-#: libgnome/gnome-init.c:414
+#: libgnome/gnome-init.c:438
 msgid "GNOME Library"
 msgstr "ГНОМ библиотека"
 
@@ -186,7 +187,7 @@ msgstr "Popt контекст"
 
 #: libgnome/gnome-program.c:444
 msgid "The popt context pointer that GnomeProgram is using"
-msgstr "Указателят към popt контекст, който ГНОМ програмата използа"
+msgstr "Указателят към popt контекст, който ГНОМ програмата използва"
 
 #: libgnome/gnome-program.c:452
 msgid "Human readable name"
@@ -336,7 +337,7 @@ msgstr "Моникър за GConf"
 msgid "config indirect moniker"
 msgstr "настрой непряк моникър"
 
-#: monikers/bonobo-config-bag.c:230
+#: monikers/bonobo-config-bag.c:231
 msgid "Unknown type"
 msgstr "Неизвестен тип"
 
@@ -344,3 +345,684 @@ msgstr "Неизвестен тип"
 #, c-format
 msgid "Key %s not found in configuration"
 msgstr "Ключ %s не може да бъде намерен в конфигурацията"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:1
+msgid "Beep when a modifier is pressed"
+msgstr "Издавай звук, когато е натиснат модифициращ клавиш"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
+msgid "Disable if two keys are pressed at the same time."
+msgstr "Изключи, ако два клавиша са натиснати едновременно."
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:3
+msgid ""
+"Do not accept a key as being pressed unless held for @delay milliseconds"
+msgstr ""
+"Не приемай клавиш за натиснат, ако не е задържан поне @delay милисекунди"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:4
+msgid "How many milliseconds it takes to go from 0 to maximum speed"
+msgstr "За колко милисекунди се стига от 0 до максималната скорост"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:5
+msgid ""
+"How many milliseconds to wait before mouse movement keys start to operate"
+msgstr ""
+"Колко милисекунди да се изчака преди включването на клавишите за движение на "
+"мишката"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:6
+msgid "How many pixels per second to move at the maximum speed"
+msgstr "С колко пиксела в секунда да се движи при максимална скорост"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:7
+msgid "Ignore multiple presses of the _same_ key within @delay milliseconds"
+msgstr ""
+"Игнорирай множество натискания на _един_ клавиш в рамките на @delay "
+"милисекунди"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:8
+msgid "how long to accelerate in milliseconds"
+msgstr "колко дълго да ускорява в милисекунди"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:9
+msgid "initial delay in milliseconds"
+msgstr "първоначално забавяне в милисекунди"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:10
+msgid "minimum interval in milliseconds"
+msgstr "минимален интервал в милисекунди"
+
+#: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:11
+msgid "pixels per seconds"
+msgstr "пиксели в секунда"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:1
+msgid "Browser needs terminal"
+msgstr "Браузърът се нуждае от терминал"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:2
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:1
+msgid "Browser understands remote"
+msgstr "Браузърът разбира remote опцията"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:3
+msgid "Default browser"
+msgstr "Четец по подразбиране"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:4
+msgid "Default browser for all URLs"
+msgstr "Браузър по подразбиране за URL-и"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:5
+msgid "Whether the default browser needs a terminal to run"
+msgstr "Дали браузърът по подразбиране се нуждае от терминал"
+
+#: schemas/desktop_gnome_applications_browser.schemas.in.h:6
+msgid "Whether the default browser understands netscape remote"
+msgstr "Дали браузърът по подразбиране разбира remote опцията на netscape"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
+msgid "Default help viewer"
+msgstr "Визуализатор на помощта по подразбиране"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
+msgid "Help viewer needs terminal"
+msgstr "Визуализаторът на помощта се нуждае от терминал"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:4
+msgid "Whether the default help viewer accepts URLs"
+msgstr "Дали визуализаторът на помощта по подразбиране може да приема URL-и"
+
+#: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:5
+msgid "Whether the default help viewer needs a terminal to run"
+msgstr "Дали визуализаторът на помощта по подразбиране се нуждае от терминал"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
+msgid ""
+"Argument used to execute programs in the terminal defined by the 'exec' key."
+msgstr ""
+"Аргумент, с който се изпълнява командата в терминала, дефиниран чрез ключа "
+"'exec'."
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
+msgid "Exec Arguments"
+msgstr "Аргументи на exec"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:3
+msgid "Terminal application"
+msgstr "Терминално приложение"
+
+#: schemas/desktop_gnome_applications_terminal.schemas.in.h:4
+msgid "Terminal program to use when starting applications that require one"
+msgstr "Кое терминално приложение да използват нуждаещите се програми"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:1
+msgid "A list with names of the first window manager workspaces."
+msgstr "Списък с имената на работите места на първия мениджър на прозорци."
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:2
+msgid "Fallback window manager"
+msgstr "Резервен мениджър на прозорци"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:3
+msgid "Fallback window manager if user window manager can't be found"
+msgstr "Резервен мениджър на прозорци в случай, че потребителския не е открит"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:4
+msgid "Names of the workspaces"
+msgstr "Имената на работните места"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:5
+msgid "The number of workspaces"
+msgstr "Брой на работните места"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:6
+msgid "The number of workspaces the window manager should use"
+msgstr "Брой на работните места, които мениджърът на прозорци да използва"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:7
+msgid "User window manager"
+msgstr "Потребителски мениджър на прозорци"
+
+#: schemas/desktop_gnome_applications_window_manager.schemas.in.h:8
+msgid "Window manager to try first"
+msgstr "Кой мениджър на прозорци да се пробва първоначално"
+
+#: schemas/desktop_gnome_background.schemas.in.h:1
+msgid "Color Shading Type"
+msgstr "Тип на цветовото нюансиране"
+
+#: schemas/desktop_gnome_background.schemas.in.h:2
+msgid ""
+"Determines how the image set by wallpaper_filename is rendered. Possible "
+"values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
+msgstr ""
+"Указва как изображението указано от името на тапета да се изобразява. "
+"Възможни стойности са \"никакъв\", \"тапет\", \"центриран\", \"пропорционален"
+"\", \"разпънат\"."
+
+#: schemas/desktop_gnome_background.schemas.in.h:3
+msgid "Draw Desktop Background"
+msgstr "Изчертай фона на работното място"
+
+#: schemas/desktop_gnome_background.schemas.in.h:4
+msgid "File to use for the background image"
+msgstr "Файл, който да се използва като тапет"
+
+#: schemas/desktop_gnome_background.schemas.in.h:5
+msgid "Have GNOME draw the desktop background"
+msgstr "ГНОМ да изчертава фона на работното място"
+
+#: schemas/desktop_gnome_background.schemas.in.h:6
+msgid ""
+"How to shade the background color. Possible values are \"horizontal-gradient"
+"\", \"vertical-gradient\", and \"solid\""
+msgstr ""
+"Как да се нюансира цвета за фона. Възможни стойности са \"хоризонтална "
+"преливка\", \"вертикална преливка\" и \"плътен цвят\""
+
+#: schemas/desktop_gnome_background.schemas.in.h:7
+msgid "Left or Top color when drawing gradients, or the solid color."
+msgstr "Ляв или горен цвят при преливки или солидният цвят."
+
+#: schemas/desktop_gnome_background.schemas.in.h:8
+msgid "Opacity with which to draw the background picture"
+msgstr "Непрозрачност, с която да се изобрази тапета"
+
+#: schemas/desktop_gnome_background.schemas.in.h:9
+msgid "Picture Filename"
+msgstr "Име на изображението"
+
+#: schemas/desktop_gnome_background.schemas.in.h:10
+msgid "Picture Opacity"
+msgstr "Непрозрачност на изображението"
+
+#: schemas/desktop_gnome_background.schemas.in.h:11
+msgid "Picture Options"
+msgstr "Настройки на изображението"
+
+#: schemas/desktop_gnome_background.schemas.in.h:12
+msgid "Primary Color"
+msgstr "Основен цвят"
+
+#: schemas/desktop_gnome_background.schemas.in.h:13
+msgid "Right or Bottom color when drawing gradients, not used for solid color."
+msgstr "Десен или долен цвят при преливки, не се използва при солиден цвят."
+
+#: schemas/desktop_gnome_background.schemas.in.h:14
+msgid "Secondary Color"
+msgstr "Втори цвят"
+
+#: schemas/desktop_gnome_file_views.schemas.in.h:1
+msgid "File Icon Theme"
+msgstr "Име на темата с икони"
+
+#: schemas/desktop_gnome_file_views.schemas.in.h:2
+msgid "Theme used for displaying file icons"
+msgstr "Тема на иконите, която да се използва"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:1
+msgid "Basename of the default theme used by gtk+."
+msgstr "Основно име на темата по подразбиране използвана от gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:2
+msgid "Can Change Accels"
+msgstr "Бързите клавиши да могат да се сменят"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:3
+msgid "Cursor Blink"
+msgstr "Курсорът да премигва"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:4
+msgid "Cursor Blink Time"
+msgstr "Време за премигване на курсора"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:5
+msgid "Default font"
+msgstr "Шрифт по подразбиране"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:6
+msgid "Enable Accessibility"
+msgstr "Включена Достъпност"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:7
+msgid "Enable Animations"
+msgstr "Включени Анимации"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:8
+msgid "GTK IM Preedit Style"
+msgstr "Стил на предварителна редакция на GTK IM"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:9
+msgid "GTK IM Status Style"
+msgstr "Стил на състоянието на GTK IM"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:10
+msgid "Gtk+ Theme"
+msgstr "Gtk+ Тема"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:11
+msgid "Icon Theme"
+msgstr "Тема с икони"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:12
+msgid "Icon theme to use for the panel, nautilus etc."
+msgstr "Тема за иконите, която да се използва от панела, наутилус и т.н."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:13
+msgid "Length of the cursor blink cycle, in milleseconds"
+msgstr "Дължина на премигването на курсора в милисекунди"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:14
+msgid "Menubar Detachable"
+msgstr "Менютата могат да се откъсват"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:15
+msgid "Menus Have Icons"
+msgstr "Менютата имат икони"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:16
+msgid "Menus Have Tearoff"
+msgstr "Менютата имат лента за откъсване"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Name of the GTK+ input method Preedit Style used by gtk+."
+msgstr ""
+"Име на GTK+ метода за вход с предварителна редакция, който се ползва от gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid "Name of the GTK+ input method Status Style used by gtk+."
+msgstr "Име на GTK+ метода за вход за състояние, който се ползва от gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Name of the default font used by gtk+."
+msgstr "Име на шрифта по подразбиране, който се ползва от gtk+."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid "Status Bar on Right"
+msgstr "Лентата за състояние отдясно"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
+msgid "This specifies the size of icons displayed in toolbars"
+msgstr "Това определя големината на иконите в лентите за инструменти"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:22
+msgid "Toolbar Detachable"
+msgstr "Лентите с инструменти могат да се отделят"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:23
+msgid "Toolbar Icon Size"
+msgstr "Големина на иконите в лентите за инструменти"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:24
+msgid "Toolbar Style"
+msgstr "Стил на лентите за инструменти"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:25
+msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
+msgstr ""
+"Стил на лентите за инструменти. Валидни стойности са двете, двете_хориз, "
+"икони и текст"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:26
+msgid "Use Custom Font"
+msgstr "Използване на шрифт по избор"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:27
+msgid "Whether Applications should have accessibility support"
+msgstr "Дали програмите да имат поддръжка за достъпност"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:28
+msgid ""
+"Whether animations should be displayed. Note: This is a global key, it "
+"changes the behaviour of the window manager, the panel etc."
+msgstr ""
+"Дали да се показват анимации. Забележка: това е глобална настройка, тя "
+"променя поведението на мениджъра на прозорци, панела и др."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid "Whether menus may display an icon next to a menu entry"
+msgstr "Дали менютата да имат икони"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:30
+msgid "Whether menus should have a tearoff"
+msgstr "Дали менютата да имат поле за откъсване"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:31
+msgid ""
+"Whether the User can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr ""
+"Дали потребителят може динамично да избере нов бърз клавиш, стоеики над "
+"позиция в активно меню"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:32
+msgid "Whether the cursor should blink"
+msgstr "Дали курсорът да премигва"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:33
+msgid "Whether the user can detach menubars and move them around"
+msgstr ""
+"Дали потребителя може да откъсва менютата и да ги позиционира произволно на "
+"екрана"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:34
+msgid "Whether the user can detach toolbars and move them around"
+msgstr ""
+"Дали потребителя може да откъсва лентите с иструменти и да ги позиционира "
+"произволно на екрана"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:35
+msgid "Whether to display a status bar meter on the right"
+msgstr "Дали индикатора на лентата за състояние да е отдясно"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:36
+msgid "Whether to use a custom font in gtk+ applications."
+msgstr "Дали да се ползва друг шрифт в gtk+ приложенията."
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
+msgid "File name of the bell sound to be played"
+msgstr "Име на файла, който да замени звънеца"
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:2
+msgid "Keyboard Bell Custom Filename"
+msgstr "Име на файла за специален клавиатурен звънец"
+
+#: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
+msgid "possible values are on, off, and custom."
+msgstr "възможни стойности са включен, изключен, специален"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
+msgid ""
+"Acceleration multiplier for mouse motion. A value of -1 is the system "
+"default."
+msgstr ""
+"Множител на ускорението на движението на мишката. -1 е системната стойност "
+"по подразбиране."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:2
+msgid "Cursor font"
+msgstr "Шрифт на курсора"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
+#, fuzzy
+msgid "Cursor size"
+msgstr "Курсорът да премигва"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
+#, fuzzy
+msgid "Cursor theme"
+msgstr "Шрифт на курсора"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
+#, fuzzy
+msgid ""
+"Cursor theme name. Used only by Xservers that support Xcursor, such as "
+"XFree86 4.3 and later. This value is only propagated to the X server start "
+"of each session, so changing it mid-session won't have an effect until the "
+"next time you log in."
+msgstr ""
+"Име на шрифта на курсора. Ако не е зададено се използва това по "
+"подразбиране. Стойността се дава в началото на X сесията, така че промяната "
+"няма да се използва до следващото влизане в X."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
+msgid "Distance before a drag is started"
+msgstr "Разстояние, след което започва провлачване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:7
+msgid ""
+"Distance in pixels the pointer must move before accelerated mouse motion is "
+"activated. A value of -1 is the system default."
+msgstr ""
+"Разстояние в пиксели, което показалецът трябва да измине преди включване не "
+"ускоряването. -1 е системната стойност по подразбиране."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:8
+msgid "Double Click Time"
+msgstr "Време за двойно щракване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:9
+msgid "Drag Threshold"
+msgstr "Праг за провлачване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
+msgid ""
+"Font name of the cursor. If unset set, the default font is used. This value "
+"is only propagated to the X server start of each session, so changing it mid-"
+"session won't have an effect until the next time you log in."
+msgstr ""
+"Име на шрифта на курсора. Ако не е зададено се използва това по "
+"подразбиране. Стойността се дава в началото на X сесията, така че промяната "
+"няма да се използва до следващото влизане в X."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
+msgid ""
+"Highlights the current location of the pointer when the Control key is "
+"pressed and released"
+msgstr ""
+"Осветява текущото положение на показалеца при натискането на клавиш Control"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:12
+msgid "Length of a double click"
+msgstr "Продължителност на двойното щракване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:13
+msgid "Locate Pointer"
+msgstr "Показвай показалеца"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:14
+msgid "Motion Threshold"
+msgstr "Праг на движение"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:15
+msgid "Mouse button orientation"
+msgstr "Ориентация на бутона на мишката"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:16
+msgid "Single Click"
+msgstr "Единично щракване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:17
+msgid "Single click to open icons"
+msgstr "Иконите да се отварят с единично щракване"
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
+#, fuzzy
+msgid ""
+"Size of the cursor referenced by cursor_theme. This value is only propagated "
+"to the X server start of each session, so changing it mid-session won't have "
+"an effect until the next time you log in."
+msgstr ""
+"Име на шрифта на курсора. Ако не е зададено се използва това по "
+"подразбиране. Стойността се дава в началото на X сесията, така че промяната "
+"няма да се използва до следващото влизане в X."
+
+#: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
+msgid "Swap left and right mouse buttons for left-handed mice"
+msgstr "Размени левия и десния бутон за левичари."
+
+#: schemas/desktop_gnome_sound.schemas.in.h:1
+msgid "Enable ESD"
+msgstr "Включи ESD"
+
+#: schemas/desktop_gnome_sound.schemas.in.h:2
+msgid "Enable sound server startup."
+msgstr "Започни да ползваш звуков сървър."
+
+#: schemas/desktop_gnome_sound.schemas.in.h:3
+msgid "Sounds for events"
+msgstr "Звук при събития"
+
+#: schemas/desktop_gnome_sound.schemas.in.h:4
+msgid "Whether to play sounds on user events."
+msgstr "Дали да се пуска звук при потребителски събития"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
+msgid "Default URL show handler"
+msgstr "Програма по подразбиране за показване на URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
+msgid "How to handle applications URLs"
+msgstr "Как да се обработват applications URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
+msgid "How to handle ghelp URLs"
+msgstr "Как да се обработват ghelp URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
+msgid "How to handle info URLs"
+msgstr "Как да се обработват info URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
+msgid "How to handle man URLs"
+msgstr "Как да се обработват man URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
+msgid "How to handle preferences URLs"
+msgstr "Как да се обработват preference URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
+msgid "How to handle server-settings URLs"
+msgstr "Как да се обработват server-settings URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
+msgid "How to handle start-here URLs"
+msgstr "Как да се обработват start-here URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
+msgid "How to handle system-settings URLs"
+msgstr "Как да се обработват system-settings URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
+msgid "How to handle trash URLs"
+msgstr "Как да се обработват trash URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
+msgid "How to handle unknown URLs"
+msgstr "Как да се обработват непознати URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
+msgid "Run program in terminal"
+msgstr "Изпълни програмата в терминал"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+msgid ""
+"Set to true to have a program specified in applications/command handle "
+"applications URLs"
+msgstr ""
+"Задайте true, за да може командата указана в applications/command да "
+"обработва applications URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
+msgid ""
+"Set to true to have a program specified in preferences/command handle "
+"preferences URLs"
+msgstr ""
+"Задайте true, за да може командата указана в preferences/command да "
+"обработва preferences URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
+msgid ""
+"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
+msgstr ""
+"Задайте true, за да може командата указана в programs/ghelp да обработва "
+"ghelp URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
+msgid ""
+"Set to true to have a program specified in programs/info handle info URLs"
+msgstr ""
+"Задайте true, за да може командата указана в programs/info да обработва info "
+"URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
+msgid "Set to true to have a program specified in programs/man handle man URLs"
+msgstr ""
+"Задайте true, за да може командата указана в programs/man да обработва man "
+"URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
+msgid ""
+"Set to true to have a program specified in programs/unknown handle unknown "
+"URLs"
+msgstr ""
+"Задайте true, за да може командата указана в programs/unknown да обработва "
+"непознатите URL-и"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
+msgid ""
+"Set to true to have a program specified in server-settings/command handle "
+"server-settings URLs"
+msgstr ""
+"Задайте true, за да може командата указана в server-settings/command да "
+"обработва server-settings URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
+msgid ""
+"Set to true to have a program specified in start-here/command handle start-"
+"here URLs"
+msgstr ""
+"Задайте true, за да може командата указана в start-here/command да обработва "
+"start-here URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
+msgid ""
+"Set to true to have a program specified in system-settings/command handle "
+"system-settings URLs"
+msgstr ""
+"Задайте true, за да може командата указана в system-settings/command да "
+"обработва system-settings URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
+msgid ""
+"Set to true to have a program specified in trash/command handle trash URLs"
+msgstr ""
+"Задайте true, за да може командата указана в trash/command да обработва "
+"trash URL-ите"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
+msgid "True if the program to handle this URL should be run in a terminal"
+msgstr ""
+"True, когато програмата за обработка на тези URL-и трябва да се изпълни в "
+"терминал"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
+msgid "URL handler for applications pages"
+msgstr "Програма за URL-и за страниците за приложения"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
+msgid "URL handler for ghelp pages"
+msgstr "Програма за URL-и за страниците на ghelp"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
+msgid "URL handler for info pages"
+msgstr "Програма за URL-и за info страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
+msgid "URL handler for man pages"
+msgstr "Програма за URL-и за man страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
+msgid "URL handler for preferences pages"
+msgstr "Програма за URL-и за preferences страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
+msgid "URL handler for server-settings pages"
+msgstr "Програма за URL-и за server-settings страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
+msgid "URL handler for start-here pages"
+msgstr "Програма за URL-и за start-here страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
+msgid "URL handler for system-settings pages"
+msgstr "Програма за URL-и за system-settings страниците"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
+msgid "URL handler for trash pages"
+msgstr "Програма за URL-и за trash страниците"
+
+#~ msgid "Name of icon theme"
+#~ msgstr "Име на темата на иконите"

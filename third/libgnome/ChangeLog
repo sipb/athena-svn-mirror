@@ -1,28 +1,168 @@
-2002-11-20  Glynn Foster  <glynn.foster@sun.com>
+2003-01-23  Alexander Larsson  <alexl@redhat.com>
 
-	* configure.in: Release 2.0.6
+	* libgnome/Makefile.am (libgnome_2_la_LDFLAGS): 
+	Correct version number error.
+	
+	* configure.in:
+	Add EXTRAVERSION and set to .1
+	Add missing translations to ALL_LINGUAS.
 
-2002-11-04  Simos Xenitellis  <simos74@gmx.net>
+2003-01-22  Christian Rose  <menthos@menthos.com>
 
-	* configure.in: Added Greek (el) to ALL_LINGUAS.
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-21  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Fix libtool versioning. Up number to 2.2.0
+
+Fri Jan 17 15:25:39 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* schemas/desktop_gnome_peripherals_mouse.schemas.in: add
+	/desktop/gnome/peripherals/mouse/cursor_theme and
+	/desktop/gnome/peripherals/mouse/cursor_size
+
+2003-01-14  Anders Carlsson  <andersca@gnu.org>
+
+	* monikers/bonobo-config-bag.c (bonobo_config_bag_new): Fix comment.
+
+2003-01-09  Alexander Larsson  <alexl@redhat.com>
+
+	* schemas/Makefile.am (schema_in_files): 
+	* schemas/desktop_gnome_thumbnailers.schemas.in:
+	Add schemas for thumbnailers.
+
+2003-01-08  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.90
+
+2003-01-08  Jody Goldberg <jody@gnome.org>
+
+	* schemas/desktop_gnome_accessibility_keyboard.schemas.in : set
+	  defaults to 0 to fix #96483
+
+2002-12-24 John Fleck <jfleck@inkstain.net>
+
+	* help-converters/info/main.c
+	output title, fixing bug #83905
+
+2002-12-16  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.5
+
+2002-12-12  Chema Celorio  <chema@celorio.com>
+
+	* acconfig.h: Trying to fix the autoheader warning didn't worked because
+	we are pulling one AC_DEFINE from gnome-common. I added acconfig.h back
+	so that autogen works again (when running autoheader) but the autoheader warning
+	is back. We need to fix gnome-common but fixing libgnome again (removing acconfig.h)
+	would require people to have the fixed version of gnome-common.
+
+2002-12-11  Christian Neumair  <chris@gnome-de.org>
+
+	* schemas/desktop_gnome_interface.schemas.in: Forgot to specify
+	<type>, too. Thanks to Yanko Kaneti <yaneti@declera.com>.
+
+2002-12-11  Christian Neumair  <chris@gnome-de.org>
+
+	* schemas/desktop_gnome_interface.schemas.in: Brown-paperbag:
+	Changed a closing tag from </apply> to </applyto>. Thanks to
+	Joe Marcus Clarke <marcus@FreeBSD.org> for reporting this bug.
+
+2002-12-09  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.4
+
+2002-12-07  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added Hungarian (hu) to ALL_LINGUAS
+
+2002-12-06  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added Czech (cs) to ALL_LINGUAS
+
+2002-12-01  Christian Neumair  <chris@gnome-de.org>
+
+	* schemas/desktop_gnome_interface.schemas.in: Various fixes,
+	moved enable_animation key from panel (partitially fixes #98426).
+
+2002-11-27  Anders Carlsson  <andersca@gnu.org>
+
+	* Relase 2.1.2
+
+2002-11-23  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in: Fix gtk-doc detection.
+
+2002-11-18  Abi Brady  <morwen@evilmagic.org>
+
+	* configure.in: Added British to ALL_LINGUAS.
+
+2002-11-03  Havoc Pennington  <hp@pobox.com>
+
+	* libgnome/parse-path.cP (parse_path): don't hardcode
+	GNOME_DOT_GNOME, use gnome_user_dir_get() and
+	gnome_user_private_dir_get()
+
+	* libgnome/gnome-init.c (libgnome_userdir_setup): allow overriding
+	gnome_user_dir via environment variable GNOME22_USER_DIR, this 
+	allows people to install multiple GNOME versions and isolate the 
+	configuration of each one.
+
+	* libgnome/gnome-init.h: add comment about how GNOME_DOT_GNOME and
+	GNOME_DOT_GNOME_PRIVATE macros should not be used
+
+2002-11-08  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* doc/reference/libgnome-sections.txt,
+	* doc/reference/tmpl/gnome-help.sgml,
+	* doc/reference/tmpl/gnome-url.sgml:
+	Move the *_with_env functions that Mark added recently into
+	libgnome-sections so that they appear in the API documentation.
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+2002-11-01  Anders Carlsson  <andersca@gnu.org>
 
-	* configure.in: Added cs to ALL_LINGUAS.
+	* configure.in: Release 2.1.1
 
-2002-09-09  Anders Carlsson  <andersca@gnu.org>
+Sun Oct 27 09:07:49 2002  Jonathan Blandford  <jrb@gnome.org>
 
-	* libgnome/gnome-program.c: (gnome_program_initv):
-	Make gnome_program_module_register do what it's supposed
-	to do. (Patch from Matt Wilson)
-	
-2002-09-04  Anders Carlsson  <andersca@gnu.org>
+	* schemas/desktop_gnome_interface.schemas (can_change_accels): Add
+	a default value and doc string.
 
-	* configure.in: Release 2.0.4
+2002-10-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* libgnome/gnome-help.[ch]:
+	(gnome_help_display_with_doc_id_and_env),
+	(gnome_help_display_desktop_with_env),
+	(gnome_help_display_uri_with_env): add _with_env()
+	variants of these functions so multiscreen applications
+	can control which screen to display the help on.
+
+	* libgnome/gnome-url.[ch]:
+	(gnome_url_show_with_env): ditto for urls.
+
+2002-10-01  Yanko Kaneti <yaneti@declera.com>
+
+	* schemas/*.schemas.in: reorder the "applyto" and "key" elements 
+	so that the files validate against the gconf dtd.
+
+2002-09-27  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.0
+
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* schemas/desktop_gnome_interface.schemas.in:
+	Add icon_theme key.
+
+Thu Sep 26 17:25:26 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* schemas/desktop_gnome_interface.schemas.in: 
+	Add settings to change preedit/status styles of GTK+ input
+	method,	and set callback styles by default (#59076)
 
 2002-09-04  Marius Andreiana <mandreiana@yahoo.com>
 

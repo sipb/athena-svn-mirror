@@ -34,6 +34,8 @@ const char* <link linkend="gnome-user-accels-dir-get">gnome_user_accels_dir_get<
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -59,15 +61,11 @@ retrieving the <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> returned b
 Retrieves the current libgnome version and the modules it depends on.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure describing the version and
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure describing the version and
 the versions of the dependents.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-bonobo-module-info-get">gnome_bonobo_module_info_get ()</title>
 <programlisting>const <link linkend="GnomeModuleInfo">GnomeModuleInfo</link>* gnome_bonobo_module_info_get
@@ -79,15 +77,11 @@ libgnome, libbonoboui does and this will also be initialised when
 initialising a GNOME app).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a new <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure describing the version of the
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GnomeModuleInfo">GnomeModuleInfo</link> structure describing the version of the
 bonobo modules and its dependents.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-user-dir-get">gnome_user_dir_get ()</title>
 <programlisting>const char* gnome_user_dir_get              (void);</programlisting>
@@ -96,14 +90,10 @@ Retrieves the user-specific directory for GNOME apps to use ($HOME/.gnome2
 is the usual GNOME 2 value).</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An absolute path to the directory.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> An absolute path to the directory.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-user-private-dir-get">gnome_user_private_dir_get ()</title>
 <programlisting>const char* gnome_user_private_dir_get      (void);</programlisting>
@@ -114,15 +104,11 @@ course, the permissions may have been altered since creation, so care still
 needs to be taken.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An absolute path to the user-specific private directory that GNOME
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> An absolute path to the user-specific private directory that GNOME
 apps can use.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-user-accels-dir-get">gnome_user_accels_dir_get ()</title>
 <programlisting>const char* gnome_user_accels_dir_get       (void);</programlisting>
@@ -133,14 +119,10 @@ storing this information, but it may be necessary to use the
 <link linkend="gnome-user-accels-dir-get">gnome_user_accels_dir_get</link>() directory for legacy applications.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The absolute path to the directory.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The absolute path to the directory.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 

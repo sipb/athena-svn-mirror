@@ -2,44 +2,509 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <applyto>/desktop/gnome/applications/window_manager/default</applyto>
       <key>/schemas/desktop/gnome/applications/window_manager/default</key>
+      <applyto>/desktop/gnome/applications/window_manager/default</applyto>
       <owner>gnome</owner>
       <type>string</type>
       <locale name="C">
         <short>Fallback window manager</short>
         <long>Fallback window manager if user window manager can't be found</long>
       </locale>
+
+      <locale name="bg">
+        <short>Резервен мениджър на прозорци</short>
+        <long>Резервен мениджър на прозорци в случай, че потребителския не е открит</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Náhradní manažer oken</short>
+        <long>Náhradní manažer oken, pokud nelze najít uživatelského manažera oken</long>
+      </locale>
+
+      <locale name="da">
+        <short>Vindueshåndtering at falde tilbage på</short>
+        <long>Den vindueshåndtering der skal faldes tilbage på hvis brugerens vindueshåndtering ikke kan findes</long>
+      </locale>
+
+      <locale name="de">
+        <short>Fenster-Manager im Problemfall</short>
+        <long>Fenster-Manager, der verwendet werden soll, wenn der bevorzugte Fenster-Manager nicht gefunden werden konnte</long>
+      </locale>
+
+      <locale name="el">
+        <short>Διαχειριστής Παραθύρων Προσφυγής</short>
+        <long>Διαχειριστής παραθύρων προσφυγής αν ο διαχειριστής παραθύρων του χρήστη δεν μπορεί να βρεθεί</long>
+      </locale>
+
+      <locale name="es">
+        <short>Gestor de ventanas auxiliar</short>
+        <long>Gestor de ventanas auxiliar si el manejador de ventanas del usuario no puede ser encontrado</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Varaikkunointiohjelma</short>
+        <long>Varaikkunointiohjelma, jos käyttäjän määrittelemää ei löydy</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Gestionnaire de fenêtres de secours</short>
+        <long>Gestionnaire de fenêtres de secours si le gestionnaire de fenêtres de l&apos;utilisateur ne peut être trouvé</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Atkāpšanās logu pārvaldnieks</short>
+        <long>Atkāpšanās logu pārvaldnieks, ja lietotāja logu pārvaldnieks nevar tikt atrasts</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Цонхны менежерийн ослын үед хэрэглэгдэх хэлбэр</short>
+        <long>Хэрэглэгчийн өөрийнх нь ц.менежер олдохгүй үед хэрэглэх &quot;ослын&quot; хэлбэр</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Terugval-window manager</short>
+        <long>Window manager om op terug te vallen als de gebruikers-window manager onvindbaar is</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Gerenciador de janelas reserva</short>
+        <long>Gerenciador de janelas reserva, para se o gerenciador do usuário não for encontrado</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Administrator de ferestre secundar</short>
+        <long>Administrator de ferestre secundar pornit în caz că cel principal nu este găsit</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Predvolený správca okien</short>
+        <long>Predvolený správca okien, ak správca okien zvolený používateľom nebol nájdený</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Rezervni upravljalnik oken</short>
+        <long>Upravljallnik oken, če uporabnikovega ni moč najti</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Alternativ fönsterhanterare</short>
+        <long>Alternativ fönsterhanterare om användarfönsterhanteraren inte kan hittas</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Pencere yöneticisine geri dön</short>
+        <long>Eğer kullanıcı pencere yöneticisi bulunamazsa pencere yöneticisine geri dön</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Trình quản lý cửa sổ dự phòng</short>
+        <long>Trình quản lý cửa sổ dự phòng trong trường hợp không tìm thấy trình quản lý cửa sổ của người dùng</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>后备窗口管理器</short>
+        <long>用户窗口管理器无法找到时使用的后备窗口管理器</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>後備視窗管理程式</short>
+        <long>指定當找不到用戶指定的視窗管理程式時執行的後備視窗管理程式</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/applications/window_manager/current</applyto>
       <key>/schemas/desktop/gnome/applications/window_manager/current</key>
+      <applyto>/desktop/gnome/applications/window_manager/current</applyto>
       <owner>gnome</owner>
       <type>string</type>
       <locale name="C">
         <short>User window manager</short>
         <long>Window manager to try first</long>
       </locale>
+
+      <locale name="bg">
+        <short>Потребителски мениджър на прозорци</short>
+        <long>Кой мениджър на прозорци да се пробва първоначално</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Uživatelský manažer oken</short>
+        <long>Manažer oken, který zkusit nejdříve</long>
+      </locale>
+
+      <locale name="da">
+        <short>Brugervindueshåndtering</short>
+        <long>Vindueshåndtering der skal forsøges først</long>
+      </locale>
+
+      <locale name="de">
+        <short>Bevorzugter Fenster-Manager</short>
+        <long>Zuerst zu versuchender Fenster-Manager</long>
+      </locale>
+
+      <locale name="el">
+        <short>Διαχειριστής παραθύρων χρήστη</short>
+        <long>Διαχειριστής παραθύρων που θα εκτελείται πρώτα</long>
+      </locale>
+
+      <locale name="es">
+        <short>Manejador de ventanas del usuario</short>
+        <long>Gestor de ventanas a probar primero</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Käyttäjän määrittelemä ikkunointiohjelma</short>
+        <long>Ensimmäisenä kokeiltava ikkunointiohjelma</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Gestionnaire de fenêtres utilisateur</short>
+        <long>Gestionnaire de fenêtres à essayer en premier</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Lietotāja logu pārvaldnieks</short>
+        <long>Logu pārvaldnieks, kuru mēģināt vispirms</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Хэрэглэгчийн цонхны менежер</short>
+        <long>Эхэлж хэрэглэх цонхны менежер</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Pengurus tetingkap pengguna</short>
+        <long>Pengurus tetingkap untuk dicuba dahulu</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Gebruikers-window manager</short>
+        <long>Eerst te proberen window manager</long>
+      </locale>
+
+      <locale name="no">
+        <short>Brukers vindushåndterer</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Gerenciador de janelas do usuário</short>
+        <long>Gerenciador de janelas prioritário</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Administrator de ferestre</short>
+        <long>Administrator de ferestre principal</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Správca okien používateľa</short>
+        <long>Správca okien, ktorého skúsiť najskôr</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Uporabnikov upravljalnik oken</short>
+        <long>Upravljalnik oken, ki naj se prvi poizkusi</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Användarfönsterhanterare</short>
+        <long>Fönsterhanterare att prova först</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Kullanıcı pencere yöneticisi</short>
+        <long>İlk denenecek pencere yöneticisi</long>
+      </locale>
+
+      <locale name="uk">
+        <short>Користувацький віконний менеджер</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Trình quản lý cửa sổ người dùng</short>
+        <long>Trình quản lý cửa sổ cần thử đầu tiên</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>用户窗口管理器</short>
+        <long>首先要尝试的窗口管理器</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>用戶指定的視窗管理程式</short>
+        <long>最先嘗試執行的視窗管理程式</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/applications/window_manager/number_of_workspaces</applyto>
       <key>/schemas/desktop/gnome/applications/window_manager/number_of_workspaces</key>
+      <applyto>/desktop/gnome/applications/window_manager/number_of_workspaces</applyto>
       <owner>gnome</owner>
       <type>int</type>
       <locale name="C">
         <short>The number of workspaces</short>
         <long>The number of workspaces the window manager should use</long>
       </locale>
+
+      <locale name="bg">
+        <short>Брой на работните места</short>
+        <long>Брой на работните места, които мениджърът на прозорци да използва</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Počet pracovních ploch</short>
+        <long>Počet pracovních ploch, které má manažer oken používat</long>
+      </locale>
+
+      <locale name="da">
+        <short>Antallet af arbejdsområder</short>
+        <long>Antallet af arbejdsområder som vindueshåndteringen skal benytte</long>
+      </locale>
+
+      <locale name="de">
+        <short>Die Anzahl der Arbeitsflächen</short>
+        <long>Die Anzahl der Arbeitsflächen, die der Fenstermanager verwenden soll</long>
+      </locale>
+
+      <locale name="el">
+        <short>Ο αριθμός των χώρων εργασίας</short>
+        <long>Ο αριθμός των χώρων εργασίας που θα χρησιμοποιεί ο διαχειριστής παραθύρων</long>
+      </locale>
+
+      <locale name="es">
+        <short>La cantidad de áreas de trabajo</short>
+        <long>El número de áreas de trabajo que el gestor de ventanas debe usar</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Työtilojen lukumäärä</short>
+        <long>Työtilojen lukumäärä, jota ikkunointiohjelman tulisi noudattaa</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Le nombre de bureaux</short>
+        <long>Le nombre de bureaux que le gestionnaire de fenêtres doit utiliser</long>
+      </locale>
+
+      <locale name="he">
+        <short>מספר סביבות העבודה</short>
+        
+      </locale>
+
+      <locale name="lv">
+        <short>Darba vietu skaits</short>
+        <long>Darba vietu skaits, ko logu pārvaldniekam būtu jālieto</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Ажлын талбаруудын тоо</short>
+        <long>Цонхны менежер хэрэглэх ёстой ажлын талбарын тоо</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Bilangan ruangkerja</short>
+        <long>Bilangan ruangkerja yang pengurus tetingkap patut guna</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Aantal werkbladen</short>
+        <long>Het aantal werkbladen dat de window manager moet gebruiken</long>
+      </locale>
+
+      <locale name="no">
+        <short>Antall arbeidsområder</short>
+        
+      </locale>
+
+      <locale name="pl">
+        <short>Liczba obszarów roboczych</short>
+        <long>Liczba obszarów roboczych, które powinien obsługiwać menedżer okien</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>O número de áreas de trabalho</short>
+        <long>O número de áreas de trabalho que o gerenciador de janelas deve usar</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Numărul spaţiilor de lucru</short>
+        <long>Numărul spaţiilor de lucru folosite de administratorul de ferestre</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Počet pracovných plôch</short>
+        <long>Počet pracovných plôch, ktoré má použiť správca okien</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Število delovnih površin</short>
+        <long>Število delovnih površin, ki naj jih uporabi upravljalnik oken</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Antalet arbetsytor</short>
+        <long>Antalet arbetsytor som fönsterhanteraren ska använda</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Çalışma alanlarının sayısı</short>
+        <long>Pencere yöneticisinin kullanması gereken çalışma alanlarının sayısı</long>
+      </locale>
+
+      <locale name="uk">
+        <short>Кількість робочих областей</short>
+        <long>Кількість робочих областей, що має використовувати віконний менеджер</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Số workspace</short>
+        <long>Số workspace trình quản lý cửa sổ nên dùng</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>工作区数目</short>
+        <long>窗口管理器应该使用的工作区数目</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>工作區數目</short>
+        <long>視窗管理程式應開啟的工作區數目</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/applications/window_manager/workspace_names</applyto>
       <key>/schemas/desktop/gnome/applications/window_manager/workspace_names</key>
+      <applyto>/desktop/gnome/applications/window_manager/workspace_names</applyto>
       <owner>gnome</owner>
       <type>list</type>
       <list_type>string</list_type>
       <locale name="C">
         <short>Names of the workspaces</short>
         <long>A list with names of the first window manager workspaces.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Имената на работните места</short>
+        <long>Списък с имената на работите места на първия мениджър на прозорци.</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Jména pracovních ploch</short>
+        <long>Seznam jmen pracovních ploch prvního manažera oken.</long>
+      </locale>
+
+      <locale name="da">
+        <short>Navne på arbejdsområderne</short>
+        <long>En liste med navne til den første vindueshåndterings arbejdsområder.</long>
+      </locale>
+
+      <locale name="de">
+        <short>Namen der Arbeitsflächen</short>
+        <long>Eine Liste mit den Namen der ersten, vom Fenster-Manager verwendeten Arbeitsflächen.</long>
+      </locale>
+
+      <locale name="el">
+        <short>Ονόματα των χώρων εργασίας</short>
+        <long>Μια λίστα με ονόματα των χώρων εργασίας του πρώτου διαχειριστή παραθύρων</long>
+      </locale>
+
+      <locale name="es">
+        <short>Nombres de las áreas de trabajo</short>
+        <long>Una lista de nombres de la primera área de trabajo del gestor de ventanas.</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Työtilojen nimet</short>
+        <long>Luettelo, jossa on ensimmäisen ikkunointiohjelman työtilojen nimet.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Noms des bureaux</short>
+        <long>Une liste avec les noms des espaces de travail du premier gestionnaire de fenêtres.</long>
+      </locale>
+
+      <locale name="he">
+        <short>שמות סביבות העבודה</short>
+        
+      </locale>
+
+      <locale name="lv">
+        <short>Darba vietu nosaukumi</short>
+        <long>Pirmā logu pārvaldnieka darba vietu nosaukumu saraksts.</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Ажлын талбаруудын нэрсүүд</short>
+        <long>Цонхны менежерийн эхлэхдээ ашигласан ажлын талбаруудын нэрсийн жагсаалт</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Nama bagi ruangkerja</short>
+        <long>Senarai nama bagi ruangkerja pertama pengurus tetingkap.</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Werkbladnamen</short>
+        <long>Een namenlijst van de eerste window manager-werkbladen</long>
+      </locale>
+
+      <locale name="no">
+        <short>Navn på arbeidsområder</short>
+        
+      </locale>
+
+      <locale name="pl">
+        <short>Nazwy obszarów roboczych</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Nomes das áreas de trabalho</short>
+        <long>Uma lista de nomes das primeiras áreas de trabalho do gerenciador de janelas.</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Numele spaţiilor de lucru</short>
+        <long>O listă cu numele primelor spaţii de lucru</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Mená pracovných plôch</short>
+        <long>Zoznam mien prvých pracovných plôch správcu okien.</long>
+      </locale>
+
+      <locale name="sl">
+        <short>število delovnih površin</short>
+        <long>Seznam imen delovnih površin prvega upravljalnika zaslona.</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Namn på arbetsytorna</short>
+        <long>En lista med namn på de första fönsterhanterararbetsytorna.</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Çalışma alanlarının adları</short>
+        
+      </locale>
+
+      <locale name="uk">
+        <short>Назви робочих областей</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Tên workspace</short>
+        <long>Danh sách kèm tên workspace trình quản lý cửa sổ đầu tiên.</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>工作区名称</short>
+        <long>第一个窗口管理器工作区名称的列表</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>工作區名稱</short>
+        <long>視窗管理程式預設使用的工作區名稱的清單。</long>
       </locale>
     </schema>
   </schemalist>

@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <applyto>/desktop/gnome/sound/enable_esd</applyto>
       <key>/schemas/desktop/gnome/sound/enable_esd</key>
+      <applyto>/desktop/gnome/sound/enable_esd</applyto>
       <owner>gnome</owner>
       <type>bool</type>
       <default>false</default>
@@ -11,16 +11,276 @@
         <short>Enable ESD</short>
         <long>Enable sound server startup.</long>
       </locale>
+
+      <locale name="bg">
+        <short>Включи ESD</short>
+        <long>Започни да ползваш звуков сървър.</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Habilita l&apos;ESD</short>
+        <long>Habilita l&apos;inici del servidor de so.</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Povolit ESD</short>
+        <long>Povolit spuštění zvukového serveru</long>
+      </locale>
+
+      <locale name="da">
+        <short>Aktivér ESD</short>
+        <long>Aktivér start af lydserver.</long>
+      </locale>
+
+      <locale name="de">
+        <short>ESD aktivieren</short>
+        <long>Soll der Sound-Server beim Start von GNOME gestartet werden?</long>
+      </locale>
+
+      <locale name="el">
+        <short>Ενεργοποίηση ESD</short>
+        <long>Ενεργοποίηση εκκίνησης εξυπηρετητή ήχων</long>
+      </locale>
+
+      <locale name="es">
+        <short>Habilitar ESD</short>
+        <long>Habilitar el inicio del servidor de sonido.</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Käytä ESD:tä (äänipalvelin)</short>
+        <long>Käynnistä äänipalvelin.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Activer ESD</short>
+        <long>Activer le serveur de son au démarrage.</long>
+      </locale>
+
+      <locale name="he">
+        <short>אפשר ESD</short>
+        <long>אפשר הפעלת שרת קול.</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Aktivizēt ESD</short>
+        <long>Aktivizēt skaņas servera sāknēšanu.</long>
+      </locale>
+
+      <locale name="mn">
+        <short>ESD-ийг идэвхжүүлэх</short>
+        <long>GNOME-ийн эхлэхэд дууны серверийг ажиллуулах6</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Hidupkan ESD</short>
+        <long>Hidupkan permulaan pelayan bunyi.</long>
+      </locale>
+
+      <locale name="nl">
+        <short>ESD gebruiken</short>
+        <long>Geluidserver gebruiken.</long>
+      </locale>
+
+      <locale name="no">
+        <short>Aktiver ESD</short>
+        <long>Aktiver oppstart av lydtjener.</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Użycie serwera dźwięku (ESD)</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Habilitar ESD</short>
+        <long>Habilidar servidor de som na inicialização.</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Activează sunet</short>
+        <long>Activează folosirea serverului de sunet.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Povoliť ESD</short>
+        <long>Povoliť štart zvukového servera.</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Vključi ESD (zvočni daemon)</short>
+        <long>Vključi zagon strežnika za zvok.</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Aktivera ESD</short>
+        <long>Aktivera uppstart av ljudserver.</long>
+      </locale>
+
+      <locale name="tr">
+        
+        <long>Ses sunucusunun başlatılmasını etkinleştir</long>
+      </locale>
+
+      <locale name="uk">
+        <short>Увімкнути ESD</short>
+        <long>Увімкнути запуск звукового сервера</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Bật ESD</short>
+        <long>Bật server âm thanh lúc khởi động.</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>启用 ESD</short>
+        <long>在启动时启用声音服务器。</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>啟用 ESD</short>
+        <long>啟動時開啟音效伺服程式。</long>
+      </locale>
     </schema>
     <schema>
-      <applyto>/desktop/gnome/sound/event_sounds</applyto>
       <key>/schemas/desktop/gnome/sound/event_sounds</key>
+      <applyto>/desktop/gnome/sound/event_sounds</applyto>
       <owner>gnome</owner>
       <type>bool</type>
       <default>false</default>
       <locale name="C">
         <short>Sounds for events</short>
         <long>Whether to play sounds on user events.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Звук при събития</short>
+        <long>Дали да се пуска звук при потребителски събития</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Sons per a events</short>
+        
+      </locale>
+
+      <locale name="cs">
+        <short>Zvuky pro události</short>
+        <long>Jestli přehrávat zvuky při uživatelských událostech.</long>
+      </locale>
+
+      <locale name="da">
+        <short>Lyde for hændelser</short>
+        <long>Om der skal afspilles lyde ved brugerhændelser.</long>
+      </locale>
+
+      <locale name="de">
+        <short>Klänge bei Ereignissen</short>
+        <long>Sollen bei Benutzer-Ereignissen Klänge abgespielt werden?</long>
+      </locale>
+
+      <locale name="el">
+        <short>Ήχοι για συμβάντα</short>
+        <long>Αν θα αναπαράγονται ήχοι στα γεγονότα χρήστη.</long>
+      </locale>
+
+      <locale name="es">
+        <short>Sonido para los eventos</short>
+        <long>Define si reproducir sonidos en los eventos del usuario.</long>
+      </locale>
+
+      <locale name="fi">
+        <short>Äänitapahtumat</short>
+        <long>Soiko ääni käyttäjän määrittelemissä tapahtumissa.</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Sons pour les événements</short>
+        <long>Si il faut jouer des sons sur les événements utilisateur</long>
+      </locale>
+
+      <locale name="he">
+        <short>צלילים לאירועים</short>
+        <long>האם לנגן צלילים לאירועי משתמש.</long>
+      </locale>
+
+      <locale name="lv">
+        <short>Skaņas notikumiem</short>
+        <long>Vai atskaņot skaņas pie lietotāja notikumiem.</long>
+      </locale>
+
+      <locale name="mn">
+        <short>Үйлдлүүдийн гаргах дуу</short>
+        <long>Хэрэглэгчийн хийх үйлдэлд хамааруулан дуу гаргах эсэх</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Bunyi bagi acara</short>
+        <long>Samada memainkan bunyi pada acara pengguna.</long>
+      </locale>
+
+      <locale name="nl">
+        <short>Geluiden voor gebeurtenissen</short>
+        <long>Of er geluiden afgespeeld moeten worden bij bepaalde gebeurtenissen.</long>
+      </locale>
+
+      <locale name="no">
+        <short>Lyder for hendelser</short>
+        
+      </locale>
+
+      <locale name="pl">
+        <short>Dźwięki dla zdarzeń</short>
+        
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Sons para eventos</short>
+        <long>Se deve-se tocar sons para eventos do usuário.</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Sunete pentru evenimente</short>
+        <long>Dacă să redau un sunet la evenimentele utilizator.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Zvuky pre udalosti</short>
+        <long>Či zahrať zvuky pri používateľských udalostiach.</long>
+      </locale>
+
+      <locale name="sl">
+        <short>Zvoki za dogodke</short>
+        <long>Ali naj se ob uporabniških dogodkih predvajajo zvoki.</long>
+      </locale>
+
+      <locale name="sv">
+        <short>Ljud för händelser</short>
+        <long>Huruvida ljud ska spelas vid användarhändelser.</long>
+      </locale>
+
+      <locale name="tr">
+        <short>Olaylar için sesler</short>
+        <long>Kullanıcı olaylarında ses çalınır.</long>
+      </locale>
+
+      <locale name="uk">
+        <short>Звуки до подій</short>
+        
+      </locale>
+
+      <locale name="vi">
+        <short>Âm thanh của sự kiện</short>
+        <long>Có phát âm trên những sự kiện của người dùng không.</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>事件的声音</short>
+        <long>是否在用户事件发生时播放声音。</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>代表事件的音效</short>
+        <long>當出現不同事件時播放代表該事件的音效。</long>
       </locale>
     </schema>
   </schemalist>

@@ -11,13 +11,46 @@ TITLE="GNOME Library Reference Manual"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Configuration"
-HREF="x1311.html"><LINK
+HREF="x1296.html"><LINK
 REL="PREVIOUS"
 TITLE="gnome-gconf"
 HREF="libgnome-gnome-gconf.html"><LINK
 REL="NEXT"
 TITLE="gnome-i18n"
-HREF="libgnome-gnome-i18n.html"></HEAD
+HREF="libgnome-gnome-i18n.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
 ><BODY
 CLASS="REFENTRY"
 BGCOLOR="#FFFFFF"
@@ -25,103 +58,73 @@ TEXT="#000000"
 LINK="#0000FF"
 VLINK="#840084"
 ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
 ><TABLE
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Library Reference Manual</FONT
-></TH
-></TR
-><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-gconf.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
+ACCESSKEY="u"
+HREF="x1296.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
 HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
 ></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Library Reference Manual</TH
 ><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
 ><A
-HREF="x1311.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-i18n.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
 ></TD
 ></TR
 ></TABLE
-></DIV
 ><H1
 ><A
-NAME="LIBGNOME-GNOME-CONFIG">gnome-config</H1
+NAME="LIBGNOME-GNOME-CONFIG"
+></A
+>gnome-config</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1392"
+NAME="AEN1374"
 ></A
 ><H2
 >Name</H2
@@ -129,15 +132,10 @@ NAME="AEN1392"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1395"><H2
+NAME="AEN1377"
+></A
+><H2
 >Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="SYNOPSIS"
 >&#13;#include &lt;libgnome/libgnome.h&gt;
@@ -332,9 +330,7 @@ void        <A
 HREF="libgnome-gnome-config.html#GNOME-CONFIG-DROP-ALL"
 >gnome_config_drop_all</A
 >           (void);
-<A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    <A
+gboolean    <A
 HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >gnome_config_sync</A
 >               (void);
@@ -400,14 +396,11 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-MAKE-VECTOR"
 >        (const char *string,
                                              int *argcp,
                                              char ***argvp);&#13;</PRE
-></TD
-></TR
-></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1460"
+NAME="AEN1442"
 ></A
 ><H2
 >Description</H2
@@ -677,809 +670,719 @@ which returns the translated version of the string for the current locale.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1532"
+NAME="AEN1514"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1534"
+NAME="AEN1516"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-STRING"
 ></A
 >gnome_config_get_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_string(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string. This value should
-be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+be freed with g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1541"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1524"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1529"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of the configuration item as a string.</TD
+><P
+> The value of the configuration item as a string.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1554"
+NAME="AEN1534"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-STRING-WITH-DEFAULT"
 ></A
 >gnome_config_get_string_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_string_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string. This value should
-be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+be freed with g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1561"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1542"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1547"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1552"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of the configuration item as a string, or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the
-configuration key does not exist.</TD
+configuration key does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1579"
+NAME="AEN1558"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-TRANSLATED-STRING"
 ></A
 >gnome_config_get_translated_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_translated_string(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string appropriate for the
-current language. The returned value should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no
+current language. The returned value should be freed with g_free() when no
 longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1586"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1566"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1571"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of the configuration item.</TD
+><P
+> The value of the configuration item.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1599"
+NAME="AEN1576"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-TRANSLATED-STRING-WITH-DEFAULT"
 ></A
 >gnome_config_get_translated_string_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_translated_string_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string appropriate for the
-current language. The returned value should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no
+current language. The returned value should be freed with g_free() when no
 longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1606"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1584"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1589"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1594"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of the configuration item or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the configuration
-item does not exist.</TD
+item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1624"
+NAME="AEN1600"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-STRING"
 ></A
 >gnome_config_private_get_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_string(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item from the user's private
 configuration directory as a string. This value should be freed with
-<A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1631"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1608"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1613"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of the configuration item as a string.</TD
+><P
+> The value of the configuration item as a string.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1644"
+NAME="AEN1618"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-STRING-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_string_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_string_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item from the user's private
 configuration directory as a string. This value should be freed with
-<A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1651"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1626"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1631"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1636"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of the configuration item as a string, or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the
-configuration key does not exist.</TD
+configuration key does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1669"
+NAME="AEN1642"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-TRANSLATED-STRING"
 ></A
 >gnome_config_private_get_translated_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_translated_string(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string appropriate for the
-current language. The returned value should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no
+current language. The returned value should be freed with g_free() when no
 longer needed.  The item is retrieved from the user's private configuration
 storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1676"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1650"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1655"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of the configuration item.</TD
+><P
+> The value of the configuration item.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1689"
+NAME="AEN1660"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-TRANSLATED-STRING-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_translated_string_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_translated_string_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string appropriate for the
-current language. The returned value should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no
+current language. The returned value should be freed with g_free() when no
 longer needed.  The item is retrieved from the user's private configuration
 storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1696"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1668"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1673"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1678"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of the configuration item or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the configuration
-item does not exist.</TD
+item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1714"
+NAME="AEN1684"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-STRING"
 ></A
 >gnome_config_set_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_string(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the string value <TT
 CLASS="PARAMETER"
@@ -1495,82 +1398,72 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1722"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1693"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1698"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string value to set.</TD
+><P
+> A string value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1735"
+NAME="AEN1703"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-TRANSLATED-STRING"
 ></A
 >gnome_config_set_translated_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_translated_string(path,value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the string value <TT
 CLASS="PARAMETER"
@@ -1587,82 +1480,72 @@ CLASS="PARAMETER"
 by the user.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1743"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1712"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1717"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string value to set.</TD
+><P
+> A string value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1756"
+NAME="AEN1722"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-STRING"
 ></A
 >gnome_config_private_set_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_string(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the string value <TT
 CLASS="PARAMETER"
@@ -1679,82 +1562,72 @@ CLASS="PARAMETER"
 private storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1764"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1731"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1736"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string value to set.</TD
+><P
+> A string value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1777"
+NAME="AEN1741"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-TRANSLATED-STRING"
 ></A
 >gnome_config_private_set_translated_string()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_translated_string(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the string value <TT
 CLASS="PARAMETER"
@@ -1771,139 +1644,300 @@ CLASS="PARAMETER"
 The configuration value is stored in the user's private storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1785"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1750"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1755"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string value to set.</TD
+><P
+> A string value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1798"
+NAME="AEN1760"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-INT"
 ></A
 >gnome_config_get_int()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_int(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves an integer value configuration item.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1804"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1767"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1772"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of a configuration item.</TD
+><P
+> The value of a configuration item.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1777"
+></A
+><H3
+><A
+NAME="GNOME-CONFIG-GET-INT-WITH-DEFAULT"
+></A
+>gnome_config_get_int_with_default()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     gnome_config_get_int_with_default(path,def)</PRE
+><P
+>Retrieves an integer value configuration item.</P
 ><P
 ></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1784"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> A gnome configuration path to an item.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1789"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>def</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> A pointer to a flag that will be set if the default value for the item
+is returned.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1794"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> The value of a configuration item as an integer or <TT
+CLASS="PARAMETER"
+><I
+>def</I
+></TT
+> if the
+configuration item does not exist.</P
+></TD
+></TR
+></TBODY
+></TABLE
 ></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1800"
+></A
+><H3
+><A
+NAME="GNOME-CONFIG-PRIVATE-GET-INT"
+></A
+>gnome_config_private_get_int()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>#define     gnome_config_private_get_int(path)</PRE
+><P
+>Retrieves a configuration item as an int from the user's private
+configuration storage area.</P
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1807"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>path</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1812"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+> The value of a configuration item as an integer.</P
+></TD
+></TR
+></TBODY
+></TABLE
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
@@ -1912,315 +1946,112 @@ NAME="AEN1817"
 ></A
 ><H3
 ><A
-NAME="GNOME-CONFIG-GET-INT-WITH-DEFAULT"
-></A
->gnome_config_get_int_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define     gnome_config_get_int_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
-><P
->Retrieves an integer value configuration item.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1823"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->path</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A gnome configuration path to an item.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->def</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A pointer to a flag that will be set if the default value for the item
-is returned.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The value of a configuration item as an integer or <TT
-CLASS="PARAMETER"
-><I
->def</I
-></TT
-> if the
-configuration item does not exist.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1841"
-></A
-><H3
-><A
-NAME="GNOME-CONFIG-PRIVATE-GET-INT"
-></A
->gnome_config_private_get_int()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#define     gnome_config_private_get_int(path)</PRE
-></TD
-></TR
-></TABLE
-><P
->Retrieves a configuration item as an int from the user's private
-configuration storage area.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1847"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->path</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> The value of a configuration item as an integer.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1860"
-></A
-><H3
-><A
 NAME="GNOME-CONFIG-PRIVATE-GET-INT-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_int_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_int_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a configuration item as an int from the user's private
 configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1866"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1824"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1829"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1834"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item as an integer or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the
-configuration item does not exist.</TD
+configuration item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1884"
+NAME="AEN1840"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-INT"
 ></A
 >gnome_config_set_int()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_int(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the integer value <TT
 CLASS="PARAMETER"
@@ -2236,82 +2067,72 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1892"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1849"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1854"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A int value to set.</TD
+><P
+> A int value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1905"
+NAME="AEN1859"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-INT"
 ></A
 >gnome_config_private_set_int()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_int(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the integer value <TT
 CLASS="PARAMETER"
@@ -2328,457 +2149,415 @@ CLASS="PARAMETER"
 configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1913"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1868"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1873"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A int value to set.</TD
+><P
+> A int value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1926"
+NAME="AEN1878"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-FLOAT"
 ></A
 >gnome_config_get_float()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_float(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a floating-point valued configuration item.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1932"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1885"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1890"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of a configuration item.</TD
+><P
+> The value of a configuration item.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1945"
+NAME="AEN1895"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-FLOAT-WITH-DEFAULT"
 ></A
 >gnome_config_get_float_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_float_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a floating-point valued configuration item.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1951"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1902"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1907"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1912"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item as a floating-point
 number or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
-> if the configuration item does not exist.</TD
+> if the configuration item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1969"
+NAME="AEN1918"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-FLOAT"
 ></A
 >gnome_config_private_get_float()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_float(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a configuration item from the user's private configuration storage
 area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1975"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1925"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1930"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item as a floating-point
-number.</TD
+number.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1988"
+NAME="AEN1935"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-FLOAT-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_float_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_float_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a configuration item from the user's private configuration storage
 area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1994"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1942"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1947"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1952"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item as a floating-point
 number or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
-> if the configuration item does not exist.</TD
+> if the configuration item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2012"
+NAME="AEN1958"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-FLOAT"
 ></A
 >gnome_config_set_float()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_float(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the double value <TT
 CLASS="PARAMETER"
@@ -2794,82 +2573,72 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2020"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1967"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1972"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A double value to set.</TD
+><P
+> A double value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2033"
+NAME="AEN1977"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-FLOAT"
 ></A
 >gnome_config_private_set_float()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_float(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores the double value <TT
 CLASS="PARAMETER"
@@ -2886,454 +2655,412 @@ CLASS="PARAMETER"
 configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2041"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1986"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN1991"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A double value to set.</TD
+><P
+> A double value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2054"
+NAME="AEN1996"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-BOOL"
 ></A
 >gnome_config_get_bool()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_bool(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a boolean configuration value.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2060"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2003"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2008"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of a configuration item.</TD
+><P
+> The value of a configuration item.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2073"
+NAME="AEN2013"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-BOOL-WITH-DEFAULT"
 ></A
 >gnome_config_get_bool_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_bool_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves a boolean configuration value.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2079"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2020"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2025"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2030"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item, or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the
-configuration item does not exist.</TD
+configuration item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2097"
+NAME="AEN2036"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-BOOL"
 ></A
 >gnome_config_private_get_bool()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_bool(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the item from the user's private configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2103"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2043"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2048"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The value of a configuration item as a boolean.</TD
+><P
+> The value of a configuration item as a boolean.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2116"
+NAME="AEN2053"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-BOOL-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_bool_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_bool_with_default(path,def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the item from the user's private configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2122"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2060"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2065"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2070"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The value of a configuration item as a boolean, or <TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
 > if the
-configuration item does not exist.</TD
+configuration item does not exist.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2140"
+NAME="AEN2076"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-BOOL"
 ></A
 >gnome_config_set_bool()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_bool(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores boolean value <TT
 CLASS="PARAMETER"
@@ -3349,82 +3076,72 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2148"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2085"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2090"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A boolean value to set.</TD
+><P
+> A boolean value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2161"
+NAME="AEN2095"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-BOOL"
 ></A
 >gnome_config_private_set_bool()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_bool(path,new_value)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores boolean value <TT
 CLASS="PARAMETER"
@@ -3440,522 +3157,488 @@ CLASS="PARAMETER"
 The value is stored in the user's private configuration storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2169"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2104"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2109"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >new_value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A boolean value to set.</TD
+><P
+> A boolean value to set.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2182"
+NAME="AEN2114"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-VECTOR"
 ></A
 >gnome_config_get_vector()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_vector(path, argcp, argvp)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string array.
-The returned vector should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+The returned vector should be freed with g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2189"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2122"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2127"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argcp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Number of elements in the vector.</TD
+><P
+> Number of elements in the vector.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2132"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argvp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Vector of strings.</TD
+><P
+> Vector of strings.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2206"
+NAME="AEN2137"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-VECTOR-WITH-DEFAULT"
 ></A
 >gnome_config_get_vector_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_vector_with_default(path, argcp, argvp, def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string array.
-The returned vector should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed.</P
+The returned vector should be freed with g_free() when no longer needed.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2213"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2145"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item.</TD
+><P
+> A gnome configuration path to an item.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2150"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argcp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Number of elements in the vector.</TD
+><P
+> Number of elements in the vector.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2155"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argvp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Vector of strings.</TD
+><P
+> Vector of strings.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2160"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2234"
+NAME="AEN2165"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-VECTOR"
 ></A
 >gnome_config_private_get_vector()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_vector(path, argcp, argvp)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string array.
-The returned vector should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed. The
+The returned vector should be freed with g_free() when no longer needed. The
 configuration value is retrieved from the user's private configuration
 storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2241"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2173"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2178"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argcp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Number of elements in the vector.</TD
+><P
+> Number of elements in the vector.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2183"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argvp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Vector of strings.</TD
+><P
+> Vector of strings.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2258"
+NAME="AEN2188"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-VECTOR-WITH-DEFAULT"
 ></A
 >gnome_config_private_get_vector_with_default()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_vector_with_default(path, argcp, argvp, def)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the value of a configuration item as a string array.
-The returned vector should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when no longer needed. The
+The returned vector should be freed with g_free() when no longer needed. The
 configuration value is retrieved from the user's private configuration
 storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2265"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2196"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to an item in the user-private namespace.</TD
+><P
+> A gnome configuration path to an item in the user-private namespace.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2201"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argcp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Number of elements in the vector</TD
+><P
+> Number of elements in the vector</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2206"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argvp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Vector of strings</TD
+><P
+> Vector of strings</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2211"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >def</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A pointer to a flag that will be set if the default value for the item
-is returned.</TD
+is returned.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2286"
+NAME="AEN2216"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SET-VECTOR"
 ></A
 >gnome_config_set_vector()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_set_vector(path,argc,argv)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores vector <TT
 CLASS="PARAMETER"
@@ -3971,104 +3654,98 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2294"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2225"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2230"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The number of elements in <TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2236"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string array holding the data to store.</TD
+><P
+> A string array holding the data to store.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2312"
+NAME="AEN2241"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SET-VECTOR"
 ></A
 >gnome_config_private_set_vector()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_set_vector(path,argc,argv)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Stores vector <TT
 CLASS="PARAMETER"
@@ -4084,212 +3761,198 @@ CLASS="PARAMETER"
 configuration value is set in the user's private storage area.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2320"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2250"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2255"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > The number of elements in <TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2261"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string array holding the data to store.</TD
+><P
+> A string array holding the data to store.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2338"
+NAME="AEN2266"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-ASSEMBLE-VECTOR"
 ></A
 >gnome_config_assemble_vector ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >char*       gnome_config_assemble_vector    (int argc,
                                              const char *const argv[]);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >This routine returns the the strings in the array contactenated by
-spaces. The return value should be freed with <A
-HREF=../glib/glib-memory-allocation.html#G-FREE
->g_free</A>() when it is no longer
+spaces. The return value should be freed with g_free() when it is no longer
 required.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2345"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2274"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argc</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > Number of elements in the <TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
-> string array.</TD
+> string array.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2280"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argv</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> An array of strings.</TD
+><P
+> An array of strings.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2285"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A string with the concatenation results.</TD
+><P
+> A string with the concatenation results.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2363"
+NAME="AEN2290"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-HAS-SECTION"
 ></A
 >gnome_config_has_section()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_has_section(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Queries the gnome configuration file for the presence
 of the section specified in <TT
@@ -4300,89 +3963,79 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2370"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2298"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a section</TD
+><P
+> A gnome configuration path to a section</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2303"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
 > if the section exists, <TT
 CLASS="LITERAL"
 >FALSE</TT
-> otherwise.</TD
+> otherwise.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2385"
+NAME="AEN2310"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-HAS-SECTION"
 ></A
 >gnome_config_private_has_section()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_has_section(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Queries the private gnome configuration file for the presence
 of the section specified in <TT
@@ -4393,89 +4046,79 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2392"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2318"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a section</TD
+><P
+> A gnome configuration path to a section</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2323"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
 > if the section exists, <TT
 CLASS="LITERAL"
 >FALSE</TT
-> otherwise.</TD
+> otherwise.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2407"
+NAME="AEN2330"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-INIT-ITERATOR"
 ></A
 >gnome_config_init_iterator()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_init_iterator(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates an iterator handle that can be used to
 iterate over the keys in a section in a gnome configuration
@@ -4491,83 +4134,73 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-ITERATOR-NEXT"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2415"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2339"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path for a section.</TD
+><P
+> A gnome configuration path for a section.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2344"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The iterator handle.</TD
+><P
+> The iterator handle.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2428"
+NAME="AEN2349"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-INIT-ITERATOR"
 ></A
 >gnome_config_private_init_iterator()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_init_iterator(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates an iterator handle that can be used to
 iterate over the keys in a section in a private gnome configuration
@@ -4583,83 +4216,73 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-ITERATOR-NEXT"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2436"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2358"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path for a section.</TD
+><P
+> A gnome configuration path for a section.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2363"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The iterator handle.</TD
+><P
+> The iterator handle.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2449"
+NAME="AEN2368"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-INIT-ITERATOR-SECTIONS"
 ></A
 >gnome_config_init_iterator_sections()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_init_iterator_sections(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates an iterator handle that can be used to iterate over the
 sections in a gnome configuration file.  <TT
@@ -4675,83 +4298,73 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-ITERATOR-NEXT"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2457"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2377"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path for a file.</TD
+><P
+> A gnome configuration path for a file.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2382"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The iterator handle.</TD
+><P
+> The iterator handle.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2470"
+NAME="AEN2387"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-INIT-ITERATOR-SECTIONS"
 ></A
 >gnome_config_private_init_iterator_sections()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_init_iterator_sections(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates an iterator handle that can be used to iterate over the
 sections in a private gnome configuration file.  <TT
@@ -4767,85 +4380,75 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-ITERATOR-NEXT"
 >().</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2478"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2396"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path for a file</TD
+><P
+> A gnome configuration path for a file</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2401"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The iterator handle.</TD
+><P
+> The iterator handle.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2491"
+NAME="AEN2406"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-ITERATOR-NEXT"
 ></A
 >gnome_config_iterator_next ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void*       gnome_config_iterator_next      (void *iterator_handle,
                                              char **key,
                                              char **value);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >If <TT
 CLASS="PARAMETER"
@@ -4857,9 +4460,7 @@ CLASS="PARAMETER"
 ><I
 >key</I
 ></TT
-> will point to a <A
-HREF=../glib/glib-memory-allocation.html#G-MALLOC
->g_malloc</A>()ed region that
+> will point to a g_malloc()ed region that
 holds the key.</P
 ><P
 >If <TT
@@ -4872,106 +4473,98 @@ CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
-> will point to a <A
-HREF=../glib/glib-memory-allocation.html#G-MALLOC
->g_malloc</A>()ed region that
+> will point to a g_malloc()ed region that
 holds the key.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2504"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2420"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >iterator_handle</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > A gnome configu iterator handle, returned from any
-                  iteration start routine or this routine.</TD
+                  iteration start routine or this routine.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2425"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >key</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
->   Address where the key gets stored.</TD
+><P
+>   Address where the key gets stored.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2430"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >value</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> Address where the value gets stored.</TD
+><P
+> Address where the value gets stored.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2521"
+NAME="AEN2435"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-DROP-ALL"
 ></A
 >gnome_config_drop_all ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_config_drop_all           (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Drops any information cached in memory that was fetched with
 gnome config. Any pending information that has not been
@@ -4982,28 +4575,16 @@ written to disk is discarded.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2527"
+NAME="AEN2441"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SYNC"
 ></A
 >gnome_config_sync ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
-><A
-HREF=../glib/glib-basic-types.html#GBOOLEAN
->gboolean</A>    gnome_config_sync               (void);</PRE
-></TD
-></TR
-></TABLE
+>gboolean    gnome_config_sync               (void);</PRE
 ><P
 >Writes all of the information modified by gnome-config to the
 disk.</P
@@ -5012,35 +4593,33 @@ disk.</P
 configuration files until this routine is actually invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2535"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2450"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
@@ -5048,37 +4627,25 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >FALSE</TT
 > if any file
-could not be written to disk.</TD
+could not be written to disk.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2546"
+NAME="AEN2457"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-SYNC-FILE"
 ></A
 >gnome_config_sync_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_sync_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Writes all of the information modified by gnome-config to the
 disk for the given file.</P
@@ -5091,52 +4658,54 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 is actually invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2554"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2466"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2471"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
@@ -5148,37 +4717,25 @@ could not be written to for some reason.  <TT
 CLASS="LITERAL"
 >FALSE</TT
 > is only returned
-when a write was actually attempted and failed.</TD
+when a write was actually attempted and failed.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2570"
+NAME="AEN2479"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-SYNC-FILE"
 ></A
 >gnome_config_private_sync_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_sync_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Writes all of the information modified by gnome-config to the
 disk for the given private file.</P
@@ -5191,52 +4748,54 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 is actually invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2578"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2488"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2493"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > <TT
 CLASS="LITERAL"
 >TRUE</TT
@@ -5248,37 +4807,25 @@ could not be written to for some reason.  <TT
 CLASS="LITERAL"
 >FALSE</TT
 > is only returned
-when a write was actually attempted and failed.</TD
+when a write was actually attempted and failed.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2594"
+NAME="AEN2501"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-DROP-FILE"
 ></A
 >gnome_config_drop_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_drop_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Releases any memory resources that were allocated from accessing
 the configuration file in <TT
@@ -5293,65 +4840,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2602"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2510"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2611"
+NAME="AEN2515"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-DROP-FILE"
 ></A
 >gnome_config_private_drop_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_drop_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Releases any memory resources that were allocated from accessing the
 private configuration file in <TT
@@ -5362,65 +4895,51 @@ CLASS="PARAMETER"
 >.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2618"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2523"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2627"
+NAME="AEN2528"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-CLEAN-FILE"
 ></A
 >gnome_config_clean_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_clean_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Cleans up the configuration file specified by <TT
 CLASS="PARAMETER"
@@ -5436,65 +4955,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2636"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2538"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2645"
+NAME="AEN2543"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-CLEAN-FILE"
 ></A
 >gnome_config_private_clean_file()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_clean_file(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Cleans up the private configuration file specified by <TT
 CLASS="PARAMETER"
@@ -5510,65 +5015,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2654"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2553"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome-config path</TD
+><P
+> A gnome-config path</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2663"
+NAME="AEN2558"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-CLEAN-SECTION"
 ></A
 >gnome_config_clean_section()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_clean_section(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Cleans up the section specified by <TT
 CLASS="PARAMETER"
@@ -5583,65 +5074,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2671"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2567"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a section.</TD
+><P
+> A gnome configuration path to a section.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2680"
+NAME="AEN2572"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-CLEAN-SECTION"
 ></A
 >gnome_config_private_clean_section()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_clean_section(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Cleans up the section specified by <TT
 CLASS="PARAMETER"
@@ -5656,65 +5133,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2688"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2581"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a section.</TD
+><P
+> A gnome configuration path to a section.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2697"
+NAME="AEN2586"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-CLEAN-KEY"
 ></A
 >gnome_config_clean_key()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_clean_key(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Removes the definition for the key on a gnome configuration file.</P
 ><P
@@ -5724,65 +5187,51 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2705"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2595"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2714"
+NAME="AEN2600"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-CLEAN-KEY"
 ></A
 >gnome_config_private_clean_key()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_clean_key(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Removes the definition for the key on a private gnome configuration
 file.</P
@@ -5793,228 +5242,194 @@ HREF="libgnome-gnome-config.html#GNOME-CONFIG-SYNC"
 >() has been invoked.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2722"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2609"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path to a key.</TD
+><P
+> A gnome configuration path to a key.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2731"
+NAME="AEN2614"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-GET-REAL-PATH"
 ></A
 >gnome_config_get_real_path()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_get_real_path(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the full (absolute) path to a configuration file.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2736"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2620"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A configuration file (this should only be the file, not the section or
-key).</TD
+key).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2625"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >An absolute path to the config file.
-&#13;</TD
+&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2749"
+NAME="AEN2630"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PRIVATE-GET-REAL-PATH"
 ></A
 >gnome_config_private_get_real_path()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >#define     gnome_config_private_get_real_path(path)</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Retrieves the full (absolute) path to a configuration file in the user's
 private configuration storage area.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2754"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2636"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >A configuration file (this should only be the file, not the section or
-key).</TD
+key).</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2641"><SPAN
+STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >Returns</I
 ></SPAN
-> :</TD
+> :</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 >An absolute path to the config file.
-&#13;</TD
+&#13;</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2767"
+NAME="AEN2646"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-PUSH-PREFIX"
 ></A
 >gnome_config_push_prefix ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_config_push_prefix        (const char *path);</PRE
-></TD
-></TR
-></TABLE
 ><P
 ><TT
 CLASS="PARAMETER"
@@ -6031,65 +5446,51 @@ any gnome-configuration access, since the application might
 be using their own prefix.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2776"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2656"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >path</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> A gnome configuration path prefix.</TD
+><P
+> A gnome configuration path prefix.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
-></DIV
 ></DIV
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2785"
+NAME="AEN2661"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-POP-PREFIX"
 ></A
 >gnome_config_pop_prefix ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_config_pop_prefix         (void);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Call this routine to remove the current configuration prefix from the stack.</P
 ><P
@@ -6098,218 +5499,137 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN2791"
+NAME="AEN2667"
 ></A
 ><H3
 ><A
 NAME="GNOME-CONFIG-MAKE-VECTOR"
 ></A
 >gnome_config_make_vector ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
 ><PRE
 CLASS="PROGRAMLISTING"
 >void        gnome_config_make_vector        (const char *string,
                                              int *argcp,
                                              char ***argvp);</PRE
-></TD
-></TR
-></TABLE
 ><P
 >Creates a new vector from a string as it stored in the config file,
 breaks the string on spaces except if the space is escaped with a
 backslash.</P
 ><P
 ></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2797"><P
+><P
 ></P
 ><TABLE
+CLASS="variablelist"
 BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
 CELLSPACING="0"
 CELLPADDING="4"
-CLASS="CALSTABLE"
 ><TBODY
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2674"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >string</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
-> The stringified vector to decode into 'argcp' and 'argvp'</TD
+><P
+> The stringified vector to decode into 'argcp' and 'argvp'</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2679"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argcp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > Returns the number of elements in <TT
 CLASS="PARAMETER"
 ><I
 >string</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ><TR
 ><TD
-WIDTH="20%"
-ALIGN="RIGHT"
+ALIGN="LEFT"
 VALIGN="TOP"
+><A
+NAME="AEN2685"><SPAN
+STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
 >argvp</I
 ></TT
->&nbsp;:</TD
+>&nbsp;:</SPAN
+></TD
 ><TD
-WIDTH="80%"
 ALIGN="LEFT"
 VALIGN="TOP"
+><P
 > Returns the array of strings found in <TT
 CLASS="PARAMETER"
 ><I
 >string</I
 ></TT
->.</TD
+>.</P
+></TD
 ></TR
 ></TBODY
 ></TABLE
-><P
-></P
 ></DIV
 ></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
+><TABLE
+CLASS="navigation"
 WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
 ><TR
+VALIGN="middle"
 ><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="left"
 ><A
+ACCESSKEY="p"
 HREF="libgnome-gnome-gconf.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
+>&lt;&lt;&lt;&nbsp;gnome-gconf</B
 ></A
 ></TD
 ><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="x1311.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
 ALIGN="right"
 ><A
+ACCESSKEY="n"
 HREF="libgnome-gnome-i18n.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
 ><B
->Next Page &#62;&#62;&#62;</B
-></FONT
+>gnome-i18n&nbsp;&gt;&gt;&gt;</B
 ></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-gconf</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-i18n</B
-></FONT
 ></TD
 ></TR
 ></TABLE
-></DIV
 ></BODY
 ></HTML
 >

@@ -27,6 +27,8 @@
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -49,17 +51,13 @@ configuration, for example the history of a GnomeEntry. This
 config space should only be used by libraries.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>subkey</parameter>&nbsp;:</entry>
-<entry> key part below the gnome desktop settings directory
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  A newly allocated string
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>subkey</parameter>&nbsp;:</term>
+<listitem><simpara> key part below the gnome desktop settings directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A newly allocated string
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-gconf-get-app-settings-relative">gnome_gconf_get_app_settings_relative ()</title>
 <programlisting><link linkend="gchar">gchar</link>*      gnome_gconf_get_app_settings_relative
@@ -70,20 +68,16 @@ Gets the full key name for an application specific
 setting.  That is "/apps/&lt;application_id&gt;/<parameter>subkey</parameter>".</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>program</parameter>&nbsp;:</entry>
-<entry> <link linkend="GnomeProgram">GnomeProgram</link> pointer or <literal>NULL</literal> for the default
-</entry></row>
-<row><entry align="right"><parameter>subkey</parameter>&nbsp;:</entry>
-<entry> key part below the gnome desktop settings directory
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>  A newly allocated string
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="GnomeProgram">GnomeProgram</link> pointer or <literal>NULL</literal> for the default
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subkey</parameter>&nbsp;:</term>
+<listitem><simpara> key part below the gnome desktop settings directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  A newly allocated string
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
