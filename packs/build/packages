@@ -1,4 +1,4 @@
-# $Id: packages,v 1.43 1998-07-23 16:36:44 danw Exp $
+# $Id: packages,v 1.44 1998-08-15 16:10:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -58,6 +58,7 @@ athena/lib/acl
 athena/lib/zephyr
 athena/lib/neos
 athena/lib/athdir
+athena/lib/ares
 athena/etc/track
 athena/etc/newsyslog
 athena/etc/cleanup
