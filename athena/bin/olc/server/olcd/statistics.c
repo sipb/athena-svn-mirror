@@ -9,11 +9,11 @@
  *      Copyright (c) 1990 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.4 1990-02-27 14:33:25 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.5 1990-03-02 18:07:57 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -58,7 +58,7 @@ dump_request_stats(file)
 
     for (i = 0; Proc_List[i].proc_code != UNKNOWN_REQUEST; i++) {
 	char *desc = Proc_List[i].description;
-	fprintf (fp, "%s:%*s %d", desc, 24 - strlen (desc), "",
+	fprintf (fp, "%s:%*s %d\n", desc, 24 - strlen (desc), "",
 		 request_counts[i]);
     }
 
