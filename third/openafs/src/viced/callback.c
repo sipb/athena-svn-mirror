@@ -82,7 +82,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.7 2004-03-17 06:23:13 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.8 2004-03-18 12:03:14 zacheiss Exp $");
 
 #include <stdio.h> 
 #include <stdlib.h>      /* for malloc() */
@@ -1056,6 +1056,7 @@ int BreakDelayedCallBacks_r(host)
     struct CallBack *cb;
     struct interfaceAddr interf;
     int code;
+    char hoststr[16];
 
     cbstuff.nbreakers++;
     if (!(host->hostFlags & RESETDONE) && !(host->hostFlags & HOSTDELETED)) {
@@ -1074,13 +1075,14 @@ int BreakDelayedCallBacks_r(host)
 	if (code) {
 	    if (ShowProblems) {
 		ViceLog(0,
-	   ("CB: Call back connect back failed (in break delayed) for %x.%d\n",
-			host->host, ntohs(host->port)));
+	   ("CB: Call back connect back failed (in break delayed) for %s:%d\n",
+			afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	      }
 	    host->hostFlags |= VENUSDOWN;
 	}
 	else {
-	    ViceLog(25,("InitCallBackState success on %x\n",host->host));
+	    ViceLog(25,("InitCallBackState success on %s\n",
+			afs_inet_ntoa_r(host->host, hoststr)));
 	    /* reset was done successfully */
 	    host->hostFlags |= RESETDONE;
 	    host->hostFlags &= ~VENUSDOWN;
@@ -1119,14 +1121,14 @@ int BreakDelayedCallBacks_r(host)
 	    int i;
 	    if (ShowProblems) {
 		ViceLog(0,
-	     ("CB: XCallBackBulk failed, host=%x.%d; callback list follows:\n",
-		    host->host, ntohs(host->port)));
+	     ("CB: XCallBackBulk failed, host=%s:%d; callback list follows:\n",
+		    afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	    }
 	    for (i = 0; i<nfids; i++) {
 		if (ShowProblems) {
 		    ViceLog(0,
-		    ("CB: Host %x.%d, file %u.%u.%u (part of bulk callback)\n",
-		               host->host, ntohs(host->port), 
+		    ("CB: Host %s:%d, file %u.%u.%u (part of bulk callback)\n",
+		               afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port), 
 		               fids[i].Volume, fids[i].Vnode, fids[i].Unique));
 		}
 		/* used to do this:
@@ -1171,6 +1173,8 @@ static int MultiBreakVolumeCallBack_r (host, isheld, parms, deletefe)
   struct VCBParams *parms;
   int deletefe;
 {
+    char hoststr[16];
+
     if ( !isheld )
 	return isheld; /* host is held only by h_Enumerate, do nothing */
     if ( host->hostFlags & HOSTDELETED )
@@ -1182,11 +1186,11 @@ static int MultiBreakVolumeCallBack_r (host, isheld, parms, deletefe)
 	    h_Unlock_r(host);
 	    return 0;      /* Release hold */
 	}
-	ViceLog(8,("BVCB: volume call back for host %x.%d failed\n",
-		 host->host,ntohs(host->port)));
+	ViceLog(8,("BVCB: volume call back for host %s:%d failed\n",
+		 afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	if (ShowProblems) {
-	    ViceLog(0, ("CB: volume callback for host %x.%d failed\n",
-		    host->host, ntohs(host->port)));
+	    ViceLog(0, ("CB: volume callback for host %s:%d failed\n",
+		    afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	}
 	DeleteAllCallBacks_r(host, deletefe); /* Delete all callback state 
 						 rather than attempting to 
@@ -2033,6 +2037,7 @@ struct host*		host;
 	struct rx_connection*   connSuccess = 0;
 	afs_int32		*addr;
 	static struct rx_securityClass *sc = 0;
+	char hoststr[16];
 
 	/* nothing more can be done */
 	if ( !host->interface ) return 1; 	/* failure */
@@ -2069,8 +2074,8 @@ struct host*		host;
 	}
 
 	assert(j);  /* at least one alternate address */
-	ViceLog(125,("Starting multiprobe on all addr for host:%x\n",
-			host->host));
+	ViceLog(125,("Starting multiprobe on all addr for host %s\n",
+			afs_inet_ntoa_r(host->host, hoststr)));
 	H_UNLOCK
 	multi_Rx(conns, j)
 	{
@@ -2086,8 +2091,8 @@ struct host*		host;
 			connSuccess	     = conns[multi_i];
 			rx_SetConnDeadTime(host->callback_rxcon, 50);
 			rx_SetConnHardDeadTime(host->callback_rxcon, AFS_HARDDEADTIME);
-			ViceLog(125,("multiprobe success with addr:%x\n",
-					addr[multi_i]));
+			ViceLog(125,("multiprobe success with addr %s\n",
+					afs_inet_ntoa_r(addr[multi_i], hoststr)));
 			H_UNLOCK
 			multi_Abort; 
 		}

@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.6 2004-02-13 18:58:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.7 2004-03-18 12:03:07 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -320,9 +320,10 @@ retry:
     }
     else if ((thost->hostFlags & VENUSDOWN) || (thost->hostFlags & HFE_LATER)){
       if (BreakDelayedCallBacks_r(thost)) {
-	ViceLog(0,("BreakDelayedCallbacks FAILED for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
+	ViceLog(0,("BreakDelayedCallbacks FAILED for host %s which IS UP.  Possible network or routing failure.\n",
+		   afs_inet_ntoa_r(thost->host, hoststr)));
 	if ( MultiProbeAlternateAddress_r (thost) ) {
-	    ViceLog(0, ("MultiProbe failed to find new address for host %x.%d\n",
+	    ViceLog(0, ("MultiProbe failed to find new address for host %s:%d\n",
 			afs_inet_ntoa_r(thost->host, hoststr), 
 			ntohs(thost->port)));
             code = -1;
@@ -331,7 +332,8 @@ retry:
                        afs_inet_ntoa_r(thost->host, hoststr), 
                        ntohs(thost->port)));
 	    if (BreakDelayedCallBacks_r(thost)) {
-		ViceLog(0,("BreakDelayedCallbacks FAILED AGAIN for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
+		ViceLog(0,("BreakDelayedCallbacks FAILED AGAIN for host %s which IS UP.  Possible network or routing failure.\n",
+			   afs_inet_ntoa_r(thost->host, hoststr)));
 		code = -1;
 	    }
 	}
