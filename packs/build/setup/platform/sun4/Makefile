@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1996-12-11 22:05:28 ghudson Exp $
+# $Id: Makefile,v 1.5 1996-12-12 17:00:39 ghudson Exp $
 
 ATHINCDIR=/usr/athena/include
 ATHLIBDIR=/usr/athena/lib
@@ -13,6 +13,12 @@ all: libbsd.a
 libbsd.a:
 	ar x /usr/ucblib/libucb.a ${BSDOBJS}
 	ar cr $@ ${BSDOBJS}
+	rm -f ${BSDOBJS}
+	if [ "$ATHENA_SYS" = sun4m_54 ]; then
+		ar x /usr/ucblib/libucb.a random.o setreid.o
+		ar r $@ random.o setreid.o
+		rm -f random.o setreid.o
+	fi
 
 check:
 
