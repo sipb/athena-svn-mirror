@@ -1,7 +1,7 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Id: bbd.c,v 1.19 1999-06-28 22:52:36 ghudson Exp $
+ * $Id: bbd.c,v 1.20 2001-04-04 21:59:36 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -10,7 +10,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Id: bbd.c,v 1.19 1999-06-28 22:52:36 ghudson Exp $";
+static char rcsid_[] = "$Id: bbd.c,v 1.20 2001-04-04 21:59:36 ghudson Exp $";
 #endif
 #endif
 
@@ -213,17 +213,7 @@ main(argc, argv)
 #endif
 
   if (!nofork) {
-    int max_fd;
-#ifdef RLIMIT_NOFILE
-    struct rlimit rl;
-
-    if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
-      max_fd = OPEN_MAX; /* either that or abort()... --bert 29jan1996 */
-    else
-      max_fd = (int)rl.rlim_cur;
-#else
-    max_fd = getdtablesize();
-#endif
+    int max_fd = sysconf(_SC_OPEN_MAX);
     
     switch (fork()) {
     case 0:                             /* child */
