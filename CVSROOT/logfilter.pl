@@ -54,7 +54,7 @@ foreach (@files) {
 	print DIFFMAIL "==================================================\n";
 	if ($old eq "NONE") {
 		print DIFFMAIL "Initial contents of new file $file\n";
-		$cmd = "diff -c /dev/null $i";
+		$cmd = "diff -c /dev/null $file";
 	} else {
 		print DIFFMAIL "Differences for $file ";
 		print DIFFMAIL "(revision $old -> $new)\n";
