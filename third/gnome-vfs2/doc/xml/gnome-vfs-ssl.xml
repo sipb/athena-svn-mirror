@@ -216,7 +216,7 @@ Wrapper an SSL socket inside a standard GnomeVFSSocket.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-set-timeout"/>gnome_vfs_ssl_set_timeout ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_ssl_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_set_timeout    (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+<indexterm><primary>gnome_vfs_ssl_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_set_timeout    (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
                                              <link linkend="GTimeVal">GTimeVal</link> *timeout,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>

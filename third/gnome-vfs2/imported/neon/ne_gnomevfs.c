@@ -252,7 +252,7 @@ ne_sock_connect (ne_socket *sock, const ne_inet_addr *addr,
 		return NE_SOCK_ERROR;
 	  
 	sock->socket = gnome_vfs_inet_connection_to_socket (sock->connection);	
-	sock->socket_buffer = gnome_vfs_inet_connection_to_socket_buffer (sock->connection);
+	sock->socket_buffer = gnome_vfs_socket_buffer_new (sock->socket);
 			 
 	return 0;
 }
@@ -425,7 +425,7 @@ ne_sock_close (ne_socket *sock)
 	GnomeVFSCancellation *cancellation;
 
 	peek_cancellation (cancellation);
-	   
+
 	if (sock->socket_buffer) {
 		gnome_vfs_socket_buffer_flush (sock->socket_buffer,
 					       cancellation);
@@ -434,6 +434,8 @@ ne_sock_close (ne_socket *sock)
 						 TRUE,
 						 cancellation);
 	}
+
+
 	g_free (sock);
 
 	return 0;

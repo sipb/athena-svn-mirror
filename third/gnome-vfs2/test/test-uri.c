@@ -430,6 +430,14 @@ strcmp_allow_nulls (const char *s1, const char *s2)
                 g_free (result);                                                                      \
 	} G_STMT_END
 
+#define VERIFY_STRING_RESULT_NULL(function) \
+	G_STMT_START {											\
+		char *result = function; 								\
+		if (result != NULL) {									\
+			test_failed ("%s: returned '%s' expected '%s'", #function, result, NULL);	\
+		}											\
+	} G_STMT_END
+
 int
 main (int argc, char **argv)
 {
@@ -710,18 +718,18 @@ main (int argc, char **argv)
 	test_uri_parent ("http://www.eazel.com?///xxx", "http://www.eazel.com?/");
 	test_uri_parent ("http://www.eazel.com/dir?xxx/yyy", "http://www.eazel.com/dir?xxx");
 
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri (""), NULL);
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/#"), NULL);
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri (""));
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("/#"));
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:/path"), "/path");
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file://path"), NULL);
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("file://path"));
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///path"), "/path");
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:////path"), "//path");
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html"), "/my/document.html");
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html#fragment"), NULL);
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("file:///my/document.html#fragment"));
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path"), "/my/docu ment#/path");
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path/foo.html.gz#gunzip:///#fragment"), NULL);
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/my/document.html"), NULL);
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("http://my/document.html"), NULL);
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path/foo.html.gz#gunzip:///#fragment"));
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("/my/document.html"));
+	VERIFY_STRING_RESULT_NULL (gnome_vfs_get_local_path_from_uri ("http://my/document.html"));
 	
 	/* Testing gnome_vfs_uri_make_full_from_relative */
 	/* (not an extensive testing, but a regression test */

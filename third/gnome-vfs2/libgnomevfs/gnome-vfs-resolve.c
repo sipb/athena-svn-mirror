@@ -217,7 +217,7 @@ gnome_vfs_resolve (const char              *hostname,
 	   gboolean retry = TRUE;
 
 restart:	   
-	   bzero (&hints, sizeof (hints));
+	   memset (&hints, 0, sizeof (hints));
 	   hints.ai_socktype = SOCK_STREAM;
 
 #ifdef ENABLE_IPV6

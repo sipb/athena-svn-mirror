@@ -6,102 +6,101 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 09:57+0200\n"
-"PO-Revision-Date: 2003-07-03 20:15+0700\n"
+"POT-Creation-Date: 2004-10-28 16:22+0200\n"
+"PO-Revision-Date: 2004-10-07 09:32+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: daemon/gnome-vfs-daemon.c:596
-#, fuzzy
 msgid "Could not initialize Bonobo"
-msgstr "Không thể tìm bộ duyệt chính"
+msgstr "Không thể khởi động Bonobo"
 
 #: daemon/gnome-vfs-daemon.c:603
 msgid "Could not initialize gnome vfs"
-msgstr ""
+msgstr "Không thể khới động gnome vfs"
 
 #: libgnomevfs/eggdesktopentries.c:229
-#, fuzzy, c-format
+#, c-format
 msgid "File could not be opened: %s"
-msgstr "Không thể phân tích: %s"
+msgstr "Không thể mở tập tin: %s"
 
-#: libgnomevfs/eggdesktopentries.c:328
+#: libgnomevfs/eggdesktopentries.c:324
 #, c-format
 msgid "Failed to open file '%s': %s"
-msgstr ""
+msgstr "Lỗi mở tập tin '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:341
-#, fuzzy
+#: libgnomevfs/eggdesktopentries.c:337
 msgid "File is empty"
-msgstr "Tập tin đã tồn tại"
+msgstr "Tập tin rỗng"
 
-#: libgnomevfs/eggdesktopentries.c:363
+#: libgnomevfs/eggdesktopentries.c:359
 #, c-format
 msgid "Failed to read from file '%s': %s"
-msgstr ""
+msgstr "Lỗi đọc từ tập tin '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:575
+#: libgnomevfs/eggdesktopentries.c:572
 #, c-format
 msgid ""
 "desktop entries contain line '%s' which is not an entry, group, or comment"
-msgstr ""
+msgstr "Desktop entry chứa dòng '%s' không phải là entry, nhóm hoặc chú thích"
 
-#: libgnomevfs/eggdesktopentries.c:648
+#: libgnomevfs/eggdesktopentries.c:645 libgnomevfs/eggdesktopentries.c:670
 msgid "desktop entries file does not start with legal start group"
-msgstr ""
+msgstr "Tập tin Desktop entry không bắt đầu bằng nhóm hợp lệ"
 
-#: libgnomevfs/eggdesktopentries.c:705
+#: libgnomevfs/eggdesktopentries.c:711
 #, c-format
 msgid "desktop entries contain line '%s' which is not UTF-8"
-msgstr ""
+msgstr "Desktop entry chứa dòng '%s' không phải là UTF-8"
 
-#: libgnomevfs/eggdesktopentries.c:728
+#: libgnomevfs/eggdesktopentries.c:734
 #, c-format
 msgid "desktop entries contain unknown encoding '%s'"
-msgstr ""
+msgstr "Desktop entry chứa bảng mã lạ '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
-#: libgnomevfs/eggdesktopentries.c:1215
+#: libgnomevfs/eggdesktopentries.c:924 libgnomevfs/eggdesktopentries.c:1036
+#: libgnomevfs/eggdesktopentries.c:1221
 #, c-format
 msgid "desktop entries do not have group '%s'"
-msgstr ""
+msgstr "Desktop entry không có nhóm '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:1042
+#: libgnomevfs/eggdesktopentries.c:1048
 #, c-format
 msgid "desktop entries do not have key '%s'"
-msgstr ""
+msgstr "Desktop entry không có khóa '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
-#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#: libgnomevfs/eggdesktopentries.c:1104 libgnomevfs/eggdesktopentries.c:1277
+#: libgnomevfs/eggdesktopentries.c:1419 libgnomevfs/eggdesktopentries.c:1544
 #, c-format
 msgid ""
 "desktop entries contain key '%s' which has value that cannot be interpreted."
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:1296
+#: libgnomevfs/eggdesktopentries.c:1302
 #, c-format
 msgid ""
 "desktop entries contain no translated value for key '%s' with locale '%s'."
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2229
+#: libgnomevfs/eggdesktopentries.c:2235
 #, c-format
 msgid "desktop entries contain invalid escape sequence '%s'"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2246
+#: libgnomevfs/eggdesktopentries.c:2252
 msgid "desktop entries contain escape character at end of line"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2271
+#: libgnomevfs/eggdesktopentries.c:2277
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2298
+#: libgnomevfs/eggdesktopentries.c:2304
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr ""
@@ -142,228 +141,227 @@ msgstr "Không tìm thấy tập tin cấu hình `%s': %s"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:37
 msgid "AFFS Volume"
-msgstr ""
+msgstr "Khối APFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:38
 msgid "AFS Network Volume"
-msgstr ""
+msgstr "Khối Mạng AFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:39
 msgid "Auto-detected Volume"
-msgstr ""
+msgstr "Khối tự động dò tìm"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:40
 #: libgnomevfs/gnome-vfs-filesystem-type.c:42
 msgid "CD-ROM Drive"
-msgstr ""
+msgstr "Ổ đĩa CD-ROM"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:41
 msgid "CD Digital Audio"
-msgstr ""
+msgstr "CD Nhạc"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:43
 msgid "Hardware Device Volume"
-msgstr ""
+msgstr "Khối Thiết bị phần cứng"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:44
 #: libgnomevfs/gnome-vfs-filesystem-type.c:45
 msgid "Ext2 Linux Volume"
-msgstr ""
+msgstr "Khối Linux Ext2"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:46
 msgid "Ext3 Linux Volume"
-msgstr ""
+msgstr "Khối Linux Ext3"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:47
 #: libgnomevfs/gnome-vfs-filesystem-type.c:57
 #: libgnomevfs/gnome-vfs-filesystem-type.c:58
 msgid "MSDOS Volume"
-msgstr ""
+msgstr "Khối MSDOS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:48
 #: libgnomevfs/gnome-vfs-filesystem-type.c:49
 msgid "MacOS Volume"
-msgstr ""
+msgstr "Khối MacOS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:50
 msgid "CDROM Volume"
-msgstr ""
+msgstr "Khối CDROM"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:51
 msgid "Hsfs CDROM Volume"
-msgstr ""
+msgstr "Khối CDROM Hsfs"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:52
 msgid "JFS Volume"
-msgstr ""
+msgstr "Khối JFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:53
 #: libgnomevfs/gnome-vfs-filesystem-type.c:60
 msgid "Windows NT Volume"
-msgstr ""
+msgstr "Khối Windows NT"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:54
 #: libgnomevfs/gnome-vfs-filesystem-type.c:62
 #: libgnomevfs/gnome-vfs-filesystem-type.c:63
 msgid "System Volume"
-msgstr ""
+msgstr "Khối Hệ thống"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:55
 msgid "Memory Volume"
-msgstr ""
+msgstr "Khối Bộ nhớ"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:56
 msgid "Minix Volume"
-msgstr ""
+msgstr "Khối Minix"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:59
 msgid "NFS Network Volume"
-msgstr ""
+msgstr "Khối Mạng NFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:61
 msgid "Netware Volume"
-msgstr ""
+msgstr "Khối Netware"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:64
 msgid "ReiserFS Linux Volume"
-msgstr ""
+msgstr "Khối Linux ReiserFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:65
 msgid "Windows Shared Volume"
-msgstr ""
+msgstr "Khối Chia sẻ Windows"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:66
 msgid "SuperMount Volume"
-msgstr ""
+msgstr "Khối SuperMount"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:67
 msgid "DVD Volume"
-msgstr ""
+msgstr "Khối DVD"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:68
 msgid "Solaris/BSD Volume"
-msgstr ""
+msgstr "Khối Solaris/BSD"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:69
 msgid "Udfs Solaris Volume"
-msgstr ""
+msgstr "Khối Solaris Udfs"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:70
 msgid "Pcfs Solaris Volume"
-msgstr ""
+msgstr "Khối Solaris Pcfs"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:71
 msgid "Sun SAM-QFS Volume"
-msgstr ""
+msgstr "Khối Sun SAM-QFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:72
 msgid "Enhanced DOS Volume"
-msgstr ""
+msgstr "Khối DOS Cải tiến"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:73
 msgid "Windows VFAT Volume"
-msgstr ""
+msgstr "Khối Windows VFAT"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:74
 msgid "Xenix Volume"
-msgstr ""
+msgstr "Khối Xenix"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:75
 msgid "XFS Linux Volume"
-msgstr ""
+msgstr "Khối Linux XFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:76
 msgid "XIAFS Volume"
-msgstr ""
+msgstr "Khối XIAFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:104
-#, fuzzy
 msgid "Unknown"
-msgstr "Lỗi lạ"
+msgstr "Không rõ"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:611
 msgid "CD-ROM Disc"
-msgstr ""
+msgstr "Đĩa CD-ROM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:614
 msgid "Blank CD-R Disc"
-msgstr ""
+msgstr "Đĩa trắng CD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:616
 msgid "CD-R Disc"
-msgstr ""
+msgstr "Đĩa CD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:619
 msgid "Blank CD-RW Disc"
-msgstr ""
+msgstr "Đĩa trắng CD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:621
 msgid "CD-RW Disc"
-msgstr ""
+msgstr "Đĩa CD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:623
 msgid "DVD-ROM Disc"
-msgstr ""
+msgstr "Đĩa DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:626
 msgid "Blank DVD-R Disc"
-msgstr ""
+msgstr "Đĩa trắng DVD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:628
 msgid "DVD-R Disc"
-msgstr ""
+msgstr "Đĩa DVD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:631
 msgid "Blank DVD-RAM Disc"
-msgstr ""
+msgstr "Đĩa trắng DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:633
 msgid "DVD-RAM Disc"
-msgstr ""
+msgstr "Đĩa DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:636
 msgid "Blank DVD-RW Disc"
-msgstr ""
+msgstr "Đĩa trắng DVD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:638
 msgid "DVD-RW Disc"
-msgstr ""
+msgstr "Đĩa DVD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:641
 msgid "Blank DVD+RW Disc"
-msgstr ""
+msgstr "Đĩa trắng DVD+RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:643
 msgid "DVD+RW Disc"
-msgstr ""
+msgstr "Đĩa DVD+RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:646
 msgid "Blank DVD+R Disc"
-msgstr ""
+msgstr "Đĩa trắng DVD+R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:648
 msgid "DVD+R Disc"
-msgstr ""
+msgstr "Đĩa DVD+R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:650
 msgid "Optical Disc"
-msgstr ""
+msgstr "Đĩa quang"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:656
 msgid "Audio Disc"
-msgstr ""
+msgstr "Đĩa nhạc"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:660
 msgid "Compact Flash Media"
-msgstr ""
+msgstr "Đĩa Compact Flash"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:662
 msgid "Memory Stick Media"
-msgstr ""
+msgstr "Thanh bộ nhớ"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:664
 msgid "Smart Media Media"
-msgstr ""
+msgstr "Đĩa Smart Media"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:666
 msgid "SD/MMC Media"
@@ -371,27 +369,26 @@ msgstr ""
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:668
 msgid "Floppy Disk"
-msgstr ""
+msgstr "Đĩa mềm"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:675
 msgid "Mac OS disk"
-msgstr ""
+msgstr "Đĩa Mac OS"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:677
 msgid "Mac OS X disk"
-msgstr ""
+msgstr "Đĩa Mac OS X"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:691
-#, fuzzy
 msgid "Windows Disk"
-msgstr "Cửa sổ"
+msgstr "Đĩa Windows"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:697
 msgid "Linux Disk"
-msgstr ""
+msgstr "Đĩa Linux"
 
 #: libgnomevfs/gnome-vfs-job.c:734
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown operation type %u"
 msgstr "Kiểu thao tác lạ %u"
 
@@ -410,28 +407,28 @@ msgid "Operation stopped"
 msgstr "Thao tác đã dừng"
 
 #: libgnomevfs/gnome-vfs-mime-handlers.c:83
-#: libgnomevfs/gnome-vfs-mime-handlers.c:305
-#: libgnomevfs/gnome-vfs-mime-handlers.c:356
-#: libgnomevfs/gnome-vfs-mime-handlers.c:650
-#: libgnomevfs/gnome-vfs-mime-handlers.c:669
-#: libgnomevfs/gnome-vfs-mime-handlers.c:687
-#: libgnomevfs/gnome-vfs-mime-handlers.c:706
-#: libgnomevfs/gnome-vfs-mime-handlers.c:725
-#: libgnomevfs/gnome-vfs-mime-handlers.c:866
-#: libgnomevfs/gnome-vfs-mime-handlers.c:888
-#: libgnomevfs/gnome-vfs-mime-handlers.c:907
-#: libgnomevfs/gnome-vfs-mime-handlers.c:926
-#: libgnomevfs/gnome-vfs-mime-handlers.c:979
-#: libgnomevfs/gnome-vfs-mime-handlers.c:996
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
-#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
-#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
-#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
-#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
-#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
-#: libgnomevfs/gnome-vfs-mime-info.c:730
+#: libgnomevfs/gnome-vfs-mime-handlers.c:312
+#: libgnomevfs/gnome-vfs-mime-handlers.c:363
+#: libgnomevfs/gnome-vfs-mime-handlers.c:657
+#: libgnomevfs/gnome-vfs-mime-handlers.c:676
+#: libgnomevfs/gnome-vfs-mime-handlers.c:694
+#: libgnomevfs/gnome-vfs-mime-handlers.c:713
+#: libgnomevfs/gnome-vfs-mime-handlers.c:732
+#: libgnomevfs/gnome-vfs-mime-handlers.c:873
+#: libgnomevfs/gnome-vfs-mime-handlers.c:895
+#: libgnomevfs/gnome-vfs-mime-handlers.c:914
+#: libgnomevfs/gnome-vfs-mime-handlers.c:933
+#: libgnomevfs/gnome-vfs-mime-handlers.c:986
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1003
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1020
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1038
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1056
+#: libgnomevfs/gnome-vfs-mime-info.c:648 libgnomevfs/gnome-vfs-mime-info.c:655
+#: libgnomevfs/gnome-vfs-mime-info.c:663 libgnomevfs/gnome-vfs-mime-info.c:670
+#: libgnomevfs/gnome-vfs-mime-info.c:678 libgnomevfs/gnome-vfs-mime-info.c:695
+#: libgnomevfs/gnome-vfs-mime-info.c:702 libgnomevfs/gnome-vfs-mime-info.c:709
+#: libgnomevfs/gnome-vfs-mime-info.c:716 libgnomevfs/gnome-vfs-mime-info.c:724
+#: libgnomevfs/gnome-vfs-mime-info.c:731
 msgid ""
 "Deprecated function.  User modifications to the MIME database are no longer "
 "supported."
@@ -679,18 +676,17 @@ msgstr "Lỗi thực hiện dòng lệnh"
 #. GNOME_VFS_ERROR_TIMEOUT
 #: libgnomevfs/gnome-vfs-result.c:84 libgnomevfs/gnome-vfs-result.c:86
 msgid "Timeout reached"
-msgstr ""
+msgstr "Quá hạn"
 
 #. GNOME_VFS_ERROR_NAMESERVER
 #: libgnomevfs/gnome-vfs-result.c:85
-#, fuzzy
 msgid "Nameserver error"
-msgstr "Lỗi chung"
+msgstr "Lỗi nameserver"
 
 #. GNOME_VFS_ERROR_LOCKED
 #: libgnomevfs/gnome-vfs-result.c:87
 msgid "The resource is locked"
-msgstr ""
+msgstr "Tài nguyên bị khóa"
 
 #. GNOME_VFS_ERROR_DEPRECATED_FUNCTION
 #: libgnomevfs/gnome-vfs-result.c:88
@@ -702,16 +698,16 @@ msgid "Unknown error"
 msgstr "Lỗi lạ"
 
 #: libgnomevfs/gnome-vfs-utils.c:85
-#, fuzzy, c-format
+#, c-format
 msgid "%u byte"
 msgid_plural "%u bytes"
 msgstr[0] "%u byte"
 msgstr[1] "%u byte"
 
 #: libgnomevfs/gnome-vfs-utils.c:91
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f KB"
-msgstr "%.1f K"
+msgstr "%.1f KB"
 
 #: libgnomevfs/gnome-vfs-utils.c:95
 #, c-format
@@ -731,191 +727,192 @@ msgstr " (Unicode không hợp lệ)"
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:573
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:629
 msgid "Floppy"
-msgstr ""
+msgstr "Đĩa mềm"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:574
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:632
 msgid "CD-ROM"
-msgstr ""
+msgstr "CD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:576
 msgid "CD-R"
-msgstr ""
+msgstr "CD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:577
 msgid "CD-RW"
-msgstr ""
+msgstr "CD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:578
 msgid "DVD-ROM"
-msgstr ""
+msgstr "DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:579
 msgid "DVD-RAM"
-msgstr ""
+msgstr "DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:580
 msgid "DVD-R"
-msgstr ""
+msgstr "DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:581
 msgid "DVD-RW"
-msgstr ""
+msgstr "DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:582
 msgid "CD-ROM/DVD-ROM"
-msgstr ""
+msgstr "CD-ROM/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:583
 msgid "CD-ROM/DVD-RAM"
-msgstr ""
+msgstr "CD-ROM/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:584
 msgid "CD-ROM/DVD-R"
-msgstr ""
+msgstr "CD-ROM/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:585
 msgid "CD-ROM/DVD-RW"
-msgstr ""
+msgstr "CD-ROM/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:586
 msgid "CD-R/DVD-ROM"
-msgstr ""
+msgstr "CD-R/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:587
 msgid "CD-R/DVD-RAM"
-msgstr ""
+msgstr "CD-R/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:588
 msgid "CD-R/DVD-R"
-msgstr ""
+msgstr "CD-R/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:589
 msgid "CD-R/DVD-RW"
-msgstr ""
+msgstr "CD-R/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:590
 msgid "CD-RW/DVD-ROM"
-msgstr ""
+msgstr "CD-RW/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:591
 msgid "CD-RW/DVD-RAM"
-msgstr ""
+msgstr "CD-RW/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:592
 msgid "CD-RW/DVD-R"
-msgstr ""
+msgstr "CD-RW/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:593
 msgid "CD-RW/DVD-RW"
-msgstr ""
+msgstr "CD-RW/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:595
 msgid "Disk"
-msgstr ""
+msgstr "Đĩa"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:596
 msgid "USB Drive"
-msgstr ""
+msgstr "Ổ đĩa USB"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:597
 msgid "IEEE1394 Drive"
-msgstr ""
+msgstr "Ổ đĩa IEEE1394"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:598
 msgid "CF"
-msgstr ""
+msgstr "CF"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:599
 msgid "SD/MMC"
-msgstr ""
+msgstr "SD/MMC"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:600
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:604
 msgid "Memory Stick"
-msgstr ""
+msgstr "Thanh bộ nhớ"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:601
 msgid "Smart Media"
-msgstr ""
+msgstr "Smart Media"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:603
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:635
 msgid "Zip Drive"
-msgstr ""
+msgstr "Ổ đĩa Zip"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:605
 msgid "Camera"
-msgstr ""
+msgstr "Camera"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:606
 msgid "DVD"
-msgstr ""
+msgstr "DVD"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:822
 msgid "Root Volume"
-msgstr ""
+msgstr "Khối gốc"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:903
 msgid "Audio CD"
-msgstr ""
+msgstr "CD Nhạc"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:936
-#, fuzzy
 msgid "Unknown volume"
-msgstr "Lỗi lạ"
+msgstr "Khối lạ"
 
-#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1122
 msgid "Network server"
-msgstr ""
+msgstr "Máy chủ mạng"
 
 #. Handle floppy case
 #: libgnomevfs/gnome-vfs-volume-ops.c:112
 msgid ""
 "Unable to mount the floppy drive. There is probably no floppy in the drive."
-msgstr ""
+msgstr "Không thể gắn kết đĩa mềm. Có lẽ do không có đĩa mềm trong ổ đĩa."
 
 #. All others
 #: libgnomevfs/gnome-vfs-volume-ops.c:116
 msgid "Unable to mount the volume. There is probably no media in the device."
-msgstr ""
+msgstr "Không thể gắn kết khối. Có lẽ do không có đĩa trong thiết bị."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:122
 msgid ""
 "Unable to mount the floppy drive. The floppy is probably in a format that "
 "cannot be mounted."
 msgstr ""
+"Không thể gắn kết đĩa mềm. Có lẽ do đĩa dùng định dạng không thể gắn kết."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:125
 msgid ""
 "Unable to mount the selected volume. The volume is probably in a format that "
 "cannot be mounted."
 msgstr ""
+"Không thể gắn kết khối. Có lẽ do khối dùng định dạng không thể gắn kết."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:130
 msgid "Unable to mount the selected floppy drive."
-msgstr ""
+msgstr "Không thể gắn kết đĩa mềm đã chọn."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:132
 msgid "Unable to mount the selected volume."
-msgstr ""
+msgstr "Không thể gắn kết khối đã chọn."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:144
 msgid "Unable to unmount the selected volume."
-msgstr ""
+msgstr "Không thể bỏ gắn kết khối đã chọn."
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:256
 #: libgnomevfs/gnome-vfs-volume-ops.c:302
 msgid "Failed to start command"
-msgstr ""
+msgstr "Lỗi lệnh khởi động"
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:292
 msgid "Unable to eject media"
-msgstr ""
+msgstr "Không thể đẩy đĩa ra"
 
 #: libgnomevfs/gnome-vfs-volume-ops.c:481
 msgid "Unable to unmount connected server"
-msgstr ""
+msgstr "Không thể bỏ gắn kết máy chủ đã kết nối"
 
 #. Translate exactly the same in CDE's sys.dtwmrc file of the locale
 #: modules/cdemenu-desktop-method.c:175
@@ -969,33 +966,31 @@ msgstr "Cửa sổ"
 
 #: modules/computer-method.c:545
 msgid "Network"
-msgstr ""
+msgstr "Mạng"
 
 #: modules/computer-method.c:563
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: modules/computer-method.c:581
-#, fuzzy
 msgid "Filesystem"
-msgstr "Tập tin"
+msgstr "Hệ tập tin"
 
 #: modules/file-method.c:386
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Không biết GnomeVFSSeekPosition %d"
 
-#: modules/network-method.c:1395
-#, fuzzy
+#: modules/network-method.c:1396
 msgid "Windows Network"
-msgstr "Cửa sổ"
+msgstr "Mạng Windows"
 
-#: modules/sftp-method.c:1339
+#: modules/sftp-method.c:1346
 #, c-format
 msgid "The identity of the remote computer (%s) is unknown."
 msgstr ""
 
-#: modules/sftp-method.c:1340
+#: modules/sftp-method.c:1347
 #, c-format
 msgid ""
 "This happens when you log in to a computer the first time.\n"
@@ -1004,13 +999,13 @@ msgid ""
 "sure it is safe to continue, contact the system administrator."
 msgstr ""
 
-#: modules/sftp-method.c:1348
+#: modules/sftp-method.c:1355
 msgid "Log In Anyway"
 msgstr ""
 
-#: modules/sftp-method.c:1349
+#: modules/sftp-method.c:1356
 msgid "Cancel Login"
-msgstr ""
+msgstr "Hủy đăng nhập"
 
 #. FIXME: we probably shouldn't use printf to output the message
 #: modules/test-method.c:590

@@ -1,11 +1,19 @@
 <!-- ##### SECTION Title ##### -->
-gnome-vfs-inet-connection
+Internet connection
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Simple TCP/IP connection functions.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+A #GnomeVFSInetConnection represents a TCP/IP connection. You can either use
+#gnome_vfs_inet_connection_create which will use the #gnome_vfs_resolve DNS
+resolution functions internally or you can do the name resolution yourself
+and use #gnome_vfs_inet_connection_create_from_address to connect to a specific
+address.
+
+After a connection has been established all I/O is done through a GnomeVFSSocket
+or a GnomeVFSSocketBuffer.
 
 </para>
 

@@ -2,7 +2,7 @@
 
 Name:		gnome-vfs
 Summary:	The GNOME virtual file-system libraries
-Version:	2.8.0
+Version:	2.8.4
 Release:	1_cvs
 License:	LGPL
 Group:		System Environment/Libraries

@@ -58,6 +58,9 @@
 <ANCHOR id="gnome-vfs-uri-make-full-from-relative" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-make-full-from-relative">
 <ANCHOR id="gnome-vfs-20-gnome-vfs-utils" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html">
 <ANCHOR id="gnome-vfs-format-file-size-for-display" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-format-file-size-for-display">
+<ANCHOR id="gnome-vfs-format-uri-for-display" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-format-uri-for-display">
+<ANCHOR id="gnome-vfs-url-show" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-url-show">
+<ANCHOR id="gnome-vfs-url-show-with-env" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-url-show-with-env">
 <ANCHOR id="gnome-vfs-escape-string" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-string">
 <ANCHOR id="gnome-vfs-escape-path-string" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-path-string">
 <ANCHOR id="gnome-vfs-escape-host-and-path-string" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-host-and-path-string">
@@ -65,6 +68,7 @@
 <ANCHOR id="gnome-vfs-escape-set" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-set">
 <ANCHOR id="gnome-vfs-unescape-string" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-unescape-string">
 <ANCHOR id="gnome-vfs-make-uri-canonical" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-canonical">
+<ANCHOR id="gnome-vfs-make-uri-canonical-strip-fragment" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-canonical-strip-fragment">
 <ANCHOR id="gnome-vfs-make-path-name-canonical" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-path-name-canonical">
 <ANCHOR id="gnome-vfs-make-uri-from-input" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input">
 <ANCHOR id="gnome-vfs-make-uri-from-input-with-dirs" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input-with-dirs">
@@ -180,6 +184,8 @@
 <ANCHOR id="GnomeVFSAsyncReadCallback" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncReadCallback">
 <ANCHOR id="GnomeVFSAsyncWriteCallback" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncWriteCallback">
 <ANCHOR id="GnomeVFSFindDirectoryResult" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSFindDirectoryResult">
+<ANCHOR id="GnomeVFSAsyncFileControlCallback" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncFileControlCallback">
+<ANCHOR id="GnomeVFSAsyncSeekCallback" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncSeekCallback">
 <ANCHOR id="gnome-vfs-async-set-job-limit" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-set-job-limit">
 <ANCHOR id="gnome-vfs-async-get-job-limit" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-get-job-limit">
 <ANCHOR id="gnome-vfs-async-cancel" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-cancel">
@@ -195,6 +201,7 @@
 <ANCHOR id="gnome-vfs-async-close" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-close">
 <ANCHOR id="gnome-vfs-async-read" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-read">
 <ANCHOR id="gnome-vfs-async-write" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-write">
+<ANCHOR id="gnome-vfs-async-seek" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-seek">
 <ANCHOR id="gnome-vfs-async-get-file-info" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-get-file-info">
 <ANCHOR id="gnome-vfs-async-set-file-info" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-set-file-info">
 <ANCHOR id="gnome-vfs-async-load-directory" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-load-directory">
@@ -267,6 +274,7 @@
 <ANCHOR id="gnome-vfs-volume-type-get-type" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-type-get-type">
 <ANCHOR id="gnome-vfs-volume-unmount" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-unmount">
 <ANCHOR id="gnome-vfs-volume-unref" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-unref">
+<ANCHOR id="gnome-vfs-connect-to-server" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-connect-to-server">
 <ANCHOR id="gnome-vfs-20-gnome-vfs-drive" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html">
 <ANCHOR id="GnomeVFSDrive" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">
 <ANCHOR id="GnomeVFSDeviceType" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDeviceType">
@@ -288,6 +296,7 @@
 <ANCHOR id="gnome-vfs-drive-get-id" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-id">
 <ANCHOR id="gnome-vfs-drive-get-mounted-volume" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-mounted-volume">
 <ANCHOR id="gnome-vfs-drive-get-mounted-volumes" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-mounted-volumes">
+<ANCHOR id="gnome-vfs-drive-volume-list-free" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-volume-list-free">
 <ANCHOR id="gnome-vfs-drive-get-type" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-type">
 <ANCHOR id="gnome-vfs-drive-is-connected" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-is-connected">
 <ANCHOR id="gnome-vfs-drive-is-mounted" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-is-mounted">
@@ -336,6 +345,7 @@
 <ANCHOR id="gnome-vfs-dns-sd-resolve-sync" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-resolve-sync">
 <ANCHOR id="gnome-vfs-dns-sd-service-list-free" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-service-list-free">
 <ANCHOR id="gnome-vfs-dns-sd-list-browse-domains-sync" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-list-browse-domains-sync">
+<ANCHOR id="gnome-vfs-get-default-browse-domains" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-get-default-browse-domains">
 <ANCHOR id="gnome-vfs-20-gnome-vfs-resolve" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-resolve.html">
 <ANCHOR id="gnome-vfs-resolve" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-resolve.html#gnome-vfs-resolve">
 <ANCHOR id="gnome-vfs-resolve-free" href="gnome-vfs-2.0/gnome-vfs-20-gnome-vfs-resolve.html#gnome-vfs-resolve-free">

@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-standard-callbacks</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="next" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#id2682515" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#id2682525" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-parse-ls.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-module-callback.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-standard-callbacks"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-vfs-standard-callbacks</span></h2><p>gnome-vfs-standard-callbacks &#8212; standard callbacks for use by gnome-vfs module writers</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-standard-callbacks</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="prev" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="next" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-parse-ls.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-module-callback.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-standard-callbacks"></a><div class="titlepage"></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-vfs-standard-callbacks</span></h2><p>gnome-vfs-standard-callbacks &#8212; standard callbacks for use by gnome-vfs module writers</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
@@ -14,15 +44,15 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 #define     <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS">GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</a>
 struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackStatusMessageIn">GnomeVFSModuleCallbackStatusMessageIn</a>;
 struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModuleCallbackStatusMessageOut</a>;
-</pre></div><div class="refsect1" lang="en"><a name="id2682515"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2656667"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2682525"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2682530"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</h3><a class="indexterm" name="id2682544"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
+</p></div><div class="refsect1" lang="en"><a name="id2656676"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2656682"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</h3><a class="indexterm" name="id2656696"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682559"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</h3><a class="indexterm" name="id2682573"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656711"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</h3><a class="indexterm" name="id2656725"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682590"></a><h3><a name="GnomeVFSModuleCallbackAuthenticationOut"></a>struct GnomeVFSModuleCallbackAuthenticationOut</h3><a class="indexterm" name="id2682603"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAuthenticationOut {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656741"></a><h3><a name="GnomeVFSModuleCallbackAuthenticationOut"></a>struct GnomeVFSModuleCallbackAuthenticationOut</h3><a class="indexterm" name="id2656755"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAuthenticationOut {
 
 	char *username;		/* will be freed by g_free,
 				 * NULL indicates no auth should be provided;
@@ -39,10 +69,10 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682625"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</h3><a class="indexterm" name="id2682638"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS "http:send-additional-headers"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656777"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</h3><a class="indexterm" name="id2656790"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS "http:send-additional-headers"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682656"></a><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersIn"></a>struct GnomeVFSModuleCallbackAdditionalHeadersIn</h3><a class="indexterm" name="id2682669"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAdditionalHeadersIn {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656807"></a><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersIn"></a>struct GnomeVFSModuleCallbackAdditionalHeadersIn</h3><a class="indexterm" name="id2656821"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAdditionalHeadersIn {
 
 	GnomeVFSURI *uri;		/* URI of operation */
 
@@ -52,7 +82,7 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682687"></a><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersOut"></a>struct GnomeVFSModuleCallbackAdditionalHeadersOut</h3><a class="indexterm" name="id2682701"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAdditionalHeadersOut {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656839"></a><h3><a name="GnomeVFSModuleCallbackAdditionalHeadersOut"></a>struct GnomeVFSModuleCallbackAdditionalHeadersOut</h3><a class="indexterm" name="id2656852"></a><pre class="programlisting">struct GnomeVFSModuleCallbackAdditionalHeadersOut {
 
 	GList *headers;			/* list of headers, will be freeed */
 
@@ -62,10 +92,10 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682719"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</h3><a class="indexterm" name="id2682732"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS "http:received-headers"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656871"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</h3><a class="indexterm" name="id2656884"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS "http:received-headers"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682749"></a><h3><a name="GnomeVFSModuleCallbackReceivedHeadersIn"></a>struct GnomeVFSModuleCallbackReceivedHeadersIn</h3><a class="indexterm" name="id2682763"></a><pre class="programlisting">struct GnomeVFSModuleCallbackReceivedHeadersIn {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656901"></a><h3><a name="GnomeVFSModuleCallbackReceivedHeadersIn"></a>struct GnomeVFSModuleCallbackReceivedHeadersIn</h3><a class="indexterm" name="id2656914"></a><pre class="programlisting">struct GnomeVFSModuleCallbackReceivedHeadersIn {
 
 	GnomeVFSURI *uri;		/* URI of operation */
 	GList *headers;			/* list of headers */
@@ -76,7 +106,7 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682781"></a><h3><a name="GnomeVFSModuleCallbackReceivedHeadersOut"></a>struct GnomeVFSModuleCallbackReceivedHeadersOut</h3><a class="indexterm" name="id2682795"></a><pre class="programlisting">struct GnomeVFSModuleCallbackReceivedHeadersOut {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656933"></a><h3><a name="GnomeVFSModuleCallbackReceivedHeadersOut"></a>struct GnomeVFSModuleCallbackReceivedHeadersOut</h3><a class="indexterm" name="id2656947"></a><pre class="programlisting">struct GnomeVFSModuleCallbackReceivedHeadersOut {
 
 	int dummy;
 
@@ -86,10 +116,10 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682812"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</h3><a class="indexterm" name="id2682826"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656964"></a><h3><a name="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"></a>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</h3><a class="indexterm" name="id2656978"></a><pre class="programlisting">#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682841"></a><h3><a name="GnomeVFSModuleCallbackStatusMessageIn"></a>struct GnomeVFSModuleCallbackStatusMessageIn</h3><a class="indexterm" name="id2682855"></a><pre class="programlisting">struct GnomeVFSModuleCallbackStatusMessageIn {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2656993"></a><h3><a name="GnomeVFSModuleCallbackStatusMessageIn"></a>struct GnomeVFSModuleCallbackStatusMessageIn</h3><a class="indexterm" name="id2657007"></a><pre class="programlisting">struct GnomeVFSModuleCallbackStatusMessageIn {
 
 	char *uri;		/* Full URI of operation */
 	char *message;		/* A message indicating the current state or
@@ -104,7 +134,7 @@ struct      <a href="gnome-vfs-20-gnome-vfs-standard-callbacks.html#GnomeVFSModu
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2682877"></a><h3><a name="GnomeVFSModuleCallbackStatusMessageOut"></a>struct GnomeVFSModuleCallbackStatusMessageOut</h3><a class="indexterm" name="id2682890"></a><pre class="programlisting">struct GnomeVFSModuleCallbackStatusMessageOut {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2657028"></a><h3><a name="GnomeVFSModuleCallbackStatusMessageOut"></a>struct GnomeVFSModuleCallbackStatusMessageOut</h3><a class="indexterm" name="id2657042"></a><pre class="programlisting">struct GnomeVFSModuleCallbackStatusMessageOut {
 
 	int dummy; /* empty structs not allowed */
 

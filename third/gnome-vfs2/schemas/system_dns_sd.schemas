@@ -18,8 +18,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Как да се показва местна DNS-SD услуга</short>
-        <long>Възможни стойности са &quot;слети&quot;, &quot;отделни&quot; и &quot;изключено&quot;.</long>
+        <short>Как да се показва локална услуга от тип DNS-SD</short>
+        <long>Възможни стойности са &quot;слети&quot;, &quot;отделени&quot; и &quot;изключено&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -87,6 +87,11 @@
         <long>Les valeurs possibles sont « merged », « separate » and « disabled ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Como visualizar o servizo DNS-SD local</short>
+        <long>Os valores posibles son &quot;merged&quot; (xunto), &quot;separate&quot; (separado) ou &quot;disabled&quot; (deshabilitado).</long>
+      </locale>
+
       <locale name="gu">
         <short>કેવી રીતે સ્થાનિક DNS-SD સેવા પ્રદર્શિત કરવી</short>
         <long>&quot;ભેગું થયેલ&quot;, &quot;અલગ&quot; અને &quot;નિષ્ક્રિય&quot; શક્ય કિંમતો છે.</long>
@@ -115,6 +120,11 @@
       <locale name="lt">
         <short>Kaip rodyti vietinę DNS-SD paslaugą</short>
         <long>Galimos reikšmės yra „merged“, „separate“ ir „disabled“.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Како да ги прикаже локалните DNS-SD сервиси</short>
+        <long>Можни вредности се &quot;припоено&quot;, &quot;одделено&quot; и &quot;искулучено&quot;.</long>
       </locale>
 
       <locale name="mn">
@@ -152,6 +162,11 @@
         <long>Mulige verdier er «merged», «separate» og «disabled».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Kamoo o ka bonagatšago tirelo ya mo gae ya DNS-SD</short>
+        <long>Boleng bjo ke  &quot;merged&quot;, &quot;separate&quot; le &quot;disabled&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਥਾਨਿਕ DNS-SD ਸੇਵਾ ਨੂੰ ਕਿਵੇਂ ਵੇਖਣਾ ਹੈ</short>
         <long>ਸੰਭਵ ਮੁੱਲ ਹਨ &quot;merged&quot;, &quot;separate&quot; ਅਤੇ &quot;disabled&quot;.</long>
@@ -180,6 +195,11 @@
       <locale name="ru">
         <short>Как отображать локальный сервис типа DNS-SD</short>
         <long>Возможные значения &quot;merged&quot; (&quot;совместные&quot;), &quot;separate&quot; (&quot;раздельные&quot;) и &quot;disabled&quot; (&quot;отключено&quot;).</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Ako sa má zobraziť miestna služba DNS SD</short>
+        <long>Prípustné hodnoty sú &quot;merged&quot;, &quot;separate&quot; a &quot;disabled&quot;.</long>
       </locale>
 
       <locale name="sq">
@@ -226,6 +246,11 @@
         <short>如何顯示本地端的 DNS-SD 服務</short>
         <long>可能值為 “merged”,“separate”以及“disabled”。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Utshengisa kanjani izisebenzisi zei-DNS-SD zasendaweni</short>
+        <long>Amanani anganzeka ilawa &quot;hlangana&quot;, &quot;hlukene&quot; kanye &quot;khininda&quot;.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/dns_sd/extra_domains</key>
@@ -245,8 +270,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Допълнителни домейни, в които да се търсят dns-sd услуги</short>
-        <long>Разделен чрез запетаи списък от dns-sd домейни, които трябва да са видими в мрежата.</long>
+        <short>Допълнителни домейни, в които да се търсят услуги от тип dns-sd</short>
+        <long>Списък от домейни тип dns-sd, разделени със запетаи, които трябва да са видими в мрежата.</long>
       </locale>
 
       <locale name="bs">
@@ -314,18 +339,23 @@
         <long>Liste des domaines dns-sd séparés par une virgule, qui doivent être visible dans l&apos;emplacement réseau</long>
       </locale>
 
+      <locale name="gl">
+        <short>Dominios extra onde procurar servizos dns-sd</short>
+        <long>Lista separada por comas dos dominios dns-sd que deben ser visibles na localización de rede.</long>
+      </locale>
+
       <locale name="gu">
         <short>આમાં dns-sd સેવાઓ માટે જોવા માટે વધારાના ડોમેઈનો</short>
         <long>અલ્પવિરામથી છુટી પડેલી dns-sd ડોમેઈનોની યાદીઓ નેટવર્કની જગ્યામાં દ્રશ્યમાન થશે.</long>
       </locale>
 
       <locale name="hu">
-        
+        <short>Extra tartományok a dns-sd szolgáltatások kereséséhez</short>
         <long>A hálózati helyen látható dns-sd tartományok vesszővel elválasztott listája.</long>
       </locale>
 
       <locale name="it">
-        
+        <short>Domini aggiuntivi da interrogare per servizi dns-sd</short>
         <long>Elenco separato da virgole di domini dns-sd che dovrebbero essere visibili nella posizione network://.</long>
       </locale>
 
@@ -342,6 +372,11 @@
       <locale name="lt">
         <short>Papildomi domenai, kuriuose irgi ieškoti dns-sd paslaugų</short>
         <long>Kableliu atskirtų dns-sd domenų, kurie turėtų būti matomi tinklo vietoje, sąrašas.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Екстра домени за пребарување на dns-sd сервиси</short>
+        
       </locale>
 
       <locale name="mn">
@@ -379,6 +414,11 @@
         <long>Kommaseparert liste med dns-sd-domener som skal være synlige i nettverkslokasjonen.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Maina a oketšegilego a go ka lebelela ditirelo tša dns-sd go ona</short>
+        <long>Lelokelelo la maina a dns-sd leo le arotšwego ka fegelwana leo le swanetšego go bonagala lefelong la neteweke.</long>
+      </locale>
+
       <locale name="pa">
         <short>dns-sd ਸੇਵਾਵਾਂ ਵਿੱਚ ਵਾਧੂ ਡੋਮੇਨਾਂ ਦੀ ਖੋਜ</short>
         <long>dns-sd ਡੋਮੇਨ ਦੀ ਕਾਮਿਆਂ ਨਾਲ ਵੱਖ ਕੀਤੀ ਸੂਚੀ ਜੋ ਕਿ ਨੈੱਟਵਰਕ ਵਿੱਚ ਉਪਲੱਬਧ ਹੋਣੀ ਲਾਜ਼ਮੀ ਹੈ </long>
@@ -407,6 +447,11 @@
       <locale name="ru">
         <short>Дополнительные домены, в которых осуществлять поиск сервисов типа dns-sd</short>
         <long>Разделённый запятыми список доменов типа dns-sd, которые должны быть видимы в сети.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Ďalšie domény, v ktorých sa majú hľadať služby dnd-sd</short>
+        <long>Čiarkou oddelený zoznam dns-sd domén, ktoré majú byť viditeľné v sieťovom umiestnení.</long>
       </locale>
 
       <locale name="sq">
@@ -452,6 +497,11 @@
       <locale name="zh_TW">
         <short>找尋 dns-sd 服務的額外網域</short>
         <long>在網路位置應該可見的 dns-sd 領域列表，以逗號區隔。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Izindawo ezangezelelwe zokufuna izisebenzisi zedns-sd ku</short>
+        <long>Ikhefana elahlukanise uhlu lwendawo yo-dns-sd okufanele ibonakela esabelweni solwembu.</long>
       </locale>
     </schema>
   </schemalist>

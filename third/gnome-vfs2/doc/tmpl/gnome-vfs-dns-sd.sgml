@@ -156,3 +156,11 @@ Gets information about available Zeroconf (aka <trademark>RendezVous</trademark>
 @Returns: 
 
 
+<!-- ##### FUNCTION gnome_vfs_get_default_browse_domains ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

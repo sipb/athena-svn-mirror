@@ -33,7 +33,7 @@
       </locale>
 
       <locale name="bg">
-        <short>Стандартна конзолна програма</short>
+        <short>Стандартна програма за терминал</short>
         <long>Стандартната конзолна програма да се използва за програми, които изискват конзола.</long>
       </locale>
 
@@ -107,9 +107,14 @@
         <long>L&apos;application terminal par défaut à utiliser pour les applications qui nécessite un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Aplicación de terminal por defecto</short>
+        <long>A aplicación de terminal por defecto usada para os programas que precisan dun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>મૂળભૂત ટર્મિનલ કાર્યક્રમ</short>
-        <long>કાર્યક્રમનો ઉપોયગ કરવા માટે મૂળભૂત ટર્મિનલ કાર્યક્રમ કે જેના માટે ટર્મિનલજરુરી છે.</long>
+        <long>કાર્યક્રમનો ઉપયોગ કરવા માટે મૂળભૂત ટર્મિનલ કાર્યક્રમ કે જેના માટે ટર્મિનલ જરુરી છે.</long>
       </locale>
 
       <locale name="he">
@@ -129,7 +134,7 @@
 
       <locale name="hu">
         <short>Alapértelmezett terminál alkalmazás</short>
-        
+        <long>A terminált igénylő alkalmazásokhoz használandó alapértelmezett terminál.</long>
       </locale>
 
       <locale name="id">
@@ -155,6 +160,11 @@
       <locale name="lt">
         <short>Standartinė terminalo programa</short>
         <long>Įprasta terminalo programa, naudojama su programomis, kurioms reikia terminalo.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Стандардна апликација за терминал</short>
+        <long>Стандардната апликација која што ќе се користи како терминал за апликациите кои имаат потреба од терминал.</long>
       </locale>
 
       <locale name="mn">
@@ -192,6 +202,11 @@
         <long>Forvalgt terminalprogram som skal brukes for programmer som krever en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dira gore tirišo ya kgokagano ya dithapo e hlaelele</short>
+        <long>Tirišo ya kgokagano ya dithapo e hlaelelago yeo e tla dirišwagoo bakeng sa ditirišo tšeo di nyakago kgokagano ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਮੂਲ ਟਰਮੀਨਲ ਕਾਰਜ</short>
         <long>ਮੂਲ ਟਰਮੀਨਲ ਕਾਰਜ ਜੋ ਕਿ ਕਾਰਜਾਂ ਲਈ ਵਰਤਣਾ ਹੈ ਜੋਕਿ ਟਰਮੀਨਲ ਦੀ ਮੰਗ ਕਰਦੇ ਹਨ ।</long>
@@ -218,8 +233,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Исходное терминальное приложение</short>
-        <long>Исходное терминальное приложение, используемое приложениями, нуждающимися в терминале.</long>
+        <short>Приложение терминала по умолчанию</short>
+        <long>Приложение терминала, используемое по умолчанию приложениями, нуждающимися в терминале.</long>
       </locale>
 
       <locale name="sk">
@@ -281,6 +296,11 @@
         <short>預設的終端機程式</short>
         <long>需要使用終端機的應用程式所使用的預設終端機程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Iphutha lesigungu sokusetshenziswa</short>
+        <long>Iphutha lesisebenzisi esigungwini sokusebenzisa izisebenzisi ezidinga isigungu.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/applications/terminal/exec_arg</key>
@@ -314,7 +334,7 @@
       </locale>
 
       <locale name="bg">
-        <short>Exec аргумента за стандартната конзола</short>
+        <short>Аргументът exec за стандартната програма за терминал</short>
         
       </locale>
 
@@ -388,6 +408,11 @@
         <long>L&apos;argument d&apos;exécution à utiliser pour l&apos;application de terminal par défaut.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Instrución para o terminal por defecto</short>
+        <long>A instrución que se executará para a aplicación de terminal por defecto.</long>
+      </locale>
+
       <locale name="gu">
         <short>મૂળભૂત ટર્મિનલ માટે ચલાવવાની દલીલ</short>
         <long>મૂળભૂત ટર્મિનલ કાર્યક્રમ માટે exec દલીલનો ઉપયોગ કરવાનો છે.</long>
@@ -438,6 +463,11 @@
         <long>Argumentas naudojamas paleidžiant įprasta terminalo programą.</long>
       </locale>
 
+      <locale name="mk">
+        <short>Exec аргумент за стандарден терминал</short>
+        
+      </locale>
+
       <locale name="mn">
         <short>Стандарт терминалын хувьд аргументыг гүйцэтгэ</short>
         <long>Стандарт терминалын хувьд гүйцэтгэх аргумент.</long>
@@ -473,6 +503,11 @@
         <long>Kjøringsargument som skal brukes for forvalgt terminalprogram.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ngangišano ya kgonthe bakeng sa kgokagano ya dithapo e hlaelelago</short>
+        <long>Ngangišano ya kgonthe ya go dirišetšwa tirišo ya kgokagano ya dithapo e hlaelelago.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਮੂਲ ਟਰਮੀਨਲ ਲਈ Exec ਆਰਗੂਮਿੰਟ</short>
         <long>ਮੂਲ ਟਰਮੀਨਲ ਕਾਰਜ ਵਿੱਚ ਵਰਤਣ ਲਈ Exec ਆਰਗੂਮਿੰਟ</long>
@@ -499,8 +534,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Аргуметы выполнения для исходного терминала</short>
-        <long>Аргумент выполнения, использующийся исходным терминальным приложением.</long>
+        <short>Аргумент exec для терминала по умолчанию</short>
+        <long>Аргумент exec, использующийся приложением терминала по умолчанию.</long>
       </locale>
 
       <locale name="sk">
@@ -561,6 +596,11 @@
       <locale name="zh_TW">
         <short>預設終端機的 Exec 參數</short>
         <long>預設終端機程式所使用的 exec 參數。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa umgomo wephutha lesigungu</short>
+        <long>Umgomo osetshenziswa ukusebenzisa iphutha lesigungu sesisebenziso.</long>
       </locale>
     </schema>
     <schema>
@@ -669,9 +709,14 @@
         <long>L&apos;application à utiliser pour visualiser les fichiers qui necessitent un composant pour les voir. Le paramètre %s sera remplacé par l&apos;URI du fichier, le paramètre %c sera remplacé par le composant IID.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Aplicación por defecto para visualización de compoñentes</short>
+        <long>A aplicación usada para ver ficheiros que precisan dun compoñente para os visualizar. O parámetro %s substitúese polos URIs do ficheiro, e o parámetro %c polo IID do compoñente.</long>
+      </locale>
+
       <locale name="gu">
         <short>મૂળભૂત ભાગો દેખાડનાર કાર્યક્રમ</short>
-        <long>ફાઇલોને જોવા માટે ઉપયોગમાં લેવાતા કાર્યક્રમ માટે તેને જોવા માટે ભાગ જરુરી છે. પરિમાણ %s ફાઇલના URIs થી બદલાઇ જશે, પરિમાણ %c ભાગIID થી બદલાઇ જશે.</long>
+        <long>ફાઇલોને જોવા માટે ઉપયોગમાં લેવાતા કાર્યક્રમ માટે તેને જોવા માટે ભાગ જરુરી છે. પરિમાણ %s ફાઇલના URI થી બદલાઇ જશે, પરિમાણ %c ભાગI ID થી બદલાઇ જશે.</long>
       </locale>
 
       <locale name="he">
@@ -691,7 +736,7 @@
 
       <locale name="hu">
         <short>Alapértelmezett komponensnéző alkalmazás</short>
-        
+        <long>Az azon fájlok megtekintésére használt alkalmazás, amelyek megtekintéséhez egy összetevő szükséges. A %s paraméter a fájl URI-jére, a %c az összetevő IID-jére lesz cserélve.</long>
       </locale>
 
       <locale name="id">
@@ -717,6 +762,11 @@
       <locale name="lt">
         <short>Įprastakomponentų peržiūros programa</short>
         <long>Programa naudojama peržiūrėti bylas, kurios reikalauja specialaus peržiūros komponento. Parametras %s bus pakeistas bylos adresu, parametras %c bus pakeistas komponento IID.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Стандардна апликација за преглед на содржина</short>
+        <long>Апликацијата што ќе се користи за преглед на датотеки кои што имаат потреба од компонента за преглед. Параметарот %s ќе биде заменет од страна на URI, параметрот %c ќе биде заменете од IID на компонентата.</long>
       </locale>
 
       <locale name="mn">
@@ -754,6 +804,11 @@
         <long>Applikasjon som skal brukes for å vise filer som krever en komponent for visning. Parameteren %s vil erstattes med filens URIer, parameteren %c vil erstattes med komponentens IID.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dira gore tirišo ya karolo ya go lebelela e hlaelele</short>
+        <long>Tirišo yeo e tla dirišetšwago go lebelela difaele tšeo di nyakago thušo gore o di lebelele. Ditekanyo tša %s di tla tšeelwa legato ke di-STS tša faele, tekanyo ya %c e tla tšeelwa legato ke thušo ya IID.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਮੂਲ ਭਾਗ ਦਰਸ਼ਕ ਕਾਰਜ</short>
         <long>ਫਾਇਲਾਂ ਨੂੰ ਵੇਖਣ ਲਈ ਵਰਤਣ ਵਾਲਾ ਕਾਰਜ ਜੋ ਕਿ ਹਿੱਸੇ ਵੇਖਣ ਦੇ ਲਈ ਜ਼ਰੂਰੀ ਹੈ ।ਪੈਰਾਮੀਟਰ %s ਨੂੰ ਫਾਇਲ ਦੇ ਯੂਆਰਐਲ਼ ਨਾਲ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ । ਪੈਰਾਮੀਟਰ %c ਨੂੰ ਹਿੱਸੇ IID ਨਾਲ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ ।</long>
@@ -780,8 +835,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Исходное приложения просмотра компонентов</short>
-        <long>Приложение, используемое для просмотра файлов, требующих компонента для просмотра. Параметр %s будет заменён адресом (URI) файла, параметр %c - идентификатором (IID) rjvgjytynf.</long>
+        <short>Приложение просмотра компонентов по умолчанию</short>
+        <long>Приложение, используемое для просмотра файлов, требующих компонента для просмотра. Параметр %s будет заменён адресом (URI) файла, параметр %c - идентификатором (IID) компонента.</long>
       </locale>
 
       <locale name="sk">
@@ -842,6 +897,11 @@
       <locale name="zh_TW">
         <short>預設的元件檢示程式</short>
         <long>用作檢視檔案的應用程式需要有一個元件來檢視它們。參數 %s 會被檔案的 URIs 所取代，參數 %c 會被元件 IID 所取代。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Iphutha lesitho sokusetshenziswa sokubuka</short>
+        <long>Isisebenziso sokubona ohele abadinga isitho sokubabona. Isigamu %s sizokubuyiselwa ngehele URIs, isigamu %c sizokubuyiselwa ngesitho IID.</long>
       </locale>
     </schema>
   </schemalist>

@@ -10,6 +10,7 @@ INCLUDES =					\
 	$(HOWL_CFLAGS)				\
 	$(LIBEFS_CFLAGS)			\
 	$(SAMBA_CFLAGS)				\
+	$(GSSAPI_CFLAGS)			\
 	$(VFS_CFLAGS)				\
 	-D_FILE_OFFSET_BITS=64			\
 	-D_BSD_SOURCE				\

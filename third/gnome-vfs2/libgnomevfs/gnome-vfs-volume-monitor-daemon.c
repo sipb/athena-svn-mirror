@@ -851,7 +851,7 @@ create_vol_from_mount (GnomeVFSVolumeMonitor *volume_monitor, GnomeVFSUnixMount 
 
 	vol->priv->volume_type = GNOME_VFS_VOLUME_TYPE_MOUNTPOINT;
 	vol->priv->device_path = g_strdup (mount->device_path);
-	vol->priv->unix_device = _gnome_vfs_unix_mount_get_unix_device (mount);
+	vol->priv->unix_device = 0;  /* Caller must fill in.  */
 	vol->priv->activation_uri = gnome_vfs_get_uri_from_local_path (mount->mount_path);
 	vol->priv->filesystem_type = g_strdup (mount->filesystem_type);
 	vol->priv->is_read_only = mount->is_read_only;
@@ -981,9 +981,8 @@ static void
 update_mtab_volumes (GnomeVFSVolumeMonitorDaemon *volume_monitor_daemon)
 {
 	GList *new_mtab;
-	GList *removed, *added;
-	GList *l;
-	GnomeVFSUnixMount *mount;
+	GList *removed, *added, *devices;
+	GList *l, *ld;
 	char *uri;
 	GnomeVFSVolume *vol;
 	GnomeVFSVolumeMonitor *volume_monitor;
@@ -998,7 +997,7 @@ update_mtab_volumes (GnomeVFSVolumeMonitorDaemon *volume_monitor_daemon)
 				   &added, &removed);
 
 		for (l = removed; l != NULL; l = l->next) {
-			mount = l->data;
+			GnomeVFSUnixMount *mount = l->data;
 			uri = gnome_vfs_get_uri_from_local_path (mount->mount_path);
 
 			vol = _gnome_vfs_volume_monitor_find_mtab_volume_by_activation_uri (volume_monitor, uri);
@@ -1011,15 +1010,22 @@ update_mtab_volumes (GnomeVFSVolumeMonitorDaemon *volume_monitor_daemon)
 
 			g_free (uri);
 		}
-		
-		for (l = added; l != NULL; l = l->next) {
-			mount = l->data;
+
+		devices = _gnome_vfs_unix_mount_get_unix_device (added);
+
+		for (l = added, ld = devices;
+		     l != NULL;
+		     l = l->next, ld = ld->next) {
+			GnomeVFSUnixMount *mount = l->data;
+			dev_t unix_device = GPOINTER_TO_UINT (ld->data);
 		
 			vol = create_vol_from_mount (volume_monitor, mount);
+			vol->priv->unix_device = unix_device;
 			_gnome_vfs_volume_monitor_mounted (volume_monitor, vol);
 			gnome_vfs_volume_unref (vol);
 		}
-		
+
+		g_list_free (devices);
 		g_list_free (added);
 		g_list_free (removed);
 		g_list_foreach (volume_monitor_daemon->last_mtab,

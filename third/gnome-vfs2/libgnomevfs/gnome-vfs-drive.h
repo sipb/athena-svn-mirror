@@ -89,7 +89,7 @@ void gnome_vfs_drive_mount   (GnomeVFSDrive             *drive,
 void gnome_vfs_drive_unmount (GnomeVFSDrive             *drive,
 			      GnomeVFSVolumeOpCallback   callback,
 			      gpointer                   user_data);
-void gnome_vfs_drive_eject   (GnomeVFSDrive             *volume,
+void gnome_vfs_drive_eject   (GnomeVFSDrive             *drive,
 			      GnomeVFSVolumeOpCallback   callback,
 			      gpointer                   user_data);
 

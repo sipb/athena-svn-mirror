@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 09:57+0200\n"
-"PO-Revision-Date: 2004-09-12 12:21+0200\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
+"POT-Creation-Date: 2004-12-23 13:09+0100\n"
+"PO-Revision-Date: 2004-12-23 18:18+0100\n"
+"Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,79 +34,79 @@ msgstr "Nem lehet inicializálni a gnome-vfs-t"
 msgid "File could not be opened: %s"
 msgstr "Nem lehet megnyitni a fájlt: %s"
 
-#: libgnomevfs/eggdesktopentries.c:328
+#: libgnomevfs/eggdesktopentries.c:324
 #, c-format
 msgid "Failed to open file '%s': %s"
-msgstr "A(z) '%s' fájl megnyitása sikertelen: %s"
+msgstr "Nem sikerült megnyitni a(z) '%s' fájlt: %s"
 
-#: libgnomevfs/eggdesktopentries.c:341
+#: libgnomevfs/eggdesktopentries.c:337
 msgid "File is empty"
 msgstr "A fájl üres"
 
-#: libgnomevfs/eggdesktopentries.c:363
+#: libgnomevfs/eggdesktopentries.c:359
 #, c-format
 msgid "Failed to read from file '%s': %s"
 msgstr "A(z) '%s' fájl olvasása sikertelen: %s"
 
-#: libgnomevfs/eggdesktopentries.c:575
+#: libgnomevfs/eggdesktopentries.c:572
 #, c-format
 msgid ""
 "desktop entries contain line '%s' which is not an entry, group, or comment"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:648
+#: libgnomevfs/eggdesktopentries.c:645 libgnomevfs/eggdesktopentries.c:670
 msgid "desktop entries file does not start with legal start group"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:705
+#: libgnomevfs/eggdesktopentries.c:711
 #, c-format
 msgid "desktop entries contain line '%s' which is not UTF-8"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:728
+#: libgnomevfs/eggdesktopentries.c:734
 #, c-format
 msgid "desktop entries contain unknown encoding '%s'"
 msgstr "a munkaasztal-bejegyzések ismeretlen '%s' kódolást tartalmaznak"
 
-#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
-#: libgnomevfs/eggdesktopentries.c:1215
+#: libgnomevfs/eggdesktopentries.c:924 libgnomevfs/eggdesktopentries.c:1036
+#: libgnomevfs/eggdesktopentries.c:1221
 #, c-format
 msgid "desktop entries do not have group '%s'"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:1042
+#: libgnomevfs/eggdesktopentries.c:1048
 #, c-format
 msgid "desktop entries do not have key '%s'"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
-#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#: libgnomevfs/eggdesktopentries.c:1104 libgnomevfs/eggdesktopentries.c:1277
+#: libgnomevfs/eggdesktopentries.c:1419 libgnomevfs/eggdesktopentries.c:1544
 #, c-format
 msgid ""
 "desktop entries contain key '%s' which has value that cannot be interpreted."
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:1296
+#: libgnomevfs/eggdesktopentries.c:1302
 #, c-format
 msgid ""
 "desktop entries contain no translated value for key '%s' with locale '%s'."
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2229
+#: libgnomevfs/eggdesktopentries.c:2235
 #, c-format
 msgid "desktop entries contain invalid escape sequence '%s'"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2246
+#: libgnomevfs/eggdesktopentries.c:2252
 msgid "desktop entries contain escape character at end of line"
 msgstr ""
 
-#: libgnomevfs/eggdesktopentries.c:2271
+#: libgnomevfs/eggdesktopentries.c:2277
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "A(z) '%s' értéket nem lehet számként értelmezni."
 
-#: libgnomevfs/eggdesktopentries.c:2298
+#: libgnomevfs/eggdesktopentries.c:2304
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "A(z) '%s' értéket nem lehet logikai értékként értelmezni."
@@ -413,28 +413,28 @@ msgid "Operation stopped"
 msgstr "A művelet leállítva"
 
 #: libgnomevfs/gnome-vfs-mime-handlers.c:83
-#: libgnomevfs/gnome-vfs-mime-handlers.c:305
-#: libgnomevfs/gnome-vfs-mime-handlers.c:356
-#: libgnomevfs/gnome-vfs-mime-handlers.c:650
-#: libgnomevfs/gnome-vfs-mime-handlers.c:669
-#: libgnomevfs/gnome-vfs-mime-handlers.c:687
-#: libgnomevfs/gnome-vfs-mime-handlers.c:706
-#: libgnomevfs/gnome-vfs-mime-handlers.c:725
-#: libgnomevfs/gnome-vfs-mime-handlers.c:866
-#: libgnomevfs/gnome-vfs-mime-handlers.c:888
-#: libgnomevfs/gnome-vfs-mime-handlers.c:907
-#: libgnomevfs/gnome-vfs-mime-handlers.c:926
-#: libgnomevfs/gnome-vfs-mime-handlers.c:979
-#: libgnomevfs/gnome-vfs-mime-handlers.c:996
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
-#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
-#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
-#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
-#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
-#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
-#: libgnomevfs/gnome-vfs-mime-info.c:730
+#: libgnomevfs/gnome-vfs-mime-handlers.c:312
+#: libgnomevfs/gnome-vfs-mime-handlers.c:363
+#: libgnomevfs/gnome-vfs-mime-handlers.c:657
+#: libgnomevfs/gnome-vfs-mime-handlers.c:676
+#: libgnomevfs/gnome-vfs-mime-handlers.c:694
+#: libgnomevfs/gnome-vfs-mime-handlers.c:713
+#: libgnomevfs/gnome-vfs-mime-handlers.c:732
+#: libgnomevfs/gnome-vfs-mime-handlers.c:873
+#: libgnomevfs/gnome-vfs-mime-handlers.c:895
+#: libgnomevfs/gnome-vfs-mime-handlers.c:914
+#: libgnomevfs/gnome-vfs-mime-handlers.c:933
+#: libgnomevfs/gnome-vfs-mime-handlers.c:986
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1003
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1020
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1038
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1056
+#: libgnomevfs/gnome-vfs-mime-info.c:648 libgnomevfs/gnome-vfs-mime-info.c:655
+#: libgnomevfs/gnome-vfs-mime-info.c:663 libgnomevfs/gnome-vfs-mime-info.c:670
+#: libgnomevfs/gnome-vfs-mime-info.c:678 libgnomevfs/gnome-vfs-mime-info.c:695
+#: libgnomevfs/gnome-vfs-mime-info.c:702 libgnomevfs/gnome-vfs-mime-info.c:709
+#: libgnomevfs/gnome-vfs-mime-info.c:716 libgnomevfs/gnome-vfs-mime-info.c:724
+#: libgnomevfs/gnome-vfs-mime-info.c:731
 msgid ""
 "Deprecated function.  User modifications to the MIME database are no longer "
 "supported."
@@ -868,7 +868,7 @@ msgstr "Audio CD"
 msgid "Unknown volume"
 msgstr "Ismeretlen kötet"
 
-#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1122
 msgid "Network server"
 msgstr "Hálózati kiszolgáló"
 
@@ -995,16 +995,16 @@ msgstr "Fájlrendszer"
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Ismeretlen GnomeVFSSeekPosition %d"
 
-#: modules/network-method.c:1395
+#: modules/network-method.c:1396
 msgid "Windows Network"
 msgstr "Windows hálózat"
 
-#: modules/sftp-method.c:1339
+#: modules/sftp-method.c:1346
 #, c-format
 msgid "The identity of the remote computer (%s) is unknown."
 msgstr "A távoli számítógép (%s) azonosítója ismeretlen."
 
-#: modules/sftp-method.c:1340
+#: modules/sftp-method.c:1347
 #, c-format
 msgid ""
 "This happens when you log in to a computer the first time.\n"
@@ -1017,11 +1017,11 @@ msgstr ""
 "A távoli számítógép által küldött azonosító %s. Ha teljesen biztos akar "
 "lenni, hogy ez biztonságos, lépjen kapcsolatba a rendszergazdával."
 
-#: modules/sftp-method.c:1348
+#: modules/sftp-method.c:1355
 msgid "Log In Anyway"
 msgstr "Bejelentkezés mindenképpen"
 
-#: modules/sftp-method.c:1349
+#: modules/sftp-method.c:1356
 msgid "Cancel Login"
 msgstr "Bejelentkezés megszakítása"
 
@@ -1071,12 +1071,16 @@ msgid ""
 "them. The parameter %s will be replaced by the file's URIs, the parameter %c "
 "will be replaced by the component IID."
 msgstr ""
+"Az azon fájlok megtekintésére használt alkalmazás, amelyek megtekintéséhez "
+"egy összetevő szükséges. A %s paraméter a fájl URI-jére, a %c az összetevő "
+"IID-jére lesz cserélve."
 
 #: schemas/desktop_default_applications.schemas.in.h:6
 msgid ""
 "The default terminal application to use for applications that require a "
 "terminal."
 msgstr ""
+"A terminált igénylő alkalmazásokhoz használandó alapértelmezett terminál."
 
 #: schemas/desktop_default_applications.schemas.in.h:7
 msgid "The exec argument to use for the default terminal application."
@@ -1088,43 +1092,43 @@ msgstr "Parancs futtatása terminálban"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:2
 msgid "The command used to handle \"aim\" URLs, if enabled."
-msgstr ""
+msgstr "Az \"aim\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:3
 msgid "The command used to handle \"callto\" URLs, if enabled."
-msgstr ""
+msgstr "A \"callto\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:4
 msgid "The command used to handle \"ghelp\" URLs, if enabled."
-msgstr ""
+msgstr "A \"ghelp\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:5
 msgid "The command used to handle \"h323\" URLs, if enabled."
-msgstr ""
+msgstr "A \"h323\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:6
 msgid "The command used to handle \"http\" URLs, if enabled."
-msgstr ""
+msgstr "A \"http\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:7
 msgid "The command used to handle \"https\" URLs, if enabled."
-msgstr ""
+msgstr "A \"https\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:8
 msgid "The command used to handle \"info\" URLs, if enabled."
-msgstr ""
+msgstr "Az \"info\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:9
 msgid "The command used to handle \"mailto\" URLs, if enabled."
-msgstr ""
+msgstr "A \"mailto\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:10
 msgid "The command used to handle \"man\" URLs, if enabled."
-msgstr ""
+msgstr "A \"man\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:11
 msgid "The command used to handle \"trash\" URLs, if enabled."
-msgstr ""
+msgstr "A \"trash\" URL-ek kezelésére használt parancs, ha engedélyezve van."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:12
 msgid "The handler for \"aim\" URLs"
@@ -1171,106 +1175,128 @@ msgid ""
 "True if the command specified in the \"command\" key should handle \"aim\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli az "
+"\"aim\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:23
 msgid ""
 "True if the command specified in the \"command\" key should handle \"callto"
 "\" URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"callto\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:24
 msgid ""
 "True if the command specified in the \"command\" key should handle \"ghelp\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"ghelp\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:25
 msgid ""
 "True if the command specified in the \"command\" key should handle \"h323\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"h323\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:26
 msgid ""
 "True if the command specified in the \"command\" key should handle \"http\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"http\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:27
 msgid ""
 "True if the command specified in the \"command\" key should handle \"https\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"https\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:28
 msgid ""
 "True if the command specified in the \"command\" key should handle \"info\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli az "
+"\"info\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:29
 msgid ""
 "True if the command specified in the \"command\" key should handle \"mailto"
 "\" URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"mailto\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:30
 msgid ""
 "True if the command specified in the \"command\" key should handle \"man\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"man\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:31
 msgid ""
 "True if the command specified in the \"command\" key should handle \"trash\" "
 "URLs."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancs kezeli a "
+"\"trash\" URL-eket."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:32
 msgid ""
 "True if the command used to handle this type of URL should be run in a "
 "terminal."
 msgstr ""
+"Ha igazra van állítva, a \"command\" kulcsban beállított parancsnak "
+"terminálban kell futnia."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:33
 msgid "Whether the specified command should handle \"aim\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e az \"aim\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:34
 msgid "Whether the specified command should handle \"callto\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"callto\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:35
 msgid "Whether the specified command should handle \"ghelp\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"ghelp\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:36
 msgid "Whether the specified command should handle \"h323\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"h323\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:37
 msgid "Whether the specified command should handle \"http\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"http\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:38
 msgid "Whether the specified command should handle \"https\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"https\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:39
 msgid "Whether the specified command should handle \"info\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e az \"info\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:40
 msgid "Whether the specified command should handle \"mailto\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"mailto\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:41
 msgid "Whether the specified command should handle \"man\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"man\" URL-eket"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:42
 msgid "Whether the specified command should handle \"trash\" URLs"
-msgstr ""
+msgstr "A megadott parancs kezelje-e a \"trash\" URL-eket"
 
 #: schemas/system_dns_sd.schemas.in.h:1
 msgid ""
@@ -1281,7 +1307,7 @@ msgstr ""
 
 #: schemas/system_dns_sd.schemas.in.h:2
 msgid "Extra domains to look for dns-sd services in"
-msgstr ""
+msgstr "Extra tartományok a dns-sd szolgáltatások kereséséhez"
 
 #: schemas/system_dns_sd.schemas.in.h:3
 msgid "How to display local DNS-SD service"
@@ -1293,15 +1319,15 @@ msgstr "Lehetséges értékek: \"merged\", \"separate\" és \"disabled\"."
 
 #: schemas/system_http_proxy.schemas.in.h:1
 msgid "Authenticate proxy server connections"
-msgstr ""
+msgstr "Kapcsolatok hitelesítése a proxy kiszolgálókhoz"
 
 #: schemas/system_http_proxy.schemas.in.h:2
 msgid "Automatic proxy configuration URL"
-msgstr ""
+msgstr "Automatikus proxybeállítás URL-je"
 
 #: schemas/system_http_proxy.schemas.in.h:3
 msgid "Enables the proxy settings when accessing HTTP over the Internet."
-msgstr "Proxy-beállítások bekapcsolása interneten keresztüli HTTP-eléréskor."
+msgstr "Proxybeállítások bekapcsolása interneten keresztüli HTTP-eléréskor."
 
 #: schemas/system_http_proxy.schemas.in.h:4
 msgid "FTP proxy host name"
@@ -1340,15 +1366,15 @@ msgstr ""
 
 #: schemas/system_http_proxy.schemas.in.h:11
 msgid "Non-proxy hosts"
-msgstr ""
+msgstr "Proxy nélkül elérhető kiszolgálók"
 
 #: schemas/system_http_proxy.schemas.in.h:12
 msgid "Password to pass as authentication when doing HTTP proxying."
-msgstr ""
+msgstr "HTTP-proxy használatakor hitelesítéshez használandó jelszó."
 
 #: schemas/system_http_proxy.schemas.in.h:13
 msgid "Proxy configuration mode"
-msgstr "Proxy-beállítás módja"
+msgstr "Proxybeállítás módja"
 
 #: schemas/system_http_proxy.schemas.in.h:14
 msgid "SOCKS proxy host name"
@@ -1371,48 +1397,49 @@ msgid ""
 "Select the proxy configuration mode. Supported values are \"none\", \"manual"
 "\", \"auto\"."
 msgstr ""
-"Válassza ki a proxy-beállítás módját. Támogatott értékek: \"none\", \"manual"
+"Válassza ki a proxybeállítás módját. Támogatott értékek: \"none\", \"manual"
 "\", \"auto\"."
 
 #: schemas/system_http_proxy.schemas.in.h:19
 msgid "The machine name to proxy FTP through."
-msgstr ""
+msgstr "Az FTP-proxy gépneve."
 
 #: schemas/system_http_proxy.schemas.in.h:20
 msgid "The machine name to proxy HTTP through."
-msgstr ""
+msgstr "A HTTP-proxy gépneve."
 
 #: schemas/system_http_proxy.schemas.in.h:21
 msgid "The machine name to proxy secure HTTP through."
-msgstr ""
+msgstr "A biztonságos HTTP-proxy gépneve."
 
 #: schemas/system_http_proxy.schemas.in.h:22
 msgid "The machine name to proxy socks through."
-msgstr ""
+msgstr "A socks-proxy gépneve."
 
 #: schemas/system_http_proxy.schemas.in.h:23
 msgid ""
 "The port on the machine defined by \"/system/http_proxy/host\" that you "
 "proxy through."
-msgstr ""
+msgstr "A \"/system/http_proxy/host\" kulcsban proxyként megadott gép portja."
 
 #: schemas/system_http_proxy.schemas.in.h:24
 msgid ""
 "The port on the machine defined by \"/system/proxy/ftp_host\" that you proxy "
 "through."
-msgstr ""
+msgstr "A \"/system/proxy/ftp_host\" kulcsban proxyként megadott gép portja."
 
 #: schemas/system_http_proxy.schemas.in.h:25
 msgid ""
 "The port on the machine defined by \"/system/proxy/secure_host\" that you "
 "proxy through."
 msgstr ""
+"A \"/system/proxy/secure_host\" kulcsban proxyként megadott gép portja."
 
 #: schemas/system_http_proxy.schemas.in.h:26
 msgid ""
 "The port on the machine defined by \"/system/proxy/socks_host\" that you "
 "proxy through."
-msgstr ""
+msgstr "A \"/system/proxy/socks_host\" kulcsban proxyként megadott gép portja."
 
 #: schemas/system_http_proxy.schemas.in.h:27
 msgid ""
@@ -1421,10 +1448,15 @@ msgid ""
 "(using an initial wildcard like *.foo.com), IP host addresses (both IPv4 and "
 "IPv6) and network addresses with a netmask (something like 192.168.0.0/24)."
 msgstr ""
+"Ez a kulcs azon kiszolgálók listáját tartalmazza, amelyekhez közvetlenül "
+"kapcsolódik, proxy használata nélkül (ha az aktív). Az értékek lehetnek "
+"kiszolgálónevek, tartományok (kezdő helyettesítő karakterek használhatóak, "
+"pl. *.akarmi.hu), IP-kiszolgálócímek (IPv4 és IPv6 egyaránt) és hálózati "
+"címek hálózati maszkkal (pl. 192.168.0.0/24)."
 
 #: schemas/system_http_proxy.schemas.in.h:28
 msgid "URL that provides proxy configuration values."
-msgstr ""
+msgstr "A proxy beállításokat tartalmazó URL."
 
 #: schemas/system_http_proxy.schemas.in.h:29
 msgid "Use HTTP proxy"
@@ -1432,7 +1464,7 @@ msgstr "HTTP-proxy használata"
 
 #: schemas/system_http_proxy.schemas.in.h:30
 msgid "User name to pass as authentication when doing HTTP proxying."
-msgstr ""
+msgstr "HTTP-proxy használatakor hitelesítéshez használandó felhasználónév."
 
 #: schemas/system_smb.schemas.in.h:1
 msgid "SMB workgroup"

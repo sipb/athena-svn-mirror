@@ -188,39 +188,43 @@ struct      <link linkend="GnomeVFSVolumeMonitorClass">GnomeVFSVolumeMonitorClas
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-volume-monitor"/>gnome_vfs_get_volume_monitor ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_get_volume_monitor</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link>* gnome_vfs_get_volume_monitor
+<indexterm><primary>gnome_vfs_get_volume_monitor</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link>* gnome_vfs_get_volume_monitor
                                             (void);</programlisting>
 <para>
-</para>
+Returns a pointer to the <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> singleton.
+<link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> is a singleton, this means it is guaranteed to
+exist and be valid until <link linkend="gnome-vfs-shutdown"><function>gnome_vfs_shutdown()</function></link> is called. Consequently,
+it doesn't need to be refcounted since gnome-vfs will hold a reference to 
+it until it is shut down.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to the <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> singleton.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-emit-pre-unmount"/>gnome_vfs_volume_monitor_emit_pre_unmount ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_emit_pre_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_monitor_emit_pre_unmount
+<indexterm><primary>gnome_vfs_volume_monitor_emit_pre_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_monitor_emit_pre_unmount
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor,
                                              <link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
-</para>
+Emits the "pre-unmount" signal on <parameter>volume</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>volume</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-get-connected-drives"/>gnome_vfs_volume_monitor_get_connected_drives ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_get_connected_drives</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_volume_monitor_get_connected_drives
+<indexterm><primary>gnome_vfs_volume_monitor_get_connected_drives</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_volume_monitor_get_connected_drives
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor);</programlisting>
 <para>
 </para>
@@ -237,38 +241,44 @@ struct      <link linkend="GnomeVFSVolumeMonitorClass">GnomeVFSVolumeMonitorClas
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-get-drive-by-id"/>gnome_vfs_volume_monitor_get_drive_by_id ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_get_drive_by_id</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_volume_monitor_get_drive_by_id
+<indexterm><primary>gnome_vfs_volume_monitor_get_drive_by_id</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_volume_monitor_get_drive_by_id
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor,
                                              <link linkend="gulong">gulong</link> id);</programlisting>
 <para>
-</para>
+Looks for a <link linkend="GnomeVFSDrive"><type>GnomeVFSDrive</type></link> whose id is <parameter>id</parameter>. A valid <parameter>volume_monitor</parameter> to pass
+to this function can be acquired using <link linkend="gnome-vfs-get-volume-monitor"><function>gnome_vfs_get_volume_monitor()</function></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>id</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> id to look for
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GnomeVFSDrive"><type>GnomeVFSDrive</type></link> corresponding to <parameter>id</parameter>, or NULL if no 
+<link linkend="GnomeVFSDrive"><type>GnomeVFSDrive</type></link> with a matching id could be found. The caller owns a 
+reference on the returned drive, and must call <parameter>gnome_vfs_drive_unref</parameter>
+when it no longer needs it.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-get-mounted-volumes"/>gnome_vfs_volume_monitor_get_mounted_volumes ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_get_mounted_volumes</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_volume_monitor_get_mounted_volumes
+<indexterm><primary>gnome_vfs_volume_monitor_get_mounted_volumes</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_volume_monitor_get_mounted_volumes
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor);</programlisting>
 <para>
-</para>
+Gets the list of all the mounted <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> volumes.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GList"><type>GList</type></link> of <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link>. The <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> objects must be 
+unreffed by the caller when no longer needed with <link linkend="gnome-vfs-volume-unref"><function>gnome_vfs_volume_unref()</function></link>
+and the <link linkend="GList"><type>GList</type></link> must be freed.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
@@ -287,28 +297,32 @@ struct      <link linkend="GnomeVFSVolumeMonitorClass">GnomeVFSVolumeMonitorClas
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-get-volume-by-id"/>gnome_vfs_volume_monitor_get_volume_by_id ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_get_volume_by_id</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_monitor_get_volume_by_id
+<indexterm><primary>gnome_vfs_volume_monitor_get_volume_by_id</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_monitor_get_volume_by_id
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor,
                                              <link linkend="gulong">gulong</link> id);</programlisting>
 <para>
-</para>
+Looks for a <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> whose id is <parameter>id</parameter>. A valid <parameter>volume_monitor</parameter> to pass
+to this function can be acquired using <link linkend="gnome-vfs-get-volume-monitor"><function>gnome_vfs_get_volume_monitor()</function></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>id</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> id to look for
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> corresponding to <parameter>id</parameter>, or NULL if no 
+<link linkend="GnomeVFSVolume"><type>GnomeVFSVolume</type></link> with a matching id could be found. The caller owns a 
+reference on the returned volume, and must call <parameter>gnome_vfs_volume_unref</parameter>
+when it no longer needs it.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-get-volume-for-path"/>gnome_vfs_volume_monitor_get_volume_for_path ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_get_volume_for_path</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_monitor_get_volume_for_path
+<indexterm><primary>gnome_vfs_volume_monitor_get_volume_for_path</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_monitor_get_volume_for_path
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor,
                                              const <link linkend="char">char</link> *path);</programlisting>
 <para>
@@ -329,31 +343,41 @@ struct      <link linkend="GnomeVFSVolumeMonitorClass">GnomeVFSVolumeMonitorClas
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-ref"/>gnome_vfs_volume_monitor_ref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_ref</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link>* gnome_vfs_volume_monitor_ref
+<indexterm><primary>gnome_vfs_volume_monitor_ref</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link>* gnome_vfs_volume_monitor_ref
                                             (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor);</programlisting>
 <para>
+Increases the reference count of a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> by one.
 </para>
+<para>
+You shouldn't use this function unless you know what you are doing:
+<link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> is to be used as a singleton object, see
+<link linkend="gnome-vfs-get-volume-monitor"><function>gnome_vfs_get_volume_monitor()</function></link> for more details.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <parameter>volume_monitor</parameter> with its refcount increased by one.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-monitor-unref"/>gnome_vfs_volume_monitor_unref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_monitor_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_monitor_unref  (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor);</programlisting>
+<indexterm><primary>gnome_vfs_volume_monitor_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_monitor_unref  (<link linkend="GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</link> *volume_monitor);</programlisting>
 <para>
+Decreases the reference count of a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> by one.
 </para>
+<para>
+You shouldn't use this function unless you know what you are doing:
+<link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link> is to be used as a singleton object, see
+<link linkend="gnome-vfs-get-volume-monitor"><function>gnome_vfs_get_volume_monitor()</function></link> for more details.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume_monitor</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> a <link linkend="GnomeVFSVolumeMonitor"><type>GnomeVFSVolumeMonitor</type></link>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>

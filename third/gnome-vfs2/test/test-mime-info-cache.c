@@ -33,6 +33,8 @@ gpointer foo (const char *mime_type) {
                 }
                 sleep (1);
         }
+
+        return NULL;
 }
 
 int main (int argc, char **argv)

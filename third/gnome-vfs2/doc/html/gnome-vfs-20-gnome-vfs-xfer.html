@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>File Transfers</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations" title="File Handling"><link rel="previous" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="next" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-xfer.html#id2583238" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-xfer.html#id2583248" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-file-info-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-xfer"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">File Transfers</span></h2><p>File Transfers &#8212; Conveniently copy/move/delete files en masse</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>File Transfers</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations" title="File Handling"><link rel="prev" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="next" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-file-info-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-xfer"></a><div class="titlepage"></div><div class="refnamediv"><h2><span class="refentrytitle">File Transfers</span></h2><p>File Transfers &#8212; Conveniently copy/move/delete files en masse</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
@@ -10,46 +40,30 @@ enum        <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">Gno
 enum        <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorAction">GnomeVFSXferErrorAction</a>;
 enum        <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferPhase">GnomeVFSXferPhase</a>;
 struct      <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</a>;
-<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">*GnomeVFSXferProgressCallback</a>) (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</a> *info,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
-<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-xfer.html#gnome-vfs-xfer-uri-list">gnome_vfs_xfer_uri_list</a>      (const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *source_uri_list,
-                                             const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *target_uri_list,
+gint        (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">*GnomeVFSXferProgressCallback</a>) (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</a> *info,
+                                             gpointer data);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-xfer.html#gnome-vfs-xfer-uri-list">gnome_vfs_xfer_uri_list</a>      (const GList *source_uri_list,
+                                             const GList *target_uri_list,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</a> overwrite_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
+                                             gpointer data);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-xfer.html#gnome-vfs-xfer-uri">gnome_vfs_xfer_uri</a>           (const GnomeVFSURI *source_uri,
                                              const GnomeVFSURI *target_uri,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</a> overwrite_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
-<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-xfer.html#gnome-vfs-xfer-delete-list">gnome_vfs_xfer_delete_list</a>   (const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *source_uri_list,
+                                             gpointer data);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-xfer.html#gnome-vfs-xfer-delete-list">gnome_vfs_xfer_delete_list</a>   (const GList *source_uri_list,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);
-</pre></div><div class="refsect1" lang="en"><a name="id2583238"></a><h2>Description</h2><p>
+                                             gpointer data);
+</pre></div><div class="refsect1" lang="en"><a name="id2559785"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2583248"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2583253"></a><h3><a name="GnomeVFSXferOptions"></a>enum GnomeVFSXferOptions</h3><a class="indexterm" name="id2583264"></a><pre class="programlisting">typedef enum {
+</p></div><div class="refsect1" lang="en"><a name="id2559795"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2559801"></a><h3><a name="GnomeVFSXferOptions"></a>enum GnomeVFSXferOptions</h3><a class="indexterm" name="id2559812"></a><pre class="programlisting">typedef enum {
 	GNOME_VFS_XFER_DEFAULT = 0,
 	GNOME_VFS_XFER_UNUSED_1 = 1 &lt;&lt; 0,
 	GNOME_VFS_XFER_FOLLOW_LINKS = 1 &lt;&lt; 1,
@@ -66,7 +80,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 } GnomeVFSXferOptions;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583292"></a><h3><a name="GnomeVFSXferProgressStatus"></a>enum GnomeVFSXferProgressStatus</h3><a class="indexterm" name="id2583305"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2559840"></a><h3><a name="GnomeVFSXferProgressStatus"></a>enum GnomeVFSXferProgressStatus</h3><a class="indexterm" name="id2559852"></a><pre class="programlisting">typedef enum {
 	GNOME_VFS_XFER_PROGRESS_STATUS_OK = 0,
 	GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR = 1,
 	GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE = 2,
@@ -76,7 +90,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 } GnomeVFSXferProgressStatus;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583324"></a><h3><a name="GnomeVFSXferOverwriteMode"></a>enum GnomeVFSXferOverwriteMode</h3><a class="indexterm" name="id2583336"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2559872"></a><h3><a name="GnomeVFSXferOverwriteMode"></a>enum GnomeVFSXferOverwriteMode</h3><a class="indexterm" name="id2559883"></a><pre class="programlisting">typedef enum {
 	/* Interrupt transferring with an error (GNOME_VFS_ERROR_FILEEXISTS).  */
 	GNOME_VFS_XFER_OVERWRITE_MODE_ABORT = 0,
 	/* Invoke the progress callback with a
@@ -89,7 +103,7 @@ href="../glib/glib-Basic-Types.html#gpointer"
 } GnomeVFSXferOverwriteMode;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583358"></a><h3><a name="GnomeVFSXferOverwriteAction"></a>enum GnomeVFSXferOverwriteAction</h3><a class="indexterm" name="id2583370"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2559905"></a><h3><a name="GnomeVFSXferOverwriteAction"></a>enum GnomeVFSXferOverwriteAction</h3><a class="indexterm" name="id2559918"></a><pre class="programlisting">typedef enum {
 	GNOME_VFS_XFER_OVERWRITE_ACTION_ABORT = 0,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE = 1,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL = 2,
@@ -107,7 +121,7 @@ without prompting the callback.
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP</tt></span></td><td> don't copy over the existing file
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL</tt></span></td><td> don't copy over the existing file, and all future
 files without prompting the callback.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583478"></a><h3><a name="GnomeVFSXferErrorMode"></a>enum GnomeVFSXferErrorMode</h3><a class="indexterm" name="id2583490"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2560025"></a><h3><a name="GnomeVFSXferErrorMode"></a>enum GnomeVFSXferErrorMode</h3><a class="indexterm" name="id2560037"></a><pre class="programlisting">typedef enum {
 	/* Interrupt transferring with an error (code returned is code of the
            operation that has caused the error).  */
 	GNOME_VFS_XFER_ERROR_MODE_ABORT = 0,
@@ -117,7 +131,7 @@ files without prompting the callback.
 } GnomeVFSXferErrorMode;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583510"></a><h3><a name="GnomeVFSXferErrorAction"></a>enum GnomeVFSXferErrorAction</h3><a class="indexterm" name="id2583522"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2560058"></a><h3><a name="GnomeVFSXferErrorAction"></a>enum GnomeVFSXferErrorAction</h3><a class="indexterm" name="id2560069"></a><pre class="programlisting">typedef enum {
 	/* Interrupt operation and return `GNOME_VFS_ERROR_INTERRUPTED'.  */
 	GNOME_VFS_XFER_ERROR_ACTION_ABORT = 0,
 	/* Try the same operation again.  */
@@ -127,7 +141,7 @@ files without prompting the callback.
 } GnomeVFSXferErrorAction;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583542"></a><h3><a name="GnomeVFSXferPhase"></a>enum GnomeVFSXferPhase</h3><a class="indexterm" name="id2583553"></a><pre class="programlisting">typedef enum {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2560089"></a><h3><a name="GnomeVFSXferPhase"></a>enum GnomeVFSXferPhase</h3><a class="indexterm" name="id2560100"></a><pre class="programlisting">typedef enum {
 	/* Initial phase */
 	GNOME_VFS_XFER_PHASE_INITIAL,
 	/* Checking if destination can handle move/copy */
@@ -166,7 +180,7 @@ files without prompting the callback.
 } GnomeVFSXferPhase;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583589"></a><h3><a name="GnomeVFSXferProgressInfo"></a>struct GnomeVFSXferProgressInfo</h3><a class="indexterm" name="id2583600"></a><pre class="programlisting">struct GnomeVFSXferProgressInfo {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2560136"></a><h3><a name="GnomeVFSXferProgressInfo"></a>struct GnomeVFSXferProgressInfo</h3><a class="indexterm" name="id2560148"></a><pre class="programlisting">struct GnomeVFSXferProgressInfo {
 
 	/* Progress status (see above for a description).  */
 	GnomeVFSXferProgressStatus status;
@@ -223,31 +237,21 @@ files without prompting the callback.
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2583667"></a><h3><a name="GnomeVFSXferProgressCallback"></a>GnomeVFSXferProgressCallback ()</h3><a class="indexterm" name="id2583679"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        (*GnomeVFSXferProgressCallback) (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</a> *info,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2560214"></a><h3><a name="GnomeVFSXferProgressCallback"></a>GnomeVFSXferProgressCallback ()</h3><a class="indexterm" name="id2560226"></a><pre class="programlisting">gint        (*GnomeVFSXferProgressCallback) (<a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</a> *info,
+                                             gpointer data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583757"></a><h3><a name="gnome-vfs-xfer-uri-list"></a>gnome_vfs_xfer_uri_list ()</h3><a class="indexterm" name="id2583769"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_uri_list      (const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *source_uri_list,
-                                             const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *target_uri_list,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2560304"></a><h3><a name="gnome-vfs-xfer-uri-list"></a>gnome_vfs_xfer_uri_list ()</h3><a class="indexterm" name="id2560316"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_uri_list      (const GList *source_uri_list,
+                                             const GList *target_uri_list,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</a> overwrite_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><p>
+                                             gpointer data);</pre><p>
 This function will transfer multiple files to a multiple targets.  Given a
 a source uri(s) and a destination uri(s).   There are a list of options that
 your application can use to control how the transfer is done.</p><p>
@@ -267,15 +271,13 @@ to overwrite a file.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> Data to be want passed back in callbacks from the xfer engine
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> If all goes well it returns GNOME_VFS_OK.  Check GnomeVFSResult for
 other values.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583976"></a><h3><a name="gnome-vfs-xfer-uri"></a>gnome_vfs_xfer_uri ()</h3><a class="indexterm" name="id2583988"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_uri           (const GnomeVFSURI *source_uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2560524"></a><h3><a name="gnome-vfs-xfer-uri"></a>gnome_vfs_xfer_uri ()</h3><a class="indexterm" name="id2560535"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_uri           (const GnomeVFSURI *source_uri,
                                              const GnomeVFSURI *target_uri,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</a> overwrite_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><p>
+                                             gpointer data);</pre><p>
 This function will allow a person to copy data from one location to another.
 The location is specified using a URIs as the means to describe the location
 of the data.  Like any copy there are several options that can be set.
@@ -325,15 +327,11 @@ communicate with your copy process.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> Data to be want passed back in callbacks from the xfer engine
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584232"></a><h3><a name="gnome-vfs-xfer-delete-list"></a>gnome_vfs_xfer_delete_list ()</h3><a class="indexterm" name="id2584244"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_delete_list   (const <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *source_uri_list,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2560779"></a><h3><a name="gnome-vfs-xfer-delete-list"></a>gnome_vfs_xfer_delete_list ()</h3><a class="indexterm" name="id2560792"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_xfer_delete_list   (const GList *source_uri_list,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</a> error_mode,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferOptions">GnomeVFSXferOptions</a> xfer_options,
                                              <a href="gnome-vfs-20-gnome-vfs-xfer.html#GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</a> progress_callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> data);</pre><p>
+                                             gpointer data);</pre><p>
 Unlink items in the list <i class="parameter"><tt>source_uri_list</tt></i> from their filesystems.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>source_uri_list</tt></i> :</span></td><td>  This is a list containing uris

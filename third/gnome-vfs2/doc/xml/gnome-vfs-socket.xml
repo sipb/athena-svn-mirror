@@ -1,12 +1,12 @@
 <refentry id="gnome-vfs-20-gnome-vfs-socket">
 <refmeta>
-<refentrytitle>gnome-vfs-socket</refentrytitle>
+<refentrytitle>Unified network I/O</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>gnome-vfs-socket</refname><refpurpose></refpurpose>
+<refname>Unified network I/O</refname><refpurpose>Posix style network input/output functions.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -60,6 +60,11 @@ struct      <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 <refsect1>
 <title>Description</title>
 <para>
+The GnomeVFSSocket function family unifies network I/O through functions
+similar to the standard POSIX read/write functions. The main difference is
+that all operations are cancellable through the standard GnomeVFS cancellation
+mechanism and you can specify a maximum amount of time an operation may take
+through <link linkend="gnome-vfs-socket-set-timeout"><type>gnome_vfs_socket_set_timeout</type></link>.
 
 </para>
 </refsect1>
@@ -258,7 +263,7 @@ the number of bytes actually read from the socket on return.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-free"/>gnome_vfs_socket_free ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_socket_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_socket_free           (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);</programlisting>
+<indexterm><primary>gnome_vfs_socket_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_socket_free           (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);</programlisting>
 <para>
 Frees the memory allocated for <parameter>socket</parameter>, but does
 not call any <link linkend="GnomeVFSSocketImpl"><type>GnomeVFSSocketImpl</type></link> function.</para>
@@ -272,7 +277,7 @@ not call any <link linkend="GnomeVFSSocketImpl"><type>GnomeVFSSocketImpl</type><
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-set-timeout"/>gnome_vfs_socket_set_timeout ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_socket_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_set_timeout (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+<indexterm><primary>gnome_vfs_socket_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_set_timeout (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
                                              <link linkend="GTimeVal">GTimeVal</link> *timeout,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>

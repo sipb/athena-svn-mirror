@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 09:57+0200\n"
-"PO-Revision-Date: 2004-09-02 22:06r+0800\n"
+"POT-Creation-Date: 2004-10-28 16:22+0200\n"
+"PO-Revision-Date: 2004-10-19 10:27+0800\n"
 "Last-Translator: LoneStar <lone@auvtech.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -30,79 +30,79 @@ msgstr "无法初始化 gnome vfs"
 msgid "File could not be opened: %s"
 msgstr "无法打开文件：%s"
 
-#: libgnomevfs/eggdesktopentries.c:328
+#: libgnomevfs/eggdesktopentries.c:324
 #, c-format
 msgid "Failed to open file '%s': %s"
 msgstr "打开文件“%s”失败：%s"
 
-#: libgnomevfs/eggdesktopentries.c:341
+#: libgnomevfs/eggdesktopentries.c:337
 msgid "File is empty"
 msgstr "文件为空"
 
-#: libgnomevfs/eggdesktopentries.c:363
+#: libgnomevfs/eggdesktopentries.c:359
 #, c-format
 msgid "Failed to read from file '%s': %s"
 msgstr "从文件“%s”读取失败：%s"
 
-#: libgnomevfs/eggdesktopentries.c:575
+#: libgnomevfs/eggdesktopentries.c:572
 #, c-format
 msgid ""
 "desktop entries contain line '%s' which is not an entry, group, or comment"
 msgstr "桌面项所包含的“%s”一行不是项、组或命令"
 
-#: libgnomevfs/eggdesktopentries.c:648
+#: libgnomevfs/eggdesktopentries.c:645 libgnomevfs/eggdesktopentries.c:670
 msgid "desktop entries file does not start with legal start group"
 msgstr "桌面项文件不以有效的启动组开头"
 
-#: libgnomevfs/eggdesktopentries.c:705
+#: libgnomevfs/eggdesktopentries.c:711
 #, c-format
 msgid "desktop entries contain line '%s' which is not UTF-8"
 msgstr "桌面项所包含的行“%s”不是 UTF-8"
 
-#: libgnomevfs/eggdesktopentries.c:728
+#: libgnomevfs/eggdesktopentries.c:734
 #, c-format
 msgid "desktop entries contain unknown encoding '%s'"
 msgstr "桌面项包含未知编码“%s”"
 
-#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
-#: libgnomevfs/eggdesktopentries.c:1215
+#: libgnomevfs/eggdesktopentries.c:924 libgnomevfs/eggdesktopentries.c:1036
+#: libgnomevfs/eggdesktopentries.c:1221
 #, c-format
 msgid "desktop entries do not have group '%s'"
 msgstr "桌面项没有组“%s”"
 
-#: libgnomevfs/eggdesktopentries.c:1042
+#: libgnomevfs/eggdesktopentries.c:1048
 #, c-format
 msgid "desktop entries do not have key '%s'"
 msgstr "桌面项没有键“%s”"
 
-#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
-#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#: libgnomevfs/eggdesktopentries.c:1104 libgnomevfs/eggdesktopentries.c:1277
+#: libgnomevfs/eggdesktopentries.c:1419 libgnomevfs/eggdesktopentries.c:1544
 #, c-format
 msgid ""
 "desktop entries contain key '%s' which has value that cannot be interpreted."
 msgstr "桌面项所包含的键“%s”的值无法识别。"
 
-#: libgnomevfs/eggdesktopentries.c:1296
+#: libgnomevfs/eggdesktopentries.c:1302
 #, c-format
 msgid ""
 "desktop entries contain no translated value for key '%s' with locale '%s'."
 msgstr "桌面项没有在区域“%2$s”中包含键“%1$s”的翻译。"
 
-#: libgnomevfs/eggdesktopentries.c:2229
+#: libgnomevfs/eggdesktopentries.c:2235
 #, c-format
 msgid "desktop entries contain invalid escape sequence '%s'"
 msgstr "桌面项包含无效的转码序列“%s”"
 
-#: libgnomevfs/eggdesktopentries.c:2246
+#: libgnomevfs/eggdesktopentries.c:2252
 msgid "desktop entries contain escape character at end of line"
 msgstr "桌面项在行尾包含转码字符"
 
-#: libgnomevfs/eggdesktopentries.c:2271
+#: libgnomevfs/eggdesktopentries.c:2277
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "无法将“%s”解释为数字。"
 
-#: libgnomevfs/eggdesktopentries.c:2298
+#: libgnomevfs/eggdesktopentries.c:2304
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "无法将“%s”解释为布尔值。"
@@ -409,28 +409,28 @@ msgid "Operation stopped"
 msgstr "操作停止"
 
 #: libgnomevfs/gnome-vfs-mime-handlers.c:83
-#: libgnomevfs/gnome-vfs-mime-handlers.c:305
-#: libgnomevfs/gnome-vfs-mime-handlers.c:356
-#: libgnomevfs/gnome-vfs-mime-handlers.c:650
-#: libgnomevfs/gnome-vfs-mime-handlers.c:669
-#: libgnomevfs/gnome-vfs-mime-handlers.c:687
-#: libgnomevfs/gnome-vfs-mime-handlers.c:706
-#: libgnomevfs/gnome-vfs-mime-handlers.c:725
-#: libgnomevfs/gnome-vfs-mime-handlers.c:866
-#: libgnomevfs/gnome-vfs-mime-handlers.c:888
-#: libgnomevfs/gnome-vfs-mime-handlers.c:907
-#: libgnomevfs/gnome-vfs-mime-handlers.c:926
-#: libgnomevfs/gnome-vfs-mime-handlers.c:979
-#: libgnomevfs/gnome-vfs-mime-handlers.c:996
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
-#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
-#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
-#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
-#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
-#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
-#: libgnomevfs/gnome-vfs-mime-info.c:730
+#: libgnomevfs/gnome-vfs-mime-handlers.c:312
+#: libgnomevfs/gnome-vfs-mime-handlers.c:363
+#: libgnomevfs/gnome-vfs-mime-handlers.c:657
+#: libgnomevfs/gnome-vfs-mime-handlers.c:676
+#: libgnomevfs/gnome-vfs-mime-handlers.c:694
+#: libgnomevfs/gnome-vfs-mime-handlers.c:713
+#: libgnomevfs/gnome-vfs-mime-handlers.c:732
+#: libgnomevfs/gnome-vfs-mime-handlers.c:873
+#: libgnomevfs/gnome-vfs-mime-handlers.c:895
+#: libgnomevfs/gnome-vfs-mime-handlers.c:914
+#: libgnomevfs/gnome-vfs-mime-handlers.c:933
+#: libgnomevfs/gnome-vfs-mime-handlers.c:986
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1003
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1020
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1038
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1056
+#: libgnomevfs/gnome-vfs-mime-info.c:648 libgnomevfs/gnome-vfs-mime-info.c:655
+#: libgnomevfs/gnome-vfs-mime-info.c:663 libgnomevfs/gnome-vfs-mime-info.c:670
+#: libgnomevfs/gnome-vfs-mime-info.c:678 libgnomevfs/gnome-vfs-mime-info.c:695
+#: libgnomevfs/gnome-vfs-mime-info.c:702 libgnomevfs/gnome-vfs-mime-info.c:709
+#: libgnomevfs/gnome-vfs-mime-info.c:716 libgnomevfs/gnome-vfs-mime-info.c:724
+#: libgnomevfs/gnome-vfs-mime-info.c:731
 msgid ""
 "Deprecated function.  User modifications to the MIME database are no longer "
 "supported."
@@ -861,7 +861,7 @@ msgstr "音频 CD"
 msgid "Unknown volume"
 msgstr "未知卷"
 
-#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1122
 msgid "Network server"
 msgstr "网络服务器"
 
@@ -980,16 +980,16 @@ msgstr "文件系统"
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "未知的 GnomeVFSSeekPosition %d"
 
-#: modules/network-method.c:1395
+#: modules/network-method.c:1396
 msgid "Windows Network"
 msgstr "Windows 网络"
 
-#: modules/sftp-method.c:1339
+#: modules/sftp-method.c:1346
 #, c-format
 msgid "The identity of the remote computer (%s) is unknown."
 msgstr "远程计算机(%s)的身份未知。"
 
-#: modules/sftp-method.c:1340
+#: modules/sftp-method.c:1347
 #, c-format
 msgid ""
 "This happens when you log in to a computer the first time.\n"
@@ -1001,11 +1001,11 @@ msgstr ""
 "\n"
 "远程计算机发送的身份是 %s。如果您绝对相信继续进行是安全的，请联系系统管理员。"
 
-#: modules/sftp-method.c:1348
+#: modules/sftp-method.c:1355
 msgid "Log In Anyway"
 msgstr "仍然登录"
 
-#: modules/sftp-method.c:1349
+#: modules/sftp-method.c:1356
 msgid "Cancel Login"
 msgstr "取消登录"
 
@@ -1426,3 +1426,6 @@ msgstr "SMB 工作组"
 #: schemas/system_smb.schemas.in.h:2
 msgid "The window workgroup the user is part of"
 msgstr "此用户所属的 Windows 工作组"
+
+#~ msgid "desktop entry does not start with legal start group"
+#~ msgstr "桌面项不以有效的启动组开头"

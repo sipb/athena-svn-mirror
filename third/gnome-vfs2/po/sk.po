@@ -3,22 +3,22 @@
 # gnome-vfs sk.po
 # Copyright (C) 2000-2001,2003, 2004 Free Software Foundation, Inc.
 # Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000-2001,2003, 2004.
-# Stanislav Visnovsky <visnovsky@kde.org>, 2003.
-#
+# Ivan Noris, <vix@vazka.sk>, 2004
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2004.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 09:57+0200\n"
-"PO-Revision-Date: 2004-03-23 17:34+0100\n"
-"Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
+"POT-Creation-Date: 2004-10-28 16:22+0200\n"
+"PO-Revision-Date: 2004-09-22 23:22+0200\n"
+"Last-Translator: Ivan Noris <vix@vazka.sk>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: daemon/gnome-vfs-daemon.c:596
 msgid "Could not initialize Bonobo"
@@ -29,87 +29,90 @@ msgid "Could not initialize gnome vfs"
 msgstr "Nemôžem inicializovať gnome VFS"
 
 #: libgnomevfs/eggdesktopentries.c:229
-#, fuzzy, c-format
+#, c-format
 msgid "File could not be opened: %s"
-msgstr "Nemôžem rozložiť: %s"
+msgstr "Nepodarilo sa otvoriť súbor %s"
 
-#: libgnomevfs/eggdesktopentries.c:328
+#: libgnomevfs/eggdesktopentries.c:324
 #, c-format
 msgid "Failed to open file '%s': %s"
-msgstr ""
+msgstr "Nepodarilo sa otvoriť súbor '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:341
-#, fuzzy
+#: libgnomevfs/eggdesktopentries.c:337
 msgid "File is empty"
-msgstr "Súbor existuje"
+msgstr "Súbor je prázdny"
 
-#: libgnomevfs/eggdesktopentries.c:363
+#: libgnomevfs/eggdesktopentries.c:359
 #, c-format
 msgid "Failed to read from file '%s': %s"
-msgstr ""
+msgstr "Nepodarilo sa čítať zo súboru '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:575
+#: libgnomevfs/eggdesktopentries.c:572
 #, c-format
 msgid ""
 "desktop entries contain line '%s' which is not an entry, group, or comment"
 msgstr ""
+"položky desktop obsahujú riadok '%s', ktorý nie je položka, skupina, ani "
+"komentár"
 
-#: libgnomevfs/eggdesktopentries.c:648
+#: libgnomevfs/eggdesktopentries.c:645 libgnomevfs/eggdesktopentries.c:670
 msgid "desktop entries file does not start with legal start group"
-msgstr ""
+msgstr "súbor s položkami desktop nezačína platnou začiatočnou skupinou"
 
-#: libgnomevfs/eggdesktopentries.c:705
+#: libgnomevfs/eggdesktopentries.c:711
 #, c-format
 msgid "desktop entries contain line '%s' which is not UTF-8"
-msgstr ""
+msgstr "položky desktopu obsahujú riadok '%s', ktorý nie je kódovaný v UTF-8"
 
-#: libgnomevfs/eggdesktopentries.c:728
+#: libgnomevfs/eggdesktopentries.c:734
 #, c-format
 msgid "desktop entries contain unknown encoding '%s'"
-msgstr ""
+msgstr "položky desktopu obsahujú neznáme kódovanie '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
-#: libgnomevfs/eggdesktopentries.c:1215
+#: libgnomevfs/eggdesktopentries.c:924 libgnomevfs/eggdesktopentries.c:1036
+#: libgnomevfs/eggdesktopentries.c:1221
 #, c-format
 msgid "desktop entries do not have group '%s'"
-msgstr ""
+msgstr "položky desktop nemajú skupinu '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:1042
+#: libgnomevfs/eggdesktopentries.c:1048
 #, c-format
 msgid "desktop entries do not have key '%s'"
-msgstr ""
+msgstr "položky desktop nemajú kľúč '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
-#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#: libgnomevfs/eggdesktopentries.c:1104 libgnomevfs/eggdesktopentries.c:1277
+#: libgnomevfs/eggdesktopentries.c:1419 libgnomevfs/eggdesktopentries.c:1544
 #, c-format
 msgid ""
 "desktop entries contain key '%s' which has value that cannot be interpreted."
 msgstr ""
+"položky desktop obsahujú kľúč '%s', ktorého hodnotu nemožno interpretovať."
 
-#: libgnomevfs/eggdesktopentries.c:1296
+#: libgnomevfs/eggdesktopentries.c:1302
 #, c-format
 msgid ""
 "desktop entries contain no translated value for key '%s' with locale '%s'."
 msgstr ""
+"položky desktop neobsahujú preloženú hodnotu pre kľúč '%s' s locale '%s'."
 
-#: libgnomevfs/eggdesktopentries.c:2229
+#: libgnomevfs/eggdesktopentries.c:2235
 #, c-format
 msgid "desktop entries contain invalid escape sequence '%s'"
-msgstr ""
+msgstr "položky desktop obsahujú neplatnú escape sekvenciu '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:2246
+#: libgnomevfs/eggdesktopentries.c:2252
 msgid "desktop entries contain escape character at end of line"
-msgstr ""
+msgstr "položky desktop obsahujú znak escape na konci riadku"
 
-#: libgnomevfs/eggdesktopentries.c:2271
+#: libgnomevfs/eggdesktopentries.c:2277
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
-msgstr ""
+msgstr "Hodnota '%s' nemôže byť interpretovaná ako číslo."
 
-#: libgnomevfs/eggdesktopentries.c:2298
+#: libgnomevfs/eggdesktopentries.c:2304
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
-msgstr ""
+msgstr "Hodnota '%s' nemôže byť interpretovaná ako logická (boolean) hodnota."
 
 #: libgnomevfs/gnome-vfs-cdrom.c:210
 msgid "ISO 9660 Volume"
@@ -258,9 +261,8 @@ msgid "Pcfs Solaris Volume"
 msgstr "Disk Solaris Pcfs"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:71
-#, fuzzy
 msgid "Sun SAM-QFS Volume"
-msgstr "Disk AFFS"
+msgstr "Disk Sun SAM-QFS"
 
 #: libgnomevfs/gnome-vfs-filesystem-type.c:72
 msgid "Enhanced DOS Volume"
@@ -287,123 +289,115 @@ msgid "Unknown"
 msgstr "Neznámy"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:611
-#, fuzzy
 msgid "CD-ROM Disc"
-msgstr "Mechanika CD-ROM"
+msgstr "Disk CD-ROM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:614
 msgid "Blank CD-R Disc"
-msgstr ""
+msgstr "Čistý disk CD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:616
-#, fuzzy
 msgid "CD-R Disc"
-msgstr "Mechanika CD-ROM"
+msgstr "Disk CD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:619
 msgid "Blank CD-RW Disc"
-msgstr ""
+msgstr "Čistý disk CD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:621
-#, fuzzy
 msgid "CD-RW Disc"
-msgstr "Mechanika CD-ROM"
+msgstr "Disk CD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:623
-#, fuzzy
 msgid "DVD-ROM Disc"
-msgstr "Mechanika CD-ROM"
+msgstr "Disk DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:626
 msgid "Blank DVD-R Disc"
-msgstr ""
+msgstr "Čistý disk DVD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:628
 msgid "DVD-R Disc"
-msgstr ""
+msgstr "Disk DVD-R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:631
 msgid "Blank DVD-RAM Disc"
-msgstr ""
+msgstr "Čistý disk DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:633
 msgid "DVD-RAM Disc"
-msgstr ""
+msgstr "Čistý disk DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:636
 msgid "Blank DVD-RW Disc"
-msgstr ""
+msgstr "Čistý disk DVD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:638
 msgid "DVD-RW Disc"
-msgstr ""
+msgstr "Disk DVD-RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:641
 msgid "Blank DVD+RW Disc"
-msgstr ""
+msgstr "Čistý disk DVD+RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:643
 msgid "DVD+RW Disc"
-msgstr ""
+msgstr "Disk DVD+RW"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:646
 msgid "Blank DVD+R Disc"
-msgstr ""
+msgstr "Čistý disk DVD+R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:648
 msgid "DVD+R Disc"
-msgstr ""
+msgstr "Disk DVD+R"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:650
 msgid "Optical Disc"
-msgstr ""
+msgstr "Optický disk"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:656
-#, fuzzy
 msgid "Audio Disc"
 msgstr "Zvukové CD"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:660
 msgid "Compact Flash Media"
-msgstr ""
+msgstr "Compact Flash médium"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:662
-#, fuzzy
 msgid "Memory Stick Media"
-msgstr "Memory Stick"
+msgstr "Memory Stick médium"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:664
 msgid "Smart Media Media"
-msgstr ""
+msgstr "Smart Media médium"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:666
 msgid "SD/MMC Media"
-msgstr ""
+msgstr "SD/MMC médium"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:668
-#, fuzzy
 msgid "Floppy Disk"
 msgstr "Disketa"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:675
 msgid "Mac OS disk"
-msgstr ""
+msgstr "Disk Mac OS"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:677
 msgid "Mac OS X disk"
-msgstr ""
+msgstr "Disk Mac OS X"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:691
-#, fuzzy
 msgid "Windows Disk"
-msgstr "Okná"
+msgstr "Disk Windows"
 
 #: libgnomevfs/gnome-vfs-hal-mounts.c:697
 msgid "Linux Disk"
-msgstr ""
+msgstr "Disk Linux"
 
 #: libgnomevfs/gnome-vfs-job.c:734
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown operation type %u"
 msgstr "Neznámy typ operácie %u"
 
@@ -422,32 +416,33 @@ msgid "Operation stopped"
 msgstr "Operácia zastavená"
 
 #: libgnomevfs/gnome-vfs-mime-handlers.c:83
-#: libgnomevfs/gnome-vfs-mime-handlers.c:305
-#: libgnomevfs/gnome-vfs-mime-handlers.c:356
-#: libgnomevfs/gnome-vfs-mime-handlers.c:650
-#: libgnomevfs/gnome-vfs-mime-handlers.c:669
-#: libgnomevfs/gnome-vfs-mime-handlers.c:687
-#: libgnomevfs/gnome-vfs-mime-handlers.c:706
-#: libgnomevfs/gnome-vfs-mime-handlers.c:725
-#: libgnomevfs/gnome-vfs-mime-handlers.c:866
-#: libgnomevfs/gnome-vfs-mime-handlers.c:888
-#: libgnomevfs/gnome-vfs-mime-handlers.c:907
-#: libgnomevfs/gnome-vfs-mime-handlers.c:926
-#: libgnomevfs/gnome-vfs-mime-handlers.c:979
-#: libgnomevfs/gnome-vfs-mime-handlers.c:996
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
-#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
-#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
-#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
-#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
-#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
-#: libgnomevfs/gnome-vfs-mime-info.c:730
+#: libgnomevfs/gnome-vfs-mime-handlers.c:312
+#: libgnomevfs/gnome-vfs-mime-handlers.c:363
+#: libgnomevfs/gnome-vfs-mime-handlers.c:657
+#: libgnomevfs/gnome-vfs-mime-handlers.c:676
+#: libgnomevfs/gnome-vfs-mime-handlers.c:694
+#: libgnomevfs/gnome-vfs-mime-handlers.c:713
+#: libgnomevfs/gnome-vfs-mime-handlers.c:732
+#: libgnomevfs/gnome-vfs-mime-handlers.c:873
+#: libgnomevfs/gnome-vfs-mime-handlers.c:895
+#: libgnomevfs/gnome-vfs-mime-handlers.c:914
+#: libgnomevfs/gnome-vfs-mime-handlers.c:933
+#: libgnomevfs/gnome-vfs-mime-handlers.c:986
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1003
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1020
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1038
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1056
+#: libgnomevfs/gnome-vfs-mime-info.c:648 libgnomevfs/gnome-vfs-mime-info.c:655
+#: libgnomevfs/gnome-vfs-mime-info.c:663 libgnomevfs/gnome-vfs-mime-info.c:670
+#: libgnomevfs/gnome-vfs-mime-info.c:678 libgnomevfs/gnome-vfs-mime-info.c:695
+#: libgnomevfs/gnome-vfs-mime-info.c:702 libgnomevfs/gnome-vfs-mime-info.c:709
+#: libgnomevfs/gnome-vfs-mime-info.c:716 libgnomevfs/gnome-vfs-mime-info.c:724
+#: libgnomevfs/gnome-vfs-mime-info.c:731
 msgid ""
 "Deprecated function.  User modifications to the MIME database are no longer "
 "supported."
 msgstr ""
+"Zastaralá funkcia.  Používateľské zmeny MIME databázy už nie sú podporované."
 
 #: libgnomevfs/gnome-vfs-parse-ls.c:666
 #, c-format
@@ -691,23 +686,22 @@ msgstr "Chyba pri spúšťaní príkazu"
 #. GNOME_VFS_ERROR_TIMEOUT
 #: libgnomevfs/gnome-vfs-result.c:84 libgnomevfs/gnome-vfs-result.c:86
 msgid "Timeout reached"
-msgstr ""
+msgstr "Čas vypršal"
 
 #. GNOME_VFS_ERROR_NAMESERVER
 #: libgnomevfs/gnome-vfs-result.c:85
-#, fuzzy
 msgid "Nameserver error"
-msgstr "Chyba"
+msgstr "Chyba DNS servera"
 
 #. GNOME_VFS_ERROR_LOCKED
 #: libgnomevfs/gnome-vfs-result.c:87
 msgid "The resource is locked"
-msgstr ""
+msgstr "Prostriedok je uzamknutý"
 
 #. GNOME_VFS_ERROR_DEPRECATED_FUNCTION
 #: libgnomevfs/gnome-vfs-result.c:88
 msgid "Function call deprecated"
-msgstr ""
+msgstr "Funkcia je zastaralá"
 
 #: libgnomevfs/gnome-vfs-result.c:203
 msgid "Unknown error"
@@ -752,107 +746,96 @@ msgid "CD-ROM"
 msgstr "CD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:576
-#, fuzzy
 msgid "CD-R"
-msgstr "CD-ROM"
+msgstr "CD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:577
-#, fuzzy
 msgid "CD-RW"
-msgstr "CD-ROM"
+msgstr "CD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:578
-#, fuzzy
 msgid "DVD-ROM"
-msgstr "CD-ROM"
+msgstr "DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:579
-#, fuzzy
 msgid "DVD-RAM"
-msgstr "Mechanika CD-ROM"
+msgstr "DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:580
 msgid "DVD-R"
-msgstr ""
+msgstr "DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:581
 msgid "DVD-RW"
-msgstr ""
+msgstr "DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:582
-#, fuzzy
 msgid "CD-ROM/DVD-ROM"
-msgstr "CD-ROM"
+msgstr "CD-ROM/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:583
-#, fuzzy
 msgid "CD-ROM/DVD-RAM"
-msgstr "CD-ROM"
+msgstr "CD-ROM/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:584
-#, fuzzy
 msgid "CD-ROM/DVD-R"
-msgstr "CD-ROM"
+msgstr "CD-ROM/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:585
-#, fuzzy
 msgid "CD-ROM/DVD-RW"
-msgstr "CD-ROM"
+msgstr "CD-ROM/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:586
-#, fuzzy
 msgid "CD-R/DVD-ROM"
-msgstr "CD-ROM"
+msgstr "CD-R/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:587
 msgid "CD-R/DVD-RAM"
-msgstr ""
+msgstr "CD-R/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:588
 msgid "CD-R/DVD-R"
-msgstr ""
+msgstr "CD-R/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:589
 msgid "CD-R/DVD-RW"
-msgstr ""
+msgstr "CD-R/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:590
-#, fuzzy
 msgid "CD-RW/DVD-ROM"
-msgstr "CD-ROM"
+msgstr "CD-RW/DVD-ROM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:591
 msgid "CD-RW/DVD-RAM"
-msgstr ""
+msgstr "CD-RW/DVD-RAM"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:592
 msgid "CD-RW/DVD-R"
-msgstr ""
+msgstr "CD-RW/DVD-R"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:593
 msgid "CD-RW/DVD-RW"
-msgstr ""
+msgstr "CD-RW/DVD-RW"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:595
 msgid "Disk"
-msgstr ""
+msgstr "Disk"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:596
-#, fuzzy
 msgid "USB Drive"
-msgstr "Mechanika Zip"
+msgstr "Mechanika USB"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:597
 msgid "IEEE1394 Drive"
-msgstr ""
+msgstr "Mechanika IEEE1394"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:598
 msgid "CF"
-msgstr ""
+msgstr "CF"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:599
 msgid "SD/MMC"
-msgstr ""
+msgstr "SD/MMC"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:600
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:604
@@ -860,9 +843,8 @@ msgid "Memory Stick"
 msgstr "Memory Stick"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:601
-#, fuzzy
 msgid "Smart Media"
-msgstr "Memory Stick"
+msgstr "Smart Media"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:603
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:635
@@ -875,7 +857,7 @@ msgstr "Digitálny fotoaparát"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:606
 msgid "DVD"
-msgstr ""
+msgstr "DVD"
 
 #: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:822
 msgid "Root Volume"
@@ -889,7 +871,7 @@ msgstr "Zvukové CD"
 msgid "Unknown volume"
 msgstr "Neznámy disk"
 
-#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1122
 msgid "Network server"
 msgstr "Sieťový server"
 
@@ -1009,16 +991,16 @@ msgstr "Systém súborov"
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Neznáma GnomeVFSSeekPosition %d"
 
-#: modules/network-method.c:1395
+#: modules/network-method.c:1396
 msgid "Windows Network"
 msgstr "Sieť Windows"
 
-#: modules/sftp-method.c:1339
+#: modules/sftp-method.c:1346
 #, c-format
 msgid "The identity of the remote computer (%s) is unknown."
-msgstr ""
+msgstr "Identita vzdialeného počítača (%s) nie je známa."
 
-#: modules/sftp-method.c:1340
+#: modules/sftp-method.c:1347
 #, c-format
 msgid ""
 "This happens when you log in to a computer the first time.\n"
@@ -1026,14 +1008,19 @@ msgid ""
 "The identity sent by the remote computer is %s. If you want to be absolutely "
 "sure it is safe to continue, contact the system administrator."
 msgstr ""
+"To sa stane pri prvom prihlásení k počítaču.\n"
+"\n"
+"Identita odoslaná vzdialeným počítačom je %s. Ak chcete mať absolútnu "
+"istotu, že je bezpečné pokračovať, kontaktujte svojho systémového "
+"administrátora."
 
-#: modules/sftp-method.c:1348
+#: modules/sftp-method.c:1355
 msgid "Log In Anyway"
-msgstr ""
+msgstr "Aj tak sa prihlásiť"
 
-#: modules/sftp-method.c:1349
+#: modules/sftp-method.c:1356
 msgid "Cancel Login"
-msgstr ""
+msgstr "Zrušiť prihlásenie"
 
 #. FIXME: we probably shouldn't use printf to output the message
 #: modules/test-method.c:590
@@ -1096,113 +1083,97 @@ msgid "The exec argument to use for the default terminal application."
 msgstr "Argument používaný pre spustenie programu v štandardnom termináli."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-#, fuzzy
 msgid "Run the command in a terminal"
 msgstr "Spustiť program v termináli"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:2
 msgid "The command used to handle \"aim\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL aim, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:3
 msgid "The command used to handle \"callto\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL callto, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:4
 msgid "The command used to handle \"ghelp\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL ghelp, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-#, fuzzy
 msgid "The command used to handle \"h323\" URLs, if enabled."
-msgstr "True, ak sa má program pre toto URL spustiť v termináli."
+msgstr "Príkaz na podporu URL h323, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-#, fuzzy
 msgid "The command used to handle \"http\" URLs, if enabled."
-msgstr "True, ak sa má program pre toto URL spustiť v termináli."
+msgstr "Príkaz na podporu URL http, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-#, fuzzy
 msgid "The command used to handle \"https\" URLs, if enabled."
-msgstr "True, ak sa má program pre toto URL spustiť v termináli."
+msgstr "Príkaz na podporu URL https, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:8
 msgid "The command used to handle \"info\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL info, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:9
 msgid "The command used to handle \"mailto\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL mailto, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:10
 msgid "The command used to handle \"man\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL man, ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:11
 msgid "The command used to handle \"trash\" URLs, if enabled."
-msgstr ""
+msgstr "Príkaz na podporu URL \"trash\", ak je povolená."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-#, fuzzy
 msgid "The handler for \"aim\" URLs"
-msgstr "Podpora URL pre man"
+msgstr "Podpora URL pre aim"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:13
-#, fuzzy
 msgid "The handler for \"callto\" URLs"
 msgstr "Podpora URL pre callto"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-#, fuzzy
 msgid "The handler for \"ghelp\" URLs"
 msgstr "Podpora URL pre ghelp"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-#, fuzzy
 msgid "The handler for \"h323\" URLs"
-msgstr "Podpora URL pre H323"
+msgstr "Podpora URL pre h323"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-#, fuzzy
 msgid "The handler for \"http\" URLs"
-msgstr "Podpora URL pre ghelp"
+msgstr "Podpora URL pre http"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-#, fuzzy
 msgid "The handler for \"https\" URLs"
-msgstr "Podpora URL pre ghelp"
+msgstr "Podpora URL pre https"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-#, fuzzy
 msgid "The handler for \"info\" URLs"
 msgstr "Podpora URL pre info"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-#, fuzzy
 msgid "The handler for \"mailto\" URLs"
 msgstr "Podpora URL pre mailto"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-#, fuzzy
 msgid "The handler for \"man\" URLs"
 msgstr "Podpora URL pre man"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-#, fuzzy
 msgid "The handler for \"trash\" URLs"
-msgstr "Podpora URL pre kôš"
+msgstr "Podpora URL pre trash"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"aim\" "
 "URLs."
 msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre man."
+"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre aim."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"callto"
 "\" URLs."
@@ -1210,7 +1181,6 @@ msgstr ""
 "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre callto."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"ghelp\" "
 "URLs."
@@ -1218,31 +1188,27 @@ msgstr ""
 "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre ghelp."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"h323\" "
 "URLs."
 msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre H323."
+"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre h323."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"http\" "
 "URLs."
 msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre ghelp."
+"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre http."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"https\" "
 "URLs."
 msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre ghelp."
+"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre https."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"info\" "
 "URLs."
@@ -1250,7 +1216,6 @@ msgstr ""
 "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre info."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"mailto"
 "\" URLs."
@@ -1258,7 +1223,6 @@ msgstr ""
 "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre mailto."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"man\" "
 "URLs."
@@ -1266,97 +1230,79 @@ msgstr ""
 "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre man."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-#, fuzzy
 msgid ""
 "True if the command specified in the \"command\" key should handle \"trash\" "
 "URLs."
 msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre kôš."
+"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre trash."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-#, fuzzy
 msgid ""
 "True if the command used to handle this type of URL should be run in a "
 "terminal."
-msgstr "True, ak sa má program pre toto URL spustiť v termináli."
+msgstr "Nastavte na true, ak sa má program pre toto URL spustiť v termináli."
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:33
-#, fuzzy
 msgid "Whether the specified command should handle \"aim\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre man."
+msgstr "Či má určený príkaz spracovat URL aim"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:34
 #, fuzzy
 msgid "Whether the specified command should handle \"callto\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre callto."
+msgstr "Či má určený príkaz spracovat URL mailto"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:35
 #, fuzzy
 msgid "Whether the specified command should handle \"ghelp\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre ghelp."
+msgstr "Či má určený príkaz spracovat URL http"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:36
-#, fuzzy
 msgid "Whether the specified command should handle \"h323\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre H323."
+msgstr "Či má určený príkaz spracovat URL h323"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:37
-#, fuzzy
 msgid "Whether the specified command should handle \"http\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre ghelp."
+msgstr "Či má určený príkaz spracovat URL http"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:38
-#, fuzzy
 msgid "Whether the specified command should handle \"https\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre kôš."
+msgstr "Či má určený príkaz spracovat URL https"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:39
-#, fuzzy
 msgid "Whether the specified command should handle \"info\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre info."
+msgstr "Či má určený príkaz spracovat URL info"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:40
-#, fuzzy
 msgid "Whether the specified command should handle \"mailto\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre mailto."
+msgstr "Či má určený príkaz spracovat URL mailto"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:41
-#, fuzzy
 msgid "Whether the specified command should handle \"man\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre man."
+msgstr "Či má určený príkaz spracovat URL man"
 
 #: schemas/desktop_gnome_url_handlers.schemas.in.h:42
-#, fuzzy
 msgid "Whether the specified command should handle \"trash\" URLs"
-msgstr ""
-"Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre kôš."
+msgstr "Či má určený príkaz spracovat URL trash"
 
 #: schemas/system_dns_sd.schemas.in.h:1
 msgid ""
 "Comma separated list of dns-sd domains that should be visible in the network "
 "location."
 msgstr ""
+"Čiarkou oddelený zoznam dns-sd domén, ktoré majú byť viditeľné v sieťovom "
+"umiestnení."
 
 #: schemas/system_dns_sd.schemas.in.h:2
 msgid "Extra domains to look for dns-sd services in"
-msgstr ""
+msgstr "Ďalšie domény, v ktorých sa majú hľadať služby dnd-sd"
 
 #: schemas/system_dns_sd.schemas.in.h:3
 msgid "How to display local DNS-SD service"
-msgstr ""
+msgstr "Ako sa má zobraziť miestna služba DNS SD"
 
 #: schemas/system_dns_sd.schemas.in.h:4
 msgid "Possible values are \"merged\", \"separate\" and \"disabled\"."
-msgstr ""
+msgstr "Prípustné hodnoty sú \"merged\", \"separate\" a \"disabled\"."
 
 #: schemas/system_http_proxy.schemas.in.h:1
 msgid "Authenticate proxy server connections"
@@ -1520,65 +1466,8 @@ msgstr "Pracovná skupina SMB"
 msgid "The window workgroup the user is part of"
 msgstr "Pracovná skupina, ktorej členom je používateľ"
 
-#, fuzzy
-#~ msgid "The handler for HTTP URLs"
-#~ msgstr "Podpora URL pre HTTP"
-
-#, fuzzy
-#~ msgid "The handler for HTTPS URLs"
-#~ msgstr "Podpora URL pre HTTPS"
-
-#, fuzzy
 #~ msgid ""
-#~ "True if the command specified in the \"command\" key should handle HTTP "
-#~ "URLs."
-#~ msgstr ""
-#~ "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre HTTP."
-
-#, fuzzy
-#~ msgid ""
-#~ "True if the command specified in the \"command\" key should handle HTTPS "
-#~ "URLs."
-#~ msgstr ""
-#~ "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre HTTPS."
-
-#, fuzzy
-#~ msgid "Whether the specified command should handle HTTP URLs"
-#~ msgstr ""
-#~ "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre HTTP."
-
-#, fuzzy
-#~ msgid "Whether the specified command should handle HTTPS URLs"
-#~ msgstr ""
-#~ "Nastavte na true, ak program zadaný v \"príkaz\" podporuje URL pre HTTPS."
-
-#~ msgid "H323 URL handler"
-#~ msgstr "Podpora URL pre H323"
-
-#~ msgid "HTTP URL handler"
-#~ msgstr "Podpora URL pre HTTP"
-
-#~ msgid "HTTPS URL handler"
-#~ msgstr "Podpora URL pre HTTPS"
-
-#, fuzzy
-#~ msgid "aim URL handler"
-#~ msgstr "Podpora URL pre man"
-
-#~ msgid "callto URL handler"
-#~ msgstr "Podpora URL pre callto"
-
-#~ msgid "ghelp URL handler"
-#~ msgstr "Podpora URL pre ghelp"
-
-#~ msgid "info URL handler"
-#~ msgstr "Podpora URL pre info"
-
-#~ msgid "mailto URL handler"
-#~ msgstr "Podpora URL pre mailto"
-
-#~ msgid "man URL handler"
-#~ msgstr "Podpora URL pre man"
-
-#~ msgid "trash URL handler"
-#~ msgstr "Podpora URL pre kôš"
+#~ "Whether the specified command should handle \"callto\" URLsČi má určený "
+#~ "príkaz spracovat URL calltoWhether the specified command should handle "
+#~ "\"ghelp\" URLs"
+#~ msgstr "Či má určený príkaz spracovat URL ghelp"

@@ -1,3 +1,427 @@
+2005-02-21  Christian Kellner  <gicmo@gnome.org>
+	
+	*  NEWS:
+	Update for release
+
+	* configure.in: 
+	Correct version to 2.8.4
+
+2005-01-28  Vincent Untz  <vincent@vuntz.net>
+
+	* libgnomevfs/gnome-vfs-uri.c: (gnome_vfs_uri_extract_short_name): fix
+	to never return NULL. This happened with URIs that have encoded / in
+	the filename.
+	Fix bug #157723
+
+2005-01-16 Paolo Borelli <pborelli@katamail.com> 
+
+	* modules/sftp-method.c: always check gnome_vfs_unescape_string
+	return value.
+
+2005-1-08  Paolo Borelli  <pborelli@katamail.com>
+
+	* modules/sftp-method.c (do_move): honour the force_replace flag.
+
+2004-12-09  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-12-01  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-11-30  Sebastien Bacher  <seb128@debian.org>
+
+	* libgnomevfs/gnome-vfs-mime-info-cache.c:
+	(gnome_vfs_mime_get_all_desktop_entries):
+	Fix a memory leak, patch from Josselin Mouette <joss@debian.org>
+	(Closes: #159823).	
+
+2004-11-04  Vincent Noel  <vnoel@cox.net>
+
+	* modules/gzip-method.c (do_read): Return GNOME_VFS_ERROR_EOF when
+	we reach the end of a file with the gzip method. Fixes bug 157275.
+
+2004-11-01  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/http-authn.c: (http_authn_self_test):
+	* test/test-uri.c: (main):
+	Fix bogus warnings in later gcc (#156505).
+	Patch from Thomas Fitzsimmons
+
+2004-10-29  Ray Strode <rstrode@redhat.com>
+
+	* test/test-mime-info-cache.c: (foo):
+	return a value to silence gcc warning.
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version dump
+
+=== gnome-vfs 2.8.3 ===
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-utils.c: (filename_charset_cache_free),
+	(vfs_get_filename_charset),
+	(gnome_vfs_format_uri_for_display_internal),
+	(gnome_vfs_format_uri_for_display),
+	(gnome_vfs_make_uri_from_input_internal),
+	(gnome_vfs_make_uri_from_input):
+	Correctly handle the new forms of G_BROKEN_FILENAMES
+
+2004-10-27  Ray Strode  <rstrode@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-handlers.c
+	(gnome_vfs_mime_application_new_from_id):
+	Chomp spaces off command strings.
+
+2004-10-26  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-info-cache.c:
+	Handle default.list files that have lists of desktop files.
+
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-xfer.c (copy_symlink):
+	Handle existing files when copying symlinks.
+
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-xfer.c (gnome_vfs_new_directory_with_unique_name):
+	Set vfs_status on callback.
+
+2004-10-18  Ray Strode  <rstrode@redhat.com>
+
+	* libgnomevfs/eggdesktopentries.c
+	(egg_desktop_entries_parse_entry):
+	Reword error message to not break string freeze.
+
+2004-10-18  Ray Strode  <rstrode@redhat.com>
+
+	* libgnomevfs/eggdesktopentries.c
+	(egg_desktop_entries_parse_entry):
+	Error out if trying to add key-value pair to comment group
+	(Patch from Miloslav Trmac <mitr@redhat.com>)
+
+2004-10-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-hal-mounts.c (_hal_get_drive_name):
+	Use utf8 +/- char, not latin1.
+
+2004-10-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-info.c (handle_attribute):
+	Remove some debug spew.
+
+2004-10-15  Ryan Lortie  <desrt@desrt.ca>
+
+	* libgnomevfs/gnome-vfs-uri.c:
+	(split_toplevel_uri): Prevent uri->text from containing
+	a NULL pointer (as per bug #141051).
+	(set_uri_element): trivial style fix
+	
+
+2004-10-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-unix-mounts.c:
+	(_gnome_vfs_get_current_unix_mounts),
+	(_gnome_vfs_get_unix_mount_table):
+	Handle several changes to mtab/fstab in the same second.
+	Fix aix mtime check.
+	Patch from johnp@redhat.com
+
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* gnome-vfs-2.0.pc.in:
+	Add missing dependencies.
+	Patch from Juergen George Sawinski <j4y54w@sawinski.de>
+
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-socket-buffer.c (flush):
+	Correctly move memory in buffer when we've written some bytes.
+
+2004-10-11  Christian Kellner  <gicmo@gnome.org>
+
+	* libgnomevfs/Makefile.am:
+	Fix build issues with concurrent installs. Patch from
+	Chris Kelso <ckelso@rooneyholdings.com>.
+		
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump
+	
+=== gnome-vfs 2.8.2 ===
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/smb-method.c (do_read_directory),
+	(update_workgroup_cache): 
+	Ignore entries with empty name. (#154670)
+
+2004-10-09  Christian Kellner <gicmo@gnome.org>
+
+	* modules/http-neon-method.c:
+	Invoke received header callback before reading the data on a
+	GET (See comment in source code for more information)
+	Thanks to Sebastien Bacher  <seb128@debian.org> for
+	helping and testing. This should now finally fix bug
+	#150561.
+		
+2004-10-08  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Add --disable-howl flag.
+	Patch from Peter Johanson <latexer@gentoo.org>
+
+2004-10-07  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-monitor.c (send_uri_changes_now):
+	Don't touch send_at of already sent events.
+	Patch from Martin Wehner <martin.wehner@epost.de>
+
+2004-10-07  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/network-method.c: (notify_gconf_value_changed),
+	(vfs_module_init):
+	* modules/smb-method.c: (smb_uri_type), (do_open_directory):
+	Use the smb.conf defined workgroup as the default if not
+	set in gconf.
+	Patch from James Henstridge <james@jamesh.id.au>
+	
+2004-10-07  Christian Kellner  <gicmo@gnome.org>
+
+	* doc/tmpl/gnome-vfs-inet-connection.sgml:
+	* doc/tmpl/gnome-vfs-socket-buffer.sgml:
+	* doc/tmpl/gnome-vfs-socket.sgml:
+	API doc updates.
+
+2004-10-06  Christian Kellner  <gicmo@gnome-de.org>
+
+	* modules/http-neon-method.c: Add support for additional and received
+	headers callbacks. This fixes bug #150561.
+	Also fixed some debugging macros.
+	
+2004-10-05  Christian Kellner  <gicmo@gnome-de.org>
+
+	* modules/http-neon-method.c (http_transfer_start_read): Fix leaking a
+	req in a error case. This should fix bug #152842.
+
+2004-10-05  Christian Kellner  <gicmo@gnome-de.org>
+
+	* ne_gnomevfs.c (ne_sock_connect): Use the same method as in
+	ne_negotiate_ssl ( ). 
+	(ne_sock_close): Don't free the socket because it will get be
+	freed in gnome_vfs_socket_buffer_destroy ( ).
+	This should fix bug #154300.
+
+2004-10-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-handlers.c (gnome_vfs_mime_get_default_action_type):
+	Temporary workaround to make show_url handle folders. This needs
+	rethinking.
+
+2004-09-27  Ray Strode  <rstrode@redhat.com>
+	* libgnomevfs/eggdesktopentries.c
+	(egg_desktop_entries_get_locale_encoding):
+	swap if and else clauses to prevent needlessly 
+	misallocating gigabytes of memory  (Spotted 
+	by Nicholas Miell, bug 153759).
+
+2004-09-27  Ray Strode  <rstrode@redhat.com>
+	* libgnomevfs/eggdesktopentries.c
+	(egg_find_file_in_data_dirs): use g_error_new
+	instead g_set_error.
+	(egg_find_file_in_data_dir): get rid of the
+	secondary error cruft.
+	(egg_desktop_entries_free): free 
+	entries->default_group_name
+	(egg_desktop_entries_get_locale_country):
+	swap if and else clauses to prevent needlessly 
+	misallocating gigabytes of memory  (Spotted 
+	by Nicholas Miell, bug 153759).
+
+2004-09-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-unix-mounts.[ch]:
+	* libgnomevfs/gnome-vfs-volume-monitor-daemon.c:
+	Try to reuse children when getting dev_t by stating.
+	Fixes bug 151026. Patch from Morten Welinder.
+
+	* configure.in:
+	Post release version bump.
+	
+=== gnome-vfs 2.8.1 ===
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.8.1
+
+	* modules/http-proxy.c: (construct_gl_http_proxy):
+	Make sure proxy is non-empty before using it.
+	Patch from Mark McLoughlin.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/http-neon-method.c:
+	Don't modify the uri object passed in in http_context_set_uri
+	Handle redirects in do_move.
+	Make close_dir return OK, not NOT_SUPPORTED.
+	Resolve schema aliases for the target file in do_move.
+	Add some debug stuff.
+	
+	* modules/sftp-method.c: (sftp_connect), (sftp_connection_close):
+	Don't leak tty_fd.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/http-neon-method.c (do_seek):
+	Don't restart read on seek, which causes problems
+	for seek-to-end (#153153)
+	Patch from Mark McLoughlin.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* imported/neon/ne_gnomevfs.c: (ne_sock_close):
+	* libgnomevfs/gnome-vfs-dns-sd.c: (howl_input):
+	* libgnomevfs/gnome-vfs-resolve.c: (gnome_vfs_resolve):
+	* modules/http-neon-method.c: (neon_session_pool_destroy),
+	(http_context_free), (http_context_set_uri):
+	Fix some leaks and build issues (#151003)
+	Patches from Christian Kellner and Kjartan Maraas.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/sftp-method.c (sftp_connect):
+	Fix some leaks (#152839).
+	Patch from Christophe Fergeau.
+	
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/sftp-method.c (sftp_connect):
+	Use password from uri if availible (#152639).
+	Patch from Bastien Nocera.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-unix-mounts.c:
+	Include sys/vfstab.h if found (#152115)
+	Patch from danek.duvall@sun.com.
+	
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-unix-mounts.c:
+	Make stating actually work (#152114). Patch from danek.duvall@sun.com.
+
+2004-09-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-info-cache.c:
+	Cache global default lookups, to avoid re-reading and validating desktop files.
+	Blow away global cache if any directory changes.
+	Don't validate all desktop entries in the mime cache. Instead validate when used.
+	Don't limit defaults.list to reference desktop files from the same
+	directory. This means user defaults.list now works.
+	Lock mime_info_cache when getting file monitor callbacks.
+	separate mime.cache and defaults.list file change handling
+	Don't leak mime_info_cache on reload.
+	Remove defaults.list-only dirs.
+	
+2004-09-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-mime-info-cache.c (gnome_vfs_mime_info_cache_get_search_path) 
+	(gnome_vfs_mime_info_cache_get_defaults_search_path):
+	Don't reorder search paths.
+
+2004-09-16  JP Rosevear  <jpr@novell.com>
+
+	* modules/ftp-method.c (ftp_kerberos_login): use
+	GSS_C_NT_HOSTBASED_SERVICE always, since we define it if it
+	doesn't exist in configure.in (fixes heimdal)
+	(ftp_connection_destroy): use GSS_C_NO_CONTEXT define instead of
+	NULL and pass a pointer to the context rather than the context
+	itself which is what gss_delete_sec_context wants
+
+2004-09-16  Christophe Fergeau  <teuf@gnome.org>
+
+	* doc/*: more API doc updates
+
+2004-09-16  Christophe Fergeau  <teuf@gnome.org>
+
+	* libgnomevfs/gnome-vfs-drive.h:
+	* libgnomevfs/gnome-vfs-volume-monitor.c:
+	* doc/tmpl/gnome-vfs-drive.sgml: API doc updates
+
+2004-09-16  Christophe Fergeau  <teuf@gnome.org>
+
+	* libgnomevfs/xdgmimeglob.c:
+	* libgnomevfs/xdgmimemagic.c: fix memleaks (sync with upstream),
+	  fixes #152768 and #152771
+
+2004-09-16  Alexander Larsson  <alexl@redhat.com>
+
+	* modules/ftp-method.c:
+	Include the right gssapi headers.
+
+2004-09-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* modules/ftp-method.c: Fix debugging define
+	so it doesn't create leaks. Closes bug #152811.
+
+2004-09-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomevfs/gnome-vfs-mime-info.c: (handle_mime_info):
+	Plug one more leak. Closes bug #152754.
+
+2004-09-15  Christian Kellner  <gicmo@gnome-de.org>
+
+	* modules/http-neon-method.c (http_get_file_info):
+	Be a little more cautious and fall back to HEAD in any
+	case except a 207 result. This should fix bug #152577 and
+	also make gtik (the stock ticker applet) working again.
+
+2004-09-14  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	* modules/Makefile.am:
+	AC_SUBST GSSAPI_* vars, and use them
+
+2004-09-14  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomevfs/gnome-vfs-volume-monitor-client.c:
+	* libgnomevfs/gnome-vfs-volume-monitor-client.h:
+	* libgnomevfs/gnome-vfs-volume-monitor.c:
+	Allow unreffing the volume monitor after shutdown.
+
+2004-09-14  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Make kerberos detection actually work
+	
+	* modules/ftp-method.c: (try_kerberos), (ftp_connection_create):
+	Fail before requesting a password if we can't even
+	connect to the ftp site.
+
+2004-09-13  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump.
+
+=== gnome-vfs 2.8.0 ===
+
 2004-09-13  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:

@@ -60,6 +60,9 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);
 <link linkend="void">void</link>        <link linkend="gnome-vfs-volume-unref">gnome_vfs_volume_unref</link>          (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-connect-to-server">gnome_vfs_connect_to_server</link>     (<link linkend="char">char</link> *uri,
+                                             <link linkend="char">char</link> *display_name,
+                                             <link linkend="char">char</link> *icon);
 </synopsis>
 </refsynopsisdiv>
 
@@ -201,7 +204,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-compare"/>gnome_vfs_volume_compare ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_compare</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_volume_compare        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *a,
+<indexterm><primary>gnome_vfs_volume_compare</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_volume_compare        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *a,
                                              <link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *b);</programlisting>
 <para>
 </para>
@@ -221,7 +224,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-eject"/>gnome_vfs_volume_eject ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_eject</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_eject          (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume,
+<indexterm><primary>gnome_vfs_volume_eject</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_eject          (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -242,7 +245,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-activation-uri"/>gnome_vfs_volume_get_activation_uri ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_activation_uri</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_activation_uri
+<indexterm><primary>gnome_vfs_volume_get_activation_uri</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_activation_uri
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -259,7 +262,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-device-path"/>gnome_vfs_volume_get_device_path ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_device_path</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_device_path
+<indexterm><primary>gnome_vfs_volume_get_device_path</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_device_path
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -276,7 +279,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-device-type"/>gnome_vfs_volume_get_device_type ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_device_type</primary></indexterm><programlisting><link linkend="GnomeVFSDeviceType">GnomeVFSDeviceType</link> gnome_vfs_volume_get_device_type
+<indexterm><primary>gnome_vfs_volume_get_device_type</primary></indexterm><programlisting><link linkend="GnomeVFSDeviceType">GnomeVFSDeviceType</link> gnome_vfs_volume_get_device_type
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -293,7 +296,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-display-name"/>gnome_vfs_volume_get_display_name ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_display_name</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_display_name
+<indexterm><primary>gnome_vfs_volume_get_display_name</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_display_name
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -310,7 +313,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-drive"/>gnome_vfs_volume_get_drive ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_drive</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_volume_get_drive   (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_get_drive</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_volume_get_drive   (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -326,7 +329,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-filesystem-type"/>gnome_vfs_volume_get_filesystem_type ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_filesystem_type</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_filesystem_type
+<indexterm><primary>gnome_vfs_volume_get_filesystem_type</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_filesystem_type
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -343,7 +346,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-hal-udi"/>gnome_vfs_volume_get_hal_udi ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_hal_udi</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_hal_udi    (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_get_hal_udi</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_hal_udi    (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -359,7 +362,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-icon"/>gnome_vfs_volume_get_icon ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_icon</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_icon       (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_get_icon</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_volume_get_icon       (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -375,7 +378,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-id"/>gnome_vfs_volume_get_id ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      gnome_vfs_volume_get_id         (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_get_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      gnome_vfs_volume_get_id         (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -402,7 +405,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-get-volume-type"/>gnome_vfs_volume_get_volume_type ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_get_volume_type</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link> gnome_vfs_volume_get_volume_type
+<indexterm><primary>gnome_vfs_volume_get_volume_type</primary></indexterm><programlisting><link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link> gnome_vfs_volume_get_volume_type
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -419,7 +422,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-handles-trash"/>gnome_vfs_volume_handles_trash ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_handles_trash</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_handles_trash  (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_handles_trash</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_handles_trash  (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -435,7 +438,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-is-mounted"/>gnome_vfs_volume_is_mounted ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_is_mounted</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_mounted     (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_is_mounted</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_mounted     (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -451,7 +454,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-is-read-only"/>gnome_vfs_volume_is_read_only ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_is_read_only</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_read_only   (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_is_read_only</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_read_only   (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -467,7 +470,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-is-user-visible"/>gnome_vfs_volume_is_user_visible ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_is_user_visible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_user_visible
+<indexterm><primary>gnome_vfs_volume_is_user_visible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_volume_is_user_visible
                                             (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
@@ -484,7 +487,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-ref"/>gnome_vfs_volume_ref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_ref</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_ref        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_ref</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_volume_ref        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
@@ -511,7 +514,7 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-unmount"/>gnome_vfs_volume_unmount ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_unmount        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume,
+<indexterm><primary>gnome_vfs_volume_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_unmount        (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -532,13 +535,34 @@ enum        <link linkend="GnomeVFSVolumeType">GnomeVFSVolumeType</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-volume-unref"/>gnome_vfs_volume_unref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_volume_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_unref          (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
+<indexterm><primary>gnome_vfs_volume_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_volume_unref          (<link linkend="GnomeVFSVolume">GnomeVFSVolume</link> *volume);</programlisting>
 <para>
 </para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>volume</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-connect-to-server"/>gnome_vfs_connect_to_server ()</title>
+<indexterm><primary>gnome_vfs_connect_to_server</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_connect_to_server     (<link linkend="char">char</link> *uri,
+                                             <link linkend="char">char</link> *display_name,
+                                             <link linkend="char">char</link> *icon);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>display_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6

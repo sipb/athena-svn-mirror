@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 09:57+0200\n"
+"POT-Creation-Date: 2004-10-28 16:22+0200\n"
 "PO-Revision-Date: 2004-09-12 14:05+0100\n"
 "Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -33,21 +33,21 @@ msgstr "Methwyd ymgychwyn gnome vfs"
 msgid "File could not be opened: %s"
 msgstr "Methwyd agor y ffeil: %s"
 
-#: libgnomevfs/eggdesktopentries.c:328
+#: libgnomevfs/eggdesktopentries.c:324
 #, c-format
 msgid "Failed to open file '%s': %s"
 msgstr "Methwyd agor ffeil '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:341
+#: libgnomevfs/eggdesktopentries.c:337
 msgid "File is empty"
 msgstr "Mae'r ffeil yn wag"
 
-#: libgnomevfs/eggdesktopentries.c:363
+#: libgnomevfs/eggdesktopentries.c:359
 #, c-format
 msgid "Failed to read from file '%s': %s"
 msgstr "Methwyd darllen o'r ffeil '%s': %s"
 
-#: libgnomevfs/eggdesktopentries.c:575
+#: libgnomevfs/eggdesktopentries.c:572
 #, c-format
 msgid ""
 "desktop entries contain line '%s' which is not an entry, group, or comment"
@@ -55,33 +55,33 @@ msgstr ""
 "mae'r cofnodion penbwrdd yn cynnwys llinell '%s' nad yw'r gofnod, grŵp na "
 "sylw"
 
-#: libgnomevfs/eggdesktopentries.c:648
+#: libgnomevfs/eggdesktopentries.c:645 libgnomevfs/eggdesktopentries.c:670
 msgid "desktop entries file does not start with legal start group"
 msgstr "nid yw'r ffeil cofnodion penbwrdd yn cychwyn gyda grŵp cychwyn dilys"
 
-#: libgnomevfs/eggdesktopentries.c:705
+#: libgnomevfs/eggdesktopentries.c:711
 #, c-format
 msgid "desktop entries contain line '%s' which is not UTF-8"
 msgstr "mae'r cofnodion penbwrdd yn cynnwys llinell '%s' nad yw'n UTF-8"
 
-#: libgnomevfs/eggdesktopentries.c:728
+#: libgnomevfs/eggdesktopentries.c:734
 #, c-format
 msgid "desktop entries contain unknown encoding '%s'"
 msgstr "mae'r cofnodion penbwrdd yn cynnwys amgodiad anhysbys '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
-#: libgnomevfs/eggdesktopentries.c:1215
+#: libgnomevfs/eggdesktopentries.c:924 libgnomevfs/eggdesktopentries.c:1036
+#: libgnomevfs/eggdesktopentries.c:1221
 #, c-format
 msgid "desktop entries do not have group '%s'"
 msgstr "nid oes grŵp '%s' gan y cofnodion penbwrdd"
 
-#: libgnomevfs/eggdesktopentries.c:1042
+#: libgnomevfs/eggdesktopentries.c:1048
 #, c-format
 msgid "desktop entries do not have key '%s'"
 msgstr "nid oes allwedd '%s' gan y cofnodion penbwrdd"
 
-#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
-#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#: libgnomevfs/eggdesktopentries.c:1104 libgnomevfs/eggdesktopentries.c:1277
+#: libgnomevfs/eggdesktopentries.c:1419 libgnomevfs/eggdesktopentries.c:1544
 #, c-format
 msgid ""
 "desktop entries contain key '%s' which has value that cannot be interpreted."
@@ -89,7 +89,7 @@ msgstr ""
 "mae'r cofnodion penbwrdd yn cynnwys bysell '%s' sydd â gwerth ni ellir ei "
 "ddehongli"
 
-#: libgnomevfs/eggdesktopentries.c:1296
+#: libgnomevfs/eggdesktopentries.c:1302
 #, c-format
 msgid ""
 "desktop entries contain no translated value for key '%s' with locale '%s'."
@@ -97,21 +97,21 @@ msgstr ""
 "nid yw'r cofnodion penbwrdd yn cynnwys gwerth cyfieithiedig o'r bysell '%s' "
 "â'r locale '%s'."
 
-#: libgnomevfs/eggdesktopentries.c:2229
+#: libgnomevfs/eggdesktopentries.c:2235
 #, c-format
 msgid "desktop entries contain invalid escape sequence '%s'"
 msgstr "mae'r cofnodion penbwrdd yn cynnwys dilyniant dianc annilys '%s'"
 
-#: libgnomevfs/eggdesktopentries.c:2246
+#: libgnomevfs/eggdesktopentries.c:2252
 msgid "desktop entries contain escape character at end of line"
 msgstr "mae'r cofnodion penbwrdd yn cynnwys nod dianc ar ddiwedd llinell"
 
-#: libgnomevfs/eggdesktopentries.c:2271
+#: libgnomevfs/eggdesktopentries.c:2277
 #, c-format
 msgid "Value '%s' cannot be interpreted as a number."
 msgstr "Ni ellir dehongli'r gwerth '%s' fel rhif."
 
-#: libgnomevfs/eggdesktopentries.c:2298
+#: libgnomevfs/eggdesktopentries.c:2304
 #, c-format
 msgid "Value '%s' cannot be interpreted as a boolean."
 msgstr "Ni ellir dehongli'r gwerth '%s' fel gwerth booleaidd."
@@ -418,28 +418,28 @@ msgid "Operation stopped"
 msgstr "Ataliwyd y gweithrediad"
 
 #: libgnomevfs/gnome-vfs-mime-handlers.c:83
-#: libgnomevfs/gnome-vfs-mime-handlers.c:305
-#: libgnomevfs/gnome-vfs-mime-handlers.c:356
-#: libgnomevfs/gnome-vfs-mime-handlers.c:650
-#: libgnomevfs/gnome-vfs-mime-handlers.c:669
-#: libgnomevfs/gnome-vfs-mime-handlers.c:687
-#: libgnomevfs/gnome-vfs-mime-handlers.c:706
-#: libgnomevfs/gnome-vfs-mime-handlers.c:725
-#: libgnomevfs/gnome-vfs-mime-handlers.c:866
-#: libgnomevfs/gnome-vfs-mime-handlers.c:888
-#: libgnomevfs/gnome-vfs-mime-handlers.c:907
-#: libgnomevfs/gnome-vfs-mime-handlers.c:926
-#: libgnomevfs/gnome-vfs-mime-handlers.c:979
-#: libgnomevfs/gnome-vfs-mime-handlers.c:996
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
-#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
-#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
-#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
-#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
-#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
-#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
-#: libgnomevfs/gnome-vfs-mime-info.c:730
+#: libgnomevfs/gnome-vfs-mime-handlers.c:312
+#: libgnomevfs/gnome-vfs-mime-handlers.c:363
+#: libgnomevfs/gnome-vfs-mime-handlers.c:657
+#: libgnomevfs/gnome-vfs-mime-handlers.c:676
+#: libgnomevfs/gnome-vfs-mime-handlers.c:694
+#: libgnomevfs/gnome-vfs-mime-handlers.c:713
+#: libgnomevfs/gnome-vfs-mime-handlers.c:732
+#: libgnomevfs/gnome-vfs-mime-handlers.c:873
+#: libgnomevfs/gnome-vfs-mime-handlers.c:895
+#: libgnomevfs/gnome-vfs-mime-handlers.c:914
+#: libgnomevfs/gnome-vfs-mime-handlers.c:933
+#: libgnomevfs/gnome-vfs-mime-handlers.c:986
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1003
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1020
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1038
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1056
+#: libgnomevfs/gnome-vfs-mime-info.c:648 libgnomevfs/gnome-vfs-mime-info.c:655
+#: libgnomevfs/gnome-vfs-mime-info.c:663 libgnomevfs/gnome-vfs-mime-info.c:670
+#: libgnomevfs/gnome-vfs-mime-info.c:678 libgnomevfs/gnome-vfs-mime-info.c:695
+#: libgnomevfs/gnome-vfs-mime-info.c:702 libgnomevfs/gnome-vfs-mime-info.c:709
+#: libgnomevfs/gnome-vfs-mime-info.c:716 libgnomevfs/gnome-vfs-mime-info.c:724
+#: libgnomevfs/gnome-vfs-mime-info.c:731
 msgid ""
 "Deprecated function.  User modifications to the MIME database are no longer "
 "supported."
@@ -874,7 +874,7 @@ msgstr "CD Sain"
 msgid "Unknown volume"
 msgstr "Cyfrol anhysbys"
 
-#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1122
 msgid "Network server"
 msgstr "Gweinydd rhwydwaith"
 
@@ -998,16 +998,16 @@ msgstr "System Ffeil"
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "GnomeVFSSeekPosition anhysbys %d"
 
-#: modules/network-method.c:1395
+#: modules/network-method.c:1396
 msgid "Windows Network"
 msgstr "Rhwydwaith Windows"
 
-#: modules/sftp-method.c:1339
+#: modules/sftp-method.c:1346
 #, c-format
 msgid "The identity of the remote computer (%s) is unknown."
 msgstr "Nid yw hunaniaeth y cyfrifiadur pell (%s) yn hysbys."
 
-#: modules/sftp-method.c:1340
+#: modules/sftp-method.c:1347
 #, c-format
 msgid ""
 "This happens when you log in to a computer the first time.\n"
@@ -1020,11 +1020,11 @@ msgstr ""
 "bod yn hollol siwr ei fod hi'n ddiogel i fynd ymlaen, cysylltwch a gweinydd "
 "y system."
 
-#: modules/sftp-method.c:1348
+#: modules/sftp-method.c:1355
 msgid "Log In Anyway"
 msgstr "Mengofnodi Fodd Bynnag"
 
-#: modules/sftp-method.c:1349
+#: modules/sftp-method.c:1356
 msgid "Cancel Login"
 msgstr "Diddymu Mewngofnodi"
 

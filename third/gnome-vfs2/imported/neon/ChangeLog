@@ -1,3 +1,9 @@
+2004-09-16  Jeffrey Stedfast  <fejj@novell.com>
+
+	* Makefile.am: Add $(GSSAPI_CFLAGS) to INCLUDES section so that
+	ne_auth.c will have the proper include path for the gssapi
+	headers.
+
 2004-07-22  Dave Camp  <dave@novell.com>
 
 	* ne_auth.c:

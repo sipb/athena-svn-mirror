@@ -621,7 +621,7 @@ do_read (GnomeVFSMethod *method,
 	if (gzip_handle->last_z_result != Z_OK) {
 		if (gzip_handle->last_z_result == Z_STREAM_END) {
 			*bytes_read = 0;
-			return GNOME_VFS_OK;
+			return GNOME_VFS_ERROR_EOF;
 		} else
 			return result_from_z_result (gzip_handle->last_z_result);
 	} else if (gzip_handle->last_vfs_result != GNOME_VFS_OK) {

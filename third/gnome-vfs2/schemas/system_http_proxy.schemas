@@ -29,8 +29,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Използване на·HTTP·proxy</short>
-        <long>Включва прокси за HTTP в интернет</long>
+        <short>Използване на сървър-посредник за HTTP</short>
+        <long>Включва настройки за сървър-посредник за HTTP в интернет</long>
       </locale>
 
       <locale name="bn">
@@ -108,9 +108,14 @@
         <long>Active les paramètres de proxy lors de l&apos;accès HTTP sur Internet.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Usar proxy HTTP</short>
+        <long>Habilita as opcións de proxy ao acceder a HTTP a través de Internet.</long>
+      </locale>
+
       <locale name="gu">
-        <short>HTTP પ્રાેક્સીનો ઉપયોગ કરો</short>
-        <long>ઇન્ટરનેટ ઉપર HTTPને પ્રપ્ત કરતા હોઇએ ત્યારે પ્રોક્સી સુયોજનાઓને સક્રિય કરો.</long>
+        <short>HTTP પ્રોક્સીનો ઉપયોગ કરો</short>
+        <long>ઇન્ટરનેટ ઉપર HTTP ને પ્રપ્ત કરતા હોઇએ ત્યારે પ્રોક્સી સુયોજનાઓને સક્રિય કરો.</long>
       </locale>
 
       <locale name="he">
@@ -130,7 +135,7 @@
 
       <locale name="hu">
         <short>HTTP-proxy használata</short>
-        <long>Proxy-beállítások bekapcsolása interneten keresztüli HTTP-eléréskor.</long>
+        <long>Proxybeállítások bekapcsolása interneten keresztüli HTTP-eléréskor.</long>
       </locale>
 
       <locale name="id">
@@ -156,6 +161,11 @@
       <locale name="lt">
         <short>Naudoti HTTP tarpinę stotį</short>
         <long>Įjungia tarpinės stoties panaudojimą, kai Internatas naršomas naudojant HTTP.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Користи HTTP proxy</short>
+        <long>Ги вклучува подесувањата за proxy кога се пристапува на HTTP преку Интернет.</long>
       </locale>
 
       <locale name="mn">
@@ -193,6 +203,11 @@
         <long>Aktiverer proxy-innstillinger ved aksess via HTTP til Internett.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Diriša kemedi ya PFSK</short>
+        <long>E kgontšha dipeakanyo tša kemedi ge e diragatša PFSK inthaneteng.</long>
+      </locale>
+
       <locale name="pa">
         <short>HTTP ਪਰਾਕਸੀ ਵਰਤੋ</short>
         <long>ਪਰਾਕਸੀ ਨਿਰਧਾਰਨ ਨੂੰ ਯੋਗ ਕਰੋ, ਜਦੋ ਕਿ ਇੰਟਰਨੈਟ &apos;ਤੇ HTTP ਨੂੰ ਵਰਤਦੇ ਹੋ ।</long>
@@ -219,8 +234,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Использовать сервис прокси для протокола HTTP</short>
-        <long>Включает установки сервиса прокси для протокола HTTP через Интернет.</long>
+        <short>Использовать прокси-сервер для протокола HTTP</short>
+        <long>Включает установки прокси-сервера для протокола HTTP через Интернет.</long>
       </locale>
 
       <locale name="sk">
@@ -282,6 +297,11 @@
         <short>使用 HTTP 代理伺服器</short>
         <long>經網際網路存取 HTTP 時啟用代理伺服器設定。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isibambeli HTTP</short>
+        <long>Igunyaza uhlelo lokubambisa uma ungena ku-HTTP ku-lwembu jikelele.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/host</key>
@@ -315,8 +335,8 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTP прокси хост</short>
-        <long>Името·на·прокси·сървъра·за·HTTP·връзки</long>
+        <short>Име на сървъра-посредник за HTTP</short>
+        <long>Името на сървъра-посредник за HTTP връзки</long>
       </locale>
 
       <locale name="bn">
@@ -389,6 +409,11 @@
         <long>Le nom de la machine qui sert de proxy HTTP.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Nome do servidor proxy HTTP</short>
+        <long>O nome da máquina para usar como proxy HTTP.</long>
+      </locale>
+
       <locale name="gu">
         <short>HTTP પ્રોક્સી યજમાન નામ</short>
         <long>પ્રોક્સી HTTP through માટે યંત્રનુ નામ.</long>
@@ -411,7 +436,7 @@
 
       <locale name="hu">
         <short>HTTP-proxy gépnév</short>
-        
+        <long>A HTTP-proxy gépneve.</long>
       </locale>
 
       <locale name="id">
@@ -437,6 +462,11 @@
       <locale name="lt">
         <short>HTTP tarpinės stoties vardas</short>
         <long>Kompiuteris, teikiantis tarpinės HTTP stoties paslaugas.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Име на хост за HTTP proxy</short>
+        <long>Име на машината преку која се преминува за HTTP.</long>
       </locale>
 
       <locale name="mn">
@@ -474,6 +504,11 @@
         <long>Maskinnavn for HTTP-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Leina la moswari la kemedi la PFSK</short>
+        <long>Leina la motšhene gore le emele PFSK.</long>
+      </locale>
+
       <locale name="pa">
         <short>HTTP ਪਰਾਕਸੀ ਮੇਜ਼ਬਾਨ ਨਾਂ</short>
         <long>ਮਸ਼ੀਨ ਦਾ ਨਾਂ, ਜਿਸ ਰਾਹੀ ਪਰਾਕਸੀ HTTP</long>
@@ -500,8 +535,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Имя узла для сервиса прокси протокола HTTP</short>
-        <long>Имя узла для сервиса сервиса прокси протокола HTTP.</long>
+        <short>Имя прокси-сервера для протокола HTTP</short>
+        <long>Имя машины прокси-сервера для протокола HTTP.</long>
       </locale>
 
       <locale name="sk">
@@ -563,6 +598,11 @@
         <short>HTTP 代理伺服器主機名稱</short>
         <long>HTTP 代理伺服器的機器名稱。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wegama lommemi ku-HTTP</short>
+        <long>Igama lomshini kusibambeli se-HTTP sidlulele.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/port</key>
@@ -597,7 +637,7 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTP прокси порт</short>
+        <short>Порт на сървъра-посредник за HTTP</short>
         
       </locale>
 
@@ -671,9 +711,14 @@
         <long>Le port de la machine définie dans « /system/http_proxy/host » utilisée comme proxy.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Porto do servidor proxy HTTP</short>
+        <long>O porto da máquina definida en &quot;/system/http_proxy/host&quot; que se usa como proxy.</long>
+      </locale>
+
       <locale name="gu">
         <short>HTTP પ્રોક્સી પોર્ટ</short>
-        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/http_પ્રોક્સી/યજમાન&quot; કે જેની તમે સીધીપ્રોક્સી કરો છો.</long>
+        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/http_પ્રોક્સી/યજમાન&quot; કે જેની તમે સીધી પ્રોક્સી કરો છો.</long>
       </locale>
 
       <locale name="he">
@@ -693,7 +738,7 @@
 
       <locale name="hu">
         <short>HTTP-proxy port</short>
-        
+        <long>A &quot;/system/http_proxy/host&quot; kulcsban proxyként megadott gép portja.</long>
       </locale>
 
       <locale name="id">
@@ -719,6 +764,11 @@
       <locale name="lt">
         <short>HTTP tarpinės stoties prievadas</short>
         <long>Tarpinės http stoties prievadas, saugomas „/system/http_proxy/host“ rakte.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Порта за HTTP proxy</short>
+        
       </locale>
 
       <locale name="mn">
@@ -756,6 +806,11 @@
         <long>Port på maskinen som brukes som proxy og er definert i «/system/http_proxy/host».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dikopantšhwa le khomphuthara tša kemedi tša PFSK</short>
+        <long>Lefelo leo mo motšheneng le hlalositšwego ke &quot;/system/http_proxy/host&quot; yo o mo emelago.</long>
+      </locale>
+
       <locale name="pa">
         <short>HTTP ਪਰਾਕਸੀ ਪੋਰਟ</short>
         <long>ਮਸ਼ੀਨ ਤੇ ਪੋਰਟ &quot;/system/http_proxy/host&quot; ਨੇ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਹੈ, ਜੋ ਕਿ ਤੁਸੀ ਰਾਹੀਪਰਾਕਸੀ ਚਲਾ ਰਹੇ ਹੋ ।</long>
@@ -782,8 +837,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Порт для сервиса прокси протокола HTTP</short>
-        <long>Порт на узле, определённом ключом &quot;/system/http_proxy/host&quot; для сервиса прокси.</long>
+        <short>Порт прокси-сервера для протокола HTTP</short>
+        <long>Порт на машине, определённой ключом &quot;/system/http_proxy/host&quot; для сервиса прокси.</long>
       </locale>
 
       <locale name="sk">
@@ -845,6 +900,11 @@
         <short>HTTP 代理伺服器埠號</short>
         <long>在 &quot;/system/http_proxy/host&quot; 中定義的代理伺服器的埠號。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wetheku ku-HTTP</short>
+        <long>Itheku emshinini lichazwa nge &quot;/system/http_proxy/host&quot; obambisela ngayo.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/use_authentication</key>
@@ -876,7 +936,7 @@
       </locale>
 
       <locale name="bg">
-        <short>Идентифицира се пред прокси сървъра</short>
+        <short>Идентификация на връзката със сървъра-посредник</short>
         
       </locale>
 
@@ -950,9 +1010,14 @@
         <long>Si vrai, alors les connexions au serveur proxy nécessitent une authentification. Le couple nom d&apos;utilisateur/mot de passe défini dans « /system/http_proxy/authentication_user » and « /system/http_proxy/authentication_password ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Usar autenticación nas conexións ao servidor proxy</short>
+        <long>Se está activada, as conexións ao servidor proxy precisarán de autenticación. O nome de usuario e o contrasinal están definidos polas claves &quot;/system/http_proxy/authentication_user&quot; e &quot;/system/http_proxy/authentication_password&quot;.</long>
+      </locale>
+
       <locale name="gu">
         <short>પ્રોક્સી સર્વરના સંપર્કોને સાચા છે કે નહિ તે તપાસો</short>
-        <long>જો સાચુ, તો પ્રોક્સી સર્વર સાથે સંપર્ક ધરાવતા માટે સાચા છે કે નહિ તેની ખાતચરી કરવી જરુરી છે.વપરાશકર્તા/પાસવર્ડ કોમ્બો અે &quot;/સિસ્ટમ/http_પ્રોક્સી/authentication_વપારાશકર્તા&quot; અને &quot;/સિસ્ટમ/http_પ્રોક્સી/authentication_પાસવર્ડ&quot;ને દ્વારા વ્યાખ્યાયિત હતા.</long>
+        <long>જો સાચુ, તો પ્રોક્સી સર્વર સાથે સંપર્ક ધરાવતા માટે સાચા છે કે નહિ તેની ખાતચરી કરવી જરુરી છે. વપરાશકર્તા/પાસવર્ડ કોમ્બો એ &quot;/સિસ્ટમ/http_પ્રોક્સી/authentication_વપારાશકર્તા&quot; અને &quot;/સિસ્ટમ/http_પ્રોક્સી/authentication_પાસવર્ડ&quot; ના દ્વારા વ્યાખ્યાયિત હતા.</long>
       </locale>
 
       <locale name="he">
@@ -971,7 +1036,7 @@
       </locale>
 
       <locale name="hu">
-        
+        <short>Kapcsolatok hitelesítése a proxy kiszolgálókhoz</short>
         <long>Ha be van kapcsolva, akkor a proxy kiszolgálóhoz történő kapcsolódáshoz hitelesítés szükséges. A felhasználónév/jelszó párost a &quot;/system/http_proxy/authentication_user&quot; és a &quot;/system/http_proxy/authentication_password&quot; adja meg.</long>
       </locale>
 
@@ -998,6 +1063,11 @@
       <locale name="lt">
         <short>Tarpinėje stotyje naudoti autorizavimą</short>
         <long>Jei teigiama, jungtims per tarpinę stotį yra būtinas autorizavimas. Vartotojo vardas ir slaptažodis yra saugomas „/system/http_proxy/authentication_user“ ir „/system/http_proxy/authentication_password“ raktuose.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Барај proxy автентикација за врските до серверот</short>
+        <long>Ако е вистина, тогаш врските до proxy серверот бараат автентикација. Корисничкото име и лозинката дефинирани од страна на &quot;/system/http_proxy/authentication_user&quot; и &quot;/system/http_proxy/authentication_password&quot;.</long>
       </locale>
 
       <locale name="mn">
@@ -1033,6 +1103,11 @@
       <locale name="no">
         <short>Autentiser forbindelser til proxytjener</short>
         <long>Hvis sann vil tilkoblinger til proxytjener kreve autentisering. Brukernavn/passord-kombinasjonen er definert i «/system/http_proxy/authentication_user» og «/system/http_proxy/authentication_password».</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Tiišetša dikgokagano tša seabi tšeo e lego kemedi</short>
+        <long>Ge eba e le therešo, dikgokagano tšeo di yago go seabi sa kemedi di nyaka tiišetšo. Motswako wa leina la modiriši/lentšu-phetišo tše hlaloswago ke &quot;/system/http_proxy/authentication_user&quot; le &quot;/system/http_proxy/authentication_password&quot;.</long>
       </locale>
 
       <locale name="pa">
@@ -1126,6 +1201,11 @@
 &quot;/system/http_proxy/authentication_user&quot; 和
 &quot;/system/http_proxy/authentication_password&quot; 中設定。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Qiniseka ngesixhumaniso sesibenzisi esingumbambeli</short>
+        <long>Uma kuyiqiniso, izixhumanisi kusimbambeli sesisebenzisi sidinga isiqiniseko. Ibizo-lesisetshenziso/umngenisi-bizo elicacicwa ngo &quot;/system/http_proxy/authentication_user&quot; kanye &quot;/system/http_proxy/authentication_password&quot;.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/authentication_user</key>
@@ -1154,8 +1234,8 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTP прокси потребител</short>
-        <long>Потребителско име, което да се подава като идентификация при използване на HTTP прокси.</long>
+        <short>Потребителско име за сървъра-посредник за HTTP</short>
+        <long>Потребителско име, което да се подава като идентификация при използване на сървър-посредник за HTTP.</long>
       </locale>
 
       <locale name="bn">
@@ -1228,9 +1308,14 @@
         <long>Nom d&apos;utilisateur à fournir comme authentification lors de l&apos;utilisation du proxy HTTP.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Usuario para o proxy HTTP</short>
+        <long>Nome de usuario empregado na autenticación ao usar o proxy HTTP.</long>
+      </locale>
+
       <locale name="gu">
         <short>HTTP પ્રોક્સી વપરાશકર્તા</short>
-        <long>જ્યારે HTTPની પ્રાેક્સીનુ કામ કરતા હોઇએ ત્યારે સાચાની ખાતરી કરવા માટે આપવાનુ વપરાશકર્તાનુ નામ.</long>
+        <long>જ્યારે HTTPની પ્રોક્સીનુ કામ કરતા હોઇએ ત્યારે સાચાની ખાતરી કરવા માટે આપવાનુ વપરાશકર્તાનુ નામ.</long>
       </locale>
 
       <locale name="he">
@@ -1250,7 +1335,7 @@
 
       <locale name="hu">
         <short>HTTP-proxy felhasználónév</short>
-        
+        <long>HTTP-proxy használatakor hitelesítéshez használandó felhasználónév.</long>
       </locale>
 
       <locale name="id">
@@ -1276,6 +1361,11 @@
       <locale name="lt">
         <short>HTTP tarpinės stoties vartotojas</short>
         <long>Vartotojo vardas naudojamas jungiantis per HTTP tarpinę stotį.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Корисничко име за HTTP proxy</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1313,6 +1403,11 @@
         <long>Brukernavn som skal oppgis som autentisering ved bruk av HTTP-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Leina la modiriši la kemedi la PFSK</short>
+        <long>Leina la modiriši la go feta bjalo ka tiišetšo ge go dirwa kemedi ya PFSK.</long>
+      </locale>
+
       <locale name="pa">
         <short>HTTP ਪਰਾਕਸੀ ਉਪਭੋਗਤਾ ਨਾਂ</short>
         <long>ਉਪਭੋਗਤਾ ਨਾਂ, ਪ੍ਰਮਾਣਿਕਤਾ ਨੂੰ ਲੰਘਣ ਲਈ ਜਦੋ ਕਿ HTTP ਪਰਾਕਸੀਇੰਗ ਕਰ ਰਹੇ ਹੋ ।</long>
@@ -1339,8 +1434,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Имя пользователя для сервиса прокси протокола HTTP</short>
-        <long>Имя пользователя для использования в авторизации сервисом прокси для протокола HTTP.</long>
+        <short>Имя пользователя прокси-сервера для протокола HTTP</short>
+        <long>Имя пользователя для использования при авторизации на прокси-сервере для протокола HTTP.</long>
       </locale>
 
       <locale name="sk">
@@ -1402,6 +1497,11 @@
         <short>HTTP 代理伺服器使用者名稱</short>
         <long>當進行 HTTP 代理時通過認證的使用者名稱。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli webizo-lukusetshenziswa ku-HTTP</short>
+        <long>Umsebenzisi gama ezedlula njengesiqiniseko mawenza isibambeli se-HTTP.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/authentication_password</key>
@@ -1430,8 +1530,8 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTP прокси парола</short>
-        <long>Парола, която да се подава като идентификация на HTTP проксито.</long>
+        <short>Парола за сървъра-посредник за HTTP</short>
+        <long>Парола, която да се подава като идентификация на сървъра-посредник за HTTP.</long>
       </locale>
 
       <locale name="bn">
@@ -1504,9 +1604,14 @@
         <long>Mot de passe à fournir comme authentification lors de l&apos;utilisation du proxy HTTP.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Contrasinal para o proxy HTTP</short>
+        <long>Contrasinal empregado na autenticación ao usar o proxy HTTP.</long>
+      </locale>
+
       <locale name="gu">
         <short>HTTP પ્રોક્સી પાસવર્ડ</short>
-        <long>જ્યારે HTTPની પ્રોક્સી કરતા હોઇએ ત્યારે સાચુ છે કે નહિ તેની ખાતરી કરવા માટે આપવાનો પાસવર્ડ.</long>
+        <long>જ્યારે HTTP ની પ્રોક્સી કરતા હોઇએ ત્યારે સાચુ છે કે નહિ તેની ખાતરી કરવા માટે આપવાનો પાસવર્ડ.</long>
       </locale>
 
       <locale name="he">
@@ -1526,7 +1631,7 @@
 
       <locale name="hu">
         <short>HTTP-proxy jelszó</short>
-        
+        <long>HTTP-proxy használatakor hitelesítéshez használandó jelszó.</long>
       </locale>
 
       <locale name="id">
@@ -1552,6 +1657,11 @@
       <locale name="lt">
         <short>HTTP tarpinės stoties slaptažodis</short>
         <long>Slaptažodis, naudojamas jungiantis per HTTP tarpinę stotį.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Лозинка за HTTP proxy</short>
+        <long>Лозинка за преминување на автентикацијата кога се работи преку HTTP proxy.</long>
       </locale>
 
       <locale name="mn">
@@ -1589,6 +1699,11 @@
         <long>Passord som skal oppgis ved autentisering for bruk av HTTP-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Lentšu-phetišo la kemedi la PFSK</short>
+        <long>Lentšu-phetišo le tla fetago bjalo ka tiišetšo ge go dirwa boemedi bja PFSK.</long>
+      </locale>
+
       <locale name="pa">
         <short>HTTP ਪਰਾਕਸੀ ਗੁਪਤ-ਕੋਡ</short>
         <long>ਗੁਪਤ-ਕੋਡ, ਪ੍ਰਮਾਣਿਕਤਾ ਨੂੰ ਲੰਘ ਲਈ ਜਦੋ ਕਿ HTTP ਪਰਾਕਸੀਇੰਗ ਕੀਤੀ ਜਾ ਰਹੀ ਹੋਵੇ ।</long>
@@ -1615,8 +1730,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Пароль для сервиса прокси протокола HTTP</short>
-        <long>Пароль для авторизации сервисом прокси протокола HTTP.</long>
+        <short>Пароль прокси-сервера для протокола HTTP</short>
+        <long>Пароль для авторизации на прокси-сервере протокола HTTP.</long>
       </locale>
 
       <locale name="sk">
@@ -1678,6 +1793,11 @@
         <short>HTTP 代理伺服器密碼</short>
         <long>當進行 HTTP 代理時通過認證的密碼。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli womngenisi-bizo ku-HTTP</short>
+        <long>Umngenisi-bizo wokungena njengesiqiniseko uma wenza isibambiso se-HTTP.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/http_proxy/ignore_hosts</key>
@@ -1716,8 +1836,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Не-прокси хостове</short>
-        <long>Този ключ съдържа списък с хостове, които за свързани директно, вместо през прокси (ако е активно). Стойностите могат да са хостове, домейни(*.foo.com), IP адреси на хостове(и IPv4, и IPv6) и мрежови адреси с мрежова маска (192.168.0.0/24).</long>
+        <short>Сървъри, които да не минават през сървър-посредник</short>
+        <long>Този ключ съдържа списък с хостове, които за свързани директно, вместо през сървър-посредник (ако е активно). Стойностите могат да са хостове, домейни (*.foo.com), IP адреси на хостове(и IPv4, и IPv6) и мрежови адреси с мрежова маска (192.168.0.0/24).</long>
       </locale>
 
       <locale name="bn">
@@ -1790,9 +1910,14 @@
         <long>Cette clé contient une liste d&apos;hôtes qui peuvent être contactés directement,plutôt que par un proxy (si il est actif). Les valeurs peuvent être des nom d&apos;hôtes,des domaines (en utilisant un caractère joker comme *.toto.fr), des adresses IPd&apos;hôte (IPv4 et IPv6) et des addresses réseau avec un masque (comme 192.168.0.0/24).</long>
       </locale>
 
+      <locale name="gl">
+        <short>Servidores que non usan proxy</short>
+        <long>Esta clave contén unha lista de servidores que deben ser accedidos directamente, en vez de a través do proxy (se está habilitado). Os valores poden ser nomes de servidor, dominios (usando comodíns de expansión como *.foo.com), enderezos IP (IPv4 ou IPv6) e enderezos de rede con máscara (como 192.168.0.0/24).</long>
+      </locale>
+
       <locale name="gu">
-        <short>યજમાનો માટે કોઇ પ્રાેક્સી નથી</short>
-        <long>આ કી અેવા યજમાનોની યાદી ધરાવે છે કે જે પ્રત્યક્ષ રીતે સંકળાયેલા છે, પ્રોક્સીથી નહિ(જો તે સક્રિયહોય તે). કિંમતો યજમાનના નામો, પ્રદેશો (શરુઆતનુ વાઇલ્ડકાર્ડ વાપરીને જેવુ કે*.foo.com), IP યજનામ સરનામુ(બંને IPv4 અને IPv6) અને નેટવર્કસરનામુ નેટમાસ્કની સાથે(જેવુ કે ૧૯૨.૧૬૮.૦.૦/૨૪).</long>
+        <short>યજમાનો માટે કોઇ પ્રોક્સી નથી</short>
+        <long>આ કી એવા યજમાનોની યાદી ધરાવે છે કે જે પ્રત્યક્ષ રીતે સંકળાયેલા છે, પ્રોક્સીથી નહિ (જો તે સક્રિયહોય તે). કિંમતો યજમાનના નામો, પ્રદેશો (શરુઆતનુ વાઇલ્ડકાર્ડ વાપરીને જેવુ કે *.foo.com), IP યજનામ સરનામુ (બંને IPv4 અને IPv6) અને નેટવર્ક સરનામુ નેટમાસ્કની સાથે (જેવુ કે ૧૯૨.૧૬૮.૦.૦/૨૪).</long>
       </locale>
 
       <locale name="he">
@@ -1808,6 +1933,11 @@
       <locale name="hr">
         <short>Računala bez proxy-a</short>
         <long>Ovaj ključ sadrži popis računala koji su direktno povezani, radije nego pomoću proxy-a (ako je uopće uključen). Vrijednosti mogu biti nazivi računala, domene (koristeći početne zamjenske znakove kao *.foo.com), IP adrese računala (obje IPv4 i IPv6) i mrežne adrese s mrežnim maskama (npr. 192.168.0.0/24).</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Proxy nélkül elérhető kiszolgálók</short>
+        <long>Ez a kulcs azon kiszolgálók listáját tartalmazza, amelyekhez közvetlenül kapcsolódik, proxy használata nélkül (ha az aktív). Az értékek lehetnek kiszolgálónevek, tartományok (kezdő helyettesítő karakterek használhatóak, pl. *.akarmi.hu), IP-kiszolgálócímek (IPv4 és IPv6 egyaránt) és hálózati címek hálózati maszkkal (pl. 192.168.0.0/24).</long>
       </locale>
 
       <locale name="id">
@@ -1833,6 +1963,11 @@
       <locale name="lt">
         <short>Adresai pasiekiami nenaudojant tarpinės stoties</short>
         <long>Šis raktas saugo adresus, prie kurių yra jungiamasi tiesiogiai, o ne per tarpinę stotį (jei tokia naudojama). Reikšmės gali saugoti mašinų vardus, domenus (su priekyje esančių apibendrinančiu simboliu, kaip *.example.com), mašinų IP adresus (tiek IPv4, tiek IPv6) bei tinklų adresus su tinklo kaukėmis (kažkas panašaus į 192.168.0.0/24).</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Хостови без proxy</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1870,6 +2005,11 @@
         <long>Denne nøkkelen inneholder en liste med verter som har direkte forbindelse i stedet for å gå via proxy (hvis denne er aktiv). Verdiene kan være vertsnavn, domener (med jokertegn som *.domene.no), IP-adresse for verten (både IPv4 og IPv6) og nettverksadresser med en nettmaske (som 192.168.0.0/24).</long>
       </locale>
 
+      <locale name="nso">
+        <short>Baswari bao e sego dikemedi</short>
+        <long>Senotlelo se se na le lelokelelo la baswari bao ba kgokagantšwego ka go lebanya, go e na le go feta go kemedi (e a šoma). Mehola e ka ba maina a moswari, maina ( go dirišwa karata e šele e bjalo ka *.foo.com), aterese ya moswari ya IP (bobedi IPv4 le IPv6) le diaterese tša neteweke tšeo di nago le seširo sa nete (selo se swanago le 192.168.0.0/24).</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕੋਈ ਪਰਾਕਸੀ ਮੇਜ਼ਬਾਨ ਨਹੀ</short>
         <long>ਇਹ ਕੀ ਉਹਨਾਂ ਮੇਜ਼ਬਾਨਾਂ ਦੀ ਸੂਚੀ ਉਪਲੱਬਧ ਕਾਰਵਾਉਦੀ ਹੈ, ਜੋ ਸਿੱਧੇ ਜੁਡ਼ੇ ਹਨ, ਨਾਕਿ ਪਰਾਕਸੀ(ਜੇ ਸਰਗਰਮ ਹੈ)।  ਮੁੱਲ ਮੇਜ਼ਬਾਨ ਨਾਂ, ਡੋਮੇਨ (ਸ਼ੁਰੂਆਤੀ wildcard ਜਿਵੇਕਿ *.foo.com ਵਰਤਕੇ), IP ਮੇਜ਼ਬਾਨ ਐਡਰਸ਼ (ਦੋਵੇ IPv4 ਅਤੇ IPv6) ਅਤੇ ਨੈਟਵਰਕ ਐਡਰਨ ਨਾਲ ਨੈਟਮਾਸਕ(netmask) (ਜਿਵੇ ਕਿ 192.168.0.0/24)</long>
@@ -1896,8 +2036,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Узлы вне сервиса прокси</short>
-        <long>Этот ключ содержит список узлов, соединение с которыми осуществляется напрямую, минуя сервис прокси (если последний активен). Значения могут быть именами узлов, доменами (с использованием расширителей типа *.foo.com), адресами узлов протокола IP (в вариантах IPv4 и IPv6) и сетевыми адресами с использованием маски (наподобие 192.168.0.0/24).</long>
+        <short>Узлы, доступные без прокси</short>
+        <long>Этот ключ содержит список узлов, соединение с которыми осуществляется напрямую, минуя прокси-сервер (если последний используется). Значения могут быть именами узлов, доменами (с использованием расширителей типа *.foo.com), адресами узлов протокола IP (в вариантах IPv4 и IPv6) и сетевыми адресами с использованием маски (наподобие 192.168.0.0/24).</long>
       </locale>
 
       <locale name="sk">
@@ -1959,6 +2099,11 @@
         <short>不使用代理伺服器的主機</short>
         <long>這設定鍵中包含了不是通過代理伺服器（如果它有啟用），而是使用直接連線的主機清單。設定值可以是主機名稱，網域名稱（使用萬用字元如 *.foo.com），IP 主機地址（IPv4 及 IPV6 亦可）和包括網路遮罩的網路地址（如 192.168.0.0/24）。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Ummemi ongayisibambisi</short>
+        <long>Lenkinobho iqukethe uhlu lwezimmemi ezixhunywe ngqo, kuno kuthi usebenzise isibambeli (uma sisebenza). Amanani kungaba amabizo-mmemi, indawo (usebenzisa isikhethi sokuqala njenge *.foo.com), amakheli ommemi IP (omabili oIPv4 ne IPv6) kanye nekheli lolwembu nesidleke zokuzivala ubuso (into enjenge 192.168.0.0/24).</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/mode</key>
@@ -1993,8 +2138,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Режим на конфигурация на прокси</short>
-        <long>Изберете режим на настройка на прокси. Поддържани стойности са &quot;няма&quot;, &quot;ръчен&quot;, &quot;автоматичен&quot;</long>
+        <short>Режим на конфигурация на сървър-посредник</short>
+        <long>Изберете режим на настройка на сървър-посредник. Поддържани стойности са &quot;няма&quot;, &quot;ръчен&quot;, &quot;автоматичен&quot;</long>
       </locale>
 
       <locale name="bn">
@@ -2067,9 +2212,14 @@
         <long>Sélectionner le mode de configuration du proxy. Les modes supportés sont « none », « manual », « auto ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Modo de configuración do proxy</short>
+        <long>Indica o modo de configuración do proxy. Os valores poden ser &quot;none&quot; (ningún), &quot;manual&quot;, ou &quot;auto&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>પ્રાેક્સી રુપરેખાંકનની સ્થિતિ</short>
-        <long>પ્રોક્સી રુપરેખાંકનની સ્થિતિ પસંદ કરો. આધારિત કિંમતો &quot;કોઇનહિ&quot;, &quot;માનવીય રીતે&quot;, &quot;આપોઆપ&quot; છે.</long>
+        <short>પ્રોક્સી રુપરેખાંકનની સ્થિતિ</short>
+        <long>પ્રોક્સી રુપરેખાંકનની સ્થિતિ પસંદ કરો. આધારિત કિંમતો &quot;કોઇ નંહિ&quot;, &quot;માનવીય રીતે&quot;, &quot;આપોઆપ&quot; છે.</long>
       </locale>
 
       <locale name="he">
@@ -2088,8 +2238,8 @@
       </locale>
 
       <locale name="hu">
-        <short>Proxy-beállítás módja</short>
-        <long>Válassza ki a proxy-beállítás módját. Támogatott értékek: &quot;none&quot;, &quot;manual&quot;, &quot;auto&quot;.</long>
+        <short>Proxybeállítás módja</short>
+        <long>Válassza ki a proxybeállítás módját. Támogatott értékek: &quot;none&quot;, &quot;manual&quot;, &quot;auto&quot;.</long>
       </locale>
 
       <locale name="id">
@@ -2115,6 +2265,11 @@
       <locale name="lt">
         <short>Tarpinės stoties nustatymų režimas</short>
         <long>Pasirinkite tarpinės stoties nustatymų režimą. Galimos reikšmės yra &quot;joks&quot;, &quot;rankinis&quot;, &quot;auto&quot;.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Режим за конфигурирање на proxy</short>
+        <long>Изберете го режимот за конфигурирање на proxy. Поддржани вредности се &quot;ништо&quot;, &quot;рачно&quot;, &quot;автоматски&quot;.</long>
       </locale>
 
       <locale name="mn">
@@ -2152,6 +2307,11 @@
         <long>Velg konfigurasjonsmodus for proxy. Verdier som er støttet er «none», «manual», «auto».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Mokgwa wa go fetola sebopego ga kemedi</short>
+        <long>Kgetha mokgwa wa go fetola sebopego wa kemedi. Mehola e thekgwago ke &quot;ga e gona&quot;, &quot;ya maitirelo&quot;, &quot;itiragalelago&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਪਰਾਕਸੀ ਸੰਰਚਨਾ ਮੋਡ</short>
         <long>ਪਰਾਕਸੀ ਸੰਰਚਨਾ ਮੋਡ ਦੀ ਚੋਣ ਸੰਭਵ ਮੁੱਲ ਹਨ &quot;ਕੁਝ ਨਹੀ&quot;, &quot;ਦਸਤੀ&quot;, &quot;ਸਵੈ&quot; ।</long>
@@ -2178,7 +2338,7 @@
       </locale>
 
       <locale name="ru">
-        <short>Режим конфигурации сервиса прокси</short>
+        <short>Режим конфигурации прокси-серверов</short>
         <long>Режим конфигурации сервиса прокси. Возможные значения &quot;none&quot; (&quot;отсутствует&quot;), &quot;manual&quot; (&quot;ручной&quot;), &quot;auto&quot; (&quot;автоматический&quot;).</long>
       </locale>
 
@@ -2241,6 +2401,11 @@
         <short>代理伺服器設置模式</short>
         <long>選擇代理伺服器設置模式。支援的值有 &quot;none&quot;，&quot;manual&quot;，&quot;auto&quot;。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Isimo sesibambiso sesilinganisi</short>
+        <long>Khetha isimo sesibambiso sesilinganisi. Amanani asekelwe yilawa &quot;ngekho&quot;, &quot;manual&quot;, &quot;zenzakalelayo&quot;.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/secure_host</key>
@@ -2269,8 +2434,8 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTPS прокси хост</short>
-        <long>Името·на·прокси·сървъра·за·HTTPS·връзки</long>
+        <short>Име на сървъра-посредник за HTTPS</short>
+        <long>Името на сървъра-посредник за HTTPS връзки</long>
       </locale>
 
       <locale name="bn">
@@ -2343,6 +2508,11 @@
         <long>Le nom de la machine qui sert de proxy HTTP sécurisé.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Nome do servidor proxy HTTP seguro</short>
+        <long>O nome da máquina para usar como proxy HTTP seguro.</long>
+      </locale>
+
       <locale name="gu">
         <short>સુરક્ષિત HTTP પ્રોક્સી યજમાન નામ</short>
         <long>સુરક્ષિત પ્રોક્સી HTTP through માટે યંત્રનુ નામ.</long>
@@ -2365,7 +2535,7 @@
 
       <locale name="hu">
         <short>Secure HTTP-proxy gépnév</short>
-        
+        <long>A biztonságos HTTP-proxy gépneve.</long>
       </locale>
 
       <locale name="id">
@@ -2391,6 +2561,11 @@
       <locale name="lt">
         <short>Tarpinė saugaus HTTP stotis</short>
         <long>Kompiuteris, teikiantis tarpinės saugaus HTTP stoties paslaugas.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Име на хост за безбеден HTTP proxy</short>
+        <long>Име на машината преку која безбедно се преминува за HTTP.</long>
       </locale>
 
       <locale name="mn">
@@ -2428,6 +2603,11 @@
         <long>Maskinnavn for HTTPS-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Leina la moswari la kemedi la PFSK le šireletšegilego</short>
+        <long>Leina la motšhene gore le emele PFSK e šireletšegilego.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸੁਰਖਿਅਤ HTTP ਪਰਾਕਸੀ ਮੇਜ਼ਬਾਨ ਨਾਂ</short>
         <long>ਮਸ਼ੀਨ ਦਾ ਨਾਂ, ਜਿਸ ਰਾਹੀ ਪਰਾਕਸੀ ਸੁਰਖਿਅਤ HTTP</long>
@@ -2454,8 +2634,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Узел для сервиса прокси защищённого протокола HTTP</short>
-        <long>Имя узла для сервиса сервиса прокси защищённого протокола HTTP.</long>
+        <short>Имя прокси-сервера для защищённого протокола HTTP</short>
+        <long>Имя машины прокси-сервера для защищённого протокола HTTP.</long>
       </locale>
 
       <locale name="sk">
@@ -2517,6 +2697,11 @@
         <short>安全 HTTP 代理伺服器主機名稱</short>
         <long>安全 HTTP 代理伺服器的機器名稱。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wegama lommemi ku-HTTP elikhuselekile</short>
+        <long>Igama lomshini kusibambeli ikhusele i-HTTP ekudluleni.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/secure_port</key>
@@ -2546,7 +2731,7 @@
       </locale>
 
       <locale name="bg">
-        <short>HTTPS прокси порт</short>
+        <short>Порт на сървъра-посредник за HTTPS</short>
         
       </locale>
 
@@ -2620,9 +2805,14 @@
         <long>Le port de la machine définie dans « /system/proxy/secure_host » utilisée comme proxy.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Porto do servidor proxy HTTP seguro</short>
+        <long>O porto da máquina definida en &quot;/system/proxy/secure_host&quot; que se usa como proxy.</long>
+      </locale>
+
       <locale name="gu">
         <short>સુરક્ષિત HTTP પ્રોક્સી પોર્ટ</short>
-        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/સુરક્ષિત_યજમાન&quot; કે જેની તમે સીધીપ્રોક્સી કરો છો.</long>
+        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/સુરક્ષિત_યજમાન&quot; કે જેની તમે સીધી પ્રોક્સી કરો છો.</long>
       </locale>
 
       <locale name="he">
@@ -2642,7 +2832,7 @@
 
       <locale name="hu">
         <short>Secure HTTP-proxy port</short>
-        
+        <long>A &quot;/system/proxy/secure_host&quot; kulcsban proxyként megadott gép portja.</long>
       </locale>
 
       <locale name="id">
@@ -2668,6 +2858,11 @@
       <locale name="lt">
         <short>Saugaus HTTP tarpinės stoties prievadas</short>
         <long>Tarpinės saugaus http stoties prievadas, saugomas „/system/http_proxy/host“ rakte.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Безбедена HTTP proxy порта</short>
+        
       </locale>
 
       <locale name="mn">
@@ -2705,6 +2900,11 @@
         <long>Port på maskinen som brukes som proxy og er definert i «/system/proxy/secure_host».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dikopantšhwa le khomphuthara tša PFSK tše šireletšegilego</short>
+        <long>Lefelo leo mo motšheneng le hlalositšwego ke &quot;/system/proxy/secure_host&quot; tšeo o di emelago.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸੁਰਖਿਅਤ HTTP ਪਰਾਕਸੀ ਪੋਰਟ</short>
         <long>ਮਸੀਨ ਤੇ ਪੋਰਟ &quot;/system/proxy/secure_host&quot; ਨੇ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਹੈ, ਜੋ ਕਿ ਤੁਸੀ ਰਾਹੀਪਰਾਕਸੀ ਚਲਾ ਰਹੇ ਹੋ ।</long>
@@ -2731,8 +2931,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Порт для сервиса прокси защищённого протокола HTTP</short>
-        <long>Порт на узле, определённом ключом &quot;/system/proxy/secure_host&quot; для сервиса прокси.</long>
+        <short>Порт прокси-сервера для защищённого протокола HTTP</short>
+        <long>Порт на машине, определённой ключом &quot;/system/proxy/secure_host&quot; для сервиса прокси.</long>
       </locale>
 
       <locale name="sk">
@@ -2794,6 +2994,11 @@
         <short>安全 HTTP 代理伺服器埠號</short>
         <long>在 &quot;/system/proxy/secure_host&quot; 中定義的代理伺服器的埠號。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wethuku ku-HTTP okhuselekile</short>
+        <long>Itheku emshinini lichazwa nge &quot;/system/proxy/secure_host&quot; obambisela ngayo.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/ftp_host</key>
@@ -2827,8 +3032,8 @@
       </locale>
 
       <locale name="bg">
-        <short>FTP прокси хост</short>
-        <long>Името на прокси сървъра за FTP връзки</long>
+        <short>Име на сървъра-посредник за FTP</short>
+        <long>Името на сървъра-посредник за FTP връзки</long>
       </locale>
 
       <locale name="bn">
@@ -2901,6 +3106,11 @@
         <long>Le nom de la machine qui sert de proxy FTP.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Nome do servidor proxy FTP</short>
+        <long>O nome da máquina para usar como proxy FTP.</long>
+      </locale>
+
       <locale name="gu">
         <short>FTP પ્રોક્સી યજમાન નામ</short>
         <long>પ્રોક્સી FTP through માટે યંત્રનુ નામ.</long>
@@ -2923,7 +3133,7 @@
 
       <locale name="hu">
         <short>FTP-proxy gépnév</short>
-        
+        <long>Az FTP-proxy gépneve.</long>
       </locale>
 
       <locale name="id">
@@ -2949,6 +3159,11 @@
       <locale name="lt">
         <short>FTP tarpinės stoties vardas</short>
         <long>Kompiuteris, teikiantis tarpinės FTP stoties paslaugas.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Име на хост за FTP proxy</short>
+        <long>Име на машината преку која се преминува за FTP.</long>
       </locale>
 
       <locale name="mn">
@@ -2986,6 +3201,11 @@
         <long>Maskinnavn for FTP-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Leina la moswari la kemedi la PFF</short>
+        <long>Leina la motšhene gore le emele PFF.</long>
+      </locale>
+
       <locale name="pa">
         <short>FTP ਪਰਾਕਸੀ ਮੇਜ਼ਬਾਨ ਨਾਂ</short>
         <long>ਮਸ਼ੀਨ ਦਾ ਨਾਂ, ਜਿਸ ਰਾਹੀ ਪਰਾਕਸੀ FTP</long>
@@ -3012,8 +3232,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Имя узла для сервиса прокси протокола FTP</short>
-        <long>Имя узла для сервиса сервиса прокси протокола FTP.</long>
+        <short>Имя прокси-сервера для протокола FTP</short>
+        <long>Имя машины прокси-сервера для протокола FTP.</long>
       </locale>
 
       <locale name="sk">
@@ -3075,6 +3295,11 @@
         <short>FTP 代理伺服器主機名稱</short>
         <long>FTP 代理伺服器的機器名稱。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wegama lommemi ku-FTP</short>
+        <long>Igama lomshini kusibambeli se-FTP sidlulele.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/ftp_port</key>
@@ -3109,7 +3334,7 @@
       </locale>
 
       <locale name="bg">
-        <short>FTP прокси порт</short>
+        <short>Порт на сървъра-посредник за FTP</short>
         
       </locale>
 
@@ -3183,9 +3408,14 @@
         <long>Le port de la machine définie dans « /system/proxy/ftp_host » utilisée comme proxy.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Porto do servidor proxy FTP</short>
+        <long>O porto da máquina definida en &quot;/system/proxy/ftp_host&quot; que se usa como proxy.</long>
+      </locale>
+
       <locale name="gu">
         <short>FTP પ્રોક્સી પોર્ટ</short>
-        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/ftp_યજમાન&quot; કે જેની તમે સીધીપ્રોક્સી કરો છો.</long>
+        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/ftp_યજમાન&quot; કે જેની તમે સીધી પ્રોક્સી કરો છો.</long>
       </locale>
 
       <locale name="he">
@@ -3205,7 +3435,7 @@
 
       <locale name="hu">
         <short>FTP-proxy port</short>
-        
+        <long>A &quot;/system/proxy/ftp_host&quot; kulcsban proxyként megadott gép portja.</long>
       </locale>
 
       <locale name="id">
@@ -3231,6 +3461,11 @@
       <locale name="lt">
         <short>FTP tarpinės stoties prievadas</short>
         <long>Tarpinės ftp stoties prievadas, saugomas „/system/http_proxy/host“ rakte.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Порта за FTP proxy</short>
+        
       </locale>
 
       <locale name="mn">
@@ -3268,6 +3503,11 @@
         <long>Port på maskinen som brukes som proxy og er definert i «/system/proxy/ftp_host».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dikopantšhwa le khomphuthara tša kemedi tša PFF</short>
+        <long>Lefelo leo mo motšheneng le hlalositšwego ke &quot;/system/proxy/ftp_host&quot; yo o mo emelago.</long>
+      </locale>
+
       <locale name="pa">
         <short>FTP ਪਰਾਕਸੀ ਪੋਰਟ</short>
         <long>ਮਸੀਨ ਤੇ ਪੋਰਟ &quot;/system/proxy/ftp_host&quot; ਨੇ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਹੈ, ਜੋ ਕਿ ਤੁਸੀ ਰਾਹੀਪਰਾਕਸੀ ਚਲਾ ਰਹੇ ਹੋ ।</long>
@@ -3294,8 +3534,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Порт для сервиса прокси протокола FTP</short>
-        <long>Порт на узле, определённом ключом &quot;/system/proxy/ftp_host&quot; для сервиса прокси.</long>
+        <short>Порт прокси-сервера для протокола FTP</short>
+        <long>Порт на машине, определённой ключом &quot;/system/proxy/ftp_host&quot; для сервиса прокси.</long>
       </locale>
 
       <locale name="sk">
@@ -3357,6 +3597,11 @@
         <short>FTP 代理伺服器埠號</short>
         <long>在 &quot;/system/proxy/ftp_host&quot; 中定義的代理伺服器的埠號。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umbambeli wetheku Ku-FTP</short>
+        <long>Itheku emshinini lichazwa nge &quot;/system/proxy/ftp_host&quot; obambisela ngayo.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/socks_host</key>
@@ -3390,8 +3635,8 @@
       </locale>
 
       <locale name="bg">
-        <short>SOCKS·прокси·хост</short>
-        <long>Името·на·прокси·сървъра·за·SOCKS·връзки</long>
+        <short>Име на сървъра-посредник за SOCKS</short>
+        <long>Името на сървъра-посредник за SOCKS връзки</long>
       </locale>
 
       <locale name="bn">
@@ -3464,8 +3709,13 @@
         <long>Le nom de machine qui sert de proxy socks.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Nome do servidor proxy SOCKS</short>
+        <long>O nome da máquina para usar como proxy socks.</long>
+      </locale>
+
       <locale name="gu">
-        <short>SOCKS પ્રાેક્સી યજમાન નામ</short>
+        <short>SOCKS પ્રોક્સી યજમાન નામ</short>
         <long>પ્રોક્સી socks through માટે યંત્રનુ નામ.</long>
       </locale>
 
@@ -3486,7 +3736,7 @@
 
       <locale name="hu">
         <short>SOCKS-proxy gépnév</short>
-        
+        <long>A socks-proxy gépneve.</long>
       </locale>
 
       <locale name="id">
@@ -3512,6 +3762,11 @@
       <locale name="lt">
         <short>SOCKS tarpinės stoties vardas</short>
         <long>Kompiuteris, teikiantis tarpinės socks stoties paslaugas.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>SOCKS proxy име на хост</short>
+        
       </locale>
 
       <locale name="mn">
@@ -3549,6 +3804,11 @@
         <long>Maskinnavn for SOCKS-proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Leina la moswari la kemedi la SOCKS</short>
+        <long>Leina la motšhene gore le emele dikausu.</long>
+      </locale>
+
       <locale name="pa">
         <short>SOCKS ਪਰਾਕਸੀ ਮੇਜ਼ਬਾਨ ਨਾਂ</short>
         <long>ਮਸ਼ੀਨ ਦਾ ਨਾਂ, ਜਿਸ ਰਾਹੀ ਪਰਾਕਸੀ ਸਾਕਟ</long>
@@ -3575,8 +3835,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Узел для сервиса прокси протокола SOCKS</short>
-        <long>Имя узла для сервиса сервиса прокси протокола SOCKS.</long>
+        <short>Имя прокси-сервера для протокола SOCKS</short>
+        <long>Имя машины прокси-сервера для протокола SOCKS.</long>
       </locale>
 
       <locale name="sk">
@@ -3638,6 +3898,11 @@
         <short>SOCKS 代理伺服器主機名稱</short>
         <long>socks 代理伺服器的機器名稱。</long>
       </locale>
+
+      <locale name="zu">
+        <short>umbambeli wegama lommemi ku-SOCKS</short>
+        <long>Igama lomshini kusibambeli sesocks sidlulele.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/socks_port</key>
@@ -3667,7 +3932,7 @@
       </locale>
 
       <locale name="bg">
-        <short>SOCKS прокси порт</short>
+        <short>Порт на сървъра-посредник за SOCKS</short>
         
       </locale>
 
@@ -3741,9 +4006,14 @@
         <long>Le·port de la machine définie dans « /system/proxy/socks_host » utilisée comme proxy.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Porto do servidor proxy SOCKS</short>
+        <long>O porto da máquina definida en &quot;/system/proxy/socks_host&quot; que se usa como proxy.</long>
+      </locale>
+
       <locale name="gu">
-        <short>SOCKS પ્રાેક્સી પોર્ટ</short>
-        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/socks_યજમાન&quot; કે જેની તમે સીધીપ્રોક્સી કરો છો.</long>
+        <short>SOCKS પ્રોક્સી પોર્ટ</short>
+        <long>યંત્ર પર વ્યાખ્યાયિત પોર્ટ &quot;/સિસ્ટમ/પ્રોક્સી/socks_યજમાન&quot; કે જેની તમે સીધી પ્રોક્સી કરો છો.</long>
       </locale>
 
       <locale name="he">
@@ -3763,7 +4033,7 @@
 
       <locale name="hu">
         <short>SOCKS-proxy port</short>
-        
+        <long>A &quot;/system/proxy/socks_host&quot; kulcsban proxyként megadott gép portja.</long>
       </locale>
 
       <locale name="id">
@@ -3789,6 +4059,11 @@
       <locale name="lt">
         <short>SOCKS tarpinės stoties prievadas</short>
         <long>Tarpinės socks stoties prievadas, saugomas „/system/http_proxy/host“ rakte.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>SOCKS proxy порта</short>
+        
       </locale>
 
       <locale name="mn">
@@ -3826,6 +4101,11 @@
         <long>Port på maskinen som brukes som proxy og er definert i «/system/proxy/socks_host».</long>
       </locale>
 
+      <locale name="nso">
+        <short>Dikopantšhwa le khomphuthara tša kemedi tša SOCKS</short>
+        <long>Lefelo leo mo motšeneng le hlalositšwego ke &quot;/system/proxy/socks_host&quot; tšeo o di emelago.</long>
+      </locale>
+
       <locale name="pa">
         <short>SOCKS ਪਰਾਕਸੀ ਪੋਰਟ</short>
         <long>ਮਸ਼ੀਨ ਤੇ ਪੋਰਟ&quot;/system/proxy/socks_host&quot; ਨੇ ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਹੈ, ਜੋ ਕਿ ਤੁਸੀ ਰਾਹੀਪਰਾਕਸੀ ਚਲਾ ਰਹੇ ਹੋ ।</long>
@@ -3852,8 +4132,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Порт для сервиса прокси протокола SOCKS</short>
-        <long>Порт на узле, определённом ключом &quot;/system/proxy/socks_host&quot; для сервиса прокси.</long>
+        <short>Порт прокси-сервера для протокола SOCKS</short>
+        <long>Порт на машине, определённой ключом &quot;/system/proxy/socks_host&quot; для сервиса прокси.</long>
       </locale>
 
       <locale name="sk">
@@ -3915,6 +4195,11 @@
         <short>SOCKS 代理伺服器埠號</short>
         <long>在 &quot;/system/proxy/socks_host&quot; 中定義的代理伺服器的埠號。</long>
       </locale>
+
+      <locale name="zu">
+        <short>umbambeli wetheku ku-SOCKS</short>
+        <long>Itheku emshinini lichazwa nge &quot;/system/proxy/socks_host&quot; obambisela ngayo.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/system/proxy/autoconfig_url</key>
@@ -3948,8 +4233,8 @@
       </locale>
 
       <locale name="bg">
-        <short>URL за автоматични настройки на прокси</short>
-        <long>URL, което дава стойности за прокси настройки.</long>
+        <short>URL за автоматични настройки на сървъра-посредник</short>
+        <long>URL, което дава стойности за настройките на сървъра-посредник.</long>
       </locale>
 
       <locale name="bn">
@@ -4022,6 +4307,11 @@
         <long>L&apos;URL qui fournit les valeurs de configuration du proxy.</long>
       </locale>
 
+      <locale name="gl">
+        <short>URL de configuración automática do proxy</short>
+        <long>URL que fornece os valores de configuración do proxy.</long>
+      </locale>
+
       <locale name="gu">
         <short>આપોઆપ પ્રોક્સી રુપરેખાંકિત URL</short>
         <long>URL કે જે પ્રોક્સીની રુપરેખાંકનની કિંમતો આપે છે.</long>
@@ -4040,6 +4330,11 @@
       <locale name="hr">
         <short>Automatska po postavljanje proxy URL-a</short>
         <long>URL koji omogućuje postavljanje vrijednosti proxy-a</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Automatikus proxybeállítás URL-je</short>
+        <long>A proxy beállításokat tartalmazó URL.</long>
       </locale>
 
       <locale name="id">
@@ -4065,6 +4360,11 @@
       <locale name="lt">
         <short>Automatinių tarpinės stoties nustatymų adresas</short>
         <long>Adresas, kuriame saugomi tarpinės stoties nustatymai</long>
+      </locale>
+
+      <locale name="mk">
+        <short>URL за автоматска конфигурација на proxy</short>
+        <long>URL кое што снабдува вредност за конфигурација на proxy</long>
       </locale>
 
       <locale name="mn">
@@ -4102,6 +4402,11 @@
         <long>URL som oppgir verdier for konfigurasjon av proxy.</long>
       </locale>
 
+      <locale name="nso">
+        <short>STS ya go fetola sebopego ya kemedi yeo e itiragalelago</short>
+        <long>STS yeo e fanago ka mehola ya go fetola sebopego ga kemedi.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਵੈ ਪਰਾਕਸੀ ਸੰਰਚਨਾ ਯੂਆਰਐਲ਼</short>
         <long>ਯੂਆਰਐਲ ਜੋ ਕਿ ਪਰਾਕਸੀ ਸੰਰਚਨਾ ਮੁੱਲ ਉਪਲੱਬਧ ਕਰਵਾਉਦਾ ਹੈ ।</long>
@@ -4128,8 +4433,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Ссылка (URL) на автоматическую конфигурацию серсиса прокси</short>
-        <long>Ссылка (URL), предоставляющая значения для автоматической конфигурации сервиса прокси.</long>
+        <short>URL автоматической настройки прокси</short>
+        <long>Ссылка (URL), предоставляющая значения для автоматической конфигурации прокси-серверов.</long>
       </locale>
 
       <locale name="sk">
@@ -4190,6 +4495,11 @@
       <locale name="zh_TW">
         <short>代表自動代理伺服器設定的 URL</short>
         <long>提供代理伺服器設置值的 URL</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Isilinganisi esingumbambeli esizenzekalelayo URL</short>
+        <long>iURL enikezela ngamanani esilinganisi sesibambeli.</long>
       </locale>
     </schema>
   </schemalist>

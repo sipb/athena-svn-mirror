@@ -1,11 +1,16 @@
 <!-- ##### SECTION Title ##### -->
-gnome-vfs-socket
+Unified network I/O
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Posix style network input/output functions.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+The GnomeVFSSocket function family unifies network I/O through functions
+similar to the standard POSIX read/write functions. The main difference is
+that all operations are cancellable through the standard GnomeVFS cancellation
+mechanism and you can specify a maximum amount of time an operation may take
+through #gnome_vfs_socket_set_timeout.
 
 </para>
 

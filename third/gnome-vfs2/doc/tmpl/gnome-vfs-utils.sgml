@@ -23,6 +23,34 @@ various utilities functions to manipulate uris
 @Returns: 
 
 
+<!-- ##### FUNCTION gnome_vfs_format_uri_for_display ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_url_show ##### -->
+<para>
+
+</para>
+
+@url: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_url_show_with_env ##### -->
+<para>
+
+</para>
+
+@url: 
+@envp: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gnome_vfs_escape_string ##### -->
 <para>
 
@@ -80,6 +108,15 @@ various utilities functions to manipulate uris
 
 
 <!-- ##### FUNCTION gnome_vfs_make_uri_canonical ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_canonical_strip_fragment ##### -->
 <para>
 
 </para>

@@ -25,7 +25,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 #define     <link linkend="GNOME-VFS-DRIVE-CLASS-CAPS">GNOME_VFS_DRIVE_CLASS</link>           (k)
 <link linkend="gint">gint</link>        <link linkend="gnome-vfs-drive-compare">gnome_vfs_drive_compare</link>         (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *a,
                                              <link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *b);
-<link linkend="void">void</link>        <link linkend="gnome-vfs-drive-eject">gnome_vfs_drive_eject</link>           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *volume,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-drive-eject">gnome_vfs_drive_eject</link>           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);
 <link linkend="char">char</link>*       <link linkend="gnome-vfs-drive-get-activation-uri">gnome_vfs_drive_get_activation_uri</link>
@@ -42,6 +42,8 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-drive-get-mounted-volumes">gnome_vfs_drive_get_mounted_volumes</link>
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-drive-volume-list-free">gnome_vfs_drive_volume_list_free</link>
+                                            (<link linkend="GList">GList</link> *volumes);
 <link linkend="GType">GType</link>       <link linkend="gnome-vfs-drive-get-type">gnome_vfs_drive_get_type</link>        (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-drive-is-connected">gnome_vfs_drive_is_connected</link>    (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-drive-is-mounted">gnome_vfs_drive_is_mounted</link>      (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);
@@ -211,7 +213,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-compare"/>gnome_vfs_drive_compare ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_compare</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_drive_compare         (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *a,
+<indexterm><primary>gnome_vfs_drive_compare</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_drive_compare         (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *a,
                                              <link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *b);</programlisting>
 <para>
 </para>
@@ -231,7 +233,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-eject"/>gnome_vfs_drive_eject ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_eject</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_eject           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *volume,
+<indexterm><primary>gnome_vfs_drive_eject</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_eject           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -239,7 +241,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><parameter>volume</parameter>&nbsp;:</term>
+<varlistentry><term><parameter>drive</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
@@ -252,7 +254,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-activation-uri"/>gnome_vfs_drive_get_activation_uri ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_activation_uri</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_activation_uri
+<indexterm><primary>gnome_vfs_drive_get_activation_uri</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_activation_uri
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
@@ -269,7 +271,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-device-path"/>gnome_vfs_drive_get_device_path ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_device_path</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_device_path (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_get_device_path</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_device_path (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -285,7 +287,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-device-type"/>gnome_vfs_drive_get_device_type ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_device_type</primary></indexterm><programlisting><link linkend="GnomeVFSDeviceType">GnomeVFSDeviceType</link> gnome_vfs_drive_get_device_type
+<indexterm><primary>gnome_vfs_drive_get_device_type</primary></indexterm><programlisting><link linkend="GnomeVFSDeviceType">GnomeVFSDeviceType</link> gnome_vfs_drive_get_device_type
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
@@ -302,7 +304,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-display-name"/>gnome_vfs_drive_get_display_name ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_display_name</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_display_name
+<indexterm><primary>gnome_vfs_drive_get_display_name</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_display_name
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
@@ -319,7 +321,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-hal-udi"/>gnome_vfs_drive_get_hal_udi ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_hal_udi</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_hal_udi     (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_get_hal_udi</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_hal_udi     (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -335,7 +337,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-icon"/>gnome_vfs_drive_get_icon ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_icon</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_icon        (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_get_icon</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_drive_get_icon        (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -351,7 +353,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-id"/>gnome_vfs_drive_get_id ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      gnome_vfs_drive_get_id          (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_get_id</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      gnome_vfs_drive_get_id          (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -367,7 +369,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-mounted-volume"/>gnome_vfs_drive_get_mounted_volume ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_mounted_volume</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_drive_get_mounted_volume
+<indexterm><primary>gnome_vfs_drive_get_mounted_volume</primary></indexterm><programlisting><link linkend="GnomeVFSVolume">GnomeVFSVolume</link>* gnome_vfs_drive_get_mounted_volume
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
@@ -384,7 +386,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-get-mounted-volumes"/>gnome_vfs_drive_get_mounted_volumes ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_get_mounted_volumes</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_drive_get_mounted_volumes
+<indexterm><primary>gnome_vfs_drive_get_mounted_volumes</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_drive_get_mounted_volumes
                                             (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
@@ -396,6 +398,20 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-drive-volume-list-free"/>gnome_vfs_drive_volume_list_free ()</title>
+<indexterm><primary>gnome_vfs_drive_volume_list_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_volume_list_free
+                                            (<link linkend="GList">GList</link> *volumes);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>volumes</parameter>&nbsp;:</term>
+<listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.6
 </para></refsect2>
@@ -412,7 +428,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-is-connected"/>gnome_vfs_drive_is_connected ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_is_connected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_connected    (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_is_connected</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_connected    (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -428,7 +444,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-is-mounted"/>gnome_vfs_drive_is_mounted ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_is_mounted</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_mounted      (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_is_mounted</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_mounted      (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -444,7 +460,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-is-user-visible"/>gnome_vfs_drive_is_user_visible ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_is_user_visible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_user_visible (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_is_user_visible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_drive_is_user_visible (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -460,7 +476,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-mount"/>gnome_vfs_drive_mount ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_mount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_mount           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
+<indexterm><primary>gnome_vfs_drive_mount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_mount           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -481,7 +497,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-ref"/>gnome_vfs_drive_ref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_ref</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_drive_ref          (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_ref</primary></indexterm><programlisting><link linkend="GnomeVFSDrive">GnomeVFSDrive</link>* gnome_vfs_drive_ref          (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>
@@ -497,7 +513,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-unmount"/>gnome_vfs_drive_unmount ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_unmount         (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
+<indexterm><primary>gnome_vfs_drive_unmount</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_unmount         (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive,
                                              <link linkend="GnomeVFSVolumeOpCallback">GnomeVFSVolumeOpCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -518,7 +534,7 @@ struct      <link linkend="GnomeVFSDriveClass">GnomeVFSDriveClass</link>;
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-drive-unref"/>gnome_vfs_drive_unref ()</title>
-<indexterm role="2.6"><primary>gnome_vfs_drive_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_unref           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
+<indexterm><primary>gnome_vfs_drive_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_drive_unref           (<link linkend="GnomeVFSDrive">GnomeVFSDrive</link> *drive);</programlisting>
 <para>
 </para>
 <para>

@@ -1,42 +1,58 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Zeroconf networking support</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="networking.html" title="Networking"><link rel="previous" href="networking.html" title="Networking"><link rel="next" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-dns-sd.html#id2629373" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-dns-sd.html#id2629382" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="networking.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="networking.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-resolve.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-dns-sd"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Zeroconf networking support</span></h2><p>Zeroconf networking support &#8212; Gets information about available Zeroconf (aka <span class="trademark">RendezVous</span>&#8482;) services on a local network.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Zeroconf networking support</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="networking.html" title="Networking"><link rel="prev" href="networking.html" title="Networking"><link rel="next" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="networking.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="networking.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-resolve.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-dns-sd"></a><div class="titlepage"></div><div class="refnamediv"><h2><span class="refentrytitle">Zeroconf networking support</span></h2><p>Zeroconf networking support &#8212; Gets information about available Zeroconf (aka <span class="trademark">RendezVous</span>&#8482;) services on a local network.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDResolveCallback">*GnomeVFSDNSSDResolveCallback</a>) (GnomeVFSDNSSDResolveHandle *handle,
+void        (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDResolveCallback">*GnomeVFSDNSSDResolveCallback</a>) (GnomeVFSDNSSDResolveHandle *handle,
                                              <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> result,
                                              const <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *service,
                                              const char *host,
                                              int port,
-                                             const <a
-href="../glib/glib-Hash-Tables.html#GHashTable"
->GHashTable</a> *text,
+                                             const GHashTable *text,
                                              int text_raw_len,
                                              const char *text_raw,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data);
+                                             gpointer callback_data);
 enum        <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDServiceStatus">GnomeVFSDNSSDServiceStatus</a>;
 struct      <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a>;
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDBrowseCallback">*GnomeVFSDNSSDBrowseCallback</a>)  (GnomeVFSDNSSDBrowseHandle *handle,
+void        (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDBrowseCallback">*GnomeVFSDNSSDBrowseCallback</a>)  (GnomeVFSDNSSDBrowseHandle *handle,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDServiceStatus">GnomeVFSDNSSDServiceStatus</a> status,
                                              const <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *service,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data);
+                                             gpointer callback_data);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse">gnome_vfs_dns_sd_browse</a>      (GnomeVFSDNSSDBrowseHandle **handle,
                                              const char *domain,
                                              const char *type,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDBrowseCallback">GnomeVFSDNSSDBrowseCallback</a> callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data,
-                                             <a
-href="../glib/glib-Datasets.html#GDestroyNotify"
->GDestroyNotify</a> callback_data_destroy_func);
+                                             gpointer callback_data,
+                                             GDestroyNotify callback_data_destroy_func);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-stop-browse">gnome_vfs_dns_sd_stop_browse</a> (GnomeVFSDNSSDBrowseHandle *handle);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-resolve">gnome_vfs_dns_sd_resolve</a>     (GnomeVFSDNSSDResolveHandle **handle,
                                              const char *name,
@@ -44,12 +60,8 @@ href="../glib/glib-Datasets.html#GDestroyNotify"
                                              const char *domain,
                                              int timeout,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDResolveCallback">GnomeVFSDNSSDResolveCallback</a> callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data,
-                                             <a
-href="../glib/glib-Datasets.html#GDestroyNotify"
->GDestroyNotify</a> callback_data_destroy_func);
+                                             gpointer callback_data,
+                                             GDestroyNotify callback_data_destroy_func);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-cancel-resolve">gnome_vfs_dns_sd_cancel_resolve</a>
                                             (GnomeVFSDNSSDResolveHandle *handle);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse-sync">gnome_vfs_dns_sd_browse_sync</a> (const char *domain,
@@ -64,39 +76,29 @@ href="../glib/glib-Datasets.html#GDestroyNotify"
                                              int timeout_msec,
                                              char **host,
                                              int *port,
-                                             <a
-href="../glib/glib-Hash-Tables.html#GHashTable"
->GHashTable</a> **text,
+                                             GHashTable **text,
                                              int *text_raw_len,
                                              char **text_raw);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-service-list-free">gnome_vfs_dns_sd_service_list_free</a>
+void        <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-service-list-free">gnome_vfs_dns_sd_service_list_free</a>
                                             (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *services,
                                              int n_services);
 <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-list-browse-domains-sync">gnome_vfs_dns_sd_list_browse_domains_sync</a>
                                             (const char *domain,
                                              int timeout_msec,
-                                             <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> **domains);
-</pre></div><div class="refsect1" lang="en"><a name="id2629373"></a><h2>Description</h2><p>
+                                             GList **domains);
+GList*      <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-get-default-browse-domains">gnome_vfs_get_default_browse_domains</a>
+                                            (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2605713"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2629382"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2629388"></a><h3><a name="GnomeVFSDNSSDResolveCallback"></a>GnomeVFSDNSSDResolveCallback ()</h3><a class="indexterm" name="id2629400"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        (*GnomeVFSDNSSDResolveCallback) (GnomeVFSDNSSDResolveHandle *handle,
+</p></div><div class="refsect1" lang="en"><a name="id2605723"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2605728"></a><h3><a name="GnomeVFSDNSSDResolveCallback"></a>GnomeVFSDNSSDResolveCallback ()</h3><a class="indexterm" name="id2605740"></a><pre class="programlisting">void        (*GnomeVFSDNSSDResolveCallback) (GnomeVFSDNSSDResolveHandle *handle,
                                              <a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> result,
                                              const <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *service,
                                              const char *host,
                                              int port,
-                                             const <a
-href="../glib/glib-Hash-Tables.html#GHashTable"
->GHashTable</a> *text,
+                                             const GHashTable *text,
                                              int text_raw_len,
                                              const char *text_raw,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data);</pre><p>
+                                             gpointer callback_data);</pre><p>
 Callback for the <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-resolve"><tt class="function">gnome_vfs_dns_sd_resolve()</tt></a> function that is called
 when a service has been resolved.
 </p><p>
@@ -104,12 +106,8 @@ The <i class="parameter"><tt>host</tt></i> and <i class="parameter"><tt>port</tt
 <i class="parameter"><tt>text</tt></i> contains additional options as defined for the type requested.
 </p><p>
 To check for options being set in <i class="parameter"><tt>text</tt></i> without any value ("key" as
-opposed to "key=value") you must use <a
-href="../glib/glib-Hash-Tables.html#g-hash-table-lookup-extended"
-><tt class="function">g_hash_table_lookup_extended()</tt></a>, since
-they are stored in the hash table with a NULL value, and <a
-href="../glib/glib-Hash-Tables.html#g-hash-table-lookup"
-><tt class="function">g_hash_table_lookup()</tt></a>
+opposed to "key=value") you must use <tt class="function">g_hash_table_lookup_extended()</tt>, since
+they are stored in the hash table with a NULL value, and <tt class="function">g_hash_table_lookup()</tt>
 can't tell that from the case where the key is not in the hash table.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> handle of the operation generating the callback
@@ -121,13 +119,13 @@ can't tell that from the case where the key is not in the hash table.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text_raw_len</tt></i> :</span></td><td> length of <i class="parameter"><tt>text_raw</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text_raw</tt></i> :</span></td><td> raw version of the additional options in <i class="parameter"><tt>text</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data</tt></i> :</span></td><td> user data defined when the callback was established
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629713"></a><h3><a name="GnomeVFSDNSSDServiceStatus"></a>enum GnomeVFSDNSSDServiceStatus</h3><a class="indexterm" name="id2629726"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606054"></a><h3><a name="GnomeVFSDNSSDServiceStatus"></a>enum GnomeVFSDNSSDServiceStatus</h3><a class="indexterm" name="id2606066"></a><pre class="programlisting">typedef enum {
 	GNOME_VFS_DNS_SD_SERVICE_ADDED,
 	GNOME_VFS_DNS_SD_SERVICE_REMOVED
 } GnomeVFSDNSSDServiceStatus;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2629742"></a><h3><a name="GnomeVFSDNSSDService"></a>struct GnomeVFSDNSSDService</h3><a class="indexterm" name="id2629754"></a><pre class="programlisting">struct GnomeVFSDNSSDService {
+</p></div><hr><div class="refsect2" lang="en"><a name="id2606082"></a><h3><a name="GnomeVFSDNSSDService"></a>struct GnomeVFSDNSSDService</h3><a class="indexterm" name="id2606094"></a><pre class="programlisting">struct GnomeVFSDNSSDService {
 
 	char *name;
 	char *type;
@@ -135,14 +133,10 @@ can't tell that from the case where the key is not in the hash table.</p><p>
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2629770"></a><h3><a name="GnomeVFSDNSSDBrowseCallback"></a>GnomeVFSDNSSDBrowseCallback ()</h3><a class="indexterm" name="id2629782"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        (*GnomeVFSDNSSDBrowseCallback)  (GnomeVFSDNSSDBrowseHandle *handle,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2606110"></a><h3><a name="GnomeVFSDNSSDBrowseCallback"></a>GnomeVFSDNSSDBrowseCallback ()</h3><a class="indexterm" name="id2606122"></a><pre class="programlisting">void        (*GnomeVFSDNSSDBrowseCallback)  (GnomeVFSDNSSDBrowseHandle *handle,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDServiceStatus">GnomeVFSDNSSDServiceStatus</a> status,
                                              const <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *service,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data);</pre><p>
+                                             gpointer callback_data);</pre><p>
 Callback for the <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse"><tt class="function">gnome_vfs_dns_sd_browse()</tt></a> function that informs
 the user of services that are added or removed.</p><p>
 
@@ -150,16 +144,12 @@ the user of services that are added or removed.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td> whether a service addition or removal was detected
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>service</tt></i> :</span></td><td> the service that was discovered or removed
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data</tt></i> :</span></td><td> user data defined when the callback was established
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2629914"></a><h3><a name="gnome-vfs-dns-sd-browse"></a>gnome_vfs_dns_sd_browse ()</h3><a class="indexterm" name="id2629925"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_browse      (GnomeVFSDNSSDBrowseHandle **handle,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606254"></a><h3><a name="gnome-vfs-dns-sd-browse"></a>gnome_vfs_dns_sd_browse ()</h3><a class="indexterm" name="id2606265"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_browse      (GnomeVFSDNSSDBrowseHandle **handle,
                                              const char *domain,
                                              const char *type,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDBrowseCallback">GnomeVFSDNSSDBrowseCallback</a> callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data,
-                                             <a
-href="../glib/glib-Datasets.html#GDestroyNotify"
->GDestroyNotify</a> callback_data_destroy_func);</pre><p>
+                                             gpointer callback_data,
+                                             GDestroyNotify callback_data_destroy_func);</pre><p>
 Browses <i class="parameter"><tt>domain</tt></i> for services of the type <i class="parameter"><tt>type</tt></i>, calling <i class="parameter"><tt>callback</tt></i> whenever
 a new one is found or removed.
 </p><p>
@@ -178,23 +168,19 @@ is a service type registered at http://www.dns-sd.org/ServiceTypes.html.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data</tt></i> :</span></td><td> data to pass <i class="parameter"><tt>callback</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data_destroy_func</tt></i> :</span></td><td> optional destructor function for <i class="parameter"><tt>callback_data</tt></i>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630155"></a><h3><a name="gnome-vfs-dns-sd-stop-browse"></a>gnome_vfs_dns_sd_stop_browse ()</h3><a class="indexterm" name="id2630167"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_stop_browse (GnomeVFSDNSSDBrowseHandle *handle);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606495"></a><h3><a name="gnome-vfs-dns-sd-stop-browse"></a>gnome_vfs_dns_sd_stop_browse ()</h3><a class="indexterm" name="id2606507"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_stop_browse (GnomeVFSDNSSDBrowseHandle *handle);</pre><p>
 Stops browsing a domain stared with <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse"><tt class="function">gnome_vfs_dns_sd_browse()</tt></a></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> handle of the browse operation to be stopped
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630239"></a><h3><a name="gnome-vfs-dns-sd-resolve"></a>gnome_vfs_dns_sd_resolve ()</h3><a class="indexterm" name="id2630251"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_resolve     (GnomeVFSDNSSDResolveHandle **handle,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606580"></a><h3><a name="gnome-vfs-dns-sd-resolve"></a>gnome_vfs_dns_sd_resolve ()</h3><a class="indexterm" name="id2606591"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_resolve     (GnomeVFSDNSSDResolveHandle **handle,
                                              const char *name,
                                              const char *type,
                                              const char *domain,
                                              int timeout,
                                              <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDResolveCallback">GnomeVFSDNSSDResolveCallback</a> callback,
-                                             <a
-href="../glib/glib-Basic-Types.html#gpointer"
->gpointer</a> callback_data,
-                                             <a
-href="../glib/glib-Datasets.html#GDestroyNotify"
->GDestroyNotify</a> callback_data_destroy_func);</pre><p>
+                                             gpointer callback_data,
+                                             GDestroyNotify callback_data_destroy_func);</pre><p>
 Tries to resolve a specific service (typically recieved from
 <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse"><tt class="function">gnome_vfs_dns_sd_browse()</tt></a>) into a hostname/ip, port number and additional
 options.
@@ -215,13 +201,13 @@ host owning the service might no longer be around to answer.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data</tt></i> :</span></td><td> data to pass <i class="parameter"><tt>callback</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>callback_data_destroy_func</tt></i> :</span></td><td> optional destructor function for <i class="parameter"><tt>callback_data</tt></i>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630512"></a><h3><a name="gnome-vfs-dns-sd-cancel-resolve"></a>gnome_vfs_dns_sd_cancel_resolve ()</h3><a class="indexterm" name="id2630524"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_cancel_resolve
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606853"></a><h3><a name="gnome-vfs-dns-sd-cancel-resolve"></a>gnome_vfs_dns_sd_cancel_resolve ()</h3><a class="indexterm" name="id2606865"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_cancel_resolve
                                             (GnomeVFSDNSSDResolveHandle *handle);</pre><p>
 Cancels resolving a service started with <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-resolve"><tt class="function">gnome_vfs_dns_sd_resolve()</tt></a></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> handle of the resolve operation to be cancelled
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630598"></a><h3><a name="gnome-vfs-dns-sd-browse-sync"></a>gnome_vfs_dns_sd_browse_sync ()</h3><a class="indexterm" name="id2630610"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_browse_sync (const char *domain,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2606938"></a><h3><a name="gnome-vfs-dns-sd-browse-sync"></a>gnome_vfs_dns_sd_browse_sync ()</h3><a class="indexterm" name="id2606950"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_browse_sync (const char *domain,
                                              const char *type,
                                              int timeout_msec,
                                              int *n_services,
@@ -244,16 +230,14 @@ more details.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>n_services</tt></i> :</span></td><td> pointer to location to store number of returned services
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>services</tt></i> :</span></td><td> pointer to location to store returned services
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2630839"></a><h3><a name="gnome-vfs-dns-sd-resolve-sync"></a>gnome_vfs_dns_sd_resolve_sync ()</h3><a class="indexterm" name="id2630851"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_resolve_sync
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2607180"></a><h3><a name="gnome-vfs-dns-sd-resolve-sync"></a>gnome_vfs_dns_sd_resolve_sync ()</h3><a class="indexterm" name="id2607192"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_resolve_sync
                                             (const char *name,
                                              const char *type,
                                              const char *domain,
                                              int timeout_msec,
                                              char **host,
                                              int *port,
-                                             <a
-href="../glib/glib-Hash-Tables.html#GHashTable"
->GHashTable</a> **text,
+                                             GHashTable **text,
                                              int *text_raw_len,
                                              char **text_raw);</pre><p>
 Tries to resolve a specific service (typically recieved from
@@ -273,21 +257,17 @@ its callback <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDResolveCal
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text_raw_len</tt></i> :</span></td><td> location to store length of <i class="parameter"><tt>text_raw_out</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text_raw</tt></i> :</span></td><td> location to store raw version of the additional options in <i class="parameter"><tt>text</tt></i>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2631143"></a><h3><a name="gnome-vfs-dns-sd-service-list-free"></a>gnome_vfs_dns_sd_service_list_free ()</h3><a class="indexterm" name="id2631156"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_dns_sd_service_list_free
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2607483"></a><h3><a name="gnome-vfs-dns-sd-service-list-free"></a>gnome_vfs_dns_sd_service_list_free ()</h3><a class="indexterm" name="id2607496"></a><pre class="programlisting">void        gnome_vfs_dns_sd_service_list_free
                                             (<a href="gnome-vfs-20-gnome-vfs-dns-sd.html#GnomeVFSDNSSDService">GnomeVFSDNSSDService</a> *services,
                                              int n_services);</pre><p>
 Frees a list of services as returned by <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse-sync"><tt class="function">gnome_vfs_dns_sd_browse_sync()</tt></a></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>services</tt></i> :</span></td><td> the list of services to free
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>n_services</tt></i> :</span></td><td> the number of services to free
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2631239"></a><h3><a name="gnome-vfs-dns-sd-list-browse-domains-sync"></a>gnome_vfs_dns_sd_list_browse_domains_sync ()</h3><a class="indexterm" name="id2631252"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_list_browse_domains_sync
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2607579"></a><h3><a name="gnome-vfs-dns-sd-list-browse-domains-sync"></a>gnome_vfs_dns_sd_list_browse_domains_sync ()</h3><a class="indexterm" name="id2607593"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_dns_sd_list_browse_domains_sync
                                             (const char *domain,
                                              int timeout_msec,
-                                             <a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> **domains);</pre><p>
+                                             GList **domains);</pre><p>
 Lists the recommended browsing domains for a specific dns domain.
 This can be used to find interesting domains for the domain
 you are currently in. These can then be browsed with <a href="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-browse"><tt class="function">gnome_vfs_dns_sd_browse()</tt></a>.</p><p>
@@ -296,4 +276,18 @@ you are currently in. These can then be browsed with <a href="gnome-vfs-20-gnome
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>timeout_msec</tt></i> :</span></td><td> maximum time to run, in milliseconds
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>domains</tt></i> :</span></td><td> location to store the returned list of domain names strings
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2607713"></a><h3><a name="gnome-vfs-get-default-browse-domains"></a>gnome_vfs_get_default_browse_domains ()</h3><a class="indexterm" name="id2607725"></a><pre class="programlisting">GList*      gnome_vfs_get_default_browse_domains
+                                            (void);</pre><p>
+Returns a list of domain names that is useful to
+browse for standard services. The list is generated
+by contacting the dns server of the domain part the
+hostname and asking for the list of browse domains.
+Then extra domains from a gconf setting is added.
+</p><p>
+The "local" domain is not normally returned by this.
+Care should be taken with local services so that its
+obvious that they are local, and cannot be confused
+with non-local services.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A GList of domain name strings
 </td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="networking.html"><b>&lt;&lt; Networking</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-resolve.html"><b>DNS Resolution &gt;&gt;</b></a></td></tr></table></body></html>
