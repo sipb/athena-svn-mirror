@@ -1,0 +1,97 @@
+xmlock is new.  A few people have asked for a gui interface to xlock.
+Thanks to Charles Vidal <vidalc@univ-mlv.fr> for starting one.
+If you want to try it copy it up one directory and edit the Imakefile
+for XmLibrary.
+ 
+-------------------------------------------------------------------------------
+
+These modes are NOT supported ...  although I did do a LOT of work on
+them.  :)  I would like to do more work on them before I feel comfortable.
+These modes are presented here for hackers ONLY.
+Please do not add these to precompiled distributions.
+
+It is nolonger used to create a seperate executable.
+Copy the *.c files up one directory and edit the Imakefile for Hackers.
+Then do the normal:
+xmkmf
+make depend
+make
+
+These modes are a bit raw.  Use at your own risk.  Some modes are
+coded by self-affirmed X newbies, so give them a break.
+Also, I "cleaned them up" and many features were lost in the process.
+Some modes may crash xlock, so they might be a security risk.
+
+Some modes are still not set up for multiscreens.  Those that are include:
+julia, pacman,  and turtle.  These modes are probably the most mature.
+I am currently working on adding these modes as well as the others.
+
+I really hate to turn down contributions...  some reasons for not making
+it into the main directory...
+  Did not black out the screen when they start.  I do not like people
+    to see what I am doing. :--|
+  Did not work in the little window or buggy.
+  Is too similar mode to a mode that already exists.
+  Many people complained about the mode (exception if I wrote it. :) ).
+  Just not enough randomness or is not interesting enough.
+  No multiscreen support. <- But I usually add it in.
+
+-------------------------------------------------------------------------------
+
+ball.c and pacman.c  are written by
+  Heath Rice <rice@asl.dl.nec.com> (wrote puzzle.c which is part xlockmore). 
+  Stuff in []'s is now broken, by me.  At the time there was runtime
+    options for modes and I like the screen blackened to start.
+
+ball     - Bouncing balls kind of mode.  [You can specify
+           the drawing function for the balls and the trail
+           left by the balls.  This one looks pretty cool
+           if you pick good functions.  You can also specify
+           specific colors or random.]
+
+pacman   - [Pacman eats screen.  Ghosts put screen back.]
+           Pacman eats ghosts when he encounters them.
+           After all ghosts are eaten, pacman continues
+           eating the screen until all of it is gone. Then
+           it starts over.
+  Recently did a lot of work on this one.
+  Food dots should be added.  Restart when done eating.
+  Optional capability: variable number of pacmen.
+
+polygon.c are written by Mike Stembera <mrbig@fc.net>
+  polygons   Flying and circling polygons/squares.
+  Ooops, I messed up polygons, I think. His dclock is in xlockmore.
+
+cartoon.c
+  cartoon.c was written by Lorenzo Patocchi <patol@info.isbiel.ch>,
+  his bat mode is in xlockmore.  Also I am not sure about copyrighted
+  cartoons being included into xlock.  Then again, I do not receive any
+  money by maintaining this.  (The GNU people are more deserving anyway.)
+  If it can not load the pixmaps it will just be a blank screen.  Try
+  the -v option to check.
+
+flamen.c was written by Scott Draves <spot@cs.cmu.edu>
+  It is supposed to be the new flame.  I received some objections, so I
+  put the old one back (with some modifications from the new one).
+  It also has another mode in the ifdefs ... drift  (I am not sure if I ever
+  got this running).
+
+huskers.c was written by Skip Burrell <Skip_Burrell@sterling.com>
+  This might be a good template to make your favorite (American) football
+  team, if you have any.
+
+julia.c was written by Sean McCullough <bankshot@mailhost.nmt.edu>
+  continuously varying Julia set, but painfully slow on my 486 33 megahertz.
+  It also seems to behave diferently on different machines as well.
+
+roll.c was submitted by Charles Vidal <vidalc@univ-mlv.fr>
+  It was written independently of bouboule.  His flag mode is in xlockmore.
+  It should not leave a trail without erasing.  Also need to be a bit more
+  unpredictable.
+
+turtle.c was written by me.  Its in here because it needs some more work.
+  turtle should handle new turtle algorithm better (CESARO_VAR).
+  HILBERT curve should use a turtle algorithm.
+
+Please resubmit any of these modes if you clean them up.
+bagleyd@megahertz.njit.edu

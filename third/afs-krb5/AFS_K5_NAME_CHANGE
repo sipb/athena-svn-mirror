@@ -1,0 +1,146 @@
+$Id: AFS_K5_NAME_CHANGE,v 1.1.1.1 2003-02-13 00:14:37 zacheiss Exp $
+
+AFS/K5 NAME CHANGE CODE
+=======================
+
+This file details procedures you need to follow in order to use the
+AFS-Kerberos 5 migration kit if you are changing the name of your
+realm/cell when you migrate from AFS to Kerberos 5.
+
+
+THE ISSUES
+==========
+
+For an AFS-style key, AFS/Kerberos uses the AFS cell name as the salt for
+the encryption process. The problem is that when you migrate the
+database from AFS to Kerberos 5 there is no way to re-encrypt the key
+using the new Kerberos 5 realm name as the salt. This generates two
+problems.
+
+The first is that when AFS-style keys are regenerated (e.g. the user
+changes their password) they must continue to be encrypted with the
+old cell name so that AFS programs, like klog, know how to decrypt
+them. (This problem can be worked around to some extent because klog
+will attempt to get a V4-style if it cannot successfully decrypt or
+retrieve the AFS-style key.)
+
+The second problem is that when Kerberos 5 programs have to deal with
+AFS keys they have to know to use the old cell name as the salt
+instead of the new realm name.
+
+
+CHANGES TO THE PROCEDURES
+=========================
+
+There are several things you need to do differently in order to make
+a successful transition. The following is lays out this changes to the
+procedures outlined in the README and other files accompanying this kit.
+
+For the sake of the examples, it's is assumed your old realm (AFS cell)
+name is old.cell.name and you new realm (K5) is new.realm.name. The
+realms name will be shown in upper or lower case depending on how they
+need to be entered. In other words if the example shows the name in
+upper case enter it in upper case
+
+
+Building Kerberos 5
+-------------------
+
+After applying the "monster-patch" as specified in the README, when
+you run configure you want to enable code to support the name change
+by specifying '--with-afs-name-change'. This should be specified in
+addition to '--with-afs' and '--with-krb4'.
+
+
+Creating AFS principal in Kerberos database
+-------------------------------------------
+
+aklog will determine that cell name and realm name differ and look for
+a afs key with the old realm name as the instance. So when you create
+your AFS principal in the Kerberos database you want to call it:
+
+	afs/old.cell.name@NEW.REALM.NAME
+
+instead of just afs@NEW.REALM.NAME.
+
+
+Running afs2k5db
+----------------
+
+When you run afs2k5db you want to specify your old cell name on the
+command line with the '-r' options. For example:
+
+afs2k5db -r OLD.CELL.NAME /usr/afs/db/kaserver.DB0
+
+What's not obvious is the function krb5_dbekd_encrypt_key_data() puts
+the salt, which in this case is old.cell.name, into the part of the
+key data structure (kdc_data_contents[1]) where code in the KDC can
+get at it.
+
+
+Running fakeka
+--------------
+
+When you run fakeka you need to specify your old cell name (in upper
+case) on the command line with the '-c' option. For example:
+
+fakeka -c OLD.CELL.NAME
+
+Note that in order for fakeka to work, you have to use database
+entries imported with afs2k5db. Principals added by other means than
+through afs2k5db will not be able to get AFS tokens through fakeka.
+
+
+Cross-Cell Authentication
+-------------------------
+
+Just a note that when you do cross-cell authentication your
+username in the remote cell will be user@NEW.REALM.NAME and not
+user@OLD.CELL.NAME
+
+
+CODE CHANGES
+============
+
+The following details the changes to the code that are included with
+the "monster-patch" and enabled when "--with-afs-name-change" is
+specified to configure.
+
+
+krb524/conv_princ.c
+-------------------
+
+Code in krb524d looks at service ticket being requested for
+conversion. If the request is for an afs ticket, it has a not null
+instance and the realms on the service ticket and requesting user
+match, then the instance of the service is copied into it's realm (and
+capitalized in the process) and the instance is set to null.
+
+The intent here is that aklog will get a ticket for
+afs/old.cell.name@NEW.REALM.NAME and then send it to krb524d to be
+converted to a V4 ticket. krb524d will then copy the instance over the
+realm and return a V4 ticket for afs@OLD.CELL.NAME
+
+
+kdc/kdc_preauth.c
+-----------------
+
+The code in kdc_preauth.c looks at key_data_contents[1] of the AFS
+key and if it does then it is returned as the salt instead of the realm
+name. What happens is when afs2k5db moved over the entries it places
+the old cell name in this field.
+
+It's non-obvious but in afs2k5db, OLD.CELL.NAME as passed in by the
+'-r' flag is placed in key_data_contents[1] by the function
+krb5_dbekd_encrypt_key_data().
+
+
+lib/kdb/kdb_cpw.c
+-----------------
+
+The code in kdb_cpw.c checks whenever a user's password is changed to
+see if the key_data_contents[1] field contains data and if so uses
+that as the salt to encrypt the new key instead of the realm name.
+
+As in afs2k5db the function krb5_dbekd_encrypt_key_data() replaces
+OLD.CELL.NAME in key_data_contents[1].
