@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.12 1993-10-09 18:53:28 probe Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.13 1995-07-11 21:31:37 miki Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,11 +85,15 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  93/10/09  18:53:28  probe
+ * Added HPLJ ivSiMX support, and better Milan support [darrin]
+ * Parse .spooler file (if it exists) for per-queue specifications.
+ * 
  * Revision 1.1  93/08/23  15:39:09  probe
  * Initial revision
  * 
  * Revision 1.11  93/06/29  15:00:02  vrt
- * avoiding the <wait.h> <m_wait.h> interaction under AIX 43.2
+ * avoiding the <wait.h> <m_wait.h> interaction under AIX 3.2
  * 
  * Revision 1.10  93/05/10  13:48:37  vrt
  * Solaris Port
@@ -213,14 +217,20 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  */
 
+#ifdef _AIX
+#undef _BSD
+#endif
 #ifdef POSIX
 #include <unistd.h>
+#include <stdlib.h>
 #endif
 
 #include <ctype.h>
 #include <setjmp.h>
 #ifndef POSIX
 #include <sgtty.h>
+#else
+#include <termios.h> 
 #endif
 #include <signal.h>
 #include <stdio.h>
@@ -228,20 +238,11 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <errno.h>
 
 #include <sys/types.h>
-#ifdef _AUX_SOURCE
-#define _POSIX_SOURCE
-#endif
-#ifdef POSIX
-#include <termios.h>
-#endif
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#ifdef _AIX
-#undef _BSD
-#endif
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -363,7 +364,7 @@ private int	rpid = 0;	/* page reversal pid */
 private int	cpid = 0;	/* listener pid */
 private int	mpid = 0;	/* current process pid */
 private int     wpid;		/* Temp pid */
-#ifdef POSIX
+#if defined(POSIX) && !defined(ultrix)
 private int status;	        /* Return value from wait() */
 #else
 private union wait status;	/* Return value from wait() */
@@ -487,17 +488,35 @@ main(argc,argv)            /* MAIN ROUTINE */
     int sformat = 0;
     int i;
 
+#if defined(POSIX) && !defined(ultrix)
+    struct sigaction sa;
+#endif
     mpid = getpid();    /* Save the current process ID for later */
 
     /* initialize signal processing */
     flagsig = FALSE;           /* Process the signals */
     intstate = init;       /* We are initializing things now */
+#if defined(POSIX) && !defined(ultrix)
+    (void) sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    sa.sa_handler = GotDieSig;
+    (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGHUP, &sa, (struct sigaction *)0);
+    (void) sigaction(SIGTERM, &sa, (struct sigaction *)0);
+
+    sa.sa_handler = GotAlarmSig;
+    (void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
+
+    sa.sa_handler = GotEmtSig;
+    (void) sigaction(SIGEMT, &sa, (struct sigaction *)0);
+#else
     VOIDC signal(SIGINT, GotDieSig);
     VOIDC signal(SIGHUP, GotDieSig);
     VOIDC signal(SIGTERM, GotDieSig);
     VOIDC signal(SIGALRM, GotAlarmSig);
     VOIDC signal(SIGEMT, GotEmtSig);
-
+#endif
 
 #ifdef SYSLOG
 #ifdef LOG_LPR
@@ -803,6 +822,8 @@ main(argc,argv)            /* MAIN ROUTINE */
 	    fclose(sfp);
 	}
 	if (scmd[0]) {
+	    lseek(0, 0L, 0);
+	    rewind(stdin);
 	    sformat = 1;
 	    if (pipe (fdpipe)) myexit2(prog, "format pipe",THROW_AWAY);
 	    if ((spid = fork()) < 0) myexit2(prog, "format fork",THROW_AWAY);
@@ -848,7 +869,7 @@ printit:;
      if ((hp = gethostbyname(dname)) == NULL) {
 	myexit2(prog,"badhost",TRY_AGAIN);
     }
-    bcopy(hp->h_addr, &dest.sin_addr.s_addr, hp->h_length);
+    memcpy(&dest.sin_addr.s_addr, hp->h_addr, hp->h_length);
     dest.sin_family = AF_INET;
 
 #ifdef MILAN
@@ -956,9 +977,23 @@ printit:;
 
 	/* ship the magic number! */
 	if ((!format) && (!reversing)) {
-	   VOIDC write(fdsend,magic,magiccnt);
-	   progress++;
+	    mbp = magic;
+	    cnt = magiccnt;
+	    while ((cnt > 0) && ((wc = write(fdsend, mbp, cnt)) != cnt)) {
+		if (wc < 0) {
+		    fprintf(stderr,"%s: error writing to printer",prog);
+		    perror("");
+		    sleep(10);
+		    croak(TRY_AGAIN);
+		}
+		mbp += wc;
+		cnt -= wc;
+		progress++;
+	    }
+	    progress++;
 	}
+
+
 
 	/* now ship the rest of the file */
 
@@ -999,7 +1034,14 @@ printit:;
 	VOIDC write(fdsend, eofbuf, 1);
 	intstate = waiting;    /* Waiting for end of user job */
 	ENDCRIT();		/* Only do end-of-job char once */
-	if( gotsig & DIE_INT ) VOIDC kill( getpid(),SIGINT );
+	if( gotsig & DIE_INT ) {
+	    intstate = synclast;
+	    syncprinter(&endpagecount);
+	    intstate = ending;
+	    if(doactng) VOIDC acctentry(startpagecount,endpagecount,
+					account,mediacost);
+	    VOIDC kill( getpid(),SIGINT );
+	}
 
 	VOIDC alarm(WAITALARM);
 	while( !childdone ) pause();	/* Wait for listener to finish */
@@ -1321,6 +1363,51 @@ char *file1, *file2;
     char buf[BUFSIZ];
     int cnt;
 
+#if defined(POSIX) && !defined(ultrix)
+    register int status;
+    struct flock fl;
+    
+    VOIDC umask(0);
+    fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
+    if (fd1 < 0) {
+	VOIDC unlink(file1);
+	fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
+    }
+    status = (fd1 < 0);
+    if (!status) {
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+	fl.l_pid = getpid();
+	status = fcntl(fd1, F_SETLKW, &fl);
+    }
+    if (status) {
+	fprintf(stderr, "%s: writing %s",prog,file1);
+	perror("");
+	VOIDC close(fd1);
+	return;
+    }
+    VOIDC ftruncate(fd1,0);
+    if ((fd2 = open(file2, O_RDONLY,0)) < 0) {
+	fprintf(stderr, "%s: error reading %s", prog, file2);
+	perror("");
+	VOIDC close(fd1);
+	return;
+    }
+    cnt = read(fd2,buf,BUFSIZ);
+    VOIDC write(fd1,buf,cnt);
+
+    fl.l_type = F_UNLCK;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = 0;
+    fl.l_len = 0;
+    fl.l_pid = getpid();
+    VOIDC fcntl(fd1, F_SETLKW, &fl);
+	
+    VOIDC close(fd1);
+    VOIDC close(fd2);
+#else
     VOIDC umask(0);
     fd1 = open(file1, O_WRONLY|O_CREAT, 0664);
     if ((fd1 < 0) || (flock(fd1,LOCK_EX) < 0)) {
@@ -1347,6 +1434,7 @@ char *file1, *file2;
     VOIDC flock(fd1,LOCK_UN);
     VOIDC close(fd1);
     VOIDC close(fd2);
+#endif
 }
 
 /* restore the "status" message from the backed-up ".status" copy */
@@ -1398,14 +1486,14 @@ int notify;
  * to abort.  Otherwise, the routine just returns.
  */
 private VOID listenexit(exitstatus)
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ultrix)
 int exitstatus;     /* Status returned by the child */
 #else
 union wait exitstatus;     /* Status returned by the child */
 #endif
 {
     debugp((stderr,"%s: Listener return status: 0x%x\n",prog,exitstatus));
-#ifdef POSIX
+#if defined(POSIX) && !defined(ultrix)
     if( WTERMSIG(exitstatus) > 0 ) {   /* Some signal got the child */
 	fprintf(stderr,"%s: Error: Listener process killed using signal=%d\n",
 	    prog,WTERMSIG(exitstatus));
@@ -1417,7 +1505,7 @@ union wait exitstatus;     /* Status returned by the child */
 	VOIDC fflush(stderr);
 	croak(TRY_AGAIN);
 	}
-#ifdef POSIX
+#if defined(POSIX) && !defined(ultrix)
     else switch( WEXITSTATUS(exitstatus) ) {   /* Depends on child's exit status */
 #else
     else switch( exitstatus.w_retcode ) {   /* Depends on child's exit status */
@@ -1461,7 +1549,11 @@ private VOID reapchildren() {
     if( rpid != 0 ) VOIDC kill(rpid,SIGINT);
     if( fpid != 0 ) VOIDC kill(fpid,SIGINT);
     if( spid != 0 ) VOIDC kill(spid,SIGINT);
-    while (wait((union wait *) 0) > 0);
+#if defined(POSIX) && !defined(ultrix)
+    while (waitpid((pid_t)-1, &status, 0) > 0) ;
+#else
+    while (wait((union wait *) 0) > 0) ;
+#endif
     VOIDC alarm(0);         /* No more alarms */
     if (VerboseLog) {
 	VOIDC time(&starttime);
@@ -1740,16 +1832,16 @@ private int resetprt() {
     debugp((stderr,"%s: Read last buffer cnt=%d rmask=0x%x\n",prog,psin->_cnt,rmask));
     while( psin->_cnt > 0 ) c = getc(psin);  /* Empty the buffer */
 #else
+#if defined(POSIX) && !defined(ultrix)
+    if (tcflush(fdsend,TCIOFLUSH) || tcflow(fdsend,TCOON) || tcflow(fdsend,TCION))
+	return -1;
+#else /* !POSIX */
     int flg = FREAD|FWRITE;	 /* ioctl FLUSH arg */
 
     VOIDC openprtread();    /* Re-open the printer */
-#ifndef _AUX_SOURCE
     if (ioctl(fdsend,TIOCFLUSH,&flg) || ioctl(fdsend,TIOCSTART,&flg) )
 	return(-1);
-#else
-    if (tcflush(fdsend,TCIOFLUSH) || tcflow(fdsend,TCOON) || tcflow(fdsend,TCION) )
-	return(-1);
-#endif /* _AUX_SOURCE */
+#endif /* POSIX && ! ultrix */
 #endif BRIDGE
 
     return(0);
@@ -1763,10 +1855,9 @@ private int resetprt() {
 private VOID hpcheck()
 {
     char message[512];
-    unsigned int sleeptime; /* Number of seconds to sleep */
+    int sleeptime = 0; /* Number of seconds to sleep */
     private int status;
 
-    sleeptime = 2;
 
     if( setjmp(snmplabel) ) goto tryagain;   /* Got an alarm */
     VOIDC alarm(SYNCALARM);                 /* schedule an alarm/timeout */
@@ -1784,8 +1875,9 @@ private VOID hpcheck()
 	}
 
 	/* Sleep A Bit */
+	if (sleeptime < 10)
+	    sleeptime += 2;
 	sleep(sleeptime);
-	sleeptime += 2;
     }
 
     VOIDC alarm(0);    /* Don't want alarms anymore */
@@ -1927,7 +2019,7 @@ NotifyUser(user, message)
     if (message[0] == '\0')
 	return;
 
-    bzero((char *)&notice, sizeof(notice));
+    memset((char *)&notice, 0, sizeof(notice));
     
     if (ZInitialize() != ZERR_NONE) 
 	return;
