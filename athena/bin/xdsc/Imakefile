@@ -2,7 +2,7 @@
 /**/# Makefile for xdiscuss
 /**/#
 
-/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.5 1991-07-29 10:32:23 sao Exp $";
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.6 1992-10-05 15:33:24 miki Exp $";
 
 #ifdef _AUX_SOURCE
 CC=cc -B/usr/lib/big/
@@ -10,7 +10,11 @@ CC=cc -B/usr/lib/big/
 
 INSTDIR=$(ATHBINDIR)
 DEFINES= -I.
+#ifdef sun
+LIBS=-lXaw  -lXt -lXmu -lXext -lX11 -lm
+#else
 LIBS=-lXaw  -lXt -lXmu -lXext -lX11 
+#endif
 
 OBJS=	xdsc.o reply.o headers.o cache.o
 SRCS=	xdsc.c reply.c headers.c cache.c
