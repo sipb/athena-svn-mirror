@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.20.2.1 2001-08-21 00:25:00 ghudson Exp $
+# $Id: update_ws.sh,v 1.20.2.2 2001-10-24 13:13:38 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -85,15 +85,24 @@ Layered)
   ;;
 esac
 
-# Define a function to set cluster variables for this host for a given
+# Define a function to set cluster variables for a given host and
 # version.  The "AUTOUPDATE=false" is so getcluster will output the
 # current version's cluster variables and NEW_PRODUCTION_RELEASE for a
 # new version.  This is a hack; ideally getcluster would always behave
 # this way.
-getclust() {
+getclusthv() {
   unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
-  eval `AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local \
-    "$HOST" "$1"`
+  eval `AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local "$1" "$2"`
+}
+
+# Define a function to set cluster variables for a given version.  If
+# this host does not have cluster info, we use the public-linux
+# cluster information.
+getclust() {
+  getclusthv "$HOST" "$1"
+  if [ -z "$SYSPREFIX" ]; then
+    getclusthv public-linux "$1"
+  fi
 }
 
 # Fetch the SYSPREFIX and SYSCONTROL cluster variables.
@@ -110,9 +119,7 @@ else
   getclust "${versarg:-$oldvers}"
 fi
 if [ -z "$SYSPREFIX" -o -z "$SYSCONTROL" ]; then
-  # Default to the release data a fresh install would use.
-  SYSPREFIX=/afs/athena.mit.edu/system/rhlinux
-  SYSCONTROL=control/control-current
+  errorout "Can't find system cluster information."
 fi
 
 # Change to the system area.
@@ -241,8 +248,12 @@ failupdate() {
   if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
     kill `cat /var/athena/dm.pid`
   fi
+  rm -rf /var/athena/update.running
   errorout "*** The update has failed ***"
 }
+
+# Let reactivate know that an update is running.
+touch /var/athena/update.running
 
 # Do the update.
 {
@@ -272,6 +283,8 @@ failupdate() {
   rm -f /var/athena/rc.conf.sync
   echo "Ending update from $oldvers to $newvers at `date`."
 } 2>&1 | tee /var/athena/update.log
+
+rm -rf /var/athena/update.running
 
 if [ -n "$auto" ]; then
   echo "Automatic update done; system will reboot in 15 seconds."
