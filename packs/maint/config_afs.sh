@@ -1,11 +1,11 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.2 1991-07-20 12:28:06 lwvanels Exp $
+# $Id: config_afs.sh,v 1.3 1991-07-20 14:33:13 epeisach Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
 # 2. It updates the cell setuid information from /usr/vice/etc/SuidCells
-PATH=/bin:/bin/athena
+PATH=/bin:/bin/athena; export PATH
 
 VICEDIR=/usr/vice/etc
 CELLDB=${VICEDIR}/CellServDB
