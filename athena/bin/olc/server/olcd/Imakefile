@@ -1,10 +1,16 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.8 1990-08-20 04:49:21 lwvanels Exp $
+ * $Id: Imakefile,v 1.9 1990-08-26 15:48:58 lwvanels Exp $
  */
 
+/*#define Profiling*/
 /*#define UseCPlusPlus*/
 /*#define NoGCC*/
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
 
 /*
  * Define UseCPlusPlus to use G++ for compiling; otherwise, standard
@@ -38,7 +44,15 @@ L_SRCS=	lumberjack.c
 L_OBJS= lumberjack.o
 
 LOCAL_LIBRARIES=$(COMMONLIB)
+
+#ifdef Profiling
+DEFINES=-DLOG -DSYSLOG -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
 DEFINES=-DLOG -DSYSLOG
+#endif /* Profiling */
+
 DEPLIBS=$(LOCAL_LIBRARIES)
 
 
@@ -48,11 +62,14 @@ SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) \
 INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
-SaberProgramTarget(olcd,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 NormalProgramTarget(lumberjack,$(L_OBJS),,,)
-SaberProgramTarget(lumberjack,$(L_SRCS),$(L_OBJS),,)
+
+saber_lumberjack:
+	#load $(ALLDEFINES) $(L_SRCS)
+
+SaberProgramTarget(olcd,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
 DependTarget()
 LintTarget()
-TagsTarget()
 
 AllTarget(olcd lumberjack)
