@@ -17,7 +17,6 @@ cat $LIBDIR/athena-deadfiles-9.2			>> $DEADFILES
 # Create the lists of packages and patches to install.
 cat $LIBDIR/solaris9.2					> $PACKAGES
 
-echo "113319-05"					> $PATCHES
 echo "112785-12"					>> $PATCHES
 echo "112970-03"					>> $PATCHES
 echo "112963-06"					>> $PATCHES
