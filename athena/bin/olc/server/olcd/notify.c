@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.13 1990-01-30 03:58:26 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.14 1990-02-06 10:18:33 vanharen Exp $";
 #endif
 
 
@@ -260,7 +260,7 @@ write_message_to_user(k, message, flags)
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
 				     NO_RESPOND);
-      status = ERROR;
+      status = UNKNOWN_STATUS;
       break;
 
     case MACHINE_DOWN:
@@ -271,7 +271,7 @@ write_message_to_user(k, message, flags)
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
 				     NO_RESPOND);
-      status = ERROR;
+      status = MACHINE_DOWN;
       break;
 
     case LOGGED_OUT:
@@ -282,7 +282,7 @@ write_message_to_user(k, message, flags)
       if(!(flags & NO_RESPOND))
 	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
 				     NO_RESPOND);
-      status = ERROR;
+      status = LOGGED_OUT;
       break;
 
     default:
