@@ -559,7 +559,7 @@ int dodir(src,dst,part)
 	((pflag && ((srcuid != targuid) || \
 		    ((srcgid >= 0) && (srcgid != targgid)))) \
 	 ? FIXOWNANDMODE : \
-	 (pflag && ((srcmode&modemask) != (targmode&modemask)))
+	 (pflag && ((srcmode&modemask) != (targmode&modemask))) \
 	 ? FIXMODE : UPTODATE)
 
 #define setdates() \
