@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.7 1989-08-04 11:03:42 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.8 1989-08-07 13:59:37 tjcoppet Exp $";
 #endif 
 
 
@@ -101,7 +101,7 @@ COMMAND OLC_Command_Table[] = {
   "show",       do_olc_show,	"Show any new messages",
   "topic",      do_olc_topic,   "Find question topic",
   "motd",       do_olc_motd,    "See message of the day",
-  "answers",    do_olc_stock,   "Browse thru answers to common questions",
+  "answers",    do_olc_stock,   "Read answers to common questions",
   "status",     do_olc_status,  "Print your status",
   "who",        do_olc_who,     "Find name of connected consultant",
   (char *) NULL, (int(*)()) NULL,	""
