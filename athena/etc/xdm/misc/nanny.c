@@ -14,6 +14,7 @@
 #define SOCK_INSECURE 2
 
 char *name;
+int debug = 5;
 int consolePreference = CONS_DOWN;
 int socketSec = SOCK_SECURE;
 
@@ -63,13 +64,15 @@ ALsessionStruct sess;
 
 void init_utmp(char *tty)
 {
+  if (tty == NULL)
+    tty = "/dev/ttyq??";
+  printf("%s\n", tty);
+
   ut.user = NANNYNAME;
   ut.host = ":0.0";
   ut.line = tty + 5;
   ut.type = ALutLOGIN_PROC;
-  ut.id = "NY00";
-  ALsetUtmpInfo(&sess, ALutUSER | ALutHOST | ALutLINE
-		| ALutID | ALutTYPE, &ut);
+  ALsetUtmpInfo(&sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ut);
   ALputUtmp(&sess);
 }
 
@@ -215,8 +218,8 @@ int main(int argc, char **argv)
   int ret = 0;
   long code;
 
-  fclose(stdout);
-  fclose(stderr);
+/*  fclose(stdout);
+    fclose(stderr); */
 
   name = argv[0];
 
