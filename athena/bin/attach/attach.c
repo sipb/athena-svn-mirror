@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.7 1990-07-16 07:30:54 jfc Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.1 1990-04-19 11:56:23 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -21,7 +21,7 @@ static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
  */
 
 attach(name)
-    const char *name;
+    char *name;
 {
     struct _attachtab at, *atp;
     char **hes;
@@ -63,8 +63,8 @@ retry:
 			goto retry;
 		}
 		fprintf(stderr,
-			"%s: Filesystem \"%s\" already being attached by another process\n",
-			progname, name);
+			"%s: Already being attached by another process\n",
+			name);
 		error_status = ERR_ATTACHINUSE;
 		return (FAILURE);
 	    }
@@ -73,8 +73,8 @@ retry:
 	    break;
 	case STATUS_DETACHING:
 	    if (!force && really_in_use(name)) {
-		fprintf(stderr, "%s: Filesystem \"%s\" is being detached by another process\n",
-			progname, name);
+		fprintf(stderr, "%s: Being detached by another process\n",
+			name);
 		error_status = ERR_ATTACHINUSE;
 		unlock_attachtab();
 		free_attachtab();
@@ -89,41 +89,33 @@ retry:
 	    if (lock_filesystem)
 		    atp->flags |= FLAG_LOCKED;
 	    if (owner_list)
-		    add_an_owner(atp,owner_uid);
+		    add_an_owner(atp,euid);
 	    if (owner_list || lock_filesystem)
 		    put_attachtab();
 	    unlock_attachtab();
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
-	    else if(verbose)
-		printf("%s: Filesystem \"%s\" is already attached", progname, name);
+	    else
+		printf("%s: Already attached", name);
 #ifdef NFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_NFS) {
-		int ret;
-		if (verbose && !print_path)
-		    printf(" (mapping)\n");
-		
-		ret = nfsid(atp->host, atp->hostaddr,
-			    MOUNTPROC_KUIDMAP, 1, name, 1, real_uid);
-		if(atp->mode != 'm')
-		  return ret;
-		if (ret == FAILURE)
-		  {
-		    error_status = 0;
-		    clear_errored(atp->hostaddr);
-		  }
-		return SUCCESS;
+		if (!print_path)
+		    printf("...mapping\n");
+		return (nfsid(atp->host, atp->hostaddr,
+			      MOUNTPROC_KUIDMAP, 1, name, 1));
 	    }
 #endif
 #ifdef AFS
 	    if (map_anyway && atp->mode != 'n' && atp->fs->type == TYPE_AFS) {
-		    if (verbose && !print_path)
-			    printf(" (authenticating)\n");
-		    return(afs_auth(atp->hesiodname, atp->hostdir));
+		    if (!print_path)
+			    printf("...mapping\n");
+		    return(afs_auth(atp->hesiodname, atp->hostdir,
+				    AFSAUTH_DOAUTH |
+				    (use_zephyr ? AFSAUTH_DOZEPHYR : 0)));
 	    }
 #endif
 	    if (!print_path)
-		putchar('\n');
+		printf("\n");
 	    /* No error code set on already attached */
 	    free_attachtab();
 	    return (FAILURE);
@@ -145,7 +137,7 @@ retry:
     at.mode = 'r';
     at.flags = 0;
     at.nowners = 1;
-    at.owners[0] = owner_uid;
+    at.owners[0] = euid;
     strcpy(at.mntpt, "?");
 
     /*
@@ -184,13 +176,13 @@ retry:
     }
 
     if (error_status == ERR_ATTACHNOTALLOWED)
-	    fprintf(stderr, "%s: You are not allowed to attach %s.\n",
-		    progname, name);
+	    fprintf(stderr, "Sorry, you're not allowed to attach %s.\n",
+		    name);
 
     if (error_status == ERR_ATTACHBADMNTPT)
 	    fprintf(stderr,
-		    "%s: You are not allowed to attach a filesystem here\n",
-		    progname);
+		    "%s: You're not allowed to attach a filesystem here\n",
+		    name);
     /*
      * We've failed -- delete the partial entry and unlock the in-use file.
      */
@@ -229,10 +221,7 @@ try_attach(name, hesline, errorout)
 	    error_status = ERR_BADFSDSC;
 	    return(FAILURE);
     }
-    if (filsys_type && *filsys_type && strcasecmp(filsys_type, at.fs->name)) {
-	    error_status = ERR_ATTACHBADFILSYS;
-	    return FAILURE;
-    }
+
     if (!override && !allow_filsys(name, at.fs->type)) {
 	    error_status = ERR_ATTACHNOTALLOWED;
 	    return(FAILURE);
@@ -241,7 +230,7 @@ try_attach(name, hesline, errorout)
     at.status = STATUS_ATTACHING;
     at.explicit = explicit;
     strcpy(at.hesiodname, name);
-    add_an_owner(&at, owner_uid);
+    add_an_owner(&at, euid);
 
     if (mntpt)
 	strcpy(at.mntpt, mntpt);
@@ -299,8 +288,8 @@ try_attach(name, hesline, errorout)
 	    status = (at.fs->attach)(&at, &mopt, errorout);
     } else {
 	    fprintf(stderr,
-		    "%s: Can't attach filesystem type \"%s\"\n", 
-		    progname, at.fs->name);
+		    "Sorry, I don't know how to attach %s type filesystems\n",
+		    at.fs->name);
 	    status = ERR_FATAL;
 	    return(FAILURE);
     }
@@ -312,14 +301,10 @@ try_attach(name, hesline, errorout)
 	else
 		strcpy(tmp, at.hostdir);
 	if (verbose)
-		if(at.fs->type == TYPE_AFS)
-		  printf("%s: %s linked to %s for filesystem %s\n", progname,
-			 tmp, at.mntpt, at.hesiodname);
-		else
-		  printf("%s: filesystem %s (%s) mounted on %s (%s)\n",
-			 progname, at.hesiodname, tmp,
-			 at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
-			 "read-write");
+		printf("%s: %s mounted %s on %s (%s)\n",
+		       at.hesiodname, at.fs->name, tmp,
+		       at.mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
+		       "read-write");
 	if (print_path)
 		printf("%s\n", at.mntpt);
 	at.status = STATUS_ATTACHED;
@@ -333,13 +318,9 @@ try_attach(name, hesline, errorout)
 	 */
 #ifdef ZEPHYR
 	if (use_zephyr && at.fs->flags & FS_REMOTE) {
-		if(at.fs->type == TYPE_AFS) {
-			afs_zinit(at.hesiodname, at.hostdir);
-		} else {
-			sprintf(instbfr, "%s:%s", at.host, at.hostdir);
-			zephyr_addsub(instbfr);
-			zephyr_addsub(at.host);
-		}
+		sprintf(instbfr, "%s:%s", at.host, at.hostdir);
+		zephyr_addsub(instbfr);
+		zephyr_addsub(at.host);
 	}
 #endif ZEPHYR
 	free_attachtab();

@@ -18,17 +18,10 @@
 #include <sys/time.h>
 #ifdef NFS
 #include <rpc/rpc.h>
-#ifndef AIX
 #include <nfs/nfs.h>
-#else
-#include <rpc/nfs.h>
-#endif
 #ifdef NeXT
 #include <nfs/nfs_mount.h>	/* Newer versions of NFS (?) */
 #endif /* NeXT */
-#ifdef _AUX_SOURCE
-#include <nfs/mount.h>
-#endif
 #else /* !NFS */
 #include <netinet/in.h>
 #endif /* NFS */
@@ -45,14 +38,6 @@
 #undef KERNEL
 #endif /* ultrix */
 #include <sys/mount.h>
-#ifdef AIX
-#include <sys/vmount.h>
-#define	M_RDONLY	MNT_READONLY
-#endif
-
-#if defined(_AUX_SOURCE) || defined(NeXT)
-#define	vfork	fork
-#endif
 
 #define MAXOWNERS 64
 
@@ -156,9 +141,7 @@ struct mntopts {
 	int	nfs_port;	/* Valid only for NFS, port for rpc.mountd */
 #endif
 	union tsa {
-#ifdef UFS
 		struct ufs_args	ufs;
-#endif
 #ifdef NFS
 		struct nfs_args nfs;
 #endif
@@ -212,7 +195,6 @@ struct cache_ent {
 #define ATTACH_CMD	"attach"
 #define DETACH_CMD	"detach"
 #define NFSID_CMD	"nfsid"
-#define FSID_CMD	"fsid"
 #ifdef ZEPHYR
 #define ZINIT_CMD	"zinit"
 #endif /* ZEPHYR */
@@ -244,7 +226,6 @@ struct cache_ent {
 
 #define ERR_NFSIDNOTATTACHED 20	/* Filesystem with -f not attached */
 #define ERR_NFSIDBADHOST 21	/* Can't resolve hostname */
-#define	ERR_NFSIDPERM	22	/* unauthorized nfsid -p */
 
 #define ERR_ATTACHBADFILSYS 20	/* Bad filesystem name */
 #define ERR_ATTACHINUSE	21	/* Filesystem in use by another proc */
@@ -259,8 +240,6 @@ struct cache_ent {
 #define ERR_DETACHINUSE 21	/* Filesystem in use by another proc */
 #define ERR_DETACHNOTALLOWED 22	/* User not allowed to do operations */
 
-#define	ERR_ZINITZLOSING	20	/* Random zephyr lossage */
-
 /*
  * Zephyr definitions
  */
@@ -271,22 +250,20 @@ struct cache_ent {
 #define ZEPHYR_TIMEOUT  60	/* 1 minute timeout */
 #endif /* ZEPHYR */
 
-/* AFS */
+/*
+ * AFS definitions
+ */
+
 #ifdef AFS
-#ifdef __STDC__
-extern int afs_auth(const char *, const char *), afs_auth_to_cell(const char *);
-extern int afs_zinit(const char *, const char *);
-#else
-extern int afs_auth(), afs_auth_to_cell();
-#endif
+/* Flags to afs_auth() */
+#define AFSAUTH_DOAUTH		1
+#define AFSAUTH_CELL		2
+#define AFSAUTH_DOZEPHYR	4
 #endif
 
 /*
  * Externals
  */
-
-extern	char	*errstr();	/* convert errno to string */
-extern	char	*inaddr_to_name();	/* convert host addr to host name */
 
 AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();
@@ -318,59 +295,8 @@ extern char *fsck_fn;
 
 extern char *ownerlist();
 extern void add_an_owner();
-extern int is_an_owner(), real_uid, effective_uid, owner_uid;
+extern int is_an_owner(),euid;
 
-extern char internal_getopt();
-extern void mark_in_use(), add_options(), check_root_privs();
-
-extern char exp_hesline[BUFSIZ];	/* Place to store explicit */
-extern char *exp_hesptr[2];		/* ``hesiod'' entry */
-extern char *abort_msg;
-
-/* High C 2.1 can optimize small bcopys such as are used to copy 4
-   byte IP addrs */
-#ifdef __HIGHC__
-#define bcopy(src, dest, cnt)	memcpy(dest, src, cnt)
-extern char *memcpy();
-#endif
-#ifdef __STDC__
-#ifdef NFS
-extern int	nfsid(const char *, struct in_addr, int, int, const char *, int, int);
-extern AUTH	*spoofunix_create_default(char *, int);
-#endif
-extern int	attach(const char *), detach(const char *);
-extern	void	detach_all(void), detach_host(const char *);
-extern int	read_config_file(const char *);
-extern int	parse_username(const char *);
-extern int	trusted_user(int);
-extern void	lock_attachtab(void), unlock_attachtab(void);
-extern void	lint_attachtab(void), get_attachtab(void), free_attachtab(void);
-#ifdef ZEPHYR
-extern	int	zephyr_sub(int), zephyr_unsub(int);
-extern	void	zephyr_addsub(const char *);
-#endif
-#else
-#ifdef NFS
-extern int	nfsid();
-extern AUTH	*spoofunix_create_default();
-#endif
-extern	int	attach(), detach();
-extern	void	detach_all(), detach_host();
-extern	int	read_config_file(), parse_username(), trusted_user();
-extern	void	lock_attachtab(), unlock_attachtab();
-extern	void	get_attachtab(), free_attachtab();
-#ifdef ZEPHYR
-extern	int	zephyr_sub(), zephyr_unsub();
-extern	void	zephyr_addsub();
-#endif
-#endif
-
-extern	char	*progname;
-
-/*
- * Instead of ifdef-ing all const declarations, make one global definition.
- * The AIX PS/2 compiler understands "const", but does not define __STDC__.
- */
-#if !defined(__STDC__) && !(defined(AIX) && defined(i386))
-#define	const
-#endif
+char exp_hesline[BUFSIZ];	/* Place to store explicit */
+char *exp_hesptr[2];		/* ``hesiod'' entry */
+char *abort_msg;

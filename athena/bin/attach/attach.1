@@ -1,8 +1,8 @@
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v 1.2 1990-07-16 05:28:20 jfc Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.1,v 1.1 1990-07-16 05:05:21 jfc Exp $
 .\"     $Author: jfc $
 .\"
-.TH ATTACH 1 "15 July 1990"
+.TH ATTACH 1 "5 July 1989"
 .ds ]W MIT Project Athena
 .SH NAME
 .nf
@@ -39,15 +39,9 @@ be mounted nosuid by including an entry in the attach.conf file.
 \fIAttach\fR will attempt to automatically create a NFS
 mapping using Kerberos (see \fIKerberosintro(1)\fR) for NFS
 filesystems so that the user will have his normal (authenticated)
-access to the filesystem.  
-
-For AFS filesystems, \fIattach\fR will authenticate to the AFS cell of the
-root of the filesystem.  If the cell of the filesystem root can not be
-determined due to a restrictive access control list, \fIattach\fR will
-strip trailing components from the path until a cell can be found,
-authenticate to that cell, and try again.  AFS mounts are currently
-implemented as symbolic links.  Users are warned not to rely on this
-behavior, as it may change in future versions of \fIattach\fR.
+access to the filesystem.  \fIAttach\fR will automatically run the
+program \fIaklog(1)\fR for AFS filesystems, to authenticate the user
+with the AFS subsystem.
 
 In the case of RVD packs, it is possible to supply an RVD password if
 Kerberos authentication is not implemented for the RVD subsystem on
@@ -55,12 +49,6 @@ the workstation and the server.  If a password is required and standard
 input is the controlling terminal, \fIattach\fR prompts for a
 password.  If standard input is not a terminal, \fIattach\fR will not
 prompt for a password, and will exit with an error status.
-
-The default mode is 'w' (read-write).
-Also supported are 'r' (read-only), 'n'
-(read-only, do not attempt to authenticate),
-and 'm' (read-write, attempt to authenticate, but authentication
-failure is not a fatal error).
 
 .PP
 The following arguments to \fIattach\fR modify its behavior.  Default
@@ -217,9 +205,6 @@ No error encountered.
 1
 Bad arguments.
 .TP 5
-2
-Generic error not included in any more specific code.
-.TP 5
 3
 Internal fatal error.
 .TP 5
@@ -247,15 +232,6 @@ RVD spinup needs a password and standard input is not a tty.
 23
 FSCK returned an error while validating an RVD spunup in exclusive
 mode.
-.TP 5
-24
-User is not allowed to attach filesystem.
-.TP 5
-25
-User is not allowed to attach a filesystem at this mountpoint.
-.TP 5
-26
-The remote filesystem does not exist.
 .PP
 If more than one filesystem argument is specified, the exit status can
 be either 0, 1, or 3 as listed above, or:
@@ -283,7 +259,7 @@ program names.
 
 .SH "SEE ALSO"
 
-detach(1), nfsid(1), zinit(1), zephyr(1), hesiod(3)
+detach(1), nfsid(1), aklog(1), zephyr(1), hesiod(3)
 .br
 `Hesiod - Project Athena Technical Plan -- Name Service'
 .br
@@ -291,23 +267,9 @@ detach(1), nfsid(1), zinit(1), zephyr(1), hesiod(3)
 .br
 `Hesiod Operations and Maintenance Guide'
 
-.SH AUTHORS
+.SH AUTHOR
 Robert French, Project Athena
 .br
-Theodore Ts'o, Project Athena
-.br
-John Carr, Project Athena
-.br
-Copyright 1988, 1990 Massachusetts Institute of Technology
+Copyright 1988, Massachusetts Institute of Technology
 
 .SH BUGS
-Nosetuid is not possible for AFS filesystems.
-Except for 'n', modes are ignored for AFS filesystems.
-These are side effects of the current implementation using symbolic links.
-
-AIX on the PS/2 does not support nosetuid, so attach ignores nosetuid
-on this system.
-
-Mount options in attach.conf always override those on the command line.
-
-
