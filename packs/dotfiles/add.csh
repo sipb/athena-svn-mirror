@@ -5,17 +5,22 @@
 #	-v	verbose
 #	-f	add lockers to the front of the path
 #	-p	print path environment filtered
-#	-c	clean add - don't add empty paths; return error
-#	-a	pass further options to attach (passes 1,2?)
+#	-w	give warning for adds with no bindirs
 #	-e	perform operations for the .environment file (changing
 #		  $athena_path, $athena_manpath instead of $PATH,
 #		  etc.)
+#	-a	pass further options to attach (passes 1,2?)
 #
 # fix bugs section of attach manpage
 
-# alias add 'set add_opts = (\!:*); source /mit/cfields/add'
+# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/misc/add'
 
 # MANPATH search too
+
+set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
+              add_opts add_attach add_dirs add_bin add_item add_i)
+
+set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
 while ( $#add_opts > 0 )
   set arg = $add_opts[1]
@@ -30,8 +35,8 @@ while ( $#add_opts > 0 )
       set add_front
       breaksw
 
-    case -c:
-      set add_clean
+    case -w:
+      set add_warn
       breaksw
 
     case -e:
@@ -40,8 +45,23 @@ while ( $#add_opts > 0 )
 
     case -a:
       shift add_opts
+      if ( $#add_opts ) then
+        set add_attach = "$add_opts"
+        set add_opts=
+      else
+        echo "add: options required after -a"
+        echo "$add_usage"
+        goto finish
+      endif
+      breaksw
 
     default:
+      if ( "$add_opts[1]" =~ -* ) then
+        echo "add: unrecognized option: $add_opts[1]"
+        echo "$add_usage"
+        goto finish
+      endif
+
       if ( $#add_opts ) then
         set add_attach = "$add_opts"
         set add_opts=
@@ -51,4 +71,31 @@ while ( $#add_opts > 0 )
 
 end
 
-unset add_opts
+if ( $?add_verbose ) attach -n -h $add_attach
+
+set add_dirs = `attach -p $add_attach`
+
+set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
+
+set add_bin = arch/$ATHENA_SYS/bin
+
+foreach add_i ($add_dirs)
+  unset add_item
+  if (-e $add_i/$add_bin) then
+    set add_item = $add_i/$add_bin
+  else
+    if ( -e $bindir ) then
+      set add_item = $bindir
+    endif
+  endif
+
+  if ( ! $?add_item && $?add_warn ) then
+    echo add: warning: $add_i has no binaries
+  endif
+end
+
+finish:
+
+foreach add_i ($add_vars)
+  unset $add_i
+end
