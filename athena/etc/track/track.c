@@ -1,6 +1,6 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.12 1994-04-07 12:57:30 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.13 1995-05-14 00:54:19 cfields Exp $
  *
  *	$Log: not supported by cvs2svn $
  * Revision 4.11  93/04/29  16:12:58  vrt
@@ -153,7 +153,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.12 1994-04-07 12:57:30 miki Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.13 1995-05-14 00:54:19 cfields Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -224,26 +224,16 @@ char **argv;
 	char	scratch[LINELEN];
 	int	cleanup();
 	int	i;
-#ifdef POSIX
-	struct sigaction act;
-#endif
+
 	strcpy(prgname,argv[0]);
 	strcpy(errmsg,"");
 
 	umask(022);	/* set default umask for daemons */
 
-#ifdef POSIX
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	act.sa_handler= (void (*)()) cleanup;
-	(void) sigaction(SIGINT, &act, NULL);
-	(void) sigaction(SIGHUP, &act, NULL);
-	(void) sigaction(SIGPIPE, &act, NULL);
-#else
 	signal( SIGINT, cleanup);
 	signal( SIGHUP, cleanup);
 	signal( SIGPIPE, cleanup);
-#endif
+
 	for(i=1;i<argc;i++) {
 		if (argv[i][0] != '-') {
 			strcpy( subfilepath, argv[i]);
@@ -256,11 +246,7 @@ char **argv;
 		case 'F':
 			get_arg(scratch,argv,&i);
 			if (*scratch != '/') {
-#ifdef POSIX
-			        getcwd(fromroot, sizeof(fromroot));
-#else
 				getwd(  fromroot);
-#endif
 				strcat( strcat( fromroot, "/"), scratch);
 			}
 			else if (! scratch[1]) *fromroot = '\0';
@@ -289,11 +275,7 @@ char **argv;
 		case 'T':
 			get_arg(scratch,argv,&i);
 			if (*scratch != '/') {
-#ifdef POSIX
-			        getcwd(toroot, sizeof(toroot));
-#else
 				getwd(  toroot);
-#endif
 				strcat( strcat( toroot, "/"), scratch);
 			}
 			else if (! scratch[1]) *toroot = '\0';
