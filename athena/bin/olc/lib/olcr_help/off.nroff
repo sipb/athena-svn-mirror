@@ -3,10 +3,10 @@
 .SH COMMAND 
 off \- sign off
 .SH USAGE
-.B off [\-force]
+.B off
 .br
 .SH DESCRIPTION
-If you had signed on, this command signs you off. If you wish to forcefully
-disconnect yourself from any users in the process, use the 
+If you had signed on with your current instance, this command signs you
+off.  You will still be connected to any questions you were previously.
 .I force 
 option.
