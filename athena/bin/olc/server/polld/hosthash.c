@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v $
- *	$Id: hosthash.c,v 1.1 1991-01-27 16:57:31 lwvanels Exp $
+ *	$Id: hosthash.c,v 1.2 1991-01-27 22:05:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.1 1991-01-27 16:57:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.2 1991-01-27 22:05:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -23,7 +23,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 struct entry {
   char hostname[128];   /* Host name */
-  struct hostent ent;    /* Host entry */
+  struct in_addr ent;    /* Host address */
   short int use;        /* mark for the clock hand */
   struct entry *next;   /* next entry in the chain */
   struct entry *prev;   /* prev entry in the chain */
@@ -77,7 +77,10 @@ c_gethostbyname(name)
 {
   int hash, found, new;
   struct entry *head, *ptr;
+  static struct hostent host;
+  static char *addr_list[1];
   struct hostent *host_p;
+
 
   cache[clock_hand].use = 1;
   inc_hand;
@@ -106,9 +109,9 @@ c_gethostbyname(name)
 
     /* copy information over */
     strcpy(cache[new].hostname,name);
-    cache[new].ent = *host_p;
+    bcopy(host_p->h_addr_list[0],&cache[new].ent,host_p->h_length);
 
-    /* Add to the head of the lined list */
+    /* Add to the head of the linked list */
     /* Need to re-set head, since we may have deleted initial bucket when we */
     /* allocated a new cache entry */
 
@@ -118,10 +121,19 @@ c_gethostbyname(name)
       head->prev = &cache[new];
     buckets[hash] = &cache[new];
 
-    return(&cache[new].ent);
+    if (host.h_length == 0) {
+      host.h_aliases = NULL;
+      host.h_addrtype = host_p->h_addrtype;
+      host.h_length = host_p->h_length;
+      host.h_addr_list = addr_list;
+    }
+    host.h_addr_list[0] = ((char *) &(cache[new].ent));
   }
+  else
+    host.h_addr_list[0] = (char *) &(ptr->ent);
 
-  return(&(ptr->ent));
+  host.h_name = name;
+  return(&host);
 }
 
 static int
@@ -167,18 +179,18 @@ delete_entry(ent)
   struct entry *ent;
 {
 
-  ent->hostname[0] = '\0';
-
   ent->use = 1;
-  if (ent->next != NULL)
-    ent->next->prev = ent->prev;
-  if (ent->prev == NULL)
-    /* If it has a null prev pointer, it's the one that buckets points to */
-    /* for that hash index */
-    buckets[get_bucket_index(ent->hostname)] = ent->next;
-  else
-    ent->prev->next = ent->next;
-
+  if (ent->hostname != '\0') {
+    if (ent->next != NULL)
+      ent->next->prev = ent->prev;
+    if (ent->prev == NULL)
+      /* If it has a null prev pointer, it's the one that buckets points to */
+      /* for that hash index */
+      buckets[get_bucket_index(ent->hostname)] = ent->next;
+    else
+      ent->prev->next = ent->next;
+  }
+  ent->hostname[0] = '\0';
   ent->prev = NULL;
   ent->next = NULL;
 }
