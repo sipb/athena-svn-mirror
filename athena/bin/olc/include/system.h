@@ -7,7 +7,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/system.h,v $
- *	$Id: system.h,v 1.3 1991-04-08 21:03:01 lwvanels Exp $
+ *	$Id: system.h,v 1.4 1991-04-11 09:33:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -32,7 +32,6 @@ int krb_mk_req P((KTEXT authent, char *service, char *instance, char *realm,
 
 char **hes_resolve P((char *name, char *HesiodNameType));
 void *calloc P((unsigned nelem, unsigned elsize));
-char *index P((char *s, int c));
 void *malloc P((unsigned size));
 char *strcpy P((char *s1, char *s2));
 char *strncpy P((char *s1, char *s2, int n));
