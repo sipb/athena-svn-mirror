@@ -13,8 +13,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.1 1990-12-03 13:47:34 sao Exp $";
-
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.2 1990-12-06 16:40:09 sao Exp $";
 
 /*
 ** Globals
@@ -85,15 +84,17 @@ static char *sampletop2 =
 	of a new meeting, as found in the \"new_meetings\"\n\
 	meeting, default values will be read from it.";
 
+/*
 static XawTextSelectType sampleselections[] = {
 	XawselectLine,
 	XawselectNull
 };
+*/
 
 
 static CommandWidget	topbuttons[MAX_TOP_BUTTONS];
 
-static XawTextPosition	savedstart = 0, savedend = 0;
+static XawTextPosition	savedstart = -1;
 
 void
 main(argc, argv)
@@ -164,7 +165,7 @@ char *argv[];
 
 	SetLabelsAndCallback (MAIN);
 
-	(void) MoveToMeeting(NEXTNEWS);
+	(void) MoveToMeeting(INITIALIZE);
 	BotButtonCB(NULL, 0, NULL);
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 	XtMainLoop();
@@ -228,8 +229,7 @@ BuildUserInterface()
 
 	static String	specialTranslations =
 		"<Btn1Up>:	Update() \n\
-		<Btn2Up>:	Update() \n\
-		<Btn1Motion>:	Stub()";
+		<Btn2Up>:	Update()";
 
 	static XtActionsRec actions[] = {
 		{"BotFakeKeyPress",	BotFakeKeyPress},
@@ -299,18 +299,13 @@ BuildUserInterface()
 	XtAddCallback (quitButton, XtNcallback, QuitCB, NULL);
 
 	n = 0;
-	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
-	label1W = XtCreateManagedWidget(
-			"label",
-			asciiTextWidgetClass,
-			paneW,
-			args,
-			n);
-
-	n = 0;
 	XtSetArg(args[n], XtNstring, meetinglist);		n++;
-	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
-	XtSetArg(args[n], XtNselectTypes, sampleselections);	n++;
+	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
+	XtSetArg(args[n], XtNuseStringInPlace, False);		n++;
+/*
+	XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
+	XtSetArg(args[n], XtNuseStringInPlace, True);		n++;
+*/
 	toptextW = (TextWidget) XtCreateManagedWidget(
 			"toptext",
 			asciiTextWidgetClass,
@@ -323,6 +318,15 @@ BuildUserInterface()
 */
 	XtAppAddActions (	XtWidgetToApplicationContext(toptextW),
 				actions, XtNumber(actions));
+
+	n = 0;
+	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
+	label1W = XtCreateManagedWidget(
+			"label",
+			asciiTextWidgetClass,
+			paneW,
+			args,
+			n);
 
 	n = 0;
 	botboxW = XtCreateManagedWidget(
@@ -366,7 +370,6 @@ BuildUserInterface()
 */
 	XtOverrideTranslations(	toptextW,
 				XtParseTranslationTable(specialTranslations));
-
 }
 
 static void
@@ -382,36 +385,36 @@ int mode;
 	char		**labels;
 
 	static String	mainTranslations =
-		"!<Key>d:	TopFakeKeyPress(0) \n\
-		!<Key>u:	TopFakeKeyPress(1) \n\
-		!<Key>i:	TopFakeKeyPress(2) \n\
-		!<Key>e:	TopFakeKeyPress(3) \n\
-		!<Key>s:	TopFakeKeyPress(4) \n\
-		!<Key>a:	Stub() \n\
-		!<Key>m:	Stub() \n\
-		!<Key>b:	Stub() \n\
+		"~Ctrl<Key>d:	TopFakeKeyPress(0) \n\
+		~Ctrl<Key>u:	TopFakeKeyPress(1) \n\
+		~Ctrl<Key>i:	TopFakeKeyPress(2) \n\
+		~Ctrl<Key>e:	TopFakeKeyPress(3) \n\
+		~Ctrl<Key>s:	TopFakeKeyPress(4) \n\
+		~Ctrl<Key>a:	Stub() \n\
+		~Ctrl<Key>m:	Stub() \n\
+		~Ctrl<Key>b:	Stub() \n\
 		";
 
 	static String	editTranslations =
-		"!<Key>d:	TopFakeKeyPress(1) \n\
-		!<Key>u:	Stub() \n\
-		!<Key>i:	Stub() \n\
-		!<Key>e:	Stub() \n\
-		!<Key>s:	Stub() \n\
-		!<Key>a:	TopFakeKeyPress(0) \n\
-		!<Key>m:	TopFakeKeyPress(2) \n\
-		!<Key>b:	Stub() \n\
+		"~Ctrl<Key>d:	TopFakeKeyPress(1) \n\
+		~Ctrl<Key>u:	Stub() \n\
+		~Ctrl<Key>i:	Stub() \n\
+		~Ctrl<Key>e:	Stub() \n\
+		~Ctrl<Key>s:	Stub() \n\
+		~Ctrl<Key>a:	TopFakeKeyPress(0) \n\
+		~Ctrl<Key>m:	TopFakeKeyPress(2) \n\
+		~Ctrl<Key>b:	Stub() \n\
 		";
 
 	static String	listTranslations =
-		"!<Key>d:	Stub() \n\
-		!<Key>u:	TopFakeKeyPress(0) \n\
-		!<Key>i:	Stub() \n\
-		!<Key>e:	Stub() \n\
-		!<Key>s:	Stub() \n\
-		!<Key>a:	TopFakeKeyPress(1) \n\
-		!<Key>m:	TopFakeKeyPress(3) \n\
-		!<Key>b:	TopFakeKeyPress(2) \n\
+		"~Ctrl<Key>d:	Stub() \n\
+		~Ctrl<Key>u:	TopFakeKeyPress(0) \n\
+		~Ctrl<Key>i:	Stub() \n\
+		~Ctrl<Key>e:	Stub() \n\
+		~Ctrl<Key>s:	Stub() \n\
+		~Ctrl<Key>a:	TopFakeKeyPress(1) \n\
+		~Ctrl<Key>m:	TopFakeKeyPress(3) \n\
+		~Ctrl<Key>b:	TopFakeKeyPress(2) \n\
 		";
 
 
@@ -454,6 +457,7 @@ int mode;
 	XtOverrideTranslations(	bottextW,
 			XtParseTranslationTable(newTranslations));
 
+	XtUnmapWidget(topboxW);
 	for (i = 0; i < MAX_TOP_BUTTONS; i++) {
 		XtUnmanageChild (topbuttons[i]);
 	}
@@ -467,11 +471,13 @@ int mode;
 			XtRemoveAllCallbacks (topbuttons[i], XtNcallback);
 		}
 
-		XtAddCallback (topbuttons[i], XtNcallback, callback, i);
+		XtAddCallback (	topbuttons[i], XtNcallback, 
+				callback, (XtPointer)i );
 	}
 
 	for (i = 0; labels[i] && i < MAX_TOP_BUTTONS; i++)
 		XtManageChild (topbuttons[i]);
+	XtMapWidget(topboxW);
 
 	oldcallback = callback;
 }
@@ -514,8 +520,12 @@ XtPointer	call_data;
 	case 2:
 		PutUpTempMessage("Rereading meeting list...");
 		ParseMeetingsFile();
-		XtSetArg(args[0], XtNstring, meetinglist);
-		XtSetValues(toptextW, args, 1);
+		n = 0;
+		XtSetArg(args[n], XtNstring, meetinglist);		n++;
+/*
+		XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
+*/
+		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
 		reading = False;
 		(void) HighlightNewItem((Widget) toptextW, NEXTNEWS, True);
@@ -699,7 +709,7 @@ Widget	w;
 XtPointer	client_data;
 XtPointer	call_data;
 {
-	(void) EnterMeeting("", topW);
+	(void) EnterMeeting("", "");
 
 	fputs("(quit)\n", outputfile);
 	fflush (outputfile);
@@ -723,27 +733,46 @@ XtPointer	call_data;
 
 HighlightNewItem(textW, mode, flag)
 Widget	textW;		/* list of meetings */
-int	mode;		/* one of { NEXTNEWS, PREVNEWS, UPDATE} */
+int	mode;		/* one of { NEXTNEWS, PREVNEWS, UPDATE, INITIALIZE} */
 Boolean	flag;		/* update current meeting? */
 {
 	Arg		args[5];
-	unsigned int	n, i;
-	XawTextPosition	start, end;
-	char		*tempstring, *foo;
+	unsigned int	n;
+	XawTextPosition	start, end, inspoint;
+	char		*tempstring, *foo, *tempptr;
 	int		length;
-	char		statusline[50];
-	char		newmtg[50];
+	char		statusline[LONGNAMELEN + 25];
+	char		longmtg[LONGNAMELEN];
+	char		shortmtg[SHORTNAMELEN];
 
-	XawTextGetSelectionPos(textW, &start, &end);
-/*
-**  Off bottom of selectable text?
-*/
-	if (start == end && start != 0)
-		return (-1);
+	inspoint = XawTextGetInsertionPoint(textW);
 
 	n = 0;
 	XtSetArg(args[n], XtNstring, &tempstring);		n++;
 	XtGetValues (textW, args, n);
+
+	if (tempstring[inspoint] == '\0')
+		return (-1);
+
+/*
+** Find start and end of current line.
+*/
+
+	for (start = inspoint; start && tempstring[start-1] != '\n'; start--)
+		;
+	for (	end = inspoint;  
+		tempstring[end] != '\0' && tempstring[end] != '\n'; 
+		end++)
+		;
+
+/*
+** Special case for initializing:  If we're already on a line with
+** unread transactions, stay there.
+*/
+	if (mode == INITIALIZE)  {
+		if ( tempstring[start + 2] != 'c')
+			mode = NEXTNEWS;
+	}
 
 	if (mode == NEXTNEWS) {
 
@@ -753,17 +782,11 @@ Boolean	flag;		/* update current meeting? */
 			return(-1);
 		}
 
-		i = 0; 
 		do {
 			if (tempstring[end] == '\n') {
 				start = end + 1;
 			}
-			if (tempstring[end-1] == '\n') {
-				fprintf (stderr, "End of string = one beyond newline, bad!\n");
-				start = end;
-			}
 			end = start + strcspn (tempstring + start, "\n\0");
-			i++;
 		} while (	tempstring[end] != '\0' &&
 				tempstring[start + 2] != 'c');
 
@@ -781,7 +804,6 @@ Boolean	flag;		/* update current meeting? */
 					"no previous meeting with unread news", False);
 			return(-1);
 		}
-		i = 0;
 		do {
 			end = start - 1;
 			for (	start = end - 1; 
@@ -789,7 +811,6 @@ Boolean	flag;		/* update current meeting? */
 				start--)
 					;
 			if (start != 0) start++;
-			i++;
 		} while (	start &&
 				tempstring[start + 2] != 'c');
 		if ( tempstring[start + 2] != 'c' ) {
@@ -807,46 +828,35 @@ Boolean	flag;		/* update current meeting? */
 ** newline as the end of it.
 */
 		if (tempstring[end-1] == '\n') {
+			PutUpWarning(	"Yo, Andy!", 
+					"This got called after all!",
+					False);
 			end--;
 		}
 	}
 
 	if (flag) {
 		length = (end - start);
-		foo = (char *) malloc (length + 1);
+		foo = (char *) calloc (length + 1, sizeof(char));
 		strncpy (foo, tempstring + start + 8, length - 8);
-/*
-		foo [length - 8] = '\0';
-		strcpy (newmtg, strrchr (foo, ',') + 2);
-*/
-		*strchr (foo, ',') = '\0';
-		strcpy (newmtg, foo);
+		tempptr = strchr (foo, ',');
+		*tempptr = '\0';
+		strcpy (longmtg, foo);
+		strcpy (shortmtg, tempptr + 2);
 
 		free (foo);
 	}
 
-	if (EnterMeeting(newmtg, topW) == -1) {
+	if (EnterMeeting(longmtg, shortmtg) == -1) {
 		PutUpStatusMessage("No current meeting");
-		XawTextSetSelection(textW, NULL, NULL);
 		CheckButtonSensitivity(BUTTONS_OFF);
 		return (-1);
 	}
 
-	XawTextSetSelection(textW, start, end);
-/*
-** Scroll top text window to keep current meeting's line visible.
-*/
-	while (end < toptextW->text.lt.info[0].position) {
-		TryToScrollAPage(toptextW, -1);
-	}
-
-	while (end >= toptextW->text.lt.info[toptextW->text.lt.lines].position) {
-		TryToScrollAPage(toptextW, 1);
-	}
-
+	PutUpArrow(textW, start);
 
 	sprintf (statusline, "Reading %s [%d-%d]", 
-			newmtg,
+			longmtg,
 			TransactionNum(FIRST),
 			TransactionNum(LAST));
 
@@ -955,8 +965,8 @@ READLINE:
 
 
 FileIntoWidget(filename, textW)
-char	*filename;
-Widget	textW;
+char		*filename;
+TextWidget	textW;
 {
 	unsigned int	fd;
 	Arg		args[5];
@@ -993,7 +1003,10 @@ Widget	textW;
 	if (*message) {
 		message[cursize - BUFSIZE + numread] = '\0';
 		n = 0;
-		XtSetArg (args[n], XtNstring, message);	n++;
+		XtSetArg (args[n], XtNstring, message);		n++;
+/*
+		XtSetArg (args[n], XtNlength, strlen(message));	n++;
+*/
 		XtSetValues (textW, args, n);
 	}
 	else {
@@ -1005,7 +1018,7 @@ Widget	textW;
 
 	XFlush(XtDisplay(textW));
 
-	free (message);
+	myfree (message);
 	close (fd);
 	return(0);
 }
@@ -1028,8 +1041,7 @@ ParseMeetingsFile()
 
 	i = strlen(fulllist) * 2;
 	if (debug) fprintf (stderr, "Want to allocate %d\n",i);
-	meetinglist = (char *) malloc (i);
-	meetinglist[0] = '\0';
+	meetinglist = (char *) calloc (i, sizeof(char));
 	if (debug) fprintf (stderr, "Allocated %d\n", i);
 
 	secondquote = fulllist;
@@ -1070,6 +1082,8 @@ ParseMeetingsFile()
 				status ? 'c' : ' ', 
 				fullname, shortname);
 	}
+
+	sprintf (meetinglist, "%s\0",meetinglist);
 	myfree(fulllist);
 	if (debug) fprintf (stderr, "Actually used %d\n", strlen(meetinglist));
 }
@@ -1113,16 +1127,21 @@ DisplayHighlightedTransaction()
 {
 	Arg		args[5];
 	unsigned int	n, num;
-	XawTextPosition	start, end;
+	XawTextPosition	start, inspoint;
 	char		*tempstring;
-
-	XawTextGetSelectionPos(toptextW, &start, &end);
-	if (!(end - start))
-		return;
 
 	n = 0;
 	XtSetArg(args[n], XtNstring, &tempstring);		n++;
 	XtGetValues (toptextW, args, n);
+
+	inspoint = XawTextGetInsertionPoint(toptextW);
+
+	if (tempstring[inspoint] == '\0')
+		return;
+
+	for (start = inspoint; start && tempstring[start-1] != '\n'; start--)
+		;
+	PutUpArrow(toptextW, start);
 
 	num = atoi (strchr (tempstring + start, '[') + 1);
 
@@ -1195,7 +1214,6 @@ DoTheRightThingInReverse()
 **  Many text functions are static, so I had to take what I could get.
 */
 
-static
 TryToScrollAPage(ctx, direction)
 TextWidget	ctx;
 int		direction;
@@ -1237,10 +1255,10 @@ PutUpTransactionList(start, finish)
 int	start;
 int	finish;
 {
-	char		command[80];
+	char		command[LONGNAMELEN + 25];
 	char		filename[70];
 	char		*returndata;
-	static char	oldmeeting[50];
+	static char	oldmeeting[LONGNAMELEN];
 	static int	oldstart=0, oldfinish=0;
 
 	sprintf (	command, 
@@ -1256,7 +1274,7 @@ int	finish;
 ** Can we optimize by keeping some of the old data?
 */
 	if (	*oldmeeting &&
-		!strcmp (oldmeeting, CurrentMtg()) && 
+		!strcmp (oldmeeting, CurrentMtg(0)) && 
 		finish == oldfinish && 
 		start <= oldstart) {
 
@@ -1272,7 +1290,7 @@ int	finish;
 
 		sprintf (filename, "%s-list", filebase);
 		sprintf (command, "(ls %s %d %d 0 %s)\n", filename, 
-			start, oldstart-1, CurrentMtg());
+			start, oldstart-1, CurrentMtg(0));
 		returndata = RunCommand (command, NULL, NULL, True);
 		if ((int) returndata <= 0) {
 			TakeDownTempMessage();
@@ -1306,7 +1324,7 @@ int	finish;
 
 		sprintf (filename, "%s-list", filebase);
 		sprintf (command, "(ls %s %d %d 0 %s)\n", filename, 
-			start, finish, CurrentMtg());
+			start, finish, CurrentMtg(0));
 		returndata = RunCommand (command, (Widget) toptextW, filename, True);
 		if ((int) returndata <= 0) {
 			TakeDownTempMessage();
@@ -1319,7 +1337,7 @@ int	finish;
 	}
 
 	TakeDownTempMessage();
-	strcpy (oldmeeting, CurrentMtg());
+	strcpy (oldmeeting, CurrentMtg(0));
 	oldstart = start;
 	oldfinish = finish;
 }
@@ -1357,9 +1375,17 @@ int	*num_params;
 
 SaveTopTextWidget()
 {
-	if (savedstart || savedend)
+	XawTextPosition	inspoint;
+
+	if (savedstart != -1)
 		return;
-	XawTextGetSelectionPos(toptextW, &savedstart, &savedend);
+
+	inspoint = XawTextGetInsertionPoint(toptextW);
+/*
+** Find start of current line
+*/
+	for (savedstart = inspoint; savedstart && meetinglist[savedstart-1] != '\n'; savedstart--)
+		;
 }
 
 RestoreTopTextWidget()
@@ -1367,6 +1393,8 @@ RestoreTopTextWidget()
 	Arg		args[1];
 	unsigned int	n;
 
+	SetLabelsAndCallback (MAIN);
+	CheckButtonSensitivity(BUTTONS_ON);
 /*
 ** If the meeting list's changed since we saved state, reread it in
 ** and highlight the next meeting with news.
@@ -1387,20 +1415,15 @@ RestoreTopTextWidget()
 
 	else {
 		n = 0;
+/*
+		XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
+*/
 		XtSetArg(args[n], XtNstring, meetinglist);		n++;
 		XtSetValues (toptextW, args, n);
-
-		XawTextSetSelection((Widget)toptextW, savedstart, savedend);
-		while (savedend >= toptextW->text.lt.info[toptextW->text.lt.lines].position) {
-			TryToScrollAPage(toptextW, 1);
-		}
+		PutUpArrow(toptextW, savedstart);
 	}
 
-	CheckButtonSensitivity(BUTTONS_ON);
-
-	SetLabelsAndCallback (MAIN);
-	savedstart = 0;
-	savedend = 0;
+	savedstart = -1;
 }
 
 /*
@@ -1454,10 +1477,9 @@ int num;
 	if (*foo) {
 		for (bar = foo; *bar && *bar != '\n'; bar++)
 			;
-		XawTextSetSelection(	toptextW, 
-					foo - tempstring,
-					bar - tempstring) ;
+		PutUpArrow(toptextW, foo - tempstring);
 
+/*
 		while (bar - tempstring < toptextW->text.lt.info[0].position) {
 			TryToScrollAPage(toptextW, -1);
 		}
@@ -1465,6 +1487,7 @@ int num;
 		while (bar - tempstring >= toptextW->text.lt.info[toptextW->text.lt.lines].position) {
 			TryToScrollAPage(toptextW, 1);
 		}
+*/
 	}
 	if (bar)
 		lastend = bar - tempstring;
@@ -1503,4 +1526,79 @@ char	*string;
 	XtSetArg(args[0], XtNstring, string);
 	XtSetValues (label1W, args, 1);
 	XFlush(XtDisplay(label1W));
+}
+
+PutUpArrow(textW, start)
+TextWidget	textW;
+XawTextPosition	start;
+{
+	XawTextBlock		textblock;
+	static XawTextPosition	oldstart = -1;
+	int			offset;
+	static int		oldTopScreen = -1;
+
+/*
+** Don't try to erase an arrow on another top screen
+*/
+	if (whichTopScreen != oldTopScreen)
+		oldstart = -1;
+
+	oldTopScreen = whichTopScreen;
+
+	if (whichTopScreen == MAIN)
+		offset = 7;
+	else
+		offset = 7;
+
+	textblock.firstPos = 0;
+	textblock.length = 1;
+	textblock.format = FMT8BIT;
+
+	if (oldstart != -1) {
+		textblock.ptr = " ";
+		XawTextReplace (	textW, oldstart + offset, 
+					oldstart + offset + 1, &textblock);
+	}
+
+	textblock.ptr = "+";
+
+	XawTextReplace (	textW, start + offset, 
+				start + offset + 1, &textblock);
+
+	XawTextSetInsertionPoint (textW, start);
+
+	XFlush(XtDisplay(textW));
+
+	oldstart = start;
+}
+
+/*
+**  This assumes the insert position is at the start of the line containing
+**  the letter 'c'.  If UseStringInPlace were True for toptextW, we
+**  wouldn't need both the XawTextReplace and the setting of
+**  the char in meetinglist, but setting it to True causes weird
+**  memory overlaps I haven't figured out yet.
+*/
+
+void
+RemoveLetterC()
+{
+	XawTextBlock		textblock;
+	XawTextPosition		inspoint;
+
+	textblock.firstPos = 0;
+	textblock.length = 1;
+	textblock.format = FMT8BIT;
+	textblock.ptr = " ";
+
+	inspoint = XawTextGetInsertionPoint(toptextW);
+
+	if (inspoint > strlen (meetinglist))
+		return;
+
+	XawTextReplace (toptextW, inspoint + 2, inspoint + 3, &textblock);
+
+	*(meetinglist + inspoint + 2) = ' ';
+
+	XFlush(XtDisplay(toptextW));
 }
