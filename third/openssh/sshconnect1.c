@@ -540,7 +540,7 @@ ssh1_krb5_common(krb5_context *context, krb5_auth_context *auth_context)
 }
 
 static int
-try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
+try_krb5_authentication(char *host, krb5_context *context, krb5_auth_context *auth_context)
 {
 	krb5_error_code problem;
 	const char *tkfile;
@@ -551,6 +551,9 @@ try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 	int type, payload_len;
 	krb5_ap_rep_enc_part *reply = NULL;
 	int ret;
+	struct hostent *hp_static;
+	krb5_creds creds, *new_creds;
+	char **hostrealms;
 	
 	memset(&ap, 0, sizeof(ap));
 	
@@ -584,10 +587,91 @@ try_krb5_authentication(krb5_context *context, krb5_auth_context *auth_context)
 	    "host", remotehost, NULL, ccache, &ap);
 
 	if (problem) {
+	        int state = -1; /* error but nothing to do */
+		char * canonhost = NULL;
+
 		debug("Kerberos v5: krb5_mk_req failed: %s",
-		    krb5_get_err_text(*context, problem));
-		ret = 0;
-		goto out;
+		      krb5_get_err_text(*context, problem));
+
+		/* Now try to use the original host directly.  This handles
+		 * the case where you have forward DNS but not reverse DNS.
+		 * This is a "best effort" attempt to find the requested host
+		 * and use it.
+		 */
+		do {
+		  hp_static = gethostbyname(host);
+		  if (!hp_static)
+		    break;
+		  
+		  canonhost = xstrdup (hp_static->h_name);
+		  memset((char *)&creds, 0, sizeof(creds));
+		  problem = krb5_get_host_realm (*context, canonhost, &hostrealms);
+		  if (problem) {
+		    debug("Kerberos V5: error while obtaining host realm: %.100s.",
+			  krb5_get_err_text(*context, problem));
+		    break;
+		  }
+		  
+		  /* Note, this assumes that hostrealm[0] is valid. */
+		  problem = krb5_build_principal (*context, &creds.server,
+						  strlen(hostrealms[0]),
+						  hostrealms[0],
+						  "host", canonhost, NULL);
+		  if (problem) {
+		    debug("Kerberos V5: error while constructing service name: %.100s.",
+			  krb5_get_err_text(*context, problem));
+		    krb5_free_host_realm (*context, hostrealms);
+		    break;
+		  }
+		  krb5_free_host_realm (*context, hostrealms);
+		  
+		  state = 1; /* need to free the creds contents */
+		  problem = krb5_cc_get_principal(*context, ccache, &creds.client);
+		  if (problem) {
+		    debug("Kerberos V5: failure on principal (%.100s).",
+			  krb5_get_err_text(*context, problem));
+		    break;
+		  }
+		  
+		  problem = krb5_get_credentials(*context, 0,
+						 ccache, &creds, &new_creds);
+		  if (problem) {
+		    char *name;
+		    krb5_unparse_name (*context, creds.server, &name);
+		    debug("Kerberos V5: failure on credentials for %s (%.100s)."
+			  "\n\t(%s)",
+			  canonhost, krb5_get_err_text(*context, problem), name);
+		    xfree(name);
+		    break;
+		  }
+		  
+		  problem = krb5_mk_req_extended(*context, auth_context,
+						 AP_OPTS_MUTUAL_REQUIRED,
+						 NULL, new_creds, &ap);
+		  
+		  krb5_free_cred_contents(*context, new_creds);
+		  
+		  if (problem) {
+		    debug("Kerberos V5: failed krb5_mk_req_extended (%.100s)",
+			  krb5_get_err_text(*context, problem));
+		    break;
+		  }
+		
+		  /* If we got here, then we've succeeded */
+		  state = 0;	/* SUCCESS */
+		} while (0);
+	
+		if (canonhost)
+		  xfree (canonhost);
+		
+		if (state >= 0)
+		  krb5_free_cred_contents(*context, &creds);
+		
+		/* Deal with errors */
+		if (state) {
+		  ret = 0;
+		  goto out;
+		}
 	}
 	
 	packet_start(SSH_CMSG_AUTH_KERBEROS);
@@ -1232,7 +1316,7 @@ ssh_userauth1(const char *local_user, const char *server_user, char *host,
             options.kerberos_authentication) {
 		debug("Trying Kerberos v5 authentication.");
 		
-		if (try_krb5_authentication(&context, &auth_context)) {
+		if (try_krb5_authentication(host, &context, &auth_context)) {
 			type = packet_read(&payload_len);
 			if (type == SSH_SMSG_SUCCESS)
 				goto success;
