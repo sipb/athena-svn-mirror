@@ -148,7 +148,7 @@ init_menus (void)
 	/*just load the menus from disk, don't make the widgets
 	  this just reads the .desktops of the top most directory
 	  and a level down*/
-	menu = gnome_datadir_file ("gnome/athena/menus");
+	menu = g_strdup ("/var/athena/menus");
 	if (menu != NULL)
 		fr_read_dir (NULL, menu, NULL, NULL, 2);
 	g_free (menu);
@@ -3445,7 +3445,7 @@ create_system_menu (GtkWidget *menu, gboolean fake_submenus,
 		    gboolean title,
 		    gboolean launcher_add)
 {
-	char *menudir = gnome_datadir_file ("gnome/athena/menus");
+	char *menudir = g_strdup ("/var/athena/menus");
 
 	if (menudir &&
 	    g_file_test (menudir, G_FILE_TEST_ISDIR)) {
@@ -4552,7 +4552,7 @@ make_add_submenu (GtkWidget *menu, gboolean fake_submenus)
 	gtk_menu_append (GTK_MENU (submenu), submenuitem);
 	gtk_signal_connect(GTK_OBJECT(submenuitem), "activate",
 			   GTK_SIGNAL_FUNC(add_menu_to_panel),
-			   "gnome/athena/menus/");
+			   "/var/athena/menus/");
 	setup_internal_applet_drag(submenuitem, "MENU:gnome/athena/menus/");
 
 	submenuitem = gtk_menu_item_new ();
