@@ -883,7 +883,7 @@ control system name."
     ;; cannot modify a file that someone else has locked.
     (and vc-type 
 	 (equal file (buffer-file-name))
-	 (vc-locking-user file)
+	 (stringp (vc-locking-user file))
 	 (not (string= (user-login-name) (vc-locking-user file)))
 	 (setq buffer-read-only t))
     ;; If the user is root, and the file is not owner-writable,
