@@ -10,25 +10,38 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
+<anchor id="PangoEngine"/>
 <synopsis>
 
 
 
 struct      <link linkend="PangoEngineInfo">PangoEngineInfo</link>;
-struct      <link linkend="PangoEngineRange">PangoEngineRange</link>;
-struct      <link linkend="PangoEngine">PangoEngine</link>;
-struct      <link linkend="PangoEngineLang">PangoEngineLang</link>;
-struct      <link linkend="PangoEngineShape">PangoEngineShape</link>;
-#define     <link linkend="PANGO-ENGINE-TYPE-LANG-CAPS">PANGO_ENGINE_TYPE_LANG</link>
-#define     <link linkend="PANGO-ENGINE-TYPE-SHAPE-CAPS">PANGO_ENGINE_TYPE_SHAPE</link>
+struct      <link linkend="PangoEngineScriptInfo">PangoEngineScriptInfo</link>;
+struct      <link linkend="PangoEngine-struct">PangoEngine</link>;
+struct      <link linkend="PangoEngineClass">PangoEngineClass</link>;
 #define     <link linkend="PANGO-RENDER-TYPE-NONE-CAPS">PANGO_RENDER_TYPE_NONE</link>
-void        <link linkend="script-engine-list">script_engine_list</link>              (<link linkend="PangoEngineInfo">PangoEngineInfo</link> **engines,
-                                             int *n_engines);
-<link linkend="PangoEngine">PangoEngine</link>* <link linkend="script-engine-load">script_engine_load</link>             (const char *id);
-void        <link linkend="script-engine-unload">script_engine_unload</link>            (<link linkend="PangoEngine">PangoEngine</link> *engine);
+<link linkend="void">void</link>        <link linkend="script-engine-list">script_engine_list</link>              (<link linkend="PangoEngineInfo">PangoEngineInfo</link> **engines,
+                                             <link linkend="int">int</link> *n_engines);
+<link linkend="void">void</link>        <link linkend="script-engine-init">script_engine_init</link>              (<link linkend="GTypeModule">GTypeModule</link> *module);
+<link linkend="void">void</link>        <link linkend="script-engine-exit">script_engine_exit</link>              (void);
+<link linkend="PangoEngine">PangoEngine</link>* <link linkend="script-engine-create">script_engine_create</link>           (const <link linkend="char">char</link> *id);
+
+
 </synopsis>
 </refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----PangoEngine
+         +----<link linkend="PangoEngineLang">PangoEngineLang</link>
+         +----<link linkend="PangoEngineShape">PangoEngineShape</link>
+</synopsis>
+
+</refsect1>
+
 
 
 
@@ -49,9 +62,10 @@ strings.
 </para>
 <para>
 Each dynamically-loaded module exports several functions which provide
-the public API. These functions are <link linkend="script-engine-list">script_engine_list</link>(),
-<link linkend="script-engine-load">script_engine_load</link>() and <link linkend="script-engine-unload">script_engine_unload</link>().  The latter two
-functions are used for loading and unloading modules, while the first
+the public API. These functions are <link linkend="script-engine-list"><function>script_engine_list()</function></link>,
+<link linkend="script-engine-init"><function>script_engine_init()</function></link> and script_engine_exit, and
+<link linkend="script-engine-create"><function>script_engine_create()</function></link>. The latter three functions are used when
+creating engines from the module at run time, while the first
 function is used when building a catalog of all available modules.
 </para>
 </refsect1>
@@ -60,228 +74,102 @@ function is used when building a catalog of all available modules.
 <title>Details</title>
 <refsect2>
 <title><anchor id="PangoEngineInfo"/>struct PangoEngineInfo</title>
-<programlisting>struct PangoEngineInfo {
+<indexterm><primary>PangoEngineInfo</primary></indexterm><programlisting>struct PangoEngineInfo {
 
   gchar *id;
   gchar *engine_type;
   gchar *render_type;
-  PangoEngineRange *ranges;
-  gint n_ranges;
+  PangoEngineScriptInfo *scripts;
+  gint n_scripts;
 };
 </programlisting>
 <para>
-The <link linkend="PangoEngineInfo">PangoEngineInfo</link> structure contains information about a particular
+The <link linkend="PangoEngineInfo"><type>PangoEngineInfo</type></link> structure contains information about a particular
 engine. It contains the following fields:
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="gchar">gchar</link> *<structfield>id</structfield></term>
+<listitem><simpara>a unique string ID for the engine.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gchar">gchar</link> *<structfield>engine_type</structfield></term>
+<listitem><simpara>a string identifying the engine type.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gchar">gchar</link> *<structfield>render_type</structfield></term>
+<listitem><simpara>a string identifying the render type.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="PangoEngineScriptInfo">PangoEngineScriptInfo</link> *<structfield>scripts</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gint">gint</link> <structfield>n_scripts</structfield></term>
+<listitem><simpara>
 
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gchar *id;</entry>
-<entry>a unique string ID for the engine.</entry>
-</row>
-<row>
-<entry>gchar *engine_type;</entry>
-<entry>a string identifying the engine type.</entry>
-</row>
-
-<row>
-<entry>gchar *render type;</entry>
-<entry>a string identifying the render type.</entry>
-</row>
-
-<row>
-<entry><link linkend="PangoEngineRange">PangoEngineRange</link> *ranges;</entry>
-<entry>a pointer to an array of <link linkend="PangoEngineRange">PangoEngineRange</link>
-       structures. Each structure contains information
-       about a range of Unicode code points that
-       this engine handles.</entry>
-</row>
-
-<row>
-<entry>gint n_ranges;</entry>
-<entry>the number of elements in <structfield>ranges</structfield>.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
-<title><anchor id="PangoEngineRange"/>struct PangoEngineRange</title>
-<programlisting>struct PangoEngineRange {
+<title><anchor id="PangoEngineScriptInfo"/>struct PangoEngineScriptInfo</title>
+<indexterm><primary>PangoEngineScriptInfo</primary></indexterm><programlisting>struct PangoEngineScriptInfo {
 
-  guint32 start;
-  guint32 end;
+  PangoScript script;
   gchar *langs;
 };
 </programlisting>
 <para>
-The PangoEngineRange structure contains
-information about a range of Unicode code
-points. It contains the following fields:
+The PangoEngineScriptInfo structure contains
+information about how the shaper covers a particular
+script.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="PangoScript">PangoScript</link> <structfield>script</structfield></term>
+<listitem><simpara>a <link linkend="PangoScript"><type>PangoScript</type></link>. The value <literal>PANGO_SCRIPT_COMMON</literal> has
+        the special meaning here of "all scripts"
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gchar">gchar</link> *<structfield>langs</structfield></term>
+<listitem><simpara>a semicolon separated list of languages that this
+        engine handles for this script. This may be empty, 
+        in which case the engine is saying that it is a
+        fallback choice for all languages for this range,
+        but should not be used if another engine 
+        indicates that it is specific for the language for
+        a given code point. An entry in this list of "*"
+        indicates that this engine is specific to all
+        languages for this range.
 
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>guint32 start;</entry>
-<entry>the first code point in the range.</entry>
-</row>
-
-<row>
-<entry>guint32 end;</entry>
-<entry>the last code point for the range.</entry>
-</row>
-
-<row>
-<entry>gchar *langs;</entry>
-<entry>A semicolon separated list of languages that this
-       engine handles for this range. This may be empty, 
-       in which case the engine is saying that it is a
-       fallback choice for all languages for this range,
-       but should not be used if another engine 
-       indicates that it is specific for the language for
-       a given code point. An entry in this list of "*"
-       indicates that this engine is specific to all
-       languages for this range.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="PangoEngine-struct"/>struct PangoEngine</title>
+<indexterm><primary>PangoEngine</primary></indexterm><programlisting>struct PangoEngine;</programlisting>
+<para>
+<link linkend="PangoEngine"><type>PangoEngine</type></link> is the base class for all types of language and
+script specific engines. It has no functionality by itself.</para>
+<para>
 </para></refsect2>
 <refsect2>
-<title><anchor id="PangoEngine"/>struct PangoEngine</title>
-<programlisting>struct PangoEngine {
+<title><anchor id="PangoEngineClass"/>struct PangoEngineClass</title>
+<indexterm><primary>PangoEngineClass</primary></indexterm><programlisting>struct PangoEngineClass {
 
-  gchar *id;
-  gchar *type;
-  gint length;
 };
 </programlisting>
 <para>
-The <link linkend="PangoEngine">PangoEngine</link> structure contains basic
-information common to all script engines. It
-contains the following fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gchar *id;</entry>
-<entry>a unique string ID for this language engine.</entry>
-</row>
-
-<row>
-<entry>gchar *type;</entry>
-<entry>The "type" of the engine. (Is this engine type or render type??).</entry>
-</row>
-
-<row>
-<entry>gint length;</entry>
-<entry>the length of the entire structure in bytes. This is 
-       provided so that new functions can be added at the
-       end of subtypes of <link linkend="PangoEngine">PangoEngine</link> without breaking
-       older modules.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
-<refsect2>
-<title><anchor id="PangoEngineLang"/>struct PangoEngineLang</title>
-<programlisting>struct PangoEngineLang {
-
-  PangoEngine engine;
-  void (*script_break) (const char    *text,
-			int            len,
-			PangoAnalysis *analysis,
-			PangoLogAttr  *attrs,
-                        int            attrs_len);
-};
-</programlisting>
+Class structure for <link linkend="PangoEngine"><type>PangoEngine</type></link></para>
 <para>
-The <link linkend="PangoEngineLang">PangoEngineLang</link> structure extends the
-basic <link linkend="PangoEngine">PangoEngine</link> structure to engines that
-deal with the rendering-system independent part
-of of the rendering pipeline. It contains the following fields:
 
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry><link linkend="PangoEngine">PangoEngine</link> engine;</entry>
-<entry>A nested structure containing basic engine data.</entry>
-</row>
-
-<row>
-<entry>void (*script_break) (...);</entry>
-<entry>A function that provides an implementation
-       for <link linkend="pango-break">pango_break</link>().</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
-<refsect2>
-<title><anchor id="PangoEngineShape"/>struct PangoEngineShape</title>
-<programlisting>struct PangoEngineShape {
-
-  PangoEngine engine;
-  void (*script_shape) (PangoFont        *font,
-			const char       *text,
-			int               length,
-			PangoAnalysis    *analysis,
-			PangoGlyphString *glyphs);
-  PangoCoverage *(*get_coverage) (PangoFont        *font,
-				  PangoLanguage    *language);
-};
-</programlisting>
-<para>
-The <link linkend="PangoEngineShape">PangoEngineShape</link> structure extends the
-basic <link linkend="PangoEngine">PangoEngine</link> structure to engines that
-deal with the rendering-system dependent part
-of of the rendering pipeline. It contains the following fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry><link linkend="PangoEngine">PangoEngine</link> engine;</entry>
-<entry>A nested structure containing basic engine data.</entry>
-</row>
-
-<row>
-<entry> void (*script_shape) (...);</entry>
-<entry>A function that provides an implementation
-       for pango_shape.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
-<refsect2>
-<title><anchor id="PANGO-ENGINE-TYPE-LANG-CAPS"/>PANGO_ENGINE_TYPE_LANG</title>
-<programlisting>#define PANGO_ENGINE_TYPE_LANG "PangoEngineLang"
-</programlisting>
-<para>
-A string constant defining the engine type
-for <firstterm>language engines</firstterm>.
-These engines have a engine structure of 
-type <link linkend="PangoEngineLang">PangoEngineLang</link>.
-</para></refsect2>
-<refsect2>
-<title><anchor id="PANGO-ENGINE-TYPE-SHAPE-CAPS"/>PANGO_ENGINE_TYPE_SHAPE</title>
-<programlisting>#define PANGO_ENGINE_TYPE_SHAPE "PangoEngineShape"
-</programlisting>
-<para>
-A string constant defining the engine type
-for <firstterm>shaping engines</firstterm>.
-These engines have a engine structure of 
-type <link linkend="PangoEngineShape">PangoEngineShape</link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PANGO-RENDER-TYPE-NONE-CAPS"/>PANGO_RENDER_TYPE_NONE</title>
-<programlisting>#define PANGO_RENDER_TYPE_NONE "PangoRenderNone"
+<indexterm><primary>PANGO_RENDER_TYPE_NONE</primary></indexterm><programlisting>#define PANGO_RENDER_TYPE_NONE "PangoRenderNone"
 </programlisting>
 <para>
 A string constant defining the render type
@@ -290,54 +178,66 @@ specific.
 </para></refsect2>
 <refsect2>
 <title><anchor id="script-engine-list"/>script_engine_list ()</title>
-<programlisting>void        script_engine_list              (<link linkend="PangoEngineInfo">PangoEngineInfo</link> **engines,
-                                             int *n_engines);</programlisting>
+<indexterm><primary>script_engine_list</primary></indexterm><programlisting><link linkend="void">void</link>        script_engine_list              (<link linkend="PangoEngineInfo">PangoEngineInfo</link> **engines,
+                                             <link linkend="int">int</link> *n_engines);</programlisting>
 <para>
 Function to be provided by a module to list the engines that the
 module supplies. The function stores a pointer to an array
-of <link linkend="PangoEngineInfo">PangoEngineInfo</link> structures and the length of that array in
+of <link linkend="PangoEngineInfo"><type>PangoEngineInfo</type></link> structures and the length of that array in
 the given location.
+</para>
+<para>
+Note that <link linkend="script-engine-init"><function>script_engine_init()</function></link> will not be called before this
+function.</para>
+<para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>engines</parameter>&nbsp;:</term>
-<listitem><simpara>location to store a pointer to an array of engines.
+<listitem><simpara> location to store a pointer to an array of engines.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_engines</parameter>&nbsp;:</term>
-<listitem><simpara>location to store the number of elements in <parameter>engines</parameter>.
-
-
+<listitem><simpara> location to store the number of elements in <parameter>engines</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="script-engine-load"/>script_engine_load ()</title>
-<programlisting><link linkend="PangoEngine">PangoEngine</link>* script_engine_load             (const char *id);</programlisting>
+<title><anchor id="script-engine-init"/>script_engine_init ()</title>
+<indexterm><primary>script_engine_init</primary></indexterm><programlisting><link linkend="void">void</link>        script_engine_init              (<link linkend="GTypeModule">GTypeModule</link> *module);</programlisting>
 <para>
-Function to be provided by a module to load a particular engine.
+Function to be provided by a module to register any
+GObject types in the module.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>module</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GTypeModule"><type>GTypeModule</type></link> structure used to associate any
+ GObject types created in this module with the module.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="script-engine-exit"/>script_engine_exit ()</title>
+<indexterm><primary>script_engine_exit</primary></indexterm><programlisting><link linkend="void">void</link>        script_engine_exit              (void);</programlisting>
+<para>
+Function to be provided by the module that is called
+when the module is unloading. Frequently does nothing.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="script-engine-create"/>script_engine_create ()</title>
+<indexterm><primary>script_engine_create</primary></indexterm><programlisting><link linkend="PangoEngine">PangoEngine</link>* script_engine_create           (const <link linkend="char">char</link> *id);</programlisting>
+<para>
+Function to be provided by the module to create an instance
+of one of the engines implemented by the module.</para>
+<para>
+
 </para><variablelist role="params">
 <varlistentry><term><parameter>id</parameter>&nbsp;:</term>
-<listitem><simpara>the ID from the <link linkend="PangoEngineInfo">PangoEngineInfo</link> structure of the
-     module to load.
+<listitem><simpara> the ID of an engine as reported by script_engine_list.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the newly created script engine.
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="script-engine-unload"/>script_engine_unload ()</title>
-<programlisting>void        script_engine_unload            (<link linkend="PangoEngine">PangoEngine</link> *engine);</programlisting>
-<para>
-Function to be provided by a module to unload an engine loaded
-with <link linkend="script-engine-load">script_engine_load</link>().
-</para><variablelist role="params">
-<varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
-<listitem><simpara>the engine to unload.
-
-
-<!-- Local Variables: -->
-<!-- sgml-parent-document: ("../pango-docs.sgml" "book" "refsect2") -->
-<!-- End: -->
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <link linkend="PangoEngine"><type>PangoEngine</type></link> of the specified
+ type, or <literal>NULL</literal> if an error occurred. (In normal operation,
+ a module should not return <literal>NULL</literal>. A <literal>NULL</literal> return is only
+ acceptable in the case where system misconfiguration or
+ bugs in the driver routine are encountered.)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -21,23 +21,25 @@ struct      <link linkend="PangoCoverage">PangoCoverage</link>;
 
 <link linkend="PangoCoverage">PangoCoverage</link>* <link linkend="pango-coverage-new">pango_coverage_new</link>           (void);
 <link linkend="PangoCoverage">PangoCoverage</link>* <link linkend="pango-coverage-ref">pango_coverage_ref</link>           (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);
-void        <link linkend="pango-coverage-unref">pango_coverage_unref</link>            (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);
+<link linkend="void">void</link>        <link linkend="pango-coverage-unref">pango_coverage_unref</link>            (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);
 <link linkend="PangoCoverage">PangoCoverage</link>* <link linkend="pango-coverage-copy">pango_coverage_copy</link>          (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);
 <link linkend="PangoCoverageLevel">PangoCoverageLevel</link> <link linkend="pango-coverage-get">pango_coverage_get</link>       (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
-                                             int index_);
-void        <link linkend="pango-coverage-max">pango_coverage_max</link>              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+                                             <link linkend="int">int</link> index_);
+<link linkend="void">void</link>        <link linkend="pango-coverage-max">pango_coverage_max</link>              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
                                              <link linkend="PangoCoverage">PangoCoverage</link> *other);
-void        <link linkend="pango-coverage-set">pango_coverage_set</link>              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
-                                             int index_,
+<link linkend="void">void</link>        <link linkend="pango-coverage-set">pango_coverage_set</link>              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+                                             <link linkend="int">int</link> index_,
                                              <link linkend="PangoCoverageLevel">PangoCoverageLevel</link> level);
-void        <link linkend="pango-coverage-to-bytes">pango_coverage_to_bytes</link>         (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+<link linkend="void">void</link>        <link linkend="pango-coverage-to-bytes">pango_coverage_to_bytes</link>         (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
                                              <link linkend="guchar">guchar</link> **bytes,
-                                             int *n_bytes);
+                                             <link linkend="int">int</link> *n_bytes);
 <link linkend="PangoCoverage">PangoCoverage</link>* <link linkend="pango-coverage-from-bytes">pango_coverage_from_bytes</link>    (<link linkend="guchar">guchar</link> *bytes,
-                                             int n_bytes);
+                                             <link linkend="int">int</link> n_bytes);
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -50,7 +52,7 @@ void        <link linkend="pango-coverage-to-bytes">pango_coverage_to_bytes</lin
 <para>
 It is often necessary in Pango to determine if a particular font can
 represent a particular character, and also how well it can represent
-that character. The <link linkend="PangoCoverage">PangoCoverage</link> is a data structure that is used
+that character. The <link linkend="PangoCoverage"><type>PangoCoverage</type></link> is a data structure that is used
 to represent that information.
 </para>
 </refsect1>
@@ -59,7 +61,7 @@ to represent that information.
 <title>Details</title>
 <refsect2>
 <title><anchor id="PangoCoverageLevel"/>enum PangoCoverageLevel</title>
-<programlisting>typedef enum {
+<indexterm><primary>PangoCoverageLevel</primary></indexterm><programlisting>typedef enum {
   PANGO_COVERAGE_NONE,
   PANGO_COVERAGE_FALLBACK,
   PANGO_COVERAGE_APPROXIMATE,
@@ -100,23 +102,23 @@ character point for a particular script.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="PANGO-TYPE-COVERAGE-LEVEL-CAPS"/>PANGO_TYPE_COVERAGE_LEVEL</title>
-<programlisting>#define PANGO_TYPE_COVERAGE_LEVEL (pango_coverage_level_get_type())
+<indexterm><primary>PANGO_TYPE_COVERAGE_LEVEL</primary></indexterm><programlisting>#define PANGO_TYPE_COVERAGE_LEVEL (pango_coverage_level_get_type())
 </programlisting>
 <para>
-The GObject type for <link linkend="PangoCoverageLevel">PangoCoverageLevel</link>.
+The GObject type for <link linkend="PangoCoverageLevel"><type>PangoCoverageLevel</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoCoverage"/>struct PangoCoverage</title>
-<programlisting>struct PangoCoverage;</programlisting>
+<indexterm><primary>PangoCoverage</primary></indexterm><programlisting>struct PangoCoverage;</programlisting>
 <para>
-The <link linkend="PangoCoverage">PangoCoverage</link> structure represents a map from ISO-10646 character
-point to <link linkend="PangoCoverageLevel">PangoCoverageLevel</link>. It is an opaque structure with no public fields.
+The <link linkend="PangoCoverage"><type>PangoCoverage</type></link> structure represents a map from ISO-10646 character
+point to <link linkend="PangoCoverageLevel"><type>PangoCoverageLevel</type></link>. It is an opaque structure with no public fields.
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-new"/>pango_coverage_new ()</title>
-<programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_new           (void);</programlisting>
+<indexterm><primary>pango_coverage_new</primary></indexterm><programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_new           (void);</programlisting>
 <para>
-Create a new <link linkend="PangoCoverage">PangoCoverage</link></para>
+Create a new <link linkend="PangoCoverage"><type>PangoCoverage</type></link></para>
 <para>
 
 </para><variablelist role="params">
@@ -126,58 +128,58 @@ Create a new <link linkend="PangoCoverage">PangoCoverage</link></para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-ref"/>pango_coverage_ref ()</title>
-<programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_ref           (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
+<indexterm><primary>pango_coverage_ref</primary></indexterm><programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_ref           (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
 <para>
-Increase the reference count on the <link linkend="PangoCoverage">PangoCoverage</link> by one</para>
+Increase the reference count on the <link linkend="PangoCoverage"><type>PangoCoverage</type></link> by one</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <parameter>coverage</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-unref"/>pango_coverage_unref ()</title>
-<programlisting>void        pango_coverage_unref            (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
+<indexterm><primary>pango_coverage_unref</primary></indexterm><programlisting><link linkend="void">void</link>        pango_coverage_unref            (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
 <para>
-Increase the reference count on the <link linkend="PangoCoverage">PangoCoverage</link> by one.
+Increase the reference count on the <link linkend="PangoCoverage"><type>PangoCoverage</type></link> by one.
 if the result is zero, free the coverage and all associated memory.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-copy"/>pango_coverage_copy ()</title>
-<programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_copy          (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
+<indexterm><primary>pango_coverage_copy</primary></indexterm><programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_copy          (<link linkend="PangoCoverage">PangoCoverage</link> *coverage);</programlisting>
 <para>
-Copy an existing <link linkend="PangoCoverage">PangoCoverage</link>. (This function may now be unecessary 
-since we refcount the structure. Mail otaylor<parameter>redhat</parameter>.com if you
+Copy an existing <link linkend="PangoCoverage"><type>PangoCoverage</type></link>. (This function may now be unecessary 
+since we refcount the structure. Mail otaylor<parameter>redhat.com</parameter> if you
 use it.)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a copy of <parameter>coverage</parameter> with a reference count of 1
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-get"/>pango_coverage_get ()</title>
-<programlisting><link linkend="PangoCoverageLevel">PangoCoverageLevel</link> pango_coverage_get       (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
-                                             int index_);</programlisting>
+<indexterm><primary>pango_coverage_get</primary></indexterm><programlisting><link linkend="PangoCoverageLevel">PangoCoverageLevel</link> pango_coverage_get       (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+                                             <link linkend="int">int</link> index_);</programlisting>
 <para>
 Determine whether a particular index is covered by <parameter>coverage</parameter></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>index_</parameter>&nbsp;:</term>
 <listitem><simpara> the index to check
@@ -187,7 +189,7 @@ Determine whether a particular index is covered by <parameter>coverage</paramete
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-max"/>pango_coverage_max ()</title>
-<programlisting>void        pango_coverage_max              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+<indexterm><primary>pango_coverage_max</primary></indexterm><programlisting><link linkend="void">void</link>        pango_coverage_max              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
                                              <link linkend="PangoCoverage">PangoCoverage</link> *other);</programlisting>
 <para>
 Set the coverage for each index in <parameter>coverage</parameter> to be the max (better)
@@ -197,16 +199,16 @@ the corresponding index in <parameter>other</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>other</parameter>&nbsp;:</term>
-<listitem><simpara> another <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> another <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-set"/>pango_coverage_set ()</title>
-<programlisting>void        pango_coverage_set              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
-                                             int index_,
+<indexterm><primary>pango_coverage_set</primary></indexterm><programlisting><link linkend="void">void</link>        pango_coverage_set              (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+                                             <link linkend="int">int</link> index_,
                                              <link linkend="PangoCoverageLevel">PangoCoverageLevel</link> level);</programlisting>
 <para>
 Modify a particular index within <parameter>coverage</parameter></para>
@@ -214,7 +216,7 @@ Modify a particular index within <parameter>coverage</parameter></para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>index_</parameter>&nbsp;:</term>
 <listitem><simpara> the index to modify
@@ -225,19 +227,19 @@ Modify a particular index within <parameter>coverage</parameter></para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-to-bytes"/>pango_coverage_to_bytes ()</title>
-<programlisting>void        pango_coverage_to_bytes         (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
+<indexterm><primary>pango_coverage_to_bytes</primary></indexterm><programlisting><link linkend="void">void</link>        pango_coverage_to_bytes         (<link linkend="PangoCoverage">PangoCoverage</link> *coverage,
                                              <link linkend="guchar">guchar</link> **bytes,
-                                             int *n_bytes);</programlisting>
+                                             <link linkend="int">int</link> *n_bytes);</programlisting>
 <para>
 Convert a PangoCoverage structure into a flat binary format</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>coverage</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes</parameter>&nbsp;:</term>
-<listitem><simpara> location to store result (must be freed with <link linkend="g-free">g_free</link>())
+<listitem><simpara> location to store result (must be freed with <link linkend="g-free"><function>g_free()</function></link>)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
 <listitem><simpara> location to store size of result
@@ -245,21 +247,21 @@ Convert a PangoCoverage structure into a flat binary format</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-coverage-from-bytes"/>pango_coverage_from_bytes ()</title>
-<programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_from_bytes    (<link linkend="guchar">guchar</link> *bytes,
-                                             int n_bytes);</programlisting>
+<indexterm><primary>pango_coverage_from_bytes</primary></indexterm><programlisting><link linkend="PangoCoverage">PangoCoverage</link>* pango_coverage_from_bytes    (<link linkend="guchar">guchar</link> *bytes,
+                                             <link linkend="int">int</link> n_bytes);</programlisting>
 <para>
-Convert data generated from <link linkend="pango-converage-to-bytes">pango_converage_to_bytes</link>() back
-to a <link linkend="PangoCoverage">PangoCoverage</link></para>
+Convert data generated from <link linkend="pango-converage-to-bytes"><function>pango_converage_to_bytes()</function></link> back
+to a <link linkend="PangoCoverage"><type>PangoCoverage</type></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>bytes</parameter>&nbsp;:</term>
-<listitem><simpara> binary data representing a <link linkend="PangoCoverage">PangoCoverage</link>
+<listitem><simpara> binary data representing a <link linkend="PangoCoverage"><type>PangoCoverage</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_bytes</parameter>&nbsp;:</term>
 <listitem><simpara> the size of <parameter>bytes</parameter> in bytes
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated <link linkend="PangoCoverage">PangoCoverage</link>, or NULL if
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated <link linkend="PangoCoverage"><type>PangoCoverage</type></link>, or NULL if
               the data was invalid.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>

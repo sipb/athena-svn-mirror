@@ -26,8 +26,7 @@
 #define __MODULES_H__
 
 extern PangoIncludedModule _pango_included_x_modules[];
-extern PangoIncludedModule _pango_included_xft_modules[];
-extern PangoIncludedModule _pango_included_ft2_modules[];
+extern PangoIncludedModule _pango_included_fc_modules[];
 extern PangoIncludedModule _pango_included_win32_modules[];
 
 #endif /* __MODULES_H__ */

@@ -25,13 +25,14 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#include "config.h"
 
 #include <string.h>
 
 #include <glib.h>
 #include "pango-engine.h"
 #include "thai-shaper.h"
+#include "thai-ot.h"
 
 #define MAX_CLUSTER_CHRS	256
 #define MAX_GLYPHS		256
@@ -302,26 +303,15 @@ add_glyph (ThaiFontInfo     *font_info,
   pango_font_get_glyph_extents (font_info->font,
 				glyphs->glyphs[index].glyph, &ink_rect, &logical_rect);
 
-  if (combining)
+  if (combining || logical_rect.width > 0)
     {
-      glyphs->glyphs[index].geometry.x_offset =
-	glyphs->glyphs[index - 1].geometry.width;
-      glyphs->glyphs[index].geometry.width =
-	logical_rect.width + glyphs->glyphs[index - 1].geometry.width;
-      glyphs->glyphs[index - 1].geometry.width = 0;
+      glyphs->glyphs[index].geometry.x_offset = 0;
+      glyphs->glyphs[index].geometry.width = logical_rect.width;
     }
   else
     {
-      if (logical_rect.width > 0)
-        {
-	 glyphs->glyphs[index].geometry.x_offset = 0;
-	 glyphs->glyphs[index].geometry.width = logical_rect.width;
-	}
-      else
-        {
-	 glyphs->glyphs[index].geometry.x_offset = ink_rect.width;
-	 glyphs->glyphs[index].geometry.width = ink_rect.width;
-        }
+      glyphs->glyphs[index].geometry.x_offset = ink_rect.width;
+      glyphs->glyphs[index].geometry.width = ink_rect.width;
     }
   glyphs->glyphs[index].geometry.y_offset = 0;
 }
@@ -341,7 +331,7 @@ get_adjusted_glyphs_list (ThaiFontInfo *font_info,
 	    if (font_info->font_set == THAI_FONT_TIS)
 	      glyph_lists[0] = thai_make_glyph (font_info, 0x20);
 	    else
-	      glyph_lists[0] = thai_make_glyph (font_info, 0x7F);
+	      glyph_lists[0] = thai_make_glyph (font_info, 0xDD);
             glyph_lists[1] =
 		thai_make_glyph (font_info, ucs2tis (cluster[0]));
 	    return 2;
@@ -443,7 +433,7 @@ get_adjusted_glyphs_list (ThaiFontInfo *font_info,
 	    if (font_info->font_set == THAI_FONT_TIS)
 	      glyph_lists[0] = thai_make_glyph (font_info, 0x20);
 	    else
-	      glyph_lists[0] = thai_make_glyph (font_info, 0x7F);
+	      glyph_lists[0] = thai_make_glyph (font_info, 0xDD);
 	    glyph_lists[1] =
 		thai_make_glyph (font_info, ucs2tis (cluster[0]));
 	    glyph_lists[2] =
@@ -561,8 +551,6 @@ get_glyphs_list (ThaiFontInfo	*font_info,
 		 gint		num_chrs,
 		 PangoGlyph	*glyph_lists)
 {
-  PangoGlyph glyph;
-  gint xtis_index;
   gint i;
 
   switch (font_info->font_set)
@@ -572,26 +560,6 @@ get_glyphs_list (ThaiFontInfo	*font_info,
 	  glyph_lists[i] = thai_make_unknown_glyph (font_info, glyph_lists[i]);
         return num_chrs;
 
-      case THAI_FONT_XTIS:
-        /* If we are rendering with an XTIS font, we try to find a precomposed
-         * glyph for the cluster.
-         */
-        xtis_index = 0x100 * (cluster[0] - 0xe00 + 0x20) + 0x30;
-        if (cluster[1])
-	    xtis_index +=8 * group1_map[cluster[1] - 0xe30];
-        if (cluster[2])
-	    xtis_index += group2_map[cluster[2] - 0xe30];
-        glyph = thai_make_glyph (font_info, xtis_index);
-        if (pango_x_has_glyph (font_info->font, glyph)) {
-            glyph_lists[0] = glyph;
-            return 1;
-        }
-        for (i=0; i < num_chrs; i++)
-	  glyph_lists[i] =
-	      thai_make_glyph (font_info,
-			0x100 * (cluster[i] - 0xe00 + 0x20) + 0x30);
-        return num_chrs;
-      
       case THAI_FONT_TIS:
 	/* TIS620-0 + Wtt2.0 Extension
 	 */
@@ -629,11 +597,21 @@ add_cluster (ThaiFontInfo	*font_info,
   PangoGlyph glyphs_list[MAX_GLYPHS];
   gint num_glyphs;
   gint i;
-  
-  num_glyphs = get_glyphs_list(font_info, cluster, num_chrs, glyphs_list);
-  for (i=0; i<num_glyphs; i++)
-       add_glyph (font_info, glyphs, cluster_start, glyphs_list[i],
-	    		i == 0 ? FALSE : TRUE);
+
+  if (!isthai (cluster[0]))
+    {
+      g_assert (num_chrs == 1);
+      add_glyph (font_info, glyphs, cluster_start,
+		 thai_make_glyph (font_info, cluster[0]),
+		 FALSE);
+    }
+  else
+    {
+      num_glyphs = get_glyphs_list(font_info, cluster, num_chrs, glyphs_list);
+      for (i=0; i<num_glyphs; i++)
+	add_glyph (font_info, glyphs, cluster_start, glyphs_list[i],
+		   i == 0 ? FALSE : TRUE);
+    }
 }
 
 static gboolean
@@ -669,16 +647,26 @@ get_next_cluster(const char	*text,
   while (p < text + length && n_chars < 3)  
     {
       gunichar current = g_utf8_get_char (p);
-      
-      if (n_chars == 0 ||
-	  is_wtt_composible ((gunichar)(cluster[n_chars - 1]), current) ||
-	  (n_chars == 1 &&
-	   is_char_type (cluster[0], Cons) && 
-	   is_char_type (current, SaraAm)) ||
-	  (n_chars == 2 &&
-	   is_char_type (cluster[0], Cons) &&
-	   is_char_type (cluster[1], Tone) &&
-	   is_char_type (current, SaraAm)))
+
+      /* Non-thai characters get split into a single character cluster */
+      if (!isthai (current))
+	{
+	  if (n_chars == 0)
+	    {
+	      cluster[n_chars++] = current;
+	      p = g_utf8_next_char (p);
+	    }
+	  break;
+	}
+      else if (n_chars == 0 ||
+	       is_wtt_composible ((gunichar)(cluster[n_chars - 1]), current) ||
+	       (n_chars == 1 &&
+		is_char_type (cluster[0], Cons) && 
+		is_char_type (current, SaraAm)) ||
+	       (n_chars == 2 &&
+		is_char_type (cluster[0], Cons) &&
+		is_char_type (cluster[1], Tone) &&
+		is_char_type (current, SaraAm)))
 	{
 	  cluster[n_chars++] = current;
 	  p = g_utf8_next_char (p);
@@ -692,7 +680,8 @@ get_next_cluster(const char	*text,
 }
 
 void 
-thai_engine_shape (PangoFont        *font,
+thai_engine_shape (PangoEngineShape *engine,
+		   PangoFont        *font,
 		   const char       *text,
 		   gint              length,
 		   PangoAnalysis    *analysis,
@@ -715,5 +704,6 @@ thai_engine_shape (PangoFont        *font,
 	p = get_next_cluster (p, text + length - p, cluster, &num_chrs);
 	add_cluster (font_info, glyphs, log_cluster - text, cluster, num_chrs);
     }
+  thai_ot_shape (font, glyphs);
 }
 

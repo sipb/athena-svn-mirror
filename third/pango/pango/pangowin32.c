@@ -52,10 +52,6 @@ struct _PangoWin32FontClass
   PangoFontClass parent_class;
 };
 
-static PangoFontClass *parent_class;	/* Parent class structure for PangoWin32Font */
-
-static void pango_win32_font_class_init (PangoWin32FontClass *class);
-static void pango_win32_font_init       (PangoWin32Font      *win32font);
 static void pango_win32_font_dispose    (GObject             *object);
 static void pango_win32_font_finalize   (GObject             *object);
 
@@ -142,33 +138,7 @@ pango_win32_get_context (void)
   return result;
 }
 
-static GType
-pango_win32_font_get_type (void)
-{
-  static GType object_type = 0;
-
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoWin32FontClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) pango_win32_font_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoWin32Font),
-        0,              /* n_preallocs */
-        (GInstanceInitFunc) pango_win32_font_init,
-      };
-      
-      object_type = g_type_register_static (PANGO_TYPE_FONT,
-                                            "PangoWin32Font",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
-}
+G_DEFINE_TYPE (PangoWin32Font, pango_win32_font, PANGO_TYPE_FONT)
 
 static void 
 pango_win32_font_init (PangoWin32Font *win32font)
@@ -231,8 +201,6 @@ pango_win32_font_class_init (PangoWin32FontClass *class)
   GObjectClass *object_class = G_OBJECT_CLASS (class);
   PangoFontClass *font_class = PANGO_FONT_CLASS (class);
 
-  parent_class = g_type_class_peek_parent (class);
-  
   object_class->finalize = pango_win32_font_finalize;
   object_class->dispose = pango_win32_font_dispose;
   
@@ -504,6 +472,30 @@ pango_win32_font_get_glyph_extents (PangoFont      *font,
     *logical_rect = info->logical_rect;
 }
 
+static int
+max_glyph_width (PangoLayout *layout)
+{
+  int max_width = 0;
+  GSList *l, *r;
+
+  for (l = pango_layout_get_lines (layout); l; l = l->next)
+    {
+      PangoLayoutLine *line = l->data;
+
+      for (r = line->runs; r; r = r->next)
+        {
+          PangoGlyphString *glyphs = ((PangoGlyphItem *)r->data)->glyphs;
+          int i;
+
+          for (i = 0; i < glyphs->num_glyphs; i++)
+            if (glyphs->glyphs[i].geometry.width > max_width)
+              max_width = glyphs->glyphs[i].geometry.width;
+        }
+    }
+
+  return max_width;
+}
+
 static PangoFontMetrics *
 pango_win32_font_get_metrics (PangoFont     *font,
 			      PangoLanguage *language)
@@ -546,10 +538,7 @@ pango_win32_font_get_metrics (PangoFont     *font,
       pango_context_set_font_description (context, font_desc);
       layout = pango_layout_new (context);
       pango_layout_set_text (layout, "0123456789", -1);
-
-      pango_layout_get_extents (layout, NULL, &extents);
-   
-      metrics->approximate_digit_width = extents.width / 10.0;
+      metrics->approximate_digit_width = max_glyph_width (layout);
 
       pango_font_description_free (font_desc);
       g_object_unref (layout);
@@ -596,7 +585,7 @@ pango_win32_font_dispose (GObject *object)
   if (!win32font->in_cache && win32font->fontmap)
     pango_win32_fontmap_cache_add (win32font->fontmap, win32font);
 
-  G_OBJECT_CLASS (parent_class)->dispose (object);
+  G_OBJECT_CLASS (pango_win32_font_parent_class)->dispose (object);
 }
 
 static void
@@ -615,7 +604,7 @@ pango_win32_font_finalize (GObject *object)
  
   g_object_unref (win32font->fontmap);
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (pango_win32_font_parent_class)->finalize (object);
 }
 
 static PangoFontDescription *
@@ -780,6 +769,29 @@ pango_win32_render_layout_line (HDC              hdc,
 	  points[0].y = points[1].y = y + 2;
 	  Polyline (hdc, points, 2);
 	  break;
+	case PANGO_UNDERLINE_ERROR:
+          {
+            int point_x;
+            int counter = 0;
+	    int end_x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
+
+            for (point_x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
+                 point_x <= end_x;
+                 point_x += 2)
+            {
+	      points[0].x = point_x;
+	      points[1].x = MAX (point_x + 1, end_x);
+
+              if (counter)
+	        points[0].y = points[1].y = y + 2;
+              else
+	        points[0].y = points[1].y = y + 3;
+
+	      Polyline (hdc, points, 2);
+              counter = (counter + 1) % 2;
+            }
+          }
+	  break;
 	case PANGO_UNDERLINE_LOW:
 	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
 	  points[0].y = points[1].y = y + PANGO_PIXELS (ink_rect.y + ink_rect.height) + 2;
@@ -813,72 +825,32 @@ pango_win32_render_layout (HDC          hdc,
 			   int          x, 
 			   int          y)
 {
-  PangoRectangle logical_rect;
-  GSList *tmp_list;
-  PangoAlignment align;
-  int indent;
-  int width;
-  int y_offset = 0;
+  PangoLayoutIter *iter;
 
-  gboolean first = TRUE;
-  
-  g_return_if_fail (layout != NULL);
+  g_return_if_fail (hdc != NULL);
+  g_return_if_fail (PANGO_IS_LAYOUT (layout));
 
-  indent = pango_layout_get_indent (layout);
-  width = pango_layout_get_width (layout);
-  align = pango_layout_get_alignment (layout);
+  iter = pango_layout_get_iter (layout);
 
-  if (width == -1 && align != PANGO_ALIGN_LEFT)
+  do
     {
-      pango_layout_get_extents (layout, NULL, &logical_rect);
-      width = logical_rect.width;
-    }
-  
-  tmp_list = pango_layout_get_lines (layout);
-  while (tmp_list)
-    {
-      PangoLayoutLine *line = tmp_list->data;
-      int x_offset;
+      PangoRectangle   logical_rect;
+      PangoLayoutLine *line;
+      int              baseline;
       
-      pango_layout_line_get_extents (line, NULL, &logical_rect);
-
-      if (width != 1 && align == PANGO_ALIGN_RIGHT)
-	x_offset = width - logical_rect.width;
-      else if (width != 1 && align == PANGO_ALIGN_CENTER)
-	x_offset = (width - logical_rect.width) / 2;
-      else
-	x_offset = 0;
-
-      if (first)
-	{
-	  if (indent > 0)
-	    {
-	      if (align == PANGO_ALIGN_LEFT)
-		x_offset += indent;
-	      else
-		x_offset -= indent;
-	    }
-
-	  first = FALSE;
-	}
-      else
-	{
-	  if (indent < 0)
-	    {
-	      if (align == PANGO_ALIGN_LEFT)
-		x_offset -= indent;
-	      else
-		x_offset += indent;
-	    }
-	}
-	  
-      pango_win32_render_layout_line (hdc, line,
-				      x + PANGO_PIXELS (x_offset),
-				      y + PANGO_PIXELS (y_offset - logical_rect.y));
-
-      y_offset += logical_rect.height;
-      tmp_list = tmp_list->next;
+      line = pango_layout_iter_get_line (iter);
+      
+      pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
+      baseline = pango_layout_iter_get_baseline (iter);
+      
+      pango_win32_render_layout_line (hdc,
+                                      line,
+                                      x + PANGO_PIXELS (logical_rect.x),
+                                      y + PANGO_PIXELS (baseline));
     }
+  while (pango_layout_iter_next_line (iter));
+
+  pango_layout_iter_free (iter);  
 }
 
 /* This utility function is duplicated here and in pango-layout.c; should it be

@@ -23,33 +23,45 @@ enum        <link linkend="PangoDirection">PangoDirection</link>;
 #define     <link linkend="PANGO-TYPE-DIRECTION-CAPS">PANGO_TYPE_DIRECTION</link>
 
 <link linkend="GList">GList</link>*      <link linkend="pango-itemize">pango_itemize</link>                   (<link linkend="PangoContext">PangoContext</link> *context,
-                                             const char *text,
-                                             int start_index,
-                                             int length,
+                                             const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> start_index,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAttrList">PangoAttrList</link> *attrs,
                                              <link linkend="PangoAttrIterator">PangoAttrIterator</link> *cached_iter);
-void        <link linkend="pango-item-free">pango_item_free</link>                 (<link linkend="PangoItem">PangoItem</link> *item);
+<link linkend="GList">GList</link>*      <link linkend="pango-itemize-with-base-dir">pango_itemize_with_base_dir</link>     (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoDirection">PangoDirection</link> base_dir,
+                                             const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> start_index,
+                                             <link linkend="int">int</link> length,
+                                             <link linkend="PangoAttrList">PangoAttrList</link> *attrs,
+                                             <link linkend="PangoAttrIterator">PangoAttrIterator</link> *cached_iter);
+<link linkend="void">void</link>        <link linkend="pango-item-free">pango_item_free</link>                 (<link linkend="PangoItem">PangoItem</link> *item);
 <link linkend="PangoItem">PangoItem</link>*  <link linkend="pango-item-copy">pango_item_copy</link>                 (<link linkend="PangoItem">PangoItem</link> *item);
 <link linkend="PangoItem">PangoItem</link>*  <link linkend="pango-item-new">pango_item_new</link>                  (void);
 <link linkend="PangoItem">PangoItem</link>*  <link linkend="pango-item-split">pango_item_split</link>                (<link linkend="PangoItem">PangoItem</link> *orig,
-                                             int split_index,
-                                             int split_offset);
+                                             <link linkend="int">int</link> split_index,
+                                             <link linkend="int">int</link> split_offset);
 <link linkend="GList">GList</link>*      <link linkend="pango-reorder-items">pango_reorder_items</link>             (<link linkend="GList">GList</link> *logical_items);
 
 <link linkend="PangoContext">PangoContext</link>* <link linkend="pango-context-new">pango_context_new</link>             (void);
-void        <link linkend="pango-context-set-font-map">pango_context_set_font_map</link>      (<link linkend="PangoContext">PangoContext</link> *context,
+<link linkend="void">void</link>        <link linkend="pango-context-set-font-map">pango_context_set_font_map</link>      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoFontMap">PangoFontMap</link> *font_map);
+<link linkend="PangoFontMap">PangoFontMap</link>* <link linkend="pango-context-get-font-map">pango_context_get_font_map</link>    (<link linkend="PangoContext">PangoContext</link> *context);
 <link linkend="PangoFontDescription">PangoFontDescription</link>* <link linkend="pango-context-get-font-description">pango_context_get_font_description</link>
                                             (<link linkend="PangoContext">PangoContext</link> *context);
-void        <link linkend="pango-context-set-font-description">pango_context_set_font_description</link>
+<link linkend="void">void</link>        <link linkend="pango-context-set-font-description">pango_context_set_font_description</link>
                                             (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc);
 <link linkend="PangoLanguage">PangoLanguage</link>* <link linkend="pango-context-get-language">pango_context_get_language</link>   (<link linkend="PangoContext">PangoContext</link> *context);
-void        <link linkend="pango-context-set-language">pango_context_set_language</link>      (<link linkend="PangoContext">PangoContext</link> *context,
+<link linkend="void">void</link>        <link linkend="pango-context-set-language">pango_context_set_language</link>      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);
 <link linkend="PangoDirection">PangoDirection</link> <link linkend="pango-context-get-base-dir">pango_context_get_base_dir</link>   (<link linkend="PangoContext">PangoContext</link> *context);
-void        <link linkend="pango-context-set-base-dir">pango_context_set_base_dir</link>      (<link linkend="PangoContext">PangoContext</link> *context,
+<link linkend="void">void</link>        <link linkend="pango-context-set-base-dir">pango_context_set_base_dir</link>      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoDirection">PangoDirection</link> direction);
+G_CONST_RETURN <link linkend="PangoMatrix">PangoMatrix</link>* <link linkend="pango-context-get-matrix">pango_context_get_matrix</link>
+                                            (<link linkend="PangoContext">PangoContext</link> *context);
+<link linkend="void">void</link>        <link linkend="pango-context-set-matrix">pango_context_set_matrix</link>        (<link linkend="PangoContext">PangoContext</link> *context,
+                                             const <link linkend="PangoMatrix">PangoMatrix</link> *matrix);
 <link linkend="PangoFont">PangoFont</link>*  <link linkend="pango-context-load-font">pango_context_load_font</link>         (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc);
 <link linkend="PangoFontset">PangoFontset</link>* <link linkend="pango-context-load-fontset">pango_context_load_fontset</link>    (<link linkend="PangoContext">PangoContext</link> *context,
@@ -58,34 +70,40 @@ void        <link linkend="pango-context-set-base-dir">pango_context_set_base_di
 <link linkend="PangoFontMetrics">PangoFontMetrics</link>* <link linkend="pango-context-get-metrics">pango_context_get_metrics</link> (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);
-void        <link linkend="pango-context-list-families">pango_context_list_families</link>     (<link linkend="PangoContext">PangoContext</link> *context,
+<link linkend="void">void</link>        <link linkend="pango-context-list-families">pango_context_list_families</link>     (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoFontFamily">PangoFontFamily</link> ***families,
-                                             int *n_families);
+                                             <link linkend="int">int</link> *n_families);
+
+<link linkend="gboolean">gboolean</link>    <link linkend="pango-get-mirror-char">pango_get_mirror_char</link>           (<link linkend="gunichar">gunichar</link> ch,
+                                             <link linkend="gunichar">gunichar</link> *mirrored_ch);
+<link linkend="PangoDirection">PangoDirection</link> <link linkend="pango-unichar-direction">pango_unichar_direction</link>      (<link linkend="gunichar">gunichar</link> ch);
+<link linkend="PangoDirection">PangoDirection</link> <link linkend="pango-find-base-dir">pango_find_base_dir</link>          (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="gint">gint</link> length);
 
 
-void        <link linkend="pango-break">pango_break</link>                     (const <link linkend="gchar">gchar</link> *text,
-                                             int length,
+<link linkend="void">void</link>        <link linkend="pango-break">pango_break</link>                     (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *attrs,
-                                             int attrs_len);
-void        <link linkend="pango-get-log-attrs">pango_get_log_attrs</link>             (const char *text,
-                                             int length,
-                                             int level,
+                                             <link linkend="int">int</link> attrs_len);
+<link linkend="void">void</link>        <link linkend="pango-get-log-attrs">pango_get_log_attrs</link>             (const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> length,
+                                             <link linkend="int">int</link> level,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *log_attrs,
-                                             int attrs_len);
-void        <link linkend="pango-find-paragraph-boundary">pango_find_paragraph_boundary</link>   (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="int">int</link> attrs_len);
+<link linkend="void">void</link>        <link linkend="pango-find-paragraph-boundary">pango_find_paragraph_boundary</link>   (const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> length,
                                              <link linkend="gint">gint</link> *paragraph_delimiter_index,
                                              <link linkend="gint">gint</link> *next_paragraph_start);
-void        <link linkend="pango-default-break">pango_default_break</link>             (const <link linkend="gchar">gchar</link> *text,
-                                             int length,
+<link linkend="void">void</link>        <link linkend="pango-default-break">pango_default_break</link>             (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *attrs,
-                                             int attrs_len);
+                                             <link linkend="int">int</link> attrs_len);
 struct      <link linkend="PangoLogAttr">PangoLogAttr</link>;
 
-void        <link linkend="pango-shape">pango_shape</link>                     (const <link linkend="gchar">gchar</link> *text,
+<link linkend="void">void</link>        <link linkend="pango-shape">pango_shape</link>                     (const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);
@@ -108,6 +126,8 @@ void        <link linkend="pango-shape">pango_shape</link>                     (
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -122,34 +142,14 @@ various steps of this process.
 <title>Details</title>
 <refsect2>
 <title><anchor id="PangoContext-struct"/>struct PangoContext</title>
-<programlisting>struct PangoContext;</programlisting>
+<indexterm><primary>PangoContext</primary></indexterm><programlisting>struct PangoContext;</programlisting>
 <para>
-The <link linkend="PangoContext">PangoContext</link> structure stores global information
-used to control the itemization process. It contains
-the following fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gchar *lang;</entry>
-<entry>the global default language in the standard form
-       "fr" or "fr_FR". (This may be overriden
-       with the <parameter>lang_info</parameter> parameter to <link linkend="pango-itemize">pango_itemize</link>().)</entry>
-</row>
-
-<row>
-<entry>gchar *render_type;</entry>
-<entry>a string identifier for the rendering system to use,
-       for instance <literal>PANGO_RENDER_TYPE_X</literal></entry>
-</row>
-
-</tbody></tgroup></informaltable>
+The <link linkend="PangoContext"><type>PangoContext</type></link> structure stores global information
+used to control the itemization process. 
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoItem"/>struct PangoItem</title>
-<programlisting>struct PangoItem {
+<indexterm><primary>PangoItem</primary></indexterm><programlisting>struct PangoItem {
 
   gint offset;
   gint length;
@@ -158,39 +158,35 @@ the following fields:
 };
 </programlisting>
 <para>
-The <link linkend="PangoItem">PangoItem</link> structure stores information about
+The <link linkend="PangoItem"><type>PangoItem</type></link> structure stores information about
 a segment of text. It contains the following fields:
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="gint">gint</link> <structfield>offset</structfield></term>
+<listitem><simpara>the offset of the segment from the beginning of the
+         string in bytes.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gint">gint</link> <structfield>length</structfield></term>
+<listitem><simpara>the length of the segment in bytes.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gint">gint</link> <structfield>num_chars</structfield></term>
+<listitem><simpara>the length of the segment in characters.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="PangoAnalysis">PangoAnalysis</link> <structfield>analysis</structfield></term>
+<listitem><simpara>the properties of the segment.
 
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gint offset;</entry>
-<entry>the offset of the segment from the beginning of the
-       string in bytes.</entry>
-</row>
-
-<row>
-<entry>gint length;</entry>
-<entry>the length of the segment in bytes.</entry>
-</row>
-
-<row>
-<entry>gint num_chars;</entry>
-<entry>the length of the segment in characters.</entry>
-</row>
-
-<row>
-<entry>gint analysis;</entry>
-<entry>the properties of the segment.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="PangoAnalysis"/>struct PangoAnalysis</title>
-<programlisting>struct PangoAnalysis {
+<indexterm><primary>PangoAnalysis</primary></indexterm><programlisting>struct PangoAnalysis {
 
   PangoEngineShape *shape_engine;
   PangoEngineLang  *lang_engine;
@@ -201,83 +197,127 @@ a segment of text. It contains the following fields:
 };
 </programlisting>
 <para>
-The <link linkend="PangoAnalysis">PangoAnalysis</link> structure stores information about
+The <link linkend="PangoAnalysis"><type>PangoAnalysis</type></link> structure stores information about
 the properties of a segment of text. It has the following
 fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry><link linkend="PangoEngineShape">PangoEngineShape</link> *shape_engine;</entry>
-<entry>the engine for doing rendering-system-dependent processing</entry>
-</row>
-
-<row>
-<entry><link linkend="PangoEngineLang">PangoEngineLang</link> *lang_engine;</entry>
-<entry>the engine for doing rendering-system-independent processing</entry>
-</row>
-
-<row>
-<entry>guint8 level;</entry>
-<entry>the bidrectional level for this segment.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
-<refsect2>
-<title><anchor id="PangoDirection"/>enum PangoDirection</title>
-<programlisting>typedef enum {
-  PANGO_DIRECTION_LTR,
-  PANGO_DIRECTION_RTL,
-  PANGO_DIRECTION_TTB_LTR,
-  PANGO_DIRECTION_TTB_RTL
-} PangoDirection;
-</programlisting>
-<para>
-The <link linkend="PangoDirection">PangoDirection</link> type represents the direction of writing
-for text.
-</para><variablelist role="enum">
+</para><variablelist role="struct">
 <varlistentry>
-<term><literal>PANGO_DIRECTION_LTR</literal></term>
-<listitem><simpara>The text is written left-to-right
+<term><link linkend="PangoEngineShape">PangoEngineShape</link> *<structfield>shape_engine</structfield></term>
+<listitem><simpara>the engine for doing rendering-system-dependent processing.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>PANGO_DIRECTION_RTL</literal></term>
-<listitem><simpara>The text is written right-to-left
+<term><link linkend="PangoEngineLang">PangoEngineLang</link> *<structfield>lang_engine</structfield></term>
+<listitem><simpara>the engine for doing rendering-system-independent processing.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>PANGO_DIRECTION_TTB_LTR</literal></term>
-<listitem><simpara>The text is written vertically
-                          top-to-bottom, with the rows ordered from
-                          left to right.
+<term><link linkend="PangoFont">PangoFont</link> *<structfield>font</structfield></term>
+<listitem><simpara>
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
-<term><literal>PANGO_DIRECTION_TTB_RTL</literal></term>
-<listitem><simpara>The text is written vertically
-                          top-to-bottom, with the rows ordered from
-                          right to left.
+<term><link linkend="guint8">guint8</link> <structfield>level</structfield></term>
+<listitem><simpara>the bidrectional level for this segment.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="PangoLanguage">PangoLanguage</link> *<structfield>language</structfield></term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="GSList">GSList</link> *<structfield>extra_attrs</structfield></term>
+<listitem><simpara>
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="PANGO-TYPE-DIRECTION-CAPS"/>PANGO_TYPE_DIRECTION</title>
-<programlisting>#define PANGO_TYPE_DIRECTION (pango_direction_get_type())
+<title><anchor id="PangoDirection"/>enum PangoDirection</title>
+<indexterm><primary>PangoDirection</primary></indexterm><programlisting>typedef enum {
+  PANGO_DIRECTION_LTR,
+  PANGO_DIRECTION_RTL,
+  PANGO_DIRECTION_TTB_LTR,
+  PANGO_DIRECTION_TTB_RTL,
+  PANGO_DIRECTION_WEAK_LTR,
+  PANGO_DIRECTION_WEAK_RTL,
+  PANGO_DIRECTION_NEUTRAL
+} PangoDirection;
 </programlisting>
 <para>
-The GObject type for <link linkend="PangoDirection">PangoDirection</link>.
+The <link linkend="PangoDirection"><type>PangoDirection</type></link> type represents a direction in the
+Unicode bidirectional algorithm; not every value in this
+enumeration makes sense for every usage of <link linkend="PangoDirection"><type>PangoDirection</type></link>;
+for example, the return value of <link linkend="pango-unichar-direction"><function>pango_unichar_direction()</function></link>
+and <link linkend="pango-find-base-direction"><function>pango_find_base_direction()</function></link> cannot be <literal>PANGO_DIRECTION_WEAK_LTR</literal>
+or <literal>PANGO_DIRECTION_WEAK_RTL</literal>, since every character is either
+neutral or has a strong direction; on the other hand
+<literal>PANGO_DIRECTION_NEUTRAL</literal> doesn't make sense to pass
+to <link linkend="pango-log2vis-get-embedding-levels"><function>pango_log2vis_get_embedding_levels()</function></link>.
+</para>
+<para>
+The <literal>PANGO_DIRECTION_TTB_LTR</literal>, <literal>PANGO_DIRECTION_TTB_RTL</literal>
+values come from an earlier interpretation of this
+enumeration as the writing direction of a block of
+text and are no longer used; See the Text module of the
+CSS3 spec for how vertical text is planned to be handled
+in a future version of Pango. The explanation of why
+<literal>PANGO_DIRECTION_TTB_LTR</literal> is treated as <literal>PANGO_DIRECTION_RTL</literal>
+can be found there as well.</para>
+<para>
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>PANGO_DIRECTION_LTR</literal></term>
+<listitem><simpara> A strong left-to-right direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_RTL</literal></term>
+<listitem><simpara> A strong right-to-left direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_TTB_LTR</literal></term>
+<listitem><simpara> Deprecated value; treated the
+  same as <literal>PANGO_DIRECTION_RTL</literal>.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_TTB_RTL</literal></term>
+<listitem><simpara> Deprecated value; treated the
+  same as PANGO_DIRECTION_LTR
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_WEAK_LTR</literal></term>
+<listitem><simpara> A weak left-to-right direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_WEAK_RTL</literal></term>
+<listitem><simpara> A weak right-to-left direction
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>PANGO_DIRECTION_NEUTRAL</literal></term>
+<listitem><simpara> No direction specified
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="PANGO-TYPE-DIRECTION-CAPS"/>PANGO_TYPE_DIRECTION</title>
+<indexterm><primary>PANGO_TYPE_DIRECTION</primary></indexterm><programlisting>#define PANGO_TYPE_DIRECTION (pango_direction_get_type())
+</programlisting>
+<para>
+The GObject type for <link linkend="PangoDirection"><type>PangoDirection</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-itemize"/>pango_itemize ()</title>
-<programlisting><link linkend="GList">GList</link>*      pango_itemize                   (<link linkend="PangoContext">PangoContext</link> *context,
-                                             const char *text,
-                                             int start_index,
-                                             int length,
+<indexterm><primary>pango_itemize</primary></indexterm><programlisting><link linkend="GList">GList</link>*      pango_itemize                   (<link linkend="PangoContext">PangoContext</link> *context,
+                                             const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> start_index,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAttrList">PangoAttrList</link> *attrs,
                                              <link linkend="PangoAttrIterator">PangoAttrIterator</link> *cached_iter);</programlisting>
 <para>
@@ -320,47 +360,90 @@ the range covering the position just after <parameter>start_index</parameter> + 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-item-free"/>pango_item_free ()</title>
-<programlisting>void        pango_item_free                 (<link linkend="PangoItem">PangoItem</link> *item);</programlisting>
+<title><anchor id="pango-itemize-with-base-dir"/>pango_itemize_with_base_dir ()</title>
+<indexterm><primary>pango_itemize_with_base_dir</primary></indexterm><programlisting><link linkend="GList">GList</link>*      pango_itemize_with_base_dir     (<link linkend="PangoContext">PangoContext</link> *context,
+                                             <link linkend="PangoDirection">PangoDirection</link> base_dir,
+                                             const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> start_index,
+                                             <link linkend="int">int</link> length,
+                                             <link linkend="PangoAttrList">PangoAttrList</link> *attrs,
+                                             <link linkend="PangoAttrIterator">PangoAttrIterator</link> *cached_iter);</programlisting>
 <para>
-Free a <link linkend="PangoItem">PangoItem</link> and all associated memory.</para>
+Like <link linkend="pango-itemize"><function>pango_itemize()</function></link>, but the base direction to use when
+computing bidirectional levels (see <link linkend="pango-context-set-base-dir"><function>pango_context_set_base_dir()</function></link>),
+is specified explicitely rather than gotten from the <link linkend="PangoContext"><type>PangoContext</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>   a structure holding information that affects
+               the itemization process.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>base_dir</parameter>&nbsp;:</term>
+<listitem><simpara>  base direction to use for bidirectional processing
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>      the text to itemize.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>start_index</parameter>&nbsp;:</term>
+<listitem><simpara> first byte in <parameter>text</parameter> to process
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara>    the number of bytes (not characters) to process
+            after <parameter>start_index</parameter>.
+            This must be &gt;= 0.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>attrs</parameter>&nbsp;:</term>
+<listitem><simpara>     the set of attributes that apply to <parameter>text</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cached_iter</parameter>&nbsp;:</term>
+<listitem><simpara>      Cached attribute iterator, or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GList of PangoItem structures.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-item-free"/>pango_item_free ()</title>
+<indexterm><primary>pango_item_free</primary></indexterm><programlisting><link linkend="void">void</link>        pango_item_free                 (<link linkend="PangoItem">PangoItem</link> *item);</programlisting>
+<para>
+Free a <link linkend="PangoItem"><type>PangoItem</type></link> and all associated memory.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoItem">PangoItem</link>
+<listitem><simpara> a <link linkend="PangoItem"><type>PangoItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-item-copy"/>pango_item_copy ()</title>
-<programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_copy                 (<link linkend="PangoItem">PangoItem</link> *item);</programlisting>
+<indexterm><primary>pango_item_copy</primary></indexterm><programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_copy                 (<link linkend="PangoItem">PangoItem</link> *item);</programlisting>
 <para>
-Copy an existing <link linkend="PangoItem">PangoItem</link> structure.</para>
+Copy an existing <link linkend="PangoItem"><type>PangoItem</type></link> structure.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoItem">PangoItem</link>
+<listitem><simpara> a <link linkend="PangoItem"><type>PangoItem</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoItem">PangoItem</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoItem"><type>PangoItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-item-new"/>pango_item_new ()</title>
-<programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_new                  (void);</programlisting>
+<indexterm><primary>pango_item_new</primary></indexterm><programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_new                  (void);</programlisting>
 <para>
-Creates a new <link linkend="PangoItem">PangoItem</link> structure initialized to default values.</para>
+Creates a new <link linkend="PangoItem"><type>PangoItem</type></link> structure initialized to default values.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoItem">PangoItem</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoItem"><type>PangoItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-item-split"/>pango_item_split ()</title>
-<programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_split                (<link linkend="PangoItem">PangoItem</link> *orig,
-                                             int split_index,
-                                             int split_offset);</programlisting>
+<indexterm><primary>pango_item_split</primary></indexterm><programlisting><link linkend="PangoItem">PangoItem</link>*  pango_item_split                (<link linkend="PangoItem">PangoItem</link> *orig,
+                                             <link linkend="int">int</link> split_index,
+                                             <link linkend="int">int</link> split_offset);</programlisting>
 <para>
 Modifies <parameter>orig</parameter> to cover only the text after <parameter>split_index</parameter>, and
 returns a new item that covers the text before <parameter>split_index</parameter> that
@@ -370,13 +453,13 @@ greater than or equal to the length of <parameter>orig</parameter> (that is, the
 be at least one byte assigned to each item, you can't create a
 zero-length item). <parameter>split_offset</parameter> is the length of the first item in
 chars, and must be provided because the text used to generate the
-item isn't available, so <link linkend="pango-item-split">pango_item_split</link>() can't count the char
+item isn't available, so <link linkend="pango-item-split"><function>pango_item_split()</function></link> can't count the char
 length of the split items itself.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>orig</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoItem">PangoItem</link>
+<listitem><simpara> a <link linkend="PangoItem"><type>PangoItem</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>split_index</parameter>&nbsp;:</term>
 <listitem><simpara> byte index of position to split item, relative to the start of the item
@@ -389,7 +472,7 @@ length of the split items itself.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-reorder-items"/>pango_reorder_items ()</title>
-<programlisting><link linkend="GList">GList</link>*      pango_reorder_items             (<link linkend="GList">GList</link> *logical_items);</programlisting>
+<indexterm><primary>pango_reorder_items</primary></indexterm><programlisting><link linkend="GList">GList</link>*      pango_reorder_items             (<link linkend="GList">GList</link> *logical_items);</programlisting>
 <para>
 From a list of items in logical order and the associated
 directional levels, produce a list in visual order.
@@ -398,11 +481,11 @@ The original list is unmodified.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>logical_items</parameter>&nbsp;:</term>
-<listitem><simpara>  a GList of <link linkend="PangoItem">PangoItem</link> in logical order.
+<listitem><simpara>  a GList of <link linkend="PangoItem"><type>PangoItem</type></link> in logical order.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a GList of PangoItem structures in visual order.
 
-(Please mail otaylor<parameter>redhat</parameter>.com if you use this function.
+(Please mail otaylor<parameter>redhat.com</parameter> if you use this function.
  It is not a particularly convenient interface, and the code
  is duplicated elsewhere in Pango for that reason.)
   
@@ -410,34 +493,67 @@ The original list is unmodified.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-new"/>pango_context_new ()</title>
-<programlisting><link linkend="PangoContext">PangoContext</link>* pango_context_new             (void);</programlisting>
+<indexterm><primary>pango_context_new</primary></indexterm><programlisting><link linkend="PangoContext">PangoContext</link>* pango_context_new             (void);</programlisting>
 <para>
-Creates a new <link linkend="PangoContext">PangoContext</link> initialized to default value.</para>
+Creates a new <link linkend="PangoContext"><type>PangoContext</type></link> initialized to default value.
+</para>
+<para>
+This function is only useful when implementing a new backend
+for Pango, something applications won't do. You should use
+the context creation function for the backend you are using,
+for example, <link linkend="pango-xft-get-context"><function>pango_xft_get_context()</function></link>, <link linkend="pango-win32-get-context"><function>pango_win32_get_context()</function></link>
+or, <link linkend="pango-ft2-font-map-create-context"><function>pango_ft2_font_map_create_context()</function></link>.
+</para>
+<para>
+If you are using Pango as part of a higher-level system,
+that system may have it's own ways of create a <link linkend="PangoContext"><type>PangoContext</type></link>.
+For instance, the GTK+ toolkit has, among others,
+<link linkend="gdk-pango-context-get-for-screen"><function>gdk_pango_context_get_for_screen()</function></link>, and 
+<link linkend="gtk-widget-get-pango-context"><function>gtk_widget_get_pango_context()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoContext">PangoContext</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-set-font-map"/>pango_context_set_font_map ()</title>
-<programlisting>void        pango_context_set_font_map      (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_set_font_map</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_set_font_map      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoFontMap">PangoFontMap</link> *font_map);</programlisting>
 <para>
-Sets the font map to be searched when fonts are looked-up in this context.</para>
+Sets the font map to be searched when fonts are looked-up in this context.
+This is only for internal use by Pango backends, a <link linkend="PangoContext"><type>PangoContext</type></link> obtained
+via one of the recommended methods should already have a suitable font map.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font_map</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="PangoFontMap">PangoFontMap</link> to set.
+<listitem><simpara> the <link linkend="PangoFontMap"><type>PangoFontMap</type></link> to set.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="pango-context-get-font-map"/>pango_context_get_font_map ()</title>
+<indexterm><primary>pango_context_get_font_map</primary></indexterm><programlisting><link linkend="PangoFontMap">PangoFontMap</link>* pango_context_get_font_map    (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
+<para>
+Gets the <link linkend="PangoFontmap"><type>PangoFontmap</type></link> used to look up fonts for this context.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the font map for the <link linkend="PangoContext"><type>PangoContext</type></link>. This value
+ is owned by Pango and should not be unreferenced.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
 <title><anchor id="pango-context-get-font-description"/>pango_context_get_font_description ()</title>
-<programlisting><link linkend="PangoFontDescription">PangoFontDescription</link>* pango_context_get_font_description
+<indexterm><primary>pango_context_get_font_description</primary></indexterm><programlisting><link linkend="PangoFontDescription">PangoFontDescription</link>* pango_context_get_font_description
                                             (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
 <para>
 Retrieve the default font description for the context.</para>
@@ -445,7 +561,7 @@ Retrieve the default font description for the context.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a pointer to the context's default font description.
               This value must not be modified or freed.
@@ -453,7 +569,7 @@ Retrieve the default font description for the context.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-set-font-description"/>pango_context_set_font_description ()</title>
-<programlisting>void        pango_context_set_font_description
+<indexterm><primary>pango_context_set_font_description</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_set_font_description
                                             (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc);</programlisting>
 <para>
@@ -462,7 +578,7 @@ Set the default font description for the context</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
 <listitem><simpara> the new pango font description
@@ -470,21 +586,21 @@ Set the default font description for the context</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-get-language"/>pango_context_get_language ()</title>
-<programlisting><link linkend="PangoLanguage">PangoLanguage</link>* pango_context_get_language   (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
+<indexterm><primary>pango_context_get_language</primary></indexterm><programlisting><link linkend="PangoLanguage">PangoLanguage</link>* pango_context_get_language   (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
 <para>
 Retrieves the global language tag for the context.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the global language tag.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-set-language"/>pango_context_set_language ()</title>
-<programlisting>void        pango_context_set_language      (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_set_language</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_set_language      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);</programlisting>
 <para>
 Sets the global language tag for the context.</para>
@@ -492,7 +608,7 @@ Sets the global language tag for the context.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>language</parameter>&nbsp;:</term>
 <listitem><simpara> the new language tag.
@@ -500,37 +616,90 @@ Sets the global language tag for the context.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-get-base-dir"/>pango_context_get_base_dir ()</title>
-<programlisting><link linkend="PangoDirection">PangoDirection</link> pango_context_get_base_dir   (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
+<indexterm><primary>pango_context_get_base_dir</primary></indexterm><programlisting><link linkend="PangoDirection">PangoDirection</link> pango_context_get_base_dir   (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
 <para>
-Retrieves the base direction for the context.</para>
+Retrieves the base direction for the context. See
+<link linkend="pango-context-set-base-dir"><function>pango_context_set_base_dir()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> 
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the base direction for the context.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-set-base-dir"/>pango_context_set_base_dir ()</title>
-<programlisting>void        pango_context_set_base_dir      (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_set_base_dir</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_set_base_dir      (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoDirection">PangoDirection</link> direction);</programlisting>
 <para>
-Sets the base direction for the context.</para>
+Sets the base direction for the context.
+</para>
+<para>
+The base direction is used in applying the Unicode bidirectional
+algorithm; if the <parameter>direction</parameter> is <literal>PANGO_DIRECTION_LTR</literal> or
+<literal>PANGO_DIRECTION_RTL</literal>, then the value will be used as the paragraph
+direction in the Unicode bidirectional algorithm.  A value of
+<literal>PANGO_DIRECTION_WEAK_LTR</literal> or <literal>PANGO_DIRECTION_WEAK_RTL</literal> is used only
+for paragraphs that do not contain any strong characters themselves.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>direction</parameter>&nbsp;:</term>
 <listitem><simpara> the new base direction
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="pango-context-get-matrix"/>pango_context_get_matrix ()</title>
+<indexterm><primary>pango_context_get_matrix</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="PangoMatrix">PangoMatrix</link>* pango_context_get_matrix
+                                            (<link linkend="PangoContext">PangoContext</link> *context);</programlisting>
+<para>
+Gets the transformation matrix that will be applied when
+rendering with this context. See <link linkend="pango-context-set-matrix"><function>pango_context_set_matrix()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the matrix, or <literal>NULL</literal> if no matrix has been set
+ (which is the same as the identity matrix). The returned
+ matrix is owned by Pango and must not be modified or
+ freed.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-context-set-matrix"/>pango_context_set_matrix ()</title>
+<indexterm><primary>pango_context_set_matrix</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_set_matrix        (<link linkend="PangoContext">PangoContext</link> *context,
+                                             const <link linkend="PangoMatrix">PangoMatrix</link> *matrix);</programlisting>
+<para>
+Sets the transformation matrix that will be applied when rendering
+with this context. Note that reported metrics are in the user space
+coordinates before the application of the matrix, not device-space
+coordiantes after the application of the matrix. So, they don't scale
+with the matrix, though they may change slightly for different
+matrices, depending on how the text is fit to the pixel grid.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoMatrix"><type>PangoMatrix</type></link>, or <literal>NULL</literal> to unset any existing matrix.
+ (No matrix set is the same as setting the identity matrix.)
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
 <title><anchor id="pango-context-load-font"/>pango_context_load_font ()</title>
-<programlisting><link linkend="PangoFont">PangoFont</link>*  pango_context_load_font         (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_load_font</primary></indexterm><programlisting><link linkend="PangoFont">PangoFont</link>*  pango_context_load_font         (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc);</programlisting>
 <para>
 Loads the font in one of the fontmaps in the context
@@ -539,17 +708,17 @@ that is the closest match for <parameter>desc</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFontDescription">PangoFontDescription</link> describing the font to load
+<listitem><simpara> a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> describing the font to load
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the font loaded, or <literal>NULL</literal> if no font matched.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-load-fontset"/>pango_context_load_fontset ()</title>
-<programlisting><link linkend="PangoFontset">PangoFontset</link>* pango_context_load_fontset    (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_load_fontset</primary></indexterm><programlisting><link linkend="PangoFontset">PangoFontset</link>* pango_context_load_fontset    (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);</programlisting>
 <para>
@@ -559,20 +728,20 @@ a font matching <parameter>desc</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFontDescription">PangoFontDescription</link> describing the fonts to load
+<listitem><simpara> a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> describing the fonts to load
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>language</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoLanguage">PangoLanguage</link> the fonts will be used for
+<listitem><simpara> a <link linkend="PangoLanguage"><type>PangoLanguage</type></link> the fonts will be used for
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the fontset, or <literal>NULL</literal> if no font matched.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-get-metrics"/>pango_context_get_metrics ()</title>
-<programlisting><link linkend="PangoFontMetrics">PangoFontMetrics</link>* pango_context_get_metrics (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_get_metrics</primary></indexterm><programlisting><link linkend="PangoFontMetrics">PangoFontMetrics</link>* pango_context_get_metrics (<link linkend="PangoContext">PangoContext</link> *context,
                                              const <link linkend="PangoFontDescription">PangoFontDescription</link> *desc,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language);</programlisting>
 <para>
@@ -583,8 +752,8 @@ the metrics should be retrieved that correspond to the script(s)
 used by that language.
 </para>
 <para>
-The <link linkend="PangoFontDescription">PangoFontDescription</link> is interpreted in the same way as
-by <link linkend="pango-itemize">pango_itemize</link>(), and the family name may be a comma separated
+The <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> is interpreted in the same way as
+by <link linkend="pango-itemize"><function>pango_itemize()</function></link>, and the family name may be a comma separated
 list of figures. If characters from multiple of these families
 would be used to render the string, then the returned fonts would
 be a composite of the metrics for the fonts loaded for the
@@ -593,48 +762,110 @@ individual families.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFontDescription">PangoFontDescription</link> structure
+<listitem><simpara> a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link> structure
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>language</parameter>&nbsp;:</term>
 <listitem><simpara> language tag used to determine which script to get the metrics
            for, or <literal>NULL</literal> to indicate to get the metrics for the entire
            font.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoMetrics">PangoMetrics</link> object. The caller must call <link linkend="pango-font-metrics-unref">pango_font_metrics_unref</link>()
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="PangoFontMetrics"><type>PangoFontMetrics</type></link> object. The caller must call <link linkend="pango-font-metrics-unref"><function>pango_font_metrics_unref()</function></link>
   when finished using the object.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-context-list-families"/>pango_context_list_families ()</title>
-<programlisting>void        pango_context_list_families     (<link linkend="PangoContext">PangoContext</link> *context,
+<indexterm><primary>pango_context_list_families</primary></indexterm><programlisting><link linkend="void">void</link>        pango_context_list_families     (<link linkend="PangoContext">PangoContext</link> *context,
                                              <link linkend="PangoFontFamily">PangoFontFamily</link> ***families,
-                                             int *n_families);</programlisting>
+                                             <link linkend="int">int</link> *n_families);</programlisting>
 <para>
 List all families for a context.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoContext">PangoContext</link>
+<listitem><simpara> a <link linkend="PangoContext"><type>PangoContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>families</parameter>&nbsp;:</term>
 <listitem><simpara> location to store a pointer to an array of PangoFontFamily *.
-           This array should be freed with <link linkend="g-free">g_free</link>().
+           This array should be freed with <link linkend="g-free"><function>g_free()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_families</parameter>&nbsp;:</term>
 <listitem><simpara> location to store the number of elements in <parameter>descs</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="pango-get-mirror-char"/>pango_get_mirror_char ()</title>
+<indexterm><primary>pango_get_mirror_char</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    pango_get_mirror_char           (<link linkend="gunichar">gunichar</link> ch,
+                                             <link linkend="gunichar">gunichar</link> *mirrored_ch);</programlisting>
+<para>
+If <parameter>ch</parameter> has the Unicode mirrored property and there is another unicode
+character that typically has a glyph that is the mirror image of <parameter>ch</parameter>'s
+glyph, puts that character in the address pointed to by <parameter>mirrored_ch</parameter>.
+</para>
+<para>
+Use <link linkend="g-unichar-get-mirror-char"><function>g_unichar_get_mirror_char()</function></link> instead; the docs for that function
+provide full details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ch</parameter>&nbsp;:</term>
+<listitem><simpara> a unicode character
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mirrored_ch</parameter>&nbsp;:</term>
+<listitem><simpara> location to store the mirrored character
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>ch</parameter> has a mirrored character and <parameter>mirrored_ch</parameter> is
+filled in, <literal>FALSE</literal> otherwise
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-unichar-direction"/>pango_unichar_direction ()</title>
+<indexterm><primary>pango_unichar_direction</primary></indexterm><programlisting><link linkend="PangoDirection">PangoDirection</link> pango_unichar_direction      (<link linkend="gunichar">gunichar</link> ch);</programlisting>
+<para>
+Determines the direction of a character; either
+<literal>PANGO_DIRECTION_LTR</literal>, <literal>PANGO_DIRECTION_LTR</literal>, or
+<literal>PANGO_DIRECTION_NEUTRAL</literal>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>ch</parameter>&nbsp;:</term>
+<listitem><simpara>character to examine
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the direction of a character, as used in the
+  Unicode bidirectional algorithm.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-find-base-dir"/>pango_find_base_dir ()</title>
+<indexterm><primary>pango_find_base_dir</primary></indexterm><programlisting><link linkend="PangoDirection">PangoDirection</link> pango_find_base_dir          (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="gint">gint</link> length);</programlisting>
+<para>
+Searches a string the first character that has a strong 
+direction, according to the Unicode bidirectional algorithm.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><simpara>   the text to process
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara> length of <parameter>text</parameter> in bytes (may be -1 if <parameter>text</parameter> is nul-terminated)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The direction corresponding to the first strong character.
+If no such character is found, then <literal>PANGO_DIRECTION_NEUTRAL</literal> is returned.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
 <title><anchor id="pango-break"/>pango_break ()</title>
-<programlisting>void        pango_break                     (const <link linkend="gchar">gchar</link> *text,
-                                             int length,
+<indexterm><primary>pango_break</primary></indexterm><programlisting><link linkend="void">void</link>        pango_break                     (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *attrs,
-                                             int attrs_len);</programlisting>
+                                             <link linkend="int">int</link> attrs_len);</programlisting>
 <para>
 Determines possible line, word, and character breaks
 for a string of Unicode text.</para>
@@ -648,7 +879,7 @@ for a string of Unicode text.</para>
 <listitem><simpara>    length of <parameter>text</parameter> in bytes (may be -1 if <parameter>text</parameter> is nul-terminated)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>analysis</parameter>&nbsp;:</term>
-<listitem><simpara>  <link linkend="PangoAnalysis">PangoAnalysis</link> structure from <link linkend="pango-itemize">pango_itemize</link>()
+<listitem><simpara>  <link linkend="PangoAnalysis"><type>PangoAnalysis</type></link> structure from <link linkend="pango-itemize"><function>pango_itemize()</function></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>attrs</parameter>&nbsp;:</term>
 <listitem><simpara>     an array to store character information in
@@ -659,15 +890,15 @@ for a string of Unicode text.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-get-log-attrs"/>pango_get_log_attrs ()</title>
-<programlisting>void        pango_get_log_attrs             (const char *text,
-                                             int length,
-                                             int level,
+<indexterm><primary>pango_get_log_attrs</primary></indexterm><programlisting><link linkend="void">void</link>        pango_get_log_attrs             (const <link linkend="char">char</link> *text,
+                                             <link linkend="int">int</link> length,
+                                             <link linkend="int">int</link> level,
                                              <link linkend="PangoLanguage">PangoLanguage</link> *language,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *log_attrs,
-                                             int attrs_len);</programlisting>
+                                             <link linkend="int">int</link> attrs_len);</programlisting>
 <para>
-Computes a <link linkend="PangoLogAttr">PangoLogAttr</link> for each character in <parameter>text</parameter>. The <parameter>log_attrs</parameter>
-array must have one <link linkend="PangoLogAttr">PangoLogAttr</link> for each position in <parameter>text</parameter>; if
+Computes a <link linkend="PangoLogAttr"><type>PangoLogAttr</type></link> for each character in <parameter>text</parameter>. The <parameter>log_attrs</parameter>
+array must have one <link linkend="PangoLogAttr"><type>PangoLogAttr</type></link> for each position in <parameter>text</parameter>; if
 <parameter>text</parameter> contains N characters, it has N+1 positions, including the
 last position at the end of the text. <parameter>text</parameter> should be an entire
 paragraph; logical attributes can't be computed without context
@@ -689,7 +920,7 @@ word is a word).</para>
 <listitem><simpara> language tag
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>log_attrs</parameter>&nbsp;:</term>
-<listitem><simpara> array with one <link linkend="PangoLogAttr">PangoLogAttr</link> per character in <parameter>text</parameter>, plus one extra, to be filled in
+<listitem><simpara> array with one <link linkend="PangoLogAttr"><type>PangoLogAttr</type></link> per character in <parameter>text</parameter>, plus one extra, to be filled in
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>attrs_len</parameter>&nbsp;:</term>
 <listitem><simpara> length of <parameter>log_attrs</parameter> array
@@ -697,7 +928,7 @@ word is a word).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-find-paragraph-boundary"/>pango_find_paragraph_boundary ()</title>
-<programlisting>void        pango_find_paragraph_boundary   (const <link linkend="gchar">gchar</link> *text,
+<indexterm><primary>pango_find_paragraph_boundary</primary></indexterm><programlisting><link linkend="void">void</link>        pango_find_paragraph_boundary   (const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> length,
                                              <link linkend="gint">gint</link> *paragraph_delimiter_index,
                                              <link linkend="gint">gint</link> *next_paragraph_start);</programlisting>
@@ -731,19 +962,19 @@ off the end).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-default-break"/>pango_default_break ()</title>
-<programlisting>void        pango_default_break             (const <link linkend="gchar">gchar</link> *text,
-                                             int length,
+<indexterm><primary>pango_default_break</primary></indexterm><programlisting><link linkend="void">void</link>        pango_default_break             (const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="int">int</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoLogAttr">PangoLogAttr</link> *attrs,
-                                             int attrs_len);</programlisting>
+                                             <link linkend="int">int</link> attrs_len);</programlisting>
 <para>
 This is the default break algorithm, used if no language
-engine overrides it. Normally you should use <link linkend="pango-break">pango_break</link>()
+engine overrides it. Normally you should use <link linkend="pango-break"><function>pango_break()</function></link>
 instead; this function is mostly useful for chaining up
-from a language engine override. Unlike <link linkend="pango-break">pango_break</link>(),
+from a language engine override. Unlike <link linkend="pango-break"><function>pango_break()</function></link>,
 <parameter>analysis</parameter> can be NULL, but only do that if you know what
-you're doing. (If you need an analysis to pass to <link linkend="pango-break">pango_break</link>(),
-you need to <link linkend="pango-itemize">pango_itemize</link>() or use <link linkend="pango-get-log-attrs">pango_get_log_attrs</link>().)</para>
+you're doing. (If you need an analysis to pass to <link linkend="pango-break"><function>pango_break()</function></link>,
+you need to <link linkend="pango-itemize"><function>pango_itemize()</function></link> or use <link linkend="pango-get-log-attrs"><function>pango_get_log_attrs()</function></link>.)</para>
 <para>
 
 </para><variablelist role="params">
@@ -754,7 +985,7 @@ you need to <link linkend="pango-itemize">pango_itemize</link>() or use <link li
 <listitem><simpara> length of text in bytes (may be -1 if <parameter>text</parameter> is nul-terminated)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>analysis</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoAnalysis">PangoAnalysis</link> for the <parameter>text</parameter>
+<listitem><simpara> a <link linkend="PangoAnalysis"><type>PangoAnalysis</type></link> for the <parameter>text</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>attrs</parameter>&nbsp;:</term>
 <listitem><simpara> logical attributes to fill in
@@ -765,7 +996,7 @@ you need to <link linkend="pango-itemize">pango_itemize</link>() or use <link li
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="PangoLogAttr"/>struct PangoLogAttr</title>
-<programlisting>struct PangoLogAttr {
+<indexterm><primary>PangoLogAttr</primary></indexterm><programlisting>struct PangoLogAttr {
 
   guint is_line_break : 1;      /* Can break line in front of character */
 
@@ -799,23 +1030,96 @@ you need to <link linkend="pango-itemize">pango_itemize</link>() or use <link li
   guint is_sentence_boundary : 1;
   guint is_sentence_start : 1;  /* first character in a sentence */
   guint is_sentence_end : 1;    /* first non-sentence char after a sentence */
+
+  /* if set, backspace deletes one character rather than
+   * the entire grapheme cluster  
+   */
+  guint backspace_deletes_character : 1; 
 };
 </programlisting>
 <para>
-The <link linkend="PangoLogAttr">PangoLogAttr</link> structure stores information
+The <link linkend="PangoLogAttr"><type>PangoLogAttr</type></link> structure stores information
 about the attributes of a single character.
-</para></refsect2>
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_line_break</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_mandatory_break</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_char_break</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_white</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_cursor_position</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_word_start</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_word_end</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_sentence_boundary</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_sentence_start</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>is_sentence_end</structfield> : 1</term>
+<listitem><simpara>
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>backspace_deletes_character</structfield> : 1</term>
+<listitem><simpara>If set, backspace deletes one character
+                              rather than the entire grapheme cluster. This
+                              field is only meaningful on grapheme
+                              boundaries (where <parameter>is_cursor_position</parameter> is
+                              set).  In some languages, the full grapheme
+                              (e.g.  letter + diacritics) is considered a
+                              unit, while in others, each decomposed
+                              character in the grapheme is a unit. In the
+                              default implementation of <link linkend="pango-break"><type>pango_break</type></link>, this
+                              bit is set on all grapheme boundaries except
+                              those following Latin, Cyrillic or Greek base
+                              characters.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-shape"/>pango_shape ()</title>
-<programlisting>void        pango_shape                     (const <link linkend="gchar">gchar</link> *text,
+<indexterm><primary>pango_shape</primary></indexterm><programlisting><link linkend="void">void</link>        pango_shape                     (const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> length,
                                              <link linkend="PangoAnalysis">PangoAnalysis</link> *analysis,
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);</programlisting>
 <para>
 Given a segment of text and the corresponding 
-<link linkend="PangoAnalysis">PangoAnalysis</link> structure returned from <link linkend="pango-itemize">pango_itemize</link>(),
+<link linkend="PangoAnalysis"><type>PangoAnalysis</type></link> structure returned from <link linkend="pango-itemize"><function>pango_itemize()</function></link>,
 convert the characters into glyphs. You may also pass
-in only a substring of the item from <link linkend="pango-itemize">pango_itemize</link>().</para>
+in only a substring of the item from <link linkend="pango-itemize"><function>pango_itemize()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -826,7 +1130,7 @@ in only a substring of the item from <link linkend="pango-itemize">pango_itemize
 <listitem><simpara>    the length (in bytes) of <parameter>text</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>analysis</parameter>&nbsp;:</term>
-<listitem><simpara>  <link linkend="PangoAnalysis">PangoAnalysis</link> structure from PangoItemize
+<listitem><simpara>  <link linkend="PangoAnalysis"><type>PangoAnalysis</type></link> structure from PangoItemize
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
 <listitem><simpara>    glyph string in which to store results

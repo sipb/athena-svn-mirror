@@ -15,14 +15,14 @@
  *
  ******************************************************************/
 
-#include <freetype/internal/ftstream.h>
-#include <freetype/internal/ftmemory.h>
-#include <freetype/internal/tttypes.h>
+#include "ftxopen.h"
+#include "ftxopenf.h"
 
 #include "fterrcompat.h"
 
-#include "ftxopen.h"
-#include "ftxopenf.h"
+#include FT_INTERNAL_STREAM_H
+#include FT_INTERNAL_MEMORY_H
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 
 
   /***************************
@@ -373,13 +373,17 @@
 
     if ( ALLOC_ARRAY( fl->FeatureRecord, count, TTO_FeatureRecord ) )
       return error;
+    if ( ALLOC_ARRAY( fl->ApplyOrder, count, FT_UShort ) )
+      goto Fail2;
+    
+    fl->ApplyCount = 0;
 
     fr = fl->FeatureRecord;
 
     for ( n = 0; n < count; n++ )
     {
       if ( ACCESS_Frame( 6L ) )
-        goto Fail;
+        goto Fail1;
 
       fr[n].FeatureTag = GET_ULong();
       new_offset = GET_UShort() + base_offset;
@@ -389,17 +393,21 @@
       cur_offset = FILE_Pos();
       if ( FILE_Seek( new_offset ) ||
            ( error = Load_Feature( &fr[n].Feature, stream ) ) != TT_Err_Ok )
-        goto Fail;
+        goto Fail1;
       (void)FILE_Seek( cur_offset );
     }
 
     return TT_Err_Ok;
 
-  Fail:
+  Fail1:
     for ( m = 0; m < n; m++ )
       Free_Feature( &fr[m].Feature, memory );
 
+    FREE( fl->ApplyOrder );
+
+  Fail2:
     FREE( fl->FeatureRecord );
+
     return error;
   }
 
@@ -584,6 +592,8 @@
 
     TTO_SubTable*  st;
 
+    FT_Bool        is_extension = FALSE;
+
 
     base_offset = FILE_Pos();
 
@@ -603,6 +613,10 @@
 
     st = l->SubTable;
 
+    if ( ( type == GSUB && l->LookupType == GSUB_LOOKUP_EXTENSION ) ||
+         ( type == GPOS && l->LookupType == GPOS_LOOKUP_EXTENSION ) )
+      is_extension = TRUE;
+
     for ( n = 0; n < count; n++ )
     {
       if ( ACCESS_Frame( 2L ) )
@@ -613,6 +627,19 @@
       FORGET_Frame();
 
       cur_offset = FILE_Pos();
+
+      if ( is_extension )
+      {
+        if ( FILE_Seek( new_offset ) || ACCESS_Frame( 8L ) )
+          goto Fail;
+
+        (void)GET_UShort();                     /* format should be 1 */
+        l->LookupType = GET_UShort();
+        new_offset = GET_ULong() + base_offset;
+
+        FORGET_Frame();
+      }
+
       if ( FILE_Seek( new_offset ) ||
            ( error = Load_SubTable( &st[n], stream,
                                     type, l->LookupType ) ) != TT_Err_Ok )
@@ -681,7 +708,7 @@
 
     if ( ALLOC_ARRAY( ll->Lookup, count, TTO_Lookup ) )
       return error;
-    if ( ALLOC_ARRAY( ll->Properties, count, FT_UShort ) )
+    if ( ALLOC_ARRAY( ll->Properties, count, FT_UInt ) )
       goto Fail2;
 
     l = ll->Lookup;
@@ -1266,7 +1293,8 @@
     FT_UShort*  cva = cdf1->ClassValueArray;
 
 
-    *index = 0;
+    if ( index )
+      *index = 0;
 
     if ( glyphID >= cdf1->StartGlyph &&
          glyphID <= cdf1->StartGlyph + cdf1->GlyphCount )

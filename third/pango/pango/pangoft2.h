@@ -23,15 +23,16 @@
 #ifndef __PANGOFT2_H__
 #define __PANGOFT2_H__
 
-#include <freetype/freetype.h>
-
 #include <fontconfig/fontconfig.h>
 
 #include <pango/pango-layout.h>
+#include <pango/pangofc-font.h>
 
 G_BEGIN_DECLS
 
+#ifndef PANGO_DISABLE_DEPRECATED
 #define PANGO_RENDER_TYPE_FT2 "PangoRenderFT2"
+#endif
 
 #define PANGO_TYPE_FT2_FONT_MAP              (pango_ft2_font_map_get_type ())
 #define PANGO_FT2_FONT_MAP(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_FT2_FONT_MAP, PangoFT2FontMap))
@@ -43,25 +44,35 @@ typedef void (*PangoFT2SubstituteFunc) (FcPattern *pattern,
                                         gpointer   data);
 
 /* Calls for applications */
-PangoContext      *pango_ft2_get_context          (double dpi_x,
-						   double dpi_y);
-PangoFontMap      *pango_ft2_font_map_for_display (void);
-void               pango_ft2_shutdown_display     (void);
 
+void pango_ft2_render             (FT_Bitmap         *bitmap,
+				   PangoFont         *font,
+				   PangoGlyphString  *glyphs,
+				   gint               x,
+				   gint               y);
+void pango_ft2_render_transformed (FT_Bitmap         *bitmap,
+				   const PangoMatrix *matrix,
+				   PangoFont         *font,
+				   PangoGlyphString  *glyphs,
+				   int                x,
+				   int                y);
 
-void           pango_ft2_render             (FT_Bitmap        *bitmap,
-					     PangoFont        *font,
-					     PangoGlyphString *glyphs,
-					     gint              x,
-					     gint              y);
-void           pango_ft2_render_layout_line (FT_Bitmap        *bitmap,
-					     PangoLayoutLine  *line,
-					     int               x,
-					     int               y);
-void           pango_ft2_render_layout      (FT_Bitmap        *bitmap,
-					     PangoLayout      *layout,
-					     int               x, 
-					     int               y);
+void pango_ft2_render_layout_line          (FT_Bitmap        *bitmap,
+					    PangoLayoutLine  *line,
+					    int               x,
+					    int               y);
+void pango_ft2_render_layout_line_subpixel (FT_Bitmap        *bitmap,
+					    PangoLayoutLine  *line,
+					    int               x,
+					    int               y);
+void pango_ft2_render_layout               (FT_Bitmap        *bitmap,
+					    PangoLayout      *layout,
+					    int               x,
+					    int               y);
+void pango_ft2_render_layout_subpixel      (FT_Bitmap        *bitmap,
+					    PangoLayout      *layout,
+					    int               x,
+					    int               y);
 
 GType pango_ft2_font_map_get_type (void);
 
@@ -79,6 +90,12 @@ PangoContext *pango_ft2_font_map_create_context         (PangoFT2FontMap        
 
 /* API for rendering modules
  */
+#ifndef PANGO_DISABLE_DEPRECATED
+PangoContext      *pango_ft2_get_context          (double dpi_x,
+						   double dpi_y);
+PangoFontMap      *pango_ft2_font_map_for_display (void);
+void               pango_ft2_shutdown_display     (void);
+
 PangoGlyph     pango_ft2_get_unknown_glyph (PangoFont       *font);
 int            pango_ft2_font_get_kerning  (PangoFont       *font,
 					    PangoGlyph       left,
@@ -86,6 +103,7 @@ int            pango_ft2_font_get_kerning  (PangoFont       *font,
 FT_Face        pango_ft2_font_get_face     (PangoFont       *font);
 PangoCoverage *pango_ft2_font_get_coverage (PangoFont       *font,
 					    PangoLanguage   *language);
+#endif /* PANGO_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

@@ -1,18 +1,22 @@
 EXPORTS
 	pango_alignment_get_type
 	pango_attr_background_new
+	pango_attr_fallback_new
 	pango_attr_family_new
 	pango_attr_font_desc_new
 	pango_attr_foreground_new
 	pango_attr_iterator_copy
 	pango_attr_iterator_destroy
 	pango_attr_iterator_get
+	pango_attr_iterator_get_attrs
 	pango_attr_iterator_get_font
 	pango_attr_iterator_next
 	pango_attr_iterator_range
 	pango_attr_language_new
+	pango_attr_letter_spacing_new
 	pango_attr_list_change
 	pango_attr_list_copy
+	pango_attr_list_filter
 	pango_attr_list_get_iterator
 	pango_attr_list_get_type
 	pango_attr_list_insert
@@ -44,7 +48,9 @@ EXPORTS
 	pango_config_key_get
 	pango_context_get_base_dir
 	pango_context_get_font_description
+	pango_context_get_font_map
 	pango_context_get_language
+	pango_context_get_matrix
 	pango_context_get_metrics
 	pango_context_get_type
 	pango_context_list_families
@@ -55,6 +61,7 @@ EXPORTS
 	pango_context_set_font_description
 	pango_context_set_font_map
 	pango_context_set_language
+	pango_context_get_metrics
 	pango_coverage_copy
 	pango_coverage_from_bytes
 	pango_coverage_get
@@ -67,6 +74,12 @@ EXPORTS
 	pango_coverage_unref
 	pango_default_break
 	pango_direction_get_type
+	pango_ellipsize_mode_get_type
+	pango_engine_get_type
+	pango_engine_lang_get_type
+	pango_engine_shape_class_init
+	pango_engine_shape_get_type
+	pango_find_base_dir
 	pango_find_map
 	pango_find_paragraph_boundary
 	pango_font_describe
@@ -102,14 +115,17 @@ EXPORTS
 	pango_font_face_describe
 	pango_font_face_get_face_name
 	pango_font_face_get_type
+	pango_font_face_list_sizes
 	pango_font_family_get_name
 	pango_font_family_get_type
+	pango_font_family_is_monospace
 	pango_font_family_list_faces
 	pango_font_find_shaper
 	pango_font_get_coverage
 	pango_font_get_glyph_extents
 	pango_font_get_metrics
 	pango_font_get_type
+	pango_font_map_get_shape_engine_type
 	pango_font_map_get_type
 	pango_font_map_list_families
 	pango_font_map_load_font
@@ -119,10 +135,15 @@ EXPORTS
 	pango_font_metrics_get_approximate_digit_width
 	pango_font_metrics_get_ascent
 	pango_font_metrics_get_descent
+	pango_font_metrics_get_strikethrough_position
+	pango_font_metrics_get_strikethrough_thickness
 	pango_font_metrics_get_type
+	pango_font_metrics_get_underline_position
+	pango_font_metrics_get_underline_thickness
 	pango_font_metrics_new
 	pango_font_metrics_ref
 	pango_font_metrics_unref
+	pango_fontset_foreach
 	pango_fontset_get_font
 	pango_fontset_get_metrics
 	pango_fontset_get_type
@@ -134,6 +155,10 @@ EXPORTS
 	pango_get_log_attrs
 	pango_get_mirror_char
 	pango_get_sysconf_subdirectory
+	pango_glyph_item_apply_attrs
+	pango_glyph_item_free
+	pango_glyph_item_letter_space
+	pango_glyph_item_split
 	pango_glyph_string_copy
 	pango_glyph_string_extents
 	pango_glyph_string_extents_range
@@ -144,26 +169,25 @@ EXPORTS
 	pango_glyph_string_new
 	pango_glyph_string_set_size
 	pango_glyph_string_x_to_index
-	pango_int_set_add
-	pango_int_set_add_range
-	pango_int_set_contains
-	pango_int_set_destroy
-	pango_int_set_new
 	pango_item_copy
 	pango_item_free
 	pango_item_new
 	pango_item_split
 	pango_itemize
+	pango_itemize_with_base_dir
 	pango_language_from_string
 	pango_language_get_sample_string
 	pango_language_get_type
+	pango_language_includes_script
 	pango_language_matches
 	pango_layout_context_changed
 	pango_layout_copy
 	pango_layout_get_alignment
 	pango_layout_get_attributes
+	pango_layout_get_auto_dir
 	pango_layout_get_context
 	pango_layout_get_cursor_pos
+	pango_layout_get_ellipsize
 	pango_layout_get_extents
 	pango_layout_get_indent
 	pango_layout_get_iter
@@ -196,6 +220,7 @@ EXPORTS
 	pango_layout_iter_get_line_yrange
 	pango_layout_iter_get_run
 	pango_layout_iter_get_run_extents
+	pango_layout_iter_get_type
 	pango_layout_iter_next_char
 	pango_layout_iter_next_cluster
 	pango_layout_iter_next_line
@@ -211,6 +236,8 @@ EXPORTS
 	pango_layout_new
 	pango_layout_set_alignment
 	pango_layout_set_attributes
+	pango_layout_set_auto_dir
+	pango_layout_set_ellipsize
 	pango_layout_set_font_description
 	pango_layout_set_indent
 	pango_layout_set_justify
@@ -226,7 +253,14 @@ EXPORTS
 	pango_log2vis_get_embedding_levels
 	pango_lookup_aliases
 	pango_map_get_engine
-	pango_map_get_entry
+	pango_map_get_engines
+	pango_matrix_concat
+	pango_matrix_copy
+	pango_matrix_free
+	pango_matrix_get_type
+	pango_matrix_rotate
+	pango_matrix_scale
+	pango_matrix_translate
 	pango_module_register
 	pango_parse_markup
 	pango_parse_stretch
@@ -238,6 +272,14 @@ EXPORTS
 	pango_scan_int
 	pango_scan_string
 	pango_scan_word
+	pango_script_for_lang
+	pango_script_for_unichar
+	pango_script_get_sample_language
+	pango_script_get_type
+	pango_script_iter_free
+	pango_script_iter_get_range
+	pango_script_iter_new 
+	pango_script_iter_next
 	pango_shape
 	pango_skip_space
 	pango_split_file_list
@@ -257,6 +299,7 @@ EXPORTS
 	pango_tab_array_set_tab
 	pango_trim_string
 	pango_underline_get_type
+	pango_unichar_direction
 	pango_variant_get_type
 	pango_weight_get_type
 	pango_wrap_mode_get_type

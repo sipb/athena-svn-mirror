@@ -46,6 +46,14 @@ GType pango_alignment_get_type (void);
 GType pango_wrap_mode_get_type (void);
 #define PANGO_TYPE_WRAP_MODE (pango_wrap_mode_get_type())
 
+GType pango_ellipsize_mode_get_type (void);
+#define PANGO_TYPE_ELLIPSIZE_MODE (pango_ellipsize_mode_get_type())
+
+/* enumerations from "pango-script.h" */
+
+GType pango_script_get_type (void);
+#define PANGO_TYPE_SCRIPT (pango_script_get_type())
+
 /* enumerations from "pango-tabs.h" */
 
 GType pango_tab_align_get_type (void);

@@ -22,8 +22,6 @@
 #ifndef __PANGO_OT_PRIVATE_H__
 #define __PANGO_OT_PRIVATE_H__
 
-#include <freetype/freetype.h>
-
 #include <glib-object.h>
 
 #include <pango/pango-ot.h>
@@ -80,6 +78,15 @@ struct _PangoOTRuleset
 struct _PangoOTRulesetClass
 {
   GObjectClass parent_class;
+};
+
+struct _PangoOTBuffer
+{
+  OTL_Buffer buffer;
+  PangoFcFont *font;
+  guint rtl : 1;
+  guint zero_width_marks : 1;
+  guint applied_gpos : 1;
 };
 
 GType pango_ot_info_get_type (void);

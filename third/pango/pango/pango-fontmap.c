@@ -23,46 +23,23 @@
 #include "pango-utils.h"
 #include <stdlib.h>
 
-static void          pango_font_map_class_init        (PangoFontMapClass          *class);
 static PangoFontset *pango_font_map_real_load_fontset (PangoFontMap               *fontmap,
 						       PangoContext               *context,
 						       const PangoFontDescription *desc,
 						       PangoLanguage              *language);
 
 
-GType
-pango_font_map_get_type (void)
-{
-  static GType object_type = 0;
-
-  if (!object_type)
-    {
-      static const GTypeInfo object_info =
-      {
-        sizeof (PangoFontMapClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) pango_font_map_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (PangoFontMap),
-        0,              /* n_preallocs */
-	NULL            /* init */
-      };
-      
-      object_type = g_type_register_static (G_TYPE_OBJECT,
-                                            "PangoFontMap",
-                                            &object_info, 0);
-    }
-  
-  return object_type;
-}
-
+G_DEFINE_TYPE (PangoFontMap, pango_font_map, G_TYPE_OBJECT)
 
 static void
 pango_font_map_class_init (PangoFontMapClass *class)
 {
   class->load_fontset = pango_font_map_real_load_fontset;
+}
+
+static void
+pango_font_map_init (PangoFontMap *fontmap)
+{
 }
 
 /**
@@ -249,3 +226,26 @@ pango_font_map_real_load_fontset (PangoFontMap               *fontmap,
 
   return PANGO_FONTSET (fonts);
 }
+
+/**
+ * pango_font_map_get_shape_engine_type:
+ * @fontmap: a #PangoFontmap
+ * 
+ * Returns the render ID for shape engines for this fontmap.
+ * See the <structfield>render_type</structfield> field of
+ * #PangoEngineInfo.
+  * 
+ * Return value: the ID string for shape engines for
+ *  this fontmap. Owned by Pango, should not be modified
+ *  or freed.
+ *
+ * Since: 1.4
+ **/
+const char *
+pango_font_map_get_shape_engine_type (PangoFontMap *fontmap)
+{
+  g_return_val_if_fail (PANGO_IS_FONT_MAP (fontmap), NULL);
+  
+  return PANGO_FONT_MAP_GET_CLASS (fontmap)->shape_engine_type;
+}
+

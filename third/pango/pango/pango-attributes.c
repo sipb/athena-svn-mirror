@@ -398,7 +398,7 @@ pango_attr_float_new  (const PangoAttrClass *klass,
 
 /**
  * pango_attr_size_new:
- * @size: the font size, in 1000ths of a point.
+ * @size: the font size, in #PANGO_SCALE<!-- -->ths of a point.
  * 
  * Create a new font-size attribute.
  * 
@@ -601,8 +601,7 @@ pango_attr_strikethrough_new (gboolean strikethrough)
 /**
  * pango_attr_rise_new:
  * @rise: the amount that the text should be displaced vertically,
- *        in 10'000ths of an em. Positive values displace the
- *        text upwards.
+ *        in Pango units. Positive values displace the text upwards.
  * 
  * Create a new baseline displacement attribute.
  * 
@@ -641,6 +640,57 @@ pango_attr_scale_new (double scale_factor)
   };
 
   return pango_attr_float_new (&klass, scale_factor);
+}
+
+/**
+ * pango_attr_fallback_new:
+ * @enable_fallback: %TRUE if we should fall back on other fonts 
+ *                   for characters the active font is missing.
+ * 
+ * Create a new font fallback attribute.
+ *
+ * If fallback is disabled, characters will only be used from the
+ * closest matching font on the system. No fallback will be done to
+ * other fonts on the system that might contain the characters in the
+ * text.
+ * 
+ * Return value: the new #PangoAttribute.
+ **/
+PangoAttribute *
+pango_attr_fallback_new (gboolean enable_fallback)
+{
+  static const PangoAttrClass klass = {
+    PANGO_ATTR_FALLBACK,
+    pango_attr_int_copy,
+    pango_attr_int_destroy,
+    pango_attr_int_equal,
+  };
+
+  return pango_attr_int_new (&klass, (int)enable_fallback);
+}
+
+/**
+ * pango_attr_letter_spacing_new:
+ * @letter_spacing: amount of extra space to add between graphemes
+ *   of the text, in Pango units.
+ * 
+ * Create a new letter-spacing attribute.
+ * 
+ * Return value: the new #PangoAttribute.
+ *
+ * Since: 1.6
+ **/
+PangoAttribute *
+pango_attr_letter_spacing_new (int letter_spacing)
+{
+  static const PangoAttrClass klass = {
+    PANGO_ATTR_LETTER_SPACING,
+    pango_attr_int_copy,
+    pango_attr_int_destroy,
+    pango_attr_int_equal
+  };
+
+  return pango_attr_int_new (&klass, letter_spacing);
 }
 
 static PangoAttribute *
@@ -941,8 +991,14 @@ pango_attr_list_change (PangoAttrList  *list,
   GSList *tmp_list, *prev, *link;
   gint start_index = attr->start_index;
   gint end_index = attr->end_index;
-  
+
   g_return_if_fail (list != NULL);
+
+  if (start_index == end_index)	/* empty, nothing to do */
+    {
+      pango_attribute_destroy (attr);
+      return;
+    }
   
   tmp_list = list->attributes;
   prev = NULL;
@@ -1244,7 +1300,7 @@ pango_attr_iterator_next (PangoAttrIterator *iterator)
 {
   GList *tmp_list;
 
-  g_return_val_if_fail (iterator != NULL, -1);
+  g_return_val_if_fail (iterator != NULL, FALSE);
 
   if (!iterator->next_attribute && !iterator->attribute_stack)
     return FALSE;
@@ -1274,8 +1330,11 @@ pango_attr_iterator_next (PangoAttrIterator *iterator)
   while (iterator->next_attribute &&
 	 ((PangoAttribute *)iterator->next_attribute->data)->start_index == iterator->start_index)
     {
-      iterator->attribute_stack = g_list_prepend (iterator->attribute_stack, iterator->next_attribute->data);
-      iterator->end_index = MIN (iterator->end_index, ((PangoAttribute *)iterator->next_attribute->data)->end_index);
+      if (((PangoAttribute *)iterator->next_attribute->data)->end_index > iterator->start_index)
+	{
+	  iterator->attribute_stack = g_list_prepend (iterator->attribute_stack, iterator->next_attribute->data);
+	  iterator->end_index = MIN (iterator->end_index, ((PangoAttribute *)iterator->next_attribute->data)->end_index);
+	}
       iterator->next_attribute = iterator->next_attribute->next;
     }
 
@@ -1368,9 +1427,9 @@ pango_attr_iterator_get (PangoAttrIterator *iterator,
  *        pango_font_description_set_family_static using values from
  *        an attribute in the #PangoAttrList associated with the iterator,
  *        so if you plan to keep it around, you must call:
- *        pango_font_description_set_family (desc, pango_font_description_get_family (desc)).
+ *        <literal>pango_font_description_set_family (desc, pango_font_description_get_family (desc))</literal>.
  * @language: if non-%NULL, location to store language tag for item, or %NULL
- *            if non is found.
+ *            if none is found.
  * @extra_attrs: if non-%NULL, location in which to store a list of non-font
  *           attributes at the the current position; only the highest priority
  *           value of each attribute will be added to this list. In order
@@ -1390,6 +1449,8 @@ pango_attr_iterator_get_font (PangoAttrIterator     *iterator,
 
   PangoFontMask mask = 0;
   gboolean have_language = FALSE;
+  gdouble scale = 0;
+  gboolean have_scale = FALSE;
 
   g_return_if_fail (iterator != NULL);
   g_return_if_fail (desc != NULL);
@@ -1460,11 +1521,10 @@ pango_attr_iterator_get_font (PangoAttrIterator     *iterator,
 	    }
 	  break;
         case PANGO_ATTR_SCALE:
-	  if (!(mask & PANGO_FONT_MASK_SIZE))
+	  if (!have_scale)
 	    {
-	      mask |= PANGO_FONT_MASK_SIZE;
-	      pango_font_description_set_size (desc,
-					       ((PangoAttrFloat *)attr)->value * pango_font_description_get_size (desc));
+	      have_scale = TRUE;
+	      scale = ((PangoAttrFloat *)attr)->value;
 	    }
 	  break;
 	case PANGO_ATTR_LANGUAGE:
@@ -1500,6 +1560,10 @@ pango_attr_iterator_get_font (PangoAttrIterator     *iterator,
 	    }
 	}
     }
+
+  if (have_scale)
+    pango_font_description_set_size (desc, scale * pango_font_description_get_size (desc));
+
 }
 
 /**
@@ -1509,11 +1573,11 @@ pango_attr_iterator_get_font (PangoAttrIterator     *iterator,
  *        should be filtered out.
  * @data: Data to be passed to @func
  * 
- * Given a PangoAttrList and callback function, removes any elements
+ * Given a #PangoAttrList and callback function, removes any elements
  * of @list for which @func returns %TRUE and inserts them into
  * a new list.
  * 
- * Return value: a newly allocated %PangoAttrList or %NULL if
+ * Return value: a newly allocated #PangoAttrList or %NULL if
  *  no attributes of the given types were found.
  **/
 PangoAttrList *
@@ -1580,7 +1644,7 @@ pango_attr_list_filter (PangoAttrList       *list,
  * iterator.
  * 
  * Return value: a list of all attributes for the current range.
- *   To free this value, call pango_attributes_destroy() on
+ *   To free this value, call pango_attribute_destroy() on
  *   each value and g_slist_free() on the list.
  **/
 GSList *

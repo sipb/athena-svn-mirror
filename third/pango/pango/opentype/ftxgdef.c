@@ -15,16 +15,16 @@
  *
  ******************************************************************/
 
-#include <freetype/tttags.h>
-
-#include <freetype/internal/ftstream.h>
-#include <freetype/internal/ftmemory.h>
-#include <freetype/internal/tttypes.h>
+#include "ftxopen.h"
+#include "ftxopenf.h"
 
 #include "fterrcompat.h"
 
-#include "ftxopen.h"
-#include "ftxopenf.h"
+#include FT_TRUETYPE_TAGS_H
+
+#include FT_INTERNAL_STREAM_H
+#include FT_INTERNAL_MEMORY_H
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 
 #define TTAG_GDEF  FT_MAKE_TAG( 'G', 'D', 'E', 'F' )
 
@@ -297,6 +297,8 @@
     Free_ClassDefinition( &gdef->MarkAttachClassDef, memory );
     
     Free_NewGlyphClasses( gdef, memory );
+
+    FREE( gdef );
 
     return TT_Err_Ok;
   }
@@ -759,7 +761,7 @@
 
     if ( glyphID < gcrr[index].Start )
     {
-      array_index = 0;
+      array_index = index;
       if ( index == 0 )
         glyph_index = glyphID;
       else
@@ -771,7 +773,7 @@
       glyph_index = glyphID - gcrr[index].End - 1;
     }
 
-    byte = ngc[array_index][glyph_index / 4 + 1];
+    byte = ngc[array_index][glyph_index / 4];
     bits = byte >> ( 16 - ( glyph_index % 4 + 1 ) * 4 );
 
     return bits & 0x000F;
@@ -1008,7 +1010,7 @@
 
     if ( gcrr[0].Start )
     {
-      if ( ALLOC_ARRAY( ngc[0], gcrr[0].Start / 4 + 1, FT_UShort ) )
+      if ( ALLOC_ARRAY( ngc[0], ( gcrr[0].Start + 3 ) / 4, FT_UShort ) )
         goto Fail1;
     }
 
@@ -1016,7 +1018,7 @@
     {
       if ( gcrr[n].Start - gcrr[n - 1].End > 1 )
         if ( ALLOC_ARRAY( ngc[n],
-                          ( gcrr[n].Start - gcrr[n - 1].End - 1 ) / 4 + 1,
+                          ( gcrr[n].Start - gcrr[n - 1].End + 2 ) / 4,
                           FT_UShort ) )
           goto Fail1;
     }
@@ -1024,7 +1026,7 @@
     if ( gcrr[count - 1].End != num_glyphs - 1 )
     {
       if ( ALLOC_ARRAY( ngc[count],
-                        ( num_glyphs - gcrr[count - 1].End - 1 ) / 4 + 1,
+                        ( num_glyphs - gcrr[count - 1].End + 2 ) / 4,
                         FT_UShort ) )
         goto Fail1;
     }
@@ -1033,6 +1035,8 @@
 
     gdef->MarkAttachClassDef_offset = 0L;
     gdef->MarkAttachClassDef.loaded = FALSE;
+
+    gcd->loaded = TRUE;
 
     return TT_Err_Ok;
 
@@ -1125,7 +1129,7 @@
 
     if ( glyphID < gcrr[index].Start )
     {
-      array_index = 0;
+      array_index = index;
       if ( index == 0 )
         glyph_index = glyphID;
       else
@@ -1137,7 +1141,7 @@
       glyph_index = glyphID - gcrr[index].End - 1;
     }
 
-    byte  = ngc[array_index][glyph_index / 4 + 1];
+    byte  = ngc[array_index][glyph_index / 4];
     bits  = byte >> ( 16 - ( glyph_index % 4 + 1 ) * 4 );
     class = bits & 0x000F;
 
@@ -1148,8 +1152,8 @@
       bits = new_class << ( 16 - ( glyph_index % 4 + 1 ) * 4 );
       mask = ~( 0x000F << ( 16 - ( glyph_index % 4 + 1 ) * 4 ) );
 
-      ngc[array_index][glyph_index / 4 + 1] &= mask;
-      ngc[array_index][glyph_index / 4 + 1] |= bits;
+      ngc[array_index][glyph_index / 4] &= mask;
+      ngc[array_index][glyph_index / 4] |= bits;
     }
 
     return TT_Err_Ok;
@@ -1157,29 +1161,52 @@
 
 
   FT_Error  Check_Property( TTO_GDEFHeader*  gdef,
-                            FT_UShort        index,
+			    OTL_GlyphItem    gitem,
                             FT_UShort        flags,
                             FT_UShort*       property )
   {
     FT_Error  error;
 
-
     if ( gdef )
     {
-      error = TT_GDEF_Get_Glyph_Property( gdef, index, property );
-      if ( error )
-        return error;
+      FT_UShort basic_glyph_class;
+      FT_UShort desired_attachment_class;
 
-      if ( flags & IGNORE_SPECIAL_MARKS )
+      if ( gitem->gproperties == OTL_GLYPH_PROPERTIES_UNKNOWN )
       {
-        /* This is OpenType 1.2 */
-
-        if ( (flags & 0xFF00) != *property )
-          return TTO_Err_Not_Covered;
+	error = TT_GDEF_Get_Glyph_Property( gdef, gitem->gindex, &gitem->gproperties );
+	if ( error )
+	  return error;
       }
-      else {
-        if ( flags & *property )
-          return TTO_Err_Not_Covered;
+
+      *property = gitem->gproperties;
+
+      /* If the glyph was found in the MarkAttachmentClass table,
+       * then that class value is the high byte of the result,
+       * otherwise the low byte contains the basic type of the glyph
+       * as defined by the GlyphClassDef table.
+       */
+      if ( *property & IGNORE_SPECIAL_MARKS  )
+	basic_glyph_class = TTO_MARK;
+      else
+	basic_glyph_class = *property;
+
+      /* Return Not_Covered, if, for example, basic_glyph_class
+       * is TTO_LIGATURE and LookFlags includes IGNORE_LIGATURES
+       */
+      if ( flags & basic_glyph_class )
+	return TTO_Err_Not_Covered;
+      
+      /* The high byte of LookupFlags has the meaning
+       * "ignore marks of attachment type different than
+       * the attachment type specified."
+       */
+      desired_attachment_class = flags & IGNORE_SPECIAL_MARKS;
+      if ( desired_attachment_class )
+      {
+	if ( basic_glyph_class == TTO_MARK &&
+	     *property != desired_attachment_class )
+	  return TTO_Err_Not_Covered;
       }
     }
 

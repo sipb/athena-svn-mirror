@@ -21,11 +21,17 @@
 
 #include <glib.h>
 #include <string.h>
-#include "pangox.h"
 #include "pango-engine.h"
 #include "pango-utils.h"
 
+#undef PANGO_DISABLE_DEPRECATED
+#include "pangox.h"
+
 #include "basic-common.h"
+
+/* No extra fields needed */
+typedef PangoEngineShape      BasicEngineX;
+typedef PangoEngineShapeClass BasicEngineXClass ;
 
 typedef struct _CharRange CharRange;
 typedef struct _Charset Charset;
@@ -77,6 +83,7 @@ struct _CharCache
   CharsetOrdering *ordering;
   MaskTable *mask_tables[256];
   GIConv converters[MAX_CHARSETS];
+  PangoCoverage *coverage;
 };
 
 struct _CharCachePointer
@@ -109,25 +116,8 @@ static PangoGlyph conv_euctw (CharCache  *cache,
 
 #include "tables-big.i"
 
-static PangoEngineRange basic_ranges[] = {
-  /* Language characters */
-  { 0x0000, 0x02af, "*" },
-  { 0x02b0, 0x02ff, "" },
-  { 0x0380, 0x058f, "*" },
-  { 0x0591, 0x05f4, "" }, /* Hebrew */
-  { 0x060c, 0x06f9, "" }, /* Arabic */
-  { 0x0e01, 0x0e5b, "" },  /* Thai */
-  { 0x10a0, 0x10ff, "*" }, /* Georgian */
-  { 0x1200, 0x16ff, "*" }, /* Ethiopic,Cherokee,Canadian,Ogham,Runic */
-  { 0x1e00, 0x1fff, "*" },
-  { 0x2000, 0x33ff, "*" },
-  { 0x3400, 0x9fa5, "*" }, /* Unihan */
-  { 0xa000, 0xa4c6, "*" }, /* Yi */
-  { 0xac00, 0xd7a3, "" },
-  { 0xe000, 0xf7ee, "*" }, /* HKSCS-1999 */
-  { 0xf900, 0xfa2d, "*" }, /* CJK Compatibility Ideographs */
-  { 0xfe30, 0xfe6b, "*" }, /* CJK Compatibility Forms and Small Form Variants */
-  { 0xff00, 0xffee, "*" }  /* Halfwidth and Fullwidth Forms */
+static PangoEngineScriptInfo basic_scripts[] = {
+  { PANGO_SCRIPT_COMMON,  "" },
 };
 
 static PangoEngineInfo script_engines[] = {
@@ -135,11 +125,9 @@ static PangoEngineInfo script_engines[] = {
     SCRIPT_ENGINE_NAME,
     PANGO_ENGINE_TYPE_SHAPE,
     PANGO_RENDER_TYPE_X,
-    basic_ranges, G_N_ELEMENTS(basic_ranges)
+    basic_scripts, G_N_ELEMENTS(basic_scripts)
   }
 };
-
-static gint n_script_engines = G_N_ELEMENTS (script_engines);
 
 /*
  * X window system script engine portion
@@ -567,7 +555,8 @@ get_char_cache (PangoFont     *font,
 }
 
 static void 
-basic_engine_shape (PangoFont        *font,
+basic_engine_shape (PangoEngineShape *engine,
+		    PangoFont        *font,
 		    const char       *text,
 		    gint              length,
 		    PangoAnalysis    *analysis,
@@ -679,69 +668,54 @@ basic_engine_shape (PangoFont        *font,
     }
 }
 
-static PangoCoverage *
-basic_engine_get_coverage (PangoFont     *font,
-			   PangoLanguage *lang)
+static PangoCoverageLevel
+basic_engine_covers (PangoEngineShape *engine,
+		     PangoFont        *font,
+		     PangoLanguage    *lang,
+		     gunichar          wc)
 {
   CharCache *cache = get_char_cache (font, lang);
-  PangoCoverage *result = pango_coverage_new ();
-  gunichar wc;
+  char buf[6];
 
-  for (wc = 0; wc < 65536; wc++)
-    {
-      char buf[6];
+  g_unichar_to_utf8 (wc, buf);
 
-      g_unichar_to_utf8 (wc, buf);
-      if (find_char (cache, font, wc, buf))
-	pango_coverage_set (result, wc, PANGO_COVERAGE_EXACT);
-    }
-
-  return result;
+  return find_char (cache, font, wc, buf) ? PANGO_COVERAGE_EXACT : PANGO_COVERAGE_NONE;
 }
 
-static PangoEngine *
-basic_engine_x_new ()
+static void
+basic_engine_x_class_init (PangoEngineShapeClass *class)
 {
-  PangoEngineShape *result;
-  
-  result = g_new (PangoEngineShape, 1);
-
-  result->engine.id = SCRIPT_ENGINE_NAME;
-  result->engine.type = PANGO_ENGINE_TYPE_SHAPE;
-  result->engine.length = sizeof (result);
-  result->script_shape = basic_engine_shape;
-  result->get_coverage = basic_engine_get_coverage;
-
-  return (PangoEngine *)result;
+  class->covers = basic_engine_covers;
+  class->script_shape = basic_engine_shape;
 }
 
-/* The following three functions provide the public module API for
- * Pango
- */
-#ifdef X_MODULE_PREFIX
-#define MODULE_ENTRY(func) _pango_basic_x_##func
-#else
-#define MODULE_ENTRY(func) func
-#endif
+PANGO_ENGINE_SHAPE_DEFINE_TYPE (BasicEngineX, basic_engine_x,
+				basic_engine_x_class_init, NULL);
 
 void 
-MODULE_ENTRY(script_engine_list) (PangoEngineInfo **engines, gint *n_engines)
+PANGO_MODULE_ENTRY(init) (GTypeModule *module)
+{
+  basic_engine_x_register_type (module);
+}
+
+void 
+PANGO_MODULE_ENTRY(exit) (void)
+{
+}
+
+void 
+PANGO_MODULE_ENTRY(list) (PangoEngineInfo **engines,
+			  int              *n_engines)
 {
   *engines = script_engines;
-  *n_engines = n_script_engines;
+  *n_engines = G_N_ELEMENTS (script_engines);
 }
 
 PangoEngine *
-MODULE_ENTRY(script_engine_load) (const char *id)
+PANGO_MODULE_ENTRY(create) (const char *id)
 {
   if (!strcmp (id, SCRIPT_ENGINE_NAME))
-    return basic_engine_x_new ();
+    return g_object_new (basic_engine_x_type, NULL);
   else
     return NULL;
 }
-
-void 
-MODULE_ENTRY(script_engine_unload) (PangoEngine *engine)
-{
-}
-

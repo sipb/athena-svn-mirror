@@ -20,27 +20,7 @@ various steps of this process.
 <!-- ##### STRUCT PangoContext ##### -->
 <para>
 The #PangoContext structure stores global information
-used to control the itemization process. It contains
-the following fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gchar *lang;</entry>
-<entry>the global default language in the standard form
-       "fr" or "fr_FR". (This may be overriden
-       with the @lang_info parameter to pango_itemize().)</entry>
-</row>
-
-<row>
-<entry>gchar *render_type;</entry>
-<entry>a string identifier for the rendering system to use,
-       for instance %PANGO_RENDER_TYPE_X</entry>
-</row>
-
-</tbody></tgroup></informaltable>
+used to control the itemization process. 
 </para>
 
 
@@ -48,89 +28,39 @@ the following fields:
 <para>
 The #PangoItem structure stores information about
 a segment of text. It contains the following fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>gint offset;</entry>
-<entry>the offset of the segment from the beginning of the
-       string in bytes.</entry>
-</row>
-
-<row>
-<entry>gint length;</entry>
-<entry>the length of the segment in bytes.</entry>
-</row>
-
-<row>
-<entry>gint num_chars;</entry>
-<entry>the length of the segment in characters.</entry>
-</row>
-
-<row>
-<entry>gint analysis;</entry>
-<entry>the properties of the segment.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
 </para>
 
-@offset: 
-@length: 
-@num_chars: 
-@analysis: 
+@offset: the offset of the segment from the beginning of the
+         string in bytes.
+@length: the length of the segment in bytes.
+@num_chars: the length of the segment in characters.
+@analysis: the properties of the segment.
 
 <!-- ##### STRUCT PangoAnalysis ##### -->
 <para>
 The #PangoAnalysis structure stores information about
 the properties of a segment of text. It has the following
 fields:
-
-<informaltable pgwide="1" frame="none" role="struct">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>#PangoEngineShape *shape_engine;</entry>
-<entry>the engine for doing rendering-system-dependent processing</entry>
-</row>
-
-<row>
-<entry>#PangoEngineLang *lang_engine;</entry>
-<entry>the engine for doing rendering-system-independent processing</entry>
-</row>
-
-<row>
-<entry>guint8 level;</entry>
-<entry>the bidrectional level for this segment.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
 </para>
 
-@shape_engine: 
-@lang_engine: 
+@shape_engine: the engine for doing rendering-system-dependent processing.
+@lang_engine: the engine for doing rendering-system-independent processing.
 @font: 
-@level: 
+@level: the bidrectional level for this segment.
 @language: 
 @extra_attrs: 
 
 <!-- ##### ENUM PangoDirection ##### -->
 <para>
-The #PangoDirection type represents the direction of writing
-for text.
 </para>
 
-@PANGO_DIRECTION_LTR: The text is written left-to-right
-@PANGO_DIRECTION_RTL: The text is written right-to-left
-@PANGO_DIRECTION_TTB_LTR: The text is written vertically
-                          top-to-bottom, with the rows ordered from
-                          left to right.
-@PANGO_DIRECTION_TTB_RTL: The text is written vertically
-                          top-to-bottom, with the rows ordered from
-                          right to left.
+@PANGO_DIRECTION_LTR: 
+@PANGO_DIRECTION_RTL: 
+@PANGO_DIRECTION_TTB_LTR: 
+@PANGO_DIRECTION_TTB_RTL: 
+@PANGO_DIRECTION_WEAK_LTR: 
+@PANGO_DIRECTION_WEAK_RTL: 
+@PANGO_DIRECTION_NEUTRAL: 
 
 <!-- ##### MACRO PANGO_TYPE_DIRECTION ##### -->
 <para>
@@ -145,6 +75,21 @@ The GObject type for #PangoDirection.
 </para>
 
 @context: 
+@text: 
+@start_index: 
+@length: 
+@attrs: 
+@cached_iter: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_itemize_with_base_dir ##### -->
+<para>
+
+</para>
+
+@context: 
+@base_dir: 
 @text: 
 @start_index: 
 @length: 
@@ -215,6 +160,15 @@ The GObject type for #PangoDirection.
 @font_map: 
 
 
+<!-- ##### FUNCTION pango_context_get_font_map ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
 <!-- ##### FUNCTION pango_context_get_font_description ##### -->
 <para>
 
@@ -269,6 +223,24 @@ The GObject type for #PangoDirection.
 @direction: 
 
 
+<!-- ##### FUNCTION pango_context_get_matrix ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_context_set_matrix ##### -->
+<para>
+
+</para>
+
+@context: 
+@matrix: 
+
+
 <!-- ##### FUNCTION pango_context_load_font ##### -->
 <para>
 
@@ -309,6 +281,38 @@ The GObject type for #PangoDirection.
 @context: 
 @families: 
 @n_families: 
+
+
+<!-- ##### FUNCTION pango_get_mirror_char ##### -->
+<para>
+
+</para>
+
+@ch: 
+@mirrored_ch: 
+@Returns: 
+
+
+<!-- ##### FUNCTION pango_unichar_direction ##### -->
+<para>
+Determines the direction of a character; either
+%PANGO_DIRECTION_LTR, %PANGO_DIRECTION_LTR, or
+%PANGO_DIRECTION_NEUTRAL.
+</para>
+
+@ch: character to examine
+@Returns:  the direction of a character, as used in the
+  Unicode bidirectional algorithm.
+
+
+<!-- ##### FUNCTION pango_find_base_dir ##### -->
+<para>
+
+</para>
+
+@text: 
+@length: 
+@Returns: 
 
 
 <!-- ##### FUNCTION pango_break ##### -->
@@ -375,6 +379,18 @@ about the attributes of a single character.
 @is_sentence_boundary: 
 @is_sentence_start: 
 @is_sentence_end: 
+@backspace_deletes_character: If set, backspace deletes one character
+                              rather than the entire grapheme cluster. This
+                              field is only meaningful on grapheme
+                              boundaries (where @is_cursor_position is
+                              set).  In some languages, the full grapheme
+                              (e.g.  letter + diacritics) is considered a
+                              unit, while in others, each decomposed
+                              character in the grapheme is a unit. In the
+                              default implementation of #pango_break, this
+                              bit is set on all grapheme boundaries except
+                              those following Latin, Cyrillic or Greek base
+                              characters.
 
 <!-- ##### FUNCTION pango_shape ##### -->
 <para>

@@ -5,17 +5,17 @@ INCLUDES = 					\
 	-DSYSCONFDIR=\"$(sysconfdir)\"		\
 	-DLIBDIR=\"$(libdir)\"			\
 	-DG_DISABLE_DEPRECATED			\
+	$(PANGO_DEBUG_FLAGS)			\
 	$(GLIB_CFLAGS)				\
 	$(FREETYPE_CFLAGS)			\
 	$(X_CFLAGS)				\
 	-I$(top_srcdir)
 
-LDADDS = @STRIP_BEGIN@ 	\
-	@x_ldflags@	\
-	@x_libs@	\
-	@GLIB_LIBS@	\
-	-lm		\
-@STRIP_END@
+LDADDS = 	\
+	$(x_ldflags)	\
+	$(x_libs)	\
+	$(GLIB_LIBS)	\
+	-lm
 
 noinst_LTLIBRARIES = libpango-ot.la
 
@@ -30,6 +30,9 @@ libpango_ot_la_SOURCES =  	\
 	ftxgpos.h		\
 	ftxgsub.c		\
 	ftxgsub.h		\
+	otlbuffer.c		\
+	otlbuffer.h		\
+	pango-ot-buffer.c	\
 	pango-ot-info.c		\
 	pango-ot-private.h	\
 	pango-ot-ruleset.c

@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>OpenType Font Handling</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>OpenType Font Handling</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Pango Reference Manual"><link rel="up" href="lowlevel.html" title="Low Level Functionality"><link rel="previous" href="PangoFcDecoder.html" title="PangoFcDecoder"><link rel="next" href="pango-Coverage-Maps.html" title="Coverage Maps"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -29,12 +28,14 @@
         .navigation .title {
             font-size: 200%;
         }
-      </style><link rel="home" href="index.html" title="Pango Reference Manual"><link rel="up" href="lowlevel.html" title="Low Level Functionality"><link rel="previous" href="lowlevel.html" title="Low Level Functionality"><link rel="next" href="pango-Coverage-Maps.html" title="Coverage Maps"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="lowlevel.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="lowlevel.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Pango Reference Manual</th><td><a accesskey="n" href="pango-Coverage-Maps.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="pango-OpenType-Font-Handling"></a><div class="titlepage"></div><div class="refnamediv"><h2>OpenType Font Handling</h2><p>OpenType Font Handling &#8212; Obtaining information from OpenType tables</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="PangoFcDecoder.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="lowlevel.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Pango Reference Manual</th><td><a accesskey="n" href="pango-Coverage-Maps.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="pango-OpenType-Font-Handling"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">OpenType Font Handling</span></h2><p>OpenType Font Handling &#8212; Obtaining information from OpenType tables</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
 typedef     <a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>;
 struct      <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>;
+struct      <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a>;
+struct      <a href="pango-OpenType-Font-Handling.html#PangoOTGlyph">PangoOTGlyph</a>;
 struct      <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>;
 enum        <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a>;
 <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>* <a href="pango-OpenType-Font-Handling.html#pango-ot-info-get">pango_ot_info_get</a>              (FT_Face face);
@@ -91,6 +92,33 @@ href="../glib/glib-Basic-Types.html#guint"
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
 >guint</a> language_index);
+<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a>* <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-new">pango_ot_buffer_new</a>          (<a href="PangoFcFont.html" title="PangoFcFont">PangoFcFont</a> *font);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-destroy">pango_ot_buffer_destroy</a>         (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-clear">pango_ot_buffer_clear</a>           (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-add-glyph">pango_ot_buffer_add_glyph</a>       (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> glyph_index,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> properties,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> cluster);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-set-rtl">pango_ot_buffer_set_rtl</a>         (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> rtl);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-set-zero-width-marks">pango_ot_buffer_set_zero_width_marks</a>
+                                            (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> zero_width_marks);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-get-glyphs">pango_ot_buffer_get_glyphs</a>      (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTGlyph">PangoOTGlyph</a> **glyphs,
+                                             int *n_glyphs);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-buffer-output">pango_ot_buffer_output</a>          (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a> *glyphs);
 <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>* <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-new">pango_ot_ruleset_new</a>        (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info);
 void        <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-add-feature">pango_ot_ruleset_add_feature</a>    (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
@@ -100,54 +128,66 @@ href="../glib/glib-Basic-Types.html#guint"
                                              <a
 href="../glib/glib-Basic-Types.html#gulong"
 >gulong</a> property_bit);
-void        <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-shape">pango_ot_ruleset_shape</a>          (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
-                                             <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a> *glyphs,
-                                             <a
-href="../glib/glib-Basic-Types.html#gulong"
->gulong</a> *properties);
-</pre></div><div class="refsect1"><h2>Description</h2><p>
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-substitute">pango_ot_ruleset_substitute</a>     (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);
+void        <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-position">pango_ot_ruleset_position</a>       (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);
+</pre></div><div class="refsect1" lang="en"><a name="id2954030"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="PangoOTTag"></a>PangoOTTag</h3><pre class="programlisting">typedef guint32  PangoOTTag;
+</p></div><div class="refsect1" lang="en"><a name="id2954040"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2954045"></a><h3><a name="PangoOTTag"></a>PangoOTTag</h3><a class="indexterm" name="id2954056"></a><pre class="programlisting">typedef guint32  PangoOTTag;
 </pre><p>
-The PangoOTTag typedef is used to represent TrueType and OpenType
-four letter tags inside Pango. Use the <tt>FT_MAKE_TAG()</tt> macro
-defined in the FreeType2 header <tt>freetype/freetype.h</tt> to 
-create PangoOTTags manually.
-</p></div><hr><div class="refsect2"><h3><a name="PangoOTInfo"></a>struct PangoOTInfo</h3><pre class="programlisting">struct PangoOTInfo;</pre><p>
-The PangoOTInfo struct contains the various 
+The <span class="type">PangoOTTag</span> typedef is used to represent TrueType and OpenType
+four letter tags inside Pango. Use the <tt class="function"><tt class="function">FT_MAKE_TAG()</tt></tt> macro
+defined in the FreeType2 header <tt class="filename">freetype/freetype.h</tt> to 
+create <span class="type">PangoOTTag</span>s manually.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954102"></a><h3><a name="PangoOTInfo"></a>struct PangoOTInfo</h3><a class="indexterm" name="id2954113"></a><pre class="programlisting">struct PangoOTInfo;</pre><p>
+The <span class="structname">PangoOTInfo</span> struct contains the various 
 tables associated with an OpenType font. It contains only private fields and
-should only be accessed via the <tt>pango_ot_info_*</tt> functions
-which are documented below. To obtain a PangoOTInfo,
-use pango_ot_info_new().
-</p></div><hr><div class="refsect2"><h3><a name="PangoOTRuleset"></a>struct PangoOTRuleset</h3><pre class="programlisting">struct PangoOTRuleset;</pre><p>
-The PangoOTRuleSet structure holds a
+should only be accessed via the <tt class="function">pango_ot_info_*</tt> functions
+which are documented below. To obtain a <span class="structname">PangoOTInfo</span>,
+use <tt class="function">pango_ot_info_new()</tt>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954156"></a><h3><a name="PangoOTBuffer"></a>struct PangoOTBuffer</h3><a class="indexterm" name="id2954168"></a><pre class="programlisting">struct PangoOTBuffer;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954182"></a><h3><a name="PangoOTGlyph"></a>struct PangoOTGlyph</h3><a class="indexterm" name="id2954193"></a><pre class="programlisting">struct PangoOTGlyph {
+
+  guint    glyph;
+  guint    properties;
+  guint    cluster;
+  gushort  component;
+  gushort  ligID;
+  gushort  property_cache;    /* Internal */
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954211"></a><h3><a name="PangoOTRuleset"></a>struct PangoOTRuleset</h3><a class="indexterm" name="id2954223"></a><pre class="programlisting">struct PangoOTRuleset;</pre><p>
+The <span class="structname">PangoOTRuleSet</span> structure holds a
 set of features selected from the tables in an OpenType font.
 (A feature is an operation such as adjusting glyph positioning
 that should be applied to a text feature such as a certain
-type of accent.) A PangoOTRuleSet
-is created with <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-new">pango_ot_ruleset_new</a>(), features are addded
-to it with <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-add-feature">pango_ot_ruleset_add_feature</a>(), then it is
-applied to a <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a> with <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-shape">pango_ot_ruleset_shape</a>().
-</p></div><hr><div class="refsect2"><h3><a name="PangoOTTableType"></a>enum PangoOTTableType</h3><pre class="programlisting">typedef enum 
+type of accent.) A <span class="structname">PangoOTRuleSet</span>
+is created with <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-new"><tt class="function">pango_ot_ruleset_new()</tt></a>, features are addded
+to it with <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-add-feature"><tt class="function">pango_ot_ruleset_add_feature()</tt></a>, then it is
+applied to a <a href="pango-Glyph-Storage.html#PangoGlyphString"><span class="type">PangoGlyphString</span></a> with <tt class="function">pango_ot_ruleset_shape()</tt>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954293"></a><h3><a name="PangoOTTableType"></a>enum PangoOTTableType</h3><a class="indexterm" name="id2954304"></a><pre class="programlisting">typedef enum 
 {
   PANGO_OT_TABLE_GSUB,
   PANGO_OT_TABLE_GPOS
 } PangoOTTableType;
 </pre><p>
-The PangoOTTableType enumeration values are used to
+The <span class="type">PangoOTTableType</span> enumeration values are used to
 identify the various OpenType tables in the
-<tt>pango_ot_info_*</tt> functions.
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><tt>PANGO_OT_TABLE_GSUB</tt></span></td><td>The GSUB table.
-</td></tr><tr><td><span class="term"><tt>PANGO_OT_TABLE_GPOS</tt></span></td><td>The GPOS table.
+<tt class="function">pango_ot_info_*</tt> functions.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">PANGO_OT_TABLE_GSUB</tt></span></td><td>The GSUB table.
+</td></tr><tr><td><span class="term"><tt class="literal">PANGO_OT_TABLE_GPOS</tt></span></td><td>The GPOS table.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-get"></a>pango_ot_info_get ()</h3><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>* pango_ot_info_get              (FT_Face face);</pre><p>
-Returns the <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> structure for the given FreeType font.</p><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2954366"></a><h3><a name="pango-ot-info-get"></a>pango_ot_info_get ()</h3><a class="indexterm" name="id2954377"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>* pango_ot_info_get              (FT_Face face);</pre><p>
+Returns the <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a> structure for the given FreeType font.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>face</tt></i> :</span></td><td> a FT_Face.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> for <i><tt>face</tt></i>. This object will
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>face</tt></i> :</span></td><td> a <span class="type">FT_Face</span>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a> for <i class="parameter"><tt>face</tt></i>. This object will
   have the same lifetime as FT_Face.
 </td></tr></tbody></table></div><p>Since  1.2
-</p></div><hr><div class="refsect2"><h3><a name="pango-ot-info-find-script"></a>pango_ot_info_find_script ()</h3><pre class="programlisting"><a
+</p></div><hr><div class="refsect2" lang="en"><a name="id2954470"></a><h3><a name="pango-ot-info-find-script"></a>pango_ot_info_find_script ()</h3><a class="indexterm" name="id2954482"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>    pango_ot_info_find_script       (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
@@ -157,12 +197,12 @@ href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *script_index);</pre><p>
 Finds the index of a script.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
-</td></tr><tr><td><span class="term"><i><tt>script_tag</tt></i> :</span></td><td> the tag of the script to find.
-</td></tr><tr><td><span class="term"><i><tt>script_index</tt></i> :</span></td><td> location to store the index of the script, or <tt>NULL</tt>.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt>TRUE</tt> if the script was found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-find-language"></a>pango_ot_info_find_language ()</h3><pre class="programlisting"><a
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_tag</tt></i> :</span></td><td> the tag of the script to find.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_index</tt></i> :</span></td><td> location to store the index of the script, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the script was found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2954628"></a><h3><a name="pango-ot-info-find-language"></a>pango_ot_info_find_language ()</h3><a class="indexterm" name="id2954640"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>    pango_ot_info_find_language     (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
@@ -178,15 +218,15 @@ href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *required_feature_index);</pre><p>
 Finds the index of a language and its required feature index.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
-</td></tr><tr><td><span class="term"><i><tt>script_index</tt></i> :</span></td><td> the index of the script whose languages are searched.
-</td></tr><tr><td><span class="term"><i><tt>language_tag</tt></i> :</span></td><td> the tag of the language to find.
-</td></tr><tr><td><span class="term"><i><tt>language_index</tt></i> :</span></td><td> location to store the index of the language, or <tt>NULL</tt>.
-</td></tr><tr><td><span class="term"><i><tt>required_feature_index</tt></i> :</span></td><td> location to store the required feature index of 
-   the language, or <tt>NULL</tt>.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt>TRUE</tt> if the language was found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-find-feature"></a>pango_ot_info_find_feature ()</h3><pre class="programlisting"><a
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_index</tt></i> :</span></td><td> the index of the script whose languages are searched.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>language_tag</tt></i> :</span></td><td> the tag of the language to find.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>language_index</tt></i> :</span></td><td> location to store the index of the language, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>required_feature_index</tt></i> :</span></td><td> location to store the required feature index of 
+   the language, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the language was found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2954838"></a><h3><a name="pango-ot-info-find-feature"></a>pango_ot_info_find_feature ()</h3><a class="indexterm" name="id2954850"></a><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"
 >gboolean</a>    pango_ot_info_find_feature      (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
@@ -202,23 +242,23 @@ href="../glib/glib-Basic-Types.html#guint"
 >guint</a> *feature_index);</pre><p>
 Finds the index of a feature.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
-</td></tr><tr><td><span class="term"><i><tt>feature_tag</tt></i> :</span></td><td> the tag of the feature to find.
-</td></tr><tr><td><span class="term"><i><tt>script_index</tt></i> :</span></td><td> the index of the script.
-</td></tr><tr><td><span class="term"><i><tt>language_index</tt></i> :</span></td><td> the index of the language whose features are searched,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>feature_tag</tt></i> :</span></td><td> the tag of the feature to find.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_index</tt></i> :</span></td><td> the index of the script.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>language_index</tt></i> :</span></td><td> the index of the language whose features are searched,
     or 0xffff to use the default language of the script.
-</td></tr><tr><td><span class="term"><i><tt>feature_index</tt></i> :</span></td><td> location to store the index of the feature, or <tt>NULL</tt>. 
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt>TRUE</tt> if the feature was found.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-list-scripts"></a>pango_ot_info_list_scripts ()</h3><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_scripts      (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>feature_index</tt></i> :</span></td><td> location to store the index of the feature, or <tt class="literal">NULL</tt>. 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the feature was found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955042"></a><h3><a name="pango-ot-info-list-scripts"></a>pango_ot_info_list_scripts ()</h3><a class="indexterm" name="id2955054"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_scripts      (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type);</pre><p>
 Obtains the list of available scripts.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly-allocated array containing the tags of the
   available scripts.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-list-languages"></a>pango_ot_info_list_languages ()</h3><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_languages    (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955145"></a><h3><a name="pango-ot-info-list-languages"></a>pango_ot_info_list_languages ()</h3><a class="indexterm" name="id2955157"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_languages    (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -226,13 +266,13 @@ href="../glib/glib-Basic-Types.html#guint"
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a> language_tag);</pre><p>
 Obtains the list of available languages for a given script.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
-</td></tr><tr><td><span class="term"><i><tt>script_index</tt></i> :</span></td><td> the index of the script to list languages for.
-</td></tr><tr><td><span class="term"><i><tt>language_tag</tt></i> :</span></td><td> unused parameter.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_index</tt></i> :</span></td><td> the index of the script to list languages for.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>language_tag</tt></i> :</span></td><td> unused parameter.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly-allocated array containing the tags of the
   available languages.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-info-list-features"></a>pango_ot_info_list_features ()</h3><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_features     (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955293"></a><h3><a name="pango-ot-info-list-features"></a>pango_ot_info_list_features ()</h3><a class="indexterm" name="id2955305"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a>* pango_ot_info_list_features     (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTag">PangoOTTag</a> tag,
                                              <a
@@ -243,20 +283,92 @@ href="../glib/glib-Basic-Types.html#guint"
 >guint</a> language_index);</pre><p>
 Obtains the list of features for the given language of the given script.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
-</td></tr><tr><td><span class="term"><i><tt>tag</tt></i> :</span></td><td> unused parameter.
-</td></tr><tr><td><span class="term"><i><tt>script_index</tt></i> :</span></td><td> the index of the script to obtain information about. 
-</td></tr><tr><td><span class="term"><i><tt>language_index</tt></i> :</span></td><td> the indes of the language to list features for, or
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to obtain information about.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>tag</tt></i> :</span></td><td> unused parameter.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>script_index</tt></i> :</span></td><td> the index of the script to obtain information about. 
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>language_index</tt></i> :</span></td><td> the indes of the language to list features for, or
     0xffff, to list features for the default language of the script.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly-allocated array containing the tags of the available
    features. 
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-ruleset-new"></a>pango_ot_ruleset_new ()</h3><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>* pango_ot_ruleset_new        (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info);</pre><p>
-Creates a new <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> for the given OpenType info.</p><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955464"></a><h3><a name="pango-ot-buffer-new"></a>pango_ot_buffer_new ()</h3><a class="indexterm" name="id2955476"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a>* pango_ot_buffer_new          (<a href="PangoFcFont.html" title="PangoFcFont">PangoFcFont</a> *font);</pre><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a>.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-ruleset-add-feature"></a>pango_ot_ruleset_add_feature ()</h3><pre class="programlisting">void        pango_ot_ruleset_add_feature    (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>font</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955532"></a><h3><a name="pango-ot-buffer-destroy"></a>pango_ot_buffer_destroy ()</h3><a class="indexterm" name="id2955543"></a><pre class="programlisting">void        pango_ot_buffer_destroy         (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955590"></a><h3><a name="pango-ot-buffer-clear"></a>pango_ot_buffer_clear ()</h3><a class="indexterm" name="id2955601"></a><pre class="programlisting">void        pango_ot_buffer_clear           (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955647"></a><h3><a name="pango-ot-buffer-add-glyph"></a>pango_ot_buffer_add_glyph ()</h3><a class="indexterm" name="id2955659"></a><pre class="programlisting">void        pango_ot_buffer_add_glyph       (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> glyph_index,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> properties,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> cluster);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>glyph_index</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>properties</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cluster</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955769"></a><h3><a name="pango-ot-buffer-set-rtl"></a>pango_ot_buffer_set_rtl ()</h3><a class="indexterm" name="id2955780"></a><pre class="programlisting">void        pango_ot_buffer_set_rtl         (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> rtl);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>rtl</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2955848"></a><h3><a name="pango-ot-buffer-set-zero-width-marks"></a>pango_ot_buffer_set_zero_width_marks ()</h3><a class="indexterm" name="id2955860"></a><pre class="programlisting">void        pango_ot_buffer_set_zero_width_marks
+                                            (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> zero_width_marks);</pre><p>
+Sets whether characters with a mark class should be forced to zero width.
+This setting is needed for proper positioning of Arabic accents,
+but will produce incorrect results with standard OpenType indic
+fonts.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer"><span class="type">PangoOTBuffer</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>zero_width_marks</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if characters with a mark class should
+ be forced to zero width.
+</td></tr></tbody></table></div><p>Since  1.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2955954"></a><h3><a name="pango-ot-buffer-get-glyphs"></a>pango_ot_buffer_get_glyphs ()</h3><a class="indexterm" name="id2955966"></a><pre class="programlisting">void        pango_ot_buffer_get_glyphs      (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTGlyph">PangoOTGlyph</a> **glyphs,
+                                             int *n_glyphs);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>glyphs</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>n_glyphs</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956054"></a><h3><a name="pango-ot-buffer-output"></a>pango_ot_buffer_output ()</h3><a class="indexterm" name="id2956066"></a><pre class="programlisting">void        pango_ot_buffer_output          (<a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer,
+                                             <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a> *glyphs);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>glyphs</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956134"></a><h3><a name="pango-ot-ruleset-new"></a>pango_ot_ruleset_new ()</h3><a class="indexterm" name="id2956145"></a><pre class="programlisting"><a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>* pango_ot_ruleset_new        (<a href="pango-OpenType-Font-Handling.html#PangoOTInfo">PangoOTInfo</a> *info);</pre><p>
+Creates a new <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset"><span class="type">PangoOTRuleset</span></a> for the given OpenType info.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>info</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTInfo"><span class="type">PangoOTInfo</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset"><span class="type">PangoOTRuleset</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956230"></a><h3><a name="pango-ot-ruleset-add-feature"></a>pango_ot_ruleset_add_feature ()</h3><a class="indexterm" name="id2956242"></a><pre class="programlisting">void        pango_ot_ruleset_add_feature    (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
                                              <a href="pango-OpenType-Font-Handling.html#PangoOTTableType">PangoOTTableType</a> table_type,
                                              <a
 href="../glib/glib-Basic-Types.html#guint"
@@ -264,25 +376,25 @@ href="../glib/glib-Basic-Types.html#guint"
                                              <a
 href="../glib/glib-Basic-Types.html#gulong"
 >gulong</a> property_bit);</pre><p>
-Adds a feature to the ruleset. See <a href="pango-OpenType-Font-Handling.html#pango-ot-ruleset-shape">pango_ot_ruleset_shape</a>()
-for an explanation of <i><tt>property_bit</tt></i>.</p><p>
+Adds a feature to the ruleset. See <tt class="function">pango_ot_ruleset_shape()</tt>
+for an explanation of <i class="parameter"><tt>property_bit</tt></i>.</p><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>ruleset</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>.
-</td></tr><tr><td><span class="term"><i><tt>table_type</tt></i> :</span></td><td> the table type to add a feature to.
-</td></tr><tr><td><span class="term"><i><tt>feature_index</tt></i> :</span></td><td> the index of the feature to add.
-</td></tr><tr><td><span class="term"><i><tt>property_bit</tt></i> :</span></td><td> the property bit to use for this feature. 
-</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="pango-ot-ruleset-shape"></a>pango_ot_ruleset_shape ()</h3><pre class="programlisting">void        pango_ot_ruleset_shape          (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
-                                             <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a> *glyphs,
-                                             <a
-href="../glib/glib-Basic-Types.html#gulong"
->gulong</a> *properties);</pre><p>
-Shapes a string of glyphs with the given properties according to <i><tt>ruleset</tt></i>.</p><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ruleset</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset"><span class="type">PangoOTRuleset</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>table_type</tt></i> :</span></td><td> the table type to add a feature to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>feature_index</tt></i> :</span></td><td> the index of the feature to add.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>property_bit</tt></i> :</span></td><td> the property bit to use for this feature. 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956385"></a><h3><a name="pango-ot-ruleset-substitute"></a>pango_ot_ruleset_substitute ()</h3><a class="indexterm" name="id2956397"></a><pre class="programlisting">void        pango_ot_ruleset_substitute     (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);</pre><p>
 
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>ruleset</tt></i> :</span></td><td> a <a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a>.
-</td></tr><tr><td><span class="term"><i><tt>glyphs</tt></i> :</span></td><td> a pointer to a <a href="pango-Glyph-Storage.html#PangoGlyphString">PangoGlyphString</a>.
-</td></tr><tr><td><span class="term"><i><tt>properties</tt></i> :</span></td><td> an array containing one <a
-href="../glib/glib-Basic-Types.html#gulong"
->gulong</a> bitfield for each glyph,
-  which gives the glyph's properties: If a certain bit is set for a glyph, 
-  the feature which has the same bit set in its property value is applied.
-</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="lowlevel.html"><b>&lt;&lt; Low Level Functionality</b></a></td><td align="right"><a accesskey="n" href="pango-Coverage-Maps.html"><b>Coverage Maps &gt;&gt;</b></a></td></tr></table></body></html>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ruleset</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956464"></a><h3><a name="pango-ot-ruleset-position"></a>pango_ot_ruleset_position ()</h3><a class="indexterm" name="id2956476"></a><pre class="programlisting">void        pango_ot_ruleset_position       (<a href="pango-OpenType-Font-Handling.html#PangoOTRuleset">PangoOTRuleset</a> *ruleset,
+                                             <a href="pango-OpenType-Font-Handling.html#PangoOTBuffer">PangoOTBuffer</a> *buffer);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ruleset</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="PangoFcDecoder.html"><b>&lt;&lt; PangoFcDecoder</b></a></td><td align="right"><a accesskey="n" href="pango-Coverage-Maps.html"><b>Coverage Maps &gt;&gt;</b></a></td></tr></table></body></html>

@@ -17,6 +17,8 @@
 
 typedef     <link linkend="PangoOTTag">PangoOTTag</link>;
 struct      <link linkend="PangoOTInfo">PangoOTInfo</link>;
+struct      <link linkend="PangoOTBuffer">PangoOTBuffer</link>;
+struct      <link linkend="PangoOTGlyph">PangoOTGlyph</link>;
 struct      <link linkend="PangoOTRuleset">PangoOTRuleset</link>;
 enum        <link linkend="PangoOTTableType">PangoOTTableType</link>;
 <link linkend="PangoOTInfo">PangoOTInfo</link>* <link linkend="pango-ot-info-get">pango_ot_info_get</link>              (<link linkend="FT-Face">FT_Face</link> face);
@@ -47,16 +49,36 @@ enum        <link linkend="PangoOTTableType">PangoOTTableType</link>;
                                              <link linkend="PangoOTTag">PangoOTTag</link> tag,
                                              <link linkend="guint">guint</link> script_index,
                                              <link linkend="guint">guint</link> language_index);
+<link linkend="PangoOTBuffer">PangoOTBuffer</link>* <link linkend="pango-ot-buffer-new">pango_ot_buffer_new</link>          (<link linkend="PangoFcFont">PangoFcFont</link> *font);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-destroy">pango_ot_buffer_destroy</link>         (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-clear">pango_ot_buffer_clear</link>           (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-add-glyph">pango_ot_buffer_add_glyph</link>       (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="guint">guint</link> glyph_index,
+                                             <link linkend="guint">guint</link> properties,
+                                             <link linkend="guint">guint</link> cluster);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-set-rtl">pango_ot_buffer_set_rtl</link>         (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="gboolean">gboolean</link> rtl);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-set-zero-width-marks">pango_ot_buffer_set_zero_width_marks</link>
+                                            (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="gboolean">gboolean</link> zero_width_marks);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-get-glyphs">pango_ot_buffer_get_glyphs</link>      (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="PangoOTGlyph">PangoOTGlyph</link> **glyphs,
+                                             <link linkend="int">int</link> *n_glyphs);
+<link linkend="void">void</link>        <link linkend="pango-ot-buffer-output">pango_ot_buffer_output</link>          (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);
 <link linkend="PangoOTRuleset">PangoOTRuleset</link>* <link linkend="pango-ot-ruleset-new">pango_ot_ruleset_new</link>        (<link linkend="PangoOTInfo">PangoOTInfo</link> *info);
-void        <link linkend="pango-ot-ruleset-add-feature">pango_ot_ruleset_add_feature</link>    (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+<link linkend="void">void</link>        <link linkend="pango-ot-ruleset-add-feature">pango_ot_ruleset_add_feature</link>    (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="guint">guint</link> feature_index,
                                              <link linkend="gulong">gulong</link> property_bit);
-void        <link linkend="pango-ot-ruleset-shape">pango_ot_ruleset_shape</link>          (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
-                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
-                                             <link linkend="gulong">gulong</link> *properties);
+<link linkend="void">void</link>        <link linkend="pango-ot-ruleset-substitute">pango_ot_ruleset_substitute</link>     (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+                                             <link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);
+<link linkend="void">void</link>        <link linkend="pango-ot-ruleset-position">pango_ot_ruleset_position</link>       (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+                                             <link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -75,40 +97,61 @@ void        <link linkend="pango-ot-ruleset-shape">pango_ot_ruleset_shape</link>
 <title>Details</title>
 <refsect2>
 <title><anchor id="PangoOTTag"/>PangoOTTag</title>
-<programlisting>typedef guint32  PangoOTTag;
+<indexterm><primary>PangoOTTag</primary></indexterm><programlisting>typedef guint32  PangoOTTag;
 </programlisting>
 <para>
 The <type>PangoOTTag</type> typedef is used to represent TrueType and OpenType
-four letter tags inside Pango. Use the <function><link linkend="FT-MAKE-TAG-CAPS">FT_MAKE_TAG</link>()</function> macro
+four letter tags inside Pango. Use the <function><link linkend="FT-MAKE-TAG-CAPS"><function>FT_MAKE_TAG()</function></link></function> macro
 defined in the FreeType2 header <filename>freetype/freetype.h</filename> to 
 create <type>PangoOTTag</type>s manually.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoOTInfo"/>struct PangoOTInfo</title>
-<programlisting>struct PangoOTInfo;</programlisting>
+<indexterm><primary>PangoOTInfo</primary></indexterm><programlisting>struct PangoOTInfo;</programlisting>
 <para>
 The <structname>PangoOTInfo</structname> struct contains the various 
 tables associated with an OpenType font. It contains only private fields and
 should only be accessed via the <function>pango_ot_info_*</function> functions
 which are documented below. To obtain a <structname>PangoOTInfo</structname>,
-use <link linkend="pango-ot-info-new">pango_ot_info_new</link>().
+use <link linkend="pango-ot-info-new"><function>pango_ot_info_new()</function></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="PangoOTBuffer"/>struct PangoOTBuffer</title>
+<indexterm><primary>PangoOTBuffer</primary></indexterm><programlisting>struct PangoOTBuffer;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="PangoOTGlyph"/>struct PangoOTGlyph</title>
+<indexterm><primary>PangoOTGlyph</primary></indexterm><programlisting>struct PangoOTGlyph {
+
+  guint    glyph;
+  guint    properties;
+  guint    cluster;
+  gushort  component;
+  gushort  ligID;
+  gushort  property_cache;    /* Internal */
+};
+</programlisting>
+<para>
+
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoOTRuleset"/>struct PangoOTRuleset</title>
-<programlisting>struct PangoOTRuleset;</programlisting>
+<indexterm><primary>PangoOTRuleset</primary></indexterm><programlisting>struct PangoOTRuleset;</programlisting>
 <para>
 The <structname>PangoOTRuleSet</structname> structure holds a
 set of features selected from the tables in an OpenType font.
 (A feature is an operation such as adjusting glyph positioning
 that should be applied to a text feature such as a certain
 type of accent.) A <structname>PangoOTRuleSet</structname>
-is created with <link linkend="pango-ot-ruleset-new">pango_ot_ruleset_new</link>(), features are addded
-to it with <link linkend="pango-ot-ruleset-add-feature">pango_ot_ruleset_add_feature</link>(), then it is
-applied to a <link linkend="PangoGlyphString">PangoGlyphString</link> with <link linkend="pango-ot-ruleset-shape">pango_ot_ruleset_shape</link>().
+is created with <link linkend="pango-ot-ruleset-new"><function>pango_ot_ruleset_new()</function></link>, features are addded
+to it with <link linkend="pango-ot-ruleset-add-feature"><function>pango_ot_ruleset_add_feature()</function></link>, then it is
+applied to a <link linkend="PangoGlyphString"><type>PangoGlyphString</type></link> with <link linkend="pango-ot-ruleset-shape"><function>pango_ot_ruleset_shape()</function></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="PangoOTTableType"/>enum PangoOTTableType</title>
-<programlisting>typedef enum 
+<indexterm><primary>PangoOTTableType</primary></indexterm><programlisting>typedef enum 
 {
   PANGO_OT_TABLE_GSUB,
   PANGO_OT_TABLE_GPOS
@@ -133,23 +176,23 @@ identify the various OpenType tables in the
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-get"/>pango_ot_info_get ()</title>
-<programlisting><link linkend="PangoOTInfo">PangoOTInfo</link>* pango_ot_info_get              (<link linkend="FT-Face">FT_Face</link> face);</programlisting>
+<indexterm><primary>pango_ot_info_get</primary></indexterm><programlisting><link linkend="PangoOTInfo">PangoOTInfo</link>* pango_ot_info_get              (<link linkend="FT-Face">FT_Face</link> face);</programlisting>
 <para>
-Returns the <link linkend="PangoOTInfo">PangoOTInfo</link> structure for the given FreeType font.</para>
+Returns the <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link> structure for the given FreeType font.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="FT-Face">FT_Face</link>.
+<listitem><simpara> a <link linkend="FT-Face"><type>FT_Face</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="PangoOTInfo">PangoOTInfo</link> for <parameter>face</parameter>. This object will
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link> for <parameter>face</parameter>. This object will
   have the same lifetime as FT_Face.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  1.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-find-script"/>pango_ot_info_find_script ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_script       (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_find_script</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_script       (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="PangoOTTag">PangoOTTag</link> script_tag,
                                              <link linkend="guint">guint</link> *script_index);</programlisting>
@@ -159,7 +202,7 @@ Finds the index of a script.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -175,7 +218,7 @@ Finds the index of a script.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-find-language"/>pango_ot_info_find_language ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_language     (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_find_language</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_language     (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="guint">guint</link> script_index,
                                              <link linkend="PangoOTTag">PangoOTTag</link> language_tag,
@@ -187,7 +230,7 @@ Finds the index of a language and its required feature index.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -210,7 +253,7 @@ Finds the index of a language and its required feature index.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-find-feature"/>pango_ot_info_find_feature ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_feature      (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_find_feature</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    pango_ot_info_find_feature      (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="PangoOTTag">PangoOTTag</link> feature_tag,
                                              <link linkend="guint">guint</link> script_index,
@@ -222,7 +265,7 @@ Finds the index of a feature.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -245,7 +288,7 @@ Finds the index of a feature.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-list-scripts"/>pango_ot_info_list_scripts ()</title>
-<programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_scripts      (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_list_scripts</primary></indexterm><programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_scripts      (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type);</programlisting>
 <para>
 Obtains the list of available scripts.</para>
@@ -253,7 +296,7 @@ Obtains the list of available scripts.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -264,7 +307,7 @@ Obtains the list of available scripts.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-list-languages"/>pango_ot_info_list_languages ()</title>
-<programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_languages    (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_list_languages</primary></indexterm><programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_languages    (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="guint">guint</link> script_index,
                                              <link linkend="PangoOTTag">PangoOTTag</link> language_tag);</programlisting>
@@ -274,7 +317,7 @@ Obtains the list of available languages for a given script.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -291,7 +334,7 @@ Obtains the list of available languages for a given script.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-info-list-features"/>pango_ot_info_list_features ()</title>
-<programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_features     (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
+<indexterm><primary>pango_ot_info_list_features</primary></indexterm><programlisting><link linkend="PangoOTTag">PangoOTTag</link>* pango_ot_info_list_features     (<link linkend="PangoOTInfo">PangoOTInfo</link> *info,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="PangoOTTag">PangoOTTag</link> tag,
                                              <link linkend="guint">guint</link> script_index,
@@ -302,7 +345,7 @@ Obtains the list of features for the given language of the given script.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to obtain information about.
@@ -322,33 +365,169 @@ Obtains the list of features for the given language of the given script.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-ot-ruleset-new"/>pango_ot_ruleset_new ()</title>
-<programlisting><link linkend="PangoOTRuleset">PangoOTRuleset</link>* pango_ot_ruleset_new        (<link linkend="PangoOTInfo">PangoOTInfo</link> *info);</programlisting>
+<title><anchor id="pango-ot-buffer-new"/>pango_ot_buffer_new ()</title>
+<indexterm><primary>pango_ot_buffer_new</primary></indexterm><programlisting><link linkend="PangoOTBuffer">PangoOTBuffer</link>* pango_ot_buffer_new          (<link linkend="PangoFcFont">PangoFcFont</link> *font);</programlisting>
 <para>
-Creates a new <link linkend="PangoOTRuleset">PangoOTRuleset</link> for the given OpenType info.</para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-destroy"/>pango_ot_buffer_destroy ()</title>
+<indexterm><primary>pango_ot_buffer_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_destroy         (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-clear"/>pango_ot_buffer_clear ()</title>
+<indexterm><primary>pango_ot_buffer_clear</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_clear           (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-add-glyph"/>pango_ot_buffer_add_glyph ()</title>
+<indexterm><primary>pango_ot_buffer_add_glyph</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_add_glyph       (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="guint">guint</link> glyph_index,
+                                             <link linkend="guint">guint</link> properties,
+                                             <link linkend="guint">guint</link> cluster);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyph_index</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>properties</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cluster</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-set-rtl"/>pango_ot_buffer_set_rtl ()</title>
+<indexterm><primary>pango_ot_buffer_set_rtl</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_set_rtl         (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="gboolean">gboolean</link> rtl);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>rtl</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-set-zero-width-marks"/>pango_ot_buffer_set_zero_width_marks ()</title>
+<indexterm><primary>pango_ot_buffer_set_zero_width_marks</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_set_zero_width_marks
+                                            (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="gboolean">gboolean</link> zero_width_marks);</programlisting>
+<para>
+Sets whether characters with a mark class should be forced to zero width.
+This setting is needed for proper positioning of Arabic accents,
+but will produce incorrect results with standard OpenType indic
+fonts.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="PangoOTBuffer"><type>PangoOTBuffer</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zero_width_marks</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if characters with a mark class should
+ be forced to zero width.
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  1.6
+</para></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-get-glyphs"/>pango_ot_buffer_get_glyphs ()</title>
+<indexterm><primary>pango_ot_buffer_get_glyphs</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_get_glyphs      (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="PangoOTGlyph">PangoOTGlyph</link> **glyphs,
+                                             <link linkend="int">int</link> *n_glyphs);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-buffer-output"/>pango_ot_buffer_output ()</title>
+<indexterm><primary>pango_ot_buffer_output</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_buffer_output          (<link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer,
+                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-ruleset-new"/>pango_ot_ruleset_new ()</title>
+<indexterm><primary>pango_ot_ruleset_new</primary></indexterm><programlisting><link linkend="PangoOTRuleset">PangoOTRuleset</link>* pango_ot_ruleset_new        (<link linkend="PangoOTInfo">PangoOTInfo</link> *info);</programlisting>
+<para>
+Creates a new <link linkend="PangoOTRuleset"><type>PangoOTRuleset</type></link> for the given OpenType info.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>info</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTInfo">PangoOTInfo</link>.
+<listitem><simpara> a <link linkend="PangoOTInfo"><type>PangoOTInfo</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="PangoOTRuleset">PangoOTRuleset</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="PangoOTRuleset"><type>PangoOTRuleset</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="pango-ot-ruleset-add-feature"/>pango_ot_ruleset_add_feature ()</title>
-<programlisting>void        pango_ot_ruleset_add_feature    (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+<indexterm><primary>pango_ot_ruleset_add_feature</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_ruleset_add_feature    (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
                                              <link linkend="PangoOTTableType">PangoOTTableType</link> table_type,
                                              <link linkend="guint">guint</link> feature_index,
                                              <link linkend="gulong">gulong</link> property_bit);</programlisting>
 <para>
-Adds a feature to the ruleset. See <link linkend="pango-ot-ruleset-shape">pango_ot_ruleset_shape</link>()
+Adds a feature to the ruleset. See <link linkend="pango-ot-ruleset-shape"><function>pango_ot_ruleset_shape()</function></link>
 for an explanation of <parameter>property_bit</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>ruleset</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTRuleset">PangoOTRuleset</link>.
+<listitem><simpara> a <link linkend="PangoOTRuleset"><type>PangoOTRuleset</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>table_type</parameter>&nbsp;:</term>
 <listitem><simpara> the table type to add a feature to.
@@ -361,25 +540,35 @@ for an explanation of <parameter>property_bit</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="pango-ot-ruleset-shape"/>pango_ot_ruleset_shape ()</title>
-<programlisting>void        pango_ot_ruleset_shape          (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
-                                             <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs,
-                                             <link linkend="gulong">gulong</link> *properties);</programlisting>
-<para>
-Shapes a string of glyphs with the given properties according to <parameter>ruleset</parameter>.</para>
+<title><anchor id="pango-ot-ruleset-substitute"/>pango_ot_ruleset_substitute ()</title>
+<indexterm><primary>pango_ot_ruleset_substitute</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_ruleset_substitute     (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+                                             <link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);</programlisting>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>ruleset</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoOTRuleset">PangoOTRuleset</link>.
+<listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyphs</parameter>&nbsp;:</term>
-<listitem><simpara> a pointer to a <link linkend="PangoGlyphString">PangoGlyphString</link>.
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>properties</parameter>&nbsp;:</term>
-<listitem><simpara> an array containing one <link linkend="gulong">gulong</link> bitfield for each glyph,
-  which gives the glyph's properties: If a certain bit is set for a glyph, 
-  the feature which has the same bit set in its property value is applied.
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="pango-ot-ruleset-position"/>pango_ot_ruleset_position ()</title>
+<indexterm><primary>pango_ot_ruleset_position</primary></indexterm><programlisting><link linkend="void">void</link>        pango_ot_ruleset_position       (<link linkend="PangoOTRuleset">PangoOTRuleset</link> *ruleset,
+                                             <link linkend="PangoOTBuffer">PangoOTBuffer</link> *buffer);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ruleset</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -9,9 +9,9 @@
 #ifndef __INDIC_OT_H__
 #define __INDIC_OT_H__
 
-#include <freetype/freetype.h>
 #include <pango/pango-glyph.h>
 #include <pango/pango-types.h>
+#include "mprefixups.h"
 
 G_BEGIN_DECLS
 
@@ -58,7 +58,7 @@ typedef enum
 {
   CF_CLASS_MASK   = 0x0000FFFF,
 
-  CF_CONSONANT    = 0x80000000,
+  CF_CONSONANT    = (int)0x80000000,
 
   CF_REPH         = 0x40000000,
   CF_VATTU        = 0x20000000,
@@ -85,7 +85,7 @@ typedef glong IndicOTCharClass;
  */
 typedef enum
 {
-  SF_MATRAS_AFTER_BASE    = 0x80000000,
+  SF_MATRAS_AFTER_BASE    = (int)0x80000000,
   SF_REPH_AFTER_BELOW     = 0x40000000,
   SF_EYELASH_RA           = 0x20000000,
   SF_MPRE_FIXUP           = 0x10000000,
@@ -114,7 +114,8 @@ enum indic_glyph_feature_
   blwm = 0x1000,
   abvm = 0x2000,
   dist = 0x4000,
-  junk = 0x8000
+  junk = 0x8000,
+  init = 0x10000
 };
 
 /*
@@ -130,32 +131,12 @@ enum indic_glyph_feature_
  */
 enum indic_glyph_property_
 {
-  rphf_p = (junk | dist),
-  blwf_p = (junk | dist | rphf),
-  half_p = (junk | dist | rphf | blwf),
-  nukt_p = (junk | dist | rphf | blwf | half)
+  rphf_p = (junk | dist | init),
+  blwf_p = (junk | dist | init | rphf),
+  half_p = (junk | dist | init | rphf | blwf),
+  pstf_p = (junk | dist | init | rphf | blwf | half),
+  nukt_p = (junk | dist | init | rphf | blwf | half | pstf)
 };
-
-/*
- * Per-script character ranges
- */
-#define SCRIPT_RANGE_deva 0x0900, 0x0970
-
-#define SCRIPT_RANGE_beng 0x0980, 0x09FA
-
-#define SCRIPT_RANGE_guru 0x0A00, 0x0A74
-
-#define SCRIPT_RANGE_gujr 0x0A80, 0x0AEF
-
-#define SCRIPT_RANGE_orya 0x0B00, 0x0B70
-
-#define SCRIPT_RANGE_taml 0x0B80, 0x0BF2
-
-#define SCRIPT_RANGE_telu 0x0C00, 0x0C6F
-
-#define SCRIPT_RANGE_knda 0x0C80, 0x0CEF
-
-#define SCRIPT_RANGE_mlym 0x0D00, 0x0D6F
 
 /*
  * Macros to test the charClass flags for various things.
@@ -241,7 +222,7 @@ gboolean indic_ot_has_below_base_form(const IndicOTClassTable *class_table, guni
 
 glong indic_ot_find_syllable(const IndicOTClassTable *class_table, const gunichar *chars, glong prev, glong char_count);
 
-glong indic_ot_reorder(const gunichar *chars, const glong *utf8_offsets, glong char_count, const IndicOTClassTable *class_table, gunichar *out_chars, glong *char_indices, gulong *char_tags);
+glong indic_ot_reorder(const gunichar *chars, const glong *utf8_offsets, glong char_count, const IndicOTClassTable *class_table, gunichar *out_chars, glong *char_indices, gulong *char_tags, MPreFixups **outMPreFixups);
 
 #endif /* PANGO_ENABLE_ENGINE */
 
