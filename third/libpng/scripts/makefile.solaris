@@ -65,7 +65,7 @@ OBJSDLL = $(OBJS:.o=.pic.o)
 .c.pic.o:
 	$(CC) -c $(CFLAGS) -fPIC -o $@ $*.c
 
-all: libpng.a $(LIBNAME).so pngtest libpng.pc libpng-config
+all: libpng.a $(LIBNAME).so libpng.so.3.$(PNGMIN) pngtest libpng.pc libpng-config
 
 libpng.a: $(OBJS)
 	ar rc $@ $(OBJS)
@@ -105,11 +105,11 @@ $(LIBNAME).so.$(PNGVER): $(OBJSDLL)
 	;; \
 	esac
 	$(LD) -G -h $(LIBNAME).so.$(PNGMAJ) \
-	 -o $(LIBNAME).so.$(PNGVER) $(OBJSDLL)
+	 -o $(LIBNAME).so.$(PNGVER) $(OBJSDLL) -lz -lm
 
 libpng.so.3.$(PNGMIN): $(OBJS)
 	$(LD) -G -h libpng.so.3 \
-	 -o libpng.so.3.$(PNGMIN) $(OBJSDLL)
+	 -o libpng.so.3.$(PNGMIN) $(OBJSDLL) -lz -lm
 
 pngtest: pngtest.o $(LIBNAME).so
 	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
