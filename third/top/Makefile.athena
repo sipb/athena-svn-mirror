@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.11 2001-09-04 12:38:45 ghudson Exp $
+# $Id: Makefile.athena,v 1.12 2002-07-19 23:42:56 zacheiss Exp $
 
 SHELL=/bin/sh
 
@@ -12,12 +12,10 @@ prepare:
 
 clean:
 	${MAKE} clean
-	rm -f top.sparcv7
 
 all:
 	case $$ATHENA_HOSTTYPE in \
 	sun4) \
-	    ${MAKE} all && mv top top.sparcv7 && ${MAKE} clean && \
 	    ${MAKE} all CDEFS="-xarch=v9 -O" \
 	    ;; \
 	*) \
@@ -28,18 +26,6 @@ all:
 check:
 
 install: always
-	 case $$ATHENA_HOSTTYPE in \
-	 sun4) \
-	     ${MAKE} install-man "DESTDIR=$$SRVD" && \
-	     mkdir -p $$SRVD/usr/athena/bin/sparcv7 && \
-	     mkdir -p $$SRVD/usr/athena/bin/sparcv9 && \
-	     ./install -o root -m 4755 -g other top.sparcv7 $$SRVD/usr/athena/bin/sparcv7/top && \
-	     ./install -o root -m 4755 -g other top $$SRVD/usr/athena/bin/sparcv9/top && \
-	     cp /usr/lib/isaexec $$SRVD/usr/athena/bin/top; \
-	     ;; \
-	 *) \
-	     ${MAKE} install "DESTDIR=$$SRVD"; \
-	     ;; \
-	 esac
+	${MAKE} install "DESTDIR=$$SRVD"; \
 
 always:
