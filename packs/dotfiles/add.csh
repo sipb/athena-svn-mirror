@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.14 1994-11-28 23:42:32 cfields Exp $
+# $Id: add.csh,v 1.14.1.1 1994-11-29 01:57:11 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -20,8 +20,8 @@
 # MANPATH search too
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
-              add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_print add_path add_arg add_i)
+              add_opts add_attach add_dirs add_bin add_bindir add_man \
+              add_mandir add_print add_path add_redir add_flags add_arg add_i)
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
@@ -31,41 +31,55 @@ set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockernam
 
 set add_opts = (!*)
 
-if ( $#add_opts == 0 ) set add_print
-
 while ( $#add_opts > 0 )
   set add_arg = $add_opts[1]
 
   switch ($add_arg)
 
     case -v:
+      set add_flags
       set add_verbose
       breaksw
 
     case -f:
+      set add_flags
       set add_front
       breaksw
 
     case -p:
+      set add_flags
       set add_print
       breaksw
 
     case -w:
+      set add_flags
       set add_warn
       breaksw
 
     case -e:
+      set add_flags
       set add_env
       breaksw
 
     case -a:
-      shift add_opts
-      if ( $#add_opts ) then
-        set add_attach = "$add_opts"
-        set add_opts=
+      set add_attach
+      while ( $#add_opts > 1 )
+        shift add_opts
+        if ( $add_opts[1] !~ >* ) then
+          set add_attach = ( $add_attach $add_opts[1] )
+        else
+          break
+        endif
+      end
+      breaksw
+
+    case >*:
+      if ( $#add_opts == 2 ) then
+        set add_redir = "$add_opts"
+        shift add_opts
+        echo $add_redir
       else
-        echo "add: options required after -a"
-        echo "$add_usage"
+        echo "add: bad redirect: $add_opts"
         goto finish
       endif
       breaksw
@@ -77,14 +91,28 @@ while ( $#add_opts > 0 )
         goto finish
       endif
 
-      if ( $#add_opts ) then
-        set add_attach = "$add_opts"
+      set add_attach
+      while ( $#add_opts > 0 )
+        if ( $add_opts[1] !~ >* ) then
+          set add_attach = ( $add_attach $add_opts[1] )
+          shift add_opts
+        else
+          break
+        endif
         set add_opts=
-      endif
+      end
+      breaksw
+
   endsw
   shift add_opts
 
 end
+
+      if ( ! $#add_opts ) then 
+        echo "add: options required after -a"
+        echo "$add_usage"
+        goto finish
+      else
 
 #
 # Try to make our environment sane.
