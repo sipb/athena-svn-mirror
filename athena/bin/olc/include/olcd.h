@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.36 1991-06-30 11:05:58 lwvanels Exp $
+ *	$Id: olcd.h,v 1.37 1991-09-22 12:10:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -392,7 +392,6 @@ ERRCODE olc_broadcast_message P((char *instance , char *message , char *code ));
 
 /* olcd.c */
 int main P((int argc , char **argv ));
-int punt P((int sig ));
 int authenticate P((REQUEST *request , unsigned long addr ));
 int get_kerberos_ticket P((void ));
 
