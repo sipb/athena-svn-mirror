@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.52 2001-05-15 23:11:55 ghudson Exp $
+# $Id: update_ws.sh,v 1.53 2001-05-16 15:37:44 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -251,7 +251,7 @@ sun4)
   rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
   usrsize=`df -k /usr | awk '{ x = $2; } END { print x; }'`
   if [ 44236 -gt "$rootsize" -o 138240 -gt "$usrsize" ]; then
-    echo "Your / or /usr partition is not big enough for Athena release 9.0
+    echo "Your / or /usr partition is not big enough for Athena release 9.0"
     echo "and higher.  You must reinstall to take this update."
     logger -t "$HOST" -p user.notice / or /usr too small to take update
     failupdate
