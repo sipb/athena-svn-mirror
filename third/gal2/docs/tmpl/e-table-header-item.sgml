@@ -1,0 +1,70 @@
+<!-- ##### SECTION Title ##### -->
+ETableHeaderItem
+
+<!-- ##### SECTION Short_Description ##### -->
+Canvas Item to display the ETable header.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+  The %ETableHeaderItem object is a %GnomeCanvasItem item that renders
+  an %ETableHeader model into a canvas.  This canvas item takes a
+  number of argument to configure the display.  
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+   %ETable, %ETableHeader, %ETableCol.
+</para>
+
+<!-- ##### SIGNAL ETableHeaderItem::button-pressed ##### -->
+<para>
+  Emmited when a button has been pressed in the header.  This will
+  pass the GdkEvent as the argument to the signal handler.
+</para>
+
+<para>
+@etableheaderitem: the object which received the signal.
+@arg1: The GdkEvent.
+</para>
+
+<!-- ##### ARG ETableHeaderItem:ETableHeader ##### -->
+<para>
+   Specifies the %ETableHeader model that this item is going to render
+   on the screen.  The ETableHeader contains the information of which
+   columns from the model are going to be displayed and in which
+   order.  It also contains details about the actual text displayed to
+   render the column names.
+</para>
+
+<!-- ##### ARG ETableHeaderItem:full_header ##### -->
+<para>
+   This is used to pass a collection of all the possible headers the
+   ETable will display.  This information is used during the
+   interactive configuration of the data to be displayed by the ETable
+   widget and to allow the user to drag and drop column names from the
+   field chooser into the table header.  This is of type %ETableHeader
+</para>
+
+<!-- ##### ARG ETableHeaderItem:dnd_code ##### -->
+<para>
+   String representing the dnd code for this ETable.
+</para>
+
+<!-- ##### ARG ETableHeaderItem:fontset ##### -->
+<para>
+   This specified the X font set to use to render the column title.
+   This is a string.
+</para>
+
+<!-- ##### ARG ETableHeaderItem:sort_info ##### -->
+<para>
+    An %ETableSortInfo object that is used to store the information
+    about sorting and grouping in the ETable.
+</para>
+
+<!-- ##### ARG ETableHeaderItem:table ##### -->
+<para>
+    This is a pointer to our parent %ETable object.  This is used
+    during by the interactive configuration process. 
+</para>
+

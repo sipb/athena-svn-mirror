@@ -1,0 +1,87 @@
+<!-- ##### SECTION Title ##### -->
+ETableGroupLeaf
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_GROUP_LEAF_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableGroupLeaf ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_group_leaf_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@full_header: 
+@header: 
+@model: 
+@sort_info: 
+@Returns: 
+
+
+<!-- ##### ARG ETableGroupLeaf:drawgrid ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:drawfocus ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:cursor_mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:length_threshold ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:table_selection_model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:minimum_width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupLeaf:frozen ##### -->
+<para>
+
+</para>
+

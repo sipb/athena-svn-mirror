@@ -1,0 +1,79 @@
+<refentry id="EVScrollbar" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>EVScrollbar</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EVScrollbar</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="EVScrollbar-struct">EVScrollbar</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-vscrollbar-new">e_vscrollbar_new</link>                (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkRange">GtkRange</link>
+               +----<link linkend="GtkScrollbar">GtkScrollbar</link>
+                     +----<link linkend="GtkVScrollbar">GtkVScrollbar</link>
+                           +----EVScrollbar
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EVScrollbar-struct">struct EVScrollbar</title>
+<programlisting>struct EVScrollbar;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-vscrollbar-new">e_vscrollbar_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_vscrollbar_new                (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>adjustment</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,94 @@
+<!-- ##### SECTION Title ##### -->
+ETreeSimple
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TREE_SIMPLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETreeSimple ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION ETreeSimpleIconAtFn ##### -->
+<para>
+
+</para>
+
+@etree: 
+@path: 
+@model_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION ETreeSimpleValueAtFn ##### -->
+<para>
+
+</para>
+
+@etree: 
+@path: 
+@col: 
+@model_data: 
+
+
+<!-- ##### USER_FUNCTION ETreeSimpleSetValueAtFn ##### -->
+<para>
+
+</para>
+
+@etree: 
+@path: 
+@col: 
+@val: 
+@model_data: 
+
+
+<!-- ##### USER_FUNCTION ETreeSimpleIsEditableFn ##### -->
+<para>
+
+</para>
+
+@etree: 
+@path: 
+@col: 
+@model_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_tree_simple_new ##### -->
+<para>
+
+</para>
+
+@col_count: 
+@duplicate_value: 
+@free_value: 
+@initialize_value: 
+@value_is_empty: 
+@value_to_string: 
+@icon_at: 
+@value_at: 
+@set_value_at: 
+@is_editable: 
+@model_data: 
+@Returns: 
+
+

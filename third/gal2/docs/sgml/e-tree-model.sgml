@@ -1,0 +1,1157 @@
+<refentry id="gal-e-tree-model" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-tree-model</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-tree-model</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TREE-MODEL-TYPE-CAPS">E_TREE_MODEL_TYPE</link>
+<link linkend="gint">gint</link>        (<link linkend="ETreePathCompareFunc">*ETreePathCompareFunc</link>)         (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path1,
+                                             <link linkend="ETreePath">ETreePath</link> *path2);
+<link linkend="gboolean">gboolean</link>    (<link linkend="ETreePathFunc">*ETreePathFunc</link>)                (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gpointer">gpointer</link> data);
+void        <link linkend="e-tree-model-construct">e_tree_model_construct</link>          (<link linkend="ETreeModel">ETreeModel</link> *etree);
+<link linkend="ETreeModel">ETreeModel</link>* <link linkend="e-tree-model-new">e_tree_model_new</link>                (void);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-get-root">e_tree_model_get_root</link>           (<link linkend="ETreeModel">ETreeModel</link> *etree);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-get-parent">e_tree_model_node_get_parent</link>    (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-get-first-child">e_tree_model_node_get_first_child</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-get-last-child">e_tree_model_node_get_last_child</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-get-next">e_tree_model_node_get_next</link>      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-get-prev">e_tree_model_node_get_prev</link>      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-insert">e_tree_model_node_insert</link>        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *parent,
+                                             int position,
+                                             <link linkend="gpointer">gpointer</link> node_data);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-insert-before">e_tree_model_node_insert_before</link> (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *parent,
+                                             <link linkend="ETreePath">ETreePath</link> *sibling,
+                                             <link linkend="gpointer">gpointer</link> node_data);
+<link linkend="gpointer">gpointer</link>    <link linkend="e-tree-model-node-remove">e_tree_model_node_remove</link>        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+void        <link linkend="e-tree-model-freeze">e_tree_model_freeze</link>             (<link linkend="ETreeModel">ETreeModel</link> *etree);
+void        <link linkend="e-tree-model-thaw">e_tree_model_thaw</link>               (<link linkend="ETreeModel">ETreeModel</link> *etree);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-node-is-root">e_tree_model_node_is_root</link>       (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-node-is-expandable">e_tree_model_node_is_expandable</link> (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-node-is-expanded">e_tree_model_node_is_expanded</link>   (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-node-is-visible">e_tree_model_node_is_visible</link>    (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+void        <link linkend="e-tree-model-set-expanded-default">e_tree_model_set_expanded_default</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="gboolean">gboolean</link> expanded);
+void        <link linkend="e-tree-model-node-set-expanded">e_tree_model_node_set_expanded</link>  (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gboolean">gboolean</link> expanded);
+void        <link linkend="e-tree-model-node-set-expanded-recurse">e_tree_model_node_set_expanded_recurse</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gboolean">gboolean</link> expanded);
+<link linkend="guint">guint</link>       <link linkend="e-tree-model-node-get-children">e_tree_model_node_get_children</link>  (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="ETreePath">ETreePath</link> ***paths);
+<link linkend="guint">guint</link>       <link linkend="e-tree-model-node-depth">e_tree_model_node_depth</link>         (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+<link linkend="guint">guint</link>       <link linkend="e-tree-model-node-num-visible-descendents">e_tree_model_node_num_visible_descendents</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node);
+<link linkend="gpointer">gpointer</link>    <link linkend="e-tree-model-node-get-data">e_tree_model_node_get_data</link>      (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node);
+void        <link linkend="e-tree-model-node-set-data">e_tree_model_node_set_data</link>      (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="gpointer">gpointer</link> node_data);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-at-row">e_tree_model_node_at_row</link>        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             int row);
+<link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="e-tree-model-icon-of-node">e_tree_model_icon_of_node</link>       (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+int         <link linkend="e-tree-model-row-of-node">e_tree_model_row_of_node</link>        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);
+void        <link linkend="e-tree-model-root-node-set-visible">e_tree_model_root_node_set_visible</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="gboolean">gboolean</link> visible);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-root-node-is-visible">e_tree_model_root_node_is_visible</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree);
+void        <link linkend="e-tree-model-node-set-compare-function">e_tree_model_node_set_compare_function</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="ETreePathCompareFunc">ETreePathCompareFunc</link> compare);
+void        <link linkend="e-tree-model-node-sort">e_tree_model_node_sort</link>          (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);
+void        <link linkend="e-tree-model-node-changed">e_tree_model_node_changed</link>       (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);
+void        <link linkend="e-tree-model-node-inserted">e_tree_model_node_inserted</link>      (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_node,
+                                             <link linkend="ETreePath">ETreePath</link> *inserted_node);
+void        <link linkend="e-tree-model-node-removed">e_tree_model_node_removed</link>       (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_node,
+                                             <link linkend="ETreePath">ETreePath</link> *removed_node);
+void        <link linkend="e-tree-model-node-collapsed">e_tree_model_node_collapsed</link>     (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);
+void        <link linkend="e-tree-model-node-expanded">e_tree_model_node_expanded</link>      (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="gboolean">gboolean</link> *allow_expand);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-save-expanded-state">e_tree_model_save_expanded_state</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             const char *filename);
+<link linkend="gboolean">gboolean</link>    <link linkend="e-tree-model-load-expanded-state">e_tree_model_load_expanded_state</link>
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             const char *filename);
+void        <link linkend="e-tree-model-node-set-save-id">e_tree_model_node_set_save_id</link>   (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             const char *id);
+<link linkend="ETreePath">ETreePath</link>*  <link linkend="e-tree-model-node-insert-id">e_tree_model_node_insert_id</link>     (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_path,
+                                             int position,
+                                             <link linkend="gpointer">gpointer</link> node_data,
+                                             const char *save_id);
+void        <link linkend="e-tree-model-node-traverse">e_tree_model_node_traverse</link>      (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="ETreePathFunc">ETreePathFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TREE-MODEL-TYPE-CAPS">E_TREE_MODEL_TYPE</title>
+<programlisting>#define E_TREE_MODEL_TYPE        (e_tree_model_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETreePathCompareFunc">ETreePathCompareFunc ()</title>
+<programlisting><link linkend="gint">gint</link>        (*ETreePathCompareFunc)         (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path1,
+                                             <link linkend="ETreePath">ETreePath</link> *path2);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path2</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ETreePathFunc">ETreePathFunc ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    (*ETreePathFunc)                (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-construct">e_tree_model_construct ()</title>
+<programlisting>void        e_tree_model_construct          (<link linkend="ETreeModel">ETreeModel</link> *etree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-new">e_tree_model_new ()</title>
+<programlisting><link linkend="ETreeModel">ETreeModel</link>* e_tree_model_new                (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-get-root">e_tree_model_get_root ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_get_root           (<link linkend="ETreeModel">ETreeModel</link> *etree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-parent">e_tree_model_node_get_parent ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_get_parent    (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-first-child">e_tree_model_node_get_first_child ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_get_first_child
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-last-child">e_tree_model_node_get_last_child ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_get_last_child
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-next">e_tree_model_node_get_next ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_get_next      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-prev">e_tree_model_node_get_prev ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_get_prev      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-insert">e_tree_model_node_insert ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_insert        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *parent,
+                                             int position,
+                                             <link linkend="gpointer">gpointer</link> node_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-insert-before">e_tree_model_node_insert_before ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_insert_before (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *parent,
+                                             <link linkend="ETreePath">ETreePath</link> *sibling,
+                                             <link linkend="gpointer">gpointer</link> node_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>sibling</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-remove">e_tree_model_node_remove ()</title>
+<programlisting><link linkend="gpointer">gpointer</link>    e_tree_model_node_remove        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-freeze">e_tree_model_freeze ()</title>
+<programlisting>void        e_tree_model_freeze             (<link linkend="ETreeModel">ETreeModel</link> *etree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-thaw">e_tree_model_thaw ()</title>
+<programlisting>void        e_tree_model_thaw               (<link linkend="ETreeModel">ETreeModel</link> *etree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-is-root">e_tree_model_node_is_root ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_node_is_root       (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-is-expandable">e_tree_model_node_is_expandable ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_node_is_expandable (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-is-expanded">e_tree_model_node_is_expanded ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_node_is_expanded   (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-is-visible">e_tree_model_node_is_visible ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_node_is_visible    (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-set-expanded-default">e_tree_model_set_expanded_default ()</title>
+<programlisting>void        e_tree_model_set_expanded_default
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="gboolean">gboolean</link> expanded);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>expanded</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-set-expanded">e_tree_model_node_set_expanded ()</title>
+<programlisting>void        e_tree_model_node_set_expanded  (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gboolean">gboolean</link> expanded);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>expanded</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-set-expanded-recurse">e_tree_model_node_set_expanded_recurse ()</title>
+<programlisting>void        e_tree_model_node_set_expanded_recurse
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="gboolean">gboolean</link> expanded);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>expanded</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-children">e_tree_model_node_get_children ()</title>
+<programlisting><link linkend="guint">guint</link>       e_tree_model_node_get_children  (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="ETreePath">ETreePath</link> ***paths);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>paths</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-depth">e_tree_model_node_depth ()</title>
+<programlisting><link linkend="guint">guint</link>       e_tree_model_node_depth         (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-num-visible-descendents">e_tree_model_node_num_visible_descendents ()</title>
+<programlisting><link linkend="guint">guint</link>       e_tree_model_node_num_visible_descendents
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-get-data">e_tree_model_node_get_data ()</title>
+<programlisting><link linkend="gpointer">gpointer</link>    e_tree_model_node_get_data      (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-set-data">e_tree_model_node_set_data ()</title>
+<programlisting>void        e_tree_model_node_set_data      (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="gpointer">gpointer</link> node_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-at-row">e_tree_model_node_at_row ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_at_row        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             int row);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>row</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-icon-of-node">e_tree_model_icon_of_node ()</title>
+<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  e_tree_model_icon_of_node       (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-row-of-node">e_tree_model_row_of_node ()</title>
+<programlisting>int         e_tree_model_row_of_node        (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-root-node-set-visible">e_tree_model_root_node_set_visible ()</title>
+<programlisting>void        e_tree_model_root_node_set_visible
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="gboolean">gboolean</link> visible);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>visible</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-root-node-is-visible">e_tree_model_root_node_is_visible ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_root_node_is_visible
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-set-compare-function">e_tree_model_node_set_compare_function ()</title>
+<programlisting>void        e_tree_model_node_set_compare_function
+                                            (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="ETreePathCompareFunc">ETreePathCompareFunc</link> compare);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>compare</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-sort">e_tree_model_node_sort ()</title>
+<programlisting>void        e_tree_model_node_sort          (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-changed">e_tree_model_node_changed ()</title>
+<programlisting>void        e_tree_model_node_changed       (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-inserted">e_tree_model_node_inserted ()</title>
+<programlisting>void        e_tree_model_node_inserted      (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_node,
+                                             <link linkend="ETreePath">ETreePath</link> *inserted_node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>parent_node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>inserted_node</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-removed">e_tree_model_node_removed ()</title>
+<programlisting>void        e_tree_model_node_removed       (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_node,
+                                             <link linkend="ETreePath">ETreePath</link> *removed_node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>parent_node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>removed_node</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-collapsed">e_tree_model_node_collapsed ()</title>
+<programlisting>void        e_tree_model_node_collapsed     (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-expanded">e_tree_model_node_expanded ()</title>
+<programlisting>void        e_tree_model_node_expanded      (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             <link linkend="gboolean">gboolean</link> *allow_expand);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>allow_expand</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-save-expanded-state">e_tree_model_save_expanded_state ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_save_expanded_state
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             const char *filename);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-load-expanded-state">e_tree_model_load_expanded_state ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    e_tree_model_load_expanded_state
+                                            (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             const char *filename);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>filename</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-set-save-id">e_tree_model_node_set_save_id ()</title>
+<programlisting>void        e_tree_model_node_set_save_id   (<link linkend="ETreeModel">ETreeModel</link> *etm,
+                                             <link linkend="ETreePath">ETreePath</link> *node,
+                                             const char *id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etm</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-insert-id">e_tree_model_node_insert_id ()</title>
+<programlisting><link linkend="ETreePath">ETreePath</link>*  e_tree_model_node_insert_id     (<link linkend="ETreeModel">ETreeModel</link> *tree_model,
+                                             <link linkend="ETreePath">ETreePath</link> *parent_path,
+                                             int position,
+                                             <link linkend="gpointer">gpointer</link> node_data,
+                                             const char *save_id);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree_model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>parent_path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>position</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>save_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-model-node-traverse">e_tree_model_node_traverse ()</title>
+<programlisting>void        e_tree_model_node_traverse      (<link linkend="ETreeModel">ETreeModel</link> *model,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             <link linkend="ETreePathFunc">ETreePathFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

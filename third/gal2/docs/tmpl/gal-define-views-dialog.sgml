@@ -1,0 +1,45 @@
+<!-- ##### SECTION Title ##### -->
+GalDefineViewsDialog
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GAL_DEFINE_VIEWS_DIALOG_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT GalDefineViewsDialog ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gal_define_views_dialog_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gal_define_views_dialog_add_section ##### -->
+<para>
+
+</para>
+
+@gal_define_views_dialog: 
+
+

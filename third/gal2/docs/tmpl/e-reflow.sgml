@@ -1,0 +1,67 @@
+<!-- ##### SECTION Title ##### -->
+EReflow
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_REFLOW_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT EReflow ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_reflow_add_item ##### -->
+<para>
+
+</para>
+
+@e_reflow: 
+@item: 
+
+
+<!-- ##### FUNCTION e_reflow_post_add_item ##### -->
+<para>
+
+</para>
+
+@e_reflow: 
+@item: 
+
+
+<!-- ##### ARG EReflow:minimum_width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EReflow:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EReflow:height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EReflow:empty_message ##### -->
+<para>
+
+</para>
+

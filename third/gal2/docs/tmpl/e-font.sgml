@@ -1,0 +1,165 @@
+<!-- ##### SECTION Title ##### -->
+e-font
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EFont ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM EFontStyle ##### -->
+<para>
+
+</para>
+
+@E_FONT_PLAIN: 
+@E_FONT_BOLD: 
+@E_FONT_ITALIC: 
+
+<!-- ##### FUNCTION e_font_from_gdk_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_font_from_gdk_font ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_font_ref ##### -->
+<para>
+
+</para>
+
+@font: 
+
+
+<!-- ##### FUNCTION e_font_unref ##### -->
+<para>
+
+</para>
+
+@font: 
+
+
+<!-- ##### FUNCTION e_font_ascent ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_font_descent ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_font_get_name ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### MACRO e_font_height ##### -->
+<para>
+
+</para>
+
+@f: 
+
+
+<!-- ##### FUNCTION e_font_draw_utf8_text ##### -->
+<para>
+
+</para>
+
+@drawable: 
+@font: 
+@style: 
+@gc: 
+@x: 
+@y: 
+@text: 
+@numbytes: 
+
+
+<!-- ##### FUNCTION e_font_utf8_text_width ##### -->
+<para>
+
+</para>
+
+@font: 
+@style: 
+@text: 
+@numbytes: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_font_utf8_char_width ##### -->
+<para>
+
+</para>
+
+@font: 
+@style: 
+@text: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_gdk_font_encoding ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_iconv_from_gdk_font ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_iconv_to_gdk_font ##### -->
+<para>
+
+</para>
+
+@font: 
+@Returns: 
+
+

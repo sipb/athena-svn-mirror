@@ -1,0 +1,149 @@
+<!-- ##### SECTION Title ##### -->
+EScrollFrame
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EScrollFrame ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_scroll_frame_new ##### -->
+<para>
+
+</para>
+
+@hadj: 
+@vadj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_hadjustment ##### -->
+<para>
+
+</para>
+
+@sf: 
+@adj: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_vadjustment ##### -->
+<para>
+
+</para>
+
+@sf: 
+@adj: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_get_hadjustment ##### -->
+<para>
+
+</para>
+
+@sf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_get_vadjustment ##### -->
+<para>
+
+</para>
+
+@sf: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_policy ##### -->
+<para>
+
+</para>
+
+@sf: 
+@hsb_policy: 
+@vsb_policy: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_placement ##### -->
+<para>
+
+</para>
+
+@sf: 
+@frame_placement: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_shadow_type ##### -->
+<para>
+
+</para>
+
+@sf: 
+@shadow_type: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_set_scrollbar_spacing ##### -->
+<para>
+
+</para>
+
+@sf: 
+@spacing: 
+
+
+<!-- ##### FUNCTION e_scroll_frame_add_with_viewport ##### -->
+<para>
+
+</para>
+
+@sf: 
+@child: 
+
+
+<!-- ##### ARG EScrollFrame:hadjustment ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:vadjustment ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:hscrollbar_policy ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:vscrollbar_policy ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:frame_placement ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:shadow_type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EScrollFrame:scrollbar_spacing ##### -->
+<para>
+
+</para>
+

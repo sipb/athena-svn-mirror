@@ -1,0 +1,194 @@
+<refentry id="ETableGroupLeaf" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETableGroupLeaf</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETableGroupLeaf</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TABLE-GROUP-LEAF-TYPE-CAPS">E_TABLE_GROUP_LEAF_TYPE</link>
+typedef     <link linkend="ETableGroupLeaf">ETableGroupLeaf</link>;
+<link linkend="ETableGroup">ETableGroup</link>* <link linkend="e-table-group-leaf-new">e_table_group_leaf_new</link>         (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
+                                             <link linkend="ETableHeader">ETableHeader</link> *full_header,
+                                             <link linkend="ETableHeader">ETableHeader</link> *header,
+                                             <link linkend="ETableModel">ETableModel</link> *model,
+                                             <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link>
+               +----<link linkend="ETableGroup">ETableGroup</link>
+                     +----ETableGroupLeaf
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="ETableGroupLeaf--drawgrid">drawgrid</link>&quot;             <link linkend="gboolean">gboolean</link>             : Write
+  &quot;<link linkend="ETableGroupLeaf--drawfocus">drawfocus</link>&quot;            <link linkend="gboolean">gboolean</link>             : Write
+  &quot;<link linkend="ETableGroupLeaf--cursor-mode">cursor_mode</link>&quot;          <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableGroupLeaf--length-threshold">length_threshold</link>&quot;     <link linkend="gint">gint</link>                 : Write
+  &quot;<link linkend="ETableGroupLeaf--table-selection-model">table_selection_model</link>&quot; <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableGroupLeaf--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read
+  &quot;<link linkend="ETableGroupLeaf--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="ETableGroupLeaf--minimum-width">minimum_width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="ETableGroupLeaf--frozen">frozen</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TABLE-GROUP-LEAF-TYPE-CAPS">E_TABLE_GROUP_LEAF_TYPE</title>
+<programlisting>#define E_TABLE_GROUP_LEAF_TYPE        (e_table_group_leaf_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableGroupLeaf">ETableGroupLeaf</title>
+<programlisting>typedef struct {
+	ETableGroup group;
+
+	/* 
+	 * Item.
+	 */
+	ETableItem *item;
+
+	gdouble height;
+	gdouble width;
+	gdouble minimum_width;
+
+	ETableSubsetVariable *subset;
+
+	int length_threshold;
+
+	guint draw_grid : 1;
+	guint draw_focus : 1;
+	ETableCursorMode cursor_mode;
+
+	ETableSelectionModel *table_selection_model;
+} ETableGroupLeaf;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-table-group-leaf-new">e_table_group_leaf_new ()</title>
+<programlisting><link linkend="ETableGroup">ETableGroup</link>* e_table_group_leaf_new         (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
+                                             <link linkend="ETableHeader">ETableHeader</link> *full_header,
+                                             <link linkend="ETableHeader">ETableHeader</link> *header,
+                                             <link linkend="ETableModel">ETableModel</link> *model,
+                                             <link linkend="ETableSortInfo">ETableSortInfo</link> *sort_info);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>full_header</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>header</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>model</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>sort_info</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="ETableGroupLeaf--drawgrid">&quot;<literal>drawgrid</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--drawfocus">&quot;<literal>drawfocus</literal>&quot; (<link linkend="gboolean">gboolean</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--cursor-mode">&quot;<literal>cursor_mode</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--length-threshold">&quot;<literal>length_threshold</literal>&quot; (<link linkend="gint">gint</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--table-selection-model">&quot;<literal>table_selection_model</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--minimum-width">&quot;<literal>minimum_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableGroupLeaf--frozen">&quot;<literal>frozen</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

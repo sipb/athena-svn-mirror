@@ -1,0 +1,101 @@
+<!-- ##### SECTION Title ##### -->
+ETableSpecification
+
+<!-- ##### SECTION Short_Description ##### -->
+Internal object to keep track of the ETable State.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+   This object is used to keep track of the ETableState, and it is
+   mostly an internal function.  These are used by the ETable widget
+   and its configuration engine (%ETableConfig).  It is mostly an
+   internal object.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+  %ETable, %ETableColumnSpecification, %ETableConfig.
+</para>
+
+<!-- ##### MACRO E_TABLE_SPECIFICATION_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSpecification ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_specification_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_specification_load_from_file ##### -->
+<para>
+
+</para>
+
+@specification: 
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_specification_load_from_string ##### -->
+<para>
+
+</para>
+
+@specification: 
+@xml: 
+
+
+<!-- ##### FUNCTION e_table_specification_load_from_node ##### -->
+<para>
+
+</para>
+
+@specification: 
+@node: 
+
+
+<!-- ##### FUNCTION e_table_specification_save_to_file ##### -->
+<para>
+
+</para>
+
+@specification: 
+@filename: 
+
+
+<!-- ##### FUNCTION e_table_specification_save_to_string ##### -->
+<para>
+
+</para>
+
+@specification: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_specification_save_to_node ##### -->
+<para>
+
+</para>
+
+@specification: 
+@doc: 
+@Returns: 
+
+<!-- ##### FUNCTION e_table_specification_duplicate ##### -->
+<para>
+</para>
+
+@spec:
+@Returns: 

@@ -1,0 +1,104 @@
+<!-- ##### SECTION Title ##### -->
+ETableSubsetVariable
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_SUBSET_VARIABLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSubsetVariable ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_subset_variable_new ##### -->
+<para>
+
+</para>
+
+@etm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_construct ##### -->
+<para>
+
+</para>
+
+@etssv: 
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_add ##### -->
+<para>
+
+</para>
+
+@ets: 
+@row: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_add_all ##### -->
+<para>
+
+</para>
+
+@ets: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_remove ##### -->
+<para>
+
+</para>
+
+@ets: 
+@row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_increment ##### -->
+<para>
+
+</para>
+
+@ets: 
+@position: 
+@amount: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_decrement ##### -->
+<para>
+
+</para>
+
+@ets: 
+@position: 
+@amount: 
+
+
+<!-- ##### FUNCTION e_table_subset_variable_set_allocation ##### -->
+<para>
+
+</para>
+
+@ets: 
+@total: 
+
+

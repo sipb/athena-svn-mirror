@@ -1,0 +1,214 @@
+<!-- ##### SECTION Title ##### -->
+EText
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ETextSuckFont ##### -->
+<para>
+
+</para>
+
+@bitmap: 
+@bitmap_width: 
+@bitmap_height: 
+@ascent: 
+@chars: 
+
+<!-- ##### STRUCT ETextSuckChar ##### -->
+<para>
+
+</para>
+
+@left_sb: 
+@right_sb: 
+@width: 
+@ascent: 
+@descent: 
+@bitmap_offset: 
+
+<!-- ##### STRUCT EText ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EText::changed ##### -->
+<para>
+
+</para>
+
+@etext: the object which received the signal.
+
+<!-- ##### SIGNAL EText::activate ##### -->
+<para>
+
+</para>
+
+@etext: the object which received the signal.
+
+<!-- ##### ARG EText:model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:event_processor ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:text ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:font ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fontset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:font_gdk ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:font_e ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:anchor ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:justification ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:clip_width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:clip_height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:clip ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fill_clip_rectangle ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:x_offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:y_offset ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fill_color ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fill_color_gdk ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fill_color_rgba ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:fill_stipple ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:text_width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:text_height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:editable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:use_ellipsis ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:ellipsis ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:line_wrap ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:break_characters ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:max_lines ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:draw_borders ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EText:allow_newlines ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,29 @@
+
+GNOME Application Libs (GAL).
+
+This module contains some library functions that came from Gnumeric and
+Evolution.  The idea is to reuse the code across various larger GNOME
+applications that might want to use it.  The API is not frozen and might change
+at any time.  Larger class renaming might happen at any point without notice.
+Use this library at your own risk.
+
+If you want to contribute code to Gal, you need to contact the maintainers of
+this module as with any other module in GNOME, as the maintainers are the
+people which will have to deal with bug reports, compilation problems,
+portability issues and quality assurance.
+
+Things are currently licensed under the terms of the GNU LGPL
+
+Miguel.
+
+
+
+Thanks to all the people who have worked on gal so far and who have
+contributed code.  See the ChangeLogs for detailed lists of
+contributions and changes.
+
+Chris
+
+
+All contributed code must be licensed as GNU LGPL.
+

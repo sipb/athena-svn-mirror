@@ -1,0 +1,377 @@
+<refentry id="gal-e-font" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-font</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-font</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="EFont">EFont</link>;
+enum        <link linkend="EFontStyle">EFontStyle</link>;
+<link linkend="EFont">EFont</link>*      <link linkend="e-font-from-gdk-name">e_font_from_gdk_name</link>            (const <link linkend="gchar">gchar</link> *name);
+<link linkend="EFont">EFont</link>*      <link linkend="e-font-from-gdk-font">e_font_from_gdk_font</link>            (<link linkend="GdkFont">GdkFont</link> *font);
+void        <link linkend="e-font-ref">e_font_ref</link>                      (<link linkend="EFont">EFont</link> *font);
+void        <link linkend="e-font-unref">e_font_unref</link>                    (<link linkend="EFont">EFont</link> *font);
+<link linkend="gint">gint</link>        <link linkend="e-font-ascent">e_font_ascent</link>                   (<link linkend="EFont">EFont</link> *font);
+<link linkend="gint">gint</link>        <link linkend="e-font-descent">e_font_descent</link>                  (<link linkend="EFont">EFont</link> *font);
+<link linkend="gchar">gchar</link>*      <link linkend="e-font-get-name">e_font_get_name</link>                 (<link linkend="EFont">EFont</link> *font);
+#define     <link linkend="e-font-height">e_font_height</link>                   (f)
+void        <link linkend="e-font-draw-utf8-text">e_font_draw_utf8_text</link>           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+                                             <link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             <link linkend="GdkGC">GdkGC</link> *gc,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="gint">gint</link> numbytes);
+int         <link linkend="e-font-utf8-text-width">e_font_utf8_text_width</link>          (<link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             const char *text,
+                                             int numbytes);
+int         <link linkend="e-font-utf8-char-width">e_font_utf8_char_width</link>          (<link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             char *text);
+const <link linkend="gchar">gchar</link>* <link linkend="e-gdk-font-encoding">e_gdk_font_encoding</link>            (<link linkend="GdkFont">GdkFont</link> *font);
+<link linkend="iconv-t">iconv_t</link>     <link linkend="e-iconv-from-gdk-font">e_iconv_from_gdk_font</link>           (<link linkend="GdkFont">GdkFont</link> *font);
+<link linkend="iconv-t">iconv_t</link>     <link linkend="e-iconv-to-gdk-font">e_iconv_to_gdk_font</link>             (<link linkend="GdkFont">GdkFont</link> *font);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EFont">struct EFont</title>
+<programlisting>struct EFont;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EFontStyle">enum EFontStyle</title>
+<programlisting>typedef enum {
+	E_FONT_PLAIN = 0,
+	E_FONT_BOLD = (1 &lt;&lt; 0),
+	E_FONT_ITALIC = (1 &lt;&lt; 4)
+} EFontStyle;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-font-from-gdk-name">e_font_from_gdk_name ()</title>
+<programlisting><link linkend="EFont">EFont</link>*      e_font_from_gdk_name            (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-from-gdk-font">e_font_from_gdk_font ()</title>
+<programlisting><link linkend="EFont">EFont</link>*      e_font_from_gdk_font            (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-ref">e_font_ref ()</title>
+<programlisting>void        e_font_ref                      (<link linkend="EFont">EFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-unref">e_font_unref ()</title>
+<programlisting>void        e_font_unref                    (<link linkend="EFont">EFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-ascent">e_font_ascent ()</title>
+<programlisting><link linkend="gint">gint</link>        e_font_ascent                   (<link linkend="EFont">EFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-descent">e_font_descent ()</title>
+<programlisting><link linkend="gint">gint</link>        e_font_descent                  (<link linkend="EFont">EFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-get-name">e_font_get_name ()</title>
+<programlisting><link linkend="gchar">gchar</link>*      e_font_get_name                 (<link linkend="EFont">EFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-height">e_font_height()</title>
+<programlisting>#define e_font_height(f) (e_font_ascent (f) + e_font_descent (f))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>f</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-draw-utf8-text">e_font_draw_utf8_text ()</title>
+<programlisting>void        e_font_draw_utf8_text           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+                                             <link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             <link linkend="GdkGC">GdkGC</link> *gc,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y,
+                                             const <link linkend="gchar">gchar</link> *text,
+                                             <link linkend="gint">gint</link> numbytes);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>drawable</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>style</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>gc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>numbytes</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-utf8-text-width">e_font_utf8_text_width ()</title>
+<programlisting>int         e_font_utf8_text_width          (<link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             const char *text,
+                                             int numbytes);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>style</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>numbytes</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-font-utf8-char-width">e_font_utf8_char_width ()</title>
+<programlisting>int         e_font_utf8_char_width          (<link linkend="EFont">EFont</link> *font,
+                                             <link linkend="EFontStyle">EFontStyle</link> style,
+                                             char *text);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>style</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-gdk-font-encoding">e_gdk_font_encoding ()</title>
+<programlisting>const <link linkend="gchar">gchar</link>* e_gdk_font_encoding            (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-iconv-from-gdk-font">e_iconv_from_gdk_font ()</title>
+<programlisting><link linkend="iconv-t">iconv_t</link>     e_iconv_from_gdk_font           (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-iconv-to-gdk-font">e_iconv_to_gdk_font ()</title>
+<programlisting><link linkend="iconv-t">iconv_t</link>     e_iconv_to_gdk_font             (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,89 @@
+<refentry id="ECellCheckbox" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ECellCheckbox</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ECellCheckbox</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-CELL-CHECKBOX-TYPE-CAPS">E_CELL_CHECKBOX_TYPE</link>
+typedef     <link linkend="ECellCheckbox">ECellCheckbox</link>;
+<link linkend="ECell">ECell</link>*      <link linkend="e-cell-checkbox-new">e_cell_checkbox_new</link>             (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="ECell">ECell</link>
+         +----<link linkend="ECellToggle">ECellToggle</link>
+               +----ECellCheckbox
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-CELL-CHECKBOX-TYPE-CAPS">E_CELL_CHECKBOX_TYPE</title>
+<programlisting>#define E_CELL_CHECKBOX_TYPE        (e_cell_checkbox_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ECellCheckbox">ECellCheckbox</title>
+<programlisting>typedef struct {
+	ECellToggle parent;
+} ECellCheckbox;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-cell-checkbox-new">e_cell_checkbox_new ()</title>
+<programlisting><link linkend="ECell">ECell</link>*      e_cell_checkbox_new             (void);</programlisting>
+<para>
+Creates a new ECell renderer that can be used to render toggle
+buttons with the images specified in <parameter>images</parameter>.  The value returned 
+by ETableModel::get_value is typecase into an integer and clamped
+to the [0..n_states) range.  That will select the image rendered.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an ECell object that can be used to render multi-state
+toggle cells.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,299 @@
+<refentry id="ETreeSimple" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETreeSimple</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETreeSimple</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TREE-SIMPLE-TYPE-CAPS">E_TREE_SIMPLE_TYPE</link>
+typedef     <link linkend="ETreeSimple">ETreeSimple</link>;
+<link linkend="GdkPixbuf">GdkPixbuf</link>*  (<link linkend="ETreeSimpleIconAtFn">*ETreeSimpleIconAtFn</link>)          (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             void *model_data);
+void*       (<link linkend="ETreeSimpleValueAtFn">*ETreeSimpleValueAtFn</link>)         (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             void *model_data);
+void        (<link linkend="ETreeSimpleSetValueAtFn">*ETreeSimpleSetValueAtFn</link>)      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             const void *val,
+                                             void *model_data);
+<link linkend="gboolean">gboolean</link>    (<link linkend="ETreeSimpleIsEditableFn">*ETreeSimpleIsEditableFn</link>)      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             void *model_data);
+<link linkend="ETreeModel">ETreeModel</link>* <link linkend="e-tree-simple-new">e_tree_simple_new</link>               (<link linkend="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn</link> col_count,
+                                             <link linkend="ETableSimpleDuplicateValueFn">ETableSimpleDuplicateValueFn</link> duplicate_value,
+                                             <link linkend="ETableSimpleFreeValueFn">ETableSimpleFreeValueFn</link> free_value,
+                                             <link linkend="ETableSimpleInitializeValueFn">ETableSimpleInitializeValueFn</link> initialize_value,
+                                             <link linkend="ETableSimpleValueIsEmptyFn">ETableSimpleValueIsEmptyFn</link> value_is_empty,
+                                             <link linkend="ETableSimpleValueToStringFn">ETableSimpleValueToStringFn</link> value_to_string,
+                                             <link linkend="ETreeSimpleIconAtFn">ETreeSimpleIconAtFn</link> icon_at,
+                                             <link linkend="ETreeSimpleValueAtFn">ETreeSimpleValueAtFn</link> value_at,
+                                             <link linkend="ETreeSimpleSetValueAtFn">ETreeSimpleSetValueAtFn</link> set_value_at,
+                                             <link linkend="ETreeSimpleIsEditableFn">ETreeSimpleIsEditableFn</link> is_editable,
+                                             <link linkend="gpointer">gpointer</link> model_data);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="ETableModel">ETableModel</link>
+         +----<link linkend="ETreeModel">ETreeModel</link>
+               +----ETreeSimple
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TREE-SIMPLE-TYPE-CAPS">E_TREE_SIMPLE_TYPE</title>
+<programlisting>#define E_TREE_SIMPLE_TYPE        (e_tree_simple_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETreeSimple">ETreeSimple</title>
+<programlisting>typedef struct {
+	ETreeModel parent;
+
+	/* Table methods */
+	ETableSimpleColumnCountFn     col_count;
+	ETableSimpleDuplicateValueFn  duplicate_value;
+	ETableSimpleFreeValueFn       free_value;
+	ETableSimpleInitializeValueFn initialize_value;
+	ETableSimpleValueIsEmptyFn    value_is_empty;
+	ETableSimpleValueToStringFn   value_to_string;
+
+	/* Tree methods */
+	ETreeSimpleIconAtFn icon_at;
+	ETreeSimpleValueAtFn value_at;
+	ETreeSimpleSetValueAtFn set_value_at;
+	ETreeSimpleIsEditableFn is_editable;
+
+	gpointer model_data;
+} ETreeSimple;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETreeSimpleIconAtFn">ETreeSimpleIconAtFn ()</title>
+<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  (*ETreeSimpleIconAtFn)          (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             void *model_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>model_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ETreeSimpleValueAtFn">ETreeSimpleValueAtFn ()</title>
+<programlisting>void*       (*ETreeSimpleValueAtFn)         (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             void *model_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>model_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ETreeSimpleSetValueAtFn">ETreeSimpleSetValueAtFn ()</title>
+<programlisting>void        (*ETreeSimpleSetValueAtFn)      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             const void *val,
+                                             void *model_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>model_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ETreeSimpleIsEditableFn">ETreeSimpleIsEditableFn ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    (*ETreeSimpleIsEditableFn)      (<link linkend="ETreeModel">ETreeModel</link> *etree,
+                                             <link linkend="ETreePath">ETreePath</link> *path,
+                                             int col,
+                                             void *model_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etree</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>col</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>model_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-tree-simple-new">e_tree_simple_new ()</title>
+<programlisting><link linkend="ETreeModel">ETreeModel</link>* e_tree_simple_new               (<link linkend="ETableSimpleColumnCountFn">ETableSimpleColumnCountFn</link> col_count,
+                                             <link linkend="ETableSimpleDuplicateValueFn">ETableSimpleDuplicateValueFn</link> duplicate_value,
+                                             <link linkend="ETableSimpleFreeValueFn">ETableSimpleFreeValueFn</link> free_value,
+                                             <link linkend="ETableSimpleInitializeValueFn">ETableSimpleInitializeValueFn</link> initialize_value,
+                                             <link linkend="ETableSimpleValueIsEmptyFn">ETableSimpleValueIsEmptyFn</link> value_is_empty,
+                                             <link linkend="ETableSimpleValueToStringFn">ETableSimpleValueToStringFn</link> value_to_string,
+                                             <link linkend="ETreeSimpleIconAtFn">ETreeSimpleIconAtFn</link> icon_at,
+                                             <link linkend="ETreeSimpleValueAtFn">ETreeSimpleValueAtFn</link> value_at,
+                                             <link linkend="ETreeSimpleSetValueAtFn">ETreeSimpleSetValueAtFn</link> set_value_at,
+                                             <link linkend="ETreeSimpleIsEditableFn">ETreeSimpleIsEditableFn</link> is_editable,
+                                             <link linkend="gpointer">gpointer</link> model_data);</programlisting>
+<para>
+This initializes a new ETreeSimpleModel object.  ETreeSimpleModel is
+an implementaiton of the abstract class ETreeModel.  The ETreeSimpleModel
+is designed to allow people to easily create ETreeModels without having
+to create a new GtkType derived from ETreeModel every time they need one.
+</para>
+<para>
+Instead, ETreeSimpleModel uses a setup based in callback functions, every
+callback function signature mimics the signature of each ETreeModel method
+and passes the extra <parameter>data</parameter> pointer to each one of the method to provide them
+with any context they might want to use. 
+</para>
+<para>
+ETreeSimple is to ETreeModel as ETableSimple is to ETableModel.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>col_count</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>duplicate_value</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>free_value</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>initialize_value</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>value_is_empty</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>value_to_string</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>icon_at</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>value_at</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>set_value_at</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>is_editable</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>model_data</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An ETreeSimple object (which is also an ETreeModel
+object).
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
