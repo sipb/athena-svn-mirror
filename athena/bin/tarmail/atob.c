@@ -1,17 +1,10 @@
-/*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/atob.c,v $
- *	$Author: jtkohl $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/atob.c,v 1.1 1985-04-25 20:34:23 jtkohl Exp $
+/* atob: version 4.0
+ * stream filter to change printable ascii from "btoa" back into 8 bit bytes
+ * if bad chars, or Csums do not match: exit(1) [and NO output]
+ *
+ *  Paul Rutter		Joe Orost
+ *  philabs!per		petsd!joe
  */
-
-#ifndef lint
-static char *rcsid_atob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/atob.c,v 1.1 1985-04-25 20:34:23 jtkohl Exp $";
-#endif	lint
-
-/*stream filter to change printable ascii from "btoa" back into 8 bit bytes*/
-/*if bad chars, or Csums do not match: exit(1) [and NO output]*/
-/*assumes that int is 32 bits*/
 
 #include <stdio.h>
 
@@ -19,60 +12,59 @@ static char *rcsid_atob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 
 #define streq(s0, s1)  strcmp(s0, s1) == 0
 
-int Ceor = 0;
-int Csum = 0;
-int Crot = 0;
-int bcount = 0;
-int word = 0;
+#define times85(x)	((((((x<<2)+x)<<2)+x)<<2)+x)
+
+long int Ceor = 0;
+long int Csum = 0;
+long int Crot = 0;
+long int word = 0;
+long int bcount = 0;
 
 fatal() {
   fprintf(stderr, "bad format or Csum to atob\n");
   exit(1);
 }
 
-#define DE(c) ((c) - ' ')
+#define DE(c) ((c) - '!')
 
-decode(c) reg c;
+decode(c) 
+  reg c;
 {
   if (c == 'z') {
     if (bcount != 0) {
       fatal();
-    }
-    else{
+    } else {
       byteout(0);
       byteout(0);
       byteout(0);
       byteout(0);
     }
-  }
-  else if ((c >= ' ') && (c < (' ' + 85))) {
+  } else if ((c >= '!') && (c < ('!' + 85))) {
     if (bcount == 0) {
       word = DE(c);
       ++bcount;
-    }
-    else if (bcount < 4) {
-      word *= 85;
+    } else if (bcount < 4) {
+      word = times85(word);
       word += DE(c);
       ++bcount;
-    }
-    else{
-      word = ((unsigned) word * (unsigned) 85) + DE(c);
-      byteout((word >> 24) & 255);
-      byteout((word >> 16) & 255);
-      byteout((word >> 8) & 255);
-      byteout(word & 255);
+    } else {
+      word = times85(word) + DE(c);
+      byteout((int)((word >> 24) & 255));
+      byteout((int)((word >> 16) & 255));
+      byteout((int)((word >> 8) & 255));
+      byteout((int)(word & 255));
       word = 0;
       bcount = 0;
     }
-  }
-  else{
+  } else {
     fatal();
   }
 }
 
-FILE *tmpfile;
+FILE *tmp_file;
 
-byteout(c) reg c;
+byteout(c) 
+  reg c;
 {
   Ceor ^= c;
   Csum += c;
@@ -80,29 +72,32 @@ byteout(c) reg c;
   if ((Crot & 0x80000000)) {
     Crot <<= 1;
     Crot += 1;
-  }
-  else{
+  } else {
     Crot <<= 1;
   }
   Crot += c;
-  putc(c, tmpfile);
+  putc(c, tmp_file);
 }
 
-main(argc, argv) char **argv;
+main(argc, argv) 
+  char **argv;
 {
-  reg c, i;
-  char tmpname[100];
+  reg c;
+  reg long int i;
+  char tmp_name[100];
   char buf[100];
-  int n1, n2, oeor, osum, orot;
+  long int n1, n2, oeor, osum, orot;
+
   if (argc != 1) {
     fprintf(stderr,"bad args to %s\n", argv[0]);
     exit(2);
   }
-  sprintf(tmpname, "/usr/tmp/atob.%x", getpid());
-  tmpfile = fopen(tmpname, "w+");
-  if (tmpfile == NULL) {
+  sprintf(tmp_name, "/usr/tmp/atob.%x", getpid());
+  tmp_file = fopen(tmp_name, "w+");
+  if (tmp_file == NULL) {
     fatal();
   }
+  unlink(tmp_name);	/* Make file disappear */
   /*search for header line*/
   for (;;) {
     if (fgets(buf, sizeof buf, stdin) == NULL) {
@@ -116,27 +111,24 @@ main(argc, argv) char **argv;
   while ((c = getchar()) != EOF) {
     if (c == '\n') {
       continue;
-    }
-    else if (c == 'x') {
+    } else if (c == 'x') {
       break;
-    }
-    else{
+    } else {
       decode(c);
-
     }
   }
-  if (scanf("btoa End N %d %x E %x S %x R %x\n", &n1, &n2, &oeor, &osum, &orot) != 5) {
+  if(scanf("btoa End N %ld %lx E %lx S %lx R %lx\n",
+         &n1, &n2, &oeor, &osum, &orot) != 5) {
     fatal();
   }
   if ((n1 != n2) || (oeor != Ceor) || (osum != Csum) || (orot != Crot)) {
     fatal();
-  }
-  else{
+  } else {
     /*copy OK tmp file to stdout*/;
-    fseek(tmpfile, 0, 0);
+    fseek(tmp_file, 0L, 0);
     for (i = n1; --i >= 0;) {
-      putchar(getc(tmpfile));
+      putchar(getc(tmp_file));
     }
-    unlink(tmpname);
   }
+  exit(0);
 }
