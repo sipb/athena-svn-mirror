@@ -29,48 +29,78 @@ EOF
 grep -s '^MACHINE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || {
   MACHINE=`$PKG_INSTALL_ROOT/bin/athena/machtype -c`
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-MACHINE=$MACHINE;	export MACHINE		# Type of machine
+MACHINE=$MACHINE;	export MACHINE		#  Type of machine
 EOF
 }
 
 grep -s '^SYSTEM=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-SYSTEM=solaris; 	export SYSTEM		# Type of operating system
+SYSTEM=solaris; 	export SYSTEM		#  Type of operating system
 EOF
 
 grep -s '^PUBLIC=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-PUBLIC=false;		export PUBLIC		# Public workstation?
+PUBLIC=false;		export PUBLIC		#  Public workstation?
 EOF
 
 grep -s '^NOCREATE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-NOCREATE=false;		export NOCREATE		# Create /etc/nocreate; see al_login_allowed(3)
+NOCREATE=false;		export NOCREATE		#  Create /etc/nocreate; see al_login_allowed(3)
 EOF
 
 grep -s '^NOATTACH=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
+NOATTACH=false;		export NOATTACH		#  Disallow attaching homedirs?
 EOF
 
 grep -s '^NOREMOTE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-NOREMOTE=false;		export NOREMOTE		# Create /etc/noremote; see al_login_allowed(3)
+NOREMOTE=false;		export NOREMOTE		#  Create /etc/noremote; see al_login_allowed(3)
 EOF
 
 grep -s '^AUTOUPDATE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-AUTOUPDATE=true;	export AUTOUPDATE	# Automatically update?
+AUTOUPDATE=true;	export AUTOUPDATE	#  Automatically update?
 EOF
 
 grep -s '^SYNCCONFIG=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
-SYNCCONFIG=true;	export SYNCCONFIG	# Synchronize configurations?
+SYNCCONFIG=true;	export SYNCCONFIG	#  Synchronize configurations?
 EOF
 
 grep -s '^MAILRELAY=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
   cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
 MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
+EOF
+
+grep -s '^KRBSRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+KRBSRV=false;		export KRBSRV		#  Kerberos server
+EOF
+
+grep -s '^KADMSRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+KADMSRV=false;		export KADMSRV		#  Kerberos Admin server
+EOF
+
+grep -s '^NFSCLIENT=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NFSCLIENT=true;		export NFSCLIENT	#* NFS client?
+EOF
+
+grep -s '^NFSSRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NFSSRV=false;		export NFSSRV		#* NFS server?
+EOF
+
+grep -s '^RVDCLIENT=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+RVDCLIENT=true;		export RVDCLIENT	#  RVD client?
+EOF
+
+grep -s '^SAVECORE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SAVECORE=false;		export SAVECORE		#* Save kernel core files?
 EOF
 
 exit 0
