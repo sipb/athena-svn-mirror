@@ -9,7 +9,7 @@
 
 # This script is not specific to any particular repository, but it is
 # specific to the Athena environment in that it assumes the existence
-# of /usr/athena/bin/perl and of mhmail.
+# of /usr/athena/bin/perl.
 
 $sendmail = ( -x "/usr/sbin/sendmail") ? "/usr/sbin/sendmail"
     : "/usr/lib/sendmail";
