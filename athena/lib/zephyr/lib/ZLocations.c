@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.12 1987-07-29 15:16:57 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.13 1987-07-30 10:24:32 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.12 1987-07-29 15:16:57 rfrench Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.13 1987-07-30 10:24:32 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -104,7 +104,7 @@ Z_SendLocation(class,opcode,auth)
 	else
 		bptr[2] = mytty;
 	
-	if ((retval = ZSendList(&notice,bptr,2,auth)) != ZERR_NONE)
+	if ((retval = ZSendList(&notice,bptr,3,auth)) != ZERR_NONE)
 		return (retval);
 
 	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,(int *)0,
