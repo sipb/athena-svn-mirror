@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.25 1999-01-22 23:11:36 ghudson Exp $
+ *    $Id: machtype_solaris.c,v 1.1 1999-09-22 00:26:50 danw Exp $
  */
 
 #define volatile 
@@ -40,7 +40,11 @@ struct nlist nl[] = {
       { "" }
 };
 
-kvm_t *do_init(void)
+static kvm_t *do_init(void);
+static void do_cleanup(kvm_t *kernel);
+static void do_cpu_prom(kvm_t *kernel, int verbose);
+
+static kvm_t *do_init(void)
 {
     kvm_t *kernel;
 
@@ -49,14 +53,14 @@ kvm_t *do_init(void)
         fprintf(stderr,"unable to examine the kernel\n");
         exit(2);
     }
-    if (kvm_nlist(kernel, &nl) < 0) {
+    if (kvm_nlist(kernel, nl) < 0) {
         fprintf(stderr,"can't get namelist\n");
         exit(2);
     }
     return kernel;
 }
 
-void do_cleanup(kvm_t *kernel)
+static void do_cleanup(kvm_t *kernel)
 {
     kvm_close(kernel);
 }
@@ -66,7 +70,7 @@ void do_machtype(void)
     puts("sun4");
 }
 
-void do_cpu_prom(kvm_t *kernel, int verbose)
+static void do_cpu_prom(kvm_t *kernel, int verbose)
 {
   unsigned long   ptop;
   struct dev_info top;
@@ -100,7 +104,8 @@ void do_cpu_prom(kvm_t *kernel, int verbose)
   } else {
 
     /* skip the initial "SUNW," */
-    if (cpustr = strchr(buf, ','))
+    cpustr = strchr(buf, ',');
+    if (cpustr)
       cpustr++;
     else
       cpustr = buf;
@@ -132,7 +137,7 @@ void do_cpu(int verbose)
     short cpu, cpu_type;
 
     kernel = do_init();
-    cpu_type = kvm_read(kernel,nl[X_cpu].n_value,&cpu, sizeof(cpu));
+    cpu_type = kvm_read(kernel,nl[X_cpu].n_value,(char*)&cpu, sizeof(cpu));
 
         switch(cpu) {
           case CPU_SUN4C_60:
@@ -184,7 +189,7 @@ void do_dpy(int verbose)
   }
   buf[count] = 0;
   p = buf + count;
-  while (p > buf && isdigit(*(p - 1)))
+  while (p > buf && isdigit((int)*(p - 1)))
     *--p = 0;
   p = strrchr(buf, ':');
   if (!p) {
@@ -256,14 +261,14 @@ void do_disk(int verbose)
 void do_memory(int verbose)
 {
    kvm_t *kernel;
-   int pos, mem, nbpp;
+   int mem, nbpp;
 
    kernel = do_init();
    nbpp = getpagesize() / 1024;
-   kvm_read(kernel, nl[X_maxmem].n_value, &mem, sizeof(mem));
+   kvm_read(kernel, nl[X_maxmem].n_value, (char *)&mem, sizeof(mem));
    if(verbose)
       printf("%d user, ", mem * nbpp);
-   kvm_read(kernel, nl[X_physmem].n_value, &mem, sizeof(mem));
+   kvm_read(kernel, nl[X_physmem].n_value, (char *)&mem, sizeof(mem));
    if(verbose)
       printf("%d (%d M) total\n", mem * nbpp, (mem * nbpp + 916) / 1024);
    else

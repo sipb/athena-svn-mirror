@@ -2,11 +2,12 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype.c,v 1.2 1999-01-22 23:11:35 ghudson Exp $
+ *    $Id: machtype.c,v 1.3 1999-09-22 00:26:48 danw Exp $
  */
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "machtype.h"
 
 extern char *optarg;
@@ -152,10 +153,12 @@ int main(int argc, char *argv[])
 
   /* Print out vendor OS name */
   if (dobosN)
-    if (verbose)
-      puts(OSNAME " " OSVERS);
-    else
-      puts(OSNAME);
+    {
+      if (verbose)
+	puts(OSNAME " " OSVERS);
+      else
+	puts(OSNAME);
+    }
 
   /* Print out vendor OS version */
   if (dobosV)

@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.16 1999-05-15 19:51:39 jweiss Exp $
+ *	$Id: machtype_irix.c,v 1.1 1999-09-22 00:26:49 danw Exp $
  */
 
 #include <stdio.h>
@@ -12,19 +12,19 @@
 #include <sys/file.h>
 #include <sys/sysinfo.h>
 #include <sys/ioctl.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include "machtype.h"
 
-#ifdef sgi
 #include <invent.h>
 #include <sys/sbd.h>
-void do_INV_SCSI(inventory_t *, int);
+void do_INV_SCSI(inventory_t *);
 void do_INV_SCSICONTROL(inventory_t *, int);
 void do_INV_DISK(inventory_t *, int);
 void do_INV_PROCESSOR(inventory_t *,int);
-void do_INV_GRAPHICS(inventory_t *, int);
-void do_INV_CAM(inventory_t *, int);
-void do_INV_CPUCHIP(inventory_t *, int);
-#endif
+void do_INV_GRAPHICS(inventory_t *);
+void do_INV_CAM(inventory_t *);
+void do_INV_CPUCHIP(inventory_t *);
 
 void do_machtype(void)
 {
@@ -44,7 +44,7 @@ void do_cpu(int verbose)
   }
 }
 
-void do_INV_CPUCHIP(inventory_t* i, int verbose)
+void do_INV_CPUCHIP(inventory_t* i)
 {
   char* pu_short = (i->inv_type == INV_CPUCHIP)?"CPU":"FPU";
   char* pu_long = (i->inv_type == INV_CPUCHIP)?
@@ -165,7 +165,7 @@ void do_INV_PROCESSOR(inventory_t *i,int verbose)
     switch(i->inv_type) {
     case INV_CPUCHIP:
     case INV_FPUCHIP:
-      do_INV_CPUCHIP(i, verbose);
+      do_INV_CPUCHIP(i);
     }
   }
 }
@@ -198,7 +198,7 @@ void do_dpy(int verbose)
     inv = getinvent();
     while ((inv != NULL) && !done) {
       if ( inv->inv_class == INV_VIDEO) {
-	do_INV_CAM(inv, verbose);
+	do_INV_CAM(inv);
       }
       inv = getinvent();
     }
@@ -207,14 +207,14 @@ void do_dpy(int verbose)
     inv = getinvent();
     while ((inv != NULL) && !done) {
       if ( inv->inv_class == INV_GRAPHICS) {
-	do_INV_GRAPHICS(inv, verbose);
+	do_INV_GRAPHICS(inv);
       }
       inv = getinvent();
     }
   } /* verbose */
 }
 
-void do_INV_GRAPHICS(inventory_t *i, int verbose)
+void do_INV_GRAPHICS(inventory_t *i)
 {
   switch(i->inv_type)
     {
@@ -250,7 +250,7 @@ void do_INV_GRAPHICS(inventory_t *i, int verbose)
     }
 }
 
-void do_INV_CAM(inventory_t *i, int verbose)
+void do_INV_CAM(inventory_t *i)
 {
   if (i->inv_type == INV_VIDEO_VINO ) {
     if (i->inv_state == INV_VINO_INDY_CAM ) {
@@ -264,21 +264,19 @@ void do_INV_CAM(inventory_t *i, int verbose)
 void do_disk(int verbose)
 {
   inventory_t *inv;
-  int t;
   int done=0;
   (void) setinvent();
   inv = getinvent();
-  t = 0;
   while ((inv != NULL) && !done) {
     if (inv->inv_class == INV_DISK) 
       do_INV_DISK(inv, verbose);
     else if (inv->inv_class == INV_SCSI)
-      do_INV_SCSI(inv, verbose);
+      do_INV_SCSI(inv);
     inv = getinvent();
   }
 }
 
-void do_INV_SCSI(inventory_t *i, int verbose)
+void do_INV_SCSI(inventory_t *i)
 {
   if (i->inv_type == INV_CDROM) {
     fprintf(stdout, "CDROM: unit %i, on SCSI controller %i\n",

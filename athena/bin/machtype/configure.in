@@ -1,0 +1,47 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(machtype.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_CANONICAL_HOST
+case $host_os in
+solaris*)
+	OS=solaris
+	AC_CHECK_FUNC(kvm_read, :, AC_CHECK_LIB(kvm, kvm_read))
+	AC_CHECK_FUNC(read_vtoc, :, AC_CHECK_LIB(adm, read_vtoc))
+	;;
+irix*)
+	OS=irix
+	;;
+linux*)
+	OS=linux
+	;;
+netbsd*)
+	OS=netbsd
+	;;
+esac
+
+AC_MSG_CHECKING(if machtype is a script)
+if test -r ${srcdir}/machtype_$OS.sh; then
+	AC_MSG_RESULT(yes)
+	TARGET=${srcdir}/machtype_$OS.sh
+	INSTALLFLAGS="-m 555"
+else
+	AC_MSG_RESULT(no)
+	TARGET=machtype
+	OS_OBJS=machtype_$OS.o
+	INSTALLFLAGS="-m 2555 -o root -g sys"
+fi
+AC_SUBST(TARGET)
+AC_SUBST(OS_OBJS)
+AC_SUBST(INSTALLFLAGS)
+
+AC_DEFINE_UNQUOTED(ATHMAJV, "$ATHENA_MAJOR_VERSION")
+AC_DEFINE_UNQUOTED(ATHMINV, "$ATHENA_MINOR_VERSION")
+AC_DEFINE_UNQUOTED(OSVERS, "`uname -r`")
+AC_DEFINE_UNQUOTED(OSNAME, "`uname -s`")
+AC_DEFINE_UNQUOTED(ATHSYS, "$ATHENA_SYS")
+AC_DEFINE_UNQUOTED(ATHSYSCOMPAT, "$ATHENA_SYS_COMPAT")
+
+AC_OUTPUT(Makefile)

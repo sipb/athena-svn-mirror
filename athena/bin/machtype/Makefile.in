@@ -1,0 +1,47 @@
+# $Id: Makefile.in,v 1.1 1999-09-22 00:26:48 danw Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+INSTALLFLAGS=@INSTALLFLAGS@
+
+OBJS=machtype.o @OS_OBJS@
+TARGET=@TARGET@
+
+all: ${TARGET}
+
+machtype: ${OBJS}
+	${CC} ${LDFLAGS} -o machtype ${OBJS} ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} ${INSTALLFLAGS} ${TARGET} \
+		${DESTDIR}${bindir}/machtype
+	${INSTALL} -m 444 ${srcdir}/machtype.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f machtype ${OBJS}
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
