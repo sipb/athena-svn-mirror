@@ -1,8 +1,4 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-
-#ifndef __GNOME_CANVAS_HACKTEXT_H__
-#define __GNOME_CANVAS_HACKTEXT_H__
-
 /*
  *  gnome-canvas-hacktext.c: Hacktext CanvasItem, used for the PrintPreview context
  *
@@ -29,6 +25,9 @@
  *  Copyright (C) 2000-2002 Ximian Inc.
  *
  */
+
+#ifndef __GNOME_CANVAS_HACKTEXT_H__
+#define __GNOME_CANVAS_HACKTEXT_H__
 
 #include <glib.h>
 
@@ -81,7 +80,7 @@ struct _GnomeCanvasHacktextClass {
 	GnomeCanvasItemClass parent_class;
 };
 
-GtkType gnome_canvas_hacktext_get_type (void);
+GType gnome_canvas_hacktext_get_type (void);
 
 G_END_DECLS
 

@@ -73,7 +73,7 @@ enum {FONT_SET, LAST_SIGNAL};
 #define MIN_PREVIEW_HEIGHT 44
 #define MAX_PREVIEW_HEIGHT 300
 
-/* These are what we use as the standard font sizes, for the size clist.
+/* These are what we use as the standard font sizes, for the size combo.
    Note that when using points we still show these integer point values but
    we work internally in decipoints (and decipoint values can be typed in). */
 static gchar * font_sizes[] = {
@@ -85,11 +85,11 @@ static void gnome_font_selection_class_init (GnomeFontSelectionClass *klass);
 static void gnome_font_selection_init (GnomeFontSelection *fontsel);
 static void gnome_font_selection_destroy (GtkObject *object);
 
-static void gnome_font_selection_select_family (GtkTreeSelection *selection, gpointer data);
-static void gnome_font_selection_select_style  (GtkTreeSelection *selection, gpointer data);
-static void gnome_font_selection_select_size   (GtkEditable * editable, gpointer data);
-static void gnome_font_selection_fill_families (GnomeFontSelection * fontsel);
-static void gnome_font_selection_fill_styles   (GnomeFontSelection * fontsel);
+static void gnome_font_selection_select_family (GtkTreeSelection   *selection, gpointer data);
+static void gnome_font_selection_select_style  (GtkTreeSelection   *selection, gpointer data);
+static void gnome_font_selection_select_size   (GtkWidget          *combo,     gpointer data);
+static void gnome_font_selection_fill_families (GnomeFontSelection *fontsel);
+static void gnome_font_selection_fill_styles   (GnomeFontSelection *fontsel);
 static gboolean find_row_to_select_cb (GtkTreeModel *model,
 				       GtkTreePath *path,
 				       GtkTreeIter *iter,
@@ -145,7 +145,6 @@ gnome_font_selection_class_init (GnomeFontSelectionClass *klass)
 static void
 gnome_font_selection_init (GnomeFontSelection * fontsel)
 {
-	static GList * sizelist = NULL;
 	GtkWidget * f, * sw, * tv, * vb, * hb, * c, * l;
 	GtkListStore *store;
 	GtkTreeSelection *selection;
@@ -155,7 +154,8 @@ gnome_font_selection_init (GnomeFontSelection * fontsel)
 	AtkRelation *relation;
 	AtkObject *relation_targets[1];
 	AtkObject *atko;
-
+	gint i;
+	GtkTreeModel *model;
 	gtk_box_set_homogeneous ((GtkBox *) fontsel, TRUE);
 	gtk_box_set_spacing ((GtkBox *) fontsel, 4);
 
@@ -257,35 +257,31 @@ gnome_font_selection_init (GnomeFontSelection * fontsel)
 	gtk_box_pack_start ((GtkBox *) vb, hb, FALSE, FALSE, 0);
 	fontsel->sizebox = hb;
 
-	c = gtk_combo_new ();
+	model = (GtkTreeModel *) gtk_list_store_new (1, G_TYPE_STRING);
+	c = gtk_combo_box_entry_new_with_model (model, 0);
 	gtk_widget_set_size_request (c, 64, -1);
-	gtk_combo_set_value_in_list ((GtkCombo *) c, FALSE, FALSE);
-	gtk_combo_set_use_arrows ((GtkCombo *) c, TRUE);
-	gtk_combo_set_use_arrows_always ((GtkCombo *) c, TRUE);
 	gtk_widget_show (c);
-	g_signal_connect (G_OBJECT (((GtkCombo *) c)->entry), "changed",
+	g_signal_connect (G_OBJECT (c), "changed",
 			  (GCallback) gnome_font_selection_select_size, fontsel);
 	gtk_box_pack_end ((GtkBox *) hb, c, FALSE, FALSE, 0);
 	fontsel->size = c;
 
-	if (!sizelist) {
-		gint i;
-		for (i = 0; i < (sizeof (font_sizes) / sizeof (font_sizes[0])); i++) {
-			sizelist = g_list_prepend (sizelist, font_sizes[i]);
-		}
-		sizelist = g_list_reverse (sizelist);
+	for (i = 0; i < G_N_ELEMENTS (font_sizes); i++) {
+		GtkTreeIter iter;
+
+		gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    0, font_sizes[i],
+				    -1);
+		if (! strcmp (font_sizes[i], "12"))
+			gtk_combo_box_set_active (GTK_COMBO_BOX (c), i);
 	}
-
-	gtk_combo_set_popdown_strings ((GtkCombo *) c, sizelist);
-
-	gtk_entry_set_text ((GtkEntry *) ((GtkCombo *) c)->entry, "12");
 	fontsel->selectedsize = 12.0;
 
 	l = gtk_label_new_with_mnemonic (_("Font _size:"));
 	gtk_widget_show (l);
 	gtk_box_pack_end ((GtkBox *) hb, l, FALSE, FALSE, 0);
-	gtk_label_set_mnemonic_widget ((GtkLabel *) l,
-				       ((GtkCombo *) c)->entry);
+	gtk_label_set_mnemonic_widget ((GtkLabel *) l, c);
 
 	/* Add a LABELLED_BY relation from the combo to the label. */
 	atko = gtk_widget_get_accessible (c);
@@ -420,9 +416,10 @@ gnome_font_selection_select_style (GtkTreeSelection *selection, gpointer data)
 }
 
 static void
-gnome_font_selection_select_size (GtkEditable * editable, gpointer data)
+gnome_font_selection_select_size (GtkWidget *combo, gpointer data)
 {
 	GnomeFontSelection * fontsel;
+	GtkWidget *entry;
 	gchar * sizestr;
 
 	fontsel = GNOME_FONT_SELECTION (data);
@@ -430,7 +427,8 @@ gnome_font_selection_select_size (GtkEditable * editable, gpointer data)
 	if (!fontsel->selectedface)
 		return;
 
-	sizestr = gtk_editable_get_chars (GTK_EDITABLE (GTK_COMBO (fontsel->size)->entry), 0, -1);
+	entry = gtk_bin_get_child (GTK_BIN (combo));
+	sizestr = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
 
 	fontsel->selectedsize = MAX (atoi (sizestr), 1.0);
 
@@ -572,7 +570,7 @@ gnome_font_selection_set_font (GnomeFontSelection * fontsel, GnomeFont * font)
 
 	g_snprintf (b, 32, "%2.1f", size);
 	b[31] = '\0';
-	gtk_entry_set_text ((GtkEntry *) ((GtkCombo *) fontsel->size)->entry, b);
+	gtk_entry_set_text (GTK_ENTRY (gtk_bin_get_child (GTK_BIN (fontsel->size))), b);
 	fontsel->selectedsize = size;
 }
 

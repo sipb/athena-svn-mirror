@@ -42,12 +42,15 @@ G_BEGIN_DECLS
 
 typedef struct _GpaPaperPreviewItem GpaPaperPreviewItem;
 
-GType             gpa_paper_preview_item_get_type (void);
+GType              gpa_paper_preview_item_get_type (void);
 
 GnomeCanvasItem *  gpa_paper_preview_item_new (GnomePrintConfig *config, GtkWidget *widget);
 void               gpa_paper_preview_item_set_lm_highlights (GpaPaperPreviewItem *pp,
 							     gboolean mt, gboolean mb, gboolean ml, gboolean mr);
 
+void               gpa_paper_preview_item_set_logical_margins ( 
+	GpaPaperPreviewItem *pp, 
+	gdouble l, gdouble r, gdouble t, gdouble b);
 
 G_END_DECLS
 

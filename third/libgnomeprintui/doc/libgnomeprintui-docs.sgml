@@ -1,11 +1,13 @@
-<!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
-<!ENTITY libgnomeprintui-gnome-font-dialog SYSTEM "sgml/gnome-font-dialog.sgml">
-<!ENTITY libgnomeprintui-gnome-print-copies SYSTEM "sgml/gnome-print-copies.sgml">
-<!ENTITY libgnomeprintui-gnome-print-dialog SYSTEM "sgml/gnome-print-dialog.sgml">
-<!ENTITY libgnomeprintui-gnome-printer-selector SYSTEM "sgml/gnome-printer-selector.sgml">
-<!ENTITY libgnomeprintui-gnome-print-job-preview SYSTEM "sgml/gnome-print-job-preview.sgml">
-<!ENTITY libgnomeprintui-gnome-print-paper-selector SYSTEM "sgml/gnome-print-paper-selector.sgml">
-<!ENTITY libgnomeprintui-gnome-print-preview SYSTEM "sgml/gnome-print-preview.sgml">
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+		"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY libgnomeprintui-gnome-font-dialog SYSTEM "xml/gnome-font-dialog.xml">
+<!ENTITY libgnomeprintui-gnome-print-copies SYSTEM "xml/gnome-print-copies.xml">
+<!ENTITY libgnomeprintui-gnome-print-dialog SYSTEM "xml/gnome-print-dialog.xml">
+<!ENTITY libgnomeprintui-gnome-printer-selector SYSTEM "xml/gnome-printer-selector.xml">
+<!ENTITY libgnomeprintui-gnome-print-job-preview SYSTEM "xml/gnome-print-job-preview.xml">
+<!ENTITY libgnomeprintui-gnome-print-paper-selector SYSTEM "xml/gnome-print-paper-selector.xml">
+<!ENTITY libgnomeprintui-gnome-print-preview SYSTEM "xml/gnome-print-preview.xml">
 
 ]>
 <book id="index">

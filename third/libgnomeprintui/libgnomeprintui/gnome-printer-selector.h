@@ -52,7 +52,7 @@ struct _GnomePrinterSelector {
 	GtkWidget *printers;   /* GPAPrinterSelector   */
 	GtkWidget *settings;   /* GPASettingsSelector  */
 	GtkWidget *transport;  /* GPATransportSelector */
-	GtkWidget *state, *type, *location, *comment;
+	gulong handler_config; /* signal handler of ->config "modified" signal */
 };
 
 struct _GnomePrinterSelectorClass {
@@ -64,6 +64,7 @@ GtkType            gnome_printer_selector_get_type (void);
 GtkWidget *        gnome_printer_selector_new (GnomePrintConfig *config);
 GtkWidget *        gnome_printer_selector_new_default (void);
 GnomePrintConfig * gnome_printer_selector_get_config (GnomePrinterSelector *psel);
+gboolean           gnome_printer_selector_check_consistency (GnomePrinterSelector *psel);
 
 G_END_DECLS
 

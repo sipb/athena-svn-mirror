@@ -5,14 +5,11 @@ INCLUDES = \
 	$(LIBGNOMEPRINTUI_CFLAGS) \
      -DWE_ARE_LIBGNOMEPRINT_INTERNALS \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DBINDIR=\""$(bindir)"\" \
-	-DDATADIR=\""$(datadir)"\" \
-	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
-	-DGNOME_DISABLE_DEPRECATED
+	-DBINDIR=\""$(bindir)"\" 	\
+	-DDATADIR=\""$(datadir)"\"	\
+	-DG_DISABLE_DEPRECATED		\
+	-DGDK_DISABLE_DEPRECATED	\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED
 
 if EXAMPLES_USE_LOCAL_LIBGNOMEPRINT
 libgnomeprint_local=$(top_builddir)/../libgnomeprint/libgnomeprint/libgnomeprint-2-2.la

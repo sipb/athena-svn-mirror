@@ -1,1573 +1,216 @@
-<HTML
-><HEAD
-><TITLE
->gnome-print-dialog</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GNOME Print UI Reference Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="API Reference"
-HREF="c7.html"><LINK
-REL="PREVIOUS"
-TITLE="gnome-print-copies"
-HREF="libgnomeprintui-gnome-print-copies.html"><LINK
-REL="NEXT"
-TITLE="gnome-printer-selector"
-HREF="libgnomeprintui-gnome-printer-selector.html"></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GNOME Print UI Reference Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="libgnomeprintui-gnome-print-copies.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libgnomeprintui-gnome-printer-selector.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><H1
-><A
-NAME="LIBGNOMEPRINTUI-GNOME-PRINT-DIALOG"
-></A
->gnome-print-dialog</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN647"
-></A
-><H2
->Name</H2
->gnome-print-dialog&nbsp;--&nbsp;</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN650"
-></A
-><H2
->Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="SYNOPSIS"
->&#13;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-print-dialog</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GNOME Print UI Reference Manual"><link rel="up" href="ch02.html" title="API Reference"><link rel="previous" href="libgnomeprintui-gnome-print-copies.html" title="gnome-print-copies"><link rel="next" href="libgnomeprintui-gnome-printer-selector.html" title="gnome-printer-selector"><link rel="chapter" href="libgnomeprintui.html" title="GNOME Print UI Overview"><link rel="chapter" href="ch02.html" title="API Reference"><link rel="refentry" href="libgnomeprintui-gnome-font-dialog.html" title="gnome-font-dialog"><link rel="refentry" href="libgnomeprintui-gnome-print-copies.html" title="gnome-print-copies"><link rel="refentry" href="libgnomeprintui-gnome-print-dialog.html" title="gnome-print-dialog"><link rel="refentry" href="libgnomeprintui-gnome-printer-selector.html" title="gnome-printer-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-job-preview.html" title="gnome-print-job-preview"><link rel="refentry" href="libgnomeprintui-gnome-print-paper-selector.html" title="gnome-print-paper-selector"><link rel="refentry" href="libgnomeprintui-gnome-print-preview.html" title="gnome-print-preview"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2512933" title="Object Hierarchy"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2512997" title="Implemented Interfaces"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2513015" title="Properties"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2513045" title="Description"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2513055" title="Details"><link rel="section" href="libgnomeprintui-gnome-print-dialog.html#id2514338" title="Properties"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprintui-gnome-print-copies.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print UI Reference Manual</th><td><a accesskey="n" href="libgnomeprintui-gnome-printer-selector.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprintui-gnome-print-dialog"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-print-dialog</span></h2><p>gnome-print-dialog &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GnomePrintDialog"></a><pre class="synopsis">
 
-struct      <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOMEPRINTDIALOG-STRUCT"
->GnomePrintDialog</A
->;
-struct      <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOMEPRINTDIALOGCLASS"
->GnomePrintDialogClass</A
->;
-enum        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOMEPRINTRANGETYPE"
->GnomePrintRangeType</A
->;
-GtkWidget*  <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-NEW"
->gnome_print_dialog_new</A
->          (GnomePrintJob *gpj,
+
+
+struct      <a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog-struct">GnomePrintDialog</a>;
+struct      <a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialogClass">GnomePrintDialogClass</a>;
+enum        <a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintRangeType">GnomePrintRangeType</a>;
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-new">gnome_print_dialog_new</a>          (GnomePrintJob *gpj,
                                              const guchar *title,
                                              gint flags);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-CONSTRUCT"
->gnome_print_dialog_construct</A
->    (GnomePrintDialog *gpd,
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-construct">gnome_print_dialog_construct</a>    (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              const guchar *title,
                                              gint flags);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-CUSTOM"
->gnome_print_dialog_construct_range_custom</A
->
-                                            (GnomePrintDialog *gpd,
-                                             GtkWidget *custom);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-ANY"
->gnome_print_dialog_construct_range_any</A
->
-                                            (GnomePrintDialog *gpd,
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-construct-range-custom">gnome_print_dialog_construct_range_custom</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *custom);
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-construct-range-any">gnome_print_dialog_construct_range_any</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint flags,
-                                             GtkWidget *range_widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *range_widget,
                                              const guchar *currentlabel,
                                              const guchar *rangelabel);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-PAGE"
->gnome_print_dialog_construct_range_page</A
->
-                                            (GnomePrintDialog *gpd,
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-construct-range-page">gnome_print_dialog_construct_range_page</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint flags,
                                              gint start,
                                              gint end,
                                              const guchar *currentlabel,
                                              const guchar *rangelabel);
-<A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOMEPRINTRANGETYPE"
->GnomePrintRangeType</A
-> <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-GET-RANGE"
->gnome_print_dialog_get_range</A
->
-                                            (GnomePrintDialog *gpd);
-int         <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-GET-RANGE-PAGE"
->gnome_print_dialog_get_range_page</A
->
-                                            (GnomePrintDialog *gpd,
+<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintRangeType">GnomePrintRangeType</a> <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-range">gnome_print_dialog_get_range</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd);
+int         <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-range-page">gnome_print_dialog_get_range_page</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint *start,
                                              gint *end);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-GET-COPIES"
->gnome_print_dialog_get_copies</A
->   (GnomePrintDialog *gpd,
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-copies">gnome_print_dialog_get_copies</a>   (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint *copies,
-                                             gint *collate);
-void        <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-SET-COPIES"
->gnome_print_dialog_set_copies</A
->   (GnomePrintDialog *gpd,
+                                             gboolean *collate);
+void        <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-set-copies">gnome_print_dialog_set_copies</a>   (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint copies,
                                              gint collate);
-GnomePrintConfig* <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-GET-CONFIG"
->gnome_print_dialog_get_config</A
->
-                                            (GnomePrintDialog *gpd);&#13;</PRE
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN699"
-></A
-><H2
->Description</H2
-><P
-></P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN702"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN704"
-></A
-><H3
-><A
-NAME="GNOMEPRINTDIALOG-STRUCT"
-></A
->struct GnomePrintDialog</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomePrintDialog;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN709"
-></A
-><H3
-><A
-NAME="GNOMEPRINTDIALOGCLASS"
-></A
->struct GnomePrintDialogClass</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GnomePrintDialogClass;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN714"
-></A
-><H3
-><A
-NAME="GNOMEPRINTRANGETYPE"
-></A
->enum GnomePrintRangeType</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->typedef enum {
+GnomePrintConfig* <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-config">gnome_print_dialog_get_config</a>
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2512933"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a
+href="../gtk/GtkObject.html"
+>GtkObject</a>
+         +----<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>
+               +----<a
+href="../gtk/GtkContainer.html"
+>GtkContainer</a>
+                     +----<a
+href="../gtk/GtkBin.html"
+>GtkBin</a>
+                           +----<a
+href="../gtk/GtkWindow.html"
+>GtkWindow</a>
+                                 +----<a
+href="../gtk/GtkDialog.html"
+>GtkDialog</a>
+                                       +----GnomePrintDialog
+</pre></div><div class="refsect1" lang="en"><a name="id2512997"></a><h2>Implemented Interfaces</h2><p>
+GnomePrintDialog implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2513015"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog--print-config">print-config</a>"         gpointer              : Write / Construct Only
+</pre></div><div class="refsect1" lang="en"><a name="id2513045"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2513055"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2513061"></a><h3><a name="GnomePrintDialog-struct"></a>struct GnomePrintDialog</h3><a class="indexterm" name="id2513072"></a><pre class="programlisting">struct GnomePrintDialog;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2513087"></a><h3><a name="GnomePrintDialogClass"></a>struct GnomePrintDialogClass</h3><a class="indexterm" name="id2513098"></a><pre class="programlisting">struct GnomePrintDialogClass {
+
+	GtkDialogClass parent_class;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2513113"></a><h3><a name="GnomePrintRangeType"></a>enum GnomePrintRangeType</h3><a class="indexterm" name="id2513125"></a><pre class="programlisting">typedef enum {
 	GNOME_PRINT_RANGETYPE_NONE,
 	GNOME_PRINT_RANGETYPE_CUSTOM,
 	GNOME_PRINT_RANGETYPE_PAGES
-} GnomePrintRangeType;</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN719"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-NEW"
-></A
->gnome_print_dialog_new ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GtkWidget*  gnome_print_dialog_new          (GnomePrintJob *gpj,
+} GnomePrintRangeType;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2513142"></a><h3><a name="gnome-print-dialog-new"></a>gnome_print_dialog_new ()</h3><a class="indexterm" name="id2513153"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  gnome_print_dialog_new          (GnomePrintJob *gpj,
                                              const guchar *title,
-                                             gint flags);</PRE
-></TD
-></TR
-></TABLE
-><P
->Create a new gnome-print-dialog window.</P
-><P
->The following options flags are available:
+                                             gint flags);</pre><p>
+Create a new gnome-print-dialog window.
+</p><p>
+The following options flags are available:
 GNOME_PRINT_DIALOG_RANGE: A range widget container will be created.
 A range widget must be created separately, using one of the
 gnome_print_dialog_construct_* functions.
-GNOME_PRINT_DIALOG_COPIES: A copies widget will be created.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN730"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpj</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> GnomePrintJob</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->title</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Title of window.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->flags</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Options for created widget.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A newly created and initialised widget.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN751"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-CONSTRUCT"
-></A
->gnome_print_dialog_construct ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_construct    (GnomePrintDialog *gpd,
+GNOME_PRINT_DIALOG_COPIES: A copies widget will be created.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpj</tt></i> :</span></td><td> GnomePrintJob
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Title of window.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> Options for created widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A newly created and initialised widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513266"></a><h3><a name="gnome-print-dialog-construct"></a>gnome_print_dialog_construct ()</h3><a class="indexterm" name="id2513277"></a><pre class="programlisting">void        gnome_print_dialog_construct    (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              const guchar *title,
-                                             gint flags);</PRE
-></TD
-></TR
-></TABLE
-><P
->Used for language bindings to post-initialise an object instantiation.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN760"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A created GnomePrintDialog.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->title</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Title of the window.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->flags</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Initialisation options, see <A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-NEW"
->gnome_print_dialog_new</A
->().</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN778"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-CUSTOM"
-></A
->gnome_print_dialog_construct_range_custom ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_construct_range_custom
-                                            (GnomePrintDialog *gpd,
-                                             GtkWidget *custom);</PRE
-></TD
-></TR
-></TABLE
-><P
->Install a custom range specification widget.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN786"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GnomePrintDialog for which a range was requested.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->custom</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A widget which will be placed in a "Range" frame in the
-main display.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN799"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-ANY"
-></A
->gnome_print_dialog_construct_range_any ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_construct_range_any
-                                            (GnomePrintDialog *gpd,
+                                             gint flags);</pre><p>
+Used for language bindings to post-initialise an object instantiation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A created GnomePrintDialog.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Title of the window.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> Initialisation options, see <a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-new"><tt class="function">gnome_print_dialog_new()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513383"></a><h3><a name="gnome-print-dialog-construct-range-custom"></a>gnome_print_dialog_construct_range_custom ()</h3><a class="indexterm" name="id2513396"></a><pre class="programlisting">void        gnome_print_dialog_construct_range_custom
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *custom);</pre><p>
+Install a custom range specification widget.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A GnomePrintDialog for which a range was requested.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>custom</tt></i> :</span></td><td> A widget which will be placed in a "Range" frame in the
+main display.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513470"></a><h3><a name="gnome-print-dialog-construct-range-any"></a>gnome_print_dialog_construct_range_any ()</h3><a class="indexterm" name="id2513482"></a><pre class="programlisting">void        gnome_print_dialog_construct_range_any
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint flags,
-                                             GtkWidget *range_widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *range_widget,
                                              const guchar *currentlabel,
-                                             const guchar *rangelabel);</PRE
-></TD
-></TR
-></TABLE
-><P
->Create a generic range area within the print range dialogue.  The flags
-field contains a mask of which options you wish displayed:</P
-><P
->GNOME_PRINT_RANGE_CURRENT: A label <TT
-CLASS="PARAMETER"
-><I
->currentlabel</I
-></TT
-> will be displayed.
+                                             const guchar *rangelabel);</pre><p>
+Create a generic range area within the print range dialogue.  The flags
+field contains a mask of which options you wish displayed:
+</p><p>
+GNOME_PRINT_RANGE_CURRENT: A label <i class="parameter"><tt>currentlabel</tt></i> will be displayed.
 GNOME_PRINT_RANGE_ALL: A label "All" will be displayed.
-GNOME_PRINT_RANGE_RANGE: A label <TT
-CLASS="PARAMETER"
-><I
->rangelabel</I
-></TT
-> will be displayed, next
-to the range specification widget <TT
-CLASS="PARAMETER"
-><I
->range_widget</I
-></TT
->.
-GNOME_PRINT_RANGE_SELECTION: A label "Selection" will be displayed.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN814"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> An initialise GnomePrintDialog, which can contain a range.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->flags</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Options flags, which ranges are displayed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->range_widget</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Widget to display for the range option.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->currentlabel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Label to display next to the 'current page' button.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->rangelabel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Label to display next to the 'range' button.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN839"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-CONSTRUCT-RANGE-PAGE"
-></A
->gnome_print_dialog_construct_range_page ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_construct_range_page
-                                            (GnomePrintDialog *gpd,
+GNOME_PRINT_RANGE_RANGE: A label <i class="parameter"><tt>rangelabel</tt></i> will be displayed, next
+to the range specification widget <i class="parameter"><tt>range_widget</tt></i>.
+GNOME_PRINT_RANGE_SELECTION: A label "Selection" will be displayed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> An initialise GnomePrintDialog, which can contain a range.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> Options flags, which ranges are displayed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>range_widget</tt></i> :</span></td><td> Widget to display for the range option.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>currentlabel</tt></i> :</span></td><td> Label to display next to the 'current page' button.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>rangelabel</tt></i> :</span></td><td> Label to display next to the 'range' button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513652"></a><h3><a name="gnome-print-dialog-construct-range-page"></a>gnome_print_dialog_construct_range_page ()</h3><a class="indexterm" name="id2513664"></a><pre class="programlisting">void        gnome_print_dialog_construct_range_page
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint flags,
                                              gint start,
                                              gint end,
                                              const guchar *currentlabel,
-                                             const guchar *rangelabel);</PRE
-></TD
-></TR
-></TABLE
-><P
->Construct a generic page/sheet range area.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN851"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> An initialise GnomePrintDialog, which can contain a range.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->flags</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Option flags.  See gnome_print_dialog_construct_any().</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->start</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> First page which may be printed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->end</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Last page which may be printed.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->currentlabel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Label text for current option.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->rangelabel</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Label text for range option.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN881"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-GET-RANGE"
-></A
->gnome_print_dialog_get_range ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOMEPRINTRANGETYPE"
->GnomePrintRangeType</A
-> gnome_print_dialog_get_range
-                                            (GnomePrintDialog *gpd);</PRE
-></TD
-></TR
-></TABLE
-><P
->Return the range option selected by the user.  This is a bitmask
-with only 1 bit set, out of:</P
-><P
->GNOME_PRINT_RANGE_CURRENT: The current option selected.
+                                             const guchar *rangelabel);</pre><p>
+Construct a generic page/sheet range area.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> An initialise GnomePrintDialog, which can contain a range.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> Option flags.  See <tt class="function">gnome_print_dialog_construct_any()</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>start</tt></i> :</span></td><td> First page which may be printed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end</tt></i> :</span></td><td> Last page which may be printed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>currentlabel</tt></i> :</span></td><td> Label text for current option.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>rangelabel</tt></i> :</span></td><td> Label text for range option.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513838"></a><h3><a name="gnome-print-dialog-get-range"></a>gnome_print_dialog_get_range ()</h3><a class="indexterm" name="id2513851"></a><pre class="programlisting"><a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintRangeType">GnomePrintRangeType</a> gnome_print_dialog_get_range
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd);</pre><p>
+Return the range option selected by the user.  This is a bitmask
+with only 1 bit set, out of:
+</p><p>
+GNOME_PRINT_RANGE_CURRENT: The current option selected.
 GNOME_PRINT_RANGE_ALL: The all option selected.
 GNOME_PRINT_RANGE_RANGE The range option selected.
-GNOME_PRINT_RANGE_SELECTION: The selection option selected.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN890"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GnomePrintDialog with a range display.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A bitmask with one option set.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN903"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-GET-RANGE-PAGE"
-></A
->gnome_print_dialog_get_range_page ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_print_dialog_get_range_page
-                                            (GnomePrintDialog *gpd,
+GNOME_PRINT_RANGE_SELECTION: The selection option selected.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A GnomePrintDialog with a range display.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A bitmask with one option set.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2513921"></a><h3><a name="gnome-print-dialog-get-range-page"></a>gnome_print_dialog_get_range_page ()</h3><a class="indexterm" name="id2513934"></a><pre class="programlisting">int         gnome_print_dialog_get_range_page
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint *start,
-                                             gint *end);</PRE
-></TD
-></TR
-></TABLE
-><P
->Retrieves the user choice for range type and range, if the user
-has requested a range of pages to print.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN912"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GnomePrintDialog with a page range display.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->start</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Return for the user-specified start page.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->end</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Return for the user-specified end page.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A bitmask with the user-selection set.  See
-<A
-HREF="libgnomeprintui-gnome-print-dialog.html#GNOME-PRINT-DIALOG-GET-RANGE"
->gnome_print_dialog_get_range</A
->().</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN934"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-GET-COPIES"
-></A
->gnome_print_dialog_get_copies ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_get_copies   (GnomePrintDialog *gpd,
+                                             gint *end);</pre><p>
+Retrieves the user choice for range type and range, if the user
+has requested a range of pages to print.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A GnomePrintDialog with a page range display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>start</tt></i> :</span></td><td> Return for the user-specified start page.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end</tt></i> :</span></td><td> Return for the user-specified end page.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A bitmask with the user-selection set.  See
+<a href="libgnomeprintui-gnome-print-dialog.html#gnome-print-dialog-get-range"><tt class="function">gnome_print_dialog_get_range()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2514052"></a><h3><a name="gnome-print-dialog-get-copies"></a>gnome_print_dialog_get_copies ()</h3><a class="indexterm" name="id2514064"></a><pre class="programlisting">void        gnome_print_dialog_get_copies   (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint *copies,
-                                             gint *collate);</PRE
-></TD
-></TR
-></TABLE
-><P
->Retrieves the number of copies and collation indicator from
+                                             gboolean *collate);</pre><p>
+Retrieves the number of copies and collation indicator from
 the print dialogue.  If the print dialogue does not have a
-copies indicator, then a default of 1 copy is returned.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN943"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GnomePrintDialog with a copies display.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->copies</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Return for the number of copies.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->collate</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> Return for collation flag.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN960"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-SET-COPIES"
-></A
->gnome_print_dialog_set_copies ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_print_dialog_set_copies   (GnomePrintDialog *gpd,
+copies indicator, then a default of 1 copy is returned.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A GnomePrintDialog with a copies display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>copies</tt></i> :</span></td><td> Return for the number of copies.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>collate</tt></i> :</span></td><td> Return for collation flag.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2514161"></a><h3><a name="gnome-print-dialog-set-copies"></a>gnome_print_dialog_set_copies ()</h3><a class="indexterm" name="id2514173"></a><pre class="programlisting">void        gnome_print_dialog_set_copies   (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd,
                                              gint copies,
-                                             gint collate);</PRE
-></TD
-></TR
-></TABLE
-><P
->Sets the print copies and collation status in the print dialogue.</P
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN969"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> A GnomePrintDialog with a copies display.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->copies</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> New number of copies.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->collate</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-> New collation status.</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN986"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-DIALOG-GET-CONFIG"
-></A
->gnome_print_dialog_get_config ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GnomePrintConfig* gnome_print_dialog_get_config
-                                            (GnomePrintDialog *gpd);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN993"
-></A
-><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->gpd</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="libgnomeprintui-gnome-print-copies.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="c7.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libgnomeprintui-gnome-printer-selector.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-print-copies</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->gnome-printer-selector</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+                                             gint collate);</pre><p>
+Sets the print copies and collation status in the print dialogue.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td> A GnomePrintDialog with a copies display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>copies</tt></i> :</span></td><td> New number of copies.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>collate</tt></i> :</span></td><td> New collation status.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2514268"></a><h3><a name="gnome-print-dialog-get-config"></a>gnome_print_dialog_get_config ()</h3><a class="indexterm" name="id2514279"></a><pre class="programlisting">GnomePrintConfig* gnome_print_dialog_get_config
+                                            (<a href="libgnomeprintui-gnome-print-dialog.html#GnomePrintDialog">GnomePrintDialog</a> *gpd);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gpd</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2514338"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2514343"></a><h3><a name="GnomePrintDialog--print-config"></a>The "<tt class="literal">print-config</tt>" property</h3><pre class="programlisting">  "print-config"         gpointer              : Write / Construct Only</pre><p>Printing Configuration to be used.</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeprintui-gnome-print-copies.html"><b>&lt;&lt; gnome-print-copies</b></a></td><td align="right"><a accesskey="n" href="libgnomeprintui-gnome-printer-selector.html"><b>gnome-printer-selector &gt;&gt;</b></a></td></tr></table></body></html>

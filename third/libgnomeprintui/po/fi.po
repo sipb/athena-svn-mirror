@@ -2,341 +2,20 @@
 # Suomennos: http://gnome-fi.sourceforge.net/
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # Mikko Rauhala <mjr@iki.fi>, 1999.
-# Sami Pesonen <sampeson@iki.fi>, 2000-2003.
-#  
+# Sami Pesonen <sampeson@iki.fi>, 2000-2004.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui\n"
-"POT-Creation-Date: 2003-02-02 20:53-0500\n"
-"PO-Revision-Date: 2003-01-05 00:34+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-08-02 01:00+0300\n"
 "Last-Translator: Sami Pesonen <sampeson@iki.fi>\n"
-"Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
-"sourceforge.net>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#. Family frame
-#: libgnomeprintui/gnome-font-dialog.c:164
-#: libgnomeprintui/gnome-font-dialog.c:199
-msgid "Font family"
-msgstr "Kirjasinperhe"
-
-#: libgnomeprintui/gnome-font-dialog.c:200
-msgid "The list of font families available"
-msgstr "Saatavilla olevien kirjasinperheiden luettelo"
-
-#. Style frame
-#: libgnomeprintui/gnome-font-dialog.c:209
-msgid "Style"
-msgstr "Tyyli"
-
-#: libgnomeprintui/gnome-font-dialog.c:250
-msgid "Font style"
-msgstr "Kirjasimen tyyli"
-
-#: libgnomeprintui/gnome-font-dialog.c:251
-msgid "The list of styles available for the selected font family"
-msgstr "Valitun kirjasinperheen saatavilla oleva luettelo tyyleistä"
-
-#: libgnomeprintui/gnome-font-dialog.c:284
-msgid "Font _size:"
-msgstr "Kirjasimen _koko:"
-
-#: libgnomeprintui/gnome-font-dialog.c:775
-msgid "This font does not have sample"
-msgstr "Tällä kirjasimella ei ole näytettä"
-
-#: libgnomeprintui/gnome-font-dialog.c:882
-msgid "Font Preview"
-msgstr "Kirjasimen esikatselu"
-
-#: libgnomeprintui/gnome-font-dialog.c:883
-msgid "Displays some example text in the selected font"
-msgstr "Tulostaa esimerkkitekstiä valitulla kirjasimella"
-
-#: libgnomeprintui/gnome-font-dialog.c:898
-msgid "Font Selection"
-msgstr "Kirjasimen valinta"
-
-#: libgnomeprintui/gnome-print-copies.c:245
-msgid "Copies"
-msgstr "Kopioita"
-
-#: libgnomeprintui/gnome-print-copies.c:254
-msgid "N_umber of copies:"
-msgstr "K_opioiden lukumäärä:"
-
-#: libgnomeprintui/gnome-print-copies.c:281
-msgid ""
-"Image showing the collation sequence when multiple copies of the document "
-"are printed"
-msgstr ""
-"Kuva näyttämässä asiakirjan tulostettavien kopioiden lajittelujärjestystä"
-
-#: libgnomeprintui/gnome-print-copies.c:283
-msgid "_Collate"
-msgstr "_Lajittele"
-
-#: libgnomeprintui/gnome-print-copies.c:288
-msgid ""
-"If copies of the document are printed separately, one after another, rather "
-"than being interleaved"
-msgstr ""
-"Jos asiakirjasta tulostetaan kopioita erikseen, tulostetaan ne peräkkäin, "
-"lomittaisen tulostuksen sijaan"
-
-#: libgnomeprintui/gnome-print-dialog.c:163
-msgid "Print range"
-msgstr "Tulostusalue"
-
-#: libgnomeprintui/gnome-print-dialog.c:201
-msgid "_All"
-msgstr "_Kaikki"
-
-#: libgnomeprintui/gnome-print-dialog.c:223
-msgid "_Selection"
-msgstr "_Valitse kirjasinlaji"
-
-#: libgnomeprintui/gnome-print-dialog.c:300
-msgid "Job"
-msgstr "Työ"
-
-#: libgnomeprintui/gnome-print-dialog.c:314
-#: libgnomeprintui/gnome-printer-selector.c:108
-msgid "Printer"
-msgstr "Tulostin"
-
-#: libgnomeprintui/gnome-print-dialog.c:324
-msgid "Paper"
-msgstr "Paperi"
-
-#: libgnomeprintui/gnome-print-dialog.c:331
-msgid "Error while loading printer configuration"
-msgstr "Virhe tulostimen asetusten lataamisessa"
-
-#: libgnomeprintui/gnome-print-dialog.c:336
-msgid "Gnome Print Dialog"
-msgstr "Gnomen tulostusikkuna"
-
-#: libgnomeprintui/gnome-print-dialog.c:482
-msgid "_From:"
-msgstr "_Mistä:"
-
-#: libgnomeprintui/gnome-print-dialog.c:496
-msgid "Sets the start of the range of pages to be printed"
-msgstr "Asettaa ensimmäisen tulostettavan sivun"
-
-#: libgnomeprintui/gnome-print-dialog.c:506
-msgid "_To:"
-msgstr "_Mihin:"
-
-#: libgnomeprintui/gnome-print-dialog.c:520
-msgid "Sets the end of the range of pages to be printed"
-msgstr "Asettaa viimeisen tulostettavan sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:614
-msgid "Page Preview"
-msgstr "Esikatselu"
-
-#: libgnomeprintui/gnome-print-job-preview.c:615
-msgid "The preview of a page in the document to be printed"
-msgstr "Asiakirjasta tulostettavan sivun esikatselu"
-
-#: libgnomeprintui/gnome-print-job-preview.c:666
-msgid "P_age: "
-msgstr "_Sivu: "
-
-#. We are displaying 'Page: XXX of XXX'.
-#: libgnomeprintui/gnome-print-job-preview.c:682
-msgid "of"
-msgstr "/"
-
-#: libgnomeprintui/gnome-print-job-preview.c:688
-msgid "Page total"
-msgstr "Sivuja"
-
-#: libgnomeprintui/gnome-print-job-preview.c:689
-msgid "The total number of pages in the document"
-msgstr "Asiakirjassa olevien sivujen kokonaislukumäärä"
-
-#: libgnomeprintui/gnome-print-job-preview.c:741
-msgid "Prints the current file"
-msgstr "Tulostaa tämänhetkisen tiedoston"
-
-#: libgnomeprintui/gnome-print-job-preview.c:745
-msgid "Closes print preview window"
-msgstr "Sulkee tulostuksen esikatseluikkunan"
-
-#: libgnomeprintui/gnome-print-job-preview.c:750
-msgid "Shows the first page"
-msgstr "Näyttää ensimmäisen sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:752
-msgid "Shows the previous page"
-msgstr "Näyttää edellisen sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:754
-msgid "Shows the next page"
-msgstr "Näyttää seuraavan sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:756
-msgid "Shows the last page"
-msgstr "Näyttää viimeisen sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:761
-msgid "Zooms 1:1"
-msgstr "Näyttää suhteessa 1:1"
-
-#: libgnomeprintui/gnome-print-job-preview.c:763
-msgid "Zooms to fit the whole page"
-msgstr "Näyttää koko sivun"
-
-#: libgnomeprintui/gnome-print-job-preview.c:765
-msgid "Zooms the page in"
-msgstr "Lähentää sivua"
-
-#: libgnomeprintui/gnome-print-job-preview.c:767
-msgid "Zooms the page out"
-msgstr "Loitontaa sivua"
-
-#: libgnomeprintui/gnome-print-job-preview.c:882
-msgid "Gnome Print Preview"
-msgstr "Gnomen tulostuksen esikatselu"
-
-#: libgnomeprintui/gnome-print-job-preview.c:907
-msgid ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">No visible output was created.</span></markup>"
-msgstr ""
-"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
-"\">Näkyvää tulostetta ei syntynyt.</span></markup>"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:381
-msgid "Pt"
-msgstr "Piste"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:382
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:383
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:384
-msgid "m"
-msgstr "m"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:385
-msgid "in"
-msgstr "in"
-
-#. Create frame for selection menus
-#: libgnomeprintui/gnome-print-paper-selector.c:550
-msgid "Paper and layout"
-msgstr "Paperi ja asemointi"
-
-#. Paper size selector
-#: libgnomeprintui/gnome-print-paper-selector.c:563
-msgid "Paper _size:"
-msgstr "Paperin _koko:"
-
-#. Custom paper Width
-#: libgnomeprintui/gnome-print-paper-selector.c:575
-msgid "_Width:"
-msgstr "_Leveys:"
-
-#. Custom paper Height
-#: libgnomeprintui/gnome-print-paper-selector.c:592
-msgid "_Height:"
-msgstr "_Korkeus:"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:616
-msgid "Metric selector"
-msgstr "Mittojen valinta"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:617
-msgid ""
-"Specifies the metric to use when setting the width and height of the paper"
-msgstr "Määrittää paperin leveyden ja korkeuden asettelussa käytettävät mitat"
-
-#. Feed orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:620
-msgid "_Feed orientation:"
-msgstr "_Syöttösuunta:"
-
-#. Page orientation
-#: libgnomeprintui/gnome-print-paper-selector.c:635
-msgid "Page _orientation:"
-msgstr "Sivun _suunta:"
-
-#. Layout
-#: libgnomeprintui/gnome-print-paper-selector.c:647
-msgid "_Layout:"
-msgstr "_Asemointi:"
-
-#. Preview frame
-#: libgnomeprintui/gnome-print-paper-selector.c:659
-#: libgnomeprintui/gnome-print-paper-selector.c:669
-msgid "Preview"
-msgstr "Esikatselu"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:670
-msgid "Preview of the page size, orientation and layout"
-msgstr "Paperin koon, suunnan ja asemoinnin esikatselu"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:688
-msgid "Margins"
-msgstr "Marginaalit"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:722
-msgid "Top"
-msgstr "Ylälaita"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:725
-msgid "Bottom"
-msgstr "Alalaita"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:728
-msgid "Left"
-msgstr "Vasen"
-
-#: libgnomeprintui/gnome-print-paper-selector.c:731
-msgid "Right"
-msgstr "Oikea"
-
-#: libgnomeprintui/gnome-printer-selector.c:123
-msgid "State:"
-msgstr "Tila:"
-
-#: libgnomeprintui/gnome-printer-selector.c:126
-msgid "Type:"
-msgstr "Tyyppi:"
-
-#: libgnomeprintui/gnome-printer-selector.c:129
-msgid "Comment:"
-msgstr "Kommentti:"
-
-#: libgnomeprintui/gnome-printer-selector.c:131
-msgid "Co_nfigure"
-msgstr "_Muokkaa"
-
-#: libgnomeprintui/gnome-printer-selector.c:139
-msgid "Adjust the settings of the selected printer"
-msgstr "Säädä valitun tulostimen asetuksia"
-
-#: libgnomeprintui/gnome-printer-selector.c:150
-msgid "Pr_inter:"
-msgstr "_Tulostin:"
-
-#: libgnomeprintui/gnome-printer-selector.c:159
-msgid "_Settings:"
-msgstr "_Asetukset:"
-
-#: libgnomeprintui/gnome-printer-selector.c:168
-msgid "_Location:"
-msgstr "S_ijainti:"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:128
 msgid "Text"
@@ -344,7 +23,7 @@ msgstr "Teksti"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:129
 msgid "Text to render"
-msgstr "Esitettävä teksti"
+msgstr "Piirtyvä teksti"
 
 #: libgnomeprintui/gnome-canvas-hacktext.c:148
 #: libgnomeprintui/gnome-canvas-hacktext.c:149
@@ -372,15 +51,369 @@ msgstr "Kirjasin"
 msgid "Font as a GnomeFont struct"
 msgstr "Kirjasin GnomeFont-rakenteena"
 
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Kirjasinperhe"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr "Saatavilla olevien kirjasinperheiden luettelo"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Tyyli"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+msgid "Font style"
+msgstr "Kirjasimen tyyli"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr "Luettelo valitun kirjasinperheen saatavilla olevista tyyleistä"
+
+#: libgnomeprintui/gnome-font-dialog.c:281
+msgid "Font _size:"
+msgstr "Kirjasimen _koko:"
+
+#: libgnomeprintui/gnome-font-dialog.c:773
+msgid "This font does not have sample"
+msgstr "Tästä kirjasimesta ei ole näytettä"
+
+#: libgnomeprintui/gnome-font-dialog.c:880
+msgid "Font Preview"
+msgstr "Kirjasimen esikatselu"
+
+#: libgnomeprintui/gnome-font-dialog.c:881
+msgid "Displays some example text in the selected font"
+msgstr "Tulostaa esimerkkitekstiä valitulla kirjasimella"
+
+#: libgnomeprintui/gnome-font-dialog.c:896
+msgid "Font Selection"
+msgstr "Kirjasimen valinta"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "Oletusasetukset"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "Kaksipuolista tulostusta esittävä kuva"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "_Kaksipuolinen"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "Sivut tulostetaan kaksipuoliseksi."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr "Kaksipuolista tulostusta toinen puoli ylösalaisin esittävä kuva."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "_Sekaisin"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"Jos asiakirjan kopiot tulostetaan kaksipuolisina, toinen sivu tulostetaan "
+"ylösalaisin."
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "_Tulostusaika:"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "Virhe tulostimen asetusten lataamisessa"
+
+#: libgnomeprintui/gnome-print-copies.c:261
+msgid "Copies"
+msgstr "Kopioita"
+
+#: libgnomeprintui/gnome-print-copies.c:274
+msgid "N_umber of copies:"
+msgstr "K_opioiden lukumäärä:"
+
+#: libgnomeprintui/gnome-print-copies.c:292
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr "Asiakirjan tulostettavien kopioiden lajittelujärjestystä esittävä kuva"
+
+#: libgnomeprintui/gnome-print-copies.c:294
+msgid "_Collate"
+msgstr "_Lajittele"
+
+#: libgnomeprintui/gnome-print-copies.c:299
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr "Asiakirjan kopiot tulostetaan peräkkäin, ei lomittain."
+
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "Tulostusalue"
+
+#: libgnomeprintui/gnome-print-dialog.c:246
+msgid "_All"
+msgstr "_Kaikki"
+
+#: libgnomeprintui/gnome-print-dialog.c:268
+msgid "_Selection"
+msgstr "_Valinta"
+
+#: libgnomeprintui/gnome-print-dialog.c:345
+msgid "Job"
+msgstr "Työ"
+
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
+msgid "Printer"
+msgstr "Tulostin"
+
+#: libgnomeprintui/gnome-print-dialog.c:382
+msgid "Paper"
+msgstr "Paperi"
+
+#: libgnomeprintui/gnome-print-dialog.c:396
+msgid "Gnome Print Dialog"
+msgstr "Gnomen tulostusikkuna"
+
+#: libgnomeprintui/gnome-print-dialog.c:546
+msgid "_From:"
+msgstr "_Mistä:"
+
+#: libgnomeprintui/gnome-print-dialog.c:559
+msgid "Sets the start of the range of pages to be printed"
+msgstr "Asettaa ensimmäisen tulostettavan sivun"
+
+#: libgnomeprintui/gnome-print-dialog.c:561
+msgid "_To:"
+msgstr "_Mihin:"
+
+#: libgnomeprintui/gnome-print-dialog.c:574
+msgid "Sets the end of the range of pages to be printed"
+msgstr "Asettaa viimeisen tulostettavan sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:618
+msgid "Page Preview"
+msgstr "Esikatselu"
+
+#: libgnomeprintui/gnome-print-job-preview.c:619
+msgid "The preview of a page in the document to be printed"
+msgstr "Tulostettavan asiakirjan sivun esikatselu"
+
+#: libgnomeprintui/gnome-print-job-preview.c:636
+msgid "P_age: "
+msgstr "_Sivu: "
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:652
+msgid "of"
+msgstr "/"
+
+#: libgnomeprintui/gnome-print-job-preview.c:658
+msgid "Page total"
+msgstr "Sivuja yhteensä"
+
+#: libgnomeprintui/gnome-print-job-preview.c:659
+msgid "The total number of pages in the document"
+msgstr "Asiakirjassa olevien sivujen kokonaislukumäärä"
+
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "Käytä _teeman värejä sisältöä varten"
+
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "Muu"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "Tulostaa nykyisen tiedoston"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "Sulkee tulostuksen esikatseluikkunan"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "Näyttää ensimmäisen sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
+msgid "Shows the previous page"
+msgstr "Näyttää edellisen sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:818
+msgid "Shows the next page"
+msgstr "Näyttää seuraavan sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:826
+msgid "Shows the last page"
+msgstr "Näyttää viimeisen sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:839
+msgid "Zooms 1:1"
+msgstr "Näyttää suhteessa 1:1"
+
+#: libgnomeprintui/gnome-print-job-preview.c:847
+msgid "Zooms to fit the whole page"
+msgstr "Näyttää koko sivun"
+
+#: libgnomeprintui/gnome-print-job-preview.c:855
+msgid "Zooms the page in"
+msgstr "Lähentää sivua"
+
+#: libgnomeprintui/gnome-print-job-preview.c:863
+msgid "Zooms the page out"
+msgstr "Loitontaa sivua"
+
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "Näytä useita sivuja"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "Sivujen lukumäärä vaakasuunnassa"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "Sivujen lukumäärä pystysuunnassa"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
+msgid "Gnome Print Preview"
+msgstr "Gnomen tulostuksen esikatselu"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr "Näkyvää tulostetta ei luotu."
+
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "Paperi ja asemointi"
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:457
+msgid "Paper _size:"
+msgstr "Paperin _koko:"
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:468
+msgid "_Width:"
+msgstr "_Leveys:"
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:482
+msgid "_Height:"
+msgstr "_Korkeus:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:500
+msgid "Metric selector"
+msgstr "Mittojen valinta"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:501
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr "Määrittää paperin leveyden ja korkeuden asettelussa käytettävät mitat"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:504
+msgid "_Feed orientation:"
+msgstr "_Syöttösuunta:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:518
+msgid "Page _orientation:"
+msgstr "Sivun _suunta:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:529
+msgid "_Layout:"
+msgstr "_Asemointi:"
+
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "Paperin _lokero:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
+msgid "Preview"
+msgstr "Esikatselu"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:569
+msgid "Preview of the page size, orientation and layout"
+msgstr "Paperin koon, suunnan ja asemoinnin esikatselu"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "Margins"
+msgstr "Reunukset"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:609
+msgid "Top"
+msgstr "Yläreuna"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:612
+msgid "Bottom"
+msgstr "Alareuna"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:615
+msgid "Left"
+msgstr "Vasen"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:618
+msgid "Right"
+msgstr "Oikea"
+
+#: libgnomeprintui/gnome-printer-selector.c:168
+msgid "Co_nfigure"
+msgstr "_Muokkaa"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr "Säädä valitun tulostimen asetuksia"
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "_Asetukset:"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
+msgid "_Location:"
+msgstr "S_ijainti:"
+
 #: libgnomeprintui/gpaui/gpa-option-menu.c:179
 #: libgnomeprintui/gpaui/gpa-option-menu.c:229
-#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
 msgid "No options are defined"
 msgstr "Asetuksia ei ole määritelty"
 
-#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
-msgid "No printers could be loaded"
-msgstr "Tulostimia ei voitu ladata"
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "Tulosta _tiedostoon"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+msgid "State"
+msgstr "Tila"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+msgid "Jobs"
+msgstr "Työt"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+msgid "Location"
+msgstr "Sijainti"
 
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:180
 msgid "No printer selected"
@@ -393,3 +426,60 @@ msgstr "Asetuksia ei ole saatavilla"
 #: libgnomeprintui/gpaui/gpa-settings-selector.c:234
 msgid "Add new settings"
 msgstr "Lisää uusia asetuksia"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
+
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "pt"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "m"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "in"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr "Annettu tiedostonimi \"%s\" on olemassaolevan hakemiston nimi."
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "Kirjoitetaanko tiedoston %s päälle?"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "Anna kohdetiedoston sijainti ja nimi:"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "Kaikki tiedostot"
+
+#~ msgid "Type:"
+#~ msgstr "Tyyppi:"
+
+#~ msgid "Comment:"
+#~ msgstr "Kommentti:"
+
+#~ msgid "Pr_inter:"
+#~ msgstr "_Tulostin:"
+
+#~ msgid "No printers could be loaded"
+#~ msgstr "Tulostimia ei voitu ladata"

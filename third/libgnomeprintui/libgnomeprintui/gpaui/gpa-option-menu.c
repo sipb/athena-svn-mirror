@@ -46,7 +46,7 @@ static gboolean gpa_option_menu_mnemonic_activate (GtkWidget *widget,
 						   gboolean group_cycling);
 static GPAWidgetClass *parent_class;
 
-GtkType
+GType
 gpa_option_menu_get_type (void)
 {
 	static GType type = 0;
@@ -159,7 +159,7 @@ gpa_option_menu_rebuild_menu (GPAOptionMenu *om)
 		const gchar *id;
 		guchar *name;
 
-		name = gpa_node_get_value (child);
+		name = gpa_option_get_name (child);
 		item = gtk_menu_item_new_with_label (name);
 		g_free (name);
 

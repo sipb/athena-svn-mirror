@@ -61,7 +61,7 @@ struct _GPAOptionMenuClass {
 	GPAWidgetClass widget_class;
 };
 
-GtkType     gpa_option_menu_get_type (void);
+GType       gpa_option_menu_get_type (void);
 
 GtkWidget * gpa_option_menu_new       (GnomePrintConfig *config, const guchar *key);
 

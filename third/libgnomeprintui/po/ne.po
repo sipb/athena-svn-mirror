@@ -1,0 +1,485 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# KU  <pawan@nplinux.org>, 2004.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprintui\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2004-05-28 11:30+0545\n"
+"Last-Translator: Pawan Chitrakar <pawan@nplinux.org>\n"
+"Language-Team: Nepali <nlp@mpp.org.np>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"First-Translator: KU Team\n"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "पाठ"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "चित्रणको लागि पाठ"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "स्वनिम सुची"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "रँग"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "पाठको रँग , सुत्र जस्तो"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "पाठको रँग,            "
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "फन्ट"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr ""
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "फन्ट परिवार"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr "फन्ट परिवारको सुचि उपलब्ध छ"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "शैलि"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+msgid "Font style"
+msgstr "फन्टको शैलि"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr "छानिएको फन्ट परिवारकोलागि शैलिहरुको सुचि उपलब्धछ"
+
+#: libgnomeprintui/gnome-font-dialog.c:281
+msgid "Font _size:"
+msgstr "फन्टको आकार"
+
+#: libgnomeprintui/gnome-font-dialog.c:773
+msgid "This font does not have sample"
+msgstr "यो फन्टको नमुना छैन"
+
+#: libgnomeprintui/gnome-font-dialog.c:880
+msgid "Font Preview"
+msgstr "फन्टको पुर्वद्रिश्य"
+
+#: libgnomeprintui/gnome-font-dialog.c:881
+msgid "Displays some example text in the selected font"
+msgstr "छानिएको फन्ट भित्र केहि उदाहरणिय पाठहरु देखाउ"
+
+#: libgnomeprintui/gnome-font-dialog.c:896
+msgid "Font Selection"
+msgstr "फन्ट रोज्ने प्रक्रिया"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+msgid "Default Settings"
+msgstr "पुर्वनिर्धारित मिलान"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr "तस्बिर देखाउने पानाहरु दोहोरो रुपमा छापिदैछन"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr "दोहोरो"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr "पानाहरु दोहोरो रुपमा छापिए"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr "तल खस्नु"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+msgid "_Printing Time:"
+msgstr "प्रिन्टगर्ने समय"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "छाप्नेयन्त्र मिलाउने क्रममा समस्या देखियो"
+
+#: libgnomeprintui/gnome-print-copies.c:261
+msgid "Copies"
+msgstr "प्रतिलिपिहरु"
+
+#: libgnomeprintui/gnome-print-copies.c:274
+msgid "N_umber of copies:"
+msgstr "प्रतिलिपिहरुको सँख्या"
+
+#: libgnomeprintui/gnome-print-copies.c:292
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-copies.c:294
+msgid "_Collate"
+msgstr "सङ्कलन"
+
+#: libgnomeprintui/gnome-print-copies.c:299
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:199
+msgid "Print Range"
+msgstr "प्रिन्टहुने क्षेत्र"
+
+#: libgnomeprintui/gnome-print-dialog.c:246
+msgid "_All"
+msgstr "सबै"
+
+#: libgnomeprintui/gnome-print-dialog.c:268
+msgid "_Selection"
+msgstr "छान्नेप्रक्रिया"
+
+#: libgnomeprintui/gnome-print-dialog.c:345
+msgid "Job"
+msgstr "काम"
+
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
+msgid "Printer"
+msgstr "छाप्नेयन्त्र"
+
+#: libgnomeprintui/gnome-print-dialog.c:382
+msgid "Paper"
+msgstr "कागज"
+
+#: libgnomeprintui/gnome-print-dialog.c:396
+msgid "Gnome Print Dialog"
+msgstr "जिनोम प्रिन्ट सम्बाद"
+
+#: libgnomeprintui/gnome-print-dialog.c:546
+msgid "_From:"
+msgstr "बाट"
+
+#: libgnomeprintui/gnome-print-dialog.c:559
+msgid "Sets the start of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:561
+msgid "_To:"
+msgstr "_देखि"
+
+#: libgnomeprintui/gnome-print-dialog.c:574
+msgid "Sets the end of the range of pages to be printed"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:618
+msgid "Page Preview"
+msgstr "पानाको पुर्वद्रिश्य"
+
+#: libgnomeprintui/gnome-print-job-preview.c:619
+msgid "The preview of a page in the document to be printed"
+msgstr "डकुमेन्ट भित्र पानाको पुर्वद्रिश्य छापियो"
+
+#: libgnomeprintui/gnome-print-job-preview.c:636
+msgid "P_age: "
+msgstr "पाना"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:652
+msgid "of"
+msgstr "को"
+
+#: libgnomeprintui/gnome-print-job-preview.c:658
+msgid "Page total"
+msgstr "सम्पुर्ण पाना"
+
+#: libgnomeprintui/gnome-print-job-preview.c:659
+msgid "The total number of pages in the document"
+msgstr "पानाको सम्पुर्ण सङ्ख्या लेखोट भित्र छ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr "ति रँगहरु बिषयबस्तुको लागि प्रयोग गर"
+
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr "अरु"
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "अहिलेको फाइल छाप"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "छाप देखाउने विन्डो बन्द गर"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "पहिलो पाना देखाउँछ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
+msgid "Shows the previous page"
+msgstr "पहिलेको पाना देखाउँछ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:818
+msgid "Shows the next page"
+msgstr "अर्को पाना देखाउँछ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:826
+msgid "Shows the last page"
+msgstr "अन्तिम पाना देखाउँछ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:839
+msgid "Zooms 1:1"
+msgstr "1:1 नजिकबाट हेर"
+
+#: libgnomeprintui/gnome-print-job-preview.c:847
+msgid "Zooms to fit the whole page"
+msgstr "सम्पुर्ण पाना भरि देखाउनलाइ जुम गर"
+
+#: libgnomeprintui/gnome-print-job-preview.c:855
+msgid "Zooms the page in"
+msgstr "पाना भित्र ठुलो पारेर देखाउ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:863
+msgid "Zooms the page out"
+msgstr "पाना बाहिर ठुलो पारेर देखाउ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr "बिविध पानाहरु देखाउ"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr "तेर्सो पारेर पानाको सङ्ख्या राख"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr "ठाडो पारेर पानाको सङ्ख्या राख"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
+msgid "Gnome Print Preview"
+msgstr "जिनोम प्रिन्ट पुर्वद्रिश्य"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+msgid "Paper and Layout"
+msgstr "कागज र ढाँचा"
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:457
+msgid "Paper _size:"
+msgstr "पानाको आकार"
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:468
+msgid "_Width:"
+msgstr "चौडाइ"
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:482
+msgid "_Height:"
+msgstr "-उचाइ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:500
+msgid "Metric selector"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:501
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:504
+msgid "_Feed orientation:"
+msgstr ""
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:518
+msgid "Page _orientation:"
+msgstr "पाना_अभिमुखिकरण"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:529
+msgid "_Layout:"
+msgstr "ढाँचा"
+
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+msgid "Paper _tray:"
+msgstr "कागज राख्ने ठाँउ"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
+msgid "Preview"
+msgstr "पुर्वद्रिश्य"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:569
+msgid "Preview of the page size, orientation and layout"
+msgstr "पानाको आकारको पुर्वद्रिश्य,ढाँचा र हभिमुखिकरण"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "Margins"
+msgstr "क्षेत्र"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:609
+msgid "Top"
+msgstr "माथि"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:612
+msgid "Bottom"
+msgstr "तल"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:615
+msgid "Left"
+msgstr "देब्रे"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:618
+msgid "Right"
+msgstr "दाहिने"
+
+#: libgnomeprintui/gnome-printer-selector.c:168
+msgid "Co_nfigure"
+msgstr "मिलाउनु"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr ""
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "मिलाउनु"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
+msgid "_Location:"
+msgstr "स्थान"
+
+#: libgnomeprintui/gpaui/gpa-option-menu.c:179
+#: libgnomeprintui/gpaui/gpa-option-menu.c:229
+msgid "No options are defined"
+msgstr "कुनै बिकल्प बर्णनगरिएको छैन"
+
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "छाप्न असफल"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+#, fuzzy
+msgid "State"
+msgstr "स्थिति:"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+#, fuzzy
+msgid "Jobs"
+msgstr "काम"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+#, fuzzy
+msgid "Location"
+msgstr "स्थान"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:180
+msgid "No printer selected"
+msgstr "कुनै छाप्नेयन्त्र छानिएन"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:191
+msgid "No settings available"
+msgstr "केहि मिलाएको छैन"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:234
+msgid "Add new settings"
+msgstr "नया तरिकाले मिलाउ"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr "%"
+
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "पिटि"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "एमएम"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "सिएम"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "एम"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "भित्र"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr "%s फाइलमाथि फेरि लेखिन सक्छ"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr "बाहिरि फाइलको स्थान र फाइलनाम बारे परिचितहोउ"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr "सम्पुर्ण फाइलहरु"
+
+#~ msgid "Type:"
+#~ msgstr "प्रकार"
+
+#~ msgid "Comment:"
+#~ msgstr "टिप्पणि"
+
+#~ msgid "Pr_inter:"
+#~ msgstr "छाप्नेयन्त्र"
+
+#~ msgid "No printers could be loaded"
+#~ msgstr "कुनै छाप्नेयन्त्र छैन"

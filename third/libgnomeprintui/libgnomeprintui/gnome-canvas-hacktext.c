@@ -85,7 +85,7 @@ struct _GnomeCanvasHacktextPriv {
 	double affine[6]; /* the text to world transform (NB! mirrored Y) */
 };
 
-GtkType
+GType
 gnome_canvas_hacktext_get_type (void)
 {
 	static GType type = 0;

@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 
 #include <libgnomeprint/private/gpa-node.h>
 
-GtkWidget * gpa_tree_viewer_new (GnomePrintConfig *config);
+GtkWidget * gpa_tree_viewer_new (GPANode *node);
 
 G_END_DECLS
 

@@ -20,11 +20,17 @@ gnome-print-dialog
 </para>
 
 
+<!-- ##### ARG GnomePrintDialog:print-config ##### -->
+<para>
+
+</para>
+
 <!-- ##### STRUCT GnomePrintDialogClass ##### -->
 <para>
 
 </para>
 
+@parent_class: 
 
 <!-- ##### ENUM GnomePrintRangeType ##### -->
 <para>

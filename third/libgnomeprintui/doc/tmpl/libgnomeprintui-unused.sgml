@@ -1,0 +1,111 @@
+<!-- ##### SECTION ./tmpl/gnome-print-master-preview.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-print-master-preview.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-print-master-preview.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/gnome-print-master-preview.sgml:Title ##### -->
+gnome-print-master-preview
+
+
+<!-- ##### MACRO GNOME_IS_PRINT_MASTER_PREVIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO GNOME_IS_PRINT_MASTER_PREVIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+<!-- ##### MACRO GNOME_PRINT_MASTER_PREVIEW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO GNOME_PRINT_MASTER_PREVIEW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+<!-- ##### MACRO GNOME_PRINT_MASTER_PREVIEW_GET_CLASS ##### -->
+<para>
+
+</para>
+
+@o: 
+
+<!-- ##### MACRO GNOME_TYPE_PRINT_MASTER_PREVIEW ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintCopiesSelection ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintCopiesSelectionClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintMasterPreview ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomePrintMasterPreviewClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_print_dialog_new_from_master ##### -->
+<para>
+
+</para>
+
+@gpm: 
+@title: 
+@flags: 
+@Returns: 
+
+<!-- ##### FUNCTION gnome_print_master_preview_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION gnome_print_master_preview_new ##### -->
+<para>
+
+</para>
+
+@gpm: 
+@title: 
+@Returns: 
+

@@ -42,13 +42,14 @@ static struct poptOption options[] = {
 };
 
 static void
-my_draw (GnomePrintContext *pc)
+my_draw (GnomePrintContext *pc, guint page)
 {
 	gint i, j;
 	gint max_i = 10;
 	gint max_j = 10;
 	gint size, spacing, x, y;
 	GnomeFont *font;
+	gchar *txt;
 
 	gnome_print_beginpage (pc, "1");
 	
@@ -57,6 +58,11 @@ my_draw (GnomePrintContext *pc)
 
 	gnome_print_moveto (pc, 50, 50);
 	gnome_print_show (pc, "Print Preview test");
+
+	txt = g_strdup_printf ("Page %i", page);
+	gnome_print_moveto (pc, 50, 800);
+	gnome_print_show (pc, txt);
+	g_free (txt);
 
 	gnome_print_moveto (pc, 50, 100);
 	gnome_print_lineto (pc, 450, 100);
@@ -193,12 +199,13 @@ my_print (void)
 	GnomePrintContext *gpc;
 	GnomePrintJob *job;
 	GtkWidget *preview;
+	guint n;
 
 	job    = gnome_print_job_new (NULL);
 	gpc    = gnome_print_job_get_context (job);
 
-	my_draw (gpc);
-	
+	for (n = 0; n < 6; n++) my_draw (gpc, n + 1);
+
 	gnome_print_job_close (job);
 
 	preview = gnome_print_job_preview_new (job, "test-preview.c");

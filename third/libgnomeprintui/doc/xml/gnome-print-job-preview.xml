@@ -1,0 +1,211 @@
+<refentry id="libgnomeprintui-gnome-print-job-preview">
+<refmeta>
+<refentrytitle>gnome-print-job-preview</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEPRINTUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-print-job-preview</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="GnomePrintJobPreview"/>
+<synopsis>
+
+
+
+struct      <link linkend="GnomePrintJobPreview-struct">GnomePrintJobPreview</link>;
+struct      <link linkend="GnomePrintJobPreviewClass">GnomePrintJobPreviewClass</link>;
+#define     <link linkend="GNOME-TYPE-PRINT-JOB-PREVIEW-CAPS">GNOME_TYPE_PRINT_JOB_PREVIEW</link>
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-CAPS">GNOME_PRINT_JOB_PREVIEW</link>         (o)
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-CLASS-CAPS">GNOME_PRINT_JOB_PREVIEW_CLASS</link>   (k)
+#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW-CAPS">GNOME_IS_PRINT_JOB_PREVIEW</link>      (o)
+#define     <link linkend="GNOME-IS-PRINT-JOB-PREVIEW-CLASS-CAPS">GNOME_IS_PRINT_JOB_PREVIEW_CLASS</link>(k)
+#define     <link linkend="GNOME-PRINT-JOB-PREVIEW-GET-CLASS-CAPS">GNOME_PRINT_JOB_PREVIEW_GET_CLASS</link>(o)
+<link linkend="GtkType">GtkType</link>     <link linkend="gnome-print-job-preview-get-type">gnome_print_job_preview_get_type</link>
+                                            (void);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-print-job-preview-new">gnome_print_job_preview_new</link>     (<link linkend="GnomePrintJob">GnomePrintJob</link> *gpm,
+                                             const <link linkend="guchar">guchar</link> *title);
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkWindow">GtkWindow</link>
+                                 +----GnomePrintJobPreview
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomePrintJobPreview implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomePrintJobPreview--nx">nx</link>&quot;                   <link linkend="gulong">gulong</link>                : Read / Write
+  &quot;<link linkend="GnomePrintJobPreview--ny">ny</link>&quot;                   <link linkend="gulong">gulong</link>                : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePrintJobPreview-struct"/>struct GnomePrintJobPreview</title>
+<indexterm><primary>GnomePrintJobPreview</primary></indexterm><programlisting>struct GnomePrintJobPreview;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomePrintJobPreviewClass"/>struct GnomePrintJobPreviewClass</title>
+<indexterm><primary>GnomePrintJobPreviewClass</primary></indexterm><programlisting>struct GnomePrintJobPreviewClass;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-TYPE-PRINT-JOB-PREVIEW-CAPS"/>GNOME_TYPE_PRINT_JOB_PREVIEW</title>
+<indexterm><primary>GNOME_TYPE_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_TYPE_PRINT_JOB_PREVIEW         (gnome_print_job_preview_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW-CAPS"/>GNOME_PRINT_JOB_PREVIEW()</title>
+<indexterm><primary>GNOME_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreview))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW-CLASS-CAPS"/>GNOME_PRINT_JOB_PREVIEW_CLASS()</title>
+<indexterm><primary>GNOME_PRINT_JOB_PREVIEW_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreviewClass))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW-CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW()</title>
+<indexterm><primary>GNOME_IS_PRINT_JOB_PREVIEW</primary></indexterm><programlisting>#define GNOME_IS_PRINT_JOB_PREVIEW(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_JOB_PREVIEW))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GNOME-IS-PRINT-JOB-PREVIEW-CLASS-CAPS"/>GNOME_IS_PRINT_JOB_PREVIEW_CLASS()</title>
+<indexterm><primary>GNOME_IS_PRINT_JOB_PREVIEW_CLASS</primary></indexterm><programlisting>#define GNOME_IS_PRINT_JOB_PREVIEW_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_JOB_PREVIEW))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GNOME-PRINT-JOB-PREVIEW-GET-CLASS-CAPS"/>GNOME_PRINT_JOB_PREVIEW_GET_CLASS()</title>
+<indexterm><primary>GNOME_PRINT_JOB_PREVIEW_GET_CLASS</primary></indexterm><programlisting>#define GNOME_PRINT_JOB_PREVIEW_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_JOB_PREVIEW, GnomePrintJobPreviewClass))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-preview-get-type"/>gnome_print_job_preview_get_type ()</title>
+<indexterm><primary>gnome_print_job_preview_get_type</primary></indexterm><programlisting><link linkend="GtkType">GtkType</link>     gnome_print_job_preview_get_type
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-preview-new"/>gnome_print_job_preview_new ()</title>
+<indexterm><primary>gnome_print_job_preview_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_print_job_preview_new     (<link linkend="GnomePrintJob">GnomePrintJob</link> *gpm,
+                                             const <link linkend="guchar">guchar</link> *title);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomePrintJobPreview--nx"/>The &quot;<literal>nx</literal>&quot; property</title>
+<programlisting>  &quot;nx&quot;                   <link linkend="gulong">gulong</link>                : Read / Write</programlisting>
+<para>Number of pages horizontally.</para><para>Allowed values: [1,65535]</para>
+</refsect2>
+<refsect2><title><anchor id="GnomePrintJobPreview--ny"/>The &quot;<literal>ny</literal>&quot; property</title>
+<programlisting>  &quot;ny&quot;                   <link linkend="gulong">gulong</link>                : Read / Write</programlisting>
+<para>Number of pages vertically.</para><para>Allowed values: [1,65535]</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

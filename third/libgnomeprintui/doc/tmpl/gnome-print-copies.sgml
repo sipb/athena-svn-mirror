@@ -20,6 +20,24 @@ gnome-print-copies
 </para>
 
 
+<!-- ##### SIGNAL GnomePrintCopiesSelector::collate-set ##### -->
+<para>
+
+</para>
+
+@printcopiesselector: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GnomePrintCopiesSelector::copies-set ##### -->
+<para>
+
+</para>
+
+@printcopiesselector: the object which received the signal.
+@arg1: 
+<!-- # Unused Parameters # -->
+@arg2: 
+
 <!-- ##### STRUCT GnomePrintCopiesSelectorClass ##### -->
 <para>
 

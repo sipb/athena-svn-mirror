@@ -18,7 +18,9 @@ noinst_PROGRAMS= \
 	example_05 \
 	example_06 \
 	example_08 \
-	example_09 $(glade_programs)
+	example_09 $(glade_programs) \
+	example_11 \
+	example_12
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -48,7 +50,8 @@ example_05_SOURCES = example_05.c
 example_06_SOURCES = example_06.c
 example_08_SOURCES = example_08.c
 example_09_SOURCES = example_09.c
-
+example_11_SOURCES = example_11.c
+example_12_SOURCES = example_12.c
 if WITH_LIBGLADE
 example_10_SOURCES = example_10.c
 endif
@@ -61,6 +64,8 @@ example_05_LDADD = $(print_libs)
 example_06_LDADD = $(print_libs)
 example_08_LDADD = $(print_libs)
 example_09_LDADD = $(print_libs)
+example_11_LDADD = $(print_libs)
+example_12_LDADD = $(print_libs)
 
 if WITH_LIBGLADE
 example_10_LDADD = $(print_libs)

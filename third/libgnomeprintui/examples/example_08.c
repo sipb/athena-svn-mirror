@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  example_12.c: sample gnome-print code
+ *  example_08.c: sample gnome-print code
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -26,6 +26,7 @@
 /*
  * See README
  */
+#define GNOME_PRINT_UNSTABLE_API
 
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-job.h>
@@ -62,9 +63,8 @@ my_print (void)
 	config = gnome_print_job_get_config (job);
 
 	/* Run the dialog */
-	gtk_widget_show (dialog);
-	response = gtk_dialog_run (GTK_DIALOG (dialog));
-	if (response == GNOME_PRINT_DIALOG_RESPONSE_CANCEL) {
+	response = gnome_print_dialog_run (GNOME_PRINT_DIALOG (dialog));
+	if (response != GNOME_PRINT_DIALOG_RESPONSE_PRINT) {
 		g_print ("Printing was canceled\n");
 		return;
 	}

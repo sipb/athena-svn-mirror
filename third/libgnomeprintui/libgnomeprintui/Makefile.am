@@ -3,27 +3,29 @@ SUBDIRS = gpaui
 lib_LTLIBRARIES = libgnomeprintui-2-2.la
 
 INCLUDES = \
-	-I$(top_srcdir) \
-	$(LIBGNOMEPRINTUI_CFLAGS) \
-	-DG_LOG_DOMAIN=\"libgnomeprintui\" \
-	-DVERSION=\"$(VERSION)\" \
-	-DWE_ARE_LIBGNOMEPRINT_INTERNALS \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DGNOME_PRINT_LIBDIR=\"$(libdir)/gnome-print\" \
+	-I$(top_srcdir)			\
+	$(LIBGNOMEPRINTUI_CFLAGS)	\
+	-DG_LOG_DOMAIN=\"libgnomeprintui\"	\
+	-DVERSION=\"$(VERSION)\"	\
+	-DWE_ARE_LIBGNOMEPRINT_INTERNALS	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOME_PRINT_LIBDIR=\"$(libdir)/gnome-print\"	\
 	-DBINDIR=\""$(bindir)"\"	\
-	-DDATADIR=\""$(datadir)"\" \
+	-DDATADIR=\""$(datadir)"\"	\
 	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
-	-DGNOME_DISABLE_DEPRECATED
+	-DG_DISABLE_DEPRECATED		\
+	-DGDK_DISABLE_DEPRECATED	\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED	
 
 
 
 libgnomeprintui_2_2_la_LIBADD = \
 	gpaui/libgpaui.la \
 	$(LIBGNOMEPRINTUI_LIBS)
+
+libgnomeprintui_2_2_la_LDFLAGS = \
+	-no-undefined \
+	-version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
 
 BUILT_SOURCES = gnome-printui-marshal.c  gnome-printui-marshal.h
 
@@ -35,6 +37,8 @@ libgnomeprintui_2_2_la_SOURCES = \
 	gnome-printer-selector.c     gnome-printer-selector.h		\
 	gnome-print-copies.c         gnome-print-copies.h		\
 	gnome-print-dialog.c         gnome-print-dialog-private.h	\
+	gnome-print-config-dialog.c  gnome-print-config-dialog-private.h \
+        gnome-print-widget.c         gnome-print-widget.h           \
 	gnome-font-dialog.c		\
 	gnome-print-paper-preview.c  gnome-print-paper-preview.h	\
 	gnome-print-unit-selector.c	\
@@ -50,9 +54,12 @@ libgnomeprintuiinc_HEADERS = \
 	gnome-print-dialog.h \
 	gnome-print-unit-selector.h \
 	gnome-print-paper-selector.h \
+	gnome-print-config-dialog.h \
 	gnome-print-job-preview.h	
 
-EXTRA_DIST = libgnomeprintui-2.2.pc.in gnome-printui-marshal.list
+EXTRA_DIST = libgnomeprintui-2.2.pc.in \
+	libgnomeprintui-uninstalled-2.2.pc.in \
+	gnome-printui-marshal.list
 CLEANFILES = $(BUILD_SOURCES)
 
 pkgconfigdir = $(libdir)/pkgconfig

@@ -20,6 +20,16 @@ gnome-print-job-preview
 </para>
 
 
+<!-- ##### ARG GnomePrintJobPreview:nx ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GnomePrintJobPreview:ny ##### -->
+<para>
+
+</para>
+
 <!-- ##### STRUCT GnomePrintJobPreviewClass ##### -->
 <para>
 

@@ -142,6 +142,13 @@ gnome-print-paper-selector
 </para>
 
 
+<!-- ##### SIGNAL GnomePrintUnitSelector::modified ##### -->
+<para>
+
+</para>
+
+@printunitselector: the object which received the signal.
+
 <!-- ##### STRUCT GnomePrintUnitSelectorClass ##### -->
 <para>
 

@@ -18,12 +18,12 @@
  *
  *  Authors:
  *    Michael Zucchi <notzed@ximian.com>
+ *    Andreas J. Guelzow <aguelzow@taliesin.ca>
  *
  *  Copyright (C) 2000-2002 Ximian Inc.
+ *  Copyright (C) 2003 Andreas J. Guelzow
  *
  */
-
-/* FIXME: Hook this up to GnomePrintConfig and no need to have signals (Chema) */
 
 #include <config.h>
 
@@ -34,7 +34,11 @@
 #include "gnome-print-copies.h"
 #include "gnome-printui-marshal.h"
 
-enum {COPIES_SET, LAST_SIGNAL};
+enum {COPIES_SET, 
+      COLLATE_SET, 
+      DUPLEX_SET, 
+      TUMBLE_SET, 
+      LAST_SIGNAL};
 
 struct _GnomePrintCopiesSelector {
 	GtkVBox vbox;
@@ -49,7 +53,8 @@ struct _GnomePrintCopiesSelector {
 struct _GnomePrintCopiesSelectorClass {
 	GtkVBoxClass parent_class;
 
-	void (* copies_set) (GnomePrintCopiesSelector * gpc, gint copies, gboolean collate);
+	void (* copies_set) (GnomePrintCopiesSelector * gpc, gint copies);
+	void (* collate_set) (GnomePrintCopiesSelector * gpc, gboolean collate);
 };
 
 static void gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *class);
@@ -188,10 +193,20 @@ gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *klass)
 						G_SIGNAL_RUN_FIRST,
 						G_STRUCT_OFFSET (GnomePrintCopiesSelectorClass, copies_set),
 						NULL, NULL,
-						libgnomeprintui_marshal_VOID__INT_BOOLEAN,
+						g_cclosure_marshal_VOID__INT,
 						G_TYPE_NONE,
-						2,
-						G_TYPE_INT, G_TYPE_BOOLEAN);
+						1,
+						G_TYPE_INT);
+	
+	gpc_signals[COLLATE_SET] = g_signal_new ("collate_set",
+						G_OBJECT_CLASS_TYPE (object_class),
+						G_SIGNAL_RUN_FIRST,
+						G_STRUCT_OFFSET (GnomePrintCopiesSelectorClass, collate_set),
+						NULL, NULL,
+						libgnomeprintui_marshal_VOID__BOOLEAN,
+						G_TYPE_NONE,
+						1,
+						G_TYPE_BOOLEAN);
 
 	gtk_object_class->destroy = gnome_print_copies_selector_destroy;
 }
@@ -199,11 +214,9 @@ gnome_print_copies_selector_class_init (GnomePrintCopiesSelectorClass *klass)
 static void
 collate_toggled (GtkWidget *widget, GnomePrintCopiesSelector *gpc)
 {
-	gint copies;
 	gboolean collate;
 	GdkPixbuf *pb;
 
-	copies = gtk_spin_button_get_value_as_int ((GtkSpinButton *) gpc->copies);
 	collate = ((GtkToggleButton *) gpc->collate)->active;
 
 	pb = gdk_pixbuf_new_from_xpm_data (collate ? collate_xpm : nocollate_xpm);
@@ -213,23 +226,25 @@ collate_toggled (GtkWidget *widget, GnomePrintCopiesSelector *gpc)
 	if (gpc->changing)
 		return;
 
-	g_signal_emit (G_OBJECT (gpc), gpc_signals[COPIES_SET], 0, copies, collate);
+	g_signal_emit (G_OBJECT (gpc), gpc_signals[COLLATE_SET], 0, collate);
 }
 
 static void
 copies_changed (GtkAdjustment *adj, GnomePrintCopiesSelector *gpc)
 {
 	gint copies;
-	gboolean collate;
 
 	copies = gtk_adjustment_get_value (adj);
-	collate = ((GtkToggleButton *) gpc->collate)->active;
+
+	gtk_widget_set_sensitive (gpc->collate, (copies != 1));
+	gtk_widget_set_sensitive (gpc->collate_image, (copies != 1));
 
 	if (gpc->changing)
 		return;
 
-	g_signal_emit (G_OBJECT (gpc), gpc_signals[COPIES_SET], 0, copies, collate);
+	g_signal_emit (G_OBJECT (gpc), gpc_signals[COPIES_SET], 0, copies);
 }
+
 
 static void
 gnome_print_copies_selector_init (GnomePrintCopiesSelector *gpc)
@@ -237,17 +252,22 @@ gnome_print_copies_selector_init (GnomePrintCopiesSelector *gpc)
 	GtkWidget *table, *label, *frame;
 	GtkAdjustment *adj;
 	GdkPixbuf *pb;
-	AtkRelationSet *relation_set;
-	AtkRelation *relation;
-	AtkObject *relation_targets[1];
 	AtkObject *atko;
+	gchar *text;
 
-	frame = gtk_frame_new (_("Copies"));
+	frame = gtk_frame_new ("");
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
+	label = gtk_label_new ("");
+	text = g_strdup_printf ("<b>%s</b>", _("Copies"));
+	gtk_label_set_markup (GTK_LABEL (label), text);
+	g_free (text);
+	gtk_frame_set_label_widget (GTK_FRAME (frame), label);
+	gtk_widget_show (label);
 	gtk_container_add (GTK_CONTAINER (gpc), frame);
 	gtk_widget_show (frame);
 
 	table = gtk_table_new(2, 2, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER(table), 4);
+	gtk_container_set_border_width (GTK_CONTAINER(table), 6);
 	gtk_container_add (GTK_CONTAINER(frame), GTK_WIDGET (table));
 	gtk_widget_show (table);
 
@@ -257,20 +277,11 @@ gnome_print_copies_selector_init (GnomePrintCopiesSelector *gpc)
 
 	adj = (GtkAdjustment *) gtk_adjustment_new(1, 1, 1000, 1.0, 10.0, 10.0);
 	gpc->copies = gtk_spin_button_new (adj, 1.0, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (gpc->copies), TRUE);
 	gtk_widget_show (gpc->copies);
 	gtk_table_attach_defaults ((GtkTable *)table, gpc->copies, 1, 2, 0, 1);
 
 	gtk_label_set_mnemonic_widget ((GtkLabel *) label, gpc->copies);
-
-	/* Add a LABELLED_BY relation from the entry to the label. */
-	atko = gtk_widget_get_accessible (gpc->copies);
-	relation_set = atk_object_ref_relation_set (atko);
-	relation_targets[0] = gtk_widget_get_accessible (label);
-	relation = atk_relation_new (relation_targets, 1,
-				     ATK_RELATION_LABELLED_BY);
-	atk_relation_set_add (relation_set, relation);
-	g_object_unref (G_OBJECT (relation));
-	g_object_unref (G_OBJECT (relation_set));
 
 	pb = gdk_pixbuf_new_from_xpm_data (nocollate_xpm);
 	gpc->collate_image = gtk_image_new_from_pixbuf (pb);
@@ -286,6 +297,9 @@ gnome_print_copies_selector_init (GnomePrintCopiesSelector *gpc)
 
 	atko = gtk_widget_get_accessible (gpc->collate);
 	atk_object_set_description (atko, _("If copies of the document are printed separately, one after another, rather than being interleaved"));
+
+	gtk_widget_set_sensitive (gpc->collate, FALSE);
+	gtk_widget_set_sensitive (gpc->collate_image, FALSE);
 
 	g_signal_connect (G_OBJECT (adj), "value_changed",
 			  (GCallback) copies_changed, gpc);
@@ -328,7 +342,7 @@ gnome_print_copies_selector_destroy (GtkObject *object)
  **/
 
 void
-gnome_print_copies_selector_set_copies (GnomePrintCopiesSelector *gpc, gint copies, gint collate)
+gnome_print_copies_selector_set_copies (GnomePrintCopiesSelector *gpc, gint copies, gboolean collate)
 {
 	g_return_if_fail (gpc != NULL);
 	g_return_if_fail (GNOME_IS_PRINT_COPIES_SELECTOR (gpc));
@@ -336,10 +350,12 @@ gnome_print_copies_selector_set_copies (GnomePrintCopiesSelector *gpc, gint copi
 	gpc->changing = TRUE;
 
 	gtk_toggle_button_set_active ((GtkToggleButton *) gpc->collate, collate);
-
 	gpc->changing = FALSE;
 
 	gtk_spin_button_set_value ((GtkSpinButton *) gpc->copies, copies);
+
+	gtk_widget_set_sensitive (gpc->collate, (copies != 1));
+	gtk_widget_set_sensitive (gpc->collate_image, (copies != 1));
 }
 
 /**
@@ -377,9 +393,6 @@ gnome_print_copies_selector_get_collate (GnomePrintCopiesSelector *gpc)
 
 	return GTK_TOGGLE_BUTTON (gpc->collate)->active?TRUE:FALSE;
 }
-
-
-
 
 
 

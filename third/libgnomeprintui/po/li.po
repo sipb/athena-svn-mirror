@@ -1,0 +1,600 @@
+# Limburgish translation of libgnomeprintui.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Mathieu van Woerkom <mathieu@brabants.org>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print cvs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 23:32-0400\n"
+"PO-Revision-Date: 2003-06-10 15:42+0100\n"
+"Last-Translator: Mathieu van Woerkom <mathieu@brabants.org>\n"
+"Language-Team: Limburgish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+msgid "Text"
+msgstr "Teks"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr "Te tuine teks"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr "Teikelies"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr "Kleur"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr "Tekskleur, es teikeriej"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr "Tekskleur, es ein R/G/B/A-gekombineerd róndj getal"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr "Booksjtaaftiep"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr "Booksjtaaftiep es ein GnomeFont-struct"
+
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Booksjtaaftiepfemielie"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+#, fuzzy
+msgid "The list of font families available"
+msgstr "De lies van besjikbare booksjtaaftiepe"
+
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Sjtiel"
+
+#: libgnomeprintui/gnome-font-dialog.c:250
+msgid "Font style"
+msgstr "Booksjtaaftiepesjtiel"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr "De lies van besjikbare sjtiele veur 't gekaoze booksjtaaftiep"
+
+#: libgnomeprintui/gnome-font-dialog.c:281
+msgid "Font _size:"
+msgstr "Booksjtaaftiep_gruutde:"
+
+#: libgnomeprintui/gnome-font-dialog.c:773
+msgid "This font does not have sample"
+msgstr "Dit booksjtaaftiep haet gei sjtaal"
+
+#: libgnomeprintui/gnome-font-dialog.c:880
+msgid "Font Preview"
+msgstr "Booksjtaaftiepsjtaal"
+
+#: libgnomeprintui/gnome-font-dialog.c:881
+msgid "Displays some example text in the selected font"
+msgstr "Tuint eine sjtaalteks in 't gekaoze booksjtaaftiep"
+
+#: libgnomeprintui/gnome-font-dialog.c:896
+msgid "Font Selection"
+msgstr "Booksjtaaftiepseleksie"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:241
+#, fuzzy
+msgid "Default Settings"
+msgstr "Sjtanderddrökker"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:267
+msgid "Image showing pages being printed in duplex."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:271
+msgid "_Duplex"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:277
+msgid "Pages are printed in duplex."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:285
+msgid ""
+"Image showing the second page of a duplex printed sequence to be printed "
+"upside down."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:290
+msgid "_Tumble"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-config-dialog.c:296
+#, fuzzy
+msgid ""
+"If copies of the document are printed in duplex, the second page is flipped "
+"upside down,"
+msgstr ""
+"Of eksemplare van 't dokkemeènt aafzunjerlik (ein veur ein), waere "
+"aafgedrök, in plaats van tösjegeveug"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:316
+#, fuzzy
+msgid "_Printing Time:"
+msgstr "Aafdrökbereik"
+
+#: libgnomeprintui/gnome-print-config-dialog.c:342
+#: libgnomeprintui/gnome-print-dialog.c:389
+msgid "Error while loading printer configuration"
+msgstr "'t goof ein faeler bie 't laje van de drökkerkóngfiggerasie"
+
+#: libgnomeprintui/gnome-print-copies.c:261
+#, fuzzy
+msgid "Copies"
+msgstr "Eksemplare"
+
+#: libgnomeprintui/gnome-print-copies.c:274
+msgid "N_umber of copies:"
+msgstr "Dei_l eksemplare:"
+
+#: libgnomeprintui/gnome-print-copies.c:292
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+"Aafbiljing die de aafdrökresem tuint bie 't aafdrökke van mierdere "
+"eksemplare van 't dokkemènt"
+
+#: libgnomeprintui/gnome-print-copies.c:294
+msgid "_Collate"
+msgstr "S_ortere"
+
+#: libgnomeprintui/gnome-print-copies.c:299
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+"Of eksemplare van 't dokkemeènt aafzunjerlik (ein veur ein), waere "
+"aafgedrök, in plaats van tösjegeveug"
+
+#: libgnomeprintui/gnome-print-dialog.c:199
+#, fuzzy
+msgid "Print Range"
+msgstr "Aafdrökbereik"
+
+#: libgnomeprintui/gnome-print-dialog.c:246
+msgid "_All"
+msgstr "_Alles"
+
+#: libgnomeprintui/gnome-print-dialog.c:268
+msgid "_Selection"
+msgstr "_Seleksie"
+
+#: libgnomeprintui/gnome-print-dialog.c:345
+msgid "Job"
+msgstr "Taak"
+
+#: libgnomeprintui/gnome-print-dialog.c:372
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:161
+msgid "Printer"
+msgstr "Drökker"
+
+#: libgnomeprintui/gnome-print-dialog.c:382
+msgid "Paper"
+msgstr "Papeer"
+
+#: libgnomeprintui/gnome-print-dialog.c:396
+msgid "Gnome Print Dialog"
+msgstr "Gnome 'aafdrökke'-dialoogvinster"
+
+#: libgnomeprintui/gnome-print-dialog.c:546
+msgid "_From:"
+msgstr "_Van:"
+
+#: libgnomeprintui/gnome-print-dialog.c:559
+msgid "Sets the start of the range of pages to be printed"
+msgstr "d'n aanvang van de riej aaf te drökke pagina's"
+
+#: libgnomeprintui/gnome-print-dialog.c:561
+msgid "_To:"
+msgstr "_bis:"
+
+#: libgnomeprintui/gnome-print-dialog.c:574
+msgid "Sets the end of the range of pages to be printed"
+msgstr "'t ènj van de riej aaf te drökke pagina's"
+
+#: libgnomeprintui/gnome-print-job-preview.c:618
+msgid "Page Preview"
+msgstr "Aafdröksjtaal"
+
+#: libgnomeprintui/gnome-print-job-preview.c:619
+msgid "The preview of a page in the document to be printed"
+msgstr "'t aafdröksjtaal van de pagina in 't dokkemènt"
+
+#: libgnomeprintui/gnome-print-job-preview.c:636
+msgid "P_age: "
+msgstr "P_agina:"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:652
+msgid "of"
+msgstr "van"
+
+#: libgnomeprintui/gnome-print-job-preview.c:658
+msgid "Page total"
+msgstr "Totaal deil pagina's"
+
+#: libgnomeprintui/gnome-print-job-preview.c:659
+msgid "The total number of pages in the document"
+msgstr "'t totaal deil pagina's in 't dokkemènt"
+
+#: libgnomeprintui/gnome-print-job-preview.c:661
+msgid "Use _theme colors for content"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Other"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:781
+msgid "Prints the current file"
+msgstr "Drök 't huijige besjtandj aaf"
+
+#: libgnomeprintui/gnome-print-job-preview.c:789
+msgid "Closes print preview window"
+msgstr "Sjloet 't aafdröksjtaalvinster"
+
+#: libgnomeprintui/gnome-print-job-preview.c:802
+msgid "Shows the first page"
+msgstr "Tuint de ierste pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:810
+msgid "Shows the previous page"
+msgstr "Tuint de veurige pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:818
+msgid "Shows the next page"
+msgstr "Tuint de naekste pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:826
+msgid "Shows the last page"
+msgstr "Tuint de leste pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:839
+msgid "Zooms 1:1"
+msgstr "Sjaalt nao 1:1"
+
+#: libgnomeprintui/gnome-print-job-preview.c:847
+msgid "Zooms to fit the whole page"
+msgstr "Sjale zoedet de ganse pagina d'rop pas"
+
+#: libgnomeprintui/gnome-print-job-preview.c:855
+msgid "Zooms the page in"
+msgstr "Pagina inzoome"
+
+#: libgnomeprintui/gnome-print-job-preview.c:863
+msgid "Zooms the page out"
+msgstr "Pagina oetzoome"
+
+#: libgnomeprintui/gnome-print-job-preview.c:875
+msgid "View multiple pages"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:1168
+#: libgnomeprintui/gnome-print-job-preview.c:1169
+msgid "Number of pages horizontally"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:1172
+#: libgnomeprintui/gnome-print-job-preview.c:1173
+msgid "Number of pages vertically"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:1213
+msgid "Gnome Print Preview"
+msgstr "Gnome aafdröksjtaal"
+
+#: libgnomeprintui/gnome-print-job-preview.c:1245
+msgid "No visible output was created."
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:440
+#, fuzzy
+msgid "Paper and Layout"
+msgstr "Papeer en opmaak"
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:457
+msgid "Paper _size:"
+msgstr "Papeer_formaat:"
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:468
+msgid "_Width:"
+msgstr "_Breide:"
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:482
+msgid "_Height:"
+msgstr "_Huugde:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:500
+msgid "Metric selector"
+msgstr "Metriekkezer"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:501
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+"Geuf aan welke metriek gebroek weurt veur de breide en huugde van 't papeer "
+"in te sjtèlle"
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:504
+msgid "_Feed orientation:"
+msgstr "_Inveurorjentasie:"
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:518
+msgid "Page _orientation:"
+msgstr "Pagina-_orjentasie:"
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:529
+msgid "_Layout:"
+msgstr "_Opmaak:"
+
+#. Paper source
+#: libgnomeprintui/gnome-print-paper-selector.c:540
+#, fuzzy
+msgid "Paper _tray:"
+msgstr "Papeer_formaat:"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:554
+#: libgnomeprintui/gnome-print-paper-selector.c:568
+msgid "Preview"
+msgstr "Aafdröksjtaal"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:569
+msgid "Preview of the page size, orientation and layout"
+msgstr "Sjtaal van de paginagruutde, -orjentasie en opmaak"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+#, fuzzy
+msgid "Margins"
+msgstr "Marges"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:609
+msgid "Top"
+msgstr "Baove"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:612
+msgid "Bottom"
+msgstr "Ónger"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:615
+msgid "Left"
+msgstr "Links"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:618
+msgid "Right"
+msgstr "Rechs"
+
+#: libgnomeprintui/gnome-printer-selector.c:168
+msgid "Co_nfigure"
+msgstr "Kó_ngfiggerere"
+
+#: libgnomeprintui/gnome-printer-selector.c:177
+msgid "Adjust the settings of the selected printer"
+msgstr "Insjtèllinge van de gekaoze drökker aanpasse"
+
+#: libgnomeprintui/gnome-printer-selector.c:185
+msgid "_Settings:"
+msgstr "_Insjtèllinge:"
+
+#: libgnomeprintui/gnome-printer-selector.c:194
+msgid "_Location:"
+msgstr "_Lokasie:"
+
+#: libgnomeprintui/gpaui/gpa-option-menu.c:179
+#: libgnomeprintui/gpaui/gpa-option-menu.c:229
+msgid "No options are defined"
+msgstr "Gein opsies aangegaeve"
+
+#: libgnomeprintui/gpaui/gpa-print-to-file.c:258
+msgid "Print to _file"
+msgstr "Aafdrökke nao besjtandj"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:168
+#, fuzzy
+msgid "State"
+msgstr "Sjtatus:"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:175
+#, fuzzy
+msgid "Jobs"
+msgstr "Taak"
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:182
+#, fuzzy
+msgid "Location"
+msgstr "_Lokasie:"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:180
+msgid "No printer selected"
+msgstr "Geine drökker gekaoze"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:191
+msgid "No settings available"
+msgstr "Gein insjtèllinge besjikbaar"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:234
+msgid "Add new settings"
+msgstr "Nuuj insjtèlling biedoon"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:311
+msgid "%"
+msgstr ""
+
+#. Percent must be first
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:312
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:313
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:314
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:315
+msgid "m"
+msgstr "m"
+
+#: libgnomeprintui/gpaui/gpa-spinbutton.c:316
+msgid "in"
+msgstr "in"
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:183
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:523
+#, c-format
+msgid "The specified filename \"%s\" is an existing directory."
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:202
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:545
+#, c-format
+msgid "Should the file %s be overwritten?"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "Please specify the location and filename of the output file:"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:271
+msgid "All Files"
+msgstr ""
+
+#~ msgid "Type:"
+#~ msgstr "Tiep:"
+
+#~ msgid "Comment:"
+#~ msgstr "Opmirking:"
+
+#~ msgid "Pr_inter:"
+#~ msgstr "D_rökker:"
+
+#~ msgid "No printers could be loaded"
+#~ msgstr "Dao kóste gein drökkers gelaje waere"
+
+#~ msgid ""
+#~ "<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background="
+#~ "\"white\">No visible output was created.</span></markup>"
+#~ msgstr ""
+#~ "<markup>1   <span foregroun=\"red\" weight=\"utlrabold\" background="
+#~ "\"white\">Gein zichbare oetveur aangemaak.</span></markup>"
+
+#, fuzzy
+#~ msgid "<b>Preview</b>"
+#~ msgstr "Aafdröksjtaal"
+
+#, fuzzy
+#~ msgid "<b>Printer</b>"
+#~ msgstr "Drökker"
+
+#~ msgid "Portrait"
+#~ msgstr "Sjtaond"
+
+#~ msgid "Landscape"
+#~ msgstr "Likgend"
+
+#~ msgid "Rotate 180"
+#~ msgstr "180 drieje"
+
+#~ msgid "Manage printers"
+#~ msgstr "Drökkers wirtsjafte"
+
+#~ msgid "Add new printer"
+#~ msgstr "Nuje drökker biedoon"
+
+#~ msgid "P_rinter"
+#~ msgstr "D_rökker"
+
+#~ msgid "No papers defined"
+#~ msgstr "Gei papeer aangegaeve"
+
+#~ msgid "No layouts defined"
+#~ msgstr "Geine opmaak aangegaeve"
+
+#~ msgid "Select Printer"
+#~ msgstr "Keus drökker"
+
+#~ msgid "Select printer model"
+#~ msgstr "Keus drökker model"
+
+#~ msgid "Manufacturer"
+#~ msgstr "Boewer"
+
+#~ msgid "Model"
+#~ msgstr "Model"
+
+#~ msgid "Name"
+#~ msgstr "Naam"
+
+#~ msgid "Add printer"
+#~ msgstr "Drökker biedoon"
+
+#~ msgid "From PPD..."
+#~ msgstr "Van PPD..."
+
+#~ msgid "My App Print Preview"
+#~ msgstr "Mien Applikasie aafdröksjtaal"
+
+#~ msgid "extracts the first font from output.pdf and places it in font.dump."
+#~ msgstr ""
+#~ "Pak 't ierste booksjtaaftiep oet output.pdf en plaats 't in font.dump."
+
+#~ msgid "extracts the font header from font.dump"
+#~ msgstr "Pak de booksjtaaftiepkop oet font.dump"
+
+#~ msgid "extracts the font body "
+#~ msgstr "Pak de booksjtaaftiepkaer oet"
+
+#~ msgid "decrypts the font body "
+#~ msgstr "Dekodeert de booksjtaaftiepkaer"
+
+#~ msgid "Render from metafile"
+#~ msgstr "Generere vanoet metabesjtandj"
+
+#~ msgid "PATH"
+#~ msgstr "PATH"
+
+#~ msgid "Bring up font dialog"
+#~ msgstr "Tuin booksjtaaftiep-dialoogvinster"
+
+#~ msgid "Bring up printer dialog"
+#~ msgstr "Tuin drökker-dialoogvinster"
+
+#~ msgid "Bring up print dialog"
+#~ msgstr "Tuin aafdrökke-dialoogvinster"
+
+#~ msgid "Use GnomePrintMasterPreview"
+#~ msgstr "Gebroek GnomePrintMasteraafdröksjtaal"
+
+#~ msgid "Show paper dialog"
+#~ msgstr "Tuin papeer-dialoogvinster"
+
+#~ msgid "Printer default location"
+#~ msgstr "Sjtanderd drökker lokasie"
