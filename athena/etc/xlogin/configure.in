@@ -1,16 +1,24 @@
-# $Id: configure.in,v 1.6 2001-04-04 21:24:40 ghudson Exp $
+# $Id: configure.in,v 1.7 2001-04-20 14:26:09 ghudson Exp $
 AC_INIT(xlogin.c)
 
 test -z "$lsbindir" && lsbindir='${sbindir}'
 AC_SUBST(lsbindir)
 
 AC_CANONICAL_HOST
+XAW=-lXaw
 case $host_os in
 solaris*)
 	AC_DEFINE(SOLARIS)
 	AC_DEFINE(SOLARIS_MAE)
 	;;
+linux*)
+	dnl Hack: use libXaw.so.6 to work around a bug in XFree86
+	dnl 4.0.1; the AsciiText widget in libXaw.so.7 does not honor
+	dnl the "echo" resource on the sink.
+	XAW=/usr/X11R6/lib/libXaw.so.6
+	;;
 esac
+AC_SUBST(XAW)
 
 AC_SUBST(ATHENA_HOSTTYPE)
 AC_SUBST(ATHENA_MAJOR_VERSION)
