@@ -463,7 +463,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot GNOME_SPEECH_MAJOR_VERSION GNOME_SPEECH_MINOR_VERSION GNOME_SPEECH_MICRO_VERSION GNOME_SPEECH_INTERFACE_AGE GNOME_SPEECH_BINARY_AGE LT_VERSION_INFO LT_RELEASE LT_CURRENT LT_REVISION LT_AGE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE ACLOCAL_AMFLAGS WARN_CFLAGS build build_cpu build_vendor build_os host host_cpu host_vendor host_os EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKG_CONFIG gnome_speech_CFLAGS gnome_speech_LIBS ORBIT_IDL BONOBO_ACTIVATION_IDL_DIR LIBBONOBO_IDL_DIR viavoice_LIBS BUILD_VIAVOICE_DRIVER_TRUE BUILD_VIAVOICE_DRIVER_FALSE dectalk_LIBS dectalk_INCLUDES BUILD_DECTALK_DRIVER_TRUE BUILD_DECTALK_DRIVER_FALSE theta_LIBS theta_INCLUDES BUILD_THETA_DRIVER_TRUE BUILD_THETA_DRIVER_FALSE eloquence_INCLUDEDIR eloquence_LIBDIR BUILD_ELOQUENCE_DRIVER_TRUE BUILD_ELOQUENCE_DRIVER_FALSE JAVA JAVAC JAVAH IDLJ JAR JAVA_HOME JAB JAVA_SUPPORT BUILD_JAVA_PACKAGE_TRUE BUILD_JAVA_PACKAGE_FALSE BUILD_JAVA_PACKAGE GNOME_SPEECH_JAR_DIR GNOME_SPEECH_INSTALLED_CLASSPATH GNOME_SPEECH_CLASSPATH FREETTS_JAR_DIR FREETTS_CLASSPATH BUILD_FREETTS_DRIVER_LINUX_TRUE BUILD_FREETTS_DRIVER_LINUX_FALSE BUILD_FREETTS_DRIVER_SOLARIS_TRUE BUILD_FREETTS_DRIVER_SOLARIS_FALSE BUILD_FREETTS_DRIVER_TRUE BUILD_FREETTS_DRIVER_FALSE FREETTS_DRIVER_JAR_DIR FREETTS_DRIVER_CLASSPATH LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot GNOME_SPEECH_MAJOR_VERSION GNOME_SPEECH_MINOR_VERSION GNOME_SPEECH_MICRO_VERSION GNOME_SPEECH_INTERFACE_AGE GNOME_SPEECH_BINARY_AGE LT_VERSION_INFO LT_RELEASE LT_CURRENT LT_REVISION LT_AGE MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE GNOME_ACLOCAL_DIR GNOME_ACLOCAL_FLAGS INSIDE_GNOME_DOCU_TRUE INSIDE_GNOME_DOCU_FALSE WARN_CFLAGS build build_cpu build_vendor build_os host host_cpu host_vendor host_os EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKG_CONFIG gnome_speech_CFLAGS gnome_speech_LIBS ORBIT_IDL BONOBO_ACTIVATION_IDL_DIR LIBBONOBO_IDL_DIR viavoice_LIBS viavoice_INCLUDES BUILD_VIAVOICE_DRIVER_TRUE BUILD_VIAVOICE_DRIVER_FALSE dectalk_LIBS dectalk_INCLUDES BUILD_DECTALK_DRIVER_TRUE BUILD_DECTALK_DRIVER_FALSE theta_LIBS theta_INCLUDES BUILD_THETA_DRIVER_TRUE BUILD_THETA_DRIVER_FALSE eloquence_INCLUDEDIR eloquence_LIBDIR BUILD_ELOQUENCE_DRIVER_TRUE BUILD_ELOQUENCE_DRIVER_FALSE JAVA JAVAC JAVAH IDLJ JAR JAVA_HOME JAB JAVA_SUPPORT BUILD_JAVA_PACKAGE_TRUE BUILD_JAVA_PACKAGE_FALSE BUILD_JAVA_PACKAGE GNOME_SPEECH_JAR_DIR GNOME_SPEECH_INSTALLED_CLASSPATH GNOME_SPEECH_CLASSPATH FREETTS_JAR_DIR FREETTS_CLASSPATH BUILD_FREETTS_DRIVER_LINUX_TRUE BUILD_FREETTS_DRIVER_LINUX_FALSE BUILD_FREETTS_DRIVER_SOLARIS_TRUE BUILD_FREETTS_DRIVER_SOLARIS_FALSE BUILD_FREETTS_DRIVER_TRUE BUILD_FREETTS_DRIVER_FALSE FREETTS_DRIVER_JAR_DIR FREETTS_DRIVER_CLASSPATH LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1027,8 +1027,7 @@ Optional Features:
                           (and sometimes confusing) to the casual installer
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
-  --enable-compile-warnings=[no/minimum/yes/maximum/error]
-                          Turn on compiler warnings
+  --enable-compile-warnings=no/minimum/yes/maximum/error	Turn on compiler warnings.
   --enable-iso-c          Try to warn if code is not ISO C
   --enable-static[=PKGS]
                           build static libraries [default=no]
@@ -1046,6 +1045,7 @@ Optional Packages:
                           both]
   --with-tags[=TAGS]
                           include additional configurations [automatic]
+{   --with-viavoice-dir=PATH	Specify path to Viavoice}
 {   --with-dectalk-dir=PATH	Specify path to DECTalk}
 {   --with-theta-dir=PATH	Specify path to Theta}
 {   --with-eloquence-dir=PATH	Specify path to Eloquence}
@@ -1508,7 +1508,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 GNOME_SPEECH_MAJOR_VERSION=0
 GNOME_SPEECH_MINOR_VERSION=3
-GNOME_SPEECH_MICRO_VERSION=5
+GNOME_SPEECH_MICRO_VERSION=6
 GNOME_SPEECH_INTERFACE_AGE=0
 GNOME_SPEECH_BINARY_AGE=0
 GNOME_SPEECH_VERSION="$GNOME_SPEECH_MAJOR_VERSION.$GNOME_SPEECH_MINOR_VERSION.$GNOME_SPEECH_MICRO_VERSION"
@@ -3209,17 +3209,50 @@ fi
 
 
 
-      ACLOCAL_AMFLAGS="\${ACLOCAL_FLAGS}"
+	if test "${ac_cv_gnome_aclocal_dir+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_gnome_aclocal_dir="$GNOME_COMMON_MACROS_DIR"
+fi
+
+	if test "${ac_cv_gnome_aclocal_flags+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_gnome_aclocal_flags="$ACLOCAL_FLAGS"
+fi
+
+	GNOME_ACLOCAL_DIR="$ac_cv_gnome_aclocal_dir"
+	GNOME_ACLOCAL_FLAGS="$ac_cv_gnome_aclocal_flags"
 
 
 
+	ACLOCAL="$ACLOCAL $GNOME_ACLOCAL_FLAGS"
+
+
+
+if false; then
+  INSIDE_GNOME_DOCU_TRUE=
+  INSIDE_GNOME_DOCU_FALSE='#'
+else
+  INSIDE_GNOME_DOCU_TRUE='#'
+  INSIDE_GNOME_DOCU_FALSE=
+fi
+
+
+
+
+    if test -z "maximum" ; then
+	default_compile_warnings=yes
+    else
+	default_compile_warnings="maximum"
+    fi
 
     # Check whether --enable-compile-warnings or --disable-compile-warnings was given.
 if test "${enable_compile_warnings+set}" = set; then
   enableval="$enable_compile_warnings"
 
 else
-  enable_compile_warnings="maximum"
+  enable_compile_warnings="$default_compile_warnings"
 fi;
 
     warnCFLAGS=
@@ -3840,15 +3873,6 @@ irix5* | irix6* | nonstopux*)
 
 # This must be Linux ELF.
 linux*)
-  case $host_cpu in
-  alpha*|hppa*|i*86|ia64*|m68*|mips*|powerpc*|sparc*|s390*|sh*|x86_64*)
-    lt_cv_deplibs_check_method=pass_all ;;
-  *)
-    # glibc up to 2.1.1 does not perform some relocations on ARM
-    # this will be overridden with pass_all, but let us keep it just in case
-    lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )' ;;
-  esac
-  lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
   lt_cv_deplibs_check_method=pass_all
   ;;
 
@@ -3966,7 +3990,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3969 "configure"' > conftest.$ac_ext
+  echo '#line 3993 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5208,7 +5232,12 @@ else
 fi
 
 
-ac_ext=cc
+
+
+if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
+    ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
+    (test "X$CXX" != "Xg++"))) ; then
+  ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -5438,6 +5467,8 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
+fi
+
 
 ac_ext=f
 ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
@@ -5531,7 +5562,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:5534:" \
+echo "$as_me:5565:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -5808,6 +5839,13 @@ hpux*) # Its linker distinguishes data from code symbols
   fi
   lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
   lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([^ ]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([^ ]*\) \([^ ]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
+  ;;
+linux*)
+  if test "$host_cpu" = ia64; then
+    symcode='[ABCDGIRSTW]'
+    lt_cv_sys_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern int \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
+    lt_cv_sys_global_symbol_to_c_name_address="sed -n -e 's/^: \([^ ]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([^ ]*\) \([^ ]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
+  fi
   ;;
 irix* | nonstopux*)
   symcode='[BCDEGRST]'
@@ -6581,11 +6619,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6584: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6622: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6588: \$? = $ac_status" >&5
+   echo "$as_me:6626: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6824,11 +6862,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6827: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6865: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6831: \$? = $ac_status" >&5
+   echo "$as_me:6869: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6884,11 +6922,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6887: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6925: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:6891: \$? = $ac_status" >&5
+   echo "$as_me:6929: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8219,7 +8257,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 8222 "configure"' > conftest.$ac_ext
+    echo '#line 8260 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9090,7 +9128,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9093 "configure"
+#line 9131 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9188,7 +9226,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9191 "configure"
+#line 9229 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9862,7 +9900,9 @@ echo "$as_me: error: tag name \"$tagname\" already exists" >&2;}
 
       case $tagname in
       CXX)
-	if test -n "$CXX" && test "X$CXX" != "Xno"; then
+	if test -n "$CXX" && ( test "X$CXX" != "Xno" &&
+	    ( (test "X$CXX" = "Xg++" && `g++ -v >/dev/null 2>&1` ) ||
+	    (test "X$CXX" != "Xg++"))) ; then
 	  ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -10703,6 +10743,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     ld_shlibs_CXX=no
     ;;
   openbsd*)
+    hardcode_direct_CXX=yes
+    hardcode_shlibpath_var_CXX=no
     archive_cmds_CXX='$CC -shared $pic_flag $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $lib'
     hardcode_libdir_flag_spec_CXX='${wl}-rpath,$libdir'
     if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
@@ -11377,11 +11419,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11380: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11422: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11384: \$? = $ac_status" >&5
+   echo "$as_me:11426: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11437,11 +11479,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11440: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11482: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11444: \$? = $ac_status" >&5
+   echo "$as_me:11486: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11948,7 +11990,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 11951 "configure"' > conftest.$ac_ext
+    echo '#line 11993 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -12819,7 +12861,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12822 "configure"
+#line 12864 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12917,7 +12959,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12920 "configure"
+#line 12962 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13754,11 +13796,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13757: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13799: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13761: \$? = $ac_status" >&5
+   echo "$as_me:13803: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -13814,11 +13856,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13817: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13859: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13821: \$? = $ac_status" >&5
+   echo "$as_me:13863: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15129,7 +15171,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 15132 "configure"' > conftest.$ac_ext
+    echo '#line 15174 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -15870,11 +15912,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15873: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15915: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15877: \$? = $ac_status" >&5
+   echo "$as_me:15919: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16113,11 +16155,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16116: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16158: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16120: \$? = $ac_status" >&5
+   echo "$as_me:16162: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16173,11 +16215,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16176: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16218: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16180: \$? = $ac_status" >&5
+   echo "$as_me:16222: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17508,7 +17550,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 17511 "configure"' > conftest.$ac_ext
+    echo '#line 17553 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -18379,7 +18421,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18382 "configure"
+#line 18424 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18477,7 +18519,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18480 "configure"
+#line 18522 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19609,13 +19651,23 @@ LIBBONOBO_IDL_DIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
 
 # Check to see if we should build the Viavoice driver
 
-echo "$as_me:$LINENO: checking for eciNew in -libmeci50" >&5
-echo $ECHO_N "checking for eciNew in -libmeci50... $ECHO_C" >&6
-if test "${ac_cv_lib_ibmeci50_eciNew+set}" = set; then
+
+# Check whether --with-viavoice_dir or --without-viavoice_dir was given.
+if test "${with_viavoice_dir+set}" = set; then
+  withval="$with_viavoice_dir"
+
+fi;
+if test x$with_viavoice_dir != x ; then
+        viavoice_LIBS="-L$with_viavoice_dir/lib -libmeci"
+        viavoice_INCLUDES="-I$with_viavoice_dir/inc"
+else
+	echo "$as_me:$LINENO: checking for eciNew in -libmeci" >&5
+echo $ECHO_N "checking for eciNew in -libmeci... $ECHO_C" >&6
+if test "${ac_cv_lib_ibmeci_eciNew+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-libmeci50  $LIBS"
+LIBS="-libmeci  $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -19660,27 +19712,30 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_ibmeci50_eciNew=yes
+  ac_cv_lib_ibmeci_eciNew=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_ibmeci50_eciNew=no
+ac_cv_lib_ibmeci_eciNew=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_ibmeci50_eciNew" >&5
-echo "${ECHO_T}$ac_cv_lib_ibmeci50_eciNew" >&6
-if test $ac_cv_lib_ibmeci50_eciNew = yes; then
-  viavoice_LIBS=-libmeci50
+echo "$as_me:$LINENO: result: $ac_cv_lib_ibmeci_eciNew" >&5
+echo "${ECHO_T}$ac_cv_lib_ibmeci_eciNew" >&6
+if test $ac_cv_lib_ibmeci_eciNew = yes; then
+  viavoice_LIBS=-libmeci
+fi
+
+	viavoice_INCLUDES="-I/opt/IBM/ibmtts/inc"
 fi
 
 
 
 
-if test "x$viavoice_LIBS" = "x-libmeci50"; then
+if test "x$viavoice_LIBS" != "x"; then
   BUILD_VIAVOICE_DRIVER_TRUE=
   BUILD_VIAVOICE_DRIVER_FALSE='#'
 else
@@ -19820,7 +19875,7 @@ fi
 
 if test x$theta_config != x ; then
    theta_LIBS=`$theta_config --libs`
-   theta_INCLUDES=`$theta_config --cflags`
+   theta_INCLUDES=`$theta_config --cflags`/swift
 fi
 
 
@@ -19900,7 +19955,9 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   JAVA="$JAVA_HOME/bin/java"
 else
-  Java executeable not found
+  JAVA="no"
+	 { echo "$as_me:$LINENO: Java executeable not found" >&5
+echo "$as_me: Java executeable not found" >&6;}
 fi
 
 else
@@ -19966,7 +20023,9 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   JAVAC="$JAVA_HOME/bin/javac"
 else
-  Java Compiler not found
+  JAVAC="no"
+	 { echo "$as_me:$LINENO: Java Compiler not found" >&5
+echo "$as_me: Java Compiler not found" >&6;}
 fi
 
 else
@@ -20032,7 +20091,9 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   JAVAH="$JAVA_HOME/bin/javah"
 else
-  Java Header Generator not found
+  JAVAH="no"
+	 { echo "$as_me:$LINENO: Java Header Generator not found" >&5
+echo "$as_me: Java Header Generator not found" >&6;}
 fi
 
 else
@@ -20098,7 +20159,9 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   IDLJ="$JAVA_HOME/bin/idlj"
 else
-  Java IDL Code Generator not found
+  IDLJ="no"
+	 { echo "$as_me:$LINENO: Java IDL Code Generator not found" >&5
+echo "$as_me: Java IDL Code Generator not found" >&6;}
 fi
 
 else
@@ -20164,7 +20227,9 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   JAR="$JAVA_HOME/bin/jar"
 else
-  Jar utility not found
+  JAR="no"
+	 { echo "$as_me:$LINENO: Jar utility not found" >&5
+echo "$as_me: Jar utility not found" >&6;}
 fi
 
 else
@@ -20262,8 +20327,8 @@ echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   JAB="$prefix/share/jar/gnome-java-bridge.jar"
 else
-  { echo "$as_me:$LINENO: echo Java Access Bridge not found" >&5
-echo "$as_me: echo Java Access Bridge not found" >&6;}
+  { echo "$as_me:$LINENO: Java Access Bridge not found" >&5
+echo "$as_me: Java Access Bridge not found" >&6;}
 fi
 
 fi
@@ -20482,6 +20547,13 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${INSIDE_GNOME_DOCU_TRUE}" && test -z "${INSIDE_GNOME_DOCU_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"INSIDE_GNOME_DOCU\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"INSIDE_GNOME_DOCU\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -21155,7 +21227,10 @@ s,@AMDEPBACKSLASH@,$AMDEPBACKSLASH,;t t
 s,@CCDEPMODE@,$CCDEPMODE,;t t
 s,@am__fastdepCC_TRUE@,$am__fastdepCC_TRUE,;t t
 s,@am__fastdepCC_FALSE@,$am__fastdepCC_FALSE,;t t
-s,@ACLOCAL_AMFLAGS@,$ACLOCAL_AMFLAGS,;t t
+s,@GNOME_ACLOCAL_DIR@,$GNOME_ACLOCAL_DIR,;t t
+s,@GNOME_ACLOCAL_FLAGS@,$GNOME_ACLOCAL_FLAGS,;t t
+s,@INSIDE_GNOME_DOCU_TRUE@,$INSIDE_GNOME_DOCU_TRUE,;t t
+s,@INSIDE_GNOME_DOCU_FALSE@,$INSIDE_GNOME_DOCU_FALSE,;t t
 s,@WARN_CFLAGS@,$WARN_CFLAGS,;t t
 s,@build@,$build,;t t
 s,@build_cpu@,$build_cpu,;t t
@@ -21191,6 +21266,7 @@ s,@ORBIT_IDL@,$ORBIT_IDL,;t t
 s,@BONOBO_ACTIVATION_IDL_DIR@,$BONOBO_ACTIVATION_IDL_DIR,;t t
 s,@LIBBONOBO_IDL_DIR@,$LIBBONOBO_IDL_DIR,;t t
 s,@viavoice_LIBS@,$viavoice_LIBS,;t t
+s,@viavoice_INCLUDES@,$viavoice_INCLUDES,;t t
 s,@BUILD_VIAVOICE_DRIVER_TRUE@,$BUILD_VIAVOICE_DRIVER_TRUE,;t t
 s,@BUILD_VIAVOICE_DRIVER_FALSE@,$BUILD_VIAVOICE_DRIVER_FALSE,;t t
 s,@dectalk_LIBS@,$dectalk_LIBS,;t t
