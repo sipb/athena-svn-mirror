@@ -237,7 +237,7 @@ fi
 
 echo "==== build package"
 
-rpm -ba -v --rcfile $destdir/rpmrc --target i386-athena-linux --buildroot $destdir/INSTALL $destdir/SPECS/$source_name
+rpm -ba -v --rcfile $destdir/rpmrc --target=i386-athena-linux --buildroot $destdir/INSTALL $destdir/SPECS/$source_name
 if [ $? -ne 0 ]; then
     exit 1
 fi
