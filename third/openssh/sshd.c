@@ -1042,11 +1042,6 @@ main(int ac, char **av)
 					error("newsock del O_NONBLOCK: %s", strerror(errno));
 					continue;
 				}
-				if (drop_connection(startups) == 1) {
-					debug("drop connection #%d", startups);
-					close(newsock);
-					continue;
-				}
 				if (pipe(startup_p) == -1) {
 					close(newsock);
 					continue;
