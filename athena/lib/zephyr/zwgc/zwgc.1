@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
 .\"	$Author: jtkohl $
-.\"	$Id: zwgc.1,v 1.3 1989-11-28 16:49:34 jtkohl Exp $
+.\"	$Id: zwgc.1,v 1.4 1989-11-28 16:59:32 jtkohl Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -511,11 +511,10 @@ the TERMCAP entry (see
 for the terminal named by the TERM environment variable.
 Supported @ commands are:
 .RS 10
-.TQ 15
-.\" .TQ
+.\" .TQ 15
 .\" @em
 .\" Emphasis.  Use underline if available, else reverse video.
-.TQ
+.TQ 15
 @bold
 Bold letters.  If not available, reverse video, else underline.
 .TQ
@@ -546,7 +545,7 @@ center aligned
 @r or @right
 right aligned
 .RE
-.IP 5
+.IP "" 5
 Other @-commands are silently ignored.
 .TP 5
 X
