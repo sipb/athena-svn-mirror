@@ -1,6 +1,23 @@
-#	$NetBSD: Makefile,v 1.2 1994/11/14 20:27:39 jtc Exp $
-#	@(#)Makefile	8.1 (Berkeley) 6/6/93
+# $Id: Makefile,v 1.2 1996-10-10 17:17:40 ghudson Exp $
 
-PROG=	lam
+SHELL=/bin/sh
+ATHBINDIR=/usr/athena/bin
+ATHMANDIR=/usr/athena/man
 
-.include <bsd.prog.mk>
+all: lam
+
+lam: lam.o
+	${CC} ${LDFLAGS} -o lam lam.o ${LIBS}
+
+check:
+
+install:
+	-mkdir -p ${DESTDIR}${ATHBINDIR}
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	install -c -m 555 lam ${DESTDIR}${ATHBINDIR}
+	install -c -m 444 lam.1 ${DESTDIR}${ATHMANDIR}/man1
+
+clean:
+	rm -f lam.o lam
+
+distclean: clean
