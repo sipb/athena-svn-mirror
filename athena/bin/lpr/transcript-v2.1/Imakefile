@@ -1,12 +1,12 @@
 /*
- * $Id: Imakefile,v 1.13 1995-11-28 23:08:00 cfields Exp $
+ * $Id: Imakefile,v 1.14 1996-05-24 21:34:17 ghudson Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
 #ifndef _AIX
 #define ISUBDIRS snmplib
 #endif
-PSLIBDIR=/usr/athena/lib/ps
+PSLIBDIR=/usr/athena/lib/lpdfilters
 PSTEMPDIR=/tmp
 DITDIR=/usr/lib/font
 TROFFFONTDIR=$(PSLIBDIR)/troff.font
