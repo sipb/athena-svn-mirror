@@ -5,7 +5,6 @@ AC_PROG_INSTALL
 
 ATHENA_HESIOD
 
-AC_CHECK_FUNC(logout, :, AC_CHECK_LIB(util, logout))
 
 AC_PATH_XTRA
 
@@ -17,7 +16,7 @@ AC_CHECK_HEADERS(util.h sys/strredir.h sys/stropts.h utmpx.h)
 AC_TYPE_PID_T
 
 dnl AC_CHECK_FUNCS(gettimeofday putenv select strerror)
-AC_CHECK_FUNCS(pututline pututxline updwtmp login_tty logout grantpt _getpty \
-	openpty)
+AC_SEARCH_LIBS(logout, util, AC_DEFINE(HAVE_LOGOUT))
+AC_CHECK_FUNCS(pututline pututxline updwtmp login_tty grantpt _getpty openpty)
 
 AC_OUTPUT(Makefile)

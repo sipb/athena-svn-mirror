@@ -4,8 +4,8 @@ AC_INIT(larvnetd.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
-AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_SEARCH_LIBS(socket, socket)
 ATHENA_HESIOD
 
 CPPFLAGS="$CPPFLAGS -I$ATHTOOLROOT/usr/athena/include"

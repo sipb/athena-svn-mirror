@@ -7,7 +7,7 @@ AC_SUBST(lbindir)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
+AC_SEARCH_LIBS(gethostbyname, nsl)
 ATHENA_HESIOD_REQUIRED
 
 AC_OUTPUT(Makefile)

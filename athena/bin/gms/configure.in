@@ -4,8 +4,8 @@ AC_INIT(get_message.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
-AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_SEARCH_LIBS(socket, socket)
 
 ATHENA_UTIL_COM_ERR
 ATHENA_HESIOD_REQUIRED
