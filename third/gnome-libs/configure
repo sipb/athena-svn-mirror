@@ -5215,8 +5215,8 @@ if eval "test \"`echo '$''{'ac_cv_gmodule'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
-  save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$LDFLAGS `glib-config --libs gmodule`"
+  save_LIBS="$LIBS"
+  LIBS="$LIBS `glib-config --libs gmodule`"
   if test "$cross_compiling" = yes; then
   ac_cv_gmodule=yes
 else
@@ -5243,7 +5243,7 @@ fi
 rm -fr conftest*
 fi
 
-  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 fi
 
 echo "$ac_t""$ac_cv_gmodule" 1>&6

@@ -117,8 +117,8 @@ AC_CHECK_LIB(m, floor)
 AC_CHECK_HEADERS(dlfcn.h locale.h libintl.h)
 
 AC_CACHE_CHECK([for gmodule support], ac_cv_gmodule,[
-  save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$LDFLAGS `glib-config --libs gmodule`"
+  save_LIBS="$LIBS"
+  LIBS="$LIBS `glib-config --libs gmodule`"
   AC_TRY_RUN([
 #include <gmodule.h>
 
@@ -126,7 +126,7 @@ int main()
 {
   return g_module_supported() == 0;
 }],ac_cv_gmodule=yes,ac_cv_gmodule=no,ac_cv_gmodule=yes)
-  LDFLAGS="$save_LDFLAGS"])
+  LIBS="$save_LIBS"])
 if test $ac_cv_gmodule = no; then
   AC_MSG_ERROR([Dynamic linking is not available on this platform. Some apps,
 like panel, will not run properly.])
