@@ -14,14 +14,3 @@
 	IN	NS	w20ns.mit.edu.
 
 	IN	A	127.0.0.1
-
-; Old versions of named allow you to shove authoritative records into
-; the database in a primary file outside of the domain the primary
-; file is for.  We can exploit this bug to allow people to write
-; arbitrary authoritative records into /etc/named.local.  Newer
-; versions of named will ignore anything the user is likely to put in
-; named.local.  (See the comments in named.boot to find out what to do
-; for local records in that case.  As of release 8.1, named.local will
-; work on SGIs but not on Suns.)
-$ORIGIN	.
-$INCLUDE /etc/named.local
