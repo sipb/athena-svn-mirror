@@ -7,5 +7,5 @@
 # This file is sourced by the Bourne shell.
 
 major=8
-minor=2
+minor=3
 patch=0
