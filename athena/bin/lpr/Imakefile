@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.6 1992-11-09 00:52:03 probe Exp $
+ * $Id: Imakefile,v 1.7 1992-12-23 11:50:08 probe Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -87,7 +87,7 @@ install::
 #endif
 
 /* Specify that should trust all hosts on 18.xx.xx.xx */
-SpecialObject(lpd.o,lpd.c,-Dws)
+SpecialObject(lpd.o,lpd.c,-DWS)
 
 /* Dependencies */
 lpd.o lpr.o lpq.o lprm.o pac.o: lp.h lp.local.h
