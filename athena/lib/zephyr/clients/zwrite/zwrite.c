@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_sendmsg_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.1 1987-06-30 18:21:08 rfrench Exp $";
+static char rcsid_sendmsg_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.2 1987-07-02 03:12:03 rfrench Exp $";
 #endif lint
 
 #define FUDGEFACTOR 150
@@ -33,9 +33,12 @@ main(argc,argv)
 	int retval,auth,verbose,urgent;
 	char *whoami,bfr[BUFSIZ],message[Z_MAXPKTLEN],*ptr;
 
-	ZInitialize();
-	
 	whoami = argv[0];
+
+	if ((retval = ZInitialize()) != ZERR_NONE) {
+		com_err(whoami,retval,"while initializing");
+		exit(1);
+	} 
 	
 	auth = verbose = urgent = 0;
 	
