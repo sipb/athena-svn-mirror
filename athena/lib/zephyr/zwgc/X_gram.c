@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.17 1992-05-07 22:37:55 marc Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.18 1992-08-25 20:47:59 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -100,9 +100,9 @@ void x_set_icccm_hints(dpy,w,name,icon_name,psizehints,pwmhints,main_window)
    if (main_window != None) {
       if (set_transient)
 	  XSetTransientForHint(dpy,w,main_window);
-      if (enable_delete)
-	  XSetWMProtocols(dpy,w,&XA_WM_DELETE_WINDOW,1);
    }
+   if (enable_delete)
+      XSetWMProtocols(dpy,w,&XA_WM_DELETE_WINDOW,1);
 }
 
 void x_gram_init(dpy)
