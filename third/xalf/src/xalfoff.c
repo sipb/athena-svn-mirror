@@ -11,7 +11,6 @@
 #include <stdlib.h>
 
 #undef DEBUG 
-//#define DEBUG 
 
 #ifdef DEBUG
 #   define DPRINTF(args) (fprintf args)
