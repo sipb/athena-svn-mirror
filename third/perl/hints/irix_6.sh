@@ -61,7 +61,6 @@ case "$cc" in
 	esac
 
 	ld=ld
-	ldflags=' -L/usr/local/lib -L/usr/lib32 -L/lib32'
 	cccdlflags=' '
     # From: David Billinghurst <David.Billinghurst@riotinto.com.au>
     # If you get complaints about so_locations then change the following
