@@ -45,24 +45,57 @@ Distribution sites for software under third
 			libexec/talkd goes in the talkd subdirectory
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
-	tex		Any CTAN mirror (e.g. ftp.duke.edu:/tex-archive,
-			ftp.cdrom.com:pub/tex/ctan).  We want:
-				- dvips from dviware/dvips
-				- xdvi from dviware/xdvi
-				- web2c from systems/web2c
-				- web from systems/web2c
-			Untar web2c and web (they will untar into the same
-			directory), and import that into third/tex/web2c.
-			Untar xdvi and import that into third/tex/xdvi.
-			Untar dvips in its own directory (it untars into
-			the current directory) and import that into
-			third/tex/dvips.
-			[And then there are fonts...]
+	tex		See below
 	top		eecs.nwu.edu:pub/top
 	transcript	From Adobe
 	wcl		ftp.x.org:contrib/devel_tools
 	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
 	x3270		ftp.x.org:contrib/applications/x3270
+
+TeX
+---
+
+There is no single distribution of what we install from TeX.  The
+files we install were retrieved from the CTAN (Comprehensive TeX
+Archive Network) archive, mirrors of which are at several places
+including ftp.duke.edu:/tex-archive and ftp.cdrom.com:pub/tex/ctan.
+Here is a list of what we got and what subdirectories they were
+imported into:
+
+	web, web2c from systems/web2c		web2c
+	dvips from dviware/dvips		dvips
+	xdvi from dviware/xdvi			xdvi
+	fonts/cm/mf/*				lib/mf/typefaces/cm
+	fonts/latex/mf/* (ignore symlinks)	lib/mf/typefaces/latex
+	fonts/ams/amsfonts/sources/euler/*	lib/mf/typefaces/euler
+	fonts/ams/amsfonts/sources/symbols/*	lib/mf/typefaces/ams
+	fonts/ams/amsfonts/sources/extracm/*	lib/mf/typefaces/cm-ams
+	fonts/ams/amsfonts/sources/cyrillic/*	lib/mf/typefaces/cyrillic
+	fonts/punk/*				lib/mf/typefaces/other
+	fonts/tengwar/*				lib/mf/typefaces/tolkien
+	fonts/cirth/*				lib/mf/typefaces/tolkien
+	fonts/oca/*				lib/mf/typefaces/ocr
+	fonts/ocr-a/*				lib/mf/typefaces/ocr
+	fonts/ocr-b/*				lib/mf/typefaces/ocr
+	fonts/amsfonts/sources/modes.mf		lib/mf/macros
+	systems/knuth/lib/*.mf*	(must gunzip)	lib/mf/macros
+	systems/knuth/lib/*.tex (must gunzip)	lib/tex/macros
+	fonts/ams/amstex/ams* (include amssym)	lib/tex/macros
+	fonts/ams/amsltx11/inputs/*		lib/tex/macros/amslatex/inputs
+	fonts/ams/amsltx11/fontsel/*		lib/tex/macros/amslatex/fontsel
+	biblio/bibtex/distribs/styles/*		lib/tex/macros/bib
+	macros/latex209/distribs/latex/sty/*	lib/tex/macros/latex
+	macros/latex209/distribs/latex/doc/*	lib/tex/macros/latex
+	macros/latex209/distribs/latex/general/* lib/tex/macros/latex
+
+This is pretty complicated (especially when you add in our own files,
+plus the stuff in lib/tex/macros/other which we don't bother
+identifying the source of).  Ideally, the contents of lib should be
+organized around distributions rather than installed directories, but
+the CTAN archive is not especially well-organized in that respect.  If
+anyone ever attempts a reorganization around distributions, they
+should probably just create a new hierarchy and delete the contents of
+the "lib" hierarchy.
 
 Third-party build systems
 -------------------------
