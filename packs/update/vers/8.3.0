@@ -13,6 +13,9 @@ sun4)
 
 	echo "/etc/inet/services"			>> "$CONFCHG"
 	echo "/etc/mail/sendmail.cf"			>> "$CONFCHG"
+
+	echo "TRACKOS=true"				>> "$CONFVARS"
+	echo "NEWUNIX=true"				>> "$CONFVARS"
 	;;
 
 sgi)
