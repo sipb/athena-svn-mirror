@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.7 1999-02-26 23:12:57 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.8 1999-03-12 15:06:42 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -338,24 +338,24 @@ void modify_path(char **pathp, char *elt)
  * A hack to print out a readable version of the user's path.
  *
  * It's a hack because it's not currently a nice thing to do
- * correctly. So, if any path element is of the form "/mit/*bin" such
- * as "/mit/gnu/arch/sun4x_55/bin," we print "{add gnu}" instead.
- * This is not always correct; it misses things that are not mounted
- * under /mit, and is misleading for lockers that do not mount under
- * /mit/lockername as well as MUL type filesystems. However, these
- * occasions are infrequent.
+ * correctly. So, if any path element starts with "/mit" and ends with
+ * "bin" such as "/mit/gnu/arch/sun4x_55/bin," we print "{add gnu}"
+ * instead.  This is not always correct; it misses things that are not
+ * mounted under /mit, and is misleading for lockers that do not mount
+ * under /mit/lockername as well as MUL type filesystems. However,
+ * these occasions are infrequent.
  *
- * In addition, each path matching /mit/*bin is tested for the substring
- * of the machine's $ATHENA_SYS value. If absent, it is assumed that
- * some form of compatibility system is being used, and a * is added
- * to the shortened path string. So if ATHENA_SYS_COMPAT is set to
- * sun4x_55 while ATHENA_SYS is set to sun4x_56, in the example above
- * "{add gnu*}" would be printed instead of "{add gnu}."
+ * In addition, each path starting with "/mit" and ending with "bin"
+ * is tested for the substring of the machine's $ATHENA_SYS value. If
+ * absent, it is assumed that some form of compatibility system is
+ * being used, and a * is added to the shortened path string. So if
+ * ATHENA_SYS_COMPAT is set to sun4x_55 while ATHENA_SYS is set to
+ * sun4x_56, in the example above "{add gnu*}" would be printed
+ * instead of "{add gnu}."
  *
  * XXX We could do a less hacky version of this using
  * locker_iterate_attachtab to get all of the mountpoints. It's not clear
- * that there's a lot of benefit to this though.
- */
+ * that there's a lot of benefit to this though.  */
 void print_readable_path(char *path)
 {
   char *p, *name, *name_end;
