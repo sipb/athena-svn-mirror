@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.12 1993-10-09 18:14:33 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.13 1995-07-11 20:55:00 miki Exp $
  */
 
 /*
@@ -26,7 +26,11 @@
 #include <sys/file.h>
 #include <fcntl.h>
 #ifdef POSIX
-#include <dirent.h>
+#ifdef SOLARIS
+#include "dirent.h"
+#else
+#include "/usr/include/dirent.h"
+#endif
 #else
 #include <sys/dir.h>
 #endif
@@ -56,15 +60,7 @@
 #include <strings.h>
 #include "lp.local.h"
 
-#ifdef SOLARIS
-/*
- * flock operations.
- */
-#define LOCK_SH               1       /* shared lock */
-#define LOCK_EX               2       /* exclusive lock */
-#define LOCK_NB               4       /* don't block when locking */
-#define LOCK_UN               8       /* unlock */
-#endif
+
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -94,6 +90,7 @@ extern char	*VF;		/* name of raster filter (per job) */
 extern char	*CF;		/* name of cifplot filter (per job) */
 extern char	*FF;		/* form feed string */
 extern char	*TR;		/* trailer string to be output when Q empties */
+extern char     *MS;            /* list of tty modes to set or clear */
 extern short	SC;		/* suppress multiple copies */
 extern short	SF;		/* suppress FF on each print job */
 extern short	SH;		/* suppress header page */
@@ -150,7 +147,13 @@ struct queue_ {
 };
 
 char	*pgetstr();
+#ifdef vax
 char	*malloc();
+#endif
 char	*getenv();
 
+
 #define UNLINK unlink
+#ifdef PQUOTA
+#define QUOTA_QUERY_VERSION '1'
+#endif
