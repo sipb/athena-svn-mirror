@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/Makefile,v 1.1 1990-11-18 18:31:00 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/Makefile,v 1.2 1990-11-23 08:21:49 probe Exp $
 
 all:
 	cd dm; make all
@@ -9,7 +9,7 @@ all:
 
 install:
 	cd dm; make install DESTDIR=${DESTDIR}
-	cd wcl; make install DESTDIR=${DESTDIR}
+#	cd wcl; make install DESTDIR=${DESTDIR}
 	cd xlogin; make install DESTDIR=${DESTDIR}
 	cd console; make install DESTDIR=${DESTDIR}
 	cd conf; make install DESTDIR=${DESTDIR}
@@ -21,3 +21,5 @@ clean:
 	cd xlogin; make clean
 	cd console; make clean
 	cd cleanup; make clean
+
+depend:
