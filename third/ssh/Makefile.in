@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.1.1.1 1997-10-17 22:25:52 danw Exp $
+# $Id: Makefile.in,v 1.2 1997-11-12 21:16:07 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/10/17 22:25:52  danw
+# Import of ssh 1.2.21
+#
 # Revision 1.39  1997/06/25 08:35:29  kivinen
 # 	Removed clenaup.free, and cleanup.commercial from
 # 	COMMERCIALDISTFILES.
@@ -247,6 +250,10 @@ RSAREFDEP	= @RSAREFDEP@
 
 WRAPLIBS	= @WRAPLIBS@
 
+ATHENA_LIBS	= -L${ATHTOOLROOT}/usr/athena/lib -lal -lhesiod @ATHENA_LIBS@
+ATHENA_INCS	= -I${ATHTOOLROOT}/usr/athena/include \
+	-I${ATHTOOLROOT}/usr/athena/include/kerberosIV
+
 SSH_INSTALL_MODE= @SSHINSTALLMODE@
 
 transform	= @program_transform_name@
@@ -368,12 +375,13 @@ rfc-pg: rfc-pg.o
 	$(CC) -o rfc-pg rfc-pg.o
 
 .c.o:
-	$(CC) -c -I. $(KERBEROS_INCS) -I$(srcdir)/$(GMPDIR) -I$(srcdir)/$(ZLIBDIR) $(DEFS) -DHOST_KEY_FILE=\"$(HOST_KEY_FILE)\" -DHOST_CONFIG_FILE=\"$(HOST_CONFIG_FILE)\" -DSERVER_CONFIG_FILE=\"$(SERVER_CONFIG_FILE)\" -DSSH_PROGRAM=\"$(SSH_PROGRAM)\" -DETCDIR=\"$(etcdir)\" -DPIDDIR=\"$(piddir)\" -DSSH_BINDIR=\"$(bindir)\" -DTIS_MAP_FILE=\"$(TIS_MAP_FILE)\" $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c -I. $(KERBEROS_INCS) -I$(srcdir)/$(GMPDIR) -I$(srcdir)/$(ZLIBDIR) $(ATHENA_INCS) $(DEFS) -DHOST_KEY_FILE=\"$(HOST_KEY_FILE)\" -DHOST_CONFIG_FILE=\"$(HOST_CONFIG_FILE)\" -DSERVER_CONFIG_FILE=\"$(SERVER_CONFIG_FILE)\" -DSSH_PROGRAM=\"$(SSH_PROGRAM)\" -DETCDIR=\"$(etcdir)\" -DPIDDIR=\"$(piddir)\" -DSSH_BINDIR=\"$(bindir)\" -DTIS_MAP_FILE=\"$(TIS_MAP_FILE)\" $(CFLAGS) $(X_CFLAGS) $<
 
 sshd: $(SSHD_OBJS) $(GMPDEP) $(RSAREFDEP) $(ZLIBDEP)
 	-rm -f sshd
 	$(CC) $(LDFLAGS) -o sshd $(SSHD_OBJS) \
-		$(KERBEROS_LIBS) $(GMPLIBS) $(ZLIBLIBS) $(WRAPLIBS) $(LIBS)
+		$(KERBEROS_LIBS) $(GMPLIBS) $(ZLIBLIBS) $(WRAPLIBS) \
+		$(ATHENA_LIBS) $(LIBS)
 
 ssh: $(SSH_OBJS) $(GMPDEP) $(RSAREFDEP) $(ZLIBDEP)
 	-rm -f ssh
@@ -480,7 +488,7 @@ hostinstall: $(PROGRAMS) make-dirs generate-host-key install-configs
 # (otherwise it can only log in as the user it runs as, and must be
 # bound to a non-privileged port).  Also, password authentication may
 # not be available if non-root and using shadow passwords.
-install: $(PROGRAMS) make-dirs generate-host-key install-configs
+install: $(PROGRAMS) make-dirs
 	-rm -f $(install_prefix)$(bindir)/ssh.old
 	-mv $(install_prefix)$(bindir)/ssh $(install_prefix)$(bindir)/ssh.old
 	-chmod 755 $(install_prefix)$(bindir)/ssh.old

@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.1.1.1 1997-10-17 22:26:00 danw Exp $
+ * $Id: sshd.c,v 1.2 1997-11-12 21:16:18 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1997/10/17 22:26:00  danw
+ * Import of ssh 1.2.21
+ *
  * Revision 1.44  1997/05/08 03:06:51  kivinen
  * 	Fixed sighup handling (added select before accept, changed
  * 	execv to execvp so sshd is searched from path).
@@ -422,7 +425,7 @@ extern char *setlimits();
 #ifdef _PATH_DEFPATH
 #define	DEFAULT_PATH		_PATH_DEFPATH
 #else
-#define DEFAULT_PATH	"/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
+#define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
 #endif
 #endif
 #endif /* DEFAULT_PATH */
@@ -437,9 +440,15 @@ extern char *setlimits();
 /* Global the contexts */
 krb5_context ssh_context = 0;
 krb5_auth_context auth_context = 0;
+int havecred = 0;
 #endif /* KRB5 */
 char *ticket = "none\0";
 #endif /* KERBEROS */
+
+#include <al.h>
+extern int setpag(), ktc_ForgetAllTokens();
+void try_afscall(int (*func)(void));
+int *al_warnings = NULL;
 
 /* Server configuration options. */
 ServerOptions options;
@@ -1412,6 +1421,19 @@ void do_connection(int privileged_port)
 
   /* Do the authentication. */
   do_authentication(user, privileged_port, cipher_type);
+
+#ifdef KERBEROS
+  /* Destroy tickets */
+  if (ticket && strcmp(ticket, "none")) {
+      krb5_ccache ccache;
+      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+	  krb5_cc_destroy(ssh_context, ccache);
+      dest_tkt();
+      try_afscall(ktc_ForgetAllTokens);
+  }
+#endif
+  
+  al_acct_revert(user, getpid());
 }
 
 /* Returns true if logging in as the specified user is permitted.  Returns
@@ -1713,6 +1735,8 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   krb5_principal client = 0, tkt_client = 0;
   krb5_data krb5data;
 #endif /* defined(KERBEROS) && defined(KRB5) */
+  int status, i;
+  char *filetext, *errmem;
 
   if (strlen(user) > 255)
     do_authentication_fail_loop();
@@ -1750,7 +1774,26 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 			 
   /* Verify that the user is a valid user.  We disallow usernames starting
      with any characters that are commonly used to start NIS entries. */
+  status = al_login_allowed(user, 1, &filetext);
+  if (status != AL_SUCCESS)
+    {
+      if (filetext && *filetext)
+	packet_disconnect("You are not allowed to log in here: %s\n%s",
+			  al_strerror(status, &errmem), filetext);
+      else
+	packet_disconnect("You are not allowed to log in here: %s\n",
+			  al_strerror(status, &errmem));
+      /* not reached */
+    }
+  al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
+  if (al_warnings)
+    {
+      free(al_warnings);
+      al_warnings = NULL;
+    }
   pw = getpwnam(user);
+  al_acct_revert(user, getpid());
+
   if (!pw || user[0] == '-' || user[0] == '+' || user[0] == '@' ||
       !login_permitted(user, pw))
     do_authentication_fail_loop();
@@ -2215,10 +2258,15 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 #ifdef KERBEROS
       /* If you forwarded a ticket you get one shot for proper
          authentication. */
-      /* If tgt was passed unlink file */
+      /* If tgt was passed, destroy it */
       if (ticket){
           if (strcmp(ticket,"none"))
-            unlink(ticket);
+	    {
+	      krb5_ccache ccache;
+	      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+		krb5_cc_destroy(ssh_context, ccache);
+	      dest_tkt();
+	    }
           else
             ticket = NULL;
       }
@@ -2252,6 +2300,13 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
     log_severity(SYSLOG_SEVERITY_NOTICE, "ROOT LOGIN as '%.100s' from %.100s",
 		 pw->pw_name, get_canonical_hostname());
   
+  if (havecred)
+    try_afscall(setpag);
+  status = al_acct_create(pw->pw_name, NULL, getpid(), havecred, 1,
+			  &al_warnings);
+  if (status != AL_SUCCESS && status != AL_WARNINGS)
+    packet_disconnect("%s\n", al_strerror(status, &errmem));
+
   /* The user has been authenticated and accepted. */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();
@@ -3092,6 +3147,21 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   char *remote_ip;
   int remote_port;
   
+  /* Print any leftover libal warnings */
+  if (al_warnings)
+    {
+      int i;
+      char *errmem;
+
+      for (i = 0; al_warnings[i]; i++)
+	{
+	  fprintf(stderr, "Warning: %s\n",
+		  al_strerror(al_warnings[i], &errmem));
+	  al_free_errmem(errmem);
+	}
+      free(al_warnings);
+    }
+
   /* Check /etc/nologin. */
   f = fopen("/etc/nologin", "r");
   if (f)
@@ -3331,7 +3401,10 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   /* Set KRBTKFILE to point to our ticket */
 #ifdef KRB5
   if (ticket)
-    child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+    {
+      child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+      child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
+    }
 #endif /* KRB5 */
 #endif /* KERBEROS */
 
@@ -3635,3 +3708,15 @@ char *username;
   return(0);
 }
 #endif /* CRAY */
+
+void try_afscall(int (*func)(void))
+{
+    struct sigaction sa, osa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGSYS, &sa, &osa);
+    func();
+    sigaction(SIGSYS, &osa, NULL);
+}

@@ -15,8 +15,11 @@ output to the system log.
 */
 
 /*
- * $Id: log-server.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: log-server.c,v 1.2 1997-11-12 21:16:16 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1997/10/17 22:26:02  danw
+ * Import of ssh 1.2.21
+ *
  * Revision 1.4  1997/04/17 04:05:51  kivinen
  * 	Added return to end of syslog_severity to remove warning about
  * 	it.
@@ -58,6 +61,10 @@ output to the system log.
 static int log_debug = 0;
 static int log_quiet = 0;
 static int log_on_stderr = 0;
+
+#ifdef KERBEROS
+extern krb5_context ssh_context;
+#endif
 
 /* Initialize the log.
      av0	program name (should be argv[0])
@@ -273,11 +280,16 @@ static void do_fatal_cleanups()
 #ifdef KERBEROS
       /* If you forwarded a ticket you get one shot for proper
 	 authentication. */
-      /* If tgt was passed unlink file */
+      /* If tgt was passed, destroy it */
       if (ticket)
 	{
 	  if (strcmp(ticket,"none"))
-	    unlink(ticket);
+	    {
+	      krb5_ccache ccache;
+	      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+		krb5_cc_destroy(ssh_context, ccache);
+	      dest_tkt();
+	    }
 	  else
 	    ticket = NULL;
 	}

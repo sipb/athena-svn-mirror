@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.1.1.1 1997-10-17 22:26:14 danw Exp $
+ * $Id: auth-kerberos.c,v 1.2 1997-11-12 21:16:08 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1997/10/17 22:26:14  danw
+ * Import of ssh 1.2.21
+ *
  * Revision 1.2  1997/04/17 03:56:51  kivinen
  * 	Kept FILE: prefix in kerberos ticket filename as DCE cache
  * 	code requires it (patch from Doug Engert <DEEngert@anl.gov>).
@@ -30,9 +33,13 @@
 #ifdef KERBEROS
 #if defined (KRB5)
 #include <krb5.h>
+/* kludge to allow us to #include krb.h without namespace conflicts */
+#define des_cbc_encrypt krb_des_cbc_encrypt
+#include <krb.h>
 
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
+extern  int havecred;
 
 int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 {
@@ -157,7 +164,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
 {
   krb5_creds **creds;
   krb5_error_code retval;
-  static char ccname[128];
+  static char ccname[128], tktname[128];
   krb5_ccache ccache = NULL;
   struct passwd *pwd;
   extern char *ticket;
@@ -166,6 +173,9 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   struct sockaddr_in local, foreign;
   krb5_address *local_addr, *remote_addr;
   int s;
+  krb5_data *realm;
+  krb5_creds increds, *v5creds;
+  CREDENTIALS v4creds;
   
   if (!(pwd = (struct passwd *) getpwnam(server_user)))
     {
@@ -228,17 +238,55 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
     goto errout;
   
   if (retval = chown(ccname+5, pwd->pw_uid, -1))
-    goto errout;
+    goto errout2;
   
   ticket = xmalloc(strlen(ccname + 5) + 1);
-  (void) sprintf(ticket, "%s", ccname);
+  (void) sprintf(ticket, "%s", ccname+5);
+  
+  /* Now try to get krb4 tickets */
+  krb524_init_ets(ssh_context);
+  realm = krb5_princ_realm(ssh_context, (*creds)->client);
+  memset(&increds, 0, sizeof(increds));
+  if (retval = krb5_build_principal(ssh_context, &(increds.server),
+				    realm->length, realm->data, "krbtgt",
+				    realm->data, NULL))
+    goto errout2;
+
+  increds.client = (*creds)->client;
+  increds.times.endtime = 0;
+  increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+  if (retval = krb5_get_credentials(ssh_context, 0, ccache, &increds,
+				    &v5creds))
+    goto errout2;
+  
+  if (retval = krb524_convert_creds_kdc(ssh_context, v5creds, &v4creds))
+    goto errout2;
+
+  sprintf(tktname, "KRBTKFILE=/tmp/tkt_p%d", getpid());
+  putenv(xstrdup(tktname));
+  if (retval = in_tkt(v4creds.pname, v4creds.pinst))
+    goto errout2;
+
+  if (retval = krb_save_credentials(v4creds.service, v4creds.instance,
+				    v4creds.realm, v4creds.session,
+				    v4creds.lifetime, v4creds.kvno,
+				    &(v4creds.ticket_st), v4creds.issue_date))
+    goto errout2;
+
+  if (retval = chown(tktname+10, pwd->pw_uid, -1))
+    goto errout3;
   
   /* Successful */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();
   packet_write_wait();
+  havecred = 1;
   return 1;
   
+errout3:
+  dest_tkt();
+errout2:
+  krb5_cc_destroy(ssh_context, ccache);
 errout:
   krb5_free_tgt_creds(ssh_context, creds);
   log_msg("Kerberos V5 tgt rejected for user %.100s :%s", server_user,

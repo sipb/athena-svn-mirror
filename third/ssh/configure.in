@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.1.1.1 1997-10-17 22:25:52 danw Exp $
+# $Id: configure.in,v 1.2 1997-11-12 21:16:15 danw Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/10/17 22:25:52  danw
+# Import of ssh 1.2.21
+#
 # Revision 1.48  1997/05/13 22:31:34  kivinen
 # 	Fixed RSAREF code.
 #
@@ -369,7 +372,7 @@ case "$host" in
     ;;
   *-*-solaris*)
     # solaris stuff. appro@fy.chalmers.se
-    AC_DEFINE(SECURE_RPC)
+    # AC_DEFINE(SECURE_RPC)
     AC_DEFINE(SECURE_NFS)
     # NIS+ is forced so that we don't have to recompile
     # if we move to NIS+. appro@fy.chalmers.se
@@ -1212,7 +1215,7 @@ no)
   AC_DEFINE(KRB5)
   KERBEROS_ROOT="$with_kerberos5"
   KERBEROS_INCS="-I${KERBEROS_ROOT}/include"
-  KERBEROS_LIBS="-L${KERBEROS_ROOT}/lib -lkrb5 -lcrypto -lcom_err"
+  KERBEROS_LIBS="-L${KERBEROS_ROOT}/lib -lkrb4 -ldes425 -lkrb524 -lkrb5 -lcrypto -lcom_err"
   AC_CHECK_LIB(ndbm, dbm_open, KERBEROS_LIBS="$KERBEROS_LIBS -lndbm")
   KERBEROS_OBJS="auth-kerberos.o"
   ;;
@@ -1524,5 +1527,24 @@ AC_SUBST(PIDDIR)
 AC_SUBST(RSAREFDEP)
 AC_SUBST(CONFOBJS)
 AC_SUBST(SSHINSTALLMODE)
+
+ATHENA_LIBS=
+AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
+	      [ATHENA_LIBS=-lresolv]))
+
+AC_ARG_WITH([afs],
+[  --without-afs        don't have afs libraries to build against (default)
+  --with-afs=AFSDIR    use preinstalled AFS library tree],
+,with_afs=no)dnl
+if test $with_afs != no; then
+	ATHENA_LIBS="$ATHENA_LIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
+	AC_CHECK_FUNC(sigvec, :,
+		      [AC_CHECK_LIB(ucb, sigvec,
+				    [ATHENA_LIBS="$ATHENA_LIBS -lucb"])])
+	AC_CHECK_FUNC(insque, :,
+		      [AC_CHECK_LIB(compat, insque,
+				    [ATHENA_LIBS="$ATHENA_LIBS -lcompat"])])
+fi
+AC_SUBST(ATHENA_LIBS)
 
 AC_OUTPUT(Makefile sshd.8 ssh.1 make-ssh-known-hosts.1 zlib-1.0.4/Makefile)

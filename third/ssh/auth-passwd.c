@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.1.1.1 1997-10-17 22:26:01 danw Exp $
+ * $Id: auth-passwd.c,v 1.2 1997-11-12 21:16:09 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1997/10/17 22:26:01  danw
+ * Import of ssh 1.2.21
+ *
  * Revision 1.11  1997/04/17 03:57:05  kivinen
  * 	Kept FILE: prefix in kerberos ticket filename as DCE cache
  * 	code requires it (patch from Doug Engert <DEEngert@anl.gov>).
@@ -259,6 +262,7 @@ static int securid_initialized = 0;
 #include <krb5.h>
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
+extern  int havecred;
 #else
 #include <krb.h>
 #endif /* KRB5 */
@@ -451,8 +455,8 @@ int auth_password(const char *server_user, const char *password)
   krb5_creds my_creds;
   krb5_timestamp now;
   krb5_ccache ccache;
-  char ccname[80];
-  int results;
+  char ccname[80], krbtkfile[80];
+  int results, status;
 #endif  /* KERBEROS */
   extern ServerOptions options;
   extern char *crypt(const char *key, const char *salt);
@@ -551,11 +555,17 @@ int auth_password(const char *server_user, const char *password)
 	      strcpy(ccname + 5, krb5_cc_get_name(ssh_context, ccache));
 	      (void) chown(ccname + 5, pw->pw_uid, pw->pw_gid);
 	      
-	      /* If tgt was passed unlink file */
+	      /* If tgt was passed, destroy it */
 	      if (ticket)
 		{
 		  if (strcmp(ticket,"none"))
-            	    unlink(ticket);
+		    {
+		      krb5_ccache fwd_ccache;
+
+		      if (!krb5_cc_resolve(ssh_context, ticket, &fwd_ccache))
+			krb5_cc_destroy(ssh_context, fwd_ccache);
+		      dest_tkt();
+		    }
 		  else
                     ticket = NULL;
 		}
@@ -567,6 +577,22 @@ int auth_password(const char *server_user, const char *password)
 	      xfree(saved_pw_name);
 	      xfree(saved_pw_passwd);
 	      
+	      /* Now get v4 tickets */
+	      sprintf(krbtkfile, "KRBTKFILE=/tmp/tkt_p%d", getpid());
+	      putenv(xstrdup(krbtkfile));
+
+	      status =
+		krb_get_pw_in_tkt(pw->pw_name, "",
+				  krb5_princ_realm(ssh_context, client)->data,
+				  "krbtgt",
+				  krb5_princ_realm(ssh_context, client)->data,
+				  60*60*10,   /* 10 hours */
+				  password);
+	      if (status)
+		goto errout;
+	      chown(krbtkfile+10, pw->pw_uid, pw->pw_gid);
+
+	      havecred = 1;
 	      return 1;
 	    }
 	  if (problem == KRB5_KT_NOTFOUND)
@@ -578,6 +604,7 @@ int auth_password(const char *server_user, const char *password)
 	}
     errout:
       krb5_cc_destroy (ssh_context, ccache);
+      dest_tkt();
     errout2:
       if (problem)
 	{
