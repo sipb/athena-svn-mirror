@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.9 1990-01-17 05:39:10 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.10 1990-01-26 15:51:58 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -373,7 +373,7 @@ ensure_consistent_state()
 			    k->question->owner->connected->connected = 
 				(KNUCKLE *) NULL;  
 			    write_message_to_user(k->question->owner->connected,
-						  "Daemon error -- please reconnect.",
+						  "Daemon error -- please reconnect.\n",
 						  NO_RESPOND);
 			}
 			k->question->owner->connected = (KNUCKLE *) NULL;
