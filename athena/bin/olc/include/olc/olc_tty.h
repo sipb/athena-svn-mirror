@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.5 1990-11-15 09:08:31 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.6 1991-01-03 15:26:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -83,8 +83,8 @@ int t_check_connected_messages P((REQUEST *Request ));
 int t_dump P((REQUEST *Request , int type , char *file ));
 
 /* t_motd.c */
-ERRCODE t_get_motd P((REQUEST *Request , int type , char *file , int display_opts ));
-ERRCODE t_change_motd P((REQUEST *Request , int type , char *file , char *editor , int incflag ));
+ERRCODE t_get_file P((REQUEST *Request , int type , char *file , int display_opts ));
+ERRCODE t_change_file P((REQUEST *Request , int type , char *file , char *editor , int incflag ));
 
 /* t_queue.c */
 int t_queue P((REQUEST *Request , char *queue ));
