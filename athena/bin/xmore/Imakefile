@@ -6,7 +6,7 @@
  *      Created: 	October 22, 1987
  *      By:		Chris D. Peterson
  *
- *	$Id: Imakefile,v 1.1 1991-02-27 15:56:14 epeisach Exp $
+ *	$Id: Imakefile,v 1.2 1991-02-27 15:59:37 epeisach Exp $
  *
  *         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *     
@@ -18,7 +18,7 @@
 LIBDIR=/usr/athena/lib
 
 DEFINES= -DHELPFILE=\"${LIBDIR}/xmore.help\" 
-LIBES= -lXaw -lXt -lXmu -lX11
+LIBES= -lXaw -lXt -lXmu -lXext -lX11
 OBJS= globals.o help.o main.o pages.o ${XTKOBJS}
 XTKOBJS= ScrollByLine.o
 XTKFILES= ScrollByLine.c
