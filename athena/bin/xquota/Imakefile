@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.4 1991-07-03 13:17:12 probe Exp $
+ * $Id: Imakefile,v 1.5 1991-07-17 11:36:29 lwvanels Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
@@ -25,7 +25,6 @@ DEFINES= ${INCFLAGS} ${HELPFILES}
 OBJS=handler.o main.o widgets.o nfs.o afs.o
 
 SimpleProgram(xquota,${OBJS},${LIBS},$(ATHBINDIR))
-		cc ${CFLAGS} ${LDFLAGS}  -o xquota ${LIBS}
 
 install_file(Xquota.ad,${ATHXAPPDIR})
 install_file(top_help.txt,${ATHXAPPDIR})
