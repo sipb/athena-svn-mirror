@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.43 1991-04-09 14:04:37 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.44 1991-04-10 14:35:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.43 1991-04-09 14:04:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.44 1991-04-10 14:35:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -1727,10 +1727,7 @@ olc_list(fd, request)
   int topic_codes[SPEC_SIZE];
   int status;
   int n,i;
-
-#ifdef LOG
   char mesg[BUFSIZ];
-#endif
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
