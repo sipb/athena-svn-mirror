@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: getqueue.h,v 1.3 1999-10-27 22:31:41 mwhitson Exp $
+ * $Id: getqueue.h,v 1.4 2000-03-31 16:21:16 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -19,6 +19,7 @@ EXTERN const char * ACTIVE_TIME		DEFINE( = "active_time" );
 EXTERN const char * ALL				DEFINE( = "all" );
 EXTERN const char * ADDR			DEFINE( = "addr" );
 EXTERN const char * ATTEMPT			DEFINE( = "attempt" );
+EXTERN const char * AUTH			DEFINE( = "auth" );
 EXTERN const char * AUTHFROM		DEFINE( = "authfrom" );
 EXTERN const char * AUTHINFO		DEFINE( = "authinfo" );
 EXTERN const char * AUTOHOLD		DEFINE( = "autohold" );
@@ -27,6 +28,7 @@ EXTERN const char * AUTH_CLIENT_ID	DEFINE( = "auth_client_id" );
 EXTERN const char * AUTH_FROM_ID	DEFINE( = "auth_from_id" );
 EXTERN const char * BNRNAME			DEFINE( = "bnrname" );
 EXTERN const char * CALL			DEFINE( = "call" );
+EXTERN const char * CMD				DEFINE( = "cmd" );
 EXTERN const char * CF_ESC_IMAGE	DEFINE( = "cf_esc_image" );
 EXTERN const char * CF_OUT_IMAGE	DEFINE( = "cf_out_image" );
 EXTERN const char * CLASS			DEFINE( = "class" );
@@ -47,6 +49,7 @@ EXTERN const char * DONE_TIME		DEFINE( = "done_time" );
 EXTERN const char * DUMP			DEFINE( = "dump" );
 EXTERN const char * END				DEFINE( = "end" );
 EXTERN const char * ERROR			DEFINE( = "error" );
+EXTERN const char * ESC_ID			DEFINE( = "esc_id" );
 EXTERN const char * FILE_HOSTNAME	DEFINE( = "file_hostname" );
 EXTERN const char * FILENAMES		DEFINE( = "filenames" );
 EXTERN const char * FILTER			DEFINE( = "filter" );
@@ -63,11 +66,13 @@ EXTERN const char * HOLD_ALL		DEFINE( = "hold_all" );
 EXTERN const char * HOLD_CLASS		DEFINE( = "hold_class" );
 EXTERN const char * HOLD_TIME		DEFINE( = "hold_time" );
 EXTERN const char * HOST			DEFINE( = "host" );
+EXTERN const char * ID				DEFINE( = "id" );
 EXTERN const char * IDENTIFIER		DEFINE( = "identifier" );
 EXTERN const char * IDLE			DEFINE( = "idle" );
 EXTERN const char * INPUT			DEFINE( = "input" );
 EXTERN const char * JOBNAME			DEFINE( = "jobname" );
 EXTERN const char * JOBSEQ			DEFINE( = "jobseq" );
+EXTERN const char * JOBSIZE			DEFINE( = "jobsize" );
 EXTERN const char * JOB_TIME		DEFINE( = "job_time" );
 EXTERN const char * JOB_TIME_USEC	DEFINE( = "job_time_usec" );
 EXTERN const char * KERBEROS		DEFINE( = "kerberos" );
@@ -192,12 +197,14 @@ void Update_destination( struct job *job );
 int Get_destination( struct job *job, int n );
 int Get_destination_by_name( struct job *job, char *name );
 int Trim_status_file( char *path, int max, int min );
-char *Fix_datafile_info( struct job *job, char *number, char *suffix );
+char *Fix_datafile_info( struct job *job, char *number, char *suffix,
+	char *xlate_format );
 int ordercomp( char *order, const void *left, const void *right );
 int BSD_sort( const void *left, const void *right );
 int LPRng_sort( const void *left, const void *right );
-int Fix_control( struct job *job, char *filter );
-int Create_control( struct job *job, char *error, int errlen );
+int Fix_control( struct job *job, char *filter, char *xlate_format );
+int Create_control( struct job *job, char *error, int errlen, char *auth_id,
+	char *xlate_format );
 void Init_buf(char **buf, int *max, int *len);
 void Put_buf_len( char *s, int cnt, char **buf, int *max, int *len );
 void Put_buf_str( char *s, char **buf, int *max, int *len );

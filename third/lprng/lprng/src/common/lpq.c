@@ -1,20 +1,20 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpq.c,v 1.2 2000-02-23 19:48:15 ghudson Exp $";
+"$Id: lpq.c,v 1.3 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1997, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
@@ -138,7 +138,8 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, SIG_DFL);
+	(void) plp_signal (SIGPIPE, SIG_IGN);
+	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
 
 	/*
 	 * set up the user state
@@ -156,6 +157,7 @@ int main(int argc, char *argv[], char *envp[])
 	Setup_configuration();
 	Get_parms(argc, argv );      /* scan input args */
 
+	if(DEBUGL1)Dump_line_list("lpq- Config", &Config_line_list );
 	if( All_printers || (Printer_DYN && safestrcasecmp(Printer_DYN,ALL) == 0 ) ){
 		Get_all_printcap_entries();
 		if(DEBUGL1)Dump_line_list("lpq- All_line_list", &All_line_list );
@@ -215,7 +217,8 @@ void Show_status(char **argv)
 	}
 	if( Check_for_rg_group( Logname_DYN ) ){
 		plp_snprintf( msg, sizeof(msg),
-			"Printer: %s - cannot use printer, not in privileged group\n" );
+			"Printer: %s - cannot use printer, not in privileged group\n",
+			Printer_DYN );
 		if(  Write_fd_str( 1, msg ) < 0 ) cleanup(0);
 		return;
 	}
@@ -275,7 +278,8 @@ int Read_status_info( char *host, int sock,
 		if( n > 0 ){
 			status = Link_read( host, &sock, timeout,
 				buffer+count, &n );
-			DEBUG1("Read_status_info: Link_read status %d, read %d", status, n );
+			DEBUG1("Read_status_info: Link_read status %d, count %d, read %d",
+				status, count, n );
 		}
 		if( status || n <= 0 ){
 			status = 1;
@@ -545,13 +549,14 @@ void usage(void)
 {
 	return(1);
 }
+ void Dispatch_input(int *talk, char *input ){}
 
 #if 0
 
 #include "permission.h"
 #include "lpd.h"
 #include "lpd_status.h"
- int Send_request(
+/* int Send_request( */
 	int class,					/* 'Q'= LPQ, 'C'= LPC, M = lprm */
 	int format,					/* X for option */
 	char **options,				/* options to send */
@@ -577,5 +582,5 @@ void usage(void)
 	Job_status(&socket,cmd);
 	return(-1);
 }
-
+*/
 #endif

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_remove.c,v 1.3 1999-10-27 22:31:37 mwhitson Exp $";
+"$Id: lpd_remove.c,v 1.4 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -346,6 +346,14 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 		DEBUGF(DLPRM2)("Get_queue_status: finished subserver status '%s'", 
 			Bounce_queue_dest_DYN );
 	} else if( RemoteHost_DYN ){
+		/* put user name at start of list */
+		Check_max(tokens,2);
+		for( i = tokens->count; i > 0; --i ){
+			tokens->list[i] = tokens->list[i-1];
+		}
+		tokens->list[0] = user;
+		++tokens->count;
+		tokens->list[tokens->count] = 0;
 		fd = Send_request( 'M', REQ_REMOVE, tokens->list, Connect_timeout_DYN,
 			Send_query_rw_timeout_DYN, *sock );
 		if( fd >= 0 ){
@@ -354,6 +362,10 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 			}
 			close(fd);
 		}
+		for( i = 0; i < tokens->count; ++i ){
+			tokens->list[i] = tokens->list[i+1];
+		}
+		--tokens->count;
 	}
 
 	DEBUGF(DLPRM2)("Get_queue_remove: finished '%s'", Printer_DYN );
@@ -377,7 +389,7 @@ void Get_local_or_remote_remove( char *user, int *sock,
 	struct line_list *tokens, struct line_list *done_list )
 {
 	char msg[LARGEBUFFER];
-	int fd, n;
+	int fd, n, i;
 
 	/* we have to see if the host is on this machine */
 
@@ -393,6 +405,14 @@ void Get_local_or_remote_remove( char *user, int *sock,
 		Get_queue_remove( user, sock, tokens, done_list );
 		return;
 	}
+	/* put user name at start of list */
+	Check_max(tokens,2);
+	for( i = tokens->count; i > 0; --i ){
+		tokens->list[i] = tokens->list[i-1];
+	}
+	tokens->list[0] = user;
+	++tokens->count;
+	tokens->list[tokens->count] = 0;
 	fd = Send_request( 'M', REQ_REMOVE, tokens->list, Connect_timeout_DYN,
 		Send_query_rw_timeout_DYN, *sock );
 	if( fd >= 0 ){
@@ -401,6 +421,10 @@ void Get_local_or_remote_remove( char *user, int *sock,
 		}
 		close(fd);
 	}
+	for( i = 0; i < tokens->count; ++i ){
+		tokens->list[i] = tokens->list[i+1];
+	}
+	--tokens->count;
 }
 
 int Remove_file( char *openname )

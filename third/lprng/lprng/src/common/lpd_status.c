@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.4 1999-10-27 22:31:37 mwhitson Exp $";
+"$Id: lpd_status.c,v 1.5 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -358,7 +358,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			Printer_DYN);
 	}
 	permission = Perms_check( &Perm_line_list, &Perm_check, 0, 0 );
-	DEBUGF(DLPQ2)("Job_status: permission '%s'", perm_str(permission));
+	DEBUGF(DLPQ1)("Job_status: permission '%s'", perm_str(permission));
 	if( permission == P_REJECT ){
 		plp_snprintf( error, sizeof(error),
 			_("%s: no permission to show status"), Printer_DYN );
@@ -665,7 +665,13 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 
 	len = strlen( header );
-	{
+	if( displayformat == REQ_VERBOSE ){
+		plp_snprintf( header+len, sizeof(header) - len,
+			_("\n Printing: %s\n Aborted: %s\n Spooling: %s"),
+				Pr_disabled(&Spool_control)?"yes":"no",
+				Pr_aborted(&Spool_control)?"yes":"no",
+				Sp_disabled(&Spool_control)?"yes":"no");
+	} else if( displayformat == REQ_DLONG ){
 		flag = 0;
 		if( Pr_disabled(&Spool_control) || Sp_disabled(&Spool_control) || Pr_aborted(&Spool_control) ){
 			plp_snprintf( header+len, sizeof(header) - len, " (" );
@@ -940,10 +946,9 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	goto done;
 
  error:
-	DEBUGF(DLPQ2)("Get_queue_status: error msg '%s'", error );
-	safestrncpy( header, _(" ERROR: ") );
-	safestrncat( header, error );
-	safestrncat( header, "\n" );
+	plp_snprintf(header,sizeof(header),"Printer: %s@%s - ERROR: %s",
+		Printer_DYN, Report_server_as_DYN?Report_server_as_DYN:ShortHost_FQDN, error );
+	DEBUGF(DLPQ1)("Get_queue_status: error msg '%s'", header );
 	if( Write_fd_str( *sock, header ) < 0 ) cleanup(0);
  done:
 	Free_line_list(&info);

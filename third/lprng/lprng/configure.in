@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 AC_CONFIG_HEADER(config.h)
 
 PACKAGE=LPRng
-VERSION=3.6.12
+VERSION=3.6.13
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)
@@ -381,7 +381,7 @@ AC_CHECK_HEADERS(assert.h com_err.h compat.h ctype.h curses.h dirent.h)
 AC_CHECK_HEADERS(errno.h exechdr.h fcntl.h filehdr.h grp.h krb.h krb5.h)
 AC_CHECK_HEADERS(limits.h locale.h machine/vmparam.h malloc.h memory.h)
 AC_CHECK_HEADERS(ncurses.h ndir.h)
-AC_CHECK_HEADERS(netdb.h netinet/in.h nlist.h pwd.h reloc.h resolv.h)
+AC_CHECK_HEADERS(netdb.h netinet/in.h nlist.h pwd.h reloc.h resolv.h select.h )
 AC_CHECK_HEADERS(setjmp.h sgs.h sgtty.h signal.h stab.h stdarg.h)
 AC_CHECK_HEADERS(stdio.h stdlib.h string.h strings.h sys/dir.h sys/exec.h)
 AC_CHECK_HEADERS(sys/exechdr.h sys/fcntl.h sys/file.h sys/ioctl.h sys/loader.h)
@@ -1032,8 +1032,8 @@ AC_CACHE_VAL(ac_cv_decl_innetgr_def,
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
-#endif],[printf("%d",innetgr);],
-ac_cv_decl_innetgr_def=yes, ac_cv_decl_innetgr_def=no)
+#endif],[printf("%d", innetgr(1));],
+ac_cv_decl_innetgr_def=no, ac_cv_decl_innetgr_def=yes)
 ])
 AC_MSG_RESULT($ac_cv_decl_innetgr_def)
 if test $ac_cv_decl_innetgr_def = yes; then
@@ -1270,9 +1270,9 @@ UTILS/LPRng.pm
 UTILS/Makefile
 UTILS/Makefile.bsd
 UTILS/accounting.pl
-UTILS/cheap_lpq
-UTILS/cheap_lpr
-UTILS/cheap_lprm
+UTILS/lpq_in_perl
+UTILS/lpr_in_perl
+UTILS/lprm_in_perl
 UTILS/fixid
 UTILS/fixupdate
 UTILS/make_lpd_conf

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.5 2000-02-23 19:48:14 ghudson Exp $";
+"$Id: lpc.c,v 1.6 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -65,7 +65,6 @@
 #include "sendreq.h"
 #include "child.h"
 #include "control.h"
-#include "sendauth.h"
 #include "getopt.h"
 #include "patchlevel.h"
 #include "errorcodes.h"
@@ -103,7 +102,8 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, SIG_DFL);
+	(void) plp_signal(SIGCHLD, (plp_sigfunc_t)SIG_DFL);
+
 
 	/*
 	 * set up the user state
@@ -322,10 +322,14 @@ void doaction( struct line_list *args )
 		} else if( pid < 0 ) {
 			Diemsg( _("fork failed - '%s'"), Errormsg(errno) );
 		}
-		while(1){
-			result = plp_waitpid( pid, &status, 0 );
-			if( (result == -1 && errno != EINTR) || result == 0 ) break;
-		}
+		while( (result = plp_waitpid(pid,&status,0)) != pid ){
+			int err = errno;
+			DEBUG1("lpc: waitpid(%d) returned %d, err '%s'",
+				pid, result, Errormsg(err) );
+			if( err == EINTR ) continue; 
+			Errorcode = JABORT;
+			logerr_die( LOG_ERR, "doaction: waitpid(%d) failed", pid);
+		} 
 		DEBUG1("lpc: system pid %d, exit status %s",
 			result, Decode_status( &status ) );
 	} else {
@@ -370,11 +374,11 @@ void doaction( struct line_list *args )
     VA_SHIFT (fmt, char *);
 
 	msg[0] = 0;
-	if( Verbose ){
+	/* if( Verbose ){ */
 		(void) plp_vsnprintf( msg, sizeof(msg)-2, fmt, ap);
 		strcat( msg,"\n" );
 		if( Write_fd_str( 2, msg ) < 0 ) cleanup(0);
-	}
+	/* } */
 	VA_END;
 	return;
 }
@@ -446,7 +450,7 @@ void Get_parms(int argc, char *argv[] )
 		}
 	}
 	if( Verbose ) {
-		fprintf( stderr, _("Version %s, Copyright 1988-1999 Patrick Powell\n"), PATCHLEVEL );
+		fprintf( stderr, _("Version %s, Copyright 1988-2000 Patrick Powell\n"), PATCHLEVEL );
 	}
 }
 
@@ -507,39 +511,4 @@ int Start_worker( struct line_list *args, int fd )
 	fatal(LOG_ERR,"LPC - Dummy Start_worker called");
 	return(fd);
 }
-
-#if TEST
-
-#include "permission.h"
-#include "gethostinfo.h"
-#include "lpd.h"
-
-int Send_request(
-	int class,					/* 'Q'= LPQ, 'C'= LPC, M = lprm */
-	int format,					/* X for option */
-	char **options,				/* options to send */
-	int connect_timeout,		/* timeout on connection */
-	int transfer_timeout,		/* timeout on transfer */
-	int output					/* output on this FD */
-	)
-{
-	int i, n;
-	int socket = 1;
-	char cmd[SMALLBUFFER];
-
-	cmd[0] = format;
-	cmd[1] = 0;
-	plp_snprintf(cmd+1, sizeof(cmd)-1, "%s", RemotePrinter_DYN);
-	for( i = 0; options[i]; ++i ){
-		n = strlen(cmd);
-		plp_snprintf(cmd+n,sizeof(cmd)-n," %s",options[i] );
-	}
-	Perm_check.remoteuser = Logname_DYN;
-	Perm_check.user = Logname_DYN;
-	Perm_check.remotehost = &Localhost_IP;
-	Is_server = 1;
-	Job_control(&socket,cmd);
-	return(-1);
-}
-
-#endif
+void Dispatch_input(int *talk, char *input ){}

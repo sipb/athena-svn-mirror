@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.8 2000-02-23 19:48:15 ghudson Exp $";
+"$Id: lpr.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -22,7 +22,6 @@
 #include "linksupport.h"
 #include "patchlevel.h"
 #include "printjob.h"
-#include "sendauth.h"
 #include "sendjob.h"
 
 /**** ENDINCLUDE ****/
@@ -70,7 +69,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, SIG_DFL);
+	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
 
 	/*
 	 * set up the defaults
@@ -132,15 +131,16 @@ int main(int argc, char *argv[], char *envp[])
 	}
 
 	/* we check to see if we need to do control file filtering */
+	/* we do not do any translation of formats */
 	s = 0;
 	if( Lpr_bounce_DYN ) s = Control_filter_DYN;
-	if( (status = Fix_control( &prjob, s )) ){
+	if( (status = Fix_control( &prjob, s, 0 )) ){
 		fatal(LOG_INFO,_("cannot print job due to control filter error") );
 	}
 
 	/* Send job to the LPD server for the printer */
 
-	Errorcode = Send_job( &prjob, Connect_timeout_DYN,
+	Errorcode = Send_job( &prjob, &prjob, Connect_timeout_DYN,
 		Connect_interval_DYN,
 		Max_connect_interval_DYN,
 		Send_job_rw_timeout_DYN );
@@ -1321,3 +1321,4 @@ int Start_worker( struct line_list *l, int fd )
 {
 	return(-1);
 }
+ void Dispatch_input(int *talk, char *input ){}

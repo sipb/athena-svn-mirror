@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_control.c,v 1.4 1999-10-28 17:34:05 mwhitson Exp $";
+"$Id: lpd_control.c,v 1.5 2000-03-31 16:21:13 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -586,10 +586,13 @@ int Do_control_file( char *user, int action, int *sock,
 
 		Perm_check.user = Find_str_value(&job.info,LOGNAME,Value_sep);
 		Perm_check.host = 0;
+#if 0
 		s = Find_str_value(&job.info,FROMHOST,Value_sep);
 		if( s && Find_fqdn( &PermHost_IP, s ) ){
 			Perm_check.host = &PermHost_IP;
 		}
+#endif
+		Perm_check.host = &RemoteHost_IP;
 		permission = Perms_check( &Perm_line_list, &Perm_check, 0, 1 );
 		DEBUGF(DCTRL1)( "Do_control_file: id '%s', user '%s', host '%s', permission %s",
 			identifier, Perm_check.user, s, perm_str(permission) );
@@ -598,6 +601,7 @@ int Do_control_file( char *user, int action, int *sock,
 				_("%s: no permission '%s'\n"),
 				Printer_DYN, identifier );
 			if( Write_fd_str( *sock, msg ) < 0 ) cleanup(0);
+			continue;
 		}
 
 		destinations = Find_flag_value(&job.info,DESTINATIONS,Value_sep);
@@ -680,6 +684,7 @@ int Do_control_file( char *user, int action, int *sock,
 			Printer_DYN, identifier );
 		if( Write_fd_str( *sock, msg ) < 0 ) cleanup(0);
 		Set_str_value(&job.info,ERROR,0 );
+		/* record the last update person */
 		Perm_check_to_list(&l, &Perm_check );
 		if( Set_hold_file(&job,&l) ){
 			setmessage( &job, TRACE, "LPC failed" );

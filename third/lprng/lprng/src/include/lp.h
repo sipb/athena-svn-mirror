@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.9 1999-10-28 17:34:06 mwhitson Exp $
+ * $Id: lp.h,v 1.10 2000-03-31 16:21:16 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -69,6 +69,34 @@ struct line_list;
 #include "debug.h"
 #include "errormsg.h"
 #include "plp_snprintf.h"
+
+/***************************************************************
+ * Security stuff - needs to be in a common place
+ ***************************************************************/
+
+struct security;
+typedef int (*CONNECT_PROC)( struct job *job, int *sock,
+	char **real_host,
+	int connect_timeout, char *errmsg, int errlen,
+	struct security *security, struct line_list *info );
+
+typedef int (*RECEIVE_PROC)( int *sock, char *user, char *jobsize,
+	int from_server,
+	char *authtype, struct line_list *config,
+	char *error, int errlen, struct line_list *header_info,
+	char *tempfile );
+
+typedef int (*SEND_PROC)( int *sock, int transfer_timeout, char *tempfile,
+	char *error, int errlen,
+	struct security *security, struct line_list *info );
+
+struct security {
+	char *name;				/* authentication name */
+	char *config_tag;		/* use this tag for configuration information */
+	CONNECT_PROC connect;		/* make the connection, talk to verify */
+	SEND_PROC    send;		/* authenticate transfer, talk to transfer */
+	RECEIVE_PROC receive;		/* receive from transfer */
+};
 
 /*****************************************************************
  * General variables use in the common routines;
@@ -220,22 +248,7 @@ EXTERN char *FQDNHost_FQDN;		/* FQDN hostname */
 EXTERN char* FQDNRemote_FQDN;    /* FQDN of Remote host */
 EXTERN char* FQDNRemote_FQDN;    /* FQDN of Remote host */
 EXTERN char* ShortRemote_FQDN;   /* Short form of Remote host */
-
-
-EXTERN char* Auth_client_id_DYN;	/* client sent/received authentication info */
-EXTERN char* Auth_dest_id_DYN;		/* destination server authentication id */
-EXTERN char* Auth_filter_DYN;		/* authentication to use to send to server */
-EXTERN char* Auth_id_DYN;			/* server id - client sends to this, server sends from this */
-EXTERN char* Auth_received_id_DYN;	/* from server/client id received */
-EXTERN char* Auth_sender_id_DYN;	/* origin authentication id */
-
-EXTERN char* esc_Auth_DYN;				/* client sent/received authentication info */
-EXTERN char* esc_Auth_client_id_DYN;	/* client sent/received authentication info */
-EXTERN char* esc_Auth_dest_id_DYN;		/* destination server authentication id */
-EXTERN char* esc_Auth_filter_DYN;		/* authentication to use to send to server */
-EXTERN char* esc_Auth_id_DYN;			/* server id - client sends to this, server sends from this */
-EXTERN char* esc_Auth_received_id_DYN;	/* from server/client id received */
-EXTERN char* esc_Auth_sender_id_DYN;	/* origin authentication id */
+/* EXTERN char* Auth_client_id_DYN;	/ * client sent/received authentication info */
 
 EXTERN int Drop_root_DYN;				/* drop root permissions */
 
@@ -252,12 +265,7 @@ EXTERN int Always_banner_DYN; /* always print banner, ignore lpr -h option */
 EXTERN char* Architecture_DYN;
 EXTERN int Athena_Z_compat_DYN;
 EXTERN char* Auth_DYN;			/* authentication to use to send to server */
-EXTERN char* Auth_client_filter_DYN;	/* client use authentication to server */
 EXTERN char* Auth_forward_DYN;	/* server use authentication when forwarding */
-EXTERN char* Auth_forward_filter_DYN;	/* filter for forwarding to destination */
-EXTERN char* Auth_forward_id_DYN;	/* remote server id for forwarding to destination */
-EXTERN char* Auth_receive_filter_DYN;	/* filter for receiving authentication */
-EXTERN char* Auth_server_id_DYN;	/* remote server id for client or when receiving */
 EXTERN int Auto_hold_DYN;	 /* automatically hold all jobs */
 EXTERN char* BK_filter_options_DYN;	/* backwards compatible filter options */
 EXTERN char* BK_of_filter_options_DYN;	/* backwards compatible OF filter options */
@@ -319,7 +327,7 @@ EXTERN int Ignore_requested_user_priority_DYN;	 /* ignore requested user priorit
 EXTERN int KA_DYN;
 EXTERN int Keepalive_DYN;	/* TCP keepalive enabled */
 EXTERN char* Kerberos_keytab_DYN;	/* kerberos keytab file */
-EXTERN char* Kerberos_dest_id_DYN;	/* kerberos keytab file */
+EXTERN char* Kerberos_dest_id_DYN;	/* kerberos destination principle */
 EXTERN char* Kerberos_life_DYN;	/* kerberos lifetime */
 EXTERN char* Kerberos_renew_DYN;	/* kerberos newal time */
 EXTERN char* Kerberos_forward_principal_DYN;	/* kerberos server principle */
@@ -371,9 +379,6 @@ EXTERN int Page_width_DYN; /* page width (in characters) */
 EXTERN int Page_x_DYN; /* page width in pixels (horizontal) */
 EXTERN int Page_y_DYN; /* page length in pixels (vertical) */
 EXTERN char* Pass_env_DYN;		/* pass these environment variables */
-EXTERN char* Pgp_path_DYN;		/* pathname of PGP program */
-EXTERN char* Pgp_passphrasefile_DYN;	/* pathname of PGP passphrase */
-EXTERN char* Pgp_server_passphrasefile_DYN;	/* pathname of file with server PGP passphrase */
 EXTERN int Poll_time_DYN; /* force polling job queues */
 EXTERN char* Pr_program_DYN; /* pr program for p format */
 EXTERN char* Printcap_path_DYN;
@@ -433,6 +438,8 @@ EXTERN int Use_info_cache_DYN;
 EXTERN int Use_queuename_DYN;	/* put queuename in control file */
 EXTERN int Use_queuename_flag_DYN;	/* Specified with the -Q option */
 EXTERN int Use_shorthost_DYN;	/* Use short hostname in control file information */
+EXTERN char* Xlate_incoming_format_DYN;	/* translate format ids on incoming jobs */
+EXTERN char* Xlate_format_DYN;	/* translate format ids on outgoing jobs */
 EXTERN int Wait_for_eof_DYN;	/* Wait for eof on device before closing */
 EXTERN char* Xlate_format_DYN;	/* translate format ids */
 EXTERN char* Zwrite_DYN;

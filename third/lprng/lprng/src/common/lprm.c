@@ -1,20 +1,20 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1999, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lprm.c,v 1.5 2000-02-23 19:48:15 ghudson Exp $";
+"$Id: lprm.c,v 1.6 2000-03-31 16:21:14 mwhitson Exp $";
 
 
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-1997, Patrick Powell, San Diego, CA
+ * Copyright 1988-2000, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
@@ -100,7 +100,6 @@
 #include "initialize.h"
 #include "linksupport.h"
 #include "patchlevel.h"
-#include "sendauth.h"
 #include "sendreq.h"
 
 /**** ENDINCLUDE ****/
@@ -133,7 +132,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, SIG_DFL);
+	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
 
 	/*
 	 * set up the user state
@@ -418,36 +417,4 @@ int Start_worker( struct line_list *l, int fd )
 {
 	return(1);
 }
-
-#if TEST
-
-#include "permission.h"
-#include "lpd.h"
-int Send_request(
-	int class,					/* 'Q'= LPQ, 'C'= LPC, M = lprm */
-	int format,					/* X for option */
-	char **options,				/* options to send */
-	int connect_timeout,		/* timeout on connection */
-	int transfer_timeout,		/* timeout on transfer */
-	int output					/* output on this FD */
-	)
-{
-	int i, n;
-	int socket = 1;
-	char cmd[SMALLBUFFER];
-
-	cmd[0] = format;
-	cmd[1] = 0;
-	plp_snprintf(cmd+1, sizeof(cmd)-1, RemotePrinter_DYN);
-	for( i = 0; options[i]; ++i ){
-		n = strlen(cmd);
-		plp_snprintf(cmd+n,sizeof(cmd)-n," %s",options[i] );
-	}
-	Perm_check.remoteuser = "papowell";
-	Perm_check.user = "papowell";
-	Is_server = 1;
-	Job_remove(&socket,cmd);
-	return(-1);
-}
-
-#endif
+ void Dispatch_input(int *talk, char *input ){}

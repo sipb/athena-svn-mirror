@@ -46,8 +46,9 @@ $(DOC).ps: $(DOC).tex Makefile
 	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
 		'\nonstopmode\input{$(DOC).tex}'
 	dvips -q -t letter -o $(DOC).ps $(DOC).dvi
-LPRng.html: $(SRC)/LPRng.html.orig
-	cp $^ $@
+LPRng.html: $(SRC)/LPRng.html.orig Makefile
+	date=`date | awk '{ print $$2,$$3,$$6;}'`; \
+	sed -e "s/^DATE/$$date/" $(SRC)/LPRng.html.orig >$@
 purge:
 	rm -f *.Bex *.aux *.log *.toc
 fixman:
@@ -64,7 +65,7 @@ clean:
 .PHONY: all clean install ci install.zman update purge
 
 update:
-	updateversion *.sgml
+	updateversion *.sgml LPRng.html.orig
 
 # 
 #
