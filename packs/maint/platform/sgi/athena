@@ -1,4 +1,4 @@
-# $Id: athena,v 1.46 1998-11-02 15:14:16 ghudson Exp $
+# $Id: athena,v 1.47 1998-11-03 19:05:19 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -25,6 +25,10 @@ logger -p user.notice "Booting"
 
 # Read configuration variables
 . /etc/athena/rc.conf
+
+# Store boot-time environment for starting server processes later.
+rm -f /var/athena/env.boot
+env > /var/athena/env.boot
 
 # Clean up the password file.
 $ECHO "Cleaning up passwd file: \c"
