@@ -192,6 +192,9 @@ gnome_vfs_get_file_info_from_handle_cancellable (GnomeVFSHandle *handle,
 	return result;
 }
 
+/* Athena hack to work around Solaris #define of "truncate" */
+#undef truncate
+
 GnomeVFSResult
 gnome_vfs_truncate_uri_cancellable (GnomeVFSURI *uri,
 				    GnomeVFSFileSize length,

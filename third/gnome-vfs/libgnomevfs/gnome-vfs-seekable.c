@@ -207,6 +207,9 @@ init_seek (SeekableMethodHandle *mh)
 		return GNOME_VFS_OK;
 }
 
+/* Athena hack to work around Solaris #define of "tell" */
+#undef tell
+
 GnomeVFSMethodHandle *
 gnome_vfs_seek_emulate (GnomeVFSURI *uri, GnomeVFSMethodHandle *child_handle,
 			GnomeVFSOpenMode open_mode)
