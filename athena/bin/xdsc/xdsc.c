@@ -13,7 +13,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.2 1990-12-06 16:40:09 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.3 1990-12-07 15:57:22 sao Exp $";
 
 /*
 ** Globals
@@ -25,7 +25,7 @@ Boolean		debug = False;
 CommandWidget	botbuttons[MAX_BOT_BUTTONS];
 char		filebase[50];
 int		whichTopScreen = MAIN;
-Widget		topW;
+Widget		topW, paneW;
 
 /*
 ** External functions
@@ -64,7 +64,7 @@ static FILE	*inputfile, *outputfile;
 static char	*meetinglist;
 static Boolean	reading = False;
 
-static Widget	paneW, topboxW, botboxW;
+static Widget	topboxW, botboxW;
 static Widget	helpButton, quitButton;
 static Widget	label1W;
 static int	prevfirst = 0;
@@ -393,6 +393,8 @@ int mode;
 		~Ctrl<Key>a:	Stub() \n\
 		~Ctrl<Key>m:	Stub() \n\
 		~Ctrl<Key>b:	Stub() \n\
+		Ctrl<Key>r:	search(backward) \n\
+		Ctrl<Key>s:	search(forward) \n\
 		";
 
 	static String	editTranslations =
@@ -404,6 +406,8 @@ int mode;
 		~Ctrl<Key>a:	TopFakeKeyPress(0) \n\
 		~Ctrl<Key>m:	TopFakeKeyPress(2) \n\
 		~Ctrl<Key>b:	Stub() \n\
+		Ctrl<Key>r:	search(backward) \n\
+		Ctrl<Key>s:	search(forward) \n\
 		";
 
 	static String	listTranslations =
@@ -415,6 +419,8 @@ int mode;
 		~Ctrl<Key>a:	TopFakeKeyPress(1) \n\
 		~Ctrl<Key>m:	TopFakeKeyPress(3) \n\
 		~Ctrl<Key>b:	TopFakeKeyPress(2) \n\
+		Ctrl<Key>r:	search(backward) \n\
+		Ctrl<Key>s:	search(forward) \n\
 		";
 
 
