@@ -1,7 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.84 1997-12-10 20:11:35 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.85 1997-12-13 01:38:54 cfields Exp $
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <pwd.h>
 #ifdef SYSV
 #include <shadow.h>
@@ -38,6 +39,7 @@
 
 #include <krb.h>
 #include <hesiod.h>
+#include <al.h>
 
 #ifdef KRB5
 #include <krb5.h>
@@ -49,17 +51,6 @@
 
 #include "environment.h"
 
-#undef NGROUPS
-#define NGROUPS 16
-
-#ifdef SETPAG
-/* Allow for primary gid and PAG identifier */
-#define MAX_GROUPS (NGROUPS-3)
-#else
-/* Allow for primary gid */
-#define MAX_GROUPS (NGROUPS-1)
-#endif
-
 #ifndef TRUE
 #define FALSE 0
 #define TRUE (!FALSE)
@@ -67,32 +58,13 @@
 
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define PASSWORD_LEN 14
-#define TEMP_DIR_PERM 0710
 #define MAXENVIRON 32
 
-/* homedir status */
-#define HD_LOCAL 0
-#define HD_ATTACHED 1
-#define HD_TEMP 2
-
-#ifndef NOLOGIN
-#define	NOLOGIN "/etc/nologin"
-#endif
-#ifndef NOCREATE
-#define NOCREATE "/etc/nocreate"
-#endif
-#ifndef NOATTACH
-#define NOATTACH "/etc/noattach"
-#endif
-#ifndef NOCRACK
-#define NOCRACK "/etc/nocrack"
-#endif
 #define MOTD "/etc/motd"
 #ifndef SYSV
 #define UTMP "/etc/utmp"
 #define WTMP "/usr/adm/wtmp"
 #endif
-#define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
@@ -110,14 +82,12 @@ extern FILE *xdmstream;
 pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
-char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
+char *get_tickets(), *strsave();
 int abort_verify();
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
 
-int homedir_status = HD_LOCAL;
-int added_to_passwd = FALSE;
 #ifdef SOLARIS
 struct passwd *
  get_pwnam(usr)
@@ -164,7 +134,7 @@ char *display;
     long salt;
     char saltc[2], c;
     char encrypt[PASSWORD_LEN+1];
-    char **environment, **glist;
+    char **environment;
     char fixed_tty[16], *p;
 #ifdef sgi
     char *newargv[4];
@@ -173,11 +143,12 @@ char *display;
     /* state variables: */
     int local_passwd = FALSE;	/* user is in local passwd file */
     int local_ok = FALSE;	/* verified from local password file */
-    int nocreate = FALSE;	/* not allowed to modify passwd file */
-    int nologin = FALSE;	/* logins disabled */
 #ifdef sgi
     int f;
 #endif
+    char *altext = NULL, *alerrmem;
+    int status, *warnings, *warning;
+    int tmp_homedir = 0;
 
     /* 4.2 vs 4.3 style syslog */
 #ifndef  LOG_ODELAY
@@ -186,16 +157,62 @@ char *display;
     openlog("login", LOG_ODELAY, LOG_AUTH);
 #endif
 
-    nocreate = file_exists(NOCREATE);
-    nologin = file_exists(NOLOGIN);
-
-    /* check to make sure a username was entered */
+    /* Check to make sure a username was entered. */
     if (!strcmp(user, ""))
       {
-	return("No username entered.  Please enter a username and password to try again.");
+	return("No username entered.  Please enter a username and "
+	       "password to try again.");
       }
 
-    /* check local password file */
+    /* Check that the user is allowed to log in. */
+    status = al_login_allowed(user, 0, &altext);
+    if (status != AL_SUCCESS)
+      {
+	memset(passwd, 0, strlen(passwd));	/* zap ASAP */
+	switch(status)
+	  {
+	  case AL_ENOUSER:
+	    sprintf(errbuf,
+		    "Unknown user name entered (no hesiod information "
+		    "for \"%s\")", user);
+	    break;
+	  case AL_ENOLOGIN:
+	    strcpy(errbuf,
+		   "Logins are currently disabled on this workstation.  ");
+	    break;
+	  case AL_ENOCREATE:
+	    strcpy(errbuf,
+		   "You are not allowed to log into this workstation.  "
+		   "Contact the workstation's administrator or a consultant "
+		   "for further information.  ");
+	    break;
+	  case AL_EBADHES:
+	    strcpy(errbuf, "This account conflicts with a locally defined "
+		   "account... aborting.");
+	    break;
+	  case AL_ENOMEM:
+	    strcpy(errbuf, "Out of memory.");
+	    break;
+	  default:
+	    strcpy(errbuf, al_strerror(status, &alerrmem));
+	    al_free_errmem(alerrmem);
+	    break;
+	  }
+
+	if (altext)
+	  {
+	    strncat(errbuf, altext, sizeof(errbuf) - strlen(errbuf) - 1);
+	    free(altext);
+	  }
+
+	return errbuf;
+      }
+
+    /* Test to see if the user can be authenticated locally. If not,
+     * grab their password information from Hesiod, since the uid is
+     * potentially needed for mail-check login and the ticket file
+     * name, before we want to call al_acct_create().
+     */
     if ((pwd = get_pwnam(user)) != NULL) {
 	local_passwd = TRUE;
 	if (strcmp(crypt(passwd, pwd->pw_passwd), pwd->pw_passwd)) {
@@ -204,44 +221,30 @@ char *display;
 	} else
 	  local_ok = TRUE;
     } else {
-	if (nocreate) {
-	    sprintf(errbuf, "You are not allowed to log into this workstation.  Contact the workstation's administrator or a consultant for further information.  (User \"%s\" is not in the password file and No_Create is set.)", user);
-	    return(errbuf);
-	}
-
- 	pwd = hes_getpwnam(user);
- 	if ((pwd == NULL) || pwd->pw_dir[0] == 0) {
-	    memset(passwd, 0, strlen(passwd));
-	    cleanup(NULL);
-	    if (hes_error() == HES_ER_NOTFOUND) {
-		sprintf(errbuf, "Unknown user name entered (no hesiod information for \"%s\")", user);
-		return(errbuf);
-	    } else
-		return("Unable to find account information due to network failure.  Try another workstation or try again later.");
- 	}
-	if (strcmp(pwd->pw_name, user))
-	    return("Unable to find account information (incorrect hesiod name found).");
-	if (getpwuid(pwd->pw_uid))
-	    return("This account conflicts with a locally defined account... aborting.");
+	pwd = hes_getpwnam(user);
+	if (pwd == NULL) /* "can't" happen */
+	    return "Strange failure in Hesiod lookup.";
     }
 
-    /* The terminal name on the Rios is likely to be something like pts/0; */
-    /* we don't want any  /'s in the path name; replace them with _'s */
+    /* Terminal names may be something like pts/0; we don't want any /'s
+     * in the path name; replace them with _'s.
+     */
     if (tty != NULL)
       {
 	strcpy(fixed_tty,tty);
 	while (p = strchr(fixed_tty,'/'))
 	  *p = '_';
-	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
       }
     else
       {
-	sprintf(tkt_file, "/tmp/tkt%d", pwd->pw_uid);
+	sprintf(fixed_tty, "%d", pwd->pw_uid);
       }
+    sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
     psetenv("KRBTKFILE", tkt_file, 1);
 
     /* we set the ticket file here because a previous dest_tkt() might
-       have cached the wrong ticket file. */
+     * have cached the wrong ticket file.
+     */
     krb_set_tkt_string(tkt_file);
 
 #ifdef KRB5
@@ -249,22 +252,10 @@ char *display;
     psetenv("KRB5CCNAME", tkt5_file, 1);
 #endif
 
-    /* set real uid/gid for kerberos library */
-#if !defined(SOLARIS) && !defined(sgi)
-    setruid(pwd->pw_uid);
-    setrgid(pwd->pw_gid);
-#endif
-    if (msg = get_tickets(user, passwd)) {
-	if (!local_ok) {
-	    cleanup(NULL);
-	    return(msg);
-	} else {
-	    if (pwd->pw_uid != ROOT)
-		prompt_user("Unable to get full authentication, you will have local access only during this login session (failed to get kerberos tickets).  Continue anyway?", abort_verify);
-	}
-    }
-
-    /* save encrypted password to put in local password file */
+    /* Save encrypted password to put in local password file. We do
+     * this ahead of time so that we can be sure of zeroing the
+     * password below.
+     */
     salt = 9 * getpid();
     saltc[0] = salt & 077;
     saltc[1] = (salt>>6) & 077;
@@ -278,38 +269,27 @@ char *display;
     }
     strcpy(encrypt,crypt(passwd, saltc));	
 
-    /* don't need the password anymore */
+    msg = get_tickets(user, passwd);
     memset(passwd, 0, strlen(passwd));
 
-    if (!local_passwd)
-      pwd->pw_passwd = encrypt;
-
-    /* if NOLOGINs and we're not root, display the contents of the
-     * nologin file */
-    if (nologin && pwd->pw_uid != ROOT) {
-	int f, count;
-	char *p;
-
-	strcpy(errbuf, "Logins are currently disabled on this workstation.  ");
-	p = &errbuf[strlen(errbuf)];
-	f = open(NOLOGIN, O_RDONLY, 0);
-	if (f > 0) {
-	    count = read(f, p, sizeof(errbuf) - strlen(errbuf) - 1);
-	    close(f);
-	    p[count] = 0;
+    if (msg) {
+	if (!local_ok) {
+	    return(msg);
+	} else {
+	    if (pwd->pw_uid != ROOT)
+		prompt_user("Unable to get full authentication, you will "
+			    "have local access only during this login "
+			    "session (failed to get kerberos tickets).  "
+			    "Continue anyway?", abort_verify, NULL);
 	}
-	cleanup(NULL);
-	return(errbuf);
     }
 
-    /* Secure tty code used to be here. */
-
-#if defined(SOLARIS) || defined(sgi)
     chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
-#endif
 #ifdef KRB5
     chown(tkt5_file, pwd->pw_uid, pwd->pw_gid);
 #endif
+
+    /* Code for verifying a secure tty used to be here. */
 
     /* if mail-check login selected, do that now. */
     if (option == 4) {
@@ -331,31 +311,97 @@ char *display;
 	    while (attach_state == -1)
 	      sigsuspend(&sig_zero);
 	    printf("\n");
-	    prompt_user("A summary of your waiting email is displayed in the console window.  Continue with full login session or logout now?", abort_verify);
+	    prompt_user("A summary of your waiting email is displayed in "
+			"the console window.  Continue with full login "
+			"session or logout now?", abort_verify, NULL);
 	}
     }
-
 #if defined(SETPAG) && !defined(sgi) /* not appropriate for SGI system */
     setpag();
 #endif
 
-    if (msg = attachhomedir(pwd)) {
-	cleanup(pwd);
-	return(msg);
-    }
+    status = al_acct_create(user, encrypt, getpid(), !msg, 1, &warnings);
+    if (status != AL_SUCCESS)
+      {
+	switch(status)
+	  {
+	  case AL_EPASSWD:
+	    strcpy(errbuf, "An unexpected error occured while entering you in "
+		   "the local password file.");
+	    return errbuf;
+	    break;
+	  case AL_WARNINGS:
+	    warning = warnings;
+	    while (*warning != AL_SUCCESS)
+	      {
+		switch(*warning)
+		  {
+		  case AL_WGROUP:
+		    prompt_user("Unable to set your group access list.  "
+				"You may have insufficient permission to "
+				"access some files.  Continue with this "
+				"login session anyway?", abort_verify, user);
+		    break;
+		  case AL_WXTMPDIR:
+		    tmp_homedir = 1;
+		    prompt_user("You are currently logged in with a "
+				"temporary home directory, so this login "
+				"session will use that directory. Continue "
+				"with this login session anyway?",
+				abort_verify, user);
+		    break;
+		  case AL_WTMPDIR:
+		    tmp_homedir = 1;
+		    prompt_user("Your home directory is unavailable.  A "
+				"temporary directory will be created for "
+				"you.  However, it will be DELETED when you "
+				"logout.  Any mail that you incorporate "
+				"during this session WILL BE LOST when you "
+				"logout.  Continue with this login session "
+				"anyway?", abort_verify, user);
+		    break;
+		  case AL_WNOHOMEDIR:
+		    prompt_user("No home directory is available.  Continue "
+				"with this login session anyway?",
+				abort_verify, user);
+		    break;
+		  case AL_WNOATTACH:
+		    prompt_user("This workstation is configured not to "
+				"attach remote filesystems.  Continue with "
+				"your local home directory?", abort_verify,
+				user);
+		    break;
+		  case AL_WBADSESSION:
+		  default:
+		    break;
+		  }
+		warning++;
+	      }
+	    free(warnings);
+	    break;
+	  default:
+	    strcpy(errbuf, al_strerror(status, &alerrmem));
+	    al_free_errmem(alerrmem);
+	    return errbuf;
+	    break;
+	  }
+      }
 
-    /* put in password file if necessary */
-    if (add_to_passwd(pwd, local_passwd)) {
-	cleanup(pwd);
-	return("An unexpected error occured while entering you in the local password file.");
-    }
+    /* Get the password entry again. We need a new copy because it
+     * may have been edited by al_acct_create().
+     */
+    pwd = get_pwnam(user);
+    if (pwd == NULL) /* "can't" happen */
+	return(lose("Unable to get your password entry.\n"));
+
     switch(fork_and_store(&quota_pid)) {
     case -1:
 	fprintf(stderr, "Unable to fork to check your filesystem quota.\n");
 	break;
     case 0:
 	if (setuid(pwd->pw_uid) != 0) {
-	    fprintf(stderr, "Unable to set user ID to check your filesystem quota.\n");
+	    fprintf(stderr,
+		    "Unable to set user ID to check your filesystem quota.\n");
 	    _exit(-1);
 	}
 	execlp("quota", "quota", NULL);
@@ -374,19 +420,6 @@ char *display;
 	    count = read(f, errbuf, sizeof(errbuf) - 1);
 	    write(1, errbuf, count);
 	    close(f);
-	}
-    }
-
-    if (!nocreate) {
-	glist = hes_resolve(user, "grplist");
-	if (glist && glist[0]) {
-	    /* add_to_group() will corrupt the list, so we save a copy first */
-	    strcpy(errbuf, glist[0]);
-	    if (msg = add_to_group(user, glist[0])) {
-		cleanup(pwd);
-		return(msg);
-	    }
-	    strcpy(glist[0], errbuf);
 	}
     }
 
@@ -416,7 +449,8 @@ char *display;
 
     environment = (char **) malloc(MAXENVIRON * sizeof(char *));
     if (environment == NULL)
-      return("Out of memory while trying to initialize user environment variables.");
+      return("Out of memory while trying to initialize user environment "
+	     "variables.");
 
     i = 0;
     sprintf(errbuf, "HOME=%s", pwd->pw_dir);
@@ -452,7 +486,7 @@ char *display;
 #endif
 #endif
 
-    if (homedir_status == HD_TEMP) {
+    if (tmp_homedir) {
 	environment[i++] = "TMPHOME=1";
     }
     strcpy(wgfile, "/tmp/wg.XXXXXX");
@@ -513,7 +547,10 @@ char *display;
 
         
     if (initgroups(user, pwd->pw_gid) < 0)
-	prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
+	prompt_user("Unable to set your group access list.  You may have "
+		    "insufficient permission to access some files.  "
+		    "Continue with this login session anyway?",
+		    abort_verify, user);
 
 #ifdef SOLARIS_MAE
     /* If the login fails, lose() is called, setting a global flag
@@ -532,6 +569,7 @@ char *display;
     if (chdir(pwd->pw_dir))
       fprintf(stderr, "Unable to connect to your home directory.\n");
 
+    /* Stuff first arg for xsession into a string. */
     sprintf(errbuf, "%d", option);
 
 #ifdef sgi
@@ -593,7 +631,8 @@ char *password;
     case KDC_PR_UNKNOWN:
 	return("Unknown username entered.");
     default:
-	sprintf(errbuf, "Unable to authenticate you, kerberos failure %d: %s.  Try again here or on another workstation.",
+	sprintf(errbuf, "Unable to authenticate you, kerberos failure "
+		"%d: %s.  Try again here or on another workstation.",
 		error, krb_err_txt[error]);
 	return(errbuf);
     }
@@ -650,419 +689,37 @@ char *password;
 }
 
 
-cleanup(pwd)
-struct passwd *pwd;
+cleanup(user)
+char *user;
 {
     /* must also detach homedir, clean passwd file */
     dest_tkt();
 #ifdef KRB5
     do_v5_kdestroy(0);
 #endif
-    if (pwd && homedir_status == HD_ATTACHED) {
-	attach_state = -1;
-	switch (fork_and_store(&attach_pid)) {
-	case -1:
-	    fprintf(stderr, "Unable to detach your home directory (could not fork to create attach process).");
-	    break;
-	case 0:
-	    if (setuid(pwd->pw_uid) != 0) {
-		fprintf(stderr,
-			"Could not execute detach command as user %s,\n",
-			pwd->pw_name);
-	    }
-	    execlp("fsid", "fsid", "-unmap", "-filsys", pwd->pw_name, NULL);
-	    _exit(-1);
-	default:
-	    while (attach_state == -1)
-	      sigsuspend(&sig_zero);
-	}
-    }
-    if (pwd && added_to_passwd) {
-#ifdef SOLARIS
-      remove_from_shadow(pwd);    
-#endif
-      remove_from_passwd(pwd);
-    }
+
+    if (user)
+      al_acct_revert(user, getpid());
+
     /* Set real uid to zero.  If this is impossible, exit.  The
        current implementation of lose() will not print a message
        so xlogin will just exit silently.  This call "can't fail",
        so this is not a serious problem. */
     if (setuid(0) == -1)
       lose ("Unable to reset real uid to root");
-
 }
 
-
-add_to_passwd(p, exists)
-struct passwd *p;
-int exists;
+abort_verify(user)
+char *user;
 {
-    int i, fd;
-    FILE *etc_passwd;
-#ifdef SOLARIS
-    FILE *etc_shadow;
-    long lastchg = DAY_NOW;
-#endif
-    if (exists)
-	return 0;
-    
-    for (i = 0; i < 10; i++)
-	if ((fd = open("/etc/ptmp", O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
-	    errno == EEXIST)
-	    sleep(1);
-	else
-	    break;
-    if (fd == -1) {
-	if (i < 10)
-	    return(errno);
-	else
-	    (void) unlink("/etc/ptmp");
-    }
-#ifdef SOLARIS
-    etc_shadow = fopen("/etc/shadow", "a");
-#endif
-    etc_passwd = fopen("/etc/passwd", "a");
-    if (etc_passwd == NULL) {
-	(void) close(fd);
-	(void) unlink("/etc/ptmp");
-	return(-1);
-    }
-#ifdef SOLARIS
-    fprintf(etc_shadow,"%s:%s:%d::::::\n",
-     	    p->pw_name,
-	    p->pw_passwd,
-            lastchg);
-    strcpy (p->pw_passwd, "x");
-    (void) fclose(etc_shadow);
-#endif
-    fprintf(etc_passwd, "%s:%s:%d:%d:%s:%s:%s\n",
-	    p->pw_name,
-#ifdef SOLARIS
-	    p->pw_passwd,
-#else
-	    file_exists(NOCRACK) ? "*" : p->pw_passwd,
-#endif
-	    p->pw_uid,
-	    p->pw_gid,
-	    p->pw_gecos,
-	    p->pw_dir,
-	    p->pw_shell);
-    (void) fclose(etc_passwd);
-    (void) close(fd);
-    (void) unlink("/etc/ptmp");
-
-    /* This tells the display manager to cleanup the password file for
-     * us after we exit. For SGI, we tell nanny about it later.
-     */
-#if !defined(XDM) && !defined(sgi)
-    kill(getppid(), SIGUSR2);
-#endif
-
-    added_to_passwd = TRUE;
-    return(0);
-}
-
-
-remove_from_passwd(p)
-struct passwd *p;
-{
-    int fd, len, i;
-    char buf[512];
-    FILE *old, *new;
-
-    for (i = 0; i < 10; i++)
-      if ((fd = open("/etc/ptmp", O_WRONLY | O_CREAT | O_EXCL, 0644)) == -1 &&
-	  errno == EEXIST)
-	sleep(1);
-      else
-	break;
-    if (fd == -1) {
-	if (i < 10)
-	  return(errno);
-    }
-
-    old = fopen("/etc/passwd", "a");
-    if (old == NULL) {
-	(void) close(fd);
-	(void) unlink("/etc/ptmp");
-	return(-1);
-    }
-    new = fdopen(fd, "w");
-    len = strlen(p->pw_name);
-
-    while (fgets(buf, sizeof(buf) - 1, old)) {
-	if (strncmp(p->pw_name, buf, len - 1) || buf[len] != ':')
-	  fputs(buf, new);
-    }
-
-    (void) fclose(old);
-    (void) fclose(new);
-    (void) rename("/etc/ptmp", "/etc/passwd");
-    return(0);
-}
-#ifdef SOLARIS
-remove_from_shadow(p)
-struct passwd *p;
-{
-    int fd, len, i;
-    char buf[512];
-    FILE *old, *new;
-    for (i = 0; i < 10; i++)
-      if ((fd = open("/etc/ptmp", O_WRONLY | O_CREAT | O_EXCL, 0644)) == -1 &&
-	  errno == EEXIST)
-	sleep(1);
-      else
-	break;
-    if (fd == -1) {
-	if (i < 10) {
-          fprintf(stderr, "errno = %d\n", errno);
-	  return(errno);
-	}
-    }
-    old = fopen("/etc/shadow", "a");
-    if (old == NULL) {
-	(void) close(fd);
-	(void) unlink("/etc/ptmp"); 
-        fprintf(stderr, "could not open shadow\n");
-	return(-1);
-    }
-    new = fdopen(fd, "w");
-    len = strlen(p->pw_name);
-
-    while (fgets(buf, sizeof(buf) - 1, old)) {
-	if (strncmp(p->pw_name, buf, len - 1) || buf[len] != ':')
-	  fputs(buf, new);
-    }
-
-    (void) fclose(old);
-    (void) fclose(new);
-    (void) rename("/etc/ptmp", "/etc/shadow");    
-    return(0);
-}
-#endif 
-
-abort_verify()
-{
-    cleanup(NULL);
+    cleanup(user);
     _exit(1);
 }
-
-
-char *attachhomedir(pwd)
-struct passwd *pwd;
-{
-    struct stat stb;
-    int i;
-
-    /* Delete empty directory if it exists.  We just try to rmdir the 
-     * directory, and if it's not empty that will fail.
-     */
-    rmdir(pwd->pw_dir);
-
-    /* If a good local homedir exists, use it */
-    if (file_exists(pwd->pw_dir) && !IsRemoteDir(pwd->pw_dir) &&
-	homedirOK(pwd->pw_dir))
-      return(NULL);
-
-    /* Using homedir already there that may or may not be good. */
-    if (file_exists(NOATTACH) && file_exists(pwd->pw_dir) &&
-	homedirOK(pwd->pw_dir)) {
-	prompt_user("This workstation is configured not to attach remote filesystems.  Continue with your local home directory?", abort_verify);
-	return(NULL);
-    }
-
-    if (file_exists(NOATTACH))
-      return("This workstation is configured not to create local home directories.  Please contact the system administrator for this machine or a consultant for further information.");
-
-    /* attempt attach now */
-    attach_state = -1;
-    switch (fork_and_store(&attach_pid)) {
-    case -1:
-	return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
-    case 0:
- 	if (setuid(pwd->pw_uid) != 0) {
- 	    fprintf(stderr, "Could not execute attach command as user %s,\n",
- 		    pwd->pw_name);
- 	    fprintf(stderr, "Filesystem mappings may be incorrect.\n");
- 	}
-	/* don't do zephyr here since user doesn't have zwgc started anyway */
-	execlp("attach", "attach", "-quiet", "-nozephyr", pwd->pw_name, NULL);
-	_exit(-1);
-    default:
-	break;
-    }
-    while (attach_state == -1) {
-        sigsuspend(&sig_zero);
-    }
-
-    if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
-	prompt_user("Your home directory could not be attached.  Try again?",
-		    abort_verify);
-	/* attempt attach again */
-	attach_state = -1;
-	switch (fork_and_store(&attach_pid)) {
-	case -1:
-	    return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
-	case 0:
-	    if (setuid(pwd->pw_uid) != 0) {
-		fprintf(stderr,
-			"Could not execute attach command as user %s,\n",
-			pwd->pw_name);
-		fprintf(stderr, "Filesystem mappings may be incorrect.\n");
-	    }
-	    /* don't do zephyr here since user doesn't have zwgc started */
-	    execlp("attach", "attach", "-quiet", "-nozephyr",
-		   pwd->pw_name, NULL);
-	    _exit(-1);
-	default:
-	    break;
-	}
-	while (attach_state == -1) {
-	    sigsuspend(&sig_zero);
-	}
-    }
-
-    if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
-	/* do tempdir here */
-	char buf[BUFSIZ];
-	homedir_status = HD_TEMP;
-
-	prompt_user("Your home directory is still unavailable.  A temporary directory will be created for you.  However, it will be DELETED when you logout.  Any mail that you incorporate during this session WILL BE LOST when you logout.  Continue with this session anyway?", abort_verify);
-	sprintf(buf, "/tmp/%s", pwd->pw_name);
-	pwd->pw_dir = (char *)malloc(strlen(buf)+1);
-	strcpy(pwd->pw_dir, buf);
-
-	i = lstat(buf, &stb);
-	if (i == 0) {
-	    if ((stb.st_mode & S_IFMT) == S_IFDIR) {
-		fprintf(stderr, "Warning - The temporary directory already exists.\n");
-		return(NULL);
-	    } else unlink(buf);
-	} else if (errno != ENOENT)
-	  return("Error while retrieving status of temporary homedir.");
-#ifndef SOLARIS
-	if (setreuid(ROOT, pwd->pw_uid) != 0)
-	  return("Error while setting user ID to make temporary home directory.");
-#endif
-	if (mkdir(buf, TEMP_DIR_PERM))
-	  return("Error while creating temporary directory.");
-
-#ifdef SOLARIS
-	if(chown(buf, pwd->pw_uid, -1))
-	  return("Could not change owner of temporary directory.");
-#endif
-
-	attachhelp_state = -1;
-	switch (fork_and_store(&attachhelp_pid)) {
-	case -1:
-	    fprintf(stderr, "Warning - could not fork to copy user prototype files into temporary directory.\n");
-	    return (NULL);
-	case 0:
-	    /* redirect to /dev/null to make cp quiet */
-#ifdef SOLARIS
-	    setuid(pwd->pw_uid); /* probably ok if it fails, but won't */
-#endif
-	    close(1);
-	    close(2);
-	    open("/dev/null", O_RDWR, 0);
-	    dup(1);
-	    execl("/bin/cp", "cp", "-r", TMPDOTFILES, buf, NULL);
-	    fprintf(stderr, "Warning - could not copy user prototype files into temporary directory.\n");
-	    _exit(-1);
-	default:
-	    break;
-	}
-	while (attachhelp_state == -1)
-	  sigsuspend(&sig_zero);
-
-	if (chmod(buf, TEMP_DIR_PERM))
-	  return("Could not change protections on temporary directory.");
-
-#ifndef SOLARIS
-	setreuid(ROOT, ROOT);
-#endif
-    } else
-      homedir_status = HD_ATTACHED;
-    return(NULL);
-}
-
-
-/* Function Name: IsRemoteDir
- * Arguments: dir - name of the directory.
- * Returns: true or false to the question (is remote dir).
- *    false may also indicate that no directory exists.
- *
- * If we cannot stat the directory, we will assume the directory is
- * remote.  Getting information about a directory may not be possible
- * if the pre-requisite authentication has not yet been performed.
- *
- * Under AIX, we use stat and check the FS_REMOTE flag.
- * Under BSD, we check the device [0,1=AFS; 255,0=NFS].
- *
- * NOTE: This routine must be CHANGED whenever a new architecture
- * is introduced or if any filesystem semantics change.
- */
-
-IsRemoteDir(dir)
-char *dir;
-{
-#if (defined(vax) || defined(ibm032) || defined(sun) || defined(sgi)) && !defined(REMOTEDONE)
-#define REMOTEDONE
-#if defined(vax) || defined(ibm032)
-#define NFS_MAJOR 0xff
-#endif
-#if defined(sun) || defined(sgi)
-#define NFS_MAJOR 130
-#endif
-    struct stat stbuf;
-  
-    if (stat(dir, &stbuf))
-	return(TRUE);
-
-    if (major(stbuf.st_dev) == NFS_MAJOR)
-	return(TRUE);
-    if (stbuf.st_dev == 0x0001)			/* AFS */
-	return(TRUE);
-
-    return(FALSE);
-#endif
-
-#ifndef REMOTEDONE
-    ERROR --- ROUTINE NOT IMPLEMENTED ON THIS PLATFORM;
-#endif
-}
-
-
-/* Function Name: homedirOK
- * Description: checks to see if our homedir is okay, i.e. exists and 
- *	contains at least 1 file
- * Arguments: dir - the directory to check.
- * Returns: TRUE if the homedir is okay.
- */
-
-int homedirOK(dir)
-char *dir;
-{
-    DIR *dp;
-    struct dirent *temp;
-    int count;
-
-    if ((dp = opendir(dir)) == NULL)
-      return(FALSE);
-
-    /* Make sure that there is something here besides . and .. */
-    for (count = 0; count < 3 ; count++)
-      temp = readdir(dp);
-
-    closedir(dp);
-    return(temp != NULL);
-}
-
 
 char *strsave(s)
 char *s;
 {
-    char *ret = (char *) malloc(strlen(s) + 1);
+    char *ret = malloc(strlen(s) + 1);
     strcpy(ret, s);
     return(ret);
 }
@@ -1150,166 +807,6 @@ char *display;
 }
 
 #define MAXGNAMELENGTH	32
-
-char *add_to_group(name, glist)
-char *name;
-char *glist;
-{
-    char *cp;			/* temporary */
-    char *gnames[MAX_GROUPS], *gids[MAX_GROUPS];
-    int i, fd = -1, ngroups, nentries;
-    int namelen = strlen(name);
-    FILE *etc_group, *etc_gtmp;
-    static char data[BUFSIZ+MAXGNAMELENGTH];/*  space to add new username */
-
-    for (i = 0; i < 10; i++)
-      if ((fd = open("/etc/gtmp", O_RDWR | O_EXCL | O_CREAT, 0644)) == -1 &&
-	  errno == EEXIST)
-	sleep(1);
-      else
-	break;
-    if (fd == -1) {
-	if (i < 10) {
-	    sprintf(data, "Update of group file failed: errno %d", errno);
-	    return(data);
-	} else
-	  unlink("/etc/gtmp");
-    }
-
-    if ((etc_gtmp = fdopen(fd, "w")) == NULL ||	/* can't happen ? */
-	(etc_group = fopen("/etc/group", "r")) == NULL) {
-	(void) close(fd);
-	(void) unlink("/etc/gtmp");
-	return("Failed to open temporary group file to update your access control groups.");
-    }
-
-    /* Parse up to MAX_GROUPS group names and gids out of glist. */
-    cp = glist;
-    ngroups = 0;
-    while (ngroups < MAX_GROUPS) {
-	gnames[ngroups] = cp;
-	cp = strchr(cp, ':');
-	if (!cp)
-	    break;
-	*cp++ = 0;
-	gids[ngroups] = cp;
-	ngroups++;
-	cp = strchr(cp, ':');
-	if (cp)
-	    *cp++ = 0;
-	else
-	    break;
-    }
-
-    /* Make a pass over the group file to count the groups the user is
-     * currently in. */
-    nentries = 0;
-    while (fgets(data, sizeof(data) - MAXGNAMELENGTH, etc_group)) {
-	char *gid;
-
-	/* Find the gid and user list. */
-	cp = strchr(data, ':');
-	if (!cp)
-	    break;
-	gid = strchr(cp + 1, ':');
-	if (!gid)
-	    break;
-	gid++;
-	cp = strchr(gid, ':');
-	if (!cp)
-	    break;
-	*cp = 0;
-
-	/* Now check if the user is in the user list. */
-	while (cp) {
-	    cp++;
-	    if (!strncmp(name, cp, namelen) &&
-		(cp[namelen] == ',' || cp[namelen] == ' ' ||
-		 cp[namelen] == '\n')) {
-		nentries++;
-		break;
-	    }
-	    cp = strchr(cp, ',');
-	}
-    }
-
-    /* Now make a second pass, adding the user to groups in our list. */
-    rewind(etc_group);
-    while (fgets(data, sizeof(data) - MAXGNAMELENGTH, etc_group)) {
-	char *gpwd, *gid, *guserlist = NULL;
-	int add = -1;	/* index of group entry in user's hesiod list */
-
-	if (data[0] == '\0')
-	  continue;	/* empty line ??? */
-
-	/* If a valid format line, check to see if the user belongs in
-	   the group.  Otherwise, just write it out as-is. */
-	if (nentries < MAX_GROUPS &&
-	    (gpwd = strchr(data, ':')) &&
-	    (gid = strchr(++gpwd, ':')) &&
-	    (guserlist = strchr(++gid, ':'))) {
-	    *guserlist = '\0';
-	    /* step through our groups */
-	    for (i = 0; i < ngroups; i++)
-	      if (gids[i] && !strcmp(gid, gids[i])) {
-		  /* found it, now check users */
-		  for (cp = guserlist; cp; cp = strchr(cp, ',')) {
-		      cp++;
-		      if (!strncmp(name, cp, strlen(name)) &&
-			  (cp[namelen] == ',' ||
-			   cp[namelen] == ' ' ||
-			   cp[namelen] == '\n')) {
-			  gnames[i] = NULL;
-			  gids[i] = NULL;
-			  break;
-		      }
-		  }
-		  if (gnames[i] != NULL)
-		    add = i;
-		  break;
-	      }
-	    *guserlist++ = ':';
-	}
-	if (add != -1) {
-	    char *end_userlist = guserlist + strlen(guserlist);
-	    *(end_userlist-1) = ',';	/* overwrite newline */
-	    strcpy(end_userlist, name);
-	    *(end_userlist + namelen) = '\n';
-	    *(end_userlist + namelen + 1) = 0;
-	    gnames[add] = NULL;
-	    gids[add] = NULL;
-	    nentries++;
-	}
-	if (fputs(data, etc_gtmp) == EOF && ferror(etc_gtmp)) {
-	    (void) fclose(etc_gtmp);
-	    goto fail;
-	}
-    }	/* end while */
-
-    /* now append all groups remaining in gids[], gnames[] */
-    for (i = 0;i < ngroups && nentries < MAX_GROUPS;i++)
-      if (gids[i] && gnames[i]) {
-	  fprintf(etc_gtmp, "%s:*:%s:%s\n", gnames[i], gids[i], name);
-	  nentries++;
-      }
-
-    (void) fchmod(fd, 0644);
-    if (fclose(etc_gtmp) == EOF)
-      goto fail;
-
-    (void) fclose(etc_group);
-    if (rename("/etc/gtmp", "/etc/group") == 0)
-      return(NULL);
-    else {
-	sprintf(data, "Failed to install your access control groups in the group file; errno %d", errno);
-	return(data);
-    }
-
- fail:
-    (void) unlink("/etc/gtmp");
-    (void) fclose(etc_group);
-    return("Failed to update your access control groups");
-}
 
 /* Fork, storing the pid in a variable var and returning the pid.  Make sure
  * that the pid is stored before any SIGCHLD can be delivered. */
@@ -1461,7 +958,7 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 	}
 
 	if (ret_cache_name) {
-		*ret_cache_name = (char *) malloc(strlen(cache_name)+1);
+		*ret_cache_name = malloc(strlen(cache_name)+1);
 		if (!*ret_cache_name) {
 			retval = ENOMEM;
 			goto cleanup;
