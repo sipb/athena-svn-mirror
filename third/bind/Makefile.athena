@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.7 1999-03-19 15:29:27 danw Exp $
+# $Id: Makefile.athena,v 1.8 1999-03-26 21:02:10 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -13,6 +13,7 @@ all:
 		DESTBIN=/usr/athena/bin \
 		DESTSBIN=/etc/athena \
 		DESTEXEC=/etc/athena \
+		DESTETC=/etc/athena \
 		DESTMAN=/usr/athena/man \
 		DESTHELP=/usr/athena/lib \
 		DESTRUN=/var/athena
