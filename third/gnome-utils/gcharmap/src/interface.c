@@ -22,11 +22,13 @@
 #ifndef _INTERFACE_C_
 #define _INTERFACE_C_
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <interface.h>
 #include <menus.h>
 #include <callbacks.h>
-#include <config.h>
-
 MainApp *mainapp;
 
 
@@ -57,8 +59,12 @@ create_chartable (void)
     {
         for (h = 0; h <= 23; h++)
         {
-            gchar *s = (gchar *) g_new0 (gchar, 5);
-            s = g_strdup_printf ("%c", v * 24 + h + 32);
+	    char *s;
+	    int ch = v * 24 + h + 32;
+	    if (ch == 127)
+		    s = g_strdup (_("del"));
+	    else
+		    s = g_strdup_printf ("%c", (char)ch);
 
             button = gtk_button_new_with_label (s);
             mainapp->buttons = g_list_append (mainapp->buttons, button);
@@ -83,8 +89,13 @@ create_chartable (void)
     {
         for (h = 0; h <= 23; h++)
         {
-            gchar *s = (gchar *) g_new0 (gchar, 5);
-            s = g_strdup_printf ("%c", v * 24 + h + 161);
+	    char *s;
+	    int ch = v * 24 + h + 161;
+
+	    if (ch > 0xff)
+		    continue;
+
+            s = g_strdup_printf ("%c", (char)ch);
 
             button = gtk_button_new_with_label (s);
             mainapp->buttons = g_list_append (mainapp->buttons, button);
@@ -195,13 +206,16 @@ main_app_create_ui (MainApp *app)
     /* The character table */
     {
         GtkWidget *tmp;
+	GdkFont *font;
 
         tmp = gtk_button_new ();
         gtk_widget_ensure_style(tmp);
         app->btnstyle = gtk_style_copy (gtk_widget_get_style (tmp));
-        app->btnstyle->font = gdk_fontset_load (
-          "-*-helvetica-medium-r-normal-*-12-*-*-*-p-*-*-*"
+        font = gdk_fontset_load (
+          _("-*-helvetica-medium-r-normal-*-12-*-*-*-p-*-*-*,*-r-*")
         );
+	if (font != NULL)
+		app->btnstyle->font = font;
         gtk_widget_destroy (tmp);
 
         chartable = create_chartable ();
@@ -236,18 +250,21 @@ main_app_create_ui (MainApp *app)
         GtkStyle *style;
         GdkColor black = {0, 0, 0, 0};
         GdkColor white = {0, 0xFFFF, 0xFFFF, 0xFFFF};
+	GdkFont *font;
         guint8 i;
 
         viewport = gtk_viewport_new (NULL, NULL);
-        gdk_color_alloc (gdk_colormap_get_system (), &black);
-        gdk_color_alloc (gdk_colormap_get_system (), &white);
+        gdk_color_alloc (gtk_widget_get_colormap (viewport), &black);
+        gdk_color_alloc (gtk_widget_get_colormap (viewport), &white);
 
         style = gtk_style_copy (gtk_widget_get_style (viewport));
         for (i = 0; i < 5; i++) style->fg[i] = white;
         for (i = 0; i < 5; i++) style->bg[i] = black;
-        style->font = gdk_fontset_load (
-          "-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+        font = gdk_fontset_load (
+          _("-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*")
         );
+	if (font != NULL)
+		style->font = font;
 
         gtk_widget_set_style (viewport, style);
         gtk_box_pack_start (GTK_BOX (vbox2), viewport, FALSE, TRUE, 0);
@@ -323,4 +340,4 @@ main_app_destroy (MainApp *obj)
 }
 
 
-#endif _INTERFACE_C_
+#endif /* _INTERFACE_C_ */

@@ -1,6 +1,6 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p5
 
-dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -10,9 +10,101 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
+
+AC_DEFUN(XML_I18N_TOOLS_NEWER_THAN_0_9,[ true ])
+
+dnl AC_PROG_XML_I18N_TOOLS([MINIMUM-VERSION [,"G2" if always using --utf8] ])
+# serial 1 AC_PROG_XML_I18N_TOOLS
+AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
+[
+  AC_DEFUN(X18T_PFORG1,  dnl and -u for G2
+        ifelse([$2],[G2],[ -u ], [ -p ]))
+  AC_DEFUN(X18T_XML_KIND, 
+        ifelse([$2],[G2],[ -u ],[ $(XML_I18N_XML_KIND) ]))
+  AC_DEFUN(X18T_KEYS_KIND, 
+        ifelse([$2],[G2],[ -u ],[ $(XML_I18N_KEYS_KIND) ]))
+
+  XML_I18N_MERGE_DESKTOP_RULE='%.desktop:   %.desktop.in   $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+XML_I18N_MERGE_DIRECTORY_RULE='%.directory: %.directory.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+     XML_I18N_MERGE_KEYS_RULE='%.keys:      %.keys.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -k X18T_KEYS_KIND'
+      XML_I18N_MERGE_OAF_RULE='%.oaf:       %.oaf.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -p'
+     XML_I18N_MERGE_PONG_RULE='%.pong:      %.pong.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_PFORG1'
+   XML_I18N_MERGE_SERVER_RULE='%.server:    %.server.in    $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -u'
+    XML_I18N_MERGE_SHEET_RULE='%.sheet:     %.sheet.in     $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x -u'
+XML_I18N_MERGE_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
+      XML_I18N_MERGE_XML_RULE='%.xml:       %.xml.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_XML_KIND'
+
+AC_SUBST(XML_I18N_MERGE_DESKTOP_RULE)
+AC_SUBST(XML_I18N_MERGE_DIRECTORY_RULE)
+AC_SUBST(XML_I18N_MERGE_KEYS_RULE)
+AC_SUBST(XML_I18N_MERGE_OAF_RULE)
+AC_SUBST(XML_I18N_MERGE_PONG_RULE)
+AC_SUBST(XML_I18N_MERGE_SERVER_RULE)
+AC_SUBST(XML_I18N_MERGE_SHEET_RULE)
+AC_SUBST(XML_I18N_MERGE_SOUNDLIST_RULE)
+AC_SUBST(XML_I18N_MERGE_XML_RULE)
+
+# Use the tools built into the package, not the ones that are installed.
+
+XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
+AC_SUBST(XML_I18N_EXTRACT)dnl
+
+XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
+AC_SUBST(XML_I18N_MERGE)dnl
+
+XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
+AC_SUBST(XML_I18N_UPDATE)dnl
+
+AC_PATH_PROG(INTLTOOL_PERL, perl)
+if test -z "$INTLTOOL_PERL"; then
+   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
+fi
+if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
+fi
+
+dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
+dnl  AC_OUTPUT
+AC_OUTPUT_COMMANDS([
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-extract.in > xml-i18n-extract.out
+if cmp -s xml-i18n-extract xml-i18n-extract.out 2>/dev/null; then
+  rm -f xml-i18n-extract.out
+else
+  mv -f xml-i18n-extract.out xml-i18n-extract
+fi
+chmod ugo+x xml-i18n-extract
+chmod u+w xml-i18n-extract
+
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-merge.in > xml-i18n-merge.out
+if cmp -s xml-i18n-merge xml-i18n-merge.out 2>/dev/null; then
+  rm -f xml-i18n-merge.out
+else
+  mv -f xml-i18n-merge.out xml-i18n-merge
+fi
+chmod ugo+x xml-i18n-merge
+chmod u+w xml-i18n-merge
+
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-update.in > xml-i18n-update.out
+if cmp -s xml-i18n-update xml-i18n-update.out 2>/dev/null; then
+  rm -f xml-i18n-update.out
+else
+  mv -f xml-i18n-update.out xml-i18n-update
+fi
+chmod ugo+x xml-i18n-update
+chmod u+w xml-i18n-update
+], INTLTOOL_PERL=${INTLTOOL_PERL})
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
+])
+
+dnl old names
+AC_DEFUN(AM_PROG_XML_I18N_TOOLS, [indir([AC_PROG_XML_I18N_TOOLS])])dnl
+
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
-AC_DEFUN(AM_CONFIG_HEADER,
+AC_DEFUN([AM_CONFIG_HEADER],
 [AC_PREREQ([2.12])
 AC_CONFIG_HEADER([$1])
 dnl When config.status generates a header, we must update the stamp-h file.
@@ -42,7 +134,7 @@ changequote([,]))])
 dnl Usage:
 dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
-AC_DEFUN(AM_INIT_AUTOMAKE,
+AC_DEFUN([AM_INIT_AUTOMAKE],
 [AC_REQUIRE([AC_PROG_INSTALL])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
@@ -70,7 +162,7 @@ AC_REQUIRE([AC_PROG_MAKE_SET])])
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN(AM_SANITY_CHECK,
+AC_DEFUN([AM_SANITY_CHECK],
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -111,7 +203,7 @@ AC_MSG_RESULT(yes)])
 
 dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
 dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
+AC_DEFUN([AM_MISSING_PROG],
 [AC_MSG_CHECKING(for working $2)
 # Run test in a subshell; some versions of sh will print an error if
 # an executable is not found, even if stderr is redirected.
@@ -130,7 +222,7 @@ AC_SUBST($1)])
 
 # serial 1
 
-AC_DEFUN(AM_MAINTAINER_MODE,
+AC_DEFUN([AM_MAINTAINER_MODE],
 [AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
   dnl maintainer-mode is disabled by default
   AC_ARG_ENABLE(maintainer-mode,
@@ -147,7 +239,7 @@ AC_DEFUN(AM_MAINTAINER_MODE,
 
 # Define a conditional.
 
-AC_DEFUN(AM_CONDITIONAL,
+AC_DEFUN([AM_CONDITIONAL],
 [AC_SUBST($1_TRUE)
 AC_SUBST($1_FALSE)
 if $2; then
@@ -292,6 +384,8 @@ AC_DEFUN([GNOME_INIT_HOOK],[
 	      *)
 		AC_MSG_RESULT(unknown library)
 	    esac
+            EXTRA_INCLUDEDIR=`$GNOME_CONFIG --cflags $i`
+            GNOME_INCLUDEDIR="$GNOME_INCLUDEDIR $EXTRA_INCLUDEDIR"
 	  done
 	fi
 ])
@@ -374,10 +468,28 @@ AC_DEFUN([GNOME_ORBIT_CHECK], [
 	GNOME_ORBIT_HOOK([],failure)
 ])
 
+#serial 1
+# This test replaces the one in autoconf.
+# Currently this macro should have the same name as the autoconf macro
+# because gettext's gettext.m4 (distributed in the automake package)
+# still uses it.  Otherwise, the use in gettext.m4 makes autoheader
+# give these diagnostics:
+#   configure.in:556: AC_TRY_COMPILE was called before AC_ISC_POSIX
+#   configure.in:556: AC_TRY_RUN was called before AC_ISC_POSIX
+
+undefine([AC_ISC_POSIX])
+
+AC_DEFUN([AC_ISC_POSIX],
+  [
+    dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
+    AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
+  ]
+)
+
 
 dnl AM_PROG_LEX
 dnl Look for flex, lex or missing, then run AC_PROG_LEX and AC_DECL_YYTEXT
-AC_DEFUN(AM_PROG_LEX,
+AC_DEFUN([AM_PROG_LEX],
 [missing_dir=ifelse([$1],,`cd $ac_aux_dir && pwd`,$1)
 AC_CHECK_PROGS(LEX, flex lex, "$missing_dir/missing flex")
 AC_PROG_LEX
@@ -778,7 +890,9 @@ AC_DEFUN([GNOME_PTHREAD_CHECK],[
 	AC_CHECK_LIB(pthread, pthread_create, PTHREAD_LIB="-lpthread",
 		[AC_CHECK_LIB(pthreads, pthread_create, PTHREAD_LIB="-lpthreads",
 		    [AC_CHECK_LIB(c_r, pthread_create, PTHREAD_LIB="-lc_r",
-			[AC_CHECK_FUNC(pthread_create)]
+			[AC_CHECK_LIB(pthread, __pthread_attr_init_system, PTHREAD_LIB="-lpthread",
+				[AC_CHECK_FUNC(pthread_create)]
+			)]
 		    )]
 		)]
 	)
@@ -893,6 +1007,7 @@ AC_DEFUN([AM_GNOME_WITH_NLS],
     AC_MSG_RESULT($USE_NLS)
     AC_SUBST(USE_NLS)
 
+    BUILD_INCLUDED_LIBINTL=no
     USE_INCLUDED_LIBINTL=no
 
     dnl If we use NLS figure out what method
@@ -1069,6 +1184,7 @@ AC_DEFUN([AM_GNOME_WITH_NLS],
     done
 
     dnl Make all variables we use known to autoconf.
+    AC_SUBST(BUILD_INCLUDED_LIBINTL)
     AC_SUBST(USE_INCLUDED_LIBINTL)
     AC_SUBST(CATALOGS)
     AC_SUBST(CATOBJEXT)
@@ -1211,15 +1327,19 @@ strdup __argz_count __argz_stringify __argz_next])
 # Ulrich Drepper <drepper@cygnus.com>, 1996.
 #
 # This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU Public License
-# but which still want to provide support for the GNU gettext functionality.
-# Please note that the actual code is *not* freely available.
+# be used in projects which are not available under the GNU General Public
+# License or the GNU Library General Public License but which still want
+# to provide support for the GNU gettext functionality.
+# Please note that the actual code of the GNU gettext library is covered
+# by the GNU Library General Public License, and the rest of the GNU
+# gettext package package is covered by the GNU General Public License.
+# They are *not* in the public domain.
 
-# serial 1
+# serial 2
 
 dnl AM_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-AC_DEFUN(AM_PATH_PROG_WITH_TEST,
+AC_DEFUN([AM_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -1247,7 +1367,7 @@ ifelse([$4], , , [  test -z "[$]ac_cv_path_$1" && ac_cv_path_$1="$4"
   ;;
 esac])dnl
 $1="$ac_cv_path_$1"
-if test -n "[$]$1"; then
+if test ifelse([$4], , [-n "[$]$1"], ["[$]$1" != "$4"]); then
   AC_MSG_RESULT([$]$1)
 else
   AC_MSG_RESULT(no)
@@ -1259,19 +1379,24 @@ AC_SUBST($1)dnl
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
 #
 # This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU Public License
-# but which still want to provide support for the GNU gettext functionality.
-# Please note that the actual code is *not* freely available.
+# be used in projects which are not available under the GNU General Public
+# License or the GNU Library General Public License but which still want
+# to provide support for the GNU gettext functionality.
+# Please note that the actual code of the GNU gettext library is covered
+# by the GNU Library General Public License, and the rest of the GNU
+# gettext package package is covered by the GNU General Public License.
+# They are *not* in the public domain.
 
-# serial 1
+# serial 2
 
-AC_DEFUN(AM_LC_MESSAGES,
+AC_DEFUN([AM_LC_MESSAGES],
   [if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
       [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
        am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
     if test $am_cv_val_LC_MESSAGES = yes; then
-      AC_DEFINE(HAVE_LC_MESSAGES)
+      AC_DEFINE(HAVE_LC_MESSAGES, 1,
+        [Define if your <locale.h> file defines LC_MESSAGES.])
     fi
   fi])
 
@@ -1283,6 +1408,18 @@ dnl
 
 AC_DEFUN([GNOME_CHECK_GUILE],
 [
+dnl	AC_MSG_WARN([Withval is: $withval])
+	guile_msg = 'Huh?'
+if test x$withval = xno ; then
+	guile_msg = 'disabled'
+	GUILE_LIBS=
+	GUILE_INCS=
+	AC_SUBST(GUILE_LIBS)
+	AC_SUBST(GUILE_INCS)
+	AM_CONDITIONAL(GUILE, /bin/false)
+else
+	guile_msg="no"
+
 	saved_ldflags="$LDFLAGS"
 	saved_cppflags="$CPPFLAGS"
 	LDFLAGS="$LDFLAGS $GNOME_LIBDIR"
@@ -1377,6 +1514,8 @@ AC_DEFUN([GNOME_CHECK_GUILE],
 	])
 	AC_MSG_RESULT($ac_cv_guile_found)
 
+	guile_msg=$ac_cv_guile_found
+
 	if test x$ac_cv_guile_found = xno ; then
 		if test x$1 = xfail ; then
 		  AC_MSG_ERROR(Can not find Guile on this system)
@@ -1393,6 +1532,7 @@ AC_DEFUN([GNOME_CHECK_GUILE],
 
 	AC_SUBST(GUILE_LIBS)
 	AM_CONDITIONAL(GUILE, test x$ac_cv_guile_found = xyes)
+fi
 ])
 
 # Configure paths for GNOME-PRINT
@@ -1417,10 +1557,10 @@ AC_DEFUN([AM_PATH_GNOME_PRINT],
   else
     AC_MSG_CHECKING(for GNOME-PRINT - version >= $min_version)
     if `$GNOME_CONFIG --libs print > /dev/null 2>&1`; then
-      rqmajor=$(echo "$1" | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\1/')
-      rqminor=$(echo "$1" | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\2/')
-      major=$($GNOME_CONFIG --modversion print | sed -e 's/gnome-print-//' | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\1/')
-      minor=$($GNOME_CONFIG --modversion print | sed -e 's/gnome-print-//' | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\2/')
+      rqmajor=`echo "$min_version" | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\1/'`
+      rqminor=`echo "$min_version" | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\2/'`
+      major=`$GNOME_CONFIG --modversion print | sed -e 's/gnome-print-//' | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\1/'`
+      minor=`$GNOME_CONFIG --modversion print | sed -e 's/gnome-print-//' | sed -e 's/cvs-//' | sed 's/\([[0-9]]*\)\.\([[0-9]]*\).*/\2/'`
       if test "$major" -ge "$rqmajor"; then
         if test "$major" -gt "$rqmajor"; then
           AC_MSG_RESULT("found $major.$minor")
@@ -1457,6 +1597,39 @@ AC_DEFUN([AM_PATH_GNOME_PRINT],
 
 AC_DEFUN([GNOME_PRINT_CHECK], [
 	AM_PATH_GNOME_PRINT($1,,[AC_MSG_ERROR(GNOME-PRINT not found or wrong version)])
+])
+
+dnl
+dnl GNOME_XML_HOOK (script-if-xml-found, failflag)
+dnl
+dnl If failflag is "failure", script aborts due to lack of XML
+dnl 
+dnl Check for availability of the libxml library
+dnl the XML parser uses libz if available too
+dnl
+
+AC_DEFUN([GNOME_XML_HOOK],[
+	AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
+	if test "$GNOME_CONFIG" = no; then
+		if test x$2 = xfailure; then
+			AC_MSG_ERROR(Could not find gnome-config)
+		fi
+	fi
+	GNOME_XML_CFLAGS=`$GNOME_CONFIG --cflags xml`
+	AC_SUBST(GNOME_XML_CFLAGS)
+	AC_CHECK_LIB(xml, xmlNewDoc, [
+		$1
+		GNOME_XML_LIB=`$GNOME_CONFIG --libs xml`
+	], [
+		if test x$2 = xfailure; then 
+			AC_MSG_ERROR(Could not link sample xml program)
+		fi
+	], `$GNOME_CONFIG --libs xml`)
+	AC_SUBST(GNOME_XML_LIB)
+])
+
+AC_DEFUN([GNOME_XML_CHECK], [
+	GNOME_XML_HOOK([],failure)
 ])
 
 dnl
@@ -1996,36 +2169,285 @@ changequote([,])dnl
 
 
 
+dnl AM_PATH_OAF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl Test for OAF, and define OAF_CFLAGS and OAF_LIBS
 dnl
-dnl GNOME_XML_HOOK (script-if-xml-found, failflag)
+AC_DEFUN(AM_PATH_OAF,
+[dnl 
+dnl Get the cflags and libraries from the oaf-config script
 dnl
-dnl If failflag is "failure", script aborts due to lack of XML
-dnl 
-dnl Check for availability of the libxml library
-dnl the XML parser uses libz if available too
-dnl
+AC_ARG_WITH(oaf-prefix,[  --with-oaf-prefix=PFX   Prefix where OAF is installed (optional)],
+            oaf_config_prefix="$withval", oaf_config_prefix="")
+AC_ARG_WITH(oaf-exec-prefix,[  --with-oaf-exec-prefix=PFX Exec prefix where OAF is installed (optional)],
+            oaf_config_exec_prefix="$withval", oaf_config_exec_prefix="")
+AC_ARG_ENABLE(oaftest, [  --disable-oaftest       Do not try to compile and run a test OAF program],
+		    , enable_oaftest=yes)
 
-AC_DEFUN([GNOME_XML_HOOK],[
-	AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
-	if test "$GNOME_CONFIG" = no; then
-		if test x$2 = xfailure; then
-			AC_MSG_ERROR(Could not find gnome-config)
-		fi
-	fi
-	GNOME_XML_CFLAGS=`$GNOME_CONFIG --cflags xml`
-	AC_SUBST(GNOME_XML_CFLAGS)
-	AC_CHECK_LIB(xml, xmlNewDoc, [
-		$1
-		GNOME_XML_LIB=`$GNOME_CONFIG --libs xml`
-	], [
-		if test x$2 = xfailure; then 
-			AC_MSG_ERROR(Could not link sample xml program)
-		fi
-	], `$GNOME_CONFIG --libs xml`)
-	AC_SUBST(GNOME_XML_LIB)
+  oaf_config_args="$oaf_config_args $4"
+
+  if test x$oaf_config_exec_prefix != x ; then
+     oaf_config_args="$oaf_config_args --exec-prefix=$oaf_config_exec_prefix"
+     if test x${OAF_CONFIG+set} != xset ; then
+        OAF_CONFIG=$oaf_config_exec_prefix/bin/oaf-config
+     fi
+  fi
+  if test x$oaf_config_prefix != x ; then
+     oaf_config_args="$oaf_config_args --prefix=$oaf_config_prefix"
+     if test x${OAF_CONFIG+set} != xset ; then
+        OAF_CONFIG=$oaf_config_prefix/bin/oaf-config
+     fi
+  fi
+
+  AC_PATH_PROG(OAF_CONFIG, oaf-config, no)
+  min_oaf_version=ifelse([$1], , 0.1, $1)
+  AC_MSG_CHECKING(for OAF - version >= $min_oaf_version)
+  no_oaf=""
+  if test "$OAF_CONFIG" = "no" ; then
+    no_oaf=yes
+  else
+    OAF_CFLAGS="`$OAF_CONFIG $oaf_config_args --cflags`"
+    OAF_LIBS="`$OAF_CONFIG $oaf_config_args --libs`"
+    oaf_config_major_version=`$OAF_CONFIG $oaf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+    oaf_config_minor_version=`$OAF_CONFIG $oaf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+    oaf_config_micro_version=`$OAF_CONFIG $oaf_config_args --version | \
+	   sed -e 's,^[[^0-9\.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+    if test "x$enable_oaftest" = "xyes" ; then
+      ac_save_CFLAGS="$CFLAGS"
+      ac_save_LIBS="$LIBS"
+      CFLAGS="$CFLAGS $OAF_CFLAGS"
+      LIBS="$OAF_LIBS $LIBS"
+dnl
+dnl Now check if the installed OAF is sufficiently new. (Also sanity
+dnl checks the results of oaf-config to some extent
+dnl
+      rm -f conf.oaftest
+      AC_TRY_RUN([
+#include <liboaf/liboaf.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int 
+main ()
+{
+  int major, minor, micro;
+  char *tmp_version;
+
+  system ("touch conf.oaftest");
+
+  /* HP/UX 9 (%@#!) writes to sscanf strings */
+  tmp_version = g_strdup("$min_oaf_version");
+  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
+     printf("%s, bad version string\n", "$min_oaf_version");
+     exit(1);
+   }
+
+  if ((liboaf_major_version != $oaf_config_major_version) ||
+      (liboaf_minor_version != $oaf_config_minor_version) ||
+      (liboaf_micro_version != $oaf_config_micro_version))
+    {
+      printf("\n*** 'oaf-config --version' returned %d.%d.%d, but OAF (%d.%d.%d)\n", 
+             $oaf_config_major_version, $oaf_config_minor_version, $oaf_config_micro_version,
+             liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
+      printf ("*** was found! If oaf-config was correct, then it is best\n");
+      printf ("*** to remove the old version of OAF. You may also be able to fix the error\n");
+      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
+      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
+      printf("*** required on your system.\n");
+      printf("*** If oaf-config was wrong, set the environment variable OAF_CONFIG\n");
+      printf("*** to point to the correct copy of oaf-config, and remove the file config.cache\n");
+      printf("*** before re-running configure\n");
+    } 
+#if defined (OAF_MAJOR_VERSION) && defined (OAF_MINOR_VERSION) && defined (OAF_MICRO_VERSION)
+  else if ((liboaf_major_version != OAF_MAJOR_VERSION) ||
+	   (liboaf_minor_version != OAF_MINOR_VERSION) ||
+           (liboaf_micro_version != OAF_MICRO_VERSION))
+    {
+      printf("*** OAF header files (version %d.%d.%d) do not match\n",
+	     OAF_MAJOR_VERSION, OAF_MINOR_VERSION, OAF_MICRO_VERSION);
+      printf("*** library (version %d.%d.%d)\n",
+	     liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
+    }
+#endif /* defined (OAF_MAJOR_VERSION) ... */
+  else
+    {
+      if ((liboaf_major_version > major) ||
+        ((liboaf_major_version == major) && (liboaf_minor_version > minor)) ||
+        ((liboaf_major_version == major) && (liboaf_minor_version == minor) && (liboaf_micro_version >= micro)))
+      {
+        return 0;
+       }
+     else
+      {
+        printf("\n*** An old version of OAF (%d.%d.%d) was found.\n",
+               liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
+        printf("*** You need a version of OAF newer than %d.%d.%d. The latest version of\n",
+	       major, minor, micro);
+        printf("*** OAF is always available from ftp://ftp.gnome.org/pub/GNOME/sources/oaf/.\n");
+        printf("***\n");
+        printf("*** If you have already installed a sufficiently new version, this error\n");
+        printf("*** probably means that the wrong copy of the oaf-config shell script is\n");
+        printf("*** being found. The easiest way to fix this is to remove the old version\n");
+        printf("*** of OAF, but you can also set the OAF_CONFIG environment to point to the\n");
+        printf("*** correct copy of oaf-config. (In this case, you will have to\n");
+        printf("*** modify your LD_LIBRARY_PATH enviroment variable, or edit /etc/ld.so.conf\n");
+        printf("*** so that the correct libraries are found at run-time))\n");
+      }
+    }
+  return 1;
+}
+],, no_oaf=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+       CFLAGS="$ac_save_CFLAGS"
+       LIBS="$ac_save_LIBS"
+     fi
+  fi
+  if test "x$no_oaf" = x ; then
+     AC_MSG_RESULT(yes)
+     ifelse([$2], , :, [$2])     
+  else
+     AC_MSG_RESULT(no)
+     if test "$OAF_CONFIG" = "no" ; then
+       echo "*** The oaf-config script installed by OAF could not be found"
+       echo "*** If OAF was installed in PREFIX, make sure PREFIX/bin is in"
+       echo "*** your path, or set the OAF_CONFIG environment variable to the"
+       echo "*** full path to oaf-config."
+     else
+       if test -f conf.oaftest ; then
+        :
+       else
+          echo "*** Could not run OAF test program, checking why..."
+          CFLAGS="$CFLAGS $OAF_CFLAGS"
+          LIBS="$LIBS $OAF_LIBS"
+          AC_TRY_LINK([
+#include <liboaf/liboaf.h>
+#include <stdio.h>
+],      [ return ((liboaf_major_version) || (liboaf_minor_version) || (liboaf_micro_version)); ],
+        [ echo "*** The test program compiled, but did not run. This usually means"
+          echo "*** that the run-time linker is not finding OAF or finding the wrong"
+          echo "*** version of OAF. If it is not finding OAF, you'll need to set your"
+          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
+          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
+          echo "*** is required on your system"
+	  echo "***"
+          echo "*** If you have an old version installed, it is best to remove it, although"
+          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
+          echo "***"
+          echo "*** If you have a RedHat 5.0 system, you should remove the OAF package that"
+          echo "*** came with the system with the command"
+          echo "***"
+          echo "***    rpm --erase --nodeps oaf oaf-devel" ],
+        [ echo "*** The test program failed to compile or link. See the file config.log for the"
+          echo "*** exact error that occured. This usually means OAF was incorrectly installed"
+          echo "*** or that you have moved OAF since it was installed. In the latter case, you"
+          echo "*** may want to edit the oaf-config script: $OAF_CONFIG" ])
+          CFLAGS="$ac_save_CFLAGS"
+          LIBS="$ac_save_LIBS"
+       fi
+     fi
+     OAF_CFLAGS=""
+     OAF_LIBS=""
+     ifelse([$3], , :, [$3])
+  fi
+  AC_SUBST(OAF_CFLAGS)
+  AC_SUBST(OAF_LIBS)
+  rm -f conf.oaftest
 ])
 
-AC_DEFUN([GNOME_XML_CHECK], [
-	GNOME_XML_HOOK([],failure)
+dnl AM_PATH_GCONF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl Test for GCONF, and define GCONF_CFLAGS and GCONF_LIBS
+dnl
+AC_DEFUN(AM_PATH_GCONF,
+[dnl 
+dnl Get the cflags and libraries from the gconf-config script
+dnl
+AC_ARG_WITH(gconf-prefix,[  --with-gconf-prefix=PFX   Prefix where GCONF is installed (optional)],
+            gconf_config_prefix="$withval", gconf_config_prefix="")
+AC_ARG_WITH(gconf-exec-prefix,[  --with-gconf-exec-prefix=PFX Exec prefix where GCONF is installed (optional)],
+            gconf_config_exec_prefix="$withval", gconf_config_exec_prefix="")
+AC_ARG_ENABLE(gconftest, [  --disable-gconftest       Do not try to compile and run a test GCONF program],
+		    , enable_gconftest=yes)
+
+  gconf_config_args="$gconf_config_args"
+
+  if test x$gconf_config_exec_prefix != x ; then
+     gconf_config_args="$gconf_config_args --exec-prefix=$gconf_config_exec_prefix"
+     if test x${GCONF_CONFIG+set} != xset ; then
+        GCONF_CONFIG=$gconf_config_exec_prefix/bin/gconf-config
+     fi
+  fi
+  if test x$gconf_config_prefix != x ; then
+     gconf_config_args="$gconf_config_args --prefix=$gconf_config_prefix"
+     if test x${GCONF_CONFIG+set} != xset ; then
+        GCONF_CONFIG=$gconf_config_prefix/bin/gconf-config
+     fi
+  fi
+
+  AC_PATH_PROG(GCONF_CONFIG, gconf-config, no)
+  min_gconf_version=ifelse([$1], , 0.5, $1)
+  AC_MSG_CHECKING(for GCONF - version >= $min_gconf_version)
+  no_gconf=""
+  if test "$GCONF_CONFIG" = "no" ; then
+    no_gconf=yes
+  else
+    GCONF_CFLAGS="`$GCONF_CONFIG  $gconf_config_args --cflags $4`"
+    GCONF_LIBS="`$GCONF_CONFIG  $gconf_config_args --libs $4`"
+    gconf_config_major_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+    gconf_config_minor_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+    gconf_config_micro_version=`$GCONF_CONFIG $gconf_config_args --version | \
+	   sed -e 's,^[[^0-9\.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+  fi
+  if test "x$no_gconf" = x ; then
+     AC_MSG_RESULT(yes)
+     ifelse([$2], , :, [$2])     
+  else
+     AC_MSG_RESULT(no)
+     if test "$GCONF_CONFIG" = "no" ; then
+       echo "*** The gconf-config script installed by GCONF could not be found"
+       echo "*** If GCONF was installed in PREFIX, make sure PREFIX/bin is in"
+       echo "*** your path, or set the GCONF_CONFIG environment variable to the"
+       echo "*** full path to gconf-config."
+     else
+	:
+     fi
+     GCONF_CFLAGS=""
+     GCONF_LIBS=""
+     ifelse([$3], , :, [$3])
+  fi
+  AC_SUBST(GCONF_CFLAGS)
+  AC_SUBST(GCONF_LIBS)
+  rm -f conf.gconftest
+])
+
+dnl AM_GCONF_SOURCE
+dnl Define GCONF_SCHEMA_CONFIG_SOURCE
+dnl
+AC_DEFUN(AM_GCONF_SOURCE,
+[
+  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
+    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool --get-default-source`
+  else
+    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
+  fi
+
+  AC_ARG_WITH(gconf-source, 
+  [  --with-gconf-source=sourceaddress      Config database for installing schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
+
+  AC_SUBST(GCONF_SCHEMA_CONFIG_SOURCE)
+  AC_MSG_RESULT("Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation")
+
+  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
+    GCONF_SCHEMA_FILE_DIR=$sysconfdir/gconf/schemas/
+  else
+    GCONF_SCHEMA_FILE_DIR=$GCONF_SCHEMA_FILE_DIR
+  fi
+
+  AC_ARG_WITH(gconf-schema-file-dir, 
+  [  --with-gconf-schema-file-dir=dir        Directory for installing schema files.],GCONF_SCHEMA_FILE_DIR="$withval",)
+
+  AC_SUBST(GCONF_SCHEMA_FILE_DIR)
+  AC_MSG_RESULT("Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files")
 ])
 

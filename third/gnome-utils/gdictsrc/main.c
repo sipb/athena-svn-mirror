@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1.1.1 2001-05-02 20:45:09 ghudson Exp $ */
+/* $Id: main.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -89,7 +89,11 @@ int main (int argc, char *argv[])
     gdict_app_create ();
     gdict_pref_load ();
     if ((gdict_init_context () < 0) && (gdict_applet_toggle == FALSE))
-	    return 0;
+      {
+            GtkWidget *dialog = gnome_error_dialog (_("Couldn't start the dictionary; most likely, http://www.dict.org could not be contacted."));
+            gnome_dialog_run (GNOME_DIALOG (dialog));
+	    return 1;
+      }
     /* If we can not find the context then we may as well just quit
      * since nothing is usable anymore. But not if we're an applet */
     defbox->context = context;

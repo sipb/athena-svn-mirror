@@ -4,16 +4,13 @@
 >Modo de búsqueda rápido</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Herramienta de búsqueda de Gnome"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Criterios de búsqueda"
-HREF="criteria.html"><LINK
-REL="NEXT"
-TITLE="Autores"
-HREF="authors.html"></HEAD
+HREF="criteria.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +49,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="authors.html"
->Siguiente</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,10 +60,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="LOCATE"
+NAME="locate"
 >Modo de búsqueda rápido</A
 ></H1
-><P
+>    
+    <P
 > 
 Esta sección describe el modo de búsqueda rápido de <TT
 CLASS="APPLICATION"
@@ -81,37 +76,43 @@ CLASS="GUILABEL"
 >Búsqueda rápida (locate)</B
 ></TT
 >, mostrada en
-<A
-HREF="locate.html#LOCATEWIN"
->Figura 4</A
->.
+.
       </P
-><DIV
+>
+
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="LOCATEWIN"
+NAME="locatewin"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/locate.png"></P
-><P
+>
+    
+   <P
 ><B
 >Figura 4. Ventana de búsqueda rápida</B
 ></P
 ></DIV
-><P
+>
+
+    <P
 >En el modo de búsqueda rápida, <TT
 CLASS="APPLICATION"
 >herramienta de búsqueda de Gnome</TT
 > no busca en ese momento un fichero en el disco
-&#8212;, si no que usa una base de datos especial que contiene los nombres de todos los
+, si no que usa una base de datos especial que contiene los nombres de todos los
 ficheros del sistema. Esto hace la búsqueda mucho mas rápida. Sin embargo, esto 
 significa también que la única búsqueda que se puede hacer es la de nombres de ficheros.
 Mas importante aun, esta búsqueda no encontrara ficheros que hayan sido añadidos después
 de la ultima actualización de la base de datos (en muchos sistemas, se actualiza diariamente,
-normalmente por la noche &#8212; , para mas información léase mas abajo).
+normalmente por la noche  , para mas información léase mas abajo).
     </P
-><P
+>
+    <P
 >Para localizar un fichero usando el modo de búsqueda rápido, simplemente teclee
 una parte del nombre del fichero en el campo <TT
 CLASS="GUILABEL"
@@ -127,13 +128,14 @@ CLASS="USERINPUT"
 ></TT
 > en ese campo.
 Esto mostrara también todos aquellos ficheros que contengan la cadena "searchtool"
-en su ruta completa &#8212; en particular, todos los ficheros localizados en el directorio
+en su ruta completa  en particular, todos los ficheros localizados en el directorio
 <TT
 CLASS="FILENAME"
 >/usr/share/help/gsearchtool</TT
 >.
     </P
-><P
+>
+    <P
 >Para restringir la búsqueda a un subdirectorio, puede usar el nombre del directorio
 en combinación con comodines. Por ejemplo, para hacer una búsqueda rápida de todos los ficheros
 con extensión <TT
@@ -154,7 +156,9 @@ CLASS="GUILABEL"
 ></TT
 >.
     </P
-><P
+>
+
+    <P
 >El modo de búsqueda rápido es actualmente una interfaz para el comando 
 <B
 CLASS="COMMAND"
@@ -162,64 +166,28 @@ CLASS="COMMAND"
 >, así que si necesita una información mas detallada, 
 puede leer la pagina de manual apropiada.
     </P
-><DIV
+>
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="LOCATEDB"
+NAME="locatedb"
 >La base de datos de locate</A
 ></H2
-><P
+>      
+      <P
 >Esta sección discute la actualización de la base de datos usado para las búsquedas
 rápidas. A no ser que sea administrador de sistemas o sienta curiosidad,
 no necesita leerla.
       </P
-><P
+>
+      <P
 >En la mayoría de los sistemas, la base de datos usada por el comando
 <B
 CLASS="COMMAND"
->locate</B
-> (y por tanto, por el modo de búsqueda rápido de
- <TT
-CLASS="APPLICATION"
->herramienta de búsqueda de Gnome</TT
->), se actualiza de forma diaria, normalmente por las noches. Esta 
-operación se realiza como una tarea <B
-CLASS="COMMAND"
->cron</B
-> &#8212; lea la
-pagina de manual de <B
-CLASS="COMMAND"
->cron</B
-> si no esta familiarizado con esta
-utilidad. Observe que si habitualmente apaga su ordenador por las noches, la
-base de datos no se actualizara. En ese caso, debería cambiar el momento 
-de actualización por omisión, bien editando manualmente <TT
-CLASS="FILENAME"
->/etc/crontab</TT
->,
-o bien usando una herramienta gráfica como <TT
-CLASS="APPLICATION"
->cromagnon</TT
->. Eso
-requiere privilegios de adminsitración de sistema (root).   
-      </P
-><P
->Puede también provocar la actualización de la base de datos de forma inmediata ejecutando
-el comando <B
-CLASS="COMMAND"
->updatedb</B
->. De nuevo, esto requiere privilegios de administrador
-de sistema (root). Sin ninguna opción, reconstruye la base de datos completa, para todos
-los ficheros del sistema. Dispone también de muchas opciones para la linea de ordenes 
-que permiten un ajuste fino (por ejemplo, indicándole que se salte ciertos directorios).
-Si necesita mas información, lea la pagina de manual de   
-      <B
-CLASS="COMMAND"
->updatedb</B
->.
-      </P
+></B
+></P
 ></DIV
 ></DIV
 ><DIV
@@ -252,10 +220,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="authors.html"
->Siguiente</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -272,7 +237,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Autores</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

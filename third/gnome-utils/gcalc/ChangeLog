@@ -1,3 +1,99 @@
+2001-09-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-calc.c: (display_expose), (create_button): Fixed 
+          buttons so that they expand/contract vertically. Fixed display
+	  so that numbers are always aligned to the right hand side. Maybe
+	  this should be using Pango for 2.0 :)
+
+2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* sr.c: Include <stdlib.h> to still a warning.
+	
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.
+
+2001-07-21 John Fleck <jfleck@inkstain.net>
+
+	*doc/de/gcalc.sgml
+	fixing invalid sgml
+
+Mon Jun 25 02:09:09 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am, sr.[ch], gcalc.c: Added X11R3 xcalc -analog slide
+	  rule mode, courtesy Jamie Zawinski <jwz@jwz.org>, (well it's
+	  mostly the original xcalc code, so it kind of sucks, needs
+	  to be ported to GTK+ and made not to not suck)
+
+Sun Jun 24 18:12:25 2001  George Lebl <jirka@5z.com>
+
+	* gnome-calc.c: Delete does CE/E, generalize INV creation a bit more,
+	  and 'i' is a shortcut to INV as in xcalc
+
+Sun Jun 24 17:49:56 2001  George Lebl <jirka@5z.com>
+
+	* gnome-calc.c: add keys for keypad without numlock, and Esc for AC.
+	  Also mark the font png translatable so that translators can make
+	  per locale fonts
+
+2001-06-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *: Added the below patch.
+	
+2001-03-17  Chema Celorio  <chema@celorio.com>
+
+	* gnome-calc.c: moved from gnome-libs into here.
+	backported it form GTK+2 (ifdef the two builds)
+	s/GnomeCalculator/GnomeCalc/g
+	s/gnome_calculator_/gnome_calc_/g
+	since we don't want to clash with the symbols in libgnomeui
+	(backspace_cb): implement
+	(key_press_event_cb): ditto
+	(gnome_calc_bind_extra_keys): ditto
+
+	* gnome-calc.h: ditto, add the header for _bind_extra_keys
+
+	* gcalc.c (main): after creating the gnome_calc, call
+	gnome_calc_bind_extra_keys
+
+	* Makefile.am (INCLUDES): add the pixbuf includes
+	(gcalc_LDADD): and LDADD
+	
+2001-06-05  Christian Rose  <menthos@menthos.com>
+
+	* gcalc.desktop: Modified sv translation.
+
+2001-05-30 John Fleck <jfleck@inkstain.net>
+
+	* gcalc.c - adding George's email address to the about box, fixing
+	bug #54152 
+
+2001-05-29  Matthias Warkus  <mawarkus@gnome.org>
+
+	* doc/Makefile.am: Added de to SUBDIRS
+	* doc/de/*: Added translation of documentation
+
+        Translation by Peter Hudec <PeterHudec@web.de>. Three cheers to
+	him.
+
+2001-05-16 Kevin Vandersloot <kfv101@psu.edu>
+
+       * gcalc.c : don't allow window to be sized smaller than default
+                   so buttons don't get too small 
+
+Wed Mar 21 15:16:34 2001  George Lebl <jirka@5z.com>
+
+	* doc/Makefile.am: remove es from SUBDIRS until it's ready
+
+2001-03-20 John Fleck <jfleck@swcp.com>
+
+	* adding omf file for Spanish docs. Makefile still needed (it
+	needs figures before I can integrate it)
+
+2001-03-20  Manuel de Vega Barreiro  <mbarreiro@red.madritel.es>
+
+	* Added Spanish translations.
+
 2001-02-20 John Fleck <jfleck@inkstain.net>
 
 	* update bugzilla reference in doc/C/gcalc.sgml and it/gcalc.sgml

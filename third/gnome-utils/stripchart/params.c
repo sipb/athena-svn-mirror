@@ -38,6 +38,53 @@ set_entry(GtkWidget *entry, const char *text)
 }
 
 static void
+set_color(ChartDatum *datum, char *color_name, int cnum)
+{
+  Chart *chart = datum->chart;
+
+  gdk_color_parse(color_name, &datum->gdk_color[cnum]);
+  gdk_color_alloc(chart->colormap, &datum->gdk_color[cnum]);
+  datum->gdk_gc[cnum] = gdk_gc_new(GTK_WIDGET(chart)->window);
+  gdk_gc_set_foreground(datum->gdk_gc[cnum], &datum->gdk_color[cnum]);
+}
+
+static void
+on_color_set(GnomeColorPicker *picker,
+  guint red, guint grn, guint blu, guint alpha, Param_page *page)
+{
+  int cnum;
+  char color_name[20];
+  sprintf(color_name, "#%04x%04x%04x", red, grn, blu);
+
+  for (cnum = 0; cnum <= page->colors; cnum++)
+    if (GNOME_COLOR_PICKER(page->color[cnum]) == picker)
+      break;
+
+  if (cnum < page->colors && page->strip_data && page->pen_data)
+    {
+      set_color(page->strip_data, color_name, cnum);
+      set_color(page->pen_data, color_name, cnum);
+    }
+}
+
+static void
+add_color(Param_page *page)
+{
+  if (page->colors <= page->shown)
+    {
+      page->color = realloc(page->color,
+	(page->colors + 1) * sizeof(*page->color));
+      page->color[page->colors] = gnome_color_picker_new();
+      gtk_box_pack_start(GTK_BOX(page->color_hbox),
+	page->color[page->colors], FALSE, FALSE, 0);
+      gtk_signal_connect(GTK_OBJECT(page->color[page->colors]),
+	"color_set", on_color_set, page);
+      page->colors++;
+    }
+  gtk_widget_show(page->color[page->shown++]);
+}
+
+static void
 param_page_set_from_desc(Param_page *page, Param_desc *desc)
 {
   int c;
@@ -90,6 +137,10 @@ param_page_set_from_desc(Param_page *page, Param_desc *desc)
       break;
     }
 
+  do {
+    add_color(page);
+  } while (desc && page->colors < desc->colors);
+
   names = g_strdup(desc->color_names);
   color = strtok(names, whitespace);
   for (c = 0; color != NULL; c++)
@@ -117,48 +168,6 @@ get_current_page_param(GtkNotebook *notebook)
 
   page = gtk_notebook_get_nth_page(notebook, pageno);
   return (Param_page *)gtk_object_get_user_data(GTK_OBJECT(page));
-}
-
-/*
- * on_option -- called when the user selects a canned parameter from
- * the Params window's Parameter menu.  Deactivate the current
- * parameter, if any, set the parameter options, and activate the new
- * parameter.
- */
-static void
-on_option(GtkMenuItem *menuitem, Param_name_page *po)
-{
-  GtkNotebook *notebook = GTK_NOTEBOOK(po->app->notebook);
-  int pageno = gtk_notebook_get_current_page(notebook);
-  GtkWidget *nb_page = gtk_notebook_get_nth_page(notebook, pageno);
-  Param_page *page = gtk_object_get_user_data(GTK_OBJECT(nb_page));
-  ChartDatum *strip_datum = NULL, *pen_datum = NULL;
-
-  param_page_set_from_desc(po->page, po->desc);
-  if (po->desc->name && *po->desc->name)
-    gtk_notebook_set_tab_label_text(notebook, nb_page, po->desc->name);
-
-  strip_datum = chart_equation_add(CHART(po->app->strip),
-    po->app->strip_param_group, po->desc, NULL,
-    str_to_plot_style(po->desc->plot) != chart_plot_indicator);
-
-  if (strip_datum)
-    {
-      pen_datum = chart_equation_add(CHART(po->app->pen),
-	po->app->pen_param_group, po->desc, strip_datum->adj, FALSE);
-      strip_set_history_size(STRIP(po->app->strip), gdk_screen_width());
-    }
-
-  if (strip_datum && pen_datum)
-    {
-      if (page->strip_data != NULL)
-	chart_parameter_deactivate(CHART(po->app->strip), page->strip_data);
-      page->strip_data = strip_datum;
-
-      if (page->pen_data != NULL)
-	chart_parameter_deactivate(CHART(po->app->strip), page->pen_data);
-      page->pen_data = pen_datum;
-    }
 }
 
 /*
@@ -234,8 +243,10 @@ param_desc_ingest(const char *fn)
 		    "%s: file %s: unrecognized tag \"%s\" containing \"%s\"\n",
 		    prog_name, fn, key, val);
 	      }
-//  	    if (streq(desc->scale, "log")) desc->s_log = 1;
-//  	    if (streq(desc->type, "indicator")) desc->t_led = 1;
+/*
+  	    if (streq(desc->scale, "log")) desc->s_log = 1;
+  	    if (streq(desc->type, "indicator")) desc->t_led = 1;
+*/
 	    desc_ptr = g_realloc(desc_ptr,
 	      (item_count + 2) * sizeof(*desc_ptr));
 	    desc_ptr[item_count++] = desc;
@@ -243,33 +254,6 @@ param_desc_ingest(const char *fn)
 
   desc_ptr[item_count] = NULL;
   return desc_ptr;
-}
-
-static GtkWidget *
-param_options_menu(Chart_app *app, Param_page *page)
-{
-  static Param_desc **descs;
-  Param_desc **desc;
-  GtkWidget *menu;
-
-  if (descs == NULL)
-    descs = param_desc_ingest(app->params_fn);
-
-  menu = gtk_menu_new();
-  for (desc = descs; desc && *desc; desc++)
-    {
-      Param_name_page *pg_opt = g_malloc(sizeof(*pg_opt));
-      GtkWidget *menuitem = gtk_menu_item_new_with_label((*desc)->name);
-      gtk_widget_show(menuitem);
-      gtk_menu_append(GTK_MENU(menu), menuitem);
-      pg_opt->page = page;
-      pg_opt->desc = *desc;
-      pg_opt->app = app;
-      gtk_signal_connect(GTK_OBJECT(menuitem),
-	"activate", GTK_SIGNAL_FUNC(on_option), pg_opt);
-    }
-
-  return menu;
 }
 
 static char *
@@ -335,10 +319,10 @@ add_node(xmlNodePtr node, const char *key, const char *val)
 int
 opts_to_file(Chart_app *app, char *fn)
 {
-  int stat;
+  int p = 0, stat;
   xmlDocPtr doc;
   xmlNodePtr list, node;
-  GList *pl;
+  GtkWidget *nb_page;
 
   doc = xmlNewDoc("1.0");
   doc->root = xmlNewDocNode(doc, NULL, "stripchart", NULL);
@@ -346,32 +330,36 @@ opts_to_file(Chart_app *app, char *fn)
   prefs_to_doc(app, doc);
 
   list = xmlNewChild(doc->root, NULL, "parameter-list", NULL);
-  for (pl = app->plist; pl != NULL; pl = g_list_next(pl))
+
+  while ((nb_page = gtk_notebook_get_nth_page(app->notebook, p)) != NULL)
     {
-      Param_page *page = pl->data;
-      Param_desc *desc = g_malloc0(sizeof(*desc));
-      page_to_desc(page, desc);
-      node = xmlNewChild(list, NULL, "parameter", NULL);
+      Param_page *page = gtk_object_get_user_data(GTK_OBJECT(nb_page));
+      if (page->strip_data->active)
+	{
+	  Param_desc *desc = g_malloc0(sizeof(*desc));
+	  page_to_desc(page, desc);
+	  node = xmlNewChild(list, NULL, "parameter", NULL);
 
-      add_node(node, "name", desc->name);
-      add_node(node, "description", desc->desc);
-      add_node(node, "equation", desc->eqn);
-      add_node(node, "filename", desc->fn);
-      add_node(node, "pattern", desc->pattern);
-      add_node(node, "top-min", desc->top_min);
-      add_node(node, "top-max", desc->top_max);
-      add_node(node, "bot-min", desc->bot_min);
-      add_node(node, "bot-max", desc->bot_max);
-      add_node(node, "scale", desc->scale);
-      add_node(node, "plot", desc->plot);
-      add_node(node, "color", desc->color_names);
-      g_free(desc);
+	  add_node(node, "name", desc->name);
+	  add_node(node, "description", desc->desc);
+	  add_node(node, "equation", desc->eqn);
+	  add_node(node, "filename", desc->fn);
+	  add_node(node, "pattern", desc->pattern);
+	  add_node(node, "top-min", desc->top_min);
+	  add_node(node, "top-max", desc->top_max);
+	  add_node(node, "bot-min", desc->bot_min);
+	  add_node(node, "bot-max", desc->bot_max);
+	  add_node(node, "scale", desc->scale);
+	  add_node(node, "plot", desc->plot);
+	  add_node(node, "color", desc->color_names);
+	  g_free(desc);
+	}
+      p++;
     }
-
   stat = xmlSaveFile(fn, doc);
-  #ifdef DEBUG
+#ifdef DEBUG
   printf("opts to file: wrote %d bytes to %s\n", stat, fn);
-  #endif
+#endif
   xmlFreeDoc(doc);
   return stat;
 }
@@ -381,7 +369,8 @@ on_save(GtkWidget *w, Chart_app *app)
 {
   if (opts_to_file(app, app->config_fn) <= 0)
     error("can't save parameters to file \"%s\".", app->config_fn);
-  gtk_widget_hide(app->file_sel);
+  if (app->file_sel)
+    gtk_widget_hide(app->file_sel);
 }
 
 static void
@@ -425,64 +414,85 @@ on_close(GtkMenuItem *menuitem, Chart_app *app)
   gtk_widget_hide(GTK_WIDGET(app->editor));
 }
 
+/*
+ * on_option -- called when the user selects a canned parameter from
+ * the Params window's Parameter menu.  Deactivate the current
+ * parameter, if any, set the parameter options, and activate the new
+ * parameter.
+ */
 static void
-set_color(ChartDatum *datum, char *color_name, int cnum)
+on_option(GtkMenuItem *menuitem, Param_name_page *po)
 {
-  Chart *chart = datum->chart;
+  GtkNotebook *notebook = po->app->notebook;
+  int pageno = gtk_notebook_get_current_page(notebook);
+  GtkWidget *nb_page = gtk_notebook_get_nth_page(notebook, pageno);
+  Param_page *page = gtk_object_get_user_data(GTK_OBJECT(nb_page));
+  ChartDatum *strip_datum = NULL, *pen_datum = NULL;
 
-  gdk_color_parse(color_name, &datum->gdk_color[cnum]);
-  gdk_color_alloc(chart->colormap, &datum->gdk_color[cnum]);
-  datum->gdk_gc[cnum] = gdk_gc_new(GTK_WIDGET(chart)->window);
-  gdk_gc_set_foreground(datum->gdk_gc[cnum], &datum->gdk_color[cnum]);
-}
+  param_page_set_from_desc(po->page, po->desc);
+  if (po->desc->name && *po->desc->name)
+    gtk_notebook_set_tab_label_text(notebook, nb_page, po->desc->name);
 
-static void
-on_color_set(GnomeColorPicker *picker,
-  guint red, guint grn, guint blu, guint alpha, Param_page *page)
-{
-  int cnum;
-  char color_name[20];
-  sprintf(color_name, "#%04x%04x%04x", red, grn, blu);
+  strip_datum = chart_equation_add(CHART(po->app->strip),
+    po->app->strip_param_group, po->desc, NULL, pageno,
+    str_to_plot_style(po->desc->plot) != chart_plot_indicator);
 
-  for (cnum = 0; cnum <= page->colors; cnum++)
-    if (GNOME_COLOR_PICKER(page->color[cnum]) == picker)
-      break;
-
-  if (cnum < page->colors && page->strip_data && page->pen_data)
+  if (strip_datum)
     {
-      set_color(page->strip_data, color_name, cnum);
-      set_color(page->pen_data, color_name, cnum);
+      pen_datum = chart_equation_add(CHART(po->app->pen),
+	po->app->pen_param_group, po->desc, strip_datum->adj, pageno, FALSE);
+    }
+
+  if (strip_datum && pen_datum)
+    {
+      if (page->strip_data != NULL)
+	chart_parameter_deactivate(CHART(po->app->strip), page->strip_data);
+      page->strip_data = strip_datum;
+
+      if (page->pen_data != NULL)
+	chart_parameter_deactivate(CHART(po->app->strip), page->pen_data);
+      page->pen_data = pen_datum;
     }
 }
 
-static void
-add_color(Param_page *page)
+static GtkWidget *
+param_options_menu(Chart_app *app, Param_page *page)
 {
-  if (page->colors <= page->shown)
+  static Param_desc **descs;
+  Param_desc **desc;
+  GtkWidget *menu;
+
+  if (descs == NULL)
+    descs = param_desc_ingest(app->params_fn);
+
+  menu = gtk_menu_new();
+  for (desc = descs; desc && *desc; desc++)
     {
-      page->color = realloc(page->color,
-	(page->colors + 1) * sizeof(*page->color));
-      page->color[page->colors] = gnome_color_picker_new();
-      gtk_box_pack_start(GTK_BOX(page->color_hbox),
-	page->color[page->colors], FALSE, FALSE, 0);
-      gtk_signal_connect(GTK_OBJECT(page->color[page->colors]),
-	"color_set", on_color_set, page);
-      page->colors++;
+      Param_name_page *pg_opt = g_malloc(sizeof(*pg_opt));
+      GtkWidget *menuitem = gtk_menu_item_new_with_label((*desc)->name);
+      gtk_widget_show(menuitem);
+      gtk_menu_append(GTK_MENU(menu), menuitem);
+      pg_opt->page = page;
+      pg_opt->desc = *desc;
+      pg_opt->app = app;
+      gtk_signal_connect(GTK_OBJECT(menuitem),
+	"activate", GTK_SIGNAL_FUNC(on_option), pg_opt);
     }
-  gtk_widget_show(page->color[page->shown++]);
+
+  return menu;
 }
 
 static void
 on_add_color(GtkMenuItem *menuitem, Chart_app *app)
 {
-  Param_page *page = get_current_page_param(GTK_NOTEBOOK(app->notebook));
+  Param_page *page = get_current_page_param(app->notebook);
   add_color(page);
 }
 
 static void
 on_delete_color(GtkMenuItem *menuitem, Chart_app *app)
 {
-  Param_page *page = get_current_page_param(GTK_NOTEBOOK(app->notebook));
+  Param_page *page = get_current_page_param(app->notebook);
 
   if (page->shown > 1)
     gtk_widget_hide(page->color[--page->shown]);
@@ -493,7 +503,7 @@ on_notebook_switch_page(GtkNotebook *notebook,
   GtkNotebookPage *page, gint page_num, Chart_app *app)
 {
   #ifdef DEBUG
-  int n = gtk_notebook_get_current_page(GTK_NOTEBOOK(app->notebook));
+  int n = gtk_notebook_get_current_page(app->notebook);
   printf("switch page: %p, %d, %d\n", app, n, page_num);
   #endif
 }
@@ -616,7 +626,7 @@ create_param_page(Chart_app *app, Param_page *page, Param_desc *desc)
   GtkWidget *param_hbox, *scale_hbox, *type_hbox, *top_hbox, *bot_hbox;
   GSList *scale_hbox_group = NULL, *type_hbox_group = NULL;
 
-  page->notebook = app->notebook;
+  page->notebook = GTK_WIDGET(app->notebook);
   page->table = gtk_table_new(10, 2, FALSE);
   gtk_widget_show(page->table);
 
@@ -824,12 +834,6 @@ create_param_page(Chart_app *app, Param_page *page, Param_desc *desc)
   gtk_table_attach(GTK_TABLE(page->table),
     page->color_hbox, 1, 2, 9, 10, GTK_FILL, GTK_FILL, 0, 0);
 
-  /* Create and add colorpickers to the page here; set the colors in
-     param_page_set_from_desc(); */
-  do {
-    add_color(page);
-  } while (desc && page->colors < desc->colors);
-
   param_page_set_from_desc(page, desc);
 }
 
@@ -847,40 +851,40 @@ add_page_before(Chart_app *app, int n, Param_desc *desc)
 
   create_param_page(app, page, desc);
 
-  gtk_notebook_insert_page(GTK_NOTEBOOK(app->notebook),
+  gtk_notebook_insert_page(app->notebook,
     page->table, gtk_label_new(pno_str), n);
-  gtk_notebook_set_page(GTK_NOTEBOOK(app->notebook), n);
-
-  app->plist = g_list_append(app->plist, page);
+  gtk_notebook_set_page(app->notebook, n);
   gtk_object_set_user_data(GTK_OBJECT(page->table), page);
 
-  #ifdef DEBUG
+#ifdef DEBUG
   printf("add_param: n %d, page %p\n", n, page);
-  #endif DEBUG
+#endif /* DEBUG */
   return page;
 }
 
 static void
 on_add_before_param(GtkMenuItem *menuitem, Chart_app *app)
 {
-  int n = gtk_notebook_get_current_page(GTK_NOTEBOOK(app->notebook));
+  int n = gtk_notebook_get_current_page(app->notebook);
   add_page_before(app, n+0, NULL);
 }
 
 static void
 on_add_after_param(GtkMenuItem *menuitem, Chart_app *app)
 {
-  int n = gtk_notebook_get_current_page(GTK_NOTEBOOK(app->notebook));
+  int n = gtk_notebook_get_current_page(app->notebook);
   add_page_before(app, n+1, NULL);
 }
 
 static void
 on_apply(GtkMenuItem *menuitem, Chart_app *app)
 {
-  GList *plist;
-  for (plist = app->plist; plist != NULL; plist = g_list_next(plist))
+  int p = 0;
+  GtkWidget *nb_page;
+
+  while ((nb_page = gtk_notebook_get_nth_page(app->notebook, p)) != NULL)
     {
-      Param_page *page = plist->data;
+      Param_page *page = gtk_object_get_user_data(GTK_OBJECT(nb_page));
       if (page->changed)
 	{
 	  ChartDatum *strip_datum = NULL, *pen_datum = NULL;
@@ -888,14 +892,13 @@ on_apply(GtkMenuItem *menuitem, Chart_app *app)
 	  page_to_desc(page, desc);
 
 	  strip_datum = chart_equation_add(CHART(app->strip),
-	    app->strip_param_group, desc, NULL,
+	    app->strip_param_group, desc, NULL, p,
 	    str_to_plot_style(desc->plot) != chart_plot_indicator);
 
 	  if (strip_datum)
 	    {
 	      pen_datum = chart_equation_add(CHART(app->pen),
-		app->pen_param_group, desc, strip_datum->adj, FALSE);
-	      strip_set_history_size(STRIP(app->strip), gdk_screen_width());
+		app->pen_param_group, desc, strip_datum->adj, p, FALSE);
 	    }
 
 	  if (strip_datum && pen_datum)
@@ -911,22 +914,22 @@ on_apply(GtkMenuItem *menuitem, Chart_app *app)
 
 	  g_free(desc);
 	}
+      p++;
     }
 }
 
 static void
 on_delete_param(GtkMenuItem *menuitem, Chart_app *app)
 {
-  GtkNotebook *notebook = GTK_NOTEBOOK(app->notebook);
-  int n = gtk_notebook_get_current_page(notebook);
-  GtkWidget *nb_page = gtk_notebook_get_nth_page(notebook, n);
+  int n = gtk_notebook_get_current_page(app->notebook);
+  GtkWidget *nb_page = gtk_notebook_get_nth_page(app->notebook, n);
   Param_page *page = gtk_object_get_user_data(GTK_OBJECT(nb_page));
 
   chart_parameter_deactivate(CHART(app->strip), page->strip_data);
   chart_parameter_deactivate(CHART(app->pen  ), page->pen_data);
 
-  gtk_notebook_remove_page(notebook, n);
-  if (notebook->children == NULL)
+  gtk_notebook_remove_page(app->notebook, n);
+  if (app->notebook->children == NULL)
     add_page_before(app, 0, NULL);
 }
 
@@ -1021,7 +1024,7 @@ static GnomeUIInfo help_menu_uiinfo[] =
     0, 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_HELP("gstripchart"),
+  GNOMEUIINFO_HELP("stripchart"),
   GNOMEUIINFO_END
 };
 
@@ -1055,7 +1058,7 @@ static void
 on_edit_menu(GtkMenuItem *item, Chart_app *app)
 {
   GnomeUIInfo *menu = edit_menu_uiinfo;
-  Param_page *page = get_current_page_param(GTK_NOTEBOOK(app->notebook));
+  Param_page *page = get_current_page_param(app->notebook);
   GtkToggleButton *indy = GTK_TOGGLE_BUTTON(page->indicator);
   int is_indicator = gtk_toggle_button_get_active(indy);
 
@@ -1111,10 +1114,11 @@ create_editor(Chart_app *app)
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(edit_menubar),
     edit_menubar_uiinfo, NULL, FALSE, 0, app);
 
-  app->notebook = gtk_notebook_new();
-  gtk_widget_show(app->notebook);
-  gtk_box_pack_start(GTK_BOX(edit_vbox), app->notebook, TRUE, TRUE, 0);
-  gtk_notebook_set_tab_pos(GTK_NOTEBOOK(app->notebook), GTK_POS_BOTTOM);
+  app->notebook = GTK_NOTEBOOK(gtk_notebook_new());
+  gtk_widget_show(GTK_WIDGET(app->notebook));
+  gtk_box_pack_start(GTK_BOX(edit_vbox),
+    GTK_WIDGET(app->notebook), TRUE, TRUE, 0);
+  gtk_notebook_set_tab_pos(app->notebook, GTK_POS_BOTTOM);
 
   gtk_signal_connect(GTK_OBJECT(app->notebook),
     "switch_page", GTK_SIGNAL_FUNC(on_notebook_switch_page), app);

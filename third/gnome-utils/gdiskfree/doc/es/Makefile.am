@@ -1,9 +1,13 @@
 figs = \
 	figures/gdiskfree-prefs.png  \
 	figures/gdiskfree.png
-
-app = gdiskfree
+docname = gdiskfree_util
 lang = es
-omffiles=gdiskfree-es.omf
-include $(top_srcdir)/app-docs.make
+omffile = gdiskfree-es.omf
+sgml_ents = gdiskfree.sgml \
+	authors.sgml \
+	licencia-es.sgml \
+	licencia-nota-es.sgml \
+	license.sgml
+include $(top_srcdir)/sgmldocs.make
 dist-hook: app-dist-hook

@@ -4,16 +4,13 @@
 >Modalità di ricerca veloce</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Manuale del Cerca File di GNOME"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Criteri di ricerca"
-HREF="criteria.html"><LINK
-REL="NEXT"
-TITLE="Autori"
-HREF="authors.html"></HEAD
+HREF="criteria.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +49,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="authors.html"
->Avanti</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,10 +60,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="LOCATE"
+NAME="locate"
 >Modalità di ricerca veloce</A
 ></H1
-><P
+>    
+    <P
 > 
       Questa sezione descrive la modalità di ricerca veloce del
     <TT
@@ -82,40 +77,46 @@ CLASS="GUILABEL"
 >Ricerca veloce
     (locate)</B
 ></TT
->, mostrata in <A
-HREF="locate.html#LOCATEWIN"
->Figura 4</A
->. 
+>, mostrata in . 
       </P
-><DIV
+>
+
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="LOCATEWIN"
+NAME="locatewin"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/locate.png"></P
-><P
+>
+    
+   <P
 ><B
 >Figura 4. Finestra Ricerca veloce</B
 ></P
 ></DIV
-><P
+>
+
+    <P
 > Nella modalità di ricerca veloce, il <TT
 CLASS="APPLICATION"
 >Cerca
       File di GNOME</TT
 > non fa realmente la ricerca di un
-      file nel disco &#8212; piuttosto usa un database speciale
+      file nel disco  piuttosto usa un database speciale
       contenente i nomi di tutti i file nel sistema. Ciò rende la
       ricerca molto più veloce. Comunque, significa anche che la sola
       ricerca che si può fare è per nome di file. Inoltre, questa
       ricerca non troverà i file che sono stati aggiunti al sistema
       dopo l'ultimo aggiornamento del database (nella maggior parte
       dei sistemi è aggiornato ogni giorno, solitamente di notte
-      &#8212; si veda nel seguito per maggiori informazioni).
+       si veda nel seguito per maggiori informazioni).
     </P
-><P
+>
+    <P
 > Per cercare un file usando la modalità di ricerca veloce,
       si inserisca semplicemente una sottostringa del nome del file
       nel campo <TT
@@ -139,13 +140,14 @@ CLASS="USERINPUT"
       <SPAN
 CLASS="QUOTE"
 >"searchtool"</SPAN
-> nel loro percorso &#8212; in
+> nel loro percorso  in
       particolare, tutti i file in <TT
 CLASS="FILENAME"
 >/usr/share/help/gsearchtool</TT
 >.
     </P
-><P
+>
+    <P
 > Per restringere la ricerca ad una sottodirectory, si può
       usare il nome della directory assieme con i caratteri jolly. Per
       esempio, per fare una ricerca veloce di tutti i file con
@@ -168,7 +170,9 @@ CLASS="GUILABEL"
 ></TT
 >. 
     </P
-><P
+>
+
+    <P
 >La modalità di ricerca veloce è in realtà un'interfaccia al
       comando <B
 CLASS="COMMAND"
@@ -182,82 +186,15 @@ TARGET="_top"
       manuale</A
 >.  
     </P
-><DIV
+>
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="LOCATEDB"
->Il database di locate</A
+NAME="locatedb"
+></A
 ></H2
-><P
->	Questa sezione discute l'aggiornamento del database utilizzato per
-	la ricerca veloce. A meno che non si sia un amministratore di
-	sistema o semplicemente curiosi, non è essenziale leggerla.
-      </P
-><P
->	Nella maggior parte dei sistemi, il database utilizzato per il
-	comando <B
-CLASS="COMMAND"
->locate</B
-> (e quindi per la modalità di
-	ricerca veloce del <TT
-CLASS="APPLICATION"
->Cerca File di
-	GNOME</TT
->), è aggiornato ogni giorno, solitamente di
-	notte. Ciò viene fatto da un job di <B
-CLASS="COMMAND"
->cron</B
->
-	&#8212; si veda la <A
-HREF="man:cron"
-TARGET="_top"
->pagina di manuale</A
-> di
-	<B
-CLASS="COMMAND"
->cron</B
-> se non si ha familiarità con questo
-	comando. Si noti che se il proprio computer solitamente viene 
-	spento di notte, il database non viene aggiornato. In questo caso,
-	si dovrebbe cambiare l'orario di aggiornamento predefinito
-	modificando manualmente <TT
-CLASS="FILENAME"
->/etc/crontab</TT
-> oppure
-	utilizzando uno strumento grafico come
-	<TT
-CLASS="APPLICATION"
->cromagnon</TT
->. Questa operazione necessità
-	dei privilegi dell'amministratore di sistema (root).
-      </P
-><P
->È anche possibile dare il comando <SPAN
-CLASS="QUOTE"
->"Aggiorna adesso
-      il database"</SPAN
-> lanciando il comando
-      <B
-CLASS="COMMAND"
->updatedb</B
->. Anche questa operazione richiede i
-      privilegi dell'amministratore di sistema (root). Senza alcuna
-      opzione, ricrea l'intero database, per tutti i file nel proprio
-      sistema. Inoltre possiede molte opzioni da riga di comando per
-      regolare il funzionamento (per esempio, è possibile istruirlo
-      per saltare alcune directory). Per maggiori informazioni si
-      legga la <A
-HREF="man:updatedb"
-TARGET="_top"
->pagina di
-      manuale</A
-> di <B
-CLASS="COMMAND"
->updatedb</B
->.
-      </P
 ></DIV
 ></DIV
 ><DIV
@@ -290,10 +227,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="authors.html"
->Avanti</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -310,7 +244,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Autori</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

@@ -1,3 +1,427 @@
+Thu Jan 31 20:43:45 2002  George Lebl <jirka@5z.com>
+
+	* Release 1.4.1.2
+
+2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure,in (ALL_LINGUAS): Added "eu".
+
+Mon Dec 17 18:55:10 2001  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* Add Japanese help files of gfloppy
+	* Add gfloppy/doc/ja/Makefile to configure.in
+
+Wed Nov 21 06:49:49 2001  Abel Cheung  <maddog@linux.org.hk>
+
+	* mini-utils/gshutdown/Makefile.am:
+	* logview/Makefile.am:
+	Added missing DESTDIR in install-data-local.
+
+Sat Oct 20 11:42:00 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.1.1
+
+	* gnome-utils.spec.in: further tweak the %files list
+
+Sat Oct 20 11:33:50 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: raise version to 1.4.1.1, add cromagnon back
+
+	* Makefile.am: make sure that cromagnon is part of the distribution
+
+Sat Oct 20 11:23:03 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: fixes from bunk@fs.tum.de (Adrian Bunk)
+
+	* gnome-utils.spec.in:  Fix the file list so that the rpm
+	  doesn't want to own directories that are not it's own
+
+Sun Oct 14 21:03:16 2001  Abel Cheung <maddog@linux.org.hk>
+
+	* configure.in (GLADE_CFLAGS): Fix typo.
+
+Fri Oct 05 11:31:04 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.1
+
+Thu Oct 04 21:21:53 2001  George Lebl <jirka@5z.com>
+
+	* logview/doc/C/Makefile.am: fix figures distribution
+
+	* Makefile.am, configure.in: gtkhtml is optional, if
+	  not found gtt will not be built.  Also make all the optional
+	  directories always dist
+
+Wed Oct 03 20:34:01 2001  George Lebl <jirka@5z.com>
+
+	* logview/logview.c, logview/doc/C/topic.dat: add help menu
+
+2001-10-02 - John Fleck <jfleck@inkstain.net>
+	add logview docs to the build
+
+2001-09-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Make gtt conditionally compile depending 
+	  on the GUILE checks.
+
+Tue Sep 04 01:15:54 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.0.99
+
+Tue Sep 04 01:15:40 2001  George Lebl <jirka@5z.com>
+
+	* NEWS: update
+
+Mon Sep 03 22:28:53 2001  George Lebl <jirka@5z.com>
+
+	* gdiskfree/doc/es/Makefile.am: fix for distcheck
+
+Mon Sep 03 17:53:13 2001  George Lebl <jirka@5z.com>
+
+	* **/Makefile.am: correctly EXTRA_DIST all files and other distcheck
+	  fixes
+
+	* configure.in: raise version to 1.4.0.3 and gdialog docs dirs
+
+2001-09-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* */*.desktop.in: Add .desktop.in files now that xml-i18n-tools
+	will handle these too. Fixes bugzilla #55615.
+	* */*.keys.in: Same here.
+	* po/*: Updated accordingly.
+	* */*.desktop: Removed these as they aren't needed anymore.
+		
+Sat Sep  1 15:50:35 MDT 2001 John Fleck <jfleck@inkstain.net
+
+	*configure.in, gfloppy/doc/Makefile.am - removing az docs from
+	the build, as they are broken and mostly in English anyway,
+	which rather defeats the point.
+
+Fri Aug 31 20:17:24 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: check for GConf
+
+	* gnome-utils.spec.in: Use Epoch: 1 since there are epoch 1 packages
+	  out there and we want to be able to upgrade
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* */*/*.sgml: Fix up some sgml all around.
+	
+Mon Aug 13 12:20:48 2001  George Lebl <jirka@5z.com>
+
+	* gcalc/gnome-calc.c, gdialog/dialog.h, logview/logrtns.c: include
+	  locale.h directly
+
+Mon Aug 13 00:08:14 2001  George Lebl <jirka@5z.com>
+
+	* logview/logview.[ch]: change per page lines to 10, and massage the
+	  scrolling code into a bit of submission.  Also change the ui to
+	  use a viewport and nicer scrollbars etc...  Anyway, the scroll code
+	  is on crack.  Well, there is more code on crack in logview, but
+	  this is really bad.
+
+Sun Aug 12 22:36:33 2001  George Lebl <jirka@5z.com>
+
+	* logview/actions.c, logview/desc_db.c, logview/logrtns.c:  Apply
+	  patch from Peter A Jonsson <Peter.A.Jonsson@epl.ericsson.se> to
+	  fix FreeBSD compilation.
+
+Sat Aug 11 12:39:39 2001  George Lebl <jirka@5z.com>
+
+	* logview/Makefile.am: correctly do $(DESTDIR) stuff
+
+	* logview/log_repaint.c, logview/logview.c: correct prototypes, and
+	  do some sanity checking, fixes bug #58439
+
+	* mini-utils/gshutdown/Makefile.am: correctly do $(DESTDIR) stuff
+
+2001-08-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* */*.desktop: Added traditional Chinese strings.
+
+2001-07-28  Dan Mueth  <d-mueth@uchicago.edu>
+
+        Updating doc build stuff to use jw on RH 7.1 and any other dist which
+        has moved to docbook-utils.
+
+	* configure.in:
+	* sgmldocs.make:
+
+	Removing the man dirs lines.  There doesn't seem to be any
+	man pages anywhere, so building RPM's is broken.   
+
+	* gnome-utils.spec.in:
+
+2001-07-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "nn" to ALL_LINGUAS.
+	
+Mon Jul 02 15:54:23 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.0.2
+
+	* gnome-utils.spec.in: add man dirs
+
+	* meat-grinder/ChangeLog: remove some cvs garbage
+
+2001-07-02 Manuel de Vega barreiro <mbarreiro@red.madritel.es>
+
+	* configure.in 
+	* gdict/doc/es
+	* gfloppy/doc/es
+
+2001-06-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gdictsrc/gdict-app.c, gdictsrc/gdict-defbox.c,
+	  gdictsrc/gdict-speller.c: Remove #include of non-public
+	  header under HAVE_GNOMEPRINT.
+	  
+2001-06-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added ta to the languages list.
+
+Sun Jun 24 21:39:20 2001  George Lebl <jirka@5z.com>
+
+	* logview/config.c: When font can't be loaded try "fixed" and "*"
+
+Sun Jun 24 21:04:49 2001  George Lebl <jirka@5z.com>
+
+	* logview/log_repaint.c, logview/zoom: Draw dates/times with locale
+	  settings
+
+	* logview/logrtns.c: Get better at reading internationalized logs.
+	  If C locale and current locale fails to produce a monthname,
+	  do some brute force lookup over a large list of locales.  Works
+	  reasonably well, and only does lookup on demand with caching
+	  so it shouldn't be a drag on performance at all.
+
+Sun Jun 24 16:51:56 2001  George Lebl <jirka@5z.com>
+
+	* logview/logrtns.c: wipe a bogus sentence from an error message
+
+Sun Jun 24 16:45:19 2001  George Lebl <jirka@5z.com>
+
+	* logview/actions.c: remove superfluous '.'
+
+Sat Jun 23 01:46:46 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.0.1
+
+	* configure.in, logview/Makefile.am, mini-utils/gshutdown/Makefile.am:
+	  fixes for rpm building
+
+2001-06-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* NEWS: Fill in the blanks.
+	* gdictsrc/dict.c: Check for a NULL line before strcmp()ing.
+	* gdictsrc/gdict-defbox.c: Mark a string for translation.
+	
+Thu Jun 21 12:45:29 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: add a pixbuf check
+
+2001-06-16 John Fleck <jfleck@inkstain.net>
+	*configure.in - add meat-grinder help directories
+
+2001/06/15 John Fleck <jfleck@inkstain.net>
+
+	* configure.in - add exe-handler help directories
+
+Thu Jun 14 22:23:31 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, Makefile.am: add exe-handler
+
+Tue Jun 12 01:21:34 2001  George Lebl <jirka@5z.com>
+
+	* gdictsrc/main.c: fix warning
+
+Tue Jun 12 01:17:54 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, Makefile.am: add meat-grinder to build
+
+2001-06-09 Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+        * mini-utils/gshutdown/doc/es
+        * mini-utils/gshutdown/doc/Makefile.am
+        * configure.in
+
+
+2001-06-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* logview/monitor.c: Add missing dot in string.
+	Fixes http://bugzilla.gnome.org/show_bug.cgi?id=55832
+	
+Wed Jun 06 06:01:58 2001  George Lebl <jirka@5z.com>
+
+	* logview/Makefile.am, mini-utils/gshutdown/Makefile.am:  use -f for
+	  mv and add gshutdown-pam to EXTRA_DIST
+
+2001-06-06  Kartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add some stuff for console-helper support for
+	gshutdown.
+	
+Wed Jun 06 05:15:23 2001  George Lebl <jirka@5z.com>
+
+	* logview/monitor.c: Do the right thing on "Hide app" that is,
+	  hide the application window (duh!)
+
+Wed Jun 06 04:38:54 2001  George Lebl <jirka@5z.com>
+
+	* logview/log_repaint.c: use %x for status date and use a strftime
+	  func for the headers and let it be translatable.
+
+Wed Jun 06 04:18:12 2001  George Lebl <jirka@5z.com>
+
+	* logview/about.c, logview/actions.c, logview/logrtns.[ch],
+	  logview/logview.[ch], logview/misc.c, logview/monitor.c,
+	  logview/userprefsdialog.c:  Implemented all the action editting foo,
+	  removed the cutop pixmap buttons, use gnome stock buttons (the
+	  dialogs are still ugly), fixed some scrolled window foo, fixed
+	  action database corruption, read action database from home dir,
+	  read databases correctly, fixed closing of many windows and some
+	  weirdness thataccompanied it, made it use the gnome-utils version,
+	  implemented executing actions, fix the tree view of actions, fix
+	  crashes when trying to edit actions, and probably some more...
+
+Tue Jun 05 20:23:36 2001  George Lebl <jirka@5z.com>
+
+	* logview/*.c: Fixed i18n problems by including config.h everywhere,
+	  when checking month in a log use also the current locale monthnames
+	  since logs are localized, not perfect but should work for most
+	  people.  Fix usage of strncpy, get rid of sprintf, increase some
+	  buffers.  Fix segfault on second openning of open dialog.
+	  General sanity.
+
+	* logview/logivew*.db:  Added a couple of entries
+
+Tue Jun 05 18:27:30 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, mini-utils/gcolorsel/Makefile.am,
+	  mini-utils/gcolorsel/session.c: Apply patch from Laszlo PETER
+	  <Laszlo.Peter@ireland.sun.com> to allow people to specify the
+	  location of the xlibs and gcolorsel to use that location to find
+	  the rgb.txt file
+
+2001-06-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gdictsrc/main.c: Added patch from Red Hat to put up an error dialog
+	if the server cannot be contacted.
+	* gdictsrc/gdict-pref-dialog.c: Apply patch from <voss@mathematik.uni-kl.de>
+	to make the order in the array match the order of the enumeration values in
+	the header file.
+	* gdictsrc/*.*: Fix up i18n by marking a lot of missing strings
+	for translation.
+	
+Mon Jun 04 20:35:28 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: a bunch of cleanups, bump the version to 1.4.0.1
+	  add configuration summary, add console helper stuff for logview
+
+	* logview/logview-(pam|security.in), logview/Makefile.am: add pam
+	  console helper stuff
+
+	* gnome-utils.spec.in: update for the above changes
+
+2001-06-05  Christian Rose  <menthos@menthos.com>
+
+	* gdictsrc/gdict.desktop, gdictsrc/GDict.desktop,
+	logview/logview.desktop: Modified sv translation.
+
+2001-06-04  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gdictsrc/dict.c: Fix a warning by casting second arg to
+	connect() to (struct sockaddr*).
+	* logview/*.*: Fix warnings. Init some stuff to NULL. Remove
+	#included xpms that weren't used. etc.
+	
+2001-06-03  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	New Spanish Translations
+
+	* configure.in
+	* gtt/doc/es
+	* gtt/doc/Makefile.am
+
+2001-06-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added AM_PROG_XML_I18N_TOOLS.
+	
+2001-05-30 John Fleck <jfleck@inkstain.net>
+
+	* configure.in - add gcalc/doc/de into the build to include German
+	translation done for us by Peter Hudec
+	<PeterHudec@web.de>. Thanks, Peter!
+	
+2001-05-23  Miguel de Icaza  <miguel@ximian.com>
+
+	* exe-handler: New directory, contains the mime type handler for
+	executable files that do not have the executable bit set.
+
+2001-05-12 John Fleck <jfleck@inkstain.net>
+
+	* remove the gfloppy az docs from the build - they're not
+	completed, and they were fouling things up. Fixes
+	http://bugzilla.gnome.org/show_bug.cgi?id=54463 
+
+2001-04-18  Bradford Hovinen  <hovinen@ximian.com>
+
+	* gdictsrc/gdict-pref-dialog.c: Disable control for setting
+	whether the handle bar gets displayed
+
+	* gdictsrc/gdict-applet.c (gdict_applet_new): Force the handle
+	bar to display if the applet is in a short panel
+
+2001-04-11 John Fleck <jfleck@inkstain.net>
+
+	* updating the build system for all the docs to match the GDP's
+	new docs build template
+
+2001-04-10 John Fleck <jfleck@inkstain.net>
+
+	* adding logview/doc/C/logview.sgml - first draft of doc. I won't
+	add it to the build until it is completed
+
+2001-04-10  Jason Leach  <jasonleach@usa.net>
+
+	* configure.in: Compile fix (may only be a problem when builddir
+	!= srcdir).
+
+2001-04-07  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	New Spanish Translations
+
+	* configure.in
+	* stripchart/doc/es
+	* stripchart/doc/Makefile.am
+
+2001-03-29  Dan Mueth  <dan@eazel.com>
+
+	Added ScrollKeeper script calls.
+
+	* gnome-utils.spec.in:
+
+Mon Mar 26 2001 - John Fleck <jfleck@swcp.com>
+
+	* add support to build system for new gcalc es docs
+	
+Wed Mar 14 15:22:20 2001  Arik Devens <arik@gnome.org>
+
+	* Released 1.4.0 "let's kill first the banker"
+	
+Wed Mar 14 14:28:29 2001  George Lebl <jirka@5z.com>
+
+	* Release 1.4.0
+
+Wed Mar 14 14:27:31 2001  George Lebl <jirka@5z.com>
+
+	* gnome-utils.spec.in: fixup the %files stuff
+
 Mon Mar 12 22:37:39 2001  George Lebl <jirka@5z.com>
 
 	* gnome-utils.spec.in: Fix up the files list to include everything

@@ -17,10 +17,19 @@ gw_LDADD = \
 	$(GNOMEUI_LIBS) 	\
 	$(INTLLIBS)
 
+man_MANS = gw.1
+
 Systemdir = $(datadir)/gnome/apps/System
-System_DATA = gw.desktop
+System_in_files = gw.desktop.in
+System_DATA = $(System_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-who.png
 
-EXTRA_DIST = gw.desktop gnome-who.png $(top_srcdir)/app-docs.make
+EXTRA_DIST = \
+	$(man_MANS) \
+	$(System_in_files) \
+	$(System_DATA) \
+	$(pixmap_DATA) \
+	$(top_srcdir)/sgmldocs.make

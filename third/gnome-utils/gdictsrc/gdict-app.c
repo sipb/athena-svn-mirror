@@ -1,4 +1,4 @@
-/* $Id: gdict-app.c,v 1.1.1.1 2001-05-02 20:43:14 ghudson Exp $ */
+/* $Id: gdict-app.c,v 1.1.1.2 2002-03-25 21:49:46 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*
@@ -410,11 +410,10 @@ gdict_not_online ()
     GtkWidget *w;
     gchar *s;
     
-    s = g_strdup_printf (
-      _("Unable to perform requested operation, either because the server\n"
-	"you are using is down or because you are not connected to the\n"
-	"Internet. If you are not already connected to the Internet, please\n" 
-        "do so and try again."));
+    s = g_strdup_printf (_("Unable to perform requested operation, either because the server\n"
+			   "you are using is down or because you are not connected to the\n"
+			   "Internet. If you are not already connected to the Internet, please\n" 
+    			   "do so and try again."));
     w = gnome_error_dialog (s);
     gnome_dialog_run_and_close (GNOME_DIALOG (w));
     g_free (s);
@@ -450,8 +449,8 @@ about_cb (GtkMenuItem *menuitem, gpointer user_data)
 }
 
 static GnomeUIInfo file_menu_uiinfo[] = {
-    GNOMEUIINFO_ITEM_STOCK (N_("Lookup"),
-			    N_("Lookup word in dictionary"),
+    GNOMEUIINFO_ITEM_STOCK (N_("Look up"),
+			    N_("Look up word in dictionary"),
 			    lookup_cb, GNOME_STOCK_MENU_SEARCH),
     GNOMEUIINFO_ITEM_STOCK (N_("Spell"), 
 			    N_("Check word spelling"), 
@@ -507,8 +506,8 @@ static GnomeUIInfo menubar_uiinfo[] = {
 };
 
 static GnomeUIInfo toolbar_uiinfo[] = {
-    GNOMEUIINFO_ITEM_STOCK (N_("Lookup"), 
-			    N_("Lookup word in dictionary"), 
+    GNOMEUIINFO_ITEM_STOCK (N_("Look up"), 
+			    N_("Look up word in dictionary"), 
 			    lookup_cb, GNOME_STOCK_PIXMAP_SEARCH),
     GNOMEUIINFO_ITEM_STOCK (N_("Spell"), 
 			    N_("Check word spelling"), 

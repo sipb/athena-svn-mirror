@@ -34,7 +34,6 @@ strip_redraw(Strip *strip)
   for (list = CHART(strip)->param; list != NULL; list = g_slist_next(list))
     {
       gint i, x, y0 = 0, points;
-      gint indicator_x = 0, indicator_y = 0, indicator_step = 10;
       ChartDatum *datum = (ChartDatum *)list->data;
       gint h = datum->newest;
       ChartPlotStyle plot = datum->plot_style;
@@ -44,20 +43,7 @@ strip_redraw(Strip *strip)
 	chart_assign_color(CHART(strip), datum);
 
       if (plot == chart_plot_indicator)
-	{
-	  gint c = datum->history[h] + 0.5;
-	  if (c > 0)
-	    {
-	      if (c > datum->colors)
-		c = datum->colors;
-	      gdk_draw_rectangle(
-		widget->window, datum->gdk_gc[c - 1], TRUE,
-		indicator_x + 1, indicator_y + 1,
-		indicator_step - 1, indicator_step - 1);
-	    }
-	  indicator_x += indicator_step;
-	  continue;
-	}
+	continue;
 
       x = width - datum->idle - 1;
       points = datum->history_count;
@@ -117,9 +103,7 @@ strip_update_by_shifting(Strip *strip)
 	}
 
       if (plot == chart_plot_indicator)
-	{
-	  continue;
-	}
+	continue;
 
       h = datum->newest;
       y = val2gdk(datum->history[h], datum->adj, height, scale);
@@ -167,15 +151,56 @@ strip_overlay_ticks(Strip *strip)
 }
 
 static void
+strip_overlay_indicators(Strip *strip)
+{
+  GSList *list;
+  GtkWidget *widget = GTK_WIDGET(strip);
+  gint indicator_x = 0, indicator_y = 0, indicator_step = 10;
+
+  for (list = CHART(strip)->param; list; list = g_slist_next(list))
+    if (((ChartDatum *)list->data)->plot_style == chart_plot_indicator)
+      indicator_x += indicator_step;
+
+  for (list = CHART(strip)->param; list; list = g_slist_next(list))
+    {
+      ChartDatum *datum = (ChartDatum *)list->data;
+      ChartPlotStyle plot = datum->plot_style;
+
+      if (plot == chart_plot_indicator)
+	{
+	  gint c = datum->history[datum->newest] + 0.5;
+	  indicator_x -= indicator_step;
+	  if (c > 0)
+	    {
+	      if (c > datum->colors)
+		c = datum->colors;
+	      gdk_draw_rectangle(widget->window,
+		widget->style->bg_gc[GTK_WIDGET_STATE(widget)], TRUE,
+		indicator_x, indicator_y, 1, indicator_step);
+	      gdk_draw_rectangle(
+		widget->window, datum->gdk_gc[c - 1], TRUE,
+		indicator_x + 1, indicator_y + 1,
+		indicator_step - 1, indicator_step - 1);
+	    }
+	}
+    }
+}
+
+static void
 strip_update(Strip *strip)
 {
-  if (!strip->show_ticks)
+  static int show_ticks = 1;
+
+  if (!show_ticks)
     strip_update_by_shifting(strip);
   else
     {
       strip_redraw(strip);
-      strip_overlay_ticks(strip);
+      if (strip->show_ticks)
+	strip_overlay_ticks(strip);
     }
+  strip_overlay_indicators(strip);
+  show_ticks = strip->show_ticks;
 }
 
 static gint
@@ -185,6 +210,7 @@ strip_expose(GtkWidget *widget, GdkEventExpose *event, void *nil)
   strip_redraw(strip);
   if (strip->show_ticks)
     strip_overlay_ticks(strip);
+  strip_overlay_indicators(strip);
   return FALSE;
 }
 
@@ -209,7 +235,7 @@ strip_set_ticks(Strip *strip, gint show, gint major, gint minor)
 }
 
 void
-strip_set_history_size(Strip *strip, gint size)
+strip_set_default_history_size(Strip *strip, gint size)
 {
   CHART(strip)->default_history_size = size;
 }

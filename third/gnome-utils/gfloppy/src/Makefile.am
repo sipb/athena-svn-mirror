@@ -6,7 +6,8 @@ INCLUDES = \
 	-I$(top_srcdir)/intl 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
         -DGLADEDIR=\""$(gladedir)"\"           	\
-	$(GNOME_INCLUDEDIR)
+	$(GNOME_INCLUDEDIR)			\
+	$(GLADE_CFLAGS)
 
 bin_PROGRAMS = gfloppy
 
@@ -25,13 +26,16 @@ gfloppy_SOURCES = \
 
 gfloppy_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) -lxml -lglade -lglade-gnome -lext2fs
 
+man_MANS = gfloppy.1
+
 EXTRA_DIST = 		     \
 	gfloppy.glade		\
 	gfloppy.h		\
 	progress.h		\
 	fdformat.h		\
 	badblocks.h             \
-	gfloppy-i18n.h
+	gfloppy-i18n.h		\
+	gfloppy.1
 
 
 update-po: gfloppy-strings.c

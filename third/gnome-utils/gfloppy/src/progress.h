@@ -20,8 +20,10 @@
 
 #ifndef __PROGRESS_H__
 #define __PROGRESS_H__
+
 #include "gfloppy.h"
 #include "gtk/gtkwidget.h"
 
 void setup_progress_and_run (GFloppy *floppy, GtkWidget *parent);
+
 #endif

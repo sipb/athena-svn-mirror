@@ -25,6 +25,7 @@
 
 struct floppy_struct param;
 extern int errno;
+
 /* keep in sync with fd_print in badblocks */
 static void
 fd_print (GFloppy *floppy, gchar *string)
@@ -35,7 +36,7 @@ fd_print (GFloppy *floppy, gchar *string)
 
 /* accepts open file handle for block device to be formatted */
 static int
-format_disk(GFloppy *floppy, gint ctrl)
+format_disk (GFloppy *floppy, gint ctrl)
 {
 	struct format_descr descr;
 	int track;
@@ -81,7 +82,7 @@ format_disk(GFloppy *floppy, gint ctrl)
 
 
 static gint
-verify_disk(GFloppy *floppy)
+verify_disk (GFloppy *floppy)
 {
 	unsigned char *data;
 	int fd, cyl_size, cyl, count;

@@ -1,3 +1,3 @@
 ## Process this file with automake to procude Makefile.in
 
-SUBDIRS = C it
+SUBDIRS = C de it es

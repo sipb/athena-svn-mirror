@@ -4,7 +4,7 @@
 >Using Gless</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="Gless Manual"
 HREF="index.html"><LINK
@@ -66,10 +66,14 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="USAGE"
+NAME="usage"
 >Using Gless</A
 ></H1
-><P
+> 
+    
+ 
+
+    <P
 ><TT
 CLASS="APPLICATION"
 >Gless</TT
@@ -80,15 +84,19 @@ CLASS="APPLICATION"
 >Gless</TT
 >.
     </P
-><DIV
+>
+
+         
+      <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MAINWIN"
+NAME="mainwin"
 >Basic usage</A
 ></H2
-><P
+>      
+      <P
 >	When you first start <TT
 CLASS="APPLICATION"
 >Gless</TT
@@ -97,42 +105,51 @@ CLASS="APPLICATION"
 CLASS="INTERFACE"
 >Main window</SPAN
 >, as shown in 
-	<A
-HREF="usage.html#MAINSHOT"
->Figure 1</A
->.
+	.
 	<DIV
 CLASS="FIGURE"
 ><A
-NAME="MAINSHOT"
+NAME="mainshot"
 ></A
-><P
+>	  
+	  	    
+	    <P
 ><IMG
 SRC="figures/gless-main.png"></P
-><P
+>
+	  
+	<P
 ><B
 >Figure 1. Gless Main Window</B
 ></P
 ></DIV
 >
       </P
-></DIV
-><DIV
+>
+
+  
+    </DIV
+>
+   
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="MENUBAR"
+NAME="menubar"
 >Menus</A
 ></H2
-><P
+>      
+      <P
 >         The menu bar, located at the top of the <SPAN
 CLASS="INTERFACE"
 >Main
          Window</SPAN
 >, provides the following commands:
       </P
-><P
+>
+      
+      <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
@@ -145,62 +162,78 @@ CLASS="GUIMENU"
 ><DD
 ><P
 > This menu contains commands
-              <B
+              	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >New Window</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-N</SPAN
-></B
+>
+		</B
 >), 
 
-              <B
+              	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Open</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-O, F3</SPAN
-></B
+>
+		</B
 >), 
 
-	      <B
+	      	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Save As</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Ctrl-A</SPAN
-></B
+>
+		</B
 >), 
-              <B
+              	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Close</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-W</SPAN
-></B
+>
+		</B
 >) 
 	      and
-	      <B
+	      	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Quit</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-Q</SPAN
-></B
+>
+		</B
 >)
 	      all of which are self-explanatory.
 	    </P
-></DD
+>
+	  </DD
 ><DT
 ><B
 CLASS="GUIMENU"
@@ -209,29 +242,36 @@ CLASS="GUIMENU"
 ><DD
 ><P
 >	      This menu contains
-              <B
+              	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Find</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-F, F6</SPAN
-></B
+>
+		</B
 >), which opens up a dialog box allowing you
 	      to enter a word to be searched for, and
-              <B
+              	+ + + + + + + + +
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Find Again</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
 ><SPAN
 CLASS="KEYSYM"
 >Alt-A, Shift-F6</SPAN
-></B
+>
+		</B
 >), which searches for the next occurrence of
 	      the same word.</P
-></DD
+>
+	  </DD
 ><DT
 ><B
 CLASS="GUIMENU"
@@ -240,20 +280,24 @@ CLASS="GUIMENU"
 ><DD
 ><P
 >	      This menu contains only one command,
-              <B
+              	+	+
++	+	-&gt;<B
 CLASS="GUIMENUITEM"
 >Fixed Font</B
-> (<B
+>+
++	+ + + + + +  (<B
 CLASS="SHORTCUT"
-><SPAN
+>		  <SPAN
 CLASS="KEYSYM"
 >Ctl-F</SPAN
-></B
+>
+		</B
 >), which toggles
 		between a fixed font display and a proportional font display.
 	     
 	      </P
-></DD
+>
+	  </DD
 ><DT
 ><B
 CLASS="GUIMENU"
@@ -265,21 +309,24 @@ CLASS="GUIMENU"
 	      <P
 ></P
 ><UL
-><LI
-><P
+>		<LI
+>		  <P
 ><B
 CLASS="GUIMENUITEM"
 >Manual</B
-> &#8212;
+> 
 		    shows this manual
 		  </P
-></LI
-><LI
-><P
+>
+		</LI
+>
+
+		<LI
+>		  <P
 ><B
 CLASS="GUIMENUITEM"
 >About</B
-> &#8212;
+> 
 		    shows basic information about
 		    <TT
 CLASS="APPLICATION"
@@ -287,16 +334,23 @@ CLASS="APPLICATION"
 >, such as
 		    author's name and version number.
 		  </P
-></LI
-></UL
+>
+		</LI
+>
+	      </UL
 >
 
 	      </P
-></DD
+>
+	  </DD
 ></DL
 ></DIV
-></DIV
-></DIV
+>
+      
+	</DIV
+>
+
+  </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

@@ -1,4 +1,4 @@
-/* $Id: gdict-speller.c,v 1.1.1.1 2001-05-02 20:43:26 ghudson Exp $ */
+/* $Id: gdict-speller.c,v 1.1.1.2 2002-03-25 21:49:46 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -115,7 +115,7 @@ gdict_speller_init (GDictSpeller *speller) {
     gtk_table_set_row_spacings (speller->table, 5);
     gtk_table_set_col_spacings (speller->table, 5);
     
-    label = gtk_label_new ("Word:");
+    label = gtk_label_new (_("Word:"));
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
     gtk_table_attach_defaults (speller->table, label, 0, 1, 0, 1);
@@ -124,7 +124,7 @@ gdict_speller_init (GDictSpeller *speller) {
     gtk_table_attach_defaults (speller->table, 
 		               GTK_WIDGET (speller->word_entry), 1, 2, 0, 1);
     
-    label = gtk_label_new ("Search Strategy:");
+    label = gtk_label_new (_("Search Strategy:"));
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
     gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
     gtk_table_attach_defaults (speller->table, label, 0, 1, 1, 2);
@@ -147,8 +147,8 @@ gdict_speller_init (GDictSpeller *speller) {
                        GTK_WIDGET (speller->word_sel));
     
     gnome_dialog_append_buttons (GNOME_DIALOG (speller),
-                                 "Find Words...",
-                                 "Lookup Word...",
+                                 _("Find Words..."),
+                                 _("Look up Word..."),
                                  GNOME_STOCK_BUTTON_CLOSE,
                                  NULL);
     
@@ -160,7 +160,7 @@ gdict_speller_init (GDictSpeller *speller) {
                         GTK_SIGNAL_FUNC (speller_lookup_cb), speller);
     gnome_dialog_button_connect (GNOME_DIALOG (speller), 2,
                         GTK_SIGNAL_FUNC (speller_close_cb), speller);
-    gtk_window_set_title (GTK_WINDOW (speller), "Spell checker");
+    gtk_window_set_title (GTK_WINDOW (speller), _("Spell checker"));
     
     gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (speller)->vbox),
                         GTK_WIDGET (speller->table), 5, TRUE, TRUE);
@@ -414,7 +414,7 @@ spell_error_cb (dict_command_t *command, DictStatusCode code,
     speller = GTK_WINDOW (data);
     
     if (code != DICT_SOCKET_ERROR) {
-        string = g_strdup_printf ("Error invoking query: %s", message);
+        string = g_strdup_printf (_("Error invoking query: %s"), message);
         gnome_error_dialog_parented (string, speller);
         
         if (command->cmd == C_MATCH)

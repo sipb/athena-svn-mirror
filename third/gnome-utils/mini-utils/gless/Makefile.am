@@ -18,8 +18,15 @@ gless_LDADD = \
 	$(GNOMEUI_LIBS) 	\
 	$(INTLLIBS)
 
+man_MANS = gless.1
+
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_DATA = gless.desktop
+Utilities_in_files = gless.desktop.in
+Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
-EXTRA_DIST = gless.desktop $(top_srcdir)/app-docs.make
-
+EXTRA_DIST = \
+	$(man_MANS) \
+	$(Utilities_in_files) \
+	$(Utilities_DATA) \
+	$(top_srcdir)/sgmldocs.make

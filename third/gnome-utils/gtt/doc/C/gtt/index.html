@@ -1,10 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
->GNOME Time Tracking Tool Manual</TITLE
+>GNOME Time Tracker Manual</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="NEXT"
 TITLE="Using GNOME Time Tracker"
 HREF="usage.html"></HEAD
@@ -23,26 +25,26 @@ CLASS="TITLEPAGE"
 CLASS="TITLE"
 ><A
 NAME="AEN2"
->GNOME Time Tracking Tool Manual</A
+>GNOME Time Tracker Manual</A
 ></H1
 ><P
 CLASS="COPYRIGHT"
 ><A
-HREF="ln10.html"
+HREF="ln13.html"
 >Copyright</A
-> &copy; 1997-2000 by <SPAN
-CLASS="HOLDER"
->Eckehard Berns</SPAN
-></P
+> &copy; 1997-2000 by Eckehard Berns</P
 ><P
 CLASS="COPYRIGHT"
 ><A
-HREF="ln10.html"
+HREF="ln13.html"
 >Copyright</A
-> &copy; 2000 by <SPAN
-CLASS="HOLDER"
->Helix Code, Inc.</SPAN
-></P
+> &copy; 2000 by Ximian, Inc.</P
+><P
+CLASS="COPYRIGHT"
+><A
+HREF="ln13.html"
+>Copyright</A
+> &copy; 2001 by Linas Vepstas &#60;linas@linas.org&#62;</P
 ><HR
 WIDTH="75%"
 ALIGN="CENTER"
@@ -112,20 +114,193 @@ NAME="WHATIS"
 >      <TT
 CLASS="APPLICATION"
 >GNOME Time Tracker</TT
-> is a program for managing workflow
-      and keeping track of the time spent on a given project. 
+> 
+      is a combination stop-watch, diary, to-do list tracker and 
+      consultant billing system.  You can measure the amount of time you
+      spend on a task, associate a memo with it, set a billing rate, print
+      an invoice, as well as track that status of other projects.
 
-      Once you have learned to use<TT
+
+      You do not need to learn or use every feature in
+      <TT
 CLASS="APPLICATION"
 >GNOME Time Tracker</TT
->effectively, it can be of great help.
-      You can use it to optimize your work and decide if you are spending too
-      much time on unimportant tasks.  You can count the hours
-      you spend on a project that is billed by the hour. You may discover many other
-      ways<TT
+>
+      to be productive: it is meant to be quite usable
+      without requiring a deep study of the documentation.
+      But once you have learned to use 
+      <TT
 CLASS="APPLICATION"
 >GNOME Time Tracker</TT
-> can work for you.
+>
+      effectively, it can be as effective as any desktop organizer.
+    </P
+><P
+>     Features include:
+     <P
+></P
+><UL
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Basic Stop-Watch Support</I
+>
+    At its core, GTT is a fancy stop-watch: you can click on
+    an icon to start and stop one of any number of timers.
+    It is the times measured by these clocks that make up
+    the core data that GTT works with.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Project Planning Support</I
+>
+    Well, OK, "project planning" may be an overstatment.  But GTT
+    does provide basic to-do list support, including the ability
+    to rank by importance and urgency, specify expected start/stop
+    times, state the project status, and estimate the amount of
+    time needed to complete the project.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Basic Billing/Invoicing Support</I
+>
+    Infrastructure for storing price &#38; billing information has been
+     put into place.  This allows billing invoices to be generated.
+     Tasks can be marked as billable, non-billable, on-hold, or
+     free-of-charge. Billing rates for regular, overtime,
+     double-overtime or flat-fee can be set per task.
+     (Fancier-looking invoices still needed).
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Sub-Project Support</I
+>
+    New projects can be listed
+     as sub-projects of other projects.  The time totals will show
+     the total including sub-projects.  The Hierarchical tree can be
+     expanded / collapsed to simplify viewing.  The tree can be
+     re-arranged by dragging-n-dropping projects.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Simpler Navigation</I
+>
+    Arrow keys and carriage return now work in the main window.
+     Up/down keys can be used to move up &#38; down.  The left/right arrow
+     keys expand/collapse a sub-project list.  Hitting return selects
+     the project.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Log Journal</I
+>
+    A journal showing explicit start and stop times is maintained.
+     Blocks of time can be annotated with memos.  The journal can be
+     exported as an html page, or printed (OK, printer support not
+     yet finished).
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Auto-merge/cleanup of Short Intervals Support</I
+>
+    Extremely short
+     intervals (the length is configurable) are automatically removed
+     from the logs.  Slightly longer but still short intervals
+     are auto-merged into nearby neighbors. Short gaps between intervals
+     are coalesced as well.  You can specify a time period of 0 seconds
+     to turn these features off.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>HTML-based GUI</I
+>
+    The journal GUI is based on extended html pages.  If you know
+     HTML, then you can create customized report pages.  Particularly
+     handy for slapping the company logo and mailing address on the top
+     of the page, and generating a unique, custom look.
+     User-defined reports (contained in ghtml files) can be added to the
+     menus by typing in the filename into the 'new report' GUI dialog.
+     Typically, a 'user-defined report' is one with customized layout,
+     maybe a logo added, all-spiffed up &#38; such.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Inactivity Timeout</I
+>
+    An inactivity timeout has been implemented. If the keyboard
+     or mouse have been idle for more than some period of time, then
+     the clock is stopped.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Shell Commands</I
+>
+    A shell command can be executed whenever a project timer is
+    started or stopped.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Scheme Extension Language</I
+>
+    Scheme (guile) is used as an extension language, although scheme
+     support is currently limited to report generation.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>XML File Format</I
+>
+    All project and journal data are stored in an XML file format.
+    This should simplify future interoperability and data access concerns.
+          </P
+></LI
+><LI
+><P
+>    <I
+CLASS="EMPHASIS"
+>Multi-Language Support</I
+>
+    The basic GTT menus have been translated to dozens of languages.
+    Translations are need for the manual. (Actually, the manual needs
+    a re-write).
+          </P
+></LI
+></UL
+>
+
     </P
 ><P
 >     <TT

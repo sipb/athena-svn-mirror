@@ -27,12 +27,12 @@
 
 typedef enum {
 	GFLOPPY_E2FS = 0,
-	GFLOPPY_FAT = 1
+	GFLOPPY_FAT  = 1
 } GFloppyType;
 
 typedef enum {
 	GFLOPPY_144M = 0,
-	GFLOPPY_12M = 1,
+	GFLOPPY_12M  = 1,
 	GFLOPPY_720K = 2,
 	GFLOPPY_360K = 3
 } GFloppySize;
@@ -69,5 +69,12 @@ void format_floppy (GFloppy *floppy);
 
 /* Return -1 if "device" is not a valid device on the system, and 0 if it is. */
 /* NOTE: It should not actually check the media. */
-gint test_floppy_device (gchar *device);
+typedef enum {
+	GFLOPPY_NO_DEVICE,
+	GFLOPPY_INVALID_PERMISSIONS,
+	GFLOPPY_DEVICE_DISCONNECTED,
+	GFLOPPY_DEVICE_OK
+} GFloppyStatus;
+GFloppyStatus test_floppy_device       (gchar *device);
 #endif
+

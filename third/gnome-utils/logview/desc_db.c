@@ -1,5 +1,8 @@
+#include <config.h>
+#include <gnome.h>
 #include "logview.h"
 #include <string.h>
+#include <sys/types.h>
 #include <regex.h>
 #include <stdlib.h>
 
@@ -30,8 +33,9 @@ read_regexp_db (char *filename, GList **db)
   fp = fopen (filename, "r");
   if (fp == NULL)
     {
-      sprintf (buffer, "Cannot open regexp data base <%s>! Open failed.", 
-	       filename);
+      g_snprintf (buffer, sizeof (buffer),
+		  _("Cannot open regexp data base <%s>! Open failed."), 
+		  filename);
      ShowErrMessage (buffer);
      return(-1);
     }
@@ -139,10 +143,11 @@ read_descript_db (char *filename, GList **db)
   fp = fopen (filename, "r");
   if (fp == NULL)
     {
-      sprintf (buffer, "Cannot open description data base <%s>! Open failed.", 
-	       filename);
-     ShowErrMessage (buffer);
-     return(-1);
+      g_snprintf (buffer, sizeof (buffer),
+		  _("Cannot open description data base <%s>! Open failed."), 
+		  filename);
+      ShowErrMessage (buffer);
+      return(-1);
     }
 
 
@@ -227,8 +232,8 @@ int
 match_line_in_db (LogLine *line, GList *db)
 {
   GList *process, *item;
-  ProcessDB *cur_proc;
-  Description *cur_desc;
+  ProcessDB *cur_proc = NULL;
+  Description *cur_desc = NULL;
   regex_t preg;
   regmatch_t matches[MAX_NUM_MATCHES];
 
@@ -279,7 +284,7 @@ int
 find_tag_in_db (LogLine *line, GList *db)
 {
   GList *item;
-  DescriptionEntry *cur_desc;
+  DescriptionEntry *cur_desc = NULL;
 
   if (line->description == NULL)
     return FALSE;

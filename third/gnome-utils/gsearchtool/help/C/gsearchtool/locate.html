@@ -4,16 +4,13 @@
 >Quick  find mode</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.52"><LINK
 REL="HOME"
 TITLE="GNOME Search Tool Manual"
 HREF="index.html"><LINK
 REL="PREVIOUS"
 TITLE="Search Criteria"
-HREF="criteria.html"><LINK
-REL="NEXT"
-TITLE="Authors"
-HREF="authors.html"></HEAD
+HREF="criteria.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -52,10 +49,7 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
-><A
-HREF="authors.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ><HR
@@ -66,10 +60,11 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="LOCATE"
+NAME="locate"
 >Quick  find mode</A
 ></H1
-><P
+>    
+    <P
 > 
       This section describes quick find mode of <TT
 CLASS="APPLICATION"
@@ -81,39 +76,45 @@ CLASS="GUILABEL"
 ><B
 >Quick find (locate)</B
 ></TT
-> window, shown in <A
-HREF="locate.html#LOCATEWIN"
->Figure 4</A
->. 
+> window, shown in . 
       </P
-><DIV
+>
+
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="LOCATEWIN"
+NAME="locatewin"
 ></A
-><P
+>     
+           
+      <P
 ><IMG
 SRC="figures/locate.png"></P
-><P
+>
+    
+   <P
 ><B
 >Figure 4. Quick find window</B
 ></P
 ></DIV
-><P
+>
+
+    <P
 > In the quick search mode, <TT
 CLASS="APPLICATION"
 >GNOME Search
       tool</TT
 > doesn not actually search for a file on the
-      disk &#8212; instead, it uses a special database containing the
+      disk  instead, it uses a special database containing the
       names of all the files on the system. It makes search much
       faster. However, it also means that the only type of search you
       can do is by filename. Moreover, this search will not find files
       which were added after the last database update (on most
-      systems, it is updated daily, usually at night &#8212; see below
+      systems, it is updated daily, usually at night  see below
       for more info).
     </P
-><P
+>
+    <P
 > To find a file using the quick search mode, just enter a
       substring of the file name in the <TT
 CLASS="GUILABEL"
@@ -136,13 +137,14 @@ CLASS="USERINPUT"
       <SPAN
 CLASS="QUOTE"
 >"searchtool"</SPAN
-> in their full pathname &#8212; in
+> in their full pathname  in
       particular, all the files in <TT
 CLASS="FILENAME"
 >/usr/share/help/gsearchtool</TT
 >.
     </P
-><P
+>
+    <P
 > To restrict search to a subdirectory, you can use the
       directory name in combination with the wildcards. For example,
       to do quick search for all files with extension
@@ -165,7 +167,9 @@ CLASS="GUILABEL"
 ></TT
 > field.
     </P
-><P
+>
+
+    <P
 >The quick search mode is actually a front-end to <B
 CLASS="COMMAND"
 >locate
@@ -177,20 +181,23 @@ TARGET="_top"
 >manual page</A
 >. 
     </P
-><DIV
+>
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="LOCATEDB"
+NAME="locatedb"
 >The locate database</A
 ></H2
-><P
+>      
+      <P
 >	This section discusses updating the database used for quick
 	search. Unless you are a system administrator or just curious,
 	you do not need to read it. 
       </P
-><P
+>
+      <P
 >	On most systems, the database used for
 	<B
 CLASS="COMMAND"
@@ -198,58 +205,8 @@ CLASS="COMMAND"
 > command (and thus, for quick search
 	mode of <TT
 CLASS="APPLICATION"
->GNOME Search tool</TT
->), is
-	updated daily, usually at nights. This is done as a
-	<B
-CLASS="COMMAND"
->cron</B
-> job &#8212; see the <A
-HREF="man:cron"
-TARGET="_top"
->manual page</A
-> for
-	<B
-CLASS="COMMAND"
->cron</B
-> if you are unfamiliar with this
-	utility. Note that if your computer is usually turned off at
-	night time, the database doesn't get updated. In this case,
-	you should change the default update time by either manully
-	editing <TT
-CLASS="FILENAME"
->/etc/crontab</TT
-> or using a graphical
-	tool such as <TT
-CLASS="APPLICATION"
->cromagnon</TT
->. This
-	requires system administrator (root) privileges.
-      </P
-><P
->You can also issue the command <SPAN
-CLASS="QUOTE"
->"Update database
-      now"</SPAN
-> by running the command
-      <B
-CLASS="COMMAND"
->updatedb</B
->. Again, this requires system
-      administrator (root) privileges. Without any options, it
-      rebuilds the whole database, for all the files on your
-      system. It also has many command line options allowing you to
-      fine-tune it (for example, istructing it to skip certain
-      directories). For more information, read the <A
-HREF="man:updatedb"
-TARGET="_top"
->manual page</A
-> for
-      <B
-CLASS="COMMAND"
->updatedb</B
->.
-      </P
+></TT
+></P
 ></DIV
 ></DIV
 ><DIV
@@ -282,10 +239,7 @@ HREF="index.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
-><A
-HREF="authors.html"
->Next &#62;&#62;&#62;</A
-></TD
+>&nbsp;</TD
 ></TR
 ><TR
 ><TD
@@ -302,7 +256,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Authors</TD
+>&nbsp;</TD
 ></TR
 ></TABLE
 ></DIV

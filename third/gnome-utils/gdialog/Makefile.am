@@ -1,3 +1,5 @@
+SUBDIRS = doc
+
 bin_PROGRAMS = gdialog
 
 gdialog_SOURCES =	\
@@ -23,3 +25,7 @@ gdialog_LDADD = \
 	$(GTKXMHTML_LIBS) \
 	$(INTLLIBS) \
 	$(CURSES_LIBS)
+
+man_MANS = gdialog.1
+
+EXTRA_DIST = gdialog.1
