@@ -1,44 +1,27 @@
 /*
- * $Id: Imakefile,v 1.14 1996-08-20 19:25:05 cfields Exp $
+ * $Id: Imakefile,v 1.15 1996-09-20 02:10:17 ghudson Exp $
  */
 
-#ifdef ultrix
-DEFINES=-DULTRIX_40 -I/usr/include/sys 
-NAME=std
-LIBS=
-INST=-m 2755 -gkmem
-#endif
-
-#ifdef _IBMR2
-NAME=rios
-LIBS=-lodm -lcfg -ldiag
-INST=
-#endif
-
 #ifdef SOLARIS
-NAME=sol
 LIBS=-lkvm
-INST=-m 4755 -o root
 #endif
 
 #ifdef sgi
-NAME=sg/**/i
 LIBS=-lmld
-INST=-m 4755 -o root
 #endif
 
-ATHSYS=`fs sysname | awk -F\' '{ print $$2 }'`
+NAME=${HOSTTYPE}
 OSNAME=`uname -s`
 OSVERS=`uname -r`
 
-machtype_${NAME}.o:	${ATHVERS} machtype_${NAME}.c
+machtype_$(NAME).o:	${ATHVERS} machtype_$(NAME).c
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
-	-DATHSYS=\"${ATHSYS}\" -DOSNAME=\"${OSNAME}\" \
+	-DATHSYS=\"${ATHENA_SYS}\" -DOSNAME=\"${OSNAME}\" \
 	-DOSVERS=\"${OSVERS}\" $*.c
 
 build_program(machtype, machtype_${NAME}.o,,${LIBS})
-install_program(machtype,${INST},${ATHRBINDIR})
+install_program(machtype,-m 4755 -o root,${ATHRBINDIR})
 
 install_man(machtype.1,machtype.1)
