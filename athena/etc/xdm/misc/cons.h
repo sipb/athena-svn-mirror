@@ -14,6 +14,10 @@ extern int 		cons_getpty(cons_state *);
 extern int	 	cons_grabcons(cons_state *);
 extern int 		cons_start(cons_state *);
 extern int 		cons_stop(cons_state *);
-extern int		cons_child(cons_state *, void *, pid_t);
-
+extern int		cons_child(cons_state *, pid_t, void *);
+extern int		cons_status(cons_state *);
+extern int		cons_fd(cons_state *);
+extern char *		cons_name(cons_state *);
+extern void		cons_io(cons_state *);
+extern void		cons_close(cons_state *);
 #endif /* _CONS_H_ */
