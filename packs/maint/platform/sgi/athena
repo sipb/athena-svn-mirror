@@ -4,8 +4,15 @@
 
 # First, set up some useful variables.
 
+IS_ON=/sbin/chkconfig
+if $IS_ON verbose ; then
+    ECHO=echo
+else            # For a quiet startup and shutdown
+    ECHO=:
+fi
+
 HOME=/; export HOME
-PATH=/bin:/usr/ucb:/usr/sbin:/etc:/sbin; export PATH
+PATH=/bin:/usr/bsd:/usr/sbin:/etc:/sbin; export PATH
 
 umask 022
 
@@ -13,7 +20,7 @@ umask 022
 case $1 in 
 'start')
 
-echo  "MIT configuration..." > /dev/console
+$ECHO "MIT configuration..."
 
 # Read configuration variables
 
@@ -21,20 +28,19 @@ echo  "MIT configuration..." > /dev/console
 
 # Clean up the password file.
 
-echo "Cleaning up passwd file: \c"				>/dev/console
+$ECHO "Cleaning up passwd file: \c"
 if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
-	echo "recovered from passwd.local... \c"		>/dev/console
+	$ECHO "recovered from passwd.local... \c"
 	/bin/cp /etc/passwd.local /etc/passwd
-	/bin/cp /etc/shadow.local /etc/shadow
 fi
-echo "done."							>/dev/console
+$ECHO "done."
 
 # Clean up the group file.
 
 if [ -f /etc/group.local ]; then
-	echo "Recovering group file... \c"			>/dev/console
+	$ECHO "Recovering group file... \c"
 	/bin/cp /etc/group.local /etc/group
-	echo "done."						>/dev/console
+	$ECHO "done."
 fi
 
 # Remove old cruft and locks
@@ -42,35 +48,32 @@ rm -rf /.deleted /etc/sm/* /etc/sm.bak/*
 
 # Reset time with the time hub
 if [ "${TIMECLIENT}" = "true" ]; then
-	echo ""							>/dev/console
-	echo  "Setting time: \c"				>/dev/console
+	$ECHO ""
+	$ECHO  "Setting time: \c"
 	if [ -f /etc/athena/gettime ]; then
-        	/etc/athena/gettime -s ${TIMEHUB}		>/dev/console
+        	/etc/athena/gettime -s ${TIMEHUB}
 	else
-		echo "Can't set time! gettime not found!"	>/dev/console
+		$ECHO "Can't set time! gettime not found!"
 	fi
 fi
 
 if [ "${AFSSRV}" = "true" ]; then
-	echo ""							>/dev/console
-	echo "AFS server: \c"					>/dev/console
+	$ECHO ""
+	$ECHO "AFS server: \c"
 	if [ -f /usr/afs/bin/bosserver ]; then
 		/usr/afs/bin/bosserver &
-		echo "started."					>/dev/console
+		$ECHO "started."
 	else
-		echo "Can't start AFS server!"
+		$ECHO "Can't start AFS server!"
 	fi
 fi
 
 # Start up afsd in foreground, in case any daemons are coming off AFS
 if [ "${AFSCLIENT}" != "false" ]; then
-	echo ""							>/dev/console
-	echo  "Starting AFS client: \c"				>/dev/console
-
 	if [ \( "${AFSADJUST}" = "true" -o "${PUBLIC}" = "true" \) \
 	     -a -d /usr/vice/cache/ ]; then
 
-		echo "Adjusting the cache size..."		>/dev/console
+		$ECHO "Adjusting the cache size..."
 		rm -f /usr/vice/etc/cacheinfo.old
 		mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
 		/bin/df /usr/vice/cache/ | \
@@ -80,105 +83,74 @@ if [ "${AFSCLIENT}" != "false" ]; then
 		  > /usr/vice/etc/cacheinfo
 
 		sed -n -e '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
-			/usr/vice/etc/cacheinfo 		>/dev/console
+			/usr/vice/etc/cacheinfo
 	fi
 
-	modload /kernel/fs/afs
-
-	if [ "${TIMESRV}" = "true" -o "${TIMECLIENT}" != "true" ]; then
-		AFSOPTS="-nosettime"
-	fi
-	if [ "${AFSCLIENT-true}" = "true" ]; then
-		AFSCLIENT=4
-	fi
-	AFSOPTS="${AFSOPTS} -daemons ${AFSCLIENT}"
-	/etc/afsd ${AFSOPTS}
 	if [ -f  /afs/athena/service/aklog ]; then
           cp -p /afs/athena.mit.edu/service/aklog /bin/athena/aklog
 	fi
 	sh /etc/athena/config_afs
 fi
 
-echo "Loading pcfile system... \c"				>/dev/console
-/usr/sbin/modload /usr/kernel/fs/pcfs
-echo "Loading fd driver... \c"					>/dev/console
-/usr/sbin/modload /usr/kernel/fs/fdfs
-echo "Done"
-
 # fsid not working yet so next block commented out; still true???
 #if [ "${NFSCLIENT}" != "false" ]; then
-#	echo  "NFS client: \c"					>/dev/console
-#	echo  "flushing old NFS connections... \c"		>/dev/console
+#	$ECHO  "NFS client: \c"
+#	$ECHO  "flushing old NFS connections... \c"
 #	/bin/athena/fsid -p -a
-#	echo "done."						>/dev/console
+#	$ECHO "done."
 #fi
 
-echo "Removing old attach mount points... \c"			>/dev/console
+$ECHO "Removing old attach mount points... \c"
 /bin/athena/detach -O -n -h -a
-echo "done."							>/dev/console
+$ECHO "done."
 
-echo ""								>/dev/console
+$ECHO ""
 
 if [ "${PUBLIC}" = "true" ]; then
 	/bin/cp /dev/null /usr/tmp/attachtab
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
-	echo "Getting cluster information: \c"			>/dev/console
+	$ECHO "Getting cluster information: \c"
 	/etc/athena/save_cluster_info
 	if [ -f /etc/athena/clusterinfo.bsh ]; then
 		. /etc/athena/clusterinfo.bsh
-		echo "Attaching system libraries:"		>/dev/console
-		/bin/athena/attach -h -n -o hard $SYSLIB	>/dev/console
-		echo "done."					>/dev/console
+		$ECHO "Attaching system libraries:"
+		/bin/athena/attach -h -n -o hard $SYSLIB
+		$ECHO "done."
 	else
-		echo "no information available..."		>/dev/console
+		$ECHO "no information available..."
 	fi
 fi
 
 # Take a new release, if necessary.
 if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
-	echo  "Checking /srvd/auto_update... \c"		>/dev/console
+	$ECHO  "Checking /srvd/auto_update... \c"
 	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
-	echo "done."						>/dev/console
+	$ECHO "done."
 elif [ -f /srvd/.rvdinfo ]; then
 	NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
 	VERSION=`awk '{a=$5}; END{print a}' /etc/athena/version`
 	if [ "${NEWVERS}" != "${VERSION}" ]; then
-		cat <<EOF					>/dev/console
+		cat <<EOF
 The workstation software version ($VERSION) does not match the
 version on the system packs ($NEWVERS).  A new version of software
 may be available.  Please contact Athena Operations (x3-1410) to
 have your workstation updated.
 EOF
-	 if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
-       	    /usr/ucb/logger -t `uname -n` -p user.notice at revision $VERSION
+	 if [ ! -f /usr/tmp/update.check -a -f /usr/bsd/logger ]; then
+       	    /usr/bsd/logger -t `uname -n` -p user.notice at revision $VERSION
 	    cp /dev/null /usr/tmp/update.check
 	 fi
 	fi
 fi
 
-echo ""								>/dev/console
-
-# The audio driver on the Sparcstation 5 has a habit of disappearing.
-# So we put it back periodically...
-if [ -f /kernel/drv/audiocs ]; then
-	case `/bin/athena/machtype -c` in
-	  SPARC/5)
-	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
-	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
-	      /usr/sbin/audlinks
-	      echo "done."					>/dev/console
-	      ;;
-	  *)
-	      ;;
-	esac
-fi
+$ECHO ""
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
-	echo "Public workstation cleanup... \c"			>/dev/console
+	$ECHO "Public workstation cleanup... \c"
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	rm -f /var/spool/cron/crontabs/root
@@ -204,7 +176,7 @@ if [ "${PUBLIC}" = "true" ]; then
             NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 	    if [ "${NEWVERS}" = "${THISVERS}" ]; then
-		echo "Running track..."				>/dev/console
+		$ECHO "Running track..."
 		/usr/athena/etc/track
 		cp -p /etc/inet/hosts.save /etc/inet/hosts
 		rm -f /etc/inet/hosts.save
@@ -217,121 +189,98 @@ if [ "${PUBLIC}" = "true" ]; then
 		fi
 	    fi
 	fi
-        echo "done."						>/dev/console
+        $ECHO "done."
 fi
 
 # Dealing with sendmail.cf
-if [ "${NEWMAILCF}" = "true" ];then
-	echo "Copying sendmail.cf... \c"			>/dev/console
-	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
-	cp -p /srvd/etc/mail/aliases /etc/mail/aliases
+#if [ "${NEWMAILCF}" = "true" ];then
+#	$ECHO "Copying sendmail.cf... \c"
+#	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
+#	cp -p /srvd/etc/mail/aliases /etc/mail/aliases
+#fi
+
+# Freeze the configuration if we aren't running sendmail.
+# (init.d/mail freezes it if we are running sendmail)
+if [ "${SENDMAIL}" = "false" ]; then
+$ECHO "Freezing sendmail configuration... \c"
+/usr/lib/sendmail -bz `cat $CONFIG/sendmail.options`
+$ECHO "done."
 fi
-# no matter what freeze the configuration
-/usr/lib/sendmail -bz 
-echo "done."							>/dev/console
 
 # Start standard daemons
-echo ""								>/dev/console
-echo  "Starting Athena daemons: \c"				>/dev/console
-
-#	if [ "${TIMECLIENT}" = "true" ]; then
-#		echo  "timed..."				>/dev/console
-#		/etc/athena/timed &
-#	fi
+$ECHO ""
+$ECHO  "Starting Athena daemons: \c"
 
 # Start Athena's inetd
-echo "inetd... \c"						>/dev/console
+$ECHO "inetd... \c"
 /etc/athena/inetd &
 
-if [ "${SNMP}" = "true" ]; then
-	echo  "snmpd... \c"					>/dev/console
-	/etc/athena/snmpd &
-fi
-
-# the sendmail file in rc2.d already cleaned the queues
-if [ "${SENDMAIL}" = "true" ]; then
-	echo  "sendmail... \c"					>/dev/console
-	/usr/lib/sendmail -bd -q1h;
-fi
-
 if [ "${ZCLIENT}" = "true" ]; then
-	echo  "zhm... \c"					>/dev/console
+	$ECHO  "zhm... \c"
 	rm -f /etc/athena/zhm.pid
 	/etc/athena/zhm &
 fi
 
 if [ "${MRUPDATE}" = "true" ]; then
-	echo  "update_server... \c"				>/dev/console
+	$ECHO  "update_server... \c"
 	/usr/athena/etc/update_server &
 fi
 
-echo "done."							>/dev/console
-echo ""								>/dev/console
+$ECHO "done."
+$ECHO ""
 
 if [ "${PUBLIC}" = "true" ]; then
-	echo  "Clearing out /mit... \c"				>/dev/console
+	$ECHO  "Clearing out /mit... \c"
 	/bin/rm -f /mit/*
 	/bin/rmdir /mit/*  >/dev/null
-	echo "done."						>/dev/console
+	$ECHO "done."
 fi
 
-echo "Editing /etc/motd... \c"					>/dev/console
+$ECHO "Editing /etc/motd... \c"
 awk '{ prev = $0 }; END { print prev }' /etc/athena/version	> /tmp/t1
 if [ "${PUBLIC}" != "true" ]; then
 	awk '{ if ( NR > 1 ) print $0 }' /etc/motd		>>/tmp/t1
 fi
 mv /tmp/t1 /etc/motd
 chmod 644 /etc/motd
-echo "done."							>/dev/console
+$ECHO "done."
 
-echo  "Fixing noattach, nocreate, noremote, and nologin... \c"	>/dev/console
+$ECHO  "Fixing noattach, nocreate, noremote, and nologin... \c"
 if [ "${NOCREATE}" = "true" ]; then
-	echo "" >> /etc/nocreate
+	$ECHO "" >> /etc/nocreate
 else
 	rm -f /etc/nocreate
 fi
 
 if [ "${NOATTACH}" = "true" ]; then
-	echo  "" >> /etc/noattach
+	$ECHO  "" >> /etc/noattach
 else
 	rm -f /etc/noattach
 fi
 
 if [ "${NOREMOTE}" = "true" ]; then
-        echo  "" >> /etc/noremote
+        $ECHO  "" >> /etc/noremote
 else
         rm -f /etc/noremote
 fi
 
-echo "done."							>/dev/console
+$ECHO "done."
 
 rm -f /etc/nologin
-echo "Logins now possible."					>/dev/console
+$ECHO "Logins now possible."
 
-/etc/athena/sethnm `uname -n`
-/etc/athena/verify
-
-echo " done!"							>/dev/console
+$ECHO " done!"
 	;;
+
 'stop')
-	pid=`/usr/bin/ps -e | /usr/bin/grep timed | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-	if test "$pid"
-	then
-		kill $pid
-	fi
-	pid=`/usr/bin/ps -e | /usr/bin/grep snmpd | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-	if test "$pid"
-	then
-		kill $pid
-	fi
-	pid=`/usr/bin/ps -e | /usr/bin/grep zhm | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
+	pid=`cat /etc/athena/zhm.pid`
 	if test "$pid"
 	then
 		kill $pid
 	fi
 	;;
 *)
-	echo "usage: /etc/rc2.d/S90athena {start|stop}"
+	$ECHO "usage: /etc/rc2.d/S90athena {start|stop}"
 	;;
 esac
 
