@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.4 1992-01-06 15:57:54 probe Exp $";
+static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.5 1992-07-31 13:26:53 probe Exp $";
 #endif
 
 #include "attach.h"
@@ -185,11 +185,7 @@ rvd_spinup(server, pack, drive, mode, servername, pw)
     struct sockaddr_in sin;
     u_short rvdmode;
 #ifdef KERBEROS
-#ifdef OLD_KERBEROS
-    extern char	*krb_getrealm();
-#else
     extern char	*krb_realmofhost();
-#endif
 #endif
 
     if (debug_flag)
@@ -232,11 +228,7 @@ rvd_spinup(server, pack, drive, mode, servername, pw)
 	register char *dot;
 	char *realm;
 
-#ifdef OLD_KERBEROS
-	realm = krb_getrealm(servername);
-#else
 	realm = krb_realmofhost(servername);
-#endif	
 	dot = index(servername, '.');
 	if (dot)
 	    *dot = '\0';
