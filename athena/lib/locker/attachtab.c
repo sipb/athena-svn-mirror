@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.4 1999-03-22 21:04:50 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.5 1999-06-01 19:09:08 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -277,7 +277,7 @@ void locker_free_attachent(locker_context context, locker_attachent *at)
   if (at->mountpoint_file)
     {
       fclose(at->mountpoint_file);
-      if (!at->attached)
+      if (!at->attached && at->mountpoint)
 	delete_attachent(context, at);
     }
   if (at->dirlockfd)
@@ -537,6 +537,7 @@ static int get_attachent(locker_context context, char *name,
 	  status = LOCKER_ENOMEM;
 	  goto cleanup;
 	}
+      unlink(npath);
       if (symlink(path, npath) < 0)
 	{
 	  locker__error(context, "Could not symlink %s\n to %s: %s.\n",
@@ -682,17 +683,27 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
   if (fstat(fileno(fp), &st2) == -1)
     {
+      fclose(fp);
       locker__error(context, "Could not fstat attachent file %s:\n%s.\n",
 		    path, strerror(errno));
       free(pmem);
       return LOCKER_EATTACHTAB;
     }
-  free(pmem);
   if (st1.st_dev != st2.st_dev || st1.st_ino != st2.st_ino)
     {
       fclose(fp);
+      free(pmem);
       return LOCKER_ENOTATTACHED;
     }
+  if (st1.st_size == 0)
+    {
+      /* "This can't happen." (Ha ha) */
+      unlink(path);
+      fclose(fp);
+      free(pmem);
+      return LOCKER_ENOTATTACHED;
+    }
+  free(pmem);
 
   /* Start building the attachent. */
   at = locker__new_attachent(context, NULL);
@@ -703,21 +714,12 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   at->mountpoint_file = fp;
+  at->attached = 1;
 
   /* Read version number. */
   status = locker__read_line(fp, &buf, &bufsize);
-
-  /* Check if that failed because the file is empty. */
-  if (status == LOCKER_EOF)
-    {
-      status = LOCKER_ENOTATTACHED;
-      goto cleanup2;
-    }
-  else if (status != LOCKER_SUCCESS)
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
-
-  /* OK. It's attached. Return to checking the version number. */
-  at->attached = 1;
   if (atoi(buf) != 1)
     {
       locker__error(context, "Could not parse attachtab file %s:\n"
@@ -727,7 +729,8 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   /* Read locker name. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->name = strdup(buf);
   if (!at->name)
@@ -737,7 +740,8 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   /* Read mountpoint. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->mountpoint = strdup(buf);
   if (!at->mountpoint)
@@ -747,7 +751,8 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   /* Read fstype. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->fs = locker__get_fstype(context, buf);
   if (!at->fs)
@@ -757,12 +762,14 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   /* Read hostaddr. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->hostaddr.s_addr = inet_addr(buf);
 
   /* Read hostdir. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->hostdir = strdup(buf);
   if (!at->hostdir)
@@ -772,17 +779,20 @@ static int read_attachent(locker_context context, int kind, char *name,
     }
 
   /* Read mode */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->mode = buf[0];
 
   /* Read flags */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->flags = atoi(buf);
 
   /* Read list of owners. */
-  if ((status = locker__read_line(fp, &buf, &bufsize)) != LOCKER_SUCCESS)
+  status = locker__read_line(fp, &buf, &bufsize);
+  if (status != LOCKER_SUCCESS)
     goto cleanup;
   at->nowners = strtol(buf, &p, 10);
   if (p == buf || (*p && *p != ':'))
