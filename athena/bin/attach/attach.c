@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.11 1990-11-16 16:15:36 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.12 1990-11-19 11:34:03 epeisach Exp $";
 #endif lint
 
 #include "attach.h"
@@ -162,7 +162,6 @@ retry:
     mark_in_use(name);
     attachtab_append(&at);
     put_attachtab();
-    free_attachtab();
     unlock_attachtab();
 
    for (i=0;hes[i];i++) {
@@ -171,6 +170,7 @@ retry:
 	if (caught_signal) {
 		if (debug_flag)
 			printf("Caught signal; cleaning up attachtab....\n");
+		free_attachtab();
 		lock_attachtab();
 		get_attachtab();
 		attachtab_delete(attachtab_lookup(at.hesiodname));
@@ -184,11 +184,13 @@ retry:
 	 * successful.
 	 */
 	if (try_attach(name, hes[i], !hes[i+1]) == SUCCESS) {
-	    mark_in_use(NULL);
-	    end_critical_code();
-	    return (SUCCESS);
+		free_attachtab();
+		mark_in_use(NULL);
+		end_critical_code();
+		return (SUCCESS);
 	}
     }
+    free_attachtab();
 
     if (error_status == ERR_ATTACHNOTALLOWED)
 	    fprintf(stderr, "%s: You are not allowed to attach %s.\n",
@@ -223,7 +225,7 @@ try_attach(name, hesline, errorout)
     char *name, *hesline;
     int errorout;
 {
-    struct _attachtab at;
+    struct _attachtab at, *atp;
     int status;
     int	attach_suid;
 #ifdef ZEPHYR
@@ -252,6 +254,13 @@ try_attach(name, hesline, errorout)
 
     if (mntpt)
 	strcpy(at.mntpt, mntpt);
+
+    if (atp=attachtab_lookup_mntpt(at.mntpt)) {
+	    fprintf(stderr,"%s: Filesystem %s is already mounted on %s\n",
+		    at.hesiodname, atp->hesiodname, at.mntpt);
+	    error_status = ERR_ATTACHDIRINUSE;
+	    return(FAILURE);
+    }
 
     /*
      * Note if a filesystem does nothave FS_MNTPT_CANON as a property,

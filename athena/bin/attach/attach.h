@@ -1,7 +1,7 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.h,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
@@ -254,6 +254,8 @@ struct cache_ent {
 #define ERR_ATTACHBADMNTPT 25	/* User not allowed to mount a */
 				/* filesystem here */
 #define ERR_ATTACHNOFILSYS 26	/* The remote filesystem doesn't exist */
+#define ERR_ATTACHDIRINUSE 27 /* Some other filesystem is using the */
+                              /* mountpoint directory */
 
 #define ERR_DETACHNOTATTACHED 20 /* Filesystem not attached */
 #define ERR_DETACHINUSE 21	/* Filesystem in use by another proc */
