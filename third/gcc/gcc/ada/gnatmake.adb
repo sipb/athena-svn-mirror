@@ -6,7 +6,6 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                            $Revision: 1.1.1.1 $
 --                                                                          --
 --          Copyright (C) 1992-1997 Free Software Foundation, Inc.          --
 --                                                                          --
@@ -28,12 +27,9 @@
 
 --  Gnatmake usage: please consult the gnat documentation
 
-with Gnatvsn;
 with Make;
 
 procedure Gnatmake is
-   pragma Ident (Gnatvsn.Gnat_Version_String);
-
 begin
    --  The real work is done in Package Make. Gnatmake used to be a standalone
    --  routine. Now Gnatmake's facilities have been placed in a package

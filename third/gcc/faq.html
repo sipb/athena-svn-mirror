@@ -9,12 +9,12 @@
 <h1>GCC Frequently Asked Questions</h1>
 
 <p>The latest version of this document is always available at 
-<a href="http://www.gnu.org/software/gcc/faq.html">http://www.gnu.org/software/gcc/faq.html</a>.</p>
+<a href="http://gcc.gnu.org/faq.html">http://gcc.gnu.org/faq.html</a>.</p>
 
 <p>This FAQ tries to answer specific questions concerning GCC. For
 general information regarding C, C++, resp. Fortran please check the 
 <a href="http://www.eskimo.com/~scs/C-faq/top.html">comp.lang.c FAQ</a>,
-<a href="http://www.research.att.com/~austern/csc/faq.html">comp.std.c++
+<a href="http://www.jamesd.demon.co.uk/csc/faq.html">comp.std.c++
 FAQ</a>,
 and the <a href="http://www.fortran.com/fortran/info.html">Fortran
 Information page</a>.</p>
@@ -30,9 +30,7 @@ Information page</a>.</p>
   <li><a href="#general">General information</a>
   <ol>
      <li><a href="#gcc">What is the relationship between GCC and EGCS?</a></li>
-     <li><a href="#cygnus">What is the relationship between GCC and Cygnus / Red Hat?</a></li>
      <li><a href="#open-development">What is an open development model?</a></li>
-     <li><a href="#bugreport">How do I report a bug?</a></li>
      <li><a href="#support">How do I get a bug fixed or a feature added?</a></li>
      <li><a href="#platforms">Does GCC work on my platform?</a></li>
   </ol></li> 
@@ -45,11 +43,11 @@ Information page</a>.</p>
     <li><a href="#gas">GCC can not find GNU as/GNU ld</a></li>
     <li><a href="#environ">cpp: Usage:... Error</a></li>
     <li><a href="#optimizing">Optimizing the compiler itself</a></li>
+    <li><a href="#iconv">Why does <code>libiconv</code> get linked into <code>jc1</code> on Solaris?</a></li>
   </ol></li>
 
   <li><a href="#testsuite">Testsuite problems</a>
   <ol>
-    <li><a href="#dejagnu">Unable to run the testsuite</a></li>
     <li><a href="#testoptions">How do I pass flags like
         <code>-fnew-abi</code> to the testsuite?</a></li>
     <li><a href="#multipletests">How can I run the test suite with multiple options?</a></li>
@@ -62,13 +60,10 @@ Information page</a>.</p>
 
   <li><a href="#misc">Miscellaneous</a>
   <ol>
-    <li><a href="#memexhausted">Virtual memory exhausted</a></li>
     <li><a href="#friend">Friend Templates</a></li>
     <li><a href="#dso"><code>dynamic_cast</code>, <code>throw</code>, <code>typeid</code> don't work with shared libraries</a></li>
     <li><a href="#generated_files">Why do I need autoconf, bison, xgettext, automake, etc?</a></li>
     <li><a href="#picflag-needed">Why can't I build a shared library?</a></li>
-    <li><a href="#squangle">How to work around too long C++ symbol names? 
-	 (<tt>-fsquangle</tt>)</a></li>
     <li><a href="#vtables">When building C++, the linker says my constructors, destructors or virtual tables are undefined, but I defined them</a></li>
     <li><a href="#incremental">Will GCC someday include an incremental linker?</a></li>
   </ol></li>
@@ -84,7 +79,7 @@ Information page</a>.</p>
 <p>In 1990/1991 gcc version 1 had reached a point of stability.  For the
 targets it could support, it worked well.  It had limitations inherent in
 its design that would be difficult to resolve, so a major effort was made
-to resolve those limitiations and gcc version 2 was the result.</p>
+to resolve those limitations and gcc version 2 was the result.</p>
 
 <p>When we had gcc2 in a useful state, development efforts on gcc1 stopped
 and we all concentrated on making gcc2 better than gcc1 could ever be.  This
@@ -97,25 +92,6 @@ official GCC maintainers. The net result was a single project which
 carries forward GCC development under the ultimate control of the
 <a href="steering.html">GCC Steering Committee</a>.</p>
 
-
-<hr />
-<h2><a name="cygnus">What is the relationship between GCC and Cygnus / Red Hat?</a></h2>
-
-<p>It is a common mis-conception that Red Hat controls GCC either
-directly or indirectly.</p>
-
-<p>While Red Hat does donate hardware, network connections, code and
-developer time to GCC development, Red Hat does not control GCC.</p>
-
-<p>Overall control of GCC is in the hands of the
-<a href="steering.html">GCC Steering Committee</a>
-which includes people from a variety of different organizations and
-backgrounds.  The purpose of the steering committee is to make
-decisions in the best interest of GCC and to help ensure that no
-individual or company has control over the project.</p>
-
-<p>To summarize, Red Hat contributes to the GCC project, but does not exert
-a controlling influence over GCC.</p>
 
 <hr />
 <h2><a name="open-development">What is an open development model?</a></h2>
@@ -162,50 +138,42 @@ than we've had before.</p>
   past few months.  The paper which started all of this introduced two
   terms:  A <b>cathedral</b> development model versus a <b>bazaar</b>
   development model.  The paper is written by Eric S. Raymond, it is
-  called ``<a
-  href="http://www.tuxedo.org/~esr/writings/cathedral-bazaar/">The
-  Cathedral and the Bazaar</a>''.  The paper is a useful starting point
-  for discussions.
+  called ``The Cathedral and the Bazaar''.
+  The paper is a useful starting point for discussions.
 </blockquote>
 
-
 <hr />
-<h2><a name="bugreport">How do I report a bug?</a></h2>
-
-<p>There are complete instructions <a href="bugs.html">here</a>.</p>
-
-
-<hr />
-<h2><a name="support">How do I get a bug fixed or a feature added?</a></h2>
+<!-- The "bugreport" anchor was used in ICE messages of GCC < 2.95.3. -->
+<h2 id="bugreport"><a name="support">How do I get a bug fixed or
+    a feature added?</a></h2>
 
 <p>There are lots of ways to get something fixed.  The list below may be
 incomplete, but it covers many of the common cases.  These are listed
-roughly in order of increasing difficulty for the average GCC user,
+roughly in order of decreasing difficulty for the average GCC user,
 meaning someone who is not skilled in the internals of GCC, and where
 difficulty is measured in terms of the time required to fix the bug.
 No alternative is better than any other; each has its benefits and
 disadvantages.</p>
 
 <ul>
-<li>Hire someone to fix it for you.  There are various companies and
-    individuals providing support for GCC.  This alternative costs
-    money, but is relatively likely to get results.</li>
+<li>Fix it yourself.  This alternative will probably bring results,
+    if you work hard enough, but will probably take a lot of time,
+    and, depending on the quality of your work and the perceived
+    benefits of your changes, your code may or may not ever make it
+    into an official release of GCC.</li>
 
-<li><a href="bugs.html">Report the problem to the GCC GNATS bug tracking system</a>
+<li><a href="bugs.html">Report the problem to the GCC bug tracking system</a>
     and hope that someone will be kind
     enough to fix it for you.  While this is certainly possible, and
     often happens, there is no guarantee that it will.  You should
     not expect the same response from this method that you would see
     from a commercial support organization since the people who read
     GCC bug reports, if they choose to help you, will be volunteering their
-    time.  This alternative will work best if you follow the directions
-    on <a href="bugs.html">submitting bugreports</a>.</li>
+    time.</li>
 
-<li>Fix it yourself.  This alternative will probably bring results,
-    if you work hard enough, but will probably take a lot of time,
-    and, depending on the quality of your work and the perceived
-    benefits of your changes, your code may or may not ever make it
-    into an official release of GCC.</li>
+<li>Hire someone to fix it for you.  There are various companies and
+    individuals providing support for GCC.  This alternative costs
+    money, but is relatively likely to get results.</li>
 </ul>
 
 <hr />
@@ -332,7 +300,7 @@ the library name in <code>-soname</code> or <code>-h</code> options.</p>
 <p>GCC searches the PATH for an assembler and a loader, but it only
 does so after searching a directory list hard-coded in the GCC
 executables.  Since, on most platforms, the hard-coded list includes
-directories in which the system asembler and loader can be found, you
+directories in which the system assembler and loader can be found, you
 may have to take one of the following actions to arrange that GCC uses
 the GNU versions of those programs.</p>
 
@@ -389,20 +357,32 @@ test the <code>-fssa</code> option, you could bootstrap like this:</p>
 
 <pre>make BOOT_CFLAGS="-O2 -fssa" bootstrap</pre>
 
+<hr />
+<h2><a name="iconv">Why does <code>libiconv</code> get linked into <code>jc1</code> on Solaris?</a></h2>
+
+<p>The Java front end requires <code>iconv</code>.  If the compiler
+used to bootstrap GCC finds <code>libiconv</code> (because the GNU
+version of <code>libiconv</code> has been installed in the same prefix
+as the bootstrap compiler), but the newly built GCC does not find the
+library (because it will be installed with a different prefix), then a
+link-time error will occur when building <code>jc1</code>.  This
+problem does not show up so often on platforms that have
+<code>libiconv</code> in a default location (like
+<code>/usr/lib</code>) because then both compilers can find a library
+named <code>libiconv</code>, even though it is a different
+library.</p>
+
+<p>Using <code>--disable-nls</code> at configure-time does not
+prevent this problem because <code>jc1</code> uses
+<code>iconv</code> even in that case.  Solutions include temporarily
+removing the GNU <code>libiconv</code>, copying it to a default
+location such as <code>/usr/lib/</code>, and using
+<code>--enable-languages</code> at configure-time to disable Java.</p>
 
 <hr />
 <a name="testsuite"></a>
 <h1>Testsuite problems</h1>
 
-<h2><a name="dejagnu">Unable to run the testsuite</a></h2>
-
-<p>If you get a message about unable to find "standard.exp" when trying to
-run the GCC testsuites, then your dejagnu is too old to run the GCC tests.
-You will need to get a newer version of dejagnu from
-<a href="http://www.gnu.org/software/dejagnu/dejagnu.html">
-  http://www.gnu.org/software/dejagnu/dejagnu.html</a>.</p>
-
-<hr />
 <h2><a name="testoptions">How do I pass flags like
   <code>-fnew-abi</code> to the testsuite?</a></h2>
 
@@ -451,20 +431,6 @@ no additional flags.</p>
 <h1>Miscellaneous</h1>
 
 
-
-<h2><a name="memexhausted">Virtual memory exhausted error</a></h2>
-
-<p> This error means your system ran out of memory; this can happen for large
-files, particularly when optimizing.  If you're getting this error you should
-consider trying to simplify your files or reducing the optimization level.</p>
-
-<p>Note that using -pedantic or -Wreturn-type can cause an explosion in the
-amount of memory needed for template-heavy C++ code, such as code that uses
-STL.  Also note that -Wall includes -Wreturn-type, so if you use -Wall you
-will need to specify -Wno-return-type to turn it off.</p>
-
-
-<hr />
 <h2><a name="friend">Friend Templates</a></h2>
 
 <p>In order to make a specialization of a template function a friend
@@ -634,33 +600,6 @@ support PIC in this manner.  For example:</p>
 	gcc -c -fPIC myfile.c
 	gcc -shared -o libmyfile.so -fPIC myfile.o
 </pre>
-
-
-<hr />
-<h2><a name="squangle">How to work around too long C++ symbol names
-(<tt>-fsquangle</tt>)</a></h2>
-
-<p>This question does not apply to GCC 3.0 or later versions, which
-have a new C++ ABI with much shorter mangled names.</p>
-
-<p>If the standard assembler of your platform can't cope with the
-large symbol names that the default g++ name mangling mechanism
-produces, your best bet is to use GNU as, from the GNU binutils
-package.</p>
-
-<p>Unfortunately, GNU as does not support all platforms supported by
-GCC, so you may have to use an experimental work-around: the
-<tt>-fsquangle</tt> option, that enables compression of symbol names.</p>
-
-<p>Note that this option is still under development, and subject to
-change.  Since it modifies the name mangling mechanism, you'll need to
-build libstdc++ and any other C++ libraries with this option enabled.
-Furthermore, if this option changes its behavior in the future, you'll
-have to rebuild them all again. :-(</p>
-
-<p>This option can be enabled by default by initializing
-`flag_do_squangling' with `1' in `gcc/cp/decl2.c' (it is not
-initialized by default), then rebuilding GCC and any C++ libraries.</p>
 
 
 <hr />

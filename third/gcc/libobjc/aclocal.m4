@@ -54,7 +54,7 @@ AC_DEFUN(GLIBCPP_CONFIGURE, [
 # These need to be absolute paths, yet at the same time need to
 # canonicalize only relative paths, because then amd will not unmount
 # drives. Thus the use of PWDCMD: set it to 'pawd' or 'amq -w' if using amd.
-glibcpp_builddir=`pwd`
+glibcpp_builddir=`${PWDCMD-pwd}`
 case $srcdir in
 [\\/$]* | ?:[\\/]*) glibcpp_srcdir=${srcdir} ;;
 *) glibcpp_srcdir=`cd "$srcdir" && ${PWDCMD-pwd} || echo "$srcdir"` ;;
@@ -207,11 +207,12 @@ if test x"$glibcpp_toolexecdir" = x"no"; then
   if test -n "$with_cross_host" &&
      test x"$with_cross_host" != x"no"; then
     glibcpp_toolexecdir='$(exec_prefix)/$(target_alias)'
-    glibcpp_toolexeclibdir='$(toolexecdir)/lib$(MULTISUBDIR)'
+    glibcpp_toolexeclibdir='$(toolexecdir)/lib'
   else
     glibcpp_toolexecdir='$(libdir)/gcc-lib/$(target_alias)'
-    glibcpp_toolexeclibdir='$(libdir)$(MULTISUBDIR)'
+    glibcpp_toolexeclibdir='$(libdir)'
   fi
+  glibcpp_toolexeclibdir=$glibcpp_toolexeclibdir/`$CC -print-multi-os-directory`
 fi
 
 AC_SUBST(glibcpp_prefixdir)

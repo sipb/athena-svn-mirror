@@ -1,35 +1,104 @@
-2002-11-19  Release Manager
+2003-10-16  Release Manager
 
-	* GCC 3.2.1 Released.
+	* GCC 3.3.2 Released.
 
-2002-11-19  Release Manager
+2003-08-08  Mark Mitchell  <mark@codesourcery.com>
 
-	* GCC 3.2.1 Released.
+	* gcc_release: Correct logic for updating version.c.  Put
+	prereleases into a subdirectory.
 
-2002-11-18  Release Manager
+2003-08-04  Release Manager
 
-	* GCC 3.2.1 Released.
+	* GCC 3.3.1 Released.
 
-2002-08-14  Release Manager
+2003-08-04  Release Manager
 
-	* GCC 3.2 Released.
+	* GCC 3.3.1 Released.
 
-2002-07-25  Release Manager
+2003-06-29  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
 
-	* GCC 3.1.1 Released.
+	* gcc_release: Command "all" now creates .bz2 files only for
+	releases and pre-releases.
+
+2003-06-27  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
+
+	* gcc_release (build_sources): Do not include gnats.html any longer.
+	Make an error message more descriptive.
+	
+2003-06-18  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
+
+	* gcc_release: Do not update gcc_latest_snapshot tag any longer.
+
+2003-06-02  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
+
+	* gcc_release (build_diffs): Add diagnostics in case we cannot
+	generate a specific diff file.
+
+2003-05-20  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
+
+	* gcc_release (upload_files): Put diff files into a "diffs"
+	subdirectory.
+
+2003-05-18  Nathanael Nerode  <neroden@gcc.gnu.org>
+
+	* gcc_release: GNU CC -> GCC.
+
+2003-05-13  Release Manager
+
+	* GCC 3.3 Released.
+
+2002-09-23  Zack Weinberg  <zack@codesourcery.com>
+
+	* update_version: Do not check in files which are unchanged.
+	* gcc_release: Only update the version in gcc/version.c.
+
+2002-09-17  Joseph S. Myers  <jsm@polyomino.org.uk>
+
+	* update_web_docs (MANUALS): Add fastjar.
+
+2002-09-08  Joseph S. Myers  <jsm@polyomino.org.uk>
+
+	* gcc_release: Make snapshots come from the mainline.
+	* snapshot-README: Update.
+
+2002-08-28  Joseph S. Myers  <jsm@polyomino.org.uk>
+
+	* update_web_docs: Remove support for generating g77_news.html and
+	g77_bugs.html.
+	* update_web_docs_old: Likewise.  Remove support for generating
+	thanks.html.
+
+2002-07-28  Andreas Jaeger  <aj@suse.de>
+
+	* gcc_release: Update comment.
+
+	* snapshot-README: Snapshots are taken from GCC 3.2 branch.
+
+2002-07-28  Mark Mitchell  <mark@codesourcery.com>
+
+	* gcc_release: Use the 3.2 branch for snapshots.
+
+2002-05-31  Florian Weimer  <fw@deneb.enyo.de>
+
+	* update_web_docs (MANUALS): Include various flavours of the GNAT
+	User Guide.
+
+2002-05-27  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* update_version (textstring_FILES): Change gcc/ada/gnatvsn.ads to
+	gcc/gcc/ada/gnatvsn.ads.
 
 2002-05-26  Joseph S. Myers  <jsm28@cam.ac.uk>
 
 	* gcc_release: Add gcc/ada/gnatvsn.ads to list of files in which
 	release status is updated.
+	* update_version (textstring_FILES): Add gcc/ada/gnatvsn.ads.
 
-2002-05-14  Release Manager
+2002-05-21  Joseph S. Myers  <jsm28@cam.ac.uk>
 
-	* GCC 3.1 Released.
+	* gcc_release: Do upload files when local.
 
-2002-05-14  Release Manager
-
-	* GCC 3.1 Released.
+	* snapshot-README, snapshot-index.html: Remove chill.
 
 2002-05-08  Mark Mitchell  <mark@codesourcery.com>
 
@@ -37,7 +106,11 @@
 
 2002-04-22  Mark Mitchell  <mark@codesourcery.com>
 
-	* gcc_release: Merge from mainline.
+	* gcc_release (build_diffs): Remove reference to Chill.
+
+2002-04-21  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* update_web_docs (MANUALS): Remove chill.  Add gnat_rm.
 
 2002-04-19  Kelley R. Cook (kelly.r.cook@gm.com)
 
@@ -47,6 +120,30 @@
 
 	* gcc_release (build_tarfiles): Do not build Chill tarfiles.
 	(CHILL_DIRS): Remove.
+
+2002-03-10  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* gcc_release: Build diffs for ada and chill.  Make "bzip2" a new
+	major mode.
+
+2002-03-06  Phil Edwards  <pme@gcc.gnu.org>
+
+	* update_version:  Don't indent the version string.
+
+2002-03-05  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* snapshot-README: Note that snapshots come from the 3.1 branch.
+	Update list of files.
+
+2002-03-03  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* gcc_release: Make snapshots come from the 3.1 branch.
+
+2002-02-25  Mark Mitchell  <mark@codesourcery.com>
+
+	* update_version: Automatically update version files on all
+	branches.
+	* crontab: Only invoke update_version once.
 
 2002-02-23  Joseph S. Myers  <jsm28@cam.ac.uk>
 
@@ -150,7 +247,7 @@
 
 2001-06-08  Gerald Pfeifer  <pfeifer@dbai.tuwien.ac.at>
 
-	* update_web_docs: Only update the install documentation for the 
+	* update_web_docs: Only update the install documentation for the
 	CVS HEAD.
 
 2001-06-07  Joseph S. Myers  <jsm28@cam.ac.uk>

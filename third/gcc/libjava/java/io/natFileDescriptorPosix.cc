@@ -1,6 +1,6 @@
 // natFileDescriptor.cc - Native part of FileDescriptor class.
 
-/* Copyright (C) 1998, 1999, 2000, 2001  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -17,6 +17,10 @@ details.  */
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/param.h>
+
+#ifndef MAXPATHLEN
+# define MAXPATHLEN 1024
+#endif
 
 #ifdef HAVE_SYS_IOCTL_H
 #define BSD_COMP /* Get FIONREAD on Solaris2. */
@@ -45,7 +49,7 @@ details.  */
 #define NO_FSYNC_MESSAGE "sync unsupported"
 
 void
-java::io::FileDescriptor::init(void)
+java::io::FileDescriptor::init (void)
 {
   in = new java::io::FileDescriptor(0);
   out = new java::io::FileDescriptor(1);
@@ -56,7 +60,7 @@ jboolean
 java::io::FileDescriptor::valid (void)
 {
   struct stat sb;
-  return ::fstat (fd, &sb) == 0;
+  return fd >= 0 && ::fstat (fd, &sb) == 0;
 }
 
 void
@@ -147,6 +151,7 @@ java::io::FileDescriptor::write (jint b)
 	  throw new IOException (JvNewStringLatin1 (strerror (errno)));
 	}
     }
+  position++;
 }
 
 void
@@ -177,6 +182,7 @@ java::io::FileDescriptor::write (jbyteArray b, jint offset, jint len)
       written += r;
       len -= r;
       bytes += r;
+      position += r;
     }
 }
 
@@ -189,24 +195,69 @@ java::io::FileDescriptor::close (void)
     throw new IOException (JvNewStringLatin1 (strerror (errno)));
 }
 
+void
+java::io::FileDescriptor::setLength (jlong pos)
+{
+  struct stat sb;
+
+#ifdef HAVE_FTRUNCATE
+  if (::fstat (fd, &sb))
+    throw new IOException (JvNewStringLatin1 (strerror (errno)));
+
+  if ((jlong) sb.st_size == pos) 
+    return;
+
+  // If the file is too short, we extend it.  We can't rely on
+  // ftruncate() extending the file.  So we lseek() to 1 byte less
+  // than we want, and then we write a single byte at the end.
+  if ((jlong) sb.st_size < pos)
+    {
+      if (::lseek (fd, (off_t) (pos - 1), SEEK_SET) == -1)
+	throw new IOException (JvNewStringLatin1 (strerror (errno)));
+      char out = '\0';
+      int r = ::write (fd, &out, 1);
+      if (r <= 0 || ::lseek (fd, position, SEEK_SET) == -1)
+	throw new IOException (JvNewStringLatin1 (strerror (errno)));
+    }
+  else
+    {
+      if (::ftruncate (fd, (off_t) pos))
+	throw new IOException (JvNewStringLatin1 (strerror (errno)));
+      position = pos;
+    }
+#else /* HAVE_FTRUNCATE */
+  throw new IOException (JvNewStringLatin1 ("FileDescriptor.setLength not implemented"));
+#endif /* HAVE_FTRUNCATE */
+}
+
 jint
 java::io::FileDescriptor::seek (jlong pos, jint whence, jboolean eof_trunc)
 {
   JvAssert (whence == SET || whence == CUR);
 
-  jlong len = length ();
-  jlong here = getFilePointer ();
-
-  if (eof_trunc
-      && ((whence == SET && pos > len) || (whence == CUR && here + pos > len)))
+  if (eof_trunc)
     {
-      whence = SET;
-      pos = len;
+      jlong len = length ();
+      if (whence == SET)
+	{
+	  if (pos > len)
+	    pos = len;
+	}
+      else
+	{
+	  jlong here = getFilePointer ();
+	  if (here + pos > len)
+	    {
+	      pos = len;
+	      whence = SET;
+	    }
+	}
     }
 
   off_t r = ::lseek (fd, (off_t) pos, whence == SET ? SEEK_SET : SEEK_CUR);
   if (r == -1)
     throw new IOException (JvNewStringLatin1 (strerror (errno)));
+  position = r;
   return r;
 }
 
@@ -222,10 +273,7 @@ java::io::FileDescriptor::length (void)
 jlong
 java::io::FileDescriptor::getFilePointer (void)
 {
-  off_t r = ::lseek (fd, 0, SEEK_CUR);
-  if (r == -1)
-    throw new IOException (JvNewStringLatin1 (strerror (errno)));
-  return r;
+  return position;
 }
 
 jint
@@ -246,6 +294,7 @@ java::io::FileDescriptor::read (void)
 	}
       throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
+  position++;
   return b & 0xFF;
 }
 
@@ -257,6 +306,11 @@ java::io::FileDescriptor::read (jbyteArray buffer, jint offset, jint count)
   jsize bsize = JvGetArrayLength (buffer);
   if (offset < 0 || count < 0 || offset + count > bsize)
     throw new java::lang::ArrayIndexOutOfBoundsException;
+
+  // Must return 0 if an attempt is made to read 0 bytes.
+  if (count == 0)
+    return 0;
+
   jbyte *bytes = elements (buffer) + offset;
   int r = ::read (fd, bytes, count);
   if (r == 0)
@@ -272,6 +326,7 @@ java::io::FileDescriptor::read (jbyteArray buffer, jint offset, jint count)
 	}
       throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
+  position += r;
   return r;
 }
 
@@ -320,7 +375,7 @@ java::io::FileDescriptor::available (void)
       off_t where = 0;
       if (fstat (fd, &sb) != -1
 	  && S_ISREG (sb.st_mode)
-	  && (where = lseek (fd, SEEK_CUR, 0)) != (off_t) -1)
+	  && (where = lseek (fd, 0, SEEK_CUR)) != (off_t) -1)
 	{
 	  num = (long) (sb.st_size - where);
 	  num_set = true;
@@ -346,6 +401,6 @@ java::io::FileDescriptor::available (void)
 
   return (jint) num;
 #else
-  throw new IOException (JvNewStringLatin1 ("unimplemented"));
+  return 0;
 #endif
 }

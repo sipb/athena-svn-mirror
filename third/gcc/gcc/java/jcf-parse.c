@@ -1,5 +1,5 @@
 /* Parser for Java(TM) .class files.
-   Copyright (C) 1996, 1998, 1999, 2000, 2001, 2002
+   Copyright (C) 1996, 1998, 1999, 2000, 2001, 2002, 2003
    Free Software Foundation, Inc.
 
 This file is part of GNU CC.
@@ -28,6 +28,7 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #include "config.h"
 #include "system.h"
 #include "tree.h"
+#include "real.h"
 #include "obstack.h"
 #include "flags.h"
 #include "java-except.h"
@@ -43,7 +44,7 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #include <locale.h>
 #endif
 
-#ifdef HAVE_NL_LANGINFO
+#ifdef HAVE_LANGINFO_CODESET
 #include <langinfo.h>
 #endif
 
@@ -65,15 +66,13 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 
 #include "jcf.h"
 
-extern struct obstack *saveable_obstack;
 extern struct obstack temporary_obstack;
-extern struct obstack permanent_obstack;
 
-/* Set to non-zero value in order to emit class initilization code
+/* Set to nonzero value in order to emit class initilization code
    before static field references.  */
 extern int always_initialize_class_p;
 
-static tree parse_roots[3] = { NULL_TREE, NULL_TREE, NULL_TREE };
+static GTY(()) tree parse_roots[3];
 
 /* The FIELD_DECL for the current field.  */
 #define current_field parse_roots[0]
@@ -192,9 +191,7 @@ set_source_filename (jcf, index)
   DECL_LINENUMBERS_OFFSET (current_method) = 0)
 
 #define HANDLE_END_METHODS() \
-{ tree handle_type = CLASS_TO_HANDLE_TYPE (current_class); \
-  if (handle_type != current_class) layout_type (handle_type); \
-  current_method = NULL_TREE; }
+{ current_method = NULL_TREE; }
 
 #define HANDLE_CODE_ATTRIBUTE(MAX_STACK, MAX_LOCALS, CODE_LENGTH) \
 { DECL_MAX_STACK (current_method) = (MAX_STACK); \
@@ -247,8 +244,6 @@ set_source_filename (jcf, index)
 
 #include "jcf-reader.c"
 
-static int yydebug;
-
 tree
 parse_signature (jcf, sig_index)
      JCF *jcf;
@@ -260,13 +255,6 @@ parse_signature (jcf, sig_index)
   else
     return parse_signature_string (JPOOL_UTF_DATA (jcf, sig_index),
 				   JPOOL_UTF_LENGTH (jcf, sig_index));
-}
-
-void
-java_set_yydebug (value)
-     int value;
-{
-  yydebug = value;
 }
 
 tree
@@ -302,62 +290,36 @@ get_constant (jcf, index)
 	force_fit_type (value, 0);
 	break;
       }
-#if TARGET_FLOAT_FORMAT == IEEE_FLOAT_FORMAT
+
     case CONSTANT_Float:
       {
 	jint num = JPOOL_INT(jcf, index);
+	long buf = num;
 	REAL_VALUE_TYPE d;
-#ifdef REAL_ARITHMETIC
-	d = REAL_VALUE_FROM_TARGET_SINGLE (num);
-#else
-	union { float f;  jint i; } u;
-	u.i = num;
-	d = u.f;
-#endif
+
+	real_from_target_fmt (&d, &buf, &ieee_single_format);
 	value = build_real (float_type_node, d);
 	break;
       }
+
     case CONSTANT_Double:
       {
-	HOST_WIDE_INT num[2];
+	long buf[2], lo, hi;
 	REAL_VALUE_TYPE d;
-	HOST_WIDE_INT lo, hi;
-	num[0] = JPOOL_UINT (jcf, index);
-	lshift_double (num[0], 0, 32, 64, &lo, &hi, 0);
-	num[0] = JPOOL_UINT (jcf, index+1);
-	add_double (lo, hi, num[0], 0, &lo, &hi);
 
-	/* Since ereal_from_double expects an array of HOST_WIDE_INT
-	   in the target's format, we swap the elements for big endian
-	   targets, unless HOST_WIDE_INT is sufficiently large to
-	   contain a target double, in which case the 2nd element
-	   is ignored.
+	hi = JPOOL_UINT (jcf, index);
+	lo = JPOOL_UINT (jcf, index+1);
 
-	   FIXME: Is this always right for cross targets? */
-	if (FLOAT_WORDS_BIG_ENDIAN && sizeof(num[0]) < 8)
-	  {
-	    num[0] = hi;
-	    num[1] = lo;
-	  }
+	if (FLOAT_WORDS_BIG_ENDIAN)
+	  buf[0] = hi, buf[1] = lo;
 	else
-	  {
-	    num[0] = lo;
-	    num[1] = hi;
-	  }
-#ifdef REAL_ARITHMETIC
-	d = REAL_VALUE_FROM_TARGET_DOUBLE (num);
-#else
-	{
-	  union { double d;  jint i[2]; } u;
-	  u.i[0] = (jint) num[0];
-	  u.i[1] = (jint) num[1];
-	  d = u.d;
-	}
-#endif
+	  buf[0] = lo, buf[1] = hi;
+
+	real_from_target_fmt (&d, buf, &ieee_double_format);
 	value = build_real (double_type_node, d);
 	break;
       }
-#endif /* TARGET_FLOAT_FORMAT == IEEE_FLOAT_FORMAT */
+
     case CONSTANT_String:
       {
 	tree name = get_name_constant (jcf, JPOOL_USHORT1 (jcf, index));
@@ -408,7 +370,7 @@ get_name_constant (jcf, index)
   return name;
 }
 
-/* Handle reading innerclass attributes. If a non zero entry (denoting
+/* Handle reading innerclass attributes. If a nonzero entry (denoting
    a non anonymous entry) is found, We augment the inner class list of
    the outer context with the newly resolved innerclass.  */
 
@@ -586,6 +548,10 @@ read_class (name)
 	    read_zip_member(current_jcf,
 			    current_jcf->zipd, current_jcf->zipd->zipf);
 	  jcf_parse (current_jcf);
+	  /* Parsing might change the class, in which case we have to
+	     put it back where we found it.  */
+	  if (current_class != class && icv != NULL_TREE)
+	    TREE_TYPE (icv) = current_class;
 	  class = current_class;
 	  java_pop_parser_context (0);
 	  java_parser_context_restore_global ();
@@ -635,9 +601,9 @@ load_class (class_or_name, verbose)
 	break;
 
       /* We failed loading name. Now consider that we might be looking
-         for a inner class. */
+	 for a inner class. */
       if ((separator = strrchr (IDENTIFIER_POINTER (name), '$'))
-          || (separator = strrchr (IDENTIFIER_POINTER (name), '.')))
+	  || (separator = strrchr (IDENTIFIER_POINTER (name), '.')))
 	{
 	  int c = *separator;
 	  *separator = '\0';
@@ -746,7 +712,7 @@ void
 init_outgoing_cpool ()
 {
   current_constant_pool_data_ref = NULL_TREE;
-  outgoing_cpool = (struct CPool *)xmalloc (sizeof (struct CPool));
+  outgoing_cpool = xmalloc (sizeof (struct CPool));
   memset (outgoing_cpool, 0, sizeof (struct CPool));
 }
 
@@ -768,12 +734,12 @@ parse_class_file ()
      compiling from class files.  */
   always_initialize_class_p = 1;
 
-  for (field = TYPE_FIELDS (CLASS_TO_HANDLE_TYPE (current_class));
+  for (field = TYPE_FIELDS (current_class);
        field != NULL_TREE; field = TREE_CHAIN (field))
     if (FIELD_STATIC (field))
       DECL_EXTERNAL (field) = 0;
 
-  for (method = TYPE_METHODS (CLASS_TO_HANDLE_TYPE (current_class));
+  for (method = TYPE_METHODS (current_class);
        method != NULL_TREE; method = TREE_CHAIN (method))
     {
       JCF *jcf = current_jcf;
@@ -876,7 +842,7 @@ parse_source_file_1 (file, finput)
   /* There's no point in trying to find the current encoding unless we
      are going to do something intelligent with it -- hence the test
      for iconv.  */
-#if defined (HAVE_LOCALE_H) && defined (HAVE_ICONV) && defined (HAVE_NL_LANGINFO)
+#if defined (HAVE_LOCALE_H) && defined (HAVE_ICONV) && defined (HAVE_LANGINFO_CODESET)
   setlocale (LC_CTYPE, "");
   if (current_encoding == NULL)
     current_encoding = nl_langinfo (CODESET);
@@ -934,8 +900,9 @@ predefined_filename_p (node)
   return 0;
 }
 
-int
-yyparse ()
+void
+java_parse_file (set_yydebug)
+     int set_yydebug ATTRIBUTE_UNUSED;
 {
   int filename_count = 0;
   char *list, *next;
@@ -1072,7 +1039,7 @@ yyparse ()
       resource_filename = IDENTIFIER_POINTER (TREE_VALUE (current_file_list));
       compile_resource_file (resource_name, resource_filename);
 
-      return 0;
+      return;
     }
 
   current_jcf = main_jcf;
@@ -1096,7 +1063,7 @@ yyparse ()
 	fatal_io_error ("can't open %s", IDENTIFIER_POINTER (name));
       
 #ifdef IO_BUFFER_SIZE
-      setvbuf (finput, (char *) xmalloc (IO_BUFFER_SIZE),
+      setvbuf (finput, xmalloc (IO_BUFFER_SIZE),
 	       _IOFBF, IO_BUFFER_SIZE);
 #endif
       input_filename = IDENTIFIER_POINTER (name);
@@ -1153,7 +1120,7 @@ yyparse ()
       parse_source_file_2 ();
     }
 
-  for (ctxp = ctxp_for_generation;  ctxp;  ctxp = ctxp->next)
+  for (ctxp = ctxp_for_generation; ctxp; ctxp = ctxp->next)
     {
       input_filename = ctxp->filename;
       parse_source_file_3 ();
@@ -1181,7 +1148,6 @@ yyparse ()
       if (flag_indirect_dispatch)
 	emit_offset_symbol_table ();
     }
-  return 0;
 }
 
 /* Process all class entries found in the zip file.  */
@@ -1293,9 +1259,9 @@ void
 init_jcf_parse ()
 {
   /* Register roots with the garbage collector.  */
-  ggc_add_tree_root (parse_roots, sizeof (parse_roots) / sizeof(tree));
-
   ggc_add_root (&current_jcf, 1, sizeof (JCF), (void (*)(void *))ggc_mark_jcf);
 
   init_src_parse ();
 }
+
+#include "gt-java-jcf-parse.h"

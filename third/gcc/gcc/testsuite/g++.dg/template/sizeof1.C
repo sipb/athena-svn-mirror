@@ -1,23 +1,15 @@
+// Test use of `sizeof' as a template parameter.
+// Origin: smacdonald@seimac.com
+
 // { dg-do compile }
 
-template<int size>
-struct Foobar {
-    // Contents irrelevant
-};
+template <unsigned I> struct A {};
 
-template <typename A>
-struct Wrapper {
-    // Contents irrelevant
-};
-
-template <typename A>
-Foobar<sizeof(Wrapper<A>)> *
-compiler_bug (A)
+template <typename SizeType>
+struct B
 {
-    return 0;
-}
-
-int main()
+char * f() const
 {
-    compiler_bug(1);
+return (A<sizeof(void *)>::value);
 }
+};

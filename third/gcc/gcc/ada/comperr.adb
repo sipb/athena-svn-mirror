@@ -6,7 +6,6 @@
 --                                                                          --
 --                                 B o d y                                  --
 --                                                                          --
---                            $Revision: 1.1.1.1 $
 --                                                                          --
 --          Copyright (C) 1992-2002 Free Software Foundation, Inc.          --
 --                                                                          --
@@ -76,8 +75,17 @@ package body Comperr is
      (X    : String;
       Code : Integer := 0)
    is
+      --  The procedures below output a "bug box" with information about
+      --  the cause of the compiler abort and about the preferred method
+      --  of reporting bugs. The default is a bug box appropriate for
+      --  the FSF version of GNAT.
+
       procedure End_Line;
       --  Add blanks up to column 76, and then a final vertical bar
+
+      --------------
+      -- End_Line --
+      --------------
 
       procedure End_Line is
       begin
@@ -96,13 +104,13 @@ package body Comperr is
 
       Abort_In_Progress := True;
 
-      --  If errors have already occurred, then we guess that the abort may
-      --  well be caused by previous errors, and we don't make too much fuss
-      --  about it, since we want to let the programmer fix the errors first.
+      --  If any errors have already occurred, then we guess that the abort
+      --  may well be caused by previous errors, and we don't make too much
+      --  fuss about it, since we want to let programmer fix the errors first.
 
       --  Debug flag K disables this behavior (useful for debugging)
 
-      if Errors_Detected /= 0 and then not Debug_Flag_K then
+      if Total_Errors_Detected /= 0 and then not Debug_Flag_K then
          Errout.Finalize;
 
          Set_Standard_Error;
@@ -251,8 +259,8 @@ package body Comperr is
 
             else
                Write_Str
-                 ("| Please submit a bug report, see" &
-                  " http://gcc.gnu.org/bugs.html.");
+                 ("| Please submit a bug report; see" &
+                 " http://gcc.gnu.org/bugs.html.");
                End_Line;
 
                Write_Str
@@ -270,7 +278,7 @@ package body Comperr is
                End_Line;
 
                Write_Str
-                 ("| (concatenated together with no headers between files).");
+                 ("| concatenated together with no headers between files.");
                End_Line;
 
             end if;

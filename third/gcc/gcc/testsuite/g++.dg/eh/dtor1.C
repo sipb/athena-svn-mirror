@@ -3,7 +3,7 @@
 // Test that a fully-constructed base is destroyed before transferring
 // control to the handler of a function-try-block.
 
-// { dg-do run { xfail *-*-* } }
+// { dg-do run }
 
 int ad;
 int r;

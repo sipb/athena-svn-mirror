@@ -56,6 +56,7 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #include "version.h"
 
 #include <getopt.h>
+#include <math.h>
 
 /* Outout file. */
 FILE *out;
@@ -71,7 +72,7 @@ int flag_print_fields = 1;
 int flag_print_methods = 1;
 int flag_print_attributes = 1;
 
-/* When non zero, warn when source file is newer than matching class
+/* When nonzero, warn when source file is newer than matching class
    file.  */
 int flag_newer = 1;
 
@@ -505,15 +506,85 @@ DEFUN(print_constant, (out, jcf, index, verbosity),
     case CONSTANT_Float:
       {
 	jfloat fnum = JPOOL_FLOAT (jcf, index);
-	fprintf (out, "%s%.10g", verbosity > 0 ? "Float " : "", (double) fnum);
+
+	if (verbosity > 0)
+	  fputs ("Float ", out);
+
+	if (fnum.negative)
+	  putc ('-', out);
+
+	if (JFLOAT_FINITE (fnum))
+	  {
+	    int dummy;
+	    int exponent = fnum.exponent - JFLOAT_EXP_BIAS;
+	    double f;
+	    uint32 mantissa = fnum.mantissa;
+	    if (fnum.exponent == 0)
+	      /* Denormal.  */
+	      exponent++;
+	    else
+	      /* Normal; add the implicit bit.  */
+	      mantissa |= ((uint32)1 << 23);
+	    
+	    f = frexp (mantissa, &dummy);
+	    f = ldexp (f, exponent + 1);
+	    fprintf (out, "%.10g", f);
+	  }
+	else
+	  {
+	    if (fnum.mantissa == 0)
+	      fputs ("Inf", out);
+	    else if (fnum.mantissa & JFLOAT_QNAN_MASK)
+	      fprintf (out, "QNaN(%u)", (fnum.mantissa & ~JFLOAT_QNAN_MASK));
+	    else
+	      fprintf (out, "SNaN(%u)", (fnum.mantissa & ~JFLOAT_QNAN_MASK));
+	  }
+
 	if (verbosity > 1)
-	  fprintf (out, ", bits = 0x%08lx", (long) (* (int32 *) &fnum));
+	  fprintf (out, ", bits = 0x%08lx", JPOOL_UINT (jcf, index));
+	
 	break;
       }
     case CONSTANT_Double:
       {
 	jdouble dnum = JPOOL_DOUBLE (jcf, index);
-	fprintf (out, "%s%.20g", verbosity > 0 ? "Double " : "", dnum);
+
+	if (verbosity > 0)
+	  fputs ("Double ", out);
+
+	if (dnum.negative)
+	  putc ('-', out);
+
+	if (JDOUBLE_FINITE (dnum))
+	  {
+	    int dummy;
+	    int exponent = dnum.exponent - JDOUBLE_EXP_BIAS;
+	    double d;
+	    uint64 mantissa = ((((uint64) dnum.mantissa0) << 32)
+			       + dnum.mantissa1);
+	    if (dnum.exponent == 0)
+	      /* Denormal.  */
+	      exponent++;
+	    else
+	      /* Normal; add the implicit bit.  */
+	      mantissa |= ((uint64)1 << 52);
+
+	    d = frexp (mantissa, &dummy);
+	    d = ldexp (d, exponent + 1);
+	    fprintf (out, "%.20g", d);
+	  }
+	else
+	  {
+	    uint64 mantissa = dnum.mantissa0 & ~JDOUBLE_QNAN_MASK;
+	    mantissa = (mantissa << 32) + dnum.mantissa1;
+
+	    if (dnum.mantissa0 == 0 && dnum.mantissa1 == 0)
+	      fputs ("Inf", out);
+	    else if (dnum.mantissa0 & JDOUBLE_QNAN_MASK)
+	      fprintf (out, "QNaN(%llu)", (unsigned long long)mantissa);
+	    else
+	      fprintf (out, "SNaN(%llu)", (unsigned long long)mantissa);
+	  }
 	if (verbosity > 1)
 	  {
 	    int32 hi, lo;
@@ -821,7 +892,7 @@ help ()
   printf ("  -v, --verbose           Print extra information while running\n");
   printf ("\n");
   printf ("For bug reporting instructions, please see:\n");
-  printf ("%s.\n", GCCBUGURL);
+  printf ("%s.\n", bug_report_url);
   exit (0);
 }
 
@@ -939,11 +1010,7 @@ DEFUN(main, (argc, argv),
   if (optind >= argc)
     {
       fprintf (out, "Reading .class from <standard input>.\n");
-#if JCF_USE_STDIO
-      open_class ("<stdio>", jcf, stdin, NULL);
-#else
       open_class ("<stdio>", jcf, 0, NULL);
-#endif
       process_class (jcf);
     }
   else

@@ -7,8 +7,6 @@
 @c                                                                            o
 @c                              G N A T _ U G                                 o
 @c                                                                            o
-@c                            $Revision: 1.1.1.1 $
-@c                                                                            o
 @c          Copyright (C) 1992-2002 Ada Core Technologies, Inc.               o
 @c                                                                            o
 @c  GNAT is free software;  you can  redistribute it  and/or modify it under  o
@@ -54,26 +52,56 @@
 @c
 @c oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
-@setfilename gnat_ug.info
 @ifset vms
+@setfilename gnat_ug_vms.info
 @settitle GNAT User's Guide for OpenVMS Alpha
 @end ifset
 
 @ifset wnt
+@setfilename gnat_ug_wnt.info
 @settitle GNAT User's Guide for Windows NT
 @end ifset
 
 @ifset unx
+@setfilename gnat_ug_unx.info
 @settitle GNAT User's Guide for Unix Platforms
 @end ifset
 
 @ifset vxworks
+@setfilename gnat_ug_vxw.info
 @settitle GNAT User's Guide for Cross Platforms
 @end ifset
+
+@include gcc-common.texi
 
 @setchapternewpage odd
 @syncodeindex fn cp
 @c %**end of header
+
+@copying
+Copyright @copyright{} 1995-2002, Free Software Foundation
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with the Invariant Sections being ``GNU Free Documentation License'', with the
+Front-Cover Texts being
+@ifset vms
+``GNAT User's Guide for OpenVMS Alpha'',
+@end ifset
+@ifset wnt
+``GNAT User's Guide for Windows NT'',
+@end ifset
+@ifset unx
+``GNAT User's Guide for Unix Platforms'',
+@end ifset
+@ifset vxworks
+``GNAT User's Guide for Cross Platforms'',
+@end ifset
+and with no Back-Cover Texts.
+A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+@end copying
 
 @titlepage
 
@@ -98,41 +126,18 @@
 @end ifset
 
 @subtitle GNAT, The GNU Ada 95 Compiler
-@subtitle Document revision level $Revision: 1.1.1.1 $
-@subtitle GNAT Version 3.16w
-@subtitle Date: $Date: 2003-01-22 21:33:10 $
+@subtitle GNAT Version for GCC @value{version-GCC}
 
 @author Ada Core Technologies, Inc.
 
 @page
 @vskip 0pt plus 1filll
 
-Copyright @copyright{} 1995-2002, Free Software Foundation
-
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1
-or any later version published by the Free Software Foundation;
-with the Invariant Sections being ``GNU Free Documentation License'', with the
-Front-Cover Texts being
-@ifset vms
-``GNAT User's Guide for OpenVMS Alpha'',
-@end ifset
-@ifset wnt
-``GNAT User's Guide for Windows NT'',
-@end ifset
-@ifset unx
-``GNAT User's Guide for Unix Platforms'',
-@end ifset
-@ifset vxworks
-``GNAT User's Guide for Cross Platforms'',
-@end ifset
-and with no Back-Cover Texts.
-A copy of the license is included in the section entitled ``GNU
-Free Documentation License''.
+@insertcopying
 
 @end titlepage
 
-@ifinfo
+@ifnottex
 @node Top, About This Guide, (dir), (dir)
 @top GNAT User's Guide
 
@@ -154,34 +159,11 @@ GNAT User's Guide for Cross Platforms
 
 GNAT, The GNU Ada 95 Compiler
 
-GNAT Version 3.16w
-
-Date: $Date: 2003-01-22 21:33:10 $
+GNAT Version for GCC @value{version-GCC}
 
 Ada Core Technologies, Inc.
 
-Copyright @copyright{} 1995-2002, Free Software Foundation
-
-Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1
-or any later version published by the Free Software Foundation;
-with the Invariant Sections being ``GNU Free Documentation License'', with the
-Front-Cover Texts being
-@ifset vms
-``GNAT User's Guide for OpenVMS Alpha'',
-@end ifset
-@ifset wnt
-``GNAT User's Guide for Windows NT'',
-@end ifset
-@ifset unx
-``GNAT User's Guide for Unix Platforms'',
-@end ifset
-@ifset vxworks
-``GNAT User's Guide for Cross Platforms'',
-@end ifset
-and with no Back-Cover Texts.
-A copy of the license is included in the section entitled ``GNU
-Free Documentation License''.
+@insertcopying
 
 @menu
 * About This Guide::
@@ -623,7 +605,7 @@ Performance Considerations
 
 * Index::
 @end menu
-@end ifinfo
+@end ifnottex
 
 @node About This Guide
 @unnumbered About This Guide

@@ -6,7 +6,6 @@
 --                                                                          --
 --                                 S p e c                                  --
 --                                                                          --
---                            $Revision: 1.1.1.1 $
 --                                                                          --
 --          Copyright (C) 1992-2002 Free Software Foundation, Inc.          --
 --                                                                          --
@@ -57,7 +56,8 @@ package Comperr is
    --  information on the version number, type of abort, and source location.
 
    --  Normally the remaining text is of the following form:
-   --    Please submit bug a report, see http://gcc.gnu.org/bugs.html.
+
+   --    Please submit a bug report; see http://gcc.gnu.org/bugs.html.
    --    Include the entire contents of this bug box in the report.
    --    Include the exact gcc or gnatmake command that you entered.
    --    Also include sources listed below in gnatchop format

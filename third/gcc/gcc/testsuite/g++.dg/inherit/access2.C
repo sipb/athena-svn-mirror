@@ -1,16 +1,14 @@
-// { dg-do compile }
+// Test that a base doesn't get special rights to convert to itself.
 
-class A {
-protected:
-  A& operator=( const A& a ) { return *this; }
+struct A {
+  void f ();
 };
 
-class B : public A
-{};
+struct B: private A { };
 
-int main()
+B b;
+
+void A::f ()
 {
-  B x;
-  B y;
-  x = y;
+  A* ap = &b;			// { dg-error "base|inherit" "" }
 }

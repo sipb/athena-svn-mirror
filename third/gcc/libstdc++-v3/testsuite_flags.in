@@ -43,13 +43,13 @@ case ${query} in
       echo ${CXX}
       ;;
     --build-cxx)
-      CC_build="@glibcpp_CXX@"
-      CXX=`echo $CC_build | sed 's/xgcc/g++/g'`
+      CXX_build="@glibcpp_CXX@ ${PCHFLAGS}"
+      CXX=`echo "$CXX_build" | sed 's,gcc/xgcc ,gcc/g++ ,'`
       echo ${CXX}
       ;;
     --cxxflags)
       CXXFLAGS=' -g @SECTION_FLAGS@ @SECTION_LDFLAGS@
-		 -fmessage-length=0
+		 -fmessage-length=0 @EXTRA_CXX_FLAGS@
 		 -DDEBUG_ASSERT  -DLOCALEDIR="@glibcpp_localedir@" '
       echo ${CXXFLAGS}
       ;;

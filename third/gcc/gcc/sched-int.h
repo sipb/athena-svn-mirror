@@ -20,6 +20,9 @@ along with GCC; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.  */
 
+/* Pointer to data describing the current DFA state.  */
+extern state_t curr_state;
+
 /* Forward declaration.  */
 struct ready_list;
 
@@ -106,9 +109,12 @@ struct deps
       int clobbers_length;
     } *reg_last;
 
-  /* Element N is set for each register that has any non-zero element
+  /* Element N is set for each register that has any nonzero element
      in reg_last[N].{uses,sets,clobbers}.  */
   regset_head reg_last_in_use;
+
+  /* Element N is set for each register that is conditionally set.  */
+  regset_head reg_conditional_sets;
 };
 
 /* This structure holds some state of the current scheduling pass, and
@@ -143,9 +149,9 @@ struct sched_info
      calculations.  */
   int (*contributes_to_priority) PARAMS ((rtx, rtx));
   /* Called when computing dependencies for a JUMP_INSN.  This function
-     should store the set of registers that must be considered as set by
-     the jump in the regset.  */
-  void (*compute_jump_reg_dependencies) PARAMS ((rtx, regset));
+     should store the set of registers that must be considered as used
+     and the set of registers that must be considered as set by the jump.  */
+  void (*compute_jump_reg_dependencies) PARAMS ((rtx, regset, regset, regset));
 
   /* The boundaries of the set of insns to be scheduled.  */
   rtx prev_head, next_tail;
@@ -190,7 +196,7 @@ struct haifa_insn_data
   int dep_count;
 
   /* An encoding of the blockage range function.  Both unit and range
-     are coded.  */
+     are coded.  This member is used only for old pipeline interface.  */
   unsigned int blockage;
 
   /* Number of instructions referring to this insn.  */
@@ -202,7 +208,8 @@ struct haifa_insn_data
 
   short cost;
 
-  /* An encoding of the function units used.  */
+  /* An encoding of the function units used.  This member is used only
+     for old pipeline interface.  */
   short units;
 
   /* This weight is an estimation of the insn's contribution to
@@ -313,4 +320,4 @@ extern int insn_unit PARAMS ((rtx));
 extern int insn_cost PARAMS ((rtx, rtx, rtx));
 extern rtx get_unit_last_insn PARAMS ((int));
 extern int actual_hazard_this_instance PARAMS ((int, int, rtx, int, int));
-
+extern void print_insn PARAMS ((char *, rtx, int));

@@ -1,7 +1,7 @@
 /* Program to write C++-suitable header files from a Java(TM) .class
    file.  This is similar to SUN's javah.
 
-Copyright (C) 1996, 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+Copyright (C) 1996, 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #include "javaop.h"
 #include "java-tree.h"
 #include "java-opcodes.h"
+#include "hashtab.h"
 
 #include <getopt.h>
 
@@ -47,7 +48,7 @@ static int found_error = 0;
 /* Nonzero if we're generating JNI output.  */
 static int flag_jni = 0;
 
-/* When non zero, warn when source file is newer than matching class
+/* When nonzero, warn when source file is newer than matching class
    file.  */
 int flag_newer = 1;
 
@@ -130,8 +131,9 @@ static void print_full_cxx_name PARAMS ((FILE*, JCF*, int, int, int,
 static void decompile_method PARAMS ((FILE*, JCF*, int));
 static void add_class_decl PARAMS ((FILE*, JCF*, JCF_u2));
 
-static int java_float_finite PARAMS ((jfloat));
-static int java_double_finite PARAMS ((jdouble));
+static void jni_print_float PARAMS ((FILE *, jfloat));
+static void jni_print_double PARAMS ((FILE *, jdouble));
+
 static void print_name PARAMS ((FILE *, JCF *, int));
 static void print_base_classname PARAMS ((FILE *, JCF *, int));
 static int utf8_cmp PARAMS ((const unsigned char *, int, const char *));
@@ -142,6 +144,8 @@ static char *get_field_name PARAMS ((JCF *, int, JCF_u2));
 static void print_field_name PARAMS ((FILE *, JCF *, int, JCF_u2));
 static const unsigned char *super_class_name PARAMS ((JCF *, int *));
 static void print_include PARAMS ((FILE *, const unsigned char *, int));
+static int gcjh_streq PARAMS ((const void *p1, const void *p2));
+static int throwable_p PARAMS ((const unsigned char *signature));
 static const unsigned char *decode_signature_piece
   PARAMS ((FILE *, const unsigned char *, const unsigned char *, int *));
 static void print_class_decls PARAMS ((FILE *, JCF *, int));
@@ -190,6 +194,9 @@ static int method_printed = 0;
 static int method_synthetic = 0;
 static int method_signature = 0;
 
+/* Set to 1 while the very first data member of a class is being handled.  */
+static int is_first_data_member = 0;
+
 #define HANDLE_METHOD(ACCESS_FLAGS, NAME, SIGNATURE, ATTRIBUTE_COUNT)	\
   {									\
     method_synthetic = 0;						\
@@ -237,38 +244,54 @@ static int decompiled = 0;
 
 #include "jcf-reader.c"
 
-/* Some useful constants.  */
-#define F_NAN_MASK 0x7f800000
-#if (1 == HOST_FLOAT_WORDS_BIG_ENDIAN) && ! defined (HOST_WORDS_BIG_ENDIAN)
-#define D_NAN_MASK 0x000000007ff00000LL
-#else
-#define D_NAN_MASK 0x7ff0000000000000LL
-#endif
-
-/* Return 1 if F is not Inf or NaN.  */
-static int
-java_float_finite (f)
-     jfloat f;
+/* Print a single-precision float, suitable for parsing by g++.  */
+static void
+jni_print_float (FILE *stream, jfloat f)
 {
-  union Word u;
-  u.f = f;
-
-  /* We happen to know that F_NAN_MASK will match all NaN values, and
-     also positive and negative infinity.  That's why we only need one
-     test here.  See The Java Language Specification, section 20.9.  */
-  return (u.i & F_NAN_MASK) != F_NAN_MASK;
+  /* It'd be nice to use __builtin_nan/__builtin_inf here but they don't
+     work in data initializers.  FIXME.  */
+  if (JFLOAT_FINITE (f))
+    {
+      fputs (" = ", stream);
+      if (f.negative)
+	putc ('-', stream);
+      if (f.exponent)
+	fprintf (stream, "0x1.%.6xp%+df",
+		 ((unsigned int)f.mantissa) << 1,
+		 f.exponent - JFLOAT_EXP_BIAS);
+      else
+	/* Exponent of 0x01 is -125; exponent of 0x00 is *also* -125,
+	   because the implicit leading 1 bit is no longer present.  */
+	fprintf (stream, "0x0.%.6xp%+df",
+		 ((unsigned int)f.mantissa) << 1,
+		 f.exponent + 1 - JFLOAT_EXP_BIAS);
+    }
+  fputs (";\n", stream);
 }
 
-/* Return 1 if D is not Inf or NaN.  */
-static int
-java_double_finite (d)
-     jdouble d;
+/* Print a double-precision float, suitable for parsing by g++.  */
+static void
+jni_print_double (FILE *stream, jdouble f)
 {
-  union DWord u;
-  u.d = d;
-
-  /* Now check for all NaNs.  */
-  return (u.l & D_NAN_MASK) != D_NAN_MASK;
+  /* It'd be nice to use __builtin_nan/__builtin_inf here but they don't
+     work in data initializers.  FIXME.  */
+  if (JDOUBLE_FINITE (f))
+    {
+      fputs (" = ", stream);
+      if (f.negative)
+	putc ('-', stream);
+      if (f.exponent)
+	fprintf (stream, "0x1.%.5x%.8xp%+d",
+		 f.mantissa0, f.mantissa1,
+		 f.exponent - JDOUBLE_EXP_BIAS);
+      else
+	/* Exponent of 0x001 is -1022; exponent of 0x000 is *also* -1022,
+	   because the implicit leading 1 bit is no longer present.  */
+	fprintf (stream, "0x0.%.5x%.8xp%+d",
+		 f.mantissa0, f.mantissa1,
+		 f.exponent + 1 - JDOUBLE_EXP_BIAS);
+    }
+  fputs (";\n", stream);
 }
 
 /* Print a character, appropriately mangled for JNI.  */
@@ -750,10 +773,7 @@ DEFUN(print_field_info, (stream, jcf, name_index, sig_index, flags),
 		jfloat fnum = JPOOL_FLOAT (jcf, current_field_value);
 		fputs ("const jfloat ", out);
 		print_field_name (out, jcf, name_index, 0);
-		if (! java_float_finite (fnum))
-		  fputs (";\n", out);
-		else
-		  fprintf (out, " = %.10g;\n",  fnum);
+		jni_print_float (out, fnum);
 	      }
 	      break;
 	    case CONSTANT_Double:
@@ -761,10 +781,7 @@ DEFUN(print_field_info, (stream, jcf, name_index, sig_index, flags),
 		jdouble dnum = JPOOL_DOUBLE (jcf, current_field_value);
 		fputs ("const jdouble ", out);
 		print_field_name (out, jcf, name_index, 0);
-		if (! java_double_finite (dnum))
-		  fputs (";\n", out);
-		else
-		  fprintf (out, " = %.17g;\n",  dnum);
+		jni_print_double (out, dnum);
 	      }
 	      break;
 	    default:
@@ -831,13 +848,13 @@ DEFUN(print_method_info, (stream, jcf, name_index, sig_index, flags),
     {
       struct method_name *nn;
 
-      nn = (struct method_name *) xmalloc (sizeof (struct method_name));
-      nn->name = (char *) xmalloc (length);
+      nn = xmalloc (sizeof (struct method_name));
+      nn->name = xmalloc (length);
       memcpy (nn->name, str, length);
       nn->length = length;
       nn->next = method_name_list;
       nn->sig_length = JPOOL_UTF_LENGTH (jcf, sig_index);
-      nn->signature = (char *) xmalloc (nn->sig_length);
+      nn->signature = xmalloc (nn->sig_length);
       memcpy (nn->signature, JPOOL_UTF_DATA (jcf, sig_index),
 	      nn->sig_length);
       method_name_list = nn;
@@ -1091,6 +1108,117 @@ decompile_method (out, jcf, code_len)
     }
 }
 
+/* Like strcmp, but invert the return result for the hash table.  This
+   should probably be in hashtab.c to complement the existing string
+   hash function.  */
+static int
+gcjh_streq (p1, p2)
+     const void *p1, *p2;
+{
+  return ! strcmp ((char *) p1, (char *) p2);
+}
+
+/* Return 1 if the initial part of CLNAME names a subclass of throwable, 
+   or 0 if not.  CLNAME may be extracted from a signature, and can be 
+   terminated with either `;' or NULL.  */
+static int
+throwable_p (clname)
+     const unsigned char *clname;
+{
+  int length;
+  unsigned char *current;
+  int i;
+  int result = 0;
+
+  /* We keep two hash tables of class names.  In one we list all the
+     classes which are subclasses of Throwable.  In the other we will
+     all other classes.  We keep two tables to make the code a bit
+     simpler; we don't have to have a structure mapping class name to
+     a `throwable?' bit.  */
+  static htab_t throw_hash;
+  static htab_t non_throw_hash;
+  static int init_done = 0;
+
+  if (! init_done)
+    {
+      PTR *slot;
+      const unsigned char *str;
+
+      /* Self-initializing.  The cost of this really doesn't matter.
+	 We also don't care about freeing these, either.  */
+      throw_hash = htab_create (10, htab_hash_string, gcjh_streq,
+				(htab_del) free);
+      non_throw_hash = htab_create (10, htab_hash_string, gcjh_streq,
+				    (htab_del) free);
+
+      /* Make sure the root classes show up in the tables.  */
+      str = xstrdup ("java.lang.Throwable");
+      slot = htab_find_slot (throw_hash, str, INSERT);
+      *slot = (PTR) str;
+
+      str = xstrdup ("java.lang.Object");
+      slot = htab_find_slot (non_throw_hash, str, INSERT);
+      *slot = (PTR) str;
+
+      init_done = 1;
+    }
+
+  for (length = 0; clname[length] != ';' && clname[length] != '\0'; ++length)
+    ;
+  current = ALLOC (length + 1);
+  for (i = 0; i < length; ++i)
+    current[i] = clname[i] == '/' ? '.' : clname[i];
+  current[length] = '\0';
+
+  /* We don't compute the hash slot here because the table might be
+     modified by the recursion.  In that case the slot could be
+     invalidated.  */
+  if (htab_find (throw_hash, current))
+    result = 1;
+  else if (htab_find (non_throw_hash, current))
+    result = 0;
+  else
+    {
+      JCF jcf;
+      PTR *slot;
+      unsigned char *super, *tmp;
+      int super_length = -1;
+      const char *classfile_name = find_class (current, strlen (current),
+					       &jcf, 0);
+
+      if (! classfile_name)
+	{
+	  fprintf (stderr, "couldn't find class %s\n", current);
+	  found_error = 1;
+	  return 0;
+	}
+      if (jcf_parse_preamble (&jcf) != 0
+	  || jcf_parse_constant_pool (&jcf) != 0
+	  || verify_constant_pool (&jcf) > 0)
+	{
+	  fprintf (stderr, "parse error while reading %s\n", classfile_name);
+	  found_error = 1;
+	  return 0;
+	}
+      jcf_parse_class (&jcf);
+
+      tmp = (unsigned char *) super_class_name (&jcf, &super_length);
+      super = ALLOC (super_length + 1);
+      memcpy (super, tmp, super_length);      
+      super[super_length] = '\0';
+
+      result = throwable_p (super);
+      slot = htab_find_slot (result ? throw_hash : non_throw_hash,
+			     current, INSERT);
+      *slot = current;
+      current = NULL;
+
+      JCF_FINISH (&jcf);
+    }
+
+  return result;
+}
+
 /* Print one piece of a signature.  Returns pointer to next parseable
    character on success, NULL on error.  */
 static const unsigned char *
@@ -1175,7 +1303,7 @@ decode_signature_piece (stream, signature, limit, need_space)
       /* If the previous iterations left us with something to print,
 	 print it.  For JNI, we always print `jobjectArray' in the
 	 nested cases.  */
-      if (flag_jni && ctype == NULL)
+      if (flag_jni && (ctype == NULL || array_depth > 0))
 	{
 	  ctype = "jobjectArray";
 	  *need_space = 1;
@@ -1204,24 +1332,16 @@ decode_signature_piece (stream, signature, limit, need_space)
     case 'L':
       if (flag_jni)
 	{
-	  /* We know about certain types and special-case their
-	     names.
-	     FIXME: something like java.lang.Exception should be
-	     printed as `jthrowable', because it is a subclass.  This
-	     means that gcjh must read the entire hierarchy and
-	     comprehend it.  */
+	  /* We know about certain types and special-case their names.  */
 	  if (! strncmp (signature, "Ljava/lang/String;",
 			 sizeof ("Ljava/lang/String;") -1))
 	    ctype = "jstring";
 	  else if (! strncmp (signature, "Ljava/lang/Class;",
 			      sizeof ("Ljava/lang/Class;") - 1))
 	    ctype = "jclass";
-	  else if (! strncmp (signature, "Ljava/lang/Throwable;",
-			      sizeof ("Ljava/lang/Throwable;") - 1))
+	  /* Skip leading 'L' for throwable_p call.  */
+	  else if (throwable_p (signature + 1))
 	    ctype = "jthrowable";
-	  else if (! strncmp (signature, "Ljava/lang/ref/WeakReference;",
-			      sizeof ("Ljava/lang/ref/WeakReference;") - 1))
-	    ctype = "jweak";
 	  else
 	    ctype = "jobject";
 
@@ -1313,6 +1433,17 @@ DEFUN(print_c_decl, (stream, jcf, name_index, signature_index, is_init,
 	      return;
 	    }
 	}
+
+      /* Force the alignment of the first data member.  This is
+	 because the "new" C++ ABI changed the alignemnt of non-POD
+	 classes.  gcj, however, still uses the "old" alignment.  */
+      if (is_first_data_member && ! (flags & ACC_STATIC) && ! is_method)
+      {
+	is_first_data_member = 0;
+	print_cxx_classname (out, " __attribute__((aligned(__alignof__( ",
+			     jcf, jcf->super_class);
+	fputs (" )))) ", stream);
+      }
 
       /* Now print the name of the thing.  */
       if (need_space)
@@ -1459,7 +1590,7 @@ DEFUN(print_stub_or_jni, (stream, jcf, name_index, signature_index, is_init,
 	return;
 
       if (flag_jni && ! stubs)
-	fputs ("extern ", stream);
+	fputs ("extern JNIEXPORT ", stream);
 
       /* If printing a method, skip to the return signature and print
 	 that first.  However, there is no return value if this is a
@@ -1491,6 +1622,9 @@ DEFUN(print_stub_or_jni, (stream, jcf, name_index, signature_index, is_init,
       /* When printing a JNI header we need to respect the space.  In
 	 other cases we're just going to insert a newline anyway.  */
       fputs (need_space && ! stubs ? " " : "\n", stream);
+
+      if (flag_jni && ! stubs)
+	fputs ("JNICALL ", stream);
       
       /* Now print the name of the thing.  */
       print_name_for_stub_or_jni (stream, jcf, name_index,
@@ -1624,7 +1758,7 @@ print_include (out, utf8, len)
 	return;
     }
 
-  incl = (struct include *) xmalloc (sizeof (struct include));
+  incl = xmalloc (sizeof (struct include));
   incl->name = xmalloc (len + 1);
   strncpy (incl->name, utf8, len);
   incl->name[len] = '\0';
@@ -1711,7 +1845,7 @@ add_namelet (name, name_limit, parent)
 
   if (n == NULL)
     {
-      n = (struct namelet *) xmalloc (sizeof (struct namelet));
+      n = xmalloc (sizeof (struct namelet));
       n->name = xmalloc (p - name + 1);
       strncpy (n->name, name, p - name);
       n->name[p - name] = '\0';
@@ -2041,6 +2175,8 @@ DEFUN(process_file, (jcf, out),
     }
 
   /* Now go back for second pass over methods and fields.  */
+  is_first_data_member = 1;
+
   JCF_SEEK (jcf, method_start);
   method_pass = 1;
   jcf_parse_methods (jcf);
@@ -2183,7 +2319,7 @@ help ()
   /* We omit -MG until it is implemented.  */
   printf ("\n");
   printf ("For bug reporting instructions, please see:\n");
-  printf ("%s.\n", GCCBUGURL);
+  printf ("%s.\n", bug_report_url);
   exit (0);
 }
 
@@ -2267,25 +2403,25 @@ DEFUN(main, (argc, argv),
 
 	case OPT_PREPEND:
 	  if (prepend_count == 0)
-	    prepend_specs = (char**) ALLOC (argc * sizeof (char*));
+	    prepend_specs = ALLOC (argc * sizeof (char*));
 	  prepend_specs[prepend_count++] = optarg;
 	  break;
 
 	case OPT_FRIEND:
 	  if (friend_count == 0)
-	    friend_specs = (char**) ALLOC (argc * sizeof (char*));
+	    friend_specs = ALLOC (argc * sizeof (char*));
 	  friend_specs[friend_count++] = optarg;
 	  break;
 
 	case OPT_ADD:
 	  if (add_count == 0)
-	    add_specs = (char**) ALLOC (argc * sizeof (char*));
+	    add_specs = ALLOC (argc * sizeof (char*));
 	  add_specs[add_count++] = optarg;
 	  break;
 
 	case OPT_APPEND:
 	  if (append_count == 0)
-	    append_specs = (char**) ALLOC (argc * sizeof (char*));
+	    append_specs = ALLOC (argc * sizeof (char*));
 	  append_specs[append_count++] = optarg;
 	  break;
 
@@ -2372,7 +2508,7 @@ DEFUN(main, (argc, argv),
 	{
 	  int dir_len = strlen (output_directory);
 	  int i, classname_length = strlen (classname);
-	  current_output_file = (char*) ALLOC (dir_len + classname_length + 5);
+	  current_output_file = ALLOC (dir_len + classname_length + 5);
 	  strcpy (current_output_file, output_directory);
 	  if (dir_len > 0 && output_directory[dir_len-1] != '/')
 	    current_output_file[dir_len++] = '/';

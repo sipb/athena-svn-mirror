@@ -111,6 +111,20 @@ union _Jv_word2
   jdouble d;
 };                              
 
+// An instance of this type is used to represent a single frame in a
+// backtrace.  If the interpreter has been built, we also include
+// information about the interpreted method.
+struct _Jv_frame_info
+{
+  // PC value.
+  void *addr;
+#ifdef INTERPRETER
+  // Actually a _Jv_InterpMethod, but we don't want to include
+  // java-interp.h everywhere.
+  void *interp;
+#endif // INTERPRETER
+};
+
 /* Extract a character from a Java-style Utf8 string.
  * PTR points to the current character.
  * LIMIT points to the end of the Utf8 string.
@@ -338,9 +352,21 @@ extern "C"
   jlong _Jv_remJ (jlong, jlong);
 }
 
-/* get/set the name of the running executable. */
-extern char *_Jv_ThisExecutable (void);
-extern void _Jv_ThisExecutable (const char *);
+/* Get the number of arguments (cf. argc) or 0 if our argument
+   list was never initialized.  */
+extern int _Jv_GetNbArgs (void);
+
+/* Get the specified argument (cf. argv[index]) or "" if either
+   our argument list was never initialized or the specified index
+   is out of bounds.  */
+extern const char * _Jv_GetSafeArg (int index);
+
+/* Sets our argument list. Can be used by programs with non-standard
+   entry points.  */
+extern void _Jv_SetArgs (int argc, const char **argv);
+
+/* Get the name of the running executable.  */
+extern const char *_Jv_ThisExecutable (void);
 
 /* Return a pointer to a symbol in executable or loaded library.  */
 void *_Jv_FindSymbolInExecutable (const char *);

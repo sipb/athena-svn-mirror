@@ -23,7 +23,6 @@ the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
 
-#undef  TARGET_VERSION
 #define TARGET_VERSION fprintf (stderr, " (i386 FreeBSD/ELF)");
 
 /* Override the default comment-starter of "/".  */
@@ -36,9 +35,6 @@ Boston, MA 02111-1307, USA.  */
 #undef  ASM_APP_OFF
 #define ASM_APP_OFF "#NO_APP\n"
 
-#undef  SET_ASM_OP
-#define SET_ASM_OP	"\t.set\t"
-
 #undef  DBX_REGISTER_NUMBER
 #define DBX_REGISTER_NUMBER(n) \
   (TARGET_64BIT ? dbx64_register_map[n] : svr4_dbx_register_map[n])
@@ -48,14 +44,8 @@ Boston, MA 02111-1307, USA.  */
 
 /* Tell final.c that we don't need a label passed to mcount.  */
 
-#undef  FUNCTION_PROFILER
-#define FUNCTION_PROFILER(FILE, LABELNO)  \
-{									\
-  if (flag_pic)								\
-      fprintf ((FILE), "\tcall *.mcount@GOT(%%ebx)\n");			\
-  else									\
-      fprintf ((FILE), "\tcall .mcount\n");				\
-}
+#undef  MCOUNT_NAME
+#define MCOUNT_NAME ".mcount"
 
 /* Make gcc agree with <machine/ansi.h>.  */
 
@@ -139,3 +129,15 @@ Boston, MA 02111-1307, USA.  */
 
 #undef  DEFAULT_PCC_STRUCT_RETURN
 #define DEFAULT_PCC_STRUCT_RETURN 0
+
+/* FreeBSD sets the rounding precision of the FPU to 53 bits.  Let the
+   compiler get the contents of <float.h> and std::numeric_limits correct.  */
+#define SUBTARGET_OVERRIDE_OPTIONS			\
+  do {							\
+    if (!TARGET_64BIT) {				\
+      real_format_for_mode[XFmode - QFmode]		\
+	= &ieee_extended_intel_96_round_53_format;	\
+      real_format_for_mode[TFmode - QFmode]		\
+	= &ieee_extended_intel_96_round_53_format;	\
+    }							\
+  } while (0)
