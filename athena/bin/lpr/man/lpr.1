@@ -24,7 +24,7 @@ lpr \- off line print
 .B \-T
 .I title
 ] [
-.B \-ptncfrhs
+.B \-ptncfrhszuk
 ] [
 filename ...
 ]
@@ -96,8 +96,16 @@ Remove the file upon completion of spooling or upon completion of
 printing (with the \fB\-s\fP option).
 .IP \fB\-h\fP 5
 Suppress the printing of the burst page.
+.IP \fB\-z\fP 5
+Notify via Zephyr on job completion.
 .IP \fB\-s\fP 5
 Use symbolic links.  Usually files are copied to the spool directory.
+.IP \fB\-u\fP 5
+Disable sending of kerberos authentication to print server.
+.IP \fB\-k\fP 5
+Send kerberos authentication to print server. This option should never
+be necessary, as the printcap information will be used to determine if
+the option needs to be used.
 .PP 
 The
 .B \-C
@@ -162,6 +170,8 @@ enscript(1),
 lpq(1),
 lprm(1),
 pr(1),
+kerberos(1),
+zephyr(1),
 symlink(2),
 printcap(5),
 printers(7),
@@ -192,6 +202,7 @@ Fonts for
 .I troff
 reside on the host with the printer.
 
+Account numbers for authenticated printing are not supported yet.
 
 
 
