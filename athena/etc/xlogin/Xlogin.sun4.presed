@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.6 2001-05-06 15:52:52 ghudson Exp $
+! $Id: Xlogin.sun4.presed,v 1.7 2001-06-12 18:05:47 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -239,6 +239,11 @@ xlogin.Geometry: 		580x325
 			setfocus(*pword_input) \n\
 	<Key>Prior:	signalConsoleACT(show) \n\
 	<Key>Next:	signalConsoleACT(hide) \n\
+	<Key>Down:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: gray) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
 	<Key>:		insert-char() \
 			idleReset()
 
@@ -319,7 +324,7 @@ xlogin.Geometry: 		580x325
 			WcSetValueACT(*name_input.borderColor: black) \
 			idleReset() \
 			setfocus(*name_input) \n\
-	Shift<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
+	<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.displayCaret: TRUE) \
 			WcSetValueACT(*name_input.borderColor: black) \
@@ -454,7 +459,8 @@ xlogin.Geometry: 		580x325
 				omenuEntry6, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
 				omenuEntry10, omenuEntry11, omenuEntry12, \
-				omenuEntry13, omenuEntry14, omenuEntry15
+				omenuEntry13, omenuEntry14, omenuEntry15, \
+				omenuEntry16
 
 *menuLine.wcClassName:		SmeLine
 *omenuEntry1.wcClassName:	SmeBSB
@@ -470,6 +476,7 @@ xlogin.Geometry: 		580x325
 *omenuEntry13.wcClassName:	SmeBSB
 *omenuEntry14.wcClassName:	SmeBSB
 *omenuEntry15.wcClassName:	SmeBSB
+*omenuEntry16.wcClassName:	SmeBSB
 
 *omenuEntry1.label:		Information
 *omenuEntry1.justify:		center
@@ -489,25 +496,28 @@ xlogin.Geometry: 		580x325
 *omenuEntry9.callback:		attachAndRunCB(moira,xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/moira/namespace)
 *omenuEntry10.label:		Display Console Window
 *omenuEntry10.callback:		signalConsoleCB(show)
-*omenuEntry11.label:		Shut Down Window System
-*omenuEntry11.callback:		windowShutdownCB()
-*omenuEntry12.label:		Restart X in 8-bit Mode
-*omenuEntry12.callback:		commandCB(touch /var/athena/x-8-bit), \
+*omenuEntry11.label:		Hide Console Window
+*omenuEntry11.callback:		signalConsoleCB(hide)
+*omenuEntry12.label:		Shut Down Window System
+*omenuEntry12.callback:		windowShutdownCB()
+*omenuEntry13.label:		Restart X in 8-bit Mode
+*omenuEntry13.callback:		commandCB(touch /var/athena/x-8-bit), \
 				restartCB()
-*omenuEntry13.label:		Eject Floppy (if present)
-*omenuEntry13.callback:		commandCB(eject floppy)
-*omenuEntry14.label:		Eject Zip Disk (if present)
-*omenuEntry14.callback:		commandCB(attachandrun mtools mzip mzip -e z:)
-*omenuEntry15.label:		Eject CD-ROM (if present)
-*omenuEntry15.callback:		commandCB(eject cdrom)
+*omenuEntry14.label:		Eject Floppy (if present)
+*omenuEntry14.callback:		commandCB(eject floppy)
+*omenuEntry15.label:		Eject Zip Disk (if present)
+*omenuEntry15.callback:		commandCB(attachandrun mtools mzip mzip -e z:)
+*omenuEntry16.label:		Eject CD-ROM (if present)
+*omenuEntry16.callback:		commandCB(eject cdrom)
 
 *omenuEntry3.rightBitmap:	Shift-F2
 *omenuEntry5.rightBitmap:	Shift-F4
 *omenuEntry6.rightBitmap:	Shift-F6
 *omenuEntry8.rightBitmap:	Shift-F7
 *omenuEntry9.rightBitmap:	Shift-F8
-*omenuEntry10.rightBitmap:	Prev
-*omenuEntry11.rightBitmap:	Ctrl-P
+*omenuEntry10.rightBitmap:	Page-Up
+*omenuEntry11.rightBitmap:	Page-Dn
+*omenuEntry12.rightBitmap:	Ctrl-P
 
 *register.wcClassName:		Command
 *register.vertDistance:		10
@@ -633,11 +643,15 @@ xlogin.Geometry: 		580x325
 *warningShell.borderWidth:	3
 
 *warning.wcClassName:		Dialog
+*warning.background:		gray
 *warning.icon:			warning
+*warning.icon.background:	gray
 *warning.label:			Login Failed
+*warning.label.background:	gray
 *warning.label.font:		-adobe-new century schoolbook-bold-r-*-240-75-*
 *warning.label.width:		200
 *warning.value:			this will be replaced before it is used
+*warning.value*background:	gray
 *warning.wcChildren:		continue
 
 *warning*value.width:		380
@@ -656,6 +670,7 @@ xlogin.Geometry: 		580x325
 			reset()
 
 *continue.wcClassName:		Command
+*continue.background:		gray
 *continue.callback:		WcPopdownCB(*warningShell), \
 				resetCB()
 
@@ -681,10 +696,10 @@ xlogin.Geometry: 		580x325
 *login*background:		gray
 *login*foreground:		black,gray55,black
 
-*login.logo.foreground:		black,gray15,red
-*login.eyes.foreground:		black,gray15,red
-*login.version.foreground:	black,gray15,red
-*login.logo2.foreground:	black,gray15,red
+*login.logo.foreground:		black,gray15,red3
+*login.eyes.foreground:		black,gray15,red3
+*login.version.foreground:	black,gray15,red3
+*login.logo2.foreground:	black,gray15,red3
 
 ! savershell is the big black window that covers the screen when the xlogin
 ! "screensaver" kicks in.
