@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.80 2003-05-20 18:32:16 ghudson Exp $
+# $Id: do.sh,v 1.81 2004-03-09 18:24:04 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -83,17 +83,23 @@ Linux\ 2.2.*\ i?86)
   ;;
 Linux\ 2.4.*\ i?86)
   case `cat /etc/redhat-release` in
-  *release\ 7.3\ *)
+  "Red Hat Linux release 7.3 "*)
     ATHENA_SYS=i386_linux24
     ATHENA_SYS_COMPAT=i386_linux22:i386_linux3:i386_linux2:i386_linux1
     ;;
-  *release\ 9\ *)
+  "Red Hat Linux release 9 "*)
     ATHENA_SYS=i386_rh9
     ATHENA_SYS_COMPAT=i386_linux24:i386_linux22:i386_linux3:i386_linux2
     ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:i386_linux1
     ;;
+  "Red Hat Enterprise Linux"*"release 3"*)
+    ATHENA_SYS=i386_rhel3
+    ATHENA_SYS_COMPAT=i386_rh9:i386_linux24:i386_linux22:i386_linux3
+    ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:i386_linux2:i386_linux1
+    ;;
   *)
     echo "Unrecognized Red Hat release, aborting." 1>&2
+    exit 1
     ;;
   esac
   ;;
