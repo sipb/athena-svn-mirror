@@ -5,11 +5,7 @@
 #include <sys/param.h>
 #ifdef POSIX
 #include <unistd.h>
-#ifndef SOLARIS
 #include <dirent.h>
-#else
-#include "dirent.h"
-#endif
 #else
 #include <sys/dir.h>
 #endif
@@ -21,9 +17,7 @@
 #ifdef OLD
 #include <ndbm.h>
 #endif
-#ifdef sparc
-#include <alloca.h>
-#endif
+
 #ifdef SOLARIS
 #define NO_LINEBUF
 #endif
@@ -35,7 +29,7 @@ char *dstdir = "";            /* effectively "/" */
 char *src_rule_file = ".rconf";
 char *dst_rule_file = ".rconf.local";
 char *date_db_name  = ".reconcile_dates";
-#else DEBUG
+#else /* DEBUG */
 char *srcdir = "s";
 char *dstdir = "d";
 char *src_rule_file = ".rconf";
@@ -43,7 +37,7 @@ char *dst_rule_file = ".rconf.local";
 #ifdef DATE
 char *date_db_name  = ".reconcile_dates";
 #endif
-#endif DEBUG
+#endif /* DEBUG */
 
 rule rules[MAXNRULES];
 unsigned int lastrule;
@@ -98,7 +92,7 @@ main(argc, argv)
   } else {
     printf("DEBUG SyncTree\n");
   }
-#endif DEBUG
+#endif /* DEBUG */
 
 #ifndef NO_RLIMIT
   getrlimit(RLIMIT_DATA,&rl);
@@ -206,7 +200,7 @@ main(argc, argv)
 	  fprintf(stderr,"exiting\n");
 	  exit(1);
 	}
-#endif 
+#endif
       if ((strlen(srcdir) + strlen("/") + strlen(p) + 1) > MAXPATHLEN)
 	{ fprintf(stderr,"full pathname is too long, exiting");
 	  exit(1);
@@ -289,6 +283,13 @@ struct targ {
   struct targ *next;
 };
 
+#ifdef POSIX
+#ifdef SYSV
+#define dlen(d) (sizeof(struct dirent) + strlen(d->d_name))
+#else
+#define dlen(d) (sizeof(struct dirent))
+#endif
+#endif
 
 int dodir(src,dst,part)
      char *src;
@@ -335,12 +336,13 @@ int dodir(src,dst,part)
 	sp->pathname = (char *)0;
 	/**** the next two lines are space inefficient, it can be done better */
 #ifdef POSIX
-	sp->dir    = (struct dirent *) getmem(sizeof(struct dirent));
+	sp->dir    = (struct dirent *) getmem(dlen(dp));
+	memcpy(sp->dir, dp, dlen(dp));
 #else
 	sp->dir    = (struct direct *) getmem(sizeof(struct direct));
-#endif
 	*(sp->dir) = *dp;
-        strcpy(sp->dir->d_name, dp->d_name);
+	strcpy(sp->dir->d_name, dp->d_name);
+#endif
     }
     closedir(dirp);
 
@@ -358,11 +360,12 @@ int dodir(src,dst,part)
 		newsrc(sp);
 		/* the next two lines are space inefficient */
 #ifdef POSIX
-		sp->dir    = (struct dirent *) getmem(sizeof(struct dirent));
+		sp->dir    = (struct dirent *) getmem(dlen(dp));
+		memcpy(sp->dir, dp, dlen(dp));
 #else
 		sp->dir    = (struct direct *) getmem(sizeof(struct direct));
-#endif
 		*(sp->dir) = *dp;
+#endif
 
 		sp->pathname =
 		    (char *) getmem( strlen(src) + strlen(sp->dir->d_name) + 2 );
