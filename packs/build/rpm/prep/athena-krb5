@@ -4,3 +4,4 @@ cp $1/packs/config/krb.conf $2
 cp $1/packs/config/krb.realms $2
 cp $1/packs/config/krb5.conf $2
 cp $1/packs/config/ftpusers $2
+cp $1/packs/maint/os/linux/user-kerberos.sh $2
