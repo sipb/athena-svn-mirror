@@ -11,14 +11,14 @@
 #include	<X11/StringDefs.h>
 #include	<X11/IntrinsicP.h>
 #include	<X11/CoreP.h>
-#include	<Xaw/Command.h>
-#include	<Xaw/AsciiText.h>
-#include	<Xaw/TextP.h>
+#include	<X11/Xaw/Command.h>
+#include	<X11/Xaw/AsciiText.h>
+#include	<X11/Xaw/TextP.h>
 #include	"xdsc.h"
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.6 1991-02-15 13:36:16 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.7 1991-03-12 16:33:51 sao Exp $";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];
@@ -26,6 +26,7 @@ extern TextWidget	bottextW, toptextW;
 extern Boolean	debug;
 extern char	filebase[];
 extern int	topscreen;
+extern int	edscversion;
 extern Widget	topW;
 extern void	TopSelect();
 
@@ -311,9 +312,6 @@ SetUpTransactionNumbers()
 		fprintf (stderr, "first is %d, last is %d\n",first, last);
 	}
 
-/*
-** I don't think the following line should be here.
-*/
 	GoToTransaction (highestseen, False);
 
 	return (highestseen);
@@ -323,18 +321,15 @@ MarkLastRead()
 {
 	static char	command[LONGNAMELEN + 25];
 
-	if (highestseen > last) {
-		sprintf (	command,
-				"Not setting highestseen in '%s'",
-				currentmtglong);
-		PutUpWarning("WARNING", command, False);
-	}
-	else {
+	if (*currentmtglong)  {
 		sprintf (	command, 
 				"(ss %d %s)\n", 
 				highestseen,
 				currentmtglong);
-		(void) RunCommand (command, NULL, NULL, False);
+		if (edscversion >= 24)
+			(void) RunCommand (command, NULL, NULL, True);
+		else
+			(void) RunCommand (command, NULL, NULL, False);
 	}
 
 }
