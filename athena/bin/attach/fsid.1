@@ -1,4 +1,4 @@
-.\" $Id: fsid.1,v 1.3 1992-07-31 19:20:47 probe Exp $
+.\" $Id: fsid.1,v 1.4 1997-04-01 01:01:42 ghudson Exp $
 .\"
 .TH FSID 1 "1 July 1991"
 .ds ]W MIT Project Athena
@@ -50,16 +50,16 @@ user be authenticated.
 .IP "-filsys or -f"
 Perform the current mapping operation for the servers associated with
 the indicated filesystems.  The filesystems are retrieved from
-/usr/tmp/attachtab.
+/var/athena/attachtab.
 .IP "-cell \fIcell\fP or -c \fIcell\fP"
 Authenticate the user to the specified AFS cell.
 .IP "-host \fIhost\fP or -h \fIhost\fP"
 Authenticate the user to the specified NFS server host.
 .IP "-all or -a"
 Perform the current mapping operation for all hosts associated with
-filesystems in /usr/tmp/attachtab (see \fIattach(1)\fP).  Note that a host
-may be referenced more than once if more than once filesystem is
-located on that host.
+filesystems in /var/athena/attachtab (see \fIattach(1)\fP).  Note that
+a host may be referenced more than once if more than once filesystem
+is located on that host.
 .IP "-user \fIuser\fP or -U \fIuser\fP"
 Perform the mapping on behalf of the specified user.
 
@@ -67,8 +67,8 @@ Perform the mapping on behalf of the specified user.
 If the -f option is not specified, \fIfsid\fP takes a list of hosts
 (either names or internet addresses) as arguments and performs the
 specified mapping function.  If -f is specified, it takes a list of
-filesystem names instead and uses /usr/tmp/attachtab to retrieve the
-server associated with each filesystem.
+filesystem names instead and uses /var/athena/attachtab to retrieve
+the server associated with each filesystem.
 
 .SH EXAMPLES
 
@@ -140,7 +140,7 @@ program names.
 
 .SH FILES
 
-/usr/tmp/attachtab
+/var/athena/attachtab
 
 .SH "SEE ALSO"
 

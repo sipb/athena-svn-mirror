@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.22 1996-10-10 18:27:16 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.23 1997-04-01 01:01:43 ghudson Exp $";
 
 #include "attach.h"
 
@@ -477,14 +477,14 @@ char internal_getopt(arg, cl)
 }
 
 /*
- * Format a hesiod name into a name in /tmp...including replacing /
+ * Format a hesiod name into a name in /var/athena...including replacing /
  * with @, etc.
  */
 make_temp_name(filename, name)
     char *filename;
     char *name;
 {
-    strcpy(filename, "/tmp/attach_");
+    strcpy(filename, "/var/athena/attach_");
     filename = filename+strlen(filename);
     
     while (*name) {

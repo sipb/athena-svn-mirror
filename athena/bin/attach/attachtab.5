@@ -6,7 +6,7 @@ Attach maintains an printable text database of all successful attaches
 in the \fIattachtab\fR.  It uses this file to determine the current status
 of a filesystem (attached, being attached, being detached) and to
 retrieve information about it.  The following information is stored in
-/usr/tmp/attachtab:
+/var/athena/attachtab:
 
 A version number
 .br
@@ -41,17 +41,19 @@ mounted with the nosuid option set.
 The mode (r or w) of the filesystem.
 
 \fIAttach\fR and \fIdetach\fR also communicate via temporary files in
-/tmp.  These files are used to determine whether or not the status
-field of /usr/tmp/attachtab is accurate.  For example, if an \fIattach\fR
-is aborted for some reason, /usr/tmp/attachtab may still indicate that the
-filesystem is in the process of being attached.  These files are named
-/tmp/attach.\fIfilesystem\fR, and are deleted as soon as they are no
-longer needed.  An advisory lock is kept by the active process on the
-file to indicate that a process really is operating on the filesystem.
+/var/athena.  These files are used to determine whether or not the
+status field of /var/athena/attachtab is accurate.  For example, if an
+\fIattach\fR is aborted for some reason, /var/athena/attachtab may
+still indicate that the filesystem is in the process of being
+attached.  These files are named /var/athena/attach_\fIfilesystem\fR,
+and are deleted as soon as they are no longer needed.  An advisory
+lock is kept by the active process on the file to indicate that a
+process really is operating on the filesystem.
 
 .SH FILES
 The location of attachtab can be dynamically configured in
-/etc/athena/attach.conf; by default it is located in /usr/tmp/attachtab.
-It is also commonly placed in /etc/athena/attachtab.
+/etc/athena/attach.conf; by default it is located in
+/var/athena/attachtab.  It is also commonly placed in
+/etc/athena/attachtab.
 .SH SEE ALSO
 attach(1), attach.conf(5)

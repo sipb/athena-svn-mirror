@@ -1,6 +1,6 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
- *	$Id: config.h,v 1.16 1995-07-21 00:38:12 cfields Exp $
+ *	$Id: config.h,v 1.17 1997-04-01 01:01:41 ghudson Exp $
  *
  * Configuration defines
  *
@@ -41,7 +41,7 @@
  * Other external filenames
  */
 #define ATTACHCONFFILE	"/etc/athena/attach.conf"
-#define ATTACHTAB	"/usr/tmp/attachtab"
+#define ATTACHTAB	"/var/athena/attachtab"
 #define FSCK_FULLNAME	"/etc/fsck"
 #define FSCK_SHORTNAME	"fsck"
 #define AKLOG_FULLNAME	"/bin/athena/aklog"
