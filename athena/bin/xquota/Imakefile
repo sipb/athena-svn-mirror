@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.5 1991-07-17 11:36:29 lwvanels Exp $
+ * $Id: Imakefile,v 1.6 1992-07-17 15:02:27 miki Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
  *       see the file mit-copyright.h
  */
     
-#if defined(vax) && !defined(ultrix) || defined(ibm032)
+#if defined(vax) && !defined(ultrix) || defined(ibm032) || defined(sun)
 INCFLAGS= -I. -I/usr/local/include
 LIBS= -lXaw -lXt -lXmu -lX11 -lhesiod -lrpcsvc /usr/local/lib/afs/libsys.a
 
