@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.8 1989-10-18 13:21:16 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.9 1990-02-09 08:52:31 epeisach Exp $
 #	$Author: epeisach $
 #	$Log: not supported by cvs2svn $
+# Revision 1.8  89/10/18  13:21:16  epeisach
+# Fixed depend line & ran depend.
+# 
 # Revision 1.7  89/02/22  16:51:28  epeisach
 # Install options to strip and set permissions added.
 # 
@@ -65,7 +68,7 @@ install:	finger
 	install -c -s -m 755 finger ${DESTDIR}/usr/athena/finger
 
 depend:
-	makedepend ${CFLAGS} ${SRCS}
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS}
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

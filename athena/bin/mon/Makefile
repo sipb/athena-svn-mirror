@@ -2,7 +2,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.6 1989-09-16 12:45:34 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/Makefile,v 1.7 1990-02-09 08:54:04 epeisach Exp $
 #
 
 
@@ -30,7 +30,7 @@ print:
 	qpr mon.h mon.c io.c vm.c netif.c readnames.c display.c
 
 depend:
-	makedepend ${CFLAGS} mon.c io.c vm.c netif.c readnames.c display.c
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} mon.c io.c vm.c netif.c readnames.c display.c
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

@@ -94,7 +94,7 @@ clean:
 
 
 depend:
-	makedepend ${CFLAGS} ${SRCS}
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS}
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

@@ -12,7 +12,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v 1.2 1989-09-16 12:56:55 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/util/Makefile,v 1.3 1990-02-09 08:51:34 epeisach Exp $
 #
 #
 ###########################################################################
@@ -44,9 +44,9 @@ lint:
 #		util files are linted with the application source
 
 depend:
-	mkdep ${CFLAGS} ${SRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 
-# DO NOT DELETE THIS LINE -- mkdep uses it.
+# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
 
 what_lib.o: what_lib.c /usr/include/mit-copyright.h /usr/include/stdio.h
 what_lib.o: /usr/include/curses.h /usr/include/sgtty.h

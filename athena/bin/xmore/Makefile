@@ -5,8 +5,8 @@
 #      By:		Chris D. Peterson
 #     
 #      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v $
-#      $Author: probe $
-#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.7 1989-10-21 15:11:15 probe Exp $
+#      $Author: epeisach $
+#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.8 1990-02-09 08:59:58 epeisach Exp $
 #      
 #         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #     
@@ -59,7 +59,7 @@ manual:	;
 
 
 depend:
-	makedepend ${CFLAGS} ${CFILES} 
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${CFILES} 
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

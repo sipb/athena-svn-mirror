@@ -12,7 +12,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.3 1989-09-16 13:15:23 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.4 1990-02-09 08:51:57 epeisach Exp $
 #
 ###########################################################################
 
@@ -61,10 +61,10 @@ TAGS:
 	etags ${SRCS} ${OTHERSRC}
 
 depend: 
-	mkdep ${CFLAGS} -I${INCLIB} ${SRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} -I${INCLIB} ${SRCS}
 
 
-# DO NOT DELETE THIS LINE -- mkdep uses it.
+# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
 
 whatsup.o: whatsup.c ../include/mit-copyright.h /usr/include/curses.h
 whatsup.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h

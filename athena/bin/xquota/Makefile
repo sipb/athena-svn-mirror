@@ -4,8 +4,8 @@
 #       By:		Chris D. Peterson
 #    
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v $
-#       $Author: probe $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.8 1989-06-13 18:50:42 probe Exp $
+#       $Author: epeisach $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.9 1990-02-09 09:00:39 epeisach Exp $
 #       
 #          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #    
@@ -43,7 +43,7 @@ install:
 		done
 
 depend:
-	makedepend  -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
+	touch Make.depend; makedepend -fMake.depend  -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
                 $(CFLAGS) $(INCFLAGS) ${SRCS}
 
 # DO NOT DELETE THIS LINE -- make depend uses it

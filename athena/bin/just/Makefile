@@ -2,7 +2,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.3 1989-09-16 12:40:06 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.4 1990-02-09 08:53:04 epeisach Exp $
 #
 
 
@@ -27,7 +27,7 @@ clean:
 	rm -f just *.o core a.out *.bak *~
 
 depend:
-	makedepend ${CFLAGS} just.c
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} just.c
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

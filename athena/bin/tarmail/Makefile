@@ -2,7 +2,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.10 1989-09-16 12:54:56 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.11 1990-02-09 08:58:42 epeisach Exp $
 #
 DESTDIR=
 INCDIR=/usr/include
@@ -29,9 +29,9 @@ clean:
 	rm -f atob btoa *.o
 
 depend:
-	mkdep -p ${CFLAGS} btoa.c atob.c
+	touch Make.depend; mkdep -fMake.depend -p ${CFLAGS} btoa.c atob.c
 
-# DO NOT DELETE THIS LINE -- mkdep uses it.
+# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
 
 btoa: btoa.c /usr/include/stdio.h
 atob: atob.c /usr/include/stdio.h

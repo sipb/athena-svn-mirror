@@ -2,7 +2,7 @@
 # Makefile for 'xversion'
 # Copyright 1989 by the Massachusetts Institute of Technology.
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/Makefile,v 1.2 1989-11-20 06:26:45 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/Makefile,v 1.3 1990-02-09 09:00:59 epeisach Exp $
 #
 
 CFLAGS=	-O
@@ -23,7 +23,7 @@ install:
 	-install -c -m 0444 xversion.man $(DESTDIR)/usr/man/man1/xversion.1
 
 depend:
-	makedepend -o "" -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
+	touch Make.depend; makedepend -fMake.depend -o "" -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
 		$(CFLAGS) $(SRCS)
 
 $(BINS):

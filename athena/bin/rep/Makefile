@@ -2,7 +2,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v 1.6 1989-09-16 12:50:38 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/rep/Makefile,v 1.7 1990-02-09 08:56:35 epeisach Exp $
 #
 DESTDIR=
 CFLAGS=-O 
@@ -19,7 +19,7 @@ clean:
 	rm -f core rep
 
 depend:
-	makedepend ${CFLAGS} rep.c
+	touch Make.depend; makedepend -fMake.depend ${CFLAGS} rep.c
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 

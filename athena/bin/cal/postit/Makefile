@@ -12,7 +12,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v $
 #	$Author: epeisach $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v 1.3 1989-09-16 13:19:32 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/Makefile,v 1.4 1990-02-09 08:51:12 epeisach Exp $
 #
 ###########################################################################
 
@@ -71,12 +71,12 @@ install: postit bulkpost
 	install -c -s -m 755 bulkpost ${DESTDIR}${INSTDIR}/bulkpost
 
 depend: 
-	mkdep ${CFLAGS} -I${INCLIB} ${ALLSRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} -I${INCLIB} ${ALLSRCS}
 
 TAGS:
 	etags *.c ../util/*.c
 
-# DO NOT DELETE THIS LINE -- mkdep uses it.
+# DO NOT DELETE THIS LINE -- touch Make.depend; mkdep -fMake.depend uses it.
 
 postmaster.o: postmaster.c ../include/mit-copyright.h /usr/include/stdio.h
 postmaster.o: /usr/include/strings.h /usr/include/ctype.h
