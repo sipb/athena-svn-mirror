@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.4 1996-05-16 21:35:17 cfields Exp $
+# $Id: update_ws.sh,v 1.5 1996-06-06 18:26:49 cfields Exp $
 #
 
 trap "" 1 15
@@ -168,6 +168,7 @@ if [ -d ${SITE}/server ] ; then
 fi
 
 if [ `/bin/athena/machtype` = sgi ]; then
+	/etc/athena/save_cluster_info
 	if [ ! -f /etc/athena/clusterinfo.bsh ]; then
 		echo "Cannot find Hesiod information for this machine, aborting update."
 		exit 1
