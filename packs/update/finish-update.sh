@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.6 1997-05-26 00:20:44 ghudson Exp $
+# $Id: finish-update.sh,v 1.7 1997-07-26 18:55:06 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -15,12 +15,13 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
-export PATH
+export PATH CPUTYPE
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 SERVERDIR=/var/server
 PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
-HOSTTYPE=`/srvd/bin/athena/machtype`
+HOSTTYPE=`/bin/athena/machtype`
+CPUTYPE=`/bin/athena/machtype -c`
 CONFCHG=/var/athena/update.confchg
 CONFVARS=/var/athena/update.confvars
 AUXDEVS=/var/athena/update.auxdevs
