@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.15 1988-06-30 18:19:21 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.16 1988-07-08 10:17:10 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.15 1988-06-30 18:19:21 jtkohl Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.16 1988-07-08 10:17:10 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -64,7 +64,8 @@ static Code_t Z_RetSubs(notice, nsubs)
 	register int i;
 	ZNotice_t retnotice;
 	char *ptr,*end,*ptr2;
-	fd_set read, write, except;
+	fd_set read, setup;
+	int nfds;
 	struct timeval tv;
 	int gotone;
 
@@ -92,14 +93,23 @@ static Code_t Z_RetSubs(notice, nsubs)
 	gimmeack = 0;
 	__subscriptions_list = (ZSubscription_t *) 0;
 
+	FD_ZERO(&setup);
+	FD_SET(ZGetFD(), &setup);
+	nfds = ZGetFD() + 1;
+
 	while (!nrecv || !gimmeack) {
 		tv.tv_sec = 0;
 		tv.tv_usec = 500000;
 		for (i=0;i<HM_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
 						  intervals */
 			gotone = 0;
-			if (select(0, &read, &write, &except, &tv) < 0)
+			read = setup;
+			if (select(nfds, &read, (fd_set *) 0,
+				   (fd_set *) 0, &tv) < 0)
 				return (errno);
+			if (FD_ISSET(ZGetFD(), &read))
+			    i--;	/* make sure we time out the
+					   full 30 secs */
 			retval = ZCheckIfNotice(&retnotice,
 						(struct sockaddr_in *)0,
 						ZCompareMultiUIDPred,
