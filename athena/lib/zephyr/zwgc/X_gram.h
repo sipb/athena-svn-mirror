@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v $
- *      $Author: marc $
- *	$Id: X_gram.h,v 1.5 1989-11-15 23:49:20 marc Exp $
+ *      $Author: raeburn $
+ *	$Id: X_gram.h,v 1.6 1990-10-22 06:28:17 raeburn Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -20,6 +20,7 @@
 #define x_gram_TYPE
 
 #include <X11/Xlib.h>
+#include <sys/time.h>
 
 typedef struct _xblock {
    unsigned long fgcolor;
@@ -37,6 +38,7 @@ typedef struct _x_gram {
    char *text;
    struct _x_gram *below,*above;
    Window w;
+   struct timeval can_die;
 } x_gram;
 
 typedef struct _xauxblock {
