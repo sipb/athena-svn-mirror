@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 #include "krb.h"
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -46,25 +47,14 @@ extern int krb_debug;
  * success, or KFAILURE if something goes wrong.
  */
 
-#ifdef HAVE_SETEUID
-#define do_seteuid(e) seteuid((e))
-#else
-#ifdef HAVE_SETRESUID
-#define do_seteuid(e) setresuid(-1, (e), -1)
-#else
-#ifdef HAVE_SETREUID
-#define do_seteuid(e) setreuid(geteuid(), (e))
-#else
-#define do_seteuid(e) (errno = EPERM, -1)
-#endif
-#endif
-#endif
+#include "k5-util.h"
+#define do_seteuid krb5_seteuid
 
 #ifndef O_SYNC
 #define O_SYNC 0
 #endif
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 in_tkt(pname,pinst)
     char *pname;
     char *pinst;
@@ -73,11 +63,11 @@ in_tkt(pname,pinst)
     uid_t me, metoo, getuid(), geteuid();
     struct stat statpre, statpost;
     int count;
-    char *file = TKT_FILE;
+    const char *file = TKT_FILE;
     int fd;
     register int i;
     char charbuf[BUFSIZ];
-    int mask;
+    mode_t mask;
 #ifdef TKT_SHMEM
     char shmidname[MAXPATHLEN];
 #endif /* TKT_SHMEM */
@@ -157,7 +147,7 @@ in_tkt(pname,pinst)
 	    return(KFAILURE);
 	} else
 	    if (krb_debug)
-		printf("swapped UID's %d and %d\n",metoo,me);
+		printf("swapped UID's %d and %d\n",(int) metoo, (int) me);
     }
     /* Set umask to ensure that we have write access on the created
        ticket file.  */
@@ -172,7 +162,7 @@ in_tkt(pname,pinst)
 	    return(KFAILURE);
 	} else
 	    if (krb_debug)
-		printf("swapped UID's %d and %d\n",me,metoo);
+		printf("swapped UID's %d and %d\n", (int) me, (int) metoo);
     }
     if (tktfile < 0) {
 	if (krb_debug)
@@ -198,4 +188,13 @@ in_tkt(pname,pinst)
 #else /* !TKT_SHMEM */
     return(KSUCCESS);
 #endif /* TKT_SHMEM */
+}
+
+int KRB5_CALLCONV
+krb_in_tkt(pname, pinst, prealm)
+    char *pname;
+    char *pinst;
+    char *prealm;
+{
+    return in_tkt(pname, pinst);
 }

@@ -27,19 +27,16 @@ char copyright[] =
 
 /* based on @(#)login.c	5.25 (Berkeley) 1/6/89 */
 
-/* While the code may be compiled with some of these options turned off,
-   the default will be to turn them *all* on if v4 compatibility is
-   available, and allow them to be configured via krb5.conf. */
-/* The configuration is of the form
+/* The configuration, with defaults as listed, is of the form:
    [login]
    # login stanza
    krb5_get_tickets = 1
    # use password to get v5 tickets
-   krb4_get_tickets = 1
+   krb4_get_tickets = 0
    # use password to get v4 tickets
-   krb4_convert = 1
+   krb4_convert = 0
    # use kerberos conversion daemon to get v4 tickets
-   krb_run_aklog = 1
+   krb_run_aklog = 0
    # attempt to run aklog
    aklog_path = $(prefix)/bin/aklog
    # where to find it [not yet implemented]
@@ -290,15 +287,23 @@ static const char *krb_get_err_text(kerror)
 
 #define MAXENVIRON	32
 
+#ifdef NEED_SETENV
+extern int setenv(char *, char *, int);
+#endif
+
 /*
  * This bounds the time given to login.  Not a define so it can
  * be patched on machines where it's too small.
  */
 int	timeout = 300;
 
+#if 0
 char term[64], *hostname, *username, *namep = NULL;
+#else
+char term[64], *username, *namep = NULL;
+#endif
 
-extern int errno;
+
 
 #ifdef KRB4
 #define KRB_ENVIRON	"KRBTKFILE"	/* Ticket file environment variable */
@@ -315,20 +320,25 @@ extern int errno;
 #endif
 
 char *getenv();
-void dofork();
+void dofork(void);
 
-int doremotelogin(), do_krb_login(), rootterm();
-void lgetstr(), getloginname(), checknologin(), sleepexit();
-void dolastlog(), motd(), check_mail();
+char *stypeof(char *);
+void term_init(int);
+int doremotelogin(char *), do_krb_login(char *, int), rootterm(char *);
+void lgetstr(char *, int, char *), getloginname(void), checknologin(void);
+void dolastlog(char *, int, char *), motd(void), check_mail(void);
+void sleepexit(int);
 
 void ensure_process_capabilities(void);
 void set_user_capabilities(const char *username);
 
 #ifndef HAVE_STRSAVE
-char * strsave();
+char * strsave(char *);
 #endif
 
 typedef krb5_sigtype sigtype;
+
+sigtype timedout(int);
 
 
 #ifndef HAVE_INITGROUPS
@@ -347,12 +357,12 @@ static struct login_confs {
     int *flag;
 } login_conf_set[] = {
 #ifdef KRB5_GET_TICKETS
-    "krb5_get_tickets", &login_krb5_get_tickets,
+    {"krb5_get_tickets", &login_krb5_get_tickets},
 #endif
 #ifdef KRB5_KRB4_COMPAT
-    "krb4_get_tickets", &login_krb4_get_tickets,
-    "krb4_convert", &login_krb4_convert,
-    "krb4_run_aklog", &login_krb_run_aklog,
+    {"krb4_get_tickets", &login_krb4_get_tickets},
+    {"krb4_convert", &login_krb4_convert},
+    {"krb4_run_aklog", &login_krb_run_aklog},
 #endif /* KRB5_KRB4_COMPAT */
 };
 
@@ -395,7 +405,7 @@ krb5_data tgtname = {
 #endif
 
 /* get flags (listed above) from the profile */
-void login_get_kconf(k)
+static void login_get_kconf(k)
      krb5_context k;
 {
     int i, max_i;
@@ -440,7 +450,7 @@ static char *salt;
 struct spwd *spwd;
 #endif
 
-void lookup_user (name)
+static void lookup_user (name)
     char *name;
 {
     pwd = getpwnam (name);
@@ -452,7 +462,7 @@ void lookup_user (name)
 #endif
 }
 
-int unix_needs_passwd ()
+static int unix_needs_passwd ()
 {
 #ifdef HAVE_SHADOW
     if (spwd)
@@ -463,7 +473,7 @@ int unix_needs_passwd ()
     return 1;
 }
 
-int unix_passwd_okay (pass)
+static int unix_passwd_okay (pass)
     char *pass;
 {
     char user_pwcopy[9];
@@ -499,13 +509,17 @@ int krbflag;			/* set if tickets have been obtained */
 #ifdef KRB4_GET_TICKETS
 static int got_v4_tickets;
 AUTH_DAT *kdata = (AUTH_DAT *) NULL;
-KTEXT ticket = (KTEXT) NULL;
 char tkfile[MAXPATHLEN];
-char realm[REALM_SZ];
 #endif
 
+#ifdef KRB4_GET_TICKETS
+static void k_init (ttyn, realm)
+    char *ttyn;
+    char *realm;
+#else
 void k_init (ttyn)
     char *ttyn;
+#endif
 {
 #ifdef KRB5_GET_TICKETS
     krb5_error_code retval;
@@ -520,7 +534,7 @@ void k_init (ttyn)
 
     /* Set up the credential cache environment variable */
     if (!getenv(KRB5_ENV_CCNAME)) {
-	sprintf(ccfile, "FILE:/tmp/krb5cc_p%d", getpid());
+	sprintf(ccfile, "FILE:/tmp/krb5cc_p%ld", (long) getpid());
 	setenv(KRB5_ENV_CCNAME, ccfile, 1);
 	krb5_cc_set_default_name(kcontext, ccfile);
 	unlink(ccfile+strlen("FILE:"));
@@ -556,12 +570,13 @@ void k_init (ttyn)
 }
 
 #ifdef KRB5_GET_TICKETS
-int k5_get_password (user_pwstring, pwsize)
+static int k5_get_password (user_pwstring, pwsize)
     char *user_pwstring;
+    unsigned int pwsize;
 {
     krb5_error_code code;
     char prompt[255];			
-    sprintf(prompt,"Password for %s: ", username);
+    sprintf(prompt,"Password for %s", username);
 
     /* reduce opportunities to be swapped out */
     code = krb5_read_password(kcontext, prompt, 0, user_pwstring, &pwsize);
@@ -578,23 +593,25 @@ int k5_get_password (user_pwstring, pwsize)
     return 1;
 }
 
-int try_krb5 (me_p, pass)
+static int try_krb5 (me_p, pass)
     krb5_principal *me_p;
     char *pass;
 {
     krb5_error_code code;
     krb5_principal me;
 
-    if (code = krb5_parse_name(kcontext, username, &me)) {
+    code = krb5_parse_name(kcontext, username, &me);
+    if (code) {
 	com_err ("login", code, "when parsing name %s",username);
 	return 0;
     }
 
     *me_p = me;
 
-    if (code = krb5_get_init_creds_password(kcontext, &my_creds, me, pass,
-					    krb5_prompter_posix, NULL,
-					    0, NULL, NULL)) {
+    code = krb5_get_init_creds_password(kcontext, &my_creds, me, pass,
+					krb5_prompter_posix, NULL,
+					0, NULL, NULL);
+    if (code) {
 	if (code == KRB5KRB_AP_ERR_BAD_INTEGRITY)
 	    fprintf (stderr,
 		     "%s: Kerberos password incorrect\n", 
@@ -618,7 +635,7 @@ int try_krb5 (me_p, pass)
     return 1;
 }
 
-int have_v5_tickets (me)
+static int have_v5_tickets (me)
     krb5_principal *me;
 {
     if (krb5_cc_default (kcontext, &ccache))
@@ -633,8 +650,9 @@ int have_v5_tickets (me)
 #endif /* KRB5_GET_TICKETS */
 
 #ifdef KRB4_CONVERT
-try_convert524(kcontext, me, use_ccache)
-    krb5_context kcontext;
+static int
+try_convert524(kctx, me, use_ccache)
+    krb5_context kctx;
     krb5_principal me;
     int use_ccache;
 {
@@ -645,20 +663,17 @@ try_convert524(kcontext, me, use_ccache)
     CREDENTIALS v4creds;
 
 
-    /* or do this directly with krb524_convert_creds_kdc */
-    krb524_init_ets(kcontext);
-
     /* If we have forwarded v5 tickets, retrieve the credentials from
      * the cache; otherwise, the v5 credentials are in my_creds.
      */
     if (use_ccache) {
 	/* cc->ccache, already set up */
 	/* client->me, already set up */
-	kpccode = krb5_build_principal(kcontext, &kpcserver, 
-				       krb5_princ_realm(kcontext, me)->length,
-				       krb5_princ_realm(kcontext, me)->data,
+	kpccode = krb5_build_principal(kctx, &kpcserver, 
+				       krb5_princ_realm(kctx, me)->length,
+				       krb5_princ_realm(kctx, me)->data,
 				       "krbtgt",
-				       krb5_princ_realm(kcontext, me)->data,
+				       krb5_princ_realm(kctx, me)->data,
 				       NULL);
 	if (kpccode) {
 	    com_err("login/v4", kpccode,
@@ -671,19 +686,19 @@ try_convert524(kcontext, me, use_ccache)
 	increds.server = kpcserver;
 	increds.times.endtime = 0;
 	increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
-	kpccode = krb5_get_credentials(kcontext, 0, ccache,
+	kpccode = krb5_get_credentials(kctx, 0, ccache,
 				       &increds, &v5creds);
-	krb5_free_principal(kcontext, kpcserver);
+	krb5_free_principal(kctx, kpcserver);
 	increds.server = NULL;
 	if (kpccode) {
 	    com_err("login/v4", kpccode, "getting V5 credentials");
 	    return 0;
 	}
 
-	kpccode = krb524_convert_creds_kdc(kcontext, v5creds, &v4creds);
-	krb5_free_creds(kcontext, v5creds);
+	kpccode = krb524_convert_creds_kdc(kctx, v5creds, &v4creds);
+	krb5_free_creds(kctx, v5creds);
     } else
-	kpccode = krb524_convert_creds_kdc(kcontext, &my_creds, &v4creds);
+	kpccode = krb524_convert_creds_kdc(kctx, &my_creds, &v4creds);
     if (kpccode) {
 	com_err("login/v4", kpccode, "converting to V4 credentials");
 	return 0;
@@ -718,9 +733,10 @@ try_convert524(kcontext, me, use_ccache)
 
 #ifdef KRB4_GET_TICKETS
 #define KRB4_DEFAULT_LIFE 120 /* 10 hours */
-try_krb4 (me, user_pwstring)
-    krb5_principal me;
+static int
+try_krb4 (user_pwstring, realm)
     char *user_pwstring;
+    char *realm;
 {
     int krbval, kpass_ok = 0;
 
@@ -777,7 +793,7 @@ try_krb4 (me, user_pwstring)
  *
  * Returns 1 for confirmation, -1 for failure, 0 for uncertainty.
  */
-int verify_krb_v4_tgt (realm)
+static int verify_krb_v4_tgt (realm)
     char *realm;
 {
     char hostname[MAXHOSTNAMELEN], phost[BUFSIZ];
@@ -785,8 +801,10 @@ int verify_krb_v4_tgt (realm)
     KTEXT_ST ticket;
     AUTH_DAT authdata;
     unsigned long addr;
-    static /*const*/ char rcmd[] = "rcmd";
+    static /*const*/ char rcmd_str[] = "rcmd";
+#if 0
     char key[8];
+#endif
     int krbval, retval, have_keys;
 
     if (gethostname(hostname, sizeof(hostname)) == -1) {
@@ -803,14 +821,15 @@ int verify_krb_v4_tgt (realm)
     memcpy ((char *) &addr, (char *)hp->h_addr, sizeof (addr));
     /* Do we have rcmd.<host> keys? */
 #if 0 /* Be paranoid.  If srvtab exists, assume it must contain the
-	 right key.  */
-    have_keys = read_service_key (rcmd, phost, realm, 0, KEYFILE, key)
+	 right key.  The more paranoid mode also helps avoid a
+	 possible DNS spoofing issue.  */
+    have_keys = read_service_key (rcmd_str, phost, realm, 0, KEYFILE, key)
 	? 0 : 1;
     memset (key, 0, sizeof (key));
 #else
     have_keys = 0 == access (KEYFILE, F_OK);
 #endif
-    krbval = krb_mk_req (&ticket, rcmd, phost, realm, 0);
+    krbval = krb_mk_req (&ticket, rcmd_str, phost, realm, 0);
     if (krbval == KDC_PR_UNKNOWN) {
 	/*
 	 * Our rcmd.<host> principal isn't known -- just assume valid
@@ -831,7 +850,7 @@ int verify_krb_v4_tgt (realm)
 	return -1;
     }
     /* got ticket, try to use it */
-    krbval = krb_rd_req (&ticket, rcmd, phost, addr, &authdata, "");
+    krbval = krb_rd_req (&ticket, rcmd_str, phost, addr, &authdata, "");
     if (krbval != KSUCCESS) {
 	if (krbval == RD_AP_UNDEC && !have_keys)
 	    retval = 0;
@@ -861,11 +880,10 @@ EGRESS:
 }
 #endif /* KRB4_GET_TICKETS */
 
-void destroy_tickets()
+static void destroy_tickets()
 {
 #ifdef KRB5_GET_TICKETS
     krb5_ccache cache;
-    krb5_error_code retval;
 
     if (login_krb5_get_tickets) {
 	if(!krb5_cc_default(kcontext, &cache))
@@ -919,7 +937,7 @@ static int try_afscall (scall)
 #endif /* SIGSYS */
 #endif /* SETPAG */
 
-void
+static void
 afs_login ()
 {
 #if defined(KRB4_GET_TICKETS) && defined(SETPAG)
@@ -947,7 +965,7 @@ afs_login ()
 #endif /* KRB_RUN_AKLOG */
 }
 
-void
+static void
 afs_cleanup ()
 {
 #ifdef SETPAG
@@ -969,6 +987,7 @@ afs_cleanup ()
     exit(1); \
 }
 
+#if defined(HAVE_ETC_ENVIRONMENT) || defined(HAVE_ETC_TIMEZONE)
 static void
 read_env_vars_from_file (filename)
     char *filename;
@@ -994,6 +1013,7 @@ read_env_vars_from_file (filename)
 	fclose(fp);
     }
 }
+#endif
 
 static void
 log_repeated_failures (tty, hostname)
@@ -1030,10 +1050,9 @@ int main(argc, argv)
     int fflag, hflag, pflag, rflag, cnt;
     int kflag, Kflag, eflag;
     int quietlog, passwd_req, ioctlval, *warnings;
-    sigtype timedout();
     char *domain, **envinit, *ttyn, *tty, *errmem;
     char tbuf[MAXPATHLEN + 2];
-    char *ttyname(), *stypeof(), *crypt(), *getpass();
+    char *ttyname(), *crypt(), *getpass();
     time_t login_time;
     int retval;
     int local_acct;
@@ -1046,9 +1065,11 @@ int main(argc, argv)
 #ifdef KRB4_GET_TICKETS
     CREDENTIALS save_v4creds;
     char *v4_ccname = 0;
+    char realm[REALM_SZ];
 #endif
     char *ccname = 0;   /* name of forwarded cache */
     char *tz = 0;
+    char *hostname = 0;
 
     off_t lseek();
     handler sa;
@@ -1244,7 +1265,11 @@ int main(argc, argv)
        v5 needs to work, does v4?
     */
 
+#ifdef KRB4_GET_TICKETS
+    k_init (ttyn, realm);
+#else
     k_init (ttyn);
+#endif
 
     for (cnt = 0;; username = NULL) {
 #ifdef KRB5_GET_TICKETS
@@ -1338,7 +1363,7 @@ int main(argc, argv)
 #ifdef KRB4_GET_TICKETS
 		if (login_krb4_get_tickets &&
 		    !(got_v5_tickets && login_krb4_convert))
-		    try_krb4(me, user_pwstring);
+		    try_krb4(user_pwstring, realm);
 #endif
 		krbflag = (got_v5_tickets
 #ifdef KRB4_GET_TICKETS
@@ -1367,9 +1392,10 @@ int main(argc, argv)
 		break;
 
 	    if (got_v5_tickets) {
-		if (retval = krb5_verify_init_creds(kcontext, &my_creds, NULL,
-						    NULL, &xtra_creds,
-						    NULL)) {
+		retval = krb5_verify_init_creds(kcontext, &my_creds, NULL,
+						NULL, &xtra_creds,
+						NULL);
+		if (retval) {
 		    com_err("login", retval, "while verifying initial ticket");
 #ifndef SYSLOG42
 		    syslog(LOG_NOTICE|LOG_AUTH,
@@ -1534,13 +1560,7 @@ int main(argc, argv)
     }
 
     quietlog = access(HUSHLOGIN, F_OK) == 0;
-    dolastlog(quietlog, tty);
-
-    if (!hflag && !rflag && !kflag && !Kflag && !eflag) {	/* XXX */
-	static struct winsize win = { 0, 0, 0, 0 };
-
-	(void)ioctl(0, TIOCSWINSZ, (char *)&win);
-    }
+    dolastlog(hostname, quietlog, tty);
 
     (void)chown(ttyn, pwd->pw_uid,
 		(gr = getgrnam(TTYGRPNAME)) ? gr->gr_gid : pwd->pw_gid);
@@ -1576,15 +1596,15 @@ int main(argc, argv)
    controlling tty, which is the case (under SunOS at least.) */
 
     {
-	int p = getpid(); 
-	struct sigaction sa, osa;
+	int pid = getpid(); 
+	struct sigaction sa2, osa;
 
 	/* this will set the PGID to the PID. */
 #ifdef HAVE_SETPGID
-	if (setpgid(p,p) < 0)
+	if (setpgid(pid,pid) < 0)
 	    perror("login.krb5: setpgid");
 #elif defined(SETPGRP_TWOARG)
-	if (setpgrp(p,p) < 0)
+	if (setpgrp(pid,pid) < 0)
 	    perror("login.krb5: setpgrp");
 #else
 	if (setpgrp() < 0)
@@ -1596,21 +1616,21 @@ int main(argc, argv)
 	   process group is the foreground pgrp of the tty, then
 	   this will suspend the child, which is bad. */
 
-	sa.sa_flags = 0;
-	sa.sa_handler = SIG_IGN;
-	sigemptyset(&(sa.sa_mask));
+	sa2.sa_flags = 0;
+	sa2.sa_handler = SIG_IGN;
+	sigemptyset(&(sa2.sa_mask));
 
-	if (sigaction(SIGTTOU, &sa, &osa))
+	if (sigaction(SIGTTOU, &sa2, &osa))
 	    perror("login.krb5: sigaction(SIGTTOU, SIG_IGN)");
 
 	/* This will set the foreground process group of the
 	   controlling terminal to this process group (containing
 	   only this process). */
 #ifdef HAVE_TCSETPGRP
-	if (tcsetpgrp(0, p) < 0)
+	if (tcsetpgrp(0, pid) < 0)
 	    perror("login.krb5: tcsetpgrp");
 #else
-	if (ioctl(0, TIOCSPGRP, &p) < 0)
+	if (ioctl(0, TIOCSPGRP, &pid) < 0)
 	    perror("login.krb5: tiocspgrp");
 #endif
 
@@ -1660,8 +1680,9 @@ int main(argc, argv)
 	} else {
 	    mcreds.ticket_flags = 0;
 
-	    if (retval = krb5_cc_retrieve_cred(kcontext, ccache, 0,
-					       &mcreds, &save_v5creds)) {
+	    retval = krb5_cc_retrieve_cred(kcontext, ccache, 0,
+					   &mcreds, &save_v5creds);
+	    if (retval) {
 		syslog(LOG_ERR,
 		       "%s while retrieiving V5 initial ticket for copy",
 		       error_message(retval));
@@ -1738,11 +1759,12 @@ int main(argc, argv)
 	/* set up credential cache -- obeying KRB5_ENV_CCNAME 
 	   set earlier */
 	/* (KRB5_ENV_CCNAME == "KRB5CCNAME" via osconf.h) */
-	if (retval = krb5_cc_default(kcontext, &ccache)) {
+	if ((retval = krb5_cc_default(kcontext, &ccache))) {
 	    com_err(argv[0], retval, "while getting default ccache");
-	} else if (retval = krb5_cc_initialize(kcontext, ccache, me)) {
+	} else if ((retval = krb5_cc_initialize(kcontext, ccache, me))) {
 	    com_err(argv[0], retval, "when initializing cache");
-	} else if (retval = krb5_cc_store_cred(kcontext, ccache, &my_creds)) {
+	} else if ((retval = krb5_cc_store_cred(kcontext, ccache, 
+						&my_creds))) {
 	    com_err(argv[0], retval, "while storing credentials");
 	} else if (xtra_creds &&
 		   (retval = krb5_cc_copy_creds(kcontext, xtra_creds,
@@ -1757,8 +1779,8 @@ int main(argc, argv)
 	    syslog(LOG_ERR,
 		   "%s while re-initializing V5 ccache as user",
 		   error_message(retval));
-	} else if (retval = krb5_cc_store_cred(kcontext, ccache,
-					       &save_v5creds)) {
+	} else if ((retval = krb5_cc_store_cred(kcontext, ccache,
+						&save_v5creds))) {
 	    syslog(LOG_ERR,
 		   "%s while re-storing V5 credentials as user",
 		   error_message(retval));
@@ -1943,7 +1965,9 @@ speed_t b_speeds[] = {
 };
 #endif
 
+void
 term_init (do_rlogin)
+int do_rlogin;
 {
     int line_speed = -1;
 
@@ -2091,7 +2115,7 @@ void getloginname(firsttime)
 	    if (p < nbuf + UT_NAMESIZE)
 		*p++ = ch;
 	}
-	if (p > nbuf)
+	if (p > nbuf) {
 	    if (nbuf[0] == '-')
 		fprintf(stderr,
 			"login names may not start with '-'.\n");
@@ -2100,11 +2124,13 @@ void getloginname(firsttime)
 		username = nbuf;
 		break;
 	    }
+	}
     }
 }
 
 sigtype
-timedout()
+timedout(signumber)
+    int signumber;
 {
     fprintf(stderr, "Login timed out after %d seconds\n", timeout);
     exit(0);
@@ -2149,8 +2175,9 @@ int rootterm(tty)
 #ifndef NO_MOTD
 sigjmp_buf motdinterrupt;
 
-sigtype
-sigint()
+static sigtype
+sigint(signum)
+    int signum;
 {
     siglongjmp(motdinterrupt, 1);
 }
@@ -2200,12 +2227,13 @@ void checknologin()
 
     if ((fd = open(NOLOGIN, O_RDONLY, 0)) >= 0) {
 	while ((nchars = read(fd, tbuf, sizeof(tbuf))) > 0)
-	    (void)write(fileno(stdout), tbuf, nchars);
+	    (void)write(fileno(stdout), tbuf, (unsigned) nchars);
 	sleepexit(0);
     }
 }
 
-void dolastlog(quiet, tty)
+void dolastlog(hostname, quiet, tty)
+     char *hostname;
      int quiet;
      char *tty;
 {
@@ -2225,9 +2253,10 @@ void dolastlog(quiet, tty)
 		printf("Last login: %.*s ", 24-5, (char *)ctime(&lltime));
 
 		if (*ll.ll_host != '\0')
-		    printf("from %.*s\n", sizeof(ll.ll_host), ll.ll_host);
+		    printf("from %.*s\n", (int) sizeof(ll.ll_host), 
+			   ll.ll_host);
 		else
-		    printf("on %.*s\n", sizeof(ll.ll_line), ll.ll_line);
+		    printf("on %.*s\n", (int) sizeof(ll.ll_line), ll.ll_line);
 	    }
 	    (void)lseek(fd, (off_t)pwd->pw_uid * sizeof(ll), SEEK_SET);
 	}
@@ -2439,23 +2468,47 @@ dofork()
 {
     int child,pid;
     handler sa;
+    int syncpipe[2];
+    char c;
+    int n;
     
 #ifdef _IBMR2
     update_ref_count(1);
 #endif
-    if (!(child=fork()))
+    if (pipe(syncpipe) < 0) {
+	perror("login: dofork: setting up syncpipe");
+	exit(1);
+    }
+    if (!(child=fork())) {
+	close(syncpipe[1]);
+	while ((n = read(syncpipe[0], &c, 1)) < 0) {
+	    if (errno != EINTR) {
+		perror("login: dofork: waiting for sync from parent");
+		exit(1);
+	    }
+	}
+	if (n == 0) {
+	    fprintf(stderr, "login: dofork: unexpected EOF waiting for sync\n");
+	    exit(1);
+	}
+	close(syncpipe[0]);
 	return; /* Child process returns */
+    }
 
     /* The parent continues here */
+
+    /* On receipt of SIGHUP, pass that along to child's process group. */
+    handler_init (sa, sighup);
+    handler_set (SIGHUP, sa);
+    /* Tell child we're ready. */
+    close(syncpipe[0]);
+    write(syncpipe[1], "", 1);
+    close(syncpipe[1]);
 
     /* Setup stuff?  This would be things we could do in parallel with login */
     (void) chdir("/");	/* Let's not keep the fs busy... */
     
     /* If we're the parent, watch the child until it dies */
-
-    /* On receipt of SIGHUP, pass that along to child's process group. */
-    handler_init (sa, sighup);
-    handler_set (SIGHUP, sa);
 
     while (1) {
 #ifdef HAVE_WAITPID

@@ -21,6 +21,9 @@
 
 #include <stdio.h>
 
+#ifdef HAVE_PTY_H
+#include <pty.h>
+#endif
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>
@@ -63,7 +66,6 @@
 #endif
      
 #include <netdb.h>
-#include <syslog.h>
 #include <string.h>
 #include <sys/param.h>
 
@@ -92,8 +94,15 @@
 #define VHANG_LAST
 #endif
 
+#if defined(NEED_GETUTMPX_PROTOTYPE)
+extern void getutmpx (const struct utmp *, struct utmpx *);
+#endif
+
+#if defined(NEED_REVOKE_PROTO)
+extern int revoke(const char *);
+#endif
+
 /* Internal functions */
-#ifdef __STDC__
 long ptyint_void_association(void);
 long ptyint_open_ctty (char *slave, int *fd);
 long ptyint_getpty_ext(int *, char *, int, int);
@@ -105,19 +114,6 @@ long ptyint_update_wtmpx(struct utmpx *utx);
 long ptyint_update_wtmp(struct utmp *ut);
 #endif
 void ptyint_vhangup(void);
-#else /*__STDC__*/
-
-long ptyint_void_association();
-long ptyint_getpty_ext();
-#ifdef HAVE_SETUTXENT
-long ptyint_update_wtmpx();
-#endif
-#if !(defined(WTMPX_FILE) && defined(HAVE_UPDWTMPX)) \
-	|| !defined(HAVE_SETUXENT)
-long ptyint_update_wtmp();
-#endif
-void ptyint_vhangup();
-#endif /* __STDC__*/
 
 #define __PTY_INT_H__
 #endif

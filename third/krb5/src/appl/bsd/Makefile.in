@@ -1,7 +1,7 @@
 thisconfigdir=.
 myfulldir=appl/bsd
 mydir=.
-BUILDTOP=$(REL)$(U)$(S)$(U)
+BUILDTOP=$(REL)..$(S)..
 LOCALINCLUDES=@KRB4_INCLUDES@
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
@@ -13,10 +13,13 @@ LOGINLIBS =-lal -llocker -lzephyr -lhesiod @LOGINLIBS@
 LIBOBJS=@LIBOBJS@
 V4RCP=@V4RCP@
 V4RCPO=@V4RCPO@
+KRSHDLIBS=@KRSHDLIBS@
 
-SRCS= krcp.c krlogin.c krsh.c kcmd.c forward.c  $(SETENVSRC) \
-	login.c krshd.c krlogind.c v4rcp.c
-OBJS= krcp.o krlogin.o krsh.o kcmd.o forward.o  $(SETENVOBJ) \
+SRCS= $(srcdir)/krcp.c $(srcdir)/krlogin.c $(srcdir)/krsh.c $(srcdir)/kcmd.c \
+	$(srcdir)/forward.c $(srcdir)/compat_recv.c \
+	$(srcdir)/login.c $(srcdir)/krshd.c $(srcdir)/krlogind.c \
+	$(srcdir)/v4rcp.c
+OBJS= krcp.o krlogin.o krsh.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) \
 	login.o krshd.o krlogind.o $(V4RCPO) $(LIBOBJS)
 
 UCB_RLOGIN = @UCB_RLOGIN@
@@ -27,25 +30,26 @@ RSH=	-DKRB5_PATH_RLOGIN=\"$(CLIENT_BINDIR)/rlogin\"
 BSD=	-DUCB_RLOGIN=\"$(UCB_RLOGIN)\" \
 	-DUCB_RSH=\"$(UCB_RSH)\" -DUCB_RCP=\"$(UCB_RCP)\"
 
-DEFINES = $(RSH) $(BSD) $(RPROGS) \
-	-DLOGIN_PROGRAM=\"$(SERVER_BINDIR)/login.krb5\" -DKPROGDIR=\"$(CLIENT_BINDIR)\"
+DEFINES = $(RSH) $(BSD) $(RPROGS) -DKERBEROS \
+	-DLOGIN_PROGRAM=\"$(SERVER_BINDIR)/login.krb5\" -DKPROGDIR=\"$(CLIENT_BINDIR)\" \
+	-DHEIMDAL_FRIENDLY
 
 all:: rsh rcp rlogin kshd klogind login.krb5 $(V4RCP)
 
 clean:: 
 	$(RM) rsh rcp rlogin kshd klogind login.krb5 v4rcp
 
-rsh: krsh.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o rsh krsh.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+rsh: krsh.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o rsh krsh.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_LIBS)
 
-rcp: krcp.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_DEPLIB) $(KRB4COMATP_DEPLIBS)
-	$(CC_LINK) -o rcp krcp.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+rcp: krcp.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o rcp krcp.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_LIBS)
 
-v4rcp: v4rcp.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o v4rcp v4rcp.o $(SETENVOBJ) $(LIBOBJS) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+v4rcp: v4rcp.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o v4rcp v4rcp.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_LIBS)
 
-rlogin: krlogin.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o rlogin krlogin.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+rlogin: krlogin.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o rlogin krlogin.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRB4COMPAT_LIBS)
 
 install::
 	for f in rsh rcp rlogin; do \
@@ -62,11 +66,11 @@ install::
 		${DESTDIR}$(CLIENT_MANDIR)/`echo $$f|sed '$(transform)'`.1; \
 	fi
 
-kshd: krshd.o kcmd.o  forward.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o kshd krshd.o kcmd.o  forward.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+kshd: krshd.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o kshd krshd.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(KRSHDLIBS) $(PTY_LIB) $(KRB4COMPAT_LIBS)
 
-klogind: krlogind.o  kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	$(CC_LINK) -o klogind krlogind.o  kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+klogind: krlogind.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS)
+	$(CC_LINK) -o klogind krlogind.o  kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB4COMPAT_LIBS)
 
 install::
 	for f in kshd klogind; do \
@@ -80,8 +84,8 @@ install::
 # No program name transformation is done with login.krb5 since it is directly
 # referenced by klogind.
 #
-login.krb5: login.o  $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(UTIL_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-	./athstatic $(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS)
+login.krb5: login.o  $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS)
+	./athstatic $(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB4COMPAT_LIBS)
 
 install::
 	$(INSTALL_PROGRAM) login.krb5 $(DESTDIR)$(SERVER_BINDIR)/login.krb5
@@ -91,4 +95,78 @@ install::
 
 getdtablesize.o: $(srcdir)/getdtablesize.c
 
-kcmd.o krcp.o krlogin.o krlogind.o krsh.o krshd.o : defines.h
+kcmd.o krcp.o krlogin.o krlogind.o krsh.o krshd.o forward.o: defines.h
+# +++ Dependency line eater +++
+# 
+# Makefile dependencies follow.  This must be the last section in
+# the Makefile.in file
+#
+$(OUTPRE)krcp.$(OBJEXT): krcp.c $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/k5-util.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/kerberosIV/krb.h $(SRCTOP)/include/kerberosIV/des.h \
+  $(KRB_ERR_H_DEP) $(BUILDTOP)/include/profile.h defines.h \
+  $(SRCTOP)/include/fake-addrinfo.h $(SRCTOP)/include/port-sockets.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/k5-platform.h
+$(OUTPRE)krlogin.$(OBJEXT): krlogin.c $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h defines.h $(SRCTOP)/include/fake-addrinfo.h \
+  $(SRCTOP)/include/port-sockets.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/k5-platform.h \
+  rpaths.h
+$(OUTPRE)krsh.$(OBJEXT): krsh.c $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h defines.h $(SRCTOP)/include/fake-addrinfo.h \
+  $(SRCTOP)/include/port-sockets.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/k5-platform.h
+$(OUTPRE)kcmd.$(OBJEXT): kcmd.c $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h defines.h $(SRCTOP)/include/fake-addrinfo.h \
+  $(SRCTOP)/include/port-sockets.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/k5-platform.h
+$(OUTPRE)forward.$(OBJEXT): forward.c $(SRCTOP)/include/k5-int.h \
+  $(BUILDTOP)/include/krb5/osconf.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/k5-platform.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(BUILDTOP)/include/profile.h $(SRCTOP)/include/port-sockets.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/krb5/kdb.h \
+  defines.h $(SRCTOP)/include/fake-addrinfo.h
+$(OUTPRE)compat_recv.$(OBJEXT): compat_recv.c $(SRCTOP)/include/k5-int.h \
+  $(BUILDTOP)/include/krb5/osconf.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/k5-platform.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(BUILDTOP)/include/profile.h $(SRCTOP)/include/port-sockets.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/krb5/kdb.h \
+  $(SRCTOP)/include/kerberosIV/krb.h $(SRCTOP)/include/kerberosIV/des.h \
+  $(KRB_ERR_H_DEP) defines.h $(SRCTOP)/include/fake-addrinfo.h
+$(OUTPRE)login.$(OBJEXT): login.c $(BUILDTOP)/include/libpty.h \
+  $(SRCTOP)/include/syslog.h $(SRCTOP)/include/k5-int.h \
+  $(BUILDTOP)/include/krb5/osconf.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/k5-platform.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(BUILDTOP)/include/profile.h $(SRCTOP)/include/port-sockets.h \
+  $(SRCTOP)/include/socket-utils.h $(SRCTOP)/include/krb5/kdb.h \
+  $(SRCTOP)/include/kerberosIV/krb.h $(SRCTOP)/include/kerberosIV/des.h \
+  $(KRB_ERR_H_DEP) loginpaths.h
+$(OUTPRE)krshd.$(OBJEXT): krshd.c $(BUILDTOP)/include/libpty.h \
+  $(SRCTOP)/include/syslog.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) loginpaths.h $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h $(SRCTOP)/include/k5-util.h \
+  $(BUILDTOP)/include/krb5/autoconf.h defines.h $(SRCTOP)/include/fake-addrinfo.h \
+  $(SRCTOP)/include/port-sockets.h $(SRCTOP)/include/socket-utils.h \
+  $(SRCTOP)/include/k5-platform.h
+$(OUTPRE)krlogind.$(OBJEXT): krlogind.c $(SRCTOP)/include/syslog.h \
+  $(SRCTOP)/include/fake-addrinfo.h $(SRCTOP)/include/port-sockets.h \
+  $(BUILDTOP)/include/krb5/autoconf.h $(SRCTOP)/include/socket-utils.h \
+  $(SRCTOP)/include/k5-platform.h $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h $(BUILDTOP)/include/libpty.h \
+  $(SRCTOP)/include/k5-util.h defines.h
+$(OUTPRE)v4rcp.$(OBJEXT): v4rcp.c $(BUILDTOP)/include/krb5.h \
+  $(COM_ERR_DEPS) $(SRCTOP)/include/k5-util.h $(BUILDTOP)/include/krb5/autoconf.h \
+  $(SRCTOP)/include/port-sockets.h $(SRCTOP)/include/kerberosIV/krb.h \
+  $(SRCTOP)/include/kerberosIV/des.h $(KRB_ERR_H_DEP) \
+  $(BUILDTOP)/include/profile.h $(SRCTOP)/include/kerberosIV/krbports.h \
+  rpaths.h
+

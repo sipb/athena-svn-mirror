@@ -157,10 +157,10 @@ char copyright[] =
 #ifdef KERBEROS
 #include <krb5.h>
 #include <com_err.h>
-#include "defines.h"
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
 #endif
+#include "defines.h"
      
 #define RLOGIN_BUFSIZ 5120
 
@@ -260,16 +260,31 @@ struct	winsize winsize;
 char	*host=0;			/* external, so it can be
 					   reached from confirm_death() */
 
-krb5_sigtype	sigwinch KRB5_PROTOTYPE((int));
-int server_message KRB5_PROTOTYPE((int));
-void oob KRB5_PROTOTYPE((void));
-krb5_sigtype	lostpeer KRB5_PROTOTYPE((int));
-#if __STDC__
-int setsignal(int sig, krb5_sigtype (*act)());
+krb5_sigtype	sigwinch (int);
+int server_message (int);
+void oob (void);
+krb5_sigtype	lostpeer (int);
+void setsignal (int sig, krb5_sigtype (*act)());
+static int read_wrapper(int fd, char *buf, int size, int *got_esc);
+static void prf(char *f);
+void try_normal(char **);
+static void mode(int);
+#ifdef POSIX_SIGNALS
+static int reader(sigset_t *);
+static void doit(sigset_t *);
+#else
+static int reader(int);
+static void doit(int);
 #endif
+static int control(char *, unsigned int);
+static void sendwindow(void);
+static void stop(int), echo(int);
+static void writer(void), done(int);
+static int confirm_death (void);
+
 
 /* to allow exits from signal handlers, without conflicting declarations */
-krb5_sigtype exit_handler() {
+static krb5_sigtype exit_handler() {
   exit(1);
 }
 
@@ -338,7 +353,7 @@ struct  termio ixon_state;
 #endif
 
 
-
+int
 main(argc, argv)
      int argc;
      char **argv;
@@ -372,6 +387,7 @@ main(argc, argv)
 #ifdef KRB5_KRB4_COMPAT
     KTEXT_ST v4_ticket;
     MSG_DAT v4_msg_data;
+    int v4only = 0;
 #endif
 #endif
     int port, debug_port = 0;
@@ -511,11 +527,25 @@ main(argc, argv)
 	argv++, argc--;
 	goto another;
     }
+#ifdef KRB5_KRB4_COMPAT
+    if (argc > 0 && !strcmp(*argv, "-4")) {
+	v4only++;
+	argv++, argc--;
+	goto another;
+    }
+#endif /* krb4 */
 #endif /* KERBEROS */
     if (host == 0)
       goto usage;
     if (argc > 0)
       goto usage;
+#ifdef KRB5_KRB4_COMPAT
+    if (kcmd_proto != KCMD_PROTOCOL_COMPAT_HACK && v4only) {
+	com_err (argv[0], 0,
+		 "-4 is incompatible with -PO/-PN");
+	exit(1);
+    }
+#endif
     pwd = getpwuid(getuid());
     if (pwd == 0) {
 	fprintf(stderr, "Who are you?\n");
@@ -631,6 +661,10 @@ main(argc, argv)
     if (Fflag)
       authopts |= OPTS_FORWARDABLE_CREDS;
 
+#ifdef KRB5_KRB4_COMPAT
+    if (v4only)
+	goto try_v4;
+#endif
     status = kcmd(&sock, &host, port,
 		  null_local_username ? "" : pwd->pw_name,
 		  name ? name : pwd->pw_name, term,
@@ -649,6 +683,7 @@ main(argc, argv)
 	    exit (1);
 #ifdef KRB5_KRB4_COMPAT
 	fprintf(stderr, "Trying krb4 rlogin...\n");
+    try_v4:
 	status = k4cmd(&sock, &host, port,
 		       null_local_username ? "" : pwd->pw_name,
 		       name ? name : pwd->pw_name, term,
@@ -667,8 +702,8 @@ main(argc, argv)
 	if (kcmd_proto == KCMD_NEW_PROTOCOL) {
 	    do_inband = 1;
 
-	    status = krb5_auth_con_getlocalsubkey (bsd_context, auth_context,
-						   &key);
+	    status = krb5_auth_con_getsendsubkey (bsd_context, auth_context,
+						  &key);
 	    if ((status || !key) && encrypt_flag)
 		try_normal(orig_argv);
 	}
@@ -705,7 +740,11 @@ main(argc, argv)
 #ifdef KERBEROS
     fprintf (stderr,
 	     "usage: rlogin host [-option] [-option...] [-k realm ] [-t ttytype] [-l username]\n");
-    fprintf (stderr, "     where option is e, 7, 8, noflow, n, a, x, f, F, or c\n");
+#ifdef KRB5_KRB4_COMPAT
+    fprintf (stderr, "     where option is e, 7, 8, noflow, n, a, x, f, F, c, 4, PO, or PN\n");
+#else
+    fprintf (stderr, "     where option is e, 7, 8, noflow, n, a, x, f, F, c, PO, or PN\n");
+#endif
 #else /* !KERBEROS */
     fprintf (stderr,
 	     "usage: rlogin host [-option] [-option...] [-t ttytype] [-l username]\n");
@@ -716,7 +755,7 @@ main(argc, argv)
 
 
 
-int confirm_death ()
+static int confirm_death ()
 {
     char hostname[33];
     char input;
@@ -746,8 +785,8 @@ int confirm_death ()
 #define CRLF "\r\n"
 
 int	child;
-krb5_sigtype	catchild KRB5_PROTOTYPE((int));
-krb5_sigtype	writeroob KRB5_PROTOTYPE((int));
+krb5_sigtype	catchild (int);
+krb5_sigtype	writeroob (int);
 
 int	defflags, tabflag;
 int	deflflags;
@@ -788,9 +827,11 @@ struct	tchars deftc;
 struct	tchars notc =	{ -1, -1, -1, -1, -1, -1 };
 #endif
 
-doit(oldmask)
+static void doit(oldmask)
 #ifdef POSIX_SIGNALS
     sigset_t *oldmask;
+#else
+    int oldmask;
 #endif
 {
 #ifdef POSIX_SIGNALS
@@ -894,6 +935,7 @@ doit(oldmask)
 /*
  * Trap a signal, unless it is being ignored.
  */
+void
 setsignal(sig, act)
      int sig;
      krb5_sigtype (*act)();
@@ -933,6 +975,7 @@ setsignal(sig, act)
 
 
 
+static void
 done(status)
      int status;
 {
@@ -1040,7 +1083,7 @@ int signo;
  * ~^Z	suspend rlogin process.
  * ~^Y  suspend rlogin process, but leave reader alone.
  */
-writer()
+static void writer()
 {
     int n_read;
     char buf[1024];
@@ -1095,7 +1138,7 @@ writer()
       }
       
       if (!got_esc) {
-	if (rcmd_stream_write(rem, buf, n_read, 0) == 0) {
+	if (rcmd_stream_write(rem, buf, (unsigned) n_read, 0) == 0) {
 	  prf("line gone");
 	  break;
 	}
@@ -1105,7 +1148,7 @@ writer()
 	/* This next test is necessary to avoid sending 0 bytes of data
 	   in the event that we got just a cmdchar */
 	if (n_read > 1) {
-	  if (rcmd_stream_write(rem, buf, n_read-1, 0) == 0) {
+	  if (rcmd_stream_write(rem, buf, (unsigned) (n_read-1), 0) == 0) {
 	    prf("line gone");
 	    break;
 	  }
@@ -1175,7 +1218,7 @@ writer()
    was a read error (other than EINTR) and errno is set appropriately. 
 */
 
-int read_wrapper(fd,buf,size,got_esc) 
+static int read_wrapper(fd,buf,size,got_esc) 
      int fd;
      char *buf;
      int size;
@@ -1185,7 +1228,7 @@ int read_wrapper(fd,buf,size,got_esc)
   static char *data_start = tbuf;
   static char *data_end = tbuf;
   static int bol = 1;
-  int return_length = 0;
+  unsigned int return_length = 0;
   char c;
 
   /* if we have no data buffered, get more */
@@ -1235,7 +1278,7 @@ int read_wrapper(fd,buf,size,got_esc)
   return return_length;
 }
 
-echo(c)
+static void echo(c)
      register char c;
 {
     char buf[8];
@@ -1253,12 +1296,12 @@ echo(c)
       *p++ = c;
     *p++ = '\r';
     *p++ = '\n';
-    (void) write(1, buf, p - buf);
+    (void) write(1, buf, (unsigned) (p - buf));
 }
 
 
 
-stop(cmdc)
+static void stop(cmdc)
      char cmdc;
 {
 #ifdef POSIX_SIGNALS
@@ -1314,10 +1357,10 @@ int signo;
 /*
  * Send the window size to the server via the magic escape
  */
-sendwindow()
+static void sendwindow()
 {
     char obuf[4 + sizeof (struct winsize)];
-    struct winsize *wp = (struct winsize *)(obuf+4);
+    struct winsize *wp = (struct winsize *)(void *)(obuf+4);
     
     obuf[0] = 0377;
     obuf[1] = 0377;
@@ -1351,8 +1394,6 @@ int server_message(mark)
 #ifndef POSIX_TERMIOS
     int out = FWRITE;
 #endif
-    int n;
-    int rcvd = 0;
 #ifdef POSIX_TERMIOS
     struct termios tty;
 #else
@@ -1429,7 +1470,7 @@ int server_message(mark)
 void oob()
 {
     char mark;
-    char waste[RLOGIN_BUFSIZ];
+    static char waste[RLOGIN_BUFSIZ];
     int atmark, n;
 
     mark = 0;
@@ -1461,9 +1502,9 @@ void oob()
    quote rule so that binary data from the server does not confuse the
    client.  */
 
-int control(cp, n)
-     unsigned char *cp;
-     int n;
+static int control(cp, n)
+     char *cp;
+     unsigned int n;
 {
     if ((n >= 5) && (cp[2] == 'o') && (cp[3] == 'o')) {
 	if (server_message(cp[4]))
@@ -1482,6 +1523,7 @@ int control(cp, n)
 /*
  * reader: read from remote: line -> 1 
  */
+static int 
 reader(oldmask)
 #ifdef POSIX_SIGNALS
     sigset_t *oldmask;
@@ -1489,13 +1531,9 @@ reader(oldmask)
      int oldmask;
 #endif
 {
-#if (defined(BSD) && BSD+0 >= 43) || defined(ultrix)
-    int pid = getpid();
-#else
-    int pid = -getpid();
-#endif
-fd_set readset, excset, writeset;
-    int n, remaining, left;
+    fd_set readset, excset, writeset;
+    int n, remaining;
+    unsigned int left;
     char *bufp = rcvbuf;
     char *cp;
 
@@ -1563,6 +1601,7 @@ fd_set readset, excset, writeset;
 			    cp[1] == '\377') {
 			    left = (rcvbuf+rcvcnt) - cp;
 			    n = control(cp, left);
+			    /* |n| <= left */
 			    if (n < 0) {
 				left -= (-n);
 				rcvcnt = 0;
@@ -1594,7 +1633,8 @@ error:
 
 
 
-mode(f)
+static void mode(f)
+int f;
 {
 #ifdef POSIX_TERMIOS
     struct termios newtty;
@@ -1751,12 +1791,11 @@ mode(f)
 
 
 
-/*VARARGS*/
-prf(f, a1, a2, a3, a4, a5)
+static void
+prf(f)
      char *f;
-     char *a1, *a2, *a3, *a4, *a5;
 {
-    fprintf(stderr, f, a1, a2, a3, a4, a5);
+    fprintf(stderr, f);
     fprintf(stderr, CRLF);
 }
 
@@ -1766,9 +1805,8 @@ prf(f, a1, a2, a3, a4, a5)
 void try_normal(argv)
      char **argv;
 {
-    register char *host;
+    register char *nhost;
 #ifdef POSIX_SIGNALS
-    struct sigaction sa;
     sigset_t mask;
 #endif
     
@@ -1780,13 +1818,13 @@ void try_normal(argv)
 	    UCB_RLOGIN);
     fflush(stderr);
     
-    host = strrchr(argv[0], '/');
-    if (host)
-      host++;
+    nhost = strrchr(argv[0], '/');
+    if (nhost)
+      nhost++;
     else
-      host = argv[0];
-    if (!strcmp(host, "rlogin"))
-      argv++;
+      nhost = argv[0];
+    if (!strcmp(nhost, "rlogin") || !strcmp(nhost, "rsh"))
+      argv[0] = UCB_RLOGIN;
     
 #ifdef POSIX_SIGNALS
     sigemptyset(&mask);

@@ -12,11 +12,7 @@
  * decrypt the enc_part of a krb5_cred
  */
 static krb5_error_code 
-decrypt_credencdata(context, pcred, pkeyblock, pcredenc)
-    krb5_context	  context;
-    krb5_cred 		* pcred;
-    krb5_keyblock 	* pkeyblock;
-    krb5_cred_enc_part 	* pcredenc;
+decrypt_credencdata(krb5_context context, krb5_cred *pcred, krb5_keyblock *pkeyblock, krb5_cred_enc_part *pcredenc)
 {
     krb5_cred_enc_part  * ppart;
     krb5_error_code 	  retval;
@@ -37,14 +33,10 @@ decrypt_credencdata(context, pcred, pkeyblock, pcredenc)
 
     /*  now decode the decrypted stuff */
     if ((retval = decode_krb5_enc_cred_part(&scratch, &ppart)))
-    	goto cleanup_encpart;
+    	goto cleanup;
 
     *pcredenc = *ppart;
     retval = 0;
-
-cleanup_encpart:
-    memset(ppart, 0, sizeof(*ppart));
-    krb5_xfree(ppart);
 
 cleanup:
     memset(scratch.data, 0, scratch.length);
@@ -55,22 +47,16 @@ cleanup:
 /*----------------------- krb5_rd_cred_basic -----------------------*/
 
 static krb5_error_code 
-krb5_rd_cred_basic(context, pcreddata, pkeyblock, 
-		   replaydata, pppcreds)
-    krb5_context          context;
-    krb5_data		* pcreddata;
-    krb5_keyblock 	* pkeyblock;
-    krb5_replay_data    * replaydata;
-    krb5_creds        *** pppcreds;
+krb5_rd_cred_basic(krb5_context context, krb5_data *pcreddata, krb5_keyblock *pkeyblock, krb5_replay_data *replaydata, krb5_creds ***pppcreds)
 {
-  krb5_error_code       retval;
-  krb5_cred 		* pcred;
+    krb5_error_code       retval;
+    krb5_cred 		* pcred;
     krb5_int32 		  ncreds;
     krb5_int32 		  i = 0;
     krb5_cred_enc_part 	  encpart;
 
     /* decode cred message */
-        if ((retval = decode_krb5_cred(pcreddata, &pcred)))
+    if ((retval = decode_krb5_cred(pcreddata, &pcred)))
     	return retval;
 
     memset(&encpart, 0, sizeof(encpart));
@@ -171,22 +157,16 @@ cleanup_cred:
  * This functions takes as input an KRB_CRED message, validates it, and
  * outputs the nonce and an array of the forwarded credentials.
  */
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_rd_cred(context, auth_context, pcreddata, pppcreds, outdata)
-    krb5_context          context;
-    krb5_auth_context     auth_context;
-    krb5_data 		FAR * pcreddata;       
-    krb5_creds        FAR * FAR * FAR * pppcreds;
-    krb5_replay_data  	FAR * outdata;
+krb5_error_code KRB5_CALLCONV
+krb5_rd_cred(krb5_context context, krb5_auth_context auth_context, krb5_data *pcreddata, krb5_creds ***pppcreds, krb5_replay_data *outdata)
 {
     krb5_error_code       retval;
     krb5_keyblock       * keyblock;
     krb5_replay_data      replaydata;
 
     /* Get keyblock */
-    if ((keyblock = auth_context->remote_subkey) == NULL)
-	if ((keyblock = auth_context->local_subkey) == NULL)
-            keyblock = auth_context->keyblock;
+    if ((keyblock = auth_context->recv_subkey) == NULL)
+	keyblock = auth_context->keyblock;
 
     if (((auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_RET_TIME) ||
       (auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_RET_SEQUENCE)) &&
@@ -199,11 +179,19 @@ krb5_rd_cred(context, auth_context, pcreddata, pppcreds, outdata)
         return KRB5_RC_REQUIRED;
 
 
+/* If decrypting with the first keyblock we try fails, perhaps the
+ * credentials are stored in the session key so try decrypting with
+    * that.
+*/
     if ((retval = krb5_rd_cred_basic(context, pcreddata, keyblock,
 				     &replaydata, pppcreds))) {
-      return retval;
+	if ((retval = krb5_rd_cred_basic(context, pcreddata,
+					 auth_context->keyblock,
+					 &replaydata, pppcreds))) {
+	    return retval;
     }
-
+    }
+    
     if (auth_context->auth_context_flags & KRB5_AUTH_CONTEXT_DO_TIME) {
         krb5_donot_replay replay;
         krb5_timestamp currenttime;
@@ -246,8 +234,10 @@ krb5_rd_cred(context, auth_context, pcreddata, pppcreds, outdata)
     }
 
 error:;
-    if (retval)
-    	krb5_xfree(*pppcreds);
+    if (retval) {
+    	krb5_free_tgt_creds(context, *pppcreds);
+	*pppcreds = NULL;
+    }
     return retval;
 }
 

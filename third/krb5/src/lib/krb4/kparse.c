@@ -38,6 +38,7 @@
 #include <ctype.h>
 #include <kparse.h>
 #include <string.h>
+#include "krb5/autoconf.h"
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -47,12 +48,11 @@
 #define TRUE 1
 #endif
 
-#define void int
-
 #define MAXKEY          80
 #define MAXVALUE        80
 
-static char *strutol();
+static char *strutol (char *);
+
 
 #ifndef HAVE_STRDUP
 static char *strdup();
@@ -327,6 +327,7 @@ int fGetKeywordValue( fp, keyword, klen, value, vlen )
 
     } while ( !gotit );
     /*NOTREACHED*/
+    return 0; /* to keep gcc happy */
 }
 
 /*
@@ -562,8 +563,8 @@ static char * strutol( start )
 {
     char *q;
     for (q=start; *q; q++)
-        if (isupper(*q))
-	    *q=tolower(*q);
+        if (isupper((int) *q))
+	    *q=tolower((int) *q);
     return(start);
 }
 

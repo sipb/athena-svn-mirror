@@ -67,15 +67,12 @@ static char sccsid[] = "@(#)ftpcmd.y	5.24 (Berkeley) 2/25/91";
 #include <stdlib.h>
 #include <string.h>
 
+#include "ftpd_var.h"
+
 extern	char *auth_type;
 
 unsigned int maxbuf, actualbuf;
 unsigned char *ucbuf;
-
-#if defined(STDARG) || (defined(__STDC__) && ! defined(VARARGS)) || defined(HAVE_STDARG_H)
-extern reply(int, char *, ...);
-extern lreply(int, char *, ...);
-#endif
 
 static int kerror;	/* XXX needed for all auth types */
 #ifdef KRB5_KRB4_COMPAT
@@ -91,14 +88,9 @@ extern MSG_DAT msg_data;
 extern gss_ctx_id_t gcontext;
 #endif
 
-#ifndef unix			/* XXX */
-#ifdef _AIX
-#define unix
-#endif
-#ifdef __hpux
-#define unix
-#endif
-#ifdef BSD
+#ifndef unix
+/* sigh */
+#if defined(_AIX) || defined(__hpux) || defined(BSD)
 #define unix
 #endif
 #endif
@@ -139,6 +131,7 @@ extern	char *globerr;
 extern	int usedefault;
 extern  int transflag;
 extern  char tmpline[];
+
 char	**ftpglob();
 
 off_t	restart_point;
@@ -171,6 +164,11 @@ struct tab {
 };
 struct tab cmdtab[];
 struct tab sitetab[];
+
+void sizecmd(char *);
+void help(struct tab *, char *);
+static int yylex(void);
+static char *copy(char *);
 %}
 
 %union { int num; char *str; }
@@ -274,7 +272,8 @@ cmd:		USER SP username CRLF
 			if (!auth_type)
 			    reply(503, "Must first perform authentication");
 			else if (strlen($3) > 10 ||
-				 strlen($3) == 10 && strcmp($3,"4294967296") >= 0)
+				 (strlen($3) == 10 && 
+				  strcmp($3,"4294967296") >= 0))
 			    reply(501, "Bad value for PBSZ: %s", $3);
 			else {
 			    if (ucbuf) (void) free(ucbuf);
@@ -615,8 +614,8 @@ cmd:		USER SP username CRLF
 		{
 			if ($2 && $4 != NULL) {
 				struct stat stbuf;
-				if (stat((char *) $4, &stbuf) < 0)
-					perror_reply(550, "%s", (char *) $4);
+				if (stat($4, &stbuf) < 0)
+					perror_reply(550, $4);
 				else if ((stbuf.st_mode&S_IFMT) != S_IFREG) {
 					reply(550, "%s: not a plain file.",
 						(char *) $4);
@@ -669,8 +668,6 @@ cmd:		USER SP username CRLF
 	;
 rcmd:		RNFR check_login SP pathname CRLF
 		{
-			char *renamefrom();
-
 			restart_point = (off_t) 0;
 			if ($2 && $4) {
 				fromname = renamefrom((char *) $4);
@@ -683,8 +680,9 @@ rcmd:		RNFR check_login SP pathname CRLF
 		{
 			fromname = (char *) 0;
 			restart_point = $3;
-			reply(350, "Restarting at %ld. %s", restart_point,
-			    "Send STORE or RETRIEVE to initiate transfer.");
+			reply(350, "Restarting at %ld. %s", 
+			      (long) restart_point,
+			      "Send STORE or RETRIEVE to initiate transfer.");
 		}
 	;
 		
@@ -959,7 +957,7 @@ struct tab sitetab[] = {
 	{ NULL,   0,    0,    0,	0 }
 };
 
-struct tab *
+static struct tab *
 lookup(p, cmd)
 	register struct tab *p;
 	char *cmd;
@@ -974,7 +972,7 @@ lookup(p, cmd)
 /*
  * urgsafe_getc - hacked up getc to ignore EOF if SIOCATMARK returns TRUE
  */
-int
+static int
 urgsafe_getc(f)
 	FILE *f;
 {
@@ -999,11 +997,11 @@ urgsafe_getc(f)
 char *
 getline(s, n, iop)
 	char *s;
+	int n;
 	register FILE *iop;
 {
-	register c;
+	register int c;
 	register char *cs;
-	int atmark;
 
 	cs = s;
 /* tmpline may contain saved command from urgent mode interruption */
@@ -1104,7 +1102,8 @@ getline(s, n, iop)
 #endif /* NOENCRYPTION */
 	    if ((cp = strpbrk(cs, " \r\n")))
 		*cp = '\0';
-	    if (kerror = radix_encode(cs, out, &len, 1)) {
+	    kerror = radix_encode(cs, out, &len, 1);
+	    if (kerror) {
 		reply(501, "Can't base 64 decode argument to %s command (%s)",
 		      mic ? "MIC" : "ENC", radix_error(kerror));
 		*s = '\0';
@@ -1222,13 +1221,14 @@ toolong(sig)
 	dologout(1);
 }
 
+static int
 yylex()
 {
 	static int cpos, state;
 	register char *cp, *cp2;
 	register struct tab *p;
 	int n;
-	char c, *copy();
+	char c;
 
 	for (;;) {
 		switch (state) {
@@ -1314,7 +1314,7 @@ yylex()
 		dostr1:
 			if (cbuf[cpos] == ' ') {
 				cpos++;
-				state = state == OSTR ? STR2 : ++state;
+				state = state == OSTR ? STR2 : state+1;
 				return (SP);
 			}
 			break;
@@ -1347,9 +1347,9 @@ yylex()
 				cpos++;
 				return (SP);
 			}
-			if (isdigit(cbuf[cpos])) {
+			if (isdigit((int) cbuf[cpos])) {
 				cp = &cbuf[cpos];
-				while (isdigit(cbuf[++cpos]))
+				while (isdigit((int) cbuf[++cpos]))
 					;
 				c = cbuf[cpos];
 				cbuf[cpos] = '\0';
@@ -1362,9 +1362,9 @@ yylex()
 			goto dostr1;
 
 		case ARGS:
-			if (isdigit(cbuf[cpos])) {
+			if (isdigit((int) cbuf[cpos])) {
 				cp = &cbuf[cpos];
-				while (isdigit(cbuf[++cpos]))
+				while (isdigit((int) cbuf[++cpos]))
 					;
 				c = cbuf[cpos];
 				cbuf[cpos] = '\0';
@@ -1444,17 +1444,18 @@ yylex()
 	}
 }
 
+void
 upper(s)
 	register char *s;
 {
 	while (*s != '\0') {
-		if (islower(*s))
-			*s = toupper(*s);
+		if (islower((int) (*s)))
+			*s = toupper((int) (*s));
 		s++;
 	}
 }
 
-char *
+static char *
 copy(s)
 	char *s;
 {
@@ -1467,6 +1468,7 @@ copy(s)
 	return (p);
 }
 
+void
 help(ctab, s)
 	struct tab *ctab;
 	char *s;
@@ -1474,12 +1476,12 @@ help(ctab, s)
 	register struct tab *c;
 	register int width, NCMDS;
 	char str[80];
-	char *type;
+	char *ftype;
 
 	if (ctab == sitetab)
-		type = "SITE ";
+		ftype = "SITE ";
 	else
-		type = "";
+		ftype = "";
 	width = 0, NCMDS = 0;
 	for (c = ctab; c->name != NULL; c++) {
 		int len = strlen(c->name);
@@ -1494,7 +1496,7 @@ help(ctab, s)
 		int columns, lines;
 
 		lreply(214, "The following %scommands are recognized %s.",
-		    type, "(* =>'s unimplemented)");
+		    ftype, "(* =>'s unimplemented)");
 		columns = 76 / width;
 		if (columns == 0)
 			columns = 1;
@@ -1525,12 +1527,13 @@ help(ctab, s)
 		return;
 	}
 	if (c->implemented)
-		reply(214, "Syntax: %s%s %s", type, c->name, c->help);
+		reply(214, "Syntax: %s%s %s", ftype, c->name, c->help);
 	else
-		reply(214, "%s%-*s\t%s; unimplemented.", type, width,
+		reply(214, "%s%-*s\t%s; unimplemented.", ftype, width,
 		    c->name, c->help);
 }
 
+void
 sizecmd(filename)
 char *filename;
 {
@@ -1542,7 +1545,7 @@ char *filename;
 		    (stbuf.st_mode&S_IFMT) != S_IFREG)
 			reply(550, "%s: not a plain file.", filename);
 		else
-			reply(213, "%lu", stbuf.st_size);
+			reply(213, "%lu", (long) stbuf.st_size);
 		break;}
 	case TYPE_A: {
 		FILE *fin;

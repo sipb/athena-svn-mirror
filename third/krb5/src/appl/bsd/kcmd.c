@@ -71,6 +71,9 @@
 #include <sys/file.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#ifdef _AIX
+#include <sys/select.h>
+#endif
 
 #ifndef POSIX_SIGNALS
 #ifndef sigmask
@@ -84,7 +87,7 @@
 
 #include <netinet/in.h>
 #include <netdb.h>
-     
+
 #include <errno.h>
 #include <krb5.h>
 #ifdef KRB5_KRB4_COMPAT
@@ -102,7 +105,12 @@ extern Key_schedule v4_schedule;
 #define START_PORT      5120     /* arbitrary */
 char *default_service = "host";
 
-#define KCMD_KEYUSAGE	1026
+#define KCMD_KEYUSAGE	1026 /* Key usage used   with 3des or any old-protocol enctype*/
+/* New protocol enctypes that use cipher state have keyusage defined later*/
+
+#ifndef GETSOCKNAME_ARG3_TYPE
+#define GETSOCKNAME_ARG3_TYPE int
+#endif
 
 /*
  * Note that the encrypted rlogin packets take the form of a four-byte
@@ -120,29 +128,26 @@ static krb5_data desoutbuf;
 
 /* XXX Overloaded: use_ivecs!=0 -> new protocol, inband signalling, etc.  */
 static int use_ivecs;
+static krb5_keyusage enc_keyusage_i[2], enc_keyusage_o[2];
 static krb5_data encivec_i[2], encivec_o[2];
 
 static krb5_keyblock *keyblock;		 /* key for encrypt/decrypt */
-static int (*input)(int, char *, int, int);
-static int (*output)(int, char *, int, int);
+static int (*input)(int, char *, size_t, int);
+static int (*output)(int, char *, size_t, int);
 static char storage[2*RCMD_BUFSIZ];	 /* storage for the decryption */
-static int nstored = 0;
+static size_t nstored = 0;
 static char *store_ptr = storage;
-static int twrite(int, char *, int, int);
-static int v5_des_read(), v5_des_write();
+static int twrite(int, char *, size_t, int);
+static int v5_des_read(int, char *, size_t, int), 
+    v5_des_write(int, char *, size_t, int);
 #ifdef KRB5_KRB4_COMPAT
-static int v4_des_read(), v4_des_write();
+static int v4_des_read(int, char *, size_t, int), 
+    v4_des_write(int, char *, size_t, int);
 static C_Block v4_session;
 static int right_justify;
 #endif
 static int do_lencheck;
 
-/* XXX: These should be internal to krb5 library, or declared in krb5.h.  */
-extern krb5_error_code krb5_write_message (krb5_context, krb5_pointer,
-					   krb5_data *);
-extern int krb5_net_read (krb5_context, int , char *, int);
-extern int krb5_net_write (krb5_context, int , const char *, int);
-/* XXX: And these should be declared in krb.h, or private.  */
 #ifdef KRB5_KRB4_COMPAT
 extern int
 krb_sendauth(long options, int fd, KTEXT ticket,
@@ -155,6 +160,201 @@ krb_sendauth(long options, int fd, KTEXT ticket,
 	     struct sockaddr_in *faddr,
 	     char *version);
 #endif
+
+#ifdef POSIX_SIGNALS
+typedef sigset_t masktype;
+#else
+typedef sigmasktype masktype;
+#endif
+
+static void
+block_urgent (masktype *oldmask)
+{
+#ifdef POSIX_SIGNALS
+    sigset_t urgmask;
+
+    sigemptyset(&urgmask);
+    sigaddset(&urgmask, SIGURG);
+    sigprocmask(SIG_BLOCK, &urgmask, oldmask);
+#else
+    *oldmask = sigblock(sigmask(SIGURG));
+#endif /* POSIX_SIGNALS */
+}
+
+static void
+restore_sigs (masktype *oldmask)
+{
+#ifdef POSIX_SIGNALS
+    sigprocmask(SIG_SETMASK, oldmask, (sigset_t*)0);
+#else
+    sigsetmask(*oldmask);
+#endif /* POSIX_SIGNALS */
+}
+
+static int
+kcmd_connect (int *sp, int *addrfamilyp, struct sockaddr_in *sockinp,
+	      char *hname, char **host_save, unsigned int rport, int *lportp,
+	      struct sockaddr_in *laddrp)
+{
+    int s, aierr;
+    struct addrinfo *ap, *ap2, aihints;
+    char rport_buf[10];
+    GETSOCKNAME_ARG3_TYPE  sin_len;
+
+    sprintf(rport_buf, "%d", ntohs(rport));
+    memset(&aihints, 0, sizeof(aihints));
+    aihints.ai_socktype = SOCK_STREAM;
+    aihints.ai_flags = AI_CANONNAME;
+    aihints.ai_family = *addrfamilyp;
+    aierr = getaddrinfo(hname, rport_buf, &aihints, &ap);
+    if (aierr) {
+	const char *msg;
+	/* We want to customize some messages.  */
+	switch (aierr) {
+	case EAI_NONAME:
+	    msg = "host unknown";
+	    break;
+	default:
+	    fprintf(stderr, "foo\n");
+	    msg = gai_strerror(aierr);
+	    break;
+	}
+	fprintf(stderr, "%s: %s\n", hname, msg);
+	return -1;
+    }
+    if (ap == 0) {
+	fprintf(stderr, "%s: no addresses?\n", hname);
+	return -1;
+    }
+
+    *host_save = strdup(ap->ai_canonname ? ap->ai_canonname : hname);
+
+    for (ap2 = ap; ap; ap = ap->ai_next) {
+	char hostbuf[NI_MAXHOST];
+	int oerrno;
+	int af = ap->ai_family;
+
+	for (;;) {
+	    s = getport(lportp, &af);
+	    if (s < 0) {
+		if (errno == EAGAIN)
+		    fprintf(stderr, "socket: All ports in use\n");
+		else
+		    perror("kcmd: socket");
+		return -1;
+	    }
+	    if (connect(s, ap->ai_addr, ap->ai_addrlen) >= 0)
+		goto connected;
+	    (void) close(s);
+	    if (errno != EADDRINUSE)
+		break;
+	    if (lportp)
+		(*lportp)--;
+	}
+
+	oerrno = errno;
+	aierr = getnameinfo(ap->ai_addr, ap->ai_addrlen,
+			    hostbuf, sizeof(hostbuf), 0, 0, NI_NUMERICHOST);
+	if (aierr)
+	    fprintf(stderr, "connect to <error formatting address: %s>: ",
+		    gai_strerror (aierr));
+	else
+	    fprintf(stderr, "connect to address %s: ", hostbuf);
+	errno = oerrno;
+	perror(0);
+
+	if (ap->ai_next)
+	    fprintf(stderr, "Trying next address...\n");
+    }
+    freeaddrinfo(ap2);
+    return -1;
+
+connected:
+    sin_len = sizeof(struct sockaddr_in);
+    if (getsockname(s, (struct sockaddr *)laddrp, &sin_len) < 0) {
+	perror("getsockname");
+	close(s);
+	return -1;
+    }
+
+    *sp = s;
+    *sockinp = *(struct sockaddr_in *) ap->ai_addr;
+    freeaddrinfo(ap2);
+    return 0;
+}
+
+static int
+setup_secondary_channel (int s, int *fd2p, int *lportp, int *addrfamilyp,
+			 struct sockaddr_in *fromp, int anyport)
+{
+    if (fd2p == 0) {
+    	write(s, "", 1);
+    	*lportp = 0;
+    } else {
+    	char num[8];
+    	int len = sizeof (*fromp);
+	size_t slen;
+    	int s2 = getport(lportp, addrfamilyp), s3;
+	fd_set rfds, xfds;
+	struct timeval waitlen;
+	int n;
+
+	*fd2p = -1;
+	if (s2 < 0)
+	    return -1;
+	FD_ZERO(&rfds);
+	FD_ZERO(&xfds);
+	FD_SET(s, &rfds);
+	FD_SET(s, &xfds);
+	listen(s2, 1);
+	FD_SET(s2, &rfds);
+    	(void) sprintf(num, "%d", *lportp);
+	slen = strlen(num)+1;
+    	if (write(s, num, slen) != slen) {
+	    perror("write: setting up stderr");
+	    (void) close(s2);
+	    return -1;
+    	}
+	waitlen.tv_sec = 600;	/* long, but better than infinite */
+	waitlen.tv_usec = 0;
+	n = (s < s2) ? s2 : s;
+	n = select(n+1, &rfds, 0, &xfds, &waitlen);
+	if (n <= 0) {
+	    /* timeout or error */
+	    fprintf(stderr, "timeout in circuit setup\n");
+	    close(s2);
+	    *fd2p = -1;
+	    return -1;
+	} else {
+	    if (FD_ISSET(s, &rfds) || FD_ISSET(s, &xfds)) {
+		fprintf(stderr, "socket: protocol error or closed connection in circuit setup\n");
+		close(s2);
+		*fd2p = -1;
+		return -1;
+	    }
+	    /* ready to accept a connection; yay! */
+	}
+    	s3 = accept(s2, (struct sockaddr *)fromp, &len);
+    	(void) close(s2);
+    	if (s3 < 0) {
+	    perror("accept");
+	    *lportp = 0;
+	    return -1;
+    	}
+    	*fd2p = s3;
+    	fromp->sin_port = ntohs(fromp->sin_port);
+	/* This check adds nothing when using Kerberos.  */
+    	if (! anyport &&
+	    (fromp->sin_family != AF_INET ||
+    	     fromp->sin_port >= IPPORT_RESERVED)) {
+	    fprintf(stderr, "socket: protocol failure in circuit setup.\n");
+	    close(s3);
+	    *fd2p = -1;
+	    return -1;
+    	}
+    }
+    return 0;
+}
 
 int
 kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
@@ -177,23 +377,17 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
      int suppress_err;		/* Don't print if authentication fails */
      enum kcmd_proto *protonump;
 {
-    int s, pid;
-#ifdef POSIX_SIGNALS
-    sigset_t oldmask, urgmask;
-#else
-    long oldmask;
-#endif
-    struct sockaddr_in sin, from, local_laddr;
-    krb5_creds *get_cred, *ret_cred = 0;
+    int s;
+    masktype oldmask;
+    struct sockaddr_in sockin, from, local_laddr;
+    krb5_creds *get_cred = 0, *ret_cred = 0;
     char c;
     int lport;
-    struct hostent *hp;
     int rc;
     char *host_save;
     krb5_error_code status;
     krb5_ap_rep_enc_part *rep_ret;
     krb5_error	*error = 0;
-    int sin_len;
     krb5_ccache cc;
     krb5_data outbuf;
     krb5_flags options = authopts;
@@ -202,6 +396,7 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
     krb5_data cksumdat;
     char *kcmd_version;
     enum kcmd_proto protonum = *protonump;
+    int addrfamily = /* AF_INET */0;
 
     if ((cksumbuf = malloc(strlen(cmd)+strlen(remuser)+64)) == 0 ) {
 	fprintf(stderr, "Unable to allocate memory for checksum buffer.\n");
@@ -213,68 +408,14 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
     cksumdat.data = cksumbuf;
     cksumdat.length = strlen(cksumbuf);
 	
-    pid = getpid();
-    hp = gethostbyname(*ahost);
-    if (hp == 0) {
-	fprintf(stderr, "%s: unknown host\n", *ahost);
-	return (-1);
-    }
-
-#ifdef POSIX_SIGNALS
-    sigemptyset(&urgmask);
-    sigaddset(&urgmask, SIGURG);
-    sigprocmask(SIG_BLOCK, &urgmask, &oldmask);
-#else
-    oldmask = sigblock(sigmask(SIGURG));
-#endif /* POSIX_SIGNALS */
+    block_urgent(&oldmask);
     
-    for (;;) {
-        s = getport(0);
-    	if (s < 0) {
-	    if (errno == EAGAIN)
-		fprintf(stderr, "socket: All ports in use\n");
-	    else
-		perror("kcmd: socket");
-#ifdef POSIX_SIGNALS
-	    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-	    sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
-	    return (-1);
-    	}
-    	sin.sin_family = hp->h_addrtype;
-    	memcpy((caddr_t)&sin.sin_addr,hp->h_addr, sizeof(sin.sin_addr));
-    	sin.sin_port = rport;
-    	if (connect(s, (struct sockaddr *)&sin, sizeof (sin)) >= 0)
-	    break;
-    	(void) close(s);
-    	if (errno == EADDRINUSE)
-	    continue;
-
-#if !(defined(tek) || defined(ultrix) || defined(sun) || defined(SYSV))
-    	if (hp->h_addr_list[1] != NULL) {
-	    int oerrno = errno;
-	    
-	    fprintf(stderr,
-    		    "connect to address %s: ", inet_ntoa(sin.sin_addr));
-	    errno = oerrno;
-	    perror(0);
-	    hp->h_addr_list++;
-	    memcpy((caddr_t)&sin.sin_addr,hp->h_addr_list[0],
-		   sizeof(sin.sin_addr));
-	    fprintf(stderr, "Trying %s...\n",
-		    inet_ntoa(sin.sin_addr));
-	    continue;
-    	}
-#endif /* !(defined(ultrix) || defined(sun)) */
-    	perror(hp->h_name);
-#ifdef POSIX_SIGNALS
-	sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-    	sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
-    	return (-1);
+    if (!laddr) laddr = &local_laddr;
+    if (kcmd_connect(&s, &addrfamily, &sockin, *ahost, &host_save, rport, 0, laddr) == -1) {
+	restore_sigs(&oldmask);
+	return -1;
     }
+    *ahost = host_save;
     /* If no service is given set to the default service */
     if (!service) service = default_service;
     
@@ -282,13 +423,6 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
         fprintf(stderr,"kcmd: no memory\n");
         return(-1);
     }
-    host_save = malloc(strlen(hp->h_name) + 1);
-    if (host_save == NULL) {
-	fprintf(stderr, "kcmd: no memory\n");
-	free(get_cred);
-	return -1;
-    }
-    strcpy(host_save, hp->h_name);
     status = krb5_sname_to_principal(bsd_context, host_save, service,
 				     KRB5_NT_SRV_HST, &get_cred->server);
     if (status) {
@@ -298,67 +432,28 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
     }
 
     if (realm && *realm) {
-	free(krb5_princ_realm(bsd_context,get_cred->server)->data);
-	/*krb5_xfree(krb5_princ_realm(bsd_context,get_cred->server)->data);*/
+        status = krb5_set_principal_realm(bsd_context, get_cred->server,
+					  realm);
+	if (status) {
+	  fprintf(stderr, "kcmd: krb5_set_principal_realm failed %s\n", 
+		  error_message(status));
+	  return(-1);
+	}
+    }
+    status = setup_secondary_channel(s, fd2p, &lport, &addrfamily, &from,
+				     anyport);
+    if (status)
+	goto bad;
 
-	krb5_princ_set_realm_length(bsd_context,get_cred->server,strlen(realm));
-	krb5_princ_set_realm_data(bsd_context,get_cred->server,strdup(realm));
-    }
-    if (fd2p == 0) {
-    	write(s, "", 1);
-    	lport = 0;
-    } else {
-    	char num[8];
-    	int s2 = getport(&lport), s3;
-    	int len = sizeof (from);
-	
-    	if (s2 < 0) {
-	    status = -1;
-	    goto bad;
-    	}
-    	listen(s2, 1);
-    	(void) sprintf(num, "%d", lport);
-    	if (write(s, num, strlen(num)+1) != strlen(num)+1) {
-	    perror("write: setting up stderr");
-	    (void) close(s2);
-	    status = -1;
-	    goto bad;
-    	}
-    	s3 = accept(s2, (struct sockaddr *)&from, &len);
-    	(void) close(s2);
-    	if (s3 < 0) {
-	    perror("accept");
-	    lport = 0;
-	    status = -1;
-	    goto bad;
-    	}
-    	*fd2p = s3;
-    	from.sin_port = ntohs((u_short)from.sin_port);
-    	if (! anyport &&
-	    (from.sin_family != AF_INET ||
-    	     from.sin_port >= IPPORT_RESERVED)) {
-	    fprintf(stderr,
-    		    "socket: protocol failure in circuit setup.\n");
-	    goto bad2;
-    	}
-    }
-    
-    if (!laddr) laddr = &local_laddr;
-    if (!faddr) faddr = &sin;
-    else 
-      memcpy(faddr,&sin,sizeof(sin));
-    
-    sin_len = sizeof (struct sockaddr_in);
-    if (getsockname(s, (struct sockaddr *)laddr, &sin_len) < 0) {
-        perror("getsockname");
-        status = -1;
-        goto bad2;
-    }
+    if (faddr)
+	*faddr = sockin;
 
-    if (status = krb5_cc_default(bsd_context, &cc))
+    status = krb5_cc_default(bsd_context, &cc);
+    if (status)
     	goto bad2;
 
-    if (status = krb5_cc_get_principal(bsd_context, cc, &get_cred->client)) {
+    status = krb5_cc_get_principal(bsd_context, cc, &get_cred->client);
+    if (status) {
     	(void) krb5_cc_close(bsd_context, cc);
     	goto bad2;
     }
@@ -385,8 +480,9 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
 	goto bad2;
 
     /* Only need local address for mk_cred() to send to krlogind */
-    if (status = krb5_auth_con_genaddrs(bsd_context, auth_context, s,
-			KRB5_AUTH_CONTEXT_GENERATE_LOCAL_FULL_ADDR))
+    status = krb5_auth_con_genaddrs(bsd_context, auth_context, s,
+				   KRB5_AUTH_CONTEXT_GENERATE_LOCAL_FULL_ADDR);
+    if (status)
 	goto bad2;
 
     if (protonum == KCMD_PROTOCOL_COMPAT_HACK) {
@@ -427,7 +523,8 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
 	    if (!suppress_err) {
 		fprintf(stderr, "Server returned error code %d (%s)\n",
 			error->error,
-			error_message(ERROR_TABLE_BASE_krb5 + error->error));
+			error_message(ERROR_TABLE_BASE_krb5 + 
+				      (int) error->error));
 		if (error->text.length) {
 		    fprintf(stderr, "Error text sent from server: %s\n",
 			    error->text.data);
@@ -448,22 +545,25 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
     (void) write(s, locuser, strlen(locuser)+1);
     
     if (options & OPTS_FORWARD_CREDS) {   /* Forward credentials */
-	if (status = krb5_fwd_tgt_creds(bsd_context, auth_context,
-					host_save,
-					ret_cred->client, ret_cred->server,
-					0, options & OPTS_FORWARDABLE_CREDS,
-					&outbuf)) {
+	status = krb5_fwd_tgt_creds(bsd_context, auth_context,
+				    host_save,
+				    ret_cred->client, ret_cred->server,
+				    0, options & OPTS_FORWARDABLE_CREDS,
+				    &outbuf);
+	if (status) {
 	    fprintf(stderr, "kcmd: Error getting forwarded creds\n");
 	    goto bad2;
 	}
 
 	/* Send forwarded credentials */
-	if (status = krb5_write_message(bsd_context, (krb5_pointer)&s, &outbuf))
+	status = krb5_write_message(bsd_context, (krb5_pointer)&s, &outbuf);
+	if (status)
 	  goto bad2;
     }
     else { /* Dummy write to signal no forwarding */
 	outbuf.length = 0;
-	if (status = krb5_write_message(bsd_context, (krb5_pointer)&s, &outbuf))
+	status = krb5_write_message(bsd_context, (krb5_pointer)&s, &outbuf);
+	if (status)
 	  goto bad2;
     }
 
@@ -485,11 +585,7 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
 	status = -1;
 	goto bad2;
     }
-#ifdef POSIX_SIGNALS
-    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-    sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
+    restore_sigs(&oldmask);
     *sock = s;
     *protonump = protonum;
     
@@ -505,11 +601,7 @@ kcmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, service, realm,
       (void) close(*fd2p);
   bad:
     (void) close(s);
-#ifdef POSIX_SIGNALS
-    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-    sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
+    restore_sigs(&oldmask);
     if (ret_cred)
       krb5_free_creds(bsd_context, ret_cred);
     return (status);
@@ -523,7 +615,7 @@ k4cmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, ticket, service, realm,
       cred, schedule, msg_data, laddr, faddr, authopts, anyport)
      int *sock;
      char **ahost;
-     u_short rport;
+     unsigned int rport;
      char *locuser, *remuser, *cmd;
      int *fd2p;
      KTEXT ticket;
@@ -536,144 +628,39 @@ k4cmd(sock, ahost, rport, locuser, remuser, cmd, fd2p, ticket, service, realm,
      long authopts;
      int anyport;
 {
-    int s, pid;
-#ifdef POSIX_SIGNALS
-    sigset_t oldmask, urgmask;
-#else
-    sigmasktype oldmask;
-#endif
-    struct sockaddr_in sin, from;
+    int s;
+    masktype oldmask;
+    struct sockaddr_in sockin, from;
     char c;
     int lport = START_PORT;
-    struct hostent *hp;
-    int rc, sin_len;
+    int rc;
     char *host_save;
     int status;
+    int addrfamily = AF_INET;
 
-    pid = getpid();
-    hp = gethostbyname(*ahost);
-    if (hp == 0) {
-	fprintf(stderr, "%s: unknown host\n", *ahost);
-	return (-1);
+    block_urgent(&oldmask);
+    if (kcmd_connect (&s, &addrfamily, &sockin, *ahost, &host_save, rport, &lport, laddr) == -1) {
+	restore_sigs(&oldmask);
+	return -1;
     }
-    host_save = malloc(strlen(hp->h_name) + 1);
-    strcpy(host_save, hp->h_name);
     *ahost = host_save;
-
-#ifdef POSIX_SIGNALS
-    sigemptyset(&urgmask);
-    sigaddset(&urgmask, SIGURG);
-    sigprocmask(SIG_BLOCK, &urgmask, &oldmask);
-#else
-    oldmask = sigblock(sigmask(SIGURG));
-#endif /* POSIX_SIGNALS */
-    for (;;) {
-	s = getport(&lport);
-	if (s < 0) {
-	    if (errno == EAGAIN)
-		fprintf(stderr, "socket: All ports in use\n");
-	    else
-		perror("rcmd: socket");
-#ifdef POSIX_SIGNALS
-	    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-	    sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
-	    return (-1);
-	}
-	sin.sin_family = hp->h_addrtype;
-	memcpy((caddr_t)&sin.sin_addr, hp->h_addr, sizeof(sin.sin_addr));
-	sin.sin_port = rport;
-	if (connect(s, (struct sockaddr *)&sin, sizeof (sin)) >= 0)
-	    break;
-	(void) close(s);
-	if (errno == EADDRINUSE) {
-	    lport--;
-	    continue;
-	}
-#if !(defined(tex) || defined(ultrix) || defined(sun) || defined(SYSV))
-	if (hp->h_addr_list[1] != NULL) {
-	    int oerrno = errno;
-
-	    fprintf(stderr,
-		    "connect to address %s: ", inet_ntoa(sin.sin_addr));
-	    errno = oerrno;
-	    perror(0);
-	    hp->h_addr_list++;
-	    memcpy((caddr_t)&sin.sin_addr, hp->h_addr_list[0],
-		   sizeof(sin.sin_addr));
-	    fprintf(stderr, "Trying %s...\n", inet_ntoa(sin.sin_addr));
-	    continue;
-	}
-#endif						/* !(defined(ultrix) || defined(sun)) */
-	perror(host_save);
-#ifdef POSIX_SIGNALS
-	sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-	sigsetmask(oldmask);
-#endif /* POSIX_SIGNALS */
-	return (-1);
-    }
     /* If realm is null, look up from table */
     if ((realm == NULL) || (realm[0] == '\0')) {
 	realm = krb_realmofhost(host_save);
     }
     lport--;
-    if (fd2p == 0) {
-	write(s, "", 1);
-	lport = 0;
-    } else {
-	char num[8];
-	int s2 = getport(&lport), s3;
-	int len = sizeof (from);
-
-	if (s2 < 0) {
-	    status = -1;
-	    goto bad;
-	}
-	listen(s2, 1);
-	(void) sprintf(num, "%d", lport);
-	if (write(s, num, strlen(num)+1) != strlen(num)+1) {
-	    perror("write: setting up stderr");
-	    (void) close(s2);
-	    status = -1;
-	    goto bad;
-	}
-	s3 = accept(s2, (struct sockaddr *)&from, &len);
-	(void) close(s2);
-	if (s3 < 0) {
-	    perror("accept");
-	    lport = 0;
-	    status = -1;
-	    goto bad;
-	}
-	*fd2p = s3;
-	from.sin_port = ntohs((u_short)from.sin_port);
-	/* This check adds nothing when using Kerberos.  */
-	if (! anyport &&
-	    (from.sin_family != AF_INET ||
-	     from.sin_port >= IPPORT_RESERVED)) {
-	    fprintf(stderr, "socket: protocol failure in circuit setup.\n");
-	    status = -1;
-	    goto bad2;
-	}
-    }
+    status = setup_secondary_channel(s, fd2p, &lport, &addrfamily, &from,
+				     anyport);
+    if (status)
+	goto bad;
 
     /* set up the needed stuff for mutual auth */
-    *faddr = sin;
-    sin_len = sizeof (struct sockaddr_in);
-    if (getsockname(s, (struct sockaddr *)laddr, &sin_len) < 0) {
-	perror("getsockname");
-	status = -1;
-	goto bad2;
-    }
+    *faddr = sockin;
 
-    if ((status = krb_sendauth(authopts, s, ticket, service, *ahost,
-			       realm, (unsigned long) getpid(), msg_data,
-			       cred, schedule,
-			       laddr,
-			       faddr,
-			       "KCMDV0.1")) != KSUCCESS) {
+    status = krb_sendauth(authopts, s, ticket, service, *ahost,
+			  realm, (unsigned long) getpid(), msg_data,
+			  cred, schedule, laddr, faddr, "KCMDV0.1");
+    if (status != KSUCCESS) {
 	fprintf(stderr, "krb_sendauth failed: %s\n", krb_get_err_text(status));
 	status = -1;
 	goto bad2;
@@ -722,7 +709,7 @@ reread:
 	    cc = 'l';
 	    (void) write(2, &cc, 1);
 	    if (p != check)
-		(void) write(2, check, p - check);
+		(void) write(2, check, (unsigned) (p - check));
 	}
 
 	(void) write(2, &c, 1);
@@ -734,11 +721,7 @@ reread:
 	status = -1;
 	goto bad2;
     }
-#ifdef POSIX_SIGNALS
-    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-    sigsetmask(oldmask);
-#endif
+    restore_sigs(&oldmask);
     *sock = s;
     return (KSUCCESS);
  bad2:
@@ -746,50 +729,80 @@ reread:
 	(void) close(*fd2p);
  bad:
     (void) close(s);
-#ifdef POSIX_SIGNALS
-    sigprocmask(SIG_SETMASK, &oldmask, (sigset_t*)0);
-#else
-    sigsetmask(oldmask);
-#endif
+    restore_sigs(&oldmask);
     return (status);
 }
 #endif /* KRB5_KRB4_COMPAT */
 
 
-int
-getport(alport)
-     int *alport;
+static int
+setup_socket (struct sockaddr *sa, GETSOCKNAME_ARG3_TYPE len)
 {
-    struct sockaddr_in sin;
     int s;
-    int len = sizeof(sin);
-    
-    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    s = socket(sa->sa_family, SOCK_STREAM, 0);
     if (s < 0)
-	return (-1);
+	return -1;
 
-    memset((char *) &sin, 0,sizeof(sin));
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = INADDR_ANY;
+    if (bind(s, sa, len) < 0)
+	return -1;
+    if (getsockname(s, sa, &len) < 0) {
+	close(s);
+	return -1;
+    }
+    return s;
+}
 
-    if (bind(s, (struct sockaddr *)&sin, sizeof (sin)) >= 0) {
-	if (alport) {
-	    if (getsockname(s, (struct sockaddr *)&sin, &len) < 0) {
-		(void) close(s);
-		return -1;
-	    } else {
-		*alport = ntohs(sin.sin_port);
-	    }
-	}
+
+int
+getport(alport, family)
+    int *alport, *family;
+{
+    int s;
+
+    if (*family == 0) {
+#ifdef KRB5_USE_INET6
+	*family = AF_INET6;
+	s = getport (alport, family);
+	if (s >= 0)
+	    return s;
+#endif
+	*family = AF_INET;
+    }
+
+#ifdef KRB5_USE_INET6
+    if (*family == AF_INET6) {
+	struct sockaddr_in6 sockin6;
+
+	memset(&sockin6, 0, sizeof(sockin6));
+	sockin6.sin6_family = AF_INET6;
+	sockin6.sin6_addr = in6addr_any;
+
+	s = setup_socket((struct sockaddr *)&sockin6, sizeof (sockin6));
+	if (s >= 0 && alport)
+	    *alport = ntohs(sockin6.sin6_port);
+	return s;
+    }
+#endif
+
+    if (*family == AF_INET) {
+	struct sockaddr_in sockin;
+
+	memset(&sockin, 0, sizeof(sockin));
+	sockin.sin_family = AF_INET;
+	sockin.sin_addr.s_addr = INADDR_ANY;
+
+	s = setup_socket((struct sockaddr *)&sockin, sizeof (sockin));
+	if (s >= 0 && alport)
+	    *alport = ntohs(sockin.sin_port);
 	return s;
     }
 
-    (void) close(s);
     return -1;
 }
 
 static int
-normal_read (int fd, char *buf, int len, int secondary)
+normal_read (int fd, char *buf, size_t len, int secondary)
 {
     return read (fd, buf, len);
 }
@@ -810,7 +823,8 @@ void rcmd_stream_init_krb5(in_keyblock, encrypt_flag, lencheck, am_client,
 {
     krb5_error_code status;
     size_t blocksize;
-    krb5_boolean similar;
+    int i;
+    krb5_error_code ret;
 
     if (!encrypt_flag) {
 	rcmd_stream_init_normal();
@@ -823,6 +837,10 @@ void rcmd_stream_init_krb5(in_keyblock, encrypt_flag, lencheck, am_client,
     do_lencheck = lencheck;
     input = v5_des_read;
     output = v5_des_write;
+    enc_keyusage_i[0] = KCMD_KEYUSAGE;
+    enc_keyusage_i[1] = KCMD_KEYUSAGE;
+    enc_keyusage_o[0] = KCMD_KEYUSAGE;
+    enc_keyusage_o[1] = KCMD_KEYUSAGE;
 
     if (protonum == KCMD_OLD_PROTOCOL) {
 	use_ivecs = 0;
@@ -830,30 +848,71 @@ void rcmd_stream_init_krb5(in_keyblock, encrypt_flag, lencheck, am_client,
     }
 
     use_ivecs = 1;
-
-    if (status = krb5_c_block_size(bsd_context, keyblock->enctype,
-				   &blocksize)) {
+    switch (in_keyblock->enctype) {
+      /* 
+       * For the DES-based enctypes and the 3DES enctype we  want to use
+       *  a non-zero  IV because that's what we did.  In the future we
+       * use different keyusage for each channel and direction and a fresh
+       * cipher state
+       */
+    case ENCTYPE_DES_CBC_CRC:
+    case ENCTYPE_DES_CBC_MD4:
+    case ENCTYPE_DES_CBC_MD5:
+    case ENCTYPE_DES3_CBC_SHA1:
+      
+      status = krb5_c_block_size(bsd_context, keyblock->enctype,
+				 &blocksize);
+      if (status) {
 	/* XXX what do I do? */
 	abort();
-    }
+      }
 
-    encivec_i[0].length = encivec_i[1].length = encivec_o[0].length
+      encivec_i[0].length = encivec_i[1].length = encivec_o[0].length
 	= encivec_o[1].length = blocksize;
 
-    if ((encivec_i[0].data = malloc(encivec_i[0].length * 4)) == NULL) {
+      if ((encivec_i[0].data = malloc(encivec_i[0].length * 4)) == NULL) {
 	/* XXX what do I do? */
 	abort();
-    }
-    encivec_i[1].data = encivec_i[0].data + encivec_i[0].length;
-    encivec_o[0].data = encivec_i[1].data + encivec_i[0].length;
-    encivec_o[1].data = encivec_o[0].data + encivec_i[0].length;
+      }
+      encivec_i[1].data = encivec_i[0].data + encivec_i[0].length;
+      encivec_o[0].data = encivec_i[1].data + encivec_i[0].length;
+      encivec_o[1].data = encivec_o[0].data + encivec_i[0].length;
 
     /* is there a better way to initialize this? */
-    memset(encivec_i[0].data, am_client, blocksize);
-    memset(encivec_o[0].data, 1 - am_client, blocksize);
-    memset(encivec_i[1].data, 2 | am_client, blocksize);
-    memset(encivec_o[1].data, 2 | (1 - am_client), blocksize);
-}
+      memset(encivec_i[0].data, am_client, blocksize);
+      memset(encivec_o[0].data, 1 - am_client, blocksize);
+      memset(encivec_i[1].data, 2 | am_client, blocksize);
+      memset(encivec_o[1].data, 2 | (1 - am_client), blocksize);
+      break;
+    default:
+      if (am_client) {
+	enc_keyusage_i[0] = 1028;
+	enc_keyusage_i[1] = 1030;
+	enc_keyusage_o[0] = 1032;
+	enc_keyusage_o[1] = 1034;
+      } else { /*am_client*/
+	enc_keyusage_i[0] = 1032;
+	enc_keyusage_i[1] = 1034;
+	enc_keyusage_o[0] = 1028;
+	enc_keyusage_o[1] = 1030;
+      }
+      for (i = 0; i < 2; i++) {
+	ret = krb5_c_init_state (bsd_context, in_keyblock, enc_keyusage_i[i],
+				 &encivec_i[i]);
+	if (ret)
+	  goto fail;
+	ret = krb5_c_init_state (bsd_context, in_keyblock, enc_keyusage_o[i],
+				 &encivec_o[i]);
+	if (ret)
+	  goto fail;
+      }
+      break;
+    }
+    return;
+ fail:
+    com_err ("kcmd", ret, "Initializing cipher state");
+    abort();
+    }
 
 #ifdef KRB5_KRB4_COMPAT
 void rcmd_stream_init_krb4(session, encrypt_flag, lencheck, justify)
@@ -877,7 +936,7 @@ void rcmd_stream_init_krb4(session, encrypt_flag, lencheck, justify)
 int rcmd_stream_read(fd, buf, len, sec)
      int fd;
      register char *buf;
-     int len;
+     size_t len;
      int sec;
 {
     return (*input)(fd, buf, len, sec);
@@ -886,7 +945,7 @@ int rcmd_stream_read(fd, buf, len, sec)
 int rcmd_stream_write(fd, buf, len, sec)
      int fd;
      register char *buf;
-     int len;
+     size_t len;
      int sec;
 {
     return (*output)(fd, buf, len, sec);
@@ -896,7 +955,7 @@ int rcmd_stream_write(fd, buf, len, sec)
 static int twrite(fd, buf, len, secondary)
      int fd;
      char *buf;
-     int len;
+     size_t len;
      int secondary;
 {
     return write((fd == 0) ? 1 : fd, buf, len);
@@ -905,7 +964,7 @@ static int twrite(fd, buf, len, secondary)
 static int v5_des_read(fd, buf, len, secondary)
      int fd;
      char *buf;
-     int len;
+     size_t len;
      int secondary;
 {
     int nreturned = 0;
@@ -948,9 +1007,10 @@ static int v5_des_read(fd, buf, len, secondary)
     if ((cc = krb5_net_read(bsd_context, fd, &c, 1)) != 1) return 0;
     rd_len = (rd_len << 8) | c;
 
-    if (ret = krb5_c_encrypt_length(bsd_context, keyblock->enctype,
-				    use_ivecs ? rd_len + 4 : rd_len,
-				    &net_len)) {
+    ret = krb5_c_encrypt_length(bsd_context, keyblock->enctype,
+				use_ivecs ? rd_len + 4 : rd_len,
+				&net_len);
+    if (ret) {
 	errno = ret;
 	return(-1);
     }
@@ -973,9 +1033,10 @@ static int v5_des_read(fd, buf, len, secondary)
     plain.data = storage;
 
     /* decrypt info */
-    if (ret = krb5_c_decrypt(bsd_context, keyblock, KCMD_KEYUSAGE,
-		       use_ivecs ? encivec_i + secondary : 0,
-		       &cipher, &plain)) {
+    ret = krb5_c_decrypt(bsd_context, keyblock, enc_keyusage_i[secondary],
+			 use_ivecs ? encivec_i + secondary : 0,
+			 &cipher, &plain);
+    if (ret) {
 	/* probably out of sync */
 	errno = EIO;
 	return(-1);
@@ -1014,7 +1075,7 @@ static int v5_des_read(fd, buf, len, secondary)
 static int v5_des_write(fd, buf, len, secondary)
      int fd;
      char *buf;
-     int len;
+     size_t len;
      int secondary;
 {
     krb5_data plain;
@@ -1042,7 +1103,7 @@ static int v5_des_write(fd, buf, len, secondary)
     cipher.ciphertext.length = sizeof(des_outpkt)-4;
     cipher.ciphertext.data = desoutbuf.data;
 
-    if (krb5_c_encrypt(bsd_context, keyblock, KCMD_KEYUSAGE,
+    if (krb5_c_encrypt(bsd_context, keyblock, enc_keyusage_o[secondary],
 		       use_ivecs ? encivec_o + secondary : 0,
 		       &plain, &cipher)) {
 	errno = EIO;
@@ -1070,10 +1131,11 @@ static int v5_des_write(fd, buf, len, secondary)
 #ifdef KRB5_KRB4_COMPAT
 
 static int
-v4_des_read(fd, buf, len)
+v4_des_read(fd, buf, len, secondary)
 int fd;
 char *buf;
-int len;
+size_t len;
+int secondary;
 {
 	int nreturned = 0;
 	krb5_ui_4 net_len, rd_len;
@@ -1135,7 +1197,7 @@ int len;
 	}
 	(void) pcbc_encrypt((des_cblock *) des_inbuf,
 			    (des_cblock *) storage,
-			    (net_len < 8) ? 8 : net_len,
+			    (int) ((net_len < 8) ? 8 : net_len),
 			    v4_schedule,
 			    &v4_session,
 			    DECRYPT);
@@ -1163,10 +1225,11 @@ int len;
 }
 
 static int
-v4_des_write(fd, buf, len)
+v4_des_write(fd, buf, len, secondary)
 int fd;
 char *buf;
-int len;
+size_t len;
+int secondary;
 {
 	static char garbage_buf[8];
 	unsigned char *len_buf = (unsigned char *) des_outpkt;
@@ -1188,17 +1251,19 @@ int len;
 #endif
 #define min(a,b) ((a < b) ? a : b)
 
-	if (len < 8 && right_justify) {
-		krb5_random_confounder(8 - len, garbage_buf);
-		/* this "right-justifies" the data in the buffer */
-		(void) memcpy(garbage_buf + 8 - len, buf, len);
-	} else {
-		krb5_random_confounder(8 - len, garbage_buf + len);
-		(void) memcpy(garbage_buf, buf, len);
+	if (len < 8) {
+		if (right_justify) {
+			krb5_random_confounder(8 - len, garbage_buf);
+			/* this "right-justifies" the data in the buffer */
+			(void) memcpy(garbage_buf + 8 - len, buf, len);
+		} else {
+			krb5_random_confounder(8 - len, garbage_buf + len);
+			(void) memcpy(garbage_buf, buf, len);
+		}
 	}
 	(void) pcbc_encrypt((des_cblock *) ((len < 8) ? garbage_buf : buf),
 			    (des_cblock *) (des_outpkt+4),
-			    (len < 8) ? 8 : len,
+			    (int) ((len < 8) ? 8 : len),
 			    v4_schedule,
 			    &v4_session,
 			    ENCRYPT);
@@ -1224,8 +1289,8 @@ int len;
    into all programs. */
 
 char *
-  strsave(sp)
-char *sp;
+strsave(sp)
+    const char *sp;
 {
     register char *ret;
     
@@ -1236,5 +1301,43 @@ char *sp;
     (void) strcpy(ret,sp);
     return(ret);
 }
-
 #endif
+
+/* Server side authentication, etc */
+
+int princ_maps_to_lname(principal, luser)	
+     krb5_principal principal;
+     char *luser;
+{
+    char kuser[10];
+    if (!(krb5_aname_to_localname(bsd_context, principal,
+				  sizeof(kuser), kuser))
+	&& (strcmp(kuser, luser) == 0)) {
+	return 1;
+    }
+    return 0;
+}
+
+int default_realm(principal)
+     krb5_principal principal;
+{
+    char *def_realm;
+    unsigned int realm_length;
+    int retval;
+    
+    realm_length = krb5_princ_realm(bsd_context, principal)->length;
+    
+    if ((retval = krb5_get_default_realm(bsd_context, &def_realm))) {
+	return 0;
+    }
+    
+    if ((realm_length != strlen(def_realm)) ||
+	(memcmp(def_realm, krb5_princ_realm(bsd_context, principal)->data, 
+		realm_length))) {
+	free(def_realm);
+	return 0;
+    }	
+    free(def_realm);
+    return 1;
+}
+

@@ -42,6 +42,9 @@ static char copyright[] =
 #include "telnetd.h"
 #include "pathnames.h"
 
+extern int getent(char *, char *);
+extern int tgetent(char *, char *);
+
 #if	defined(_SC_CRAY_SECURE_SYS) && !defined(SCM_SECURITY)
 /*
  * UNICOS 6.0/6.1 do not have SCM_SECURITY defined, so we can
@@ -74,6 +77,8 @@ struct	socket_security ss;
 # endif /* SO_SEC_MULTI */
 #endif	/* _SC_CRAY_SECURE_SYS */
 
+#include "fake-addrinfo.h"
+
 #ifdef KRB5
 #include "krb5.h"
 #endif
@@ -85,6 +90,9 @@ struct	socket_security ss;
 #ifdef ENCRYPTION
 #include <libtelnet/encrypt.h>
 #include <libtelnet/enc-proto.h>
+#endif
+#if	defined(AUTHENTICATION) || defined(ENCRYPTION)
+#include <libtelnet/misc-proto.h>
 #endif
 
 int	registerd_host_only = 0;
@@ -100,7 +108,6 @@ int	registerd_host_only = 0;
 #ifdef  HAVE_SYS_PTYVAR_H
 # include <sys/ptyvar.h>
 #endif
-
 
 /*
  * Because of the way ptyibuf is used with streams messages, we need
@@ -127,7 +134,9 @@ char	ptyibuf2[BUFSIZ];
 
 #endif /* ! STREAMPTY */
 
-void doit P((struct sockaddr_in *));
+static void doit (struct sockaddr *);
+int terminaltypeok (char *);
+static void _gettermname(void);
 
 int	hostinfo = 1;			/* do we print login banner? */
 
@@ -144,7 +153,7 @@ int maxhostlen = 0;
 int always_ip = 0;
 int stripdomain = 1;
 
-extern void usage P((void));
+extern void usage (void);
 
 /*
  * The string to pass to getopt().  We do it this way so
@@ -206,12 +215,14 @@ get_default_IM()
 	return banner;
 }
 
+int
 main(argc, argv)
 	int argc;
 	char *argv[];
 {
-	struct sockaddr_in from;
-	int on = 1, fromlen;
+	struct sockaddr_storage from;
+	int on = 1;
+	socklen_t fromlen;
 	register int ch;
 	extern char *optarg;
 	extern int optind;
@@ -463,16 +474,6 @@ main(argc, argv)
 				}
 			}
 			break;
-		case 'u':
-			maxhostlen = atoi(optarg);
-			break;
-		case 'i':
-			always_ip = 1;
-			break;
-		case 'N':
-			stripdomain = 0;
-			break;
-
 		default:
 			fprintf(stderr, "telnetd: %c: unknown option\n", ch);
 			/* FALLTHROUGH */
@@ -485,25 +486,27 @@ main(argc, argv)
 	argc -= optind;
 	argv += optind;
 
+	/* XXX Convert this to support getaddrinfo, ipv6, etc.  */
 	if (debug) {
-	    int s, ns, foo;
+	    int s, ns;
+	    socklen_t foo;
 	    struct servent *sp;
-	    static struct sockaddr_in sin = { AF_INET };
+	    static struct sockaddr_in sin4 = { AF_INET };
 
 	    if (argc > 1) {
 		usage();
 		/* NOT REACHED */
 	    } else if (argc == 1) {
 		    if ((sp = getservbyname(*argv, "tcp"))) {
-			sin.sin_port = sp->s_port;
+			sin4.sin_port = sp->s_port;
 		    } else {
-			sin.sin_port = atoi(*argv);
-			if ((int)sin.sin_port <= 0) {
+			sin4.sin_port = atoi(*argv);
+			if ((int)sin4.sin_port <= 0) {
 			    fprintf(stderr, "telnetd: %s: bad port #\n", *argv);
 			    usage();
 			    /* NOT REACHED */
 			}
-			sin.sin_port = htons((u_short)sin.sin_port);
+			sin4.sin_port = htons((u_short)sin4.sin_port);
 		   }
 	    } else {
 		sp = getservbyname("telnet", "tcp");
@@ -511,7 +514,7 @@ main(argc, argv)
 		    fprintf(stderr, "telnetd: tcp/telnet: unknown service\n");
 		    exit(1);
 		}
-		sin.sin_port = sp->s_port;
+		sin4.sin_port = sp->s_port;
 	    }
 
 	    s = socket(AF_INET, SOCK_STREAM, 0);
@@ -521,7 +524,7 @@ main(argc, argv)
 	    }
 	    (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
 				(char *)&on, sizeof(on));
-	    if (bind(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
+	    if (bind(s, (struct sockaddr *)&sin4, sizeof(sin4)) < 0) {
 		perror("bind");
 		exit(1);
 	    }
@@ -529,8 +532,8 @@ main(argc, argv)
 		perror("listen");
 		exit(1);
 	    }
-	    foo = sizeof(sin);
-	    ns = accept(s, (struct sockaddr *)&sin, &foo);
+	    foo = sizeof(sin4);
+	    ns = accept(s, (struct sockaddr *)&sin4, &foo);
 	    if (ns < 0) {
 		perror("accept");
 		exit(1);
@@ -606,6 +609,7 @@ main(argc, argv)
 
 	openlog("telnetd", LOG_PID | LOG_ODELAY, LOG_DAEMON);
 	fromlen = sizeof (from);
+	memset(&from, 0, sizeof(from));
 	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
 		fprintf(stderr, "%s: ", progname);
 		perror("getpeername");
@@ -618,7 +622,7 @@ main(argc, argv)
 	}
 
 #if	defined(IPPROTO_IP) && defined(IP_TOS)
-	{
+	if (fromlen == sizeof (struct in_addr)) {
 # if	defined(HAVE_GETTOSBYNAME)
 		struct tosent *tp;
 		if (tos < 0 && (tp = gettosbyname("telnet", "tcp")))
@@ -634,7 +638,7 @@ main(argc, argv)
 	}
 #endif	/* defined(IPPROTO_IP) && defined(IP_TOS) */
 	net = 0;
-	doit(&from);
+	doit((struct sockaddr *)&from);
 	
 	/* NOTREACHED */
 	return 0;
@@ -681,22 +685,22 @@ usage()
 #ifdef	AUTHENTICATION
 	fprintf(stderr, " [-X auth-type]");
 #endif
-	fprintf(stderr, " [-u utmp_hostname_length] [-U]\n");
-	fprintf(stderr, " [-w [ip|maxhostlen[,[no]striplocal]]]\n");
+	fprintf(stderr, " [-U]\n\t");
+	fprintf(stderr, " [-w [ip|maxhostlen[,[no]striplocal]]]\n\t");
 	fprintf(stderr, " [port]\n");
 	exit(1);
 }
 
 static void encrypt_failure()
 {
-    char *error_message;
+    char *lerror_message;
 
     if (auth_must_encrypt())
-	error_message = "Encryption was not successfully negotiated.  Goodbye.\r\n\r\n";
+	lerror_message = "Encryption was not successfully negotiated.  Goodbye.\r\n\r\n";
     else
-	error_message = "Unencrypted connection refused. Goodbye.\r\n\r\n";
+	lerror_message = "Unencrypted connection refused. Goodbye.\r\n\r\n";
 
-    netputs(error_message);
+    netputs(lerror_message);
     netflush();
     exit(1);
 }
@@ -711,12 +715,11 @@ static unsigned char ttytype_sbbuf[] = {
 	IAC, SB, TELOPT_TTYPE, TELQUAL_SEND, IAC, SE
 };
 
-    int
+static int
 getterminaltype(name)
     char *name;
 {
     int retval = -1;
-    void _gettermname();
 
     settimer(baseline);
 #if	defined(AUTHENTICATION)
@@ -883,7 +886,7 @@ getterminaltype(name)
 #endif
 }  /* end of getterminaltype */
 
-    void
+static void
 _gettermname()
 {
     /*
@@ -933,9 +936,9 @@ char remote_host_name[MAXDNAME];
 char *rhost_sane;
 
 #ifndef	convex
-extern void telnet P((int, int));
+extern void telnet (int, int);
 #else
-extern void telnet P((int, int, char *));
+extern void telnet (int, int, char *);
 #endif
 
 void encr_intr(sig)
@@ -947,13 +950,13 @@ void encr_intr(sig)
 /*
  * Get a pty, scan input lines.
  */
-void doit(who)
-	struct sockaddr_in *who;
+static void doit(who)
+	struct sockaddr *who;
 {
-	char *host, *inet_ntoa();
-	struct hostent *hp;
 	int level;
+#if	defined(_SC_CRAY_SECURE_SYS)
 	int ptynum;
+#endif
 	int on = 1;
 	char user_name[256];
 	long retval;
@@ -985,19 +988,25 @@ void doit(who)
 	}
 #endif	/* _SC_CRAY_SECURE_SYS */
 
-	retval = pty_make_sane_hostname(who, maxhostlen,
+	retval = pty_make_sane_hostname((struct sockaddr *) who, maxhostlen,
 					stripdomain, always_ip,
 					&rhost_sane);
 	if (retval) {
 		fatal(net, error_message(retval));
 	}
-	/* get name of connected client */
-	hp = gethostbyaddr((char *)&who->sin_addr, sizeof (struct in_addr),
-		who->sin_family);
-
-	if (hp == NULL && registerd_host_only) {
-		fatal(net, "Couldn't resolve your address into a host name.\r\n\
-         Please contact your net administrator");
+	if (registerd_host_only) {
+	    /* Get name of connected client -- but we don't actually
+	       use it.  Just confirm that we can get it.  */
+	    int aierror;
+	    char hostnamebuf[NI_MAXHOST];
+	    aierror = getnameinfo (who, socklen (who),
+				   hostnamebuf, sizeof (hostnamebuf), 0, 0,
+				   NI_NAMEREQD);
+	    if (aierror != 0) {
+		fatal(net,
+		      "Couldn't resolve your address into a host name.\r\n"
+		      "Please contact your net administrator");
+	    }
 	}
 
 	(void) gethostname(host_name, sizeof (host_name));

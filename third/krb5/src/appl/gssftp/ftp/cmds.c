@@ -38,10 +38,24 @@ static char sccsid[] = "@(#)cmds.c	5.26 (Berkeley) 3/5/91";
 /*
  * FTP User Program -- Command Routines.
  */
-#include <sys/param.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include <port-sockets.h>
+
+#ifdef _WIN32
+#include <sys/stat.h>
+#include <direct.h>
+#include <mbstring.h>
+#undef ERROR
+#else
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
+#endif
 
 #include <arpa/ftp.h>
 
@@ -49,10 +63,8 @@ static char sccsid[] = "@(#)cmds.c	5.26 (Berkeley) 3/5/91";
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <netdb.h>
 #include <ctype.h>
 #include <time.h>
-#include <netinet/in.h>
 
 #ifdef HAVE_GETCWD
 #define getwd(x) getcwd(x,MAXPATHLEN)
@@ -61,15 +73,9 @@ static char sccsid[] = "@(#)cmds.c	5.26 (Berkeley) 3/5/91";
 #include "ftp_var.h"
 #include "pathnames.h"
 
-#define sig_t my_sig_t
-#define sigtype krb5_sigtype
-typedef sigtype (*sig_t)();
-
 extern	char *globerr;
-extern	char **ftpglob();
 extern	char *home;
 extern	char *remglob();
-extern	char *getenv();
 #ifndef HAVE_STRERROR
 #define strerror(error) (sys_errlist[error])
 #ifdef NEED_SYS_ERRLIST
@@ -82,10 +88,17 @@ extern char reply_string[];
 
 char *mname;
 jmp_buf jabort;
-char *dotrans(), *domap();
 
 extern	char *auth_type;
 extern int do_auth();
+
+static int globulize (char **);
+static int confirm (char *, char *);
+static int getit (int, char **, int, char *);
+static sigtype mabort (int);
+static void quote1 (char *, int, char **);
+static char *dotrans (char *);
+static char *domap (char *);
 
 /*
  * `Another' gets another argument, and stores the new argc and argv.
@@ -93,12 +106,13 @@ extern int do_auth();
  *
  * Returns false if no new arguments have been added.
  */
+int 
 another(pargc, pargv, prompt)
 	int *pargc;
 	char ***pargv;
 	char *prompt;
 {
-	int len = strlen(line), ret;
+        int len = strlen(line), ret;
 	extern sig_t intr();
 
 	if (len >= sizeof(line) - 3) {
@@ -107,7 +121,7 @@ another(pargc, pargv, prompt)
 	}
 	printf("(%s) ", prompt);
 	line[len++] = ' ';
-	if (fgets(&line[len], sizeof(line) - len, stdin) == NULL)
+	if (fgets(&line[len], (signed) sizeof(line) - len, stdin) == NULL)
 		intr();
 	len += strlen(&line[len]);
 	if (len > 0 && line[len - 1] == '\n')
@@ -123,7 +137,7 @@ another(pargc, pargv, prompt)
  * Connect to peer server and
  * auto-login, if possible.
  */
-setpeer(argc, argv)
+void setpeer(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -145,14 +159,14 @@ setpeer(argc, argv)
 	}
 	port = sp->s_port;
 	if (argc > 2) {
-		port = atoi(argv[2]);
-		if (port <= 0) {
+		int iport = atoi (argv[2]);
+		if (iport <= 0 || iport >= 65536) {
 			printf("%s: bad port number-- %s\n", argv[1], argv[2]);
 			printf ("usage: %s host-name [port]\n", argv[0]);
 			code = -1;
 			return;
 		}
-		port = htons(port);
+		port = htons(iport);
 	}
 	host = hookup(argv[1], port);
 	if (host) {
@@ -184,21 +198,15 @@ setpeer(argc, argv)
 				(void) login(argv[1]);
 		}
 
-#ifndef unix			/* XXX */
-#ifdef _AIX
-#define unix
-#endif
-
-#ifdef __hpux
-#define unix
-#endif
-
-#ifdef BSD
+#ifndef unix
+/* sigh */
+#if defined(_AIX) || defined(__hpux) || defined(BSD)
 #define unix
 #endif
 #endif
 
-#if defined(unix) && (NBBY == 8 || defined(linux))
+/* XXX - WIN32 - Is this really ok for Win32 (binary vs text mode)? */
+#if defined(unix) && (NBBY == 8 || defined(linux)) || defined(_WIN32)
 /*
  * this ifdef is to keep someone form "porting" this to an incompatible
  * system and not checking this out. This way they have to think about it.
@@ -207,7 +215,7 @@ setpeer(argc, argv)
 		if (debug == 0)
 			verbose = -1;
 		if (command("SYST") == COMPLETE && overbose) {
-			register char *cp, c;
+			register char *cp, c=0;
 			cp = strchr(reply_string+4, ' ');
 			if (cp == NULL)
 				cp = strchr(reply_string+4, '\r');
@@ -263,10 +271,10 @@ struct	levels {
 #ifndef NOENCRYPTION
 	{ "private",	"P",	PROT_P },
 #endif
-	0
+	{ 0,             0,     0}
 };
 
-char *
+static char *
 getclevel()
 {
 	register struct levels *p;
@@ -275,7 +283,7 @@ getclevel()
 	return(p->p_name);
 }
 
-char *
+static char *
 getdlevel()
 {
 	register struct levels *p;
@@ -293,7 +301,7 @@ char *plevel[] = {
 /*
  * Set control channel protection level.
  */
-setclevel(argc, argv)
+void setclevel(argc, argv)
 	char *argv[];
 {
 	register struct levels *p;
@@ -345,6 +353,7 @@ setclevel(argc, argv)
 /*
  * Set data channel protection level.
  */
+void
 setdlevel(argc, argv)
 	char *argv[];
 {
@@ -396,6 +405,7 @@ setdlevel(argc, argv)
  * Set clear command protection level.
  */
 /*VARARGS*/
+void
 ccc()
 {
 	plevel[1] = "clear";
@@ -406,6 +416,7 @@ ccc()
  * Set clear data protection level.
  */
 /*VARARGS*/
+void
 setclear()
 {
 	plevel[1] = "clear";
@@ -416,6 +427,7 @@ setclear()
  * Set safe data protection level.
  */
 /*VARARGS*/
+void
 setsafe()
 {
 	plevel[1] = "safe";
@@ -427,6 +439,7 @@ setsafe()
  * Set private data protection level.
  */
 /*VARARGS*/
+void
 setprivate()
 {
 	plevel[1] = "private";
@@ -445,10 +458,10 @@ struct	types {
 	{ "image",	"I",	TYPE_I,	0 },
 	{ "ebcdic",	"E",	TYPE_E,	0 },
 	{ "tenex",	"L",	TYPE_L,	bytename },
-	0
+	{  0,            0 ,    0,      0}
 };
 
-char *
+static char *
 gettype()
 {
 	register struct types *p;
@@ -464,6 +477,7 @@ gettype()
 /*
  * Set transfer type.
  */
+void
 settype(argc, argv)
 	int argc;
 	char *argv[];
@@ -510,7 +524,7 @@ settype(argc, argv)
  * without changing our notion of the type for data transfers.
  * Used to change to and from ascii for listings.
  */
-changetype(newtype, show)
+void changetype(newtype, show)
 	int newtype, show;
 {
 	register struct types *p;
@@ -548,7 +562,7 @@ char *stype[] = {
  * Set binary transfer type.
  */
 /*VARARGS*/
-setbinary()
+void setbinary()
 {
 	stype[1] = "binary";
 	settype(2, stype);
@@ -558,7 +572,7 @@ setbinary()
  * Set ascii transfer type.
  */
 /*VARARGS*/
-setascii()
+void setascii()
 {
 	stype[1] = "ascii";
 	settype(2, stype);
@@ -568,14 +582,14 @@ setascii()
  * Set tenex transfer type.
  */
 /*VARARGS*/
-settenex()
+void settenex()
 {
 	stype[1] = "tenex";
 	settype(2, stype);
 }
 
-char *
-getmode()
+static char *
+get_mode()
 {
 	return("stream");
 }
@@ -584,16 +598,16 @@ getmode()
  * Set file transfer mode.
  */
 /*ARGSUSED*/
-setmode(argc, argv)
+void set_mode(argc, argv)
 	int argc;
 	char *argv[];
 {
 
-	printf("We only support %s mode, sorry.\n", getmode());
+	printf("We only support %s mode, sorry.\n", get_mode());
 	code = -1;
 }
 
-char *
+static char *
 getform()
 {
 	return("non-print");
@@ -603,7 +617,7 @@ getform()
  * Set file transfer format.
  */
 /*ARGSUSED*/
-setform(argc, argv)
+void setform(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -612,7 +626,7 @@ setform(argc, argv)
 	code = -1;
 }
 
-char *
+static char *
 getstruct()
 {
 	return("file");
@@ -622,7 +636,7 @@ getstruct()
  * Set file transfer structure.
  */
 /*ARGSUSED*/
-setstruct(argc, argv)
+void setstruct(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -634,7 +648,7 @@ setstruct(argc, argv)
 /*
  * Send a single file.
  */
-put(argc, argv)
+void put(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -682,16 +696,14 @@ usage:
 /*
  * Send multiple files.
  */
-mput(argc, argv)
+void mput(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern jmp_buf jabort;
 	register int i;
 	sig_t oldintr;
 	int ointer;
 	char *tp;
-	sigtype mabort();
 
 	if (argc < 2 && !another(&argc, &argv, "local-files")) {
 		printf("usage: %s local-files\n", argv[0]);
@@ -713,14 +725,14 @@ mput(argc, argv)
 			if (mflag && confirm(argv[0], cp)) {
 				tp = cp;
 				if (mcase) {
-					while (*tp && !islower(*tp)) {
+					while (*tp && !islower((int) (*tp))) {
 						tp++;
 					}
 					if (!*tp) {
 						tp = cp;
 						tp2 = tmpbuf;
 						while ((*tp2 = *tp) != 0) {
-						     if (isupper(*tp2)) {
+						     if (isupper((int) *tp2)) {
 						        *tp2 = 'a' + *tp2 - 'A';
 						     }
 						     tp++;
@@ -805,14 +817,14 @@ mput(argc, argv)
 	mflag = 0;
 }
 
-reget(argc, argv)
+void reget(argc, argv)
 	int argc;
 	char *argv[];
 {
 	(void) getit(argc, argv, 1, "r+w");
 }
 
-get(argc, argv)
+void get(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -822,10 +834,10 @@ get(argc, argv)
 /*
  * Receive one file.
  */
-getit(argc, argv, restartit, mode)
+static int getit(argc, argv, restartit, rmode)
 	int argc;
 	char *argv[];
-	char *mode;
+	char *rmode;
 {
 	int loc = 0;
 	char *oldargv1, *oldargv2;
@@ -852,14 +864,14 @@ usage:
 	if (loc && mcase) {
 		char *tp = argv[1], *tp2, tmpbuf[MAXPATHLEN];
 
-		while (*tp && !islower(*tp)) {
+		while (*tp && !islower((int) *tp)) {
 			tp++;
 		}
 		if (!*tp) {
 			tp = argv[2];
 			tp2 = tmpbuf;
 			while ((*tp2 = *tp) != 0) {
-				if (isupper(*tp2)) {
+				if (isupper((int) *tp2)) {
 					*tp2 = 'a' + *tp2 - 'A';
 				}
 				tp++;
@@ -927,18 +939,17 @@ usage:
 		}
 	}
 
-	recvrequest("RETR", argv[2], argv[1], mode,
-	    argv[1] != oldargv1 || argv[2] != oldargv2);
+	recvrequest("RETR", argv[2], argv[1], rmode,
+	    argv[1] != oldargv1 || argv[2] != oldargv2, loc);
 	restart_point = 0;
 	return (0);
 }
 
-sigtype
+static sigtype
 mabort(sig)
 	int sig;
 {
 	int ointer;
-	extern jmp_buf jabort;
 
 	printf("\n");
 	(void) fflush(stdout);
@@ -958,15 +969,13 @@ mabort(sig)
 /*
  * Get multiple files.
  */
-mget(argc, argv)
+void mget(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern jmp_buf jabort;
 	sig_t oldintr;
 	int ointer;
 	char *cp, *tp, *tp2, tmpbuf[MAXPATHLEN];
-	sigtype mabort();
 
 	if (argc < 2 && !another(&argc, &argv, "remote-files")) {
 		printf("usage: %s remote-files\n", argv[0]);
@@ -985,14 +994,14 @@ mget(argc, argv)
 		if (mflag && confirm(argv[0], cp)) {
 			tp = cp;
 			if (mcase) {
-				while (*tp && !islower(*tp)) {
+				while (*tp && !islower((int) *tp)) {
 					tp++;
 				}
 				if (!*tp) {
 					tp = cp;
 					tp2 = tmpbuf;
 					while ((*tp2 = *tp) != 0) {
-						if (isupper(*tp2)) {
+						if (isupper((int) *tp2)) {
 							*tp2 = 'a' + *tp2 - 'A';
 						}
 						tp++;
@@ -1008,7 +1017,7 @@ mget(argc, argv)
 				tp = domap(tp);
 			}
 			recvrequest("RETR", tp, cp, "w",
-			    tp != cp || !interactive);
+			    tp != cp || !interactive, 1);
 			if (!mflag && fromatty) {
 				ointer = interactive;
 				interactive = 1;
@@ -1028,12 +1037,16 @@ remglob(argv,doswitch)
 	char *argv[];
 	int doswitch;
 {
+#ifdef _WIN32
+	char *temp = NULL;
+#else
 	char temp[16];
+#endif
 	static char buf[MAXPATHLEN];
 	static FILE *ftemp = NULL;
 	static char **args;
 	int oldverbose, oldhash;
-	char *cp, *mode;
+	char *cp, *rmode;
 
 	if (!mflag) {
 		if (!doglob) {
@@ -1055,22 +1068,34 @@ remglob(argv,doswitch)
 		return (cp);
 	}
 	if (ftemp == NULL) {
+#ifdef _WIN32
+		temp = _tempnam(_PATH_TMP, "ftpglob");
+		if (temp == NULL) {
+			printf("can't get temporary file name\n");
+			return (NULL);
+		}
+#else
 		(void) strncpy(temp, _PATH_TMP, sizeof(temp) - 1);
 		temp[sizeof(temp) - 1] = '\0';
 		(void) mktemp(temp);
+#endif /* !_WIN32 */
 		oldverbose = verbose, verbose = 0;
 		oldhash = hash, hash = 0;
 		if (doswitch) {
 			pswitch(!proxy);
 		}
-		for (mode = "w"; *++argv != NULL; mode = "a")
-			recvrequest ("NLST", temp, *argv, mode, 0);
+		for (rmode = "w"; *++argv != NULL; rmode = "a")
+			recvrequest ("NLST", temp, *argv, rmode, 0, 0);
 		if (doswitch) {
 			pswitch(!proxy);
 		}
 		verbose = oldverbose; hash = oldhash;
 		ftemp = fopen(temp, "r");
 		(void) unlink(temp);
+#ifdef _WIN32
+		free(temp);
+		temp = NULL;
+#endif /* _WIN32 */
 		if (ftemp == NULL) {
 			printf("can't find list of remote files, oops\n");
 			return (NULL);
@@ -1085,7 +1110,7 @@ remglob(argv,doswitch)
 	return (buf);
 }
 
-char *
+static char *
 onoff(bool)
 	int bool;
 {
@@ -1093,7 +1118,7 @@ onoff(bool)
 	return (bool ? "on" : "off");
 }
 
-cstatus()
+static void cstatus()
 {
 	if (!connected) {
 		printf(proxy ? "No proxy connection.\n" : "Not connected.\n");
@@ -1106,7 +1131,7 @@ cstatus()
 	printf("Data Channel Protection Level: %s\n", getdlevel());
 	printf("Passive mode %s\n", onoff(passivemode));
 	printf("Mode: %s; Type: %s; Form: %s; Structure: %s\n",
-		getmode(), gettype(), getform(), getstruct());
+		get_mode(), gettype(), getform(), getstruct());
 	printf("Store unique: %s; Receive unique: %s\n", onoff(sunique),
 		onoff(runique));
 	printf("Case: %s; CR stripping: %s\n",onoff(mcase),onoff(crflag));
@@ -1128,7 +1153,7 @@ cstatus()
  * Show status.
  */
 /*ARGSUSED*/
-status(argc, argv)
+void status(argc, argv)
 	char *argv[];
 {
 	int i;
@@ -1159,7 +1184,7 @@ status(argc, argv)
  * Set beep on cmd completed mode.
  */
 /*VARARGS*/
-setbell()
+void setbell()
 {
 
 	bell = !bell;
@@ -1171,7 +1196,7 @@ setbell()
  * Turn on packet tracing.
  */
 /*VARARGS*/
-settrace()
+void settrace()
 {
 
 	trace = !trace;
@@ -1183,7 +1208,7 @@ settrace()
  * Toggle hash mark printing during transfers.
  */
 /*VARARGS*/
-sethash()
+void sethash()
 {
 
 	hash = !hash;
@@ -1198,7 +1223,7 @@ sethash()
  * Turn on printing of server echo's.
  */
 /*VARARGS*/
-setverbose()
+void setverbose()
 {
 
 	verbose = !verbose;
@@ -1210,7 +1235,7 @@ setverbose()
  * Toggle PORT cmd use before each data connection.
  */
 /*VARARGS*/
-setport()
+void setport()
 {
 
 	sendport = !sendport;
@@ -1223,7 +1248,7 @@ setport()
  * during mget, mput, and mdelete.
  */
 /*VARARGS*/
-setprompt()
+void setprompt()
 {
 
 	interactive = !interactive;
@@ -1236,7 +1261,7 @@ setprompt()
  * on local file names.
  */
 /*VARARGS*/
-setglob()
+void setglob()
 {
 	
 	doglob = !doglob;
@@ -1249,7 +1274,7 @@ setglob()
  * set level of debugging.
  */
 /*VARARGS*/
-setdebug(argc, argv)
+void setdebug(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1277,7 +1302,7 @@ setdebug(argc, argv)
  * Set current working directory
  * on remote machine.
  */
-cd(argc, argv)
+void cd(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1298,7 +1323,7 @@ cd(argc, argv)
  * Set current working directory
  * on local machine.
  */
-lcd(argc, argv)
+void lcd(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1327,7 +1352,7 @@ lcd(argc, argv)
 /*
  * Delete a single file.
  */
-delete_file(argc, argv)
+void delete_file(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1343,15 +1368,13 @@ delete_file(argc, argv)
 /*
  * Delete multiple files.
  */
-mdelete(argc, argv)
+void mdelete(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern jmp_buf jabort;
 	sig_t oldintr;
 	int ointer;
 	char *cp;
-	sigtype mabort();
 
 	if (argc < 2 && !another(&argc, &argv, "remote-files")) {
 		printf("usage: %s remote-files\n", argv[0]);
@@ -1386,7 +1409,7 @@ mdelete(argc, argv)
 /*
  * Rename a remote file.
  */
-renamefile(argc, argv)
+void renamefile(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1407,7 +1430,7 @@ usage:
  * Get a directory listing
  * of remote files.
  */
-ls(argc, argv)
+void ls(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1432,22 +1455,20 @@ ls(argc, argv)
 			code = -1;
 			return;
 	}
-	recvrequest(cmd, argv[2], argv[1], "w", 0);
+	recvrequest(cmd, argv[2], argv[1], "w", 0, 0);
 }
 
 /*
  * Get a directory listing
  * of multiple remote files.
  */
-mls(argc, argv)
+void mls(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern jmp_buf jabort;
 	sig_t oldintr;
 	int ointer, i;
-	char *volatile cmd, mode[1], *dest;
-	sigtype mabort();
+	char *volatile cmd, rmode[1], *dest;
 
 	if (argc < 2 && !another(&argc, &argv, "remote-files"))
 		goto usage;
@@ -1471,8 +1492,8 @@ usage:
 	oldintr = signal(SIGINT, mabort);
 	(void) setjmp(jabort);
 	for (i = 1; mflag && i < argc-1; ++i) {
-		*mode = (i == 1) ? 'w' : 'a';
-		recvrequest(cmd, dest, argv[i], mode, 0);
+		*rmode = (i == 1) ? 'w' : 'a';
+		recvrequest(cmd, dest, argv[i], rmode, 0, 0);
 		if (!mflag && fromatty) {
 			ointer = interactive;
 			interactive = 1;
@@ -1490,17 +1511,89 @@ usage:
  * Do a shell escape
  */
 /*ARGSUSED*/
-shell(argc, argv)
+#ifdef _WIN32
+void shell(int argc, char **argv)
+{
+	char *AppName;
+	char ShellCmd[MAX_PATH];
+	char CmdLine[MAX_PATH];
+	int i;
+	PROCESS_INFORMATION ProcessInformation;
+	BOOL Result;
+	STARTUPINFO StartupInfo;
+	int NumBytes;
+
+#ifdef _DEBUG
+	if (trace)
+	{
+		fprintf(stderr, "entered shell\n");
+		fprintf(stderr, "arguments = \n");
+		fprintf(stderr, "   argc = %d\n", argc);
+		for (i = 0; i < argc; i++)
+		{
+			fprintf(stderr, "    argv %d = %s\n", i, argv[i]);
+		}
+	}
+#endif /* _DEBUG */
+
+	NumBytes = GetEnvironmentVariable("COMSPEC", ShellCmd, sizeof(ShellCmd));
+
+	if (NumBytes == 0)
+	{
+		code = -1;
+		return;
+	}
+
+	AppName = ShellCmd;
+	_mbscpy(CmdLine, ShellCmd);
+
+	if (argc > 1)
+	{
+		_mbsncat(CmdLine, " /C", sizeof(CmdLine));
+	}
+
+	for (i = 1; i < argc; i++)
+	{
+		_mbsncat(CmdLine, " ", sizeof(CmdLine));
+		_mbsncat(CmdLine, argv[i], sizeof(CmdLine));
+	}
+	CmdLine[sizeof(CmdLine)-1] = 0;
+
+	memset(&StartupInfo, 0, sizeof(StartupInfo));
+	StartupInfo.cb = sizeof(StartupInfo);
+	Result = CreateProcess(AppName,              /* command name */
+			       CmdLine,              /* command line w/args */
+			       NULL,                 /* sec attr (app) */
+			       NULL,                 /* sec attr (thread) */
+			       FALSE,                /* inherit flags */
+			       0,                    /* creation flags */
+			       NULL,                 /* environment */
+			       NULL,                 /* working directory */
+			       &StartupInfo,         /* startup info struct */
+			       &ProcessInformation); /* process info struct */
+
+	if (Result)
+	{
+		WaitForSingleObject(ProcessInformation.hProcess, INFINITE);
+		CloseHandle(ProcessInformation.hProcess);
+		code = 0;
+	}
+	else {
+		code = -1;
+	}
+}
+#else
+void shell(argc, argv)
 	int argc;
 	char **argv;
 {
 	int pid;
 	sig_t old1, old2;
-	char shellnam[40], *shell, *namep; 
+	char shellnam[40], *shellprog, *namep; 
 #ifdef WAIT_USES_INT
-	int status;
+	int w_status;
 #else
-	union wait status;
+	union wait w_status;
 #endif
 
 	old1 = signal (SIGINT, SIG_IGN);
@@ -1510,33 +1603,33 @@ shell(argc, argv)
 			(void) close(pid);
 		(void) signal(SIGINT, SIG_DFL);
 		(void) signal(SIGQUIT, SIG_DFL);
-		shell = getenv("SHELL");
-		if (shell == NULL)
-			shell = "/bin/sh";
-		namep = strrchr(shell,'/');
+		shellprog = getenv("SHELL");
+		if (shellprog == NULL)
+			shellprog = "/bin/sh";
+		namep = strrchr(shellprog,'/');
 		if (namep == NULL)
-			namep = shell;
+			namep = shellprog;
 		(void) strcpy(shellnam,"-");
 		(void) strncat(shellnam, ++namep, sizeof(shellnam) - 1 - strlen(shellnam));
 		shellnam[sizeof(shellnam) - 1] = '\0';
 		if (strcmp(namep, "sh") != 0)
 			shellnam[0] = '+';
 		if (debug) {
-			printf ("%s\n", shell);
+			printf ("%s\n", shellprog);
 			(void) fflush (stdout);
 		}
 		if (argc > 1) {
-			execl(shell,shellnam,"-c",altarg,(char *)0);
+			execl(shellprog,shellnam,"-c",altarg,(char *)0);
 		}
 		else {
-			execl(shell,shellnam,(char *)0);
+			execl(shellprog,shellnam,(char *)0);
 		}
-		perror(shell);
+		perror(shellprog);
 		code = -1;
 		exit(1);
 		}
 	if (pid > 0)
-		while (wait(&status) != pid)
+		while (wait(&w_status) != pid)
 			;
 	(void) signal(SIGINT, old1);
 	(void) signal(SIGQUIT, old2);
@@ -1547,17 +1640,18 @@ shell(argc, argv)
 	else {
 		code = 0;
 	}
-	return (0);
+	return;
 }
+#endif
 
 /*
  * Send new user information (re-login)
  */
-user(argc, argv)
+void user(argc, argv)
 	int argc;
 	char **argv;
 {
-	char acct[80], *mygetpass();
+	char macct[80];
 	int n, aflag = 0;
 
 	if (argc < 2)
@@ -1565,7 +1659,7 @@ user(argc, argv)
 	if (argc < 2 || argc > 4) {
 		printf("usage: %s username [password] [account]\n", argv[0]);
 		code = -1;
-		return (0);
+		return;
 	}
 	n = command("USER %s", argv[1]);
 	if (n == COMPLETE)
@@ -1588,28 +1682,29 @@ user(argc, argv)
 	if (n == CONTINUE) {
 		if (argc < 4) {
 			printf("Account: "); (void) fflush(stdout);
-			(void) fgets(acct, sizeof(acct) - 1, stdin);
-			acct[strlen(acct) - 1] = '\0';
-			argv[3] = acct; argc++;
+			(void) fgets(macct, sizeof(macct) - 1, stdin);
+			macct[strlen(macct) - 1] = '\0';
+			argv[3] = macct; argc++;
 		}
 		n = command("ACCT %s", argv[3]);
 		aflag++;
 	}
 	if (n != COMPLETE) {
 		fprintf(stdout, "Login failed.\n");
-		return (0);
+		/* code = -1;*/
+		return;
 	}
 	if (!aflag && argc == 4) {
 		(void) command("ACCT %s", argv[3]);
 	}
-	return (1);
+	return;
 }
 
 /*
  * Print working directory.
  */
 /*VARARGS*/
-pwd()
+void pwd()
 {
 	int oldverbose = verbose;
 
@@ -1627,7 +1722,7 @@ pwd()
 /*
  * Make a directory.
  */
-makedir(argc, argv)
+void makedir(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1647,7 +1742,7 @@ makedir(argc, argv)
 /*
  * Remove a directory.
  */
-removedir(argc, argv)
+void removedir(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1667,7 +1762,7 @@ removedir(argc, argv)
 /*
  * Send a line, verbatim, to the remote machine.
  */
-quote(argc, argv)
+void quote(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1685,7 +1780,7 @@ quote(argc, argv)
  * is sent verbatim to the remote machine, except that the
  * word "SITE" is added at the front.
  */
-site(argc, argv)
+void site(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1702,7 +1797,7 @@ site(argc, argv)
  * Turn argv[1..argc) into a space-separated string, then prepend initial text.
  * Send the result as a one-line command and get response.
  */
-quote1(initial, argc, argv)
+static void quote1(initial, argc, argv)
 	char *initial;
 	int argc;
 	char **argv;
@@ -1725,7 +1820,7 @@ quote1(initial, argc, argv)
 	}
 }
 
-do_chmod(argc, argv)
+void do_chmod(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1741,7 +1836,7 @@ usage:
 	(void) command("SITE CHMOD %s %s", argv[1], argv[2]);
 }
 
-do_umask(argc, argv)
+void do_umask(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1752,7 +1847,7 @@ do_umask(argc, argv)
 	verbose = oldverbose;
 }
 
-siteidle(argc, argv)
+void siteidle(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1766,7 +1861,7 @@ siteidle(argc, argv)
 /*
  * Ask the other side for help.
  */
-rmthelp(argc, argv)
+void rmthelp(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -1781,7 +1876,7 @@ rmthelp(argc, argv)
  * Terminate session and exit.
  */
 /*VARARGS*/
-quit()
+void quit()
 {
 
 	if (connected)
@@ -1796,20 +1891,20 @@ quit()
 /*
  * Terminate session, but don't exit.
  */
-disconnect()
+void disconnect()
 {
 	extern FILE *cout;
-	extern int data;
+	extern SOCKET data;
 
 	if (!connected)
 		return;
 	(void) command("QUIT");
 	if (cout) {
-		(void) fclose(cout);
+		(void) FCLOSE_SOCKET(cout);	
+		cout = NULL;
 	}
-	cout = NULL;
 	connected = 0;
-	data = -1;
+	data = INVALID_SOCKET;
 	if (!proxy) {
 		macnum = 0;
 	}
@@ -1817,21 +1912,21 @@ disconnect()
 	dlevel = PROT_C;
 }
 
-confirm(cmd, file)
+static int confirm(cmd, file)
 	char *cmd, *file;
 {
-	char line[FTP_BUFSIZ];
+	char mline[FTP_BUFSIZ];
 
 	if (!interactive)
 		return (1);
 	printf("%s %s? ", cmd, file);
 	(void) fflush(stdout);
-	if (fgets(line, sizeof line, stdin) == NULL)
+	if (fgets(mline, sizeof mline, stdin) == NULL)
 		return (0);
-	return (*line != 'n' && *line != 'N');
+	return (*mline != 'n' && *mline != 'N');
 }
 
-fatal(msg)
+void fatal(msg)
 	char *msg;
 {
 
@@ -1845,10 +1940,11 @@ fatal(msg)
  * Can't control multiple values being expanded
  * from the expression, we return only the first.
  */
-globulize(cpp)
+static int globulize(cpp)
 	char **cpp;
 {
 	char **globbed;
+	char **globbed1;
 
 	if (!doglob)
 		return (1);
@@ -1862,33 +1958,34 @@ globulize(cpp)
 		return (0);
 	}
 	if (globbed) {
-		*cpp = *globbed++;
+		globbed1 = globbed;
+		*cpp = *globbed1++;
 		/* don't waste too much memory */
 		if (*globbed) {
-			blkfree(globbed);
+			blkfree(globbed1);
 			free((char *)globbed);
 		}
 	}
 	return (1);
 }
 
-account(argc,argv)
+void account(argc,argv)
 	int argc;
 	char **argv;
 {
-	char acct[50], *mygetpass(), *ap;
+	char macct[50], *ap;
 
 	if (argc > 1) {
 		++argv;
 		--argc;
-		(void) strncpy(acct,*argv,49);
-		acct[49] = '\0';
+		(void) strncpy(macct,*argv,49);
+		macct[49] = '\0';
 		while (argc > 1) {
 			--argc;
 			++argv;
-			(void) strncat(acct,*argv, 49-strlen(acct));
+			(void) strncat(macct,*argv, 49-strlen(macct));
 		}
-		ap = acct;
+		ap = macct;
 	}
 	else {
 		ap = mygetpass("Account:");
@@ -1898,9 +1995,8 @@ account(argc,argv)
 
 jmp_buf abortprox;
 
-sigtype
-proxabort(sig)
-	int sig;
+static sigtype
+proxabort(int sig)
 {
 	extern int proxy;
 
@@ -1917,16 +2013,13 @@ proxabort(sig)
 	longjmp(abortprox,1);
 }
 
-doproxy(argc,argv)
+void doproxy(argc,argv)
 	int argc;
 	char *argv[];
 {
-	extern struct cmd cmdtab[];
-	extern jmp_buf abortprox;
 	register struct cmd *c;
 	struct cmd *getcmd();
 	sig_t oldintr;
-	sigtype proxabort();
 
 	if (argc < 2 && !another(&argc, &argv, "command")) {
 		printf("usage: %s command\n", argv[0]);
@@ -1977,21 +2070,21 @@ doproxy(argc,argv)
 	(void) signal(SIGINT, oldintr);
 }
 
-setcase()
+void setcase()
 {
 	mcase = !mcase;
 	printf("Case mapping %s.\n", onoff(mcase));
 	code = mcase;
 }
 
-setcr()
+void setcr()
 {
 	crflag = !crflag;
 	printf("Carriage Return stripping %s.\n", onoff(crflag));
 	code = crflag;
 }
 
-setntrans(argc,argv)
+void setntrans(argc,argv)
 	int argc;
 	char *argv[];
 {
@@ -2013,7 +2106,7 @@ setntrans(argc,argv)
 	ntout[16] = '\0';
 }
 
-char *
+static char *
 dotrans(name)
 	char *name;
 {
@@ -2041,7 +2134,7 @@ dotrans(name)
 	return(new);
 }
 
-setnmap(argc, argv)
+void setnmap(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2072,7 +2165,7 @@ setnmap(argc, argv)
 	(void) strncpy(mapout, cp, MAXPATHLEN - 1);
 }
 
-char *
+static char *
 domap(name)
 	char *name;
 {
@@ -2134,7 +2227,7 @@ domap(name)
 				break;
 			case '[':
 LOOP:
-				if (*++cp2 == '$' && isdigit(*(cp2+1))) { 
+				if (*++cp2 == '$' && isdigit((int) *(cp2+1))) { 
 					if (*++cp2 == '0') {
 						char *cp3 = name;
 
@@ -2159,7 +2252,7 @@ LOOP:
 							cp2++;
 						}
 						else if (*cp2 == '$' &&
-   						        isdigit(*(cp2+1))) {
+   						        isdigit((int) *(cp2+1))) {
 							if (*++cp2 == '0') {
 							   char *cp3 = name;
 
@@ -2211,7 +2304,7 @@ LOOP:
 				}
 				break;
 			case '$':
-				if (isdigit(*(cp2 + 1))) {
+				if (isdigit((int) *(cp2 + 1))) {
 					if (*++cp2 == '0') {
 						char *cp3 = name;
 
@@ -2242,14 +2335,14 @@ LOOP:
 	return(new);
 }
 
-setsunique()
+void setsunique()
 {
 	sunique = !sunique;
 	printf("Store unique %s.\n", onoff(sunique));
 	code = sunique;
 }
 
-setrunique()
+void setrunique()
 {
 	runique = !runique;
 	printf("Receive unique %s.\n", onoff(runique));
@@ -2257,7 +2350,7 @@ setrunique()
 }
 
 /* change directory to perent directory */
-cdup()
+void cdup()
 {
 	if (command("CDUP") == ERROR && code == 500) {
 		if (verbose)
@@ -2267,7 +2360,7 @@ cdup()
 }
 
 /* restart transfer at specific point */
-restart(argc, argv)
+void restart(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2276,18 +2369,18 @@ restart(argc, argv)
 		printf("restart: offset not specified\n");
 	else {
 		restart_point = atol(argv[1]);
-		printf("restarting at %ld. %s\n", restart_point,
+		printf("restarting at %ld. %s\n", (long) restart_point,
 		    "execute get, put or append to initiate transfer");
 	}
 }
 
 /* show remote system type */
-syst()
+void syst()
 {
 	(void) command("SYST");
 }
 
-macdef(argc, argv)
+void macdef(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2350,7 +2443,7 @@ macdef(argc, argv)
 /*
  * get size of file on remote machine
  */
-sizecmd(argc, argv)
+void sizecmd(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2366,7 +2459,7 @@ sizecmd(argc, argv)
 /*
  * get last modification time of file on remote machine
  */
-modtime(argc, argv)
+void modtime(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2393,9 +2486,9 @@ modtime(argc, argv)
 }
 
 /*
- * show status on reomte machine
+ * show status on remote machine
  */
-rmtstatus(argc, argv)
+void rmtstatus(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2405,7 +2498,7 @@ rmtstatus(argc, argv)
 /*
  * get file if modtime is more recent than current file
  */
-newer(argc, argv)
+void newer(argc, argv)
 	int argc;
 	char *argv[];
 {
@@ -2420,7 +2513,7 @@ newer(argc, argv)
  */
 
 /*VARARGS*/
-setpassive()
+void setpassive()
 {
 
 	passivemode = !passivemode;

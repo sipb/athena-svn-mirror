@@ -63,8 +63,10 @@
 
 #ifdef	KRB5
 #include <arpa/telnet.h>
+#include <errno.h>
 #include <stdio.h>
-#include "k5-int.h"
+#include "krb5.h"
+
 #include "com_err.h"
 #include <netdb.h>
 #include <ctype.h>
@@ -95,14 +97,16 @@ void try_afscall(int (*func)(void));
 #endif /* SIGSYS */
 int setpag(), ktc_ForgetAllTokens();
 
-extern auth_debug_mode;
+extern int auth_debug_mode;
 extern int net;
 extern int al_local_acct;
 
 #ifdef	FORWARD
 int forward_flags = 0;  /* Flags get set in telnet/main.c on -f and -F */
 
-void kerberos5_forward();
+static void kerberos5_forward(Authenticator *);
+
+#include "krb5forw.h"
 
 #endif	/* FORWARD */
 
@@ -211,7 +215,7 @@ kerberos5_cleanup()
     if (telnet_context == 0)
 	return;
 
-    ccname = getenv(KRB5_ENV_CCNAME);
+    ccname = getenv("KRB5CCNAME");
     if (ccname) {
 	retval = krb5_cc_resolve(telnet_context, ccname, &ccache);
 	if (!retval)
@@ -334,7 +338,7 @@ kerberos5_send(ap)
 				 &check_data, new_creds, &auth);
 
 #ifdef	ENCRYPTION
-	krb5_auth_con_getlocalsubkey(telnet_context, auth_context, &newkey);
+	krb5_auth_con_getsendsubkey(telnet_context, auth_context, &newkey);
 	if (session_key) {
 		krb5_free_keyblock(telnet_context, session_key);
 		session_key = 0;
@@ -368,7 +372,8 @@ kerberos5_send(ap)
 		return(0);
 	}
 
-        if (!auth_sendname(UserNameRequested, strlen(UserNameRequested))) {
+        if (!auth_sendname((unsigned char *) UserNameRequested, 
+			   (int) strlen(UserNameRequested))) {
                 if (auth_debug_mode)
                         printf("telnet: Not enough room for user name\r\n");
                 return(0);
@@ -452,6 +457,10 @@ kerberos5_is(ap, data, cnt)
 		 * first component of a service name especially since
 		 * the default is of length 4.
 		 */
+		if (krb5_princ_size(telnet_context,ticket->server) < 1) {
+		    (void) strcpy(errbuf, "malformed service name");
+		    goto errout;
+		}
 		if (krb5_princ_component(telnet_context,ticket->server,0)->length < 256) {
 		    char princ[256];
 		    strncpy(princ,	
@@ -554,7 +563,7 @@ kerberos5_is(ap, data, cnt)
 		
 		if (name)
 		    free(name);
-		krb5_auth_con_getremotesubkey(telnet_context, auth_context,
+		krb5_auth_con_getrecvsubkey(telnet_context, auth_context,
 					      &newkey);
 		if (session_key) {
 		    krb5_free_keyblock(telnet_context, session_key);
@@ -585,12 +594,13 @@ kerberos5_is(ap, data, cnt)
 		    (r = rd_and_store_for_creds(telnet_context, auth_context,
 			   &inbuf, ticket))) {
 
-		    char errbuf[128];
+		    char kerrbuf[128];
 		    
-		    (void) strcpy(errbuf, "Read forwarded creds failed: ");
-		    errbuf[sizeof(errbuf) - 1] = '\0';
-		    (void) strncat(errbuf, error_message(r), sizeof(errbuf) - 1 - strlen(errbuf));
-		    Data(ap, KRB_FORWARD_REJECT, errbuf, -1);
+		    (void) strcpy(kerrbuf, "Read forwarded creds failed: ");
+		    kerrbuf[sizeof(kerrbuf) - 1] = '\0';
+		    (void) strncat(kerrbuf, error_message(r), 
+			sizeof(kerrbuf) - 1 - strlen(kerrbuf));
+		    Data(ap, KRB_FORWARD_REJECT, kerrbuf, -1);
 		    if (auth_debug_mode)
 		      printf(
 			"telnetd: Could not read forwarded credentials\r\n");
@@ -793,7 +803,8 @@ kerberos5_status(ap, name, level)
 	void
 kerberos5_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
-	int cnt, buflen;
+	int cnt;
+	unsigned int buflen;
 {
 	char lbuf[32];
 	register int i;
@@ -859,7 +870,7 @@ kerberos5_printsub(data, cnt, buf, buflen)
 
 #ifdef	FORWARD
 
-void
+static void
 kerberos5_forward(ap)
      Authenticator *ap;
 {

@@ -1,18 +1,39 @@
 thisconfigdir=./..
 myfulldir=util
 mydir=util
-MY_SUBDIRS=profile pty dyn db2 send-pr
-BUILDTOP=$(REL)$(U)
+##WIN32###Windows NMAKE doesn't like @ in make variable names, and on
+##WIN32### Windows we don't do the @FOO@ substitutions we do with UNIX
+##WIN32### configure scripts.  The set of subdirs to use is hard-coded
+##WIN32### below in the 'all-windows' target anyways, so just hide this.
+##WIN32##!if 0
+MY_SUBDIRS=$(MAYBE_ET_@COM_ERR_VERSION@) $(MAYBE_SS_@SS_VERSION@) \
+	profile pty $(MAYBE_DB_@DB_VERSION@) send-pr
+##WIN32##!endif
+BUILDTOP=$(REL)..
+
+MAYBE_ET_k5 = et
+MAYBE_SS_k5 = ss
+MAYBE_DB_k5 = db2
+MAYBE_ET_sys =
+MAYBE_SS_sys =
+MAYBE_DB_sys =
 
 MAC_SUBDIRS = profile et
 
 editsh = sed -e 's,@''ARADD''@,$(ARADD),g' -e 's,@''ARCHIVE''@,$(ARCHIVE),g'
 HOST_TYPE=@HOST_TYPE@
 HAVE_GCC=@HAVE_GCC@
-SLIBSH=sed -e 's,@''CC''@,$(CC),g' -e 's,@''HOST_TYPE''@,$(HOST_TYPE),g' -e 's,@''HAVE_GCC''@,$(HAVE_GCC),g'
+SLIBSH=sed -e 's|@''CC''@|$(CC)|g' -e 's,@''HOST_TYPE''@,$(HOST_TYPE),g' -e 's,@''HAVE_GCC''@,$(HAVE_GCC),g'
 
 all-recurse: libupdate makeshlib
+all-unix:: $(FAKEPREFIX)/lib
 all-mac::
+
+$(FAKEPREFIX)/lib:
+	$(SRCTOP)/config/mkinstalldirs $(FAKEPREFIX) && ln -s `pwd`/../lib $(FAKEPREFIX)
+
+clean-unix::
+	$(RM) -r $(FAKEPREFIX)
 
 NO_OUTDIR=1
 all-windows::
@@ -39,32 +60,6 @@ clean-windows::
 	$(MAKE) -$(MFLAGS) clean
 	cd ..
 
-# this is necessary because the db2 build, which is intended to be
-# standalone, of course does not know to make symlinks in the right
-# magic places in the krb5 build tree so other parts of the tree can
-# find db2.  So we make those links here.  this can't use CopyHeader,
-# because there's no way in this make setup to do stuff after the
-# subdirectory recursion.  fortunately, one does not need a
-# destination to make a link...
-
-all-unix::
-	$(RM) ../include/db.h ../include/db-config.h ../include/db-ndbm.h \
-		../lib/libdb.a
-	ln -s ../util/db2/obj/db.h ../include
-	ln -s ../util/db2/obj/db-config.h ../include
-	ln -s ../util/db2/obj/libdb.a ../lib
-	if test '$(srcdir)' = . ; then \
-		ln -s ../util/db2/include/db-ndbm.h ../include; \
-	else \
-		ln -s $(srcdir)/db2/include/db-ndbm.h ../include; \
-	fi
-
-clean-unix::
-	$(RM) ../include/db.h ../include/db-config.h ../include/db-ndbm.h \
-		../lib/libdb.a
-
-unixmac: libupdate
-
 libupdate: $(srcdir)/libupdate.sh
 	$(RM) $@ $@.tmp
 	$(editsh) $(srcdir)/libupdate.sh > $@.tmp && chmod +x $@.tmp && mv $@.tmp $@
@@ -73,14 +68,6 @@ makeshlib: $(srcdir)/makeshlib.sh Makefile
 	 $(RM) $@ $@.tmp
 	 $(SLIBSH) $(srcdir)/makeshlib.sh >$@.tmp&&chmod a+x $@.tmp&&mv $@.tmp $@
 
-
-#
-# We only need this for AIX, but we generate it for all systems.
-#
-all-prerecurse:: aix.bincmds
-
-aix.bincmds: Makefile
-	 echo libpath $(KRB5_LIBDIR):`pwd`/$(TOPLIBD):/usr/lib:/lib >aix.bincmds
 clean::
 	$(RM) libupdate makeshlib
 

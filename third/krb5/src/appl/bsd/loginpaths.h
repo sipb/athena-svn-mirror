@@ -100,8 +100,8 @@
 
 #ifdef _PATH_DEFPATH
 #undef LPATH
-#undef RPATH
 #define LPATH APATH _PATH_DEFPATH
+#undef RPATH
 #define RPATH APATH _PATH_DEFPATH
 #endif
 

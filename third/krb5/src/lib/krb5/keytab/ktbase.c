@@ -29,18 +29,22 @@
 
 #include "k5-int.h"
 
-extern krb5_kt_ops krb5_ktf_ops;
-extern krb5_kt_ops krb5_kts_ops;
-extern krb5_kt_ops krb5_kta_ops;
+extern const krb5_kt_ops krb5_ktf_ops;
+extern const krb5_kt_ops krb5_ktf_writable_ops;
+extern const krb5_kt_ops krb5_kts_ops;
+extern const krb5_kt_ops krb5_kta_ops;
 
-struct krb5_kt_typelist
- {
-  krb5_kt_ops *ops;
-  struct krb5_kt_typelist *next;
- };
-static struct krb5_kt_typelist krb5_kt_typelist_file = {
-    &krb5_ktf_ops,
+struct krb5_kt_typelist {
+    const krb5_kt_ops *ops;
+    struct krb5_kt_typelist *next;
+};
+static struct krb5_kt_typelist krb5_kt_typelist_wrfile  = {
+    &krb5_ktf_writable_ops,
     0
+};
+static struct krb5_kt_typelist krb5_kt_typelist_file  = {
+    &krb5_ktf_ops,
+    &krb5_kt_typelist_wrfile
 };
 static struct krb5_kt_typelist krb5_kt_typelist_srvtab = {
     &krb5_kts_ops,
@@ -58,10 +62,8 @@ static struct krb5_kt_typelist *kt_typehead = &krb5_kt_typelist_any;
  * don't replace if it already exists; return an error instead.
  */
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_kt_register(context, ops)
-    krb5_context context;
-    krb5_kt_ops FAR *ops;
+krb5_error_code KRB5_CALLCONV
+krb5_kt_register(krb5_context context, krb5_kt_ops *ops)
 {
     struct krb5_kt_typelist *t;
     for (t = kt_typehead;t && strcmp(t->ops->prefix,ops->prefix);t = t->next)
@@ -87,23 +89,21 @@ krb5_kt_register(context, ops)
  * particular keytab type.
  */
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_kt_resolve (context, name, ktid)
-    krb5_context context;
-    krb5_const char FAR *name;
-    krb5_keytab FAR *ktid;
+krb5_error_code KRB5_CALLCONV
+krb5_kt_resolve (krb5_context context, const char *name, krb5_keytab *ktid)
 {
     struct krb5_kt_typelist *tlist;
-    char *pfx, *resid, *cp;
-    int pfxlen;
+    char *pfx;
+    unsigned int pfxlen;
+    const char *cp, *resid;
     
     cp = strchr (name, ':');
     if (!cp) {
 	    return (*krb5_kt_dfl_ops.resolve)(context, name, ktid);
     }
 
-    pfxlen = cp - (char *)name;
-    resid = (char *)name + pfxlen + 1;
+    pfxlen = cp - name;
+    resid = name + pfxlen + 1;
 	
     pfx = malloc (pfxlen+1);
     if (!pfx)
@@ -131,11 +131,11 @@ krb5_kt_resolve (context, name, ktid)
  *	krb5_keytab_internalize();
  */
 static krb5_error_code krb5_keytab_size
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, size_t *));
+	(krb5_context, krb5_pointer, size_t *);
 static krb5_error_code krb5_keytab_externalize
-	KRB5_PROTOTYPE((krb5_context, krb5_pointer, krb5_octet **, size_t *));
+	(krb5_context, krb5_pointer, krb5_octet **, size_t *);
 static krb5_error_code krb5_keytab_internalize
-	KRB5_PROTOTYPE((krb5_context,krb5_pointer *, krb5_octet **, size_t *));
+	(krb5_context,krb5_pointer *, krb5_octet **, size_t *);
 
 /*
  * Serialization entry for this type.
@@ -148,10 +148,7 @@ static const krb5_ser_entry krb5_keytab_ser_entry = {
 };
 
 static krb5_error_code
-krb5_keytab_size(kcontext, arg, sizep)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    size_t		*sizep;
+krb5_keytab_size(krb5_context kcontext, krb5_pointer arg, size_t *sizep)
 {
     krb5_error_code	kret;
     krb5_keytab		keytab;
@@ -167,11 +164,7 @@ krb5_keytab_size(kcontext, arg, sizep)
 }
 
 static krb5_error_code
-krb5_keytab_externalize(kcontext, arg, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	arg;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_keytab_externalize(krb5_context kcontext, krb5_pointer arg, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_keytab		keytab;
@@ -187,11 +180,7 @@ krb5_keytab_externalize(kcontext, arg, buffer, lenremain)
 }
 
 static krb5_error_code
-krb5_keytab_internalize(kcontext, argp, buffer, lenremain)
-    krb5_context	kcontext;
-    krb5_pointer	*argp;
-    krb5_octet		**buffer;
-    size_t		*lenremain;
+krb5_keytab_internalize(krb5_context kcontext, krb5_pointer *argp, krb5_octet **buffer, size_t *lenremain)
 {
     krb5_error_code	kret;
     krb5_ser_handle	shandle;
@@ -203,9 +192,8 @@ krb5_keytab_internalize(kcontext, argp, buffer, lenremain)
     return(kret);
 }
 
-KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
-krb5_ser_keytab_init(kcontext)
-    krb5_context	kcontext;
+krb5_error_code KRB5_CALLCONV
+krb5_ser_keytab_init(krb5_context kcontext)
 {
     return(krb5_register_serializer(kcontext, &krb5_keytab_ser_entry));
 }

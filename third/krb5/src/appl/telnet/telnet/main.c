@@ -39,9 +39,14 @@ char copyright[] =
 
 /* based on @(#)main.c	5.5 (Berkeley) 12/18/92 */
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <libtelnet/auth.h>
-
+#ifdef ENCRYPTION
+#include <libtelnet/encrypt.h>
+#endif
 
 # include <netinet/in.h>
 
@@ -49,6 +54,9 @@ char copyright[] =
 #include "externs.h"
 #include "defines.h"
 
+#ifdef NEED_PARSETOS_PROTO
+extern int parsetos(char *, char *);
+#endif
 
 #if 0
 #define FORWARD
@@ -73,7 +81,7 @@ tninit()
 #endif
 }
 
-	void
+static void
 usage()
 {
 	fprintf(stderr, "Usage: %s %s%s%s%s\n",
@@ -110,6 +118,7 @@ usage()
 /* see forward.c -- indicate that we're in telnet, not telnetd. */
 char *line = 0;
 
+int
 main(argc, argv)
 	int argc;
 	char *argv[];
@@ -132,7 +141,7 @@ main(argc, argv)
 
 	TerminalSaveState();
 
-	if (prompt = strrchr(argv[0], '/'))
+	if ((prompt = strrchr(argv[0], '/')))
 		++prompt;
 	else
 		prompt = argv[0];
@@ -233,7 +242,7 @@ main(argc, argv)
 #if defined(AUTHENTICATION) && defined(KRB4)
 		    {
 			extern char *dest_realm, dst_realm_buf[];
-			extern int dst_realm_sz;
+			extern unsigned int dst_realm_sz;
 			dest_realm = dst_realm_buf;
 			(void)strncpy(dest_realm, optarg, dst_realm_sz);
 		    }
@@ -350,7 +359,7 @@ main(argc, argv)
 	argv += optind;
 
 	if (argc) {
-		char *args[7], **argp = args;
+		char *args[7], **volatile argp = args;
 
 		if (argc > 2)
 			usage();

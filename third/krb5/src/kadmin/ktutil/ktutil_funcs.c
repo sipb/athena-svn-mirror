@@ -61,16 +61,16 @@ krb5_error_code ktutil_free_kt_list(context, list)
  * Delete a numbered entry in a kt_list.  Takes a pointer to a kt_list
  * in case head gets deleted.
  */
-krb5_error_code ktutil_delete(context, list, index)
+krb5_error_code ktutil_delete(context, list, idx)
     krb5_context context;
     krb5_kt_list *list;
-    int index;
+    int idx;
 {
     krb5_kt_list lp, prev;
     int i;
 
     for (lp = *list, i = 1; lp; prev = lp, lp = lp->next, i++) {
-	if (i == index) {
+	if (i == idx) {
 	    if (i == 1)
 		*list = lp->next;
 	    else
@@ -109,7 +109,8 @@ krb5_error_code ktutil_add(context, list, princ_str, kvno,
     char promptstr[1024];
 
     char *cp;
-    int i, tmp, pwsize = BUFSIZ;
+    int i, tmp;
+    unsigned int pwsize = BUFSIZ;
 
     retval = krb5_parse_name(context, princ_str, &princ);
     if (retval)
@@ -160,7 +161,7 @@ krb5_error_code ktutil_add(context, list, princ_str, kvno,
 	    goto cleanup;
 	}
 
-	sprintf(promptstr, "Password for %.1000s: ", princ_str);
+	sprintf(promptstr, "Password for %.1000s", princ_str);
         retval = krb5_read_password(context, promptstr, NULL, password.data,
 				    &password.length);
 	if (retval)
@@ -202,7 +203,7 @@ krb5_error_code ktutil_add(context, list, princ_str, kvno,
 
 	i = 0;
 	for (cp = buf; *cp; cp += 2) {
-	    if (!isxdigit(cp[0]) || !isxdigit(cp[1])) {
+	    if (!isxdigit((int) cp[0]) || !isxdigit((int) cp[1])) {
 	        fprintf(stderr, "addent: Illegal character in key.\n");
 		retval = 0;
 		goto cleanup;
@@ -286,7 +287,7 @@ krb5_error_code ktutil_read_keytab(context, name, list)
     }
     if (entry)
 	free((char *)entry);
-    if (retval)
+    if (retval) {
 	if (retval == KRB5_KT_END)
 	    retval = 0;
 	else {
@@ -295,6 +296,7 @@ krb5_error_code ktutil_read_keytab(context, name, list)
 	    if (back)
 		back->next = NULL;
 	}
+    }
     if (!*list)
 	*list = tail;
     krb5_kt_end_seq_get(context, kt, &cursor);
@@ -334,6 +336,29 @@ krb5_error_code ktutil_write_keytab(context, list, name)
 
 #ifdef KRB5_KRB4_COMPAT
 /*
+ * getstr() takes a file pointer, a string and a count.  It reads from
+ * the file until either it has read "count" characters, or until it
+ * reads a null byte.  When finished, what has been read exists in the
+ * given string "s".  If "count" characters were actually read, the
+ * last is changed to a null, so the returned string is always null-
+ * terminated.  getstr() returns the number of characters read,
+ * including the null terminator.
+ */
+
+static int getstr(fp, s, n)
+    FILE *fp;
+    register char *s;
+    int n;
+{
+    register int count = n;
+    while (fread(s, 1, 1, fp) > 0 && --count)
+        if (*s++ == '\0')
+            return (n - count);
+    *s = '\0';
+    return (n - count);
+}
+
+/*
  * Read in a named krb4 srvtab and append to list.  Allocate new list
  * if needed.
  */
@@ -370,9 +395,9 @@ krb5_error_code ktutil_read_srvtab(context, name, list)
 	memset(sname, 0, sizeof (sname));
 	memset(sinst, 0, sizeof (sinst));
 	memset(srealm, 0, sizeof (srealm));
-	if (!(fgetst(fp, sname, SNAME_SZ) > 0 &&
-	      fgetst(fp, sinst, INST_SZ) > 0 &&
-	      fgetst(fp, srealm, REALM_SZ) > 0 &&
+	if (!(getstr(fp, sname, SNAME_SZ) > 0 &&
+	      getstr(fp, sinst, INST_SZ) > 0 &&
+	      getstr(fp, srealm, REALM_SZ) > 0 &&
 	      fread(&kvno, 1, 1, fp) > 0 &&
 	      fread((char *)key, sizeof (key), 1, fp) > 0))
 	    break;
@@ -442,7 +467,6 @@ krb5_error_code ktutil_write_srvtab(context, list, name)
     krb5_kt_list lp, lp1, prev, pruned = NULL;
     krb5_error_code retval = 0;
     FILE *fp;
-    int fd;
     char sname[SNAME_SZ];
     char sinst[INST_SZ];
     char srealm[REALM_SZ];
@@ -493,14 +517,11 @@ krb5_error_code ktutil_write_srvtab(context, list, name)
 		lp1->entry = lp->entry;
 	}
     }
-    fd = creat(name, S_IRUSR | S_IWUSR);
-    if (fd == -1) {
-	retval = EIO;
-	goto free_pruned;
-    }
-    fp = fdopen(fd, "w");
+    umask(0077); /*Changing umask for all of ktutil is OK
+		  * We don't ever write out anything that should use
+		  * default umask.*/
+    fp = fopen(name, "w");
     if (!fp) {
-	close(fd);
 	retval = EIO;
 	goto free_pruned;
     }

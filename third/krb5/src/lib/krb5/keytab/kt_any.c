@@ -38,41 +38,41 @@ typedef struct _krb5_ktany_cursor_data {
 } krb5_ktany_cursor_data;
 
 static krb5_error_code krb5_ktany_resolve
-	PROTOTYPE((krb5_context,
+        (krb5_context,
 		   const char *,
-		   krb5_keytab *));
+		   krb5_keytab *);
 static krb5_error_code krb5_ktany_get_name
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_keytab id,
 		   char *name,
-		   int len));
+		   int len);
 static krb5_error_code krb5_ktany_close
-	PROTOTYPE((krb5_context context,
-		   krb5_keytab id));
+	(krb5_context context,
+		   krb5_keytab id);
 static krb5_error_code krb5_ktany_get_entry
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_keytab id,
 		   krb5_const_principal principal,
 		   krb5_kvno kvno,
 		   krb5_enctype enctype,
-		   krb5_keytab_entry *entry));
+		   krb5_keytab_entry *entry);
 static krb5_error_code krb5_ktany_start_seq_get
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_keytab id,
-		   krb5_kt_cursor *cursorp));
+		   krb5_kt_cursor *cursorp);
 static krb5_error_code krb5_ktany_next_entry
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_keytab id,
 		   krb5_keytab_entry *entry,
-		   krb5_kt_cursor *cursor));
+		   krb5_kt_cursor *cursor);
 static krb5_error_code krb5_ktany_end_seq_get
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_keytab id,
-		   krb5_kt_cursor *cursor));
+		   krb5_kt_cursor *cursor);
 static void cleanup
-	PROTOTYPE((krb5_context context,
+	(krb5_context context,
 		   krb5_ktany_data *data,
-		   int nchoices));
+		   int nchoices);
 
 struct _krb5_kt_ops krb5_kta_ops = {
     0,

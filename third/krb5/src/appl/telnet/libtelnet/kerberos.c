@@ -91,6 +91,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <errno.h>
 #include <arpa/telnet.h>
 #include <stdio.h>
 #include <des.h>        /* BSD wont include this in krb.h, so we do it here */
@@ -110,13 +111,17 @@
 
 #include <al.h>
 
-extern auth_debug_mode;
+extern int auth_debug_mode;
 extern krb5_context telnet_context;
+
+int kerberos4_cksum (unsigned char *, int);
 
 static unsigned char str_data[1024] = { IAC, SB, TELOPT_AUTHENTICATION, 0,
 			  		AUTHTYPE_KERBEROS_V4, };
+#if 0
 static unsigned char str_name[1024] = { IAC, SB, TELOPT_AUTHENTICATION,
 					TELQUAL_NAME, };
+#endif
 
 #define	KRB_AUTH	0		/* Authentication data follows */
 #define	KRB_REJECT	1		/* Rejected (reason might follow) */
@@ -131,7 +136,6 @@ static	char name[ANAME_SZ];
 static	AUTH_DAT adat = { 0 };
 #ifdef	ENCRYPTION
 static Block	session_key	= { 0 };
-static Schedule sched;
 static krb5_keyblock krbkey;
 static Block	challenge	= { 0 };
 #endif	/* ENCRYPTION */
@@ -142,15 +146,14 @@ extern int al_local_acct;
 Data(ap, type, d, c)
 	Authenticator *ap;
 	int type;
-	void *d;
+	const void *d;
 	int c;
 {
         unsigned char *p = str_data + 4;
-	unsigned char *cd = (unsigned char *)d;
+	const unsigned char *cd = (const unsigned char *)d;
 	size_t spaceleft = sizeof(str_data) - 4;
-
 	if (c == -1)
-		c = strlen((char *)cd);
+		c = strlen((const char *)cd);
 
         if (auth_debug_mode) {
                 printf("%s:%d: [%d] (%d)",
@@ -206,13 +209,13 @@ kerberos4_init(ap, server)
 }
 
 char dst_realm_buf[REALM_SZ], *dest_realm = NULL;
-int dst_realm_sz = REALM_SZ;
+unsigned int dst_realm_sz = REALM_SZ;
 
 	int
 kerberos4_send(ap)
 	Authenticator *ap;
 {
-	KTEXT_ST auth;
+	KTEXT_ST kauth;
 	char instance[INST_SZ];
 	char *realm;
 	char *krb_realmofhost();
@@ -223,7 +226,7 @@ kerberos4_send(ap)
 	krb5_data data;
 	krb5_enc_data encdata;
 	krb5_error_code code;
-	krb5_keyblock random_key;
+	krb5_keyblock rand_key;
 #endif
 
 	printf("[ Trying KERBEROS4 ... ]\r\n");	
@@ -236,7 +239,7 @@ kerberos4_send(ap)
 
 	memset(instance, 0, sizeof(instance));
 
-	if (realm = krb_get_phost(RemoteHostName))
+	if ((realm = krb_get_phost(RemoteHostName)))
 		strncpy(instance, realm, sizeof(instance));
 
 	instance[sizeof(instance)-1] = '\0';
@@ -247,12 +250,12 @@ kerberos4_send(ap)
 		printf("Kerberos V4: no realm for %s\r\n", RemoteHostName);
 		return(0);
 	}
-	if (r = krb_mk_req(&auth, KRB_SERVICE_NAME, instance, realm, 0)) {
-		printf("mk_req failed: %s\r\n", krb_err_txt[r]);
+	if ((r = krb_mk_req(&kauth, KRB_SERVICE_NAME, instance, realm, 0))) {
+		printf("mk_req failed: %s\r\n", krb_get_err_text(r));
 		return(0);
 	}
-	if (r = krb_get_cred(KRB_SERVICE_NAME, instance, realm, &cred)) {
-		printf("get_cred failed: %s\r\n", krb_err_txt[r]);
+	if ((r = krb_get_cred(KRB_SERVICE_NAME, instance, realm, &cred))) {
+		printf("get_cred failed: %s\r\n", krb_get_err_text(r));
 		return(0);
 	}
 	if (!auth_sendname(UserNameRequested, strlen(UserNameRequested))) {
@@ -261,8 +264,8 @@ kerberos4_send(ap)
 		return(0);
 	}
 	if (auth_debug_mode)
-		printf("Sent %d bytes of authentication data\r\n", auth.length);
-	if (!Data(ap, KRB_AUTH, (void *)auth.dat, auth.length)) {
+		printf("Sent %d bytes of authentication data\r\n", kauth.length);
+	if (!Data(ap, KRB_AUTH, (void *)kauth.dat, kauth.length)) {
 		if (auth_debug_mode)
 			printf("Not enough room for authentication data\r\n");
 		return(0);
@@ -278,15 +281,15 @@ kerberos4_send(ap)
 		data.data = cred.session;
 		data.length = 8; /* sizeof(cred.session) */;
 
-		if (code = krb5_c_random_seed(telnet_context, &data)) {
+		if ((code = krb5_c_random_seed(telnet_context, &data))) {
 		    com_err("libtelnet", code,
 			    "while seeding random number generator");
 		    return(0);
 		}
 
-		if (code = krb5_c_make_random_key(telnet_context,
-						  ENCTYPE_DES_CBC_RAW,
-						  &random_key)) {
+		if ((code = krb5_c_make_random_key(telnet_context,
+						   ENCTYPE_DES_CBC_RAW,
+						   &rand_key))) {
 		    com_err("libtelnet", code,
 			    "while creating random session key");
 		    return(0);
@@ -298,8 +301,8 @@ kerberos4_send(ap)
 		krbkey.length = 8;
 		krbkey.contents = cred.session;
 
-		encdata.ciphertext.data = random_key.contents;
-		encdata.ciphertext.length = random_key.length;
+		encdata.ciphertext.data = rand_key.contents;
+		encdata.ciphertext.length = rand_key.length;
 		encdata.enctype = ENCTYPE_UNKNOWN;
 
 		data.data = session_key;
@@ -308,7 +311,7 @@ kerberos4_send(ap)
 		code = krb5_c_decrypt(telnet_context, &krbkey, 0, 0,
 				      &encdata, &data);
 
-		krb5_free_keyblock_contents(telnet_context, &random_key);
+		krb5_free_keyblock_contents(telnet_context, &rand_key);
 
 		if (code) {
 		    com_err("libtelnet", code, "while encrypting random key");
@@ -344,8 +347,8 @@ kerberos4_send(ap)
 		encdata.ciphertext.length = 8;
 		encdata.enctype = ENCTYPE_UNKNOWN;
 
-		if (code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0, &data,
-					  &encdata)) {
+		if ((code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0, 
+					   &data, &encdata))) {
 		    com_err("libtelnet", code, "while encrypting random key");
 		    return(0);
 		}
@@ -353,8 +356,8 @@ kerberos4_send(ap)
 #endif	/* ENCRYPTION */
 	
 	if (auth_debug_mode) {
-		printf("CK: %d:", kerberos4_cksum(auth.dat, auth.length));
-		printd(auth.dat, auth.length);
+		printf("CK: %d:", kerberos4_cksum(kauth.dat, kauth.length));
+		printd(kauth.dat, kauth.length);
 		printf("\r\n");
 		printf("Sent Kerberos V4 credentials to server\r\n");
 	}
@@ -403,11 +406,11 @@ kerberos4_is(ap, data, cnt)
 		if (getpeername(0, (struct sockaddr *) &sin, &sin_len) == 0
 		    && sin.sin_family == AF_INET)
 			from_addr = sin.sin_addr.s_addr;
-		if (r = krb_rd_req(&auth, KRB_SERVICE_NAME,
-				   instance, from_addr, &adat, "")) {
+		if ((r = krb_rd_req(&auth, KRB_SERVICE_NAME,
+				   instance, from_addr, &adat, ""))) {
 			if (auth_debug_mode)
 				printf("Kerberos failed him as %s\r\n", name);
-			Data(ap, KRB_REJECT, (void *)krb_err_txt[r], -1);
+			Data(ap, KRB_REJECT, (const void *)krb_get_err_text(r), -1);
 			auth_finished(ap, AUTH_REJECT);
 			return;
 		}
@@ -479,7 +482,7 @@ kerberos4_is(ap, data, cnt)
 		kdata.data = session_key;
 		kdata.length = 8;
 
-		if (code = krb5_c_random_seed(telnet_context, &kdata)) {
+		if ((code = krb5_c_random_seed(telnet_context, &kdata))) {
 		    com_err("libtelnet", code,
 			    "while seeding random number generator");
 		    return;
@@ -502,8 +505,8 @@ kerberos4_is(ap, data, cnt)
 		encdata.ciphertext.length = 8;
 		encdata.enctype = ENCTYPE_UNKNOWN;
 
-		if (code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0,
-					  &kdata, &encdata)) {
+		if ((code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0,
+					   &kdata, &encdata))) {
 		    com_err("libtelnet", code, "while encrypting random key");
 		    return;
 		}
@@ -523,8 +526,8 @@ kerberos4_is(ap, data, cnt)
 		kdata.data = challenge;
 		kdata.length = 8;
 
-		if (code = krb5_c_decrypt(telnet_context, &krbkey, 0, 0, 
-					  &encdata, &kdata)) {
+		if ((code = krb5_c_decrypt(telnet_context, &krbkey, 0, 0, 
+					   &encdata, &kdata))) {
 		    com_err("libtelnet", code, "while decrypting challenge");
 		    return;
 		}
@@ -544,8 +547,8 @@ kerberos4_is(ap, data, cnt)
 		encdata.ciphertext.length = 8;
 		encdata.enctype = ENCTYPE_UNKNOWN;
 
-		if (code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0,
-					  &kdata, &encdata)) {
+		if ((code = krb5_c_encrypt(telnet_context, &krbkey, 0, 0,
+					   &kdata, &encdata))) {
 		    com_err("libtelnet", code, "while decrypting challenge");
 		    return;
 		}
@@ -606,8 +609,8 @@ kerberos4_reply(ap, data, cnt)
 			encdata.ciphertext.length = 8;
 			encdata.enctype = ENCTYPE_UNKNOWN;
 
-			if (code = krb5_c_encrypt(telnet_context, &krbkey,
-						  0, 0, &kdata, &encdata)) {
+			if ((code = krb5_c_encrypt(telnet_context, &krbkey,
+						   0, 0, &kdata, &encdata))) {
 				com_err("libtelnet", code,
 					"while encrypting session_key");
 				return;
@@ -649,9 +652,9 @@ kerberos4_reply(ap, data, cnt)
 }
 
 	int
-kerberos4_status(ap, name, level)
+kerberos4_status(ap, kname, level)
 	Authenticator *ap;
-	char *name;
+	char *kname;
 	int level;
 {
 	if (level < AUTH_USER)
@@ -659,8 +662,11 @@ kerberos4_status(ap, name, level)
 
 	if (krb4_accepted) {
 		/* the name buffer comes from telnetd/telnetd{-ktd}.c */
-		strncpy(name, UserNameRequested, 255);
+		strncpy(kname, UserNameRequested, 255);
 		name[255] = '\0';
+	}
+
+	if (UserNameRequested && !kuserok(&adat, UserNameRequested)) {
 		return(AUTH_VALID);
 	} else
 		return(AUTH_USER);
@@ -672,7 +678,8 @@ kerberos4_status(ap, name, level)
 	void
 kerberos4_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
-	int cnt, buflen;
+	int cnt;
+	unsigned int buflen;
 {
 	char lbuf[32];
 	register int i;
@@ -761,7 +768,9 @@ kerberos4_cksum(d, n)
 	return(ck);
 }
 #else
-#include "k5-int.h"
+#include <krb5.h>
+#include <errno.h>
+
 #endif
 
 #ifdef notdef

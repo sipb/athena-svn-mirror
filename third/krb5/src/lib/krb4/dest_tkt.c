@@ -29,6 +29,10 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+
+#include "k5-util.h"
+#define do_seteuid krb5_seteuid
+
 #ifdef TKT_SHMEM
 #include <sys/param.h>
 #endif
@@ -41,20 +45,6 @@
 #define O_SYNC 0
 #endif
 
-#ifdef HAVE_SETEUID
-#define do_seteuid(e) seteuid((e))
-#else
-#ifdef HAVE_SETRESUID
-#define do_seteuid(e) setresuid(-1, (e), -1)
-#else
-#ifdef HAVE_SETREUID
-#define do_seteuid(e) setreuid(geteuid(), (e))
-#else
-#define do_seteuid(e) (errno = EPERM, -1)
-#endif
-#endif
-#endif
-
 /*
  * dest_tkt() is used to destroy the ticket store upon logout.
  * If the ticket file does not exist, dest_tkt() returns RET_TKFIL.
@@ -64,12 +54,11 @@
  * The ticket file (TKT_FILE) is defined in "krb.h".
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
+int KRB5_CALLCONV
 dest_tkt()
 {
-    char *file = TKT_FILE;
+    const char *file = TKT_FILE;
     int i,fd;
-    extern int errno;
     int ret;
     struct stat statpre, statpost;
     char buf[BUFSIZ];

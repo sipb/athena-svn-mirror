@@ -65,6 +65,7 @@
 #include <arpa/telnet.h>
 #ifdef	__STDC__
 #include <stdlib.h>
+#include <unistd.h>
 #endif
 #ifdef	HAVE_STRING_H
 #include <string.h>
@@ -403,7 +404,8 @@ auth_send(data, cnt)
 	auth_send_cnt = cnt;
 	if (auth_send_cnt > sizeof(_auth_send_data))
 	    auth_send_cnt = sizeof(_auth_send_data);
-	memcpy((void *)_auth_send_data, (void *)data, auth_send_cnt);
+	memcpy((void *)_auth_send_data, (void *)data, 
+	       (unsigned) auth_send_cnt);
 	auth_send_data = _auth_send_data;
 
 	auth_send_retry();
@@ -485,7 +487,7 @@ auth_is(data, cnt)
 		return;
 	}
 
-	if (ap = findauthenticator(data[0], data[1])) {
+	if ((ap = findauthenticator(data[0], data[1]))) {
 		if (ap->is)
 			(*ap->is)(ap, data+2, cnt-2);
 	} else if (auth_debug_mode)
@@ -503,7 +505,7 @@ auth_reply(data, cnt)
 	if (cnt < 2)
 		return;
 
-	if (ap = findauthenticator(data[0], data[1])) {
+	if ((ap = findauthenticator(data[0], data[1]))) {
 		if (ap->reply)
 			(*ap->reply)(ap, data+2, cnt-2);
 	} else if (auth_debug_mode)
@@ -528,10 +530,10 @@ auth_name(data, cnt)
 	if (cnt > sizeof(savename) - 1) {
 		if (auth_debug_mode)
 			printf(">>>%s: Name in NAME (%d) exceeds %d length\r\n",
-					Name, cnt, sizeof(savename)-1);
+					Name, cnt, (int) sizeof(savename)-1);
 		return;
 	}
-	memcpy((void *)savename, (void *)data, cnt);
+	memcpy((void *)savename, (void *)data, (unsigned) cnt);
 	savename[cnt] = '\0';	/* Null terminate */
 	if (auth_debug_mode)
 		printf(">>>%s: Got NAME [%s]\r\n", Name, savename);
@@ -547,7 +549,7 @@ auth_name(data, cnt)
 		/* if we don't call auth_encrypt_user, the auth will
 		   (eventually) fail */
 	} else
-		auth_encrypt_user(savename);
+		auth_encrypt_user((const char *)savename);
 }
 
 	int
@@ -644,7 +646,8 @@ auth_debug(mode)
 	void
 auth_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
-	int cnt, buflen;
+	int cnt;
+	unsigned int buflen;
 {
 	Authenticator *ap;
 
@@ -657,7 +660,8 @@ auth_printsub(data, cnt, buf, buflen)
 	void
 auth_gen_printsub(data, cnt, buf, buflen)
 	unsigned char *data, *buf;
-	int cnt, buflen;
+	int cnt;
+	unsigned int buflen;
 {
 	register unsigned char *cp;
 	unsigned char tbuf[16];

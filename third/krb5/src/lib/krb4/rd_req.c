@@ -1,14 +1,29 @@
 /*
- * rd_req.c
+ * lib/krb4/rd_req.c
  *
- * Copyright 1985, 1986, 1987, 1988 by the Massachusetts Institute
- * of Technology.
+ * Copyright 1985, 1986, 1987, 1988, 2000, 2001, 2002 by the
+ * Massachusetts Institute of Technology.  All Rights Reserved.
  *
- * For copying and distribution information, please see the file
- * <mit-copyright.h>.
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
  */
 
-#include "mit-copyright.h"
 #include "des.h"
 #include "krb.h"
 #include "prot.h"
@@ -18,7 +33,9 @@
 
 extern int krb_ap_req_debug;
 
-extern char *krb__get_srvtabname();
+static int
+krb_rd_req_with_key(KTEXT, char *, char *, KRB_UINT32, AUTH_DAT *,
+		    Key_schedule, krb5_keyblock *);
 
 /* declared in krb.h */
 int krb_ignore_ip_address = 0;
@@ -68,7 +85,7 @@ static int krb5_key;		/* whether krb5 key is used for decrypt */
 static krb5_keyblock srv_k5key;
 
 int
-krb_set_key(key,cvt)
+krb_set_key(key, cvt)
     char *key;
     int cvt;
 {
@@ -81,10 +98,10 @@ krb_set_key(key,cvt)
     return KSUCCESS;
 #else /* Encrypt */
     if (cvt)
-        string_to_key(key,ky);
+        string_to_key(key, ky);
     else
         memcpy((char *)ky, key, 8);
-    return(des_key_sched(ky,serv_key));
+    return des_key_sched(ky,serv_key);
 #endif /* NOENCRYPTION */
 }
 
@@ -106,19 +123,6 @@ krb_clear_key_krb5(ctx)
     if (krb5_key)
 	krb5_free_keyblock_contents(ctx, &srv_k5key);
     krb5_key = 0;
-}
-
-/* A helper function to let us see if a buffer is properly terminated. */
-static int
-krb_strnlen(const char *str, size_t max_len)
-{
-    int i = 0;
-    for(i = 0; i < max_len; i++) {
-        if(str[i] == '\0') {
-            return i;
-	}
-    }
-    return -1;
 }
 
 /*
@@ -162,14 +166,15 @@ krb_strnlen(const char *str, size_t max_len)
  * Mutual authentication is not implemented.
  */
 
-KRB5_DLLIMP int KRB5_CALLCONV
-krb_rd_req(authent,service,instance,from_addr,ad,fn)
+static int
+krb_rd_req_with_key(authent, service, instance, from_addr, ad, ks, k5key)
     register KTEXT authent;	/* The received message */
-    char FAR *service;		/* Service name */
-    char FAR *instance;		/* Service instance */
+    char *service;		/* Service name */
+    char *instance;		/* Service instance */
     unsigned KRB4_32 from_addr; /* Net address of originating host */
-    AUTH_DAT FAR *ad;		/* Structure to be filled in */
-    char FAR *fn;		/* Filename to get keys from */
+    AUTH_DAT *ad;		/* Structure to be filled in */
+    Key_schedule ks;
+    krb5_keyblock *k5key;
 {
     KTEXT_ST ticket;		/* Temp storage for ticket */
     KTEXT tkt = &ticket;
@@ -178,7 +183,6 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
 
     char realm[REALM_SZ];	/* Realm of issuing kerberos */
     Key_schedule seskey_sched; /* Key sched for session key */
-    unsigned char skey[KKEY_SZ]; /* Session key from ticket */
     char sname[SNAME_SZ];	/* Service name from ticket */
     char iname[INST_SZ];	/* Instance name from ticket */
     char r_aname[ANAME_SZ];	/* Client name from authenticator */
@@ -186,45 +190,48 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     char r_realm[REALM_SZ];	/* Client realm from authenticator */
     unsigned int r_time_ms;     /* Fine time from authenticator */
     unsigned KRB4_32 r_time_sec;   /* Coarse time from authenticator */
-    register char *ptr;		/* For stepping through */
+    register unsigned char *ptr; /* For stepping through */
     unsigned KRB4_32 t_local;	/* Local time on our side of the protocol */
     KRB4_32 delta_t;      	/* Time in authenticator minus local time */
+#ifdef KRB_CRYPT_DEBUG
     KRB4_32 tkt_age;		/* Age of ticket */
-    int swap_bytes;		/* Need to swap bytes? */
+#endif
+    int le;			/* is little endian? */
     int mutual;			/* Mutual authentication requested? */
+    int t;			/* msg type */
     unsigned char s_kvno;	/* Version number of the server's key
 				   Kerberos used to encrypt ticket */
-    krb5_keyblock keyblock;
-    int status;
+    int ret;
+    int len;
 
     tkt->mbz = req_id->mbz = 0;
 
-    if (authent->length <= 0)
-	return(RD_AP_MODIFIED);
+    if (authent->length < 1 + 1 + 1)
+	return RD_AP_MODIFIED;
 
-    ptr = (char *) authent->dat;
+    ptr = authent->dat;
+#define AUTHENT_REMAIN (authent->length - (ptr - authent->dat))
 
     /* get msg version, type and byte order, and server key version */
 
     /* check version */
-    if (KRB_PROT_VERSION != (unsigned int) *ptr++)
-        return(RD_AP_VERSION);
+    if (KRB_PROT_VERSION != *ptr++)
+        return RD_AP_VERSION;
 
     /* byte order */
-    swap_bytes = 0;
-    if ((*ptr & 1) != HOST_BYTE_ORDER)
-        swap_bytes++;
+    t = *ptr++;
+    le = t & 1;
 
     /* check msg type */
     mutual = 0;
-    switch (*ptr++ & ~1) {
+    switch (t & ~1) {
     case AUTH_MSG_APPL_REQUEST:
         break;
     case AUTH_MSG_APPL_REQUEST_MUTUAL:
         mutual++;
         break;
     default:
-        return(RD_AP_MSG_TYPE);
+        return RD_AP_MSG_TYPE;
     }
 
 #ifdef lint
@@ -234,54 +241,24 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
         mutual = 0;
 #endif /* lint */
     s_kvno = *ptr++;		/* get server key version */
-    if(krb_strnlen(ptr, sizeof(realm)) < 0) {
+    len = krb4int_strnlen((char *)ptr, AUTHENT_REMAIN) + 1;
+    if (len <= 0 || len > sizeof(realm)) {
 	return RD_AP_MODIFIED;  /* must have been modified, the client wouldn't
 	                           try to trick us with wacky data */
     }
-    (void) strncpy(realm,ptr,REALM_SZ);	/* And the realm of the issuing KDC */
-    realm[REALM_SZ-1] = '\0';
-    ptr += strlen(realm) + 1;	/* skip the realm "hint" */
+    /* And the realm of the issuing KDC */
+    (void)memcpy(realm, ptr, (size_t)len);
+    ptr += len;			/* skip the realm "hint" */
 
-    /*
-     * If "fn" is NULL, key info should already be set; don't
-     * bother with ticket file.  Otherwise, check to see if we
-     * already have key info for the given server and key version
-     * (saved in the static st_* variables).  If not, go get it
-     * from the ticket file.  If "fn" is the null string, use the
-     * default ticket file.
-     */
-    if (fn && (strcmp(st_nam,service) || strcmp(st_inst,instance) ||
-               strcmp(st_rlm,realm) || (st_kvno != s_kvno))) {
-        if (*fn == 0) fn = KEYFILE;
-        st_kvno = s_kvno;
-#ifndef NOENCRYPTION
-        if (read_service_key(service,instance,realm,(int) s_kvno,
-			     fn,(char *)skey) == 0) {
-		if ((status = krb_set_key((char *)skey,0)))
-			return(status);
-#ifdef KRB4_USE_KEYTAB
-	} else if (krb54_get_service_keyblock(service,instance,
-		       realm, (int) s_kvno,fn, &keyblock) == 0) {
-		krb_set_key_krb5(krb5__krb4_context, &keyblock);
-		krb5_free_keyblock_contents(krb5__krb4_context, &keyblock);
-#endif
-	} else
-		return(RD_AP_UNDEC);
-	
-#endif /* !NOENCRYPTION */
-        (void) strncpy(st_rlm,realm, sizeof(st_rlm) - 1);
-	st_rlm[sizeof(st_rlm) - 1] = '\0';
-        (void) strncpy(st_nam,service, sizeof(st_nam) - 1);
-	st_nam[sizeof(st_nam) - 1] = '\0';
-        (void) strncpy(st_inst,instance, sizeof(st_inst) - 1);
-	st_inst[sizeof(st_inst) - 1] = '\0';
-    }
-
-    /* Get ticket from authenticator */
-    tkt->length = (int) *ptr++ & 0xff;
-    if ((tkt->length + (ptr+1 - (char *) authent->dat)) > authent->length)
-	return(RD_AP_MODIFIED);
-    memcpy((char *)(tkt->dat), ptr+1, tkt->length);
+    /* Get ticket length */
+    tkt->length = *ptr++;
+    /* Get authenticator length while we're at it. */
+    req_id->length = *ptr++;
+    if (AUTHENT_REMAIN < tkt->length + req_id->length)
+	return RD_AP_MODIFIED;
+    /* Copy ticket */
+    memcpy(tkt->dat, ptr, (size_t)tkt->length);
+    ptr += tkt->length;
 
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug)
@@ -294,10 +271,10 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     /* Decrypt and take apart ticket */
 #endif
 
-    if (!krb5_key) {
+    if (k5key == NULL) {
 	if (decomp_ticket(tkt,&ad->k_flags,ad->pname,ad->pinst,ad->prealm,
 			  &(ad->address),ad->session, &(ad->life),
-			  &(ad->time_sec),sname,iname,ky,serv_key)) {
+			  &(ad->time_sec),sname,iname,ky,ks)) {
 #ifdef KRB_CRYPT_DEBUG
 	    log("Can't decode ticket");
 #endif
@@ -307,11 +284,10 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
 	if (decomp_tkt_krb5(tkt, &ad->k_flags, ad->pname, ad->pinst,
 			    ad->prealm, &ad->address, ad->session,
 			    &ad->life, &ad->time_sec, sname, iname,
-			    &srv_k5key)) {
+			    k5key)) {
 	    return RD_AP_UNDEC;
 	}
     }
-
 
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug) {
@@ -325,73 +301,81 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
 #endif
 
     /* Extract the authenticator */
-    req_id->length = (int) *(ptr++);
-    if ((req_id->length + (ptr + tkt->length - (char *) authent->dat)) >
-	authent->length)
-	return(RD_AP_MODIFIED);
-    memcpy((char *)(req_id->dat), ptr + tkt->length, req_id->length);
+    memcpy(req_id->dat, ptr, (size_t)req_id->length);
 
 #ifndef NOENCRYPTION
     /* And decrypt it with the session key from the ticket */
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug) log("About to decrypt authenticator");
 #endif
-    key_sched(ad->session,seskey_sched);
-    pcbc_encrypt((C_Block *)req_id->dat,(C_Block *)req_id->dat,
-                 (long) req_id->length, seskey_sched,&ad->session,DES_DECRYPT);
+
+    key_sched(ad->session, seskey_sched);
+    pcbc_encrypt((C_Block *)req_id->dat, (C_Block *)req_id->dat,
+                 (long)req_id->length,
+		 seskey_sched, &ad->session, DES_DECRYPT);
+    memset(seskey_sched, 0, sizeof(seskey_sched));
+
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug) log("Done.");
 #endif
 #endif /* NOENCRYPTION */
 
-#define check_ptr() if ((ptr - (char *) req_id->dat) > req_id->length) return(RD_AP_MODIFIED);
+    ptr = req_id->dat;
+#define REQID_REMAIN (req_id->length - (ptr - req_id->dat))
 
-    ptr = (char *) req_id->dat;
-    (void) strncpy(r_aname,ptr,ANAME_SZ); /* Authentication name */
-    r_aname[ANAME_SZ-1] = '\0';
-    ptr += strlen(r_aname)+1;
-    check_ptr();
-    (void) strncpy(r_inst,ptr,INST_SZ);	/* Authentication instance */
-    r_inst[INST_SZ-1] = '\0';
-    ptr += strlen(r_inst)+1;
-    check_ptr();
-    (void) strncpy(r_realm,ptr,REALM_SZ); /* Authentication name */
-    r_realm[REALM_SZ-1] = '\0';
-    ptr += strlen(r_realm)+1;
-    check_ptr();
-    memcpy((char *)&ad->checksum, ptr, 4);	/* Checksum */
-    ptr += 4;
-    check_ptr();
-    if (swap_bytes) ad->checksum = krb4_swab32(ad->checksum);
-    r_time_ms = *(ptr++);	/* Time (fine) */
+    ret = RD_AP_MODIFIED;
+
+    len = krb4int_strnlen((char *)ptr, REQID_REMAIN) + 1;
+    if (len <= 0 || len > ANAME_SZ)
+	goto cleanup;
+    memcpy(r_aname, ptr, (size_t)len); /* Authentication name */
+    ptr += len;
+    len = krb4int_strnlen((char *)ptr, REQID_REMAIN) + 1;
+    if (len <= 0 || len > INST_SZ)
+	goto cleanup;
+    memcpy(r_inst, ptr, (size_t)len); /* Authentication instance */
+    ptr += len;
+    len = krb4int_strnlen((char *)ptr, REQID_REMAIN) + 1;
+    if (len <= 0 || len > REALM_SZ)
+	goto cleanup;
+    memcpy(r_realm, ptr, (size_t)len); /* Authentication name */
+    ptr += len;
+
+    if (REQID_REMAIN < 4 + 1 + 4)
+	goto cleanup;
+    KRB4_GET32(ad->checksum, ptr, le);
+    r_time_ms = *ptr++;		/* Time (fine) */
 #ifdef lint
     /* XXX r_time_ms is set but not used.  why??? */
     /* this is a crock to get lint to shut up */
     if (r_time_ms)
         r_time_ms = 0;
 #endif /* lint */
-    check_ptr();
-    /* assume sizeof(r_time_sec) == 4 ?? */
-    memcpy((char *)&r_time_sec, ptr, 4); /* Time (coarse) */
-    if (swap_bytes) r_time_sec = krb4_swab32(r_time_sec);
+    /* Time (coarse) */
+    KRB4_GET32(r_time_sec, ptr, le);
 
     /* Check for authenticity of the request */
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug)
         log("Pname:   %s %s",ad->pname,r_aname);
 #endif
+
+    ret = RD_AP_INCON;
     if (strcmp(ad->pname,r_aname) != 0)
-        return(RD_AP_INCON);
+	goto cleanup;
     if (strcmp(ad->pinst,r_inst) != 0)
-        return(RD_AP_INCON);
+	goto cleanup;
+
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug)
         log("Realm:   %s %s",ad->prealm,r_realm);
 #endif
-    if ((strcmp(ad->prealm,r_realm) != 0))
-        return(RD_AP_INCON);
+
+    if (strcmp(ad->prealm,r_realm) != 0)
+	goto cleanup;
 
     /* check the time integrity of the msg */
+    ret = RD_AP_TIME;
     t_local = TIME_GMT_UNIXSEC;
     delta_t = t_local - r_time_sec;
     if (delta_t < 0) delta_t = -delta_t;  /* Absolute value of difference */
@@ -401,33 +385,145 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
             log("Time out of range: %d - %d = %d",
                 time_secs, r_time_sec, delta_t);
 #endif
-        return(RD_AP_TIME);
+	goto cleanup;
     }
 
     /* Now check for expiration of ticket */
 
-    tkt_age = t_local - ad->time_sec;
+    ret = RD_AP_NYV;
 #ifdef KRB_CRYPT_DEBUG
+    tkt_age = t_local - ad->time_sec;
     if (krb_ap_req_debug)
         log("Time: %d Issue Date: %d Diff: %d Life %x",
             time_secs, ad->time_sec, tkt_age, ad->life);
 #endif
     if (t_local < ad->time_sec) {
         if ((ad->time_sec - t_local) > CLOCK_SKEW)
-            return(RD_AP_NYV);
+	    goto cleanup;
+    } else if (krb_life_to_time((KRB4_32)ad->time_sec, ad->life)
+	     < t_local + CLOCK_SKEW) {
+	ret = RD_AP_EXP;
+	goto cleanup;
     }
-    else if ((t_local - ad->time_sec) > 5 * 60 * ad->life)
-        return(RD_AP_EXP);
 
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug)
         log("Address: %d %d",ad->address,from_addr);
 #endif
-    if (!krb_ignore_ip_address && from_addr && (ad->address != from_addr))
-        return(RD_AP_BADD);
+
+    if (!krb_ignore_ip_address
+	&& from_addr && (ad->address != from_addr)) {
+	ret = RD_AP_BADD;
+	goto cleanup;
+    }
 
     /* All seems OK */
     ad->reply.length = 0;
+    ret = 0;
 
-    return(RD_AP_OK);
+cleanup:
+    if (ret) {
+	/* Stomp on session key if there is an error. */
+	memset(ad->session, 0, sizeof(ad->session));
+	return ret;
+    }
+
+    return RD_AP_OK;
+}
+
+int KRB5_CALLCONV
+krb_rd_req_int(authent, service, instance, from_addr, ad, key)
+    KTEXT authent;		/* The received message */
+    char *service;		/* Service name */
+    char *instance;		/* Service instance */
+    KRB_UINT32 from_addr;	/* Net address of originating host */
+    AUTH_DAT *ad;		/* Structure to be filled in */
+    C_Block key;		/* Key to decrypt ticket with */
+{
+    Key_schedule ks;
+    int ret;
+
+    do {
+	ret = des_key_sched(key, ks);
+	if (ret) break;
+	ret = krb_rd_req_with_key(authent, service, instance,
+				  from_addr, ad, ks, NULL);
+    } while (0);
+    memset(ks, 0, sizeof(ks));
+    return ret;
+}
+
+int KRB5_CALLCONV
+krb_rd_req(authent, service, instance, from_addr, ad, fn)
+    register KTEXT authent;	/* The received message */
+    char *service;		/* Service name */
+    char *instance;		/* Service instance */
+    unsigned KRB4_32 from_addr; /* Net address of originating host */
+    AUTH_DAT *ad;		/* Structure to be filled in */
+    char *fn;		/* Filename to get keys from */
+{
+    unsigned char *ptr;
+    unsigned char s_kvno;
+    char realm[REALM_SZ];
+    unsigned char skey[KKEY_SZ];
+#ifdef KRB4_USE_KEYTAB
+    krb5_keyblock keyblock;
+#endif
+    int len;
+    int status;
+
+#define AUTHENT_REMAIN (authent->length - (ptr - authent->dat))
+    if (authent->length < 3)
+	return RD_AP_MODIFIED;
+    ptr = authent->dat + 2;
+    s_kvno = *ptr++;		/* get server key version */
+    len = krb4int_strnlen((char *)ptr, AUTHENT_REMAIN) + 1;
+    if (len <= 0 || len > sizeof(realm))
+	return RD_AP_MODIFIED;
+    (void)memcpy(realm, ptr, (size_t)len);
+#undef AUTHENT_REMAIN
+    /*
+     * If "fn" is NULL, key info should already be set; don't
+     * bother with ticket file.  Otherwise, check to see if we
+     * already have key info for the given server and key version
+     * (saved in the static st_* variables).  If not, go get it
+     * from the ticket file.  If "fn" is the null string, use the
+     * default ticket file.
+     */
+    if (fn && (strcmp(st_nam,service) || strcmp(st_inst,instance)
+	       || strcmp(st_rlm,realm) || (st_kvno != s_kvno))) {
+        if (*fn == 0)
+	    fn = KEYFILE;
+        st_kvno = s_kvno;
+        if (read_service_key(service,instance,realm, (int)s_kvno,
+			     fn, (char *)skey) == 0) {
+	    if ((status = krb_set_key((char *)skey,0)))
+		return(status);
+#ifdef KRB4_USE_KEYTAB
+	} else if (krb54_get_service_keyblock(service, instance,
+					      realm, (int)s_kvno,
+					      fn, &keyblock) == 0) {
+	    krb_set_key_krb5(krb5__krb4_context, &keyblock);
+	    krb5_free_keyblock_contents(krb5__krb4_context, &keyblock);
+#endif
+	} else
+	    return RD_AP_UNDEC;
+
+	len = krb4int_strnlen(realm, sizeof(st_rlm)) + 1;
+	if (len <= 0)
+	    return KFAILURE;
+	memcpy(st_rlm, realm, (size_t)len);
+	len = krb4int_strnlen(service, sizeof(st_nam)) + 1;
+	if (len <= 0)
+	    return KFAILURE;
+	memcpy(st_nam, service, (size_t)len);
+	len = krb4int_strnlen(instance, sizeof(st_inst)) + 1;
+	if (len <= 0)
+	    return KFAILURE;
+	memcpy(st_inst, instance, (size_t)len);
+    }
+    return krb_rd_req_with_key(authent, service, instance,
+			       from_addr, ad,
+			       krb5_key ? NULL : serv_key,
+			       krb5_key ? &srv_k5key : NULL);
 }

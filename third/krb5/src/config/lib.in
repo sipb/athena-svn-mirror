@@ -23,54 +23,11 @@
 #			form dir1:dir2 ...
 # RELDIR	path to this directory relative to $(TOPLIBD)
 
-## Parameters to be set by configure:
-##
-
-LN_S=@LN_S@
-AR=@AR@
-
-# Set to "lib$(LIB)$(STEXT) lib$(LIB)$(SHEXT) lib$(LIB)$(PFEXT)" or
-# some subset thereof by configure; determines which types of libs get
-# built.
-LIBLIST=@LIBLIST@
-
-# Set by configure; list of library symlinks to make to $(TOPLIBD)
-LIBLINKS=@LIBLINKS@
-
-# Set by configure; list of install targets
-LIBINSTLIST=@LIBINSTLIST@
-
-# Some of these should really move to pre.in, since programs will need
-# it too. (e.g. stuff that has dependencies on the libraries)
-
-# usually .a
-STLIBEXT=@STLIBEXT@
-
-# usually .so.$(LIBMAJOR).$(LIBMINOR)
-SHLIBVEXT=@SHLIBVEXT@
-
-# usually .so.$(LIBMAJOR) (to allow for major-version compat)
-SHLIBSEXT=@SHLIBSEXT@
-
-# usually .so
-SHLIBEXT=@SHLIBEXT@
-
-# usually _p.a
-PFLIBEXT=@PFLIBEXT@
-
-# "cc -G", "ld -Bshareable", etc.
-LDCOMBINE=@LDCOMBINE@ $(LDFLAGS)
-
-# Misc args to tack on the tail of LDCOMBINE
-LDCOMBINE_TAIL=@LDCOMBINE_TAIL@
-
-# flags for explicit libraries depending on this one,
-# e.g. "-R$(SHLIB_RPATH) $(SHLIB_SHLIB_DIRFLAGS) $(SHLIB_EXPLIBS)"
-SHLIB_EXPFLAGS=@SHLIB_EXPFLAGS@
-
 # STOBJLISTS=dir1/OBJS.ST dir2/OBJS.ST etc...
 SHOBJLISTS=$(STOBJLISTS:.ST=.SH)
 PFOBJLISTS=$(STOBJLISTS:.ST=.PF)
+
+dummy-target-1 $(SUBDIROBJLISTS) $(SUBDIROBJLISTS:.ST=.SH) $(SUBDIROBJLISTS:.ST=.PF): all-recurse
 
 lib$(LIB)$(STLIBEXT): $(STOBJLISTS)
 	$(RM) $@
@@ -78,7 +35,7 @@ lib$(LIB)$(STLIBEXT): $(STOBJLISTS)
 	@dirs=`echo $(STOBJLISTS) | \
 		sed -e 's%/OBJS.ST%%g' -e 's%OBJS.ST%.%'`; \
 		$(AR) cq $@ `for d in $$dirs; do \
-			sed -e "s%^%$$d/%" -e "s% % $$d/%g" \
+			sed -e '/^$$/d' -e "s%^%$$d/%" -e "s% % $$d/%g" \
 				$$d/OBJS.ST; done`
 	$(RANLIB) $@
 
@@ -88,7 +45,7 @@ lib$(LIB)$(SHLIBVEXT): $(SHOBJLISTS) $(SHLIB_EXPDEPS)
 	@dirs=`echo $(SHOBJLISTS) | \
 		sed -e 's%/OBJS.SH%%g' -e 's%OBJS.SH%.%'`; \
 		$(LDCOMBINE) -o $@ `for d in $$dirs; do \
-			sed -e "s%^%$$d/%" -e "s% % $$d/%g" \
+			sed -e '/^$$/d' -e "s%^%$$d/%" -e "s% % $$d/%g" \
 				$$d/OBJS.SH; done` \
 			$(SHLIB_EXPFLAGS) \
 			$(LDCOMBINE_TAIL)
@@ -105,7 +62,7 @@ lib$(LIB)$(PFLIBEXT): $(PFOBJLISTS)
 	@dirs=`echo $(PFOBJLISTS) | \
 		sed -e 's%/OBJS.PF%%g' -e 's%OBJS.PF%.%'`; \
 		$(AR) cq $@ `for d in $$dirs; do \
-			sed -e "s%^%$$d/%" -e "s% % $$d/%g" \
+			sed -e '/^$$/d' -e "s%^%$$d/%" -e "s% % $$d/%g" \
 				$$d/OBJS.PF; done`
 	$(RANLIB) $@
 
@@ -163,6 +120,7 @@ install-profiled:
 	$(RANLIB) $(DESTDIR)$(KRB5_LIBDIR)/lib$(LIB)$(PFLIBEXT)
 
 Makefile: $(SRCTOP)/config/lib.in
+config.status: $(SRCTOP)/config/shlib.conf
 
 # Use the following if links need to be made to $(TOPLIBD):
 # all-unix:: all-liblinks

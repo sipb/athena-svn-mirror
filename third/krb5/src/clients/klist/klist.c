@@ -1,7 +1,7 @@
 /*
  * clients/klist/klist.c
  *
- * Copyright 1990,2001 by the Massachusetts Institute of Technology.
+ * Copyright 1990 by the Massachusetts Institute of Technology.
  * All Rights Reserved.
  *
  * Export of this software from the United States of America may
@@ -33,6 +33,9 @@
 #endif
 #include <com_err.h>
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
@@ -46,9 +49,7 @@
 #define GET_PROGNAME(x) max(max(strrchr((x), '/'), strrchr((x), '\\')) + 1,(x))
 #endif
 
-#if (defined(_MSDOS) || defined(_WIN32))
-#include <winsock.h>
-#else
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netdb.h>
 #endif
@@ -60,23 +61,21 @@ int show_etype = 0, show_addresses = 0, no_resolve = 0;
 char *defname;
 char *progname;
 krb5_int32 now;
-int timestamp_width;
+unsigned int timestamp_width;
 
 krb5_context kcontext;
 
-char * etype_string KRB5_PROTOTYPE((krb5_enctype ));
-void show_credential KRB5_PROTOTYPE((char *,
-				krb5_context,
-				krb5_creds *));
+char * etype_string (krb5_enctype );
+void show_credential (krb5_creds *);
 	
-void do_ccache KRB5_PROTOTYPE((char *));
-void do_keytab KRB5_PROTOTYPE((char *));
-void printtime KRB5_PROTOTYPE((time_t));
-void one_addr KRB5_PROTOTYPE((krb5_address *));
-void fillit KRB5_PROTOTYPE((FILE *, int, int));
+void do_ccache (char *);
+void do_keytab (char *);
+void printtime (time_t);
+void one_addr (krb5_address *);
+void fillit (FILE *, unsigned int, int);
 
 #ifdef KRB5_KRB4_COMPAT
-void do_v4_ccache KRB5_PROTOTYPE((char *));
+void do_v4_ccache (char *);
 #endif /* KRB5_KRB4_COMPAT */
 
 #define DEFAULT 0
@@ -99,12 +98,12 @@ static int default_k4 = 1;
 static int default_k4 = 0;
 #endif
 
-void usage()
+static void usage()
 {
 #define KRB_AVAIL_STRING(x) ((x)?"available":"not available")
 
-    fprintf(stderr, "Usage: %s [-5] [-4] [-e] [[-c] [-f] [-s] [-a [-n]]] "
-	     "[-k [-t] [-K]] [name]\n", progname); 
+    fprintf(stderr, "Usage: %s [-5] [-4] [-e] [[-c] [-f] [-s] [-a [-n]]] %s",
+	     progname, "[-k [-t] [-K]] [name]\n"); 
     fprintf(stderr, "\t-5 Kerberos 5 (%s)\n", KRB_AVAIL_STRING(got_k5));
     fprintf(stderr, "\t-4 Kerberos 4 (%s)\n", KRB_AVAIL_STRING(got_k4));
     fprintf(stderr, "\t   (Default is %s%s%s%s)\n",
@@ -448,7 +447,7 @@ void do_ccache(name)
 		creds.times.endtime > now)
 		exit_status = 0;
 	} else {
-	    show_credential(progname, kcontext, &creds);
+	    show_credential(&creds);
 	}
 	krb5_free_cred_contents(kcontext, &creds);
     }
@@ -491,7 +490,7 @@ etype_string(enctype)
     return buf;
 }
 
-char *
+static char *
 flags_string(cred)
     register krb5_creds *cred;
 {
@@ -547,9 +546,7 @@ printtime(tv)
 }
 
 void
-show_credential(progname, kcontext, cred)
-    char 		* progname;
-    krb5_context  	  kcontext;
+show_credential(cred)
     register krb5_creds * cred;
 {
     krb5_error_code retval;
@@ -656,63 +653,72 @@ show_credential(progname, kcontext, cred)
     krb5_free_unparsed_name(kcontext, sname);
 }
 
+#include "port-sockets.h"
+#include "socket-utils.h" /* for ss2sin etc */
+#include "fake-addrinfo.h"
+
 void one_addr(a)
     krb5_address *a;
 {
-    struct hostent *h;
+    struct sockaddr_storage ss;
+    int err;
+    char namebuf[NI_MAXHOST];
 
-    if ((a->addrtype == ADDRTYPE_INET && a->length == 4)
-#ifdef AF_INET6
-	|| (a->addrtype == ADDRTYPE_INET6 && a->length == 16)
-#endif
-	) {
-	int af = AF_INET;
-#ifdef AF_INET6
-	if (a->addrtype == ADDRTYPE_INET6)
-	    af = AF_INET6;
-#endif
-	if (!no_resolve) {
-#ifdef HAVE_GETIPNODEBYADDR
-	    int err;
-	    h = getipnodebyaddr(a->contents, a->length, af, &err);
-	    if (h) {
-		printf("%s", h->h_name);
-		freehostent(h);
-	    }
-#else
-	    h = gethostbyaddr(a->contents, a->length, af);
-	    if (h) {
-		printf("%s", h->h_name);
-	    }
-#endif
-	    if (h)
-		return;
+    memset (&ss, 0, sizeof (ss));
+
+    switch (a->addrtype) {
+    case ADDRTYPE_INET:
+	if (a->length != 4) {
+	broken:
+	    printf ("broken address (type %d length %d)",
+		    a->addrtype, a->length);
+	    return;
 	}
-	if (no_resolve || !h) {
-#ifdef HAVE_INET_NTOP
-	    char buf[46];
-	    const char *name = inet_ntop(a->addrtype, a->contents, buf, sizeof(buf));
-	    if (name) {
-		printf ("%s", name);
-		return;
-	    }
-#else
-	    if (a->addrtype == ADDRTYPE_INET) {
-		printf("%d.%d.%d.%d", a->contents[0], a->contents[1],
-		       a->contents[2], a->contents[3]);
-		return;
-	    }
+	{
+	    struct sockaddr_in *sinp = ss2sin (&ss);
+	    sinp->sin_family = AF_INET;
+#ifdef HAVE_SA_LEN
+	    sinp->sin_len = sizeof (struct sockaddr_in);
 #endif
+	    memcpy (&sinp->sin_addr, a->contents, 4);
 	}
+	break;
+#ifdef KRB5_USE_INET6
+    case ADDRTYPE_INET6:
+	if (a->length != 16)
+	    goto broken;
+	{
+	    struct sockaddr_in6 *sin6p = ss2sin6 (&ss);
+	    sin6p->sin6_family = AF_INET6;
+#ifdef HAVE_SA_LEN
+	    sin6p->sin6_len = sizeof (struct sockaddr_in6);
+#endif
+	    memcpy (&sin6p->sin6_addr, a->contents, 16);
+	}
+	break;
+#endif
+    default:
+	printf ("unknown addrtype %d", a->addrtype);
+	return;
     }
-    printf("unknown addr type %d", a->addrtype);
+
+    namebuf[0] = 0;
+    err = getnameinfo (ss2sa (&ss), socklen (ss2sa (&ss)),
+		       namebuf, sizeof (namebuf), 0, 0,
+		       no_resolve ? NI_NUMERICHOST : 0U);
+    if (err) {
+	printf ("unprintable address (type %d, error %d %s)", a->addrtype, err,
+		gai_strerror (err));
+	return;
+    }
+    printf ("%s", namebuf);
 }
 
 void
 fillit(f, num, c)
-    FILE	*f;
-    int		num;
-    int		c;
+    FILE		*f;
+    unsigned int	num;
+    int			c;
 {
     int i;
 
@@ -761,7 +767,8 @@ do_v4_ccache(name)
      */
 
     /* Open ticket file */
-    if (k_errno = tf_init(file, R_TKT_FIL)) {
+    k_errno = tf_init(file, R_TKT_FIL);
+    if (k_errno) {
 	fprintf(stderr, "%s: %s\n", progname, krb_get_err_text (k_errno));
 	exit(1);
     }
@@ -781,7 +788,7 @@ do_v4_ccache(name)
     }
 
     /* Open ticket file */
-    if (k_errno = tf_init(file, R_TKT_FIL)) {
+    if ((k_errno = tf_init(file, R_TKT_FIL))) {
 	fprintf(stderr, "%s: %s\n", progname, krb_get_err_text (k_errno));
 	exit(1);
     }
@@ -810,7 +817,7 @@ do_v4_ccache(name)
 	}
 	printtime(c.issue_date);
 	fputs("  ", stdout);
-	printtime(c.issue_date + ((unsigned char) c.lifetime) * 5 * 60);
+	printtime(krb_life_to_time(c.issue_date, c.lifetime));
 	printf("  %s%s%s%s%s\n",
 	       c.service, (c.instance[0] ? "." : ""), c.instance,
 	       (c.realm[0] ? "@" : ""), c.realm);

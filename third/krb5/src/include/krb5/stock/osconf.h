@@ -30,7 +30,7 @@
 #ifndef KRB5_OSCONF__
 #define KRB5_OSCONF__
 
-#if !defined(_MSDOS) || !defined(_WIN32)
+#if !!defined(_WIN32)
     /* Don't try to pull in autoconf.h for Windows, since it's not used */
 #ifndef KRB5_AUTOCONF__
 #define KRB5_AUTOCONF__
@@ -38,12 +38,18 @@
 #endif
 #endif
 
-#if defined(_MSDOS) || defined(_WIN32)
+#if defined(_WIN32)
 #define DEFAULT_PROFILE_FILENAME "krb5.ini"
 #define	DEFAULT_LNAME_FILENAME	"/aname"
 #define	DEFAULT_KEYTAB_NAME	"FILE:%s\\krb5kt"
 #else /* !_WINDOWS */
-#define DEFAULT_PROFILE_PATH	"/etc/krb5.conf:@SYSCONFDIR/krb5.conf"
+#if TARGET_OS_MAC
+#define DEFAULT_SECURE_PROFILE_PATH "/Library/Preferences/edu.mit.Kerberos:/etc/krb5.conf:@SYSCONFDIR/krb5.conf"
+#define DEFAULT_PROFILE_PATH        ("~/Library/Preferences/edu.mit.Kerberos" ":" DEFAULT_SECURE_PROFILE_PATH)
+#else
+#define DEFAULT_SECURE_PROFILE_PATH	"/etc/krb5.conf:@SYSCONFDIR/krb5.conf"
+#define DEFAULT_PROFILE_PATH        DEFAULT_SECURE_PROFILE_PATH
+#endif
 #define	DEFAULT_KEYTAB_NAME	"FILE:/etc/krb5.keytab"
 #define	DEFAULT_LNAME_FILENAME	"@PREFIX/lib/krb5.aname"
 #endif /* _WINDOWS  */
@@ -58,7 +64,7 @@
 #define	DEFAULT_KDC_PROFILE	"@LOCALSTATEDIR/krb5kdc/kdc.conf"
 #define	KDC_PROFILE_ENV		"KRB5_KDC_PROFILE"
 
-#define	DEFAULT_KDC_ENCTYPE	ENCTYPE_DES_CBC_CRC
+#define	DEFAULT_KDC_ENCTYPE	ENCTYPE_DES3_CBC_SHA1
 #define KDCRCACHE		"dfl:krb5kdc_rcache"
 
 #define KDC_PORTNAME		"kerberos" /* for /etc/services or equiv. */
@@ -72,7 +78,8 @@
 #define DEFAULT_KPASSWD_PORT	464
 #define KPASSWD_PORTNAME "kpasswd"
 
-#define DEFAULT_KDC_PORTLIST	"88,750"
+#define DEFAULT_KDC_UDP_PORTLIST "88,750"
+#define DEFAULT_KDC_TCP_PORTLIST ""
 
 /*
  * Defaults for the KADM5 admin system.
@@ -89,8 +96,8 @@
 #define RCTMPDIR	"@KRB5RCTMPDIR"	/* directory to store replay caches */
 
 #define KRB5_PATH_TTY	"/dev/tty"
-#define KRB5_PATH_LOGIN	"@SERVER_BINDIR/login.krb5"
-#define KRB5_PATH_RLOGIN "@EXEC_PREFIX/bin/rlogin"
+#define KRB5_PATH_LOGIN	"@SBINDIR/login.krb5"
+#define KRB5_PATH_RLOGIN "@BINDIR/rlogin"
 
 #define KRB5_ENV_CCNAME	"KRB5CCNAME"
 
@@ -112,8 +119,8 @@
 
 #define KPROP_DEFAULT_FILE "@LOCALSTATEDIR/krb5kdc/slave_datatrans"
 #define KPROPD_DEFAULT_FILE "@LOCALSTATEDIR/krb5kdc/from_master"
-#define KPROPD_DEFAULT_KDB5_UTIL "@PREFIX/sbin/kdb5_util"
-#define KPROPD_DEFAULT_KDB5_EDIT "@PREFIX/sbin/kdb5_edit"
+#define KPROPD_DEFAULT_KDB5_UTIL "@SBINDIR/kdb5_util"
+#define KPROPD_DEFAULT_KDB5_EDIT "@SBINDIR/kdb5_edit"
 #define KPROPD_DEFAULT_KRB_DB DEFAULT_KDB_FILE
 #define KPROPD_ACL_FILE "@LOCALSTATEDIR/krb5kdc/kpropd.acl"
 

@@ -26,6 +26,7 @@
 
 #include "krb.h"
 #include "k5-int.h"
+#include "krb4int.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -46,7 +47,6 @@
 #define TF_LCK_RETRY ((unsigned)2)	/* seconds to sleep before
 					 * retry if ticket file is
 					 * locked */
-extern int errno;
 extern int krb_debug;
 
 void tf_close();
@@ -111,7 +111,7 @@ static int  curpos;			/* Position in tfbfr */
 static int  lastpos;			/* End of tfbfr */
 static char tfbfr[BUFSIZ];		/* Buffer for ticket data */
 
-static tf_gets(), tf_read();
+static int tf_gets (char *, int), tf_read (char *, int);
 
 /*
  * This file contains routines for manipulating the ticket cache file.
@@ -129,14 +129,21 @@ static tf_gets(), tf_read();
  *      Where "CREDENTIAL_x" consists of the following fixed-length
  *      fields from the CREDENTIALS structure (see "krb.h"):
  *
- *              char            service[ANAME_SZ]
- *              char            instance[INST_SZ]
- *              char            realm[REALM_SZ]
+ *              string          service[ANAME_SZ]
+ *              string          instance[INST_SZ]
+ *              string          realm[REALM_SZ]
  *              C_Block         session
  *              int             lifetime
  *              int             kvno
  *              KTEXT_ST        ticket_st
  *              long            issue_date
+ *
+ * Strings are stored NUL-terminated, and read back until a NUL is
+ * found or the indicated number of bytes have been read.  (So if you
+ * try to store a string exactly that long or longer, reading them
+ * back will not work.)  The KTEXT_ST structure is stored as an int
+ * length followed by that many data bytes.  All ints are stored using
+ * host size and byte order for "int".
  *
  * Short description of routines:
  *
@@ -175,8 +182,8 @@ static tf_gets(), tf_read();
  * TKT_FIL_LCK  - couldn't lock the file, even after a retry
  */
 
-int tf_init(tf_name, rw)
-    char   *tf_name;
+int KRB5_CALLCONV tf_init(tf_name, rw)
+    const char   *tf_name;
     int rw;
 {
     int     wflag;
@@ -465,7 +472,7 @@ int tf_init(tf_name, rw)
  * was longer than ANAME_SZ, TKT_FIL_FMT is returned. 
  */
 
-int tf_get_pname(p)
+int KRB5_CALLCONV tf_get_pname(p)
     char   *p;
 {
     if (fd < 0) {
@@ -488,7 +495,7 @@ int tf_get_pname(p)
  * instance may be null. 
  */
 
-int tf_get_pinst(inst)
+int KRB5_CALLCONV tf_get_pinst(inst)
     char   *inst;
 {
     if (fd < 0) {
@@ -512,7 +519,7 @@ int tf_get_pinst(inst)
  * EOF          - end of file encountered
  */
 
-int tf_get_cred(c)
+int KRB5_CALLCONV tf_get_cred(c)
     CREDENTIALS *c;
 {
     KTEXT   ticket = &c->ticket_st;	/* pointer to ticket */
@@ -579,7 +586,7 @@ int tf_get_cred(c)
  * The return value is not defined.
  */
 
-void tf_close()
+void KRB5_CALLCONV tf_close()
 {
     if (!(fd < 0)) {
 #ifdef TKT_SHMEM
@@ -681,8 +688,6 @@ tf_read(s, n)
     return n;
 }
      
-char   *tkt_string();
-
 /*
  * tf_save_cred() appends an incoming ticket to the end of the ticket
  * file.  You must call tf_init() before calling tf_save_cred().
@@ -710,7 +715,7 @@ int tf_save_cred(service, instance, realm, session, lifetime, kvno,
 {
 
     off_t   lseek();
-    int     count;		/* count for write */
+    unsigned int count;		/* count for write */
 #ifdef TKT_SHMEM
     int	    *skey_check;
 #endif /* TKT_SHMEM */

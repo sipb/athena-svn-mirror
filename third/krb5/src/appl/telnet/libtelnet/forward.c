@@ -27,9 +27,19 @@
 #include <stdio.h>
 #include <netdb.h>
 #include <krb.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
  
-#include "k5-int.h"
+#include "krb5.h"
+#include <errno.h>
+
+#include "krb5forw.h"
  
+#if defined(NEED_SETENV) || defined(NEED_SETENV_PROTO)
+extern int setenv(char *, char *, int);
+#endif
+
 extern char *line;		/* see sys_term.c */
 extern char *UserNameRequested;
 extern int k5_haveauth;
@@ -46,27 +56,27 @@ rd_and_store_for_creds(context, auth_context, inbuf, ticket)
     krb5_error_code retval;
     char ccname[35];
     krb5_ccache ccache = NULL;
-    char *tty;
 
     k5_haveauth = 0;
 
     if (!UserNameRequested)
 	return EPERM;
 
-    if (retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL)) 
+    if ((retval = krb5_rd_cred(context, auth_context, inbuf, &creds, NULL))) 
 	return(retval);
 
-    sprintf(ccname, "FILE:/tmp/krb5cc_p%d", getpid());
+    sprintf(ccname, "FILE:/tmp/krb5cc_p%ld", (long) getpid());
     unlink(ccname + 5);
-    setenv(KRB5_ENV_CCNAME, ccname, 1);
+    setenv("KRB5CCNAME", ccname, 1);
 
-    if (retval = krb5_cc_resolve(context, ccname, &ccache))
+    if ((retval = krb5_cc_resolve(context, ccname, &ccache)))
 	goto cleanup;
 
-    if (retval = krb5_cc_initialize(context, ccache, ticket->enc_part2->client))
+    if ((retval = krb5_cc_initialize(context, ccache, 
+				     ticket->enc_part2->client)))
 	goto cleanup;
 
-    if (retval = krb5_cc_store_cred(context, ccache, *creds)) 
+    if ((retval = krb5_cc_store_cred(context, ccache, *creds))) 
 	goto cleanup;
 
     tty = strrchr(line, '/') + 1;
