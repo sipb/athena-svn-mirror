@@ -35,9 +35,8 @@
 #ifdef SYSV
 #include <sys/mkdev.h>
 #endif
-#ifndef SOLARIS
+
 #define SETPAG 
-#endif
 
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define file_exists(f) (access((f), F_OK) == 0)
