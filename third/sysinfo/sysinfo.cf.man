@@ -1,0 +1,210 @@
+.\"
+.\" Copyright (c) 1992-1994 Michael A. Cooper.
+.\" This software may be freely distributed provided it is not sold for 
+.\" profit and the author is credited appropriately.
+.\"
+.\" $Id: sysinfo.cf.man,v 1.1.1.1 1996-10-07 20:16:47 ghudson Exp $
+.\" 
+.TH sysinfo.cf 5 "3 November 1994"
+.ds ]W USC-UCS
+.SH NAME
+sysinfo.cf \- Configuration File for sysinfo
+.SH SYNOPSIS
+\fBDefine | \fIType | StringKey | NumericKey | Value1 | Value 2\fR
+.br
+.sp
+\fBDevice | \fIName | Type\fB/[\fISubType\fB]\fI | NumericID | 
+Model | Description | Flags | DevFiles\fR
+.br
+.sp
+\fBInclude \fIFileName\fR
+.SH DESCRIPTION
+.B sysinfo.cf
+files are parsed by the
+.B sysinfo 
+program.  Text starting with ``#'' and continuing 
+to the end of the line is
+ignored.  Each line starts with a specific keyword as described below.
+All leading and trailing white space (space and TAB characters) for
+each field is removed before parsing.
+All keywords are case insensitive.
+The valid keywords are:
+.IP "\fBDefine \fIfields\fR"
+Definetion.  Each
+field is seperated by a ``|'' character.  Any fields that are not
+specified are initialized to NULL.
+The
+.I StringKey
+and/or
+.I NumericKey
+fields are used in matching search criteria.
+The specification for each field follows:
+.RS
+.IP \fIType\fR
+Specify the definetion type.  The following 
+.I Type
+values are allowed:
+\fB
+CPU,
+Category,
+KArch,
+Kernel,
+NetType,
+OBP,
+Part,
+SysConf,
+SysModel,
+TapeInfo,
+VPD
+\fR
+.IP \fIStringKey\fR
+A string to use as a key.
+.IP \fINumericKey\fR
+A numeric value to use as a key.
+.IP \fIValue1\fR
+A string to return for the entry.
+.IP \fIValue2\fR
+A string to return for the entry.
+.RE
+.IP "\fBDevice \fIfields\fR"
+Device specification.  Each
+field is seperated by a ``|'' character.  Any fields that are not
+specified are initialized to NULL.
+The specification for each field follows:
+.RS
+.IP \fIName\fR
+The name of the device.
+( e.g. 
+.B sd,
+.B cgsix
+)
+.IP "\fIType\fB/[\fISubType\fB]\fR"
+The type of device.  
+The
+.I Type
+value is used to determine how to 
+.I probe
+the device and what device type label to assign to it.
+If 
+.I SubType
+is specified, then the
+.I Type
+field specifies how to
+.I probe
+the device and the
+.I SubType
+field specifies what device type label to assign.
+The valid keywords are:
+.br
+\fB
+Bus,
+CDROM,
+CPU,
+Device,
+DiskCtlr,
+DiskDrive,
+FrameBuffer,
+Generic,
+KeyBoard,
+Memory,
+NetIF,
+Pseudo,
+TapeCtlr,
+TapeDrive
+\fR
+.IP \fINumericID\fR
+Specifies a unique numeric identifier for a particuliar device type.
+This field is typically used to find a device by a numeric value
+returned from the kernel.
+.IP \fIModel\fR
+The device's model.
+.IP \fIDescription\fR
+A description of the device.
+.IP \fIFlags\fR
+The 
+.I Flags
+field may contain either a valid keyword or a numeric value.
+Numeric values are used in a device-type specific manner by the
+device type's probe routine.
+The valid keywords are:
+.RS
+.IP \fBDefInfo\fR
+Use default device definetion information.
+Usage varies by device type.
+.IP \fBLenCmp\fR
+Compare device name by length.
+.IP \fBNoUnit\fR
+Don't add a unit number to the device's name.
+.IP \fBZombie\fR
+If the device is present, treat it as if it were
+alive regardless of whether the kernel has
+indicated so.
+.RE
+.IP \fIDevFiles\fR
+A list of space seperated device files that provide access
+to the device.
+Each file may contain a 
+.B `%d'
+which will be expanded to be the device's unit number.
+.RE
+.IP "\fBInclude \fIFileName\fR"
+Read and parse a
+.B sysinfo.cf
+file called
+.I FileName.
+Parsing of the current file resumes on the next line when finished
+with
+.I FileName.
+If
+.I FileName
+does not exist, sysinfo will silently continue parsing the current file.
+.I FileName
+may contain variables that are expanded at runtime.
+Variable names are enclosed inside of
+.B ${}
+or
+.B $()
+and are case insensitive.
+The following variables are available:
+.RS
+.IP \fB${ConfDir}\fR
+The path to the 
+.B sysinfo
+configuration directory.
+.IP \fB${DefConfFile}\fR
+The name of the default 
+.B sysinfo.cf
+configuration file.
+( e.g.
+.B Default.cf
+)
+.IP \fB${OSname}\fR
+The name of the operating system.
+( e.g.
+.B SunOS
+)
+.IP \fB${OSver}\fR
+The operating system version number.
+( e.g.
+.B 4.1.3
+)
+.IP \fB${OSmajver}\fR
+The operating system major version number.
+( e.g. for 
+.B 4.1.3
+the value would be
+.B 4
+)
+.RE
+.SH AUTHOR
+Michael A. Cooper
+.br
+University Computing Services
+.br
+University of Southern California
+.br
+mcooper@usc.edu
+.SH SEE ALSO
+sysinfo(1)
+.SH DIAGNOSTICS
+.SH BUGS
