@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.10 1990-04-16 20:49:33 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.11 1990-07-02 14:17:24 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -34,7 +34,7 @@ LN=ln -s
 OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
-	startdaemon.c common.c printcap.c lpdchar.c
+	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
 ALL=	lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr 
 
 SUBDIR=quota transcript-v2.1 man
@@ -48,9 +48,9 @@ saber_lpr:
 	#load $(CFLAGS) lpr.c netsend.c common.c printcap.c ${LIBS}
 
 lpd:	lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o 
-lpd:	lpdchar.o s_common.o printcap.o 
+lpd:	lpdchar.o s_common.o printcap.o tcp_conn.o
 	${CC} -o lpd lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o \
-		lpdchar.o s_common.o printcap.o ${LIBS}
+		lpdchar.o s_common.o printcap.o tcp_conn.o ${LIBS}
 
 s_rmjob.o: rmjob.c lp.h lp.local.h
 	rm -f s_rmjob.c
