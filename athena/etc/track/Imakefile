@@ -1,21 +1,22 @@
 /* Iakefile for "track" automatic update program
  *
- *	$Id: Imakefile,v 1.2 1991-01-22 15:22:24 epeisach Exp $
+ *	$Id: Imakefile,v 1.3 1991-07-06 15:46:51 probe Exp $
 */
 
 LIBS= -ll
 
+#ifdef _AUX_SOURCE
+OSLIBS= -lc -lPW
+#endif
+
+
 TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
-
 TRACK_SRCS= track.c y.tab.c stamp.c except.c files.c misc.c update.c cksum.c
+TRACK_DEP = track.h track.c stamp.c except.c files.c misc.c update.c nullmail.c
 
-TRACK_DEP= track.h track.c stamp.c except.c files.c misc.c update.c nullmail.c
 #define ISUBDIRS doc
 
-SimpleProgram(track,$(TRACK_OBJS),$(LIBS),/etc/athena)
-#if 0
-SimpleProgram(nullmail,nullmail.c,/etc/athena)
-#endif
+SimpleProgram(track,$(TRACK_OBJS),$(LIBS) $(OSLIBS),$(ATHETCDIR))
 
 y.tab.c : sub_gram.y 
 	yacc sub_gram.y
@@ -27,8 +28,4 @@ lex.yy.c : input.l
 	lex input.l
 
 clean::
-	/bin/rm -f a.out core *.o *~ y.tab.c lex.yy.c 
-
-lint:
-	lint -uahv $(TRACK_SRCS)
-
+	$(RM) a.out core *.o *~ y.tab.c lex.yy.c 
