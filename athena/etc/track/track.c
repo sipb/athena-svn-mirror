@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.19 1998-02-27 01:36:48 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.20 1999-01-18 20:06:35 rbasch Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.19  1998/02/27 01:36:48  ghudson
+ *	From nathanw: don't stop working after the first symlink entry.
+ *
  *	Revision 4.18  1998/02/18 21:57:46  ghudson
  *	Add the ability to make an entire entry a forced symlink.
  *
@@ -169,7 +172,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.19 1998-02-27 01:36:48 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.20 1999-01-18 20:06:35 rbasch Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -687,10 +690,13 @@ struct currentness *currency;
 		do_gripe();
 		return;
 	}
-	dp = readdir( dirp);	/* skip . */
-	dp = readdir( dirp);	/* skip .. */
 
 	while( dp = readdir( dirp)) {
+		if (strcmp(dp->d_name, ".") == 0)
+		  continue;
+		if (strcmp(dp->d_name, "..") == 0)
+		  continue;
+
 		if (! dp->d_ino) continue;    /* empty dir-block */
 
 		pushpath( f, dp->d_name);
