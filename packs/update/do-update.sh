@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.11 1997-03-28 10:44:50 ghudson Exp $
+# $Id: do-update.sh,v 1.12 1997-04-01 01:17:59 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -153,14 +153,18 @@ sgi)
 	killall inetd snmpd syslogd snmpd named
 	;;
 *)
+	if [ -f /var/athena/inetd.pid ]; then
+		kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
+	fi
+	# 8.0 and prior machines still have /etc/athena/inetd.pid.
 	if [ -f /etc/athena/inetd.pid ]; then
 		kill `cat /etc/athena/inetd.pid` > /dev/null 2>&1
 	fi
 	if [ -f /etc/syslog.pid ]; then
 		kill `cat /etc/syslog.pid` > /dev/null 2>&1
 	fi
-	if [ -f /etc/snmpd.pid ]; then
-		kill `cat /etc/snmpd.pid` > /dev/null 2>&1
+	if [ -f /var/athena/snmpd.pid ]; then
+		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
 	fi
 	if [ -f /etc/named.pid ]; then
 		kill `cat /etc/named.pid` > /dev/null 2>&1
