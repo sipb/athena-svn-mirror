@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.1 1990-11-18 18:52:10 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.2 1990-11-18 21:07:25 lwvanels Exp $";
 #endif
 #endif
 
@@ -14,9 +14,10 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 /* file descriptors in a process should be taken into account. */
 
 #define CACHESIZE 16
-#define inc_hand (clock_hand = (clock_hand++)&(CACHESIZE-1));
+#define inc_hand (clock_hand = (++clock_hand)&(CACHESIZE-1));
 
-#define LOG_DIRECTORY "/usr/spool/olc"
+/* #define LOG_DIRECTORY "/usr/spool/olc" */
+#define LOG_DIRECTORY "/usr/tmp/olc"
 
 extern int errno;
 
@@ -42,6 +43,7 @@ init_cache()
     cache[i].use = 1;
     cache[i].question = NULL;
     cache[i].next = NULL;
+    cache[i].prev = NULL;
   }
 }
 
@@ -77,7 +79,7 @@ get_log(username,instance,result)
   found = 0;
   ptr = head;
   while (ptr != NULL) {
-    if (strcmp(username,ptr->username) && (instance == ptr->instance)) {
+    if (!strcmp(username,ptr->username) && (instance == ptr->instance)) {
       found = 1;
       break;
     }
@@ -137,6 +139,8 @@ get_log(username,instance,result)
     
     /* Add to the head of the linked list */
     cache[new].next = head;
+    if (head != NULL)
+      head->prev = &cache[new];
     buckets[hash] = &cache[new];
 
     /* Set result to file size, and return pointer to text */
@@ -164,7 +168,8 @@ get_log(username,instance,result)
       /* File has been modified, need to re-read */
       free(ptr->question);
       ptr->length = file_stat.st_size;
-      
+      ptr->last_mod = file_stat.st_mtime;
+
       /* Alloc new amount of memory */
       if ((ptr->question = malloc(file_stat.st_size)) == NULL) {
 	fprintf(stderr,"fdcache: malloc: error alloc'ing %d bytes\n",
@@ -174,6 +179,14 @@ get_log(username,instance,result)
 	return(NULL);
       }
       
+      /* rewind file */
+      if (lseek(ptr->fd,0,L_SET) == -1) {
+	perror("fdcache: lseek");
+	delete_entry(ptr);
+	*result = -1;
+	return(NULL);
+      }
+
       /* Read file into buffer */
       if (read(ptr->fd,ptr->question,ptr->length) != ptr->length) {
 	perror("fdcache: read");
@@ -220,11 +233,13 @@ allocate_entry()
   /* found an entry; mark it as touched, and increment hand past it */
 
   new = clock_hand;
-  cache[new].use = 0;
   inc_hand;
 
   /* If it's in use, clean it up */
   delete_entry(&cache[new]);
+
+  /* Now mark it as used */
+  cache[new].use = 0;
   return(new);
 }
 
@@ -240,4 +255,15 @@ delete_entry(ent)
     ent->question = NULL;
   }
   ent->use = 1;
+  if (ent->next != NULL)
+    ent->next->prev = ent->prev;
+  if (ent->prev == NULL)
+    /* If it has a null prev pointer, it's the one that buckets points to */
+    /* for that hash index */
+    buckets[get_bucket_index(ent->username,ent->instance)] = ent->next;
+  else
+    ent->prev->next = ent->next;
+
+  ent->prev = NULL;
+  ent->next = NULL;
 }

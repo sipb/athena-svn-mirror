@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.1 1990-11-18 18:53:23 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.2 1990-11-18 21:07:55 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -23,6 +23,7 @@ struct 	entry {
   char *question;	/* pointer to buffer containing question */
   short int use;	/* mark for the clock hand */
   struct entry *next;	/* next entry in the chain */
+  struct entry *prev;	/* prev entry in the chain */
 };
 
 #ifdef __STDC__
@@ -46,6 +47,7 @@ int write P((int d, void *buf, int nbytes));
 int fstat P((int fd, struct stat *buf));
 void *malloc P((unsigned size));
 int free P((void *ptr));
+int shutdown P((int s, int how));
 
 /* rpd.c */
 int clean_up P((int signal));

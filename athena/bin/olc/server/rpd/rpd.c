@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.1 1990-11-18 18:52:34 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.2 1990-11-18 21:07:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -18,27 +18,20 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 main()
 {
   int len;
-  int output_fd;
   long output_len;
   struct sockaddr_in sin,from;
   struct servent *sent;
-  struct stat stat;
   char username[9];
-  char pathname[128];
   char *buf;
-  int buf_size;
   int instance;
+  int result;
 
-  buf_size = 16384;
-  if ((buf = malloc(16384)) == NULL) {
-    fprintf(stderr,"replayerd: error malloc'ing inital buffer\n");
-    exit(1);
-  }
-  
   signal(SIGHUP,clean_up);
   signal(SIGINT,clean_up);
   signal(SIGTERM,clean_up);
   signal(SIGPIPE,SIG_IGN);
+
+  init_cache();
 
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("replayerd: socket");
@@ -86,29 +79,23 @@ main()
     }
 
     instance = ntohs(instance);
-    sprintf(pathname,"/usr/spool/olc/%s_%d.log",username,instance);
-    if ((output_fd = open(pathname,O_RDONLY,0)) < 0) {
-      output_len = htonl(-1);
+    buf = get_log(username,instance,&result);
+    if (buf == NULL) {
+      /* Didn't get response; determine if it's an error or simply that the */
+      /* question just doesn't exist based on result */
+      if (result == 0)
+	output_len = htonl(-1L);
+      else
+	output_len = htonl(-2L);
       write(fd,&output_len,sizeof(long));
     }
     else {
-      fstat(output_fd,&stat);
-      if (buf_size < stat.st_size) {
-	buf_size = stat.st_size*2;
-	free(buf);
-	if ((buf = malloc(buf_size)) == NULL) {
-	  output_len = htonl(-2);
-	  write(fd,&output_len,sizeof(long));
-	  fprintf(stderr,"Error mallocing %d bytes\n",buf);
-	  exit(1);
-	}
-      }
-      read(output_fd,buf,stat.st_size);
-      output_len = htonl(stat.st_size);
+      /* All systems go, write response */
+      output_len = htonl((long)result);
       write(fd,&output_len,sizeof(long));
-      write(fd,buf,stat.st_size);
-      close(fd);
+      write(fd,buf,result);
     }
+    close(fd);
   }
 }
 
@@ -116,6 +103,7 @@ int clean_up(signal)
      int signal;
 {
   close(fd);
+  shutdown(sock,2);
   close(sock);
   exit(0);
 }
