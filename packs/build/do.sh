@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.44 1999-09-28 21:56:13 danw Exp $
+# $Id: do.sh,v 1.45 1999-11-01 19:33:51 danw Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -188,10 +188,10 @@ elif [ -f configure.in ]; then
 			$maybe touch config.do
 			$maybe rm -f mkinstalldirs install-sh config.guess
 			$maybe rm -f config.sub aclocal.m4
-			$maybe cp "$source/third/autoconf/mkinstalldirs" .
-			$maybe cp "$source/third/autoconf/install-sh" .
-			$maybe cp "$source/third/autoconf/config.guess" .
-			$maybe cp "$source/third/autoconf/config.sub" .
+			$maybe cp "$source/packs/build/autoconf/mkinstalldirs" .
+			$maybe cp "$source/packs/build/autoconf/install-sh" .
+			$maybe cp "$source/packs/build/autoconf/config.guess" .
+			$maybe cp "$source/packs/build/autoconf/config.sub" .
 			$maybe cp "$source/packs/build/aclocal.m4" .
 			$maybe autoconf \
 				-m ${ATHTOOLROOT}/usr/athena/lib/autoconf \
