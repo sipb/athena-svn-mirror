@@ -91,12 +91,6 @@ This option specifies the location of the
 file.  Since other programs, such as mount(8) and umount(8) expect
 mtab to be in /etc, it is probably unwise to change the location of
 this file.
-.IP "aklog (type string)"
-(default: /afs/athena/mit/andrew/{a}sys/aklog)
-
-This keyword specifies the location of the 
-.I aklog
-program.  It is used to authenticate the user to the AFS system.
 .IP "fsck (type string) (default: /etc/fsck)"
 This option specifies the location of 
 .IR fsck(8) ,
@@ -200,9 +194,7 @@ command line.  Likewise, the minus sign indicates that the regular
 expression should be considered only if the filesystem was not
 explicitly definied.
 .SH BUGS
-There is a bug in troff that preclude the use of the ``at'' sign.
-Thus, instances of the at sign as have been replaced by {a} in this
-manual page.
+
 .SH FILES
 /etc/attach.conf
 .SH SEE ALSO
