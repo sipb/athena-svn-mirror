@@ -7,7 +7,7 @@
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.6 1990-05-01 05:58:18 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.7 1990-05-01 06:06:27 probe Exp $
 # Generic one project, one target makefile.
 #
 
@@ -44,7 +44,7 @@ clean:
 	-rm -f $(OBJS) $(LIB) $(TARGET) $(ETINCS) $(ETOBJS) 
 	-rm -f $(SERVER) message_daemon.o
 
-$(TARGET): $(TARGET).o $(LIB)
+$(TARGET): $(LIB) $(TARGET).o
 	$(CC) $(CFLAGS) -o $@ $(TARGET).o $(LIBS)
 
 install: $(TARGET) $(SERVER)
