@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.26 1988-06-03 14:58:23 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.27 1988-06-15 22:54:30 jtkohl Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -177,7 +177,7 @@ extern char *strsave();
 /* found in dispatch.c */
 extern void handle_packet(), dispatch(), clt_ack(), nack_release(), sendit();
 extern void xmit();
-extern Code_t control_dispatch();
+extern Code_t control_dispatch(), xmit_frag();
 
 /* found in hostm_s.c */
 extern void hostm_flush(), hostm_shutdown(), hostm_losing();
