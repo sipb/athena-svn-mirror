@@ -6,3 +6,12 @@ Group: System Environment/Libraries
 %description
 The GNOME MIME database contains a basic set of applications and MIME
 types for a GNOME system.
+
+# We don't build our own gnome-vfs on Linux, so we have to clobber the
+# OS copies of gnome-vfs.applications and gnome-vfs.keys or our
+# changes won't take effect.
+%triggerin -- gnome-mime-data
+apps=share/application-registry/gnome-vfs.applications
+keys=share/mime-info/gnome-vfs.keys
+cp /usr/athena/$apps /usr/$apps
+cp /usr/athena/$keys /usr/$keys
