@@ -1,4 +1,4 @@
-# $Id: packages,v 1.81 1999-08-16 22:24:22 danw Exp $
+# $Id: packages,v 1.82 1999-08-18 12:12:45 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -98,7 +98,7 @@ athena/etc/xdm			requires krb5,al,wcl,larv,Mu
 athena/etc/desync
 athena/etc/busyd		requires larv
 athena/etc/larvnetd		requires larv,ares,hesiod
-athena/etc/cviewd
+athena/etc/cviewd		requires larv
 athena/etc/athinfod
 athena/etc/console		requires Xj
 athena/etc/mkcred
