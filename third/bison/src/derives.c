@@ -1,5 +1,5 @@
 /* Match rules with nonterminals for bison,
-   Copyright 1984, 1989, 2000, 2001  Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989, 2000, 2001, 2002  Free Software Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
 
@@ -21,12 +21,19 @@
 
 #include "system.h"
 #include "getargs.h"
-#include "types.h"
+#include "symtab.h"
 #include "reader.h"
 #include "gram.h"
 #include "derives.h"
 
-short **derives = NULL;
+/* Linked list of rule numbers.  */
+typedef struct rule_list_s
+{
+  struct rule_list_s *next;
+  rule_t *value;
+} rule_list_t;
+
+rule_t ***derives = NULL;
 
 static void
 print_derives (void)
@@ -37,15 +44,12 @@ print_derives (void)
 
   for (i = ntokens; i < nsyms; i++)
     {
-      short *sp;
-      fprintf (stderr, "\t%s derives\n", tags[i]);
-      for (sp = derives[i]; *sp > 0; sp++)
+      rule_t **rp;
+      fprintf (stderr, "\t%s derives\n", symbols[i]->tag);
+      for (rp = derives[i]; *rp; ++rp)
 	{
-	  short *rhsp;
-	  fprintf (stderr, "\t\t%d:", *sp);
-	  for (rhsp = ritem + rule_table[*sp].rhs; *rhsp > 0; ++rhsp)
-	    fprintf (stderr, " %s", tags[*rhsp]);
-	  fprintf (stderr, " (rule %d)\n", -*rhsp);
+	  fprintf (stderr, "\t\t%3d ", (*rp)->user_number);
+	  rule_rhs_print (*rp, stderr);
 	}
     }
 
@@ -54,52 +58,59 @@ print_derives (void)
 
 
 void
-set_derives (void)
+derives_compute (void)
 {
-  int i;
-  shorts *p;
-  short *q;
-  shorts **dset;
-  shorts *delts;
+  symbol_number_t i;
+  int r;
+  rule_t **q;
 
-  dset = XCALLOC (shorts *, nvars) - ntokens;
-  delts = XCALLOC (shorts, nrules + 1);
+  /* DSET[NTERM] -- A linked list of the numbers of the rules whose
+     LHS is NTERM.  */
+  rule_list_t **dset = XCALLOC (rule_list_t *, nvars) - ntokens;
 
-  p = delts;
-  for (i = nrules; i > 0; i--)
-    if (rule_table[i].useful)
-      {
-	int lhs = rule_table[i].lhs;
-	p->next = dset[lhs];
-	p->value = i;
-	dset[lhs] = p;
-	p++;
-      }
+  /* DELTS[RULE] -- There are NRULES rule number to attach to nterms.
+     Instead of performing NRULES allocations for each, have an array
+     indexed by rule numbers.  */
+  rule_list_t *delts = XCALLOC (rule_list_t, nrules);
 
-  derives = XCALLOC (short *, nvars) - ntokens;
-  q = XCALLOC (short, nvars + nrules);
+  for (r = nrules - 1; r >= 0; --r)
+    {
+      symbol_number_t lhs = rules[r].lhs->number;
+      rule_list_t *p = &delts[r];
+      /* A new LHS is found.  */
+      p->next = dset[lhs];
+      p->value = &rules[r];
+      dset[lhs] = p;
+    }
+
+  /* DSET contains what we need under the form of a linked list.  Make
+     it a single array.  */
+
+  derives = XCALLOC (rule_t **, nvars) - ntokens;
+  q = XCALLOC (rule_t *, nvars + int_of_rule_number (nrules));
 
   for (i = ntokens; i < nsyms; i++)
     {
+      rule_list_t *p = dset[i];
       derives[i] = q;
-      p = dset[i];
       while (p)
 	{
 	  *q++ = p->value;
 	  p = p->next;
 	}
-      *q++ = -1;
+      *q++ = NULL;
     }
 
-  if (trace_flag)
+  if (trace_flag & trace_sets)
     print_derives ();
 
-  XFREE (dset + ntokens);
-  XFREE (delts);
+  free (dset + ntokens);
+  free (delts);
 }
 
+
 void
-free_derives (void)
+derives_free (void)
 {
   XFREE (derives[ntokens]);
   XFREE (derives + ntokens);

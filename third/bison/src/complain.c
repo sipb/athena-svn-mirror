@@ -1,5 +1,5 @@
 /* Declaration for error-reporting function for Bison.
-   Copyright 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 2000, 2001, 2002  Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published by the
@@ -41,17 +41,7 @@
 void exit ();
 #endif
 
-/* To get error_one_per_line. */
-#include "error.h"
-
 #include "complain.h"
-
-#ifndef HAVE_DECL_STRERROR_R
-"this configure-time declaration test was not run"
-#endif
-#if !HAVE_DECL_STRERROR_R
-char *strerror_r ();
-#endif
 
 #ifndef _
 # define _(String) String
@@ -79,14 +69,14 @@ char *strerror_r ();
    name of the executing program.  */
 extern char *program_name;
 
-# ifdef HAVE_STRERROR_R
-#  define __strerror_r strerror_r
+# if HAVE_STRERROR
+#  ifndef HAVE_DECL_STRERROR
+"this configure-time declaration test was not run"
+#  endif
+#  if !HAVE_DECL_STRERROR && !defined strerror
+char *strerror PARAMS ((int));
+#  endif
 # else
-#  if HAVE_STRERROR
-#   ifndef strerror		/* On some systems, strerror is a macro */
-char *strerror ();
-#   endif
-#  else
 static char *
 private_strerror (errnum)
      int errnum;
@@ -98,9 +88,8 @@ private_strerror (errnum)
     return _(sys_errlist[errnum]);
   return _("Unknown system error");
 }
-#   define strerror private_strerror
-#  endif /* HAVE_STRERROR */
-# endif	/* HAVE_STRERROR_R */
+#  define strerror private_strerror
+# endif /* HAVE_STRERROR */
 #endif	/* not _LIBC */
 
 /* This variable is incremented each time `warn' is called.  */
@@ -116,38 +105,51 @@ unsigned int complain_message_count;
 
 void
 #if defined VA_START && defined __STDC__
-warn (const char *message, ...)
+warn_at (location_t location, const char *message, ...)
 #else
-warn (message, va_alist)
-     char *message;
-     va_dcl
+warn_at (location, message, va_alist)
+  location_t location
+  char *message;
+  va_dcl
 #endif
 {
 #ifdef VA_START
   va_list args;
 #endif
 
-  if (error_one_per_line)
-    {
-      static const char *old_infile;
-      static int old_lineno;
+  fflush (stdout);
+  LOCATION_PRINT (stderr, location);
+  fputs (": ", stderr);
+  fputs (_("warning: "), stderr);
 
-      if (old_lineno == lineno &&
-	  (infile == old_infile || !strcmp (old_infile, infile)))
-	/* Simply return and print nothing.  */
-	return;
+#ifdef VA_START
+  VA_START (args, message);
+  vfprintf (stderr, message, args);
+  va_end (args);
+#else
+  fprintf (stderr, message, a1, a2, a3, a4, a5, a6, a7, a8);
+#endif
 
-      old_infile = infile;
-      old_lineno = lineno;
-    }
+  ++warn_message_count;
+  putc ('\n', stderr);
+  fflush (stderr);
+}
+
+void
+#if defined VA_START && defined __STDC__
+warn (const char *message, ...)
+#else
+warn (message, va_alist)
+  char *message;
+  va_dcl
+#endif
+{
+#ifdef VA_START
+  va_list args;
+#endif
 
   fflush (stdout);
-  if (infile != NULL)
-    fprintf (stderr, "%s:%d: ", infile, lineno);
-  else
-    fprintf (stderr, "%s:", program_name);
-
-  fputs (_("warning: "), stderr);
+  fprintf (stderr, "%s: %s", infile ? infile : program_name, _("warning: "));
 
 #ifdef VA_START
   VA_START (args, message);
@@ -168,6 +170,37 @@ warn (message, va_alist)
 
 void
 #if defined VA_START && defined __STDC__
+complain_at (location_t location, const char *message, ...)
+#else
+complain_at (location, message, va_alist)
+  location_t location;
+  char *message;
+  va_dcl
+#endif
+{
+#ifdef VA_START
+  va_list args;
+#endif
+
+  fflush (stdout);
+  LOCATION_PRINT (stderr, location);
+  fputs (": ", stderr);
+
+#ifdef VA_START
+  VA_START (args, message);
+  vfprintf (stderr, message, args);
+  va_end (args);
+#else
+  fprintf (stderr, message, a1, a2, a3, a4, a5, a6, a7, a8);
+#endif
+
+  ++complain_message_count;
+  putc ('\n', stderr);
+  fflush (stderr);
+}
+
+void
+#if defined VA_START && defined __STDC__
 complain (const char *message, ...)
 #else
 complain (message, va_alist)
@@ -179,25 +212,8 @@ complain (message, va_alist)
   va_list args;
 #endif
 
-  if (error_one_per_line)
-    {
-      static const char *old_infile;
-      static int old_lineno;
-
-      if (old_lineno == lineno &&
-	  (infile == old_infile || !strcmp (old_infile, infile)))
-	/* Simply return and print nothing.  */
-	return;
-
-      old_infile = infile;
-      old_lineno = lineno;
-    }
-
   fflush (stdout);
-  if (infile != NULL)
-    fprintf (stderr, "%s:%d: ", infile, lineno);
-  else
-    fprintf (stderr, "%s:", program_name);
+  fprintf (stderr, "%s: ", infile ? infile : program_name);
 
 #ifdef VA_START
   VA_START (args, message);
@@ -218,6 +234,37 @@ complain (message, va_alist)
 
 void
 #if defined VA_START && defined __STDC__
+fatal_at (location_t location, const char *message, ...)
+#else
+fatal_at (location, message, va_alist)
+  location_t location;
+  char *message;
+  va_dcl
+#endif
+{
+#ifdef VA_START
+  va_list args;
+#endif
+
+  fflush (stdout);
+  LOCATION_PRINT (stderr, location);
+  fputs (": ", stderr);
+  fputs (_("fatal error: "), stderr);
+
+#ifdef VA_START
+  VA_START (args, message);
+  vfprintf (stderr, message, args);
+  va_end (args);
+#else
+  fprintf (stderr, message, a1, a2, a3, a4, a5, a6, a7, a8);
+#endif
+  putc ('\n', stderr);
+  fflush (stderr);
+  exit (1);
+}
+
+void
+#if defined VA_START && defined __STDC__
 fatal (const char *message, ...)
 #else
 fatal (message, va_alist)
@@ -230,10 +277,7 @@ fatal (message, va_alist)
 #endif
 
   fflush (stdout);
-  if (infile != NULL)
-    fprintf (stderr, "%s:%d: ", infile, lineno);
-  else
-    fprintf (stderr, "%s:", program_name);
+  fprintf (stderr, "%s: ", infile ? infile : program_name);
 
   fputs (_("fatal error: "), stderr);
 

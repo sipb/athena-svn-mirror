@@ -30,39 +30,35 @@
    state.  These symbols at these items are the allowable inputs that
    can follow now.
 
-   A core represents one state.  States are numbered in the number
+   A core represents one state.  States are numbered in the NUMBER
    field.  When generate_states is finished, the starting state is
-   state 0 and nstates is the number of states.  (A transition to a
-   state whose state number is nstates indicates termination.)  All
-   the cores are chained together and first_state points to the first
-   one (state 0).
+   state 0 and NSTATES is the number of states.  (FIXME: This sentence
+   is no longer true: A transition to a state whose state number is
+   NSTATES indicates termination.)  All the cores are chained together
+   and FIRST_STATE points to the first one (state 0).
 
    For each state there is a particular symbol which must have been
    the last thing accepted to reach that state.  It is the
-   accessing_symbol of the core.
+   ACCESSING_SYMBOL of the core.
 
-   Each core contains a vector of nitems items which are the indices
-   in the ritems vector of the items that are selected in this state.
+   Each core contains a vector of NITEMS items which are the indices
+   in the RITEMS vector of the items that are selected in this state.
 
-   The link field is used for chaining buckets that hash states by
-   their itemsets.  This is for recognizing equivalent states and
-   combining them when the states are generated.
+   The two types of actions are shifts/gotos (push the lookahead token
+   and read another/goto to the state designated by a nterm) and
+   reductions (combine the last n things on the stack via a rule,
+   replace them with the symbol that the rule derives, and leave the
+   lookahead token alone).  When the states are generated, these
+   actions are represented in two other lists.
 
-   The two types of transitions are shifts (push the lookahead token
-   and read another) and reductions (combine the last n things on the
-   stack via a rule, replace them with the symbol that the rule
-   derives, and leave the lookahead token alone).  When the states are
-   generated, these transitions are represented in two other lists.
+   Each transition_t structure describes the possible transitions out
+   of one state, the state whose number is in the number field.  Each
+   contains a vector of numbers of the states that transitions can go
+   to.  The accessing_symbol fields of those states' cores say what
+   kind of input leads to them.
 
-   Each shifts structure describes the possible shift transitions out
-   of one state, the state whose number is in the number field.  The
-   shifts structures are linked through next and first_shift points to
-   them.  Each contains a vector of numbers of the states that shift
-   transitions can go to.  The accessing_symbol fields of those
-   states' cores say what kind of input leads to them.
-
-   A shift to state zero should be ignored.  Conflict resolution
-   deletes shifts by changing them to zero.
+   A transition to state zero should be ignored: conflict resolution
+   deletes transitions by having them point to zero.
 
    Each reductions structure describes the possible reductions at the
    state whose number is in the number field.  The data is a list of
@@ -72,122 +68,187 @@
    Conflict resolution can decide that certain tokens in certain
    states should explicitly be errors (for implementing %nonassoc).
    For each state, the tokens that are errors for this reason are
-   recorded in an errs structure, which has the state number in its
-   number field.  The rest of the errs structure is full of token
-   numbers.
+   recorded in an errs structure, which holds the token numbers.
 
-   There is at least one shift transition present in state zero.  It
+   There is at least one goto transition present in state zero.  It
    leads to a next-to-final state whose accessing_symbol is the
    grammar's start symbol.  The next-to-final state has one shift to
    the final state, whose accessing_symbol is zero (end of input).
-   The final state has one shift, which goes to the termination state
-   (whose number is nstates-1).  The reason for the extra state at the
-   end is to placate the parser's strategy of making all decisions one
-   token ahead of its actions.  */
+   The final state has one shift, which goes to the termination state.
+   The reason for the extra state at the end is to placate the
+   parser's strategy of making all decisions one token ahead of its
+   actions.  */
 
 #ifndef STATE_H_
 # define STATE_H_
 
+# include "bitset.h"
 
-/*-------.
-| Core.  |
-`-------*/
 
-typedef struct core
+/*-------------------.
+| Numbering states.  |
+`-------------------*/
+
+typedef short state_number_t;
+# define STATE_NUMBER_MAX ((state_number_t) SHRT_MAX)
+
+/* Be ready to map a state_number_t to an int.  */
+# define state_number_as_int(Tok) ((int) (Tok))
+
+
+typedef struct state_s state_t;
+
+/*--------------.
+| Transitions.  |
+`--------------*/
+
+typedef struct transtion_s
 {
-  struct core *next;
-  struct core *link;
-  short number;
-  short accessing_symbol;
-  short nitems;
-  short items[1];
-} core;
-
-#define CORE_ALLOC(Nitems)						\
-  (core *) xcalloc ((unsigned) (sizeof (core)	 			\
-                                + (Nitems - 1) * sizeof (short)), 1)
-
-/*---------.
-| Shifts.  |
-`---------*/
-
-typedef struct shifts
-{
-  struct shifts *next;
-  short number;
-  short nshifts;
-  short shifts[1];
-} shifts;
+  short num;
+  state_t *states[1];
+} transitions_t;
 
 
-#define SHIFTS_ALLOC(Nshifts)						\
-  (shifts *) xcalloc ((unsigned) (sizeof (shifts) 			\
-                                  + (Nshifts - 1) * sizeof (short)), 1)
+/* What is the symbol labelling the transition to
+   TRANSITIONS->states[Num]?  Can be a token (amongst which the error
+   token), or non terminals in case of gotos.  */
 
-shifts * shifts_new PARAMS ((int n));
+#define TRANSITION_SYMBOL(Transitions, Num) \
+  (Transitions->states[Num]->accessing_symbol)
 
+/* Is the TRANSITIONS->states[Num] a shift? (as opposed to gotos).  */
 
-/* What is the symbol which is shifted by SHIFTS->shifts[Shift]?  Can
-   be a token (amongst which the error token), or non terminals in
-   case of gotos.  */
+#define TRANSITION_IS_SHIFT(Transitions, Num) \
+  (ISTOKEN (TRANSITION_SYMBOL (Transitions, Num)))
 
-#define SHIFT_SYMBOL(Shifts, Shift) \
-  (state_table[Shifts->shifts[Shift]].accessing_symbol)
+/* Is the TRANSITIONS->states[Num] a goto?. */
 
-/* Is the SHIFTS->shifts[Shift] a real shift? (as opposed to gotos.) */
+#define TRANSITION_IS_GOTO(Transitions, Num) \
+  (!TRANSITION_IS_SHIFT (Transitions, Num))
 
-#define SHIFT_IS_SHIFT(Shifts, Shift) \
-  (ISTOKEN (SHIFT_SYMBOL (Shifts, Shift)))
+/* Is the TRANSITIONS->states[Num] labelled by the error token?  */
 
-/* Is the SHIFTS->shifts[Shift] a goto?. */
-
-#define SHIFT_IS_GOTO(Shifts, Shift) \
-  (!SHIFT_IS_SHIFT (Shifts, Shift))
-
-/* Is the SHIFTS->shifts[Shift] then handling of the error token?. */
-
-#define SHIFT_IS_ERROR(Shifts, Shift) \
-  (SHIFT_SYMBOL (Shifts, Shift) == error_token_number)
+#define TRANSITION_IS_ERROR(Transitions, Num) \
+  (TRANSITION_SYMBOL (Transitions, Num) == errtoken->number)
 
 /* When resolving a SR conflicts, if the reduction wins, the shift is
    disabled.  */
 
-#define SHIFT_DISABLE(Shifts, Shift) \
-  (Shifts->shifts[Shift] = 0)
+#define TRANSITION_DISABLE(Transitions, Num) \
+  (Transitions->states[Num] = NULL)
 
-#define SHIFT_IS_DISABLED(Shifts, Shift) \
-  (Shifts->shifts[Shift] == 0)
+#define TRANSITION_IS_DISABLED(Transitions, Num) \
+  (Transitions->states[Num] == NULL)
+
+
+/* Iterate over each transition over a token (shifts).  */
+#define FOR_EACH_SHIFT(Transitions, Iter)			\
+  for (Iter = 0;						\
+       Iter < Transitions->num					\
+	 && (TRANSITION_IS_DISABLED (Transitions, Iter)		\
+	     || TRANSITION_IS_SHIFT (Transitions, Iter));	\
+       ++Iter)							\
+    if (!TRANSITION_IS_DISABLED (Transitions, Iter))
+
+
+/* Return the state such these TRANSITIONS contain a shift/goto to it on
+   SYMBOL.  Aborts if none found.  */
+struct state_s;
+struct state_s *transitions_to PARAMS ((transitions_t *state,
+					symbol_number_t s));
 
 
 /*-------.
 | Errs.  |
 `-------*/
 
-typedef struct errs
+typedef struct errs_s
 {
-  short nerrs;
-  short errs[1];
-} errs;
+  short num;
+  symbol_t *symbols[1];
+} errs_t;
 
-#define ERRS_ALLOC(Nerrs)						\
-  (errs *) xcalloc ((unsigned) (sizeof (errs) 				\
-                                  + (Nerrs - 1) * sizeof (short)), 1)
+errs_t *errs_new PARAMS ((int num, symbol_t **tokens));
 
 
 /*-------------.
 | Reductions.  |
 `-------------*/
 
-typedef struct reductions
+typedef struct reductions_s
 {
-  struct reductions *next;
-  short number;
-  short nreds;
-  short rules[1];
-} reductions;
+  short num;
+  bitset *lookaheads;
+  rule_t *rules[1];
+} reductions_t;
 
-#define REDUCTIONS_ALLOC(Nreductions)					\
-  (reductions *) xcalloc ((unsigned) (sizeof (reductions)		\
-                                  + (Nreductions - 1) * sizeof (short)), 1)
 
+
+/*---------.
+| States.  |
+`---------*/
+
+struct state_s
+{
+  state_number_t number;
+  symbol_number_t accessing_symbol;
+  transitions_t     *transitions;
+  reductions_t *reductions;
+  errs_t       *errs;
+
+  /* Nonzero if no lookahead is needed to decide what to do in state S.  */
+  char consistent;
+
+  /* If some conflicts were solved thanks to precedence/associativity,
+     a human readable description of the resolution.  */
+  const char *solved_conflicts;
+
+  /* Its items.  Must be last, since ITEMS can be arbitrarily large.
+     */
+  unsigned short nitems;
+  item_number_t items[1];
+};
+
+extern state_number_t nstates;
+extern state_t *final_state;
+
+/* Create a new state with ACCESSING_SYMBOL for those items.  */
+state_t *state_new PARAMS ((symbol_number_t accessing_symbol,
+			    size_t core_size, item_number_t *core));
+
+/* Set the transitions of STATE.  */
+void state_transitions_set PARAMS ((state_t *state,
+				    int num, state_t **transitions));
+
+/* Set the reductions of STATE.  */
+void state_reductions_set PARAMS ((state_t *state,
+				   int num, rule_t **reductions));
+
+int state_reduction_find PARAMS ((state_t *state, rule_t *rule));
+
+/* Set the errs of STATE.  */
+void state_errs_set PARAMS ((state_t *state,
+			     int num, symbol_t **errs));
+
+/* Print on OUT all the lookaheads such that this STATE wants to
+   reduce this RULE.  */
+void state_rule_lookaheads_print PARAMS ((state_t *state, rule_t *rule,
+					  FILE *out));
+
+/* Create/destroy the states hash table.  */
+void state_hash_new PARAMS ((void));
+void state_hash_free PARAMS ((void));
+
+/* Find the state associated to the CORE, and return it.  If it does
+   not exist yet, return NULL.  */
+state_t *state_hash_lookup PARAMS ((size_t core_size, item_number_t *core));
+
+/* Insert STATE in the state hash table.  */
+void state_hash_insert PARAMS ((state_t *state));
+
+/* All the states, indexed by the state number.  */
+extern state_t **states;
+
+/* Free all the states.  */
+void states_free PARAMS ((void));
 #endif /* !STATE_H_ */

@@ -1,4 +1,4 @@
-## Copyright 2001, 2002 Free Software Foundation, Inc.
+## Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,38 +18,57 @@
 AUTOMAKE_OPTIONS = ../lib/ansi2knr
 
 DEFS = @DEFS@ \
-  -DBISON_SIMPLE=\"$(pkgdatadir)/bison.simple\" \
-  -DBISON_HAIRY=\"$(pkgdatadir)/bison.hairy\" \
+  -DPKGDATADIR=\"$(pkgdatadir)\" \
   -DLOCALEDIR=\"$(datadir)/locale\"
 
-CFLAGS = @CFLAGS@ $(WARNING_CFLAGS) $(WERROR_CFLAGS)
+AM_CFLAGS = $(WARNING_CFLAGS) $(WERROR_CFLAGS)
+AM_YFLAGS = "-dv"
 
-# libintl.h in is build/intl, intl/libgettext.h in src/,
-# config.h in build/.
-INCLUDES = -I$(top_builddir)/intl \
-           -I$(top_builddir)      \
-           -I$(top_srcdir)/intl \
+# config.h is in build/.
+INCLUDES = -I$(top_builddir)      \
            -I$(top_srcdir)/lib
 
 LDADD = $(INTLLIBS) ../lib/libbison.a
 
 bin_PROGRAMS = bison
 
-bison_SOURCES = LR0.c closure.c complain.c conflicts.c	\
-    derives.c	\
-    files.c getargs.c gram.c lalr.c lex.c main.c nullable.c \
-    output.h output.c \
-    state.h state.c \
-    print.c reader.c reduce.c symtab.c warshall.c vcg.c print_graph.c
+bison_SOURCES = 				  \
+	LR0.c LR0.h				  \
+	assoc.c assoc.h				  \
+	closure.c closure.h			  \
+	complain.c complain.h			  \
+	conflicts.c conflicts.h			  \
+	derives.c derives.h			  \
+	files.c files.h				  \
+	getargs.c getargs.h			  \
+	gram.c gram.h				  \
+	lalr.h lalr.c				  \
+	location.c location.h			  \
+	main.c					  \
+	muscle_tab.c muscle_tab.h		  \
+	nullable.c nullable.h			  \
+	output.c output.h			  \
+	parse-gram.h parse-gram.y		  \
+	print.c print.h				  \
+	print_graph.c print_graph.h		  \
+	reader.c reader.h			  \
+	reduce.c reduce.h			  \
+	relation.c relation.h			  \
+	scan-gram.l				  \
+	scan-skel.l				  \
+	state.c state.h				  \
+	symlist.c symlist.h			  \
+	symtab.c symtab.h			  \
+	system.h				  \
+	tables.h tables.c			  \
+	vcg.c vcg.h				  \
+	vcg_defaults.h
+
+BUILT_SOURCES = scan-skel.c scan-gram.c parse-gram.c parse-gram.h
 
 EXTRA_bison_SOURCES = vmsgetargs.c
 
-noinst_HEADERS = LR0.h closure.h complain.h conflicts.h \
- derives.h \
- files.h getargs.h gram.h lalr.h lex.h nullable.h \
- print.h reader.h reduce.h symtab.h warshall.h system.h types.h \
- vcg.h vcg_defaults.h print_graph.h
+EXTRA_DIST = build.com bison.cld vmshlp.mar
 
-pkgdata_DATA = bison.simple bison.hairy
-
-EXTRA_DIST = $(pkgdata_DATA) build.com bison.cld vmshlp.mar
+echo:
+	echo $(bison_SOURCES) $(noinst_HEADERS)

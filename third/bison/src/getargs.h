@@ -1,5 +1,6 @@
 /* Parse command line arguments for bison.
-   Copyright 1984, 1986, 1989, 1992, 2000, 2001 Free Software Foundation, Inc.
+   Copyright 1984, 1986, 1989, 1992, 2000, 2001, 2002
+   Free Software Foundation, Inc.
 
    This file is part of Bison, the GNU Compiler Compiler.
 
@@ -22,9 +23,8 @@
 # define GETARGS_H_
 
 /* flags set by % directives */
-extern char *spec_file_prefix;	/* for -b */
-extern char *spec_name_prefix; 	/* for -p */
-extern const char *skeleton;
+extern const char *skeleton;		/* for -S */
+extern const char *include;		/* for -I */
 
 extern int debug_flag; 		/* for -t */
 extern int defines_flag;    	/* for -d */
@@ -32,10 +32,35 @@ extern int locations_flag;
 extern int no_lines_flag;    	/* for -l */
 extern int no_parser_flag;	/* for -n */
 extern int token_table_flag;   	/* for -k */
-extern int verbose_flag;	/* for -v */
 extern int graph_flag;		/* for -g */
 extern int yacc_flag;  		/* for -y */
+
+/* --trace.  */
+enum trace_e
+  {
+    trace_none      = 0,
+    trace_resource  = 1 << 0,
+    trace_sets      = 1 << 1,
+    trace_bitsets   = 1 << 2,
+    trace_tools     = 1 << 3,
+    trace_automaton = 1 << 4,
+    trace_grammar   = 1 << 5,
+    trace_time      = 1 << 6,
+    trace_all       = ~0
+  };
 extern int trace_flag;
+
+/* --report.  */
+enum report_e
+  {
+    report_none             = 0,
+    report_states           = 1 << 0,
+    report_itemsets         = 1 << 1,
+    report_lookaheads       = 1 << 2,
+    report_solved_conflicts = 1 << 3,
+    report_all              = ~0
+  };
+extern int report_flag;
 
 void getargs PARAMS ((int argc, char *argv[]));
 

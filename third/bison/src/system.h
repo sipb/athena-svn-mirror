@@ -1,5 +1,5 @@
 /* system-dependent definitions for Bison.
-   Copyright 2000 Free Software Foundation, Inc.
+   Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,19 +22,26 @@
 # include <config.h>
 #endif
 
+/* AIX requires this to be the first thing in the file.  */
+#ifdef __GNUC__
+# define alloca(Size) __builtin_alloca (Size)
+#else
+# if HAVE_ALLOCA_H
+#  include <alloca.h>
+# else
+#  ifdef _AIX
+ #pragma alloca
+#  else
+#   ifndef alloca /* predefined by HP cc +Olibcalls */
+char *alloca ();
+#   endif
+#  endif
+# endif
+#endif
+
 #include <stdio.h>
 
 #include <assert.h>
-
-#ifdef MSDOS
-# include <io.h>
-#endif
-
-#ifdef _MSC_VER
-# include <stdlib.h>
-# include <process.h>
-# define getpid _getpid
-#endif
 
 #if HAVE_STDLIB_H
 # include <stdlib.h>
@@ -62,45 +69,47 @@
 # if !defined(STDC_HEADERS) && defined(HAVE_MEMORY_H)
 #  include <memory.h>
 # endif /* not STDC_HEADERS and HAVE_MEMORY_H */
-# ifndef bcopy
-#  define bcopy(src, dst, num) memcpy((dst), (src), (num))
-# endif
 #else /* not STDC_HEADERS and not HAVE_STRING_H */
 # include <strings.h>
 /* memory.h and strings.h conflict on some systems.  */
 #endif /* not STDC_HEADERS and not HAVE_STRING_H */
-
-#if defined(STDC_HEADERS) || defined(HAVE_CTYPE_H)
-# include <ctype.h>
-#endif
 
 #include <errno.h>
 #ifndef errno
 extern int errno;
 #endif
 
-/* AIX requires this to be the first thing in the file.  */
-#ifndef __GNUC__
-# if HAVE_ALLOCA_H
-#  include <alloca.h>
+#ifndef PARAMS
+# if defined PROTOTYPES || defined __STDC__
+#  define PARAMS(Args) Args
 # else
-#  ifdef _AIX
- #pragma alloca
-#  else
-#   ifndef alloca /* predefined by HP cc +Olibcalls */
-char *alloca ();
-#   endif
-#  endif
+#  define PARAMS(Args) ()
 # endif
 #endif
 
-#if PROTOTYPES
-# define PARAMS(p) p
-#else
-# define PARAMS(p) ()
+#if HAVE_LIMITS_H
+# include <limits.h>
+#endif
+#ifndef SHRT_MIN
+# define SHRT_MIN (-32768)
+#endif
+#ifndef SHRT_MAX
+# define SHRT_MAX 32767
 #endif
 
 # include "xalloc.h"
+
+/* From xstrndup.c.  */
+char *xstrndup PARAMS ((const char *s, size_t n));
+
+
+/*----------------.
+| Using timevar.  |
+`----------------*/
+
+#include "timevar.h"
+extern int time_report;
+
 
 /*---------------------.
 | Missing prototypes.  |
@@ -142,14 +151,22 @@ void *memrchr PARAMS ((const void *s, int c, size_t n));
 (__GNUC__ == 2 && __GNUC_MINOR__ < 5) || __STRICT_ANSI__
 #  define __attribute__(Spec) /* empty */
 # endif
-/* The __-protected variants of `format' and `printf' attributes
-   are accepted by gcc versions 2.6.4 (effectively 2.7) and later.  */
-# if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 7)
-#  define __format__ format
-#  define __printf__ printf
-# endif
 #endif
 
+/* The __-protected variants of `format' and `printf' attributes
+   are accepted by gcc versions 2.6.4 (effectively 2.7) and later.  */
+#if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 7)
+# define __format__ format
+# define __printf__ printf
+#endif
+
+#ifndef ATTRIBUTE_NORETURN
+# define ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
+#endif
+
+#ifndef ATTRIBUTE_UNUSED
+# define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
+#endif
 
 /*------.
 | NLS.  |
@@ -162,7 +179,7 @@ void *memrchr PARAMS ((const void *s, int c, size_t n));
 # define setlocale(Category, Locale)
 #endif
 
-#include "libgettext.h"
+#include "gettext.h"
 #define _(Msgid)  gettext (Msgid)
 #define N_(Msgid) (Msgid)
 
@@ -227,80 +244,37 @@ do {								\
 } while (0)
 
 
-/*---------------------------------.
-| Machine-dependencies for Bison.  |
-`---------------------------------*/
 
-#ifdef	eta10
-# define	MAXSHORT	2147483647
-# define	MINSHORT	-2147483648
-#else
-# define	MAXSHORT	32767
-# define	MINSHORT	-32768
-#endif
-
-#if defined (MSDOS) && !defined (__GO32__)
-# define	BITS_PER_WORD	16
-# define MAXTABLE	16383
-#else
-# define	BITS_PER_WORD	32
-# define MAXTABLE	32767
-#endif
-
-#define	WORDSIZE(n)	(((n) + BITS_PER_WORD - 1) / BITS_PER_WORD)
-#define	SETBIT(x, i)	((x)[(i)/BITS_PER_WORD] |= (1<<((i) % BITS_PER_WORD)))
-#define RESETBIT(x, i)	((x)[(i)/BITS_PER_WORD] &= ~(1<<((i) % BITS_PER_WORD)))
-#define BITISSET(x, i)	(((x)[(i)/BITS_PER_WORD] & (1<<((i) % BITS_PER_WORD))) != 0)
-
-
-/* Extensions to use for the output files. */
+/*-----------------------------------------.
+| Extensions to use for the output files.  |
+`-----------------------------------------*/
 
 #ifdef VMS
   /* VMS. */
 # define EXT_TAB	"_tab"
 # define EXT_OUTPUT	".output"
-# define EXT_STYPE_H	"_stype"
-# define EXT_GUARD_C	"_guard"
 #else /* ! VMS */
 # ifdef MSDOS
    /* MS DOS. */
 #  define EXT_TAB	"_tab"
 #  define EXT_OUTPUT	".out"
-#  define EXT_STYPE_H	".sth"
-#  define EXT_GUARD_C	".guc"
 # else /* ! MSDOS */
   /* Standard. */
 #  define EXT_TAB	".tab"
 #  define EXT_OUTPUT	".output"
-#  define EXT_STYPE_H	".stype"
-#  define EXT_GUARD_C	".guard"
 # endif /* ! MSDOS */
 #endif /* ! VMS */
 
-#if defined (VMS) & !defined (__VMS_POSIX)
-# ifndef BISON_SIMPLE
-#  define BISON_SIMPLE "GNU_BISON:[000000]BISON.SIMPLE"
-# endif
-# ifndef BISON_HAIRY
-#  define BISON_HARIRY "GNU_BISON:[000000]BISON.HAIRY"
-# endif
-#endif
-
-#if defined (_MSC_VER)
-# ifndef BISON_SIMPLE
-#  define BISON_SIMPLE "c:/usr/local/lib/bison.simple"
-# endif
-# ifndef BISON_HAIRY
-#  define BISON_HAIRY "c:/usr/local/lib/bison.hairy"
-# endif
+#ifndef DEFAULT_TMPDIR
+# define DEFAULT_TMPDIR "/tmp"
 #endif
 
 
-/* As memcpy, but for shorts.  */
-#define shortcpy(Dest, Src, Num) \
-  memcpy (Dest, Src, Num * sizeof (short))
 
-/* Free a linked list. */
+/*---------------------.
+| Free a linked list.  |
+`---------------------*/
+
 #define LIST_FREE(Type, List)			\
 do {						\
   Type *_node, *_next;				\
@@ -311,13 +285,14 @@ do {						\
     }						\
 } while (0)
 
-/*---------------------------------.
-| Debugging the memory allocator.  |
-`---------------------------------*/
+
+/*---------------------------------------------.
+| Debugging memory allocation (must be last).  |
+`---------------------------------------------*/
 
 # if WITH_DMALLOC
 #  define DMALLOC_FUNC_CHECK
 #  include <dmalloc.h>
 # endif /* WITH_DMALLOC */
 
-#endif  /* BISON_SYSTEM_H */
+#endif  /* ! BISON_SYSTEM_H */

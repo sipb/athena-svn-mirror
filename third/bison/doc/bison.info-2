@@ -1,32 +1,240 @@
-Ceci est le fichier Info bison.info, produit par Makeinfo version 4.0b
-à partir bison.texinfo.
+Ceci est le fichier Info bison.info, produit par Makeinfo version 4.2 à
+partir bison.texinfo.
 
-START-INFO-DIR-ENTRY
-* bison: (bison).	GNU Project parser generator (yacc replacement).
-END-INFO-DIR-ENTRY
 
-   This file documents the Bison parser generator.
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
-2000, 2001 Free Software Foundation, Inc.
+2000, 2001, 2002 Free Software Foundation, Inc.
 
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
 
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided also
-that the sections entitled "GNU General Public License" and "Conditions
-for Using Bison" are included exactly as in the original, and provided
-that the entire resulting derived work is distributed under the terms
-of a permission notice identical to this one.
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).	GNU parser generator (yacc replacement).
+END-INFO-DIR-ENTRY
 
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that the sections entitled "GNU General Public
-License", "Conditions for Using Bison" and this permission notice may be
-included in translations approved by the Free Software Foundation
-instead of in the original English.
+
+File: bison.info,  Node: Locations Overview,  Next: Bison Parser,  Prev: GLR Parsers,  Up: Concepts
+
+Locations
+=========
+
+   Many applications, like interpreters or compilers, have to produce
+verbose and useful error messages.  To achieve this, one must be able
+to keep track of the "textual position", or "location", of each
+syntactic construct.  Bison provides a mechanism for handling these
+locations.
+
+   Each token has a semantic value.  In a similar fashion, each token
+has an associated location, but the type of locations is the same for
+all tokens and groupings.  Moreover, the output parser is equipped with
+a default data structure for storing locations (*note Locations::, for
+more details).
+
+   Like semantic values, locations can be reached in actions using a
+dedicated set of constructs.  In the example above, the location of the
+whole grouping is `@$', while the locations of the subexpressions are
+`@1' and `@3'.
+
+   When a rule is matched, a default action is used to compute the
+semantic value of its left hand side (*note Actions::).  In the same
+way, another default action is used for locations.  However, the action
+for locations is general enough for most cases, meaning there is
+usually no need to describe for each rule how `@$' should be formed.
+When building a new location for a given grouping, the default behavior
+of the output parser is to take the beginning of the first symbol, and
+the end of the last symbol.
+
+
+File: bison.info,  Node: Bison Parser,  Next: Stages,  Prev: Locations Overview,  Up: Concepts
+
+Bison Output: the Parser File
+=============================
+
+   When you run Bison, you give it a Bison grammar file as input.  The
+output is a C source file that parses the language described by the
+grammar.  This file is called a "Bison parser".  Keep in mind that the
+Bison utility and the Bison parser are two distinct programs: the Bison
+utility is a program whose output is the Bison parser that becomes part
+of your program.
+
+   The job of the Bison parser is to group tokens into groupings
+according to the grammar rules--for example, to build identifiers and
+operators into expressions.  As it does this, it runs the actions for
+the grammar rules it uses.
+
+   The tokens come from a function called the "lexical analyzer" that
+you must supply in some fashion (such as by writing it in C).  The Bison
+parser calls the lexical analyzer each time it wants a new token.  It
+doesn't know what is "inside" the tokens (though their semantic values
+may reflect this).  Typically the lexical analyzer makes the tokens by
+parsing characters of text, but Bison does not depend on this.  *Note
+The Lexical Analyzer Function `yylex': Lexical.
+
+   The Bison parser file is C code which defines a function named
+`yyparse' which implements that grammar.  This function does not make a
+complete C program: you must supply some additional functions.  One is
+the lexical analyzer.  Another is an error-reporting function which the
+parser calls to report an error.  In addition, a complete C program must
+start with a function called `main'; you have to provide this, and
+arrange for it to call `yyparse' or the parser will never run.  *Note
+Parser C-Language Interface: Interface.
+
+   Aside from the token type names and the symbols in the actions you
+write, all symbols defined in the Bison parser file itself begin with
+`yy' or `YY'.  This includes interface functions such as the lexical
+analyzer function `yylex', the error reporting function `yyerror' and
+the parser function `yyparse' itself.  This also includes numerous
+identifiers used for internal purposes.  Therefore, you should avoid
+using C identifiers starting with `yy' or `YY' in the Bison grammar
+file except for the ones defined in this manual.
+
+   In some cases the Bison parser file includes system headers, and in
+those cases your code should respect the identifiers reserved by those
+headers.  On some non-GNU hosts, `<alloca.h>', `<stddef.h>', and
+`<stdlib.h>' are included as needed to declare memory allocators and
+related types.  Other system headers may be included if you define
+`YYDEBUG' to a nonzero value (*note Tracing Your Parser: Tracing.).
+
+
+File: bison.info,  Node: Stages,  Next: Grammar Layout,  Prev: Bison Parser,  Up: Concepts
+
+Stages in Using Bison
+=====================
+
+   The actual language-design process using Bison, from grammar
+specification to a working compiler or interpreter, has these parts:
+
+  1. Formally specify the grammar in a form recognized by Bison (*note
+     Bison Grammar Files: Grammar File.).  For each grammatical rule in
+     the language, describe the action that is to be taken when an
+     instance of that rule is recognized.  The action is described by a
+     sequence of C statements.
+
+  2. Write a lexical analyzer to process input and pass tokens to the
+     parser.  The lexical analyzer may be written by hand in C (*note
+     The Lexical Analyzer Function `yylex': Lexical.).  It could also
+     be produced using Lex, but the use of Lex is not discussed in this
+     manual.
+
+  3. Write a controlling function that calls the Bison-produced parser.
+
+  4. Write error-reporting routines.
+
+   To turn this source code as written into a runnable program, you
+must follow these steps:
+
+  1. Run Bison on the grammar to produce the parser.
+
+  2. Compile the code output by Bison, as well as any other source
+     files.
+
+  3. Link the object files to produce the finished product.
+
+
+File: bison.info,  Node: Grammar Layout,  Prev: Stages,  Up: Concepts
+
+The Overall Layout of a Bison Grammar
+=====================================
+
+   The input file for the Bison utility is a "Bison grammar file".  The
+general form of a Bison grammar file is as follows:
+
+     %{
+     PROLOGUE
+     %}
+     
+     BISON DECLARATIONS
+     
+     %%
+     GRAMMAR RULES
+     %%
+     EPILOGUE
+
+The `%%', `%{' and `%}' are punctuation that appears in every Bison
+grammar file to separate the sections.
+
+   The prologue may define types and variables used in the actions.
+You can also use preprocessor commands to define macros used there, and
+use `#include' to include header files that do any of these things.
+
+   The Bison declarations declare the names of the terminal and
+nonterminal symbols, and may also describe operator precedence and the
+data types of semantic values of various symbols.
+
+   The grammar rules define how to construct each nonterminal symbol
+from its parts.
+
+   The epilogue can contain any code you want to use.  Often the
+definition of the lexical analyzer `yylex' goes here, plus subroutines
+called by the actions in the grammar rules.  In a simple program, all
+the rest of the program can go here.
+
+
+File: bison.info,  Node: Examples,  Next: Grammar File,  Prev: Concepts,  Up: Top
+
+Examples
+********
+
+   Now we show and explain three sample programs written using Bison: a
+reverse polish notation calculator, an algebraic (infix) notation
+calculator, and a multi-function calculator.  All three have been tested
+under BSD Unix 4.3; each produces a usable, though limited, interactive
+desk-top calculator.
+
+   These examples are simple, but Bison grammars for real programming
+languages are written the same way.  You can copy these examples out of
+the Info file and into a source file to try them.
+
+* Menu:
+
+* RPN Calc::          Reverse polish notation calculator;
+                        a first example with no operator precedence.
+* Infix Calc::        Infix (algebraic) notation calculator.
+                        Operator precedence is introduced.
+* Simple Error Recovery::  Continuing after syntax errors.
+* Location Tracking Calc:: Demonstrating the use of @N and @$.
+* Multi-function Calc::  Calculator with memory and trig functions.
+                           It uses multiple data-types for semantic values.
+* Exercises::         Ideas for improving the multi-function calculator.
+
+
+File: bison.info,  Node: RPN Calc,  Next: Infix Calc,  Up: Examples
+
+Reverse Polish Notation Calculator
+==================================
+
+   The first example is that of a simple double-precision "reverse
+polish notation" calculator (a calculator using postfix operators).
+This example provides a good starting point, since operator precedence
+is not an issue.  The second example will illustrate how operator
+precedence is handled.
+
+   The source code for this calculator is named `rpcalc.y'.  The `.y'
+extension is a convention used for Bison input files.
+
+* Menu:
+
+* Decls: Rpcalc Decls.  Prologue (declarations) for rpcalc.
+* Rules: Rpcalc Rules.  Grammar Rules for rpcalc, with explanation.
+* Lexer: Rpcalc Lexer.  The lexical analyzer.
+* Main: Rpcalc Main.    The controlling function.
+* Error: Rpcalc Error.  The error reporting function.
+* Gen: Rpcalc Gen.      Running Bison on the grammar file.
+* Comp: Rpcalc Compile. Run the C compiler on the output code.
 
 
 File: bison.info,  Node: Rpcalc Decls,  Next: Rpcalc Rules,  Up: RPN Calc
@@ -37,7 +245,7 @@ Declarations for `rpcalc'
    Here are the C and Bison declarations for the reverse polish notation
 calculator.  As in C, comments are placed between `/*...*/'.
 
-     /* Reverse polish notation calculator. */
+     /* Reverse polish notation calculator.  */
      
      %{
      #define YYSTYPE double
@@ -46,10 +254,10 @@ calculator.  As in C, comments are placed between `/*...*/'.
      
      %token NUM
      
-     %% /* Grammar rules and actions follow */
+     %% /* Grammar rules and actions follow.  */
 
-   The C declarations section (*note The C Declarations Section: C
-Declarations.) contains two preprocessor directives.
+   The declarations section (*note The prologue: Prologue.) contains two
+preprocessor directives.
 
    The `#define' directive defines the macro `YYSTYPE', thus specifying
 the C data type for semantic values of both tokens and groupings (*note
@@ -61,14 +269,14 @@ expression has an associated value, which is a floating point number.
    The `#include' directive is used to declare the exponentiation
 function `pow'.
 
-   The second section, Bison declarations, provides information to
-Bison about the token types (*note The Bison Declarations Section:
-Bison Declarations.).  Each terminal symbol that is not a
-single-character literal must be declared here.  (Single-character
-literals normally don't need to be declared.)  In this example, all the
-arithmetic operators are designated by single-character literals, so the
-only terminal symbol that needs to be declared is `NUM', the token type
-for numeric constants.
+   The second section, Bison declarations, provides information to Bison
+about the token types (*note The Bison Declarations Section: Bison
+Declarations.).  Each terminal symbol that is not a single-character
+literal must be declared here.  (Single-character literals normally
+don't need to be declared.)  In this example, all the arithmetic
+operators are designated by single-character literals, so the only
+terminal symbol that needs to be declared is `NUM', the token type for
+numeric constants.
 
 
 File: bison.info,  Node: Rpcalc Rules,  Next: Rpcalc Lexer,  Prev: Rpcalc Decls,  Up: RPN Calc
@@ -155,7 +363,7 @@ executed zero or more times.
 
    The parser function `yyparse' continues to process input until a
 grammatical error is seen or the lexical analyzer says there are no more
-input tokens; we will arrange for the latter to happen at end of file.
+input tokens; we will arrange for the latter to happen at end-of-input.
 
 
 File: bison.info,  Node: Rpcalc Line,  Next: Rpcalc Expr,  Prev: Rpcalc Input,  Up: Rpcalc Rules
@@ -224,7 +432,7 @@ action, Bison by default copies the value of `$1' into `$$'.  This is
 what happens in the first rule (the one that uses `NUM').
 
    The formatting shown here is the recommended convention, but Bison
-does not require it.  You can add or change whitespace as much as you
+does not require it.  You can add or change white space as much as you
 wish.  For example, this:
 
      exp   : NUM | exp exp '+' {$$ = $1 + $2; } | ...
@@ -258,12 +466,12 @@ for such a single-character token is the character itself.
 which represents a token type.  The same text used in Bison rules to
 stand for this token type is also a C expression for the numeric code
 for the type.  This works in two ways.  If the token type is a
-character literal, then its numeric code is the ASCII code for that
-character; you can use the same character literal in the lexical
-analyzer to express the number.  If the token type is an identifier,
-that identifier is defined by Bison as a C macro whose definition is
-the appropriate number.  In this example, therefore, `NUM' becomes a
-macro for `yylex' to use.
+character literal, then its numeric code is that of the character; you
+can use the same character literal in the lexical analyzer to express
+the number.  If the token type is an identifier, that identifier is
+defined by Bison as a C macro whose definition is the appropriate
+number.  In this example, therefore, `NUM' becomes a macro for `yylex'
+to use.
 
    The semantic value of the token (if it has one) is stored into the
 global variable `yylval', which is where the Bison parser will look for
@@ -271,16 +479,16 @@ it.  (The C data type of `yylval' is `YYSTYPE', which was defined at
 the beginning of the grammar; *note Declarations for `rpcalc': Rpcalc
 Decls..)
 
-   A token type code of zero is returned if the end-of-file is
-encountered.  (Bison recognizes any nonpositive value as indicating the
-end of the input.)
+   A token type code of zero is returned if the end-of-input is
+encountered.  (Bison recognizes any nonpositive value as indicating
+end-of-input.)
 
    Here is the code for the lexical analyzer:
 
-     /* Lexical analyzer returns a double floating point
-        number on the stack and the token NUM, or the ASCII
-        character read if not a number.  Skips all blanks
-        and tabs, returns 0 for EOF. */
+     /* The lexical analyzer returns a double floating point
+        number on the stack and the token NUM, or the numeric code
+        of the character read if not a number.  It skips all blanks
+        and tabs, and returns 0 for end-of-input.  */
      
      #include <ctype.h>
      
@@ -289,20 +497,20 @@ end of the input.)
      {
        int c;
      
-       /* skip white space  */
+       /* Skip white space.  */
        while ((c = getchar ()) == ' ' || c == '\t')
          ;
-       /* process numbers   */
+       /* Process numbers.  */
        if (c == '.' || isdigit (c))
          {
            ungetc (c, stdin);
            scanf ("%lf", &yylval);
            return NUM;
          }
-       /* return end-of-file  */
+       /* Return end-of-input.  */
        if (c == EOF)
          return 0;
-       /* return single chars */
+       /* Return a single char.  */
        return c;
      }
 
@@ -337,7 +545,7 @@ definition we will use:
      #include <stdio.h>
      
      void
-     yyerror (const char *s)  /* Called by yyparse on error */
+     yyerror (const char *s)  /* called by yyparse on error */
      {
        printf ("%s\n", s);
      }
@@ -359,8 +567,8 @@ Running Bison to Make the Parser
 arrange all the source code in one or more source files.  For such a
 simple example, the easiest thing is to put everything in one file.  The
 definitions of `yylex', `yyerror' and `main' go at the end, in the
-"additional C code" section of the file (*note The Overall Layout of a
-Bison Grammar: Grammar Layout.).
+epilogue of the file (*note The Overall Layout of a Bison Grammar:
+Grammar Layout.).
 
    For a large project, you would probably have several source files,
 and use `make' to arrange to recompile them.
@@ -372,9 +580,10 @@ to convert it into a parser file:
 
 In this example the file was called `rpcalc.y' (for "Reverse Polish
 CALCulator").  Bison produces a file named `FILE_NAME.tab.c', removing
-the `.y' from the original file name. The file output by Bison contains
-the source code for `yyparse'.  The additional functions in the input
-file (`yylex', `yyerror' and `main') are copied verbatim to the output.
+the `.y' from the original file name.  The file output by Bison
+contains the source code for `yyparse'.  The additional functions in
+the input file (`yylex', `yyerror' and `main') are copied verbatim to
+the output.
 
 
 File: bison.info,  Node: Rpcalc Compile,  Prev: Rpcalc Gen,  Up: RPN Calc
@@ -390,7 +599,7 @@ Compiling the Parser File
      
      # Compile the Bison parser.
      # `-lm' tells compiler to search math library for `pow'.
-     $ cc rpcalc.tab.c -lm -o rpcalc
+     $ cc -lm -o rpcalc rpcalc.tab.c
      
      # List files again.
      $ ls
@@ -477,11 +686,11 @@ the page or screen), the higher the precedence.  Hence, exponentiation
 has the highest precedence, unary minus (`NEG') is next, followed by
 `*' and `/', and so on.  *Note Operator Precedence: Precedence.
 
-   The other important new feature is the `%prec' in the grammar section
-for the unary minus operator.  The `%prec' simply instructs Bison that
-the rule `| '-' exp' has the same precedence as `NEG'--in this case the
-next-to-highest.  *Note Context-Dependent Precedence: Contextual
-Precedence.
+   The other important new feature is the `%prec' in the grammar
+section for the unary minus operator.  The `%prec' simply instructs
+Bison that the rule `| '-' exp' has the same precedence as `NEG'--in
+this case the next-to-highest.  *Note Context-Dependent Precedence:
+Contextual Precedence.
 
    Here is a sample run of `calc.y':
 
@@ -542,7 +751,7 @@ Location Tracking Calculator: `ltcalc'
 tracking.  This feature will be used to improve the error messages.  For
 the sake of clarity, this example is a simple integer calculator, since
 most of the work needed to use locations will be done in the lexical
-analyser.
+analyzer.
 
 * Menu:
 
@@ -642,7 +851,7 @@ The `ltcalc' Lexical Analyzer.
 ------------------------------
 
    Until now, we relied on Bison's defaults to enable location
-tracking. The next step is to rewrite the lexical analyser, and make it
+tracking.  The next step is to rewrite the lexical analyzer, and make it
 able to feed the parser with the token locations, as it already does for
 semantic values.
 
@@ -654,15 +863,15 @@ input text, to avoid the computed locations of being fuzzy or wrong:
      {
        int c;
      
-       /* skip white space */
+       /* Skip white space.  */
        while ((c = getchar ()) == ' ' || c == '\t')
          ++yylloc.last_column;
      
-       /* step */
+       /* Step.  */
        yylloc.first_line = yylloc.last_line;
        yylloc.first_column = yylloc.last_column;
      
-       /* process numbers */
+       /* Process numbers.  */
        if (isdigit (c))
          {
            yylval = c - '0';
@@ -676,11 +885,11 @@ input text, to avoid the computed locations of being fuzzy or wrong:
            return NUM;
          }
      
-       /* return end-of-file */
+       /* Return end-of-input.  */
        if (c == EOF)
          return 0;
      
-       /* return single chars and update location */
+       /* Return a single char, and update location.  */
        if (c == '\n')
          {
            ++yylloc.last_line;
@@ -697,8 +906,8 @@ tokens.  In addition, it updates `yylloc', the global variable (of type
 `YYLTYPE') containing the token's location.
 
    Now, each time this function returns a token, the parser has its
-number as well as its semantic value, and its location in the text. The
-last needed change is to initialize `yylloc', for example in the
+number as well as its semantic value, and its location in the text.
+The last needed change is to initialize `yylloc', for example in the
 controlling function:
 
      int
@@ -771,7 +980,7 @@ Declarations for `mfcalc'
 calculator.
 
      %{
-     #include <math.h>  /* For math functions, cos(), sin(), etc. */
+     #include <math.h>  /* For math functions, cos(), sin(), etc.  */
      #include "calc.h"  /* Contains definition of `symrec'        */
      %}
      %union {
@@ -865,7 +1074,7 @@ declarations, but it requires some additional C functions for support.
 definition, which is kept in the header `calc.h', is as follows.  It
 provides for either functions or variables to be placed in the table.
 
-     /* Fonctions type.                                   */
+     /* Function type.                                    */
      typedef double (*func_t) (double);
      
      /* Data type for links in the chain of symbols.      */
@@ -928,7 +1137,7 @@ function that initializes the symbol table.  Here it is, and
      /* The symbol table: a chain of `struct symrec'.  */
      symrec *sym_table = (symrec *) 0;
      
-     /* Put arithmetic functions in table. */
+     /* Put arithmetic functions in table.  */
      void
      init_table (void)
      {
@@ -959,7 +1168,7 @@ found, a pointer to that symbol is returned; otherwise zero is returned.
        ptr->name = (char *) malloc (strlen (sym_name) + 1);
        strcpy (ptr->name,sym_name);
        ptr->type = sym_type;
-       ptr->value.var = 0; /* set value to 0 even if fctn.  */
+       ptr->value.var = 0; /* Set value to 0 even if fctn.  */
        ptr->next = (struct symrec *)sym_table;
        sym_table = ptr;
        return ptr;
@@ -997,7 +1206,7 @@ operators in `yylex'.
      {
        int c;
      
-       /* Ignore whitespace, get first nonwhite character.  */
+       /* Ignore white space, get first nonwhite character.  */
        while ((c = getchar ()) == ' ' || c == '\t');
      
        if (c == EOF)
@@ -1038,7 +1247,7 @@ operators in `yylex'.
                /* Get another character.                    */
                c = getchar ();
              }
-           while (c != EOF && isalnum (c));
+           while (isalnum (c));
      
            ungetc (c, stdin);
            symbuf[i] = '\0';
@@ -1054,7 +1263,7 @@ operators in `yylex'.
        return c;
      }
 
-   This program is both powerful and flexible. You may easily add new
+   This program is both powerful and flexible.  You may easily add new
 functions, and it is a simple job to modify this code to install
 predefined variables such as `pi' or `e' as well.
 
@@ -1107,7 +1316,7 @@ Outline of a Bison Grammar
 appropriate delimiters:
 
      %{
-     C DECLARATIONS
+     PROLOGUE
      %}
      
      BISON DECLARATIONS
@@ -1116,33 +1325,57 @@ appropriate delimiters:
      GRAMMAR RULES
      %%
      
-     ADDITIONAL C CODE
+     EPILOGUE
 
    Comments enclosed in `/* ... */' may appear in any of the sections.
 
 * Menu:
 
-* C Declarations::    Syntax and usage of the C declarations section.
+* Prologue::          Syntax and usage of the prologue.
 * Bison Declarations::  Syntax and usage of the Bison declarations section.
 * Grammar Rules::     Syntax and usage of the grammar rules section.
-* C Code::            Syntax and usage of the additional C code section.
+* Epilogue::          Syntax and usage of the epilogue.
 
 
-File: bison.info,  Node: C Declarations,  Next: Bison Declarations,  Up: Grammar Outline
+File: bison.info,  Node: Prologue,  Next: Bison Declarations,  Up: Grammar Outline
 
-The C Declarations Section
---------------------------
+The prologue
+------------
 
-   The C DECLARATIONS section contains macro definitions and
-declarations of functions and variables that are used in the actions in
-the grammar rules.  These are copied to the beginning of the parser
-file so that they precede the definition of `yyparse'.  You can use
-`#include' to get the declarations from a header file.  If you don't
-need any C declarations, you may omit the `%{' and `%}' delimiters that
-bracket this section.
+   The PROLOGUE section contains macro definitions and declarations of
+functions and variables that are used in the actions in the grammar
+rules.  These are copied to the beginning of the parser file so that
+they precede the definition of `yyparse'.  You can use `#include' to
+get the declarations from a header file.  If you don't need any C
+declarations, you may omit the `%{' and `%}' delimiters that bracket
+this section.
+
+   You may have more than one PROLOGUE section, intermixed with the
+BISON DECLARATIONS.  This allows you to have C and Bison declarations
+that refer to each other.  For example, the `%union' declaration may
+use types defined in a header file, and you may wish to prototype
+functions that take arguments of type `YYSTYPE'.  This can be done with
+two PROLOGUE blocks, one before and one after the `%union' declaration.
+
+     %{
+     #include <stdio.h>
+     #include "ptypes.h"
+     %}
+     
+     %union {
+       long n;
+       tree t;  /* `tree' is defined in `ptypes.h'. */
+     }
+     
+     %{
+     static void yyprint(FILE *, int, YYSTYPE);
+     #define YYPRINT(F, N, L) yyprint(F, N, L)
+     %}
+     
+     ...
 
 
-File: bison.info,  Node: Bison Declarations,  Next: Grammar Rules,  Prev: C Declarations,  Up: Grammar Outline
+File: bison.info,  Node: Bison Declarations,  Next: Grammar Rules,  Prev: Prologue,  Up: Grammar Outline
 
 The Bison Declarations Section
 ------------------------------
@@ -1153,7 +1386,7 @@ some simple grammars you may not need any declarations.  *Note Bison
 Declarations: Declarations.
 
 
-File: bison.info,  Node: Grammar Rules,  Next: C Code,  Prev: Bison Declarations,  Up: Grammar Outline
+File: bison.info,  Node: Grammar Rules,  Next: Epilogue,  Prev: Bison Declarations,  Up: Grammar Outline
 
 The Grammar Rules Section
 -------------------------
@@ -1166,17 +1399,17 @@ rules, and nothing else.  *Note Syntax of Grammar Rules: Rules.
 the first thing in the file.
 
 
-File: bison.info,  Node: C Code,  Prev: Grammar Rules,  Up: Grammar Outline
+File: bison.info,  Node: Epilogue,  Prev: Grammar Rules,  Up: Grammar Outline
 
-The Additional C Code Section
------------------------------
+The epilogue
+------------
 
-   The ADDITIONAL C CODE section is copied verbatim to the end of the
-parser file, just as the C DECLARATIONS section is copied to the
-beginning.  This is the most convenient place to put anything that you
-want to have in the parser file but which need not come before the
-definition of `yyparse'.  For example, the definitions of `yylex' and
-`yyerror' often go here.  *Note Parser C-Language Interface: Interface.
+   The EPILOGUE is copied verbatim to the end of the parser file, just
+as the PROLOGUE is copied to the beginning.  This is the most convenient
+place to put anything that you want to have in the parser file but
+which need not come before the definition of `yyparse'.  For example,
+the definitions of `yylex' and `yyerror' often go here.  *Note Parser
+C-Language Interface: Interface.
 
    If the last section is empty, you may omit the `%%' that separates it
 from the grammar rules.
@@ -1184,240 +1417,5 @@ from the grammar rules.
    The Bison parser itself contains many static variables whose names
 start with `yy' and many macros whose names start with `YY'.  It is a
 good idea to avoid using any such names (except those documented in this
-manual) in the additional C code section of the grammar file.
-
-
-File: bison.info,  Node: Symbols,  Next: Rules,  Prev: Grammar Outline,  Up: Grammar File
-
-Symbols, Terminal and Nonterminal
-=================================
-
-   "Symbols" in Bison grammars represent the grammatical classifications
-of the language.
-
-   A "terminal symbol" (also known as a "token type") represents a
-class of syntactically equivalent tokens.  You use the symbol in grammar
-rules to mean that a token in that class is allowed.  The symbol is
-represented in the Bison parser by a numeric code, and the `yylex'
-function returns a token type code to indicate what kind of token has
-been read.  You don't need to know what the code value is; you can use
-the symbol to stand for it.
-
-   A "nonterminal symbol" stands for a class of syntactically equivalent
-groupings.  The symbol name is used in writing grammar rules.  By
-convention, it should be all lower case.
-
-   Symbol names can contain letters, digits (not at the beginning),
-underscores and periods.  Periods make sense only in nonterminals.
-
-   There are three ways of writing terminal symbols in the grammar:
-
-   * A "named token type" is written with an identifier, like an
-     identifier in C.  By convention, it should be all upper case.  Each
-     such name must be defined with a Bison declaration such as
-     `%token'.  *Note Token Type Names: Token Decl.
-
-   * A "character token type" (or "literal character token") is written
-     in the grammar using the same syntax used in C for character
-     constants; for example, `'+'' is a character token type.  A
-     character token type doesn't need to be declared unless you need to
-     specify its semantic value data type (*note Data Types of Semantic
-     Values: Value Type.), associativity, or precedence (*note Operator
-     Precedence: Precedence.).
-
-     By convention, a character token type is used only to represent a
-     token that consists of that particular character.  Thus, the token
-     type `'+'' is used to represent the character `+' as a token.
-     Nothing enforces this convention, but if you depart from it, your
-     program will confuse other readers.
-
-     All the usual escape sequences used in character literals in C can
-     be used in Bison as well, but you must not use the null character
-     as a character literal because its ASCII code, zero, is the code
-     `yylex' returns for end-of-input (*note Calling Convention for
-     `yylex': Calling Convention.).
-
-   * A "literal string token" is written like a C string constant; for
-     example, `"<="' is a literal string token.  A literal string token
-     doesn't need to be declared unless you need to specify its semantic
-     value data type (*note Value Type::), associativity, or precedence
-     (*note Precedence::).
-
-     You can associate the literal string token with a symbolic name as
-     an alias, using the `%token' declaration (*note Token
-     Declarations: Token Decl.).  If you don't do that, the lexical
-     analyzer has to retrieve the token number for the literal string
-     token from the `yytname' table (*note Calling Convention::).
-
-     *WARNING*: literal string tokens do not work in Yacc.
-
-     By convention, a literal string token is used only to represent a
-     token that consists of that particular string.  Thus, you should
-     use the token type `"<="' to represent the string `<=' as a token.
-     Bison does not enforce this convention, but if you depart from
-     it, people who read your program will be confused.
-
-     All the escape sequences used in string literals in C can be used
-     in Bison as well.  A literal string token must contain two or more
-     characters; for a token containing just one character, use a
-     character token (see above).
-
-   How you choose to write a terminal symbol has no effect on its
-grammatical meaning.  That depends only on where it appears in rules and
-on when the parser function returns that symbol.
-
-   The value returned by `yylex' is always one of the terminal symbols
-(or 0 for end-of-input).  Whichever way you write the token type in the
-grammar rules, you write it the same way in the definition of `yylex'.
-The numeric code for a character token type is simply the ASCII code for
-the character, so `yylex' can use the identical character constant to
-generate the requisite code.  Each named token type becomes a C macro in
-the parser file, so `yylex' can use the name to stand for the code.
-(This is why periods don't make sense in terminal symbols.)  *Note
-Calling Convention for `yylex': Calling Convention.
-
-   If `yylex' is defined in a separate file, you need to arrange for the
-token-type macro definitions to be available there.  Use the `-d'
-option when you run Bison, so that it will write these macro definitions
-into a separate header file `NAME.tab.h' which you can include in the
-other source files that need it.  *Note Invoking Bison: Invocation.
-
-   The symbol `error' is a terminal symbol reserved for error recovery
-(*note Error Recovery::); you shouldn't use it for any other purpose.
-In particular, `yylex' should never return this value.
-
-
-File: bison.info,  Node: Rules,  Next: Recursion,  Prev: Symbols,  Up: Grammar File
-
-Syntax of Grammar Rules
-=======================
-
-   A Bison grammar rule has the following general form:
-
-     RESULT: COMPONENTS...
-             ;
-
-where RESULT is the nonterminal symbol that this rule describes, and
-COMPONENTS are various terminal and nonterminal symbols that are put
-together by this rule (*note Symbols::).
-
-   For example,
-
-     exp:      exp '+' exp
-             ;
-
-says that two groupings of type `exp', with a `+' token in between, can
-be combined into a larger grouping of type `exp'.
-
-   Whitespace in rules is significant only to separate symbols.  You
-can add extra whitespace as you wish.
-
-   Scattered among the components can be ACTIONS that determine the
-semantics of the rule.  An action looks like this:
-
-     {C STATEMENTS}
-
-Usually there is only one action and it follows the components.  *Note
-Actions::.
-
-   Multiple rules for the same RESULT can be written separately or can
-be joined with the vertical-bar character `|' as follows:
-
-     RESULT:   RULE1-COMPONENTS...
-             | RULE2-COMPONENTS...
-             ...
-             ;
-
-They are still considered distinct rules even when joined in this way.
-
-   If COMPONENTS in a rule is empty, it means that RESULT can match the
-empty string.  For example, here is how to define a comma-separated
-sequence of zero or more `exp' groupings:
-
-     expseq:   /* empty */
-             | expseq1
-             ;
-     
-     expseq1:  exp
-             | expseq1 ',' exp
-             ;
-
-It is customary to write a comment `/* empty */' in each rule with no
-components.
-
-
-File: bison.info,  Node: Recursion,  Next: Semantics,  Prev: Rules,  Up: Grammar File
-
-Recursive Rules
-===============
-
-   A rule is called "recursive" when its RESULT nonterminal appears
-also on its right hand side.  Nearly all Bison grammars need to use
-recursion, because that is the only way to define a sequence of any
-number of a particular thing.  Consider this recursive definition of a
-comma-separated sequence of one or more expressions:
-
-     expseq1:  exp
-             | expseq1 ',' exp
-             ;
-
-Since the recursive use of `expseq1' is the leftmost symbol in the
-right hand side, we call this "left recursion".  By contrast, here the
-same construct is defined using "right recursion":
-
-     expseq1:  exp
-             | exp ',' expseq1
-             ;
-
-Any kind of sequence can be defined using either left recursion or
-right recursion, but you should always use left recursion, because it
-can parse a sequence of any number of elements with bounded stack
-space.  Right recursion uses up space on the Bison stack in proportion
-to the number of elements in the sequence, because all the elements
-must be shifted onto the stack before the rule can be applied even
-once.  *Note The Bison Parser Algorithm: Algorithm, for further
-explanation of this.
-
-   "Indirect" or "mutual" recursion occurs when the result of the rule
-does not appear directly on its right hand side, but does appear in
-rules for other nonterminals which do appear on its right hand side.
-
-   For example:
-
-     expr:     primary
-             | primary '+' primary
-             ;
-     
-     primary:  constant
-             | '(' expr ')'
-             ;
-
-defines two mutually-recursive nonterminals, since each refers to the
-other.
-
-
-File: bison.info,  Node: Semantics,  Next: Locations,  Prev: Recursion,  Up: Grammar File
-
-Defining Language Semantics
-===========================
-
-   The grammar rules for a language determine only the syntax.  The
-semantics are determined by the semantic values associated with various
-tokens and groupings, and by the actions taken when various groupings
-are recognized.
-
-   For example, the calculator calculates properly because the value
-associated with each expression is the proper number; it adds properly
-because the action for the grouping `X + Y' is to add the numbers
-associated with X and Y.
-
-* Menu:
-
-* Value Type::        Specifying one data type for all semantic values.
-* Multiple Types::    Specifying several alternative data types.
-* Actions::           An action is the semantic definition of a grammar rule.
-* Action Types::      Specifying data types for actions to operate on.
-* Mid-Rule Actions::  Most actions go at the end of a rule.
-                      This says when, why and how to use the exceptional
-                        action in the middle of a rule.
+manual) in the epilogue of the grammar file.
 

@@ -1,32 +1,301 @@
-Ceci est le fichier Info bison.info, produit par Makeinfo version 4.0b
-à partir bison.texinfo.
+Ceci est le fichier Info bison.info, produit par Makeinfo version 4.2 à
+partir bison.texinfo.
 
-START-INFO-DIR-ENTRY
-* bison: (bison).	GNU Project parser generator (yacc replacement).
-END-INFO-DIR-ENTRY
 
-   This file documents the Bison parser generator.
+
+   This manual is for GNU Bison (version 1.75, 14 October 2002), the
+GNU parser generator.
 
    Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1995, 1998, 1999,
-2000, 2001 Free Software Foundation, Inc.
+2000, 2001, 2002 Free Software Foundation, Inc.
 
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.1 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with the Front-Cover texts
+     being "A GNU Manual," and with the Back-Cover Texts as in (a)
+     below.  A copy of the license is included in the section entitled
+     "GNU Free Documentation License."
 
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided also
-that the sections entitled "GNU General Public License" and "Conditions
-for Using Bison" are included exactly as in the original, and provided
-that the entire resulting derived work is distributed under the terms
-of a permission notice identical to this one.
+     (a) The FSF's Back-Cover Text is: "You have freedom to copy and
+     modify this GNU Manual, like GNU software.  Copies published by
+     the Free Software Foundation raise funds for GNU development."
+   
+INFO-DIR-SECTION GNU programming tools
+START-INFO-DIR-ENTRY
+* bison: (bison).	GNU parser generator (yacc replacement).
+END-INFO-DIR-ENTRY
 
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that the sections entitled "GNU General Public
-License", "Conditions for Using Bison" and this permission notice may be
-included in translations approved by the Free Software Foundation
-instead of in the original English.
+
+File: bison.info,  Node: Calling Convention,  Next: Token Values,  Up: Lexical
+
+Calling Convention for `yylex'
+------------------------------
+
+   The value that `yylex' returns must be the positive numeric code for
+the type of token it has just found; a zero or negative value signifies
+end-of-input.
+
+   When a token is referred to in the grammar rules by a name, that name
+in the parser file becomes a C macro whose definition is the proper
+numeric code for that token type.  So `yylex' can use the name to
+indicate that type.  *Note Symbols::.
+
+   When a token is referred to in the grammar rules by a character
+literal, the numeric code for that character is also the code for the
+token type.  So `yylex' can simply return that character code, possibly
+converted to `unsigned char' to avoid sign-extension.  The null
+character must not be used this way, because its code is zero and that
+signifies end-of-input.
+
+   Here is an example showing these things:
+
+     int
+     yylex (void)
+     {
+       ...
+       if (c == EOF)    /* Detect end-of-input.  */
+         return 0;
+       ...
+       if (c == '+' || c == '-')
+         return c;      /* Assume token type for `+' is '+'.  */
+       ...
+       return INT;      /* Return the type of the token.  */
+       ...
+     }
+
+This interface has been designed so that the output from the `lex'
+utility can be used without change as the definition of `yylex'.
+
+   If the grammar uses literal string tokens, there are two ways that
+`yylex' can determine the token type codes for them:
+
+   * If the grammar defines symbolic token names as aliases for the
+     literal string tokens, `yylex' can use these symbolic names like
+     all others.  In this case, the use of the literal string tokens in
+     the grammar file has no effect on `yylex'.
+
+   * `yylex' can find the multicharacter token in the `yytname' table.
+     The index of the token in the table is the token type's code.  The
+     name of a multicharacter token is recorded in `yytname' with a
+     double-quote, the token's characters, and another double-quote.
+     The token's characters are not escaped in any way; they appear
+     verbatim in the contents of the string in the table.
+
+     Here's code for looking up a token in `yytname', assuming that the
+     characters of the token are stored in `token_buffer'.
+
+          for (i = 0; i < YYNTOKENS; i++)
+            {
+              if (yytname[i] != 0
+                  && yytname[i][0] == '"'
+                  && ! strncmp (yytname[i] + 1, token_buffer,
+                                strlen (token_buffer))
+                  && yytname[i][strlen (token_buffer) + 1] == '"'
+                  && yytname[i][strlen (token_buffer) + 2] == 0)
+                break;
+            }
+
+     The `yytname' table is generated only if you use the
+     `%token-table' declaration.  *Note Decl Summary::.
+
+
+File: bison.info,  Node: Token Values,  Next: Token Positions,  Prev: Calling Convention,  Up: Lexical
+
+Semantic Values of Tokens
+-------------------------
+
+   In an ordinary (non-reentrant) parser, the semantic value of the
+token must be stored into the global variable `yylval'.  When you are
+using just one data type for semantic values, `yylval' has that type.
+Thus, if the type is `int' (the default), you might write this in
+`yylex':
+
+       ...
+       yylval = value;  /* Put value onto Bison stack.  */
+       return INT;      /* Return the type of the token.  */
+       ...
+
+   When you are using multiple data types, `yylval''s type is a union
+made from the `%union' declaration (*note The Collection of Value
+Types: Union Decl.).  So when you store a token's value, you must use
+the proper member of the union.  If the `%union' declaration looks like
+this:
+
+     %union {
+       int intval;
+       double val;
+       symrec *tptr;
+     }
+
+then the code in `yylex' might look like this:
+
+       ...
+       yylval.intval = value; /* Put value onto Bison stack.  */
+       return INT;            /* Return the type of the token.  */
+       ...
+
+
+File: bison.info,  Node: Token Positions,  Next: Pure Calling,  Prev: Token Values,  Up: Lexical
+
+Textual Positions of Tokens
+---------------------------
+
+   If you are using the `@N'-feature (*note Tracking Locations:
+Locations.) in actions to keep track of the textual locations of tokens
+and groupings, then you must provide this information in `yylex'.  The
+function `yyparse' expects to find the textual location of a token just
+parsed in the global variable `yylloc'.  So `yylex' must store the
+proper data in that variable.
+
+   By default, the value of `yylloc' is a structure and you need only
+initialize the members that are going to be used by the actions.  The
+four members are called `first_line', `first_column', `last_line' and
+`last_column'.  Note that the use of this feature makes the parser
+noticeably slower.
+
+   The data type of `yylloc' has the name `YYLTYPE'.
+
+
+File: bison.info,  Node: Pure Calling,  Prev: Token Positions,  Up: Lexical
+
+Calling Conventions for Pure Parsers
+------------------------------------
+
+   When you use the Bison declaration `%pure-parser' to request a pure,
+reentrant parser, the global communication variables `yylval' and
+`yylloc' cannot be used.  (*Note A Pure (Reentrant) Parser: Pure Decl.)
+In such parsers the two global variables are replaced by pointers
+passed as arguments to `yylex'.  You must declare them as shown here,
+and pass the information back by storing it through those pointers.
+
+     int
+     yylex (YYSTYPE *lvalp, YYLTYPE *llocp)
+     {
+       ...
+       *lvalp = value;  /* Put value onto Bison stack.  */
+       return INT;      /* Return the type of the token.  */
+       ...
+     }
+
+   If the grammar file does not use the `@' constructs to refer to
+textual positions, then the type `YYLTYPE' will not be defined.  In
+this case, omit the second argument; `yylex' will be called with only
+one argument.
+
+   If you use a reentrant parser, you can optionally pass additional
+parameter information to it in a reentrant way.  To do so, define the
+macro `YYPARSE_PARAM' as a variable name.  This modifies the `yyparse'
+function to accept one argument, of type `void *', with that name.
+
+   When you call `yyparse', pass the address of an object, casting the
+address to `void *'.  The grammar actions can refer to the contents of
+the object by casting the pointer value back to its proper type and
+then dereferencing it.  Here's an example.  Write this in the parser:
+
+     %{
+     struct parser_control
+     {
+       int nastiness;
+       int randomness;
+     };
+     
+     #define YYPARSE_PARAM parm
+     %}
+
+Then call the parser like this:
+
+     struct parser_control
+     {
+       int nastiness;
+       int randomness;
+     };
+     
+     ...
+     
+     {
+       struct parser_control foo;
+       ...  /* Store proper data in `foo'.  */
+       value = yyparse ((void *) &foo);
+       ...
+     }
+
+In the grammar actions, use expressions like this to refer to the data:
+
+     ((struct parser_control *) parm)->randomness
+
+   If you wish to pass the additional parameter data to `yylex', define
+the macro `YYLEX_PARAM' just like `YYPARSE_PARAM', as shown here:
+
+     %{
+     struct parser_control
+     {
+       int nastiness;
+       int randomness;
+     };
+     
+     #define YYPARSE_PARAM parm
+     #define YYLEX_PARAM parm
+     %}
+
+   You should then define `yylex' to accept one additional
+argument--the value of `parm'.  (This makes either two or three
+arguments in total, depending on whether an argument of type `YYLTYPE'
+is passed.)  You can declare the argument as a pointer to the proper
+object type, or you can declare it as `void *' and access the contents
+as shown above.
+
+   You can use `%pure-parser' to request a reentrant parser without
+also using `YYPARSE_PARAM'.  Then you should call `yyparse' with no
+arguments, as usual.
+
+
+File: bison.info,  Node: Error Reporting,  Next: Action Features,  Prev: Lexical,  Up: Interface
+
+The Error Reporting Function `yyerror'
+======================================
+
+   The Bison parser detects a "parse error" or "syntax error" whenever
+it reads a token which cannot satisfy any syntax rule.  An action in
+the grammar can also explicitly proclaim an error, using the macro
+`YYERROR' (*note Special Features for Use in Actions: Action Features.).
+
+   The Bison parser expects to report the error by calling an error
+reporting function named `yyerror', which you must supply.  It is
+called by `yyparse' whenever a syntax error is found, and it receives
+one argument.  For a parse error, the string is normally
+`"parse error"'.
+
+   If you define the macro `YYERROR_VERBOSE' in the Bison declarations
+section (*note The Bison Declarations Section: Bison Declarations.),
+then Bison provides a more verbose and specific error message string
+instead of just plain `"parse error"'.  It doesn't matter what
+definition you use for `YYERROR_VERBOSE', just whether you define it.
+
+   The parser can detect one other kind of error: stack overflow.  This
+happens when the input contains constructions that are very deeply
+nested.  It isn't likely you will encounter this, since the Bison
+parser extends its stack automatically up to a very large limit.  But
+if overflow happens, `yyparse' calls `yyerror' in the usual fashion,
+except that the argument string is `"parser stack overflow"'.
+
+   The following definition suffices in simple programs:
+
+     void
+     yyerror (char *s)
+     {
+       fprintf (stderr, "%s\n", s);
+     }
+
+   After `yyerror' returns to `yyparse', the latter will attempt error
+recovery if you have written suitable error recovery grammar rules
+(*note Error Recovery::).  If recovery is impossible, `yyparse' will
+immediately return 1.
+
+   The variable `yynerrs' contains the number of syntax errors
+encountered so far.  Normally this variable is global; but if you
+request a pure parser (*note A Pure (Reentrant) Parser: Pure Decl.)
+then it is a local variable which only the actions can access.
 
 
 File: bison.info,  Node: Action Features,  Prev: Error Reporting,  Up: Interface
@@ -65,10 +334,10 @@ useful in actions.
 
 `YYBACKUP (TOKEN, VALUE);'
      Unshift a token.  This macro is allowed only for rules that reduce
-     a single value, and only when there is no look-ahead token.  It
-     installs a look-ahead token with token type TOKEN and semantic
-     value VALUE; then it discards the value that was going to be
-     reduced by this rule.
+     a single value, and only when there is no look-ahead token.  It is
+     also disallowed in GLR parsers.  It installs a look-ahead token
+     with token type TOKEN and semantic value VALUE; then it discards
+     the value that was going to be reduced by this rule.
 
      If the macro is used when it is not valid, such as when there is a
      look-ahead token already, then it reports a syntax error with a
@@ -172,6 +441,7 @@ Grammar.).
 * Parser States::     The parser is a finite-state-machine with stack.
 * Reduce/Reduce::     When two rules are applicable in the same situation.
 * Mystery Conflicts::  Reduce/reduce conflicts that look unjustified.
+* Generalized LR Parsing::  Parsing arbitrary context-free grammars.
 * Stack Overflow::    What happens when stack gets full.  How to avoid it.
 
 
@@ -612,7 +882,7 @@ empty:
              ;
 
 
-File: bison.info,  Node: Mystery Conflicts,  Next: Stack Overflow,  Prev: Reduce/Reduce,  Up: Algorithm
+File: bison.info,  Node: Mystery Conflicts,  Next: Generalized LR Parsing,  Prev: Reduce/Reduce,  Up: Algorithm
 
 Mysterious Reduce/Reduce Conflicts
 ==================================
@@ -705,7 +975,79 @@ activates the altered rule for `return_spec' rather than the one for
              ;
 
 
-File: bison.info,  Node: Stack Overflow,  Prev: Mystery Conflicts,  Up: Algorithm
+File: bison.info,  Node: Generalized LR Parsing,  Next: Stack Overflow,  Prev: Mystery Conflicts,  Up: Algorithm
+
+Generalized LR (GLR) Parsing
+============================
+
+   Bison produces _deterministic_ parsers that choose uniquely when to
+reduce and which reduction to apply based on a summary of the preceding
+input and on one extra token of lookahead.  As a result, normal Bison
+handles a proper subset of the family of context-free languages.
+Ambiguous grammars, since they have strings with more than one possible
+sequence of reductions cannot have deterministic parsers in this sense.
+The same is true of languages that require more than one symbol of
+lookahead, since the parser lacks the information necessary to make a
+decision at the point it must be made in a shift-reduce parser.
+Finally, as previously mentioned (*note Mystery Conflicts::), there are
+languages where Bison's particular choice of how to summarize the input
+seen so far loses necessary information.
+
+   When you use the `%glr-parser' declaration in your grammar file,
+Bison generates a parser that uses a different algorithm, called
+Generalized LR (or GLR).  A Bison GLR parser uses the same basic
+algorithm for parsing as an ordinary Bison parser, but behaves
+differently in cases where there is a shift-reduce conflict that has not
+been resolved by precedence rules (*note Precedence::) or a
+reduce-reduce conflict.  When a GLR parser encounters such a situation,
+it effectively _splits_ into a several parsers, one for each possible
+shift or reduction.  These parsers then proceed as usual, consuming
+tokens in lock-step.  Some of the stacks may encounter other conflicts
+and split further, with the result that instead of a sequence of states,
+a Bison GLR parsing stack is what is in effect a tree of states.
+
+   In effect, each stack represents a guess as to what the proper parse
+is.  Additional input may indicate that a guess was wrong, in which case
+the appropriate stack silently disappears.  Otherwise, the semantics
+actions generated in each stack are saved, rather than being executed
+immediately.  When a stack disappears, its saved semantic actions never
+get executed.  When a reduction causes two stacks to become equivalent,
+their sets of semantic actions are both saved with the state that
+results from the reduction.  We say that two stacks are equivalent when
+they both represent the same sequence of states, and each pair of
+corresponding states represents a grammar symbol that produces the same
+segment of the input token stream.
+
+   Whenever the parser makes a transition from having multiple states
+to having one, it reverts to the normal LALR(1) parsing algorithm,
+after resolving and executing the saved-up actions.  At this
+transition, some of the states on the stack will have semantic values
+that are sets (actually multisets) of possible actions.  The parser
+tries to pick one of the actions by first finding one whose rule has
+the highest dynamic precedence, as set by the `%dprec' declaration.
+Otherwise, if the alternative actions are not ordered by precedence,
+but there the same merging function is declared for both rules by the
+`%merge' declaration, Bison resolves and evaluates both and then calls
+the merge function on the result.  Otherwise, it reports an ambiguity.
+
+   It is possible to use a data structure for the GLR parsing tree that
+permits the processing of any LALR(1) grammar in linear time (in the
+size of the input), any unambiguous (not necessarily LALR(1)) grammar in
+quadratic worst-case time, and any general (possibly ambiguous)
+context-free grammar in cubic worst-case time.  However, Bison currently
+uses a simpler data structure that requires time proportional to the
+length of the input times the maximum number of stacks required for any
+prefix of the input.  Thus, really ambiguous or non-deterministic
+grammars can require exponential time and space to process.  Such badly
+behaving examples, however, are not generally of practical interest.
+Usually, non-determinism in a grammar is local--the parser is "in
+doubt" only for a few tokens at a time.  Therefore, the current data
+structure should generally be adequate.  On LALR(1) portions of a
+grammar, in particular, it is only slightly slower than with the default
+Bison parser.
+
+
+File: bison.info,  Node: Stack Overflow,  Prev: Generalized LR Parsing,  Up: Algorithm
 
 Stack Overflow, and How to Avoid It
 ===================================
@@ -714,6 +1056,10 @@ Stack Overflow, and How to Avoid It
 and not reduced.  When this happens, the parser function `yyparse'
 returns a nonzero value, pausing only to call `yyerror' to report the
 overflow.
+
+   Becaue Bison parsers have growing stacks, hitting the upper limit
+usually results from using a right recursion instead of a left
+recursion, *Note Recursive Rules: Recursion.
 
    By defining the macro `YYMAXDEPTH', you can control how deep the
 parser stack can become before a stack overflow occurs.  Define the
@@ -733,6 +1079,12 @@ to save space for ordinary inputs that do not need much stack.
    You can control how much stack is allocated initially by defining the
 macro `YYINITDEPTH'.  This value too must be a compile-time constant
 integer.  The default is 200.
+
+   Because of semantical differences between C and C++, the LALR(1)
+parsers in C produced by Bison by compiled as C++ cannot grow.  In this
+precise case (compiling a C parser as C++) you are suggested to grow
+`YYINITDEPTH'.  In the near future, a C++ output output will be
+provided which addresses this issue.
 
 
 File: bison.info,  Node: Error Recovery,  Next: Context Dependency,  Prev: Algorithm,  Up: Top
@@ -795,7 +1147,7 @@ for error recovery.  A simple and useful strategy is simply to skip the
 rest of the current input line or current statement if an error is
 detected:
 
-     stmnt: error ';'  /* on error, skip until ';' is read */
+     stmnt: error ';'  /* On error, skip until ';' is read.  */
 
    It is also useful to recover to the matching close-delimiter of an
 opening-delimiter that has already been parsed.  Otherwise the
@@ -866,436 +1218,4 @@ parsers for such languages.
 
    (Actually, "kludge" means any technique that gets its job done but is
 neither clean nor robust.)
-
-
-File: bison.info,  Node: Semantic Tokens,  Next: Lexical Tie-ins,  Up: Context Dependency
-
-Semantic Info in Token Types
-============================
-
-   The C language has a context dependency: the way an identifier is
-used depends on what its current meaning is.  For example, consider
-this:
-
-     foo (x);
-
-   This looks like a function call statement, but if `foo' is a typedef
-name, then this is actually a declaration of `x'.  How can a Bison
-parser for C decide how to parse this input?
-
-   The method used in GNU C is to have two different token types,
-`IDENTIFIER' and `TYPENAME'.  When `yylex' finds an identifier, it
-looks up the current declaration of the identifier in order to decide
-which token type to return: `TYPENAME' if the identifier is declared as
-a typedef, `IDENTIFIER' otherwise.
-
-   The grammar rules can then express the context dependency by the
-choice of token type to recognize.  `IDENTIFIER' is accepted as an
-expression, but `TYPENAME' is not.  `TYPENAME' can start a declaration,
-but `IDENTIFIER' cannot.  In contexts where the meaning of the
-identifier is _not_ significant, such as in declarations that can
-shadow a typedef name, either `TYPENAME' or `IDENTIFIER' is
-accepted--there is one rule for each of the two token types.
-
-   This technique is simple to use if the decision of which kinds of
-identifiers to allow is made at a place close to where the identifier is
-parsed.  But in C this is not always so: C allows a declaration to
-redeclare a typedef name provided an explicit type has been specified
-earlier:
-
-     typedef int foo, bar, lose;
-     static foo (bar);        /* redeclare `bar' as static variable */
-     static int foo (lose);   /* redeclare `foo' as function */
-
-   Unfortunately, the name being declared is separated from the
-declaration construct itself by a complicated syntactic structure--the
-"declarator".
-
-   As a result, part of the Bison parser for C needs to be duplicated,
-with all the nonterminal names changed: once for parsing a declaration
-in which a typedef name can be redefined, and once for parsing a
-declaration in which that can't be done.  Here is a part of the
-duplication, with actions omitted for brevity:
-
-     initdcl:
-               declarator maybeasm '='
-               init
-             | declarator maybeasm
-             ;
-     
-     notype_initdcl:
-               notype_declarator maybeasm '='
-               init
-             | notype_declarator maybeasm
-             ;
-
-Here `initdcl' can redeclare a typedef name, but `notype_initdcl'
-cannot.  The distinction between `declarator' and `notype_declarator'
-is the same sort of thing.
-
-   There is some similarity between this technique and a lexical tie-in
-(described next), in that information which alters the lexical analysis
-is changed during parsing by other parts of the program.  The
-difference is here the information is global, and is used for other
-purposes in the program.  A true lexical tie-in has a special-purpose
-flag controlled by the syntactic context.
-
-
-File: bison.info,  Node: Lexical Tie-ins,  Next: Tie-in Recovery,  Prev: Semantic Tokens,  Up: Context Dependency
-
-Lexical Tie-ins
-===============
-
-   One way to handle context-dependency is the "lexical tie-in": a flag
-which is set by Bison actions, whose purpose is to alter the way tokens
-are parsed.
-
-   For example, suppose we have a language vaguely like C, but with a
-special construct `hex (HEX-EXPR)'.  After the keyword `hex' comes an
-expression in parentheses in which all integers are hexadecimal.  In
-particular, the token `a1b' must be treated as an integer rather than
-as an identifier if it appears in that context.  Here is how you can do
-it:
-
-     %{
-     int hexflag;
-     %}
-     %%
-     ...
-     expr:   IDENTIFIER
-             | constant
-             | HEX '('
-                     { hexflag = 1; }
-               expr ')'
-                     { hexflag = 0;
-                        $$ = $4; }
-             | expr '+' expr
-                     { $$ = make_sum ($1, $3); }
-             ...
-             ;
-     
-     constant:
-               INTEGER
-             | STRING
-             ;
-
-Here we assume that `yylex' looks at the value of `hexflag'; when it is
-nonzero, all integers are parsed in hexadecimal, and tokens starting
-with letters are parsed as integers if possible.
-
-   The declaration of `hexflag' shown in the C declarations section of
-the parser file is needed to make it accessible to the actions (*note
-The C Declarations Section: C Declarations.).  You must also write the
-code in `yylex' to obey the flag.
-
-
-File: bison.info,  Node: Tie-in Recovery,  Prev: Lexical Tie-ins,  Up: Context Dependency
-
-Lexical Tie-ins and Error Recovery
-==================================
-
-   Lexical tie-ins make strict demands on any error recovery rules you
-have.  *Note Error Recovery::.
-
-   The reason for this is that the purpose of an error recovery rule is
-to abort the parsing of one construct and resume in some larger
-construct.  For example, in C-like languages, a typical error recovery
-rule is to skip tokens until the next semicolon, and then start a new
-statement, like this:
-
-     stmt:   expr ';'
-             | IF '(' expr ')' stmt { ... }
-             ...
-             error ';'
-                     { hexflag = 0; }
-             ;
-
-   If there is a syntax error in the middle of a `hex (EXPR)'
-construct, this error rule will apply, and then the action for the
-completed `hex (EXPR)' will never run.  So `hexflag' would remain set
-for the entire rest of the input, or until the next `hex' keyword,
-causing identifiers to be misinterpreted as integers.
-
-   To avoid this problem the error recovery rule itself clears
-`hexflag'.
-
-   There may also be an error recovery rule that works within
-expressions.  For example, there could be a rule which applies within
-parentheses and skips to the close-parenthesis:
-
-     expr:   ...
-             | '(' expr ')'
-                     { $$ = $2; }
-             | '(' error ')'
-             ...
-
-   If this rule acts within the `hex' construct, it is not going to
-abort that construct (since it applies to an inner level of parentheses
-within the construct).  Therefore, it should not clear the flag: the
-rest of the `hex' construct should be parsed with the flag still in
-effect.
-
-   What if there is an error recovery rule which might abort out of the
-`hex' construct or might not, depending on circumstances?  There is no
-way you can write the action to determine whether a `hex' construct is
-being aborted or not.  So if you are using a lexical tie-in, you had
-better make sure your error recovery rules are not of this kind.  Each
-rule must be such that you can be sure that it always will, or always
-won't, have to clear the flag.
-
-
-File: bison.info,  Node: Debugging,  Next: Invocation,  Prev: Context Dependency,  Up: Top
-
-Debugging Your Parser
-*********************
-
-   If a Bison grammar compiles properly but doesn't do what you want
-when it runs, the `yydebug' parser-trace feature can help you figure
-out why.
-
-   To enable compilation of trace facilities, you must define the macro
-`YYDEBUG' to a nonzero value when you compile the parser.  You could
-use `-DYYDEBUG=1' as a compiler option or you could put `#define
-YYDEBUG 1' in the C declarations section of the grammar file (*note The
-C Declarations Section: C Declarations.).  Alternatively, use the `-t'
-option when you run Bison (*note Invoking Bison: Invocation.) or the
-`%debug' declaration (*note Bison Declaration Summary: Decl Summary.).
-We suggest that you always define `YYDEBUG' so that debugging is always
-possible.
-
-   The trace facility outputs messages with macro calls of the form
-`YYFPRINTF (stderr, FORMAT, ARGS)' where FORMAT and ARGS are the usual
-`printf' format and arguments.  If you define `YYDEBUG' to a nonzero
-value but do not define `YYFPRINTF', `<stdio.h>' is automatically
-included and `YYPRINTF' is defined to `fprintf'.  In the same
-situation, C++ parsers include `<cstdio>' and use `std::fprintf'
-instead.
-
-   Once you have compiled the program with trace facilities, the way to
-request a trace is to store a nonzero value in the variable `yydebug'.
-You can do this by making the C code do it (in `main', perhaps), or you
-can alter the value with a C debugger.
-
-   Each step taken by the parser when `yydebug' is nonzero produces a
-line or two of trace information, written on `stderr'.  The trace
-messages tell you these things:
-
-   * Each time the parser calls `yylex', what kind of token was read.
-
-   * Each time a token is shifted, the depth and complete contents of
-     the state stack (*note Parser States::).
-
-   * Each time a rule is reduced, which rule it is, and the complete
-     contents of the state stack afterward.
-
-   To make sense of this information, it helps to refer to the listing
-file produced by the Bison `-v' option (*note Invoking Bison:
-Invocation.).  This file shows the meaning of each state in terms of
-positions in various rules, and also what each state will do with each
-possible input token.  As you read the successive trace messages, you
-can see that the parser is functioning according to its specification
-in the listing file.  Eventually you will arrive at the place where
-something undesirable happens, and you will see which parts of the
-grammar are to blame.
-
-   The parser file is a C program and you can use C debuggers on it,
-but it's not easy to interpret what it is doing.  The parser function
-is a finite-state machine interpreter, and aside from the actions it
-executes the same code over and over.  Only the values of variables
-show where in the grammar it is working.
-
-   The debugging information normally gives the token type of each token
-read, but not its semantic value.  You can optionally define a macro
-named `YYPRINT' to provide a way to print the value.  If you define
-`YYPRINT', it should take three arguments.  The parser will pass a
-standard I/O stream, the numeric code for the token type, and the token
-value (from `yylval').
-
-   Here is an example of `YYPRINT' suitable for the multi-function
-calculator (*note Declarations for `mfcalc': Mfcalc Decl.):
-
-     #define YYPRINT(file, type, value)   yyprint (file, type, value)
-     
-     static void
-     yyprint (FILE *file, int type, YYSTYPE value)
-     {
-       if (type == VAR)
-         fprintf (file, " %s", value.tptr->name);
-       else if (type == NUM)
-         fprintf (file, " %d", value.val);
-     }
-
-
-File: bison.info,  Node: Invocation,  Next: Table of Symbols,  Prev: Debugging,  Up: Top
-
-Invoking Bison
-**************
-
-   The usual way to invoke Bison is as follows:
-
-     bison INFILE
-
-   Here INFILE is the grammar file name, which usually ends in `.y'.
-The parser file's name is made by replacing the `.y' with `.tab.c'.
-Thus, the `bison foo.y' filename yields `foo.tab.c', and the `bison
-hack/foo.y' filename yields `hack/foo.tab.c'. It's is also possible, in
-case you are writing C++ code instead of C in your grammar file, to
-name it `foo.ypp' or `foo.y++'. Then, the output files will take an
-extention like the given one as input (repectively `foo.tab.cpp' and
-`foo.tab.c++').  This feature takes effect with all options that
-manipulate filenames like `-o' or `-d'.
-
-   For example :
-
-     bison -d INFILE.YXX
-
-will produce `infile.tab.cxx' and `infile.tab.hxx'. and
-
-     bison -d INFILE.Y -o OUTPUT.C++
-
-will produce `output.c++' and `outfile.h++'.
-
-* Menu:
-
-* Bison Options::     All the options described in detail,
-			in alphabetical order by short options.
-* Environment Variables::  Variables which affect Bison execution.
-* Option Cross Key::  Alphabetical list of long options.
-* VMS Invocation::    Bison command syntax on VMS.
-
-
-File: bison.info,  Node: Bison Options,  Next: Environment Variables,  Up: Invocation
-
-Bison Options
-=============
-
-   Bison supports both traditional single-letter options and mnemonic
-long option names.  Long option names are indicated with `--' instead of
-`-'.  Abbreviations for option names are allowed as long as they are
-unique.  When a long option takes an argument, like `--file-prefix',
-connect the option name and the argument with `='.
-
-   Here is a list of options that can be used with Bison, alphabetized
-by short option.  It is followed by a cross key alphabetized by long
-option.
-
-Operations modes:
-`-h'
-`--help'
-     Print a summary of the command-line options to Bison and exit.
-
-`-V'
-`--version'
-     Print the version number of Bison and exit.
-
-`-y'
-`--yacc'
-`--fixed-output-files'
-     Equivalent to `-o y.tab.c'; the parser output file is called
-     `y.tab.c', and the other outputs are called `y.output' and
-     `y.tab.h'.  The purpose of this option is to imitate Yacc's output
-     file name conventions.  Thus, the following shell script can
-     substitute for Yacc:
-
-          bison -y $*
-
-Tuning the parser:
-
-`-S FILE'
-`--skeleton=FILE'
-     Specify the skeleton to use.  You probably don't need this option
-     unless you are developing Bison.
-
-`-t'
-`--debug'
-     In the parser file, define the macro `YYDEBUG' to 1 if it is not
-     already defined, so that the debugging facilities are compiled.
-     *Note Debugging Your Parser: Debugging.
-
-`--locations'
-     Pretend that `%locations' was specified.  *Note Decl Summary::.
-
-`-p PREFIX'
-`--name-prefix=PREFIX'
-     Pretend that `%name-prefix="PREFIX"' was specified.  *Note Decl
-     Summary::.
-
-`-l'
-`--no-lines'
-     Don't put any `#line' preprocessor commands in the parser file.
-     Ordinarily Bison puts them in the parser file so that the C
-     compiler and debuggers will associate errors with your source
-     file, the grammar file.  This option causes them to associate
-     errors with the parser file, treating it as an independent source
-     file in its own right.
-
-`-n'
-`--no-parser'
-     Pretend that `%no-parser' was specified.  *Note Decl Summary::.
-
-`-k'
-`--token-table'
-     Pretend that `%token-table' was specified.  *Note Decl Summary::.
-
-Adjust the output:
-
-`-d'
-`--defines'
-     Pretend that `%defines' was specified, i.e., write an extra output
-     file containing macro definitions for the token type names defined
-     in the grammar and the semantic value type `YYSTYPE', as well as a
-     few `extern' variable declarations.  *Note Decl Summary::.
-
-`--defines=DEFINES-FILE'
-     Same as above, but save in the file DEFINES-FILE.
-
-`-b FILE-PREFIX'
-`--file-prefix=PREFIX'
-     Pretend that `%verbose' was specified, i.e, specify prefix to use
-     for all Bison output file names. *Note Decl Summary::.
-
-`-v'
-`--verbose'
-     Pretend that `%verbose' was specified, i.e, write an extra output
-     file containing verbose descriptions of the grammar and parser.
-     *Note Decl Summary::.
-
-`-o FILENAME'
-`--output=FILENAME'
-     Specify the FILENAME for the parser file.
-
-     The other output files' names are constructed from FILENAME as
-     described under the `-v' and `-d' options.
-
-`-g'
-     Output a VCG definition of the LALR(1) grammar automaton computed
-     by Bison. If the grammar file is `foo.y', the VCG output file will
-     be `foo.vcg'.
-
-`--graph=GRAPH-FILE'
-     The behaviour of -GRAPH is the same than `-g'. The only difference
-     is that it has an optionnal argument which is the name of the
-     output graph filename.
-
-
-File: bison.info,  Node: Environment Variables,  Next: Option Cross Key,  Prev: Bison Options,  Up: Invocation
-
-Environment Variables
-=====================
-
-   Here is a list of environment variables which affect the way Bison
-runs.
-
-`BISON_SIMPLE'
-`BISON_HAIRY'
-     Much of the parser generated by Bison is copied verbatim from a
-     file called `bison.simple'.  If Bison cannot find that file, or if
-     you would like to direct Bison to use a different copy, setting the
-     environment variable `BISON_SIMPLE' to the path of the file will
-     cause Bison to use that copy instead.
-
-     When the `%semantic_parser' declaration is used, Bison copies from
-     a file called `bison.hairy' instead.  The location of this file can
-     also be specified or overridden in a similar fashion, with the
-     `BISON_HAIRY' environment variable.
 
