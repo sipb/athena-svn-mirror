@@ -1,0 +1,8 @@
+Name: athena-libdaemon
+Summary: Libdaemon, a generic daeemon library, for athena.
+License: GPL
+Group: System Environment/Libraries
+
+%description
+Libdaemon is a lightweight C library that eases the writing of UNIX
+daemons.
