@@ -6,9 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-#ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.6 1990-05-04 15:40:02 jfc Exp $";
-#endif lint
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.7 1990-07-04 15:53:52 jfc Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -585,8 +583,9 @@ attachcmd(argc, argv)
 		skip_fsck = 1;
 		break;
    	    case 'U':
+		++i;
 		if (trusted_user(real_uid)) {
-			if (argv[++i])
+			if (argv[i])
 				owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
@@ -729,9 +728,13 @@ detachcmd(argc, argv)
 		}
 		break;
    	    case 'U':
+		++i;
 		if (trusted_user(real_uid)) {
-			if (argv[++i])
-				owner_uid = parse_username(argv[i]);
+			if (!argv[i]) {
+				fprintf(stderr, "Username required with -U.\n");
+				return (ERR_BADARGS);
+			}
+			owner_uid = parse_username(argv[i]);
 		} else {
 			fprintf(stderr,
 		"Sorry, you're not authorized to use the -user option\n");
@@ -745,7 +748,7 @@ detachcmd(argc, argv)
 		"Sorry, you're not authorized to use the -clean option\n");
 		}
 		break;
-	    default:
+	default:
 		fprintf(stderr, "Unknown switch %s\n", argv[i]);
 		return (ERR_BADARGS);
 	    }
