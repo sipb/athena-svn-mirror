@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.12 1997-05-16 02:23:20 ghudson Exp $
+# $Id: phase3.sh,v 1.13 1997-07-26 16:46:46 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -26,16 +26,18 @@ cd /
 echo "Making dirs on root"
 mkdir /root/var
 mkdir /root/usr
-mkdir /root/tmp
 mkdir /root/proc
-#ln -s var/opt /root/opt
+ln -s var/rtmp /root/tmp
 
 echo "Mount var, usr , var/usr/vice..."
 /sbin/mount  $vardrive /root/var
 /sbin/mount  $usrdrive /root/usr
-chmod 1777 /root/tmp
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
+mkdir /root/var/tmp
+mkdir /root/var/rtmp
+chmod 1777 /root/var/tmp
+chmod 1777 /root/var/rtmp
 
 
 echo "Copying file system from installation srvd to new filesys..."
@@ -142,12 +144,6 @@ echo "Updating vfstab"
 cp -p /srvd/etc/vfstab.std etc/vfstab
 cp /dev/null etc/named.local
 
-
-
-echo "Making /var/tmp"
-cd /root/var
-mkdir tmp 2>/dev/null
-chmod 1777 tmp
 
 cd /var/usr/vice
 for i in  CellServDB SuidCells 
