@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.50 1992-05-19 13:54:00 cfields Exp $
+ * $Id: login.c,v 1.51 1992-06-03 13:53:09 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.50 1992-05-19 13:54:00 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.51 1992-06-03 13:53:09 lwvanels Exp $";
 #endif
 
 /*
@@ -132,7 +132,7 @@ char	get_motd[] =	"get_message";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 #ifdef POSIX
-struct  passwd nouser = {"",		/* name */
+struct  passwd nouser = {"        ",		/* name */
                              "nope",	/* passwd */
                              -2,	/* uid */
 #ifdef ultrix
