@@ -109,6 +109,7 @@ dashmd)
   ;;
 
 sgi)
+  exec "$@"
   if test "$libtool" = yes; then
     "$@" "-Wc,-MDupdate,$tmpdepfile"
   else

@@ -1,0 +1,10 @@
+Name: athena-gms
+Summary: A library used by the global Athena message service
+Copyright: MIT
+Group: Applications/Communications
+
+Requires: athena-libet
+
+%description
+The gms library defines error codes and constants used by get_message
+and messaged, the components of the global Athena message service.

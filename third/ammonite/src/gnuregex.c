@@ -31,6 +31,10 @@
 # include <config.h>	/* Tinyproxy uses defines.h for autoconf defs */
 #endif
 
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
+#endif
+
 #ifndef PARAMS
 # if defined __GNUC__ || (defined __STDC__ && __STDC__)
 #  define PARAMS(args) args

@@ -13,7 +13,7 @@ static char yysccsid[] = "@(#)yaccpar	1.9 (Berkeley) 02/21/93 (BSDI)";
 #define YYPREFIX "yy"
 #line 2 "ns_parser.y"
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_parser.c,v 1.1.1.2 1998-05-12 18:10:31 ghudson Exp $";
+static char rcsid[] = "$Id: ns_parser.c,v 1.3 2000-04-22 04:39:49 ghudson Exp $";
 #endif /* not lint */
 
 /*

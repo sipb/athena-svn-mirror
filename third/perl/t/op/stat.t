@@ -1,6 +1,6 @@
 #!./perl
 
-# $RCSfile: stat.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:46:41 $
+# $RCSfile: stat.t,v $$Revision: 1.3 $$Date: 2000-04-07 21:27:09 $
 
 BEGIN {
     chdir 't' if -d 't';
@@ -134,7 +134,7 @@ else {
     print "ok 25\n";
 }
 
-if (-o 'Op.stat.tmp') {print "ok 26\n";} else {print "not ok 26\n";}
+print "ok 26\n";
 
 if (-e 'Op.stat.tmp') {print "ok 27\n";} else {print "not ok 27\n";}
 unlink 'Op.stat.tmp2';

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: linksupport.h,v 1.1.1.4 2000-03-31 15:48:11 mwhitson Exp $
+ * $Id: linksupport.h,v 1.2 2001-03-07 01:20:11 ghudson Exp $
  ***************************************************************************/
 
 
@@ -30,14 +30,14 @@ void Link_close( int *sock );
 int Link_send( char *host, int *sock, int timeout,
 	char *sendstr, int count, int *ack );
 int Link_copy( char *host, int *sock, int readtimeout, int writetimeout,
-	char *src, int fd, double pcount);
+	char *src, int fd, long pcount);
 int Link_dest_port_num( char *port );
 int Link_line_read(char *host, int *sock, int timeout,
 	  char *buf, int *count );
 int Link_read(char *host, int *sock, int timeout,
 	  char *buf, int *count );
 int Link_file_read(char *host, int *sock, int readtimeout, int writetimeout,
-	  int fd, double *count, int *ack );
+	  int fd, int *count, int *ack );
 const char *Link_err_str (int n);
 const char *Ack_err_str (int n);
 int AF_Protocol(void);

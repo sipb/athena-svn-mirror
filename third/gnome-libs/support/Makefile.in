@@ -359,22 +359,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-findme.lo findme.o : findme.c ../config.h getopt.h findme.h
-gnome-argp.lo gnome-argp.o : gnome-argp.c ../config.h
-poptconfig.lo poptconfig.o : poptconfig.c ../config.h getopt.h \
-	popt-gnome.h poptint.h
-popthelp.lo popthelp.o : popthelp.c ../config.h popt-gnome.h poptint.h
-popt.lo popt.o : popt.c ../config.h getopt.h findme.h popt-gnome.h \
-	poptint.h
-poptparse.lo poptparse.o : poptparse.c ../config.h popt-gnome.h
-
 info-am:
 info: info-am
 dvi-am:

@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Tue Mar 16 10:50:06 1999
+%%CreationDate: Thu May  7 13:34:50 1998
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 2
@@ -290,138 +290,127 @@ F .084(tion \214le guide included with this distrib)72 216 R .084
 (n, then the def).15 F .336
 (ault con\214guration \214le is used The master \214le consists of)-.1 F
 1.593(control information and a list of resource records for objects in the zone of the forms: $INCLUDE <\214lename>)
-72 360 R 1.021(<opt_domain> $ORIGIN <domain> $TTL <ttl> <domain> <opt_ttl> <opt_class> <type> <resource_record_data>)
-72 372 R .027(where: is for root, for the current origin, or a standard domain name. If is a standard domain name that does end with)
-72 384 R .014(the current origin is appended to the domain. Domain names ending with are unmodi\214ed.)
-72 396 R .013(This \214eld is used to de\214ne)5.013 F .338
-(an origin for the data in an included \214le.)72 408 R .339(It is equi)
-5.339 F -.25(va)-.25 G .339
-(lent to placing an statement before the \214rst line of the included)
-.25 F 2.749(\214le. The)72 420 R .249(\214eld is optional.)2.749 F .248
-(Neither the \214eld nor statements in the included \214le modify the current origin for this \214le.)
-5.249 F 3.83(Ai)72 432 S(nte)-3.83 E 1.33(ger number that sets the def)
--.15 F 1.33(ault time-to-li)-.1 F 1.631 -.15(ve f)-.25 H 1.331
-(or future records without an e).15 F 1.331(xplicit ttl.)-.15 F 1.331
-(An optional inte)6.331 F(ger)-.15 E .394(number for the time-to-li)72
-444 R .694 -.15(ve \214)-.25 H 2.894(eld. If).15 F .394
-(not set the ttl is tak)2.894 F .394(en from the last $TTL statement.)
--.1 F .393(If no $TTL statement has)5.394 F .611(occured then the SO)72
-456 R 3.111(Am)-.35 G .611(inimum v)-3.111 F .611(alue is used and a w)
--.25 F .611(arning is generated.)-.1 F .611
-(The object address type; currently only)5.611 F .124
-(one type is supported, for objects connected to the D)72 468 R(ARP)-.4
-E 2.623(AI)-.92 G 2.623(nternet. This)-2.623 F .123
-(\214eld contains one of the follo)2.623 F .123(wing tok)-.25 F(ens;)-.1
-E .396(the data e)72 480 R .396(xpected in the \214eld is in parentheses: a host address \(dotted-quad IP address\) an authoritati)
--.15 F .697 -.15(ve n)-.25 H .397(ame serv).15 F(er)-.15 E .733
-(\(domain\) a mail e)72 492 R .733
-(xchanger \(domain\), preceded by a preference v)-.15 F .732
-(alue \(0..32767\), with lo)-.25 F .732(wer numeric v)-.25 F .732
-(alues repre-)-.25 F .666(senting higher logical preferences.)72 504 R
-.667(the canonical name for an alias \(domain\) marks the start of a zone of authority)
-5.666 F .128(\(domain of originating host, domain address of maintainer)
-72 516 R 2.628(,as)-.4 G .128(erial number and the follo)-2.628 F .128
-(wing parameters in seconds:)-.25 F .167(refresh, retry)72 528 R 2.667
-(,e)-.65 G .167(xpire and minimum TTL \(see RFC 883 and RFC 2308\)\).)
--2.817 F 2.667(an)5.167 G .167
-(ull resource record \(no format or data\) a)-2.667 F .465
-(Responsible Person for some domain name \(mailbox, TXT)72 540 R .464
-(-referral\) a domain name pointer \(domain\) host informa-)-.92 F .524
-(tion \(cpu_type OS_type\) Resource records normally end at the end of a line, b)
-72 552 R .524(ut may be continued across lines be-)-.2 F 1.234
-(tween opening and closing parentheses.)72 564 R 1.233
-(Comments are introduced by semicolons and continue to the end of the)
-6.233 F 2.994(line. There)72 576 R .494
-(are other resource record types not sho)2.994 F .494(wn here.)-.25 F
--1.1(Yo)5.494 G 2.995(us)1.1 G .495
-(hould consult the Operations Guide for the com-)-2.995 F .462
-(plete list.)72 588 R .461(Some resource record types may ha)5.462 F
-.761 -.15(ve b)-.2 H .461(een standardized in ne).15 F .461(wer RFC')
--.25 F 2.961(sb)-.55 G .461(ut not yet implemented in this)-3.161 F -.15
-(ve)72 600 S .48(rsion of Each master zone \214le should be).15 F .48
-(gin with an SO)-.15 F 2.98(Ar)-.35 G .48(ecord for the zone.)-2.98 F
-.48(An e)5.48 F .48(xample SO)-.15 F 2.98(Ar)-.35 G .48
-(ecord is as fol-)-2.98 F(lo)72 612 Q 42.08(ws: @)-.25 F 22.95(IN SO)
-26.79 F 16.35(Au)-.35 G(cb)-16.35 E -.25(va)-.15 G(x.Berk).25 E(ele)-.1
-E -.65(y.)-.15 G 42.08(EDU. rwh.ucb).65 F -.25(va)-.15 G(x.Berk).25 E
-(ele)-.1 E -.65(y.)-.15 G 42.08(EDU. \().65 F 19.5(1989020501 ;)216 624
-R 147.173(serial 10800)5.673 F 5.674(;r)11 G(efresh)-5.674 E 13.5
-(3600 ;)216 636 R 161.073(retry 3600000)19.574 F 19.573(;e)1 G(xpire)
--19.723 E .827(86400 \))216 648 R 3.327(;m)28.45 G .827(inimum The SO)
--3.327 F 3.327(As)-.35 G .827(peci\214es a serial number)-3.327 F 3.328
-(,w)-.4 G .828(hich should be)-3.328 F .38
-(changed each time the master \214le is changed.)72 660 R .379
-(Note that the serial number can be gi)5.38 F -.15(ve)-.25 G 2.879(na)
-.15 G 2.879(sad)-2.879 G .379(otted number)-2.879 F 2.879(,b)-.4 G .379
-(ut this)-3.079 F .095
-(is a unwise thing to do since the translation to normal inte)72 672 R
-.096(gers is via concatenation rather than multiplication and ad-)-.15 F
-3.164(dition. Y)72 684 R .664(ou can spell out the year)-1.1 F 3.164(,m)
--.4 G .664(onth, day of month, and 0..99 v)-3.164 F .664
-(ersion number and still \214t inside the unsigned)-.15 F .69
-(32-bit size of this \214eld.)72 696 R(\(It')5.69 E 3.19(st)-.55 G .69
-(rue that we will ha)-3.19 F .99 -.15(ve t)-.2 H 3.19(or).15 G .691
-(ethink this strate)-3.19 F .691(gy in the year 4294, b)-.15 F .691
-(ut we')-.2 F .691(re not w)-.5 F(orried)-.1 E .17(about it.\))72 708 R
-.17(Secondary serv)5.17 F .17(ers check the serial number at interv)-.15
-F .169(als speci\214ed by the refresh time in seconds; if the seri-)-.25
-F .198(al number changes, a zone transfer will be done to load the ne)72
-720 R 2.699(wd)-.25 G 2.699(ata. If)-2.699 F 2.699(am)2.699 G .199
-(aster serv)-2.699 F .199(er cannot be contacted when a)-.15 F .331
-(refresh is due, the retry time speci\214es the interv)72 732 R .331
-(al at which refreshes should be attempted.)-.25 F .331
-(If a master serv)5.331 F .331(er cannot)-.15 F .636
-(be contacted within the interv)72 744 R .637(al gi)-.25 F -.15(ve)-.25
-G 3.137(nb).15 G 3.137(yt)-3.137 G .637(he e)-3.137 F .637
-(xpire time, all data from the zone is discarded by secondary serv)-.15
-F(ers.)-.15 E .936(The minimum v)72 756 R .936
-(alue is the cache time-to-li)-.25 F 1.235 -.15(ve f)-.25 H .935(or ne)
-.15 F -.05(ga)-.15 G(ti).05 E 1.235 -.15(ve a)-.25 H .935
-(nswers \(RFC 2308\).).15 F .935(The boot \214le directi)5.935 F -.15
-(ve)-.25 G 3.435(sa).15 G .935(nd ha)-3.435 F -.15(ve)-.2 G .816
-(been obsoleted by a more useful, resolv)72 768 R(er)-.15 E .816
-(-based implementation of suf)-.2 F .816
-(\214xing for partially-quali\214ed domain names.)-.25 F .609
-(The prior mechanisms could f)72 780 R .609
-(ail under a number of situations, especially when then local nameserv)
--.1 F .608(er did not ha)-.15 F -.15(ve)-.2 G 1.4(complete information.)
-72 792 R 1.4(The follo)6.4 F 1.4(wing signals ha)-.25 F 1.7 -.15(ve t)
--.2 H 1.401(he speci\214ed ef).15 F 1.401(fect when sent to the serv)
--.25 F 1.401(er process using the)-.15 F EP
+72 360 R .41(<opt_domain> $ORIGIN <domain> <domain> <opt_ttl> <opt_class> <type> <resource_record_data> where: is for)
+72 372 R .385(root, for the current origin, or a standard domain name. If is a standard domain name that does end with the current)
+72 384 R .393(origin is appended to the domain. Domain names ending with are unmodi\214ed.)
+72 396 R .393(This \214eld is used to de\214ne an origin)5.393 F .338
+(for the data in an included \214le.)72 408 R .338(It is equi)5.338 F
+-.25(va)-.25 G .339(lent to placing an statement before the \214rst line of the included \214le.)
+.25 F(The)5.339 E .513(\214eld is optional.)72 420 R .512(Neither the \214eld nor statements in the included \214le modify the current origin for this \214le.)
+5.513 F .512(An op-)5.512 F .068(tional inte)72 432 R .069
+(ger number for the time-to-li)-.15 F .369 -.15(ve \214)-.25 H 2.569
+(eld. It).15 F(def)2.569 E .069(aults to zero, meaning the minimum v)-.1
+F .069(alue speci\214ed in the SO)-.25 F(A)-.35 E 1.392
+(record for the zone.)72 444 R 1.391(The object address type; currently only one type is supported, for objects connected to the)
+6.391 F -.4(DA)72 456 S(RP).4 E 3.034(AI)-.92 G 3.034(nternet. This)
+-3.034 F .534(\214eld contains one of the follo)3.034 F .534(wing tok)
+-.25 F .534(ens; the data e)-.1 F .535
+(xpected in the \214eld is in parentheses: a)-.15 F .888
+(host address \(dotted-quad IP address\) an authoritati)72 468 R 1.188
+-.15(ve n)-.25 H .888(ame serv).15 F .888(er \(domain\) a mail e)-.15 F
+.887(xchanger \(domain\), preceded)-.15 F .615(by a preference v)72 480
+R .615(alue \(0..32767\), with lo)-.25 F .615(wer numeric v)-.25 F .615
+(alues representing higher logical preferences.)-.25 F .615
+(the canonical)5.615 F 1.039(name for an alias \(domain\) marks the start of a zone of authority \(domain of originating host, domain address of)
+72 492 R(maintainer)72 504 Q 3.218(,as)-.4 G .718
+(erial number and the follo)-3.218 F .718
+(wing parameters in seconds: refresh, retry)-.25 F 3.218(,e)-.65 G .718
+(xpire and minimum TTL \(see)-3.368 F .238(RFC 883\)\).)72 516 R 2.738
+(an)5.238 G .238(ull resource record \(no format or data\) a Responsible Person for some domain name \(mailbox, TXT)
+-2.738 F(-)-.92 E .896(referral\) a domain name pointer \(domain\) host information \(cpu_type OS_type\) Resource records normally end at)
+72 528 R .29(the end of a line, b)72 540 R .29(ut may be continued across lines between opening and closing parentheses.)
+-.2 F .29(Comments are intro-)5.29 F .084
+(duced by semicolons and continue to the end of the line.)72 552 R .084
+(There are other resource record types not sho)5.084 F .084(wn here.)
+-.25 F -1.1(Yo)5.084 G(u)1.1 E .354
+(should consult the Operations Guide for the complete list.)72 564 R
+.354(Some resource record types may ha)5.354 F .653 -.15(ve b)-.2 H .353
+(een standardized).15 F .568(in ne)72 576 R .568(wer RFC')-.25 F 3.068
+(sb)-.55 G .568(ut not yet implemented in this v)-3.268 F .568
+(ersion of Each master zone \214le should be)-.15 F .568(gin with an SO)
+-.15 F 3.068(Ar)-.35 G(ecord)-3.068 E 1.684(for the zone.)72 588 R 1.684
+(An e)6.684 F 1.684(xample SO)-.15 F 4.184(Ar)-.35 G 1.683
+(ecord is as follo)-4.184 F 1.683(ws: @)-.25 F 22.95(IN SO)26.79 F 16.35
+(Au)-.35 G(cb)-16.35 E -.25(va)-.15 G(x.Berk).25 E(ele)-.1 E -.65(y.)
+-.15 G 1.683(EDU. rwh.ucb-).65 F -.25(va)72 600 S(x.Berk).25 E(ele)-.1 E
+-.65(y.)-.15 G 46.43(EDU. \().65 F 19.5(1989020501 ;)192.93 F(serial)
+48.93 E 8.5(10800 ;)216 612 R 160.1(refresh 3600)18.6 F 18.6(;r)16 G
+(etry)-18.6 E -1.5(3600000 ;)216 624 R -.15(ex)5.13 G 146.63(pire 86400)
+.15 F 5.17(\);)5.13 G 2.63(minimum The)-.04 F(SO)72 636 Q 3.17(As)-.35 G
+.67(peci\214es a serial number)-3.17 F 3.17(,w)-.4 G .669
+(hich should be changed each time the master \214le is changed.)-3.17 F
+.669(Note that the serial)5.669 F .581(number can be gi)72 648 R -.15
+(ve)-.25 G 3.081(na).15 G 3.082(sad)-3.081 G .582(otted number)-3.082 F
+3.082(,b)-.4 G .582
+(ut this is a unwise thing to do since the translation to normal inte)
+-3.282 F .582(gers is)-.15 F 1.314
+(via concatenation rather than multiplication and addition.)72 660 R
+-1.1(Yo)6.314 G 3.814(uc)1.1 G 1.313(an spell out the year)-3.814 F
+3.813(,m)-.4 G 1.313(onth, day of month, and)-3.813 F .577(0..99 v)72
+672 R .577(ersion number and still \214t inside the unsigned 32-bit size of this \214eld.)
+-.15 F(\(It')5.578 E 3.078(st)-.55 G .578(rue that we will ha)-3.078 F
+.878 -.15(ve t)-.2 H 3.078(or).15 G(ethink)-3.078 E .03(this strate)72
+684 R .03(gy in the year 4294, b)-.15 F .03(ut we')-.2 F .03(re not w)
+-.5 F .029(orried about it.\))-.1 F .029(Secondary serv)5.029 F .029
+(ers check the serial number at interv)-.15 F(als)-.25 E .609(speci\214ed by the refresh time in seconds; if the serial number changes, a zone transfer will be done to load the ne)
+72 696 R(w)-.25 E 3.039(data. If)72 708 R 3.039(am)3.039 G .539
+(aster serv)-3.039 F .539(er cannot be contacted when a refresh is due, the retry time speci\214es the interv)
+-.15 F .538(al at which re-)-.25 F .417(freshes should be attempted.)72
+720 R .417(If a master serv)5.417 F .417
+(er cannot be contacted within the interv)-.15 F .418(al gi)-.25 F -.15
+(ve)-.25 G 2.918(nb).15 G 2.918(yt)-2.918 G .418(he e)-2.918 F .418
+(xpire time, all)-.15 F .278
+(data from the zone is discarded by secondary serv)72 732 R 2.777
+(ers. The)-.15 F .277(minimum v)2.777 F .277(alue is the time-to-li)-.25
+F .577 -.15(ve u)-.25 H .277(sed by records in the).15 F .415
+(\214le with no e)72 744 R .415(xplicit time-to-li)-.15 F .715 -.15
+(ve v)-.25 H 2.915(alue. The)-.1 F .415(boot \214le directi)2.915 F -.15
+(ve)-.25 G 2.915(sa).15 G .415(nd ha)-2.915 F .715 -.15(ve b)-.2 H .415
+(een obsoleted by a more useful, resolv).15 F(er)-.15 E(-)-.2 E .918
+(based implementation of suf)72 756 R .918
+(\214xing for partially-quali\214ed domain names.)-.25 F .918
+(The prior mechanisms could f)5.918 F .917(ail under a)-.1 F .291
+(number of situations, especially when then local nameserv)72 768 R .291
+(er did not ha)-.15 F .592 -.15(ve c)-.2 H .292(omplete information.).15
+F .292(The follo)5.292 F .292(wing sig-)-.25 F .548(nals ha)72 780 R
+.848 -.15(ve t)-.2 H .548(he speci\214ed ef).15 F .548
+(fect when sent to the serv)-.25 F .547
+(er process using the command: Causes serv)-.15 F .547
+(er to read and reload)-.15 F .72(the database.)72 792 R .72
+(If the serv)5.72 F .72(er is b)-.15 F .721
+(uilt with the compile-time option, then will also cause the serv)-.2 F
+.721(er to check the serial)-.15 F EP
 %%Page: 2 2
 %%BeginPageSetup
 BP
 %%EndPageSetup
-/F0 10/Times-Roman@0 SF .863(command: Causes serv)72 12 R .862
-(er to read and reload the database.)-.15 F .862(If the serv)5.862 F
-.862(er is b)-.15 F .862(uilt with the compile-time option, then)-.2 F
-.643(will also cause the serv)72 24 R .644
-(er to check the serial number on all secondary zones; normally)-.15 F
-3.144(,t)-.65 G .644(he serial numbers are only)-3.144 F(check)72 36 Q
-.595(ed at the SO)-.1 F .595(A-speci\214ed interv)-.35 F 3.095
-(als. Dumps)-.25 F .595(the current data base and cache to or the v)
-3.095 F .595(alue of Dumps statistics)-.25 F .119(data into if the serv)
-72 48 R .119
-(er is compiled with Statistics data is appended to the \214le.)-.15 F
-.12(Dumps the pro\214ling data in if the serv-)5.12 F .036
-(er is compiled with pro\214ling \(serv)72 60 R .035
-(er forks, chdirs and e)-.15 F 2.535(xits\). Dumps)-.15 F .035
-(the primary and secondary database \214les.)2.535 F(Used)5.035 E .702
-(to sa)72 72 R 1.002 -.15(ve m)-.2 H .702(odi\214ed data on shutdo).15 F
-.702(wn if the serv)-.25 F .702
-(er is compiled with dynamic updating enabled.)-.15 F -.45(Tu)5.703 G
-.703(rns on deb).45 F(ugging;)-.2 E .624(each increments deb)72 84 R
-.624(ug le)-.2 F -.15(ve)-.25 G 3.124(l. on).15 F .624
-(older systems without T)3.124 F .624(urns of)-.45 F 3.124(fd)-.25 G(eb)
--3.124 E .624(ugging completely)-.2 F 5.624(.o)-.65 G 3.124(no)-5.624 G
-.624(lder systems without)-3.124 F -.8(To)72 96 S .175
-(ggles logging of all incoming queries via \(requires serv).8 F .176
-(er to ha)-.15 F .476 -.15(ve b)-.2 H .176(een b).15 F .176
-(uilt with the option\).)-.2 F(def)5.176 E .176(ault name serv)-.1 F(er)
--.15 E .144(con\214guration \214le the process id dump of the name serv)
-72 108 R .144(er database deb)-.15 F .144(ug output nameserv)-.2 F .144
-(er statistics data RFC 882,)-.15 F(RFC 883, RFC 973, RFC 974, RFC 1033, RFC 1034, RFC 1035, RFC 1123, RFC 2308)
-72 120 Q EP
+/F0 10/Times-Roman@0 SF 2.018(number on all secondary zones; normally)72
+12 R 4.518(,t)-.65 G 2.018(he serial numbers are only check)-4.518 F
+2.018(ed at the SO)-.1 F 2.018(A-speci\214ed interv)-.35 F(als.)-.25 E
+.787(Dumps the current data base and cache to or the v)72 24 R .787
+(alue of Dumps statistics data into if the serv)-.25 F .788
+(er is compiled with)-.15 F .98
+(Statistics data is appended to the \214le.)72 36 R .979
+(Dumps the pro\214ling data in if the serv)5.98 F .979
+(er is compiled with pro\214ling \(serv)-.15 F(er)-.15 E .355
+(forks, chdirs and e)72 48 R 2.855(xits\). Dumps)-.15 F .355
+(the primary and secondary database \214les.)2.855 F .355(Used to sa)
+5.355 F .656 -.15(ve m)-.2 H .356(odi\214ed data on shutdo).15 F(wn)-.25
+E .083(if the serv)72 60 R .083
+(er is compiled with dynamic updating enabled.)-.15 F -.45(Tu)5.083 G
+.083(rns on deb).45 F .083(ugging; each increments deb)-.2 F .083(ug le)
+-.2 F -.15(ve)-.25 G 2.583(l. on).15 F(old-)2.582 E 1.635
+(er systems without T)72 72 R 1.635(urns of)-.45 F 4.135(fd)-.25 G(eb)
+-4.135 E 1.635(ugging completely)-.2 F 6.635(.o)-.65 G 4.135(no)-6.635 G
+1.635(lder systems without T)-4.135 F 1.636
+(oggles logging of all incoming)-.8 F .287(queries via \(requires serv)
+72 84 R .286(er to ha)-.15 F .586 -.15(ve b)-.2 H .286(een b).15 F .286
+(uilt with the option\).)-.2 F(def)5.286 E .286(ault name serv)-.1 F
+.286(er con\214guration \214le the process id)-.15 F .38
+(dump of the name serv)72 96 R .38(er database deb)-.15 F .38
+(ug output nameserv)-.2 F .381
+(er statistics data RFC 882, RFC 883, RFC 973, RFC 974,)-.15 F
+(RFC 1033, RFC 1034, RFC 1035, RFC 1123,)72 108 Q EP
 %%Trailer
 end
 %%EOF

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: child.c,v 1.1.1.3 2000-03-31 15:48:00 mwhitson Exp $";
+"$Id: child.c,v 1.2 2001-03-07 01:19:18 ghudson Exp $";
 
 
 #include "lp.h"
@@ -16,7 +16,6 @@
 #include "getopt.h"
 #include "gethostinfo.h"
 #include "proctitle.h"
-#include "linksupport.h"
 #include "child.h"
 /**** ENDINCLUDE ****/
 
@@ -54,6 +53,28 @@ pid_t plp_waitpid (pid_t pid, plp_status_t *statusPtr, int options)
 	DEBUG2("plp_waitpid: report %d, status %s", report,
 		Decode_status( statusPtr ) );
 	return report;
+}
+
+pid_t plp_waitpid_timeout(int timeout,
+	pid_t pid, plp_status_t *status, int options)
+{
+	int report = -1;
+	int err;
+	DEBUG2("plp_waitpid_timeout: timeout %d, pid %d, options %d",
+		timeout, pid, options );
+	if( Set_timeout() ){
+		Set_timeout_alarm( timeout  );
+		report = plp_waitpid( pid, status, options );
+		err = errno;
+	} else {
+		report = -1;
+		err = EINTR;
+	}
+	Clear_timeout();
+	DEBUG2("plp_waitpid_timeout: report %d, status %s", pid,
+		Decode_status( status ) );
+	errno = err;
+	return( report );
 }
 
 /***************************************************************************
@@ -121,16 +142,10 @@ void Killchildren( int sig )
 
 	for( i = 0; i < Process_list.count; ++i ){
 		p = (void *)Process_list.list[i];
-		DEBUG2("Killchildren: pid %d, kill(%d,%s), ppid %d", pid,
-			p->pid, Sigstr(sig), p->ppid);
-		if( p->ppid == pid && p->pid > 0 ){
-			killpg(p->pid,sig);
-			killpg(p->pid,SIGCONT);
-			kill(p->pid,sig);
-			kill(p->pid,SIGCONT);
-			if( kill(p->pid, sig) == 0 ){
-				DEBUG4("Killchildren: pid %d still active", p->pid );
-			}
+		DEBUG2("Killchildren: kill(%d,%s)", p->pid, Sigstr(sig));
+		if( p->ppid == pid && p->pid > 0 && kill(p->pid, sig) == 0
+			&& kill(p->pid, SIGCONT) == 0 ){
+			DEBUG4("Killchildren: pid %d active", p->pid );
 		} else {
 			p->pid = 0;
 			p->ppid = 0;
@@ -152,6 +167,9 @@ int dofork( int new_process_group )
 
 	pid = fork();
 	if( pid == 0 ){
+		/* set subgroups to 0 */
+		Free_line_list(&Process_list);
+
 		/* you MUST put the process in another process group;
 		 * if you have a filter, and it does a 'killpg()' signal,
 		 * if you do not have it in a separate group the effects
@@ -204,19 +222,9 @@ int dofork( int new_process_group )
 		 */
 		}
 		/* we do not want to copy our parent's exit jobs or temp files */
-		Process_list.count = 0;
 		Clear_tempfile_list();
 		Clear_exit();
-
-		/*
-		 * We need to make sure that LPD forked processes do not have blocked
-		 * signals.  The only two that I block are SIGCHLD and SIGUSR1.
-		 * These,  unfortunately,  are precisely the ones that cause problems.
-		 * Also,  SIGALRM is used,  but it is never blocked.
-		 */
-		if( Is_server ){
-			plp_block_mask oblock; plp_unblock_all_signals( &oblock );
-		}
+		if( Name ) setproctitle( "lpd %s", Name );
 	} else if( pid != -1 ){
 		Check_max(&Process_list,1);
 		p = malloc_or_die(sizeof(p[0]),__FILE__,__LINE__);
@@ -288,7 +296,7 @@ plp_signal_t cleanup_TERM (int passed_signal)
 plp_signal_t cleanup (int passed_signal)
 {
 	plp_block_mask oblock;
-	int i, n;
+	int i, pid = getpid(), n;
 	int signalv = passed_signal;
 	struct exit_info *e;
 
@@ -297,20 +305,13 @@ plp_signal_t cleanup (int passed_signal)
 	DEBUG2("cleanup: signal %s, Errorcode %d, exits %d",
 		Sigstr(passed_signal), Errorcode, Exit_list.count);
 
-	/* shut down all logging stuff */
-	Doing_cleanup = 1;
 	n = Get_max_fd();
-	/* first we try to close all the output ports */
-	for( i = 3; i < n; ++i ){
-		struct stat statb;
-		if( fstat( i, &statb ) == 0 && S_ISSOCK(statb.st_mode)
-			&& Exit_linger_timeout_DYN > 0 ){
-			Set_linger( i, Exit_linger_timeout_DYN );
+	for( i = 0; i < n; ++i ){
+		if( i != 2 && i != Status_fd ){
+			close(i);
 		}
-		close(i);
 	}
 
-	/* then we do exit cleanup */
 	for( i = Exit_list.count-1; i >= 0;  --i ){
 		e = (void *)(Exit_list.list[i]);
 		DEBUG2("exit '%s' 0x%lx, parm 0x%lx", e->name,
@@ -329,7 +330,12 @@ plp_signal_t cleanup (int passed_signal)
 
 	/* kill children of this process */
 	Killchildren( signalv );
-	DEBUG1("cleanup: done, exit(%d)", Errorcode);
+	DEBUG1("cleanup: done, doing killpg then exit(%d)", Errorcode);
+	if( Is_server && getpgrp() == pid ){
+		killpg( pid, signalv );
+		killpg( pid, SIGCONT );
+	}
+
 
 	if( Errorcode == 0 ){
 		Errorcode = passed_signal;
@@ -343,16 +349,16 @@ plp_signal_t cleanup (int passed_signal)
 void Dump_unfreed_mem(char *title)
 {
 #if defined(DMALLOC)
-	extern int _dmalloc_outfile;
-	extern char *_dmalloc_logpath;
+	extern int dmalloc_outfile;
+	extern char *dmalloc_logpath;
 	char buffer[SMALLBUFFER];
 
-	if( _dmalloc_logpath && _dmalloc_outfile < 0 ){
-		_dmalloc_outfile = open( _dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if( dmalloc_logpath && dmalloc_outfile < 0 ){
+		dmalloc_outfile = open( dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	}
 	plp_snprintf(buffer,sizeof(buffer),"*** Dump_unfreed_mem: %s, pid %d\n",
 		title, getpid() );
-	Write_fd_str(_dmalloc_outfile, buffer );
+	Write_fd_str(dmalloc_outfile, buffer );
 	if(Outbuf) free(Outbuf); Outbuf = 0;
 	if(Inbuf) free(Inbuf); Inbuf = 0;
 	Clear_tempfile_list();
@@ -365,7 +371,7 @@ void Dump_unfreed_mem(char *title)
     Clear_var_list( Pc_var_list, 0 );
     Clear_var_list( DYN_var_list, 0 );
 	dmalloc_log_unfreed();
-	Write_fd_str(_dmalloc_outfile, "***\n" );
+	Write_fd_str(dmalloc_outfile, "***\n" );
 	exit(Errorcode);
 #endif
 }

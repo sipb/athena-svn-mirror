@@ -1,5 +1,5 @@
 #
-# Copyright (c) 1996,1999 by Internet Software Consortium
+# Copyright (c) 1996 by Internet Software Consortium
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
 # SOFTWARE.
 #
 
-# $Id: Makefile,v 1.1.1.2 1999-03-16 19:46:41 danw Exp $
+# $Id: Makefile,v 1.2 2000-04-22 04:42:15 ghudson Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -33,46 +33,31 @@ TOP= ../..
 INCL = ${TOP}/include
 PORTINCL = ${TOP}/port/${SYSTYPE}/include
 LIBBIND = ${TOP}/lib/libbind.${A}
-LIBBINDR = ../${TOP}/lib/libbind_r.${A}
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL}
 LD_LIBFLAGS= -x -r
-AR= ar cru
+AR= ar cruv
 RANLIB= ranlib
 INSTALL= install
-INSTALL_EXEC=
-INSTALL_LIB=-o bin -g bin
-THREADED= threaded
 
-SRCS=	ns_parse.c ns_print.c ns_netint.c ns_ttl.c ns_name.c ns_sign.c ns_verify.c
+SRCS=	ns_parse.c ns_print.c ns_netint.c ns_ttl.c ns_name.c
 
-OBJS=	ns_parse.${O} ns_print.${O} ns_netint.${O} ns_ttl.${O} ns_name.${O} ns_sign.${O} ns_verify.${O}
+OBJS=	ns_parse.${O} ns_print.${O} ns_netint.${O} ns_ttl.${O} ns_name.${O}
 
-all: ${LIBBIND} 
+all: ${LIBBIND}
 
 ${LIBBIND}: ${OBJS}
-	( cd ${THREADED} ; \
-	${AR} ${LIBBINDR} ${ARPREF} ${OBJS} ${ARSUFF} ; \
-	${RANLIB} ${LIBBINDR} )
 	${AR} ${LIBBIND} ${ARPREF} ${OBJS} ${ARSUFF}
 	${RANLIB} ${LIBBIND}
 
 .c.${O}:
-	if test ! -d ${THREADED} ;  then mkdir ${THREADED} ; fi
-	${CC} ${CPPFLAGS} ${CFLAGS} ${BOUNDS} ${REENTRANT} -c $*.c \
-	 -o ${THREADED}/$*.${O}
-	-${LDS} ${LD} ${LD_LIBFLAGS} ${THREADED}/$*.${O} -o a.out && \
-	 ${LDS} mv a.out ${THREADED}/$*.${O}
-	${CC} ${CPPFLAGS} ${CFLAGS} ${BOUNDS} -c $*.c
-	-${LDS} ${LD} ${LD_LIBFLAGS} $*.${O} -o a.out && \
-	 ${LDS} mv a.out $*.${O}
+	${CC} ${CPPFLAGS} ${CFLAGS} -c $*.c
+	-${LDS} ${LD} ${LD_LIBFLAGS} $*.${O} && ${LDS} mv a.out $*.${O}
 
 distclean: clean
 
 clean: FRC
 	rm -f .depend a.out core ${LIB} tags
 	rm -f *.${O} *.BAK *.CKP *~
-	rm -f ${THREADED}/*.${O}
-	-rmdir ${THREADED}
 
 depend: FRC
 	mkdep -I${INCL} -I${PORTINCL} ${CPPFLAGS} ${SRCS}

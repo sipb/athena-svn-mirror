@@ -60,15 +60,6 @@ the logging configuration will be:</P>
     };
 </PRE>
 
-The logging configuration is established as soon as the
-<CODE>logging</CODE> statement is parsed.  If you want to redirect
-messages about processing of the entire configuration file, the
-<CODE>logging</CODE>statement must appear first.  Even if you do not
-redirect configuration file parsing messages, we recommend
-always putting the <CODE>logging</CODE> statement first so that this
-rule need not be consciously recalled if you ever do need want the
-parser's messages relocated.
-
 <H4>The <CODE>channel</CODE> phrase</H4>
 
 <P>All log output goes to one or more "channels"; you can make as many
@@ -102,9 +93,8 @@ by renaming them when opening.  For example, if you choose to keep 3
 old versions of the file "lamers.log" then just before it is opened
 lamers.log.1 is renamed to lames.log.2, lamers.log.0 is renamed to
 lamers.log.1, and lamers.log is renamed to lamers.log.0.  No rolled
-versions are kept by default; any existing log file is simply
-appended.  The <CODE>unlimited</CODE> keyword is synonymous with
-<CODE>99</CODE> in current BIND releases.</P>
+versions are kept by default.  The <CODE>unlimited</CODE> keyword is
+synonymous with <CODE>99</CODE> in current BIND releases.</P>
 
 <P>The argument for the <CODE>syslog</CODE> clause is a syslog
 facility as described in the <CODE>syslog</CODE> manual page.  How
@@ -135,13 +125,12 @@ from the channel.</P>
 <P>The server can supply extensive debugging information when it is in
 debugging mode.  If the server's global debug level is greater than
 zero, then debugging mode will be active.  The global debug level is
-set either by starting the <CODE>named</CODE> server with the "-d"
-flag followed by a positive integer, or by sending the running server the
-SIGUSR1 signal (for example, by using "ndc trace").  The global debug
-level can be set to zero, and debugging mode turned off, by sending
-the server the SIGUSR2 signal ("ndc notrace").  All debugging messages
-in the server have a debug level, and higher debug levels give more
-more detailed output.
+set either by starting the server with the "-d" flag followed by a
+positive integer, or by sending the server the SIGUSR1 signal (for
+example, by using "ndc trace").  The global debug level can be set to
+zero, and debugging mode turned off, by sending the server the SIGUSR2
+signal ("ndc notrace".  All debugging messages in the server have a
+debug level, and higher debug levels give more more detailed output.
 Channels that specify a specific debug severity, e.g.
 
 <PRE>
@@ -353,7 +342,7 @@ Messages arising from response checking, such as
 
 <HR>
 <ADDRESS>
-Last Updated: $Id: logging.html,v 1.1.1.3 1999-03-16 19:43:58 danw Exp $
+Last Updated: $Id: logging.html,v 1.2 2000-04-22 04:38:43 ghudson Exp $
 </ADDRESS>
 </BODY>
 </HTML>

@@ -1,7 +1,7 @@
 ! AppDefaultsVersion should only be defined in the site-wide file
 Xmh.AppDefaultsVersion:		1
 
-Xmh.Geometry:			508x750
+Xmh.Geometry:			508x736
 Xmh.ReplyInsertFilter:		cat
 Xmh.SendBreakWidth:		2000
 *ShapeStyle:			Oval
@@ -170,3 +170,59 @@ Xmh.error.Dialog.OK.Label:	Acknowledged
 	<Btn1Down>,<Btn1Up>:	XmhSave()unset()\n
 *compButtons.insert.Translations:#override\n\
 	<Btn1Down>,<Btn1Up>:	XmhInsert()unset()\n
+
+! The following are the ATHENA specifc changes. These changes are for
+! user interface compatibility and functionality
+
+*InitialIncFile:
+*CommandButtonCount:		11
+
+*commandBox.button1.label:	inc
+*commandBox.button1.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhIncorporateNewMail() unset()
+
+*commandBox.button2.label:	next
+*commandBox.button2.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhViewNextMessage() unset()
+
+*commandBox.button3.label:	prev
+*commandBox.button3.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhViewPreviousMessage() unset()
+
+*commandBox.button4.label:	compose
+*commandBox.button4.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhComposeMessage() unset()
+
+*commandBox.button5.label:	reply
+*commandBox.button5.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhViewReply() unset()
+
+*commandBox.button6.label:	forward
+*commandBox.button6.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhViewForward() unset()
+
+*commandBox.button7.label:	delete
+*commandBox.button7.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhMarkDelete() unset()
+
+*commandBox.button8.label:	move
+*commandBox.button8.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhMarkMove() unset()
+
+*commandBox.button9.label:	unmark
+*commandBox.button9.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhUnmark() unset()
+
+*commandBox.button10.label:	commit
+*commandBox.button10.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhCommitChanges() unset()
+
+*commandBox.button11.label:	close
+*commandBox.button11.translations: #override\
+	<Btn1Down>,<Btn1Up>: XmhClose() unset()
+
+
+*Font:	fixed
+
+*mailWaitingFlag:	false
+*checkNewMail:	false

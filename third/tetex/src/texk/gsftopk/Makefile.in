@@ -34,15 +34,15 @@ install: install-exec install-data
 uninstall: uninstall-exec uninstall-data
 
 install-exec: $(program)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir)
-	$(INSTALL_LIBTOOL_PROG)  $(bindir) $(program)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir)
+	$(INSTALL_LIBTOOL_PROG)  ${DESTDIR}$(bindir) $(program)
 uninstall-exec:
 	rm -f $(bindir)/$(program)
 
 install-data: gsftopk.1
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir) $(gsftopkpsheaderdir)
-	$(INSTALL_DATA) gsftopk.1 $(mandir)/gsftopk.$(manext)
-	$(INSTALL_DATA) $(srcdir)/render.ps $(gsftopkpsheaderdir)/render.ps
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(mandir) ${DESTDIR}$(gsftopkpsheaderdir)
+	$(INSTALL_DATA) gsftopk.1 ${DESTDIR}$(mandir)/gsftopk.$(manext)
+	$(INSTALL_DATA) $(srcdir)/render.ps ${DESTDIR}$(gsftopkpsheaderdir)/render.ps
 uninstall-data:
 	rm -f $(mandir)/gsftopk.$(manext)
 	rm -f $(gsftopkpsheaderdir)/render.ps

@@ -2531,15 +2531,6 @@ DEPEND_FLAGS=
 DEPEND_DEFINES=
 
 
-if test \! -z "$includedir" ; then 
-  INCLUDES="$INCLUDES -I$includedir"
-fi
-
-if test \! -z "$libdir" ; then
-  LDFLAGS="$LDFLAGS -L$libdir"
-fi
-
-
 PREFERRED_DEMO_PROGRAM=xscreensaver-demo-Xm
 ALL_DEMO_PROGRAMS=
 if test "$have_motif" = yes; then

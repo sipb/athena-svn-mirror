@@ -3183,6 +3183,7 @@ else
   echo "$as_me:3183: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
+PATH_PERL=/usr/athena/bin/perl
 
  cat >conftest.$ac_ext <<_ACEOF
 #line 3188 "configure"

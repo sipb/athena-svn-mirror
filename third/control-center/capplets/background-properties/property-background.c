@@ -903,7 +903,7 @@ background_read ( BGState *state )
 	gint r, g, b;
 
 	gdk_color_parse
-		(gnome_config_get_string ("/Background/Default/color1=#005060"),
+		(gnome_config_get_string ("/Background/Default/color1=#5e738f"),
 		 &state->bgColor1);
 	r = state->bgColor1.red >> 8;
 	g = state->bgColor1.green >> 8;

@@ -51,7 +51,7 @@ static char *window_icon = GNOME_ICONDIR"/gnome-terminal.png";
 
 char **env;
 
-#define DEFAULT_FONT "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso8859-1"
+#define DEFAULT_FONT "-misc-fixed-medium-r-semicondensed-*-*-120-*-*-c-*-iso8859-1"
 #define EXTRA 6
 
 /* is there pixmap compiled into zvt */
@@ -521,7 +521,7 @@ load_config (char *class)
 	
 	cfg->bell              = gnome_config_get_bool ("bell_silenced=0");
 	cfg->blink             = gnome_config_get_bool ("blinking=0");
-	cfg->swap_keys         = gnome_config_get_bool ("swap_del_and_backspace=0");
+	cfg->swap_keys         = gnome_config_get_bool ("swap_del_and_backspace=1");
 #ifdef HAVE_ZVT_DEL_IS_DEL
 	cfg->del_is_del        = gnome_config_get_bool ("del_is_del=0");
 #endif
@@ -533,9 +533,9 @@ load_config (char *class)
 	cfg->scroll_background = gnome_config_get_bool ("scroll_background=0");
 #endif
 	/* Default colors in the case the color set is the custom one */
-	fore_color = gnome_config_get_string ("foreground=gray");
-	back_color = gnome_config_get_string ("background=black");
-	cfg->color_set = gnome_config_get_int ("color_set=0");
+	fore_color = gnome_config_get_string ("foreground=black");
+	back_color = gnome_config_get_string ("background=#ebecf0");
+	cfg->color_set = gnome_config_get_int ("color_set=4");
 
 	cfg->menubar_hidden = !gnome_config_get_bool ("menubar=true");
 	cfg->scroll_key = gnome_config_get_bool ("scrollonkey=true");

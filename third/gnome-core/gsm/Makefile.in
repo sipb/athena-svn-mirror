@@ -159,7 +159,7 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
+INCLUDES = $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
 
 
 LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
@@ -196,7 +196,8 @@ default_DATA = default.session default.wm
 desktopdir = $(datadir)/gnome/apps/Settings/Session/
 desktop_DATA = save-session.desktop session.desktop
 
-@SESSION_TRUE@sys_DATA = session-properties.desktop
+# Disable capplet listing, since Athena doesn't use gsm by default.
+# sys_DATA = session-properties.desktop
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session
 
@@ -257,7 +258,7 @@ MANS = $(man_MANS)
 
 NROFF = nroff
 DATA =  $(default_DATA) $(desktop_DATA) $(noinst_DATA) $(pixmap_DATA) \
-$(settings_DATA) $(sys_DATA)
+$(settings_DATA)
 
 DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO \
 default.session.5.in gnome-session.1.in
@@ -265,7 +266,7 @@ default.session.5.in gnome-session.1.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_session_SOURCES) $(save_session_SOURCES) $(gnome_login_check_SOURCES) $(session_properties_SOURCES) $(gnome_libice_check_SOURCES) $(session_properties_capplet_SOURCES)
 OBJECTS = $(gnome_session_OBJECTS) $(save_session_OBJECTS) $(gnome_login_check_OBJECTS) $(session_properties_OBJECTS) $(gnome_libice_check_OBJECTS) $(session_properties_capplet_OBJECTS)
@@ -539,25 +540,6 @@ uninstall-settingsDATA:
 	  rm -f $(DESTDIR)$(settingsdir)/$$p; \
 	done
 
-install-sysDATA: $(sys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-sysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
-	done
-
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
 # To change the values of `make' variables: instead of editing Makefiles,
@@ -672,40 +654,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-command.o: command.c command.h manager.h headers.h session.h save.h \
-	prop.h
-gnome-libice-check.o: gnome-libice-check.c
-gnome-login-check.o: gnome-login-check.c ../config.h
-gsm-client-editor.o: gsm-client-editor.c ../config.h gsm-client-editor.h \
-	gsm-protocol.h gsm-client-row.h gsm-client-list.h
-gsm-client-list.o: gsm-client-list.c ../config.h gsm-client-list.h \
-	gsm-client-row.h gsm-protocol.h gsm-client-editor.h
-gsm-client-row.o: gsm-client-row.c ../config.h gsm-client-row.h \
-	gsm-protocol.h gsm-client-list.h gsm-client-editor.h
-gsm-protocol.o: gsm-protocol.c ../config.h session.h gsm-protocol.h
-ice.o: ice.c ../config.h ice.h headers.h session.h manager.h
-logout.o: logout.c ../config.h logout.h headers.h command.h manager.h
-main.o: main.c ../config.h manager.h headers.h ice.h save.h command.h \
-	splash.h
-manager.o: manager.c ../config.h manager.h headers.h session.h prop.h \
-	command.h splash.h remote.h save.h logout.h ice.h \
-	gsm-protocol.h
-prop.o: prop.c prop.h headers.h
-remote.o: remote.c ../config.h remote.h headers.h
-save-session.o: save-session.c ../config.h headers.h gsm-protocol.h
-save.o: save.c ../config.h save.h headers.h session.h prop.h command.h \
-	manager.h
-session-names.o: session-names.c ../config.h \
-	session-properties-capplet.h headers.h gsm-protocol.h
-session-properties-capplet.o: session-properties-capplet.c ../config.h \
-	headers.h gsm-client-list.h gsm-client-row.h gsm-protocol.h \
-	session-properties-capplet.h
-session-properties.o: session-properties.c ../config.h gsm-client-list.h \
-	gsm-client-row.h gsm-protocol.h
-splash.o: splash.c ../config.h splash.h headers.h manager.h
-startup-programs.o: startup-programs.c ../config.h \
-	session-properties-capplet.h gsm-protocol.h
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -718,7 +666,7 @@ install-exec-am: install-binPROGRAMS install-binSCRIPTS
 install-exec: install-exec-recursive
 
 install-data-am: install-man install-defaultDATA install-desktopDATA \
-		install-pixmapDATA install-settingsDATA install-sysDATA
+		install-pixmapDATA install-settingsDATA
 install-data: install-data-recursive
 
 install-am: all-am
@@ -726,8 +674,7 @@ install-am: all-am
 install: install-recursive
 uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS uninstall-man \
 		uninstall-defaultDATA uninstall-desktopDATA \
-		uninstall-pixmapDATA uninstall-settingsDATA \
-		uninstall-sysDATA
+		uninstall-pixmapDATA uninstall-settingsDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(MANS) $(DATA)
 all-redirect: all-recursive
@@ -738,8 +685,7 @@ installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(bindir) \
 		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(mandir)/man5 \
 		$(DESTDIR)$(defaultdir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(settingsdir) \
-		$(DESTDIR)$(sysdir)
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(settingsdir)
 
 
 mostlyclean-generic:
@@ -786,11 +732,11 @@ install-binSCRIPTS install-man1 uninstall-man1 install-man5 \
 uninstall-man5 install-man uninstall-man uninstall-defaultDATA \
 install-defaultDATA uninstall-desktopDATA install-desktopDATA \
 uninstall-pixmapDATA install-pixmapDATA uninstall-settingsDATA \
-install-settingsDATA uninstall-sysDATA install-sysDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+install-settingsDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

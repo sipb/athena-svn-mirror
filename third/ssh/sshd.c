@@ -18,8 +18,78 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.1.1.4 1999-03-08 17:43:02 danw Exp $
+ * $Id: sshd.c,v 1.20 2000-05-30 15:26:20 rbasch Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2000/04/09 21:50:52  rbasch
+ * Look up and set user capabilities on IRIX.
+ *
+ * Revision 1.18  1999/03/27 01:59:28  ghudson
+ * Nuke broken SGI project management code.
+ *
+ * Revision 1.17  1999/03/16 19:03:38  danw
+ * log a debugging error if al_acct_create fails
+ *
+ * Revision 1.16  1999/03/08 18:20:11  danw
+ * merge changes
+ *
+ * Revision 1.15  1999/02/27 17:08:21  ghudson
+ * Teach sshd how to switch on SIGUSR1/SIGUSR2.
+ * Note: the current implementation only works with LIBWRAP defined,
+ *  since that's how we build it.
+ *
+ * Revision 1.14  1998/06/30 21:10:02  danw
+ * put xauthority data in /tmp, not afs
+ *
+ * Revision 1.13  1998/05/13 20:18:55  danw
+ * merge in changes from 1.2.23
+ *
+ * Revision 1.12  1998/04/25 23:15:56  ghudson
+ * Take advantage of relaxed al_acct_create() contract.
+ *
+ * Revision 1.11  1998/04/09 22:51:48  ghudson
+ * Support local accounts as determined by libal.
+ *
+ * Revision 1.10  1998/03/12 20:37:12  danw
+ * recheck pw->pw_dir after al_acct_create in case we got a temp homedir
+ *
+ * Revision 1.9  1998/03/01 16:12:59  danw
+ * Use xmalloc, not malloc. (pointed out by mhpower)
+ *
+ * Revision 1.8  1998/02/28 17:58:31  danw
+ * Don't use packet_disconnect for `you are not allowed to log in here'
+ *
+ * Revision 1.7  1998/02/02 23:20:15  danw
+ * use our DEFAULT_PATH, not the OS's unless the builder overrides it on
+ * the command line.
+ *
+ * Revision 1.6  1998/01/24 01:47:26  danw
+ * merge in changes for 1.2.22
+ *
+ * Revision 1.5  1998/01/01 18:18:21  danw
+ * Don't set KRB5CCNAME if the user didn't get tickets
+ *
+ * Revision 1.4  1997/11/19 20:44:45  danw
+ * do chown later
+ *
+ * Revision 1.3  1997/11/15 00:04:20  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
+ * Revision 1.2  1997/11/12 21:16:18  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
+ * Revision 1.1.1.1  1997/10/17 22:26:00  danw
+ * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:18  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1998/05/13 19:11:09  danw
+ * Import of ssh 1.2.23
+ *
+ * Revision 1.1.1.4  1999/03/08 17:43:02  danw
+ * Import of ssh 1.2.26
+ *
  * Revision 1.55  1998/07/08 14:55:22  tri
  * 	Fixed version negotiation so, that ssh 2
  * 	compatibility is even remotedly possible.
@@ -493,6 +563,11 @@ extern char *setlimits();
 #include <login_cap.h>
 #endif
 
+#ifdef sgi
+#include <capability.h>
+#include <sys/capability.h>
+#endif
+
 #ifdef _PATH_BSHELL
 #define DEFAULT_SHELL		_PATH_BSHELL
 #else
@@ -500,15 +575,7 @@ extern char *setlimits();
 #endif
 
 #ifndef DEFAULT_PATH
-#ifdef _PATH_USERPATH
-#define DEFAULT_PATH		_PATH_USERPATH
-#else
-#ifdef _PATH_DEFPATH
-#define	DEFAULT_PATH		_PATH_DEFPATH
-#else
-#define DEFAULT_PATH	"/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
-#endif
-#endif
+#define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/usr/bsd:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
 #endif /* DEFAULT_PATH */
 
 #ifndef O_NOCTTY
@@ -521,9 +588,19 @@ extern char *setlimits();
 /* Global the contexts */
 krb5_context ssh_context = 0;
 krb5_auth_context auth_context = 0;
+int havecred = 0;
 #endif /* KRB5 */
 char *ticket = "none\0";
 #endif /* KERBEROS */
+
+#include <al.h>
+extern int setpag(), ktc_ForgetAllTokens();
+extern char *tkt_string();
+void try_afscall(int (*func)(void));
+void al_cleanup(void);
+int *al_warnings = NULL;
+char *al_user;
+int al_local_acct;
 
 /* Server configuration options. */
 ServerOptions options;
@@ -549,6 +626,10 @@ char **saved_argv;
 /* This is set to the socket that the server is listening; this is used in
    the SIGHUP signal handler. */
 int listen_sock;
+
+/* Whether the server should accept connections. */
+static int switched = 0;
+static int enabled = 1;
 
 /* This is not really needed, and could be eliminated if server-specific
    and client-specific code were removed from newchannels.c */
@@ -621,6 +702,9 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	      const char *display, const char *auth_proto,
 	      const char *auth_data, const char *ttyname);
 
+void ensure_process_capabilities(void);
+void set_user_capabilities(const char *username);
+
 
 /* Signal handler for SIGHUP.  Sshd execs itself when it receives SIGHUP;
    the effect is to reread the configuration file (and to regenerate
@@ -653,6 +737,8 @@ RETSIGTYPE sigterm_handler(int sig)
 {
   log_msg("Received signal %d; terminating.", sig);
   close(listen_sock);
+  if (!debug_flag && options.pid_file != NULL)
+    unlink(options.pid_file);
   exit(255);
 }
 
@@ -720,6 +806,19 @@ RETSIGTYPE key_regeneration_alarm(int sig)
   alarm(options.key_regeneration_time);
 }
 
+RETSIGTYPE sigusr1_handler(int sig)
+{
+  enabled = 1;
+  signal(SIGUSR1, sigusr1_handler);
+}
+
+RETSIGTYPE sigusr2_handler(int sig)
+{
+  if (switched)
+    enabled = 0;
+  signal(SIGUSR2, sigusr2_handler);
+}
+
 /* Main program for the daemon. */
 
 int main(int ac, char **av)
@@ -759,7 +858,7 @@ int main(int ac, char **av)
   initialize_server_options(&options);
 
   /* Parse command-line arguments. */
-  while ((opt = getopt(ac, av, "f:p:b:k:h:g:diqV:")) != EOF)
+  while ((opt = getopt(ac, av, "f:p:b:k:h:g:diqV:sS")) != EOF)
     {
       switch (opt)
 	{
@@ -789,6 +888,13 @@ int main(int ac, char **av)
 	  break;
 	case 'h':
 	  options.host_key_file = optarg;
+	  break;
+	case 's':
+	  switched = 1;
+	  break;
+	case 'S':
+	  switched = 1;
+	  enabled = 0;
 	  break;
 	case 'V':
 	  ssh_remote_version_string = optarg;
@@ -902,6 +1008,9 @@ int main(int ac, char **av)
 #ifdef HAVE_OSF1_C2_SECURITY
   initialize_osf_security(ac, av);
 #endif /* HAVE_OSF1_C2_SECURITY */
+
+  /* Ensure that we have the proper capabilities. */
+  ensure_process_capabilities();
 
   /* If not in debugging mode, and not started from inetd, disconnect from
      the controlling terminal, and fork.  The original process exits. */
@@ -1075,6 +1184,10 @@ int main(int ac, char **av)
       signal(SIGHUP, sighup_handler);
       signal(SIGTERM, sigterm_handler);
       signal(SIGQUIT, sigterm_handler);
+
+      /* Switch on and off on SIGUSR1 and SIGUSR2 (conditional on switched). */
+      signal(SIGUSR1, sigusr1_handler);
+      signal(SIGUSR2, sigusr2_handler);
       
       /* AIX sends SIGDANGER when memory runs low.  The default action is
 	 to terminate the process.  This sometimes makes it difficult to
@@ -1150,7 +1263,7 @@ int main(int ac, char **av)
 		
 		request_init(&req, RQ_DAEMON, av0, RQ_FILE, newsock, NULL);
 		fromhost(&req);
-		if (!hosts_access(&req))
+		if (!hosts_access(&req) || !enabled)
 		  refuse(&req);
 	      }
 #endif /* LIBWRAP */
@@ -1177,7 +1290,7 @@ int main(int ac, char **av)
 		    
 		    request_init(&req, RQ_DAEMON, av0, RQ_FILE, newsock, NULL);
 		    fromhost(&req);
-		    if (!hosts_access(&req))
+		    if (!hosts_access(&req) || !enabled)
 		      refuse(&req);
 		  }
 #endif /* LIBWRAP */
@@ -2094,7 +2207,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   int authenticated = 0;
   int authentication_type = 0;
   char *password;
-  struct passwd *pw, pwcopy;
+  struct passwd *pw, *pw2, pwcopy;
   char *client_user;
   unsigned int client_host_key_bits;
   MP_INT client_host_key_e, client_host_key_n;
@@ -2114,6 +2227,9 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   hostname = get_canonical_hostname();
   ipaddr = get_remote_ipaddr();
 #endif /* HAVE_LOGIN_CAP_H */
+  int status, i;
+  char *filetext, *errmem;
+  const char *err;
 
   if (strlen(user) > 255)
     do_authentication_fail_loop();
@@ -2155,7 +2271,49 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 			 
   /* Verify that the user is a valid user.  We disallow usernames starting
      with any characters that are commonly used to start NIS entries. */
+  status = al_login_allowed(user, 1, &al_local_acct, &filetext);
+  if (status != AL_SUCCESS)
+    {
+      /* We don't want to use `packet_disconnect', because it will syslog
+	 at LOG_ERR. Ssh doesn't provide a primitive way to give an
+	 informative message and disconnect without any bad feelings... */
+
+      char *buf;
+
+      err = al_strerror(status, &errmem);
+      if (filetext && *filetext)
+	{
+	  buf = xmalloc(40 + strlen(err) + strlen(filetext));
+	  sprintf(buf, "You are not allowed to log in here: %s\n%s",
+		  err, filetext);
+	}
+      else
+	{
+	  buf = xmalloc(40 + strlen(err));
+	  sprintf(buf, "You are not allowed to log in here: %s\n", err);
+	}
+      packet_start(SSH_MSG_DISCONNECT);
+      packet_put_string(buf, strlen(buf));
+      packet_send();
+      packet_write_wait();
+
+      fatal_severity(SYSLOG_SEVERITY_INFO, "Login denied: %s", err);
+      /* not reached */
+    }
+  if (!al_local_acct)
+    {
+      status = al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+      if (status != AL_SUCCESS && debug_flag)
+	{
+	  err = al_strerror(status, &errmem);
+	  debug("al_acct_create failed for user %s: %s", user, err);
+	  al_free_errmem(errmem);
+	}
+      al_user = xstrdup(user);
+      atexit(al_cleanup);
+    }
   pw = getpwnam(user);
+
   if (!pw || user[0] == '-' || user[0] == '+' || user[0] == '@' ||
       !login_permitted(user, pw))
     do_authentication_fail_loop();
@@ -2628,11 +2786,15 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 #ifdef KERBEROS
       /* If you forwarded a ticket you get one shot for proper
          authentication. */
-      /* If tgt was passed unlink file */
+      /* If tgt was passed, destroy it */
       if (ticket){
           if (strcmp(ticket,"none"))
- 	    /* ticket -> FILE:path */
- 	    unlink(ticket + 5);
+	    {
+	      krb5_ccache ccache;
+	      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+		krb5_cc_destroy(ssh_context, ccache);
+	      dest_tkt();
+	    }
           else
             ticket = NULL;
       }
@@ -2708,6 +2870,21 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
     log_severity(SYSLOG_SEVERITY_NOTICE, "ROOT LOGIN as '%.100s' from %.100s",
 		 pw->pw_name, get_canonical_hostname());
   
+  if (havecred)
+    try_afscall(setpag);
+  if (!al_local_acct)
+    {
+      status = al_acct_create(pw->pw_name, NULL, getpid(), havecred, 1,
+			      &al_warnings);
+      if (status != AL_SUCCESS && status != AL_WARNINGS)
+	packet_disconnect("%s\n", al_strerror(status, &errmem));
+    }
+
+  /* al_acct_create may have given us a temp homedir */
+  pw2 = getpwnam(pw->pw_name);
+  free(pw->pw_dir);
+  pw->pw_dir = xstrdup(pw2->pw_dir);
+
   /* The user has been authenticated and accepted. */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();
@@ -3760,6 +3937,21 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 #endif /* defined (__bsdi__) && _BSDI_VERSION == 199510 */
 #endif /* __bsdi__  && _BSDI_VERSION >= 199510  */
 
+  /* Print any leftover libal warnings */
+  if (al_warnings)
+    {
+      int i;
+      char *errmem;
+
+      for (i = 0; al_warnings[i]; i++)
+	{
+	  fprintf(stderr, "Warning: %s\n",
+		  al_strerror(al_warnings[i], &errmem));
+	  al_free_errmem(errmem);
+	}
+      free(al_warnings);
+    }
+
   /* Check /etc/nologin. */
   f = fopen("/etc/nologin", "r");
   if (f)
@@ -3974,6 +4166,15 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	      close(i);
 	    }
 	  
+#ifdef KERBEROS
+	  /* Chown ticket files to user */
+	  if (ticket && strcmp(ticket, "none"))
+	    {
+	      chown(ticket + 5, user_uid, user_gid);
+	      chown(tkt_string(), user_uid, user_gid);
+	    }
+#endif
+
 	  /* At this point, this process should no longer be holding any
 	     confidential information, as changing uid below will permit the
 	     user to attach with a debugger on some machines. */
@@ -3982,11 +4183,6 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	  if (cray_setup(user_uid, user_name) < 0)
 	    fatal("Failure performing Cray job setup for user %d.",
 		  (int)user_uid);
-#endif
-
-#ifdef HAVE_SGI_PROJ_H
-  if (sgi_project_setup(user_name) < 0)
-    fatal("Failure performing SGI project setup for user %d.",(int)user_uid);
 #endif
 
 #ifdef HAVE_SETLUID
@@ -4026,6 +4222,9 @@ void do_child(const char *command, struct passwd *pw, const char *term,
     }
   }
 #endif
+
+  /* Set process capabilities for the user. */
+  set_user_capabilities(user_name);
 
   /* Get the shell from the password data.  An empty shell field is legal,
      and means /bin/sh. */
@@ -4140,8 +4339,11 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 #ifdef KERBEROS
   /* Set KRBTKFILE to point to our ticket */
 #ifdef KRB5
-  if (ticket)
-    child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+  if (ticket && strcmp(ticket, "none"))
+    {
+      child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+      child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
+    }
 #endif /* KRB5 */
 #endif /* KERBEROS */
 
@@ -4149,6 +4351,24 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   if (auth_get_socket_name() != NULL)
     child_set_env(&env, &envsize, SSH_AUTHSOCKET_ENV_NAME, 
 		  auth_get_socket_name());
+
+  /* Set XAUTHORITY to something safe. (we don't want to put the xauth
+     cookie into AFS.) */
+  if (auth_proto != NULL && auth_data != NULL)
+    {
+      sprintf(buf, "/tmp/xauth-%s-%d", user_name, (int)getpid());
+      if (mkdir(buf, S_IRWXU) == -1)
+	{
+	  fprintf(stderr, "Could not create xauth directory %s: %s\n"
+		  "Disabling X forwarding.\n", buf, strerror(errno));
+	  auth_proto = auth_data = NULL;
+	}
+      else
+	{
+	  strcat(buf, "/Xauthority");
+	  child_set_env(&env, &envsize, "XAUTHORITY", buf);
+	}
+    }      
 
 #ifdef USELOGIN
   if (command != NULL || !options.use_login)
@@ -4488,3 +4708,93 @@ char *username;
   return(0);
 }
 #endif /* CRAY */
+
+void try_afscall(int (*func)(void))
+{
+#ifdef SIGSYS
+  struct sigaction sa, osa;
+
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGSYS, &sa, &osa);
+#endif
+  func();
+#ifdef SIGSYS
+  sigaction(SIGSYS, &osa, NULL);
+#endif
+}
+
+void al_cleanup(void)
+{
+  al_acct_revert(al_user, getpid());
+}
+
+void krb_cleanup(void)
+{
+  if (ticket && strcmp(ticket, "none"))
+    {
+      krb5_ccache ccache;
+      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+	  krb5_cc_destroy(ssh_context, ccache);
+      dest_tkt();
+      try_afscall(ktc_ForgetAllTokens);
+    }
+}
+
+/* Ensure we will be able to set process capabilities after we
+ * setuid().  Currently implemented only on IRIX.
+ */
+void ensure_process_capabilities(void)
+{
+#ifdef sgi
+  if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1)
+    fatal("Insufficient privilege");
+#endif
+  return;
+}
+
+/* Set the POSIX capabilities for the user process.  This is called
+ * after we setuid() to the user.
+ * Currently implemented only on IRIX.
+ */
+void set_user_capabilities(const char *username)
+{
+#ifdef sgi
+  struct user_cap *user_cap;
+  char *def_cap;
+  cap_t cap, ocap;
+  cap_value_t capval;
+
+  /* If capabilities are supported, initialize the user's capability
+   * set, defaulting to an empty set if no default capabilities are
+   * defined for the user.
+   */
+  if (sysconf(_SC_CAP) > 0)
+    {
+      user_cap = sgi_getcapabilitybyname(username);
+      def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
+      cap = cap_from_text(def_cap);
+      if (user_cap != NULL)
+	{
+	  free(user_cap->ca_name);
+	  free(user_cap->ca_default);
+	  free(user_cap->ca_allowed);
+	  free(user_cap);
+	}
+      if (cap == NULL)
+	fatal("Cannot convert user capabilities: %s", strerror(errno));
+      capval = CAP_SETPCAP;
+      ocap = cap_acquire(1, &capval);
+      if (cap_set_proc(cap) == -1)
+	{
+	  cap_surrender(ocap);
+	  cap_free(cap);
+	  fatal("Cannot set process capabilities: %s", strerror(errno));
+	}
+      cap_free(cap);
+      cap_free(ocap);
+    }
+#endif
+  return;
+}

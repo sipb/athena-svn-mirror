@@ -157,7 +157,7 @@ l = @l@
 
 SUBDIRS = help
 
-INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(srcdir)/../desk-guide				-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
+INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(srcdir)/../desk-guide				-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
 
 
 bin_PROGRAMS = tasklist_applet
@@ -218,7 +218,7 @@ DIST_COMMON =  README ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(tasklist_applet_SOURCES)
 OBJECTS = $(tasklist_applet_OBJECTS)
@@ -472,24 +472,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-gstc.o: gstc.c ../../panel/gstc.h
-gwmh.o: gwmh.c ../../panel/gwmh.h ../../panel/gstc.h
-tasklist_applet.o: tasklist_applet.c ../../config.h ../../panel/gstc.h \
-	../../panel/gwmh.h tasklist_applet.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h \
-	unknown.xpm
-tasklist_config.o: tasklist_config.c tasklist_applet.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h \
-	../../panel/gwmh.h
-tasklist_icon.o: tasklist_icon.c ../../panel/gwmh.h tasklist_applet.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h
-tasklist_menu.o: tasklist_menu.c ../../config.h tasklist_applet.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h \
-	../../panel/gwmh.h pixmaps.h
-tasklist_properties.o: tasklist_properties.c ../../config.h \
-	tasklist_applet.h ../../panel/applet-widget.h \
-	../../panel/gnome-panel.h ../../panel/gwmh.h
-
 info-am:
 info: info-recursive
 dvi-am:

@@ -524,7 +524,7 @@ directory_combo_changed_callback (GtkWidget *widget,
 
 	g_return_if_fail (GNOME_IS_FILE_SELECTION (data));
 
-	g_warning (__FUNCTION__);
+	g_warning ("directory_combo_changed_callback");
 
 	fs = GNOME_FILE_SELECTION (data);
 	entry = GTK_ENTRY (GTK_COMBO (fs->directory_combo)->entry);
@@ -568,7 +568,7 @@ directory_combo_button_press (GtkWidget *widget,
 {
 	g_return_val_if_fail (GNOME_IS_FILE_SELECTION (data), FALSE);
 
-	g_warning (__FUNCTION__);
+	g_warning ("directory_combo_button_press");
 
 	update_directory_combo_list
 		(GNOME_FILE_SELECTION (data));

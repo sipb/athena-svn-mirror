@@ -549,10 +549,10 @@ install.perl:	all installperl
 		cd ../pod; $(MAKE) compile; \
 	else :; \
 	fi
-	$(LDLIBPTH) ./perl installperl $(STRIPFLAGS)
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installperl $(STRIPFLAGS)
 
 install.man:	all installman
-	$(LDLIBPTH) ./perl installman
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installman
 
 # XXX Experimental. Hardwired values, but useful for testing.
 # Eventually Configure could ask for some of these values.
@@ -768,7 +768,7 @@ minitest: miniperl lib/re.pm
 	@echo "You may see some irrelevant test failures if you have been unable"
 	@echo "to build lib/Config.pm."
 	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-		&& $(LDLIBPTH) ./perl TEST base/*.t comp/*.t cmd/*.t io/*.t op/*.t pragma/*.t </dev/tty
+		&& $(LDLIBPTH) ./perl TEST base/*.t comp/*.t cmd/*.t io/*.t op/*.t pragma/*.t
 
 # Handy way to run perlbug -ok without having to install and run the
 # installed perlbug. We don't re-run the tests here - we trust the user.

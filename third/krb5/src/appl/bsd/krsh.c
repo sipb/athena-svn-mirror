@@ -129,7 +129,7 @@ main(argc, argv0)
      char **argv0;
 {
     int rem, pid;
-    char *host=0, *cp, **ap, buf[RCMD_BUFSIZ], *args, **argv = argv0, *user = 0;
+    char *host=0, *cp, **ap, buf[8192], *args, **argv = argv0, *user = 0;
     register int cc;
     struct passwd *pwd;
     fd_set readfrom, ready;

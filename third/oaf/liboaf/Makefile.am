@@ -90,8 +90,9 @@ oaf-factory.h stamp-factory-idl: $(top_srcdir)/idl/oaf-factory.idl
 CLEANFILES=			\
 	stamp-idl 		\
 	stamp-factory-idl 	\
-	$(BUILT_SOURCES)	\
 	$(NULL)
 
 
 
+oaf-stubs.o oaf-skels.o oaf-common.o: oaf-factory.h
+oaf-stubs.lo oaf-skels.lo oaf-common.lo: oaf-factory.h

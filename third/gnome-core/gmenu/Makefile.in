@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(includedir) $(GNOME_INCLUDEDIR)			-DGNOME_DATADIR=\""$(datadir)"\"
+INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)			-DGNOME_DATADIR=\""$(datadir)"\"
 
 
 bin_PROGRAMS = gmenu
@@ -200,7 +200,7 @@ DIST_COMMON =  README AUTHORS ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gmenu_SOURCES)
 OBJECTS = $(gmenu_OBJECTS)
@@ -346,19 +346,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-desktop.o: desktop.c gmenu.h ../config.h
-edit.o: edit.c gmenu.h ../config.h icon-entry-hack.h
-icon-entry-hack.o: icon-entry-hack.c ../config.h icon-entry-hack.h
-main.o: main.c gmenu.h ../config.h
-order.o: order.c gmenu.h ../config.h
-save.o: save.c gmenu.h ../config.h
-tree.o: tree.c gmenu.h ../config.h
-treedel.o: treedel.c gmenu.h ../config.h
-treednd.o: treednd.c gmenu.h ../config.h
-treenew.o: treenew.c gmenu.h ../config.h
-treeutil.o: treeutil.c gmenu.h ../config.h
-utils.o: utils.c gmenu.h ../config.h top.xpm unknown.xpm
-
 info-am:
 info: info-am
 dvi-am:

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: accounting.h,v 1.1.1.3 2000-03-31 15:48:13 mwhitson Exp $
+ * $Id: accounting.h,v 1.2 2001-03-07 01:19:57 ghudson Exp $
  ***************************************************************************/
 
 

@@ -132,7 +132,7 @@ typedef struct ktext KTEXT_ST;
 /* Maximum alloable clock skew in seconds */
 #define 	CLOCK_SKEW	5*60
 /* Filename for readservkey */
-#define		KEYFILE		((char*)krb__get_srvtabname("/etc/srvtab"))
+#define		KEYFILE	     ((char*)krb__get_srvtabname("/etc/athena/srvtab"))
 
 /* Structure definition for rd_ap_req */
 
@@ -340,8 +340,8 @@ typedef struct msg_dat MSG_DAT;
 /*
  * New byte swapping routines, much cleaner
  */
-#define krb4_swab16(val)	(((val) >> 8) | ((val) << 8))
-#define krb4_swab32(val)	(((val)>>24) | (((val)>>8)&0xFF00) | \
+#define krb4_swab16(val)	((((val) >> 8)&0xFF) | ((val) << 8))
+#define krb4_swab32(val)	((((val)>>24)&0xFF) | (((val)>>8)&0xFF00) | \
 				  (((val)<<8)&0xFF0000) | ((val)<<24))
 
 /* Kerberos ticket flag field bit definitions */
@@ -466,7 +466,7 @@ KRB5_DLLIMP int KRB5_CALLCONV dest_tkt
 	PROTOTYPE((void));
 /* err_txt.c */
 KRB5_DLLIMP const char FAR * KRB5_CALLCONV krb_get_err_text
-	PROTOTYPE((int errno));
+	PROTOTYPE((int code));
 /* g_ad_tkt.c */
 int get_ad_tkt
 	PROTOTYPE((char *service, char *sinst, char *realm, int lifetime));
@@ -632,6 +632,13 @@ KRB5_DLLIMP int KRB5_CALLCONV krb_save_credentials
 	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
 		   C_Block session, int lifetime, int kvno,
 		   KTEXT ticket, long issue_date));
+/* sendauth.c */
+int krb_sendauth
+	PROTOTYPE((long options, int fd, KTEXT ticket, char *service,
+		   char *inst, char *realm, unsigned KRB4_32 checksum,
+		   MSG_DAT *msg_data, CREDENTIALS *cred,
+		   Key_schedule schedule, struct sockaddr_in *laddr,
+		   struct sockaddr_in *faddr, char *version));
 /* send_to_kdc.c */
 int send_to_kdc
 	PROTOTYPE((KTEXT pkt, KTEXT rpkt, char *realm));

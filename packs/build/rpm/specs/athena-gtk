@@ -1,0 +1,12 @@
+Name: athena-gtk
+Summary: The gtk user interface library, for Athena
+Copyright: GPL
+Group: User Interface/X
+
+Requires: athena-glib
+
+%description
+gtk is a library for creating graphical user interfaces for the X
+Window System.  It was originally written for the GIMP (GNU Image
+Manipulation Program), but is now a fundamental component of the GNOME
+(GNU Network Object Model Environment) system.

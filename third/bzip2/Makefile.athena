@@ -1,0 +1,17 @@
+# $Id: Makefile.athena,v 1.1 2001-04-06 00:42:05 ghudson Exp $
+
+dist:
+
+prepare:
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all CC="$$COMPILER" CFLAGS=-g
+
+check:
+	# bzip2 runs its tests as part of the "all" target
+
+install:
+	${MAKE} install PREFIX="$$SRVD/usr/athena"

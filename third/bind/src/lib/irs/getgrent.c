@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1998 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,25 +16,21 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: getgrent.c,v 1.1.1.3 1999-03-16 19:45:36 danw Exp $";
+static char rcsid[] = "$Id: getgrent.c,v 1.2 2000-04-22 04:41:41 ghudson Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
 
-#if !defined(WANT_IRS_GR) || defined(__BIND_NOSTATIC)
+#ifndef WANT_IRS_GR
 static int __bind_irs_gr_unneeded;
 #else
 
 #include <sys/types.h>
 
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-
 #include <errno.h>
 #include <grp.h>
-#include <resolv.h>
 #include <stdio.h>
 
 #include <irs.h>
@@ -45,150 +41,87 @@ static int __bind_irs_gr_unneeded;
 
 /* Forward */
 
-static struct net_data *init(void);
+static struct irs_gr *	init(void);
 void			endgrent(void);
 
 /* Public */
 
 struct group *
 getgrent() {
-	struct net_data *net_data = init();
-
-	return (getgrent_p(net_data));
+	struct irs_gr *gr = init();
+	
+	if (!gr)
+		return (NULL);
+	net_data.gr_last = (*gr->next)(gr);
+	return (net_data.gr_last);
 }
 
 struct group *
 getgrnam(const char *name) {
-	struct net_data *net_data = init();
-
-	return (getgrnam_p(name, net_data));
+	struct irs_gr *gr = init();
+	
+	if (!gr)
+		return (NULL);
+	if (net_data.gr_stayopen && net_data.gr_last &&
+	    !strcmp(net_data.gr_last->gr_name, name))
+		return (net_data.gr_last);
+	net_data.gr_last = (*gr->byname)(gr, name);
+	if (!net_data.gr_stayopen)
+		endgrent();
+	return (net_data.gr_last);
 }
 
 struct group *
 getgrgid(gid_t gid) {
-	struct net_data *net_data = init();
-
-	return (getgrgid_p(gid, net_data));
+	struct irs_gr *gr = init();
+	
+	if (!gr)
+		return (NULL);
+	if (net_data.gr_stayopen && net_data.gr_last &&
+	    net_data.gr_last->gr_gid == gid)
+		return (net_data.gr_last);
+	net_data.gr_last = (*gr->bygid)(gr, gid);
+	if (!net_data.gr_stayopen)
+		endgrent();
+	return (net_data.gr_last);
 }
 
 int
 setgroupent(int stayopen) {
-	struct net_data *net_data = init();
-
-	return (setgroupent_p(stayopen, net_data));
-}
-
-#ifdef SETGRENT_VOID
-void
-setgrent() {
-	struct net_data *net_data = init();
-
-	return (setgrent_p(net_data));
-}
-#else
-int
-setgrent() {
-	struct net_data *net_data = init();
-
-	return (setgrent_p(net_data));
-}
-#endif /* SETGRENT_VOID */
-
-void
-endgrent() {
-	struct net_data *net_data = init();
-
-	endgrent_p(net_data);
-}
-
-int
-getgrouplist(const char *name, gid_t basegid, gid_t *groups, int *ngroups) {
-	struct net_data *net_data = init();
-
-	return (getgrouplist_p(name, basegid, groups, ngroups, net_data));
-}
-
-/* Shared private. */
-
-struct group *
-getgrent_p(struct net_data *net_data) {
-	struct irs_gr *gr;
-
-	if (!net_data || !(gr = net_data->gr))
-		return (NULL);
-	net_data->gr_last = (*gr->next)(gr);
-	return (net_data->gr_last);
-}
-
-struct group *
-getgrnam_p(const char *name, struct net_data *net_data) {
-	struct irs_gr *gr;
-
-	if (!net_data || !(gr = net_data->gr))
-		return (NULL);
-	if (net_data->gr_stayopen && net_data->gr_last &&
-	    !strcmp(net_data->gr_last->gr_name, name))
-		return (net_data->gr_last);
-	net_data->gr_last = (*gr->byname)(gr, name);
-	if (!net_data->gr_stayopen)
-		endgrent();
-	return (net_data->gr_last);
-}
-
-struct group *
-getgrgid_p(gid_t gid, struct net_data *net_data) {
-	struct irs_gr *gr;
-
-	if (!net_data || !(gr = net_data->gr))
-		return (NULL);
-	if (net_data->gr_stayopen && net_data->gr_last &&
-	    net_data->gr_last->gr_gid == gid)
-		return (net_data->gr_last);
-	net_data->gr_last = (*gr->bygid)(gr, gid);
-	if (!net_data->gr_stayopen)
-		endgrent();
-	return (net_data->gr_last);
-}
-
-int
-setgroupent_p(int stayopen, struct net_data *net_data) {
-	struct irs_gr *gr;
-
-	if (!net_data || !(gr = net_data->gr))
+	struct irs_gr *gr = init();
+	
+	if (!gr)
 		return (0);
 	(*gr->rewind)(gr);
-	net_data->gr_stayopen = (stayopen != 0);
-	if (stayopen == 0)
-		net_data_minimize(net_data);
+	net_data.gr_stayopen = (stayopen != 0);
 	return (1);
 }
 
 #ifdef SETGRENT_VOID
 void
-setgrent_p(struct net_data *net_data) {
-	(void)setgroupent_p(0, net_data);
+setgrent() {
+	(void)setgroupent(0);
 }
 #else
 int
-setgrent_p(struct net_data *net_data) {
-	return (setgroupent_p(0, net_data));
+setgrent() {
+	return (setgroupent(0));
 }
 #endif /* SETGRENT_VOID */
 
 void
-endgrent_p(struct net_data *net_data) {
-	struct irs_gr *gr;
+endgrent() {
+	struct irs_gr *gr = init();
 
-	if ((net_data != NULL) && ((gr = net_data->gr) != NULL))
+	if (gr != NULL)
 		(*gr->minimize)(gr);
 }
 
 int
-getgrouplist_p(const char *name, gid_t basegid, gid_t *groups, int *ngroups,
-	       struct net_data *net_data) {
-	struct irs_gr *gr;
-
-	if (!net_data || !(gr = net_data->gr)) {
+getgrouplist(const char *name, gid_t basegid, gid_t *groups, int *ngroups) {
+	struct irs_gr *gr = init();
+	
+	if (!gr) {
 		*ngroups = 0;
 		return (-1);
 	}
@@ -197,25 +130,18 @@ getgrouplist_p(const char *name, gid_t basegid, gid_t *groups, int *ngroups,
 
 /* Private */
 
-static struct net_data *
+static struct irs_gr *
 init() {
-	struct net_data *net_data;
-
-	if (!(net_data = net_data_init(NULL)))
+	if (!net_data_init())
 		goto error;
-	if (!net_data->gr) {
-		net_data->gr = (*net_data->irs->gr_map)(net_data->irs);
-
-		if (!net_data->gr || !net_data->res) {
+	if (!net_data.gr)
+		net_data.gr = (*net_data.irs->gr_map)(net_data.irs);
+	if (!net_data.gr) {
  error: 
-			errno = EIO;
-			return (NULL);
-		}
-		(*net_data->gr->res_set)(net_data->gr, net_data->res,
-					 NULL);
+		errno = EIO;
+		return (NULL);
 	}
-	
-	return (net_data);
+	return (net_data.gr);
 }
 
 #endif /* WANT_IRS_GR */

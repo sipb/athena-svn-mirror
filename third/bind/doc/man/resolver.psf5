@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Tue Mar 16 10:50:10 1999
+%%CreationDate: Thu May  7 13:34:55 1998
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 1
@@ -212,12 +212,10 @@ BP
 (normally con\214gured system, this \214le should not be necessary)72 48
 R 5.234(.T)-.65 G .235(he only name serv)-5.234 F .235
 (er to be queried will be on the lo-)-.15 F .031(cal machine, the domain name is determined from the host name, and the domain search path is constructed from the)
-72 60 R .311(domain name.)72 72 R .311(The dif)5.311 F .311
-(ferent con\214guration directi)-.25 F -.15(ve)-.25 G 2.811(sa).15 G
-.311(re: Internet address \(in dot notation\) of a name serv)-2.811 F
-.312(er that the)-.15 F .248(should query)72 84 R 5.248(.U)-.65 G 2.748
-(pt)-5.248 G 2.748(o\()-2.748 G .248(currently 3\) name serv)-2.748 F
-.248(ers may be listed, one per k)-.15 F -.15(ey)-.1 G -.1(wo).15 G
+72 60 R .842(domain name.)72 72 R .842(The dif)5.842 F .842(ferent con\214guration options are: Internet address \(in dot notation\) of a name serv)
+-.25 F .843(er that the)-.15 F .248(should query)72 84 R 5.248(.U)-.65 G
+2.748(pt)-5.248 G 2.748(o\()-2.748 G .248(currently 3\) name serv)-2.748
+F .248(ers may be listed, one per k)-.15 F -.15(ey)-.1 G -.1(wo).15 G
 2.748(rd. If).1 F .248(there are multiple serv)2.748 F .248
 (ers, the li-)-.15 F .121(brary queries them in the order listed.)72 96
 R .122(If no entries are present, the def)5.122 F .122
@@ -262,45 +260,26 @@ R .386 -.15(ve t)-.25 H 2.586(ot).15 G .086(he local domain.)-2.586 F
 (o\()-2.622 G .122(see before an will be made.)-2.622 F .122(The def)
 5.122 F .122
 (ault for is meaning that if there are dots in a name, the name)-.1 F
-.571(will be tried \214rst as an absolute name before an)72 300 R 3.071
-(ye)-.15 G .571(lements are appended to it.)-3.071 F .571
-(sets the amount of time the resolv)5.571 F(er)-.15 E .604(will w)72 312
-R .604(ait for a response from a remote name serv)-.1 F .604
-(er before gi)-.15 F .604(ving up and retrying the query)-.25 F 5.605
-(.M)-.65 G .605(easured in seconds,)-5.605 F .078(the def)72 324 R .078
-(ault is 30.)-.1 F .078(sets the number of queries the resolv)5.078 F
-.078(er will send to a gi)-.15 F -.15(ve)-.25 G 2.577(nn).15 G(ameserv)
--2.577 E .077(er before gi)-.15 F .077(ving up and trying)-.25 F .201
-(the ne)72 336 R .201(xt listed nameserv)-.15 F(er)-.15 E 5.201(.T)-.55
-G .201(he def)-5.201 F .201(ault is 2.)-.1 F .202
-(sets in which causes round robin selection of nameserv)5.202 F .202
-(ers from among)-.15 F .031(those listed.)72 348 R .031(This has the ef)
-5.031 F .031(fect of spreading the query load among all listed serv)-.25
-F .031(ers, rather than ha)-.15 F .031(ving all clients try)-.2 F .057
-(the \214rst listed serv)72 360 R .058(er \214rst e)-.15 F -.15(ve)-.25
-G .058(ry time.).15 F .058(sets in which disables the modern BIND checking of incoming host names and)
-5.058 F .518(mail names for in)72 372 R -.25(va)-.4 G .518(lid characters such as underscore \(_\), non-ASCII, or control characters.)
-.25 F .517(sets in This has the ef-)5.518 F .677(fect of trying a AAAA query before an A query inside the function, and of mapping IPv4 responses in IPv6 `)
-72 384 R(`tun-)-.74 E .59(nelled form')72 396 R 3.09('i)-.74 G 3.09(fn)
--3.09 G 3.09(oA)-3.09 G .59(AAA records are found b)-3.09 F .59
-(ut an A record set e)-.2 F 3.09(xists. The)-.15 F .59(and k)3.09 F -.15
-(ey)-.1 G -.1(wo).15 G .59(rds are mutually e).1 F(xclusi)-.15 E -.15
-(ve)-.25 G(.).15 E .101(If more than one instance of these k)72 408 R
--.15(ey)-.1 G -.1(wo).15 G .101(rds is present, the last instance wins.)
-.1 F .101(The k)5.101 F -.15(ey)-.1 G -.1(wo).15 G .101(rd of a system')
-.1 F 2.601<738c>-.55 G .101(le can be)-2.601 F -.15(ove)72 420 S .978
-(rridden on a per).15 F .978(-process basis by setting the en)-.2 F .977
-(vironment v)-.4 F .977
-(ariable to a space-separated list of search domains.)-.25 F .093(The k)
-72 432 R -.15(ey)-.1 G -.1(wo).15 G .093(rd of a system').1 F 2.593
-<738c>-.55 G .094(le can be amended on a per)-2.593 F .094
-(-process basis by setting the en)-.2 F .094(vironment v)-.4 F .094
-(ariable options as)-.25 F -.15(ex)72 444 S .895(plained abo).15 F 1.195
--.15(ve u)-.15 H .895(nder The k).15 F -.15(ey)-.1 G -.1(wo).15 G .894
-(rd and v).1 F .894(alue must appear on a single line, and the k)-.25 F
--.15(ey)-.1 G -.1(wo).15 G .894(rd \(e.g., must start the).1 F 2.5
-(line. The)72 456 R -.25(va)2.5 G(lue follo).25 E(ws the k)-.25 E -.15
-(ey)-.1 G -.1(wo).15 G(rd, separated by white space.).1 E EP
+.049(will be tried \214rst as an absolute name before an)72 300 R 2.549
+(ye)-.15 G .048(lements are appended to it.)-2.549 F .048(The and k)
+5.048 F -.15(ey)-.1 G -.1(wo).15 G .048(rds are mutually e).1 F(xclu-)
+-.15 E(si)72 312 Q -.15(ve)-.25 G 5.361(.I).15 G 2.861(fm)-5.361 G .361
+(ore than one instance of these k)-2.861 F -.15(ey)-.1 G -.1(wo).15 G
+.362(rds is present, the last instance wins.).1 F .362(The k)5.362 F
+-.15(ey)-.1 G -.1(wo).15 G .362(rd of a system').1 F 2.862<738c>-.55 G
+(le)-2.862 E .577(can be o)72 324 R -.15(ve)-.15 G .577
+(rridden on a per).15 F .577(-process basis by setting the en)-.2 F .577
+(vironment v)-.4 F .576(ariable to a space-separated list of search do-)
+-.25 F 3.231(mains. The)72 336 R -.1(ke)3.231 G(yw)-.05 E .731
+(ord of a system')-.1 F 3.231<738c>-.55 G .732
+(le can be amended on a per)-3.231 F .732
+(-process basis by setting the en)-.2 F .732(vironment v)-.4 F(ariable)
+-.25 E .456(options as e)72 348 R .456(xplained abo)-.15 F .756 -.15
+(ve u)-.15 H .456(nder The k).15 F -.15(ey)-.1 G -.1(wo).15 G .455
+(rd and v).1 F .455(alue must appear on a single line, and the k)-.25 F
+-.15(ey)-.1 G -.1(wo).15 G .455(rd \(e.g., must).1 F(start the line.)72
+360 Q(The v)5 E(alue follo)-.25 E(ws the k)-.25 E -.15(ey)-.1 G -.1(wo)
+.15 G(rd, separated by white space.).1 E EP
 %%Trailer
 end
 %%EOF

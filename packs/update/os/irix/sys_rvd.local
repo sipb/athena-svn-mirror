@@ -1,0 +1,55 @@
+GLOBAL : *.CKP *.local *.pid :
+## Major subscription list for workstations
+## $Id: sys_rvd.local,v 1.1 2001-04-12 17:14:08 ghudson Exp $
+##
+##	MIT Project Athena
+##
+	/etc:::
+		aliases
+		compiler.defaults
+		cshrc
+		ftpusers
+		group
+		ifhp.conf
+		inetd.conf
+		lpd.conf
+		lpd.perms
+		named.conf
+		ntp.conf
+		passwd
+		passwd.fallback
+		profile
+		sendmail.cf
+		services
+		shadow
+		shadow.fallback
+		shells
+		srvtab
+		sshd_config
+		syslog.conf
+		:
+	/etc/athena:::
+		athinfo.access
+		athinfo.defs
+		attach.conf
+		inetd.conf
+		newsyslog.conf
+		rc.conf
+		version
+		-> shutdown_notify
+		-> zephyr.desc
+		-> zephyr.vars
+		:
+	/usr:::
+		-> athena/lib/update
+		-> athena/lib/slists
+		-> athena/lib/stats
+		-> prototype_usr
+		:
+	/var:::
+		spool
+		:
+	/var/sysgen:::
+		boot
+		:
+	/var/sysgen/boot/afs.a::::

@@ -85,7 +85,8 @@ The Lisp code is executed when the node is selected.")
 		     (expand-file-name "info/" installation-directory)))
 	alternative)
     (if path
-	(split-string path (regexp-quote path-separator))
+	(append (split-string path (regexp-quote path-separator))
+		Info-default-directory-list)
       (if (and sibling (file-exists-p sibling))
 	  (setq alternative sibling)	; uninstalled, Emacs builddir != srcdir
 	(setq alternative source))	; uninstalled, builddir != srcdir

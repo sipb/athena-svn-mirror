@@ -62,6 +62,7 @@ extern int	require_SecurID;
 #endif
 #if	defined(AUTHENTICATION)
 extern int	auth_level;
+extern int	auth_client_non_unix;
 #endif
 extern int auth_negotiated; /* Have we finished all authentication negotiation we plan to finish?*/
 extern slcfun	slctab[NSLC + 1];	/* slc mapping table */
@@ -87,6 +88,10 @@ extern char *unptyip;  /* pointer to remaining characters in buffer */
 
 extern int	pty, net;
 extern int	SYNCHing;		/* we are in TELNET SYNCH mode */
+
+#ifdef ENCRYPTION
+extern int	must_encrypt;
+#endif
 
 #ifndef	P
 # ifdef	__STDC__

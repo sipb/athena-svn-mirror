@@ -17,11 +17,11 @@ check:
 
 # Auxiliary files.
 install-data:: $(INFOFILES)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(mandir)
 	for p in $(manpgs); do \
-	  $(INSTALL_DATA) $(srcdir)/$$p.man $(mandir)/$$p.$(manext); \
+	  $(INSTALL_DATA) $(srcdir)/$$p.man ${DESTDIR}$(mandir)/$$p.$(manext); \
 	done
-	cd $(mandir); rm -f allec.$(manext) einitex.$(manext) \
+	cd ${DESTDIR}$(mandir); rm -f allec.$(manext) einitex.$(manext) \
 	  elatex.$(manext) evirtex.$(manext) \
 	  inimf.$(manext) inimpost.$(manext) iniomega.$(manext) \
 	  initex.$(manext) kpsepath.$(manext) kpsexpand.$(manext) \
@@ -30,47 +30,47 @@ install-data:: $(INFOFILES)
 	  viromega.$(manext) virtex.$(manext) pdflatex.$(manext) \
 	  MakeTeXPK.$(manext) \
 	  cont-de.$(manext) cont-nl.$(manext) cont-en.$(manext)
-	ln -s allcm.$(manext) $(mandir)/allec.$(manext)
-	ln -s mktexlsr.$(manext) $(mandir)/texhash.$(manext)
-	ln -s tex.$(manext) $(mandir)/initex.$(manext)
-	ln -s tex.$(manext) $(mandir)/virtex.$(manext)
-	ln -s etex.$(manext) $(mandir)/einitex.$(manext)
-	ln -s etex.$(manext) $(mandir)/evirtex.$(manext)
-	ln -s etex.$(manext) $(mandir)/elatex.$(manext)
-	ln -s mf.$(manext) $(mandir)/inimf.$(manext)
-	ln -s mf.$(manext) $(mandir)/virmf.$(manext)
-	ln -s mpost.$(manext) $(mandir)/inimpost.$(manext)
-	ln -s mpost.$(manext) $(mandir)/virmpost.$(manext)
-	ln -s omega.$(manext) $(mandir)/iniomega.$(manext)
-	ln -s omega.$(manext) $(mandir)/viromega.$(manext)
-	ln -s omega.$(manext) $(mandir)/lambda.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdfinitex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdfvirtex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/pdflatex.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-de.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-nl.$(manext)
-	ln -s pdftex.$(manext) $(mandir)/cont-en.$(manext)
-	ln -s mktexpk.$(manext) $(mandir)/MakeTeXPK.$(manext)
+	ln -s allcm.$(manext) ${DESTDIR}$(mandir)/allec.$(manext)
+	ln -s mktexlsr.$(manext) ${DESTDIR}$(mandir)/texhash.$(manext)
+	ln -s tex.$(manext) ${DESTDIR}$(mandir)/initex.$(manext)
+	ln -s tex.$(manext) ${DESTDIR}$(mandir)/virtex.$(manext)
+	ln -s etex.$(manext) ${DESTDIR}$(mandir)/einitex.$(manext)
+	ln -s etex.$(manext) ${DESTDIR}$(mandir)/evirtex.$(manext)
+	ln -s etex.$(manext) ${DESTDIR}$(mandir)/elatex.$(manext)
+	ln -s mf.$(manext) ${DESTDIR}$(mandir)/inimf.$(manext)
+	ln -s mf.$(manext) ${DESTDIR}$(mandir)/virmf.$(manext)
+	ln -s mpost.$(manext) ${DESTDIR}$(mandir)/inimpost.$(manext)
+	ln -s mpost.$(manext) ${DESTDIR}$(mandir)/virmpost.$(manext)
+	ln -s omega.$(manext) ${DESTDIR}$(mandir)/iniomega.$(manext)
+	ln -s omega.$(manext) ${DESTDIR}$(mandir)/viromega.$(manext)
+	ln -s omega.$(manext) ${DESTDIR}$(mandir)/lambda.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/pdfinitex.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/pdfvirtex.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/pdflatex.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/cont-de.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/cont-nl.$(manext)
+	ln -s pdftex.$(manext) ${DESTDIR}$(mandir)/cont-en.$(manext)
+	ln -s mktexpk.$(manext) ${DESTDIR}$(mandir)/MakeTeXPK.$(manext)
 	test -r latex.info || cd $(srcdir) && for i in latex.info*; do \
-	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
+	  $(INSTALL_DATA) $$i ${DESTDIR}$(infodir)/$$i; done
 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
-	  install-info --info-dir=$(infodir) $(infodir)/latex.info; \
+	  install-info --info-dir=${DESTDIR}$(infodir) ${DESTDIR}$(infodir)/latex.info; \
 	else true; fi
 
 
 install-exec:
-	-$(SHELL) $(srcdir)/../mkinstalldirs $(scriptdir)
+	-$(SHELL) $(srcdir)/../mkinstalldirs ${DESTDIR}$(scriptdir)
 	for s in $(SCRIPTS); do \
-	  $(INSTALL_SCRIPT) $(srcdir)/$$s $(scriptdir)/$$s; \
+	  $(INSTALL_SCRIPT) $(srcdir)/$$s ${DESTDIR}$(scriptdir)/$$s; \
 	done
-	if test -f $(bindir)/pdftex; then \
+	if test -f ${DESTDIR}$(bindir)/pdftex; then \
 	  for s in $(PDFSCRIPTS); do \
-	    $(INSTALL_SCRIPT) $(srcdir)/$$s $(scriptdir)/$$s; \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$s ${DESTDIR}$(scriptdir)/$$s; \
 	  done; \
 	else \
 	  true; \
 	fi
-	cd $(scriptdir); rm -f allec kpsepath kpsexpand texhash; \
+	cd ${DESTDIR}$(scriptdir); rm -f allec kpsepath kpsexpand texhash; \
 	  ln -s allcm allec; \
 	  ln -s kpsetool kpsepath; \
 	  ln -s kpsetool kpsexpand; \

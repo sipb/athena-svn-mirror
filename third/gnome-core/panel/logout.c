@@ -64,7 +64,7 @@ create_logout_widget (void)
 	GtkWidget *button;
 	char *pixmap_name;
 
-	pixmap_name = gnome_pixmap_file ("gnome-term-night.png");
+	pixmap_name = gnome_datadir_file ("gnome/athena/logout-icon");
 
 	button = button_widget_new (pixmap_name, -1,
 				    MISC_TILE,

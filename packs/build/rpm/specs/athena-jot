@@ -1,0 +1,9 @@
+Name: athena-jot
+Summary: jot is a simple tool that prints random or sequential data
+Copyright: BSD
+Group: Applications/Text
+
+%description
+Jot prints numbers, in arithmetic sequence or according to some simple
+random generators.
+

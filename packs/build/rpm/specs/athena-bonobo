@@ -1,0 +1,12 @@
+Name: athena-bonobo
+Summary: The bonobo library for compound documents in GNOME, for Athena
+Copyright: GPL
+Group: Development/Libraries
+
+Requires: athena-gnome-libs athena-libxml athena-gnome-print
+Requires: athena-gdk-pixbuf athena-oaf
+
+%description
+Bonobo is a library that provides the necessary framework for GNOME
+applications to deal with compound documents, e.g. those with a
+spreadsheet and graphic embedded in a word-processing document.

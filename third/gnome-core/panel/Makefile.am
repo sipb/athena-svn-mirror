@@ -14,7 +14,7 @@ INCLUDES = -I. -I$(srcdir) \
 	-I$(top_builddir)/panel \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DGNOME_DATADIR=\""$(datadir)"\" \
-	-I$(includedir) $(GNOME_INCLUDEDIR) $(ORB_CFLAGS) \
+	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) \
 	@PIXBUF_CFLAGS@
 
 gwmh_dir = $(top_srcdir)/applets/desk-guide
@@ -266,4 +266,29 @@ sys_DATA = gnome-panel-properties.desktop
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
 
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = info.png logout-icon-menu.png
+
+athenadir = $(datadir)/gnome/athena
+athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
+athena_SCRIPTS = mail-script browser-script terminal-script editor-script
+AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
+
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(athenadir)
+	install -c -m 644 mail.png $(DESTDIR)$(athenadir)/mail-icon
+	install -c -m 644 browser.png $(DESTDIR)$(athenadir)/browser-icon
+	install -c -m 644 terminal.png $(DESTDIR)$(athenadir)/terminal-icon
+	install -c -m 644 editor.png $(DESTDIR)$(athenadir)/editor-icon
+	install -c -m 644 logout.png $(DESTDIR)$(athenadir)/logout-icon
+	install -c -m 644 menu.png $(DESTDIR)$(athenadir)/menu-icon
+	rm -f $(DESTDIR)$(athenadir)/menus
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
+		$(DESTDIR)$(athenadir)/menus
+	rm -f $(DESTDIR)$(athenadir)/menus.tar
+	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION).tar \
+		$(DESTDIR)$(athenadir)/menus.tar
+
 $(srcdir)/panel-util.c: $(CORBA_SRCLIST)
+
+applet-widget.o applet.o extern.o panel.o status-docklet.o status.o xstuff.o applet-widget.lo applet.lo extern.lo panel.lo status-docklet.lo status.lo xstuff.lo: gnome-panel.h

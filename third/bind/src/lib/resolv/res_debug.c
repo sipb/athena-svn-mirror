@@ -77,7 +77,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -95,7 +95,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)res_debug.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: res_debug.c,v 1.1.1.3 1999-03-16 19:46:35 danw Exp $";
+static char rcsid[] = "$Id: res_debug.c,v 1.2 2000-04-22 04:42:21 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
@@ -134,10 +134,12 @@ extern const char *_res_sectioncodes[];
  * Print the current options.
  */
 void
-fp_resstat(const res_state statp, FILE *file) {
+fp_resstat(struct __res_state *statp, FILE *file) {
 	u_long mask;
 
 	fprintf(file, ";; res options:");
+	if (!statp)
+		statp = &_res;
 	for (mask = 1;  mask != 0;  mask <<= 1)
 		if (statp->options & mask)
 			fprintf(file, " %s", p_option(mask));
@@ -145,10 +147,7 @@ fp_resstat(const res_state statp, FILE *file) {
 }
 
 static void
-do_section(const res_state statp,
-	   ns_msg *handle, ns_sect section,
-	   int pflag, FILE *file)
-{
+do_section(ns_msg *handle, ns_sect section, int pflag, FILE *file) {
 	int n, sflag, rrnum;
 	char buf[2048];	/* XXX need to malloc */
 	ns_opcode opcode;
@@ -157,8 +156,8 @@ do_section(const res_state statp,
 	/*
 	 * Print answer records.
 	 */
-	sflag = (statp->pfcode & pflag);
-	if (statp->pfcode && !sflag)
+	sflag = (_res.pfcode & pflag);
+	if (_res.pfcode && !sflag)
 		return;
 
 	opcode = ns_msg_getflag(*handle, ns_f_opcode);
@@ -169,11 +168,11 @@ do_section(const res_state statp,
 				fprintf(file, ";; ns_parserr: %s\n",
 					strerror(errno));
 			else if (rrnum > 0 && sflag != 0 &&
-				 (statp->pfcode & RES_PRF_HEAD1))
+				 (_res.pfcode & RES_PRF_HEAD1))
 				putc('\n', file);
 			return;
 		}
-		if (rrnum == 0 && sflag != 0 && (statp->pfcode & RES_PRF_HEAD1))
+		if (rrnum == 0 && sflag != 0 && (_res.pfcode & RES_PRF_HEAD1))
 			fprintf(file, ";; %s SECTION:\n",
 				p_section(section, opcode));
 		if (section == ns_s_qd)
@@ -196,15 +195,28 @@ do_section(const res_state statp,
 	}
 }
 
+void
+p_query(const u_char *msg) {
+	fp_query(msg, stdout);
+}
+
+void
+fp_query(const u_char *msg, FILE *file) {
+	fp_nquery(msg, PACKETSZ, file);
+}
+
 /*
  * Print the contents of a query.
  * This is intended to be primarily a debugging routine.
  */
 void
-res_pquery(const res_state statp, const u_char *msg, int len, FILE *file) {
+fp_nquery(const u_char *msg, int len, FILE *file) {
 	ns_msg handle;
 	int n, qdcount, ancount, nscount, arcount;
 	u_int opcode, rcode, id;
+
+	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
+		return;
 
 	if (ns_initparse(msg, len, &handle) < 0) {
 		fprintf(file, ";; ns_initparse: %s\n", strerror(errno));
@@ -221,13 +233,13 @@ res_pquery(const res_state statp, const u_char *msg, int len, FILE *file) {
 	/*
 	 * Print header fields.
 	 */
-	if ((!statp->pfcode) || (statp->pfcode & RES_PRF_HEADX) || rcode)
+	if ((!_res.pfcode) || (_res.pfcode & RES_PRF_HEADX) || rcode)
 		fprintf(file,
 			";; ->>HEADER<<- opcode: %s, status: %s, id: %d\n",
 			_res_opcodes[opcode], _res_resultcodes[rcode], id);
-	if ((!statp->pfcode) || (statp->pfcode & RES_PRF_HEADX))
+	if ((!_res.pfcode) || (_res.pfcode & RES_PRF_HEADX))
 		putc(';', file);
-	if ((!statp->pfcode) || (statp->pfcode & RES_PRF_HEAD2)) {
+	if ((!_res.pfcode) || (_res.pfcode & RES_PRF_HEAD2)) {
 		fprintf(file, "; flags:");
 		if (ns_msg_getflag(handle, ns_f_qr))
 			fprintf(file, " qr");
@@ -246,7 +258,7 @@ res_pquery(const res_state statp, const u_char *msg, int len, FILE *file) {
 		if (ns_msg_getflag(handle, ns_f_cd))
 			fprintf(file, " cd");
 	}
-	if ((!statp->pfcode) || (statp->pfcode & RES_PRF_HEAD1)) {
+	if ((!_res.pfcode) || (_res.pfcode & RES_PRF_HEAD1)) {
 		fprintf(file, "; %s: %d",
 			p_section(ns_s_qd, opcode), qdcount);
 		fprintf(file, ", %s: %d",
@@ -256,17 +268,17 @@ res_pquery(const res_state statp, const u_char *msg, int len, FILE *file) {
 		fprintf(file, ", %s: %d",
 			p_section(ns_s_ar, opcode), arcount);
 	}
-	if ((!statp->pfcode) || (statp->pfcode & 
+	if ((!_res.pfcode) || (_res.pfcode & 
 		(RES_PRF_HEADX | RES_PRF_HEAD2 | RES_PRF_HEAD1))) {
 		putc('\n',file);
 	}
 	/*
 	 * Print the various sections.
 	 */
-	do_section(statp, &handle, ns_s_qd, RES_PRF_QUES, file);
-	do_section(statp, &handle, ns_s_an, RES_PRF_ANS, file);
-	do_section(statp, &handle, ns_s_ns, RES_PRF_AUTH, file);
-	do_section(statp, &handle, ns_s_ar, RES_PRF_ADD, file);
+	do_section(&handle, ns_s_qd, RES_PRF_QUES, file);
+	do_section(&handle, ns_s_an, RES_PRF_ANS, file);
+	do_section(&handle, ns_s_ns, RES_PRF_AUTH, file);
+	do_section(&handle, ns_s_ar, RES_PRF_ADD, file);
 	if (qdcount == 0 && ancount == 0 &&
 	    nscount == 0 && arcount == 0)
 		putc('\n', file);
@@ -363,74 +375,52 @@ const struct res_sym __p_update_section_syms[] = {
 	{0,             (char *)0}
 };
 
-const struct res_sym __p_key_syms[] = {
-	{NS_ALG_MD5RSA,		"RSA",		"RSA KEY with MD5 hash"},
-	{NS_ALG_DH,		"DH",		"Diffie Hellman"},
-	{NS_ALG_DSA,		"DSA",		"Digital Signature Algorithm"},
-	{NS_ALG_EXPIRE_ONLY,	"EXPIREONLY",	"No algorithm"},
-	{NS_ALG_PRIVATE_OID,	"PRIVATE",	"Algorithm obtained from OID"},
-	{0,			NULL,		NULL}
-};
-
-const struct res_sym __p_cert_syms[] = {
-	{cert_t_pkix,	"PKIX",		"PKIX (X.509v3) Certificate"},
-	{cert_t_spki,	"SPKI",		"SPKI certificate"},
-	{cert_t_pgp,	"PGP",		"PGP certificate"},
-	{cert_t_url,	"URL",		"URL Private"},
-	{cert_t_oid,	"OID",		"OID Private"},
-	{0,		NULL,		NULL}
-};
-
 /*
  * Names of RR types and qtypes.  Types and qtypes are the same, except
  * that T_ANY is a qtype but not a type.  (You can ask for records of type
  * T_ANY, but you can't have any records of that type in the database.)
  */
 const struct res_sym __p_type_syms[] = {
-	{ns_t_a,	"A",		"address"},
-	{ns_t_ns,	"NS",		"name server"},
-	{ns_t_md,	"MD",		"mail destination (deprecated)"},
-	{ns_t_mf,	"MF",		"mail forwarder (deprecated)"},
-	{ns_t_cname,	"CNAME",	"canonical name"},
-	{ns_t_soa,	"SOA",		"start of authority"},
-	{ns_t_mb,	"MB",		"mailbox"},
-	{ns_t_mg,	"MG",		"mail group member"},
-	{ns_t_mr,	"MR",		"mail rename"},
-	{ns_t_null,	"NULL",		"null"},
-	{ns_t_wks,	"WKS",		"well-known service (deprecated)"},
-	{ns_t_ptr,	"PTR",		"domain name pointer"},
-	{ns_t_hinfo,	"HINFO",	"host information"},
-	{ns_t_minfo,	"MINFO",	"mailbox information"},
-	{ns_t_mx,	"MX",		"mail exchanger"},
-	{ns_t_txt,	"TXT",		"text"},
-	{ns_t_rp,	"RP",		"responsible person"},
-	{ns_t_afsdb,	"AFSDB",	"DCE or AFS server"},
-	{ns_t_x25,	"X25",		"X25 address"},
-	{ns_t_isdn,	"ISDN",		"ISDN address"},
-	{ns_t_rt,	"RT",		"router"},
-	{ns_t_nsap,	"NSAP",		"nsap address"},
-	{ns_t_nsap_ptr,	"NSAP_PTR",	"domain name pointer"},
-	{ns_t_sig,	"SIG",		"signature"},
-	{ns_t_key,	"KEY",		"key"},
-	{ns_t_px,	"PX",		"mapping information"},
-	{ns_t_gpos,	"GPOS",		"geographical position (withdrawn)"},
-	{ns_t_aaaa,	"AAAA",		"IPv6 address"},
-	{ns_t_loc,	"LOC",		"location"},
-	{ns_t_nxt,	"NXT",		"next valid name (unimplemented)"},
-	{ns_t_eid,	"EID",		"endpoint identifier (unimplemented)"},
-	{ns_t_nimloc,	"NIMLOC",	"NIMROD locator (unimplemented)"},
-	{ns_t_srv,	"SRV",		"server selection"},
-	{ns_t_atma,	"ATMA",		"ATM address (unimplemented)"},
-	{ns_t_tsig,	"TSIG",		"transaction signature"},
-	{ns_t_ixfr,	"IXFR",		"incremental zone transfer"},
-	{ns_t_axfr,	"AXFR",		"zone transfer"},
-	{ns_t_zxfr,	"ZXFR",		"compressed zone transfer"},
-	{ns_t_mailb,	"MAILB",	"mailbox-related data (deprecated)"},
-	{ns_t_maila,	"MAILA",	"mail agent (deprecated)"},
-	{ns_t_naptr,	"NAPTR",	"URN Naming Authority"},
-	{ns_t_kx,	"KX",		"Key Exchange"},
-	{ns_t_cert,	"CERT",		"Certificate"},
-	{ns_t_any,	"ANY",		"\"any\""},
+	{T_A,		"A",		"address"},
+	{T_NS,		"NS",		"name server"},
+	{T_MD,		"MD",		"mail destination (deprecated)"},
+	{T_MF,		"MF",		"mail forwarder (deprecated)"},
+	{T_CNAME,	"CNAME",	"canonical name"},
+	{T_SOA,		"SOA",		"start of authority"},
+	{T_MB,		"MB",		"mailbox"},
+	{T_MG,		"MG",		"mail group member"},
+	{T_MR,		"MR",		"mail rename"},
+	{T_NULL,	"NULL",		"null"},
+	{T_WKS,		"WKS",		"well-known service (deprecated)"},
+	{T_PTR,		"PTR",		"domain name pointer"},
+	{T_HINFO,	"HINFO",	"host information"},
+	{T_MINFO,	"MINFO",	"mailbox information"},
+	{T_MX,		"MX",		"mail exchanger"},
+	{T_TXT,		"TXT",		"text"},
+	{T_RP,		"RP",		"responsible person"},
+	{T_AFSDB,	"AFSDB",	"DCE or AFS server"},
+	{T_X25,		"X25",		"X25 address"},
+	{T_ISDN,	"ISDN",		"ISDN address"},
+	{T_RT,		"RT",		"router"},
+	{T_NSAP,	"NSAP",		"nsap address"},
+	{T_NSAP_PTR,	"NSAP_PTR",	"domain name pointer"},
+	{T_SIG,		"SIG",		"signature"},
+	{T_KEY,		"KEY",		"key"},
+	{T_PX,		"PX",		"mapping information"},
+	{T_GPOS,	"GPOS",		"geographical position (withdrawn)"},
+	{T_AAAA,	"AAAA",		"IPv6 address"},
+	{T_LOC,		"LOC",		"location"},
+	{T_NXT,		"NXT",		"next valid name (unimplemented)"},
+	{T_EID,		"EID",		"endpoint identifier (unimplemented)"},
+	{T_NIMLOC,	"NIMLOC",	"NIMROD locator (unimplemented)"},
+	{T_SRV,		"SRV",		"server selection"},
+	{T_ATMA,	"ATMA",		"ATM address (unimplemented)"},
+	{T_IXFR,	"IXFR",		"incremental zone transfer"},
+	{T_AXFR,	"AXFR",		"zone transfer"},
+	{T_MAILB,	"MAILB",	"mailbox-related data (deprecated)"},
+	{T_MAILA,	"MAILA",	"mail agent (deprecated)"},
+	{T_NAPTR,	"NAPTR",	"URN Naming Authority"},
+	{T_ANY,		"ANY",		"\"any\""},
 	{0, 		NULL,		NULL}
 };
 
@@ -460,7 +450,7 @@ sym_ntos(const struct res_sym *syms, int number, int *success) {
 		}
 	}
 
-	sprintf(unname, "%d", number);		/* XXX nonreentrant */
+	sprintf(unname, "%d", number);
 	if (success)
 		*success = 0;
 	return (unname);
@@ -477,7 +467,7 @@ sym_ntop(const struct res_sym *syms, int number, int *success) {
 			return (syms->humanname);
 		}
 	}
-	sprintf(unname, "%d", number);		/* XXX nonreentrant */
+	sprintf(unname, "%d", number);
 	if (success)
 		*success = 0;
 	return (unname);
@@ -537,7 +527,6 @@ p_option(u_long option) {
 	case RES_DNSRCH:	return "dnsrch";
 	case RES_INSECURE1:	return "insecure1";
 	case RES_INSECURE2:	return "insecure2";
-				/* XXX nonreentrant */
 	default:		sprintf(nbuf, "?0x%lx?", (u_long)option);
 				return (nbuf);
 	}
@@ -548,7 +537,7 @@ p_option(u_long option) {
  */
 const char *
 p_time(u_int32_t value) {
-	static char nbuf[40];		/* XXX nonreentrant */
+	static char nbuf[40];
 
 	if (ns_format_ttl(value, nbuf, sizeof nbuf) < 0)
 		sprintf(nbuf, "%u", value);
@@ -570,7 +559,7 @@ static const char *
 precsize_ntoa(prec)
 	u_int8_t prec;
 {
-	static char retbuf[sizeof "90000000.00"];	/* XXX nonreentrant */
+	static char retbuf[sizeof "90000000.00"];
 	unsigned long val;
 	int mantissa, exponent;
 
@@ -842,8 +831,6 @@ loc_ntoa(binary, ascii)
 	char *ascii;
 {
 	static char *error = "?";
-	static char tmpbuf[sizeof
-"1000 60 60.000 N 1000 60 60.000 W -12345678.00m 90000000.00m 90000000.00m 90000000.00m"];
 	const u_char *cp = binary;
 
 	int latdeg, latmin, latsec, latsecfrac;
@@ -860,9 +847,6 @@ loc_ntoa(binary, ascii)
 	char *sizestr, *hpstr, *vpstr;
 
 	versionval = *cp++;
-
-	if (ascii == NULL)
-		ascii = tmpbuf;
 
 	if (versionval) {
 		(void) sprintf(ascii, "; error: unknown LOC RR version");
@@ -976,16 +960,11 @@ dn_count_labels(const char *name) {
  */
 char *
 p_secstodate (u_long secs) {
-	/* XXX nonreentrant */
 	static char output[15];		/* YYYYMMDDHHMMSS and null */
 	time_t clock = secs;
 	struct tm *time;
 	
-#ifdef HAVE_TIME_R
-	gmtime_r(&clock, &time);
-#else
 	time = gmtime(&clock);
-#endif
 	time->tm_year += 1900;
 	time->tm_mon += 1;
 	sprintf(output, "%04d%02d%02d%02d%02d%02d",

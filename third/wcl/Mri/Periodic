@@ -13,6 +13,7 @@ Mri.wcChildren:		main
 Mri.wcCallback:		WcSetValue(this.title: Periodic)
 
 *background:		Turquoise
+*foreground:		Black
 *fontList:		-adobe-helvetica-medium-r-normal--10-*
 
 *main.wcCreate:		XmCreateMainWindow

@@ -4,7 +4,6 @@ INCLUDES =                                              \
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/bonobo                          \
-        -I$(includedir)                                 \
 	$(BONOBO_TEST_CFLAGS)
 
 OAF_FILES =					\
@@ -39,7 +38,8 @@ bin_PROGRAMS = 				\
 moniker_ldadd = 				\
 	$(top_builddir)/bonobo/libbonobo.la	\
 	$(top_builddir)/bonobo/libbonobox.la	\
-	$(BONOBOX_TEST_LIBS)
+	$(BONOBOX_TEST_LIBS)			\
+	$(INTLLIBS)
 
 libmoniker_std_la_SOURCES =			\
 	bonobo-moniker-extender-file.c  	\

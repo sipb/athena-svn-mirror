@@ -1,0 +1,25 @@
+AC_INIT(dm.c)
+
+test -z "$lsbindir" && lsbindir='${sbindir}'
+AC_SUBST(lsbindir)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+ATHENA_HESIOD
+
+
+AC_PATH_XTRA
+
+dnl AC_HEADER_STDC
+dnl AC_HEADER_SYS_WAIT
+dnl AC_CHECK_HEADERS(fcntl.h sys/file.h sys/ioctl.h sys/time.h syslog.h unistd.h sys/strredir.h sys/stropts.h utmpx.h)
+AC_CHECK_HEADERS(util.h sys/strredir.h sys/stropts.h utmpx.h pty.h)
+
+AC_TYPE_PID_T
+
+dnl AC_CHECK_FUNCS(gettimeofday putenv select strerror)
+AC_SEARCH_LIBS(logout, util, AC_DEFINE(HAVE_LOGOUT))
+AC_CHECK_FUNCS(pututline pututxline updwtmp login_tty grantpt _getpty openpty)
+
+AC_OUTPUT(Makefile)

@@ -1,0 +1,49 @@
+.\" $Id: al_is_local_acct.3,v 1.1 1998-05-07 17:11:26 ghudson Exp $
+.\"
+.\" Copyright 1998 by the Massachusetts Institute of
+.\" Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH AL_IS_LOCAL_ACCT 3 "5 May 1998"
+.SH NAME
+al_is_local_acct \- Determine if an account is local
+.SH SYNOPSIS
+.nf
+.B #include <al.h>
+.PP
+.B int al_is_local_acct(const char *\fIusername\fP)
+.PP
+.B cc file.c -lal -lhesiod
+.fi
+.SH DESCRIPTION
+This function determines if
+.I username
+has a local account according to the Athena access control file
+.I /etc/athena/access
+(see access(5)).  If the access file does not exist, it is assumed
+that
+.I username
+does not have a local account.
+.SH RETURN VALUES
+.I al_is_local_acct
+returns 1 if
+.I username
+has a local account, 0 if not, and -1 if there was a memory allocation
+error or permissions error reading the access file.
+.SH SEE ALSO
+al_login_allowed(3), al_get_access(3)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

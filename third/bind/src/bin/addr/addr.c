@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: addr.c,v 1.1.1.2 1999-03-16 19:44:36 danw Exp $";
+static char rcsid[] = "$Id: addr.c,v 1.2 2000-04-22 04:39:25 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above

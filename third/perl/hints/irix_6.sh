@@ -75,15 +75,13 @@ esac
 # Check for which compiler we're using
 
 case "$cc" in
-*"cc -n32"*)
+*cc*)
 
 	libscheck='case "`/usr/bin/file $xxx`" in
 *N32*) ;;
 *) xxx=/no/n32$xxx ;;
 esac'
 
-	# NOTE: -L/usr/lib32 -L/lib32 are automatically selected by the linker
-	ldflags=' -L/usr/local/lib32 -L/usr/local/lib'
 	cccdlflags=' '
     # From: David Billinghurst <David.Billinghurst@riotinto.com.au>
     # If you get complaints about so_locations then change the following

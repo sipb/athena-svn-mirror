@@ -59,7 +59,7 @@
   /* Its parameter is the file pathname, relative to the public root of a  */
   /* given header file.                                                    */
   /*                                                                       */
-#define FT_PUBLIC_FILE( x )  <FT_ROOT/x>
+#define FT_PUBLIC_FILE( x )  <freetype/x>
 
 
   /*************************************************************************/
@@ -68,7 +68,7 @@
   /* Its parameter is the file pathname, relative to the configuration     */
   /* root directory of a given header file.                                */
   /*                                                                       */
-#define FT_CONFIG_FILE( x )  <FT_CONFIG_ROOT/x>
+#define FT_CONFIG_FILE( x )  <freetype/config/x>
 
 
   /*************************************************************************/
@@ -77,7 +77,7 @@
   /* file.  Its parameter is the file pathname, relative to the            */
   /* configuration root directory of a given header file.                  */
   /*                                                                       */
-#define FT_INTERNAL_FILE( x )  <FT_ROOT/internal/x>
+#define FT_INTERNAL_FILE( x )  <freetype/internal/x>
 
 
   /*************************************************************************/
@@ -94,7 +94,7 @@
   /* directory and compile them normally by defining the macro             */
   /* FT_FLAT_COMPILATION.                                                  */
   /*                                                                       */
-#define FT_COMPONENT_FILE( d, x )  <FT_ROOT/d/x>
+#define FT_COMPONENT_FILE( d, x )  <freetype/d/x>
 
 
   /*************************************************************************/

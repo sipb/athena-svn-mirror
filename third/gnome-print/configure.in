@@ -97,8 +97,8 @@ else
 fi
 AC_SUBST(HTML_DIR)
                                                     
-PRINT_LIBDIR='-L${libdir}'
-PRINT_INCLUDEDIR='-I${includedir}'
+PRINT_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+PRINT_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}'
 PRINT_INCLUDEDIR="$PRINT_INCLUDEDIR `gnome-config --cflags gnomeui`"
 PRINT_INCLUDEDIR="$PRINT_INCLUDEDIR `xml-config --cflags`"
 PRINT_LIBS="-lgnomeprint `gnome-config --libs gnomeui gdk_pixbuf`"

@@ -23,7 +23,7 @@ extern int statfs(const char *, struct statfs *);
 #  define plp_struct_statfs struct statvfs
 #  define statfs(path, buf) statvfs(path, buf)
 #  define USING "STATVFS"
-#  define BLOCKSIZE(f) (unsigned long)(f.f_frsize?f.frsize:f.f_bsize)
+#  define BLOCKSIZE(f) (unsigned long)f.f_frsize
 #  define BLOCKS(f)    (unsigned long)f.f_bavail
 # endif
 
@@ -68,7 +68,7 @@ int main( int argc, char *argv[], char *envp[] )
 		fprintf(stderr, "Space_avail: cannot stat '%s'", pathname );
 		exit(1);
 	}
-	space = (1.0 * BLOCKS(fsb) * BLOCKSIZE(fsb))/1024;
+	space = BLOCKS(fsb) * (BLOCKSIZE(fsb)/1024.0);
 	printf("path '%s', Using '%s', %lu blocks, %lu blocksize, space %lu\n",
 	pathname, USING, BLOCKS(fsb), BLOCKSIZE(fsb), space );
 	return(0);

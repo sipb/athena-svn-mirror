@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES = $(GNOME_INCLUDEDIR) 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
 LDADD = -lXt -lXmu $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
@@ -188,7 +188,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_smproxy_SOURCES)
 OBJECTS = $(gnome_smproxy_OBJECTS)
@@ -315,9 +315,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-save.o: save.c smproxy.h
-smproxy.o: smproxy.c smproxy.h
-
 info-am:
 info: info-am
 dvi-am:

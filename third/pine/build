@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: build,v 1.1.1.1 2001-02-19 07:05:55 ghudson Exp $
+# $Id: build,v 1.2 2001-04-30 20:04:53 rbasch Exp $
 #
 #            T H E    P I N E    M A I L   S Y S T E M
 #
@@ -335,11 +335,11 @@ case $maketarg in
         if [ ! -d bin ] ;  then    mkdir bin;        fi
         cd $PHOME/bin
         rm -f pine mtest imapd pico pilot
-        if [ -s ../pine/pine ] ;      then ln ../pine/pine  pine      ; fi
-        if [ -s ../mtest/mtest ] ;    then ln ../mtest/mtest mtest ; fi
-        if [ -s ../imapd/imapd ] ;    then ln ../imapd/imapd imapd    ; fi
-        if [ -s ../pico/pico ] ;      then ln ../pico/pico pico ; fi
-        if [ -s ../pico/pilot ] ;     then ln ../pico/pilot pilot ; fi
+        if [ -s ../pine/pine ] ;      then ln -s ../pine/pine  pine      ; fi
+        if [ -s ../mtest/mtest ] ;    then ln -s ../mtest/mtest mtest ; fi
+        if [ -s ../imapd/imapd ] ;    then ln -s ../imapd/imapd imapd    ; fi
+        if [ -s ../pico/pico ] ;      then ln -s ../pico/pico pico ; fi
+        if [ -s ../pico/pilot ] ;     then ln -s ../pico/pilot pilot ; fi
         cd $PHOME
         echo ''
         echo "Links to executables are in bin directory:"

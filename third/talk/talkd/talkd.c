@@ -39,7 +39,7 @@ char copyright[] =
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)talkd.c	5.8 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: talkd.c,v 1.1.1.1 1996-10-07 20:39:12 ghudson Exp $";
+static char rcsid[] = "$Id: talkd.c,v 1.3 1997-07-30 17:16:16 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -59,7 +59,12 @@ static char rcsid[] = "$Id: talkd.c,v 1.1.1.1 1996-10-07 20:39:12 ghudson Exp $"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_PATHS_H
 #include <paths.h>
+#endif
+#ifndef _PATH_DEV
+#define _PATH_DEV "/dev/"
+#endif
 
 CTL_MSG		request;
 CTL_RESPONSE	response;
@@ -80,6 +85,7 @@ main(argc, argv)
 {
 	register CTL_MSG *mp = &request;
 	int cc;
+	struct sigaction action;
 
 	if (getuid()) {
 		fprintf(stderr, "%s: getuid: not super-user", argv[0]);
@@ -96,7 +102,10 @@ main(argc, argv)
 	}
 	if (argc > 1 && strcmp(argv[1], "-d") == 0)
 		debug = 1;
-	signal(SIGALRM, timeout);
+	action.sa_handler = timeout;
+	action.sa_flags = 0;
+	sigemptyset(&action.sa_mask);
+	sigaction(SIGALRM, &action, NULL);
 	alarm(TIMEOUT);
 	for (;;) {
 		extern int errno;

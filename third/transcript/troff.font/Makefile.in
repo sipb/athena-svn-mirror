@@ -1,0 +1,102 @@
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/troff.font/Makefile.in,v 1.1 1996-10-14 04:30:18 ghudson Exp $
+#
+# This is the global Makefile template for TranScript on Athena.
+# It does, roughly, the same things as the original build scripts, but
+# in a slightly more structured fashion.
+#
+# PostScript is a registered trademark of Adobe Systems Incorporated
+# TranScript is a registered trademark of Adobe Systems Incorporated
+
+CC=@CC@
+
+# SYSV make is a censored piece of censored...
+SHELL = /bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+mandir=@mandir@
+datadir=@datadir@
+PSLIBDIR=${datadir}/ps
+TROFFDIR=${PSLIBDIR}/troff.font
+DITDIR=${PSLIBDIR}/ditroff.font
+PSTEMPDIR=/var/tmp
+
+# programs
+SED=sed
+AWK=awk
+RM=rm -f
+LN=ln -s
+
+# fonts
+FONTS_A=Times Helvetica Courier
+FONTS_B=AvantGarde Bookman HelvNarrow NewCentury Palatino Zapf
+FONTS_X=Garamond Optima Souvenir
+
+FONTS=$(FONTS_A) $(FONTS_B) $(FONTS_X)
+
+fR=R
+fI=I
+fB=B
+fS=S
+MAKE_LINKS=make-links.sh
+
+.PHONY: all buildtroff clean install family
+
+all: buildtroff
+
+# We extract names of the actual fonts from the .map file with awk,
+# then go and build them.
+buildtroff:
+	-$(RM) $(MAKE_LINKS)
+	echo "cd $(DESTDIR)$(TROFFDIR)" >> ./$(MAKE_LINKS)
+	-mkdir $(FONTS)
+	for i in $(FONTS); do						     \
+		ARGS="`$(AWK) -f args.awk ../lib/troff.font/$$i.map`";	     \
+		cd $$i;$(MAKE) -f ../Makefile $(MFLAGS) $$ARGS family;cd ..; \
+	done
+
+clean:
+	-$(RM) $(MAKE_LINKS)
+	-$(RM) -r $(FONTS)
+
+install:
+	-cd $(DESTDIR)$(TROFFDIR); ${RM} -r $(FONTS)
+	for i in $(FONTS); do chmod 755 $$i; chmod 644 $$i/*; done
+	cp -rp $(FONTS) $(DESTDIR)$(TROFFDIR)
+	/bin/sh $(MAKE_LINKS)
+
+##### The following dependencies get executed from the sub-directories.
+
+# Courier looks better without ligatures.
+font.head:
+	cp ../../lib/troff.font/font.head .
+	if [ "$(FAM)" = "Courier" ]; then	\
+		chmod u+w font.head;		\
+		echo ".lg 0" >> font.head;	\
+	fi
+
+# "pscatmap" takes map-file data and generates C source code, which is
+# then compiled into the object file.
+font.ct ft$(fR).c ft$(fI).c ft$(fB).c ft$(fS).c:
+	-$(LN) ../../lib/troff.font/chartab.inc .
+	PSRESOURCEPATH="../../lib::" \
+		../../src/pscatmap ../../lib/troff.font/$(FAM).map
+	$(RM) chartab.inc
+	mv $(FAM).ct font.ct
+
+# fonts are stripped object files.
+# (I suspect this is a BSD [or earlier] thing; see Athena-release-notes.)
+family: ft$(fR).o ft$(fI).o ft$(fB).o ft$(fS).o font.ct font.head
+	for i in $(fR) $(fI) $(fB) $(fS); do				\
+		mv ft$$i.o ft$$i;					\
+		strip ft$$i || echo "$(FAM)/$$i: not stripped!";	\
+	done
+	-$(RM) ft$(fR).c ft$(fI).c ft$(fB).c ft$(fS).c
+	if [ "$(fR)" != "R" ]; then			\
+		echo "$(LN) ft$(fR) $(FAM)/ftR" >> ../$(MAKE_LINKS); fi
+	if [ "$(fI)" != "I" ]; then			\
+		echo "$(LN) ft$(fI) $(FAM)/ftI" >> ../$(MAKE_LINKS); fi
+	if [ "$(fB)" != "B" ]; then			\
+		echo "$(LN) ft$(fB) $(FAM)/ftB" >> ../$(MAKE_LINKS); fi
+	if [ "$(fS)" != "S" ]; then			\
+		echo "$(LN) ft$(fS) $(FAM)/ftS" >> ../$(MAKE_LINKS); fi

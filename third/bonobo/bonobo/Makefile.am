@@ -8,7 +8,6 @@ INCLUDES =                                              \
 	-I. 						\
 	-I$(srcdir) -I$(top_srcdir) 			\
 	-I$(top_builddir)				\
-        -I$(includedir)                                 \
 	$(GNOME_INCLUDEDIR)				\
 	$(OAF_CFLAGS)					\
 	$(GDK_PIXBUF_CFLAGS)				\

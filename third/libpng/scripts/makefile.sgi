@@ -15,21 +15,29 @@ CC=cc
 
 WARNMORE=-fullwarn
 # You can add the -n32 option; then zlib must also be compiled with -n32
-CFLAGS=-I$(ZLIBINC) -O $(WARNMORE) # -g -DPNG_DEBUG=5
-LDFLAGS=-L. -L$(ZLIBLIB) -lpng -lz -lm
+CFLAGS=-I$(ATHTOOLROOT)$(ZLIBINC) -g $(WARNMORE) # -g -DPNG_DEBUG=5
+LDFLAGS=-L. -L$(ATHROOLROOT)$(ZLIBLIB) -lpng -lz -lm
 
 RANLIB=echo
 #RANLIB=ranlib
+
+PNGMAJ=2
+PNGMIN=1.0.8
+PNGVER=$(PNGMAJ).$(PNGMIN)
 
 OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 	pngread.o pngrio.o pngwio.o pngwrite.o pngrtran.o \
 	pngwtran.o pngmem.o pngerror.o pngpread.o
 
-all: libpng.a pngtest
+all: libpng.a libpng.so pngtest
 
 libpng.a: $(OBJS)
 	ar rc $@  $(OBJS)
 	$(RANLIB) $@
+
+libpng.so: $(OBJS)
+	ld -shared -L $(ATHTOOLROOT)$(ZLIBLIB) -rpath $(ZLIBLIB) \
+	  -soname libpng.so.$(PNGMAJ) -o $@ $(OBJS) -lz
 
 pngtest: pngtest.o libpng.a
 	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
@@ -38,14 +46,19 @@ test: pngtest
 	./pngtest
 
 install: libpng.a
-	-@mkdir $(prefix)/include
-	-@mkdir $(prefix)/lib
-	cp png.h $(prefix)/include
-	cp pngconf.h $(prefix)/include
-	chmod 644 $(prefix)/include/png.h
-	chmod 644 $(prefix)/include/pngconf.h
-	cp libpng.a $(prefix)/lib
-	chmod 644 $(prefix)/lib/libpng.a
+	mkdir -p $(DESTDIR)$(prefix)/include
+	mkdir -p $(DESTDIR)$(prefix)/lib
+	cp png.h $(DESTDIR)$(prefix)/include
+	cp pngconf.h $(DESTDIR)$(prefix)/include
+	chmod 644 $(DESTDIR)$(prefix)/include/png.h
+	chmod 644 $(DESTDIR)$(prefix)/include/pngconf.h
+	cp libpng.a $(DESTDIR)$(prefix)/lib
+	chmod 644 $(DESTDIR)$(prefix)/lib/libpng.a
+	cp libpng.so $(DESTDIR)$(prefix)/lib/libpng.so.$(PNGVER)
+	rm -f $(DESTDIR)$(prefix)/lib/libpng.so.$(PNGMAJ)
+	ln -s -f libpng.so.$(PNGVER) $(DESTDIR)$(prefix)/lib/libpng.so.$(PNGMAJ)
+	rm -f $(DESTDIR)$(prefix)/lib/libpng.so
+	ln -s -f libpng.so.$(PNGVER) $(DESTDIR)$(prefix)/lib/libpng.so
 
 clean:
 	rm -f *.o libpng.a pngtest pngout.png

@@ -5,7 +5,7 @@
 ;; Author:     Eric S. Raymond <esr@snark.thyrsus.com>
 ;; Maintainer: Andre Spiegel <spiegel@gnu.org>
 
-;; $Id: vc-hooks.el,v 1.114 1999/06/30 07:10:20 spiegel Exp $
+;; $Id$
 
 ;; This file is part of GNU Emacs.
 
@@ -1020,7 +1020,7 @@ control system name."
     ;; cannot modify a file that someone else has locked.
     (and vc-type 
 	 (equal file (buffer-file-name))
-	 (vc-locking-user file)
+	 (stringp (vc-locking-user file))
 	 (not (string= (vc-user-login-name) (vc-locking-user file)))
 	 (setq buffer-read-only t))
     ;; If the user is root, and the file is not owner-writable,

@@ -4,7 +4,6 @@ INCLUDES =					\
 	-I$(top_builddir) -I$(top_srcdir)	\
 	$(SUPPORTINCS)				\
 	$(GDK_IMLIB_CFLAGS)			\
-	-I$(includedir)				\
 	@GTK_CFLAGS@
 
 LDADD = $(top_builddir)/libgnomeui/libgnomeui.la	\

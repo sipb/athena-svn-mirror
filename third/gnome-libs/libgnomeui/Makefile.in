@@ -158,7 +158,7 @@ lib_LTLIBRARIES = libgnomeui.la
 #
 libgnomeuiincludedir = $(includedir)/libgnomeui
 
-INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl 	-I$(includedir) $(GDK_IMLIB_CFLAGS) 	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS)         -DGNOMELIBDIR=\""$(libdir)"\"         -DGNOMEDATADIR=\""$(datadir)"\"         -DGNOMEBINDIR=\""$(bindir)"\"         -DGNOMELOCALSTATEDIR=\""$(localstatedir)"\"         -DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" 	-DG_LOG_DOMAIN=\"GnomeUI\"
+INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl 	$(GDK_IMLIB_CFLAGS) 	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS)         -DGNOMELIBDIR=\""$(libdir)"\"         -DGNOMEDATADIR=\""$(datadir)"\"         -DGNOMEBINDIR=\""$(bindir)"\"         -DGNOMELOCALSTATEDIR=\""$(localstatedir)"\"         -DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" 	-DG_LOG_DOMAIN=\"GnomeUI\"
 
 
 EXTRA_HEADERS = 

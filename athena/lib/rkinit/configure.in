@@ -1,0 +1,10 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(rk_lib.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+ATHENA_KRB4_REQUIRED
+
+AC_OUTPUT(Makefile)

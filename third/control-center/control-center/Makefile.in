@@ -152,7 +152,7 @@ BUILT_SOURCES = $(CORBA_SRCLIST)
 
 gnomecc_DEPS = libcapplet.la
 
-gnomecc_LDADD =  	libcapplet.la						$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(INTLLIBS)						$(GNORBA_LIBS)						$(ORB_LIBS)
+gnomecc_LDADD =  	libcapplet.la						-lgdk_imlib						$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(INTLLIBS)						$(GNORBA_LIBS)						$(ORB_LIBS)
 
 
 appicondir = $(datadir)/pixmaps
@@ -213,7 +213,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libcapplet_la_SOURCES) $(gnomecc_SOURCES)
 OBJECTS = $(libcapplet_la_OBJECTS) $(gnomecc_OBJECTS)
@@ -452,35 +452,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-callbacks.o: callbacks.c ../config.h callbacks.h tree.h control-center.h \
-	corba-glue.h capplet-manager.h
-capplet-manager.o: capplet-manager.c ../config.h capplet-manager.h \
-	control-center.h tree.h callbacks.h gtk-multiview.h
-capplet-widget-libs.lo capplet-widget-libs.o : capplet-widget-libs.c \
-	capplet-widget-libs.h control-center.h
-capplet-widget.lo capplet-widget.o : capplet-widget.c capplet-widget.h \
-	capplet-widget-libs.h control-center.h
-control-center-common.lo control-center-common.o : \
-	control-center-common.c control-center.h
-control-center-skels.lo control-center-skels.o : control-center-skels.c \
-	control-center.h
-control-center-stubs.lo control-center-stubs.o : control-center-stubs.c \
-	control-center.h
-corba-glue.o: corba-glue.c corba-glue.h control-center.h \
-	capplet-manager.h tree.h
-gtk-multiview.o: gtk-multiview.c gtk-multiview.h
-main.o: main.c ../config.h callbacks.h tree.h control-center.h \
-	corba-glue.h capplet-manager.h gtk-multiview.h splash.h
-splash.o: splash.c ../config.h splash.h
-tree.o: tree.c tree.h control-center.h capplet-manager.h
-
 info-am:
 info: info-am
 dvi-am:

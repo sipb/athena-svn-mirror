@@ -92,13 +92,13 @@ case "$host_os" in
 	# libname.so.M -> libname.so.M.N
 	${echo} ${RM} ${INSTALLDIR}/$LINK2
 	if [ -z "$uninstall" ]; then
-		${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK2
+		${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK2
 	fi
 
 	# libname.so -> libname.so.M.N
 	${echo} ${RM} ${INSTALLDIR}/$LINK1
 	if [ -z "$uninstall" ]; then
-		${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK1
+		${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK1
 	fi
 	;;
 
@@ -106,7 +106,7 @@ solaris2*|aix4.[2-9]*|osf*|irix[56]*)
 	# libname.so -> libname.so.M
 	${echo} ${RM} ${INSTALLDIR}/$LINK1
 	if [ -z "$uninstall" ]; then
-		${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK1
+		${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK1
 	fi
 	;;
 
@@ -117,19 +117,19 @@ freebsd3*)
 		# libname.so -> libname.so.M
 		${echo} ${RM} ${INSTALLDIR}/$LINK1
 		if [ -z "$uninstall" ]; then
-			${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK1
+			${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK1
 		fi
 	else
 		# libname.so.M -> libname.so.M.N
 		${echo} ${RM} ${INSTALLDIR}/$LINK2
 		if [ -z "$uninstall" ]; then
-			${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK2
+			${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK2
 		fi
 
 		# libname.so -> libname.so.M.N
 		${echo} ${RM} ${INSTALLDIR}/$LINK1
 		if [ -z "$uninstall" ]; then
-			${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/$LINK1
+			${echo} ln -s $LIBNAME ${INSTALLDIR}/$LINK1
 		fi
 	fi
 	;;
@@ -138,7 +138,7 @@ hpux1*)
 	# libname.sl -> libname.M
 	${echo} ${RM} ${INSTALLDIR}/$LINK1.sl
 	if [ -z "$uninstall" ]; then
-		${echo} ln -s $INSTALLDIR/$LIBNAME ${INSTALLDIR}/${LINK1}.sl
+		${echo} ln -s $LIBNAME ${INSTALLDIR}/${LINK1}.sl
 	fi
 	;;
 

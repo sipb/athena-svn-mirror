@@ -1,0 +1,44 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:47:58 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+SRCS=p_ask.c p_connect.c p_consult.c p_instance.c p_messages.c p_motd.c	     \
+  p_queue.c p_resolve.c p_send.c p_topic.c p_utils.c p_status.c p_describe.c \
+  p_local.c p_misc.c p_cmdloop.c p_acl.c p_list.c p_admin.c
+OBJS=p_ask.o p_connect.o p_consult.o p_instance.o p_messages.o p_motd.o	     \
+  p_queue.o p_resolve.o p_send.o p_topic.o p_utils.o p_status.o p_describe.o \
+  p_local.o p_misc.o p_cmdloop.o p_acl.o p_list.o p_admin.o
+
+all: libparser.a
+
+libparser.a: $(OBJS)
+	rm -f $@
+	ar cq $@ $(OBJS)
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+# we don't install this library anywhere, it's here only for our
+# private use in building the binaries.
+install:
+
+clean:
+	rm -f $(OBJS) libparser.a
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

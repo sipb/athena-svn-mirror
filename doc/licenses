@@ -1,0 +1,64 @@
+athena/bin/cxref		non-commercial-use
+athena/bin/install		UCB/MIT
+athena/bin/voldump		private (includes Transarc code)
+athena/etc/synctree		private
+athena/etc/track		non-commercial-use
+third/afsbin			private (Transarc)
+third/autoconf			GPL
+third/bash			GPL
+third/bind			MIT-style, but modifications to DNSSAFE
+				code/invocation are partly restricted
+third/emacs			GPL
+third/gcc			GPL
+third/gmake			GPL
+third/inetd			UCB
+third/intlfonts			GPL
+third/ispell			BSD-style
+third/jot			UCB
+third/kermit			non-commercial-use
+third/kpasswd			MIT
+third/krb5			MIT, plus UCB and other MIT-style
+third/ksrvutil			MIT
+third/lam			UCB
+third/look			UCB
+third/lprng/athena		MIT
+third/lprng/ifhp		Artistic or GPL
+third/lprng/lprng		Artistic or GPL
+third/m4			GPL
+third/mdoc			UCB
+third/motif			private (OSF)
+third/nmh			MIT-style
+third/patch			GPL
+third/perl			Artistic or GPL
+third/rcs			GPL
+third/readline			GPL
+third/rs			UCB
+third/sendmail			non-commercial
+third/ssh			non-commercial
+third/sysinfo			non-commercial
+third/talk			UCB
+third/tcp_wrappers		MIT-style
+third/tcsh			UCB
+third/tex			mostly GPL, but modifications to tex.web
+				are not allowed
+third/top			MIT-style
+third/traceroute		BSD-style (UCB and LBL)
+third/transcript		private (Adobe)
+third/wcl			MIT-style
+third/whois			UCB
+third/x3270			MIT-style, except fonts are non-commercial-use
+third/xmh			MIT-style
+third/xntp			MIT-style
+third/xscreensaver		MIT-style
+
+
+Everything in athena/ is assumed to be under MIT copyright unless listed
+above.
+
+"private" indicates software whose sources and binaries we can't
+release outside MIT.
+
+"UCB" indicates code copyrighted to the Regents of the University of
+California which includes the "advertising clause" which no longer
+actually applies to it. "BSD-style" indicates copyrights modeled after
+it where the advertising clause is still active.

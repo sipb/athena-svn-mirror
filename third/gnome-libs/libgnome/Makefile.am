@@ -11,7 +11,7 @@ libgnomeincludedir = $(includedir)/libgnome
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl \
-	-I$(includedir) $(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  \
+	$(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  \
 	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS) \
 	-DGNOMELIBDIR=\""$(libdir)"\" \
 	-DGNOMEDATADIR=\""$(datadir)"\" \

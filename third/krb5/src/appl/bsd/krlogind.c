@@ -238,6 +238,8 @@ struct winsize {
 #include <utmp.h>
 #endif
 
+#include <al.h>
+
 int auth_sys = 0;	/* Which version of Kerberos used to authenticate */
 
 #define KRB5_RECVAUTH_V4	4
@@ -817,10 +819,10 @@ void doit(f, fromp)
     if (retval)
         fatalperror(2, "failed make_sane_hostname");
     if (passwd_req)
-        execl(login_program, "login", "-p", "-h", rhost_sane,
+        execl(login_program, "login", "-h", rhost_sane,
           lusername, 0);
     else
-        execl(login_program, "login", "-p", "-h", rhost_sane,
+        execl(login_program, "login", "-h", rhost_sane,
              "-f", lusername, 0);
 #else /* USE_LOGIN_F */
 	execl(login_program, "login", "-r", rhost_sane, 0);
@@ -1205,7 +1207,7 @@ do_krb_login(host_addr, hostname)
     krb5_error_code status;
     struct passwd *pwd;
     char *msg_fail = NULL;
-    int valid_checksum;
+    int valid_checksum, local_acct;
 
     if (getuid()) {
 	exit(1);
@@ -1232,7 +1234,12 @@ do_krb_login(host_addr, hostname)
 	  fatal(netf, "This server does not support Kerberos V4");
   }
 #endif
-    
+
+    if (al_login_allowed(lusername, 1, &local_acct, NULL) != 0)
+	fatal(netf, "You are not authorized to log in here remotely");
+
+    if (!local_acct)
+	al_acct_create(lusername, NULL, getpid(), 0, 0, NULL);
 
 #if (defined(ALWAYS_V5_KUSEROK) || !defined(KRB5_KRB4_COMPAT))
 	/* krb5_kuserok returns 1 if OK */
@@ -1250,7 +1257,8 @@ do_krb_login(host_addr, hostname)
 	}
 #endif
 
-    
+    if (!local_acct)
+	al_acct_revert(lusername, getpid());
 
     if (checksum_required && !valid_checksum) {
 	if (auth_sent & AUTH_KRB5) {

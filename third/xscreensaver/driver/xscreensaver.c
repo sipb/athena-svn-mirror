@@ -133,6 +133,7 @@
 #include <X11/Shell.h>
 #include <X11/Xos.h>
 #include <netdb.h>	/* for gethostbyname() */
+#include <signal.h>
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Error.h>
@@ -177,6 +178,10 @@ static XrmOptionDescRec options [] = {
   { "-lock-timeout",	   ".lockTimeout",	XrmoptionSepArg, 0 },
   { "-lock-vts",	   ".lockVTs",		XrmoptionNoArg, "on" },
   { "-no-lock-vts",	   ".lockVTs",		XrmoptionNoArg, "off" },
+  { "-start-locked",	   ".startLocked",	XrmoptionNoArg, "on" },
+  { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
+  { "-lock-command",	   ".lockCommand",	XrmoptionSepArg, 0 },
+  { "-unlock-command",	   ".unlockCommand",	XrmoptionSepArg, 0 },
   { "-visual",		   ".visualID",		XrmoptionSepArg, 0 },
   { "-install",		   ".installColormap",	XrmoptionNoArg, "on" },
   { "-no-install",	   ".installColormap",	XrmoptionNoArg, "off" },
@@ -198,6 +203,7 @@ static XrmOptionDescRec options [] = {
   { "-nosplash",	   ".splash",		XrmoptionNoArg, "off" },
   { "-idelay",		   ".initialDelay",	XrmoptionSepArg, 0 },
   { "-nice",		   ".nice",		XrmoptionSepArg, 0 },
+  { "-passwd",		   ".passwd",		XrmoptionSepArg, 0 },
 
   /* Actually these are built in to Xt, but just to be sure... */
   { "-synchronous",	   ".synchronous",	XrmoptionNoArg, "on" },
@@ -234,17 +240,17 @@ The standard Xt command-line options are accepted; other options include:\n\
 \n\
 See the manual for other options and X resources.\n\
 \n\
-The `xscreensaver' program should be left running in the background.\n\
-Use the `xscreensaver-demo' and `xscreensaver-command' programs to\n\
-manipulate a running xscreensaver.\n\
+The `xss' program should be left running in the background.\n\
+Use the `xss-demo' and `xss-command' programs to manipulate a running\n\
+xss. Use the `xss-button' command to create a button you can use to\n\
+lock your screen.\n\
 \n\
 The `*programs' resource controls which graphics demos will be launched by\n\
-the screensaver.  See `man xscreensaver' or the web page for more details.\n\
+the screensaver.  See `man xss' or the web page for more details.\n\
 \n\
 Just getting started?  Try this:\n\
 \n\
-        xscreensaver &\n\
-        xscreensaver-demo\n\
+        xss-button &\n\
 \n\
 For updates, check http://www.jwz.org/xscreensaver/\n\
 \n",
@@ -434,7 +440,7 @@ set_version_string (saver_info *si, int *argc, char **argv)
 }
 
 
-/* Initializations that potentially take place as a priveleged user:
+/* Initializations that potentially take place as a privileged user:
    If the xscreensaver executable is setuid root, then these initializations
    are run as root, before discarding privileges.
  */
@@ -461,16 +467,13 @@ lock_initialization (saver_info *si, int *argc, char **argv)
 #else /* !NO_LOCKING */
 
   /* Finish initializing locking, now that we're out of privileged code. */
-  if (! lock_init (*argc, argv, si->prefs.verbose_p))
+  if (! lock_init (&si->prefs))
     {
       si->locking_disabled_p = True;
       si->nolock_reason = "error getting password";
     }
 #endif /* NO_LOCKING */
-
-  hack_uid (si);
 }
-
 
 /* Open the connection to the X server, and intern our Atoms.
  */
@@ -579,16 +582,16 @@ process_command_line (saver_info *si, int *argc, char **argv)
 
 	      if (!strcmp (s, "-demo") || !strcmp (s, "-prefs"))
 		fprintf (stderr, "\n\
-    Perhaps you meant to run the `xscreensaver-demo' program instead?\n");
+    Perhaps you meant to run the `xss-demo' program instead?\n");
 	      else
 		fprintf (stderr, "\n\
-    However, `%s' is an option to the `xscreensaver-command' program.\n", s);
+    However, `%s' is an option to the `xss-command' program.\n", s);
 
 	      fprintf (stderr, "\
-    The `xscreensaver' program is a daemon that runs in the background.\n\
-    You control a running xscreensaver process by sending it messages\n\
-    with `xscreensaver-demo' or `xscreensaver-command'.\n\
-.   See the man pages for details, or check the web page:\n\
+    The `xss' program is a daemon that runs in the background.\n\
+    You control a running xss process by sending it messages\n\
+    with `xss-button', `xss-demo', or `xss-command'.\n\
+    See the man pages for details, or check the web page:\n\
     http://www.jwz.org/xscreensaver/\n\n");
 
 	      /* Since version 1.21 renamed the "-lock" option to "-lock-mode",
@@ -596,7 +599,7 @@ process_command_line (saver_info *si, int *argc, char **argv)
 	      if (!strcmp (s, "-lock"))
 		fprintf (stderr, "\
     Or perhaps you meant either the \"-lock-mode\" or the\n\
-    \"-lock-timeout <minutes>\" options to xscreensaver?\n\n");
+    \"-lock-timeout <minutes>\" options to xss?\n\n");
 	    }
 
 	  exit (1);
@@ -923,11 +926,13 @@ main_loop (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
   Bool ok_to_unblank;
+  pid_t lock_command_pid = 0;
 
   while (1)
     {
       Bool was_locked = False;
-      sleep_until_idle (si, True);
+      if (!p->start_locked_p)
+	sleep_until_idle (si, True);
 
       if (p->verbose_p)
 	{
@@ -996,11 +1001,14 @@ main_loop (saver_info *si)
 
         si->emergency_lock_p = False;
 
-        if (!si->demoing_p &&           /* if not going into demo mode */
+        if ((!si->demoing_p &&          /* if not going into demo mode */
             p->lock_p &&                /* and locking is enabled */
             !si->locking_disabled_p &&  /* and locking is possible */
-            lock_timeout == 0)          /* and locking is not timer-deferred */
+            lock_timeout == 0) ||       /* and locking is not timer-deferred */
+	    p->start_locked_p) {        /* OR we're starting locked */
           set_locked_p (si, True);      /* then lock right now. */
+	  si->locked_due_to_idle_p = False;
+	}
 
         /* locked_p might be true already because of the above, or because of
            the LOCK ClientMessage.  But if not, and if we're supposed to lock
@@ -1012,6 +1020,23 @@ main_loop (saver_info *si)
           si->lock_id = XtAppAddTimeOut (si->app, lock_timeout,
                                          activate_lock_timer,
                                          (XtPointer) si);
+
+      if (si->locked_p && p->lock_command && *p->lock_command)
+	{
+	  lock_command_pid = fork ();
+	  switch (lock_command_pid)
+	    {
+	    case -1:
+	      fprintf (stderr, "%s: Could not fork to run lock command.\n",
+		       blurb());
+	      break;
+
+	    case 0:
+	      setsid ();
+	      system (p->lock_command);
+	      _exit (0);
+	    }
+	}
       }
 #endif /* !NO_LOCKING */
 
@@ -1066,6 +1091,29 @@ main_loop (saver_info *si)
       kill_screenhack (si);
       unblank_screen (si);
 
+      if (si->locked_p)
+	{
+	  if (lock_command_pid > 0)
+	    {
+	      kill (-lock_command_pid, SIGTERM);
+	      lock_command_pid = 0;
+	    }
+	  if (p->unlock_command && *p->unlock_command)
+	    {
+	      switch (lock_command_pid)
+		{
+		case -1:
+		  fprintf (stderr, "%s: Could not fork to run unlock "
+			   "command.\n", blurb());
+		  break;
+
+		case 0:
+		  system (p->unlock_command);
+		  _exit (0);
+		}
+	    }
+	}
+
       set_locked_p (si, False);
       si->emergency_lock_p = False;
       si->demoing_p = 0;
@@ -1092,6 +1140,9 @@ main_loop (saver_info *si)
 	  XtRemoveTimeOut (si->lock_id);
 	  si->lock_id = 0;
 	}
+
+      if (p->start_locked_p)
+	break;
 
       if (p->verbose_p)
 	fprintf (stderr, "%s: awaiting idleness.\n", blurb());
@@ -1137,6 +1188,8 @@ main (int argc, char **argv)
   for (i = 0; i < si->nscreens; i++)
     if (ensure_no_screensaver_running (si->dpy, si->screens[i].screen))
       exit (1);
+
+  load_init_file (p);
 
   lock_initialization (si, &argc, argv);
 
@@ -1242,11 +1295,18 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 
   if (event->xclient.message_type != XA_SCREENSAVER)
     {
+/* Message disabled as a local Athena change, since we get it spuriously
+ * on Solaris (which has no screensaver extensions) when clients send
+ * WM_CHANGE_STATE messages to the root window.  Not sure why.  Problem
+ * reported to jwz.
+ */
+#if 0
       char *str;
       str = XGetAtomName_safe (si->dpy, event->xclient.message_type);
       fprintf (stderr, "%s: unrecognised ClientMessage type %s received\n",
 	       blurb(), (str ? str : "(null)"));
       if (str) XFree (str);
+#endif
       return False;
     }
   if (event->xclient.format != 32)
@@ -1509,6 +1569,7 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 	  sprintf (buf, "LOCK ClientMessage received; %s", response);
 	  clientmessage_response (si, window, False, buf, response);
 	  set_locked_p (si, True);
+	  si->locked_due_to_idle_p = False;
 	  si->selection_mode = 0;
 	  si->demoing_p = False;
 

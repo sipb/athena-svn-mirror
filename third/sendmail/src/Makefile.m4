@@ -42,10 +42,13 @@ LIBDIRS=confLIBDIRS
 
 # libraries required on your system
 #  delete -l44bsd if you are not running BIND 4.9.x
-LIBS=	ifdef(`confLIBS', `confLIBS')
+LIBS=	-lwrap ifdef(`confLIBS', `confLIBS')
 
 # location of sendmail binary (usually /usr/sbin or /usr/lib)
 BINDIR=	${DESTDIR}ifdef(`confMBINDIR', `confMBINDIR', `/usr/sbin')
+
+# BINDIR for symlink purposes (no DESTDIR)
+LNBINDIR= ifdef(`confMBINDIR', `confMBINDIR', `/usr/sbin')
 
 # location of "user" binaries (usually /usr/bin or /usr/ucb)
 UBINDIR=${DESTDIR}ifdef(`confUBINDIR', `confUBINDIR', `/usr/bin')
@@ -130,8 +133,12 @@ sendmail.${MAN8SRC}: sendmail.8
 install: install-sendmail install-docs
 
 install-sendmail: sendmail
+	mkdir -p ${BINDIR}
+	mkdir -p ${UBINDIR}
+	mkdir -p ${HFDIR}
+	mkdir -p ${STDIR}
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} sendmail ${BINDIR}
-	for i in ${LINKS}; do rm -f $$i; ln -s ${BINDIR}/sendmail $$i; done
+	for i in ${LINKS}; do rm -f $$i; ln -s ${LNBINDIR}/sendmail $$i; done
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 444 sendmail.hf \
 	    ${HFDIR}/sendmail.hf
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 644 sendmail.st \
@@ -139,13 +146,16 @@ install-sendmail: sendmail
 
 install-docs: aliases.${MAN5SRC} mailq.${MAN1SRC} newaliases.${MAN1SRC} sendmail.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} sendmail.${MAN8SRC} ${MAN8}/sendmail.${MAN8EXT}
+`	mkdir -p ${MAN1}
+	mkdir -p ${MAN5}
+	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} sendmail.${MAN8SRC} ${MAN8}/sendmail.${MAN8EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} aliases.${MAN5SRC} ${MAN5}/aliases.${MAN5EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mailq.${MAN1SRC} ${MAN1}/mailq.${MAN1EXT}
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} newaliases.${MAN1SRC} ${MAN1}/newaliases.${MAN1EXT}')
 
 clean:
-	rm -f ${OBJS} sendmail aliases.${MAN5SRC} mailq.${MAN1SRC} newaliases.${MAN1SRC} sendmail.${MAN8SRC}
+	rm -f ${OBJS} sendmail
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE', `generic').m4)dnl

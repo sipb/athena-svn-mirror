@@ -1,0 +1,106 @@
+.\" $Id: locker_read_attachent.3,v 1.1 1999-02-26 19:05:14 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_READ_ATTACHENT 3
+.SH NAME
+locker_read_attachent \- Dispose of a locker_attachent
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+int locker_read_attachent(locker_context \fIcontext\fP, char *\fIname\fP,
+.B
+	locker_attachent **\fIatp\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+This function reads in the attachtab file for the named locker (which
+must be currently attached), and returns a
+.I locker_attachent
+for it.
+.PP
+A
+.I locker_attachent
+has at least the following fields:
+.TP 8
+.B char *\fIname\fP
+The name of the locker (or the description, for an
+explicitly-specified locker).
+.TP 8
+.B char *\fImountpoint\fP
+The mountpoint the locker is attached on.
+.TP 8
+.B struct locker_ops *\fIfs\fP
+A pointer to filesystem-specific data. The name of the filesystem type
+is \fIfs->name\fP.
+.TP 8
+.B struct in_addr \fIhostaddr\fP
+The address of the host the filesystem is on.
+.TP 8
+.B char *\fIhostdir\fP
+The location of the filesystem on its host. (For NFS lockers, this is
+actually hostname:path.)
+.TP 8
+.B int \fImode\fP
+The default authentication mode for this filesystem. One of
+\fBLOCKER_AUTH_NONE\fP, \fBLOCKER_AUTH_READONLY\fP,
+\fBLOCKER_AUTH_READWRITE\fP, or \fBLOCKER_AUTH_MAYBE_READWRITE\fP, as
+explained in
+.BR locker_attach (3)
+.TP 8
+.B uid_t *\fIowners\fP
+A list of uids of users who have attached this locker.
+.TP 8
+.B int \fInowners\fP
+The length of the
+.I owners
+array.
+.TP 8
+.B int \fIflags\fP
+A bitfield which may have the following bits set:
+.RS 8
+.TP 12
+.B LOCKER_FLAG_LOCKED
+The locker is locked (via LOCKER_ATTACH_OPT_LOCK).
+.TP 12
+.B LOCKER_FLAG_KEEP
+The locker will not be detached from the filesystem when it is
+detached. (See the "keep-mount" option in
+.BR attach.conf (5)
+)
+.TP 12
+.B LOCKER_FLAG_NOSUID
+The locker was attached without LOCKER_ATTACH_OPT_ALLOW_SETUID. (This
+information is kept because it used in certain outputs of the attach
+program.)
+.TP 12
+.B LOCKER_FLAG_NAMEFILE
+The locker has a file in the "lockers" subdirectory of the attachtab
+directory; that is, it is a named locker which has been attached on
+its default mountpoint.
+.RE
+.PP
+The data in the
+.I locker_attachent
+should be treated as read-only by callers.
+.SH SEE ALSO
+locker_free_attachent(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

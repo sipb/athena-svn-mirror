@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(includedir)			-I$(top_srcdir)/intl		-I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES =  	-I$(top_srcdir)/intl		-I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
 LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(PIXBUF_LIBS)			$(CANVAS_PIXBUF_LIBS)		$(INTLLIBS)
@@ -193,7 +193,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_about_SOURCES)
 OBJECTS = $(gnome_about_OBJECTS)
@@ -339,8 +339,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-about.o: gnome-about.c ../config.h contributors.h logo.xpm
-
 info-am:
 info: info-am
 dvi-am:

@@ -4,7 +4,7 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) \
+INCLUDES = $(GNOME_INCLUDEDIR) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale\"" \
 	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
@@ -54,7 +54,8 @@ desktop_DATA = save-session.desktop session.desktop
 sysdir = $(datadir)/control-center/Session
 
 if SESSION
-sys_DATA = session-properties.desktop
+# Disable capplet listing, since Athena doesn't use gsm by default.
+# sys_DATA = session-properties.desktop
 endif
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session

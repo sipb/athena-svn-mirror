@@ -1,0 +1,29 @@
+Name: athena-mingetty
+Summary: A compact getty program for virtual consoles only, for Athena.
+License: GPL
+Group: System Environment/Base
+
+Requires: athena-krb5
+
+%description
+The mingetty program is a lightweight, minimalist getty program for
+use only on virtual consoles.  Mingetty is not suitable for serial
+lines (you should use the mgetty program in that case).
+
+This version of mingetty has been modified to use the Athena krb5
+login program (/usr/athena/etc/krb5.conf).  Installing this RPM will
+automatically convert /etc/inittab to use this version of mingetty
+instead of /sbin/mingetty.
+
+%triggerin --initscripts
+
+# Make inittab use us.  Take into account getty-ization done by old
+# versions of athena-krb5.
+sed -e 's|/sbin/getty tty\(.\) VC linux|/etc/athena/mingetty tty\1|' \
+    -e 's|/sbin/mingetty|/etc/athena/mingetty|' /etc/inittab > /etc/inittab.new
+mv /etc/inittab.new /etc/inittab
+
+%preun
+[ $1 = 0 ] || exit 0
+sed -e 's|/etc/athena/mingetty|/sbin/mingetty|' /etc/inittab > /etc/inittab.new
+mv /etc/inittab.new /etc/inittab

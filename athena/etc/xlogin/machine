@@ -1,0 +1,75 @@
+#!/bin/sh
+
+PATH=/bin:/bin/athena:/usr/bsd:/usr/ucb:/usr/bin:/usr/athena/bin
+
+# bsd or sysv style echo
+TESTECHO=`echo -n`
+case "$TESTECHO" in
+   -n) N=''; C='\c';;
+   *)  N='-n'; C='';;
+esac
+
+if [ -f /etc/athena/rc.conf ]; then
+	. /etc/athena/rc.conf
+fi
+
+df="df -t 4.2"
+
+case `/bin/athena/machtype -c` in
+	CVAXSTAR) type="Digital VAXstation 3100";;
+	VAXSTAR) type="Digital VAX VS2000";;
+	MVAX-II) type="Digital Microvax II";;
+	RT*) type="IBM PC/RT";;
+	KN01) type="Digital DECstation 3100"
+		df="/bin/df";;
+	KN02) type="Digital DECstation 5000"
+		df="/bin/df";;
+	KN02ba) type="Digital DECstation 5000/120"
+		df="/bin/df";;
+	KN02ca) type="Digital Personal DECstation 5000/25"
+		df="/bin/df";;
+	KN210) type="Digital DECstation 5400"
+		df="/bin/df";;
+	PS2-70) type="IBM PS/2 Model 70"
+		df="/bin/df";;
+	PS2-80) type="IBM PS/2 Model 80"
+		df="/bin/df";;
+	PS2*) type="IBM PS/2"
+		df="/bin/df";;
+	POWER*) type="IBM RISC/6000"
+		df="/bin/df";;
+	SPARC/*) type=`/bin/athena/machtype -c`
+		df="/bin/df -k";;
+	IP22) type=`/bin/athena/machtype -c`
+		df="/bin/df -k";;
+	*) type=`/bin/athena/machtype -c -v`
+		df="/bin/df";;
+	esac
+
+echo `hostname` "is a" $type
+echo $N "Release: $C"
+tail -1 /etc/athena/version | awk '{print $5}'
+echo "   O/S pack attached: " `attach | awk '$2=="/os" {print $1;s=1} END {if (s==0) print "none"}'`
+echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1;s=1} END {if (s==0) print "none"}'`
+echo $N "System pack is: $C"
+cat /srvd/.rvdinfo
+echo "Hesiod information:"
+hesinfo `hostname` cluster | awk '{printf("\t%s\n", $0)}'
+echo "Address: " $ADDR
+if [ "${PUBLIC}" = "true" ]; then
+	echo "This is a public workstation."
+fi
+echo "Memory: " `/bin/athena/machtype -v -M`
+echo $N "Display head: $C"
+machtype -v -d
+echo "Disks:"
+machtype -v -r| awk '{printf("\t%s\n", $0)}'
+echo "Disk space:"
+$df
+echo
+echo
+echo $N "Press ENTER or RETURN to exit.$C"
+
+read foo
+
+exit 0

@@ -32,7 +32,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -50,26 +50,17 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 static char sccsid[] = "@(#)herror.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: herror.c,v 1.1.1.2 1999-03-16 19:46:28 danw Exp $";
+static char rcsid[] = "$Id: herror.c,v 1.2 2000-04-22 04:42:20 ghudson Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 #include "port_before.h"
-
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/uio.h>
-
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-
 #include <netdb.h>
-#include <resolv.h>
 #include <string.h>
 #include <unistd.h>
-#include <irs.h>
-
 #include "port_after.h"
-#undef	h_errno
 
 const char *h_errlist[] = {
 	"Resolver Error 0 (no error)",
@@ -87,19 +78,21 @@ int	h_errno;
  *	print the error indicated by the h_errno value.
  */
 void
-herror(const char *s) {
-	struct iovec iov[4], *v = iov;
-	extern int * __h_errno();
+herror(s)
+	const char *s;
+{
+	struct iovec iov[4];
+	register struct iovec *v = iov;
 
-	if (s != NULL && *s != '\0') {
-		v->iov_base = (/*noconst*/ char *)s;
+	if (s && *s) {
+		v->iov_base = (char *)s;
 		v->iov_len = strlen(s);
 		v++;
 		v->iov_base = ": ";
 		v->iov_len = 2;
 		v++;
 	}
-	v->iov_base = (char *)hstrerror(*__h_errno());
+	v->iov_base = (char *)hstrerror(h_errno);
 	v->iov_len = strlen(v->iov_base);
 	v++;
 	v->iov_base = "\n";
@@ -107,12 +100,10 @@ herror(const char *s) {
 	writev(STDERR_FILENO, iov, (v - iov) + 1);
 }
 
-/*
- * hstrerror --
- *	return the string associated with a given "host" errno value.
- */
 const char *
-hstrerror(int err) {
+hstrerror(err)
+	int err;
+{
 	if (err < 0)
 		return ("Resolver internal error");
 	else if (err < h_nerr)

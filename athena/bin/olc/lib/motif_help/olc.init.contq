@@ -1,0 +1,23 @@
+This is the X version of the On-Line Consulting program.
+
+Welcome back to OLC!
+
+What you are seeing is the welcome screen for OLC.  The boxed-in area
+contains the OLC MOTD (Message Of The Day).  If there is some
+information that consultants wish to convey to you, it will be displayed
+there.  You may find that often-times it will answer your question before
+you can ask it.
+
+Since you already have a question in OLC, you may continue it by clicking
+on the `continue question' button.  From there, use `help' again if you need
+information on how to send messages to the consultant, or how to
+"cancel" or "done" your question, etc.
+
+If you would like to see the answers to commonly-asked questions, click
+on the `stock answer' button.  This will start up a seperate application.
+Please be patient.  Check the `help' there for more information on how to
+use that program.  If you find your answer there, please consider
+canceling your question in OLC.
+
+If you decide that you just want to get out of this program without
+removing your question from OLC, click on the `quit' button.

@@ -5940,12 +5940,12 @@ else
   HAVE_VFS_FALSE=
 fi
 
-BONOBO_LIBDIR='-L${libdir}'
-BONOBO_INCLUDEDIR="-I${includedir} `$GNOME_CONFIG --cflags gnomeui gdk_pixbuf print oaf xml`"
-BONOBO_LIBS="-lbonobo `$GNOME_CONFIG --libs gnomeui gdk_pixbuf oaf`"
-BONOBOX_LIBS="$BONOBO_LIBS -lbonobox `$GNOME_CONFIG --libs xml`"
-BONOBOX_PRINT_LIBS="$BONOBOX_LIBS -lbonobo-print `$GNOME_CONFIG --libs print`"
-XML_LIBS="`$GNOME_CONFIG --libs xml`"
+BONOBO_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+BONOBO_INCLUDEDIR="-I\$\$ATHTOOLROOT${includedir} \`gnome-config --cflags gnomeui gdk_pixbuf print oaf xml\`"
+BONOBO_LIBS="-lbonobo \`gnome-config --libs gnomeui gdk_pixbuf oaf\`"
+BONOBOX_LIBS="$BONOBO_LIBS -lbonobox \`gnome-config --libs xml\`"
+BONOBOX_PRINT_LIBS="$BONOBOX_LIBS -lbonobo-print \`gnome-config --libs print\`"
+XML_LIBS="\`gnome-config --libs xml\`"
 
 
 

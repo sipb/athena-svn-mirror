@@ -2,7 +2,7 @@
 
 INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl \
-	-I$(includedir) $(GDK_IMLIB_CFLAGS) \
+	$(GDK_IMLIB_CFLAGS) \
 	-DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" \
 	-DLOCALEDIR=\""$(gnomelocaledir)"\"
 

@@ -135,17 +135,26 @@ main(int argc, char *argv[])
             if(gnome_sound_connection < 0
                && gnome_config_get_bool("/sound/system/settings/start_esd=true")) {
                 int esdpid;
-                static const char *esd_cmdline[] = {"esd", "-nobeeps", NULL};
+                static const char *esd_cmdline[] = {"dustbuster", "-s", "TERM", "esd", "-nobeeps", NULL};
                 char *tmpargv[3];
                 char argbuf[32];
                 time_t starttime;
 
-                esdpid = gnome_execute_async(NULL, 2, (char **)esd_cmdline);
-                g_snprintf(argbuf, sizeof(argbuf), "%d", esdpid);
-                tmpargv[0] = "kill"; tmpargv[1] = argbuf; tmpargv[2] = NULL;
-                gnome_client_set_shutdown_command(client, 2, tmpargv);
-		starttime = time(NULL);
+                /* Note that gnome_sound_init() will cause esd to be started
+                 * when it can't connect to a local daemon.  So we call that
+                 * first in order to avoid a race with our own invocation.
+                 */
                 gnome_sound_init(NULL);
+                if(gnome_sound_connection < 0) {
+                    /* gnome_sound_init() must not have started esd, so
+                     * we'll start it explicitly.
+                     */
+                    esdpid = gnome_execute_async(NULL, 5, (char **)esd_cmdline);
+                    g_snprintf(argbuf, sizeof(argbuf), "%d", esdpid);
+                    tmpargv[0] = "kill"; tmpargv[1] = argbuf; tmpargv[2] = NULL;
+                    gnome_client_set_shutdown_command(client, 2, tmpargv);
+                }
+		starttime = time(NULL);
 		while(gnome_sound_connection < 0
 		      && ((time(NULL) - starttime) < 4)) {
 #ifdef HAVE_USLEEP

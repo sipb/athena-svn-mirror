@@ -874,67 +874,34 @@ static void
 load_default_applets1(PanelWidget *panel)
 {
 	char *def_launchers[] =
-	      { "gnome/apps/gnome-help.desktop",
-		"gnome/apps/System/gnome-terminal.desktop",
-		"gnome/apps/Settings/gnomecc.desktop",
-		"gnome/apps/Internet/Netscape.desktop",
+	      { "gnome/athena/mail.desktop",
+		"gnome/athena/browser.desktop",
+		"gnome/athena/terminal.desktop",
+		"gnome/athena/editor.desktop",
 		NULL };
 	int i;
 	char *p;
 	int sz;
 
-	/* if we find a mozilla .desktop use that in place of
-	 * the "Netscape" one (which would launch mozilla by
-	 * default anyway though :) */
-	if (panel_file_exists ("/etc/X11/applnk/Internet/mozilla.desktop")) {
-		def_launchers[3] = "/etc/X11/applnk/Internet/mozilla.desktop";
-	} else {
-		p = gnome_datadir_file ("gnome/apps/Internet/mozilla.desktop");
-		if (p != NULL) {
-			def_launchers[3] = "gnome/apps/Internet/mozilla.desktop";
-			g_free (p);
-		} else {
-			p = gnome_datadir_file ("gnome/apps/Internet/Mozilla.desktop");
-			if (p != NULL) {
-				def_launchers[3] = "gnome/apps/Internet/Mozilla.desktop";
-				g_free (p);
-			}
-		}
-	}
-
-	if(gdk_screen_width() <= 320)
-		sz = SIZE_ULTRA_TINY;
-	else if(gdk_screen_width() < 800)
-		sz = SIZE_TINY;
-	else if(gdk_screen_width() < 1024)
-		sz = SIZE_SMALL;
-	else
-		sz = SIZE_STANDARD;
+	sz = SIZE_STANDARD;
 
 	/* load up the foot menu */
-	load_menu_applet(NULL, get_default_menu_flags (),
-			 TRUE, FALSE, NULL, panel, 0, TRUE);
+	load_menu_applet(NULL,
+			 MAIN_MENU_USER_SUB|MAIN_MENU_SYSTEM|MAIN_MENU_DESKTOP,
+			 FALSE, FALSE, NULL, panel, 0, TRUE);
 
-	/*load up some buttons, but only if screen larger then 639*/
-	if(gdk_screen_width() >= 640) {
-		for(i=0;def_launchers[i]!=NULL;i++) {
+	for(i=0;def_launchers[i]!=NULL;i++) {
+		p = gnome_datadir_file (def_launchers[i]);
+		/*int center = gdk_screen_width()/2;*/
+		if(p) {
+			Launcher *launcher;
+			launcher = load_launcher_applet(p, panel,
+							sz+i*sz, TRUE);
+			g_free(p);
 
-			if (def_launchers[i][0] == '/') {
-				p = g_strdup (def_launchers[i]);
-			} else {
-				p = gnome_datadir_file (def_launchers[i]);
-			}
-			/*int center = gdk_screen_width()/2;*/
-			if(p) {
-				Launcher *launcher;
-				launcher = load_launcher_applet(p, panel,
-								sz*2+i*sz, TRUE);
-				g_free(p);
-
-				/* suck these into our own directories now */
-				if (launcher != NULL)
-					launcher_hoard (launcher);
-			}
+			/* suck these into our own directories now */
+			if (launcher != NULL)
+			  launcher_hoard (launcher);
 		}
 	}
 
@@ -942,15 +909,12 @@ load_default_applets1(PanelWidget *panel)
 			   panel, G_MAXINT/2 /*flush right*/,
 			   TRUE, TRUE);
 
-	/*load up the fish, but only if screen larger then 639*/
-	if(gdk_screen_width() >= 640) {
-		load_extern_applet ("fish_applet", NULL,
-				    panel, G_MAXINT/2 + 4000/*flush right*/,
-				    TRUE, TRUE);
-	}
+	load_extern_applet("gen_util_clock", NULL,
+			   panel, G_MAXINT/2 + 4000 /*flush right*/,
+			   TRUE, TRUE);
 
-	load_status_applet(panel,
-			   G_MAXINT/2 + 8000/*flush right*/, TRUE);
+	load_logout_applet(panel,
+			   G_MAXINT/2 + 4000/*flush right*/, TRUE);
 }
 
 static gboolean
@@ -1315,31 +1279,14 @@ init_user_panels(void)
 	  to work, so this is the way we find out if there was no
 	  config from last time*/
 	if(count <= 0)  {
-		int sz;
-		gboolean hidebutton_pixmaps;
-
-		if(gdk_screen_width() <= 320) {
-			sz = SIZE_ULTRA_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_width() < 800) {
-			sz = SIZE_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_width() < 1024) {
-			sz = SIZE_SMALL;
-			hidebutton_pixmaps = TRUE;
-		} else {
-			sz = SIZE_STANDARD;
-			hidebutton_pixmaps = TRUE;
-		}
-
 		panel = edge_widget_new (BORDER_BOTTOM,
 					 BASEP_EXPLICIT_HIDE /* mode */,
 					 BASEP_SHOWN /* state */,
 					 BASEP_LEVEL_DEFAULT /* level */,
 					 TRUE /* avoid_on_maximize */,
-					 sz /* size */,
+					 SIZE_STANDARD /* size */,
 					 TRUE /* hidebuttons_enabled */,
-					 hidebutton_pixmaps,
+					 TRUE,
 					 PANEL_BACK_NONE /* back type */,
 					 NULL,
 					 TRUE,
@@ -1351,50 +1298,6 @@ init_user_panels(void)
 
 		/*load up default applets on the default panel*/
 		load_default_applets1(PANEL_WIDGET(BASEP_WIDGET(panel)->panel));
-
-		/*
-		if(gdk_screen_height() <= 240) {
-			sz = SIZE_ULTRA_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_height() < 600) {
-			sz = SIZE_TINY;
-			hidebutton_pixmaps = FALSE;
-		} else if(gdk_screen_height() < 768) {
-			sz = SIZE_SMALL;
-			hidebutton_pixmaps = TRUE;
-		} else {
-			sz = SIZE_STANDARD;
-			hidebutton_pixmaps = TRUE;
-		}
-
-		panel = aligned_widget_new(ALIGNED_LEFT,
-					   BORDER_RIGHT,
-					   BASEP_EXPLICIT_HIDE,
-					   BASEP_SHOWN,
-					   BASEP_LEVEL_DEFAULT,
-					   TRUE,
-					   sz,
-					   TRUE,
-					   hidebutton_pixmaps,
-					   PANEL_BACK_NONE,
-					   NULL,
-					   TRUE,
-					   FALSE,
-					   TRUE,
-					   NULL);*/
-		panel = foobar_widget_new();
-
-		/* Don't translate the first part of this string */
-		s = gnome_config_get_string (_("/panel/Config/clock_format=%I:%M:%S %p"));
-		if (s != NULL)
-			foobar_widget_set_clock_format (FOOBAR_WIDGET (panel), s);
-		g_free (s);
-
-		panel_setup(panel);
-		gtk_widget_show(panel);	       
-
-		/*load up default applets on the second default panel*/
-		load_default_applets2(PANEL_WIDGET(FOOBAR_WIDGET(panel)->panel));
 
 		/*we laoded default applets, so we didn't find the config
 		  or something else was wrong, so do complete save when
@@ -1665,15 +1568,13 @@ load_up_globals (void)
 		gnome_config_get_bool("show_dot_buttons=FALSE");
 
 	global_config.hungry_menus =
-		gnome_config_get_bool("memory_hungry_menus=FALSE");
+		gnome_config_get_bool("memory_hungry_menus=TRUE");
 
 	global_config.use_large_icons =
-		gnome_config_get_bool(gdk_screen_height () > 768 
-				      ? "use_large_icons=TRUE"
-				      : "use_large_icons=FALSE");
+		gnome_config_get_bool("use_large_icons=FALSE");
 
 	global_config.merge_menus =
-		gnome_config_get_bool("merge_menus=TRUE");
+		gnome_config_get_bool("merge_menus=FALSE");
 
 	global_config.menu_check =
 		gnome_config_get_bool("menu_check=TRUE");
@@ -1760,7 +1661,7 @@ load_up_globals (void)
 	global_config.avoid_collisions =
 		gnome_config_get_bool ("avoid_collisions=TRUE");
 	
-	g_string_sprintf (buf, "menu_flags=%d", get_default_menu_flags ());
+	g_string_sprintf (buf, "menu_flags=%d", MAIN_MENU_PANEL);
 	global_config.menu_flags = gnome_config_get_int (buf->str);
 
 	for (i = 0; i < LAST_TILE; i++) {

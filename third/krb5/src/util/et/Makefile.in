@@ -1,3 +1,4 @@
+INSTALL = :
 thisconfigdir=.
 myfulldir=util/et
 mydir=.
@@ -10,7 +11,7 @@ SED = sed
 ##DOS##XTRA=
 ##DOS##OBJFILE=$(OUTPRE)comerr.lst
 
-STLIBOBJS=error_message.o et_name.o init_et.o com_err.o
+STLIBOBJS=error_message.o et_name.o init_et.o com_err.o add_to_error_table.o
 STOBJLISTS=OBJS.ST
 LIB=com_err
 LIBMAJOR=3
@@ -18,14 +19,15 @@ LIBMINOR=0
 
 all-unix:: all-liblinks
 clean-unix:: clean-liblinks clean-libs clean-libobjs
-install-unix:: install-libs
+install-unix::
 
 LINTFLAGS=-uhvb 
-LINTFILES= error_message.c et_name.c init_et.c com_err.c
+LINTFILES= error_message.c et_name.c init_et.c com_err.c add_to_error_table.c
 LIBOBJS=$(OUTPRE)com_err.$(OBJEXT) \
 	$(OUTPRE)error_message.$(OBJEXT) \
 	$(OUTPRE)et_name.$(OBJEXT) \
-	$(OUTPRE)init_et.$(OBJEXT)
+	$(OUTPRE)init_et.$(OBJEXT) \
+	$(OUTPRE)add_to_error_table.$(OBJECT)
 # for et_lex.lex.c include in error_table.y
 LOCALINCLUDES=-I. -I$(srcdir)
 
@@ -118,12 +120,6 @@ clean-unix::
 	$(RM) compile_et
 
 depend:: 
-
-install:: com_err.h 
-	$(INSTALL_DATA) $(srcdir)/com_err.h  $(DESTDIR)$(KRB5_INCDIR)/com_err.h
-
-install:: mit-sipb-copyright.h
-	$(INSTALL_DATA) $(srcdir)/mit-sipb-copyright.h $(DESTDIR)$(KRB5_INCDIR)/mit-sipb-copyright.h
 
 #
 #install:: compile_et.1

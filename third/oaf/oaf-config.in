@@ -83,8 +83,8 @@ while test $# -gt 0; do
     shift
 done
 
-the_libs="$the_libs -L$libdir -loaf `@ORBIT_CONFIG@ --use-service=name --libs server`"
-the_flags="$the_flags -I$includedir `@ORBIT_CONFIG@ --cflags server`"
+the_libs="$the_libs -L$ATHTOOLROOT$libdir -loaf `orbit-config --use-service=name --libs server`"
+the_flags="$the_flags -I$ATHTOOLROOT$includedir `orbit-config --cflags server`"
 
 if $cflags; then
     all_flags="$the_flags"

@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: control.h,v 1.1.1.4 2000-03-31 15:48:12 mwhitson Exp $
+ * $Id: control.h,v 1.2 2001-03-07 01:19:59 ghudson Exp $
  ***************************************************************************/
 
 
@@ -37,10 +37,9 @@
 #define  OP_DEFAULTQ	25
 #define  OP_ACTIVE		26
 #define  OP_REDO		27
-#define  OP_CLIENT		28
+#define  OP_LOCAL		28
 #define  OP_SERVER		29
 #define  OP_MSG			30
-#define  OP_DEFAULTS	31
 
 /* PROTOTYPES */
 

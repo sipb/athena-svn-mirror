@@ -97,6 +97,7 @@ struct saver_info {
      ======================================================================= */
 
   Bool locked_p;		/* Whether the screen is currently locked. */
+  Bool locked_due_to_idle_p;	/* Whether the locking was due to idle time. */
   Bool dbox_up_p;		/* Whether the demo-mode or passwd dialogs
 				   are currently visible */
 
@@ -313,7 +314,7 @@ extern void get_screen_viewport (saver_screen_info *ssi,
 #ifndef NO_LOCKING
 extern Bool unlock_p (saver_info *si);
 extern Bool lock_priv_init (int argc, char **argv, Bool verbose_p);
-extern Bool lock_init (int argc, char **argv, Bool verbose_p);
+extern Bool lock_init (saver_preferences *p);
 extern Bool passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif /* NO_LOCKING */
 

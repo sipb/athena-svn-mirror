@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-lnx.h,v 1.1.1.1 2001-02-19 07:04:09 ghudson Exp $
+  $Id: os-lnx.h,v 1.2 2001-02-21 00:23:50 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -160,8 +160,8 @@
 
 
 /*----- System-wide config file ----------------------------------------*/
-#define SYSTEM_PINERC             "/usr/local/lib/pine.conf"
-#define SYSTEM_PINERC_FIXED       "/usr/local/lib/pine.conf.fixed"
+#define SYSTEM_PINERC             "/usr/athena/etc/pine.conf"
+#define SYSTEM_PINERC_FIXED       "/usr/athena/etc/pine.conf.fixed"
 
 
 
@@ -223,7 +223,7 @@
 
 
 /*--------- Program employed by users to change their password ---------*/
-#define	PASSWD_PROG	"/bin/passwd"
+#define	PASSWD_PROG	"/usr/athena/bin/passwd"
 
 
 /*-------------- A couple constants used to size arrays ----------------*/
@@ -268,7 +268,7 @@
        8
        9 logs gross details of command execution
  ----*/
-#define DEFAULT_DEBUG 2
+#define DEFAULT_DEBUG 0
 
 
 

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:14 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-03-02 16:15:28 ghudson Exp $
 #
 # Copyright 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -38,13 +38,15 @@
 # SUCH DAMAGE.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/09/03 21:08:14  ghudson
+# Import of ispell 3.1.20
+#
 # Revision 1.3  1994/01/25  07:12:25  geoff
 # Get rid of all old RCS log lines in preparation for the 3.1 release.
 #
 #
 
 SHELL = /bin/sh
-MAKE = make
 
 CONFIG		=	../config.sh
 FIX8BIT		=	../fix8bit

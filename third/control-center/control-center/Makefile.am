@@ -33,6 +33,7 @@ gnomecc_DEPS=libcapplet.la
 
 gnomecc_LDADD = \
 	libcapplet.la					\
+	-lgdk_imlib					\
 	$(GNOME_LIBDIR)					\
 	$(GNOMEUI_LIBS)					\
 	$(INTLLIBS)					\

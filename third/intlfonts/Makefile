@@ -1,111 +1,137 @@
-INSTALLDIR = /usr/local/share/emacs/fonts
+# $Id: Makefile,v 1.6 2001-04-08 14:55:21 ghudson Exp $
 
-BDFTOPCF = bdftopcf
-MKFONTDIR = mkfontdir
-COMPRESS =
+# Tools
+BDFTOPCF=bdftopcf
+MKFONTDIR=mkfontdir
 
-SUBDIRS =	European Asian Chinese Japanese Ethiopic Misc
-SUBDIRS_X =	Chinese-X Japanese-X Korean-X
-SUBDIRS_BIG =	European-BIG  Chinese-BIG Japanese-BIG
+# Where to put the founts
+INSTALLDIR = $(DESTDIR)/usr/athena/lib/X11/fonts/intlfonts
 
-help:
-	@echo "Usage: make [ COMPRESS=compress ] [ all | SUBDIRECTORIES ]"
-	@echo
-	@echo "This Makefile installs all the fonts in the current directory"
-	@echo "to ${INSTALLDIR}."
-	@echo
-	@echo "If you want to install only some portion of fonts,"
-	@echo "give some of the following subdirectories as arguments:"
-	@echo "	${SUBDIRS}"
-	@echo "	${SUBDIRS_X} ${SUBDIRS_BIG}"
-	@echo
-	@echo "If you are using a X window system which can handle compressed"
-	@echo "fonts (*.pcf.Z), give \"COMPRESS=compress\" as an argument."
-	@echo
-	@echo "If you want to install fonts to the different directory,"
-	@echo "give \"INSTALLDIR=_YOUR_INSTALL_DIRECTORY_\" as an argument."
-	@echo
-	@echo "Please read README for how to inform your X server about"
-	@echo "the new fonts."
+# alias files
+aliases = Chinese/fonts.alias European/fonts.alias Japanese-X/fonts.alias \
+	Japanese/fonts.alias
 
-${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}: FRC
-	@[ -d ${INSTALLDIR} ] || mkdir -p ${INSTALLDIR}
-	@if [ ! -d $@ ] ; then \
-	  if [ -f $@.tar.gz ] ; then \
-	    echo "Extracting the archive file $@.tar.gz ..." ; \
-	    (zcat $@.tar.gz | tar xf -) ; \
-	    chmod a+w $@/*.bdf ; \
-	  elif [ -f $@.tar ] ; then \
-	    echo "Extracting the archive file $@.tar ..." ; \
-	    tar xf $@.tar ; \
-	    chmod a+w $@/*.bdf ; \
-	  else \
-	    echo "Archive file $@.tar.gz does not exist.  Ignore it." ; \
-	  fi ; \
-	else true ; fi
-	@if [ -d $@ ] ; then \
-	  pwd=`pwd` ; \
-	  cd $@ ; \
-	  if [ -z "${COMPRESS}" ] ; then \
-	    for f in *.bdf ; do \
-	      echo Making ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	      $(BDFTOPCF) $${f} > ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	    done ; \
-	  else \
-	    for f in *.bdf ; do \
-	      echo Making ${INSTALLDIR}/`basename $${f} .bdf`.pcf.Z ; \
-	      $(BDFTOPCF) $${f} > ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	      rm -f ${INSTALLDIR}/`basename $${f} .bdf`.pcf.Z ; \
-	      $(COMPRESS) ${INSTALLDIR}/`basename $${f} .bdf`.pcf ; \
-	    done ; \
-	  fi ; \
-	  if [ -f fonts.alias ] ; then \
-	    if [ -f ${INSTALLDIR}/fonts.alias ] ; then \
-	      cat ${INSTALLDIR}/fonts.alias fonts.alias |sort |uniq > temp ; \
-	      cat temp > ${INSTALLDIR}/fonts.alias ; \
-	      rm -f temp ; \
-	    else \
-	      cat fonts.alias > ${INSTALLDIR}/fonts.alias ; \
-	    fi ; \
-	  else true ; fi ; \
-	  cd $${pwd}; \
-	else true ; fi
-	@if [ -d $@ -a ! -f making.all ] ; then \
-	  echo "Building ${INSTALLDIR}/fonts.dir..." ; \
-	  cd ${INSTALLDIR}; ${MKFONTDIR} ; \
-	  echo "-----------------------------------------------------------------------" ; \
-	  echo "Please read README for how to inform your X server about the new fonts." ; \
-	  echo "-----------------------------------------------------------------------" ; \
-	else true ; fi
+# fonts to build
+fonts = Asian/etl16-viscii.pcf \
+	Asian/etl24-viscii.pcf \
+	Asian/mule-indian-1col-24.pcf \
+	Asian/mule-indian-24.pcf \
+	Asian/mule-iscii-24.pcf \
+	Asian/mule-lao-14.pcf \
+	Asian/mule-lao-16.pcf \
+	Asian/mule-lao-24.pcf \
+	Asian/mule-tibmdx-16.pcf \
+	Asian/mule-tibmdx-1col-16.pcf \
+	Asian/mule-tibmdx-1col-24.pcf \
+	Asian/mule-tibmdx-24.pcf \
+	Asian/thai-14.pcf \
+	Asian/thai-16.pcf \
+	Asian/thai-24.pcf \
+	Chinese-BIG/cc40s.pcf \
+	Chinese-BIG/cc48s.pcf \
+	Chinese-BIG/cns-1-40.pcf \
+	Chinese-BIG/cns-2-40.pcf \
+	Chinese-BIG/cns-3-40.pcf \
+	Chinese-BIG/cns-4-40.pcf \
+	Chinese-BIG/cns-5-40.pcf \
+	Chinese-BIG/cns-6-40.pcf \
+	Chinese-BIG/cns-7-40.pcf \
+	Chinese-X/gb16fs.pcf \
+	Chinese-X/gb16st.pcf \
+	Chinese-X/gb24st.pcf \
+	Chinese/cns-1-16.pcf \
+	Chinese/cns-1-24.pcf \
+	Chinese/cns-2-16.pcf \
+	Chinese/cns-2-24.pcf \
+	Chinese/cns-3-24.pcf \
+	Chinese/cns-4-24.pcf \
+	Chinese/cns-5-24.pcf \
+	Chinese/cns-6-24.pcf \
+	Chinese/cns-7-24.pcf \
+	Chinese/etl14-sisheng.pcf \
+	Chinese/etl16-sisheng.pcf \
+	Chinese/etl24-sisheng.pcf \
+	Chinese/guobiao16.pcf \
+	Chinese/taipei16.pcf \
+	Chinese/taipei24.pcf \
+	Ethiopic/ethiomx16f-uni.pcf \
+	Ethiopic/ethiomx24f-uni.pcf \
+	European-BIG/etl40-latin1.pcf \
+	European/a18.pcf \
+	European/etl14-cyrillic.pcf \
+	European/etl14-greek.pcf \
+	European/etl14-koi8.pcf \
+	European/etl14-latin1.pcf \
+	European/etl14-latin2.pcf \
+	European/etl14-latin3.pcf \
+	European/etl14-latin4.pcf \
+	European/etl14-latin5.pcf \
+	European/etl16-cyrillic.pcf \
+	European/etl16-greek.pcf \
+	European/etl16-koi8.pcf \
+	European/etl16-latin1.pcf \
+	European/etl16-latin2.pcf \
+	European/etl16-latin3.pcf \
+	European/etl16-latin4.pcf \
+	European/etl16-latin5.pcf \
+	European/etl16b-latin1.pcf \
+	European/etl16bi-latin1.pcf \
+	European/etl16i-latin1.pcf \
+	European/etl24-cyrillic.pcf \
+	European/etl24-greek.pcf \
+	European/etl24-koi8.pcf \
+	European/etl24-latin1.pcf \
+	European/etl24-latin2.pcf \
+	European/etl24-latin3.pcf \
+	European/etl24-latin4.pcf \
+	European/etl24-latin5.pcf \
+	Japanese-BIG/jisksp40.pcf \
+	Japanese-BIG/kanji32.pcf \
+	Japanese-BIG/kanji48.pcf \
+	Japanese-X/12x24rk.pcf \
+	Japanese-X/8x16rk.pcf \
+	Japanese-X/jiskan16.pcf \
+	Japanese-X/jiskan24.pcf \
+	Japanese-X/k14.pcf \
+	Japanese/a18rk.pcf \
+	Japanese/jiskan16-1978.pcf \
+	Japanese/jisksp16.pcf \
+	Japanese/k16-1990.pcf \
+	Japanese/kanji18.pcf \
+	Korean-X/hanglg16.pcf \
+	Korean-X/hanglm16.pcf \
+	Korean-X/hanglm24.pcf \
+	Misc/etl14-hebrew.pcf \
+	Misc/etl14-ipa.pcf \
+	Misc/etl16-arabic0.pcf \
+	Misc/etl16-arabic1.pcf \
+	Misc/etl16-arabic2.pcf \
+	Misc/etl16-hebrew.pcf \
+	Misc/etl16-ipa.pcf \
+	Misc/etl24-arabic0.pcf \
+	Misc/etl24-arabic1.pcf \
+	Misc/etl24-arabic2.pcf \
+	Misc/etl24-hebrew.pcf \
+	Misc/etl24-ipa.pcf
 
-all:
-	@touch making.all
-	make COMPRESS="${COMPRESS}" INSTALLDIR=${INSTALLDIR} \
-		${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}
-	@rm -f making.all
-	echo "Building ${INSTALLDIR}/fonts.dir..."
-	cd ${INSTALLDIR}; $(MKFONTDIR)
-	@echo "-----------------------------------------------------------------------"
-	@echo "Please read README for how to inform your X server about the new fonts."
-	@echo "-----------------------------------------------------------------------"
+all: $(fonts) fonts.alias
 
 clean:
-	rm -fr ${SUBDIRS} ${SUBDIRS_X} ${SUBDIRS_BIG}
+	rm -f $(fonts) fonts.alias
 
-FRC:
+check:
 
-## The following target should be used only by a maintainer of intlfonts.
-dist: make-dist
-	sh make-dist --dist
+install: all
+	mkdir -p $(INSTALLDIR)
+	cp $(fonts) $(INSTALLDIR)
+	touch $(INSTALLDIR)/fonts.alias
+	cat fonts.alias $(INSTALLDIR)/fonts.alias | sort | uniq > temp
+	mv temp $(INSTALLDIR)/fonts.alias
+	(cd $(INSTALLDIR); $(MKFONTDIR))
 
-arc: make-dist
-	sh make-dist --arc
+fonts.alias: $(aliases)
+	cat $(aliases) | sort | uniq > fonts.alias
 
-split: make-dist
-	sh make-dist --split
-
-diff: make-dist
-	sh make-dist --diff
-
-pack: make-dist
-	sh make-dist --pack
+%.pcf: %.bdf
+	rm -f $@
+	$(BDFTOPCF) $< > $@

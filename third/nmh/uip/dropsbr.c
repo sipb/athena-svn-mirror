@@ -2,7 +2,7 @@
 /*
  * dropsbr.c -- create/read/manipulate mail drops
  *
- * $Id: dropsbr.c,v 1.1.1.1 1999-02-07 18:14:13 danw Exp $
+ * $Id: dropsbr.c,v 1.2 2000-01-07 04:43:57 rbasch Exp $
  */
 
 #include <h/nmh.h>
@@ -479,8 +479,7 @@ mbx_size (int md, off_t start, off_t stop)
 int
 mbx_close (char *mailbox, int md)
 {
-    lkclose (md, mailbox);
-    return OK;
+    return (lkclose (md, mailbox) == 0 ? OK : NOTOK);
 }
 
 
@@ -645,7 +644,8 @@ map_write (char *mailbox, int md, int id, long last, off_t start,
 	return NOTOK;
     }
 
-    mbx_close (file, fd);
+    if (mbx_close (file, fd) == NOTOK)
+	return NOTOK;
 
     return OK;
 }

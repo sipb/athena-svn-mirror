@@ -891,7 +891,7 @@ giop_recv_message_buffer_use(GIOPConnection *connection)
 	retval->message_body = g_malloc(message_size+sizeof(GIOPMessageHeader)+4);
 	/* XXX1 This is a lame hack to work with the fact that
 	   alignment is relative to the MessageHeader, not the RequestHeader */
-	retval->cur = retval->message_body + 12;
+	retval->cur = (char *)retval->message_body + 12;
 	retval->state = GIOP_MSG_READING_BODY;
 	retval->left_to_read = message_size;
 	break;

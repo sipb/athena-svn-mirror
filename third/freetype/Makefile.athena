@@ -1,0 +1,17 @@
+# $Id: Makefile.athena,v 1.1 2001-02-14 02:01:58 ghudson Exp $
+
+dist:
+
+prepare:
+	${MAKE} setup CFG="--prefix=/usr/athena"
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE}
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"

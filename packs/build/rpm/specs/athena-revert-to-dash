@@ -1,0 +1,12 @@
+Name: athena-revert-to-dash
+Summary: An Athena script to revert future logins to the old interface
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-gnome-utils
+
+%description
+The revert-to-dash program puts up a dialog box to confirm that the
+user wants to use the old dash-based interface for future logins, and
+creates the homedir file .athena_dash_interface if the user selects
+yes.

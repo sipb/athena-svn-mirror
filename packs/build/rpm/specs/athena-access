@@ -1,0 +1,10 @@
+Name: athena-access
+Summary: Utilities to turn on or off remote access to Athena workstations.
+Copyright: MIT
+Group: Applications/Internet
+
+%description
+The access_on and access_off utilities are used on Athena workstations
+to permit and deny, respectively, access to the workstation by remote
+users.
+

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996,1999 by Internet Software Consortium.
+ * Copyright (c) 1996 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: gen_ng.c,v 1.1.1.3 1999-03-16 19:45:47 danw Exp $";
+static char rcsid[] = "$Id: gen_ng.c,v 1.2 2000-04-22 04:41:40 ghudson Exp $";
 #endif
 
 /* Imports */
@@ -25,15 +25,10 @@ static char rcsid[] = "$Id: gen_ng.c,v 1.1.1.3 1999-03-16 19:45:47 danw Exp $";
 
 #include <sys/types.h>
 
-#include <netinet/in.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
-
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <isc/memcluster.h>
 #include <irs.h>
 
 #include "port_after.h"
@@ -67,13 +62,13 @@ irs_gen_ng(struct irs_acc *this) {
 	struct irs_ng *ng;
 	struct pvt *pvt;
 	
-	if (!(ng = memget(sizeof *ng))) {
+	if (!(ng = malloc(sizeof *ng))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(ng, 0x5e, sizeof *ng);
-	if (!(pvt = memget(sizeof *pvt))) {
-		memput(ng, sizeof *ng);
+	if (!(pvt = malloc(sizeof *pvt))) {
+		free(ng);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -95,11 +90,10 @@ static void
 ng_close(struct irs_ng *this) {
 	struct pvt *pvt = (struct pvt *)this->private;
 	
-	ng_minimize(this);
 	if (pvt->curgroup)
 		free(pvt->curgroup);
-	memput(pvt, sizeof *pvt);
-	memput(this, sizeof *this);
+	free(pvt);
+	free(this);
 }
 
 static int

@@ -159,7 +159,7 @@ SUBDIRS = help gnome-man2html gnome-info2html
 
 @HELP_USE_GTKHTML_TRUE@htmlcflags = -DHELP_USE_GTKHTML
 
-INCLUDES =  	-I$(includedir)							-I$(top_srcdir)/intl -I$(top_builddir)/intl			$(GNOME_INCLUDEDIR)						-DGNOME_PREFIX=\""$(prefix)\"" 		-DGNOMELOCALEDIR=\""$(datadir)/locale\""		$(htmlcflags)
+INCLUDES =  	-I$(top_srcdir)/intl -I$(top_builddir)/intl			$(GNOME_INCLUDEDIR)						-DGNOME_PREFIX=\""$(prefix)\"" 		-DGNOMELOCALEDIR=\""$(datadir)/locale\""		$(htmlcflags)
 
 @HELP_USE_GTKHTML_TRUE@htmllibs = $(GNOME_XML_LIB) @PIXBUF_LIBS@ 	$(GTK_HTML_PREFIX)/lib/libgtkhtml.a		$(GNOME_PRINT_PREFIX)/lib/libgnomeprint.a
 @HELP_USE_GTKHTML_FALSE@htmllibs = $(GTKXMHTML_LIBS)
@@ -238,7 +238,7 @@ DIST_COMMON =  README AUTHORS ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_help_browser_SOURCES) $(gnome_help_caller_SOURCES)
 OBJECTS = $(gnome_help_browser_OBJECTS) $(gnome_help_caller_OBJECTS)
@@ -477,41 +477,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-HTParse.o: HTParse.c HTParse.h
-bookmarks.o: bookmarks.c ../config.h bookmarks.h
-cache.o: cache.c cache.h
-docobj.o: docobj.c docobj.h parseUrl.h transport.h cache.h
-gnome-help-browser.o: gnome-help-browser.c ../config.h window.h queue.h \
-	history.h bookmarks.h cache.h toc2.h help-browser.h
-gnome-helpwin.o: gnome-helpwin.c ../config.h gnome-helpwin.h
-help-browser-common.o: help-browser-common.c help-browser.h
-help-browser-impl.o: help-browser-impl.c help-browser.h window.h queue.h \
-	history.h bookmarks.h cache.h toc2.h
-help-browser-skels.o: help-browser-skels.c help-browser.h
-help-browser-stubs.o: help-browser-stubs.c help-browser.h
-help-caller.o: help-caller.c ../config.h help-browser.h
-history.o: history.c ../config.h history.h
-htmlurl.o: htmlurl.c htmlurl.h
-magic.o: magic.c magic.h docobj.h parseUrl.h toc2.h misc.h
-mime.o: mime.c ../config.h docobj.h parseUrl.h mime.h misc.h \
-	gnome-helpwin.h
-misc.o: misc.c ../config.h misc.h
-parseUrl.o: parseUrl.c ../config.h HTParse.h parseUrl.h
-queue.o: queue.c queue.h
-toc2-ghelp.o: toc2-ghelp.c toc2.h toc2-ghelp.h
-toc2-info.o: toc2-info.c misc.h toc2-info.h toc2.h
-toc2-man.o: toc2-man.c ../config.h toc2.h toc2-man.h
-toc2.o: toc2.c ../config.h gnome-helpwin.h toc2.h toc2-man.h \
-	toc2-ghelp.h toc2-info.h
-transport.o: transport.c transport.h docobj.h parseUrl.h cache.h misc.h \
-	gnome-helpwin.h
-visit.o: visit.c ../config.h parseUrl.h docobj.h window.h queue.h \
-	history.h bookmarks.h cache.h toc2.h magic.h mime.h transport.h \
-	visit.h
-window.o: window.c ../config.h gnome-helpwin.h parseUrl.h window.h \
-	queue.h history.h bookmarks.h cache.h toc2.h transport.h \
-	docobj.h visit.h misc.h contents.xpm
-
 info-am:
 info: info-recursive
 dvi-am:

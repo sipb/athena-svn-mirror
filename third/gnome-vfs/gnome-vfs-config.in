@@ -3,7 +3,7 @@
 usage="\
     Usage: gnome-vfs-config [--version] [--config] [--cflags] [--libs]"
 
-config_file="@LIBDIR@/vfsConf.sh"
+config_file="$ATHTOOLROOT@LIBDIR@/vfsConf.sh"
 . $config_file
 
 if test $# -eq 0; then

@@ -1,0 +1,12 @@
+Name: athena-panel-wrapper
+Summary: Runs panel and confirms user desire to logout
+Copyright: GPL
+Group: User Interface/Desktops
+
+Requires: athena-gnome-core
+
+%description
+The panel-wrapper program runs panel (from athena-gnome-core) as a
+subprocess.  When panel exits with status 0, indicating a user logout
+requet, panel-wrapper puts up a dialog confirming the user's desire to
+log out, and restarts panel if the user elects not to log out.

@@ -476,6 +476,12 @@ typedef struct net_mailbox {
   unsigned int altflag : 1;	/* alt driver flag */
   unsigned int tryaltflag : 1;	/* (internal) try alt driver first flag */
   unsigned int altopt : 1;	/* alt option flag */
+#ifdef HESIOD
+  unsigned int hesflag : 1;    /* Hesiod flag */
+#endif
+#ifdef KERBEROS
+  unsigned int krbflag : 1;    /* Kerberos flag */
+#endif
 } NETMBX;
 
 /* Item in an address list */

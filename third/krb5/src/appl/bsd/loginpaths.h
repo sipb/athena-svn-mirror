@@ -1,9 +1,12 @@
 /* here are actual path values from each operating system supported. */
 /* LPATH is from rlogin, for login.c; RPATH is from rsh, for rshd.c */
+
+#define APATH "/usr/athena/bin:/bin/athena:"
+
 #ifdef sun
 #ifdef __SVR4
-#define RPATH "/usr/bin"
-#define LPATH "/usr/bin"
+#define RPATH APATH "/usr/bin:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin:/usr/ucb"
+#define LPATH APATH "/usr/bin:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin:/usr/ucb"
 #else
 /* sun3 and sun4 */
 #define LPATH "/usr/ucb:/bin:/usr/bin"
@@ -45,13 +48,13 @@
 #endif
 
 #ifdef sgi
-#define LPATH "/usr/sbin:/usr/bsd:/usr/bin:/bin:/usr/bin/X11"
-#define RPATH "/usr/sbin:/usr/bsd:/usr/bin:/bin:/usr/bin/X11"
+#define LPATH APATH "/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11"
+#define RPATH APATH "/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11"
 #endif
 
 #ifdef linux
-#define LPATH "/local/bin:/usr/bin:/bin:/usr/local/bin:/usr/bin/X11:."
-#define RPATH "/local/bin:/usr/bin:/bin:/usr/local/bin:/usr/bin/X11:."
+#define LPATH APATH "/local/bin:/usr/bin:/bin:/usr/local/bin:/usr/bin/X11:."
+#define RPATH APATH "/local/bin:/usr/bin:/bin:/usr/local/bin:/usr/bin/X11:."
 #endif
 
 #ifdef __386BSD__
@@ -90,8 +93,8 @@
 
 #ifndef LPATH
 #ifdef __NetBSD__
-#define LPATH "/usr/bin:/bin"
-#define RPATH "/usr/bin:/bin"
+#define LPATH APATH "/usr/bin:/bin"
+#define RPATH APATH "/usr/bin:/bin"
 #endif
 #endif
 
@@ -103,9 +106,9 @@
 /* catch-all entries for operating systems we haven't looked up
    hardcoded paths for */
 #ifndef LPATH
-#define LPATH "/usr/bin:/bin"
+#define LPATH APATH "/usr/bin:/bin"
 #endif
 
 #ifndef RPATH
-#define RPATH "/usr/bin:/bin"
+#define RPATH APATH "/usr/bin:/bin"
 #endif

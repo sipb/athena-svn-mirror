@@ -87,8 +87,8 @@ while test $# -gt 0; do
        	;;
 
     client|server)
-	the_libs="$the_libs -L$libdir -lORBit -lIIOP -lORBitutil `glib-config --libs` @LIBS@ -lm"
-	the_flags="$the_flags `glib-config --cflags` -I$includedir "
+	the_libs="$the_libs -L$ATHTOOLROOT$libdir -lORBit -lIIOP -lORBitutil `glib-config --libs` @LIBS@ -lm"
+	the_flags="$the_flags `glib-config --cflags` -I$ATHTOOLROOT$includedir "
 	;;
 
    --use-service=*)

@@ -1,6 +1,6 @@
 /*
  *	from ns.h	4.33 (Berkeley) 8/23/90
- *	$Id: ns_defs.h,v 1.1.1.3 1999-03-16 19:44:47 danw Exp $
+ *	$Id: ns_defs.h,v 1.2 2000-04-22 04:39:46 ghudson Exp $
  */
 
 /*
@@ -36,8 +36,7 @@
  * SUCH DAMAGE.
  */
 
-/*
- * Portions Copyright (c) 1993 by Digital Equipment Corporation.
+/* Portions Copyright (c) 1993 by Digital Equipment Corporation.
  * 
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -57,7 +56,7 @@
  */
 
 /*
- * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -71,26 +70,6 @@
  * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
  * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
  * SOFTWARE.
- */
-
-/*
- * Portions Copyright (c) 1999 by Check Point Software Technologies, Inc.
- * 
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies, and that
- * the name of Check Point Software Technologies Incorporated not be used 
- * in advertising or publicity pertaining to distribution of the document 
- * or software without specific, written prior permission.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS" AND CHECK POINT SOFTWARE TECHNOLOGIES 
- * INCORPORATED DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, 
- * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.   
- * IN NO EVENT SHALL CHECK POINT SOFTWARE TECHNOLOGIES INCORPRATED
- * BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR 
- * ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
- * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT 
- * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 /*
@@ -113,7 +92,6 @@
  * dies out in a little more than a minute.
  * (sequence RETRYBASE, 2*RETRYBASE, 4*RETRYBASE... for MAXRETRY)
  */
-#define	NEWZONES	64	/* must be a power of two. */
 #define MINROOTS	2	/* min number of root hints */
 #define NSMAX		16	/* max number of NS addrs to try ([0..255]) */
 #define RETRYBASE	4 	/* base time between retries */
@@ -139,29 +117,21 @@
 #define DEFAULT_XFERS_PER_NS 2	  /* default # of xfers per peer nameserver */
 #define	XFER_BUFSIZE	(16*1024) /* arbitrary but bigger than most MTU's */
 
-				  /* maximum time to cache negative answers */
-#define DEFAULT_MAX_NCACHE_TTL (3*60*60)
-
 #define ALPHA    0.7	/* How much to preserve of old response time */
 #define	BETA	 1.2	/* How much to penalize response time on failure */
 #define	GAMMA	 0.98	/* How much to decay unused response times */
 
 	/* What maintainance operations need to be performed sometime soon? */
-typedef enum {
-	main_need_reload = 0,	/* db_reload() needed. */
-	main_need_maint,	/* ns_maint() needed. */
-	main_need_endxfer,	/* endxfer() needed. */
-	main_need_zoneload,	/* loadxfer() needed. */
-	main_need_dump,		/* doadump() needed. */
-	main_need_statsdump,	/* ns_stats() needed. */
-	main_need_exit,		/* exit() needed. */
-	main_need_qrylog,	/* toggle_qrylog() needed. */
-	main_need_debug,	/* use_desired_debug() needed. */
-	main_need_notify,	/* do_notify_after_load() needed */
-	main_need_restart,	/* exec() needed. */
-	main_need_reap,		/* need to reap dead children */
-	main_need_num		/* number of needs, int needs[main_need_num]; */
-} main_need;
+#define	MAIN_NEED_RELOAD	0x0001	/* db_reload() needed. */
+#define	MAIN_NEED_MAINT		0x0002	/* ns_maint() needed. */
+#define	MAIN_NEED_ENDXFER	0x0004	/* endxfer() needed. */
+#define	MAIN_NEED_ZONELOAD	0x0008	/* loadxfer() needed. */
+#define	MAIN_NEED_DUMP		0x0010	/* doadump() needed. */
+#define	MAIN_NEED_STATSDUMP	0x0020	/* ns_stats() needed. */
+#define	MAIN_NEED_EXIT		0x0040	/* exit() needed. */
+#define	MAIN_NEED_QRYLOG	0x0080	/* toggle_qrylog() needed. */
+#define	MAIN_NEED_DEBUG		0x0100	/* use_desired_debug() needed. */
+#define	MAIN_NEED_NOTIFY	0x0200	/* do_notify_after_load() needed */
 
 	/* What global options are set? */
 #define	OPTION_NORECURSE	0x0001	/* Don't recurse even if asked. */
@@ -174,15 +144,8 @@ typedef enum {
 					 * CNAME RRs */
 #define OPTION_HOSTSTATS	0x0080	/* Maintain per-host statistics? */
 #define OPTION_DEALLOC_ON_EXIT	0x0100	/* Deallocate everything on exit? */
-#define OPTION_USE_IXFR		0x0110	/* Use by delault ixfr in zone transfer */
-#define OPTION_MAINTAIN_IXFR_BASE 0x0120 
-#define OPTION_NODIALUP		0x0200	/* Turn off dialup support */
-#define OPTION_NORFC2308_TYPE1	0x0400	/* Prevent type1 respones (RFC 2308)
-					 * to cached negative respones */
-#define	OPTION_USE_ID_POOL	0x0800	/* Use the memory hogging query ID */
 
-#define	DEFAULT_OPTION_FLAGS	(OPTION_NODIALUP|OPTION_NONAUTH_NXDOMAIN|\
-				 OPTION_USE_ID_POOL|OPTION_NORFC2308_TYPE1)
+#define	DEFAULT_OPTION_FLAGS	0
 
 #ifdef BIND_UPDATE
 #define SOAINCRINTVL 300 /* default value for the time after which
@@ -202,7 +165,6 @@ typedef enum {
 #define CLEAN_TIMER		0x01
 #define INTERFACE_TIMER		0x02
 #define STATS_TIMER		0x04
-#define HEARTBEAT_TIMER		0x08
 
 	/* IP address accessor, network byte order. */
 #define	ina_ulong(ina)	(ina.s_addr)
@@ -224,13 +186,6 @@ typedef enum {
 		(panic(panic_msg_no_options, NULL), 0) : \
 		((server_options->flags & option) != 0))
 
-#define	NS_ZOPTION_P(zp, option) \
-		(((zp) != NULL && (((zp)->z_optset & option) != 0)) ? \
-		(((zp)->z_options & option) != 0) : NS_OPTION_P(option))
-
-#define	NS_ZFWDTAB(zp)	(((zp) == NULL) ? \
-		server_options->fwdtab : (zp)->z_fwdtab)
-
 #define	NS_INCRSTAT(addr, which) \
 	do { \
 		if ((int)which >= (int)nssLast) \
@@ -251,8 +206,6 @@ enum severity { ignore, warn, fail, not_set };
 
 enum znotify { znotify_use_default=0, znotify_yes, znotify_no };
 
-enum zdialup { zdialup_use_default=0, zdialup_yes, zdialup_no };
-
 enum axfr_format { axfr_use_default=0, axfr_one_answer, axfr_many_answers };
 
 struct ip_match_direct {
@@ -264,12 +217,8 @@ struct ip_match_indirect {
 	struct ip_match_list *list;
 };
 
-struct ip_match_key {
-	struct dst_key *key;
-};
-
 typedef enum { ip_match_pattern, ip_match_indirect, ip_match_localhost,
-	       ip_match_localnets, ip_match_key } ip_match_type;
+	       ip_match_localnets } ip_match_type;
 
 typedef struct ip_match_element {
 	ip_match_type type;
@@ -277,7 +226,6 @@ typedef struct ip_match_element {
 	union {
 		struct ip_match_direct direct;
 		struct ip_match_indirect indirect;
-		struct ip_match_key key;
 	} u;
 	struct ip_match_element *next;
 } *ip_match_element;
@@ -315,10 +263,8 @@ struct zoneinfo {
 	struct in_addr	z_addr[NSMAX];	/* list of master servers for zone */
 	u_char		z_addrcnt;	/* number of entries in z_addr[] */
 	u_char		z_type;		/* type of zone; see below */
-	u_int32_t	z_flags;	/* state bits; see below */
+	u_int16_t	z_flags;	/* state bits; see below */
 	pid_t		z_xferpid;	/* xfer child pid */
-	u_int		z_options;	/* options set specific to this zone */
-	u_int		z_optset;	/* which opts override global opts */
 	int		z_class;	/* class of zone */
 	int		z_numxfrs;	/* Ref count of concurrent xfrs. */
 	enum severity	z_checknames;	/* How to handle non-RFC-compliant names */
@@ -341,24 +287,15 @@ struct zoneinfo {
 					   from us */
 	long		z_max_transfer_time_in;	/* max num seconds for AXFR */
 	enum znotify	z_notify;	/* Notify mode */
-	enum zdialup	z_dialup;	/* secondaries over a dialup link */
-	struct in_addr	*z_also_notify; /* More nameservers to notify */
+	struct in_addr	z_also_notify[NSMAX];  /* More nameservers to notify */
 	int		z_notify_count;
-	char            *z_ixfr_base;	/* where to find the history of the zone */
-	char            *z_ixfr_tmp;    /* tmp file for the ixfr */
-	int		z_maintain_ixfr_base;
-	int		z_log_size_ixfr;
-	int		z_max_log_size_ixfr;
 	evTimerID	z_timer;	/* maintenance timer */
 	ztimer_info	z_timerinfo;	/* UAP associated with timer */
 	time_t		z_nextmaint;	/* time of next maintenance */
-	u_int16_t	z_port;		/* perform AXFR to this port */
-	struct fwdinfo	*z_fwdtab;	/* zone-specific forwarders */
-	LINK(struct zoneinfo) z_freelink;
 };
 
 	/* zone types (z_type) */
-enum zonetype { z_nil, z_master, z_slave, z_hint, z_stub, z_forward, z_any };
+enum zonetype { z_nil, z_master, z_slave, z_hint, z_stub, z_any };
 #define	Z_NIL		z_nil		/* XXX */
 #define Z_MASTER	z_master	/* XXX */
 #define Z_PRIMARY	z_master	/* XXX */
@@ -367,41 +304,33 @@ enum zonetype { z_nil, z_master, z_slave, z_hint, z_stub, z_forward, z_any };
 #define Z_HINT		z_hint		/* XXX */
 #define Z_CACHE		z_hint		/* XXX */
 #define Z_STUB		z_stub		/* XXX */
-#define Z_FORWARD	z_forward	/* XXX */
 #define Z_ANY		z_any		/* XXX*2 */
 
-	/* zone state bits (32 bits) */
-#define	Z_AUTH		0x00000001	/* zone is authoritative */
-#define	Z_NEED_XFER	0x00000002	/* waiting to do xfer */
-#define	Z_XFER_RUNNING	0x00000004	/* asynch. xfer is running */
-#define	Z_NEED_RELOAD	0x00000008	/* waiting to do reload */
-#define	Z_SYSLOGGED	0x00000010	/* have logged timeout */
-#define	Z_QSERIAL	0x00000020	/* sysquery()'ing for serial number */
-#define	Z_FOUND		0x00000040	/* found in boot file when reloading */
-#define	Z_INCLUDE	0x00000080	/* set if include used in file */
-#define	Z_DB_BAD	0x00000100	/* errors when loading file */
-#define	Z_TMP_FILE	0x00000200	/* backup file for xfer is temporary */
+	/* zone state bits (16 bits) */
+#define	Z_AUTH		0x0001		/* zone is authoritative */
+#define	Z_NEED_XFER	0x0002		/* waiting to do xfer */
+#define	Z_XFER_RUNNING	0x0004		/* asynch. xfer is running */
+#define	Z_NEED_RELOAD	0x0008		/* waiting to do reload */
+#define	Z_SYSLOGGED	0x0010		/* have logged timeout */
+#define	Z_QSERIAL	0x0020		/* sysquery()'ing for serial number */
+#define	Z_FOUND		0x0040		/* found in boot file when reloading */
+#define	Z_INCLUDE	0x0080		/* set if include used in file */
+#define	Z_DB_BAD	0x0100		/* errors when loading file */
+#define	Z_TMP_FILE	0x0200		/* backup file for xfer is temporary */
 #ifdef BIND_UPDATE
-#define	Z_DYNAMIC	0x00000400	/* allow dynamic updates */
-#define	Z_NEED_DUMP	0x00000800	/* zone has changed, needs a dump */
-#define	Z_NEED_SOAUPDATE 0x00001000	/* soa serial number needs increment */
+#define	Z_DYNAMIC	0x0400		/* allow dynamic updates */
+#define	Z_NEED_DUMP	0x0800		/* zone has changed, needs a dump */
+#define	Z_NEED_SOAUPDATE 0x1000		/* soa serial number needs increment */
 #endif /* BIND_UPDATE */
-#define	Z_XFER_ABORTED	0x00002000	/* zone transfer has been aborted */
-#define	Z_XFER_GONE	0x00004000	/* zone transfer process is gone */
-#define	Z_TIMER_SET	0x00008000	/* z_timer contains a valid id */
-#define	Z_NEED_QSERIAL  0x00020000	/* we need to re-call qserial() */
+#define	Z_XFER_ABORTED	0x2000		/* zone transfer has been aborted */
+#define	Z_XFER_GONE	0x4000		/* zone transfer process is gone */
+#define	Z_TIMER_SET	0x8000		/* z_timer contains a valid id */
 
 	/* named_xfer exit codes */
 #define	XFER_UPTODATE	0		/* zone is up-to-date */
 #define	XFER_SUCCESS	1		/* performed transfer successfully */
 #define	XFER_TIMEOUT	2		/* no server reachable/xfer timeout */
 #define	XFER_FAIL	3		/* other failure, has been logged */
-#define XFER_SUCCESSAXFR 4              /* named-xfr recived a xfr */
-#define XFER_SUCCESSIXFR 5              /* named-xfr recived a ixfr */
-#define XFER_SUCCESSAXFRIXFRFILE 6      /* named-xfr received AXFR for IXFR */
-#define XFER_ISAXFR     -1              /* the last XFR is AXFR */
-#define XFER_ISIXFR     -2              /* the last XFR is IXFR */
-#define XFER_ISAXFRIXFR	-3		/* the last XFR is AXFR but we must create IXFR base */
 
 /* XXX - "struct qserv" is deprecated in favor of "struct nameser" */
 struct qserv {
@@ -446,7 +375,6 @@ struct qinfo {
 	int16_t		q_nqueries;	/* # of queries required */
 	struct qstream	*q_stream;	/* TCP stream, null if UDP */
 	struct zoneinfo	*q_zquery;	/* Zone query is about (Q_ZSERIAL) */
-	struct zoneinfo	*q_fzone;	/* Forwarding zone, if any */
 	char		*q_domain;	/* domain of most enclosing zone cut */
 	char		*q_name;	/* domain of query */
 	u_int16_t	q_class;	/* class of query */
@@ -456,8 +384,6 @@ struct qinfo {
 					 * when the reply to this comes in.
 					 */
 #endif
-	struct tsig_record *q_tsig;	/* forwarded query's TSIG record */
-	struct tsig_record *q_nstsig;	/* forwarded query's TSIG record */
 };
 
 	/* q_flags bits (8 bits) */
@@ -538,7 +464,7 @@ struct qstream {
 	u_int		flags;		/* see below */
 	struct qstream_xfr {
 		enum { s_x_base, s_x_firstsoa, s_x_zone,
- 		       s_x_lastsoa, s_x_done, s_x_ixfr }
+		       s_x_lastsoa, s_x_done }
 				state;		/* state of transfer. */
 		u_char		*msg,		/* current assembly message. */
 				*cp,		/* where are we in msg? */
@@ -549,9 +475,6 @@ struct qstream {
 				opcode;		/* opcode of an XFR. */
 		u_int		zone;		/* zone being XFR'd. */
 		struct namebuf	*top;		/* top np of an XFR. */
- 		int             ixfr_zone;
-	        u_int32_t	serial;	/* serial number requested in IXFR */
-		ns_tcp_tsig_state *tsig_state;	/* used by ns_sign_tcp */
 		struct qs_x_lev {		/* decompose the recursion. */
 			enum {sxl_ns, sxl_all, sxl_sub}
 					state;	/* what's this level doing? */
@@ -626,8 +549,7 @@ struct nameser {
 	u_int8_t	xfers;		/* #/xfers running right now */
 };
 		
-enum transport { primary_trans, secondary_trans, response_trans, update_trans,
-		 num_trans };
+enum transport { primary_trans, secondary_trans, response_trans, num_trans };
 
 /* types used by the parser or config routines */
 
@@ -651,31 +573,8 @@ typedef struct listen_info_list {
 #endif
 typedef RLIMIT_TYPE rlimit_type;
 
-struct control;
-typedef struct control *control;
-typedef LIST(struct control) controls;
-
-enum ordering { unknown_order, fixed_order, cyclic_order, random_order };
-
-#define DEFAULT_ORDERING cyclic_order
-
-typedef struct rrset_order_element {
-	int class;
-	int type;
-	char *name;
-	enum ordering order;
-	struct rrset_order_element *next;
-} *rrset_order_element ;
-
-typedef struct rrset_order_list {
-	rrset_order_element first;
-	rrset_order_element last;
-} *rrset_order_list;
-
-
 typedef struct options {
 	u_int flags;
-	char *version;
 	char *directory;
 	char *dump_filename;
 	char *pid_filename;
@@ -685,17 +584,12 @@ typedef struct options {
 	int transfers_in;
 	int transfers_per_ns;
 	int transfers_out;
- 	int max_log_size_ixfr;
 	enum axfr_format transfer_format;
 	long max_transfer_time_in;
 	struct sockaddr_in query_source;
 	ip_match_list query_acl;
 	ip_match_list transfer_acl;
-	ip_match_list blackhole_acl;
 	ip_match_list topology;
-#ifdef SORT_RESPONSE
-	ip_match_list sortlist;
-#endif /* SORT_RESPONSE */
 	enum severity check_names[num_trans];
 	u_long data_size;
 	u_long stack_size;
@@ -707,14 +601,16 @@ typedef struct options {
 	int clean_interval;
 	int interface_interval;
 	int stats_interval;
-	rrset_order_list ordering;
-	int heartbeat_interval;
-	u_int max_ncache_ttl;
-	u_int lame_ttl;
 } *options;
 
+typedef struct key_info {
+	char *name;
+	char *algorithm;
+	char *secret;			/* XXX should be u_char? */
+} *key_info;
+
 typedef struct key_list_element {
-	struct dst_key *key;
+	key_info info;
 	struct key_list_element *next;
 } *key_list_element;
 
@@ -751,7 +647,6 @@ typedef struct server_config {
 } server_config;
 
 #define SERVER_INFO_BOGUS	0x01
-#define SERVER_INFO_SUPPORT_IXFR	0x02
 
 typedef struct server_info {
 	struct in_addr address;
@@ -799,7 +694,6 @@ typedef enum ns_logging_categories {
 	ns_log_maint,
 	ns_log_load,
 	ns_log_resp_checks,
-	ns_log_control,
 	ns_log_max_category
 } ns_logging_categories;
 

@@ -81,7 +81,7 @@ SHLIB_MAJOR=		@SHLIB_MAJOR@
 SHLIB_MINOR=		.@SHLIB_MINOR@
 
 # For libraries which include headers from other libraries.
-INCLUDES = -I. -I.. -I$(topdir) -I$(includedir)
+INCLUDES = -I. -I.. -I$(topdir)
 
 CCFLAGS = $(DEFS) $(LOCAL_DEFS) $(CPPFLAGS) $(INCLUDES) $(LOCAL_CFLAGS) $(CFLAGS)
 
@@ -145,11 +145,11 @@ $(SHARED_HISTORY):	$(SHARED_HISTOBJ) xmalloc.so
 	$(SHOBJ_LD) ${SHOBJ_LDFLAGS} ${SHLIB_XLDFLAGS} -o $@ $(SHARED_HISTOBJ) xmalloc.so $(SHLIB_LIBS)
 
 installdirs: $(topdir)/support/mkdirs
-	-$(SHELL) $(topdir)/support/mkdirs $(libdir)
+	-$(SHELL) $(topdir)/support/mkdirs $(DESTDIR)$(libdir)
 
 install: installdirs $(SHLIB_STATUS)
-	$(SHELL) $(topdir)/support/shlib-install -O $(host_os) -d $(libdir) -i "$(INSTALL_DATA)" $(SHARED_HISTORY)
-	$(SHELL) $(topdir)/support/shlib-install -O $(host_os) -d $(libdir) -i "$(INSTALL_DATA)" $(SHARED_READLINE)
+	$(SHELL) $(topdir)/support/shlib-install -O $(host_os) -d $(DESTDIR)$(libdir) -i "$(INSTALL_DATA)" $(SHARED_HISTORY)
+	$(SHELL) $(topdir)/support/shlib-install -O $(host_os) -d $(DESTDIR)$(libdir) -i "$(INSTALL_DATA)" $(SHARED_READLINE)
 	@echo install: you may need to run ldconfig
 
 uninstall:

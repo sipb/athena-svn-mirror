@@ -815,8 +815,8 @@ fi
 
 
 
-GHTTP_LIBDIR='-L${libdir}'
-GHTTP_INCLUDEDIR='-I${includedir}'
+GHTTP_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+GHTTP_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}'
 GHTTP_LIBS="-lghttp"
 
 echo $ac_n "checking whether to enable maintainer-specific portions of Makefiles""... $ac_c" 1>&6

@@ -246,14 +246,16 @@ info: objc-features.info
 dvi: objc-features.dvi
 html: objc-features_toc.html
 
-objc-features.info: $(srcdir)/objc-features.texi
-	makeinfo $(srcdir)/objc-features.texi
+# Next three rules commented out by ghudson@mit.edu on 2000-04-07
+# since CVS munges timestamps and we don't want to rebuild these.
+#objc-features.info: $(srcdir)/objc-features.texi
+#	makeinfo $(srcdir)/objc-features.texi
 
-objc-features.dvi: $(srcdir)/objc-features.texi
-	texi2dvi $(srcdir)/objc-features.texi
+#objc-features.dvi: $(srcdir)/objc-features.texi
+#	texi2dvi $(srcdir)/objc-features.texi
 
-objc-features_toc.html: objc-features.texi
-	texi2html -split_node $(srcdir)/objc-features.texi
+#objc-features_toc.html: objc-features.texi
+#	texi2html -split_node $(srcdir)/objc-features.texi
 
 Makefile: Makefile.in config.status
 	$(SHELL) config.status

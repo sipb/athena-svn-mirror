@@ -121,7 +121,7 @@ impl_Bonobo_Property_removeListener (PortableServer_Servant servant,
 
 	corba_es = BONOBO_OBJREF (ps->pb->es);
 
-	return Bonobo_EventSource_removeListener (corba_es, id, ev); 
+	Bonobo_EventSource_removeListener (corba_es, id, ev); 
 }
 
 static POA_Bonobo_Property__epv *

@@ -154,7 +154,7 @@ LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 libgnomeincludedir = $(includedir)/libgnome
 
-INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl 	-I$(includedir) $(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS) 	-DGNOMELIBDIR=\""$(libdir)"\" 	-DGNOMEDATADIR=\""$(datadir)"\" 	-DGNOMEBINDIR=\""$(bindir)"\" 	-DGNOMELOCALSTATEDIR=\""$(localstatedir)"\" 	-DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" 	-DGNOMESYSCONFDIR=\""$(sysconfdir)"\" 	-DVERSION=\""$(VERSION)"\" 	-DG_LOG_DOMAIN=\"Gnome\"
+INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl 	$(GLIB_CFLAGS) $(GDK_IMLIB_CFLAGS)  	$(AUDIOFILE_CFLAGS) $(ESD_CFLAGS) 	-DGNOMELIBDIR=\""$(libdir)"\" 	-DGNOMEDATADIR=\""$(datadir)"\" 	-DGNOMEBINDIR=\""$(bindir)"\" 	-DGNOMELOCALSTATEDIR=\""$(localstatedir)"\" 	-DGNOMELOCALEDIR=\""$(gnomelocaledir)"\" 	-DGNOMESYSCONFDIR=\""$(sysconfdir)"\" 	-DVERSION=\""$(VERSION)"\" 	-DG_LOG_DOMAIN=\"Gnome\"
 
 
 libgnome_la_SOURCES =  	gnome-config.c			gnome-dentry.c          	gnome-exec.c			gnome-fileconvert.c		gnome-help.c			gnome-history.c			gnome-i18n.c			gnome-magic.c			gnome-metadata.c		gnome-mime.c			gnome-mime-info.c		gnome-popt.c			gnome-regex.c			gnome-remote.c			gnome-score.c			gnome-sound.c			gnome-triggers.c		gnome-url.c			gnome-util.c			gnome-paper.c			gnomelib-init.c
@@ -421,7 +421,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

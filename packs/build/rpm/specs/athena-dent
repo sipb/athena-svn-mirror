@@ -1,0 +1,8 @@
+Name: athena-dent
+Summary: An Athena utility to indent files
+Copyright: MIT
+Group: Applications/Text
+
+%description
+The dent utility indents files by a fixed number of spaces.
+

@@ -1,0 +1,8 @@
+Name: athena-imakecf
+Summary: Imake templates and rules for Athena workstations
+Copyright: MIT
+Group: Development/Tools
+
+%description
+Imake templates and rules for Athena workstations
+

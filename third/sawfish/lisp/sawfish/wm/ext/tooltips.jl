@@ -1,5 +1,5 @@
 ;; tooltips.jl -- display frame-part keymap descriptions
-;; $Id: tooltips.jl,v 1.1.1.2 2001-01-13 14:58:04 ghudson Exp $
+;; $Id: tooltips.jl,v 1.2 2001-04-30 15:20:29 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -29,6 +29,7 @@
 	  rep.system
 	  rep.regexp
 	  rep.io.timers
+	  sawfish.wm.commands
 	  sawfish.wm.custom
 	  sawfish.wm.misc
 	  sawfish.wm.windows
@@ -197,9 +198,7 @@
     (let (doc)
       (if (and tooltips-show-doc-strings command
 	       (symbolp command)
-	       (progn
-		 (require 'rep.lang.doc)
-		 (setq doc (documentation command))))
+	       (setq doc (command-documentation command)))
 	  (_ doc)
 	(format nil "%S" command))))
 

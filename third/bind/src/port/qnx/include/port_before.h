@@ -14,8 +14,3 @@
 #define MAX	max
 #define PORT_NONBLOCK	O_NONBLOCK
 #define HAVE_SA_LEN
-
-#if defined(HAS_PTHREADS) && defined(_REENTRANT)
-#define DO_PTHREADS
-#endif
-

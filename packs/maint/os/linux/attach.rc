@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# athena-attach:	Prepare athena attach service
+#
+# chkconfig: 2345 40 60
+# description: attach startup.
+# processname: sendmail
+# pidfile: /var/run/sendmail.pid
+#
+# config: /etc/sysconfig/network
+# config: /etc/athena/rc.conf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+RETVAL=0
+
+# Fetch the PUBLIC variable.  
+[ -r /etc/athena/rc.conf ] || . /etc/athena/rc.conf
+
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Removing old attach mount points: "
+
+	detach -O -n -h -a && success "detaching mount points" || failure "detaching mount points"
+
+	if [ "$PUBLIC" = true ]; then
+		echo -n "Cleaning attachtab: "
+		rm -f /var/athena/attachtab/mountpoint/* /var/athena/attachtab/locker/* && success "cleaning attachtab" || failure "cleaning attachtab"
+
+		echo -n "Clearing out /mit: "
+		rm -f /mit/* \
+		    && rmdir /mit/* 2>/dev/null \
+		    && rm -f /var/athena/attachtab/directory/_=mit* \
+		    && success "clearing /mit" || failure "clearing /mit"
+	fi
+
+
+
+	;;
+
+  stop)
+	;;
+
+  status)
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	;;
+
+  *)
+	echo "Usage: attach {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

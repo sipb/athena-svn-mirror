@@ -1,10 +1,10 @@
 %{
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_parser.y,v 1.1.1.3 1999-03-16 19:45:08 danw Exp $";
+static char rcsid[] = "$Id: ns_parser.y,v 1.2 2000-04-22 04:39:50 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,8 +25,6 @@ static char rcsid[] = "$Id: ns_parser.y,v 1.1.1.3 1999-03-16 19:45:08 danw Exp $
 #include "port_before.h"
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
@@ -42,8 +40,6 @@ static char rcsid[] = "$Id: ns_parser.y,v 1.1.1.3 1999-03-16 19:45:08 danw Exp $
 
 #include <isc/eventlib.h>
 #include <isc/logging.h>
-
-#include <isc/dst.h>
 
 #include "port_after.h"
 
@@ -65,12 +61,10 @@ static symbol_table symtab;
 static symbol_table authtab = NULL;
 
 static zone_config current_zone;
-static int should_install;
+static int seen_zone;
 
 static options current_options;
 static int seen_options;
-
-static controls current_controls;
 
 static topology_config current_topology;
 static int seen_topology;
@@ -95,10 +89,8 @@ static log_channel lookup_channel(char *);
 static void define_channel(char *, log_channel);
 static char *canonical_name(char *);
 
-extern const struct res_sym __p_type_syms[];
+int yyparse();
 
- int yyparse();
-	
 %}
 
 %union {
@@ -110,9 +102,7 @@ extern const struct res_sym __p_type_syms[];
 	struct in_addr		ip_addr;
 	ip_match_element	ime;
 	ip_match_list		iml;
-	rrset_order_list	rol;
-	rrset_order_element	roe;
-	struct dst_key *	keyi;
+	key_info		keyi;
 	enum axfr_format	axfr_fmt;
 }
 
@@ -131,28 +121,22 @@ extern const struct res_sym __p_type_syms[];
 %token			T_OPTIONS
 %token			T_DIRECTORY T_PIDFILE T_NAMED_XFER
 %token			T_DUMP_FILE T_STATS_FILE T_MEMSTATS_FILE
-%token			T_FAKE_IQUERY T_RECURSION T_FETCH_GLUE 
+%token			T_FAKE_IQUERY T_RECURSION T_FETCH_GLUE
 %token			T_QUERY_SOURCE T_LISTEN_ON T_PORT T_ADDRESS
-%token			T_RRSET_ORDER T_ORDER T_NAME T_CLASS
-%token			T_CONTROLS T_INET T_UNIX T_PERM T_OWNER T_GROUP T_ALLOW
 %type	<us_int>	in_port
 %type	<us_int>	maybe_port
-%type	<us_int>	maybe_zero_port
 %type	<us_int>	maybe_wild_port
 %type	<ip_addr>	maybe_wild_addr
 %token			T_DATASIZE T_STACKSIZE T_CORESIZE
 %token			T_DEFAULT T_UNLIMITED
-%token			T_FILES T_VERSION
+%token			T_FILES
 %token			T_HOSTSTATS T_DEALLOC_ON_EXIT
 %token			T_TRANSFERS_IN T_TRANSFERS_OUT T_TRANSFERS_PER_NS
 %token			T_TRANSFER_FORMAT T_MAX_TRANSFER_TIME_IN
 %token			T_ONE_ANSWER T_MANY_ANSWERS
 %type	<axfr_fmt>	transfer_format
-%token			T_NOTIFY T_AUTH_NXDOMAIN T_MULTIPLE_CNAMES T_USE_IXFR T_MAINTAIN_IXFR_BASE
-%token			T_CLEAN_INTERVAL T_INTERFACE_INTERVAL T_STATS_INTERVAL T_MAX_LOG_SIZE_IXFR
-%token			T_HEARTBEAT T_USE_ID_POOL
-%token			T_MAX_NCACHE_TTL T_HAS_OLD_CLIENTS T_RFC2308_TYPE1
-%token			T_LAME_TTL
+%token			T_NOTIFY T_AUTH_NXDOMAIN T_MULTIPLE_CNAMES
+%token			T_CLEAN_INTERVAL T_INTERFACE_INTERVAL T_STATS_INTERVAL
 
 /* Items used for the "logging" statement: */
 %token			T_LOGGING T_CATEGORY T_CHANNEL T_SEVERITY T_DYNAMIC
@@ -163,17 +147,8 @@ extern const struct res_sym __p_type_syms[];
 %type	<cp>		category_name channel_name facility_name
 %type	<s_int>		maybe_syslog_facility
 
-/* Items used for the "sortlist" statement: */
-%token			T_SORTLIST
-
 /* Items used for the "topology" statement: */
 %token			T_TOPOLOGY
-
-%type	<s_int>		ordering_class
-%type	<s_int>		ordering_type
-%type	<cp>		ordering_name
-%type	<rol>		rrset_ordering_list
-%type	<roe>		rrset_ordering_element
 
 /* ip_match_list */
 %type	<ime>		address_match_simple address_match_element address_name
@@ -185,7 +160,6 @@ extern const struct res_sym __p_type_syms[];
 %token			T_BOGUS 
 %token			T_TRANSFERS 
 %token			T_KEYS
-%token			T_SUPPORT_IXFR
 
 /* Items used for "zone" statements: */
 %token			T_ZONE
@@ -196,19 +170,11 @@ extern const struct res_sym __p_type_syms[];
 %token			T_MASTER T_SLAVE T_STUB T_RESPONSE
 %token			T_HINT
 %token			T_MASTERS T_TRANSFER_SOURCE
-%token			T_PUBKEY
 %token			T_ALSO_NOTIFY
-%token			T_DIALUP
-%token			T_FILE_IXFR
-%token			T_IXFR_TMP
-
-/* Items used for "trusted-keys" statements: */
-%token                  T_TRUSTED_KEYS
 
 /* Items used for access control lists and "allow" clauses: */
 %token			T_ACL 
 %token	 		T_ALLOW_UPDATE T_ALLOW_QUERY T_ALLOW_TRANSFER
-%token			T_BLACKHOLE
 
 /* Items related to the "key" statement: */
 %token			T_SEC_KEY T_ALGID T_SECRET
@@ -238,9 +204,7 @@ extern const struct res_sym __p_type_syms[];
 %%
 config_file: statement_list
 	{
-		if (EMPTY(current_controls))
-			ns_ctl_defaults(&current_controls);
-		ns_ctl_install(&current_controls);
+		/* nothing */
 	}
 	;
 
@@ -250,11 +214,9 @@ statement_list: statement
 
 statement: include_stmt
 	| options_stmt L_EOS
-	| controls_stmt L_EOS
 	| logging_stmt L_EOS
 	| server_stmt L_EOS
 	| zone_stmt L_EOS
-	| trusted_keys_stmt L_EOS
 	| acl_stmt L_EOS
 	| key_stmt L_EOS
 	| L_END_INCLUDE
@@ -291,12 +253,6 @@ options: option L_EOS
 	;
 
 option: /* Empty */
-	| T_VERSION L_QSTRING
-	{
-		if (current_options->version != NULL)
-			freestr(current_options->version);
-		current_options->version = $2;
-	}
 	| T_DIRECTORY L_QSTRING
 	{
 		if (current_options->directory != NULL)
@@ -335,75 +291,42 @@ option: /* Empty */
 	}
 	| T_FAKE_IQUERY yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_FAKE_IQUERY, $2);
+		set_boolean_option(current_options, OPTION_FAKE_IQUERY, $2);
 	}
 	| T_RECURSION yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_NORECURSE, !$2);
+		set_boolean_option(current_options, OPTION_NORECURSE, !$2);
 	}
 	| T_FETCH_GLUE yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_NOFETCHGLUE, !$2);
+		set_boolean_option(current_options, OPTION_NOFETCHGLUE, !$2);
 	}
 	| T_NOTIFY yea_or_nay
 	{
-		set_global_boolean_option(current_options, 
-			OPTION_NONOTIFY, !$2);
+		set_boolean_option(current_options, OPTION_NONOTIFY, !$2);
 	}
 	| T_HOSTSTATS yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_HOSTSTATS, $2);
+		set_boolean_option(current_options, OPTION_HOSTSTATS, $2);
 	}
 	| T_DEALLOC_ON_EXIT yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_DEALLOC_ON_EXIT, $2);
-	}
-	| T_USE_IXFR yea_or_nay
-	{
-		set_global_boolean_option(current_options, OPTION_USE_IXFR, $2);
-	}
-	| T_MAINTAIN_IXFR_BASE yea_or_nay
-	{
-		set_global_boolean_option(current_options,
-					  OPTION_MAINTAIN_IXFR_BASE, $2);
-	}
-	| T_HAS_OLD_CLIENTS yea_or_nay
-	{
-		set_global_boolean_option(current_options,
-					  OPTION_MAINTAIN_IXFR_BASE, $2);
-		set_global_boolean_option(current_options,
-					  OPTION_NORFC2308_TYPE1, $2);
-		set_global_boolean_option(current_options,
-					  OPTION_NONAUTH_NXDOMAIN, !$2);
+		set_boolean_option(current_options, OPTION_DEALLOC_ON_EXIT,
+				   $2);
 	}
 	| T_AUTH_NXDOMAIN yea_or_nay
 	{
-		set_global_boolean_option(current_options, OPTION_NONAUTH_NXDOMAIN,
+		set_boolean_option(current_options, OPTION_NONAUTH_NXDOMAIN,
 				   !$2);
 	}
 	| T_MULTIPLE_CNAMES yea_or_nay
 	{
-		set_global_boolean_option(current_options,
-			OPTION_MULTIPLE_CNAMES, $2);
+		set_boolean_option(current_options, OPTION_MULTIPLE_CNAMES,
+				   $2);
 	}
 	| T_CHECK_NAMES check_names_type check_names_opt
 	{
 		current_options->check_names[$2] = $3;
-	}
-	| T_USE_ID_POOL yea_or_nay
-	{
-		set_global_boolean_option(current_options,
-					  OPTION_USE_ID_POOL, $2);
-	}
-	| T_RFC2308_TYPE1 yea_or_nay
-	{
-		set_global_boolean_option(current_options,
-                        		  OPTION_NORFC2308_TYPE1, !$2);
 	}
 	| T_LISTEN_ON maybe_port '{' address_match_list '}'
 	{
@@ -445,18 +368,6 @@ option: /* Empty */
 			free_ip_match_list(current_options->transfer_acl);
 		current_options->transfer_acl = $3;
 	}
-	| T_SORTLIST '{' address_match_list '}'
-	{
-		if (current_options->sortlist)
-			free_ip_match_list(current_options->sortlist);
-		current_options->sortlist = $3;
-	}
-	| T_BLACKHOLE '{' address_match_list '}'
-	{
-		if (current_options->blackhole_acl)
-			free_ip_match_list(current_options->blackhole_acl);
-		current_options->blackhole_acl = $3;
-	}
 	| T_TOPOLOGY '{' address_match_list '}'
 	{
 		if (current_options->topology)
@@ -488,160 +399,9 @@ option: /* Empty */
 	{
 		current_options->stats_interval = $2 * 60;
 	}
-	| T_MAX_LOG_SIZE_IXFR L_NUMBER
-	{
-		#ifdef IXFR
-		current_options->max_log_size_ixfr = $2;
-		#endif /* IXFR */
-	}
-	| T_MAX_NCACHE_TTL L_NUMBER
-	{
-		current_options->max_ncache_ttl = $2;
-	}
-	| T_LAME_TTL L_NUMBER
-	{
-		current_options->lame_ttl = $2;
-	}
-	| T_HEARTBEAT L_NUMBER
-	{
-		current_options->heartbeat_interval = $2 * 60;
-	}
-	| T_DIALUP yea_or_nay
-	{
-		set_global_boolean_option(current_options,
-                                          OPTION_NODIALUP, !$2);
-	}
-	| T_RRSET_ORDER	'{' rrset_ordering_list '}'
-	{
-		if (current_options->ordering)
-			free_rrset_order_list(current_options->ordering);
-		current_options->ordering = $3;
-	}
 	| error
 	;
 
-/*
- * Controls.
- */
-controls_stmt: T_CONTROLS '{' controls '}'
-	;		
-
-controls: control L_EOS
-	| controls control L_EOS
-	;
-
-control: /* Empty */
-	| T_INET maybe_wild_addr T_PORT in_port
-	  T_ALLOW '{' address_match_list '}'
-	{
-		ns_ctl_add(&current_controls, ns_ctl_new_inet($2, $4, $7));
-	}
-	| T_UNIX L_QSTRING T_PERM L_NUMBER T_OWNER L_NUMBER T_GROUP L_NUMBER
-	{
-		ns_ctl_add(&current_controls, ns_ctl_new_unix($2, $4, $6, $8));
-	}
-	| error
-	;
-
-rrset_ordering_list: rrset_ordering_element L_EOS
-	{
-		rrset_order_list rol;
-
-		rol = new_rrset_order_list();
-		if ($1 != NULL) {
-			add_to_rrset_order_list(rol, $1);
-		}
-		
-		$$ = rol;
-	}
-	| rrset_ordering_list rrset_ordering_element L_EOS
-	{
-		if ($2 != NULL) {
-			add_to_rrset_order_list($1, $2);
-		}
-		$$ = $1;
-	}
-	;
-
-ordering_class: /* nothing */
-	{
-		$$ = C_ANY;
-	}
-	| T_CLASS any_string
-	{
-		symbol_value value;
-
-		if (lookup_symbol(constants, $2, SYM_CLASS, &value))
-			$$ = value.integer;
-		else {
-			parser_error(0, "unknown class '%s'; using ANY", $2);
-			$$ = C_ANY;
-		}
-		freestr($2);
-	}
-	;
-
-ordering_type: /* nothing */
-	{
-		$$ = ns_t_any;
-	}
-	| T_TYPE any_string
-	{
-		int success;
-
-		if (strcmp($2, "*") == 0) {
-			$$ = ns_t_any;
-		} else {
-			$$ = __sym_ston(__p_type_syms, $2, &success);
-			if (success == 0) {
-				$$ = ns_t_any;
-				parser_error(0,
-					     "unknown type '%s'; assuming ANY",
-					     $2);
-			}
-		}
-		freestr($2);
-	}
-
-ordering_name: /* nothing */
-	{
-		$$ = savestr("*", 1);
-	}
-	| T_NAME L_QSTRING
-	{
-		if (strcmp(".",$2) == 0 || strcmp("*.",$2) == 0) {
-			$$ = savestr("*", 1);
-			freestr($2);
-		} else {
-			$$ = $2 ;
-		}
-		/* XXX Should do any more name validation here? */
-	}
-
-
-rrset_ordering_element: ordering_class ordering_type ordering_name T_ORDER L_STRING
-	{
-		int o ;
-
-		if (strlen($5) == 0) {
-			parser_error(0, "null order name");
-			$$ = NULL ;
-		} else {
-			o = lookup_ordering($5);
-			if (o == unknown_order) {
-				o = DEFAULT_ORDERING;
-				parser_error(0,
-					     "invalid order name '%s'; using %s",
-					     $5, p_order(o));
-			}
-			
-			freestr($5);
-			
-			$$ = new_rrset_order_element($1, $2, $3, o);
-		}
-	}
-
-	
 transfer_format: T_ONE_ANSWER
 	{
 		$$ = axfr_one_answer;
@@ -681,11 +441,6 @@ query_source: query_source_address
 maybe_port: /* nothing */ { $$ = htons(NS_DEFAULTPORT); }
 	| T_PORT in_port { $$ = $2; }
 	;
-
-maybe_zero_port : /* nothing */ { $$ = htons(0); }
-	| T_PORT in_port { $$ = $2; }
-	;
-
 
 yea_or_nay: T_YES
 	{ 
@@ -745,13 +500,11 @@ check_names_opt: T_WARN
 
 forward_opt: T_ONLY
 	{
-		set_global_boolean_option(current_options,
-			OPTION_FORWARD_ONLY, 1);
+		set_boolean_option(current_options, OPTION_FORWARD_ONLY, 1);
 	}
 	| T_FIRST
 	{
-		set_global_boolean_option(current_options,
-			OPTION_FORWARD_ONLY, 0);
+		set_boolean_option(current_options, OPTION_FORWARD_ONLY, 0);
 	}
 	| T_IF_NO_ANSWER
 	{
@@ -838,7 +591,7 @@ forwarders_in_addr_list: forwarders_in_addr L_EOS
 
 forwarders_in_addr: L_IPADDR
 	{
-	  	add_global_forwarder(current_options, $1);
+	  	add_forwarder(current_options, $1);
 	}
 	;
 
@@ -1098,7 +851,7 @@ category: category_name
 
 server_stmt: T_SERVER L_IPADDR
 	{
-		const char *ip_printable;
+		char *ip_printable;
 		symbol_value value;
 		
 		ip_printable = inet_ntoa($2);
@@ -1130,10 +883,6 @@ server_info: T_BOGUS yea_or_nay
 	{
 		set_server_option(current_server, SERVER_INFO_BOGUS, $2);
 	}
-	| T_SUPPORT_IXFR yea_or_nay
-	{
-		set_server_option(current_server, SERVER_INFO_SUPPORT_IXFR, $2);
-	}	
 	| T_TRANSFERS L_NUMBER
 	{
 		set_server_transfers(current_server, (int)$2);
@@ -1173,11 +922,6 @@ address_match_element: address_match_simple
 		if ($2 != NULL)
 			ip_match_negate($2);
 		$$ = $2;
-	}
-	| T_SEC_KEY L_STRING
-	{
-		struct dst_key *dst_key = find_key($2, NULL);
-		$$ = new_ip_match_key(dst_key);
 	}
 	;
 
@@ -1253,14 +997,14 @@ address_name: any_string
 
 key_ref: any_string
 	{
-		struct dst_key *dst_key;
+		key_info ki;
 
-		dst_key = lookup_key($1);
-		if (dst_key == NULL) {
+		ki = lookup_key($1);
+		if (ki == NULL) {
 			parser_error(0, "unknown key '%s'", $1);
 			$$ = NULL;
 		} else
-			$$ = dst_key;
+			$$ = ki;
 		freestr($1);
 	}
 	;
@@ -1286,7 +1030,7 @@ key_stmt: T_SEC_KEY
 	}
 	any_string '{' key_definition '}'
 	{
-		struct dst_key *dst_key;
+		key_info ki;
 
 		if (lookup_key($3) != NULL) {
 			parser_error(0, "can't redefine key '%s'", $3);
@@ -1296,12 +1040,9 @@ key_stmt: T_SEC_KEY
 			    current_secret == NULL)
 				parser_error(0, "skipping bad key '%s'", $3);
 			else {
-				dst_key = new_key_info($3, current_algorithm,
-						       current_secret);
-				define_key($3, dst_key);
-				if (secretkey_info == NULL)
-					secretkey_info = new_key_info_list();
-				add_to_key_info_list(secretkey_info, dst_key);
+				ki = new_key_info($3, current_algorithm,
+						  current_secret);
+				define_key($3, ki);
 			}
 		}
 	}
@@ -1363,32 +1104,24 @@ zone_stmt: T_ZONE L_QSTRING optional_class
 		if (zone_name == NULL) {
 			parser_error(0, "can't make zone name '%s' canonical",
 				     $2);
-			should_install = 0;
+			seen_zone = 1;
 			zone_name = savestr("__bad_zone__", 1);
 		} else {
-			if (lookup_symbol(symtab, zone_name, sym_type, NULL)) {
-				should_install = 0;
+			seen_zone = lookup_symbol(symtab, zone_name, sym_type,
+						  NULL);
+			if (seen_zone) {
 				parser_error(0,
 					"cannot redefine zone '%s' class %d",
 					     zone_name, $3);
-			} else {
-				should_install = 1;
+			} else
 				define_symbol(symtab, zone_name, sym_type,
 					      value, 0);
-			}
 		}
 		freestr($2);
-		if (reloading &&
-		    reload_cur_args != NULL &&
-		    *reload_cur_args != '\0' &&
-		    strcasecmp(reload_cur_args, zone_name) != 0)
-			should_install = 0;
 		current_zone = begin_zone(zone_name, $3); 
 	}
 	optional_zone_options_list
-	{
-		end_zone(current_zone, should_install);
-	}
+	{ end_zone(current_zone, !seen_zone); }
 	;
 
 optional_zone_options_list: /* Empty */
@@ -1429,10 +1162,6 @@ zone_type: T_MASTER
 	{
 		$$ = Z_STUB;
 	}
-	| T_FORWARD
-	{
-		$$ = Z_FORWARD;
-	}
 	;
 
 zone_option_list: zone_option L_EOS
@@ -1450,22 +1179,7 @@ zone_option: T_TYPE zone_type
 			parser_warning(0,
 				       "zone filename already set; skipping");
 	}
-	| T_FILE_IXFR L_QSTRING
-    {
-                if (!set_zone_ixfr_file(current_zone, $2))
-                        parser_warning(0,
-                                       "zone ixfr data base already set; skipping");
-    }
-	| T_IXFR_TMP L_QSTRING
-    {
-                if (!set_zone_ixfr_tmp(current_zone, $2))
-                        parser_warning(0,
-                                       "zone ixfr temp filename already set; skipping");
-    }
-	| T_MASTERS maybe_zero_port '{' master_in_addr_list '}'
-	{
-		set_zone_master_port(current_zone, $2);
-	}
+	| T_MASTERS '{' master_in_addr_list '}'
 	| T_TRANSFER_SOURCE maybe_wild_addr
 	{
 		set_zone_transfer_source(current_zone, $2);
@@ -1494,46 +1208,17 @@ zone_option: T_TYPE zone_type
 			parser_warning(0,
 				    "zone transfer acl already set; skipping");
 	}
-	| T_FORWARD zone_forward_opt
-	| T_FORWARDERS 
-	{
-		struct zoneinfo *zp = current_zone.opaque;
-		if (zp->z_fwdtab) {
-                	free_forwarders(zp->z_fwdtab);
-			zp->z_fwdtab = NULL;
-		}
-
-	}
-	'{' opt_zone_forwarders_list '}'
 	| T_MAX_TRANSFER_TIME_IN L_NUMBER
 	{
 		if (!set_zone_transfer_time_in(current_zone, $2*60))
 			parser_warning(0,
 		       "zone max transfer time (in) already set; skipping");
 	}
-	| T_MAX_LOG_SIZE_IXFR L_NUMBER
-	{
-		set_zone_max_log_size_ixfr(current_zone, $2);
-        }
 	| T_NOTIFY yea_or_nay
 	{
 		set_zone_notify(current_zone, $2);
 	}
-	| T_MAINTAIN_IXFR_BASE yea_or_nay
-	{
-		set_zone_maintain_ixfr_base(current_zone, $2);
-	}
-	| T_PUBKEY L_NUMBER L_NUMBER L_NUMBER L_QSTRING
-	{
-		/* flags proto alg key */
-		set_zone_pubkey(current_zone, $2, $3, $4, $5);
-
-	}
 	| T_ALSO_NOTIFY '{' opt_notify_in_addr_list '}'
-	| T_DIALUP yea_or_nay 
-	{
-		 set_zone_dialup(current_zone, $2);
-	}
 	| error
 	;
 
@@ -1570,60 +1255,6 @@ notify_in_addr_list: notify_in_addr L_EOS
 notify_in_addr: L_IPADDR
 	{
 	  	add_zone_notify(current_zone, $1);
-	}
-	;
-
-zone_forward_opt: T_ONLY
-	{
-		set_zone_boolean_option(current_zone, OPTION_FORWARD_ONLY, 1);
-	}
-	| T_FIRST
-	{
-		set_zone_boolean_option(current_zone, OPTION_FORWARD_ONLY, 0);
-	}
-	;
-
-opt_zone_forwarders_list: /* nothing */
-	| zone_forwarders_in_addr_list
-	;
-
-zone_forwarders_in_addr_list: zone_forwarders_in_addr L_EOS
-	{
-		/* nothing */
-	}
-	| zone_forwarders_in_addr_list zone_forwarders_in_addr L_EOS
-	{
-		/* nothing */
-	}
-	;
-
-zone_forwarders_in_addr: L_IPADDR
-	{
-	  	add_zone_forwarder(current_zone, $1);
-	}
-	;
-
-/*
- * Trusted Key statement
- */
-
-trusted_keys_stmt: T_TRUSTED_KEYS '{' trusted_keys_list '}'
-	{
-	}
-	;
-trusted_keys_list: trusted_key L_EOS
-	{
-		/* nothing */
-	}
-	| trusted_keys_list trusted_key L_EOS
-	{
-		/* nothing */
-	}
-	;
-trusted_key: L_STRING L_NUMBER L_NUMBER L_NUMBER L_QSTRING
-	{
-		/* name flags proto alg key */
-		set_trusted_key($1, $2, $3, $4, $5);
 	}
 	;
 
@@ -1752,7 +1383,6 @@ parser_setup() {
 	authtab = new_symbol_table(AUTH_TABLE_SIZE, free_sym_value);
 	init_acls();
 	define_builtin_channels();
-	INIT_LIST(current_controls);
 }
 
 static void
@@ -1793,25 +1423,25 @@ define_acl(char *name, ip_match_list iml) {
 	dprint_ip_match_list(ns_log_parser, iml, 2, "allow ", "deny ");
 }
 
-struct dst_key *
+key_info
 lookup_key(char *name) {
 	symbol_value value;
 
 	if (lookup_symbol(authtab, name, SYM_KEY, &value))
-		return ((struct dst_key *)(value.pointer));
+		return ((key_info)(value.pointer));
 	return (NULL);
 }
 
 void
-define_key(char *name, struct dst_key *dst_key) {
+define_key(char *name, key_info ki) {
 	symbol_value value;
 
 	INSIST(name != NULL);
-	INSIST(dst_key != NULL);
+	INSIST(ki != NULL);
 
-	value.pointer = dst_key;
+	value.pointer = ki;
 	define_symbol(authtab, name, SYM_KEY, value, SYMBOL_FREE_VALUE);
-	dprint_key_info(dst_key);
+	dprint_key_info(ki);
 }
 
 void

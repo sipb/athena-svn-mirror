@@ -157,7 +157,7 @@ l = @l@
 
 SUBDIRS = help
 
-INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR)			-DVERSION=\""$(VERSION)"\"				@PIXBUF_CFLAGS@
+INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(GNOME_INCLUDEDIR)			-DVERSION=\""$(VERSION)"\"				@PIXBUF_CFLAGS@
 
 
 bin_PROGRAMS = deskguide_applet
@@ -201,7 +201,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(deskguide_applet_SOURCES)
 OBJECTS = $(deskguide_applet_OBJECTS)
@@ -455,15 +455,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-deskguide_applet.o: deskguide_applet.c ../../config.h deskguide_applet.h \
-	../../panel/applet-widget.h ../../panel/gnome-panel.h gwmh.h \
-	gwmdesktop.h gwmtaskview.h gwmthumbnail.h
-gstc.o: gstc.c gstc.h
-gwmdesktop.o: gwmdesktop.c gwmdesktop.h gwmh.h gwmthumbnail.h
-gwmh.o: gwmh.c gwmh.h gstc.h
-gwmtaskview.o: gwmtaskview.c gwmtaskview.h gwmh.h
-gwmthumbnail.o: gwmthumbnail.c gwmthumbnail.h
-
 info-am:
 info: info-recursive
 dvi-am:

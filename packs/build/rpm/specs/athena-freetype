@@ -1,0 +1,12 @@
+Name: athena-freetype
+Summary: A free and portable TrueType font rendering engine, for Athena
+Copyright: BSD-like
+Group: System Environment/Libraries
+
+%description
+The FreeType engine is a free and portable TrueType font rendering
+engine, developed to provide TrueType support for a variety of
+platforms and environments.  FreeType is a library which can open and
+manages font files as well as efficiently load, hint and render
+individual glyphs.  FreeType is not a font server or a complete
+text-rendering library.

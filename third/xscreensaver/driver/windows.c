@@ -192,7 +192,7 @@ grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
     fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
              blurb(), grab_string(mstatus));
 
-  return (kstatus == GrabSuccess ||
+  return (kstatus == GrabSuccess &&
 	  mstatus == GrabSuccess);
 }
 
@@ -1022,9 +1022,10 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
    */
   attrs.event_mask = (KeyPressMask | KeyReleaseMask |
 		      ButtonPressMask | ButtonReleaseMask |
-		      PointerMotionMask);
+		      PointerMotionMask | StructureNotifyMask |
+		      VisibilityChangeMask);
 
-  attrs.backing_store = NotUseful;
+  attrs.backing_store = WhenMapped;
   attrs.colormap = ssi->cmap;
   attrs.background_pixel = ssi->black_pixel;
   attrs.backing_pixel = ssi->black_pixel;
@@ -1286,13 +1287,6 @@ blank_screen (saver_info *si)
                                  ? 0
                                  : si->screens[0].cursor));
 
-
-  if (si->using_mit_saver_extension || si->using_sgi_saver_extension)
-    /* If we're using a server extension, then failure to get a grab is
-       not a big deal -- even without the grab, we will still be able
-       to un-blank when there is user activity, since the server will
-       tell us. */
-    ok = True;
 
   if (!ok)
     return False;

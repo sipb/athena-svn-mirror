@@ -107,8 +107,8 @@ AC_CHECK_FUNC(isnan, , AC_CHECK_LIB(m, isnan,
 AC_CHECK_FUNC(isinf, , AC_CHECK_LIB(m, isinf,
   [M_LIBS="-lm"; AC_DEFINE(HAVE_ISINF)]))
 
-XML_LIBDIR='-L${libdir}'
-XML_INCLUDEDIR='-I${includedir}/gnome-xml'
+XML_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+XML_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}/gnome-xml'
 XML_LIBS="-lxml $Z_LIBS $M_LIBS $LIBS"
 
 AC_CANONICAL_HOST

@@ -1,0 +1,11 @@
+Name: athena-config_console
+Summary: An Athena utility to communicate with the console program
+Copyright: MIT
+Group: User Interface/X
+
+Requires: athena-console
+
+%description
+The config_console utility allows a user to instruct the console
+program to show its window, hide its window, or reconfigure itself
+according to new X resources.

@@ -7,7 +7,6 @@ htmlcflags=-DHELP_USE_GTKHTML
 endif
 
 INCLUDES = 							\
-	-I$(includedir)						\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		\
 	$(GNOME_INCLUDEDIR)					\
 	-DGNOME_PREFIX=\""$(prefix)\"" 	\

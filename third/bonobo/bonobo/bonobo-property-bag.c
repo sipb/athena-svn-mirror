@@ -532,7 +532,7 @@ bonobo_property_bag_add (BonoboPropertyBag  *pb,
 {
 	g_return_if_fail (pb != NULL);
 
-	return bonobo_property_bag_add_full (pb, name, idx, type,
+	bonobo_property_bag_add_full (pb, name, idx, type,
 					     default_value, docstring, flags,
 					     pb->priv->get_prop,
 					     pb->priv->set_prop,

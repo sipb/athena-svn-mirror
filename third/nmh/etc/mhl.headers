@@ -4,9 +4,8 @@
 ; MIME messages.  mhn calls the mhlproc with this
 ; filter to display message header.
 ;
-overflowtext="***",overflowoffset=5
-leftadjust,compwidth=9
-ignores=msgid,message-id,received,content-type,content-transfer-encoding,content-id
+width=0,leftadjust
+ignores=msgid,message-id,received,content-transfer-encoding,content-id
 Date:formatfield="%<(nodate{text})%{text}%|%(pretty{text})%>"
 To:
 cc:

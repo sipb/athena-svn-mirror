@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Tue Mar 16 10:50:06 1999
+%%CreationDate: Thu May  7 13:34:48 1998
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 1
@@ -199,52 +199,121 @@ def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
 %%BeginPageSetup
 BP
 %%EndPageSetup
-/F0 10/Times-Roman@0 SF .094(\(DNS K)72 12 R .394 -.15(ey G)-.25 H .094
-(enerator\) is a tool to generate and maintain k).15 F -.15(ey)-.1 G
-2.594(sf).15 G .093(or DNS Security within the DNS \(Domain Name Sys-)
--2.594 F 3.915(tem\). can)72 24 R 1.415(generate public and pri)3.915 F
--.25(va)-.25 G 1.416(te k).25 F -.15(ey)-.1 G 3.916(st).15 G 3.916(oa)
--3.916 G 1.416(uthenticate zone data, and shared secret k)-3.916 F -.15
-(ey)-.1 G 3.916(st).15 G 3.916(ob)-3.916 G 3.916(eu)-3.916 G 1.416
-(sed for Re-)-3.916 F(quest/T)72 36 Q .857(ransaction signatures.)-.35 F
-(Dnsk)5.857 E -.15(ey)-.1 G .857(gen will generate a k).15 F -.15(ey)-.1
-G 5.857(.m)-.5 G .856(ust be one of [512, 576, 640, 704, 768, 832, 896,)
--5.857 F .098(960, 1024].)72 48 R(Dnsk)5.098 E -.15(ey)-.1 G .098
-(gen will generate an k).15 F -.15(ey)-.1 G 5.098(.m)-.5 G .098
-(ust be between 128 and 504.)-5.098 F(Dnsk)5.099 E -.15(ey)-.1 G .099
-(gen will generate an k).15 F -.15(ey)-.1 G 5.099(.m)-.5 G(ust)-5.099 E
-.235(be between 512 and 4096.)72 60 R .235(Use a lar)5.235 F .235(ge e)
--.18 F .235(xponent for k)-.15 F .535 -.15(ey g)-.1 H 2.735
-(eneration. These).15 F .235(\215ags de\214ne the type of k)2.735 F .535
--.15(ey b)-.1 H .235(eing gener).15 F(-)-.2 E .396(ated: Zone \(DNS v)72
-72 R .396(alidation\) k)-.25 F -.15(ey)-.1 G 2.896(,H)-.5 G .396
-(ost \(host or service\) k)-2.896 F .696 -.15(ey o)-.1 H 2.896(rU).15 G
-.396(ser \(e.g. email\) k)-2.896 F -.15(ey)-.1 G 2.897(,r)-.5 G(especti)
--2.897 E -.15(ve)-.25 G(ly).15 E 5.397(.E)-.65 G .397(ach k)-5.397 F
-.697 -.15(ey i)-.1 H 2.897(so).15 G(nly)-2.897 E(allo)72 84 Q .488
-(wed to be one of these.)-.25 F .488(Indicates that the k)5.488 F .788
--.15(ey b)-.1 H 2.988(eu).15 G .488(sed for authentication.)-2.988 F
-.487(Indicates that the k)5.487 F .787 -.15(ey b)-.1 H 2.987(eu).15 G
-.487(sed for en-)-2.987 F 2.664(cryption. Sets)72 96 R .164(the k)2.664
-F -.15(ey)-.1 G 1.264 -.55('s p).15 H .164(rotocol \214eld to ; the def)
-.55 F .164
-(ault is \(DNSSEC\) if or is speci\214ed and \(EMAIL\) otherwise.)-.1 F
-(Other)5.165 E .057(accepted v)72 108 R .057
-(alues are \(TLS\), \(IPSEC\), and \(ANY\).)-.25 F .057(Sets the k)5.057
-F -.15(ey)-.1 G 1.157 -.55('s s).15 H .057(trength \214eld to the def)
-.55 F .057(ault is Sets the k)-.1 F -.15(ey)-.1 G 1.157 -.55('s n).15 H
-.057(ame to).55 F .581(stores each k)72 120 R .882 -.15(ey i)-.1 H 3.082
-(nt).15 G .782 -.1(wo \214)-3.082 H .582
-(les: and The \214le contains the pri).1 F -.25(va)-.25 G .582(te k).25
-F .882 -.15(ey i)-.1 H 3.082(nap).15 G .582(ortable format.)-3.082 F
-.582(The \214le contains the public)5.582 F -.1(ke)72 132 S 2.872(yi)
--.05 G 2.872(nt)-2.872 G .372(he DNS zone \214le format: No en)-2.872 F
-.372(vironmental v)-.4 F .372(ariables are used.)-.25 F .371
-(on secure DNS and the Internet Draft.)5.371 F(Ola-)5.371 E .776
-(fur Gudmundsson \(ogud@tis.com\).)72 144 R .776
-(The underlying cryptographic math is done by the DNSSAFE and/or F)5.776
-F(ounda-)-.15 E(tion T)72 156 Q(oolkit libraries.)-.8 E(None are kno)5 E
-(wn at this time)-.25 E EP
+/F0 10/Times-Roman@0 SF 2.802(||\()72 12 S .302(DNS K)-2.802 F .602 -.15
+(ey G)-.25 H .302(enerator\) is a tool to generate and maintain RSA k)
+.15 F -.15(ey)-.1 G 2.802(sf).15 G .302(or DNS \(Domain Name System\).)
+-2.802 F .302(will gener)5.302 F(-)-.2 E .702(ate a ne)72 24 R 3.202(wk)
+-.25 G 1.002 -.15(ey w)-3.302 H .702(hen the \215ag is speci\214ed.).15
+F .703
+(If the \215ag is not speci\214ed, then it will attempt to display an e)
+5.702 F .703(xisting k)-.15 F -.15(ey)-.1 G .308
+(that is stored in the current directory)72 36 R 5.307(.I)-.65 G 2.807
+(fn)-5.307 G 2.807(oi)-2.807 G 2.807(ss)-2.807 G .307
+(peci\214ed after the \215ag, a k)-2.807 F .607 -.15(ey o)-.1 H 2.807
+(f5).15 G .307(12 bits will be generated; otherwise,)-2.807 F .009
+(is the size of the modulus in the ne)72 48 R .009(wly-generated k)-.25
+F -.15(ey)-.1 G 5.009<2e8d>-.5 G .01
+(ag can only be speci\214ed with the \215ag; this changes the e)-5.009 F
+(xpo-)-.15 E .049(nent used on the k)72 60 R -.15(ey)-.1 G 5.049(.I)-.5
+G 2.549(fi)-5.049 G 2.549(ss)-2.549 G .049(peci\214ed, the e)-2.549 F
+.048(xponent is 65537, which is suitable for encryption k)-.15 F -.15
+(ey)-.1 G 2.548(s. If).15 F .048(is not speci\214ed,)2.548 F .352(the e)
+72 72 R .352(xponent is 3, which is suitable for signatures and v)-.15 F
+.352(eri\214cation of public data such as DNS records.)-.15 F .353
+(Signing and)5.353 F -.15(ve)72 84 S .107(rifying with e).15 F .107
+(xponent of 65537 tak)-.15 F .107
+(es signi\214cantly more CPU time than with e)-.1 F .106(xponent of 3.)
+-.15 F .106(These \215ags de\214ne the)5.106 F .662(type of k)72 96 R
+.962 -.15(ey b)-.1 H .662(eing generated: Zone \(DNS v).15 F .663
+(alidation\) k)-.25 F -.15(ey)-.1 G 3.163(,E)-.5 G .663
+(nd Entity \(host or service\) k)-3.163 F .963 -.15(ey o)-.1 H 3.163(rU)
+.15 G .663(ser \(e.g. email\) k)-3.163 F -.15(ey)-.1 G(,)-.5 E(respecti)
+72 108 Q -.15(ve)-.25 G(ly).15 E 5.074(.E)-.65 G .074(ach k)-5.074 F
+.374 -.15(ey i)-.1 H 2.574(so).15 G .074(nly allo)-2.574 F .074
+(wed to be one of these.)-.25 F .074(When k)5.074 F -.15(ey)-.1 G 2.574
+(sa).15 G .074(re displayed, the type of k)-2.574 F .373 -.15(ey c)-.1 H
+.073(an be changed.).15 F .057(Indicates that the k)72 120 R .358 -.15
+(ey c)-.1 H .058
+(an be used for IPSEC \(Internet Protocol Security services\).).15 F
+.058(Indicates that the k)5.058 F .358 -.15(ey c)-.1 H .058(an be used)
+.15 F .012(for secure email.)72 132 R .012(Indicates that the k)5.012 F
+.312 -.15(ey c)-.1 H .011(an be used for protocol number A v).15 F .011
+(alue of denies the use of the k)-.25 F .311 -.15(ey f)-.1 H .011
+(or pro-).15 F .16
+(tocol \(other than those speci\214ed by other option \215ags lik)72 144
+R 2.66(eAv)-.1 G .161(alue of allo)-2.91 F .161
+(ws it to be used with protocols.)-.25 F .161(These pro-)5.161 F .294(tocol numbers will be assigned in the latest Assigned Numbers RFC from the Internet Assigned Numbers Authority)
+72 156 R(\(IAN)72 168 Q 2.512(A\). Strength)-.35 F -.25(va)2.512 G .012
+(lue; this v).25 F .012(alue is only used when k)-.25 F .312 -.15(ey i)
+-.1 H 2.513(ss).15 G 2.513(igning. Interpretation)-2.513 F .013
+(of this \214eld is to be speci\214ed lat-)2.513 F(er)72 180 Q 3.347(.D)
+-.55 G(ef)-3.347 E .847(ault v)-.1 F .847(alue is 7.)-.25 F .847
+(Experimental k)5.847 F -.15(ey)-.1 G 5.847(.T)-.5 G .847
+(his indicates that softw)-5.847 F .846
+(are should not assume that it should use secure)-.1 F .701
+(protocols when talking to this zone, host, or user)72 192 R 5.701(.I)
+-.55 G .701(nstead, the k)-5.701 F 1.001 -.15(ey i)-.1 H 3.201(sb).15 G
+.701(eing published e)-3.201 F(xperimentally)-.15 E 3.201(,t)-.65 G
+3.202(od)-3.201 G(eb)-3.202 E .702(ug the)-.2 F(softw)72 204 Q .511
+(are to be used to run the secure protocols, for e)-.1 F 3.01
+(xample. Data)-.15 F .51(signed by Experimental k)3.01 F -.15(ey)-.1 G
+3.01(sw).15 G .51(ill not be treated)-3.01 F .209
+(as trusted by DNS serv)72 216 R 2.709(ers. The)-.15 F .209
+(DNS name the k)2.709 F .509 -.15(ey i)-.1 H 2.709(sf).15 G(or)-2.709 E
+5.209(.T)-.55 G .209(his can be an)-5.209 F 2.709(yv)-.15 G .209
+(alid DNS name.)-2.959 F .209(uses tw)5.209 F 2.71<6f8c>-.1 G .21
+(les for each)-2.71 F -.1(ke)72 228 S .126
+(y: and File contains the public k)-.05 F .426 -.15(ey i)-.1 H 2.626(nt)
+.15 G .126(he pubk)-2.626 F .426 -.15(ey f)-.1 H .126
+(ormat: displays the public k).15 F .426 -.15(ey i)-.1 H 2.625(nb).15 G
+.125(oth DNS RR format and pub-)-2.625 F -.1(ke)72 240 S 2.786(yf)-.05 G
+2.786(ormat. can)-2.786 F .286(display the k)2.786 F .586 -.15(ey w)-.1
+H .286(ith dif).15 F .286(ferent \215ags on subsequent runs.)-.25 F .286
+(The contents of the public k)5.286 F .586 -.15(ey \214)-.1 H .286
+(le will not).15 F .743(be changed.)72 252 R .743(stores the pri)5.743 F
+-.25(va)-.25 G .743(te k).25 F -.15(ey)-.1 G 3.243(,i)-.5 G 3.243(ne)
+-3.243 G .743(ither a passw)-3.243 F .743
+(ord-protected format \214le or in a open \214le. The adv)-.1 F .743
+(antage of a)-.25 F(passw)72 264 Q .681
+(ord-protected \214le is that it is harder to use the k)-.1 F .981 -.15
+(ey i)-.1 H 3.181(ft).15 G .682(he \214le is stolen. The disadv)-3.181 F
+.682(antage is that the passw)-.25 F(ord)-.1 E .27(has to be gi)72 276 R
+-.15(ve)-.25 G 2.77(ne).15 G .27(ach time the k)-2.77 F .57 -.15(ey i)
+-.1 H 2.77(sr).15 G .27(ead. If the k)-2.77 F .57 -.15(ey i)-.1 H 2.77
+(st).15 G 2.77(ob)-2.77 G 2.77(es)-2.77 G .27(tored in a safe of)-2.77 F
+.27(f-line place, and only used for signing)-.25 F .503
+(zones, then local polic)72 288 R 3.003(ym)-.15 G .503(ay allo)-3.003 F
+3.003(ws)-.25 G .503(toring the k)-3.003 F .803 -.15(ey i)-.1 H 3.003
+(na).15 G 3.003(nu)-3.003 G .503(nencrypted format.)-3.003 F .503(No en)
+5.503 F .503(vironmental v)-.4 F .503(ariables are used.)-.25 F 1.439
+(RSAREF documentation, on secure DNS.)72 300 R 1.439
+(Olafur Gudmundsson \(ogud@tis.com\).)6.439 F 1.439
+(The underlying cryptographic)6.439 F .865
+(math is done by the RSAREF or BSAFE libraries.)72 312 R .865
+(renames old k)5.865 F -.15(ey)-.1 G 3.365(si).15 G 3.366(ns)-3.365 G
+.866(uch a w)-3.366 F .866(ay that only one k)-.1 F 1.166 -.15(ey f)-.1
+H .866(or a gi).15 F -.15(ve)-.25 G(n).15 E .423(name is k)72 324 R .423
+(ept; older k)-.1 F -.15(ey)-.1 G 2.923(sa).15 G .423(re o)-2.923 F -.15
+(ve)-.15 G 2.923(rwritten. \(F).15 F .423(or e)-.15 F .422
+(xample, the third time a k)-.15 F .722 -.15(ey i)-.1 H 2.922(sg).15 G
+.422(enerated for a gi)-2.922 F -.15(ve)-.25 G 2.922(nn).15 G .422
+(ame, the sec-)-2.922 F .066(ond k)72 336 R .366 -.15(ey i)-.1 H 2.567
+(sk).15 G .067(ept as the k)-2.667 F -.15(ey)-.1 G 2.567(,w)-.5 G .067
+(hile the \214rst k)-2.567 F .367 -.15(ey i)-.1 H 2.567(sl).15 G 2.567
+(ost. If)-2.567 F 2.567(ak)2.567 G .367 -.15(ey i)-2.667 H 2.567(sg).15
+G .067(enerated for this name--i.e., if the fourth k)-2.567 F .367 -.15
+(ey i)-.1 H 2.567(sg).15 G(en-)-2.567 E .998(erated--then the third k)72
+348 R 1.298 -.15(ey w)-.1 H .998(ill become the k).15 F 1.298 -.15(ey a)
+-.1 H .998(nd the second k).15 F 1.298 -.15(ey w)-.1 H .998
+(ill be lost.\)).15 F .998(will not o)5.998 F -.15(ve)-.15 G .997
+(rwrite e).15 F .997(xisting k)-.15 F -.15(ey)-.1 G(s.).15 E .695
+(Only one k)72 360 R .995 -.15(ey f)-.1 H .695
+(or each name can be stored in the current directory).15 F 5.696(.I)-.65
+G 3.196(fy)-5.696 G .696(ou w)-3.196 F .696(ant to k)-.1 F .696
+(eep your old k)-.1 F -.15(ey)-.1 G .696(s, rename the).15 F 1.123(\214les before running Otherwise you must delete them before running Portability of Pri)
+72 372 R -.25(va)-.25 G 1.122(te k).25 F 1.422 -.15(ey \214)-.1 H 1.122
+(le must be better).15 F(tested between dif)72 384 Q
+(ferent implementations of RSA.)-.25 E EP
 %%Trailer
 end
 %%EOF

@@ -170,6 +170,8 @@ Key_schedule v4_schedule;
 #define MAXDNAME 256 /*per the rfc*/
 #endif
 
+#include <al.h>
+
 #define ARGSTR	"ek54ciD:S:M:AP:?L:w:"
 
 
@@ -521,6 +523,7 @@ int maxlogs;
 
 #define NMAX   16 
 
+pid_t acctpid = 0;
 int pid;
 char locuser[NMAX+1];
 char remuser[NMAX +1];
@@ -569,6 +572,8 @@ cleanup(signumber)
     
     pty_logwtmp(ttyn,"","");
     syslog(LOG_INFO ,"Daemon terminated via signal %d.", signumber);
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     exit(0);
@@ -819,6 +824,8 @@ void doit(f, fromp)
 	       kremuser, remuser, hostaddra, hostname,
 	       locuser); /* xxx sprintf buffer in syslog*/
 	error("Login incorrect.\n");
+	if (acctpid)
+	    al_acct_revert(locuser, acctpid);
 	exit(1);
     }
     
@@ -1305,6 +1312,8 @@ if(port)
 #endif
 	    /* Finish session in wmtp */
 	    pty_logwtmp(ttyn,"","");
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    if (ccache)
 		krb5_cc_destroy(bsd_context, ccache);
 	    exit(0);
@@ -1468,15 +1477,16 @@ if(port)
         strcpy((char *) cmdbuf + offst, kprogdir);
 	cp = copy + 3 + offst;
 
+	cmdbuf[sizeof(cmdbuf) - 1] = '\0';
 	if (auth_sys == KRB5_RECVAUTH_V4) {
-	  strcat(cmdbuf, "/v4rcp");
+	  strncat(cmdbuf, "/v4rcp", sizeof(cmdbuf) - 1 - strlen(cmdbuf));
 	} else {
-	  strcat(cmdbuf, "/rcp");
+	  strncat(cmdbuf, "/rcp", sizeof(cmdbuf) - 1 - strlen(cmdbuf));
 	}
 	if (stat((char *)cmdbuf + offst, &s) >= 0)
-	  strcat(cmdbuf, cp);
+	  strncat(cmdbuf, cp, sizeof(cmdbuf) - 1 - strlen(cmdbuf));
 	else
-	  strcpy(cmdbuf, copy);
+	  strncpy(cmdbuf, copy, sizeof(cmdbuf) - 1 - strlen(cmdbuf));
 	free(copy);
     }
 #endif
@@ -1498,6 +1508,8 @@ if(port)
     exit(1);
     
   signout_please:
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     ccache = NULL;
@@ -1771,7 +1783,7 @@ recvauth(netf, peersin, valid_checksum)
     krb5_error_code status;
     struct sockaddr_in laddr;
     char krb_vers[KRB_SENDAUTH_VLEN + 1];
-    int len;
+    int len, local_acct;
     krb5_data inbuf;
 #ifdef KRB5_KRB4_COMPAT
     char v4_instance[INST_SZ];	/* V4 Instance */
@@ -1951,10 +1963,22 @@ recvauth(netf, peersin, valid_checksum)
 	exit(1);
     }
 
+    if (al_login_allowed(locuser, 1, &local_acct, NULL) != 0) {
+	error("You are not authorized to log in here remotely.\n");
+	exit(1);
+    }
+
+    if (!local_acct) {
+	acctpid = getpid();
+	al_acct_create(locuser, NULL, acctpid, 0, 0, NULL);
+    }
+
     if (inbuf.length) { /* Forwarding being done, read creds */
 	pwd = getpwnam(locuser);
 	if (!pwd) {
 	    error("Login incorrect.\n");
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
 	uid = pwd->pw_uid;
@@ -1963,11 +1987,15 @@ recvauth(netf, peersin, valid_checksum)
 					     ticket, &ccache))) {
 	    error("Can't get forwarded credentials: %s\n",
 		  error_message(status));
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
 	if (chown(krb5_cc_get_name(bsd_context, ccache), uid, gid) == -1) {
 	    error("Can't chown forwarded credentials: %s\n",
 		  error_message(errno));
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    exit(1);
 	}
     }

@@ -1,0 +1,48 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "/etc/inet/inetd.conf"				>> "$CONFCHG"
+
+  # Machines which updated to 8.4.0 or 8.4.1 did not correctly get six
+  # Sun packages installed because /var/sadm/install/contents said that
+  # these paths were directories, when in fact they had been links to
+  # /os and were removed before package installation.  In case we are
+  # in this situation, create the paths as directories (if they don't
+  # exist as links, as they will on an 8.3.x machine or on a machine
+  # installed at 8.4.0 or 8.4.1) and reinstall the packages.  Also
+  # reinstall patch 106541-09, since it modifies SUNWarc and SUNWtoo.
+  for d in /usr/ccs/lib/link_audit \
+	   /usr/ccs/lib/fp \
+	   /usr/ccs/lib/help \
+	   /usr/openwin/lib/locale/en_AU/libs \
+	   /usr/openwin/lib/locale/en_CA/libs \
+	   /usr/openwin/lib/locale/en_US/libs \
+	   /usr/openwin/lib/locale/cz/libs \
+	   /usr/openwin/lib/locale/el/libs \
+	   /usr/openwin/lib/locale/en_IE/libs \
+	   /usr/openwin/lib/locale/en_NZ/libs \
+	   /usr/openwin/lib/locale/hu/libs \
+	   /usr/openwin/lib/locale/lt/libs \
+	   /usr/openwin/lib/locale/lv/libs \
+	   /usr/openwin/lib/locale/pl/libs \
+	   /usr/openwin/lib/locale/ru/libs \
+	   /usr/openwin/lib/locale/tr/libs; do
+    if [ ! -h $d ]; then
+      mkdir -p $d
+    fi
+  done
+  echo "SUNWtoo"					>> "$LOCALPACKAGES"
+  echo "SUNWarc"					>> "$LINKPACKAGES"
+  echo "SUNWi1of"					>> "$LINKPACKAGES"
+  echo "SUNWplow"					>> "$LINKPACKAGES"
+  echo "SUNWplow1"					>> "$LINKPACKAGES"
+  echo "SUNWsprot"					>> "$LINKPACKAGES"
+  # If $PATCHES has contents, then 106541-09 is already in it (the
+  # last version script which wrote to $PATCHES is 8.4.0), so only add
+  # 106451-09 if the file isn't there or is empty.
+  if [ ! -s "$PATCHES" ]; then
+    echo "106541-09"					>> "$PATCHES"
+  fi
+  ;;
+esac

@@ -20,6 +20,10 @@ static char sccsid[] = "@(#)conf.c	8.452 (Berkeley) 1/26/1999";
 # include <sys/param.h>
 # include <limits.h>
 
+# include <hesiod.h>
+struct passwd	*sm_hes_getpwnam __P((char *));
+struct passwd	*sm_hes_getpwuid __P((UID_T));
+
 /*
 **  CONF.C -- Sendmail Configuration Tables.
 **
@@ -964,7 +968,7 @@ username()
 		myname = getlogin();
 		if (myname == NULL || myname[0] == '\0')
 		{
-			pw = sm_getpwuid(RealUid);
+			pw = sm_hes_getpwuid(RealUid);
 			if (pw != NULL)
 				myname = newstr(pw->pw_name);
 		}
@@ -973,10 +977,10 @@ username()
 			uid_t uid = RealUid;
 
 			myname = newstr(myname);
-			if ((pw = sm_getpwnam(myname)) == NULL ||
+			if ((pw = sm_hes_getpwnam(myname)) == NULL ||
 			      (uid != 0 && uid != pw->pw_uid))
 			{
-				pw = sm_getpwuid(uid);
+				pw = sm_hes_getpwuid(uid);
 				if (pw != NULL)
 					myname = newstr(pw->pw_name);
 			}
@@ -1947,7 +1951,7 @@ getla()
 
 /* Non Apollo stuff removed by Don Lewis 11/15/93 */
 #ifndef lint
-static char  rcsid[] = "@(#)$Id: conf.c,v 1.1.1.1 1999-02-23 21:41:58 danw Exp $";
+static char  rcsid[] = "@(#)$Id: conf.c,v 1.4 1999-06-25 21:22:25 danw Exp $";
 #endif /* !lint */
 
 #ifdef apollo
@@ -4212,6 +4216,56 @@ sm_getpwuid(uid)
 #else
 	return getpwuid(uid);
 #endif
+}
+
+struct passwd *
+sm_hes_getpwnam(user)
+	char *user;
+{
+	struct passwd *pw;
+	static struct passwd tmp;
+	void *hes_context;
+
+	pw = getpwnam(user);
+	if (!pw)
+	{
+		if (hesiod_init(&hes_context) != 0)
+			return pw;
+		pw = hesiod_getpwnam(hes_context, user);
+		if (pw)
+		{
+			memcpy(&tmp, pw, sizeof(struct passwd));
+			hesiod_free_passwd(hes_context, pw);
+			pw = &tmp;
+		}
+		hesiod_end(hes_context);
+	}
+	return pw;
+}
+
+struct passwd *
+sm_hes_getpwuid(uid)
+	UID_T uid;
+{
+	struct passwd *pw;
+	static struct passwd tmp;
+	void *hes_context;
+
+	pw = getpwuid(uid);
+	if (!pw)
+	{
+		if (hesiod_init(&hes_context) != 0)
+			return pw;
+		pw = hesiod_getpwuid(hes_context, uid);
+		if (pw)
+		{
+			memcpy(&tmp, pw, sizeof(struct passwd));
+			hesiod_free_passwd(hes_context, pw);
+			pw = &tmp;
+		}
+		hesiod_end(hes_context);
+	}
+	return pw;
 }
 /*
 **  SECUREWARE_SETUP_SECURE -- Convex SecureWare setup

@@ -155,6 +155,7 @@ extern int
     apitrace,		/* Trace API transactions */
 #endif	/* defined(TN3270) */
     termdata,		/* Print out terminal data flow */
+    dontfallback,	/* Don't fall back if encryption fails */
     debug;			/* Debug level */
 
 extern int intr_happened, intr_waiting;	/* for interrupt handling */

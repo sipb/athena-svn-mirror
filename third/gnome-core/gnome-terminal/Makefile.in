@@ -159,7 +159,7 @@ l = @l@
 
 SUBDIRS = C de da es it no
 
-INCLUDES =  	-I$(includedir)						-I$(top_srcdir)/intl					-I$(top_builddir)/intl					$(GNOME_TERMINAL_CFLAGS)				-DGNOME_TERMINAL_GLADEDIR=\""$(gladedir)"\"		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES =  	-I$(top_srcdir)/intl					-I$(top_builddir)/intl					$(GNOME_TERMINAL_CFLAGS)				-DGNOME_TERMINAL_GLADEDIR=\""$(gladedir)"\"		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
 LDADD =  	$(GNOME_TERMINAL_LIBS)		$(INTLLIBS)
@@ -219,7 +219,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_terminal_SOURCES)
 OBJECTS = $(gnome_terminal_OBJECTS)
@@ -512,12 +512,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-Terminal-common.o: Terminal-common.c Terminal.h
-Terminal-skels.o: Terminal-skels.c Terminal.h
-Terminal-stubs.o: Terminal-stubs.c Terminal.h
-corba.o: corba.c ../config.h gnome-terminal.h Terminal.h
-gnome-terminal.o: gnome-terminal.c ../config.h gnome-terminal.h
-
 info-am:
 info: info-recursive
 dvi-am:

@@ -150,7 +150,7 @@ l = @l@
 
 PLUGIN_DIR = $(libdir)/bonobo/plugin
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"		-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"			-DG_LOG_DOMAIN=\"Bonobo\"				-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				        -I$(includedir)                                 	$(GNOME_INCLUDEDIR)					$(OAF_CFLAGS)						$(GDK_PIXBUF_CFLAGS)					$(PROF_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        	-DBONOBO_UIDIR=\""$(datadir)/gnome/ui/"\"		-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"			-DG_LOG_DOMAIN=\"Bonobo\"				-I. 							-I$(srcdir) -I$(top_srcdir) 				-I$(top_builddir)				 	$(GNOME_INCLUDEDIR)					$(OAF_CFLAGS)						$(GDK_PIXBUF_CFLAGS)					$(PROF_CFLAGS)
 
 
 LDFLAGS = @LDFLAGS@ $(PROF_LDFLAGS)

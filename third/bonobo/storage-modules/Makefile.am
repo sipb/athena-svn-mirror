@@ -6,7 +6,6 @@ INCLUDES =                                              \
 	-I$(top_builddir)				\
 	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
 	-I$(top_srcdir)/libefs/src			\
-        -I$(includedir)                                 \
 	$(VFS_CFLAGS)					\
         $(GNOME_INCLUDEDIR)
 

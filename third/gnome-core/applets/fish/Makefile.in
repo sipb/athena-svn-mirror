@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
+INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
 
 
 SUBDIRS = help
@@ -217,7 +217,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libfish_applet_la_SOURCES)
 OBJECTS = $(libfish_applet_la_OBJECTS)
@@ -489,9 +489,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-fish.lo fish.o : fish.c ../../config.h ../../panel/applet-widget.h \
-	../../panel/gnome-panel.h
-
 info-am:
 info: info-recursive
 dvi-am:

@@ -1,9 +1,9 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_glue.c,v 1.1.1.3 1999-03-16 19:44:59 danw Exp $";
+static char rcsid[] = "$Id: ns_glue.c,v 1.2 2000-04-22 04:39:47 ghudson Exp $";
 #endif /* not lint */
 
 /*
- * Copyright (c) 1996-1999 by Internet Software Consortium.
+ * Copyright (c) 1996, 1997 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -24,7 +24,6 @@ static char rcsid[] = "$Id: ns_glue.c,v 1.1.1.3 1999-03-16 19:44:59 danw Exp $";
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
-#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
@@ -88,13 +87,6 @@ sin_ntoa(struct sockaddr_in sin) {
 /*
  * Logging Support
  */
-
-int
-ns_wouldlog(int category, int level) {
-	if (log_ctx_valid)
-		return (log_check(log_ctx, category, level));
-	return (0);
-}
 
 void
 ns_debug(int category, int level, const char *format, ...) {

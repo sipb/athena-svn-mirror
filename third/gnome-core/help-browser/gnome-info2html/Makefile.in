@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(includedir)			-I$(top_srcdir)/intl -I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)	
+INCLUDES =  	-I$(top_srcdir)/intl -I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)	
 
 
 LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(INTLLIBS)
@@ -185,7 +185,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_info2html_SOURCES)
 OBJECTS = $(gnome_info2html_OBJECTS)
@@ -312,11 +312,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-html.o: html.c data.h html.h parse.h utils.h
-main.o: main.c data.h html.h parse.h utils.h version.h
-parse.o: parse.c parse.h data.h utils.h
-utils.o: utils.c data.h utils.h
-
 info-am:
 info: info-am
 dvi-am:

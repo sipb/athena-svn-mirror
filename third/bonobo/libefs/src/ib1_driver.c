@@ -265,7 +265,7 @@ ib1_open (EFSDir **dir, EFSDriver *driver, const char *path, gint flags,
 
 	ib1_create_typefd (efs);
 
-	(IB1Dir *)(*dir) = g_new0 (IB1Dir, 1);
+	*(IB1Dir **)dir = g_new0 (IB1Dir, 1);
 	(*dir)->efs = (EFS *)efs;
 	(*dir)->pos = 0;
 	((IB1Dir *)(*dir))->inode = IB1_ROOT_INODE;
@@ -319,7 +319,7 @@ ib1_create (EFSDir **dir, EFSDriver *driver, const char *path, gint flags,
 
 	ib1_create_typefd (efs);
 
-	(IB1Dir *)(*dir) = g_new0 (IB1Dir, 1);
+	*(IB1Dir **)dir = g_new0 (IB1Dir, 1);
 	(*dir)->efs = (EFS *)efs;
 	(*dir)->pos = 0;
 	((IB1Dir *)(*dir))->inode = IB1_ROOT_INODE;

@@ -33,8 +33,8 @@
 
 # Extended flags needed for additional authenticators.  You may need to modify.
 
-KRBCFLAGS= -I/usr/include/kerberosIV
-KRBLDFLAGS= -lkrb -ldes
+KRBCFLAGS=
+KRBLDFLAGS= -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err
 
 krb:	# Kerberos IV flags
 	echo $(KRBCFLAGS) >> OSCFLAGS

@@ -2,7 +2,7 @@
 /*
  * mhshowsbr.c -- routines to display the contents of MIME messages
  *
- * $Id: mhshowsbr.c,v 1.1.1.1 1999-02-07 18:14:15 danw Exp $
+ * $Id: mhshowsbr.c,v 1.4 2000-01-04 21:47:01 danw Exp $
  */
 
 #include <h/mh.h>
@@ -44,7 +44,7 @@ char *progsw = NULL;
 int nomore   = 0;
 char *formsw = NULL;
 
-pid_t xpid = 0;
+pid_t xpid = 0, m_pid = 0, intrpid = 0;
 
 static sigjmp_buf intrenv;
 
@@ -87,6 +87,9 @@ static int show_message_rfc822 (CT, int, int);
 static int show_partial (CT, int, int);
 static int show_external (CT, int, int);
 static RETSIGTYPE intrser (int);
+static RETSIGTYPE intrser2 (int);
+static void m_popen (char *);
+static void m_pclose (void);
 
 
 /*
@@ -138,6 +141,9 @@ show_single_message (CT ct, char *form)
 
     umask (ct->c_umask);
 
+    if (!nomore && isatty (fileno (stdout)))
+	m_popen (progsw ? progsw : moreproc);
+
     /*
      * If you have a format file, then display
      * the message headers.
@@ -164,6 +170,8 @@ show_single_message (CT ct, char *form)
     sigaddset (&set, SIGQUIT);
     sigaddset (&set, SIGTERM);
     SIGPROCMASK (SIG_BLOCK, &set, &oset);
+
+    m_pclose ();
 
     while (wait (&status) != NOTOK) {
 #ifdef WAITINT
@@ -198,18 +206,8 @@ DisplayMsgHeader (CT ct, char *form)
     vec[vecp++] = "-form";
     vec[vecp++] = form;
     vec[vecp++] = "-nobody";
+    vec[vecp++] = "-nomoreproc";
     vec[vecp++] = ct->c_file;
-
-    /*
-     * If we've specified -(no)moreproc,
-     * then just pass that along.
-     */
-    if (nomore) {
-	vec[vecp++] = "-nomoreproc";
-    } else if (progsw) {
-	vec[vecp++] = "-moreproc";
-	vec[vecp++] = progsw;
-    }
     vec[vecp] = NULL;
 
     fflush (stdout);
@@ -325,9 +323,9 @@ show_content (CT ct, int serial, int alternate)
 int
 show_content_aux (CT ct, int serial, int alternate, char *cp, char *cracked)
 {
-    int fd, len, buflen;
+    int fd, len, buflen, sawquote;
     int	xstdin, xlist, xpause, xtty;
-    char *bp, *file, buffer[BUFSIZ];
+    char *bp, *pp, *file, buffer[BUFSIZ];
     CI ci = &ct->c_ctinfo;
 
     if (!ct->c_ceopenfnx) {
@@ -355,12 +353,16 @@ show_content_aux (CT ct, int serial, int alternate, char *cp, char *cracked)
 
     /* get buffer ready to go */
     bp = buffer;
-    bp[0] = '\0';
-    buflen = sizeof(buffer);
+    bp[0] = bp[sizeof(buffer) - 1] = '\0';
+    buflen = sizeof(buffer) - 1;
+
+    sawquote = 0;
 
     /* Now parse display string */
-    for ( ; *cp; cp++) {
+    for ( ; *cp && buflen > 0; cp++) {
 	if (*cp == '%') {
+	    pp = bp;
+
 	    switch (*++cp) {
 	    case 'a':
 		/* insert parameters from Content-Type field */
@@ -433,12 +435,40 @@ show_content_aux (CT ct, int serial, int alternate, char *cp, char *cracked)
 	    len = strlen (bp);
 	    bp += len;
 	    buflen -= len;
+
+	    if (sawquote) {
+		while ((pp = strchr (pp, '\'')) && buflen > 3) {
+		    len = strlen (pp++);
+		    memmove (pp + 3, pp, len);
+		    *pp++ = '\\';
+		    *pp++ = '\'';
+		    *pp++ = '\'';
+		    buflen -= 3;
+		    bp += 3;
+		}
+		/* If pp is set, that means we ran out of space. */
+		if (pp)
+		    buflen = 0;
+	    }
+
+	    sawquote = 0;
 	} else {
 raw:
 	*bp++ = *cp;
 	*bp = '\0';
 	buflen--;
+	sawquote = *cp == '\'';
 	}
+    }
+
+    if (buflen == 0 ||
+	(ct->c_termproc && buflen < strlen(ct->c_termproc))) {
+	/* content_error would provide a more useful error message
+	 * here, except that if we got overrun, it probably would
+	 * too.
+	 */
+	fprintf(stderr, "Buffer overflow constructing show command!\n");
+	return NOTOK;
     }
 
     /* use charset string to modify display method */
@@ -466,6 +496,8 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
     pid_t child_id;
     int i;
     char *vec[4], exec[BUFSIZ + sizeof "exec "];
+    int	intr;
+    SIGNAL_HANDLER istat;
     
     if (debugsw || cracked) {
 	fflush (stdout);
@@ -487,6 +519,9 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 	xpid = 0;
     }
 
+    if (xstdin && m_pid)
+	m_pclose ();
+
     if (xlist) {
 	char prompt[BUFSIZ];
 
@@ -499,9 +534,6 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 	    printf ("Press <return> to show content...");
 
 	if (xpause) {
-	    int	intr;
-	    SIGNAL_HANDLER istat;
-
 	    istat = SIGNAL (SIGINT, intrser);
 	    if ((intr = sigsetjmp (intrenv, 1)) == OK) {
 		fflush (stdout);
@@ -525,10 +557,12 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 
     fflush (stdout);
 
-    for (i = 0; (child_id = vfork ()) == NOTOK && i < 5; i++)
+    istat = SIGNAL (SIGINT, intrser2);
+    for (i = 0; (intrpid = child_id = vfork ()) == NOTOK && i < 5; i++)
 	sleep (5);
     switch (child_id) {
 	case NOTOK:
+	    SIGNAL (SIGINT, istat);
 	    advise ("fork", "unable to");
 	    (*ct->c_ceclosefnx) (ct);
 	    return NOTOK;
@@ -556,6 +590,7 @@ show_content_aux2 (CT ct, int serial, int alternate, char *cracked, char *buffer
 
 	    if (fd != NOTOK)
 		(*ct->c_ceclosefnx) (ct);
+	    SIGNAL (SIGINT, istat);
 	    return (alternate ? DONE : OK);
     }
 }
@@ -587,8 +622,7 @@ show_text (CT ct, int serial, int alternate)
      * if it is not a text part of a multipart/alternative
      */
     if (!alternate || ct->c_subtype == TEXT_PLAIN) {
-	snprintf (buffer, sizeof(buffer), "%%p%s '%%F'", progsw ? progsw :
-		moreproc && *moreproc ? moreproc : "more");
+	snprintf (buffer, sizeof(buffer), "%%ecat '%%f'");
 	cp = (ct->c_showproc = add (buffer, NULL));
 	return show_content_aux (ct, serial, alternate, cp, NULL);
     }
@@ -780,9 +814,9 @@ out:
 static int
 show_multi_aux (CT ct, int serial, int alternate, char *cp)
 {
-    int len, buflen;
+    int len, buflen, sawquote;
     int xlist, xpause, xtty;
-    char *bp, *file, buffer[BUFSIZ];
+    char *bp, *pp, *file, buffer[BUFSIZ];
     struct multipart *m = (struct multipart *) ct->c_ctparams;
     struct part *part;
     CI ci = &ct->c_ctinfo;
@@ -817,12 +851,16 @@ show_multi_aux (CT ct, int serial, int alternate, char *cp)
 
     /* get buffer ready to go */
     bp = buffer;
-    bp[0] = '\0';
-    buflen = sizeof(buffer);
+    bp[0] = bp[sizeof(buffer) - 1] = '\0';
+    buflen = sizeof(buffer) - 1;
+
+    sawquote = 0;
 
     /* Now parse display string */
-    for ( ; *cp; cp++) {
+    for ( ; *cp && buflen > 0; cp++) {
 	if (*cp == '%') {
+	    pp = bp;
+
 	    switch (*++cp) {
 	    case 'a':
 		/* insert parameters from Content-Type field */
@@ -906,12 +944,40 @@ show_multi_aux (CT ct, int serial, int alternate, char *cp)
 	    len = strlen (bp);
 	    bp += len;
 	    buflen -= len;
+
+	    if (sawquote) {
+		while ((pp = strchr (pp, '\'')) && buflen > 3) {
+		    len = strlen (pp++);
+		    memmove (pp + 3, pp, len);
+		    *pp++ = '\\';
+		    *pp++ = '\'';
+		    *pp++ = '\'';
+		    buflen -= 3;
+		    bp += 3;
+		}
+		/* If pp is set, that means we ran out of space. */
+		if (pp)
+		    buflen = 0;
+	    }
+
+	    sawquote = 0;
 	} else {
 raw:
 	*bp++ = *cp;
 	*bp = '\0';
 	buflen--;
+	sawquote = *cp == '\'';
 	}
+    }
+
+    if (buflen == 0 ||
+	(ct->c_termproc && buflen < strlen(ct->c_termproc))) {
+	/* content_error would provide a more useful error message
+	 * here, except that if we got overrun, it probably would
+	 * too.
+	 */
+	fprintf(stderr, "Buffer overflow constructing show command!\n");
+	return NOTOK;
     }
 
     /* use charset string to modify display method */
@@ -1011,4 +1077,75 @@ intrser (int i)
 
     putchar ('\n');
     siglongjmp (intrenv, DONE);
+}
+
+static RETSIGTYPE
+intrser2 (int i)
+{
+#ifndef RELIABLE_SIGNALS
+    SIGNAL (SIGINT, intrser2);
+#endif
+    kill (intrpid, SIGKILL);
+}
+
+static  int sd = NOTOK;
+
+static void
+m_popen (char *name)
+{
+    int pd[2];
+
+    if ((sd = dup (fileno (stdout))) == NOTOK)
+	adios ("standard output", "unable to dup()");
+
+    if (pipe (pd) == NOTOK)
+	adios ("pipe", "unable to");
+
+    switch (m_pid = vfork ()) {
+	case NOTOK: 
+	    adios ("fork", "unable to");
+
+	case OK: 
+	    SIGNAL (SIGINT, SIG_DFL);
+	    SIGNAL (SIGQUIT, SIG_DFL);
+
+	    close (pd[1]);
+	    if (pd[0] != fileno (stdin)) {
+		dup2 (pd[0], fileno (stdin));
+		close (pd[0]);
+	    }
+	    execlp (name, r1bindex (name, '/'), NULL);
+	    fprintf (stderr, "unable to exec ");
+	    perror (name);
+	    _exit (-1);
+
+	default: 
+	    close (pd[0]);
+	    if (pd[1] != fileno (stdout)) {
+		dup2 (pd[1], fileno (stdout));
+		close (pd[1]);
+	    }
+    }
+}
+
+
+void
+m_pclose (void)
+{
+    if (!m_pid)
+	return;
+
+    if (sd != NOTOK) {
+	if (dup2 (sd, fileno (stdout)) == NOTOK)
+	    adios ("standard output", "unable to dup2()");
+
+	clearerr (stdout);
+	close (sd);
+	sd = NOTOK;
+    }
+    else
+	fclose (stdout);
+
+    pidwait (m_pid, OK);
+    m_pid = 0;
 }

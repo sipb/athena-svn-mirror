@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)announce.c	5.9 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: announce.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp $";
+static char rcsid[] = "$Id: announce.c,v 1.2 1996-10-13 07:08:39 ghudson Exp $";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -49,8 +49,12 @@ static char rcsid[] = "$Id: announce.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <vis.h>
+#ifdef HAVE_PATHS_H
 #include <paths.h>
+#endif
+#ifndef _PATH_DEV
+#define _PATH_DEV "/dev/"
+#endif
 
 extern char hostname[];
 
@@ -103,18 +107,20 @@ announce_proc(request, remote_machine)
 	FILE *tf;
 	struct stat stbuf;
 
-	(void)snprintf(full_tty, sizeof(full_tty), "%s/%s", _PATH_DEV, 
-	    request->r_tty);
+	(void)sprintf(full_tty, "%s/%.*s", _PATH_DEV, 
+	    sizeof(full_tty) - strlen(_PATH_DEV) - 2, request->r_tty);
 	if (access(full_tty, 0) != 0)
 		return (FAILED);
 	if ((tf = fopen(full_tty, "w")) == NULL)
 		return (PERMISSION_DENIED);
+#ifdef TIOCNOTTY
 	/*
 	 * On first tty open, the server will have
 	 * it's pgrp set, so disconnect us from the
 	 * tty before we catch a signal.
 	 */
 	ioctl(fileno(tf), TIOCNOTTY, (struct sgttyb *) 0);
+#endif
 	if (fstat(fileno(tf), &stbuf) < 0)
 		return (PERMISSION_DENIED);
 	if ((stbuf.st_mode&020) == 0)
@@ -154,29 +160,29 @@ print_mesg(tf, request, remote_machine)
 	gettimeofday(&clock, &zone);
 	clocktime = clock.tv_sec;
 	localclock = localtime(&clocktime);
-	(void)snprintf(line_buf[i], N_CHARS, " ");
+	(void)sprintf(line_buf[i], " ");
 	sizes[i] = strlen(line_buf[i]);
 	max_size = max(max_size, sizes[i]);
 	i++;
-	(void)snprintf(line_buf[i], N_CHARS, 
-	    "Message from Talk_Daemon@%s at %d:%02d ...",
+	(void)sprintf(line_buf[i],
+	    "Message from Talk_Daemon@%.64s at %d:%02d ...",
 	    hostname, localclock->tm_hour , localclock->tm_min );
 	sizes[i] = strlen(line_buf[i]);
 	max_size = max(max_size, sizes[i]);
 	i++;
-	vis_user = (char *) malloc(strlen(request->l_name) * 4 + 1);
-	strvis(vis_user, request->l_name, VIS_CSTYLE);
-	(void)snprintf(line_buf[i], N_CHARS, 
-	    "talk: connection requested by %s@%s.", vis_user, remote_machine);
+	(void)sprintf(line_buf[i],
+	    "talk: connection requested by %.24s@%.64s.", request->l_name,
+	    remote_machine);
 	sizes[i] = strlen(line_buf[i]);
 	max_size = max(max_size, sizes[i]);
 	i++;
-	(void)snprintf(line_buf[i], N_CHARS,
-	    "talk: respond with:  talk %s@%s", vis_user, remote_machine);
+	(void)sprintf(line_buf[i],
+	    "talk: respond with:  talk %.24s@%.64s", request->l_name,
+	    remote_machine);
 	sizes[i] = strlen(line_buf[i]);
 	max_size = max(max_size, sizes[i]);
 	i++;
-	(void)snprintf(line_buf[i], N_CHARS, " ");
+	(void)sprintf(line_buf[i], " ");
 	sizes[i] = strlen(line_buf[i]);
 	max_size = max(max_size, sizes[i]);
 	i++;
@@ -198,5 +204,7 @@ print_mesg(tf, request, remote_machine)
 	*bptr = '\0';
 	fprintf(tf, big_buf);
 	fflush(tf);
+#ifdef TIOCNOTTY
 	ioctl(fileno(tf), TIOCNOTTY, (struct sgttyb *) 0);
+#endif
 }

@@ -35,9 +35,9 @@ outocp: outocp.o
 $(programs): $(proglib) $(kpathsea)
 
 install-programs: $(programs)
-	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) 
-	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) $(bindir) $$p; done
-	for p in $(scripts); do $(INSTALL_SCRIPT) $(srcdir)/$$p $(scriptdir); done
+	$(SHELL) $(top_srcdir)/../mkinstalldirs ${DESTDIR}$(bindir) 
+	for p in $(programs); do $(INSTALL_LIBTOOL_PROG) ${DESTDIR}$(bindir) $$p; done
+	for p in $(scripts); do $(INSTALL_SCRIPT) $(srcdir)/$$p ${DESTDIR}$(scriptdir); done
 
 Makefile: Makefile.in ../config.status
 	cd .. && $(SHELL) config.status

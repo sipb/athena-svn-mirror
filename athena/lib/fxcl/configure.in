@@ -1,0 +1,23 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(fx_connect.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+AC_MSG_CHECKING(how to tell rpcgen to generate function prototypes)
+if rpcgen -C -c -o /dev/null $srcdir/fx_prot.x 2> /dev/null; then
+	RPCGENFLAGS=-C
+	AC_MSG_RESULT(-C)
+elif rpcgen -P -c -o /dev/null $srcdir/fx_prot.x 2> /dev/null; then
+	RPCGENFLAGS=-P
+	AC_MSG_RESULT(-P)
+else
+	AC_MSG_RESULT(unknown)
+fi
+AC_SUBST(RPCGENFLAGS)
+
+ATHENA_KRB4
+ATHENA_HESIOD
+
+AC_OUTPUT(Makefile)

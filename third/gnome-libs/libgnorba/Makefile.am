@@ -12,7 +12,6 @@ INCLUDES = 						\
 	-I.. 						\
 	-I$(srcdir)/..					\
 	$(SUPPORTINCS) 					\
-	-I$(includedir) 				\
         $(GNOME_INCLUDES)  				\
 	$(ORBIT_CFLAGS) 				\
 	$(GLIB_INCLUDES) 				\

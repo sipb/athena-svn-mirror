@@ -357,7 +357,7 @@ append_desktop_menu (GtkWidget *menu_bar)
 	item = add_menu_separator (menu);
 	gmc_menu_items = g_list_prepend (gmc_menu_items, item);
 	
-	char_tmp = panel_is_program_in_path ("xscreensaver");
+	char_tmp = panel_is_program_in_path ("xss");
 	if (char_tmp) {	
 		item = pixmap_menu_item_new (_("Lock Screen"), 
 					       "gnome-lockscreen.png");

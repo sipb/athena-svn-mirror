@@ -144,7 +144,7 @@ bin_PROGRAMS = sound-properties
 
 sound_properties_SOURCES = sound-properties.c
 
-sound_properties_LDADD = ../../control-center/libcapplet.la 		     $(GNOME_LIBDIR) $(ORB_LIBS) 		     $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba
+sound_properties_LDADD = ../../control-center/libcapplet.la 		     $(ESD_LIBS) 		     $(GNOME_LIBDIR) $(ORB_LIBS) 		     $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba
 
 
 EXTRA_DIST =  	sound-properties.desktop.in			sound-properties.desktop
@@ -176,7 +176,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(sound_properties_SOURCES)
 OBJECTS = $(sound_properties_OBJECTS)
@@ -315,16 +315,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-sound-properties.o: sound-properties.c ../../config.h \
-	../../control-center/capplet-widget.h
-
 info-am:
 info: info-am
 dvi-am:

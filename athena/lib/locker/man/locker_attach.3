@@ -1,0 +1,234 @@
+.\" $Id: locker_attach.3,v 1.1 1999-02-26 19:05:07 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_ATTACH 3
+.SH NAME
+locker_attach_simple, locker_attach, locker_attach_explicit,
+locker_attach_attachent \- Attach a locker
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+int locker_attach(locker_context \fIcontext\fP, char *\fIfilesystem\fP,
+.B
+	char *\fImountpoint\fP, int \fIauth\fP, int \fIoptions\fP,
+.B
+	char *\fImountoptions\fP, locker_attachent **\fIatp\fP)
+.PP
+.B
+int locker_attach_explicit(locker_context \fIcontext\fP, char *\fItype\fP
+.B
+	char *\fIdesc\fP, char *\fImountpoint\fP, int \fIauth\fP,
+.B
+	int \fIoptions\fP, char *\fImountoptions\fP,
+.B
+	locker_attachent **\fIatp\fP)
+.PP
+.B
+int locker_attach_attachent(locker_context \fIcontext\fP,
+.B
+	locker_attachent *\fIat\fP, int \fIauth\fP, int \fIoptions\fP,
+.B
+	char *\fImountoptions\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+These functions attempt to attach a filesystem to a local path on the
+workstation. The
+.I context
+argument to each of these functions must be a locker context
+initialized by
+.B locker_init\fP.
+.PP
+The
+.B locker_attach_simple
+function attaches a locker.
+.I filesystem
+should be the name of a filesystem existing either in Hesiod or the
+local attach.conf. 
+.PP
+.B locker_attach_explicit
+is used to attach filesystems that aren't described in Hesiod or
+attach.conf.
+.B type
+should be the type of the locker (e.g., "AFS"), and
+.B desc
+should be a filesystem-specific description of the filesystem's
+location. (For AFS, this is the path to the filesystem. For most other
+filesystem types, it is the path or host:path that would be passed to
+.BR mount (1).)
+.PP
+The
+.I mountpoint
+argument specifies a non-default mountpoint for the locker. If it is
+NULL, the locker will be attached in the default location specified by
+the Hesiod entry, or the filesystem-specific code.
+.PP
+The
+.I atp
+argument is used if the caller needs more information about the locker
+after it has been successfully attached. If the locker is successfully
+attached, and
+.I atp
+is non-NULL, the attach function will pass back a pointer to a
+.I locker_attachent
+corresponding to the attached locker, which the caller can use, for
+example, to check the mountpoint of the locker. The caller should call
+.BR locker_free_attachent (3)
+when it is done with the attachent. See
+.BR locker_read_attachent (3)
+for more information about the format of a
+.I locker_attachent\fP.
+.PP
+.B locker_attach_attachent
+can be used to attach a locker when you already have a
+.I locker_attachent
+describing it. This is not likely to be useful, but it is provided to
+be consistent with the
+.B locker_detach
+functions.
+.PP
+The remaining options to
+.B locker_attach\fP,
+.B locker_attach_explicit\fP, and
+.B locker_attach_attachent
+are as follows:
+.TP 8
+.I auth
+describes the level of authentication to the filesystem. The allowed
+values are:
+.RS 8
+.TP 12
+.I LOCKER_AUTH_NONE
+Do not authenticate to the filesystem.
+.TP 12
+.I LOCKER_AUTH_READONLY
+Authenticate for read-only access.
+.TP 12
+.I LOCKER_AUTH_READWRITE
+Authenticate for read-write access.
+.TP 12
+.I LOCKER_AUTH_MAYBE_READWRITE
+Attempt read-write authentication, but do not consider it an error if
+authentication fails.
+.TP 12
+.I LOCKER_AUTH_DEFAULT
+Do the default authentication for this filesystem specified in its
+Hesiod description (or by the filesystem-specific code in the case of
+explicit attaches). This is the default for
+.B locker_attach\fP.
+.RE
+.TP 8
+.I options
+is a bit field which can have any of the following options set:
+.RS 8
+.TP 12
+.I LOCKER_ATTACH_OPT_OVERRIDE
+Override various restrictions set in attach.conf. (See
+.BR attach.conf (5)
+for more details.) This option can only be used by trusted users
+(as specified by attach.conf).
+.TP 12
+.I LOCKER_ATTACH_OPT_LOCK
+Lock the locker so that non-trusted users cannot detach it. This
+option can only be used by trusted users.
+.TP 12
+.I LOCKER_ATTACH_OPT_ALLOW_SETUID
+Mount the locker without the -nosetuid option. This only affects
+certain filesystem types. This option can only be used by trusted
+users.
+.TP 12
+.I LOCKER_ATTACH_OPT_ZEPHYR
+Get Zephyr subscriptions for the attached lockers.
+.TP 12
+.I LOCKER_ATTACH_OPT_REAUTH
+Authenticate to the locker even if it is already attached.
+.PP
+.B locker_attach
+uses
+.I LOCKER_ATTACH_DEFAULT_OPTIONS\fP,
+which sets
+.I LOCKER_ATTACH_OPT_ZEPHYR
+and
+.I LOCKER_ATTACH_OPT_REAUTH\fP.
+.RE
+.TP 8
+.I mountoptions
+specifies additional options to pass to
+.BR mount (1),
+for filesystem types that use
+.BR mount (1).
+These options may be overridden by options specified in an attach.conf
+"options" line, and if the user is not trusted, then only options
+specified in the relevant attach.conf "allowoptions" line will be
+used. (Other
+.I mountoptions
+passed will be silently discarded.)
+.SH RETURN VALUES
+The attach functions can return the following values:
+.TP 15
+.I LOCKER_SUCCESS
+The locker was succesfully attached.
+.TP 15
+.I LOCKER_EALREADY
+The locker was already attached.
+.PP
+The caller can use the
+.I LOCKER_ATTACH_SUCCESS()
+macro on the status to see if it was one of the previous two values.
+.TP 15
+.I LOCKER_EUNKNOWN
+No such filesystem.
+.TP 15
+.I LOCKER_EATTACH
+Unable to attach the locker. (Mount or symlink failed.)
+.TP 15
+.I LOCKER_EATTACHTAB
+Error creating or reading the attachtab entry corresponding to this
+locker.
+.TP 15
+.I LOCKER_EAUTH
+Authentication failed.
+.TP 15
+.I LOCKER_EBADPATH
+Unable to attach the locker on the given mountpoint for security reasons
+.TP 15
+.I LOCKER_EHESIOD
+Error looking up locker in Hesiod.
+.TP 15
+.I LOCKER_EMOUNTPOINT
+Could not build the locker mountpoint.
+.TP 15
+.I LOCKER_EMOUNTPOINTBUSY
+Another locker is already mounted on the mountpoint specified for this
+locker.
+.TP 15
+.I LOCKER_EPARSE
+Unable to parse filesystem description.
+.TP 15
+.I LOCKER_EPERM
+Untrusted user attempted privileged operation.
+.TP 15
+.I LOCKER_ENOMEM
+Memory was exhausted.
+.SH SEE ALSO
+locker_init(3), locker_detach(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

@@ -141,15 +141,15 @@ realclean: distclean
 
 install: all installdirs
 	for p in $(PROGRAMS); do \
-	  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p | $(edit_program_name)`; \
+	  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p | $(edit_program_name)`; \
 	done
 	{ test -f diff.info || cd $(srcdir); } && \
 	for f in diff.info*; do \
-	  $(INSTALL_DATA) $$f $(infodir)/$$f; \
+	  $(INSTALL_DATA) $$f $(DESTDIR)$(infodir)/$$f; \
 	done
 
 installdirs:
-	$(SHELL) ${srcdir}/mkinstalldirs $(bindir) $(infodir)
+	$(SHELL) ${srcdir}/mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(infodir)
 
 # We need more tests.
 check:
@@ -160,9 +160,9 @@ check:
 
 uninstall:
 	for p in $(PROGRAMS); do \
-	  rm -f $(bindir)/`echo $$p | $(edit_program_name)`; \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p | $(edit_program_name)`; \
 	done
-	rm -f $(infodir)/diff.info*
+	rm -f $(DESTDIR)$(infodir)/diff.info*
 
 configure: configure.in
 	cd $(srcdir) && autoconf

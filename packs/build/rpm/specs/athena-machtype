@@ -1,0 +1,8 @@
+Name: athena-machtype
+Summary: Print Athena machine type to standard output
+Copyright: MIT
+Group: Applications/System
+
+%description
+Print CPU type and hardware configuration information.
+

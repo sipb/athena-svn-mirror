@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prefix=@prefix@
+prefix=${ATHTOOLROOT}@prefix@
 exec_prefix=@exec_prefix@
 
 bindir=@bindir@
@@ -169,23 +169,23 @@ while test $# -gt 0; do
 	the_flags="$the_flags `glib-config --cflags`"
 	;;
     gtk)
-	the_libs="$the_libs `gtk-config --libs`"
+	the_libs="$the_libs -lSM -lICE `gtk-config --libs`"
 	the_flags="$the_flags `gtk-config --cflags`"
 	;;
     gnome)
        	the_libs="$the_libs @GNOME_LIBDIR@ @GNOME_LIBS@"
-  	the_flags="$the_flags @GNOME_INCLUDEDIR@ @GTK_CFLAGS@"
+  	the_flags="$the_flags @GNOME_INCLUDEDIR@ `gtk-config --cflags`"
 	;;
     gnomeui)
 	the_libs="$the_libs @GNOME_LIBDIR@ @GNOMEUI_LIBS@"
-	the_flags="$the_flags @GNOME_INCLUDEDIR@ @GTK_CFLAGS@"
+	the_flags="$the_flags @GNOME_INCLUDEDIR@ `gtk-config --cflags`"
 	;;
     gtkxmhtml)
 	the_libs="$the_libs @GNOME_LIBDIR@ @GTKXMHTML_LIBS@"
 	;;
     gnorba)
-        the_libs="$the_libs @GNOME_LIBDIR@ -lgnorba @ORBIT_LIBS@"
-	the_flags="$the_flags @GNOME_INCLUDEDIR@ @ORBIT_CFLAGS@"
+        the_libs="$the_libs @GNOME_LIBDIR@ -lgnorba `orbit-config --use-service=name --libs client server`"
+	the_flags="$the_flags @GNOME_INCLUDEDIR@ `orbit-config --cflags client server`"
         ;;
     idl)
 	the_flags="-I${datadir}/idl"

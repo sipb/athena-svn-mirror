@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: printjob.c,v 1.1.1.5 2000-03-31 15:47:50 mwhitson Exp $";
+"$Id: printjob.c,v 1.6 2001-03-07 01:19:43 ghudson Exp $";
 
 
 #include "lp.h"
@@ -95,21 +95,14 @@
 int Wait_for_pid( int of_pid, char *name, int suspend, int timeout,
 	plp_status_t *ps_status)
 {
-	int pid, err, n;
+	int pid, n = 0, err;
 	DEBUG2("Wait_for_pid: name '%s', pid %d, suspend %d, timeout %d",
 		name, of_pid, suspend, timeout );
 	errno = 0;
 	do{
 		memset(ps_status,0,sizeof(ps_status[0]));
 		if( timeout > 0 ){
-			if( Set_timeout() ){
-				Set_timeout_alarm( timeout  );
-				pid = plp_waitpid(of_pid,ps_status,WUNTRACED );
-			} else {
-				pid = -1;
-				errno = EINTR;
-			}
-			Clear_timeout();
+			pid = plp_waitpid_timeout(timeout,of_pid,ps_status,WUNTRACED);
 		} else if( timeout == 0 ){
 			pid = plp_waitpid(of_pid,ps_status,WUNTRACED);
 		} else {
@@ -119,7 +112,6 @@ int Wait_for_pid( int of_pid, char *name, int suspend, int timeout,
 		DEBUG2("Wait_for_pid: pid %d exit status '%s'",
 			pid, Decode_status(ps_status));
 	} while( pid == -1 && err != ECHILD && err != EINTR );
-	n = 0;
 	if( pid > 0 ){
 		if( suspend && WIFSTOPPED(*ps_status) ){
 			n = 0;
@@ -229,10 +221,9 @@ void Print_job( int output, struct job *job, int timeout )
 	/* check for the banner printing */
 	do_banner = Always_banner_DYN ||
 		(!Suppress_header_DYN && banner_name);
-	if( do_banner && banner_name == 0 ){
-		banner_name = Find_str_value( &job->info,LOGNAME,Value_sep);
+	if( do_banner ){
+		if( banner_name == 0 ) banner_name = Find_str_value( &job->info,LOGNAME,Value_sep);
 		if( banner_name == 0 ) banner_name = "ANONYMOUS";
-		Set_str_value(&job->info,BNRNAME,banner_name);
 	}
 
 	/* now we have a banner, is it at start or end? */
@@ -268,9 +259,6 @@ void Print_job( int output, struct job *job, int timeout )
 		files.list[files.count++] = Cast_int_to_voidstar(of_fd[0]);	/* stdin */
 		files.list[files.count++] = Cast_int_to_voidstar(output);	/* stdout */
 		files.list[files.count++] = Cast_int_to_voidstar(of_error[1]);	/* stderr */
-		if( Accounting_port > 0 ){; /* accounting */
-			files.list[files.count++] = Cast_int_to_voidstar(Accounting_port);
-		}
         if( (of_pid = Make_passthrough( OF_Filter_DYN, s,&files, job, 0 ))<0){
             Errorcode = JFAIL;
             logerr_die(LOG_INFO,"Print_job: could not create OF process");
@@ -389,10 +377,10 @@ void Print_job( int output, struct job *job, int timeout )
 				Errorcode = JFAIL;
 				cleanup(0);
 			}
-			Init_buf(&Outbuf, &Outmax, &Outlen );
 			if( files_printed++ && !No_FF_separator_DYN && FF_str ){
 				/* FF separator -> of_fd; */
 				setstatus(job,"printing '%s' FF separator ",id);
+				Init_buf(&Outbuf, &Outmax, &Outlen );
 				Put_buf_str( FF_str, &Outbuf, &Outmax, &Outlen );
 				if( of_pid ){
 					Put_buf_str( FILTER_STOP, &Outbuf, &Outmax, &Outlen );
@@ -424,8 +412,7 @@ void Print_job( int output, struct job *job, int timeout )
 				fatal( LOG_ERR, "Print_job: job '%s', cannot open data file '%s'",
 					id, openname );
 			}
-			setstatus(job,"printing data file '%s', size %0.0f",
-				transfername, (double)statb.st_size );
+			setstatus(job,"printing data file '%s'", transfername );
 
 			DEBUG2( "Print_job: data file format '%s', IF_Filter_DYN '%s'",
 				format, IF_Filter_DYN );
@@ -444,9 +431,6 @@ void Print_job( int output, struct job *job, int timeout )
 				files.list[files.count++] = Cast_int_to_voidstar(fd);		/* stdin */
 				files.list[files.count++] = Cast_int_to_voidstar(tempfd);	/* stdout */
 				files.list[files.count++] = Cast_int_to_voidstar(if_error[1]);	/* stderr */
-				if( Accounting_port > 0 ){; /* accounting */
-					files.list[files.count++] = Cast_int_to_voidstar(Accounting_port);
-				}
 				if( (pid = Make_passthrough( Pr_program_DYN, 0, &files,
 					job, 0 )) < 0 ){
 					Errorcode = JFAIL;
@@ -505,9 +489,6 @@ void Print_job( int output, struct job *job, int timeout )
 				files.list[files.count++] = Cast_int_to_voidstar(fd);		/* stdin */
 				files.list[files.count++] = Cast_int_to_voidstar(output);	/* stdout */
 				files.list[files.count++] = Cast_int_to_voidstar(if_error[1]);	/* stderr */
-				if( Accounting_port > 0 ){; /* accounting */
-					files.list[files.count++] = Cast_int_to_voidstar(Accounting_port);
-				}
 				if( (pid = Make_passthrough( filter, s, &files, job, 0 )) < 0 ){
 					Errorcode = JFAIL;
 					logerr_die(LOG_INFO,"Print_job:  could not make %s process",
@@ -536,6 +517,7 @@ void Print_job( int output, struct job *job, int timeout )
 					if( exit_status ) Errorcode = exit_status;
 					setstatus(job,"%s filter problems, error '%s'",
 						filter_title, Server_status(n));
+					Errorcode = n;
 					cleanup(0);
 				}
 				setstatus(job, "%s filter finished", filter_title );
@@ -637,6 +619,51 @@ void Print_job( int output, struct job *job, int timeout )
 	setstatus(job,"printing done '%s'",id);
 }
 
+/***************************************************************************
+ * int Fix_str( char * str )
+ * - make a copy of the original string
+ * - substitute all the escape characters
+ * \f, \n, \r, \t, and \nnn
+ ***************************************************************************/
+char *Fix_str( char *str )
+{
+	char *s, *end, *dupstr, buffer[4];
+	int c, len;
+	DEBUG3("Fix_str: '%s'", str );
+	if( str == 0 ) return(str);
+	dupstr = s = safestrdup(str,__FILE__,__LINE__);
+	DEBUG3("Fix_str: dup '%s', 0x%lx", dupstr, Cast_ptr_to_long(dupstr) );
+	for( ; (s = strchr(s,'\\')); ){
+		end = s+1;
+		c = cval(end);
+		/* check for \nnn */
+		if( isdigit( c ) ){
+			for( len = 0; len < 3; ++len ){
+				if( !isdigit(cval(end)) ){
+					break;
+				}
+				buffer[len] = *end++;
+			}
+			c = strtol(buffer,0,8);
+		} else {
+			switch( c ){
+				case 'f': c = '\f'; break;
+				case 'r': c = '\r'; break;
+				case 'n': c = '\n'; break;
+				case 't': c = '\t'; break;
+			}
+			++end;
+		}
+		s[0] = c;
+		if( c == 0 ) break;
+		memcpy(s+1,end,strlen(end)+1);
+		++s;
+	}
+	if( *dupstr == 0 ){ free(dupstr); dupstr = 0; }
+	DEBUG3( "Fix_str: final str '%s' -> '%s'", str, dupstr );
+	return( dupstr );
+}
+
 /*
  * Print a banner
  * check for a small or large banner as necessary
@@ -666,15 +693,8 @@ void Print_banner( char *name, char *pgm, struct job *job )
 			}
 		}
 	}
-	if( !pgm ) pgm = Banner_printer_DYN;
-
-	DEBUG2( "Print_banner: name '%s', pgm '%s', sb=%d, Banner_line_DYN '%s'",
-		name, pgm, Short_banner_DYN, Banner_line_DYN );
-
-	if( !pgm && !Short_banner_DYN ){
-		setstatus(job,"no banner");
-		return;
-	}
+	DEBUG2( "Print_banner: name '%s', pgm '%s', Banner_line_DYN '%s'",
+		name, pgm, Banner_line_DYN );
 	Split(&l,Banner_line_DYN,Whitespace,0,0,0,0,0);
 	if( l.count ){
 		Fix_dollars(&l,job);
@@ -683,6 +703,7 @@ void Print_banner( char *name, char *pgm, struct job *job )
 		Free_line_list(&l);
 		if(s) free(s); s = 0;
 	}
+	if( !pgm ) pgm = Banner_printer_DYN;
 
  	if( pgm ){
 		/* we now need to create a banner */
@@ -705,9 +726,6 @@ void Print_banner( char *name, char *pgm, struct job *job )
 		files.list[files.count++] = Cast_int_to_voidstar(nullfd);		/* stdin */
 		files.list[files.count++] = Cast_int_to_voidstar(tempfd);	/* stdout */
 		files.list[files.count++] = Cast_int_to_voidstar(of_error[1]);	/* stderr */
-		if( Accounting_port > 0 ){; /* accounting */
-			files.list[files.count++] = Cast_int_to_voidstar(Accounting_port);
-		}
 		if( (pid = Make_passthrough( pgm, Filter_options_DYN, &files, job, 0 )) < 0 ){
 			Errorcode = JFAIL;
 			logerr_die(LOG_INFO,"Print_banner:  could not OF process");
@@ -730,21 +748,14 @@ void Print_banner( char *name, char *pgm, struct job *job )
 		while( len < sizeof(buffer)-1
 			&& (n = read(of_error[0],buffer+len,sizeof(buffer)-len-1)) >0 ){
 			buffer[n+len] = 0;
-			while( (s = safestrchr(buffer,'\n')) ){
+			while( (s = strchr(buffer,'\n')) ){
 				*s++ = 0;
 				setstatus(job,"BANNER: %s", buffer );
 				memmove(buffer,s,strlen(s)+1);
 			}
 			len = strlen(buffer);
 		}
-		while( (n = plp_waitpid(pid,&status,0)) != pid ){
-			int err = errno;
-			DEBUG1("Print_banner: waitpid(%d) returned %d, err '%s'",
-				pid, n, Errormsg(err) );
-			if( err == EINTR ) continue; 
-			Errorcode = JABORT;
-			logerr_die( LOG_ERR, "Print_banner: waitpid(%d) failed", pid);
-		} 
+		while( (n = plp_waitpid(pid,&status,0)) != pid );
 		DEBUG1("Print_banner: pid %d, exit status '%s'", pid,
 			Decode_status(&status) );
 		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
@@ -850,7 +861,7 @@ int Write_outbuf_to_OF( struct job *job, char *title,
 			msglen += count;
 			msg[msglen] = 0;
 			s = msg;
-			while( (s = safestrchr(msg,'\n')) ){
+			while( (s = strchr(msg,'\n')) ){
 				*s++ = 0;
 				setstatus(job, "%s filter msg - '%s'", title, msg );
 				memmove(msg,s,strlen(s)+1);
@@ -895,7 +906,7 @@ int Write_outbuf_to_OF( struct job *job, char *title,
 					msglen += count;
 					msg[msglen] = 0;
 					s = msg;
-					while( (s = safestrchr(msg,'\n')) ){
+					while( (s = strchr(msg,'\n')) ){
 						*s++ = 0;
 						setstatus(job, "%s filter msg - '%s'", title, msg );
 						memmove(msg,s,strlen(s)+1);
@@ -942,7 +953,7 @@ int Write_outbuf_to_OF( struct job *job, char *title,
 					msglen += count;
 					msg[msglen] = 0;
 					s = msg;
-					while( (s = safestrchr(msg,'\n')) ){
+					while( (s = strchr(msg,'\n')) ){
 						*s++ = 0;
 						setstatus(job, "%s filter msg - '%s'", title, msg );
 						memmove(msg,s,strlen(s)+1);

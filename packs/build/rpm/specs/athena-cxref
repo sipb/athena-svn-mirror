@@ -1,0 +1,8 @@
+Name: athena-cxref
+Summary: A utility to cross-reference C source files.
+Copyright: Arnold Robbins
+Group: Development/Tools
+
+%description
+The cxref utility reads C source files and writes a cross reference of
+all the identifiers and constants in the files.  

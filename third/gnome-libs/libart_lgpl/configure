@@ -1621,8 +1621,8 @@ if test "x$GCC" = "xyes"; then
   fi
 fi
 
-LIBART_LIBDIR='-L${libdir}'
-LIBART_INCLUDEDIR='-I${includedir}'
+LIBART_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+LIBART_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}'
 LIBART_LIBS='-lart_lgpl'
 
 

@@ -30,7 +30,7 @@ AWK = @AWK@
 CHECKS = *[0-9][0-9].*
 DISTFILES = Makefile.in get-them check-them stamp-checks incl.m4 foo
 
-all: stamp-checks
+all:
 
 stamp-checks: get-them ../doc/m4.texinfo
 	rm -f $(srcdir)/$(CHECKS)

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  ;;
+
+sgi)
+  devlib=/usr/lib/devicelib
+  if [ ! -d $devlib ]; then
+    rm -rf $devlib
+    mkdir -m 755 $devlib
+    ln -s /os${devlib}/* $devlib
+  fi
+  ;;
+esac

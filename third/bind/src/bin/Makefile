@@ -1,4 +1,4 @@
-## Copyright (c) 1996,1999 by Internet Software Consortium
+## Copyright (c) 1996 by Internet Software Consortium
 ##
 ## Permission to use, copy, modify, and distribute this software for any
 ## purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:44:33 danw Exp $
+# $Id: Makefile,v 1.3 2000-04-22 04:39:23 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -39,9 +39,7 @@ DESTSBIN = /usr/local/sbin
 DESTEXEC = /usr/local/libexec
 DESTMAN = /usr/share/man
 DESTHELP= /usr/share/misc
-AR= ar cru
-INSTALL_EXEC=
-INSTALL_LIB=-o bin -g bin
+AR= ar cruv
 
 LDFLAGS=
 
@@ -53,16 +51,14 @@ MARGS =	"SYSTYPE=${SYSTYPE}" "SHELL=${SHELL}" "A=${A}" "O=${O}" \
 	"DESTLIB=${DESTLIB}" "DESTINC=${DESTINC}" "DESTETC=${DESTETC}" \
 	"DESTRUN=${DESTRUN}" "DESTHELP=${DESTHELP}" \
 	"RANLIB=${RANLIB}" "AR=${AR}" "ARPREF=${ARPREF}" "ARSUFF=${ARSUFF}" \
-	"INCL=../${INCL}" "PORTINCL=../${PORTINCL}" "EXE=${EXE}" \
+	"INCL=../${INCL}" "PORTINCL=../${PORTINCL}" \
 	"LIBBIND=../${LIBBIND}" "LIBPORT=../${LIBPORT}" \
 	"INSTALL=${INSTALL}" "CPPFLAGS=${CPPFLAGS}" "TOP=../${TOP}" \
-	"VER=${VER}" "STRIP=${STRIP}" "PS=${PS}" "INSTALL_LIB=${INSTALL_LIB}" \
-	"INSTALL_EXEC=${INSTALL_EXEC}" "BOUNDS=${BOUNDS}"
+	"VER=${VER}" "STRIP=${STRIP}" "PS=${PS}"
 
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL}
 
-SUBDIRS = addr nslookup dig dnsquery host named named-xfer ndc nsupdate \
-	mkservdb irpd dnskeygen named-bootconf
+SUBDIRS = addr nslookup dig dnsquery host named named-xfer ndc nsupdate
 
 all: ${SUBDIRS}
 

@@ -10,7 +10,7 @@
 #ifndef BONOBO_PRINT_IDL
 #define BONOBO_PRINT_IDL
 
-#include "Bonobo_Stream.idl"
+#include "Bonobo_Storage.idl"
 
 module Bonobo {
 

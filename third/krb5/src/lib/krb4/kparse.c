@@ -575,7 +575,7 @@ int fGetChar(fp)
 static char * strsave(p)
     char *p;
 {
-    return(strcpy(malloc(strlen(p)+1),p));
+    return strdup(p);
 }
 #endif
 

@@ -1,4 +1,4 @@
-# Copyright (c) 1996,1999 by Internet Software Consortium
+# Copyright (c) 1996 by Internet Software Consortium
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.2 1999-03-16 19:47:13 danw Exp $
+# $Id: Makefile,v 1.2 2000-04-22 04:42:33 ghudson Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -32,7 +32,7 @@ PORTINCL = ${TOP}/port/${SYSTYPE}/include
 LIBBIND = ${TOP}/lib/libbind.${A}
 LIBPORT = ${TOP}/port/libport.${A}
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL}
-AR= ar cru
+AR= ar cruv
 RANLIB= ranlib
 INSTALL= install
 

@@ -167,9 +167,13 @@ s-libe77: f2cext.c
 
 f2cext.c: g2c.h
 
+# This rule replaced with ":" by ghudson@mit.edu on 2000-04-08 since
+# CVS munges timestamps and causes sources file to be rebuilt when we
+# don't want them to be.
 ${srcdir}/configure: configure.in
-	rm -f config.cache
-	cd $(srcdir) && autoconf
+	:
+#	rm -f config.cache
+#	cd $(srcdir) && autoconf
 
 # Dependence on Makefile serializes for parallel make.
 g2c.h: g2c.hin config.status Makefile

@@ -30,6 +30,8 @@ AC_FUNC_ALLOCA
 AC_FUNC_MMAP
 AC_CHECK_FUNCS(getcwd getwd putenv strdup)
 
+AC_CHECK_LIB(intl, gettext)
+
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE(scrollkeeper,0.2)
 AM_PROG_LIBTOOL

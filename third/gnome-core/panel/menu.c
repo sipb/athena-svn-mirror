@@ -65,6 +65,8 @@ extern char *kde_mini_icondir;
 
 extern GtkTooltips *panel_tooltips;
 
+static GtkStyle *title_style;
+
 enum {
 	HELP_BUTTON = 0,
 	REVERT_BUTTON,
@@ -141,11 +143,12 @@ init_menus (void)
 {
 	const DistributionInfo *distribution_info = get_distribution_info ();
 	char *menu;
+	GdkFont *font;
 
 	/*just load the menus from disk, don't make the widgets
 	  this just reads the .desktops of the top most directory
 	  and a level down*/
-	menu = gnome_datadir_file ("gnome/apps");
+	menu = g_strdup ("/var/athena/menus");
 	if (menu != NULL)
 		fr_read_dir (NULL, menu, NULL, NULL, 2);
 	g_free (menu);
@@ -163,6 +166,14 @@ init_menus (void)
 	if (distribution_info != NULL &&
 	    distribution_info->menu_init_func != NULL)
 		distribution_info->menu_init_func ();
+
+	title_style = gtk_style_copy (gtk_widget_get_default_style ());
+	font = gdk_font_load ("-adobe-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-1");
+	if (font)
+	  {
+	    gdk_font_unref (title_style->font);
+	    title_style->font = font;
+	  }
 }
 
 /*the most important dialog in the whole application*/
@@ -1874,7 +1885,9 @@ setup_title_menuitem (GtkWidget *menuitem, GtkWidget *pixmap,
 	GtkWidget *label, *hbox=NULL, *align;
 	IconSize size = global_config.use_large_icons 
 		? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE;
+	gtk_widget_push_style (title_style);
 	label = gtk_label_new (title);
+	gtk_widget_pop_style ();
 	gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
 	gtk_widget_show (label);
 
@@ -1886,7 +1899,7 @@ setup_title_menuitem (GtkWidget *menuitem, GtkWidget *pixmap,
 	} else
 		gtk_container_add (GTK_CONTAINER (menuitem), label);
 	
-	if (gnome_preferences_get_menus_have_icons ()) {
+	if (0) {
 		align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 		gtk_widget_show (align);
 		gtk_container_set_border_width (GTK_CONTAINER (align), 1);
@@ -3448,7 +3461,7 @@ create_system_menu (GtkWidget *menu, gboolean fake_submenus,
 		    gboolean title,
 		    gboolean launcher_add)
 {
-	char *menudir = gnome_datadir_file ("gnome/apps");
+	char *menudir = g_strdup ("/var/athena/menus");
 
 	if (menudir &&
 	    g_file_test (menudir, G_FILE_TEST_ISDIR)) {
@@ -4555,8 +4568,8 @@ make_add_submenu (GtkWidget *menu, gboolean fake_submenus)
 	gtk_menu_append (GTK_MENU (submenu), submenuitem);
 	gtk_signal_connect(GTK_OBJECT(submenuitem), "activate",
 			   GTK_SIGNAL_FUNC(add_menu_to_panel),
-			   "gnome/apps");
-	setup_internal_applet_drag(submenuitem, "MENU:gnome/apps");
+			   "/var/athena/menus");
+	setup_internal_applet_drag(submenuitem, "MENU:gnome/athena/menus");
 
 	submenuitem = gtk_menu_item_new ();
 	gtk_widget_lock_accelerators (menuitem);
@@ -4882,7 +4895,7 @@ make_panel_submenu (GtkWidget *menu, gboolean fake_submenus, gboolean is_basep)
 void
 panel_lock (GtkWidget *widget, gpointer data)
 {
-	char *argv[3] = {"xscreensaver-command", "-lock", NULL};
+	char *argv[3] = {"xss-command", "-lock", NULL};
 	if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
 		panel_error_dialog (_("Cannot execute xscreensaver"));
 }
@@ -5026,7 +5039,7 @@ create_desktop_menu (GtkWidget *menu, gboolean fake_submenus, gboolean tearoff)
 				    NULL);
 	}
 
-	char_tmp = panel_is_program_in_path ("xscreensaver");
+	char_tmp = panel_is_program_in_path ("xss");
 	if (char_tmp) {	
 		menuitem = gtk_menu_item_new ();
 		gtk_widget_lock_accelerators (menuitem);
@@ -5043,7 +5056,7 @@ create_desktop_menu (GtkWidget *menu, gboolean fake_submenus, gboolean tearoff)
 	menuitem = gtk_menu_item_new ();
 	gtk_widget_lock_accelerators (menuitem);
 	setup_menuitem_try_pixmap (menuitem,
-				   "gnome-term-night.png",
+				   "logout-icon-menu.png",
 				   _("Log out"), SMALL_ICON_SIZE);
 	gtk_menu_append (GTK_MENU (menu), menuitem);
 	gtk_signal_connect (GTK_OBJECT (menuitem), "activate",

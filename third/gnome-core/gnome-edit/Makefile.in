@@ -185,7 +185,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_edit_SOURCES)
 OBJECTS = $(gnome_edit_OBJECTS)
@@ -312,8 +312,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-edit.o: gnome-edit.c
-
 info-am:
 info: info-am
 dvi-am:

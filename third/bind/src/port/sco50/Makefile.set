@@ -8,6 +8,7 @@
 'YACC=yacc -d'
 'SYSLIBS=-ll -lnsl -L/usr/local/lib -lsocket'
 'INSTALL=/usr/local/bin/install'
+'PIDDIR=/usr/local/etc'
 'DESTDIR='
 'DESTBIN=/usr/local/bin'
 'DESTSBIN=/usr/local/etc'

@@ -102,7 +102,9 @@ localedir = $(datadir)/locale
 EXTRA_DIST = combine-sh gettext.perl gettext-sh magic.add tcl_gettext.c \
 README-Tcl po-mode.el locale.alias
 DISTCLEANFILES = gettextize
-lisp_LISP = po-mode.el
+
+hackdir = $(datadir)/emacs/site-lisp
+hack_DATA = po-mode.el
 
 bin_SCRIPTS = gettextize
 
@@ -112,10 +114,7 @@ CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  gettextize
 SCRIPTS =  $(bin_SCRIPTS)
 
-LISP =  $(lisp_LISP)
-
-ELCFILES =  po-mode.elc
-DATA =  $(locale_DATA)
+DATA =  $(hack_DATA) $(locale_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in elisp-comp \
 gettextize.in
@@ -123,12 +122,11 @@ gettextize.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP = --best
-all: Makefile $(SCRIPTS) $(LISP) $(ELCFILES) $(DATA)
+all: Makefile $(SCRIPTS) $(DATA)
 
 .SUFFIXES:
-.SUFFIXES: .el .elc
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnits --include-deps misc/Makefile
 
@@ -158,38 +156,24 @@ uninstall-binSCRIPTS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
 	done
 
-install-lispLISP: $(lisp_LISP) $(ELCFILES)
+install-hackDATA: $(hack_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(lispdir)
-	@list='$(lisp_LISP)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p; \
-	  if test -f $${p}c; then \
-	    echo " $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c"; \
-	    $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c; \
-	  else : ; fi; \
+	$(mkinstalldirs) $(DESTDIR)$(hackdir)
+	@list='$(hack_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(hackdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(hackdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(hackdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(hackdir)/$$p; \
+	  fi; fi; \
 	done
 
-uninstall-lispLISP:
+uninstall-hackDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(lisp_LISP)'; for p in $$list; do \
-	  rm -f $(lispdir)/$$p $(DESTDIR)$(lispdir)/$${p}c; \
+	list='$(hack_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(hackdir)/$$p; \
 	done
-.el.elc:
-	@echo 'WARNING: Warnings can be ignored. :-)'
-	if test $(EMACS) != no; then \
-	  EMACS=$(EMACS) $(SHELL) $(srcdir)/elisp-comp $<; \
-	fi
-
-mostlyclean-lisp:
-
-clean-lisp:
-	-test -z "$(ELCFILES)" || rm -f $(ELCFILES)
-
-distclean-lisp:
-
-maintainer-clean-lisp:
 
 install-localeDATA: $(locale_DATA)
 	@$(NORMAL_INSTALL)
@@ -232,18 +216,18 @@ installcheck:
 install-exec: install-binSCRIPTS
 	@$(NORMAL_INSTALL)
 
-install-data: install-lispLISP install-localeDATA
+install-data: install-hackDATA install-localeDATA
 	@$(NORMAL_INSTALL)
 
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-binSCRIPTS uninstall-lispLISP uninstall-localeDATA
+uninstall: uninstall-binSCRIPTS uninstall-hackDATA uninstall-localeDATA
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(DATADIR)$(bindir) $(DATADIR)$(lispdir) \
+	$(mkinstalldirs)  $(DATADIR)$(bindir) $(DATADIR)$(hackdir) \
 		$(DATADIR)$(localedir)
 
 
@@ -261,26 +245,23 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean:  mostlyclean-lisp mostlyclean-generic
+mostlyclean:  mostlyclean-generic
 
-clean:  clean-lisp clean-generic mostlyclean
+clean:  clean-generic mostlyclean
 
-distclean:  distclean-lisp distclean-generic clean
+distclean:  distclean-generic clean
 	-rm -f config.status
 	-rm -f libtool
 
-maintainer-clean:  maintainer-clean-lisp maintainer-clean-generic \
-		distclean
+maintainer-clean:  maintainer-clean-generic distclean
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-.PHONY: uninstall-binSCRIPTS install-binSCRIPTS uninstall-lispLISP \
-install-lispLISP mostlyclean-lisp distclean-lisp clean-lisp \
-maintainer-clean-lisp uninstall-localeDATA install-localeDATA tags \
-distdir info dvi installcheck install-exec install-data install \
-uninstall all installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
+.PHONY: uninstall-binSCRIPTS install-binSCRIPTS uninstall-hackDATA \
+install-hackDATA uninstall-localeDATA install-localeDATA tags distdir \
+info dvi installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

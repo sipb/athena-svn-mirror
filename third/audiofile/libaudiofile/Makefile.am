@@ -18,5 +18,5 @@ libaudiofile_la_SOURCES = \
 
 include_HEADERS = audiofile.h aupvlist.h af_vfs.h
 
-CFLAGS = -Wall -g
+CFLAGS = -g
 #CFLAGS = -Wall -DNDEBUG

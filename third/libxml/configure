@@ -3072,8 +3072,8 @@ fi
 fi
 
 
-XML_LIBDIR='-L${libdir}'
-XML_INCLUDEDIR='-I${includedir}/gnome-xml'
+XML_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+XML_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}/gnome-xml'
 XML_LIBS="-lxml $Z_LIBS $M_LIBS $LIBS"
 
 

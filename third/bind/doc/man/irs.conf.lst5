@@ -42,7 +42,6 @@ DDEESSCCRRIIPPTTIIOONN
            local           Use a local file, usually in /etc
            dns             Use the domain name service (includes hesiod)
            nis             Use the Sun-compatible Network Information Service
-           irp             Use the IRP daemon on the localhost.
 
      Available options:
 
@@ -80,10 +79,7 @@ EEXXAAMMPPLLEE
            hosts           dns     continue
            hosts           local
 
-           # Networks comes first from the local file, and failing
-           # that the, irp daemon
-           networks        local   continue
-           networks        irp
+           networks        local
 
            netgroup        local
 

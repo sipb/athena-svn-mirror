@@ -1,0 +1,58 @@
+#!/bin/csh -f
+# Copyright (C) 1991 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+set magic=/mit/olc-stock/MAGIC			# if !exists, attach
+onintr cleanup
+
+if ($1 == "-q") then
+  if (! -e $magic) attach -n -r olc-stock
+else
+  echo "================================================================"
+  echo "Welcome to the OLC Answers browser."
+  echo "Copyright (c) 1988 by the Massachusetts Institute of Technology."
+  echo "================================================================"
+  echo ""
+  echo "Mail comments or suggestions to 'olc-stock'."
+  echo ""
+  if (! -e $magic) then
+	echo -n "Attaching OLC answers filesystem ... "
+	attach -n -r olc-stock > /dev/null
+	echo "done."
+	echo ""
+  endif
+  if (! -e $magic) then
+	echo "Cannot access OLC answers filesystems. Please try again later."
+	echo ""
+	exit 1
+  endif
+
+  echo "To see a browser entry, type its number.  SPACE goes to the next page"
+  echo -n "of a menu, and '-' goes back.  "
+  echo "The 's' command saves an entry to a file."
+  echo "'?' shows a list of commands.  Type 'q' to exit the browser."
+  echo ""
+  echo -n "Press RETURN to start the browser, or type 'q' to quit: "
+  set answer = $<
+  if ($answer =~ [qQ]*) goto cleanup
+endif
+
+/mit/olc-stock/olc_browser  -r  /mit/olc-stock/stock_answers
+
+cleanup:
+onintr					# now, ignore interrupts
+if ($1 != "-q") then
+  echo ""
+  echo "Thanks for using the OLC Answers browser."
+endif
+exit
+#
+#	olc_answers: Read the OLC stock answers (for general users)
+#
+#	Version of 4/27/90, 6:30am (vanharen)
+#
+#	Options: -q for quiet startup, with no delay
+#
+#	If stock answers aren't attached, attach them.  Start the browser
+#	in the top-level topics directory.
+#

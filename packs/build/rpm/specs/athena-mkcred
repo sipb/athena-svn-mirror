@@ -1,0 +1,8 @@
+Name: athena-mkcred
+Summary: Compile a knfs credentials file
+Copyright: MIT
+Group: Applications/Internet
+
+%description
+Compile an ASCII credentials file in the hashed db file used by the
+Kerberized NFS mountd.

@@ -210,11 +210,15 @@ Makefile: Makefile.in config.status
 config.status: configure
 	rm -f config.cache
 	CONFIG_SITE=no-such-file CC='$(CC)' AR='$(AR)' CFLAGS='$(CFLAGS)' \
-  	CPPFLAGS='$(CPPFLAGS)' $(SHELL) config.status --recheck
+	CPPFLAGS='$(CPPFLAGS)' $(SHELL) config.status --recheck
 
+# This rule replaced with ":" by ghudson@mit.edu on 2000-04-08 since
+# CVS munges timestamps and causes sources file to be rebuilt when we
+# don't want them to be.
 ${srcdir}/configure: configure.in
-	rm -f config.cache
-	cd ${srcdir} && autoconf
+	:
+#	rm -f config.cache
+#	cd ${srcdir} && autoconf
 
 install: all
 	$(INSTALL_DATA) libchill.a $(libsubdir)$(MULTISUBDIR)/libchill.a.n

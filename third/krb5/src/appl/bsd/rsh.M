@@ -17,7 +17,7 @@
 .\"
 .\"	@(#)rsh.1	6.2 (Berkeley) 9/20/88
 .\" "
-.TH RSH
+.TH RSH 1
 .SH NAME
 rsh \- remote shell
 .SH SYNOPSIS

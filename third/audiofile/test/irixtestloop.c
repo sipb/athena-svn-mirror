@@ -116,7 +116,7 @@ main (int argc, char **argv)
 	for (i=0; i<REPEAT_COUNT; i++)
 	{
 		printf("starting iteration %d: %d, %d, %d\n", i, endloop, startloop, endloop - startloop);
-		alWriteFrames(outport, buffer + startloop * channelCount * (sampleWidth / 8), endloop - startloop);
+		alWriteFrames(outport, (char *)buffer + startloop * channelCount * (sampleWidth / 8), endloop - startloop);
 	}
 
 	waitport(outport);

@@ -155,7 +155,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(includedir)			-I$(top_srcdir)/intl -I$(top_builddir)/intl
+INCLUDES =  	-I$(top_srcdir)/intl -I$(top_builddir)/intl
 
 
 LDADD = 
@@ -185,7 +185,7 @@ DIST_COMMON =  README Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_man2html_SOURCES)
 OBJECTS = $(gnome_man2html_OBJECTS)
@@ -312,8 +312,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-man2html.o: gnome-man2html.c
-
 info-am:
 info: info-am
 dvi-am:

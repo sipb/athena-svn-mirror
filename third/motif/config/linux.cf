@@ -1,0 +1,8 @@
+#define OSName			Linux
+#define OSMajorVersion		2
+#define OSMinorVersion		0
+#define OSTeenyVersion		0
+
+#define XtNeedsIceLibs		YES
+
+#include <lnxLib.rules>

@@ -1,4 +1,4 @@
-## Copyright (c) 1996,1999 by Internet Software Consortium
+## Copyright (c) 1996 by Internet Software Consortium
 ##
 ## Permission to use, copy, modify, and distribute this software for any
 ## purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:44:42 danw Exp $
+# $Id: Makefile,v 1.6 2000-04-22 04:40:09 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -29,19 +29,17 @@ PORTINCL = ${TOP}/port/${SYSTYPE}/include
 LIBBIND = ${TOP}/lib/libbind.a
 A=a
 O=o
-EXE=
 LEX = lex -I
 SYSLIBS = -ll -lutil
+PIDDIR = /var/run
 DESTBIN = /usr/local/bin
 DESTSBIN = /usr/local/sbin
 DESTEXEC = /usr/local/libexec
 DESTMAN = /usr/share/man
 DESTHELP= /usr/share/misc
-AR= ar cru
+AR= ar cruv
 INSTALL= install
 STRIP=-s
-INSTALL_EXEC=
-INSTALL_LIB=-o bin -g bin
 
 PS=ps
 LDFLAGS=
@@ -54,19 +52,17 @@ PROG= named-xfer
 SRCS= ${PROG}.c
 OBJS= ${PROG}.${O}
 
-all: ${PROG}${EXE}
+all: ${PROG}
 
-${PROG}${EXE}: ${OBJS} ${NAMED_OBJS} ${LIBBIND} Makefile
-	${CC} ${CDEBUG} ${LDFLAGS} ${BOUNDS} -o ${PROG}${EXE} ${OBJS} ${NAMED_OBJS} \
+${PROG}: ${OBJS} ${NAMED_OBJS} ${LIBBIND} Makefile
+	${CC} ${CDEBUG} ${LDFLAGS} -o ${PROG} ${OBJS} ${NAMED_OBJS} \
 		${LIBBIND} ${SYSLIBS}
-.c.${O}:
-	${CC} ${CPPFLAGS} ${CFLAGS} ${BOUNDS} -c $*.c
 
 distclean: clean
 
 clean: FRC
-	rm -f ${PROG}${EXE} ${OBJS} core .depend
-	rm -f *.BAK *.CKP *~ *.orig
+	rm -f ${PROG} core .depend
+	rm -f *.BAK *.CKP *~ *.${O} *.orig
 
 depend: ${SRCS}
 	mkdep -p ${CPPFLAGS} -I${INCL} -I${PORTINCL} ${SRCS}
@@ -74,14 +70,17 @@ depend: ${SRCS}
 ${DESTDIR}${DESTEXEC}:
 	mkdir -p ${DESTDIR}${DESTEXEC}
 
-install: ${DESTDIR}${DESTEXEC} ${PROG}${EXE}
-	${INSTALL} ${STRIP} -c ${INSTALL_EXEC} -m 755 ${PROG}${EXE} ${DESTDIR}${DESTEXEC}/${PROG}${EXE}
+install: ${DESTDIR}${DESTEXEC} ${PROG}
+	${INSTALL} ${STRIP} -c -m 755 ${PROG} ${DESTDIR}${DESTEXEC}/${PROG}
 
 links: FRC
 	@set -e; ln -s SRC/*.[ch] .
 
 tags: FRC
 	ctags ${SRCS} *.h
+
+commands.c: commands.l
+	${LEX} -t $< > $@ || rm $@
 
 FRC:
 

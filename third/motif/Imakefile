@@ -8,7 +8,7 @@ XCOMM
 XCOMM HISTORY
 XCOMM Motif Release 1.2.5
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:26 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.2 $ $Date: 1999-01-30 03:27:37 $
 #define IHaveSubdirs
 #define PassCDebugFlags 'CDEBUGFLAGS=$(CDEBUGFLAGS)'
 
@@ -17,7 +17,7 @@ XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:26 
 #endif
 
       WORLDOPTS = -k
-      SUBDIRS = config lib tools/wml clients $(DEMOSDIRECTORY) bitmaps bindings
+      SUBDIRS = lib tools/wml clients $(DEMOSDIRECTORY) bitmaps bindings
 
 
 MakeSubdirs($(SUBDIRS))

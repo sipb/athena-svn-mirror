@@ -150,7 +150,7 @@ noinst_PROGRAMS = zterm test-utmp
 
 libzvtincludedir = $(includedir)/zvt
 
-INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS)			-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(includedir) $(GTK_CFLAGS)  				$(GDK_IMLIB_CFLAGS)					-DGNOMESBINDIR=\""$(sbindir)"\"
+INCLUDES = -I.. -I$(srcdir)/.. $(SUPPORTINCS)			-I$(top_srcdir)/intl -I$(top_builddir)/intl		$(GTK_CFLAGS)  						$(GDK_IMLIB_CFLAGS)					-DGNOMESBINDIR=\""$(sbindir)"\"
 
 
 libzvt_la_SOURCES =  	gnome-login-support.h		gnome-login-support.c		lists.c				subshell.h			subshell.c			subshell-includes.h		update.c			vt.c				zvtterm.c
@@ -393,7 +393,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

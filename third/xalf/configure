@@ -3014,8 +3014,41 @@ else
   COMPILE_CAPPLET_FALSE=
 fi
 
+case "$host" in
+  *-sgi-irix6*)
+    need_ldinit=yes
+        /usr/sbin/getabi add "$CFLAGS" > /dev/null 2>&1
+    case $? in
+      3)
+	cat >> confdefs.h <<\EOF
+#define RLD_LIST "_RLDN32_LIST"
+EOF
+
+	;;
+      *)
+	cat >> confdefs.h <<\EOF
+#define RLD_LIST "_RLD_LIST"
+EOF
+
+	;;
+    esac
+    ;;
+  *)
+    need_ldinit=no
+    ;;
+esac
+
+
+if test x$need_ldinit = xyes; then
+  NEED_LD_INIT_OPTION_TRUE=
+  NEED_LD_INIT_OPTION_FALSE='#'
+else
+  NEED_LD_INIT_OPTION_TRUE='#'
+  NEED_LD_INIT_OPTION_FALSE=
+fi
+
 cat >> confdefs.h <<\EOF
-#define DEFAULT_TIMEOUT 20
+#define DEFAULT_TIMEOUT 240
 EOF
 
 
@@ -3195,6 +3228,8 @@ s%@GNOME_CC_CFLAGS@%$GNOME_CC_CFLAGS%g
 s%@GNOME_CC_LIBS@%$GNOME_CC_LIBS%g
 s%@COMPILE_CAPPLET_TRUE@%$COMPILE_CAPPLET_TRUE%g
 s%@COMPILE_CAPPLET_FALSE@%$COMPILE_CAPPLET_FALSE%g
+s%@NEED_LD_INIT_OPTION_TRUE@%$NEED_LD_INIT_OPTION_TRUE%g
+s%@NEED_LD_INIT_OPTION_FALSE@%$NEED_LD_INIT_OPTION_FALSE%g
 
 CEOF
 EOF

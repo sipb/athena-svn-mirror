@@ -1,7 +1,7 @@
 INCLUDES = 			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(includedir) $(GNOME_INCLUDEDIR)		\
+	$(GNOME_INCLUDEDIR)		\
 	-DGNOME_DATADIR=\""$(datadir)"\"
 
 bin_PROGRAMS = gmenu

@@ -1,0 +1,7 @@
+
+#define OSName			NetBSD
+#define OSMajorVersion		1
+#define OSMinorVersion		3
+#define OSTeenyVersion		0
+
+#include <NetBSDLib.rules>

@@ -27,8 +27,3 @@ struct timespec {
         long    tv_nsec;        /* nanoseconds */
 };
  
-
-#if defined(HAS_PTHREADS) && defined(_REENTRANT)
-#define DO_PTHREADS
-#endif
-

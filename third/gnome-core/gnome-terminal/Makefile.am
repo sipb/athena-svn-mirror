@@ -4,7 +4,6 @@
 SUBDIRS = C de da es it no
 
 INCLUDES = 						\
-	-I$(includedir)					\
 	-I$(top_srcdir)/intl				\
 	-I$(top_builddir)/intl				\
 	$(GNOME_TERMINAL_CFLAGS)			\

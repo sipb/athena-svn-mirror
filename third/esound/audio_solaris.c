@@ -111,7 +111,8 @@ int esd_audio_open()
 	}
 	if ( (strcmp(adev.name, "SUNW,CS4231") != 0) 
 	     && (strcmp(adev.name, "SUNW,sb16")  != 0)
-	     && (strcmp(adev.name, "SUNW,dbri") != 0)  ) 
+	     && (strcmp(adev.name, "SUNW,dbri") != 0)
+	     && (strcmp(adev.name, "SUNW,audiots") != 0) )
 	{
 	    fprintf(stderr, "No idea how to handle device `%s', FIXME\n", adev.name);
 	    esd_audio_fd = -1;
@@ -183,7 +184,8 @@ int esd_audio_open()
 
     if ( (strcmp(adev.name, "SUNW,CS4231") != 0)
 	&& (strcmp(adev.name, "SUNW,sb16")  != 0)
-	&& (strcmp(adev.name, "SUNW,dbri") != 0)  ) 
+	&& (strcmp(adev.name, "SUNW,dbri") != 0)
+	&& (strcmp(adev.name, "SUNW,audiots") != 0) )
     {
       fprintf(stderr, "No idea how to handle device `%s', FIXME\n", adev.name);
       close(afd);

@@ -1,5 +1,4 @@
 INCLUDES = 			\
-	-I$(includedir)		\
 	-I$(top_srcdir)/intl	\
 	-I$(top_builddir)/intl	\
 	$(GNOME_INCLUDEDIR)	\
@@ -32,7 +31,8 @@ EXTRA_DIST = \
 	gnome-hint.desktop
 
 sysdir = $(datadir)/control-center/Session/
-sys_DATA = gnome-hint-properties.desktop
+# Disable capplet listing, since Athena doesn't run gnome-hint by default.
+# sys_DATA = gnome-hint-properties.desktop
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = gnome-hint.png

@@ -109,7 +109,6 @@ DDEESSCCRRIIPPTTIIOONN
 
            $INCLUDE <filename> <opt_domain>
            $ORIGIN <domain>
-           $TTL <ttl>
            <domain> <opt_ttl> <opt_class> <type> <resource_record_data>
 
      where:
@@ -126,15 +125,11 @@ DDEESSCCRRIIPPTTIIOONN
                    $ORIGIN statements in the included file modify the current
                    origin for this file.
 
-     _t_t_l           A integer number that sets the default time-to-live for fu-
+     _o_p_t___t_t_l       An optional integer number for the time-to-live field.  It
+                   defaults to zero, meaning the minimum value specified in
 
 
-                   ture records without an explicit ttl.
-
-     _o_p_t___t_t_l       An optional integer number for the time-to-live field.  If
-                   not set the ttl is taken from the last $TTL statement.  If
-                   no $TTL statement has occured then the SOA minimum value is
-                   used and a warning is generated.
+                   the SOA record for the zone.
 
      _o_p_t___c_l_a_s_s     The object address type; currently only one type is sup-
                    ported, IN, for objects connected to the DARPA Internet.
@@ -159,7 +154,7 @@ DDEESSCCRRIIPPTTIIOONN
                                     dress of maintainer, a serial number and
                                     the following parameters in seconds: re-
                                     fresh, retry, expire and minimum TTL (see
-                                    RFC 883 and RFC 2308)).
+                                    RFC 883)).
 
                          NULL       a null resource record (no format or data)
 
@@ -199,14 +194,16 @@ DDEESSCCRRIIPPTTIIOONN
      field.  (It's true that we will have to rethink this strategy in the year
      4294, but we're not worried about it.)
 
+
      Secondary servers check the serial number at intervals specified by the
      refresh time in seconds; if the serial number changes, a zone transfer
      will be done to load the new data.  If a master server cannot be contact-
      ed when a refresh is due, the retry time specifies the interval at which
      refreshes should be attempted.  If a master server cannot be contacted
      within the interval given by the expire time, all data from the zone is
-     discarded by secondary servers.  The minimum value is the cache time-to-
-     live for negative answers (RFC 2308).
+     discarded by secondary servers.  The minimum value is the time-to-live
+     (``TTL'') used by records in the file with no explicit time-to-live val-
+     ue.
 
 NNOOTTEESS
      The boot file directives ``domain'' and ``suffixes'' have been obsoleted
@@ -258,6 +255,6 @@ FFIILLEESS
 SSEEEE AALLSSOO
      gethostbyname(3),  hostname(7),  kill(1),  resolver(3),  resolver(5),
      signal(2),  RFC 882, RFC 883, RFC 973, RFC 974, RFC 1033, RFC 1034, RFC
-     1035, RFC 1123, RFC 2308 ``Name Server Operations Guide for BBIINNDD''
+     1035, RFC 1123, ``Name Server Operations Guide for BBIINNDD''
 
 4th Berkeley Distribution      February 1, 1996                              4
