@@ -177,10 +177,7 @@ getanswer(answer, anslen, iquery, info)
 			    continue;
 			  }
 			*info = (char *) bp;
-			cp += n;
-			buflen -= n;
-			haveanswer++;
-			continue;
+			return(&host);
 		}
 		if (iquery || type != T_A)  {
 #ifdef DEBUG
