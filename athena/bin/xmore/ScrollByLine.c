@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.1 1988-05-24 14:04:40 kit Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/ScrollByLine.c,v 1.2 1989-10-15 04:31:51 probe Exp $";
 #endif lint
 
 /* 
@@ -36,7 +36,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xm
 #include	"ScrollByLine.h"
 #include	"ScrollByLineP.h"
 #include        <X11/Scroll.h>
-#include	<X11/Atoms.h>
+#include	<X11/StringDefs.h>
 #include	<X11/Misc.h>
 
 /* Default Translation Table */
