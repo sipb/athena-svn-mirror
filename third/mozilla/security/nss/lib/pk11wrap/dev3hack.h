@@ -35,7 +35,7 @@
 #define DEVNSS3HACK_H
 
 #ifdef DEBUG
-static const char DEVNSS3HACK_CVS_ID[] = "@(#) $RCSfile: dev3hack.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 16:08:44 $ $Name: not supported by cvs2svn $";
+static const char DEVNSS3HACK_CVS_ID[] = "@(#) $RCSfile: dev3hack.h,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 13:59:00 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #include "cert.h"
