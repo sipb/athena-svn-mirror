@@ -1,29 +1,29 @@
+thisconfigdir=./../..
+myfulldir=lib/krb5/keytab/any
+mydir=keytab/any
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)$(S)$(U)
+
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..\..
-##DOSLIBNAME=..\..\krb5.lib
+##DOS##BUILDTOP = ..\..\..\..
+##DOS##PREFIXDIR=keytab\any
+##DOS##OBJFILE=$(OUTPRE)any.lst
+##WIN16##LIBNAME=..\..\krb5.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+STLIBOBJS= \
+	kta_ops.o	\
+	kta_resolv.o
 
-SRCS= \
-	$(srcdir)/kta_ops.c \
+OBJS=	\
+	$(OUTPRE)kta_ops.$(OBJEXT)	\
+	$(OUTPRE)kta_resolv.$(OBJEXT)
+
+
+SRCS=	\
+	$(srcdir)/kta_ops.c	\
 	$(srcdir)/kta_resolv.c
 
-OBJS = \
-	kta_ops.$(OBJEXT)	\
-	kta_resolv.$(OBJEXT)
+##DOS##LIBOBJS = $(OBJS)
 
-all-unix:: shared $(OBJS)
-all-mac:: $(OBJS)
-all-windows:: $(OBJS)
-
-shared:
-	mkdir shared
-
-clean-unix::
-	$(RM) shared/*
-
-clean-mac::
-clean-windows::
+all-unix:: all-libobjs
+clean-unix:: clean-libobjs
