@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.2 1996-10-04 03:21:58 ghudson Exp $
+# $Id: build.sh,v 1.3 1996-10-06 21:07:18 ghudson Exp $
 
 export ATHENA_SYS HOSTTYPE PATH CONFIG_SITE
 
@@ -78,12 +78,15 @@ packages=`( echo "$HOSTTYPE"; cat "$source/packs/build/packages" ) | awk '
 	}
 	/[ \t]/ {
 		split($2, p, ",");
+		build = 0;
 		for (i in p) {
-			if (p[i] == platform || p[i] == "all") {
-				print $1;
-				break;
-			}
+			if (p[i] == platform || p[i] == "all")
+				build = 1;
+			if (p[i] == ("-" platform))
+				build = 0;
 		}
+		if (build)
+			print $1;
 		next;
 	}
 	{
@@ -134,8 +137,8 @@ for package in $packages; do
 		echo In ${package}: make install DESTDIR=$srvd &&
 		make install DESTDIR=$srvd
 	elif [ -r "$build/$package/Imakefile" ]; then
-		echo In ${package}: imake -I$configdir -DUseInstalled -DSRCDIR=$source &&
-		imake -I"$configdir" -DUseInstalled -DSRCDIR="$source" &&
+		echo In ${package}: imake -I$configdir -DUseInstalled -DTOPDIR=$source &&
+		imake -I"$configdir" -DUseInstalled -DTOPDIR="$source" &&
 		echo In ${package}: make Makefiles && make Makefiles &&
 		echo In ${package}: make clean && make clean &&
 		echo In ${package}: make depend && make depend &&
