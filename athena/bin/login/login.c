@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.38 1991-07-08 09:15:46 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.39 1991-07-08 09:17:02 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.38 1991-07-08 09:15:46 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.39 1991-07-08 09:17:02 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -103,7 +103,7 @@ typedef int sigtype;
 
 #define KRB_ENVIRON	"KRBTKFILE" /* Ticket file environment variable */
 #define KRB_TK_DIR	"/tmp/tkt_" /* Where to put the ticket */
-#define KRBTKLIFETIME	96	/* 8 hours */
+#define KRBTKLIFETIME	DEFAULT_TKT_LIFE
 
 #define PROTOTYPE_DIR	"/usr/athena/lib/prototype_tmpuser" /* Source for temp files */
 #define TEMP_DIR_PERM	0755	/* Permission on temporary directories */
