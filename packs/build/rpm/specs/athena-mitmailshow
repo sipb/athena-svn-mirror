@@ -1,0 +1,9 @@
+Name: athena-mitmailshow
+Summary: Show messages in an IMAP folder
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailshow program displays messages from a folder on an IMAP server.
