@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.13 1993-04-29 17:26:52 miki Exp $
+ * $Id: from.c,v 1.14 1994-03-29 12:28:42 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: miki $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.13 1993-04-29 17:26:52 miki Exp $";
+static char *rcsid = "$Id: from.c,v 1.14 1994-03-29 12:28:42 miki Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -30,6 +30,7 @@ extern char *malloc();
 #include <sys/stat.h>
 #ifdef SOLARIS
 #include <termios.h>
+#include <regexpr.h>
 #endif
 #define NOTOK (-1)
 #define OK 0
@@ -112,7 +113,7 @@ parse_args(argc,argv)
 	struct hes_postoffice *p;
 #endif
 
-	cp = rindex(argv[0], '/');
+	cp = strrchr(argv[0], '/');
 	if (cp)
 	    progname = cp + 1;
 	else
@@ -411,16 +412,26 @@ char *re_comp();
 int list_compare(s,list)
       char *s,**list;
 {
-      char *err;
+      char *retval;
 
       while (*list!=NULL) {
-	      err=re_comp(*list++);
-	      if (err) {
-		      fprintf(stderr,"%s: %s - %s\n",progname,err,*(--list));
+#ifdef SOLARIS
+       retval=compile(*list++, NULL, NULL);
+            if (regerrno) {
+                    fprintf(stderr,"%s: %d - %s\n",progname,regerrno,*(--list));
+                     exit(1);
+                    }
+            if (step(s, retval))
+                    return(1);
+#else
+	      retval=re_comp(*list++);
+	      if (retval) {
+		      fprintf(stderr,"%s: %s - %s\n",progname,retval,*(--list));
 		      exit(1);
 		      }
 	      if (re_exec(s))
 		      return(1);
+#endif
       }
       return(0);
 }
@@ -459,11 +470,11 @@ char *parse_from_field(str)
 	stored = scr = strdup(str);
 	while (*scr && isspace(*scr))
 		scr++;
-	if (cp = index(scr, '<'))
+	if (cp = strchr(scr, '<'))
 		scr = cp+1;
-	if (cp = index(scr, '@'))
+	if (cp = strchr(scr, '@'))
 		*cp = '\0';
-	if (cp = index(scr, '>'))
+	if (cp = strchr(scr, '>'))
 		*cp = '\0';
 	scr = strdup(scr);
 	MakeLowerCase(scr);
@@ -554,7 +565,7 @@ print_report(headers, num_headers, winlength)
   char *p, *from_field = 0, *subject_field = 0, *buf, *buf1;
   
   for(j = 0; j < num_headers; j++) {
-    p = index(headers[j], ':');
+    p = strchr(headers[j], ':');
     if (p == NULL)
       continue;
 
