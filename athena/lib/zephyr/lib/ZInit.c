@@ -4,17 +4,18 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.17 1989-05-30 18:11:25 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.18 1991-03-21 11:42:53 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZInitialize_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.17 1989-05-30 18:11:25 jtkohl Exp $";
-#endif lint
+static char rcsid_ZInitialize_c[] =
+    "$Zephyr: /afs/athena.mit.edu/astaff/project/zephyr/src/lib/RCS/ZInitialize.c,v 1.17 89/05/30 18:11:25 jtkohl Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -62,8 +63,6 @@ Code_t ZInitialize()
 #ifdef KERBEROS    
     if ((krbval = krb_get_lrealm(__Zephyr_realm, 1)) != KSUCCESS)
 	return (krbval);
-#else
-    (void) strcpy(__Zephyr_realm, KRB_REALM);
 #endif
 
     /* Get the sender so we can cache it */
