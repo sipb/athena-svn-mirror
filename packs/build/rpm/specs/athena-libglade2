@@ -2,7 +2,6 @@ Name: athena-libglade2
 Summary: The Glade user interface library, version 2, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libglade2 = 2.0.1
 
 %description
 This library allows you to load glade interface files in a program at

@@ -2,7 +2,6 @@ Name: athena-gnome-media
 Summary: GNOME media programs, for Athena
 License: GPL
 Group: Applications/Multimedia
-Provides: gnome-media = 2.2.1.1
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of

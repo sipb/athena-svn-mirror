@@ -2,7 +2,6 @@ Name: athena-yelp
 Summary: A system documentation reader from the Gnome project, for Athena
 License: GPL
 Group: Applications/System
-Provides: yelp = 2.2.0
 
 %description
 Yelp is the Gnome 2 help/documentation browser. It is designed

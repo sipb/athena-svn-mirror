@@ -2,7 +2,6 @@ Name: athena-gnome-panel
 Summary: GNOME panel, for Athena
 License: GPL
 Group: User Interface/Desktops
-Provides: gnome-panel = 2.2.0.1
 
 %description
 The GNOME panel provides the window list, workspace switcher, menus,

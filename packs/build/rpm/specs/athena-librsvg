@@ -2,7 +2,6 @@ Name: athena-librsvg
 Summary: An SVG library based on libart, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: librsvg2 = 2.2.3
 
 %description 
 The librsvg library is a lightweight library for parsing and rendering

@@ -2,7 +2,6 @@ Name: athena-oaf
 Summary: GNOME object activation framework, for Athena
 License: LGPL and GPL
 Group: System Environment/Libraries
-Provides: oaf = 0.6.10
 
 Requires: athena-libxml athena-ORBit athena-dustbuster
 

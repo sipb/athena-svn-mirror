@@ -2,7 +2,6 @@ Name: athena-libgnomecanvas
 Summary: GNOME Canvas widget, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnomecanvas = 2.2.0.1
 
 %description
 The GNOME canvas widget allows you to create custom displays using

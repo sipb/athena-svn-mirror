@@ -2,7 +2,6 @@ Name: athena-intltool
 Summary: Scripts for internationalizing data files, for Athena
 License: GPL
 Group: Development/Tools
-Provides: intltool = 0.25
 
 %description
 intltool can automatically extract translatable strings from oaf,

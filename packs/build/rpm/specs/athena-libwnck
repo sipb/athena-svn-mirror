@@ -2,7 +2,6 @@ Name: athena-libwnck
 Summary: Window Navigator Construction Kit, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libwnck = 2.2.1
 
 %description
 libwnck (pronounced "libwink") is used to implement pagers, tasklists,

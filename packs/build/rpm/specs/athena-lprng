@@ -2,8 +2,6 @@ Name: athena-lprng
 Summary: The LPRNG printing system for Athena.
 License: Artistic License
 Group: System Environment/Base
-Provides: lpr
-Provides: LPRng = 3.5.3
 
 %description
 The LPRNG printing system for Athena.

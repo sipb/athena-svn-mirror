@@ -2,7 +2,6 @@ Name: athena-expat
 Summary: A library for parsing XML, for Athena
 License: BSD
 Group: System Environment/Libraries
-Provides: expat = 1.95.5
 
 %description
 This is expat, the C library for parsing XML, written by James Clark.

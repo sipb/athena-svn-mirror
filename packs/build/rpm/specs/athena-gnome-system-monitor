@@ -2,7 +2,6 @@ Name: athena-gnome-system-monitor
 Summary: Simple process monitor, for Athena
 License: GPL
 Group: Applications/System
-Provides: gnome-system-monitor = 2.0.4
 
 %description
 gnome-system-monitor is a simple process and system monitor.

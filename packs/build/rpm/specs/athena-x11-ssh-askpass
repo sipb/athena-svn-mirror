@@ -2,7 +2,6 @@ Name: athena-x11-ssh-askpass
 Summary: A passphrase dialog for OpenSSH and X.
 License: BSD
 Group: Applications/Internet
-Provides: x11-ssh-askpass = 1.2.4.1
 
 %description
 This package contains an X11 passphrase dialog for OpenSSH.

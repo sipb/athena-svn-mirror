@@ -2,9 +2,6 @@ Name: athena-krb5
 Summary: Version 5 of the Kerberos system
 License: MIT
 Group: System Environment/Base
-Provides: krb5-libs = 1.2.5
-Provides: krb5-workstation = 1.2.5
-Provides: krb5-server = 1.2.5
 
 %description
 The Kerberos secure net authentication system.

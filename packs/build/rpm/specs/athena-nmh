@@ -2,8 +2,6 @@ Name: athena-nmh
 Summary: The NMH mail handling system
 License: Richard Coleman
 Group: Applications/Communications
-Provides: mh
-Provides: nmh = 1.0
 
 %description
 NMH is the standard mail handling system on Athena.

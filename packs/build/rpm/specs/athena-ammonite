@@ -2,7 +2,6 @@ Name: athena-ammonite
 Summary: The Ammonite HTTP proxy, for Athena
 License: GPL
 Group: User Interface/Desktop
-Provides: ammonite = 0.8.1
 
 Requires: athena-gnome-libs athena-libxml athena-GConf athena-oaf
 Requires: athena-openssl

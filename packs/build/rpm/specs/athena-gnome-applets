@@ -2,7 +2,6 @@ Name: athena-gnome-applets
 Summary: Small applications for the GNOME panel, for Athena
 License: GPL
 Group: User Interface/Desktops
-Provides: gnome-applets = 2.2.0
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of

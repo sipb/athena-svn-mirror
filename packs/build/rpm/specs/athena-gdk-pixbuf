@@ -2,7 +2,6 @@ Name: athena-gdk-pixbuf
 Summary: The gdk-pixbuf image handling library, for Athena
 License: GPL and LGPL
 Group: System Environment/Libraries
-Provides: gdk-pixbuf = 0.22.0
 
 Requires: libpng libungif libjpeg athena-gtk
 

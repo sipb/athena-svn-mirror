@@ -2,7 +2,6 @@ Name: athena-soup
 Summary: Soup, a SOAP implementation, for Athena
 License: LGPL
 Group: Libraries/Network
-Provides: soup = 0.7.10
 
 %description
 Soup is a SOAP (Simple Object Access Protocol) implementation in C. It 

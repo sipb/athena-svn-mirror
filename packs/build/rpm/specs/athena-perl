@@ -2,7 +2,6 @@ Name: athena-perl
 Summary: The Perl programming language, as configured for Athena
 License: GPL
 Group: Development/Languages
-Provides: perl = 1:5.8.0
 
 # Auto-requirement checking on the perl package generates some odd
 # perl dependencies like perl(v5.6.) which we don't want to have.

@@ -2,7 +2,6 @@ Name: athena-ntp
 Summary: The Network Time Protocol, to keep Athena workstations in sync
 License: David L. Mills
 Group: System Environment/Base
-Provides: ntp = 4.1.1
 
 %description
 The Network Time Protocol, to keep Athena workstations in sync

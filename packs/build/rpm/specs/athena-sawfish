@@ -2,7 +2,6 @@ Name: athena-sawfish
 Summary: The sawfish window manager, for Athena
 License: GPL
 Group: User Interface/Desktops
-Provides: sawfish = 1.2-gtk2
 
 %description
 Sawfish is an extensible window manager using an Emacs Lisp-like

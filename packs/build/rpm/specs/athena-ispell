@@ -2,7 +2,6 @@ Name: athena-ispell
 Summary: A spelling checker, for Athena
 License: BSDish
 Group: Applications/Text
-Provides: ispell = 3.1.20
 
 %description
 Ispell is an interactive spelling checker.  Ispell can check text

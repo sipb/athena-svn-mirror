@@ -2,7 +2,6 @@ Name: athena-gnome-utils
 Summary: GNOME utility programs, for Athena
 License: GPL
 Group: Applications/System
-Provides: gnome-utils = 2.2.0.3
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of

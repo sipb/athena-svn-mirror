@@ -2,7 +2,6 @@ Name: athena-gtk-engines
 Summary: Theme engines for GTK, for Athena
 License: GPL
 Group: System Environment/Libraries
-Provides: gtk2-engines = 2.2.0
 
 %description
 The gtk2-engines package contains shared objects and configuration

@@ -2,7 +2,6 @@ Name: athena-audiofile
 Summary: A library for accessing various audio file formats, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: audiofile = 0.2.3
 
 %description
 The Audio File library is an implementation of SGI's Audio File

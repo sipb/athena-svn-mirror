@@ -2,7 +2,6 @@ Name: athena-gnome-libs
 Summary: The GNOME library package, for Athena
 License: GPL
 Group: System Environment/Libraries
-Provides: gnome-libs = 1.4.1.4
 
 Requires: athena-gtk athena-ORBit athena-imlib
 

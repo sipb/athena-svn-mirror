@@ -2,7 +2,6 @@ Name: athena-bug-buddy
 Summary: A bug reporting utility for GNOME, for Athena
 License: GPL
 Group: Applications/System
-Provides: bug-buddy = 2.2.102
 
 %description
 Bug-buddy is a bug reporting utility for the GNOME desktop GUI

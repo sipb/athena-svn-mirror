@@ -2,7 +2,6 @@ Name: athena-glib2
 Summary: The glib utility library (version 2), for Athena
 License: GPL
 Group: System Environment/Libraries
-Provides: glib2 = 2.2.1
 
 %description
 glib is a library of utility and portability functions.  It is a basic

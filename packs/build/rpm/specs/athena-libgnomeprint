@@ -2,7 +2,6 @@ Name: athena-libgnomeprint
 Summary: Printing library for GNOME, for Athena
 License: LGPL
 Group: System Environment/Base
-Provides: libgnomeprint22 = 2.2.1.1
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of

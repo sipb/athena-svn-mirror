@@ -2,8 +2,6 @@ Name: athena-mozilla
 Summary: Web browser and mail reader, for Athena.
 License: MPL
 Group: Applications/Internet
-Provides: webclient
-Provides: mozilla = 1.2.1
 
 Requires: athena-gtk
 

@@ -2,7 +2,6 @@ Name: athena-rpm
 Summary: The RPM package management system, for Athena
 License: GPL
 Group: System Environment/Base
-Provides: rpm = 4.2
 
 %description
 The RPM Package Manager (RPM) is a powerful command line driven

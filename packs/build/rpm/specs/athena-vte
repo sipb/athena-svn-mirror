@@ -2,7 +2,6 @@ Name: athena-vte
 Summary: A terminal emulator widget, for Athena
 License: LGPL
 Group: User Interface/X
-Provides: vte = 0.10.26
 
 %description
 VTE is a terminal emulator widget for use with GTK+ 2.0.

@@ -2,7 +2,6 @@ Name: athena-xscreensaver
 Summary: The standard screensaver and locking program for Athena
 License: Jamie Zawinski
 Group: User Interface/X
-Provides: xscreensaver = 3.29
 
 Requires: athena-krb5
 

@@ -2,7 +2,6 @@ Name: athena-libgnome
 Summary: GNOME base library, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnome = 2.2.0.1
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of

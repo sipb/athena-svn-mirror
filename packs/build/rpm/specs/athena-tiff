@@ -2,7 +2,6 @@ Name: athena-tiff
 Summary: A library for manipulating TIFF format image files, for Athena
 License: distributable
 Group: System Environment/Libraries
-Provides: libtiff = 3.5.7
 
 %description
 The libtiff package contains a library of functions for manipulating

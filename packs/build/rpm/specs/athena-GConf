@@ -2,7 +2,6 @@ Name: athena-GConf
 Summary: The GNOME configuration database system, for Athena
 License: LGPL
 Group: System Environment/Base
-Provides: GConf = 1.0.0
 
 Requires: athena-gtk athena-oaf athena-ORBit
 

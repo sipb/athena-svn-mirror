@@ -2,7 +2,6 @@ Name: athena-eog
 Summary: Eye of GNOME image viewer, for athena
 License: GPL
 Group: User Interface/Desktops
-Provides: eog = 2.2.2
 
 %description
 Eye of GNOME (EOG) is an image viewer component used by Nautilus.

@@ -2,7 +2,6 @@ Name: athena-gal
 Summary: The G App library, for Athena
 License: GPL
 Group: System Environment/Libraries
-Provides: gal = 0.24
 
 Requires: athena-gnome-vfs athena-libglade
 

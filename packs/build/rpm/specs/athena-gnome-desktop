@@ -2,7 +2,6 @@ Name: athena-gnome-desktop
 Summary: Shared code for GNOME desktop components
 License: GPL
 Group: System Environment/Libraries
-Provides: gnome-desktop = 2.2.0.1
 
 %description
 The gnome-desktop package contains an internal library

@@ -2,7 +2,6 @@ Name: athena-gedit
 Summary: A small but powerful text editor for GNOME, for Athena
 License: GPL
 Group: Applications/Editors
-Provides: gedit = 2.2.0.1
 
 %description
 gEdit is a small but powerful text editor designed specifically for

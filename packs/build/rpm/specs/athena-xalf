@@ -2,7 +2,6 @@ Name: athena-xalf
 Summary: A utility to provide feedback when starting X applications, for Athena
 License: GPL
 Group: X11/Utilities
-Provides: xalf = 0.12
 
 Requires: athena-gtk athena-control-center
 

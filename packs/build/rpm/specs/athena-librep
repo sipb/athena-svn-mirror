@@ -2,7 +2,6 @@ Name: athena-librep
 Summary: The rep Lisp interpreter, for Athena
 License: GPL
 Group: Development/Languages
-Provides: librep = 0.16.1
 
 %description
 The librep shared library implements a Lisp dialect that is
