@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.18 1991-06-30 21:05:37 probe Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.19 1991-07-21 10:53:11 epeisach Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -453,7 +453,7 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry7.justify:		center
 !*omenuEntry7.sensitive:		False
 *omenuEntry8.label:		Login to MITVMA
-*omenuEntry8.callback:		runCB(/usr/athena/bin/lib/login/mitvma)
+*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
 *omenuEntry9.callback:		attachAndRunCB(moira,xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/moira/namespace)
 *omenuEntry10.label:		Advice (lucy)
