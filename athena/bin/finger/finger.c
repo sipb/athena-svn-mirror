@@ -4,9 +4,16 @@
  * "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.11 1991-03-01 17:29:36 epeisach Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.12 1991-05-27 13:17:16 probe Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  91/03/27  14:44:33  probe
+ * Initial revision
+ * 
+ * Revision 1.11  91/03/01  17:29:36  epeisach
+ * PS/2 fixes. Does not have the _pw_stayopen hack.
+ * Also, AIX does not use /usr/adm/lastlog. Don't print message complaining.
+ * 
  * Revision 1.10  90/07/12  15:46:18  epeisach
  * Ultrix fixes.
  * 
@@ -40,7 +47,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.11 1991-03-01 17:29:36 epeisach Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.12 1991-05-27 13:17:16 probe Exp $";
 
 #endif lint
 
@@ -109,7 +116,12 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/signal.h>
 #include <pwd.h>
 #include <stdio.h>
+#if !defined(_AIX) || (AIXV < 20)
+/* AIX 3.1 does not have <lastlog.h> */
 #include <lastlog.h>
+#else
+#define NO_LASTLOG
+#endif
 #include <ctype.h>
 #include <sys/time.h>
 #include <sys/socket.h>
@@ -290,7 +302,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#if defined(ultrix) || defined(AIX)
+#if defined(ultrix) || defined(_AIX)
 		setpwent();
 #else
 		extern _pw_stayopen;
@@ -348,7 +360,7 @@ donames(argv)
 	register struct person *q;	/* A second chain for athena-wide
 					 * finger */
 	register struct passwd *pw;
-	struct passwd *hesgetpwnam();
+	struct passwd *hes_getpwnam();
 	int uf, i;
 	Code_t state;
 
@@ -398,7 +410,7 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#if !defined(ultrix) && !defined(AIX)
+#if !defined(ultrix) && !defined(_AIX)
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
@@ -442,7 +454,7 @@ donames(argv)
 			}
 		/* now do the hesiod chain */
 		for (q = person2; q != 0; q = q->link)
-			if (pw = hesgetpwnam(q->name))
+			if (pw = hes_getpwnam(q->name))
 				q->pwd = pwdcopy(pw);
 		endpwent();
 	}
@@ -1064,11 +1076,13 @@ decode(pers)
 
 fwopen()
 {
+#ifndef NO_LASTLOG
 	if ((lf = open(LASTLOG, 0)) < 0) {
-#ifndef AIX
+#ifndef _AIX
 		fprintf(stderr, "finger: %s open error\n", LASTLOG);
 #endif
 	}
+#endif
 	if ((lw = open(ACCTLOG, 0)) < 0)
 		fprintf(stderr, "finger: %s open error\n", ACCTLOG);
 }
@@ -1076,7 +1090,9 @@ fwopen()
 findwhen(pers)
 	register struct person *pers;
 {
+#ifndef NO_LASTLOG
 	struct lastlog ll;
+#endif
 	struct stat stb;
 	struct utmp *bp;
 	struct utmp buf[128];
@@ -1132,6 +1148,7 @@ findwhen(pers)
 		}
 	}
 fudged:
+#ifndef NO_LASTLOG
 	if (lf >= 0) {
 		(void) lseek(lf, (long) pers->pwd->pw_uid * sizeof ll, 0);
 		if ((i = read(lf, (char *) &ll, sizeof ll)) == sizeof ll) {
@@ -1150,8 +1167,9 @@ fudged:
 			pers->host[0] = 0;
 			pers->loginat = 0L;
 		}
-	}
-	else {
+	} else
+#endif
+	{
 		pers->tty[0] = 0;
 		pers->host[0] = 0;
 		pers->loginat = 0L;
@@ -1160,10 +1178,12 @@ fudged:
 
 fwclose()
 {
+#ifndef NO_LASTLOG
 	if (lf >= 0) {
 		(void) close(lf);
 		lf = -1;
 	}
+#endif
 	if (lw >= 0) {
 		(void) close(lw);
 		lw = -1;

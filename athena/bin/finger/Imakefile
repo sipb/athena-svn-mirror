@@ -3,17 +3,10 @@
  *
  *	MIT Project Athena
  * 
- * $Id: Imakefile,v 1.1 1991-05-27 13:16:47 probe Exp $
+ * $Id: Imakefile,v 1.2 1991-05-27 13:17:11 probe Exp $
  */
 
 LIBS =  -lhesiod -lzephyr -lcom_err -lkrb -ldes
-
-SRCS =	finger.c hespwnam.c
-
-OBJECTS = finger.o hespwnam.o
+OBJECTS = finger.o
 
 SimpleProgram(finger,$(OBJECTS),$(LIBS),$(ATHBINDIR))
-
-lint::
-	lint *.c
-
