@@ -2,7 +2,6 @@
 
 cp $1/packs/config/aliases $2
 cp $1/packs/config/authinfo $2
-cp $1/packs/config/os/$OS/sendmail-noauth.cf $2
 cp $1/packs/config/os/$OS/sendmail.cf $2
 cp $1/packs/maint/os/$OS/athena-sendmail.rc $2
 cp $1/packs/maint/os/$OS/sendmail.sh $2
