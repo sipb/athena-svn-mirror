@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.18 1991-04-18 21:35:02 lwvanels Exp $
+# $Id: Imakefile,v 1.19 1991-05-15 12:51:12 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # For copying and distribution information,
@@ -16,7 +16,13 @@ WCLDIR=
 WCLDIR=wcl
 #endif
 
-SUBDIRS= common logger clients server browser man lib $(WCLDIR)
+#if HaveSysLibMu
+LIBMUDIR=
+#else
+LIBMUDIR=libMu
+#endif
+
+SUBDIRS= common logger clients server browser man lib $(WCLDIR) $(LIBMUDIR)
 RM=rm -f
 MV=mv -f
 
