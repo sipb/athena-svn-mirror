@@ -1,8 +1,4 @@
-# $Id: Makefile,v 1.5 1999-09-29 20:40:05 danw Exp $
-
-# Font source directories
-VPATH = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
-	European-BIG Japanese Japanese-BIG Japanese-X Korean-X Misc
+# $Id: Makefile,v 1.6 2001-04-08 14:55:21 ghudson Exp $
 
 # Tools
 BDFTOPCF=bdftopcf
@@ -16,41 +12,112 @@ aliases = Chinese/fonts.alias European/fonts.alias Japanese-X/fonts.alias \
 	Japanese/fonts.alias
 
 # fonts to build
-fonts = etl16-viscii.pcf etl24-viscii.pcf mule-indian-1col-24.pcf \
-	mule-indian-24.pcf mule-iscii-24.pcf mule-lao-14.pcf \
-	mule-lao-16.pcf mule-lao-24.pcf mule-tibmdx-16.pcf \
-	mule-tibmdx-1col-16.pcf mule-tibmdx-1col-24.pcf \
-	mule-tibmdx-24.pcf thai-14.pcf thai-16.pcf thai-24.pcf \
-	cns-1-16.pcf cns-1-24.pcf cns-2-16.pcf cns-2-24.pcf \
-	cns-3-24.pcf cns-4-24.pcf cns-5-24.pcf cns-6-24.pcf \
-	cns-7-24.pcf etl14-sisheng.pcf etl16-sisheng.pcf \
-	etl24-sisheng.pcf fonts.alias guobiao16.pcf taipei16.pcf \
-	taipei24.pcf cc40s.pcf cc48s.pcf cns-1-40.pcf cns-2-40.pcf \
-	cns-3-40.pcf cns-4-40.pcf cns-5-40.pcf cns-6-40.pcf \
-	cns-7-40.pcf gb16fs.pcf gb16st.pcf gb24st.pcf \
-	ethiomx16f-uni.pcf ethiomx24f-uni.pcf a18.pcf \
-	etl14-cyrillic.pcf etl14-greek.pcf etl14-koi8.pcf \
-	etl14-latin1.pcf etl14-latin2.pcf etl14-latin3.pcf \
-	etl14-latin4.pcf etl14-latin5.pcf etl16-cyrillic.pcf \
-	etl16-greek.pcf etl16-koi8.pcf etl16-latin1.pcf \
-	etl16-latin2.pcf etl16-latin3.pcf etl16-latin4.pcf \
-	etl16-latin5.pcf etl16b-latin1.pcf etl16bi-latin1.pcf \
-	etl16i-latin1.pcf etl24-cyrillic.pcf etl24-greek.pcf \
-	etl24-koi8.pcf etl24-latin1.pcf etl24-latin2.pcf \
-	etl24-latin3.pcf etl24-latin4.pcf etl24-latin5.pcf \
-	etl40-latin1.pcf a18rk.pcf jiskan16-1978.pcf jisksp16.pcf \
-	k16-1990.pcf kanji18.pcf jisksp40.pcf kanji32.pcf kanji48.pcf \
-	12x24rk.pcf 8x16rk.pcf jiskan16.pcf jiskan24.pcf k14.pcf \
-	hanglg16.pcf hanglm16.pcf hanglm24.pcf etl14-hebrew.pcf \
-	etl14-ipa.pcf etl16-arabic0.pcf etl16-arabic1.pcf \
-	etl16-arabic2.pcf etl16-hebrew.pcf etl16-ipa.pcf \
-	etl24-arabic0.pcf etl24-arabic1.pcf etl24-arabic2.pcf \
-	etl24-hebrew.pcf etl24-ipa.pcf
+fonts = Asian/etl16-viscii.pcf \
+	Asian/etl24-viscii.pcf \
+	Asian/mule-indian-1col-24.pcf \
+	Asian/mule-indian-24.pcf \
+	Asian/mule-iscii-24.pcf \
+	Asian/mule-lao-14.pcf \
+	Asian/mule-lao-16.pcf \
+	Asian/mule-lao-24.pcf \
+	Asian/mule-tibmdx-16.pcf \
+	Asian/mule-tibmdx-1col-16.pcf \
+	Asian/mule-tibmdx-1col-24.pcf \
+	Asian/mule-tibmdx-24.pcf \
+	Asian/thai-14.pcf \
+	Asian/thai-16.pcf \
+	Asian/thai-24.pcf \
+	Chinese-BIG/cc40s.pcf \
+	Chinese-BIG/cc48s.pcf \
+	Chinese-BIG/cns-1-40.pcf \
+	Chinese-BIG/cns-2-40.pcf \
+	Chinese-BIG/cns-3-40.pcf \
+	Chinese-BIG/cns-4-40.pcf \
+	Chinese-BIG/cns-5-40.pcf \
+	Chinese-BIG/cns-6-40.pcf \
+	Chinese-BIG/cns-7-40.pcf \
+	Chinese-X/gb16fs.pcf \
+	Chinese-X/gb16st.pcf \
+	Chinese-X/gb24st.pcf \
+	Chinese/cns-1-16.pcf \
+	Chinese/cns-1-24.pcf \
+	Chinese/cns-2-16.pcf \
+	Chinese/cns-2-24.pcf \
+	Chinese/cns-3-24.pcf \
+	Chinese/cns-4-24.pcf \
+	Chinese/cns-5-24.pcf \
+	Chinese/cns-6-24.pcf \
+	Chinese/cns-7-24.pcf \
+	Chinese/etl14-sisheng.pcf \
+	Chinese/etl16-sisheng.pcf \
+	Chinese/etl24-sisheng.pcf \
+	Chinese/guobiao16.pcf \
+	Chinese/taipei16.pcf \
+	Chinese/taipei24.pcf \
+	Ethiopic/ethiomx16f-uni.pcf \
+	Ethiopic/ethiomx24f-uni.pcf \
+	European-BIG/etl40-latin1.pcf \
+	European/a18.pcf \
+	European/etl14-cyrillic.pcf \
+	European/etl14-greek.pcf \
+	European/etl14-koi8.pcf \
+	European/etl14-latin1.pcf \
+	European/etl14-latin2.pcf \
+	European/etl14-latin3.pcf \
+	European/etl14-latin4.pcf \
+	European/etl14-latin5.pcf \
+	European/etl16-cyrillic.pcf \
+	European/etl16-greek.pcf \
+	European/etl16-koi8.pcf \
+	European/etl16-latin1.pcf \
+	European/etl16-latin2.pcf \
+	European/etl16-latin3.pcf \
+	European/etl16-latin4.pcf \
+	European/etl16-latin5.pcf \
+	European/etl16b-latin1.pcf \
+	European/etl16bi-latin1.pcf \
+	European/etl16i-latin1.pcf \
+	European/etl24-cyrillic.pcf \
+	European/etl24-greek.pcf \
+	European/etl24-koi8.pcf \
+	European/etl24-latin1.pcf \
+	European/etl24-latin2.pcf \
+	European/etl24-latin3.pcf \
+	European/etl24-latin4.pcf \
+	European/etl24-latin5.pcf \
+	Japanese-BIG/jisksp40.pcf \
+	Japanese-BIG/kanji32.pcf \
+	Japanese-BIG/kanji48.pcf \
+	Japanese-X/12x24rk.pcf \
+	Japanese-X/8x16rk.pcf \
+	Japanese-X/jiskan16.pcf \
+	Japanese-X/jiskan24.pcf \
+	Japanese-X/k14.pcf \
+	Japanese/a18rk.pcf \
+	Japanese/jiskan16-1978.pcf \
+	Japanese/jisksp16.pcf \
+	Japanese/k16-1990.pcf \
+	Japanese/kanji18.pcf \
+	Korean-X/hanglg16.pcf \
+	Korean-X/hanglm16.pcf \
+	Korean-X/hanglm24.pcf \
+	Misc/etl14-hebrew.pcf \
+	Misc/etl14-ipa.pcf \
+	Misc/etl16-arabic0.pcf \
+	Misc/etl16-arabic1.pcf \
+	Misc/etl16-arabic2.pcf \
+	Misc/etl16-hebrew.pcf \
+	Misc/etl16-ipa.pcf \
+	Misc/etl24-arabic0.pcf \
+	Misc/etl24-arabic1.pcf \
+	Misc/etl24-arabic2.pcf \
+	Misc/etl24-hebrew.pcf \
+	Misc/etl24-ipa.pcf
 
 all: $(fonts) fonts.alias
 
 clean:
-	rm -f *.pcf fonts.alias
+	rm -f $(fonts) fonts.alias
 
 check:
 
