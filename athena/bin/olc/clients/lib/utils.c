@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.21 1991-09-27 10:50:05 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: utils.c,v 1.22 1994-08-21 18:15:52 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.21 1991-09-27 10:50:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.22 1994-08-21 18:15:52 cfields Exp $";
 #endif
 #endif
 
@@ -215,7 +215,7 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
-#ifdef VOID_SIGRET
+#if defined(VOID_SIGRET) && !defined(POSIX)
 #ifdef __STDC__
   void (*func)(int);
 #else
@@ -224,7 +224,9 @@ call_program(program, argument)
 #else
   int (*func)();
 #endif
-
+#ifdef POSIX
+  struct sigaction sa, osa;
+#endif
 #ifdef NO_VFORK
   if ((pid = fork()) == -1) 
 #else
@@ -243,13 +245,24 @@ call_program(program, argument)
       }
     else 
       {
+#ifdef POSIX
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler= (void (*)()) SIG_IGN;
+	(void) sigaction(SIGINT, &sa, &osa);
+#else
 	func = signal(SIGINT, SIG_IGN);
+#endif
 	while (wait(0) != pid) 
 	  {
 			/* ho hum ... (yawn) */
             /* tap tap */
 	  };
+#ifdef POSIX
+	(void) sigaction(SIGINT, &osa, NULL);
+#else
 	signal(SIGINT, func);
+#endif
 	return(SUCCESS);
       }
 }
