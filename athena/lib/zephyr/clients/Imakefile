@@ -5,13 +5,13 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.4 1989-03-23 11:06:49 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.5 1989-04-05 16:56:59 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
 
 SRCDIR= ${SRCTOP}/clients
-CODE= Imakefile
+CODE= Imakefile ${SHELLSRC}
 
 #ifdef DO_SYSLOG
 SYSLOGD= syslogd
@@ -32,10 +32,13 @@ SUBDIRS = zaway zctl zinit zleave zlocate \
 
 #ifdef OLD_ATHENA_COMPAT
 SHELLSCRIPTS= zlogout zhide zwgc
+SHELLSRC= zlogout.sh zhide.sh zwgc.sh
 
 install_shell_scripts(SHELLSCRIPTS,$(CLIENTDIR))
 
 install::
 	rm -f ${DESTDIR}${CLIENTDIR}/zlogin
 	ln -s zlogout ${DESTDIR}${CLIENTDIR}/zlogin
+#else
+SHELLSRC=
 #endif
