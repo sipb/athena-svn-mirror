@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.19 1994-07-08 15:27:41 cfields Exp $
+# $Id: reactivate.sh,v 1.20 1994-08-24 04:17:37 cfields Exp $
 
 trap "" 1 15
 
@@ -65,12 +65,9 @@ esac
 
 # kdestroy from /tmp any ticket files that may have escaped other methods
 # of destruction, before we clear /tmp.
-export KRBTKFILE
 for i in /tmp/tkt*; do
-  KRBTKFILE=$i
-  /usr/athena/bin/kdestroy -f
+  KRBTKFILE=$i /usr/athena/bin/kdestroy -f
 done
-unset KRBTKFILE
 
 if [ $full ]; then		# START tmp clean
 # Clean temporary areas (including temporary home directories)
