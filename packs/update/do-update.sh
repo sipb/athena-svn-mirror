@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.32 1999-09-28 22:10:34 jweiss Exp $
+# $Id: do-update.sh,v 1.33 1999-12-14 04:56:13 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -51,6 +51,38 @@ esac
 method=$1
 version=$2
 newvers=$3
+
+# Some versions of Solaris will panic if they are hit with a certain
+# type of port scan and you then kill a network daemon.  As a
+# work-around, sync the disks first, and sleep to give the machine a
+# chance to panic if it is going to.
+sync
+sleep 2
+# We could be more intelligent and shutdown everything, but...
+echo "Shutting down running services"
+if [ -f /var/athena/inetd.pid ]; then
+	kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
+fi
+if [ -f /var/athena/sshd.pid ]; then
+	kill `cat /var/athena/sshd.pid` > /dev/null 2>&1
+fi
+if [ -f /var/athena/named.pid ]; then
+	kill `cat /var/athena/named.pid` > /dev/null 2>&1
+fi
+case "$HOSTTYPE" in
+sgi)
+	killall inetd snmpd syslogd
+	;;
+*)
+	if [ -f /etc/syslog.pid ]; then
+		kill `cat /etc/syslog.pid` > /dev/null 2>&1
+	fi
+	if [ -f /var/athena/snmpd.pid ]; then
+		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
+	fi
+	;;
+esac
+sleep 10
 
 echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
 	"$CONFDIR/version"
@@ -172,31 +204,6 @@ else
 		done
 	fi
 fi
-
-# We could be more intelligent and shutdown everything, but...
-echo "Shutting down running services"
-if [ -f /var/athena/inetd.pid ]; then
-	kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
-fi
-if [ -f /var/athena/sshd.pid ]; then
-	kill `cat /var/athena/sshd.pid` > /dev/null 2>&1
-fi
-if [ -f /var/athena/named.pid ]; then
-	kill `cat /var/athena/named.pid` > /dev/null 2>&1
-fi
-case "$HOSTTYPE" in
-sgi)
-	killall inetd snmpd syslogd
-	;;
-*)
-	if [ -f /etc/syslog.pid ]; then
-		kill `cat /etc/syslog.pid` > /dev/null 2>&1
-	fi
-	if [ -f /var/athena/snmpd.pid ]; then
-		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
-	fi
-	;;
-esac
 
 # MINIROOT is currently only used for Irix 6.x.
 if [ "$MINIROOT" = true ]; then
