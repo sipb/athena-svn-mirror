@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.11 1997-02-27 18:30:53 ghudson Exp $
+# $Id: do.sh,v 1.12 1997-06-29 00:48:17 cfields Exp $
 
 source="/source"
 build="/build"
@@ -33,6 +33,8 @@ case "`uname -a`" in
 SunOS*5.5*sun4*)	ATHENA_SYS=sun4x_55	;;
 SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
 IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
+IRIX*6.2*)		ATHENA_SYS=sgi_62	;;
+IRIX*6.3*)		ATHENA_SYS=sgi_63	;;
 esac
 
 # Determine platform type, appropriate path, and compiler for use with plain
