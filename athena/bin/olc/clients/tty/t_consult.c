@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.5 1989-11-17 14:10:16 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.6 1990-02-14 15:20:55 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -35,7 +35,6 @@ t_sign_on(Request,flag,hold)
      int hold;
 {
   int status;
-  char buf[BUF_SIZE];
   int instance;
   
   if(flag)
@@ -67,10 +66,8 @@ t_sign_on(Request,flag,hold)
     case HAS_QUESTION:
       if(isme(Request))
 	{
-	  get_prompted_input("Would you like to create another instance to sign on? " ,buf);
-	  if(string_equiv(buf,"yes",1))
-	    return(t_sign_on(Request,TRUE,hold));
-	  status = NO_ACTION;
+	  printf("Your current instance is busy, creating another one for you.\n");
+	  return(t_sign_on(Request,TRUE,hold));
 	  break;
 	}
       else
