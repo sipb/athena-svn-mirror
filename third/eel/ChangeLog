@@ -1,3 +1,99 @@
+2003-03-10  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.2.2.
+
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/Makefile.am: 
+	* eel/eel-input-event-box.[ch]:
+	New widget. Basically GtkEventBox with a INPUT_ONLY window.
+
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.c:
+	Update foocanvas. Fix a11y crash.
+
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-accessibility.[ch]:
+	Publicaly export some utility functions.
+	Patch from padraig.obriain@sun.com
+
+2003-03-04  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.c:
+	Update foocanvas. Gets a11y support from padraig.
+
+2003-03-03  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-canvas.c:
+	Update from foo-canvas. Fixes group movement,
+	removes silly warning.
+
+2003-02-28  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-editable-label.[ch]:
+	Add eel_editable_label_get_font_description and
+	eel_editable_label_set_font_description.
+
+2003-02-27  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configur.in: Added "bn" to ALL_LINGUAS
+
+2003-02-25  Samúel Jón Gunnarsson <sammi@techattack.nu>
+
+	* configur.in: Added is to ALL_LINGUAS
+
+2003-02-21  Paisa Seeluangsawat  <paisa@colorado.edu>
+
+	* configure.in (ALL_LINGUAS): Added "th".
+
+2003-02-18  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-02-14  Alexander Larsson  <alexl@redhat.com>
+
+	* eel/eel-glib-extensions.c (eel_unsetenv):
+	Fix bug. Patch from hidetoshi.tajima@sun.com.
+
+=== eel 2.2.1 ===
+	
+2003-02-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS: 
+	* configure.in:
+	Bump version to 2.2.1
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Removed "ga" from ALL_LINGUAS. Empty translation file.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-02-05  James M. Cape  <jcape@ignore-your.tv>
+
+	* eel/eel-background.c,
+	eel/eel-canvas-rect-ellipse.c,
+	eel/eel-canvas.c,
+	eel/eel-cell-renderer-pixbuf-list.c,
+	eel/eel-editable-label.c,
+	eel/eel-gdk-pixbuf-extensions.c,
+	eel/eel-gnome-extensions.c,
+	eel/eel-stock-dialogs.c,
+	test/test-eel-image-table.c:
+	Replace gtk+ functions deprecated in 2.3.
+
+=== eel 2.2.0.2 ===
+
 2003-01-27  Dave Camp  <dave@ximian.com>
 
 	* NEWS: 

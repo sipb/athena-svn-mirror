@@ -65,7 +65,7 @@ struct _EelEditableLabel
   gchar  *text;
   int text_size; /* allocated size, in bytes */
   int n_bytes;	 /* length in use (not including terminating zero), in bytes */
-  
+
   PangoLayout *layout;
   guint        layout_includes_preedit : 1;
 
@@ -81,6 +81,8 @@ struct _EelEditableLabel
 
   GdkGC *primary_cursor_gc;
   GdkGC *secondary_cursor_gc;
+  
+  PangoFontDescription *font_desc;
 };
 
 struct _EelEditableLabelClass
@@ -131,6 +133,9 @@ PangoLayout *         eel_editable_label_get_layout           (EelEditableLabel 
 void                  eel_editable_label_get_layout_offsets   (EelEditableLabel *label,
 							       gint             *x,
 							       gint             *y);
+PangoFontDescription *eel_editable_label_get_font_description (EelEditableLabel *label);
+void                  eel_editable_label_set_font_description (EelEditableLabel *label,
+							       const PangoFontDescription *desc);
 
 #ifdef __cplusplus
 }

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 1.2\n"
-"POT-Creation-Date: 2003-01-27 21:09-0500\n"
+"POT-Creation-Date: 2003-03-10 18:08+0100\n"
 "PO-Revision-Date: 2002-12-19 10:52+0100\n"
 "Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
+#: eel/eel-canvas.c:1188 eel/eel-canvas.c:1189
 msgid "X"
 msgstr "X"
 
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
+#: eel/eel-canvas.c:1195 eel/eel-canvas.c:1196
 msgid "Y"
 msgstr "Y"
 
@@ -74,11 +74,11 @@ msgstr ""
 "De positie van het andere einde van de selectie van de cursor, in "
 "lettertekens "
 
-#: eel/eel-editable-label.c:3030
+#: eel/eel-editable-label.c:3069
 msgid "Select All"
 msgstr "Alles selecteren"
 
-#: eel/eel-editable-label.c:3041
+#: eel/eel-editable-label.c:3080
 msgid "Input Methods"
 msgstr "Invoermethodes"
 

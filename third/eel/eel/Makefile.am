@@ -62,6 +62,7 @@ libeel_2_la_SOURCES =				\
 	eel-i18n.c				\
 	eel-image-chooser.c			\
 	eel-image-table.c			\
+	eel-input-event-box.c			\
 	eel-labeled-image.c			\
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
@@ -116,6 +117,7 @@ eel_headers =					\
 	eel-i18n.h				\
 	eel-image-chooser.h			\
 	eel-image-table.h			\
+	eel-input-event-box.h			\
 	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
 	eel-password-dialog.h			\

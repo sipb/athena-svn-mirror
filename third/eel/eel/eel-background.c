@@ -914,11 +914,11 @@ eel_background_draw (EelBackground *background,
 
 			canvas_buf_from_pixbuf (&buffer, pixbuf, x_canvas, y_canvas, width, height);
 			eel_background_draw_aa (background, &buffer);
-			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
-						       0, 0,
-						       dest_x + x, dest_y + y,
-						       width, height,
-						       GDK_RGB_DITHER_MAX, dest_x + x, dest_y + y);
+			gdk_draw_pixbuf (drawable, gc, pixbuf,
+					 0, 0,
+					 dest_x + x, dest_y + y,
+					 width, height,
+					 GDK_RGB_DITHER_MAX, dest_x + x, dest_y + y);
 		}
 	}
 	

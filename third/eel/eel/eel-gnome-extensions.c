@@ -293,7 +293,7 @@ icon_selected (IconSelectionData *selection_data)
 	/* We have to get rid of the icon selection dialog, but we can't do it now, since the
 	 * file entry might still need it. Do it when the next idle rolls around
 	 */ 
-	gtk_idle_add (widget_destroy_callback, selection_data);
+	g_idle_add (widget_destroy_callback, selection_data);
 }
 
 /* handle the cancel button being pressed */

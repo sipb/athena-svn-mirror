@@ -890,6 +890,30 @@ eel_editable_label_get_line_wrap (EelEditableLabel *label)
   return label->wrap;
 }
 
+PangoFontDescription *
+eel_editable_label_get_font_description (EelEditableLabel *label)
+{
+  if (label->font_desc)
+    return pango_font_description_copy (label->font_desc);
+
+  return NULL;
+}
+
+void
+eel_editable_label_set_font_description (EelEditableLabel *label,
+					 const PangoFontDescription *desc)
+{
+  if (label->font_desc)
+    pango_font_description_free (label->font_desc);
+
+  if (desc)
+    label->font_desc = pango_font_description_copy (desc);
+  else
+    label->font_desc = NULL;
+
+  eel_editable_label_clear_layout (label);
+}
+
 static void
 eel_editable_label_finalize (GObject *object)
 {
@@ -899,6 +923,12 @@ eel_editable_label_finalize (GObject *object)
   
   label = EEL_EDITABLE_LABEL (object);
 
+  if (label->font_desc)
+    {
+      pango_font_description_free (label->font_desc);
+      label->font_desc = NULL;
+    }
+  
   g_object_unref (G_OBJECT (label->im_context));
   label->im_context = NULL;
   
@@ -1030,6 +1060,9 @@ eel_editable_label_ensure_layout (EelEditableLabel *label,
 	  label->layout = gtk_widget_create_pango_layout (widget, label->text);
 	}
       label->layout_includes_preedit = include_preedit;
+
+      if (label->font_desc != NULL)
+	pango_layout_set_font_description (label->layout, label->font_desc);
       
       pango_layout_set_attributes (label->layout, tmp_attrs);
       
@@ -2681,6 +2714,9 @@ eel_editable_label_move_cursor (EelEditableLabel    *label,
 	case GTK_MOVEMENT_PARAGRAPHS:
 	case GTK_MOVEMENT_PAGES:
 	  break;
+	default:
+	  g_assert_not_reached ();
+	  break;
 	}
     }
   else
@@ -2717,6 +2753,9 @@ eel_editable_label_move_cursor (EelEditableLabel    *label,
 	  break;
 	case GTK_MOVEMENT_PARAGRAPHS:
 	case GTK_MOVEMENT_PAGES:
+	  break;
+	default:
+	  g_assert_not_reached ();
 	  break;
 	}
     }
