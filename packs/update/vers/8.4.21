@@ -2,13 +2,11 @@
 
 case "$HOSTTYPE" in
 sun4)
-  echo "106300-09"					>> $PATCHES
   echo "106327-08"					>> $PATCHES
   echo "106541-14"					>> $PATCHES
   echo "106950-13"					>> $PATCHES
   echo "106980-15"					>> $PATCHES
   echo "107081-25"					>> $PATCHES
-  echo "107153-01"					>> $PATCHES
   echo "107226-14"					>> $PATCHES
   echo "107636-05"					>> $PATCHES
   echo "108374-04"					>> $PATCHES
