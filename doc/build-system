@@ -103,7 +103,10 @@ to it) which does the following:
 The build environment will ensure that the following things are true:
 
 	* The environment variable ATHENA_SYS is set to the current
-	  platform's desired value.
+	  platform's desired ATHENA_SYS value (e.g. "sun4m_54").
+
+	* The environment variable HOSTTYPE is set to the current
+	  platform name (e.g. "sun").
 
 	* The environment variable CONFIG_SITE points to the Athena
 	  config.site file.
