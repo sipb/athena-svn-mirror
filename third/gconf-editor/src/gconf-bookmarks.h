@@ -23,7 +23,10 @@
 #include "gconf-editor-window.h"
 #include <gtk/gtkwidget.h>
 
-void gconf_bookmarks_hook_up_menu (GConfEditorWindow *window, GtkWidget *menu);
+void gconf_bookmarks_hook_up_menu (GConfEditorWindow *window,
+				   GtkWidget         *menu,
+				   GtkWidget         *add_bookmark,
+				   GtkWidget         *edit_bookmarks);
 void gconf_bookmarks_add_bookmark (const char *path);
 
 #endif /* __GCONF_BOOKMARKS_H__ */

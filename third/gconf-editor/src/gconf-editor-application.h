@@ -21,7 +21,14 @@
 #define __GCONF_EDITOR_APPLICATION_H__
 
 #include <gtk/gtkwidget.h>
+#include <gnome.h>
 
-GtkWidget *gconf_editor_application_create_editor_window (void);
+enum {
+	GCONF_EDITOR_WINDOW_NORMAL,
+	GCONF_EDITOR_WINDOW_DEFAULTS,
+	GCONF_EDITOR_WINDOW_MANDATORY
+};
+
+GtkWidget *gconf_editor_application_create_editor_window (int type);
 
 #endif /* __GCONF_EDITOR_APPLICATION_H__ */

@@ -194,14 +194,17 @@ gconf_bookmarks_dialog_init (GConfBookmarksDialog *dialog)
 	GdkPixbuf *pixbuf;
 	GConfClient *client;
        
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
 	gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW (dialog), 300, 200);
 	
 	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Edit bookmarks"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Edit Bookmarks"));
 
 	dialog->list_store = gtk_list_store_new (1, G_TYPE_STRING);
 	g_signal_connect (dialog->list_store, "row_deleted",

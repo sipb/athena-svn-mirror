@@ -58,7 +58,7 @@ gconf_list_model_notify_func (GConfClient* client, guint cnxn_id, GConfEntry *en
 	if (strncmp (key, list_model->root_path, strlen (list_model->root_path)) != 0)
 	    return;
 	
-	if (gconf_client_dir_exists (gconf_client_get_default (), key, NULL))
+	if (gconf_client_dir_exists (client, key, NULL))
 		/* this is a directory -- ignore */
 		return;
 
@@ -298,6 +298,10 @@ gconf_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, gint co
 		case GCONF_VALUE_SCHEMA:
 			icon = schema_pixbuf;
 			break;
+		case GCONF_VALUE_PAIR:
+			/* FIXME: We need an icon for pairs */
+			icon = blank_pixbuf;
+			break;
 		default:
 			icon = blank_pixbuf;
 			g_warning ("unknown value type %d", gconf_entry_get_value (entry)->type);
@@ -387,6 +391,7 @@ gconf_list_model_finalize (GObject *object)
 	list_model = (GConfListModel *)object;
 	
 	g_hash_table_destroy (list_model->key_hash);
+	g_free (list_model->root_path);
 	
 	parent_class->finalize (object);
 }
@@ -413,11 +418,20 @@ gconf_list_model_class_init (GConfListModelClass *klass)
 static void
 gconf_list_model_init (GConfListModel *model)
 {
-	model->client = gconf_client_get_default ();
 	model->stamp = g_random_int ();
 	model->key_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
 						 g_free, NULL);
+	model->client = gconf_client_get_default ();
 }
+
+void
+gconf_list_model_set_client (GConfListModel *model, GConfClient *client)
+{
+	g_object_unref (model->client);
+	model->client = client;
+}
+
+
 
 GType
 gconf_list_model_get_type (void)

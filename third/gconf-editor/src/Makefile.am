@@ -1,11 +1,8 @@
 INCLUDES = \
 	-DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DDATADIR=\""$(datadir)"\" 	\
 	-DGCONF_EDITOR_IMAGEDIR=\""$(datadir)/pixmaps/gconf-editor"\" \
 	-DIMAGEDIR=\""$(datadir)/pixmaps"\" \
-	-I$(includedir)		\
-	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED -DGNOME_VFS_DISABLE_DEPRECATED \
 	$(GCONF_EDITOR_CFLAGS)	
 
 bin_PROGRAMS = gconf-editor
@@ -28,14 +25,18 @@ gconf_editor_SOURCES = \
 	gconf-key-editor.h		\
 	gconf-list-model.c		\
 	gconf-list-model.h		\
-	gconf-message-dialog.c		\
-	gconf-message-dialog.h		\
 	gconf-stock-icons.c		\
 	gconf-stock-icons.h		\
 	gconf-tree-model.c		\
 	gconf-tree-model.h		\
 	gconf-util.c			\
 	gconf-util.h			\
+	gedit-output-window.c		\
+	gedit-output-window.h		\
+	gconf-search.h                  \
+	gconf-search.c                  \
+	gconf-search-dialog.h           \
+	gconf-search-dialog.c           \
 	main.c				\
 	$(gconf_editor_built_headers)	\
 	$(gconf_editor_built_cfiles)

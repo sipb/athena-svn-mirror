@@ -10,8 +10,7 @@ images_DATA = \
 	entry-schema.png	\
 	entry-string.png	\
 	folder-closed.png	\
-	folder-open.png		\
-	stock-about-16.png	
+	folder-open.png
 
 icon_DATA = \
 	gconf-editor.png	

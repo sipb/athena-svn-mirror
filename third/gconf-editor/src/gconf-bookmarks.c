@@ -35,36 +35,62 @@
 static void
 gconf_bookmarks_bookmark_activated (GtkWidget *menuitem, GConfEditorWindow *window)
 {
-	char *key;
-	GtkTreePath *path, *child_path;
-	gint depth;
-	gint i;
+	gconf_editor_window_go_to (window,
+				   g_object_get_data (G_OBJECT (menuitem), "gconf-key"));
+}
 
-	key = g_object_get_data (G_OBJECT (menuitem), "gconf-key");
+static void
+gconf_bookmarks_set_item_has_icon (GtkWidget *item,
+				   gboolean   have_icons)
+{
+	GtkWidget *image;
 
-	child_path = gconf_tree_model_get_tree_path_from_gconf_path (GCONF_TREE_MODEL (window->tree_model), key);
+	image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (item));
+	if (image && !g_object_get_data (G_OBJECT (item), "gconf-editor-icon"))
+		g_object_set_data_full (G_OBJECT (item), "gconf-editor-icon",
+					g_object_ref (image), g_object_unref);
 
-	path = gtk_tree_model_sort_convert_child_path_to_path (GTK_TREE_MODEL_SORT (window->sorted_tree_model),
-							       child_path);
+	if (!image)
+		image = g_object_get_data (G_OBJECT (item), "gconf-editor-icon");
 
-	gtk_tree_path_free (child_path);
-	
-	/* kind of hackish, but it works! */
-	depth = gtk_tree_path_get_depth (path);
-	for (i = 0; i < depth; i++) {
-		gint j;
-		GtkTreePath *cpath = gtk_tree_path_copy (path);
+	if (!image)
+		return;
 
-		for (j = 0; j < (depth - i); j++)
-			gtk_tree_path_up (cpath);
+	if (have_icons)
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+	else
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), NULL);
+}
 
-		gtk_tree_view_expand_row (GTK_TREE_VIEW (window->tree_view), cpath, FALSE);
-		gtk_tree_path_free (cpath);
-	}
+static void
+gconf_bookmarks_set_have_icons (GtkWidget *menu, gboolean have_icons)
+{
+        GList *items, *n;
 
-	gtk_tree_selection_select_path (gtk_tree_view_get_selection (GTK_TREE_VIEW (window->tree_view)), path);
-	gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (window->tree_view), path, NULL, TRUE, 0.5, 0.5);
-	gtk_tree_path_free (path);
+        items = GTK_MENU_SHELL (menu)->children;
+
+        for (n = items; n != NULL; n = n->next) 
+                if (GTK_IS_IMAGE_MENU_ITEM (n->data))
+                        gconf_bookmarks_set_item_has_icon (GTK_WIDGET (n->data), have_icons);
+}
+
+static void
+gconf_bookmarks_have_icons_notify (GConfClient       *client,
+				   guint              cnxn_id,
+				   GConfEntry        *entry,
+				   gpointer           data)
+{
+        GtkWidget *menu;
+	gboolean have_icons;
+
+        menu = GTK_WIDGET (data);
+
+	if (entry->value->type != GCONF_VALUE_BOOL)
+		return;
+
+	have_icons = gconf_value_get_bool (entry->value);
+
+	gconf_bookmarks_set_have_icons (menu, have_icons);
 }
 
 static void
@@ -153,20 +179,52 @@ remove_notify_id (gpointer data)
 }
 
 void
-gconf_bookmarks_hook_up_menu (GConfEditorWindow *window, GtkWidget *menu)
+gconf_bookmarks_hook_up_menu (GConfEditorWindow *window,
+			      GtkWidget *menu,
+			      GtkWidget *add_bookmark,
+			      GtkWidget *edit_bookmarks)
 {
+	GConfClient *client;
 	guint notify_id;
 
 	g_object_set_data (G_OBJECT (menu), "editor-window", window);
+
+	client = gconf_client_get_default ();
 	
 	/* Add a notify function */
-	gconf_client_add_dir (gconf_client_get_default (), "/apps/gconf-editor/bookmarks",
+	gconf_client_add_dir (client, "/apps/gconf-editor/bookmarks",
 			      GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-	notify_id = gconf_client_notify_add (gconf_client_get_default (), "/apps/gconf-editor/bookmarks",
+	notify_id = gconf_client_notify_add (client, "/apps/gconf-editor/bookmarks",
 					     gconf_bookmarks_key_changed, menu, NULL, NULL);
 	g_object_set_data_full (G_OBJECT (menu), "notify-id", GINT_TO_POINTER (notify_id),
 				remove_notify_id);
 
+
+	notify_id = gconf_client_notify_add (client, "/desktop/gnome/interface/menus_have_icons",
+					     gconf_bookmarks_have_icons_notify, menu, NULL, NULL); 
+	g_object_set_data_full (G_OBJECT (menu), "notify-id-x", GINT_TO_POINTER (notify_id),
+				remove_notify_id);
+
 	gconf_bookmarks_update_menu (menu);
 
+        {
+                gboolean have_icons;
+                GConfValue *value;
+                GError *err;
+
+                err = NULL;
+                value = gconf_client_get (client, "/desktop/gnome/interface/menus_have_icons", &err);
+
+                if (err != NULL || value->type != GCONF_VALUE_BOOL)
+                        return;
+
+                have_icons = gconf_value_get_bool (value);
+
+                gconf_bookmarks_set_have_icons (menu, have_icons);
+        }
+
+	if ( ! gconf_client_key_is_writable (client, "/apps/gconf-editor/bookmarks", NULL)) {
+		gtk_widget_set_sensitive (add_bookmark, FALSE);
+		gtk_widget_set_sensitive (edit_bookmarks, FALSE);
+	}
 }

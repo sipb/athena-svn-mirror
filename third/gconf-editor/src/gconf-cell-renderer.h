@@ -38,7 +38,7 @@ enum {
 	GCONF_CELL_RENDERER_KEY_NAME_COLUMN,
 	GCONF_CELL_RENDERER_VALUE_COLUMN,
 	GCONF_CELL_RENDERER_VALUE_TYPE_COLUMN,
-	GCONF_CELL_RENDERER_NUM_COLUMNS,
+	GCONF_CELL_RENDERER_NUM_COLUMNS
 };
 
 struct _GConfCellRenderer {
@@ -53,7 +53,8 @@ struct _GConfCellRenderer {
 struct _GConfCellRendererClass {
 	GtkCellRendererClass parent_class;
 
-	void (*changed) (GConfCellRenderer *renderer, GConfValue *value);
+	void (*changed) (GConfCellRenderer *renderer, char *path, GConfValue *value);
+	gboolean (*check_writable) (GConfCellRenderer *renderer, char *path);
 };
 
 GType gconf_cell_renderer_get_type (void);

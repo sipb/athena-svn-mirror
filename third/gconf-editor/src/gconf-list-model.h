@@ -38,7 +38,7 @@ enum {
 	GCONF_LIST_MODEL_KEY_NAME_COLUMN,
 	GCONF_LIST_MODEL_KEY_PATH_COLUMN,
 	GCONF_LIST_MODEL_VALUE_COLUMN,
-	GCONF_LIST_MODEL_NUM_COLUMNS,
+	GCONF_LIST_MODEL_NUM_COLUMNS
 };
 
 struct _GConfListModel {
@@ -63,5 +63,6 @@ struct _GConfListModelClass {
 GType gconf_list_model_get_type (void);
 GtkTreeModel *gconf_list_model_new (void);
 void gconf_list_model_set_root_path (GConfListModel *model, const gchar *path);
+void gconf_list_model_set_client (GConfListModel *model, GConfClient *client);
 
 #endif /* __GCONF_LIST_MODEL_H__ */

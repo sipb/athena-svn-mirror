@@ -1,3 +1,774 @@
+2004-09-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.8.0 "Joshua Bell"
+
+2004-09-12  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/gconf-editor.xml:
+	- Minor fixes
+
+2004-09-12  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/gconf-editor.xml:
+	- Typo fixes from Keywan Najafi Tonekaboni
+
+2004-09-11  Abel Cheung  <maddog@linuxhall.org>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-09-08  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post release version bumping to 2.8.0
+
+2004-09-08  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in: Release 2.7.92 ("Morte della Madonna").
+
+2004-09-08  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * configure.in: Added 'or' to ALL_LINGUAS.
+ 
+2004-09-06  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/gconf-editor.xml:
+	- Adding revision status information
+
+2004-09-02  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/Makefile.am:
+	* docs/C/gconf-editor-C.omf:
+	* docs/C/gconf-editor.xml:
+	- Full revisions for 2.8
+
+2004-09-02  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/gconf-editor.xml:
+	* docs/C/figures/gconf_editor_anno_window.png:
+	* docs/C/figures/gconf_editor_anno_window.xcf:
+	- Partial documentation updates for 2.8
+
+2004-08-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in: Release 2.7.91 ("Que fuerte me parece").
+
+2004-08-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-search-dialog.c: (gconf_search_dialog_search):
+	* src/gconf-search.c: (gconf_tree_model_search_iter_foreach),
+	(gconf_tree_model_build_match_list):
+	* src/gconf-search.h: Fix search cancelation. (Bugs #150728, #146790)
+
+2004-08-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_window_update_list_selection): Check for NULL values
+	before showing/hiding the non-schema warning. Fix bug #149805.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-02  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.90
+
+	* NEWS: Update.
+
+2004-07-31  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* src/gconf-editor-window.c:  Use stock add icon in 'Add Bookmark' menu.
+	
+	* src/gconf-bookmarks-dialog.c:  Use HIG widget spacing for edit
+	bookmarks dialog. Use header capitalization for dialog's window title. 
+
+2004-07-31  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* src/gconf-editor-window.c:  Use header capitalization for newly added
+	menu item and add mnemonic.
+
+2004-07-31  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* src/gconf-search-dialog.c:  (gconf_search_dialog_init):  Use HIG
+	widget spacing for find dialog.  Add missing mnemonic to the search
+	entry's label.
+	 
+2004-07-20  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in:
+	Post release version bump
+
+2004-07-20  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Released 2.7.4
+
+2004-07-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gedit-output-window.c: (gedit_output_window_prepend_line):
+	* src/gedit-output-window.h: added prepend function.
+	* src/gconf-editor-window.c: (gconf_add_recent_key),
+	(gconf_editor_show_recent_keys), (gconf_editor_new_key_response),
+	(gconf_editor_edit_key_response), (gconf_editor_window_recents_init),
+	(gconf_editor_gconf_value_changed), (gconf_editor_window_init):
+	* src/gconf-editor-window.h:
+	* src/gconf-search-dialog.c: (gconf_search_dialog_search): Add every
+	modified key to recents and add an entry in the menu for showing them
+	all in the output window.
+
+2004-07-18  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* src/gconf-editor-window.c:  Use header capitalization for
+	menu items. Fix bug #147753
+
+2004-07-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_go_to): Go to
+	the rigth key also in the list view if location is a full key.
+
+2004-07-17  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-search-dialog.c: (gconf_search_dialog_search):
+	* src/gconf-search.c: (gconf_tree_model_search_iter_foreach),
+	(gconf_tree_model_build_match_list):
+	* src/gconf-search.h: Search asyncronously and add results to the 
+	output window as soon as they come. Search in gconf_client_all_entries
+	instead of the list_model to allow user interation during the search.
+
+2004-07-17  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_init): Put the output
+	window in a vpane so it can be resized. Fixs #146776
+
+2004-07-14  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Added ne Nepali in ALL_LINGUS
+
+2004-07-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post-release version bumping.
+
+2004-07-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in:
+	* NEWS: Release 2.7.3
+
+2004-07-09  Anders Carlsson  <andersca@gnome.org>
+
+	* src/gconf-search-dialog.c: 
+	(gconf_search_not_found_dialog):
+	Translate dialog title
+	
+	(gconf_search_entry_changed):
+	Make the find button insensitive if there's no text entered.
+
+	(gconf_search_dialog_init):
+	Remove the dialog separator and make the window non-resizable.
+
+2004-07-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.7.2 (never released :) )
+
+2004-07-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* po/POTFILES.in: removed src/gconf-message-dialog.c and added
+	gconf-search-dialog.c
+
+2004-07-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* data/gconf-editor.schemas.in:
+	* src/Makefile.am:
+	* src/gconf-message-dialog.c:
+	* src/gconf-message-dialog.h:
+	* src/main.c: (main): Removed warning dialog. Patch from Christian Neumair
+
+2004-07-08  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/Makefile.am: Added new files.
+	* src/gconf-editor-window.c: (gconf_editor_window_search),
+	(gconf_editor_window_close_output_window),
+	(gconf_editor_window_output_window_changed),
+	(gconf_editor_window_init): 
+	* src/gconf-editor-window.h: Added the output window. Change default size.
+	* src/gconf-search-dialog.c: (gconf_search_dialog_response),
+	(gconf_search_dialog_class_init), (gconf_search_not_found_dialog),
+	(gconf_search_dialog_search), (gconf_search_dialog_init),
+	(gconf_search_dialog_get_type), (gconf_search_dialog_new):
+	* src/gconf-search-dialog.h: New files for the search dialog.
+	* src/gconf-search.c: (gconf_tree_model_search_iter_foreach),
+	(gconf_tree_model_build_match_list):
+	* src/gconf-search.h: New files for doing the search.
+	* src/gedit-output-window.c: (gedit_output_window_get_type),
+	(gedit_output_window_class_init),
+	(gedit_output_window_copy_selection), (close_clicked_callback),
+	(clear_clicked_callback), (copy_clicked_callback),
+	(gedit_output_window_key_press_event_cb), (create_popup_menu),
+	(gedit_output_window_treeview_selection_changed),
+	(gedit_output_window_init), (gedit_output_window_finalize),
+	(gedit_output_window_destroy), (gedit_output_window_new),
+	(gedit_output_window_clear), (gedit_output_window_append_line),
+	(gedit_output_window_set_select_multiple):
+	* src/gedit-output-window.h: Class borrowed from gedit. Minor changes
+	for disabling multiple selection and adding a new signal when the
+	selection has changed.
+
+	With this we have a new fancy search system :) Fixed bugs #82902 and
+	#113235.
+
+2004-07-04  Christian Neumair  <chris@gnome-de.org>
+
+	* src/gconf-editor-window.c (gconf_editor_window_init):
+	Enable menu internationalization by setting the menu action group's
+	translation domain to NULL.
+
+2004-06-22  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post-release version bumping.
+
+2004-06-22  Breda McColgan  <breda.mccolgan@sun.com>
+
+	* docs/C/gconf-editor.xml: updated menu path (Getting Started)
+	* docs/C/gconf-editor-C.omf: updated manual date and version numbers
+	* docs/C/l10n.txt: updated manual date and version number
+
+2004-06-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.7.1
+
+2004-06-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_gconf_value_changed): Check 
+	if we are changing values of the same type. Because we can get a changed 
+	signal from a cell_renderer corresponfing to a previous list_model.
+	This finally fixes bug #136148.
+
+2004-06-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-list-model.c: (gconf_list_model_finalize): Free root_path.
+
+2004-06-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_gconf_value_changed): Free the path.
+
+2004-06-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-application.c:
+	(gconf_editor_application_create_editor_window):
+	* src/gconf-editor-window.c: (gconf_editor_window_init): Fix keybindings.
+	* src/gconf-editor-window.h:
+	* src/gconf-list-model.h:
+	* src/gconf-tree-model.h: add missing function definitions.
+
+2004-06-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_init): Unsensitivice new 
+	defaut/mandatory windows menu entries if the user cannot edit them.
+
+2004-06-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-application.c:
+	(gconf_editor_application_create_editor_window):
+	* src/gconf-editor-application.h:
+	* src/gconf-editor-window.c: (gconf_editor_window_go_to),
+	(gconf_editor_window_new_window),
+	(gconf_editor_window_new_defaults_window),
+	(gconf_editor_window_new_mandatory_window),
+	(gconf_editor_popup_window_unset_key),
+	(gconf_editor_new_key_response),
+	(gconf_editor_popup_window_new_key),
+	(gconf_editor_edit_key_response),
+	(gconf_editor_popup_window_edit_key),
+	(gconf_editor_gconf_value_changed), (gconf_editor_check_writable),
+	(gconf_editor_window_update_list_selection),
+	(gconf_editor_window_expand_first), (gconf_editor_window_finalize),
+	(gconf_editor_window_init):
+	* src/gconf-editor-window.h:
+	* src/gconf-list-model.c: (gconf_list_model_notify_func),
+	(gconf_list_model_init), (gconf_list_model_set_client):
+	* src/gconf-tree-model.c: (gconf_tree_model_set_client):
+	* src/main.c: (main): Open new windows for browsing/editing defaults and
+	mandatory settings. Use always the GConf client asociated to the window.
+
+2004-06-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_popup_window_set_as_default): set defaults in
+	gconf.xml.defaults instead of on schemas.
+	(gconf_editor_popup_window_set_as_mandatory): set a value as
+	mandatory.
+	(gconf_editor_window_init): Unsensitive "set as default" and "set as
+	mandatory" if the user cannot do it.
+	* src/gconf-util.c: (gconf_client_can_edit_defaults),
+	(gconf_client_can_edit_mandatory):
+	* src/gconf-util.h: new helper functions.
+
+2004-06-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in:
+	* data/Makefile.am:
+	* data/gconf-editor.schemas.in:
+	* po/POTFILES.in: Add an schema file.
+
+2004-05-28  Anders Carlsson  <andersca@gnome.org>
+
+	* src/gconf-editor-window.c (gconf_editor_window_about_window): 
+	Add Fernando.
+
+2004-05-28  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post release bump to 2.7.1
+	* src/gconf-editor-window.c: (gconf_editor_popup_window_new_key): new
+	key are writable, so don't show the warning.
+	* src/gconf-key-editor.c: (update_list_buttons),
+	(list_edit_element), (list_edit_clicked),
+	(list_view_row_activated), (gconf_key_editor_init):
+	* src/gconf-key-editor.h: Implement list element editing and add a
+	button for it. Fixes bug #141034.
+
+2004-05-28  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.7.0
+
+2004-05-28  Alberto Ruíz  <arc@gulic.org>
+
+	* src/gconf-key-editor.c: (list_remove_clicked): When removing an
+	item, select the next one or the previous. Fixes bug #142994.
+
+2004-05-28  Fernando Herrera  <fherrera@onirica.com>
+
+	* data/icons/Makefile.am
+	* data/icons/stock-about-16.png: removed unused icon.
+
+2004-05-19  James Bowes  <bowes@cs.dal.ca>
+
+	* src/gconf-stock-icons.h:
+	* src/gconf-stock-icons.c: Remove gconf-stock-about icon.
+	* src/gconf-editor-window.c (gconf_editor_window_close_window,
+	gconf_editor_window_copy_key_name, gconf_editor_window_add_bookmark,
+	gconf_editor_window_edit_bookmarks, gconf_editor_window_new_window,
+	help_cb, gconf_editor_window_about_window, 
+	gconf_editor_popup_window_unset_key, gconf_editor_popup_window_new_key,
+	gconf_editor_popup_window_edit_key, 
+	gconf_editor_popup_window_set_as_default, list_view_button_press_event,
+	gconf_editor_window_list_view_popup_position, 
+	gconf_editor_window_list_view_popup_menu, 
+	gconf_editor_window_set_have_tearoffs, 
+	gconf_editor_window_set_item_has_icon, gconf_editor_window_finalize,
+	gconf_editor_window_init):
+	* src/gconf-editor-window.h: Replace use of item factory with ui 
+	manager. Remove function 
+	gconf_editor_window_item_factory_translate_func.
+	* src/gconf-editor-window.c (gconf_editor_window_init):
+	Put number of rows and columns in the correct order in gtk_table_new
+	for the details area table. Remove shadow from details_frame and
+	indent its contents to follow the HIG
+
+2004-04-27  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Removed AC_SUBST CFLAGS, CPPFLAGS, LDFLAGS because
+	autoconf does it automatically.
+
+2004-04-23  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_new_window): Don't
+	show all widgets in new window, because we have hidden ones.
+
+2004-04-23  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: Translate "Contents" string added by
+	Shakti patch.
+
+2004-04-23  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_window_update_list_selection),
+	(gconf_editor_window_init):
+	* src/gconf-editor-window.h: Show an alert when the key has no schema.
+	Fixes #110745
+
+2004-04-23  Mariano Suárez-Alvarez  <msuarezalvarez@arnet.com.ar>
+
+	* src/gconf-bookmarks.c: (gconf_bookmarks_set_item_has_icon),
+	(gconf_bookmarks_set_have_icons),
+	(gconf_bookmarks_have_icons_notify),
+	(gconf_bookmarks_hook_up_menu): Make menu icons follow
+	menus_have_icons preference key.
+
+2004-04-23  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_about_window): use
+	gnome_about_window. (Fix #88279)
+
+2004-04-23  Fernando Herrera  <fherrera@onirica.com>
+
+	* xmldocs.make: added for build docs.
+	* omf.make: added for build docs.
+
+2004-04-23  Shakti Sen <shprasad@novell.com>
+
+	* configure.in: Made changes to provide gnome libraries support.
+	* src/main.c (main): Initialized the application with gnome_program_init
+	* src/gconf-editor-window.c (help_cb): Added this function to provide
+	Help support.
+	* src/gconf-editor-application.h: <gnome.h> is included
+	* docs/Makefile.am: Added the C subdirectory.
+	* omf.make and xmldocs.make: Added to provide Help support.
+ 	Fixes #133052
+ 
+2004-04-19  Richard Hult  <richard@imendio.com>
+
+	* src/gconf-editor-window.c (gconf_editor_popup_window_edit_key):
+	Fix crash when nothing is selected.
+	(gconf_editor_window_edit_bookmarks): Fix warning.
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: branched for gnome 2.7. Bump version number to 2.7.0
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-key-editor.c: (gconf_key_editor_init): allow the notebook
+	in the key editor to fill and expand. (Fix #138557)
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_go_to): Check if
+	location is a valid key/dir. Fix #136381
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-cell-renderer.c:
+	(gconf_cell_renderer_text_editing_done): Cast to gdouble for float
+	keys in the cell editor. Fix bug #137468
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-tree-model.c: (gconf_tree_model_free_node),
+	(gconf_tree_model_clear_node), (gconf_tree_model_unref_node): Reverted
+	wrong patch for #124662 . New unref code. Real Fix(tm) for 
+	#124662 and #136631
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_window_selection_changed):
+	* src/gconf-tree-model.c: (gconf_tree_model_build_level),
+	(gconf_tree_model_iter_has_child):
+	* src/gconf-tree-model.h: Reverted patch for #96744, because it
+	introduced two worse bugs (#135807 and #136400)
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Bump version to 2.6.1
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-05  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in:  Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-03-22  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in: Release 2.6.0
+
+2004-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-18  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-16  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in: Release 2.5.92
+
+2004-03-06  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in: Release 2.5.91
+
+2004-03-05  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-util.c:
+	(gconf_client_get_schema_for_key): Retrieve the entry
+	using gconf_engine API to get the schema name, beacuse
+	getting it with gconf_client doesn't work (GConf bug #131011).
+	So this Fixes #121813.
+
+2004-02-21  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-03  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.4
+
+2004-02-03 Sanjiv Agarwala <sagarwala@novell.com>
+	* src/gconf-tree-model.c:(gconf_tree_model_unref_node):
+	When unreffing the node, node->parent->children must be 
+	assigned to node->children. Fix (#105884 and #124662)
+
+2004-02-01  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_copy_key_name):
+	When copying keys, check if there is one selected on the list and
+	if so, copy full path, otherwise, copy only the tree path. (Fix
+	#132085)
+
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_window_update_list_selection): Update statusbar on key
+	selection.
+
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-tree-model.c: (gconf_tree_model_get_value): Check if
+	node is NULL before getting value (Fix #128272)
+
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-editor-window.c: (gconf_editor_window_about_window): 
+	Unify copyright strings. Patch from Christian Neumair Fixes bug
+	#101728
+
+2004-01-21  Anders Carlsson  <andersca@gnome.org>
+
+	* src/gconf-editor-window.c:
+	(gconf_editor_window_selection_changed):
+	* src/gconf-tree-model.c: (gconf_tree_model_get_gconf_escape_path),
+	(gconf_tree_model_build_level), (gconf_tree_model_iter_has_child):
+	* src/gconf-tree-model.h:
+	Handle escaping of keys correctly.
+	(#96744, fix by Hidetoshi Tajima).
+	
+2004-01-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gconf-cell-renderer.h:
+	* src/gconf-key-editor.h:
+	* src/gconf-list-model.h:
+	* src/gconf-tree-model.h: Removed final "," in enums and make AIX
+	compiler happy
+
+2003-12-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* Makefile.am:
+	* configure.in:
+	* docs/gconf-editor.1: added man page from Sebastien Bacher
+
+2003-11-12  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.1
+
+2003-11-11  Sebastien Bacher  <seb128@debian.org>
+
+	* src/gconf-editor-window.c: (gconf_editor_new_key_response),
+	(gconf_editor_popup_window_edit_key):
+	Commited patch to fix the crash with unset values 
+	(Closes: 121084).
+
+2003-10-28  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/gconf-editor-window.c (gconf_editor_window_test_expand_row):
+	New callback, set the cursor to GDK_WATCH while we are figuring
+	out the child nodes.
+	(gconf_editor_window_row_expanded): New callback, reset the cursor
+	to normal.
+	(gconf_editor_window_init): Install signal handlers for the
+	callbacks above.
+
+2003-10-23 Mark Finlay <sisob@tuxfamilyDOTorg>
+
+	* src/gconf-editor-window.c:
+
+	Commiting Patch by Christophe Fergeau <teuf@gnome.org> 
+	to make the tree items expand when double clicked.
+
+2003-10-14  Ross Burton  <ross@burtonini.com>
+
+	* src/gconf-key-editor.c:
+	Added float support to the list editor, fixing a crash.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-10-06  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* src/Makefile.am: GtkItemFactory has been depricated
+	Remove the GTK_DISABLE_DEPRECATED flag. Thanks to Anders for
+	the right fix. Fix #123932
+
+2003-09-06  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.4.0
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-09-02  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-08-10  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.6
+
+Wed Jul 23 14:43:43 2003  George Lebl <jirka@5z.com>
+
+	* src/gconf-bookmarks.[ch], src/gconf-editor-window.c:
+	  Don't allow changing bookmarks when the bookmarks key is not
+	  writable
+
+	* src/gconf-message-dialog.c: If the key for the show toggle
+	  is not writable, don't even show the toggle
+
+	* src/gconf-cell-renderer.[ch]: Fix signature of the changed signal
+	  and add a "check_writable" signal which has a boolean return 
+	  value and can be used to make the cell not writable.
+
+	* src/gconf-key-editor.[ch]:  Add a non-writable label and show it
+	  if the key is not writable, also in that case make the notebook
+	  insensitive since we can't set the key.
+
+	* src/gconf-editor-window.[ch]: Don't set a key if it's not writable,
+	  fix crash when setting a key resulted in an error,  Also
+	  set the key editor not to be writable and connect the
+	  "check_writable" signal for the list items and check writability
+	  there.  In the information pane add a non-writable label thing
+	  and show that if the key is not writable.
+
+	* src/gconf-marshal.[ch], src/gconf-marshal.list: the glib signal
+	  marshaller generating stuff did some changes here.  I added
+	  a BOOLEAN:STRING
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* data/gconf-editor.desktop.in: Use "false" instead of "0" in Terminal
+	entry.
+
+2003-06-26  Anders Carlsson  <andersca@codefactory.se>
+
+	* src/gconf-editor-window.c (gconf_editor_popup_window_edit_key): 
+	Fix typo (reported by Dafydd Harries).
+
+2003-06-24  Anders Carlsson  <andersca@codefactory.se>
+
+	* src/gconf-cell-renderer.c: (gconf_cell_renderer_set_property),
+	(gconf_cell_renderer_get_size), (gconf_cell_renderer_render):
+	* src/gconf-list-model.c: (gconf_list_model_get_value):
+	Add support for showing pairs. (#90729, Mathias Warkus)
+	
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/Makefile.am: remove -I$(includedir).
+	Patch from Matt Keenan, matt.keenan@sun.com.
+
+2003-06-05 Kenneth Rohde Christiansen <kenneth@gnu.org>
+
+	* configure.in: Added li to ALL_LINGUAS.
+
+2003-06-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "sr@Latn" to ALL_LINGUAS.
+
+2003-06-03  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 0.5.0
+
+2003-05-26  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" to ALL_LINGUAS
+
+2003-05-13  Ross Burton  <ross@burtonini.com>
+
+	* src/gconf-editor-window.c: Implement Set As Default on arbitary
+	keys. Requires that the user has write access to the defaults
+	tree.
+
+	* configure.in: Find the GConf defaults and mandatory
+	configuration sources. Also comment the AC_DEFINEs.
+
+	* acconfig.h: Remove, thanks to the commenting done above.
+	
+2003-05-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "am" "mk" "nl" "tr" to ALL_LINGUAS.
+
+2003-05-07  Richard Hult  <rhult@codefactory.se>
+
+	* src/gconf-editor-window.c (gconf_editor_window_init),
+	(gconf_editor_window_style_set): Set the bg color for the textview
+	in a style_set callback instead of in _init to make it work with
+	other themes than the default. Start out with the name column
+	sorted for keys.
+
+2003-05-07  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-03-18  Paul Duffy <dubhthach@zion.nuigalway.ie>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-09  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in: Added "fi" to ALL_LINGUAS.
+
+2003-02-17  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gconf-editor-window.[ch]: (gconf_editor_window_go_to):
+	Split this out from gconf-bookmarks.c.
+
+	* src/gconf-bookmarks.c: (gconf_bookmarks_bookmark_activated):
+	Upd.
+
+	* src/gconf-tree-model.c:
+	(gconf_tree_model_get_tree_path_from_gconf_path): Return the
+	last matching element of the path - better than nothing if we
+	don't have an exact match. Also, don't leak the strv.
+
+	* src/main.c: (invalid_arg_error_dialog), (main): add support
+	for passing in an initial GConf key as an argument.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-01-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
 2002-12-10  Anders Carlsson  <andersca@gnu.org>
 
 	* src/gconf-editor-window.c (gconf_editor_window_init): Don't use a white
@@ -316,7 +1087,7 @@ Sat Apr 13 13:54:49 2002  Kristian Rietveld  <kris@gtk.org>
 
 	* configure.in: Added "zh_CN" to ALL_LINGUAS.
 
-2002-03-17  T�ivo Leedj�rv  <toivo@linux.ee>
+2002-03-17  Tõivo Leedjärv  <toivo@linux.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 

@@ -178,6 +178,7 @@ update_list_buttons (GConfKeyEditor *editor)
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (editor->list_widget));
 
 	gtk_widget_set_sensitive (editor->remove_button, FALSE);
+	gtk_widget_set_sensitive (editor->edit_button, FALSE);
 	gtk_widget_set_sensitive (editor->go_up_button, FALSE);
 	gtk_widget_set_sensitive (editor->go_down_button, FALSE);
 
@@ -186,6 +187,7 @@ update_list_buttons (GConfKeyEditor *editor)
 
 		selected = gtk_tree_path_get_indices (path)[0];
 
+		gtk_widget_set_sensitive (editor->edit_button, TRUE);
 		gtk_widget_set_sensitive (editor->remove_button, TRUE);
 		gtk_widget_set_sensitive (editor->go_up_button, selected > 0);
 		gtk_widget_set_sensitive (editor->go_down_button, selected < gtk_tree_model_iter_n_children (model, NULL) - 1);
@@ -306,15 +308,132 @@ list_add_clicked (GtkButton *button,
 }
 
 static void
+list_edit_element (GConfKeyEditor *editor)
+{
+	GtkWidget *dialog;
+	GtkWidget *hbox1, *hbox2;
+	GtkWidget *stock;
+	GtkWidget *value_widget;
+	GtkWidget *label;
+	gint response;
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GConfValue *value = NULL;
+
+	dialog = gtk_dialog_new_with_buttons (_("Edit list entry"),
+                                              GTK_WINDOW (editor),
+					      GTK_DIALOG_MODAL| GTK_DIALOG_DESTROY_WITH_PARENT,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+	
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 8);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox1, FALSE, FALSE, 0);
+
+	stock = gtk_image_new_from_stock (GTK_STOCK_DIALOG_QUESTION, GTK_ICON_SIZE_DIALOG);
+	gtk_box_pack_start (GTK_BOX (hbox1), stock, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, TRUE, TRUE, 0);
+
+	label = gtk_label_new_with_mnemonic (_("_Edit list element:"));
+	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (editor->list_widget));
+	gtk_tree_selection_get_selected (selection, &model, &iter);
+	gtk_tree_model_get (GTK_TREE_MODEL (model), &iter, 0, &value, -1);
+	switch (gtk_option_menu_get_history (GTK_OPTION_MENU (editor->list_type_menu))) {
+		case EDIT_INTEGER:
+			value_widget = gtk_spin_button_new_with_range (G_MININT, G_MAXINT, 1);
+			gtk_spin_button_set_value (GTK_SPIN_BUTTON (value_widget), gconf_value_get_int (value));
+			break;
+		case EDIT_BOOLEAN:
+			value_widget = gtk_toggle_button_new_with_mnemonic (_("_False"));
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (value_widget), gconf_value_get_bool (value));
+			break;
+		case EDIT_STRING:
+			value_widget = gtk_entry_new ();
+			gtk_entry_set_text (GTK_ENTRY (value_widget), gconf_value_get_string (value));
+			break;
+		default:
+			value_widget = NULL;
+			g_assert_not_reached ();
+	}
+	gconf_value_free (value);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), value_widget);
+	gtk_box_pack_start (GTK_BOX (hbox2), value_widget, FALSE, FALSE, 0);
+
+	gtk_widget_show_all (hbox1);
+
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if (response == GTK_RESPONSE_OK) {
+		GConfValue *value;
+		
+	        value = NULL;
+
+		switch (gtk_option_menu_get_history (GTK_OPTION_MENU (editor->list_type_menu))) {
+			case EDIT_INTEGER:
+				value = gconf_value_new (GCONF_VALUE_INT);
+				gconf_value_set_int (value,
+						     gtk_spin_button_get_value (GTK_SPIN_BUTTON (value_widget)));
+				break;
+
+			case EDIT_BOOLEAN:
+				value = gconf_value_new (GCONF_VALUE_BOOL);
+				gconf_value_set_bool (value,
+						      gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (value_widget)));
+				break;
+
+			case EDIT_STRING:
+		                {
+		                        char *text;
+				
+		                        text = gtk_editable_get_chars (GTK_EDITABLE (value_widget), 0, -1);
+		                        value = gconf_value_new (GCONF_VALUE_STRING);
+		                        gconf_value_set_string (value, text);
+		                        g_free (text);
+		                }
+	                	break;
+			default:
+				g_assert_not_reached ();
+				
+		}
+                gtk_list_store_set (editor->list_model, &iter, 0, value, -1);
+
+	}
+	
+	gtk_widget_destroy (dialog);
+}
+
+
+
+static void
 list_remove_clicked (GtkButton *button,
 		     GConfKeyEditor *editor)
 {
 	GtkTreeIter iter;
+	GtkTreeIter tmp;
 	GtkTreeSelection *selection;
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (editor->list_widget));
 
 	if (gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		tmp = iter;
+		if (gtk_tree_model_iter_next (GTK_TREE_MODEL (editor->list_model), &tmp)) {
+			gtk_tree_selection_select_iter (selection, &tmp);
+		} else {
+			GtkTreePath *path;
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (editor->list_model), &iter);
+			if (gtk_tree_path_prev (path)) {
+				gtk_tree_selection_select_path (selection, path);
+			}
+			gtk_tree_path_free (path);
+		}
 		gtk_list_store_remove (editor->list_model, &iter);
 	}
 }
@@ -378,6 +497,22 @@ list_go_down_clicked (GtkButton *button,
 }
 
 static void
+list_edit_clicked (GtkWidget      *button,
+                   GConfKeyEditor *editor)
+{
+        list_edit_element (editor);
+}
+
+static void
+list_view_row_activated (GtkTreeView       *tree_view,
+                         GtkTreePath       *path,
+                         GtkTreeViewColumn *column,
+                         GConfKeyEditor    *editor)
+{
+        list_edit_element (editor);
+}
+
+static void
 fix_button_align (GtkWidget *button)
 {
         GtkWidget *child = gtk_bin_get_child (GTK_BIN (button));
@@ -397,8 +532,8 @@ gconf_key_editor_class_init (GConfKeyEditorClass *klass)
 static void
 gconf_key_editor_init (GConfKeyEditor *editor)
 {
-	GtkWidget *hbox, *frame;
-	GtkWidget *label;
+	GtkWidget *hbox, *frame, *framebox;
+	GtkWidget *label, *image;
 	GtkWidget *value_box;
 	GtkWidget *button_box, *button;
 	GtkSizeGroup *size_group;
@@ -451,13 +586,28 @@ gconf_key_editor_init (GConfKeyEditor *editor)
 	gtk_widget_show_all (hbox);
 	gtk_frame_set_label_widget (GTK_FRAME (frame), hbox);
 
+	framebox = gtk_vbox_new (FALSE, 6);
+	gtk_widget_show (framebox);
+	gtk_container_add (GTK_CONTAINER (frame), framebox);
+
+	editor->non_writable_label = gtk_hbox_new (FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (framebox), editor->non_writable_label, FALSE, FALSE, 0);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_BUTTON);
+	gtk_widget_show (image);
+	gtk_box_pack_start (GTK_BOX (editor->non_writable_label), image, FALSE, FALSE, 3);
+
+	label = gtk_label_new (_("This key is not writable"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (editor->non_writable_label), label, FALSE, FALSE, 3);
+
 	editor->notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (editor->notebook),
 				    FALSE);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (editor->notebook),
 				      FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (editor->notebook), 3);
-	gtk_container_add (GTK_CONTAINER (frame), editor->notebook);
+	gtk_box_pack_start (GTK_BOX (framebox), editor->notebook, TRUE, TRUE, 0);
 
 	editor->active_type = EDIT_INTEGER;
 
@@ -542,6 +692,8 @@ gconf_key_editor_init (GConfKeyEditor *editor)
 	editor->list_widget = gtk_tree_view_new_with_model (GTK_TREE_MODEL (editor->list_model));
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (editor->list_widget), FALSE);
 	list_selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (editor->list_widget));
+	g_signal_connect (G_OBJECT (editor->list_widget), "row_activated",
+			  G_CALLBACK (list_view_row_activated), editor);
 	g_signal_connect (G_OBJECT (list_selection), "changed",
 			  G_CALLBACK (list_selection_changed), editor);
  	
@@ -558,12 +710,16 @@ gconf_key_editor_init (GConfKeyEditor *editor)
 	fix_button_align (button);
 	editor->remove_button = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	fix_button_align (editor->remove_button);
+	/* FIXME: We should have a stock edit button */
+	editor->edit_button = gtk_button_new_with_mnemonic ("_Edit");
 	editor->go_up_button = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
 	fix_button_align (editor->go_up_button);
 	editor->go_down_button = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
 	fix_button_align (editor->go_down_button);
 	g_signal_connect (G_OBJECT (button), "clicked",
 			  G_CALLBACK (list_add_clicked), editor);
+	g_signal_connect (G_OBJECT (editor->edit_button), "clicked",
+			  G_CALLBACK (list_edit_clicked), editor);
 	g_signal_connect (G_OBJECT (editor->remove_button), "clicked",
 			  G_CALLBACK (list_remove_clicked), editor);
 	g_signal_connect (G_OBJECT (editor->go_up_button), "clicked",
@@ -572,6 +728,7 @@ gconf_key_editor_init (GConfKeyEditor *editor)
 			  G_CALLBACK (list_go_down_clicked), editor);
 	gtk_box_pack_start (GTK_BOX (button_box), button, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (button_box), editor->remove_button, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (button_box), editor->edit_button, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (button_box), editor->go_up_button, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (button_box), editor->go_down_button, FALSE, FALSE, 0);
 
@@ -676,6 +833,9 @@ gconf_key_editor_set_value (GConfKeyEditor *editor, GConfValue *value)
 			switch (gconf_value_get_list_type(value)) {
 				case GCONF_VALUE_INT:
 					gtk_option_menu_set_history (GTK_OPTION_MENU (editor->list_type_menu), EDIT_INTEGER);
+					break;
+				case GCONF_VALUE_FLOAT:
+					gtk_option_menu_set_history (GTK_OPTION_MENU (editor->list_type_menu), EDIT_FLOAT);
 					break;
 				case GCONF_VALUE_STRING:
 					gtk_option_menu_set_history (GTK_OPTION_MENU (editor->list_type_menu), EDIT_STRING);
@@ -791,6 +951,17 @@ void
 gconf_key_editor_set_key_name (GConfKeyEditor *editor, const char *path)
 {
 	gtk_entry_set_text (GTK_ENTRY (editor->name_entry), path);
+}
+
+void
+gconf_key_editor_set_writable (GConfKeyEditor *editor, gboolean writable)
+{
+	if (writable)
+		gtk_widget_hide (editor->non_writable_label);
+	else
+		gtk_widget_show (editor->non_writable_label);
+
+	gtk_widget_set_sensitive (editor->notebook, writable);
 }
 
 G_CONST_RETURN char *

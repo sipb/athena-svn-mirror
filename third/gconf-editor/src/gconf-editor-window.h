@@ -20,12 +20,13 @@
 #ifndef __GCONF_EDITOR_WINDOW_H__
 #define __GCONF_EDITOR_WINDOW_H__
 
-#include <gtk/gtkitemfactory.h>
+#include <gtk/gtkuimanager.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtktextbuffer.h>
 #include <gtk/gtktreemodel.h>
 #include <gtk/gtktreeviewcolumn.h>
 #include <gtk/gtkwindow.h>
+#include <gconf/gconf-client.h>
 
 #define GCONF_TYPE_EDITOR_WINDOW		  (gconf_editor_window_get_type ())
 #define GCONF_EDITOR_WINDOW(obj)		  (GTK_CHECK_CAST ((obj), GCONF_TYPE_EDITOR_WINDOW, GConfEditorWindow))
@@ -34,11 +35,23 @@
 #define GCONF_IS_EDITOR_WINDOW_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((obj), GCONF_TYPE_EDITOR_WINDOW))
 #define GCONF_EDITOR_WINDOW_GET_CLASS(obj)   (GTK_CHECK_GET_CLASS ((obj), GCONF_TYPE_EDITOR_WINDOW, GConfEditorWindowClass))
 
+#define RECENT_LIST_MAX_SIZE 20
+
+enum {
+	GCONF_EDITOR_WINDOW_OUTPUT_WINDOW_NONE,
+	GCONF_EDITOR_WINDOW_OUTPUT_WINDOW_SEARCH,
+	GCONF_EDITOR_WINDOW_OUTPUT_WINDOW_RECENTS
+};
+
+
 typedef struct _GConfEditorWindow GConfEditorWindow;
 typedef struct _GConfEditorWindowClass GConfEditorWindowClass;
 
 struct _GConfEditorWindow {
 	GtkWindow parent_instance;
+
+	GConfClient *client;
+
 
 	GtkWidget *tree_view;
 	GtkTreeModel *tree_model;
@@ -48,16 +61,21 @@ struct _GConfEditorWindow {
 	GtkTreeModel *list_model;
 	GtkTreeModel *sorted_list_model;
 	
+	GtkWidget *output_window;
+	int output_window_type;
+
 	GtkWidget *statusbar;
 
-	GtkItemFactory *popup_factory;
-	GtkItemFactory *item_factory;
+	GtkUIManager *ui_manager;
+	GtkWidget *popup_menu;
 	GtkTreeViewColumn *value_column;
 
+	GtkWidget *non_writable_label;
 	GtkWidget *key_name_label;
 	GtkWidget *short_desc_label;
 	GtkTextBuffer *long_desc_buffer;
 	GtkWidget *owner_label;
+	GtkWidget *no_schema_label;
 
 	guint tearoffs_notify_id;
 	guint icons_notify_id;
@@ -69,6 +87,15 @@ struct _GConfEditorWindowClass {
 
 GType gconf_editor_window_get_type (void);
 GtkWidget *gconf_editor_window_new (void);
+
+void gconf_editor_window_go_to (GConfEditorWindow *window,
+				const char        *location);
+void gconf_editor_window_expand_first (GConfEditorWindow *window);
+
+void gconf_editor_window_popup_error_dialog (GtkWindow   *parent,
+					     const gchar *message,
+					     GError      *error);
+
 
 #endif /* __GCONF_EDITOR_WINDOW_H__ */
 
