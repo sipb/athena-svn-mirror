@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.16 1991-06-30 12:23:19 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.17 1991-08-12 13:33:42 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -631,7 +631,7 @@ olc_help (w, tag, callback_data)
   WAIT_CURSOR;
   
   if (stat(help_filename, &statbuf)) {
-    MuError("help: unable to stat help file.");
+    MuError("help: unable to stat help file %s.", help_filename);
     STANDARD_CURSOR;
     return;
   }
@@ -647,6 +647,7 @@ olc_help (w, tag, callback_data)
   
   if ((fd = open(help_filename, O_RDONLY, 0)) < 0)
     {
+      free(help);
       fprintf(stderr, "help: unable to open help file for read.\n");
       MuError("help: unable to open help file for read.");
       STANDARD_CURSOR;
@@ -655,6 +656,8 @@ olc_help (w, tag, callback_data)
   
   if ((read(fd, help, statbuf.st_size)) != statbuf.st_size)
     {
+      close(fd);
+      free(help);
       fprintf(stderr, "help: unable to read help correctly.\n");
       MuError("help: unable to read help correctly.");
       STANDARD_CURSOR;
