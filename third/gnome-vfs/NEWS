@@ -1,9 +1,0 @@
-Gnome VFS 0.6
--------------
-
-Pthread async backend redone for performance improvements.
-
-Several API cleanups.
-
-Numerous bug fixes.
-
