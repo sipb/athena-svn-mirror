@@ -20,13 +20,14 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.1 1989-11-17 14:20:28 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.2 1989-11-17 14:49:36 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 
 int OCompareListByTopic();
 int OCompareListByNseen();
+int OCompareListByTime();
 int OCompareListByUUsername();
 int OCompareListByCUsername();
 int OCompareListByUInstance();
@@ -80,6 +81,8 @@ OSortListByRule(list,rule)
       if(string_eq(*rule,"ckstatus"))
 	OSortListByCKStatus(list);
 	
+      if(string_eq(*rule,"time"))
+        OSortListByTime(list);
       ++rule;
       if(rule == (char **) NULL)
 	return(ERROR);
@@ -100,6 +103,13 @@ OSortListByNseen(list)
      LIST *list;
 {
   return(OSortList(list,OCompareListByNseen));
+}
+
+ERRCODE
+OSortListByTime(list)
+     LIST *list;
+{
+  return(OSortList(list,OCompareListByTime));
 }
 
 ERRCODE
@@ -189,6 +199,13 @@ OCompareListByNseen(a,b)
      LIST *a, *b;
 {
   return(OCompareInts(a->nseen, b->nseen));
+}
+
+int
+OCompareListByTime(a,b)
+     LIST *a, *b;
+{
+  return(OCompareInts(a->time, b->time));
 }
 
 int 
