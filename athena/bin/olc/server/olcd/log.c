@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.27 1990-12-05 21:22:36 lwvanels Exp $
+ *	$Id: log.c,v 1.28 1990-12-12 15:17:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.27 1990-12-05 21:22:36 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.28 1990-12-12 15:17:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,6 +37,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
 #include <com_err.h>
+#include <lumberjack.h>
 
 #include <olcd.h>
 
@@ -50,7 +51,8 @@ extern int errno;
 
 static ERRCODE log_log P((KNUCKLE *knuckle , char *message , char *header ));
 static ERRCODE terminate_log_crash P((KNUCKLE *knuckle ));
-static ERRCODE dispose_of_log P((KNUCKLE *knuckle , int answered ));
+static ERRCODE dispose_of_log P((KNUCKLE *knuckle ));
+static char *trans_m_i P((char *os ));
 
 #undef P
 
@@ -352,7 +354,7 @@ init_log(knuckle, question, machinfo)
   fprintf(logfile, "Question:\n");
   write_line_to_log(logfile, question);
   if (machinfo != NULL)
-    fprintf(logfile, "\nMachine info:\t%s\n", machinfo);
+    fprintf(logfile, "\nMachine info:\t%s\n", trans_m_i(machinfo));
   write_line_to_log(logfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
   (void) fclose(logfile);
@@ -395,7 +397,7 @@ terminate_log_answered(knuckle)
   fprintf(logfile, "\n--- Title: %s\n", question->title);
 
   (void) fclose(logfile);
-  if (dispose_of_log(knuckle, ANSWERED) == ERROR)
+  if (dispose_of_log(knuckle) == ERROR)
     return(ERROR);
   return(SUCCESS);
 }
@@ -436,7 +438,7 @@ terminate_log_unanswered(knuckle)
 	  "\n--- Session terminated without answer at %s\n",
 	  current_time);
   (void) fclose(logfile);
-  if (dispose_of_log(knuckle, UNANSWERED) == ERROR)
+  if (dispose_of_log(knuckle) == ERROR)
     return(ERROR);
   return(SUCCESS);
 }
@@ -465,7 +467,7 @@ terminate_log_crash(knuckle)
   if ((logfile = fopen(question->logfile, "a")) == (FILE *)NULL) 
     {
       (void) sprintf(error,
-		     "terminate_log_unanswered: can't open temp log %s", 
+		     "terminate_log_crash: can't open temp log %s", 
 		     question->logfile);
       log_error(error);
       return(ERROR);
@@ -474,7 +476,7 @@ terminate_log_crash(knuckle)
   fprintf(logfile, "\n--- Log file '%s' saved after daemon crash.\n[%s]",
 	  index(question->logfile, '/')+1, current_time);
   (void) fclose(logfile);
-  if (dispose_of_log(knuckle, UNANSWERED) == ERROR)
+  if (dispose_of_log(knuckle) == ERROR)
     return(ERROR);
   return(SUCCESS);
 }
@@ -496,7 +498,7 @@ terminate_log_crash(knuckle)
  */
 
 static ERRCODE
-dispose_of_log(knuckle, answered)
+dispose_of_log(knuckle)
      KNUCKLE *knuckle;
 {
   QUESTION *question;		/* Pointer to the question. */
@@ -552,4 +554,98 @@ dispose_of_log(knuckle, answered)
       _exit(0);
     }
   return(SUCCESS);
+}
+
+/* Translates obsure stuff from machtype -v in os to "english" */
+
+static char *
+  trans_m_i(os)
+char *os;
+{
+  static TRANS *mach, *disp;	/* machine and display translations */
+  static int n_mach = -1;	/* number of translations loaded */
+  static int n_disp = -1;
+  char *memory, *o_mach, *o_disp,*p;
+  FILE *trans_file;
+  int i,size;
+  static char stuff[BUF_SIZE];
+
+  strcpy(stuff,os);
+  if (n_mach == -1) {
+    n_mach = n_disp = 0;
+
+    /* Load translations */
+    trans_file = fopen(MACH_TRANS_FILE,"r");
+    if (trans_file == NULL)
+      log_error("trans_m_i: could not open translation file %%m");
+    else {
+      fscanf(trans_file,"%d\n",&n_mach);
+      mach = calloc(n_mach,sizeof(TRANS));
+      if (mach == NULL) {
+	log_error("trans_m_i: calloc failed");
+	return(stuff);
+      }
+      for (i=0;i<n_mach;i++) {
+	fgets(mach[i].orig,80,trans_file);
+	fgets(mach[i].trans,80,trans_file);
+      }
+      fscanf(trans_file,"%d\n",&n_disp);
+      disp = calloc(n_disp,sizeof(TRANS));
+      for (i=0;i<n_disp;i++) {
+	fgets(disp[i].orig,80,trans_file);
+	fgets(disp[i].trans,80,trans_file);
+      }
+      fclose(trans_file);
+    }
+  }
+
+  /* look for processor field */
+  p = index(os,',');
+  if (p == NULL)
+    return(stuff);
+  *p = '\0';
+  o_mach = os;
+
+  /* look for display field */
+  o_disp = p+1;
+  p = index(o_disp,',');
+  if (p == NULL)
+    return(stuff);
+  *p = '\0';
+
+  /* should be done, only one more comma */
+  memory = p +1;
+  p = index(memory,',');
+  if (p == NULL)
+    return(stuff);
+  p = p +1;
+  p = index(p,',');
+  if (p != NULL)
+    return(stuff);
+
+  /* strip whitespace off of front of machine name */
+  while (*o_mach == ' ')
+    o_mach++;
+  size = strlen(o_mach);
+  for(i=0;i<n_mach;i++)
+    if (strncmp(o_mach,mach[i].orig,size) == 0) {
+      o_mach = mach[i].trans;
+      break;
+    }
+  
+  while (*o_disp == ' ')
+    o_disp++;
+  size = strlen(o_disp);
+  for(i=0;i<n_disp;i++)
+    if (strncmp(o_disp,disp[i].orig,size) == 0) {
+      o_disp = disp[i].trans;
+      break;
+    }
+
+  while (*memory == ' ')
+    memory++;
+
+  sprintf(stuff,"\nProcessor: %sDisplay  : %sMemory   : %s", o_mach, o_disp,
+	  memory);
+  return(stuff);
 }
