@@ -1,4 +1,4 @@
-# $Id: athena,v 1.13 1999-10-18 17:17:12 danw Exp $
+# $Id: athena,v 1.14 1999-12-07 21:47:24 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -126,12 +126,6 @@ echo "Checking for a new release"
 if [ -x /srvd/auto_update ]; then
 	/srvd/auto_update rc
 fi
-
-# Whenever Solaris decides to configure the devices directory, it insists
-# on creating /dev/audio and /dev/audioctl mode 600 (which would require
-# various CD-playing programs to be setuid), despite our efforts.  Make
-# sure they're world-writable.
-chmod 666 /dev/audio /dev/audioctl
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
