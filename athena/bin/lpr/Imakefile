@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.8 1993-10-09 21:16:51 probe Exp $
+ * $Id: Imakefile,v 1.9 1993-10-19 03:35:33 probe Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -10,8 +10,6 @@
  * Copyright (c) 1990, 19910 MIT Project Athena.
  */
 
-
-
 #
 # makefile for line printer spooling system
 #
@@ -20,22 +18,18 @@
 # DAEMON	someone special
 # SPGRP		the group id of the spooling programs
 #
-#if (defined(_AIX) && defined(i386)) || defined(_IBMR2)
-MACHL=-lbsd
-#endif
 
-DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota $(MACHD)
-LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes $(MACHL)
+#define ISUBDIRS filters quota transcript-v2.1 man
 
+DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota
+LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes
 
-CXREF=ctags -x
 ROOT=root
 DAEMON=daemon
+SPGRP=daemon
 
 #if defined(_IBMR2)
 SPGRP=printq
-#else
-SPGRP=daemon
 #endif
 
 #if defined(ibm032) || defined(vax) || defined(ultrix)
@@ -48,43 +42,42 @@ BINDIR=$(ATHBINDIR)
 USRETCDIR=$(ATHETCDIR)
 #endif
 
-SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
-	printjob.c recvjob.c displayq.c rmjob.c \
-	startdaemon.c common.c printcap.c lpdchar.c tcp_conn.c
+#define LPRprogram(prog,objs,libs,dest)					@@\
+build_program(prog,objs,,libs)						@@\
+install_program(prog,-o root -g $(SPGRP) -m 6755,dest)
 
-#include "Ilpr.rules"
+#define LPRGprogram(prog,objs,libs,dest)				@@\
+build_program(prog,objs,,libs)						@@\
+install_program(prog,-o root -g $(SPGRP) -m 2755,dest)
 
-#define ISUBDIRS filters quota transcript-v2.1 man
-
-
-LPRGSimpleProgram(lpd,lpd.o lpdchar.o printjob.o recvjob.o tcp_conn.o \
+LPRGprogram(lpd,lpd.o lpdchar.o printjob.o recvjob.o tcp_conn.o \
 	displayq.o rmjob.o common.o printcap.o, $(LIBS),$(LPDDIR))
-LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o printcap.o common.o startdaemon.o,\
+LPRGprogram(lpc,lpc.o cmds.o cmdtab.o printcap.o common.o startdaemon.o,\
 	$(LIBS),$(USRETCDIR))
 
-LPRSimpleProgram(lpr,lpr.o netsend.o printcap.o common.o startdaemon.o,\
+LPRprogram(lpr,lpr.o netsend.o printcap.o common.o startdaemon.o,\
 	$(LIBS),$(BINDIR))
-LPRSimpleProgram(lpq,lpq.o displayq.o printcap.o common.o startdaemon.o,\
+LPRprogram(lpq,lpq.o displayq.o printcap.o common.o startdaemon.o,\
 	$(LIBS) -ltermcap,$(BINDIR))
-LPRSimpleProgram(lprm,lprm.o rmjob.o printcap.o common.o startdaemon.o,\
+LPRprogram(lprm,lprm.o rmjob.o printcap.o common.o startdaemon.o,\
 	$(LIBS),$(BINDIR))
 
 saber_lpr:
 	/**/#load lpr.c printcap.c netsend.c common.c $(LIBS)
 
-#ifndef _IBMR2
+#if defined(ultrix) || defined(vax) || defined(ibm032)
 SimpleProgram(lptest,lptest.c,,$(BINDIR))
 SimpleProgram(pac,pac.o printcap.o,$(LIBS),$(USRETCDIR))
 
 install_script(print.sh,,/usr/ucb/print)
 install_script(makespools,,/etc/makespools)
+#else
+install_script(makespools,,$(USRETCDIR)/makespools)
+#endif
 
 install::
-	-rm -f ${DESTDIR}${BINDIR}/lpr.ucb
-	-ln -s lpr ${DESTDIR}${BINDIR}/lpr.ucb
 	@echo  To build spooling directories:
 	@echo makespools ${DESTDIR} 775 ${DAEMON} ${SPGRP}
-#endif
 
 /* Specify that should trust all hosts on 18.xx.xx.xx */
 SpecialObject(lpd.o,lpd.c,-DWS)
