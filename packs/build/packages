@@ -1,4 +1,4 @@
-# $Id: packages,v 1.305 2005-03-17 20:21:53 ghudson Exp $
+# $Id: packages,v 1.306 2005-03-17 22:26:54 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -259,7 +259,6 @@ third/lprng/ifhp		requires athena/lib/zephyr
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
 third/metacity			requires gettext,intltool,gtk2,GConf2,startup-notification
-third/mingetty			on linux
 third/motif/clients/mwm		on solaris
 third/mozilla			requires gtk,ORBit
 third/nautilus			requires gettext,intltool,libart_lgpl,libbonobo,libbonoboui,eel,esound,glib2,libgnomecanvas,gnome-desktop,libgnome,libgnomeui,gnome-vfs2,gtk2,librsvg,libxml2,pango,jpeg,ORBit2
