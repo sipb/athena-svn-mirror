@@ -19,6 +19,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "resources.h"
+
 #define MENU_NAME "menu"
 
 #ifndef BINDIR
@@ -148,7 +150,12 @@ static XtAppContext context;
 static pid_t child = -2;
 static Pixmap pixmap;
 static int fdRedirect;
-static char *progname;
+
+/* We need the following globals for the files in ../utils, which we use
+ * for xscreensaver_logo(). */
+char *progname;
+char *progclass = "XScreenSaver";
+XrmDatabase db;
 
 int main(int argc, char **argv)
 {
@@ -162,7 +169,7 @@ int main(int argc, char **argv)
   toplevel = XtVaAppInitialize(&context, "XScreenSaverButton",
 			       options, XtNumber(options),
 			       &argc, argv, fallbacks, NULL);
-
+  db = XtDatabase(XtDisplay(toplevel));
 
   /* Any leftover arguments are unrecognized.  Print an error message,
      but continue anyway. */
@@ -221,16 +228,17 @@ int main(int argc, char **argv)
   XtRealizeWidget(toplevel);
   XtAppMainLoop(context);
   die();
+  return 0;
 }
 
 static Pixmap get_pixmap(Widget toplevel)
 {
-  Colormap cmap;
-  Display *dpy = XtDisplay(toplevel);
+  Screen *screen = XtScreen(toplevel);
 
-  cmap = DefaultColormapOfScreen(XtScreen(toplevel));
-  return xscreensaver_logo(dpy, RootWindowOfScreen(XtScreen(toplevel)),
-			   cmap, 1, NULL, NULL, 0);
+  return xscreensaver_logo(screen, DefaultVisualOfScreen(screen),
+			   RootWindowOfScreen(screen),
+			   DefaultColormapOfScreen(screen),
+			   1, NULL, NULL, NULL, 0);
   
 }
 
@@ -354,7 +362,7 @@ void split_and_exec(char *cmd, pid_t *pid)
   
   i = 0;
   words[i++] = strtok(newcmd, " ");
-  while (words[i++] = strtok(NULL, " "));
+  while ((words[i++] = strtok(NULL, " ")) != NULL);
 
   /* Block SIGCHLD until we've stored into *pid, if requested. */
   if (pid)

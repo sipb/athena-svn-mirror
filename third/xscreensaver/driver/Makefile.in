@@ -194,9 +194,11 @@ DEMO_SRCS	= prefs.c dpms.c remote.c exec.c $(DEMO_UTIL_SRCS)
 DEMO_OBJS	= prefs.o dpms.o remote.o exec.o $(DEMO_UTIL_OBJS)
 
 BUTTON_SRCS	= xscreensaver-button.c $(UTILS_SRC)/logo.c \
-		  $(UTILS_SRC)/spline.c
+		  $(UTILS_SRC)/resources.c $(UTILS_SRC)/spline.c \
+		  $(UTILS_SRC)/visual.c
 BUTTON_OBJS	= xscreensaver-button.o $(UTILS_BIN)/logo.o \
-		  $(UTILS_BIN)/spline.o
+		  $(UTILS_BIN)/resources.o $(UTILS_BIN)/spline.o \
+		  $(UTILS_BIN)/visual.o
 
 PDF2JPEG_SRCS	= pdf2jpeg.m
 PDF2JPEG_OBJS	= pdf2jpeg.o
@@ -860,7 +862,7 @@ demo-Gtk-conf.o: demo-Gtk-conf.c
 
 xscreensaver-button.o: xscreensaver-button.c
 	$(CC) -c $(INCLUDES) $(DEFS) '-DBINDIR="$(bindir)/"' \
-		$(CFLAGS) $(X_CFLAGS) $(srcdir)/subprocs.c
+		$(CFLAGS) $(X_CFLAGS) $(srcdir)/xscreensaver-button.c
 
 # How we build the default app-defaults file into the program.
 #

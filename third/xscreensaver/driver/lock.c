@@ -167,7 +167,6 @@ make_passwd_window (saver_info *si)
   unsigned long attrmask = 0;
   passwd_dialog_data *pw = (passwd_dialog_data *) calloc (1, sizeof(*pw));
   Screen *screen;
-  Colormap cmap;
   char *f;
   saver_screen_info *ssi = &si->screens [mouse_screen (si)];
   Atom type;
@@ -264,8 +263,10 @@ make_passwd_window (saver_info *si)
 
   /* Figure out the correct idle time. */
   pw->idle_string = malloc(32);
-  sprintf(pw->idle_string, "%d:%02d:%02d", pw->idle_time / 3600000,
-           (pw->idle_time / 60000) % 60, (pw->idle_time / 1000) % 60);
+  sprintf(pw->idle_string, "%lu:%02lu:%02lu",
+	  (unsigned long)(pw->idle_time / 3600000),
+	  (unsigned long)(pw->idle_time / 60000) % 60,
+	  (unsigned long)(pw->idle_time / 1000) % 60);
 
   f = get_string_resource ("passwd.headingFont", "Dialog.Font");
   pw->heading_font = XLoadQueryFont (si->dpy, (f ? f : "fixed"));
@@ -1578,7 +1579,6 @@ handle_typeahead (saver_info *si)
 Bool
 unlock_p (saver_info *si)
 {
-  passwd_dialog_data *pw;
   saver_preferences *p = &si->prefs;
   Bool status;
 
