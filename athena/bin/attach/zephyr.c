@@ -7,8 +7,8 @@
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.7 1991-08-13 21:07:05 probe Exp $";
-#endif lint
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.8 1992-01-06 15:57:00 probe Exp $";
+#endif
 
 #include "attach.h"
 #ifdef ZEPHYR
@@ -30,7 +30,7 @@ static int num_subs = 0;
 
 static jmp_buf	timeout;
 
-static int zephyr_timeout()
+static sig_catch zephyr_timeout()
 {
 	longjmp(timeout, 1);
 }
