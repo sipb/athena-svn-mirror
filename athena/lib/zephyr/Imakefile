@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.4 1989-03-23 11:09:22 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.5 1989-03-23 17:31:20 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -33,7 +33,7 @@ world:
 	make ${MFLAGS} all
 #else
 world:
-	(cd imake; make ${MFLAGS} imake)
+	(cd imake; make ${MFLAGS} clean; make ${MFLAGS} imake)
 	make ${MFLAGS} Makefile
 	make ${MFLAGS} Makefiles
 	make ${MFLAGS} depend
