@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.2 1990-04-25 11:47:54 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.3 1990-06-04 20:04:09 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v $ */
 /* $Author: epeisach $ */
 /*
@@ -291,7 +291,7 @@ char *buf;
 	ADDTIME("q", line->trans.charge.subtime);
 	ADDNUM("p", line->trans.charge.npages);
 	ADDNUM("c", line->trans.charge.med_cost);
-	ADDSTRING("p", line->trans.charge.where);
+	ADDSTRING("w", line->trans.charge.where);
 	break;
     }
 
