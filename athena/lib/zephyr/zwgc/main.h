@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
  *      $Author: ghudson $
- *	$Id: main.h,v 1.6 1997-09-14 22:14:13 ghudson Exp $
+ *	$Id: main.h,v 1.7 1998-05-24 04:48:04 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -21,6 +21,7 @@
 
 extern char *progname;
 extern char *subscriptions_filename_override;
+extern char *location_override;
 
 /*
  *    void usage()

@@ -15,7 +15,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.6 1997-09-14 22:15:04 ghudson Exp $";
+static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.7 1998-05-24 04:48:04 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -35,6 +35,7 @@ static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.6 1997-09-14 22:15:04 gh
 #include "subscriptions.h"
 #include "variables.h"
 #include "pointer.h"
+#include "main.h"
 #ifndef X_DISPLAY_MISSING
 #include "X_driver.h"
 #endif
@@ -141,9 +142,11 @@ void zephyr_init(notice_handler)
     }
 
     /* Set hostname and tty for locations.  If we support X, use the
-     * display string for the tty name. */
+     * display string for the default tty name. */
+    if (location_override)
+	tty = location_override;
 #ifndef X_DISPLAY_MISSING
-    if (dpy)
+    else if (dpy)
 	tty = DisplayString(dpy);
 #endif
     error_code = ZInitLocationInfo(NULL, tty);
