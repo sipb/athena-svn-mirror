@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psdit.c,v 1.2 1997-10-30 01:24:23 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psdit.c,v 1.2.6.1 1999-11-08 20:19:48 tb Exp $";
 #endif
 /* psdit.c
  *
@@ -18,6 +18,12 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1999/11/04 17:31:03  tb
+ * stdout is not a constant.  initialize it in real code.
+ *
+ * Revision 1.2  1997/10/30 01:24:23  ghudson
+ * From mhpower: close buffer overruns.
+ *
  * Revision 1.1.1.1  1996/10/07 20:25:51  ghudson
  * Import of Transcript 4.1
  *
@@ -391,7 +397,7 @@ struct dimensions {
 };
 
 
-private FILE	*tf = stdout;	/* output file */
+private FILE	*tf;	/* output file */
 private char devname[20] = "psc";
 
 private char	*infilename = "stdin"; /* input file name */
@@ -417,6 +423,8 @@ char *argv[];
     VOID done();
     int c;
     int i;
+
+    tf = stdout;
 
     ditdir = DitDir;
     prog = argv[0];
