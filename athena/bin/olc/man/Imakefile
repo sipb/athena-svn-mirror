@@ -1,11 +1,13 @@
 #
-# $Id: Imakefile,v 1.1 1990-07-24 13:16:30 lwvanels Exp $
+# $Id: Imakefile,v 1.2 1991-04-08 21:34:02 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/man/Imakefile,v $
 #
 # Imakefile for top level directory.
 #
 
-InstallMultipleDestFlags(install,olc.1 olcr.1 olc_answers.1,$(DESTDIR)/usr/man/man1,$(INSTMANFLAGS))
+PAGES = olc.1 olcr.1 olc_answers.1 cref.1
+
+InstallMultipleDestFlags(install,$(PAGES),$(DESTDIR)/usr/man/man1,$(INSTMANFLAGS))
 
 DependTarget()
 AllTarget()
