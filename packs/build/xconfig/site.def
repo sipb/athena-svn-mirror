@@ -62,6 +62,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #undef XdecServer
 #endif
 #define XdecServer NO
+#define BuildServer NO
 #define BuildPex	NO
 /* We have better uses for 100 MB of disk space than to hold mips
    debugging information.  If you own stock in a disk manufacturer,
