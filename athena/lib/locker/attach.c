@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.11 2002-10-17 05:20:05 ghudson Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.12 2003-01-03 17:53:12 ghudson Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -302,6 +302,7 @@ static int try_local_copy(locker_context context, locker_attachent *at)
     }
   free(at->hostdir);
   at->hostdir = path;
+  at->fs = locker__get_fstype(context, "LOC");
   return 1;
 }
 
