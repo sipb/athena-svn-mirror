@@ -2,13 +2,14 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.1 1993-06-17 11:58:55 probe Exp $
+ *    $Id: machtype_sun4.c,v 1.2 1993-06-17 12:02:55 probe Exp $
  *    $Locker:  $
  */
 
 #include <stdio.h>
 #include <string.h>
 #include <kvm.h>
+#include <nlist.h>
 #include <fcntl.h>
 #undef NBPP
 #define NBPP 4
@@ -25,7 +26,7 @@ struct nlist nl[] = {
       { "maxmem" },
 #define X_physmem 2
       { "physmem" },
-      { "" },
+      { "" }
 };
 
 main(argc, argv)
@@ -171,7 +172,11 @@ kvm_t *kv;
     if (cpuflg || dpyflg || raflg || memflg)
       {
         int memfd;
-      kv = kvm_open(NULL,NULL,"/dev/swap",O_RDONLY,NULL);
+      kv = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
+      if (!kv) {
+        fprintf(stderr,"%s: unable to examine the kernel\n", argv[0]);
+        exit(2);
+      }
       if (kvm_nlist(kv, &nl) < 0) {
         fprintf(stderr,"%s: can't get namelist\n", argv[0]);
         exit(2);
