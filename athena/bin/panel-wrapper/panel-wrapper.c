@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <errno.h>
 
 #include <gtk/gtk.h>
@@ -250,7 +251,9 @@ int main(int argc, char **argv)
 	  perror("panel-wrapper: wait");
 	  exit(1);
 	}
-      if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+      if (WIFSIGNALED(status) && WTERMSIG(status) == SIGTERM)
+	kill(getpid(), SIGTERM);
+      else if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
 	confirm_logout();
       else
 	{
