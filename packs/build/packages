@@ -1,4 +1,4 @@
-# $Id: packages,v 1.160 2002-03-04 03:40:58 ghudson Exp $
+# $Id: packages,v 1.161 2002-03-04 15:46:37 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -136,7 +136,7 @@ third/bison			on solaris
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
 third/bonobo-conf		requires bonobo
 third/bzip2			except linux
-third/db			except linux
+third/db
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
 third/diffutils			on solaris
 third/emacs			requires hesiod,krb5
