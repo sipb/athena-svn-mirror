@@ -39,7 +39,7 @@ static int	lflag;		/* long output option */
  */
 #ifdef TERMCAP
 
-#if !defined(_AUX_SOURCE) && !defined(SOLARIS) && !defined(_AIX)
+#if !defined(POSIX)
 struct sgttyb sbuf;
 static unsigned ospeed;
 #endif
@@ -197,7 +197,7 @@ termcap()
 	char *bp = buf;
 	register char **p, ***q, *cp;
 
-#if !defined(_AUX_SOURCE) && !defined(SOLARIS) && !defined(_AIX)
+#if !defined(POSIX)
 	ioctl(0, TIOCGETP, (char *)&sbuf);
 	ospeed = sbuf.sg_ospeed;
 #endif
