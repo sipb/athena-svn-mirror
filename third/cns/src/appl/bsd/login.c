@@ -95,6 +95,11 @@ static char sccsid[] = "@(#)login.c	5.25 (Berkeley) 1/6/89";
 #include <arpa/nameser.h>
 #include <arpa/resolv.h>
 #endif /* BIND_HACK */
+#ifdef KRB5
+#include <krb5/krb5.h>
+#include <krb5/ext-proto.h>
+#include <krb5/los-proto.h>
+#endif
 #endif /* KERBEROS */
 #include "loginpaths.h"
 
@@ -169,6 +174,8 @@ int initgroups(char* name, gid_t basegid) {
 }
 #endif
 
+#define SETPAG
+
 #define	TTYGRPNAME	"tty"		/* name of group to own ttys */
 
 #define	MOTDFILE	"/etc/motd"
@@ -228,13 +235,25 @@ extern int errno;
 #ifdef KERBEROS
 #define KRB_ENVIRON	"KRBTKFILE"	/* Ticket file environment variable */
 #define KRB_TK_DIR	"/tmp/tkt_"	/* Where to put the ticket */
+
+#ifdef KRB5
+#define KRB5_ENVIRON	"KRB5CCNAME"	/* Ticket file environment variable */
+#define KRB5_TK_DIR	"/tmp/krb5cc_"	/* Where to put the ticket */
+#endif
+
 #define MAXPWSIZE	128		/* Biggest string accepted for Kerberos
 					   passsword */
 
 AUTH_DAT *kdata;
 char tkfile[MAXPATHLEN];
+#ifdef KRB5
+char tk5file[MAXPATHLEN];
+#endif
 int krbflag;			/* Set if Kerberos tickets are
 				   hanging around. */
+#ifdef SETPAG
+int pagflag;			/* true if setpag() has been called */
+#endif
 char *srvtab = "";
 char *getenv();
 #ifndef HAVE_STRSAVE
@@ -616,6 +635,15 @@ main(argc, argv)
 			    sizeof(tkfile) - strlen(tkfile) - 1);
 		    (void) setenv(KRB_ENVIRON, tkfile, 1);
 		    krb_set_tkt_string(tkfile);
+#ifdef KRB5
+		    /* Set up the ticket file environment variable */
+		    strncpy(tk5file, KRB5_TK_DIR, sizeof(tkfile));
+		    strncat(tk5file, tty,
+			    sizeof(tk5file) - strlen(tk5file) - 1);
+		    while (p = strchr((char *)tk5file+strlen(KRB5_TK_DIR), '/'))
+			*p = '_';
+		    (void) setenv(KRB5_ENVIRON, tk5file, 1);
+#endif /* KRB5 */
 		    if (setreuid(pwd->pw_uid, -1) < 0) {
 			/* can't set ruid to user! */
 			krbval = -1;
@@ -626,6 +654,20 @@ main(argc, argv)
 					       realm, "krbtgt",
 					       realm,
 					       DEFAULT_TKT_LIFE, pp2);
+#ifdef KRB5
+		    {
+			krb5_error_code krb5_ret;
+			char *etext;
+			
+			krb5_ret = do_v5_kinit(username, "", realm,
+					       TKT_LIFE,
+					       pp2, 0, &etext);
+			if (krb5_ret &&
+			    krb5_ret != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
+			    com_err("login", krb5_ret, etext);
+			}
+		    }
+#endif
 		    memset (pp2, 0, sizeof(pp2));
 #ifndef NO_SETPRIORITY
 		    (void) setpriority(PRIO_PROCESS, 0, 0 + PRIO_OFFSET);
@@ -683,8 +725,12 @@ main(argc, argv)
 		if (lpass_ok)
 		    break;
 bad_login:
-		if (krbflag)
+		if (krbflag) {
 		    dest_tkt();		/* clean up tickets if login fails */
+#ifdef KRB5
+		    do_v5_kdestroy(0);
+#endif
+		}
 #else
 #ifndef NO_SETPRIORITY
 		(void) setpriority(PRIO_PROCESS, 0, -4 + PRIO_OFFSET);
@@ -807,9 +853,20 @@ sco_lose:
 #ifdef KERBEROS
 	if(krbflag)
 	    (void) chown(getenv(KRB_ENVIRON), pwd->pw_uid, pwd->pw_gid);
+#ifdef KRB5
+	    (void) chown(getenv(KRB5_ENVIRON), pwd->pw_uid, pwd->pw_gid);
+#endif
 #endif
 	(void)chmod(ttyn, 0620);
-#if 0
+#ifdef KERBEROS
+#ifdef SETPAG
+	if (pwd->pw_uid) {
+	    /* Only reset the pag for non-root users. */
+	    /* This allows root to become anything. */
+	    pagflag = 1;
+	    setpag();
+	}
+#endif
 	/* This is often not desirable, and the old code didn't work
            anyhow.  */
 	/* Fork so that we can call kdestroy */
@@ -981,16 +1038,16 @@ sco_lose:
 		struct stat st;
 
 #ifdef KERBEROS
-#if 0 /* this message causes confusion for some people... */
 		if (!krbflag)
 		    printf("\nWarning: No Kerberos tickets obtained.\n\n");
-#endif
 #endif /* KERBEROS */
+#ifndef sgi /* SGI takes care of this stuff in /etc/profile and /etc/cshrc. */
 		motd();
 		(void)sprintf(tbuf, "%s/%s", MAILDIR, pwd->pw_name);
 		if (stat(tbuf, &st) == 0 && st.st_size != 0)
 			printf("You have %smail.\n",
 			    (st.st_mtime > st.st_atime) ? "new " : "");
+#endif
 	}
 
 #ifndef OQUOTA
@@ -1367,14 +1424,17 @@ sleepexit(eval)
 	int eval;
 {
 #ifdef KERBEROS
-	if (krbflag)
+	if (krbflag) {
 	    (void) dest_tkt();
+#ifdef KRB5
+	    do_v5_kdestroy(0);
+#endif
+	}
 #endif /* KERBEROS */
 	sleep((u_int)5);
 	exit(eval);
 }
 
-#if 0
 /*
  * This routine handles cleanup stuff, and the like.
  * It exits only in the child process.
@@ -1404,11 +1464,17 @@ dofork()
 
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
+#ifdef KRB5
+    do_v5_kdestroy(0);
+#endif
+#ifdef SETPAG
+    if (pagflag)
+	ktc_ForgetAllTokens();
+#endif
 
     /* Leave */
     exit(0);
 }
-#endif
 
 
 #ifndef HAVE_STRSAVE
@@ -1511,3 +1577,147 @@ static int setuid(uid)
 }
 
 #endif /* RIOS */
+
+#ifdef KRB5
+/*
+ * This routine takes v4 kinit parameters and performs a V5 kinit.
+ * 
+ * name, instance, realm is the v4 principal information
+ *
+ * lifetime is the v4 lifetime (i.e., in units of 5 minutes)
+ * 
+ * password is the password
+ *
+ * ret_cache_name is an optional output argument in case the caller
+ * wants to know the name of the actual V5 credentials cache (to put
+ * into the KRB5CCNAME environment variable)
+ *
+ * etext is a mandatory output variable which is filled in with
+ * additional explanatory text in case of an error.
+ */
+krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
+                           ret_cache_name, etext)
+    char    *name;
+    char    *instance;
+    char    *realm;
+    int     lifetime;
+    char    *password;
+    char    **ret_cache_name;
+    char    **etext;
+{
+    krb5_error_code retval;
+    krb5_principal  me = 0, server = 0;
+    krb5_ccache     ccache = NULL;
+    krb5_creds      my_creds;
+    krb5_timestamp  now;
+    krb5_address    **my_addresses = 0;
+    char            *cache_name = krb5_cc_default_name();
+
+    *etext = 0;
+    if (ret_cache_name)
+	*ret_cache_name = 0;
+    memset((char *)&my_creds, 0, sizeof(my_creds));
+    
+    krb5_init_ets();
+    
+    retval = krb5_425_conv_principal(name, instance, realm, &me);
+    if (retval) {
+	*etext = "while converting V4 principal";
+	goto cleanup;
+    }
+    
+    retval = krb5_cc_resolve (cache_name, &ccache);
+    if (retval) {
+	*etext = "while resolving ccache";
+	goto cleanup;
+    }
+
+    retval = krb5_cc_initialize (ccache, me);
+    if (retval) {
+	*etext = "while initializing cache";
+	goto cleanup;
+    }
+
+    retval = krb5_build_principal_ext(&server,
+				      krb5_princ_realm(me)->length,
+				      krb5_princ_realm(me)->data,
+				      KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
+				      krb5_princ_realm(me)->length,
+				      krb5_princ_realm(me)->data,
+				      0);
+    if (retval)  {
+	*etext = "while building server name";
+	goto cleanup;
+    }
+
+    retval = krb5_os_localaddr(&my_addresses);
+    if (retval) {
+	*etext = "when getting my address";
+	goto cleanup;
+    }
+
+    retval = krb5_timeofday(&now);
+    if (retval) {
+	*etext = "while getting time of day";
+	goto cleanup;
+    }
+       
+    my_creds.client = me;
+    my_creds.server = server;
+    my_creds.times.starttime = 0;
+    my_creds.times.endtime = now + lifetime*5*60;
+    my_creds.times.renew_till = 0;
+       
+    retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
+					   ETYPE_DES_CBC_CRC,
+					   KEYTYPE_DES,
+					   password,
+					   ccache,
+					   &my_creds, 0);
+    if (retval) {
+	*etext = "while calling krb5_get_in_tkt_with_password";
+	goto cleanup;
+    }
+
+    if (ret_cache_name) {
+	*ret_cache_name = malloc(strlen(cache_name)+1);
+	if (!*ret_cache_name) {
+	    retval = ENOMEM;
+	    goto cleanup;
+	}
+	strcpy(*ret_cache_name, cache_name);
+    }
+
+ cleanup:
+    if (me)
+	krb5_free_principal(me);
+    if (server)
+	krb5_free_principal(server);
+    if (my_addresses)
+	krb5_free_addresses(my_addresses);
+    if (ccache)
+	krb5_cc_close(ccache);
+    my_creds.client = 0;
+    my_creds.server = 0;
+    krb5_free_cred_contents(&my_creds);
+    return retval;
+}
+
+krb5_error_code do_v5_kdestroy(cachename)
+    char    *cachename;
+{
+    krb5_error_code retval;
+    krb5_ccache cache;
+    
+    if (!cachename)
+	cachename = krb5_cc_default_name();
+    
+    krb5_init_ets();
+    
+    retval = krb5_cc_resolve (cachename, &cache);
+    if (!retval)
+	retval = krb5_cc_destroy(cache);
+
+    return retval;
+}
+#endif /* KRB5 */
