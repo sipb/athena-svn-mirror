@@ -1,10 +1,10 @@
 #
 # Makefile for error-table routines
 #
-# Copyright 1987, 1989 MIT Student Information Processing Board
+# Copyright 1987, 1989, 1991 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.8 1991-02-22 07:34:58 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.9 1991-02-22 07:47:16 jik Exp $
 #	$Locker:  $
 #
 
@@ -16,10 +16,10 @@ LINTFLAGS= 	-uhvpb
 LINTFILES= 	error_message.c et_name.c init_et.c com_err.c
 LIBOBJS= 	error_message.o et_name.o init_et.o com_err.o
 
-BINDIR=		/usr/athena
+BINDIR=		/usr/bin
 INCDIR=		/usr/include
-LIBDIR=		/usr/athena/lib
-DOCDIR=		/usr/doc/athena
+LIBDIR=		/usr/lib
+DOCDIR=		/usr/doc
 DESTDIR=
 
 CFILES=		com_err.c compile_et.c error_message.c et_name.c\
