@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/etc:/usr/ucb:/bin:/usr/bin:.:/etc/athena:/bin/athena:/usr/bin/athena
+PATH=/etc:/usr/ucb:/bin:/usr/bin:.:/etc/athena:/bin/athena:/usr/athena/bin:/usr/bin/X11
 export PATH
 SHELL=/bin/echo
 export SHELL
@@ -9,7 +9,7 @@ attach -n -h -q mitvma
 
 MAP3270=/mit/mitvma/map3270; export MAP3270
 
-/usr/bin/X11/xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/ucb/tn3270 mitvma.mit.edu
+xterm -geometry 80x34+60+30 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 tn3270 mitvma.mit.edu
 
 detach -q mitvma
 
