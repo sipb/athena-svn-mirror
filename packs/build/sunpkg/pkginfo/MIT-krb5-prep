@@ -1,3 +1,4 @@
 PKG=MIT-krb5-prep
-NAME=don't install this rpm
-DESC=Do not install this RPM
+NAME=Do not install this package
+DESC=This package is for internal use by the build system.  It should never be installed.
+CATEGORY=MITdontinstall
