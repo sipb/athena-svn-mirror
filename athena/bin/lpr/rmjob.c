@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.7 1993-02-25 13:47:46 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8 1995-07-11 20:39:25 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.7 1993-02-25 13:47:46 probe Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8 1995-07-11 20:39:25 miki Exp $";
 #endif lint
 
 /*
@@ -24,6 +24,9 @@ static char sccsid[] = "@(#)rmjob.c	5.1 (Berkeley) 6/6/85";
  */
 
 #include "lp.h"
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h"
+#endif
 
 /*
  * Stuff for handling lprm specifications
@@ -187,7 +190,7 @@ process(file)
 
 	if (!chk(file))
 		return;
-	if ((cfp = fopen(file, "r")) == NULL)
+	if ((cfp = fopen(file, "r+")) == NULL)
 		fatal("cannot open %s", file);
 	while (flock(fileno(cfp), LOCK_EX|LOCK_NB) < 0) {
 		if (errno == EWOULDBLOCK) {
