@@ -1,5 +1,5 @@
 #ifndef lint
-static char rcsid[] = "$Id: host.c,v 1.1.1.2 1998-05-12 18:03:49 ghudson Exp $";
+static char rcsid[] = "$Id: host.c,v 1.1.1.2.2.1 1998-07-15 18:53:53 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -227,6 +227,10 @@ main(int c, char **v) {
 			v++;
 			c--;
 		}		
+		else {
+			fprintf(stderr, "Usage: host [-w] [-v] [-r] [-d] [-t querytype] [-c class] [-a] host [server]\n  -w to wait forever until reply\n  -v for verbose output\n  -r to disable recursive processing\n  -d to turn on debugging output\n  -t querytype to look for a specific type of information\n  -c class to look for non-Internet data\n  -a is equivalent to '-v -t *'\n");
+			exit(1);
+		}
         }
 	if (c > 2) {
 		s = v[2];
