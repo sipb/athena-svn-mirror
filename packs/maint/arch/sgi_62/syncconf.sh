@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3 1998-06-29 16:35:33 rbasch Exp $
+# $Id: syncconf.sh,v 1.4 1998-07-02 18:36:21 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -68,7 +68,7 @@ remove()
 
 move()
 {
-	$maybe mv "$1" "$2"
+	$maybe mv -f "$1" "$2"
 }
 
 quiet_move()
