@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.29 1994-08-19 14:09:11 probe Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.30 1996-03-25 18:07:41 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -402,19 +402,8 @@ static void setup_signals(dofork)
     sa.sa_handler = SIG_IGN;
     sigaction(SIGPIPE, &sa, (struct sigaction *)0);
 
-#ifdef SOLARIS
-    sa.sa_handler = SIG_IGN;
-    sa.sa_flags = SA_NOCLDSTOP;
-#else
     sa.sa_handler = signal_child;
-#endif
     sigaction(SIGCHLD, &sa, (struct sigaction *)0);
-
-#ifdef _AIX
-    sa.sa_flags = SA_FULLDUMP;
-    sa.sa_handler = SIG_DFL;
-    sigaction(SIGSEGV, &sa, (struct sigaction *)0);
-#endif
 
 #else /* !POSIX */
     if (dofork) {
