@@ -1,13 +1,13 @@
 #  This file is part of the Project Athena Global Message System.
 #  Created by: Mark W. Eichin <eichin@athena.mit.edu>
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v $
-#  $Author: probe $
+#  $Author: epeisach $
 # 
 # 	Copyright (c) 1988 by the Massachusetts Institute of Technology.
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.4 1989-10-15 16:26:32 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.5 1990-02-09 09:34:10 epeisach Exp $
 # Generic one project, one target makefile.
 #
 
@@ -32,7 +32,7 @@ ALLSRCS= $(CSRCS) $(ETSRCS)
 
 CFLAGS= ${INCLUDE}
 
-DEPEND=/usr/athena/makedepend
+DEPEND=touch Make.depend; /usr/athena/makedepend -fMake.depend 
 COMPILE_ET=/usr/athena/compile_et
 
 LIB= lib${PROJECT}.a
@@ -83,48 +83,3 @@ $(ETOBJS):	$(ETCSRC)
 depend: $(ETINCS)
 	${DEPEND} -v ${CFLAGS} -s'# DO NOT DELETE' $(CSRCS) $(MODS)
 
-# DO NOT DELETE THIS LINE
-
-get_a_message.o: /usr/include/mit-copyright.h globalmessage.h
-# globalmessage.h includes:
-#	errno.h
-#	globalmessage_err.h
-get_a_message.o: /usr/include/errno.h globalmessage_err.h
-get_a_message.o: /usr/include/syslog.h
-get_fallback_file.o: /usr/include/mit-copyright.h globalmessage.h
-get_fallback_file.o: /usr/include/errno.h globalmessage_err.h
-get_fallback_file.o: /usr/include/sys/file.h
-get_message.o: /usr/include/mit-copyright.h globalmessage.h
-get_message.o: /usr/include/errno.h globalmessage_err.h /usr/include/stdio.h
-get_message.o: /usr/include/sys/types.h /usr/include/syslog.h
-get_message_from_server.o: /usr/include/mit-copyright.h globalmessage.h
-get_message_from_server.o: /usr/include/errno.h globalmessage_err.h
-get_message_from_server.o: /usr/include/sys/types.h /usr/include/sys/socket.h
-get_message_from_server.o: /usr/include/netinet/in.h /usr/include/netdb.h
-get_message_from_server.o: /usr/include/hesiod.h /usr/include/sys/time.h
-# /usr/include/sys/time.h includes:
-#	time.h
-get_message_from_server.o: /usr/include/sys/time.h
-get_servername.o: /usr/include/mit-copyright.h globalmessage.h
-get_servername.o: /usr/include/errno.h globalmessage_err.h
-get_servername.o: /usr/include/hesiod.h
-gethost_errors.o: /usr/include/mit-copyright.h gethost_err.h
-gethost_errors.o: /usr/include/netdb.h
-hesiod_errors.o: /usr/include/mit-copyright.h hesiod_err.h
-hesiod_errors.o: /usr/include/hesiod.h
-put_fallback_file.o: /usr/include/mit-copyright.h globalmessage.h
-put_fallback_file.o: /usr/include/errno.h globalmessage_err.h
-put_fallback_file.o: /usr/include/sys/file.h /usr/include/sys/types.h
-put_fallback_file.o: /usr/include/sys/time.h /usr/include/sys/time.h
-read_to_memory.o: /usr/include/mit-copyright.h globalmessage.h
-read_to_memory.o: /usr/include/errno.h globalmessage_err.h
-view_message_by_tty.o: /usr/include/mit-copyright.h globalmessage.h
-view_message_by_tty.o: /usr/include/errno.h globalmessage_err.h
-view_message_by_zephyr.o: /usr/include/mit-copyright.h globalmessage.h
-view_message_by_zephyr.o: /usr/include/errno.h globalmessage_err.h
-view_message_by_zephyr.o: /usr/include/pwd.h /usr/include/stdio.h
-view_message_by_zephyr.o: /usr/include/strings.h /usr/include/syslog.h
-check_viewable.o: /usr/include/mit-copyright.h globalmessage.h
-check_viewable.o: /usr/include/errno.h globalmessage_err.h
-check_viewable.o: /usr/include/strings.h /usr/include/sys/types.h
-check_viewable.o: /usr/include/sys/file.h /usr/include/pwd.h
