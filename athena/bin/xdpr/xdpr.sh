@@ -88,7 +88,7 @@ while [ $1 ]; do
 # ...arguments to lp[r]...
 
 	-P*|-#?*|-C?*|-J?*|-h|-m)
-		bsdlprv="$lprv $1";;
+		bsdlprv="$bsdlprv $1";;
 
 	-d*|-H*|-q*|-n*|-o*|-w)
 		svlprv="$svlprv $1";;
