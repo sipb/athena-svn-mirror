@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.4 2003-04-04 17:30:30 ghudson Exp $
+# $Id: cshrc,v 1.5 2003-05-29 16:29:55 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -202,8 +202,12 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
   set nostat = (/afs/)		#   Don't stat when completing in /afs
 endif
 
-set hosttype=$HOSTTYPE
-set host=$HOST
+if ($?HOSTTYPE) then
+  set hosttype=$HOSTTYPE
+endif
+if ($?HOST) then
+  set host=$HOST
+endif
 
 # Set up standard C shell aliases
 
