@@ -39,7 +39,7 @@ get_play_time (const gchar* filename)
 	gboolean nofile = FALSE;
 
 	/* Check if there is an active file or not */
-	if (!g_file_exists (filename))
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
 		nofile = TRUE;
 	
 	if (!nofile) {
@@ -68,13 +68,12 @@ get_play_time (const gchar* filename)
 }    
 
 void
-set_min_sec_time (gint sec, gboolean set_topic)
+set_min_sec_time (gint sec)
 {
 	gint minutes = 0;
 	gint seconds = 0;
 	
 	gchar* temp_string = NULL;
-	gchar* show_mess = NULL;
 
         /* Time in seconds -> time in seconds & minutes */
 	minutes = (int) sec / 60;
@@ -90,17 +89,6 @@ set_min_sec_time (gint sec, gboolean set_topic)
 
 	gtk_label_set_text (GTK_LABEL (grecord_widgets.timemin_label), temp_string);
 
-	if (sec != 0 && set_topic) {
-		gchar* temp_string2;
-		temp_string2 = g_strdup (strrchr (active_file, '/'));
-		temp_string2[0] = ' ';
-		show_mess = g_strconcat (_(maintopic), temp_string2, " - ", temp_string, NULL);
-		g_free (temp_string2);
-	}
-	else if (sec == 0 && set_topic) {
-		show_mess = g_strconcat (_(maintopic), _(" untitled.wav"),  " - ", "00", NULL);
-	}
-
 	g_free (temp_string);
 
 	if (seconds <= 0)
@@ -112,15 +100,7 @@ set_min_sec_time (gint sec, gboolean set_topic)
 
 	gtk_label_set_text (GTK_LABEL (grecord_widgets.timesec_label), temp_string);
 
-	/* Set topic */
-	if (set_topic) {
-		gchar* temp;
-		temp = g_strconcat (show_mess, ":", temp_string, NULL);
-		gtk_window_set_title (GTK_WINDOW (grecord_widgets.grecord_window), temp);
-		g_free (temp);
-	}
 	g_free (temp_string);
-	g_free (show_mess);
 }
 
 /******************************/
@@ -133,25 +113,32 @@ add_echo (gchar* filename, gboolean overwrite)
 	static gboolean first_time = TRUE;
 	gchar* backup_file;
 
-	gchar* command;
-	gchar* command_plus_make_backup;
-
-	backup_file = g_concat_dir_and_file (temp_dir, temp_filename_backup);
-
-	command = g_strconcat (sox_command, " ", backup_file, " ", active_file, " echo 0.8 0.88 60.0 0.4", NULL);
-	command_plus_make_backup = g_strconcat ("cp -f ", active_file, " ", backup_file, " ; ", command, NULL);
+	backup_file = g_build_filename (temp_dir, temp_filename_backup, NULL);
 
 	/* Make a backup only the first time */
 	if (first_time) {
-		run_command (command_plus_make_backup, _("Adding echo to sample..."));
+		pid_t pid;
+		int status;
+
+		pid = fork ();
+		if (pid == 0) {
+			execlp ("cp", "cp", "-f", active_file, backup_file, NULL);
+			perror ("cp");
+			_exit (1);
+		} else if (pid == -1) {
+			g_error ("Cannot fork child process");
+		} else {
+			waitpid (pid, &status, 0);
+		}
 		first_time = FALSE;
 	}
-	else
-		run_command (command, _("Adding echo to sample..."));
+
+	run_command (_("Adding echo to sample..."), sox_command,
+		     backup_file, active_file, "echo", "0.8", "60.0",
+		     "0.4", NULL);
+		
 
 	g_free (backup_file);
-	g_free (command);
-	g_free (command_plus_make_backup);
 }
 
 void

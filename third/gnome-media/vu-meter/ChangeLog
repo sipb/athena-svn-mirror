@@ -1,3 +1,61 @@
+2002-04-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* main.c (main): Use GETTEXT_PACKAGE instead of PACKAGE.
+	
+2002-04-06  Iain <iain@ximian.com>
+
+	* main.c (main): Don't restore the application size, don't free
+	anything after the gtk_main is quit.
+	(save_state): Just restart the program.
+	
+2002-03-06  Iain <iain@ximian.com>
+
+	* gtkledbar.c (led_bar_new): Move the creation of the led outside of 
+	the if statements, so that all the leds are created.
+
+	* Makefile.am: USe the VUMETER values.
+
+2002-02-02  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-reclevel.png:
+	* gnome-vumeter.png:
+
+	Modernize the icons a little.
+
+2002-01-26  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* main.c: get translations in UTF-8
+
+2001-12-25  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* reclevel.desktop.in: Fixed small typo
+
+2001-12-09  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* reclevel.desktop.in:
+	* vumeter.desktop.in:
+
+	Install into the correct location, use INSTAL_DESKTOP_RULE,
+	menu renaming to match the HIG.
+	
+2001-12-02  Iain Holmes  <iain@ximian.com>
+
+	* gtkledbar.c: Update GNOME_CLASS_BOILERPLATE macro.
+
+	* gtkled.c: Same.
+
+	* Makefile.am: Comment out the desktop lines till I work them out.
+
+2001-08-07  Stanislav Brabec  <utx@penguin.cz>
+
+	* main.c, reclevel.desktop.in, gnome-reclevel.png, Makefile.am:
+	New feature - recording level meter. To record simultaneously,
+	you need at least esound 0.2.21. Otherwise reclevel meter blocks
+	recording. Now it isn't only a toy. :-)
+
+	* vumeter.desktop.in: Trailing space remove.
+
 2001-06-01  Christian Rose  <menthos@menthos.com>
 
 	* vumeter.desktop: Updated Swedish translation.

@@ -47,3 +47,9 @@
  *   1 = version 1.9.9g
  *   2 = version 4.0/4.1 */
 #undef NCURSES_970530
+
+#undef GETTEXT_PACKAGE
+
+#undef HAVE_CDROMCLOSETRAY_IOCTL
+#undef DEFAULT_MIXER
+#undef HAVE_MIXER

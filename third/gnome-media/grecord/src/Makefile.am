@@ -1,14 +1,15 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-I$(top_srcdir)/intl \
-	$(GNOME_INCLUDEDIR)	\
+	$(MEDIA_CFLAGS)		\
+	-DDATADIR=\""$(datadir)"\"		\
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\"
 
-bin_PROGRAMS = grecord
+bin_PROGRAMS = gnome-sound-recorder
 
-grecord_SOURCES = \
+gnome_sound_recorder_SOURCES = \
 	main.c \
 	gui.c gui.h \
 	grec.c grec.h \
@@ -16,5 +17,5 @@ grecord_SOURCES = \
 	sound.c sound.h \
 	prog.h
 
-grecord_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+gnome_sound_recorder_LDADD = $(MEDIA_LIBS) $(INTLLIBS)
 

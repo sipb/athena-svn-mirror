@@ -1,10 +1,10 @@
-Audiodir = $(datadir)/gnome/apps/Multimedia
+Audiodir = $(datadir)/applications
 
 pixmapdir = $(datadir)/pixmaps
 
 INCLUDES = \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(GNOME_INCLUDEDIR)			\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	$(VUMETER_CFLAGS)			\
 	-DGNOME_ICONDIR=\""$(pixmapdir)"\"
 
 bin_PROGRAMS = vumeter
@@ -17,14 +17,15 @@ vumeter_SOURCES = \
 	main.c
 
 vumeter_LDADD = \
-	$(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+	$(VUMETER_LIBS) $(INTLLIBS)
 
-BITMAPS = gnome-vumeter.png
+BITMAPS = gnome-vumeter.png gnome-reclevel.png
 
 pixmap_DATA = $(BITMAPS)
 
-EXTRA_DIST = $(BITMAPS) vumeter.desktop.in README TODO
+EXTRA_DIST = $(BITMAPS) vumeter.desktop.in reclevel.desktop.in README TODO
 
-Audio_in_files = vumeter.desktop.in
+@INTLTOOL_DESKTOP_RULE@
+Audio_in_files = vumeter.desktop.in reclevel.desktop.in
 Audio_DATA = $(Audio_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+

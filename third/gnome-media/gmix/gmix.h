@@ -25,7 +25,7 @@
  */
 #define GMIX_VERSION 0x030000
 
-#ifdef ALSA
+#if defined(ALSA) || defined(__FreeBSD__)
 /* stolen from OSS's soundcard.h */
 typedef struct mixer_info
 {
@@ -45,16 +45,23 @@ typedef struct device_info {
 #endif
 	int fd;
 	mixer_info info;
-	int recsrc;	/* current recording-source(s) */
+	char *card_name;
+
 	int devmask;	/* devices supported by this driver */
+	
+#ifdef CRACKROCK
+	int recsrc;	/* current recording-source(s) */
 	int recmask;	/* devices, that can be a recording-source */
 	int stereodevs;	/* devices with stereo abilities */
+#endif
 	int caps;	/* features supported by the mixer */
+#ifdef CRACKROCK
 	int volume_left[32], volume_right[32]; /* volume, mono only left */
 
 	int mute_bitmask; /* which channels are muted */
 	int lock_bitmask; /* which channels have the L/R sliders linked together */
 	int enabled_bitmask; /* which channels should be visible in the GUI ? */
+#endif
 	GList *channels;
 } device_info;
 
@@ -68,13 +75,29 @@ typedef struct channel_info {
 #ifdef ALSA
 	snd_mixer_group_t *mixer_group;
 #endif
+
+	gboolean record_source; /* Can be a recording source */
+	gboolean is_record_source; /* Is currently a recording source */
+	gboolean is_stereo;
+	gboolean is_muted;
+	gboolean is_locked;
+	gboolean visible;
+
+	int volume_left;
+	int volume_right;
+	
 	/* GUI info */
 	char *title; /* or char *titel ? */
 	char *user_title;
 	char *pixmap;
+	
 	/* here are the widgets... */
 	GtkObject *left, *right;
+	GtkWidget *mixer;
 	GtkWidget *lock, *rec, *mute;
+	GtkWidget *icon;
+	GtkWidget *label;
+	GtkWidget *separator;
 
 	int passive; /* avoid recursive calls to event handler */
 } channel_info;
@@ -85,7 +108,3 @@ struct pixmap {
 };
 
 extern GList *devices;
-
-void help_cb(GtkWidget *widget, gpointer data);
-void fill_in_device_guis(GtkWidget *notebook);
-void gmix_build_slidernotebook(void);

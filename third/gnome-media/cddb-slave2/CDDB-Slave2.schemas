@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/server</key>
+      <applyto>/apps/CDDB-Slave2/server</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default>freedb.freedb.org</default>
+      <locale name="C">
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/port</key>
+      <applyto>/apps/CDDB-Slave2/port</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>888</default>
+      <locale name="C">
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/server-type</key>
+      <applyto>/apps/CDDB-Slave2/server-type</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/info</key>
+      <applyto>/apps/CDDB-Slave2/info</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C"></locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/name</key>
+      <applyto>/apps/CDDB-Slave2/name</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C"></locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/CDDB-Slave2/hostname</key>
+      <applyto>/apps/CDDB-Slave2/hostname</applyto>
+      <owner>CDDB-Slave2</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C"></locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>

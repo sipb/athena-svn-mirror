@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      1.2.3
+%define ver      2.0.3
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
@@ -100,5 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/locale/*/*/*
 %config %{prefix}/share/gnome/cddb-submit-methods
 %{prefix}/share/gnome/apps/*
+%{prefix}/share/gnome/help/*
 %{prefix}/share/pixmaps/*
+
 

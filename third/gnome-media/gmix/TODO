@@ -1,4 +1,4 @@
-- rewrite docs in SGML
+- rewrite docs in SGML (DONE)
 - add icons for devices
 - configurable devicenames
 - add support for sun's /dev/audio style devices. It's easy, just has to be

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,108 +60,129 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CDDBSLAVE_CFLAGS = @CDDBSLAVE_CFLAGS@
+CDDBSLAVE_LIBS = @CDDBSLAVE_LIBS@
+CDROM_HOST = @CDROM_HOST@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
-CURSES_INCLUDEDIR = @CURSES_INCLUDEDIR@
-CURSES_LIBS = @CURSES_LIBS@
 DATADIRNAME = @DATADIRNAME@
+DEFAULT_MIXER = @DEFAULT_MIXER@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
-GENCAT = @GENCAT@
-GHTTP_LIB = @GHTTP_LIB@
+EXEEXT = @EXEEXT@
+GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
+GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMIX_LIBS = @GMIX_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MEDIA_CFLAGS = @MEDIA_CFLAGS@
+MEDIA_LIBS = @MEDIA_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
+OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PROGRAMS_GMIX = @PROGRAMS_GMIX@
+PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
 PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
-PROGRAMS_TCD = @PROGRAMS_TCD@
 PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
 RANLIB = @RANLIB@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
+SOX_PATH = @SOX_PATH@
+STRIP = @STRIP@
 USE_CD_CHANGER = @USE_CD_CHANGER@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-ZVT_LIBS = @ZVT_LIBS@
-cflags_set = @cflags_set@
-cxxflags_set = @cxxflags_set@
-l = @l@
+VUMETER_CFLAGS = @VUMETER_CFLAGS@
+VUMETER_LIBS = @VUMETER_LIBS@
+default_cd_device = @default_cd_device@
+path_to_sox = @path_to_sox@
 
-Audiodir = $(datadir)/gnome/apps/Multimedia
+Audiodir = $(datadir)/applications
 
 pixmapdir = $(datadir)/pixmaps
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	$(GNOME_INCLUDEDIR)				-DGNOME_ICONDIR=\""$(pixmapdir)"\"
+INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	$(VUMETER_CFLAGS)			\
+	-DGNOME_ICONDIR=\""$(pixmapdir)"\"
 
 
 bin_PROGRAMS = vumeter
 
-vumeter_SOURCES =  	gtkled.c		gtkled.h		gtkledbar.c		gtkledbar.h		main.c
+vumeter_SOURCES = \
+	gtkled.c	\
+	gtkled.h	\
+	gtkledbar.c	\
+	gtkledbar.h	\
+	main.c
 
 
-vumeter_LDADD =  	$(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
+vumeter_LDADD = \
+	$(VUMETER_LIBS) $(INTLLIBS)
 
 
-BITMAPS = gnome-vumeter.png
+BITMAPS = gnome-vumeter.png gnome-reclevel.png
 
 pixmap_DATA = $(BITMAPS)
 
-EXTRA_DIST = $(BITMAPS) vumeter.desktop.in README TODO
-
-Audio_in_files = vumeter.desktop.in
+EXTRA_DIST = $(BITMAPS) vumeter.desktop.in reclevel.desktop.in README TODO
+Audio_in_files = vumeter.desktop.in reclevel.desktop.in
 Audio_DATA = $(Audio_in_files:.desktop.in=.desktop)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  vumeter$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-vumeter_OBJECTS =  gtkled.o gtkledbar.o main.o
+vumeter_OBJECTS =  gtkled.$(OBJEXT) gtkledbar.$(OBJEXT) main.$(OBJEXT)
 vumeter_DEPENDENCIES = 
 vumeter_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -182,7 +203,7 @@ OBJECTS = $(vumeter_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps vu-meter/Makefile
 
@@ -219,6 +240,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -227,6 +253,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -254,8 +281,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-vumeter: $(vumeter_OBJECTS) $(vumeter_DEPENDENCIES)
-	@rm -f vumeter
+vumeter$(EXEEXT): $(vumeter_OBJECTS) $(vumeter_DEPENDENCIES)
+	@rm -f vumeter$(EXEEXT)
 	$(LINK) $(vumeter_LDFLAGS) $(vumeter_OBJECTS) $(vumeter_LDADD) $(LIBS)
 
 install-AudioDATA: $(Audio_DATA)
@@ -341,7 +368,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 gtkled.o: gtkled.c ../config.h gtkled.h
-gtkledbar.o: gtkledbar.c gtkledbar.h gtkled.h
+gtkledbar.o: gtkledbar.c ../config.h gtkledbar.h gtkled.h
 main.o: main.c ../config.h gtkledbar.h gtkled.h
 
 info-am:
@@ -421,7 +448,8 @@ install-am install uninstall-am uninstall all-redirect all-am all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-@XML_I18N_MERGE_DESKTOP_RULE@
+
+@INTLTOOL_DESKTOP_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<gconfschemafile>
+  <schemalist>
+  
+    <schema>
+      <key>/schemas/apps/gnome-volume-control/init-on-start</key>
+      <applyto>/apps/gnome-volume-control/init-on-start</applyto>
+      <owner>Gnome Volume Control</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C"></locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-volume-control/show-icons</key>
+      <applyto>/apps/gnome-volume-control/show-icons</applyto>
+      <owner>Gnome Volume Control</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C"></locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gnome-volume-control/show-labels</key>
+      <applyto>/apps/gnome-volume-control/show-labels</applyto>
+      <owner>Gnome Volume Control</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C"></locale>
+    </schema>
+  
+  </schemalist>
+</gconfschemafile>

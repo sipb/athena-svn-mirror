@@ -23,7 +23,6 @@
 #define _PROG_H_
 
 #include <gnome.h>
-#include <config.h>
 
 const extern gchar* maintopic;
 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+_Name=Sound Recorder
+_Comment=Record sound clips
+Exec=gnome-sound-recorder
+Icon=gnome-grecord.png
+Terminal=false
+Type=Application
+X-GNOME-DocPath=grecord/grecord.xml
+Categories=GNOME;Application;AudioVideo;

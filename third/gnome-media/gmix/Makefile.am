@@ -1,27 +1,44 @@
-Audiodir = $(datadir)/gnome/apps/Multimedia
+Audiodir = $(datadir)/applications
 pixmapdir = $(datadir)/pixmaps
 
-EXTRA_DIST = README TODO NEWS gmix.desktop.in gnome-mixer.png \
+EXTRA_DIST = README TODO NEWS gnome-volume-control.desktop.in gnome-mixer.png \
 	device_labels_linux.sed device_labels_linux.h \
-	device_labels_alsa.sed device_labels_alsa.h
+	device_labels_alsa.sed device_labels_alsa.h	\
+	gnome-volume-control.schemas
+
+INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	$(MEDIA_CFLAGS) 				\
+	-DDATADIR=\""$(datadir)"\"			\
+	-DGNOME_ICONDIR=\""$(pixmapdir)"\"
 
 SUBDIRS = doc
 
-INCLUDES = \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(GNOME_INCLUDEDIR) 				\
-	-DGNOME_ICONDIR=\""$(pixmapdir)"\"
+if BUILD_GMIX
+bin_PROGRAMS = gnome-volume-control
 
-bin_PROGRAMS = gmix
-
-gmix_SOURCES =	\
+gnome_volume_control_SOURCES =	\
 	gmix.c gmix.h prefs.c prefs.h
 
-gmix_LDADD = \
-	$(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(GMIX_LIBS)
+gnome_volume_control_LDADD = \
+	$(MEDIA_LIBS) $(INTLLIBS) $(GMIX_LIBS)
+endif
 
-Audio_in_files = gmix.desktop.in
+@INTLTOOL_DESKTOP_RULE@
+@INTLTOOL_SCHEMAS_RULE@
+
+Audio_in_files = gnome-volume-control.desktop.in
 Audio_DATA = $(Audio_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+
 
 pixmap_DATA = gnome-mixer.png
+
+if BUILD_GMIX
+schemadir=$(sysconfdir)/gconf/schemas
+schema_DATA=gnome-volume-control.schemas
+
+install-schemas:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
+
+install-data-local: install-schemas
+endif

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+_Name=Recording level monitor
+_Comment=Monitor the recording input volume
+Exec=vumeter -r
+Icon=gnome-reclevel.png
+Terminal=false
+Type=Application
+Categories=GNOME;Application;AudioVideo;

@@ -5,7 +5,14 @@
 # be used in projects which are not available under the GNU Public License
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
+#
+# - Modified by Owen Taylor <otaylor@redhat.com> to use GETTEXT_PACKAGE
+#   instead of PACKAGE and to look for po2tbl in ./ not in intl/
+#
+# - Modified by jacob berkman <jacob@ximian.com> to install
+#   Makefile.in.in and po2tbl.sed.in for use with glib-gettextize
 
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
 
@@ -22,10 +29,8 @@ exec_prefix = @exec_prefix@
 datadir = $(prefix)/@DATADIRNAME@
 localedir = $(datadir)/locale
 gnulocaledir = $(prefix)/share/locale
-gettextsrcdir = $(prefix)/share/gettext/po
+gettextsrcdir = $(prefix)/share/glib-2.0/gettext/po
 subdir = po
-
-DESTDIR =
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -36,12 +41,10 @@ GENCAT = @GENCAT@
 GMSGFMT = PATH=../src:$$PATH @GMSGFMT@
 MSGFMT = @MSGFMT@
 XGETTEXT = PATH=../src:$$PATH @XGETTEXT@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
- 
-MSGMERGE = XML_I18N_EXTRACT=$(XML_I18N_EXTRACT) $(XML_I18N_UPDATE) --dist
-GENPOT   = XML_I18N_EXTRACT=$(XML_I18N_EXTRACT) $(XML_I18N_UPDATE) --pot
-
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+MSGMERGE = INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --dist
+GENPOT   = INTLTOOL_EXTRACT=$(INTLTOOL_EXTRACT) $(INTLTOOL_UPDATE) --gettext-package $(GETTEXT_PACKAGE) --pot
 
 DEFS = @DEFS@
 CFLAGS = @CFLAGS@
@@ -51,11 +54,11 @@ INCLUDES = -I.. -I$(top_srcdir)/intl
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
 
-SOURCES = cat-id-tbl.c
+SOURCES = 
 POFILES = @POFILES@
 GMOFILES = @GMOFILES@
-DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(PACKAGE).pot \
-stamp-cat-id $(POFILES) $(GMOFILES) $(SOURCES)
+DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(GETTEXT_PACKAGE).pot \
+$(POFILES) $(GMOFILES) $(SOURCES)
 
 POTFILES = \
 
@@ -70,8 +73,8 @@ INSTOBJEXT = @INSTOBJEXT@
 	$(COMPILE) $<
 
 .po.pox:
-	$(MAKE) $(PACKAGE).pot
-	$(MSGMERGE) $< $(srcdir)/$(PACKAGE).pot -o $*.pox
+	$(MAKE) $(GETTEXT_PACKAGE).pot
+	$(MSGMERGE) $< $(srcdir)/$(GETTEXT_PACKAGE).pot -o $*.pox
 
 .po.mo:
 	$(MSGFMT) -o $@ $<
@@ -87,26 +90,11 @@ INSTOBJEXT = @INSTOBJEXT@
 
 all: all-@USE_NLS@
 
-all-yes: cat-id-tbl.c $(CATALOGS)
+all-yes: $(CATALOGS)
 all-no:
 
-$(srcdir)/$(PACKAGE).pot: $(POTFILES)
+$(srcdir)/$(GETTEXT_PACKAGE).pot: $(POTFILES)
 	$(GENPOT)
-
-$(srcdir)/cat-id-tbl.c: stamp-cat-id; @:
-$(srcdir)/stamp-cat-id: $(PACKAGE).pot
-	rm -f cat-id-tbl.tmp
-	sed -f ../intl/po2tbl.sed $(srcdir)/$(PACKAGE).pot \
-		| sed -e "s/@PACKAGE NAME@/$(PACKAGE)/" > cat-id-tbl.tmp
-	if cmp -s cat-id-tbl.tmp $(srcdir)/cat-id-tbl.c; then \
-	  rm cat-id-tbl.tmp; \
-	else \
-	  echo cat-id-tbl.c changed; \
-	  rm -f $(srcdir)/cat-id-tbl.c; \
-	  mv cat-id-tbl.tmp $(srcdir)/cat-id-tbl.c; \
-	fi
-	cd $(srcdir) && rm -f stamp-cat-id && echo timestamp > stamp-cat-id
-
 
 install: install-exec install-data
 install-exec:
@@ -122,39 +110,39 @@ install-data-yes: all
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  case "$$cat" in \
-	    *.gmo) destdir=$(DESTDIR)$(gnulocaledir);; \
-	    *)     destdir=$(DESTDIR)$(localedir);; \
+	    *.gmo) destdir=$(gnulocaledir);; \
+	    *)     destdir=$(localedir);; \
 	  esac; \
 	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
-	  dir=$$destdir/$$lang/LC_MESSAGES; \
+	  dir=$(DESTDIR)$$destdir/$$lang/LC_MESSAGES; \
 	  if test -r "$(MKINSTALLDIRS)"; then \
 	    $(MKINSTALLDIRS) $$dir; \
 	  else \
 	    $(SHELL) $(top_srcdir)/mkinstalldirs $$dir; \
 	  fi; \
 	  if test -r $$cat; then \
-	    $(INSTALL_DATA) $$cat $$dir/$(PACKAGE)$(INSTOBJEXT); \
-	    echo "installing $$cat as $$dir/$(PACKAGE)$(INSTOBJEXT)"; \
+	    $(INSTALL_DATA) $$cat $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT); \
+	    echo "installing $$cat as $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT)"; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$cat $$dir/$(PACKAGE)$(INSTOBJEXT); \
+	    $(INSTALL_DATA) $(srcdir)/$$cat $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT); \
 	    echo "installing $(srcdir)/$$cat as" \
-		 "$$dir/$(PACKAGE)$(INSTOBJEXT)"; \
+		 "$$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT)"; \
 	  fi; \
 	  if test -r $$cat.m; then \
-	    $(INSTALL_DATA) $$cat.m $$dir/$(PACKAGE)$(INSTOBJEXT).m; \
-	    echo "installing $$cat.m as $$dir/$(PACKAGE)$(INSTOBJEXT).m"; \
+	    $(INSTALL_DATA) $$cat.m $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m; \
+	    echo "installing $$cat.m as $$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m"; \
 	  else \
 	    if test -r $(srcdir)/$$cat.m ; then \
 	      $(INSTALL_DATA) $(srcdir)/$$cat.m \
-		$$dir/$(PACKAGE)$(INSTOBJEXT).m; \
+		$$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m; \
 	      echo "installing $(srcdir)/$$cat as" \
-		   "$$dir/$(PACKAGE)$(INSTOBJEXT).m"; \
+		   "$$dir/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m"; \
 	    else \
 	      true; \
 	    fi; \
 	  fi; \
 	done
-	if test "$(PACKAGE)" = "gettext"; then \
+	if test "$(PACKAGE)" = "glib"; then \
 	  if test -r "$(MKINSTALLDIRS)"; then \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(gettextsrcdir); \
 	  else \
@@ -174,21 +162,19 @@ uninstall:
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
-	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE)$(INSTOBJEXT); \
-	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE)$(INSTOBJEXT).m; \
-	  rm -f $(DESTDIR)$(gnulocaledir)/$$lang/LC_MESSAGES/$(PACKAGE)$(INSTOBJEXT); \
-	  rm -f $(DESTDIR)$(gnulocaledir)/$$lang/LC_MESSAGES/$(PACKAGE)$(INSTOBJEXT).m; \
+	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(GETTEXT_PACKAGE)$(INSTOBJEXT); \
+	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m; \
+	  rm -f $(DESTDIR)$(gnulocaledir)/$$lang/LC_MESSAGES/$(GETTEXT_PACKAGE)$(INSTOBJEXT); \
+	  rm -f $(DESTDIR)$(gnulocaledir)/$$lang/LC_MESSAGES/$(GETTEXT_PACKAGE)$(INSTOBJEXT).m; \
 	done
 	rm -f $(DESTDIR)$(gettextsrcdir)/po-Makefile.in.in
 
 check: all
 
-cat-id-tbl.o: ../intl/libgettext.h
-
 dvi info tags TAGS ID:
 
 mostlyclean:
-	rm -f core core.* *.pox $(PACKAGE).po *.old.po cat-id-tbl.tmp
+	rm -f core core.* *.pox $(GETTEXT_PACKAGE).po *.old.po cat-id-tbl.tmp
 	rm -fr *.o
 
 clean: mostlyclean
@@ -201,7 +187,7 @@ maintainer-clean: distclean
 	@echo "it deletes files that may require special tools to rebuild."
 	rm -f $(GMOFILES)
 
-distdir = ../$(PACKAGE)-$(VERSION)/$(subdir)
+distdir = ../$(GETTEXT_PACKAGE)-$(VERSION)/$(subdir)
 dist distdir: update-po $(DISTFILES)
 	dists="$(DISTFILES)"; \
 	for file in $$dists; do \
@@ -210,7 +196,7 @@ dist distdir: update-po $(DISTFILES)
 	done
 
 update-po: Makefile
-	$(MAKE) $(PACKAGE).pot
+	$(MAKE) $(GETTEXT_PACKAGE).pot
 	PATH=`pwd`/../src:$$PATH; \
 	cd $(srcdir); \
 	catalogs='$(CATALOGS)'; \
@@ -223,6 +209,7 @@ update-po: Makefile
 	    rm -f $$lang.old.po; \
 	  else \
 	    echo "msgmerge for $$cat failed!"; \
+	    rm -f $$lang.po; \
 	    mv $$lang.old.po $$lang.po; \
 	  fi; \
 	done
@@ -240,6 +227,9 @@ update-po: Makefile
 	msgfmt --statistics $*.po; echo;
 
 
+# POTFILES is created from POTFILES.in by stripping comments, empty lines
+# and Intltool tags (enclosed in square brackets), and appending a full
+# relative path to them
 POTFILES: POTFILES.in
 	( if test 'x$(srcdir)' != 'x.'; then \
 	    posrcprefix='$(top_srcdir)/'; \
@@ -247,8 +237,10 @@ POTFILES: POTFILES.in
 	    posrcprefix="../"; \
 	  fi; \
 	  rm -f $@-t $@ \
-	    && (sed -e '/^#/d' -e '/^[ 	]*$$/d' \
-		    -e "s@.*@	$$posrcprefix& \\\\@" < $(srcdir)/$@.in \
+	    && (sed -e '/^#/d' 						\
+		    -e "s/^\[.*\] +//" 					\
+		    -e '/^[ 	]*$$/d' 				\
+		    -e "s@.*@	$$posrcprefix& \\\\@" < $(srcdir)/$@.in	\
 		| sed -e '$$s/\\$$//') > $@-t \
 	    && chmod a-w $@-t \
 	    && mv $@-t $@ )

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -63,94 +63,113 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CDDBSLAVE_CFLAGS = @CDDBSLAVE_CFLAGS@
+CDDBSLAVE_LIBS = @CDDBSLAVE_LIBS@
+CDROM_HOST = @CDROM_HOST@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
-CURSES_INCLUDEDIR = @CURSES_INCLUDEDIR@
-CURSES_LIBS = @CURSES_LIBS@
 DATADIRNAME = @DATADIRNAME@
+DEFAULT_MIXER = @DEFAULT_MIXER@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
-GENCAT = @GENCAT@
-GHTTP_LIB = @GHTTP_LIB@
+EXEEXT = @EXEEXT@
+GAILUTIL_CFLAGS = @GAILUTIL_CFLAGS@
+GAILUTIL_LIBS = @GAILUTIL_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMIX_LIBS = @GMIX_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MEDIA_CFLAGS = @MEDIA_CFLAGS@
+MEDIA_LIBS = @MEDIA_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
+OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PROGRAMS_GMIX = @PROGRAMS_GMIX@
+PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
 PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
-PROGRAMS_TCD = @PROGRAMS_TCD@
 PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
 RANLIB = @RANLIB@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
+SOX_PATH = @SOX_PATH@
+STRIP = @STRIP@
 USE_CD_CHANGER = @USE_CD_CHANGER@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-ZVT_LIBS = @ZVT_LIBS@
-cflags_set = @cflags_set@
-cxxflags_set = @cxxflags_set@
-l = @l@
+VUMETER_CFLAGS = @VUMETER_CFLAGS@
+VUMETER_LIBS = @VUMETER_LIBS@
+default_cd_device = @default_cd_device@
+path_to_sox = @path_to_sox@
 
-always_built_SUBDIRS = cddbslave
+always_built_SUBDIRS = cddb-slave2
 
-SUBDIRS = intl po macros omf-install $(always_built_SUBDIRS) 	  @PROGRAMS_VUMETER@ @PROGRAMS_GMIX@ @PROGRAMS_TCD@ @PROGRAMS_GRECORD@
-
-
-DIST_SUBDIRS = intl po macros omf-install $(always_built_SUBDIRS) 	       vu-meter gmix tcd grecord
+SUBDIRS = po $(always_built_SUBDIRS) \
+	  @PROGRAMS_VUMETER@ \
+	  @PROGRAMS_GMIX@ \
+	  @PROGRAMS_GNOME_CD@ \
+	  @PROGRAMS_GRECORD@
 
 
-EXTRA_DIST = gnome-media.spec.in configure acinclude.m4 COPYING-DOCS 		sgmldocs.make xml-i18n-extract.in xml-i18n-merge.in 		xml-i18n-update.in
+DIST_SUBDIRS = po $(always_built_SUBDIRS) \
+	       vu-meter gmix grecord gnome-cd
+
+
+EXTRA_DIST = gnome-media.spec.in configure acinclude.m4 COPYING-DOCS \
+		sgmldocs.make xmldocs.make omf.make \
+		intltool-extract.in intltool-merge.in intltool-update.in
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  gnome-media.spec version.h
-DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 \
-aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-gnome-media.spec.in install-sh ltconfig ltmain.sh missing mkinstalldirs \
+DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
+Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 aclocal.m4 \
+config.guess config.h.in config.sub configure configure.in \
+gnome-media.spec.in install-sh ltmain.sh missing mkinstalldirs \
 version.h.in
 
 
@@ -243,7 +262,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -309,7 +328,7 @@ distcheck: dist
 	mkdir $(distdir)/=inst
 	dc_install_base=`cd $(distdir)/=inst && pwd`; \
 	cd $(distdir)/=build \
-	  && ../configure --with-included-gettext --srcdir=.. --prefix=$$dc_install_base \
+	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
 	  && $(MAKE) $(AM_MAKEFLAGS) \
 	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
 	  && $(MAKE) $(AM_MAKEFLAGS) check \
@@ -432,10 +451,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 dist-hook: gnome-media.spec
 	cp gnome-media.spec $(distdir)
-
-@MAINT@include macros/macros.dep
-@MAINT@macros/macros.dep: macros/Makefile.am
-@MAINT@	cd macros && $(MAKE) macros.dep
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
