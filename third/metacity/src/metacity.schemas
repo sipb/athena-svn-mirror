@@ -737,7 +737,7 @@
 
       <locale name="it">
          <short>Modalità di focus delle finestre</short>
-         <long>La modalità di focus indica come vengono attivate le finestre. I possibili valori sono tre: &quot;click&quot; fa sì che le finestre vengano attivate facendoci clic sopra, &quot;sloppy&quot; che vengano attivate quando il puntatore è posizionato al di sopra e &quot;mouse&quot; fa in modo che il focus sia assegnato alla finestra sulla quale il puntatore è posizionato e che venga tolto quando il quest&apos;ultimo lascia la finestra.</long>
+         <long>La modalità di focus indica come vengono attivate le finestre. I possibili valori sono tre: &quot;click&quot; fa sì che si debba fare clic su una finestra per farle ottenere il focus, &quot;sloppy&quot; fa sì che le finestre ottengano il focus quando il puntatore entra nella loro area, &quot;mouse&quot; fa sì che le finestre ottengono il focus quando il puntantore entra nella loro area e lo perdano quando ne esce.</long>
       </locale>
 
       <locale name="ja">
@@ -1017,7 +1017,7 @@
 
       <locale name="gu">
          <short>શીર્ષકપટ્ટી પર બે વખત ક્લિક કરવા પર કરવામાં આવતી ક્રિયા</short>
-         <long>આ શીર્ષકપટ્ટી પર બે વખતના ક્લિકની અસર નક્કી કરે છે. વર્તમાન યોગ્ય વિકલ્પો છે &apos;toggle_shade&apos; કે જે વિન્ડોને છાયાંકિ/અછાયાંકિત કરે છે, અને &apos;toggle_maximize&apos; કે જે વિન્ડોને મહત્તમ/મહત્તમ ના હોય તેવું કરે છે.</long>
+         <long>આ શીર્ષકપટ્ટી પર બે વખતના ક્લિકની અસર નક્કી કરે છે. વર્તમાન યોગ્ય વિકલ્પો છે &apos;toggle_shade&apos; કે જે વિન્ડોને છાયાંકિત/અછાયાંકિત કરે છે, અને &apos;toggle_maximize&apos; કે જે વિન્ડોને મહત્તમ/મહત્તમ ના હોય તેવું કરે છે.</long>
       </locale>
 
       <locale name="he">
@@ -1046,7 +1046,7 @@
       </locale>
 
       <locale name="it">
-         <short>Azione per il doppio click sulla barra del titolo</short>
+         <short>Azione per il doppio clic sulla barra del titolo</short>
          <long>Questa opzione determina l&apos;effetto del doppio clic sulla barra del titolo. Le possibili impostazioni sono &quot;toggle_shade&quot; per arrotolare/srotolare e &quot;toggle_maximize&quot; per  massimizzare/demassimizzare la finestra.</long>
       </locale>
 
@@ -1339,7 +1339,7 @@
       </locale>
 
       <locale name="it">
-         <short>Porta automaticamente in primo piano le finestre che hanno il focus</short>
+         <short>Primo piano automatico per finestre con focus</short>
          <long>Se impostata a vero e la modalità di focus è &quot;sloppy&quot; o &quot;mouse&quot;, allora la finestra con il focus è portata automaticamente in primo piano dopo un certo ritardo, specificato nella chiave &quot;auto_raise_delay&quot;.</long>
       </locale>
 
@@ -1945,7 +1945,7 @@
 
       <locale name="it">
          <short>Tema in uso</short>
-         <long>Il tema determina l&apos;aspetto delle cornici delle finestre, della barra del titolo e così via.</long>
+         <long>Il tema determina l&apos;aspetto dei bordi delle finestre, della barra del titolo e così via.</long>
       </locale>
 
       <locale name="ja">
@@ -2868,7 +2868,7 @@
 
       <locale name="gu">
          <short>કામ કરવા માટેની જગ્યાઓની સંખ્યા</short>
-         <long>કામ કરવા માટેની જગ્યાઓની સંખ્યા. તે શૂન્ય કરતાં વધારે હોવી જોઈએ અને નિશ્ચિત મહત્તમ ધરાવે છે (૩૪ મિલિયન કામ કરવાની જગ્યાઓની માંગ કરવાથી થતા તમારા ડેસ્કટોપ ના આકસ્મિક નાશથી બચવા માટે).</long>
+         <long>કામ કરવા માટેની જગ્યાઓની સંખ્યા. તે શૂન્ય કરતાં વધારે હોવી જોઈએ અને નિશ્ચિત મહત્તમ ધરાવે છે (૩૪ મિલિયન કામ કરવાની જગ્યાઓની માંગ કરવાથી થતા તમારા ડેસ્કટોપના આકસ્મિક નાશથી બચવા માટે).</long>
       </locale>
 
       <locale name="he">
@@ -3173,7 +3173,7 @@
 
       <locale name="fr">
          <short>Activer la sonnerie visuelle</short>
-         <long>Active une indication visuelle lorsque une application ou le système emets un bip ; utile pour les malentendants et pour une utilisation dans des environnements bruyants, ou lorsque « audible bell » est off.</long>
+         <long>Active une indication visuelle lorsque une application ou le système émets un bip ; utile pour les malentendants et pour une utilisation dans des environnements bruyants, ou lorsque « audible bell » est off.</long>
       </locale>
 
       <locale name="gu">
@@ -3203,7 +3203,7 @@
 
       <locale name="it">
          <short>Abilita campanella visiva</short>
-         <long>Attiva un&apos;indicazione visiva quando un&apos;applicazione o il sistema emette un bip o suona una campanella; utile per chi ha problemi d&apos;udito o per l&apos;uso in ambienti rumorosi, oppure quando &quot;audible_bell&quot; è disattivata.</long>
+         <long>Attiva un&apos;indicazione visiva quando un&apos;applicazione o il sistema emette un &quot;bip&quot; o &quot;suona una campanella&quot;; utile per chi ha problemi d&apos;udito o per l&apos;uso in ambienti rumorosi, oppure quando &quot;audible_bell&quot; è disattivata.</long>
       </locale>
 
       <locale name="ja">
@@ -3759,7 +3759,7 @@
 
       <locale name="gu">
          <short>દેખાતી ઘંટડીનો પ્રકાર</short>
-         <long>મેટાસીટીને કહે છે કે કયા દ્રશ્ય સંકેતો કામમાં લેવામાં આવે કે જેથી સિસ્ટમ કોલ અથવા બીજા કાર્યક્રમ ઘંટડી વગાડે. હાલમાં બે માન્ય કિંમતો છે, &quot;સંપૂર્ણ સ્ક્રીન&quot;, જે આખી સ્ક્રીન સફેદ-કાળી ફ્લેશ કરે છે તથા &quot;ઝબૂકતુ ચોકઠુ&quot; જે સંબંધિત કાર્યક્રમની શીર્ષકપટ્ટીને ફ્લેશ કરવાના હેતુથી સંકેત કરે છે, જેને ઘંટી સંકેત મોકલે છે. જે કાર્યક્રમે ઘંટી સંકેત મોકલ્યો હોય તે જો અજાણ હોય તો (જેમકે ખાસ કરીનેે મૂળભૂત કિસ્સા માટે &quot;સિસ્ટમ બીપ&quot; હોય છે), વર્તમાન પ્રકાશન વિન્ડોની શિર્ષકપટ્ટી પર ફ્લેશ કરશે.</long>
+         <long>મેટાસીટીને કહે છે કે કયા દ્રશ્ય સંકેતો કામમાં લેવામાં આવે કે જેથી સિસ્ટમ કોલ અથવા બીજા કાર્યક્રમ ઘંટડી વગાડે. હાલમાં બે માન્ય કિંમતો છે, &quot;સંપૂર્ણ સ્ક્રીન&quot;, જે આખી સ્ક્રીન સફેદ-કાળી ફ્લેશ કરે છે તથા &quot;ઝબૂકતુ ચોકઠુ&quot; જે સંબંધિત કાર્યક્રમની શીર્ષકપટ્ટીને ફ્લેશ કરવાના હેતુથી સંકેત કરે છે, જેને ઘંટી સંકેત મોકલે છે. જે કાર્યક્રમે ઘંટી સંકેત મોકલ્યો હોય તે જો અજાણ હોય તો (જેમકે ખાસ કરીને મૂળભૂત કિસ્સા માટે &quot;સિસ્ટમ બીપ&quot; હોય છે), વર્તમાન પ્રકાશન વિન્ડોની શિર્ષકપટ્ટી પર ફ્લેશ કરશે.</long>
       </locale>
 
       <locale name="hi">
@@ -5836,6 +5836,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Maximiser la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડોને મહત્તમ સ્થિતિમાં લાવો</short>
          
@@ -5843,6 +5848,11 @@ you set
 
       <locale name="hu">
          <short>Ablak maximalizálása</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Massimizza la finestra</short>
          
       </locale>
 
@@ -6076,6 +6086,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Annuler la maximisation de la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડોને મહત્તમ સ્થિતિમાંથી પાછી લાવો</short>
          
@@ -6083,6 +6098,11 @@ you set
 
       <locale name="hu">
          <short>Ablak eredeti mérete</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Demassimizza la finestra</short>
          
       </locale>
 
@@ -6603,6 +6623,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Ferme la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડો બંધ કરો</short>
          
@@ -6610,6 +6635,11 @@ you set
 
       <locale name="hu">
          <short>Ablak bezárása</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Chiudi la finestra</short>
          
       </locale>
 
@@ -6844,6 +6874,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Minimiser la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડોને ન્યૂનત્તમ સ્થિતિમાં લાવો</short>
          
@@ -6851,6 +6886,11 @@ you set
 
       <locale name="hu">
          <short>Ablak minimalizálása</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Minimizza la finestra</short>
          
       </locale>
 
@@ -7086,6 +7126,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Déplacer la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડોને ખસાડો</short>
          
@@ -7093,6 +7138,11 @@ you set
 
       <locale name="hu">
          <short>Ablak áthelyezése</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Muovi la finestra</short>
          
       </locale>
 
@@ -7328,6 +7378,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Redimensionner la fenêtre</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>વિન્ડોનુ માપ બદલો</short>
          
@@ -7335,6 +7390,11 @@ you set
 
       <locale name="hu">
          <short>Ablak átméretezése</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Ridimensiona la finestra</short>
          
       </locale>
 
@@ -14768,7 +14828,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta il focus tra le finestre con il dialogo popup</short>
+         <short>Sposta con una finestra a comparsa il focus tra le finestre</short>
          
       </locale>
 
@@ -15063,7 +15123,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta, in senso contrario, il focus tra le finestre con il dialogo popup</short>
+         <short>Sposta, facendo uso di una finestra a comparsa e in senso contrario, il focus tra le finestre</short>
          
       </locale>
 
@@ -15357,7 +15417,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta il focus tra i pannelli ed il desktop con il dialogo popup</short>
+         <short>Sposta con una finestra a comparsa il focus tra i pannelli ed il desktop</short>
          
       </locale>
 
@@ -15651,7 +15711,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta, in senso contrario, il focus tra i pannelli ed il desktop con il dialogo popup</short>
+         <short>Sposta con una finestra a comparsa e in senso contrario il focus tra i pannelli ed il desktop</short>
          
       </locale>
 
@@ -15952,7 +16012,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta il focus tra le finestre</short>
+         <short>Sposta immediatamente il focus tra le finestre</short>
          
       </locale>
 
@@ -16247,7 +16307,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta, in senso contrario, il focus tra le finestre</short>
+         <short>Sposta immediatamente e in senso contrario il focus tra le finestre</short>
          
       </locale>
 
@@ -16541,7 +16601,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta il focus tra i pannelli ed il desktop</short>
+         <short>Sposta immediatamente il focus tra i pannelli ed il desktop</short>
          
       </locale>
 
@@ -16835,7 +16895,7 @@ you set
       </locale>
 
       <locale name="it">
-         <short>Sposta, in senso contrario, il focus tra i panneli ed il desktop</short>
+         <short>Sposta immediatamente e in senso contrario il focus tra i panneli ed il desktop</short>
          
       </locale>
 
@@ -22910,7 +22970,7 @@ you set
       </locale>
 
       <locale name="en_CA">
-         <short>Show the panel run application dialog</short>
+         <short>Show the panel run application dialogue</short>
          
       </locale>
 
@@ -22934,6 +22994,11 @@ you set
          
       </locale>
 
+      <locale name="fr">
+         <short>Afficher la boîte de dialogue « Lancer une application »</short>
+         
+      </locale>
+
       <locale name="gu">
          <short>પેનલ ચલાવવા માટેના સંવાદ દર્શાવો</short>
          
@@ -22941,6 +23006,11 @@ you set
 
       <locale name="hu">
          <short>A panel futtatás párbeszédablakának megjelenítése</short>
+         
+      </locale>
+
+      <locale name="it">
+         <short>Mostra la finestra di dialogo &quot;Esegui applicazione&quot;</short>
          
       </locale>
 
@@ -24111,7 +24181,7 @@ you set
 
       <locale name="fr">
          <short>La commande de capture d&apos;écran</short>
-         <long>La clé /apps/metacity/global_keybindings/run_command_screenshot defini une combinaison de touches qui invoque la commande spécifiée par ce réglage.</long>
+         <long>La clé /apps/metacity/global_keybindings/run_command_screenshot défini une combinaison de touches qui invoque la commande spécifiée par ce réglage.</long>
       </locale>
 
       <locale name="gu">
@@ -24392,11 +24462,11 @@ you set
 
       <locale name="fr">
          <short>La commande de capture d&apos;écran de fenêtre</short>
-         <long>La clé /apps/metacity/global_keybindings/run_command_window_screenshot defini une combinaison de touches qui invoque la commande spécifiée par ce réglage.</long>
+         <long>La clé /apps/metacity/global_keybindings/run_command_window_screenshot défini une combinaison de touches qui invoque la commande spécifiée par ce réglage.</long>
       </locale>
 
       <locale name="gu">
-         <short>વિન્ડોના ફોટો પાડવા માટેનાે આદેશ</short>
+         <short>વિન્ડોના ફોટો પાડવા માટેનો આદેશ</short>
          <long>/apps/metacity/global_keybindings/run_command_window_screenshot કી જોડાણને  વ્યાખ્યાયિત કરે છે જે આ સુયોજન દ્વારા સ્પષ્ટ કરાયેલા આદેશને જગાડે છે.</long>
       </locale>
 
@@ -24685,7 +24755,7 @@ you set
 
       <locale name="fr">
          <short>Commande à exécuter en réponse aux combinaisons de touches</short>
-         <long>Les clés /apps/metacity/global_keybindings/run_command_N definissent les combinaisons de touches qui corresponde à ces commandes. Presser la combinaison pour run_command_N exécutera la command_N.</long>
+         <long>Les clés /apps/metacity/global_keybindings/run_command_N définissent les combinaisons de touches qui corresponde à ces commandes. Presser la combinaison pour run_command_N exécutera la command_N.</long>
       </locale>
 
       <locale name="gu">
@@ -24988,12 +25058,12 @@ you set
 
       <locale name="fr">
          <short>(Pas encore mis en oeuvre) La navigation fonctionne en termes d&apos;applications et non de fenêtres</short>
-         <long>Si la valeur est vrai, Metacity fonctionne en termes d&apos;applications plutôt que de fenêtres. Le concept est assez abstrait, mais, en général, une configuration basée sur les applications est plus proche de Mac que de Windows. Lorsque vous activez une fenêtre en mode basé sur les applications, toutes les fenêtres de l&apos;application seront mises au premier plan. En outre, en mode basé sur les applications, les clics de focus ne sont pas transmis aux fenêtres d&apos;autres applications. L&apos;existence de ce paramètre est assez douteuse, mais elle est préférable à la définition de paramètres pour tous les détails spécifiques des modes basés sur les applications/fenêtres, p. ex. concernant la transmission des clics. Pour l&apos;instant, le mode basé sur des applications n&apos;est généralement pas mis en oeuvre.</long>
+         <long>Si la valeur est vrai, Metacity fonctionne en termes d&apos;applications plutôt que de fenêtres. Le concept est assez abstrait, mais, en général, une configuration basée sur les applications est plus proche de Mac OS que de Windows. Lorsque vous activez une fenêtre en mode basé sur les applications, toutes les fenêtres de l&apos;application seront mises au premier plan. En outre, en mode basé sur les applications, les clics de focus ne sont pas transmis aux fenêtres d&apos;autres applications. L&apos;existence de ce paramètre est assez douteuse, mais elle est préférable à la définition de paramètres pour tous les détails spécifiques des modes basés sur les applications/fenêtres, p. ex. concernant la transmission des clics. Pour l&apos;instant, le mode basé sur des applications n&apos;est généralement pas mis en oeuvre.</long>
       </locale>
 
       <locale name="gu">
          <short>(અમલમાં નથી મૂકાયુ) શોધખોળ કાર્યક્રમ અનુસાર થાય છે વિન્ડો અનુસાર નહિં</short>
-         <long>જો ખરુ હોય તો, મેટાસીટી વિન્ડો કરતા કાર્યક્રમ અનુસાર કામ કરે છે. આ એક અમૂર્ત ખ્યાલ છે, પણ સામાન્ય રીતે કાર્યક્રમ-આધારિત ગોઠવણ એ વધુ પડતી મેક જેવી અને થોડીક વિન્ડો જેવી છે. કાર્યક્રમ-આધારિત સ્થિતિમાં જ્યારે તમે વિન્ડોને પ્રકાશન કરો, ત્યારે કાર્યક્રમની બધી વિન્ડો મોટી કરી દેવાશે. કાર્યક્રમ-આધારિત સ્થિતિમાં પણ પ્રકાશન કરવા માટેની ક્લિકે, બીજા કાર્યક્રમની વિન્ડોમાં આગળ ધપાવાતી નથી. આ ગોઠવણનું અસ્તિત્વ થોડાં ઘણાં પ્રશ્ન કરી શકાય તેવું છે. પણ એ કાર્યક્રમ અાધારિત વિરુદ્ધ વિન્ડો-આધારિત માટેની બધી જ સ્પષ્ટ વિગતો માટેની ગોઠવણ હોવા કરતા સારુ છે. દા.ત. ક્લિક ને આગળ ધપાવવી છે કે નહિ. કાર્યક્રમ-આધારિત સ્થિતિએ મોટે ભાગે આ ક્ષણે અમલમાં મૂકાયેલું નથી.</long>
+         <long>જો ખરુ હોય, તો મેટાસીટી વિન્ડો કરતા કાર્યક્રમ અનુસાર કામ કરે છે. આ એક અમૂર્ત ખ્યાલ છે, પણ સામાન્ય રીતે કાર્યક્રમ-આધારિત ગોઠવણ એ વધુ પડતી મેક જેવી અને થોડીક વિન્ડો જેવી છે. કાર્યક્રમ-આધારિત સ્થિતિમાં જ્યારે તમે વિન્ડોને પ્રકાશન કરો, ત્યારે કાર્યક્રમની બધી વિન્ડો મોટી કરી દેવાશે. કાર્યક્રમ-આધારિત સ્થિતિમાં પણ પ્રકાશન કરવા માટેની ક્લિકે, બીજા કાર્યક્રમની વિન્ડોમાં આગળ ધપાવાતી નથી. આ ગોઠવણનું અસ્તિત્વ થોડાં ઘણાં પ્રશ્ન કરી શકાય તેવું છે. પણ એ કાર્યક્રમ આધારિત વિરુદ્ધ વિન્ડો-આધારિત માટેની બધી જ સ્પષ્ટ વિગતો માટેની ગોઠવણ હોવા કરતા સારુ છે. દા.ત. ક્લિક ને આગળ ધપાવવી છે કે નહિ. કાર્યક્રમ-આધારિત સ્થિતિએ મોટે ભાગે આ ક્ષણે અમલમાં મૂકાયેલું નથી.</long>
       </locale>
 
       <locale name="hi">
@@ -25284,7 +25354,7 @@ you set
 
       <locale name="en_CA">
          <short>Disable misfeatures that are required by old or broken applications</short>
-         <long>Some applications break specifications in ways that result in window manager misfeatures. For example, ideally Metacity would place all dialogs in a consistent position with respect to their parent window. This requires ignoring application-specified positions for dialogs. But some versions of Java/Swing mark their popup menus as dialogs, so Metacity has to disable dialog positioning to allow menus to work in broken Java applications. There are several other examples like this. This option puts Metacity in full-on Correct mode, which perhaps gives a moderately nicer UI if you don&apos;t need to run any broken apps. Sadly, workarounds must be enabled by default; the real world is an ugly place. Some of the workarounds are workarounds for limitations in the specifications themselves, so sometimes a bug in no-workarounds mode won&apos;t be fixable without amending a spec.</long>
+         <long>Some applications break specifications in ways that result in window manager misfeatures. For example, ideally Metacity would place all dialogues in a consistent position with respect to their parent window. This requires ignoring application-specified positions for dialogues. But some versions of Java/Swing mark their popup menus as dialogues, so Metacity has to disable dialogue positioning to allow menus to work in broken Java applications. There are several other examples like this. This option puts Metacity in full-on Correct mode, which perhaps gives a moderately nicer UI if you don&apos;t need to run any broken apps. Sadly, workarounds must be enabled by default; the real world is an ugly place. Some of the workarounds are workarounds for limitations in the specifications themselves, so sometimes a bug in no-workarounds mode won&apos;t be fixable without amending a spec.</long>
 
       </locale>
 
@@ -25320,7 +25390,7 @@ you set
 
       <locale name="gu">
          <short>જૂના અથવા બગડેલા કાર્યક્રમ દ્વારા જરુરી ખરાબ લક્ષણોને નિષ્ક્રિય કરો</short>
-         <long>અમુક કાર્યક્રમો એ રીતે સ્પષ્ટ કરેલા વર્ણનને તોડે છે જે વિન્ડો વ્યવસ્થાપકની ખરાબીમાં પરિણમે છે. દા.ત. આદર્શ રીતે મેટાસીટી બધા સંવાદોને તેમના પિતૃ વિન્ડોના સંદર્ભમાં યોગ્ય સ્થાને ગોઠવે છે. આના માટે સંવાદને કાર્યક્રમ દ્વારા સ્પષ્ટ કરાયેલી જગ્યાને અવગણો. પરંતુ જાવા/સ્વિંગ ની અમુક આવૃત્તિઓ તેમની પોપ-અપ મેનુઓને સંવાદ તરીકે અંકિત કરે છે, એટલા માટે મેટાસીટીને મેનુઓને તૂટેલા જાવા કાર્યક્રમમાં કામ કરવા માટે સંવાદ ગોઠવણીને નિષ્ક્રિય કરવી પડે છે. અાવા બીજા ઘણા ઉદાહરણો છે. આ વિકલ્પ મેટાસીટીને &apos;ખરુ હોય તો પૂરુ&apos; સ્થિતિમાં મૂકે છે. જે કદાચ સારી વપરાશ ગોઠવણી આપે છે. જો તમને તૂટેલા કાર્યક્રમને ચલાવવાની જરુર ના હોય તો દુ:ખદ રીતે, મૂળભૂત રીતે આસપાસના કાર્યોમાંના અમુકે તેમની પોતાની સ્પષ્ટીકરણની મર્યાદાઓ માટેના આસપાસનાં કાર્યો છે. એટલા માટે અમુક વાર સ્પષ્ટીકરણને સુધાર્યા વિના બગ વર્કઅરાઉન્ડ સ્થિતિમાં સુધારી શકાતો નથી.</long>
+         <long>અમુક કાર્યક્રમો એ રીતે સ્પષ્ટ કરેલા વર્ણનને તોડે છે જે વિન્ડો વ્યવસ્થાપકની ખરાબીમાં પરિણમે છે. દા.ત. આદર્શ રીતે મેટાસીટી બધા સંવાદોને તેમના પિતૃ વિન્ડોના સંદર્ભમાં યોગ્ય સ્થાને ગોઠવે છે. આના માટે સંવાદને કાર્યક્રમ દ્વારા સ્પષ્ટ કરાયેલી જગ્યાને અવગણો. પરંતુ જાવા/સ્વિંગ ની અમુક આવૃત્તિઓ તેમની પોપ-અપ મેનુઓને સંવાદ તરીકે અંકિત કરે છે, એટલા માટે મેટાસીટીને મેનુઓને તૂટેલા જાવા કાર્યક્રમમાં કામ કરવા માટે સંવાદ ગોઠવણીને નિષ્ક્રિય કરવી પડે છે. આવા બીજા ઘણા ઉદાહરણો છે. આ વિકલ્પ મેટાસીટીને &apos;ખરુ હોય તો પૂરુ&apos; સ્થિતિમાં મૂકે છે. જે કદાચ સારી વપરાશ ગોઠવણી આપે છે. જો તમને તૂટેલા કાર્યક્રમને ચલાવવાની જરુર ના હોય તો દુ:ખદ રીતે, મૂળભૂત રીતે આસપાસના કાર્યોમાંના અમુકે તેમની પોતાની સ્પષ્ટીકરણની મર્યાદાઓ માટેના આસપાસનાં કાર્યો છે. એટલા માટે અમુક વાર સ્પષ્ટીકરણને સુધાર્યા વિના બગ વર્કઅરાઉન્ડ સ્થિતિમાં સુધારી શકાતો નથી.</long>
 
       </locale>
 

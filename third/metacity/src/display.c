@@ -328,7 +328,9 @@ meta_display_open (const char *name)
 
   display->pending_pings = NULL;
   display->autoraise_timeout_id = 0;
+  display->autoraise_window = NULL;
   display->focus_window = NULL;
+  display->previously_focused_window = NULL;
   display->expected_focus_window = NULL;
 
 #ifdef HAVE_XSYNC
@@ -500,6 +502,9 @@ meta_display_open (const char *name)
   
   display->current_time = CurrentTime;
   display->sentinel_counter = 0;
+
+  display->grab_resize_timeout_id = 0;
+  display->grab_have_keyboard = FALSE;
   
   display->grab_op = META_GRAB_OP_NONE;
   display->grab_wireframe_active = FALSE;
@@ -776,11 +781,7 @@ meta_display_close (MetaDisplay *display)
 
   meta_prefs_remove_listener (prefs_changed_callback, display);
   
-  if (display->autoraise_timeout_id != 0)
-    {
-      g_source_remove (display->autoraise_timeout_id);
-      display->autoraise_timeout_id = 0;
-    }
+  meta_display_remove_autoraise_callback (display);
   
 #ifdef USE_GDK_DISPLAY
   /* Stop caring about events */
@@ -1095,6 +1096,35 @@ meta_display_get_current_time (MetaDisplay *display)
   return display->current_time;
 }
 
+/* Get a timestamp, even if it means a roundtrip */
+guint32
+meta_display_get_current_time_roundtrip (MetaDisplay *display)
+{
+  guint32 timestamp;
+  
+  timestamp = meta_display_get_current_time (display);
+  if (timestamp == CurrentTime)
+    {
+      XEvent property_event;
+
+      /* Using the property XA_PRIMARY because it's safe; nothing
+       * would use it as a property. The type doesn't matter.
+       */
+      XChangeProperty (display->xdisplay,
+                       display->leader_window,
+                       XA_PRIMARY, XA_STRING, 8,
+                       PropModeAppend, NULL, 0);
+      XWindowEvent (display->xdisplay,
+                    display->leader_window,
+                    PropertyChangeMask,
+                    &property_event);
+
+      timestamp = property_event.xproperty.time;
+    }
+
+  return timestamp;
+}
+
 static void
 add_ignored_serial (MetaDisplay  *display,
                     unsigned long serial)
@@ -1160,6 +1190,7 @@ window_raise_with_delay_callback (void *data)
 	      auto_raise->xwindow);
 
   auto_raise->display->autoraise_timeout_id = 0;
+  auto_raise->display->autoraise_window = NULL;
 
   window  = meta_display_lookup_x_window (auto_raise->display, 
 					  auto_raise->xwindow);
@@ -1194,6 +1225,33 @@ window_raise_with_delay_callback (void *data)
     }
 
   return FALSE;
+}
+
+void
+meta_display_queue_autoraise_callback (MetaDisplay *display,
+                                       MetaWindow  *window)
+{
+  MetaAutoRaiseData *auto_raise_data;
+
+  meta_topic (META_DEBUG_FOCUS, 
+              "Queuing an autoraise timeout for %s with delay %d\n", 
+              window->desc, 
+              meta_prefs_get_auto_raise_delay ());
+  
+  auto_raise_data = g_new (MetaAutoRaiseData, 1);
+  auto_raise_data->display = window->display;
+  auto_raise_data->xwindow = window->xwindow;
+  
+  if (display->autoraise_timeout_id != 0)
+    g_source_remove (display->autoraise_timeout_id);
+
+  display->autoraise_timeout_id = 
+    g_timeout_add_full (G_PRIORITY_DEFAULT,
+                        meta_prefs_get_auto_raise_delay (),
+                        window_raise_with_delay_callback,
+                        auto_raise_data,
+                        g_free);
+  display->autoraise_window = window;
 }
 
 static int
@@ -1676,6 +1734,8 @@ event_callback (XEvent   *event,
         meta_window_handle_mouse_grab_op_event (window, event);
       /* do this even if window->has_focus to avoid races */
       else if (window && !serial_is_ignored (display, event->xany.serial) &&
+               event->xcrossing.mode != NotifyGrab && 
+               event->xcrossing.mode != NotifyUngrab &&
                event->xcrossing.detail != NotifyInferior &&
                meta_display_focus_sentinel_clear (display))
         {
@@ -1697,26 +1757,7 @@ event_callback (XEvent   *event,
 		  
 		  if (meta_prefs_get_auto_raise ()) 
 		    {
-		      MetaAutoRaiseData *auto_raise_data;
-
-		      meta_topic (META_DEBUG_FOCUS, 
-				  "Queuing an autoraise timeout for %s with delay %d\n", 
-				  window->desc, 
-				  meta_prefs_get_auto_raise_delay ());
-		      
-		      auto_raise_data = g_new (MetaAutoRaiseData, 1);
-		      auto_raise_data->display = window->display;
-		      auto_raise_data->xwindow = window->xwindow;
-		      
-		      if (display->autoraise_timeout_id != 0)
-			g_source_remove (display->autoraise_timeout_id);
-
-		      display->autoraise_timeout_id = 
-			g_timeout_add_full (G_PRIORITY_DEFAULT,
-					    meta_prefs_get_auto_raise_delay (),
-					    window_raise_with_delay_callback,
-					    auto_raise_data,
-					    g_free);
+                      meta_display_queue_autoraise_callback (display, window);
 		    }
 		  else
 		    {
@@ -1743,7 +1784,7 @@ event_callback (XEvent   *event,
           switch (meta_prefs_get_focus_mode ())
             {
             case META_FOCUS_MODE_MOUSE:
-              if (window->has_focus &&
+              if (window == display->expected_focus_window &&
                   (window->frame == NULL || frame_was_receiver) &&
 		  event->xcrossing.mode != NotifyGrab && 
 		  event->xcrossing.mode != NotifyUngrab &&
@@ -1751,10 +1792,8 @@ event_callback (XEvent   *event,
                 {
                   meta_verbose ("Unsetting focus from %s due to LeaveNotify\n",
                                 window->desc);
-                  XSetInputFocus (display->xdisplay,
-                                  display->no_focus_window,
-                                  RevertToPointerRoot,
-                                  event->xcrossing.time);
+                  meta_display_focus_the_no_focus_window (display, 
+                                                          event->xcrossing.time);
                 }
               break;
             case META_FOCUS_MODE_SLOPPY:
@@ -1790,6 +1829,9 @@ event_callback (XEvent   *event,
       else if (meta_display_screen_for_root (display,
                                              event->xany.window) != NULL)
         {
+          MetaScreen * screen;
+          screen = meta_display_screen_for_root (display, event->xany.window);
+
           meta_topic (META_DEBUG_FOCUS,
                       "Focus %s event received on root window 0x%lx "
                       "mode %s detail %s\n",
@@ -1803,29 +1845,20 @@ event_callback (XEvent   *event,
           if (event->type == FocusIn &&
               event->xfocus.detail == NotifyDetailNone)
             {
-              XEvent   property_event;
+              meta_topic (META_DEBUG_FOCUS, 
+                          "Focus got set to None, probably due to brain-damage in the X protocol (see bug 125492).  Setting the default focus window.\n");
 
-              /* FIXME _() gettextify on HEAD */
-              meta_warning ("Working around an application which called XSetInputFocus (None) or with RevertToNone instead of RevertToPointerRoot, this is a minor bug in some application. If you can figure out which application causes this please report it as a bug against that application.\n");
-
-              /* Fix the problem */
-              /* Using the property XA_PRIMARY because it's safe;
-               * nothing would use it as a property. The type
-               * doesn't matter.
-               */
-              XChangeProperty (display->xdisplay,
-                               display->leader_window,
-                               XA_PRIMARY, XA_STRING, 8,
-                               PropModeAppend, NULL, 0);
-              XWindowEvent (display->xdisplay,
-                            display->leader_window,
-                            PropertyChangeMask,
-                            &property_event);
-              XSetInputFocus (display->xdisplay,
-                              display->no_focus_window,
-                              RevertToPointerRoot,
-                              property_event.xproperty.time);
+              meta_workspace_focus_default_window (screen->active_workspace, NULL, meta_display_get_current_time_roundtrip (display));
             }
+          else if (event->type == FocusIn &&
+              event->xfocus.mode == NotifyNormal &&
+              event->xfocus.detail == NotifyInferior)
+            {
+              meta_topic (META_DEBUG_FOCUS,
+                          "Focus got set to root window, probably due to gnome-session logout dialog usage (see bug 153220).  Setting the default focus window.\n");
+              meta_workspace_focus_default_window (screen->active_workspace, NULL, meta_display_get_current_time_roundtrip (display));
+            }
+
         }
       break;
     case KeymapNotify:
@@ -2094,15 +2127,7 @@ event_callback (XEvent   *event,
                                                         space);
 
                   if (workspace)
-                    {
-                      if (workspace != screen->active_workspace)
-                        {
-                          meta_workspace_activate (workspace);
-                          meta_workspace_focus_default_window (workspace, NULL);
-                        }
-                      else
-                        meta_verbose ("Workspace %d already active.\n", space);
-                    }
+                    meta_workspace_activate (workspace, meta_display_get_current_time_roundtrip (display));
                   else
                     meta_verbose ("Don't know about workspace %d\n", space);
                 }
@@ -2131,7 +2156,7 @@ event_callback (XEvent   *event,
 		  else
 		    {
 		      meta_screen_unshow_desktop (screen);
-		      meta_workspace_focus_default_window (screen->active_workspace, NULL);
+		      meta_workspace_focus_default_window (screen->active_workspace, NULL, meta_display_get_current_time_roundtrip (display));
 		    }
 		}
               else if (event->xclient.message_type ==
@@ -3902,16 +3927,20 @@ meta_display_window_has_pending_pings (MetaDisplay *display,
 static MetaWindow*
 find_tab_forward (MetaDisplay   *display,
                   MetaTabList    type,
-		  MetaScreen    *screen, 
+                  MetaScreen    *screen, 
                   MetaWorkspace *workspace,
-                  GList        *start)
+                  GList         *start,
+                  gboolean       skip_first)
 {
   GList *tmp;
 
   g_return_val_if_fail (start != NULL, NULL);
   g_return_val_if_fail (workspace != NULL, NULL);
 
-  tmp = start->next;
+  tmp = start;
+  if (skip_first)
+    tmp = tmp->next;
+
   while (tmp != NULL)
     {
       MetaWindow *window = tmp->data;
@@ -3940,16 +3969,19 @@ find_tab_forward (MetaDisplay   *display,
 static MetaWindow*
 find_tab_backward (MetaDisplay   *display,
                    MetaTabList    type,
-		   MetaScreen    *screen, 
+                   MetaScreen    *screen, 
                    MetaWorkspace *workspace,
-                   GList         *start)
+                   GList         *start,
+                   gboolean       skip_last)
 {
   GList *tmp;
 
   g_return_val_if_fail (start != NULL, NULL);
   g_return_val_if_fail (workspace != NULL, NULL);
-  
-  tmp = start->prev;
+
+  tmp = start;
+  if (skip_last)  
+    tmp = tmp->prev;
   while (tmp != NULL)
     {
       MetaWindow *window = tmp->data;
@@ -4036,6 +4068,7 @@ meta_display_get_tab_next (MetaDisplay   *display,
                            MetaWindow    *window,
                            gboolean       backward)
 {
+  gboolean skip;
   GList *tab_list;
   tab_list = meta_display_get_tab_list(display,
                                        type,
@@ -4052,19 +4085,23 @@ meta_display_get_tab_next (MetaDisplay   *display,
       if (backward)
         return find_tab_backward (display, type, screen, workspace,
                                   g_list_find (tab_list,
-                                               window));
+                                               window),
+                                  TRUE);
       else
         return find_tab_forward (display, type, screen, workspace,
                                  g_list_find (tab_list,
-                                              window));
+                                              window),
+                                 TRUE);
     }
-  
+
+  skip = display->focus_window != NULL && 
+         IN_TAB_CHAIN (display->focus_window, type);
   if (backward)
     return find_tab_backward (display, type, screen, workspace,
-                              tab_list);
+                              tab_list, skip);
   else
     return find_tab_forward (display, type, screen, workspace,
-                             tab_list);
+                             tab_list, skip);
 
   g_list_free (tab_list);
 }
@@ -4558,4 +4595,27 @@ gboolean
 meta_display_focus_sentinel_clear (MetaDisplay *display)
 {
   return (display->sentinel_counter == 0);
+}
+
+void
+meta_display_focus_the_no_focus_window (MetaDisplay *display, 
+                                        Time         timestamp)
+{
+  XSetInputFocus (display->xdisplay,
+                  display->no_focus_window,
+                  RevertToPointerRoot,
+                  timestamp);
+  display->expected_focus_window = NULL;
+  meta_display_remove_autoraise_callback (display);
+}
+
+void
+meta_display_remove_autoraise_callback (MetaDisplay *display)
+{
+  if (display->autoraise_timeout_id != 0)
+    {
+      g_source_remove (display->autoraise_timeout_id);
+      display->autoraise_timeout_id = 0;
+      display->autoraise_window = NULL;
+    }
 }

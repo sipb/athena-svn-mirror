@@ -539,8 +539,6 @@ meta_screen_new (MetaDisplay *display,
   screen->vertical_workspaces = FALSE;
   screen->starting_corner = META_SCREEN_TOPLEFT;
 
-  screen->showing_desktop = FALSE;
-
   screen->compositor_windows = NULL;
   screen->damage_region = None;
   screen->root_picture = None;
@@ -604,7 +602,7 @@ meta_screen_new (MetaDisplay *display,
   /* Screens must have at least one workspace at all times,
    * so create that required workspace.
    */
-  meta_workspace_activate (meta_workspace_new (screen));
+  meta_workspace_activate (meta_workspace_new (screen), timestamp);
   update_num_workspaces (screen);
   
   set_workspace_names (screen);
@@ -641,7 +639,7 @@ meta_screen_new (MetaDisplay *display,
                                                 current_workspace);
     
     if (space != NULL)
-      meta_workspace_activate (space);
+      meta_workspace_activate (space, timestamp);
   }
 
   meta_compositor_manage_screen (screen->display->compositor,
@@ -1077,7 +1075,7 @@ update_num_workspaces (MetaScreen *screen)
     }
 
   if (need_change_space)
-    meta_workspace_activate (last_remaining);
+    meta_workspace_activate (last_remaining, meta_display_get_current_time_roundtrip (screen->display));
 
   /* Should now be safe to free the workspaces */
   tmp = extras;
@@ -1769,7 +1767,7 @@ meta_create_offscreen_window (Display *xdisplay,
                         0,
                         CopyFromParent,
                         CopyFromParent,
-                        CopyFromParent,
+                        (Visual *)CopyFromParent,
                         CWOverrideRedirect | CWEventMask,
                         &attrs);
 }
@@ -2166,12 +2164,12 @@ meta_screen_resize (MetaScreen *screen,
   meta_screen_foreach_window (screen, meta_screen_resize_func, 0);
 }
 
-static void
-update_showing_desktop_hint (MetaScreen *screen)
+void
+meta_screen_update_showing_desktop_hint (MetaScreen *screen)
 {
   unsigned long data[1];
 
-  data[0] = screen->showing_desktop ? 1 : 0;  
+  data[0] = screen->active_workspace->showing_desktop ? 1 : 0;
       
   meta_error_trap_push (screen->display);
   XChangeProperty (screen->display->xdisplay, screen->xroot,
@@ -2187,6 +2185,10 @@ queue_windows_showing (MetaScreen *screen)
   GSList *windows;
   GSList *tmp;
 
+  /* Must operate on all windows on display instead of just on the
+   * active_workspace's window list, because the active_workspace's
+   * window list may not contain the on_all_workspace windows.
+   */
   windows = meta_display_list_windows (screen->display);
 
   tmp = windows;
@@ -2204,13 +2206,13 @@ queue_windows_showing (MetaScreen *screen)
 }
 
 void
-meta_screen_minimize_all_except (MetaScreen *screen,
-                                 MetaWindow *keep)
+meta_screen_minimize_all_on_active_workspace_except (MetaScreen *screen,
+                                                     MetaWindow *keep)
 {
-  GSList *windows;
-  GSList *tmp;
-  
-  windows = meta_display_list_windows (screen->display);
+  GList *windows;
+  GList *tmp;
+
+  windows = screen->active_workspace->windows;
   
   tmp = windows;
   while (tmp != NULL)
@@ -2224,37 +2226,34 @@ meta_screen_minimize_all_except (MetaScreen *screen,
       
       tmp = tmp->next;
     }
-  
-  g_slist_free (windows);
 }
 
 void
 meta_screen_show_desktop (MetaScreen *screen)
 {
-  if (screen->showing_desktop)
+  if (screen->active_workspace->showing_desktop)
     return;
-
-  screen->showing_desktop = TRUE;
-
+  
+  screen->active_workspace->showing_desktop = TRUE;
+  
   queue_windows_showing (screen);
-
-  update_showing_desktop_hint (screen);
-
-  meta_workspace_focus_top_window (screen->active_workspace, NULL);
+  
+  meta_screen_update_showing_desktop_hint (screen);
 }
 
 void
 meta_screen_unshow_desktop (MetaScreen *screen)
 {
-  if (!screen->showing_desktop)
+  if (!screen->active_workspace->showing_desktop)
     return;
 
-  screen->showing_desktop = FALSE;
-  
+  screen->active_workspace->showing_desktop = FALSE;
+
   queue_windows_showing (screen);
 
-  update_showing_desktop_hint (screen);
+  meta_screen_update_showing_desktop_hint (screen);
 }
+
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static gboolean startup_sequence_timeout (void *data);

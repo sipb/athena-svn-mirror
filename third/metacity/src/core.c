@@ -236,8 +236,9 @@ meta_core_user_raise (Display *xdisplay,
 }
 
 void
-meta_core_user_lower (Display *xdisplay,
-                      Window   frame_xwindow)
+meta_core_user_lower_and_unfocus (Display *xdisplay,
+                                  Window   frame_xwindow,
+                                  Time     timestamp)
 {
   MetaDisplay *display;
   MetaWindow *window;
@@ -249,6 +250,38 @@ meta_core_user_lower (Display *xdisplay,
     meta_bug ("No such frame window 0x%lx!\n", frame_xwindow);
   
   meta_window_lower (window);
+
+  if (meta_prefs_get_focus_mode () == META_FOCUS_MODE_CLICK)
+    {
+      /* Move window to the back of the focusing workspace's MRU list.
+       * Do extra sanity checks to avoid possible race conditions.
+       * (Borrowed from window.c.)
+       */
+      if (window->screen->active_workspace &&
+          meta_window_visible_on_workspace (window, 
+                                            window->screen->active_workspace))
+        {
+          GList* link;
+          link = g_list_find (window->screen->active_workspace->mru_list, 
+                              window);
+          g_assert (link);
+
+          window->screen->active_workspace->mru_list = 
+            g_list_remove_link (window->screen->active_workspace->mru_list,
+                                link);
+          g_list_free (link);
+
+          window->screen->active_workspace->mru_list = 
+            g_list_append (window->screen->active_workspace->mru_list, 
+                           window);
+        }
+    }
+
+  /* focus the default window, if needed */
+  if (window->has_focus)
+    meta_workspace_focus_default_window (window->screen->active_workspace,
+                                         NULL,
+                                         timestamp);
 }
 
 void

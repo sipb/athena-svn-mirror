@@ -188,6 +188,10 @@ struct _MetaDisplay
    */
   MetaWindow *focus_window;
 
+ /* Window that was the actual window from focus events before focus_window
+  */
+  MetaWindow *previously_focused_window;
+
   /* window we are expecting a FocusIn event for
    */
   MetaWindow *expected_focus_window;
@@ -229,6 +233,7 @@ struct _MetaDisplay
 
   /* Pending autoraise */
   guint       autoraise_timeout_id;
+  MetaWindow* autoraise_window;
 
   /* Alt+click button grabs */
   unsigned int window_grab_modifiers;
@@ -418,7 +423,8 @@ void     meta_display_increment_event_serial (MetaDisplay *display);
 
 void     meta_display_update_active_window_hint (MetaDisplay *display);
 
-guint32  meta_display_get_current_time (MetaDisplay *display);
+guint32  meta_display_get_current_time           (MetaDisplay *display);
+guint32  meta_display_get_current_time_roundtrip (MetaDisplay *display);
 
 /* utility goo */
 const char* meta_event_mode_to_string   (int m);
@@ -479,5 +485,11 @@ void meta_display_devirtualize_modifiers (MetaDisplay        *display,
 void meta_display_increment_focus_sentinel (MetaDisplay *display);
 void meta_display_decrement_focus_sentinel (MetaDisplay *display);
 gboolean meta_display_focus_sentinel_clear (MetaDisplay *display);
+
+void meta_display_focus_the_no_focus_window (MetaDisplay *display, 
+                                             Time         timestamp);
+void meta_display_queue_autoraise_callback  (MetaDisplay *display,
+                                             MetaWindow  *window);
+void meta_display_remove_autoraise_callback (MetaDisplay *display);
 
 #endif

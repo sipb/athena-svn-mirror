@@ -83,6 +83,7 @@ GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 HAVE_LIB = @HAVE_LIB@
 HOST_ALIAS = @HOST_ALIAS@
+ICONV = @ICONV@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
@@ -112,6 +113,8 @@ LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -125,6 +128,7 @@ RC = @RC@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+XGETTEXT = @XGETTEXT@
 
 INCLUDES = @METACITY_CFLAGS@
 
@@ -191,7 +195,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(wm_tester_SOURCES) $(test_gravity_SOURCES) $(test_resizing_SOURCES) $(focus_window_SOURCES) $(test_size_hints_SOURCES)
 OBJECTS = $(wm_tester_OBJECTS) $(test_gravity_OBJECTS) $(test_resizing_OBJECTS) $(focus_window_OBJECTS) $(test_size_hints_OBJECTS)
@@ -298,7 +302,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

@@ -1,3 +1,21 @@
+2004-11-23  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-11-14  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation from
+	Baptiste Mille-Mathias <baptiste@mille-mathias.info>.
+
+2004-09-26  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-19  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
 2004-09-14  Gora Mohanty  <gmohanty@cvs.gnome.org>
                                                                                 
         * or.po: Updated Oriya translation.
