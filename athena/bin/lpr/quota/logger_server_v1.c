@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.2 1990-07-10 16:05:09 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.3 1990-11-14 17:08:29 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.2 1990-07-10 16:05:09 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.3 1990-11-14 17:08:29 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -29,6 +29,14 @@ char *set_service();
 
 
 
+#ifdef __STDC__
+quota_error_code LoggerJournal_v1(handle_t h, krb_ktext *auth, 
+				  quota_identifier *qid, 
+				  startingpoint start, maxtotransfer maxnum, 
+				  loggerflags flags, ndr_$long_int *numtrans,
+				  LogEnt_v1 LogEnts[LOGMAXRETURN], 
+				  quota_currency currency)
+#else
 quota_error_code LoggerJournal_v1(h,auth,qid,start,maxnum,flags,numtrans,LogEnts,currency)
 handle_t h;
 krb_ktext *auth;
@@ -39,6 +47,7 @@ loggerflags flags;
 ndr_$long_int *numtrans;
 LogEnt_v1 LogEnts[LOGMAXRETURN];
 quota_currency currency;
+#endif
 {
 
 /* This is the meat of this whole user interface - we handle the world... */
@@ -61,7 +70,7 @@ quota_currency currency;
     /* Init for error returns */
     *numtrans = 0;
 
-    strcpy(currency, qcurrency);
+    (void) strcpy((char *) currency, qcurrency);
 
     CHECK_PROTECT();
 
@@ -81,7 +90,7 @@ quota_currency currency;
 
     /* Find out who the info is about!!! */
 
-    parse_username(qid->username, rname, rinstance, rrealm);
+    parse_username((char *) qid->username, rname, rinstance, rrealm);
 
     if(((strcmp(rname, uname) != 0) || (strcmp(rinstance, uinstance) != 0) ||
        (strcmp(rrealm, urealm) != 0)) && (authuser == 0)) {
@@ -161,10 +170,12 @@ quota_currency currency;
 	/* Ok boys, package it up !!! */
 	lent->time = ent->time;
 
-	make_kname(ent->user.name, ent->user.instance, ent->user.realm,
-		   lent->name);
+	make_kname((char *) ent->user.name, 
+		   (char *) ent->user.instance, 
+		   (char *) ent->user.realm,
+		   (char *) lent->name);
 
-	strcpy(lent->service, logger_num_to_string(ent->service));
+	(void) strcpy((char *) lent->service, logger_num_to_string(ent->service));
 	lent->next = ent->next;
 	lent->prev = ent->prev;
 
@@ -182,13 +193,13 @@ quota_currency currency;
 	    make_kname(logger_num_to_string(ent->trans.offset.name),
 		       logger_num_to_string(ent->trans.offset.inst),
 		       logger_num_to_string(ent->trans.offset.realm),
-		       lent->func_union.tagged_union.offset.wname);
+		       (char *) lent->func_union.tagged_union.offset.wname);
 	    break;
 	case LO_CHARGE_V1:
 	    lent->func_union.tagged_union.charge.ptime = ent->trans.charge.subtime;
 	    lent->func_union.tagged_union.charge.npages =  ent->trans.charge.npages;
 	    lent->func_union.tagged_union.charge.pcost = ent->trans.charge.med_cost;
-	    strcpy(lent->func_union.tagged_union.charge.where,
+	    (void) strcpy((char *) lent->func_union.tagged_union.charge.where,
 		   logger_num_to_string(ent->trans.charge.where));
 
 	    break;
