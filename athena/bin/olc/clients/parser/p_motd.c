@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.7 1990-01-17 02:54:12 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.8 1990-04-25 16:43:25 vanharen Exp $";
 #endif
 
 
@@ -32,20 +32,20 @@ do_olc_motd(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_SIZE];
+  char file[NAME_SIZE] = "";
   int status;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
-  char editor[NAME_SIZE];
-  char *editorP = (char *) NULL;
+  char editor[NAME_SIZE] = "";
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
   
   make_temp_name(file);
 
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
 						    max(strlen(*arguments),2)))
@@ -59,25 +59,29 @@ do_olc_motd(arguments)
 	      if(file[0] == '\0')
 		return(ERROR);
             }
-	  else
+	  else {
 	    (void) strcpy(file,*arguments);
+	    arguments++;
+	  }
 	  
 	  save_file = TRUE;
 	  continue;
 	}
 
-       if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
         {
           ++arguments;
-          editorP = editor;
-          if(*arguments != (char *) NULL)
-            (void) strcpy(editorP, *arguments);
+          if(*arguments != (char *) NULL) {
+            (void) strcpy(editor, *arguments);
+	    arguments++;
+	  }
           else
-            (void) strcpy(editorP, NO_EDITOR);
+            (void) strcpy(editor, NO_EDITOR);
         }
 
       if(string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
 	{
+          ++arguments;
 	  change_flag = TRUE;
 	  continue;
 	}
@@ -92,14 +96,12 @@ do_olc_motd(arguments)
 	  printf("[-editor <editor>]\n");
 	  return(ERROR);
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
     }
 
   if(!change_flag)
     status = t_get_motd(&Request,type,file,!save_file);
   else
-    status = t_change_motd(&Request,type,file,editorP, !save_file);
+    status = t_change_motd(&Request,type,file,editor, !save_file);
 
   if(!save_file)
     (void) unlink(file);
