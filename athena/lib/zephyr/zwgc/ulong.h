@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/ulong.h,v $
- *      $Author: jfc $
- *	$Id: ulong.h,v 1.3 1991-06-20 09:18:32 jfc Exp $
+ *      $Author: probe $
+ *	$Id: ulong.h,v 1.4 1993-11-21 06:23:50 probe Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,10 +15,9 @@
 #ifndef ulong_MODULE
 #define ulong_MODULE
 
-#if defined(_AIX) || defined(_AUX_SOURCE) || defined(SYSV)
-/* Sys5 derived systems define ulong in <sys/types.h>.  */
 #include <sys/types.h>
-#else
+
+#if defined(ultrix) || defined(vax)
 typedef unsigned long ulong;
 #endif
 
