@@ -59,20 +59,27 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
+DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
@@ -82,18 +89,20 @@ GNOME_ABOUT_LIBS = @GNOME_ABOUT_LIBS@
 GNOME_DATE = @GNOME_DATE@
 GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
 GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
+GNOME_DISTRIBUTOR = @GNOME_DISTRIBUTOR@
 GNOME_MICRO = @GNOME_MICRO@
 GNOME_MINOR = @GNOME_MINOR@
 GNOME_PLATFORM = @GNOME_PLATFORM@
-GNOME_VENDOR = @GNOME_VENDOR@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTK_REQUIRED = @GTK_REQUIRED@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -107,12 +116,14 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
+LIB = @LIB@
 LIBGNOMECANVAS_REQUIRED = @LIBGNOMECANVAS_REQUIRED@
 LIBGNOMEUI_REQUIRED = @LIBGNOMEUI_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 LT_VERSION = @LT_VERSION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -127,39 +138,35 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
 STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-cxxflags_set = @cxxflags_set@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 
 AUTOMAKE_OPTIONS = 1.4
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale\""  	-DGNOME_DESKTOP_SYSCONFDIR=\""$(sysconfdir)"\"			-DGNOME_DESKTOP_PIXMAPDIR=\""$(datadir)/pixmaps"\"		-DGNOME_DESKTOP_ICONDIR=\""$(datadir)/icons"\"			-DGNOME_CORE_INTERNAL						$(WARN_CFLAGS)							$(GNOME_DESKTOP_CFLAGS)
+SUBDIRS = libgnome libgnomeui
+
+INCLUDES =  	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale\""  	-DGNOME_DESKTOP_SYSCONFDIR=\""$(sysconfdir)"\"			-DGNOME_DESKTOP_PIXMAPDIR=\""$(datadir)/pixmaps"\"		-DGNOME_DESKTOP_ICONDIR=\""$(datadir)/icons"\"			-DGNOME_CORE_INTERNAL						$(WARN_CFLAGS)							$(DISABLE_DEPRECATED_CFLAGS)					$(GNOME_DESKTOP_CFLAGS)
 
 
 lib_LTLIBRARIES = libgnome-desktop-2.la
 
 noinst_PROGRAMS = test-ditem test-hint test-ditem-edit
 
-libgnome_desktop_2_la_SOURCES =  	gnome-desktop-item.c		gnome-ditem-edit.c		gnome-hint.c			$(EGGFILES)
-
-
-libgnome_desktopdir = $(includedir)/gnome-desktop-2.0/libgnome
-libgnome_desktop_HEADERS =  	gnome-desktop-item.h
-
-
-libgnomeui_desktopdir = $(includedir)/gnome-desktop-2.0/libgnomeui
-libgnomeui_desktop_HEADERS =  	gnome-ditem-edit.h 	gnome-hint.h
+libgnome_desktop_2_la_SOURCES =  	gnome-desktop-item.c		gnome-ditem-edit.c		gnome-hint.c			gnome-desktop-i18n.c		gnome-desktop-i18n.h
 
 
 libgnome_desktop_2_la_LIBADD =  	$(GNOME_DESKTOP_LIBS)
 
 
-libgnome_desktop_2_la_LDFLAGS =  	-version-info $(LT_VERSION)
+libgnome_desktop_2_la_LDFLAGS =  	-version-info $(LT_VERSION) 	-no-undefined
 
 
 test_ditem_SOURCES =  	test-ditem.c
@@ -182,24 +189,22 @@ test_ditem_edit_LDADD =  	libgnome-desktop-2.la		$(GNOME_DESKTOP_LIBS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-desktop-2.0.pc
 
-EXTRA_DIST =  	gnome-desktop-2.0.pc.in
+EXTRA_DIST =  	gnome-desktop-2.0.pc.in                	gnome-desktop-2.0-uninstalled.pc.in
 
-
-EGGFILES =  	egg-spawn.h		egg-spawn.c
-
-
-EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES =  gnome-desktop-2.0.pc
+CONFIG_CLEAN_FILES =  gnome-desktop-2.0.pc \
+gnome-desktop-2.0-uninstalled.pc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgnome_desktop_2_la_DEPENDENCIES = 
 libgnome_desktop_2_la_OBJECTS =  gnome-desktop-item.lo \
-gnome-ditem-edit.lo gnome-hint.lo egg-spawn.lo
+gnome-ditem-edit.lo gnome-hint.lo gnome-desktop-i18n.lo
 noinst_PROGRAMS =  test-ditem$(EXEEXT) test-hint$(EXEEXT) \
 test-ditem-edit$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
@@ -213,15 +218,15 @@ test_hint_LDFLAGS =
 test_ditem_edit_OBJECTS =  test-ditem-edit.$(OBJEXT)
 test_ditem_edit_DEPENDENCIES =  libgnome-desktop-2.la
 test_ditem_edit_LDFLAGS = 
+CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(pkgconfig_DATA)
 
-HEADERS =  $(libgnome_desktop_HEADERS) $(libgnomeui_desktop_HEADERS)
-
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in gnome-desktop-2.0.pc.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in \
+gnome-desktop-2.0-uninstalled.pc.in gnome-desktop-2.0.pc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -242,6 +247,8 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 gnome-desktop-2.0.pc: $(top_builddir)/config.status gnome-desktop-2.0.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+gnome-desktop-2.0-uninstalled.pc: $(top_builddir)/config.status gnome-desktop-2.0-uninstalled.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
@@ -356,34 +363,59 @@ uninstall-pkgconfigDATA:
 	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
-install-libgnome_desktopHEADERS: $(libgnome_desktop_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libgnome_desktopdir)
-	@list='$(libgnome_desktop_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnome_desktopdir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnome_desktopdir)/$$p; \
-	done
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
 
-uninstall-libgnome_desktopHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(libgnome_desktop_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libgnome_desktopdir)/$$p; \
-	done
+@SET_MAKE@
 
-install-libgnomeui_desktopHEADERS: $(libgnomeui_desktop_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libgnomeui_desktopdir)
-	@list='$(libgnomeui_desktop_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomeui_desktopdir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libgnomeui_desktopdir)/$$p; \
-	done
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
 
-uninstall-libgnomeui_desktopHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(libgnomeui_desktop_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libgnomeui_desktopdir)/$$p; \
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
 	done
 
 tags: TAGS
@@ -396,9 +428,14 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -430,47 +467,57 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	for subdir in $(SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
 egg-spawn.lo egg-spawn.o : egg-spawn.c ../config.h egg-spawn.h
+gnome-desktop-i18n.lo gnome-desktop-i18n.o : gnome-desktop-i18n.c \
+	../config.h gnome-desktop-i18n.h
 gnome-desktop-item.lo gnome-desktop-item.o : gnome-desktop-item.c \
-	../config.h egg-spawn.h gnome-desktop-item.h
+	../config.h libgnome/gnome-desktop-item.h gnome-desktop-i18n.h
 gnome-ditem-edit.lo gnome-ditem-edit.o : gnome-ditem-edit.c ../config.h \
-	gnome-desktop-item.h gnome-ditem-edit.h
-gnome-hint.lo gnome-hint.o : gnome-hint.c ../config.h gnome-hint.h
-test-ditem-edit.o: test-ditem-edit.c ../config.h gnome-ditem-edit.h \
-	gnome-desktop-item.h
-test-ditem.o: test-ditem.c ../config.h gnome-desktop-item.h
-test-hint.o: test-hint.c ../config.h gnome-hint.h
+	gnome-desktop-i18n.h libgnome/gnome-desktop-item.h \
+	libgnomeui/gnome-ditem-edit.h
+gnome-hint.lo gnome-hint.o : gnome-hint.c ../config.h \
+	libgnomeui/gnome-hint.h gnome-desktop-i18n.h
+test-ditem-edit.o: test-ditem-edit.c ../config.h \
+	libgnomeui/gnome-ditem-edit.h libgnome/gnome-desktop-item.h
+test-ditem.o: test-ditem.c ../config.h libgnome/gnome-desktop-item.h
+test-hint.o: test-hint.c ../config.h libgnomeui/gnome-hint.h
 
 info-am:
-info: info-am
+info: info-recursive
 dvi-am:
-dvi: dvi-am
+dvi: dvi-recursive
 check-am: all-am
-check: check-am
+check: check-recursive
 installcheck-am:
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-exec-am: install-libLTLIBRARIES
-install-exec: install-exec-am
+install-exec: install-exec-recursive
 
-install-data-am: install-pkgconfigDATA install-libgnome_desktopHEADERS \
-		install-libgnomeui_desktopHEADERS
-install-data: install-data-am
+install-data-am: install-pkgconfigDATA
+install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
-		uninstall-libgnome_desktopHEADERS \
-		uninstall-libgnomeui_desktopHEADERS
-uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
-all-redirect: all-am
+install: install-recursive
+uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA
+uninstall: uninstall-recursive
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgconfigdir) \
-		$(DESTDIR)$(libgnome_desktopdir) \
-		$(DESTDIR)$(libgnomeui_desktopdir)
+installdirs: installdirs-recursive
+installdirs-am:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -486,20 +533,20 @@ mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
 		mostlyclean-tags mostlyclean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
 		clean-noinstPROGRAMS clean-tags clean-generic \
 		mostlyclean-am
 
-clean: clean-am
+clean: clean-recursive
 
 distclean-am:  distclean-libLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-noinstPROGRAMS \
 		distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
-distclean: distclean-am
+distclean: distclean-recursive
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
@@ -508,7 +555,7 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 
 .PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
 clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
@@ -518,19 +565,19 @@ mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-pkgconfigDATA \
-install-pkgconfigDATA uninstall-libgnome_desktopHEADERS \
-install-libgnome_desktopHEADERS uninstall-libgnomeui_desktopHEADERS \
-install-libgnomeui_desktopHEADERS tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+install-pkgconfigDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs-am \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-regenerate-built-sources:
-	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

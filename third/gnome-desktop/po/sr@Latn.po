@@ -1,0 +1,470 @@
+# Serbian translation of gnome-desktop
+# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
+# 
+# This file is distributed under the same license as the gnome-desktop package.
+# 
+# Maintainer: Danilo Šegan <dsegan@gmx.net>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-desktop 2.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:31+0100\n"
+"PO-Revision-Date: 2004-03-14 20:27+0100\n"
+"Last-Translator: Danilo Segan <danilo@prevod.org>\n"
+"Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: desktop-links/Accessories.directory.in.h:1
+msgid "Accessories"
+msgstr "Alatke"
+
+#: desktop-links/Accessories.directory.in.h:2
+msgid "Accessories menu"
+msgstr "Meni sa alatkama"
+
+#: desktop-links/Applications.directory.in.h:1
+msgid "Applications"
+msgstr "Programi"
+
+#: desktop-links/Development.directory.in.h:1
+msgid "Programming"
+msgstr "Programiranje"
+
+#: desktop-links/Development.directory.in.h:2
+msgid "Tools for software development"
+msgstr "Alati za razvoj softvera"
+
+#: desktop-links/Games.directory.in.h:1
+msgid "Games"
+msgstr "Igre"
+
+#: desktop-links/Games.directory.in.h:2
+msgid "Games menu"
+msgstr "Meni za igrice"
+
+#: desktop-links/Graphics.directory.in.h:1
+msgid "Graphics"
+msgstr "Grafika"
+
+#: desktop-links/Graphics.directory.in.h:2
+msgid "Graphics menu"
+msgstr "Meni za grafičke programe"
+
+#: desktop-links/Internet.directory.in.h:1
+msgid "Internet"
+msgstr "Internet"
+
+#: desktop-links/Internet.directory.in.h:2
+msgid "Programs for Internet and networks"
+msgstr "Programi za Internet i mreže"
+
+#: desktop-links/Multimedia.directory.in.h:1
+msgid "Multimedia"
+msgstr "Multimedija"
+
+#: desktop-links/Multimedia.directory.in.h:2
+msgid "Multimedia menu"
+msgstr "Meni za multimediju"
+
+#: desktop-links/Office.directory.in.h:1
+msgid "Office"
+msgstr "Kancelarija"
+
+#: desktop-links/Office.directory.in.h:2
+msgid "Office Applications"
+msgstr "Programi za kancelariju"
+
+#: desktop-links/Other.directory.in.h:1
+msgid "Applications without a category"
+msgstr "Programi bez određene kategorije"
+
+#: desktop-links/Other.directory.in.h:2
+msgid "Other"
+msgstr "Ostalo"
+
+#: desktop-links/Root.directory.in.h:1
+msgid "Programs"
+msgstr "Programi"
+
+#: desktop-links/Root.directory.in.h:2
+msgid "Programs menu"
+msgstr "Meni za programe"
+
+#: desktop-links/Settings.directory.in.h:1
+msgid "Desktop Preferences"
+msgstr "Postavke okruženja"
+
+#: desktop-links/Settings.directory.in.h:2
+msgid "Preferences that affect the whole GNOME desktop"
+msgstr "Postavke koje utiču na celo radno okruženje Gnom"
+
+#: desktop-links/System.directory.in.h:1
+msgid "System Tools"
+msgstr "Sistemski alati"
+
+#: desktop-links/System.directory.in.h:2
+msgid "System menu"
+msgstr "Sistemski meni"
+
+#: gnome-about/contributors.h:107
+msgid "The Mysterious GEGL"
+msgstr "Misteriozni GEGL"
+
+#: gnome-about/contributors.h:291
+msgid "The Squeaky Rubber Gnome"
+msgstr "Škripeći gumeni Gnome"
+
+#: gnome-about/contributors.h:324
+msgid "Wanda The GNOME Fish"
+msgstr "Gnom riba zvana Vanda"
+
+#: gnome-about/gnome-about.c:139
+msgid "The End!"
+msgstr "Kraj!"
+
+#: gnome-about/gnome-about.c:428
+msgid "Could not locate the directory with header images."
+msgstr "Ne mogu da pronađem direktorijum sa slikama za zaglavlje."
+
+#: gnome-about/gnome-about.c:437
+#, c-format
+msgid "Failed to open directory with header images: %s"
+msgstr "Nisam uspeo da pristupim direktorijumu sa slikama za zaglavlje: %s"
+
+#: gnome-about/gnome-about.c:470
+#, c-format
+msgid "Unable to load header image: %s"
+msgstr "Ne mogu da učitam sliku za zaglavlje: %s"
+
+#: gnome-about/gnome-about.c:495
+msgid "Could not locate the GNOME logo button."
+msgstr "Ne mogu da pronađem Gnomov logotip."
+
+#: gnome-about/gnome-about.c:504
+#, c-format
+msgid "Unable to load '%s': %s"
+msgstr "Ne mogu da učitam „%s“: %s"
+
+#: gnome-about/gnome-about.c:557
+#, c-format
+msgid "Could not open the address \"%s\": %s"
+msgstr "Ne mogu da pristupim adresi „%s“: %s"
+
+#: gnome-about/gnome-about.c:809
+msgid "Could not locate the file with GNOME version information."
+msgstr "Ne mogu da pronađem datoteku sa podacima o izdanju Gnoma."
+
+#: gnome-about/gnome-about.c:878
+msgid "Version"
+msgstr "Izdanje"
+
+#: gnome-about/gnome-about.c:897
+msgid "Distributor"
+msgstr "Dobavljač"
+
+#: gnome-about/gnome-about.c:916
+msgid "Build Date"
+msgstr "Datum pripreme"
+
+#: gnome-about/gnome-about.c:998
+msgid "About GNOME"
+msgstr "O Gnomu"
+
+#: gnome-about/gnome-about.c:1012
+msgid "News"
+msgstr "Vesti"
+
+#: gnome-about/gnome-about.c:1022
+msgid "Software"
+msgstr "Softver"
+
+#: gnome-about/gnome-about.c:1028
+msgid "Developers"
+msgstr "Programeri"
+
+#: gnome-about/gnome-about.c:1034
+msgid "Friends of GNOME"
+msgstr "Prijatelji Gnoma"
+
+#: gnome-about/gnome-about.c:1040
+msgid "Contact"
+msgstr "Kontakt"
+
+#: gnome-about/gnome-about.c:1077
+msgid "Welcome to the GNOME Desktop"
+msgstr "Dobrodošli na Gnomovu radnu površinu"
+
+#: gnome-about/gnome-about.c:1094
+msgid "Brought to you by:"
+msgstr "Omogućili su vam:"
+
+#: gnome-about/gnome-about.c:1142
+msgid "About the GNOME Desktop"
+msgstr "O radnom okruženju Gnom"
+
+#: gnome-version.xml.in.in.h:1
+msgid ""
+"GNOME also includes a complete development platform for applications "
+"programmers, allowing the creation of powerful and complex applications."
+msgstr ""
+"Gnom takođe sadrži i razvojnu platformu koja omogućava programerima da prave "
+"nove složene i moćne programe."
+
+#: gnome-version.xml.in.in.h:2
+msgid ""
+"GNOME includes most of what you see on your computer, including the file "
+"manager, web browser, menus, and many applications."
+msgstr ""
+"Gnom sadrži većinu onoga što vidite na vašem računaru, uključujući i "
+"upravljača datotekama, čitač veba, menije, i mnoge programe."
+
+#. NOTE TO AUTHORS: Do not put anything in the following paragraphs that
+#. will be substituted by the configure script. Otherwise you will break
+#. the translations.
+#: gnome-version.xml.in.in.h:6
+msgid ""
+"GNOME is a Free, usable, stable, accessible desktop environment for the Unix-"
+"like family of operating systems."
+msgstr ""
+"Gnom je slobodno, upotrebljivo, moćno i pristupačno radno okruženje za "
+"operativne sisteme nalik Uniksu."
+
+#: gnome-version.xml.in.in.h:7
+msgid ""
+"GNOME's focus on usability and accessibility, regular release cycle, and "
+"strong corporate backing make it unique among Free Software desktops."
+msgstr ""
+"Gnomove težnje ka upotrebljivosti i pristupačnosti, redovnom postupku "
+"izdavanja i snažna podrška preduzeća ga izdvajaju među radnim okruženjima "
+"slobodnog softvera."
+
+#: gnome-version.xml.in.in.h:8
+msgid ""
+"GNOME's greatest strength is our strong community. Virtually anyone, with or "
+"without coding skills, can contribute to making GNOME better."
+msgstr ""
+"Najveća snaga Gnoma je naša čvrsta zajednica. Gotovo svako, sa ili bez "
+"programerskih sposobnosti, može doprineti da Gnom bude još bolji."
+
+#: gnome-version.xml.in.in.h:9
+msgid ""
+"Hundreds of people have contributed code to GNOME since it was started in "
+"1997; many more have contributed in other important ways, including "
+"translations, documentation, and quality assurance."
+msgstr ""
+"Stotine ljudi su napisali ponešto koda za Gnom od njegovog začeća 1997. "
+"godine; mnogi su doprineli i na druge značajne načine, kao što su prevodi, "
+"dokumentacija, i kontrola kvaliteta."
+
+#: libgnome-desktop/gnome-desktop-item.c:210
+#: libgnome-desktop/gnome-desktop-item.c:580
+#, c-format
+msgid "Error reading file '%s': %s"
+msgstr "Greška pri čitanju datoteke „%s“: %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:278
+#, c-format
+msgid "Error rewinding file '%s': %s"
+msgstr "Greška pri premotavanju datoteke „%s“: %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:362
+#: libgnome-desktop/gnome-desktop-item.c:3585
+msgid "No name"
+msgstr "Bez imena"
+
+#: libgnome-desktop/gnome-desktop-item.c:595
+#, c-format
+msgid "File '%s' is not a regular file or directory."
+msgstr "Datoteka „%s“ nije obična datoteka ili direktorijum."
+
+#: libgnome-desktop/gnome-desktop-item.c:746
+msgid "No filename to save to"
+msgstr "Ime datoteke nije dato"
+
+#: libgnome-desktop/gnome-desktop-item.c:1700
+#, c-format
+msgid "Starting %s"
+msgstr "Pokrećem %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:1930
+msgid "No URL to launch"
+msgstr "Nema adrese za pokretanje"
+
+#: libgnome-desktop/gnome-desktop-item.c:1940
+msgid "Not a launchable item"
+msgstr "Nije moguće pokrenuti"
+
+#: libgnome-desktop/gnome-desktop-item.c:1950
+msgid "No command (Exec) to launch"
+msgstr "Nema naredbe (Exec) za pokretanje"
+
+#: libgnome-desktop/gnome-desktop-item.c:1963
+msgid "Bad command (Exec) to launch"
+msgstr "Loša naredba (Exec) za pokretanje"
+
+#: libgnome-desktop/gnome-desktop-item.c:3642
+#, c-format
+msgid "Unknown encoding of: %s"
+msgstr "Nepoznato kodiranje za: %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:3873
+#, c-format
+msgid "Error writing file '%s': %s"
+msgstr "Greška pri pisanju datoteke „%s“: %s"
+
+#: libgnome-desktop/gnome-ditem-edit.c:206
+#: libgnome-desktop/gnome-ditem-edit.c:214
+msgid "Directory"
+msgstr "Direktorijum"
+
+#: libgnome-desktop/gnome-ditem-edit.c:210
+msgid "Application"
+msgstr "Program"
+
+#: libgnome-desktop/gnome-ditem-edit.c:217
+msgid "Link"
+msgstr "Veza"
+
+# SD = Sistem Datoteka
+#: libgnome-desktop/gnome-ditem-edit.c:219
+msgid "FSDevice"
+msgstr "SDUređaj"
+
+#: libgnome-desktop/gnome-ditem-edit.c:221
+msgid "MIME Type"
+msgstr "MIME vrsta"
+
+#: libgnome-desktop/gnome-ditem-edit.c:223
+msgid "Service"
+msgstr "Usluga"
+
+#: libgnome-desktop/gnome-ditem-edit.c:225
+msgid "ServiceType"
+msgstr "VrstaUsluge"
+
+#: libgnome-desktop/gnome-ditem-edit.c:311
+msgid "_URL:"
+msgstr "_Adresa:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:314
+#: libgnome-desktop/gnome-ditem-edit.c:381
+msgid "Comm_and:"
+msgstr "N_aredba:"
+
+#. Name
+#: libgnome-desktop/gnome-ditem-edit.c:335
+msgid "_Name:"
+msgstr "_Ime:"
+
+#. Generic Name
+#: libgnome-desktop/gnome-ditem-edit.c:352
+msgid "_Generic name:"
+msgstr "_Osnovno ime:"
+
+#. Comment
+#: libgnome-desktop/gnome-ditem-edit.c:369
+msgid "Co_mment:"
+msgstr "Pri_medba:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:385
+msgid "Browse"
+msgstr "Razgledaj"
+
+#: libgnome-desktop/gnome-ditem-edit.c:396
+msgid "_Type:"
+msgstr "Vrs_ta:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:413
+msgid "_Icon:"
+msgstr "_Ikona:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:423
+msgid "Browse icons"
+msgstr "Razgledaj ikone"
+
+#: libgnome-desktop/gnome-ditem-edit.c:437
+msgid "Run in t_erminal"
+msgstr "Pokreni u t_erminalu"
+
+#: libgnome-desktop/gnome-ditem-edit.c:653
+#: libgnome-desktop/gnome-ditem-edit.c:751
+msgid "Language"
+msgstr "Jezik"
+
+#: libgnome-desktop/gnome-ditem-edit.c:658
+#: libgnome-desktop/gnome-ditem-edit.c:758
+msgid "Name"
+msgstr "Ime"
+
+#: libgnome-desktop/gnome-ditem-edit.c:663
+#: libgnome-desktop/gnome-ditem-edit.c:765
+msgid "Generic name"
+msgstr "Osnovno ime"
+
+#: libgnome-desktop/gnome-ditem-edit.c:668
+#: libgnome-desktop/gnome-ditem-edit.c:774
+msgid "Comment"
+msgstr "Primedba"
+
+#: libgnome-desktop/gnome-ditem-edit.c:703
+msgid "_Try this before using:"
+msgstr "Pokušaj ovo pre upo_trebe:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:714
+msgid "_Documentation:"
+msgstr "_Uputstva:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:725
+msgid "_Name/Comment translations:"
+msgstr "Prevodi ime_na i primedbe:"
+
+#: libgnome-desktop/gnome-ditem-edit.c:776
+msgid "_Add/Set"
+msgstr "Dod_aj/postavi"
+
+#: libgnome-desktop/gnome-ditem-edit.c:782
+msgid "Add or Set Name/Comment Translations"
+msgstr "Dodaj ili postavi prevode imena i primedbe"
+
+#: libgnome-desktop/gnome-ditem-edit.c:784
+msgid "Re_move"
+msgstr "_Ukloni"
+
+#: libgnome-desktop/gnome-ditem-edit.c:789
+msgid "Remove Name/Comment Translation"
+msgstr "Ukloni prevod imena i primedbe"
+
+#: libgnome-desktop/gnome-ditem-edit.c:805
+msgid "Basic"
+msgstr "Osnovno"
+
+#: libgnome-desktop/gnome-ditem-edit.c:813
+msgid "Advanced"
+msgstr "Napredno"
+
+#: libgnome-desktop/gnome-hint.c:176
+msgid "_Show Hints at Startup"
+msgstr "Prikaži _savete pri pokretanju"
+
+#~ msgid ""
+#~ "GNOME is developed by an active community of volunteers who want to "
+#~ "provide a desktop and a suite of user friendly applications. Because "
+#~ "GNOME needs documentors, translators, and many other types of people, "
+#~ "virtually anyone, with or without coding skills, can contribute to GNOME."
+#~ msgstr ""
+#~ "Gnoma razvija aktivna zajednica dobrovoljaca koji žele da naprave radno "
+#~ "okruženje i skup programa lakih za upotrebu. Kako Gnomu uvek treba dopuna "
+#~ "dokumentacije, prevoda, i još mnogo šta, gotovo svako, sa ili bez "
+#~ "programerskog umeća, može da doprinese Gnomu."
+
+#~ msgid "Download"
+#~ msgstr "Preuzmi"
+
+#~ msgid "Users"
+#~ msgstr "Korisnici"
+
+#~ msgid "Foundation"
+#~ msgstr "Zadužbina"

@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Summary:          The gnome desktop programs for the GNOME GUI desktop environment.
 Name:             gnome-desktop
-Version:          2.2.0.1
+Version:          2.8.0
 Release:          1
 License:          LGPL
 Group:            System Environment/Base

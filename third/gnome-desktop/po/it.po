@@ -1,12 +1,15 @@
 # Italian translation for gnome-desktop
 # Copyright (C) 1997-2002 Free Software Foundation, Inc.
 # Copyright (C) 1997-2002 Christopher R. Gabriel <cgabriel@pluto.linux.it>
+# Luca Ferretti <elle.uca@infinito.it>, 2003-2004.
+# Alessio Frusciante <algol@firenze.linux.it>, 2003.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-core 2.1.2\n"
-"POT-Creation-Date: 2003-02-04 11:52+1300\n"
-"PO-Revision-Date: 2003-01-21 11:00+0100\n"
-"Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
+"Project-Id-Version: gnome-desktop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:31+0100\n"
+"PO-Revision-Date: 2004-02-25 20:51+0100\n"
+"Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,19 +21,15 @@ msgstr "Accessori"
 
 #: desktop-links/Accessories.directory.in.h:2
 msgid "Accessories menu"
-msgstr "Menù degli accessori"
+msgstr "Menu degli accessori"
 
 #: desktop-links/Applications.directory.in.h:1
-msgid "Applications without a category"
-msgstr "Applicazioni senza una categoria"
-
-#: desktop-links/Applications.directory.in.h:2
-msgid "Other"
-msgstr "Altro"
+msgid "Applications"
+msgstr "Applicazioni"
 
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
-msgstr "Sviluppo"
+msgstr "Programmazione"
 
 #: desktop-links/Development.directory.in.h:2
 msgid "Tools for software development"
@@ -42,7 +41,7 @@ msgstr "Giochi"
 
 #: desktop-links/Games.directory.in.h:2
 msgid "Games menu"
-msgstr "Applicazioni ludiche"
+msgstr "Menu dei giochi"
 
 #: desktop-links/Graphics.directory.in.h:1
 msgid "Graphics"
@@ -50,23 +49,23 @@ msgstr "Grafica"
 
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
-msgstr "Applicazioni grafiche"
+msgstr "Menu per la grafica"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
-msgstr "Rete"
+msgstr "Internet"
 
 #: desktop-links/Internet.directory.in.h:2
 msgid "Programs for Internet and networks"
-msgstr "Applicazaioni per Internet e le reti"
+msgstr "Programmi per Internet e le reti"
 
 #: desktop-links/Multimedia.directory.in.h:1
-msgid "Multimedia menu"
-msgstr "Applicazioni multimediali"
+msgid "Multimedia"
+msgstr "Multimedia"
 
 #: desktop-links/Multimedia.directory.in.h:2
-msgid "Sound & Video"
-msgstr "Audio e video"
+msgid "Multimedia menu"
+msgstr "Menu per il multimediale"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
@@ -76,13 +75,21 @@ msgstr "Ufficio"
 msgid "Office Applications"
 msgstr "Applicazioni per l'ufficio"
 
+#: desktop-links/Other.directory.in.h:1
+msgid "Applications without a category"
+msgstr "Applicazioni senza una categoria"
+
+#: desktop-links/Other.directory.in.h:2
+msgid "Other"
+msgstr "Altro"
+
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
 msgstr "Programmi"
 
 #: desktop-links/Root.directory.in.h:2
 msgid "Programs menu"
-msgstr "Menù programmi"
+msgstr "Menu dei programmi"
 
 #: desktop-links/Settings.directory.in.h:1
 msgid "Desktop Preferences"
@@ -90,403 +97,355 @@ msgstr "Preferenze del desktop"
 
 #: desktop-links/Settings.directory.in.h:2
 msgid "Preferences that affect the whole GNOME desktop"
-msgstr "Impostazioni che modificano tutto il desktop GNOME"
+msgstr "Preferenze che hanne effetto su l'intero GNOME Desktop"
 
 #: desktop-links/System.directory.in.h:1
 msgid "System Tools"
-msgstr "Sistema"
+msgstr "Strumenti di sistema"
 
 #: desktop-links/System.directory.in.h:2
 msgid "System menu"
-msgstr "Programmi di gestione del sistema"
+msgstr "Menu di sistema"
 
-#: gnome-about/contributors.h:20
-msgid "Timur I. Bakeyev"
-msgstr "Timur I. Bakeyev"
-
-#. if your encoding allows it, use aacute (U00E1)
-#. * for the 'a' of 'Ban'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs 'Shooby' Bán"
-
-#: gnome-about/contributors.h:36
-msgid "Jerome Bolliet"
-msgstr "Jerome Bolliet"
-
-#. if your encoding allows it, use eacute (U00E9) for the first
-#. * and the last 'e' in 'Chenede'
-#: gnome-about/contributors.h:54
-msgid "Erwann Chenede"
-msgstr "Erwann Chenede"
-
-#. CJK people please use (U5F35) (U570B) (U51A0) to replace
-#. * this name
-#: gnome-about/contributors.h:57
-msgid "Abel Cheung"
-msgstr "Abel Cheung"
-
-#. if you encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:70
-msgid "Frederic Crozat"
-msgstr "Frederic Crozat"
-
-#. if your encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:77
-msgid "Frederic Devernay"
-msgstr "Frédéric Devernay"
-
-#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
-#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:91
-msgid "Gergo Erdi"
-msgstr "Gergo Érdi"
-
-#: gnome-about/contributors.h:98
-msgid "Raul Perusquia Flores"
-msgstr "Raul Perusquia Flores"
-
-#: gnome-about/contributors.h:112
+#: gnome-about/contributors.h:107
 msgid "The Mysterious GEGL"
 msgstr "Il Misterioso GEGL"
 
-#: gnome-about/contributors.h:114
-msgid "Bjoern Giesler"
-msgstr "Bjoern Giesler"
-
-#: gnome-about/contributors.h:120
-msgid "Dov Grobgeld"
-msgstr "Dov Grobgeld"
-
-#. Wang is the surname. CJK people, please use (U738B) (U5251)
-#. * to replace this name.
-#: gnome-about/contributors.h:144
-msgid "Wang Jian"
-msgstr "Wang Jian"
-
-#: gnome-about/contributors.h:153
-msgid "Helmut Koeberle"
-msgstr "Helmut Koeberle"
-
-#: gnome-about/contributors.h:190
-msgid "Matthew Marjanovic"
-msgstr "Matthew Marjanovic"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Muniz'
-#: gnome-about/contributors.h:215
-msgid "Alexandre Muniz"
-msgstr "Alexandre Muñiz"
-
-#. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:217
-msgid "Sung-Hyun Nam"
-msgstr "Sung-Hyun Nam"
-
-#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
-#. * of 'Norbaeck'
-#: gnome-about/contributors.h:226
-msgid "Martin Norbaeck"
-msgstr "Martin Norbäck"
-
-#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
-#. * of 'Oegren'
-#: gnome-about/contributors.h:233
-msgid "Tomas Oegren"
-msgstr "Tomas Ögren"
-
-#. If your encoding allows it, use oacute (U00F3) for the 'o'
-#. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:243
-msgid "Carlos Perello Marin"
-msgstr "Carlos Perello Marin"
-
-#. If your encoding allows it, use aacute (U00E1) for the 'a'
-#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
-#: gnome-about/contributors.h:252
-msgid "German Poo-Caamano"
-msgstr ""
-
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
-#: gnome-about/contributors.h:273
-msgid "Kazuhiro Sasayama"
-msgstr "Kazuhiro Sasayama"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Inigo'
-#: gnome-about/contributors.h:283
-msgid "Inigo Serna"
-msgstr "Iñigo Serna"
-
-#: gnome-about/contributors.h:287
-msgid "Miroslav Silovic"
-msgstr "Miroslav Silovic"
-
-#. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:298
+# Pisolo, Mammolo, Squartolo... non fa ridere?
+#: gnome-about/contributors.h:291
 msgid "The Squeaky Rubber Gnome"
-msgstr "Lo Gnomo di Gomma"
+msgstr "Lo gnomo Gommolo"
 
-#: gnome-about/contributors.h:306
-msgid "Istvan Szekeres"
-msgstr "Istvan Szekeres"
-
-#: gnome-about/contributors.h:319
-msgid "Manish Vachharajani"
-msgstr "Manish Vachharajani"
-
-#: gnome-about/contributors.h:320
-msgid "Neil Vachharajani"
-msgstr "Neil Vachharajani"
-
-#: gnome-about/contributors.h:328
-msgid "Wanda the GNOME Fish"
+#: gnome-about/contributors.h:324
+msgid "Wanda The GNOME Fish"
 msgstr "Il pesce di GNOME di nome Wanda"
 
-#: gnome-about/gnome-about.c:273
-msgid "Click here to visit the site : "
-msgstr "Premere qui per visitare il sito "
+#: gnome-about/gnome-about.c:139
+msgid "The End!"
+msgstr "La Fine!"
 
-#: gnome-about/gnome-about.c:285
-msgid "List of GNOME Contributors"
-msgstr "Elenco di chi ha contribuito a GNOME"
+#: gnome-about/gnome-about.c:428
+msgid "Could not locate the directory with header images."
+msgstr "Impossibile localizzare la directory con le immagini di intestazione."
 
-#: gnome-about/gnome-about.c:287
-msgid "GNOME Logo Image"
-msgstr "Immagine del Logo di GNOME"
-
-#: gnome-about/gnome-about.c:295
-msgid "Contributors' Names"
-msgstr "Nomi dei collaboratori"
-
-#: gnome-about/gnome-about.c:297
-msgid "GNOME Logo"
-msgstr "Logo di GNOME"
-
-#: gnome-about/gnome-about.c:506
-msgid "GNOME"
-msgstr "GNOME"
-
-#: gnome-about/gnome-about.c:660
-msgid "And Many More ..."
-msgstr "E molti altri ancora.."
-
-#: gnome-about/gnome-about.c:838
+#: gnome-about/gnome-about.c:437
 #, c-format
-msgid "About GNOME%s%s%s"
-msgstr "Informazioni su GNOME%s%s%s"
+msgid "Failed to open directory with header images: %s"
+msgstr "Apertura della directory con le immagini di intestazione fallita: %s"
 
-#: gnome-about/gnome-about.c:949
-msgid "GNOME News Site"
-msgstr "Sito delle novità di GNOME"
+#: gnome-about/gnome-about.c:470
+#, c-format
+msgid "Unable to load header image: %s"
+msgstr "Impossibile caricare l'immagine di intestazione: %s"
 
-#: gnome-about/gnome-about.c:953
-msgid "http://www.gnome.org/"
-msgstr "http://www.it.gnome.org/"
+#: gnome-about/gnome-about.c:495
+msgid "Could not locate the GNOME logo button."
+msgstr "Impossibile localizzare il pulsante GNOME logo."
 
-#: gnome-about/gnome-about.c:954
-msgid "GNOME Main Site"
-msgstr "Sito web di GNOME"
+#: gnome-about/gnome-about.c:504
+#, c-format
+msgid "Unable to load '%s': %s"
+msgstr "Impossibile caricare «%s»: %s"
 
-#: gnome-about/gnome-about.c:959
-msgid "GNOME Developers' Site"
-msgstr "Sito per sviluppatori GNOME"
+#: gnome-about/gnome-about.c:557
+#, c-format
+msgid "Could not open the address \"%s\": %s"
+msgstr "Impossibile aprire l'indirizzo «%s»: %s"
 
-#: gnome-about/gnome-about.c:981
-msgid "GNOME is a part of the GNU Project"
-msgstr "GNOME fa parte del progetto GNU"
+#: gnome-about/gnome-about.c:809
+msgid "Could not locate the file with GNOME version information."
+msgstr ""
+"Impossibile localizzare il file con le informazioni sulla versione di GNOME."
 
-#: libgnome-desktop/gnome-desktop-item.c:208
-#: libgnome-desktop/gnome-desktop-item.c:578
+#: gnome-about/gnome-about.c:878
+msgid "Version"
+msgstr "Versione"
+
+#: gnome-about/gnome-about.c:897
+msgid "Distributor"
+msgstr "Distribuita da"
+
+#: gnome-about/gnome-about.c:916
+msgid "Build Date"
+msgstr "Compilata il"
+
+#: gnome-about/gnome-about.c:998
+msgid "About GNOME"
+msgstr "Informazioni su GNOME"
+
+#: gnome-about/gnome-about.c:1012
+msgid "News"
+msgstr "Notizie"
+
+#: gnome-about/gnome-about.c:1022
+msgid "Software"
+msgstr "Software"
+
+#: gnome-about/gnome-about.c:1028
+msgid "Developers"
+msgstr "Sviluppatori"
+
+#: gnome-about/gnome-about.c:1034
+msgid "Friends of GNOME"
+msgstr "Amici di GNOME"
+
+#: gnome-about/gnome-about.c:1040
+msgid "Contact"
+msgstr "Contatti"
+
+#: gnome-about/gnome-about.c:1077
+msgid "Welcome to the GNOME Desktop"
+msgstr "Benvenuti nello GNOME Desktop"
+
+# Hey, è open source, anzi free software!!
+#: gnome-about/gnome-about.c:1094
+msgid "Brought to you by:"
+msgstr "Sviluppato per tutti da:"
+
+#: gnome-about/gnome-about.c:1142
+msgid "About the GNOME Desktop"
+msgstr "Informazioni sullo GNOME Desktop"
+
+#: gnome-version.xml.in.in.h:1
+msgid ""
+"GNOME also includes a complete development platform for applications "
+"programmers, allowing the creation of powerful and complex applications."
+msgstr ""
+"Con GNOME viene fornita anche una completa piattaforma di sviluppo per i "
+"programmatori, rendendo possibile la creazione di applicazioni potenti e "
+"complesse."
+
+#: gnome-version.xml.in.in.h:2
+msgid ""
+"GNOME includes most of what you see on your computer, including the file "
+"manager, web browser, menus, and many applications."
+msgstr ""
+"GNOME include la maggior parte di quello che è visibile sul computer, "
+"compresi il file manager, il web browser, i menù e molte applicazioni."
+
+#. NOTE TO AUTHORS: Do not put anything in the following paragraphs that
+#. will be substituted by the configure script. Otherwise you will break
+#. the translations.
+#: gnome-version.xml.in.in.h:6
+msgid ""
+"GNOME is a Free, usable, stable, accessible desktop environment for the Unix-"
+"like family of operating systems."
+msgstr ""
+"GNOME è un ambiente desktop libero, usabile, stabile ed accessibile per la "
+"famiglia di sistemi operativi tipo UNIX."
+
+#: gnome-version.xml.in.in.h:7
+msgid ""
+"GNOME's focus on usability and accessibility, regular release cycle, and "
+"strong corporate backing make it unique among Free Software desktops."
+msgstr ""
+"L'interesse nella facilità d'uso e nell'accesso universale, nel ciclo di "
+"rilasci regolari e il supporto delle aziende rendono GNOME unico tra i "
+"desktop liberi."
+
+#: gnome-version.xml.in.in.h:8
+msgid ""
+"GNOME's greatest strength is our strong community. Virtually anyone, with or "
+"without coding skills, can contribute to making GNOME better."
+msgstr ""
+"Il punto di forza di GNOME è la sua solida comunità. Chiunque, dotato o meno "
+"di capacità di programmazione, può contribuire a rendere GNOME migliore."
+
+#: gnome-version.xml.in.in.h:9
+msgid ""
+"Hundreds of people have contributed code to GNOME since it was started in "
+"1997; many more have contributed in other important ways, including "
+"translations, documentation, and quality assurance."
+msgstr ""
+"Centinaia di persone hanno scritto codice per GNOME fin da quando il "
+"progetto è partito nel 1997; molti di più hanno contribuito in altri modi "
+"importanti, come traduzioni, documentazione e controllo della qualità."
+
+#: libgnome-desktop/gnome-desktop-item.c:210
+#: libgnome-desktop/gnome-desktop-item.c:580
 #, c-format
 msgid "Error reading file '%s': %s"
-msgstr "Errore nella lettura del file «%s»: %s"
+msgstr "Errore nella leggere il file «%s»: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:276
+#: libgnome-desktop/gnome-desktop-item.c:278
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Errore nel riavvolgere il file «%s»: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:593
+#: libgnome-desktop/gnome-desktop-item.c:362
+#: libgnome-desktop/gnome-desktop-item.c:3585
+msgid "No name"
+msgstr "Senza nome"
+
+#: libgnome-desktop/gnome-desktop-item.c:595
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "Il file «%s» non è un file regolare o una directory."
 
-#: libgnome-desktop/gnome-desktop-item.c:609
-#, c-format
-msgid "File '%s' has invalid MIME type: %s"
-msgstr "Il file «%s» ha un tipo MIME non valido: %s"
-
-#: libgnome-desktop/gnome-desktop-item.c:760
+#: libgnome-desktop/gnome-desktop-item.c:746
 msgid "No filename to save to"
-msgstr "Nessun nome di file per salvare i dati"
+msgstr "Nessun nome di file su cui salvare"
 
-#: libgnome-desktop/gnome-desktop-item.c:1736
+#: libgnome-desktop/gnome-desktop-item.c:1700
 #, c-format
 msgid "Starting %s"
-msgstr "Avvio di %s"
+msgstr "Avvio di «%s» in corso"
 
-#: libgnome-desktop/gnome-desktop-item.c:1956
+#: libgnome-desktop/gnome-desktop-item.c:1930
 msgid "No URL to launch"
 msgstr "Nessun URL da visualizzare"
 
-#: libgnome-desktop/gnome-desktop-item.c:1966
+#: libgnome-desktop/gnome-desktop-item.c:1940
 msgid "Not a launchable item"
 msgstr "Non è un oggetto eseguibile"
 
-#: libgnome-desktop/gnome-desktop-item.c:1976
+#: libgnome-desktop/gnome-desktop-item.c:1950
 msgid "No command (Exec) to launch"
 msgstr "Nessun comando (Exec) da eseguire"
 
-#: libgnome-desktop/gnome-desktop-item.c:1989
+#: libgnome-desktop/gnome-desktop-item.c:1963
 msgid "Bad command (Exec) to launch"
 msgstr "Comando da eseguire (Exec) non valido"
 
-#: libgnome-desktop/gnome-desktop-item.c:3619
-msgid "No name"
-msgstr "Senza nome"
-
-#: libgnome-desktop/gnome-desktop-item.c:3676
+#: libgnome-desktop/gnome-desktop-item.c:3642
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Codifica sconosciuta per: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3907
+#: libgnome-desktop/gnome-desktop-item.c:3873
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Errore nella scrittura del file «%s»: %s"
 
-#: libgnome-desktop/gnome-ditem-edit.c:209
-#: libgnome-desktop/gnome-ditem-edit.c:217
+#: libgnome-desktop/gnome-ditem-edit.c:206
+#: libgnome-desktop/gnome-ditem-edit.c:214
 msgid "Directory"
 msgstr "Directory"
 
-#: libgnome-desktop/gnome-ditem-edit.c:213
+#: libgnome-desktop/gnome-ditem-edit.c:210
 msgid "Application"
 msgstr "Applicazione"
 
-#: libgnome-desktop/gnome-ditem-edit.c:220
+#: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Link"
 msgstr "Collegamento"
 
-#: libgnome-desktop/gnome-ditem-edit.c:222
+#: libgnome-desktop/gnome-ditem-edit.c:219
 msgid "FSDevice"
 msgstr "FSDevice"
 
-#: libgnome-desktop/gnome-ditem-edit.c:224
+#: libgnome-desktop/gnome-ditem-edit.c:221
 msgid "MIME Type"
 msgstr "Tipo MIME"
 
-#: libgnome-desktop/gnome-ditem-edit.c:226
+#: libgnome-desktop/gnome-ditem-edit.c:223
 msgid "Service"
 msgstr "Servizio"
 
-#: libgnome-desktop/gnome-ditem-edit.c:228
+#: libgnome-desktop/gnome-ditem-edit.c:225
 msgid "ServiceType"
 msgstr "TipoServizio"
 
-#: libgnome-desktop/gnome-ditem-edit.c:314
-msgid "URL:"
-msgstr "URL:"
+#: libgnome-desktop/gnome-ditem-edit.c:311
+msgid "_URL:"
+msgstr "_URL:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:317
-#: libgnome-desktop/gnome-ditem-edit.c:387
-msgid "Command:"
-msgstr "Comando:"
+#: libgnome-desktop/gnome-ditem-edit.c:314
+#: libgnome-desktop/gnome-ditem-edit.c:381
+msgid "Comm_and:"
+msgstr "Com_ando:"
 
 #. Name
-#: libgnome-desktop/gnome-ditem-edit.c:338
-msgid "Name:"
-msgstr "Nome:"
+#: libgnome-desktop/gnome-ditem-edit.c:335
+msgid "_Name:"
+msgstr "_Nome:"
 
 #. Generic Name
-#: libgnome-desktop/gnome-ditem-edit.c:356
-msgid "Generic name:"
-msgstr "Nome generico:"
+#: libgnome-desktop/gnome-ditem-edit.c:352
+msgid "_Generic name:"
+msgstr "Nome _generico:"
 
 #. Comment
-#: libgnome-desktop/gnome-ditem-edit.c:374
-msgid "Comment:"
-msgstr "Commento:"
+#: libgnome-desktop/gnome-ditem-edit.c:369
+msgid "Co_mment:"
+msgstr "Co_mmento:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:391
+#: libgnome-desktop/gnome-ditem-edit.c:385
 msgid "Browse"
 msgstr "Sfoglia"
 
-#: libgnome-desktop/gnome-ditem-edit.c:401
-msgid "Type:"
-msgstr "Tipo:"
+#: libgnome-desktop/gnome-ditem-edit.c:396
+msgid "_Type:"
+msgstr "_Tipo:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:419
-msgid "Icon:"
-msgstr "Icona:"
+#: libgnome-desktop/gnome-ditem-edit.c:413
+msgid "_Icon:"
+msgstr "Ic_ona:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:429
+#: libgnome-desktop/gnome-ditem-edit.c:423
 msgid "Browse icons"
 msgstr "Sfoglia icone"
 
-#: libgnome-desktop/gnome-ditem-edit.c:444
-msgid "Run in Terminal"
-msgstr "Avviare in un terminale"
+#: libgnome-desktop/gnome-ditem-edit.c:437
+msgid "Run in t_erminal"
+msgstr "Avviare in un t_erminale"
 
-#: libgnome-desktop/gnome-ditem-edit.c:658
-#: libgnome-desktop/gnome-ditem-edit.c:757
+#: libgnome-desktop/gnome-ditem-edit.c:653
+#: libgnome-desktop/gnome-ditem-edit.c:751
 msgid "Language"
 msgstr "Lingua"
 
-#: libgnome-desktop/gnome-ditem-edit.c:663
-#: libgnome-desktop/gnome-ditem-edit.c:765
+#: libgnome-desktop/gnome-ditem-edit.c:658
+#: libgnome-desktop/gnome-ditem-edit.c:758
 msgid "Name"
 msgstr "Nome"
 
-#: libgnome-desktop/gnome-ditem-edit.c:668
-#: libgnome-desktop/gnome-ditem-edit.c:773
+#: libgnome-desktop/gnome-ditem-edit.c:663
+#: libgnome-desktop/gnome-ditem-edit.c:765
 msgid "Generic name"
 msgstr "Nome generico"
 
-#: libgnome-desktop/gnome-ditem-edit.c:673
-#: libgnome-desktop/gnome-ditem-edit.c:783
+#: libgnome-desktop/gnome-ditem-edit.c:668
+#: libgnome-desktop/gnome-ditem-edit.c:774
 msgid "Comment"
 msgstr "Commento"
 
-#: libgnome-desktop/gnome-ditem-edit.c:709
-msgid "Try this before using:"
-msgstr "Provare prima di eseguire:"
+#: libgnome-desktop/gnome-ditem-edit.c:703
+msgid "_Try this before using:"
+msgstr "Prima di eseguire _provare:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:721
-msgid "Documentation:"
-msgstr "Documentazione:"
+#: libgnome-desktop/gnome-ditem-edit.c:714
+msgid "_Documentation:"
+msgstr "_Documentazione:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:733
-msgid "Name/Comment translations:"
-msgstr "Traduzioni nome/commento:"
+#: libgnome-desktop/gnome-ditem-edit.c:725
+msgid "_Name/Comment translations:"
+msgstr "Traduzioni del _nome e commento:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:786
-msgid "Add/Set"
-msgstr "Aggiungi/Imposta"
+#: libgnome-desktop/gnome-ditem-edit.c:776
+msgid "_Add/Set"
+msgstr "A_ggiungi/Imposta"
 
-#: libgnome-desktop/gnome-ditem-edit.c:792
+#: libgnome-desktop/gnome-ditem-edit.c:782
 msgid "Add or Set Name/Comment Translations"
-msgstr "Aggiunge o imposta la traduzione di nome/commento"
+msgstr "Aggiunge o imposta le traduzioni del nome e commento"
 
-#: libgnome-desktop/gnome-ditem-edit.c:794
-msgid "Remove"
-msgstr "Rimuovi"
+#: libgnome-desktop/gnome-ditem-edit.c:784
+msgid "Re_move"
+msgstr "Ri_muovi"
 
-#: libgnome-desktop/gnome-ditem-edit.c:799
+#: libgnome-desktop/gnome-ditem-edit.c:789
 msgid "Remove Name/Comment Translation"
-msgstr "Rimuove traduzione di nome/commento"
+msgstr "Rimuove le traduzioni del nome e commento"
 
-#: libgnome-desktop/gnome-ditem-edit.c:815
+#: libgnome-desktop/gnome-ditem-edit.c:805
 msgid "Basic"
-msgstr "Generale"
+msgstr "Generali"
 
-#: libgnome-desktop/gnome-ditem-edit.c:823
+#: libgnome-desktop/gnome-ditem-edit.c:813
 msgid "Advanced"
-msgstr "Avanzato"
+msgstr "Avanzate"
 
-#: libgnome-desktop/gnome-hint.c:175
+#: libgnome-desktop/gnome-hint.c:176
 msgid "_Show Hints at Startup"
 msgstr "_Mostra suggerimenti all'avvio"

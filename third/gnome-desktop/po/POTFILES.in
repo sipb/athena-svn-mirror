@@ -8,11 +8,13 @@ desktop-links/Graphics.directory.in
 desktop-links/Internet.directory.in
 desktop-links/Multimedia.directory.in
 desktop-links/Office.directory.in
+desktop-links/Other.directory.in
 desktop-links/Root.directory.in
 desktop-links/Settings.directory.in
 desktop-links/System.directory.in
 gnome-about/contributors.h
 gnome-about/gnome-about.c
+gnome-version.xml.in.in
 libgnome-desktop/gnome-desktop-item.c
 libgnome-desktop/gnome-ditem-edit.c
 libgnome-desktop/gnome-hint.c

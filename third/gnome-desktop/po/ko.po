@@ -1,15 +1,13 @@
-# ko.po -- Korean messages for GNOME core
-# Copyright (C) 1998, 1999, 2002 Free Software Foundation, Inc.
-# Changwoo Ryu <cwryu@adam.kaist.ac.kr>, 1998.
-# Updated by Sung-Hyun Nam <namsh@kldp.org>, 2000
-# Updated by Young-Ho Cha <ganadist@chollian.net>, 2000,2001
-# Changwoo Ryu <cwryu@debian.org>, 2002
+# Sung-Hyun Nam <namsh@kldp.org>, 2000
+# Young-Ho Cha <ganadist@chollian.net>, 2000,2001,2003
+# Changwoo Ryu <cwryu@debian.org>, 1998, 2002, 2003
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-desktop 2.1.90\n"
-"POT-Creation-Date: 2003-02-04 11:52+1300\n"
-"PO-Revision-Date: 2003-01-15 02:28+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
+"Project-Id-Version: gnome-desktop 2.3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:31+0100\n"
+"PO-Revision-Date: 2003-08-23 03:37+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,12 +22,8 @@ msgid "Accessories menu"
 msgstr "보조 프로그램 메뉴"
 
 #: desktop-links/Applications.directory.in.h:1
-msgid "Applications without a category"
-msgstr "어떤 범주에도 해당되지 않는 프로그램"
-
-#: desktop-links/Applications.directory.in.h:2
-msgid "Other"
-msgstr "기타"
+msgid "Applications"
+msgstr "프로그램"
 
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
@@ -64,12 +58,12 @@ msgid "Programs for Internet and networks"
 msgstr "인터넷 메뉴"
 
 #: desktop-links/Multimedia.directory.in.h:1
-msgid "Multimedia menu"
-msgstr "멀티미디어 메뉴"
+msgid "Multimedia"
+msgstr "멀티미디어"
 
 #: desktop-links/Multimedia.directory.in.h:2
-msgid "Sound & Video"
-msgstr "멀티미디어"
+msgid "Multimedia menu"
+msgstr "멀티미디어 메뉴"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
@@ -78,6 +72,14 @@ msgstr "오피스"
 #: desktop-links/Office.directory.in.h:2
 msgid "Office Applications"
 msgstr "오피스 응용프로그램"
+
+#: desktop-links/Other.directory.in.h:1
+msgid "Applications without a category"
+msgstr "어떤 범주에도 해당되지 않는 프로그램"
+
+#: desktop-links/Other.directory.in.h:2
+msgid "Other"
+msgstr "기타"
 
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
@@ -103,395 +105,349 @@ msgstr "시스템"
 msgid "System menu"
 msgstr "시스템 메뉴"
 
-#: gnome-about/contributors.h:20
-msgid "Timur I. Bakeyev"
-msgstr "Timur I. Bakeyev"
-
-#. if your encoding allows it, use aacute (U00E1)
-#. * for the 'a' of 'Ban'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs 'Shooby' Ban"
-
-#: gnome-about/contributors.h:36
-msgid "Jerome Bolliet"
-msgstr "Jerome Bolliet"
-
-#. if your encoding allows it, use eacute (U00E9) for the first
-#. * and the last 'e' in 'Chenede'
-#: gnome-about/contributors.h:54
-msgid "Erwann Chenede"
-msgstr "Erwann Chenede"
-
-#. CJK people please use (U5F35) (U570B) (U51A0) to replace
-#. * this name
-#: gnome-about/contributors.h:57
-msgid "Abel Cheung"
-msgstr "張國冠"
-
-#. if you encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:70
-msgid "Frederic Crozat"
-msgstr "Frederic Crozat"
-
-#. if your encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:77
-msgid "Frederic Devernay"
-msgstr "Frederic Devernay"
-
-#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
-#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:91
-msgid "Gergo Erdi"
-msgstr "Gergo Erdi"
-
-#: gnome-about/contributors.h:98
-msgid "Raul Perusquia Flores"
-msgstr "Raul Perusquia Flores"
-
-#: gnome-about/contributors.h:112
+#: gnome-about/contributors.h:107
 msgid "The Mysterious GEGL"
 msgstr "불가사의한 GEGL"
 
-#: gnome-about/contributors.h:114
-msgid "Bjoern Giesler"
-msgstr "Bjoern Giesler"
-
-#: gnome-about/contributors.h:120
-msgid "Dov Grobgeld"
-msgstr "Dov Grobgeld"
-
-# KSC5601에서 U+5251 표시 불가능.
-#. Wang is the surname. CJK people, please use (U738B) (U5251)
-#. * to replace this name.
-#: gnome-about/contributors.h:144
-msgid "Wang Jian"
-msgstr "Wang Jian"
-
-#: gnome-about/contributors.h:153
-msgid "Helmut Koeberle"
-msgstr "Helmut Koeberle"
-
-#: gnome-about/contributors.h:190
-msgid "Matthew Marjanovic"
-msgstr "Matthew Marjanovic"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Muniz'
-#: gnome-about/contributors.h:215
-msgid "Alexandre Muniz"
-msgstr "Alexandre Muniz"
-
-#. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:217
-msgid "Sung-Hyun Nam"
-msgstr "남성현"
-
-#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
-#. * of 'Norbaeck'
-#: gnome-about/contributors.h:226
-msgid "Martin Norbaeck"
-msgstr "Martin Norbaeck"
-
-#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
-#. * of 'Oegren'
-#: gnome-about/contributors.h:233
-msgid "Tomas Oegren"
-msgstr "Tomas Oegren"
-
-#. If your encoding allows it, use oacute (U00F3) for the 'o'
-#. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:243
-msgid "Carlos Perello Marin"
-msgstr "Carlos Perello Marin"
-
-#. If your encoding allows it, use aacute (U00E1) for the 'a'
-#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
-#: gnome-about/contributors.h:252
-msgid "German Poo-Caamano"
-msgstr "German Poo-Caamano"
-
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
-#: gnome-about/contributors.h:273
-msgid "Kazuhiro Sasayama"
-msgstr "Kazuhiro Sasayama"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Inigo'
-#: gnome-about/contributors.h:283
-msgid "Inigo Serna"
-msgstr "Inigo Serna"
-
-#: gnome-about/contributors.h:287
-msgid "Miroslav Silovic"
-msgstr "Miroslav Silovic"
-
-#. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:298
+#: gnome-about/contributors.h:291
 msgid "The Squeaky Rubber Gnome"
 msgstr "The Squeaky Rubber Gnome"
 
-#: gnome-about/contributors.h:306
-msgid "Istvan Szekeres"
-msgstr "Istvan Szekeres"
-
-#: gnome-about/contributors.h:319
-msgid "Manish Vachharajani"
-msgstr "Manish Vachharajani"
-
-#: gnome-about/contributors.h:320
-msgid "Neil Vachharajani"
-msgstr "Neil Vachharajani"
-
-#: gnome-about/contributors.h:328
-msgid "Wanda the GNOME Fish"
+#: gnome-about/contributors.h:324
+msgid "Wanda The GNOME Fish"
 msgstr "그놈 물고기 완다"
 
-#: gnome-about/gnome-about.c:273
-msgid "Click here to visit the site : "
-msgstr "사이트를 방문하려면 클릭하십시오: "
+#: gnome-about/gnome-about.c:139
+msgid "The End!"
+msgstr "끝!"
 
-#: gnome-about/gnome-about.c:285
-msgid "List of GNOME Contributors"
-msgstr "그놈에 기여한 사람들 목록"
+#: gnome-about/gnome-about.c:428
+msgid "Could not locate the directory with header images."
+msgstr "헤더 이미지가 들어 있는 디렉토리를 찾을 수 없습니다."
 
-#: gnome-about/gnome-about.c:287
-msgid "GNOME Logo Image"
-msgstr "그놈 로고 그림"
-
-#: gnome-about/gnome-about.c:295
-msgid "Contributors' Names"
-msgstr "도움주신 분들"
-
-#: gnome-about/gnome-about.c:297
-msgid "GNOME Logo"
-msgstr "그놈 로고"
-
-#: gnome-about/gnome-about.c:506
-msgid "GNOME"
-msgstr "그놈"
-
-#: gnome-about/gnome-about.c:660
-msgid "And Many More ..."
-msgstr "그리고 이 외에도 많은 사람들 ..."
-
-#: gnome-about/gnome-about.c:838
+#: gnome-about/gnome-about.c:437
 #, c-format
-msgid "About GNOME%s%s%s"
-msgstr "그놈 %s%s%s 정보"
+msgid "Failed to open directory with header images: %s"
+msgstr "헤더 이미지가 들어 있는 디렉토리를 여는 데 실패했습니다: %s"
 
-#: gnome-about/gnome-about.c:949
-msgid "GNOME News Site"
-msgstr "그놈 뉴스 사이트"
+#: gnome-about/gnome-about.c:470
+#, c-format
+msgid "Unable to load header image: %s"
+msgstr "헤더 이미지를 읽어들일 수 없습니다: %s"
 
-# 한국어 사이트가 있다면 그걸 써야 하나?
-#: gnome-about/gnome-about.c:953
-msgid "http://www.gnome.org/"
-msgstr "http://www.gnome.org/"
+#: gnome-about/gnome-about.c:495
+msgid "Could not locate the GNOME logo button."
+msgstr "그놈 로고 단추를 찾을 수 없습니다."
 
-#: gnome-about/gnome-about.c:954
-msgid "GNOME Main Site"
-msgstr "그놈 메인 사이트"
+#: gnome-about/gnome-about.c:504
+#, c-format
+msgid "Unable to load '%s': %s"
+msgstr "'%s'을(를) 읽어들일 수 없습니다: %s"
 
-#: gnome-about/gnome-about.c:959
-msgid "GNOME Developers' Site"
-msgstr "그놈 개발자 사이트"
+#: gnome-about/gnome-about.c:557
+#, c-format
+msgid "Could not open the address \"%s\": %s"
+msgstr "다음 주소를 열 수 없습니다. \"%s\": %s"
 
-#: gnome-about/gnome-about.c:981
-msgid "GNOME is a part of the GNU Project"
-msgstr "그놈은 GNU프로젝트의 일부입니다"
+#: gnome-about/gnome-about.c:809
+msgid "Could not locate the file with GNOME version information."
+msgstr "그놈 버전 정보가 들어 있는 파일을 찾을 수가 없습니다."
 
-#: libgnome-desktop/gnome-desktop-item.c:208
-#: libgnome-desktop/gnome-desktop-item.c:578
+#: gnome-about/gnome-about.c:878
+msgid "Version"
+msgstr "버젼"
+
+#: gnome-about/gnome-about.c:897
+msgid "Distributor"
+msgstr "배포자"
+
+#: gnome-about/gnome-about.c:916
+msgid "Build Date"
+msgstr "빌드 날짜"
+
+#: gnome-about/gnome-about.c:998
+msgid "About GNOME"
+msgstr "그놈 정보"
+
+#: gnome-about/gnome-about.c:1012
+msgid "News"
+msgstr "새소식"
+
+#: gnome-about/gnome-about.c:1022
+msgid "Software"
+msgstr "소프트웨어"
+
+#: gnome-about/gnome-about.c:1028
+msgid "Developers"
+msgstr "개발자"
+
+#: gnome-about/gnome-about.c:1034
+msgid "Friends of GNOME"
+msgstr "그놈 친구"
+
+#: gnome-about/gnome-about.c:1040
+msgid "Contact"
+msgstr "연락처"
+
+#: gnome-about/gnome-about.c:1077
+msgid "Welcome to the GNOME Desktop"
+msgstr "그놈 데스크탑에 오신 것을 환영합니다"
+
+#: gnome-about/gnome-about.c:1094
+msgid "Brought to you by:"
+msgstr "여기에 오기까지 애썼던 사람들:"
+
+#: gnome-about/gnome-about.c:1142
+msgid "About the GNOME Desktop"
+msgstr "그놈 데스크탑 정보"
+
+#: gnome-version.xml.in.in.h:1
+msgid ""
+"GNOME also includes a complete development platform for applications "
+"programmers, allowing the creation of powerful and complex applications."
+msgstr ""
+"그놈에는 응용 프로그램 개발자가 이용할 수 있는 완전한 개발 플랫폼이 들어 있습"
+"니다. 이 플랫폼으로 강력하고 방대한 응용 프로그램을 만들 수 있습니다."
+
+#: gnome-version.xml.in.in.h:2
+msgid ""
+"GNOME includes most of what you see on your computer, including the file "
+"manager, web browser, menus, and many applications."
+msgstr ""
+"그놈에는 컴퓨터에서 할 수 있는 모든 것이 들어 있습니다. 파일 관리자, 웹 브라"
+"우저, 메뉴, 그리고 많은 응용 프로그램들까지."
+
+#. NOTE TO AUTHORS: Do not put anything in the following paragraphs that
+#. will be substituted by the configure script. Otherwise you will break
+#. the translations.
+#: gnome-version.xml.in.in.h:6
+msgid ""
+"GNOME is a Free, usable, stable, accessible desktop environment for the Unix-"
+"like family of operating systems."
+msgstr ""
+"그놈은 유닉스와 같은 운영체제를 위한 자유롭고, 사용 가능하고, 안정적이고, 누"
+"구나 접근할 수 있는 데스크탑 환경입니다."
+
+#: gnome-version.xml.in.in.h:7
+msgid ""
+"GNOME's focus on usability and accessibility, regular release cycle, and "
+"strong corporate backing make it unique among Free Software desktops."
+msgstr ""
+"그놈의 사용성과 접근성에 대한 관심, 정기적인 릴리즈 주기, 강력한 기업의 후원"
+"때문에 그놈은 자유 소프트웨어 데스크탑중에서도 비할 바가 없는 데스크탑입니다."
+
+#: gnome-version.xml.in.in.h:8
+msgid ""
+"GNOME's greatest strength is our strong community. Virtually anyone, with or "
+"without coding skills, can contribute to making GNOME better."
+msgstr ""
+"그놈의 최고의 힘은 우리의 강력한 커뮤니티입니다. 코딩 기술이 있던, 없던, 그 "
+"누구든 간에 그놈을 더 낫게 만드는 데 공헌할 수 있습니다."
+
+#: gnome-version.xml.in.in.h:9
+msgid ""
+"Hundreds of people have contributed code to GNOME since it was started in "
+"1997; many more have contributed in other important ways, including "
+"translations, documentation, and quality assurance."
+msgstr ""
+"1997년에 시작된 이래로 수백명이 사람들이 그놈의 코드에 공헌했습니다; 그보다 "
+"훨씬 많은 사람들이 번역, 문서화, 품질 보증 등의 다른 중요한 방식으로 그놈에 "
+"공헌했습니다. "
+
+#: libgnome-desktop/gnome-desktop-item.c:210
+#: libgnome-desktop/gnome-desktop-item.c:580
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "'%s' 파일을 읽는 중 오류: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:276
+#: libgnome-desktop/gnome-desktop-item.c:278
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "'%s' 파일을 뒤로 감는 데 오류 발생: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:593
+#: libgnome-desktop/gnome-desktop-item.c:362
+#: libgnome-desktop/gnome-desktop-item.c:3585
+msgid "No name"
+msgstr "이름 없음"
+
+#: libgnome-desktop/gnome-desktop-item.c:595
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "'%s' 파일은 일반 파일이나 디렉토리가 아닙니다."
 
-#: libgnome-desktop/gnome-desktop-item.c:609
-#, c-format
-msgid "File '%s' has invalid MIME type: %s"
-msgstr "'%s' 파일의 MIME 타입이 잘못되었습니다: %s"
-
-#: libgnome-desktop/gnome-desktop-item.c:760
+#: libgnome-desktop/gnome-desktop-item.c:746
 msgid "No filename to save to"
 msgstr "저장할 파일이름이 없음"
 
-#: libgnome-desktop/gnome-desktop-item.c:1736
+#: libgnome-desktop/gnome-desktop-item.c:1700
 #, c-format
 msgid "Starting %s"
 msgstr "%s 시작중"
 
-#: libgnome-desktop/gnome-desktop-item.c:1956
+#: libgnome-desktop/gnome-desktop-item.c:1930
 msgid "No URL to launch"
 msgstr "실행할 URL 없음"
 
-#: libgnome-desktop/gnome-desktop-item.c:1966
+#: libgnome-desktop/gnome-desktop-item.c:1940
 msgid "Not a launchable item"
-msgstr "실행할수 있는 항목 아님"
+msgstr "실행할 수 있는 항목 아님"
 
-#: libgnome-desktop/gnome-desktop-item.c:1976
+#: libgnome-desktop/gnome-desktop-item.c:1950
 msgid "No command (Exec) to launch"
 msgstr "실행할 명령이 없음"
 
-#: libgnome-desktop/gnome-desktop-item.c:1989
+#: libgnome-desktop/gnome-desktop-item.c:1963
 msgid "Bad command (Exec) to launch"
-msgstr "실행할수 있는 명령이 잘못됨"
+msgstr "실행할 수 있는 명령이 잘못됨"
 
-#: libgnome-desktop/gnome-desktop-item.c:3619
-msgid "No name"
-msgstr "이름 없음"
-
-#: libgnome-desktop/gnome-desktop-item.c:3676
+#: libgnome-desktop/gnome-desktop-item.c:3642
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "알 수 없는 인코딩: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3907
+#: libgnome-desktop/gnome-desktop-item.c:3873
 #, c-format
 msgid "Error writing file '%s': %s"
-msgstr "파일 '%s'를 쓰는중 오류: %s"
+msgstr "파일 '%s'을(를) 쓰는 중 오류: %s"
 
-#: libgnome-desktop/gnome-ditem-edit.c:209
-#: libgnome-desktop/gnome-ditem-edit.c:217
+#: libgnome-desktop/gnome-ditem-edit.c:206
+#: libgnome-desktop/gnome-ditem-edit.c:214
 msgid "Directory"
 msgstr "디렉토리"
 
-#: libgnome-desktop/gnome-ditem-edit.c:213
+#: libgnome-desktop/gnome-ditem-edit.c:210
 msgid "Application"
 msgstr "프로그램"
 
-#: libgnome-desktop/gnome-ditem-edit.c:220
+#: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Link"
 msgstr "링크"
 
-#: libgnome-desktop/gnome-ditem-edit.c:222
+#: libgnome-desktop/gnome-ditem-edit.c:219
 msgid "FSDevice"
 msgstr "FS장치"
 
-#: libgnome-desktop/gnome-ditem-edit.c:224
+#: libgnome-desktop/gnome-ditem-edit.c:221
 msgid "MIME Type"
 msgstr "MIME 형식"
 
-#: libgnome-desktop/gnome-ditem-edit.c:226
+#: libgnome-desktop/gnome-ditem-edit.c:223
 msgid "Service"
 msgstr "서비스"
 
-#: libgnome-desktop/gnome-ditem-edit.c:228
+#: libgnome-desktop/gnome-ditem-edit.c:225
 msgid "ServiceType"
 msgstr "서비스형식"
 
-#: libgnome-desktop/gnome-ditem-edit.c:314
-msgid "URL:"
-msgstr "URL:"
+#: libgnome-desktop/gnome-ditem-edit.c:311
+msgid "_URL:"
+msgstr "URL(_U):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:317
-#: libgnome-desktop/gnome-ditem-edit.c:387
-msgid "Command:"
-msgstr "명령:"
+#: libgnome-desktop/gnome-ditem-edit.c:314
+#: libgnome-desktop/gnome-ditem-edit.c:381
+msgid "Comm_and:"
+msgstr "명령(_A):"
 
 #. Name
-#: libgnome-desktop/gnome-ditem-edit.c:338
-msgid "Name:"
-msgstr "이름:"
+#: libgnome-desktop/gnome-ditem-edit.c:335
+msgid "_Name:"
+msgstr "이름(_N):"
 
 #. Generic Name
-#: libgnome-desktop/gnome-ditem-edit.c:356
-msgid "Generic name:"
-msgstr "일반 이름:"
+#: libgnome-desktop/gnome-ditem-edit.c:352
+msgid "_Generic name:"
+msgstr "일반 이름(_G):"
 
 #. Comment
-#: libgnome-desktop/gnome-ditem-edit.c:374
-msgid "Comment:"
-msgstr "설명:"
+#: libgnome-desktop/gnome-ditem-edit.c:369
+msgid "Co_mment:"
+msgstr "설명(_M):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:391
+#: libgnome-desktop/gnome-ditem-edit.c:385
 msgid "Browse"
 msgstr "찾아보기"
 
-#: libgnome-desktop/gnome-ditem-edit.c:401
-msgid "Type:"
-msgstr "형식:"
+#: libgnome-desktop/gnome-ditem-edit.c:396
+msgid "_Type:"
+msgstr "형식(_T):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:419
-msgid "Icon:"
-msgstr "아이콘:"
+#: libgnome-desktop/gnome-ditem-edit.c:413
+msgid "_Icon:"
+msgstr "아이콘(_I):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:429
+#: libgnome-desktop/gnome-ditem-edit.c:423
 msgid "Browse icons"
 msgstr "아이콘 찾아보기"
 
-#: libgnome-desktop/gnome-ditem-edit.c:444
-msgid "Run in Terminal"
-msgstr "터미널에서 실행"
+#: libgnome-desktop/gnome-ditem-edit.c:437
+msgid "Run in t_erminal"
+msgstr "터미널에서 실행(_E)"
 
-#: libgnome-desktop/gnome-ditem-edit.c:658
-#: libgnome-desktop/gnome-ditem-edit.c:757
+#: libgnome-desktop/gnome-ditem-edit.c:653
+#: libgnome-desktop/gnome-ditem-edit.c:751
 msgid "Language"
 msgstr "언어"
 
-#: libgnome-desktop/gnome-ditem-edit.c:663
-#: libgnome-desktop/gnome-ditem-edit.c:765
+#: libgnome-desktop/gnome-ditem-edit.c:658
+#: libgnome-desktop/gnome-ditem-edit.c:758
 msgid "Name"
 msgstr "이름"
 
-#: libgnome-desktop/gnome-ditem-edit.c:668
-#: libgnome-desktop/gnome-ditem-edit.c:773
+#: libgnome-desktop/gnome-ditem-edit.c:663
+#: libgnome-desktop/gnome-ditem-edit.c:765
 msgid "Generic name"
 msgstr "일반 이름"
 
-#: libgnome-desktop/gnome-ditem-edit.c:673
-#: libgnome-desktop/gnome-ditem-edit.c:783
+#: libgnome-desktop/gnome-ditem-edit.c:668
+#: libgnome-desktop/gnome-ditem-edit.c:774
 msgid "Comment"
 msgstr "설명"
 
-#: libgnome-desktop/gnome-ditem-edit.c:709
-msgid "Try this before using:"
-msgstr "사용하기 전에 이것을 해보기:"
+#: libgnome-desktop/gnome-ditem-edit.c:703
+msgid "_Try this before using:"
+msgstr "사용하기 전에 이것을 해보기(_T):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:721
-msgid "Documentation:"
-msgstr "문서"
+#: libgnome-desktop/gnome-ditem-edit.c:714
+msgid "_Documentation:"
+msgstr "문서(_D):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:733
-msgid "Name/Comment translations:"
-msgstr "이름/설명 번역:"
+#: libgnome-desktop/gnome-ditem-edit.c:725
+msgid "_Name/Comment translations:"
+msgstr "이름/설명 번역(_N):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:786
-msgid "Add/Set"
-msgstr "더하기/정하기"
+#: libgnome-desktop/gnome-ditem-edit.c:776
+msgid "_Add/Set"
+msgstr "더하기/정하기(_A)"
 
-#: libgnome-desktop/gnome-ditem-edit.c:792
+#: libgnome-desktop/gnome-ditem-edit.c:782
 msgid "Add or Set Name/Comment Translations"
 msgstr "이름/설명 번역을 더하거나 정합니다"
 
-#: libgnome-desktop/gnome-ditem-edit.c:794
-msgid "Remove"
-msgstr "지우기"
+#: libgnome-desktop/gnome-ditem-edit.c:784
+msgid "Re_move"
+msgstr "지우기(_M)"
 
-#: libgnome-desktop/gnome-ditem-edit.c:799
+#: libgnome-desktop/gnome-ditem-edit.c:789
 msgid "Remove Name/Comment Translation"
 msgstr "이름/설명 번역을 지웁니다"
 
-#: libgnome-desktop/gnome-ditem-edit.c:815
+#: libgnome-desktop/gnome-ditem-edit.c:805
 msgid "Basic"
 msgstr "기본"
 
-#: libgnome-desktop/gnome-ditem-edit.c:823
+#: libgnome-desktop/gnome-ditem-edit.c:813
 msgid "Advanced"
 msgstr "고급"
 
-#: libgnome-desktop/gnome-hint.c:175
+#: libgnome-desktop/gnome-hint.c:176
 msgid "_Show Hints at Startup"
 msgstr "시작할 때 힌트 보이기(_S)"
+
+#~ msgid "Download"
+#~ msgstr "다운로드"
+
+#~ msgid "Users"
+#~ msgstr "사용자"
+
+#~ msgid "Foundation"
+#~ msgstr "재단"
