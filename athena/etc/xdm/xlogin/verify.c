@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.74 1996-09-20 04:18:56 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.75 1996-11-26 21:51:58 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -1369,7 +1369,7 @@ char *display;
     strncpy(utx_entry.ut_host, display, sizeof utx_entry.ut_host);
     utx_entry.ut_host[(sizeof utx_entry.ut_host) - 1] = '\0';
 
-    gettimeofday(&utx_entry.ut_tv);
+    gettimeofday(&utx_entry.ut_tv, NULL);
     utx_entry.ut_pid = getppid();
     utx_entry.ut_type = USER_PROCESS;
     strncpy(utx_entry.ut_id, "XLOG", sizeof utx_entry.ut_id);

@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.81 1996-09-20 02:04:09 ghudson Exp $
+ * $Id: login.c,v 1.82 1996-11-26 21:52:58 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.81 1996-09-20 02:04:09 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.82 1996-11-26 21:52:58 ghudson Exp $";
 #endif
 
 /*
@@ -1054,7 +1054,7 @@ leavethis:
     }
 #else /* is SYSV */
 /* Fill in the utmp/utmpx information */
-    gettimeofday(&utmpx.ut_tv);
+    gettimeofday(&utmpx.ut_tv, NULL);
     if (strchr(ttyn, 'c') == NULL ) {
          strcpy(ptty, ttyn + 5);
          strcpy(utmpx_tty, ttyn);

@@ -2,7 +2,7 @@
  * xdm - display manager daemon
  *
  * $XConsortium: verify.c,v 1.24 91/07/18 22:22:45 rws Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.3 1996-06-27 19:58:55 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.4 1996-11-26 21:52:39 ghudson Exp $
  *
  * Copyright 1988 Massachusetts Institute of Technology
  *
@@ -283,7 +283,7 @@ struct verify_info	*verify;
 	     &consoletty[5]);
 #endif
 #else /* SOLARIS */
-    gettimeofday(&utmpx.ut_tv);
+    gettimeofday(&utmpx.ut_tv, NULL);
     utmpx.ut_type = 8   ;
     strncpy(utmpx.ut_line, &consoletty[5], sizeof(utmpx.ut_line));    
     setutxent();

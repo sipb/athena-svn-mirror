@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.51 1996-11-23 17:50:58 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.52 1996-11-26 21:52:22 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -627,11 +627,7 @@ start_reactivate(data, timerid)
 
 
 #ifndef sgi /* Not our problem on the SGI. */
-#ifdef SYSV
-    gettimeofday(&now);
-#else
     gettimeofday(&now, NULL);
-#endif
     if (now.tv_sec - starttime.tv_sec > resources.restart_timeout) {
 	fprintf(stderr, "Restarting X Server\n");
 	exit(0);

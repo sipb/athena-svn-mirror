@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.46 1996-09-20 04:15:59 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.47 1996-11-26 21:51:16 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.46 1996-09-20 04:15:59 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.47 1996-11-26 21:51:16 ghudson Exp $";
 #endif
 
 #ifndef NULL
@@ -83,7 +83,6 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #ifdef SOLARIS
 #define L_INCR          1
 #define RAW     040
-#define INPUT_FD_CARD   6
 #define BROKEN_CONSOLE_DRIVER
 #endif
 
@@ -989,7 +988,7 @@ char **argv;
     static struct timeval last_try = { 0, 0 };
     struct timeval now;
     int file, pgrp, i;
-    char *number(), c;
+    char *number(), c, buf[64], **argvp;
 #ifdef POSIX
     struct termios tc;
 #else
@@ -1194,7 +1193,12 @@ char **argv;
 	sigsetmask(0);
 #endif
 #ifdef SOLARIS
-        sprintf(argv[INPUT_FD_CARD], "%d", fd);
+	/* Icky hack: last two args are "-inputfd" and "0"; change the last
+	 * one to be the console fd. */
+	sprintf(buf, "%d", fd);
+	for (argvp = argv; *argvp; argvp++)
+	    ;
+	*(argvp - 1) = buf;
 #endif
 	execv(argv[0], argv);
 	message("dm: Failed to exec console\n");
@@ -1329,7 +1333,7 @@ char *tty;
 	}
     }
 #else /* SOLARIS */
-    gettimeofday(&utmpx.ut_tv);
+    gettimeofday(&utmpx.ut_tv, NULL);
     utmpx.ut_type = 8   ;
     strcpy(utmpx.ut_line,tty);
     setutxent();

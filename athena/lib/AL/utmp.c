@@ -178,7 +178,7 @@ ALputUtmp(ALsession sess)
    */
 
 #ifdef UTMPX_FILE
-  gettimeofday(&ALut_tv(sess));
+  gettimeofday(&ALut_tv(sess), NULL);
 #else
   time(&ALut_time(sess));
 #endif

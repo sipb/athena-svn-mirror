@@ -221,7 +221,7 @@ loguwtmp(linepid, name, host)
 #ifndef SOLARIS
   (void)time(&ut.ut_time);
 #else
-  (void) gettimeofday(&ut.ut_tv);
+  (void) gettimeofday(&ut.ut_tv, NULL);
 #endif
 #if defined(_AIX) || defined(SOLARIS)
   /* Note that name is only \0 in the case where the program
