@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.9 1990-11-21 10:53:23 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.10 1990-11-21 12:24:18 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.9 1990-11-21 10:53:23 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.10 1990-11-21 12:24:18 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -69,6 +69,9 @@ char *consolef ="/dev/console";
 char *consolelog = "/usr/tmp/console.log";
 char *mousedev = "/dev/mouse";
 char *displaydev = "/dev/cons";
+#ifdef ultrix
+char *ultrixcons = "/dev/xcons";
+#endif
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -93,6 +96,9 @@ char **argv;
     char line[16], buf[256];
     fd_set readfds;
     int pgrp, file, tries, console = TRUE, mask;
+#ifdef ultrix
+    int ultrix_console, login_tty;
+#endif
 
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
@@ -278,6 +284,13 @@ char **argv;
     if (login_running != RUNNING)
       console_login("\nUnable to start xlogin, doing console login instead.\n");
 
+#ifdef ultrix
+    ultrix_console = open(ultrixcons, O_RDONLY, 0);
+    strcpy(line, "/dev/");
+    strcat(line, logintty);
+    console_tty = open(line, O_WRONLY, 0);
+#endif
+
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
     sigblock(sigmask(SIGCHLD));
     while (1) {
@@ -291,6 +304,7 @@ char **argv;
 	     * bar messages.
 	     */
 	    FD_ZERO(&readfds);
+#ifndef ultrix
 	    FD_SET(console_tty, &readfds);
 	    mask = sigsetmask(0);
 	    select(console_tty + 1, &readfds, NULL, NULL, NULL);
@@ -299,6 +313,30 @@ char **argv;
 		file = read(console_tty, buf, sizeof(buf));
 		write(1, buf, file);
 	    }
+#else /* ultrix */
+	    FD_SET(ultrix_console, &readfds);
+	    FD_SET(console_tty, &readfds);
+	    mask = sigsetmask(0);
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+	    select(max(ultrix_console,console_tty) + 1, &readfds, NULL, NULL, NULL);
+	    sigblock(mask);
+	    if (FD_ISSET(ultrix_console, &readfds)) {
+#ifdef DEBUG
+		message("Got something from Ultrix console\n");
+#endif
+		file = read(ultrix_console, buf, sizeof(buf));
+		write(login_tty, buf, file);
+	    }
+	    if (FD_ISSET(console_tty, &readfds)) {
+#ifdef DEBUG
+		message("Got something from console tty\n");
+#endif
+		file = read(console_tty, buf, sizeof(buf));
+		write(1, buf, file);
+	    }
+#endif /* ultrix */
 	} else {
 	    alarm(60);
 	    sigpause(0);
@@ -365,7 +403,7 @@ char *msg;
 #ifndef BROKEN_CONSOLE_DRIVER
     setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
     ioctl(0, TIOCSPGRP, &pgrp);
-#ifdef TIOCCONSx
+#ifdef TIOCCONS
     ioctl (0, TIOCCONS, 0);		/* Grab the console   */
     ioctl (1, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
