@@ -11,6 +11,13 @@ int lineno;
 char *yyinfilename;
 static char *srcpath;
 static char *dstpath;
+char **svecappend();
+char **s2svec();
+char *concat();
+char *c2s();
+char *append();
+char *scopy();
+void sfree();
 %}
 %union{
   char *s;

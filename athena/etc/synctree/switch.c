@@ -51,7 +51,7 @@
 		if (!exists) {
 		    if (nflag) {
 			printf("Copying %s (mode is %5.5o).\n",
-			       srcname,targname,srcmode);
+			       srcname,srcmode);
 			break;
 		    }
 		    if (copyfile(srcname,targname,srcmode))
