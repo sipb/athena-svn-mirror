@@ -76,7 +76,8 @@ typedef enum
    */
   GTK_RECEIVES_DEFAULT = 1 << 20,
 
-  GTK_DOUBLE_BUFFERED  = 1 << 21
+  GTK_DOUBLE_BUFFERED  = 1 << 21,
+  GTK_NO_SHOW_ALL      = 1 << 22
 } GtkWidgetFlags;
 
 /* Kinds of widget-specific help */
@@ -197,6 +198,8 @@ struct _GtkWidget
    */
   gchar *name;
   
+  /*< public >*/
+
   /* The style for the widget. The style contains the
    *  colors the widget should be drawn in for each state
    *  along with graphics contexts used to draw with and
@@ -396,12 +399,14 @@ struct _GtkWidgetClass
   
   /* accessibility support 
    */
-  AtkObject*   (* get_accessible)  (GtkWidget          *widget);
+  AtkObject*   (*get_accessible)     (GtkWidget *widget);
 
-  void (* screen_changed) (GtkWidget *widget,
-			   GdkScreen *previous_screen);
+  void         (*screen_changed)     (GtkWidget *widget,
+                                      GdkScreen *previous_screen);
+  gboolean     (*can_activate_accel) (GtkWidget *widget,
+                                      guint      signal_id);
+
   /* Padding for future expansion */
-  void (*_gtk_reserved1) (void);
   void (*_gtk_reserved2) (void);
   void (*_gtk_reserved3) (void);
   void (*_gtk_reserved4) (void);
@@ -447,6 +452,9 @@ void       gtk_widget_show_now            (GtkWidget           *widget);
 void	   gtk_widget_hide		  (GtkWidget	       *widget);
 void	   gtk_widget_show_all		  (GtkWidget	       *widget);
 void	   gtk_widget_hide_all		  (GtkWidget	       *widget);
+void       gtk_widget_set_no_show_all     (GtkWidget           *widget,
+					   gboolean             no_show_all);
+gboolean   gtk_widget_get_no_show_all     (GtkWidget           *widget);
 void	   gtk_widget_map		  (GtkWidget	       *widget);
 void	   gtk_widget_unmap		  (GtkWidget	       *widget);
 void	   gtk_widget_realize		  (GtkWidget	       *widget);
@@ -470,6 +478,7 @@ void	   gtk_widget_queue_clear_area	  (GtkWidget	       *widget,
 
 
 void	   gtk_widget_queue_resize	  (GtkWidget	       *widget);
+void	   gtk_widget_queue_resize_no_redraw (GtkWidget *widget);
 #ifndef GTK_DISABLE_DEPRECATED
 void	   gtk_widget_draw		  (GtkWidget	       *widget,
 					   GdkRectangle	       *area);
@@ -496,6 +505,8 @@ void       gtk_widget_set_accel_path      (GtkWidget           *widget,
 const gchar* _gtk_widget_get_accel_path   (GtkWidget           *widget,
 					   gboolean	       *locked);
 GList*     gtk_widget_list_accel_closures (GtkWidget	       *widget);
+gboolean   gtk_widget_can_activate_accel  (GtkWidget           *widget,
+                                           guint                signal_id);
 gboolean   gtk_widget_mnemonic_activate   (GtkWidget           *widget,
 					   gboolean             group_cycling);
 gboolean   gtk_widget_event		  (GtkWidget	       *widget,
@@ -639,16 +650,16 @@ void        gtk_widget_modify_style       (GtkWidget            *widget,
 GtkRcStyle *gtk_widget_get_modifier_style (GtkWidget            *widget);
 void        gtk_widget_modify_fg          (GtkWidget            *widget,
 					   GtkStateType          state,
-					   GdkColor             *color);
+					   const GdkColor       *color);
 void        gtk_widget_modify_bg          (GtkWidget            *widget,
 					   GtkStateType          state,
-					   GdkColor             *color);
+					   const GdkColor       *color);
 void        gtk_widget_modify_text        (GtkWidget            *widget,
 					   GtkStateType          state,
-					   GdkColor             *color);
+					   const GdkColor       *color);
 void        gtk_widget_modify_base        (GtkWidget            *widget,
 					   GtkStateType          state,
-					   GdkColor             *color);
+					   const GdkColor       *color);
 void        gtk_widget_modify_font        (GtkWidget            *widget,
 					   PangoFontDescription *font_desc);
 
@@ -749,6 +760,12 @@ void	     gtk_widget_class_path	   (GtkWidget *widget,
 					    gchar    **path,
 					    gchar    **path_reversed);
 
+GList* gtk_widget_list_mnemonic_labels  (GtkWidget *widget);
+void   gtk_widget_add_mnemonic_label    (GtkWidget *widget,
+					 GtkWidget *label);
+void   gtk_widget_remove_mnemonic_label (GtkWidget *widget,
+					 GtkWidget *label);
+
 GType           gtk_requisition_get_type (void);
 GtkRequisition *gtk_requisition_copy     (const GtkRequisition *requisition);
 void            gtk_requisition_free     (GtkRequisition       *requisition);
@@ -758,6 +775,9 @@ void            gtk_requisition_free     (GtkRequisition       *requisition);
 #  define gtk_widget_unref gtk_object_unref
 #endif	/* GTK_TRACE_OBJECTS && __GNUC__ */
 
+void              _gtk_widget_grab_notify                 (GtkWidget    *widget,
+						           gboolean	was_grabbed);
+
 GtkWidgetAuxInfo *_gtk_widget_get_aux_info                (GtkWidget    *widget,
 							   gboolean      create);
 void              _gtk_widget_propagate_hierarchy_changed (GtkWidget    *widget,
@@ -766,7 +786,6 @@ void              _gtk_widget_propagate_screen_changed    (GtkWidget    *widget,
 							   GdkScreen    *previous_screen);
 
 GdkColormap* _gtk_widget_peek_colormap (void);
-
 
 #ifdef __cplusplus
 }

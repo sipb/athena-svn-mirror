@@ -26,6 +26,7 @@
  *
  *  - Using GtkDialog
  */
+#include <config.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include "demo-common.h"
@@ -577,7 +578,7 @@ destroy_cb (GtkObject          *object,
  * it. Otherwise, destroys it.
  */
 GtkWidget *
-do_changedisplay (void)
+do_changedisplay (GtkWidget *do_widget)
 {
   static ChangeDisplayInfo *info = NULL;
 
@@ -589,7 +590,7 @@ do_changedisplay (void)
       info = g_new0 (ChangeDisplayInfo, 1);
 
       info->window = gtk_dialog_new_with_buttons ("Change Screen or display",
-					    NULL, /* parent */
+					    GTK_WINDOW (do_widget), 
 					    GTK_DIALOG_NO_SEPARATOR,
 					    GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE,
 					    "Change",         GTK_RESPONSE_OK,

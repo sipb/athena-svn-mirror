@@ -62,6 +62,8 @@ void          gtk_stock_item_free (GtkStockItem       *item);
 
 
 /* Stock IDs (not all are stock items; some are images only) */
+#define GTK_STOCK_DIALOG_AUTHENTICATION \
+                                   "gtk-dialog-authentication"
 #define GTK_STOCK_DIALOG_INFO      "gtk-dialog-info"
 #define GTK_STOCK_DIALOG_WARNING   "gtk-dialog-warning"
 #define GTK_STOCK_DIALOG_ERROR     "gtk-dialog-error"
@@ -94,9 +96,12 @@ void          gtk_stock_item_free (GtkStockItem       *item);
 #define GTK_STOCK_GO_DOWN          "gtk-go-down"
 #define GTK_STOCK_GO_FORWARD       "gtk-go-forward"
 #define GTK_STOCK_GO_UP            "gtk-go-up"
+#define GTK_STOCK_HARDDISK         "gtk-harddisk"
 #define GTK_STOCK_HELP             "gtk-help"
 #define GTK_STOCK_HOME             "gtk-home"
 #define GTK_STOCK_INDEX            "gtk-index"
+#define GTK_STOCK_INDENT           "gtk-indent"		/* since gtk-2.4 */
+#define GTK_STOCK_UNINDENT         "gtk-unindent"	/* since gtk-2.4 */
 #define GTK_STOCK_ITALIC           "gtk-italic"
 #define GTK_STOCK_JUMP_TO          "gtk-jump-to"
 #define GTK_STOCK_JUSTIFY_CENTER   "gtk-justify-center"
@@ -104,6 +109,7 @@ void          gtk_stock_item_free (GtkStockItem       *item);
 #define GTK_STOCK_JUSTIFY_LEFT     "gtk-justify-left"
 #define GTK_STOCK_JUSTIFY_RIGHT    "gtk-justify-right"
 #define GTK_STOCK_MISSING_IMAGE    "gtk-missing-image"
+#define GTK_STOCK_NETWORK          "gtk-network"
 #define GTK_STOCK_NEW              "gtk-new"
 #define GTK_STOCK_NO               "gtk-no"
 #define GTK_STOCK_OK               "gtk-ok"

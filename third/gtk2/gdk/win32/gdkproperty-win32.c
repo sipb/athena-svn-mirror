@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <glib/gprintf.h>
@@ -197,12 +198,10 @@ find_common_locale (const guchar  *data,
    * bytes for each Unicode char should be enough, Windows code pages
    * are either single- or double-byte.
    */
-  *bufp = g_malloc ((nchars+1) * 2);
-  wcs = g_new (wchar_t, nchars+1);
+  *bufp = g_malloc ((nchars+1)*2);
 
   /* Convert to Windows wide chars into temp buf */
-  _gdk_utf8_to_ucs2 (wcs, data, nelements, nchars);
-  wcs[nchars] = 0;
+  wcs = g_utf8_to_utf16 (data, nelements, NULL, NULL, NULL);
 
   /* For each code page that is the default for an installed locale: */
   for (i = 0; i < G_N_ELEMENTS (locales); i++)
@@ -253,7 +252,8 @@ gdk_property_change (GdkWindow    *window,
   gchar *prop_name, *type_name;
   guchar *ucptr, *buf = NULL;
   wchar_t *wcptr;
-  enum { PLAIN_ASCII, UNICODE_TEXT, SINGLE_LOCALE, RICH_TEXT } method;
+  glong wclen;
+  enum { SYSTEM_CODEPAGE, UNICODE_TEXT, SINGLE_LOCALE, RICH_TEXT } method;
   gboolean ok = TRUE;
 
   g_return_if_fail (window != NULL);
@@ -265,8 +265,8 @@ gdk_property_change (GdkWindow    *window,
   GDK_NOTE (DND,
 	    (prop_name = gdk_atom_name (property),
 	     type_name = gdk_atom_name (type),
-	     g_print ("gdk_property_change: %#x %#x (%s) %#x (%s) %s %d*%d bytes %.10s\n",
-		      (guint) GDK_WINDOW_HWND (window),
+	     g_print ("gdk_property_change: %p %#x (%s) %#x (%s) %s %d*%d bytes %.10s\n",
+		      GDK_WINDOW_HWND (window),
 		      (guint) property, prop_name,
 		      (guint) type, type_name,
 		      (mode == GDK_PROP_MODE_REPLACE ? "REPLACE" :
@@ -278,7 +278,8 @@ gdk_property_change (GdkWindow    *window,
 	     g_free (type_name)));
 
   if (property == _gdk_selection_property
-      && type == GDK_TARGET_STRING
+      && ((type == GDK_TARGET_STRING && GetACP () == 1252) ||
+	  type == _utf8_string)
       && format == 8
       && mode == GDK_PROP_MODE_REPLACE)
     {
@@ -288,22 +289,31 @@ gdk_property_change (GdkWindow    *window,
 	  return;
 	}
 
-      /* Check if only ASCII */
-      for (i = 0; i < nelements; i++)
-	if (data[i] >= 0200)
-	  break;
+      if (type == _utf8_string)
+	{
+	  /* Check if only ASCII */
+	  for (i = 0; i < nelements; i++)
+	    if (data[i] >= 0200)
+	      break;
+	}
+      else /* if (type == GDK_TARGET_STRING) */
+	{
+	  /* Check that no 0200..0240 chars present, as they
+	   * differ between ISO-8859-1 and CP1252.
+	   */
+	  for (i = 0; i < nelements; i++)
+	    if (data[i] >= 0200 && data[i] < 0240)
+	      break;
+	}
+      nchars = g_utf8_strlen (data, nelements);
 
-      if (i == nelements)
-	nchars = nelements;
-      else
-	nchars = g_utf8_strlen (data, nelements);
-
-      GDK_NOTE (DND, g_print ("...nchars:%d\n", nchars));
-      
       if (i == nelements)
 	{
-	  /* If only ASCII, use CF_TEXT and the data as such. */
-	  method = PLAIN_ASCII;
+	  /* If UTF-8 and only ASCII, or if STRING (ISO-8859-1) and
+	   * system codepage is CP1252, use CF_TEXT and the data as
+	   * such.
+	   */
+	  method = SYSTEM_CODEPAGE;
 	  size = nelements;
 	  for (i = 0; i < nelements; i++)
 	    if (data[i] == '\n')
@@ -313,9 +323,15 @@ gdk_property_change (GdkWindow    *window,
 	}
       else if (IS_WIN_NT ())
 	{
-	  /* On NT, use CF_UNICODETEXT if any non-ASCII char present */
+	  /* On NT, use CF_UNICODETEXT if any non-system codepage char
+	   * present.
+	   */
 	  method = UNICODE_TEXT;
-	  size = (nchars + 1) * 2;
+
+	  wcptr = g_utf8_to_utf16 (data, nelements, NULL, &wclen, NULL);
+
+	  wclen++;		/* Terminating 0 */
+	  size = wclen * 2;
 	  GDK_NOTE (DND, g_print ("...as Unicode\n"));
 	}
       else if (find_common_locale (data, nelements, nchars, &lcid, &buf, &size))
@@ -346,7 +362,7 @@ gdk_property_change (GdkWindow    *window,
 		  rtf = g_string_append_c (rtf, *p);
 		  p++;
 		}
-	      else if (*p < 0200)
+	      else if (*p < 0200 && *p >= ' ')
 		{
 		  rtf = g_string_append_c (rtf, *p);
 		  p++;
@@ -387,7 +403,7 @@ gdk_property_change (GdkWindow    *window,
 
       switch (method)
 	{
-	case PLAIN_ASCII:
+	case SYSTEM_CODEPAGE:
 	  cf = CF_TEXT;
 	  for (i = 0; i < nelements; i++)
 	    {
@@ -400,10 +416,8 @@ gdk_property_change (GdkWindow    *window,
 
 	case UNICODE_TEXT:
 	  cf = CF_UNICODETEXT;
-	  wcptr = (wchar_t *) ucptr;
-	  if (_gdk_utf8_to_ucs2 (wcptr, data, nelements, nchars) == -1)
-	    g_warning ("_gdk_utf8_to_ucs2() failed");
-	  wcptr[nchars] = 0;
+	  memmove (ucptr, wcptr, size);
+	  g_free (wcptr);
 	  break;
 
 	case SINGLE_LOCALE:
@@ -470,17 +484,58 @@ gdk_property_delete (GdkWindow *window,
 
   GDK_NOTE (DND,
 	    (prop_name = gdk_atom_name (property),
-	     g_print ("gdk_property_delete: %#x %#x (%s)\n",
-		      (window ? (guint) GDK_WINDOW_HWND (window) : 0),
+	     g_print ("gdk_property_delete: %p %#x (%s)\n",
+		      GDK_WINDOW_HWND (window),
 		      (guint) property, prop_name),
 	     g_free (prop_name)));
 
   if (property == _gdk_selection_property)
     _gdk_selection_property_delete (window);
+  else if (property == _wm_transient_for)
+    gdk_window_set_transient_for (window, _gdk_parent_root);
   else
-    g_warning ("gdk_property_delete: General case not implemented");
+    {
+      prop_name = gdk_atom_name (property);
+      g_warning ("gdk_property_delete: General case (%s) not implemented",
+		 prop_name);
+      g_free (prop_name);
+    }
 }
 
+/*
+  for reference copied from gdk/x11/gdkevents-x11.c
+
+  { "Net/DoubleClickTime", "gtk-double-click-time" },
+  { "Net/DoubleClickDistance", "gtk-double-click-distance" },
+  { "Net/DndDragThreshold", "gtk-dnd-drag-threshold" },
+  { "Gtk/CanChangeAccels", "gtk-can-change-accels" },
+  { "Gtk/ColorPalette", "gtk-color-palette" },
+  { "Gtk/FontName", "gtk-font-name" },
+  { "Gtk/IconSizes", "gtk-icon-sizes" },
+  { "Gtk/KeyThemeName", "gtk-key-theme-name" },
+  { "Gtk/ToolbarStyle", "gtk-toolbar-style" },
+  { "Gtk/ToolbarIconSize", "gtk-toolbar-icon-size" },
+  { "Gtk/IMPreeditStyle", "gtk-im-preedit-style" },
+  { "Gtk/IMStatusStyle", "gtk-im-status-style" },
+  { "Net/CursorBlink", "gtk-cursor-blink" },
+  { "Net/CursorBlinkTime", "gtk-cursor-blink-time" },
+  { "Net/ThemeName", "gtk-theme-name" },
+  { "Net/IconThemeName", "gtk-icon-theme-name" },
+  { "Gtk/ButtonImages", "gtk-button-images" },
+  { "Gtk/MenuImages", "gtk-menu-images" },
+  { "Xft/Antialias", "gtk-xft-antialias" },
+  { "Xft/Hinting", "gtk-xft-hinting" },
+  { "Xft/HintStyle", "gtk-xft-hintstyle" },
+  { "Xft/RGBA", "gtk-xft-rgba" },
+  { "Xft/DPI", "gtk-xft-dpi" },
+
+  // more spread in gtk sources
+  gtk-entry-select-on-focus
+  gtk-cursor-blink
+  gtk-cursor-blink-time
+  gtk-split-cursor
+
+*/
 gboolean
 gdk_screen_get_setting (GdkScreen   *screen,
                         const gchar *name,
@@ -492,16 +547,67 @@ gdk_screen_get_setting (GdkScreen   *screen,
    * XXX : if these values get changed through the Windoze UI the
    *       respective gdk_events are not generated yet.
    */
-  if (strcmp ("double-click-timeout", name) == 0)
+  if (strcmp ("gtk-double-click-time", name) == 0)
     {
-      g_value_set_int (value, GetDoubleClickTime ());
+      gint i = GetDoubleClickTime ();
+      GDK_NOTE(MISC, g_print("gdk_screen_get_setting(\"%s\") : %d\n", name, i));
+      g_value_set_int (value, i);
       return TRUE;
     }
-  else if (strcmp ("drag-threshold", name) == 0)
+  else if (strcmp ("gtk-double-click-distance", name) == 0)
     {
-      g_value_set_int (value, MAX(GetSystemMetrics (SM_CXDRAG), GetSystemMetrics (SM_CYDRAG)));
+      gint i = MAX(GetSystemMetrics (SM_CXDOUBLECLK), GetSystemMetrics (SM_CYDOUBLECLK));
+      GDK_NOTE(MISC, g_print("gdk_screen_get_setting(\"%s\") : %d\n", name, i));
+      g_value_set_int (value, i);
       return TRUE;
     }
-  else
-    return FALSE;
+  else if (strcmp ("gtk-dnd-drag-threshold", name) == 0)
+    {
+      gint i = MAX(GetSystemMetrics (SM_CXDRAG), GetSystemMetrics (SM_CYDRAG));
+      GDK_NOTE(MISC, g_print("gdk_screen_get_setting(\"%s\") : %d\n", name, i));
+      g_value_set_int (value, i);
+      return TRUE;
+    }
+  else if (strcmp ("gtk-split-cursor", name) == 0)
+    {
+      GDK_NOTE(MISC, g_print("gdk_screen_get_setting(\"%s\") : FALSE\n", name));
+      g_value_set_boolean (value, FALSE);
+      return TRUE;
+    }
+#if 0
+  /*
+   * With 'MS Sans Serif' as windows menu font (default on win98se) you'll get a 
+   * bunch of :
+   *   WARNING **: Couldn't load font "MS Sans Serif 8" falling back to "Sans 8"
+   * at least with testfilechooser (regardless of the bitmap check below)
+   * so just disabling this code seems to be the best we can do --hb
+   */
+  else if (strcmp ("gtk-font-name", name) == 0)
+    {
+      NONCLIENTMETRICS ncm;
+      ncm.cbSize = sizeof(NONCLIENTMETRICS);
+      if (SystemParametersInfo (SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
+        {
+          /* Pango finally uses GetDeviceCaps to scale, we use simple approximation here */
+          int nHeight = (0 > ncm.lfMenuFont.lfHeight ? -3*ncm.lfMenuFont.lfHeight/4 : 10);
+          if (OUT_STRING_PRECIS == ncm.lfMenuFont.lfOutPrecision)
+            GDK_NOTE(MISC, g_print("gdk_screen_get_setting(%s) : ignoring bitmap font '%s'\n", 
+                                   name, ncm.lfMenuFont.lfFaceName));
+          else if (ncm.lfMenuFont.lfFaceName && strlen(ncm.lfMenuFont.lfFaceName) > 0 &&
+                   /* avoid issues like those described in bug #135098 */
+                   g_utf8_validate (ncm.lfMenuFont.lfFaceName, -1, NULL))
+            {
+              char* s = g_strdup_printf ("%s %d", ncm.lfMenuFont.lfFaceName, nHeight);
+              GDK_NOTE(MISC, g_print("gdk_screen_get_setting(%s) : %s\n", name, s));
+              g_value_set_string (value, s);
+
+              g_free(s);
+              return TRUE;
+            }
+        }
+    }
+#endif
+
+  GDK_NOTE(MISC, g_print("gdk_screen_get_setting(%s) not handled\n", name));
+  return FALSE;
 }

@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -368,7 +369,7 @@ gamma_ok_callback (GtkWidget *w, gpointer data)
   start = gtk_entry_get_text (GTK_ENTRY (c->gamma_text));
   if (start)
     {
-      v = strtod (start, &end);
+      v = g_strtod (start, &end);
       if (end > start && v > 0.0)
 	c->gamma = v;
     }

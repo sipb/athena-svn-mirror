@@ -35,8 +35,8 @@
 #define g_marshal_value_peek_ulong(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_int64(v)    (v)->data[0].v_int64
 #define g_marshal_value_peek_uint64(v)   (v)->data[0].v_uint64
-#define g_marshal_value_peek_enum(v)     (v)->data[0].v_int
-#define g_marshal_value_peek_flags(v)    (v)->data[0].v_uint
+#define g_marshal_value_peek_enum(v)     (v)->data[0].v_long
+#define g_marshal_value_peek_flags(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_float(v)    (v)->data[0].v_float
 #define g_marshal_value_peek_double(v)   (v)->data[0].v_double
 #define g_marshal_value_peek_string(v)   (v)->data[0].v_pointer
@@ -47,9 +47,9 @@
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* VOID:VOID (gdk-pixbuf-marshal.list:25) */
+/* VOID:VOID (./gdk-pixbuf-marshal.list:25) */
 
-/* VOID:INT,INT,INT,INT (gdk-pixbuf-marshal.list:26) */
+/* VOID:INT,INT,INT,INT (./gdk-pixbuf-marshal.list:26) */
 void
 gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
                                           GValue       *return_value,
@@ -90,9 +90,9 @@ gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
             data2);
 }
 
-/* VOID:POINTER (gdk-pixbuf-marshal.list:27) */
+/* VOID:POINTER (./gdk-pixbuf-marshal.list:27) */
 
-/* VOID:INT,INT (gdk-pixbuf-marshal.list:28) */
+/* VOID:INT,INT (./gdk-pixbuf-marshal.list:28) */
 void
 gdk_pixbuf_marshal_VOID__INT_INT (GClosure     *closure,
                                   GValue       *return_value,

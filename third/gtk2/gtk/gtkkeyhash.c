@@ -18,6 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <config.h>
 #include "gtkdebug.h"
 #include "gtkkeyhash.h"
 
@@ -307,6 +308,8 @@ sort_lookup_results (GSList *slist)
  * @key_hash: a #GtkKeyHash
  * @hardware_keycode: hardware keycode field from a #GdkEventKey
  * @state: state field from a #GdkEventKey
+ * @mask: mask of modifiers to consider when matching against the
+ *        modifiers in entries.
  * @group: group field from a #GdkEventKey
  * 
  * Looks up the best matching entry or entries in the hash table for
@@ -322,6 +325,7 @@ GSList *
 _gtk_key_hash_lookup (GtkKeyHash      *key_hash,
 		      guint16          hardware_keycode,
 		      GdkModifierType  state,
+		      GdkModifierType  mask,
 		      gint             group)
 {
   GHashTable *keycode_hash = key_hash_get_keycode_hash (key_hash);
@@ -333,6 +337,10 @@ _gtk_key_hash_lookup (GtkKeyHash      *key_hash,
   gint level;
   GdkModifierType consumed_modifiers;
 
+  /* We don't want Caps_Lock to affect keybinding lookups.
+   */
+  state &= ~GDK_LOCK_MASK;
+  
   gdk_keymap_translate_keyboard_state (key_hash->keymap,
 				       hardware_keycode, state, group,
 				       &keyval, &effective_group, &level, &consumed_modifiers);
@@ -349,7 +357,7 @@ _gtk_key_hash_lookup (GtkKeyHash      *key_hash,
 	{
 	  GtkKeyHashEntry *entry = tmp_list->data;
 
-	  if ((entry->modifiers & ~consumed_modifiers) == (state & ~consumed_modifiers))
+	  if ((entry->modifiers & ~consumed_modifiers & mask) == (state & ~consumed_modifiers & mask))
 	    {
 	      gint i;
 

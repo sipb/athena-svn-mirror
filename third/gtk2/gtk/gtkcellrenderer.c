@@ -17,8 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gtkcellrenderer.h"
 #include "gtkintl.h"
+#include "gtkmarshalers.h"
 #include "gtktreeprivate.h"
 
 static void gtk_cell_renderer_init       (GtkCellRenderer      *cell);
@@ -33,6 +35,15 @@ static void gtk_cell_renderer_set_property  (GObject              *object,
 					     GParamSpec           *pspec);
 static void set_cell_bg_color               (GtkCellRenderer      *cell,
 					     GdkColor             *color);
+
+
+#define GTK_CELL_RENDERER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_CELL_RENDERER, GtkCellRendererPrivate))
+
+typedef struct _GtkCellRendererPrivate GtkCellRendererPrivate;
+struct _GtkCellRendererPrivate
+{
+  GdkColor cell_background;
+};
 
 
 enum {
@@ -51,6 +62,15 @@ enum {
   PROP_CELL_BACKGROUND_GDK,
   PROP_CELL_BACKGROUND_SET
 };
+
+/* Signal IDs */
+enum {
+  EDITING_CANCELED,
+  LAST_SIGNAL
+};
+
+static guint cell_renderer_signals[LAST_SIGNAL] = { 0 };
+
 
 GType
 gtk_cell_renderer_get_type (void)
@@ -83,8 +103,6 @@ gtk_cell_renderer_get_type (void)
 static void
 gtk_cell_renderer_init (GtkCellRenderer *cell)
 {
-  GtkCellRendererInfo *cellinfo;
-
   cell->mode = GTK_CELL_RENDERER_MODE_INERT;
   cell->visible = TRUE;
   cell->width = -1;
@@ -93,10 +111,6 @@ gtk_cell_renderer_init (GtkCellRenderer *cell)
   cell->yalign = 0.5;
   cell->xpad = 0;
   cell->ypad = 0;
-
-  cellinfo = g_new0 (GtkCellRendererInfo, 1);
-  g_object_set_data_full (G_OBJECT (cell),
-		          GTK_CELL_RENDERER_INFO_KEY, cellinfo, g_free);
 }
 
 static void
@@ -110,11 +124,33 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   class->render = NULL;
   class->get_size = NULL;
 
+  /**
+   * GtkCellRenderer::editing-canceled:
+   * @renderer: the object which received the signal
+   *
+   * This signal gets emitted when the user cancels the process of editing a
+   * cell.  For example, an editable cell renderer could be written to cancel
+   * editing when the user presses Escape.
+   *
+   * See also: gtk_cell_renderer_editing_canceled()
+   *
+   * Since: 2.4
+   */
+
+  cell_renderer_signals[EDITING_CANCELED] =
+    g_signal_new ("editing-canceled",
+		  G_OBJECT_CLASS_TYPE (object_class),
+		  G_SIGNAL_RUN_FIRST,
+		  G_STRUCT_OFFSET (GtkCellRendererClass, editing_canceled),
+		  NULL, NULL,
+		  _gtk_marshal_VOID__VOID,
+		  G_TYPE_NONE, 0);
+
   g_object_class_install_property (object_class,
 				   PROP_MODE,
 				   g_param_spec_enum ("mode",
-						      _("mode"),
-						      _("Editable mode of the CellRenderer"),
+						      P_("mode"),
+						      P_("Editable mode of the CellRenderer"),
 						      GTK_TYPE_CELL_RENDERER_MODE,
 						      GTK_CELL_RENDERER_MODE_INERT,
 						      G_PARAM_READABLE |
@@ -123,8 +159,8 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_VISIBLE,
 				   g_param_spec_boolean ("visible",
-							 _("visible"),
-							 _("Display the cell"),
+							 P_("visible"),
+							 P_("Display the cell"),
 							 TRUE,
 							 G_PARAM_READABLE |
 							 G_PARAM_WRITABLE));
@@ -132,8 +168,8 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_XALIGN,
 				   g_param_spec_float ("xalign",
-						       _("xalign"),
-						       _("The x-align"),
+						       P_("xalign"),
+						       P_("The x-align"),
 						       0.0,
 						       1.0,
 						       0.0,
@@ -143,8 +179,8 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_YALIGN,
 				   g_param_spec_float ("yalign",
-						       _("yalign"),
-						       _("The y-align"),
+						       P_("yalign"),
+						       P_("The y-align"),
 						       0.0,
 						       1.0,
 						       0.5,
@@ -154,10 +190,10 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_XPAD,
 				   g_param_spec_uint ("xpad",
-						      _("xpad"),
-						      _("The xpad"),
+						      P_("xpad"),
+						      P_("The xpad"),
 						      0,
-						      100,
+						      G_MAXUINT,
 						      2,
 						      G_PARAM_READABLE |
 						      G_PARAM_WRITABLE));
@@ -165,10 +201,10 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_YPAD,
 				   g_param_spec_uint ("ypad",
-						      _("ypad"),
-						      _("The ypad"),
+						      P_("ypad"),
+						      P_("The ypad"),
 						      0,
-						      100,
+						      G_MAXUINT,
 						      2,
 						      G_PARAM_READABLE |
 						      G_PARAM_WRITABLE));
@@ -176,10 +212,10 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_WIDTH,
 				   g_param_spec_int ("width",
-						     _("width"),
-						     _("The fixed width"),
+						     P_("width"),
+						     P_("The fixed width"),
 						     -1,
-						     100,
+						     G_MAXINT,
 						     -1,
 						     G_PARAM_READABLE |
 						     G_PARAM_WRITABLE));
@@ -187,10 +223,10 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_HEIGHT,
 				   g_param_spec_int ("height",
-						     _("height"),
-						     _("The fixed height"),
+						     P_("height"),
+						     P_("The fixed height"),
 						     -1,
-						     100,
+						     G_MAXINT,
 						     -1,
 						     G_PARAM_READABLE |
 						     G_PARAM_WRITABLE));
@@ -198,8 +234,8 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_IS_EXPANDER,
 				   g_param_spec_boolean ("is_expander",
-							 _("Is Expander"),
-							 _("Row has children"),
+							 P_("Is Expander"),
+							 P_("Row has children"),
 							 FALSE,
 							 G_PARAM_READABLE |
 							 G_PARAM_WRITABLE));
@@ -208,8 +244,8 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_IS_EXPANDED,
 				   g_param_spec_boolean ("is_expanded",
-							 _("Is Expanded"),
-							 _("Row is an expander row, and is expanded"),
+							 P_("Is Expanded"),
+							 P_("Row is an expander row, and is expanded"),
 							 FALSE,
 							 G_PARAM_READABLE |
 							 G_PARAM_WRITABLE));
@@ -217,16 +253,16 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
   g_object_class_install_property (object_class,
 				   PROP_CELL_BACKGROUND,
 				   g_param_spec_string ("cell_background",
-							_("Cell background color name"),
-							_("Cell background color as a string"),
+							P_("Cell background color name"),
+							P_("Cell background color as a string"),
 							NULL,
 							G_PARAM_WRITABLE));
 
   g_object_class_install_property (object_class,
 				   PROP_CELL_BACKGROUND_GDK,
 				   g_param_spec_boxed ("cell_background_gdk",
-						       _("Cell background color"),
-						       _("Cell background color as a GdkColor"),
+						       P_("Cell background color"),
+						       P_("Cell background color as a GdkColor"),
 						       GDK_TYPE_COLOR,
 						       G_PARAM_READABLE | G_PARAM_WRITABLE));
 
@@ -234,8 +270,10 @@ gtk_cell_renderer_class_init (GtkCellRendererClass *class)
 #define ADD_SET_PROP(propname, propval, nick, blurb) g_object_class_install_property (object_class, propval, g_param_spec_boolean (propname, nick, blurb, FALSE, G_PARAM_READABLE | G_PARAM_WRITABLE))
 
   ADD_SET_PROP ("cell_background_set", PROP_CELL_BACKGROUND_SET,
-                _("Cell background set"),
-                _("Whether this tag affects the cell background color"));
+                P_("Cell background set"),
+                P_("Whether this tag affects the cell background color"));
+
+  g_type_class_add_private (object_class, sizeof (GtkCellRendererPrivate));
 }
 
 static void
@@ -245,10 +283,7 @@ gtk_cell_renderer_get_property (GObject     *object,
 				GParamSpec  *pspec)
 {
   GtkCellRenderer *cell = GTK_CELL_RENDERER (object);
-  GtkCellRendererInfo *cellinfo;
-
-  cellinfo = g_object_get_data (object,
-		                GTK_CELL_RENDERER_INFO_KEY);
+  GtkCellRendererPrivate *priv = GTK_CELL_RENDERER_GET_PRIVATE (object);
 
   switch (param_id)
     {
@@ -277,18 +312,18 @@ gtk_cell_renderer_get_property (GObject     *object,
       g_value_set_int (value, cell->height);
       break;
     case PROP_IS_EXPANDER:
-      g_value_set_int (value, cell->is_expander);
+      g_value_set_boolean (value, cell->is_expander);
       break;
     case PROP_IS_EXPANDED:
-      g_value_set_int (value, cell->is_expanded);
+      g_value_set_boolean (value, cell->is_expanded);
       break;
     case PROP_CELL_BACKGROUND_GDK:
       {
 	GdkColor color;
 
-	color.red = cellinfo->cell_background.red;
-	color.green = cellinfo->cell_background.green;
-	color.blue = cellinfo->cell_background.blue;
+	color.red = priv->cell_background.red;
+	color.green = priv->cell_background.green;
+	color.blue = priv->cell_background.blue;
 
 	g_value_set_boxed (value, &color);
       }
@@ -374,10 +409,7 @@ static void
 set_cell_bg_color (GtkCellRenderer *cell,
 		   GdkColor        *color)
 {
-  GtkCellRendererInfo *cellinfo;
-
-  cellinfo = g_object_get_data (G_OBJECT (cell),
-		                GTK_CELL_RENDERER_INFO_KEY);
+  GtkCellRendererPrivate *priv = GTK_CELL_RENDERER_GET_PRIVATE (cell);
 
   if (color)
     {
@@ -387,9 +419,9 @@ set_cell_bg_color (GtkCellRenderer *cell,
 	  g_object_notify (G_OBJECT (cell), "cell_background_set");
 	}
 
-      cellinfo->cell_background.red = color->red;
-      cellinfo->cell_background.green = color->green;
-      cellinfo->cell_background.blue = color->blue;
+      priv->cell_background.red = color->red;
+      priv->cell_background.green = color->green;
+      priv->cell_background.blue = color->blue;
     }
   else
     {
@@ -482,10 +514,7 @@ gtk_cell_renderer_render (GtkCellRenderer     *cell,
 			  GtkCellRendererState flags)
 {
   gboolean selected = FALSE;
-  GtkCellRendererInfo *cellinfo;
-
-  cellinfo = g_object_get_data (G_OBJECT (cell),
-		                GTK_CELL_RENDERER_INFO_KEY);
+  GtkCellRendererPrivate *priv = GTK_CELL_RENDERER_GET_PRIVATE (cell);
 
   g_return_if_fail (GTK_IS_CELL_RENDERER (cell));
   g_return_if_fail (GTK_CELL_RENDERER_GET_CLASS (cell)->render != NULL);
@@ -497,9 +526,9 @@ gtk_cell_renderer_render (GtkCellRenderer     *cell,
       GdkColor color;
       GdkGC *gc;
 
-      color.red = cellinfo->cell_background.red;
-      color.green = cellinfo->cell_background.green;
-      color.blue = cellinfo->cell_background.blue;
+      color.red = priv->cell_background.red;
+      color.green = priv->cell_background.green;
+      color.blue = priv->cell_background.blue;
 
       gc = gdk_gc_new (window);
       gdk_gc_set_rgb_fg_color (gc, &color);
@@ -657,4 +686,23 @@ gtk_cell_renderer_get_fixed_size (GtkCellRenderer *cell,
     (* width) = cell->width;
   if (height)
     (* height) = cell->height;
+}
+
+/**
+ * gtk_cell_renderer_editing_canceled:
+ * @cell: A #GtkCellRenderer
+ * 
+ * Causes the cell renderer to emit the "editing-canceled" signal.  This
+ * function is for use only by implementations of cell renderers that need to
+ * notify the client program that an editing process was canceled and the
+ * changes were not committed.
+ *
+ * Since: 2.4
+ **/
+void
+gtk_cell_renderer_editing_canceled (GtkCellRenderer *cell)
+{
+  g_return_if_fail (GTK_IS_CELL_RENDERER (cell));
+
+  g_signal_emit (cell, cell_renderer_signals[EDITING_CANCELED], 0);
 }

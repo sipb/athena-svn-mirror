@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <glib/gprintf.h>
 #include <math.h>
 #include <string.h>
@@ -61,6 +62,8 @@ static void gtk_progress_size_allocate   (GtkWidget        *widget,
 				 	  GtkAllocation    *allocation);
 static void gtk_progress_create_pixmap   (GtkProgress      *progress);
 static void gtk_progress_value_changed   (GtkAdjustment    *adjustment,
+					  GtkProgress      *progress);
+static void gtk_progress_changed         (GtkAdjustment    *adjustment,
 					  GtkProgress      *progress);
 
 
@@ -124,24 +127,24 @@ gtk_progress_class_init (GtkProgressClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_ACTIVITY_MODE,
                                    g_param_spec_boolean ("activity_mode",
-							 _("Activity mode"),
-							 _("If TRUE the GtkProgress is in activity mode, meaning that it signals something is happening, but not how much of the activity is finished. This is used when you're doing something that you don't know how long it will take"),
+							 P_("Activity mode"),
+							 P_("If TRUE the GtkProgress is in activity mode, meaning that it signals something is happening, but not how much of the activity is finished. This is used when you're doing something that you don't know how long it will take"),
 							 FALSE,
 							 G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_SHOW_TEXT,
                                    g_param_spec_boolean ("show_text",
-							 _("Show text"),
-							 _("Whether the progress is shown as text"),
+							 P_("Show text"),
+							 P_("Whether the progress is shown as text"),
 							 FALSE,
 							 G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
 				   PROP_TEXT_XALIGN,
 				   g_param_spec_float ("text_xalign",
-						       _("Text x alignment"),
-						       _("A number between 0.0 and 1.0 specifying the horizontal alignment of the text in the progress widget"),
+						       P_("Text x alignment"),
+						       P_("A number between 0.0 and 1.0 specifying the horizontal alignment of the text in the progress widget"),
 						       0.0,
 						       1.0,
 						       0.5,
@@ -149,8 +152,8 @@ gtk_progress_class_init (GtkProgressClass *class)
     g_object_class_install_property (gobject_class,
 				   PROP_TEXT_YALIGN,
 				   g_param_spec_float ("text_yalign",
-						       _("Text y alignment"),
-						       _("A number between 0.0 and 1.0 specifying the vertical alignment of the text in the progress widget"),
+						       P_("Text y alignment"),
+						       P_("A number between 0.0 and 1.0 specifying the vertical alignment of the text in the progress widget"),
 						       0.0,
 						       1.0,
 						       0.5,
@@ -283,6 +286,9 @@ gtk_progress_destroy (GtkObject *object)
       g_signal_handlers_disconnect_by_func (progress->adjustment,
 					    gtk_progress_value_changed,
 					    progress);
+      g_signal_handlers_disconnect_by_func (progress->adjustment,
+					    gtk_progress_changed,
+					    progress);
       g_object_unref (progress->adjustment);
       progress->adjustment = NULL;
     }
@@ -366,6 +372,19 @@ gtk_progress_create_pixmap (GtkProgress *progress)
 						   -1);
       GTK_PROGRESS_GET_CLASS (progress)->paint (progress);
     }
+}
+
+static void
+gtk_progress_changed (GtkAdjustment *adjustment,
+		      GtkProgress   *progress)
+{
+  /* A change in the value of adjustment->upper can change
+   * the size request
+   */
+  if (progress->use_text_format && progress->show_text)
+    gtk_widget_queue_resize (GTK_WIDGET (progress));
+  else
+    GTK_PROGRESS_GET_CLASS (progress)->update (progress);
 }
 
 static void
@@ -504,6 +523,9 @@ gtk_progress_set_adjustment (GtkProgress   *progress,
       if (progress->adjustment)
         {
 	  g_signal_handlers_disconnect_by_func (progress->adjustment,
+						gtk_progress_changed,
+						progress);
+	  g_signal_handlers_disconnect_by_func (progress->adjustment,
 						gtk_progress_value_changed,
 						progress);
           g_object_unref (progress->adjustment);
@@ -513,10 +535,15 @@ gtk_progress_set_adjustment (GtkProgress   *progress,
         {
           g_object_ref (adjustment);
 	  gtk_object_sink (GTK_OBJECT (adjustment));
+          g_signal_connect (adjustment, "changed",
+			    G_CALLBACK (gtk_progress_changed),
+			    progress);
           g_signal_connect (adjustment, "value_changed",
 			    G_CALLBACK (gtk_progress_value_changed),
 			    progress);
         }
+
+      gtk_progress_changed (adjustment, progress);
     }
 }
 
@@ -570,8 +597,7 @@ gtk_progress_get_current_percentage (GtkProgress *progress)
   if (!progress->adjustment)
     gtk_progress_set_adjustment (progress, NULL);
 
-  return ((progress->adjustment->value - progress->adjustment->lower) /
-	  (progress->adjustment->upper - progress->adjustment->lower));
+  return gtk_progress_get_percentage_from_value (progress, progress->adjustment->value);
 }
 
 gdouble
@@ -583,7 +609,8 @@ gtk_progress_get_percentage_from_value (GtkProgress *progress,
   if (!progress->adjustment)
     gtk_progress_set_adjustment (progress, NULL);
 
-  if (value >= progress->adjustment->lower &&
+  if (progress->adjustment->lower < progress->adjustment->upper &&
+      value >= progress->adjustment->lower &&
       value <= progress->adjustment->upper)
     return (value - progress->adjustment->lower) /
       (progress->adjustment->upper - progress->adjustment->lower);
@@ -622,8 +649,7 @@ gtk_progress_set_show_text (GtkProgress *progress,
     {
       progress->show_text = show_text;
 
-      if (GTK_WIDGET_DRAWABLE (GTK_WIDGET (progress)))
-	gtk_widget_queue_resize (GTK_WIDGET (progress));
+      gtk_widget_queue_resize (GTK_WIDGET (progress));
 
       g_object_notify (G_OBJECT (progress), "show_text");
     }
@@ -680,8 +706,7 @@ gtk_progress_set_format_string (GtkProgress *progress,
   progress->format = g_strdup (format);
   g_free (old_format);
   
-  if (GTK_WIDGET_DRAWABLE (GTK_WIDGET (progress)))
-    gtk_widget_queue_resize (GTK_WIDGET (progress));
+  gtk_widget_queue_resize (GTK_WIDGET (progress));
 }
 
 gchar *

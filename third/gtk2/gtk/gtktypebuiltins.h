@@ -18,6 +18,14 @@ GType gtk_accel_flags_get_type (void);
 GType gtk_calendar_display_options_get_type (void);
 #define GTK_TYPE_CALENDAR_DISPLAY_OPTIONS (gtk_calendar_display_options_get_type())
 
+/* enumerations from "gtkcellrenderer.h" */
+
+GType gtk_cell_renderer_state_get_type (void);
+#define GTK_TYPE_CELL_RENDERER_STATE (gtk_cell_renderer_state_get_type())
+
+GType gtk_cell_renderer_mode_get_type (void);
+#define GTK_TYPE_CELL_RENDERER_MODE (gtk_cell_renderer_mode_get_type())
+
 /* enumerations from "gtkclist.h" */
 
 GType gtk_cell_type_get_type (void);
@@ -42,14 +50,6 @@ GType gtk_ctree_expander_style_get_type (void);
 
 GType gtk_ctree_expansion_type_get_type (void);
 #define GTK_TYPE_CTREE_EXPANSION_TYPE (gtk_ctree_expansion_type_get_type())
-
-/* enumerations from "gtkcellrenderer.h" */
-
-GType gtk_cell_renderer_state_get_type (void);
-#define GTK_TYPE_CELL_RENDERER_STATE (gtk_cell_renderer_state_get_type())
-
-GType gtk_cell_renderer_mode_get_type (void);
-#define GTK_TYPE_CELL_RENDERER_MODE (gtk_cell_renderer_mode_get_type())
 
 /* enumerations from "gtkdebug.h" */
 
@@ -121,6 +121,9 @@ GType gtk_metric_type_get_type (void);
 
 GType gtk_movement_step_get_type (void);
 #define GTK_TYPE_MOVEMENT_STEP (gtk_movement_step_get_type())
+
+GType gtk_scroll_step_get_type (void);
+#define GTK_TYPE_SCROLL_STEP (gtk_scroll_step_get_type())
 
 GType gtk_orientation_get_type (void);
 #define GTK_TYPE_ORIENTATION (gtk_orientation_get_type())
@@ -199,6 +202,27 @@ GType gtk_im_preedit_style_get_type (void);
 
 GType gtk_im_status_style_get_type (void);
 #define GTK_TYPE_IM_STATUS_STYLE (gtk_im_status_style_get_type())
+
+/* enumerations from "gtkfilechooser.h" */
+
+GType gtk_file_chooser_action_get_type (void);
+#define GTK_TYPE_FILE_CHOOSER_ACTION (gtk_file_chooser_action_get_type())
+
+GType gtk_file_chooser_error_get_type (void);
+#define GTK_TYPE_FILE_CHOOSER_ERROR (gtk_file_chooser_error_get_type())
+
+/* enumerations from "gtkfilefilter.h" */
+
+GType gtk_file_filter_flags_get_type (void);
+#define GTK_TYPE_FILE_FILTER_FLAGS (gtk_file_filter_flags_get_type())
+
+/* enumerations from "gtkicontheme.h" */
+
+GType gtk_icon_lookup_flags_get_type (void);
+#define GTK_TYPE_ICON_LOOKUP_FLAGS (gtk_icon_lookup_flags_get_type())
+
+GType gtk_icon_theme_error_get_type (void);
+#define GTK_TYPE_ICON_THEME_ERROR (gtk_icon_theme_error_get_type())
 
 /* enumerations from "gtkimage.h" */
 
@@ -297,6 +321,11 @@ GType gtk_tree_view_drop_position_get_type (void);
 
 GType gtk_tree_view_column_sizing_get_type (void);
 #define GTK_TYPE_TREE_VIEW_COLUMN_SIZING (gtk_tree_view_column_sizing_get_type())
+
+/* enumerations from "gtkuimanager.h" */
+
+GType gtk_ui_manager_item_type_get_type (void);
+#define GTK_TYPE_UI_MANAGER_ITEM_TYPE (gtk_ui_manager_item_type_get_type())
 
 /* enumerations from "gtkwidget.h" */
 

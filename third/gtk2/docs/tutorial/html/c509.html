@@ -5,8 +5,7 @@
 >The Button Widget</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -70,13 +69,17 @@ WIDTH="100%"></DIV
 CLASS="CHAPTER"
 ><H1
 ><A
-NAME="CH-BUTTONWIDGET">The Button Widget</H1
+NAME="CH-BUTTONWIDGET"
+></A
+>The Button Widget</H1
 ><DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-NORMALBUTTONS">Normal Buttons</H1
+NAME="SEC-NORMALBUTTONS"
+>Normal Buttons</A
+></H1
 ><P
 >We've almost seen all there is to see of the button widget. It's
 pretty simple. There is however more than one way to create a button. You can
@@ -112,8 +115,8 @@ CLASS="PROGRAMLISTING"
 /* Create a new hbox with an image and a label packed into it
  * and return the box. */
 
-GtkWidget *xpm_label_box( gchar     *xpm_filename,
-                          gchar     *label_text )
+static GtkWidget *xpm_label_box( gchar     *xpm_filename,
+                                 gchar     *label_text )
 {
     GtkWidget *box;
     GtkWidget *label;
@@ -140,8 +143,8 @@ GtkWidget *xpm_label_box( gchar     *xpm_filename,
 }
 
 /* Our usual callback function */
-void callback( GtkWidget *widget,
-               gpointer   data )
+static void callback( GtkWidget *widget,
+                      gpointer   data )
 {
     g_print ("Hello again - %s was pressed\n", (char *) data);
 }

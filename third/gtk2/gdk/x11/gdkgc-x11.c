@@ -109,10 +109,8 @@ gdk_gc_x11_finalize (GObject *object)
   if (x11_gc->clip_region)
     gdk_region_destroy (x11_gc->clip_region);
   
-#if HAVE_XFT
   if (x11_gc->fg_picture != None)
     XRenderFreePicture (GDK_GC_XDISPLAY (x11_gc), x11_gc->fg_picture);
-#endif  
   
   XFreeGC (GDK_GC_XDISPLAY (x11_gc), GDK_GC_XGC (x11_gc));
 
@@ -140,9 +138,12 @@ _gdk_x11_gc_new (GdkDrawable      *drawable,
   private = GDK_GC_X11 (gc);
 
   private->dirty_mask = 0;
+  private->have_clip_mask = FALSE;
   private->clip_region = NULL;
     
   private->screen = GDK_DRAWABLE_IMPL_X11 (drawable)->screen;
+
+  private->depth = gdk_drawable_get_depth (drawable);
 
   if (values_mask & (GDK_GC_CLIP_X_ORIGIN | GDK_GC_CLIP_Y_ORIGIN))
     {
@@ -158,7 +159,10 @@ _gdk_x11_gc_new (GdkDrawable      *drawable,
 
   if (values_mask & GDK_GC_FOREGROUND)
     private->fg_pixel = values->foreground.pixel;
-  
+
+  if ((values_mask & GDK_GC_CLIP_MASK) && values->clip_mask)
+    private->have_clip_mask = TRUE;
+
   xvalues.function = GXcopy;
   xvalues.fill_style = FillSolid;
   xvalues.arc_mode = ArcPieSlice;
@@ -373,8 +377,6 @@ gdk_x11_gc_set_values (GdkGC           *gc,
   XGCValues xvalues;
   unsigned long xvalues_mask = 0;
 
-  g_return_if_fail (GDK_IS_GC (gc));
-
   x11_gc = GDK_GC_X11 (gc);
 
   if (values_mask & (GDK_GC_CLIP_X_ORIGIN | GDK_GC_CLIP_Y_ORIGIN))
@@ -396,6 +398,8 @@ gdk_x11_gc_set_values (GdkGC           *gc,
 	  gdk_region_destroy (x11_gc->clip_region);
 	  x11_gc->clip_region = NULL;
 	}
+
+      x11_gc->have_clip_mask = values->clip_mask != NULL;
     }
 
   if (values_mask & GDK_GC_FOREGROUND)
@@ -645,20 +649,30 @@ gdk_gc_set_clip_rectangle (GdkGC	*gc,
 			   GdkRectangle *rectangle)
 {
   GdkGCX11 *x11_gc;
-
+  gboolean had_region = FALSE;
+  
   g_return_if_fail (GDK_IS_GC (gc));
 
   x11_gc = GDK_GC_X11 (gc);
 
   if (x11_gc->clip_region)
-    gdk_region_destroy (x11_gc->clip_region);
+    {
+      had_region = TRUE;
+      gdk_region_destroy (x11_gc->clip_region);
+    }
 
   if (rectangle)
     x11_gc->clip_region = gdk_region_rectangle (rectangle);
   else
+    x11_gc->clip_region = NULL;
+
+  /* Unset immediately, to make sure Xlib doesn't keep the
+   * XID of an old clip mask cached
+   */
+  if ((had_region && !rectangle) || x11_gc->have_clip_mask)
     {
-      x11_gc->clip_region = NULL;
       XSetClipMask (GDK_GC_XDISPLAY (gc), GDK_GC_XGC (gc), None);
+      x11_gc->have_clip_mask = FALSE;
     }
 
   gc->clip_x_origin = 0;
@@ -672,22 +686,32 @@ gdk_gc_set_clip_region (GdkGC	  *gc,
 			GdkRegion *region)
 {
   GdkGCX11 *x11_gc;
+  gboolean had_region = FALSE;
 
   g_return_if_fail (GDK_IS_GC (gc));
 
   x11_gc = GDK_GC_X11 (gc);
 
   if (x11_gc->clip_region)
-    gdk_region_destroy (x11_gc->clip_region);
+    {
+      had_region = TRUE;
+      gdk_region_destroy (x11_gc->clip_region);
+    }
 
   if (region)
     x11_gc->clip_region = gdk_region_copy (region);
   else
+    x11_gc->clip_region = NULL;    
+
+  /* Unset immediately, to make sure Xlib doesn't keep the
+   * XID of an old clip mask cached
+   */
+  if ((had_region && !region) || x11_gc->have_clip_mask)
     {
-      x11_gc->clip_region = NULL;
       XSetClipMask (GDK_GC_XDISPLAY (gc), GDK_GC_XGC (gc), None);
+      x11_gc->have_clip_mask = FALSE;
     }
-  
+
   gc->clip_x_origin = 0;
   gc->clip_y_origin = 0;
   
@@ -792,7 +816,6 @@ gdk_x11_gc_get_xgc (GdkGC *gc)
   return gc_x11->xgc;
 }
 
-#ifdef HAVE_XFT
 /* Various bits of the below are roughly cribbed from XFree86
  * lib/Xft/xftdraw.c, Copyright 2000, Keith Packard
  */
@@ -836,9 +859,8 @@ Picture
 _gdk_x11_gc_get_fg_picture (GdkGC *gc)
 {
   GdkGCX11 *x11_gc;
-  GdkColormap *cmap;
   gboolean new = FALSE;
-  GdkColor color;
+  XftColor xftcolor;
   
   g_return_val_if_fail (GDK_IS_GC_X11 (gc), None);
 
@@ -846,7 +868,6 @@ _gdk_x11_gc_get_fg_picture (GdkGC *gc)
     return None;
 
   x11_gc = GDK_GC_X11 (gc);
-  cmap = gdk_gc_get_colormap (gc);
 
   if (x11_gc->fg_picture == None)
     {
@@ -870,17 +891,16 @@ _gdk_x11_gc_get_fg_picture (GdkGC *gc)
       new = TRUE;
     }
 
-  gdk_colormap_query_color (cmap, x11_gc->fg_pixel, &color);
-
+  _gdk_gc_x11_get_fg_xft_color (gc, &xftcolor);
+  
   if (new ||
-      x11_gc->fg_picture_color.red != color.red ||
-      x11_gc->fg_picture_color.green != color.green ||
-      x11_gc->fg_picture_color.blue != color.blue)
+      x11_gc->fg_picture_color.red != xftcolor.color.red ||
+      x11_gc->fg_picture_color.green != xftcolor.color.green ||
+      x11_gc->fg_picture_color.blue != xftcolor.color.blue)
     {
-      x11_gc->fg_picture_color.red = color.red;
-      x11_gc->fg_picture_color.green = color.green;
-      x11_gc->fg_picture_color.blue = color.blue;
-      x11_gc->fg_picture_color.alpha = 0xffff;
+      x11_gc->fg_picture_color.red = xftcolor.color.red;
+      x11_gc->fg_picture_color.green = xftcolor.color.green;
+      x11_gc->fg_picture_color.blue = xftcolor.color.blue;
 
       XRenderFillRectangle (GDK_GC_XDISPLAY (gc), PictOpSrc, 
 			    x11_gc->fg_picture, &x11_gc->fg_picture_color,
@@ -908,15 +928,46 @@ _gdk_gc_x11_get_fg_xft_color (GdkGC    *gc,
   g_return_if_fail (GDK_IS_GC_X11 (gc));
 
   x11_gc = GDK_GC_X11 (gc);
+
   cmap = gdk_gc_get_colormap (gc);
 
   xftcolor->pixel = x11_gc->fg_pixel;
 
-  gdk_colormap_query_color (cmap, xftcolor->pixel, &color);
-  xftcolor->color.red = color.red;
-  xftcolor->color.green = color.green;
-  xftcolor->color.blue = color.blue;
-  xftcolor->color.alpha = 0xffff;
+  if (cmap)
+    {
+      gdk_colormap_query_color (cmap, xftcolor->pixel, &color);
+      xftcolor->color.alpha = 0xffff;
+      xftcolor->color.red = color.red;
+      xftcolor->color.green = color.green;
+      xftcolor->color.blue = color.blue;
+    }
+  else if (x11_gc->depth == 1)
+    {
+      /* Drawing with Xft on a bitmap is a bit bizzare; it
+       * takes alpha >= 0x8000 to mean 'set to 1' and
+       * alpha < 0x8000 to mean 'set to 0'.
+       */
+      if (xftcolor->pixel)
+        {
+	  xftcolor->color.red = 0xffff;
+	  xftcolor->color.green = 0xffff;
+	  xftcolor->color.blue = 0xffff;
+	  xftcolor->color.alpha = 0xffff;
+	}
+      else
+        {
+	  xftcolor->color.red = 0;
+	  xftcolor->color.green = 0;
+	  xftcolor->color.blue = 0;
+	  xftcolor->color.alpha = 0;
+	}
+    }
+  else
+    {
+      g_warning ("Using Xft rendering requires the GC argument to have a\n"
+		 "specified colormap. If the GC was created for a drawable\n"
+		 "with a colormap, the colormap will be set on the GC\n"
+		 "automatically. Otherwise, a colormap must be set on it with"
+		 "gdk_gc_set_colormap");
+    }
 }
-
-#endif /* HAVE_XFT */

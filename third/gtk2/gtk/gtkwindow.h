@@ -201,6 +201,9 @@ gboolean   gtk_window_get_skip_taskbar_hint    (GtkWindow           *window);
 void       gtk_window_set_skip_pager_hint      (GtkWindow           *window,
                                                 gboolean             setting);
 gboolean   gtk_window_get_skip_pager_hint      (GtkWindow           *window);
+void       gtk_window_set_accept_focus         (GtkWindow           *window,
+                                                gboolean             setting);
+gboolean   gtk_window_get_accept_focus         (GtkWindow           *window);
 void       gtk_window_set_destroy_with_parent  (GtkWindow           *window,
                                                 gboolean             setting);
 gboolean   gtk_window_get_destroy_with_parent  (GtkWindow           *window);
@@ -222,6 +225,11 @@ void       gtk_window_set_geometry_hints       (GtkWindow           *window,
 void	   gtk_window_set_screen	       (GtkWindow	    *window,
 						GdkScreen	    *screen);
 GdkScreen* gtk_window_get_screen	       (GtkWindow	    *window);
+
+gboolean   gtk_window_is_active                (GtkWindow           *window);
+gboolean   gtk_window_has_toplevel_focus       (GtkWindow           *window);
+
+
 
 /* gtk_window_set_has_frame () must be called before realizing the window_*/
 void       gtk_window_set_has_frame            (GtkWindow *window, 
@@ -252,6 +260,7 @@ gboolean   gtk_window_set_icon_from_file           (GtkWindow   *window,
 GdkPixbuf* gtk_window_get_icon                     (GtkWindow  *window);
 void       gtk_window_set_default_icon_list        (GList      *list);
 GList*     gtk_window_get_default_icon_list        (void);
+void       gtk_window_set_default_icon             (GdkPixbuf  *icon);
 gboolean   gtk_window_set_default_icon_from_file   (const gchar *filename,
 						    GError     **err);
 
@@ -276,6 +285,11 @@ void     gtk_window_set_mnemonic_modifier (GtkWindow       *window,
 					   GdkModifierType  modifier);
 GdkModifierType gtk_window_get_mnemonic_modifier (GtkWindow *window);
 
+gboolean gtk_window_activate_key          (GtkWindow        *window,
+					   GdkEventKey      *event);
+gboolean gtk_window_propagate_key_event   (GtkWindow        *window,
+					   GdkEventKey      *event);
+
 void     gtk_window_present       (GtkWindow *window);
 void     gtk_window_iconify       (GtkWindow *window);
 void     gtk_window_deiconify     (GtkWindow *window);
@@ -285,6 +299,8 @@ void     gtk_window_maximize      (GtkWindow *window);
 void     gtk_window_unmaximize    (GtkWindow *window);
 void     gtk_window_fullscreen    (GtkWindow *window);
 void     gtk_window_unfullscreen  (GtkWindow *window);
+void     gtk_window_set_keep_above    (GtkWindow *window, gboolean setting);
+void     gtk_window_set_keep_below    (GtkWindow *window, gboolean setting);
 
 void gtk_window_begin_resize_drag (GtkWindow     *window,
                                    GdkWindowEdge  edge,
@@ -359,8 +375,6 @@ void            _gtk_window_constrain_size     (GtkWindow *window,
 						gint      *new_width,
 						gint      *new_height);
 GtkWindowGroup *_gtk_window_get_group          (GtkWindow *window);
-gboolean        _gtk_window_activate_key       (GtkWindow   *window,
-						GdkEventKey *event);
 
 void            _gtk_window_set_has_toplevel_focus (GtkWindow *window,
 						    gboolean   has_toplevel_focus);

@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib.h>
@@ -36,6 +37,7 @@
       (Iter)->user_data3 = NULL; \
     }G_STMT_END
 
+#define ROW_REF_DATA_STRING "gtk-tree-row-refs"
 
 enum {
   ROW_CHANGED,
@@ -48,15 +50,48 @@ enum {
 
 static guint tree_model_signals[LAST_SIGNAL] = { 0 };
 
-
 struct _GtkTreePath
 {
   gint depth;
   gint *indices;
 };
 
-static void gtk_tree_model_base_init (gpointer g_class);
+typedef struct
+{
+  GSList *list;
+} RowRefList;
 
+static void      gtk_tree_model_base_init   (gpointer           g_class);
+
+/* custom closures */
+static void      row_inserted_marshal       (GClosure          *closure,
+                                             GValue /* out */  *return_value,
+                                             guint              n_param_value,
+                                             const GValue      *param_values,
+                                             gpointer           invocation_hint,
+                                             gpointer           marshal_data);
+static void      row_deleted_marshal        (GClosure          *closure,
+                                             GValue /* out */  *return_value,
+                                             guint              n_param_value,
+                                             const GValue      *param_values,
+                                             gpointer           invocation_hint,
+                                             gpointer           marshal_data);
+static void      rows_reordered_marshal     (GClosure          *closure,
+                                             GValue /* out */  *return_value,
+                                             guint              n_param_value,
+                                             const GValue      *param_values,
+                                             gpointer           invocation_hint,
+                                             gpointer           marshal_data);
+
+static void      gtk_tree_row_ref_inserted  (RowRefList        *refs,
+                                             GtkTreePath       *path,
+                                             GtkTreeIter       *iter);
+static void      gtk_tree_row_ref_deleted   (RowRefList        *refs,
+                                             GtkTreePath       *path);
+static void      gtk_tree_row_ref_reordered (RowRefList        *refs,
+                                             GtkTreePath       *path,
+                                             GtkTreeIter       *iter,
+                                             gint              *new_order);
 
 GType
 gtk_tree_model_get_type (void)
@@ -92,9 +127,23 @@ static void
 gtk_tree_model_base_init (gpointer g_class)
 {
   static gboolean initialized = FALSE;
+  GClosure *closure;
 
   if (! initialized)
     {
+      GType row_inserted_params[2];
+      GType row_deleted_params[1];
+      GType rows_reordered_params[3];
+
+      row_inserted_params[0] = GTK_TYPE_TREE_PATH;
+      row_inserted_params[1] = GTK_TYPE_TREE_ITER;
+
+      row_deleted_params[0] = GTK_TYPE_TREE_PATH;
+
+      rows_reordered_params[0] = GTK_TYPE_TREE_PATH;
+      rows_reordered_params[1] = GTK_TYPE_TREE_ITER;
+      rows_reordered_params[2] = G_TYPE_POINTER;
+
       tree_model_signals[ROW_CHANGED] =
         g_signal_new ("row_changed",
                       GTK_TYPE_TREE_MODEL,
@@ -105,16 +154,31 @@ gtk_tree_model_base_init (gpointer g_class)
                       G_TYPE_NONE, 2,
                       GTK_TYPE_TREE_PATH,
                       GTK_TYPE_TREE_ITER);
+
+      /* We need to get notification about structure changes
+       * to update row references., so instead of using the
+       * standard g_signal_new() with an offset into our interface
+       * structure, we use a customs closures for the class
+       * closures (default handlers) that first update row references
+       * and then calls the function from the interface structure.
+       *
+       * The reason we don't simply update the row references from
+       * the wrapper functions (gtk_tree_model_row_inserted(), etc.)
+       * is to keep proper ordering with respect to signal handlers
+       * connected normally and after.
+       */
+      closure = g_closure_new_simple (sizeof (GClosure), NULL);
+      g_closure_set_marshal (closure, row_inserted_marshal);
       tree_model_signals[ROW_INSERTED] =
-        g_signal_new ("row_inserted",
-                      GTK_TYPE_TREE_MODEL,
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (GtkTreeModelIface, row_inserted),
-                      NULL, NULL,
-                      _gtk_marshal_VOID__BOXED_BOXED,
-                      G_TYPE_NONE, 2,
-                      GTK_TYPE_TREE_PATH,
-                      GTK_TYPE_TREE_ITER);
+        g_signal_newv ("row_inserted",
+                       GTK_TYPE_TREE_MODEL,
+                       G_SIGNAL_RUN_FIRST,
+                       closure,
+                       NULL, NULL,
+                       _gtk_marshal_VOID__BOXED_BOXED,
+                       G_TYPE_NONE, 2,
+                       row_inserted_params);
+
       tree_model_signals[ROW_HAS_CHILD_TOGGLED] =
         g_signal_new ("row_has_child_toggled",
                       GTK_TYPE_TREE_MODEL,
@@ -125,28 +189,129 @@ gtk_tree_model_base_init (gpointer g_class)
                       G_TYPE_NONE, 2,
                       GTK_TYPE_TREE_PATH,
                       GTK_TYPE_TREE_ITER);
+
+      closure = g_closure_new_simple (sizeof (GClosure), NULL);
+      g_closure_set_marshal (closure, row_deleted_marshal);
       tree_model_signals[ROW_DELETED] =
-        g_signal_new ("row_deleted",
-                      GTK_TYPE_TREE_MODEL,
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (GtkTreeModelIface, row_deleted),
-                      NULL, NULL,
-                      _gtk_marshal_VOID__BOXED,
-                      G_TYPE_NONE, 1,
-                      GTK_TYPE_TREE_PATH);
+        g_signal_newv ("row_deleted",
+                       GTK_TYPE_TREE_MODEL,
+                       G_SIGNAL_RUN_FIRST,
+                       closure,
+                       NULL, NULL,
+                       _gtk_marshal_VOID__BOXED,
+                       G_TYPE_NONE, 1,
+                       row_deleted_params);
+
+      closure = g_closure_new_simple (sizeof (GClosure), NULL);
+      g_closure_set_marshal (closure, rows_reordered_marshal);
       tree_model_signals[ROWS_REORDERED] =
-        g_signal_new ("rows_reordered",
-                      GTK_TYPE_TREE_MODEL,
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (GtkTreeModelIface, rows_reordered),
-                      NULL, NULL,
-                      _gtk_marshal_VOID__BOXED_BOXED_POINTER,
-                      G_TYPE_NONE, 3,
-                      GTK_TYPE_TREE_PATH,
-                      GTK_TYPE_TREE_ITER,
-                      G_TYPE_POINTER);
+        g_signal_newv ("rows_reordered",
+                       GTK_TYPE_TREE_MODEL,
+                       G_SIGNAL_RUN_FIRST,
+                       closure,
+                       NULL, NULL,
+                       _gtk_marshal_VOID__BOXED_BOXED_POINTER,
+                       G_TYPE_NONE, 3,
+                       rows_reordered_params);
       initialized = TRUE;
     }
+}
+
+static void
+row_inserted_marshal (GClosure          *closure,
+                      GValue /* out */  *return_value,
+                      guint              n_param_values,
+                      const GValue      *param_values,
+                      gpointer           invocation_hint,
+                      gpointer           marshal_data)
+{
+  GtkTreeModelIface *iface;
+
+  void (* row_inserted_callback) (GtkTreeModel *tree_model,
+                                  GtkTreePath *path,
+                                  GtkTreeIter *iter) = 0;
+            
+  GObject *model = g_value_get_object (param_values + 0);
+  GtkTreePath *path = (GtkTreePath *)g_value_get_boxed (param_values + 1);
+  GtkTreeIter *iter = (GtkTreeIter *)g_value_get_boxed (param_values + 2);
+
+  /* first, we need to update internal row references */
+  gtk_tree_row_ref_inserted ((RowRefList *)g_object_get_data (model, ROW_REF_DATA_STRING),
+                             path, iter);
+                               
+  /* fetch the interface ->row_inserted implementation */
+  iface = GTK_TREE_MODEL_GET_IFACE (model);
+  row_inserted_callback = G_STRUCT_MEMBER (gpointer, iface,
+                              G_STRUCT_OFFSET (GtkTreeModelIface,
+                                               row_inserted));
+
+  /* Call that default signal handler, it if has been set */                                                         
+  if (row_inserted_callback)
+    row_inserted_callback (GTK_TREE_MODEL (model), path, iter);
+}
+
+static void
+row_deleted_marshal (GClosure          *closure,
+                     GValue /* out */  *return_value,
+                     guint              n_param_values,
+                     const GValue      *param_values,
+                     gpointer           invocation_hint,
+                     gpointer           marshal_data)
+{
+  GtkTreeModelIface *iface;
+  void (* row_deleted_callback) (GtkTreeModel *tree_model,
+                                 GtkTreePath  *path) = 0;                                 
+  GObject *model = g_value_get_object (param_values + 0);
+  GtkTreePath *path = (GtkTreePath *)g_value_get_boxed (param_values + 1);
+ 
+
+  /* first, we need to update internal row references */
+  gtk_tree_row_ref_deleted ((RowRefList *)g_object_get_data (model, ROW_REF_DATA_STRING),
+                            path);
+
+  /* fetch the interface ->row_deleted implementation */
+  iface = GTK_TREE_MODEL_GET_IFACE (model);
+  row_deleted_callback = G_STRUCT_MEMBER (gpointer, iface,
+                              G_STRUCT_OFFSET (GtkTreeModelIface,
+                                               row_deleted));
+                              
+  /* Call that default signal handler, it if has been set */
+  if (row_deleted_callback)
+    row_deleted_callback (GTK_TREE_MODEL (model), path);
+}
+
+static void
+rows_reordered_marshal (GClosure          *closure,
+                        GValue /* out */  *return_value,
+                        guint              n_param_values,
+                        const GValue      *param_values,
+                        gpointer           invocation_hint,
+                        gpointer           marshal_data)
+{
+  GtkTreeModelIface *iface;
+  void (* rows_reordered_callback) (GtkTreeModel *tree_model,
+                                    GtkTreePath  *path,
+                                    GtkTreeIter  *iter,
+                                    gint         *new_order);
+            
+  GObject *model = g_value_get_object (param_values + 0);
+  GtkTreePath *path = (GtkTreePath *)g_value_get_boxed (param_values + 1);
+  GtkTreeIter *iter = (GtkTreeIter *)g_value_get_boxed (param_values + 2);
+  gint *new_order = (gint *)g_value_get_pointer (param_values + 3);
+  
+  /* first, we need to update internal row references */
+  gtk_tree_row_ref_reordered ((RowRefList *)g_object_get_data (model, ROW_REF_DATA_STRING),
+                              path, iter, new_order);
+
+  /* fetch the interface ->rows_reordered implementation */
+  iface = GTK_TREE_MODEL_GET_IFACE (model);
+  rows_reordered_callback = G_STRUCT_MEMBER (gpointer, iface,
+                              G_STRUCT_OFFSET (GtkTreeModelIface,
+                                               rows_reordered));
+
+  /* Call that default signal handler, it if has been set */
+  if (rows_reordered_callback)
+    rows_reordered_callback (GTK_TREE_MODEL (model), path, iter, new_order);
 }
 
 /**
@@ -397,7 +562,8 @@ gtk_tree_path_get_indices (GtkTreePath *path)
 void
 gtk_tree_path_free (GtkTreePath *path)
 {
-  g_return_if_fail (path != NULL);
+  if (!path)
+    return;
 
   g_free (path->indices);
   g_free (path);
@@ -579,7 +745,7 @@ gtk_tree_path_prev (GtkTreePath *path)
  * gtk_tree_path_up:
  * @path: A #GtkTreePath.
  *
- * Moves the @path to point to it's parent node, if it has a parent.
+ * Moves the @path to point to its parent node, if it has a parent.
  *
  * Return value: %TRUE if @path has a parent, and the move was made.
  **/
@@ -1048,7 +1214,7 @@ gtk_tree_model_iter_parent (GtkTreeModel *tree_model,
  * entire file-hierarchy in memory, just the sections that are currently being
  * displayed by every current view.
  *
- * A model should be expected to be able to get an iter independent of it's
+ * A model should be expected to be able to get an iter independent of its
  * reffed state.
  **/
 void
@@ -1254,9 +1420,9 @@ gtk_tree_model_row_deleted (GtkTreeModel *tree_model,
  * @tree_model: A #GtkTreeModel
  * @path: A #GtkTreePath pointing to the tree node whose children have been reordered
  * @iter: A valid #GtkTreeIter pointing to the node whose children have been reordered
- * @new_order: an array of integers containing the new indices of the children,
- *      i.e. the former child <literal>n</literal> is now at position
- *      @new_order<literal>[n]</literal>. 
+ * @new_order: an array of integers mapping the current position of each child
+ *      to its old position before the re-ordering,
+ *      i.e. @new_order<literal>[newpos] = oldpos</literal>.
  * 
  * Emits the "rows_reordered" signal on @tree_model.  This should be called by
  * models when their rows have been reordered.  
@@ -1359,19 +1525,12 @@ gtk_tree_row_reference_get_type (void)
 }
 
 
-#define ROW_REF_DATA_STRING "gtk-tree-row-refs"
-
 struct _GtkTreeRowReference
 {
   GObject *proxy;
   GtkTreeModel *model;
   GtkTreePath *path;
 };
-
-typedef struct
-{
-  GSList *list;
-} RowRefList;
 
 
 static void
@@ -1399,13 +1558,10 @@ release_row_references (gpointer data)
 }
 
 static void
-gtk_tree_row_ref_inserted_callback (GObject     *object,
-				    GtkTreePath *path,
-				    GtkTreeIter *iter,
-				    gpointer     data)
+gtk_tree_row_ref_inserted (RowRefList  *refs,
+			   GtkTreePath *path,
+			   GtkTreeIter *iter)
 {
-  RowRefList *refs = g_object_get_data (data, ROW_REF_DATA_STRING);
-
   GSList *tmp_list;
 
   if (refs == NULL)
@@ -1454,11 +1610,9 @@ gtk_tree_row_ref_inserted_callback (GObject     *object,
 }
 
 static void
-gtk_tree_row_ref_deleted_callback (GObject     *object,
-				   GtkTreePath *path,
-				   gpointer     data)
+gtk_tree_row_ref_deleted (RowRefList  *refs,
+			  GtkTreePath *path)
 {
-  RowRefList *refs = g_object_get_data (data, ROW_REF_DATA_STRING);
   GSList *tmp_list;
 
   if (refs == NULL)
@@ -1515,13 +1669,11 @@ next:
 }
 
 static void
-gtk_tree_row_ref_reordered_callback (GObject     *object,
-				     GtkTreePath *path,
-				     GtkTreeIter *iter,
-				     gint        *new_order,
-				     gpointer     data)
+gtk_tree_row_ref_reordered (RowRefList  *refs,
+			    GtkTreePath *path,
+			    GtkTreeIter *iter,
+			    gint        *new_order)
 {
-  RowRefList *refs = g_object_get_data (data, ROW_REF_DATA_STRING);
   GSList *tmp_list;
   gint length;
 
@@ -1563,26 +1715,7 @@ gtk_tree_row_ref_reordered_callback (GObject     *object,
 
       tmp_list = g_slist_next (tmp_list);
     }
-  
 }
-     
-static void
-connect_ref_callbacks (GtkTreeModel *model)
-{
-  g_signal_connect (model,
-		    "row_inserted",
-		    G_CALLBACK (gtk_tree_row_ref_inserted_callback),
-		    model);
-  g_signal_connect (model,
-		    "row_deleted",
-		    G_CALLBACK (gtk_tree_row_ref_deleted_callback),
-		    model);
-  g_signal_connect (model,
-		    "rows_reordered",
-		    G_CALLBACK (gtk_tree_row_ref_reordered_callback),
-		    model);
-}
-
 
 /* We do this recursively so that we can unref children nodes before their parent */
 static void
@@ -1617,26 +1750,6 @@ gtk_tree_row_reference_unref_path (GtkTreePath  *path,
   gtk_tree_model_unref_node (model, &iter);
 }
 
-static void
-disconnect_ref_callbacks (GtkTreeModel *model)
-{
-  g_signal_handlers_disconnect_matched (model,
-                                        G_SIGNAL_MATCH_FUNC,
-                                        0, 0, NULL,
-					gtk_tree_row_ref_inserted_callback,
-					NULL);
-  g_signal_handlers_disconnect_matched (model,
-                                        G_SIGNAL_MATCH_FUNC,
-                                        0, 0, NULL,
-					gtk_tree_row_ref_deleted_callback,
-					NULL);
-  g_signal_handlers_disconnect_matched (model,
-                                        G_SIGNAL_MATCH_FUNC,
-                                        0, 0, NULL,
-					gtk_tree_row_ref_reordered_callback,
-					NULL);
-}
-
 /**
  * gtk_tree_row_reference_new:
  * @model: A #GtkTreeModel
@@ -1644,7 +1757,7 @@ disconnect_ref_callbacks (GtkTreeModel *model)
  * 
  * Creates a row reference based on @path.  This reference will keep pointing to
  * the node pointed to by @path, so long as it exists.  It listens to all
- * signals emitted by @model, and updates it's path appropriately.  If @path
+ * signals emitted by @model, and updates its path appropriately.  If @path
  * isn't a valid path in @model, then %NULL is returned.
  * 
  * Return value: A newly allocated #GtkTreeRowReference, or %NULL
@@ -1656,6 +1769,10 @@ gtk_tree_row_reference_new (GtkTreeModel *model,
   g_return_val_if_fail (GTK_IS_TREE_MODEL (model), NULL);
   g_return_val_if_fail (path != NULL, NULL);
 
+  /* We use the model itself as the proxy object; and call
+   * gtk_tree_row_reference_inserted(), etc, in the
+   * class closure (default handler) marshalers for the signal.
+   */  
   return gtk_tree_row_reference_new_proxy (G_OBJECT (model), model, path);
 }
 
@@ -1672,8 +1789,15 @@ gtk_tree_row_reference_new (GtkTreeModel *model,
  * gtk_tree_row_reference_new(), it does not listen to the model for changes.
  * The creator of the row reference must do this explicitly using
  * gtk_tree_row_reference_inserted(), gtk_tree_row_reference_deleted(),
- * gtk_tree_row_reference_reordered().  This must be called once per signal per
- * proxy.
+ * gtk_tree_row_reference_reordered().
+ * 
+ * These functions must be called exactly once per proxy when the
+ * corresponding signal on the model is emitted. This single call
+ * updates all row references for that proxy. Since built-in GTK+
+ * objects like #GtkTreeView already use this mechanism internally,
+ * using them as the proxy object will produce unpredictable results.
+ * Further more, passing the same object as @model and @proxy
+ * doesn't work for reasons of internal implementation.
  *
  * This type of row reference is primarily meant by structures that need to
  * carefully monitor exactly when a row_reference updates itself, and is not
@@ -1712,7 +1836,7 @@ gtk_tree_row_reference_new_proxy (GObject      *proxy,
       parent_iter = iter;
     }
 
-  /* Make ther row reference */
+  /* Make the row reference */
   reference = g_new (GtkTreeRowReference, 1);
 
   g_object_ref (proxy);
@@ -1727,9 +1851,6 @@ gtk_tree_row_reference_new_proxy (GObject      *proxy,
     {
       refs = g_new (RowRefList, 1);
       refs->list = NULL;
-
-      if (G_OBJECT (model) == proxy)
-	connect_ref_callbacks (model);
 
       g_object_set_data_full (G_OBJECT (proxy),
 			      ROW_REF_DATA_STRING,
@@ -1827,9 +1948,6 @@ gtk_tree_row_reference_free (GtkTreeRowReference *reference)
 
   if (refs->list == NULL)
     {
-      if (G_OBJECT (reference->model) == reference->proxy)
-	disconnect_ref_callbacks (reference->model);
-
       g_object_set_data (G_OBJECT (reference->proxy),
 			 ROW_REF_DATA_STRING,
 			 NULL);
@@ -1860,8 +1978,7 @@ gtk_tree_row_reference_inserted (GObject     *proxy,
 {
   g_return_if_fail (G_IS_OBJECT (proxy));
 
-  gtk_tree_row_ref_inserted_callback (NULL, path, NULL, proxy);
-  
+  gtk_tree_row_ref_inserted ((RowRefList *)g_object_get_data (proxy, ROW_REF_DATA_STRING), path, NULL);
 }
 
 /**
@@ -1878,7 +1995,7 @@ gtk_tree_row_reference_deleted (GObject     *proxy,
 {
   g_return_if_fail (G_IS_OBJECT (proxy));
 
-  gtk_tree_row_ref_deleted_callback (NULL, path, proxy);
+  gtk_tree_row_ref_deleted ((RowRefList *)g_object_get_data (proxy, ROW_REF_DATA_STRING), path);
 }
 
 /**
@@ -1899,7 +2016,5 @@ gtk_tree_row_reference_reordered (GObject     *proxy,
 {
   g_return_if_fail (G_IS_OBJECT (proxy));
 
-  gtk_tree_row_ref_reordered_callback (NULL, path, iter, new_order, proxy);
+  gtk_tree_row_ref_reordered ((RowRefList *)g_object_get_data (proxy, ROW_REF_DATA_STRING), path, iter, new_order);
 }
-  
-

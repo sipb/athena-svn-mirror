@@ -18,16 +18,16 @@ Collection of tags that can be used together</refpurpose>
 
 
 struct      <link linkend="GtkTextTagTable-struct">GtkTextTagTable</link>;
-void        (<link linkend="GtkTextTagTableForeach">*GtkTextTagTableForeach</link>)       (<link linkend="GtkTextTag">GtkTextTag</link> *tag,
+<link linkend="void">void</link>        (<link linkend="GtkTextTagTableForeach">*GtkTextTagTableForeach</link>)       (<link linkend="GtkTextTag">GtkTextTag</link> *tag,
                                              <link linkend="gpointer">gpointer</link> data);
 <link linkend="GtkTextTagTable">GtkTextTagTable</link>* <link linkend="gtk-text-tag-table-new">gtk_text_tag_table_new</link>     (void);
-void        <link linkend="gtk-text-tag-table-add">gtk_text_tag_table_add</link>          (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-text-tag-table-add">gtk_text_tag_table_add</link>          (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTag">GtkTextTag</link> *tag);
-void        <link linkend="gtk-text-tag-table-remove">gtk_text_tag_table_remove</link>       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-text-tag-table-remove">gtk_text_tag_table_remove</link>       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTag">GtkTextTag</link> *tag);
 <link linkend="GtkTextTag">GtkTextTag</link>* <link linkend="gtk-text-tag-table-lookup">gtk_text_tag_table_lookup</link>       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              const <link linkend="gchar">gchar</link> *name);
-void        <link linkend="gtk-text-tag-table-foreach">gtk_text_tag_table_foreach</link>      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-text-tag-table-foreach">gtk_text_tag_table_foreach</link>      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTagTableForeach">GtkTextTagTableForeach</link> func,
                                              <link linkend="gpointer">gpointer</link> data);
 <link linkend="gint">gint</link>        <link linkend="gtk-text-tag-table-get-size">gtk_text_tag_table_get_size</link>     (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table);
@@ -49,20 +49,22 @@ void        <link linkend="gtk-text-tag-table-foreach">gtk_text_tag_table_foreac
 
 
 
+
+
 <refsect1>
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="GtkTextTagTable-tag-added">tag-added</link>&quot; void        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+&quot;<link linkend="GtkTextTagTable-tag-added">tag-added</link>&quot; <link linkend="void">void</link>        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkTextTagTable-tag-changed">tag-changed</link>&quot;
-            void        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gboolean">gboolean</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkTextTagTable-tag-removed">tag-removed</link>&quot;
-            void        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -86,13 +88,13 @@ types related to the text widget and how they work together.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTextTagTable-struct"/>struct GtkTextTagTable</title>
-<programlisting>struct GtkTextTagTable;</programlisting>
+<indexterm><primary>GtkTextTagTable</primary></indexterm><programlisting>struct GtkTextTagTable;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkTextTagTableForeach"/>GtkTextTagTableForeach ()</title>
-<programlisting>void        (*GtkTextTagTableForeach)       (<link linkend="GtkTextTag">GtkTextTag</link> *tag,
+<indexterm><primary>GtkTextTagTableForeach</primary></indexterm><programlisting><link linkend="void">void</link>        (*GtkTextTagTableForeach)       (<link linkend="GtkTextTag">GtkTextTag</link> *tag,
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
@@ -108,19 +110,19 @@ types related to the text widget and how they work together.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-new"/>gtk_text_tag_table_new ()</title>
-<programlisting><link linkend="GtkTextTagTable">GtkTextTagTable</link>* gtk_text_tag_table_new     (void);</programlisting>
+<indexterm><primary>gtk_text_tag_table_new</primary></indexterm><programlisting><link linkend="GtkTextTagTable">GtkTextTagTable</link>* gtk_text_tag_table_new     (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkTextTagTable">GtkTextTagTable</link>. The table contains no tags by
+Creates a new <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>. The table contains no tags by
 default.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTextTagTable">GtkTextTagTable</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-add"/>gtk_text_tag_table_add ()</title>
-<programlisting>void        gtk_text_tag_table_add          (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<indexterm><primary>gtk_text_tag_table_add</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_text_tag_table_add          (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTag">GtkTextTag</link> *tag);</programlisting>
 <para>
 Add a tag to the table. The tag is assigned the highest priority
@@ -133,15 +135,15 @@ the same name as an already-added tag.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTagTable">GtkTextTagTable</link>
+<listitem><simpara> a <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tag</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTag">GtkTextTag</link>
+<listitem><simpara> a <link linkend="GtkTextTag"><type>GtkTextTag</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-remove"/>gtk_text_tag_table_remove ()</title>
-<programlisting>void        gtk_text_tag_table_remove       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<indexterm><primary>gtk_text_tag_table_remove</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_text_tag_table_remove       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTag">GtkTextTag</link> *tag);</programlisting>
 <para>
 Remove a tag from the table. This will remove the table's
@@ -151,15 +153,15 @@ up destroyed if you don't have a reference to it.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTagTable">GtkTextTagTable</link>
+<listitem><simpara> a <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tag</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTag">GtkTextTag</link>
+<listitem><simpara> a <link linkend="GtkTextTag"><type>GtkTextTag</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-lookup"/>gtk_text_tag_table_lookup ()</title>
-<programlisting><link linkend="GtkTextTag">GtkTextTag</link>* gtk_text_tag_table_lookup       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<indexterm><primary>gtk_text_tag_table_lookup</primary></indexterm><programlisting><link linkend="GtkTextTag">GtkTextTag</link>* gtk_text_tag_table_lookup       (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 Look up a named tag.</para>
@@ -167,7 +169,7 @@ Look up a named tag.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTagTable">GtkTextTagTable</link> 
+<listitem><simpara> a <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> name of a tag
@@ -177,7 +179,7 @@ Look up a named tag.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-foreach"/>gtk_text_tag_table_foreach ()</title>
-<programlisting>void        gtk_text_tag_table_foreach      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
+<indexterm><primary>gtk_text_tag_table_foreach</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_text_tag_table_foreach      (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table,
                                              <link linkend="GtkTextTagTableForeach">GtkTextTagTableForeach</link> func,
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
@@ -186,7 +188,7 @@ Calls <parameter>func</parameter> on each tag in <parameter>table</parameter>, w
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTagTable">GtkTextTagTable</link>
+<listitem><simpara> a <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>func</parameter>&nbsp;:</term>
 <listitem><simpara> a function to call on each tag
@@ -197,14 +199,14 @@ Calls <parameter>func</parameter> on each tag in <parameter>table</parameter>, w
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-tag-table-get-size"/>gtk_text_tag_table_get_size ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_text_tag_table_get_size     (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table);</programlisting>
+<indexterm><primary>gtk_text_tag_table_get_size</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_text_tag_table_get_size     (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *table);</programlisting>
 <para>
 Returns the size of the table (number of tags)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextTagTable">GtkTextTagTable</link>
+<listitem><simpara> a <link linkend="GtkTextTagTable"><type>GtkTextTagTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> number of tags in <parameter>table</parameter>
 </simpara></listitem></varlistentry>
@@ -215,7 +217,7 @@ Returns the size of the table (number of tags)</para>
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkTextTagTable-tag-added"/>The &quot;tag-added&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -231,7 +233,7 @@ Returns the size of the table (number of tags)</para>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkTextTagTable-tag-changed"/>The &quot;tag-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gboolean">gboolean</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -251,7 +253,7 @@ Returns the size of the table (number of tags)</para>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkTextTagTable-tag-removed"/>The &quot;tag-removed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTextTagTable">GtkTextTagTable</link> *texttagtable,
                                             <link linkend="GtkTextTag">GtkTextTag</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>

@@ -26,6 +26,7 @@
 
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
 #include "gtklabel.h"
 #include "gtkeventbox.h"
 #include "gtkpixmap.h"
@@ -393,14 +394,14 @@ gtk_tree_item_add_pixmaps (GtkTreeItem *tree_item)
 	gdk_pixmap_create_from_xpm_d (GTK_WIDGET (tree_item)->window,
 				      &pixmap_node->mask_plus,
 				      NULL,
-				      tree_plus);
+				      (gchar **)tree_plus);
       
       /* create pixmaps for minus icon */
       pixmap_node->pixmap_minus = 
 	gdk_pixmap_create_from_xpm_d (GTK_WIDGET (tree_item)->window,
 				      &pixmap_node->mask_minus,
 				      NULL,
-				      tree_minus);
+				      (gchar **)tree_minus);
 
       tree_item->pixmaps = pixmaps = g_list_prepend (pixmaps, pixmap_node);
     }
@@ -1035,4 +1036,6 @@ gtk_tree_item_forall (GtkContainer *container,
     (* callback) (bin->child, callback_data);
   if (include_internals && tree_item->subtree)
     (* callback) (tree_item->subtree, callback_data);
+  if (include_internals && tree_item->pixmaps_box)
+    (* callback) (tree_item->pixmaps_box, callback_data);
 }

@@ -19,15 +19,13 @@
  * up when the menu item is selected. Typically, all menu items in a menu bar
  * have submenus.
  *
- * The GtkOptionMenu widget is a button that pops up a GtkMenu when clicked.
- * It's used inside dialogs and such.
- *
- * GtkItemFactory provides a higher-level interface for creating menu bars
+ * GtkUIManager provides a higher-level interface for creating menu bars
  * and menus; while you can construct menus manually, most people don't
- * do that. There's a separate demo for GtkItemFactory.
+ * do that. There's a separate demo for GtkUIManager.
  * 
  */
 
+#include <config.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -74,14 +72,12 @@ create_menu (gint     depth,
 }
 
 GtkWidget *
-do_menus (void)
+do_menus (GtkWidget *do_widget)
 {
   static GtkWidget *window = NULL;
   GtkWidget *box1;
   GtkWidget *box2;
   GtkWidget *button;
-  GtkWidget *optionmenu;
-  GtkWidget *separator;
   
   if (!window)
     {
@@ -91,7 +87,8 @@ do_menus (void)
       GtkAccelGroup *accel_group;
       
       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-      
+      gtk_window_set_screen (GTK_WINDOW (window),
+			     gtk_widget_get_screen (do_widget));
       g_signal_connect (window, "destroy",
 			G_CALLBACK(gtk_widget_destroyed), &window);
       g_signal_connect (window, "delete-event",
@@ -130,62 +127,6 @@ do_menus (void)
       gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menuitem);
       gtk_widget_show (menuitem);
       
-      box2 = gtk_vbox_new (FALSE, 10);
-      gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
-      gtk_box_pack_start (GTK_BOX (box1), box2, TRUE, TRUE, 0);
-      gtk_widget_show (box2);
-      
-      menu = create_menu (1, FALSE);
-      gtk_menu_set_accel_group (GTK_MENU (menu), accel_group);
-      
-      menuitem = gtk_separator_menu_item_new ();
-      gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-      gtk_widget_show (menuitem);
-      
-      menuitem = gtk_check_menu_item_new_with_label ("Accelerate Me");
-      gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-      gtk_widget_show (menuitem);
-      gtk_widget_add_accelerator (menuitem,
-				  "activate",
-				  accel_group,
-				  GDK_F1,
-				  0,
-				  GTK_ACCEL_VISIBLE);
-      menuitem = gtk_check_menu_item_new_with_label ("Accelerator Locked");
-      gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-      gtk_widget_show (menuitem);
-      gtk_widget_add_accelerator (menuitem,
-				  "activate",
-				  accel_group,
-				  GDK_F2,
-				  0,
-				  GTK_ACCEL_VISIBLE | GTK_ACCEL_LOCKED);
-      menuitem = gtk_check_menu_item_new_with_label ("Accelerators Frozen");
-      gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-      gtk_widget_show (menuitem);
-      gtk_widget_add_accelerator (menuitem,
-				  "activate",
-				  accel_group,
-				  GDK_F2,
-				  0,
-				  GTK_ACCEL_VISIBLE);
-      gtk_widget_add_accelerator (menuitem,
-				  "activate",
-				  accel_group,
-				  GDK_F3,
-				  0,
-				  GTK_ACCEL_VISIBLE);
-      
-      optionmenu = gtk_option_menu_new ();
-      gtk_option_menu_set_menu (GTK_OPTION_MENU (optionmenu), menu);
-      gtk_option_menu_set_history (GTK_OPTION_MENU (optionmenu), 3);
-      gtk_box_pack_start (GTK_BOX (box2), optionmenu, TRUE, TRUE, 0);
-      gtk_widget_show (optionmenu);
-
-      separator = gtk_hseparator_new ();
-      gtk_box_pack_start (GTK_BOX (box1), separator, FALSE, TRUE, 0);
-      gtk_widget_show (separator);
-
       box2 = gtk_vbox_new (FALSE, 10);
       gtk_container_set_border_width (GTK_CONTAINER (box2), 10);
       gtk_box_pack_start (GTK_BOX (box1), box2, FALSE, TRUE, 0);

@@ -48,6 +48,7 @@
 #include <gdk/gdkrgb.h>
 #include <gdk/gdkscreen.h>
 #include <gdk/gdkselection.h>
+#include <gdk/gdkspawn.h>
 #include <gdk/gdktypes.h>
 #include <gdk/gdkvisual.h>
 #include <gdk/gdkwindow.h>
@@ -149,10 +150,12 @@ GType gdk_rectangle_get_type (void);
 
 /* Conversion functions between wide char and multibyte strings. 
  */
+#ifndef GDK_DISABLE_DEPRECATED
 gchar     *gdk_wcstombs          (const GdkWChar   *src);
 gint       gdk_mbstowcs          (GdkWChar         *dest,
 				  const gchar      *src,
 				  gint              dest_max);
+#endif
 
 /* Miscellaneous */
 #ifndef GDK_MULTIHEAD_SAFE
@@ -169,20 +172,27 @@ void gdk_notify_startup_complete (void);
 /* Threading
  */
 
-GDKVAR GMutex *gdk_threads_mutex;
+#if !defined (GDK_DISABLE_DEPRECATED) || defined (GDK_COMPILATION)
+GDKVAR GMutex *gdk_threads_mutex; /* private */
+#endif
+
+GDKVAR GCallback gdk_threads_lock;
+GDKVAR GCallback gdk_threads_unlock;
 
 void     gdk_threads_enter                (void);
 void     gdk_threads_leave                (void);
-void     gdk_threads_init                 (void);  
+void     gdk_threads_init                 (void);
+void     gdk_threads_set_lock_functions   (GCallback enter_fn,
+					   GCallback leave_fn);
 
 #ifdef	G_THREADS_ENABLED
 #  define GDK_THREADS_ENTER()	G_STMT_START {	\
-      if (gdk_threads_mutex)                 	\
-        g_mutex_lock (gdk_threads_mutex);   	\
+      if (gdk_threads_lock)                 	\
+        (*gdk_threads_lock) ();			\
    } G_STMT_END
 #  define GDK_THREADS_LEAVE()	G_STMT_START { 	\
-      if (gdk_threads_mutex)                 	\
-        g_mutex_unlock (gdk_threads_mutex); 	\
+      if (gdk_threads_unlock)                 	\
+        (*gdk_threads_unlock) ();		\
    } G_STMT_END
 #else	/* !G_THREADS_ENABLED */
 #  define GDK_THREADS_ENTER()

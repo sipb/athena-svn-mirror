@@ -5,8 +5,7 @@
 >Scrolled Windows</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-SCROLLEDWINDOWS">Scrolled Windows</H1
+NAME="SEC-SCROLLEDWINDOWS"
+>Scrolled Windows</A
+></H1
 ><P
 >Scrolled windows are used to create a scrollable area with another
 widget inside it. You may insert any type of widget into a scrolled
@@ -172,8 +173,8 @@ CLASS="PROGRAMLISTING"
 >&#13;#include &#60;stdio.h&#62;
 #include &#60;gtk/gtk.h&#62;
 
-void destroy( GtkWidget *widget,
-              gpointer   data )
+static void destroy( GtkWidget *widget,
+                     gpointer   data )
 {
     gtk_main_quit ();
 }

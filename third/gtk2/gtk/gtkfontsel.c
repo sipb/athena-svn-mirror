@@ -29,9 +29,12 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <glib/gprintf.h>
 #include <string.h>
+
+#include <atk/atk.h>
 
 #include "gdk/gdk.h"
 #include "gdk/gdkkeysyms.h"
@@ -54,6 +57,7 @@
 #include "gtkvbox.h"
 #include "gtkscrolledwindow.h"
 #include "gtkintl.h"
+#include "gtkaccessible.h"
 
 /* We don't enable the font and style entries because they don't add
  * much in terms of visible effect and have a weird effect on keynav.
@@ -207,22 +211,22 @@ gtk_font_selection_class_init (GtkFontSelectionClass *klass)
   g_object_class_install_property (gobject_class,
                                    PROP_FONT_NAME,
                                    g_param_spec_string ("font_name",
-                                                        _("Font name"),
-                                                        _("The X string that represents this font"),
+                                                        P_("Font name"),
+                                                        P_("The X string that represents this font"),
                                                         NULL,
                                                         G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
 				   PROP_FONT,
 				   g_param_spec_boxed ("font",
-						       _("Font"),
-						       _("The GdkFont that is currently selected"),
+						       P_("Font"),
+						       P_("The GdkFont that is currently selected"),
 						       GDK_TYPE_FONT,
 						       G_PARAM_READABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_PREVIEW_TEXT,
                                    g_param_spec_string ("preview_text",
-                                                        _("Preview text"),
-                                                        _("The text to display in order to demonstrate the selected font"),
+                                                        P_("Preview text"),
+                                                        P_("The text to display in order to demonstrate the selected font"),
                                                         PREVIEW_TEXT,
                                                         G_PARAM_READWRITE));
   gobject_class->finalize = gtk_font_selection_finalize;
@@ -278,6 +282,28 @@ static void gtk_font_selection_get_property (GObject         *object,
     }
 }
 
+/* Handles key press events on the lists, so that we can trap Enter to
+ * activate the default button on our own.
+ */
+static gboolean
+list_row_activated (GtkWidget *widget)
+{
+  GtkWindow *window;
+  
+  window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (widget)));
+  if (!GTK_WIDGET_TOPLEVEL (window))
+    window = NULL;
+  
+  if (window
+      && widget != window->default_widget
+      && !(widget == window->focus_widget &&
+	   (!window->default_widget || !GTK_WIDGET_SENSITIVE (window->default_widget))))
+    {
+      gtk_window_activate_default (window);
+    }
+  
+  return TRUE;
+}
 
 static void
 gtk_font_selection_init (GtkFontSelection *fontsel)
@@ -290,6 +316,7 @@ gtk_font_selection_init (GtkFontSelection *fontsel)
   GtkListStore *model;
   GtkTreeViewColumn *column;
   GList *focus_chain = NULL;
+  AtkObject *atk_obj;
 
   gtk_widget_push_composite_child ();
 
@@ -358,6 +385,9 @@ gtk_font_selection_init (GtkFontSelection *fontsel)
   fontsel->family_list = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
   g_object_unref (model);
 
+  g_signal_connect (fontsel->family_list, "row-activated",
+		    G_CALLBACK (list_row_activated), fontsel);
+
   column = gtk_tree_view_column_new_with_attributes ("Family",
 						     gtk_cell_renderer_text_new (),
 						     "text", FAMILY_NAME_COLUMN,
@@ -391,6 +421,8 @@ gtk_font_selection_init (GtkFontSelection *fontsel)
 			      G_TYPE_STRING); /* FACE_NAME_COLUMN */
   fontsel->face_list = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
   g_object_unref (model);
+  g_signal_connect (fontsel->face_list, "row-activated",
+		    G_CALLBACK (list_row_activated), fontsel);
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (style_label), fontsel->face_list);
 
@@ -424,6 +456,8 @@ gtk_font_selection_init (GtkFontSelection *fontsel)
   model = gtk_list_store_new (1, G_TYPE_INT);
   fontsel->size_list = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
   g_object_unref (model);
+  g_signal_connect (fontsel->size_list, "row-activated",
+		    G_CALLBACK (list_row_activated), fontsel);
 
   column = gtk_tree_view_column_new_with_attributes ("Size",
 						     gtk_cell_renderer_text_new (),
@@ -464,6 +498,50 @@ gtk_font_selection_init (GtkFontSelection *fontsel)
 
   g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (fontsel->size_list)), "changed",
 		    G_CALLBACK (gtk_font_selection_select_size), fontsel);
+  atk_obj = gtk_widget_get_accessible (fontsel->size_list);
+  if (GTK_IS_ACCESSIBLE (atk_obj))
+    {
+      /* Accessibility support is enabled.
+       * Make the label ATK_RELATON_LABEL_FOR for the size list as well.
+       */
+      AtkObject *atk_label;
+      AtkRelationSet *relation_set;
+      AtkRelation *relation;
+      AtkObject *obj_array[1];
+      GPtrArray *array;
+
+      atk_label = gtk_widget_get_accessible (label);
+      relation_set = atk_object_ref_relation_set (atk_obj);
+      relation = atk_relation_set_get_relation_by_type (relation_set, ATK_RELATION_LABELLED_BY);
+      if (relation)
+        {
+          array = atk_relation_get_target (relation);
+          g_ptr_array_add (array, atk_label);
+        }
+      else 
+        {
+          obj_array[0] = atk_label;
+          relation = atk_relation_new (obj_array, 1, ATK_RELATION_LABELLED_BY);
+          atk_relation_set_add (relation_set, relation);
+        }
+      g_object_unref (relation_set);
+
+      relation_set = atk_object_ref_relation_set (atk_label);
+      relation = atk_relation_set_get_relation_by_type (relation_set, ATK_RELATION_LABEL_FOR);
+      if (relation)
+        {
+          array = atk_relation_get_target (relation);
+          g_ptr_array_add (array, atk_obj);
+        }
+      else 
+        {
+          obj_array[0] = atk_obj;
+          relation = atk_relation_new (obj_array, 1, ATK_RELATION_LABEL_FOR);
+          atk_relation_set_add (relation_set, relation);
+        }
+      g_object_unref (relation_set);
+    }    
+      
 
   /* create the text entry widget */
   label = gtk_label_new_with_mnemonic (_("_Preview:"));
@@ -957,7 +1035,10 @@ gtk_font_selection_size_activate (GtkWidget   *w,
   text = gtk_entry_get_text (GTK_ENTRY (fontsel->size_entry));
   new_size = MAX (0.1, atof (text) * PANGO_SCALE + 0.5);
 
-  gtk_font_selection_set_size (fontsel, new_size);
+  if (fontsel->size != new_size)
+    gtk_font_selection_set_size (fontsel, new_size);
+  else 
+    list_row_activated (w);
 }
 
 static gboolean
@@ -965,7 +1046,16 @@ gtk_font_selection_size_focus_out (GtkWidget     *w,
 				   GdkEventFocus *event,
 				   gpointer       data)
 {
-  gtk_font_selection_size_activate (w, data);
+  GtkFontSelection *fontsel;
+  gint new_size;
+  const gchar *text;
+  
+  fontsel = GTK_FONT_SELECTION (data);
+
+  text = gtk_entry_get_text (GTK_ENTRY (fontsel->size_entry));
+  new_size = MAX (0.1, atof (text) * PANGO_SCALE + 0.5);
+
+  gtk_font_selection_set_size (fontsel, new_size);
   
   return TRUE;
 }
@@ -1053,7 +1143,7 @@ gtk_font_selection_update_preview (GtkFontSelection *fontsel)
   gtk_editable_set_position (GTK_EDITABLE (preview_entry), 0);
 }
 
-GdkFont*
+static GdkFont*
 gtk_font_selection_get_font_internal (GtkFontSelection *fontsel)
 {
   if (!fontsel->font)

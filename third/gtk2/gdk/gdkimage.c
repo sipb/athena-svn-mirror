@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
@@ -215,7 +216,7 @@ allocate_scratch_images (GdkScratchImageInfo *info,
 	  gint j;
 	  
 	  for (j = 0; j < i; j++)
-	    g_object_unref (info->static_image[i]);
+	    g_object_unref (info->static_image[j]);
 	  
 	  return FALSE;
 	}
@@ -247,7 +248,7 @@ scratch_image_info_for_depth (GdkScreen *screen,
   image_info->depth = depth;
   image_info->screen = screen;
 
-    /* Try to allocate as few possible shared images */
+  /* Try to allocate as few possible shared images */
   for (i=0; i < G_N_ELEMENTS (possible_n_images); i++)
     {
       if (allocate_scratch_images (image_info, possible_n_images[i], TRUE))

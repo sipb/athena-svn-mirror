@@ -1,21 +1,152 @@
-Mon Jan 27 17:10:30 2003  Owen Taylor  <otaylor@redhat.com>
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
 
-	* Makefile.am (gdk-pixbuf.loaders): Rewrite to run
-	on the .la files rather than looking for .so files.
-	(#102142, Martin Gansser)
+	* === Released 2.4.9 ===
 
-	* Makefile.am: Don't build gdk-pixbuf.loaders when
-	cross-compiling.
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
 
-2003-01-12  Tor Lillqvist  <tml@iki.fi>
+	* === Released 2.4.8 ===
 
-	* gdk_pixbuf.def: Add some missing entries. Thanks to Kenichi SUTO.
+2004-08-24  Matthias Clasen  <mclasen@redhat.com>
 
-2003-01-09  Tor Lillqvist  <tml@iki.fi>
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_new_with_mime_type): Use
+	the correct index, and compare correctly, reported by Tommi Komulainen.
+
+	* gdk-pixdata.c (gdk_pixdata_from_pixbuf): Work around bugs in
+	the runlength encoder by forcing rowstride * height to be 
+	divisible by bpp.  (#150882)
+
+Mon Aug 23 00:51:20 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* pixops/pixops.c (pixops_scale_nearest): Make it 
+	compile.  (#150761, Jon-Kare Hellan)
+
+Sun Aug 22 03:24:38 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* pixops/pixops.c (pixops_scale_nearest): Fix a mixup in 
+	the handling of dest_channels.  (#111922, Christophe Fergeau)
+
+Fri Aug 20 11:59:10 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* io-bmp.c: Fix infinite loop that can occur for bad
+	image data (#150601, Chris Evans, Manish Singh)
+
+Sat Aug 14 19:15:08 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* === Released 2.4.7 ===
+
+2004-08-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.6 ===
+
+Thu Aug 12 22:19:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-bmp.c (DecodeHeader): Properly determine the number of 
+	colors in an OS/2 BMP file.  (#150003, Jon-Kare Hellan)
+
+2004-08-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* pixops/pixops.c: Remove C99-isms.  (#149967, Vincent Noel)
+
+2004-08-11  Matthias Clasen  <mclasen@redhat.com>
+
+	* pixops/pixops.c: Make scaling and compositing functions handle
+	edge pixels consistently.  (#111922, Brian Cameron)
+
+Sun Aug  1 23:57:06 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-pcx.c (pcx_increment_load_data_1): Fix progressive
+	loading of 8bit pcx files. (#148518, Magnus Bergman)
+
+Tue Jul 20 22:23:26 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.h: Remove trailing commas from 
+	enumerations.  (#148035)
+
+2004-07-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.4 ===
+
+2004-07-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdk-pixbuf-features.h.in: Fix the build.
+
+2004-07-06  Tor Lillqvist  <tml@iki.fi>
+
+	* gdk-pixbuf-features.h.in
+	* gdk-pixbuf.c: Mark the version variables for proper import and
+	export from Windows DLLs. Thanks to Laurent Sansonetti for
+	reporting the problem.
+
+Sat Jul  3 00:41:44 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* pixops/pixops.c (bilinear_box_make_weights): Correct the
+	math to calculate bilinear weights. (#112412, Brian Cameron)
+
+Sun Jun 20 00:16:00 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-scale.c (gdk_pixbuf_composite): Add a figure which
+	explains pixbuf compositing.
+
+2004-06-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* io-tiff.c: Make the tiff loader work with both 
+	libtiff 3.5.7 and libtiff 3.6.1.  (#135541, Marco Ghirlanda)
+
+2004-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.3 ===
+
+Sat Jun  5 00:59:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-animation.c: 
+	* gdk-pixbuf-io.c: Convert filenames to UTF-8 when embedding
+	them in error messages.  (#143654, Sven Neumann)
+
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.2 ===
+
+Sun May 16 22:55:49 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-pnm.c (pnm_read_next_value): Don't read integers 
+	partially.  (#142584, Kouichirou Hiratsuka) 
+
+2004-05-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* pixops/timescale.c: 
+	* pixops/pixops.c: 
+	* pixops/pixops.h: 
+	* gdk-pixbuf-scale.c: _-prefix the nonstatic pixops_... 
+	functions.  (#142233, Morten Welinder)
+
+2004-04-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.1 ===
+
+2004-04-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* io-ani.c (gdk_pixbuf__ani_image_load_animation): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_get_file_info) 
+	(_gdk_pixbuf_generic_image_load) 
+	(gdk_pixbuf_new_from_file_at_size): When calling fread()
+	in a loop, check for ferror() as well as for feof() to
+	avoid infinite loops on directories.  (#137804, Alex Converse)
+
+Mon Mar 15 15:01:59 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.4.0 ===
+
+2004-03-15  Tor Lillqvist  <tml@iki.fi>
+
+	* queryloaders.c (main): [Win32] Look up installation prefix at
+	run-time, replace prefix in PIXBUF_LIBDIR with that. (#106141)
+
+	Merges from stable branch that had been left out. (#136282, J. Ali
+	Harlow):
 
 	Changes for run-time lookup of installation location on Win32:
 	
-	* Makefile.am (INCLUDES): Define PREFIX as $(prefix).
+	* Makefile.am (INCLUDES): Define GTK_PREFIX as $(prefix).
 
 	* gdk-pixbuf-io.c (get_sysconfdir): New function, look up
 	installation location at runtime and deduce GTK_SYSCONFDIR
@@ -24,14 +155,478 @@ Mon Jan 27 17:10:30 2003  Owen Taylor  <otaylor@redhat.com>
 	(correct_prefix): Replace compile-time prefix with run-time
 	prefix.
 	(get_libdir): Remove, not used any longer.
-	(gdk_pixbuf_io_init): Call correct_prefix().
-
-2003-01-05  Tor Lillqvist  <tml@iki.fi>
+	(gdk_pixbuf_io_init): Call correct_prefix() on Win32.
 
 	* queryloaders.c (query_module): [Win32] Change backslahses into
 	slashes in path.
 
-2003-01-04  Tor Lillqvist  <tml@iki.fi>
+Tue Mar  9 09:33:28 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.6 ===
+
+2004-03-05  Tor Lillqvist  <tml@iki.fi>
+
+	* gdk_pixbuf.def: Add missing entries. Thanks to J. Ali Harlow.
+
+Fri Mar  5 22:22:25 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-bmp.c (OneLine32): Don't try to load an alpha channel
+	from the BMP, since there is no evidence that even 32bit
+	BMPs have an alpha channel.  (#135502)
+
+Mon Mar  1 19:47:48 2004  Owen Taylor  <otaylor@redhat.com>
+
+	 * === Released 2.3.5 ====
+
+2004-02-28  Hans Breuer  <hans@breuer.org>
+
+	* io-tiff.c : include <io.h> for lseek()
+	* io-xbm.c : use HAVE_UNISTD_H
+
+Tue Feb 24 14:45:03 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.3 ===
+
+Sun Feb 22 01:09:55 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-bmp.c (gdk_pixbuf__bmp_image_begin_load): Remove debugging
+	code.
+
+Fri Feb 20 22:25:32 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* io-bmp.c (DecodeHeader): Store and sanity-check the clrUsed field 
+	from the header for use in DecodeColormap.
+	* io-bmp.c (DecodeColormap): Don't read more colormap entries than
+	the header says are there.  (#134235, Kazuho Okui)
+
+Sun Feb  8 01:07:20 2004  Manish Singh  <yosh@gimp.org>
+
+	* gdk-pixbuf-io.c: removed unnecessary G_OBJECT() cast checks.
+
+	* io-jpeg.c: make the return type for to_callback_empty_output_buffer
+	"boolean", which should be defined by the jpeg headers. The right
+	return type for this function depends on how the jpeg library
+	was built (one wonders what happens if different compilers are used).
+
+2004-01-28  Hans Breuer  <hans@breuer.org>
+
+	* gdk_pixbuf.def : updated externals
+
+Sat Jan 17 23:02:55 2004  Matthias Clasen  <maclas@gmx.de>
+
+	The second part of the fix for #114351 (see also 
+	../Changelog)
+	
+	* gdk-pixbuf-i18n.h (P_): Use translation domain gtk20-properties.
+
+Sat Jan 17 00:01:51 2004  Matthias Clasen  <maclas@gmx.de>
+
+	The first part of the fix for #114351 (see also
+	../ChangeLog): 
+
+	* gdk-pixbuf-i18n.h: Define P_() for property blurbs and nicks.
+
+	* gdk-pixbuf.c:  Mark property blurbs and nicks with P_().
+
+Thu Jan  8 22:01:14 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* queryloaders.c (loader_sanity_check): Don't use bitwise operators
+	on booleans.  (#130923, reported by Telsa Gwynne, fix by Dave Jones)
+
+2004-01-06  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_save): Escape an ampersand in the
+	documentation comment, and hack around an empty line in the code
+	example so that gtk-doc won't put a <para> due to it.
+
+	* gdk-pixbuf.c (gdk_pixbuf_get_pixels): Link to the documentation
+	section on image data.
+
+2004-01-06  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixdata.c (gdk_pixbuf_new_from_inline): Fix example in
+	documentation comment.  Fixes #130701.
+
+Wed Jan  7 02:41:14 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_save_to_bufferv): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_save_to_buffer): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_save_to_callbackv): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_save_to_callback): New public API
+	to save pixbufs to non-file locations.  (#82203, Tim Evans)
+
+	* gdk-pixbuf.h:
+	* gdk-pixbuf.def: Declare the new public API.
+
+	* gdk-pixbuf-io.h: Add save_to_callback to the module interface.
+	
+	* io-jpeg.c: 
+	* io-png.c: Implement save_to_callback.
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_savev): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_save): Update documentation. 
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_real_save): Support saving via
+	image_module->save_to_callback.
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_real_save_to_callback): New generic
+	save_to_callback function which falls back to image_module->save 
+	on a temp file.
+	
+Wed Jan  7 01:17:36 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_size_func): 
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_set_size): 
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_init): Make it possible
+	to call gdk_pixbuf_loader_set_size (loader, 0, 0) by changing
+	the initial values of priv->width/height to -1.
+	
+	* io-tiff.c (tiff_image_parse): 
+	* io-ras.c (RAS2State): 
+	* io-pnm.c (gdk_pixbuf__pnm_image_load_increment): 
+	* io-pcx.c (gdk_pixbuf__pcx_load_increment): 
+	* io-jpeg.c (gdk_pixbuf__jpeg_image_load_increment): 
+	* io-png.c (png_info_callback): 
+	* io-ico.c (DecodeHeader): 
+	* io-bmp.c (DecodeHeader): Call size_func once the size is known,
+	even if the module can't make use of the scaling information. If
+	size_func returns 0, don't allocate a pixbuf and return, if 
+	necessary with an error.
+
+	* gdk-pixbuf.h: 
+	* gdk-pixbuf-io.c (gdk_pixbuf_get_file_info): A new function 
+	to determine the type and size of an image file without loading
+	it completely.  (#53725)
+
+Sun Jan  4 00:44:57 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf.c (gdk_pixbuf_class_init): Turn the pixbuf 
+	attributes into (construct-only, but always readable) 
+	properties.  (#130196)
+
+	* gdk-pixbuf-data.c (gdk_pixbuf_new_from_data): Set properties
+	in g_object_new().
+
+Mon Dec 22 01:35:36 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* Makefile.am (gdk-pixbuf.loaders): Fix building with
+	--disable-modules --with-included-loaders, create an 
+	empty gdk-pixbuf.loaders file.  (#124496, Arno Charlet, fix 
+	proposed by Owen Taylor)
+
+Thu Dec 11 01:57:05 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_class_init): Move
+	the documentation for signals inline, to get proper parameter
+	documentation.  (#128977) 	
+
+Sat Nov 15 00:26:19 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* queryloaders.c (loader_sanity_check): Check that the mask
+	is NULL or a string of the same length consisting entirely of
+	' ', '!', 'x', 'z', 'n'. 
+
+Mon Nov 10 00:17:52 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* Makefile.am (install-data-local): Typo fix in warning.
+
+Sun Nov  9 23:07:05 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.c (_gdk_pixbuf_generic_image_load): If neither
+	load nor begin_load are available fall back to load_animation 
+	and use gdk_pixbuf_animation_get_static_image() to obtain a 
+	pixbuf. Inefficient, but at least doesn't crash.
+
+Sun Nov  9 21:56:20 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* queryloaders.c (write_loader_info): New function to write 
+	out the information for a single loader, factored out of 
+	query_module().
+	(loader_sanity_check): New function to perform
+	sanity checks on a loader.
+	(query_module): Use the new functions.
+
+Thu Nov  6 00:27:27 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* io-pcx.c (gdk_pixbuf__pcx_load_increment): Fold two similar
+	strings into on.  (#126204, Danilo Segan)
+
+2003-09-19  Matthias Clasen  <maclas@gmx.de>
+
+	* io-tga.c (try_preload): Remove a pointless check.  
+	(#122710, Kjartan Maraas)
+
+Mon Aug 18 10:25:29 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk-pixdata.c (gdk_pixdata_to_csource): Add the correct
+	alignment magic for Sun compiler and for GCC to get
+	the strings aligned. (Patch from Brian Cameron, #117217)
+
+2003-08-14  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixdata.c (gdk_pixdata_to_csource): Improve doc comment
+	wording. (#119754, Doug Quale)
+
+2003-08-03  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf.c (gdk_pixbuf_get_rowstride): 
+	* gdk-pixbuf-data.c (gdk_pixbuf_new_from_data): Clarify misleading
+	explanation of rowstride.  (#119000)
+
+2003-07-24  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_new_from_file_at_size): Preserve the
+	aspect ratio.  (#118145, Owen Taylor) 
+
+2003-07-23  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.c (gdk_pixbuf_new_from_file_at_size): Close loader
+	before unref'ing it.  (#118146, Owen Taylor)
+
+2003-03-01  Hans Breuer  <hans@breuer.org>
+
+	* makefile.msc : updated
+
+	* gdk_pixbuf.def : export a bunch of new functions
+
+2003-07-18  Matthias Clasen  <maclas@gmx.de>
+
+	* pixops/pixops.c (correct_total): Split correction into multiple
+	pieces if no single weight is large enough to apply the unsplit
+	correction.  (#117431, problem reported by Tomas Ögren) 
+
+2003-07-13  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf.h: 
+	* gdk-pixbuf-io.c (gdk_pixbuf_new_from_file_at_size): New function
+	to load an image from a file at a  specified size.  (#105326, Dom
+	Lachowicz) 
+
+2003-07-11  Matthias Clasen  <maclas@gmx.de>
+
+	* queryloaders.c (query_module): Handle absolute filenames
+	properly. (#117170, Jens Elkner) 
+
+	* gdk-pixbuf-io.c: Mention that NULL-terminated arrays returned by 
+	gdk_pixbuf_format_get_mime_types() and
+	gdk_pixbuf_format_get_extensions() must be freed with g_strfreev().
+
+2003-07-04  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-io.c: Document ICO save parameters.
+
+	* io-ico.c: Support saving of ICOs and CURs. Currently, only
+	single-image ICOs are produced, but the code for multi-image ICOs
+	is already in place. The saver understands the options "depth"
+	(can be "32", "24" or "16") and "x_hot"/"y_hot" for hotspot
+	coordinates of CURs. 
+
+2003-06-28  Matthias Clasen  <maclas@gmx.de>
+
+	* io-ico.c (DecodeHeader): Stop discriminating against 32bpp ICOs
+	a): Use the byte size of the image as a heuristic when selecting
+	the bitmap  to load - this lets us select 32bpp bitmaps which come
+	after a 8bpp bitmap. 
+	(OneLineTransp): Stop discriminating against 32bpp ICOs b): Don't
+	overwrite the alpha channel of 32bpp ICOs. 
+	(gdk_pixbuf__ico_image_load_increment): Stop decoding the header
+	unnecessarily. 
+
+Fri Jun 27 03:56:59 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* io-gif-animation.c (gdk_pixbuf_gif_anim_frame_composite): Make
+	it compile with C89 compilers.
+
+2003-06-23  Matthias Clasen  <maclas@gmx.de>
+
+	* io-gif.c (gif_get_frame_info): Remove the pointless refusal to
+	load images with dubious disposal mode on the first frame. Just
+	ignore it, as everybody else does. 
+
+2003-06-22  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-loader.[hc] (gdk_pixbuf_loader_new_with_mime_type):
+	New function to obtain a loader for a specific mime type.
+	(#105324, Dom Lachowicz) 
+
+	* io-gif.c (gif_get_extension): Reset block_count to 0 for all
+	application extensions, otherwise the data blocks of unknown
+	extensions are not propertly skipped.  
+
+	Second half of the fix for #106962, handle frames extending beyond
+	the logical screen: 
+	
+	* io-gif.c (clip_frame): New helper function to clip a rectangle
+	to the logical screen size of the gif. 
+	(maybe_update): New helper function to call update_func only if
+	the rectangle is not completely off-bounds. 
+	(gif_get_lzw): Read frames extending outside the logical screen
+	size, but be careful clip to the logical screen size 
+	when operating on the composite pixbuf and when calling update_func.
+	(gif_init): Set the animation size to the logical screen size.
+	(gif_get_frame_info): Don't refuse to load images with frames
+	extending beyond the logical screen size. 
+
+	* io-gif-animation.c (gdk_pixbuf_gif_anim_frame_composite): Be
+	careful to clip all rectangles to the logical screen size, also
+	handle the fact that frames may be completely off-bounds. 
+
+2003-06-21  Matthias Clasen  <maclas@gmx.de>
+
+	* io-gif.c: Merge from 2.2: Fix update_func() arguments and accept
+	empty frames.  (#106962)
+
+2003-06-17  Matthias Clasen  <maclas@gmx.de>
+
+	* Makefile.am (man_MANS): Removed, man pages are now installed
+	from docs/reference/gdk-pixbuf.
+
+2003-06-03  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixdata.c (gdk_pixbuf_new_from_inline): Document
+	data_length == -1, add an example.  (#97290)
+
+2003-06-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixdata.h (struct _GdkPixdata): Fix misleading documentation
+	of rowstride.  (#113924, Noah Levitt)
+
+2003-05-27  Matthias Clasen  <maclas@gmx.de>
+
+	* io-wbmp.c: Remove dubious bitfields of
+	unspecified signedness.  (#112919, Morten Welinder)gdk-p
+
+	* gdk-pixdata.c (gdk_pixdata_to_csource): Replace all occurances
+	of g_string_new ("") by g_string_new (NULL). (#106975, Morten
+	Welinder) 
+
+2003-05-21  Matthias Clasen  <maclas@gmx.de>
+
+	* pixbufloader_pcx.def: 
+	* io-pcx.c: A loader for PCX files.  (#113035, Josh Beam)
+
+	* gdk-pixbuf-io.c: 
+	* Makefile.am: Add PCX loader.
+
+2003-05-19  Matthias Clasen  <maclas@gmx.de>
+
+	Improve progressive loading from slow sources:  (#107368)
+	
+	* io-gif-animation.c (gdk_pixbuf_gif_anim_get_iter): Initialize
+	first_loop_slowness. 
+	(gdk_pixbuf_gif_anim_iter_advance): Don't wrap during loading if
+	the datasource falls behind the speed of the display.
+
+	* io-gif-animation.h: Add a loading flag to GdkPixbufGifAnim and  
+	first_loop_slowness to GdkPixbufGifAnimIter.
+
+Wed May 14 18:24:50 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk-pixdata.c (gdk_pixdata_deserialize): Add a 
+	(gint32 *) => (guint32 *) cast. (#108615, Rick Jones)
+
+2003-04-24  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-loader.c (gdk_pixbuf_loader_write): 
+	(gdk_pixbuf_loader_new_with_type): 
+	(gdk_pixbuf_loader_close): 
+	* gdk-pixbuf-io.c (gdk_pixbuf_new_from_file): 
+	(gdk_pixbuf_save): 
+	(gdk_pixbuf_savev): 
+	* gdk-pixbuf-animation.c (gdk_pixbuf_animation_new_from_file): 
+	Add sanity checks for GError handling.  (#108345) 
+
+Tue Apr  1 15:33:51 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* pixops/pixops.c (make_weights): Exploit the fact that all
+	our filters are separable to simplify the calculation of
+	the weight tables. (Based on a patch from Brian Cameron.)
+
+	* pixops/Makefile.am pixbuf-transform-math.ltx: 
+	Add a short article describing how the math in pixops.c
+	works.
+
+2003-03-21  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-animation.c (gdk_pixbuf_non_anim_get_type): Add
+	missing static.  (#108614)
+
+	* io-jpeg.c (gdk_pixbuf__jpeg_image_begin_load): 
+	* io-ico.c (gdk_pixbuf__ico_image_stop_load): Add missing static
+	qualifiers apparently causing problems on some platforms. (#108617)
+
+2003-03-11  Matthias Clasen  <maclas@gmx.de>
+
+	* io-ico.c (DecodeHeader): Calculate LineWidth for 16bpp from
+	width, like for the other depths.  (noticed by Marijn Ros)
+
+2003-03-08  Matthias Clasen  <maclas@gmx.de>
+
+	Bug #107664 continued: 
+	
+	* io-xpm.c (find_color): Fix 0/FALSE confusion
+	* gdk-pixbuf.c (gdk_pixbuf_get_has_alpha): Fix -1/gboolean
+	confusion. 
+
+2003-03-06  Matthias Clasen  <maclas@gmx.de>
+
+	* io-gif.c (gif_read): Fix 0/FALSE confusion (#107664, Morten
+	Welinder) 
+
+2003-02-20  Matthias Clasen  <maclas@gmx.de>
+
+	* io-gif-animation.c (gdk_pixbuf_gif_anim_frame_composite): 
+	Always clear the initial frame and "disposed" areas with
+	transparent pixels, no matter whether the frame has transparency 
+	or not.  (#55502)
+
+2003-02-18  Matthias Clasen  <maclas@gmx.de>
+
+	* io-tga.c (pixbuf_flip_row): 
+	(pixbuf_flip_vertically): Auxiliary functions used to implement
+	support for arbitrary origins.
+	(parse_data_for_row_pseudocolor): 
+	(parse_data_for_row_truecolor): 
+	(parse_data_for_row_grayscale): 
+	(parse_data_for_row): 
+	(fill_in_context): Remove the check for upper-left origin.
+	(parse_rle_data): Support arbitrary origins. (#105912)
+
+	* io-tga.c (fread_check): 
+	(fseek_check): 
+	(get_header_from_file): 
+	(get_colormap_from_file): 
+	(get_image_pseudocolor): 
+	(swap_channels_pixbuf): 
+	(get_image_truecolor): 
+	(get_image_grayscale): 
+	(gdk_pixbuf__tga_load): Remove the non-incremental load
+	implementation, since we have generic_image_load () now.
+
+	(gdk_pixbuf__tga_stop_load): Fix a potential crash discovered by
+	pixbuf-lowmem.
+
+2003-02-14  Matthias Clasen  <maclas@gmx.de>
+
+	* io-tga.c (try_preload): 
+	(gdk_pixbuf__tga_load): Actually reject images with origin
+	not in the upper-left corner.  (#105912)  
+
+2003-02-06  Matthias Clasen  <maclas@gmx.de>
+
+	* queryloaders.c (query_module): Better error message if
+	module_open() fails.  (#105349, Tim Mooney)
+
+Mon Jan 27 17:10:30 2003  Owen Taylor  <otaylor@redhat.com>
+ 
+ 	* Makefile.am (gdk-pixbuf.loaders): Rewrite to run
+ 	on the .la files rather than looking for .so files.
+ 	(#102142, Martin Gansser)
+ 
+ 	* Makefile.am: Don't build gdk-pixbuf.loaders when
+ 	cross-compiling.
+ 
+2003-01-05  Tor Lillqvist  <tml@iki.fi>
 
 	* Makefile.am (gdk-pixbuf.loaders): Use @SOEXT@ in the find command.
 
@@ -927,9 +1522,10 @@ Wed Sep 26 18:08:19 2001  Owen Taylor  <otaylor@redhat.com>
 Thu Sep 20 17:22:48 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* io-tiff.c (gdk_pixbuf__tiff_image_load): On OSF, apparently fseek()
-	works in some on-demand way, so the fseek gdk_pixbuf_new_from_file() doesn't 
-	work here since we are using the raw file descriptor. So, we call lseek()
-	on the fileno(f) before using it. (#60840).
+	works in some on-demand way, so the fseek
+	gdk_pixbuf_new_from_file() doesn't work here since we are using
+	the raw file descriptor. So, we call lseek() on the fileno(f)
+	before using it. (#60840). 
 
 2001-09-20  James Henstridge  <james@daa.com.au>
 
@@ -2271,8 +2867,8 @@ Fri May  5 12:16:32 2000  Owen Taylor  <otaylor@redhat.com>
 
 2000-02-14  Mark Crichton  <crichton@gimp.org>
 
-	* gdk-pixbuf/io-xpm.c (xpm_extract_color): Added check for "g" color type.
-	Imlib/libXpm handle this, but we didn't.
+	* gdk-pixbuf/io-xpm.c (xpm_extract_color): Added check for "g"
+	color type. Imlib/libXpm handle this, but we didn't.
 
 2000-02-14  Darin Adler  <darin@eazel.com>
 
@@ -2280,7 +2876,8 @@ Fri May  5 12:16:32 2000  Owen Taylor  <otaylor@redhat.com>
 	* .cvsignore: gdk-pixbuf/.cvsignore: More to ignore.
 
 2000-02-14  Elliot Lee  <sopwith@redhat.com>
-	* gdk-pixbuf/gdk-pixbuf.h, gdk-pixbuf/gdk-pixbuf-data.c: Make passed-in argument 'const'.
+	* gdk-pixbuf/gdk-pixbuf.h, gdk-pixbuf/gdk-pixbuf-data.c: Make
+	passed-in argument 'const'.
 
 2000-02-04  Michael Meeks  <mmeeks@gnu.org>
 
@@ -2479,10 +3076,11 @@ Mon Jan 31 12:38:50 2000  Owen Taylor  <otaylor@redhat.com>
 
 2000-01-05  Owen Taylor  <otaylor@redhat.com>
 
-	* gdk-pixbuf/pixops/pixops.c (pixops_process): Fix computation of end of run indices.
+	* gdk-pixbuf/pixops/pixops.c (pixops_process): Fix computation of
+	end of run indices. 
 
-	* gdk-pixbuf/pixops/pixops.c: Fix double increments when dest_channels == 4.
-	  (Pointed out by Tomas Ogren)
+	* gdk-pixbuf/pixops/pixops.c: Fix double increments when
+	  dest_channels == 4.  (Pointed out by Tomas Ogren)
 
 2000-01-05  Mark Crichton  <crichton@gimp.org>
 
@@ -3242,8 +3840,8 @@ Mon Nov 15 17:18:28 1999  George Lebl <jirka@5z.com>
 	will look into next.
 
 1999-11-03    <sopwith@redhat.com>
-	* src/testpixbuf.c: A GtkFunction needs to return a value for deterministic behaviour.
-	  Also put dot printing back in.
+	* src/testpixbuf.c: A GtkFunction needs to return a value for
+	  deterministic behaviour. Also put dot printing back in.
 
 1999-11-03    <jrb@redhat.com>
 
@@ -3270,8 +3868,8 @@ Mon Nov 15 17:18:28 1999  George Lebl <jirka@5z.com>
 	It's a little slow though. )-:
 
 1999-11-02 Elliot Lee <sopwith@redhat.com>
-	* src/gdk-pixbuf-loader.[ch], src/gdk-pixbuf-io.h: Make the arguments to the
-	write/load_increment operations const-correct.
+	* src/gdk-pixbuf-loader.[ch], src/gdk-pixbuf-io.h: Make the
+	arguments to the write/load_increment operations const-correct.
 
 1999-11-02  Federico Mena Quintero  <federico@redhat.com>
 
@@ -3282,8 +3880,8 @@ Mon Nov 15 17:18:28 1999  George Lebl <jirka@5z.com>
 
 1999-11-02 Elliot Lee <sopwith@redhat.com>
 
-	* src/testpixbuf.c: Allow using $TBF_READLEN to specify the size of the chunks
-	that are read from the input file.
+	* src/testpixbuf.c: Allow using $TBF_READLEN to specify the size
+	of the chunks that are read from the input file.
 
 1999-11-02  Larry Ewing  <lewing@gimp.org>
 
@@ -3427,7 +4025,8 @@ Mon Nov 15 17:18:28 1999  George Lebl <jirka@5z.com>
 	(file_formats): This array initializer was seriously on crack,
 	was assigning a function pointer to a GModule*
 
-	* src/testpixbuf.c (main): Change type of pixbuf_loader to GdkPixbufLoader*
+	* src/testpixbuf.c (main): Change type of pixbuf_loader to
+	GdkPixbufLoader* 
 
 1999-10-27  Havoc Pennington  <hp@pobox.com>
 

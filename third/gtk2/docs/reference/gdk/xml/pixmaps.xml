@@ -30,27 +30,27 @@ struct      <link linkend="GdkPixmap-struct">GdkPixmap</link>;
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height,
                                              <link linkend="gint">gint</link> depth,
-                                             <link linkend="GdkColor">GdkColor</link> *fg,
-                                             <link linkend="GdkColor">GdkColor</link> *bg);
+                                             const <link linkend="GdkColor">GdkColor</link> *fg,
+                                             const <link linkend="GdkColor">GdkColor</link> *bg);
 <link linkend="GdkPixmap">GdkPixmap</link>*  <link linkend="gdk-pixmap-create-from-xpm">gdk_pixmap_create_from_xpm</link>      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              const <link linkend="gchar">gchar</link> *filename);
 <link linkend="GdkPixmap">GdkPixmap</link>*  <link linkend="gdk-pixmap-colormap-create-from-xpm">gdk_pixmap_colormap_create_from_xpm</link>
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              const <link linkend="gchar">gchar</link> *filename);
 <link linkend="GdkPixmap">GdkPixmap</link>*  <link linkend="gdk-pixmap-create-from-xpm-d">gdk_pixmap_create_from_xpm_d</link>    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              <link linkend="gchar">gchar</link> **data);
 <link linkend="GdkPixmap">GdkPixmap</link>*  <link linkend="gdk-pixmap-colormap-create-from-xpm-d">gdk_pixmap_colormap_create_from_xpm_d</link>
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              <link linkend="gchar">gchar</link> **data);
 #define     <link linkend="gdk-pixmap-ref">gdk_pixmap_ref</link>
 #define     <link linkend="gdk-pixmap-unref">gdk_pixmap_unref</link>
@@ -78,12 +78,14 @@ struct      <link linkend="GdkBitmap">GdkBitmap</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
 Pixmaps are offscreen drawables. They can be drawn upon with the
 standard drawing primitives, then copied to another drawable (such as
-a <link linkend="GdkWindow">GdkWindow</link>) with <link linkend="gdk-pixmap-draw">gdk_pixmap_draw</link>(). The depth of a pixmap
+a <link linkend="GdkWindow"><type>GdkWindow</type></link>) with <link linkend="gdk-pixmap-draw"><function>gdk_pixmap_draw()</function></link>. The depth of a pixmap
 is the number of bits per pixels. Bitmaps are simply pixmaps
 with a depth of 1. (That is, they are monochrome bitmaps - each
 pixel can be either on or off).
@@ -94,17 +96,17 @@ pixel can be either on or off).
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkPixmap-struct"/>struct GdkPixmap</title>
-<programlisting>struct GdkPixmap;</programlisting>
+<indexterm><primary>GdkPixmap</primary></indexterm><programlisting>struct GdkPixmap;</programlisting>
 <para>
 An opaque structure representing an offscreen drawable.
-Pointers to structures of type <link linkend="GdkPixmap">GdkPixmap</link>, <link linkend="GdkBitmap">GdkBitmap</link>,
-and <link linkend="GdkWindow">GdkWindow</link>, can often be used interchangeably. 
-The type <link linkend="GdkDrawable">GdkDrawable</link> refers generically to any of
+Pointers to structures of type <link linkend="GdkPixmap"><type>GdkPixmap</type></link>, <link linkend="GdkBitmap"><type>GdkBitmap</type></link>,
+and <link linkend="GdkWindow"><type>GdkWindow</type></link>, can often be used interchangeably. 
+The type <link linkend="GdkDrawable"><type>GdkDrawable</type></link> refers generically to any of
 these types.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-new"/>gdk_pixmap_new ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_new                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_pixmap_new</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_new                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height,
                                              <link linkend="gint">gint</link> depth);</programlisting>
@@ -112,7 +114,8 @@ these types.
 Create a new pixmap with a given size and depth.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>A <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap. Can be <literal>NULL</literal> if <parameter>depth</parameter> is specified,
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&nbsp;:</term>
 <listitem><simpara>The width of the new pixmap in pixels.
@@ -122,15 +125,17 @@ Create a new pixmap with a given size and depth.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>depth</parameter>&nbsp;:</term>
 <listitem><simpara>The depth (number of bits per pixel) of the new pixmap. 
-  If -1, and <parameter>window</parameter> is not <literal>NULL</literal>, the depth of the new
-  pixmap will be equal to that of <parameter>window</parameter>.
+  If -1, and <parameter>drawable</parameter> is not <literal>NULL</literal>, the depth of the new
+  pixmap will be equal to that of <parameter>drawable</parameter>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-bitmap-create-from-data"/>gdk_bitmap_create_from_data ()</title>
-<programlisting><link linkend="GdkBitmap">GdkBitmap</link>*  gdk_bitmap_create_from_data     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_bitmap_create_from_data</primary></indexterm><programlisting><link linkend="GdkBitmap">GdkBitmap</link>*  gdk_bitmap_create_from_data     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              const <link linkend="gchar">gchar</link> *data,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
@@ -138,7 +143,9 @@ Create a new pixmap with a given size and depth.
 Creates a new bitmap from data in XBM format.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap. Can be <literal>NULL</literal>, in which case the root
+window is used.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>a pointer to the XBM data.
@@ -149,23 +156,26 @@ Creates a new bitmap from data in XBM format.
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara>the height of the new pixmap in pixels.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkBitmap">GdkBitmap</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkBitmap"><type>GdkBitmap</type></link>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-create-from-data"/>gdk_pixmap_create_from_data ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_data     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_pixmap_create_from_data</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_data     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              const <link linkend="gchar">gchar</link> *data,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height,
                                              <link linkend="gint">gint</link> depth,
-                                             <link linkend="GdkColor">GdkColor</link> *fg,
-                                             <link linkend="GdkColor">GdkColor</link> *bg);</programlisting>
+                                             const <link linkend="GdkColor">GdkColor</link> *fg,
+                                             const <link linkend="GdkColor">GdkColor</link> *bg);</programlisting>
 <para>
 Create a two-color pixmap from data in XBM data.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap. Can be <literal>NULL</literal>, if the depth is given.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>a pointer to the data.
@@ -185,20 +195,23 @@ Create a two-color pixmap from data in XBM data.
 <varlistentry><term><parameter>bg</parameter>&nbsp;:</term>
 <listitem><simpara>the background color.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-create-from-xpm"/>gdk_pixmap_create_from_xpm ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_xpm      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_pixmap_create_from_xpm</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_xpm      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 Create a pixmap from a XPM file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mask</parameter>&nbsp;:</term>
 <listitem><simpara>a pointer to a place to store a bitmap representing
@@ -213,25 +226,28 @@ in which case a default color will be used.
 <varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
 <listitem><simpara>the filename of a file containing XPM data.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-colormap-create-from-xpm"/>gdk_pixmap_colormap_create_from_xpm ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_colormap_create_from_xpm
+<indexterm><primary>gdk_pixmap_colormap_create_from_xpm</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_colormap_create_from_xpm
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 Create a pixmap from a XPM file using a particular colormap.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap. Can be <literal>NULL</literal> if <parameter>colormap</parameter> is given.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>colormap</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GdkColormap">GdkColormap</link> that the new pixmap will be use.
+<listitem><simpara>the <link linkend="GdkColormap"><type>GdkColormap</type></link> that the new pixmap will be use.
   If omitted, the colormap for <parameter>window</parameter> will be used.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mask</parameter>&nbsp;:</term>
@@ -247,20 +263,23 @@ in which case a default color will be used.
 <varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
 <listitem><simpara>the filename of a file containing XPM data.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>.
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-create-from-xpm-d"/>gdk_pixmap_create_from_xpm_d ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_xpm_d    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_pixmap_create_from_xpm_d</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_create_from_xpm_d    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              <link linkend="gchar">gchar</link> **data);</programlisting>
 <para>
 Create a pixmap from data in XPM format.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mask</parameter>&nbsp;:</term>
 <listitem><simpara>Pointer to a place to store a bitmap representing
@@ -275,26 +294,29 @@ in which case a default color will be used.
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>Pointer to a string containing the XPM data.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-colormap-create-from-xpm-d"/>gdk_pixmap_colormap_create_from_xpm_d ()</title>
-<programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_colormap_create_from_xpm_d
+<indexterm><primary>gdk_pixmap_colormap_create_from_xpm_d</primary></indexterm><programlisting><link linkend="GdkPixmap">GdkPixmap</link>*  gdk_pixmap_colormap_create_from_xpm_d
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask,
-                                             <link linkend="GdkColor">GdkColor</link> *transparent_color,
+                                             const <link linkend="GdkColor">GdkColor</link> *transparent_color,
                                              <link linkend="gchar">gchar</link> **data);</programlisting>
 <para>
 Create a pixmap from data in XPM format using a particular
 colormap.
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara>a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, used to determine default values
+for the new pixmap. Can be <literal>NULL</literal> if <parameter>colormap</parameter> is given.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>colormap</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GdkColormap">GdkColormap</link> that the new pixmap will be use.
+<listitem><simpara>the <link linkend="GdkColormap"><type>GdkColormap</type></link> that the new pixmap will be use.
   If omitted, the colormap for <parameter>window</parameter> will be used.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>mask</parameter>&nbsp;:</term>
@@ -310,59 +332,65 @@ in which case a default color will be used.
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>Pointer to a string containing the XPM data.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap">GdkPixmap</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GdkPixmap"><type>GdkPixmap</type></link>.
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-ref"/>gdk_pixmap_ref</title>
-<programlisting>#define gdk_pixmap_ref                 gdk_drawable_ref
+<indexterm role="deprecated"><primary>gdk_pixmap_ref</primary></indexterm><programlisting>#define gdk_pixmap_ref                 gdk_drawable_ref
 </programlisting>
 <warning><para><literal>gdk_pixmap_ref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of <link linkend="g-object-ref">g_object_ref</link>().
+Deprecated equivalent of <link linkend="g-object-ref"><function>g_object_ref()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><parameter>pixmap</parameter>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixmap-unref"/>gdk_pixmap_unref</title>
-<programlisting>#define gdk_pixmap_unref               gdk_drawable_unref
+<indexterm role="deprecated"><primary>gdk_pixmap_unref</primary></indexterm><programlisting>#define gdk_pixmap_unref               gdk_drawable_unref
 </programlisting>
 <warning><para><literal>gdk_pixmap_unref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of <link linkend="g-object-unref">g_object_unref</link>().
+Deprecated equivalent of <link linkend="g-object-unref"><function>g_object_unref()</function></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkBitmap"/>struct GdkBitmap</title>
-<programlisting>struct GdkBitmap {
+<indexterm><primary>GdkBitmap</primary></indexterm><programlisting>struct GdkBitmap {
 
   gpointer user_data;
 };
 </programlisting>
 <para>
 An opaque structure representing an offscreen drawable of depth
-1. Pointers to structures of type <link linkend="GdkPixmap">GdkPixmap</link>, <link linkend="GdkBitmap">GdkBitmap</link>, and
-<link linkend="GdkWindow">GdkWindow</link>, can often be used interchangeably.  The type <link linkend="GdkDrawable">GdkDrawable</link>
+1. Pointers to structures of type <link linkend="GdkPixmap"><type>GdkPixmap</type></link>, <link linkend="GdkBitmap"><type>GdkBitmap</type></link>, and
+<link linkend="GdkWindow"><type>GdkWindow</type></link>, can often be used interchangeably.  The type <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 refers generically to any of these types.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-bitmap-ref"/>gdk_bitmap_ref</title>
-<programlisting>#define gdk_bitmap_ref                 gdk_drawable_ref
+<indexterm role="deprecated"><primary>gdk_bitmap_ref</primary></indexterm><programlisting>#define gdk_bitmap_ref                 gdk_drawable_ref
 </programlisting>
 <warning><para><literal>gdk_bitmap_ref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of <link linkend="g-object-ref">g_object_ref</link>().
+Deprecated equivalent of <link linkend="g-object-ref"><function>g_object_ref()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><parameter>pixmap</parameter>
+
+
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-bitmap-unref"/>gdk_bitmap_unref</title>
-<programlisting>#define gdk_bitmap_unref               gdk_drawable_unref
+<indexterm role="deprecated"><primary>gdk_bitmap_unref</primary></indexterm><programlisting>#define gdk_bitmap_unref               gdk_drawable_unref
 </programlisting>
 <warning><para><literal>gdk_bitmap_unref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of <link linkend="g-object-unref">g_object_unref</link>().
+Deprecated equivalent of <link linkend="g-object-unref"><function>g_object_unref()</function></link>.
 </para></refsect2>
 
 </refsect1>

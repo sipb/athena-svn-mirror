@@ -47,13 +47,42 @@ static void                 gdk_display_x11_class_init         (GdkDisplayX11Cla
 static void                 gdk_display_x11_dispose            (GObject            *object);
 static void                 gdk_display_x11_finalize           (GObject            *object);
 
+#ifdef HAVE_X11R6
 static void gdk_internal_connection_watch (Display  *display,
 					   XPointer  arg,
 					   gint      fd,
 					   gboolean  opening,
 					   XPointer *watch_data);
+#endif /* HAVE_X11R6 */
 
 static gpointer parent_class = NULL;
+
+/* Note that we never *directly* use WM_LOCALE_NAME, WM_PROTOCOLS,
+ * but including them here has the side-effect of getting them
+ * into the internal Xlib cache
+ */
+static const char *const precache_atoms[] = {
+  "UTF8_STRING",
+  "WM_CLIENT_LEADER",
+  "WM_DELETE_WINDOW",
+  "WM_LOCALE_NAME",
+  "WM_PROTOCOLS",
+  "WM_TAKE_FOCUS",
+  "_NET_WM_DESKTOP",
+  "_NET_WM_ICON",
+  "_NET_WM_ICON_NAME",
+  "_NET_WM_NAME",
+  "_NET_WM_PID",
+  "_NET_WM_PING",
+  "_NET_WM_STATE",
+  "_NET_WM_STATE_STICKY",
+  "_NET_WM_STATE_MAXIMIZED_VERT",
+  "_NET_WM_STATE_MAXIMIZED_HORZ",
+  "_NET_WM_STATE_FULLSCREEN",
+  "_NET_WM_WINDOW_TYPE",
+  "_NET_WM_WINDOW_TYPE_NORMAL",
+  "_NET_WM_USER_TIME",
+};
 
 GType
 _gdk_display_x11_get_type (void)
@@ -66,7 +95,7 @@ _gdk_display_x11_get_type (void)
 	{
 	  sizeof (GdkDisplayX11Class),
 	  (GBaseInitFunc) NULL,
-	  (GBaseFinalizeFunc) gdk_display_x11_finalize,
+	  (GBaseFinalizeFunc) NULL,
 	  (GClassInitFunc) gdk_display_x11_class_init,
 	  NULL,			/* class_finalize */
 	  NULL,			/* class_data */
@@ -110,12 +139,12 @@ gdk_display_open (const gchar *display_name)
   Display *xdisplay;
   GdkDisplay *display;
   GdkDisplayX11 *display_x11;
+  GdkWindowAttr attr;
   gint argc;
   gchar **argv;
   const char *sm_client_id;
   
   XClassHint *class_hint;
-  XKeyboardState keyboard_state;
   gulong pid;
   gint i;
 
@@ -126,11 +155,13 @@ gdk_display_open (const gchar *display_name)
   display = g_object_new (GDK_TYPE_DISPLAY_X11, NULL);
   display_x11 = GDK_DISPLAY_X11 (display);
 
-  display_x11->use_xft = -1;
+  display_x11->use_xshm = TRUE;
   display_x11->xdisplay = xdisplay;
 
+#ifdef HAVE_X11R6  
   /* Set up handlers for Xlib internal connections */
   XAddConnectionWatch (xdisplay, gdk_internal_connection_watch, NULL);
+#endif /* HAVE_X11R6 */
   
   /* initialize the display's screens */ 
   display_x11->screens = g_new (GdkScreen *, ScreenCount (display_x11->xdisplay));
@@ -145,17 +176,28 @@ gdk_display_open (const gchar *display_name)
   
   /*set the default screen */
   display_x11->default_screen = display_x11->screens[DefaultScreen (display_x11->xdisplay)];
-  display_x11->leader_window = XCreateSimpleWindow (display_x11->xdisplay,
-						    GDK_SCREEN_X11 (display_x11->default_screen)->xroot_window,
-						    10, 10, 10, 10, 0, 0, 0);
+
+  attr.window_type = GDK_WINDOW_TOPLEVEL;
+  attr.wclass = GDK_INPUT_OUTPUT;
+  attr.x = 10;
+  attr.y = 10;
+  attr.width = 10;
+  attr.height = 10;
+  attr.event_mask = 0;
+
+  display_x11->leader_gdk_window = gdk_window_new (GDK_SCREEN_X11 (display_x11->default_screen)->root_window, 
+						   &attr, GDK_WA_X | GDK_WA_Y);
+  display_x11->leader_window = GDK_WINDOW_XID (display_x11->leader_gdk_window);
+
   display_x11->leader_window_title_set = FALSE;
 
-  display_x11->have_shape = GDK_UNKNOWN;
-  display_x11->gravity_works = GDK_UNKNOWN;
+  display_x11->have_render = GDK_UNKNOWN;
 
   if (_gdk_synchronize)
     XSynchronize (display_x11->xdisplay, True);
   
+  _gdk_x11_precache_atoms (display, precache_atoms, G_N_ELEMENTS (precache_atoms));
+
   class_hint = XAllocClassHint();
   class_hint->res_name = g_get_prgname ();
   
@@ -176,9 +218,10 @@ gdk_display_open (const gchar *display_name)
 		   display_x11->leader_window,
 		   gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_PID"),
 		   XA_CARDINAL, 32, PropModeReplace, (guchar *) & pid, 1);
-  
-  XGetKeyboardControl (display_x11->xdisplay, &keyboard_state);
 
+  /* We don't yet know a valid time. */
+  display_x11->user_time = 0;
+  
 #ifdef HAVE_XKB
   {
     gint xkb_major = XkbMajorVersion;
@@ -198,8 +241,8 @@ gdk_display_open (const gchar *display_name)
 
             XkbSelectEvents (display_x11->xdisplay,
                              XkbUseCoreKbd,
-                             XkbMapNotifyMask | XkbStateNotifyMask,
-                             XkbMapNotifyMask | XkbStateNotifyMask);
+                             XkbNewKeyboardNotifyMask | XkbMapNotifyMask | XkbStateNotifyMask,
+                             XkbNewKeyboardNotifyMask | XkbMapNotifyMask | XkbStateNotifyMask);
 
 	    XkbSetDetectableAutoRepeat (display_x11->xdisplay,
 					True,
@@ -226,6 +269,7 @@ gdk_display_open (const gchar *display_name)
   return display;
 }
 
+#ifdef HAVE_X11R6
 /*
  * XLib internal connection handling
  */
@@ -297,6 +341,7 @@ gdk_internal_connection_watch (Display  *display,
   else
     gdk_remove_connection_handler ((GdkInternalConnection *)*watch_data);
 }
+#endif /* HAVE_X11R6 */
 
 /**
  * gdk_display_get_name:
@@ -405,10 +450,16 @@ void
 gdk_display_pointer_ungrab (GdkDisplay *display,
 			    guint32     time)
 {
+  Display *xdisplay;
+  
   g_return_if_fail (GDK_IS_DISPLAY (display));
+
+  xdisplay = GDK_DISPLAY_XDISPLAY (display);
   
   _gdk_input_ungrab_pointer (display, time);
-  XUngrabPointer (GDK_DISPLAY_XDISPLAY (display), time);
+  XUngrabPointer (xdisplay, time);
+  XFlush (xdisplay);
+  
   GDK_DISPLAY_X11 (display)->pointer_xgrab_window = NULL;
 }
 
@@ -443,9 +494,15 @@ void
 gdk_display_keyboard_ungrab (GdkDisplay *display,
 			     guint32     time)
 {
-  g_return_if_fail (GDK_IS_DISPLAY (display));
+  Display *xdisplay;
   
-  XUngrabKeyboard (GDK_DISPLAY_XDISPLAY (display), time);
+  g_return_if_fail (GDK_IS_DISPLAY (display));
+
+  xdisplay = GDK_DISPLAY_XDISPLAY (display);
+  
+  XUngrabKeyboard (xdisplay, time);
+  XFlush (xdisplay);
+  
   GDK_DISPLAY_X11 (display)->keyboard_xgrab_window = NULL;
 }
 
@@ -487,6 +544,50 @@ gdk_display_sync (GdkDisplay * display)
   g_return_if_fail (GDK_IS_DISPLAY (display));
   
   XSync (GDK_DISPLAY_XDISPLAY (display), False);
+}
+
+/**
+ * gdk_display_flush:
+ * @display: a #GdkDisplay
+ *
+ * Flushes any requests queued for the windowing system; this happens automatically
+ * when the main loop blocks waiting for new events, but if your application
+ * is drawing without returning control to the main loop, you may need
+ * to call this function explicitely. A common case where this function
+ * needs to be called is when an application is executing drawing commands
+ * from a thread other than the thread where the main loop is running.
+ *
+ * This is most useful for X11. On windowing systems where requests are
+ * handled synchronously, this function will do nothing.
+ *
+ * Since: 2.4
+ */
+void 
+gdk_display_flush (GdkDisplay *display)
+{
+  g_return_if_fail (GDK_IS_DISPLAY (display));
+
+  if (!display->closed)
+    XFlush (GDK_DISPLAY_XDISPLAY (display));
+}
+
+/**
+ * gdk_display_get_default_group:
+ * @display: a #GdkDisplay
+ * 
+ * Returns the default group leader window for all toplevel windows
+ * on @display. This window is implicitly created by GDK. 
+ * See gdk_window_set_group().
+ * 
+ * Return value: The default group leader window for @display
+ *
+ * Since: 2.4
+ **/
+GdkWindow *gdk_display_get_default_group (GdkDisplay *display)
+{
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), NULL);
+
+  return GDK_DISPLAY_X11 (display)->leader_gdk_window;
 }
 
 /**
@@ -535,7 +636,10 @@ gdk_x11_display_ungrab (GdkDisplay * display)
   
   display_x11->grab_count--;
   if (display_x11->grab_count == 0)
-    XUngrabServer (display_x11->xdisplay);
+    {
+      XUngrabServer (display_x11->xdisplay);
+      XFlush (display_x11->xdisplay);
+    }
 }
 
 static void
@@ -581,6 +685,9 @@ gdk_display_x11_finalize (GObject *object)
   XDestroyWindow (display_x11->xdisplay, display_x11->leader_window);
   /* list of filters for client messages */
   g_list_free (display_x11->client_filters);
+  /* List of event window extraction functions */
+  g_slist_foreach (display_x11->event_types, (GFunc)g_free, NULL);
+  g_slist_free (display_x11->event_types);
   /* X ID hashtable */
   g_hash_table_destroy (display_x11->xid_ht);
   /* input GdkDevice list */
@@ -690,10 +797,9 @@ _gdk_windowing_set_default_display (GdkDisplay *display)
 	display_x11->startup_notification_id = g_strdup (startup_id);
       
       /* Clear the environment variable so it won't be inherited by
-       * child processes and confuse things.  unsetenv isn't portable,
-       * right...
+       * child processes and confuse things.  
        */
-      putenv ("DESKTOP_STARTUP_ID=");
+      g_unsetenv ("DESKTOP_STARTUP_ID");
 
       /* Set the startup id on the leader window so it
        * applies to all windows we create on this display
@@ -707,13 +813,13 @@ _gdk_windowing_set_default_display (GdkDisplay *display)
     }
 }
 
-char*
+static char*
 escape_for_xmessage (const char *str)
 {
   GString *retval;
   const char *p;
   
-  retval = g_string_new ("");
+  retval = g_string_new (NULL);
 
   p = str;
   while (*p)
@@ -800,6 +906,12 @@ broadcast_xmessage   (GdkDisplay   *display,
             ++dest;
             ++src;
           }
+
+	while (dest != dest_end)
+	  {
+	    *dest = 0;
+	    ++dest;
+	  }
         
         XSendEvent (xdisplay,
                     xroot_window,

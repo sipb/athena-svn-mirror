@@ -21,10 +21,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
 
-#include <config.h>
 #include <glib.h>
 #include "gdkscreen.h"
 #include "gdkscreen-x11.h"
@@ -32,16 +33,15 @@
 #include "gdkdisplay-x11.h"
 #include "gdkx.h"
 
-#ifdef HAVE_XFT
-#include <pango/pangoxft.h>
-#endif
-#include <pango/pangox.h>
-
 #ifdef HAVE_SOLARIS_XINERAMA
 #include <X11/extensions/xinerama.h>
 #endif
 #ifdef HAVE_XFREE_XINERAMA
 #include <X11/extensions/Xinerama.h>
+#endif
+
+#ifdef HAVE_RANDR
+#include <X11/extensions/Xrandr.h>
 #endif
 
 static void         gdk_screen_x11_class_init  (GdkScreenX11Class *klass);
@@ -70,7 +70,7 @@ _gdk_screen_x11_get_type ()
 	{
 	  sizeof (GdkScreenX11Class),
 	  (GBaseInitFunc) NULL,
-	  (GBaseFinalizeFunc) gdk_screen_x11_finalize,
+	  (GBaseFinalizeFunc) NULL,
 	  (GClassInitFunc) gdk_screen_x11_class_init,
 	  NULL,			/* class_finalize */
 	  NULL,			/* class_data */
@@ -327,10 +327,9 @@ gdk_screen_x11_finalize (GObject *object)
  * gdk_screen_get_n_monitors:
  * @screen: a #GdkScreen.
  *
- * Returns the number of monitors being part of the virtual screen
+ * Returns the number of monitors which @screen consists of.
  *
- * Returns: number of monitors part of the virtual screen or
- *          0 if @screen is not in virtual screen mode.
+ * Returns: number of monitors which @screen consists of.
  *
  * Since: 2.2
  **/
@@ -348,11 +347,10 @@ gdk_screen_get_n_monitors (GdkScreen *screen)
  * @monitor_num: the monitor number. 
  * @dest : a #GdkRectangle to be filled with the monitor geometry
  *
- * Retrieves the #GdkRectangle representing the size and start
- * coordinates of the individual monitor within the the entire virtual
- * screen.
+ * Retrieves the #GdkRectangle representing the size and position of 
+ * the individual monitor within the the entire screen area.
  * 
- * Note that the virtual screen coordinates can be retrieved via 
+ * Note that the size of the entire screen area can be retrieved via 
  * gdk_screen_get_width() and gdk_screen_get_height().
  *
  * Since: 2.2
@@ -540,12 +538,70 @@ init_xinerama_support (GdkScreen * screen)
 
   /* No Xinerama
    */
-  screen_x11->num_monitors = 1;
-  screen_x11->monitors = g_new0 (GdkRectangle, 1);
-  screen_x11->monitors[0].x = 0;
-  screen_x11->monitors[0].y = 0;
-  screen_x11->monitors[0].width = WidthOfScreen (screen_x11->xscreen);
-  screen_x11->monitors[0].height = HeightOfScreen (screen_x11->xscreen);
+#ifdef G_ENABLE_DEBUG
+  if (_gdk_debug_flags & GDK_DEBUG_XINERAMA)
+    {
+      /* Fake Xinerama mode by splitting the screen into 4 monitors.
+       * Also draw a little cross to make the monitor boundaries visible.
+       */
+      XSetWindowAttributes atts;
+      Window win;
+      gint w, h;
+
+      w = WidthOfScreen (screen_x11->xscreen);
+      h = HeightOfScreen (screen_x11->xscreen);
+      screen_x11->num_monitors = 4;
+      screen_x11->monitors = g_new0 (GdkRectangle, 4);
+      screen_x11->monitors[0].x = 0;
+      screen_x11->monitors[0].y = 0;
+      screen_x11->monitors[0].width = w / 2;
+      screen_x11->monitors[0].height = h / 2;
+      screen_x11->monitors[1].x = w / 2;
+      screen_x11->monitors[1].y = 0;
+      screen_x11->monitors[1].width = w / 2;
+      screen_x11->monitors[1].height = h / 2;
+      screen_x11->monitors[2].x = 0;
+      screen_x11->monitors[2].y = h / 2;
+      screen_x11->monitors[2].width = w / 2;
+      screen_x11->monitors[2].height = h / 2;
+      screen_x11->monitors[3].x = w / 2;
+      screen_x11->monitors[3].y = h / 2;
+      screen_x11->monitors[3].width = w / 2;
+      screen_x11->monitors[3].height = h / 2;
+      atts.override_redirect = 1;
+      atts.background_pixel = WhitePixel(GDK_SCREEN_XDISPLAY (screen), 
+					 screen_x11->screen_num);
+      win = XCreateWindow(GDK_SCREEN_XDISPLAY (screen), 
+			  screen_x11->xroot_window, 0, h / 2, w, 1, 0, 
+			  DefaultDepth(GDK_SCREEN_XDISPLAY (screen), 
+				       screen_x11->screen_num),
+			  InputOutput, 
+			  DefaultVisual(GDK_SCREEN_XDISPLAY (screen), 
+					screen_x11->screen_num),
+			  CWOverrideRedirect|CWBackPixel, 
+			  &atts);
+      XMapRaised(GDK_SCREEN_XDISPLAY (screen), win); 
+      win = XCreateWindow(GDK_SCREEN_XDISPLAY (screen), 
+			  screen_x11->xroot_window, w/2 , 0, 1, h, 0, 
+			  DefaultDepth(GDK_SCREEN_XDISPLAY (screen), 
+				       screen_x11->screen_num),
+			  InputOutput, 
+			  DefaultVisual(GDK_SCREEN_XDISPLAY (screen), 
+					screen_x11->screen_num),
+			  CWOverrideRedirect|CWBackPixel, 
+			  &atts);
+      XMapRaised(GDK_SCREEN_XDISPLAY (screen), win); 
+    }
+  else
+#endif
+    {
+       screen_x11->num_monitors = 1;
+       screen_x11->monitors = g_new0 (GdkRectangle, 1);
+       screen_x11->monitors[0].x = 0;
+       screen_x11->monitors[0].y = 0;
+       screen_x11->monitors[0].width = WidthOfScreen (screen_x11->xscreen);
+       screen_x11->monitors[0].height = HeightOfScreen (screen_x11->xscreen);
+    }
 }
 
 static void
@@ -579,14 +635,13 @@ _gdk_x11_screen_size_changed (GdkScreen *screen,
 #endif
   
   init_xinerama_support (screen);
-  g_signal_emit_by_name (G_OBJECT (screen), "size_changed");
+  g_signal_emit_by_name (screen, "size_changed");
 }
 
 void
 _gdk_x11_screen_window_manager_changed (GdkScreen *screen)
 {
-  g_signal_emit (G_OBJECT (screen),
-                 signals[WINDOW_MANAGER_CHANGED], 0);
+  g_signal_emit (screen, signals[WINDOW_MANAGER_CHANGED], 0);
 }
 
 /**

@@ -39,11 +39,14 @@ struct      <link linkend="GtkInputDialog-struct">GtkInputDialog</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkInputDialog implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkInputDialog implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -53,11 +56,11 @@ GtkInputDialog implements <link linkend="AtkImplementorIface">AtkImplementorIfac
 <synopsis>
 
 &quot;<link linkend="GtkInputDialog-disable-device">disable-device</link>&quot;
-            void        user_function      (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
                                             <link linkend="GdkDevice">GdkDevice</link> *deviceid,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkInputDialog-enable-device">enable-device</link>&quot;
-            void        user_function      (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
                                             <link linkend="GdkDevice">GdkDevice</link> *deviceid,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -77,7 +80,7 @@ GtkInputDialog implements <link linkend="AtkImplementorIface">AtkImplementorIfac
 </para>
 
 <para>
-<link linkend="GtkInputDialog">GtkInputDialog</link> displays a dialog which allows the user
+<link linkend="GtkInputDialog"><type>GtkInputDialog</type></link> displays a dialog which allows the user
 to configure XInput extension devices. For each
 device, they can control the mode of the device
 (disabled, screen-relative, or window-relative), 
@@ -86,7 +89,7 @@ mapping of the devices macro keys to key press
 events.
 </para>
 <para>
-<link linkend="GtkInputDialog">GtkInputDialog</link> contains two buttons to which
+<link linkend="GtkInputDialog"><type>GtkInputDialog</type></link> contains two buttons to which
 the application can connect; one for closing
 the dialog, and one for saving the changes.
 No actions are bound to these by default.
@@ -99,16 +102,16 @@ immediately.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkInputDialog-struct"/>struct GtkInputDialog</title>
-<programlisting>struct GtkInputDialog;</programlisting>
+<indexterm><primary>GtkInputDialog</primary></indexterm><programlisting>struct GtkInputDialog;</programlisting>
 <para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-input-dialog-new"/>gtk_input_dialog_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_input_dialog_new            (void);</programlisting>
+<indexterm><primary>gtk_input_dialog_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_input_dialog_new            (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkInputDialog">GtkInputDialog</link>.
+Creates a new <link linkend="GtkInputDialog"><type>GtkInputDialog</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkInputDialog">GtkInputDialog</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkInputDialog"><type>GtkInputDialog</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -119,13 +122,13 @@ Creates a new <link linkend="GtkInputDialog">GtkInputDialog</link>.
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkInputDialog-disable-device"/>The &quot;disable-device&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
                                             <link linkend="GdkDevice">GdkDevice</link> *deviceid,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 This signal is emitted when the user changes the 
-mode of a device from a <link linkend="GDK-MODE-SCREEN-CAPS">GDK_MODE_SCREEN</link> or <link linkend="GDK-MODE-WINDOW-CAPS">GDK_MODE_WINDOW</link>
-to <link linkend="GDK-MODE-ENABLED-CAPS">GDK_MODE_ENABLED</link>.
+mode of a device from a <link linkend="GDK-MODE-SCREEN-CAPS"><type>GDK_MODE_SCREEN</type></link> or <link linkend="GDK-MODE-WINDOW-CAPS"><type>GDK_MODE_WINDOW</type></link>
+to <link linkend="GDK-MODE-ENABLED-CAPS"><type>GDK_MODE_ENABLED</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>inputdialog</parameter>&nbsp;:</term>
 <listitem><simpara>the object which received the signal.
@@ -137,13 +140,13 @@ to <link linkend="GDK-MODE-ENABLED-CAPS">GDK_MODE_ENABLED</link>.
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkInputDialog-enable-device"/>The &quot;enable-device&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkInputDialog">GtkInputDialog</link> *inputdialog,
                                             <link linkend="GdkDevice">GdkDevice</link> *deviceid,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 This signal is emitted when the user changes the 
-mode of a device from <link linkend="GDK-MODE-DISABLED-CAPS">GDK_MODE_DISABLED</link> to a 
-<link linkend="GDK-MODE-SCREEN-CAPS">GDK_MODE_SCREEN</link> or <link linkend="GDK-MODE-WINDOW-CAPS">GDK_MODE_WINDOW</link>.
+mode of a device from <link linkend="GDK-MODE-DISABLED-CAPS"><type>GDK_MODE_DISABLED</type></link> to a 
+<link linkend="GDK-MODE-SCREEN-CAPS"><type>GDK_MODE_SCREEN</type></link> or <link linkend="GDK-MODE-WINDOW-CAPS"><type>GDK_MODE_WINDOW</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>inputdialog</parameter>&nbsp;:</term>
 <listitem><simpara>the object which received the signal.

@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkTreeStore</refname><refpurpose>A tree-like data structure that can be used with the <link linkend="GtkTreeView">GtkTreeView</link></refpurpose>
+<refname>GtkTreeStore</refname><refpurpose>A tree-like data structure that can be used with the <link linkend="GtkTreeView"><type>GtkTreeView</type></link></refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -21,37 +21,37 @@ struct      <link linkend="GtkTreeStore-struct">GtkTreeStore</link>;
                                              ...);
 <link linkend="GtkTreeStore">GtkTreeStore</link>* <link linkend="gtk-tree-store-newv">gtk_tree_store_newv</link>           (<link linkend="gint">gint</link> n_columns,
                                              <link linkend="GType">GType</link> *types);
-void        <link linkend="gtk-tree-store-set-column-types">gtk_tree_store_set_column_types</link> (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-set-column-types">gtk_tree_store_set_column_types</link> (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="gint">gint</link> n_columns,
                                              <link linkend="GType">GType</link> *types);
-void        <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>        (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>        (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="gint">gint</link> column,
                                              <link linkend="GValue">GValue</link> *value);
-void        <link linkend="gtk-tree-store-set">gtk_tree_store_set</link>              (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-set">gtk_tree_store_set</link>              (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              ...);
-void        <link linkend="gtk-tree-store-set-valist">gtk_tree_store_set_valist</link>       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-set-valist">gtk_tree_store_set_valist</link>       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
-                                             va_list var_args);
+                                             <link linkend="va-list">va_list</link> var_args);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-tree-store-remove">gtk_tree_store_remove</link>           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);
-void        <link linkend="gtk-tree-store-insert">gtk_tree_store_insert</link>           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-insert">gtk_tree_store_insert</link>           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="gint">gint</link> position);
-void        <link linkend="gtk-tree-store-insert-before">gtk_tree_store_insert_before</link>    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-insert-before">gtk_tree_store_insert_before</link>    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *sibling);
-void        <link linkend="gtk-tree-store-insert-after">gtk_tree_store_insert_after</link>     (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-insert-after">gtk_tree_store_insert_after</link>     (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *sibling);
-void        <link linkend="gtk-tree-store-prepend">gtk_tree_store_prepend</link>          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-prepend">gtk_tree_store_prepend</link>          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent);
-void        <link linkend="gtk-tree-store-append">gtk_tree_store_append</link>           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-append">gtk_tree_store_append</link>           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-tree-store-is-ancestor">gtk_tree_store_is_ancestor</link>      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
@@ -59,19 +59,19 @@ void        <link linkend="gtk-tree-store-append">gtk_tree_store_append</link>  
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *descendant);
 <link linkend="gint">gint</link>        <link linkend="gtk-tree-store-iter-depth">gtk_tree_store_iter_depth</link>       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);
-void        <link linkend="gtk-tree-store-clear">gtk_tree_store_clear</link>            (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store);
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-clear">gtk_tree_store_clear</link>            (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-tree-store-iter-is-valid">gtk_tree_store_iter_is_valid</link>    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);
-void        <link linkend="gtk-tree-store-reorder">gtk_tree_store_reorder</link>          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-reorder">gtk_tree_store_reorder</link>          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="gint">gint</link> *new_order);
-void        <link linkend="gtk-tree-store-swap">gtk_tree_store_swap</link>             (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-swap">gtk_tree_store_swap</link>             (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *a,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *b);
-void        <link linkend="gtk-tree-store-move-before">gtk_tree_store_move_before</link>      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-move-before">gtk_tree_store_move_before</link>      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *position);
-void        <link linkend="gtk-tree-store-move-after">gtk_tree_store_move_after</link>       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<link linkend="void">void</link>        <link linkend="gtk-tree-store-move-after">gtk_tree_store_move_after</link>       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *position);
 
@@ -89,11 +89,14 @@ void        <link linkend="gtk-tree-store-move-after">gtk_tree_store_move_after<
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkTreeStore implements <link linkend="GtkTreeModel">GtkTreeModel</link>, <link linkend="GtkTreeDragSource">GtkTreeDragSource</link>, <link linkend="GtkTreeDragDest">GtkTreeDragDest</link> and <link linkend="GtkTreeSortable">GtkTreeSortable</link>.
-</para>
+GtkTreeStore implements
+ <link linkend="GtkTreeModel">GtkTreeModel</link>,  <link linkend="GtkTreeDragSource">GtkTreeDragSource</link>,  <link linkend="GtkTreeDragDest">GtkTreeDragDest</link> and  <link linkend="GtkTreeSortable">GtkTreeSortable</link>.</para>
+
 </refsect1>
 
 
@@ -103,10 +106,10 @@ GtkTreeStore implements <link linkend="GtkTreeModel">GtkTreeModel</link>, <link 
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkTreeStore">GtkTreeStore</link> object is a list model for use with a <link linkend="GtkTreeView">GtkTreeView</link>
-widget.  It implements the <link linkend="GtkTreeModel">GtkTreeModel</link> interface, and consequentialy,
+The <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link> object is a list model for use with a <link linkend="GtkTreeView"><type>GtkTreeView</type></link>
+widget.  It implements the <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link> interface, and consequentialy,
 can use all of the methods available there.  It also implements the
-<link linkend="GtkTreeSortable">GtkTreeSortable</link> interface so it can be sorted by the view.  Finally,
+<link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link> interface so it can be sorted by the view.  Finally,
 it also implements the tree <link linkend="gtktreednd">drag and
 drop</link> interfaces.
 
@@ -117,19 +120,23 @@ drop</link> interfaces.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTreeStore-struct"/>struct GtkTreeStore</title>
-<programlisting>struct GtkTreeStore;</programlisting>
+<indexterm><primary>GtkTreeStore</primary></indexterm><programlisting>struct GtkTreeStore;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-new"/>gtk_tree_store_new ()</title>
-<programlisting><link linkend="GtkTreeStore">GtkTreeStore</link>* gtk_tree_store_new            (<link linkend="gint">gint</link> n_columns,
+<indexterm><primary>gtk_tree_store_new</primary></indexterm><programlisting><link linkend="GtkTreeStore">GtkTreeStore</link>* gtk_tree_store_new            (<link linkend="gint">gint</link> n_columns,
                                              ...);</programlisting>
 <para>
 Creates a new tree store as with <parameter>n_columns</parameter> columns each of the types passed
-in.  As an example, <literal>gtk_tree_store_new (3, G_TYPE_INT, G_TYPE_STRING,
-GDK_TYPE_PIXBUF);</literal> will create a new <link linkend="GtkTreeStore">GtkTreeStore</link> with three columns, of type
-<type>int</type>, <type>string</type> and <link linkend="GdkPixbuf">GdkPixbuf</link> respectively.</para>
+in.  Note that only types derived from standard GObject fundamental types 
+are supported. 
+</para>
+<para>
+As an example, <literal>gtk_tree_store_new (3, G_TYPE_INT, G_TYPE_STRING,
+GDK_TYPE_PIXBUF);</literal> will create a new <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link> with three columns, of type
+<type>int</type>, <type>string</type> and <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> respectively.</para>
 <para>
 
 </para><variablelist role="params">
@@ -137,14 +144,14 @@ GDK_TYPE_PIXBUF);</literal> will create a new <link linkend="GtkTreeStore">GtkTr
 <listitem><simpara> number of columns in the tree store
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
-<listitem><simpara> all <link linkend="GType">GType</link> types for the columns, from first to last
+<listitem><simpara> all <link linkend="GType"><type>GType</type></link> types for the columns, from first to last
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTreeStore">GtkTreeStore</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-newv"/>gtk_tree_store_newv ()</title>
-<programlisting><link linkend="GtkTreeStore">GtkTreeStore</link>* gtk_tree_store_newv           (<link linkend="gint">gint</link> n_columns,
+<indexterm><primary>gtk_tree_store_newv</primary></indexterm><programlisting><link linkend="GtkTreeStore">GtkTreeStore</link>* gtk_tree_store_newv           (<link linkend="gint">gint</link> n_columns,
                                              <link linkend="GType">GType</link> *types);</programlisting>
 <para>
 Non vararg creation function.  Used primarily by language bindings.</para>
@@ -155,37 +162,37 @@ Non vararg creation function.  Used primarily by language bindings.</para>
 <listitem><simpara> number of columns in the tree store
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>types</parameter>&nbsp;:</term>
-<listitem><simpara> an array of <link linkend="GType">GType</link> types for the columns, from first to last
+<listitem><simpara> an array of <link linkend="GType"><type>GType</type></link> types for the columns, from first to last
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTreeStore">GtkTreeStore</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-set-column-types"/>gtk_tree_store_set_column_types ()</title>
-<programlisting>void        gtk_tree_store_set_column_types (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_set_column_types</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_set_column_types (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="gint">gint</link> n_columns,
                                              <link linkend="GType">GType</link> *types);</programlisting>
 <para>
-This function is meant primarily for <link linkend="GObjects">GObjects</link> that inherit from 
-<link linkend="GtkTreeStore">GtkTreeStore</link>, and should only be used when constructing a new 
-<link linkend="GtkTreeStore">GtkTreeStore</link>.  It will not function after a row has been added, 
-or a method on the <link linkend="GtkTreeModel">GtkTreeModel</link> interface is called.</para>
+This function is meant primarily for <link linkend="GObjects"><type>GObjects</type></link> that inherit from 
+<link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>, and should only be used when constructing a new 
+<link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.  It will not function after a row has been added, 
+or a method on the <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link> interface is called.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_columns</parameter>&nbsp;:</term>
 <listitem><simpara> Number of columns for the tree store
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>types</parameter>&nbsp;:</term>
-<listitem><simpara> An array of <link linkend="GType">GType</link> types, one for each column
+<listitem><simpara> An array of <link linkend="GType"><type>GType</type></link> types, one for each column
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-set-value"/>gtk_tree_store_set_value ()</title>
-<programlisting>void        gtk_tree_store_set_value        (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_set_value</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_set_value        (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="gint">gint</link> column,
                                              <link linkend="GValue">GValue</link> *value);</programlisting>
@@ -197,10 +204,10 @@ column.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> a <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link> for the row being modified
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> for the row being modified
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
 <listitem><simpara> column number to modify
@@ -211,7 +218,7 @@ column.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-set"/>gtk_tree_store_set ()</title>
-<programlisting>void        gtk_tree_store_set              (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_set</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_set              (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              ...);</programlisting>
 <para>
@@ -225,10 +232,10 @@ The list is terminated by a -1. For example, to set column 0 with type
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link> for the row being modified
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> for the row being modified
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>...</parameter>&nbsp;:</term>
 <listitem><simpara> pairs of column number and value, terminated with -1
@@ -236,20 +243,20 @@ The list is terminated by a -1. For example, to set column 0 with type
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-set-valist"/>gtk_tree_store_set_valist ()</title>
-<programlisting>void        gtk_tree_store_set_valist       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_set_valist</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_set_valist       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
-                                             va_list var_args);</programlisting>
+                                             <link linkend="va-list">va_list</link> var_args);</programlisting>
 <para>
-See <link linkend="gtk-tree-store-set">gtk_tree_store_set</link>(); this version takes a <type>va_list</type> for
+See <link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link>; this version takes a <type>va_list</type> for
 use by language bindings.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link> for the row being modified
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> for the row being modified
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>var_args</parameter>&nbsp;:</term>
 <listitem><simpara> <type>va_list</type> of column/value pairs
@@ -257,7 +264,7 @@ use by language bindings.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-remove"/>gtk_tree_store_remove ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_remove           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_remove</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_remove           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);</programlisting>
 <para>
 Removes <parameter>iter</parameter> from <parameter>tree_store</parameter>.  After being removed, <parameter>iter</parameter> is set to the
@@ -267,17 +274,17 @@ last one.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>iter</parameter> is still valid, <literal>FALSE</literal> if not.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-insert"/>gtk_tree_store_insert ()</title>
-<programlisting>void        gtk_tree_store_insert           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_insert</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_insert           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="gint">gint</link> position);</programlisting>
@@ -287,19 +294,19 @@ made a child of <parameter>parent</parameter>.  Otherwise, the row will be creat
 If <parameter>position</parameter> is larger than the number of rows at that level, then the new
 row will be inserted to the end of the list.  <parameter>iter</parameter> will be changed to point
 to this new row.  The row will be empty after this function is called.  To
-fill in values, you need to call <link linkend="gtk-tree-store-set">gtk_tree_store_set</link>() or
-<link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>().</para>
+fill in values, you need to call <link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link> or
+<link linkend="gtk-tree-store-set-value"><function>gtk_tree_store_set_value()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> An unset <link linkend="GtkTreeIter">GtkTreeIter</link> to set to the new row
+<listitem><simpara> An unset <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> to set to the new row
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>position</parameter>&nbsp;:</term>
 <listitem><simpara> position to insert the new row
@@ -307,7 +314,7 @@ fill in values, you need to call <link linkend="gtk-tree-store-set">gtk_tree_sto
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-insert-before"/>gtk_tree_store_insert_before ()</title>
-<programlisting>void        gtk_tree_store_insert_before    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_insert_before</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_insert_before    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *sibling);</programlisting>
@@ -321,26 +328,26 @@ set, then <parameter>parent</parameter> must be the parent of <parameter>sibling
 <para>
 <parameter>iter</parameter> will be changed to point to this new row.  The row will be empty after
 this function is called.  To fill in values, you need to call
-<link linkend="gtk-tree-store-set">gtk_tree_store_set</link>() or <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>().</para>
+<link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link> or <link linkend="gtk-tree-store-set-value"><function>gtk_tree_store_set_value()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> An unset <link linkend="GtkTreeIter">GtkTreeIter</link> to set to the new row
+<listitem><simpara> An unset <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> to set to the new row
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sibling</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-insert-after"/>gtk_tree_store_insert_after ()</title>
-<programlisting>void        gtk_tree_store_insert_after     (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_insert_after</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_insert_after     (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *sibling);</programlisting>
@@ -354,26 +361,26 @@ set, then <parameter>parent</parameter> must be the parent of <parameter>sibling
 <para>
 <parameter>iter</parameter> will be changed to point to this new row.  The row will be empty after
 this function is called.  To fill in values, you need to call
-<link linkend="gtk-tree-store-set">gtk_tree_store_set</link>() or <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>().</para>
+<link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link> or <link linkend="gtk-tree-store-set-value"><function>gtk_tree_store_set_value()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> An unset <link linkend="GtkTreeIter">GtkTreeIter</link> to set to the new row
+<listitem><simpara> An unset <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> to set to the new row
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sibling</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-prepend"/>gtk_tree_store_prepend ()</title>
-<programlisting>void        gtk_tree_store_prepend          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_prepend</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_prepend          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent);</programlisting>
 <para>
@@ -381,23 +388,23 @@ Prepends a new row to <parameter>tree_store</parameter>.  If <parameter>parent</
 the new row before the first child of <parameter>parent</parameter>, otherwise it will prepend a row
 to the top level.  <parameter>iter</parameter> will be changed to point to this new row.  The row
 will be empty after this function is called.  To fill in values, you need to
-call <link linkend="gtk-tree-store-set">gtk_tree_store_set</link>() or <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>().</para>
+call <link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link> or <link linkend="gtk-tree-store-set-value"><function>gtk_tree_store_set_value()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> An unset <link linkend="GtkTreeIter">GtkTreeIter</link> to set to the prepended row
+<listitem><simpara> An unset <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> to set to the prepended row
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-append"/>gtk_tree_store_append ()</title>
-<programlisting>void        gtk_tree_store_append           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_append</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_append           (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent);</programlisting>
 <para>
@@ -405,23 +412,23 @@ Appends a new row to <parameter>tree_store</parameter>.  If <parameter>parent</p
 new row after the last child of <parameter>parent</parameter>, otherwise it will append a row to
 the top level.  <parameter>iter</parameter> will be changed to point to this new row.  The row will
 be empty after this function is called.  To fill in values, you need to call
-<link linkend="gtk-tree-store-set">gtk_tree_store_set</link>() or <link linkend="gtk-tree-store-set-value">gtk_tree_store_set_value</link>().</para>
+<link linkend="gtk-tree-store-set"><function>gtk_tree_store_set()</function></link> or <link linkend="gtk-tree-store-set-value"><function>gtk_tree_store_set_value()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> An unset <link linkend="GtkTreeIter">GtkTreeIter</link> to set to the appended row
+<listitem><simpara> An unset <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> to set to the appended row
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>, or <literal>NULL</literal>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-is-ancestor"/>gtk_tree_store_is_ancestor ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_is_ancestor      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_is_ancestor</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_is_ancestor      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *descendant);</programlisting>
 <para>
@@ -431,20 +438,20 @@ parent (or grandparent or great-grandparent) of <parameter>descendant</parameter
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>descendant</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal>, if <parameter>iter</parameter> is an ancestor of <parameter>descendant</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-iter-depth"/>gtk_tree_store_iter_depth ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_tree_store_iter_depth       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm><primary>gtk_tree_store_iter_depth</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_tree_store_iter_depth       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);</programlisting>
 <para>
 Returns the depth of <parameter>iter</parameter>.  This will be 0 for anything on the root level, 1
@@ -453,44 +460,44 @@ for anything down a level, etc.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A valid <link linkend="GtkTreeIter">GtkTreeIter</link>
+<listitem><simpara> A valid <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The depth of <parameter>iter</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-clear"/>gtk_tree_store_clear ()</title>
-<programlisting>void        gtk_tree_store_clear            (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store);</programlisting>
+<indexterm><primary>gtk_tree_store_clear</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_clear            (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store);</programlisting>
 <para>
 Removes all rows from <parameter>tree_store</parameter></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTreeStore">GtkTreeStore</link>
+<listitem><simpara> a <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-iter-is-valid"/>gtk_tree_store_iter_is_valid ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_iter_is_valid    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm role="2.2"><primary>gtk_tree_store_iter_is_valid</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_store_iter_is_valid    (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter);</programlisting>
 <para>
 WARNING: This function is slow. Only use it for debugging and/or testing
 purposes.
 </para>
 <para>
-Checks if the given iter is a valid iter for this <link linkend="GtkTreeStore">GtkTreeStore</link>.</para>
+Checks if the given iter is a valid iter for this <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>.
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the iter is valid, <literal>FALSE</literal> if the iter is invalid.
 
@@ -499,7 +506,7 @@ Checks if the given iter is a valid iter for this <link linkend="GtkTreeStore">G
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-reorder"/>gtk_tree_store_reorder ()</title>
-<programlisting>void        gtk_tree_store_reorder          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm role="2.2"><primary>gtk_tree_store_reorder</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_reorder          (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *parent,
                                              <link linkend="gint">gint</link> *new_order);</programlisting>
 <para>
@@ -510,19 +517,21 @@ unsorted stores.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>.
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>new_order</parameter>&nbsp;:</term>
-<listitem><simpara> An integer array indication the new order for the list.
+<listitem><simpara> an array of integers mapping the new position of each child
+     to its old position before the re-ordering,
+     i.e. <parameter>new_order</parameter><literal>[newpos] = oldpos</literal>.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-swap"/>gtk_tree_store_swap ()</title>
-<programlisting>void        gtk_tree_store_swap             (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm role="2.2"><primary>gtk_tree_store_swap</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_swap             (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *a,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *b);</programlisting>
 <para>
@@ -532,19 +541,19 @@ only works with unsorted stores.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>.
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>a</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>b</parameter>&nbsp;:</term>
-<listitem><simpara> Another <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> Another <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-move-before"/>gtk_tree_store_move_before ()</title>
-<programlisting>void        gtk_tree_store_move_before      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm role="2.2"><primary>gtk_tree_store_move_before</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_move_before      (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *position);</programlisting>
 <para>
@@ -556,19 +565,19 @@ moved to the end of the level.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>.
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>position</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link> or <literal>NULL</literal>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link> or <literal>NULL</literal>.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-store-move-after"/>gtk_tree_store_move_after ()</title>
-<programlisting>void        gtk_tree_store_move_after       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
+<indexterm role="2.2"><primary>gtk_tree_store_move_after</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_store_move_after       (<link linkend="GtkTreeStore">GtkTreeStore</link> *tree_store,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *iter,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *position);</programlisting>
 <para>
@@ -580,13 +589,13 @@ to the start of the level.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>tree_store</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeStore">GtkTreeStore</link>.
+<listitem><simpara> A <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>position</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeIter">GtkTreeIter</link>.
+<listitem><simpara> A <link linkend="GtkTreeIter"><type>GtkTreeIter</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
@@ -598,7 +607,7 @@ to the start of the level.</para>
 <refsect1>
 <title>See Also</title>
 <para>
-<link linkend="GtkTreeModel">GtkTreeModel</link>, <link linkend="GtkTreeStore">GtkTreeStore</link>
+<link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>, <link linkend="GtkTreeStore"><type>GtkTreeStore</type></link>
 </para>
 </refsect1>
 

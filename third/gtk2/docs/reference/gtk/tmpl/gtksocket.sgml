@@ -64,7 +64,7 @@ is running.
 
 <para>
 The communication between a #GtkSocket and a #GtkPlug follows the 
-<ulink url="http://www.freedesktop.org/standards/xembed.html">XEmbed</ulink>
+<ulink url="http://www.freedesktop.org/standards/xembed-spec">XEmbed</ulink>
 protocol. This protocol has also been implemented in other toolkits, e.g.  
 <application>Qt</application>, allowing the same level of integration
 when embedding a <application>Qt</application> widget in GTK or vice versa.</para>
@@ -85,7 +85,7 @@ as between a #GtkPlug and a #GtkSocket.</para>
 </varlistentry>
 
 <varlistentry>
-<term><ulink url="http://www.freedesktop.org/standards/xembed.html">XEmbed</ulink></term>
+<term><ulink url="http://www.freedesktop.org/standards/xembed-spec">XEmbed</ulink></term>
 <listitem><para>the XEmbed Protocol Specification.</para></listitem>
 </varlistentry>
 
@@ -99,6 +99,28 @@ field.  (This field should be considered read-only. It should
 never be set by an application.)
 </para>
 
+
+<!-- ##### SIGNAL GtkSocket::plug-added ##### -->
+<para>
+This signal is emitted when a client is successfully
+added to the socket.
+</para>
+
+@socket: the object which received the signal.
+<!-- # Unused Parameters # -->
+@socket_: the object which received the signal.
+
+<!-- ##### SIGNAL GtkSocket::plug-removed ##### -->
+<para>
+This signal is emitted when a client is removed from the socket. The
+default action is to destroy the #GtkSocket widget, so if you want to
+reuse it you must add a signal handler that returns %TRUE.
+</para>
+
+@socket: the object which received the signal.
+@Returns: 
+<!-- # Unused Parameters # -->
+@socket_: the object which received the signal.
 
 <!-- ##### FUNCTION gtk_socket_new ##### -->
 <para>
@@ -134,23 +156,4 @@ never be set by an application.)
 @socket_: 
 @Returns: 
 
-
-<!-- ##### SIGNAL GtkSocket::plug-added ##### -->
-<para>
-
-</para>
-
-@socket: the object which received the signal.
-<!-- # Unused Parameters # -->
-@socket_: the object which received the signal.
-
-<!-- ##### SIGNAL GtkSocket::plug-removed ##### -->
-<para>
-
-</para>
-
-@socket: the object which received the signal.
-@Returns: 
-<!-- # Unused Parameters # -->
-@socket_: the object which received the signal.
 

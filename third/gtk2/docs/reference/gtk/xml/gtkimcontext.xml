@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkIMContext</refname><refpurpose></refpurpose>
+<refname>GtkIMContext</refname><refpurpose>Base class for input method contexts</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -17,25 +17,25 @@
 
 
 struct      <link linkend="GtkIMContext-struct">GtkIMContext</link>;
-void        <link linkend="gtk-im-context-set-client-window">gtk_im_context_set_client_window</link>
+<link linkend="void">void</link>        <link linkend="gtk-im-context-set-client-window">gtk_im_context_set_client_window</link>
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *window);
-void        <link linkend="gtk-im-context-get-preedit-string">gtk_im_context_get_preedit_string</link>
+<link linkend="void">void</link>        <link linkend="gtk-im-context-get-preedit-string">gtk_im_context_get_preedit_string</link>
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gchar">gchar</link> **str,
                                              <link linkend="PangoAttrList">PangoAttrList</link> **attrs,
                                              <link linkend="gint">gint</link> *cursor_pos);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-im-context-filter-keypress">gtk_im_context_filter_keypress</link>  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkEventKey">GdkEventKey</link> *event);
-void        <link linkend="gtk-im-context-focus-in">gtk_im_context_focus_in</link>         (<link linkend="GtkIMContext">GtkIMContext</link> *context);
-void        <link linkend="gtk-im-context-focus-out">gtk_im_context_focus_out</link>        (<link linkend="GtkIMContext">GtkIMContext</link> *context);
-void        <link linkend="gtk-im-context-reset">gtk_im_context_reset</link>            (<link linkend="GtkIMContext">GtkIMContext</link> *context);
-void        <link linkend="gtk-im-context-set-cursor-location">gtk_im_context_set_cursor_location</link>
+<link linkend="void">void</link>        <link linkend="gtk-im-context-focus-in">gtk_im_context_focus_in</link>         (<link linkend="GtkIMContext">GtkIMContext</link> *context);
+<link linkend="void">void</link>        <link linkend="gtk-im-context-focus-out">gtk_im_context_focus_out</link>        (<link linkend="GtkIMContext">GtkIMContext</link> *context);
+<link linkend="void">void</link>        <link linkend="gtk-im-context-reset">gtk_im_context_reset</link>            (<link linkend="GtkIMContext">GtkIMContext</link> *context);
+<link linkend="void">void</link>        <link linkend="gtk-im-context-set-cursor-location">gtk_im_context_set_cursor_location</link>
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkRectangle">GdkRectangle</link> *area);
-void        <link linkend="gtk-im-context-set-use-preedit">gtk_im_context_set_use_preedit</link>  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gtk-im-context-set-use-preedit">gtk_im_context_set_use_preedit</link>  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> use_preedit);
-void        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_surrounding</link>  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_surrounding</link>  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> len,
                                              <link linkend="gint">gint</link> cursor_index);
@@ -57,9 +57,13 @@ void        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_su
 
   <link linkend="GObject">GObject</link>
    +----GtkIMContext
+         +----<link linkend="GtkIMContextSimple">GtkIMContextSimple</link>
+         +----<link linkend="GtkIMMulticontext">GtkIMMulticontext</link>
 </synopsis>
 
 </refsect1>
+
+
 
 
 
@@ -68,7 +72,7 @@ void        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_su
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="GtkIMContext-commit">commit</link>&quot;    void        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+&quot;<link linkend="GtkIMContext-commit">commit</link>&quot;    <link linkend="void">void</link>        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gchar">gchar</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkIMContext-delete-surrounding">delete-surrounding</link>&quot;
@@ -77,13 +81,13 @@ void        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_su
                                             <link linkend="gint">gint</link> arg2,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkIMContext-preedit-changed">preedit-changed</link>&quot;
-            void        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkIMContext-preedit-end">preedit-end</link>&quot;
-            void        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkIMContext-preedit-start">preedit-start</link>&quot;
-            void        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkIMContext-retrieve-surrounding">retrieve-surrounding</link>&quot;
             <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
@@ -103,25 +107,25 @@ void        <link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_su
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkIMContext-struct"/>struct GtkIMContext</title>
-<programlisting>struct GtkIMContext;</programlisting>
+<indexterm><primary>GtkIMContext</primary></indexterm><programlisting>struct GtkIMContext;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-set-client-window"/>gtk_im_context_set_client_window ()</title>
-<programlisting>void        gtk_im_context_set_client_window
+<indexterm><primary>gtk_im_context_set_client_window</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_set_client_window
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *window);</programlisting>
 <para>
 Set the client window for the input context; this is the
-<link linkend="GdkWindow">GdkWindow</link> in which the input appears. This window is
+<link linkend="GdkWindow"><type>GdkWindow</type></link> in which the input appears. This window is
 used in order to correctly position status windows, and may
 also be used for purposes internal to the input method.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>window</parameter>&nbsp;:</term>
 <listitem><simpara>  the client window. This may be <literal>NULL</literal> to indicate
@@ -130,7 +134,7 @@ also be used for purposes internal to the input method.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-get-preedit-string"/>gtk_im_context_get_preedit_string ()</title>
-<programlisting>void        gtk_im_context_get_preedit_string
+<indexterm><primary>gtk_im_context_get_preedit_string</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_get_preedit_string
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gchar">gchar</link> **str,
                                              <link linkend="PangoAttrList">PangoAttrList</link> **attrs,
@@ -144,16 +148,16 @@ point.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara>    a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara>    a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>str</parameter>&nbsp;:</term>
 <listitem><simpara>        location to store the retrieved string. The
-             string retrieved must be freed with <link linkend="g-free">g_free</link>().
+             string retrieved must be freed with <link linkend="g-free"><function>g_free()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>attrs</parameter>&nbsp;:</term>
 <listitem><simpara>      location to store the retrieved attribute list.
              When you are done with this list, you must
-             unreference it with <link linkend="pango-attr-list-unref">pango_attr_list_unref</link>().
+             unreference it with <link linkend="pango-attr-list-unref"><function>pango_attr_list_unref()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cursor_pos</parameter>&nbsp;:</term>
 <listitem><simpara> location to store position of cursor (in bytes)
@@ -162,7 +166,7 @@ point.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-filter-keypress"/>gtk_im_context_filter_keypress ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_filter_keypress  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<indexterm><primary>gtk_im_context_filter_keypress</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_filter_keypress  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkEventKey">GdkEventKey</link> *event);</programlisting>
 <para>
 Allow an input method to internally handle a key press event.
@@ -172,7 +176,7 @@ should be done for this keystroke.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>event</parameter>&nbsp;:</term>
 <listitem><simpara> the key event
@@ -183,22 +187,22 @@ should be done for this keystroke.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-focus-in"/>gtk_im_context_focus_in ()</title>
-<programlisting>void        gtk_im_context_focus_in         (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
+<indexterm><primary>gtk_im_context_focus_in</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_focus_in         (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
 <para>
 Notify the input method that the widget to which this
-input context corresponds has lost gained. The input method
+input context corresponds has gained focus. The input method
 may, for example, change the displayed feedback to reflect
 this change.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-focus-out"/>gtk_im_context_focus_out ()</title>
-<programlisting>void        gtk_im_context_focus_out        (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
+<indexterm><primary>gtk_im_context_focus_out</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_focus_out        (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
 <para>
 Notify the input method that the widget to which this
 input context corresponds has lost focus. The input method
@@ -208,12 +212,12 @@ state to reflect this change.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-reset"/>gtk_im_context_reset ()</title>
-<programlisting>void        gtk_im_context_reset            (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
+<indexterm><primary>gtk_im_context_reset</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_reset            (<link linkend="GtkIMContext">GtkIMContext</link> *context);</programlisting>
 <para>
 Notify the input method that a change such as a change in cursor
 position has been made. This will typically cause the input
@@ -222,12 +226,12 @@ method to clear the preedit state.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-set-cursor-location"/>gtk_im_context_set_cursor_location ()</title>
-<programlisting>void        gtk_im_context_set_cursor_location
+<indexterm><primary>gtk_im_context_set_cursor_location</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_set_cursor_location
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="GdkRectangle">GdkRectangle</link> *area);</programlisting>
 <para>
@@ -238,7 +242,7 @@ window.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>area</parameter>&nbsp;:</term>
 <listitem><simpara> new location
@@ -246,7 +250,7 @@ window.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-set-use-preedit"/>gtk_im_context_set_use_preedit ()</title>
-<programlisting>void        gtk_im_context_set_use_preedit  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<indexterm><primary>gtk_im_context_set_use_preedit</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_set_use_preedit  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> use_preedit);</programlisting>
 <para>
 Sets whether the IM context should use the preedit string
@@ -257,7 +261,7 @@ feedback, such as displaying it in a child of the root window.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>use_preedit</parameter>&nbsp;:</term>
 <listitem><simpara> whether the IM context should use the preedit string.
@@ -265,20 +269,20 @@ feedback, such as displaying it in a child of the root window.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-set-surrounding"/>gtk_im_context_set_surrounding ()</title>
-<programlisting>void        gtk_im_context_set_surrounding  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<indexterm><primary>gtk_im_context_set_surrounding</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_im_context_set_surrounding  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> len,
                                              <link linkend="gint">gint</link> cursor_index);</programlisting>
 <para>
 Sets surrounding context around the insertion point and preedit
 string. This function is expected to be called in response to the
-GtkIMContext::retrieve_context signal, and will likely have no
+GtkIMContext::retrieve_surrounding signal, and will likely have no
 effect if called at other times.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link> 
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> text surrounding the insertion point, as UTF-8.
@@ -294,7 +298,7 @@ effect if called at other times.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-get-surrounding"/>gtk_im_context_get_surrounding ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_get_surrounding  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
+<indexterm><primary>gtk_im_context_get_surrounding</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_get_surrounding  (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gchar">gchar</link> **text,
                                              <link linkend="gint">gint</link> *cursor_index);</programlisting>
 <para>
@@ -305,23 +309,23 @@ only some sequences of characters are allowed.
 </para>
 <para>
 This function is implemented by emitting the
-GtkIMContext::retrieve_context signal on the input method; in
+GtkIMContext::retrieve_surrounding signal on the input method; in
 response to this signal, a widget should provide as much context as
 is available, up to an entire paragraph, by calling
-<link linkend="gtk-im-context-set-surrounding">gtk_im_context_set_surrounding</link>(). Note that there is no obligation
-for a widget to respond to the ::retrieve_context signal, so input
+<link linkend="gtk-im-context-set-surrounding"><function>gtk_im_context_set_surrounding()</function></link>. Note that there is no obligation
+for a widget to respond to the ::retrieve_surrounding signal, so input
 methods must be prepared to function without context.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> location to store a UTF-8 encoded string of text
        holding context around the insertion point.
        If the function returns <literal>TRUE</literal>, then you must free
-       the result stored in this location with <link linkend="g-free">g_free</link>().
+       the result stored in this location with <link linkend="g-free"><function>g_free()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cursor_index</parameter>&nbsp;:</term>
 <listitem><simpara> location to store byte index of the insertion cursor
@@ -333,7 +337,7 @@ methods must be prepared to function without context.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-im-context-delete-surrounding"/>gtk_im_context_delete_surrounding ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_delete_surrounding
+<indexterm><primary>gtk_im_context_delete_surrounding</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_im_context_delete_surrounding
                                             (<link linkend="GtkIMContext">GtkIMContext</link> *context,
                                              <link linkend="gint">gint</link> offset,
                                              <link linkend="gint">gint</link> n_chars);</programlisting>
@@ -342,11 +346,11 @@ Asks the widget that the input context is attached to to delete
 characters around the cursor position by emitting the
 GtkIMContext::delete_surrounding signal. Note that <parameter>offset</parameter> and <parameter>n_chars</parameter>
 are in characters not in bytes, which differs from the usage other
-places in <link linkend="GtkIMContext">GtkIMContext</link>.
+places in <link linkend="GtkIMContext"><type>GtkIMContext</type></link>.
 </para>
 <para>
 In order to use this function, you should first call
-<link linkend="gtk-im-context-get-surrounding">gtk_im_context_get_surrounding</link>() to get the current context, and
+<link linkend="gtk-im-context-get-surrounding"><function>gtk_im_context_get_surrounding()</function></link> to get the current context, and
 call this function immediately afterwards to make sure that you
 know what you are deleting. You should also account for the fact
 that even if the signal was handled, the input context might not
@@ -360,7 +364,7 @@ not useful for applications.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkIMContext">GtkIMContext</link>
+<listitem><simpara> a <link linkend="GtkIMContext"><type>GtkIMContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
 <listitem><simpara> offset from cursor position in chars;
@@ -378,7 +382,7 @@ not useful for applications.</para>
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkIMContext-commit"/>The &quot;commit&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gchar">gchar</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -416,7 +420,7 @@ not useful for applications.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkIMContext-preedit-changed"/>The &quot;preedit-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
@@ -428,7 +432,7 @@ not useful for applications.</para>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkIMContext-preedit-end"/>The &quot;preedit-end&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
@@ -440,7 +444,7 @@ not useful for applications.</para>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkIMContext-preedit-start"/>The &quot;preedit-start&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkIMContext">GtkIMContext</link> *imcontext,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 

@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkTreeItem</refname><refpurpose>The widget used for items in a <link linkend="GtkTree">GtkTree</link>.</refpurpose>
+<refname>GtkTreeItem</refname><refpurpose>The widget used for items in a <link linkend="GtkTree"><type>GtkTree</type></link>.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -20,13 +20,13 @@ struct      <link linkend="GtkTreeItem-struct">GtkTreeItem</link>;
 #define     <link linkend="GTK-TREE-ITEM-SUBTREE-CAPS">GTK_TREE_ITEM_SUBTREE</link>           (obj)
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-tree-item-new">gtk_tree_item_new</link>               (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-tree-item-new-with-label">gtk_tree_item_new_with_label</link>    (const <link linkend="gchar">gchar</link> *label);
-void        <link linkend="gtk-tree-item-set-subtree">gtk_tree_item_set_subtree</link>       (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item,
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-set-subtree">gtk_tree_item_set_subtree</link>       (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item,
                                              <link linkend="GtkWidget">GtkWidget</link> *subtree);
-void        <link linkend="gtk-tree-item-remove-subtree">gtk_tree_item_remove_subtree</link>    (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
-void        <link linkend="gtk-tree-item-select">gtk_tree_item_select</link>            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
-void        <link linkend="gtk-tree-item-deselect">gtk_tree_item_deselect</link>          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
-void        <link linkend="gtk-tree-item-expand">gtk_tree_item_expand</link>            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
-void        <link linkend="gtk-tree-item-collapse">gtk_tree_item_collapse</link>          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-remove-subtree">gtk_tree_item_remove_subtree</link>    (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-select">gtk_tree_item_select</link>            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-deselect">gtk_tree_item_deselect</link>          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-expand">gtk_tree_item_expand</link>            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
+<link linkend="void">void</link>        <link linkend="gtk-tree-item-collapse">gtk_tree_item_collapse</link>          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);
 
 
 </synopsis>
@@ -47,11 +47,14 @@ void        <link linkend="gtk-tree-item-collapse">gtk_tree_item_collapse</link>
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkTreeItem implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkTreeItem implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -60,9 +63,9 @@ GtkTreeItem implements <link linkend="AtkImplementorIface">AtkImplementorIface</
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="GtkTreeItem-collapse">collapse</link>&quot;  void        user_function      (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
+&quot;<link linkend="GtkTreeItem-collapse">collapse</link>&quot;  <link linkend="void">void</link>        user_function      (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
                                             <link linkend="gpointer">gpointer</link> user_data);
-&quot;<link linkend="GtkTreeItem-expand">expand</link>&quot;    void        user_function      (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
+&quot;<link linkend="GtkTreeItem-expand">expand</link>&quot;    <link linkend="void">void</link>        user_function      (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -73,9 +76,9 @@ GtkTreeItem implements <link linkend="AtkImplementorIface">AtkImplementorIface</
 <para>
 <warning>
 <para>
-<link linkend="GtkTree">GtkTree</link> is deprecated and unsupported. It is known to be
+<link linkend="GtkTree"><type>GtkTree</type></link> is deprecated and unsupported. It is known to be
 buggy. To use it, you must define the symbol <literal>GTK_ENABLE_BROKEN</literal>
-prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTreeView</link> instead.
+prior to including the GTK+ header files. Use <link linkend="GtkTreeView"><type>GtkTreeView</type></link> instead.
 </para>
 </warning>
 </para>
@@ -85,14 +88,14 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTreeItem-struct"/>struct GtkTreeItem</title>
-<programlisting>struct GtkTreeItem;</programlisting>
+<indexterm role="deprecated"><primary>GtkTreeItem</primary></indexterm><programlisting>struct GtkTreeItem;</programlisting>
 <warning><para><literal>GtkTreeItem</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-TREE-ITEM-SUBTREE-CAPS"/>GTK_TREE_ITEM_SUBTREE()</title>
-<programlisting>#define GTK_TREE_ITEM_SUBTREE(obj)      (GTK_TREE_ITEM(obj)-&gt;subtree)
+<indexterm role="deprecated"><primary>GTK_TREE_ITEM_SUBTREE</primary></indexterm><programlisting>#define GTK_TREE_ITEM_SUBTREE(obj)      (GTK_TREE_ITEM(obj)-&gt;subtree)
 </programlisting>
 <warning><para><literal>GTK_TREE_ITEM_SUBTREE</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -106,7 +109,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-new"/>gtk_tree_item_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_tree_item_new               (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_tree_item_new               (void);</programlisting>
 <warning><para><literal>gtk_tree_item_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -118,7 +121,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-new-with-label"/>gtk_tree_item_new_with_label ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_tree_item_new_with_label    (const <link linkend="gchar">gchar</link> *label);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_new_with_label</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_tree_item_new_with_label    (const <link linkend="gchar">gchar</link> *label);</programlisting>
 <warning><para><literal>gtk_tree_item_new_with_label</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -133,7 +136,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-set-subtree"/>gtk_tree_item_set_subtree ()</title>
-<programlisting>void        gtk_tree_item_set_subtree       (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item,
+<indexterm role="deprecated"><primary>gtk_tree_item_set_subtree</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_set_subtree       (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item,
                                              <link linkend="GtkWidget">GtkWidget</link> *subtree);</programlisting>
 <warning><para><literal>gtk_tree_item_set_subtree</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -150,7 +153,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-remove-subtree"/>gtk_tree_item_remove_subtree ()</title>
-<programlisting>void        gtk_tree_item_remove_subtree    (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_remove_subtree</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_remove_subtree    (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
 <warning><para><literal>gtk_tree_item_remove_subtree</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -163,7 +166,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-select"/>gtk_tree_item_select ()</title>
-<programlisting>void        gtk_tree_item_select            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_select</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_select            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
 <warning><para><literal>gtk_tree_item_select</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -176,7 +179,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-deselect"/>gtk_tree_item_deselect ()</title>
-<programlisting>void        gtk_tree_item_deselect          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_deselect</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_deselect          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
 <warning><para><literal>gtk_tree_item_deselect</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -189,7 +192,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-expand"/>gtk_tree_item_expand ()</title>
-<programlisting>void        gtk_tree_item_expand            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_expand</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_expand            (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
 <warning><para><literal>gtk_tree_item_expand</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -202,7 +205,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-item-collapse"/>gtk_tree_item_collapse ()</title>
-<programlisting>void        gtk_tree_item_collapse          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
+<indexterm role="deprecated"><primary>gtk_tree_item_collapse</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_item_collapse          (<link linkend="GtkTreeItem">GtkTreeItem</link> *tree_item);</programlisting>
 <warning><para><literal>gtk_tree_item_collapse</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 
@@ -219,7 +222,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkTreeItem-collapse"/>The &quot;collapse&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
@@ -231,7 +234,7 @@ prior to including the GTK+ header files. Use <link linkend="GtkTreeView">GtkTre
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkTreeItem-expand"/>The &quot;expand&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTreeItem">GtkTreeItem</link> *treeitem,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 

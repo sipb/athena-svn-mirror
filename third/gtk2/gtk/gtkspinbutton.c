@@ -27,6 +27,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -237,16 +238,16 @@ gtk_spin_button_class_init (GtkSpinButtonClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_ADJUSTMENT,
                                    g_param_spec_object ("adjustment",
-                                                        _("Adjustment"),
-                                                        _("The adjustment that holds the value of the spinbutton"),
+                                                        P_("Adjustment"),
+                                                        P_("The adjustment that holds the value of the spinbutton"),
                                                         GTK_TYPE_ADJUSTMENT,
                                                         G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_CLIMB_RATE,
                                    g_param_spec_double ("climb_rate",
-							_("Climb Rate"),
-							_("The acceleration rate when you hold down a button"),
+							P_("Climb Rate"),
+							P_("The acceleration rate when you hold down a button"),
 							0.0,
 							G_MAXDOUBLE,
 							0.0,
@@ -255,8 +256,8 @@ gtk_spin_button_class_init (GtkSpinButtonClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_DIGITS,
                                    g_param_spec_uint ("digits",
-						      _("Digits"),
-						      _("The number of decimal places to display"),
+						      P_("Digits"),
+						      P_("The number of decimal places to display"),
 						      0,
 						      MAX_DIGITS,
 						      0,
@@ -265,32 +266,32 @@ gtk_spin_button_class_init (GtkSpinButtonClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_SNAP_TO_TICKS,
                                    g_param_spec_boolean ("snap_to_ticks",
-							 _("Snap to Ticks"),
-							 _("Whether erroneous values are automatically changed to a spin button's nearest step increment"),
+							 P_("Snap to Ticks"),
+							 P_("Whether erroneous values are automatically changed to a spin button's nearest step increment"),
 							 FALSE,
 							 G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_NUMERIC,
                                    g_param_spec_boolean ("numeric",
-							 _("Numeric"),
-							 _("Whether non-numeric characters should be ignored"),
+							 P_("Numeric"),
+							 P_("Whether non-numeric characters should be ignored"),
 							 FALSE,
 							 G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_WRAP,
                                    g_param_spec_boolean ("wrap",
-							 _("Wrap"),
-							 _("Whether a spin button should wrap upon reaching its limits"),
+							 P_("Wrap"),
+							 P_("Whether a spin button should wrap upon reaching its limits"),
 							 FALSE,
 							 G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_UPDATE_POLICY,
                                    g_param_spec_enum ("update_policy",
-						      _("Update Policy"),
-						      _("Whether the spin button should update always, or only when the value is legal"),
+						      P_("Update Policy"),
+						      P_("Whether the spin button should update always, or only when the value is legal"),
 						      GTK_TYPE_SPIN_BUTTON_UPDATE_POLICY,
 						      GTK_UPDATE_ALWAYS,
 						      G_PARAM_READWRITE));
@@ -298,15 +299,17 @@ gtk_spin_button_class_init (GtkSpinButtonClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_VALUE,
                                    g_param_spec_double ("value",
-							_("Value"),
-							_("Reads the current value, or sets a new value"),
+							P_("Value"),
+							P_("Reads the current value, or sets a new value"),
 							-G_MAXDOUBLE,
 							G_MAXDOUBLE,
 							0.0,
 							G_PARAM_READWRITE));  
   
   gtk_widget_class_install_style_property_parser (widget_class,
-						  g_param_spec_enum ("shadow_type", "Shadow Type", NULL,
+						  g_param_spec_enum ("shadow_type", 
+								     "Shadow Type", 
+								     P_("Style of bevel around the spin button"),
 								     GTK_TYPE_SHADOW_TYPE,
 								     GTK_SHADOW_IN,
 								     G_PARAM_READABLE),
@@ -613,6 +616,40 @@ compute_double_length (double val, int digits)
   return a + digits + extra;
 }
 
+/* Keep in sync with gtkentry.c !
+ */
+static void
+get_borders (GtkEntry *entry,
+             gint     *xborder,
+             gint     *yborder)
+{
+  GtkWidget *widget = GTK_WIDGET (entry);
+  gint focus_width;
+  gboolean interior_focus;
+
+  gtk_widget_style_get (widget,
+			"interior-focus", &interior_focus,
+			"focus-line-width", &focus_width,
+			NULL);
+
+  if (entry->has_frame)
+    {
+      *xborder = widget->style->xthickness;
+      *yborder = widget->style->ythickness;
+    }
+  else
+    {
+      *xborder = 0;
+      *yborder = 0;
+    }
+
+  if (!interior_focus)
+    {
+      *xborder += focus_width;
+      *yborder += focus_width;
+    }
+}
+
 static void
 gtk_spin_button_size_request (GtkWidget      *widget,
 			      GtkRequisition *requisition)
@@ -638,6 +675,7 @@ gtk_spin_button_size_request (GtkWidget      *widget,
       gint digit_width;
       gboolean interior_focus;
       gint focus_width;
+      gint xborder, yborder;
 
       gtk_widget_style_get (widget,
 			    "interior-focus", &interior_focus,
@@ -650,7 +688,8 @@ gtk_spin_button_size_request (GtkWidget      *widget,
 					   pango_context_get_language (context));
 
       digit_width = pango_font_metrics_get_approximate_digit_width (metrics);
-      digit_width = PANGO_PIXELS (digit_width);
+      digit_width = PANGO_SCALE *
+        ((digit_width + PANGO_SCALE - 1) / PANGO_SCALE);
 
       pango_font_metrics_unref (metrics);
       
@@ -662,16 +701,18 @@ gtk_spin_button_size_request (GtkWidget      *widget,
 
       string_len = compute_double_length (spin_button->adjustment->upper,
                                           spin_button->digits);
-      w = MIN (string_len, max_string_len) * digit_width;
+      w = PANGO_PIXELS (MIN (string_len, max_string_len) * digit_width);
       width = MAX (width, w);
       string_len = compute_double_length (spin_button->adjustment->lower,
 					  spin_button->digits);
-      w = MIN (string_len, max_string_len) * digit_width;
+      w = PANGO_PIXELS (MIN (string_len, max_string_len) * digit_width);
       width = MAX (width, w);
       
-      requisition->width = width;
-      if (interior_focus)
-	requisition->width += 2 * focus_width;
+      get_borders (entry, &xborder, &yborder);
+      
+      xborder += 2; /* INNER_BORDER */
+
+      requisition->width = width + xborder * 2;
     }
 
   requisition->width += arrow_size + 2 * widget->style->xthickness;
@@ -782,14 +823,21 @@ static gboolean
 spin_button_at_limit (GtkSpinButton *spin_button,
                      GtkArrowType   arrow)
 {
+  GtkArrowType effective_arrow;
+
   if (spin_button->wrap)
     return FALSE;
 
-  if (arrow == GTK_ARROW_UP &&
+  if (spin_button->adjustment->step_increment > 0)
+    effective_arrow = arrow;
+  else
+    effective_arrow = arrow == GTK_ARROW_UP ? GTK_ARROW_DOWN : GTK_ARROW_UP; 
+  
+  if (effective_arrow == GTK_ARROW_UP &&
       (spin_button->adjustment->upper - spin_button->adjustment->value <= EPSILON))
     return TRUE;
   
-  if (arrow == GTK_ARROW_DOWN &&
+  if (effective_arrow == GTK_ARROW_DOWN &&
       (spin_button->adjustment->value - spin_button->adjustment->lower <= EPSILON))
     return TRUE;
   
@@ -955,16 +1003,26 @@ static void
 gtk_spin_button_grab_notify (GtkWidget *widget,
 			     gboolean   was_grabbed)
 {
+  GtkSpinButton *spin = GTK_SPIN_BUTTON (widget);
+
   if (!was_grabbed)
-    gtk_spin_button_stop_spinning (GTK_SPIN_BUTTON (widget));
+    {
+      gtk_spin_button_stop_spinning (spin);
+      spin_button_redraw (spin);
+    }
 }
 
 static void
 gtk_spin_button_state_changed (GtkWidget    *widget,
 			       GtkStateType  previous_state)
 {
+  GtkSpinButton *spin = GTK_SPIN_BUTTON (widget);
+
   if (!GTK_WIDGET_IS_SENSITIVE (widget))
-    gtk_spin_button_stop_spinning (GTK_SPIN_BUTTON (widget));    
+    {
+      gtk_spin_button_stop_spinning (spin);    
+      spin_button_redraw (spin);
+    }
 }
 
 static gint
@@ -996,7 +1054,7 @@ gtk_spin_button_stop_spinning (GtkSpinButton *spin)
 {
   if (spin->timer)
     {
-      gtk_timeout_remove (spin->timer);
+      g_source_remove (spin->timer);
       spin->timer = 0;
       spin->timer_calls = 0;
       spin->need_timer = FALSE;
@@ -1006,25 +1064,29 @@ gtk_spin_button_stop_spinning (GtkSpinButton *spin)
   spin->timer = 0;
   spin->timer_step = spin->adjustment->step_increment;
   spin->timer_calls = 0;
+
+  spin->click_child = NO_ARROW;
+  spin->button = 0;
 }
 
 static void
 start_spinning (GtkSpinButton *spin,
 		GtkArrowType   click_child,
-		gfloat         step)
+		gdouble        step)
 {
   g_return_if_fail (click_child == GTK_ARROW_UP || click_child == GTK_ARROW_DOWN);
   
   spin->click_child = click_child;
-  gtk_spin_button_real_spin (spin, click_child == GTK_ARROW_UP ? step : -step);
   
   if (!spin->timer)
     {
       spin->timer_step = step;
       spin->need_timer = TRUE;
-      spin->timer = gtk_timeout_add (SPIN_BUTTON_INITIAL_TIMER_DELAY, 
-				     (GtkFunction) gtk_spin_button_timer, (gpointer) spin);
+      spin->timer = g_timeout_add (SPIN_BUTTON_INITIAL_TIMER_DELAY, 
+				   (GSourceFunc) gtk_spin_button_timer, 
+				   (gpointer) spin);
     }
+  gtk_spin_button_real_spin (spin, click_child == GTK_ARROW_UP ? step : -step);
 
   spin_button_redraw (spin);
 }
@@ -1083,7 +1145,7 @@ gtk_spin_button_button_release (GtkWidget      *widget,
 
   if (event->button == spin->button)
     {
-      guint click_child;
+      int click_child = spin->click_child;
 
       gtk_spin_button_stop_spinning (spin);
 
@@ -1093,7 +1155,7 @@ gtk_spin_button_button_release (GtkWidget      *widget,
 	      event->y <= widget->requisition.height &&
 	      event->x <= arrow_size + 2 * widget->style->xthickness)
 	    {
-	      if (spin->click_child == GTK_ARROW_UP &&
+	      if (click_child == GTK_ARROW_UP &&
 		  event->y <= widget->requisition.height / 2)
 		{
 		  gdouble diff;
@@ -1102,7 +1164,7 @@ gtk_spin_button_button_release (GtkWidget      *widget,
 		  if (diff > EPSILON)
 		    gtk_spin_button_real_spin (spin, diff);
 		}
-	      else if (spin->click_child == GTK_ARROW_DOWN &&
+	      else if (click_child == GTK_ARROW_DOWN &&
 		       event->y > widget->requisition.height / 2)
 		{
 		  gdouble diff;
@@ -1113,9 +1175,6 @@ gtk_spin_button_button_release (GtkWidget      *widget,
 		}
 	    }
 	}		  
-      click_child = spin->click_child;
-      spin->click_child = NO_ARROW;
-      spin->button = 0;
       spin_button_redraw (spin);
 
       return TRUE;
@@ -1175,9 +1234,9 @@ gtk_spin_button_timer (GtkSpinButton *spin_button)
       if (spin_button->need_timer)
 	{
 	  spin_button->need_timer = FALSE;
-	  spin_button->timer = gtk_timeout_add 
-	    (SPIN_BUTTON_TIMER_DELAY, (GtkFunction) gtk_spin_button_timer, 
-	     (gpointer) spin_button);
+	  spin_button->timer = g_timeout_add (SPIN_BUTTON_TIMER_DELAY, 
+					      (GSourceFunc) gtk_spin_button_timer, 
+					      (gpointer) spin_button);
 	}
       else 
 	{
@@ -1485,7 +1544,7 @@ gtk_spin_button_default_input (GtkSpinButton *spin_button,
 {
   gchar *err = NULL;
 
-  *new_val = strtod (gtk_entry_get_text (GTK_ENTRY (spin_button)), &err);
+  *new_val = g_strtod (gtk_entry_get_text (GTK_ENTRY (spin_button)), &err);
   if (*err)
     return GTK_INPUT_ERROR;
   else
@@ -1681,7 +1740,7 @@ gtk_spin_button_get_adjustment (GtkSpinButton *spin_button)
 /**
  * gtk_spin_button_set_digits:
  * @spin_button: a #GtkSpinButton
- * @digits: the number of digits to be displayed for the spin button's value
+ * @digits: the number of digits after the decimal point to be displayed for the spin button's value
  * 
  * Set the precision to be displayed by @spin_button. Up to 20 digit precision
  * is allowed.

@@ -21,20 +21,26 @@ enum        <link linkend="GdkCursorType">GdkCursorType</link>;
 <link linkend="GdkCursor">GdkCursor</link>*  <link linkend="gdk-cursor-new">gdk_cursor_new</link>                  (<link linkend="GdkCursorType">GdkCursorType</link> cursor_type);
 <link linkend="GdkCursor">GdkCursor</link>*  <link linkend="gdk-cursor-new-from-pixmap">gdk_cursor_new_from_pixmap</link>      (<link linkend="GdkPixmap">GdkPixmap</link> *source,
                                              <link linkend="GdkPixmap">GdkPixmap</link> *mask,
-                                             <link linkend="GdkColor">GdkColor</link> *fg,
-                                             <link linkend="GdkColor">GdkColor</link> *bg,
+                                             const <link linkend="GdkColor">GdkColor</link> *fg,
+                                             const <link linkend="GdkColor">GdkColor</link> *bg,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);
+<link linkend="GdkCursor">GdkCursor</link>*  <link linkend="gdk-cursor-new-from-pixbuf">gdk_cursor_new_from_pixbuf</link>      (<link linkend="GdkDisplay">GdkDisplay</link> *display,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);
 <link linkend="GdkCursor">GdkCursor</link>*  <link linkend="gdk-cursor-new-for-display">gdk_cursor_new_for_display</link>      (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="GdkCursorType">GdkCursorType</link> cursor_type);
 <link linkend="GdkDisplay">GdkDisplay</link>* <link linkend="gdk-cursor-get-display">gdk_cursor_get_display</link>          (<link linkend="GdkCursor">GdkCursor</link> *cursor);
 <link linkend="GdkCursor">GdkCursor</link>*  <link linkend="gdk-cursor-ref">gdk_cursor_ref</link>                  (<link linkend="GdkCursor">GdkCursor</link> *cursor);
-void        <link linkend="gdk-cursor-unref">gdk_cursor_unref</link>                (<link linkend="GdkCursor">GdkCursor</link> *cursor);
+<link linkend="void">void</link>        <link linkend="gdk-cursor-unref">gdk_cursor_unref</link>                (<link linkend="GdkCursor">GdkCursor</link> *cursor);
 #define     <link linkend="gdk-cursor-destroy">gdk_cursor_destroy</link>
 
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -53,7 +59,7 @@ void        <link linkend="gdk-cursor-unref">gdk_cursor_unref</link>            
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkCursor"/>struct GdkCursor</title>
-<programlisting>struct GdkCursor {
+<indexterm><primary>GdkCursor</primary></indexterm><programlisting>struct GdkCursor {
 
   GdkCursorType type;
   guint ref_count;
@@ -64,7 +70,7 @@ A <type>GdkCursor</type> structure represents a cursor.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkCursorType"/>enum GdkCursorType</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkCursorType</primary></indexterm><programlisting>typedef enum
 {
   GDK_X_CURSOR 		  = 0,
   GDK_ARROW 		  = 2,
@@ -543,20 +549,20 @@ The standard cursors available.
 <varlistentry>
 <term><literal>GDK_CURSOR_IS_PIXMAP</literal></term>
 <listitem><simpara>type of cursors constructed with 
-    <link linkend="gdk-cursor-new-from-pixmap">gdk_cursor_new_from_pixmap</link>().
+    <link linkend="gdk-cursor-new-from-pixmap"><function>gdk_cursor_new_from_pixmap()</function></link>.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-new"/>gdk_cursor_new ()</title>
-<programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new                  (<link linkend="GdkCursorType">GdkCursorType</link> cursor_type);</programlisting>
+<indexterm><primary>gdk_cursor_new</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new                  (<link linkend="GdkCursorType">GdkCursorType</link> cursor_type);</programlisting>
 <para>
 Creates a new cursor from the set of builtin cursors for the default display.
-See <link linkend="gdk-cursor-new-for-display">gdk_cursor_new_for_display</link>().
+See <link linkend="gdk-cursor-new-for-display"><function>gdk_cursor_new_for_display()</function></link>.
 </para>
 <para>
-To make the cursor invisible, use <link linkend="gdk-cursor-new-from-pixmap">gdk_cursor_new_from_pixmap</link>() to create
+To make the cursor invisible, use <link linkend="gdk-cursor-new-from-pixmap"><function>gdk_cursor_new_from_pixmap()</function></link> to create
 a cursor with no pixels in it.</para>
 <para>
 
@@ -564,15 +570,15 @@ a cursor with no pixels in it.</para>
 <varlistentry><term><parameter>cursor_type</parameter>&nbsp;:</term>
 <listitem><simpara> cursor to create
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor">GdkCursor</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor"><type>GdkCursor</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-new-from-pixmap"/>gdk_cursor_new_from_pixmap ()</title>
-<programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new_from_pixmap      (<link linkend="GdkPixmap">GdkPixmap</link> *source,
+<indexterm><primary>gdk_cursor_new_from_pixmap</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new_from_pixmap      (<link linkend="GdkPixmap">GdkPixmap</link> *source,
                                              <link linkend="GdkPixmap">GdkPixmap</link> *mask,
-                                             <link linkend="GdkColor">GdkColor</link> *fg,
-                                             <link linkend="GdkColor">GdkColor</link> *bg,
+                                             const <link linkend="GdkColor">GdkColor</link> *fg,
+                                             const <link linkend="GdkColor">GdkColor</link> *bg,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
@@ -640,120 +646,162 @@ static unsigned char cursor1mask_bits[] = {
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara> the vertical offset of the 'hotspot' of the cursor.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor">GdkCursor</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor"><type>GdkCursor</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="gdk-cursor-new-from-pixbuf"/>gdk_cursor_new_from_pixbuf ()</title>
+<indexterm role="2.4"><primary>gdk_cursor_new_from_pixbuf</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new_from_pixbuf      (<link linkend="GdkDisplay">GdkDisplay</link> *display,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             <link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);</programlisting>
+<para>
+Creates a new cursor from a pixbuf. 
+</para>
+<para>
+Not all GDK backends support RGBA cursors. If they are not 
+supported, a monochrome approximation will be displayed. 
+The functions <link linkend="gdk-display-supports-cursor-alpha"><function>gdk_display_supports_cursor_alpha()</function></link> and 
+<link linkend="gdk-display-supports-cursor-color"><function>gdk_display_supports_cursor_color()</function></link> can be used to determine
+whether RGBA cursors are supported; 
+<link linkend="gdk-display-get-default-cursor-size"><function>gdk_display_get_default_cursor_size()</function></link> and 
+<link linkend="gdk-display-get-maximal-cursor-size"><function>gdk_display_get_maximal_cursor_size()</function></link> give information about 
+cursor sizes.
+</para>
+<para>
+On the X backend, support for RGBA cursors requires a
+sufficently new version of the X Render extension.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>display</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> for which the cursor will be created
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> containing the cursor image
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> the horizontal offset of the 'hotspot' of the cursor. 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> the vertical offset of the 'hotspot' of the cursor.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor"><type>GdkCursor</type></link>.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.4
+</para></refsect2>
+<refsect2>
 <title><anchor id="gdk-cursor-new-for-display"/>gdk_cursor_new_for_display ()</title>
-<programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new_for_display      (<link linkend="GdkDisplay">GdkDisplay</link> *display,
+<indexterm role="2.2"><primary>gdk_cursor_new_for_display</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_new_for_display      (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="GdkCursorType">GdkCursorType</link> cursor_type);</programlisting>
 <para>
 Creates a new cursor from the set of builtin cursors.
 Some useful ones are:
 <itemizedlist>
 <listitem><para>
- <inlinegraphic format="PNG" fileref="right_ptr.png"></inlinegraphic> <link linkend="GDK-RIGHT-PTR-CAPS">GDK_RIGHT_PTR</link> (right-facing arrow)
+ <inlinegraphic format="PNG" fileref="right_ptr.png"></inlinegraphic> <link linkend="GDK-RIGHT-PTR-CAPS"><type>GDK_RIGHT_PTR</type></link> (right-facing arrow)
 </para></listitem>
 <listitem><para>
- <inlinegraphic format="PNG" fileref="crosshair.png"></inlinegraphic> <link linkend="GDK-CROSSHAIR-CAPS">GDK_CROSSHAIR</link> (crosshair)
+ <inlinegraphic format="PNG" fileref="crosshair.png"></inlinegraphic> <link linkend="GDK-CROSSHAIR-CAPS"><type>GDK_CROSSHAIR</type></link> (crosshair)
 </para></listitem>
 <listitem><para>
- <inlinegraphic format="PNG" fileref="xterm.png"></inlinegraphic> <link linkend="GDK-XTERM-CAPS">GDK_XTERM</link> (I-beam)
+ <inlinegraphic format="PNG" fileref="xterm.png"></inlinegraphic> <link linkend="GDK-XTERM-CAPS"><type>GDK_XTERM</type></link> (I-beam)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="watch.png"></inlinegraphic> <link linkend="GDK-WATCH-CAPS">GDK_WATCH</link> (busy)
+<inlinegraphic format="PNG" fileref="watch.png"></inlinegraphic> <link linkend="GDK-WATCH-CAPS"><type>GDK_WATCH</type></link> (busy)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="fleur.png"></inlinegraphic> <link linkend="GDK-FLEUR-CAPS">GDK_FLEUR</link> (for moving objects)
+<inlinegraphic format="PNG" fileref="fleur.png"></inlinegraphic> <link linkend="GDK-FLEUR-CAPS"><type>GDK_FLEUR</type></link> (for moving objects)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="hand1.png"></inlinegraphic> <link linkend="GDK-HAND1-CAPS">GDK_HAND1</link> (a right-pointing hand)
+<inlinegraphic format="PNG" fileref="hand1.png"></inlinegraphic> <link linkend="GDK-HAND1-CAPS"><type>GDK_HAND1</type></link> (a right-pointing hand)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="hand2.png"></inlinegraphic> <link linkend="GDK-HAND2-CAPS">GDK_HAND2</link> (a left-pointing hand)
+<inlinegraphic format="PNG" fileref="hand2.png"></inlinegraphic> <link linkend="GDK-HAND2-CAPS"><type>GDK_HAND2</type></link> (a left-pointing hand)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="left_side.png"></inlinegraphic> <link linkend="GDK-LEFT-SIDE-CAPS">GDK_LEFT_SIDE</link> (resize left side)
+<inlinegraphic format="PNG" fileref="left_side.png"></inlinegraphic> <link linkend="GDK-LEFT-SIDE-CAPS"><type>GDK_LEFT_SIDE</type></link> (resize left side)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="right_side.png"></inlinegraphic> <link linkend="GDK-RIGHT-SIDE-CAPS">GDK_RIGHT_SIDE</link> (resize right side)
+<inlinegraphic format="PNG" fileref="right_side.png"></inlinegraphic> <link linkend="GDK-RIGHT-SIDE-CAPS"><type>GDK_RIGHT_SIDE</type></link> (resize right side)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="top_left_corner.png"></inlinegraphic> <link linkend="GDK-TOP-LEFT-CORNER-CAPS">GDK_TOP_LEFT_CORNER</link> (resize northwest corner)
+<inlinegraphic format="PNG" fileref="top_left_corner.png"></inlinegraphic> <link linkend="GDK-TOP-LEFT-CORNER-CAPS"><type>GDK_TOP_LEFT_CORNER</type></link> (resize northwest corner)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="top_right_corner.png"></inlinegraphic> <link linkend="GDK-TOP-RIGHT-CORNER-CAPS">GDK_TOP_RIGHT_CORNER</link> (resize northeast corner)
+<inlinegraphic format="PNG" fileref="top_right_corner.png"></inlinegraphic> <link linkend="GDK-TOP-RIGHT-CORNER-CAPS"><type>GDK_TOP_RIGHT_CORNER</type></link> (resize northeast corner)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="bottom_left_corner.png"></inlinegraphic> <link linkend="GDK-BOTTOM-LEFT-CORNER-CAPS">GDK_BOTTOM_LEFT_CORNER</link> (resize southwest corner)
+<inlinegraphic format="PNG" fileref="bottom_left_corner.png"></inlinegraphic> <link linkend="GDK-BOTTOM-LEFT-CORNER-CAPS"><type>GDK_BOTTOM_LEFT_CORNER</type></link> (resize southwest corner)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="bottom_right_corner.png"></inlinegraphic> <link linkend="GDK-BOTTOM-RIGHT-CORNER-CAPS">GDK_BOTTOM_RIGHT_CORNER</link> (resize southeast corner)
+<inlinegraphic format="PNG" fileref="bottom_right_corner.png"></inlinegraphic> <link linkend="GDK-BOTTOM-RIGHT-CORNER-CAPS"><type>GDK_BOTTOM_RIGHT_CORNER</type></link> (resize southeast corner)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="top_side.png"></inlinegraphic> <link linkend="GDK-TOP-SIDE-CAPS">GDK_TOP_SIDE</link> (resize top side)
+<inlinegraphic format="PNG" fileref="top_side.png"></inlinegraphic> <link linkend="GDK-TOP-SIDE-CAPS"><type>GDK_TOP_SIDE</type></link> (resize top side)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="bottom_side.png"></inlinegraphic> <link linkend="GDK-BOTTOM-SIDE-CAPS">GDK_BOTTOM_SIDE</link> (resize bottom side)
+<inlinegraphic format="PNG" fileref="bottom_side.png"></inlinegraphic> <link linkend="GDK-BOTTOM-SIDE-CAPS"><type>GDK_BOTTOM_SIDE</type></link> (resize bottom side)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="sb_h_double_arrow.png"></inlinegraphic> <link linkend="GDK-SB-H-DOUBLE-ARROW-CAPS">GDK_SB_H_DOUBLE_ARROW</link> (move vertical splitter)
+<inlinegraphic format="PNG" fileref="sb_h_double_arrow.png"></inlinegraphic> <link linkend="GDK-SB-H-DOUBLE-ARROW-CAPS"><type>GDK_SB_H_DOUBLE_ARROW</type></link> (move vertical splitter)
 </para></listitem>
 <listitem><para>
-<inlinegraphic format="PNG" fileref="sb_v_double_arrow.png"></inlinegraphic> <link linkend="GDK-SB-V-DOUBLE-ARROW-CAPS">GDK_SB_V_DOUBLE_ARROW</link> (move horizontal splitter)
+<inlinegraphic format="PNG" fileref="sb_v_double_arrow.png"></inlinegraphic> <link linkend="GDK-SB-V-DOUBLE-ARROW-CAPS"><type>GDK_SB_V_DOUBLE_ARROW</type></link> (move horizontal splitter)
 </para></listitem>
 </itemizedlist>
 </para>
 <para>
-To make the cursor invisible, use <link linkend="gdk-cursor-new-from-pixmap">gdk_cursor_new_from_pixmap</link>() to create
+To make the cursor invisible, use <link linkend="gdk-cursor-new-from-pixmap"><function>gdk_cursor_new_from_pixmap()</function></link> to create
 a cursor with no pixels in it.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link> for which the cursor will be created
+<listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> for which the cursor will be created
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cursor_type</parameter>&nbsp;:</term>
 <listitem><simpara> cursor to create
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor">GdkCursor</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GdkCursor"><type>GdkCursor</type></link>
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-get-display"/>gdk_cursor_get_display ()</title>
-<programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_cursor_get_display          (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
+<indexterm role="2.2"><primary>gdk_cursor_get_display</primary></indexterm><programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_cursor_get_display          (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
 <para>
-Returns the display on which the <link linkend="GdkCursor">GdkCursor</link> is defined.</para>
+Returns the display on which the <link linkend="GdkCursor"><type>GdkCursor</type></link> is defined.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cursor</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkCursor">GdkCursor</link>.
+<listitem><simpara> a <link linkend="GdkCursor"><type>GdkCursor</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link> associated to <parameter>cursor</parameter>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> associated to <parameter>cursor</parameter>
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-ref"/>gdk_cursor_ref ()</title>
-<programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_ref                  (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
+<indexterm><primary>gdk_cursor_ref</primary></indexterm><programlisting><link linkend="GdkCursor">GdkCursor</link>*  gdk_cursor_ref                  (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
 <para>
 Adds a reference to <parameter>cursor</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cursor</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkCursor">GdkCursor</link>
+<listitem><simpara> a <link linkend="GdkCursor"><type>GdkCursor</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Same <parameter>cursor</parameter> that was passed in
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-unref"/>gdk_cursor_unref ()</title>
-<programlisting>void        gdk_cursor_unref                (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
+<indexterm><primary>gdk_cursor_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_cursor_unref                (<link linkend="GdkCursor">GdkCursor</link> *cursor);</programlisting>
 <para>
 Removes a reference from <parameter>cursor</parameter>, deallocating the cursor
 if no references remain.</para>
@@ -761,12 +809,12 @@ if no references remain.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cursor</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkCursor">GdkCursor</link>
+<listitem><simpara> a <link linkend="GdkCursor"><type>GdkCursor</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-cursor-destroy"/>gdk_cursor_destroy</title>
-<programlisting>#define gdk_cursor_destroy             gdk_cursor_unref
+<indexterm role="deprecated"><primary>gdk_cursor_destroy</primary></indexterm><programlisting>#define gdk_cursor_destroy             gdk_cursor_unref
 </programlisting>
 <warning><para><literal>gdk_cursor_destroy</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>

@@ -18,12 +18,12 @@ Prebuilt common menu/toolbar items and corresponding icons</refpurpose>
 
 
 struct      <link linkend="GtkStockItem">GtkStockItem</link>;
-void        <link linkend="gtk-stock-add">gtk_stock_add</link>                   (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
+<link linkend="void">void</link>        <link linkend="gtk-stock-add">gtk_stock_add</link>                   (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
                                              <link linkend="guint">guint</link> n_items);
-void        <link linkend="gtk-stock-add-static">gtk_stock_add_static</link>            (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
+<link linkend="void">void</link>        <link linkend="gtk-stock-add-static">gtk_stock_add_static</link>            (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
                                              <link linkend="guint">guint</link> n_items);
 <link linkend="GtkStockItem">GtkStockItem</link>* <link linkend="gtk-stock-item-copy">gtk_stock_item_copy</link>           (const <link linkend="GtkStockItem">GtkStockItem</link> *item);
-void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>             (<link linkend="GtkStockItem">GtkStockItem</link> *item);
+<link linkend="void">void</link>        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>             (<link linkend="GtkStockItem">GtkStockItem</link> *item);
 <link linkend="GSList">GSList</link>*     <link linkend="gtk-stock-list-ids">gtk_stock_list_ids</link>              (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-stock-lookup">gtk_stock_lookup</link>                (const <link linkend="gchar">gchar</link> *stock_id,
                                              <link linkend="GtkStockItem">GtkStockItem</link> *item);
@@ -40,6 +40,7 @@ void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>      
 #define     <link linkend="GTK-STOCK-COPY-CAPS">GTK_STOCK_COPY</link>
 #define     <link linkend="GTK-STOCK-CUT-CAPS">GTK_STOCK_CUT</link>
 #define     <link linkend="GTK-STOCK-DELETE-CAPS">GTK_STOCK_DELETE</link>
+#define     <link linkend="GTK-STOCK-DIALOG-AUTHENTICATION-CAPS">GTK_STOCK_DIALOG_AUTHENTICATION</link>
 #define     <link linkend="GTK-STOCK-DIALOG-ERROR-CAPS">GTK_STOCK_DIALOG_ERROR</link>
 #define     <link linkend="GTK-STOCK-DIALOG-INFO-CAPS">GTK_STOCK_DIALOG_INFO</link>
 #define     <link linkend="GTK-STOCK-DIALOG-QUESTION-CAPS">GTK_STOCK_DIALOG_QUESTION</link>
@@ -58,8 +59,10 @@ void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>      
 #define     <link linkend="GTK-STOCK-GO-DOWN-CAPS">GTK_STOCK_GO_DOWN</link>
 #define     <link linkend="GTK-STOCK-GO-FORWARD-CAPS">GTK_STOCK_GO_FORWARD</link>
 #define     <link linkend="GTK-STOCK-GO-UP-CAPS">GTK_STOCK_GO_UP</link>
+#define     <link linkend="GTK-STOCK-HARDDISK-CAPS">GTK_STOCK_HARDDISK</link>
 #define     <link linkend="GTK-STOCK-HELP-CAPS">GTK_STOCK_HELP</link>
 #define     <link linkend="GTK-STOCK-HOME-CAPS">GTK_STOCK_HOME</link>
+#define     <link linkend="GTK-STOCK-INDENT-CAPS">GTK_STOCK_INDENT</link>
 #define     <link linkend="GTK-STOCK-INDEX-CAPS">GTK_STOCK_INDEX</link>
 #define     <link linkend="GTK-STOCK-ITALIC-CAPS">GTK_STOCK_ITALIC</link>
 #define     <link linkend="GTK-STOCK-JUMP-TO-CAPS">GTK_STOCK_JUMP_TO</link>
@@ -68,6 +71,7 @@ void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>      
 #define     <link linkend="GTK-STOCK-JUSTIFY-LEFT-CAPS">GTK_STOCK_JUSTIFY_LEFT</link>
 #define     <link linkend="GTK-STOCK-JUSTIFY-RIGHT-CAPS">GTK_STOCK_JUSTIFY_RIGHT</link>
 #define     <link linkend="GTK-STOCK-MISSING-IMAGE-CAPS">GTK_STOCK_MISSING_IMAGE</link>
+#define     <link linkend="GTK-STOCK-NETWORK-CAPS">GTK_STOCK_NETWORK</link>
 #define     <link linkend="GTK-STOCK-NEW-CAPS">GTK_STOCK_NEW</link>
 #define     <link linkend="GTK-STOCK-NO-CAPS">GTK_STOCK_NO</link>
 #define     <link linkend="GTK-STOCK-OK-CAPS">GTK_STOCK_OK</link>
@@ -94,6 +98,7 @@ void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>      
 #define     <link linkend="GTK-STOCK-UNDELETE-CAPS">GTK_STOCK_UNDELETE</link>
 #define     <link linkend="GTK-STOCK-UNDERLINE-CAPS">GTK_STOCK_UNDERLINE</link>
 #define     <link linkend="GTK-STOCK-UNDO-CAPS">GTK_STOCK_UNDO</link>
+#define     <link linkend="GTK-STOCK-UNINDENT-CAPS">GTK_STOCK_UNINDENT</link>
 #define     <link linkend="GTK-STOCK-YES-CAPS">GTK_STOCK_YES</link>
 #define     <link linkend="GTK-STOCK-ZOOM-100-CAPS">GTK_STOCK_ZOOM_100</link>
 #define     <link linkend="GTK-STOCK-ZOOM-FIT-CAPS">GTK_STOCK_ZOOM_FIT</link>
@@ -108,26 +113,29 @@ void        <link linkend="gtk-stock-item-free">gtk_stock_item_free</link>      
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
 Stock items represent commonly-used menu or toolbar items such as
 "Open" or "Exit". Each stock item is identified by a stock ID; 
-stock IDs are just strings, but macros such as <link linkend="GTK-STOCK-OPEN-CAPS">GTK_STOCK_OPEN</link> are
+stock IDs are just strings, but macros such as <link linkend="GTK-STOCK-OPEN-CAPS"><type>GTK_STOCK_OPEN</type></link> are
 provided to avoid typing mistakes in the strings.
 Applications can register their own stock items in addition to those
 built-in to GTK+.
 </para>
 <para>
-Each stock ID can be associated with a <link linkend="GtkStockItem">GtkStockItem</link>, which contains
+Each stock ID can be associated with a <link linkend="GtkStockItem"><type>GtkStockItem</type></link>, which contains
 the user-visible label, keyboard accelerator, and translation domain
 of the menu or toolbar item; and/or with an icon stored in a
-<link linkend="GtkIconFactory">GtkIconFactory</link>. See <link
+<link linkend="GtkIconFactory"><type>GtkIconFactory</type></link>. See <link
 linkend="gtk-Themeable-Stock-Images">GtkIconFactory</link> for
 more information on stock icons. The connection between a
-<link linkend="GtkStockItem">GtkStockItem</link> and stock icons is purely conventional (by virtue of
+<link linkend="GtkStockItem"><type>GtkStockItem</type></link> and stock icons is purely conventional (by virtue of
 using the same stock ID); it's possible to register a stock item but
-no icon, and vice versa.
+no icon, and vice versa. Stock icons may have a RTL variant which gets
+used for right-to-left locales. 
 </para>
 </refsect1>
 
@@ -135,7 +143,7 @@ no icon, and vice versa.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkStockItem"/>struct GtkStockItem</title>
-<programlisting>struct GtkStockItem {
+<indexterm><primary>GtkStockItem</primary></indexterm><programlisting>struct GtkStockItem {
 
   gchar *stock_id;
   gchar *label;
@@ -149,37 +157,37 @@ no icon, and vice versa.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-add"/>gtk_stock_add ()</title>
-<programlisting>void        gtk_stock_add                   (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
+<indexterm><primary>gtk_stock_add</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_stock_add                   (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
                                              <link linkend="guint">guint</link> n_items);</programlisting>
 <para>
 Registers each of the stock items in <parameter>items</parameter>. If an item already
 exists with the same stock ID as one of the <parameter>items</parameter>, the old item
 gets replaced. The stock items are copied, so GTK+ does not hold
 any pointer into <parameter>items</parameter> and <parameter>items</parameter> can be freed. Use
-<link linkend="gtk-stock-add-static">gtk_stock_add_static</link>() if <parameter>items</parameter> is persistent and GTK+ need not
+<link linkend="gtk-stock-add-static"><function>gtk_stock_add_static()</function></link> if <parameter>items</parameter> is persistent and GTK+ need not
 copy the array.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>items</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkStockItem">GtkStockItem</link> or array of items
+<listitem><simpara> a <link linkend="GtkStockItem"><type>GtkStockItem</type></link> or array of items
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_items</parameter>&nbsp;:</term>
-<listitem><simpara> number of <link linkend="GtkStockItem">GtkStockItem</link> in <parameter>items</parameter>
+<listitem><simpara> number of <link linkend="GtkStockItem"><type>GtkStockItem</type></link> in <parameter>items</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-add-static"/>gtk_stock_add_static ()</title>
-<programlisting>void        gtk_stock_add_static            (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
+<indexterm><primary>gtk_stock_add_static</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_stock_add_static            (const <link linkend="GtkStockItem">GtkStockItem</link> *items,
                                              <link linkend="guint">guint</link> n_items);</programlisting>
 <para>
-Same as <link linkend="gtk-stock-add">gtk_stock_add</link>(), but doesn't copy <parameter>items</parameter>, so
+Same as <link linkend="gtk-stock-add"><function>gtk_stock_add()</function></link>, but doesn't copy <parameter>items</parameter>, so
 <parameter>items</parameter> must persist until application exit.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>items</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkStockItem">GtkStockItem</link> or array of <link linkend="GtkStockItem">GtkStockItem</link>
+<listitem><simpara> a <link linkend="GtkStockItem"><type>GtkStockItem</type></link> or array of <link linkend="GtkStockItem"><type>GtkStockItem</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>n_items</parameter>&nbsp;:</term>
 <listitem><simpara> number of items
@@ -187,39 +195,39 @@ Same as <link linkend="gtk-stock-add">gtk_stock_add</link>(), but doesn't copy <
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-item-copy"/>gtk_stock_item_copy ()</title>
-<programlisting><link linkend="GtkStockItem">GtkStockItem</link>* gtk_stock_item_copy           (const <link linkend="GtkStockItem">GtkStockItem</link> *item);</programlisting>
+<indexterm><primary>gtk_stock_item_copy</primary></indexterm><programlisting><link linkend="GtkStockItem">GtkStockItem</link>* gtk_stock_item_copy           (const <link linkend="GtkStockItem">GtkStockItem</link> *item);</programlisting>
 <para>
 Copies a stock item, mostly useful for language bindings and not in applications.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkStockItem">GtkStockItem</link>
+<listitem><simpara> a <link linkend="GtkStockItem"><type>GtkStockItem</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkStockItem">GtkStockItem</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkStockItem"><type>GtkStockItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-item-free"/>gtk_stock_item_free ()</title>
-<programlisting>void        gtk_stock_item_free             (<link linkend="GtkStockItem">GtkStockItem</link> *item);</programlisting>
+<indexterm><primary>gtk_stock_item_free</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_stock_item_free             (<link linkend="GtkStockItem">GtkStockItem</link> *item);</programlisting>
 <para>
 Frees a stock item allocated on the heap, such as one returned by
-<link linkend="gtk-stock-item-copy">gtk_stock_item_copy</link>(). Also frees the fields inside the stock item,
+<link linkend="gtk-stock-item-copy"><function>gtk_stock_item_copy()</function></link>. Also frees the fields inside the stock item,
 if they are not <literal>NULL</literal>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkStockItem">GtkStockItem</link>
+<listitem><simpara> a <link linkend="GtkStockItem"><type>GtkStockItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-list-ids"/>gtk_stock_list_ids ()</title>
-<programlisting><link linkend="GSList">GSList</link>*     gtk_stock_list_ids              (void);</programlisting>
+<indexterm><primary>gtk_stock_list_ids</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gtk_stock_list_ids              (void);</programlisting>
 <para>
-Retrieves a list of all known stock IDs added to a <link linkend="GtkIconFactory">GtkIconFactory</link>
-or registered with <link linkend="gtk-stock-add">gtk_stock_add</link>(). The list must be freed with <link linkend="g-slist-free">g_slist_free</link>(),
-and each string in the list must be freed with <link linkend="g-free">g_free</link>().</para>
+Retrieves a list of all known stock IDs added to a <link linkend="GtkIconFactory"><type>GtkIconFactory</type></link>
+or registered with <link linkend="gtk-stock-add"><function>gtk_stock_add()</function></link>. The list must be freed with <link linkend="g-slist-free"><function>g_slist_free()</function></link>,
+and each string in the list must be freed with <link linkend="g-free"><function>g_free()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -228,7 +236,7 @@ and each string in the list must be freed with <link linkend="g-free">g_free</li
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-stock-lookup"/>gtk_stock_lookup ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_stock_lookup                (const <link linkend="gchar">gchar</link> *stock_id,
+<indexterm><primary>gtk_stock_lookup</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_stock_lookup                (const <link linkend="gchar">gchar</link> *stock_id,
                                              <link linkend="GtkStockItem">GtkStockItem</link> *item);</programlisting>
 <para>
 Fills <parameter>item</parameter> with the registered values for <parameter>stock_id</parameter>, returning <literal>TRUE</literal>
@@ -247,7 +255,7 @@ if <parameter>stock_id</parameter> was known.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ADD-CAPS"/>GTK_STOCK_ADD</title>
-<programlisting>#define GTK_STOCK_ADD              "gtk-add"
+<indexterm><primary>GTK_STOCK_ADD</primary></indexterm><programlisting>#define GTK_STOCK_ADD              "gtk-add"
 </programlisting>
 <para>
 The "Add" item.
@@ -255,7 +263,7 @@ The "Add" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-APPLY-CAPS"/>GTK_STOCK_APPLY</title>
-<programlisting>#define GTK_STOCK_APPLY            "gtk-apply"
+<indexterm><primary>GTK_STOCK_APPLY</primary></indexterm><programlisting>#define GTK_STOCK_APPLY            "gtk-apply"
 </programlisting>
 <para>
 The "Apply" item.
@@ -263,7 +271,7 @@ The "Apply" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-BOLD-CAPS"/>GTK_STOCK_BOLD</title>
-<programlisting>#define GTK_STOCK_BOLD             "gtk-bold"
+<indexterm><primary>GTK_STOCK_BOLD</primary></indexterm><programlisting>#define GTK_STOCK_BOLD             "gtk-bold"
 </programlisting>
 <para>
 The "Bold" item.
@@ -271,7 +279,7 @@ The "Bold" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CANCEL-CAPS"/>GTK_STOCK_CANCEL</title>
-<programlisting>#define GTK_STOCK_CANCEL           "gtk-cancel"
+<indexterm><primary>GTK_STOCK_CANCEL</primary></indexterm><programlisting>#define GTK_STOCK_CANCEL           "gtk-cancel"
 </programlisting>
 <para>
 The "Cancel" item.
@@ -279,7 +287,7 @@ The "Cancel" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CDROM-CAPS"/>GTK_STOCK_CDROM</title>
-<programlisting>#define GTK_STOCK_CDROM            "gtk-cdrom"
+<indexterm><primary>GTK_STOCK_CDROM</primary></indexterm><programlisting>#define GTK_STOCK_CDROM            "gtk-cdrom"
 </programlisting>
 <para>
 The "CD-Rom" item.
@@ -287,7 +295,7 @@ The "CD-Rom" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CLEAR-CAPS"/>GTK_STOCK_CLEAR</title>
-<programlisting>#define GTK_STOCK_CLEAR            "gtk-clear"
+<indexterm><primary>GTK_STOCK_CLEAR</primary></indexterm><programlisting>#define GTK_STOCK_CLEAR            "gtk-clear"
 </programlisting>
 <para>
 The "Clear" item.
@@ -295,7 +303,7 @@ The "Clear" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CLOSE-CAPS"/>GTK_STOCK_CLOSE</title>
-<programlisting>#define GTK_STOCK_CLOSE            "gtk-close"
+<indexterm><primary>GTK_STOCK_CLOSE</primary></indexterm><programlisting>#define GTK_STOCK_CLOSE            "gtk-close"
 </programlisting>
 <para>
 The "Close" item.
@@ -303,18 +311,18 @@ The "Close" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-COLOR-PICKER-CAPS"/>GTK_STOCK_COLOR_PICKER</title>
-<programlisting>#define GTK_STOCK_COLOR_PICKER     "gtk-color-picker"
+<indexterm role="2.2"><primary>GTK_STOCK_COLOR_PICKER</primary></indexterm><programlisting>#define GTK_STOCK_COLOR_PICKER     "gtk-color-picker"
 </programlisting>
 <para>
 The "Color Picker" item.
-<inlinegraphic fileref="stock_colorselector_24.png" format="PNG"></inlinegraphic>
+<inlinegraphic fileref="stock_color_picker_25.png" format="PNG"></inlinegraphic>
 </para><para>Since 2.2
 
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CONVERT-CAPS"/>GTK_STOCK_CONVERT</title>
-<programlisting>#define GTK_STOCK_CONVERT          "gtk-convert"
+<indexterm><primary>GTK_STOCK_CONVERT</primary></indexterm><programlisting>#define GTK_STOCK_CONVERT          "gtk-convert"
 </programlisting>
 <para>
 The "Convert" item.
@@ -322,7 +330,7 @@ The "Convert" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-COPY-CAPS"/>GTK_STOCK_COPY</title>
-<programlisting>#define GTK_STOCK_COPY             "gtk-copy"
+<indexterm><primary>GTK_STOCK_COPY</primary></indexterm><programlisting>#define GTK_STOCK_COPY             "gtk-copy"
 </programlisting>
 <para>
 The "Copy" item.
@@ -330,7 +338,7 @@ The "Copy" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-CUT-CAPS"/>GTK_STOCK_CUT</title>
-<programlisting>#define GTK_STOCK_CUT              "gtk-cut"
+<indexterm><primary>GTK_STOCK_CUT</primary></indexterm><programlisting>#define GTK_STOCK_CUT              "gtk-cut"
 </programlisting>
 <para>
 The "Cut" item.
@@ -338,15 +346,25 @@ The "Cut" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DELETE-CAPS"/>GTK_STOCK_DELETE</title>
-<programlisting>#define GTK_STOCK_DELETE           "gtk-delete"
+<indexterm><primary>GTK_STOCK_DELETE</primary></indexterm><programlisting>#define GTK_STOCK_DELETE           "gtk-delete"
 </programlisting>
 <para>
 The "Delete" item.
 <inlinegraphic fileref="stock_trash_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
+<title><anchor id="GTK-STOCK-DIALOG-AUTHENTICATION-CAPS"/>GTK_STOCK_DIALOG_AUTHENTICATION</title>
+<indexterm role="2.4"><primary>GTK_STOCK_DIALOG_AUTHENTICATION</primary></indexterm><programlisting>#define     GTK_STOCK_DIALOG_AUTHENTICATION</programlisting>
+<para>
+The "Authentication" item.
+<inlinegraphic fileref="stock_dialog_authentication_48.png" format="PNG"></inlinegraphic>
+</para><para>Since 2.4
+
+
+</para></refsect2>
+<refsect2>
 <title><anchor id="GTK-STOCK-DIALOG-ERROR-CAPS"/>GTK_STOCK_DIALOG_ERROR</title>
-<programlisting>#define GTK_STOCK_DIALOG_ERROR     "gtk-dialog-error"
+<indexterm><primary>GTK_STOCK_DIALOG_ERROR</primary></indexterm><programlisting>#define GTK_STOCK_DIALOG_ERROR     "gtk-dialog-error"
 </programlisting>
 <para>
 The "Error" item.
@@ -354,7 +372,7 @@ The "Error" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DIALOG-INFO-CAPS"/>GTK_STOCK_DIALOG_INFO</title>
-<programlisting>#define GTK_STOCK_DIALOG_INFO      "gtk-dialog-info"
+<indexterm><primary>GTK_STOCK_DIALOG_INFO</primary></indexterm><programlisting>#define GTK_STOCK_DIALOG_INFO      "gtk-dialog-info"
 </programlisting>
 <para>
 The "Information" item.
@@ -362,7 +380,7 @@ The "Information" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DIALOG-QUESTION-CAPS"/>GTK_STOCK_DIALOG_QUESTION</title>
-<programlisting>#define GTK_STOCK_DIALOG_QUESTION  "gtk-dialog-question"
+<indexterm><primary>GTK_STOCK_DIALOG_QUESTION</primary></indexterm><programlisting>#define GTK_STOCK_DIALOG_QUESTION  "gtk-dialog-question"
 </programlisting>
 <para>
 The "Question" item.
@@ -370,7 +388,7 @@ The "Question" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DIALOG-WARNING-CAPS"/>GTK_STOCK_DIALOG_WARNING</title>
-<programlisting>#define GTK_STOCK_DIALOG_WARNING   "gtk-dialog-warning"
+<indexterm><primary>GTK_STOCK_DIALOG_WARNING</primary></indexterm><programlisting>#define GTK_STOCK_DIALOG_WARNING   "gtk-dialog-warning"
 </programlisting>
 <para>
 The "Warning" item.
@@ -378,7 +396,7 @@ The "Warning" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DND-CAPS"/>GTK_STOCK_DND</title>
-<programlisting>#define GTK_STOCK_DND              "gtk-dnd"
+<indexterm><primary>GTK_STOCK_DND</primary></indexterm><programlisting>#define GTK_STOCK_DND              "gtk-dnd"
 </programlisting>
 <para>
 The "Drag-And-Drop" icon.
@@ -386,7 +404,7 @@ The "Drag-And-Drop" icon.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-DND-MULTIPLE-CAPS"/>GTK_STOCK_DND_MULTIPLE</title>
-<programlisting>#define GTK_STOCK_DND_MULTIPLE     "gtk-dnd-multiple"
+<indexterm><primary>GTK_STOCK_DND_MULTIPLE</primary></indexterm><programlisting>#define GTK_STOCK_DND_MULTIPLE     "gtk-dnd-multiple"
 </programlisting>
 <para>
 The "Drag-And-Drop multiple" icon.
@@ -394,7 +412,7 @@ The "Drag-And-Drop multiple" icon.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-EXECUTE-CAPS"/>GTK_STOCK_EXECUTE</title>
-<programlisting>#define GTK_STOCK_EXECUTE          "gtk-execute"
+<indexterm><primary>GTK_STOCK_EXECUTE</primary></indexterm><programlisting>#define GTK_STOCK_EXECUTE          "gtk-execute"
 </programlisting>
 <para>
 The "Execute" item.
@@ -402,7 +420,7 @@ The "Execute" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-FIND-CAPS"/>GTK_STOCK_FIND</title>
-<programlisting>#define GTK_STOCK_FIND             "gtk-find"
+<indexterm><primary>GTK_STOCK_FIND</primary></indexterm><programlisting>#define GTK_STOCK_FIND             "gtk-find"
 </programlisting>
 <para>
 The "Find" item.
@@ -410,7 +428,7 @@ The "Find" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-FIND-AND-REPLACE-CAPS"/>GTK_STOCK_FIND_AND_REPLACE</title>
-<programlisting>#define GTK_STOCK_FIND_AND_REPLACE "gtk-find-and-replace"
+<indexterm><primary>GTK_STOCK_FIND_AND_REPLACE</primary></indexterm><programlisting>#define GTK_STOCK_FIND_AND_REPLACE "gtk-find-and-replace"
 </programlisting>
 <para>
 The "Find and Replace" item.
@@ -418,7 +436,7 @@ The "Find and Replace" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-FLOPPY-CAPS"/>GTK_STOCK_FLOPPY</title>
-<programlisting>#define GTK_STOCK_FLOPPY           "gtk-floppy"
+<indexterm><primary>GTK_STOCK_FLOPPY</primary></indexterm><programlisting>#define GTK_STOCK_FLOPPY           "gtk-floppy"
 </programlisting>
 <para>
 The "Floppy" item.
@@ -426,7 +444,7 @@ The "Floppy" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GOTO-BOTTOM-CAPS"/>GTK_STOCK_GOTO_BOTTOM</title>
-<programlisting>#define GTK_STOCK_GOTO_BOTTOM      "gtk-goto-bottom"
+<indexterm><primary>GTK_STOCK_GOTO_BOTTOM</primary></indexterm><programlisting>#define GTK_STOCK_GOTO_BOTTOM      "gtk-goto-bottom"
 </programlisting>
 <para>
 The "Bottom" item.
@@ -434,23 +452,27 @@ The "Bottom" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GOTO-FIRST-CAPS"/>GTK_STOCK_GOTO_FIRST</title>
-<programlisting>#define GTK_STOCK_GOTO_FIRST       "gtk-goto-first"
+<indexterm><primary>GTK_STOCK_GOTO_FIRST</primary></indexterm><programlisting>#define GTK_STOCK_GOTO_FIRST       "gtk-goto-first"
 </programlisting>
 <para>
 The "First" item.
 <inlinegraphic fileref="stock_first_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_last_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GOTO-LAST-CAPS"/>GTK_STOCK_GOTO_LAST</title>
-<programlisting>#define GTK_STOCK_GOTO_LAST        "gtk-goto-last"
+<indexterm><primary>GTK_STOCK_GOTO_LAST</primary></indexterm><programlisting>#define GTK_STOCK_GOTO_LAST        "gtk-goto-last"
 </programlisting>
 <para>
 The "Last" item.
 <inlinegraphic fileref="stock_last_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_first_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GOTO-TOP-CAPS"/>GTK_STOCK_GOTO_TOP</title>
-<programlisting>#define GTK_STOCK_GOTO_TOP         "gtk-goto-top"
+<indexterm><primary>GTK_STOCK_GOTO_TOP</primary></indexterm><programlisting>#define GTK_STOCK_GOTO_TOP         "gtk-goto-top"
 </programlisting>
 <para>
 The "Top" item.
@@ -458,15 +480,17 @@ The "Top" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GO-BACK-CAPS"/>GTK_STOCK_GO_BACK</title>
-<programlisting>#define GTK_STOCK_GO_BACK          "gtk-go-back"
+<indexterm><primary>GTK_STOCK_GO_BACK</primary></indexterm><programlisting>#define GTK_STOCK_GO_BACK          "gtk-go-back"
 </programlisting>
 <para>
 The "Back" item.
 <inlinegraphic fileref="stock_left_arrow_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_right_arrow_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GO-DOWN-CAPS"/>GTK_STOCK_GO_DOWN</title>
-<programlisting>#define GTK_STOCK_GO_DOWN          "gtk-go-down"
+<indexterm><primary>GTK_STOCK_GO_DOWN</primary></indexterm><programlisting>#define GTK_STOCK_GO_DOWN          "gtk-go-down"
 </programlisting>
 <para>
 The "Down" item.
@@ -474,23 +498,32 @@ The "Down" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GO-FORWARD-CAPS"/>GTK_STOCK_GO_FORWARD</title>
-<programlisting>#define GTK_STOCK_GO_FORWARD       "gtk-go-forward"
+<indexterm><primary>GTK_STOCK_GO_FORWARD</primary></indexterm><programlisting>#define GTK_STOCK_GO_FORWARD       "gtk-go-forward"
 </programlisting>
 <para>
 The "Forward" item.
 <inlinegraphic fileref="stock_right_arrow_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_left_arrow_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-GO-UP-CAPS"/>GTK_STOCK_GO_UP</title>
-<programlisting>#define GTK_STOCK_GO_UP            "gtk-go-up"
+<indexterm><primary>GTK_STOCK_GO_UP</primary></indexterm><programlisting>#define GTK_STOCK_GO_UP            "gtk-go-up"
 </programlisting>
 <para>
 The "Up" item.
 <inlinegraphic fileref="stock_up_arrow_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
+<title><anchor id="GTK-STOCK-HARDDISK-CAPS"/>GTK_STOCK_HARDDISK</title>
+<indexterm><primary>GTK_STOCK_HARDDISK</primary></indexterm><programlisting>#define GTK_STOCK_HARDDISK         "gtk-harddisk"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
 <title><anchor id="GTK-STOCK-HELP-CAPS"/>GTK_STOCK_HELP</title>
-<programlisting>#define GTK_STOCK_HELP             "gtk-help"
+<indexterm><primary>GTK_STOCK_HELP</primary></indexterm><programlisting>#define GTK_STOCK_HELP             "gtk-help"
 </programlisting>
 <para>
 The "Help" item.
@@ -498,15 +531,22 @@ The "Help" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-HOME-CAPS"/>GTK_STOCK_HOME</title>
-<programlisting>#define GTK_STOCK_HOME             "gtk-home"
+<indexterm><primary>GTK_STOCK_HOME</primary></indexterm><programlisting>#define GTK_STOCK_HOME             "gtk-home"
 </programlisting>
 <para>
 The "Home" item.
 <inlinegraphic fileref="stock_home_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
+<title><anchor id="GTK-STOCK-INDENT-CAPS"/>GTK_STOCK_INDENT</title>
+<indexterm><primary>GTK_STOCK_INDENT</primary></indexterm><programlisting>#define GTK_STOCK_INDENT           "gtk-indent"		/* since gtk-2.4 */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
 <title><anchor id="GTK-STOCK-INDEX-CAPS"/>GTK_STOCK_INDEX</title>
-<programlisting>#define GTK_STOCK_INDEX            "gtk-index"
+<indexterm><primary>GTK_STOCK_INDEX</primary></indexterm><programlisting>#define GTK_STOCK_INDEX            "gtk-index"
 </programlisting>
 <para>
 The "Index" item.
@@ -514,7 +554,7 @@ The "Index" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ITALIC-CAPS"/>GTK_STOCK_ITALIC</title>
-<programlisting>#define GTK_STOCK_ITALIC           "gtk-italic"
+<indexterm><primary>GTK_STOCK_ITALIC</primary></indexterm><programlisting>#define GTK_STOCK_ITALIC           "gtk-italic"
 </programlisting>
 <para>
 The "Italic" item.
@@ -522,15 +562,17 @@ The "Italic" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-JUMP-TO-CAPS"/>GTK_STOCK_JUMP_TO</title>
-<programlisting>#define GTK_STOCK_JUMP_TO          "gtk-jump-to"
+<indexterm><primary>GTK_STOCK_JUMP_TO</primary></indexterm><programlisting>#define GTK_STOCK_JUMP_TO          "gtk-jump-to"
 </programlisting>
 <para>
 The "Jump to" item.
 <inlinegraphic fileref="stock_jump_to_24.png" format="PNG"></inlinegraphic>
+RTL-variant 
+<inlinegraphic fileref="stock_jump_to_rtl_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-JUSTIFY-CENTER-CAPS"/>GTK_STOCK_JUSTIFY_CENTER</title>
-<programlisting>#define GTK_STOCK_JUSTIFY_CENTER   "gtk-justify-center"
+<indexterm><primary>GTK_STOCK_JUSTIFY_CENTER</primary></indexterm><programlisting>#define GTK_STOCK_JUSTIFY_CENTER   "gtk-justify-center"
 </programlisting>
 <para>
 The "Center" item.
@@ -538,7 +580,7 @@ The "Center" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-JUSTIFY-FILL-CAPS"/>GTK_STOCK_JUSTIFY_FILL</title>
-<programlisting>#define GTK_STOCK_JUSTIFY_FILL     "gtk-justify-fill"
+<indexterm><primary>GTK_STOCK_JUSTIFY_FILL</primary></indexterm><programlisting>#define GTK_STOCK_JUSTIFY_FILL     "gtk-justify-fill"
 </programlisting>
 <para>
 The "Fill" item.
@@ -546,7 +588,7 @@ The "Fill" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-JUSTIFY-LEFT-CAPS"/>GTK_STOCK_JUSTIFY_LEFT</title>
-<programlisting>#define GTK_STOCK_JUSTIFY_LEFT     "gtk-justify-left"
+<indexterm><primary>GTK_STOCK_JUSTIFY_LEFT</primary></indexterm><programlisting>#define GTK_STOCK_JUSTIFY_LEFT     "gtk-justify-left"
 </programlisting>
 <para>
 The "Left" item.
@@ -554,7 +596,7 @@ The "Left" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-JUSTIFY-RIGHT-CAPS"/>GTK_STOCK_JUSTIFY_RIGHT</title>
-<programlisting>#define GTK_STOCK_JUSTIFY_RIGHT    "gtk-justify-right"
+<indexterm><primary>GTK_STOCK_JUSTIFY_RIGHT</primary></indexterm><programlisting>#define GTK_STOCK_JUSTIFY_RIGHT    "gtk-justify-right"
 </programlisting>
 <para>
 The "Right" item.
@@ -562,15 +604,22 @@ The "Right" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-MISSING-IMAGE-CAPS"/>GTK_STOCK_MISSING_IMAGE</title>
-<programlisting>#define GTK_STOCK_MISSING_IMAGE    "gtk-missing-image"
+<indexterm><primary>GTK_STOCK_MISSING_IMAGE</primary></indexterm><programlisting>#define GTK_STOCK_MISSING_IMAGE    "gtk-missing-image"
 </programlisting>
 <para>
 The "Missing image" icon.
 <inlinegraphic fileref="stock_broken_image_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
+<title><anchor id="GTK-STOCK-NETWORK-CAPS"/>GTK_STOCK_NETWORK</title>
+<indexterm><primary>GTK_STOCK_NETWORK</primary></indexterm><programlisting>#define GTK_STOCK_NETWORK          "gtk-network"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
 <title><anchor id="GTK-STOCK-NEW-CAPS"/>GTK_STOCK_NEW</title>
-<programlisting>#define GTK_STOCK_NEW              "gtk-new"
+<indexterm><primary>GTK_STOCK_NEW</primary></indexterm><programlisting>#define GTK_STOCK_NEW              "gtk-new"
 </programlisting>
 <para>
 The "New" item.
@@ -578,7 +627,7 @@ The "New" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-NO-CAPS"/>GTK_STOCK_NO</title>
-<programlisting>#define GTK_STOCK_NO               "gtk-no"
+<indexterm><primary>GTK_STOCK_NO</primary></indexterm><programlisting>#define GTK_STOCK_NO               "gtk-no"
 </programlisting>
 <para>
 The "No" item.
@@ -586,7 +635,7 @@ The "No" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-OK-CAPS"/>GTK_STOCK_OK</title>
-<programlisting>#define GTK_STOCK_OK               "gtk-ok"
+<indexterm><primary>GTK_STOCK_OK</primary></indexterm><programlisting>#define GTK_STOCK_OK               "gtk-ok"
 </programlisting>
 <para>
 The "OK" item.
@@ -594,7 +643,7 @@ The "OK" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-OPEN-CAPS"/>GTK_STOCK_OPEN</title>
-<programlisting>#define GTK_STOCK_OPEN             "gtk-open"
+<indexterm><primary>GTK_STOCK_OPEN</primary></indexterm><programlisting>#define GTK_STOCK_OPEN             "gtk-open"
 </programlisting>
 <para>
 The "Open" item.
@@ -602,7 +651,7 @@ The "Open" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-PASTE-CAPS"/>GTK_STOCK_PASTE</title>
-<programlisting>#define GTK_STOCK_PASTE            "gtk-paste"
+<indexterm><primary>GTK_STOCK_PASTE</primary></indexterm><programlisting>#define GTK_STOCK_PASTE            "gtk-paste"
 </programlisting>
 <para>
 The "Paste" item.
@@ -610,7 +659,7 @@ The "Paste" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-PREFERENCES-CAPS"/>GTK_STOCK_PREFERENCES</title>
-<programlisting>#define GTK_STOCK_PREFERENCES      "gtk-preferences"
+<indexterm><primary>GTK_STOCK_PREFERENCES</primary></indexterm><programlisting>#define GTK_STOCK_PREFERENCES      "gtk-preferences"
 </programlisting>
 <para>
 The "Preferences" item.
@@ -618,7 +667,7 @@ The "Preferences" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-PRINT-CAPS"/>GTK_STOCK_PRINT</title>
-<programlisting>#define GTK_STOCK_PRINT            "gtk-print"
+<indexterm><primary>GTK_STOCK_PRINT</primary></indexterm><programlisting>#define GTK_STOCK_PRINT            "gtk-print"
 </programlisting>
 <para>
 The "Print" item.
@@ -626,7 +675,7 @@ The "Print" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-PRINT-PREVIEW-CAPS"/>GTK_STOCK_PRINT_PREVIEW</title>
-<programlisting>#define GTK_STOCK_PRINT_PREVIEW    "gtk-print-preview"
+<indexterm><primary>GTK_STOCK_PRINT_PREVIEW</primary></indexterm><programlisting>#define GTK_STOCK_PRINT_PREVIEW    "gtk-print-preview"
 </programlisting>
 <para>
 The "Print Preview" item.
@@ -634,7 +683,7 @@ The "Print Preview" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-PROPERTIES-CAPS"/>GTK_STOCK_PROPERTIES</title>
-<programlisting>#define GTK_STOCK_PROPERTIES       "gtk-properties"
+<indexterm><primary>GTK_STOCK_PROPERTIES</primary></indexterm><programlisting>#define GTK_STOCK_PROPERTIES       "gtk-properties"
 </programlisting>
 <para>
 The "Properties" item.
@@ -642,7 +691,7 @@ The "Properties" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-QUIT-CAPS"/>GTK_STOCK_QUIT</title>
-<programlisting>#define GTK_STOCK_QUIT             "gtk-quit"
+<indexterm><primary>GTK_STOCK_QUIT</primary></indexterm><programlisting>#define GTK_STOCK_QUIT             "gtk-quit"
 </programlisting>
 <para>
 The "Quit" item.
@@ -650,15 +699,17 @@ The "Quit" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-REDO-CAPS"/>GTK_STOCK_REDO</title>
-<programlisting>#define GTK_STOCK_REDO             "gtk-redo"
+<indexterm><primary>GTK_STOCK_REDO</primary></indexterm><programlisting>#define GTK_STOCK_REDO             "gtk-redo"
 </programlisting>
 <para>
 The "Redo" item.
 <inlinegraphic fileref="stock_redo_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_redo_rtl_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-REFRESH-CAPS"/>GTK_STOCK_REFRESH</title>
-<programlisting>#define GTK_STOCK_REFRESH          "gtk-refresh"
+<indexterm><primary>GTK_STOCK_REFRESH</primary></indexterm><programlisting>#define GTK_STOCK_REFRESH          "gtk-refresh"
 </programlisting>
 <para>
 The "Refresh" item.
@@ -666,7 +717,7 @@ The "Refresh" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-REMOVE-CAPS"/>GTK_STOCK_REMOVE</title>
-<programlisting>#define GTK_STOCK_REMOVE           "gtk-remove"
+<indexterm><primary>GTK_STOCK_REMOVE</primary></indexterm><programlisting>#define GTK_STOCK_REMOVE           "gtk-remove"
 </programlisting>
 <para>
 The "Remove" item.
@@ -674,15 +725,17 @@ The "Remove" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-REVERT-TO-SAVED-CAPS"/>GTK_STOCK_REVERT_TO_SAVED</title>
-<programlisting>#define GTK_STOCK_REVERT_TO_SAVED  "gtk-revert-to-saved"
+<indexterm><primary>GTK_STOCK_REVERT_TO_SAVED</primary></indexterm><programlisting>#define GTK_STOCK_REVERT_TO_SAVED  "gtk-revert-to-saved"
 </programlisting>
 <para>
 The "Revert" item.
 <inlinegraphic fileref="stock_revert_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_revert_rtl_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SAVE-CAPS"/>GTK_STOCK_SAVE</title>
-<programlisting>#define GTK_STOCK_SAVE             "gtk-save"
+<indexterm><primary>GTK_STOCK_SAVE</primary></indexterm><programlisting>#define GTK_STOCK_SAVE             "gtk-save"
 </programlisting>
 <para>
 The "Save" item.
@@ -690,7 +743,7 @@ The "Save" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SAVE-AS-CAPS"/>GTK_STOCK_SAVE_AS</title>
-<programlisting>#define GTK_STOCK_SAVE_AS          "gtk-save-as"
+<indexterm><primary>GTK_STOCK_SAVE_AS</primary></indexterm><programlisting>#define GTK_STOCK_SAVE_AS          "gtk-save-as"
 </programlisting>
 <para>
 The "Save As" item.
@@ -698,7 +751,7 @@ The "Save As" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SELECT-COLOR-CAPS"/>GTK_STOCK_SELECT_COLOR</title>
-<programlisting>#define GTK_STOCK_SELECT_COLOR     "gtk-select-color"
+<indexterm><primary>GTK_STOCK_SELECT_COLOR</primary></indexterm><programlisting>#define GTK_STOCK_SELECT_COLOR     "gtk-select-color"
 </programlisting>
 <para>
 The "Color" item.
@@ -706,7 +759,7 @@ The "Color" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SELECT-FONT-CAPS"/>GTK_STOCK_SELECT_FONT</title>
-<programlisting>#define GTK_STOCK_SELECT_FONT      "gtk-select-font"
+<indexterm><primary>GTK_STOCK_SELECT_FONT</primary></indexterm><programlisting>#define GTK_STOCK_SELECT_FONT      "gtk-select-font"
 </programlisting>
 <para>
 The "Font" item.
@@ -714,7 +767,7 @@ The "Font" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SORT-ASCENDING-CAPS"/>GTK_STOCK_SORT_ASCENDING</title>
-<programlisting>#define GTK_STOCK_SORT_ASCENDING   "gtk-sort-ascending"
+<indexterm><primary>GTK_STOCK_SORT_ASCENDING</primary></indexterm><programlisting>#define GTK_STOCK_SORT_ASCENDING   "gtk-sort-ascending"
 </programlisting>
 <para>
 The "Ascending" item.
@@ -722,7 +775,7 @@ The "Ascending" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SORT-DESCENDING-CAPS"/>GTK_STOCK_SORT_DESCENDING</title>
-<programlisting>#define GTK_STOCK_SORT_DESCENDING  "gtk-sort-descending"
+<indexterm><primary>GTK_STOCK_SORT_DESCENDING</primary></indexterm><programlisting>#define GTK_STOCK_SORT_DESCENDING  "gtk-sort-descending"
 </programlisting>
 <para>
 The "Descending" item.
@@ -730,7 +783,7 @@ The "Descending" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-SPELL-CHECK-CAPS"/>GTK_STOCK_SPELL_CHECK</title>
-<programlisting>#define GTK_STOCK_SPELL_CHECK      "gtk-spell-check"
+<indexterm><primary>GTK_STOCK_SPELL_CHECK</primary></indexterm><programlisting>#define GTK_STOCK_SPELL_CHECK      "gtk-spell-check"
 </programlisting>
 <para>
 The "Spell Check" item.
@@ -738,7 +791,7 @@ The "Spell Check" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-STOP-CAPS"/>GTK_STOCK_STOP</title>
-<programlisting>#define GTK_STOCK_STOP             "gtk-stop"
+<indexterm><primary>GTK_STOCK_STOP</primary></indexterm><programlisting>#define GTK_STOCK_STOP             "gtk-stop"
 </programlisting>
 <para>
 The "Stop" item.
@@ -746,7 +799,7 @@ The "Stop" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-STRIKETHROUGH-CAPS"/>GTK_STOCK_STRIKETHROUGH</title>
-<programlisting>#define GTK_STOCK_STRIKETHROUGH    "gtk-strikethrough"
+<indexterm><primary>GTK_STOCK_STRIKETHROUGH</primary></indexterm><programlisting>#define GTK_STOCK_STRIKETHROUGH    "gtk-strikethrough"
 </programlisting>
 <para>
 The "Strikethrough" item.
@@ -754,15 +807,17 @@ The "Strikethrough" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-UNDELETE-CAPS"/>GTK_STOCK_UNDELETE</title>
-<programlisting>#define GTK_STOCK_UNDELETE         "gtk-undelete"
+<indexterm><primary>GTK_STOCK_UNDELETE</primary></indexterm><programlisting>#define GTK_STOCK_UNDELETE         "gtk-undelete"
 </programlisting>
 <para>
 The "Undelete" item.
 <inlinegraphic fileref="stock_undelete_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_undelete_rtl_24.png" format="PNG"></inlinegraphic>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-UNDERLINE-CAPS"/>GTK_STOCK_UNDERLINE</title>
-<programlisting>#define GTK_STOCK_UNDERLINE        "gtk-underline"
+<indexterm><primary>GTK_STOCK_UNDERLINE</primary></indexterm><programlisting>#define GTK_STOCK_UNDERLINE        "gtk-underline"
 </programlisting>
 <para>
 The "Underline" item.
@@ -770,15 +825,24 @@ The "Underline" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-UNDO-CAPS"/>GTK_STOCK_UNDO</title>
-<programlisting>#define GTK_STOCK_UNDO             "gtk-undo"
+<indexterm><primary>GTK_STOCK_UNDO</primary></indexterm><programlisting>#define GTK_STOCK_UNDO             "gtk-undo"
 </programlisting>
 <para>
 The "Undo" item.
 <inlinegraphic fileref="stock_undo_24.png" format="PNG"></inlinegraphic>
+RTL variant
+<inlinegraphic fileref="stock_undo_rtl_24.png" format="PNG"></inlinegraphic>
+</para></refsect2>
+<refsect2>
+<title><anchor id="GTK-STOCK-UNINDENT-CAPS"/>GTK_STOCK_UNINDENT</title>
+<indexterm><primary>GTK_STOCK_UNINDENT</primary></indexterm><programlisting>#define GTK_STOCK_UNINDENT         "gtk-unindent"	/* since gtk-2.4 */
+</programlisting>
+<para>
+
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-YES-CAPS"/>GTK_STOCK_YES</title>
-<programlisting>#define GTK_STOCK_YES              "gtk-yes"
+<indexterm><primary>GTK_STOCK_YES</primary></indexterm><programlisting>#define GTK_STOCK_YES              "gtk-yes"
 </programlisting>
 <para>
 The "Yes" item.
@@ -786,7 +850,7 @@ The "Yes" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ZOOM-100-CAPS"/>GTK_STOCK_ZOOM_100</title>
-<programlisting>#define GTK_STOCK_ZOOM_100         "gtk-zoom-100"
+<indexterm><primary>GTK_STOCK_ZOOM_100</primary></indexterm><programlisting>#define GTK_STOCK_ZOOM_100         "gtk-zoom-100"
 </programlisting>
 <para>
 The "Zoom 100%" item.
@@ -794,7 +858,7 @@ The "Zoom 100%" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ZOOM-FIT-CAPS"/>GTK_STOCK_ZOOM_FIT</title>
-<programlisting>#define GTK_STOCK_ZOOM_FIT         "gtk-zoom-fit"
+<indexterm><primary>GTK_STOCK_ZOOM_FIT</primary></indexterm><programlisting>#define GTK_STOCK_ZOOM_FIT         "gtk-zoom-fit"
 </programlisting>
 <para>
 The "Zoom to Fit" item.
@@ -802,7 +866,7 @@ The "Zoom to Fit" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ZOOM-IN-CAPS"/>GTK_STOCK_ZOOM_IN</title>
-<programlisting>#define GTK_STOCK_ZOOM_IN          "gtk-zoom-in"
+<indexterm><primary>GTK_STOCK_ZOOM_IN</primary></indexterm><programlisting>#define GTK_STOCK_ZOOM_IN          "gtk-zoom-in"
 </programlisting>
 <para>
 The "Zoom In" item.
@@ -810,7 +874,7 @@ The "Zoom In" item.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GTK-STOCK-ZOOM-OUT-CAPS"/>GTK_STOCK_ZOOM_OUT</title>
-<programlisting>#define GTK_STOCK_ZOOM_OUT         "gtk-zoom-out"
+<indexterm><primary>GTK_STOCK_ZOOM_OUT</primary></indexterm><programlisting>#define GTK_STOCK_ZOOM_OUT         "gtk-zoom-out"
 </programlisting>
 <para>
 The "Zoom Out" item.

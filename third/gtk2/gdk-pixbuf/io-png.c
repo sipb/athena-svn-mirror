@@ -358,6 +358,7 @@ struct _LoadContext {
         png_structp png_read_ptr;
         png_infop   png_info_ptr;
 
+        GdkPixbufModuleSizeFunc size_func;
         GdkPixbufModulePreparedFunc prepare_func;
         GdkPixbufModuleUpdatedFunc update_func;
         gpointer notify_user_data;
@@ -398,6 +399,7 @@ gdk_pixbuf__png_image_begin_load (GdkPixbufModuleSizeFunc size_func,
         
         lc->fatal_error_occurred = FALSE;
 
+        lc->size_func = size_func;
         lc->prepare_func = prepare_func;
         lc->update_func = update_func;
         lc->notify_user_data = user_data;
@@ -593,7 +595,18 @@ png_info_callback   (png_structp png_read_ptr,
         if (color_type & PNG_COLOR_MASK_ALPHA)
                 have_alpha = TRUE;
         
-        lc->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, have_alpha, 8, width, height);
+        if (lc->size_func) {
+                gint w = width;
+                gint h = height;
+                (* lc->size_func) (&w, &h, lc->notify_user_data);
+                
+                if (w == 0 || h == 0) {
+                        lc->fatal_error_occurred = TRUE;
+                        return;
+                }
+        }
+
+        lc->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, have_alpha, 8, width, height);
 
         if (lc->pixbuf == NULL) {
                 /* Failed to allocate memory */
@@ -728,12 +741,40 @@ png_warning_callback(png_structp png_read_ptr,
 
 /* Save */
 
-static gboolean
-gdk_pixbuf__png_image_save (FILE          *f, 
-                            GdkPixbuf     *pixbuf, 
-                            gchar        **keys,
-                            gchar        **values,
-                            GError       **error)
+typedef struct {
+        GdkPixbufSaveFunc save_func;
+        gpointer user_data;
+        GError **error;
+} SaveToFunctionIoPtr;
+
+static void
+png_save_to_callback_write_func (png_structp png_ptr,
+                                 png_bytep   data,
+                                 png_size_t  length)
+{
+        SaveToFunctionIoPtr *ioptr = png_get_io_ptr (png_ptr);
+
+        if (!ioptr->save_func (data, length, ioptr->error, ioptr->user_data)) {
+                /* If save_func has already set an error, which it
+                   should have done, this won't overwrite it. */
+                png_error (png_ptr, "write function failed");
+        }
+}
+
+static void
+png_save_to_callback_flush_func (png_structp png_ptr)
+{
+        ;
+}
+
+static gboolean real_save_png (GdkPixbuf        *pixbuf, 
+                               gchar           **keys,
+                               gchar           **values,
+                               GError          **error,
+                               gboolean          to_callback,
+                               FILE             *f,
+                               GdkPixbufSaveFunc save_func,
+                               gpointer          user_data)
 {
        png_structp png_ptr;
        png_infop info_ptr;
@@ -749,6 +790,7 @@ gdk_pixbuf__png_image_save (FILE          *f,
        int bpc;
        int num_keys;
        gboolean success = TRUE;
+       SaveToFunctionIoPtr to_callback_ioptr;
 
        num_keys = 0;
 
@@ -847,7 +889,16 @@ gdk_pixbuf__png_image_save (FILE          *f,
                png_set_text (png_ptr, info_ptr, text_ptr, num_keys);
        }
 
-       png_init_io (png_ptr, f);
+       if (to_callback) {
+               to_callback_ioptr.save_func = save_func;
+               to_callback_ioptr.user_data = user_data;
+               to_callback_ioptr.error = error;
+               png_set_write_fn (png_ptr, &to_callback_ioptr,
+                                 png_save_to_callback_write_func,
+                                 png_save_to_callback_flush_func);
+       } else {
+               png_init_io (png_ptr, f);
+       }
 
        if (has_alpha) {
                png_set_IHDR (png_ptr, info_ptr, w, h, bpc,
@@ -888,6 +939,29 @@ cleanup:
        return success;
 }
 
+static gboolean
+gdk_pixbuf__png_image_save (FILE          *f, 
+                            GdkPixbuf     *pixbuf, 
+                            gchar        **keys,
+                            gchar        **values,
+                            GError       **error)
+{
+        return real_save_png (pixbuf, keys, values, error,
+                              FALSE, f, NULL, NULL);
+}
+
+static gboolean
+gdk_pixbuf__png_image_save_to_callback (GdkPixbufSaveFunc   save_func,
+                                        gpointer            user_data,
+                                        GdkPixbuf          *pixbuf, 
+                                        gchar             **keys,
+                                        gchar             **values,
+                                        GError            **error)
+{
+        return real_save_png (pixbuf, keys, values, error,
+                              TRUE, NULL, save_func, user_data);
+}
+
 void
 MODULE_ENTRY (png, fill_vtable) (GdkPixbufModule *module)
 {
@@ -896,6 +970,7 @@ MODULE_ENTRY (png, fill_vtable) (GdkPixbufModule *module)
         module->stop_load = gdk_pixbuf__png_image_stop_load;
         module->load_increment = gdk_pixbuf__png_image_load_increment;
         module->save = gdk_pixbuf__png_image_save;
+        module->save_to_callback = gdk_pixbuf__png_image_save_to_callback;
 }
 
 void

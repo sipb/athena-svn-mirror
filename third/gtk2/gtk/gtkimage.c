@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <math.h>
 #include "gtkcontainer.h"
 #include "gtkimage.h"
@@ -132,40 +133,40 @@ gtk_image_class_init (GtkImageClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_PIXBUF,
                                    g_param_spec_object ("pixbuf",
-                                                        _("Pixbuf"),
-                                                        _("A GdkPixbuf to display"),
+                                                        P_("Pixbuf"),
+                                                        P_("A GdkPixbuf to display"),
                                                         GDK_TYPE_PIXBUF,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_PIXMAP,
                                    g_param_spec_object ("pixmap",
-                                                        _("Pixmap"),
-                                                        _("A GdkPixmap to display"),
+                                                        P_("Pixmap"),
+                                                        P_("A GdkPixmap to display"),
                                                         GDK_TYPE_PIXMAP,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_IMAGE,
                                    g_param_spec_object ("image",
-                                                        _("Image"),
-                                                        _("A GdkImage to display"),
+                                                        P_("Image"),
+                                                        P_("A GdkImage to display"),
                                                         GDK_TYPE_IMAGE,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_MASK,
                                    g_param_spec_object ("mask",
-                                                        _("Mask"),
-                                                        _("Mask bitmap to use with GdkImage or GdkPixmap"),
+                                                        P_("Mask"),
+                                                        P_("Mask bitmap to use with GdkImage or GdkPixmap"),
                                                         GDK_TYPE_PIXMAP,
                                                         G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_FILE,
                                    g_param_spec_string ("file",
-                                                        _("Filename"),
-                                                        _("Filename to load and display"),
+                                                        P_("Filename"),
+                                                        P_("Filename to load and display"),
                                                         NULL,
                                                         G_PARAM_WRITABLE));
   
@@ -173,24 +174,24 @@ gtk_image_class_init (GtkImageClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_STOCK,
                                    g_param_spec_string ("stock",
-                                                        _("Stock ID"),
-                                                        _("Stock ID for a stock image to display"),
+                                                        P_("Stock ID"),
+                                                        P_("Stock ID for a stock image to display"),
                                                         NULL,
                                                         G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_ICON_SET,
                                    g_param_spec_boxed ("icon_set",
-                                                       _("Icon set"),
-                                                       _("Icon set to display"),
+                                                       P_("Icon set"),
+                                                       P_("Icon set to display"),
                                                        GTK_TYPE_ICON_SET,
                                                        G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_ICON_SIZE,
                                    g_param_spec_int ("icon_size",
-                                                     _("Icon size"),
-                                                     _("Size to use for stock icon or icon set"),
+                                                     P_("Icon size"),
+                                                     P_("Size to use for stock icon or icon set"),
                                                      0, G_MAXINT,
                                                      DEFAULT_ICON_SIZE,
                                                      G_PARAM_READWRITE));
@@ -198,16 +199,16 @@ gtk_image_class_init (GtkImageClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_PIXBUF_ANIMATION,
                                    g_param_spec_object ("pixbuf_animation",
-                                                        _("Animation"),
-                                                        _("GdkPixbufAnimation to display"),
+                                                        P_("Animation"),
+                                                        P_("GdkPixbufAnimation to display"),
                                                         GDK_TYPE_PIXBUF_ANIMATION,
                                                         G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_STORAGE_TYPE,
                                    g_param_spec_enum ("storage_type",
-                                                      _("Storage type"),
-                                                      _("The representation being used for image data"),
+                                                      P_("Storage type"),
+                                                      P_("The representation being used for image data"),
                                                       GTK_TYPE_IMAGE_TYPE,
                                                       GTK_IMAGE_EMPTY,
                                                       G_PARAM_READABLE));
@@ -401,7 +402,7 @@ gtk_image_get_property (GObject     *object,
  * @mask: a #GdkBitmap, or %NULL
  * 
  * Creates a #GtkImage widget displaying @pixmap with a @mask.
- * A #GdkImage is a server-side image buffer in the pixel format of the
+ * A #GdkPixmap is a server-side image buffer in the pixel format of the
  * current display. The #GtkImage does not assume a reference to the
  * pixmap or mask; you still need to unref them if you own references.
  * #GtkImage will add its own reference rather than adopting yours.
@@ -1206,6 +1207,44 @@ animation_timeout (gpointer data)
   return FALSE;
 }
 
+/*
+ * Like gdk_rectangle_intersect (dest, src, dest), but make 
+ * sure that the origin of dest is moved by an "even" offset. 
+ * If necessary grow the intersection by one row or column 
+ * to achieve this.
+ *
+ * This is necessary since we can't pass alignment information
+ * for the pixelation pattern down to gdk_pixbuf_saturate_and_pixelate(), 
+ * thus we have to makesure that the subimages are properly aligned.
+ */
+static gboolean
+rectangle_intersect_even (GdkRectangle *src, 
+			  GdkRectangle *dest)
+{
+  gboolean isect;
+  gint x, y;
+
+  x = dest->x;
+  y = dest->y;
+  isect = gdk_rectangle_intersect (dest, src, dest);
+
+  if ((dest->x - x + dest->y - y) % 2 != 0)
+    {
+      if (dest->x > x)
+	{
+	  dest->x--;
+	  dest->width++;
+	}
+      else
+	{
+	  dest->y--;
+	  dest->height++;
+	}
+    }
+  
+  return isect;
+}
+
 static gint
 gtk_image_expose (GtkWidget      *widget,
 		  GdkEventExpose *event)
@@ -1220,7 +1259,7 @@ gtk_image_expose (GtkWidget      *widget,
       GtkMisc *misc;
       GdkRectangle area, image_bound;
       gfloat xalign;
-      gint x, y;
+      gint x, y, mask_x, mask_y;
       GdkBitmap *mask;
       GdkPixbuf *pixbuf;
       gboolean needs_state_transform;
@@ -1252,6 +1291,8 @@ gtk_image_expose (GtkWidget      *widget,
       y = floor (widget->allocation.y + misc->ypad 
 		 + ((widget->allocation.height - widget->requisition.height) * misc->yalign)
 		 + 0.5);
+      mask_x = x;
+      mask_y = y;
       
       image_bound.x = x;
       image_bound.y = y;      
@@ -1269,8 +1310,7 @@ gtk_image_expose (GtkWidget      *widget,
           gdk_drawable_get_size (image->data.pixmap.pixmap,
                                  &image_bound.width,
                                  &image_bound.height);
-
-	  if (gdk_rectangle_intersect (&image_bound, &area, &image_bound) &&
+	  if (rectangle_intersect_even (&area, &image_bound) &&
 	      needs_state_transform)
             {
               pixbuf = gdk_pixbuf_get_from_drawable (NULL,
@@ -1292,7 +1332,7 @@ gtk_image_expose (GtkWidget      *widget,
           image_bound.width = image->data.image.image->width;
           image_bound.height = image->data.image.image->height;
 
-	  if (gdk_rectangle_intersect (&image_bound, &area, &image_bound) &&
+	  if (rectangle_intersect_even (&area, &image_bound) &&
 	      needs_state_transform)
             {
               pixbuf = gdk_pixbuf_get_from_image (NULL,
@@ -1311,8 +1351,9 @@ gtk_image_expose (GtkWidget      *widget,
         case GTK_IMAGE_PIXBUF:
           image_bound.width = gdk_pixbuf_get_width (image->data.pixbuf.pixbuf);
           image_bound.height = gdk_pixbuf_get_height (image->data.pixbuf.pixbuf);          
+	  
 
-	  if (gdk_rectangle_intersect (&image_bound, &area, &image_bound) &&
+	  if (rectangle_intersect_even (&area, &image_bound) &&
 	      needs_state_transform)
 	    {
 	      pixbuf = gdk_pixbuf_new_subpixbuf (image->data.pixbuf.pixbuf,
@@ -1397,10 +1438,10 @@ gtk_image_expose (GtkWidget      *widget,
       if (mask)
 	{
 	  gdk_gc_set_clip_mask (widget->style->black_gc, mask);
-	  gdk_gc_set_clip_origin (widget->style->black_gc, x, y);
+	  gdk_gc_set_clip_origin (widget->style->black_gc, mask_x, mask_y);
 	}
 
-      if (gdk_rectangle_intersect (&image_bound, &area, &image_bound))
+      if (rectangle_intersect_even (&area, &image_bound))
         {
           if (pixbuf)
             {

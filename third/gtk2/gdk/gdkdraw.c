@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gdkdrawable.h"
 #include "gdkinternals.h"
 #include "gdkwindow.h"
@@ -519,6 +520,8 @@ gdk_draw_polygon (GdkDrawable *drawable,
  * @string:  the string of characters to draw.
  * 
  * Draws a string of characters in the given font or fontset.
+ * 
+ * Deprecated: Use gdk_draw_layout() instead.
  **/
 void
 gdk_draw_string (GdkDrawable *drawable,
@@ -548,6 +551,8 @@ gdk_draw_string (GdkDrawable *drawable,
  * @text_length: the number of characters of @text to draw.
  * 
  * Draws a number of characters in the given font or fontset.
+ *
+ * Deprecated: Use gdk_draw_layout() instead.
  **/
 void
 gdk_draw_text (GdkDrawable *drawable,
@@ -579,6 +584,8 @@ gdk_draw_text (GdkDrawable *drawable,
  * Draws a number of wide characters using the given font of fontset.
  * If the font is a 1-byte font, the string is converted into 1-byte 
  * characters (discarding the high bytes) before output.
+ * 
+ * Deprecated: Use gdk_draw_layout() instead.
  **/
 void
 gdk_draw_text_wc (GdkDrawable	 *drawable,
@@ -601,7 +608,7 @@ gdk_draw_text_wc (GdkDrawable	 *drawable,
  * gdk_draw_drawable:
  * @drawable: a #GdkDrawable
  * @gc: a #GdkGC sharing the drawable's visual and colormap
- * @src: another #GdkDrawable
+ * @src: the source #GdkDrawable, which may be the same as @drawable
  * @xsrc: X position in @src of rectangle to draw
  * @ysrc: Y position in @src of rectangle to draw
  * @xdest: X position in @drawable where the rectangle should be drawn
@@ -740,6 +747,9 @@ gdk_draw_image (GdkDrawable *drawable,
  * On older X servers, rendering pixbufs with an alpha channel involves round 
  * trips to the X server, and may be somewhat slow.
  *
+ * The clip mask of @gc is ignored, but clip rectangles and clip regions work
+ * fine.
+ * 
  * Since: 2.2
  **/
 void
@@ -891,7 +901,7 @@ gdk_draw_glyphs (GdkDrawable      *drawable,
 
 
 /**
- * _gdk_drawable_copy_to_image:
+ * gdk_drawable_copy_to_image:
  * @drawable: a #GdkDrawable
  * @image: a #GdkDrawable, or %NULL if a new @image should be created.
  * @src_x: x coordinate on @drawable
@@ -906,17 +916,19 @@ gdk_draw_glyphs (GdkDrawable      *drawable,
  * and copies into that. See gdk_drawable_get_image() for further details.
  * 
  * Return value: @image, or a new a #GdkImage containing the contents
-                 of @drawable
+ *               of @drawable
+ * 
+ * Since: 2.4
  **/
 GdkImage*
-_gdk_drawable_copy_to_image (GdkDrawable *drawable,
-			     GdkImage    *image,
-			     gint         src_x,
-			     gint         src_y,
-			     gint         dest_x,
-			     gint         dest_y,
-			     gint         width,
-			     gint         height)
+gdk_drawable_copy_to_image (GdkDrawable *drawable,
+			    GdkImage    *image,
+			    gint         src_x,
+			    gint         src_y,
+			    gint         dest_x,
+			    gint         dest_y,
+			    gint         width,
+			    gint         height)
 {
   GdkDrawable *composite;
   gint composite_x_offset = 0;
@@ -1059,7 +1071,7 @@ gdk_drawable_real_get_image (GdkDrawable     *drawable,
 			     gint             width,
 			     gint             height)
 {
-  return _gdk_drawable_copy_to_image (drawable, NULL, x, y, 0, 0, width, height);
+  return gdk_drawable_copy_to_image (drawable, NULL, x, y, 0, 0, width, height);
 }
 
 static GdkDrawable*
@@ -1318,7 +1330,6 @@ gdk_drawable_real_draw_pixbuf (GdkDrawable  *drawable,
 			       gint          x_dither,
 			       gint          y_dither)
 {
-  gboolean free_gc = FALSE;
   GdkPixbuf *composited = NULL;
   gint dwidth, dheight;
   GdkRegion *clip;
@@ -1394,12 +1405,8 @@ gdk_drawable_real_draw_pixbuf (GdkDrawable  *drawable,
     return;
   
   /* Actually draw */
-
   if (!gc)
-    {
-      gc = gdk_gc_new (drawable);
-      free_gc = TRUE;
-    }
+    gc = _gdk_drawable_get_scratch_gc (drawable, FALSE);
   
   if (pixbuf->has_alpha)
     {
@@ -1451,10 +1458,10 @@ gdk_drawable_real_draw_pixbuf (GdkDrawable  *drawable,
 							    width1, height1,
 							    gdk_drawable_get_depth (drawable), &xs0, &ys0);
 		  
-		  _gdk_drawable_copy_to_image (drawable, image,
-					       dest_x + x0, dest_y + y0,
-					       xs0, ys0,
-					       width1, height1);
+		  gdk_drawable_copy_to_image (drawable, image,
+					      dest_x + x0, dest_y + y0,
+					      xs0, ys0,
+					      width1, height1);
 		  (*composite_func) (pixbuf->pixels + (src_y + y0) * pixbuf->rowstride + (src_x + x0) * 4,
 				     pixbuf->rowstride,
 				     (guchar*)image->mem + ys0 * image->bpl + xs0 * image->bpp,
@@ -1524,7 +1531,63 @@ gdk_drawable_real_draw_pixbuf (GdkDrawable  *drawable,
  out:
   if (composited)
     g_object_unref (composited);
+}
 
-  if (free_gc)
-    g_object_unref (gc);
+/**
+ * _gdk_drawable_get_scratch_gc:
+ * @drawable: A #GdkDrawable
+ * @graphics_exposures: Whether the returned #GdkGC should generate graphics exposures 
+ * 
+ * Returns a #GdkGC suitable for drawing on @drawable. The #GdkGC has
+ * the standard values for @drawable, except for the graphics_exposures
+ * field which is determined by the @graphics_exposures parameter.
+ *
+ * The foreground color of the returned #GdkGC is undefined. The #GdkGC
+ * must not be altered in any way, except to change its foreground color.
+ * 
+ * Return value: A #GdkGC suitable for drawing on @drawable
+ * 
+ * Since: 2.4
+ **/
+GdkGC *
+_gdk_drawable_get_scratch_gc (GdkDrawable *drawable,
+			      gboolean     graphics_exposures)
+{
+  GdkScreen *screen;
+  gint depth;
+
+  g_return_val_if_fail (GDK_IS_DRAWABLE (drawable), NULL);
+
+  screen = gdk_drawable_get_screen (drawable);
+
+  g_return_val_if_fail (!screen->closed, NULL);
+
+  depth = gdk_drawable_get_depth (drawable) - 1;
+
+  if (graphics_exposures)
+    {
+      if (!screen->exposure_gcs[depth])
+	{
+	  GdkGCValues values;
+	  GdkGCValuesMask mask;
+
+	  values.graphics_exposures = TRUE;
+	  mask = GDK_GC_EXPOSURES;  
+
+	  screen->exposure_gcs[depth] =
+	    gdk_gc_new_with_values (drawable, &values, mask);
+	}
+
+      return screen->exposure_gcs[depth];
+    }
+  else
+    {
+      if (!screen->normal_gcs[depth])
+	{
+	  screen->normal_gcs[depth] =
+	    gdk_gc_new (drawable);
+	}
+
+      return screen->normal_gcs[depth];
+    }
 }

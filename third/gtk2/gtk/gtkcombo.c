@@ -30,6 +30,7 @@
 
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
 #include <string.h>
 
 #include "gtkarrow.h"
@@ -140,38 +141,38 @@ gtk_combo_class_init (GtkComboClass * klass)
   g_object_class_install_property (gobject_class,
                                    PROP_ENABLE_ARROW_KEYS,
                                    g_param_spec_boolean ("enable_arrow_keys",
-                                                         _("Enable arrow keys"),
-                                                         _("Whether the arrow keys move through the list of items"),
+                                                         P_("Enable arrow keys"),
+                                                         P_("Whether the arrow keys move through the list of items"),
                                                          TRUE,
                                                          G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_ENABLE_ARROWS_ALWAYS,
                                    g_param_spec_boolean ("enable_arrows_always",
-                                                         _("Always enable arrows"),
-                                                         _("Obsolete property, ignored"),
+                                                         P_("Always enable arrows"),
+                                                         P_("Obsolete property, ignored"),
                                                          TRUE,
                                                          G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_CASE_SENSITIVE,
                                    g_param_spec_boolean ("case_sensitive",
-                                                         _("Case sensitive"),
-                                                         _("Whether list item matching is case sensitive"),
+                                                         P_("Case sensitive"),
+                                                         P_("Whether list item matching is case sensitive"),
                                                          FALSE,
                                                          G_PARAM_READABLE | G_PARAM_WRITABLE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_ALLOW_EMPTY,
                                    g_param_spec_boolean ("allow_empty",
-                                                         _("Allow empty"),
-							 _("Whether an empty value may be entered in this field"),
+                                                         P_("Allow empty"),
+							 P_("Whether an empty value may be entered in this field"),
                                                          TRUE,
                                                          G_PARAM_READABLE | G_PARAM_WRITABLE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_VALUE_IN_LIST,
                                    g_param_spec_boolean ("value_in_list",
-                                                         _("Value in list"),
-                                                         _("Whether entered values must already be present in the list"),
+                                                         P_("Value in list"),
+                                                         P_("Whether entered values must already be present in the list"),
                                                          FALSE,
                                                          G_PARAM_READABLE | G_PARAM_WRITABLE));
   
@@ -223,11 +224,11 @@ gtk_combo_entry_key_press (GtkEntry * entry, GdkEventKey * event, GtkCombo * com
       pos = gtk_editable_get_position (editable);
       prefix = gtk_editable_get_chars (editable, 0, pos);
 
-      g_completion_complete (cmpl, prefix, &nprefix);
+      g_completion_complete_utf8 (cmpl, prefix, &nprefix);
 
       if (nprefix && strlen (nprefix) > strlen (prefix)) 
 	{
-	  gtk_editable_insert_text (editable, nprefix + pos, 
+	  gtk_editable_insert_text (editable, g_utf8_offset_to_pointer (nprefix, pos), 
 				    strlen (nprefix) - strlen (prefix), &pos);
 	  gtk_editable_set_position (editable, pos);
 	}
@@ -444,6 +445,8 @@ gtk_combo_get_pos (GtkCombo * combo, gint * x, gint * y, gint * height, gint * w
   scrollbar_spacing = _gtk_scrolled_window_get_scrollbar_spacing (popup);
 
   gdk_window_get_origin (combo->entry->window, x, y);
+  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) 
+    *x -= widget->allocation.width - combo->entry->allocation.width;
   real_height = MIN (combo->entry->requisition.height, 
 		     combo->entry->allocation.height);
   *y += real_height;
@@ -511,8 +514,9 @@ gtk_combo_get_pos (GtkCombo * combo, gint * x, gint * y, gint * height, gint * w
 }
 
 static void
-gtk_combo_popup_list (GtkCombo * combo)
+gtk_combo_popup_list (GtkCombo *combo)
 {
+  GtkWidget *toplevel;
   GtkList *list;
   gint height, width, x, y;
   gint old_width, old_height;
@@ -551,6 +555,15 @@ gtk_combo_popup_list (GtkCombo * combo)
     }
   
   gtk_window_move (GTK_WINDOW (combo->popwin), x, y);
+
+  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (combo));
+
+  if (GTK_IS_WINDOW (toplevel))
+    {
+      gtk_window_group_add_window (_gtk_window_get_group (GTK_WINDOW (toplevel)), 
+                                   GTK_WINDOW (combo->popwin));
+    }
+
   gtk_widget_set_size_request (combo->popwin, width, height);
   gtk_widget_show (combo->popwin);
 
@@ -578,6 +591,8 @@ gtk_combo_popdown_list (GtkCombo *combo)
     }
   
   gtk_widget_hide (combo->popwin);
+
+  gtk_window_group_add_window (_gtk_window_get_group (NULL), GTK_WINDOW (combo->popwin));
 }
 
 static gboolean
@@ -911,8 +926,8 @@ gtk_combo_init (GtkCombo * combo)
   combo->entry_change_id = g_signal_connect (combo->entry, "changed",
 					     G_CALLBACK (gtk_combo_update_list),
 					     combo);
-  g_signal_connect (combo->entry, "key_press_event",
-		    G_CALLBACK (gtk_combo_entry_key_press), combo);
+  g_signal_connect_after (combo->entry, "key_press_event",
+			  G_CALLBACK (gtk_combo_entry_key_press), combo);
   g_signal_connect_after (combo->entry, "focus_out_event",
 			  G_CALLBACK (gtk_combo_entry_focus_out), combo);
   combo->activate_id = g_signal_connect (combo->entry, "activate",
@@ -1107,13 +1122,13 @@ gtk_combo_set_use_arrows_always (GtkCombo * combo, gboolean val)
 }
 
 void
-gtk_combo_set_popdown_strings (GtkCombo * combo, GList * strings)
+gtk_combo_set_popdown_strings (GtkCombo *combo, 
+			       GList    *strings)
 {
   GList *list;
   GtkWidget *li;
 
   g_return_if_fail (GTK_IS_COMBO (combo));
-  g_return_if_fail (strings != NULL);
 
   gtk_combo_popdown_list (combo);
 

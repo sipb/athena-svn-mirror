@@ -2,14 +2,21 @@
 
 SUBDIRS=stock-icons theme-bits
 
-INCLUDES = @STRIP_BEGIN@ \
+if OS_UNIX
+SUBDIRS += xdgmime
+endif
+
+DIST_SUBDIRS=stock-icons theme-bits xdgmime
+
+INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Gtk\"				\
 	-DGTK_LIBDIR=\"$(libdir)\"			\
+	-DGTK_DATADIR=\"$(datadir)\"			\
 	-DGTK_DATA_PREFIX=\"$(prefix)\"			\
 	-DGTK_SYSCONFDIR=\"$(sysconfdir)\"		\
-	-DGTK_VERSION=\"@GTK_VERSION@\"			\
-	-DGTK_BINARY_VERSION=\"@GTK_BINARY_VERSION@\"	\
-	-DGTK_HOST=\"@host@\"	                        \
+	-DGTK_VERSION=\"$(GTK_VERSION)\"		\
+	-DGTK_BINARY_VERSION=\"$(GTK_BINARY_VERSION)\"	\
+	-DGTK_HOST=\"$(host)\"				\
 	-DGTK_COMPILATION				\
 	-I$(top_builddir)/gtk				\
 	-I$(top_srcdir) -I../gdk			\
@@ -19,11 +26,11 @@ INCLUDES = @STRIP_BEGIN@ \
 	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
 	-DGDK_DISABLE_DEPRECATED			\
 	-DGTK_DISABLE_DEPRECATED			\
-	@GTK_DEBUG_FLAGS@				\
-	@GTK_DEP_CFLAGS@				\
-@STRIP_END@
+	-DGTK_FILE_SYSTEM_ENABLE_UNSUPPORTED		\
+	$(GTK_DEBUG_FLAGS)				\
+	$(GTK_DEP_CFLAGS)
 
-gtarget=@gdktarget@
+gtarget=$(gdktarget)
 
 if PLATFORM_WIN32
 no_undefined = -no-undefined
@@ -67,18 +74,21 @@ endif
 # since automake doesn't support conditionalized libsomething_la_LDFLAGS
 # we use the general approach here
 libgtkincludedir = $(includedir)/gtk-2.0/gtk
-LDFLAGS = @STRIP_BEGIN@ \
-	@LDFLAGS@								\
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)			\
-	-export-dynamic								\
-	-rpath $(libdir)							\
-	$(no_undefined)								\
-	@LIBTOOL_EXPORT_OPTIONS@						\
-	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la		\
-	$(top_builddir)/gdk/@gdktargetlib@					\
-	$(libgtk_target_ldflags)						\
-	@GTK_DEP_LIBS@								\
-@STRIP_END@
+libadd =								\
+	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+	$(top_builddir)/gdk/$(gdktargetlib)				\
+	$(GTK_DEP_LIBS)
+
+if OS_UNIX
+libadd += xdgmime/libxdgmime.la
+endif
+
+# common options for the various packages.
+libtool_opts =							\
+  -version-info $(LT_VERSION_INFO)				\
+  -export-dynamic $(no_undefined) $(LIBTOOL_EXPORT_OPTIONS)	\
+  -rpath $(libdir) $(libgtk_target_ldflags)
+
 
 #
 # setup source file variables
@@ -86,48 +96,61 @@ LDFLAGS = @STRIP_BEGIN@ \
 
 # GTK+ header files for public installation (non-generated, or generated
 # by configure)
-gtk_public_h_sources = @STRIP_BEGIN@ \
+gtk_public_h_sources =          \
 	gtk.h			\
 	gtkaccelgroup.h		\
 	gtkaccellabel.h		\
 	gtkaccelmap.h		\
 	gtkaccessible.h		\
+	gtkaction.h		\
+	gtkactiongroup.h	\
 	gtkadjustment.h		\
 	gtkalignment.h		\
 	gtkarrow.h		\
 	gtkaspectframe.h	\
+	gtkbbox.h		\
 	gtkbin.h		\
 	gtkbindings.h		\
-	gtkbbox.h		\
 	gtkbox.h		\
 	gtkbutton.h		\
 	gtkcalendar.h		\
+	gtkcelleditable.h	\
+	gtkcelllayout.h		\
+	gtkcellrenderer.h	\
+	gtkcellrendererpixbuf.h	\
+	gtkcellrenderertext.h	\
+	gtkcellrenderertoggle.h	\
 	gtkcheckbutton.h	\
 	gtkcheckmenuitem.h	\
-	gtkseparatormenuitem.h	\
+	gtkclipboard.h		\
 	gtkclist.h		\
 	gtkclipboard.h		\
+	gtkcolorbutton.h	\
 	gtkcolorsel.h		\
 	gtkcolorseldialog.h	\
 	gtkcombo.h		\
+	gtkcombobox.h		\
+	gtkcomboboxentry.h	\
 	gtkcontainer.h		\
 	gtkctree.h		\
 	gtkcurve.h		\
-	gtkcellrenderer.h	\
-	gtkcelleditable.h	\
-	gtkcellrenderertext.h	\
-	gtkcellrenderertoggle.h	\
-	gtkcellrendererpixbuf.h	\
 	gtkdebug.h              \
 	gtkdialog.h		\
 	gtkdnd.h		\
 	gtkdrawingarea.h	\
 	gtkeditable.h           \
 	gtkentry.h		\
+	gtkentrycompletion.h	\
 	gtkenums.h		\
 	gtkeventbox.h		\
+	gtkexpander.h		\
+	gtkfilechooser.h        \
+	gtkfilechooserdialog.h  \
+	gtkfilechooserwidget.h  \
+	gtkfilefilter.h		\
 	gtkfilesel.h		\
 	gtkfixed.h		\
+	gtkfontbutton.h		\
 	gtkfontsel.h		\
 	gtkframe.h		\
 	gtkgamma.h		\
@@ -141,6 +164,7 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkhscrollbar.h		\
 	gtkhseparator.h		\
 	gtkiconfactory.h	\
+	gtkicontheme.h		\
 	gtkimage.h		\
 	gtkimagemenuitem.h	\
 	gtkimcontext.h		\
@@ -164,8 +188,8 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkmessagedialog.h	\
 	gtkmisc.h		\
 	gtknotebook.h		\
-	gtkoldeditable.h	\
 	gtkobject.h		\
+	gtkoldeditable.h	\
 	gtkoptionmenu.h		\
 	gtkpaned.h		\
 	gtkpixmap.h		\
@@ -174,8 +198,10 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkprivate.h		\
 	gtkprogress.h		\
 	gtkprogressbar.h	\
+	gtkradioaction.h	\
 	gtkradiobutton.h	\
 	gtkradiomenuitem.h	\
+	gtkradiotoolbutton.h	\
 	gtkrange.h		\
 	gtkrc.h			\
 	gtkruler.h		\
@@ -184,34 +210,40 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkscrolledwindow.h	\
 	gtkselection.h		\
 	gtkseparator.h		\
+	gtkseparatormenuitem.h	\
+	gtkseparatortoolitem.h	\
 	gtksettings.h		\
 	gtksignal.h		\
 	gtksizegroup.h		\
 	gtksocket.h		\
 	gtkspinbutton.h		\
-	gtkstyle.h		\
 	gtkstatusbar.h		\
 	gtkstock.h		\
+	gtkstyle.h		\
 	gtktable.h		\
 	gtktearoffmenuitem.h    \
+	gtktext.h		\
 	gtktextbuffer.h		\
 	gtktextchild.h		\
 	gtktextdisplay.h	\
 	gtktextiter.h		\
-	gtktextlayout.h		\
 	gtktextmark.h		\
 	gtktexttag.h		\
 	gtktexttagtable.h	\
 	gtktextview.h		\
-	gtktext.h		\
 	gtktipsquery.h		\
+	gtktoggleaction.h	\
 	gtktogglebutton.h	\
+	gtktoggletoolbutton.h	\
 	gtktoolbar.h		\
+	gtktoolbutton.h		\
+	gtktoolitem.h		\
 	gtktooltips.h		\
 	gtktree.h		\
 	gtktreednd.h		\
 	gtktreeitem.h		\
 	gtktreemodel.h		\
+	gtktreemodelfilter.h	\
 	gtktreemodelsort.h	\
 	gtktreeselection.h	\
 	gtktreesortable.h	\
@@ -219,6 +251,7 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtktreeview.h		\
 	gtktreeviewcolumn.h	\
 	gtktypeutils.h		\
+	gtkuimanager.h		\
 	gtkvbbox.h		\
 	gtkvbox.h		\
 	gtkviewport.h		\
@@ -228,10 +261,28 @@ gtk_public_h_sources = @STRIP_BEGIN@ \
 	gtkvscrollbar.h		\
 	gtkvseparator.h		\
 	gtkwidget.h		\
-	gtkwindow.h		\
-@STRIP_END@
+	gtkwindow.h
+
+# Installed header files without compatibility guarantees
+# that are not include in gtk/gtk.h
+gtk_semi_private_h_sources =    \
+	gtktextlayout.h		\
+	gtkfilesystem.h
+
 # GTK+ header files that don't get installed
-gtk_private_h_sources = @STRIP_BEGIN@ \
+gtk_private_h_sources =         \
+	gtkcellrendererseptext.h\
+	gtkcellview.h		\
+	gtkcellviewmenuitem.h	\
+	gtkentryprivate.h	\
+	gtkfilechooserembed.h	\
+	gtkfilechooserentry.h	\
+	gtkfilechooserdefault.h	\
+	gtkfilechooserprivate.h	\
+	gtkfilechooserutils.h	\
+	gtkfilesystemunix.h	\
+	gtkfilesystemmodel.h	\
+	gtkpathbar.h		\
 	gtkrbtree.h 		\
 	gtktextbtree.h		\
 	gtktextchildprivate.h   \
@@ -244,37 +295,47 @@ gtk_private_h_sources = @STRIP_BEGIN@ \
 	gtkthemes.h		\
 	gtktreedatalist.h	\
 	gtktreeprivate.h	\
-	gtkwindow-decorate.h    \
-@STRIP_END@
+	gtkwindow-decorate.h	\
+	gtktoggleactionprivate.h
+
 # GTK+ C sources to build the library from
-gtk_c_sources = @STRIP_BEGIN@   \
+gtk_c_sources =                 \
+	fnmatch.c		\
 	gtkaccelgroup.c		\
-	gtkaccelmap.c		\
 	gtkaccellabel.c		\
+	gtkaccelmap.c		\
 	gtkaccessible.c		\
+	gtkaction.c		\
+	gtkactiongroup.c	\
 	gtkadjustment.c		\
 	gtkalignment.c		\
 	gtkarrow.c		\
 	gtkaspectframe.c	\
+	gtkbbox.c		\
 	gtkbin.c		\
 	gtkbindings.c		\
-	gtkbbox.c		\
 	gtkbox.c		\
 	gtkbutton.c		\
 	gtkcalendar.c		\
-	gtkcellrenderer.c	\
 	gtkcelleditable.c	\
+	gtkcelllayout.c		\
+	gtkcellrenderer.c	\
+	gtkcellrendererpixbuf.c	\
+	gtkcellrendererseptext.c\
 	gtkcellrenderertext.c	\
 	gtkcellrenderertoggle.c	\
-	gtkcellrendererpixbuf.c	\
+	gtkcellview.c		\
+	gtkcellviewmenuitem.c	\
 	gtkcheckbutton.c	\
 	gtkcheckmenuitem.c	\
-	gtkseparatormenuitem.c	\
 	gtkclipboard.c		\
 	gtkclist.c		\
+	gtkcolorbutton.c	\
 	gtkcolorsel.c		\
 	gtkcolorseldialog.c	\
 	gtkcombo.c		\
+	gtkcombobox.c		\
+	gtkcomboboxentry.c	\
 	gtkcontainer.c		\
 	gtkctree.c		\
 	gtkcurve.c		\
@@ -283,9 +344,22 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtkdrawingarea.c	\
 	gtkeditable.c           \
 	gtkentry.c		\
+	gtkentrycompletion.c	\
 	gtkeventbox.c		\
+	gtkexpander.c		\
+	gtkfilechooser.c	\
+	gtkfilechooserdialog.c	\
+	gtkfilechooserembed.c	\
+	gtkfilechooserentry.c	\
+	gtkfilechooserdefault.c	\
+	gtkfilechooserutils.c	\
+	gtkfilechooserwidget.c	\
+	gtkfilefilter.c		\
 	gtkfilesel.c		\
+	gtkfilesystem.c		\
+	gtkfilesystemmodel.c	\
 	gtkfixed.c		\
+	gtkfontbutton.c         \
 	gtkfontsel.c            \
 	gtkframe.c		\
 	gtkgamma.c		\
@@ -301,6 +375,9 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtkhsv.c		\
 	gtkhsv.h		\
 	gtkiconfactory.c	\
+	gtkicontheme.c		\
+	gtkiconthemeparser.c	\
+	gtkiconthemeparser.h	\
 	gtkimage.c		\
 	gtkimagemenuitem.c	\
 	gtkimcontext.c		\
@@ -320,8 +397,8 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtklistitem.c		\
 	gtkliststore.c		\
 	gtkmain.c		\
-	gtkmarshalers.c		\
 	gtkmarshal.c		\
+	gtkmarshalers.c		\
 	gtkmenu.c		\
 	gtkmenubar.c		\
 	gtkmenuitem.c		\
@@ -333,12 +410,15 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtkoldeditable.c	\
 	gtkoptionmenu.c		\
 	gtkpaned.c		\
+	gtkpathbar.c		\
 	gtkpixmap.c		\
 	gtkpreview.c		\
 	gtkprogress.c		\
 	gtkprogressbar.c	\
+	gtkradioaction.c	\
 	gtkradiobutton.c	\
 	gtkradiomenuitem.c	\
+	gtkradiotoolbutton.c	\
 	gtkrange.c		\
 	gtkrbtree.c 		\
 	gtkrc.c			\
@@ -348,13 +428,15 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtkscrolledwindow.c	\
 	gtkselection.c		\
 	gtkseparator.c		\
+	gtkseparatormenuitem.c	\
+	gtkseparatortoolitem.c	\
 	gtksettings.c		\
 	gtksignal.c		\
 	gtksizegroup.c		\
 	gtkspinbutton.c		\
+	gtkstatusbar.c		\
 	gtkstock.c		\
 	gtkstyle.c		\
-	gtkstatusbar.c		\
 	gtktable.c		\
 	gtktearoffmenuitem.c    \
 	gtktext.c		\
@@ -375,14 +457,19 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtktextview.c		\
 	gtkthemes.c		\
 	gtktipsquery.c		\
+	gtktoggleaction.c	\
 	gtktogglebutton.c	\
+	gtktoggletoolbutton.c	\
 	gtktoolbar.c		\
+	gtktoolbutton.c		\
+	gtktoolitem.c		\
 	gtktooltips.c		\
 	gtktree.c		\
-	gtktreeitem.c		\
 	gtktreedatalist.c	\
 	gtktreednd.c		\
+	gtktreeitem.c		\
 	gtktreemodel.c		\
+	gtktreemodelfilter.c	\
 	gtktreemodelsort.c	\
 	gtktreeselection.c	\
 	gtktreesortable.c	\
@@ -391,6 +478,7 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtktreeviewcolumn.c	\
 	gtktypebuiltins.c	\
 	gtktypeutils.c		\
+	gtkuimanager.c		\
 	gtkvbbox.c		\
 	gtkvbox.c		\
 	gtkviewport.c		\
@@ -400,16 +488,25 @@ gtk_c_sources = @STRIP_BEGIN@   \
 	gtkvscrollbar.c		\
 	gtkvseparator.c		\
 	gtkwidget.c		\
-	gtkwindow.c		\
 	gtkwindow-decorate.c    \
-	fnmatch.c		\
-	xembed.h		\
-@STRIP_END@
+	gtkwindow.c		\
+	xembed.h
 
-gtk_plug_c_sources = @STRIP_BEGIN@   \
+if OS_UNIX
+gtk_private_h_sources += gtkfilesystemunix.h
+gtk_c_sources +=         gtkfilesystemunix.c
+endif
+
+if OS_WIN32
+gtk_private_h_sources += gtkfilesystemwin32.h
+gtk_c_sources +=         gtkfilesystemwin32.c
+endif
+
+gtk_plug_c_sources =            \
 	gtkplug.c		\
 	gtksocket.c		\
-@STRIP_END@
+	gtkxembed.c		\
+	gtkxembed.h
 
 # we use our own built_sources variable rules to avoid automake's
 # BUILT_SOURCES oddities
@@ -418,38 +515,37 @@ gtk_plug_c_sources = @STRIP_BEGIN@   \
 # content
 
 # built sources that get installed with the header files
-gtk_built_public_sources = @STRIP_BEGIN@ \
-	gtkmarshal.h		\
-	gtktypebuiltins.h	\
-@STRIP_END@
-gtk_built_private_headers = @STRIP_BEGIN@ \
-	gtkmarshalers.h		\
-@STRIP_END@
+gtk_built_public_sources =			\
+	gtkmarshal.h				\
+	gtktypebuiltins.h
+
+gtk_built_private_headers =			\
+	gtkmarshalers.h
+
 # built sources that don't get installed
-gtk_built_sources = @STRIP_BEGIN@		\
+gtk_built_sources =				\
 	gtktypebuiltins.c			\
 	gtkmarshalers.c				\
 	gtkmarshalers.h				\
 	gtkmarshal.c				\
 	${gtk_built_private_headers}		\
-	${gtk_built_public_sources}		\
-@STRIP_END@
-stamp_files = @STRIP_BEGIN@ 		\
-	stamp-gtkmarshalers.h		\
-	stamp-gtkmarshal.h		\
-	stamp-gtktypebuiltins.h		\
-@STRIP_END@
+	${gtk_built_public_sources}
+
+stamp_files =					\
+	stamp-gtkmarshalers.h			\
+	stamp-gtkmarshal.h			\
+	stamp-gtktypebuiltins.h
+
 # non-header sources (headers should be specified in the above variables)
 # that don't serve as direct make target sources, i.e. they don't have
 # their own .lo rules and don't get publically installed
-gtk_extra_sources = @STRIP_BEGIN@ \
-	gtkversion.h.in		\
-	gtkmarshalers.list	\
-	gtkmarshal.list		\
-@STRIP_END@
+gtk_extra_sources =				\
+	gtkversion.h.in				\
+	gtkmarshalers.list			\
+	gtkmarshal.list
 
 #
-# setup GTK+ sources and their dependancies
+# setup GTK+ sources and their dependencies
 #
 MAINTAINERCLEANFILES = $(gtk_built_sources) $(stamp_files)
 EXTRA_HEADERS =
@@ -459,67 +555,44 @@ EXTRA_DIST += $(gtk_built_sources)
 #
 # rules to generate built sources
 #
-# setup autogeneration dependancies
+# setup autogeneration dependencies
 gen_sources = xgen-gdef xgen-gtbh xgen-gtic xgen-gmh xgen-gmc xgen-gmlh xgen-gmlc
 CLEANFILES = $(gen_sources)
 
-## automake 1.5 supports this without $(OBJECTS): $(gtk_built_sources) hack
-#BUILT_SOURCES = $(gtk_built_sources)
-
-$(libgtk_x11_2_0_la_OBJECTS) $(libgtk_linux_fb_2_0_la_OBJECTS) $(libgtk_win32_2_0_la_OBJECTS): ${gtk_built_public_sources} ${gtk_built_private_headers}
+BUILT_SOURCES = $(gtk_built_sources)
 
 # all autogenerated files need to be generated in the srcdir,
 # so old versions get remade and are not confused with newer
 # versions in the build dir. thus a development setup requires
 # srcdir to be writable, passing --disable-rebuilds to
 # ../configure will supress all autogeneration rules.
-$(srcdir)/gtkmarshalers.h: stamp-gtkmarshalers.h
+gtkmarshalers.h: stamp-gtkmarshalers.h
 	@true
 stamp-gtkmarshalers.h: @REBUILD@ gtkmarshalers.list
-	case @GLIB_GENMARSHAL@ in								\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;					\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;						\
-	esac;											\
-	cd $(srcdir)										\
-	&& $$glib_genmarshal --prefix=_gtk_marshal gtkmarshalers.list --header >> xgen-gmlh	\
-	&& (cmp -s xgen-gmlh gtkmarshalers.h || cp xgen-gmlh gtkmarshalers.h)			\
-	&& rm -f xgen-gmlh 									\
+	$(GLIB_GENMARSHAL) --prefix=_gtk_marshal $(srcdir)/gtkmarshalers.list --header >> xgen-gmlh \
+	&& (cmp -s xgen-gmlh gtkmarshalers.h || cp xgen-gmlh gtkmarshalers.h) \
+	&& rm -f xgen-gmlh \
 	&& echo timestamp > $(@F)	
-$(srcdir)/gtkmarshalers.c: @REBUILD@ gtkmarshalers.list
-	case @GLIB_GENMARSHAL@ in								\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;					\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;						\
-	esac;											\
-	cd $(srcdir)										\
-	&& $$glib_genmarshal --prefix=_gtk_marshal gtkmarshalers.list --body >> xgen-gmlc	\
-	&& cp xgen-gmlc gtkmarshalers.c								\
+gtkmarshalers.c: @REBUILD@ gtkmarshalers.list
+	$(GLIB_GENMARSHAL) --prefix=_gtk_marshal $(srcdir)/gtkmarshalers.list --body >> xgen-gmlc \
+	&& cp xgen-gmlc gtkmarshalers.c \
 	&& rm -f xgen-gmlc
 
-$(srcdir)/gtkmarshal.h: stamp-gtkmarshal.h
+gtkmarshal.h: stamp-gtkmarshal.h
 	@true
 stamp-gtkmarshal.h: @REBUILD@ gtkmarshal.list
-	case @GLIB_GENMARSHAL@ in								\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;					\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;						\
-	esac;											\
-	cd $(srcdir)										\
-	&& echo "#ifndef GTK_DISABLE_DEPRECATED" > xgen-gmh					\
-        && $$glib_genmarshal --prefix=gtk_marshal gtkmarshal.list --header >> xgen-gmh		\
-	&& echo "#endif /* GTK_DISABLE_DEPRECATED */" >> xgen-gmh				\
-	&& (cmp -s xgen-gmh gtkmarshal.h || cp xgen-gmh gtkmarshal.h)				\
-	&& rm -f xgen-gmh 									\
+	echo "#ifndef GTK_DISABLE_DEPRECATED" > xgen-gmh					\
+        && $(GLIB_GENMARSHAL) --prefix=gtk_marshal $(srcdir)/gtkmarshal.list --header >> xgen-gmh \
+	&& echo "#endif /* GTK_DISABLE_DEPRECATED */" >> xgen-gmh \
+	&& (cmp -s xgen-gmh gtkmarshal.h || cp xgen-gmh gtkmarshal.h) \
+	&& rm -f xgen-gmh \
 	&& echo timestamp > $(@F)
-$(srcdir)/gtkmarshal.c: @REBUILD@ gtkmarshal.list
-	case @GLIB_GENMARSHAL@ in								\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;					\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;						\
-	esac;											\
-	cd $(srcdir)										\
-	&& $$glib_genmarshal --prefix=gtk_marshal gtkmarshal.list --body >> xgen-gmc		\
-	&& cp xgen-gmc gtkmarshal.c								\
+gtkmarshal.c: @REBUILD@ gtkmarshal.list
+	$(GLIB_GENMARSHAL) --prefix=gtk_marshal $(srcdir)/gtkmarshal.list --body >> xgen-gmc \
+	&& cp xgen-gmc gtkmarshal.c \
 	&& rm -f xgen-gmc 
 
-$(srcdir)/gtktypebuiltins.h: stamp-gtktypebuiltins.h
+gtktypebuiltins.h: stamp-gtktypebuiltins.h
 	@true
 stamp-gtktypebuiltins.h: @REBUILD@ $(gtk_public_h_sources) Makefile
 	( cd $(srcdir) && glib-mkenums \
@@ -528,10 +601,10 @@ stamp-gtktypebuiltins.h: @REBUILD@ $(gtk_public_h_sources) Makefile
 			--vhead "GType @enum_name@_get_type (void);\n#define GTK_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n" \
 			--ftail "G_END_DECLS\n\n#endif /* __GTK_TYPE_BUILTINS_H__ */" \
 		$(gtk_public_h_sources) ) >> xgen-gtbh \
-	&& (cmp -s xgen-gtbh $(srcdir)/gtktypebuiltins.h || cp xgen-gtbh $(srcdir)/gtktypebuiltins.h ) \
+	&& (cmp -s xgen-gtbh gtktypebuiltins.h || cp xgen-gtbh gtktypebuiltins.h ) \
 	&& rm -f xgen-gtbh \
 	&& echo timestamp > $(@F)
-$(srcdir)/gtktypebuiltins.c: @REBUILD@ $(gtk_public_h_sources) Makefile
+gtktypebuiltins.c: @REBUILD@ $(gtk_public_h_sources) Makefile
 	( cd $(srcdir) && glib-mkenums \
 			--fhead "#undef GTK_DISABLE_DEPRECATED\n#define GTK_ENABLE_BROKEN\n#include \"gtk.h\"\n#include \"gtkprivate.h\"" \
 			--fprod "\n/* enumerations from \"@filename@\" */" \
@@ -539,20 +612,26 @@ $(srcdir)/gtktypebuiltins.c: @REBUILD@ $(gtk_public_h_sources) Makefile
 			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
 		$(gtk_public_h_sources) ) > xgen-gtbc \
-	&& cp xgen-gtbc $(srcdir)/gtktypebuiltins.c  \
+	&& cp xgen-gtbc gtktypebuiltins.c  \
 	&& rm -f xgen-gtbc
 
 # target platform:
 lib_LTLIBRARIES = $(gtktargetlib)
 
 gtkincludedir = $(includedir)/gtk-2.0/gtk
-gtkinclude_HEADERS = $(gtk_public_h_sources) $(gtk_built_public_sources) gtkversion.h
+gtkinclude_HEADERS = $(gtk_public_h_sources) $(gtk_semi_private_h_sources) $(gtk_built_public_sources) gtkversion.h
 
 libgtk_x11_2_0_la_SOURCES = $(gtk_c_sources) $(gtk_plug_c_sources)
 libgtk_linux_fb_2_0_la_SOURCES = $(gtk_c_sources)
 libgtk_win32_2_0_la_SOURCES = $(gtk_c_sources)
 
-libgtk_win32_2_0_la_LIBADD = $(gtk_win32res_lo)
+libgtk_x11_2_0_la_LDFLAGS = $(libtool_opts)
+libgtk_linux_fb_2_0_la_LDFLAGS = $(libtool_opts)
+libgtk_win32_2_0_la_LDFLAGS = $(libtool_opts)
+
+libgtk_x11_2_0_la_LIBADD = $(libadd)
+libgtk_linux_fb_2_0_la_LIBADD = $(libadd)
+libgtk_win32_2_0_la_LIBADD = $(libadd) $(gtk_win32res_lo)
 libgtk_win32_2_0_la_DEPENDENCIES = $(gtk_def) $(gtk_win32res_lo)
 
 if USE_WIN32
@@ -579,15 +658,21 @@ uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
 	rm -f $(DESTDIR)$(datadir)/themes/Default/gtk-2.0-key/gtkrc
 	rm -f $(DESTDIR)$(datadir)/themes/Emacs/gtk-2.0-key/gtkrc
 
+# if srcdir!=builddir, clean out maintainer-clean files from builddir
+# this allows dist to pass.
+distclean-local:
+	if test $(srcdir) != .; then \
+	  rm -f $(MAINTAINERCLEANFILES); \
+	fi
+
 DEPS = $(gtktargetlib) $(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la $(top_builddir)/gdk/$(gdktargetlib)
 
 TEST_DEPS = $(DEPS) gtk.immodules
 
-LDADDS = @STRIP_BEGIN@ \
+LDADDS =								\
 	$(gtktargetlib)							\
 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
-	$(top_builddir)/gdk/$(gdktargetlib) 				\
-@STRIP_END@
+	$(top_builddir)/gdk/$(gdktargetlib)
 
 #
 # Installed tools
@@ -606,7 +691,7 @@ files:
 	  echo $$p; \
 	done
 
-EXTRA_DIST += @STRIP_BEGIN@ 	\
+EXTRA_DIST +=                   \
 	line-arrow.xbm 		\
 	line-wrap.xbm 		\
 	tree_plus.xbm		\
@@ -616,12 +701,13 @@ EXTRA_DIST += @STRIP_BEGIN@ 	\
 	gtk.def			\
 	gtk-win32.rc		\
 	gtk-win32.rc.in		\
+	gtkfilesystemwin32.h	\
+	gtkfilesystemwin32.c	\
 	gtkrc.default		\
 	gtkrc.key.default	\
 	gtkrc.key.emacs		\
 	makefile.msc		\
-	makefile.msc.in		\
-@STRIP_END@
+	makefile.msc.in
 
 install-data-local:
 

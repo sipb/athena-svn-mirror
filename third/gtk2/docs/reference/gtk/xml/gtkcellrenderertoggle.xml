@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkCellRendererToggle</refname><refpurpose></refpurpose>
+<refname>GtkCellRendererToggle</refname><refpurpose>Renders a toggle button in a cell</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -21,12 +21,12 @@ struct      <link linkend="GtkCellRendererToggle-struct">GtkCellRendererToggle</
                                             (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-cell-renderer-toggle-get-radio">gtk_cell_renderer_toggle_get_radio</link>
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle);
-void        <link linkend="gtk-cell-renderer-toggle-set-radio">gtk_cell_renderer_toggle_set_radio</link>
+<link linkend="void">void</link>        <link linkend="gtk-cell-renderer-toggle-set-radio">gtk_cell_renderer_toggle_set_radio</link>
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle,
                                              <link linkend="gboolean">gboolean</link> radio);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-cell-renderer-toggle-get-active">gtk_cell_renderer_toggle_get_active</link>
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle);
-void        <link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_renderer_toggle_set_active</link>
+<link linkend="void">void</link>        <link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_renderer_toggle_set_active</link>
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle,
                                              <link linkend="gboolean">gboolean</link> setting);
 
@@ -48,14 +48,16 @@ void        <link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_rendere
 
 
 
+
+
 <refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkCellRendererToggle--activatable">activatable</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkCellRendererToggle--active">active</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkCellRendererToggle--inconsistent">inconsistent</link>&quot;         <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkCellRendererToggle--radio">radio</link>&quot;                <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GtkCellRendererToggle--activatable">activatable</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkCellRendererToggle--active">active</link>&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkCellRendererToggle--inconsistent">inconsistent</link>&quot;         <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkCellRendererToggle--radio">radio</link>&quot;                <link linkend="gboolean">gboolean</link>              : Read / Write
 </synopsis>
 </refsect1>
 
@@ -63,7 +65,7 @@ void        <link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_rendere
 <title>Signal Prototypes</title>
 <synopsis>
 
-&quot;<link linkend="GtkCellRendererToggle-toggled">toggled</link>&quot;   void        user_function      (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *cellrenderertoggle,
+&quot;<link linkend="GtkCellRendererToggle-toggled">toggled</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *cellrenderertoggle,
                                             <link linkend="gchar">gchar</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
@@ -81,19 +83,19 @@ void        <link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_rendere
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkCellRendererToggle-struct"/>struct GtkCellRendererToggle</title>
-<programlisting>struct GtkCellRendererToggle;</programlisting>
+<indexterm><primary>GtkCellRendererToggle</primary></indexterm><programlisting>struct GtkCellRendererToggle;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-toggle-new"/>gtk_cell_renderer_toggle_new ()</title>
-<programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>* gtk_cell_renderer_toggle_new
+<indexterm><primary>gtk_cell_renderer_toggle_new</primary></indexterm><programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>* gtk_cell_renderer_toggle_new
                                             (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>. Adjust rendering
+Creates a new <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>. Adjust rendering
 parameters using object properties. Object properties can be set
-globally (with <link linkend="g-object-set">g_object_set</link>()). Also, with <link linkend="GtkTreeViewColumn">GtkTreeViewColumn</link>, you
-can bind a property to a value in a <link linkend="GtkTreeModel">GtkTreeModel</link>. For example, you
+globally (with <link linkend="g-object-set"><function>g_object_set()</function></link>). Also, with <link linkend="GtkTreeViewColumn"><type>GtkTreeViewColumn</type></link>, you
+can bind a property to a value in a <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>. For example, you
 can bind the "active" property on the cell renderer to a boolean value
 in the model, thus causing the check button to reflect the state of
 the model.</para>
@@ -105,7 +107,7 @@ the model.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-toggle-get-radio"/>gtk_cell_renderer_toggle_get_radio ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_cell_renderer_toggle_get_radio
+<indexterm><primary>gtk_cell_renderer_toggle_get_radio</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_cell_renderer_toggle_get_radio
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle);</programlisting>
 <para>
 Returns wether we're rendering radio toggles rather than checkboxes.</para>
@@ -113,14 +115,14 @@ Returns wether we're rendering radio toggles rather than checkboxes.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>toggle</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>
+<listitem><simpara> a <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if we're rendering radio toggles rather than checkboxes
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-toggle-set-radio"/>gtk_cell_renderer_toggle_set_radio ()</title>
-<programlisting>void        gtk_cell_renderer_toggle_set_radio
+<indexterm><primary>gtk_cell_renderer_toggle_set_radio</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_renderer_toggle_set_radio
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle,
                                              <link linkend="gboolean">gboolean</link> radio);</programlisting>
 <para>
@@ -128,14 +130,14 @@ If <parameter>radio</parameter> is <literal>TRUE</literal>, the cell renderer re
 (i.e. a toggle in a group of mutually-exclusive toggles).
 If <literal>FALSE</literal>, it renders a check toggle (a standalone boolean option).
 This can be set globally for the cell renderer, or changed just
-before rendering each cell in the model (for <link linkend="GtkTreeView">GtkTreeView</link>, you set
-up a per-row setting using <link linkend="GtkTreeViewColumn">GtkTreeViewColumn</link> to associate model
+before rendering each cell in the model (for <link linkend="GtkTreeView"><type>GtkTreeView</type></link>, you set
+up a per-row setting using <link linkend="GtkTreeViewColumn"><type>GtkTreeViewColumn</type></link> to associate model
 columns with cell renderer properties).</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>toggle</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>
+<listitem><simpara> a <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>radio</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> to make the toggle look like a radio button
@@ -143,23 +145,23 @@ columns with cell renderer properties).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-toggle-get-active"/>gtk_cell_renderer_toggle_get_active ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_cell_renderer_toggle_get_active
+<indexterm><primary>gtk_cell_renderer_toggle_get_active</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_cell_renderer_toggle_get_active
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle);</programlisting>
 <para>
 Returns whether the cell renderer is active. See
-<link linkend="gtk-cell-renderer-toggle-set-active">gtk_cell_renderer_toggle_set_active</link>().</para>
+<link linkend="gtk-cell-renderer-toggle-set-active"><function>gtk_cell_renderer_toggle_set_active()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>toggle</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>
+<listitem><simpara> a <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the cell renderer is active.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-toggle-set-active"/>gtk_cell_renderer_toggle_set_active ()</title>
-<programlisting>void        gtk_cell_renderer_toggle_set_active
+<indexterm><primary>gtk_cell_renderer_toggle_set_active</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_renderer_toggle_set_active
                                             (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *toggle,
                                              <link linkend="gboolean">gboolean</link> setting);</programlisting>
 <para>
@@ -168,7 +170,7 @@ Activates or deactivates a cell renderer.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>toggle</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link>.
+<listitem><simpara> a <link linkend="GtkCellRendererToggle"><type>GtkCellRendererToggle</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>setting</parameter>&nbsp;:</term>
 <listitem><simpara> the value to set.
@@ -178,39 +180,29 @@ Activates or deactivates a cell renderer.</para>
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkCellRendererToggle--activatable"/>&quot;<literal>activatable</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkCellRendererToggle--activatable"/>The &quot;<literal>activatable</literal>&quot; property</title>
+<programlisting>  &quot;activatable&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>The toggle button can be activated.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererToggle--active"/>The &quot;<literal>active</literal>&quot; property</title>
+<programlisting>  &quot;active&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>The toggle state of the button.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererToggle--inconsistent"/>The &quot;<literal>inconsistent</literal>&quot; property</title>
+<programlisting>  &quot;inconsistent&quot;         <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>The inconsistent state of the button.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererToggle--radio"/>The &quot;<literal>radio</literal>&quot; property</title>
+<programlisting>  &quot;radio&quot;                <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Draw the toggle button as a radio button.</para><para>Default value: FALSE</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererToggle--active"/>&quot;<literal>active</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererToggle--inconsistent"/>&quot;<literal>inconsistent</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererToggle--radio"/>&quot;<literal>radio</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkCellRendererToggle-toggled"/>The &quot;toggled&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *cellrenderertoggle,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkCellRendererToggle">GtkCellRendererToggle</link> *cellrenderertoggle,
                                             <link linkend="gchar">gchar</link> *arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>

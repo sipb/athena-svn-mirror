@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -68,6 +69,7 @@ static gboolean get_keyboard_mode          (GtkWidget   *widget);
 
 static GtkObjectClass *parent_class;
 static const gchar  *tooltips_data_key = "_GtkTooltipsData";
+static const gchar  *tooltips_info_key = "_GtkTooltipsInfo";
 
 GType
 gtk_tooltips_get_type (void)
@@ -189,7 +191,7 @@ gtk_tooltips_destroy (GtkObject *object)
 
   if (tooltips->timer_tag)
     {
-      gtk_timeout_remove (tooltips->timer_tag);
+      g_source_remove (tooltips->timer_tag);
       tooltips->timer_tag = 0;
     }
 
@@ -205,6 +207,8 @@ gtk_tooltips_destroy (GtkObject *object)
     }
 
   gtk_tooltips_unset_tip_window (tooltips);
+
+  GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -376,10 +380,13 @@ gtk_tooltips_set_tip (GtkTooltips *tooltips,
 static gint
 gtk_tooltips_paint_window (GtkTooltips *tooltips)
 {
+  GtkRequisition req;
+
+  gtk_widget_size_request (tooltips->tip_window, &req);
   gtk_paint_flat_box (tooltips->tip_window->style, tooltips->tip_window->window,
 		      GTK_STATE_NORMAL, GTK_SHADOW_OUT, 
 		      NULL, GTK_WIDGET(tooltips->tip_window), "tooltip",
-		      0, 0, -1, -1);
+		      0, 0, req.width, req.height);
 
   return FALSE;
 }
@@ -390,10 +397,13 @@ gtk_tooltips_draw_tips (GtkTooltips *tooltips)
   GtkRequisition requisition;
   GtkWidget *widget;
   GtkStyle *style;
-  gint x, y, w, h, scr_w, scr_h;
+  gint x, y, w, h;
   GtkTooltipsData *data;
   gboolean keyboard_mode;
   GdkScreen *screen;
+  GdkScreen *pointer_screen;
+  gint monitor_num, px, py;
+  GdkRectangle monitor;
 
   if (!tooltips->tip_window)
     gtk_tooltips_force_window (tooltips);
@@ -404,14 +414,14 @@ gtk_tooltips_draw_tips (GtkTooltips *tooltips)
   style = tooltips->tip_window->style;
   
   widget = tooltips->active_tips_data->widget;
+  g_object_set_data (G_OBJECT (tooltips->tip_window), tooltips_info_key,
+                     tooltips);
 
   keyboard_mode = get_keyboard_mode (widget);
 
   gtk_tooltips_update_screen (tooltips, FALSE);
   
   screen = gtk_widget_get_screen (widget);
-  scr_w = gdk_screen_get_width (screen);
-  scr_h = gdk_screen_get_height (screen);
 
   data = tooltips->active_tips_data;
 
@@ -436,12 +446,22 @@ gtk_tooltips_draw_tips (GtkTooltips *tooltips)
 
   x -= (w / 2 + 4);
 
-  if ((x + w) > scr_w)
-    x -= (x + w) - scr_w;
-  else if (x < 0)
-    x = 0;
+  gdk_display_get_pointer (gdk_screen_get_display (screen),
+			   &pointer_screen, &px, &py, NULL);
+  if (pointer_screen != screen) 
+    {
+      px = x;
+      py = y;
+    }
+  monitor_num = gdk_screen_get_monitor_at_point (screen, px, py);
+  gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
 
-  if ((y + h + widget->allocation.height + 4) > scr_h)
+  if ((x + w) > monitor.x + monitor.width)
+    x -= (x + w) - (monitor.x + monitor.width);
+  else if (x < monitor.x)
+    x = monitor.x;
+
+  if ((y + h + widget->allocation.height + 4) > monitor.y + monitor.height)
     y = y - h - 4;
   else
     y = y + widget->allocation.height + 4;
@@ -478,7 +498,7 @@ gtk_tooltips_set_active_widget (GtkTooltips *tooltips,
     }
   if (tooltips->timer_tag)
     {
-      gtk_timeout_remove (tooltips->timer_tag);
+      g_source_remove (tooltips->timer_tag);
       tooltips->timer_tag = 0;
     }
   
@@ -607,9 +627,9 @@ gtk_tooltips_start_delay (GtkTooltips *tooltips,
 	delay = STICKY_DELAY;
       else
 	delay = tooltips->delay;
-      tooltips->timer_tag = gtk_timeout_add (delay,
-					     gtk_tooltips_timeout,
-					     (gpointer) tooltips);
+      tooltips->timer_tag = g_timeout_add (delay,
+					   gtk_tooltips_timeout,
+					   (gpointer) tooltips);
     }
 }
 
@@ -735,3 +755,42 @@ _gtk_tooltips_toggle_keyboard_mode (GtkWidget *widget)
     start_keyboard_mode (widget);
 }
 
+/**
+ * gtk_tooltips_get_info_from_tip_window:
+ * @tip_window: a #GtkWindow 
+ * @tooltips: the return location for the tooltips which are displayed 
+ *    in @tip_window, or %NULL
+ * @current_widget: the return location for the widget whose tooltips 
+ *    are displayed, or %NULL
+ * 
+ * Determines the tooltips and the widget they belong to from the window in 
+ * which they are displayed. 
+ *
+ * This function is mostly intended for use by accessibility technologies;
+ * applications should have little use for it.
+ * 
+ * Return value: %TRUE if @tip_window is displaying tooltips, otherwise %FALSE.
+ *
+ * Since: 2.4
+ **/
+gboolean
+gtk_tooltips_get_info_from_tip_window (GtkWindow    *tip_window,
+                                       GtkTooltips **tooltips,
+                                       GtkWidget   **current_widget)
+{
+  GtkTooltips  *current_tooltips;  
+  gboolean has_tips;
+
+  g_return_val_if_fail (GTK_IS_WINDOW (tip_window), FALSE);
+
+  current_tooltips = g_object_get_data (G_OBJECT (tip_window), tooltips_info_key);
+
+  has_tips = current_tooltips != NULL;
+
+  if (tooltips)
+    *tooltips = current_tooltips;
+  if (current_widget)
+    *current_widget = has_tips ? current_tooltips->active_tips_data->widget : NULL;
+
+  return has_tips;
+}

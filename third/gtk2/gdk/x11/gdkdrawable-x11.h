@@ -32,10 +32,7 @@
 #include <gdk/gdkdrawable.h>
 
 #include <X11/Xlib.h>
-
-#ifdef HAVE_XFT
 #include <X11/Xft/Xft.h>
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +40,14 @@ extern "C" {
 
 /* Drawable implementation for X11
  */
+
+typedef enum
+{
+  GDK_X11_FORMAT_NONE,
+  GDK_X11_FORMAT_EXACT_MASK,
+  GDK_X11_FORMAT_ARGB_MASK,
+  GDK_X11_FORMAT_ARGB
+} GdkX11FormatType;
 
 typedef struct _GdkDrawableImplX11 GdkDrawableImplX11;
 typedef struct _GdkDrawableImplX11Class GdkDrawableImplX11Class;
@@ -65,11 +70,7 @@ struct _GdkDrawableImplX11
   Window xid;
   GdkScreen *screen;
 
-#ifdef HAVE_XFT2
   XftDraw *xft_draw;
-#elif defined (HAVE_XFT)
-  Picture picture;
-#endif  
 };
  
 struct _GdkDrawableImplX11Class 
@@ -79,6 +80,15 @@ struct _GdkDrawableImplX11Class
 };
 
 GType _gdk_drawable_impl_x11_get_type (void);
+
+void  _gdk_x11_convert_to_format      (guchar           *src_buf,
+                                       gint              src_rowstride,
+                                       guchar           *dest_buf,
+                                       gint              dest_rowstride,
+                                       GdkX11FormatType  dest_format,
+                                       GdkByteOrder      dest_byteorder,
+                                       gint              width,
+                                       gint              height);
 
 #ifdef __cplusplus
 }

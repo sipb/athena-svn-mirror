@@ -38,11 +38,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
+typedef gchar * (*GtkTranslateFunc)	   (const gchar		*path,
+					    gpointer             func_data);
+
+#if !defined (GTK_DISABLE_DEPRECATED) || defined (GTK_COMPILATION)
 
 typedef void	(*GtkPrintFunc)		   (gpointer		 func_data,
 					    const gchar		*str);
-typedef gchar * (*GtkTranslateFunc)	   (const gchar		*path,
-					    gpointer             func_data);
 /* We use () here to mean unspecified arguments. This is deprecated
  * as of C99, but we can't change it without breaking compatibility.
  * (Note that if we are included from a C++ program () will mean
@@ -200,7 +202,6 @@ void   gtk_item_factory_set_translate_func (GtkItemFactory      *ifactory,
 					    gpointer             data,
 					    GtkDestroyNotify     notify);
 
-#if !defined (GTK_DISABLE_DEPRECATED) || defined (GTK_COMPILATION)
 /* Compatibility functions for deprecated GtkMenuFactory code
  */
 
@@ -226,15 +227,14 @@ void	gtk_item_factory_create_items_ac (GtkItemFactory	*ifactory,
 					  GtkItemFactoryEntry	*entries,
 					  gpointer		 callback_data,
 					  guint			 callback_type);
-#endif /* !GTK_DISABLE_DEPRECATED || GTK_COMPILATION */
 
-#ifndef GTK_DISABLE_DEPRECATED
 GtkItemFactory*	gtk_item_factory_from_path   (const gchar       *path);
 void	gtk_item_factory_create_menu_entries (guint		 n_entries,
 					      GtkMenuEntry      *entries);
 void	gtk_item_factories_path_delete	   (const gchar		*ifactory_path,
 					    const gchar		*path);
-#endif /* GTK_DISABLE_DEPRECATED */
+
+#endif /* !GTK_DISABLE_DEPRECATED || GTK_COMPILATION */
 
 
 #ifdef __cplusplus
@@ -243,3 +243,4 @@ void	gtk_item_factories_path_delete	   (const gchar		*ifactory_path,
 
 
 #endif	/* __GTK_ITEM_FACTORY_H__ */
+

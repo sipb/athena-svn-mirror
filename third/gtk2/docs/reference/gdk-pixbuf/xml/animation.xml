@@ -19,13 +19,13 @@
 struct      <link linkend="GdkPixbufAnimation-struct">GdkPixbufAnimation</link>;
 struct      <link linkend="GdkPixbufAnimationIter-struct">GdkPixbufAnimationIter</link>;
 <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* <link linkend="gdk-pixbuf-animation-new-from-file">gdk_pixbuf_animation_new_from_file</link>
-                                            (const char *filename,
+                                            (const <link linkend="char">char</link> *filename,
                                              <link linkend="GError">GError</link> **error);
 <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* <link linkend="gdk-pixbuf-animation-ref">gdk_pixbuf_animation_ref</link>
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
-void        <link linkend="gdk-pixbuf-animation-unref">gdk_pixbuf_animation_unref</link>      (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
-int         <link linkend="gdk-pixbuf-animation-get-width">gdk_pixbuf_animation_get_width</link>  (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
-int         <link linkend="gdk-pixbuf-animation-get-height">gdk_pixbuf_animation_get_height</link> (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-animation-unref">gdk_pixbuf_animation_unref</link>      (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
+<link linkend="int">int</link>         <link linkend="gdk-pixbuf-animation-get-width">gdk_pixbuf_animation_get_width</link>  (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
+<link linkend="int">int</link>         <link linkend="gdk-pixbuf-animation-get-height">gdk_pixbuf_animation_get_height</link> (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);
 <link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>* <link linkend="gdk-pixbuf-animation-get-iter">gdk_pixbuf_animation_get_iter</link>
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation,
                                              const <link linkend="GTimeVal">GTimeVal</link> *start_time);
@@ -36,7 +36,7 @@ int         <link linkend="gdk-pixbuf-animation-get-height">gdk_pixbuf_animation
 <link linkend="gboolean">gboolean</link>    <link linkend="gdk-pixbuf-animation-iter-advance">gdk_pixbuf_animation_iter_advance</link>
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter,
                                              const <link linkend="GTimeVal">GTimeVal</link> *current_time);
-int         <link linkend="gdk-pixbuf-animation-iter-get-delay-time">gdk_pixbuf_animation_iter_get_delay_time</link>
+<link linkend="int">int</link>         <link linkend="gdk-pixbuf-animation-iter-get-delay-time">gdk_pixbuf_animation_iter_get_delay_time</link>
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter);
 <link linkend="gboolean">gboolean</link>    <link linkend="gdk-pixbuf-animation-iter-on-currently-loading-frame">gdk_pixbuf_animation_iter_on_currently_loading_frame</link>
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter);
@@ -67,9 +67,11 @@ int         <link linkend="gdk-pixbuf-animation-iter-get-delay-time">gdk_pixbuf_
 
 
 
+
+
 <refsect1>
 <title>Description</title>
-  <para><anchor id="GdkPixbufAnimation"/>
+  <para>
     The &gdk-pixbuf; library provides a simple mechanism to load and represent
     animations. An animation is conceptually a series of frames to be displayed
     over time. Each frame is the same size. The animation may not be represented
@@ -84,27 +86,27 @@ int         <link linkend="gdk-pixbuf-animation-iter-get-delay-time">gdk_pixbuf_
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkPixbufAnimation-struct"/>struct GdkPixbufAnimation</title>
-<programlisting>struct GdkPixbufAnimation;</programlisting>
+<indexterm><primary>GdkPixbufAnimation</primary></indexterm><programlisting>struct GdkPixbufAnimation;</programlisting>
   <para>
     This object describes an animation.
   </para></refsect2>
 <refsect2>
 <title><anchor id="GdkPixbufAnimationIter-struct"/>struct GdkPixbufAnimationIter</title>
-<programlisting>struct GdkPixbufAnimationIter;</programlisting>
+<indexterm><primary>GdkPixbufAnimationIter</primary></indexterm><programlisting>struct GdkPixbufAnimationIter;</programlisting>
 <para>
-A <link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> provides the necessary functionality to
-display an animation. See <link linkend="gdk-pixbuf-animation-get-iter">gdk_pixbuf_animation_get_iter</link>().
+A <link linkend="GdkPixbufAnimationIter"><type>GdkPixbufAnimationIter</type></link> provides the necessary functionality to
+display an animation. See <link linkend="gdk-pixbuf-animation-get-iter"><function>gdk_pixbuf_animation_get_iter()</function></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-new-from-file"/>gdk_pixbuf_animation_new_from_file ()</title>
-<programlisting><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* gdk_pixbuf_animation_new_from_file
-                                            (const char *filename,
+<indexterm><primary>gdk_pixbuf_animation_new_from_file</primary></indexterm><programlisting><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* gdk_pixbuf_animation_new_from_file
+                                            (const <link linkend="char">char</link> *filename,
                                              <link linkend="GError">GError</link> **error);</programlisting>
 <para>
 Creates a new animation by loading it from a file.  The file format is
 detected automatically.  If the file's format does not support multi-frame
 images, then an animation with a single frame will be created. Possible errors
-are in the <link linkend="GDK-PIXBUF-ERROR-CAPS">GDK_PIXBUF_ERROR</link> and <link linkend="G-FILE-ERROR-CAPS">G_FILE_ERROR</link> domains.</para>
+are in the <link linkend="GDK-PIXBUF-ERROR-CAPS"><type>GDK_PIXBUF_ERROR</type></link> and <link linkend="G-FILE-ERROR-CAPS"><type>G_FILE_ERROR</type></link> domains.</para>
 <para>
 
 </para><variablelist role="params">
@@ -122,9 +124,9 @@ allocate the image buffer, or the image file contained invalid data.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-ref"/>gdk_pixbuf_animation_ref ()</title>
-<programlisting><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* gdk_pixbuf_animation_ref
+<indexterm role="deprecated"><primary>gdk_pixbuf_animation_ref</primary></indexterm><programlisting><link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>* gdk_pixbuf_animation_ref
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
-<warning><para><literal>gdk_pixbuf_animation_ref</literal> is deprecated and should not be used in newly-written code. Use <link linkend="g-object-ref">g_object_ref</link>().</para></warning>
+<warning><para><literal>gdk_pixbuf_animation_ref</literal> is deprecated and should not be used in newly-written code. Use <link linkend="g-object-ref"><function>g_object_ref()</function></link>.</para></warning>
 <para>
 Adds a reference to an animation.</para>
 <para>
@@ -139,8 +141,8 @@ Adds a reference to an animation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-unref"/>gdk_pixbuf_animation_unref ()</title>
-<programlisting>void        gdk_pixbuf_animation_unref      (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
-<warning><para><literal>gdk_pixbuf_animation_unref</literal> is deprecated and should not be used in newly-written code. Use <link linkend="g-object-unref">g_object_unref</link>().</para></warning>
+<indexterm role="deprecated"><primary>gdk_pixbuf_animation_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_animation_unref      (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
+<warning><para><literal>gdk_pixbuf_animation_unref</literal> is deprecated and should not be used in newly-written code. Use <link linkend="g-object-unref"><function>g_object_unref()</function></link>.</para></warning>
 <para>
 Removes a reference from an animation.</para>
 <para>
@@ -152,7 +154,7 @@ Removes a reference from an animation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-get-width"/>gdk_pixbuf_animation_get_width ()</title>
-<programlisting>int         gdk_pixbuf_animation_get_width  (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
+<indexterm><primary>gdk_pixbuf_animation_get_width</primary></indexterm><programlisting><link linkend="int">int</link>         gdk_pixbuf_animation_get_width  (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
 <para>
 Queries the width of the bounding box of a pixbuf animation.</para>
 <para>
@@ -166,7 +168,7 @@ Queries the width of the bounding box of a pixbuf animation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-get-height"/>gdk_pixbuf_animation_get_height ()</title>
-<programlisting>int         gdk_pixbuf_animation_get_height (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
+<indexterm><primary>gdk_pixbuf_animation_get_height</primary></indexterm><programlisting><link linkend="int">int</link>         gdk_pixbuf_animation_get_height (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
 <para>
 Queries the height of the bounding box of a pixbuf animation.</para>
 <para>
@@ -180,39 +182,39 @@ Queries the height of the bounding box of a pixbuf animation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-get-iter"/>gdk_pixbuf_animation_get_iter ()</title>
-<programlisting><link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>* gdk_pixbuf_animation_get_iter
+<indexterm><primary>gdk_pixbuf_animation_get_iter</primary></indexterm><programlisting><link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>* gdk_pixbuf_animation_get_iter
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation,
                                              const <link linkend="GTimeVal">GTimeVal</link> *start_time);</programlisting>
 <para>
 Get an iterator for displaying an animation. The iterator provides
 the frames that should be displayed at a given time.
-It should be freed after use with <link linkend="g-object-unref">g_object_unref</link>().
+It should be freed after use with <link linkend="g-object-unref"><function>g_object_unref()</function></link>.
 </para>
 <para>
-<parameter>start_time</parameter> would normally come from <link linkend="g-get-current-time">g_get_current_time</link>(), and
+<parameter>start_time</parameter> would normally come from <link linkend="g-get-current-time"><function>g_get_current_time()</function></link>, and
 marks the beginning of animation playback. After creating an
 iterator, you should immediately display the pixbuf returned by
-<link linkend="gdk-pixbuf-animation-iter-get-pixbuf">gdk_pixbuf_animation_iter_get_pixbuf</link>(). Then, you should install a
-timeout (with <link linkend="g-timeout-add">g_timeout_add</link>()) or by some other mechanism ensure
+<link linkend="gdk-pixbuf-animation-iter-get-pixbuf"><function>gdk_pixbuf_animation_iter_get_pixbuf()</function></link>. Then, you should install a
+timeout (with <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>) or by some other mechanism ensure
 that you'll update the image after
-<link linkend="gdk-pixbuf-animation-iter-get-delay-time">gdk_pixbuf_animation_iter_get_delay_time</link>() milliseconds. Each time
+<link linkend="gdk-pixbuf-animation-iter-get-delay-time"><function>gdk_pixbuf_animation_iter_get_delay_time()</function></link> milliseconds. Each time
 the image is updated, you should reinstall the timeout with the new,
 possibly-changed delay time.
 </para>
 <para>
 As a shortcut, if <parameter>start_time</parameter> is <literal>NULL</literal>, the result of
-<link linkend="g-get-current-time">g_get_current_time</link>() will be used automatically.
+<link linkend="g-get-current-time"><function>g_get_current_time()</function></link> will be used automatically.
 </para>
 <para>
 To update the image (i.e. possibly change the result of
-<link linkend="gdk-pixbuf-animation-iter-get-pixbuf">gdk_pixbuf_animation_iter_get_pixbuf</link>() to a new frame of the animation),
-call <link linkend="gdk-pixbuf-animation-iter-advance">gdk_pixbuf_animation_iter_advance</link>().
+<link linkend="gdk-pixbuf-animation-iter-get-pixbuf"><function>gdk_pixbuf_animation_iter_get_pixbuf()</function></link> to a new frame of the animation),
+call <link linkend="gdk-pixbuf-animation-iter-advance"><function>gdk_pixbuf_animation_iter_advance()</function></link>.
 </para>
 <para>
-If you're using <link linkend="GdkPixbufLoader">GdkPixbufLoader</link>, in addition to updating the image
+If you're using <link linkend="GdkPixbufLoader"><type>GdkPixbufLoader</type></link>, in addition to updating the image
 after the delay time, you should also update it whenever you
 receive the area_updated signal and
-<link linkend="gdk-pixbuf-animation-iter-on-currently-loading-frame">gdk_pixbuf_animation_iter_on_currently_loading_frame</link>() returns
+<link linkend="gdk-pixbuf-animation-iter-on-currently-loading-frame"><function>gdk_pixbuf_animation_iter_on_currently_loading_frame()</function></link> returns
 <literal>TRUE</literal>. In this case, the frame currently being fed into the loader
 has received new data, so needs to be refreshed. The delay time for
 a frame may also be modified after an area_updated signal, for
@@ -226,7 +228,7 @@ A delay time of -1 is possible, indicating "infinite."</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>animation</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>
+<listitem><simpara> a <link linkend="GdkPixbufAnimation"><type>GdkPixbufAnimation</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>start_time</parameter>&nbsp;:</term>
 <listitem><simpara> time when the animation starts playing
@@ -236,25 +238,25 @@ A delay time of -1 is possible, indicating "infinite."</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-is-static-image"/>gdk_pixbuf_animation_is_static_image ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_is_static_image
+<indexterm><primary>gdk_pixbuf_animation_is_static_image</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_is_static_image
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
 <para>
-If you load a file with <link linkend="gdk-pixbuf-animation-new-from-file">gdk_pixbuf_animation_new_from_file</link>() and it turns
+If you load a file with <link linkend="gdk-pixbuf-animation-new-from-file"><function>gdk_pixbuf_animation_new_from_file()</function></link> and it turns
 out to be a plain, unanimated image, then this function will return
-<literal>TRUE</literal>. Use <link linkend="gdk-pixbuf-animation-get-static-image">gdk_pixbuf_animation_get_static_image</link>() to retrieve
+<literal>TRUE</literal>. Use <link linkend="gdk-pixbuf-animation-get-static-image"><function>gdk_pixbuf_animation_get_static_image()</function></link> to retrieve
 the image.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>animation</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>
+<listitem><simpara> a <link linkend="GdkPixbufAnimation"><type>GdkPixbufAnimation</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the "animation" was really just an image
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-get-static-image"/>gdk_pixbuf_animation_get_static_image ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_animation_get_static_image
+<indexterm><primary>gdk_pixbuf_animation_get_static_image</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_animation_get_static_image
                                             (<link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link> *animation);</programlisting>
 <para>
 If an animation is really just a plain image (has only one frame),
@@ -267,30 +269,30 @@ function will return <literal>NULL</literal>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>animation</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbufAnimation">GdkPixbufAnimation</link>
+<listitem><simpara> a <link linkend="GdkPixbufAnimation"><type>GdkPixbufAnimation</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> unanimated image representing the animation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-iter-advance"/>gdk_pixbuf_animation_iter_advance ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_iter_advance
+<indexterm><primary>gdk_pixbuf_animation_iter_advance</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_iter_advance
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter,
                                              const <link linkend="GTimeVal">GTimeVal</link> *current_time);</programlisting>
 <para>
 Possibly advances an animation to a new frame. Chooses the frame based
-on the start time passed to <link linkend="gdk-pixbuf-animation-get-iter">gdk_pixbuf_animation_get_iter</link>().
+on the start time passed to <link linkend="gdk-pixbuf-animation-get-iter"><function>gdk_pixbuf_animation_get_iter()</function></link>.
 </para>
 <para>
-<parameter>current_time</parameter> would normally come from <link linkend="g-get-current-time">g_get_current_time</link>(), and
+<parameter>current_time</parameter> would normally come from <link linkend="g-get-current-time"><function>g_get_current_time()</function></link>, and
 must be greater than or equal to the time passed to
-<link linkend="gdk-pixbuf-animation-get-iter">gdk_pixbuf_animation_get_iter</link>(), and must increase or remain
-unchanged each time <link linkend="gdk-pixbuf-animation-iter-get-pixbuf">gdk_pixbuf_animation_iter_get_pixbuf</link>() is
+<link linkend="gdk-pixbuf-animation-get-iter"><function>gdk_pixbuf_animation_get_iter()</function></link>, and must increase or remain
+unchanged each time <link linkend="gdk-pixbuf-animation-iter-get-pixbuf"><function>gdk_pixbuf_animation_iter_get_pixbuf()</function></link> is
 called. That is, you can't go backward in time; animations only
 play forward.
 </para>
 <para>
-As a shortcut, pass <literal>NULL</literal> for the current time and <link linkend="g-get-current-time">g_get_current_time</link>()
+As a shortcut, pass <literal>NULL</literal> for the current time and <link linkend="g-get-current-time"><function>g_get_current_time()</function></link>
 will be invoked on your behalf. So you only need to explicitly pass
 <parameter>current_time</parameter> if you're doing something odd like playing the animation
 at double speed.
@@ -298,13 +300,13 @@ at double speed.
 <para>
 If this function returns <literal>FALSE</literal>, there's no need to update the animation
 display, assuming the display had been rendered prior to advancing;
-if <literal>TRUE</literal>, you need to call <link linkend="gdk-animation-iter-get-pixbuf">gdk_animation_iter_get_pixbuf</link>() and update the
+if <literal>TRUE</literal>, you need to call <link linkend="gdk-animation-iter-get-pixbuf"><function>gdk_animation_iter_get_pixbuf()</function></link> and update the
 display with the new pixbuf.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>
+<listitem><simpara> a <link linkend="GdkPixbufAnimationIter"><type>GdkPixbufAnimationIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>current_time</parameter>&nbsp;:</term>
 <listitem><simpara> current time
@@ -315,11 +317,11 @@ display with the new pixbuf.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-iter-get-delay-time"/>gdk_pixbuf_animation_iter_get_delay_time ()</title>
-<programlisting>int         gdk_pixbuf_animation_iter_get_delay_time
+<indexterm><primary>gdk_pixbuf_animation_iter_get_delay_time</primary></indexterm><programlisting><link linkend="int">int</link>         gdk_pixbuf_animation_iter_get_delay_time
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter);</programlisting>
 <para>
 Gets the number of milliseconds the current pixbuf should be displayed,
-or -1 if the current pixbuf should be displayed forever. <link linkend="g-timeout-add">g_timeout_add</link>()
+or -1 if the current pixbuf should be displayed forever. <link linkend="g-timeout-add"><function>g_timeout_add()</function></link>
 conveniently takes a timeout in milliseconds, so you can use a timeout
 to schedule the next update.</para>
 <para>
@@ -333,11 +335,11 @@ to schedule the next update.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-iter-on-currently-loading-frame"/>gdk_pixbuf_animation_iter_on_currently_loading_frame ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_iter_on_currently_loading_frame
+<indexterm><primary>gdk_pixbuf_animation_iter_on_currently_loading_frame</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_pixbuf_animation_iter_on_currently_loading_frame
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter);</programlisting>
 <para>
 Used to determine how to respond to the area_updated signal on
-<link linkend="GdkPixbufLoader">GdkPixbufLoader</link> when loading an animation. area_updated is emitted
+<link linkend="GdkPixbufLoader"><type>GdkPixbufLoader</type></link> when loading an animation. area_updated is emitted
 for an area of the frame currently streaming in to the loader. So if
 you're on the currently loading frame, you need to redraw the screen for
 the updated area.</para>
@@ -345,25 +347,25 @@ the updated area.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link>
+<listitem><simpara> a <link linkend="GdkPixbufAnimationIter"><type>GdkPixbufAnimationIter</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the frame we're on is partially loaded, or the last frame
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-animation-iter-get-pixbuf"/>gdk_pixbuf_animation_iter_get_pixbuf ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_animation_iter_get_pixbuf
+<indexterm><primary>gdk_pixbuf_animation_iter_get_pixbuf</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_animation_iter_get_pixbuf
                                             (<link linkend="GdkPixbufAnimationIter">GdkPixbufAnimationIter</link> *iter);</programlisting>
 <para>
 Gets the current pixbuf which should be displayed; the pixbuf will
 be the same size as the animation itself
-(<link linkend="gdk-pixbuf-animation-get-width">gdk_pixbuf_animation_get_width</link>(),
-<link linkend="gdk-pixbuf-animation-get-height">gdk_pixbuf_animation_get_height</link>()). This pixbuf should be displayed
-for <link linkend="gdk-pixbuf-animation-get-delay-time">gdk_pixbuf_animation_get_delay_time</link>() milliseconds.  The caller
+(<link linkend="gdk-pixbuf-animation-get-width"><function>gdk_pixbuf_animation_get_width()</function></link>,
+<link linkend="gdk-pixbuf-animation-get-height"><function>gdk_pixbuf_animation_get_height()</function></link>). This pixbuf should be displayed
+for <link linkend="gdk-pixbuf-animation-get-delay-time"><function>gdk_pixbuf_animation_get_delay_time()</function></link> milliseconds.  The caller
 of this function does not own a reference to the returned pixbuf;
 the returned pixbuf will become invalid when the iterator advances
 to the next frame, which may happen anytime you call
-<link linkend="gdk-pixbuf-animation-iter-advance">gdk_pixbuf_animation_iter_advance</link>(). Copy the pixbuf to keep it
+<link linkend="gdk-pixbuf-animation-iter-advance"><function>gdk_pixbuf_animation_iter_advance()</function></link>. Copy the pixbuf to keep it
 (don't just add a reference), as it may get recycled as you advance
 the iterator.</para>
 <para>
@@ -383,7 +385,7 @@ the iterator.</para>
 <refsect1>
 <title>See Also</title>
   <para>
-    <link linkend="GdkPixbufLoader">GdkPixbufLoader</link>
+    <link linkend="GdkPixbufLoader"><type>GdkPixbufLoader</type></link>
   </para>
 </refsect1>
 

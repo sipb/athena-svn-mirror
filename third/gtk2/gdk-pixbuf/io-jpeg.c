@@ -449,7 +449,7 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
  * return context (opaque to user)
  */
 
-gpointer
+static gpointer
 gdk_pixbuf__jpeg_image_begin_load (GdkPixbufModuleSizeFunc size_func,
 				   GdkPixbufModulePreparedFunc prepared_func, 
 				   GdkPixbufModuleUpdatedFunc updated_func,
@@ -650,7 +650,12 @@ gdk_pixbuf__jpeg_image_load_increment (gpointer data,
 			
 			width = cinfo->image_width;
 			height = cinfo->image_height;
-			(* context->size_func) (&width, &height, context->user_data);
+			if (context->size_func) {
+				(* context->size_func) (&width, &height, context->user_data);
+				if (width == 0 || height == 0)
+					return FALSE;
+			}
+			
 			for (cinfo->scale_denom = 2; cinfo->scale_denom <= 8; cinfo->scale_denom *= 2) {
 				jpeg_calc_output_dimensions (cinfo);
 				if (cinfo->output_width < width || cinfo->output_height < height) {
@@ -775,12 +780,85 @@ gdk_pixbuf__jpeg_image_load_increment (gpointer data,
 	return TRUE;
 }
 
+/* Save */
+
+#define TO_FUNCTION_BUF_SIZE 4096
+
+typedef struct {
+	struct jpeg_destination_mgr pub;
+	JOCTET             *buffer;
+	GdkPixbufSaveFunc   save_func;
+	gpointer            user_data;
+	GError            **error;
+} ToFunctionDestinationManager;
+
+void
+to_callback_init (j_compress_ptr cinfo)
+{
+	ToFunctionDestinationManager *destmgr;
+
+	destmgr	= (ToFunctionDestinationManager*) cinfo->dest;
+	destmgr->pub.next_output_byte = destmgr->buffer;
+	destmgr->pub.free_in_buffer = TO_FUNCTION_BUF_SIZE;
+}
+
+static void
+to_callback_do_write (j_compress_ptr cinfo, gsize length)
+{
+	ToFunctionDestinationManager *destmgr;
+
+	destmgr	= (ToFunctionDestinationManager*) cinfo->dest;
+        if (!destmgr->save_func (destmgr->buffer,
+				 length,
+				 destmgr->error,
+				 destmgr->user_data)) {
+		struct error_handler_data *errmgr;
+        
+		errmgr = (struct error_handler_data *) cinfo->err;
+		/* Use a default error message if the callback didn't set one,
+		 * which it should have.
+		 */
+		if (errmgr->error && *errmgr->error == NULL) {
+			g_set_error (errmgr->error,
+				     GDK_PIXBUF_ERROR,
+				     GDK_PIXBUF_ERROR_CORRUPT_IMAGE,
+				     "write function failed");
+		}
+		siglongjmp (errmgr->setjmp_buffer, 1);
+		g_assert_not_reached ();
+        }
+}
+
+static boolean
+to_callback_empty_output_buffer (j_compress_ptr cinfo)
+{
+	ToFunctionDestinationManager *destmgr;
+
+	destmgr	= (ToFunctionDestinationManager*) cinfo->dest;
+	to_callback_do_write (cinfo, TO_FUNCTION_BUF_SIZE);
+	destmgr->pub.next_output_byte = destmgr->buffer;
+	destmgr->pub.free_in_buffer = TO_FUNCTION_BUF_SIZE;
+	return TRUE;
+}
+
+void
+to_callback_terminate (j_compress_ptr cinfo)
+{
+	ToFunctionDestinationManager *destmgr;
+
+	destmgr	= (ToFunctionDestinationManager*) cinfo->dest;
+	to_callback_do_write (cinfo, TO_FUNCTION_BUF_SIZE - destmgr->pub.free_in_buffer);
+}
+
 static gboolean
-gdk_pixbuf__jpeg_image_save (FILE          *f, 
-                             GdkPixbuf     *pixbuf, 
-                             gchar        **keys,
-                             gchar        **values,
-                             GError       **error)
+real_save_jpeg (GdkPixbuf          *pixbuf,
+		gchar             **keys,
+		gchar             **values,
+		GError            **error,
+		gboolean            to_callback,
+		FILE               *f,
+		GdkPixbufSaveFunc   save_func,
+		gpointer            user_data)
 {
         /* FIXME error handling is broken */
         
@@ -795,6 +873,9 @@ gdk_pixbuf__jpeg_image_save (FILE          *f,
        int w, h = 0;
        int rowstride = 0;
        struct error_handler_data jerr;
+       ToFunctionDestinationManager to_callback_destmgr;
+
+       to_callback_destmgr.buffer = NULL;
 
        if (keys && *keys) {
                gchar **kiter = keys;
@@ -849,7 +930,9 @@ gdk_pixbuf__jpeg_image_save (FILE          *f,
        pixels = gdk_pixbuf_get_pixels (pixbuf);
        g_return_val_if_fail (pixels != NULL, FALSE);
 
-       /* allocate a small buffer to convert image data */
+       /* Allocate a small buffer to convert image data,
+	* and a larger buffer if doing to_callback save.
+	*/
        buf = g_try_malloc (w * 3 * sizeof (guchar));
        if (!buf) {
 	       g_set_error (error,
@@ -857,6 +940,16 @@ gdk_pixbuf__jpeg_image_save (FILE          *f,
 			    GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY,
 			    _("Couldn't allocate memory for loading JPEG file"));
 	       return FALSE;
+       }
+       if (to_callback) {
+	       to_callback_destmgr.buffer = g_try_malloc (TO_FUNCTION_BUF_SIZE);
+	       if (!to_callback_destmgr.buffer) {
+		       g_set_error (error,
+				    GDK_PIXBUF_ERROR,
+				    GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY,
+				    _("Couldn't allocate memory for loading JPEG file"));
+		       return FALSE;
+	       }
        }
 
        /* set up error handling */
@@ -868,12 +961,23 @@ gdk_pixbuf__jpeg_image_save (FILE          *f,
        if (sigsetjmp (jerr.setjmp_buffer, 1)) {
                jpeg_destroy_compress (&cinfo);
                g_free (buf);
+	       g_free (to_callback_destmgr.buffer);
                return FALSE;
        }
 
        /* setup compress params */
        jpeg_create_compress (&cinfo);
-       jpeg_stdio_dest (&cinfo, f);
+       if (to_callback) {
+	       to_callback_destmgr.pub.init_destination    = to_callback_init;
+	       to_callback_destmgr.pub.empty_output_buffer = to_callback_empty_output_buffer;
+	       to_callback_destmgr.pub.term_destination    = to_callback_terminate;
+	       to_callback_destmgr.error = error;
+	       to_callback_destmgr.save_func = save_func;
+	       to_callback_destmgr.user_data = user_data;
+	       cinfo.dest = (struct jpeg_destination_mgr*) &to_callback_destmgr;
+       } else {
+	       jpeg_stdio_dest (&cinfo, f);
+       }
        cinfo.image_width      = w;
        cinfo.image_height     = h;
        cinfo.input_components = 3; 
@@ -904,7 +1008,31 @@ gdk_pixbuf__jpeg_image_save (FILE          *f,
        jpeg_finish_compress (&cinfo);
        jpeg_destroy_compress(&cinfo);
        g_free (buf);
+       g_free (to_callback_destmgr.buffer);
        return TRUE;
+}
+
+static gboolean
+gdk_pixbuf__jpeg_image_save (FILE          *f, 
+                             GdkPixbuf     *pixbuf, 
+                             gchar        **keys,
+                             gchar        **values,
+                             GError       **error)
+{
+	return real_save_jpeg (pixbuf, keys, values, error,
+			       FALSE, f, NULL, NULL);
+}
+
+static gboolean
+gdk_pixbuf__jpeg_image_save_to_callback (GdkPixbufSaveFunc   save_func,
+					 gpointer            user_data,
+					 GdkPixbuf          *pixbuf, 
+					 gchar             **keys,
+					 gchar             **values,
+					 GError            **error)
+{
+	return real_save_jpeg (pixbuf, keys, values, error,
+			       TRUE, NULL, save_func, user_data);
 }
 
 void
@@ -915,6 +1043,7 @@ MODULE_ENTRY (jpeg, fill_vtable) (GdkPixbufModule *module)
 	module->stop_load = gdk_pixbuf__jpeg_image_stop_load;
 	module->load_increment = gdk_pixbuf__jpeg_image_load_increment;
 	module->save = gdk_pixbuf__jpeg_image_save;
+	module->save_to_callback = gdk_pixbuf__jpeg_image_save_to_callback;
 }
 
 void

@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkruler.h"
 #include "gtkintl.h"
 
@@ -115,8 +116,8 @@ gtk_ruler_class_init (GtkRulerClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_LOWER,
                                    g_param_spec_double ("lower",
-							_("Lower"),
-							_("Lower limit of ruler"),
+							P_("Lower"),
+							P_("Lower limit of ruler"),
 							-G_MAXDOUBLE,
 							G_MAXDOUBLE,
 							0.0,
@@ -125,8 +126,8 @@ gtk_ruler_class_init (GtkRulerClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_UPPER,
                                    g_param_spec_double ("upper",
-							_("Upper"),
-							_("Upper limit of ruler"),
+							P_("Upper"),
+							P_("Upper limit of ruler"),
 							-G_MAXDOUBLE,
 							G_MAXDOUBLE,
 							0.0,
@@ -135,8 +136,8 @@ gtk_ruler_class_init (GtkRulerClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_POSITION,
                                    g_param_spec_double ("position",
-							_("Position"),
-							_("Position of mark on the ruler"),
+							P_("Position"),
+							P_("Position of mark on the ruler"),
 							-G_MAXDOUBLE,
 							G_MAXDOUBLE,
 							0.0,
@@ -145,8 +146,8 @@ gtk_ruler_class_init (GtkRulerClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_MAX_SIZE,
                                    g_param_spec_double ("max_size",
-							_("Max Size"),
-							_("Maximum size of the ruler"),
+							P_("Max Size"),
+							P_("Maximum size of the ruler"),
 							-G_MAXDOUBLE,
 							G_MAXDOUBLE,
 							0.0,

@@ -21,14 +21,16 @@
                                              <link linkend="Drawable">Drawable</link> src,
                                              <link linkend="Colormap">Colormap</link> cmap,
                                              <link linkend="Visual">Visual</link> *visual,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -40,7 +42,7 @@
 <title>Description</title>
   <para>
     The functions in this section allow you to take the image data
-    from an X drawable and dump it into a <link linkend="GdkPixbuf">GdkPixbuf</link>.  This can be
+    from an X drawable and dump it into a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>.  This can be
     used for screenshots and other special effects.  Note that these
     operations can be expensive, since the image data has to be
     transferred from the X server to the client program and converted.
@@ -56,17 +58,17 @@
 <title>Details</title>
 <refsect2>
 <title><anchor id="gdk-pixbuf-xlib-get-from-drawable"/>gdk_pixbuf_xlib_get_from_drawable ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_xlib_get_from_drawable
+<indexterm><primary>gdk_pixbuf_xlib_get_from_drawable</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_xlib_get_from_drawable
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
                                              <link linkend="Drawable">Drawable</link> src,
                                              <link linkend="Colormap">Colormap</link> cmap,
                                              <link linkend="Visual">Visual</link> *visual,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);</programlisting>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);</programlisting>
 <para>
 Transfers image data from a Gdk drawable and converts it to an RGB(A)
 representation inside a GdkPixbuf.
@@ -78,17 +80,17 @@ If the drawable is a window, the <parameter>cmap</parameter> argument will be ig
 window's own colormap will be used instead.
 </para>
 <para>
-If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL-CAPS">NULL</link>, then this function will
+If the specified destination pixbuf <parameter>dest</parameter> is <link linkend="NULL-CAPS"><type>NULL</type></link>, then this function will
 create an RGB pixbuf with 8 bits per channel and no alpha, with the same size
 specified by the <parameter>width</parameter> and <parameter>height</parameter> arguments.  In this case, the <parameter>dest_x</parameter> and
 <parameter>dest_y</parameter> arguments must be specified as 0, otherwise the function will return
-<link linkend="NULL-CAPS">NULL</link>.  If the specified destination pixbuf is not NULL and it contains alpha
+<link linkend="NULL-CAPS"><type>NULL</type></link>.  If the specified destination pixbuf is not NULL and it contains alpha
 information, then the filled pixels will be set to full opacity.
 </para>
 <para>
 If the specified drawable is a pixmap, then the requested source rectangle
 must be completely contained within the pixmap, otherwise the function will
-return <link linkend="NULL-CAPS">NULL</link>.
+return <link linkend="NULL-CAPS"><type>NULL</type></link>.
 </para>
 <para>
 If the specified drawable is a window, then it must be viewable, i.e. all of

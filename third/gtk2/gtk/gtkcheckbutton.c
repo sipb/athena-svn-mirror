@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkcheckbutton.h"
 #include "gtkintl.h"
 #include "gtklabel.h"
@@ -95,16 +96,16 @@ gtk_check_button_class_init (GtkCheckButtonClass *class)
 
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("indicator_size",
-							     _("Indicator Size"),
-							     _("Size of check or radio indicator"),
+							     P_("Indicator Size"),
+							     P_("Size of check or radio indicator"),
 							     0,
 							     G_MAXINT,
 							     INDICATOR_SIZE,
 							     G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("indicator_spacing",
-							     _("Indicator Spacing"),
-							     _("Spacing around check or radio indicator"),
+							     P_("Indicator Spacing"),
+							     P_("Spacing around check or radio indicator"),
 							     0,
 							     G_MAXINT,
 							     INDICATOR_SPACING,
@@ -415,7 +416,7 @@ gtk_real_check_button_draw_indicator (GtkCheckButton *check_button,
 	state_type = GTK_STATE_ACTIVE;
       else if (button->in_button)
 	state_type = GTK_STATE_PRELIGHT;
-      else if (!GTK_WIDGET_SENSITIVE (widget))
+      else if (!GTK_WIDGET_IS_SENSITIVE (widget))
 	state_type = GTK_STATE_INSENSITIVE;
       else
 	state_type = GTK_STATE_NORMAL;

@@ -1,8 +1,50 @@
-# require autoconf 2.52
-AC_PREREQ(2.52)
-
 # Process this file with autoconf to produce a configure script.
-AC_INIT(gdk/gdktypes.h)
+# require autoconf 2.54
+AC_PREREQ(2.54)
+
+# Making releases:
+#   GTK_MICRO_VERSION += 1;
+#   GTK_INTERFACE_AGE += 1;
+#   GTK_BINARY_AGE += 1;
+# if any functions have been added, set GTK_INTERFACE_AGE to 0.
+# if backwards compatibility has been broken,
+# set GTK_BINARY_AGE and GTK_INTERFACE_AGE to 0.
+
+m4_define([gtk_major_version], [2])
+m4_define([gtk_minor_version], [4])
+m4_define([gtk_micro_version], [9])
+m4_define([gtk_version],
+          [gtk_major_version.gtk_minor_version.gtk_micro_version])
+m4_define([gtk_interface_age], [9])
+m4_define([gtk_binary_age],
+          [m4_eval(100 * gtk_minor_version + gtk_micro_version)])
+# This is the X.Y used in -lgtk-FOO-X.Y
+m4_define([gtk_api_version], [2.0])
+
+# Define a string for the earliest version that this release has
+# forward/backwards binary compatibility with. This is used for module
+# locations. (Should this be backwards-compat instead?)
+#
+#GTK_BINARY_VERSION=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION.$LT_CURRENT
+m4_define([gtk_binary_version], [2.4.0])
+
+# required versions of other packages
+m4_define([glib_required_version], [2.4.0])
+m4_define([pango_required_version], [1.4.0])
+m4_define([atk_required_version], [1.0.1])
+
+
+AC_INIT([gtk+], [gtk_version],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=gtk+],
+	[gtk+])
+
+AC_CONFIG_SRCDIR([gdk/gdktypes.h])
+
+# Save this value here, since automake will set cflags later
+cflags_set=${CFLAGS+set}
+
+AM_INIT_AUTOMAKE(no-define)
+AM_CONFIG_HEADER(config.h)
 
 #
 # For each of the libraries we build, we define the following
@@ -15,31 +57,14 @@ AC_INIT(gdk/gdktypes.h)
 # foo_DEP_CFLAGS:   All cflags this module requires
 
 
-# Save this value here, since automake will set cflags later
-cflags_set=${CFLAGS+set}
-
-dnl we to AC_DIVERT_PUSH/AC_DIVERT_POP these variable definitions so they
-dnl are available for $ac_help expansion (don't we all *love* autoconf?)
-GLIB_AC_DIVERT_BEFORE_HELP([
-#
-# Making releases:
-#   GTK_MICRO_VERSION += 1;
-#   GTK_INTERFACE_AGE += 1;
-#   GTK_BINARY_AGE += 1;
-# if any functions have been added, set GTK_INTERFACE_AGE to 0.
-# if backwards compatibility has been broken,
-# set GTK_BINARY_AGE and GTK_INTERFACE_AGE to 0.
-#
-GTK_MAJOR_VERSION=2
-GTK_MINOR_VERSION=2
-GTK_MICRO_VERSION=1
-GTK_INTERFACE_AGE=1
-GTK_BINARY_AGE=201
-GTK_VERSION=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION.$GTK_MICRO_VERSION
-dnl This is the X.Y used in -lgtk-FOO-X.Y
-GTK_API_VERSION=2.0
-])dnl
-
+GTK_MAJOR_VERSION=gtk_major_version
+GTK_MINOR_VERSION=gtk_minor_version
+GTK_MICRO_VERSION=gtk_micro_version
+GTK_INTERFACE_AGE=gtk_interface_age
+GTK_BINARY_AGE=gtk_binary_age
+GTK_VERSION=gtk_version
+GTK_API_VERSION=gtk_api_version
+GTK_BINARY_VERSION=gtk_binary_version
 AC_SUBST(GTK_MAJOR_VERSION)
 AC_SUBST(GTK_MINOR_VERSION)
 AC_SUBST(GTK_MICRO_VERSION)
@@ -47,6 +72,7 @@ AC_SUBST(GTK_INTERFACE_AGE)
 AC_SUBST(GTK_BINARY_AGE)
 AC_SUBST(GTK_API_VERSION)
 AC_SUBST(GTK_VERSION)
+AC_SUBST(GTK_BINARY_VERSION)
 
 # libtool versioning
 #LT_RELEASE=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION
@@ -55,93 +81,33 @@ AC_SUBST(GTK_VERSION)
 #LT_AGE=`expr $GTK_BINARY_AGE - $GTK_INTERFACE_AGE`
 #LT_CURRENT_MINUS_AGE=`expr $LT_CURRENT - $LT_AGE`
 
-LT_RELEASE=$GTK_MAJOR_VERSION.0
-LT_CURRENT=`expr 100 '*' $GTK_MINOR_VERSION + $GTK_MICRO_VERSION - $GTK_INTERFACE_AGE`
-LT_REVISION=$GTK_INTERFACE_AGE
-LT_AGE=`expr $GTK_BINARY_AGE - $GTK_INTERFACE_AGE`
-LT_CURRENT_MINUS_AGE=`expr $LT_CURRENT - $LT_AGE`
-AC_SUBST(LT_RELEASE)
-AC_SUBST(LT_CURRENT)
-AC_SUBST(LT_REVISION)
-AC_SUBST(LT_AGE)
+m4_define([lt_current], [m4_eval(100 * gtk_minor_version + gtk_micro_version - gtk_interface_age)])
+m4_define([lt_revision], [gtk_interface_age])
+m4_define([lt_age], [m4_eval(gtk_binary_age - gtk_interface_age)])
+LT_VERSION_INFO="lt_current:lt_revision:lt_age"
+LT_CURRENT_MINUS_AGE=m4_eval(lt_current - lt_age)
+AC_SUBST(LT_VERSION_INFO)
 AC_SUBST(LT_CURRENT_MINUS_AGE)
 
-# Define a string for the earliest version that this release has
-# forward/backwards binary compatibility with. This is used for module
-# locations. (Should this be backwards-compat instead?)
-#
-#GTK_BINARY_VERSION=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION.$LT_CURRENT
-GTK_BINARY_VERSION=2.2.0
-AC_SUBST(GTK_BINARY_VERSION)
 
 #
 # gdk-pixbuf gets versioned separately, and for now, using standard
 # libtool versioning, not GTK+-style versioning
 #
-GDK_PIXBUF_MAJOR=$GTK_MAJOR_VERSION
-GDK_PIXBUF_MINOR=$GTK_MINOR_VERSION
-GDK_PIXBUF_MICRO=$GTK_MICRO_VERSION
+GDK_PIXBUF_MAJOR=gtk_major_version
+GDK_PIXBUF_MINOR=gtk_minor_version
+GDK_PIXBUF_MICRO=gtk_micro_version
 GDK_PIXBUF_VERSION="${GDK_PIXBUF_MAJOR}.${GDK_PIXBUF_MINOR}.${GDK_PIXBUF_MICRO}"
 AC_SUBST(GDK_PIXBUF_MAJOR)
 AC_SUBST(GDK_PIXBUF_MINOR)
 AC_SUBST(GDK_PIXBUF_MICRO)
 AC_SUBST(GDK_PIXBUF_VERSION)
 
-## Versions of dependencies
-GLIB_REQUIRED_VERSION=2.1.4
-PANGO_REQUIRED_VERSION=1.0.1
-ATK_REQUIRED_VERSION=1.0.1
-
-# For automake.
-VERSION=$GTK_VERSION
-PACKAGE=gtk+
-
 GETTEXT_PACKAGE=gtk20
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 
-# Save this value here, since automake will set cflags later
-cflags_set=${CFLAGS+set}
-
-dnl Initialize automake stuff
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
-
-# Specify a configuration file
-AM_CONFIG_HEADER(config.h)
-
-dnl Initialize libtool
-AC_PROG_CC
-AM_DISABLE_STATIC
-AC_LIBTOOL_WIN32_DLL
-AM_PROG_LIBTOOL
-
-dnl XXXX Hack: Set AS and ASFLAGS so that automake 1.5 will be happy
-AS="\${CC}"
-ASFLAGS="\${CFLAGS}"
-AC_SUBST(AS)
-AC_SUBST(ASFLAGS)
-dnl XXXX Hack: Set CCAS and CCASFLAGS so that automake 1.6 will be happy
-CCAS="\${CC}"
-CCASFLAGS="\${CFLAGS}"
-AC_SUBST(CCAS)
-AC_SUBST(CCASFLAGS)
-
-dnl Initialize maintainer mode
-AM_MAINTAINER_MODE
-
 AC_CANONICAL_HOST
-
-AC_MSG_CHECKING([for some Win32 platform])
-case "$host" in
-  *-*-mingw*|*-*-cygwin*)
-    platform_win32=yes
-    ;;
-  *)
-    platform_win32=no
-    ;;
-esac
-AC_MSG_RESULT([$platform_win32])
-AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 
 MATH_LIB=-lm
 AC_MSG_CHECKING([for native Win32])
@@ -155,39 +121,86 @@ case "$host" in
     ;;
 esac
 AC_MSG_RESULT([$os_win32])
+
+dnl Initialize libtool
+AC_PROG_CC
+AM_DISABLE_STATIC
+
+if test "$os_win32" = "yes"; then
+  if test x$enable_static = xyes -o x$enable_static = x; then
+    AC_MSG_WARN([Disabling static library build, must build as DLL on Windows.])
+    enable_static=no
+  fi
+  if test x$enable_shared = xno; then
+    AC_MSG_WARN([Enabling shared library build, must build as DLL on Windows.])
+  fi
+  enable_shared=yes
+fi
+
+AM_PROG_LIBTOOL
+
+# Make sure we use 64-bit versions of various file stuff.
+AC_SYS_LARGEFILE
+
+AM_PROG_AS
+
+dnl Initialize maintainer mode
+AM_MAINTAINER_MODE
+
+AC_MSG_CHECKING([for some Win32 platform])
+case "$host" in
+  *-*-mingw*|*-*-cygwin*)
+    platform_win32=yes
+    ;;
+  *)
+    platform_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$platform_win32])
+AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
+
 AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
+AM_CONDITIONAL(OS_UNIX, test "$os_win32" != "yes")
 
 if test "$os_win32" = "yes"; then
   AC_CHECK_PROG(ms_librarian, lib.exe, yes, no)
 fi
 AM_CONDITIONAL(MS_LIB_AVAILABLE, test x$ms_librarian = xyes)
 
-dnl figure debugging default, prior to $ac_help setup
-dnl
-GLIB_AC_DIVERT_BEFORE_HELP([
-if test `expr $GTK_MINOR_VERSION \% 2` = 1 ; then
-        debug_default=yes
-else
-        debug_default=minimum
-fi
-])dnl
+m4_define([debug_default],
+          m4_if(m4_eval(gtk_minor_version % 2), [1], [yes], [minimum]))
 
 dnl declare --enable-* args and collect ac_help strings
-AC_ARG_ENABLE(debug, [  --enable-debug=[no/minimum/yes] turn on debugging [default=$debug_default]],,enable_debug=$debug_default)
-AC_ARG_ENABLE(shm, [  --enable-shm            support shared memory if available [default=yes]],
-		   echo $enable_shm, enable_shm="yes")
-AC_ARG_ENABLE(ansi, [  --enable-ansi           turn on strict ansi [default=no]],
-		    , enable_ansi=no)
-AC_ARG_ENABLE(xim, [  --enable-xim            support XIM [default=yes]],
-			, enable_xim="yes")
-AC_ARG_ENABLE(xkb, [  --enable-xkb            support XKB [default=maybe]],
-			, enable_xkb="maybe")
-AC_ARG_ENABLE(rebuilds, [  --disable-rebuilds      disable all source autogeneration rules],,enable_rebuilds=yes)
+AC_ARG_ENABLE(debug,
+              AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
+                             [turn on debugging @<:@default=debug_default@:>@]),,
+              enable_debug=debug_default)
+AC_ARG_ENABLE(shm,
+              [AC_HELP_STRING([--enable-shm],
+                              [support shared memory if available [default=yes]])],,
+              [enable_shm="yes"])
+AC_ARG_ENABLE(ansi,
+              [AC_HELP_STRING([--enable-ansi],
+                              [turn on strict ansi [default=no]])],,
+              [enable_ansi=no])
+AC_ARG_ENABLE(xkb,
+              [AC_HELP_STRING([--enable-xkb],
+                              [support XKB [default=maybe]])],,
+              [enable_xkb="maybe"])
+AC_ARG_ENABLE(rebuilds,
+              [AC_HELP_STRING([--disable-rebuilds],
+                              [disable all source autogeneration rules])],,
+              [enable_rebuilds=yes])
 
-AC_ARG_WITH(xinput, [  --with-xinput=[no/yes]  support XInput ])
+AC_ARG_WITH(xinput,
+            [AC_HELP_STRING([--with-xinput=@<:@no/yes@:>@], [support XInput])])
 
-AC_ARG_WITH(wintab, [  --with-wintab=DIRECTORY use Wintab API with win32 backend])
-AC_ARG_WITH(ie55, [  --with-ie55=DIRECTORY IE5.5 libs and headers (for Active IMM)])
+AC_ARG_WITH(wintab,
+            [AC_HELP_STRING([--with-wintab=DIRECTORY],
+                            [use Wintab API with win32 backend])])
+AC_ARG_WITH(ie55,
+            [AC_HELP_STRING([--with-ie55=DIRECTORY],
+                            [IE5.5 libs and headers (for Active IMM)])])
 
 GLIB_AC_DIVERT_BEFORE_HELP([
 if test "$platform_win32" = yes; then
@@ -212,9 +225,15 @@ gtktargetlib=libgtk-$gdktarget-$GTK_API_VERSION.la
 AC_SUBST(gdktargetlib)
 AC_SUBST(gtktargetlib)
 
-AC_ARG_ENABLE(shadowfb, [  --disable-shadowfb      disable shadowfb support for linux-fb],,enable_shadowfb=yes)
+AC_ARG_ENABLE(shadowfb,
+              [AC_HELP_STRING([--disable-shadowfb],
+                              [disable shadowfb support for linux-fb])],,
+              [enable_shadowfb=yes])
 
-AC_ARG_ENABLE(fbmanager, [  --enable-fbmanager      enable framebuffer manager support (GtkFB)],enable_fbmanager=yes,enable_fbmanager=no)
+AC_ARG_ENABLE(fbmanager,
+              [AC_HELP_STRING([--enable-fbmanager],
+                              [enable framebuffer manager support (GtkFB)])],,
+              enable_fbmanager=no)
 	
 if test "x$enable_debug" = "xyes"; then
   test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
@@ -304,7 +323,10 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
 ## calls. Oh, also the later pkg-config calls don't include 
 ## the version requirements since those make the module lists 
 ## annoying to construct
-PKG_CHECK_MODULES(BASE_DEPENDENCIES, glib-2.0 >= $GLIB_REQUIRED_VERSION atk >= $ATK_REQUIRED_VERSION pango >= $PANGO_REQUIRED_VERSION)
+PKG_CHECK_MODULES(BASE_DEPENDENCIES,
+  [glib-2.0 >= glib_required_version dnl
+   atk >= atk_required_version dnl
+   pango >= pango_required_version])
 
 if test "$os_win32" != yes; then
     # libtool option to control which symbols are exported
@@ -321,9 +343,9 @@ dnl * See whether to include shared library dependencies *
 dnl ******************************************************
 
 AC_ARG_ENABLE(explicit-deps, 
-              [  --enable-explicit-deps=[yes/no/auto]    use explicit dependencies in .pc files [default=auto]],
-              enable_explicit_deps="$enableval", 
-              enable_explicit_deps=auto)
+              [AC_HELP_STRING([--enable-explicit-deps=@<:@yes/no/auto@:>@],
+                              [use explicit dependencies in .pc files [default=auto]])],,
+              [enable_explicit_deps=auto])
 
 AC_MSG_CHECKING([Whether to write dependencies into .pc files])
 case $enable_explicit_deps in
@@ -373,25 +395,18 @@ if test "$gtk_ok" = "yes"; then
   AC_DEFINE(HAVE_SIGSETJMP)
 fi
 
-AC_MSG_CHECKING(whether make is GNU Make)
-STRIP_BEGIN=
-STRIP_END=
-if $ac_make --version 2>/dev/null | grep '^GNU Make ' >/dev/null ; then
-	STRIP_BEGIN='$(strip $(STRIP_DUMMY)'
-	STRIP_END=')'
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-STRIP_DUMMY=
-AC_SUBST(STRIP_DUMMY)
-AC_SUBST(STRIP_BEGIN)
-AC_SUBST(STRIP_END)
-
 # i18n stuff
-ALL_LINGUAS="am az be bg ca cs cy da de el en_GB en@IPA es et eu fa fi fr ga gl he hi hr hu ia it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_TW zh_CN"
+# TRANSLATORS:  Please note that gtk+ has both po/ and po-properties/
+# directories.  If you add a new language to ALL_LINGUAS, please make
+# sure that both po/ and po-properties/ have .po files that correspond
+# to your language.  If you only add one to po/, the build will break
+# in po-properties/.
+ALL_LINGUAS="af am ar az be bg bn br bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu ia id is it ja ko li lt lv mi mk ml mn mr ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta th tk tr uk uz uz@Latn vi wa yi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 LIBS="$LIBS $INTLLIBS"
+AC_OUTPUT_COMMANDS([case "$CONFIG_FILES" in *po-properties/Makefile.in*)
+        sed -e "/POTFILES =/r po-properties/POTFILES" po-properties/Makefile.in > po-properties/Makefile
+      esac])
 
 AM_GLIB_DEFINE_LOCALEDIR(GTK_LOCALEDIR)
 
@@ -448,10 +463,10 @@ AC_TRY_COMPILE([#include <dirent.h>], [DIR *dir;],
 
 GLIB_PACKAGES="gobject-2.0 gmodule-2.0"
 
-AM_PATH_GLIB_2_0($GLIB_REQUIRED_VERSION, :,
+AM_PATH_GLIB_2_0(glib_required_version, :,
   AC_MSG_ERROR([
-*** GLIB $GLIB_REQUIRED_VERSION or better is required. The latest version of 
-*** GLIB is always available from ftp://ftp.gtk.org/.]),
+*** GLIB glib_required_version or better is required. The latest version of 
+*** GLIB is always available from ftp://ftp.gtk.org/pub/gtk/.]),
   gobject gmodule gthread)
 
 dnl
@@ -634,7 +649,9 @@ fi
 
 AC_MSG_CHECKING(whether to build gmodulized gdk-pixbuf)
 
-AC_ARG_ENABLE(modules, [  --disable-modules       disable dynamic module loading])
+AC_ARG_ENABLE(modules,
+              [AC_HELP_STRING([--disable-modules],
+                              [disable dynamic module loading])])
 
 dynworks=false
 deps=
@@ -674,9 +691,15 @@ fi
 dnl We allow people to disable image loaders explicitely, but if they don't we error
 dnl out so that people don't accidentally build without them.
 
-AC_ARG_WITH(libpng,  [  --without-libpng	  disable PNG loader for gdk-pixbuf])
-AC_ARG_WITH(libjpeg, [  --without-libjpeg	  disable JPEG loader for gdk-pixbuf])
-AC_ARG_WITH(libtiff, [  --without-libtiff	  disable TIFF loader for gdk-pixbuf])
+AC_ARG_WITH(libpng,
+            [AC_HELP_STRING([--without-libpng],
+                            [disable PNG loader for gdk-pixbuf])])
+AC_ARG_WITH(libjpeg,
+            [AC_HELP_STRING([--without-libjpeg],
+                            [disable JPEG loader for gdk-pixbuf])])
+AC_ARG_WITH(libtiff,
+            [AC_HELP_STRING([--without-libtiff],
+                            [disable TIFF loader for gdk-pixbuf])])
 
 dnl Test for libtiff
   if test x$with_libtiff != xno && test -z "$LIBTIFF"; then
@@ -778,12 +801,6 @@ dnl Test for libpng
 *** from CVS.])
   fi
 
-  REBUILD_PNGS=\#
-  if test -z "$LIBPNG"; then
-     REBUILD_PNGS=
-  fi
-  AC_SUBST(REBUILD_PNGS)
-
 AC_SUBST(LIBTIFF)
 AC_SUBST(LIBJPEG)
 AC_SUBST(LIBPNG)
@@ -795,7 +812,14 @@ AM_CONDITIONAL(BUILD_DYNAMIC_MODULES, $dynworks)
 #
 AC_MSG_CHECKING(pixbuf loaders to build)
 
-AC_ARG_WITH(included_loaders, [  --with-included-loaders=LOADER1,LOADER2,...  build the specified loaders into gdk-pixbuf (only used if module loading disabled)])
+dnl due to an autoconf bug, commas in the first arg to
+dnl AC_HELP_STRING cause problems.
+dnl AC_HELP_STRING([--with-included-loaders=LOADER1 LOADER2 ...],
+dnl                [build the specified loaders into gdk-pixbuf (only used if module loading disabled)])
+AC_ARG_WITH(included_loaders,
+[  --with-included-loaders=LOADER1,LOADER2,...
+                          build the specified loaders into gdk-pixbuf (only
+                          used if module loading disabled)])
 
 if $dynworks; then 
         :
@@ -806,7 +830,7 @@ else
    fi
 fi
 
-all_loaders="png,bmp,wbmp,gif,ico,ani,jpeg,pnm,ras,tiff,xpm,tga"
+all_loaders="png,bmp,wbmp,gif,ico,ani,jpeg,pnm,ras,tiff,xpm,tga,pcx"
 included_loaders=""
 # If no loaders specified, include all
 if test "x$with_included_loaders" = xyes ; then
@@ -898,6 +922,11 @@ fi
 
 AM_CONDITIONAL(USE_MMX, test x$use_mmx_asm = xyes)
 
+REBUILD_PNGS=
+if test -z "$LIBPNG"; then
+  REBUILD_PNGS=#
+fi
+
 dnl Look for a host system's gdk-pixbuf-csource if we are cross-compiling
 
 AM_CONDITIONAL(CROSS_COMPILING, test $cross_compiling = yes)
@@ -905,9 +934,19 @@ AM_CONDITIONAL(CROSS_COMPILING, test $cross_compiling = yes)
 if test $cross_compiling = yes; then
   AC_PATH_PROG(GDK_PIXBUF_CSOURCE, gdk-pixbuf-csource, no)
   if test x$GDK_PIXBUF_CSOURCE = xno; then
-    AC_MSG_ERROR(Could not find a gdk-pixbuf-csource in your PATH)
+    REBUILD_PNGS=#
   fi
 fi
+
+if test ! -f $srcdir/gtk/stock-icons/gtkstockpixbufs.h && 
+   test "x$REBUILD_PNGS" = "x#" ; then
+     AC_MSG_ERROR([
+*** gtkstockpixbufs.h is not in the tree, and cannot be built
+*** because you don't have libpng, or (when cross-compiling) you 
+*** don't have a prebuilt gdk-pixbuf-csource on the host system.])
+fi
+
+AC_SUBST(REBUILD_PNGS)
 
 GDK_PIXBUF_PACKAGES="gmodule-2.0 gobject-2.0"
 GDK_PIXBUF_EXTRA_LIBS="$STATIC_LIB_DEPS $MATH_LIB"
@@ -928,6 +967,7 @@ AC_SUBST(GDK_PIXBUF_DEP_CFLAGS)
 
 GDK_EXTRA_LIBS=$GDK_WLIBS
 GDK_EXTRA_CFLAGS= 
+GTK_DEP_LIBS_FOR_X=
 
 FREETYPE_LIBS=
 FREETYPE_CFLAGS=
@@ -952,7 +992,8 @@ if test "x$gdktarget" = "xlinux-fb" || test "x$gdktarget" = "xx11" ; then
 
       AC_MSG_CHECKING([For sufficiently new FreeType (at least 2.0.1)])
       AC_TRY_COMPILE([
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include FT_ERRORS_H
     ],
 	             [(void)1;],:,have_freetype=false)
@@ -972,88 +1013,44 @@ fi
 if test "x$gdktarget" = "xx11"; then
   # We start off with the libraries from Pango
 
-  if $PKG_CONFIG --exists pangox ; then : ; else
-    AC_MSG_ERROR([pangox Pango backend is required for x11 target])
-  fi
-    
-  ## be sure we also have Pango built with xft support
-  if $PKG_CONFIG --exists pangoxft ; then
-    PANGO_PACKAGES="pangoxft pangox"
-    have_xft=true
-    AC_DEFINE(HAVE_XFT)
+  ## be sure we also have Pango built with Xft2 support
+  if $PKG_CONFIG --exists 'pangoxft >= 1.2.0' ; then
     if $have_freetype ; then
       :
     else
-      AC_MSG_ERROR([pangoxft Pango backend found but did not find freetype libraries])
+      AC_MSG_ERROR([Xft Pango backend found but did not find freetype libraries])
     fi
   else
-    PANGO_PACKAGES="pangox"
-    have_xft=false
+    AC_MSG_ERROR([Pango 1.2.0 and Xft backend is required for x11 target])
   fi
 
-  AM_CONDITIONAL(HAVE_XFT, $have_xft)
-
-  if $PKG_CONFIG --exists xft ; then
-    AC_DEFINE(HAVE_XFT2, 1, [Define if we have Xft, version 2])
+  if $PKG_CONFIG --exists xft ; then : ; else
+    AC_MSG_ERROR([Xft version 2 is required for x11 target])
   fi
 
   #
   # If Pango included the shared library dependencies from X11 in
   # the pkg-config output, then we use that (to avoid duplicates).
-  # but if they were omitted to avoid binary compatibility problems
+  # but if they were omitted to avoid binary compatibility problems,
   # then we need to repeat the checks.
   #
-  x_libs="`$PKG_CONFIG --libs $PANGO_PACKAGES`"
+  x_libs="`$PKG_CONFIG --libs pangoxft`"
   case "$x_libs" in
     *-lX11*) pango_omitted_x_deps=no ;;
     *)       pango_omitted_x_deps=yes ;;
   esac
 
-  x_cflags="`$PKG_CONFIG --cflags $PANGO_PACKAGES`"
+  x_cflags="`$PKG_CONFIG --cflags pangoxft`"
   x_extra_libs=
 
+  AC_PATH_XTRA
+  if test x$no_x = xyes ; then
+    AC_MSG_ERROR([X development libraries not found])
+  fi
+  
   if test $pango_omitted_x_deps = yes ; then
-    AC_PATH_XTRA
-
-    if test x$no_x = xyes ; then
-      AC_MSG_ERROR([X development libraries not found])
-    fi
-
-    x_libs="$X_LIBS -lX11 $X_EXTRA_LIBS"
-
-    #
-    # Checks for Xft/XRender
-    #
-    if test $have_xft = true ; then
-      have_xft=false
-
-      if pkg-config --exists pangoxft '>=' 1.1.0 ; then
-        x_libs="`pkg-config --libs xft` -lX11 $FREETYPE_LIBS $X_EXTRA_LIBS"
-        have_xft=true
-      else
-        gtk_save_cppflags="$CPPFLAGS"
-        CPPFLAGS="$CPPFLAGS $x_cflags"
-      
-        AC_CHECK_LIB(Xrender, XRenderFindFormat, 
-	  [AC_CHECK_LIB(Xft, XftFontOpen,
-	    [AC_CHECK_HEADER(X11/Xft/XftFreetype.h,
-	      have_xft=true,:)],
-	    :,-lXrender -lXext $x_libs $FREETYPE_LIBS)]
-	  ,:,-lXext $x_libs)
-	  
-        if $have_xft ; then
-	  x_libs="$X_LIBS -lXft -lXrender -lXext -lX11 $FREETYPE_LIBS $X_EXTRA_LIBS"
-        fi
-
-        CPPFLAGS="$gtk_save_cppflags"
-      fi
-
-      if $have_xft ; then
-        :
-      else
-        AC_MSG_ERROR([pangoxft Pango backend found, but Xft not found])
-      fi
-    fi
+    # Old versions of Xft didn't necessarily include -lX11 in the output
+    x_libs="`pkg-config --libs xft` -lX11 $X_EXTRA_LIBS"
   fi    	
 
   ## Strip the .la files
@@ -1074,22 +1071,23 @@ if test "x$gdktarget" = "xx11"; then
   if test "x$enable_shm" = "xyes"; then
     # Check for the Xext library (needed for XShm extention)
     AC_CHECK_LIB(Xext, XShmAttach,
-        if test -z "`echo $x_libs | grep "\-lXext" 2> /dev/null`"; then
-          x_extra_libs="-lXext"
-        fi,
+        [GTK_ADD_LIB(x_extra_libs,Xext)],
         # On AIX, it is in XextSam instead, but we still need -lXext
-        AC_CHECK_LIB(XextSam, XShmAttach, 
-            if test -z "`echo $x_libs | grep "\-lXext" 2> /dev/null`"; then
-               x_extra_libs="-lXextSam -lXext"
-            else
-               x_extra_libs="-lXextSam"
-            fi, , $x_libs_for_checks),
+        [AC_CHECK_LIB(XextSam, XShmAttach, 
+            [GTK_ADD_LIB(x_extra_libs,Xext)
+             GTK_ADD_LIB(x_extra_libs,XextSam)
+            ], , -lXext $x_libs_for_checks)],
         $x_libs_for_checks)
   fi
 
   GDK_PIXBUF_XLIB_EXTRA_CFLAGS="$x_cflags"
   # Don't ever pull in the pangoxft libraries for gdk-pixbuf-x11
-  GDK_PIXBUF_XLIB_EXTRA_LIBS="$x_extra_libs $x_libs"
+  GDK_PIXBUF_XLIB_EXTRA_LIBS="$X_LIBS -lX11 $x_extra_libs $X_EXTRA_LIBS"
+
+  # GTK+ uses some X calls, so needs to link against X directly
+  if test $enable_explicit_deps != yes ; then
+    GTK_DEP_LIBS_FOR_X="$X_LIBS -lX11 $X_EXTRA_LIBS"
+  fi
 
   # Check for Xinerama extension (Solaris impl or Xfree impl)
 
@@ -1104,11 +1102,9 @@ if test "x$gdktarget" = "xx11"; then
 			use_solaris_xinerama=yes, use_solaris_xinerama=no)
 	  if test "x$use_solaris_xinerama" = "xyes"; then
 	      AC_CHECK_HEADER(X11/extensions/xinerama.h,
-		if test -z "`echo $x_extra_libs $x_libs | grep "\-lXext" 2> /dev/null`"; then
-		    x_extra_libs="-lXext $x_extra_libs"
-		fi
+	        [GTK_ADD_LIB(x_extra_libs,Xext)
 		AC_DEFINE(HAVE_SOLARIS_XINERAMA)
-		AC_DEFINE(HAVE_XINERAMA), use_solaris_xinerama=no, -lXext $x_libs_for_checks)
+		AC_DEFINE(HAVE_XINERAMA)], use_solaris_xinerama=no, -lXext $x_libs_for_checks)
 	  fi	
 	  AC_MSG_CHECKING(for Xinerama support on Solaris)
 	  AC_MSG_RESULT($use_solaris_xinerama);
@@ -1118,12 +1114,10 @@ if test "x$gdktarget" = "xx11"; then
 	  use_xfree_xinerama=yes
 	  AC_CHECK_LIB(Xinerama, XineramaQueryExtension,
 	      [AC_CHECK_HEADER(X11/extensions/Xinerama.h, 
-		  x_extra_libs="-lXinerama $x_extra_libs"   
-		  if test -z "`echo $x_extra_libs $x_libs | grep "\-lXext" 2> /dev/null`"; then
-		      x_extra_libs="-lXext $x_extra_libs"
-		  fi
+	          [GTK_ADD_LIB(x_extra_libs,Xext)
+	          GTK_ADD_LIB(x_extra_libs,Xinerama)
 		  AC_DEFINE(HAVE_XFREE_XINERAMA)
-		  AC_DEFINE(HAVE_XINERAMA), 
+		  AC_DEFINE(HAVE_XINERAMA)], 
 		  use_xfree_xinerama=no,
                   [#include <X11/Xlib.h>])],
 	      use_xfree_xinerama=no, -lXext $x_libs_for_checks)
@@ -1137,10 +1131,8 @@ if test "x$gdktarget" = "xx11"; then
   # Check for shaped window extension
 
   AC_CHECK_LIB(Xext, XShapeCombineMask,
-      if test -z "`echo $x_extra_libs $x_libs | grep "\-lXext" 2> /dev/null`"; then
-           x_extra_libs="-lXext $x_extra_libs"
-      fi
-      AC_DEFINE(HAVE_SHAPE_EXT),
+      [GTK_ADD_LIB(x_extra_libs,Xext)
+       AC_DEFINE(HAVE_SHAPE_EXT)],
       ,
       $x_libs_for_checks)
 
@@ -1151,11 +1143,20 @@ if test "x$gdktarget" = "xx11"; then
       ,
       $x_libs_for_checks)
 
-  # Check for XIM support.
+  # Generic X11R6 check needed for XIM support; we could
+  # probably use this to replace the above, but we'll
+  # leave the separate XConvertCase check for clarity
 
-  if test "x$enable_xim" = "xyes"; then
-    GTK_XIM_FLAGS="-DUSE_XIM"
+  have_x11r6=false
+  AC_CHECK_LIB(X11, XAddConnectionWatch,
+      have_x11r6=true,
+      ,
+      $x_libs_for_checks)
+
+  if $have_x11r6; then
+    AC_DEFINE(HAVE_X11R6,1,[Define if we have X11R6])
   fi
+  AM_CONDITIONAL(HAVE_X11R6, $have_x11r6)
 
   # Check for XKB support.
 
@@ -1178,7 +1179,7 @@ if test "x$gdktarget" = "xx11"; then
 
   if test "x$with_xinput" = "xxfree" || test "x$with_xinput" = "xyes"; then
     AC_DEFINE(XINPUT_XFREE)
-    x_extra_libs="-lXi $x_extra_libs"
+    GTK_ADD_LIB(x_extra_libs, Xi)
   else
     AC_DEFINE(XINPUT_NONE)
   fi
@@ -1190,14 +1191,23 @@ if test "x$gdktarget" = "xx11"; then
   AC_CHECK_LIB(Xrandr, XRRUpdateConfiguration,
       [AC_CHECK_HEADER(X11/extensions/Xrandr.h,
           # RANDR requires RENDER
-	  if test -z "`echo $x_extra_libs $x_libs | grep "\-lXrender" 2> /dev/null`"; then
-	      x_extra_libs="-lXrender $x_extra_libs"
-	  fi
-	  x_extra_libs="-lXrandr $x_extra_libs"
-	  AC_DEFINE(HAVE_RANDR, 1, Have the Xrandr extension library),
+          [GTK_ADD_LIB(x_extra_libs, Xrender)
+          GTK_ADD_LIB(x_extra_libs, Xrandr)
+	  AC_DEFINE(HAVE_RANDR, 1, Have the Xrandr extension library)],
 	  :, [#include <X11/Xlib.h>])], : ,
        $X_LIBS -lXrandr -lXrender -lX11 $X_EXTRA_LIBS)
 
+  # Checks for Xcursor library
+  
+  have_xcursor=false
+  PKG_CHECK_MODULES(XCURSOR, xcursor, have_xcursor=true, :)
+
+  if $have_xcursor ; then
+    AC_DEFINE(HAVE_XCURSOR, 1, Have the Xcursor library)
+    GDK_EXTRA_CFLAGS="`$PKG_CONFIG --cflags xcursor` $GDK_EXTRA_CFLAGS"
+    GDK_EXTRA_LIBS="`$PKG_CONFIG --libs xcursor` $GDK_EXTRA_LIBS"
+  fi
+    
   # Xshm checks
 
   if test "x$enable_shm" = "xyes"; then
@@ -1230,25 +1240,21 @@ if test "x$gdktarget" = "xx11"; then
     fi
   fi
 
-  GDK_EXTRA_CFLAGS=
   if test $pango_omitted_x_deps = yes ; then
-    GDK_EXTRA_LIBS="$x_extra_libs $x_libs $GDK_EXTRA_LIBS"
+    GDK_EXTRA_LIBS="$X_LIBS $x_extra_libs $x_libs $GDK_EXTRA_LIBS"
   else
-    GDK_EXTRA_LIBS="$x_extra_libs $GDK_EXTRA_LIBS"
+    GDK_EXTRA_LIBS="$X_LIBS $x_extra_libs $GDK_EXTRA_LIBS"
   fi
 
   AM_CONDITIONAL(USE_X11, true)
 else
-  AM_CONDITIONAL(HAVE_XFT, false)
   AM_CONDITIONAL(XINPUT_XFREE, false)
   AM_CONDITIONAL(USE_X11, false)
+  AM_CONDITIONAL(HAVE_X11R6, false)
 fi
 
 if test "x$gdktarget" = "xwin32"; then
   # We start off with the libraries from Pango
-
-  ## be sure we also have Pango built with win32 support
-  PANGO_PACKAGES="pangowin32"
 
   if test x$have_wintab = xyes; then
     GDK_WIN32_EXTRA_CFLAGS="-I $with_wintab/include"
@@ -1260,8 +1266,6 @@ if test "x$gdktarget" = "xwin32"; then
 else
   AM_CONDITIONAL(USE_WIN32, false)
 fi
-
-AC_SUBST(xinput_progs)
 
 GDK_PIXBUF_XLIB_PACKAGES=
 GDK_PIXBUF_XLIB_DEP_LIBS="`$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PIXBUF_XLIB_PACKAGES` $GDK_PIXBUF_XLIB_EXTRA_LIBS $GDK_PIXBUF_EXTRA_LIBS"
@@ -1299,7 +1303,6 @@ if test "x$gdktarget" = "xlinux-fb"; then
     AM_CONDITIONAL(ENABLE_FB_MANAGER, false)
   fi
   
-  GDK_EXTRA_CFLAGS=""
   if test $pango_omitted_ft2_deps = yes ; then
     GDK_EXTRA_LIBS="$FREETYPE_LIBS $GDK_EXTRA_LIBS"
   fi
@@ -1315,11 +1318,13 @@ fi
 #
 
 if test "x$gdktarget" = "xx11"; then
-	if $have_xft = true ; then
-            PANGO_PACKAGES="pangoxft pangox"
-        else
-            PANGO_PACKAGES=pangox
-        fi
+        PANGO_PACKAGES=pangoxft
+	
+        # We no longer use pangox, but if we find it, we link to it 
+	# for binary compatibility.
+	if $PKG_CONFIG --exists pangox ; then
+		PANGO_PACKAGES="$PANGO_PACKAGES pangox"
+	fi
 elif test "x$gdktarget" = "xwin32"; then
         PANGO_PACKAGES=pangowin32
 elif test "x$gdktarget" = "xlinux-fb"; then
@@ -1361,7 +1366,7 @@ fi
 CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
 
-GDK_PACKAGES=$PANGO_PACKAGES
+GDK_PACKAGES="$PANGO_PACKAGES"
 GDK_DEP_LIBS="$GDK_EXTRA_LIBS `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_LIBS"
 GDK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS"
 
@@ -1412,7 +1417,7 @@ fi
 GTK_PACKAGES=atk
 GTK_EXTRA_LIBS=
 GTK_EXTRA_CFLAGS= 
-GTK_DEP_LIBS="$GDK_EXTRA_LIBS `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PACKAGES $GTK_PACKAGES` $GTK_EXTRA_LIBS $GDK_PIXBUF_EXTRA_LIBS"
+GTK_DEP_LIBS="$GDK_EXTRA_LIBS $GTK_DEP_LIBS_FOR_X `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PACKAGES $GTK_PACKAGES` $GTK_EXTRA_LIBS $GDK_PIXBUF_EXTRA_LIBS"
 GTK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES $GTK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS $GTK_EXTRA_CFLAGS"
 
 AC_SUBST(GTK_PACKAGES)
@@ -1425,85 +1430,63 @@ AC_SUBST(GTK_DEP_CFLAGS)
 AC_SUBST(GTK_DEBUG_FLAGS)
 AC_SUBST(GTK_XIM_FLAGS)
 
+################################################################
+# Strip -export-dynamic from the link lines of various libraries
+################################################################
+
+#
+# pkg-config --libs gmodule includes the "export_dynamic" flag,
+#  but this flag is only meaningful for executables. For libraries
+#  the effect is undefined; what it causes on Linux is that the
+#  export list from -export-symbols-regex is ignored and everything
+#  is exported
+#	
+export_dynamic=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
+if test -n "$export_dynamic"; then
+  GDK_PIXBUF_DEP_LIBS=`echo $GDK_PIXBUF_DEP_LIBS | sed -e "s/$export_dynamic//"`
+  GDK_PIXBUF_XLIB_DEP_LIBS=`echo $GDK_PIXBUF_XLIB_DEP_LIBS | sed -e "s/$export_dynamic//"`
+  GDK_DEP_LIBS=`echo $GDK_DEP_LIBS | sed -e "s/$export_dynamic//"`
+  GTK_DEP_LIBS=`echo $GTK_DEP_LIBS | sed -e "s/$export_dynamic//"`
+fi
+
+
 ##################################################
 # Checks for gtk-doc and docbook-tools
 ##################################################
 
-AC_ARG_WITH(html-dir, [  --with-html-dir=PATH    path to installed docs ])
-
-if test "x$with_html_dir" = "x" ; then
-  HTML_DIR='${datadir}/gtk-doc/html'
-else
-  HTML_DIR=$with_html_dir
-fi
-
-AC_SUBST(HTML_DIR)
-
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-
-gtk_doc_min_version=0.10
-if $GTKDOC ; then
-    gtk_doc_version=`gtkdoc-mkdb --version`
-    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-
-    IFS="${IFS= 	}"; gtk_save_IFS="$IFS"; IFS="."
-    set $gtk_doc_version
-    for min in $gtk_doc_min_version ; do
-        cur=$1; shift
-        if test -z $min ; then break; fi
-        if test -z $cur ; then GTKDOC=false; break; fi
-        if test $cur -gt $min ; then break ; fi
-        if test $cur -lt $min ; then GTKDOC=false; break ; fi
-    done
-    IFS="$gtk_save_IFS"
-
-    if $GTKDOC ; then
-      AC_MSG_RESULT(yes)
-    else
-      AC_MSG_RESULT(no)
-    fi
-fi
+GTK_DOC_CHECK([1.0])
 
 AC_CHECK_PROG(DB2HTML, db2html, true, false)
 AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
 
-dnl Make people enable the gtk-doc stuff explicitely.
-AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc        use gtk-doc to build documentation [default=no]], enable_gtk_doc="$enableval", enable_gtk_doc=auto)
+AC_ARG_ENABLE(man,
+              [AC_HELP_STRING([--enable-man],
+                              [regenerate man pages from Docbook [default=no]])],enable_man=yes,
+              enable_man=no)
 
-if test x$enable_gtk_doc = xyes ; then
-  if test x$GTKDOC != xtrue ; then
-    enable_gtk_doc=no 
+if test "${enable_man}" != no; then
+  dnl
+  dnl Check for xsltproc
+  dnl
+  AC_PATH_PROG([XSLTPROC], [xsltproc])
+  if test -z "$XSLTPROC"; then
+    enable_man=no
   fi
+
+  dnl check for DocBook DTD and stylesheets in the local catalog.
+  JH_CHECK_XML_CATALOG([-//OASIS//DTD DocBook XML V4.1.2//EN],
+     [DocBook XML DTD V4.1.2],,enable_man=no)
+  JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl],
+     [DocBook XSL Stylesheets],,enable_man=no)
 fi
 
-dnl NOTE: We need to use a separate automake conditional for this
-dnl       to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
-
+AM_CONDITIONAL(ENABLE_MAN, test x$enable_man != xno)
 
 ##################################################
 # Output commands
 ##################################################
 
-AC_OUTPUT_COMMANDS([
-
-## Generate `gdk/gdkconfig.h' in two cases
-## 1. `config.status' is run either explicitly, or via configure.
-##     Esp. not when it is run in `Makefile' to generate makefiles and
-##     config.h
-## 2. CONFIG_OTHER is set explicitly
-##
-## Case 1 is difficult.  We know that `automake' sets one of
-## CONFIG_FILES or CONFIG_HEADERS to empty.  This heuristic works
-## only when AM_CONFIG_HEADER is set, however.
-
-if test -n "${CONFIG_FILES}" && test -n "${CONFIG_HEADERS}"; then
-  # Both CONFIG_FILES and CONFIG_HEADERS are non-empty ==> Case 1
-  CONFIG_OTHER=${CONFIG_OTHER:-gdk/gdkconfig.h}
-fi
-case "$CONFIG_OTHER" in
-*gdk/gdkconfig.h*)
-	echo creating gdk/gdkconfig.h
+AC_CONFIG_COMMANDS([gdk/gdkconfig.h], [
 	outfile=gdkconfig.h-tmp
 	cat > $outfile <<\_______EOF
 /* gdkconfig.h
@@ -1536,12 +1519,11 @@ _______EOF
 
 
 	if cmp -s $outfile gdk/gdkconfig.h; then
-	  echo gdk/gdkconfig.h is unchanged
+          AC_MSG_NOTICE([gdk/gdkconfig.h is unchanged])
 	  rm -f $outfile
 	else
 	  mv $outfile gdk/gdkconfig.h
-	fi ;;
-esac
+	fi
 ],[
 if test "x$gdktarget" = "xx11" ; then
   gdk_windowing='
@@ -1571,10 +1553,7 @@ fi
 
 ])
 
-AC_PATH_PROG(SGML2HTML, sgml2html, no)
-AM_CONDITIONAL(HAVE_SGML2HTML, test x$SGML2HTML != xno)
-
-AC_OUTPUT([
+AC_CONFIG_FILES([
 config.h.win32
 gtk-zip.sh
 Makefile
@@ -1586,6 +1565,7 @@ gdk-2.0-uninstalled.pc
 gtk+-2.0-uninstalled.pc
 m4macros/Makefile
 po/Makefile.in
+po-properties/Makefile.in
 build/Makefile
 build/win32/Makefile
 build/win32/dirent/Makefile
@@ -1619,9 +1599,12 @@ gtk/gtkversion.h
 gtk/gtk-win32.rc
 gtk/stock-icons/Makefile
 gtk/theme-bits/Makefile
+gtk/xdgmime/Makefile
 modules/Makefile
 modules/input/Makefile
 contrib/Makefile
 contrib/gdk-pixbuf-xlib/Makefile
 contrib/gdk-pixbuf-xlib/gdk-pixbuf-xlib-2.0.pc
 ])
+
+AC_OUTPUT

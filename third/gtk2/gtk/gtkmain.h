@@ -89,6 +89,9 @@ gchar* gtk_check_version (guint	required_major,
 /* Initialization, exit, mainloop and miscellaneous routines
  */
 
+gboolean gtk_parse_args           (int    *argc,
+				   char ***argv);
+
 void     gtk_init                 (int    *argc,
                                    char ***argv);
 
@@ -122,7 +125,7 @@ void     gtk_exit                 (gint    error_code);
 void           gtk_disable_setlocale    (void);
 gchar *        gtk_set_locale           (void);
 PangoLanguage *gtk_get_default_language (void);
-gint           gtk_events_pending       (void);
+gboolean       gtk_events_pending       (void);
 
 /* The following is the event func GTK+ registers with GDK
  * we expose it mainly to allow filtering of events between
@@ -158,6 +161,7 @@ guint	   gtk_quit_add_full	   (guint	       main_level,
 				    GtkDestroyNotify   destroy);
 void	   gtk_quit_remove	   (guint	       quit_handler_id);
 void	   gtk_quit_remove_by_data (gpointer	       data);
+#ifndef GTK_DISABLE_DEPRECATED
 guint	   gtk_timeout_add	   (guint32	       interval,
 				    GtkFunction	       function,
 				    gpointer	       data);
@@ -187,7 +191,7 @@ guint	   gtk_input_add_full	   (gint	       source,
 				    gpointer	       data,
 				    GtkDestroyNotify   destroy);
 void	   gtk_input_remove	   (guint	       input_handler_id);
-
+#endif /* GTK_DISABLE_DEPRECATED */
 
 guint	   gtk_key_snooper_install (GtkKeySnoopFunc snooper,
 				    gpointer	    func_data);
@@ -213,6 +217,8 @@ gboolean _gtk_boolean_handled_accumulator (GSignalInvocationHint *ihint,
 gchar * _gtk_find_module     (const gchar *name,
 			      const gchar *type);
 gchar **_gtk_get_module_path (const gchar *type);
+
+gchar *_gtk_get_lc_ctype (void);
 
 #ifdef __cplusplus
 }

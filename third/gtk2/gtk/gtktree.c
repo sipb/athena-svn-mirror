@@ -26,6 +26,7 @@
 
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
 #include "gtkmain.h"
 #include "gtkmarshalers.h"
 #include "gtksignal.h"
@@ -595,9 +596,9 @@ gtk_tree_remove_item (GtkTree      *container,
   g_list_free (item_list);
 }
 
-/* used by gtk_tree_remove_items to make the function independant of
+/* used by gtk_tree_remove_items to make the function independent of
    order in list of items to remove.
-   Sort item bu depth in tree */
+   Sort item by depth in tree */
 static gint 
 gtk_tree_sort_item_by_depth(GtkWidget* a, GtkWidget* b)
 {

@@ -29,6 +29,7 @@
  * and Hans Breuer <hans@breuer.org>
  */
 
+#include <config.h>
 #include "gdk.h"		/* For gdk_rectangle_intersect */
 #include "gdkregion.h"
 #include "gdkregion-generic.h"
@@ -193,9 +194,9 @@ gdk_window_copy_area_scroll (GdkWindow    *window,
 static void
 compute_intermediate_position (GdkWin32PositionInfo *position_info,
 			       GdkWin32PositionInfo *new_info,
-			       gint              d_xoffset,
-			       gint              d_yoffset,
-			       GdkRectangle     *new_position)
+			       gint                  d_xoffset,
+			       gint                  d_yoffset,
+			       GdkRectangle         *new_position)
 {
   gint new_x0, new_x1, new_y0, new_y1;
   
@@ -578,8 +579,8 @@ _gdk_window_move_resize_child (GdkWindow *window,
 
 static void
 gdk_window_compute_position (GdkWindowImplWin32   *window,
-			     GdkWindowParentPos *parent_pos,
-			     GdkWin32PositionInfo   *info)
+			     GdkWindowParentPos   *parent_pos,
+			     GdkWin32PositionInfo *info)
 {
   GdkWindowObject *wrapper;
   int parent_x_offset;
@@ -675,7 +676,7 @@ gdk_window_compute_position (GdkWindowImplWin32   *window,
 }
 
 static void
-gdk_window_compute_parent_pos (GdkWindowImplWin32      *window,
+gdk_window_compute_parent_pos (GdkWindowImplWin32 *window,
 			       GdkWindowParentPos *parent_pos)
 {
   GdkWindowObject *wrapper;
@@ -884,7 +885,7 @@ gdk_window_queue_append (GdkWindow          *window,
 		      g_print ("%s\n",
 			       _gdk_win32_gdkregion_to_string (item->u.antiexpose.area)))));
 
-  gdk_drawable_ref (window);
+  g_object_ref (window);
   translate_queue = g_slist_append (translate_queue, item) ;
 }
 
@@ -923,8 +924,8 @@ _gdk_windowing_window_queue_antiexpose (GdkWindow *window,
 }
 
 void
-_gdk_window_process_expose (GdkWindow    *window,
-			    GdkRegion    *invalidate_region)
+_gdk_window_process_expose (GdkWindow *window,
+			    GdkRegion *invalidate_region)
 {
   GdkWindowImplWin32 *impl;
   GdkRegion *clip_region;
@@ -975,7 +976,7 @@ _gdk_window_process_expose (GdkWindow    *window,
 	  GDK_NOTE (EVENTS, g_print ("...item %ld being removed\n", item->serial));
 
 	  translate_queue = g_slist_remove_link (translate_queue, translate_queue);
-	  gdk_drawable_unref (item->window);
+	  g_object_unref (item->window);
 
 	  if (item->type == GDK_WINDOW_QUEUE_ANTIEXPOSE)
 	    gdk_region_destroy (item->u.antiexpose.area);

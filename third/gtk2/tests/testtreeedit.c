@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gtk/gtk.h>
 
 typedef struct {
@@ -165,7 +166,7 @@ main (gint argc, gchar **argv)
   g_signal_connect (renderer, "toggled",
 		    G_CALLBACK (toggled), tree_model);
   
-  g_object_set (G_OBJECT (renderer),
+  g_object_set (renderer,
 		"xalign", 0.0,
 		NULL);
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),

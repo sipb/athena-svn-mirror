@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gdkcolor.h"
 #include "gdkgc.h"
 #include "gdkpango.h"
@@ -134,11 +135,11 @@ gdk_pango_free_gc (PangoContext *context,
  * @colormap: a #GdkColormap
  *
  * Sets the colormap to be used for drawing with @context.
+ *
  * If you obtained your context from gtk_widget_get_pango_context() or
  * gtk_widget_create_pango_context(), the colormap will already be set
  * to the colormap for the widget, so you shouldn't need this
  * function.
- * 
  **/
 void
 gdk_pango_context_set_colormap (PangoContext *context,
@@ -163,6 +164,56 @@ gdk_pango_context_set_colormap (PangoContext *context,
     }
 }
 
+static void
+draw_underline (GdkDrawable    *drawable,
+		GdkGC          *gc,
+		PangoUnderline  uline,
+		int             baseline_y,
+		int             low_y,
+		int             start_x,
+		int             end_x)
+{
+  switch (uline)
+    {
+    case PANGO_UNDERLINE_NONE:
+      break;
+    case PANGO_UNDERLINE_DOUBLE:
+      gdk_draw_line (drawable, gc,
+		     start_x, baseline_y + 3,
+		     end_x,   baseline_y + 3);
+      /* Fall through */
+    case PANGO_UNDERLINE_SINGLE:
+      gdk_draw_line (drawable, gc,
+		     start_x, baseline_y + 1,
+		     end_x,   baseline_y + 1);
+      break;
+    case PANGO_UNDERLINE_ERROR:
+      {
+        int point_x, point_y;
+        int counter = 0;
+
+        for (point_x = start_x;
+             point_x <= end_x;
+             point_x += 2)
+	  {
+	    point_y = counter ? baseline_y + 1 : baseline_y + 2;
+	    
+	    gdk_draw_line (drawable, gc,
+			   point_x, point_y,
+			   MIN (point_x + 1, end_x), point_y);
+	    
+	    counter = (counter + 1) % 2;
+	  }
+      }
+      break;
+    case PANGO_UNDERLINE_LOW:
+      gdk_draw_line (drawable, gc,
+		     start_x, low_y + 1,
+		     end_x,   low_y + 1);
+      break;
+    }
+}
+
 /**
  * gdk_draw_layout_line_with_colors:
  * @drawable:  the drawable on which to draw the line
@@ -183,8 +234,8 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
                                   gint              x, 
                                   gint              y,
                                   PangoLayoutLine  *line,
-                                  GdkColor         *foreground,
-                                  GdkColor         *background)
+                                  const GdkColor   *foreground,
+                                  const GdkColor   *background)
 {
   GSList *tmp_list = line->runs;
   PangoRectangle overall_rect;
@@ -195,6 +246,15 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
   gint rise = 0;
   gboolean embossed;
   GdkBitmap *stipple;
+  PangoUnderline last_uline = PANGO_UNDERLINE_NONE;
+  gint uline_start_x = 0;
+  gint uline_end_x = 0;
+  gint uline_end_x_extended = 0;
+  gint last_risen_y = 0;
+  gint low_y = G_MININT;
+  GdkGC *last_fg_gc = NULL;
+  gboolean last_fg_set = FALSE;
+  PangoColor last_fg_color;
 
   g_return_if_fail (GDK_IS_DRAWABLE (drawable));
   g_return_if_fail (GDK_IS_GC (gc));
@@ -206,7 +266,7 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
   
   while (tmp_list)
     {
-      PangoUnderline uline = PANGO_UNDERLINE_NONE;
+      PangoUnderline this_uline = PANGO_UNDERLINE_NONE;
       PangoLayoutRun *run = tmp_list->data;
       PangoColor fg_color, bg_color;
       gboolean strike, fg_set, bg_set, shape_set;
@@ -215,7 +275,7 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
       
       tmp_list = tmp_list->next;
       
-      gdk_pango_get_item_properties (run->item, &uline,
+      gdk_pango_get_item_properties (run->item, &this_uline,
 				     &strike,
                                      &rise,
                                      &fg_color, &fg_set,
@@ -231,7 +291,7 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
       
       if (!shape_set)
 	{
-	  if (uline == PANGO_UNDERLINE_NONE)
+	  if (this_uline == PANGO_UNDERLINE_NONE)
 	    pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
 					NULL, &logical_rect);
 	  else
@@ -281,7 +341,7 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
         }
       else
 	fg_gc = gc;
-      
+
       if (!shape_set)
         {
           gint gx, gy;
@@ -304,36 +364,58 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
                            gx, gy,
                            run->glyphs);
         }
-      
-      switch (uline)
+
+      if (this_uline != last_uline ||
+	  risen_y != last_risen_y ||
+	  fg_set != last_fg_set ||
+	  (fg_set && (last_fg_color.red != fg_color.red ||
+		      last_fg_color.green != fg_color.green ||
+		      last_fg_color.blue != fg_color.blue)))
 	{
-	case PANGO_UNDERLINE_NONE:
-	  break;
-	case PANGO_UNDERLINE_DOUBLE:
-	  gdk_draw_line (drawable, fg_gc,
-			 x + (x_off + ink_rect.x) / PANGO_SCALE - 1,
-                         risen_y + 3,
-			 x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE,
-                         risen_y + 3);
-	  /* Fall through */
-	case PANGO_UNDERLINE_SINGLE:
-	  gdk_draw_line (drawable, fg_gc,
-			 x + (x_off + ink_rect.x) / PANGO_SCALE - 1,
-                         risen_y + 1,
-			 x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE,
-                         risen_y + 1);
-	  break;
-	case PANGO_UNDERLINE_LOW:
-	  gdk_draw_line (drawable, fg_gc,
-			 x + (x_off + ink_rect.x) / PANGO_SCALE - 1,
-                         risen_y + (ink_rect.y + ink_rect.height) / PANGO_SCALE + 1,
-			 x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE,
-                         risen_y + (ink_rect.y + ink_rect.height) / PANGO_SCALE + 1);
-	  break;
+	  /* If only color changes, the underlines extend to the edge
+	   * of the logical rectangle so they join up; otherwise they
+	   * go 1 pixel beyond the ink rectangle. This doesn't work
+	   * for low underlines (they will be at a different y anyways),
+	   * so they follow the normal path.
+	   */
+	  gboolean extend_uline = (this_uline == last_uline &&
+				   this_uline != PANGO_UNDERLINE_LOW &&
+				   risen_y == last_risen_y);
+	  
+	  /* Starting a new underline run
+	   */
+	  if (last_uline != PANGO_UNDERLINE_NONE)
+	    {
+	      draw_underline (drawable, last_fg_gc, last_uline,
+			      last_risen_y, low_y,
+			      uline_start_x,
+			      extend_uline ? uline_end_x_extended : uline_end_x);
+	    }
+
+	  if (this_uline != PANGO_UNDERLINE_NONE)
+	    {
+	      if (extend_uline)
+		uline_start_x = x + x_off / PANGO_SCALE;
+	      else
+		uline_start_x = x + (x_off + ink_rect.x) / PANGO_SCALE - 1;
+
+	      low_y = G_MININT;
+	    }
 	}
 
+      /* Update current underline segment information
+       */
+      if (this_uline != PANGO_UNDERLINE_NONE)
+	{
+	  uline_end_x = x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE;
+	  uline_end_x_extended = x + (x_off + logical_rect.x + logical_rect.width) / PANGO_SCALE - 1;
+	}
+
+      if (this_uline == PANGO_UNDERLINE_LOW)
+	low_y = MAX (low_y, risen_y + (ink_rect.y + ink_rect.height) / PANGO_SCALE);
+
       if (strike)
-      {
+	{
 	  int centerline = logical_rect.y + logical_rect.height / 2;
 	  
 	  gdk_draw_line (drawable, fg_gc,
@@ -341,13 +423,29 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
 			 risen_y + centerline / PANGO_SCALE,
 			 x + (x_off + logical_rect.x + logical_rect.width) / PANGO_SCALE + 1,
 			 risen_y + centerline / PANGO_SCALE);
-      }
-      
-      if (fg_gc != gc)
-	gdk_pango_free_gc (context, fg_gc);
+	}
 
+      if (last_fg_gc != gc && last_fg_gc)
+	gdk_pango_free_gc (context, last_fg_gc);
+
+      last_risen_y = risen_y;
+      last_uline = this_uline;
+      last_fg_gc = fg_gc;
+      last_fg_set = fg_set;
+      if (fg_set)
+	last_fg_color = fg_color;
+      
       x_off += logical_rect.width;
     }
+
+  /* Finish off any remaining underlines
+   */
+  if (last_uline != PANGO_UNDERLINE_NONE)
+    draw_underline (drawable, last_fg_gc, last_uline, last_risen_y, low_y,
+		    uline_start_x, uline_end_x);
+
+  if (last_fg_gc != gc && last_fg_gc)
+    gdk_pango_free_gc (context, last_fg_gc);
 }
 
 /**
@@ -363,6 +461,9 @@ gdk_draw_layout_line_with_colors (GdkDrawable      *drawable,
  * Render a #PangoLayout onto a #GdkDrawable, overriding the
  * layout's normal colors with @foreground and/or @background.
  * @foreground and @background need not be allocated.
+ *
+ * If you're using GTK+, the ususal way to obtain a #PangoLayout
+ * is gtk_widget_create_pango_layout().
  */
 void 
 gdk_draw_layout_with_colors (GdkDrawable     *drawable,
@@ -370,8 +471,8 @@ gdk_draw_layout_with_colors (GdkDrawable     *drawable,
                              int              x, 
                              int              y,
                              PangoLayout     *layout,
-                             GdkColor        *foreground,
-                             GdkColor        *background)
+                             const GdkColor  *foreground,
+                             const GdkColor  *background)
 {
   PangoLayoutIter *iter;
   
@@ -437,6 +538,9 @@ gdk_draw_layout_line (GdkDrawable      *drawable,
  * @layout:    a #PangoLayout
  *
  * Render a #PangoLayout onto a GDK drawable
+ *
+ * If you're using GTK+, the ususal way to obtain a #PangoLayout
+ * is gtk_widget_create_pango_layout().
  */
 void 
 gdk_draw_layout (GdkDrawable     *drawable,

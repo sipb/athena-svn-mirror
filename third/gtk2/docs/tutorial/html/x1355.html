@@ -5,8 +5,7 @@
 >Paned Window Widgets</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-PANEDWINDOWWIDGETS">Paned Window Widgets</H1
+NAME="SEC-PANEDWINDOWWIDGETS"
+>Paned Window Widgets</A
+></H1
 ><P
 >The paned window widgets are useful when you want to divide an area
 into two parts, with the relative size of the two parts controlled by
@@ -159,7 +160,7 @@ CLASS="PROGRAMLISTING"
 #include &#60;gtk/gtk.h&#62;
    
 /* Create the list of "messages" */
-GtkWidget *create_list( void )
+static GtkWidget *create_list( void )
 {
 
     GtkWidget *scrolled_window;
@@ -213,7 +214,7 @@ when our window is realized. We could also force our window to be
 realized with gtk_widget_realize, but it would have to be part of
 a hierarchy first */
 
-void insert_text (GtkTextBuffer *buffer)
+static void insert_text( GtkTextBuffer *buffer )
 {
    GtkTextIter iter;
  
@@ -231,7 +232,7 @@ void insert_text (GtkTextBuffer *buffer)
 }
    
 /* Create a scrolled text area that displays a "message" */
-GtkWidget *create_text( void )
+static GtkWidget *create_text( void )
 {
    GtkWidget *scrolled_window;
    GtkWidget *view;

@@ -37,11 +37,14 @@ struct      <link linkend="GtkVPaned-struct">GtkVPaned</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkVPaned implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkVPaned implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -54,7 +57,7 @@ GtkVPaned implements <link linkend="AtkImplementorIface">AtkImplementorIface</li
 The VPaned widget is a container widget with two
 children arranged vertically. The division between
 the two panes is adjustable by the user by dragging
-a handle. See <link linkend="GtkPaned">GtkPaned</link> for details.
+a handle. See <link linkend="GtkPaned"><type>GtkPaned</type></link> for details.
 </para>
 </refsect1>
 
@@ -62,16 +65,16 @@ a handle. See <link linkend="GtkPaned">GtkPaned</link> for details.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkVPaned-struct"/>struct GtkVPaned</title>
-<programlisting>struct GtkVPaned;</programlisting>
+<indexterm><primary>GtkVPaned</primary></indexterm><programlisting>struct GtkVPaned;</programlisting>
 <para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-vpaned-new"/>gtk_vpaned_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vpaned_new                  (void);</programlisting>
+<indexterm><primary>gtk_vpaned_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vpaned_new                  (void);</programlisting>
 <para>
-Create a new <link linkend="GtkVPaned">GtkVPaned</link>
+Create a new <link linkend="GtkVPaned"><type>GtkVPaned</type></link>
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkVPaned">GtkVPaned</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkVPaned"><type>GtkVPaned</type></link>
 
 
 </simpara></listitem></varlistentry>

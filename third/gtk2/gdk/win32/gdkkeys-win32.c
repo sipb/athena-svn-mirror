@@ -36,9 +36,10 @@
 #include "gdkinternals.h"
 #include "gdkkeysyms.h"
 
-#include "config.h"
+#include <config.h>
 
 guint _gdk_keymap_serial = 0;
+gboolean _gdk_keyboard_has_altgr = FALSE;
 
 static GdkKeymap *default_keymap = NULL;
 
@@ -50,7 +51,7 @@ print_keysym_tab (void)
 {
   gint vk;
   
-  g_print ("keymap:\n");
+  g_print ("keymap:%s\n", _gdk_keyboard_has_altgr ? " (uses AltGr)" : "");
   for (vk = 0; vk < 256; vk++)
     {
       gint state;
@@ -72,7 +73,8 @@ static void
 update_keymap (void)
 {
   static guint current_serial = 0;
-  guchar key_state[256];
+  guchar key_state[256], temp_key_state[256];
+  wchar_t wcs[1];
   guint scancode;
   guint vk;
 
@@ -86,6 +88,8 @@ update_keymap (void)
 
   memset (key_state, 0, sizeof (key_state));
 
+  _gdk_keyboard_has_altgr = FALSE;
+
   for (vk = 0; vk < 256; vk++)
     {
       if ((scancode = MapVirtualKey (vk, 0)) == 0)
@@ -95,15 +99,15 @@ update_keymap (void)
 	  keysym_tab[vk*4+3] = GDK_VoidSymbol;
       else
 	{
-	  gint i, k;
+	  gint shift;
 
 	  key_state[vk] = 0x80;
-	  for (i = 0; i < 4; i++)
+	  for (shift = 0; shift < 4; shift++)
 	    {
-	      guint *ksymp = keysym_tab + vk*4 + i;
+	      guint *ksymp = keysym_tab + vk*4 + shift;
 	      guchar chars[2];
 	      
-	      switch (i)
+	      switch (shift)
 		{
 		case 0:
 		  key_state[VK_SHIFT] = 0;
@@ -137,7 +141,7 @@ update_keymap (void)
 		case VK_BACK:
 		  *ksymp = GDK_BackSpace; break;
 		case VK_TAB:
-		  if (i & 1)
+		  if (shift & 0x1)
 		    *ksymp = GDK_ISO_Left_Tab;
 		  else
 		    *ksymp = GDK_Tab;
@@ -199,8 +203,6 @@ update_keymap (void)
 		  *ksymp = GDK_KP_Separator; break;
 		case VK_SUBTRACT:
 		  *ksymp = GDK_KP_Subtract; break;
-		case VK_DECIMAL:
-		  *ksymp = GDK_KP_Decimal; break;
 		case VK_DIVIDE:
 		  *ksymp = GDK_KP_Divide; break;
 		case VK_F1:
@@ -264,20 +266,115 @@ update_keymap (void)
 		}
 	      if (*ksymp == 0)
 		{
-		  if ((k = ToAsciiEx (vk, scancode, key_state,
-				      (LPWORD) chars, 0,
-				      _gdk_input_locale)) == 1)
+		  gint k = ToAsciiEx (vk, scancode, key_state,
+				      (LPWORD) chars, 0, _gdk_input_locale);
+#if 0
+		  g_print ("ToAsciiEx(%02x: %d: %d: %d, %02x%02x\n",
+			   vk, scancode, shift, k, chars[0], chars[1]);
+#endif
+		  if (k == 1)
 		    {
-		      if (_gdk_input_codepage == 1252 &&
+		      if (_gdk_input_codepage >= 1250 &&
+			  _gdk_input_codepage <= 1258 &&
 			  chars[0] >= GDK_space && chars[0] <= GDK_asciitilde)
 			*ksymp = chars[0];
 		      else
 			{
-			  wchar_t wcs[1];
 			  if (MultiByteToWideChar (_gdk_input_codepage, 0,
 						   chars, 1, wcs, 1) > 0)
 			    *ksymp = gdk_unicode_to_keyval (wcs[0]);
 			}
+		    }
+		  else if (k == -1)
+		    {
+		      MultiByteToWideChar (_gdk_input_codepage, 0,
+					   chars, 1, wcs, 1);
+
+		      /* It is a dead key, and it's has been stored in
+		       * the keyboard layout's state by ToAsciiEx(). 
+		       * Yes, this is an incredibly silly API! Make
+		       * the keyboard layout forget it by calling
+		       * ToAsciiEx() once more, with the virtual key
+		       * code and scancode for the spacebar, without
+		       * shift or AltGr. Otherwise the next call to
+		       * ToAsciiEx() with a different key would try to
+		       * combine with the dead key.
+		       */
+
+		      memmove (temp_key_state, key_state, sizeof (key_state));
+		      temp_key_state[VK_SHIFT] =
+			temp_key_state[VK_CONTROL] =
+			temp_key_state[VK_MENU] = 0;
+		      ToAsciiEx (VK_SPACE, MapVirtualKey (VK_SPACE, 0),
+				 temp_key_state, (LPWORD) chars, 0,
+				 _gdk_input_locale);
+		      
+		      /* Use dead keysyms instead of "undead" ones */
+		      switch (gdk_unicode_to_keyval (wcs[0]))
+			{
+			case '"': /* 0x022 */
+			  *ksymp = GDK_dead_diaeresis; break;
+			case '\'': /* 0x027 */
+			  *ksymp = GDK_dead_acute; break;
+			case GDK_asciicircum: /* 0x05e */
+			  *ksymp = GDK_dead_circumflex; break;
+			case GDK_grave:	/* 0x060 */
+			  *ksymp = GDK_dead_grave; break;
+			case GDK_asciitilde: /* 0x07e */
+			  *ksymp = GDK_dead_tilde; break;
+			case GDK_diaeresis: /* 0x0a8 */
+			  *ksymp = GDK_dead_diaeresis; break;
+			case GDK_degree: /* 0x0b0 */
+			  *ksymp = GDK_dead_abovering; break;
+			case GDK_acute:	/* 0x0b4 */
+			  *ksymp = GDK_dead_acute; break;
+			case GDK_periodcentered: /* 0x0b7 */
+			  *ksymp = GDK_dead_abovedot; break;
+			case GDK_cedilla: /* 0x0b8 */
+			  *ksymp = GDK_dead_cedilla; break;
+			case GDK_breve:	/* 0x1a2 */
+			  *ksymp = GDK_dead_breve; break;
+			case GDK_ogonek: /* 0x1b2 */
+			  *ksymp = GDK_dead_ogonek; break;
+			case GDK_caron:	/* 0x1b7 */
+			  *ksymp = GDK_dead_caron; break;
+			case GDK_doubleacute: /* 0x1bd */
+			  *ksymp = GDK_dead_doubleacute; break;
+			case GDK_abovedot: /* 0x1ff */
+			  *ksymp = GDK_dead_abovedot; break;
+			case GDK_Greek_accentdieresis: /* 0x7ae */
+			  *ksymp = GDK_Greek_accentdieresis; break;
+			default:
+			  GDK_NOTE (EVENTS,
+				    g_print ("Unhandled dead key cp:%d vk:%02x, sc:%x, ch:%02x%s%s\n",
+					     _gdk_input_codepage, vk,
+					     scancode, chars[0],
+					     (shift&0x1 ? " shift" : ""),
+					     (shift&0x2 ? " altgr" : "")));
+			}
+		    }
+		  else if (k == 0)
+		    {
+		      /* Seems to be necessary to "reset" the keyboard layout
+		       * in this case, too. Otherwise problems on NT4.
+		       */
+		      memmove (temp_key_state, key_state, sizeof (key_state));
+		      temp_key_state[VK_SHIFT] =
+			temp_key_state[VK_CONTROL] =
+			temp_key_state[VK_MENU] = 0;
+		      ToAsciiEx (VK_SPACE, MapVirtualKey (VK_SPACE, 0),
+				 temp_key_state, (LPWORD) chars, 0,
+				 _gdk_input_locale);
+		    }
+		  else
+		    {
+#if 0
+		      GDK_NOTE (EVENTS, g_print ("ToAsciiEx returns %d "
+						 "for vk:%02x, sc:%02x%s%s\n",
+						 k, vk, scancode,
+						 (shift&0x1 ? " shift" : ""),
+						 (shift&0x2 ? " altgr" : "")));
+#endif
 		    }
 		}
 	      if (*ksymp == 0)
@@ -285,6 +382,11 @@ update_keymap (void)
 	    }
 	  key_state[vk] = 0;
 	}
+      if ((keysym_tab[vk*4 + 2] != GDK_VoidSymbol &&
+	   keysym_tab[vk*4] != keysym_tab[vk*4 + 2]) ||
+	  (keysym_tab[vk*4 + 3] != GDK_VoidSymbol &&
+	   keysym_tab[vk*4 + 1] != keysym_tab[vk*4 + 3]))
+	_gdk_keyboard_has_altgr = TRUE;
     }
   GDK_NOTE (EVENTS, print_keysym_tab ());
 } 
@@ -309,7 +411,6 @@ gdk_keymap_get_direction (GdkKeymap *keymap)
     {
     case LANG_HEBREW:
     case LANG_ARABIC:
-      /* Not 100% sure about these */
 #ifdef LANG_URDU
     case LANG_URDU:
 #endif
@@ -541,9 +642,10 @@ gdk_keymap_translate_keyboard_state (GdkKeymap       *keymap,
   g_return_val_if_fail (keymap == NULL || GDK_IS_KEYMAP (keymap), FALSE);
   g_return_val_if_fail (group < 4, FALSE);
   
+#if 0
   GDK_NOTE (EVENTS, g_print ("gdk_keymap_translate_keyboard_state: keycode=%#x state=%#x group=%d\n",
 			     hardware_keycode, state, group));
-
+#endif
   if (keyval)
     *keyval = 0;
   if (effective_group)
@@ -563,16 +665,19 @@ gdk_keymap_translate_keyboard_state (GdkKeymap       *keymap,
   if (group < 0 || group >= 2)
     return FALSE;
 
-  if ((state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
-    shift_level = 0;		/* shift disables shift lock */
-  else if ((state & GDK_SHIFT_MASK) || (state & GDK_LOCK_MASK))
-    shift_level = 1;
-  else
-    shift_level = 0;
-
   update_keymap ();
 
   keyvals = keysym_tab + hardware_keycode*4;
+
+  if ((state & GDK_SHIFT_MASK) &&
+      (state & GDK_LOCK_MASK) &&
+      keyvals[group*2 + 1] == gdk_keyval_to_upper (keyvals[group*2 + 0]))
+    /* Shift disables caps lock */
+    shift_level = 0;		
+  else if (state & GDK_SHIFT_MASK)
+    shift_level = 1;
+  else
+    shift_level = 0;
 
   /* Drop group and shift if there are no keysymbols on
    * the key for those.
@@ -621,6 +726,13 @@ gdk_keymap_translate_keyboard_state (GdkKeymap       *keymap,
   if (effective_group)
     *effective_group = group;
 
+  if (!(state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
+    {
+      guint upper = gdk_keyval_to_upper (tmp_keyval);
+      if (upper != tmp_keyval)
+	tmp_keyval = upper;
+    }
+
   if (level)
     *level = shift_level;
 
@@ -630,8 +742,10 @@ gdk_keymap_translate_keyboard_state (GdkKeymap       *keymap,
   if (keyval)
     *keyval = tmp_keyval;
 
+#if 0
   GDK_NOTE (EVENTS, g_print ("...group=%d level=%d cmods=%#x keyval=%s\n",
 			     group, shift_level, tmp_modifiers, gdk_keyval_name (tmp_keyval)));
+#endif
 
   return tmp_keyval != GDK_VoidSymbol;
 }

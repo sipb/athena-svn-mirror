@@ -5,8 +5,7 @@
 >Fixed Container</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-FIXEDCONTAINER">Fixed Container</H1
+NAME="SEC-FIXEDCONTAINER"
+>Fixed Container</A
+></H1
 ><P
 >The Fixed container allows you to place widgets at a fixed position
 within it's window, relative to it's upper left hand corner. The
@@ -174,8 +175,8 @@ gint y = 50;
 
 /* This callback function moves the button to a new position
  * in the Fixed container. */
-void move_button( GtkWidget *widget,
-                  GtkWidget *fixed )
+static void move_button( GtkWidget *widget,
+                         GtkWidget *fixed )
 {
   x = (x + 30) % 300;
   y = (y + 50) % 300;

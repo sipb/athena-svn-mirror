@@ -32,6 +32,7 @@
  */
 
 
+#include <config.h>
 #include <glib/gprintf.h>
 #include <stdlib.h>
 #include "gdk/gdkkeysyms.h"
@@ -47,11 +48,14 @@
 #include "gtkmenu.h"
 #include "gtkmenuitem.h"
 #include "gtknotebook.h"
-#include "gtkoptionmenu.h"
 #include "gtkscrolledwindow.h"
 #include "gtkstock.h"
 #include "gtktable.h"
 #include "gtkvbox.h"
+
+#undef GTK_DISABLE_DEPRECATED
+#include "gtkoptionmenu.h"
+#define GTK_DISABLE_DEPRECATED
 
 #include "gtkintl.h"
 
@@ -236,7 +240,7 @@ gtk_input_dialog_init (GtkInputDialog *inputd)
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (inputd)->vbox), private->main_vbox,
 		      TRUE, TRUE, 0);
 
-  private->no_devices_label = gtk_label_new (_("No input devices"));
+  private->no_devices_label = gtk_label_new (_("No extended input devices"));
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (inputd)->vbox),
 		      private->no_devices_label,
 		      TRUE, TRUE, 0);
@@ -648,7 +652,7 @@ gtk_input_dialog_set_key (GtkInputKeyInfo *key,
 
   if (keyval)
     {
-      str = g_string_new("");
+      str = g_string_new (NULL);
       
       if (modifiers & GDK_SHIFT_MASK)
 	g_string_append (str, "Shift+");

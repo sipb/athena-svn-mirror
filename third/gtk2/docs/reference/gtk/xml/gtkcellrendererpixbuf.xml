@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkCellRendererPixbuf</refname><refpurpose></refpurpose>
+<refname>GtkCellRendererPixbuf</refname><refpurpose>Renders a pixbuf in a cell</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -38,16 +38,18 @@ struct      <link linkend="GtkCellRendererPixbuf-struct">GtkCellRendererPixbuf</
 
 
 
+
+
 <refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="GdkPixbuf">GdkPixbuf</link>            : Read / Write
-  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf-expander-closed">pixbuf-expander-closed</link>&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>            : Read / Write
-  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf-expander-open">pixbuf-expander-open</link>&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>            : Read / Write
-  &quot;<link linkend="GtkCellRendererPixbuf--stock-detail">stock-detail</link>&quot;         <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GtkCellRendererPixbuf--stock-id">stock-id</link>&quot;             <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GtkCellRendererPixbuf--stock-size">stock-size</link>&quot;           <link linkend="GtkIconSize">GtkIconSize</link>          : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf-expander-closed">pixbuf-expander-closed</link>&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--pixbuf-expander-open">pixbuf-expander-open</link>&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--stock-detail">stock-detail</link>&quot;         <link linkend="gchararray">gchararray</link>            : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--stock-id">stock-id</link>&quot;             <link linkend="gchararray">gchararray</link>            : Read / Write
+  &quot;<link linkend="GtkCellRendererPixbuf--stock-size">stock-size</link>&quot;           <link linkend="guint">guint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 
@@ -64,22 +66,22 @@ struct      <link linkend="GtkCellRendererPixbuf-struct">GtkCellRendererPixbuf</
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkCellRendererPixbuf-struct"/>struct GtkCellRendererPixbuf</title>
-<programlisting>struct GtkCellRendererPixbuf;</programlisting>
+<indexterm><primary>GtkCellRendererPixbuf</primary></indexterm><programlisting>struct GtkCellRendererPixbuf;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-renderer-pixbuf-new"/>gtk_cell_renderer_pixbuf_new ()</title>
-<programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>* gtk_cell_renderer_pixbuf_new
+<indexterm><primary>gtk_cell_renderer_pixbuf_new</primary></indexterm><programlisting><link linkend="GtkCellRenderer">GtkCellRenderer</link>* gtk_cell_renderer_pixbuf_new
                                             (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkCellRendererPixbuf">GtkCellRendererPixbuf</link>. Adjust rendering
+Creates a new <link linkend="GtkCellRendererPixbuf"><type>GtkCellRendererPixbuf</type></link>. Adjust rendering
 parameters using object properties. Object properties can be set
-globally (with <link linkend="g-object-set">g_object_set</link>()). Also, with <link linkend="GtkTreeViewColumn">GtkTreeViewColumn</link>, you
-can bind a property to a value in a <link linkend="GtkTreeModel">GtkTreeModel</link>. For example, you
+globally (with <link linkend="g-object-set"><function>g_object_set()</function></link>). Also, with <link linkend="GtkTreeViewColumn"><type>GtkTreeViewColumn</type></link>, you
+can bind a property to a value in a <link linkend="GtkTreeModel"><type>GtkTreeModel</type></link>. For example, you
 can bind the "pixbuf" property on the cell renderer to a pixbuf value
 in the model, thus rendering a different image in each row of the
-<link linkend="GtkTreeView">GtkTreeView</link>.</para>
+<link linkend="GtkTreeView"><type>GtkTreeView</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -90,45 +92,28 @@ in the model, thus rendering a different image in each row of the
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--pixbuf"/>&quot;<literal>pixbuf</literal>&quot; (<link linkend="GdkPixbuf">GdkPixbuf</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--pixbuf"/>The &quot;<literal>pixbuf</literal>&quot; property</title>
+<programlisting>  &quot;pixbuf&quot;               <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>The pixbuf to render.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--pixbuf-expander-closed"/>The &quot;<literal>pixbuf-expander-closed</literal>&quot; property</title>
+<programlisting>  &quot;pixbuf-expander-closed&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>Pixbuf for closed expander.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--pixbuf-expander-open"/>The &quot;<literal>pixbuf-expander-open</literal>&quot; property</title>
+<programlisting>  &quot;pixbuf-expander-open&quot; <link linkend="GdkPixbuf">GdkPixbuf</link>             : Read / Write</programlisting>
+<para>Pixbuf for open expander.</para></refsect2>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--stock-detail"/>The &quot;<literal>stock-detail</literal>&quot; property</title>
+<programlisting>  &quot;stock-detail&quot;         <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>Render detail to pass to the theme engine.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--stock-id"/>The &quot;<literal>stock-id</literal>&quot; property</title>
+<programlisting>  &quot;stock-id&quot;             <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>The stock ID of the stock icon to render.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCellRendererPixbuf--stock-size"/>The &quot;<literal>stock-size</literal>&quot; property</title>
+<programlisting>  &quot;stock-size&quot;           <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The GtkIconSize value that specifies the size of the rendered icon.</para><para>Default value: 1</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--pixbuf-expander-closed"/>&quot;<literal>pixbuf-expander-closed</literal>&quot; (<link linkend="GdkPixbuf">GdkPixbuf</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--pixbuf-expander-open"/>&quot;<literal>pixbuf-expander-open</literal>&quot; (<link linkend="GdkPixbuf">GdkPixbuf</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--stock-detail"/>&quot;<literal>stock-detail</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--stock-id"/>&quot;<literal>stock-id</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCellRendererPixbuf--stock-size"/>&quot;<literal>stock-size</literal>&quot; (<link linkend="GtkIconSize">GtkIconSize</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

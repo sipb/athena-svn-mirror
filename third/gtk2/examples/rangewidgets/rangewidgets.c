@@ -1,4 +1,5 @@
 
+#include <config.h>
 #include <gtk/gtk.h>
 
 GtkWidget *hscale, *vscale;
@@ -39,6 +40,7 @@ void cb_page_size( GtkAdjustment *get,
     gtk_adjustment_set_value (set, CLAMP (set->value,
 					  set->lower,
 					  (set->upper - set->page_size)));
+    g_signal_emit_by_name(G_OBJECT(set), "changed");
 }
 
 void cb_draw_value( GtkToggleButton *button )

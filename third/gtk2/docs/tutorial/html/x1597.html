@@ -5,8 +5,7 @@
 >Manual Menu Example</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-MANUALMENUEXAMPLE">Manual Menu Example</H1
+NAME="SEC-MANUALMENUEXAMPLE"
+>Manual Menu Example</A
+></H1
 ><P
 >That should about do it. Let's take a look at an example to help clarify.</P
 ><P
@@ -94,7 +95,7 @@ CLASS="PROGRAMLISTING"
 >&#13;#include &#60;stdio.h&#62;
 #include &#60;gtk/gtk.h&#62;
 
-static gint button_press (GtkWidget *, GdkEvent *);
+static gboolean button_press (GtkWidget *, GdkEvent *);
 static void menuitem_response (gchar *);
 
 int main( int   argc,
@@ -200,8 +201,8 @@ int main( int   argc,
  * the button that was pressed.
  */
 
-static gint button_press( GtkWidget *widget,
-                          GdkEvent *event )
+static gboolean button_press( GtkWidget *widget,
+                              GdkEvent *event )
 {
 
     if (event-&#62;type == GDK_BUTTON_PRESS) {

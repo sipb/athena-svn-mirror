@@ -25,7 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -77,6 +77,16 @@ static GdkWindow *wintab_window;
 
 #endif /* HAVE_WINTAB */
 
+#ifdef HAVE_SOME_XINPUT
+
+static GdkWindow *x_grab_window = NULL; /* Window that currently holds
+					 * the extended inputs grab
+					 */
+static GdkEventMask x_grab_mask;
+static gboolean x_grab_owner_events;
+
+#endif /* HAVE_SOME_XINPUT */
+
 #ifdef HAVE_WINTAB
 
 static GdkDevicePrivate *
@@ -108,7 +118,6 @@ print_lc(LOGCONTEXT *lc)
   if (lc->lcOptions & CXO_MESSAGES) g_print (" CXO_MESSAGES");
   if (lc->lcOptions & CXO_MARGIN) g_print (" CXO_MARGIN");
   if (lc->lcOptions & CXO_MGNINSIDE) g_print (" CXO_MGNINSIDE");
-  if (lc->lcOptions & CXO_CSRMESSAGES) g_print (" CXO_CSRMESSAGES");
   if (lc->lcOptions & CXO_CSRMESSAGES) g_print (" CXO_CSRMESSAGES");
   g_print ("\n");
   g_print ("lcStatus =");
@@ -249,7 +258,7 @@ gdk_input_wintab_init (void)
 	  g_warning ("gdk_input_wintab_init: gdk_window_new failed");
 	  return;
 	}
-      gdk_drawable_ref (wintab_window);
+      g_object_ref (wintab_window);
       
       for (devix = 0; devix < ndevices; devix++)
 	{
@@ -346,6 +355,20 @@ gdk_input_wintab_init (void)
 	  GDK_NOTE (INPUT, (g_print("context for device %d after WTOpen:\n", devix),
 			   print_lc(&lc)));
 #endif
+	  /* Increase packet queue size to reduce the risk of lost packets */
+	  /* According to the specs, if the function fails we must try again */
+	  /* with a smaller queue size */
+	  GDK_NOTE (INPUT, g_print("Attempting to increase queue size\n"));
+	  for (i = 128; i >= 1; i >>= 1)
+	    {
+	      if (WTQueueSizeSet(*hctx, i))
+		{
+		  GDK_NOTE (INPUT, g_print("Queue size set to %d\n", i));
+		  break;
+		}
+	    }
+	  if (!i)
+	    GDK_NOTE (INPUT, g_print("Whoops, no queue size could be set\n"));
 	  for (cursorix = firstcsr; cursorix < firstcsr + ncsrtypes; cursorix++)
 	    {
 	      active = FALSE;
@@ -399,7 +422,7 @@ gdk_input_wintab_init (void)
 		    gdkdev->axes[k].max_value = axis_x.axMax;
 		  gdkdev->info.axes[k].use = GDK_AXIS_X;
 		  gdkdev->info.axes[k].min = axis_x.axMin;
-		  gdkdev->info.axes[k].min = axis_x.axMax;
+		  gdkdev->info.axes[k].max = axis_x.axMax;
 		  k++;
 		}
 	      if (gdkdev->pktdata & PK_Y)
@@ -412,7 +435,7 @@ gdk_input_wintab_init (void)
 		    gdkdev->axes[k].max_value = axis_y.axMax;
 		  gdkdev->info.axes[k].use = GDK_AXIS_Y;
 		  gdkdev->info.axes[k].min = axis_y.axMin;
-		  gdkdev->info.axes[k].min = axis_y.axMax;
+		  gdkdev->info.axes[k].max = axis_y.axMax;
 		  k++;
 		}
 	      if (gdkdev->pktdata & PK_NORMAL_PRESSURE)
@@ -424,8 +447,9 @@ gdk_input_wintab_init (void)
 		  gdkdev->axes[k].xmax_value =
 		    gdkdev->axes[k].max_value = axis_npressure.axMax;
 		  gdkdev->info.axes[k].use = GDK_AXIS_PRESSURE;
-		  gdkdev->info.axes[k].min = axis_npressure.axMin;
-		  gdkdev->info.axes[k].min = axis_npressure.axMax;
+		  /* GIMP seems to expect values in the range 0-1 */
+		  gdkdev->info.axes[k].min = 0.0; /*axis_npressure.axMin;*/
+		  gdkdev->info.axes[k].max = 1.0; /*axis_npressure.axMax;*/
 		  k++;
 		}
 	      if (gdkdev->pktdata & PK_ORIENTATION)
@@ -447,7 +471,7 @@ gdk_input_wintab_init (void)
 			gdkdev->axes[k].max_value = 1000;
 		      gdkdev->info.axes[k].use = axis;
 		      gdkdev->info.axes[k].min = -1000;
-		      gdkdev->info.axes[k].min = 1000;
+		      gdkdev->info.axes[k].max = 1000;
 		      k++;
 		    }
 		}
@@ -639,24 +663,8 @@ gdk_input_get_root_relative_geometry (HWND w,
     *y_ret = rect.top;
 }
 
-GdkTimeCoord *
-gdk_input_motion_events (GdkWindow *window,
-			 guint32    deviceid,
-			 guint32    start,
-			 guint32    stop,
-			 gint      *nevents_return)
-{
-  g_return_val_if_fail (window != NULL, NULL);
-  if (GDK_WINDOW_DESTROYED (window))
-    return NULL;
-
-  *nevents_return = 0;
-  return NULL;		/* ??? */
-}
-
 void
-_gdk_input_configure_event (GdkEventConfigure *event,
-			    GdkWindow         *window)
+_gdk_input_configure_event (GdkWindow         *window)
 {
   GdkInputWindow *input_window;
   int root_x, root_y;
@@ -672,8 +680,7 @@ _gdk_input_configure_event (GdkEventConfigure *event,
 }
 
 void 
-_gdk_input_enter_event (GdkEventCrossing *event, 
-			GdkWindow        *window)
+_gdk_input_enter_event (GdkWindow        *window)
 {
   GdkInputWindow *input_window;
   int root_x, root_y;
@@ -687,7 +694,32 @@ _gdk_input_enter_event (GdkEventCrossing *event,
   input_window->root_y = root_y;
 }
 
-gint 
+/**
+ * Get the currently active keyboard modifiers (ignoring the mouse buttons)
+ * We could use gdk_window_get_pointer but that function does a lot of other
+ * expensive things besides getting the modifiers. This code is somewhat based
+ * on build_pointer_event_state from gdkevents-win32.c
+ */
+static guint
+get_modifier_key_state (void)
+{
+  guint state;
+  
+  state = 0;
+  /* High-order bit is up/down, low order bit is toggled/untoggled */
+  if (GetKeyState (VK_CONTROL) < 0)
+    state |= GDK_CONTROL_MASK;
+  if (GetKeyState (VK_SHIFT) < 0)
+    state |= GDK_SHIFT_MASK;
+  if (GetKeyState (VK_MENU) < 0)
+    state |= GDK_MOD1_MASK;
+  if (GetKeyState (VK_CAPITAL) & 0x1)
+    state |= GDK_LOCK_MASK;
+
+  return state;
+}
+
+gboolean 
 _gdk_input_other_event (GdkEvent  *event,
 			MSG       *msg,
 			GdkWindow *window)
@@ -697,11 +729,11 @@ _gdk_input_other_event (GdkEvent  *event,
   GdkWindow *current_window;
 #endif
   GdkDisplay *display;
-  GdkWindowObject *obj;
-  GdkWindowImplWin32 *impl;
+  GdkWindowObject *obj, *grab_obj;
   GdkInputWindow *input_window;
   GdkDevicePrivate *gdkdev = NULL;
   GdkEventMask masktest;
+  guint key_state;
   POINT pt;
 
   PACKET packet;
@@ -719,7 +751,7 @@ _gdk_input_other_event (GdkEvent  *event,
   if (window == NULL)
     window = _gdk_parent_root;
 
-  gdk_drawable_ref (window);
+  g_object_ref (window);
   display = gdk_drawable_get_display (window);
 
   GDK_NOTE (EVENTS_OR_INPUT,
@@ -744,12 +776,11 @@ _gdk_input_other_event (GdkEvent  *event,
     }
 
   obj = GDK_WINDOW_OBJECT (window);
-  impl = GDK_WINDOW_IMPL_WIN32 (obj->impl);
 
   switch (msg->message)
     {
     case WT_PACKET:
-      if (window == _gdk_parent_root)
+      if (window == _gdk_parent_root && x_grab_window == NULL)
 	{
 	  GDK_NOTE (EVENTS_OR_INPUT, g_print ("...is root\n"));
 	  return FALSE;
@@ -808,25 +839,54 @@ _gdk_input_other_event (GdkEvent  *event,
 	    masktest |= GDK_BUTTON_MOTION_MASK | GDK_BUTTON3_MOTION_MASK;
 	}
 
+      /* See if input is grabbed */
+      /* FIXME: x_grab_owner_events should probably be handled somehow */
+      if (x_grab_window != NULL)
+	{
+	  grab_obj = GDK_WINDOW_OBJECT (x_grab_window);
+	  if (!GDK_WINDOW_IMPL_WIN32 (grab_obj->impl)->extension_events_selected
+	      || !(grab_obj->extension_events & masktest)
+	      || !(x_grab_mask && masktest))
+	    {
+	      GDK_NOTE (EVENTS_OR_INPUT, 
+			g_print ("...grabber doesn't want it\n"));
+	      return FALSE;
+	    }
+	  GDK_NOTE (EVENTS_OR_INPUT, g_print ("...to grabber\n"));
+
+	  g_object_ref(x_grab_window);
+	  g_object_unref(window);
+	  window = x_grab_window;
+	  obj = grab_obj;
+	}
       /* Now we can check if the window wants the event, and
        * propagate if necessary.
        */
     dijkstra:
-      if (!impl->extension_events_selected
+      if (!GDK_WINDOW_IMPL_WIN32 (obj->impl)->extension_events_selected
 	  || !(obj->extension_events & masktest))
 	{
 	  GDK_NOTE (EVENTS_OR_INPUT, g_print ("...not selected\n"));
 
 	  if (obj->parent == GDK_WINDOW_OBJECT (_gdk_parent_root))
 	    return FALSE;
+
+	  /* It is not good to propagate the extended events up to the parent
+	   * if this window wants normal (not extended) motion/button events */
+	  if (obj->event_mask & masktest)
+	    {
+	      GDK_NOTE (EVENTS_OR_INPUT, 
+			g_print ("...wants ordinary event, ignoring this\n"));
+	      return FALSE;
+	    }
 	  
 	  pt.x = x;
 	  pt.y = y;
 	  ClientToScreen (GDK_WINDOW_HWND (window), &pt);
-	  gdk_drawable_unref (window);
+	  g_object_unref (window);
 	  window = (GdkWindow *) obj->parent;
 	  obj = GDK_WINDOW_OBJECT (window);
-	  gdk_drawable_ref (window);
+	  g_object_ref (window);
 	  ScreenToClient (GDK_WINDOW_HWND (window), &pt);
 	  x = pt.x;
 	  y = pt.y;
@@ -844,7 +904,7 @@ _gdk_input_other_event (GdkEvent  *event,
 	return FALSE;
 
       event->any.window = window;
-
+      key_state = get_modifier_key_state ();
       if (event->any.type == GDK_BUTTON_PRESS
 	  || event->any.type == GDK_BUTTON_RELEASE)
 	{
@@ -858,16 +918,26 @@ _gdk_input_other_event (GdkEvent  *event,
 	    return FALSE;
 #endif
 #endif
+	  event->button.axes = g_new(gdouble, gdkdev->info.num_axes);
+
 	  gdk_input_translate_coordinates (gdkdev, input_window,
 					   gdkdev->last_axis_data,
 					   event->button.axes,
 					   &event->button.x, 
 					   &event->button.y);
 
+	  /* Also calculate root coordinates. Note that input_window->root_x
+	     is in Win32 screen coordinates. */
+	  event->button.x_root = event->button.x + input_window->root_x
+				 + _gdk_offset_x;
+	  event->button.y_root = event->button.y + input_window->root_y
+				 + _gdk_offset_y;
+
 	  event->button.state = ((gdkdev->button_state << 8)
 				 & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK
 				    | GDK_BUTTON3_MASK | GDK_BUTTON4_MASK
-				    | GDK_BUTTON5_MASK));
+				    | GDK_BUTTON5_MASK))
+				| key_state;
 	  GDK_NOTE (EVENTS_OR_INPUT,
 		    g_print ("WINTAB button %s:%d %g,%g\n",
 			     (event->button.type == GDK_BUTTON_PRESS ?
@@ -881,16 +951,26 @@ _gdk_input_other_event (GdkEvent  *event,
 	  event->motion.is_hint = FALSE;
 	  event->motion.device = &gdkdev->info;
 
+	  event->motion.axes = g_new(gdouble, gdkdev->info.num_axes);
+
 	  gdk_input_translate_coordinates (gdkdev, input_window,
 					   gdkdev->last_axis_data,
 					   event->motion.axes,
 					   &event->motion.x, 
 					   &event->motion.y);
 
+	  /* Also calculate root coordinates. Note that input_window->root_x
+	     is in Win32 screen coordinates. */
+	  event->motion.x_root = event->motion.x + input_window->root_x
+				 + _gdk_offset_x;
+	  event->motion.y_root = event->motion.y + input_window->root_y
+				 + _gdk_offset_y;
+
 	  event->motion.state = ((gdkdev->button_state << 8)
 				 & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK
 				    | GDK_BUTTON3_MASK | GDK_BUTTON4_MASK
-				    | GDK_BUTTON5_MASK));
+				    | GDK_BUTTON5_MASK))
+				| key_state;
 
 	  GDK_NOTE (EVENTS_OR_INPUT,
 		    g_print ("WINTAB motion: %g,%g\n",
@@ -902,7 +982,7 @@ _gdk_input_other_event (GdkEvent  *event,
 	   */
 	  if ((gdkdev->pktdata & PK_NORMAL_PRESSURE
 	       && (event->motion.state & GDK_BUTTON1_MASK)
-	       && packet.pkNormalPressure <= MAX (0, gdkdev->npbtnmarks[0] - 2))
+	       && packet.pkNormalPressure <= MAX (0, (gint) gdkdev->npbtnmarks[0] - 2))
 	      || (gdkdev->pktdata & PK_NORMAL_PRESSURE
 		  && !(event->motion.state & GDK_BUTTON1_MASK)
 		  && packet.pkNormalPressure > gdkdev->npbtnmarks[1] + 2))
@@ -921,7 +1001,8 @@ _gdk_input_other_event (GdkEvent  *event,
 	      event2->button.state = ((gdkdev->button_state << 8)
 				      & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK
 					 | GDK_BUTTON3_MASK | GDK_BUTTON4_MASK
-					 | GDK_BUTTON5_MASK));
+					 | GDK_BUTTON5_MASK))
+				     | key_state;
 	      event2->button.button = 1;
 	      GDK_NOTE (EVENTS_OR_INPUT,
 			g_print ("WINTAB synthesized button %s: %d %g,%gg\n",
@@ -956,7 +1037,7 @@ _gdk_input_other_event (GdkEvent  *event,
       return TRUE;
     }
 #endif
-  return -1;
+  return FALSE;
 }
 
 gboolean
@@ -1025,6 +1106,11 @@ _gdk_input_grab_pointer (GdkWindow    *window,
   if (new_window)
     {
       new_window->grabbed = TRUE;
+      x_grab_window = window;
+      x_grab_mask = event_mask;
+      x_grab_owner_events = owner_events;
+
+      /* FIXME: Do we need to handle confine_to and time? */
       
       tmp_list = _gdk_input_devices;
       while (tmp_list)
@@ -1054,6 +1140,7 @@ _gdk_input_grab_pointer (GdkWindow    *window,
     }
   else
     { 
+      x_grab_window = NULL;
       tmp_list = _gdk_input_devices;
       while (tmp_list)
 	{
@@ -1111,14 +1198,8 @@ _gdk_input_ungrab_pointer (guint32 time)
 	  tmp_list = tmp_list->next;
 	}
     }
+  x_grab_window = NULL;
 #endif
-}
-
-gint 
-_gdk_input_window_none_event (GdkEvent *event,
-			      MSG      *msg)
-{
-  return -1;
 }
 
 gboolean
@@ -1158,42 +1239,27 @@ gdk_device_get_state (GdkDevice       *device,
       GdkDevicePrivate *gdkdev;
       GdkInputWindow *input_window;
       
-      if (mask)
-	gdk_window_get_pointer (window, NULL, NULL, mask);
-      
       gdkdev = (GdkDevicePrivate *)device;
+      /* For now just use the last known button and axis state of the device.
+       * Since graphical tablets send an insane amount of motion events each
+       * second, the info should be fairly up to date */
+      if (mask)
+	{
+	  gdk_window_get_pointer (window, NULL, NULL, mask);
+	  *mask &= 0xFF; /* Mask away core pointer buttons */
+	  *mask |= ((gdkdev->button_state << 8)
+		    & (GDK_BUTTON1_MASK | GDK_BUTTON2_MASK
+		       | GDK_BUTTON3_MASK | GDK_BUTTON4_MASK
+		       | GDK_BUTTON5_MASK));
+	}
       input_window = _gdk_input_window_find (window);
       g_return_if_fail (input_window != NULL);
-
-#if 0 /* FIXME */
-      state = XQueryDeviceState (gdk_display, gdkdev->xdevice);
-      input_class = state->data;
-      for (i = 0; i < state->num_classes; i++)
-	{
-	  switch (input_class->class)
-	    {
-	    case ValuatorClass:
-	      if (axes)
-		gdk_input_translate_coordinates (gdkdev, input_window,
-						 ((XValuatorState *)input_class)->valuators,
-						 axes, NULL, NULL);
-	      break;
-	      
-	    case ButtonClass:
-	      if (mask)
-		{
-		  *mask &= 0xFF;
-		  if (((XButtonState *)input_class)->num_buttons > 0)
-		    *mask |= ((XButtonState *)input_class)->buttons[0] << 7;
-		  /* GDK_BUTTON1_MASK = 1 << 8, and button n is stored
-		   * in bit 1<<(n%8) in byte n/8. n = 1,2,... */
-		}
-	      break;
-	    }
-	  input_class = (XInputClass *)(((char *)input_class)+input_class->length);
-	}
-      XFreeDeviceState (state);
-#endif
+      /* For some reason, input_window is sometimes NULL when I use The GIMP 2
+       * (bug #141543?). Avoid crashing if debugging is disabled. */
+      if (axes && gdkdev->last_axis_data && input_window)
+	gdk_input_translate_coordinates (gdkdev, input_window,
+					 gdkdev->last_axis_data,
+					 axes, NULL, NULL);
     }
 }
 

@@ -24,6 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
+#include <math.h>
 #include <gdk/gdkkeysyms.h>
 #include "gtkbindings.h"
 #include "gtkmarshalers.h"
@@ -232,30 +234,30 @@ gtk_scrolled_window_class_init (GtkScrolledWindowClass *class)
   g_object_class_install_property (gobject_class,
 				   PROP_HADJUSTMENT,
 				   g_param_spec_object ("hadjustment",
-							_("Horizontal Adjustment"),
-							_("The GtkAdjustment for the horizontal position"),
+							P_("Horizontal Adjustment"),
+							P_("The GtkAdjustment for the horizontal position"),
 							GTK_TYPE_ADJUSTMENT,
 							G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class,
 				   PROP_VADJUSTMENT,
 				   g_param_spec_object ("vadjustment",
-							_("Vertical Adjustment"),
-							_("The GtkAdjustment for the vertical position"),
+							P_("Vertical Adjustment"),
+							P_("The GtkAdjustment for the vertical position"),
 							GTK_TYPE_ADJUSTMENT,
 							G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class,
                                    PROP_HSCROLLBAR_POLICY,
                                    g_param_spec_enum ("hscrollbar_policy",
-                                                      _("Horizontal Scrollbar Policy"),
-                                                      _("When the horizontal scrollbar is displayed"),
+                                                      P_("Horizontal Scrollbar Policy"),
+                                                      P_("When the horizontal scrollbar is displayed"),
 						      GTK_TYPE_POLICY_TYPE,
 						      GTK_POLICY_ALWAYS,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_VSCROLLBAR_POLICY,
                                    g_param_spec_enum ("vscrollbar_policy",
-                                                      _("Vertical Scrollbar Policy"),
-                                                      _("When the vertical scrollbar is displayed"),
+                                                      P_("Vertical Scrollbar Policy"),
+                                                      P_("When the vertical scrollbar is displayed"),
 						      GTK_TYPE_POLICY_TYPE,
 						      GTK_POLICY_ALWAYS,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
@@ -263,24 +265,24 @@ gtk_scrolled_window_class_init (GtkScrolledWindowClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_WINDOW_PLACEMENT,
                                    g_param_spec_enum ("window_placement",
-                                                      _("Window Placement"),
-                                                      _("Where the contents are located with respect to the scrollbars"),
+                                                      P_("Window Placement"),
+                                                      P_("Where the contents are located with respect to the scrollbars"),
 						      GTK_TYPE_CORNER_TYPE,
 						      GTK_CORNER_TOP_LEFT,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_SHADOW_TYPE,
                                    g_param_spec_enum ("shadow_type",
-                                                      _("Shadow Type"),
-                                                      _("Style of bevel around the contents"),
+                                                      P_("Shadow Type"),
+                                                      P_("Style of bevel around the contents"),
 						      GTK_TYPE_SHADOW_TYPE,
 						      GTK_SHADOW_NONE,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
 
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("scrollbar_spacing",
-							     _("Scrollbar spacing"),
-							     _("Number of pixels between the scrollbars and the scrolled window"),
+							     P_("Scrollbar spacing"),
+							     P_("Number of pixels between the scrollbars and the scrolled window"),
 							     0,
 							     G_MAXINT,
 							     DEFAULT_SCROLLBAR_SPACING,
@@ -373,7 +375,7 @@ gtk_scrolled_window_set_hadjustment (GtkScrolledWindow *scrolled_window,
   if (hadjustment)
     g_return_if_fail (GTK_IS_ADJUSTMENT (hadjustment));
   else
-    hadjustment = (GtkAdjustment*) gtk_object_new (GTK_TYPE_ADJUSTMENT, NULL);
+    hadjustment = (GtkAdjustment*) g_object_new (GTK_TYPE_ADJUSTMENT, NULL);
 
   bin = GTK_BIN (scrolled_window);
 
@@ -427,7 +429,7 @@ gtk_scrolled_window_set_vadjustment (GtkScrolledWindow *scrolled_window,
   if (vadjustment)
     g_return_if_fail (GTK_IS_ADJUSTMENT (vadjustment));
   else
-    vadjustment = (GtkAdjustment*) gtk_object_new (GTK_TYPE_ADJUSTMENT, NULL);
+    vadjustment = (GtkAdjustment*) g_object_new (GTK_TYPE_ADJUSTMENT, NULL);
 
   bin = GTK_BIN (scrolled_window);
 
@@ -1029,11 +1031,18 @@ gtk_scrolled_window_relative_allocation (GtkWidget     *widget,
   if (scrolled_window->vscrollbar_visible)
     {
       GtkRequisition vscrollbar_requisition;
+      gboolean is_rtl;
+
       gtk_widget_get_child_requisition (scrolled_window->vscrollbar,
 					&vscrollbar_requisition);
+      is_rtl = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
   
-      if (scrolled_window->window_placement == GTK_CORNER_TOP_RIGHT ||
-	  scrolled_window->window_placement == GTK_CORNER_BOTTOM_RIGHT)
+      if ((!is_rtl && 
+	   (scrolled_window->window_placement == GTK_CORNER_TOP_RIGHT ||
+	    scrolled_window->window_placement == GTK_CORNER_BOTTOM_RIGHT)) ||
+	  (is_rtl && 
+	   (scrolled_window->window_placement == GTK_CORNER_TOP_LEFT ||
+	    scrolled_window->window_placement == GTK_CORNER_BOTTOM_LEFT)))
 	allocation->x += (vscrollbar_requisition.width +  scrollbar_spacing);
 
       allocation->width = MAX (1, allocation->width - (vscrollbar_requisition.width + scrollbar_spacing));
@@ -1170,8 +1179,12 @@ gtk_scrolled_window_size_allocate (GtkWidget     *widget,
       gtk_widget_get_child_requisition (scrolled_window->vscrollbar,
 					&vscrollbar_requisition);
 
-      if (scrolled_window->window_placement == GTK_CORNER_TOP_LEFT ||
-	  scrolled_window->window_placement == GTK_CORNER_BOTTOM_LEFT)
+      if ((gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL && 
+	   (scrolled_window->window_placement == GTK_CORNER_TOP_RIGHT ||
+	    scrolled_window->window_placement == GTK_CORNER_BOTTOM_RIGHT)) ||
+	  (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR && 
+	   (scrolled_window->window_placement == GTK_CORNER_TOP_LEFT ||
+	    scrolled_window->window_placement == GTK_CORNER_BOTTOM_LEFT)))
 	child_allocation.x = (relative_allocation.x +
 			      relative_allocation.width +
 			      scrollbar_spacing +
@@ -1215,14 +1228,12 @@ gtk_scrolled_window_scroll_event (GtkWidget *widget,
   if (range && GTK_WIDGET_VISIBLE (range))
     {
       GtkAdjustment *adj = GTK_RANGE (range)->adjustment;
-      gdouble new_value;
+      gdouble delta, new_value;
 
-      if (event->direction == GDK_SCROLL_UP || event->direction == GDK_SCROLL_LEFT)
-	new_value = adj->value - adj->page_increment / 2;
-      else
-	new_value = adj->value + adj->page_increment / 2;
+      delta = _gtk_range_get_wheel_delta (GTK_RANGE (range), event->direction);
 
-      new_value = CLAMP (new_value, adj->lower, adj->upper - adj->page_size);
+      new_value = CLAMP (adj->value + delta, adj->lower, adj->upper - adj->page_size);
+      
       gtk_adjustment_set_value (adj, new_value);
 
       return TRUE;

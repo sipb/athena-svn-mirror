@@ -24,8 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gdk.h"
-#include "config.h"
 
 #include "gdkwindow.h"
 #include "gdkinputprivate.h"
@@ -187,6 +187,8 @@ gdk_window_new (GdkWindow     *parent,
   private = (GdkWindowObject *)window;
 
   private->parent = parent_private;
+
+  private->accept_focus = TRUE;
 
   if (attributes_mask & GDK_WA_X)
     x = attributes->x;
@@ -1438,8 +1440,8 @@ gdk_window_set_transient_for (GdkWindow *window,
 }
 
 void
-gdk_window_set_background (GdkWindow *window,
-			   GdkColor  *color)
+gdk_window_set_background (GdkWindow      *window,
+			   const GdkColor *color)
 {
   GdkWindowObject *private = (GdkWindowObject *)window;
   
@@ -1551,7 +1553,7 @@ gdk_window_get_origin (GdkWindow *window,
 		       gint      *x,
 		       gint      *y)
 {
-  g_return_val_if_fail (window != NULL, 0);
+  g_return_val_if_fail (window != NULL, FALSE);
   
   if (x)
     *x = GDK_DRAWABLE_IMPL_FBDATA (window)->abs_x;
@@ -1990,6 +1992,22 @@ gdk_window_set_override_redirect (GdkWindow *window,
   /* N/A */
 }
 
+void
+gdk_window_set_accept_focus (GdkWindow *window,
+			     gboolean accept_focus)
+{
+  GdkWindowObject *private;
+  g_return_if_fail (window != NULL);
+  g_return_if_fail (GDK_IS_WINDOW (window));
+
+  private = (GdkWindowObject *)window;  
+  
+  accept_focus = accept_focus != FALSE;
+
+  if (private->accept_focus != accept_focus)
+    private->accept_focus = accept_focus;
+}
+
 void          
 gdk_window_set_icon (GdkWindow *window, 
 		     GdkWindow *icon_window,
@@ -2206,6 +2224,22 @@ gdk_window_unfullscreen (GdkWindow *window)
   g_return_if_fail (GDK_IS_WINDOW (window));
 
   /*  g_warning ("gdk_window_unfullscreen() not implemented.\n");*/
+}
+
+void
+gdk_window_set_keep_above (GdkWindow *window, gboolean setting)
+{
+  g_return_if_fail (GDK_IS_WINDOW (window));
+
+  g_warning ("gdk_window_set_keep_above() not implemented.\n");
+}
+
+void
+gdk_window_set_keep_below (GdkWindow *window, gboolean setting)
+{
+  g_return_if_fail (GDK_IS_WINDOW (window));
+
+  g_warning ("gdk_window_set_keep_below() not implemented.\n");
 }
 
 void

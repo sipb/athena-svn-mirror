@@ -333,6 +333,8 @@ gdk_window_state_get_type (void)
       { GDK_WINDOW_STATE_MAXIMIZED, "GDK_WINDOW_STATE_MAXIMIZED", "maximized" },
       { GDK_WINDOW_STATE_STICKY, "GDK_WINDOW_STATE_STICKY", "sticky" },
       { GDK_WINDOW_STATE_FULLSCREEN, "GDK_WINDOW_STATE_FULLSCREEN", "fullscreen" },
+      { GDK_WINDOW_STATE_ABOVE, "GDK_WINDOW_STATE_ABOVE", "above" },
+      { GDK_WINDOW_STATE_BELOW, "GDK_WINDOW_STATE_BELOW", "below" },
       { 0, NULL, NULL }
     };
     etype = g_flags_register_static ("GdkWindowState", values);

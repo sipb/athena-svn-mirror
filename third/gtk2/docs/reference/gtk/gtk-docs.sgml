@@ -2,6 +2,8 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
                "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY GtkAccelLabel SYSTEM "xml/gtkaccellabel.xml">
+<!ENTITY GtkAction SYSTEM "xml/gtkaction.xml">
+<!ENTITY GtkActionGroup SYSTEM "xml/gtkactiongroup.xml">
 <!ENTITY GtkAdjustment SYSTEM "xml/gtkadjustment.xml">
 <!ENTITY GtkAlignment SYSTEM "xml/gtkalignment.xml">
 <!ENTITY GtkArrow SYSTEM "xml/gtkarrow.xml">
@@ -14,9 +16,12 @@
 <!ENTITY GtkCheckButton SYSTEM "xml/gtkcheckbutton.xml">
 <!ENTITY GtkCheckMenuItem SYSTEM "xml/gtkcheckmenuitem.xml">
 <!ENTITY GtkCList SYSTEM "xml/gtkclist.xml">
+<!ENTITY GtkColorButton SYSTEM "xml/gtkcolorbutton.xml">
 <!ENTITY GtkColorSelection SYSTEM "xml/gtkcolorsel.xml">
 <!ENTITY GtkColorSelectionDialog SYSTEM "xml/gtkcolorseldlg.xml">
 <!ENTITY GtkCombo SYSTEM "xml/gtkcombo.xml">
+<!ENTITY GtkComboBox SYSTEM "xml/gtkcombobox.xml">
+<!ENTITY GtkComboBoxEntry SYSTEM "xml/gtkcomboboxentry.xml">
 <!ENTITY GtkContainer SYSTEM "xml/gtkcontainer.xml">
 <!ENTITY GtkCTree SYSTEM "xml/gtkctree.xml">
 <!ENTITY GtkCurve SYSTEM "xml/gtkcurve.xml">
@@ -25,9 +30,16 @@
 <!ENTITY GtkEditable SYSTEM "xml/gtkeditable.xml">
 <!ENTITY GtkOldEditable SYSTEM "xml/gtkoldeditable.xml">
 <!ENTITY GtkEntry SYSTEM "xml/gtkentry.xml">
+<!ENTITY GtkEntryCompletion SYSTEM "xml/gtkentrycompletion.xml">
 <!ENTITY GtkEventBox SYSTEM "xml/gtkeventbox.xml">
+<!ENTITY GtkExpander SYSTEM "xml/gtkexpander.xml">
+<!ENTITY GtkFileChooser SYSTEM "xml/gtkfilechooser.xml">
+<!ENTITY GtkFileChooserDialog SYSTEM "xml/gtkfilechooserdialog.xml">
+<!ENTITY GtkFileChooserWidget SYSTEM "xml/gtkfilechooserwidget.xml">
+<!ENTITY GtkFileFilter SYSTEM "xml/gtkfilefilter.xml">
 <!ENTITY GtkFileSelection SYSTEM "xml/gtkfilesel.xml">
 <!ENTITY GtkFixed SYSTEM "xml/gtkfixed.xml">
+<!ENTITY GtkFontButton SYSTEM "xml/gtkfontbutton.xml">
 <!ENTITY GtkFontSelection SYSTEM "xml/gtkfontsel.xml">
 <!ENTITY GtkFontSelectionDialog SYSTEM "xml/gtkfontseldlg.xml">
 <!ENTITY GtkFrame SYSTEM "xml/gtkframe.xml">
@@ -68,8 +80,10 @@
 <!ENTITY GtkPreview SYSTEM "xml/gtkpreview.xml">
 <!ENTITY GtkProgress SYSTEM "xml/gtkprogress.xml">
 <!ENTITY GtkProgressBar SYSTEM "xml/gtkprogressbar.xml">
+<!ENTITY GtkRadioAction SYSTEM "xml/gtkradioaction.xml">
 <!ENTITY GtkRadioButton SYSTEM "xml/gtkradiobutton.xml">
 <!ENTITY GtkRadioMenuItem SYSTEM "xml/gtkradiomenuitem.xml">
+<!ENTITY GtkRadioToolButton SYSTEM "xml/gtkradiotoolbutton.xml">
 <!ENTITY GtkRange SYSTEM "xml/gtkrange.xml">
 <!ENTITY GtkRuler SYSTEM "xml/gtkruler.xml">
 <!ENTITY GtkScale SYSTEM "xml/gtkscale.xml">
@@ -77,6 +91,7 @@
 <!ENTITY GtkScrolledWindow SYSTEM "xml/gtkscrolledwindow.xml">
 <!ENTITY GtkSeparator SYSTEM "xml/gtkseparator.xml">
 <!ENTITY GtkSeparatorMenuItem SYSTEM "xml/gtkseparatormenuitem.xml">
+<!ENTITY GtkSeparatorToolItem SYSTEM "xml/gtkseparatortoolitem.xml">
 <!ENTITY GtkSizeGroup SYSTEM "xml/gtksizegroup.xml">
 <!ENTITY GtkSocket SYSTEM "xml/gtksocket.xml">
 <!ENTITY GtkSpinButton SYSTEM "xml/gtkspinbutton.xml">
@@ -91,18 +106,25 @@
 <!ENTITY GtkTextTagTable SYSTEM "xml/gtktexttagtable.xml">
 <!ENTITY GtkTextView SYSTEM "xml/gtktextview.xml">
 <!ENTITY GtkTipsQuery SYSTEM "xml/gtktipsquery.xml">
+<!ENTITY GtkToggleAction SYSTEM "xml/gtktoggleaction.xml">
 <!ENTITY GtkToggleButton SYSTEM "xml/gtktogglebutton.xml">
+<!ENTITY GtkToggleToolButton SYSTEM "xml/gtktoggletoolbutton.xml">
 <!ENTITY GtkToolbar SYSTEM "xml/gtktoolbar.xml">
+<!ENTITY GtkToolButton SYSTEM "xml/gtktoolbutton.xml">
+<!ENTITY GtkToolItem SYSTEM "xml/gtktoolitem.xml">
 <!ENTITY GtkTooltips SYSTEM "xml/gtktooltips.xml">
 <!ENTITY GtkTree SYSTEM "xml/gtktree.xml">
 <!ENTITY GtkTreeItem SYSTEM "xml/gtktreeitem.xml">
 <!ENTITY GtkTreeModel SYSTEM "xml/gtktreemodel.xml">
 <!ENTITY GtkTreeSortable SYSTEM "xml/gtktreesortable.xml">
 <!ENTITY GtkTreeModelSort SYSTEM "xml/gtktreemodelsort.xml">
+<!ENTITY GtkTreeModelFilter SYSTEM "xml/gtktreemodelfilter.xml">
 <!ENTITY GtkTreeSelection SYSTEM "xml/gtktreeselection.xml">
 <!ENTITY GtkTreeStore SYSTEM "xml/gtktreestore.xml">
 <!ENTITY GtkTreeViewColumn SYSTEM "xml/gtktreeviewcolumn.xml">
 <!ENTITY GtkTreeView SYSTEM "xml/gtktreeview.xml">
+<!ENTITY GtkUIManager SYSTEM "xml/gtkuimanager.xml">
+<!ENTITY GtkCellLayout SYSTEM "xml/gtkcelllayout.xml">
 <!ENTITY GtkCellRenderer SYSTEM "xml/gtkcellrenderer.xml">
 <!ENTITY GtkCellEditable SYSTEM "xml/gtkcelleditable.xml">
 <!ENTITY GtkCellRendererPixbuf SYSTEM "xml/gtkcellrendererpixbuf.xml">
@@ -137,6 +159,7 @@
 <!ENTITY gtk-Types SYSTEM "xml/gtktypeutils.xml">
 <!ENTITY gtk-Bindings SYSTEM "xml/gtkbindings.xml">
 <!ENTITY gtk-Standard-Enumerations SYSTEM "xml/gtkenums.xml">
+<!ENTITY gtk-Named-Icons SYSTEM "xml/gtkicontheme.xml">
 <!ENTITY gtk-Stock-Items SYSTEM "xml/gtkstock.xml">
 <!ENTITY gtk-Themeable-Stock-Images SYSTEM "xml/gtkiconfactory.xml">
 <!ENTITY gtk-Settings SYSTEM "xml/gtksettings.xml">
@@ -156,7 +179,13 @@
 <!ENTITY gtk-Questions SYSTEM "question_index.sgml">
 <!ENTITY gtk-Changes-1-2 SYSTEM "changes-1.2.sgml">
 <!ENTITY gtk-Changes-2-0 SYSTEM "changes-2.0.sgml">
+<!ENTITY gtk-migrating-checklist SYSTEM "migrating-checklist.sgml">
+<!ENTITY gtk-migrating-GtkFileChooser SYSTEM "migrating-GtkFileChooser.sgml">
+<!ENTITY gtk-migrating-GtkAction SYSTEM "migrating-GtkAction.sgml">
+<!ENTITY gtk-migrating-GtkComboBox SYSTEM "migrating-GtkComboBox.sgml">
 <!ENTITY version SYSTEM "version.xml">
+<!ENTITY gtk-query-immodules SYSTEM "gtk-query-immodules-2.0.xml">
+<!ENTITY gtk-glossary SYSTEM "glossary.xml">
 ]>
 <book id="index">
   <bookinfo>
@@ -195,8 +224,11 @@ string utilities, file utilities, a main loop abstraction, and so on.
 <listitem><para>
 
 Pango is a library for internationalized text handling. It centers
-around the #PangoLayout object, representing a paragraph of text.
-Pango provides the engine for #GtkTextView, #GtkLabel, #GtkEntry, and
+around the <link linkend="PangoLayout">PangoLayout</link> object, representing
+a paragraph of text. 
+Pango provides the engine for <link linkend="GtkTextView">GtkTextView</link>, 
+<link linkend="GtkLabel">GtkLabel</link>, 
+<link linkend="GtkEntry">GtkEntry</link>, and
 other widgets that display text.
 
 </para></listitem>
@@ -219,9 +251,9 @@ framework.
 <varlistentry>
 <term>GdkPixbuf</term>
 <listitem><para>
-This is a small library which allows you to create #GdkPixbuf
+This is a small library which allows you to create <link linkend="GdkPixbuf">GdkPixbuf</link>
 ("pixel buffer") objects from image data or image files. 
-Use a #GdkPixbuf in combination with #GtkImage to display images.
+Use a <link linkend="GdkPixbuf">GdkPixbuf</link> in combination with <link linkend="GtkImage">GtkImage</link> to display images.
 </para></listitem>
 </varlistentry>
 
@@ -239,7 +271,8 @@ on X11, Windows, and the Linux framebuffer device.
 <listitem><para>
 
 The GTK+ library itself contains <firstterm>widgets</firstterm>, 
-that is, GUI components such as #GtkButton or #GtkTextView.
+that is, GUI components such as <link linkend="GtkButton">GtkButton</link> or 
+<link linkend="GtkTextView">GtkTextView</link>.
 
 </para></listitem>
 </varlistentry>
@@ -252,11 +285,8 @@ that is, GUI components such as #GtkButton or #GtkTextView.
     &gtk-Windows;
     &gtk-Framebuffer;
     &gtk-X11;
-    &gtk-Changes-1-2;
-    &gtk-Changes-2-0;
     &gtk-Resources;
     &gtk-Questions;
-
   </part>
 
 
@@ -267,6 +297,7 @@ that is, GUI components such as #GtkButton or #GtkTextView.
     &gtk-accel-map;
     &gtk-Clipboards;
     &gtk-Drag-and-Drop;
+    &gtk-Named-Icons;
     &gtk-Stock-Items;
     &gtk-Themeable-Stock-Images;
     &gtk-Resource-Files;   
@@ -279,11 +310,11 @@ that is, GUI components such as #GtkButton or #GtkTextView.
     &gtk-Feature-Test-Macros;
     &gtk-Signals;
     &gtk-Types;
-
   </part>
 
   <part id="gtkobjects">
     <title>GTK+ Widgets and Objects</title>
+
     <chapter>
       <title>Object Hierarchy</title>
     &index-Object-Tree;
@@ -294,7 +325,6 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkDialog;
         &GtkInvisible;
         &GtkMessageDialog;
-        &GtkPlug;
         &GtkWindow;
         &GtkWindowGroup;
     </chapter>
@@ -319,6 +349,7 @@ that is, GUI components such as #GtkButton or #GtkTextView.
     <chapter id="NumericEntry">
       <title>Numeric/Text Data Entry</title>
         &GtkEntry;
+        &GtkEntryCompletion;
         &GtkHScale;      
         &GtkVScale;
         &GtkSpinButton;
@@ -346,6 +377,8 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkTreeDND;
 	&GtkTreeSortable;
         &GtkTreeModelSort;
+        &GtkTreeModelFilter;
+        &GtkCellLayout;
         &GtkCellRenderer;
         &GtkCellEditable;
         &GtkCellRendererPixbuf;
@@ -354,28 +387,48 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkListStore;
         &GtkTreeStore;
     </chapter>
+
     <chapter id="MenusAndCombos">
       <title>Menus, Combo Box, Toolbar</title>
-        &GtkCombo;
-        &GtkItemFactory;
+	&GtkComboBox;
+	&GtkComboBoxEntry;
         &GtkMenu;
         &GtkMenuBar;
         &GtkMenuItem;
         &GtkMenuShell;
-        &GtkOptionMenu;
 	&GtkImageMenuItem;
         &GtkRadioMenuItem;
         &GtkCheckMenuItem;      
         &GtkSeparatorMenuItem;
         &GtkTearoffMenuItem;
         &GtkToolbar;
+        &GtkToolItem;
+        &GtkSeparatorToolItem;
+        &GtkToolButton;
+        &GtkToggleToolButton;
+        &GtkRadioToolButton;
+    </chapter>
+ 
+    <chapter id="Actions">
+      <title>Action-based menus and toolbars</title>
+        &GtkUIManager;
+        &GtkActionGroup;
+        &GtkAction;
+        &GtkToggleAction;
+        &GtkRadioAction;
     </chapter>
 
     <chapter id="SelectorWidgets">
       <title>Selectors (File/Font/Color/Input Devices)</title>
+        &GtkColorButton;
         &GtkColorSelection;
         &GtkColorSelectionDialog;
         &GtkFileSelection;
+	&GtkFileChooser;
+	&GtkFileChooserDialog;
+	&GtkFileChooserWidget;
+	&GtkFileFilter;
+        &GtkFontButton;
         &GtkFontSelection;
         &GtkFontSelectionDialog;
         &GtkInputDialog;
@@ -395,6 +448,7 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkLayout;
         &GtkNotebook;
         &GtkTable;
+        &GtkExpander;
     </chapter>
 
     <chapter id="Ornaments">
@@ -419,7 +473,6 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkDrawingArea;
         &GtkEventBox;
         &GtkHandleBox;
-        &GtkIMContext;
         &GtkIMContextSimple;
         &GtkIMMulticontext;
         &GtkSizeGroup;
@@ -443,10 +496,12 @@ that is, GUI components such as #GtkButton or #GtkTextView.
         &GtkScrollbar;
         &GtkSeparator;
         &GtkWidget;
+        &GtkIMContext;
     </chapter>    
 
     <chapter id="PlugSocket">
       <title>Cross-process Embedding</title>
+        &GtkPlug;
         &GtkSocket;
     </chapter>
 
@@ -463,18 +518,50 @@ that is, GUI components such as #GtkButton or #GtkTextView.
       <title>Deprecated</title>
         &GtkCList;      
         &GtkCTree;
+        &GtkCombo;
+        &GtkItemFactory;
         &GtkList;
         &GtkListItem;
-        &GtkPixmap;
-        &GtkProgress;
-        &GtkPreview;
         &GtkOldEditable;
+        &GtkOptionMenu;
+        &GtkPixmap;
+        &GtkPreview;
+        &GtkProgress;
         &GtkText;
         &GtkTipsQuery;
         &GtkTree;
         &GtkTreeItem;
     </chapter>
-
   </part>
 
+  <part id="migrating">
+    <title>Migrating from Previous Versions of GTK+</title>
+
+    <partintro>
+      <para>
+	This part describes what you need to change in programs use
+	older versions of GTK+ so that they can use the new features.
+      </para>
+    </partintro>
+
+    &gtk-migrating-checklist;
+    &gtk-Changes-1-2;
+    &gtk-Changes-2-0;
+    &gtk-migrating-GtkFileChooser;
+    &gtk-migrating-GtkAction;
+    &gtk-migrating-GtkComboBox;
+  </part>
+
+  <part>
+    <title>GTK+ Tools</title>
+
+     &gtk-query-immodules;
+  </part>
+
+  &gtk-glossary;
+
+  <index/>
+
 </book>
+
+

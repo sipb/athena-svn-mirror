@@ -58,7 +58,7 @@ Used to indicate the direction in which a #GtkArrow should point.
 
 <!-- ##### ENUM GtkAttachOptions ##### -->
 <para>
-Denotes the expansion properties that a widget will have when it (or it's
+Denotes the expansion properties that a widget will have when it (or its
 parent) is resized.
 </para>
 
@@ -134,13 +134,13 @@ widget.
 
 <!-- ##### ENUM GtkExpanderStyle ##### -->
 <para>
-
+Used to specify the style of the expanders drawn by a #GtkTreeView.
 </para>
 
-@GTK_EXPANDER_COLLAPSED: 
-@GTK_EXPANDER_SEMI_COLLAPSED: 
-@GTK_EXPANDER_SEMI_EXPANDED: 
-@GTK_EXPANDER_EXPANDED: 
+@GTK_EXPANDER_COLLAPSED: The style used for a collapsed subtree.
+@GTK_EXPANDER_SEMI_COLLAPSED: Intermediate style used during animation.
+@GTK_EXPANDER_SEMI_EXPANDED: Intermediate style used during animation.
+@GTK_EXPANDER_EXPANDED: The style used for an expanded subtree.
 
 <!-- ##### ENUM GtkIMPreeditStyle ##### -->
 <para>
@@ -149,6 +149,7 @@ widget.
 
 @GTK_IM_PREEDIT_NOTHING: 
 @GTK_IM_PREEDIT_CALLBACK: 
+@GTK_IM_PREEDIT_NONE: 
 
 <!-- ##### ENUM GtkIMStatusStyle ##### -->
 <para>
@@ -157,6 +158,7 @@ widget.
 
 @GTK_IM_STATUS_NOTHING: 
 @GTK_IM_STATUS_CALLBACK: 
+@GTK_IM_STATUS_NONE: 
 
 <!-- ##### ENUM GtkJustification ##### -->
 <para>
@@ -183,12 +185,12 @@ Used for justifying the text inside a #GtkLabel widget. (See also
 
 <!-- ##### ENUM GtkMetricType ##### -->
 <para>
-
+Used to indicate which metric is used by a #GtkRuler.
 </para>
 
-@GTK_PIXELS: 
-@GTK_INCHES: 
-@GTK_CENTIMETERS: 
+@GTK_PIXELS: Pixels.
+@GTK_INCHES: Inches.
+@GTK_CENTIMETERS: Centimeters.
 
 <!-- ##### ENUM GtkMovementStep ##### -->
 <para>
@@ -204,14 +206,16 @@ Used for justifying the text inside a #GtkLabel widget. (See also
 @GTK_MOVEMENT_PARAGRAPH_ENDS: 
 @GTK_MOVEMENT_PAGES: 
 @GTK_MOVEMENT_BUFFER_ENDS: 
+@GTK_MOVEMENT_HORIZONTAL_PAGES: 
 
 <!-- ##### ENUM GtkOrientation ##### -->
 <para>
-
+Represents the orientation of widgets which can be switched between horizontal
+and vertical orientation on the fly, like #GtkToolbar.
 </para>
 
-@GTK_ORIENTATION_HORIZONTAL: 
-@GTK_ORIENTATION_VERTICAL: 
+@GTK_ORIENTATION_HORIZONTAL: The widget is in horizontal orientation.
+@GTK_ORIENTATION_VERTICAL: The widget is in vertical orientation.
 
 <!-- ##### ENUM GtkPackType ##### -->
 <para>
@@ -255,13 +259,15 @@ when all of a #GtkCList can not be seen.
 
 <!-- ##### ENUM GtkPositionType ##### -->
 <para>
-
+Describes which edge of a widget a certain feature is positioned at, e.g. the
+tabs of a #GtkNotebook, the handle of a #GtkHandleBox or the label of a 
+#GtkScale.
 </para>
 
-@GTK_POS_LEFT: 
-@GTK_POS_RIGHT: 
-@GTK_POS_TOP: 
-@GTK_POS_BOTTOM: 
+@GTK_POS_LEFT: The feature is at the left edge.
+@GTK_POS_RIGHT: The feature is at the right edge.
+@GTK_POS_TOP: The feature is at the top edge.
+@GTK_POS_BOTTOM: The feature is at the bottom edge.
 
 <!-- ##### ENUM GtkPreviewType ##### -->
 <para>
@@ -274,12 +280,12 @@ contains grayscale or red-green-blue data.
 
 <!-- ##### ENUM GtkReliefStyle ##### -->
 <para>
-
+Indicated the relief to be drawn around a #GtkButton.
 </para>
 
-@GTK_RELIEF_NORMAL: 
-@GTK_RELIEF_HALF: 
-@GTK_RELIEF_NONE: 
+@GTK_RELIEF_NORMAL: Draw a normal relief.
+@GTK_RELIEF_HALF: A half relief.
+@GTK_RELIEF_NONE: No relief.
 
 <!-- ##### ENUM GtkResizeMode ##### -->
 <para>
@@ -289,6 +295,18 @@ contains grayscale or red-green-blue data.
 @GTK_RESIZE_PARENT: 
 @GTK_RESIZE_QUEUE: 
 @GTK_RESIZE_IMMEDIATE: 
+
+<!-- ##### ENUM GtkScrollStep ##### -->
+<para>
+
+</para>
+
+@GTK_SCROLL_STEPS: 
+@GTK_SCROLL_PAGES: 
+@GTK_SCROLL_ENDS: 
+@GTK_SCROLL_HORIZONTAL_STEPS: 
+@GTK_SCROLL_HORIZONTAL_PAGES: 
+@GTK_SCROLL_HORIZONTAL_ENDS: 
 
 <!-- ##### ENUM GtkScrollType ##### -->
 <para>
@@ -401,12 +419,12 @@ other, rather than vertically stacked
 
 <!-- ##### ENUM GtkVisibility ##### -->
 <para>
-
+Used by #GtkCList and #GtkCTree to indicate whether a row is visible.
 </para>
 
-@GTK_VISIBILITY_NONE: 
-@GTK_VISIBILITY_PARTIAL: 
-@GTK_VISIBILITY_FULL: 
+@GTK_VISIBILITY_NONE: The row is not visible.
+@GTK_VISIBILITY_PARTIAL: The row is partially visible.
+@GTK_VISIBILITY_FULL: The row is fully visible.
 
 <!-- ##### ENUM GtkWindowPosition ##### -->
 <para>

@@ -5,8 +5,7 @@
 >Packing Demonstration Program</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-PACKINGDEMONSTRATIONPROGRAM">Packing Demonstration Program</H1
+NAME="SEC-PACKINGDEMONSTRATIONPROGRAM"
+>Packing Demonstration Program</A
+></H1
 ><TABLE
 BORDER="0"
 BGCOLOR="#E0E0E0"
@@ -89,9 +90,9 @@ CLASS="PROGRAMLISTING"
 #include &#60;stdlib.h&#62;
 #include "gtk/gtk.h"
 
-gint delete_event( GtkWidget *widget,
-                   GdkEvent  *event,
-                   gpointer   data )
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
 {
     gtk_main_quit ();
     return FALSE;
@@ -100,11 +101,11 @@ gint delete_event( GtkWidget *widget,
 /* Make a new hbox filled with button-labels. Arguments for the 
  * variables we're interested are passed in to this function. 
  * We do not show the box, but do show everything inside. */
-GtkWidget *make_box( gboolean homogeneous,
-                     gint     spacing,
-		     gboolean expand,
-		     gboolean fill,
-		     guint    padding ) 
+static GtkWidget *make_box( gboolean homogeneous,
+                            gint     spacing,
+                            gboolean expand,
+                            gboolean fill,
+                            guint    padding ) 
 {
     GtkWidget *box;
     GtkWidget *button;

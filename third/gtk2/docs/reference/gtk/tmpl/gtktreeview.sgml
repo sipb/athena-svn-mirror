@@ -21,6 +21,236 @@ linkend="GtkTreeModel">GtkTreeModel</link> interface.
 </para>
 
 
+<!-- ##### SIGNAL GtkTreeView::columns-changed ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+
+<!-- ##### SIGNAL GtkTreeView::cursor-changed ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+
+<!-- ##### SIGNAL GtkTreeView::expand-collapse-cursor-row ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::move-cursor ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::row-activated ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkTreeView::row-collapsed ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkTreeView::row-expanded ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkTreeView::select-all ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::select-cursor-parent ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::select-cursor-row ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::set-scroll-adjustments ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkTreeView::start-interactive-search ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::test-collapse-row ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::test-expand-row ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@arg1: 
+@arg2: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::toggle-cursor-row ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkTreeView::unselect-all ##### -->
+<para>
+
+</para>
+
+@treeview: the object which received the signal.
+@Returns: 
+
+<!-- ##### ARG GtkTreeView:enable-search ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:expander-column ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:fixed-height-mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:hadjustment ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:headers-clickable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:headers-visible ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:reorderable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:rules-hint ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:search-column ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:vadjustment ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:allow-rules ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:even-row-color ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:expander-size ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:horizontal-separator ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:indent-expanders ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:odd-row-color ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeView:vertical-separator ##### -->
+<para>
+
+</para>
+
 <!-- ##### ENUM GtkTreeViewDropPosition ##### -->
 <para>
 An enum for determining where a dropped row goes.
@@ -70,15 +300,19 @@ Function used for #gtk_tree_view_map_expanded_rows.
 
 <!-- ##### USER_FUNCTION GtkTreeViewSearchEqualFunc ##### -->
 <para>
-
+A function used for checking whether a row in @model matches
+a search key string entered by the user. Note the return value
+is reversed from what you would normally expect, though it
+has some similarity to strcmp() returning 0 for equal strings.
 </para>
 
-@model: 
-@column: 
-@key: 
-@iter: 
-@search_data: 
-@Returns: 
+@model: the #GtkTreeModel being searched
+@column: the search column set by gtk_tree_view_set_search_column()
+@key: the key string to compare with
+@iter: a #GtkTreeIter pointing the row of @model that should be compared
+  with @key.
+@search_data: user data from gtk_tree_view_set_search_equal_func()
+@Returns: %FALSE if the row matches, %TRUE otherwise.
 
 
 <!-- ##### FUNCTION gtk_tree_view_new ##### -->
@@ -738,229 +972,4 @@ Function used for #gtk_tree_view_map_expanded_rows.
 @data: 
 @destroy: 
 
-
-<!-- ##### SIGNAL GtkTreeView::columns-changed ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-
-<!-- ##### SIGNAL GtkTreeView::cursor-changed ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-
-<!-- ##### SIGNAL GtkTreeView::expand-collapse-cursor-row ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::move-cursor ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::row-activated ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL GtkTreeView::row-collapsed ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL GtkTreeView::row-expanded ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL GtkTreeView::select-all ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::select-cursor-parent ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::select-cursor-row ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::set-scroll-adjustments ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL GtkTreeView::start-interactive-search ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::test-collapse-row ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::test-expand-row ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@arg1: 
-@arg2: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::toggle-cursor-row ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkTreeView::unselect-all ##### -->
-<para>
-
-</para>
-
-@treeview: the object which received the signal.
-@Returns: 
-
-<!-- ##### ARG GtkTreeView:enable-search ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:expander-column ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:hadjustment ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:headers-clickable ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:headers-visible ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:model ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:reorderable ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:rules-hint ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:search-column ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:vadjustment ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:allow-rules ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:even-row-color ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:expander-size ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:horizontal-separator ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:indent-expanders ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:odd-row-color ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeView:vertical-separator ##### -->
-<para>
-
-</para>
 

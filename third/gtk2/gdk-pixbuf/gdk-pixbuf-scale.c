@@ -72,13 +72,13 @@ gdk_pixbuf_scale (const GdkPixbuf *src,
   offset_x = floor (offset_x + 0.5);
   offset_y = floor (offset_y + 0.5);
   
-  pixops_scale (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
-		dest_x - offset_x, dest_y - offset_y, 
-		dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
-		dest->rowstride, dest->n_channels, dest->has_alpha,
-		src->pixels, src->width, src->height,
-		src->rowstride, src->n_channels, src->has_alpha,
-		scale_x, scale_y, (PixopsInterpType)interp_type);
+  _pixops_scale (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
+		 dest_x - offset_x, dest_y - offset_y, 
+		 dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
+		 dest->rowstride, dest->n_channels, dest->has_alpha,
+		 src->pixels, src->width, src->height,
+		 src->rowstride, src->n_channels, src->has_alpha,
+		 scale_x, scale_y, (PixopsInterpType)interp_type);
 }
 
 /**
@@ -97,9 +97,20 @@ gdk_pixbuf_scale (const GdkPixbuf *src,
  * @overall_alpha: overall alpha for source image (0..255)
  * 
  * Creates a transformation of the source image @src by scaling by
- * @scale_x and @scale_y then translating by @offset_x and @offset_y,
- * then composites the rectangle (@dest_x, @dest_y, @dest_width,
- * @dest_height) of the resulting image onto the destination image.
+ * @scale_x and @scale_y then translating by @offset_x and @offset_y.
+ * This gives an image in the coordinates of the destination pixbuf.
+ * The rectangle (@dest_x, @dest_y, @dest_width, @dest_height)
+ * is then composited onto the corresponding rectangle of the
+ * original destination image.
+ * 
+ * When the destination rectangle contains parts not in the source 
+ * image, the data at the edges of the source image is replicated
+ * to infinity. 
+ *
+ * <figure id="pixbuf-composite-diagram">
+ *   <title>Compositing of pixbufs</title>
+ *   <graphic fileref="composite.png" format="PNG"/>
+ * </figure>
  **/
 void
 gdk_pixbuf_composite (const GdkPixbuf *src,
@@ -123,13 +134,13 @@ gdk_pixbuf_composite (const GdkPixbuf *src,
 
   offset_x = floor (offset_x + 0.5);
   offset_y = floor (offset_y + 0.5);
-  pixops_composite (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
-		    dest_x - offset_x, dest_y - offset_y, 
-		    dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
-		    dest->rowstride, dest->n_channels, dest->has_alpha,
-		    src->pixels, src->width, src->height,
-		    src->rowstride, src->n_channels, src->has_alpha,
-		    scale_x, scale_y, (PixopsInterpType)interp_type, overall_alpha);
+  _pixops_composite (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
+		     dest_x - offset_x, dest_y - offset_y, 
+		     dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
+		     dest->rowstride, dest->n_channels, dest->has_alpha,
+		     src->pixels, src->width, src->height,
+		     src->rowstride, src->n_channels, src->has_alpha,
+		     scale_x, scale_y, (PixopsInterpType)interp_type, overall_alpha);
 }
 
 /**
@@ -191,14 +202,14 @@ gdk_pixbuf_composite_color (const GdkPixbuf *src,
   offset_x = floor (offset_x + 0.5);
   offset_y = floor (offset_y + 0.5);
   
-  pixops_composite_color (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
-			  dest_x - offset_x, dest_y - offset_y, 
-			  dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
-			  dest->rowstride, dest->n_channels, dest->has_alpha,
-			  src->pixels, src->width, src->height,
-			  src->rowstride, src->n_channels, src->has_alpha,
-			  scale_x, scale_y, (PixopsInterpType)interp_type, overall_alpha, check_x, check_y,
-			  check_size, color1, color2);
+  _pixops_composite_color (dest->pixels + dest_y * dest->rowstride + dest_x * dest->n_channels,
+			   dest_x - offset_x, dest_y - offset_y, 
+			   dest_x + dest_width - offset_x, dest_y + dest_height - offset_y,
+			   dest->rowstride, dest->n_channels, dest->has_alpha,
+			   src->pixels, src->width, src->height,
+			   src->rowstride, src->n_channels, src->has_alpha,
+			   scale_x, scale_y, (PixopsInterpType)interp_type, overall_alpha, check_x, check_y,
+			   check_size, color1, color2);
 }
 
 /**

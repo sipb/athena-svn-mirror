@@ -193,7 +193,8 @@ typedef enum
   GTK_CENTIMETERS
 } GtkMetricType;
 
-typedef enum {
+typedef enum 
+{
   GTK_MOVEMENT_LOGICAL_POSITIONS, /* move by forw/back graphemes */
   GTK_MOVEMENT_VISUAL_POSITIONS,  /* move by left/right graphemes */
   GTK_MOVEMENT_WORDS,             /* move by forward/back words */
@@ -202,8 +203,19 @@ typedef enum {
   GTK_MOVEMENT_PARAGRAPHS,        /* move up/down paragraphs (newline-ended lines) */
   GTK_MOVEMENT_PARAGRAPH_ENDS,    /* move to either end of a paragraph */
   GTK_MOVEMENT_PAGES,	          /* move by pages */
-  GTK_MOVEMENT_BUFFER_ENDS        /* move to ends of the buffer */
+  GTK_MOVEMENT_BUFFER_ENDS,       /* move to ends of the buffer */
+  GTK_MOVEMENT_HORIZONTAL_PAGES   /* move horizontally by pages */
 } GtkMovementStep;
+
+typedef enum 
+{
+  GTK_SCROLL_STEPS,
+  GTK_SCROLL_PAGES,
+  GTK_SCROLL_ENDS,
+  GTK_SCROLL_HORIZONTAL_STEPS,
+  GTK_SCROLL_HORIZONTAL_PAGES,
+  GTK_SCROLL_HORIZONTAL_ENDS
+} GtkScrollStep;
 
 /* Orientation for toolbars, etc. */
 typedef enum
@@ -415,7 +427,8 @@ typedef enum
 {
   GTK_WRAP_NONE,
   GTK_WRAP_CHAR,
-  GTK_WRAP_WORD
+  GTK_WRAP_WORD,
+  GTK_WRAP_WORD_CHAR
 } GtkWrapMode;
 
 /* How to sort */
@@ -429,13 +442,15 @@ typedef enum
 typedef enum
 {
   GTK_IM_PREEDIT_NOTHING,
-  GTK_IM_PREEDIT_CALLBACK
+  GTK_IM_PREEDIT_CALLBACK,
+  GTK_IM_PREEDIT_NONE
 } GtkIMPreeditStyle;
 
 typedef enum
 {
   GTK_IM_STATUS_NOTHING,
-  GTK_IM_STATUS_CALLBACK
+  GTK_IM_STATUS_CALLBACK,
+  GTK_IM_STATUS_NONE
 } GtkIMStatusStyle;
 
 #ifdef __cplusplus

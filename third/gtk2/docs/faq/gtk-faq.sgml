@@ -2,7 +2,7 @@
 <book>
 
 <bookinfo>
-  <date>October 27th 2002</date>
+  <date>January 14th 2004</date>
   <title>GTK+ FAQ</title>
   <authorgroup>
     <author>
@@ -22,6 +22,8 @@
     <para> This document is intended to answer questions that are
     likely to be frequently asked by programmers using GTK+ or
     people who are just looking at using GTK+. </para>
+    <para><emphasis>Note: </emphasis> This FAQ mainly covers GTK+ 1.2. 
+	Where the text covers GTK+ 2.x this will be indicated</para>
   </abstract>
 </bookinfo>
 
@@ -34,7 +36,19 @@
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Before anything else: the greetings</title>
+<title>Note: This FAQ is undergoing conversion to GTK+ 2.x</title>
+<para>This FAQ is undergoing conversion to GTK+ 2.x.
+Where the text covers GTK+ 2.x this will be indicated by prefixing the
+text with: <emphasis>[GTK+ 2.x]</emphasis>. Where this is not
+indicated, the text has not yet been updated from GTK+ 1.2 and may
+not be totally correct.
+</para>
+</sect1>
+
+<!-- ----------------------------------------------------------------- -->
+
+<sect1>
+<title>Before anything else: the greetings <emphasis>[GTK 2.x]</emphasis></title>
 <para>The FAQ authors want to thank:</para>
 <itemizedlist spacing=Compact>
 <listitem>
@@ -74,7 +88,7 @@ it's really short :) </para>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Authors</title>
+<title>Authors <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>The original authors of GTK+ were:</para>
 
@@ -91,35 +105,72 @@ it's really short :) </para>
 </itemizedlist>
 
 <para>Since then, much has been added by others. Please see the
-AUTHORS file in the distribution for the GTK+ Team.</para>
+AUTHORS file in the distribution for the GTK+ Team. The people currently
+contributing the most code to GTK+ are (in no particular order):</para>
+
+
+<itemizedlist spacing=Compact>
+<listitem>
+<simpara>Owen Taylor</simpara>
+</listitem>
+<listitem>
+<simpara>Matthias Clasen</simpara>
+</listitem>
+<listitem>
+<simpara>Federico Mena Quintero</simpara>
+</listitem>
+<listitem>
+<simpara>Soeren Sandmann</simpara>
+</listitem>
+<listitem>
+<simpara>Padraig O'Briain</simpara>
+</listitem>
+<listitem>
+<simpara>Manish Singh</simpara>
+</listitem>
+<listitem>
+<simpara>Kristian Rietveld</simpara>
+</listitem>
+<listitem>
+<simpara>Tor Lillqvist</simpara>
+</listitem>
+</itemizedlist>
 
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>What is GTK+?</title>
+<title>What is GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>GTK+ is a small and efficient widget set designed with
+<para>GTK+ is a multi-platform toolkit for creating graphical user
+interfaces, originally designed with
 the general look and feel of Motif.  In reality, it looks much
-better than Motif.  It contains common widgets and some more
-complex widgets such as a file selection, and color selection
-widgets.</para>
+better than Motif.  It contains common and complex widgets, such as
+file selection, and color selection widgets.</para>
 
-<para>GTK+ provides some unique features. (At least, I know of
-no other widget library which provides them). For example, a
-button does not contain a label, it contains a child widget,
-which in most instances will be a label.  However, the child
-widget can also be a pixmap, image or any combination possible
-the programmer desires. This flexibility is adhered to
-throughout the library.</para>
+<para>GTK+ was initially developed as a widget set for the GIMP (GNU Image
+Manipulation Program). It has grown extensively since then, and is today
+used by a large number of applications, and is the toolkit used by the
+<ulink url="http://www.gnome.org/">GNOME</ulink> desktop project.</para>
 
+<para>GTK+ is free software and part of the GNU Project. However, the
+licensing terms for GTK+, the GNU LGPL, allow it to be used by all developers,
+including those developing proprietary software, without any license fees
+or royalties.</para>
+
+<para>GTK+ has been designed from the ground up to support a range of
+<ulink url="http://www.gtk.org/bindings.html">
+language bindings</ulink>, not only C/C++. Using GTK+ from languages
+such as Perl and Python (especially in combination with the Glade GUI
+builder) provides an effective method of rapid application
+development..</para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>What is the + in GTK+?</title>
+<title>What is the + in GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Peter Mattis informed the gtk mailing list that:</para>
 
@@ -133,30 +184,37 @@ version of gtk and the new version. You can think of it as
 being an enhancement to the original gtk that adds object
 oriented features.</quote></para>
 
+<para>Although much has changed with GTK+, and Peter, Spencer and Josh
+don't have any direct involvement these days, the name is kept to keep
+a link with the heritage of GTK+.</para>
+
+<para>GTK+ is now additionally based upon the Pango and ATK
+libraries, that provide text layout and rendering and accessibility
+interfaces.</para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Does the G in GTK+, GDK and GLib stand for?</title>
+<title>Does the G in GTK+, GDK and GLib stand for? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>GTK+ == Gimp Toolkit</para>
+<para>GTK+ == The GIMP Toolkit</para>
 <para>GDK == GTK+ Drawing Kit</para>
-<para>GLib == G Libray</para>
+<para>GLib == G Library</para>
 
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Where is the documentation for GTK+?</title>
+<title>Where is the documentation for GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>In the GTK+ distribution's doc/ directory you will find
-the reference material for both GTK and GDK, this FAQ and the
+the API Reference for both GTK and GDK, this FAQ and the
 GTK Tutorial.</para>
 
 <para>In addition, you can find links to HTML versions of
-these documents  by going to <ulink url="http://www.gtk.org/">
+these documents by going to <ulink url="http://www.gtk.org/">
 http://www.gtk.org/</ulink>. A
 packaged version of the GTK Tutorial, with SGML, HTML,
 Postscript, DVI and text versions can be found in <ulink
@@ -164,8 +222,9 @@ url="ftp://ftp.gtk.org/pub/gtk/tutorial">
 ftp://ftp.gtk.org/pub/gtk/tutorial
 </ulink></para>
 
-<para>There are now a couple of books available that deal with
-programming GTK+, GDK and GNOME:</para>
+<para>There are now a few books available that deal with
+programming GTK+, GDK and GNOME. Unfortunately, they
+currently are all based upon GTK+ 1.x:</para>
 
 <itemizedlist>
 <listitem><simpara>Eric Harlows book entitled "Developing
@@ -190,15 +249,28 @@ url="http://pobox.com/~hp/gnome-app-devel.html">
 http://pobox.com/~hp/gnome-app-devel.html
 </ulink></simpara>
 </listitem>
+<listitem><simpara>"GTK+ Programming in C" by
+Syd Logan. ISBN: 0-1301-4264-6</simpara>
+</listitem>
+<listitem><simpara>"Linux GNOME/GTK+ Programming Bible" by
+Arthur Griffith. ISBN: 0-7645-4640-6</simpara>
+</listitem>
+<listitem><simpara>"Beginning GTK+/GNOME Programming" by
+Peter Wright. ISBN: 1-8610-0381-1</simpara>
+</listitem>
+<listitem><simpara>"Sams Teach Yourself GTK+ Programming
+in 21 Days" by Donna Martin
+. ISBN: 0-6723-1829-6</simpara>
+</listitem>
 </itemizedlist>
 
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
-<sect1>
+<sect1 id="faq-MailLists">
 <title>Is there a mailing list (or mailing list archive) for
-GTK+?</title>
+GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Information on mailing lists relating to GTK+ can be
 found at: <ulink
@@ -211,7 +283,7 @@ http://www.gtk.org/mailinglists.html
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How to get help with GTK+</title>
+<title>How to get help with GTK+ <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>First, make sure your question isn't answered in the
 documentation, this FAQ or the tutorial. Done that? You're
@@ -223,7 +295,7 @@ post questions is to the GTK+ mailing list.</para>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How to report bugs in GTK+</title>
+<title>How to report bugs in GTK+ <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Bugs should be reported to the GNOME bug tracking system
 (<ulink url="http://bugzilla.gnome.org">http://bugzilla.gnome.org</ulink>).
@@ -239,10 +311,11 @@ that may prove useful includes:</para>
 <listitem><simpara> How to reproduce the bug.</simpara>
 <simpara>If you can reproduce it with the testgtk program
 that is built in the gtk/ subdirectory, that will be most
-convenient. Otherwise, please include a short test program
-that exhibits the behavior. As a last resort, you can also
+convenient. Otherwise, please include a complete, short test
+program that exhibits the behavior. As a last resort, you can also
 provide a pointer to a larger piece of software that can
 be downloaded.</simpara>
+
 <simpara>(Bugs that can be reproduced within the GIMP are
 almost as good as bugs that can be reproduced in
 testgtk. If you are reporting a bug found with the GIMP,
@@ -251,11 +324,13 @@ using)</simpara>
 </listitem>
 
 <listitem><simpara> If the bug was a crash, the exact text that was
-printed out when the crash occurred.</simpara>
+printed out when the crash occurred. If you can easily reproduce this
+crash then running the program under a debugger (e.g. gdb) and getting
+a backtrace when the crash occurs is very useful.</simpara>
 </listitem>
 
 <listitem><simpara> Further information such as stack traces
-may be useful, but are not necessary. If you do send a stack trace,
+may be useful. If you do send a stack trace,
 and the error is an X error, it will be more useful if the stacktrace is
 produced running the test program with the <literal>--sync</literal>
 command line option.</simpara>
@@ -267,33 +342,31 @@ command line option.</simpara>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Is there a Windows version of GTK+?</title>
+<title>Is there a Windows version of GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>There is an on going port of GTK+ to the Windows
-platform which is making impressive progress.</para>
+<para>The Win32 port of GTK+ is maintained concurrently with the Xwindows
+version in CVS. As such it is a supported architecture.</para>
 
-<para>See <ulink
-url="http://www.iki.fi/tml/gimp/win32">
-http://www.iki.fi/tml/gimp/win32</ulink>
-for more information.</para>
+<para>The Win32 port has been predominately done by Tor Lillqvist. Tor
+maintains some information on <ulink url="http://www.gimp.org/~tml/gimp/win32/">
+GTK+ and GIMP for Windows</ulink>.</para>
+
+<para>There is a pre-compiled, easy-to-install version of GTK+ for
+windows on the <ulink url="http://www.dropline.net/gtk/">
+Dropline GTK+</ulink> site.</para>
 
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>What applications have been written with GTK+?</title>
+<title>What applications have been written with GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>A list of some GTK+ based application can be found on
-the GTK+ web server at <ulink
-url="http://www.gtk.org/apps/">http://www.gtk.org/apps/</ulink>
-and contains more than 350 applications.</para>
+<para>The GNOME software map contains a catalogue of software that is
+built using GNOME and GTK+. The catalogue is searchable and browsable, so
+provides easy access.</para>
 
-<para>Failing that, look for a project to work on for the
-GNOME project, <ulink
-url="http://www.gnome.org/">http://www.gnome.org/</ulink>
-Write a game. Write something that is useful.</para>
-<para>Some of these are:</para>
+<para>Some of the best known projects utilising GTK+ are:</para>
 
 <itemizedlist>
 <listitem><simpara> GIMP (<ulink
@@ -301,51 +374,34 @@ url="http://www.gimp.org/">http://www.gimp.org/</ulink>), an
 image manipulation program</simpara>
 </listitem>
 <listitem><simpara> AbiWord (<ulink
-url="http://www.abisource.com/">http://www.abisource.com/</ulink>),
+url="http://www.abiword.org/">http://www.abiword.com/</ulink>),
 a professional word processor</simpara>
 </listitem>
-<listitem><simpara> Gzilla (<ulink
-url="http://www.levien.com/gzilla/">http://www.levien.com/gzilla/</ulink>),
-a web browser</simpara>
+<listitem><simpara> Dia (<ulink
+url="http://www.lysator.liu.se/~alla/dia/dia.html">
+http://www.lysator.liu.se/~alla/dia/dia.html</ulink>),
+a diagram creation program</simpara>
 </listitem>
-<listitem><simpara> XQF (<ulink
-url="http://www.botik.ru/~roma/quake/">
-http://www.botik.ru/~roma/quake/</ulink>),
-a QuakeWorld/Quake2 server browser and launcher</simpara>
+<listitem><simpara> GnuCash (<ulink
+url="http://www.gnucash.org/">
+http://www.gnucash.org/</ulink>),
+a personal finance manager</simpara>
 </listitem>
-<listitem><simpara> GDK Imlib (<ulink
-url="http://www.rasterman.com/imlib.html">
-http://www.rasterman.com/imlib.html</ulink>),
-a fast image loading and manipulation library for GDK</simpara>
+<listitem><simpara> Gnumeric (<ulink
+url="http://www.gnome.org/projects/gnumeric/">
+http://www.gnome.org/projects/gnumeric/</ulink>),
+the GNOME spreadsheet application</simpara>
 </listitem>
 <listitem><simpara> Glade (<ulink
-url="http://glade.pn.org/">http://glade.pn.org/</ulink>), a
-GTK+ based RAD tool which produces GTK+ applications</simpara>
+url="http://glade.gnome.org/">http://glade.gnome.org/</ulink>), a
+GTK+ based RAD tool which produces GTK+ and GNOME applications</simpara>
+</listitem>
+<listitem><simpara> Anjuta (<ulink
+url="http://anjuta.sourceforge.net/">http://anjuta.sourceforge.net/</ulink>),
+a versatile Integrated Development Environment (IDE) using C and C++ for GTK+
+and GIMP.</simpara>
 </listitem>
 </itemizedlist>
-</sect1>
-
-<!-- ----------------------------------------------------------------- -->
-
-<sect1>
-<title>I'm looking for an application to write in GTK+. How
-about an IRC client?</title>
-
-<para>Ask on gtk-list for suggestions. There are at least
-three IRC clients already under development (probably more in fact. The
-server at <ulink url="http://www.forcix.cx/irc-clients.html">
-http://www.forcix.cx/irc-clients.html</ulink> list a bunch of
-them).</para>
-
-<itemizedlist spacing=compact>
-<listitem><simpara> X-Chat.</simpara>
-</listitem>
-<listitem><simpara> girc. (Included with GNOME)</simpara>
-</listitem>
-<listitem><simpara> gsirc. (In the gnome CVS tree)</simpara>
-</listitem>
-</itemizedlist>
-
 </sect1>
 
 </chapter>
@@ -356,18 +412,84 @@ them).</para>
 
 <!-- ----------------------------------------------------------------- -->
 
-<sect1>
-<title>What do I need to run GTK+?</title>
+<sect1 id="faq-Compile">
+<title>What do I need to compile GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>To compile GTK+, all you need is a C compiler (gcc) and
-the X Window System and associated libraries on your system.</para>
+<para>GTK+ is a large package that is dependent on a number of other
+tools and libraries. It is recommended that you use precompiled
+binary packages for your system if possible</para>
+
+<para>To compile GTK+ from source you need a C compiler (gcc) and
+the X Window System and associated development libraries and packages
+on your system.</para>
+
+<para>You will also need to have installed the tools
+and libraries that GTK+ depends upon. These are listed below in the order
+in which they need to be installed:</para>
+
+<itemizedlist spacing=compact>
+<listitem><simpara> pkg-config
+(<ulink url="http://www.freedesktop.org/software/pkgconfig">
+pkg-config Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> GNU make
+(<ulink url="http://www.gnu.org/software/make/">
+GNU make Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> JPEG, PNG and TIFF image libraries
+(<ulink url="ftp://ftp.gtk.org/pub/gtk/v2.2/dependencies/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> FreeType
+(<ulink url="http://www.freetype.org/">
+FreeType Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> fontconfig
+(<ulink url="http://www.fontconfig.org/">
+fontconfig Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> GNU libiconv library (if your system doesn't have iconv())
+(<ulink url="http://www.gnu.org/software/libiconv/">
+GNU libiconv Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> GNU gettext (if your system doesn't have gettext())
+(<ulink url="http://www.gnu.org/software/gettext/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> GLib
+(<ulink url="ftp://ftp.gtk.org/pub/gtk/v2.2/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> Pango
+(<ulink url="ftp://ftp.gtk.org/pub/gtk/v2.2/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> ATK
+(<ulink url="ftp://ftp.gtk.org/pub/gtk/v2.2/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+
+<listitem><simpara> GTK+
+(<ulink url="ftp://ftp.gtk.org/pub/gtk/v2.2/">
+GTK+ Site</ulink>)</simpara>
+</listitem>
+</itemizedlist>
 
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>Where can I get GTK+?</title>
+<title>Where can I get GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>The canonical site is <ulink
 url="ftp://ftp.gtk.org/pub/gtk">ftp://ftp.gtk.org/pub/gtk</ulink>.</para>
@@ -385,30 +507,31 @@ url="ftp://ftp.gtk.org/etc/mirrors">ftp://ftp.gtk.org/etc/mirrors
 <ulink url="ftp://ftp.is.co.za/applications/gimp">
 ftp://ftp.is.co.za/applications/gimp</ulink></simpara> 
 </listitem>
+
 <listitem><simpara> Australia -
 <ulink
-url="ftp://ftp.au.gimp.org/pub/gimp">
-ftp://ftp.au.gimp.org/pub/gimp</ulink></simpara> 
+url="ftp://ftp.planetmirror.com/pub/gimp/gtk">
+ftp://ftp.planetmirror.com/pub/gimp/gtk</ulink></simpara> 
 </listitem>
+
 <listitem><simpara> Finland -
-<ulink url="ftp://ftp.funet.fi/pub/sci/graphics/packages/gimp">
-ftp://ftp.funet.fi/pub/sci/graphics/packages/gimp</ulink></simpara> 
+<ulink url="ftp://ftp.funet.fi/pub/sci/graphics/packages/gimp/gtk">
+ftp://ftp.funet.fi/pub/sci/graphics/packages/gimp/gtk</ulink></simpara> 
 </listitem>
+
 <listitem><simpara> Germany -
-<ulink url="ftp://infosoc.uni-koeln.de/pub/ftp.gimp.org">
-ftp://infosoc.uni-koeln.de/pub/ftp.gimp.org"</ulink></simpara> 
+<ulink url="ftp://ftp.gwdg.de/pub/misc/grafik/gimp/gtk">
+ftp://ftp.gwdg.de/pub/misc/grafik/gimp/gtk</ulink></simpara> 
 </listitem>
+
 <listitem><simpara> Japan -
-<ulink url="ftp://SunSITE.sut.ac.jp/pub/archives/packages/gimp">
-ftp://SunSITE.sut.ac.jp/pub/archives/packages/gimp</ulink></simpara> 
+<ulink url="ftp://sunsite.sut.ac.jp/pub/archives/packages/gimp/gtk">
+ftp://sunsite.sut.ac.jp/pub/archives/packages/gimp/gtk</ulink></simpara> 
 </listitem>
+
 <listitem><simpara> UK - 
-<ulink url="ftp://ftp.flirble.org/pub/X/gimp">
-ftp://ftp.flirble.org/pub/X/gimp</ulink></simpara>
-</listitem>
-<listitem><simpara> US -
-<ulink url="ftp://ftp.insync.net/pub/mirrors/ftp.gimp.org">
-ftp://ftp.insync.net/pub/mirrors/ftp.gimp.org</ulink></simpara> 
+<ulink url="http://www.mirror.ac.uk/sites/ftp.gimp.org/pub/gtk/">
+http://www.mirror.ac.uk/sites/ftp.gimp.org/pub/gtk/</ulink></simpara>
 </listitem>
 </itemizedlist>
 </sect1>
@@ -416,21 +539,34 @@ ftp://ftp.insync.net/pub/mirrors/ftp.gimp.org</ulink></simpara>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I configure/compile GTK+?</title>
+<title>How do I configure/compile GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>Generally, all you will need to do is issue the commands:</para>
+<para>Generally, the minimum you need to do is issue the commands:</para>
 
 <para><literallayout><literal>./configure</literal>
-<literal>make</literal></literallayout></para>
+<literal>make</literal>
+<literal>make install</literal></literallayout></para>
 
-<para>in the gtk+-version/ directory.</para>
+<para>in the GTK+ source directory.</para>
+
+<para>This generally also holds true for each of the packages that GTK+
+depends upon, listed <link linkend="faq-Compile">above</link>.</para>
+
+<para>There are various options that you can pass to the configure script
+in order to change its default settings. The one that you are most likely
+to want to use is the <literal>--prefix</literal>
+argument, which defines where the package is to be install, e.g.</para>
+
+<para>
+<literallayout><literal>./configure --prefix=/usr</literal></literallayout>
+</para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
 <title>When compiling GTK+ I get an error like: <literal>make:
-file `Makefile' line 456: Syntax error</literal></title>
+file `Makefile' line 456: Syntax error</literal> <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Make sure that you are using GNU make
 (use <literal>make -v</literal>
@@ -444,26 +580,24 @@ generated Makefiles.</para>
 
 <sect1>
 <title>I've compiled and installed GTK+, but I can't get any
-programs to link with it!</title>
+programs to link with it! <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>This problem is most often encountered when the GTK+
 libraries can't be  found or are the wrong version. Generally,
-the compiler will complain about an 'unresolved symbol'.
-There are two things you need to check:</para>
+the compiler will complain about an 'unresolved symbol'.</para>
 
-<itemizedlist>
-<listitem><simpara>Make sure that the libraries can be
+<para>Make sure that the libraries can be
 found. You want to edit <filename>/etc/ld.so.conf</filename> to
 include the directories which contain the GTK libraries,
-so it looks something like:</simpara>
+so it looks something like:</para>
 
 <para><literallayout><literal>/usr/X11R6/lib</literal>
 <literal>/usr/local/lib</literal></literallayout></para>
 
 <para>Then you need to run /sbin/ldconfig as root. You can
-find what directory GTK is in using</para>
+find what libraries GTK requires using</para>
 
-<para><literallayout><literal>gtk-config --libs</literal>
+<para><literallayout><literal>pkg-config gtk+-2.0 --libs</literal>
 </literallayout></para>
 
 <para>If your system doesn't use ld.so to find libraries
@@ -482,91 +616,29 @@ your GTK libraries are in /usr/local/lib):</para>
 <literal>setenv LD_LIBRARY_PATH /usr/local/lib</literal>
 </literallayout></para>
 
-</listitem>
-<listitem><simpara>Make sure the linker is finding the
-correct set of libraries. If you have a Linux distribution that
-installs GTK+ (e.g. RedHat 5.0) then this  older version may be
-used. Now (assuming you have a RedHat system), issue the
-command</simpara>
-
-<para><literallayout>
-<literal>rpm -e gtk gtk-devel</literal>
-</literallayout></para>
-
-<para>You may also want to remove the packages that depend
-on gtk (rpm will tell you which ones they are).  If you don't have a
-RedHat Linux system, check to make sure that neither
-<filename>/usr/lib</filename> or <filename>/usr/local/lib</filename>
-contain any of the libraries libgtk, libgdk, libglib, or libgck. If
-they do exist, remove them (and any gtk include files, such as
-<filename>/usr/include/gtk</filename> and
-<filename>/usr/include/gdk</filename>) and reinstall gtk+.</para>
-</listitem>
-</itemizedlist>
-
-</sect1>
-
-<!-- ----------------------------------------------------------------- -->
-
-<sect1>
-<title>When compiling programs with GTK+, I get compiler error
-messages about not being able to find
-<literal>glibconfig.h</literal>.</title>
-
-<para>The header file "glibconfig.h" was moved to the
-directory $exec_prefix/lib/glib/include/. $exec_prefix is the
-directory that was specified by giving the --exec-prefix flags
-to ./configure when compiling GTK+. It defaults to  $prefix,
-(specified with --prefix), which in turn defaults to /usr/local/.</para>
-
-<para>This was done because "glibconfig.h" includes
-architecture dependent information, and the rest of the
-include files are put in $prefix/include, which can be shared
-between different architectures.</para>
-
-<para>GTK+ includes a shell script, <literal>/gtk-config/</literal>,
-that makes it easy to find out the correct include paths. The GTK+
-Tutorial includes an example of using <literal>/gtk-config/</literal>
-for simple compilation from the command line. For information about more
-complicated configuration, see the file docs/gtk-config.txt in the GTK+
-distribution.</para>
-
-<para>If you are trying to compile an old program, you may be
-able to work around the problem by configuring it with a
-command line like:</para>
-
-<para><literallayout>
-<literal>setenv CPPFLAGS "-I/usr/local/include/glib/include"</literal>
-<literal>./configure</literal>
-</literallayout></para>
-
-<para>(Substitute the appropriate value of $exec_prefix for
-/usr/local.)</para>
-
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
 <title>When installing a GTK+ application, configure reports
-that it can't find GTK.</title>
+that it can't find GTK. <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>There are several common reasons for this:</para>
 
 <itemizedlist>
 <listitem><simpara>You have an old version of GTK installed
-somewhere. RedHat 5.0, for example, installs an older copy of GTK that
-may not work with the latest applications. You should remove this old
-copy, but note that in the case of RedHat 5.0 this will
-break the <literal>control-panel</literal> applications.</simpara>
+somewhere. You should remove this old copy, but note that
+this may break applications that have been compiled against
+the old version.</simpara>
 </listitem>
 
-<listitem><simpara><literal>gtk-config</literal> (or another
+<listitem><simpara><literal>pkg-config</literal> (or another
 component of GTK) isn't in your path, or there is an old
 version on your system. Type:</simpara>
 
 <para><literallayout>
-<literal>gtk-config --version</literal>
+<literal>pkg-config gtk+-2.0 --modversion</literal>
 </literallayout></para>
 
 <para>to check for both of these. If it returns a value
@@ -599,14 +671,14 @@ successful, try executing it.</para>
 
 <sect1>
 <title>Whats this CVS thing that everyone keeps talking about,
-and how do I access it?</title>
+and how do I access it? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>CVS is the Concurrent Version System and is a very
 popular means of version control for software projects. It is
-designed to allow multiple  authors to be able to
-simultanously operate on the same source tree.  This source
-tree is centrally maintained, but each developer has a local
-mirror of this repository that they make their changes to.</para>
+designed to allow multiple authors to simultanously operate on the same
+source tree.  This source tree is centrally maintained, but each
+developer has a local mirror of this repository that they make
+their changes to.</para>
 
 <para>The GTK+ developers use a CVS repository to store the
 master copy of the current development version of GTK+. As
@@ -653,12 +725,22 @@ need to get that as well:</para>
 </listitem>
 </itemizedlist>
 
+<para>The CVS archive stores both the current development version of
+GTK+ (the CVS HEAD branch) and all current and past stable versions.
+If you want to retrieve a specific version of GTK+ you have to specify
+the CVS tag corresponding to the version you want to checkout. If you
+want to checkout the current GTK+ 2.2 stable source code, you would need
+to use the following command:</para>
+
+<para><literallayout>
+<literal>cvs -z3 get -r gtk-2-2 gtk+</literal>
+</literallayout></para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
-<sect1>
-<title>How can I contribute to GTK+?</title>
+<sect1 id="faq-Patches">
+<title>How can I contribute to GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>It's simple. If something doesn't work like you think it
 should in a program, check the documentation to make sure
@@ -666,35 +748,15 @@ you're not missing something. If it is a true bug or missing
 feature, track it down in the GTK+ source, change it,  and
 then generate a patch in the form of a 'context diff'. This
 can be done using a command such as <literal>diff -ru
-&lt;oldfile&gt; &lt;newfile&gt;</literal>. Then upload the patchfile
-to:</para>
+&lt;oldfile&gt; &lt;newfile&gt;</literal>.</para>
 
-<para><literallayout>
-<literal>ftp://ftp.gtk.org/incoming</literal>
-</literallayout></para>
+<para>The patch should then be attached to a bug report in
+the GNOME bug tracking system, which can also be used to store
+general patches
+(<ulink url="http://bugzilla.gnome.org">http://bugzilla.gnome.org</ulink>).
+</para>
 
-<para>along with a README file. Make sure you follow the
-naming conventions or your patch will just be deleted! The
-filenames should be of this form:</para>
-
-<para><literallayout>
-<literal>gtk&lt;username&gt;-&lt;date yymmdd-n&gt;.patch.gz</literal>
-<literal>gtk-&lt;username&gt;-&lt;date yymmdd-n&gt;.patch.README</literal>
-</literallayout></para>
-
-<para>The "n" in the date indicates a unique number (starting
-from 0) of patches you uploaded that day.  It should be 0,
-unless you upload more than one patch in the same day.</para>
-
-<para>Example:</para>
-
-<para><literallayout>
-<literal>gtk-gale-982701-0.patch.gz</literal>
-<literal>gtk-gale-982701-0.patch.README</literal>
-</literallayout></para>
-
-<para>Once you upload <emphasis>anything</emphasis>, send the README to
-ftp-admin@gtk.org</para>
+<para>This method ensures that the patch will not be lost.</para>
 
 </sect1>
 
@@ -702,155 +764,51 @@ ftp-admin@gtk.org</para>
 
 <sect1>
 <title>How do I know if my patch got applied, and if not, why
-not?</title>
+not? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>Uploaded patches will be moved to
-<filename>ftp://ftp.gtk.org/pub/gtk/patches</filename> where one of the
-GTK+ development team will pick them up. If applied, they will be moved
-to <filename>/pub/gtk/patches/old</filename>.</para>
+<para>If you have used the GNOME bug tracking system (as stated
+<link linkend="faq-Patches">above</link>) then the status
+of your patch should be reflected in the bug report.</para>
 
-<para>Patches that aren't applied, for whatever reason, are
-moved to <filename>/pub/gtk/patches/unapplied</filename> or
-<filename>/pub/gtk/patches/outdated</filename>. At this point you can ask
-on the <literal>gtk-list</literal> mailing list why your patch wasn't
-applied. There are many possible reasons why patches may not
-be applied, ranging from it doesn't apply cleanly, to it isn't
-right. Don't be put off if your patch didn't make it first
-time round.</para>
-
+<para>The GTK+ developers will generally add comments to the bug
+report stating what needs to be done to get the patch applied,
+or why the patch is not appropriate.</para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
 <title>What is the policy on incorporating new widgets into
-the library?</title>
+the library? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>This is up to the authors, so you will have to ask them
 once you are done with your widget. As a general guideline,
-widgets that are  generally useful, work, and are not a
+widgets that are generally useful, work, and are not a
 disgrace to the widget set will gladly be included.</para>
 
+<para>The new widgets that get added to GTK+ are generally either
+replacements for existing widgets that are no longer
+deemed to be adequate, or have been developed externally to GTK+ but
+have been widely tested. One possible avenue for this is via
+<ulink url="http://cvs.gnome.org/lxr/source/libegg/">libegg</ulink>.</para>
+
+<para>Before you spend months of your valuable time implementing your
+revolutionary widget, it is highly recommended that you get some
+feedback on your idea via the appropriate 
+<link linkend="faq-MailLists">mailing list</link>.</para>
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
 <title>Is anyone working on bindings for languages other than
-C?</title>
+C? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>The GTK+ home page (<ulink
-url="http://www.gtk.org/">http://www.gtk.org/</ulink>)
-presents a list of GTK+ bindings.</para>
+<para>There is a list of <ulink url="http://www.gtk.org/bindings.html">
+language bindings</ulink> on the GTK+ website.</para>
 
-<itemizedlist>
-<listitem><simpara>There are several C++ wrappers for GTK+.</simpara>
-
-  <itemizedlist> 
-  <listitem><simpara>the gtk-- package, which is a very small wrapper for
-  GTK+. You can find the home page at <ulink
-  url="http://www.cs.tut.fi/~p150650/gtk/gtk--.html">
-  http://www.cs.tut.fi/~p150650/gtk/gtk--.html</ulink>. The FTP site is 
-  <ulink url="ftp://ftp.gtk.org/pub/gtk/gtk--">
-  ftp://ftp.gtk.org/pub/gtk/gtk--</ulink>.</simpara>
-  </listitem>
-
-  <listitem><simpara>the VDK package, which was built as
-  the base package of a GTK+ application Borland-like
-  builder. The home page can be found at <ulink
-  url="http://www.guest.net/homepages/mmotta/VDKHome">
-  http://www.guest.net/homepages/mmotta/VDKHome</ulink>.</simpara>
-  </listitem>
-
-  <listitem><simpara>The wxWindows/Gtk package, a free C++ library for
-  cross-platform GUI development. The home page of this package is
-  <ulink url="http://www.freiburg.linux.de/~wxxt/">
-  http://www.freiburg.linux.de/~wxxt/</ulink>.</simpara>
-  </listitem>
-
-  </itemizedlist>
-</listitem>
-
-<listitem><simpara>There are three known Objective-c
-bindings currently in development:</simpara>
-
-  <itemizedlist> 
-  <listitem><simpara>The <ulink
-  url="http://www.gnome.org/">http://www.gnome.org/</ulink>
-  package of choice is objgtk. Objgtk is based on the Object class and
-  is maintained by <ulink url="mailto:sopwith@cuc.edu">Elliot
-  Lee</ulink>. Apparently, objgtk is being accepted as the `standard'
-  Objective-C binding for GTK+.</simpara>
-  </listitem>
-
-  <listitem><simpara>If you are more inclined towards the 
-  <ulink url="http://www.gnustep.org/">GNUstep project</ulink>,
-  you may want to check out GTKKit by 
-  <ulink url="mailto:helge@mdlink.de">Helge He&szlig;</ulink>.
-  The intention is to setup a GTK+ binding using the FoundationKit. 
-  GTKKit includes nicities like writing a XML-type template file to 
-  construct a GTK+ interface.</simpara>
-  </listitem>
-
-  <listitem><simpara>The GToolKit package, which can be found at
-  <ulink url="ftp://ftp.gtk.org/pub/gtk/objc-gtoolkit/">
-  ftp://ftp.gtk.org/pub/gtk/objc-gtoolkit/</ulink>.</simpara>
-  </listitem>
-  
-  </itemizedlist>
-</listitem>
-
-<listitem><simpara>Perl bindings <ulink
-url="ftp://ftp.gtk.org/pub/gtk/perl">
-ftp://ftp.gtk.org/pub/gtk/perl</ulink></simpara>
-</listitem>
-
-<listitem><simpara>Guile bindings. The home page is at
-<ulink url="http://www.ping.de/sites/zagadka/guile-gtk">
-http://www.ping.de/sites/zagadka/guile-gtk</ulink>.
-By the way, Guile is the GNU Project's implemention of R4RS Scheme (the
-standard). If you like Scheme, you may want to take a look at
-this.</simpara>
-</listitem>
-
-<listitem><simpara>David Monniaux reports:
-<quote>I've started a gtk-O'Caml binding system.
-The basics of the system, including callbacks, work fine.
-
-The current development is in
-<ulink url="http://www.ens-lyon.fr/~dmonniau/arcs">
-http://www.ens-lyon.fr/~dmonniau/arcs</ulink>
-</quote></simpara>
-</listitem>
-
-<listitem><simpara>Several python bindings have been done:</simpara>
-
-  <itemizedlist>
-  <listitem><simpara>pygtk is at 
-  <ulink url="http://www.daa.com.au/~james/pygtk">
-  http://www.daa.com.au/~james/pygtk</ulink> and 
-  <ulink url="ftp://ftp.gtk.org/pub/gtk/python">
-  ftp://ftp.gtk.org/pub/gtk/python</ulink></simpara>
-  </listitem>
-
-  <listitem><simpara>python-gtk is at
-  <ulink url="http://www.ucalgary.ca/~nascheme/python-gtk">
-  http://www.ucalgary.ca/~nascheme/python-gtk</ulink></simpara>
-  </listitem>
-  
-  </itemizedlist>
-</listitem>
-
-<listitem><simpara>There's are a couple of OpenGL/Mesa
-widgets available for GTK+. I suggest you start at
-<ulink url="http://www.student.oulu.fi/~jlof/gtkglarea/index.html">
-http://www.student.oulu.fi/~jlof/gtkglarea/index.html</ulink></simpara>
-</listitem>
-<listitem><simpara>Last, there are a lot of other language
-bindings for languages such as Eiffel, TOM, Pascal, Pike, etc.</simpara>
-</listitem>
-
-</itemizedlist>
+<para>The 'official' language bindings are C++, Ada and Python.
+However, bindings for many other languages are available.</para>
 </sect1>
 
 </chapter>
@@ -862,7 +820,7 @@ bindings for languages such as Eiffel, TOM, Pascal, Pike, etc.</simpara>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I get started?</title>
+<title>How do I get started? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>So, after you have installed GTK+ there are a couple of
 things that can ease you into developing applications with
@@ -872,10 +830,10 @@ http://www.gtk.org/tutorial/</ulink>, which is undergoing
 development. This will introduce you to writing applications
 using C.</para>
 
-<para>The Tutorial doesn't (yet) contain information on all of
+<para>The GTK+ Tutorial doesn't contain information on all of
 the widgets that are in GTK+. For example code on how to use
-the basics of all the GTK+ widgets you should look at the file
-gtk/testgtk.c (and associated source files) within the GTK+
+the basics of all the GTK+ widgets you should look in the
+directory 'tests' (and associated source files) within the GTK+
 distribution. Looking at these examples will give you a good
 grounding on what the widgets can do.</para>
 
@@ -884,11 +842,44 @@ grounding on what the widgets can do.</para>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I write security sensitive/SUID/SGID programs with GTK+?
-Is GTK+ secure? What's this GTK_MODULES security hole I heard about?</title>
+<title>How do I use the Glade GUI builder with GTK+? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>The short answer to this question is: Don't write SUID/SGID
+<para>There are two ways to use Glade. The first way is to use
+Glade's facilities for generating code; the second
+way is to use the libglade library which directly loads
+the XML user interface description files that Glade
+generates into a running program.</para>
+
+<para>Experienced GTK+ programmers generally strongly recommend
+using libglade; you don't have to worry about the interaction
+between Glade generating the source and you editing it,
+and its been shown to be a method that works better
+for large projects, so there is a lot of example code
+out there you can look at.</para>
+
+<para>An introduction to using libglade can be found in the 
+libglade API docs
+(<ulink url="http://developer.gnome.org/doc/API/2.0/libglade/libglade-notes.html#libglade-basics">
+http://developer.gnome.org/doc/API/2.0/libglade/libglade-notes.html#libglade-basics</ulink>)
+.</para>
+
+</sect1>
+
+<!-- ----------------------------------------------------------------- -->
+
+<sect1>
+<title>How do I write security sensitive/SUID/SGID programs with GTK+?
+Is GTK+ secure? What's this GTK_MODULES security hole I heard about?
+<emphasis>[GTK 2.x]</emphasis></title>
+
+<para>The short answer to this question is: you can't, so don't write SUID/SGID
 programs with GTK+</para>
+
+<para>GTK+ will refuse to run with elevated privileges, as it is not designed
+to be used in this manner. The only correct way to write a setuid program with
+a graphical user interface is to have a setuid backend that communicates with
+the non-setuid graphical user interface via a mechanism such as a pipe and that
+considers the input it receives to be untrusted.</para>
 
 <para>For a more thorough explanation of the GTK+ Developers position on
 this issue see <ulink
@@ -900,26 +891,26 @@ url="http://www.gtk.org/setuid.html">http://www.gtk.org/setuid.html</ulink>.</pa
 
 <sect1>
 <title>I tried to compile a small <command>Hello World</command> of mine,
-but it failed. Any clue?</title>
+but it failed. Any clue? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Since you are good at coding, we will not deal with
-compile time error here :)</para>
+compile time errors here :)</para>
 
 <para>The classic command line to compile a GTK+ based program is</para>
 <para><literallayout>
-<literal>gcc -o myprog [c files] `gtk-config --cflags --libs`</literal>
+<literal>gcc -o myprog [c files] `pkg-config gtk+-2.0 --cflags --libs`</literal>
 </literallayout></para>
 
 <para>You should notice the backquote character which is used
 in this command line. A common mistake when you start a GTK+
-based development is to use quote instead of backquotes. If
+based development is to use quotes instead of backquotes. If
 you do so, the compiler will complain about an unknown file
-called <filename>gtk-config --cflags --libs</filename>. The
+called <filename>pkg-config gtk+-2.0 --cflags --libs</filename>. The
 text in backquotes is an instruction to your shell to
-substitute the output of executing this text into the
+substitute the output of executing this command into the
 commandline.</para>
 
-<para>The command line above ensure that:</para>
+<para>The command line above ensures that:</para>
 
 <itemizedlist>
 <listitem><simpara>the correct C compiler flags will be used
@@ -938,17 +929,17 @@ needed libraries.</simpara>
 
 <sect1>
 <title>What about using the <command>make</command>
-utility?</title>
+utility? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>This is a sample makefile which compile a GTK+ based
+<para>This is a sample makefile which compiles a GTK+ based
 program:</para>
 
 <programlisting role="C">
 # basic GTK+ app makefile
 SOURCES = myprg.c foo.c bar.c
 OBJS    = ${SOURCES:.c=.o}
-CFLAGS  = `gtk-config --cflags`
-LDADD   = `gtk-config --libs`
+CFLAGS  = `pkg-config gtk+-2.0 --cflags`
+LDADD   = `pkg-config gtk+-2.0 --libs`
 CC      = gcc
 PACKAGE = myprg
 
@@ -970,14 +961,14 @@ should read either the related man page or the relevant info file.</para>
 
 <sect1>
 <title>I use the backquote stuff in my makefiles, but my make
-process failed.</title>
+process failed. <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>The backquote construction seems to not be accepted by
 some old <command>make</command> utilities. If you use one of these, the
 make process will probably fail. In order to have the
 backquote syntax working again, you should use the GNU make
 utility (get it on the GNU ftp server at <ulink
-url="ftp://ftp.gnu.org/">ftp://ftp.gnu.org/</ulink>).</para>
+url="ftp://ftp.gnu.org/gnu/make/">ftp://ftp.gnu.org/gnu/make/</ulink>).</para>
 
 </sect1>
 
@@ -985,7 +976,7 @@ url="ftp://ftp.gnu.org/">ftp://ftp.gnu.org/</ulink>).</para>
 
 <sect1>
 <title>I want to add some configure stuff, how could I do
-this?</title>
+this? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>To use autoconf/automake, you must first install the
 relevant packages. These are:</para>
@@ -994,14 +985,14 @@ relevant packages. These are:</para>
 <listitem><simpara>the m4 preprocessor v1.4 or better</simpara>
 </listitem>
 
-<listitem><simpara>autoconf v2.13 or better</simpara>
+<listitem><simpara>autoconf v2.54 or better</simpara>
 </listitem>
 
-<listitem><simpara>automake v1.4 or better</simpara>
+<listitem><simpara>automake v1.7 or better suggested</simpara>
 </listitem>
 </itemizedlist>
 
-<para>You'll find these packages on the GNU main ftp server
+<para>You'll find these packages on the main GNU ftp server
 (<ulink url="ftp://ftp.gnu.org/">ftp://ftp.gnu.org/</ulink>)
 or on any GNU mirror.</para>
 
@@ -1012,20 +1003,20 @@ you must create a configure.in which may look like:</para>
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for a GTK+ based program
 
-AC_INIT(myprg.c)dnl
-AM_INIT_AUTOMAKE(mypkgname,0.0.1)dnl
-AM_CONFIG_HEADER(config.h)dnl
+AC_INIT(myprg.c)
+AM_INIT_AUTOMAKE(mypkgname, 0.0.1)
+AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs.
 AC_PROG_CC dnl check for the c compiler
 dnl you should add CFLAGS="" here, 'cos it is set to -g by PROG_CC
 
 dnl Checks for libraries.
-AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(mypkgname 0.1 needs GTK))dnl
+AM_PATH_GTK_2_0(2.2.0,,AC_MSG_ERROR(mypkgname 0.1 needs GTK+ 2.2.0))
 
 AC_OUTPUT(
 	Makefile
-)dnl
+)
 </programlisting>
 
 <para>You must add a Makefile.am file:</para>
@@ -1069,7 +1060,7 @@ resources that deal with autoconf and automake).</para>
 <sect1>
 <title>I try to debug my GTK+ application with gdb, but it
 hangs my X server when I hit some breakpoint. Any
-Idea?</title>
+Idea? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>From Federico Mena Quintero:</para>
 
@@ -1089,6 +1080,17 @@ port is also great for debugging X programs. Old vt100/vt220
 terminals are dirt cheap but a bit hard to get (here in The
 Netherlands, YMMV).</quote></para>
 
+<para>
+Another option is to run your application on Xnest. Xnest is an X server
+which displays its root window in a regular window of another X server.  
+A pointer grab on the Xnest display will not affect the GUI of your debugger
+running on your regular X server.
+<programlisting>
+Xnest :1
+twm -display :1
+myapp --display=:1
+</programlisting>
+</para>
 </sect1>
 </chapter>
 
@@ -1192,7 +1194,7 @@ Netherlands, YMMV).</quote></para>
 
 <sect1>
 <title>Is GTK+ thread safe? How do I write multi-threaded GTK+
-applications?</title>
+applications? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>The GLib library can be used in a thread-safe mode by
 calling g_thread_init() before making any other GLib
@@ -1204,11 +1206,12 @@ simultaneously. If two different threads need to access the
 same hash table, the application is responsible for locking
 itself.</para>
 
-<para>When GLib is intialized to be thread-safe, GTK+ is
-<emphasis>thread aware</emphasis>. There is a single global
+<para>In order to make GDK thread aware, you also need to
+call gdk_threads_init() in conjunction with the above call.
+There is a single global
 lock that you must acquire with gdk_threads_enter() before
 making any GDK calls, and release with gdk_threads_leave()
-afterwards.</para>
+afterwards throughout your code.</para>
 
 <para>A minimal main program for a threaded GTK+ application
 looks like:</para>
@@ -1219,7 +1222,11 @@ main (int argc, char *argv[])
 {
   GtkWidget *window;
 
+  /* init threads */	
   g_thread_init(NULL);
+  gdk_threads_init();
+  
+  /* init gtk */
   gtk_init(&amp;argc, &amp;argv);
 
   window = create_window();
@@ -1229,7 +1236,7 @@ main (int argc, char *argv[])
   gtk_main();
   gdk_threads_leave();
 
-  return(0);
+  return 0;
 }
 </programlisting>
 
@@ -1246,36 +1253,30 @@ illustrate how to use threads within GTK+ programs.</para>
 <programlisting role="C">
 /*-------------------------------------------------------------------------
  * Filename:      gtk-thread.c
- * Version:       0.99.1
+ * Version:       1.99.1
  * Copyright:     Copyright (C) 1999, Erik Mouw
  * Author:        Erik Mouw &lt;J.A.K.Mouw@its.tudelft.nl&gt;
- * Description:   GTK threads example. 
+ * Description:   GTK threads example.
  * Created at:    Sun Oct 17 21:27:09 1999
- * Modified by:   Erik Mouw &lt;J.A.K.Mouw@its.tudelft.nl&gt;
- * Modified at:   Sun Oct 24 17:21:41 1999
+ * Modified by:   Owen Taylor &lt;otaylor@gtk.org&gt;
+ * Modified at:   Wed May 28 10:43:00 2003
  *-----------------------------------------------------------------------*/
 /*
  * Compile with:
  *
- * cc -o gtk-thread gtk-thread.c `gtk-config --cflags --libs gthread`
+ * cc -o gtk-thread gtk-thread.c `pkg-config --cflags --libs gtk+-2.0 gthread-2.0`
  *
- * Thanks to Sebastian Wilhelmi and Owen Taylor for pointing out some
- * bugs.
+ * Thanks to Sebastian Wilhelmi for pointing out some bugs in earlier versions.
  *
  */
 
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
 #include &lt;unistd.h&gt;
-#include &lt;time.h&gt;
 #include &lt;gtk/gtk.h&gt;
-#include &lt;glib.h&gt;
-#include &lt;pthread.h&gt;
 
 #define YES_IT_IS    (1)
 #define NO_IT_IS_NOT (0)
 
-typedef struct 
+typedef struct
 {
   GtkWidget *label;
   int what;
@@ -1297,7 +1298,7 @@ void *argument_thread(void *args)
   for(;;)
     {
       /* sleep a while */
-      sleep(rand() / (RAND_MAX / 3) + 1);
+      sleep(g_random_int_range (1, 4));
 
       /* lock the yes_or_no_variable */
       G_LOCK(yes_or_no);
@@ -1325,42 +1326,46 @@ void *argument_thread(void *args)
 	  else
 	    gtk_label_set_text(GTK_LABEL(data->label), "O no, it isn't!");
 
+	  /* Make sure all X commands are sent to the X server; not strictly
+	   * necessary here, but always a good idea when you do anything
+	   * from a thread other than the one where the main loop is running.
+	   */
+	  gdk_flush ();
+
 	  /* release GTK thread lock */
 	  gdk_threads_leave();
 	}
     }
 
-  return(NULL);
+  return NULL;
 }
 
 int main(int argc, char *argv[])
 {
   GtkWidget *window;
   GtkWidget *label;
+  GError *error = NULL;
   yes_or_no_args yes_args, no_args;
-  pthread_t no_tid, yes_tid;
 
   /* init threads */
   g_thread_init(NULL);
+  gdk_threads_init();
 
   /* init gtk */
   gtk_init(&amp;argc, &amp;argv);
 
-  /* init random number generator */
-  srand((unsigned int)time(NULL));
-
   /* create a window */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-  gtk_signal_connect(GTK_OBJECT (window), "destroy",
-		     GTK_SIGNAL_FUNC(destroy), NULL);
+  g_signal_connect(window, "destroy",
+		   G_CALLBACK(destroy), NULL);
 
   gtk_container_set_border_width(GTK_CONTAINER (window), 10);
 
   /* create a label */
   label = gtk_label_new("And now for something completely different ...");
   gtk_container_add(GTK_CONTAINER(window), label);
-  
+
   /* show everything */
   gtk_widget_show(label);
   gtk_widget_show (window);
@@ -1368,18 +1373,26 @@ int main(int argc, char *argv[])
   /* create the threads */
   yes_args.label = label;
   yes_args.what = YES_IT_IS;
-  pthread_create(&amp;yes_tid, NULL, argument_thread, &amp;yes_args);
+  if (!g_thread_create(argument_thread, &amp;yes_args, FALSE, &amp;error))
+    {
+      g_printerr ("Failed to create YES thread: %s\n", error->message);
+      return 1;
+    }
 
   no_args.label = label;
   no_args.what = NO_IT_IS_NOT;
-  pthread_create(&amp;no_tid, NULL, argument_thread, &amp;no_args);
+  if (!g_thread_create(argument_thread, &amp;no_args, FALSE, &amp;error))
+    {
+      g_printerr ("Failed to create NO thread: %s\n", error->message);
+      return 1;
+    }
 
   /* enter the GTK main loop */
   gdk_threads_enter();
   gtk_main();
   gdk_threads_leave();
 
-  return(0);
+  return 0;
 }
 </programlisting>
 </sect1>
@@ -1387,8 +1400,76 @@ int main(int argc, char *argv[])
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
+<title>I'm doing some stuff with GTK+ in a separate thread, and
+properly locking with gdk_threads_enter/gdk_threads_leave()
+but the display doesn't update properly. <emphasis>[GTK 2.x]</emphasis>
+</title>
+
+<para>For efficiency, the X window system batches up commands
+and sends them to the X server in batches instead of sending
+out immediately.</para>
+
+<para>In a non-multithreaded program, you don't have to worry about
+this, since the first thing that happens when control returns
+to the main loop is that any outstanding X requests are 
+sent to the X server.</para>
+
+<para>However, if you are making GTK+ calls from a thread other
+than the main loop, then GTK+ doesn't know when to send batched
+commands out. For that reason, after making GTK+ calls 
+in a separate thread, it is usually a good idea to call
+gdk_flush() before gdk_thread_leave().</para>
+
+<para>Actually, gdk_flush() is more expensive than is necessary here,
+since it waits for the X server to finish outstanding commands
+as well; if performance is an issue, you may want to call
+XFlush() directly:</para>
+
+<programlisting role="C">
+
+#include &lt;gdk/gdkx.h&gt;
+
+void my_flush_commands (void)
+{
+  GdkDisplay *display = gdk_display_get_default ();
+  XFlush (GDK_DISPLAY_XDISPLAY (display);
+}
+</programlisting>
+
+</sect1>
+
+<!-- ----------------------------------------------------------------- -->
+
+<sect1>
+<title>What's an easy way to run a function in the thread with
+the main loop? <emphasis>[GTK 2.x]</emphasis></title>
+
+<para>Sometimes the simplest way to set up a threaded program
+is to make all the GTK+ calls in a single thread. In such
+a program, you should still call g_threads_init(), but
+don't need to call gdk_threads_init(), gkd_threads_enter(),
+and gdk_threads_leave().</para>
+
+<para>If you set your program up this way, how then do you get
+the thread making GTK+ calls and running the main loop
+to do something in response to another thread?</para>
+
+<para>An easy way to do it is to take advantage of the fact that
+the GLib main loop functions are all thread safe, and can
+be called from any thread by adding an idle function
+with g_idle_add(). The function provided will be called
+at the next opportunity by the main thread. If you want
+your function to take priority over event handling and
+drawing, you can instead use g_idle_add_full() and pass
+in a priority of G_PRIORITY_HIGH.</para>
+
+</sect1>
+
+<!-- ----------------------------------------------------------------- -->
+
+<sect1>
 <title>Why does this strange 'x io error' occur when I
-<literal>fork()</literal> in my GTK+ app?</title>
+<literal>fork()</literal> in my GTK+ app? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>This is not really a GTK+ problem, and the problem is
 not related to <literal>fork()</literal> either. If the 'x io
@@ -1409,18 +1490,20 @@ illustrate handling fork() and exit().</para>
 <programlisting role="C">
 /*-------------------------------------------------------------------------
  * Filename:      gtk-fork.c
- * Version:       0.99.1
+ * Version:       0.99.2
  * Copyright:     Copyright (C) 1999, Erik Mouw
  * Author:        Erik Mouw &lt;J.A.K.Mouw@its.tudelft.nl&gt;
  * Description:   GTK+ fork example
  * Created at:    Thu Sep 23 21:37:55 1999
  * Modified by:   Erik Mouw &lt;J.A.K.Mouw@its.tudelft.nl&gt;
  * Modified at:   Thu Sep 23 22:39:39 1999
+ * Modified by:   Tony Gale &lt;gale@gtk.org&gt;
+ * Modified at:   Wed Jan 14 12:38:00 2004
  *-----------------------------------------------------------------------*/
 /*
  * Compile with:
  *
- * cc -o gtk-fork gtk-fork.c `gtk-config --cflags --libs`
+ * cc -o gtk-fork gtk-fork.c `pkg-config gtk+-2.0 --cflags --libs`
  *
  */
 
@@ -1444,7 +1527,7 @@ void sigchld_handler(int num)
   sigprocmask(SIG_BLOCK, &amp;set, &amp;oldset);
 
   /* wait for child */
-  while((pid = waitpid((pid_t)-1, &amp;status, WNOHANG)) > 0)
+  while((pid = waitpid((pid_t)-1, &amp;status, WNOHANG)) &gt; 0)
     {
       if(WIFEXITED(status))
 	{
@@ -1541,13 +1624,13 @@ int main(int argc, char *argv[])
    */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-  gtk_signal_connect(GTK_OBJECT (window), "delete_event",
-		     GTK_SIGNAL_FUNC(delete_event), NULL);
+  g_signal_connect(G_OBJECT (window), "delete_event",
+		     G_CALLBACK(delete_event), NULL);
           
-  gtk_signal_connect(GTK_OBJECT (window), "destroy",
-		     GTK_SIGNAL_FUNC(destroy), NULL);
+  g_signal_connect(G_OBJECT (window), "destroy",
+		     G_CALLBACK(destroy), NULL);
 
-#if (GTK_MAJOR_VERSION == 1) && (GTK_MINOR_VERSION == 0)
+#if (GTK_MAJOR_VERSION == 1) &amp;&amp; (GTK_MINOR_VERSION == 0)
   gtk_container_border_width(GTK_CONTAINER (window), 10);
 #else  
   gtk_container_set_border_width(GTK_CONTAINER (window), 10);
@@ -1556,8 +1639,8 @@ int main(int argc, char *argv[])
   /* add a button to do something usefull */
   button = gtk_button_new_with_label("Fork me!");
           
-  gtk_signal_connect(GTK_OBJECT (button), "clicked",
-		     GTK_SIGNAL_FUNC(fork_me), NULL);
+  g_signal_connect(G_OBJECT (button), "clicked",
+		     G_CALLBACK(fork_me), NULL);
 
   gtk_container_add(GTK_CONTAINER(window), button);
           
@@ -1582,7 +1665,7 @@ int main(int argc, char *argv[])
 
 <sect1>
 <title>Why don't the contents of a button move when the button
-is pressed? Here's a patch to make it work that way...</title>
+is pressed? Here's a patch to make it work that way... <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>From: Peter Mattis</para>
 
@@ -1608,12 +1691,12 @@ and determined it didn't look good and removed it.</quote></para>
 
 <sect1>
 <title>How do I identifiy a widgets top level window or other
-ancestor?</title>
+ancestor? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>There are a couple of ways to find the top level parent
-of a widget. The easier way is to call the
-<literal>gtk_widget_top_level()</literal> function that
-returns pointer to a GtkWidget that is the top level
+of a widget. The easiest way is to call the
+<literal>gtk_widget_get_toplevel()</literal> function that
+returns a pointer to a GtkWidget that is the top level
 window.</para>
 
 <para>A more complicated way to do this (but less limited, as
@@ -1637,12 +1720,16 @@ widget (entry, label, etc. To find the master hbox using the
       hbox = gtk_widget_get_ancestor(w, GTK_TYPE_HBOX);
 </programlisting>
 
+<para>You can also follow the a widgets ancestry by using the function
+<literal>gtk_widget_get_parent()</literal> that returns a pointer
+to a widgets parent widget.</para>
+
 </sect1>
 
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I get the Window ID of a GtkWindow?</title>
+<title>How do I get the Window ID of a GtkWindow? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>The actual Gdk/X window will be created when the widget
 gets realized. You can get the Window ID with:</para>
@@ -1657,8 +1744,7 @@ Window xwin = GDK_WINDOW_XWINDOW (GTK_WIDGET (my_window)->window);
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I catch a double click event (in a list widget,
-for example)?</title>
+<title>How do I catch a double click event? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>Tim Janik wrote to gtk-list (slightly modified):</para>
 
@@ -1668,10 +1754,10 @@ for example)?</title>
 gint
 signal_handler_event(GtkWidget *widget, GdkEventButton *event, gpointer func_data)
 {
-  if (GTK_IS_LIST_ITEM(widget) &&
+  if (GTK_IS_BUTTON(widget) &&
        (event->type==GDK_2BUTTON_PRESS ||
         event->type==GDK_3BUTTON_PRESS) ) {
-    printf("I feel %s clicked on button %d\n",
+    printf("I feel %s clicked with button %d\n",
            event->type==GDK_2BUTTON_PRESS ? "double" : "triple",
            event->button);
   }
@@ -1683,18 +1769,18 @@ signal_handler_event(GtkWidget *widget, GdkEventButton *event, gpointer func_dat
 
 <programlisting role="C">
 {
-  /* list, list item init stuff */     
+  /* button init stuff */     
 
-  gtk_signal_connect(GTK_OBJECT(list_item),
+  g_signal_connect(G_OBJECT(button),
                      "button_press_event",
-                     GTK_SIGNAL_FUNC(signal_handler_event),
+                     G_CALLBACK(signal_handler_event),
                      NULL);
 
   /* and/or */
 
-  gtk_signal_connect(GTK_OBJECT(list_item),
+  g_signal_connect(G_OBJECT(button),
                      "button_release_event",
-                     GTK_SIGNAL_FUNC(signal_handler_event),
+                     G_CALLBACK(signal_handler_event),
                      NULL);
 
   /* something else */
@@ -1898,7 +1984,7 @@ do <literal>gtk_grab_remove(my_window)</literal>.</para>
 
 <sect1>
 <title>Why doesn't my widget (e.g. progressbar)
-update?</title>
+update? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>You are probably doing all the changes within a function without
 returning control to <literal>gtk_main()</literal>. This may
@@ -1909,7 +1995,7 @@ drawing queue to be processed using something like:</para>
 
 
 <programlisting role="C">
-while (g_main_iteration(FALSE));
+while (g_main_context_iteration(NULL, FALSE));
 </programlisting>
 
 <para>inside you're function that changes the widget.</para>
@@ -1923,7 +2009,8 @@ and high priority idle functions, then return immediately
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I attach data to some GTK+ object/widget?</title>
+<title>How do I attach data to some GTK+ object/widget?
+<emphasis>[GTK 2.x]</emphasis></title>
 
 <para>First of all, the attached data is stored in the
 object_data field of a GtkObject. The type of this field is
@@ -1932,15 +2019,15 @@ gdataset.c file in your glib source directory very
 carefully.</para>
 
 <para>There are two (easy) ways to attach some data to a gtk
-object.  Using <literal>gtk_object_set_data()</literal> and
-<literal>gtk_object_get_data()</literal> seems to be the most
+object.  Using <literal>g_object_set_data()</literal> and
+<literal>g_object_get_data()</literal> seems to be the most
 common way to do this, as it provides a powerful interface to
 connect objects and data.</para>
 
 <programlisting role="C">
-void gtk_object_set_data(GtkObject *object, const gchar *key, gpointer data);
+void g_object_set_data(GObject *object, const gchar *key, gpointer data);
 
-gpointer gtk_object_get_data(GtkObject *object, const gchar *key);
+gpointer g_object_get_data(GObject *object, const gchar *key);
 </programlisting>
 
 <para>Since a short example is better than any lengthy speech:</para>
@@ -1949,10 +2036,10 @@ gpointer gtk_object_get_data(GtkObject *object, const gchar *key);
 struct my_struct	p1,p2,*result;
 GtkWidget		*w;
 
-gtk_object_set_data(GTK_OBJECT(w),"p1 data",(gpointer)&amp;p1);
-gtk_object_set_data(GTK_OBJECT(w),"p2 data",(gpointer)&amp;p2);
+g_object_set_data(G_OBJECT(w),"p1 data",(gpointer)&amp;p1);
+g_object_set_data(G_OBJECT(w),"p2 data",(gpointer)&amp;p2);
 
-result = gtk_object_get_data(GTK_OBJECT(w),"p1 data");
+result = g_object_get_data(G_OBJECT(w),"p1 data");
 </programlisting>
 
 <para>The <literal>gtk_object_set_user_data()</literal> and
@@ -2075,62 +2162,24 @@ windows.</para>
 
 <sect1>
 <title>How do I set the size of a widget/window? How do I
-prevent the user resizing my window?</title>
+prevent the user resizing my window? <emphasis>[GTK 2.x]</emphasis></title>
 
-<para>The <literal>gtk_widget_set_uposition()</literal>
-function is used to set the position of any widget.</para>
+<para>The <literal>gtk_widget_set_size_request()</literal> function
+is used to set the size of a widget to a specific size.
 
-<para>The <literal>gtk_widget_set_usize()</literal> function
-is used to set the size of a widget. In order to use all the
-features that are provided by this function when it acts on a
-window, you may want to use the
-<literal>gtk_window_set_policy</literal> function. The
+The function
+<literal>gtk_window_set_resizable()</literal> function sets whether
+the user can resize a window, which they can by default. The
 definition of these functions are:</para>
 
 <programlisting role="C">
-void gtk_widget_set_usize (GtkWidget *widget,
-                           gint width,
-                           gint height);
+void gtk_widget_set_size_request (GtkWidget *widget,
+                                  gint       width,
+                                  gint       height);
 
-void gtk_window_set_policy (GtkWindow *window,
-                            gint allow_shrink,
-                            gint allow_grow,
-                            gint auto_shrink);
-</programlisting>
+void gtk_window_set_resizable (GtkWindow *window,
+                               gboolean   resizable);
 
-<para><literal>auto_shrink</literal> will automatically shrink
-the window when the requested size of the child widgets goes
-below the current size of the
-window. <literal>allow_shrink</literal> will give the user the
-authorisation to make the window smaller that it should
-normally be. <literal>allow_grow</literal> gives the user
-the ability to make the window bigger. The default
-values for these parameters are:</para>
-
-<programlisting role="C">
-allow_shrink = FALSE
-allow_grow   = TRUE
-auto_shrink  = FALSE
-</programlisting>
-
-<para>The <literal>gtk_widget_set_usize()</literal> functions
-is not the easiest way to set a window size since you cannot
-decrease this window size with another call to this function
-unless you call it twice, as in:</para>
-
-<programlisting role="C">
-     gtk_widget_set_usize(your_widget, -1, -1);
-     gtk_widget_set_usize(your_widget, new_x_size, new_y_size);
-</programlisting>
-
-<para>Another way to set the size of and/or move a window is to use
-the <literal>gdk_window_move_resize()</literal> function which
-uses to work fine both to grow or to shrink the window:</para>
-
-<programlisting role="C">
-     gdk_window_move_resize(window->window, 
-                            x_pos, y_pos, 
-                            x_size, y_size);
 </programlisting>
 
 </sect1>
@@ -2826,7 +2875,7 @@ be:</para>
 <!-- ----------------------------------------------------------------- -->
 
 <sect1>
-<title>How do I validate/limit/filter the input to a GtkEntry?</title>
+<title>How do I validate/limit/filter the input to a GtkEntry? <emphasis>[GTK 2.x]</emphasis></title>
 
 <para>If you want to validate the text that a user enters into
 a GtkEntry widget you can attach to the "insert_text" signal
@@ -2857,16 +2906,16 @@ void insert_text_handler (GtkEntry    *entry,
   }
   
   if (count > 0) {
-    gtk_signal_handler_block_by_func (GTK_OBJECT (editable),
-				      GTK_SIGNAL_FUNC (insert_text_handler),
-				      data);
+    g_signal_handlers_block_by_func (G_OBJECT (editable),
+                                     G_CALLBACK (insert_text_handler),
+                                     data);
     gtk_editable_insert_text (editable, result, count, position);
-    gtk_signal_handler_unblock_by_func (GTK_OBJECT (editable),
-					GTK_SIGNAL_FUNC (insert_text_handler),
-					data);
+    g_signal_handlers_unblock_by_func (G_OBJECT (editable),
+                                       G_CALLBACK (insert_text_handler),
+                                       data);
   }
-  gtk_signal_emit_stop_by_name (GTK_OBJECT (editable), "insert_text");
-  
+  g_signal_stop_emission_by_name (G_OBJECT (editable), "insert_text");
+
   g_free (result);
 }
 
@@ -2881,12 +2930,13 @@ int main (int   argc,
   /* create a new window */
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW (window), "GTK Entry");
-  gtk_signal_connect(GTK_OBJECT (window), "delete_event",
-		     (GtkSignalFunc) gtk_exit, NULL);
-  
+  g_signal_connect (G_OBJECT (window), "destroy",
+                    G_CALLBACK (gtk_main_quit),
+                    NULL);
+
   entry = gtk_entry_new();
-  gtk_signal_connect(GTK_OBJECT(entry), "insert_text",
-		     GTK_SIGNAL_FUNC(insert_text_handler),
+  g_signal_connect(G_OBJECT(entry), "insert_text",
+		     G_CALLBACK(insert_text_handler),
 		     NULL);
   gtk_container_add(GTK_CONTAINER (window), entry);
   gtk_widget_show(entry);
@@ -3553,22 +3603,15 @@ and become more useful!</para>
 Tony Gale
 <ulink url="mailto:gale@gtk.org">&lt;gale@gtk.org&gt;</ulink>
 
-Nathan Froyd
-<ulink url="mailto:maestrox@geocities.com">
-&lt;maestrox@geocities.com&gt;</ulink>,
-and 
-Emmanuel Deloget
-<ulink url="mailto:logout@free.fr">&lt;logout@free.fr&gt;</ulink>.
-
 This FAQ was created by Shawn T. Amundson 
 <ulink url="mailto:amundson@gimp.org">
-&lt;amundson@gimp.org&gt;</ulink> who continues to provide support.
+&lt;amundson@gimp.org&gt;</ulink>.
 
 Contributions should be sent to Tony Gale <ulink
 url="mailto:gale@gtk.org">&lt;gale@gtk.org&gt;</ulink></para>
 
-<para>The GTK+ FAQ is Copyright (C) 1997-2000 by Shawn T. Amundson, 
-Tony Gale, Emmanuel Deloget and Nathan Froyd.</para>
+<para>The GTK+ FAQ is Copyright (C) 1997-2003 by Shawn T. Amundson, 
+Tony Gale.</para>
 
 <para>Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are

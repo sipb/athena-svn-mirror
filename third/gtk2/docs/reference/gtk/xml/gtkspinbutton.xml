@@ -19,7 +19,7 @@
 struct      <link linkend="GtkSpinButton-struct">GtkSpinButton</link>;
 enum        <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link>;
 enum        <link linkend="GtkSpinType">GtkSpinType</link>;
-void        <link linkend="gtk-spin-button-configure">gtk_spin_button_configure</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-configure">gtk_spin_button_configure</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment,
                                              <link linkend="gdouble">gdouble</link> climb_rate,
                                              <link linkend="guint">guint</link> digits);
@@ -29,43 +29,43 @@ void        <link linkend="gtk-spin-button-configure">gtk_spin_button_configure<
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-spin-button-new-with-range">gtk_spin_button_new_with_range</link>  (<link linkend="gdouble">gdouble</link> min,
                                              <link linkend="gdouble">gdouble</link> max,
                                              <link linkend="gdouble">gdouble</link> step);
-void        <link linkend="gtk-spin-button-set-adjustment">gtk_spin_button_set_adjustment</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-adjustment">gtk_spin_button_set_adjustment</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);
 <link linkend="GtkAdjustment">GtkAdjustment</link>* <link linkend="gtk-spin-button-get-adjustment">gtk_spin_button_get_adjustment</link>
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
-void        <link linkend="gtk-spin-button-set-digits">gtk_spin_button_set_digits</link>      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-digits">gtk_spin_button_set_digits</link>      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="guint">guint</link> digits);
-void        <link linkend="gtk-spin-button-set-increments">gtk_spin_button_set_increments</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-increments">gtk_spin_button_set_increments</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> step,
                                              <link linkend="gdouble">gdouble</link> page);
-void        <link linkend="gtk-spin-button-set-range">gtk_spin_button_set_range</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-range">gtk_spin_button_set_range</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> min,
                                              <link linkend="gdouble">gdouble</link> max);
 #define     <link linkend="gtk-spin-button-get-value-as-float">gtk_spin_button_get_value_as_float</link>
 <link linkend="gint">gint</link>        <link linkend="gtk-spin-button-get-value-as-int">gtk_spin_button_get_value_as_int</link>
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
-void        <link linkend="gtk-spin-button-set-value">gtk_spin_button_set_value</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-value">gtk_spin_button_set_value</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> value);
-void        <link linkend="gtk-spin-button-set-update-policy">gtk_spin_button_set_update_policy</link>
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-update-policy">gtk_spin_button_set_update_policy</link>
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> policy);
-void        <link linkend="gtk-spin-button-set-numeric">gtk_spin_button_set_numeric</link>     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-numeric">gtk_spin_button_set_numeric</link>     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> numeric);
-void        <link linkend="gtk-spin-button-spin">gtk_spin_button_spin</link>            (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-spin">gtk_spin_button_spin</link>            (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkSpinType">GtkSpinType</link> direction,
                                              <link linkend="gdouble">gdouble</link> increment);
-void        <link linkend="gtk-spin-button-set-wrap">gtk_spin_button_set_wrap</link>        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-wrap">gtk_spin_button_set_wrap</link>        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> wrap);
-void        <link linkend="gtk-spin-button-set-snap-to-ticks">gtk_spin_button_set_snap_to_ticks</link>
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-set-snap-to-ticks">gtk_spin_button_set_snap_to_ticks</link>
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> snap_to_ticks);
-void        <link linkend="gtk-spin-button-update">gtk_spin_button_update</link>          (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-update">gtk_spin_button_update</link>          (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
 <link linkend="guint">guint</link>       <link linkend="gtk-spin-button-get-digits">gtk_spin_button_get_digits</link>      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
-void        <link linkend="gtk-spin-button-get-increments">gtk_spin_button_get_increments</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-get-increments">gtk_spin_button_get_increments</link>  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> *step,
                                              <link linkend="gdouble">gdouble</link> *page);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-spin-button-get-numeric">gtk_spin_button_get_numeric</link>     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);
-void        <link linkend="gtk-spin-button-get-range">gtk_spin_button_get_range</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<link linkend="void">void</link>        <link linkend="gtk-spin-button-get-range">gtk_spin_button_get_range</link>       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> *min,
                                              <link linkend="gdouble">gdouble</link> *max);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-spin-button-get-snap-to-ticks">gtk_spin_button_get_snap_to_ticks</link>
@@ -93,11 +93,14 @@ void        <link linkend="gtk-spin-button-get-range">gtk_spin_button_get_range<
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkSpinButton implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>, <link linkend="GtkEditable">GtkEditable</link> and <link linkend="GtkCellEditable">GtkCellEditable</link>.
-</para>
+GtkSpinButton implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>,  <link linkend="GtkEditable">GtkEditable</link> and  <link linkend="GtkCellEditable">GtkCellEditable</link>.</para>
+
 </refsect1>
 
 
@@ -105,21 +108,21 @@ GtkSpinButton implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkSpinButton--adjustment">adjustment</link>&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write
-  &quot;<link linkend="GtkSpinButton--climb-rate">climb-rate</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkSpinButton--digits">digits</link>&quot;               <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkSpinButton--numeric">numeric</link>&quot;              <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkSpinButton--snap-to-ticks">snap-to-ticks</link>&quot;        <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkSpinButton--update-policy">update-policy</link>&quot;        <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> : Read / Write
-  &quot;<link linkend="GtkSpinButton--value">value</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkSpinButton--wrap">wrap</link>&quot;                 <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GtkSpinButton--adjustment">adjustment</link>&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write
+  &quot;<link linkend="GtkSpinButton--climb-rate">climb-rate</link>&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkSpinButton--digits">digits</link>&quot;               <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkSpinButton--numeric">numeric</link>&quot;              <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkSpinButton--snap-to-ticks">snap-to-ticks</link>&quot;        <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkSpinButton--update-policy">update-policy</link>&quot;        <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link>  : Read / Write
+  &quot;<link linkend="GtkSpinButton--value">value</link>&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkSpinButton--wrap">wrap</link>&quot;                 <link linkend="gboolean">gboolean</link>              : Read / Write
 </synopsis>
 </refsect1>
 <refsect1>
 <title>Style Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkSpinButton--shadow-type">shadow-type</link>&quot;          <link linkend="GtkShadowType">GtkShadowType</link>        : Read
+  &quot;<link linkend="GtkSpinButton--shadow-type">shadow-type</link>&quot;          <link linkend="GtkShadowType">GtkShadowType</link>         : Read
 </synopsis>
 </refsect1>
 
@@ -128,7 +131,7 @@ GtkSpinButton implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <synopsis>
 
 &quot;<link linkend="GtkSpinButton-change-value">change-value</link>&quot;
-            void        user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
                                             <link linkend="GtkScrollType">GtkScrollType</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkSpinButton-input">input</link>&quot;     <link linkend="gint">gint</link>        user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
@@ -137,7 +140,7 @@ GtkSpinButton implements <link linkend="AtkImplementorIface">AtkImplementorIface
 &quot;<link linkend="GtkSpinButton-output">output</link>&quot;    <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkSpinButton-value-changed">value-changed</link>&quot;
-            void        user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -146,15 +149,15 @@ GtkSpinButton implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <refsect1>
 <title>Description</title>
 <para>
-A <link linkend="GtkSpinButton">GtkSpinButton</link> is an ideal way to allow the user to set the value of some 
-attribute. Rather than having to directly type a number into a <link linkend="GtkEntry">GtkEntry</link>, 
-<link linkend="GtkSpinButton">GtkSpinButton</link> allows the user to click on one of two arrows to increment or 
+A <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> is an ideal way to allow the user to set the value of some 
+attribute. Rather than having to directly type a number into a <link linkend="GtkEntry"><type>GtkEntry</type></link>, 
+<link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> allows the user to click on one of two arrows to increment or 
 decrement the displayed value. A value can still be typed in, with the bonus 
 that it can be checked to ensure it is in a given range.
 </para>
 <para>
-The main properties of a <link linkend="GtkSpinButton">GtkSpinButton</link> are through a <link linkend="GtkAdjustment">GtkAdjustment</link>. See the 
-<link linkend="GtkAdjustment">GtkAdjustment</link> section for more details about an adjustment's properties.
+The main properties of a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> are through a <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>. See the 
+<link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> section for more details about an adjustment's properties.
 </para>
 <para>
 <example>
@@ -231,15 +234,15 @@ void create_floating_spin_button (void) {
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkSpinButton-struct"/>struct GtkSpinButton</title>
-<programlisting>struct GtkSpinButton;</programlisting>
+<indexterm><primary>GtkSpinButton</primary></indexterm><programlisting>struct GtkSpinButton;</programlisting>
 <para>
-<structfield>entry</structfield> is the <link linkend="GtkEntry">GtkEntry</link> part of the <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<structfield>entry</structfield> is the <link linkend="GtkEntry"><type>GtkEntry</type></link> part of the <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 widget, and can be used accordingly. All other fields contain private data 
 and should only be modified using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkSpinButtonUpdatePolicy"/>enum GtkSpinButtonUpdatePolicy</title>
-<programlisting>typedef enum
+<indexterm><primary>GtkSpinButtonUpdatePolicy</primary></indexterm><programlisting>typedef enum
 {
   GTK_UPDATE_ALWAYS,
   GTK_UPDATE_IF_VALID
@@ -252,17 +255,17 @@ and should only be modified using the functions below.
 <tbody>
 <row>
 <entry>GTK_UPDATE_ALWAYS</entry>
-<entry>When refreshing your <link linkend="GtkSpinButton">GtkSpinButton</link>, the value is always displayed.</entry>
+<entry>When refreshing your <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>, the value is always displayed.</entry>
 </row>
 <row>
 <entry>GTK_UPDATE_IF_VALID</entry>
-<entry>When refreshing your <link linkend="GtkSpinButton">GtkSpinButton</link>, the value is only displayed if it is valid within the bounds of the spin button's <link linkend="GtkAdjustment">GtkAdjustment</link>.</entry>
+<entry>When refreshing your <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>, the value is only displayed if it is valid within the bounds of the spin button's <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>.</entry>
 </row>
 </tbody></tgroup></informaltable>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkSpinType"/>enum GtkSpinType</title>
-<programlisting>typedef enum
+<indexterm><primary>GtkSpinType</primary></indexterm><programlisting>typedef enum
 {
   GTK_SPIN_STEP_FORWARD,
   GTK_SPIN_STEP_BACKWARD,
@@ -283,22 +286,22 @@ and should only be modified using the functions below.
 GTK_SPIN_STEP_BACKWARD, 
 GTK_SPIN_PAGE_FORWARD, 
 GTK_SPIN_PAGE_BACKWARD</entry>
-<entry>These values spin a <link linkend="GtkSpinButton">GtkSpinButton</link> by the relevant values of the spin button's <link linkend="GtkAdjustment">GtkAdjustment</link>.</entry>
+<entry>These values spin a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> by the relevant values of the spin button's <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>.</entry>
 </row>
 <row>
 <entry>GTK_SPIN_HOME, 
 GTK_SPIN_END</entry>
-<entry>These set the spin button's value to the minimum or maxmimum possible values, (set by it's <link linkend="GtkAdjustment">GtkAdjustment</link>), respectively.</entry>
+<entry>These set the spin button's value to the minimum or maxmimum possible values, (set by its <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>), respectively.</entry>
 </row>
 <row>
 <entry>GTK_SPIN_USER_DEFINED</entry>
-<entry>The programmer must specify the exact amount to spin the <link linkend="GtkSpinButton">GtkSpinButton</link>.</entry>
+<entry>The programmer must specify the exact amount to spin the <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>.</entry>
 </row>
 </tbody></tgroup></informaltable>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-configure"/>gtk_spin_button_configure ()</title>
-<programlisting>void        gtk_spin_button_configure       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_configure</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_configure       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment,
                                              <link linkend="gdouble">gdouble</link> climb_rate,
                                              <link linkend="guint">guint</link> digits);</programlisting>
@@ -306,10 +309,10 @@ GTK_SPIN_END</entry>
 Changes the properties of an existing spin button. The adjustment, climb rate, and number of decimal places are all changed accordingly, after this function call.
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkSpinButton">GtkSpinButton</link>.
+<listitem><simpara>a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkAdjustment">GtkAdjustment</link>.
+<listitem><simpara>a <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>climb_rate</parameter>&nbsp;:</term>
 <listitem><simpara>the new climb rate.
@@ -322,14 +325,14 @@ Changes the properties of an existing spin button. The adjustment, climb rate, a
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-new"/>gtk_spin_button_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_spin_button_new             (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment,
+<indexterm><primary>gtk_spin_button_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_spin_button_new             (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment,
                                              <link linkend="gdouble">gdouble</link> climb_rate,
                                              <link linkend="guint">guint</link> digits);</programlisting>
 <para>
-Creates a new <link linkend="GtkSpinButton">GtkSpinButton</link>.
+Creates a new <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkAdjustment">GtkAdjustment</link> object that this spin button should use.
+<listitem><simpara>the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> object that this spin button should use.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>climb_rate</parameter>&nbsp;:</term>
 <listitem><simpara>specifies how much the spin button changes when an arrow is clicked on.
@@ -337,19 +340,19 @@ Creates a new <link linkend="GtkSpinButton">GtkSpinButton</link>.
 <varlistentry><term><parameter>digits</parameter>&nbsp;:</term>
 <listitem><simpara>the number of decimal places to display.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The new spin button as a <link linkend="GtkWidget">GtkWidget</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The new spin button as a <link linkend="GtkWidget"><type>GtkWidget</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-new-with-range"/>gtk_spin_button_new_with_range ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_spin_button_new_with_range  (<link linkend="gdouble">gdouble</link> min,
+<indexterm><primary>gtk_spin_button_new_with_range</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_spin_button_new_with_range  (<link linkend="gdouble">gdouble</link> min,
                                              <link linkend="gdouble">gdouble</link> max,
                                              <link linkend="gdouble">gdouble</link> step);</programlisting>
 <para>
 This is a convenience constructor that allows creation of a numeric 
-<link linkend="GtkSpinButton">GtkSpinButton</link> without manually creating an adjustment. The value is 
+<link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> without manually creating an adjustment. The value is 
 initially set to the minimum value and a page increment of 10 * <parameter>step</parameter>
 is the default. The precision of the spin button is equivalent to the 
 precision of <parameter>step</parameter>.</para>
@@ -365,43 +368,43 @@ precision of <parameter>step</parameter>.</para>
 <varlistentry><term><parameter>step</parameter>&nbsp;:</term>
 <listitem><simpara> Increment added or subtracted by spinning the widget
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new spin button as a <link linkend="GtkWidget">GtkWidget</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new spin button as a <link linkend="GtkWidget"><type>GtkWidget</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-adjustment"/>gtk_spin_button_set_adjustment ()</title>
-<programlisting>void        gtk_spin_button_set_adjustment  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_adjustment</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_adjustment  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
 <para>
-Replaces the <link linkend="GtkAdjustment">GtkAdjustment</link> associated with <parameter>spin_button</parameter>.</para>
+Replaces the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> associated with <parameter>spin_button</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkAdjustment">GtkAdjustment</link> to replace the existing adjustment
+<listitem><simpara> a <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> to replace the existing adjustment
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-adjustment"/>gtk_spin_button_get_adjustment ()</title>
-<programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>* gtk_spin_button_get_adjustment
+<indexterm><primary>gtk_spin_button_get_adjustment</primary></indexterm><programlisting><link linkend="GtkAdjustment">GtkAdjustment</link>* gtk_spin_button_get_adjustment
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
-Get the adjustment associated with a <link linkend="GtkSpinButton">GtkSpinButton</link></para>
+Get the adjustment associated with a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GtkAdjustment">GtkAdjustment</link> of <parameter>spin_button</parameter>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> of <parameter>spin_button</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-digits"/>gtk_spin_button_set_digits ()</title>
-<programlisting>void        gtk_spin_button_set_digits      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_digits</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_digits      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="guint">guint</link> digits);</programlisting>
 <para>
 Set the precision to be displayed by <parameter>spin_button</parameter>. Up to 20 digit precision
@@ -410,15 +413,15 @@ is allowed.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>digits</parameter>&nbsp;:</term>
-<listitem><simpara> the number of digits to be displayed for the spin button's value
+<listitem><simpara> the number of digits after the decimal point to be displayed for the spin button's value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-increments"/>gtk_spin_button_set_increments ()</title>
-<programlisting>void        gtk_spin_button_set_increments  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_increments</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_increments  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> step,
                                              <link linkend="gdouble">gdouble</link> page);</programlisting>
 <para>
@@ -428,7 +431,7 @@ quickly the value changes when the spin button's arrows are activated.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>step</parameter>&nbsp;:</term>
 <listitem><simpara> increment applied for a button 1 press.
@@ -439,7 +442,7 @@ quickly the value changes when the spin button's arrows are activated.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-range"/>gtk_spin_button_set_range ()</title>
-<programlisting>void        gtk_spin_button_set_range       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_range</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_range       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> min,
                                              <link linkend="gdouble">gdouble</link> max);</programlisting>
 <para>
@@ -448,7 +451,7 @@ Sets the minimum and maximum allowable values for <parameter>spin_button</parame
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>min</parameter>&nbsp;:</term>
 <listitem><simpara> minimum allowable value
@@ -459,19 +462,19 @@ Sets the minimum and maximum allowable values for <parameter>spin_button</parame
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-value-as-float"/>gtk_spin_button_get_value_as_float</title>
-<programlisting>#define gtk_spin_button_get_value_as_float gtk_spin_button_get_value
+<indexterm role="deprecated"><primary>gtk_spin_button_get_value_as_float</primary></indexterm><programlisting>#define gtk_spin_button_get_value_as_float gtk_spin_button_get_value
 </programlisting>
 <warning><para><literal>gtk_spin_button_get_value_as_float</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Gets the value in the <parameter>spin_button</parameter>. This function is deprecated,
-use <link linkend="gtk-spin-button-get-value">gtk_spin_button_get_value</link>() instead.
+use <link linkend="gtk-spin-button-get-value"><function>gtk_spin_button_get_value()</function></link> instead.
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>spin_button</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-value-as-int"/>gtk_spin_button_get_value_as_int ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_spin_button_get_value_as_int
+<indexterm><primary>gtk_spin_button_get_value_as_int</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_spin_button_get_value_as_int
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Get the value <parameter>spin_button</parameter> represented as an integer.</para>
@@ -479,14 +482,14 @@ Get the value <parameter>spin_button</parameter> represented as an integer.</par
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the value of <parameter>spin_button</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-value"/>gtk_spin_button_set_value ()</title>
-<programlisting>void        gtk_spin_button_set_value       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_value</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_value       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> value);</programlisting>
 <para>
 Set the value of <parameter>spin_button</parameter>.</para>
@@ -494,7 +497,7 @@ Set the value of <parameter>spin_button</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>value</parameter>&nbsp;:</term>
 <listitem><simpara> the new value
@@ -502,7 +505,7 @@ Set the value of <parameter>spin_button</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-update-policy"/>gtk_spin_button_set_update_policy ()</title>
-<programlisting>void        gtk_spin_button_set_update_policy
+<indexterm><primary>gtk_spin_button_set_update_policy</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_update_policy
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> policy);</programlisting>
 <para>
@@ -512,15 +515,15 @@ spin button is always updated or only when a valid value is set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>policy</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> value
+<listitem><simpara> a <link linkend="GtkSpinButtonUpdatePolicy"><type>GtkSpinButtonUpdatePolicy</type></link> value
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-numeric"/>gtk_spin_button_set_numeric ()</title>
-<programlisting>void        gtk_spin_button_set_numeric     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_numeric</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_numeric     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> numeric);</programlisting>
 <para>
 Sets the flag that determines if non-numeric text can be typed into
@@ -529,7 +532,7 @@ the spin button.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>numeric</parameter>&nbsp;:</term>
 <listitem><simpara> flag indicating if only numeric entry is allowed. 
@@ -537,7 +540,7 @@ the spin button.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-spin"/>gtk_spin_button_spin ()</title>
-<programlisting>void        gtk_spin_button_spin            (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_spin</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_spin            (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="GtkSpinType">GtkSpinType</link> direction,
                                              <link linkend="gdouble">gdouble</link> increment);</programlisting>
 <para>
@@ -547,10 +550,10 @@ by a specified amount.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>direction</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinType">GtkSpinType</link> indicating the direction to spin.
+<listitem><simpara> a <link linkend="GtkSpinType"><type>GtkSpinType</type></link> indicating the direction to spin.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>increment</parameter>&nbsp;:</term>
 <listitem><simpara> step increment to apply in the specified direction.
@@ -558,7 +561,7 @@ by a specified amount.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-wrap"/>gtk_spin_button_set_wrap ()</title>
-<programlisting>void        gtk_spin_button_set_wrap        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_set_wrap</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_wrap        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> wrap);</programlisting>
 <para>
 Sets the flag that determines if a spin button value wraps around to the
@@ -567,7 +570,7 @@ opposite limit when the upper or lower limit of the range is exceeded.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>wrap</parameter>&nbsp;:</term>
 <listitem><simpara> a flag indicating if wrapping behavior is performed.
@@ -575,7 +578,7 @@ opposite limit when the upper or lower limit of the range is exceeded.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-set-snap-to-ticks"/>gtk_spin_button_set_snap_to_ticks ()</title>
-<programlisting>void        gtk_spin_button_set_snap_to_ticks
+<indexterm><primary>gtk_spin_button_set_snap_to_ticks</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_set_snap_to_ticks
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gboolean">gboolean</link> snap_to_ticks);</programlisting>
 <para>
@@ -585,7 +588,7 @@ increment when a spin button is activated after providing an invalid value.</par
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>snap_to_ticks</parameter>&nbsp;:</term>
 <listitem><simpara> a flag indicating if invalid values should be corrected.
@@ -593,43 +596,43 @@ increment when a spin button is activated after providing an invalid value.</par
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-update"/>gtk_spin_button_update ()</title>
-<programlisting>void        gtk_spin_button_update          (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
+<indexterm><primary>gtk_spin_button_update</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_update          (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Manually force an update of the spin button.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link> 
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-digits"/>gtk_spin_button_get_digits ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_spin_button_get_digits      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
+<indexterm><primary>gtk_spin_button_get_digits</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_spin_button_get_digits      (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
-Fetches the precision of <parameter>spin_button</parameter>. See <link linkend="gtk-spin-button-set-digits">gtk_spin_button_set_digits</link>().</para>
+Fetches the precision of <parameter>spin_button</parameter>. See <link linkend="gtk-spin-button-set-digits"><function>gtk_spin_button_set_digits()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the current precision
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-increments"/>gtk_spin_button_get_increments ()</title>
-<programlisting>void        gtk_spin_button_get_increments  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_get_increments</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_get_increments  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> *step,
                                              <link linkend="gdouble">gdouble</link> *page);</programlisting>
 <para>
 Gets the current step and page the increments used by <parameter>spin_button</parameter>. See
-<link linkend="gtk-spin-button-set-increments">gtk_spin_button_set_increments</link>().</para>
+<link linkend="gtk-spin-button-set-increments"><function>gtk_spin_button_set_increments()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>step</parameter>&nbsp;:</term>
 <listitem><simpara> location to store step increment, or <literal>NULL</literal>
@@ -640,32 +643,32 @@ Gets the current step and page the increments used by <parameter>spin_button</pa
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-numeric"/>gtk_spin_button_get_numeric ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_numeric     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
+<indexterm><primary>gtk_spin_button_get_numeric</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_numeric     (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Returns whether non-numeric text can be typed into the spin button.
-See <link linkend="gtk-spin-button-set-numeric">gtk_spin_button_set_numeric</link>().</para>
+See <link linkend="gtk-spin-button-set-numeric"><function>gtk_spin_button_set_numeric()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if only numeric text can be entered
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-range"/>gtk_spin_button_get_range ()</title>
-<programlisting>void        gtk_spin_button_get_range       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
+<indexterm><primary>gtk_spin_button_get_range</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_spin_button_get_range       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button,
                                              <link linkend="gdouble">gdouble</link> *min,
                                              <link linkend="gdouble">gdouble</link> *max);</programlisting>
 <para>
 Gets the range allowed for <parameter>spin_button</parameter>. See
-<link linkend="gtk-spin-button-set-range">gtk_spin_button_set_range</link>().</para>
+<link linkend="gtk-spin-button-set-range"><function>gtk_spin_button_set_range()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>min</parameter>&nbsp;:</term>
 <listitem><simpara> location to store minimum allowed value, or <literal>NULL</literal>
@@ -676,69 +679,69 @@ Gets the range allowed for <parameter>spin_button</parameter>. See
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-snap-to-ticks"/>gtk_spin_button_get_snap_to_ticks ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_snap_to_ticks
+<indexterm><primary>gtk_spin_button_get_snap_to_ticks</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_snap_to_ticks
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Returns whether the values are corrected to the nearest step. See
-<link linkend="gtk-spin-button-set-snap-to-ticks">gtk_spin_button_set_snap_to_ticks</link>().</para>
+<link linkend="gtk-spin-button-set-snap-to-ticks"><function>gtk_spin_button_set_snap_to_ticks()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if values are snapped to the nearest step.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-update-policy"/>gtk_spin_button_get_update_policy ()</title>
-<programlisting><link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> gtk_spin_button_get_update_policy
+<indexterm><primary>gtk_spin_button_get_update_policy</primary></indexterm><programlisting><link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> gtk_spin_button_get_update_policy
                                             (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Gets the update behavior of a spin button. See
-<link linkend="gtk-spin-button-set-update-policy">gtk_spin_button_set_update_policy</link>().</para>
+<link linkend="gtk-spin-button-set-update-policy"><function>gtk_spin_button_set_update_policy()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the current update policy
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-value"/>gtk_spin_button_get_value ()</title>
-<programlisting><link linkend="gdouble">gdouble</link>     gtk_spin_button_get_value       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
+<indexterm><primary>gtk_spin_button_get_value</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     gtk_spin_button_get_value       (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Get the value in the <parameter>spin_button</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the value of <parameter>spin_button</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-spin-button-get-wrap"/>gtk_spin_button_get_wrap ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_wrap        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
+<indexterm><primary>gtk_spin_button_get_wrap</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_spin_button_get_wrap        (<link linkend="GtkSpinButton">GtkSpinButton</link> *spin_button);</programlisting>
 <para>
 Returns whether the spin button's value wraps around to the
 opposite limit when the upper or lower limit of the range is
-exceeded. See <link linkend="gtk-spin-button-set-wrap">gtk_spin_button_set_wrap</link>().</para>
+exceeded. See <link linkend="gtk-spin-button-set-wrap"><function>gtk_spin_button_set_wrap()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>spin_button</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSpinButton">GtkSpinButton</link>
+<listitem><simpara> a <link linkend="GtkSpinButton"><type>GtkSpinButton</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the spin button wraps around
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GTK-INPUT-ERROR-CAPS"/>GTK_INPUT_ERROR</title>
-<programlisting>#define GTK_INPUT_ERROR -1
+<indexterm><primary>GTK_INPUT_ERROR</primary></indexterm><programlisting>#define GTK_INPUT_ERROR -1
 </programlisting>
 <para>
 
@@ -747,75 +750,56 @@ exceeded. See <link linkend="gtk-spin-button-set-wrap">gtk_spin_button_set_wrap<
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkSpinButton--adjustment"/>&quot;<literal>adjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkSpinButton--adjustment"/>The &quot;<literal>adjustment</literal>&quot; property</title>
+<programlisting>  &quot;adjustment&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write</programlisting>
+<para>The adjustment that holds the value of the spinbutton.</para></refsect2>
+<refsect2><title><anchor id="GtkSpinButton--climb-rate"/>The &quot;<literal>climb-rate</literal>&quot; property</title>
+<programlisting>  &quot;climb-rate&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>The acceleration rate when you hold down a button.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--digits"/>The &quot;<literal>digits</literal>&quot; property</title>
+<programlisting>  &quot;digits&quot;               <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The number of decimal places to display.</para><para>Allowed values: &lt;= 20</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--numeric"/>The &quot;<literal>numeric</literal>&quot; property</title>
+<programlisting>  &quot;numeric&quot;              <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether non-numeric characters should be ignored.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--snap-to-ticks"/>The &quot;<literal>snap-to-ticks</literal>&quot; property</title>
+<programlisting>  &quot;snap-to-ticks&quot;        <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether erroneous values are automatically changed to a spin button's nearest step increment.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--update-policy"/>The &quot;<literal>update-policy</literal>&quot; property</title>
+<programlisting>  &quot;update-policy&quot;        <link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link>  : Read / Write</programlisting>
+<para>Whether the spin button should update always, or only when the value is legal.</para><para>Default value: GTK_UPDATE_ALWAYS</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--value"/>The &quot;<literal>value</literal>&quot; property</title>
+<programlisting>  &quot;value&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Reads the current value, or sets a new value.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkSpinButton--wrap"/>The &quot;<literal>wrap</literal>&quot; property</title>
+<programlisting>  &quot;wrap&quot;                 <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether a spin button should wrap upon reaching its limits.</para><para>Default value: FALSE</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--climb-rate"/>&quot;<literal>climb-rate</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--digits"/>&quot;<literal>digits</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--numeric"/>&quot;<literal>numeric</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--snap-to-ticks"/>&quot;<literal>snap-to-ticks</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--update-policy"/>&quot;<literal>update-policy</literal>&quot; (<link linkend="GtkSpinButtonUpdatePolicy">GtkSpinButtonUpdatePolicy</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--value"/>&quot;<literal>value</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkSpinButton--wrap"/>&quot;<literal>wrap</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 <refsect1>
 <title>Style Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkSpinButton--shadow-type"/>&quot;<literal>shadow-type</literal>&quot; (<link linkend="GtkShadowType">GtkShadowType</link> : Read)</term>
-<listitem>
+<refsect2><title><anchor id="GtkSpinButton--shadow-type"/>The &quot;<literal>shadow-type</literal>&quot; style property</title>
+<programlisting>  &quot;shadow-type&quot;          <link linkend="GtkShadowType">GtkShadowType</link>         : Read</programlisting>
 <para>
 the type of border that surrounds the arrows of a spin button.
-</para>
-</listitem></varlistentry>
+</para><para>Default value: GTK_SHADOW_IN</para>
+</refsect2>
 
-</variablelist>
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkSpinButton-change-value"/>The &quot;change-value&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
                                             <link linkend="GtkScrollType">GtkScrollType</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -863,7 +847,7 @@ the type of border that surrounds the arrows of a spin button.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkSpinButton-value-changed"/>The &quot;value-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkSpinButton">GtkSpinButton</link> *spinbutton,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
@@ -883,7 +867,7 @@ the type of border that surrounds the arrows of a spin button.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkEntry">GtkEntry</link></term>
+<term><link linkend="GtkEntry"><type>GtkEntry</type></link></term>
 <listitem><para>retrieve text rather than numbers.</para></listitem>
 </varlistentry>
 </variablelist>

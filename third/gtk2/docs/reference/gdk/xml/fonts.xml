@@ -30,19 +30,19 @@ enum        <link linkend="GdkFontType">GdkFontType</link>;
                                              <link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc);
 <link linkend="GdkDisplay">GdkDisplay</link>* <link linkend="gdk-font-get-display">gdk_font_get_display</link>            (<link linkend="GdkFont">GdkFont</link> *font);
 <link linkend="GdkFont">GdkFont</link>*    <link linkend="gdk-font-ref">gdk_font_ref</link>                    (<link linkend="GdkFont">GdkFont</link> *font);
-void        <link linkend="gdk-font-unref">gdk_font_unref</link>                  (<link linkend="GdkFont">GdkFont</link> *font);
+<link linkend="void">void</link>        <link linkend="gdk-font-unref">gdk_font_unref</link>                  (<link linkend="GdkFont">GdkFont</link> *font);
 <link linkend="gint">gint</link>        <link linkend="gdk-font-id">gdk_font_id</link>                     (const <link linkend="GdkFont">GdkFont</link> *font);
 <link linkend="gboolean">gboolean</link>    <link linkend="gdk-font-equal">gdk_font_equal</link>                  (const <link linkend="GdkFont">GdkFont</link> *fonta,
                                              const <link linkend="GdkFont">GdkFont</link> *fontb);
 
-void        <link linkend="gdk-string-extents">gdk_string_extents</link>              (<link linkend="GdkFont">GdkFont</link> *font,
+<link linkend="void">void</link>        <link linkend="gdk-string-extents">gdk_string_extents</link>              (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *string,
                                              <link linkend="gint">gint</link> *lbearing,
                                              <link linkend="gint">gint</link> *rbearing,
                                              <link linkend="gint">gint</link> *width,
                                              <link linkend="gint">gint</link> *ascent,
                                              <link linkend="gint">gint</link> *descent);
-void        <link linkend="gdk-text-extents">gdk_text_extents</link>                (<link linkend="GdkFont">GdkFont</link> *font,
+<link linkend="void">void</link>        <link linkend="gdk-text-extents">gdk_text_extents</link>                (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length,
                                              <link linkend="gint">gint</link> *lbearing,
@@ -50,7 +50,7 @@ void        <link linkend="gdk-text-extents">gdk_text_extents</link>            
                                              <link linkend="gint">gint</link> *width,
                                              <link linkend="gint">gint</link> *ascent,
                                              <link linkend="gint">gint</link> *descent);
-void        <link linkend="gdk-text-extents-wc">gdk_text_extents_wc</link>             (<link linkend="GdkFont">GdkFont</link> *font,
+<link linkend="void">void</link>        <link linkend="gdk-text-extents-wc">gdk_text_extents_wc</link>             (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="GdkWChar">GdkWChar</link> *text,
                                              <link linkend="gint">gint</link> text_length,
                                              <link linkend="gint">gint</link> *lbearing,
@@ -101,10 +101,12 @@ typedef     <link linkend="GdkWChar">GdkWChar</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GdkFont">GdkFont</link> data type represents a font for drawing on
+The <link linkend="GdkFont"><type>GdkFont</type></link> data type represents a font for drawing on
 the screen. These functions provide support for
 loading fonts, and also for determining the dimensions
 of characters and strings when drawn with a particular
@@ -257,7 +259,7 @@ of forms of string input:
   <varlistentry>
     <term>8-bit string</term>
     <listitem><para>
-    When using functions like <link linkend="gdk-string-width">gdk_string_width</link>() that
+    When using functions like <link linkend="gdk-string-width"><function>gdk_string_width()</function></link> that
     take a <type>gchar *</type>, if the font is of type
     <literal>GDK_FONT_FONT</literal> and is an 8-bit font, then each
     <type>gchar</type> indexes the glyphs in the font directly.
@@ -285,7 +287,7 @@ of forms of string input:
     of one or more bytes, with different lengths for different
     characters in the string). They can be converted to and
     from wide character strings (see below) using
-    <link linkend="gdk-wcstombs">gdk_wcstombs</link>() and <link linkend="gdk-mbstowcs">gdk_mbstowcs</link>().) The string will
+    <link linkend="gdk-wcstombs"><function>gdk_wcstombs()</function></link> and <link linkend="gdk-mbstowcs"><function>gdk_mbstowcs()</function></link>.) The string will
     be rendered using one or more different fonts from
     the fontset.
     </para></listitem>
@@ -294,7 +296,7 @@ of forms of string input:
     <term>Wide character string</term>
     <listitem><para>
     For a number of the text-measuring functions, GDK
-    provides a variant (such as <link linkend="gdk-text-width-wc">gdk_text_width_wc</link>()) which
+    provides a variant (such as <link linkend="gdk-text-width-wc"><function>gdk_text_width_wc()</function></link>) which
     takes a <type>GdkWChar *</type> instead of a 
     <type>gchar *</type>. The input is then taken to
     be a wide character string in the encoding of the
@@ -359,7 +361,7 @@ here).
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkFont"/>struct GdkFont</title>
-<programlisting>struct GdkFont {
+<indexterm role="deprecated"><primary>GdkFont</primary></indexterm><programlisting>struct GdkFont {
 
   GdkFontType type;
   gint ascent;
@@ -370,12 +372,12 @@ here).
 <para>
 The <structname>GdkFont</structname> structure represents a font or fontset. It
 contains the following public fields. A new <structname>GdkFont</structname>
-structure is returned by <link linkend="gdk-font-load">gdk_font_load</link>() or <link linkend="gdk-fontset-load">gdk_fontset_load</link>(),
-and is reference counted with <link linkend="gdk-font-ref">gdk_font_ref</link>() and <link linkend="gdk-font-unref">gdk_font_unref</link>()
+structure is returned by <link linkend="gdk-font-load"><function>gdk_font_load()</function></link> or <link linkend="gdk-fontset-load"><function>gdk_fontset_load()</function></link>,
+and is reference counted with <link linkend="gdk-font-ref"><function>gdk_font_ref()</function></link> and <link linkend="gdk-font-unref"><function>gdk_font_unref()</function></link>
 </para><variablelist role="struct">
 <varlistentry>
 <term><link linkend="GdkFontType">GdkFontType</link> <structfield>type</structfield></term>
-<listitem><simpara>a value of type <link linkend="GdkFontType">GdkFontType</link> which indicates
+<listitem><simpara>a value of type <link linkend="GdkFontType"><type>GdkFontType</type></link> which indicates
   whether this font is a single font or a fontset.
 </simpara></listitem>
 </varlistentry>
@@ -395,7 +397,7 @@ descends below the baseline.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkFontType"/>enum GdkFontType</title>
-<programlisting>typedef enum
+<indexterm role="deprecated"><primary>GdkFontType</primary></indexterm><programlisting>typedef enum
 {
   GDK_FONT_FONT,
   GDK_FONT_FONTSET
@@ -420,7 +422,7 @@ are currently:
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-load"/>gdk_font_load ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_load                   (const <link linkend="gchar">gchar</link> *font_name);</programlisting>
+<indexterm role="deprecated"><primary>gdk_font_load</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_load                   (const <link linkend="gchar">gchar</link> *font_name);</programlisting>
 <warning><para><literal>gdk_font_load</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Loads a font.
@@ -433,12 +435,12 @@ You should make no assumptions about the initial reference count.</para>
 <varlistentry><term><parameter>font_name</parameter>&nbsp;:</term>
 <listitem><simpara> a XLFD describing the font to load.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont">GdkFont</link>, or <literal>NULL</literal> if the font could not be loaded.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>, or <literal>NULL</literal> if the font could not be loaded.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-load-for-display"/>gdk_font_load_for_display ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_load_for_display       (<link linkend="GdkDisplay">GdkDisplay</link> *display,
+<indexterm role="deprecated 2.2"><primary>gdk_font_load_for_display</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_load_for_display       (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              const <link linkend="gchar">gchar</link> *font_name);</programlisting>
 <warning><para><literal>gdk_font_load_for_display</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -451,18 +453,18 @@ You should make no assumptions about the initial reference count.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDisplay">GdkDisplay</link>
+<listitem><simpara> a <link linkend="GdkDisplay"><type>GdkDisplay</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font_name</parameter>&nbsp;:</term>
 <listitem><simpara> a XLFD describing the font to load.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont">GdkFont</link>, or <literal>NULL</literal> if the font could not be loaded.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>, or <literal>NULL</literal> if the font could not be loaded.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-fontset-load"/>gdk_fontset_load ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_fontset_load                (const <link linkend="gchar">gchar</link> *fontset_name);</programlisting>
+<indexterm role="deprecated"><primary>gdk_fontset_load</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_fontset_load                (const <link linkend="gchar">gchar</link> *fontset_name);</programlisting>
 <warning><para><literal>gdk_fontset_load</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Loads a fontset.
@@ -476,12 +478,12 @@ You should make no assumptions about the initial reference count.</para>
 <listitem><simpara> a comma-separated list of XLFDs describing
     the component fonts of the fontset to load.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont">GdkFont</link>, or <literal>NULL</literal> if the fontset could not be loaded.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>, or <literal>NULL</literal> if the fontset could not be loaded.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-fontset-load-for-display"/>gdk_fontset_load_for_display ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_fontset_load_for_display    (<link linkend="GdkDisplay">GdkDisplay</link> *display,
+<indexterm role="deprecated 2.2"><primary>gdk_fontset_load_for_display</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_fontset_load_for_display    (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              const <link linkend="gchar">gchar</link> *fontset_name);</programlisting>
 <warning><para><literal>gdk_fontset_load_for_display</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -494,22 +496,22 @@ You should make no assumptions about the initial reference count.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDisplay">GdkDisplay</link>
+<listitem><simpara> a <link linkend="GdkDisplay"><type>GdkDisplay</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fontset_name</parameter>&nbsp;:</term>
 <listitem><simpara> a comma-separated list of XLFDs describing
   the component fonts of the fontset to load.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont">GdkFont</link>, or <literal>NULL</literal> if the fontset could not be loaded.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>, or <literal>NULL</literal> if the fontset could not be loaded.
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-from-description"/>gdk_font_from_description ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_from_description       (<link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc);</programlisting>
+<indexterm role="deprecated"><primary>gdk_font_from_description</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_from_description       (<link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc);</programlisting>
 <warning><para><literal>gdk_font_from_description</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Load a <link linkend="GdkFont">GdkFont</link> based on a Pango font description. This font will
+Load a <link linkend="GdkFont"><type>GdkFont</type></link> based on a Pango font description. This font will
 only be an approximation of the Pango font, and
 internationalization will not be handled correctly. This function
 should only be used for legacy code that cannot be easily converted
@@ -518,7 +520,7 @@ to use Pango. Using Pango directly will produce better results.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font_desc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFontDescription">PangoFontDescription</link>.
+<listitem><simpara> a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly loaded font, or <literal>NULL</literal> if the font
 cannot be loaded.
@@ -526,12 +528,12 @@ cannot be loaded.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-from-description-for-display"/>gdk_font_from_description_for_display ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_from_description_for_display
+<indexterm role="deprecated 2.2"><primary>gdk_font_from_description_for_display</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_from_description_for_display
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="PangoFontDescription">PangoFontDescription</link> *font_desc);</programlisting>
 <warning><para><literal>gdk_font_from_description_for_display</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Loads a <link linkend="GdkFont">GdkFont</link> based on a Pango font description for use on <parameter>display</parameter>. 
+Loads a <link linkend="GdkFont"><type>GdkFont</type></link> based on a Pango font description for use on <parameter>display</parameter>. 
 This font will only be an approximation of the Pango font, and
 internationalization will not be handled correctly. This function
 should only be used for legacy code that cannot be easily converted
@@ -540,10 +542,10 @@ to use Pango. Using Pango directly will produce better results.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDisplay">GdkDisplay</link>
+<listitem><simpara> a <link linkend="GdkDisplay"><type>GdkDisplay</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font_desc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="PangoFontDescription">PangoFontDescription</link>.
+<listitem><simpara> a <link linkend="PangoFontDescription"><type>PangoFontDescription</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly loaded font, or <literal>NULL</literal> if the font
 cannot be loaded.
@@ -553,38 +555,38 @@ cannot be loaded.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-get-display"/>gdk_font_get_display ()</title>
-<programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_font_get_display            (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<indexterm role="deprecated 2.2"><primary>gdk_font_get_display</primary></indexterm><programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_font_get_display            (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
 <warning><para><literal>gdk_font_get_display</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Returns the <link linkend="GdkDisplay">GdkDisplay</link> for <parameter>font</parameter>.</para>
+Returns the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> for <parameter>font</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> the <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the corresponding <link linkend="GdkDisplay">GdkDisplay</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the corresponding <link linkend="GdkDisplay"><type>GdkDisplay</type></link>.
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-ref"/>gdk_font_ref ()</title>
-<programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_ref                    (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<indexterm role="deprecated"><primary>gdk_font_ref</primary></indexterm><programlisting><link linkend="GdkFont">GdkFont</link>*    gdk_font_ref                    (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
 <warning><para><literal>gdk_font_ref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Increases the reference count of a font by one.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <parameter>font</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-unref"/>gdk_font_unref ()</title>
-<programlisting>void        gdk_font_unref                  (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<indexterm role="deprecated"><primary>gdk_font_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_font_unref                  (<link linkend="GdkFont">GdkFont</link> *font);</programlisting>
 <warning><para><literal>gdk_font_unref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Decreases the reference count of a font by one.
@@ -592,26 +594,26 @@ If the result is zero, destroys the font.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-id"/>gdk_font_id ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_font_id                     (const <link linkend="GdkFont">GdkFont</link> *font);</programlisting>
+<indexterm role="deprecated"><primary>gdk_font_id</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_font_id                     (const <link linkend="GdkFont">GdkFont</link> *font);</programlisting>
 <warning><para><literal>gdk_font_id</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Returns the X Font ID for the given font.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the numeric X Font ID
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-font-equal"/>gdk_font_equal ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_font_equal                  (const <link linkend="GdkFont">GdkFont</link> *fonta,
+<indexterm role="deprecated"><primary>gdk_font_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_font_equal                  (const <link linkend="GdkFont">GdkFont</link> *fonta,
                                              const <link linkend="GdkFont">GdkFont</link> *fontb);</programlisting>
 <warning><para><literal>gdk_font_equal</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -621,17 +623,17 @@ not currently work correctly for fontsets.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>fonta</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fontb</parameter>&nbsp;:</term>
-<listitem><simpara> another <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> another <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the fonts are equal.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-string-extents"/>gdk_string_extents ()</title>
-<programlisting>void        gdk_string_extents              (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_string_extents</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_string_extents              (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *string,
                                              <link linkend="gint">gint</link> *lbearing,
                                              <link linkend="gint">gint</link> *rbearing,
@@ -644,7 +646,7 @@ Gets the metrics of a nul-terminated string.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara> the nul-terminated string to measure.
@@ -667,7 +669,7 @@ Gets the metrics of a nul-terminated string.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-extents"/>gdk_text_extents ()</title>
-<programlisting>void        gdk_text_extents                (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_extents</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_text_extents                (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length,
                                              <link linkend="gint">gint</link> *lbearing,
@@ -681,7 +683,7 @@ Gets the metrics of a string.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure
@@ -709,7 +711,7 @@ Gets the metrics of a string.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-extents-wc"/>gdk_text_extents_wc ()</title>
-<programlisting>void        gdk_text_extents_wc             (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_extents_wc</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_text_extents_wc             (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="GdkWChar">GdkWChar</link> *text,
                                              <link linkend="gint">gint</link> text_length,
                                              <link linkend="gint">gint</link> *lbearing,
@@ -723,7 +725,7 @@ Gets the metrics of a string of wide characters.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure.
@@ -749,7 +751,7 @@ Gets the metrics of a string of wide characters.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-string-width"/>gdk_string_width ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_string_width                (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_string_width</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_string_width                (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *string);</programlisting>
 <warning><para><literal>gdk_string_width</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -760,7 +762,7 @@ should be drawn)</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>  a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara>  a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara> the nul-terminated string to measure
@@ -770,7 +772,7 @@ should be drawn)</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-width"/>gdk_text_width ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_text_width                  (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_width</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_text_width                  (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
 <warning><para><literal>gdk_text_width</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -779,7 +781,7 @@ Determines the width of a given string.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure.
@@ -792,7 +794,7 @@ Determines the width of a given string.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-width-wc"/>gdk_text_width_wc ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_text_width_wc               (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_width_wc</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_text_width_wc               (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="GdkWChar">GdkWChar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
 <warning><para><literal>gdk_text_width_wc</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -801,7 +803,7 @@ Determines the width of a given wide-character string.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure.
@@ -814,15 +816,15 @@ Determines the width of a given wide-character string.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-char-width"/>gdk_char_width ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_char_width                  (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_char_width</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_char_width                  (<link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="gchar">gchar</link> character);</programlisting>
-<warning><para><literal>gdk_char_width</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-text-extents">gdk_text_extents</link>() instead.</para></warning>
+<warning><para><literal>gdk_char_width</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-text-extents"><function>gdk_text_extents()</function></link> instead.</para></warning>
 <para>
 Determines the width of a given character.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>character</parameter>&nbsp;:</term>
 <listitem><simpara> the character to measure.
@@ -833,7 +835,7 @@ Determines the width of a given character.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-char-width-wc"/>gdk_char_width_wc ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_char_width_wc               (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_char_width_wc</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_char_width_wc               (<link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkWChar">GdkWChar</link> character);</programlisting>
 <warning><para><literal>gdk_char_width_wc</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -842,7 +844,7 @@ in the wide-character encoding of the current locale).</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>character</parameter>&nbsp;:</term>
 <listitem><simpara> the character to measure.
@@ -852,7 +854,7 @@ in the wide-character encoding of the current locale).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-string-measure"/>gdk_string_measure ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_string_measure              (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_string_measure</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_string_measure              (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *string);</programlisting>
 <warning><para><literal>gdk_string_measure</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -860,11 +862,11 @@ Determines the distance from the origin to the rightmost
 portion of a nul-terminated string when drawn. This is not the
 correct value for determining the origin of the next
 portion when drawing text in multiple pieces.
-See <link linkend="gdk-string-width">gdk_string_width</link>().</para>
+See <link linkend="gdk-string-width"><function>gdk_string_width()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara> the nul-terminated string to measure.
@@ -874,7 +876,7 @@ See <link linkend="gdk-string-width">gdk_string_width</link>().</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-measure"/>gdk_text_measure ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_text_measure                (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_measure</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_text_measure                (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
 <warning><para><literal>gdk_text_measure</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -883,11 +885,11 @@ Determines the distance from the origin to the rightmost
 portion of a string when drawn. This is not the
 correct value for determining the origin of the next
 portion when drawing text in multiple pieces. 
-See <link linkend="gdk-text-width">gdk_text_width</link>().</para>
+See <link linkend="gdk-text-width"><function>gdk_text_width()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure.
@@ -900,7 +902,7 @@ See <link linkend="gdk-text-width">gdk_text_width</link>().</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-char-measure"/>gdk_char_measure ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_char_measure                (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_char_measure</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_char_measure                (<link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="gchar">gchar</link> character);</programlisting>
 <warning><para><literal>gdk_char_measure</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -911,7 +913,7 @@ portion when drawing text in multiple pieces.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>character</parameter>&nbsp;:</term>
 <listitem><simpara> the character to measure.
@@ -921,18 +923,18 @@ portion when drawing text in multiple pieces.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-string-height"/>gdk_string_height ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_string_height               (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_string_height</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_string_height               (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *string);</programlisting>
 <warning><para><literal>gdk_string_height</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Determines the total height of a given nul-terminated
 string. This value is not generally useful, because you
 cannot determine how this total height will be drawn in
-relation to the baseline. See <link linkend="gdk-string-extents">gdk_string_extents</link>().</para>
+relation to the baseline. See <link linkend="gdk-string-extents"><function>gdk_string_extents()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara> the nul-terminated string to measure.
@@ -942,7 +944,7 @@ relation to the baseline. See <link linkend="gdk-string-extents">gdk_string_exte
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-text-height"/>gdk_text_height ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_text_height                 (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_text_height</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_text_height                 (<link linkend="GdkFont">GdkFont</link> *font,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
 <warning><para><literal>gdk_text_height</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -950,11 +952,11 @@ relation to the baseline. See <link linkend="gdk-string-extents">gdk_string_exte
 Determines the total height of a given string.
 This value is not generally useful, because you cannot
 determine how this total height will be drawn in
-relation to the baseline. See <link linkend="gdk-text-extents">gdk_text_extents</link>().</para>
+relation to the baseline. See <link linkend="gdk-text-extents"><function>gdk_text_extents()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> the text to measure.
@@ -967,18 +969,18 @@ relation to the baseline. See <link linkend="gdk-text-extents">gdk_text_extents<
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-char-height"/>gdk_char_height ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_char_height                 (<link linkend="GdkFont">GdkFont</link> *font,
+<indexterm role="deprecated"><primary>gdk_char_height</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_char_height                 (<link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="gchar">gchar</link> character);</programlisting>
-<warning><para><literal>gdk_char_height</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-text-extents">gdk_text_extents</link>() instead.</para></warning>
+<warning><para><literal>gdk_char_height</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-text-extents"><function>gdk_text_extents()</function></link> instead.</para></warning>
 <para>
 Determines the total height of a given character.
 This value is not generally useful, because you cannot
 determine how this total height will be drawn in
-relation to the baseline. See <link linkend="gdk-text-extents">gdk_text_extents</link>().</para>
+relation to the baseline. See <link linkend="gdk-text-extents"><function>gdk_text_extents()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>character</parameter>&nbsp;:</term>
 <listitem><simpara> the character to measure.
@@ -989,7 +991,7 @@ relation to the baseline. See <link linkend="gdk-text-extents">gdk_text_extents<
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkWChar"/>GdkWChar</title>
-<programlisting>typedef guint32			    GdkWChar;
+<indexterm><primary>GdkWChar</primary></indexterm><programlisting>typedef guint32			    GdkWChar;
 </programlisting>
 <para>
 Specifies a wide character type, used to represent character codes.
@@ -1016,7 +1018,7 @@ the character are all of the same size.
 <para>
 Applications typically use wide characters to represent character codes
 internally, and multi-byte strings when saving the characters to a file.
-The <link linkend="gdk-wcstombs">gdk_wcstombs</link>() and <link linkend="gdk-mbstowcs">gdk_mbstowcs</link>() functions can be used to convert from
+The <link linkend="gdk-wcstombs"><function>gdk_wcstombs()</function></link> and <link linkend="gdk-mbstowcs"><function>gdk_mbstowcs()</function></link> functions can be used to convert from
 one representation to the other.
 </para>
 <para>
@@ -1025,7 +1027,8 @@ for more detailed information on wide and multi-byte characters.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-wcstombs"/>gdk_wcstombs ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gdk_wcstombs                    (const <link linkend="GdkWChar">GdkWChar</link> *src);</programlisting>
+<indexterm role="deprecated"><primary>gdk_wcstombs</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gdk_wcstombs                    (const <link linkend="GdkWChar">GdkWChar</link> *src);</programlisting>
+<warning><para><literal>gdk_wcstombs</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Converts a wide character string to a multi-byte string.
 (The function name comes from an acronym of 'Wide Character String TO
@@ -1036,15 +1039,16 @@ Multi-Byte String').</para>
 <listitem><simpara> a wide character string.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the multi-byte string corresponding to <parameter>src</parameter>, or <literal>NULL</literal> if the
-conversion failed. The returned string should be freed with <link linkend="g-free">g_free</link>() when no
+conversion failed. The returned string should be freed with <link linkend="g-free"><function>g_free()</function></link> when no
 longer needed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-mbstowcs"/>gdk_mbstowcs ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_mbstowcs                    (<link linkend="GdkWChar">GdkWChar</link> *dest,
+<indexterm role="deprecated"><primary>gdk_mbstowcs</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_mbstowcs                    (<link linkend="GdkWChar">GdkWChar</link> *dest,
                                              const <link linkend="gchar">gchar</link> *src,
                                              <link linkend="gint">gint</link> dest_max);</programlisting>
+<warning><para><literal>gdk_mbstowcs</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Converts a multi-byte string to a wide character string.
 (The function name comes from an acronym of 'Multi-Byte String TO Wide

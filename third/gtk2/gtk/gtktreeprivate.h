@@ -28,7 +28,7 @@ extern "C" {
 #include <gtk/gtktreeview.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtkrbtree.h>
-  
+
 #define TREE_VIEW_DRAG_WIDTH 6
 
 typedef enum
@@ -43,6 +43,13 @@ typedef enum
   GTK_TREE_VIEW_IN_COLUMN_DRAG = 1 << 7
 } GtkTreeViewFlags;
 
+typedef enum
+{
+  GTK_TREE_SELECT_MODE_TOGGLE = 1 << 0,
+  GTK_TREE_SELECT_MODE_EXTEND = 1 << 1
+}
+GtkTreeSelectMode;
+
 enum
 {
   DRAG_COLUMN_WINDOW_STATE_UNSET = 0,
@@ -51,7 +58,7 @@ enum
   DRAG_COLUMN_WINDOW_STATE_ARROW_LEFT = 3,
   DRAG_COLUMN_WINDOW_STATE_ARROW_RIGHT = 4
 };
-  
+
 #define GTK_TREE_VIEW_SET_FLAG(tree_view, flag)   G_STMT_START{ (tree_view->priv->flags|=flag); }G_STMT_END
 #define GTK_TREE_VIEW_UNSET_FLAG(tree_view, flag) G_STMT_START{ (tree_view->priv->flags&=~(flag)); }G_STMT_END
 #define GTK_TREE_VIEW_FLAG_SET(tree_view, flag)   ((tree_view->priv->flags&flag)==flag)
@@ -169,6 +176,9 @@ struct _GtkTreeViewPrivate
   gint press_start_x;
   gint press_start_y;
 
+  /* fixed height */
+  gint fixed_height;
+
   /* Scroll-to functionality when unrealized */
   GtkTreeRowReference *scroll_to_path;
   GtkTreeViewColumn *scroll_to_column;
@@ -176,6 +186,7 @@ struct _GtkTreeViewPrivate
   gfloat scroll_to_col_align;
   guint scroll_to_use_align : 1;
 
+  guint fixed_height_mode : 1;
   guint fixed_height_check : 1;
 
   guint reorderable : 1;
@@ -184,30 +195,32 @@ struct _GtkTreeViewPrivate
   /* hint to display rows in alternating colors */
   guint has_rules : 1;
   guint mark_rows_col_dirty : 1;
-  
+
+  /* for DnD */
+  guint empty_view_drop : 1;
+
+  guint ctrl_pressed : 1;
+  guint shift_pressed : 1;
+
+
+  guint init_hadjust_value : 1;
+
   /* interactive search */
   guint enable_search : 1;
   guint disable_popdown : 1;
+  
+  guint hover_selection : 1;
+
+  gint selected_iter;
   gint search_column;
   GtkTreeViewSearchDialogPositionFunc search_dialog_position_func;
   GtkTreeViewSearchEqualFunc search_equal_func;
   gpointer search_user_data;
   GtkDestroyNotify search_destroy;
-};
+  GtkWidget *search_window;
+  GtkWidget *search_entry;
 
-/* cool ABI compat hack */
-#define GTK_CELL_RENDERER_INFO_KEY "gtk-cell-renderer-info"
-
-typedef struct _GtkCellRendererInfo GtkCellRendererInfo;
-struct _GtkCellRendererInfo
-{
-  GdkColor cell_background;
-
-  /* text renderer */
-  gulong focus_out_id;
-
-  /* toggle renderer */
-  gboolean inconsistent :1;
+  gint prev_width;
 };
 
 #ifdef __GNUC__
@@ -287,7 +300,7 @@ void         _gtk_tree_selection_internal_select_node (GtkTreeSelection  *select
 						       GtkRBNode         *node,
 						       GtkRBTree         *tree,
 						       GtkTreePath       *path,
-						       GdkModifierType    state,
+                                                       GtkTreeSelectMode  mode,
 						       gboolean           override_browse_mode);
 gboolean     _gtk_tree_view_find_node                 (GtkTreeView       *tree_view,
 						       GtkTreePath       *path,
@@ -306,6 +319,8 @@ void         _gtk_tree_view_queue_draw_node           (GtkTreeView       *tree_v
 						       GtkRBTree         *tree,
 						       GtkRBNode         *node,
 						       GdkRectangle      *clip_rect);
+void         _gtk_tree_view_set_hover_selection       (GtkTreeView       *tree_view,
+						       gboolean           hover);
 
 void _gtk_tree_view_column_realize_button   (GtkTreeViewColumn *column);
 void _gtk_tree_view_column_unrealize_button (GtkTreeViewColumn *column);
@@ -365,6 +380,7 @@ void              _gtk_tree_view_column_get_neighbor_sizes (GtkTreeViewColumn *c
 							    GtkCellRenderer   *cell,
 							    gint              *left,
 							    gint              *right);
+
 
 
 #ifdef __cplusplus

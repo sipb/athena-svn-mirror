@@ -18,15 +18,15 @@
 
 struct      <link linkend="GtkRuler-struct">GtkRuler</link>;
 struct      <link linkend="GtkRulerMetric">GtkRulerMetric</link>;
-void        <link linkend="gtk-ruler-set-metric">gtk_ruler_set_metric</link>            (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<link linkend="void">void</link>        <link linkend="gtk-ruler-set-metric">gtk_ruler_set_metric</link>            (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="GtkMetricType">GtkMetricType</link> metric);
-void        <link linkend="gtk-ruler-set-range">gtk_ruler_set_range</link>             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<link linkend="void">void</link>        <link linkend="gtk-ruler-set-range">gtk_ruler_set_range</link>             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="gdouble">gdouble</link> lower,
                                              <link linkend="gdouble">gdouble</link> upper,
                                              <link linkend="gdouble">gdouble</link> position,
                                              <link linkend="gdouble">gdouble</link> max_size);
 <link linkend="GtkMetricType">GtkMetricType</link> <link linkend="gtk-ruler-get-metric">gtk_ruler_get_metric</link>          (<link linkend="GtkRuler">GtkRuler</link> *ruler);
-void        <link linkend="gtk-ruler-get-range">gtk_ruler_get_range</link>             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<link linkend="void">void</link>        <link linkend="gtk-ruler-get-range">gtk_ruler_get_range</link>             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="gdouble">gdouble</link> *lower,
                                              <link linkend="gdouble">gdouble</link> *upper,
                                              <link linkend="gdouble">gdouble</link> *position,
@@ -44,15 +44,20 @@ void        <link linkend="gtk-ruler-get-range">gtk_ruler_get_range</link>      
    +----<link linkend="GtkObject">GtkObject</link>
          +----<link linkend="GtkWidget">GtkWidget</link>
                +----GtkRuler
+                     +----<link linkend="GtkHRuler">GtkHRuler</link>
+                     +----<link linkend="GtkVRuler">GtkVRuler</link>
 </synopsis>
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkRuler implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -60,10 +65,10 @@ GtkRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkRuler--lower">lower</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkRuler--max-size">max-size</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkRuler--position">position</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkRuler--upper">upper</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GtkRuler--lower">lower</link>&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkRuler--max-size">max-size</link>&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkRuler--position">position</link>&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkRuler--upper">upper</link>&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write
 </synopsis>
 </refsect1>
 
@@ -71,8 +76,9 @@ GtkRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 
 <refsect1>
 <title>Description</title>
+<note>
 <para>
- NOTE this widget is considered too specialized/little-used for
+ This widget is considered too specialized/little-used for
  GTK+, and will in the future be moved to some other package.  If
  your application needs this widget, feel free to use it, as the
  widget does work and is useful in some applications; it's just not
@@ -80,13 +86,14 @@ GtkRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
  the widget, and it will eventually move out of the GTK+
  distribution.
 </para>
+</note>
 <para>
 The GTKRuler widget is a base class for horizontal and vertical rulers. Rulers
 are used to show the mouse pointer's location in a window. The ruler can either
 be horizontal or vertical on the window. Within the ruler a small triangle
-indicates the location of the mouse relative to the horixontal or vertical
-ruler. See <link linkend="GtkHRuler">GtkHRuler</link> to learn how to create a new horizontal ruler. See
-<link linkend="GtkVRuler">GtkVRuler</link> to learn how to create a new vertical ruler.
+indicates the location of the mouse relative to the horizontal or vertical
+ruler. See <link linkend="GtkHRuler"><type>GtkHRuler</type></link> to learn how to create a new horizontal ruler. See
+<link linkend="GtkVRuler"><type>GtkVRuler</type></link> to learn how to create a new vertical ruler.
 </para>
 </refsect1>
 
@@ -94,14 +101,14 @@ ruler. See <link linkend="GtkHRuler">GtkHRuler</link> to learn how to create a n
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkRuler-struct"/>struct GtkRuler</title>
-<programlisting>struct GtkRuler;</programlisting>
+<indexterm><primary>GtkRuler</primary></indexterm><programlisting>struct GtkRuler;</programlisting>
 <para>
 All distances are in 1/72nd's of an inch. (According to Adobe thats a point, but
 points are really 1/72.27 in.)
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkRulerMetric"/>struct GtkRulerMetric</title>
-<programlisting>struct GtkRulerMetric {
+<indexterm><primary>GtkRulerMetric</primary></indexterm><programlisting>struct GtkRulerMetric {
 
   gchar *metric_name;
   gchar *abbrev;
@@ -117,10 +124,10 @@ This should be points_per_unit. This is the size of the unit in 1/72nd's of an i
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-ruler-set-metric"/>gtk_ruler_set_metric ()</title>
-<programlisting>void        gtk_ruler_set_metric            (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<indexterm><primary>gtk_ruler_set_metric</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_ruler_set_metric            (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="GtkMetricType">GtkMetricType</link> metric);</programlisting>
 <para>
-This calls the <link linkend="GTKMetricType">GTKMetricType</link> to set the ruler to units defined. Available units
+This calls the <link linkend="GTKMetricType"><type>GTKMetricType</type></link> to set the ruler to units defined. Available units
 are GTK_PIXELS, GTK_INCHES, or GTK_CENTIMETERS. The default unit of measurement
 is GTK_PIXELS.
 </para><variablelist role="params">
@@ -135,7 +142,7 @@ is GTK_PIXELS.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-ruler-set-range"/>gtk_ruler_set_range ()</title>
-<programlisting>void        gtk_ruler_set_range             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<indexterm><primary>gtk_ruler_set_range</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_ruler_set_range             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="gdouble">gdouble</link> lower,
                                              <link linkend="gdouble">gdouble</link> upper,
                                              <link linkend="gdouble">gdouble</link> position,
@@ -163,33 +170,33 @@ This sets the range of the ruler using gfloat lower, gfloat upper, gfloat positi
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-ruler-get-metric"/>gtk_ruler_get_metric ()</title>
-<programlisting><link linkend="GtkMetricType">GtkMetricType</link> gtk_ruler_get_metric          (<link linkend="GtkRuler">GtkRuler</link> *ruler);</programlisting>
+<indexterm><primary>gtk_ruler_get_metric</primary></indexterm><programlisting><link linkend="GtkMetricType">GtkMetricType</link> gtk_ruler_get_metric          (<link linkend="GtkRuler">GtkRuler</link> *ruler);</programlisting>
 <para>
-Gets the units used for a <link linkend="GtkRuler">GtkRuler</link>. See <link linkend="gtk-ruler-set-metric">gtk_ruler_set_metric</link>().</para>
+Gets the units used for a <link linkend="GtkRuler"><type>GtkRuler</type></link>. See <link linkend="gtk-ruler-set-metric"><function>gtk_ruler_set_metric()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>ruler</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkRuler">GtkRuler</link>
+<listitem><simpara> a <link linkend="GtkRuler"><type>GtkRuler</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the units currently used for <parameter>ruler</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-ruler-get-range"/>gtk_ruler_get_range ()</title>
-<programlisting>void        gtk_ruler_get_range             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
+<indexterm><primary>gtk_ruler_get_range</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_ruler_get_range             (<link linkend="GtkRuler">GtkRuler</link> *ruler,
                                              <link linkend="gdouble">gdouble</link> *lower,
                                              <link linkend="gdouble">gdouble</link> *upper,
                                              <link linkend="gdouble">gdouble</link> *position,
                                              <link linkend="gdouble">gdouble</link> *max_size);</programlisting>
 <para>
-Retrieves values indicating the range and current position of a <link linkend="GtkRuler">GtkRuler</link>.
-See <link linkend="gtk-ruler-set-range">gtk_ruler_set_range</link>().</para>
+Retrieves values indicating the range and current position of a <link linkend="GtkRuler"><type>GtkRuler</type></link>.
+See <link linkend="gtk-ruler-set-range"><function>gtk_ruler_set_range()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>ruler</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkRuler">GtkRuler</link>
+<listitem><simpara> a <link linkend="GtkRuler"><type>GtkRuler</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>lower</parameter>&nbsp;:</term>
 <listitem><simpara> location to store lower limit of the ruler, or <literal>NULL</literal>
@@ -209,33 +216,23 @@ See <link linkend="gtk-ruler-set-range">gtk_ruler_set_range</link>().</para>
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkRuler--lower"/>&quot;<literal>lower</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkRuler--lower"/>The &quot;<literal>lower</literal>&quot; property</title>
+<programlisting>  &quot;lower&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Lower limit of ruler.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkRuler--max-size"/>The &quot;<literal>max-size</literal>&quot; property</title>
+<programlisting>  &quot;max-size&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Maximum size of the ruler.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkRuler--position"/>The &quot;<literal>position</literal>&quot; property</title>
+<programlisting>  &quot;position&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Position of mark on the ruler.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkRuler--upper"/>The &quot;<literal>upper</literal>&quot; property</title>
+<programlisting>  &quot;upper&quot;                <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>Upper limit of ruler.</para><para>Default value: 0</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkRuler--max-size"/>&quot;<literal>max-size</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkRuler--position"/>&quot;<literal>position</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkRuler--upper"/>&quot;<literal>upper</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 
@@ -243,7 +240,7 @@ See <link linkend="gtk-ruler-set-range">gtk_ruler_set_range</link>().</para>
 <refsect1>
 <title>See Also</title>
 <para>
-<link linkend="GtkHRuler">GtkHRuler</link>, <link linkend="GtkVRuler">GtkVRuler</link>
+<link linkend="GtkHRuler"><type>GtkHRuler</type></link>, <link linkend="GtkVRuler"><type>GtkVRuler</type></link>
 </para>
 </refsect1>
 

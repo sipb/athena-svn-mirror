@@ -36,11 +36,14 @@ struct      <link linkend="GtkVSeparator-struct">GtkVSeparator</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkVSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkVSeparator implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -50,7 +53,7 @@ GtkVSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkVSeparator">GtkVSeparator</link> widget is a vertical separator, used to group the
+The <link linkend="GtkVSeparator"><type>GtkVSeparator</type></link> widget is a vertical separator, used to group the
 widgets within a window. It displays a vertical line with a shadow to
 make it appear sunken into the interface.
 </para>
@@ -60,18 +63,18 @@ make it appear sunken into the interface.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkVSeparator-struct"/>struct GtkVSeparator</title>
-<programlisting>struct GtkVSeparator;</programlisting>
+<indexterm><primary>GtkVSeparator</primary></indexterm><programlisting>struct GtkVSeparator;</programlisting>
 <para>
-The <link linkend="GtkVSeparator-struct">GtkVSeparator</link> struct contains private data only, and
+The <link linkend="GtkVSeparator-struct"><type>GtkVSeparator-struct</type></link> struct contains private data only, and
 should be accessed using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-vseparator-new"/>gtk_vseparator_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vseparator_new              (void);</programlisting>
+<indexterm><primary>gtk_vseparator_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vseparator_new              (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkVSeparator">GtkVSeparator</link>.
+Creates a new <link linkend="GtkVSeparator"><type>GtkVSeparator</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkVSeparator">GtkVSeparator</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkVSeparator"><type>GtkVSeparator</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -86,7 +89,7 @@ Creates a new <link linkend="GtkVSeparator">GtkVSeparator</link>.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkHSeparator">GtkHSeparator</link></term>
+<term><link linkend="GtkHSeparator"><type>GtkHSeparator</type></link></term>
 <listitem><para>a horizontal separator.</para></listitem>
 </varlistentry>
 </variablelist>

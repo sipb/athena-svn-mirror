@@ -1,3 +1,4 @@
+#include <config.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +29,31 @@ struct _CallbackData
   GtkTreePath *path;
 };
 
+#ifdef G_OS_WIN32
+
+#undef DEMOCODEDIR
+
+static char *
+get_democodedir (void)
+{
+  static char *result = NULL;
+
+  if (result == NULL)
+    {
+      result = g_win32_get_package_installation_directory (NULL, NULL);
+      if (result == NULL)
+	result = "unknown-location";
+
+      result = g_strconcat (result, "\\share\\gtk-2.0\\demo", NULL);
+    }
+
+  return result;
+}
+
+#define DEMOCODEDIR get_democodedir ()
+
+#endif
+
 /**
  * demo_find_file:
  * @base: base filename
@@ -43,9 +69,10 @@ gchar *
 demo_find_file (const char *base,
 		GError    **err)
 {
-  g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
+  g_return_val_if_fail (err == NULL || *err == NULL, NULL);
   
-  if (g_file_test (base, G_FILE_TEST_EXISTS))
+  if (g_file_test ("gtk-logo-rgb.gif", G_FILE_TEST_EXISTS) &&
+      g_file_test (base, G_FILE_TEST_EXISTS))
     return g_strdup (base);
   else
     {
@@ -96,7 +123,7 @@ read_line (FILE *stream, GString *str)
     {
       int c;
       
-#ifndef G_OS_WIN32
+#ifdef HAVE_FLOCKFILE
       c = getc_unlocked (stream);
 #else
       c = getc (stream);
@@ -578,7 +605,7 @@ row_activated_cb (GtkTreeView       *tree_view,
 			  &iter,
 			  ITALIC_COLUMN, !italic,
 			  -1);
-      window = (func) ();
+      window = (func) (gtk_widget_get_toplevel (GTK_WIDGET (tree_view)));
       
       if (window != NULL)
 	{
@@ -722,7 +749,7 @@ create_tree (void)
 
   cell = gtk_cell_renderer_text_new ();
 
-  g_object_set (G_OBJECT (cell),
+  g_object_set (cell,
                 "style", PANGO_STYLE_ITALIC,
                 NULL);
   
@@ -811,8 +838,8 @@ main (int argc, char **argv)
   if (g_file_test ("../../gdk-pixbuf/libpixbufloader-pnm.la",
                    G_FILE_TEST_EXISTS))
     {
-      putenv ("GDK_PIXBUF_MODULE_FILE=../../gdk-pixbuf/gdk-pixbuf.loaders");
-      putenv ("GTK_IM_MODULE_FILE=../../modules/input/gtk.immodules");
+      g_setenv ("GDK_PIXBUF_MODULE_FILE", "../../gdk-pixbuf/gdk-pixbuf.loaders", TRUE);
+      g_setenv ("GTK_IM_MODULE_FILE", "../../modules/input/gtk.immodules", TRUE);
     }
   /* -- End of hack -- */
   

@@ -1,4 +1,4 @@
-#include "config.h"
+#include <config.h>
 #include "gdkprivate-fb.h"
 #include <string.h>
 #include <signal.h>
@@ -1503,6 +1503,11 @@ gdk_shadow_fb_update (gint minx, gint miny, gint maxx, gint maxy)
   
 }
 #else
+
+void
+gdk_shadow_fb_stop_updates (void)
+{
+}
 
 void
 gdk_shadow_fb_update (gint minx, gint miny, gint maxx, gint maxy)

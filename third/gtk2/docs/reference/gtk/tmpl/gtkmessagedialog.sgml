@@ -25,7 +25,7 @@ returns when any dialog button is clicked.
                                   GTK_DIALOG_DESTROY_WITH_PARENT,
                                   GTK_MESSAGE_ERROR,
                                   GTK_BUTTONS_CLOSE,
-                                  "Error loading file '%s': %s",
+                                  "Error loading file '&percnt;s': &percnt;s",
                                   filename, g_strerror (errno));
  gtk_dialog_run (GTK_DIALOG (dialog));
  gtk_widget_destroy (dialog);
@@ -42,13 +42,13 @@ You might do a non-modal #GtkMessageDialog as follows:
                                   GTK_DIALOG_DESTROY_WITH_PARENT,
                                   GTK_MESSAGE_ERROR,
                                   GTK_BUTTONS_CLOSE,
-                                  "Error loading file '%s': %s",
+                                  "Error loading file '&percnt;s': &percnt;s",
                                   filename, g_strerror (errno));
 
  /* Destroy the dialog when the user responds to it (e.g. clicks a button) */
- g_signal_connect_swapped (GTK_OBJECT (dialog), "response",
+ g_signal_connect_swapped (dialog, "response",
                            G_CALLBACK (gtk_widget_destroy),
-                           GTK_OBJECT (dialog));
+                           dialog);
 </programlisting>
 </example>
 </para>
@@ -63,6 +63,26 @@ You might do a non-modal #GtkMessageDialog as follows:
 
 </para>
 
+
+<!-- ##### ARG GtkMessageDialog:buttons ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkMessageDialog:message-type ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkMessageDialog:message-border ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkMessageDialog:use-separator ##### -->
+<para>
+
+</para>
 
 <!-- ##### ENUM GtkMessageType ##### -->
 <para>
@@ -102,18 +122,26 @@ then call gtk_dialog_add_buttons().
 @Returns: 
 
 
-<!-- ##### ARG GtkMessageDialog:buttons ##### -->
+<!-- ##### FUNCTION gtk_message_dialog_new_with_markup ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG GtkMessageDialog:message-type ##### -->
+@parent: 
+@flags: 
+@type: 
+@buttons: 
+@message_format: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_message_dialog_set_markup ##### -->
 <para>
 
 </para>
 
-<!-- ##### ARG GtkMessageDialog:message-border ##### -->
-<para>
+@message_dialog: 
+@str: 
 
-</para>
 

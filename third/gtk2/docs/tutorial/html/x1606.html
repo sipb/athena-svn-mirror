@@ -5,8 +5,7 @@
 >Using ItemFactory</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -18,7 +17,7 @@ TITLE="Manual Menu Example"
 HREF="x1597.html"><LINK
 REL="NEXT"
 TITLE="Item Factory Example"
-HREF="x1716.html"></HEAD
+HREF="x1717.html"></HEAD
 ><BODY
 CLASS="SECT1"
 BGCOLOR="#FFFFFF"
@@ -60,7 +59,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x1716.html"
+HREF="x1717.html"
 ACCESSKEY="N"
 >Next &#62;&#62;&#62;</A
 ></TD
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-USINGITEMFACTORY">Using ItemFactory</H1
+NAME="SEC-USINGITEMFACTORY"
+>Using ItemFactory</A
+></H1
 ><P
 >Now that we've shown you the hard way, here's how you do it using the
 gtk_item_factory calls.</P
@@ -87,7 +88,9 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SEC-ITEMFACTORYENTRIES">ItemFactory entries</H2
+NAME="SEC-ITEMFACTORYENTRIES"
+>ItemFactory entries</A
+></H2
 ><P
 >At the core of ItemFactory is the ItemFactoryEntry. This structure defines
 one menu item, and when an array of these entries is defined a whole
@@ -211,7 +214,13 @@ CLASS="PROGRAMLISTING"
 "&#60;Tearoff&#62;"            - create a tearoff
 "&#60;Separator&#62;"          - create a separator
 "&#60;Branch&#62;"             - create an item to hold submenus (optional)
-"&#60;LastBranch&#62;"         - create a right justified branch</PRE
+"&#60;LastBranch&#62;"         - create a right justified branch
+"&#60;StockItem&#62;"          - create a simple item with a stock image. 
+                               see <TT
+CLASS="FILENAME"
+>gtkstock.h</TT
+> for builtin stock items
+ </PRE
 ></TD
 ></TR
 ></TABLE
@@ -223,7 +232,9 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="SEC-ITEMFACTORYCALLBACK">Callback Description</H3
+NAME="SEC-ITEMFACTORYCALLBACK"
+>Callback Description</A
+></H3
 ><P
 >The callback for an ItemFactory entry can take two forms. If
 <TT
@@ -239,7 +250,7 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void callback(void)</PRE
+>void callback( void )</PRE
 ></TD
 ></TR
 ></TABLE
@@ -253,9 +264,9 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void callback(gpointer    callback_data,
-              guint       callback_action,
-              GtkWidget  *widget)</PRE
+>void callback( gpointer    callback_data,
+               guint       callback_action,
+               GtkWidget  *widget )</PRE
 ></TD
 ></TR
 ></TABLE
@@ -289,7 +300,9 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="SEC-ITEMFACTORYENTRYEXAMPLES">ItemFactory entry examples</H3
+NAME="SEC-ITEMFACTORYENTRYEXAMPLES"
+>ItemFactory entry examples</A
+></H3
 ><P
 >Creating a simple menu item:</P
 ><TABLE
@@ -348,9 +361,9 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void print_state(gpointer    callback_data,
-                 guint       callback_action,
-                 GtkWidget  *widget)</PRE
+>void print_state( gpointer    callback_data,
+                  guint       callback_action,
+                  GtkWidget  *widget )</PRE
 ></TD
 ></TR
 ></TABLE
@@ -434,7 +447,9 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="SEC-ITEMFACTORYENTRYARRAYS">ItemFactoryEntry Arrays</H3
+NAME="SEC-ITEMFACTORYENTRYARRAYS"
+>ItemFactoryEntry Arrays</A
+></H3
 ><P
 >An ItemFactoryEntry on it's own however isn't useful. An array of
 entries is what's required to define a menu. Below is an example of how
@@ -453,7 +468,7 @@ CLASS="PROGRAMLISTING"
   { "/File/_New",     "&#60;CTRL&#62;N", new_file,     1, "&#60;Item&#62;" },
   { "/File/_Open...", "&#60;CTRL&#62;O", open_file,    1, "&#60;Item&#62;" },
   { "/File/sep1",     NULL,      NULL,         0, "&#60;Separator&#62;" },
-  { "/File/_Quit",    "&#60;CTRL&#62;Q", quit_program, 0, "&#60;Item&#62;"} };</PRE
+  { "/File/_Quit",    "&#60;CTRL&#62;Q", quit_program, 0, "&#60;StockItem&#62;", GTK_STOCK_QUIT } };</PRE
 ></TD
 ></TR
 ></TABLE
@@ -464,7 +479,9 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SEC-ITEMFACTORYCREATION">Creating an ItemFactory</H2
+NAME="SEC-ITEMFACTORYCREATION"
+>Creating an ItemFactory</A
+></H2
 ><P
 >An array of GtkItemFactoryEntry items defines a menu. Once this
 array is defined then the item factory can be created. The function that
@@ -590,7 +607,9 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SEC-USINGMENUANDITEMS">Making use of the menu and its menu items</H2
+NAME="SEC-USINGMENUANDITEMS"
+>Making use of the menu and its menu items</A
+></H2
 ><P
 >The last thing to do is make use of the menu. The following function
 extracts the relevant widgets from the ItemFactory:</P
@@ -692,7 +711,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x1716.html"
+HREF="x1717.html"
 ACCESSKEY="N"
 >Next &#62;&#62;&#62;</A
 ></TD

@@ -22,10 +22,10 @@ struct      <link linkend="GtkTableRowCol">GtkTableRowCol</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-table-new">gtk_table_new</link>                   (<link linkend="guint">guint</link> rows,
                                              <link linkend="guint">guint</link> columns,
                                              <link linkend="gboolean">gboolean</link> homogeneous);
-void        <link linkend="gtk-table-resize">gtk_table_resize</link>                (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-resize">gtk_table_resize</link>                (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> rows,
                                              <link linkend="guint">guint</link> columns);
-void        <link linkend="gtk-table-attach">gtk_table_attach</link>                (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-attach">gtk_table_attach</link>                (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="guint">guint</link> left_attach,
                                              <link linkend="guint">guint</link> right_attach,
@@ -35,23 +35,23 @@ void        <link linkend="gtk-table-attach">gtk_table_attach</link>            
                                              <link linkend="GtkAttachOptions">GtkAttachOptions</link> yoptions,
                                              <link linkend="guint">guint</link> xpadding,
                                              <link linkend="guint">guint</link> ypadding);
-void        <link linkend="gtk-table-attach-defaults">gtk_table_attach_defaults</link>       (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-attach-defaults">gtk_table_attach_defaults</link>       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="GtkWidget">GtkWidget</link> *widget,
                                              <link linkend="guint">guint</link> left_attach,
                                              <link linkend="guint">guint</link> right_attach,
                                              <link linkend="guint">guint</link> top_attach,
                                              <link linkend="guint">guint</link> bottom_attach);
-void        <link linkend="gtk-table-set-row-spacing">gtk_table_set_row_spacing</link>       (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-set-row-spacing">gtk_table_set_row_spacing</link>       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> spacing);
-void        <link linkend="gtk-table-set-col-spacing">gtk_table_set_col_spacing</link>       (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-set-col-spacing">gtk_table_set_col_spacing</link>       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> column,
                                              <link linkend="guint">guint</link> spacing);
-void        <link linkend="gtk-table-set-row-spacings">gtk_table_set_row_spacings</link>      (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-set-row-spacings">gtk_table_set_row_spacings</link>      (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> spacing);
-void        <link linkend="gtk-table-set-col-spacings">gtk_table_set_col_spacings</link>      (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-set-col-spacings">gtk_table_set_col_spacings</link>      (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> spacing);
-void        <link linkend="gtk-table-set-homogeneous">gtk_table_set_homogeneous</link>       (<link linkend="GtkTable">GtkTable</link> *table,
+<link linkend="void">void</link>        <link linkend="gtk-table-set-homogeneous">gtk_table_set_homogeneous</link>       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="gboolean">gboolean</link> homogeneous);
 <link linkend="guint">guint</link>       <link linkend="gtk-table-get-default-row-spacing">gtk_table_get_default_row_spacing</link>
                                             (<link linkend="GtkTable">GtkTable</link> *table);
@@ -80,11 +80,14 @@ void        <link linkend="gtk-table-set-homogeneous">gtk_table_set_homogeneous<
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkTable implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkTable implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -92,25 +95,25 @@ GtkTable implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkTable--column-spacing">column-spacing</link>&quot;       <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--homogeneous">homogeneous</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkTable--n-columns">n-columns</link>&quot;            <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--n-rows">n-rows</link>&quot;               <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--row-spacing">row-spacing</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GtkTable--column-spacing">column-spacing</link>&quot;       <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--homogeneous">homogeneous</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkTable--n-columns">n-columns</link>&quot;            <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--n-rows">n-rows</link>&quot;               <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--row-spacing">row-spacing</link>&quot;          <link linkend="guint">guint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 <refsect1>
 <title>Child Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkTable--bottom-attach">bottom-attach</link>&quot;        <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--left-attach">left-attach</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--right-attach">right-attach</link>&quot;         <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--top-attach">top-attach</link>&quot;           <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--x-options">x-options</link>&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>     : Read / Write
-  &quot;<link linkend="GtkTable--x-padding">x-padding</link>&quot;            <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkTable--y-options">y-options</link>&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>     : Read / Write
-  &quot;<link linkend="GtkTable--y-padding">y-padding</link>&quot;            <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GtkTable--bottom-attach">bottom-attach</link>&quot;        <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--left-attach">left-attach</link>&quot;          <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--right-attach">right-attach</link>&quot;         <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--top-attach">top-attach</link>&quot;           <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--x-options">x-options</link>&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>      : Read / Write
+  &quot;<link linkend="GtkTable--x-padding">x-padding</link>&quot;            <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkTable--y-options">y-options</link>&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>      : Read / Write
+  &quot;<link linkend="GtkTable--y-padding">y-padding</link>&quot;            <link linkend="guint">guint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 
@@ -119,27 +122,27 @@ GtkTable implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkTable">GtkTable</link> functions allow the programmer to arrange widgets in rows and
+The <link linkend="GtkTable"><type>GtkTable</type></link> functions allow the programmer to arrange widgets in rows and
 columns, making it easy to align many widgets next to each other,
 horizontally and vertically.
 </para>
 <para>
-Tables are created with a call to <link linkend="gtk-table-new">gtk_table_new</link>(), the size of which can
-later be changed with <link linkend="gtk-table-resize">gtk_table_resize</link>().
+Tables are created with a call to <link linkend="gtk-table-new"><function>gtk_table_new()</function></link>, the size of which can
+later be changed with <link linkend="gtk-table-resize"><function>gtk_table_resize()</function></link>.
 </para>
 <para>
-Widgets can be added to a table using <link linkend="gtk-table-attach">gtk_table_attach</link>() or the more
-convenient (but slightly less flexible) <link linkend="gtk-table-attach-defaults">gtk_table_attach_defaults</link>().
+Widgets can be added to a table using <link linkend="gtk-table-attach"><function>gtk_table_attach()</function></link> or the more
+convenient (but slightly less flexible) <link linkend="gtk-table-attach-defaults"><function>gtk_table_attach_defaults()</function></link>.
 </para>
 <para>
-To alter the space next to a specific row, use <link linkend="gtk-table-set-row-spacing">gtk_table_set_row_spacing</link>(),
-and for a column, <link linkend="gtk-table-set-col-spacing">gtk_table_set_col_spacing</link>().</para>
+To alter the space next to a specific row, use <link linkend="gtk-table-set-row-spacing"><function>gtk_table_set_row_spacing()</function></link>,
+and for a column, <link linkend="gtk-table-set-col-spacing"><function>gtk_table_set_col_spacing()</function></link>.</para>
 <para>
 The gaps between <emphasis>all</emphasis> rows or columns can be changed by calling
-<link linkend="gtk-table-set-row-spacings">gtk_table_set_row_spacings</link>() or <link linkend="gtk-table-set-col-spacings">gtk_table_set_col_spacings</link>() respectively.
+<link linkend="gtk-table-set-row-spacings"><function>gtk_table_set_row_spacings()</function></link> or <link linkend="gtk-table-set-col-spacings"><function>gtk_table_set_col_spacings()</function></link> respectively.
 </para>
 <para>
-<link linkend="gtk-table-set-homogeneous">gtk_table_set_homogeneous</link>(), can be used to set whether all cells in the
+<link linkend="gtk-table-set-homogeneous"><function>gtk_table_set_homogeneous()</function></link>, can be used to set whether all cells in the
 table will resize themselves to the size of the largest widget in the table.
 </para>
 </refsect1>
@@ -148,18 +151,18 @@ table will resize themselves to the size of the largest widget in the table.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTable-struct"/>struct GtkTable</title>
-<programlisting>struct GtkTable;</programlisting>
+<indexterm><primary>GtkTable</primary></indexterm><programlisting>struct GtkTable;</programlisting>
 <para>
 The <structname>GtkTable</structname> structure holds the data for the actual table itself. 
 
-<structfield>children</structfield> is a <link linkend="GList">GList</link> of all the widgets the table contains. <structfield>rows</structfield> and <structfield>columns</structfield> are pointers to <link linkend="GtkTableRowCol">GtkTableRowCol</link> structures, which contain the default spacing and expansion details for the <link linkend="GtkTable">GtkTable</link>'s rows and columns, respectively.
+<structfield>children</structfield> is a <link linkend="GList"><type>GList</type></link> of all the widgets the table contains. <structfield>rows</structfield> and <structfield>columns</structfield> are pointers to <link linkend="GtkTableRowCol"><type>GtkTableRowCol</type></link> structures, which contain the default spacing and expansion details for the <link linkend="GtkTable"><type>GtkTable</type></link>'s rows and columns, respectively.
 </para>
 <para>
 <structfield>nrows</structfield> and <structfield>ncols</structfield> are 16bit integers storing the number of rows and columns the table has. 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkTableChild"/>struct GtkTableChild</title>
-<programlisting>struct GtkTableChild {
+<indexterm><primary>GtkTableChild</primary></indexterm><programlisting>struct GtkTableChild {
 
   GtkWidget *widget;
   guint16 left_attach;
@@ -191,7 +194,7 @@ specify the space between this widget and the surrounding table cells.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkTableRowCol"/>struct GtkTableRowCol</title>
-<programlisting>struct GtkTableRowCol {
+<indexterm><primary>GtkTableRowCol</primary></indexterm><programlisting>struct GtkTableRowCol {
 
   guint16 requisition;
   guint16 allocation;
@@ -208,13 +211,13 @@ These fields should be considered read-only and not be modified directly.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-new"/>gtk_table_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_table_new                   (<link linkend="guint">guint</link> rows,
+<indexterm><primary>gtk_table_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_table_new                   (<link linkend="guint">guint</link> rows,
                                              <link linkend="guint">guint</link> columns,
                                              <link linkend="gboolean">gboolean</link> homogeneous);</programlisting>
 <para>
 Used to create a new table widget. An initial size must be given by
 specifying how many rows and columns the table should have, although
-this can be changed later with <link linkend="gtk-table-resize">gtk_table_resize</link>().  <parameter>rows</parameter> and <parameter>columns</parameter>
+this can be changed later with <link linkend="gtk-table-resize"><function>gtk_table_resize()</function></link>.  <parameter>rows</parameter> and <parameter>columns</parameter>
 must both be in the range 0 .. 65535.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rows</parameter>&nbsp;:</term>
@@ -234,14 +237,14 @@ containing the largest widget.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-resize"/>gtk_table_resize ()</title>
-<programlisting>void        gtk_table_resize                (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_resize</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_resize                (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> rows,
                                              <link linkend="guint">guint</link> columns);</programlisting>
 <para>
 If you need to change a table's size <emphasis>after</emphasis> it has been created, this function allows you to do so.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>The <link linkend="GtkTable">GtkTable</link> you wish to change the size of.
+<listitem><simpara>The <link linkend="GtkTable"><type>GtkTable</type></link> you wish to change the size of.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>rows</parameter>&nbsp;:</term>
 <listitem><simpara>The new number of rows.
@@ -254,7 +257,7 @@ If you need to change a table's size <emphasis>after</emphasis> it has been crea
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-attach"/>gtk_table_attach ()</title>
-<programlisting>void        gtk_table_attach                (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_attach</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_attach                (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="guint">guint</link> left_attach,
                                              <link linkend="guint">guint</link> right_attach,
@@ -271,7 +274,7 @@ These each represent the leftmost, rightmost, uppermost and lowest column
 and row numbers of the table. (Columns and rows are indexed from zero).
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>The <link linkend="GtkTable">GtkTable</link> to add a new widget to.
+<listitem><simpara>The <link linkend="GtkTable"><type>GtkTable</type></link> to add a new widget to.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara>The widget to add.
@@ -286,7 +289,7 @@ and row numbers of the table. (Columns and rows are indexed from zero).
 <listitem><simpara>the row number to attach the top of a child widget to.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bottom_attach</parameter>&nbsp;:</term>
-<listitem><simpara>the column number to attach the bottom of a child widget to.
+<listitem><simpara>the row number to attach the bottom of a child widget to.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xoptions</parameter>&nbsp;:</term>
 <listitem><simpara>Used to specify the properties of the child widget when the table is resized.
@@ -305,14 +308,14 @@ and row numbers of the table. (Columns and rows are indexed from zero).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-attach-defaults"/>gtk_table_attach_defaults ()</title>
-<programlisting>void        gtk_table_attach_defaults       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_attach_defaults</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_attach_defaults       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="GtkWidget">GtkWidget</link> *widget,
                                              <link linkend="guint">guint</link> left_attach,
                                              <link linkend="guint">guint</link> right_attach,
                                              <link linkend="guint">guint</link> top_attach,
                                              <link linkend="guint">guint</link> bottom_attach);</programlisting>
 <para>
-As there are many options associated with <link linkend="gtk-table-attach">gtk_table_attach</link>(), this convenience function provides the programmer with a means to add children to a table with identical padding and expansion options.
+As there are many options associated with <link linkend="gtk-table-attach"><function>gtk_table_attach()</function></link>, this convenience function provides the programmer with a means to add children to a table with identical padding and expansion options. The values used for the <link linkend="GtkAttachOptions"><type>GtkAttachOptions</type></link> are <literal>GTK_EXPAND | GTK_FILL</literal>, and the padding is set to 0.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
 <listitem><simpara>The table to add a new child widget to.
@@ -337,14 +340,14 @@ As there are many options associated with <link linkend="gtk-table-attach">gtk_t
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-set-row-spacing"/>gtk_table_set_row_spacing ()</title>
-<programlisting>void        gtk_table_set_row_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_set_row_spacing</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_set_row_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> row,
                                              <link linkend="guint">guint</link> spacing);</programlisting>
 <para>
 Changes the space between a given table row and its surrounding rows.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkTable">GtkTable</link> containing the row whose properties you wish to change.
+<listitem><simpara>a <link linkend="GtkTable"><type>GtkTable</type></link> containing the row whose properties you wish to change.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
 <listitem><simpara>row number whose spacing will be changed.
@@ -357,14 +360,14 @@ Changes the space between a given table row and its surrounding rows.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-set-col-spacing"/>gtk_table_set_col_spacing ()</title>
-<programlisting>void        gtk_table_set_col_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_set_col_spacing</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_set_col_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> column,
                                              <link linkend="guint">guint</link> spacing);</programlisting>
 <para>
 Alters the amount of space between a given table column and the adjacent columns.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkTable">GtkTable</link>.
+<listitem><simpara>a <link linkend="GtkTable"><type>GtkTable</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
 <listitem><simpara>the column whose spacing should be changed.
@@ -377,13 +380,13 @@ Alters the amount of space between a given table column and the adjacent columns
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-set-row-spacings"/>gtk_table_set_row_spacings ()</title>
-<programlisting>void        gtk_table_set_row_spacings      (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_set_row_spacings</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_set_row_spacings      (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> spacing);</programlisting>
 <para>
 Sets the space between every row in <parameter>table</parameter> equal to <parameter>spacing</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkTable">GtkTable</link>.
+<listitem><simpara>a <link linkend="GtkTable"><type>GtkTable</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>spacing</parameter>&nbsp;:</term>
 <listitem><simpara>the number of pixels of space to place between every row in the table.
@@ -393,13 +396,13 @@ Sets the space between every row in <parameter>table</parameter> equal to <param
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-set-col-spacings"/>gtk_table_set_col_spacings ()</title>
-<programlisting>void        gtk_table_set_col_spacings      (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_set_col_spacings</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_set_col_spacings      (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> spacing);</programlisting>
 <para>
 Sets the space between every column in <parameter>table</parameter> equal to <parameter>spacing</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkTable">GtkTable</link>.
+<listitem><simpara>a <link linkend="GtkTable"><type>GtkTable</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>spacing</parameter>&nbsp;:</term>
 <listitem><simpara>the number of pixels of space to place between every column in the table.
@@ -409,13 +412,13 @@ Sets the space between every column in <parameter>table</parameter> equal to <pa
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-set-homogeneous"/>gtk_table_set_homogeneous ()</title>
-<programlisting>void        gtk_table_set_homogeneous       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_set_homogeneous</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_table_set_homogeneous       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="gboolean">gboolean</link> homogeneous);</programlisting>
 <para>
 Changes the homogenous property of table cells, ie. whether all cells are an equal size or not.
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara>The <link linkend="GtkTable">GtkTable</link> you wish to set the homogeneous properties of.
+<listitem><simpara>The <link linkend="GtkTable"><type>GtkTable</type></link> you wish to set the homogeneous properties of.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>homogeneous</parameter>&nbsp;:</term>
 <listitem><simpara>Set to <literal>TRUE</literal> to ensure all table cells are the same size. Set
@@ -426,48 +429,48 @@ to <literal>FALSE</literal> if this is not your desired behaviour.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-get-default-row-spacing"/>gtk_table_get_default_row_spacing ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_table_get_default_row_spacing
+<indexterm><primary>gtk_table_get_default_row_spacing</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_table_get_default_row_spacing
                                             (<link linkend="GtkTable">GtkTable</link> *table);</programlisting>
 <para>
 Gets the default row spacing for the table. This is
 the spacing that will be used for newly added rows.
-(See <link linkend="gtk-table-set-row-spacings">gtk_table_set_row_spacings</link>())</para>
+(See <link linkend="gtk-table-set-row-spacings"><function>gtk_table_set_row_spacings()</function></link>)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTable">GtkTable</link>
+<listitem><simpara> a <link linkend="GtkTable"><type>GtkTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>value: the default row spacing
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-get-homogeneous"/>gtk_table_get_homogeneous ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_table_get_homogeneous       (<link linkend="GtkTable">GtkTable</link> *table);</programlisting>
+<indexterm><primary>gtk_table_get_homogeneous</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_table_get_homogeneous       (<link linkend="GtkTable">GtkTable</link> *table);</programlisting>
 <para>
 Returns whether the table cells are all constrained to the same
-width and height. (See <link linkend="gtk-table-set-homogenous">gtk_table_set_homogenous</link>())</para>
+width and height. (See <link linkend="gtk-table-set-homogenous"><function>gtk_table_set_homogenous()</function></link>)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTable">GtkTable</link>
+<listitem><simpara> a <link linkend="GtkTable"><type>GtkTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the cells are all constrained to the same size
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-get-row-spacing"/>gtk_table_get_row_spacing ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_table_get_row_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_get_row_spacing</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_table_get_row_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> row);</programlisting>
 <para>
 Gets the amount of space between row <parameter>row</parameter>, and
-row <parameter>row</parameter> + 1. See <link linkend="gtk-table-set-row-spacing">gtk_table_set_row_spacing</link>().</para>
+row <parameter>row</parameter> + 1. See <link linkend="gtk-table-set-row-spacing"><function>gtk_table_set_row_spacing()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTable">GtkTable</link>
+<listitem><simpara> a <link linkend="GtkTable"><type>GtkTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>row</parameter>&nbsp;:</term>
 <listitem><simpara> a row in the table, 0 indicates the first row
@@ -477,16 +480,16 @@ row <parameter>row</parameter> + 1. See <link linkend="gtk-table-set-row-spacing
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-get-col-spacing"/>gtk_table_get_col_spacing ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_table_get_col_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
+<indexterm><primary>gtk_table_get_col_spacing</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_table_get_col_spacing       (<link linkend="GtkTable">GtkTable</link> *table,
                                              <link linkend="guint">guint</link> column);</programlisting>
 <para>
 Gets the amount of space between column <parameter>col</parameter>, and
-column <parameter>col</parameter> + 1. See <link linkend="gtk-table-set-col-spacing">gtk_table_set_col_spacing</link>().</para>
+column <parameter>col</parameter> + 1. See <link linkend="gtk-table-set-col-spacing"><function>gtk_table_set_col_spacing()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTable">GtkTable</link>
+<listitem><simpara> a <link linkend="GtkTable"><type>GtkTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>column</parameter>&nbsp;:</term>
 <listitem><simpara> a column in the table, 0 indicates the first column
@@ -496,17 +499,17 @@ column <parameter>col</parameter> + 1. See <link linkend="gtk-table-set-col-spac
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-table-get-default-col-spacing"/>gtk_table_get_default_col_spacing ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_table_get_default_col_spacing
+<indexterm><primary>gtk_table_get_default_col_spacing</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_table_get_default_col_spacing
                                             (<link linkend="GtkTable">GtkTable</link> *table);</programlisting>
 <para>
 Gets the default column spacing for the table. This is
 the spacing that will be used for newly added columns.
-(See <link linkend="gtk-table-set-col-spacings">gtk_table_set_col_spacings</link>())</para>
+(See <link linkend="gtk-table-set-col-spacings"><function>gtk_table_set_col_spacings()</function></link>)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>table</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTable">GtkTable</link>
+<listitem><simpara> a <link linkend="GtkTable"><type>GtkTable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>value: the default column spacing
 </simpara></listitem></varlistentry>
@@ -515,93 +518,69 @@ the spacing that will be used for newly added columns.
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkTable--column-spacing"/>&quot;<literal>column-spacing</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkTable--column-spacing"/>The &quot;<literal>column-spacing</literal>&quot; property</title>
+<programlisting>  &quot;column-spacing&quot;       <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The amount of space between two consecutive columns.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--homogeneous"/>The &quot;<literal>homogeneous</literal>&quot; property</title>
+<programlisting>  &quot;homogeneous&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>If TRUE this means the table cells are all the same width/height.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--n-columns"/>The &quot;<literal>n-columns</literal>&quot; property</title>
+<programlisting>  &quot;n-columns&quot;            <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The number of columns in the table.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--n-rows"/>The &quot;<literal>n-rows</literal>&quot; property</title>
+<programlisting>  &quot;n-rows&quot;               <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The number of rows in the table.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--row-spacing"/>The &quot;<literal>row-spacing</literal>&quot; property</title>
+<programlisting>  &quot;row-spacing&quot;          <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The amount of space between two consecutive rows.</para><para>Default value: 0</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--homogeneous"/>&quot;<literal>homogeneous</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--n-columns"/>&quot;<literal>n-columns</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--n-rows"/>&quot;<literal>n-rows</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--row-spacing"/>&quot;<literal>row-spacing</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 <refsect1>
 <title>Child Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkTable--bottom-attach"/>&quot;<literal>bottom-attach</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkTable--bottom-attach"/>The &quot;<literal>bottom-attach</literal>&quot; child property</title>
+<programlisting>  &quot;bottom-attach&quot;        <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The row number to attach the bottom of the child to.</para><para>Allowed values: [1,65535]</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--left-attach"/>The &quot;<literal>left-attach</literal>&quot; child property</title>
+<programlisting>  &quot;left-attach&quot;          <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The column number to attach the left side of the child to.</para><para>Allowed values: &lt;= 65535</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--right-attach"/>The &quot;<literal>right-attach</literal>&quot; child property</title>
+<programlisting>  &quot;right-attach&quot;         <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The column number to attach the right side of a child widget to.</para><para>Allowed values: [1,65535]</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--top-attach"/>The &quot;<literal>top-attach</literal>&quot; child property</title>
+<programlisting>  &quot;top-attach&quot;           <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The row number to attach the top of a child widget to.</para><para>Allowed values: &lt;= 65535</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--x-options"/>The &quot;<literal>x-options</literal>&quot; child property</title>
+<programlisting>  &quot;x-options&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>      : Read / Write</programlisting>
+<para>Options specifying the horizontal behaviour of the child.</para><para>Default value: GTK_EXPAND|GTK_FILL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--x-padding"/>The &quot;<literal>x-padding</literal>&quot; child property</title>
+<programlisting>  &quot;x-padding&quot;            <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>Extra space to put between the child and its left and right neighbors, in pixels.</para><para>Allowed values: &lt;= 65535</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--y-options"/>The &quot;<literal>y-options</literal>&quot; child property</title>
+<programlisting>  &quot;y-options&quot;            <link linkend="GtkAttachOptions">GtkAttachOptions</link>      : Read / Write</programlisting>
+<para>Options specifying the vertical behaviour of the child.</para><para>Default value: GTK_EXPAND|GTK_FILL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkTable--y-padding"/>The &quot;<literal>y-padding</literal>&quot; child property</title>
+<programlisting>  &quot;y-padding&quot;            <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>Extra space to put between the child and its upper and lower neighbors, in pixels.</para><para>Allowed values: &lt;= 65535</para>
+<para>Default value: 0</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--left-attach"/>&quot;<literal>left-attach</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--right-attach"/>&quot;<literal>right-attach</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--top-attach"/>&quot;<literal>top-attach</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--x-options"/>&quot;<literal>x-options</literal>&quot; (<link linkend="GtkAttachOptions">GtkAttachOptions</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--x-padding"/>&quot;<literal>x-padding</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--y-options"/>&quot;<literal>y-options</literal>&quot; (<link linkend="GtkAttachOptions">GtkAttachOptions</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkTable--y-padding"/>&quot;<literal>y-padding</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 
@@ -611,11 +590,11 @@ the spacing that will be used for newly added columns.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkVBox">GtkVBox</link></term>
+<term><link linkend="GtkVBox"><type>GtkVBox</type></link></term>
 <listitem><para>For packing widgets vertically only.</para></listitem>
 </varlistentry>
 <varlistentry>
-<term><link linkend="GtkHBox">GtkHBox</link></term>
+<term><link linkend="GtkHBox"><type>GtkHBox</type></link></term>
 <listitem><para>For packing widgets horizontally only.</para></listitem>
 </varlistentry>
 </variablelist>

@@ -47,6 +47,7 @@ extern "C" {
 
 typedef struct _GtkAlignment       GtkAlignment;
 typedef struct _GtkAlignmentClass  GtkAlignmentClass;
+typedef struct _GtkAlignmentPrivate GtkAlignmentPrivate;
 
 struct _GtkAlignment
 {
@@ -75,6 +76,17 @@ void       gtk_alignment_set        (GtkAlignment      *alignment,
 				     gfloat             xscale,
 				     gfloat             yscale);
 
+void       gtk_alignment_set_padding (GtkAlignment      *alignment,
+				      guint              padding_top,
+				      guint              padding_bottom,
+				      guint              padding_left,
+				      guint              padding_right);
+
+void       gtk_alignment_get_padding (GtkAlignment      *alignment,
+				      guint             *padding_top,
+				      guint             *padding_bottom,
+				      guint             *padding_left,
+				      guint             *padding_right);
 
 #ifdef __cplusplus
 }

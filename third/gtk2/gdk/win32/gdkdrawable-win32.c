@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <math.h>
 #include <stdio.h>
 #include <glib.h>
@@ -604,7 +605,7 @@ generic_draw (GdkDrawable    *drawable,
 	  GDI_CALL (DeleteObject, (fg_brush));
 	  GDI_CALL (SelectObject, (stipple_hdc, old_stipple_hbm));
 	  GDI_CALL (DeleteDC, (stipple_hdc));
-	  gdk_drawable_unref (stipple_bitmap);
+	  g_object_unref (stipple_bitmap);
 	}
 
       /* Tile pixmap now contains the pattern that we should paint in
@@ -665,8 +666,8 @@ generic_draw (GdkDrawable    *drawable,
 	  GDI_CALL (SelectObject, (temp2_hdc, old_temp2_hbm));
 	  GDI_CALL (DeleteDC, (temp1_hdc));
 	  GDI_CALL (DeleteDC, (temp2_hdc));
-	  gdk_drawable_unref (temp1_pixmap);
-	  gdk_drawable_unref (temp2_pixmap);
+	  g_object_unref (temp1_pixmap);
+	  g_object_unref (temp2_pixmap);
 	}
       
       /* Cleanup */
@@ -674,8 +675,8 @@ generic_draw (GdkDrawable    *drawable,
       GDI_CALL (SelectObject, (tile_hdc, old_tile_hbm));
       GDI_CALL (DeleteDC, (mask_hdc));
       GDI_CALL (DeleteDC, (tile_hdc));
-      gdk_drawable_unref (mask_pixmap);
-      gdk_drawable_unref (tile_pixmap);
+      g_object_unref (mask_pixmap);
+      g_object_unref (tile_pixmap);
 
       gdk_win32_hdc_release (drawable, gc, blitting_mask);
     }
@@ -801,12 +802,9 @@ draw_arc (GdkGCWin32 *gcwin32,
 {
   HGDIOBJ old_pen;
   gboolean filled;
-  gint x;
-  gint y;
-  gint width;
-  gint height;
-  gint angle1;
-  gint angle2;
+  gint x, y;
+  gint width, height;
+  gint angle1, angle2;
   int nXStartArc, nYStartArc, nXEndArc, nYEndArc;
 
   filled = va_arg (args, gboolean);
@@ -826,18 +824,17 @@ draw_arc (GdkGCWin32 *gcwin32,
     }
   else if (angle2 > 0)
     {
-      /* The 100. is just an arbitrary value */
-      nXStartArc = x + width/2 + 100. * cos(angle1/64.*2.*G_PI/360.);
-      nYStartArc = y + height/2 + -100. * sin(angle1/64.*2.*G_PI/360.);
-      nXEndArc = x + width/2 + 100. * cos((angle1+angle2)/64.*2.*G_PI/360.);
-      nYEndArc = y + height/2 + -100. * sin((angle1+angle2)/64.*2.*G_PI/360.);
+      nXStartArc = x + width/2 + width * cos(angle1/64.*2.*G_PI/360.);
+      nYStartArc = y + height/2 + -height * sin(angle1/64.*2.*G_PI/360.);
+      nXEndArc = x + width/2 + width * cos((angle1+angle2)/64.*2.*G_PI/360.);
+      nYEndArc = y + height/2 + -height * sin((angle1+angle2)/64.*2.*G_PI/360.);
     }
   else
     {
-      nXEndArc = x + width/2 + 100. * cos(angle1/64.*2.*G_PI/360.);
-      nYEndArc = y + height/2 + -100. * sin(angle1/64.*2.*G_PI/360.);
-      nXStartArc = x + width/2 + 100. * cos((angle1+angle2)/64.*2.*G_PI/360.);
-      nYStartArc = y + height/2 + -100. * sin((angle1+angle2)/64.*2.*G_PI/360.);
+      nXEndArc = x + width/2 + width * cos(angle1/64.*2.*G_PI/360.);
+      nYEndArc = y + height/2 + -height * sin(angle1/64.*2.*G_PI/360.);
+      nXStartArc = x + width/2 + width * cos((angle1+angle2)/64.*2.*G_PI/360.);
+      nYStartArc = y + height/2 + -height * sin((angle1+angle2)/64.*2.*G_PI/360.);
     }
   
   if (filled)
@@ -905,6 +902,7 @@ draw_polygon (GdkGCWin32 *gcwin32,
 {
   gboolean filled;
   POINT *pts;
+  HPEN old_pen;
   gint npoints;
   gint i;
 
@@ -920,7 +918,14 @@ draw_polygon (GdkGCWin32 *gcwin32,
       }
 
   if (filled)
-    GDI_CALL (Polygon, (hdc, pts, npoints));
+    {
+      old_pen = SelectObject (hdc, GetStockObject (NULL_PEN));
+      if (old_pen == NULL)
+	WIN32_GDI_FAILED ("SelectObject");
+      GDI_CALL (Polygon, (hdc, pts, npoints));
+      if (old_pen != NULL)
+	GDI_CALL (SelectObject, (hdc, old_pen));
+    }
   else
     GDI_CALL (Polyline, (hdc, pts, npoints));
 }
@@ -955,10 +960,14 @@ gdk_win32_draw_polygon (GdkDrawable *drawable,
     {
       bounds.x = MIN (bounds.x, points[i].x);
       bounds.y = MIN (bounds.y, points[i].y);
-      bounds.width = MAX (bounds.width, points[i].x - bounds.x);
-      bounds.height = MAX (bounds.height, points[i].y - bounds.y);
       pts[i].x = points[i].x;
       pts[i].y = points[i].y;
+    }
+
+  for (i = 0; i < npoints; i++)
+    {
+      bounds.width = MAX (bounds.width, points[i].x - bounds.x);
+      bounds.height = MAX (bounds.height, points[i].y - bounds.y);
     }
 
   if (points[0].x != points[npoints-1].x ||
@@ -1023,7 +1032,7 @@ gdk_win32_draw_text (GdkDrawable *drawable,
 {
   const GdkGCValuesMask mask = GDK_GC_FOREGROUND|GDK_GC_FONT;
   wchar_t *wcstr, wc;
-  gint wlen;
+  glong wlen;
   gdk_draw_text_arg arg;
 
   if (text_length == 0)
@@ -1049,14 +1058,10 @@ gdk_win32_draw_text (GdkDrawable *drawable,
     }
   else
     {
-      wcstr = g_new (wchar_t, text_length);
-      if ((wlen = _gdk_utf8_to_ucs2 (wcstr, text, text_length, text_length)) == -1)
-	g_warning ("gdk_win32_draw_text: _gdk_utf8_to_ucs2 failed");
-      else
-	_gdk_wchar_text_handle (font, wcstr, wlen, gdk_draw_text_handler, &arg);
+      wcstr = g_utf8_to_utf16 (text, text_length, NULL, &wlen, NULL);
+      _gdk_wchar_text_handle (font, wcstr, wlen, gdk_draw_text_handler, &arg);
       g_free (wcstr);
     }
-
 
   gdk_win32_hdc_release (drawable, gc, mask);
 }
@@ -1170,13 +1175,17 @@ draw_segments (GdkGCWin32 *gcwin32,
   nsegs = va_arg (args, gint);
 
   if (x_offset != 0 || y_offset != 0)
-    for (i = 0; i < nsegs; i++)
-      {
-	segs[i].x1 -= x_offset;
-	segs[i].y1 -= y_offset;
-	segs[i].x2 -= x_offset;
-	segs[i].y2 -= y_offset;
-      }
+    {
+      /* must not modify in place, but could splice in the offset all below */
+      segs = g_memdup (segs, nsegs * sizeof (GdkSegment));
+      for (i = 0; i < nsegs; i++)
+        {
+          segs[i].x1 -= x_offset;
+          segs[i].y1 -= y_offset;
+          segs[i].x2 -= x_offset;
+          segs[i].y2 -= y_offset;
+        }
+    }
 
   if (gcwin32->pen_dashes && !IS_WIN_NT ())
     {
@@ -1214,19 +1223,46 @@ draw_segments (GdkGCWin32 *gcwin32,
 	    }
 	  else
 	    GDI_CALL (MoveToEx, (hdc, segs[i].x1, segs[i].y1, NULL)) &&
-	      GDI_CALL (LineTo, (hdc, segs[i].x2, segs[i].y2)) &&
-	      (gcwin32->pen_width <= 1 &&
-	       GDI_CALL (LineTo, (hdc, segs[i].x2 + 1, segs[i].y2 + 1)));
+	      GDI_CALL (LineTo, (hdc, segs[i].x2, segs[i].y2));
+
 	}
     }
   else
     {
       for (i = 0; i < nsegs; i++)
 	GDI_CALL (MoveToEx, (hdc, segs[i].x1, segs[i].y1, NULL)) &&
-	  GDI_CALL (LineTo, (hdc, segs[i].x2, segs[i].y2)) &&
-	  (gcwin32->pen_width <= 1 &&
-	   GDI_CALL (LineTo, (hdc, segs[i].x2 + 1, segs[i].y2 + 1)));
+	  GDI_CALL (LineTo, (hdc, segs[i].x2, segs[i].y2));
+
+      /* not drawing the end pixel does produce a crippled mask, look 
+       * e.g. at xpm icons produced with gdk_pixbuf_new_from_xpm_data trough
+       * gdk_pixbuf_render_threshold_alpha (testgtk folder icon or
+       * Dia's toolbox icons) but only on win9x ... --hb
+       *
+       * Update : see bug #81895 and bug #126710 why this is finally
+       *          needed on any win32 platform ;-)
+       */
+      if (gcwin32->pen_width <= 1)
+        {
+          GdkSegment *ps = &segs[nsegs-1];
+          int xc = 0, yc = 0;
+
+          if (ps->y2 == ps->y1 && ps->x2 == ps->x1)
+            xc = 1; /* just a point */
+          else if (ps->y2 == ps->y1)
+            xc = (ps->x1 < ps->x2) ? 1 : -1; /* advance x only */
+          else if (ps->x2 == ps->x1)
+            yc = (ps->y1 < ps->y2) ? 1 : -1; /* advance y only */
+          else
+            {
+              xc = (ps->x1 < ps->x2) ? 1 : -1;
+              yc = (ps->y1 < ps->y2) ? 1 : -1;
+            }
+
+          GDI_CALL (LineTo, (hdc, ps->x2 + xc, ps->y2 + yc));
+        }
     }
+  if (x_offset != 0 || y_offset != 0)
+    g_free (segs);
 }
 
 static void
@@ -1254,6 +1290,10 @@ gdk_win32_draw_segments (GdkDrawable *drawable,
       bounds.x = MIN (bounds.x, segs[i].x2);
       bounds.y = MIN (bounds.y, segs[i].y1);
       bounds.y = MIN (bounds.y, segs[i].y2);
+    }
+
+  for (i = 0; i < nsegs; i++)
+    {
       bounds.width = MAX (bounds.width, segs[i].x1 - bounds.x);
       bounds.width = MAX (bounds.width, segs[i].x2 - bounds.x);
       bounds.height = MAX (bounds.height, segs[i].y1 - bounds.y);
@@ -1357,10 +1397,14 @@ gdk_win32_draw_lines (GdkDrawable *drawable,
     {
       bounds.x = MIN (bounds.x, points[i].x);
       bounds.y = MIN (bounds.y, points[i].y);
-      bounds.width = MAX (bounds.width, points[i].x - bounds.x);
-      bounds.height = MAX (bounds.height, points[i].y - bounds.y);
       pts[i].x = points[i].x;
       pts[i].y = points[i].y;
+    }
+
+  for (i = 0; i < npoints; i++)
+    {
+      bounds.width = MAX (bounds.width, points[i].x - bounds.x);
+      bounds.height = MAX (bounds.height, points[i].y - bounds.y);
     }
 
   region = widen_bounds (&bounds, GDK_GC_WIN32 (gc)->pen_width);
@@ -1454,13 +1498,13 @@ blit_from_pixmap (gboolean              use_fg_bg,
     WIN32_GDI_FAILED ("SelectObject");
   else
     {
-      if (src->image->depth <= 8)
+      if (GDK_PIXMAP_OBJECT (src->parent_instance.wrapper)->depth <= 8)
 	{
 	  /* Blitting from a 1, 4 or 8-bit pixmap */
 
 	  if ((oldtable_size = GetDIBColorTable (srcdc, 0, 256, oldtable)) == 0)
 	    WIN32_GDI_FAILED ("GetDIBColorTable");
-	  else if (src->image->depth == 1)
+	  else if (GDK_PIXMAP_OBJECT (src->parent_instance.wrapper)->depth == 1)
 	    {
 	      /* Blitting from an 1-bit pixmap */
 
@@ -1476,9 +1520,9 @@ blit_from_pixmap (gboolean              use_fg_bg,
 		  bgix = 0;
 		  fgix = 1;
 		}
-
+	      
 	      if (GDK_IS_PIXMAP_IMPL_WIN32 (dest) &&
-		  ((GdkPixmapImplWin32 *) dest)->image->depth <= 8)
+		  GDK_PIXMAP_OBJECT (dest->wrapper)->depth <= 8)
 		{
 		  /* Destination is also pixmap, get fg and bg from
 		   * its palette. Either use the foreground and

@@ -1,6 +1,1173 @@
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.9 ===
+
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.8 ===
+
+2004-08-24  Matthias Clasen  <mclasen@redhat.com>
+
+	* gdk-pixbuf/gdk-pixbuf-csource.xml: Document bugs of
+	the runlength encoder.
+
+Sat Aug 14 19:15:08 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* === Released 2.4.7 ===
+
+2004-08-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.6 ===
+
+Thu Aug 12 00:06:20 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkuimanager.sgml: Add some information about
+	allowed values for the name and action attributes.
+
+2004-08-07  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/tmpl/gtkrc.sgml: Fix a typo.  (#149470, Mariano
+	Suarez-Alvarez)
+
+2004-07-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtk-sections.txt: Add gtk_parse_args.
+
+2004-07-12  Federico Mena Quintero  <federico@ximian.com>
+
+	Merged from HEAD:
+
+	* gtk/glossary.xml: Start of the GTK+ glossary.
+
+	* gtk/Makefile.am (content_files): Added glossary.xml.
+
+	* gtk/gtk-docs.sgml: Likewise.
+
+2004-07-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.4 ===
+
+Sat Jul  3 23:44:45 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtksocket.sgml: 
+	* gtk/tmpl/gtkicontheme.sgml: 
+	* gtk/building.sgml: 
+	* gdk/tmpl/windows.sgml: Fix links to www.freedesktop.org.  
+	(#145210, Billy Biggs)
+
+Tue Jun 22 21:54:24 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/composite.dia: 
+	* gdk-pixbuf/composite.png: Flip the y axes in the diagrams. 
+
+Sun Jun 20 00:17:58 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/composite.png: Add a figure which tries
+	to expain pixbuf compositing.
+	
+	* gdk-pixbuf/composite.dia: 
+	* gdk-pixbuf/apple-red-1a.png: 
+	* gdk-pixbuf/apple-red-2c.png: 
+	* gdk-pixbuf/gnome-gmush-1.png: Sources for composite.png.
+	
+	* gdk-pixbuf/Makefile.am (HTML_IMAGES): Add composite.png.
+
+Fri Jun 18 21:23:08 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreemodelfilter.sgml: Fix the docs for
+	GtkTreeModelFilterVisibleFunc.  (#144583, Olivier Andrieu)
+
+2004-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.3 ===
+
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.2 ===
+
+Mon May 31 00:18:29 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktable.sgml: Document the default attach
+	options for gtk_table_attach_defaults().  (#143391,
+	Steve Chaplin)
+
+Fri May 28 14:35:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcontainer.sgml: Fix docs for 
+	gtk_container_border_width().  (#143309, Doug Quale)
+
+Fri May  7 01:36:30 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/gdk-pixbuf-csource.xml: Add an "Environment" 
+	section.  (Jens Elkner)
+
+Fri May  7 01:23:03 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkicontheme.sgml: Fix example.  (Steffen Röcker)
+
+2004-05-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/tmpl/gtkuimanager.sgml: Fixes to the DTD.
+
+2004-04-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.1 ===
+
+2004-04-29  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Added an .gtkrc-2.0 example of how
+	to actually change the key bindings.
+
+2004-04-23  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/tmpl/gtkdialog.sgml: 
+	* gtk/tmpl/gtkeditable.sgml: 
+	* gtk/tmpl/gtkfilesel.sgml: 
+	* gtk/tmpl/gtkmain.sgml: 
+	* gtk/tmpl/gtkmenu.sgml: 
+	* gtk/tmpl/gtkmessagedialog.sgml: 
+	* gtk/tmpl/gtktogglebutton.sgml: Remove excessive
+	casts from examples.  (#139387, Olexiy Avramchenko)
+
+	* gtk/migrating-GtkAction.sgml: Fix an example.  
+	(#138966, Tim-Philipp Müller)
+
+	* gdk/tmpl/properties.sgml: Document the only_if_exists argument
+	to gdk_atom_intern() as ignored.
+
+2004-04-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/gtk-sections.txt: Add GtkFileChooserEmbed to a 
+	Private section, so gtk-doc can strip it out of the hierarchy.
+
+2004-04-15  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Added a section explaining
+	character encoding for filenames.
+
+2004-04-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtk/tmpl/gtkuimanager.sgml: Some corrections.
+
+2004-04-13  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Typo fix.
+
+2004-04-12  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Added documentation about
+	GtkFileChooserDefault's key binding signals.
+
+2004-03-26  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooserdialog.sgml: Added a section about using
+	known response codes for "accept"-type buttons, rather than custom
+	responses.  This is related to bugs #136237 and #138263.
+
+Tue Mar 16 13:17:26 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.4.0 ===
+
+Tue Mar 16 00:13:19 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreestore.sgml: Remove cvs conflict
+	markers.
+
+Sun Mar 14 22:27:59 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/tmpl/gtktreeview.sgml: Document 
+	#GtkTreeViewSearchEqualFunc and its backwards return
+	value.
+
+Mon Mar 15 02:36:32 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkentrycompletion.sgml: Add some docs.
+
+Tue Mar  9 09:34:10 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.6 ===
+
+Tue Mar  9 00:52:56 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/migrating-GtkAction.sgml: Fix the example XML ui
+	description.
+
+Mon Mar  8 08:26:52 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/building.sgml: Fix link to gettext. (Henning Nielsen Lund)
+
+Sat Mar  6 23:50:37 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkrc.sgml: Document that [xy]thickness can
+	be specified in a style.
+
+Fri Mar  5 23:58:01 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreemodelfilter.sgml: A little addition.
+
+Fri Mar  5 23:45:06 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkinvisible.sgml: Remove "internally-used"
+	which sounds like "private".
+
+Tue Mar  2 23:51:24 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkentrycompletion.sgml: Add a bit about actions.
+
+Mon Mar  1 19:47:48 2004  Owen Taylor  <otaylor@redhat.com>
+
+	 * === Released 2.3.5 ====
+
+	* gtk/gtk-sections.txt: Update
+
+Sun Feb 29 22:04:43 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtk-sections.txt: Add gtk_entry_get_alignment
+
+Sun Feb 29 20:32:18 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtk-sections.txt: Add gtk_window_mnemonic_activate
+
+Sat Feb 28 01:14:23 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/migrating-GtkComboBox.sgml: New chapter.
+
+Sat Feb 28 01:11:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: Include migrating-GtkComboBox.sgml.
+
+Sat Feb 28 01:11:34 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (content_files): Add migrating-GtkComboBox.sgml.
+
+Fri Feb 27 22:54:01 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: Sort deprecated widgets alphabetically.
+
+2004-02-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-GtkAction.sgml: Put explicit <link> elements
+	instead of #Symbol, because the latter doesn't get substituted by
+	gtk-doc outside of template files.  Thanks to Matthias for
+	pointing this out.
+
+	* gtk/migrating-GtkFileChooser.sgml: Likewise.
+
+	* gtk/gtk-sections.txt: Removed gtk_file_chooser_{set,get}_folder_mode.
+
+Fri Feb 27 22:51:35 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkoptionmenu.sgml: 
+	* gtk/tmpl/gtkcombo.sgml: Add some more deprecation notes.
+
+Fri Feb 27 22:47:28 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Suppress link in example.
+
+Fri Feb 27 22:40:50 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (IGNORE_HFILES): Add gtkpathbar.h
+
+Fri Feb 27 22:27:34 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_widget_{add,remove,list}_mnemonic_label(s).
+
+2004-02-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-GtkFileChooser.sgml: Inform about
+	gtk_file_chooser_set_action().
+
+Thu Feb 26 22:18:21 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_combo_box_entry_new_text.
+
+Thu Feb 26 21:41:25 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_rc_reset_styles.
+
+Tue Feb 24 19:06:20 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.4 ===
+
+2004-02-24  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkexpander.sgml: Added a section about usage when you
+	want to manage the expanded widgets yourself.
+
+Tue Feb 24 14:45:03 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.3 ===
+
+Thu Feb 19 00:11:23 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_radio_menu_item_new_from_widget
+	gtk_radio_menu_item_new_with_label_from_widget,
+	gtk_radio_menu_item_new_with_mnemonic_from_widget.
+
+2004-02-17  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: Add a missing semicolon to an
+	entity.
+
+2004-02-16  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: Umm, I'm on crack.  Use
+	gtk_accelerator_get_default_mod_mask().
+
+	* gdk/tmpl/windows.sgml: Removed the incorrect description from
+	GDK_MODIFIER_MASK.
+
+2004-02-16  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk/tmpl/windows.sgml: Added an example of how to use
+	GDK_MODIFIER_MASK to test for modifier keys correctly.
+
+	* gtk/migrating-checklist.sgml: Likewise.
+
+Sun Feb 15 23:51:08 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcomboboxentry.sgml: 
+	* gtk/tmpl/gtkcombobox.sgml: Add short descriptions.
+
+Sun Feb 15 22:09:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcombo.sgml: 
+	* gtk/tmpl/gtkoptionmenu.sgml: Add deprecation notes pointing
+	people to GtkComboBox.
+
+Sun Feb 15 02:46:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreednd.sgml: Add docs.
+
+Sat Feb 14 03:09:49 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Remove duplicated section for
+	file gtktreednd.sgml.
+
+Fri Feb 13 00:54:24 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_scale_get_layout
+	and gtk_scale_get_layout_offsets.
+
+Thu Feb 12 23:56:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_tooltips_get_info_from_tip_window.
+
+Thu Feb 12 23:30:25 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_combo_box_{popup,popdown}.
+
+Thu Feb 12 02:00:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreemodelfilter.sgml: 
+	* gtk/tmpl/gtkentrycompletion.sgml: 
+	* gtk/tmpl/gtkcelllayout.sgml: Additions.
+
+Thu Feb 12 01:27:02 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Updates.
+
+Thu Feb 12 01:26:42 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (IGNORE_HFILES): Add some private headers.
+
+Sat Feb  7 00:38:23 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add GtkAccelMap, gtk_accel_map_get,
+	and a bunch of standard and private accel map symbols.
+
+Sat Feb  7 00:38:03 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk.types: Add gtk_accel_map_get_type.
+
+Sun Feb  1 00:37:44 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkobject.sgml: Remove misleading documentation for 
+	gtk_object_set_user_data().  (#101614)
+
+Sun Feb  1 00:30:53 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/general.sgml: Improve the documentation of event_mask for
+	gdk_pointer_grab.  (#132223, Pascal Haakmat)
+
+Fri Jan 30 00:27:36 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcombo.sgml: Document clearing the list with
+	gtk_combo_set_popdown_strings().
+
+Wed Jan 28 22:51:41 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreeviewcolumn.sgml: Remove unfinished sentence, until
+	jrb finds time to write a real description.
+
+Wed Jan 28 21:46:55 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/event_structs.sgml: Fix a header name misspelling.  
+	(#123589, Jan Huelsbergen)
+
+2004-01-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: Note that a widget must be
+	focusable for the menu keybindings to work.
+
+2004-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: Mention when it is useful to use
+	GdkEventExpose.region rather than GdkEventExpose.area.
+
+2004-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: Point to GtkEntry as an example of
+	a widget that uses a custom function to position its popup menu.
+
+2004-01-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/migrating-checklist.sgml: New chapter with a "Migration
+	Checklist" of things people need to do to be good citizens in the
+	GTK+ world.  This is mainly a way to tell people about interesting
+	APIs that they should use instead of hand-hacked approaches.
+
+	* gtk/gtk-docs.sgml: Added migrating-checklist.sgml.
+
+	* gtk/Makefile.am (content_files): Likewise.
+
+Thu Jan 22 01:46:45 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gtk/tmpl/gtktreemodelsort.sgml: new introduction section.
+
+2004-01-20  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtk-sections.txt: Added gtk_paned_get_child[12].
+
+Thu Jan 15 23:54:46 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: Move the old chapters about 1.2 and 2.0 
+	changes to Federicos new 'migrating' part.
+
+Fri Jan  9 00:38:58 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_ui_manager_get_toplevels.
+
+Thu Jan  8 00:14:02 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkmain.sgml (gtk_input_add_full): Fix link in deprecation
+	note.
+
+Wed Jan  7 22:25:45 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_action_new, gtk_toggle_action_new,
+	gtk_radio_action_new, gtk_action_group_add_action_with_accel.
+
+Wed Jan  7 01:56:33 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/file-saving.sgml: Document GdkPixbufSaveFunc.
+
+	* gdk-pixbuf/gdk-pixbuf-sections.txt: Add GdkPixbufSaveFunc,
+	gdk_pixbuf_save_to_callback, gdk_pixbuf_save_to_callbackv,
+	gdk_pixbuf_save_to_buffer and gdk_pixbuf_save_to_bufferv.
+
+Wed Jan  7 01:27:23 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/module_interface.sgml: Document expected
+	module behaviour if the size_func returns 0.
+
+Wed Jan  7 01:26:07 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/gdk-pixbuf-sections.txt: Add gdk_pixbuf_get_file_info.
+
+2004-01-06  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/tmpl/gdk-pixbuf.sgml: Added a section on how to
+	compute pixel offsets for gdk_pixbuf_get_pixels().
+
+Mon Dec 29 01:40:20 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_accel_map_{un,}lock_path.
+
+Wed Dec 24 01:12:12 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add GtkClipboardTargetReceivedFunc,
+	gtk_clipboard_request_targets, gtk_clipboard_wait_for_targets.
+
+Wed Dec 24 01:11:36 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkclipboard.sgml: Document GtkClipboardTargetReceivedFunc.
+
+Sun Dec 21 01:58:33 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_menu_shell_cancel.
+
+Thu Dec 18 01:24:35 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_message_dialog_set_markup
+
+Tue Dec 16 01:57:13 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/gdk-sections.txt: Add gdk_display_set_double_click_distance.
+
+Mon Dec 15 01:03:08 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_button_[sg]et_alignment.
+
+Sun Dec 14 01:25:49 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/gdk-sections.txt: Add gdk_x11_register_standard_event_type.
+
+Sat Dec 13 22:37:46 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (HTML_IMAGES): Add 
+	stock_dialog_authentication_48.png.  (#129255, Olivier Andrieu)
+
+Fri Dec 12 00:52:25 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/gdk-sections.txt: Add the new gdk_spawn_* and
+	gdk_threads_* declarations.
+
+Thu Dec 11 01:57:55 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/gdk-pixbuf-loader.sgml: Signal documentation
+	moved inline.
+
+Thu Dec 11 00:04:10 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_window_[sg]et_accept_focus().
+	* gdk/gdk-sections.txt: Add gdk_window_set_accept_focus().
+
+Wed Dec 10 00:09:51 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/gdk-sections.txt: Add gdk_window_get_group(), 
+	gdk_display_get_default_group().
+
+2003-12-08  Federico Mena Quintero  <federico@ximian.com>
+ 
+ 	* gtk/migrating-GtkAction.sgml: New chapter about how to migrate
+ 	from gnome-ui/bonobo-ui/etc. to GtkAction.
+ 
+ 	* gtk/gtk-docs.sgml: Integrated the above.
+ 
+ 	* gtk/Makefile.am (content_files): Added migrating-GtkAction.sgml.
+ 
+Mon Dec  8 12:47:01 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/Makefile.am (IGNORE_HFILES): Add xdgmime directory,
+	gtkfilesystemwin32.
+
+	* gtk/gtk-sections.txt: Some updates.
+
+Sun Nov 23 20:59:57 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tree_widget.sgml: Add a missing comma.
+
+Fri Nov 21 00:09:36 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkfontsel.sgml: 
+	* gtk/tmpl/gtkfontseldlg.sgml: Remove leftover documentation of
+	the filter functionality that got removed long ago.
+
+2003-11-18  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Added sections section about
+	generating previews and including extra widgets.
+
+	* gtk/gtk-docs.sgml: Added a part about migrating old code to new
+	widgets.
+
+	* gtk/migrating-GtkFileChooser.sgml: New file.
+
+	* gtk/Makefile.am (content_files): Added
+	migrating-GtkFileChooser.sgml.
+
+Tue Nov 18 00:12:23 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/gdk-sections.txt: Add gdk_drawable_copy_to_image.
+
+Mon Nov 17 23:29:21 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_combo_box_new_with_model,
+	gtk_combo_box_set_model.
+
+Sun Nov 16 00:41:48 2003  Matthias Clasen  <maclas@gmx.de>
+ 
+	* gtk/gtk-sections.txt: Remove gtk_tool_item_[sg]et_pack_end.
+
+Sun Nov 16 00:32:18 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Move GtkFileChooser out of the
+	private section, in order to get the autogenerated docs
+	on hierarchy, signals, properties, etc.
+
+Sat Nov 15 00:25:39 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/module_interface.sgml: Add an example
+	for GdkPixbufModulePattern.
+
+Wed Nov 12 21:52:35 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_menu_set_monitor.
+
+Fri Oct 24 13:15:32 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* gtk/tmpl/gtktoolbar.sgml, gtk/tmpl/gtkseparatortoolitem.sgml:
+	Mention the "expand" and "draw" trick for separator tool items.
+
+Fri Oct 24 17:21:04 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk-pixbuf/Makefile.am gtk/Makefile.am: Distribute generated
+	man pages.
+
+2003-10-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/tmpl/gtkfilechooser.sgml: Added the text for the initial
+	section, and descriptions for the signals and enumerations.
+
+	* gtk/tmpl/gtkfilechooserdialog.sgml: Added the text for the
+	initial section, and a short example.
+
+	* gtk/tmpl/gtkfilechooserwidget.sgml: Added the text for the
+	initial section.
+
+Fri Oct 24 00:25:07 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkfilefilter.sgml: 
+	* gtk/tmpl/gtkfilechooser.sgml: 
+	* gtk/tmpl/gtkfilechooserwidget.sgml: 
+	* gtk/tmpl/gtkfilechooserdialog.sgml: Add short descriptions.
+
+Thu Oct 23 22:41:02 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: Move GtkCombo and GtkOptionMenu to
+	the "Deprecated" chapter. Add GtkFileChooser, GtkFileChooserDialog,
+	GtkFileChooseWidget and GtkFileFilter.
+
+2003-10-23  Federico Mena Quintero  <federico@ximian.com>
+
+	* gtk/gtk.types: Added gtk_file_chooser_get_type,
+	gtk_file_chooser_dialog_get_type,
+	gtk_file_chooser_widget_get_type, gtk_file_filter_get_type.
+
+	* gtk/gtk-sections.txt: Added GtkFileChooser,
+	GtkFileChooserWidget, GtkFileChooserDialog, GtkFileFilter.
+
+	* gtk/Makefile.am (IGNORE_HFILES): Added gtkcellrendererseptext.h,
+	gtkfilechooserdefault.h, gtkfilechooserentry.h,
+	gtkfilechooserutils.h, gtkfilesystem.h, gtkfilesystemmodel.h,
+	gtkfilesystemunix.h.
+
+	* gtk/tmpl/gtkfilechooser.sgml: New template file.
+
+	* gtk/tmpl/gtkfilechooserdialog.sgml: Likewise.
+
+	* gtk/tmpl/gtkfilechooserwidget.sgml: Likewise.
+
+	* gtk/tmpl/gtkfilefilter.sgml: Likewise.
+
+Sun Oct 12 00:33:48 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk.types: Add the get_type() functions for
+	GtkEntryCompletion, GtkTreeModelFilter, GtkCellLayout, 
+	GtkComboBox, GtkComboBoxEntry.
+
+Sat Oct 11 00:18:46 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkprogressbar.sgml: Included 
+	gtk_progress_bar_get_orientation() in the list of undeprecated 
+	functions, use less clumsy markup for enumerations.
+
+2003-10-02  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (IGNORE_HFILES): Add gtkcellview.h and
+	gtkcellviewmenuitem.h.
+
+	* gtk/tmpl/gtkentrycompletion.sgml: 
+	* gtk/tmpl/gtktreemodelfilter.sgml: 
+	* gtk/tmpl/gtkcelllayout.sgml: 
+	* gtk/tmpl/gtkcombobox.sgml: 
+	* gtk/tmpl/gtkcomboboxentry.sgml: New templates.
+
+	* gtk/gtk-sections.txt: 
+	* gtk/gtk-docs.sgml: Add sections for GtkEntryCompletion, 
+	GtkTreeModelFilter, GtkCellLayout, GtkComboBox, GtkComboBoxEntry.
+
+	* gtk/tmpl/gtktreednd.sgml: Add short description.
+
+	* gtk/gtk-docs.sgml: Move GtkItemFactory to the "Deprecated" chapter.
+
+	* gtk/tmpl/gtktoggletoolbutton.sgml: Fix section title.
+
+2003-10-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/keys.sgml: Add two missing signals.
+
+	* gtk/tmpl/gtkaction.sgml: Fix cross reference to GtkMenuMerge.
+
+	* gtk/gtk-sections.txt: Additions.
+
+	* gtk/tmpl/gtkitemfactory.sgml: Add hint to use #GtkUIManager instead.
+
+2003-09-30  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkuimanager.sgml: Add a section about empty menus.
+
+	* gdk/tmpl/keys.sgml: Small addition.
+
+	* gdk/gdk-sections.txt: Add GdkDisplayClass and GdkScreenClass.
+
+	* gdk-pixbuf/gdk-pixbuf-sections.txt: Add GdkPixbufLoaderClass.
+
+2003-09-22  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktable.sgml: Fix a copy-and-paste error.  (#122800)
+
+2003-09-21  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_widget_[gs]et_no_show_all.
+	Add gtk_toggle_action_[gs]et_draw_as_radio.
+
+2003-09-18  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: 
+	* gtk/tmpl/gtkuimanager.sgml: Updates for accelerator-only actions.
+
+2003-09-16  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkaction.sgml: 
+	* gtk/tmpl/gtkradioaction.sgml: 
+	* gtk/tmpl/gtkactiongroup.sgml: 
+	* gtk/tmpl/gtkuimanager.sgml: Updates.
+
+2003-09-15  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkuimanager.sgml: Add a paragraph about smart separators.
+
+	* gtk/gtk-sections.txt: Add gtk_action_group_add_toggle_actions[_full].
+
+2003-09-12  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/drawing.sgml: Add deprecation note for gdk_draw_pixmap().
+
+2003-09-11  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/drawing.sgml: Add hints about obtaining Pango 
+	structures. (#121953, Martin Pool)
+
+2003-09-04  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add GtkUIManagerItemType.
+
+	* gtk/tmpl/gtkuimanager.sgml: Change the name of the "pos" 
+	attribute to "position".
+
+	* gtk/tmpl/gtkactiongroup.sgml: Doc tweaks.
+
+2003-09-02  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkactiongroup.sgml:	
+	* gtk/tmpl/gtkuimanager.sgml: Additions.
+
+	* gtk/gtk-sections.txt: Add gtk_ui_manager_new_merge_id and
+	gtk_ui_manager_add_ui.
+
+2003-09-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkuimanager.sgml: Add an example UI description.
+
+	* gtk/gtk-sections.txt: Add gtk_ui_manager_ensure_update.
+
+2003-08-31  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (IGNORE_HFILES): Add gtktoggleactionprivate.h
+
+	* gtk/tmpl/gtkuimanager.sgml: 
+	* gtk/gtk-sections.txt: Replace gtk_ui_manager_activate by
+	gtk_ui_manager_get_action.
+
+	* gtk/tmpl/gtkuimanager.sgml: 
+	* gtk/tmpl/gtkactiongroup.sgml: 
+	* gtk/tmpl/gtkaction.sgml: 
+	* gtk/tmpl/gtktoggleaction.sgml: 
+	* gtk/tmpl/gtkradioaction.sgml: Additions.
+
+	* gtk/gtk-sections.txt: Updates.
+
+	* gtk/gtk.types: Add GtkAction, GtkActionGroup, GtkToggleAction,
+	GtkRadioAction and GtkUIManager.
+	
+2003-08-28  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk/tmpl/events.sgml: Improve PointerHint docs.
+	* gdk/tmpl/event_structs.sgml: Explain is_hint field in GdkEventMotion.
+	(#120542)
+
+2003-08-26  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Rename GtkMenuMerge to GtkUIManager
+	* gtk/gtk-docs.sgml: Adjust.
+	* gtk/tmpl/gtkuimanager.sgml: New template.
+	* gtk/tmpl/gtkmenumerge.sgml: Removed.
+
+2003-08-24  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkmenumerge.sgml: 
+	* gtk/tmpl/gtkaction.sgml: 
+	* gtk/tmpl/gtkactiongroup.sgml: 
+	* gtk/tmpl/gtkradioaction.sgml: 
+	* gtk/tmpl/gtktoggleaction.sgml: New templates.
+
+	* gtk/gtk-docs.sgml: 
+	* gtk/gtk-sections.txt: Add GtkMenuMerge, GtkAction, GtkActionGroup, 
+	GtkRadioAction, GtkToggleAction.
+
+2003-08-11  Matthias Clasen  <maclas@gmx.de>
+ 
+	* gdk/gdk-sections.txt: Add gdk_window_set_keep_above and
+	gdk_window_set_keep_below.  
+
+	* gtk/gtk-sections.txt: Add gtk_window_set_keep_above and
+	gtk_window_set_keep_below. 
+
+	* gdk/tmpl/event_structs.sgml: Document GDK_WINDOW_STATE_FULLSCREEN, 
+	GDK_WINDOW_STATE_ABOVE and GDK_WINDOW_STATE_BELOW.
+
+2003-08-10  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkwidget.sgml: Document public GtkWidget members.
+	(#119463) 
+
+2003-08-09  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcalendar.sgml: Deprecate
+	GTK_CALENDAR_WEEK_START_MONDAY. (#87977) 
+
+2003-08-03  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/gdk-pixbuf.sgml: Clarify misleading explanation
+	of rowstride. (#119000) 
+
+Tue Jul 29 14:21:48 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* gtk/tmpl/gtktoolbar.sgml: Move documentation inline
+
+2003-07-29  Sven Neumann  <sven@gimp.org>
+
+	* gdk/tmpl/pixmaps.sgml: Resurrected documentation that got lost
+	when the window parameter was renamed to drawable.
+
+2003-07-21  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkdnd.sgml: It is GTK_DEST_DEFAULT_DROP, not
+	GTK_DRAG_DEFAULT_DROP. (#117917, Tim-Philipp Müller)
+
+2003-07-19  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add GTK_STOCK_DIALOG_AUTHENTICATION.
+
+	* gtk/tmpl/gtkstock.sgml: Add GTK_STOCK_DIALOG_AUTHENTICATION.
+
+	* gtk/gtk-sections.txt: Add gtk_button_box_get_child_secondary().
+
+2003-07-18  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_message_dialog_new_with_markup()
+	and gtk_window_set_default_icon(). 
+
+2003-07-15  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkseparatortoolitem.sgml: 
+	* gtk/tmpl/gtkradiotoolbutton.sgml: 
+	* gtk/tmpl/gtktoggletoolbutton.sgml: New templates.
+
+	* gtk/gtk-docs.sgml: Include gtkseparatortoolitem.xml,
+	gtkradiotoolbutton.xml and gtktoggletoolbutton.xml.
+
+	* gtk/gtk.types: Add gtk_separator_tool_item_get_type,
+	gtk_radio_tool_button_get_type and gtk_toggle_tool_button_get_type.
+
+	* gtk/gtk-sections.txt: Add GtkSeparatorToolItem,
+	GtkRadioToolButton and GtkToggleToolButton sections.
+
+	* gdk/tmpl/input_devices.sgml: Remove docs for
+	gdk_device_get_history() which are now inline. 
+
+	* gdk/gdk-sections.txt: Add gdk_display_flush.
+
+2003-07-13  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk.types: Add gtk_tool_button_get_type and
+	gtk_tool_item_get_type. 
+	
+	* gtk/tmpl/gtktoolbutton.sgml:
+	* gtk/tmpl/gtktoolitem.sgml:
+	* gtk/gtk-docs.sgml: 
+	* gtk/gtk-sections.txt: Add new toolbar api.
+
+	* gtk/tmpl/gtkdnd.sgml: Remove docs for gtk_drag_begin(), which
+	are now inline. 
+
+	* gdk-pixbuf/gdk-pixbuf-sections.txt: Add
+	gdk_pixbuf_new_from_file_at_size. 
+
+2003-07-08  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkfilesel.sgml: Fix the example.  (#116575)
+
+Wed Jul  2 18:15:21 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/Makefile.am gtk/gtk-docs.sgml gtk/gtksections.txt
+	gtk/tmpl/gtkicontheme.sgml: Document named icon system.
+
+	* gtk/tmpl/gtkrc.sgml: Mention specifying named icons
+	as @"icon-name".
+
+	* gtk/tmpl/gtkimage.sgml: Add a cross-reference to stock
+	icons.
+
+2003-07-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcolorbutton.sgml: 
+	* gtk/tmpl/gtkfontbutton.sgml: 
+	* gtk/tmpl/gtkexpander.sgml: New files. Templates for GtkExpander,
+	GtkFontButton and GtkColorButton. 
+
+	* gtk/gtk-sections.txt: Add a sections for GtkExpander,
+	GtkColorButton and GtkFontButton. 
+
+	* gtk/gtk-docs.sgml: Add an entities for GtkExpander,
+	GtkColorButton and GtkFontButton. 
+	
+	* gtk/gtk.types: Add gtk_expander_get_type,
+	gtk_color_button_get_type() and gtk_font_button_get_type(). 
+
+	* gdk/gdk-sections.txt: Add
+	gdk_cursor_new_from_pixbuf(), gdk_display_supports_cursor_alpha(), 
+	gdk_display_supports_cursor_color(),
+	gdk_display_get_default_cursor_size() and 
+	gdk_display_get_maximal_cursor_size(). 
+
+2003-06-30  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcontainer.sgml: Write a bit about size negotiation. 
+
+	* gtk/tmpl/gtkwidget.sgml: Some additions.
+
+2003-06-24  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: Move GtkIMContext to "Abstract Base Classes",
+	since its abstract. 
+
+	* gtk/tmpl/gtkaccessible.sgml: 
+	* gtk/tmpl/gtkimmulticontext.sgml: 
+	* gtk/tmpl/gtkimcontextsimple.sgml: 
+	* gtk/tmpl/gtkimcontext.sgml: 
+	* gtk/tmpl/gtkviewport.sgml: 
+	* gtk/tmpl/gtkcellrenderertext.sgml: 
+	* gtk/tmpl/gtkcellrendererpixbuf.sgml: 
+	* gtk/tmpl/gtkcelleditable.sgml: 
+	* gtk/tmpl/gtktreemodelsort.sgml: 
+	* gtk/tmpl/gtktreednd.sgml: 
+	* gtk/tmpl/gtktreesortable.sgml: Add short descriptions.
+
+2003-06-23  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/Makefile.am (HTML_IMAGES): Add RTL variants of stock icons.
+
+	* gtk/tmpl/gtkstock.sgml: Document RTL variants of stock icons. 
+
+2003-06-22  Matthias Clasen  <matthias@localhost.localdomain>
+
+	* gdk-pixbuf/tmpl/gdk-pixbuf.sgml: Typo fix.
+
+	* gdk-pixbuf/gdk-pixbuf-sections.txt: Add
+	gdk_pixbuf_loader_new_with_mime_type. 
+
+2003-06-19  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/question_index.sgml: Add a question about changing
+	fonts. And one about "Getting Started".  (#114747, #108015)	 
+
+2003-06-17  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/Makefile.am: Add rule to regenerate man pages from 
+	Docbook.
+	(man_MANS): Add gdk-pixbuf-csource.1, gdk-pixbuf-query-loaders.1.
+	(content_files): Add gdk-pixbuf-csource.xml, 
+	gdk-pixbuf-query-loaders.xml.
+
+	* gdk-pixbuf/gdk-pixbuf-csource.xml: New refentry, containing the 
+	former gdk-pixbuf/gdk-pixbuf-csource.1, converted to Docbook.
+
+	* gdk-pixbuf/gdk-pixbuf-query-loaders.xml: New refentry.
+
+	* gdk-pixbuf/gdk-pixbuf-csource.1:
+	* gdk-pixbuf/gdk-pixbuf-query-loaders.1: Man pages generated from
+	the .xml sources.
+
+	* gdk-pixbuf/gdk-pixbuf.sgml: Include gdk-pixbuf-csource.xml and
+	gdk-pixbuf-query-loaders.xml.
+	
+	* gtk/Makefile.am: Add rule to regenerate man pages from Docbook.
+	(man_MANS): Add gtk-query-immodules-2.0.1
+	(content_files): Add gtk-query-immodules-2.0.xml
+
+	* gtk/gtk-query-immodules-2.0.xml: New refentry.
+
+	* gtk/gtk-query-immodules-2.0.1: Man page generated from the .xml 
+	source.
+
+	* gtk/gtk-docs.sgml: Include gtk-query-immodules-2.0.xml.
+
+	* gtk/gtk-docs.sgml: 
+	* gdk-pixbuf/gdk-pixbuf.sgml: 
+	* gdk/gdk-docs.sgml: Add autogenerated indices.
+
+2003-06-11  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkdnd.sgml: Fix some typos.
+
+2003-06-10  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_text_view_[gs]et_overwrite().
+
+2003-06-05  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/question_index.sgml: Add a couple of questions.
+
+2003-06-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add gtk_alignment_[gs]et_padding().
+
+2003-05-27  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkadjustment.sgml: Document allowed values for
+	adjustments which are used in scrollbars.  (#108448, Ernst Lippe)
+
+	* gtk/tmpl/gtkradiomenuitem.sgml: Fix example.  (#113604, 
+	Julien Moutte)
+
+2003-05-08  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkcalendar.sgml: Deprecate gtk_calendar_display_options().
+
+	* gtk/gtk-sections.txt: Add gtk_calendar_[sg]et_display_options().
+
+2003-05-05  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: 
+	* gtk/tmpl/gtksocket.sgml: Improve the docs about cross-process
+	embedding a bit.  (#112101, #112006)
+
+2003-05-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: 
+	* gtk/gtk-sections.txt: Remove some accidentally committed changes.
+
+2003-04-16  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkstyle.sgml: Additions.
+
+2003-04-13  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkenums.sgml: Additions.
+
+	* gtk/tmpl/gtkvruler.sgml: 
+	* gtk/tmpl/gtkhruler.sgml: 
+	* gtk/tmpl/gtkgamma.sgml: 
+	* gtk/tmpl/gtkcurve.sgml: 
+	* gtk/tmpl/gtkruler.sgml: Fix some typos and add some markup.
+
+	* gtk/gtk-sections.txt: Add a bunch of new functions.
+
+2003-04-09  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/building.sgml: More typo fixes.
+
+2003-04-08  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/building.sgml: Typo fix.
+
+2003-04-07  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktexttag.sgml: Document GTK_WRAP_WORD_CHAR.  (#110086)
+
+	* gtk/tmpl/gtkenums.sgml, gtk/tmpl/gtkmain.sgml,
+	gtk/tmpl/gtkpaned.sgml, gtk/tmpl/gtkradiobutton.sgml,
+	gtk/tmpl/gtkspinbutton.sgml, gtk/tmpl/gtkstatusbar.sgml,
+	gtk/tmpl/gtktext.sgml, gtk/tmpl/gtktogglebuttons.sgml,
+	gtk/tmpl/gtktreeviewcolumn.sgml, gtk/tmpl/gtktypeutils.sgml: Fix
+	numerous misspellings of possessive "its".  (#110027, Doug Quale)
+
+	* gtk/tmpl/gtktypeutils.sgml: Add some deprecation info.
+
+2003-04-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkmessagedialog.sgml: Fix formatting of examples.
+
+	* gtk/tmpl/gtkfilesel.sgml: Fix the example.  (#109563)
+
+2003-03-22  Michael Natterer  <mitch@gimp.org>
+
+	* gtk/Makefile.am: copy stock_color_picker_25.png, don't copy
+	stock_save_24.png twice.
+
+	* gtk/tmpl/gtkstock.sgml: use it for GTK_STOCK_COLOR_PICKER
+	instead of stock_colorselector_24.png.
+
+2003-03-04  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkobject.sgml: Add deprecation notes.
+
+2003-02-24  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtktreemodel.sgml: Fix self-referential documenation of
+	gtk_tree_model_get_iter_root().  (#106720, Keith Sharp)
+
+2003-02-11  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkrc.sgml: Document that font and fontset declarations
+	are ignored.
+
+2003-02-02  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-docs.sgml: 
+	* gtk/question_index.sgml: # doesn't work here, add links
+	manually.  (#104991)
+
+2003-02-01  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/compiling.sgml: Mention xxx_DISABLE_DEPRECATED and
+	GDK_MULTIHEAD_SAFE. 
+
+2003-01-31  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkmain.sgml: Deprecate the gtk_timeout_*, gtk_idle_*
+	and gtk_input_* functions.  (#71596)
+
 2003-01-30  Matthias Clasen  <maclas@gmx.de>
 
 	* gtk/running.sgml: s/overwrite/override/g  (#104627, Brian Cameron)
+
+2003-01-21  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkrc.sgml: Fix integer color range.  (#103992)
+
+2003-01-14  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/gtk-sections.txt: Add new GtkTextIter functions.
+
+2003-01-13  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf/tmpl/gdk-pixbuf.sgml: 
+	* gdk-pixbuf/tmpl/animation.sgml: Remove ids which are now
+	generated by gtk-doc.
+	
+2003-01-03  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkrc.sgml: Update description of priorities for styles
+	and bindings.  (#98054)
+
+2002-12-31  Matthias Clasen  <maclas@gmx.de>
+
+	* gtk/tmpl/gtkrc.sgml: Add a note about gtkrc-2.0 being parsed by
+	all 2.x versions.
 
 Fri Dec 20 13:10:06 2002  Owen Taylor  <otaylor@redhat.com>
 
@@ -399,8 +1566,9 @@ Tue Jun 18 17:02:48 2002  Owen Taylor  <otaylor@redhat.com>
 
 2002-05-05  Matthias Clasen  <maclas@gmx.de>
 
-	* gtk/gtk-sections.txt: Add gtk_widget_class_find_style_property,
-	gtk_widget_class_list_style_properties and gtk_style_get_font_for_display.
+	* gtk/gtk-sections.txt: Add gtk_widget_class_find_style_property, 
+	gtk_widget_class_list_style_properties and
+	gtk_style_get_font_for_display. 
 
 2002-05-03  Matthias Clasen  <maclas@gmx.de>
 
@@ -421,14 +1589,15 @@ Tue Jun 18 17:02:48 2002  Owen Taylor  <otaylor@redhat.com>
 
 2002-05-01  Matthias Clasen  <maclas@gmx.de>
 
-	* gdk/gdk-sections.txt: Move GdkScreen struct to the GdkScreen section.
+	* gdk/gdk-sections.txt: Move GdkScreen struct to the GdkScreen
+	section. 
 
 	* gdk/tmpl/gdkscreen.sgml: 
 	* gdk/tmpl/gdkdisplay.sgml: Typo and markup fixes.
 
 	* gdk/gdk-docs.sgml: Reorder display and screen sections.
 
-	* gdk/multihead.sgml: Remove references to GdkDisplayManager, typo
+	* gdk/multihead.sgml: Remove references to GdkDisplayManager, typo 
 	and markup fixes.
 
 Tue Apr 30 14:16:12 2002  Owen Taylor  <otaylor@redhat.com>
@@ -561,9 +1730,9 @@ Fri Mar  8 15:14:32 2002  Owen Taylor  <otaylor@redhat.com>
 2002-03-07  Matthias Clasen  <maclas@gmx.de>
 
 	* gdk-pixbuf/tmpl/animation.sgml, gdk-pixbuf/tmpl/gdk-pixbuf.sgml,
-	gtk/tmpl/gtkrc.sgml, gtk/tmpl/gtktextview.sgml, gtk/tmpl/gtkiconfactory.sgml,
-	gtk/tmpl/gtkaccelgroup.sgml: Add some ids which are referenced
-	from the object hierarchy.
+	gtk/tmpl/gtkrc.sgml, gtk/tmpl/gtktextview.sgml,
+	gtk/tmpl/gtkiconfactory.sgml, gtk/tmpl/gtkaccelgroup.sgml: Add
+	some ids which are referenced from the object hierarchy.
 
 	* gtk/gtk-docs.sgml: Use parts as top-level division (#61575),
 	include gtkaccessible docs.
@@ -1030,7 +2199,8 @@ Sat Dec 22 18:18:07 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* gtk/tmpl/gtklist.sgml: Markup fixes.
 
-	* gdk/tmpl/selections.sgml, gtk/tmpl/gtksocket.sgml: s/succesful/successful/g.
+	* gdk/tmpl/selections.sgml, gtk/tmpl/gtksocket.sgml:
+	s/succesful/successful/g. 
 
 	* gtk/gtk-sections.txt, gtk/tmpl/gtkstyle.sgml: Remove
 	GTK_STYLE_NUM_STYLECOLORS. (#66467)

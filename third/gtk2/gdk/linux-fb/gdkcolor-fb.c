@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <time.h>
 #include <sys/ioctl.h>
 #include <string.h>
@@ -753,7 +754,7 @@ gdk_colors_alloc (GdkColormap	*colormap,
   private = GDK_COLORMAP_PRIVATE_DATA (colormap);
   
   if (nplanes > 0)
-    return 0;
+    return FALSE;
 
   found = 0;
   for (i = 1; i < colormap->size; i++)

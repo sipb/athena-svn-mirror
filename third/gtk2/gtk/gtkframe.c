@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <string.h>
 #include "gtkframe.h"
 #include "gtklabel.h"
@@ -122,16 +123,16 @@ gtk_frame_class_init (GtkFrameClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_LABEL,
                                    g_param_spec_string ("label",
-                                                        _("Label"),
-                                                        _("Text of the frame's label"),
+                                                        P_("Label"),
+                                                        P_("Text of the frame's label"),
                                                         NULL,
                                                         G_PARAM_READABLE |
 							G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
 				   PROP_LABEL_XALIGN,
 				   g_param_spec_float ("label_xalign",
-						       _("Label xalign"),
-						       _("The horizontal alignment of the label"),
+						       P_("Label xalign"),
+						       P_("The horizontal alignment of the label"),
 						       0.0,
 						       1.0,
 						       0.5,
@@ -140,8 +141,8 @@ gtk_frame_class_init (GtkFrameClass *class)
   g_object_class_install_property (gobject_class,
 				   PROP_LABEL_YALIGN,
 				   g_param_spec_float ("label_yalign",
-						       _("Label yalign"),
-						       _("The vertical alignment of the label"),
+						       P_("Label yalign"),
+						       P_("The vertical alignment of the label"),
 						       0.0,
 						       1.0,
 						       0.5,
@@ -150,15 +151,15 @@ gtk_frame_class_init (GtkFrameClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_SHADOW,
                                    g_param_spec_enum ("shadow", NULL,
-                                                      _("Deprecated property, use shadow_type instead"),
+                                                      P_("Deprecated property, use shadow_type instead"),
 						      GTK_TYPE_SHADOW_TYPE,
 						      GTK_SHADOW_ETCHED_IN,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_SHADOW_TYPE,
                                    g_param_spec_enum ("shadow_type",
-                                                      _("Frame shadow"),
-                                                      _("Appearance of the frame border"),
+                                                      P_("Frame shadow"),
+                                                      P_("Appearance of the frame border"),
 						      GTK_TYPE_SHADOW_TYPE,
 						      GTK_SHADOW_ETCHED_IN,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE));
@@ -166,8 +167,8 @@ gtk_frame_class_init (GtkFrameClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_LABEL_WIDGET,
                                    g_param_spec_object ("label_widget",
-                                                        _("Label widget"),
-                                                        _("A widget to display in place of the usual frame label"),
+                                                        P_("Label widget"),
+                                                        P_("A widget to display in place of the usual frame label"),
                                                         GTK_TYPE_WIDGET,
                                                         G_PARAM_READABLE | G_PARAM_WRITABLE));
   
@@ -313,8 +314,6 @@ gtk_frame_set_label (GtkFrame *frame,
 
       gtk_frame_set_label_widget (frame, child);
     }
-
-  g_object_notify (G_OBJECT (frame), "label");
 }
 
 /**
@@ -382,7 +381,10 @@ gtk_frame_set_label_widget (GtkFrame  *frame,
   if (GTK_WIDGET_VISIBLE (frame) && need_resize)
     gtk_widget_queue_resize (GTK_WIDGET (frame));
 
+  g_object_freeze_notify (G_OBJECT (frame));
   g_object_notify (G_OBJECT (frame), "label_widget");
+  g_object_notify (G_OBJECT (frame), "label");
+  g_object_thaw_notify (G_OBJECT (frame));
 }
 
 /**
@@ -518,7 +520,7 @@ gtk_frame_paint (GtkWidget    *widget,
 	  else
 	    xalign = 1 - frame->label_xalign;
 
-	  height_extra = MAX (0, child_requisition.height - widget->style->xthickness);
+	  height_extra = MAX (0, child_requisition.height - widget->style->ythickness);
 	  y -= height_extra * (1 - frame->label_yalign);
 	  height += height_extra * (1 - frame->label_yalign);
 	  
@@ -568,7 +570,7 @@ gtk_frame_size_request (GtkWidget      *widget,
 
       requisition->width = child_requisition.width + 2 * LABEL_PAD + 2 * LABEL_SIDE_PAD;
       requisition->height =
-	MAX (0, child_requisition.height - GTK_WIDGET (widget)->style->xthickness);
+	MAX (0, child_requisition.height - GTK_WIDGET (widget)->style->ythickness);
     }
   else
     {

@@ -7,7 +7,7 @@ A choice from multiple check buttons.
 <!-- ##### SECTION Long_Description ##### -->
 <para>
 A single radio button performs the same basic function as a #GtkCheckButton,
-as it's position in the object hierarchy reflects. It is only when multiple
+as its position in the object hierarchy reflects. It is only when multiple
 radio buttons are grouped together that they become a different user
 interface component in their own right.</para>
 <para>
@@ -90,6 +90,18 @@ Contains only private data that should be read and manipulated using the
 functions below.
 </para>
 
+
+<!-- ##### SIGNAL GtkRadioButton::group-changed ##### -->
+<para>
+
+</para>
+
+@radiobutton: the object which received the signal.
+
+<!-- ##### ARG GtkRadioButton:group ##### -->
+<para>
+Sets a new group for a radio button.
+</para>
 
 <!-- ##### FUNCTION gtk_radio_button_new ##### -->
 <para>
@@ -182,9 +194,4 @@ Retrieves the group assigned to a radio button.
 @Returns: a linked list containing all the radio buttons in the same group
 as @radio_button.
 
-
-<!-- ##### ARG GtkRadioButton:group ##### -->
-<para>
-Sets a new group for a radio button.
-</para>
 

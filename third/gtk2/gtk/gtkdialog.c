@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkbutton.h"
 #include "gtkdialog.h"
 #include "gtkhbbox.h"
@@ -34,6 +35,12 @@
 #include "gtkmain.h"
 #include "gtkintl.h"
 #include "gtkbindings.h"
+
+#define GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GTK_TYPE_DIALOG, GtkDialogPrivate))
+
+typedef struct {
+  guint ignore_separator : 1;
+} GtkDialogPrivate;
 
 typedef struct _ResponseData ResponseData;
 
@@ -67,7 +74,8 @@ static void gtk_dialog_map               (GtkWidget        *widget);
 
 static void gtk_dialog_close             (GtkDialog        *dialog);
 
-static ResponseData* get_response_data   (GtkWidget        *widget);
+static ResponseData* get_response_data   (GtkWidget        *widget,
+					  gboolean          create);
 
 enum {
   PROP_0,
@@ -130,11 +138,13 @@ gtk_dialog_class_init (GtkDialogClass *class)
 
   class->close = gtk_dialog_close;
   
+  g_type_class_add_private (gobject_class, sizeof (GtkDialogPrivate));
+
   g_object_class_install_property (gobject_class,
                                    PROP_HAS_SEPARATOR,
                                    g_param_spec_boolean ("has_separator",
-							 _("Has separator"),
-							 _("The dialog has a separator bar above its buttons"),
+							 P_("Has separator"),
+							 P_("The dialog has a separator bar above its buttons"),
                                                          TRUE,
                                                          G_PARAM_READWRITE));
   
@@ -159,16 +169,16 @@ gtk_dialog_class_init (GtkDialogClass *class)
   
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("content_area_border",
-                                                             _("Content area border"),
-                                                             _("Width of border around the main dialog area"),
+                                                             P_("Content area border"),
+                                                             P_("Width of border around the main dialog area"),
                                                              0,
                                                              G_MAXINT,
                                                              2,
                                                              G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
                                            g_param_spec_int ("button_spacing",
-                                                             _("Button spacing"),
-                                                             _("Spacing between buttons"),
+                                                             P_("Button spacing"),
+                                                             P_("Spacing between buttons"),
                                                              0,
                                                              G_MAXINT,
                                                              10,
@@ -176,8 +186,8 @@ gtk_dialog_class_init (GtkDialogClass *class)
   
   gtk_widget_class_install_style_property (widget_class,
                                            g_param_spec_int ("action_area_border",
-                                                             _("Action area border"),
-                                                             _("Width of border around the button area at the bottom of the dialog"),
+                                                             P_("Action area border"),
+                                                             P_("Width of border around the button area at the bottom of the dialog"),
                                                              0,
                                                              G_MAXINT,
                                                              5,
@@ -219,6 +229,11 @@ update_spacings (GtkDialog *dialog)
 static void
 gtk_dialog_init (GtkDialog *dialog)
 {
+  GtkDialogPrivate *priv;
+
+  priv = GET_PRIVATE (dialog);
+  priv->ignore_separator = FALSE;
+
   /* To avoid breaking old code that prevents destroy on delete event
    * by connecting a handler, we have to have the FIRST signal
    * connection on the dialog.
@@ -364,7 +379,7 @@ dialog_has_cancel (GtkDialog *dialog)
 
   for (tmp_list = children; tmp_list; tmp_list = tmp_list->next)
     {
-      ResponseData *rd = get_response_data (tmp_list->data);
+      ResponseData *rd = get_response_data (tmp_list->data, FALSE);
       
       if (rd && rd->response_id == GTK_RESPONSE_CANCEL)
 	{
@@ -496,12 +511,13 @@ gtk_dialog_new_with_buttons (const gchar    *title,
 }
 
 static ResponseData*
-get_response_data (GtkWidget *widget)
+get_response_data (GtkWidget *widget,
+		   gboolean   create)
 {
   ResponseData *ad = g_object_get_data (G_OBJECT (widget),
                                         "gtk-dialog-response-data");
 
-  if (ad == NULL)
+  if (ad == NULL && create)
     {
       ad = g_new (ResponseData, 1);
       
@@ -524,7 +540,7 @@ action_widget_activated (GtkWidget *widget, GtkDialog *dialog)
 
   response_id = GTK_RESPONSE_NONE;
   
-  ad = get_response_data (widget);
+  ad = get_response_data (widget, TRUE);
 
   g_assert (ad != NULL);
   
@@ -557,7 +573,7 @@ gtk_dialog_add_action_widget (GtkDialog *dialog,
   g_return_if_fail (GTK_IS_DIALOG (dialog));
   g_return_if_fail (GTK_IS_WIDGET (child));
 
-  ad = get_response_data (child);
+  ad = get_response_data (child, TRUE);
 
   ad->response_id = response_id;
 
@@ -766,10 +782,20 @@ void
 gtk_dialog_set_has_separator (GtkDialog *dialog,
                               gboolean   setting)
 {
+  GtkDialogPrivate *priv;
+
   g_return_if_fail (GTK_IS_DIALOG (dialog));
+
+  priv = GET_PRIVATE (dialog);
 
   /* this might fail if we get called before _init() somehow */
   g_assert (dialog->vbox != NULL);
+
+  if (priv->ignore_separator)
+    {
+      g_warning ("Ignoring the separator setting");
+      return;
+    }
   
   if (setting && dialog->separator == NULL)
     {
@@ -1000,4 +1026,27 @@ gtk_dialog_run (GtkDialog *dialog)
   g_object_unref (dialog);
 
   return ri.response_id;
+}
+
+void
+_gtk_dialog_set_ignore_separator (GtkDialog *dialog,
+				  gboolean   ignore_separator)
+{
+  GtkDialogPrivate *priv;
+
+  priv = GET_PRIVATE (dialog);
+  priv->ignore_separator = ignore_separator;
+}
+
+gint
+_gtk_dialog_get_response_for_widget (GtkDialog *dialog,
+				     GtkWidget *widget)
+{
+  ResponseData *rd;
+
+  rd = get_response_data (widget, FALSE);
+  if (!rd)
+    return GTK_RESPONSE_NONE;
+  else
+    return rd->response_id;
 }

@@ -260,6 +260,8 @@ struct _GdkWindowObject
   guint modal_hint : 1;
   
   guint destroyed : 2;
+
+  guint accept_focus : 1;
   
   GdkEventMask event_mask;
 };
@@ -317,6 +319,8 @@ void          gdk_window_set_user_data         (GdkWindow     *window,
                                                 gpointer       user_data);
 void          gdk_window_set_override_redirect (GdkWindow     *window,
                                                 gboolean       override_redirect);
+void          gdk_window_set_accept_focus      (GdkWindow     *window,
+					        gboolean       accept_focus);
 void          gdk_window_add_filter            (GdkWindow     *window,
                                                 GdkFilterFunc  function,
                                                 gpointer       data);
@@ -428,7 +432,7 @@ void          gdk_window_set_role          (GdkWindow       *window,
 void          gdk_window_set_transient_for (GdkWindow       *window, 
 					    GdkWindow       *parent);
 void	      gdk_window_set_background	 (GdkWindow	  *window,
-					  GdkColor	  *color);
+					  const GdkColor  *color);
 void	      gdk_window_set_back_pixmap (GdkWindow	  *window,
 					  GdkPixmap	  *pixmap,
 					  gboolean	   parent_relative);
@@ -484,6 +488,7 @@ void	      gdk_window_set_icon_name	 (GdkWindow	  *window,
 					  const gchar	  *name);
 void	      gdk_window_set_group	 (GdkWindow	  *window, 
 					  GdkWindow	  *leader);
+GdkWindow*    gdk_window_get_group	 (GdkWindow	  *window);
 void	      gdk_window_set_decorations (GdkWindow	  *window,
 					  GdkWMDecoration  decorations);
 gboolean      gdk_window_get_decorations (GdkWindow       *window,
@@ -502,6 +507,10 @@ void          gdk_window_maximize        (GdkWindow       *window);
 void          gdk_window_unmaximize      (GdkWindow       *window);
 void          gdk_window_fullscreen      (GdkWindow       *window);
 void          gdk_window_unfullscreen    (GdkWindow       *window);
+void          gdk_window_set_keep_above  (GdkWindow       *window,
+                                          gboolean         setting);
+void          gdk_window_set_keep_below  (GdkWindow       *window,
+                                          gboolean         setting);
 
 void          gdk_window_register_dnd    (GdkWindow       *window);
 

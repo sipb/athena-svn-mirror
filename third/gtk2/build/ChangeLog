@@ -1,3 +1,39 @@
+2004-05-01  Hans Breuer  <hans@breuer.org>
+
+	* win32/make.msc : -DG_ENABLE_DEBUG=1 for debug builds
+	(#141335, John Ehresman)
+
+2004-03-05  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #136082, patch by Morten Welinder.
+
+	* win32/cl-wrapper.c: #include <config.h>
+	* win32/dirent/dirent.c: Likewise.
+
+2004-01-24  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/compile-resource
+	* win32/lt-compile-resource: Use /bin/sh instead of /bin/bash, as
+	MSYS doesn't come with any /bin/bash. When compiling with
+	--enable-static and --disable-shared flag, libtool creates *.lo
+	files as scripts, but the *.o files are in "." and not in
+	".libs". Thanks to Fridrich Strba.
+
+2003-11-15  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/dirent/makefile.msc: Improve. (#126913, John Ehresman)
+
+2003-08-08  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/cl-wrapper.c: Fix bug in environment variable
+	handling. Support --version flag. Prefix double quotes in -I and
+	-D parameters with backslash.
+
+2003-06-06  Tor Lillqvist  <tml@iki.fi>
+
+	* win32(compile-resource (resfile): Support a WINDRES environment
+	variable. (#112387, J. Ali Harlow)
+
 2002-09-28  Tor Lillqvist  <tml@iki.fi>
 
 	* win32/make.mingw: Add libxml2 CFLAGS and LIBS

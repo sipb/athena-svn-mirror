@@ -35,7 +35,6 @@
 #undef HAVE_SYS_TIME_H
 #undef HAVE_XFREE_XINERAMA
 #undef HAVE_XINERAMA
-#undef HAVE_WINSOCK_H
 #undef HAVE_WINTAB
 #undef HAVE_XCONVERTCASE
 #undef HAVE_XFT
@@ -169,11 +168,11 @@
 /* Have wctype.h include file */
 #undef HAVE_WCTYPE_H
 
-/* Define if we have Xft, version 2 */
-#undef HAVE_XFT2
+/* Define if we have X11R6 */
+#undef HAVE_X11R6
 
-/* Name of package */
-#undef PACKAGE
+/* Have the Xcursor library */
+#undef HAVE_XCURSOR
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
@@ -199,11 +198,14 @@
 /* Whether to load modules via .la files rather than directly */
 #undef USE_LA_MODULES
 
-/* Version number of package */
-#undef VERSION
-
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

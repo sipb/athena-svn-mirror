@@ -150,6 +150,14 @@ libpixbufloader_tga_la_SOURCES = io-tga.c
 libpixbufloader_tga_la_LDFLAGS = -avoid-version -module $(no_undefined)
 libpixbufloader_tga_la_LIBADD = $(module_libs)
 
+#
+# The PCX loader
+#
+libpixbufloader_static_pcx_la_SOURCES = io-pcx.c
+libpixbufloader_pcx_la_SOURCES = io-pcx.c
+libpixbufloader_pcx_la_LDFLAGS = -avoid-version -module $(no_undefined)
+libpixbufloader_pcx_la_LIBADD = $(module_libs)
+
 if HAVE_PNG
 PNG_LIB = libpixbufloader-png.la
 STATIC_PNG_LIB = libpixbufloader-static-png.la
@@ -195,6 +203,9 @@ STATIC_XBM_LIB = libpixbufloader-static-xbm.la
 TGA_LIB = libpixbufloader-tga.la
 STATIC_TGA_LIB = libpixbufloader-static-tga.la
 
+PCX_LIB = libpixbufloader-pcx.la
+STATIC_PCX_LIB = libpixbufloader-static-pcx.la
+
 if BUILD_DYNAMIC_MODULES
 
 loader_LTLIBRARIES = 	\
@@ -210,7 +221,8 @@ loader_LTLIBRARIES = 	\
 	$(BMP_LIB)	\
 	$(WBMP_LIB)	\
 	$(XBM_LIB)	\
-	$(TGA_LIB)
+	$(TGA_LIB)	\
+	$(PCX_LIB)
 
 
 extra_sources = 
@@ -231,29 +243,29 @@ noinst_LTLIBRARIES =		\
 	$(STATIC_BMP_LIB)	\
 	$(STATIC_WBMP_LIB)	\
 	$(STATIC_XBM_LIB)	\
-	$(STATIC_TGA_LIB)
+	$(STATIC_TGA_LIB)	\
+	$(STATIC_PCX_LIB)
 
 builtin_objs = @INCLUDED_LOADER_OBJ@
 
 endif
 
 DEPS = libgdk_pixbuf-$(GTK_API_VERSION).la
-INCLUDES = @STRIP_BEGIN@ 			\
+INCLUDES = \
 	-DG_LOG_DOMAIN=\"GdkPixbuf\"		\
 	-I$(top_srcdir) -I$(top_builddir) 	\
 	-I$(top_srcdir)/gdk-pixbuf 		\
 	-I$(top_builddir)/gdk-pixbuf 		\
 	-DGTK_SYSCONFDIR=\"$(sysconfdir)\"	\
-	-DGTK_VERSION=\"@GTK_VERSION@\"		\
-	-DGTK_BINARY_VERSION=\"@GTK_BINARY_VERSION@\"	\
+	-DGTK_VERSION=\"$(GTK_VERSION)\"	\
+	-DGTK_BINARY_VERSION=\"$(GTK_BINARY_VERSION)\"	\
 	-DG_DISABLE_DEPRECATED			\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
-	-DPREFIX=\"$(prefix)\"			\
-	@INCLUDED_LOADER_DEFINE@ 		\
-	@GTK_DEBUG_FLAGS@			\
-	@GDK_PIXBUF_DEP_CFLAGS@			\
-	-DGDK_PIXBUF_ENABLE_BACKEND		\
-@STRIP_END@
+	-DGTK_PREFIX=\"$(prefix)\"		\
+	$(INCLUDED_LOADER_DEFINE) 		\
+	$(GTK_DEBUG_FLAGS)			\
+	$(GDK_PIXBUF_DEP_CFLAGS)		\
+	-DGDK_PIXBUF_ENABLE_BACKEND
 
 AM_CPPFLAGS = "-DPIXBUF_LIBDIR=\"$(loaderdir)\"" "-DBUILT_MODULES_DIR=\"$(srcdir)/.libs\""
 LDADDS = libgdk_pixbuf-$(GTK_API_VERSION).la
@@ -272,16 +284,10 @@ gdk_pixbuf_query_loaders_SOURCES = queryloaders.c
 
 
 #
-# manual pages to install
-#
-man_MANS = gdk-pixbuf-csource.1
-
-
-#
 # The GdkPixBuf library
 #
 libgdk_pixbufincludedir = $(includedir)/gtk-2.0/gdk-pixbuf
-libgdk_pixbuf_2_0_la_SOURCES = @STRIP_BEGIN@ \
+libgdk_pixbuf_2_0_la_SOURCES =  \
 	gdk-pixbuf-i18n.h	\
 	gdk-pixbuf.c		\
 	gdk-pixbuf-animation.c	\
@@ -291,14 +297,14 @@ libgdk_pixbuf_2_0_la_SOURCES = @STRIP_BEGIN@ \
 	gdk-pixbuf-scale.c	\
 	gdk-pixbuf-util.c	\
 	gdk-pixdata.c		\
-	$(gdk_pixbuf_built_cfiles) \
-@STRIP_END@
-libgdk_pixbuf_2_0_la_LDFLAGS = @STRIP_BEGIN@ \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)    \
-	@LIBTOOL_EXPORT_OPTIONS@				\
-	$(no_undefined)						\
-	$(gdk_pixbuf_symbols)					\
-@STRIP_END@
+	gdk-pixbuf-enum-types.c
+
+libgdk_pixbuf_2_0_la_LDFLAGS = \
+	-version-info $(LT_VERSION_INFO)	\
+	$(LIBTOOL_EXPORT_OPTIONS)		\
+	$(no_undefined)				\
+	$(gdk_pixbuf_symbols)
+
 
 libgdk_pixbuf_2_0_la_LIBADD = pixops/libpixops.la $(builtin_objs) $(gdk_pixbuf_win32res_lo) $(GDK_PIXBUF_DEP_LIBS)
 libgdk_pixbuf_2_0_la_DEPENDENCIES = pixops/libpixops.la $(builtin_objs) $(gdk_pixbuf_def) $(gdk_pixbuf_win32res_lo)
@@ -311,24 +317,27 @@ gdk_pixbuf_headers = 			\
 
 libgdk_pixbufinclude_HEADERS =  	\
 	$(gdk_pixbuf_headers)		\
-	$(gdk_pixbuf_built_headers)	\
+	gdk-pixbuf-enum-types.h		\
+	gdk-pixbuf-marshal.h		\
 	gdk-pixbuf-features.h		\
 	gdk-pixdata.h
 
 noinst_HEADERS = 		\
 	gdk-pixbuf-private.h
 
-gdk_pixbuf_built_headers = gdk-pixbuf-enum-types.h gdk-pixbuf-marshal.h
-gdk_pixbuf_built_cfiles = gdk-pixbuf-enum-types.c 
-$(libgdk_pixbuf_2_0_la_OBJECTS) $(OBJECTS): $(gdk_pixbuf_built_headers) $(gdk_pixbuf_built_cfiles) gdk-pixbuf-marshal.c
+BUILT_SOURCES = gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.c \
+  gdk-pixbuf-marshal.h gdk-pixbuf-marshal.c
 
 CLEANFILES =
-MAINTAINERCLEANFILES = $(gdk_pixbuf_built_headers) $(gdk_pixbuf_built_cfiles) gdk-pixbuf-marshal.c
+MAINTAINERCLEANFILES = \
+  gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.c \
+  gdk-pixbuf-marshal.h gdk-pixbuf-marshal.c \
+  gdk-pixbuf.loaders
 
 #
 # gdk-pixbuf-enum-types.h
 #
-$(srcdir)/gdk-pixbuf-enum-types.h: s-enum-types-h
+gdk-pixbuf-enum-types.h: s-enum-types-h
 	@true
 
 s-enum-types-h: @REBUILD@ $(gdk_pixbuf_headers) Makefile
@@ -338,7 +347,7 @@ s-enum-types-h: @REBUILD@ $(gdk_pixbuf_headers) Makefile
 			--vhead "GType @enum_name@_get_type (void);\n#define GDK_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
 			--ftail "G_END_DECLS\n\n#endif /* __GDK_PIXBUF_ENUM_TYPES_H__ */" \
 		$(gdk_pixbuf_headers) ) > tmp-gdk-pixbuf-enum-types.h \
-	&& (cmp -s tmp-gdk-pixbuf-enum-types.h $(srcdir)/gdk-pixbuf-enum-types.h || cp tmp-gdk-pixbuf-enum-types.h $(srcdir)/gdk-pixbuf-enum-types.h ) \
+	&& (cmp -s tmp-gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.h || cp tmp-gdk-pixbuf-enum-types.h gdk-pixbuf-enum-types.h ) \
 	&& rm -f tmp-gdk-pixbuf-enum-types.h \
 	&& echo timestamp > $(@F)
 
@@ -348,30 +357,25 @@ MAINTAINERCLEANFILES += s-enum-types-h
 #
 # gdk-pixbuf-enum-types.c
 #
-$(srcdir)/gdk-pixbuf-enum-types.c: @REBUILD@ $(gdk_pixbuf_headers) Makefile
-	cd $(srcdir) && glib-mkenums \
+gdk-pixbuf-enum-types.c: @REBUILD@ $(gdk_pixbuf_headers) Makefile
+	(cd $(srcdir) && glib-mkenums \
 		--fhead "#include <gdk-pixbuf/gdk-pixbuf.h>" \
 		--fprod "\n/* enumerations from \"@filename@\" */" \
 		--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {"       \
 		--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
 		--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
-		  $(gdk_pixbuf_headers) > gdk-pixbuf-enum-types.c
+		  $(gdk_pixbuf_headers)) > gdk-pixbuf-enum-types.c
 
 #
 # gdk-pixbuf-marshal.h
 #
-$(srcdir)/gdk-pixbuf-marshal.h: @REBUILD@ stamp-gdk-pixbuf-marshal.h
+gdk-pixbuf-marshal.h: @REBUILD@ stamp-gdk-pixbuf-marshal.h
 	@true
 
 stamp-gdk-pixbuf-marshal.h: @REBUILD@ $(srcdir)/gdk-pixbuf-marshal.list
-	case @GLIB_GENMARSHAL@ in									\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;				\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;							\
-	esac;												\
-	cd $(srcdir) \
-	&& $$glib_genmarshal --prefix=gdk_pixbuf_marshal gdk-pixbuf-marshal.list --header >> xgen-gmh	\
-	&& (cmp -s xgen-gmh gdk-pixbuf-marshal.h || cp xgen-gmh gdk-pixbuf-marshal.h)			\
-	&& rm -f xgen-gmh xgen-gmh~	\
+	$(GLIB_GENMARSHAL) --prefix=gdk_pixbuf_marshal $(srcdir)/gdk-pixbuf-marshal.list --header >> xgen-gmh \
+	&& (cmp -s xgen-gmh gdk-pixbuf-marshal.h || cp xgen-gmh gdk-pixbuf-marshal.h) \
+	&& rm -f xgen-gmh xgen-gmh~ \
 	&& echo timestamp > $(@F)
 
 CLEANFILES += xgen-gmh
@@ -381,36 +385,38 @@ MAINTAINERCLEANFILES += stamp-gdk-pixbuf-marshal.h
 # gdk-pixbuf-marshal.c
 #
 $(srcdir)/gdk-pixbuf-marshal.c: @REBUILD@ $(srcdir)/gdk-pixbuf-marshal.list
-	case @GLIB_GENMARSHAL@ in									\
-	   .*) glib_genmarshal=`pwd`/@GLIB_GENMARSHAL@ ;;				\
-	   *) glib_genmarshal=@GLIB_GENMARSHAL@ ;;							\
-	esac;												\
-	cd $(srcdir) \
-	&& $$glib_genmarshal --prefix=gdk_pixbuf_marshal gdk-pixbuf-marshal.list --body >> xgen-gmc	\
-	&& cp xgen-gmc gdk-pixbuf-marshal.c								\
+	$(GLIB_GENMARSHAL) --prefix=gdk_pixbuf_marshal $(srcdir)/gdk-pixbuf-marshal.list --body >> xgen-gmc \
+	&& cp xgen-gmc gdk-pixbuf-marshal.c \
 	&& rm -f xgen-gmc xgen-gmc~
 
 CLEANFILES += xgen-gmc
 
-EXTRA_DIST =			\
-        gdk-pixbuf-csource.1    \
-	makefile.msc		\
-	gdk_pixbuf.def		\
-	gdk_pixbuf.rc		\
-	gdk-pixbuf-marshal.c	\
-	gdk-pixbuf-marshal.list		\
-	pixbufloader_ico.def		\
-	pixbufloader_ani.def		\
-	pixbufloader_pnm.def		\
-	pixbufloader_xpm.def		\
-	pixbufloader_bmp.def		\
-	pixbufloader_jpeg.def		\
-	pixbufloader_ras.def		\
-	pixbufloader_gif.def		\
-	pixbufloader_png.def		\
-	pixbufloader_tiff.def		\
-	pixbufloader_wbmp.def		\
-	pixbufloader_xbm.def		\
+# if srcdir!=builddir, clean out maintainer-clean files from builddir
+# this allows dist to pass.
+distclean-local:
+	if test $(srcdir) != .; then \
+	  rm -f $(MAINTAINERCLEANFILES); \
+	fi
+
+EXTRA_DIST =					\
+        gdk-pixbuf-csource.1			\
+	makefile.msc				\
+	gdk_pixbuf.def				\
+	gdk_pixbuf.rc				\
+	gdk-pixbuf-marshal.c			\
+	gdk-pixbuf-marshal.list			\
+	pixbufloader_ico.def			\
+	pixbufloader_ani.def			\
+	pixbufloader_pnm.def			\
+	pixbufloader_xpm.def			\
+	pixbufloader_bmp.def			\
+	pixbufloader_jpeg.def			\
+	pixbufloader_ras.def			\
+	pixbufloader_gif.def			\
+	pixbufloader_png.def			\
+	pixbufloader_tiff.def			\
+	pixbufloader_wbmp.def			\
+	pixbufloader_xbm.def			\
 	pixbufloader_tga.def
 
 if CROSS_COMPILING
@@ -421,7 +427,11 @@ endif
 
 # Running this if cross compiling or if DESTDIR is set is going to
 # not work at all, so skip it
-install-data-local: install-ms-lib install-libtool-import-lib
+# We use install-data-hook here to workaround a bug in automake and/or libtool
+# that makes the install target for the loader libraries a dependency on
+# install-data-am, and not install-exec-am. We need to ensure this gets run
+# after the libraries are installed in their final locations.
+install-data-hook: install-ms-lib install-libtool-import-lib
 	@if $(RUN_QUERY_LOADER_TEST) ; then \
 	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
 	  $(top_builddir)/gdk-pixbuf/gdk-pixbuf-query-loaders > $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders ; \
@@ -429,16 +439,20 @@ install-data-local: install-ms-lib install-libtool-import-lib
 	  echo "***" ; \
 	  echo "*** Warning: gdk-pixbuf.loaders not built" ; \
 	  echo "***" ; \
-	  echo "*** Generate this file manually on on host" ; \
+	  echo "*** Generate this file manually on host" ; \
 	  echo "*** system using gdk-pixbuf-query-loaders" ; \
 	  echo "***" ; \
 	fi
+
+uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
+	rm -f $(DESTDIR)$(sysconfdir)/gtk-2.0/gdk-pixbuf.loaders
 
 if CROSS_COMPILING
 else
 all-local: gdk-pixbuf.loaders
 endif
 
+if BUILD_DYNAMIC_MODULES
 gdk-pixbuf.loaders: $(loader_LTLIBRARIES) gdk-pixbuf-query-loaders
 	LOADERS=`echo libpixbufloader-*.la` ; \
 	if test "x$$LOADERS" != 'xlibpixbufloader-*.la' ; then \
@@ -448,6 +462,8 @@ gdk-pixbuf.loaders: $(loader_LTLIBRARIES) gdk-pixbuf-query-loaders
           echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
 	  touch gdk-pixbuf.loaders; \
 	fi
-
-uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
-
+else
+gdk-pixbuf.loaders: 
+	echo "No dynamic modules found; will use only static modules for uninstalled example programs."; \
+	touch gdk-pixbuf.loaders;
+endif

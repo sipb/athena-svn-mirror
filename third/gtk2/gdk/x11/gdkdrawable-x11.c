@@ -24,15 +24,12 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
+
 #include "gdkx.h"
 #include "gdkregion-generic.h"
 
-#include <pango/pangox.h>
-#include <config.h>
-
-#if HAVE_XFT
 #include <pango/pangoxft.h>
-#endif
 
 #include <stdlib.h>
 #include <string.h>		/* for memcpy() */
@@ -122,7 +119,6 @@ static void gdk_x11_draw_image     (GdkDrawable     *drawable,
                                     gint             ydest,
                                     gint             width,
                                     gint             height);
-#ifdef HAVE_XFT
 static void gdk_x11_draw_pixbuf    (GdkDrawable     *drawable,
 				    GdkGC           *gc,
 				    GdkPixbuf       *pixbuf,
@@ -135,7 +131,6 @@ static void gdk_x11_draw_pixbuf    (GdkDrawable     *drawable,
 				    GdkRgbDither     dither,
 				    gint             x_dither,
 				    gint             y_dither);
-#endif /* HAVE_XFT */
 
 static void gdk_x11_set_colormap   (GdkDrawable    *drawable,
                                     GdkColormap    *colormap);
@@ -201,9 +196,7 @@ gdk_drawable_impl_x11_class_init (GdkDrawableImplX11Class *klass)
   drawable_class->draw_lines = gdk_x11_draw_lines;
   drawable_class->draw_glyphs = gdk_x11_draw_glyphs;
   drawable_class->draw_image = gdk_x11_draw_image;
-#ifdef HAVE_XFT  
   drawable_class->draw_pixbuf = gdk_x11_draw_pixbuf;
-#endif /* HAVE_XFT */
   
   drawable_class->set_colormap = gdk_x11_set_colormap;
   drawable_class->get_colormap = gdk_x11_get_colormap;
@@ -223,20 +216,94 @@ gdk_drawable_impl_x11_finalize (GObject *object)
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-#ifdef HAVE_XFT
+static void
+try_pixmap (Display *xdisplay,
+	    int      screen,
+	    int      depth)
+{
+  Pixmap pixmap = XCreatePixmap (xdisplay,
+				 RootWindow (xdisplay, screen),
+				 1, 1, depth);
+  XFreePixmap (xdisplay, pixmap);
+}
+
 gboolean
 _gdk_x11_have_render (GdkDisplay *display)
 {
-  /* This check is cheap, but if we have to do version checks, we will
-   * need to cache the result since version checks are round-trip
-   */
-  int event_base, error_base;
+  Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
+  GdkDisplayX11 *x11display = GDK_DISPLAY_X11 (display);
 
-  return XRenderQueryExtension (GDK_DISPLAY_XDISPLAY (display), 
-				&event_base, &error_base);
+  if (x11display->have_render == GDK_UNKNOWN)
+    {
+      int event_base, error_base;
+      x11display->have_render =
+	XRenderQueryExtension (xdisplay, &event_base, &error_base)
+	? GDK_YES : GDK_NO;
+
+      if (x11display->have_render == GDK_YES)
+	{
+	  /*
+	   * Sun advertises RENDER, but fails to support 32-bit pixmaps.
+	   * That is just no good.  Therefore, we check all screens
+	   * for proper support.
+	   */
+
+	  int screen;
+	  for (screen = 0; screen < ScreenCount (xdisplay); screen++)
+	    {
+	      int count;
+	      int *depths = XListDepths (xdisplay, screen, &count);
+	      gboolean has_8 = FALSE, has_32 = FALSE;
+
+	      if (depths)
+		{
+		  int i;
+
+		  for (i = 0; i < count; i++)
+		    {
+		      if (depths[i] == 8)
+			has_8 = TRUE;
+		      else if (depths[i] == 32)
+			has_32 = TRUE;
+		    }
+		  XFree (depths);
+		}
+
+	      /* At this point, we might have a false positive;
+	       * buggy versions of Xinerama only report depths for
+	       * which there is an associated visual; so we actually
+	       * go ahead and try create pixmaps.
+	       */
+	      if (!(has_8 && has_32))
+		{
+		  gdk_error_trap_push ();
+		  if (!has_8)
+		    try_pixmap (xdisplay, screen, 8);
+		  if (!has_32)
+		    try_pixmap (xdisplay, screen, 32);
+		  XSync (xdisplay, False);
+		  if (gdk_error_trap_pop () == 0)
+		    {
+		      has_8 = TRUE;
+		      has_32 = TRUE;
+		    }
+		}
+	      
+	      if (!(has_8 && has_32))
+		{
+		  g_warning ("The X server advertises that RENDER support is present,\n"
+			     "but fails to supply the necessary pixmap support.  In\n"
+			     "other words, it is buggy.");
+		  x11display->have_render = GDK_NO;
+		  break;
+		}
+	    }
+	}
+    }
+
+  return x11display->have_render == GDK_YES;
 }
 
-#ifdef HAVE_XFT2
 static XftDraw *
 gdk_x11_drawable_get_xft_draw (GdkDrawable *drawable)
 {
@@ -245,22 +312,29 @@ gdk_x11_drawable_get_xft_draw (GdkDrawable *drawable)
    if (impl->xft_draw == NULL)
     {
       GdkColormap *colormap = gdk_drawable_get_colormap (drawable);
-      GdkVisual *visual;
-
-      if (!colormap)
+      
+      if (colormap)
 	{
+          GdkVisual *visual;
+
+          visual = gdk_colormap_get_visual (colormap);
+      
+          impl->xft_draw = XftDrawCreate (GDK_SCREEN_XDISPLAY (impl->screen), impl->xid,
+ 				          GDK_VISUAL_XVISUAL (visual), GDK_COLORMAP_XCOLORMAP (colormap));
+	}
+      else if (gdk_drawable_get_depth (drawable) == 1)
+	{
+	  impl->xft_draw = XftDrawCreateBitmap (GDK_SCREEN_XDISPLAY (impl->screen), impl->xid);
+	}
+      else
+        {
 	  g_warning ("Using Xft rendering requires the drawable argument to\n"
 		     "have a specified colormap. All windows have a colormap,\n"
 		     "however, pixmaps only have colormap by default if they\n"
 		     "were created with a non-NULL window argument. Otherwise\n"
 		     "a colormap must be set on them with gdk_drawable_set_colormap");
- 	  return NULL;
-	}
-
-      visual = gdk_colormap_get_visual (colormap);
-      
-      impl->xft_draw = XftDrawCreate (GDK_SCREEN_XDISPLAY (impl->screen), impl->xid,
- 				      GDK_VISUAL_XVISUAL (visual), GDK_COLORMAP_XCOLORMAP (colormap));
+	  return NULL;
+        }
     }
 
    return impl->xft_draw;
@@ -324,81 +398,6 @@ gdk_x11_drawable_update_xft_clip (GdkDrawable *drawable,
       XftDrawSetClip (xft_draw, NULL);
     }
 }
-
-#else /* !HAVE_XFT2 */
-
-static Picture
-gdk_x11_drawable_get_picture (GdkDrawable *drawable)
-{
-  GdkDrawableImplX11 *impl = GDK_DRAWABLE_IMPL_X11 (drawable);
- 
-  if (!_gdk_x11_have_render (gdk_drawable_get_display (drawable)))
-    return None;
-  
-  if (impl->picture == None)
-    {
-      GdkVisual *visual = gdk_drawable_get_visual (drawable);
-      XRenderPictFormat *format;
- 
-      if (!visual)
- 	{
- 	  g_warning ("Using Xft rendering requires the drawable argument to\n"
- 		     "have a specified colormap. All windows have a colormap,\n"
- 		     "however, pixmaps only have colormap by default if they\n"
- 		     "were created with a non-NULL window argument. Otherwise\n"
- 		     "a colormap must be set on them with gdk_drawable_set_colormap");
-	  return None;
- 	}
- 
-      format = XRenderFindVisualFormat (GDK_SCREEN_XDISPLAY (impl->screen),
-					gdk_x11_visual_get_xvisual(visual));
-      if (format)
-	impl->picture = XRenderCreatePicture (GDK_SCREEN_XDISPLAY (impl->screen),
-					      impl->xid, format, 0, NULL);
-    }
- 
-  return impl->picture;
-}
- 
-static void
-gdk_x11_drawable_update_xft_clip (GdkDrawable *drawable,
-				  GdkGC       *gc)
-{
-  GdkGCX11 *gc_private = gc ? GDK_GC_X11 (gc) : NULL;
-  GdkDrawableImplX11 *impl = GDK_DRAWABLE_IMPL_X11 (drawable);
-  Picture picture = gdk_x11_drawable_get_picture (drawable);
- 
-  if (gc && gc_private->clip_region)
-    {
-      GdkRegionBox *boxes = gc_private->clip_region->rects;
-      gint n_boxes = gc_private->clip_region->numRects;
-      XRectangle *rects = g_new (XRectangle, n_boxes);
-      int i;
- 
-      for (i=0; i < n_boxes; i++)
-	{
-	  rects[i].x = CLAMP (boxes[i].x1 + gc->clip_x_origin, G_MINSHORT, G_MAXSHORT);
-	  rects[i].y = CLAMP (boxes[i].y1 + gc->clip_y_origin, G_MINSHORT, G_MAXSHORT);
-	  rects[i].width = CLAMP (boxes[i].x2 + gc->clip_x_origin, G_MINSHORT, G_MAXSHORT) - rects[i].x;
-	  rects[i].height = CLAMP (boxes[i].y2 + gc->clip_y_origin, G_MINSHORT, G_MAXSHORT) - rects[i].y;
-	}
-
-      XRenderSetPictureClipRectangles (GDK_SCREEN_XDISPLAY (impl->screen),
-				       picture, 0, 0, rects, n_boxes);
- 
-      g_free (rects);
-    }
-  else
-    {
-      XRenderPictureAttributes pa;
-      pa.clip_mask = None;
-      XRenderChangePicture (GDK_SCREEN_XDISPLAY (impl->screen),
-			    picture, CPClipMask, &pa);
-    }
-}
-#endif /* HAVE_XFT2 */
-
-#endif /* HAVE_XFT */
 
 /*****************************************************
  * X11 specific implementations of generic functions *
@@ -791,42 +790,19 @@ gdk_x11_draw_glyphs (GdkDrawable      *drawable,
 		     PangoGlyphString *glyphs)
 {
   GdkDrawableImplX11 *impl;
+  XftColor color;
+  XftDraw *draw;
 
   impl = GDK_DRAWABLE_IMPL_X11 (drawable);
 
-#if HAVE_XFT
-  if (PANGO_XFT_IS_FONT (font))
-    {
-#ifdef HAVE_XFT2
-      XftColor color;
-      XftDraw *draw;
+  g_return_if_fail (PANGO_XFT_IS_FONT (font));
  
-      _gdk_gc_x11_get_fg_xft_color (gc, &color);
-       
-      gdk_x11_drawable_update_xft_clip (drawable, gc);
-      draw = gdk_x11_drawable_get_xft_draw (drawable);
+  _gdk_gc_x11_get_fg_xft_color (gc, &color);
       
-      pango_xft_render (draw, &color, font, glyphs, x, y);
-#else /* !HAVE_XFT2 */
-      Picture src_picture;
-      Picture dest_picture;
+  gdk_x11_drawable_update_xft_clip (drawable, gc);
+  draw = gdk_x11_drawable_get_xft_draw (drawable);
       
-      src_picture = _gdk_x11_gc_get_fg_picture (gc);
-      
-      gdk_x11_drawable_update_xft_clip (drawable, gc);
-      dest_picture = gdk_x11_drawable_get_picture (drawable);
-      
-      pango_xft_picture_render (GDK_SCREEN_XDISPLAY (impl->screen), 
-				src_picture, dest_picture, 
-				font, glyphs, x, y);
-#endif /* HAVE_XFT2 */
-    }
-  else
-#endif  /* HAVE_XFT */
-    pango_x_render (GDK_SCREEN_XDISPLAY (impl->screen),
-		    impl->xid,
-		    GDK_GC_GET_XGC (gc),
-		    font, glyphs, x, y);
+  pango_xft_render (draw, &color, font, glyphs, x, y);
 }
 
 static void
@@ -844,11 +820,13 @@ gdk_x11_draw_image     (GdkDrawable     *drawable,
   
   impl = GDK_DRAWABLE_IMPL_X11 (drawable);
 
+#ifdef USE_SHM  
   if (image->type == GDK_IMAGE_SHARED)
     XShmPutImage (GDK_SCREEN_XDISPLAY (impl->screen), impl->xid,
                   GDK_GC_GET_XGC (gc), GDK_IMAGE_XIMAGE (image),
                   xsrc, ysrc, xdest, ydest, width, height, False);
   else
+#endif
     XPutImage (GDK_SCREEN_XDISPLAY (impl->screen), impl->xid,
                GDK_GC_GET_XGC (gc), GDK_IMAGE_XIMAGE (image),
                xsrc, ysrc, xdest, ydest, width, height);
@@ -943,15 +921,8 @@ gdk_x11_drawable_get_xid (GdkDrawable *drawable)
  * what's the fastest depending on the available picture formats,
  * whether we can used shared pixmaps, etc.
  */
-#ifdef HAVE_XFT
-typedef enum {
-  FORMAT_NONE,
-  FORMAT_EXACT_MASK,
-  FORMAT_ARGB_MASK,
-  FORMAT_ARGB
-} FormatType;
 
-static FormatType
+static GdkX11FormatType
 select_format (GdkDisplay         *display,
 	       XRenderPictFormat **format,
 	       XRenderPictFormat **mask)
@@ -960,7 +931,7 @@ select_format (GdkDisplay         *display,
   XRenderPictFormat pf;
 
   if (!_gdk_x11_have_render (display))
-    return FORMAT_NONE;
+    return GDK_X11_FORMAT_NONE;
   
   /* Look for a 32-bit xRGB and Axxx formats that exactly match the
    * in memory data format. We can use them as pixmap and mask
@@ -1016,7 +987,7 @@ select_format (GdkDisplay         *display,
 			     0);
 
   if (*format && *mask)
-    return FORMAT_EXACT_MASK;
+    return GDK_X11_FORMAT_EXACT_MASK;
 
   /* OK, that failed, now look for xRGB and Axxx formats in
    * RENDER's preferred order
@@ -1046,7 +1017,7 @@ select_format (GdkDisplay         *display,
 			     0);
 
   if (*format && *mask)
-    return FORMAT_ARGB_MASK;
+    return GDK_X11_FORMAT_ARGB_MASK;
 
   /* Finally, if neither of the above worked, fall back to
    * looking for combined ARGB -- we'll premultiply ourselves.
@@ -1071,9 +1042,9 @@ select_format (GdkDisplay         *display,
   *mask = NULL;
 
   if (*format)
-    return FORMAT_ARGB;
+    return GDK_X11_FORMAT_ARGB;
 
-  return FORMAT_NONE;
+  return GDK_X11_FORMAT_NONE;
 }
 
 #if 0
@@ -1104,98 +1075,108 @@ list_formats (XRenderPictFormat *pf)
 }
 #endif  
 
-static void
-convert_to_format (guchar        *src_buf,
-		   gint           src_rowstride,
-		   guchar        *dest_buf,
-		   gint           dest_rowstride,
-		   FormatType     dest_format,
-		   GdkByteOrder   dest_byteorder,
-		   gint           width,
-		   gint           height)
+void
+_gdk_x11_convert_to_format (guchar           *src_buf,
+                            gint              src_rowstride,
+                            guchar           *dest_buf,
+                            gint              dest_rowstride,
+                            GdkX11FormatType  dest_format,
+                            GdkByteOrder      dest_byteorder,
+                            gint              width,
+                            gint              height)
 {
   gint i;
 
-  if (dest_format == FORMAT_EXACT_MASK &&
-      src_rowstride == dest_rowstride)
-    {
-      memcpy (dest_buf, src_buf, height * src_rowstride);
-      return;
-    }
-  
   for (i=0; i < height; i++)
     {
       switch (dest_format)
 	{
-	case FORMAT_EXACT_MASK:
+	case GDK_X11_FORMAT_EXACT_MASK:
 	  {
 	    memcpy (dest_buf + i * dest_rowstride,
 		    src_buf + i * src_rowstride,
 		    width * 4);
 	    break;
 	  }
-	case FORMAT_ARGB_MASK:
+	case GDK_X11_FORMAT_ARGB_MASK:
 	  {
-	    guint *p = (guint *)(src_buf + i * src_rowstride);
-	    guint *q = (guint *)(dest_buf + i * dest_rowstride);
-	    guint *end = p + width;
+	    guchar *row = src_buf + i * src_rowstride;
+	    if (((gsize)row & 3) != 0)
+	      {
+		guchar *p = row;
+		guint32 *q = (guint32 *)(dest_buf + i * dest_rowstride);
+		guchar *end = p + 4 * width;
+
+		while (p < end)
+		  {
+		    *q = (p[3] << 24) | (p[0] << 16) | (p[1] << 8) | p[2];
+		    p += 4;
+		    q++;
+		  }
+	      }
+	    else
+	      {
+		guint32 *p = (guint32 *)row;
+		guint32 *q = (guint32 *)(dest_buf + i * dest_rowstride);
+		guint32 *end = p + width;
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN	    
-	    if (dest_byteorder == GDK_LSB_FIRST)
-	      {
-		/* ABGR => ARGB */
-		
-		while (p < end)
+		if (dest_byteorder == GDK_LSB_FIRST)
 		  {
-		    *q = ( (*p & 0xff00ff00) |
-			  ((*p & 0x000000ff) << 16) |
-			  ((*p & 0x00ff0000) >> 16));
-		    q++;
-		    p++;
-		  }
-	      }
-	    else
-	      {
-		/* ABGR => BGRA */
+		    /* ABGR => ARGB */
 		
-		while (p < end)
-		  {
-		    *q = (((*p & 0xff000000) >> 24) |
-			  ((*p & 0x00ffffff) << 8));
-		    q++;
-		    p++;
+		    while (p < end)
+		      {
+			*q = ( (*p & 0xff00ff00) |
+			       ((*p & 0x000000ff) << 16) |
+			       ((*p & 0x00ff0000) >> 16));
+			q++;
+			p++;
+		      }
 		  }
-	      }
+		else
+		  {
+		    /* ABGR => BGRA */
+		
+		    while (p < end)
+		      {
+			*q = (((*p & 0xff000000) >> 24) |
+			      ((*p & 0x00ffffff) << 8));
+			q++;
+			p++;
+		      }
+		  }
 #else /* G_BYTE_ORDER == G_BIG_ENDIAN */
-	    if (dest_byteorder == GDK_LSB_FIRST)
-	      {
-		/* RGBA => BGRA */
-		
-		while (p < end)
+		if (dest_byteorder == GDK_LSB_FIRST)
 		  {
-		    *q = ( (*p & 0x00ff00ff) |
-			  ((*p & 0x0000ff00) << 16) |
-			  ((*p & 0xff000000) >> 16));
-		    q++;
-		    p++;
-		  }
-	      }
-	    else
-	      {
-		/* RGBA => ARGB */
+		    /* RGBA => BGRA */
 		
-		while (p < end)
-		  {
-		    *q = (((*p & 0xffffff00) >> 8) |
-			  ((*p & 0x000000ff) << 24));
-		    q++;
-		    p++;
+		    while (p < end)
+		      {
+			*q = ( (*p & 0x00ff00ff) |
+			       ((*p & 0x0000ff00) << 16) |
+			       ((*p & 0xff000000) >> 16));
+			q++;
+			p++;
+		      }
 		  }
-	      }
+		else
+		  {
+		    /* RGBA => ARGB */
+		
+		    while (p < end)
+		      {
+			*q = (((*p & 0xffffff00) >> 8) |
+			      ((*p & 0x000000ff) << 24));
+			q++;
+			p++;
+		      }
+		  }
 #endif /* G_BYTE_ORDER*/	    
+	      }
 	    break;
 	  }
-	case FORMAT_ARGB:
+	case GDK_X11_FORMAT_ARGB:
 	  {
 	    guchar *p = (src_buf + i * src_rowstride);
 	    guchar *q = (dest_buf + i * dest_rowstride);
@@ -1231,7 +1212,7 @@ convert_to_format (guchar        *src_buf,
 #undef MULT
 	    break;
 	  }
-	case FORMAT_NONE:
+	case GDK_X11_FORMAT_NONE:
 	  g_assert_not_reached ();
 	  break;
 	}
@@ -1241,7 +1222,7 @@ convert_to_format (guchar        *src_buf,
 static void
 draw_with_images (GdkDrawable       *drawable,
 		  GdkGC             *gc,
-		  FormatType         format_type,
+		  GdkX11FormatType   format_type,
 		  XRenderPictFormat *format,
 		  XRenderPictFormat *mask_format,
 		  guchar            *src_rgb,
@@ -1273,7 +1254,7 @@ draw_with_images (GdkDrawable       *drawable,
 
   dest_pict = gdk_x11_drawable_get_picture (drawable);  
   
-  pix_gc = gdk_gc_new (pix);
+  pix_gc = _gdk_drawable_get_scratch_gc (pix, FALSE);
 
   for (y0 = 0; y0 < height; y0 += GDK_SCRATCH_IMAGE_HEIGHT)
     {
@@ -1286,10 +1267,10 @@ draw_with_images (GdkDrawable       *drawable,
 	  
 	  image = _gdk_image_get_scratch (screen, width1, height1, 32, &xs0, &ys0);
 	  
-	  convert_to_format (src_rgb + y0 * src_rowstride + 4 * x0, src_rowstride,
-			     image->mem + ys0 * image->bpl + xs0 * image->bpp, image->bpl,
-			     format_type, image->byte_order, 
-			     width1, height1);
+	  _gdk_x11_convert_to_format (src_rgb + y0 * src_rowstride + 4 * x0, src_rowstride,
+                                      (guchar *)image->mem + ys0 * image->bpl + xs0 * image->bpp, image->bpl,
+                                      format_type, image->byte_order, 
+                                      width1, height1);
 
 	  gdk_draw_image (pix, pix_gc,
 			  image, xs0, ys0, x0, y0, width1, height1);
@@ -1304,7 +1285,6 @@ draw_with_images (GdkDrawable       *drawable,
     XRenderFreePicture (xdisplay, mask);
   
   g_object_unref (pix);
-  g_object_unref (pix_gc);
 }
 
 typedef struct _ShmPixmapInfo ShmPixmapInfo;
@@ -1366,7 +1346,7 @@ get_shm_pixmap_for_image (Display           *xdisplay,
 static gboolean
 draw_with_pixmaps (GdkDrawable       *drawable,
 		   GdkGC             *gc,
-		   FormatType         format_type,
+		   GdkX11FormatType   format_type,
 		   XRenderPictFormat *format,
 		   XRenderPictFormat *mask_format,
 		   guchar            *src_rgb,
@@ -1400,10 +1380,10 @@ draw_with_pixmaps (GdkDrawable       *drawable,
 	  if (!get_shm_pixmap_for_image (xdisplay, image, format, mask_format, &pix, &pict, &mask))
 	    return FALSE;
 
-	  convert_to_format (src_rgb + y0 * src_rowstride + 4 * x0, src_rowstride,
-			     image->mem + ys0 * image->bpl + xs0 * image->bpp, image->bpl,
-			     format_type, image->byte_order, 
-			     width1, height1);
+	  _gdk_x11_convert_to_format (src_rgb + y0 * src_rowstride + 4 * x0, src_rowstride,
+                                      (guchar *)image->mem + ys0 * image->bpl + xs0 * image->bpp, image->bpl,
+                                      format_type, image->byte_order, 
+                                      width1, height1);
 
 	  XRenderComposite (xdisplay, PictOpOver, pict, mask, dest_pict, 
 			    xs0, ys0, xs0, ys0, x0 + dest_x, y0 + dest_y,
@@ -1429,7 +1409,7 @@ gdk_x11_draw_pixbuf (GdkDrawable     *drawable,
 		     gint             x_dither,
 		     gint             y_dither)
 {
-  FormatType format_type;
+  GdkX11FormatType format_type;
   XRenderPictFormat *format, *mask_format;
   gint rowstride;
 #ifdef USE_SHM  
@@ -1439,8 +1419,9 @@ gdk_x11_draw_pixbuf (GdkDrawable     *drawable,
   format_type = select_format (gdk_drawable_get_display (drawable),
 			       &format, &mask_format);
 
-  if (format_type == FORMAT_NONE ||
+  if (format_type == GDK_X11_FORMAT_NONE ||
       !gdk_pixbuf_get_has_alpha (pixbuf) ||
+      gdk_drawable_get_depth (drawable) == 1 ||
       (dither == GDK_RGB_DITHER_MAX && gdk_drawable_get_depth (drawable) != 24) ||
       gdk_x11_drawable_get_picture (drawable) == None)
     {
@@ -1475,4 +1456,3 @@ gdk_x11_draw_pixbuf (GdkDrawable     *drawable,
 		      rowstride,
 		      dest_x, dest_y, width, height);
 }
-#endif /* HAVE_XFT */

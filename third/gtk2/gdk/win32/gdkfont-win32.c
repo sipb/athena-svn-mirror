@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -1334,6 +1335,15 @@ gdk_fontset_load (const gchar *fontset_name)
   return font;
 }
 
+GdkFont*
+gdk_fontset_load_for_display (GdkDisplay  *display,
+			      const gchar *fontset_name)
+{
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), NULL);
+  
+  return gdk_fontset_load (fontset_name);
+}
+
 void
 _gdk_font_destroy (GdkFont *font)
 {
@@ -1418,17 +1428,17 @@ gdk_font_equal (const GdkFont *fonta,
 	{
 	  if (((GdkWin32SingleFont *) lista->data)->hfont
 	      != ((GdkWin32SingleFont *) listb->data)->hfont)
-	    return 0;
+	    return FALSE;
 	  lista = lista->next;
 	  listb = listb->next;
 	}
       if (lista || listb)
-	return 0;
+	return FALSE;
       else
-	return 1;
+	return TRUE;
     }
   else
-    return 0;
+    return FALSE;
 }
 
 /* Return the Unicode Subset bitfield number for a Unicode character */
@@ -1582,8 +1592,8 @@ gdk_text_extents (GdkFont     *font,
 		  gint        *descent)
 {
   gdk_text_size_arg arg;
-  gint wlen;
-  wchar_t *wcstr;
+  glong wlen;
+  wchar_t *wcstr, wc;
 
   g_return_if_fail (font != NULL);
   g_return_if_fail (text != NULL);
@@ -1607,21 +1617,17 @@ gdk_text_extents (GdkFont     *font,
 
   arg.total.cx = arg.total.cy = 0;
 
-  wcstr = g_new (wchar_t, text_length);
   if (text_length == 1)
     {
-      wcstr[0] = (guchar) text[0];
-      _gdk_wchar_text_handle (font, wcstr, 1, gdk_text_size_handler, &arg);
+      wc = (guchar) text[0];
+      _gdk_wchar_text_handle (font, &wc, 1, gdk_text_size_handler, &arg);
     }
   else
     {
-      if ((wlen = _gdk_utf8_to_ucs2 (wcstr, text, text_length, text_length)) == -1)
-	g_warning ("gdk_text_extents: _gdk_utf8_to_ucs2 failed");
-      else
-	_gdk_wchar_text_handle (font, wcstr, wlen, gdk_text_size_handler, &arg);
+      wcstr = g_utf8_to_utf16 (text, text_length, NULL, &wlen, NULL);
+      _gdk_wchar_text_handle (font, wcstr, wlen, gdk_text_size_handler, &arg);
+      g_free (wcstr);
     }
-
-  g_free (wcstr);
 
   /* XXX This is quite bogus */
   if (lbearing)
@@ -1699,4 +1705,10 @@ gdk_text_extents_wc (GdkFont        *font,
     *ascent = arg.total.cy + 1;
   if (descent)
     *descent = font->descent + 1;
+}
+
+GdkDisplay* 
+gdk_font_get_display (GdkFont* font)
+{
+  return _gdk_display;
 }

@@ -28,6 +28,7 @@
 #define LINE_ATTRIBUTES (GDK_GC_LINE_WIDTH|GDK_GC_LINE_STYLE| \
 			 GDK_GC_CAP_STYLE|GDK_GC_JOIN_STYLE)
 
+#include <config.h>
 #include <string.h>
 
 #include "gdkgc.h"
@@ -106,10 +107,10 @@ gdk_gc_win32_finalize (GObject *object)
     gdk_font_unref (win32_gc->font);
   
   if (win32_gc->values_mask & GDK_GC_TILE)
-    gdk_drawable_unref (win32_gc->tile);
+    g_object_unref (win32_gc->tile);
   
   if (win32_gc->values_mask & GDK_GC_STIPPLE)
-    gdk_drawable_unref (win32_gc->stipple);
+    g_object_unref (win32_gc->stipple);
 
   if (win32_gc->pen_dashes)
     g_free (win32_gc->pen_dashes);
@@ -204,11 +205,11 @@ gdk_win32_gc_values_to_win32values (GdkGCValues    *values,
   if (mask & GDK_GC_TILE)
     {
       if (win32_gc->tile != NULL)
-	gdk_drawable_unref (win32_gc->tile);
+	g_object_unref (win32_gc->tile);
       win32_gc->tile = values->tile;
       if (win32_gc->tile != NULL)
 	{
-	  gdk_drawable_ref (win32_gc->tile);
+	  g_object_ref (win32_gc->tile);
 	  win32_gc->values_mask |= GDK_GC_TILE;
 	  GDK_NOTE (GC,
 		    (g_print ("%stile=%p", s,
@@ -226,7 +227,7 @@ gdk_win32_gc_values_to_win32values (GdkGCValues    *values,
   if (mask & GDK_GC_STIPPLE)
     {
       if (win32_gc->stipple != NULL)
-	gdk_drawable_unref (win32_gc->stipple);
+	g_object_unref (win32_gc->stipple);
       win32_gc->stipple = values->stipple;
       if (win32_gc->stipple != NULL)
 	{
@@ -265,7 +266,7 @@ gdk_win32_gc_values_to_win32values (GdkGCValues    *values,
 	    }
 	  else
 #endif
-	    gdk_drawable_ref (win32_gc->stipple);
+	    g_object_ref (win32_gc->stipple);
 	  win32_gc->values_mask |= GDK_GC_STIPPLE;
 	  GDK_NOTE (GC,
 		    (g_print ("%sstipple=%p", s,
@@ -360,7 +361,7 @@ gdk_win32_gc_values_to_win32values (GdkGCValues    *values,
 	    {
 	      g_free (win32_gc->pen_dashes);
 	      win32_gc->pen_dashes = NULL;
-            win32_gc->pen_num_dashes = 0;
+	      win32_gc->pen_num_dashes = 0;
 	    }
           win32_gc->pen_style &= ~(PS_STYLE_MASK);
 	  win32_gc->pen_style |= PS_SOLID;
@@ -454,8 +455,10 @@ _gdk_win32_gc_new (GdkDrawable	  *drawable,
   win32_gc->fill_style = GDK_SOLID;
   win32_gc->tile = NULL;
   win32_gc->stipple = NULL;
-  win32_gc->pen_style = PS_GEOMETRIC|PS_ENDCAP_FLAT|PS_JOIN_MITER;
+  win32_gc->subwindow_mode = GDK_CLIP_BY_CHILDREN;
+  win32_gc->graphics_exposures = TRUE;
   win32_gc->pen_width = 0;
+  win32_gc->pen_style = PS_GEOMETRIC|PS_ENDCAP_FLAT|PS_JOIN_MITER;
   win32_gc->pen_dashes = NULL;
   win32_gc->pen_num_dashes = 0;
 
@@ -590,6 +593,8 @@ gdk_win32_gc_set_dashes (GdkGC *gc,
 
   win32_gc->pen_style |= (PS_GEOMETRIC | PS_USERSTYLE);
   win32_gc->pen_num_dashes = n;
+  if (win32_gc->pen_dashes != NULL)
+    g_free (win32_gc->pen_dashes);
   win32_gc->pen_dashes = g_new (DWORD, n);
   for (i = 0; i < n; i++)
     win32_gc->pen_dashes[i] = dash_list[i];
@@ -693,20 +698,23 @@ gdk_gc_copy (GdkGC *dst_gc,
     gdk_font_unref (dst_win32_gc->font);
 
   if (dst_win32_gc->tile != NULL)
-    gdk_drawable_unref (dst_win32_gc->tile);
+    g_object_unref (dst_win32_gc->tile);
 
   if (dst_win32_gc->stipple != NULL)
-    gdk_drawable_unref (dst_win32_gc->stipple);
+    g_object_unref (dst_win32_gc->stipple);
 
   if (dst_win32_gc->pen_dashes)
     g_free (dst_win32_gc->pen_dashes);
   
-  *dst_win32_gc = *src_win32_gc;
-  dst_win32_gc->hdc = NULL;
-
+  dst_gc->clip_x_origin = src_gc->clip_x_origin;
+  dst_gc->clip_y_origin = src_gc->clip_y_origin;
+  dst_gc->ts_x_origin = src_gc->ts_x_origin;
+  dst_gc->ts_y_origin = src_gc->ts_y_origin;
+  dst_gc->colormap = src_gc->colormap;
   if (dst_gc->colormap)
     g_object_ref (G_OBJECT (dst_gc->colormap));
 
+  dst_win32_gc->hcliprgn = src_win32_gc->hcliprgn;
   if (dst_win32_gc->hcliprgn)
     {
       /* create a new region, to copy to */
@@ -716,18 +724,38 @@ gdk_gc_copy (GdkGC *dst_gc,
 		  NULL, RGN_COPY);
     }
 
+  dst_win32_gc->values_mask = src_win32_gc->values_mask; 
+  dst_win32_gc->foreground = src_win32_gc->foreground;
+  dst_win32_gc->background = src_win32_gc->background;
+  dst_win32_gc->font = src_win32_gc->font;
   if (dst_win32_gc->font != NULL)
     gdk_font_ref (dst_win32_gc->font);
 
+  dst_win32_gc->rop2 = src_win32_gc->rop2;
+  dst_win32_gc->fill_style = src_win32_gc->fill_style;
+  dst_win32_gc->tile = src_win32_gc->tile;
   if (dst_win32_gc->tile != NULL)
-    gdk_drawable_ref (dst_win32_gc->tile);
+    g_object_ref (dst_win32_gc->tile);
 
+  dst_win32_gc->stipple = src_win32_gc->stipple;
   if (dst_win32_gc->stipple != NULL)
-    gdk_drawable_ref (dst_win32_gc->stipple);
+    g_object_ref (dst_win32_gc->stipple);
 
+  dst_win32_gc->subwindow_mode = src_win32_gc->subwindow_mode;
+  dst_win32_gc->graphics_exposures = src_win32_gc->graphics_exposures;
+  dst_win32_gc->pen_width = src_win32_gc->pen_width;
+  dst_win32_gc->pen_style = src_win32_gc->pen_style;
+  dst_win32_gc->pen_dashes = src_win32_gc->pen_dashes;
   if (dst_win32_gc->pen_dashes)
     dst_win32_gc->pen_dashes = g_memdup (src_win32_gc->pen_dashes, 
                                          sizeof (DWORD) * src_win32_gc->pen_num_dashes);
+  dst_win32_gc->pen_num_dashes = src_win32_gc->pen_num_dashes;
+
+
+  dst_win32_gc->hdc = NULL;
+  dst_win32_gc->saved_dc = FALSE;
+  dst_win32_gc->hwnd = NULL;
+  dst_win32_gc->holdpal = NULL;
 }
 
 GdkScreen *  
@@ -1077,12 +1105,17 @@ _gdk_win32_bitmap_to_hrgn (GdkPixmap *pixmap)
   HRGN h;
   DWORD maxRects;
   RGNDATA *pData;
-  GdkImage *image;
+  guchar *bits;
+  gint width, height, bpl;
   guchar *p;
   gint x, y;
 
-  image = GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (pixmap)->impl)->image;
-  g_assert (image->depth == 1);
+  g_assert (GDK_PIXMAP_OBJECT(pixmap)->depth == 1);
+
+  bits = GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (pixmap)->impl)->bits;
+  width = GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (pixmap)->impl)->width;
+  height = GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (pixmap)->impl)->height;
+  bpl = ((width - 1)/32 + 1)*4;
 
   /* For better performances, we will use the ExtCreateRegion()
    * function to create the region. This function take a RGNDATA
@@ -1098,15 +1131,15 @@ _gdk_win32_bitmap_to_hrgn (GdkPixmap *pixmap)
   pData->rdh.nCount = pData->rdh.nRgnSize = 0;
   SetRect (&pData->rdh.rcBound, MAXLONG, MAXLONG, 0, 0);
 
-  for (y = 0; y < image->height; y++)
+  for (y = 0; y < height; y++)
     {
       /* Scan each bitmap row from left to right*/
-      p = (guchar *) image->mem + y * image->bpl;
-      for (x = 0; x < image->width; x++)
+      p = (guchar *) bits + y * bpl;
+      for (x = 0; x < width; x++)
 	{
 	  /* Search for a continuous range of "non transparent pixels"*/
 	  gint x0 = x;
-	  while (x < image->width)
+	  while (x < width)
 	    {
 	      if ((((p[x/8])>>(7-(x%8)))&1) == 0)
 		/* This pixel is "transparent"*/

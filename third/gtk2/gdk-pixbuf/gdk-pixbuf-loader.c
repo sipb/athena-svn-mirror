@@ -24,6 +24,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <string.h>
 
 #include "gdk-pixbuf-private.h"
@@ -70,7 +71,6 @@ typedef struct
 
 /**
  * gdk_pixbuf_loader_get_type:
- * @void:
  *
  * Registers the #GdkPixbufLoader class if necessary, and returns the type ID
  * associated to it.
@@ -116,6 +116,18 @@ gdk_pixbuf_loader_class_init (GdkPixbufLoaderClass *class)
   
         object_class->finalize = gdk_pixbuf_loader_finalize;
 
+        /**
+         * GdkPixbufLoader::size-prepared:
+         * @loader: the object which received the signal.
+         * @width: the original width of the image
+         * @height: the original height of the image
+         *
+         * This signal is emitted when the pixbuf loader has been fed the
+         * initial amount of data that is required to figure out the size
+         * of the image that it will create.  Applications can call  
+         * gdk_pixbuf_loader_set_size() in response to this signal to set
+         * the desired size to which the image should be scaled.
+         */
         pixbuf_loader_signals[SIZE_PREPARED] =
                 g_signal_new ("size_prepared",
                               G_TYPE_FROM_CLASS (object_class),
@@ -127,6 +139,15 @@ gdk_pixbuf_loader_class_init (GdkPixbufLoaderClass *class)
                               G_TYPE_INT,
                               G_TYPE_INT);
   
+        /**
+         * GdkPixbufLoader::area-prepared:
+         * @loader: the object which received the signal.
+         *
+         * This signal is emitted when the pixbuf loader has allocated the 
+         * pixbuf in the desired size.  After this signal is emitted, 
+         * applications can call gdk_pixbuf_loader_get_pixbuf() to fetch 
+         * the partially-loaded pixbuf.
+         */
         pixbuf_loader_signals[AREA_PREPARED] =
                 g_signal_new ("area_prepared",
                               G_TYPE_FROM_CLASS (object_class),
@@ -135,7 +156,21 @@ gdk_pixbuf_loader_class_init (GdkPixbufLoaderClass *class)
                               NULL, NULL,
                               gdk_pixbuf_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
-  
+
+        /**
+         * GdkPixbufLoader::area-updated:
+         * @loader: the object which received the signal.
+         * @x: X offset of upper-left corner of the updated area.
+         * @y: Y offset of upper-left corner of the updated area.
+         * @width: Width of updated area.
+         * @height: Height of updated area.
+         *
+         * This signal is emitted when a significant area of the image being
+         * loaded has been updated.  Normally it means that a complete
+         * scanline has been read in, but it could be a different area as
+         * well.  Applications can use this signal to know when to repaint
+         * areas of an image that is being loaded.
+         */
         pixbuf_loader_signals[AREA_UPDATED] =
                 g_signal_new ("area_updated",
                               G_TYPE_FROM_CLASS (object_class),
@@ -149,6 +184,15 @@ gdk_pixbuf_loader_class_init (GdkPixbufLoaderClass *class)
                               G_TYPE_INT,
                               G_TYPE_INT);
   
+        /**
+         * GdkPixbufLoader::closed:
+         * @loader: the object which received the signal.
+         *
+         * This signal is emitted when gdk_pixbuf_loader_close() is called.
+         * It can be used by different parts of an application to receive
+         * notification when an image loader is closed by the code that
+         * drives it.
+         */
         pixbuf_loader_signals[CLOSED] =
                 g_signal_new ("closed",
                               G_TYPE_FROM_CLASS (object_class),
@@ -165,6 +209,9 @@ gdk_pixbuf_loader_init (GdkPixbufLoader *loader)
         GdkPixbufLoaderPrivate *priv;
   
         priv = g_new0 (GdkPixbufLoaderPrivate, 1);
+        priv->width = -1;
+        priv->height = -1;
+
         loader->priv = priv;
 }
 
@@ -179,7 +226,6 @@ gdk_pixbuf_loader_finalize (GObject *object)
 
         if (!priv->closed)
                 g_warning ("GdkPixbufLoader finalized without calling gdk_pixbuf_loader_close() - this is not allowed. You must explicitly end the data stream to the loader before dropping the last reference.");
-  
         if (priv->animation)
                 g_object_unref (priv->animation);
   
@@ -210,7 +256,7 @@ gdk_pixbuf_loader_set_size (GdkPixbufLoader *loader,
 			    gint             height)
 {
         GdkPixbufLoaderPrivate *priv = GDK_PIXBUF_LOADER (loader)->priv;
-        g_return_if_fail (width > 0 && height > 0);
+        g_return_if_fail (width >= 0 && height >= 0);
 
         if (!priv->size_fixed) 
                 {
@@ -225,7 +271,7 @@ gdk_pixbuf_loader_size_func (gint *width, gint *height, gpointer loader)
         GdkPixbufLoaderPrivate *priv = GDK_PIXBUF_LOADER (loader)->priv;
 
         /* allow calling gdk_pixbuf_loader_set_size() before the signal */
-        if (priv->width == 0 && priv->height == 0) 
+        if (priv->width == -1 && priv->height == -1) 
                 {
                         priv->width = *width;
                         priv->height = *height;
@@ -423,6 +469,7 @@ gdk_pixbuf_loader_write (GdkPixbufLoader *loader,
   
         g_return_val_if_fail (buf != NULL, FALSE);
         g_return_val_if_fail (count >= 0, FALSE);
+        g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
   
         priv = loader->priv;
 
@@ -499,7 +546,67 @@ gdk_pixbuf_loader_new_with_type (const char *image_type,
 {
         GdkPixbufLoader *retval;
         GError *tmp;
+        g_return_val_if_fail (error == NULL || *error == NULL, NULL);
   
+        retval = g_object_new (GDK_TYPE_PIXBUF_LOADER, NULL);
+
+        tmp = NULL;
+        gdk_pixbuf_loader_load_module (retval, image_type, &tmp);
+        if (tmp != NULL)
+                {
+                        g_propagate_error (error, tmp);
+                        g_object_unref (retval);
+                        return NULL;
+                }
+
+        return retval;
+}
+
+/**
+ * gdk_pixbuf_loader_new_with_mime_type:
+ * @mime_type: the mime type to be loaded 
+ * @error: return location for an allocated #GError, or %NULL to ignore errors
+ *
+ * Creates a new pixbuf loader object that always attempts to parse
+ * image data as if it were an image of mime type @mime_type, instead of
+ * identifying the type automatically. Useful if you want an error if
+ * the image isn't the expected mime type, for loading image formats
+ * that can't be reliably identified by looking at the data, or if
+ * the user manually forces a specific mime type.
+ *
+ * Return value: A newly-created pixbuf loader.
+ * Since: 2.4
+ **/
+GdkPixbufLoader *
+gdk_pixbuf_loader_new_with_mime_type (const char *mime_type,
+                                      GError    **error)
+{
+        const char * image_type = NULL;
+        char ** mimes;
+
+        GdkPixbufLoader *retval;
+        GError *tmp;
+  
+        GSList * formats;
+        GdkPixbufFormat *info;
+        int i, j, length;
+
+        formats = gdk_pixbuf_get_formats ();
+        length = g_slist_length (formats);
+
+        for (i = 0; i < length && image_type == NULL; i++) {
+                info = (GdkPixbufFormat *)g_slist_nth_data (formats, i);
+                mimes = info->mime_types;
+                
+                for (j = 0; mimes[j] != NULL; j++)
+                        if (g_ascii_strcasecmp (mimes[j], mime_type) == 0) {
+                                image_type = info->name;
+                                break;
+                        }
+        }        
+
+        g_slist_free (formats);
+
         retval = g_object_new (GDK_TYPE_PIXBUF_LOADER, NULL);
 
         tmp = NULL;
@@ -602,6 +709,7 @@ gdk_pixbuf_loader_close (GdkPixbufLoader *loader,
   
         g_return_val_if_fail (loader != NULL, TRUE);
         g_return_val_if_fail (GDK_IS_PIXBUF_LOADER (loader), TRUE);
+        g_return_val_if_fail (error == NULL || *error == NULL, TRUE);
   
         priv = loader->priv;
   

@@ -41,9 +41,7 @@
 
 #include <config.h>
 
-#if HAVE_XFT
 #include <X11/extensions/Xrender.h>
-#endif
 
 #define GDK_TYPE_GC_X11              (_gdk_gc_x11_get_type ())
 #define GDK_GC_X11(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_GC_X11, GdkGCX11))
@@ -64,12 +62,12 @@ struct _GdkGCX11
   GC xgc;
   GdkScreen *screen;
   GdkRegion *clip_region;
-  guint dirty_mask;
+  guint16 dirty_mask;
+  guint have_clip_mask : 1;
+  guint depth : 8;
 
-#ifdef HAVE_XFT  
   Picture fg_picture;
   XRenderColor fg_picture_color; 
-#endif  
   gulong fg_pixel;
 };
 
@@ -105,12 +103,10 @@ gint _gdk_send_xevent      (GdkDisplay *display,
 
 GType _gdk_gc_x11_get_type (void);
 
-#ifdef HAVE_XFT
 gboolean _gdk_x11_have_render         (GdkDisplay *display);
 Picture  _gdk_x11_gc_get_fg_picture   (GdkGC      *gc);
 void     _gdk_gc_x11_get_fg_xft_color (GdkGC      *gc,
 				       XftColor   *xftcolor);
-#endif /* HAVE_XFT */
 
 GdkGC *_gdk_x11_gc_new                  (GdkDrawable     *drawable,
 					 GdkGCValues     *values,
@@ -165,6 +161,10 @@ void _gdk_xgrab_check_destroy (GdkWindow *window);
 
 gboolean _gdk_x11_display_is_root_window (GdkDisplay *display,
 					  Window      xroot_window);
+
+void _gdk_x11_precache_atoms (GdkDisplay          *display,
+			      const gchar * const *atom_names,
+			      gint                 n_atoms);
 
 void _gdk_x11_events_init_screen   (GdkScreen *screen);
 void _gdk_x11_events_uninit_screen (GdkScreen *screen);

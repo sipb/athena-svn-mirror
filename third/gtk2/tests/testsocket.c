@@ -1,5 +1,6 @@
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
 #include <gtk/gtk.h>
 
 #include <string.h>
@@ -11,7 +12,7 @@ int n_children = 0;
 GSList *sockets = NULL;
 
 GtkWidget *window;
-GtkWidget *vbox;
+GtkWidget *box;
 
 typedef struct 
 {
@@ -129,7 +130,7 @@ steal (GtkWidget *window, GtkEntry *entry)
     }
 
   socket = create_socket ();
-  gtk_box_pack_start (GTK_BOX (vbox), socket->box, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (box), socket->box, TRUE, TRUE, 0);
   gtk_widget_show (socket->box);
 
   gtk_socket_steal (GTK_SOCKET (socket->socket), xid);
@@ -167,7 +168,7 @@ child_read_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
       else
 	{
 	  Socket *socket = create_socket ();
-	  gtk_box_pack_start (GTK_BOX (vbox), socket->box, TRUE, TRUE, 0);
+	  gtk_box_pack_start (GTK_BOX (box), socket->box, TRUE, TRUE, 0);
 	  gtk_widget_show (socket->box);
 	  
 	  gtk_socket_add_id (GTK_SOCKET (socket->socket), xid);
@@ -178,7 +179,6 @@ child_read_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
       return TRUE;
     case G_IO_STATUS_EOF:
       n_children--;
-      g_io_channel_unref (channel);
       return FALSE;
     case G_IO_STATUS_ERROR:
       fprintf (stderr, "Error reading fd from child: %s\n", error->message);
@@ -205,7 +205,7 @@ add_child (GtkWidget *window,
   if (active)
     {
       socket = create_socket ();
-      gtk_box_pack_start (GTK_BOX (vbox), socket->box, TRUE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (box), socket->box, TRUE, TRUE, 0);
       gtk_widget_show (socket->box);
       sprintf(buffer, "%#lx", (gulong) gtk_socket_get_id (GTK_SOCKET (socket->socket)));
       argv[1] = buffer;
@@ -249,7 +249,7 @@ add_local_active_child (GtkWidget *window)
   Socket *socket;
 
   socket = create_socket ();
-  gtk_box_pack_start (GTK_BOX (vbox), socket->box, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (box), socket->box, TRUE, TRUE, 0);
   gtk_widget_show (socket->box);
 
   create_child_plug (gtk_socket_get_id (GTK_SOCKET (socket->socket)), TRUE);
@@ -262,7 +262,7 @@ add_local_passive_child (GtkWidget *window)
   GdkNativeWindow xid;
 
   socket = create_socket ();
-  gtk_box_pack_start (GTK_BOX (vbox), socket->box, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (box), socket->box, TRUE, TRUE, 0);
   gtk_widget_show (socket->box);
 
   xid = create_child_plug (0, TRUE);
@@ -274,6 +274,7 @@ main (int argc, char *argv[])
 {
   GtkWidget *button;
   GtkWidget *hbox;
+  GtkWidget *vbox;
   GtkWidget *entry;
   GtkAccelGroup *accel_group;
   GtkItemFactory *item_factory;
@@ -346,6 +347,11 @@ main (int argc, char *argv[])
 		    G_CALLBACK (steal),
 		    entry);
 
+  hbox = gtk_hbox_new (FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+  box = hbox;
+  
   gtk_widget_show_all (window);
 
   gtk_main ();

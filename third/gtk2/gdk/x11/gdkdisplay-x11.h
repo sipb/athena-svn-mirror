@@ -77,8 +77,7 @@ struct _GdkDisplayX11
 
   gboolean use_xshm;
   gboolean have_shm_pixmaps;
-  GdkTristate have_shape;
-  GdkTristate gravity_works;
+  GdkTristate have_render;
   
   /* Information about current pointer and keyboard grabs held by this
    * client. If gdk_pointer_xgrab_window or gdk_keyboard_xgrab_window
@@ -109,10 +108,14 @@ struct _GdkDisplayX11
 
   /* Session Management leader window see ICCCM */
   Window leader_window;
+  GdkWindow *leader_gdk_window;
   gboolean leader_window_title_set;
   
   /* list of filters for client messages */
-  GList *client_filters;	            
+  GList *client_filters;
+
+  /* List of functions to go from extension event => X window */
+  GSList *event_types;
   
   /* X ID hashtable */
   GHashTable *xid_ht;
@@ -132,10 +135,16 @@ struct _GdkDisplayX11
   gchar *input_gxid_host;
   gint   input_gxid_port;
 
-  gint   use_xft; 
-
   /* Startup notification */
   gchar *startup_notification_id;
+
+  /* Time of most recent user interaction. */
+  gulong user_time;
+
+  /* Sets of atoms for DND */
+  guint base_dnd_atoms_precached : 1;
+  guint xdnd_atoms_precached : 1;
+  guint motif_atoms_precached : 1;
 };
 
 struct _GdkDisplayX11Class

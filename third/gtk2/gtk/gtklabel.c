@@ -23,6 +23,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <math.h>
 #include <string.h>
 #include "gtklabel.h"
@@ -102,12 +103,13 @@ static void gtk_label_realize           (GtkWidget        *widget);
 static void gtk_label_unrealize         (GtkWidget        *widget);
 static void gtk_label_map               (GtkWidget        *widget);
 static void gtk_label_unmap             (GtkWidget        *widget);
-static gint gtk_label_button_press      (GtkWidget        *widget,
-                                         GdkEventButton   *event);
-static gint gtk_label_button_release    (GtkWidget        *widget,
-                                         GdkEventButton   *event);
-static gint gtk_label_motion            (GtkWidget        *widget,
-                                         GdkEventMotion   *event);
+
+static gboolean gtk_label_button_press      (GtkWidget        *widget,
+					     GdkEventButton   *event);
+static gboolean gtk_label_button_release    (GtkWidget        *widget,
+					     GdkEventButton   *event);
+static gboolean gtk_label_motion            (GtkWidget        *widget,
+					     GdkEventMotion   *event);
 
 
 static void gtk_label_set_text_internal          (GtkLabel      *label,
@@ -287,37 +289,37 @@ gtk_label_class_init (GtkLabelClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_LABEL,
                                    g_param_spec_string ("label",
-                                                        _("Label"),
-                                                        _("The text of the label"),
+                                                        P_("Label"),
+                                                        P_("The text of the label"),
                                                         NULL,
                                                         G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
 				   PROP_ATTRIBUTES,
 				   g_param_spec_boxed ("attributes",
-						       _("Attributes"),
-						       _("A list of style attributes to apply to the text of the label"),
+						       P_("Attributes"),
+						       P_("A list of style attributes to apply to the text of the label"),
 						       PANGO_TYPE_ATTR_LIST,
 						       G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
                                    PROP_USE_MARKUP,
                                    g_param_spec_boolean ("use_markup",
-							 _("Use markup"),
-							 _("The text of the label includes XML markup. See pango_parse_markup()"),
+							 P_("Use markup"),
+							 P_("The text of the label includes XML markup. See pango_parse_markup()"),
                                                         FALSE,
                                                         G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
                                    PROP_USE_UNDERLINE,
                                    g_param_spec_boolean ("use_underline",
-							 _("Use underline"),
-							 _("If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key"),
+							 P_("Use underline"),
+							 P_("If set, an underline in the text indicates the next character should be used for the mnemonic accelerator key"),
                                                         FALSE,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
 				   PROP_JUSTIFY,
                                    g_param_spec_enum ("justify",
-                                                      _("Justification"),
-                                                      _("The alignment of the lines in the text of the label relative to each other. This does NOT affect the alignment of the label within its allocation. See GtkMisc::xalign for that"),
+                                                      P_("Justification"),
+                                                      P_("The alignment of the lines in the text of the label relative to each other. This does NOT affect the alignment of the label within its allocation. See GtkMisc::xalign for that"),
 						      GTK_TYPE_JUSTIFICATION,
 						      GTK_JUSTIFY_LEFT,
                                                       G_PARAM_READWRITE));
@@ -325,30 +327,30 @@ gtk_label_class_init (GtkLabelClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_PATTERN,
                                    g_param_spec_string ("pattern",
-                                                        _("Pattern"),
-                                                        _("A string with _ characters in positions correspond to characters in the text to underline"),
+                                                        P_("Pattern"),
+                                                        P_("A string with _ characters in positions correspond to characters in the text to underline"),
                                                         NULL,
                                                         G_PARAM_WRITABLE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_WRAP,
                                    g_param_spec_boolean ("wrap",
-                                                        _("Line wrap"),
-                                                        _("If set, wrap lines if the text becomes too wide"),
+                                                        P_("Line wrap"),
+                                                        P_("If set, wrap lines if the text becomes too wide"),
                                                         FALSE,
                                                         G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
                                    PROP_SELECTABLE,
                                    g_param_spec_boolean ("selectable",
-                                                        _("Selectable"),
-                                                        _("Whether the label text can be selected with the mouse"),
+                                                        P_("Selectable"),
+                                                        P_("Whether the label text can be selected with the mouse"),
                                                         FALSE,
                                                         G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class,
                                    PROP_MNEMONIC_KEYVAL,
                                    g_param_spec_uint ("mnemonic_keyval",
-						      _("Mnemonic key"),
-						      _("The mnemonic accelerator key for this label"),
+						      P_("Mnemonic key"),
+						      P_("The mnemonic accelerator key for this label"),
 						      0,
 						      G_MAXUINT,
 						      GDK_VoidSymbol,
@@ -356,8 +358,8 @@ gtk_label_class_init (GtkLabelClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_MNEMONIC_WIDGET,
                                    g_param_spec_object ("mnemonic_widget",
-							_("Mnemonic widget"),
-							_("The widget to be activated when the label's mnemonic "
+							P_("Mnemonic widget"),
+							P_("The widget to be activated when the label's mnemonic "
 							  "key is pressed"),
 							GTK_TYPE_WIDGET,
 							G_PARAM_READWRITE));
@@ -365,8 +367,8 @@ gtk_label_class_init (GtkLabelClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_CURSOR_POSITION,
                                    g_param_spec_int ("cursor_position",
-                                                     _("Cursor Position"),
-                                                     _("The current position of the insertion cursor in chars"),
+                                                     P_("Cursor Position"),
+                                                     P_("The current position of the insertion cursor in chars"),
                                                      0,
                                                      G_MAXINT,
                                                      0,
@@ -375,8 +377,8 @@ gtk_label_class_init (GtkLabelClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_SELECTION_BOUND,
                                    g_param_spec_int ("selection_bound",
-                                                     _("Selection Bound"),
-                                                     _("The position of the opposite end of the selection from the cursor in chars"),
+                                                     P_("Selection Bound"),
+                                                     P_("The position of the opposite end of the selection from the cursor in chars"),
                                                      0,
                                                      G_MAXINT,
                                                      0,
@@ -768,14 +770,20 @@ gtk_label_set_mnemonic_widget (GtkLabel  *label,
     g_return_if_fail (GTK_IS_WIDGET (widget));
 
   if (label->mnemonic_widget)
-    g_object_weak_unref (G_OBJECT (label->mnemonic_widget),
-			 label_mnemonic_widget_weak_notify,
-			 label);
+    {
+      gtk_widget_remove_mnemonic_label (label->mnemonic_widget, GTK_WIDGET (label));
+      g_object_weak_unref (G_OBJECT (label->mnemonic_widget),
+			   label_mnemonic_widget_weak_notify,
+			   label);
+    }
   label->mnemonic_widget = widget;
   if (label->mnemonic_widget)
-    g_object_weak_ref (G_OBJECT (label->mnemonic_widget),
-		       label_mnemonic_widget_weak_notify,
-		       label);
+    {
+      g_object_weak_ref (G_OBJECT (label->mnemonic_widget),
+		         label_mnemonic_widget_weak_notify,
+		         label);
+      gtk_widget_add_mnemonic_label (label->mnemonic_widget, GTK_WIDGET (label));
+    }
   
   g_object_notify (G_OBJECT (label), "mnemonic_widget");
 }
@@ -874,7 +882,8 @@ gtk_label_set_attributes_internal (GtkLabel      *label,
 
   if (!label->use_markup && !label->use_underline)
     {
-      pango_attr_list_ref (attrs);
+      if (attrs)
+	pango_attr_list_ref (attrs);
       if (label->effective_attrs)
 	pango_attr_list_unref (label->effective_attrs);
       label->effective_attrs = attrs;
@@ -1407,9 +1416,11 @@ gtk_label_ensure_layout (GtkLabel *label)
   GtkWidget *widget;
   PangoRectangle logical_rect;
   gint rwidth, rheight;
+  gboolean rtl;
 
   widget = GTK_WIDGET (label);
 
+  rtl = gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL;
   rwidth = label->misc.xpad * 2;
   rheight = label->misc.ypad * 2;
 
@@ -1425,17 +1436,17 @@ gtk_label_ensure_layout (GtkLabel *label)
       switch (label->jtype)
 	{
 	case GTK_JUSTIFY_LEFT:
-	  align = PANGO_ALIGN_LEFT;
+	  align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
 	  break;
 	case GTK_JUSTIFY_RIGHT:
-	  align = PANGO_ALIGN_RIGHT;
+	  align = rtl ? PANGO_ALIGN_LEFT : PANGO_ALIGN_RIGHT;
 	  break;
 	case GTK_JUSTIFY_CENTER:
 	  align = PANGO_ALIGN_CENTER;
 	  break;
 	case GTK_JUSTIFY_FILL:
 	  /* FIXME: This just doesn't work to do this */
-	  align = PANGO_ALIGN_LEFT;
+	  align = rtl ? PANGO_ALIGN_RIGHT : PANGO_ALIGN_LEFT;
 	  pango_layout_set_justify (label->layout, TRUE);
 	  break;
 	default:
@@ -1698,6 +1709,53 @@ get_layout_location (GtkLabel  *label,
 }
 
 static void
+draw_insertion_cursor (GtkLabel      *label,
+		       GdkRectangle  *cursor_location,
+		       gboolean       is_primary,
+		       PangoDirection direction,
+		       gboolean       draw_arrow)
+{
+  GtkWidget *widget = GTK_WIDGET (label);
+  GtkTextDirection text_dir;
+
+  if (direction == PANGO_DIRECTION_LTR)
+    text_dir = GTK_TEXT_DIR_LTR;
+  else
+    text_dir = GTK_TEXT_DIR_RTL;
+
+  gtk_draw_insertion_cursor (widget, widget->window, NULL,
+			     cursor_location,
+			     is_primary, text_dir, draw_arrow);
+}
+
+static PangoDirection
+get_cursor_direction (GtkLabel *label)
+{
+  GSList *l;
+
+  g_assert (label->select_info);
+
+  gtk_label_ensure_layout (label);
+
+  for (l = pango_layout_get_lines (label->layout); l; l = l->next)
+    {
+      PangoLayoutLine *line = l->data;
+
+      /* If label->select_info->selection_end is at the very end of
+       * the line, we don't know if the cursor is on this line or
+       * the next without looking ahead at the next line. (End
+       * of paragraph is different from line break.) But it's
+       * definitely in this paragraph, which is good enough
+       * to figure out the resolved direction.
+       */
+       if (line->start_index + line->length >= label->select_info->selection_end)
+	return line->resolved_dir;
+    }
+
+  return PANGO_DIRECTION_LTR;
+}
+
+static void
 gtk_label_draw_cursor (GtkLabel  *label, gint xoffset, gint yoffset)
 {
   if (label->select_info == NULL)
@@ -1707,22 +1765,18 @@ gtk_label_draw_cursor (GtkLabel  *label, gint xoffset, gint yoffset)
     {
       GtkWidget *widget = GTK_WIDGET (label);
 
-      GtkTextDirection keymap_direction;
-      GtkTextDirection widget_direction;
+      PangoDirection keymap_direction;
+      PangoDirection cursor_direction;
       PangoRectangle strong_pos, weak_pos;
       gboolean split_cursor;
       PangoRectangle *cursor1 = NULL;
       PangoRectangle *cursor2 = NULL;
       GdkRectangle cursor_location;
-      GtkTextDirection dir1 = GTK_TEXT_DIR_NONE;
-      GtkTextDirection dir2 = GTK_TEXT_DIR_NONE;
-      GdkGC *gc;
+      PangoDirection dir1 = PANGO_DIRECTION_NEUTRAL;
+      PangoDirection dir2 = PANGO_DIRECTION_NEUTRAL;
 
-      keymap_direction =
-	(gdk_keymap_get_direction (gdk_keymap_get_for_display (gtk_widget_get_display (widget))) == PANGO_DIRECTION_LTR) ?
-	GTK_TEXT_DIR_LTR : GTK_TEXT_DIR_RTL;
-
-      widget_direction = gtk_widget_get_direction (widget);
+      keymap_direction = gdk_keymap_get_direction (gdk_keymap_get_for_display (gtk_widget_get_display (widget)));
+      cursor_direction = get_cursor_direction (label);
 
       gtk_label_ensure_layout (label);
       
@@ -1733,7 +1787,7 @@ gtk_label_draw_cursor (GtkLabel  *label, gint xoffset, gint yoffset)
 		    "gtk-split-cursor", &split_cursor,
 		    NULL);
 
-      dir1 = widget_direction;
+      dir1 = cursor_direction;
       
       if (split_cursor)
 	{
@@ -1742,13 +1796,13 @@ gtk_label_draw_cursor (GtkLabel  *label, gint xoffset, gint yoffset)
 	  if (strong_pos.x != weak_pos.x ||
 	      strong_pos.y != weak_pos.y)
 	    {
-	      dir2 = (widget_direction == GTK_TEXT_DIR_LTR) ? GTK_TEXT_DIR_RTL : GTK_TEXT_DIR_LTR;
+	      dir2 = (cursor_direction == PANGO_DIRECTION_LTR) ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR;
 	      cursor2 = &weak_pos;
 	    }
 	}
       else
 	{
-	  if (keymap_direction == widget_direction)
+	  if (keymap_direction == cursor_direction)
 	    cursor1 = &strong_pos;
 	  else
 	    cursor1 = &weak_pos;
@@ -1759,23 +1813,20 @@ gtk_label_draw_cursor (GtkLabel  *label, gint xoffset, gint yoffset)
       cursor_location.width = 0;
       cursor_location.height = PANGO_PIXELS (cursor1->height);
 
-      gc = _gtk_get_insertion_cursor_gc (widget, TRUE);
-      _gtk_draw_insertion_cursor (widget, widget->window, gc,
-				  &cursor_location, dir1,
-                                  dir2 != GTK_TEXT_DIR_NONE);
-      g_object_unref (gc);
+      draw_insertion_cursor (label,
+			     &cursor_location, TRUE, dir1,
+			     dir2 != PANGO_DIRECTION_NEUTRAL);
       
-      if (dir2 != GTK_TEXT_DIR_NONE)
+      if (dir2 != PANGO_DIRECTION_NEUTRAL)
 	{
 	  cursor_location.x = xoffset + PANGO_PIXELS (cursor2->x);
 	  cursor_location.y = yoffset + PANGO_PIXELS (cursor2->y);
 	  cursor_location.width = 0;
 	  cursor_location.height = PANGO_PIXELS (cursor2->height);
 
-	  gc = _gtk_get_insertion_cursor_gc (widget, FALSE);
-	  _gtk_draw_insertion_cursor (widget, widget->window, gc,
-				      &cursor_location, dir2, TRUE);
-	  g_object_unref (gc);
+	  draw_insertion_cursor (label,
+				 &cursor_location, FALSE, dir2,
+				 TRUE);
 	}
     }
 }
@@ -1799,7 +1850,7 @@ gtk_label_expose (GtkWidget      *widget,
       label->text && (*label->text != '\0'))
     {
       get_layout_location (label, &x, &y);
-      
+
       gtk_paint_layout (widget->style,
                         widget->window,
                         GTK_WIDGET_STATE (widget),
@@ -2175,7 +2226,7 @@ gtk_label_select_word (GtkLabel *label)
   gtk_label_select_region_index (label, min, max);
 }
 
-static gint
+static gboolean
 gtk_label_button_press (GtkWidget      *widget,
                         GdkEventButton *event)
 {
@@ -2254,7 +2305,7 @@ gtk_label_button_press (GtkWidget      *widget,
   return FALSE;
 }
 
-static gint
+static gboolean
 gtk_label_button_release (GtkWidget      *widget,
                           GdkEventButton *event)
 
@@ -2276,7 +2327,7 @@ gtk_label_button_release (GtkWidget      *widget,
   return TRUE;
 }
 
-static gint
+static gboolean
 gtk_label_motion (GtkWidget      *widget,
                   GdkEventMotion *event)
 {
@@ -2768,8 +2819,34 @@ static gboolean
 gtk_label_focus (GtkWidget         *widget,
 		 GtkDirectionType   direction)
 {
-  /* We never want to be in the tab chain */
-  return FALSE;
+  GtkLabel *label = GTK_LABEL (widget);
+  GdkEvent *current_event;
+  gboolean is_control_tab = FALSE;
+  
+  /* We want to be in the tab chain only if we are selectable
+   * and Control-[Shift]Tab is pressed
+   */
+  if (label->select_info == NULL)
+    return FALSE;
+
+  current_event = gtk_get_current_event ();
+
+  if (current_event)
+    {
+      if (current_event->type == GDK_KEY_PRESS &&
+	  (current_event->key.keyval == GDK_Tab ||
+	   current_event->key.keyval == GDK_KP_Tab ||
+	   current_event->key.keyval == GDK_ISO_Left_Tab) &&
+	  (current_event->key.state & GDK_CONTROL_MASK) != 0)
+	is_control_tab = TRUE;
+      
+      gdk_event_free (current_event);
+    }
+      
+  if (is_control_tab)
+    return GTK_WIDGET_CLASS (parent_class)->focus (widget, direction);
+  else
+    return FALSE;
 }
 
 /* Compute the X position for an offset that corresponds to the "more important
@@ -2784,10 +2861,8 @@ get_better_cursor (GtkLabel *label,
 		   gint      *y)
 {
   GdkKeymap *keymap = gdk_keymap_get_for_display (gtk_widget_get_display (GTK_WIDGET (label)));
-  GtkTextDirection keymap_direction =
-    (gdk_keymap_get_direction (keymap) == PANGO_DIRECTION_LTR) ?
-    GTK_TEXT_DIR_LTR : GTK_TEXT_DIR_RTL;
-  GtkTextDirection widget_direction = gtk_widget_get_direction (GTK_WIDGET (label));
+  PangoDirection keymap_direction = gdk_keymap_get_direction (keymap);
+  PangoDirection cursor_direction = get_cursor_direction (label);
   gboolean split_cursor;
   PangoRectangle strong_pos, weak_pos;
   
@@ -2807,7 +2882,7 @@ get_better_cursor (GtkLabel *label,
     }
   else
     {
-      if (keymap_direction == widget_direction)
+      if (keymap_direction == cursor_direction)
 	{
 	  *x = strong_pos.x / PANGO_SCALE;
 	  *y = strong_pos.y / PANGO_SCALE;
@@ -2890,11 +2965,9 @@ gtk_label_move_visually (GtkLabel *label,
       else
 	{
 	  GdkKeymap *keymap = gdk_keymap_get_for_display (gtk_widget_get_display (GTK_WIDGET (label)));
-	  GtkTextDirection keymap_direction =
-	    (gdk_keymap_get_direction (keymap) == PANGO_DIRECTION_LTR) ?
-	    GTK_TEXT_DIR_LTR : GTK_TEXT_DIR_RTL;
+	  PangoDirection keymap_direction = gdk_keymap_get_direction (keymap);
 
-	  strong = keymap_direction == gtk_widget_get_direction (GTK_WIDGET (label));
+	  strong = keymap_direction == get_cursor_direction (label);
 	}
       
       if (count > 0)
@@ -3036,6 +3109,7 @@ gtk_label_move_cursor (GtkLabel       *label,
 	case GTK_MOVEMENT_DISPLAY_LINES:
 	case GTK_MOVEMENT_PARAGRAPHS:
 	case GTK_MOVEMENT_PAGES:
+	case GTK_MOVEMENT_HORIZONTAL_PAGES:
 	  break;
 	}
     }
@@ -3070,6 +3144,7 @@ gtk_label_move_cursor (GtkLabel       *label,
 	case GTK_MOVEMENT_DISPLAY_LINES:
 	case GTK_MOVEMENT_PARAGRAPHS:
 	case GTK_MOVEMENT_PAGES:
+	case GTK_MOVEMENT_HORIZONTAL_PAGES:
 	  break;
 	}
     }

@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkCellEditable</refname><refpurpose></refpurpose>
+<refname>GtkCellEditable</refname><refpurpose>Interface for widgets which can are used for editing cells</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -18,10 +18,10 @@
 
 struct      <link linkend="GtkCellEditable-struct">GtkCellEditable</link>;
 struct      <link linkend="GtkCellEditableIface">GtkCellEditableIface</link>;
-void        <link linkend="gtk-cell-editable-start-editing">gtk_cell_editable_start_editing</link> (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable,
+<link linkend="void">void</link>        <link linkend="gtk-cell-editable-start-editing">gtk_cell_editable_start_editing</link> (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable,
                                              <link linkend="GdkEvent">GdkEvent</link> *event);
-void        <link linkend="gtk-cell-editable-editing-done">gtk_cell_editable_editing_done</link>  (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);
-void        <link linkend="gtk-cell-editable-remove-widget">gtk_cell_editable_remove_widget</link> (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);
+<link linkend="void">void</link>        <link linkend="gtk-cell-editable-editing-done">gtk_cell_editable_editing_done</link>  (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);
+<link linkend="void">void</link>        <link linkend="gtk-cell-editable-remove-widget">gtk_cell_editable_remove_widget</link> (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);
 
 
 </synopsis>
@@ -38,17 +38,21 @@ void        <link linkend="gtk-cell-editable-remove-widget">gtk_cell_editable_re
 </refsect1>
 
 <refsect1>
-<title>Implementations</title>
-<para>
-GtkCellEditable is implemented by <link linkend="GtkEntry">GtkEntry</link> and <link linkend="GtkSpinButton">GtkSpinButton</link>.
-</para>
-</refsect1>
-
-<refsect1>
 <title>Prerequisites</title>
 <para>
-GtkCellEditable requires <link linkend="GtkWidget">GtkWidget</link>.
-</para>
+GtkCellEditable requires
+ <link linkend="GtkWidget">GtkWidget</link>.</para>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Known Implementations</title>
+<para>
+GtkCellEditable is implemented by
+ <link linkend="GtkEntry">GtkEntry</link> and  <link linkend="GtkSpinButton">GtkSpinButton</link>.</para>
+
 </refsect1>
 
 
@@ -57,10 +61,10 @@ GtkCellEditable requires <link linkend="GtkWidget">GtkWidget</link>.
 <synopsis>
 
 &quot;<link linkend="GtkCellEditable-editing-done">editing-done</link>&quot;
-            void        user_function      (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkCellEditable-remove-widget">remove-widget</link>&quot;
-            void        user_function      (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -77,13 +81,13 @@ GtkCellEditable requires <link linkend="GtkWidget">GtkWidget</link>.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkCellEditable-struct"/>struct GtkCellEditable</title>
-<programlisting>struct GtkCellEditable;</programlisting>
+<indexterm><primary>GtkCellEditable</primary></indexterm><programlisting>struct GtkCellEditable;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkCellEditableIface"/>struct GtkCellEditableIface</title>
-<programlisting>struct GtkCellEditableIface {
+<indexterm><primary>GtkCellEditableIface</primary></indexterm><programlisting>struct GtkCellEditableIface {
 
   GTypeInterface g_iface;
 
@@ -101,38 +105,38 @@ GtkCellEditable requires <link linkend="GtkWidget">GtkWidget</link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-editable-start-editing"/>gtk_cell_editable_start_editing ()</title>
-<programlisting>void        gtk_cell_editable_start_editing (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable,
+<indexterm><primary>gtk_cell_editable_start_editing</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_editable_start_editing (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable,
                                              <link linkend="GdkEvent">GdkEvent</link> *event);</programlisting>
 <para>
-Begins editing on a <parameter>cell_editable</parameter>.  <parameter>event</parameter> is the <link linkend="GdkEvent">GdkEvent</link> that began the
+Begins editing on a <parameter>cell_editable</parameter>.  <parameter>event</parameter> is the <link linkend="GdkEvent"><type>GdkEvent</type></link> that began the
 editing process.  It may be <literal>NULL</literal>, in the instance that editing was initiated
 through programatic means.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cell_editable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkCellEditable">GtkCellEditable</link>
+<listitem><simpara> A <link linkend="GtkCellEditable"><type>GtkCellEditable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>event</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GdkEvent">GdkEvent</link>, or <literal>NULL</literal>
+<listitem><simpara> A <link linkend="GdkEvent"><type>GdkEvent</type></link>, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-editable-editing-done"/>gtk_cell_editable_editing_done ()</title>
-<programlisting>void        gtk_cell_editable_editing_done  (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);</programlisting>
+<indexterm><primary>gtk_cell_editable_editing_done</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_editable_editing_done  (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);</programlisting>
 <para>
 Emits the "editing_done" signal.  This signal is a sign for the cell renderer
-to update it's value from the cell.</para>
+to update its value from the cell.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cell_editable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeEditable">GtkTreeEditable</link>
+<listitem><simpara> A <link linkend="GtkTreeEditable"><type>GtkTreeEditable</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-cell-editable-remove-widget"/>gtk_cell_editable_remove_widget ()</title>
-<programlisting>void        gtk_cell_editable_remove_widget (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);</programlisting>
+<indexterm><primary>gtk_cell_editable_remove_widget</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_cell_editable_remove_widget (<link linkend="GtkCellEditable">GtkCellEditable</link> *cell_editable);</programlisting>
 <para>
 Emits the "remove_widget" signal.  This signal is meant to indicate that the
 cell is finished editing, and the widget may now be destroyed.</para>
@@ -140,7 +144,7 @@ cell is finished editing, and the widget may now be destroyed.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>cell_editable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeEditable">GtkTreeEditable</link>
+<listitem><simpara> A <link linkend="GtkTreeEditable"><type>GtkTreeEditable</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
@@ -149,7 +153,7 @@ cell is finished editing, and the widget may now be destroyed.</para>
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkCellEditable-editing-done"/>The &quot;editing-done&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 
@@ -161,7 +165,7 @@ cell is finished editing, and the widget may now be destroyed.</para>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkCellEditable-remove-widget"/>The &quot;remove-widget&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkCellEditable">GtkCellEditable</link> *celleditable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 

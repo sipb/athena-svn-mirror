@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gdktypes.h"
 #include "gdkprivate-win32.h"
 
@@ -32,20 +33,26 @@ GdkDisplay	 *_gdk_display = NULL;
 GdkScreen	 *_gdk_screen = NULL;
 GdkWindow	 *_gdk_parent_root = NULL;
 
+gint		  _gdk_num_monitors;
+GdkRectangle     *_gdk_monitors;
+
+gint		 _gdk_offset_x, _gdk_offset_y;
+
 HWND              _gdk_root_window = NULL;
 HDC		  _gdk_display_hdc;
 HINSTANCE	  _gdk_dll_hinstance;
 HINSTANCE	  _gdk_app_hmodule;
 
 HKL		  _gdk_input_locale;
+gboolean	  _gdk_input_locale_is_ime;
 UINT		  _gdk_input_codepage;
 
 WORD  		  _cf_rtf;
 WORD		  _cf_utf8_string;
 
 GdkAtom           _utf8_string;
-GdkAtom		  _compound_text;
 GdkAtom		  _text_uri_list;
+GdkAtom		  _targets;
 
 GdkAtom		  _local_dnd;
 GdkAtom		  _gdk_win32_dropfiles;
@@ -53,7 +60,9 @@ GdkAtom		  _gdk_ole2_dnd;
 
 GdkAtom           _gdk_selection_property;
 
+GdkAtom	          _wm_transient_for;
+
 DWORD		  _windows_version;
 
-gint		  _gdk_input_ignore_wintab = FALSE;
+gint		  _gdk_input_ignore_wintab = TRUE;
 gint		  _gdk_max_colors = 0;

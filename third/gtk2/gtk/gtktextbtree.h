@@ -173,6 +173,10 @@ gboolean            _gtk_text_btree_get_selection_bounds    (GtkTextBTree       
                                                              GtkTextIter        *end);
 void                _gtk_text_btree_place_cursor            (GtkTextBTree       *tree,
                                                              const GtkTextIter  *where);
+void                _gtk_text_btree_select_range            (GtkTextBTree       *tree,
+                                                             const GtkTextIter  *ins,
+							     const GtkTextIter 
+*bound);
 gboolean            _gtk_text_btree_mark_is_insert          (GtkTextBTree       *tree,
                                                              GtkTextMark        *segment);
 gboolean            _gtk_text_btree_mark_is_selection_bound (GtkTextBTree       *tree,
@@ -212,6 +216,9 @@ struct _GtkTextLine {
   GtkTextLineSegment *segments; /* First in ordered list of segments
                                  * that make up the line. */
   GtkTextLineData *views;      /* data stored here by views */
+  guchar dir_strong;                /* BiDi algo dir of line */
+  guchar dir_propagated_back;       /* BiDi algo dir of next line */
+  guchar dir_propagated_forward;    /* BiDi algo dir of prev line */
 };
 
 

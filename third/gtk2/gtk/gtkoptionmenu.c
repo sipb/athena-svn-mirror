@@ -1,5 +1,5 @@
 /* GTK - The GIMP Toolkit
- * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Jsh MacDonald
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,13 +24,16 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkintl.h"
 #include "gtkmenu.h"
 #include "gtkmenuitem.h"
-#include "gtkoptionmenu.h"
 #include "gtkmarshalers.h"
 #include "gdk/gdkkeysyms.h"
 
+#undef GTK_DISABLE_DEPRECATED
+#include "gtkoptionmenu.h"
+#define GTK_DISABLE_DEPRECATED
 
 #define CHILD_LEFT_SPACING        4
 #define CHILD_RIGHT_SPACING       1
@@ -187,21 +190,21 @@ gtk_option_menu_class_init (GtkOptionMenuClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_MENU,
                                    g_param_spec_object ("menu",
-                                                        _("Menu"),
-                                                        _("The menu of options"),
+                                                        P_("Menu"),
+                                                        P_("The menu of options"),
                                                         GTK_TYPE_MENU,
                                                         G_PARAM_READABLE | G_PARAM_WRITABLE));
   
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_boxed ("indicator_size",
-							       _("Indicator Size"),
-							       _("Size of dropdown indicator"),
+							       P_("Indicator Size"),
+							       P_("Size of dropdown indicator"),
 							       GTK_TYPE_REQUISITION,
 							       G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_boxed ("indicator_spacing",
-							       _("Indicator Spacing"),
-							       _("Spacing around indicator"),
+							       P_("Indicator Spacing"),
+							       P_("Spacing around indicator"),
 							       GTK_TYPE_BORDER,
 							       G_PARAM_READABLE));
 }
@@ -303,7 +306,7 @@ gtk_option_menu_remove_menu (GtkOptionMenu *option_menu)
   if (option_menu->menu)
     {
       if (GTK_MENU_SHELL (option_menu->menu)->active)
-	g_signal_emit_by_name (option_menu->menu, "cancel", 0);
+	gtk_menu_shell_cancel (GTK_MENU_SHELL (option_menu->menu));
       
       gtk_menu_detach (GTK_MENU (option_menu->menu));
     }
@@ -335,6 +338,7 @@ gtk_option_menu_set_history (GtkOptionMenu *option_menu,
  * items are numbered from top to bottom, starting with 0. 
  * 
  * Return value: index of the selected menu item, or -1 if there are no menu items
+ * Deprecated: Use #GtkComboBox instead.
  **/
 gint
 gtk_option_menu_get_history (GtkOptionMenu *option_menu)
@@ -841,6 +845,7 @@ gtk_option_menu_remove_contents (GtkOptionMenu *option_menu)
       if (child)
 	{
 	  gtk_widget_set_sensitive (child, TRUE);
+	  gtk_widget_set_state (child, GTK_STATE_NORMAL);
 	  gtk_widget_reparent (child, option_menu->menu_item);
 	}
 
@@ -952,6 +957,10 @@ gtk_option_menu_position (GtkMenu  *menu,
       children = children->next;
     }
 
+  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
+    menu_xpos = menu_xpos + widget->allocation.width - menu_width;
+
+  /* Clamp the position on screen */
   screen_width = gdk_screen_get_width (gtk_widget_get_screen (widget));
   
   if (menu_xpos < 0)

@@ -19,12 +19,12 @@
 struct      <link linkend="GtkPreview-struct">GtkPreview</link>;
 struct      <link linkend="GtkPreviewInfo">GtkPreviewInfo</link>;
 union       <link linkend="GtkDitherInfo">GtkDitherInfo</link>;
-void        <link linkend="gtk-preview-uninit">gtk_preview_uninit</link>              (void);
+<link linkend="void">void</link>        <link linkend="gtk-preview-uninit">gtk_preview_uninit</link>              (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-preview-new">gtk_preview_new</link>                 (<link linkend="GtkPreviewType">GtkPreviewType</link> type);
-void        <link linkend="gtk-preview-size">gtk_preview_size</link>                (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<link linkend="void">void</link>        <link linkend="gtk-preview-size">gtk_preview_size</link>                (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);
-void        <link linkend="gtk-preview-put">gtk_preview_put</link>                 (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<link linkend="void">void</link>        <link linkend="gtk-preview-put">gtk_preview_put</link>                 (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="GdkWindow">GdkWindow</link> *window,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> srcx,
@@ -33,26 +33,26 @@ void        <link linkend="gtk-preview-put">gtk_preview_put</link>              
                                              <link linkend="gint">gint</link> desty,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);
-void        <link linkend="gtk-preview-draw-row">gtk_preview_draw_row</link>            (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<link linkend="void">void</link>        <link linkend="gtk-preview-draw-row">gtk_preview_draw_row</link>            (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="guchar">guchar</link> *data,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="gint">gint</link> w);
-void        <link linkend="gtk-preview-set-expand">gtk_preview_set_expand</link>          (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-expand">gtk_preview_set_expand</link>          (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="gboolean">gboolean</link> expand);
-void        <link linkend="gtk-preview-set-gamma">gtk_preview_set_gamma</link>           (<link linkend="double">double</link> gamma_);
-void        <link linkend="gtk-preview-set-color-cube">gtk_preview_set_color_cube</link>      (<link linkend="guint">guint</link> nred_shades,
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-gamma">gtk_preview_set_gamma</link>           (<link linkend="double">double</link> gamma_);
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-color-cube">gtk_preview_set_color_cube</link>      (<link linkend="guint">guint</link> nred_shades,
                                              <link linkend="guint">guint</link> ngreen_shades,
                                              <link linkend="guint">guint</link> nblue_shades,
                                              <link linkend="guint">guint</link> ngray_shades);
-void        <link linkend="gtk-preview-set-install-cmap">gtk_preview_set_install_cmap</link>    (<link linkend="gint">gint</link> install_cmap);
-void        <link linkend="gtk-preview-set-reserved">gtk_preview_set_reserved</link>        (<link linkend="gint">gint</link> nreserved);
-void        <link linkend="gtk-preview-set-dither">gtk_preview_set_dither</link>          (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-install-cmap">gtk_preview_set_install_cmap</link>    (<link linkend="gint">gint</link> install_cmap);
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-reserved">gtk_preview_set_reserved</link>        (<link linkend="gint">gint</link> nreserved);
+<link linkend="void">void</link>        <link linkend="gtk-preview-set-dither">gtk_preview_set_dither</link>          (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither);
 <link linkend="GdkVisual">GdkVisual</link>*  <link linkend="gtk-preview-get-visual">gtk_preview_get_visual</link>          (void);
 <link linkend="GdkColormap">GdkColormap</link>* <link linkend="gtk-preview-get-cmap">gtk_preview_get_cmap</link>           (void);
 <link linkend="GtkPreviewInfo">GtkPreviewInfo</link>* <link linkend="gtk-preview-get-info">gtk_preview_get_info</link>        (void);
-void        <link linkend="gtk-preview-reset">gtk_preview_reset</link>               (void);
+<link linkend="void">void</link>        <link linkend="gtk-preview-reset">gtk_preview_reset</link>               (void);
 
 
 </synopsis>
@@ -70,11 +70,14 @@ void        <link linkend="gtk-preview-reset">gtk_preview_reset</link>          
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkPreview implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkPreview implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -82,7 +85,7 @@ GtkPreview implements <link linkend="AtkImplementorIface">AtkImplementorIface</l
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkPreview--expand">expand</link>&quot;               <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GtkPreview--expand">expand</link>&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write
 </synopsis>
 </refsect1>
 
@@ -91,10 +94,10 @@ GtkPreview implements <link linkend="AtkImplementorIface">AtkImplementorIface</l
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkPreview">GtkPreview</link> widget provides a simple interface 
+The <link linkend="GtkPreview"><type>GtkPreview</type></link> widget provides a simple interface 
 used to display images as RGB or grayscale data.
-It's deprecated; just use a <link linkend="GdkPixbuf">GdkPixbuf</link> displayed by a <link linkend="GtkImage">GtkImage</link>, or
-perhaps a <link linkend="GtkDrawingArea">GtkDrawingArea</link>. <link linkend="GtkPreview">GtkPreview</link> has no advantage over those 
+It's deprecated; just use a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> displayed by a <link linkend="GtkImage"><type>GtkImage</type></link>, or
+perhaps a <link linkend="GtkDrawingArea"><type>GtkDrawingArea</type></link>. <link linkend="GtkPreview"><type>GtkPreview</type></link> has no advantage over those 
 approaches.
 </para>
 </refsect1>
@@ -103,15 +106,15 @@ approaches.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkPreview-struct"/>struct GtkPreview</title>
-<programlisting>struct GtkPreview;</programlisting>
+<indexterm role="deprecated"><primary>GtkPreview</primary></indexterm><programlisting>struct GtkPreview;</programlisting>
 <warning><para><literal>GtkPreview</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-The <link linkend="GtkPreview-struct">GtkPreview</link> struct contains private data only, and
+The <link linkend="GtkPreview-struct"><type>GtkPreview-struct</type></link> struct contains private data only, and
 should be accessed using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkPreviewInfo"/>struct GtkPreviewInfo</title>
-<programlisting>struct GtkPreviewInfo {
+<indexterm role="deprecated"><primary>GtkPreviewInfo</primary></indexterm><programlisting>struct GtkPreviewInfo {
 
   guchar *lookup;
 
@@ -123,7 +126,7 @@ should be accessed using the functions below.
 Contains information about global properties
 of preview widgets.
 
-The <link linkend="GtkPreviewInfo">GtkPreviewInfo</link> struct contains the following fields.
+The <link linkend="GtkPreviewInfo"><type>GtkPreviewInfo</type></link> struct contains the following fields.
 (These fields should be considered read-only. They should never be set by
 an application.)
 
@@ -132,18 +135,18 @@ an application.)
 <tbody>
 
 <row>
-<entry><link linkend="GdkVisual">GdkVisual</link> *visual;</entry>
+<entry><link linkend="GdkVisual"><type>GdkVisual</type></link> *visual;</entry>
 <entry>the visual used by all previews.</entry>
 </row>
 
 <row>
-<entry><link linkend="GdkColormap">GdkColormap</link> *cmap;</entry>
+<entry><link linkend="GdkColormap"><type>GdkColormap</type></link> *cmap;</entry>
 <entry>the colormap used by all previews.</entry>
 </row>
 
 <row>
 <entry>gdouble gamma;</entry>
-<entry>the gamma correction value used by all previews (See <link linkend="gtk-preview-set-gamma">gtk_preview_set_gamma</link>()).</entry>
+<entry>the gamma correction value used by all previews (See <link linkend="gtk-preview-set-gamma"><function>gtk_preview_set_gamma()</function></link>).</entry>
 </row>
 
 </tbody>
@@ -153,7 +156,7 @@ an application.)
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkDitherInfo"/>union GtkDitherInfo</title>
-<programlisting>union GtkDitherInfo
+<indexterm role="deprecated"><primary>GtkDitherInfo</primary></indexterm><programlisting>union GtkDitherInfo
 {
   gushort s[2];
   guchar c[4];
@@ -165,14 +168,14 @@ This union not used in GTK+.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-uninit"/>gtk_preview_uninit ()</title>
-<programlisting>void        gtk_preview_uninit              (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_uninit</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_uninit              (void);</programlisting>
 <warning><para><literal>gtk_preview_uninit</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This function is deprecated and does nothing.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-new"/>gtk_preview_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_preview_new                 (<link linkend="GtkPreviewType">GtkPreviewType</link> type);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_preview_new                 (<link linkend="GtkPreviewType">GtkPreviewType</link> type);</programlisting>
 <warning><para><literal>gtk_preview_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Create a new preview widget.
@@ -188,7 +191,7 @@ Create a new preview widget.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-size"/>gtk_preview_size ()</title>
-<programlisting>void        gtk_preview_size                (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<indexterm role="deprecated"><primary>gtk_preview_size</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_size                (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
 <warning><para><literal>gtk_preview_size</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -199,10 +202,10 @@ drawing area may actually be allocated a size
 larger than this depending on how it is packed
 within the enclosing containers. The effect
 of this is determined by whether the preview
-is set to expand or not (see <link linkend="gtk-preview-expand">gtk_preview_expand</link>())
+is set to expand or not (see <link linkend="gtk-preview-expand"><function>gtk_preview_expand()</function></link>)
 </para><variablelist role="params">
 <varlistentry><term><parameter>preview</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkPreview">GtkPreview</link>.
+<listitem><simpara>a <link linkend="GtkPreview"><type>GtkPreview</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&nbsp;:</term>
 <listitem><simpara>the new width.
@@ -215,7 +218,7 @@ is set to expand or not (see <link linkend="gtk-preview-expand">gtk_preview_expa
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-put"/>gtk_preview_put ()</title>
-<programlisting>void        gtk_preview_put                 (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<indexterm role="deprecated"><primary>gtk_preview_put</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_put                 (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="GdkWindow">GdkWindow</link> *window,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> srcx,
@@ -230,7 +233,7 @@ Takes a portion of the contents of a preview widget
 and draws it onto the given drawable, <parameter>window</parameter>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>preview</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkPreview">GtkPreview</link>.
+<listitem><simpara>a <link linkend="GtkPreview"><type>GtkPreview</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>window</parameter>&nbsp;:</term>
 <listitem><simpara>a window or pixmap.
@@ -262,7 +265,7 @@ and draws it onto the given drawable, <parameter>window</parameter>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-draw-row"/>gtk_preview_draw_row ()</title>
-<programlisting>void        gtk_preview_draw_row            (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<indexterm role="deprecated"><primary>gtk_preview_draw_row</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_draw_row            (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="guchar">guchar</link> *data,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
@@ -272,7 +275,7 @@ and draws it onto the given drawable, <parameter>window</parameter>.
 Sets the data for a portion of a row.
 </para><variablelist role="params">
 <varlistentry><term><parameter>preview</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkPreview">GtkPreview</link>.
+<listitem><simpara>a <link linkend="GtkPreview"><type>GtkPreview</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara>the new data for the portion. It should contain
@@ -294,7 +297,7 @@ Sets the data for a portion of a row.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-expand"/>gtk_preview_set_expand ()</title>
-<programlisting>void        gtk_preview_set_expand          (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<indexterm role="deprecated"><primary>gtk_preview_set_expand</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_expand          (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="gboolean">gboolean</link> expand);</programlisting>
 <warning><para><literal>gtk_preview_set_expand</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -302,7 +305,7 @@ Determines the way that the the preview widget behaves
 when the size it is allocated is larger than the requested
 size. If <parameter>expand</parameter> is <literal>FALSE</literal>, then the preview's window
 and buffer will be no larger than the size set with 
-<link linkend="gtk-preview-size">gtk_preview_size</link>(), and the data set will be centered
+<link linkend="gtk-preview-size"><function>gtk_preview_size()</function></link>, and the data set will be centered
 in the allocation if it is larger. If <parameter>expand</parameter> is <literal>TRUE</literal>
 then the window and buffer will expand with the allocation;
 the application is responsible for catching
@@ -310,7 +313,7 @@ the "size_allocate" signal and providing the data
 appropriate for this size.
 </para><variablelist role="params">
 <varlistentry><term><parameter>preview</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkPreview">GtkPreview</link>.
+<listitem><simpara>a <link linkend="GtkPreview"><type>GtkPreview</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>expand</parameter>&nbsp;:</term>
 <listitem><simpara>whether the preview's window should expand or not.
@@ -320,7 +323,7 @@ appropriate for this size.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-gamma"/>gtk_preview_set_gamma ()</title>
-<programlisting>void        gtk_preview_set_gamma           (<link linkend="double">double</link> gamma_);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_set_gamma</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_gamma           (<link linkend="double">double</link> gamma_);</programlisting>
 <warning><para><literal>gtk_preview_set_gamma</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Set the gamma-correction value for all preview widgets.
@@ -329,7 +332,7 @@ function that sets a per-preview-widget gamma value).
 The resulting intensity is given by:
 <literal>destination_value * pow (source_value/255, 1/gamma)</literal>.
 The gamma value is applied when the data is
-set with <link linkend="gtk-preview-draw-row">gtk_preview_draw_row</link>() so changing this
+set with <link linkend="gtk-preview-draw-row"><function>gtk_preview_draw_row()</function></link> so changing this
 value will not affect existing data in preview
 widgets.
 </para><variablelist role="params">
@@ -341,7 +344,7 @@ widgets.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-color-cube"/>gtk_preview_set_color_cube ()</title>
-<programlisting>void        gtk_preview_set_color_cube      (<link linkend="guint">guint</link> nred_shades,
+<indexterm role="deprecated"><primary>gtk_preview_set_color_cube</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_color_cube      (<link linkend="guint">guint</link> nred_shades,
                                              <link linkend="guint">guint</link> ngreen_shades,
                                              <link linkend="guint">guint</link> nblue_shades,
                                              <link linkend="guint">guint</link> ngray_shades);</programlisting>
@@ -368,7 +371,7 @@ display.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-install-cmap"/>gtk_preview_set_install_cmap ()</title>
-<programlisting>void        gtk_preview_set_install_cmap    (<link linkend="gint">gint</link> install_cmap);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_set_install_cmap</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_install_cmap    (<link linkend="gint">gint</link> install_cmap);</programlisting>
 <warning><para><literal>gtk_preview_set_install_cmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This function is deprecated
@@ -384,7 +387,7 @@ colors.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-reserved"/>gtk_preview_set_reserved ()</title>
-<programlisting>void        gtk_preview_set_reserved        (<link linkend="gint">gint</link> nreserved);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_set_reserved</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_reserved        (<link linkend="gint">gint</link> nreserved);</programlisting>
 <warning><para><literal>gtk_preview_set_reserved</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This function is deprecated and does nothing.
@@ -397,14 +400,14 @@ This function is deprecated and does nothing.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-set-dither"/>gtk_preview_set_dither ()</title>
-<programlisting>void        gtk_preview_set_dither          (<link linkend="GtkPreview">GtkPreview</link> *preview,
+<indexterm role="deprecated"><primary>gtk_preview_set_dither</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_set_dither          (<link linkend="GtkPreview">GtkPreview</link> *preview,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither);</programlisting>
 <warning><para><literal>gtk_preview_set_dither</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Set the dithering mode for the display. 
 </para><variablelist role="params">
 <varlistentry><term><parameter>preview</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkPreview">GtkPreview</link>.
+<listitem><simpara>a <link linkend="GtkPreview"><type>GtkPreview</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dither</parameter>&nbsp;:</term>
 <listitem><simpara>the dithering mode.
@@ -414,12 +417,12 @@ Set the dithering mode for the display.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-get-visual"/>gtk_preview_get_visual ()</title>
-<programlisting><link linkend="GdkVisual">GdkVisual</link>*  gtk_preview_get_visual          (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_get_visual</primary></indexterm><programlisting><link linkend="GdkVisual">GdkVisual</link>*  gtk_preview_get_visual          (void);</programlisting>
 <warning><para><literal>gtk_preview_get_visual</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Returns the visual used by preview widgets. This
 function is deprecated, and you should use
-<link linkend="gdk-rgb-get-visual">gdk_rgb_get_visual</link>() instead.
+<link linkend="gdk-rgb-get-visual"><function>gdk_rgb_get_visual()</function></link> instead.
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the visual for previews.
 
@@ -428,12 +431,12 @@ function is deprecated, and you should use
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-get-cmap"/>gtk_preview_get_cmap ()</title>
-<programlisting><link linkend="GdkColormap">GdkColormap</link>* gtk_preview_get_cmap           (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_get_cmap</primary></indexterm><programlisting><link linkend="GdkColormap">GdkColormap</link>* gtk_preview_get_cmap           (void);</programlisting>
 <warning><para><literal>gtk_preview_get_cmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Returns the colormap used by preview widgets. This
 function is deprecated, and you should use
-<link linkend="gdk-rgb-get-cmap">gdk_rgb_get_cmap</link>() instead.
+<link linkend="gdk-rgb-get-cmap"><function>gdk_rgb_get_cmap()</function></link> instead.
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the colormap for previews.
 
@@ -442,13 +445,13 @@ function is deprecated, and you should use
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-get-info"/>gtk_preview_get_info ()</title>
-<programlisting><link linkend="GtkPreviewInfo">GtkPreviewInfo</link>* gtk_preview_get_info        (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_get_info</primary></indexterm><programlisting><link linkend="GtkPreviewInfo">GtkPreviewInfo</link>* gtk_preview_get_info        (void);</programlisting>
 <warning><para><literal>gtk_preview_get_info</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Return a <link linkend="GtkPreviewInfo">GtkPreviewInfo</link> structure containing 
+Return a <link linkend="GtkPreviewInfo"><type>GtkPreviewInfo</type></link> structure containing 
 global information about preview widgets.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkPreviewInfo">GtkPreviewInfo</link> structure. The return
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkPreviewInfo"><type>GtkPreviewInfo</type></link> structure. The return
  value belongs to GTK+ and must not be modified
  or freed.
 
@@ -457,7 +460,7 @@ global information about preview widgets.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-preview-reset"/>gtk_preview_reset ()</title>
-<programlisting>void        gtk_preview_reset               (void);</programlisting>
+<indexterm role="deprecated"><primary>gtk_preview_reset</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_preview_reset               (void);</programlisting>
 <warning><para><literal>gtk_preview_reset</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 This function is deprecated and does nothing. It was
@@ -467,15 +470,11 @@ once used for changing the colormap and visual on the fly.
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkPreview--expand"/>&quot;<literal>expand</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkPreview--expand"/>The &quot;<literal>expand</literal>&quot; property</title>
+<programlisting>  &quot;expand&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether the preview widget should take up the entire space it is allocated.</para><para>Default value: FALSE</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 
@@ -486,8 +485,8 @@ once used for changing the colormap and visual on the fly.
 <variablelist>
 
 <varlistentry>
-<term><link linkend="GdkRGB">GdkRGB</link></term>
-<listitem><para>the backend used by <link linkend="GtkPreview">GtkPreview</link>.</para></listitem>
+<term><link linkend="GdkRGB"><type>GdkRGB</type></link></term>
+<listitem><para>the backend used by <link linkend="GtkPreview"><type>GtkPreview</type></link>.</para></listitem>
 </varlistentry>
 
 </variablelist>

@@ -5,8 +5,7 @@
 >File Selections</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-FILESELECTIONS">File Selections</H1
+NAME="SEC-FILESELECTIONS"
+>File Selections</A
+></H1
 ><P
 >The file selection widget is a quick and simple way to display a File
 dialog box. It comes complete with Ok, Cancel, and Help buttons, a
@@ -174,8 +175,8 @@ CLASS="PROGRAMLISTING"
 >&#13;#include &#60;gtk/gtk.h&#62;
 
 /* Get the selected filename and print it to the console */
-void file_ok_sel( GtkWidget        *w,
-                  GtkFileSelection *fs )
+static void file_ok_sel( GtkWidget        *w,
+                         GtkFileSelection *fs )
 {
     g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
 }

@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkMenuBar</refname><refpurpose>A subclass widget for <link linkend="GtkMenuShell">GtkMenuShell</link> which holds <link linkend="GtkMenuItem">GtkMenuItem</link> widgets</refpurpose>
+<refname>GtkMenuBar</refname><refpurpose>A subclass widget for <link linkend="GtkMenuShell"><type>GtkMenuShell</type></link> which holds <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> widgets</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -40,11 +40,14 @@ struct      <link linkend="GtkMenuBar-struct">GtkMenuBar</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkMenuBar implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkMenuBar implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -52,8 +55,8 @@ GtkMenuBar implements <link linkend="AtkImplementorIface">AtkImplementorIface</l
 <title>Style Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkMenuBar--internal-padding">internal-padding</link>&quot;     <link linkend="gint">gint</link>                 : Read
-  &quot;<link linkend="GtkMenuBar--shadow-type">shadow-type</link>&quot;          <link linkend="GtkShadowType">GtkShadowType</link>        : Read
+  &quot;<link linkend="GtkMenuBar--internal-padding">internal-padding</link>&quot;     <link linkend="gint">gint</link>                  : Read
+  &quot;<link linkend="GtkMenuBar--shadow-type">shadow-type</link>&quot;          <link linkend="GtkShadowType">GtkShadowType</link>         : Read
 </synopsis>
 </refsect1>
 
@@ -62,7 +65,7 @@ GtkMenuBar implements <link linkend="AtkImplementorIface">AtkImplementorIface</l
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkMenuBar">GtkMenuBar</link> is a subclass of <link linkend="GtkMenuShell">GtkMenuShell</link> which contains one to many <link linkend="GtkMenuItem">GtkMenuItem</link>. The result is a standard menu bar which can hold many menu items. <link linkend="GtkMenuBar">GtkMenuBar</link> allows for a shadow type to be set for aesthetic purposes. The shadow types are defined in the <link linkend="gtk-menu-bar-set-shadow-type">gtk_menu_bar_set_shadow_type</link> function.
+The <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> is a subclass of <link linkend="GtkMenuShell"><type>GtkMenuShell</type></link> which contains one to many <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link>. The result is a standard menu bar which can hold many menu items. <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> allows for a shadow type to be set for aesthetic purposes. The shadow types are defined in the <link linkend="gtk-menu-bar-set-shadow-type"><type>gtk_menu_bar_set_shadow_type</type></link> function.
 </para>
 </refsect1>
 
@@ -70,64 +73,64 @@ The <link linkend="GtkMenuBar">GtkMenuBar</link> is a subclass of <link linkend=
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkMenuBar-struct"/>struct GtkMenuBar</title>
-<programlisting>struct GtkMenuBar;</programlisting>
+<indexterm><primary>GtkMenuBar</primary></indexterm><programlisting>struct GtkMenuBar;</programlisting>
 <para>
-The <link linkend="GtkMenuBar">GtkMenuBar</link> struct contains the following fields. (These fields should be considered read-only.  They should never be set by an application.)
+The <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link> struct contains the following fields. (These fields should be considered read-only.  They should never be set by an application.)
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-menu-bar-new"/>gtk_menu_bar_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_menu_bar_new                (void);</programlisting>
+<indexterm><primary>gtk_menu_bar_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_menu_bar_new                (void);</programlisting>
 <para>
-Creates the new <link linkend="GtkMenuBar">GtkMenuBar</link>
+Creates the new <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GtkMenuBar">GtkMenuBar</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the <link linkend="GtkMenuBar"><type>GtkMenuBar</type></link>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-menu-bar-append"/>gtk_menu_bar_append()</title>
-<programlisting>#define gtk_menu_bar_append(menu,child)	    gtk_menu_shell_append  ((GtkMenuShell *)(menu),(child))
+<indexterm role="deprecated"><primary>gtk_menu_bar_append</primary></indexterm><programlisting>#define gtk_menu_bar_append(menu,child)	    gtk_menu_shell_append  ((GtkMenuShell *)(menu),(child))
 </programlisting>
 <warning><para><literal>gtk_menu_bar_append</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a new <link linkend="GtkMenuItem">GtkMenuItem</link> to the end of the GtkMenuBar
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the end of the GtkMenuBar
 </para><variablelist role="params">
 <varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkMenuItem">GtkMenuItem</link> to add
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-menu-bar-prepend"/>gtk_menu_bar_prepend()</title>
-<programlisting>#define gtk_menu_bar_prepend(menu,child)    gtk_menu_shell_prepend ((GtkMenuShell *)(menu),(child))
+<indexterm role="deprecated"><primary>gtk_menu_bar_prepend</primary></indexterm><programlisting>#define gtk_menu_bar_prepend(menu,child)    gtk_menu_shell_prepend ((GtkMenuShell *)(menu),(child))
 </programlisting>
 <warning><para><literal>gtk_menu_bar_prepend</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a new <link linkend="GtkMenuItem">GtkMenuItem</link> to the beginning of the GtkMenuBar
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the beginning of the GtkMenuBar
 </para><variablelist role="params">
 <varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkMenuItem">GtkMenuItem</link> to add
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-menu-bar-insert"/>gtk_menu_bar_insert()</title>
-<programlisting>#define gtk_menu_bar_insert(menu,child,pos) gtk_menu_shell_insert ((GtkMenuShell *)(menu),(child),(pos))
+<indexterm role="deprecated"><primary>gtk_menu_bar_insert</primary></indexterm><programlisting>#define gtk_menu_bar_insert(menu,child,pos) gtk_menu_shell_insert ((GtkMenuShell *)(menu),(child),(pos))
 </programlisting>
 <warning><para><literal>gtk_menu_bar_insert</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a new <link linkend="GtkMenuItem">GtkMenuItem</link> to the GtkMenuBar at the position defined by <parameter>position</parameter>
+Adds a new <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to the GtkMenuBar at the position defined by <parameter>position</parameter>
 </para><variablelist role="params">
 <varlistentry><term><parameter>menu</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkMenuItem">GtkMenuItem</link> to add
+<listitem><simpara>the <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link> to add
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
 <listitem><simpara>
@@ -137,21 +140,16 @@ Adds a new <link linkend="GtkMenuItem">GtkMenuItem</link> to the GtkMenuBar at t
 </refsect1>
 <refsect1>
 <title>Style Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkMenuBar--internal-padding"/>&quot;<literal>internal-padding</literal>&quot; (<link linkend="gint">gint</link> : Read)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkMenuBar--internal-padding"/>The &quot;<literal>internal-padding</literal>&quot; style property</title>
+<programlisting>  &quot;internal-padding&quot;     <link linkend="gint">gint</link>                  : Read</programlisting>
+<para>Amount of border space between the menubar shadow and the menu items.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkMenuBar--shadow-type"/>The &quot;<literal>shadow-type</literal>&quot; style property</title>
+<programlisting>  &quot;shadow-type&quot;          <link linkend="GtkShadowType">GtkShadowType</link>         : Read</programlisting>
+<para>Style of bevel around the menubar.</para><para>Default value: GTK_SHADOW_OUT</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkMenuBar--shadow-type"/>&quot;<literal>shadow-type</literal>&quot; (<link linkend="GtkShadowType">GtkShadowType</link> : Read)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 
@@ -159,7 +157,7 @@ Adds a new <link linkend="GtkMenuItem">GtkMenuItem</link> to the GtkMenuBar at t
 <refsect1>
 <title>See Also</title>
 <para>
-<link linkend="GtkMenuShell">GtkMenuShell</link>, <link linkend="GtkMenu">GtkMenu</link>, <link linkend="GtkMenuItem">GtkMenuItem</link>
+<link linkend="GtkMenuShell"><type>GtkMenuShell</type></link>, <link linkend="GtkMenu"><type>GtkMenu</type></link>, <link linkend="GtkMenuItem"><type>GtkMenuItem</type></link>
 </para>
 </refsect1>
 
