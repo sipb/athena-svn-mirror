@@ -188,13 +188,15 @@ addressEqual (a1, len1, a2, len2)
     }
     part1 = NetaddrPort(a1, &partlen1);
     part2 = NetaddrPort(a2, &partlen2);
-    if (partlen1 != partlen2 || bcmp(part1, part2, partlen1) != 0)
+    if (partlen1 != partlen2 || memcmp(part1, part2, partlen1) != 0)
+
     {
 	return FALSE;
     }
     part1 = NetaddrAddress(a1, &partlen1);
     part2 = NetaddrAddress(a2, &partlen2);
-    if (partlen1 != partlen2 || bcmp(part1, part2, partlen1) != 0)
+    if (partlen1 != partlen2 || memcmp(part1, part2, partlen1) != 0)
+
     {
 	return FALSE;
     }
