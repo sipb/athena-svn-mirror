@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2001-06-05 19:08:47 ghudson Exp $
+# $Id: Makefile,v 1.13 2002-06-26 22:29:11 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -19,6 +19,7 @@ install:
 	install -c -m 0555 clean_tmp_areas.sh \
 		${DESTDIR}${ATHRETCDIR}/clean_tmp_areas
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs
+	install -c -m 0555 counterlog.sh ${DESTDIR}${ATHRETCDIR}/counterlog
 	install -c -m 0555 local-menus.sh ${DESTDIR}${ATHRETCDIR}/local-menus
 	install -c -m 0555 local-netscape.sh \
 		${DESTDIR}${ATHRETCDIR}/local-netscape

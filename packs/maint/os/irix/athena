@@ -1,4 +1,4 @@
-# $Id: athena,v 1.24 2002-04-05 14:51:12 zacheiss Exp $
+# $Id: athena,v 1.25 2002-06-26 22:29:11 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -25,7 +25,7 @@ case $1 in
 $ECHO "Beginning Athena startup tasks"
 
 # Let the log host know that we're booting.
-logger -p user.notice "Booting"
+counterlog booting
 
 # Read configuration variables
 . /etc/athena/rc.conf

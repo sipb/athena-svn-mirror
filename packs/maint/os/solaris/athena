@@ -1,4 +1,4 @@
-# $Id: athena,v 1.29 2002-04-05 14:51:25 zacheiss Exp $
+# $Id: athena,v 1.30 2002-06-26 22:29:12 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -21,7 +21,7 @@ panic=`dmesg | awk '
 	/^panic/	{ panic = " (" $0 ")"; boots = 0; }
 	/UNIX\(R\)/	{ if (++boots == 2) panic = ""; }
 	END		{ print panic; }'`
-logger -p user.notice "Booting$panic"
+counterlog "booting$panic"
 
 # Syslog partition information for release planning purposes.
 rootdev=`mount | sed -n '/^\/ /s#^/ on \(/dev/dsk/[^ ]*\).*$#\1#p'`
