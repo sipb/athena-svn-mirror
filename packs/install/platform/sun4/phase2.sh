@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.12 1996-04-22 02:28:09 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.13 1996-04-26 15:44:24 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -108,7 +108,7 @@ mkdir /root/var
 mkdir /root/usr
 mkdir /root/tmp
 mkdir /root/proc
-ln -s var/opt /root/opt
+#ln -s var/opt /root/opt
 
 echo "Mount var, usr , var/usr/vice..."
 /sbin/mount  $vardrive /root/var
@@ -116,12 +116,21 @@ echo "Mount var, usr , var/usr/vice..."
 chmod 1777 /root/tmp
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
-#/sbin/mount  $cachedrive /root/var/usr/vice
+
 
 echo "Copying file system from installation srvd to new filesys..."
 echo "Running 'track'..."
+/srvd/usr/athena/etc/track -d -F /os -T /root  -W /srvd/usr/athena/lib -s stats/os_rvd slists/os_rvd
+echo "tracking the kernel"
+mkdir /root/kernel
+/srvd/usr/athena/etc/track -d -F /os/kernel -T /root/kernel  -W /srvd/usr/athena/lib -s stats/kernel_rvd slists/kernel_rvd
+echo "tracking the usr kernel"
+mkdir /root/usr/kernel
+/srvd/usr/athena/etc/track -d -F /os/usr/kernel -T /root/usr/kernel  -W /srvd/usr/athena/lib -s stats/usr_kernel_rvd slists/usr_kernel_rvd
+echo "tracking the srvd"
 /srvd/usr/athena/etc/track -d -F /srvd -T /root -W /srvd/usr/athena/lib
-
+echo "copying afs from /srvd/kernel/fs/afs"
+cp -p /srvd/kernel/fs/* /root/kernel/fs/
 
 echo "Create devices and dev"
 mkdir /root/dev
@@ -132,38 +141,15 @@ chmod 755 /root/dev
 chmod 755 /root/devices
 cat </etc/path_to_inst >/root/etc/path_to_inst
 cp /dev/null /root/reconfigure
-if [ ${MACH}X = 4cX ]
-then
-    echo "copying 4c kernel"
-    mkdir /root/kernel;
-    (cd /srvd/kernel.4c; tar cf - . ) | (cd /root/kernel; tar xf - . )
-    echo "copying kvm..."
-    mkdir /root/usr/kvm
-    (cd /srvd/usr/kvm.4c; tar cf - . ) | (cd /root/usr/kvm; tar xf - . )
-    echo "copying /usr/kernel"
-    mkdir /root/usr/kernel
-    (cd /srvd/usr/kernel; tar cf - . ) | (cd /root/usr/kernel; tar xf - . )
-    cp -p /srvd/kadb /root/kadb
-else
-    echo "copying 4m kernel"
-    mkdir /root/kernel;
-    (cd /srvd/kernel; tar cf - . ) | (cd /root/kernel; tar xf - . )
-    echo "getting usr/kvm.4m"
-    mkdir /root/usr/kvm
-    (cd /srvd/usr/kvm; tar cf - . ) | (cd /root/usr/kvm; tar xf - . )
-    echo "copying /usr/kernel "
-    mkdir /root/usr/kernel
-    (cd /srvd/usr/kernel; tar cf - . ) | (cd /root/usr/kernel; tar xf - . )
-    cp -p /srvd/kadb.4c /root/kadb
-fi
+
 
 cd /root
 echo "Creating other files/directories on the pack's root..."
 mkdir afs mit mnt 
 ln -s /var/usr/vice usr/vice
-ln -s /var/adm usr/adm
-ln -s /var/spool usr/spool
-ln -s /var/preserve usr/preserve
+#ln -s /var/adm usr/adm
+#ln -s /var/spool usr/spool
+#ln -s /var/preserve usr/preserve
 cp -p /srvd/.c* /srvd/.l* /srvd/.p* /srvd/.r* /srvd/.t* /srvd/.x* /root/
 chmod 1777 /root/tmp 
 
@@ -171,15 +157,19 @@ chmod 1777 /root/tmp
 echo "Finishing etc"
 cp /dev/null etc/mnttab
 cp /dev/null etc/dumpdates
-cp /dev/null ups_data
+#cp /dev/null ups_data
 cp -p /srvd/etc/ftpusers etc/
-cp -p /srvd/etc/inetd.conf etc/
-cp -p /srvd/etc/services etc/
+cp -p /srvd/etc/inetd.conf etc/inet/
+cp -p /srvd/etc/services etc/inet/
 cp -p /srvd/etc/athena/inetd.conf etc/athena/
 cp -p /srvd/etc/minor_perm etc/minor_perm
 cp -p /srvd/etc/system etc/system
-cp -p /srvd/etc/name_to_major etc/
-cp -p /srvd/etc/driver_aliases etc/
+#cp -p /srvd/etc/name_to_major etc/
+cp -p /os/etc/name_to_major etc/name_to_major
+#cp -p /srvd/etc/driver_aliases etc/
+cp -p /os/etc/driver_aliases etc/driver_aliases
+cp -p /os/etc/device.tab etc/device.tab
+cp -p /os/etc/dgroup.tab etc/dgroup.tab
 chmod 644 etc/system
 
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
@@ -189,19 +179,21 @@ echo "Address is $netaddr"
 echo $hostname >etc/nodename
 echo $hostname >etc/hostname.le0
 echo $gateway >etc/defaultrouter
-cp -p /srvd/etc/inet/hosts etc/inet/hosts
+cp -p /os/etc/inet/hosts etc/inet/hosts
+cp -p /srvd/etc/inet/netmasks etc/inet/netmasks
+cp -p /os/etc/dfs/dfstab etc/dfs/dfstab
+#cp -p /srvd/etc/inet/hosts etc/inet/hosts
 echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
 cd /root/etc
-#ln -s inet/hosts hosts
 cd /root
 cp -p /srvd/etc/passwd.std etc/passwd
 cp -p /srvd/etc/shadow.std etc/shadow
 chmod 600 etc/shadow
 cp -p /srvd/etc/group.std etc/group
-ln -s ../var/adm/utmp etc/utmp
-ln -s ../var/adm/utmpx etc/utmpx
-ln -s ../var/adm/wtmp etc/wtmp
-ln -s ../var/adm/wtmpx etc/wtmpx
+#ln -s ../var/adm/utmp etc/utmp
+#ln -s ../var/adm/utmpx etc/utmpx
+#ln -s ../var/adm/wtmp etc/wtmp
+#ln -s ../var/adm/wtmpx etc/wtmpx
 cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
@@ -222,7 +214,9 @@ cp /dev/null etc/named.local
 echo "Updating var"
 cd /root/var
 cpio -idm </srvd/install/var.cpio
-ln -s /srvd/var/sadm sadm
+#ln -s /srvd/var/sadm sadm
+mkdir sadm
+(cd /os/var/sadm;  tar cf - . ) | ( cd /root/var/sadm; tar xf - . )
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
 
@@ -239,9 +233,11 @@ cp /dev/null /root/var/adm/wtmp
 cp /dev/null /root/var/adm/wtmpx
 cp /dev/null /root/var/spool/mqueue/syslog
 cp -p /srvd/etc/crontab.root.add  /root/var/spool/cron/crontabs/root
+rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
 cp -p /ufsboot /root
-/usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
+#/usr/sbin/installboot /srvd/lib/fs/ufs/bootblk $rrootdrive
+/usr/sbin/installboot /os/lib/fs/ufs/bootblk $rrootdrive
 cd /root
 
 # Note: device scripts depend on ROOT being set properly.
