@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:38:16 ghudson Exp $
+# $Id: Makefile,v 1.2 1997-03-11 19:28:51 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
-ATHRETCDIR=/etc/athena
-MODULES=/sgiload
+VICE=/var/usr/vice/etc
+MODULES=${VICE}/sgiload
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
@@ -15,7 +15,7 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}${ATHRBINDIR}
-	-mkdir -p ${DESTDIR}${ATHRETCDIR}
+	-mkdir -p ${DESTDIR}${VICE}
 	-mkdir -p ${DESTDIR}${MODULES}
 	-mkdir -p ${DESTDIR}${INITD}
 	-mkdir -p ${DESTDIR}${RC0}
@@ -28,7 +28,7 @@ install:
 	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
-	install -c -m 555 afsd ${DESTDIR}${ATHRETCDIR}
+	install -c -m 555 afsd ${DESTDIR}${VICE}
 	install -c -m 444 libafs.SP.R4000.nonfs.o ${DESTDIR}${MODULES}
 	install -c -m 555 afs.rc ${DESTDIR}${INITD}/afs
 	rm -f ${DESTDIR}${RC0}/K35afs
