@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_class_c[] =
-    "$Id: class.c,v 1.18 1991-02-04 16:07:55 raeburn Exp $";
+    "$Id: class.c,v 1.19 1991-03-08 12:35:03 raeburn Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -106,7 +106,7 @@ ZDestination::ZDestination (const ZDestination&d) : classname (d.classname), ins
     hash_value = d.hash_value;
 }
 
-int ZDestination::compare_strings (const ZDestination& z1, const ZDestination& z2) {
+int ZDestination::order_strings (const ZDestination& z1, const ZDestination& z2) {
     return (z1.classname != z2.classname
 	    ? z1.classname < z2.classname
 	    : (z1.inst != z2.inst
