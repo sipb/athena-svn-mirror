@@ -141,6 +141,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 	if (( !username[0]) && (flags&PTY_UTMP_USERNAME_VALID))
 	  strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
 #endif
+
+	/* Work around a bug in Solaris 7, by clearing the static buffer */
+	memset(utptr, 0, sizeof(struct utmp));
       }
     setutent();			/* Reset the file pointer for pututline(). */
 	
