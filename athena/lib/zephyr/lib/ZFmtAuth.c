@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.2 1987-06-26 03:35:02 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.3 1987-06-29 17:55:43 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -24,8 +24,7 @@ Code_t ZFormatAuthenticNotice(notice,buffer,buffer_len,len,session)
 	C_Block		session;
 {
 	char *ptr;
-	int result,retval,hdrlen;
-	CREDENTIALS cred;
+	int retval,hdrlen;
 
 	notice->z_auth = 1;
 	notice->z_authent_len = 0;
