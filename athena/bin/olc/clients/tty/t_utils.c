@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.37 1992-02-14 21:22:01 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_utils.c,v 1.38 1994-03-15 10:48:34 vrt Exp $
+ *	$Author: vrt $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.37 1992-02-14 21:22:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.38 1994-03-15 10:48:34 vrt Exp $";
 #endif
 #endif
 
@@ -627,7 +627,7 @@ edit_message(file, editor)
 	}
       editor = editor_name;
     }
-  (void) call_program(editor, file);
+  return(call_program(editor, file));
 }
 
 
