@@ -1,51 +1,34 @@
-# Makefile for "track" automatic update program
-#
-# 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Imakefile,v $
-#	$Author: epeisach $
-#	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Imakefile,v 1.1 1991-01-22 15:12:03 epeisach Exp $
-DESTDIR=
-INCDIR= /usr/include
-CFLAGS=	-O -I${INCDIR}
-LIBS= -ll
+/* Iakefile for "track" automatic update program
+ *
+ *	$Id: Imakefile,v 1.2 1991-01-22 15:22:24 epeisach Exp $
+*/
 
-PROGS= track # nullmail
+LIBS= -ll
 
 TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
 
 TRACK_SRCS= track.c y.tab.c stamp.c except.c files.c misc.c update.c cksum.c
 
 TRACK_DEP= track.h track.c stamp.c except.c files.c misc.c update.c nullmail.c
+#define ISUBDIRS doc
 
-all: $(PROGS)
-
-track: $(TRACK_OBJS)
-	$(CC) -o track $(TRACK_OBJS) $(LIBS)
-
-y.tab.o : y.tab.c lex.yy.c track.h
-	cc -c y.tab.c
+SimpleProgram(track,$(TRACK_OBJS),$(LIBS),/etc/athena)
+#if 0
+SimpleProgram(nullmail,nullmail.c,/etc/athena)
+#endif
 
 y.tab.c : sub_gram.y 
 	yacc sub_gram.y
+
+y.tab.o : y.tab.c lex.yy.c track.h
 
 lex.yy.c : input.l
 	@echo IGNORE FIVE "Non-Portable Character Class" WARNINGS --
 	lex input.l
 
-nullmail : nullmail.c
-	$(CC) $(CFLAGS) -o nullmail nullmail.c
-	
-install:
-	for i in $(PROGS); do \
-		(install -c -s $$i $(DESTDIR)/etc/athena/$$i); \
-	done
-	(cd doc; make install ${MFLAGS} DESTDIR=${DESTDIR})
-
-clean:
-	/bin/rm -f a.out core *.o *~ y.tab.c lex.yy.c $(PROGS)
+clean::
+	/bin/rm -f a.out core *.o *~ y.tab.c lex.yy.c 
 
 lint:
 	lint -uahv $(TRACK_SRCS)
 
-depend: $(TRACK_SRCS)
-	touch Make.depend; makedepend -fMake.depend $(CFLAGS) ${TRACK_SRCS}
