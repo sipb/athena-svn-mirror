@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Copy some files and remove some files after the os pkgs were installed
-# $Id: oschanges,v 1.17 2003-04-12 15:24:27 ghudson Exp $
+# $Id: oschanges,v 1.18 2003-11-21 15:41:06 miki Exp $
 
 # copied from AFS
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
@@ -44,4 +44,4 @@ if [ ! -h $UPDATE_ROOT/tmp ]; then
 fi
 
 # Generate windex files so apropos works
-chroot ${UPDATE_ROOT:-/} /usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
+/usr/bin/catman -w -M $UPDATE_ROOT/usr/openwin/share/man:$UPDATE_ROOT/usr/dt/share/man:$UPDATE_ROOT/usr/share/man
