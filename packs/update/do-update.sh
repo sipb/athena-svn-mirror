@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.20 1997-12-06 21:30:06 ghudson Exp $
+# $Id: do-update.sh,v 1.21 1998-02-09 23:11:34 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -285,7 +285,7 @@ if [ "$NEWOS" = true ]; then
 	sleep 15
 	exec reboot
 else
-	sh /srvd/usr/athena/lib/update/finish-update.sh "$newvers"
+	sh /srvd/usr/athena/lib/update/finish-update "$newvers"
 	if [ "$method" = Auto ]; then
 		echo "Automatic update done; system will reboot in 15 seconds."
 		sync
