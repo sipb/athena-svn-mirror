@@ -830,7 +830,7 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
 		      PointerMotionMask | StructureNotifyMask |
 		      VisibilityChangeMask);
 
-  attrs.backing_store = NotUseful;
+  attrs.backing_store = WhenMapped;
   attrs.colormap = ssi->cmap;
   attrs.background_pixel = ssi->black_pixel;
   attrs.backing_pixel = ssi->black_pixel;
