@@ -111,13 +111,13 @@ See also auto-save-file-name-p."
       (if buffer-file-name
 	  (concat auto-save-main-directory
 		  "#"
-		  (user-real-uid)
+		  (int-to-string (user-real-uid))
 		  "."
 		  (auto-save-replace-slashes buffer-file-name)
 		  "#")
 	(concat auto-save-main-directory
 		"#%"
-		(user-real-uid)
+		(int-to-string (user-real-uid))
 		"."
 		(auto-save-replace-slashes (buffer-name))
 		"#"))
