@@ -8,7 +8,7 @@
 #endif
 
 #define noupdate(problem) printf("Not %sing %s because %s\n",action,targname,problem)
-#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,errno<sys_nerr?sys_errlist[errno]:"unknown error")
+#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,strerror(errno))
 
         switch (typeofaction) {
 	    int status;
@@ -250,7 +250,7 @@
 	    break;
 
 #undef update_error
-#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,errno<sys_nerr?sys_errlist[errno]:"unknown error")
+#define update_error(problem) printf("Error %sing %s: %s: %s\n",action,targname,problem,strerror(errno))
 
 #undef action
 #define action "delet"
