@@ -53,3 +53,12 @@ Changes from release 8.0 to release 8.1:
 	  be no significant user-visible changes.
 
 	* RCS has been upgraded from version 4 to version 5.7.
+
+	* x3270 has been upgraded from version 1.2 to version 3.1.1.3.
+
+	* sysinfo is now available under Irix.
+
+	* /bin/athena/tcsh now has Hesiod support enabled, which means
+	  that "~lockername" will work in a pathname in most cases.
+	  (It won't work for users with local passwd information who
+	  don't have their lockers attached.)
