@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.4 2000-06-19 03:52:48 ghudson Exp $
+# $Id: xsession,v 1.5 2000-06-21 16:57:04 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -163,7 +163,7 @@ if (! $?skip_x_startup) then
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 	if (! $?skip_xss) then
-		(xss -no-splash &)
+		(xset s off; xss -no-splash &)
 	endif
 endif
 
