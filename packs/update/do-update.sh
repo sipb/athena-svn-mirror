@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.4 1997-01-23 16:15:36 ghudson Exp $
+# $Id: do-update.sh,v 1.5 1997-01-27 13:16:22 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -32,7 +32,7 @@ HOSTTYPE=`/srvd/bin/athena/machtype`
 echo "Starting update"
 
 echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
-	${CONFDIR}/version
+	"$CONFDIR/version"
 
 if [ "$VERSION" != "$NEWVERS" ]; then
 	echo "Version-specific updating.."
@@ -114,10 +114,10 @@ cp -p "$CONFDIR/rc.conf" "$CONFDIR/rc.conf.old"
 if [ "$PUBLIC" = true ]; then
 	# Just substitute who we are into the current rc.conf from the srvd.
 	echo "Updating $CONFDIR/rc.conf from /srvd$CONFDIR/rc.conf"
-	sed -n	-e "s/^HOST=[^;]*/HOST=${HOST}/" \
-		-e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
-		-e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
-		-e "s/^NETDEV=[^;]*/NETDEV=${NETDEV}/" \
+	sed -n	-e "s/^HOST=[^;]*/HOST=$HOST/" \
+		-e "s/^ADDR=[^;]*/ADDR=$ADDR/" \
+		-e "s/^MACHINE=[^;]*/MACHINE=$MACHINE/" \
+		-e "s/^NETDEV=[^;]*/NETDEV=$NETDEV/" \
 		-e p "/srvd$CONFDIR/rc.conf" > "$CONFDIR/rc.conf"
 else
 	# Add any new variables to rc.conf.
@@ -242,7 +242,7 @@ fi
 
 if [ -s "$AUXDEVS" ]; then
 	drvrs=`cat "$AUXDEVS"`
-	for i in ${drvrs}; do
+	for i in $drvrs; do
 		/srvd/install/aux.devs/$i
 	done
 fi
@@ -272,6 +272,6 @@ fi
 
 echo "Updating version for reboot"
 echo "Athena Workstation ($HOSTTYPE) Version Reboot $method $NEWVERS `date`" \
-	>> ${CONFDIR}/version
+	>> "$CONFDIR/version"
 
 sync
