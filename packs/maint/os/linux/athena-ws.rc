@@ -66,35 +66,6 @@ case "$1" in
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
-		# Collect files which mismatch RPM's list
-		rpm -V `rpm -q -a` > /tmp/verify
-		
-		# Exclude files with only mtime differences
-		grep -v '\.\.\.T\.\.\.\.' /tmp/verify > /tmp/out
-		mv /tmp/out /tmp/verify
-		
-		# Exclude files in the exclusions list
-		# XXX
-
-		# Find out which packages we need to install
-		rpm -q -f `awk -f '{print $2;}' < /tmp/verify` \
-			| sort | uniq > /tmp/packs
-		rm /tmp/verify
-
-		# Find out which package files those are
-		for i in `cat /tmp/packs` ; do
-			grep $i $xxxreleaselist >> /tmp/packfiles
-		done
-
-		# Install packages
-		(cd $xxxreleaseroot; rpm -U --replacepkgs `cat /tmp/packfiles`)
-
-		# Copy special config files
-		# XXX
-	       
-		# Do special verification
-		# XXX
-
 #		Should also check rpm integrity here
 
 		rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist \
