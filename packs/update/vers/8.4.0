@@ -5,9 +5,25 @@ echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 case "$HOSTTYPE" in
 sun4)
 	echo "MINIROOT=true"				>> "$CONFVARS"
+	echo "NEWOS=true"				>> "$CONFVARS"
+	echo "NEWDEVS=true"				>> "$CONFVARS"
+	platform=`uname -m`
+	echo "SUNPLATFORM=$platform"			>> "$CONFVARS"
+
 	echo "/etc/athena/named-bootconf"		>> "$DEADFILES"
 	echo "/etc/athena/syslogd"			>> "$DEADFILES"
 	echo "/etc/athena/xdm"				>> "$DEADFILES"
+	cat "$LIBDIR/solaris26-7"			>> "$DEADFILES"
+
+	# Create list of old packages and old patches to be removed
+	# from the DB.
+	cat "$LIBDIR/solaris26-pkgs"			>> "$OLDPKGS"
+	cat "$LIBDIR/solaris26-ptchs"			>> "$OLDPTCHS"
+
+	# Create the lists of packages and patches to install.
+	cat "$LIBDIR/solaris7-local-$SUNPLATFORM"	>> "$LOCALPACKAGES"
+	cat "$LIBDIR/solaris7-nolocal-$SUNPLATFORM"	>> "$LINKPACKAGES"
+	cat "$LIBDIR/solaris7-patches.8.4.0"		>> "$PATCHES"
 	;;
 
 sgi)

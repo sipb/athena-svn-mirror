@@ -60,6 +60,13 @@ echo "Athena Workstation ($HOSTTYPE) Version BootSwap" \
 	"$method $newvers `date`" >> $CONFDIR/version
 cp "$CONFDIR/version" "$swapmount$CONFDIR/version"
 
+echo "Copying update configuration variables onto the miniroot..."
+mkdir -p $swapmount`dirname $CONFVARS`
+cp $CONFVARS $swapmount/$CONFVARS
+
+echo "Copying finish-update onto the miniroot..."
+cp /srvd/etc/rc2.d/S70finish-update $swapmount/etc/rc2.d/S70finish-update
+
 echo "Making the new vfstab..."
 awk '
 	$4 == "ufs"	{ if ($3 == "/") $3 = "";

@@ -1,75 +1,93 @@
 #!/sbin/sh
 
-if [ -f $CONFVARS ]; then
-	. $CONFVARS
+CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
+. $CONFVARS
+
+cd $UPDATE_ROOT
+if [ "$NEWOS" = "true" ]; then
+  echo "Removing the patch/pkg DB for a new OS major rev"
+  pks="`cat $OLDPKGS`"
+  for i in $pks; do
+    rm -rf $UPDATE_ROOT/var/sadm/pkg/$i
+  done
+  patches="`cat $OLDPTCHS`"
+  for i in $patches; do
+    rm -rf $UPDATE_ROOT/var/sadm/patch/$i
+  done
 fi
 
 if [ -s "$DEADFILES" ]; then
-	echo "Removing outdated files"
-	dead="`cat $DEADFILES`"
-	for i in $dead; do
-		rm -rf $i
-	done
+  echo "Removing outdated files"
+  dead="`cat $DEADFILES`"
+  for i in $dead; do
+    rm -rf $UPDATE_ROOT/$i
+  done
 fi
 
-echo "Tracking changes"
-if [ "$TRACKOS" = true ]; then
-	# Sun ships multiple revisions of OS config files
-	# with the same timestamp, so we must use -c.
-	track -c -v -F /os -T / -d -W /srvd/usr/athena/lib \
-		-s stats/os_rvd slists/os_rvd
-
-	# Bring this architecture's /platform directory local.
-	rm -rf "/platform/$SUNPLATFORM"
-	cp -rp "/os/platform/$SUNPLATFORM" "/platform/$SUNPLATFORM"
-	if [ sun4u = "$SUNPLATFORM" ]; then
-		rm -rf /platform/SUNW,Ultra-250 /platform/SUNW,Ultra-4
-		rm -rf /platform/SUNW,Ultra-Enterpris*
-		cp -rp /os/platform/SUNW,Ultra-250 /platform
-		cp -rp /os/platform/SUNW,Ultra-4 /platform
-		cp -rp /os/platform/SUNW,Ultra-Enterpris* /platform
-	fi
+if [ -s "$LOCALPACKAGES" ]; then
+  echo "Installing os local packages"
+  for i in `cat "$LOCALPACKAGES"`; do
+    echo "$i"
+    cat /util/yes-file | pkgadd -R "$UPDATE_ROOT" -d /cdrom "$i"
+  done 2>/dev/null
 fi
 
-track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-rm -f /var/athena/rc.conf.sync
-
-if [ "$NEWOS" = true ]; then
-	echo "Copying new system files"
-	cp -p "/srvd/etc/driver_aliases.$SUNPLATFORM" /etc/driver_aliases
-	cp -p "/srvd/etc/driver_classes.$SUNPLATFORM" /etc/driver_classes
-	cp -p "/srvd/etc/minor_perm.$SUNPLATFORM" /etc/minor_perm
-	cp -p "/srvd/etc/name_to_major.$SUNPLATFORM" /etc/name_to_major
+if [ -s "$LINKPACKAGES" ]; then
+  echo "Installing the os link packages"
+  for i in `cat "$LINKPACKAGES"`; do
+    echo "$i"
+    cat /util/yes-file | pkgadd -R "$UPDATE_ROOT" -d /cdrom/cdrom.link "$i"
+  done 2>/dev/null
 fi
 
-if [ "$NEWUNIX" = true ] ; then
-	echo "Updating kernel"
-	echo "Tracking new kernel"        
-	track -c -v -F /os/kernel -T /kernel -d \
-		-W /srvd/usr/athena/lib -s stats/kernel_rvd \
-		slists/kernel_rvd
-	echo "Tracking new usr kernel"        
-	track -c -v -F /os/usr/kernel -T /usr/kernel -d \
-		-W /srvd/usr/athena/lib -s stats/usr_kernel_rvd \
-		slists/usr_kernel_rvd
-	cp -p /srvd/kernel/fs/* /kernel/fs/
+if [ "$NEWOS" = "true" ]; then
+  echo "Making adjustments"
+  cp /cdrom/I* "$UPDATE_ROOT/var/sadm/system/admin"
+  rm $UPDATE_ROOT/etc/.UNC*
+  rm "$UPDATE_ROOT/etc/.sysidconfig.apps"
+  cp /cdrom/.sysIDtool.state "$UPDATE_ROOT/etc/default"
 fi
 
-if [ "$NEWBOOT" = true ]; then
-	echo "Copying new bootstraps"
-
-	# installboot is a /bin/sh script, but /bin/sh might not work now
-	# that we've tracked the OS.  So explicitly run it with sh, which
-	# we could have copied into /tmp/bin.  If installboot ever becomes
-	# a binary, we'll have to use a different workaround.
-	sh /usr/sbin/installboot \
-		"/usr/platform/$SUNPLATFORM/lib/fs/ufs/bootblk" \
-		"/dev/rdsk/$ROOTDISK"
+if [ -s "$PATCHES" ]; then
+  echo "Installing OS patches"
+  cat /util/yes-file | patchadd -d -R "$UPDATE_ROOT" -u \
+    -M /patches/patches.link `cat $PATCHES`
 fi
 
-if [ "$NEWDEVS" = true ]; then
-	echo "Copying new pseudo-devices"
-	cd /devices && tar xf /srvd/install/devices/devices.pseudo.tar
-	cd /dev && tar xf /srvd/install/devices/dev.pseudo.tar
+if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" -o -s "$PATCHES" ]; then
+  echo "Performing local OS changes"
+  sh /srvd/usr/athena/lib/update/oschanges 2>/dev/null
+
+  # Restore any config file that pkgadd has replaced.
+  echo "Re-copying config files after OS update"
+  if [ -s "$CONFCHG" ]; then
+    for i in `cat $CONFCHG`; do
+      if [ -f "/srvd$i" ]; then
+	rm -rf "$UPDATE_ROOT$i"
+	cp -p "/srvd$i" "$UPDATE_ROOT$i"
+      fi
+      if [ true = "$PUBLIC" ]; then
+	rm -rf "$UPDATE_ROOT$i.saved"
+      fi
+    done
+  fi
 fi
-echo "Finished the first stage of the update at `date`."
+
+echo "Finished os installation"
+
+echo "Tracking the srvd"
+track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib
+
+echo "Copying kernel modules from /srvd/kernel"
+cp -p /srvd/kernel/fs/* "$UPDATE_ROOT/kernel/fs"
+
+rm -f "$UPDATE_ROOT/var/spool/cron/crontabs/uucp"
+
+if [ "$NEWDEVS" = "true" ]; then
+  echo "Create devices and dev"
+  cd "$UPDATE_ROOT"
+  drvconfig -R $UPDATE_ROOT -r devices -p "$UPDATE_ROOT/etc/path_to_inst"
+  chmod 755 "$UPDATE_ROOT/dev"
+  chmod 755 "$UPDATE_ROOT/devices"
+  cp /dev/null "$UPDATE_ROOT/reconfigure"
+fi

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 2000-02-18 15:08:25 ghudson Exp $
+# $Id: Makefile,v 1.11 2000-05-19 02:19:37 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -34,6 +34,12 @@ install:
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris251-26 ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris26-pkgs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris26-ptchs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris7-local-sun4m ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris7-local-sun4u ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris7-nolocal-sun4m ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris7-nolocal-sun4u ${DESTDIR}${UPDATE}
 	for i in vers/*.*.*; do \
 		install -c -m 0555 $$i ${DESTDIR}${UPDATE}; \
 	done
