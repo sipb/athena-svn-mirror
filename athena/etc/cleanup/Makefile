@@ -1,8 +1,8 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Makefile,v 1.1 1990-11-18 18:24:03 mar Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Makefile,v 1.2 1990-11-21 14:25:51 epeisach Exp $
 
 CFLAGS = -O
-GCC = /mit/gnu/@sys/gcc
 
+GCC= gcc
 all: cleanup
 
 cleanup: cleanup.o
