@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: dbtable.c,v 1.1.1.1 2001-10-22 13:07:49 ghudson Exp $
+ * $Id: dbtable.c,v 1.1.1.2 2002-02-03 04:24:54 ghudson Exp $
  */
 
 /*
@@ -48,9 +48,8 @@ struct dns_dbtable {
 	dns_db_t *		default_db;
 };
 
-#define DBTABLE_MAGIC		0x44422D2DU /* DB--. */
-#define VALID_DBTABLE(dbtable)	((dbtable) != NULL && \
-				 (dbtable)->magic == DBTABLE_MAGIC)
+#define DBTABLE_MAGIC		ISC_MAGIC('D', 'B', '-', '-')
+#define VALID_DBTABLE(dbtable)	ISC_MAGIC_VALID(dbtable, DBTABLE_MAGIC)
 
 static void
 dbdetach(void *data, void *arg) {

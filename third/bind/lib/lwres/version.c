@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: version.c,v 1.1.1.1 2001-10-22 13:09:46 ghudson Exp $ */
+/* $Id: version.c,v 1.1.1.2 2002-02-03 04:26:25 ghudson Exp $ */
 
 char lwres_version[] = VERSION;
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: assertions.c,v 1.1.1.1 2001-10-22 13:09:20 ghudson Exp $ */
+/* $Id: assertions.c,v 1.1.1.2 2002-02-03 04:25:43 ghudson Exp $ */
 
 #include <config.h>
 
@@ -36,7 +36,8 @@ default_callback(const char *, int, isc_assertiontype_t, const char *);
  * Public.
  */
 
-isc_assertioncallback_t isc_assertion_failed = default_callback;
+LIBISC_EXTERNAL_DATA isc_assertioncallback_t isc_assertion_failed =
+					     default_callback;
 
 void
 isc_assertion_setcallback(isc_assertioncallback_t cb) {

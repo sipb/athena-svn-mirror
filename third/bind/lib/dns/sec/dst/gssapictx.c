@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gssapictx.c,v 1.1.1.1 2001-10-22 13:08:45 ghudson Exp $ */
+/* $Id: gssapictx.c,v 1.1.1.2 2002-02-03 04:25:33 ghudson Exp $ */
 
 #include <config.h>
 

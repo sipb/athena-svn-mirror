@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gpos_27.c,v 1.1.1.1 2001-10-22 13:08:32 ghudson Exp $ */
+/* $Id: gpos_27.c,v 1.1.1.2 2002-02-03 04:25:21 ghudson Exp $ */
 
 /* reviewed: Wed Mar 15 16:48:45 PST 2000 by brister */
 
@@ -33,15 +33,17 @@ fromtext_gpos(ARGS_FROMTEXT) {
 
 	REQUIRE(type == 27);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
+	UNUSED(callbacks);
 
 	for (i = 0; i < 3 ; i++) {
 		RETERR(isc_lex_getmastertoken(lexer, &token,
 					      isc_tokentype_qstring,
 					      ISC_FALSE));
-		RETERR(txt_fromtext(&token.value.as_textregion, target));
+		RETTOK(txt_fromtext(&token.value.as_textregion, target));
 	}
 	return (ISC_R_SUCCESS);
 }
@@ -73,6 +75,7 @@ fromwire_gpos(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 27);
 
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(rdclass);
 	UNUSED(downcase);
@@ -118,6 +121,7 @@ fromstruct_gpos(ARGS_FROMSTRUCT) {
 	REQUIRE(gpos->common.rdtype == type);
 	REQUIRE(gpos->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	RETERR(uint8_tobuffer(gpos->long_len, target));
@@ -144,25 +148,17 @@ tostruct_gpos(ARGS_TOSTRUCT) {
 	dns_rdata_toregion(rdata, &region);
 	gpos->long_len = uint8_fromregion(&region);
 	isc_region_consume(&region, 1);
-	if (gpos->long_len != 0) {
-		gpos->longitude = mem_maybedup(mctx, region.base,
-					       gpos->long_len);
-		if (gpos->longitude == NULL)
-			return (ISC_R_NOMEMORY);
-		isc_region_consume(&region, gpos->long_len);
-	} else
-		gpos->longitude = NULL;
+	gpos->longitude = mem_maybedup(mctx, region.base, gpos->long_len);
+	if (gpos->longitude == NULL)
+		return (ISC_R_NOMEMORY);
+	isc_region_consume(&region, gpos->long_len);
 
 	gpos->lat_len = uint8_fromregion(&region);
 	isc_region_consume(&region, 1);
-	if (gpos->lat_len > 0) {
-		gpos->latitude =
-			mem_maybedup(mctx, region.base, gpos->lat_len);
-		if (gpos->latitude == NULL)
-			goto cleanup_longitude;
-		isc_region_consume(&region, gpos->lat_len);
-	} else
-		gpos->latitude = NULL;
+	gpos->latitude = mem_maybedup(mctx, region.base, gpos->lat_len);
+	if (gpos->latitude == NULL)
+		goto cleanup_longitude;
+	isc_region_consume(&region, gpos->lat_len);
 
 	gpos->alt_len = uint8_fromregion(&region);
 	isc_region_consume(&region, 1);

@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: setup.pl,v 1.1.1.1 2001-10-22 13:03:54 ghudson Exp $
+# $Id: setup.pl,v 1.1.1.2 2002-02-03 04:30:58 ghudson Exp $
 
 #
 # Set up test data for zone transfer quota tests.

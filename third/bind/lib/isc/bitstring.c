@@ -15,12 +15,13 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: bitstring.c,v 1.1.1.1 2001-10-22 13:09:21 ghudson Exp $ */
+/* $Id: bitstring.c,v 1.1.1.2 2002-02-03 04:25:43 ghudson Exp $ */
 
 #include <config.h>
 
 #include <stddef.h>
 
+#include <isc/magic.h>
 #include <isc/bitstring.h>
 #include <isc/util.h>
 
@@ -33,9 +34,8 @@
 #define SETBIT(bs, n)		(bs)->data[DIV8(n)] |= (1 << (7 - MOD8(n)))
 #define CLEARBIT(bs, n)		(bs)->data[DIV8(n)] &= ~(1 << (7 - MOD8(n)))
 
-#define BITSTRING_MAGIC			0x42537472U	/* BStr. */
-#define VALID_BITSTRING(b)		((b) != NULL && \
-					 (b)->magic == BITSTRING_MAGIC)
+#define BITSTRING_MAGIC		ISC_MAGIC('B', 'S', 't', 'r')
+#define VALID_BITSTRING(b)	ISC_MAGIC_VALID(b, BITSTRING_MAGIC)
 
 void
 isc_bitstring_init(isc_bitstring_t *bitstring, unsigned char *data,

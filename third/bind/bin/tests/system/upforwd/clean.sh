@@ -15,14 +15,14 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: clean.sh,v 1.1.1.1 2001-10-22 13:04:24 ghudson Exp $
+# $Id: clean.sh,v 1.1.1.2 2002-02-03 04:35:54 ghudson Exp $
 
 #
 # Clean up after zone transfer tests.
 #
 
 rm -f dig.out.ns1 dig.out.ns2 dig.out.ns1 dig.out.ns3 dig.out.ns1.after
-rm -f ns1/*.jnl ns2/*.jnl ns3/*.jnl ns1/*.db ns2/*.bk ns3/*.bk
+rm -f ns1/*.jnl ns2/*.jnl ns3/*.jnl ns1/example.db ns2/*.bk ns3/*.bk
 
 
 

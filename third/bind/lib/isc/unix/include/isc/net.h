@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: net.h,v 1.1.1.1 2001-10-22 13:09:31 ghudson Exp $ */
+/* $Id: net.h,v 1.1.1.2 2002-02-03 04:25:55 ghudson Exp $ */
 
 #ifndef ISC_NET_H
 #define ISC_NET_H 1
@@ -44,8 +44,8 @@
  *
  * It declares inet_aton(), inet_ntop(), and inet_pton().
  *
- * It ensures that INADDR_ANY, IN6ADDR_ANY_INIT, in6addr_any, and
- * in6addr_loopback are available.
+ * It ensures that INADDR_LOOPBACK, INADDR_ANY, IN6ADDR_ANY_INIT,
+ * in6addr_any, and in6addr_loopback are available.
  *
  * It ensures that IN_MULTICAST() is available to check for multicast
  * addresses.
@@ -95,6 +95,7 @@
 #define in6_addr in_addr6	/* Required for pre RFC2133 implementations. */
 #endif
 
+#ifdef ISC_PLATFORM_HAVEIPV6
 /*
  * Required for some pre RFC2133 implementations.
  * IN6ADDR_ANY_INIT and IN6ADDR_LOOPBACK_INIT were added in
@@ -118,6 +119,30 @@
 #endif
 #endif
 
+#ifndef IN6_IS_ADDR_V4MAPPED
+#define IN6_IS_ADDR_V4MAPPED(x) \
+	 (memcmp((x)->s6_addr, in6addr_any.s6_addr, 10) == 0 && \
+	  (x)->s6_addr[10] == 0xff && (x)->s6_addr[11] == 0xff)
+#endif
+
+#ifndef IN6_IS_ADDR_V4COMPAT
+#define IN6_IS_ADDR_V4COMPAT(x) \
+	 (memcmp((x)->s6_addr, in6addr_any.s6_addr, 12) == 0 && \
+	 ((x)->s6_addr[12] != 0 || (x)->s6_addr[13] != 0 || \
+	  (x)->s6_addr[14] != 0 || \
+	  ((x)->s6_addr[15] != 0 && (x)->s6_addr[15] != 1)))
+#endif
+
+#ifndef IN6_IS_ADDR_MULTICAST
+#define IN6_IS_ADDR_MULTICAST(a)        ((a)->s6_addr[0] == 0xff)
+#endif
+
+#ifndef IN6_IS_ADDR_LOOPBACK
+#define IN6_IS_ADDR_LOOPBACK(x) \
+	(memcmp((x)->s6_addr, in6addr_loopback.s6_addr, 16) == 0)
+#endif
+#endif
+
 #ifndef AF_INET6
 #define AF_INET6 99
 #endif
@@ -126,8 +151,8 @@
 #define PF_INET6 AF_INET6
 #endif
 
-#ifndef ISC_PLATFORM_HAVEIPV6
-#include <isc/ipv6.h>		/* Contractual promise. */
+#ifndef INADDR_LOOPBACK
+#define INADDR_LOOPBACK 0x7f000001UL
 #endif
 
 #ifndef ISC_PLATFORM_HAVEIN6PKTINFO
@@ -138,11 +163,16 @@ struct in6_pktinfo {
 #endif
 
 /*
- * Cope with a missing in6addr_any.
+ * Cope with a missing in6addr_any and in6addr_loopback.
  */
 #if defined(ISC_PLATFORM_HAVEIPV6) && defined(ISC_PLATFORM_NEEDIN6ADDRANY)
 extern const struct in6_addr isc_net_in6addrany;
 #define in6addr_any isc_net_in6addrany
+#endif
+
+#if defined(ISC_PLATFORM_HAVEIPV6) && defined(ISC_PLATFORM_NEEDIN6ADDRLOOPBACK)
+extern const struct in6_addr isc_net_in6addrloop;
+#define in6addr_loopback isc_net_in6addrloop
 #endif
 
 /*
@@ -226,6 +256,7 @@ isc_net_ntop(int af, const void *src, char *dst, size_t size);
 #ifdef ISC_PLATFORM_NEEDPTON
 int
 isc_net_pton(int af, const char *src, void *dst);
+#undef inet_pton
 #define inet_pton isc_net_pton
 #endif
 

@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: clean.sh,v 1.1.1.1 2001-10-22 13:03:53 ghudson Exp $
+# $Id: clean.sh,v 1.1.1.2 2002-02-03 04:30:57 ghudson Exp $
 
 rm -f reload.pid
 

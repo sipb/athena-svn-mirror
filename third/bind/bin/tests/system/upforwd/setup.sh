@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: setup.sh,v 1.1.1.1 2001-10-22 13:04:25 ghudson Exp $
+# $Id: setup.sh,v 1.1.1.2 2002-02-03 04:35:43 ghudson Exp $
 
-cp ns1/example.orig ns1/example.db
+cp ns1/example1.db ns1/example.db
 rm -f ns1/example.db.jnl ns2/example.bk ns2/example.bk.jnl

@@ -15,16 +15,20 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: time.c,v 1.1.1.1 2001-10-22 13:09:36 ghudson Exp $ */
+/* $Id: time.c,v 1.1.1.2 2002-02-03 04:25:59 ghudson Exp $ */
 
 #include <config.h>
 
 #include <errno.h>
 #include <limits.h>
+#include <syslog.h>
 #include <time.h>
 
 #include <sys/time.h>	/* Required for struct timeval on some platforms. */
 
+#include <isc/log.h>
+#include <isc/print.h>
+#include <isc/strerror.h>
 #include <isc/string.h>
 #include <isc/time.h>
 #include <isc/util.h>
@@ -40,6 +44,10 @@
  * need an initialized type.
  */
 
+#ifndef ISC_FIX_TV_USEC
+#define ISC_FIX_TV_USEC 1
+#endif
+
 /***
  *** Intervals
  ***/
@@ -47,17 +55,36 @@
 static isc_interval_t zero_interval = { 0, 0 };
 isc_interval_t *isc_interval_zero = &zero_interval;
 
+#if ISC_FIX_TV_USEC
+static inline void
+fix_tv_usec(struct timeval *tv) {
+	isc_boolean_t fixed = ISC_FALSE;
+
+	if (tv->tv_usec < 0) {
+		fixed = ISC_TRUE;
+		do {
+			tv->tv_sec -= 1;
+			tv->tv_usec += US_PER_S;
+		} while (tv->tv_usec < 0);
+	} else if (tv->tv_usec >= US_PER_S) {
+		fixed = ISC_TRUE;
+		do {
+			tv->tv_sec += 1;
+			tv->tv_usec -= US_PER_S;
+		} while (tv->tv_usec >=US_PER_S);
+	}
+	/*
+	 * Call syslog directly as was are called from the logging functions.
+	 */
+	if (fixed)
+		syslog(LOG_ERR, "gettimeofday returned bad tv_usec: corrected");
+}
+#endif
+
 void
 isc_interval_set(isc_interval_t *i,
 		 unsigned int seconds, unsigned int nanoseconds)
 {
-
-	/*
-	 * Set 'i' to a value representing an interval of 'seconds' seconds
-	 * and 'nanoseconds' nanoseconds, suitable for use in isc_time_add()
-	 * and isc_time_subtract().
-	 */
-
 	REQUIRE(i != NULL);
 	REQUIRE(nanoseconds < NS_PER_S);
 
@@ -67,11 +94,6 @@ isc_interval_set(isc_interval_t *i,
 
 isc_boolean_t
 isc_interval_iszero(isc_interval_t *i) {
-
-	/*
-	 * Returns ISC_TRUE iff. 'i' is the zero interval.
-	 */
-
 	REQUIRE(i != NULL);
 	INSIST(i->nanoseconds < NS_PER_S);
 
@@ -91,10 +113,6 @@ isc_time_t *isc_time_epoch = &epoch;
 
 void
 isc_time_set(isc_time_t *t, unsigned int seconds, unsigned int nanoseconds) {
-	/*
-	 * Set 't' to a particular number of seconds + nanoseconds since the
-	 * epoch.
-	 */
 	REQUIRE(t != NULL);
 	REQUIRE(nanoseconds < NS_PER_S);
 
@@ -104,10 +122,6 @@ isc_time_set(isc_time_t *t, unsigned int seconds, unsigned int nanoseconds) {
 
 void
 isc_time_settoepoch(isc_time_t *t) {
-	/*
-	 * Set 't' to the time of the epoch.
-	 */
-
 	REQUIRE(t != NULL);
 
 	t->seconds = 0;
@@ -116,11 +130,6 @@ isc_time_settoepoch(isc_time_t *t) {
 
 isc_boolean_t
 isc_time_isepoch(isc_time_t *t) {
-
-	/*
-	 * Returns ISC_TRUE iff. 't' is the epoch ("time zero").
-	 */
-
 	REQUIRE(t != NULL);
 	INSIST(t->nanoseconds < NS_PER_S);
 
@@ -130,18 +139,17 @@ isc_time_isepoch(isc_time_t *t) {
 	return (ISC_FALSE);
 }
 
+
 isc_result_t
 isc_time_now(isc_time_t *t) {
 	struct timeval tv;
-
-	/*
-	 * Set *t to the current absolute time.
-	 */
+	char strbuf[ISC_STRERRORSIZE];
 
 	REQUIRE(t != NULL);
 
 	if (gettimeofday(&tv, NULL) == -1) {
-		UNEXPECTED_ERROR(__FILE__, __LINE__, strerror(errno));
+		isc__strerror(errno, strbuf, sizeof(strbuf));
+		UNEXPECTED_ERROR(__FILE__, __LINE__, "%s", strbuf);
 		return (ISC_R_UNEXPECTED);
 	}
 
@@ -152,8 +160,14 @@ isc_time_now(isc_time_t *t) {
 	 * happening are pretty much zero, but since the libisc library ensures
 	 * certain things to be true ...
 	 */
+#if ISC_FIX_TV_USEC
+	fix_tv_usec(&tv);
+	if (tv.tv_sec < 0)
+		return (ISC_R_UNEXPECTED);
+#else
 	if (tv.tv_sec < 0 || tv.tv_usec < 0 || tv.tv_usec >= US_PER_S)
 		return (ISC_R_UNEXPECTED);
+#endif
 
 	/*
 	 * Ensure the tv_sec value fits in t->seconds.
@@ -171,17 +185,15 @@ isc_time_now(isc_time_t *t) {
 isc_result_t
 isc_time_nowplusinterval(isc_time_t *t, isc_interval_t *i) {
 	struct timeval tv;
-
-	/*
-	 * Set *t to the current absolute time + i.
-	 */
+	char strbuf[ISC_STRERRORSIZE];
 
 	REQUIRE(t != NULL);
 	REQUIRE(i != NULL);
 	INSIST(i->nanoseconds < NS_PER_S);
 
 	if (gettimeofday(&tv, NULL) == -1) {
-		UNEXPECTED_ERROR(__FILE__, __LINE__, strerror(errno));
+		isc__strerror(errno, strbuf, sizeof(strbuf));
+		UNEXPECTED_ERROR(__FILE__, __LINE__, "%s", strbuf);
 		return (ISC_R_UNEXPECTED);
 	}
 
@@ -192,8 +204,14 @@ isc_time_nowplusinterval(isc_time_t *t, isc_interval_t *i) {
 	 * happening are pretty much zero, but since the libisc library ensures
 	 * certain things to be true ...
 	 */
+#if ISC_FIX_TV_USEC
+	fix_tv_usec(&tv);
+	if (tv.tv_sec < 0)
+		return (ISC_R_UNEXPECTED);
+#else
 	if (tv.tv_sec < 0 || tv.tv_usec < 0 || tv.tv_usec >= US_PER_S)
 		return (ISC_R_UNEXPECTED);
+#endif
 
 	/*
 	 * Ensure the resulting seconds value fits in the size of an
@@ -217,11 +235,6 @@ isc_time_nowplusinterval(isc_time_t *t, isc_interval_t *i) {
 
 int
 isc_time_compare(isc_time_t *t1, isc_time_t *t2) {
-
-	/*
-	 * Compare the times referenced by 't1' and 't2'
-	 */
-
 	REQUIRE(t1 != NULL && t2 != NULL);
 	INSIST(t1->nanoseconds < NS_PER_S && t2->nanoseconds < NS_PER_S);
 
@@ -238,10 +251,6 @@ isc_time_compare(isc_time_t *t1, isc_time_t *t2) {
 
 isc_result_t
 isc_time_add(isc_time_t *t, isc_interval_t *i, isc_time_t *result) {
-	/*
-	 * Add 't' to 'i', storing the result in 'result'.
-	 */
-
 	REQUIRE(t != NULL && i != NULL && result != NULL);
 	INSIST(t->nanoseconds < NS_PER_S && i->nanoseconds < NS_PER_S);
 
@@ -267,10 +276,6 @@ isc_time_add(isc_time_t *t, isc_interval_t *i, isc_time_t *result) {
 
 isc_result_t
 isc_time_subtract(isc_time_t *t, isc_interval_t *i, isc_time_t *result) {
-	/*
-	 * Subtract 'i' from 't', storing the result in 'result'.
-	 */
-
 	REQUIRE(t != NULL && i != NULL && result != NULL);
 	INSIST(t->nanoseconds < NS_PER_S && i->nanoseconds < NS_PER_S);
 
@@ -384,4 +389,21 @@ isc_time_nanoseconds(isc_time_t *t) {
 	ENSURE(t->nanoseconds < NS_PER_S);
 
 	return ((isc_uint32_t)t->nanoseconds);
+}
+
+void
+isc_time_formattimestamp(const isc_time_t *t, char *buf, unsigned int len) {
+	time_t now;
+	unsigned int flen;
+
+	REQUIRE(len > 0);
+
+	now = (time_t) t->seconds;
+	flen = strftime(buf, len, "%b %d %X", localtime(&now));
+	INSIST(flen < len);
+	if (flen != 0)
+		snprintf(buf + flen, len - flen,
+			 ".%03u", t->nanoseconds / 1000000);
+	else
+                snprintf(buf, len, "Bad 00 99:99:99.999");
 }

@@ -15,12 +15,12 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: main.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: main.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #ifndef NAMED_MAIN_H
 #define NAMED_MAIN_H 1
 
 void
-ns_main_earlyfatal(const char *format, ...);
+ns_main_earlyfatal(const char *format, ...) ISC_FORMAT_PRINTF(1, 2);
 
 #endif /* NAMED_MAIN_H */

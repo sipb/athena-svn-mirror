@@ -18,7 +18,7 @@
 #ifndef IN_1_SRV_33_H
 #define IN_1_SRV_33_H 1
 
-/* $Id: srv_33.h,v 1.1.1.1 2001-10-22 13:08:42 ghudson Exp $ */
+/* $Id: srv_33.h,v 1.1.1.2 2002-02-03 04:25:30 ghudson Exp $ */
 
 /* Reviewed: Fri Mar 17 13:01:00 PST 2000 by bwelling */
 

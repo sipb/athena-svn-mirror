@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: minfo_14.c,v 1.1.1.1 2001-10-22 13:08:35 ghudson Exp $ */
+/* $Id: minfo_14.c,v 1.1.1.2 2002-02-03 04:25:23 ghudson Exp $ */
 
 /* reviewed: Wed Mar 15 17:45:32 PST 2000 by brister */
 
@@ -33,7 +33,9 @@ fromtext_minfo(ARGS_FROMTEXT) {
 
 	REQUIRE(type == 14);
 
+	UNUSED(type);
 	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	for (i = 0; i < 2 ; i++) {
 		RETERR(isc_lex_getmastertoken(lexer, &token,
@@ -42,7 +44,7 @@ fromtext_minfo(ARGS_FROMTEXT) {
 		dns_name_init(&name, NULL);
 		buffer_fromregion(&buffer, &token.value.as_region);
 		origin = (origin != NULL) ? origin : dns_rootname;
-		RETERR(dns_name_fromtext(&name, &buffer, origin,
+		RETTOK(dns_name_fromtext(&name, &buffer, origin,
 					 downcase, target));
 	}
 	return (ISC_R_SUCCESS);
@@ -88,9 +90,10 @@ fromwire_minfo(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 14);
 
-	dns_decompress_setmethods(dctx, DNS_COMPRESS_GLOBAL14);
-
+	UNUSED(type);
 	UNUSED(rdclass);
+
+	dns_decompress_setmethods(dctx, DNS_COMPRESS_GLOBAL14);
 
         dns_name_init(&rmail, NULL);
         dns_name_init(&email, NULL);
@@ -104,14 +107,16 @@ towire_minfo(ARGS_TOWIRE) {
 	isc_region_t region;
 	dns_name_t rmail;
 	dns_name_t email;
+	dns_offsets_t roffsets;
+	dns_offsets_t eoffsets;
 
 	REQUIRE(rdata->type == 14);
 	REQUIRE(rdata->length != 0);
 
 	dns_compress_setmethods(cctx, DNS_COMPRESS_GLOBAL14);
 
-	dns_name_init(&rmail, NULL);
-	dns_name_init(&email, NULL);
+	dns_name_init(&rmail, roffsets);
+	dns_name_init(&email, eoffsets);
 
 	dns_rdata_toregion(rdata, &region);
 
@@ -176,6 +181,7 @@ fromstruct_minfo(ARGS_FROMSTRUCT) {
 	REQUIRE(minfo->common.rdtype == type);
 	REQUIRE(minfo->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	dns_name_toregion(&minfo->rmailbox, &region);

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: client.h,v 1.1.1.1 2001-10-22 13:06:40 ghudson Exp $ */
+/* $Id: client.h,v 1.1.1.2 2002-02-03 04:22:37 ghudson Exp $ */
 
 #ifndef NAMED_CLIENT_H
 #define NAMED_CLIENT_H 1
@@ -64,6 +64,7 @@
  ***/
 
 #include <isc/buffer.h>
+#include <isc/magic.h>
 #include <isc/stdtime.h>
 #include <isc/quota.h>
 
@@ -86,26 +87,28 @@ struct ns_client {
 	ns_clientmgr_t *	manager;
 	int			state;
 	int			newstate;
-	isc_boolean_t		disconnect;
 	int			naccepts;
 	int			nreads;
 	int			nsends;
+	int			nrecvs;
+	int			nctls;
 	int			references;
 	unsigned int		attributes;
 	isc_task_t *		task;
 	dns_view_t *		view;
-	dns_view_t *		lockview;
 	dns_dispatch_t *	dispatch;
-	dns_dispentry_t *	dispentry;
-	dns_dispatchevent_t *	dispevent;
+	isc_socket_t *		udpsocket;
 	isc_socket_t *		tcplistener;
 	isc_socket_t *		tcpsocket;
 	unsigned char *		tcpbuf;
 	dns_tcpmsg_t		tcpmsg;
 	isc_boolean_t		tcpmsg_valid;
 	isc_timer_t *		timer;
+	isc_boolean_t 		timerset;
 	dns_message_t *		message;
-	unsigned char *		sendbuf;
+	isc_socketevent_t *	sendevent;
+	isc_socketevent_t *	recvevent;
+	unsigned char *		recvbuf;
 	dns_rdataset_t *	opt;
 	isc_uint16_t		udpsize;
 	isc_uint16_t		extflags;
@@ -125,6 +128,17 @@ struct ns_client {
 	isc_boolean_t		peeraddr_valid;
 	struct in6_pktinfo	pktinfo;
 	isc_event_t		ctlevent;
+	/*
+	 * Information about recent FORMERR response(s), for
+	 * FORMERR loop avoidance.  This is separate for each
+	 * client object rather than global only to avoid
+	 * the need for locking.
+	 */
+	struct {
+		isc_sockaddr_t		addr;
+		isc_stdtime_t		time;
+		dns_messageid_t		id;
+	} formerrcache;
 	ISC_LINK(ns_client_t)	link;
 	/*
 	 * The list 'link' is part of, or NULL if not on any list.
@@ -132,8 +146,7 @@ struct ns_client {
 	client_list_t		*list;
 };
 
-
-#define NS_CLIENT_MAGIC			0x4E534363U	/* NSCc */
+#define NS_CLIENT_MAGIC			ISC_MAGIC('N','S','C','c')
 #define NS_CLIENT_VALID(c)		ISC_MAGIC_VALID(c, NS_CLIENT_MAGIC)
 
 #define NS_CLIENTATTR_TCP		0x01
@@ -205,6 +218,12 @@ ns_client_replace(ns_client_t *client);
  * leaving the dispatch/socket without service.
  */
 
+void
+ns_client_settimeout(ns_client_t *client, unsigned int seconds);
+/*
+ * Set a timer in the client to go off in the specified amount of time.
+ */
+
 isc_result_t
 ns_clientmgr_create(isc_mem_t *mctx, isc_taskmgr_t *taskmgr,
 		    isc_timermgr_t *timermgr, ns_clientmgr_t **managerp);
@@ -236,17 +255,14 @@ ns_client_getsockaddr(ns_client_t *client);
  */
 
 isc_result_t
-ns_client_checkacl(ns_client_t  *client,
-		   const char *opname, dns_acl_t *acl,
-		   isc_boolean_t default_allow,
-		   int log_level);
+ns_client_checkaclsilent(ns_client_t  *client,dns_acl_t *acl,
+			 isc_boolean_t default_allow);
+
 /*
  * Convenience function for client request ACL checking.
  *
  * Check the current client request against 'acl'.  If 'acl'
  * is NULL, allow the request iff 'default_allow' is ISC_TRUE.
- * Log the outcome of the check if deemed appropriate.
- * Log messages will refer to the request as an 'opname' request.
  *
  * Notes:
  *	This is appropriate for checking allow-update,
@@ -257,7 +273,6 @@ ns_client_checkacl(ns_client_t  *client,
  *
  * Requires:
  *	'client' points to a valid client.
- *	'opname' points to a null-terminated string.
  *	'acl' points to a valid ACL, or is NULL.
  *
  * Returns:
@@ -266,9 +281,30 @@ ns_client_checkacl(ns_client_t  *client,
  *	No other return values are possible.
  */
 
+isc_result_t
+ns_client_checkacl(ns_client_t  *client,
+		   const char *opname, dns_acl_t *acl,
+		   isc_boolean_t default_allow,
+		   int log_level);
+/*
+ * Like ns_client_checkacl, but also logs the outcome of the
+ * check at log level 'log_level' if denied, and at debug 3
+ * if approved.  Log messages will refer to the request as
+ * an 'opname' request.
+ *
+ * Requires:
+ *	Those of ns_client_checkaclsilent(), and:
+ *
+ *	'opname' points to a null-terminated string.
+ */
+
 void
 ns_client_log(ns_client_t *client, isc_logcategory_t *category,
 	      isc_logmodule_t *module, int level,
-	      const char *fmt, ...);
+	      const char *fmt, ...) ISC_FORMAT_PRINTF(5, 6);
+
+void
+ns_client_aclmsg(const char *msg, dns_name_t *name, dns_rdataclass_t rdclass,
+                 char *buf, size_t len);
 
 #endif /* NAMED_CLIENT_H */

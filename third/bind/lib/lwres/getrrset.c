@@ -15,18 +15,9 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: getrrset.c,v 1.1.1.1 2001-10-22 13:09:43 ghudson Exp $ */
+/* $Id: getrrset.c,v 1.1.1.2 2002-02-03 04:26:21 ghudson Exp $ */
 
 #include <config.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-
-#include <netinet/in.h>
-
-#include <arpa/nameser.h>
-#include <arpa/inet.h>
 
 #include <string.h>
 #include <errno.h>
@@ -43,6 +34,8 @@ lwresult_to_result(lwres_result_t lwresult) {
 	switch (lwresult) {
 	case LWRES_R_SUCCESS:	return (ERRSET_SUCCESS);
 	case LWRES_R_NOMEMORY:	return (ERRSET_NOMEMORY);
+	case LWRES_R_NOTFOUND:	return (ERRSET_NONAME);
+	case LWRES_R_TYPENOTFOUND: return (ERRSET_NODATA);
 	default:		return (ERRSET_FAIL);
 	}
 }
@@ -109,8 +102,10 @@ lwres_getrrsetbyname(const char *hostname, unsigned int rdclass,
 	UNUSED(flags);
 	lwflags = 0;
 
-	lwresult = lwres_getrdatabyname(lwrctx, hostname, rdclass, rdtype,
-				      lwflags, &response);
+	lwresult = lwres_getrdatabyname(lwrctx, hostname,
+					(lwres_uint16_t)rdclass, 
+					(lwres_uint16_t)rdtype,
+					lwflags, &response);
 	if (lwresult != LWRES_R_SUCCESS) {
 		result = lwresult_to_result(lwresult);
 		goto fail;

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: t_dst.c,v 1.1.1.1 2001-10-22 13:06:57 ghudson Exp $ */
+/* $Id: t_dst.c,v 1.1.1.2 2002-02-03 04:22:56 ghudson Exp $ */
 
 #include <config.h>
 
@@ -47,6 +47,10 @@
 
 #include <tests/t_api.h>
 
+#ifndef PATH_MAX
+#define PATH_MAX	256
+#endif
+
 /*
  * Adapted from the original dst_test.c program.
  * XXXDCL should use isc_dir_*.
@@ -60,7 +64,7 @@ cleandir(char *path) {
 
 	dirp = opendir(path);
 	if (dirp == NULL) {
-		t_info("opendir(%s) failed %d\n", path, opendir);
+		t_info("opendir(%s) failed %d\n", path, errno);
 		return;
 	}
 
@@ -360,7 +364,7 @@ t1(void) {
 	mctx = NULL;
 	isc_result = isc_mem_create(0, 0, &mctx);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_mem_create failed %d\n",
+		t_info("isc_mem_create failed %s\n",
 		       isc_result_totext(isc_result));
 		t_result(T_UNRESOLVED);
 		return;
@@ -368,23 +372,30 @@ t1(void) {
 	ectx = NULL;
 	isc_result = isc_entropy_create(mctx, &ectx);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_entropy_create failed %d\n",
+		t_info("isc_entropy_create failed %s\n",
 		       isc_result_totext(isc_result));
 		t_result(T_UNRESOLVED);
 		return;
 	}
 	result = isc_entropy_createfilesource(ectx, "randomfile");
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_entropy_create failed %d\n",
+		t_info("isc_entropy_create failed %s\n",
 		       isc_result_totext(isc_result));
 		t_result(T_UNRESOLVED);
 		return;
 	}
 	isc_result = dst_lib_init(mctx, ectx, ISC_ENTROPY_BLOCKING);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("dst_lib_init failed %d\n",
+		t_info("dst_lib_init failed %s\n",
 		       isc_result_totext(isc_result));
 		t_result(T_UNRESOLVED);
+		return;
+	}
+
+	if (!dst_algorithm_supported(DST_ALG_RSAMD5)) {
+		dst_lib_destroy();
+		t_info("library built without crypto support\n");
+		t_result(T_UNTESTED);
 		return;
 	}
 
@@ -835,28 +846,34 @@ t2_vfy(char **av) {
 	mctx = NULL;
 	isc_result = isc_mem_create(0, 0, &mctx);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_mem_create failed %d\n",
+		t_info("isc_mem_create failed %s\n",
 		       isc_result_totext(isc_result));
 		return(T_UNRESOLVED);
 	}
 	ectx = NULL;
 	isc_result = isc_entropy_create(mctx, &ectx);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_entropy_create failed %d\n",
+		t_info("isc_entropy_create failed %s\n",
 		       isc_result_totext(isc_result));
 		return(T_UNRESOLVED);
 	}
 	result = isc_entropy_createfilesource(ectx, "randomfile");
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("isc_entropy_create failed %d\n",
+		t_info("isc_entropy_create failed %s\n",
 		       isc_result_totext(isc_result));
 		return(T_UNRESOLVED);
 	}
 	isc_result = dst_lib_init(mctx, ectx, ISC_ENTROPY_BLOCKING);
 	if (isc_result != ISC_R_SUCCESS) {
-		t_info("dst_lib_init failed %d\n",
+		t_info("dst_lib_init failed %s\n",
 		       isc_result_totext(isc_result));
 		return(T_UNRESOLVED);
+	}
+
+	if (!dst_algorithm_supported(DST_ALG_RSAMD5)) {
+		dst_lib_destroy();
+		t_info("library built without crypto support\n");
+		return (T_UNTESTED);
 	}
 
 	t_info("testing %s, %s, %s, %s, %s, %s\n",

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: journal.c,v 1.1.1.1 2001-10-22 13:07:53 ghudson Exp $ */
+/* $Id: journal.c,v 1.1.1.2 2002-02-03 04:24:59 ghudson Exp $ */
 
 #include <config.h>
 
@@ -37,6 +37,7 @@
 #include <dns/rdataset.h>
 #include <dns/rdatasetiter.h>
 #include <dns/result.h>
+#include <dns/soa.h>
 
 /*
  * When true, accept IXFR difference sequences where the
@@ -85,32 +86,6 @@ encode_uint32(isc_uint32_t val, unsigned char *p) {
 	p[1] = (isc_uint8_t)(val >> 16);
 	p[2] = (isc_uint8_t)(val >>  8);
 	p[3] = (isc_uint8_t)(val >>  0);
-}
-
-isc_uint32_t
-dns_soa_getserial(dns_rdata_t *rdata) {
-	INSIST(rdata->type == dns_rdatatype_soa);
-	/*
-	 * Locate the serial number within the SOA RDATA based
-	 * on its position relative to the end of the data.
-	 * (it starts 20 bytes from the end).  This is a bit of
-	 * a kludge, but the alternative approach of using
-	 * dns_rdata_tostruct() and dns_rdata_fromstruct()
-	 * would involve a lot of unnecessary work (like
-	 * building domain names and allocating temporary memory)
-	 * when all we really want to do is to change 32 bits of
-	 * fixed-sized data.  Besides, fromstruct_soa() is not
-	 * implemented yet.
-	 */
-	INSIST(rdata->length > 20);
-	return (decode_uint32(rdata->data + rdata->length - 20));
-}
-
-void
-dns_soa_setserial(isc_uint32_t val, dns_rdata_t *rdata) {
-	INSIST(rdata->type == dns_rdatatype_soa);
-	INSIST(rdata->length > 20);
-	encode_uint32(val, rdata->data + rdata->length - 20);
 }
 
 isc_result_t
@@ -356,7 +331,7 @@ struct dns_journal {
 	} it;
 };
 
-#define DNS_JOURNAL_MAGIC	0x4a4f5552U	/* JOUR. */
+#define DNS_JOURNAL_MAGIC	ISC_MAGIC('J', 'O', 'U', 'R')
 #define DNS_JOURNAL_VALID(t)	ISC_MAGIC_VALID(t, DNS_JOURNAL_MAGIC)
 
 static void
@@ -515,7 +490,7 @@ journal_file_create(isc_mem_t *mctx, const char *filename) {
 
 	INSIST(sizeof(journal_rawheader_t) == JOURNAL_HEADER_SIZE);
 
-	result = isc_stdio_open(filename, "w", &fp);
+	result = isc_stdio_open(filename, "wb", &fp);
 	if (result != ISC_R_SUCCESS) {
 		isc_log_write(JOURNAL_COMMON_LOGARGS, ISC_LOG_ERROR,
 			      "%s: create: %s",
@@ -629,18 +604,6 @@ dns_journal_open(isc_mem_t *mctx, const char *filename, isc_boolean_t write,
 	journal_header_decode(&rawheader, &j->header);
 
 	/*
-	 * When opening a journal for reading, it is not supposed to
-	 * be empty - if there are no transactions, the file should
-	 * not exist.
-	 */
-	if (! write && JOURNAL_EMPTY(&j->header)) {
-		isc_log_write(JOURNAL_COMMON_LOGARGS, ISC_LOG_ERROR,
-			      "%s: journal unexpectedly empty",
-			      j->filename);
-		FAIL(ISC_R_UNEXPECTED);
-	}
-
-	/*
 	 * If there is an index, read the raw index into a dynamically
 	 * allocated buffer and then convert it into a cooked index.
 	 */
@@ -720,10 +683,10 @@ dns_journal_open(isc_mem_t *mctx, const char *filename, isc_boolean_t write,
  */
 static int
 ixfr_order(const void *av, const void *bv) {
-	dns_difftuple_t * const *ap = av;
-	dns_difftuple_t * const *bp = bv;
-	dns_difftuple_t *a = *ap;
-	dns_difftuple_t *b = *bp;
+	dns_difftuple_t const * const *ap = av;
+	dns_difftuple_t const * const *bp = bv;
+	dns_difftuple_t const *a = *ap;
+	dns_difftuple_t const *b = *bp;
 	int r;
 
 	r = (b->op == DNS_DIFFOP_DEL) - (a->op == DNS_DIFFOP_DEL);
@@ -1359,7 +1322,10 @@ dns_journal_rollforward(isc_mem_t *mctx, dns_db_t *db, const char *filename) {
 	}
 	if (result != ISC_R_SUCCESS)
 		return (result);
-	result = roll_forward(j, db);
+	if (JOURNAL_EMPTY(&j->header))
+		result = DNS_R_UPTODATE;
+	else
+		result = roll_forward(j, db);
 
 	dns_journal_destroy(&j);
 
@@ -1768,10 +1734,10 @@ get_name_diff(dns_db_t *db, dns_dbversion_t *ver, isc_stdtime_t now,
  */
 static int
 rdata_order(const void *av, const void *bv) {
-	dns_difftuple_t * const *ap = av;
-	dns_difftuple_t * const *bp = bv;
-	dns_difftuple_t *a = *ap;
-	dns_difftuple_t *b = *bp;
+	dns_difftuple_t const * const *ap = av;
+	dns_difftuple_t const * const *bp = bv;
+	dns_difftuple_t const *a = *ap;
+	dns_difftuple_t const *b = *bp;
 	int r;
 	r = (b->rdata.type - a->rdata.type);
 	if (r != 0)

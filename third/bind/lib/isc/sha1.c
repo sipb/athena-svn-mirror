@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: sha1.c,v 1.1.1.1 2001-10-22 13:09:27 ghudson Exp $ */
+/* $Id: sha1.c,v 1.1.1.2 2002-02-03 04:25:50 ghudson Exp $ */
 
 /*	$NetBSD: sha1.c,v 1.5 2000/01/22 22:19:14 mycroft Exp $	*/
 /*	$OpenBSD: sha1.c,v 1.9 1997/07/23 21:12:32 kstailey Exp $	*/

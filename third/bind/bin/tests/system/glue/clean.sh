@@ -15,12 +15,10 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: clean.sh,v 1.1.1.1 2001-10-22 13:02:57 ghudson Exp $
+# $Id: clean.sh,v 1.1.1.2 2002-02-03 04:32:15 ghudson Exp $
 
 #
 # Clean up after glue tests.
 #
 
-rm -f dig.out
-
-
+rm -f dig.out ns1/cache

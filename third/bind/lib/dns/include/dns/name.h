@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: name.h,v 1.1.1.1 2001-10-22 13:08:24 ghudson Exp $ */
+/* $Id: name.h,v 1.1.1.2 2002-02-03 04:24:43 ghudson Exp $ */
 
 #ifndef DNS_NAME_H
 #define DNS_NAME_H 1
@@ -76,6 +76,7 @@
 
 #include <isc/boolean.h>
 #include <isc/lang.h>
+#include <isc/magic.h>
 #include <isc/region.h>		/* Required for storage size of dns_label_t. */
 
 #include <dns/types.h>
@@ -195,7 +196,7 @@ struct dns_name {
 	ISC_LIST(dns_rdataset_t)	list;
 };
 
-#define DNS_NAME_MAGIC			0x444E536EU	/* DNSn. */
+#define DNS_NAME_MAGIC			ISC_MAGIC('D','N','S','n')
 
 #define DNS_NAMEATTR_ABSOLUTE		0x0001
 #define DNS_NAMEATTR_READONLY		0x0002
@@ -209,7 +210,7 @@ struct dns_name {
 #define DNS_NAMEATTR_NCACHE		0x0400		/* Used by resolver. */
 #define DNS_NAMEATTR_CHAINING		0x0800		/* Used by resolver. */
 
-extern dns_name_t *dns_rootname;
+LIBDNS_EXTERNAL_DATA extern dns_name_t *dns_rootname;
 extern dns_name_t *dns_wildcardname;
 
 /*
@@ -800,8 +801,6 @@ dns_name_towire(dns_name_t *name, dns_compress_t *cctx, isc_buffer_t *target);
  *
  *	If the result is success:
  *
- *		Any bitstring labels are in canonical form.
- *
  *		The used space in target is updated.
  *
  * Returns:
@@ -886,8 +885,6 @@ dns_name_totext(dns_name_t *name, isc_boolean_t omit_final_dot,
  *
  *	If the result is success:
  *
- *		Any bitstring labels are in canonical form.
- *
  *		The used space in target is updated.
  *
  * Returns:
@@ -916,6 +913,37 @@ dns_name_totext(dns_name_t *name, isc_boolean_t omit_final_dot,
  *   When printed, this is (3 * 63 + 61) * 4
  *   bytes for the escaped label data + 4 bytes for the
  *   dot terminating each label = 1004 bytes total.
+ */
+
+isc_result_t
+dns_name_tofilenametext(dns_name_t *name, isc_boolean_t omit_final_dot,
+			isc_buffer_t *target);
+/*
+ * Convert 'name' into an alternate text format appropriate for filenames,
+ * storing the result in 'target'.  The name data is downcased, guaranteeing
+ * that the filename does not depend on the case of the converted name.
+ *
+ * Notes:
+ *	If 'omit_final_dot' is true, then the final '.' in absolute
+ *	names other than the root name will be omitted.
+ *
+ *	The name is not NUL terminated.
+ *
+ * Requires:
+ *
+ *	'name' is a valid absolute name
+ *
+ *	'target' is a valid buffer.
+ *
+ * Ensures:
+ *
+ *	If the result is success:
+ *
+ *		The used space in target is updated.
+ *
+ * Returns:
+ *	ISC_R_SUCCESS
+ *	ISC_R_NOSPACE
  */
 
 isc_result_t
@@ -1222,6 +1250,30 @@ dns_name_format(dns_name_t *name, char *cp, unsigned int size);
  * Includes space for the terminating NULL.
  */
 
+isc_result_t
+dns_name_copy(dns_name_t *source, dns_name_t *dest, isc_buffer_t *target);
+/*
+ * Makes 'dest' refer to a copy of the name in 'source'.  The data are
+ * either copied to 'target' or the dedicated buffer in 'dest'.
+ *
+ * Requires:
+ * 	'source' is a valid name.
+ *
+ * 	'dest' is an initialized name with a dedicated buffer.
+ *
+ * 	'target' is NULL or an initialized buffer.
+ *
+ * 	Either dest has a dedicated buffer or target != NULL.
+ *
+ * Ensures:
+ *
+ *	On success, the used space in target is updated.
+ *
+ * Returns:
+ *	ISC_R_SUCCESS
+ *	ISC_R_NOSPACE
+ */
+
 ISC_LANG_ENDDECLS
 
 /***
@@ -1235,13 +1287,6 @@ ISC_LANG_ENDDECLS
  *
  * WARNING:  No assertion checking is done for these macros.
  */
-
-#ifdef DNS_NAME_USEINLINE
-
-#define dns_name_init(n, o)		DNS_NAME_INIT(n, o)
-#define dns_name_reset(n)		DNS_NAME_RESET(n)
-#define dns_name_countlabels(n)		DNS_NAME_COUNTLABELS(n)
-#define dns_name_isabsolute(n)		DNS_NAME_ISABSOLUTE(n)
 
 #define DNS_NAME_INIT(n, o) \
 do { \
@@ -1274,6 +1319,22 @@ do { \
 
 #define DNS_NAME_COUNTLABELS(n) \
 	((n)->labels)
+
+#define DNS_NAME_TOREGION(n, r) \
+do { \
+	(r)->base = (n)->ndata; \
+	(r)->length = (n)->length; \
+} while (0);
+
+
+#ifdef DNS_NAME_USEINLINE
+
+#define dns_name_init(n, o)		DNS_NAME_INIT(n, o)
+#define dns_name_reset(n)		DNS_NAME_RESET(n)
+#define dns_name_setbuffer(n, b)	DNS_NAME_SETBUFFER(n, b)
+#define dns_name_countlabels(n)		DNS_NAME_COUNTLABELS(n)
+#define dns_name_isabsolute(n)		DNS_NAME_ISABSOLUTE(n)
+#define dns_name_toregion(n, r)		DNS_NAME_TOREGION(n, r)
 
 #endif /* DNS_NAME_USEINLINE */
 

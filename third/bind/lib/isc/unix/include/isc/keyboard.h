@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: keyboard.h,v 1.1.1.1 2001-10-22 13:09:31 ghudson Exp $ */
+/* $Id: keyboard.h,v 1.1.1.2 2002-02-03 04:25:54 ghudson Exp $ */
 
 #ifndef ISC_KEYBOARD_H
 #define ISC_KEYBOARD_H 1

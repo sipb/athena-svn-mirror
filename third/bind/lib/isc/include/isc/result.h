@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: result.h,v 1.1.1.1 2001-10-22 13:09:18 ghudson Exp $ */
+/* $Id: result.h,v 1.1.1.2 2002-02-03 04:25:40 ghudson Exp $ */
 
 #ifndef ISC_RESULT_H
 #define ISC_RESULT_H 1
@@ -75,10 +75,14 @@
 #define ISC_R_BADHEX			49	/* bad hex encoding */
 #define ISC_R_TOOMANYOPENFILES		50	/* too many open files */
 #define ISC_R_NOTBLOCKING		51	/* not blocking */
+#define ISC_R_UNBALANCEDQUOTES		52	/* unbalanced quotes */
+#define ISC_R_INPROGRESS		53	/* operation in progress */
+#define ISC_R_CONNECTIONRESET		54	/* connection reset */
+
 /*
  * Not a result code: the number of results.
  */
-#define ISC_R_NRESULTS 			52
+#define ISC_R_NRESULTS 			55
 
 ISC_LANG_BEGINDECLS
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: context.c,v 1.1.1.1 2001-10-22 13:09:41 ghudson Exp $ */
+/* $Id: context.c,v 1.1.1.2 2002-02-03 04:26:18 ghudson Exp $ */
 
 #include <config.h>
 
@@ -23,16 +23,16 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
-
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-
-#include <netinet/in.h>
 
 #include <lwres/lwres.h>
 #include <lwres/net.h>
+#include <lwres/platform.h>
+
+#ifdef LWRES_PLATFORM_NEEDSYSSELECTH
+#include <sys/select.h>
+#endif
 
 #include "context_p.h"
 #include "assert_p.h"
@@ -44,6 +44,20 @@
  */
 #ifndef LWRES_SOCKADDR_LEN_T
 #define LWRES_SOCKADDR_LEN_T unsigned int
+#endif
+
+/*
+ * Make a socket nonblocking.
+ */
+#ifndef MAKE_NONBLOCKING
+#define MAKE_NONBLOCKING(sd, retval) \
+do { \
+	retval = fcntl(sd, F_GETFL, 0); \
+	if (retval != -1) { \
+		retval |= O_NONBLOCK; \
+		retval = fcntl(sd, F_SETFL, retval); \
+	} \
+} while (0)
 #endif
 
 lwres_uint16_t lwres_udp_port = LWRES_UDP_PORT;
@@ -181,7 +195,6 @@ context_connect(lwres_context_t *ctx) {
 	struct sockaddr_in6 sin6;
 	struct sockaddr *sa;
 	LWRES_SOCKADDR_LEN_T salen;
-	int flags;
 	int domain;
 
 	if (ctx->confdata.lwnext != 0) {
@@ -228,9 +241,7 @@ context_connect(lwres_context_t *ctx) {
 		return (LWRES_R_IOERROR);
 	}
 
-	flags = fcntl(s, F_GETFL, 0);
-	flags |= O_NONBLOCK;
-	ret = fcntl(s, F_SETFL, flags);
+	MAKE_NONBLOCKING(s, ret);
 	if (ret < 0)
 		return (LWRES_R_IOERROR);
 
@@ -295,6 +306,9 @@ lwres_context_recv(lwres_context_t *ctx,
 	if (ret < 0)
 		return (LWRES_R_IOERROR);
 
+	if (ret == recvlen)
+		return (LWRES_R_TOOLARGE);
+
 	/*
 	 * If we got something other than what we expect, have the caller
 	 * wait for another packet.  This can happen if an old result
@@ -330,7 +344,6 @@ lwres_context_sendrecv(lwres_context_t *ctx,
 	int ret2;
 	fd_set readfds;
 	struct timeval timeout;
-
 
 	/*
 	 * Type of tv_sec is long, so make sure the unsigned long timeout

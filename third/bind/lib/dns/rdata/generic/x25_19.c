@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: x25_19.c,v 1.1.1.1 2001-10-22 13:08:39 ghudson Exp $ */
+/* $Id: x25_19.c,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 /* Reviewed: Thu Mar 16 16:15:57 PST 2000 by bwelling */
 
@@ -31,20 +31,23 @@ fromtext_x25(ARGS_FROMTEXT) {
 	isc_token_t token;
 	unsigned int i;
 
+	REQUIRE(type == 19);
+
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
-
-	REQUIRE(type == 19);
+	UNUSED(callbacks);
 
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_qstring,
 				      ISC_FALSE));
 	if (token.value.as_textregion.length < 4)
-		return (DNS_R_SYNTAX);
+		RETTOK(DNS_R_SYNTAX);
 	for (i = 0; i < token.value.as_textregion.length; i++)
 		if (!isdigit(token.value.as_textregion.base[i] & 0xff))
-			return (ISC_R_RANGE);
-	return (txt_fromtext(&token.value.as_textregion, target));
+			RETTOK(ISC_R_RANGE);
+	RETTOK(txt_fromtext(&token.value.as_textregion, target));
+	return (ISC_R_SUCCESS);
 }
 
 static inline isc_result_t
@@ -64,11 +67,12 @@ static inline isc_result_t
 fromwire_x25(ARGS_FROMWIRE) {
 	isc_region_t sr;
 
+	REQUIRE(type == 19);
+
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(rdclass);
 	UNUSED(downcase);
-
-	REQUIRE(type == 19);
 
 	isc_buffer_activeregion(source, &sr);
 	if (sr.length < 5)
@@ -111,10 +115,13 @@ fromstruct_x25(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(x25->common.rdtype == type);
 	REQUIRE(x25->common.rdclass == rdclass);
-	REQUIRE((x25->x25 == NULL && x25->x25_len == 0) ||
-		(x25->x25 != NULL && x25->x25_len != 0));
+	REQUIRE(x25->x25 != NULL && x25->x25_len != 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
+
+	if (x25->x25_len < 4)
+		return (ISC_R_RANGE);
 
 	for (i = 0; i < x25->x25_len; i++)
 		if (!isdigit(x25->x25[i] & 0xff))
@@ -140,12 +147,9 @@ tostruct_x25(ARGS_TOSTRUCT) {
 	dns_rdata_toregion(rdata, &r);
 	x25->x25_len = uint8_fromregion(&r);
 	isc_region_consume(&r, 1);
-	if (x25->x25_len != 0) {
-		x25->x25 = mem_maybedup(mctx, r.base, x25->x25_len);
-		if (x25->x25 == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		x25->x25 = NULL;
+	x25->x25 = mem_maybedup(mctx, r.base, x25->x25_len);
+	if (x25->x25 == NULL)
+		return (ISC_R_NOMEMORY);
 
 	x25->mctx = mctx;
 	return (ISC_R_SUCCESS);

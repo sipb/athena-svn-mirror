@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lex.h,v 1.1.1.1 2001-10-22 13:09:15 ghudson Exp $ */
+/* $Id: lex.h,v 1.1.1.2 2002-02-03 04:25:37 ghudson Exp $ */
 
 #ifndef ISC_LEX_H
 #define ISC_LEX_H 1
@@ -87,7 +87,7 @@ ISC_LANG_BEGINDECLS
 
 #define ISC_LEXOPT_CNUMBER		0x80    /* Regognise octal and hex */
 #define ISC_LEXOPT_ESCAPE		0x100	/* Recognize escapes. */
-
+#define ISC_LEXOPT_QSTRINGMULTILINE	0x200	/* Allow multiline "" strings */
 
 /*
  * Various commenting styles, which may be changed at any time with

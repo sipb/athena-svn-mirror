@@ -1,4 +1,4 @@
-/* $Id: lace.h,v 1.1.1.1 2001-10-22 13:07:20 ghudson Exp $ */
+/* $Id: lace.h,v 1.1.1.2 2002-02-03 04:23:32 ghudson Exp $ */
 /*
  * Copyright (c) 2000 Japan Network Information Center.  All rights reserved.
  *  
@@ -70,13 +70,13 @@
 #include <mdn/converter.h>
 
 extern mdn_result_t
-mdn__lace_open(mdn_converter_t ctx, mdn_converter_dir_t dir);
+mdn__lace_open(mdn_converter_t ctx, mdn_converter_dir_t dir, void **privdata);
 
 extern mdn_result_t
-mdn__lace_close(mdn_converter_t ctx, mdn_converter_dir_t dir);
+mdn__lace_close(mdn_converter_t ctx, void *privdata, mdn_converter_dir_t dir);
 
 extern mdn_result_t
-mdn__lace_convert(mdn_converter_t ctx, mdn_converter_dir_t dir,
+mdn__lace_convert(mdn_converter_t ctx, void *privdata, mdn_converter_dir_t dir,
 		  const char *from, char *to, size_t tolen);
 
 #endif /* MDN_LACE_H */

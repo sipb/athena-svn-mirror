@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lex.c,v 1.1.1.1 2001-10-22 13:09:23 ghudson Exp $ */
+/* $Id: lex.c,v 1.1.1.2 2002-02-03 04:25:46 ghudson Exp $ */
 
 #include <config.h>
 
@@ -43,12 +43,11 @@ typedef struct inputsource {
 	char *				name;
 	unsigned long			line;
 	unsigned long			saved_line;
-	LINK(struct inputsource)	link;
+	ISC_LINK(struct inputsource)	link;
 } inputsource;
 
-#define LEX_MAGIC			0x4C657821U	/* Lex!. */
-#define VALID_LEX(l)			((l) != NULL && \
-					 (l)->magic == LEX_MAGIC)
+#define LEX_MAGIC			ISC_MAGIC('L', 'e', 'x', '!')
+#define VALID_LEX(l)			ISC_MAGIC_VALID(l, LEX_MAGIC)
 
 struct isc_lex {
 	/* Unlocked. */
@@ -236,10 +235,6 @@ isc_lex_openfile(isc_lex_t *lex, const char *filename) {
 	if (result != ISC_R_SUCCESS)
 		return (result);
 
-#ifdef HAVE_FLOCKFILE
-	flockfile(stream);
-#endif
-
 	result = new_source(lex, ISC_TRUE, ISC_TRUE, stream, filename);
 	if (result != ISC_R_SUCCESS)
 		fclose(stream);
@@ -256,9 +251,6 @@ isc_lex_openstream(isc_lex_t *lex, FILE *stream) {
 
 	REQUIRE(VALID_LEX(lex));
 
-#ifdef HAVE_FLOCKFILE
-	flockfile(stream);
-#endif
 	/* This is safe. */
 	sprintf(name, "stream-%p", stream);
 
@@ -295,11 +287,8 @@ isc_lex_close(isc_lex_t *lex) {
 	if (source == NULL)
 		return (ISC_R_NOMORE);
 
-	UNLINK(lex->sources, source, link);
+	ISC_LIST_UNLINK(lex->sources, source, link);
 	if (source->is_file) {
-#ifdef HAVE_FLOCKFILE
-		funlockfile((FILE *)(source->input));
-#endif
 		if (source->need_close)
 			fclose((FILE *)(source->input));
 	}
@@ -372,7 +361,7 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 	FILE *stream;
 	char *curr, *prev;
 	size_t remaining;
-	unsigned long ulong;
+	unsigned long as_ulong;
 	unsigned int saved_options;
 	char *e;
 	isc_result_t result;
@@ -423,12 +412,18 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 
 	prev = NULL;
 	remaining = lex->max_token;
+
+#ifdef HAVE_FLOCKFILE
+	if (source->is_file)
+		flockfile(source->input);
+#endif
+
 	do {
 		if (isc_buffer_remaininglength(source->pushback) == 0) {
 			if (source->is_file) {
 				stream = source->input;
 
-#ifdef HAVE_FLOCKFILE
+#if defined(HAVE_FLOCKFILE) && defined(HAVE_GETCUNLOCKED)
 				c = getc_unlocked(stream);
 #else
 				c = getc(stream);
@@ -436,7 +431,8 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 				if (c == EOF) {
 					if (ferror(stream)) {
 						source->result = ISC_R_IOERROR;
-						return (source->result);
+						result = source->result;
+						goto done;
 					}
 					source->at_eof = ISC_TRUE;
 				}
@@ -454,8 +450,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 			}
 			if (c != EOF) {
 				source->result = pushandgrow(lex, source, c);
-				if (source->result != ISC_R_SUCCESS)
-					return (source->result);
+				if (source->result != ISC_R_SUCCESS) {
+					result = source->result;
+					goto done;
+				}
 			}
 		}
 
@@ -505,10 +503,14 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 			if (c == EOF) {
 				lex->last_was_eol = ISC_FALSE;
 				if ((options & ISC_LEXOPT_DNSMULTILINE) != 0 &&
-				    lex->paren_count != 0)
-						return (ISC_R_UNBALANCED);
-				if ((options & ISC_LEXOPT_EOF) == 0)
-					return (ISC_R_EOF);
+				    lex->paren_count != 0) {
+					result = ISC_R_UNBALANCED;
+					goto done;
+				}
+				if ((options & ISC_LEXOPT_EOF) == 0) {
+					result = ISC_R_EOF;
+					goto done;
+				}
 				tokenp->type = isc_tokentype_eof;
 				done = ISC_TRUE;
 			} else if (c == ' ' || c == '\t') {
@@ -543,8 +545,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 							options &= ~IWSEOL;
 						lex->paren_count++;
 					} else {
-						if (lex->paren_count == 0)
-						    return (ISC_R_UNBALANCED);
+						if (lex->paren_count == 0) {
+						    result = ISC_R_UNBALANCED;
+						    goto done;
+						}
 						lex->paren_count--;
 						if (lex->paren_count == 0)
 							options =
@@ -584,15 +588,16 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 					else
 						base = 10;
 					pushback(source, c);
-					ulong = strtoul(lex->data, &e, base);
-					if (ulong == ULONG_MAX &&
+					as_ulong = strtoul(lex->data, &e, base);
+					if (as_ulong == ULONG_MAX &&
 					    errno == ERANGE) {
-						return (ISC_R_RANGE);
+						result = ISC_R_RANGE;
+						goto done;
 					} else if (*e == 0) {
 						tokenp->type =
 							isc_tokentype_number;
 						tokenp->value.as_ulong =
-							ulong;
+							as_ulong;
 					} else {
 						isc_tokenvalue_t *v;
 
@@ -619,7 +624,7 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 				result = grow_data(lex, &remaining,
 						   &curr, &prev);
 				if (result != ISC_R_SUCCESS)
-					return (result);
+					goto done;
 			}
 			INSIST(remaining > 0);
 			*curr++ = c;
@@ -631,8 +636,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 			     (c == ' ' || c == '\t' || lex->specials[c])) ||
 			    c == '\r' || c == '\n' || c == EOF) {
 				pushback(source, c);
-				if (source->result != ISC_R_SUCCESS)
-					return (source->result);
+				if (source->result != ISC_R_SUCCESS) {
+					result = source->result;
+					goto done;
+				}
 				tokenp->type = isc_tokentype_string;
 				tokenp->value.as_textregion.base = lex->data;
 				tokenp->value.as_textregion.length =
@@ -647,7 +654,7 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 				result = grow_data(lex, &remaining,
 						   &curr, &prev);
 				if (result != ISC_R_SUCCESS)
-					return (result);
+					goto done;
 			}
 			INSIST(remaining > 0);
 			*curr++ = c;
@@ -670,14 +677,18 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 			state = saved_state;
 			goto no_read;
 		case lexstate_ccomment:
-			if (c == EOF)
-				return (ISC_R_UNEXPECTEDEND);
+			if (c == EOF) {
+				result = ISC_R_UNEXPECTEDEND;
+				goto done;
+			}
 			if (c == '*')
 				state = lexstate_ccommentend;
 			break;
 		case lexstate_ccommentend:
-			if (c == EOF)
-				return (ISC_R_UNEXPECTEDEND);
+			if (c == EOF) {
+				result = ISC_R_UNEXPECTEDEND;
+				goto done;
+			}
 			if (c == '/') {
 				/*
 				 * C-style comments become a single space.
@@ -693,8 +704,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 				state = lexstate_ccomment;
 			break;
 		case lexstate_eatline:
-			if (c == EOF)
-				return (ISC_R_UNEXPECTEDEND);
+			if (c == EOF) {
+				result = ISC_R_UNEXPECTEDEND;
+				goto done;
+			}
 			if (c == '\n') {
 				no_comments = ISC_FALSE;
 				state = saved_state;
@@ -702,8 +715,10 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 			}
 			break;
 		case lexstate_qstring:
-			if (c == EOF)
-				return (ISC_R_UNEXPECTEDEND);
+			if (c == EOF) {
+				result = ISC_R_UNEXPECTEDEND;
+				goto done;
+			}
 			if (c == '"') {
 				if (escaped) {
 					escaped = ISC_FALSE;
@@ -722,6 +737,12 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 					done = ISC_TRUE;
 				}
 			} else {
+				if (c == '\n' && !escaped &&
+			    (options & ISC_LEXOPT_QSTRINGMULTILINE) == 0) {
+					pushback(source, c);
+					result = ISC_R_UNBALANCEDQUOTES;
+					goto done;
+				}
 				if (c == '\\' && !escaped)
 					escaped = ISC_TRUE;
 				else
@@ -730,7 +751,7 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 					result = grow_data(lex, &remaining,
 							   &curr, &prev);
 					if (result != ISC_R_SUCCESS)
-						return (result);
+						goto done;
 				}
 				INSIST(remaining > 0);
 				prev = curr;
@@ -750,7 +771,13 @@ isc_lex_gettoken(isc_lex_t *lex, unsigned int options, isc_token_t *tokenp) {
 
 	} while (!done);
 
-	return (ISC_R_SUCCESS);
+	result = ISC_R_SUCCESS;
+ done:
+#ifdef HAVE_FLOCKFILE
+	if (source->is_file)
+		funlockfile(source->input);
+#endif
+	return (result);
 }
 
 isc_result_t
@@ -766,6 +793,8 @@ isc_lex_getmastertoken(isc_lex_t *lex, isc_token_t *token,
 	else if (expect == isc_tokentype_number)
 		options |= ISC_LEXOPT_NUMBER;
 	result = isc_lex_gettoken(lex, options, token);
+	if (result == ISC_R_RANGE)
+		isc_lex_ungettoken(lex, token);
 	if (result != ISC_R_SUCCESS)
 		return (result);
 
@@ -822,8 +851,10 @@ isc_lex_getlasttokentext(isc_lex_t *lex, isc_token_t *tokenp, isc_region_t *r)
 	UNUSED(tokenp);
 
 	INSIST(source->ignored <= isc_buffer_consumedlength(source->pushback));
-	r->base = (unsigned char *)isc_buffer_base(source->pushback) + source->ignored;
-	r->length = isc_buffer_consumedlength(source->pushback) - source->ignored;
+	r->base = (unsigned char *)isc_buffer_base(source->pushback) +
+		  source->ignored;
+	r->length = isc_buffer_consumedlength(source->pushback) -
+		    source->ignored;
 }
 
 

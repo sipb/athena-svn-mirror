@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: dbiterator.c,v 1.1.1.1 2001-10-22 13:07:48 ghudson Exp $ */
+/* $Id: dbiterator.c,v 1.1.1.2 2002-02-03 04:24:54 ghudson Exp $ */
 
 #include <config.h>
 
@@ -131,4 +131,11 @@ dns_dbiterator_origin(dns_dbiterator_t *iterator, dns_name_t *name) {
 	REQUIRE(dns_name_hasbuffer(name));
 
 	return (iterator->methods->origin(iterator, name));
+}
+
+void
+dns_dbiterator_setcleanmode(dns_dbiterator_t *iterator, isc_boolean_t mode) {
+	REQUIRE(DNS_DBITERATOR_VALID(iterator));
+
+	iterator->cleaning = mode;
 }

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ncache.h,v 1.1.1.1 2001-10-22 13:08:25 ghudson Exp $ */
+/* $Id: ncache.h,v 1.1.1.2 2002-02-03 04:24:43 ghudson Exp $ */
 
 #ifndef DNS_NCACHE_H
 #define DNS_NCACHE_H 1

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwsearch.c,v 1.1.1.1 2001-10-22 13:06:47 ghudson Exp $ */
+/* $Id: lwsearch.c,v 1.1.1.2 2002-02-03 04:22:45 ghudson Exp $ */
 
 #include <config.h>
 

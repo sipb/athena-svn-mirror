@@ -13,7 +13,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: lookup.tcl,v 1.1.1.1 2001-10-22 13:05:09 ghudson Exp $
+# $Id: lookup.tcl,v 1.1.1.2 2002-02-03 04:31:53 ghudson Exp $
 
 #
 # Sample lookup procedure for tcldb

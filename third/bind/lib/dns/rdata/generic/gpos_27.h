@@ -18,7 +18,7 @@
 #ifndef GENERIC_GPOS_27_H
 #define GENERIC_GPOS_27_H 1
 
-/* $Id: gpos_27.h,v 1.1.1.1 2001-10-22 13:08:32 ghudson Exp $ */
+/* $Id: gpos_27.h,v 1.1.1.2 2002-02-03 04:25:21 ghudson Exp $ */
 
 /* RFC 1712 */
 

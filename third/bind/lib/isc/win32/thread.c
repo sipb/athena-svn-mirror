@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: thread.c,v 1.1.1.1 2001-10-22 13:09:37 ghudson Exp $ */
+/* $Id: thread.c,v 1.1.1.2 2002-02-03 04:26:06 ghudson Exp $ */
 
 #include <config.h>
 
@@ -57,4 +57,12 @@ isc_thread_join(isc_thread_t thread, isc_threadresult_t *rp) {
 	(void)CloseHandle(thread);
 
 	return (ISC_R_SUCCESS);
+}
+
+void
+isc_thread_setconcurrency(unsigned int level) {
+	/*
+	 * This is unnecessary on Win32 systems, but is here so that the
+	 * call exists
+	 */
 }

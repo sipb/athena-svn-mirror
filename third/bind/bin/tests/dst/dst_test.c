@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: dst_test.c,v 1.1.1.1 2001-10-22 13:06:56 ghudson Exp $ */
+/* $Id: dst_test.c,v 1.1.1.2 2002-02-03 04:22:56 ghudson Exp $ */
 
 #include <config.h>
 

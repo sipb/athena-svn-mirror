@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cert_37.c,v 1.1.1.1 2001-10-22 13:08:32 ghudson Exp $ */
+/* $Id: cert_37.c,v 1.1.1.2 2002-02-03 04:25:20 ghudson Exp $ */
 
 /* Reviewed: Wed Mar 15 21:14:32 EST 2000 by tale */
 
@@ -34,16 +34,18 @@ fromtext_cert(ARGS_FROMTEXT) {
 
 	REQUIRE(type == 37);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
+	UNUSED(callbacks);
 
 	/*
 	 * Cert type.
 	 */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
-	RETERR(dns_cert_fromtext(&cert, &token.value.as_textregion));
+	RETTOK(dns_cert_fromtext(&cert, &token.value.as_textregion));
 	RETERR(uint16_tobuffer(cert, target));
 
 	/*
@@ -52,7 +54,7 @@ fromtext_cert(ARGS_FROMTEXT) {
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
 				      ISC_FALSE));
 	if (token.value.as_ulong > 0xffff)
-		return (ISC_R_RANGE);
+		RETTOK(ISC_R_RANGE);
 	RETERR(uint16_tobuffer(token.value.as_ulong, target));
 
 	/*
@@ -60,7 +62,7 @@ fromtext_cert(ARGS_FROMTEXT) {
 	 */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
-	RETERR(dns_secalg_fromtext(&secalg, &token.value.as_textregion));
+	RETTOK(dns_secalg_fromtext(&secalg, &token.value.as_textregion));
 	RETERR(mem_tobuffer(target, &secalg, 1));
 
 	return (isc_base64_tobuffer(lexer, target, -1));
@@ -120,6 +122,7 @@ fromwire_cert(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 37);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(dctx);
 	UNUSED(downcase);
@@ -170,6 +173,7 @@ fromstruct_cert(ARGS_FROMSTRUCT) {
 	REQUIRE(cert->common.rdtype == type);
 	REQUIRE(cert->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	RETERR(uint16_tobuffer(cert->type, target));
@@ -202,13 +206,9 @@ tostruct_cert(ARGS_TOSTRUCT) {
 	isc_region_consume(&region, 1);
 	cert->length = region.length;
 
-	if (cert->length > 0) {
-		cert->certificate = mem_maybedup(mctx, region.base,
-						 region.length);
-		if (cert->certificate == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		cert->certificate = NULL;
+	cert->certificate = mem_maybedup(mctx, region.base, region.length);
+	if (cert->certificate == NULL)
+		return (ISC_R_NOMEMORY);
 
 	cert->mctx = mctx;
 	return (ISC_R_SUCCESS);

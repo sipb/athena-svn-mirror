@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: result.c,v 1.1.1.1 2001-10-22 13:08:06 ghudson Exp $ */
+/* $Id: result.c,v 1.1.1.2 2002-02-03 04:25:10 ghudson Exp $ */
 
 #include <config.h>
 
@@ -100,7 +100,7 @@ static const char *text[DNS_R_NRESULTS] = {
 
 	"no valid NXT",			       /* 60 DNS_R_NOVALIDNXT	     */
 	"not insecure",			       /* 61 DNS_R_NOTINSECURE	     */
-	"<unused 62> ",			       /* 62 unused		     */
+	"unknown service",		       /* 62 DNS_R_UNKNOWNSERVICE    */
 	"recoverable error occurred",	       /* 63 DNS_R_RECOVERABLE       */
 	"unknown opt attribute record",	       /* 64 DNS_R_UNKNOWNOPT	     */
 
@@ -114,11 +114,13 @@ static const char *text[DNS_R_NRESULTS] = {
 	"CNAME and other data",		       /* 71 DNS_R_CNAMEANDOTHER     */
 	"multiple RRs of singleton type",      /* 72 DNS_R_SINGLETON	     */
 	"hint nxrrset",			       /* 73 DNS_R_HINTNXRRSET	     */
-	"no master file configured",	       /* 74 DNS_R_NOMASTERFILE      */
-	
-	"unknown protocol",		       /* 75 DNS_R_UNKNOWNPROTO      */
+	"no master file configured",	       /* 74 DNS_R_NOMASTERFILE	     */
+
+	"unknown protocol",		       /* 75 DNS_R_UNKNOWNPROTO	     */
 	"clocks are unsynchronized",	       /* 76 DNS_R_CLOCKSKEW	     */
-	"IXFR failed"			       /* 77 DNS_R_BADIXFR	     */
+	"IXFR failed",			       /* 77 DNS_R_BADIXFR	     */
+	"<unused 78>",			       /* 78 unused		     */
+	"no valid KEY"			       /* 79 DNS_R_NOVALIDKEY	     */
 };
 
 static const char *rcode_text[DNS_R_NRCODERESULTS] = {

@@ -15,13 +15,16 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: acconfig.h,v 1.1.1.1 2001-10-22 13:07:13 ghudson Exp $ */
+/* $Id: acconfig.h,v 1.1.1.2 2002-02-03 04:23:12 ghudson Exp $ */
 
 /***
  *** This file is not to be included by any public header files, because
  *** it does not get installed.
  ***/
 @TOP@
+
+/* define to `int' if <sys/types.h> doesn't define.  */
+#undef ssize_t
 
 /* define on DEC OSF to enable 4.4BSD style sa_len support */
 #undef _SOCKADDR_LEN
@@ -43,6 +46,9 @@
 
 /* define if sysconf() is available */
 #undef HAVE_SYSCONF
+
+/* define if sysctlbyname() is available */
+#undef HAVE_SYSCTLBYNAME
 
 /* define if catgets() is available */
 #undef HAVE_CATGETS
@@ -81,8 +87,8 @@
 /* define if flockfile() is available */
 #undef HAVE_FLOCKFILE
 
-/* define if rlim_t is defined via sys/types.h or sys/resource.h */
-#undef HAVE_RLIM_T
+/* define if getc_unlocked() is available */
+#undef HAVE_GETCUNLOCKED
 
 /* Shut up warnings about sputaux in stdio.h on BSD/OS pre-4.1 */
 #undef SHUTUP_SPUTAUX
@@ -120,3 +126,6 @@ int sigwait(const unsigned int *set, int *sig);
 
 /* define if pthread_attr_getstacksize() is available */
 #undef HAVE_PTHREAD_ATTR_GETSTACKSIZE
+
+/* define if you have strerror in the C library. */
+#undef HAVE_STRERROR

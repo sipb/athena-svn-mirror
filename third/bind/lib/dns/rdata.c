@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdata.c,v 1.1.1.1 2001-10-22 13:08:02 ghudson Exp $ */
+/* $Id: rdata.c,v 1.1.1.2 2002-02-03 04:25:07 ghudson Exp $ */
 
 #include <config.h>
 #include <ctype.h>
@@ -43,15 +43,25 @@
 #include <dns/time.h>
 #include <dns/ttl.h>
 
-#define RETERR(x) do { \
-	isc_result_t _r = (x); \
-	if (_r != ISC_R_SUCCESS) \
-		return (_r); \
+#define RETERR(x) \
+	do { \
+		isc_result_t _r = (x); \
+		if (_r != ISC_R_SUCCESS) \
+			return (_r); \
+	} while (0)
+#define RETTOK(x) \
+	do { \
+		isc_result_t _r = (x); \
+		if (_r != ISC_R_SUCCESS) { \
+			isc_lex_ungettoken(lexer, &token); \
+			return (_r); \
+		} \
 	} while (0)
 
 #define ARGS_FROMTEXT	int rdclass, dns_rdatatype_t type, \
 			isc_lex_t *lexer, dns_name_t *origin, \
-			isc_boolean_t downcase, isc_buffer_t *target
+			isc_boolean_t downcase, isc_buffer_t *target, \
+			dns_rdatacallbacks_t *callbacks
 
 #define ARGS_TOTEXT	dns_rdata_t *rdata, dns_rdata_textctx_t *tctx, \
 			isc_buffer_t *target
@@ -107,6 +117,9 @@ name_length(dns_name_t *name);
 static isc_result_t
 str_totext(const char *source, isc_buffer_t *target);
 
+static isc_result_t
+inet_totext(int af, isc_region_t *src, isc_buffer_t *target);
+
 static isc_boolean_t
 buffer_empty(isc_buffer_t *source);
 
@@ -153,7 +166,8 @@ static isc_result_t
 atob_tobuffer(isc_lex_t *lexer, isc_buffer_t *target);
 
 static void
-default_fromtext_callback(dns_rdatacallbacks_t *callbacks, const char *, ...);
+default_fromtext_callback(dns_rdatacallbacks_t *callbacks, const char *, ...)
+     ISC_FORMAT_PRINTF(2, 3);
 
 static void
 fromtext_error(void (*callback)(dns_rdatacallbacks_t *, const char *, ...),
@@ -166,6 +180,25 @@ fromtext_warneof(isc_lex_t *lexer, dns_rdatacallbacks_t *callbacks);
 static isc_result_t
 rdata_totext(dns_rdata_t *rdata, dns_rdata_textctx_t *tctx,
 	     isc_buffer_t *target);
+
+static inline int
+getquad(const void *src, struct in_addr *dst,
+	isc_lex_t *lexer, dns_rdatacallbacks_t *callbacks)
+{
+	int result;
+	struct in_addr *tmp;
+
+	result = inet_aton(src, dst);
+	if (result == 1 && callbacks != NULL &&
+	    inet_pton(AF_INET, src, &tmp) != 1) {
+		(*callbacks->warn)(callbacks, "%s:%lu: warning \"%s\" "
+			           "is not a decimal dotted quad",
+				   isc_lex_getsourcename(lexer),
+				   isc_lex_getsourceline(lexer),
+				   src);
+	}
+	return (result);
+}
 
 static inline isc_result_t
 name_duporclone(dns_name_t *source, isc_mem_t *mctx, dns_name_t *target) {
@@ -347,6 +380,8 @@ dns_rdata_init(dns_rdata_t *rdata) {
 void
 dns_rdata_reset(dns_rdata_t *rdata) {
 
+	REQUIRE(rdata != NULL);
+
 	REQUIRE(!ISC_LINK_LINKED(rdata, link));
 	REQUIRE(DNS_RDATA_VALIDFLAGS(rdata));
 
@@ -363,6 +398,9 @@ dns_rdata_reset(dns_rdata_t *rdata) {
 
 void
 dns_rdata_clone(const dns_rdata_t *src, dns_rdata_t *target) {
+
+	REQUIRE(src != NULL);
+	REQUIRE(target != NULL);
 
 	REQUIRE(DNS_RDATA_INITIALIZED(target));
 
@@ -463,6 +501,9 @@ dns_rdata_fromwire(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 		REQUIRE(DNS_RDATA_INITIALIZED(rdata));
 		REQUIRE(DNS_RDATA_VALIDFLAGS(rdata));
 	}
+
+	if (type == 0)
+		return (DNS_R_FORMERR);
 
 	ss = *source;
 	st = *target;
@@ -573,7 +614,7 @@ unknown_fromtext(dns_rdataclass_t rdclass, dns_rdatatype_t type,
 	isc_buffer_t *buf = NULL;
 	isc_token_t token;
 
-	if (dns_rdatatype_ismeta(type))
+	if (type == 0 || dns_rdatatype_ismeta(type))
 		return (DNS_R_METATYPE);
 
 	result = isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
@@ -626,7 +667,7 @@ dns_rdata_fromtext(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 	char *name;
 	unsigned long line;
 	void (*callback)(dns_rdatacallbacks_t *, const char *, ...);
-	isc_result_t iresult;
+	isc_result_t tresult;
 
 	REQUIRE(origin == NULL || dns_name_isabsolute(origin) == ISC_TRUE);
 	if (rdata != NULL) {
@@ -636,10 +677,24 @@ dns_rdata_fromtext(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 
 	st = *target;
 
+	if (callbacks == NULL)
+		callback = NULL;
+	else
+		callback = callbacks->error;
+
+	if (callback == NULL)
+		callback = default_fromtext_callback;
+
 	result = isc_lex_getmastertoken(lexer, &token, isc_tokentype_qstring,
 					ISC_FALSE);
-	if (result != ISC_R_SUCCESS)
+	if (result != ISC_R_SUCCESS) {
+		name = isc_lex_getsourcename(lexer);
+		line = isc_lex_getsourceline(lexer);
+		fromtext_error(callback, callbacks, name, line,
+			       &token, result);
 		return (result);
+	}
+
 	if (strcmp((char *)token.value.as_pointer, "\\#") == 0)
 		result = unknown_fromtext(rdclass, type, lexer, mctx, target);
 	else {
@@ -648,13 +703,6 @@ dns_rdata_fromtext(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 		FROMTEXTSWITCH
 	}
 
-	if (callbacks == NULL)
-		callback = NULL;
-	else
-		callback = callbacks->error;
-
-	if (callback == NULL)
-		callback = default_fromtext_callback;
 	/*
 	 * Consume to end of line / file.
 	 * If not at end of line initially set error code.
@@ -663,24 +711,10 @@ dns_rdata_fromtext(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 	do {
 		name = isc_lex_getsourcename(lexer);
 		line = isc_lex_getsourceline(lexer);
-		iresult = isc_lex_gettoken(lexer, options, &token);
-		if (iresult != ISC_R_SUCCESS) {
-			if (result == ISC_R_SUCCESS) {
-				switch (iresult) {
-				case ISC_R_NOMEMORY:
-					result = ISC_R_NOMEMORY;
-					break;
-				case ISC_R_NOSPACE:
-					result = ISC_R_NOSPACE;
-					break;
-				default:
-					UNEXPECTED_ERROR(__FILE__, __LINE__,
-					    "isc_lex_gettoken() failed: %s",
-					    isc_result_totext(iresult));
-					result = ISC_R_UNEXPECTED;
-					break;
-				}
-			}
+		tresult = isc_lex_gettoken(lexer, options, &token);
+		if (tresult != ISC_R_SUCCESS) {
+			if (result == ISC_R_SUCCESS)
+				result = tresult;
 			if (callback != NULL)
 				fromtext_error(callback, callbacks, name,
 					       line, NULL, result);
@@ -1022,6 +1056,7 @@ dns_rdataclass_fromtext(dns_rdataclass_t *classp, isc_textregion_t *source) {
 		break;
 	case 'h':
 		COMPARE("hs", dns_rdataclass_hs);
+		COMPARE("hesiod", dns_rdataclass_hs);
 		break;
 	case 'i':
 		COMPARE("in", dns_rdataclass_in);
@@ -1317,7 +1352,7 @@ txt_totext(isc_region_t *source, isc_buffer_t *target) {
 	*tp++ = '"';
 	tl--;
 	while (n--) {
-		if (*sp < 0x20 || *sp > 0x7f) {
+		if (*sp < 0x20 || *sp >= 0x7f) {
 			if (tl < 4)
 				return (ISC_R_NOSPACE);
 			sprintf(tp, "\\%03u", *sp++);
@@ -1374,7 +1409,7 @@ txt_fromtext(isc_textregion_t *source, isc_buffer_t *target) {
 	if (nrem > 255)
 		nrem = 255;
 	while (n-- != 0) {
-		c = (*s++)&0xff;
+		c = (*s++) & 0xff;
 		if (escape && (d = decvalue((char)c)) != -1) {
 			c = d;
 			if (n == 0)
@@ -1473,6 +1508,19 @@ str_totext(const char *source, isc_buffer_t *target) {
 
 	memcpy(region.base, source, l);
 	isc_buffer_add(target, l);
+	return (ISC_R_SUCCESS);
+}
+
+static isc_result_t
+inet_totext(int af, isc_region_t *src, isc_buffer_t *target) {
+	char tmpbuf[64];
+
+	/* Note - inet_ntop doesn't do size checking on its input. */
+	if (inet_ntop(af, src->base, tmpbuf, sizeof(tmpbuf)) == NULL)
+		return (ISC_R_NOSPACE);
+	if (strlen(tmpbuf) > isc_buffer_availablelength(target))
+		return (ISC_R_NOSPACE);
+	isc_buffer_putstr(target, tmpbuf);
 	return (ISC_R_SUCCESS);
 }
 

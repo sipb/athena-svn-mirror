@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: taskpool.h,v 1.1.1.1 2001-10-22 13:09:20 ghudson Exp $ */
+/* $Id: taskpool.h,v 1.1.1.2 2002-02-03 04:25:42 ghudson Exp $ */
 
 #ifndef ISC_TASKPOOL_H
 #define ISC_TASKPOOL_H 1
@@ -85,7 +85,8 @@ isc_taskpool_create(isc_taskmgr_t *tmgr, isc_mem_t *mctx,
  *	ISC_R_UNEXPECTED
  */
 
-void isc_taskpool_gettask(isc_taskpool_t *pool, unsigned int hash,
+void 
+isc_taskpool_gettask(isc_taskpool_t *pool, unsigned int hash,
 			  isc_task_t **targetp);
 /*
  * Attach to the task corresponding to the hash value "hash".

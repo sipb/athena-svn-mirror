@@ -19,10 +19,10 @@
 
 /*
  * Principal Author: Brian Wellington
- * $Id: openssldh_link.c,v 1.1.1.1 2001-10-22 13:08:46 ghudson Exp $
+ * $Id: openssldh_link.c,v 1.1.1.2 2002-02-03 04:25:34 ghudson Exp $
  */
 
-#if defined(OPENSSL)
+#ifdef OPENSSL
 
 #include <config.h>
 
@@ -413,8 +413,7 @@ openssldh_tofile(const dst_key_t *key, const char *directory) {
 }
 
 static isc_result_t
-openssldh_fromfile(dst_key_t *key, const isc_uint16_t id, const char *filename)
-{
+openssldh_fromfile(dst_key_t *key, const char *filename) {
 	dst_private_t priv;
 	isc_result_t ret;
 	int i;
@@ -425,7 +424,7 @@ openssldh_fromfile(dst_key_t *key, const isc_uint16_t id, const char *filename)
 	mctx = key->mctx;
 
 	/* read private key file */
-	ret = dst__privstruct_parsefile(key, id, filename, mctx, &priv);
+	ret = dst__privstruct_parsefile(key, filename, mctx, &priv);
 	if (ret != ISC_R_SUCCESS)
 		return (ret);
 

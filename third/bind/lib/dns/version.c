@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: version.c,v 1.1.1.1 2001-10-22 13:08:11 ghudson Exp $ */
+/* $Id: version.c,v 1.1.1.2 2002-02-03 04:25:16 ghudson Exp $ */
 
 char dns_version[] = VERSION;
 

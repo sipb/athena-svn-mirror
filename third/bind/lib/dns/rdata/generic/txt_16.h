@@ -18,7 +18,7 @@
 #ifndef GENERIC_TXT_16_H
 #define GENERIC_TXT_16_H 1
 
-/* $Id: txt_16.h,v 1.1.1.1 2001-10-22 13:08:38 ghudson Exp $ */
+/* $Id: txt_16.h,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 typedef struct dns_rdata_txt_string {
                 isc_uint8_t    length;

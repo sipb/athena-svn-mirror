@@ -1,4 +1,4 @@
-/* $Id: result.h,v 1.1.1.1 2001-10-22 13:07:21 ghudson Exp $ */
+/* $Id: result.h,v 1.1.1.2 2002-02-03 04:23:33 ghudson Exp $ */
 /*
  * Copyright (c) 2000 Japan Network Information Center.  All rights reserved.
  *  
@@ -70,12 +70,15 @@ typedef enum {
 	mdn_invalid_syntax,
 	mdn_invalid_name,
 	mdn_invalid_message,
+	mdn_invalid_action,
+	mdn_invalid_codepoint,
 	mdn_buffer_overflow,
 	mdn_noentry,
 	mdn_nomemory,
 	mdn_nofile,
 	mdn_nomapping,
 	mdn_context_required,
+	mdn_prohibited,
 	mdn_failure	/* !!This must be the last one!! */
 } mdn_result_t;
 

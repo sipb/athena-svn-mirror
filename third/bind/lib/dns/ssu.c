@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: ssu.c,v 1.1.1.1 2001-10-22 13:08:08 ghudson Exp $
+ * $Id: ssu.c,v 1.1.1.2 2002-02-03 04:25:12 ghudson Exp $
  * Principal Author: Brian Wellington
  */
 
@@ -30,13 +30,14 @@
 #include <dns/name.h>
 #include <dns/ssu.h>
 
-#define SSUTABLEMAGIC		0x53535554 /* SSUT */
-#define VALID_SSUTABLE(table)	ISC_MAGIC_VALID((table), SSUTABLEMAGIC)
-#define SSURULEMAGIC		0x53535552 /* SSUR */
-#define VALID_SSURULE(table)	ISC_MAGIC_VALID((table), SSURULEMAGIC)
+#define SSUTABLEMAGIC		ISC_MAGIC('S', 'S', 'U', 'T')
+#define VALID_SSUTABLE(table)	ISC_MAGIC_VALID(table, SSUTABLEMAGIC)
+
+#define SSURULEMAGIC		ISC_MAGIC('S', 'S', 'U', 'R')
+#define VALID_SSURULE(table)	ISC_MAGIC_VALID(table, SSURULEMAGIC)
 
 struct dns_ssurule {
-	isc_uint32_t magic;
+	unsigned int magic;
 	isc_boolean_t grant;	/* is this a grant or a deny? */
 	unsigned int matchtype;	/* which type of pattern match? */
 	dns_name_t *identity;	/* the identity to match */
@@ -48,7 +49,7 @@ struct dns_ssurule {
 };
 
 struct dns_ssutable {
-	isc_uint32_t magic;
+	unsigned int magic;
 	isc_mem_t *mctx;
 	unsigned int references;
 	isc_mutex_t lock;

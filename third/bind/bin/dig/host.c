@@ -15,13 +15,11 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: host.c,v 1.1.1.1 2001-10-22 13:06:36 ghudson Exp $ */
+/* $Id: host.c,v 1.1.1.2 2002-02-03 04:22:35 ghudson Exp $ */
 
 #include <config.h>
 #include <stdlib.h>
 #include <limits.h>
-
-extern int h_errno;
 
 #include <isc/app.h>
 #include <isc/commandline.h>
@@ -45,17 +43,16 @@ extern ISC_LIST(dig_lookup_t) lookup_list;
 extern ISC_LIST(dig_server_t) server_list;
 extern ISC_LIST(dig_searchlist_t) search_list;
 
+extern isc_boolean_t usesearch;
 extern isc_boolean_t debugging;
 extern unsigned int timeout;
 extern isc_mem_t *mctx;
 extern int ndots;
 extern int tries;
-extern isc_boolean_t usesearch;
-extern int lookup_counter;
 extern char *progname;
 extern isc_task_t *global_task;
 
-isc_boolean_t short_form = ISC_TRUE, listed_server = ISC_FALSE;
+static isc_boolean_t short_form = ISC_TRUE, listed_server = ISC_FALSE;
 
 static const char *opcodetext[] = {
 	"QUERY",
@@ -230,54 +227,64 @@ dighost_shutdown(void) {
 }
 
 void
-received(int bytes, int frmsize, char *frm, dig_query_t *query) {
+received(int bytes, isc_sockaddr_t *from, dig_query_t *query)
+{
 	isc_time_t now;
 	isc_result_t result;
 	int diff;
 
 	if (!short_form) {
+		char fromtext[ISC_SOCKADDR_FORMATSIZE];
+		isc_sockaddr_format(from, fromtext, sizeof(fromtext));
 		result = isc_time_now(&now);
 		check_result(result, "isc_time_now");
-		diff = isc_time_microdiff(&now, &query->time_sent);
-		printf("Received %u bytes from %.*s in %d ms\n",
-		       bytes, frmsize, frm, diff/1000);
+		diff = (int) isc_time_microdiff(&now, &query->time_sent);
+		printf("Received %u bytes from %s in %d ms\n",
+		       bytes, fromtext, diff/1000);
 	}
 }
 
 void
-trying(int frmsize, char *frm, dig_lookup_t *lookup) {
+trying(char *frm, dig_lookup_t *lookup) {
 	UNUSED(lookup);
 
 	if (!short_form)
-		printf ("Trying \"%.*s\"\n", frmsize, frm);
+		printf("Trying \"%s\"\n", frm);
 }
 
 static void
 say_message(dns_name_t *name, const char *msg, dns_rdata_t *rdata,
 	    dig_query_t *query)
 {
-	isc_buffer_t *b = NULL, *b2 = NULL;
-	isc_region_t r, r2;
+	isc_buffer_t *b = NULL;
+	char namestr[DNS_NAME_FORMATSIZE];
+	isc_region_t r;
 	isc_result_t result;
+	unsigned int bufsize = BUFSIZ;
 
-	result = isc_buffer_allocate(mctx, &b, BUFSIZE);
+	dns_name_format(name, namestr, sizeof(namestr));
+ retry:
+	result = isc_buffer_allocate(mctx, &b, bufsize);
 	check_result(result, "isc_buffer_allocate");
-	result = isc_buffer_allocate(mctx, &b2, BUFSIZE);
-	check_result(result, "isc_buffer_allocate");
-	result = dns_name_totext(name, ISC_FALSE, b);
-	check_result(result, "dns_name_totext");
-	isc_buffer_usedregion(b, &r);
-	result = dns_rdata_totext(rdata, NULL, b2);
-	check_result(result, "dns_rdata_totext");
-	isc_buffer_usedregion(b2, &r2);
-	printf ( "%.*s %s %.*s", (int)r.length, (char *)r.base,
-		 msg, (int)r2.length, (char *)r2.base);
-	if (query->lookup->identify) {
-		printf (" on server %s", query->servname);
+	result = dns_rdata_totext(rdata, NULL, b);
+	if (result == ISC_R_NOSPACE) {
+		isc_buffer_free(&b);
+		bufsize *= 2;
+		goto retry;
 	}
-	printf ("\n");
+	check_result(result, "dns_rdata_totext");
+	isc_buffer_usedregion(b, &r);
+	if (query->lookup->identify_previous_line) {
+		printf("Nameserver %s:\n\t",
+			query->servname);
+	}
+	printf("%s %s %.*s", namestr,
+	       msg, (int)r.length, (char *)r.base);
+	if (query->lookup->identify) {
+		printf(" on server %s", query->servname);
+	}
+	printf("\n");
 	isc_buffer_free(&b);
-	isc_buffer_free(&b2);
 }
 
 
@@ -346,7 +353,7 @@ printsection(dns_message_t *msg, dns_section_t sectionid,
 				while (loopresult == ISC_R_SUCCESS) {
 					dns_rdataset_current(rdataset, &rdata);
 					if (rdata.type <= 103)
-						rtt=rtypetext[rdata.type];
+						rtt = rtypetext[rdata.type];
 					else if (rdata.type == 249)
 						rtt = "key";
 					else if (rdata.type == 250)
@@ -411,36 +418,25 @@ printmessage(dig_query_t *query, dns_message_t *msg, isc_boolean_t headers) {
 	dns_rdataset_t *opt, *tsig = NULL;
 	dns_name_t *tsigname;
 	isc_result_t result = ISC_R_SUCCESS;
-	isc_buffer_t *b = NULL;
-	isc_region_t r;
 
 	UNUSED(headers);
 
 	if (listed_server) {
+		char sockstr[ISC_SOCKADDR_FORMATSIZE];
+
 		printf("Using domain server:\n");
 		printf("Name: %s\n", query->servname);
-		result = isc_buffer_allocate(mctx, &b, MXNAME);
-		check_result(result, "isc_buffer_allocate");
-		result = isc_sockaddr_totext(&query->sockaddr, b);
-		check_result(result, "isc_sockaddr_totext");
-		printf("Address: %.*s\n",
-		       (int)isc_buffer_usedlength(b),
-		       (char*)isc_buffer_base(b));
-		isc_buffer_free(&b);
+		isc_sockaddr_format(&query->sockaddr, sockstr,
+				    sizeof(sockstr));
+		printf("Address: %s\n", sockstr);
 		printf("Aliases: \n\n");
 	}
 
 	if (msg->rcode != 0) {
-		result = isc_buffer_allocate(mctx, &b, MXNAME);
-		check_result(result, "isc_buffer_allocate");
-		result = dns_name_totext(query->lookup->name, ISC_FALSE,
-					 b);
-		check_result(result, "dns_name_totext");
-		isc_buffer_usedregion(b, &r);
-		printf("Host %.*s not found: %d(%s)\n",
-		       (int)r.length, (char *)r.base,
+		char namestr[DNS_NAME_FORMATSIZE];
+		dns_name_format(query->lookup->name, namestr, sizeof(namestr));
+		printf("Host %s not found: %d(%s)\n", namestr,
 		       msg->rcode, rcodetext[msg->rcode]);
-		isc_buffer_free(&b);
 		return (ISC_R_SUCCESS);
 	}
 	if (!short_form) {
@@ -576,8 +572,8 @@ parse_args(isc_boolean_t is_batchfile, int argc, char **argv) {
 						   (isc_textregion_t *)&tr);
 
 			if (result != ISC_R_SUCCESS)
-				fprintf (stderr,"Warning: invalid type: %s\n",
-					 isc_commandline_argument);
+				fprintf(stderr,"Warning: invalid type: %s\n",
+					isc_commandline_argument);
 			else {
 				lookup->rdtype = rdtype;
 				lookup->rdtypeset = ISC_TRUE;
@@ -590,8 +586,8 @@ parse_args(isc_boolean_t is_batchfile, int argc, char **argv) {
 						   (isc_textregion_t *)&tr);
 
 			if (result != ISC_R_SUCCESS)
-				fprintf (stderr,"Warning: invalid class: %s\n",
-					 isc_commandline_argument);
+				fprintf(stderr,"Warning: invalid class: %s\n",
+					isc_commandline_argument);
 			else {
 				lookup->rdclass = rdclass;
 				lookup->rdclassset = ISC_TRUE;
@@ -627,12 +623,13 @@ parse_args(isc_boolean_t is_batchfile, int argc, char **argv) {
 			break;
 		case 'C':
 			debug("showing all SOAs");
-			lookup->rdtype = dns_rdatatype_soa;
+			lookup->rdtype = dns_rdatatype_ns;
 			lookup->rdtypeset = ISC_TRUE;
 			lookup->rdclass = dns_rdataclass_in;
 			lookup->rdclassset = ISC_TRUE;
 			lookup->ns_search_only = ISC_TRUE;
 			lookup->trace_root = ISC_TRUE;
+			lookup->identify_previous_line = ISC_TRUE;
 			break;
 		case 'N':
 			debug("setting NDOTS to %s",

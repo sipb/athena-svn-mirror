@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: xfrin.h,v 1.1.1.1 2001-10-22 13:08:30 ghudson Exp $ */
+/* $Id: xfrin.h,v 1.1.1.2 2002-02-03 04:24:49 ghudson Exp $ */
 
 #ifndef DNS_XFRIN_H
 #define DNS_XFRIN_H 1
@@ -85,9 +85,13 @@ void
 dns_xfrin_detach(dns_xfrin_ctx_t **xfrp);
 /*
  * Detach a reference to a zone transfer object.
- *
- * (Because there is no attach() method, there can currently
- * only be one reference).
+ * Caller to maintain external locking if required.
+ */
+
+void
+dns_xfrin_attach(dns_xfrin_ctx_t *source, dns_xfrin_ctx_t **target);
+/*
+ * Caller to maintain external locking if required.
  */
 
 ISC_LANG_ENDDECLS

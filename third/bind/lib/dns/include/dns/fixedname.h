@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: fixedname.h,v 1.1.1.1 2001-10-22 13:08:21 ghudson Exp $ */
+/* $Id: fixedname.h,v 1.1.1.2 2002-02-03 04:24:39 ghudson Exp $ */
 
 #ifndef DNS_FIXEDNAME_H
 #define DNS_FIXEDNAME_H 1

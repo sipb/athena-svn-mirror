@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: symtab.h,v 1.1.1.1 2001-10-22 13:09:19 ghudson Exp $ */
+/* $Id: symtab.h,v 1.1.1.2 2002-02-03 04:25:41 ghudson Exp $ */
 
 #ifndef ISC_SYMTAB_H
 #define ISC_SYMTAB_H 1

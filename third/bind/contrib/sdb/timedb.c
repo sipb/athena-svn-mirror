@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: timedb.c,v 1.1.1.1 2001-10-22 13:07:35 ghudson Exp $ */
+/* $Id: timedb.c,v 1.1.1.2 2002-02-03 04:23:49 ghudson Exp $ */
 
 /*
  * A simple database driver that enables the server to return the

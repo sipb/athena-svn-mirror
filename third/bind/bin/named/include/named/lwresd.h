@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwresd.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: lwresd.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #ifndef NAMED_LWRESD_H
 #define NAMED_LWRESD_H 1
@@ -23,11 +23,12 @@
 #include <isc/types.h>
 #include <isc/sockaddr.h>
 
-#include <dns/confctx.h>
+#include <isccfg/cfg.h>
+
 #include <dns/types.h>
 
 struct ns_lwresd {
-	isc_uint32_t magic;
+	unsigned int magic;
 
 	isc_mutex_t lock;
 	dns_view_t *view;
@@ -39,7 +40,7 @@ struct ns_lwresd {
 };
 
 struct ns_lwreslistener {
-	isc_uint32_t magic;
+	unsigned int magic;
 
 	isc_mutex_t lock;
 	isc_mem_t *mctx;
@@ -55,13 +56,11 @@ struct ns_lwreslistener {
  * Configure lwresd.
  */
 isc_result_t
-ns_lwresd_configure(isc_mem_t *mctx, dns_c_ctx_t *cctx);
+ns_lwresd_configure(isc_mem_t *mctx, cfg_obj_t *config);
 
-/*
- * Create a configuration context based on resolv.conf and default parameters.
- */
 isc_result_t
-ns_lwresd_parseresolvconf(isc_mem_t *mctx, dns_c_ctx_t **ctxp);
+ns_lwresd_parseeresolvconf(isc_mem_t *mctx, cfg_parser_t *pctx,
+			   cfg_obj_t **configp);
 
 /*
  * Trigger shutdown.
@@ -73,8 +72,7 @@ ns_lwresd_shutdown(void);
  * Manager functions
  */
 isc_result_t
-ns_lwdmanager_create(isc_mem_t *mctx, dns_c_lwres_t *lwres,
-		     ns_lwresd_t **lwresdp);
+ns_lwdmanager_create(isc_mem_t *mctx, cfg_obj_t *lwres, ns_lwresd_t **lwresdp);
 
 void
 ns_lwdmanager_attach(ns_lwresd_t *source, ns_lwresd_t **targetp);

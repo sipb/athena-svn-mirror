@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: platform.h.in,v 1.1.1.1 2001-10-22 13:09:17 ghudson Exp $ */
+/* $Id: platform.h.in,v 1.1.1.2 2002-02-03 04:25:39 ghudson Exp $ */
 
 #ifndef ISC_PLATFORM_H
 #define ISC_PLATFORM_H 1
@@ -57,6 +57,12 @@
  * be defined.
  */
 @ISC_PLATFORM_NEEDIN6ADDRANY@
+
+/*
+ * If this system is missing in6addr_loopback, ISC_PLATFORM_NEEDIN6ADDRLOOPBACK
+ * will be defined.
+ */
+@ISC_PLATFORM_NEEDIN6ADDRLOOPBACK@
 
 /*
  * If this system has in6_pktinfo, ISC_PLATFORM_HAVEIN6PKTINFO will be
@@ -123,9 +129,9 @@
 @ISC_PLATFORM_NEEDVSNPRINTF@
 
 /*
- * Defined if sizeof(long long int) == sizeof(long int).
+ * The printf format string modifier to use with isc_uint64_t values.
  */
-@ISC_PLATFORM_LONGLONGEQUALLONG@
+@ISC_PLATFORM_QUADFORMAT@
 
 /*
  * Defined if we are using threads.
@@ -133,14 +139,52 @@
 @ISC_PLATFORM_USETHREADS@
 
 /*
+ * Defined if unistd.h does not cause fd_set to be delared.
+ */
+@ISC_PLATFORM_NEEDSYSSELECTH@
+
+/*
  * Type used for resource limits.
  */
 @ISC_PLATFORM_RLIMITTYPE@
 
 /*
- * Defined if unistd.h does not cause fd_set to be delared.
+ * Define if your compiler supports "long long int".
  */
-@ISC_PLATFORM_NEEDSYSSELECTH@
+@ISC_PLATFORM_HAVELONGLONG@
+
+/*
+ * Used to control how extern data is linked; needed for Win32 platforms.
+ */
+@ISC_PLATFORM_USEDECLSPEC@
+
+#ifndef ISC_PLATFORM_USEDECLSPEC
+#define LIBISC_EXTERNAL_DATA
+#define LIBDNS_EXTERNAL_DATA
+#define LIBISCCC_EXTERNAL_DATA
+#define LIBISCCFG_EXTERNAL_DATA
+#else /* ISC_PLATFORM_USEDECLSPEC */
+#ifdef LIBISC_EXPORTS
+#define LIBISC_EXTERNAL_DATA __declspec(dllexport)
+#else
+#define LIBISC_EXTERNAL_DATA __declspec(dllimport)
+#endif
+#ifdef LIBDNS_EXPORTS
+#define LIBDNS_EXTERNAL_DATA __declspec(dllexport)
+#else
+#define LIBDNS_EXTERNAL_DATA __declspec(dllimport)
+#endif
+#ifdef LIBISCCC_EXPORTS
+#define LIBISCCC_EXTERNAL_DATA __declspec(dllexport)
+#else
+#define LIBISCCC_EXTERNAL_DATA __declspec(dllimport)
+#endif
+#ifdef LIBISCCFG_EXPORTS
+#define LIBISCCFG_EXTERNAL_DATA __declspec(dllexport)
+#else
+#define LIBISCCFG_EXTERNAL_DATA __declspec(dllimport)
+#endif
+#endif /* ISC_PLATFORM_USEDECLSPEC */
 
 /*
  * Tell emacs to use C mode for this file.

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: condition.h,v 1.1.1.1 2001-10-22 13:09:36 ghudson Exp $ */
+/* $Id: condition.h,v 1.1.1.2 2002-02-03 04:26:00 ghudson Exp $ */
 
 #ifndef ISC_CONDITION_H
 #define ISC_CONDITION_H 1

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: null_10.c,v 1.1.1.1 2001-10-22 13:08:36 ghudson Exp $ */
+/* $Id: null_10.c,v 1.1.1.2 2002-02-03 04:25:24 ghudson Exp $ */
 
 /* Reviewed: Thu Mar 16 13:57:50 PST 2000 by explorer */
 
@@ -26,25 +26,26 @@
 
 static inline isc_result_t
 fromtext_null(ARGS_FROMTEXT) {
+	REQUIRE(type == 10);
+
 	UNUSED(rdclass);
 	UNUSED(type);
 	UNUSED(lexer);
 	UNUSED(origin);
 	UNUSED(downcase);
 	UNUSED(target);
-
-	REQUIRE(type == 10);
+	UNUSED(callbacks);
 
 	return (DNS_R_SYNTAX);
 }
 
 static inline isc_result_t
 totext_null(ARGS_TOTEXT) {
+	REQUIRE(rdata->type == 10);
+
 	UNUSED(rdata);
 	UNUSED(tctx);
 	UNUSED(target);
-
-	REQUIRE(rdata->type == 10);
 
 	return (DNS_R_SYNTAX);
 }
@@ -53,11 +54,12 @@ static inline isc_result_t
 fromwire_null(ARGS_FROMWIRE) {
 	isc_region_t sr;
 
+	REQUIRE(type == 10);
+
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(dctx);
 	UNUSED(downcase);
-
-	REQUIRE(type == 10);
 
 	isc_buffer_activeregion(source, &sr);
 	isc_buffer_forward(source, sr.length);
@@ -66,9 +68,9 @@ fromwire_null(ARGS_FROMWIRE) {
 
 static inline isc_result_t
 towire_null(ARGS_TOWIRE) {
-	UNUSED(cctx);
-
 	REQUIRE(rdata->type == 10);
+
+	UNUSED(cctx);
 
 	return (mem_tobuffer(target, rdata->data, rdata->length));
 }
@@ -78,7 +80,7 @@ compare_null(ARGS_COMPARE) {
 	isc_region_t r1;
 	isc_region_t r2;
 
-	REQUIRE(rdata1->type == rdata1->type);
+	REQUIRE(rdata1->type == rdata2->type);
 	REQUIRE(rdata1->rdclass == rdata2->rdclass);
 	REQUIRE(rdata1->type == 10);
 
@@ -95,9 +97,9 @@ fromstruct_null(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(null->common.rdtype == type);
 	REQUIRE(null->common.rdclass == rdclass);
-	REQUIRE((null->data != NULL && null->length != 0) ||
-		(null->data == NULL && null->length == 0));
+	REQUIRE(null->data != NULL || null->length == 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	return (mem_tobuffer(target, null->data, null->length));
@@ -117,12 +119,9 @@ tostruct_null(ARGS_TOSTRUCT) {
 
 	dns_rdata_toregion(rdata, &r);
 	null->length = r.length;
-	if (null->length != 0) {
-		null->data = mem_maybedup(mctx, r.base, r.length);
-		if (null->data == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		null->data = NULL;
+	null->data = mem_maybedup(mctx, r.base, r.length);
+	if (null->data == NULL)
+		return (ISC_R_NOMEMORY);
 
 	null->mctx = mctx;
 	return (ISC_R_SUCCESS);

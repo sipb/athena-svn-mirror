@@ -18,7 +18,7 @@
 #ifndef GENERIC_OPT_41_H
 #define GENERIC_OPT_41_H 1
 
-/* $Id: opt_41.h,v 1.1.1.1 2001-10-22 13:08:36 ghudson Exp $ */
+/* $Id: opt_41.h,v 1.1.1.2 2002-02-03 04:25:24 ghudson Exp $ */
 
 /* RFC 2671 */
 

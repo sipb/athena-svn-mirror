@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: nsap_22.c,v 1.1.1.1 2001-10-22 13:08:41 ghudson Exp $ */
+/* $Id: nsap_22.c,v 1.1.1.2 2002-02-03 04:25:29 ghudson Exp $ */
 
 /* Reviewed: Fri Mar 17 10:41:07 PST 2000 by gson */
 
@@ -37,18 +37,20 @@ fromtext_in_nsap(ARGS_FROMTEXT) {
 	REQUIRE(type == 22);
 	REQUIRE(rdclass == 1);
 
+	UNUSED(type);
 	UNUSED(origin);
 	UNUSED(downcase);
 	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	/* 0x<hex.string.with.periods> */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
 	sr = &token.value.as_textregion;
 	if (sr->length < 2)
-		return (ISC_R_UNEXPECTEDEND);
+		RETTOK(ISC_R_UNEXPECTEDEND);
 	if (sr->base[0] != '0' || (sr->base[1] != 'x' && sr->base[1] != 'X'))
-		return (DNS_R_SYNTAX);
+		RETTOK(DNS_R_SYNTAX);
 	isc_textregion_consume(sr, 2);
 	digits = 0;
 	n = 0;
@@ -58,7 +60,7 @@ fromtext_in_nsap(ARGS_FROMTEXT) {
 			continue;
 		}
 		if ((n = hexvalue(sr->base[0])) == -1)
-			return (DNS_R_SYNTAX);
+			RETTOK(DNS_R_SYNTAX);
 		c <<= 4;
 		c += n;
 		if (++digits == 2) {
@@ -67,9 +69,8 @@ fromtext_in_nsap(ARGS_FROMTEXT) {
 		}
 		isc_textregion_consume(sr, 1);
 	}
-	if (digits) {
-		return (ISC_R_UNEXPECTEDEND);
-	}
+	if (digits)
+		RETTOK(ISC_R_UNEXPECTEDEND);
 	return (ISC_R_SUCCESS);
 }
 
@@ -101,6 +102,7 @@ fromwire_in_nsap(ARGS_FROMWIRE) {
 	REQUIRE(type == 22);
 	REQUIRE(rdclass == 1);
 
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(downcase);
 	UNUSED(rdclass);
@@ -151,9 +153,9 @@ fromstruct_in_nsap(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(nsap->common.rdtype == type);
 	REQUIRE(nsap->common.rdclass == rdclass);
-	REQUIRE((nsap->nsap == NULL && nsap->nsap_len == 0) ||
-		(nsap->nsap != NULL && nsap->nsap_len != 0));
+	REQUIRE(nsap->nsap != NULL || nsap->nsap_len == 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	return (mem_tobuffer(target, nsap->nsap, nsap->nsap_len));
@@ -175,12 +177,9 @@ tostruct_in_nsap(ARGS_TOSTRUCT) {
 
 	dns_rdata_toregion(rdata, &r);
 	nsap->nsap_len = r.length;
-	if (nsap->nsap_len != 0) {
-		nsap->nsap = mem_maybedup(mctx, r.base, r.length);
-		if (nsap->nsap == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		nsap->nsap = NULL;
+	nsap->nsap = mem_maybedup(mctx, r.base, r.length);
+	if (nsap->nsap == NULL)
+		return (ISC_R_NOMEMORY);
 
 	nsap->mctx = mctx;
 	return (ISC_R_SUCCESS);

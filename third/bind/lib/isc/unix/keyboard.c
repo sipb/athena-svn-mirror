@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: keyboard.c,v 1.1.1.1 2001-10-22 13:09:35 ghudson Exp $ */
+/* $Id: keyboard.c,v 1.1.1.2 2002-02-03 04:25:58 ghudson Exp $ */
 
 #include <config.h>
 

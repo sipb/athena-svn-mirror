@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ifiter_ioctl.c,v 1.1.1.1 2001-10-22 13:09:34 ghudson Exp $ */
+/* $Id: ifiter_ioctl.c,v 1.1.1.2 2002-02-03 04:25:57 ghudson Exp $ */
 
 /*
  * Obtain the list of network interfaces using the SIOCGLIFCONF ioctl.
@@ -45,8 +45,8 @@
 #endif
 
 
-#define IFITER_MAGIC		0x49464954U	/* IFIT. */
-#define VALID_IFITER(t)		((t) != NULL && (t)->magic == IFITER_MAGIC)
+#define IFITER_MAGIC		ISC_MAGIC('I', 'F', 'I', 'T')
+#define VALID_IFITER(t)		ISC_MAGIC_VALID(t, IFITER_MAGIC)
 
 struct isc_interfaceiter {
 	unsigned int		magic;		/* Magic number. */
@@ -73,6 +73,7 @@ isc_result_t
 isc_interfaceiter_create(isc_mem_t *mctx, isc_interfaceiter_t **iterp) {
 	isc_interfaceiter_t *iter;
 	isc_result_t result;
+	char strbuf[ISC_STRERRORSIZE];
 
 	REQUIRE(mctx != NULL);
 	REQUIRE(iterp != NULL);
@@ -89,13 +90,14 @@ isc_interfaceiter_create(isc_mem_t *mctx, isc_interfaceiter_t **iterp) {
 	 * Create an unbound datagram socket to do the SIOCGLIFADDR ioctl on.
 	 */
 	if ((iter->socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		isc__strerror(errno, strbuf, sizeof(strbuf));
 		UNEXPECTED_ERROR(__FILE__, __LINE__,
 				 isc_msgcat_get(isc_msgcat,
 						ISC_MSGSET_IFITERIOCTL,
 						ISC_MSG_MAKESCANSOCKET,
 						"making interface "
 						"scan socket: %s"),
-				 strerror(errno));
+				 strbuf);
 		result = ISC_R_UNEXPECTED;
 		goto socket_failure;
 	}
@@ -124,19 +126,20 @@ isc_interfaceiter_create(isc_mem_t *mctx, isc_interfaceiter_t **iterp) {
 		iter->ifc.lifc_buf = iter->buf;
 		/*
 		 * Ignore the HP/UX warning about "interger overflow during
-		 * conversion.  It comes from its own macro definition,
+		 * conversion".  It comes from its own macro definition,
 		 * and is really hard to shut up.
 		 */
 		if (ioctl(iter->socket, SIOCGLIFCONF, (char *)&iter->ifc)
 		    == -1) {
 			if (errno != EINVAL) {
+				isc__strerror(errno, strbuf, sizeof(strbuf));
 				UNEXPECTED_ERROR(__FILE__, __LINE__,
 						 isc_msgcat_get(isc_msgcat,
 							ISC_MSGSET_IFITERIOCTL,
 							ISC_MSG_GETIFCONFIG,
 							"get interface "
 							"configuration: %s"),
-						 strerror(errno));
+						 strbuf);
 				result = ISC_R_UNEXPECTED;
 				goto ioctl_failure;
 			}
@@ -209,6 +212,7 @@ internal_current(isc_interfaceiter_t *iter) {
 	struct lifreq *ifrp;
 	struct lifreq lifreq;
 	int family;
+	char strbuf[ISC_STRERRORSIZE];
 
 	REQUIRE(VALID_IFITER(iter));
 	REQUIRE (iter->pos < (unsigned int) iter->ifc.lifc_len);
@@ -226,6 +230,7 @@ internal_current(isc_interfaceiter_t *iter) {
 	iter->current.af = family;
 
 	INSIST(sizeof(lifreq.lifr_name) <= sizeof(iter->current.name));
+	memset(iter->current.name, 0, sizeof(iter->current.name));
 	memcpy(iter->current.name, lifreq.lifr_name, sizeof(lifreq.lifr_name));
 
 	get_addr(family, &iter->current.address,
@@ -243,10 +248,10 @@ internal_current(isc_interfaceiter_t *iter) {
 	 * and is really hard to shut up.
 	 */
 	if (ioctl(iter->socket, SIOCGLIFFLAGS, (char *) &lifreq) < 0) {
+		isc__strerror(errno, strbuf, sizeof(strbuf));
 		UNEXPECTED_ERROR(__FILE__, __LINE__,
 				 "%s: getting interface flags: %s",
-				 lifreq.lifr_name,
-				 strerror(errno));
+				 lifreq.lifr_name, strbuf);
 		return (ISC_R_IGNORE);
 	}
 
@@ -270,14 +275,14 @@ internal_current(isc_interfaceiter_t *iter) {
 		 */
 		if (ioctl(iter->socket, SIOCGLIFDSTADDR, (char *)&lifreq)
 		    < 0) {
+			isc__strerror(errno, strbuf, sizeof(strbuf));
 			UNEXPECTED_ERROR(__FILE__, __LINE__,
 				isc_msgcat_get(isc_msgcat,
 					       ISC_MSGSET_IFITERIOCTL,
 					       ISC_MSG_GETDESTADDR,
 					       "%s: getting "
 					       "destination address: %s"),
-					 lifreq.lifr_name,
-					 strerror(errno));
+					 lifreq.lifr_name, strbuf);
 			return (ISC_R_IGNORE);
 		}
 		get_addr(family, &iter->current.dstaddress,
@@ -298,13 +303,13 @@ internal_current(isc_interfaceiter_t *iter) {
 		 */
 		if (ioctl(iter->socket, SIOCGLIFNETMASK, (char *)&lifreq)
 		    < 0) {
+			isc__strerror(errno, strbuf, sizeof(strbuf));
 			UNEXPECTED_ERROR(__FILE__, __LINE__,
 				isc_msgcat_get(isc_msgcat,
 					       ISC_MSGSET_IFITERIOCTL,
 					       ISC_MSG_GETNETMASK,
 					       "%s: getting netmask: %s"),
-					 lifreq.lifr_name,
-					 strerror(errno));
+					 lifreq.lifr_name, strbuf);
 			return (ISC_R_IGNORE);
 		}
 		get_addr(family, &iter->current.netmask,

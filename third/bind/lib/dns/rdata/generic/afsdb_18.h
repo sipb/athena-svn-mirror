@@ -18,7 +18,7 @@
 #ifndef GENERIC_AFSDB_18_H
 #define GENERIC_AFSDB_18_H 1
 
-/* $Id: afsdb_18.h,v 1.1.1.1 2001-10-22 13:08:32 ghudson Exp $ */
+/* $Id: afsdb_18.h,v 1.1.1.2 2002-02-03 04:25:20 ghudson Exp $ */
 
 /* RFC 1183 */
 

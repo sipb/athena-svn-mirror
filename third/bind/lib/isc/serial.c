@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: serial.c,v 1.1.1.1 2001-10-22 13:09:27 ghudson Exp $ */
+/* $Id: serial.c,v 1.1.1.2 2002-02-03 04:25:50 ghudson Exp $ */
 #include <config.h>
 
 #include <isc/serial.h>

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lib.h,v 1.1.1.1 2001-10-22 13:08:42 ghudson Exp $ */
+/* $Id: lib.h,v 1.1.1.2 2002-02-03 04:25:31 ghudson Exp $ */
 
 #ifndef DST_LIB_H
 #define DST_LIB_H 1

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: check-tool.c,v 1.1.1.1 2001-10-22 13:06:32 ghudson Exp $ */
+/* $Id: check-tool.c,v 1.1.1.2 2002-02-03 04:22:30 ghudson Exp $ */
 
 #include <config.h>
 
@@ -27,8 +27,6 @@
 #include <isc/log.h>
 #include <isc/types.h>
 
-#include <dns/log.h>
-
 isc_result_t
 setup_logging(isc_mem_t *mctx, isc_log_t **logp) {
 	isc_logdestination_t destination;
@@ -37,8 +35,6 @@ setup_logging(isc_mem_t *mctx, isc_log_t **logp) {
 
 	RUNTIME_CHECK(isc_log_create(mctx, &log, &logconfig) == ISC_R_SUCCESS);
 	isc_log_setcontext(log);
-	dns_log_init(log);
-	dns_log_setcontext(log);
 
 	destination.file.stream = stdout;
 	destination.file.name = NULL;

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: globals.h,v 1.1.1.1 2001-10-22 13:06:40 ghudson Exp $ */
+/* $Id: globals.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #ifndef NAMED_GLOBALS_H
 #define NAMED_GLOBALS_H 1
@@ -24,9 +24,9 @@
 #include <isc/log.h>
 #include <isc/net.h>
 
-#include <dns/zone.h>
+#include <isccfg/cfg.h>
 
-#include <omapi/types.h>
+#include <dns/zone.h>
 
 #include <named/types.h>
 
@@ -52,7 +52,7 @@ EXTERN isc_entropy_t *		ns_g_entropy		INIT(NULL);
  */
 EXTERN isc_timermgr_t *		ns_g_timermgr		INIT(NULL);
 EXTERN isc_socketmgr_t *	ns_g_socketmgr		INIT(NULL);
-EXTERN omapi_object_t *		ns_g_omapimgr		INIT(NULL);
+EXTERN cfg_parser_t *		ns_g_parser		INIT(NULL);
 EXTERN const char *		ns_g_version		INIT(VERSION);
 EXTERN in_port_t		ns_g_port		INIT(0);
 EXTERN in_port_t		lwresd_g_listenport	INIT(0);
@@ -72,8 +72,12 @@ EXTERN unsigned int		ns_g_debuglevel		INIT(0);
 /*
  * Current configuration information.
  */
+EXTERN cfg_obj_t *		ns_g_config		INIT(NULL);
+EXTERN cfg_obj_t *		ns_g_defaults		INIT(NULL);
 EXTERN const char *		ns_g_conffile		INIT(NS_SYSCONFDIR
 							     "/named.conf");
+EXTERN const char *		ns_g_keyfile		INIT(NS_SYSCONFDIR
+							     "/rndc.key");
 EXTERN const char *		lwresd_g_conffile	INIT(NS_SYSCONFDIR
 							     "/lwresd.conf");
 EXTERN const char *		lwresd_g_resolvconffile	INIT("/etc"
@@ -100,7 +104,7 @@ EXTERN isc_boolean_t		ns_g_logstderr		INIT(ISC_FALSE);
 EXTERN const char *		ns_g_defaultpidfile 	INIT(NS_LOCALSTATEDIR
 							     "/run/named.pid");
 EXTERN const char *		lwresd_g_defaultpidfile INIT(NS_LOCALSTATEDIR
-							     "/run/lwresd.pid");
+							    "/run/lwresd.pid");
 EXTERN const char *		ns_g_username		INIT(NULL);
 
 #undef EXTERN

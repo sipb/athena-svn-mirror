@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: zonetodb.c,v 1.1.1.1 2001-10-22 13:07:35 ghudson Exp $ */
+/* $Id: zonetodb.c,v 1.1.1.2 2002-02-03 04:23:50 ghudson Exp $ */
 
 #include <isc/buffer.h>
 #include <isc/mem.h>
@@ -236,7 +236,6 @@ main(int argc, char **argv) {
 		check_result(result, "dns_db_allrdatasets");
 
 		result = dns_rdatasetiter_first(rdsiter);
-		check_result(result, "dns_rdatasetiter_first");
 
 		while (result == ISC_R_SUCCESS) {
 			dns_rdatasetiter_current(rdsiter, &rdataset);

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *rcsid = "$Id: util.c,v 1.1.1.1 2001-10-22 13:07:31 ghudson Exp $";
+static char *rcsid = "$Id: util.c,v 1.1.1.2 2002-02-03 04:23:30 ghudson Exp $";
 #endif
 
 /*
@@ -68,11 +68,25 @@ static char *rcsid = "$Id: util.c,v 1.1.1.1 2001-10-22 13:07:31 ghudson Exp $";
 #include <mdn/result.h>
 #include <mdn/logmacro.h>
 #include <mdn/utf8.h>
+#include <mdn/util.h>
 
 /*
- * ASCII tolower() macro.
- * Note that this macro evaluates the argument multiple times.  Be careful.
+ * ASCII ctype macros.
+ * Note that these macros evaluate the argument multiple times.  Be careful.
  */
+#define ASCII_ISDIGIT(c) \
+	('0' <= (c) && (c) <= '9')
+#define ASCII_ISUPPER(c) \
+	('A' <= (c) && (c) <= 'Z')
+#define ASCII_ISLOWER(c) \
+	('a' <= (c) && (c) <= 'z')
+#define ASCII_ISALPHA(c) \
+	(ASCII_ISUPPER(c) || ASCII_ISLOWER(c))
+#define ASCII_ISALNUM(c) \
+	(ASCII_ISDIGIT(c) || ASCII_ISUPPER(c) || ASCII_ISLOWER(c))
+
+#define ASCII_TOUPPER(c) \
+	(('a' <= (c) && (c) <= 'z') ? ((c) - 'a' + 'A') : (c))
 #define ASCII_TOLOWER(c) \
 	(('A' <= (c) && (c) <= 'Z') ? ((c) - 'A' + 'a') : (c))
 
@@ -106,13 +120,33 @@ mdn_util_casematch(const char *s1, const char *s2, size_t n) {
 
 const char *
 mdn_util_domainspan(const char *s, const char *end) {
-	while (s < end &&
-	       (('a' <= *s && *s <= 'z') ||
-		('A' <= *s && *s <= 'Z') ||
-		('0' <= *s && *s <= '9') ||
-		*s == '-'))
+	while (s < end && (ASCII_ISALNUM(*s) || *s == '-'))
 		s++;
 	return (s);
+}
+
+int
+mdn_util_validstd13(const char *s, const char *end) {
+	if (!ASCII_ISALNUM(*s))
+		return (0);
+	s++;
+	if (end == NULL) {
+		while (*s != '\0') {
+			if (!ASCII_ISALNUM(*s) && *s != '-')
+				return (0);
+			s++;
+		}
+	} else {
+		while (s < end) {
+			if (!ASCII_ISALNUM(*s) && *s != '-')
+				return (0);
+			s++;
+		}
+	}
+	s--;
+	if (!ASCII_ISALNUM(*s))
+		return (0);
+	return (1);
 }
 
 mdn_result_t

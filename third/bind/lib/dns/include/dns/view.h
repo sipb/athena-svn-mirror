@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: view.h,v 1.1.1.1 2001-10-22 13:08:30 ghudson Exp $ */
+/* $Id: view.h,v 1.1.1.2 2002-02-03 04:24:48 ghudson Exp $ */
 
 #ifndef DNS_VIEW_H
 #define DNS_VIEW_H 1
@@ -66,9 +66,11 @@
 #include <isc/event.h>
 #include <isc/mutex.h>
 #include <isc/net.h>
+#include <isc/refcount.h>
 #include <isc/rwlock.h>
 #include <isc/stdtime.h>
 
+#include <dns/acl.h>
 #include <dns/types.h>
 
 ISC_LANG_BEGINDECLS
@@ -82,7 +84,6 @@ struct dns_view {
 	dns_zt_t *			zonetable;
 	dns_resolver_t *		resolver;
 	dns_adb_t *			adb;
-	dns_loadmgr_t *			loadmgr;
 	dns_requestmgr_t *		requestmgr;
 	dns_cache_t *			cache;
 	dns_db_t *			cachedb;
@@ -90,13 +91,12 @@ struct dns_view {
 	dns_keytable_t *		secroots;
 	dns_keytable_t *		trustedkeys;
 	isc_mutex_t			lock;
-	isc_rwlock_t			conflock;
 	isc_boolean_t			frozen;
 	isc_task_t *			task;
 	isc_event_t			resevent;
 	isc_event_t			adbevent;
 	isc_event_t			reqevent;
-	/* Configurable data, locked by conflock. */
+	/* Configurable data. */
 	dns_tsig_keyring_t *		statickeys;
 	dns_tsig_keyring_t *		dynamickeys;
 	dns_peerlist_t *		peers;
@@ -105,32 +105,38 @@ struct dns_view {
 	isc_boolean_t			auth_nxdomain;
 	isc_boolean_t			additionalfromcache;
 	isc_boolean_t			additionalfromauth;
+	isc_boolean_t			minimalresponses;
 	dns_transfer_format_t		transfer_format;
 	dns_acl_t *			queryacl;
 	dns_acl_t *			recursionacl;
+	dns_acl_t *			v6synthesisacl;
 	dns_acl_t *			sortlist;
 	isc_boolean_t			requestixfr;
 	isc_boolean_t			provideixfr;
 	dns_ttl_t			maxcachettl;
 	dns_ttl_t			maxncachettl;
 	in_port_t			dstport;
-	char *				cachefile;
+	dns_aclenv_t			aclenv;
 
 	/*
 	 * Configurable data for server use only,
 	 * locked by server configuration lock.
 	 */
 	dns_acl_t *			matchclients;
+	dns_acl_t *			matchdestinations;
+	isc_boolean_t			matchrecursiveonly;
+
+	/* Locked by themselves. */
+	isc_refcount_t			references;
 
 	/* Locked by lock. */
-	unsigned int			references;
 	unsigned int			weakrefs;
 	unsigned int			attributes;
 	/* Under owner's locking control. */
 	ISC_LINK(struct dns_view)	link;
 };
 
-#define DNS_VIEW_MAGIC			0x56696577	/* View. */
+#define DNS_VIEW_MAGIC			ISC_MAGIC('V','i','e','w')
 #define DNS_VIEW_VALID(view)		ISC_MAGIC_VALID(view, DNS_VIEW_MAGIC)
 
 #define DNS_VIEWATTR_RESSHUTDOWN	0x01
@@ -577,10 +583,17 @@ dns_view_findzone(dns_view_t *view, dns_name_t *name, dns_zone_t **zonep);
 
 isc_result_t
 dns_view_load(dns_view_t *view, isc_boolean_t stop);
+
+isc_result_t
+dns_view_loadnew(dns_view_t *view, isc_boolean_t stop);
 /*
- * Load all zones attached to this view.  If 'stop' is ISC_TRUE,
- * stop on the first error and return it.  If 'stop'
- * is ISC_FALSE, ignore errors.
+ * Load zones attached to this view.  dns_view_load() loads
+ * all zones whose master file has changed since the last
+ * load; dns_view_loadnew() loads only zones that have never 
+ * been loaded.
+ *
+ * If 'stop' is ISC_TRUE, stop on the first error and return it.
+ * If 'stop' is ISC_FALSE, ignore errors.
  *
  * Requires:
  *
@@ -635,27 +648,9 @@ dns_view_checksig(dns_view_t *view, isc_buffer_t *source, dns_message_t *msg);
  */
 
 void
-dns_view_setloadmgr(dns_view_t *view, dns_loadmgr_t *loadmgr);
-
-void
 dns_view_dialup(dns_view_t *view);
 /*
  * Perform dialup-time maintenance on the zones of 'view'.
- */
-
-isc_result_t
-dns_view_dumpcache(dns_view_t *view);
-/*
- * Dump the view's cache to the the view's cache file.
- *
- * Requires:
- * 	
- *	'view' is valid.
- *
- * Returns:
- * 	ISC_R_SUCCESS	The cache was successfully dumped.
- * 	ISC_R_IGNORE	No cachefile was specified.
- * 	others		An error occurred (see dns_master_dump)
  */
 
 isc_result_t
@@ -677,8 +672,22 @@ dns_view_dumpdbtostream(dns_view_t *view, FILE *fp);
  *
  * Returns:
  * 	ISC_R_SUCCESS	The cache was successfully dumped.
- * 	ISC_R_IGNORE	No cachefile was specified.
  * 	others		An error occurred (see dns_master_dump)
+ */
+
+isc_result_t
+dns_view_flushcache(dns_view_t *view);
+/*
+ * Flush the view's cache (and ADB).
+ *
+ * Requires:
+ * 	'view' is valid.
+ *
+ * 	No other tasks are executing.
+ *
+ * Returns:
+ *	ISC_R_SUCCESS
+ *	ISC_R_NOMEMORY
  */
 
 ISC_LANG_ENDDECLS

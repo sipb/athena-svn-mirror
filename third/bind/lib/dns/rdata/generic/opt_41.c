@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: opt_41.c,v 1.1.1.1 2001-10-22 13:08:36 ghudson Exp $ */
+/* $Id: opt_41.c,v 1.1.1.2 2002-02-03 04:25:24 ghudson Exp $ */
 
 /* Reviewed: Thu Mar 16 14:06:44 PST 2000 by gson */
 
@@ -29,18 +29,20 @@
 			       DNS_RDATATYPEATTR_NOTQUESTION)
 
 static inline isc_result_t
-			       fromtext_opt(ARGS_FROMTEXT) {
+fromtext_opt(ARGS_FROMTEXT) {
 	/*
 	 * OPT records do not have a text format.
 	 */
 
 	REQUIRE(type == 41);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(lexer);
 	UNUSED(origin);
 	UNUSED(downcase);
 	UNUSED(target);
+	UNUSED(callbacks);
 
 	return (ISC_R_NOTIMPLEMENTED);
 }
@@ -96,6 +98,7 @@ fromwire_opt(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 41);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(dctx);
 	UNUSED(downcase);
@@ -164,9 +167,9 @@ fromstruct_opt(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(opt->common.rdtype == type);
 	REQUIRE(opt->common.rdclass == rdclass);
-	REQUIRE((opt->options != NULL && opt->length != 0) ||
-		(opt->options == NULL && opt->length == 0));
+	REQUIRE(opt->options != NULL || opt->length == 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	region.base = opt->options;
@@ -199,12 +202,9 @@ tostruct_opt(ARGS_TOSTRUCT) {
 
 	dns_rdata_toregion(rdata, &r);
 	opt->length = r.length;
-	if (opt->length != 0) {
-		opt->options = mem_maybedup(mctx, r.base, r.length);
-		if (opt->options == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		opt->options = NULL;
+	opt->options = mem_maybedup(mctx, r.base, r.length);
+	if (opt->options == NULL)
+		return (ISC_R_NOMEMORY);
 
 	opt->offset = 0;
 	opt->mctx = mctx;

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: mem.h,v 1.1.1.1 2001-10-22 13:09:17 ghudson Exp $ */
+/* $Id: mem.h,v 1.1.1.2 2002-02-03 04:25:39 ghudson Exp $ */
 
 #ifndef ISC_MEM_H
 #define ISC_MEM_H 1
@@ -24,6 +24,7 @@
 
 #include <isc/lang.h>
 #include <isc/mutex.h>
+#include <isc/platform.h>
 #include <isc/types.h>
 
 ISC_LANG_BEGINDECLS
@@ -82,10 +83,14 @@ typedef void (*isc_memfree_t)(void *, void *);
  * _DEBUGRECORD
  *	remember each allocation, and match them up on free.  Crash if
  *	a free doesn't match an allocation
+ * _DEBUGUSAGE
+ *	if a hi_water mark is set print the maximium inuse memory every
+ *	time it is raised once it exceeds the hi_water mark
  */
-extern unsigned int isc_mem_debugging;
+LIBISC_EXTERNAL_DATA extern unsigned int isc_mem_debugging;
 #define ISC_MEM_DEBUGTRACE		0x00000001U
 #define ISC_MEM_DEBUGRECORD		0x00000002U
+#define ISC_MEM_DEBUGUSAGE		0x00000004U
 
 #if ISC_MEM_TRACKLINES
 #define _ISC_MEM_FILELINE	, __FILE__, __LINE__
@@ -154,40 +159,98 @@ extern unsigned int isc_mem_debugging;
 #define isc_mempool_put(c, p)	isc__mempool_put((c), (p) _ISC_MEM_FILELINE)
 #endif
 
-isc_result_t			isc_mem_create(size_t, size_t, isc_mem_t **);
-void				isc_mem_attach(isc_mem_t *, isc_mem_t **);
-void				isc_mem_detach(isc_mem_t **);
-void				isc_mem_destroy(isc_mem_t **);
-isc_result_t			isc_mem_ondestroy(isc_mem_t *ctx,
-						  isc_task_t *task,
-						  isc_event_t **event);
-void *				isc__mem_get(isc_mem_t *, size_t
-					     _ISC_MEM_FLARG);
-void 				isc__mem_putanddetach(isc_mem_t **, void *,
-						      size_t _ISC_MEM_FLARG);
-void 				isc__mem_put(isc_mem_t *, void *,
-					     size_t _ISC_MEM_FLARG);
-isc_result_t			isc_mem_preallocate(isc_mem_t *);
-void 				isc_mem_stats(isc_mem_t *, FILE *);
-isc_boolean_t			isc_mem_valid(isc_mem_t *, void *);
-void *				isc__mem_allocate(isc_mem_t *, size_t
-						  _ISC_MEM_FLARG);
-void				isc__mem_free(isc_mem_t *, void *
-					      _ISC_MEM_FLARG);
-char *				isc__mem_strdup(isc_mem_t *, const char *
-						_ISC_MEM_FLARG);
-void				isc_mem_setdestroycheck(isc_mem_t *,
-							isc_boolean_t);
-void				isc_mem_setsplit(isc_mem_t *, isc_boolean_t);
-void				isc_mem_setquota(isc_mem_t *, size_t);
-size_t				isc_mem_getquota(isc_mem_t *);
-size_t				isc_mem_inuse(isc_mem_t *);
+isc_result_t 
+isc_mem_create(size_t max_size, size_t target_size,
+			    isc_mem_t **mctxp);
 
-isc_result_t			isc_mem_createx(size_t, size_t,
-						isc_memalloc_t memalloc,
-						isc_memfree_t memfree,
-						void *arg, isc_mem_t **);
-isc_result_t			isc_mem_restore(isc_mem_t *);
+isc_result_t 
+isc_mem_createx(size_t max_size, size_t target_size,
+			     isc_memalloc_t memalloc, isc_memfree_t memfree,
+			     void *arg, isc_mem_t **mctxp);
+/*
+ * Create a memory context.
+ *
+ * 'max_size' and 'target_size' are tuning parameters.  When
+ * ISC_MEM_USE_INTERNAL_MALLOC is true, allocations smaller than
+ * 'max_size' will be satisfied by getting blocks of size
+ * 'target_size' from the system allocator and breaking them up into
+ * pieces; larger allocations will use the system allocator directly.
+ * If 'max_size' and/or 'target_size' are zero, default values will be
+ * used.  When ISC_MEM_USE_INTERNAL_MALLOC is false, 'max_size' and
+ * 'target_size' are ignored.
+ *
+ * A memory context created using isc_mem_createx() will obtain
+ * memory from the system by calling 'memalloc' and 'memfree',
+ * passing them the argument 'arg'.  A memory context created
+ * using isc_mem_create() will use the standard library malloc()
+ * and free().
+ *
+ * Requires:
+ * mctxp != NULL && *mctxp == NULL */
+
+void 
+isc_mem_attach(isc_mem_t *, isc_mem_t **);
+void 
+isc_mem_detach(isc_mem_t **);
+/*
+ * Attach to / detach from a memory context.
+ *
+ * This is intended for applications that use multiple memory contexts
+ * in such a way that it is not obvious when the last allocations from
+ * a given context has been freed and destroying the context is safe.
+ * 
+ * Most applications do not need to call these functions as they can
+ * simply create a single memory context at the beginning of main()
+ * and destroy it at the end of main(), thereby guaranteeing that it
+ * is not destroyed while there are outstanding allocations.
+ */
+
+void 
+isc_mem_destroy(isc_mem_t **);
+/*
+ * Destroy a memory context.
+ */
+
+isc_result_t 
+isc_mem_ondestroy(isc_mem_t *ctx,
+			       isc_task_t *task,
+			       isc_event_t **event);
+/*
+ * Request to be notified with an event when a memory context has
+ * been successfully destroyed.
+ */
+
+void 
+isc_mem_stats(isc_mem_t *mctx, FILE *out);
+/*
+ * Print memory usage statistics for 'mctx' on the stream 'out'.
+ */
+
+void 
+isc_mem_setdestroycheck(isc_mem_t *mctx,
+			     isc_boolean_t on);
+/*
+ * Iff 'on' is ISC_TRUE, 'mctx' will check for memory leaks when
+ * destroyed and abort the program if any are present.
+ */
+
+void 
+isc_mem_setquota(isc_mem_t *, size_t);
+size_t 
+isc_mem_getquota(isc_mem_t *);
+/*
+ * Set/get the memory quota of 'mctx'.  This is a hard limit
+ * on the amount of memory that may be allocated from mctx;
+ * if it is exceeded, allocations will fail.
+ */
+
+size_t 
+isc_mem_inuse(isc_mem_t *mctx);
+/*
+ * Get an estimate of the number of memory in use in 'mctx', in bytes.
+ * This includes quantization overhead, but does not include memory
+ * allocated from the system but not yet used.
+ */
 
 void
 isc_mem_setwater(isc_mem_t *mctx, isc_mem_water_t water, void *water_arg,
@@ -198,26 +261,18 @@ isc_mem_setwater(isc_mem_t *mctx, isc_mem_water_t water, void *water_arg,
  * will be called.  When the usage drops below 'lowater', 'water' will
  * again be called, this time with ISC_MEM_LOWATER.
  *
- * Requires:
- * 	If 'water' is NULL then 'water_arg', 'hi_water' and 'lo_water' are
- *	ignored and the state is reset.  Otherwise, requires
+ * If 'water' is NULL then 'water_arg', 'hi_water' and 'lo_water' are
+ * ignored and the state is reset.
  *
- *	'water' to point to a valid function.
- *	'hi_water > lo_water'
- *	'lo_water != 0'
- *	'hi_water != 0'
+ * Requires:
+ *
+ *	'water' is not NULL.
+ *	hi_water >= lo_water
  */
 
 /*
  * Memory pools
  */
-
-/*
- * Internal (but public) functions.  Don't call these from application
- * code.  Use isc_mempool_get() and isc_mempool_put() instead.
- */
-void *		isc__mempool_get(isc_mempool_t * _ISC_MEM_FLARG);
-void 		isc__mempool_put(isc_mempool_t *, void * _ISC_MEM_FLARG);
 
 isc_result_t
 isc_mempool_create(isc_mem_t *mctx, size_t size, isc_mempool_t **mpctxp);
@@ -354,6 +409,28 @@ isc_mempool_setfillcount(isc_mempool_t *mpctx, unsigned int limit);
  * Additional requirements:
  *	limit > 0
  */
+
+
+/*
+ * Pseudo-private functions for use via macros.  Do not call directly.
+ */
+void *		
+isc__mem_get(isc_mem_t *, size_t _ISC_MEM_FLARG);
+void 		
+isc__mem_putanddetach(isc_mem_t **, void *,
+				      size_t _ISC_MEM_FLARG);
+void 		
+isc__mem_put(isc_mem_t *, void *, size_t _ISC_MEM_FLARG);
+void *		
+isc__mem_allocate(isc_mem_t *, size_t _ISC_MEM_FLARG);
+void		
+isc__mem_free(isc_mem_t *, void * _ISC_MEM_FLARG);
+char *		
+isc__mem_strdup(isc_mem_t *, const char *_ISC_MEM_FLARG);
+void *		
+isc__mempool_get(isc_mempool_t * _ISC_MEM_FLARG);
+void 		
+isc__mempool_put(isc_mempool_t *, void * _ISC_MEM_FLARG);
 
 ISC_LANG_ENDDECLS
 

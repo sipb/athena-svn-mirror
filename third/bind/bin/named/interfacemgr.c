@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: interfacemgr.c,v 1.1.1.1 2001-10-22 13:06:44 ghudson Exp $ */
+/* $Id: interfacemgr.c,v 1.1.1.2 2002-02-03 04:22:42 ghudson Exp $ */
 
 #include <config.h>
 
@@ -31,8 +31,8 @@
 #include <named/log.h>
 #include <named/interfacemgr.h>
 
-#define IFMGR_MAGIC		0x49464D47U	/* IFMG. */
-#define NS_INTERFACEMGR_VALID(t) ISC_MAGIC_VALID(t, IFMGR_MAGIC)
+#define IFMGR_MAGIC			ISC_MAGIC('I', 'F', 'M', 'G')
+#define NS_INTERFACEMGR_VALID(t)	ISC_MAGIC_VALID(t, IFMGR_MAGIC)
 
 #define IFMGR_COMMON_LOGARGS \
 	ns_g_lctx, NS_LOGCATEGORY_NETWORK, NS_LOGMODULE_INTERFACEMGR
@@ -244,6 +244,7 @@ ns_interface_listenudp(ns_interface_t *ifp) {
 		attrs |= DNS_DISPATCHATTR_IPV4;
 	else
 		attrs |= DNS_DISPATCHATTR_IPV6;
+	attrs |= DNS_DISPATCHATTR_NOLISTEN;
 	attrmask = 0;
 	attrmask |= DNS_DISPATCHATTR_UDP | DNS_DISPATCHATTR_TCP;
 	attrmask |= DNS_DISPATCHATTR_IPV4 | DNS_DISPATCHATTR_IPV6;
@@ -269,6 +270,8 @@ ns_interface_listenudp(ns_interface_t *ifp) {
 	return (ISC_R_SUCCESS);
 
  addtodispatch_failure:
+	dns_dispatch_changeattributes(ifp->udpdispatch, 0,
+				      DNS_DISPATCHATTR_NOLISTEN);
 	dns_dispatch_detach(&ifp->udpdispatch);
  udp_dispatch_failure:
 	return (result);
@@ -373,8 +376,11 @@ ns_interface_destroy(ns_interface_t *ifp) {
 
 	ns_interface_shutdown(ifp);
 
-	if (ifp->udpdispatch != NULL)
+	if (ifp->udpdispatch != NULL) {
+		dns_dispatch_changeattributes(ifp->udpdispatch, 0,
+					      DNS_DISPATCHATTR_NOLISTEN);
 		dns_dispatch_detach(&ifp->udpdispatch);
+	}
 	if (ifp->tcpsocket != NULL)
 		isc_socket_detach(&ifp->tcpsocket);
 
@@ -463,14 +469,14 @@ clearacl(isc_mem_t *mctx, dns_acl_t **aclp) {
 	return (ISC_R_SUCCESS);
 }
 
-static void
+static isc_result_t
 do_ipv4(ns_interfacemgr_t *mgr) {
 	isc_interfaceiter_t *iter = NULL;
 	isc_result_t result;
 
 	result = isc_interfaceiter_create(mgr->mctx, &iter);
 	if (result != ISC_R_SUCCESS)
-		return;
+		return (result);
 
 	result = clearacl(mgr->mctx, &mgr->aclenv.localhost);
 	if (result != ISC_R_SUCCESS)
@@ -499,22 +505,31 @@ do_ipv4(ns_interfacemgr_t *mgr) {
 		if ((interface.flags & INTERFACE_F_UP) == 0)
 			continue;
 
-		result = isc_netaddr_masktoprefixlen(&interface.netmask,
-						     &prefixlen);
-		if (result != ISC_R_SUCCESS)
-			goto ignore_interface;
 		elt.type = dns_aclelementtype_ipprefix;
 		elt.negative = ISC_FALSE;
 		elt.u.ip_prefix.address = interface.address;
-		elt.u.ip_prefix.prefixlen = prefixlen;
-		/* XXX suppress duplicates */
-		result = dns_acl_appendelement(mgr->aclenv.localnets, &elt);
-		if (result != ISC_R_SUCCESS)
-			goto ignore_interface;
 		elt.u.ip_prefix.prefixlen = 32;
 		result = dns_acl_appendelement(mgr->aclenv.localhost, &elt);
 		if (result != ISC_R_SUCCESS)
 			goto ignore_interface;
+
+		result = isc_netaddr_masktoprefixlen(&interface.netmask,
+						     &prefixlen);
+		if (result != ISC_R_SUCCESS) {
+			isc_log_write(IFMGR_COMMON_LOGARGS,
+				      ISC_LOG_WARNING,
+				      "omitting IPv4 interface %s from "
+				      "localnets ACL: %s",
+				      interface.name,
+				      isc_result_totext(result));
+		} else {
+			elt.u.ip_prefix.prefixlen = prefixlen;
+			/* XXX suppress duplicates */
+			result = dns_acl_appendelement(mgr->aclenv.localnets,
+						       &elt);
+			if (result != ISC_R_SUCCESS)
+				goto ignore_interface;
+		}
 
 		for (le = ISC_LIST_HEAD(mgr->listenon4->elts);
 		     le != NULL;
@@ -584,18 +599,15 @@ do_ipv4(ns_interfacemgr_t *mgr) {
 		UNEXPECTED_ERROR(__FILE__, __LINE__,
 				 "IPv4: interface iteration failed: %s",
 				 isc_result_totext(result));
+	else 
+		result = ISC_R_SUCCESS;
  cleanup_iter:
 	isc_interfaceiter_destroy(&iter);
+	return (result);
 }
 
 static isc_boolean_t
-listenon_is_ip6_none(ns_listenlist_t *p) {
-	ns_listenelt_t *elt;
-	if (ISC_LIST_EMPTY(p->elts))
-		return (ISC_TRUE); /* No listen-on-v6 statements */
-	elt = ISC_LIST_HEAD(p->elts);
-	if (ISC_LIST_NEXT(elt, link) != NULL)
-		return (ISC_FALSE); /* More than one listen-on-v6 stmt */
+listenon_is_ip6_none(ns_listenelt_t *elt) {
 	if (elt->acl->length == 0)
 		return (ISC_TRUE); /* listen-on-v6 { } */
 	if (elt->acl->length > 1)
@@ -607,76 +619,84 @@ listenon_is_ip6_none(ns_listenlist_t *p) {
 }
 
 static isc_boolean_t
-listenon_is_ip6_any(ns_listenlist_t *p, in_port_t *portp) {
-	ns_listenelt_t *elt;
-	if (ISC_LIST_EMPTY(p->elts))
-		return (ISC_FALSE); /* No listen-on-v6 statements */
-	elt = ISC_LIST_HEAD(p->elts);
-	if (ISC_LIST_NEXT(elt, link) != NULL)
-		return (ISC_FALSE); /* More than one listen-on-v6 stmt */
+listenon_is_ip6_any(ns_listenelt_t *elt) {
 	if (elt->acl->length != 1)
 		return (ISC_FALSE);
 	if (elt->acl->elements[0].negative == ISC_FALSE &&
-	    elt->acl->elements[0].type == dns_aclelementtype_any) {
-		*portp = elt->port;
+	    elt->acl->elements[0].type == dns_aclelementtype_any)
 		return (ISC_TRUE);  /* listen-on-v6 { any; } */
-	}
 	return (ISC_FALSE); /* All others */
 }
 
-static void
+static isc_result_t
 do_ipv6(ns_interfacemgr_t *mgr) {
 	isc_result_t result;
 	ns_interface_t *ifp;
 	isc_sockaddr_t listen_addr;
 	struct in6_addr in6a;
-	in_port_t port;
+	ns_listenelt_t *le;
 
-	if (listenon_is_ip6_none(mgr->listenon6))
-		return;
-
-	if (! listenon_is_ip6_any(mgr->listenon6, &port)) {
-		isc_log_write(IFMGR_COMMON_LOGARGS,
-		      ISC_LOG_ERROR,
-		      "bad IPv6 listen-on list: must be 'any' or 'none'");
-		return;
-	}
-
-	in6a = in6addr_any;
-	isc_sockaddr_fromin6(&listen_addr, &in6a, port);
-
-	ifp = find_matching_interface(mgr, &listen_addr);
-	if (ifp != NULL) {
-		ifp->generation = mgr->generation;
-	} else {
-		isc_log_write(IFMGR_COMMON_LOGARGS, ISC_LOG_INFO,
-			      "listening on IPv6 interfaces, port %u", port);
-		result = ns_interface_setup(mgr, &listen_addr, "<any>", &ifp);
-		if (result != ISC_R_SUCCESS) {
+	for (le = ISC_LIST_HEAD(mgr->listenon6->elts);
+	     le != NULL;
+	     le = ISC_LIST_NEXT(le, link))
+	{
+		if (listenon_is_ip6_none(le))
+			continue;
+		if (! listenon_is_ip6_any(le)) {
 			isc_log_write(IFMGR_COMMON_LOGARGS,
 				      ISC_LOG_ERROR,
-				      "listening on IPv6 interfaces failed");
-			/* Continue. */
+				      "bad IPv6 listen-on list: "
+				      "must be 'any' or 'none'");
+			return (ISC_R_FAILURE);
+		}
+
+		in6a = in6addr_any;
+		isc_sockaddr_fromin6(&listen_addr, &in6a, le->port);
+
+		ifp = find_matching_interface(mgr, &listen_addr);
+		if (ifp != NULL) {
+			ifp->generation = mgr->generation;
+		} else {
+			isc_log_write(IFMGR_COMMON_LOGARGS, ISC_LOG_INFO,
+				      "listening on IPv6 interfaces, port %u",
+				      le->port);
+			result = ns_interface_setup(mgr, &listen_addr,
+						    "<any>", &ifp);
+			if (result != ISC_R_SUCCESS) {
+				isc_log_write(IFMGR_COMMON_LOGARGS,
+					      ISC_LOG_ERROR,
+					      "listening on IPv6 interfaces "
+					      "failed");
+				/* Continue. */
+			}
 		}
 	}
+	return (ISC_R_SUCCESS);
 }
 
 void
 ns_interfacemgr_scan(ns_interfacemgr_t *mgr, isc_boolean_t verbose) {
+	isc_boolean_t purge = ISC_TRUE;
 
 	REQUIRE(NS_INTERFACEMGR_VALID(mgr));
 
 	mgr->generation++;	/* Increment the generation count. */
 
 	if (isc_net_probeipv6() == ISC_R_SUCCESS) {
-		do_ipv6(mgr);
-	} else
+		if (do_ipv6(mgr) != ISC_R_SUCCESS)
+			purge = ISC_FALSE;
+	}
+#ifdef WANT_IPV6
+	else
 		isc_log_write(IFMGR_COMMON_LOGARGS,
 			      verbose ? ISC_LOG_INFO : ISC_LOG_DEBUG(1),
 			      "no IPv6 interfaces found");
-	if (isc_net_probeipv4() == ISC_R_SUCCESS)
-		do_ipv4(mgr);
-	else
+#endif
+
+	if (isc_net_probeipv4() == ISC_R_SUCCESS) {
+		if (do_ipv4(mgr) != ISC_R_SUCCESS)
+			purge = ISC_FALSE;
+	} else
 		isc_log_write(IFMGR_COMMON_LOGARGS,
 			      verbose ? ISC_LOG_INFO : ISC_LOG_DEBUG(1),
 			      "no IPv4 interfaces found");
@@ -687,15 +707,17 @@ ns_interfacemgr_scan(ns_interfacemgr_t *mgr, isc_boolean_t verbose) {
 	 * how we catch interfaces that go away or change their
 	 * addresses.
 	 */
-	purge_old_interfaces(mgr);
+	if (purge)
+		purge_old_interfaces(mgr);
 
-	if (ISC_LIST_EMPTY(mgr->interfaces)) {
+	/*
+	 * Warn if we are not listening on any interface, unless
+	 * we're in lwresd-only mode, in which case that is to 
+	 * be expected.
+	 */
+	if (ISC_LIST_EMPTY(mgr->interfaces) && ! ns_g_lwresdonly)
 		isc_log_write(IFMGR_COMMON_LOGARGS, ISC_LOG_WARNING,
 			      "not listening on any interfaces");
-		/*
-		 * Continue anyway.
-		 */
-	}
 }
 
 void

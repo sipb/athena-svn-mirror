@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: pgsqldb.h,v 1.1.1.1 2001-10-22 13:07:34 ghudson Exp $ */
+/* $Id: pgsqldb.h,v 1.1.1.2 2002-02-03 04:23:48 ghudson Exp $ */
 
 #include <isc/types.h>
 

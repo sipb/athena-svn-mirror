@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwsearch.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: lwsearch.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #ifndef NAMED_LWSEARCH_H
 #define NAMED_LWSEARCH_H 1
@@ -38,7 +38,7 @@
  */
 
 struct ns_lwsearchlist {
-	isc_uint32_t magic;
+	unsigned int magic;
 
 	isc_mutex_t lock;
 	isc_mem_t *mctx;

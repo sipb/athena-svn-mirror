@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: dir.h,v 1.1.1.1 2001-10-22 13:09:31 ghudson Exp $ */
+/* $Id: dir.h,v 1.1.1.2 2002-02-03 04:25:54 ghudson Exp $ */
 
 /* Principal Authors: DCL */
 
@@ -43,7 +43,7 @@ typedef struct isc_direntry {
 } isc_direntry_t;
 
 typedef struct isc_dir {
-	int		magic;
+	unsigned int	magic;
 	/*
 	 * As with isc_direntry_t->name, making this "right" for all systems
 	 * is slightly problematic because AIX does not define PATH_MAX.
@@ -72,6 +72,19 @@ isc_dir_close(isc_dir_t *dir);
 
 isc_result_t
 isc_dir_chdir(const char *dirname);
+
+isc_result_t
+isc_dir_chroot(const char *dirname);
+
+isc_result_t
+isc_dir_current(char *dirname, size_t length, isc_boolean_t end_sep);
+/*
+ * Put the absolute name of the current directory into 'dirname', which is a
+ * buffer of at least 'length' characters.  If 'end_sep' is true, end the
+ * string with the appropriate path separator, such that the final product
+ * could be concatenated with a relative pathname to make a valid pathname
+ * string. 
+ */
 
 isc_result_t
 isc_dir_createunique(char *templet);

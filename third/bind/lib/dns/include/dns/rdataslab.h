@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdataslab.h,v 1.1.1.1 2001-10-22 13:08:27 ghudson Exp $ */
+/* $Id: rdataslab.h,v 1.1.1.2 2002-02-03 04:24:46 ghudson Exp $ */
 
 #ifndef DNS_RDATASLAB_H
 #define DNS_RDATASLAB_H 1

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: soa_6.c,v 1.1.1.1 2001-10-22 13:08:38 ghudson Exp $ */
+/* $Id: soa_6.c,v 1.1.1.2 2002-02-03 04:25:26 ghudson Exp $ */
 
 /* Reviewed: Thu Mar 16 15:18:32 PST 2000 by explorer */
 
@@ -32,9 +32,11 @@ fromtext_soa(ARGS_FROMTEXT) {
 	int i;
 	isc_uint32_t n;
 
-	UNUSED(rdclass);
-
 	REQUIRE(type == 6);
+
+	UNUSED(type);
+	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	origin = (origin != NULL) ? origin : dns_rootname;
 
@@ -45,7 +47,7 @@ fromtext_soa(ARGS_FROMTEXT) {
 
 		dns_name_init(&name, NULL);
 		buffer_fromregion(&buffer, &token.value.as_region);
-		RETERR(dns_name_fromtext(&name, &buffer, origin,
+		RETTOK(dns_name_fromtext(&name, &buffer, origin,
 					 downcase, target));
 	}
 
@@ -57,7 +59,7 @@ fromtext_soa(ARGS_FROMTEXT) {
 		RETERR(isc_lex_getmastertoken(lexer, &token,
 					      isc_tokentype_string,
 					      ISC_FALSE));
-		RETERR(dns_counter_fromtext(&token.value.as_textregion, &n));
+		RETTOK(dns_counter_fromtext(&token.value.as_textregion, &n));
 		RETERR(uint32_tobuffer(n, target));
 	}
 
@@ -146,9 +148,10 @@ fromwire_soa(ARGS_FROMWIRE) {
 	isc_region_t sregion;
 	isc_region_t tregion;
 
-	UNUSED(rdclass);
-
 	REQUIRE(type == 6);
+
+	UNUSED(type);
+	UNUSED(rdclass);
 
 	dns_decompress_setmethods(dctx, DNS_COMPRESS_GLOBAL14);
 
@@ -179,14 +182,16 @@ towire_soa(ARGS_TOWIRE) {
 	isc_region_t tregion;
 	dns_name_t mname;
 	dns_name_t rname;
+	dns_offsets_t moffsets;
+	dns_offsets_t roffsets;
 
 	REQUIRE(rdata->type == 6);
 	REQUIRE(rdata->length != 0);
 
 	dns_compress_setmethods(cctx, DNS_COMPRESS_GLOBAL14);
 
-	dns_name_init(&mname, NULL);
-	dns_name_init(&rname, NULL);
+	dns_name_init(&mname, moffsets);
+	dns_name_init(&rname, roffsets);
 
 	dns_rdata_toregion(rdata, &sregion);
 
@@ -263,11 +268,12 @@ fromstruct_soa(ARGS_FROMSTRUCT) {
 	REQUIRE(soa->common.rdtype == type);
 	REQUIRE(soa->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	dns_name_toregion(&soa->origin, &region);
 	RETERR(isc_buffer_copyregion(target, &region));
-	dns_name_toregion(&soa->mname, &region);
+	dns_name_toregion(&soa->contact, &region);
 	RETERR(isc_buffer_copyregion(target, &region));
 	RETERR(uint32_tobuffer(soa->serial, target));
 	RETERR(uint32_tobuffer(soa->refresh, target));
@@ -302,8 +308,8 @@ tostruct_soa(ARGS_TOSTRUCT) {
 
 	dns_name_fromregion(&name, &region);
 	isc_region_consume(&region, name_length(&name));
-	dns_name_init(&soa->mname, NULL);
-	result = name_duporclone(&name, mctx, &soa->mname);
+	dns_name_init(&soa->contact, NULL);
+	result = name_duporclone(&name, mctx, &soa->contact);
 	if (result != ISC_R_SUCCESS)
 		goto cleanup;
 
@@ -341,7 +347,7 @@ freestruct_soa(ARGS_FREESTRUCT) {
 		return;
 
 	dns_name_free(&soa->origin, soa->mctx);
-	dns_name_free(&soa->mname, soa->mctx);
+	dns_name_free(&soa->contact, soa->mctx);
 	soa->mctx = NULL;
 }
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gai_strerror.c,v 1.1.1.1 2001-10-22 13:09:41 ghudson Exp $ */
+/* $Id: gai_strerror.c,v 1.1.1.2 2002-02-03 04:26:18 ghudson Exp $ */
 
 #include <lwres/netdb.h>
 
@@ -43,7 +43,8 @@ lwres_gai_strerror(int ecode) {
 		char *deconst_ptr;
 	} ptr;
 
-	if ((ecode < 0) || (ecode > EAI_MAX))
+	if ((ecode < 0) ||
+	    (ecode >= (int)(sizeof(gai_messages)/sizeof(*gai_messages))))
 		ptr.const_ptr = "invalid error code";
 	else
 		ptr.const_ptr = gai_messages[ecode];

@@ -13,7 +13,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: Makefile.in,v 1.1.1.1 2001-10-22 13:06:56 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2002-02-03 04:22:55 ghudson Exp $
 
 srcdir =	@srcdir@
 VPATH =		@srcdir@
@@ -45,10 +45,10 @@ SRCS =		dst_test.c t_dst.c
 @BIND9_MAKE_RULES@
 
 dst_test: dst_test.@O@ ${DEPLIBS}
-	${LIBTOOL} ${CC} -o $@ dst_test.@O@ ${LIBS}
+	${LIBTOOL} ${PURIFY} ${CC} ${CFLAGS} -o $@ dst_test.@O@ ${LIBS}
 
 t_dst: t_dst.@O@ ${DEPLIBS} ${TLIB}
-	${LIBTOOL} ${CC} -o $@ t_dst.@O@  ${TLIB} ${LIBS}
+	${LIBTOOL} ${PURIFY} ${CC} ${CFLAGS} -o $@ t_dst.@O@  ${TLIB} ${LIBS}
 
 test: t_dst
 	../genrandom 100 randomfile

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: entropy_test.c,v 1.1.1.1 2001-10-22 13:07:00 ghudson Exp $ */
+/* $Id: entropy_test.c,v 1.1.1.2 2002-02-03 04:22:59 ghudson Exp $ */
 
 #include <config.h>
 

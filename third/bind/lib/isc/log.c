@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: log.c,v 1.1.1.1 2001-10-22 13:09:24 ghudson Exp $ */
+/* $Id: log.c,v 1.1.1.2 2002-02-03 04:25:48 ghudson Exp $ */
 
 /* Principal Authors: DCL */
 
@@ -30,18 +30,21 @@
 #include <sys/stat.h>
 
 #include <isc/dir.h>
+#include <isc/file.h>
 #include <isc/log.h>
 #include <isc/magic.h>
 #include <isc/mem.h>
 #include <isc/msgs.h>
 #include <isc/print.h>
+#include <isc/stdio.h>
 #include <isc/string.h>
 #include <isc/time.h>
 #include <isc/util.h>
 
-#define LCTX_MAGIC		0x4C637478U	/* Lctx. */
+#define LCTX_MAGIC		ISC_MAGIC('L', 'c', 't', 'x')
 #define VALID_CONTEXT(lctx)	ISC_MAGIC_VALID(lctx, LCTX_MAGIC)
-#define LCFG_MAGIC		0x4C636667U	/* Lcfg. */
+
+#define LCFG_MAGIC		ISC_MAGIC('L', 'c', 'f', 'g')
 #define VALID_CONFIG(lcfg)	ISC_MAGIC_VALID(lcfg, LCFG_MAGIC)
 
 /*
@@ -182,7 +185,7 @@ static const int syslog_map[] = {
  * be overridden.  Since the default is always looked up as the first
  * channellist in the log context, it must come first in isc_categories[].
  */
-isc_logcategory_t isc_categories[] = {
+LIBISC_EXTERNAL_DATA isc_logcategory_t isc_categories[] = {
 	{ "default", 0 },	/* "default" must come first. */
 	{ "general", 0 },
 	{ NULL, 0 }
@@ -191,8 +194,9 @@ isc_logcategory_t isc_categories[] = {
 /*
  * See above comment for categories, and apply it to modules.
  */
-isc_logmodule_t isc_modules[] = {
+LIBISC_EXTERNAL_DATA isc_logmodule_t isc_modules[] = {
 	{ "socket", 0 },
+	{ "time", 0 },
 	{ NULL, 0 }
 };
 
@@ -206,7 +210,7 @@ static isc_logchannellist_t default_channel;
 /*
  * libisc logs to this context.
  */
-isc_log_t *isc_lctx = NULL;
+LIBISC_EXTERNAL_DATA isc_log_t *isc_lctx = NULL;
 
 /*
  * Forward declarations.
@@ -228,7 +232,8 @@ static void
 isc_log_doit(isc_log_t *lctx, isc_logcategory_t *category,
 	     isc_logmodule_t *module, int level, isc_boolean_t write_once,
 	     isc_msgcat_t *msgcat, int msgset, int msg,
-	     const char *format, va_list args);
+	     const char *format, va_list args)
+     ISC_FORMAT_PRINTF(9, 0);
 
 /*
  * Convenience macros.
@@ -336,7 +341,7 @@ isc_logconfig_create(isc_log_t *lctx, isc_logconfig_t **lcfgp) {
 		lcfg->magic = LCFG_MAGIC;
 
 	} else
-		return (ISC_R_NOMEMORY);
+		result = ISC_R_NOMEMORY;
 
 	/*
 	 * Create the default channels:
@@ -361,13 +366,14 @@ isc_logconfig_create(isc_log_t *lctx, isc_logconfig_t **lcfgp) {
 					       ISC_LOG_PRINTTIME);
 	}
 
-	/*
-	 * Set the default category's channel to default_stderr, which
-	 * is at the head of the channels list because it was just created.
-	 */
-	default_channel.channel = ISC_LIST_HEAD(lcfg->channels);
-
 	if (result == ISC_R_SUCCESS) {
+		/*
+		 * Set the default category's channel to default_stderr,
+		 * which is at the head of the channels list because it was
+		 * just created.
+		 */
+		default_channel.channel = ISC_LIST_HEAD(lcfg->channels);
+
 		destination.file.stream = stderr;
 		destination.file.name = NULL;
 		destination.file.versions = ISC_LOG_ROLLNEVER;
@@ -928,9 +934,24 @@ isc_log_setcontext(isc_log_t *lctx) {
 
 void
 isc_log_setdebuglevel(isc_log_t *lctx, unsigned int level) {
+	isc_logchannel_t *channel;
+
 	REQUIRE(VALID_CONTEXT(lctx));
 
 	lctx->debug_level = level;
+	/*
+	 * Close ISC_LOG_DEBUGONLY channels if level is zero.
+	 */
+	if (lctx->debug_level == 0)
+		for (channel = ISC_LIST_HEAD(lctx->logconfig->channels);
+		     channel != NULL;
+		     channel = ISC_LIST_NEXT(channel, link))
+			if (channel->type == ISC_LOG_TOFILE &&
+			    (channel->flags & ISC_LOG_DEBUGONLY) != 0 &&
+			    FILE_STREAM(channel) != NULL) {
+				(void)fclose(FILE_STREAM(channel));
+				FILE_STREAM(channel) = NULL;
+			}
 }
 
 unsigned int
@@ -1223,12 +1244,12 @@ roll_log(isc_logchannel_t *channel) {
 	for (i = greatest; i > 0; i--) {
 		sprintf(current, "%s.%d", path, i - 1);
 		sprintf(new, "%s.%d", path, i);
-		(void)rename(current, new);
+		(void)isc_file_rename(current, new);
 	}
 
 	if (FILE_VERSIONS(channel) != 0) {
 		sprintf(new, "%s.0", path);
-		(void)rename(path, new);
+		(void)isc_file_rename(path, new);
 
 	} else if (FILE_VERSIONS(channel) == 0)
 		(void)remove(path);
@@ -1238,9 +1259,10 @@ roll_log(isc_logchannel_t *channel) {
 
 static isc_result_t
 isc_log_open(isc_logchannel_t *channel) {
-	FILE *stream;
 	struct stat statbuf;
 	isc_boolean_t regular_file;
+	isc_boolean_t roll = ISC_FALSE;
+	isc_result_t result = ISC_R_SUCCESS;
 	const char *path;
 
 	REQUIRE(channel->type == ISC_LOG_TOFILE);
@@ -1252,31 +1274,32 @@ isc_log_open(isc_logchannel_t *channel) {
 
 	/*
 	 * Determine type of file; only regular files will be
-	 * version renamed.
+	 * version renamed, and only if the base file exists
+	 * and either has no size limit or has reached its size limit.
 	 */
-	if (stat(path, &statbuf) == 0)
+	if (stat(path, &statbuf) == 0) {
 		regular_file = (statbuf.st_mode & S_IFREG) ?
 							ISC_TRUE : ISC_FALSE;
-	else if (errno == ENOENT)
+		/* XXXDCL if not regular_file complain? */
+		roll = ISC_TF(regular_file &&
+			      statbuf.st_size >= FILE_MAXSIZE(channel));
+	} else if (errno == ENOENT)
 		regular_file = ISC_TRUE;
 	else
-		return (ISC_R_INVALIDFILE);
+		result = ISC_R_INVALIDFILE;
 
 	/*
 	 * Version control.
 	 */
-	if (regular_file)
-		if (roll_log(channel) != ISC_R_SUCCESS)
-			return (ISC_R_INVALIDFILE);
-	/* XXXDCL if not regular_file complain? */
+	if (result == ISC_R_SUCCESS && roll) {
+		result = roll_log(channel);
+		if (result != ISC_R_SUCCESS)
+			return (result);
+	}
 
-	stream = fopen(path, "a");
-	if (stream == NULL)
-		return (ISC_R_INVALIDFILE);
+	result = isc_stdio_open(path, "a", &FILE_STREAM(channel));
 
-	FILE_STREAM(channel) = stream;
-
-	return (ISC_R_SUCCESS);
+	return (result);
 }
 
 isc_boolean_t
@@ -1323,7 +1346,6 @@ isc_log_doit(isc_log_t *lctx, isc_logcategory_t *category,
 	isc_logconfig_t *lcfg;
 	isc_logchannel_t *channel;
 	isc_logchannellist_t *category_channels;
-	isc_time_t isctime;
 	isc_result_t result;
 
 	REQUIRE(lctx == NULL || VALID_CONTEXT(lctx));
@@ -1415,37 +1437,13 @@ isc_log_doit(isc_log_t *lctx, isc_logcategory_t *category,
 
 		if ((channel->flags & ISC_LOG_PRINTTIME) != 0 &&
 		    time_string[0] == '\0') {
-			time_t now;
+		    isc_time_t isctime;
 
-			result = isc_time_now(&isctime);
+		    result = isc_time_now(&isctime);
 			if (result == ISC_R_SUCCESS)
-				result = isc_time_secondsastimet(&isctime,
-								 &now);
-
-			if (result == ISC_R_SUCCESS) {
-				unsigned int len;
-				struct tm *timeptr;
-
-				timeptr = localtime(&now);
-				/*
-				 * Emulate syslog's time format,
-				 * with milliseconds.
-				 *
-				 * It would be nice if the format
-				 * were configurable.
-				 */
-				strftime(time_string, sizeof(time_string),
-					 "%b %d %X", timeptr);
-
-				len = strlen(time_string);
-
-				snprintf(time_string + len,
-					 sizeof(time_string) - len,
-					 ".%03u ",
-					 isc_time_nanoseconds(&isctime)
-					 / 1000000);
-
-			} else
+				isc_time_formattimestamp(&isctime, time_string,
+							 sizeof(time_string));
+			else
 				/*
 				 * "Should never happen."
 				 */
@@ -1453,7 +1451,7 @@ isc_log_doit(isc_log_t *lctx, isc_logcategory_t *category,
 					 isc_msgcat_get(isc_msgcat,
 						      ISC_MSGSET_LOG,
 						      ISC_MSG_BADTIME,
-						      "Bad 00 99:99:99.999 "));
+						      "Bad 00 99:99:99.999"));
 
 		}
 
@@ -1639,8 +1637,9 @@ isc_log_doit(isc_log_t *lctx, isc_logcategory_t *category,
 			/* FALLTHROUGH */
 
 		case ISC_LOG_TOFILEDESC:
-			fprintf(FILE_STREAM(channel), "%s%s%s%s%s%s%s%s%s\n",
+			fprintf(FILE_STREAM(channel), "%s%s%s%s%s%s%s%s%s%s\n",
 				printtime     ? time_string	: "",
+				printtime     ? " "		: "",
 				printtag      ? lcfg->tag	: "",
 				printtag      ? ": "		: "",
 				printcategory ? category->name	: "",

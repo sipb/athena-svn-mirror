@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: check-tool.h,v 1.1.1.1 2001-10-22 13:06:32 ghudson Exp $ */
+/* $Id: check-tool.h,v 1.1.1.2 2002-02-03 04:22:30 ghudson Exp $ */
 
 #ifndef CHECK_TOOL_H
 #define CHECK_TOOL_H

@@ -15,16 +15,14 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gethost.c,v 1.1.1.1 2001-10-22 13:09:42 ghudson Exp $ */
+/* $Id: gethost.c,v 1.1.1.2 2002-02-03 04:26:19 ghudson Exp $ */
 
 #include <config.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
 
 #include <errno.h>
 #include <string.h>
 
+#include <lwres/net.h>
 #include <lwres/netdb.h>
 
 #include "assert_p.h"

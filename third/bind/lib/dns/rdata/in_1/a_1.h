@@ -18,7 +18,7 @@
 #ifndef IN_1_A_1_H
 #define IN_1_A_1_H 1
 
-/* $Id: a_1.h,v 1.1.1.1 2001-10-22 13:08:40 ghudson Exp $ */
+/* $Id: a_1.h,v 1.1.1.2 2002-02-03 04:25:28 ghudson Exp $ */
 
 typedef struct dns_rdata_in_a {
 	dns_rdatacommon_t	common;

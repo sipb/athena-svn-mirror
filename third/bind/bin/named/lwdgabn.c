@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwdgabn.c,v 1.1.1.1 2001-10-22 13:06:46 ghudson Exp $ */
+/* $Id: lwdgabn.c,v 1.1.1.2 2002-02-03 04:22:44 ghudson Exp $ */
 
 #include <config.h>
 
@@ -607,6 +607,8 @@ ns_lwdclient_processgabn(ns_lwdclient_t *client, lwres_buffer_t *b) {
 	result = lwres_gabnrequest_parse(client->clientmgr->lwctx,
 					 b, &client->pkt, &req);
 	if (result != LWRES_R_SUCCESS)
+		goto out;
+	if (req->name == NULL)
 		goto out;
 
 	isc_buffer_init(&namebuf, req->name, req->namelen);

@@ -15,9 +15,10 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwaddr.h,v 1.1.1.1 2001-10-22 13:06:40 ghudson Exp $ */
+/* $Id: lwaddr.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #include <lwres/lwres.h>
+#include <lwres/net.h>
 
 isc_result_t
 lwaddr_netaddr_fromlwresaddr(isc_netaddr_t *na, lwres_addr_t *la);

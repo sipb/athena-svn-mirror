@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: a6.h,v 1.1.1.1 2001-10-22 13:08:14 ghudson Exp $ */
+/* $Id: a6.h,v 1.1.1.2 2002-02-03 04:24:36 ghudson Exp $ */
 
 #ifndef DNS_A6_H
 #define DNS_A6_H 1

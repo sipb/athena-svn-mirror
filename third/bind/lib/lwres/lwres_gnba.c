@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwres_gnba.c,v 1.1.1.1 2001-10-22 13:09:45 ghudson Exp $ */
+/* $Id: lwres_gnba.c,v 1.1.1.2 2002-02-03 04:26:24 ghudson Exp $ */
 
 #include <config.h>
 

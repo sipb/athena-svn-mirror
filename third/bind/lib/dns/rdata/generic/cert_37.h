@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cert_37.h,v 1.1.1.1 2001-10-22 13:08:32 ghudson Exp $ */
+/* $Id: cert_37.h,v 1.1.1.2 2002-02-03 04:25:20 ghudson Exp $ */
 
 /* RFC 2538 */
 #ifndef GENERIC_CERT_37_H

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: hinfo_13.c,v 1.1.1.1 2001-10-22 13:08:33 ghudson Exp $ */
+/* $Id: hinfo_13.c,v 1.1.1.2 2002-02-03 04:25:21 ghudson Exp $ */
 
 /*
  * Reviewed: Wed Mar 15 16:47:10 PST 2000 by halley.
@@ -31,9 +31,11 @@ fromtext_hinfo(ARGS_FROMTEXT) {
 	isc_token_t token;
 	int i;
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
+	UNUSED(callbacks);
 
 	REQUIRE(type == 13);
 
@@ -41,7 +43,7 @@ fromtext_hinfo(ARGS_FROMTEXT) {
 		RETERR(isc_lex_getmastertoken(lexer, &token,
 					      isc_tokentype_qstring,
 					      ISC_FALSE));
-		RETERR(txt_fromtext(&token.value.as_textregion, target));
+		RETTOK(txt_fromtext(&token.value.as_textregion, target));
 	}
 	return (ISC_R_SUCCESS);
 }
@@ -64,11 +66,12 @@ totext_hinfo(ARGS_TOTEXT) {
 static inline isc_result_t
 fromwire_hinfo(ARGS_FROMWIRE) {
 
+	REQUIRE(type == 13);
+
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(rdclass);
 	UNUSED(downcase);
-
-	REQUIRE(type == 13);
 
 	RETERR(txt_fromwire(source, target));
 	return (txt_fromwire(source, target));
@@ -110,6 +113,7 @@ fromstruct_hinfo(ARGS_FROMSTRUCT) {
 	REQUIRE(hinfo->common.rdtype == type);
 	REQUIRE(hinfo->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	RETERR(uint8_tobuffer(hinfo->cpu_len, target));
@@ -134,22 +138,17 @@ tostruct_hinfo(ARGS_TOSTRUCT) {
 	dns_rdata_toregion(rdata, &region);
 	hinfo->cpu_len = uint8_fromregion(&region);
 	isc_region_consume(&region, 1);
-	if (hinfo->cpu_len > 0) {
-		hinfo->cpu = mem_maybedup(mctx, region.base, hinfo->cpu_len);
-		if (hinfo->cpu == NULL)
-			return (ISC_R_NOMEMORY);
-		isc_region_consume(&region, hinfo->cpu_len);
-	} else
-		hinfo->cpu = NULL;
+	hinfo->cpu = mem_maybedup(mctx, region.base, hinfo->cpu_len);
+	if (hinfo->cpu == NULL)
+		return (ISC_R_NOMEMORY);
+	isc_region_consume(&region, hinfo->cpu_len);
 
 	hinfo->os_len = uint8_fromregion(&region);
 	isc_region_consume(&region, 1);
-	if (hinfo->os_len > 0) {
-		hinfo->os = mem_maybedup(mctx, region.base, hinfo->os_len);
-		if (hinfo->os == NULL)
-			goto cleanup;
-	} else
-		hinfo->os = NULL;
+	hinfo->os = mem_maybedup(mctx, region.base, hinfo->os_len);
+	if (hinfo->os == NULL)
+		goto cleanup;
+
 	hinfo->mctx = mctx;
 	return (ISC_R_SUCCESS);
 
