@@ -1,6 +1,6 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.1 1990-04-23 14:28:10 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.2 1990-04-26 15:43:32 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -21,10 +21,16 @@
  *  reconfig with this option.  SNMPD uses this define for other
  *  gateway related stuff and so does unix.
  */
-/*#define GATEWAY		/* gives larger routing tables */
 
+#ifdef MIT
+/*
+ * This is a bogus way to do it.
+ */
+#endif MIT
+
+/*#define GATEWAY		/* gives larger routing tables */
 /*#define SUN3_3PLUS		/* Sun OS 3.3 or greater, but < 4.0 */
-#define BSD43			/* 4.3 BSD */
+/*#define BSD43			/* 4.3 BSD */
 /*#define ULTRIX2_2		/* Ultrix 2.2 or 2.0 */
 /*#define SUN40			/* Sun OS 4.0 */
 
@@ -50,11 +56,11 @@
 #define PIDFILE		"/etc/snmpd.pid"
 #define VERSION		"3.4"
 
-#ifdef ATHENA
-#ifdef LOGIN
+#ifdef  MIT
+#ifdef  LOGIN
 #define LOGIN_FILE      "/etc/utmp"
-#endif LOGIN
-#endif ATHENA
+#endif  LOGIN
+#endif  MIT
 
 /*
  *  Well known port that snmpd will listen on to find out
@@ -74,7 +80,7 @@
  *  nothing is specified in the SNMPINITFILE.
  */
 
-#define SYS_DESCR "VS2"
+#define SYS_DESCR "Slinky"
 
 /* #define SYS_DESCR "VAX 11/750" */
 /* #define SYS_DESCR "VAX 3600"   */
@@ -90,6 +96,12 @@
  *  With SunOS 4.0, the BSD43 flag works fine, so make sure it is
  *  turned on.  Also, SunOS 4.0 includes Van J's TCP improvements.
  */
+#ifdef MIT
+/* 
+ * Deal with suns at a later time
+ */
+#endif MIT
+
 #ifdef SUN40
 #ifndef BSD43
 #define BSD43
