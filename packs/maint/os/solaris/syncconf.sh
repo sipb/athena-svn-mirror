@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.5 1999-12-06 04:25:48 ghudson Exp $
+# $Id: syncconf.sh,v 1.6 2000-01-01 05:40:13 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -40,13 +40,6 @@ move()
 	$maybe mv -f "$1" "$2"
 }
 
-quiet_move()
-{
-	if [ -f "$1" ]; then
-		move "$1" "$2"
-	fi
-}
-
 put()
 {
 	if [ -n "$debug" ]; then
@@ -63,6 +56,12 @@ append()
 	else
 		echo "$2" >> "$1"
 	fi
+}
+
+update()
+{
+	$maybe ln "$1" "$1.saved"
+	$maybe /bin/athena/syncupdate "$1.new" "$1"
 }
 
 handle()
@@ -98,20 +97,22 @@ handle()
 			wasdhcp=true
 		fi
 
-		move /etc/nodename /etc/nodename.saved
-		move "/etc/hostname.$NETDEV" "/etc/hostname.$NETDEV.saved"
-		move /etc/defaultrouter /etc/defaultrouter.saved
-		move /etc/inet/hosts /etc/inet/hosts.saved
-		move /etc/inet/netmasks /etc/inet/netmasks.saved
+		remove /etc/nodename.new
+		remove /etc/hotname.$NETDEV.new
+		remove /etc/defaultrouter.new
+		remove /etc/inet/hosts.new
+		remove /etc/inet/netmasks.new
 
-		put	/etc/inet/hosts "#"
-		append	/etc/inet/hosts "# Internet host table"
-		append	/etc/inet/hosts "#"
-		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
+		put	/etc/inet/hosts.new "#"
+		append	/etc/inet/hosts.new "# Internet host table"
+		append	/etc/inet/hosts.new "#"
+		append	/etc/inet/hosts.new "127.0.0.1  localhost loghost"
 
 		if [ "$ADDR" = dhcp ]; then
-			$maybe touch /etc/nodename /etc/hostname.$NETDEV
-			$maybe touch /etc/defaultrouter /etc/netmasks
+			$maybe touch /etc/nodename.new
+			$maybe touch /etc/hostname.$NETDEV.new
+			$maybe touch /etc/defaultrouter.new
+			$maybe touch /etc/netmasks.new
 			put "/etc/dhcp.$NETDEV" "primary"
 		else
 			remove "/etc/dhcp.$NETDEV"
@@ -123,18 +124,19 @@ handle()
 			# file.
 			first=`expr "$HOST" : '\([^.]*\)\.'`
 
-			put	/etc/nodename "$HOST"
-			put	"/etc/hostname.$NETDEV" "$HOST"
-			put	/etc/defaultrouter "$gateway"
-			append	/etc/inet/hosts "$ADDR  $HOST $first"
-			put	/etc/inet/netmasks "# Netmask for this host"
-			append	/etc/inet/netmasks "$ADDR	$netmask"
+			put    /etc/nodename.new "$HOST"
+			put    "/etc/hostname.$NETDEV.new" "$HOST"
+			put    /etc/defaultrouter.new "$gateway"
+			append /etc/inet/hosts.new "$ADDR  $HOST $first"
+			put    /etc/inet/netmasks.new "# Netmask for this host"
+			append /etc/inet/netmasks.new "$ADDR	$netmask"
 		fi
 
-		# Decrease the likelihood that the machine reboots
-		# uncleanly before the new files are written out to
-		# disk.  A more robust algorithm is in the works.
-		sync
+		update /etc/nodename
+		update /etc/hostname.$NETDEV
+		update /etc/defaultrouter
+		update /etc/inet/hosts
+		update /etc/inet/netmasks
 
 		# Hostname configuration happens prior to rc2 scripts on
 		# Solaris.

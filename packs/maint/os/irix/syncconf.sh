@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.5 1999-11-10 06:01:27 ghudson Exp $
+# $Id: syncconf.sh,v 1.6 2000-01-01 05:40:20 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -71,13 +71,6 @@ move()
 	$maybe mv -f "$1" "$2"
 }
 
-quiet_move()
-{
-	if [ -f "$1" ]; then
-		move "$1" "$2"
-	fi
-}
-
 put()
 {
 	if [ -n "$debug" ]; then
@@ -94,6 +87,12 @@ append()
 	else
 		echo "$2" >> "$1"
 	fi
+}
+
+update()
+{
+	$maybe ln "$1" "$1.saved"
+	$maybe /bin/athena/syncupdate "$1.new" "$1"
 }
 
 handle()
@@ -210,12 +209,10 @@ handle()
 		;;
 
 	HOSTADDR)
-		move /etc/sys_id /etc/sys_id.saved
-		move /etc/hosts /etc/hosts.saved
-		move $config/static-route.options \
-			$config/static-route.options.saved
-		move $config/ifconfig-1.options \
-			$config/ifconfig-1.options.saved
+		remove /etc/sys_id.new
+		remove /etc/hosts.new
+		remove $config/static-route.options.new
+		remove $config/ifconfig-1.options.new
 
 		set -- `/etc/athena/netparams "$ADDR"`
 		netmask=$1
@@ -226,23 +223,29 @@ handle()
 		# file.
 		first=`expr "$HOST" : '\([^.]*\)\.'`
 
-		put    /etc/sys_id $HOST
+		put    /etc/sys_id.new $HOST
 
-		put    $config/static-route.options "#"
-		append $config/static-route.options \
+		put    $config/static-route.options.new "#"
+		append $config/static-route.options.new \
 "# See /os/etc/config/static-route.options for information on this file."
-		append $config/static-route.options "#"
-		append $config/static-route.options \
+		append $config/static-route.options.new "#"
+		append $config/static-route.options.new \
 			"\$ROUTE \$QUIET add net default $gateway"
 
-		put    $config/ifconfig-1.options \
+		put    $config/ifconfig-1.options.new \
 			"netmask $netmask broadcast $broadcast"
 
-		put    /etc/hosts "#"
-		append /etc/hosts "# Internet host table"
-		append /etc/hosts "#"
-		append /etc/hosts "127.0.0.1  localhost"
-		append /etc/hosts "$ADDR  $HOST $first"
+		put    /etc/hosts.new "#"
+		append /etc/hosts.new "# Internet host table"
+		append /etc/hosts.new "#"
+		append /etc/hosts.new "127.0.0.1  localhost"
+		append /etc/hosts.new "$ADDR  $HOST $first"
+
+		update /etc/sys_id
+		update /etc/hosts
+		update $config/static-route.options
+		update $config/ifconfig-1.options
+
 		/sbin/nvram netaddr "$ADDR"
 		;;
 
