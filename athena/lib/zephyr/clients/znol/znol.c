@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: znol.c,v 1.15 1999-01-22 23:18:41 ghudson Exp $
+ *	$Id: znol.c,v 1.16 1999-10-15 04:59:55 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static const char rcsid_znol_c[] = "$Id: znol.c,v 1.15 1999-01-22 23:18:41 ghudson Exp $";
+static const char rcsid_znol_c[] = "$Id: znol.c,v 1.16 1999-10-15 04:59:55 ghudson Exp $";
 #endif 
 
 #define SUBSATONCE 7
@@ -36,7 +36,7 @@ main(argc,argv)
 	char *comment_ptr;
 	int onoff = ON,quiet = 0,justlist = 0,useronly = 0, filenamed = 0;
 	int retval,arg,ind,one,numlocs,i;
-	short wgport;
+	int wgport;
 
 	if ((retval = ZInitialize()) != ZERR_NONE) {
 		com_err(argv[0],retval,"initializing");
