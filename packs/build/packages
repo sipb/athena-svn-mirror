@@ -1,4 +1,4 @@
-# $Id: packages,v 1.2 1996-09-22 00:04:24 ghudson Exp $
+# $Id: packages,v 1.3 1996-09-25 17:53:39 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -103,7 +103,7 @@ athena/bin/telnet
 athena/bin/xquota		sun4
 packs/config
 packs/dotfiles
-#packs/glue
+packs/glue
 packs/install
 packs/maint
 packs/update
