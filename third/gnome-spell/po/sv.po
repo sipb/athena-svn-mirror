@@ -2,7 +2,7 @@
 # Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.1 2003-08-13 20:17:23 ghudson Exp $
+# $Id: sv.po,v 1.1.2.1 2003-08-20 16:39:26 ghudson Exp $
 #
 msgid ""
 msgstr ""
