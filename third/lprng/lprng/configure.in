@@ -9,7 +9,7 @@ AC_CANONICAL_SYSTEM
 AC_CONFIG_HEADER(config.h)
 
 PACKAGE=LPRng
-VERSION=3.6.1beta43
+VERSION=3.6.1
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)
@@ -322,7 +322,7 @@ AC_CHECK_FUNCS(mktemp openlog random rand seteuid setlocale setpgid setproctitle
 AC_CHECK_FUNCS(setresuid setreuid setsid sigaction)
 AC_CHECK_FUNCS(sigprocmask siglongjmp socketpair strcasecmp)
 AC_CHECK_FUNCS(strchr strdup strerror strncasecmp sysconf sysinfo)
-AC_CHECK_FUNCS(tcflush tcsetattr uname wait3 waitpid)
+AC_CHECK_FUNCS(tcdrain tcflush tcsetattr uname wait3 waitpid)
 
 if test ! "$ac_cv_func_setreuid" = yes -a ! "$ac_cv_func_seteuid" = yes -a ! "$ac_cv_func_setresuid" = yes; then
 	echo "WARNING: missing setreuid(), seteuid(), and setresuid()"

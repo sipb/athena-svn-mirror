@@ -657,7 +657,7 @@ test "$host_alias" != "$target_alias" &&
 
 
 PACKAGE=LPRng
-VERSION=3.6.1beta43
+VERSION=3.6.1
 cat >> confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
 EOF
@@ -4373,7 +4373,7 @@ else
 fi
 done
 
-for ac_func in tcflush tcsetattr uname wait3 waitpid
+for ac_func in tcdrain tcflush tcsetattr uname wait3 waitpid
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:4380: checking for $ac_func" >&5

@@ -204,7 +204,7 @@ dist_list:
 		echo $${DIR}/Makefile >>/tmp/X;
 #	cat /tmp/X
 
-dist: update ci newmake dist_list
+dist: update newmake ci dist_list
 	DIR=`pwd | sed 's,.*/,,' `; \
 		cd ..; \
 		tar zXcf /tmp/X $${DIR}.tgz $${DIR}; \

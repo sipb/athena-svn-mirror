@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.10 1999-05-17 06:47:02 ghudson Exp $
+# $Id: Makefile.in,v 1.11 1999-05-24 18:34:51 danw Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -195,7 +195,7 @@ LDFLAGS := $(LF) -g $(LDFLAGS)
 
 #**********************  End of Configurable Part ****************************
 
-TARGET= lpc lpd lpq lpr lprm lpf lpraccnt pclbanner checkpc lp lpstat \
+TARGET= lpc lpd lpq lpr lprm lpf lpraccnt pclbanner psbanner checkpc lp lpstat \
 	lpbanner monitor lpd.conf
 
 NONTARGET = sserver sclient
@@ -279,7 +279,10 @@ lpbanner: $(LPBANNER_OBJS) liblpr.a
 monitor: $(MONITOR_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-pclbanner: ${SRC}/common/pclbanner.sh
+pclbanner: ${SRC}/common/pclbanner.pl
+	rm -f $@; cp $^ $@; chmod 555 $@
+
+psbanner: ${SRC}/common/psbanner.pl
 	rm -f $@; cp $^ $@; chmod 555 $@
 
 authenticate_pgp: ${SRC}/AUTHENTICATE/authenticate_pgp.sh
@@ -302,9 +305,10 @@ lp: lpr
 # lpd.conf
 
 lpd.conf: vars.c
-	rm -f $@ XYlpd.conf
-	$(CPP) $(CFLAGS) -C $^  >XYlpd.conf
-	${SRC}/../UTILS/make_lpd_conf $^ <XYlpd.conf >$@
+	rm -f lpd.conf.working lpd.conf
+	$(CPP) $(CFLAGS) -C $^ >lpd.conf.working
+	${SRC}/../UTILS/make_lpd_conf $^ <lpd.conf.working >lpd.conf
+	chmod 644 lpd.conf
 
 ###########################################################################
 # 
@@ -324,6 +328,8 @@ install: all ${INSTALL_LIB} ${INSTALL_BIN} ${INSTALL_MAINT}
 	${INSTALLCMD} -m $(NORM_PERMS) lpd ${INSTALL_LIB}
 	${INSTALLCMD} -m $(NORM_PERMS) lpf ${INSTALL_LIB}
 	${INSTALLCMD} -m $(NORM_PERMS) lpbanner ${INSTALL_LIB}
+	${INSTALLCMD} -m $(NORM_PERMS) pclbanner ${INSTALL_LIB}
+	${INSTALLCMD} -m $(NORM_PERMS) psbanner ${INSTALL_LIB}
 	${INSTALLCMD} -m $(NORM_PERMS) checkpc ${INSTALL_MAINT}
 	${INSTALLCMD} -m $(NORM_PERMS) lpraccnt ${INSTALL_MAINT}
 	rm -f ${INSTALL_BIN}/lp;     ln -s lpr  ${INSTALL_BIN}/lp;
