@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.5 1991-09-10 13:33:22 lwvanels Exp $
+# $Id: Imakefile,v 1.6 1991-11-05 14:07:44 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/Imakefile,v $
 #
 # For copying and distribution information,
@@ -13,19 +13,19 @@ SRCS=	t_ask.c t_connect.c t_consult.c t_instance.c \
 	t_messages.c t_motd.c t_queue.c t_resolve.c \
 	t_send.c t_topic.c t_data.c t_utils.c t_status.c \
 	t_describe.c t_acl.c t_misc.c t_db.c \
-	t_list.c
+	t_list.c t_admin.c t_version.c
 
 OBJS=	t_ask.o t_connect.o t_consult.o t_instance.o \
 	t_messages.o t_motd.o t_queue.o t_resolve.o \
 	t_send.o t_topic.o t_data.o t_utils.o t_status.o \
 	t_describe.o t_acl.o t_misc.o t_db.o \
-	t_list.o
+	t_list.o t_admin.o t_version.o
 
 depend::
 	-$(RM) libtty.a
 	sh newvers.sh
 
-libtty.a:: newvers.sh
+libtty.a::
 	-$(RM) libtty.a
 	sh newvers.sh
 
