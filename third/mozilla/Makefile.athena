@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2003-05-08 05:34:00 rbasch Exp $
+# $Id: Makefile.athena,v 1.2 2004-04-15 20:29:18 rbasch Exp $
 
 SHELL=/bin/sh
 common_options=--enable-crypto --disable-debug --disable-tests
@@ -12,6 +12,7 @@ prepare:
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
 	    CONFIG_SITE=`pwd`/config.site.athena \
+	    CPPFLAGS=-D_REENTRANT \
 	    ./configure --enable-optimize=-O2 ${common_options} \
 	    ;; \
 	sun4) \
