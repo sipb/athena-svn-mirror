@@ -6,7 +6,7 @@
 # there is no need to use tcp_wrappers in this file.
 #
 #
-ftp	stream	tcp	nowait	switched	root	/usr/athena/etc/ftpd	ftpd -a off
+ftp	stream	tcp	nowait	switched	root	/usr/athena/etc/ftpd	ftpd -C
 telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a cred
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
 klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
