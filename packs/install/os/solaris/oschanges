@@ -4,7 +4,7 @@
 # copied from AFS
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so
-cp /os/usr/ucblib/libucb.so.1 $UPDATE_ROOT/usr/ucblib
+cp -p /os/usr/ucblib/libucb.so.1 $UPDATE_ROOT/usr/ucblib
 ln -s libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
 
 
