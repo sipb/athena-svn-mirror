@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.1 1990-04-26 16:33:41 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.2 1990-05-26 13:37:42 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  16:33:41  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:42:44  snmpdev
  * Initial revision
  * 
@@ -24,7 +27,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.1 1990-04-26 16:33:41 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/if_grp.c,v 1.2 1990-05-26 13:37:42 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -121,7 +124,7 @@ find_nnets()
 			return(BUILD_ERR);
 		}
 		nloffset = (off_t)ifnet.if_next;
-#if defined(BSD43) || defined (ULTRIX2_2)
+#if defined(BSD43) || defined(ULTRIX2_2)
 		theaddr = (off_t)ifnet.if_addrlist;
 		while (theaddr != 0) {
 			(void)lseek(kmem, (long)theaddr, L_SET);

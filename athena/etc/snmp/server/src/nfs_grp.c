@@ -15,11 +15,14 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.2  90/04/26  17:36:09  tom
+ * *** empty log message ***
+ * 
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/nfs_grp.c,v 1.2 1990-04-26 17:36:09 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/nfs_grp.c,v 1.3 1990-05-26 13:40:08 tom Exp $";
 #endif
 
 #include "include.h"

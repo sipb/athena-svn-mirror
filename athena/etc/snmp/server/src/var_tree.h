@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.2 1990-04-26 18:38:00 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.3 1990-05-26 13:42:31 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/04/26  18:38:00  tom
+ * *** empty log message ***
+ * 
  * Revision 1.1  90/04/23  14:28:32  tom
  * Initial revision
  * 
@@ -26,7 +29,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.2 1990-04-26 18:38:00 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.3 1990-05-26 13:42:31 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -606,3 +609,6 @@ struct snmp_tree_info {
 #define N_RPCCREDPAG      504
 #define N_RPCCREDDIR      505
 #endif MIT
+
+#define N_DKPATH          510
+#define N_DKDNAME         511

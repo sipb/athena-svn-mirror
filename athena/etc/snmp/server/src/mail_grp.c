@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/04/26  17:05:15  tom
+ * added rcsid
+ * 
  * Revision 1.2  90/04/26  17:04:06  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 1.3 1990-04-26 17:05:15 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 1.4 1990-05-26 13:38:30 tom Exp $";
 #endif
 
 #include "include.h"
