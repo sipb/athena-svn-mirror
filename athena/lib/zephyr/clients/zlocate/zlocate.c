@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,9 +14,10 @@
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr.h>
+#include <string.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.c,v 1.4 1987-08-06 22:51:06 rfrench Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.c,v 1.5 1988-06-23 13:32:04 jtkohl Exp $";
 #endif lint
 
 main(argc,argv)
@@ -47,13 +48,13 @@ main(argc,argv)
 	ourargc = argc;
 	
 	for (;argc--;argv++) {
-		strcpy(user,*argv);
+		(void) strcpy(user,*argv);
 		if (!index(user,'@')) {
-			strcat(user,"@");
-			strcat(user,ZGetRealm());
+			(void) strcat(user,"@");
+			(void) strcat(user,ZGetRealm());
 		} 
 		if ((retval = ZLocateUser(user,&numlocs)) != ZERR_NONE) {
-			sprintf(bfr,"while locating user %s",user);
+			(void) sprintf(bfr,"while locating user %s",user);
 			com_err(whoami,retval,bfr);
 			continue;
 		}
@@ -82,7 +83,7 @@ main(argc,argv)
 		}
 		if (argc)
 			printf("\n");
-		ZFlushLocations();
+		(void) ZFlushLocations();
 	}
 }
 
@@ -93,7 +94,7 @@ print_pad(s,n)
 	char bfr[81];
 	int num;
 
-	strcpy(bfr,"                                                                               ");
+	(void) strcpy(bfr,"                                                                               ");
 	
 	if (strlen(s) < n)
 		num = n-strlen(s);
