@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.31 1999-01-29 17:51:04 ghudson Exp $
+# $Id: Imakefile,v 1.32 1999-05-06 16:04:52 ghudson Exp $
 
 SESSIONSCRIPT=Xsession
 KEYMAPS=/usr/athena/lib/X11/keymaps
@@ -10,6 +10,8 @@ create_dir($(KEYMAPS))
 #ifdef SOLARIS
 install_file(config.solaris,/etc/athena/login/config)
 install_file(AthenaMods.sun4,$(KEYMAPS)/AthenaMods)
+install_script(xwrapper.sh,,/etc/athena/xwrapper)
+install_man(xwrapper.8,xwrapper.8)
 #endif
 
 #ifdef linux
