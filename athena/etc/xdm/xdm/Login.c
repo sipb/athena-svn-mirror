@@ -653,18 +653,18 @@ InsertChar (ctxw, event, params, num_params)
     switch (ctx->login.state) {
     case GET_NAME:
 	EraseName (ctx, ctx->login.cursor);
-	bcopy (ctx->login.data.name + ctx->login.cursor,
-	       ctx->login.data.name + ctx->login.cursor + len,
+	memmove (ctx->login.data.name + ctx->login.cursor + len,
+		ctx->login.data.name + ctx->login.cursor,
 	       strlen (ctx->login.data.name + ctx->login.cursor) + 1);
-	bcopy (strbuf, ctx->login.data.name + ctx->login.cursor, len);
+	memcpy (ctx->login.data.name + ctx->login.cursor, strbuf, len);
 	DrawName (ctx, ctx->login.cursor);
 	ctx->login.cursor += len;
 	break;
     case GET_PASSWD:
-	bcopy (ctx->login.data.passwd + ctx->login.cursor,
-	       ctx->login.data.passwd + ctx->login.cursor + len,
+	memmove (ctx->login.data.passwd + ctx->login.cursor + len,
+	       ctx->login.data.passwd + ctx->login.cursor,
 	       strlen (ctx->login.data.passwd + ctx->login.cursor) + 1);
-	bcopy (strbuf, ctx->login.data.passwd + ctx->login.cursor, len);
+	memcpy (ctx->login.data.passwd + ctx->login.cursor, strbuf, len);
 	ctx->login.cursor += len;
 	break;
     }
@@ -788,8 +788,8 @@ static void Destroy (gw)
      Widget gw;
 {
     LoginWidget w = (LoginWidget)gw;
-    bzero (w->login.data.name, NAME_LEN);
-    bzero (w->login.data.passwd, NAME_LEN);
+    memset (w->login.data.name, 0, NAME_LEN);
+    memset (w->login.data.passwd, 0, NAME_LEN);
     XtReleaseGC(gw, w->login.textGC);
     XtReleaseGC(gw, w->login.bgGC);
     XtReleaseGC(gw, w->login.xorGC);
