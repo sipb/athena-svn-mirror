@@ -128,7 +128,7 @@ ProcessRequestSocket ()
     int			addrlen = sizeof addr;
 
     Debug ("ProcessRequestSocket\n");
-    bzero ((char *) &addr, sizeof (addr));
+    memset ((char *) &addr, 0, sizeof (addr));
     if (!XdmcpFill (xdmcpFd, &buffer, &addr, &addrlen)) {
 	Debug ("XdmcpFill failed\n");
 	return;
@@ -226,12 +226,12 @@ sendForward (connectionType, address, closure)
 #ifdef AF_INET
     case FamilyInternet:
 	addr = (struct sockaddr *) &in_addr;
-	bzero ((char *) &in_addr, sizeof (in_addr));
+	memset ((char *) &in_addr, 0, sizeof (in_addr));
 	in_addr.sin_family = AF_INET;
 	in_addr.sin_port = htons ((short) XDM_UDP_PORT);
 	if (address->length != 4)
 	    return;
-	bcopy (address->data, (char *) &in_addr.sin_addr, address->length);
+	memcpy ((char *) &in_addr.sin_addr, address->data, address->length);
 	addrlen = sizeof (struct sockaddr_in);
 	break;
 #endif
@@ -258,12 +258,12 @@ ClientAddress (from, addr, port, type)
 
     data = NetaddrPort(from, &length);
     XdmcpAllocARRAY8 (port, length);
-    bcopy (data, port->data, length);
+    memcpy (port->data, data, length);
     port->length = length;
 
     family = ConvertAddr(from, &length, &data);
     XdmcpAllocARRAY8 (addr, length);
-    bcopy (data, addr->data, length);
+    memcpy (addr->data, data, length);
     addr->length = length;
 
     *type = family;
@@ -454,10 +454,10 @@ forward_respond (from, fromlen, length)
 		    {
 			goto badAddress;
 		    }
-		    bzero ((char *) &in_addr, sizeof (in_addr));
+		    memset ((char *) &in_addr, 0, sizeof (in_addr));
 		    in_addr.sin_family = AF_INET;
-		    bcopy (clientAddress.data, &in_addr.sin_addr, 4);
-		    bcopy (clientPort.data, (char *) &in_addr.sin_port, 2);
+		    memcpy (&in_addr.sin_addr, clientAddress.data, 4);
+		    memcpy ((char *) &in_addr.sin_port, clientPort.data, 2);
 		    client = (struct sockaddr *) &in_addr;
 		    clientlen = sizeof (in_addr);
 		}
@@ -470,9 +470,9 @@ forward_respond (from, fromlen, length)
 
 		    if (clientAddress.length >= sizeof (un_addr.sun_path))
 			goto badAddress;
-		    bzero ((char *) &un_addr, sizeof (un_addr));
+		    memset ((char *) &un_addr, 0, sizeof (un_addr));
 		    un_addr.sun_family = AF_UNIX;
-		    bcopy (clientAddress.data, un_addr.sun_path, clientAddress.length);
+		    memcpy (un_addr.sun_path, clientAddress.data, clientAddress.length);
 		    un_addr.sun_path[clientAddress.length] = '\0';
 		    client = (struct sockaddr *) &un_addr;
 		    clientlen = sizeof (un_addr);
@@ -869,7 +869,7 @@ manage (from, fromlen, length)
 	    }
 	    if (displayClass.length)
 	    {
-		bcopy (displayClass.data, class, displayClass.length);
+		memcpy (class, displayClass.data, displayClass.length);
 		class[displayClass.length] = '\0';
 	    }
 	    else
@@ -880,7 +880,7 @@ manage (from, fromlen, length)
 		send_failed (from, fromlen, name, sessionID, "out of memory");
 		goto abort;
 	    }
-	    bcopy (from, from_save, fromlen);
+	    memcpy (from_save, from, fromlen);
 	    d = NewDisplay (name, class);
 	    if (!d)
 	    {
@@ -1085,7 +1085,7 @@ ARRAY8Ptr   connectionAddress;
 		return FALSE;
 	    if (!XdmcpAllocARRAY8 (connectionAddress, hostent->h_length))
 		return FALSE;
-	    bcopy (hostent->h_addr, connectionAddress->data, hostent->h_length);
+	    memcpy (connectionAddress->data, hostent->h_addr, hostent->h_length);
 	    return TRUE;
 	}
 #ifdef DNET
