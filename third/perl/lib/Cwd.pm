@@ -1,5 +1,4 @@
 package Cwd;
-use 5.006;
 
 =head1 NAME
 
@@ -38,8 +37,6 @@ Returns the current working directory.
 
 Re-implements the getcwd(3) (or getwd(3)) functions in Perl.
 
-Taint-safe.
-
 =item cwd
 
     my $cwd = cwd();
@@ -47,8 +44,6 @@ Taint-safe.
 The cwd() is the most natural form for the current architecture. For
 most systems it is identical to `pwd` (but without the trailing line
 terminator).
-
-Taint-safe.
 
 =item fastcwd
 
@@ -77,7 +72,8 @@ The fastgetcwd() function is provided as a synonym for cwd().
 =head2 abs_path and friends
 
 These functions are exported only on request.  They each take a single
-argument and return the absolute pathname for it.
+argument and return the absolute pathname for it.  If no argument is
+given they'll use the current working directory.
 
 =over 4
 
@@ -89,24 +85,17 @@ Uses the same algorithm as getcwd().  Symbolic links and relative-path
 components ("." and "..") are resolved to return the canonical
 pathname, just like realpath(3).
 
-Taint-safe.
-
 =item realpath
 
   my $abs_path = realpath($file);
 
 A synonym for abs_path().
 
-Taint-safe.
-
 =item fast_abs_path
 
   my $abs_path = fast_abs_path($file);
 
 A more dangerous, but potentially faster version of abs_path.
-
-This function is B<Not> taint-safe : you can't use it in programs
-that work under taint mode.
 
 =back
 
@@ -147,14 +136,14 @@ L<File::chdir>
 =cut
 
 ## use strict;
+use Exporter;
+use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
 
-use Carp;
+$VERSION = '2.12';
 
-our $VERSION = '2.06';
-
-use base qw/ Exporter /;
-our @EXPORT = qw(cwd getcwd fastcwd fastgetcwd);
-our @EXPORT_OK = qw(chdir abs_path fast_abs_path realpath fast_realpath);
+@ISA = qw/ Exporter /;
+@EXPORT = qw(cwd getcwd fastcwd fastgetcwd);
+@EXPORT_OK = qw(chdir abs_path fast_abs_path realpath fast_realpath);
 
 # sys_cwd may keep the builtin command
 
@@ -162,22 +151,25 @@ our @EXPORT_OK = qw(chdir abs_path fast_abs_path realpath fast_realpath);
 # there is no sense to process the rest of the file.
 # The best choice may be to have this in BEGIN, but how to return from BEGIN?
 
-if ($^O eq 'os2' && defined &sys_cwd && defined &sys_abspath) {
+if ($^O eq 'os2') {
     local $^W = 0;
-    *cwd		= \&sys_cwd;
-    *getcwd		= \&cwd;
-    *fastgetcwd		= \&cwd;
-    *fastcwd		= \&cwd;
-    *abs_path		= \&sys_abspath;
-    *fast_abs_path	= \&abs_path;
-    *realpath		= \&abs_path;
-    *fast_realpath	= \&abs_path;
+
+    *cwd                = defined &sys_cwd ? \&sys_cwd : \&_os2_cwd;
+    *getcwd             = \&cwd;
+    *fastgetcwd         = \&cwd;
+    *fastcwd            = \&cwd;
+
+    *fast_abs_path      = \&sys_abspath if defined &sys_abspath;
+    *abs_path           = \&fast_abs_path;
+    *realpath           = \&fast_abs_path;
+    *fast_realpath      = \&fast_abs_path;
+
     return 1;
 }
 
 eval {
     require XSLoader;
-    undef *Cwd::fastcwd; # avoid redefinition warning
+    local $^W = 0;
     XSLoader::load('Cwd');
 };
 
@@ -192,7 +184,20 @@ foreach my $try (qw(/bin/pwd /usr/bin/pwd)) {
         last;
     }
 }
-$pwd_cmd ||= 'pwd';
+unless ($pwd_cmd) {
+    if (-x '/QOpenSys/bin/pwd') { # OS/400 PASE.
+        $pwd_cmd = '/QOpenSys/bin/pwd' ;
+    } else {
+        # Isn't this wrong?  _backtick_pwd() will fail if somenone has
+        # pwd in their path but it is not /bin/pwd or /usr/bin/pwd?
+        # See [perl #16774]. --jhi
+        $pwd_cmd = 'pwd';
+    }
+}
+
+# Lazy-load Carp
+sub _carp  { require Carp; Carp::carp(@_)  }
+sub _croak { require Carp; Carp::croak(@_) }
 
 # The 'natural and safe form' for UNIX (pwd may be setuid root)
 sub _backtick_pwd {
@@ -365,7 +370,7 @@ sub _perl_abs_path
 
     unless (@cst = stat( $start ))
     {
-	carp "stat($start): $!";
+	_carp("stat($start): $!");
 	return '';
     }
     $cwd = '';
@@ -374,14 +379,15 @@ sub _perl_abs_path
     {
 	$dotdots .= '/..';
 	@pst = @cst;
+	local *PARENT;
 	unless (opendir(PARENT, $dotdots))
 	{
-	    carp "opendir($dotdots): $!";
+	    _carp("opendir($dotdots): $!");
 	    return '';
 	}
 	unless (@cst = stat($dotdots))
 	{
-	    carp "stat($dotdots): $!";
+	    _carp("stat($dotdots): $!");
 	    closedir(PARENT);
 	    return '';
 	}
@@ -408,7 +414,7 @@ sub _perl_abs_path
 	    {
 		unless (defined ($dir = readdir(PARENT)))
 	        {
-		    carp "readdir($dotdots): $!";
+		    _carp("readdir($dotdots): $!");
 		    closedir(PARENT);
 		    return '';
 		}
@@ -429,14 +435,24 @@ sub _perl_abs_path
 # used to the libc function.  --tchrist 27-Jan-00
 *realpath = \&abs_path;
 
+my $Curdir;
 sub fast_abs_path {
     my $cwd = getcwd();
     require File::Spec;
-    my $path = @_ ? shift : File::Spec->curdir;
-    CORE::chdir($path) || croak "Cannot chdir to $path: $!";
+    my $path = @_ ? shift : ($Curdir ||= File::Spec->curdir);
+
+    # Detaint else we'll explode in taint mode.  This is safe because
+    # we're not doing anything dangerous with it.
+    ($path) = $path =~ /(.*)/;
+    ($cwd)  = $cwd  =~ /(.*)/;
+
+    if (!CORE::chdir($path)) {
+ 	_croak("Cannot chdir to $path: $!");
+    }
     my $realpath = getcwd();
-    -d $cwd && CORE::chdir($cwd) ||
-	croak "Cannot chdir back to $cwd: $!";
+    if (! ((-d $cwd) && (CORE::chdir($cwd)))) {
+ 	_croak("Cannot chdir back to $cwd: $!");
+    }
     $realpath;
 }
 
@@ -462,13 +478,16 @@ sub _vms_cwd {
 sub _vms_abs_path {
     return $ENV{'DEFAULT'} unless @_;
     my $path = VMS::Filespec::pathify($_[0]);
-    croak("Invalid path name $_[0]") unless defined $path;
+    if (! defined $path)
+	{
+	_croak("Invalid path name $_[0]")
+	}
     return VMS::Filespec::rmsexpand($path);
 }
 
 sub _os2_cwd {
     $ENV{'PWD'} = `cmd /c cd`;
-    chop $ENV{'PWD'};
+    chomp $ENV{'PWD'};
     $ENV{'PWD'} =~ s:\\:/:g ;
     return $ENV{'PWD'};
 }
@@ -487,7 +506,7 @@ sub _win32_cwd {
 sub _dos_cwd {
     if (!defined &Dos::GetCwd) {
         $ENV{'PWD'} = `command /c cd`;
-        chop $ENV{'PWD'};
+        chomp $ENV{'PWD'};
         $ENV{'PWD'} =~ s:\\:/:g ;
     } else {
         $ENV{'PWD'} = Dos::GetCwd();
@@ -500,7 +519,7 @@ sub _qnx_cwd {
 	local $ENV{CDPATH} = '';
 	local $ENV{ENV} = '';
     $ENV{'PWD'} = `/usr/bin/fullpath -t`;
-    chop $ENV{'PWD'};
+    chomp $ENV{'PWD'};
     return $ENV{'PWD'};
 }
 
@@ -509,8 +528,13 @@ sub _qnx_abs_path {
 	local $ENV{CDPATH} = '';
 	local $ENV{ENV} = '';
     my $path = @_ ? shift : '.';
-    my $realpath=`/usr/bin/fullpath -t $path`;
-    chop $realpath;
+    local *REALPATH;
+
+    open(REALPATH, '-|', '/usr/bin/fullpath', '-t', $path) or
+      die "Can't open /usr/bin/fullpath: $!";
+    my $realpath = <REALPATH>;
+    close REALPATH;
+    chomp $realpath;
     return $realpath;
 }
 
@@ -539,14 +563,6 @@ sub _epoc_cwd {
         *abs_path	= \&fast_abs_path;
         *realpath   = \&fast_abs_path;
     }
-    elsif ($^O eq 'os2') {
-        # sys_cwd may keep the builtin command
-        *cwd		= defined &sys_cwd ? \&sys_cwd : \&_os2_cwd;
-        *getcwd		= \&cwd;
-        *fastgetcwd	= \&cwd;
-        *fastcwd	= \&cwd;
-        *abs_path	= \&fast_abs_path;
-    }
     elsif ($^O eq 'dos') {
         *cwd		= \&_dos_cwd;
         *getcwd		= \&_dos_cwd;
@@ -567,6 +583,7 @@ sub _epoc_cwd {
         *fastgetcwd	= \&cwd;
         *fastcwd	= \&cwd;
         *abs_path	= \&fast_abs_path;
+        *realpath	= \&abs_path;
     }
     elsif ($^O eq 'epoc') {
         *cwd            = \&_epoc_cwd;
