@@ -138,11 +138,7 @@
 		    break;
 		if (copylink(srcname,targname,srcmode))
 		    update_error("copy of symbolic link failed.");
-#ifdef ultrix
-		else if (pflag && chown(targname,srcuid,srcgid))
-		    update_error("chown() failed.");
-#endif
-#ifdef SYSV
+#ifdef HAVE_LCHOWN
 		else if (pflag && lchown(targname,srcuid,srcgid))
 		    update_error("lchown() failed.");
 #endif
