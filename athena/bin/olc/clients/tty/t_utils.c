@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.26 1991-02-24 11:42:38 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.27 1991-03-26 13:05:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.26 1991-02-24 11:42:38 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.27 1991-03-26 13:05:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -623,28 +623,6 @@ mail_message(user, consultant, msgfile, args)
   int filedes;		        /* File descriptor for msgfile. */
   int nbytes;		        /* Number of bytes in message. */
   char *msgbuf;		        /* Ptr. to mail message buffer. */
-
-#if 0
-#ifdef HESIOD
-  char **hp;
-  char buf[LINE_SIZE];
-  char resp[LINE_SIZE];
-#endif /* HESIOD */
-
-#ifdef ATHENA
-#ifdef HESIOD
-  hp = (char **) hes_resolve(user,"pobox");
-  if((hp == NULL) || (*hp == NULL))
-    {
-      (void) sprintf(buf,"%s does not have an Athena pobox, continue? ", user);
-      (void) get_prompted_input(buf,resp);
-      if(strncmp(resp,"y",1))
-	return(ABORT);
-      printf("continuing...\n");
-    }
-#endif /* HESIOD */
-#endif /* ATHENA */
-#endif
 
   if ((nbytes = file_length(msgfile)) == ERROR)
     {
