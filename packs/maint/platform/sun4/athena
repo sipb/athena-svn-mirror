@@ -162,6 +162,7 @@ EOF
 	if [ "${NEWMAILCF}" = "true" ];then
 		echo "copying sendmail.cf..."
 		cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
+		cp -p /srvd/etc/mail/aliases /etc/mail/aliases
 	fi
 	# no matter what freeze the configuration
 	/usr/lib/sendmail -bz 
