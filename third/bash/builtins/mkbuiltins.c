@@ -1,7 +1,7 @@
 /* mkbuiltins.c - Create builtins.c, builtext.h, and builtdoc.c from
    a single source file called builtins.def. */
 
-/* Copyright (C) 1987, 1989, 1991 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -38,8 +38,15 @@ Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include "../bashansi.h"
 #include <stdio.h>
+#include <errno.h>
+
+#include "stdc.h"
 
 #define DOCFILE "builtins.texi"
+
+#ifndef errno
+extern int errno;
+#endif
 
 static char *xmalloc (), *xrealloc ();
 
@@ -64,9 +71,13 @@ int only_documentation = 0;
 /* Non-zero means to not do any productions. */
 int inhibit_production = 0;
 
-#if !defined (OLDCODE)
-int no_long_document = 0;
-#endif /* !OLDCODE */
+/* Non-zero means to produce separate help files for each builtin, named by
+   the builtin name, in `./helpfiles'. */
+int separate_helpfiles = 0;
+
+/* The name of a directory into which the separate external help files will
+   eventually be installed. */
+char *helpfile_directory;
 
 /* The name of a directory to precede the filename when reporting
    errors. */
@@ -147,11 +158,16 @@ void write_documentation ();
 void write_longdocs ();
 void write_builtins ();
 
+int write_helpfiles ();
+
 void free_defs ();
 void add_documentation ();
 
 void must_be_building ();
 void remove_trailing_whitespace ();
+
+#define document_name(b)	((b)->docname ? (b)->docname : (b)->name)
+
 
 /* For each file mentioned on the command line, process it and
    write the information to STRUCTFILE and EXTERNFILE, while
@@ -202,10 +218,11 @@ main (argc, argv)
 	  only_documentation = 1;
 	  documentation_file = fopen (documentation_filename, "w");
 	}
-#if !defined (OLDCODE)
-      else if (strcmp (arg, "-nodocument") == 0)
-	no_long_document = 1;
-#endif /* !OLDCODE */	
+      else if (strcmp (arg, "-H") == 0)
+        {
+	  separate_helpfiles = 1;
+	  helpfile_directory = argv[arg_index++];
+        }
       else
 	{
 	  fprintf (stderr, "%s: Unknown flag %s.\n", argv[0], arg);
@@ -223,7 +240,7 @@ main (argc, argv)
       if (struct_filename)
 	{
 	  temp_struct_filename = xmalloc (15);
-	  sprintf (temp_struct_filename, "mk-%d", (int) getpid ());
+	  sprintf (temp_struct_filename, "mk-%ld", (long) getpid ());
 	  structfile = fopen (temp_struct_filename, "w");
 
 	  if (!structfile)
@@ -274,6 +291,11 @@ main (argc, argv)
 
       if (externfile)
 	fclose (externfile);
+    }
+
+  if (separate_helpfiles)
+    {
+      write_helpfiles (saved_builtins);
     }
 
   if (documentation_file)
@@ -378,17 +400,22 @@ array_free (array)
 
 /* The definition of a function. */
 typedef int Function ();
+typedef int mk_handler_func_t __P((char *, DEF_FILE *, char *));
 
 /* Structure handles processor directives. */
 typedef struct {
   char *directive;
-  Function *function;
+  mk_handler_func_t *function;
 } HANDLER_ENTRY;
 
-extern int
-  builtin_handler (), function_handler (), short_doc_handler (),
-  comment_handler (), depends_on_handler (), produces_handler (),
-  end_handler (), docname_handler ();
+extern int builtin_handler __P((char *, DEF_FILE *, char *));
+extern int function_handler __P((char *, DEF_FILE *, char *));
+extern int short_doc_handler __P((char *, DEF_FILE *, char *));
+extern int comment_handler __P((char *, DEF_FILE *, char *));
+extern int depends_on_handler __P((char *, DEF_FILE *, char *));
+extern int produces_handler __P((char *, DEF_FILE *, char *));
+extern int end_handler __P((char *, DEF_FILE *, char *));
+extern int docname_handler __P((char *, DEF_FILE *, char *));
 
 HANDLER_ENTRY handlers[] = {
   { "BUILTIN", builtin_handler },
@@ -400,7 +427,7 @@ HANDLER_ENTRY handlers[] = {
   { "DEPENDS_ON", depends_on_handler },
   { "PRODUCES", produces_handler },
   { "END", end_handler },
-  { (char *)NULL, (Function *)NULL }
+  { (char *)NULL, (mk_handler_func_t *)NULL }
 };
 
 /* Return the entry in the table of handlers for NAME. */
@@ -724,8 +751,9 @@ add_documentation (defs, line)
 /* How to handle the $BUILTIN directive. */
 int
 builtin_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   BUILTIN_DESC *new;
   char *name;
@@ -769,8 +797,9 @@ builtin_handler (self, defs, arg)
 /* How to handle the $FUNCTION directive. */
 int
 function_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   register BUILTIN_DESC *builtin;
 
@@ -793,8 +822,9 @@ function_handler (self, defs, arg)
 /* How to handle the $DOCNAME directive. */
 int
 docname_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   register BUILTIN_DESC *builtin;
 
@@ -812,8 +842,9 @@ docname_handler (self, defs, arg)
 /* How to handle the $SHORT_DOC directive. */
 int
 short_doc_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   register BUILTIN_DESC *builtin;
 
@@ -830,9 +861,10 @@ short_doc_handler (self, defs, arg)
 
 /* How to handle the $COMMENT directive. */
 int
-comment_handler (self, defs)
+comment_handler (self, defs, arg)
      char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   return (0);
 }
@@ -840,8 +872,9 @@ comment_handler (self, defs)
 /* How to handle the $DEPENDS_ON directive. */
 int
 depends_on_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   register BUILTIN_DESC *builtin;
   char *dependent;
@@ -860,8 +893,9 @@ depends_on_handler (self, defs, arg)
 /* How to handle the $PRODUCES directive. */
 int
 produces_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   /* If just hacking documentation, don't change any of the production
      files. */
@@ -893,8 +927,9 @@ produces_handler (self, defs, arg)
 /* How to handle the $END directive. */
 int
 end_handler (self, defs, arg)
-     char *self, *arg;
+     char *self;
      DEF_FILE *defs;
+     char *arg;
 {
   must_be_building (self, defs);
   building_builtin = 0;
@@ -1021,8 +1056,9 @@ save_builtin (builtin)
 }
 
 /* Flags that mean something to write_documentation (). */
-#define STRING_ARRAY 1
-#define TEXINFO 2
+#define STRING_ARRAY	1
+#define TEXINFO		2
+#define PLAINTEXT	4
 
 char *structfile_header[] = {
   "/* builtins.c -- the built in shell commands. */",
@@ -1030,7 +1066,7 @@ char *structfile_header[] = {
   "/* This file is manufactured by ./mkbuiltins, and should not be",
   "   edited by hand.  See the source to mkbuiltins for details. */",
   "",
-  "/* Copyright (C) 1987, 1991, 1992 Free Software Foundation, Inc.",
+  "/* Copyright (C) 1987-2002 Free Software Foundation, Inc.",
   "",
   "   This file is part of GNU Bash, the Bourne Again SHell.",
   "",
@@ -1056,7 +1092,7 @@ char *structfile_header[] = {
   "",
   "   Functions which need to look at only the simple commands (e.g.",
   "   the enable_builtin ()), should ignore entries where",
-  "   (array[i].function == (Function *)NULL).  Such entries are for",
+  "   (array[i].function == (sh_builtin_func_t *)NULL).  Such entries are for",
   "   the list of shell reserved control structures, like `if' and `while'.",
   "   The end of the list is denoted with a NULL name field. */",
   "",
@@ -1065,7 +1101,7 @@ char *structfile_header[] = {
   };
 
 char *structfile_footer[] = {
-  "  { (char *)0x0, (Function *)0x0, 0, (char **)0x0, (char *)0x0 }",
+  "  { (char *)0x0, (sh_builtin_func_t *)0x0, 0, (char **)0x0, (char *)0x0 }",
   "};",
   "",
   "struct builtin *shell_builtins = static_shell_builtins;",
@@ -1147,11 +1183,11 @@ write_builtins (defs, structfile, externfile)
 	      if (externfile)
 		{
 		  if (builtin->function)
-		    fprintf (externfile, "extern int %s ();\n",
+		    fprintf (externfile, "extern int %s __P((WORD_LIST *));\n",
 			     builtin->function);
 
-		  fprintf (externfile, "extern char *%s_doc[];\n",
-			   builtin->docname ? builtin->docname : builtin->name);
+		  fprintf (externfile, "extern char * const %s_doc[];\n",
+			   document_name (builtin));
 		}
 
 	      /* Write the structure definition. */
@@ -1162,22 +1198,24 @@ write_builtins (defs, structfile, externfile)
 		  if (builtin->function)
 		    fprintf (structfile, "%s, ", builtin->function);
 		  else
-		    fprintf (structfile, "(Function *)0x0, ");
+		    fprintf (structfile, "(sh_builtin_func_t *)0x0, ");
 
 		  fprintf (structfile, "%s%s%s, %s_doc,\n",
 		    "BUILTIN_ENABLED | STATIC_BUILTIN",
 		    (builtin->flags & BUILTIN_FLAG_SPECIAL) ? " | SPECIAL_BUILTIN" : "",
 		    (builtin->flags & BUILTIN_FLAG_ASSIGNMENT) ? " | ASSIGNMENT_BUILTIN" : "",
-		    builtin->docname ? builtin->docname : builtin->name);
+		    document_name (builtin));
 
 		  fprintf
 		    (structfile, "     \"%s\", (char *)NULL },\n",
 		     builtin->shortdoc ? builtin->shortdoc : builtin->name);
 
-		  /* Save away this builtin for later writing of the
-		     long documentation strings. */
-		  save_builtin (builtin);
 		}
+
+	      if (structfile || separate_helpfiles)
+		/* Save away this builtin for later writing of the
+		   long documentation strings. */
+		save_builtin (builtin);
 
 	      /* Write out the matching #endif, if neccessary. */
 	      if (builtin->dependencies)
@@ -1208,6 +1246,8 @@ write_longdocs (stream, builtins)
 {
   register int i;
   register BUILTIN_DESC *builtin;
+  char *dname;
+  char *sarray[2];
 
   for (i = 0; i < builtins->sindex; i++)
     {
@@ -1217,9 +1257,20 @@ write_longdocs (stream, builtins)
 	write_ifdefs (stream, builtin->dependencies->array);
 
       /* Write the long documentation strings. */
-      fprintf (stream, "char *%s_doc[] =",
-	       builtin->docname ? builtin->docname : builtin->name);
-      write_documentation (stream, builtin->longdoc->array, 0, STRING_ARRAY);
+      dname = document_name (builtin);
+      fprintf (stream, "char * const %s_doc[] =", dname);
+
+      if (separate_helpfiles)
+	{
+	  int l = strlen (helpfile_directory) + strlen (dname) + 1;
+	  sarray[0] = (char *)xmalloc (l + 1);
+	  sprintf (sarray[0], "%s/%s", helpfile_directory, dname);
+	  sarray[1] = (char *)NULL;
+	  write_documentation (stream, sarray, 0, STRING_ARRAY);
+	  free (sarray[0]);
+	}
+      else
+	write_documentation (stream, builtin->longdoc->array, 0, STRING_ARRAY);
 
       if (builtin->dependencies)
 	write_endifs (stream, builtin->dependencies->array);
@@ -1306,12 +1357,6 @@ write_documentation (stream, documentation, indentation, flags)
   if (string_array)
     fprintf (stream, " {\n#if defined (HELP_BUILTIN)\n");
 
-#if !defined (OLDCODE)
-  /* XXX -- clean me up; for experiment only */
-  if (no_long_document)
-    goto end_of_document;
-#endif /* !OLDCODE */
-
   for (i = 0, texinfo = (flags & TEXINFO); line = documentation[i]; i++)
     {
       /* Allow #ifdef's to be written out verbatim. */
@@ -1369,14 +1414,52 @@ write_documentation (stream, documentation, indentation, flags)
 	fprintf (stream, "%s\n", line);
     }
 
-#if !defined (OLDCODE)
-end_of_document:
-#endif /* !OLDCODE */
-
   if (string_array)
     fprintf (stream, "#endif /* HELP_BUILTIN */\n  (char *)NULL\n};\n");
 }
 
+int
+write_helpfiles (builtins)
+     ARRAY *builtins;
+{
+  char *helpfile, *bname;
+  FILE *helpfp;
+  int i, hdlen;
+  BUILTIN_DESC *builtin;	
+
+  i = mkdir ("helpfiles", 0777);
+  if (i < 0 && errno != EEXIST)
+    {
+      fprintf (stderr, "write_helpfiles: helpfiles: cannot create directory\n");
+      return -1;
+    }
+
+  hdlen = strlen ("helpfiles/");
+  for (i = 0; i < builtins->sindex; i++)
+    {
+      builtin = (BUILTIN_DESC *)builtins->array[i];
+
+      bname = document_name (builtin);
+      helpfile = (char *)xmalloc (hdlen + strlen (bname) + 1);
+      sprintf (helpfile, "helpfiles/%s", bname);
+
+      helpfp = fopen (helpfile, "w");
+      if (helpfp == 0)
+	{
+	  fprintf (stderr, "write_helpfiles: cannot open %s\n", helpfile);
+	  free (helpfile);
+	  continue;
+	}
+
+      write_documentation (helpfp, builtin->longdoc->array, 4, PLAINTEXT);
+
+      fflush (helpfp);
+      fclose (helpfp);
+      free (helpfile);
+    }
+  return 0;
+}      
+      	        
 static int
 _find_in_table (name, name_table)
      char *name, *name_table[];

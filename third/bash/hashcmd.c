@@ -1,7 +1,7 @@
 /* hashcmd.c - functions for managing a hash table mapping command names to
 	       full pathnames. */
 
-/* Copyright (C) 1997 Free Software Foundation, Inc.
+/* Copyright (C) 1997-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -36,63 +36,62 @@
 
 extern int hashing_enabled;
 
-static int hashing_initialized = 0;
+HASH_TABLE *hashed_filenames = (HASH_TABLE *)NULL;
 
-HASH_TABLE *hashed_filenames;
+static void phash_freedata __P((PTR_T));
 
 void
-initialize_filename_hashing ()
+phash_create ()
 {
-  if (hashing_initialized == 0)
-    {
-      hashed_filenames = make_hash_table (FILENAME_HASH_BUCKETS);
-      hashing_initialized = 1;
-    }
+  if (hashed_filenames == 0)
+    hashed_filenames = hash_create (FILENAME_HASH_BUCKETS);
 }
 
 static void
-free_filename_data (data)
-     char *data;
+phash_freedata (data)
+     PTR_T data;
 {
   free (((PATH_DATA *)data)->path);
   free (data);
 }
 
 void
-flush_hashed_filenames ()
+phash_flush ()
 {
   if (hashed_filenames)
-    flush_hash_table (hashed_filenames, free_filename_data);
+    hash_flush (hashed_filenames, phash_freedata);
 }
 
 /* Remove FILENAME from the table of hashed commands. */
-void
-remove_hashed_filename (filename)
-     char *filename;
+int
+phash_remove (filename)
+     const char *filename;
 {
   register BUCKET_CONTENTS *item;
 
   if (hashing_enabled == 0 || hashed_filenames == 0)
-    return;
+    return 0;
 
-  item = remove_hash_item (filename, hashed_filenames);
+  item = hash_remove (filename, hashed_filenames, 0);
   if (item)
     {
       if (item->data)
-	free_filename_data (item->data);
+	phash_freedata (item->data);
       free (item->key);
       free (item);
+      return 0;
     }
+  return 1;
 }
 
-/* Place FILENAME (key) and FULL_PATHNAME (data->path) into the
+/* Place FILENAME (key) and FULL_PATH (data->path) into the
    hash table.  CHECK_DOT if non-null is for future calls to
-   find_hashed_filename (); it means that this file was found
+   phash_search (); it means that this file was found
    in a directory in $PATH that is not an absolute pathname.
    FOUND is the initial value for times_found. */
 void
-remember_filename (filename, full_pathname, check_dot, found)
-     char *filename, *full_pathname;
+phash_insert (filename, full_path, check_dot, found)
+     char *filename, *full_path;
      int check_dot, found;
 {
   register BUCKET_CONTENTS *item;
@@ -100,10 +99,10 @@ remember_filename (filename, full_pathname, check_dot, found)
   if (hashing_enabled == 0)
     return;
 
-  if (hashed_filenames == 0 || hashing_initialized == 0)
-    initialize_filename_hashing ();
+  if (hashed_filenames == 0)
+    phash_create ();
 
-  item = add_hash_item (filename, hashed_filenames);
+  item = hash_insert (filename, hashed_filenames, 0);
   if (item->data)
     free (pathdata(item)->path);
   else
@@ -111,11 +110,11 @@ remember_filename (filename, full_pathname, check_dot, found)
       item->key = savestring (filename);
       item->data = xmalloc (sizeof (PATH_DATA));
     }
-  pathdata(item)->path = savestring (full_pathname);
+  pathdata(item)->path = savestring (full_path);
   pathdata(item)->flags = 0;
   if (check_dot)
     pathdata(item)->flags |= HASH_CHKDOT;
-  if (*full_pathname != '/')
+  if (*full_path != '/')
     pathdata(item)->flags |= HASH_RELPATH;
   item->times_found = found;
 }
@@ -126,8 +125,8 @@ remember_filename (filename, full_pathname, check_dot, found)
    returns a newly-allocated string; the caller is responsible
    for freeing it. */
 char *
-find_hashed_filename (filename)
-     char *filename;
+phash_search (filename)
+     const char *filename;
 {
   register BUCKET_CONTENTS *item;
   char *path, *dotted_filename, *tail;
@@ -136,7 +135,7 @@ find_hashed_filename (filename)
   if (hashing_enabled == 0 || hashed_filenames == 0)
     return ((char *)NULL);
 
-  item = find_hash_item (filename, hashed_filenames);
+  item = hash_search (filename, hashed_filenames, 0);
 
   if (item == NULL)
     return ((char *)NULL);
@@ -147,11 +146,11 @@ find_hashed_filename (filename)
   path = pathdata(item)->path;
   if (pathdata(item)->flags & (HASH_CHKDOT|HASH_RELPATH))
     {
-      tail = (pathdata(item)->flags & HASH_RELPATH) ? path : filename;
+      tail = (pathdata(item)->flags & HASH_RELPATH) ? path : (char *)filename;	/* XXX - fix const later */
       /* If the pathname does not start with a `./', add a `./' to it. */
       if (tail[0] != '.' || tail[1] != '/')
 	{
-	  dotted_filename = xmalloc (3 + strlen (tail));
+	  dotted_filename = (char *)xmalloc (3 + strlen (tail));
 	  dotted_filename[0] = '.'; dotted_filename[1] = '/';
 	  strcpy (dotted_filename + 2, tail);
 	}

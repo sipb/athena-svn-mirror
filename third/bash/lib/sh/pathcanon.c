@@ -18,25 +18,52 @@
    with Bash; see the file COPYING.  If not, write to the Free Software
    Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
-#include "config.h"
+#include <config.h>
 
-#include "bashtypes.h"
+#include <bashtypes.h>
 #ifndef _MINIX
 #  include <sys/param.h>
 #endif
-#include "posixstat.h"
+#include <posixstat.h>
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
 #endif
 
-#include "filecntl.h"
-#include "bashansi.h"
+#include <filecntl.h>
+#include <bashansi.h>
 #include <stdio.h>
+#include <chartypes.h>
 
 #include "shell.h"
 
-#include "maxpath.h"
+#if defined (__CYGWIN__)
+#include <sys/cygwin.h>
+
+static int
+_is_cygdrive (path)
+     char *path;
+{
+  static char user[MAXPATHLEN];
+  static char system[MAXPATHLEN];
+  static int first_time = 1;
+
+  /* If the path is the first part of a network path, treat it as
+     existing. */
+  if (path[0] == '/' && path[1] == '/' && !strchr (path + 2, '/'))
+    return 1; 
+  /* Otherwise check for /cygdrive prefix. */
+  if (first_time)
+    {
+      char user_flags[MAXPATHLEN];
+      char system_flags[MAXPATHLEN];
+      /* Get the cygdrive info */
+      cygwin_internal (CW_GET_CYGDRIVE_INFO, user, system, user_flags, system_flags);
+      first_time = 0;
+    }
+  return !strcasecmp (path, user) || !strcasecmp (path, system);
+}
+#endif /* __CYGWIN__ */	
 
 /* Return 1 if PATH corresponds to a directory.  A function for debugging. */
 static int
@@ -47,6 +74,10 @@ _path_isdir (path)
   struct stat sb;
 
   l = stat (path, &sb) == 0 && S_ISDIR (sb.st_mode);
+#if defined (__CYGWIN__)
+  if (l == 0)
+    l = _is_cygdrive (path);
+#endif
   return l;
 }
 
@@ -80,7 +111,7 @@ sh_canonpath (path, flags)
     {
       stub_char = DIRSEP;
 #if defined (__CYGWIN__)
-      base = (isalpha(result[0]) && result[1] == ':') ? result + 3 : result + 1;
+      base = (ISALPHA((unsigned char)result[0]) && result[1] == ':') ? result + 3 : result + 1;
 #else
       base = result + 1;
 #endif
@@ -91,10 +122,11 @@ sh_canonpath (path, flags)
     {
       stub_char = '.';
 #if defined (__CYGWIN__)
-      base = (isalpha(result[0]) && result[1] == ':') ? result + 2 : result;
+      base = (ISALPHA((unsigned char)result[0]) && result[1] == ':') ? result + 2 : result;
 #else
       base = result;
 #endif
+      double_slash_path = 0;
     }
 
   /*

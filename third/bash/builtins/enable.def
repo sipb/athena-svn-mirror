@@ -1,7 +1,7 @@
 This file is enable.def, from which is created enable.c.
 It implements the builtin "enable" in Bash.
 
-Copyright (C) 1987, 1989, 1991 Free Software Foundation, Inc.
+Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
 This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -60,14 +60,6 @@ $END
 #  include "../pcomplete.h"
 #endif
 
-#if defined (HAVE_DLOPEN) && defined (HAVE_DLSYM)
-static int dyn_load_builtin ();
-#endif
-
-#if defined (HAVE_DLCLOSE)
-static int dyn_unload_builtin ();
-#endif
-
 #define ENABLED  1
 #define DISABLED 2
 #define SPECIAL  4
@@ -79,8 +71,18 @@ static int dyn_unload_builtin ();
 #define PFLAG	0x10
 #define SFLAG	0x20
 
-static int enable_shell_command ();
-static void list_some_builtins ();
+#if defined (HAVE_DLOPEN) && defined (HAVE_DLSYM)
+static int dyn_load_builtin __P((WORD_LIST *, int, char *));
+#endif
+
+#if defined (HAVE_DLCLOSE)
+static int dyn_unload_builtin __P((char *));
+static void delete_builtin __P((struct builtin *));
+static int local_dlclose __P((void *));
+#endif
+
+static void list_some_builtins __P((int));
+static int enable_shell_command __P((char *, int));
 
 /* Enable/disable shell commands present in LIST.  If list is not specified,
    then print out a list of shell commands showing which are enabled and
@@ -144,7 +146,7 @@ enable_builtin (list)
   /* Restricted shells cannot load new builtins. */
   if (restricted && (flags & (FFLAG|DFLAG)))
     {
-      builtin_error ("restricted");
+      sh_restricted ((char *)NULL);
       return (EXECUTION_FAILURE);
     }
 #endif
@@ -244,6 +246,13 @@ enable_shell_command (name, disable_p)
 
   if (disable_p)
     b->flags &= ~BUILTIN_ENABLED;
+#if defined (RESTRICTED_SHELL)
+  else if (restricted && ((b->flags & BUILTIN_ENABLED) == 0))
+    {
+      sh_restricted ((char *)NULL);
+      return (EXECUTION_FAILURE);
+    }
+#endif
   else
     b->flags |= BUILTIN_ENABLED;
 
@@ -305,7 +314,7 @@ dyn_load_builtin (list, flags, filename)
       name = list->word->word;
 
       size = strlen (name);
-      struct_name = xmalloc (size + 8);
+      struct_name = (char *)xmalloc (size + 8);
       strcpy (struct_name, name);
       strcpy (struct_name + size, "_struct");
 
@@ -355,7 +364,7 @@ dyn_load_builtin (list, flags, filename)
 		  sizeof (struct builtin));
 
       new_shell_builtins[total].name = (char *)0;
-      new_shell_builtins[total].function = (Function *)0;
+      new_shell_builtins[total].function = (sh_builtin_func_t *)0;
       new_shell_builtins[total].flags = 0;
 
       if (shell_builtins != static_shell_builtins)
@@ -427,7 +436,6 @@ dyn_unload_builtin (name)
   struct builtin *b;
   void *handle;
   int ref, i;
-  char *uerror;
 
   b = builtin_address_internal (name, 1);
   if (b == 0)
@@ -452,7 +460,7 @@ dyn_unload_builtin (name)
      using it drops to zero. */
   if (ref == 1 && local_dlclose (handle) != 0)
     {
-      builtin_error ("cannot delete %s: %s", name, dlerror ());
+      builtin_error ("%s: cannot delete: %s", name, dlerror ());
       return (EXECUTION_FAILURE);
     }
 

@@ -29,32 +29,22 @@
 	extern char *func __P((char *, char *, int)); */
 
 #if !defined (__P)
-#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus)
+#  if defined (__STDC__) || defined (__GNUC__) || defined (__cplusplus) || defined (PROTOTYPES)
 #    define __P(protos) protos
 #  else 
 #    define __P(protos) ()
 #  endif
 #endif
 
-#if defined (__STDC__)
-
+#if defined (HAVE_STRINGIZE)
 #  define __STRING(x) #x
-
-#  if !defined (__GNUC__)
-#    define inline
-#  endif
-
-#else /* !__STDC__ */
-
+#else
 #  define __STRING(x) "x"
+#endif
+
+#if !defined (__STDC__)
 
 #if defined (__GNUC__)		/* gcc with -traditional */
-#  if !defined (const)
-#    define const  __const
-#  endif
-#  if !defined (inline)
-#    define inline __inline
-#  endif
 #  if !defined (signed)
 #    define signed __signed
 #  endif
@@ -62,9 +52,6 @@
 #    define volatile __volatile
 #  endif
 #else /* !__GNUC__ */
-#  if !defined (const)
-#    define const
-#  endif
 #  if !defined (inline)
 #    define inline
 #  endif
@@ -77,5 +64,25 @@
 #endif /* !__GNUC__ */
 
 #endif /* !__STDC__ */
+
+#ifndef __attribute__
+#  if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 8) || __STRICT_ANSI__
+#    define __attribute__(x)
+#  endif
+#endif
+
+/* For those situations when gcc handles inlining a particular function but
+   other compilers complain. */
+#ifdef __GNUC__
+#  define INLINE inline
+#else
+#  define INLINE
+#endif
+
+#if defined (PREFER_STDARG)
+#  define SH_VA_START(va, arg)  va_start(va, arg)
+#else
+#  define SH_VA_START(va, arg)  va_start(va)
+#endif
 
 #endif /* !_STDC_H_ */

@@ -1,7 +1,7 @@
 /* alias.c -- Not a full alias, but just the kind that we use in the
    shell.  Csh style alias is somewhere else (`over there, in a box'). */
 
-/* Copyright (C) 1987,1991 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -31,6 +31,7 @@
 #endif
 
 #include <stdio.h>
+#include "chartypes.h"
 #include "bashansi.h"
 #include "command.h"
 #include "general.h"
@@ -41,7 +42,20 @@
 #  include "pcomplete.h"
 #endif
 
-static int qsort_alias_compare ();
+#define ALIAS_HASH_BUCKETS	16	/* must be power of two */
+
+typedef int sh_alias_map_func_t __P((alias_t *));
+
+static void free_alias_data __P((PTR_T));
+static alias_t **map_over_aliases __P((sh_alias_map_func_t *));
+static void sort_aliases __P((alias_t **));
+static int qsort_alias_compare __P((alias_t **, alias_t **));
+
+#if defined (READLINE)
+static int skipquotes __P((char *, int));
+static int skipws __P((char *, int));
+static int rd_token __P((char *, int));
+#endif
 
 /* Non-zero means expand all words on the line.  Otherwise, expand
    after first expansion if the expansion ends in a space. */
@@ -54,7 +68,7 @@ void
 initialize_aliases ()
 {
   if (!aliases)
-    aliases = make_hash_table (0);
+    aliases = hash_create (ALIAS_HASH_BUCKETS);
 }
 
 /* Scan the list of aliases looking for one with NAME.  Return NULL
@@ -68,7 +82,7 @@ find_alias (name)
   if (aliases == 0)
     return ((alias_t *)NULL);
 
-  al = find_hash_item (name, aliases);
+  al = hash_search (name, aliases, 0);
   return (al ? (alias_t *)al->data : (alias_t *)NULL);
 }
 
@@ -108,6 +122,7 @@ add_alias (name, value)
     {
       free (temp->value);
       temp->value = savestring (value);
+      temp->flags &= ~AL_EXPANDNEXT;
       n = value[strlen (value) - 1];
       if (n == ' ' || n == '\t')
 	temp->flags |= AL_EXPANDNEXT;
@@ -123,8 +138,8 @@ add_alias (name, value)
       if (n == ' ' || n == '\t')
 	temp->flags |= AL_EXPANDNEXT;
 
-      elt = add_hash_item (savestring (name), aliases);
-      elt->data = (char *)temp;
+      elt = hash_insert (savestring (name), aliases, HASH_NOSRCH);
+      elt->data = temp;
 #if defined (PROGRAMMABLE_COMPLETION)
       set_itemlist_dirty (&it_aliases);
 #endif
@@ -134,7 +149,7 @@ add_alias (name, value)
 /* Delete a single alias structure. */
 static void
 free_alias_data (data)
-     char *data;
+     PTR_T data;
 {
   register alias_t *a;
 
@@ -156,7 +171,7 @@ remove_alias (name)
   if (aliases == 0)
     return (-1);
 
-  elt = remove_hash_item (name, aliases);
+  elt = hash_remove (name, aliases, 0);
   if (elt)
     {
       free_alias_data (elt->data);
@@ -177,8 +192,8 @@ delete_all_aliases ()
   if (aliases == 0)
     return;
 
-  flush_hash_table (aliases, free_alias_data);
-  dispose_hash_table (aliases);
+  hash_flush (aliases, free_alias_data);
+  hash_dispose (aliases);
   aliases = (HASH_TABLE *)NULL;
 #if defined (PROGRAMMABLE_COMPLETION)
   set_itemlist_dirty (&it_aliases);
@@ -189,32 +204,29 @@ delete_all_aliases ()
    If FUNCTION is NULL, return all aliases. */
 static alias_t **
 map_over_aliases (function)
-     Function *function;
+     sh_alias_map_func_t *function;
 {
   register int i;
   register BUCKET_CONTENTS *tlist;
   alias_t *alias, **list;
-  int list_index, list_size;
+  int list_index;
 
-  list = (alias_t **)NULL;
-  for (i = list_index = list_size = 0; i < aliases->nbuckets; i++)
+  i = HASH_ENTRIES (aliases);
+  if (i == 0)
+    return ((alias_t **)NULL);
+
+  list = (alias_t **)xmalloc ((i + 1) * sizeof (alias_t *));
+  for (i = list_index = 0; i < aliases->nbuckets; i++)
     {
-      tlist = get_hash_bucket (i, aliases);
-
-      while (tlist)
+      for (tlist = hash_items (i, aliases); tlist; tlist = tlist->next)
 	{
 	  alias = (alias_t *)tlist->data;
 
 	  if (!function || (*function) (alias))
 	    {
-	      if (list_index + 1 >= list_size)
-		list = (alias_t **)
-		  xrealloc ((char *)list, (list_size += 20) * sizeof (alias_t *));
-
 	      list[list_index++] = alias;
 	      list[list_index] = (alias_t *)NULL;
 	    }
-	  tlist = tlist->next;
 	}
     }
   return (list);
@@ -224,7 +236,7 @@ static void
 sort_aliases (array)
      alias_t **array;
 {
-  qsort (array, array_len ((char **)array), sizeof (alias_t *), qsort_alias_compare);
+  qsort (array, strvec_len ((char **)array), sizeof (alias_t *), (QSFUNC *)qsort_alias_compare);
 }
 
 static int
@@ -245,10 +257,10 @@ all_aliases ()
 {
   alias_t **list;
 
-  if (!aliases)
+  if (aliases == 0 || HASH_ENTRIES (aliases) == 0)
     return ((alias_t **)NULL);
 
-  list = map_over_aliases ((Function *)NULL);
+  list = map_over_aliases ((sh_alias_map_func_t *)NULL);
   if (list)
     sort_aliases (list);
   return (list);
@@ -324,12 +336,13 @@ skipws (string, start)
      char *string;
      int start;
 {
-  register int i = 0;
-  int pass_next, backslash_quoted_word, peekc;
+  register int i;
+  int pass_next, backslash_quoted_word;
+  unsigned char peekc;
 
   /* skip quoted strings, in ' or ", and words in which a character is quoted
      with a `\'. */
-  backslash_quoted_word = pass_next = 0;
+  i = backslash_quoted_word = pass_next = 0;
 
   /* Skip leading whitespace (or separator characters), and quoted words.
      But save it in the output.  */
@@ -351,7 +364,7 @@ skipws (string, start)
       if (string[i] == '\\')
 	{
 	  peekc = string[i+1];
-	  if (isletter (peekc))
+	  if (ISLETTER (peekc))
 	    backslash_quoted_word++;	/* this is a backslash-quoted word */
 	  else
 	    pass_next++;
@@ -372,7 +385,7 @@ skipws (string, start)
 	    break;
 
 	  peekc = string[i + 1];
-	  if (isletter (peekc))
+	  if (ISLETTER (peekc))
 	    backslash_quoted_word++;
 	  continue;
 	}
@@ -452,8 +465,8 @@ alias_expand (string)
   alias_t *alias;
 
   line_len = strlen (string) + 1;
-  line = xmalloc (line_len);
-  token = xmalloc (line_len);
+  line = (char *)xmalloc (line_len);
+  token = (char *)xmalloc (line_len);
 
   line[0] = i = 0;
   expand_next = 0;
@@ -513,7 +526,7 @@ alias_expand (string)
       /* If there is a backslash-escaped character quoted in TOKEN,
 	 then we don't do alias expansion.  This should check for all
 	 other quoting characters, too. */
-      if (strchr (token, '\\'))
+      if (xstrchr (token, '\\'))
 	expand_this_token = 0;
 
       /* If we should be expanding here, if we are expanding all words, or if

@@ -1,6 +1,6 @@
 /* general.c -- Stuff that is used by all files. */
 
-/* Copyright (C) 1987-1999 Free Software Foundation, Inc.
+/* Copyright (C) 1987-2002 Free Software Foundation, Inc.
 
    This file is part of GNU Bash, the Bourne Again SHell.
 
@@ -33,29 +33,26 @@
 #include "filecntl.h"
 #include "bashansi.h"
 #include <stdio.h>
-#include <ctype.h>
+#include "chartypes.h"
 #include <errno.h>
 
 #include "shell.h"
 #include <tilde/tilde.h>
 
-#include "maxpath.h"
-
 #if !defined (errno)
 extern int errno;
 #endif /* !errno */
 
-#ifndef to_upper
-#  define to_upper(c) (islower(c) ? toupper(c) : (c))
-#  define to_lower(c) (isupper(c) ? tolower(c) : (c))
-#endif
-
-extern int interactive_shell, expand_aliases;
+extern int expand_aliases;
 extern int interrupt_immediately;
 extern int interactive_comments;
 extern int check_hashed_filenames;
 extern int source_uses_path;
 extern int source_searches_cwd;
+
+static char *bash_special_tilde_expansions __P((char *));
+static int unquoted_tilde_word __P((const char *));
+static void initialize_group_array __P((void));
 
 /* A standard error message to use when getcwd() returns NULL. */
 char *bash_getcwd_errstr = "getcwd: cannot access parent directories";
@@ -102,8 +99,8 @@ string_to_rlimtype (s)
       neg = *s == '-';
       s++;
     }
-  for ( ; s && *s && digit (*s); s++)
-    ret = (ret * 10) + digit_value (*s);
+  for ( ; s && *s && DIGIT (*s); s++)
+    ret = (ret * 10) + TODIGIT (*s);
   return (neg ? -ret : ret);
 }
 
@@ -112,26 +109,27 @@ print_rlimtype (n, addnl)
      RLIMTYPE n;
      int addnl;
 {
-  char s[sizeof (RLIMTYPE) * 3 + 1];
-  int len;
+  char s[INT_STRLEN_BOUND (RLIMTYPE) + 1], *p;
 
-  if (n == 0)
-    {
-      printf ("0%s", addnl ? "\n" : "");
-      return;
-    }
+  p = s + sizeof(s);
+  *--p = '\0';
 
   if (n < 0)
     {
-      putchar ('-');
-      n = -n;
+      do
+	*--p = '0' - n % 10;
+      while ((n /= 10) != 0);
+
+      *--p = '-';
+    }
+  else
+    {
+      do
+	*--p = '0' + n % 10;
+      while ((n /= 10) != 0);
     }
 
-  len = sizeof (RLIMTYPE) * 3 + 1;
-  s[--len] = '\0';
-  for ( ; n != 0; n /= 10)
-    s[--len] = n % 10 + '0';
-  printf ("%s%s", s + len, addnl ? "\n" : "");
+  printf ("%s%s", p, addnl ? "\n" : "");
 }
 #endif /* RLIMTYPE */
 
@@ -149,7 +147,7 @@ all_digits (string)
   register char *s;
 
   for (s = string; *s; s++)
-    if (isdigit (*s) == 0)
+    if (DIGIT (*s) == 0)
       return (0);
 
   return (1);
@@ -157,21 +155,24 @@ all_digits (string)
 
 /* Return non-zero if the characters pointed to by STRING constitute a
    valid number.  Stuff the converted number into RESULT if RESULT is
-   a non-null pointer to a long. */
+   not null. */
 int
 legal_number (string, result)
      char *string;
-     long *result;
+     intmax_t *result;
 {
-  long value;
+  intmax_t value;
   char *ep;
 
   if (result)
     *result = 0;
 
-  value = strtol (string, &ep, 10);
+  errno = 0;
+  value = strtoimax (string, &ep, 10);
+  if (errno)
+    return 0;	/* errno is set on overflow or underflow */
 
-  /* Skip any trailing whitespace, since strtol does not. */
+  /* Skip any trailing whitespace, since strtoimax does not. */
   while (whitespace (*ep))
     ep++;
 
@@ -198,13 +199,14 @@ legal_identifier (name)
      char *name;
 {
   register char *s;
+  unsigned char c;
 
-  if (!name || !*name || (legal_variable_starter (*name) == 0))
+  if (!name || !(c = *name) || (legal_variable_starter (c) == 0))
     return (0);
 
-  for (s = name + 1; *s; s++)
+  for (s = name + 1; (c = *s) != 0; s++)
     {
-      if (legal_variable_char (*s) == 0)
+      if (legal_variable_char (c) == 0)
 	return (0);
     }
   return (1);
@@ -232,6 +234,47 @@ check_identifier (word, check_word)
     }
   else
     return (1);
+}
+
+/* Returns non-zero if STRING is an assignment statement.  The returned value
+   is the index of the `=' sign. */
+int
+assignment (string)
+     const char *string;
+{
+  register unsigned char c;
+  register int newi, indx;
+
+  c = string[indx = 0];
+
+  if (legal_variable_starter (c) == 0)
+    return (0);
+
+  while (c = string[indx])
+    {
+      /* The following is safe.  Note that '=' at the start of a word
+	 is not an assignment statement. */
+      if (c == '=')
+	return (indx);
+
+#if defined (ARRAY_VARS)
+      if (c == '[')
+	{
+	  newi = skipsubscript (string, indx);
+	  if (string[newi++] != ']')
+	    return (0);
+	  return ((string[newi] == '=') ? newi : 0);
+	}
+#endif /* ARRAY_VARS */
+
+      /* Variable names in assignment statements may contain only letters,
+	 digits, and `_'. */
+      if (legal_variable_char (c) == 0)
+	return (0);
+
+      indx++;
+    }
+  return (0);
 }
 
 /* **************************************************************** */
@@ -279,6 +322,14 @@ sh_unset_nodelay_mode (fd)
     }
 
   return 0;
+}
+
+/* Return 1 if file descriptor FD is valid; 0 otherwise. */
+int
+sh_validfd (fd)
+     int fd;
+{
+  return (fcntl (fd, F_GETFD, 0) >= 0);
 }
 
 /* There is a bug in the NeXT 2.1 rlogind that causes opens
@@ -354,8 +405,8 @@ move_to_high_fd (fd, check_new, maxfd)
       nfds = getdtablesize ();
       if (nfds <= 0)
 	nfds = 20;
-      if (nfds > 256)
-	nfds = 256;
+      if (nfds > HIGH_FD_MAX)
+	nfds = HIGH_FD_MAX;		/* reasonable maximum */
     }
   else
     nfds = maxfd;
@@ -364,13 +415,15 @@ move_to_high_fd (fd, check_new, maxfd)
     if (fcntl (nfds, F_GETFD, &ignore) == -1)
       break;
 
-  if (nfds && fd != nfds && (script_fd = dup2 (fd, nfds)) != -1)
+  if (nfds > 3 && fd != nfds && (script_fd = dup2 (fd, nfds)) != -1)
     {
       if (check_new == 0 || fd != fileno (stderr))	/* don't close stderr */
 	close (fd);
       return (script_fd);
     }
 
+  /* OK, we didn't find one less than our artificial maximum; return the
+     original file descriptor. */
   return (fd);
 }
  
@@ -379,27 +432,21 @@ move_to_high_fd (fd, check_new, maxfd)
    check up to the first newline, or SAMPLE_LEN, whichever comes first.
    All of the characters must be printable or whitespace. */
 
-#if !defined (isspace)
-#define isspace(c) ((c) == ' ' || (c) == '\t' || (c) == '\n' || (c) == '\f')
-#endif
-
-#if !defined (isprint)
-#define isprint(c) (isletter(c) || digit(c) || ispunct(c))
-#endif
-
 int
 check_binary_file (sample, sample_len)
-     unsigned char *sample;
+     char *sample;
      int sample_len;
 {
   register int i;
+  unsigned char c;
 
   for (i = 0; i < sample_len; i++)
     {
-      if (sample[i] == '\n')
+      c = sample[i];
+      if (c == '\n')
 	return (0);
 
-      if (isspace (sample[i]) == 0 && isprint (sample[i]) == 0)
+      if (ISSPACE (c) == 0 && ISPRINT (c) == 0)
 	return (1);
     }
 
@@ -434,7 +481,7 @@ make_absolute (string, dot_path)
    to decide whether or not to look up a directory name in $CDPATH. */
 int
 absolute_pathname (string)
-     char *string;
+     const char *string;
 {
   if (string == 0 || *string == '\0')
     return (0);
@@ -456,9 +503,9 @@ absolute_pathname (string)
    up through $PATH. */
 int
 absolute_program (string)
-     char *string;
+     const char *string;
 {
-  return ((char *)strchr (string, '/') != (char *)NULL);
+  return ((char *)xstrchr (string, '/') != (char *)NULL);
 }
 
 /* Return the `basename' of the pathname in STRING (the stuff after the
@@ -486,7 +533,7 @@ full_pathname (file)
 {
   char *ret;
 
-  file = (*file == '~') ? bash_tilde_expand (file) : savestring (file);
+  file = (*file == '~') ? bash_tilde_expand (file, 0) : savestring (file);
 
   if (ABSPATH(file))
     return (file);
@@ -561,7 +608,7 @@ extract_colon_unit (string, p_index)
       if (string[i])
 	(*p_index)++;
       /* Return "" in the case of a trailing `:'. */
-      value = xmalloc (1);
+      value = (char *)xmalloc (1);
       value[0] = '\0';
     }
   else
@@ -579,6 +626,9 @@ extract_colon_unit (string, p_index)
 #if defined (PUSHD_AND_POPD)
 extern char *get_dirstack_from_string __P((char *));
 #endif
+
+static char **bash_tilde_prefixes;
+static char **bash_tilde_suffixes;
 
 /* If tilde_expand hasn't been able to expand the text, perhaps it
    is a special shell expansion.  This function is installed as the
@@ -598,7 +648,7 @@ bash_special_tilde_expansions (text)
   else if (text[0] == '-' && text[1] == '\0')
     result = get_string_value ("OLDPWD");
 #if defined (PUSHD_AND_POPD)
-  else if (isdigit (*text) || ((*text == '+' || *text == '-') && isdigit (text[1])))
+  else if (DIGIT (*text) || ((*text == '+' || *text == '-') && DIGIT (text[1])))
     result = get_dirstack_from_string (text);
 #endif
 
@@ -614,35 +664,73 @@ tilde_initialize ()
   static int times_called = 0;
 
   /* Tell the tilde expander that we want a crack first. */
-  tilde_expansion_preexpansion_hook = (CPFunction *)bash_special_tilde_expansions;
+  tilde_expansion_preexpansion_hook = bash_special_tilde_expansions;
 
   /* Tell the tilde expander about special strings which start a tilde
      expansion, and the special strings that end one.  Only do this once.
      tilde_initialize () is called from within bashline_reinitialize (). */
   if (times_called++ == 0)
     {
-      tilde_additional_prefixes = alloc_array (3);
-      tilde_additional_prefixes[0] = "=~";
-      tilde_additional_prefixes[1] = ":~";
-      tilde_additional_prefixes[2] = (char *)NULL;
+      bash_tilde_prefixes = strvec_create (3);
+      bash_tilde_prefixes[0] = "=~";
+      bash_tilde_prefixes[1] = ":~";
+      bash_tilde_prefixes[2] = (char *)NULL;
 
-      tilde_additional_suffixes = alloc_array (3);
-      tilde_additional_suffixes[0] = ":";
-      tilde_additional_suffixes[1] = "=~";
-      tilde_additional_suffixes[2] = (char *)NULL;
+      tilde_additional_prefixes = bash_tilde_prefixes;
+
+      bash_tilde_suffixes = strvec_create (3);
+      bash_tilde_suffixes[0] = ":";
+      bash_tilde_suffixes[1] = "=~";	/* XXX - ?? */
+      bash_tilde_suffixes[2] = (char *)NULL;
+
+      tilde_additional_suffixes = bash_tilde_suffixes;
     }
 }
 
-char *
-bash_tilde_expand (s)
-     char *s;
+/* POSIX.2, 3.6.1:  A tilde-prefix consists of an unquoted tilde character
+   at the beginning of the word, followed by all of the characters preceding
+   the first unquoted slash in the word, or all the characters in the word
+   if there is no slash...If none of the characters in the tilde-prefix are
+   quoted, the characters in the tilde-prefix following the tilde shell be
+   treated as a possible login name. */
+
+#define TILDE_END(c)	((c) == '\0' || (c) == '/' || (c) == ':')
+
+static int
+unquoted_tilde_word (s)
+     const char *s;
 {
-  int old_immed;
+  const char *r;
+
+  for (r = s; TILDE_END(*r) == 0; r++)
+    {
+      switch (*r)
+	{
+	case '\\':
+	case '\'':
+	case '"':
+	  return 0;
+	}
+    }
+  return 1;
+}
+
+/* Tilde-expand S by running it through the tilde expansion library.
+   ASSIGN_P is 1 if this is a variable assignment, so the alternate
+   tilde prefixes should be enabled (`=~' and `:~', see above). */
+char *
+bash_tilde_expand (s, assign_p)
+     const char *s;
+     int assign_p;
+{
+  int old_immed, r;
   char *ret;
 
   old_immed = interrupt_immediately;
   interrupt_immediately = 1;
-  ret = tilde_expand (s);
+  tilde_additional_prefixes = assign_p ? bash_tilde_prefixes : (char **)0;
+  r = (*s == '~') ? unquoted_tilde_word (s) : 1;
+  ret = r ? tilde_expand (s) : savestring (s);
   interrupt_immediately = old_immed;
   return (ret);
 }
@@ -661,20 +749,6 @@ static GETGROUPS_T *group_array = (GETGROUPS_T *)NULL;
 #if !defined (NOGROUP)
 #  define NOGROUP (gid_t) -1
 #endif
-
-#if defined (HAVE_SYSCONF) && defined (_SC_NGROUPS_MAX)
-#  define getmaxgroups() sysconf(_SC_NGROUPS_MAX)
-#else
-#  if defined (NGROUPS_MAX)
-#    define getmaxgroups() NGROUPS_MAX
-#  else /* !NGROUPS_MAX */
-#    if defined (NGROUPS)
-#      define getmaxgroups() NGROUPS
-#    else /* !NGROUPS */
-#      define getmaxgroups() 64
-#    endif /* !NGROUPS */
-#  endif /* !NGROUPS_MAX */
-#endif /* !HAVE_SYSCONF || !SC_NGROUPS_MAX */
 
 static void
 initialize_group_array ()
@@ -768,7 +842,6 @@ get_group_list (ngp)
 {
   static char **group_vector = (char **)NULL;
   register int i;
-  char *nbuf;
 
   if (group_vector)
     {
@@ -787,12 +860,9 @@ get_group_list (ngp)
       return (char **)NULL;
     }
 
-  group_vector = alloc_array (ngroups);
+  group_vector = strvec_create (ngroups);
   for (i = 0; i < ngroups; i++)
-    {
-      nbuf = itos ((int)group_array[i]);
-      group_vector[i] = nbuf;
-    }
+    group_vector[i] = itos (group_array[i]);
 
   if (ngp)
     *ngp = ngroups;
