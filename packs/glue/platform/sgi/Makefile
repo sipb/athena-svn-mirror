@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-02-19 18:24:01 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-10-06 16:17:55 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -9,6 +9,7 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${ATHBINDIR}/perl
 	ln -s /usr/sbin/perl ${DESTDIR}${ATHBINDIR}/perl
 
