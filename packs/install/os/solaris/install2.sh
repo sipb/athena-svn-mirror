@@ -24,7 +24,6 @@ echo "Making dirs on root"
 mkdir /root/var
 mkdir /root/usr
 mkdir /root/proc
-ln -s var/rtmp /root/tmp
 
 
 echo "Mount var, usr , var/usr/vice..."
