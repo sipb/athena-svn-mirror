@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.5 1991-01-23 15:19:32 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.6 1993-05-10 13:41:50 vrt Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: vrt $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -17,6 +17,7 @@
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
+#include <fcntl.h>
 
 /* This is the User Database section of the code. */
 

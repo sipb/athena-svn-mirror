@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.6 1991-02-09 16:45:23 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.7 1993-05-10 13:42:16 vrt Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: vrt $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -17,6 +17,7 @@
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <syslog.h>
 
 extern int errno;

@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.5 1990-11-14 16:11:34 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.6 1993-05-10 13:42:12 vrt Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: vrt $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #ifndef lint
-static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.5 1990-11-14 16:11:34 epeisach Exp $";
+static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_dba.c,v 1.6 1993-05-10 13:42:12 vrt Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -16,8 +16,19 @@ static char rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/l
 #include "quota_db.h"
 #include <sys/stat.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/time.h>
+
+#ifdef SOLARIS
+/*
+ * flock operations.
+ */
+#define LOCK_SH               1       /* shared lock */
+#define LOCK_EX               2       /* exclusive lock */
+#define LOCK_NB               4       /* don't block when locking */
+#define LOCK_UN               8       /* unlock */
+#endif
 
 #ifdef ultrix
 /* We are dumb and redefine NULL */

@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.4 1991-01-23 15:18:34 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.5 1993-05-10 13:42:50 vrt Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: vrt $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <gquota_db.h>
 
@@ -264,7 +265,11 @@ char *str;
     
     /* First add the entry to the end of the file. If we can't do that, we 
        are screwed */
+#ifdef POSIX
+    if ( lseek(dbfd, (off_t) 0, SEEK_END) < 0) {
+#else
     if ( lseek(dbfd, (off_t) 0, L_XTND) < 0) {
+#endif
 	(void) uid_close_database();
 	return(0); /* Error seeking to the end */
     }

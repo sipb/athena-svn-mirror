@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.13 1991-03-01 12:01:38 epeisach Exp $
+ *	$Author: vrt $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.14 1993-05-10 13:42:18 vrt Exp $
  */
 
 /*
@@ -11,14 +11,18 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.13 1991-03-01 12:01:38 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.14 1993-05-10 13:42:18 vrt Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include "mit-copyright.h"
 #include "quota.h"
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>

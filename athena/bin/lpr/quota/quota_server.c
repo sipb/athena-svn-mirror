@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.12 1991-09-30 10:26:54 epeisach Exp $
+ *	$Author: vrt $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.13 1993-05-10 13:41:56 vrt Exp $
  */
 
 /*
@@ -10,11 +10,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.12 1991-09-30 10:26:54 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.13 1993-05-10 13:41:56 vrt Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
 #include "quota.h"
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <krb.h>
 #include "quota_limits.h"
 #include "quota_ncs.h"
