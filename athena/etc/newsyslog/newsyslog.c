@@ -2,10 +2,10 @@
  * 	newsyslog - roll over selected logs at the appropriate time,
  * 		keeping the a specified number of backup files around.
  *
- * 	$Id: newsyslog.c,v 1.11 1999-10-19 20:22:28 danw Exp $
+ * 	$Id: newsyslog.c,v 1.12 2002-04-09 05:53:57 ghudson Exp $
  */
 
-static const char rcsid[] = "$Id: newsyslog.c,v 1.11 1999-10-19 20:22:28 danw Exp $";
+static const char rcsid[] = "$Id: newsyslog.c,v 1.12 2002-04-09 05:53:57 ghudson Exp $";
 
 #include "config.h"
 
@@ -900,7 +900,7 @@ static void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
 	     && isspace((unsigned char)line[sizeof(KEYWORD_PID)-1]))
 #ifdef ALLOW_PROCNAME
 	    || (!strncasecmp(line, KEYWORD_PNAME, sizeof(KEYWORD_PNAME)-1)
-		&& isspace(line[sizeof(KEYWORD_PNAME)-1]))) {
+		&& isspace((unsigned char) line[sizeof(KEYWORD_PNAME)-1]))) {
 #else
 	    ) {
 #endif
