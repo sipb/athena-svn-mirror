@@ -1,0 +1,581 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+API_VERSION = @API_VERSION@
+AS = @AS@
+ASPELL_DICT = @ASPELL_DICT@
+ASPELL_INC = @ASPELL_INC@
+ASPELL_LIBS = @ASPELL_LIBS@
+BONOBO_IDL_INCLUDES = @BONOBO_IDL_INCLUDES@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_SPELL_CFLAGS = @GNOME_SPELL_CFLAGS@
+GNOME_SPELL_DATADIR = @GNOME_SPELL_DATADIR@
+GNOME_SPELL_LIBS = @GNOME_SPELL_LIBS@
+GNOME_SPELL_RELEASE = @GNOME_SPELL_RELEASE@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+cxxflags_set = @cxxflags_set@
+
+PLUGIN_DIR = $(libdir)/bonobo/plugin
+
+gladedir = $(datadir)/gnome-spell-@GNOME_SPELL_RELEASE@
+glade_DATA = spell-checker.glade
+
+END = 
+
+INCLUDES = \
+        -I$(srcdir)                                     \
+	$(ASPELL_INC)					\
+        -DGNOMEDATADIR=\""$(datadir)"\"         	\
+        -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
+	-DGLADE_DATADIR=\"$(gladedir)\"			\
+	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
+	-DGTK_DISABLE_DEPRECATED=1			\
+	-DASPELL_DICT=\""$(ASPELL_DICT)"\"		\
+	$(GNOME_SPELL_CFLAGS)				\
+	$(END)
+
+
+SPELL_IDL = Spell.idl
+
+IDL_GENERATED = \
+	Spell.h			\
+	Spell-common.c		\
+	Spell-skels.c		\
+	Spell-stubs.c
+
+
+EXTRA_DIST = \
+	$(SPELL_IDL)		\
+	$(glade_DATA)\
+ $(server_in_files) $(server_DATA) $(idl_DATA)
+
+CLEANFILES = $(IDL_GENERATED)
+
+privlibdir = "$(libdir)/gnome-spell"
+privlib_LTLIBRARIES = libgnome-spell-component.la
+
+noinst_PROGRAMS = \
+	test-gnome-spell-component
+
+
+noinst_LTLIBRARIES = libgnome-spell-idl.la
+
+libgnome_spell_idl_la_SOURCES = \
+	$(IDL_GENERATED)	\
+	$(END)
+
+
+libgnome_spell_component_la_LDFLAGS = -release $(API_VERSION)
+libgnome_spell_component_la_LIBADD = \
+	libgnome-spell-idl.la		\
+	$(ASPELL_LIBS)		\
+	$(GNOME_SPELL_LIBS)			\
+	$(END)
+
+
+libgnome_spell_component_la_SOURCES = \
+	control.h				\
+	control.c				\
+	dictionary.h				\
+	dictionary.c				\
+	spell-factory.c				\
+	$(END)
+
+
+test_gnome_spell_component_LDADD = \
+	libgnome-spell-idl.la		\
+	$(ASPELL_LIBS)				\
+	$(GNOME_SPELL_LIBS)			\
+	$(END)
+
+
+test_gnome_spell_component_SOURCES = \
+	test-spell.c
+
+
+serverdir = $(libdir)/bonobo/servers
+server_in_files = GNOME_Spell.server.in.in
+
+server_DATA = $(server_in_files:.server.in.in=.server)
+
+idldir = $(datadir)/idl
+idl_DATA = \
+	Spell.idl				\
+	$(END)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(noinst_LTLIBRARIES) $(privlib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+libgnome_spell_idl_la_LDFLAGS = 
+libgnome_spell_idl_la_LIBADD = 
+libgnome_spell_idl_la_OBJECTS =  Spell-common.lo Spell-skels.lo \
+Spell-stubs.lo
+libgnome_spell_component_la_DEPENDENCIES =  libgnome-spell-idl.la
+libgnome_spell_component_la_OBJECTS =  control.lo dictionary.lo \
+spell-factory.lo
+noinst_PROGRAMS =  test-gnome-spell-component$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS)
+
+test_gnome_spell_component_OBJECTS =  test-spell.$(OBJEXT)
+test_gnome_spell_component_DEPENDENCIES =  libgnome-spell-idl.la
+test_gnome_spell_component_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(glade_DATA) $(idl_DATA) $(server_DATA)
+
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libgnome_spell_idl_la_SOURCES) $(libgnome_spell_component_la_SOURCES) $(test_gnome_spell_component_SOURCES)
+OBJECTS = $(libgnome_spell_idl_la_OBJECTS) $(libgnome_spell_component_la_OBJECTS) $(test_gnome_spell_component_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps gnome-spell/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-noinstLTLIBRARIES:
+
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+
+distclean-noinstLTLIBRARIES:
+
+maintainer-clean-noinstLTLIBRARIES:
+
+mostlyclean-privlibLTLIBRARIES:
+
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
+
+distclean-privlibLTLIBRARIES:
+
+maintainer-clean-privlibLTLIBRARIES:
+
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-privlibLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libgnome-spell-idl.la: $(libgnome_spell_idl_la_OBJECTS) $(libgnome_spell_idl_la_DEPENDENCIES)
+	$(LINK)  $(libgnome_spell_idl_la_LDFLAGS) $(libgnome_spell_idl_la_OBJECTS) $(libgnome_spell_idl_la_LIBADD) $(LIBS)
+
+libgnome-spell-component.la: $(libgnome_spell_component_la_OBJECTS) $(libgnome_spell_component_la_DEPENDENCIES)
+	$(LINK) -rpath $(privlibdir) $(libgnome_spell_component_la_LDFLAGS) $(libgnome_spell_component_la_OBJECTS) $(libgnome_spell_component_la_LIBADD) $(LIBS)
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+test-gnome-spell-component$(EXEEXT): $(test_gnome_spell_component_OBJECTS) $(test_gnome_spell_component_DEPENDENCIES)
+	@rm -f test-gnome-spell-component$(EXEEXT)
+	$(LINK) $(test_gnome_spell_component_LDFLAGS) $(test_gnome_spell_component_OBJECTS) $(test_gnome_spell_component_LDADD) $(LIBS)
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
+	done
+
+install-idlDATA: $(idl_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(idldir)
+	@list='$(idl_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-idlDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(idl_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(idldir)/$$p; \
+	done
+
+install-serverDATA: $(server_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-serverDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = gnome-spell
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+control.lo control.o : control.c ../config.h Spell.h control.h
+dictionary.lo dictionary.o : dictionary.c ../config.h Spell.h \
+	dictionary.h
+preload.o: preload.c ../config.h preload.h
+Spell-common.lo Spell-common.o : Spell-common.c Spell.h
+spell-factory.lo spell-factory.o : spell-factory.c ../config.h Spell.h \
+	dictionary.h control.h
+Spell-skels.lo Spell-skels.o : Spell-skels.c Spell.h
+Spell-stubs.lo Spell-stubs.o : Spell-stubs.c Spell.h
+test-spell.o: test-spell.c ../config.h Spell.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am: install-privlibLTLIBRARIES install-gladeDATA \
+		install-idlDATA install-serverDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-privlibLTLIBRARIES uninstall-gladeDATA \
+		uninstall-idlDATA uninstall-serverDATA
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(privlibdir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(idldir) $(DESTDIR)$(serverdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES \
+		mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-noinstLTLIBRARIES clean-privlibLTLIBRARIES \
+		clean-compile clean-libtool clean-noinstPROGRAMS \
+		clean-tags clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-noinstLTLIBRARIES distclean-privlibLTLIBRARIES \
+		distclean-compile distclean-libtool \
+		distclean-noinstPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
+		maintainer-clean-privlibLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-gladeDATA install-gladeDATA \
+uninstall-idlDATA install-idlDATA uninstall-serverDATA \
+install-serverDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+$(IDL_GENERATED): $(SPELL_IDL)
+	$(ORBIT_IDL) $(BONOBO_IDL_INCLUDES) $(srcdir)/Spell.idl
+
+Spell-impl.o: Spell.h
+$(server_in_files:.server.in.in=.server.in): $(server_in_files) Makefile
+	sed -e "s|\@GNOME_SPELL_COMPONENT_LOCATION\@|$(privlibdir)|g" \
+	    -e "s|\@API_VERSION\@|$(API_VERSION)|g" \
+	    -e "s|\@GNOME_SPELL_RELEASE\@|$(GNOME_SPELL_RELEASE)|g" $< > $@
+
+@INTLTOOL_SERVER_RULE@
+
+install-data-hook:
+	mv $(DESTDIR)$(idldir)/Spell.idl $(DESTDIR)$(idldir)/Spell-@GNOME_SPELL_RELEASE@.idl
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

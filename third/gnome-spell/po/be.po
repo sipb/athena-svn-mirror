@@ -1,0 +1,219 @@
+# translation of be.po to belarusian
+# translation of gnome-spell.HEAD.be.po to belarusian
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Vital Khilko <dojlid@mova.org>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: be\n"
+"POT-Creation-Date: 2003-04-30 17:53+0200\n"
+"PO-Revision-Date: 2003-05-23 23:04GMT+2\n"
+"Last-Translator: Vital Khilko <dojlid@mova.org>\n"
+"Language-Team: belarusian <i18n@mova.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "Прапановы да \"%s\""
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Прапановы"
+
+#: gnome-spell/control.c:413 capplet/main.c:238
+msgid "Could not load glade file."
+msgstr "Немагчыма загрузіць файл glade.ыыыыы"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr "Брэтонская"
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr "Каталёнская"
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr "Чэская"
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr "Дацкая"
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr "Нямецкая (Нямеччына)"
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr "Нямецкая (Швэйцарыя)"
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr "Грэцкая"
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr "Ангельская (Амэрыка)"
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr "Ангельская (Брытанія)"
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr "Ангельская (Канада)"
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr "Эспэранта"
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr "Гішпанская"
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr "Фаросі"
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr "Французкая (Францыя)"
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr "Французкая (Швэйцарыя)"
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr "Італійская"
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr "Галянская"
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr "Нарвэжская"
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr "Польская"
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr "Партугальская (Партугалія)"
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr "Партугальская (Бразылія)"
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr "Расейская"
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr "Славацкая"
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr "Швэдская"
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr "Украінская"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Немагчыма праініцыялізаваць Bonobo"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr "Выбярыце колер"
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr "Колеры"
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr "Мова"
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr "колер падкрэсьленьня памылковага напісаньня"
+
+#: capplet/main.c:171
+msgid "en"
+msgstr "анг"
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr "Мовы"
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gnome-spell/spell-checker.glade.h:2
+msgid "Add to dictionary"
+msgstr "Дадаць да слоўніка"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Слова якое правяраецца"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "_Слоўнікі"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "Апісаць _усё"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Ігнараваць"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Запомніць"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Замяніць"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr "_Дадаць слова"
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr "_Назад"
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "_Апісаць"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Дапамога"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "_Ігнараваць"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "_Замяніць"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "_Прапусьціць"
+

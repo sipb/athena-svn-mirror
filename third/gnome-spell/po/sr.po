@@ -1,0 +1,218 @@
+# Serbian translation of gnome-spell
+# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
+# 
+# This file is distributed under the same license as the gnome-spell package.
+# 
+# Maintainer: Предраг Кртолица <predrag_k@optusnet.com.au>
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-spell \n"
+"POT-Creation-Date: 2003-05-19 18:03+0200\n"
+"PO-Revision-Date: 2003-05-11 03:08+1000\n"
+"Last-Translator: Предраг Кртолица <predrag_k@optusnet.com.au>\n"
+"Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: capplet/gnome-spell-capplet.glade.h:1
+msgid "Choose color"
+msgstr "Изаберите боју"
+
+#: capplet/gnome-spell-capplet.glade.h:2
+msgid "Colors"
+msgstr "Боје"
+
+#: capplet/gnome-spell-capplet.glade.h:3
+msgid "Language"
+msgstr "Говорни језик"
+
+#: capplet/gnome-spell-capplet.glade.h:4
+msgid "misspelling underline color"
+msgstr "боја за подвлачење погрешно исписане речи"
+
+#: capplet/main.c:171
+msgid "en"
+msgstr "ен"
+
+#: capplet/main.c:238 gnome-spell/control.c:413
+msgid "Could not load glade file."
+msgstr "Неуспешно позивање glade датотеке"
+
+#: capplet/main.c:248
+msgid "Languages"
+msgstr "Говорни језици"
+
+#: gnome-spell/control.c:231
+#, c-format
+msgid "Suggestions for '%s'"
+msgstr "Предлози за '%s'"
+
+#: gnome-spell/control.c:334 gnome-spell/spell-checker.glade.h:9
+msgid "Suggestions"
+msgstr "Предлози"
+
+#: gnome-spell/dictionary.c:148
+msgid "Breton"
+msgstr "бретањски"
+
+#: gnome-spell/dictionary.c:149
+msgid "Catalan"
+msgstr "каталански"
+
+#: gnome-spell/dictionary.c:150
+msgid "Czech"
+msgstr "чешки"
+
+#: gnome-spell/dictionary.c:151
+msgid "Danish"
+msgstr "дански"
+
+#: gnome-spell/dictionary.c:152
+msgid "German (Germany)"
+msgstr "немачки (Немачка)"
+
+#: gnome-spell/dictionary.c:153
+msgid "German (Swiss)"
+msgstr "немачки (Швајцарска)"
+
+#: gnome-spell/dictionary.c:154
+msgid "Greek"
+msgstr "грчки"
+
+#: gnome-spell/dictionary.c:155
+msgid "English (American)"
+msgstr "енглески (Америка)"
+
+#: gnome-spell/dictionary.c:156
+msgid "English (British)"
+msgstr "енглески (Британија)"
+
+#: gnome-spell/dictionary.c:157
+msgid "English (Canadian)"
+msgstr "енглески (Канада)"
+
+#: gnome-spell/dictionary.c:158
+msgid "Esperanto"
+msgstr "есперанто"
+
+#: gnome-spell/dictionary.c:159
+msgid "Spanish"
+msgstr "шпански"
+
+#: gnome-spell/dictionary.c:160
+msgid "Faroese"
+msgstr "фароски"
+
+#: gnome-spell/dictionary.c:161
+msgid "French (France)"
+msgstr "француски (Француска)"
+
+#: gnome-spell/dictionary.c:162
+msgid "French (Swiss)"
+msgstr "француски (Швајцарска)"
+
+#: gnome-spell/dictionary.c:163
+msgid "Italian"
+msgstr "италијански"
+
+#: gnome-spell/dictionary.c:164
+msgid "Dutch"
+msgstr "холандски"
+
+#: gnome-spell/dictionary.c:165
+msgid "Norwegian"
+msgstr "норвешки"
+
+#: gnome-spell/dictionary.c:166
+msgid "Polish"
+msgstr "пољски"
+
+#: gnome-spell/dictionary.c:167
+msgid "Portuguese (Portugal)"
+msgstr "португалски (Португал)"
+
+#: gnome-spell/dictionary.c:168
+msgid "Portuguese (Brazilian)"
+msgstr "португалски (Бразил)"
+
+#: gnome-spell/dictionary.c:169
+msgid "Russian"
+msgstr "руски"
+
+#: gnome-spell/dictionary.c:170
+msgid "Slovak"
+msgstr "словачки"
+
+#: gnome-spell/dictionary.c:171
+msgid "Swedish"
+msgstr "шведски"
+
+#: gnome-spell/dictionary.c:172
+msgid "Ukrainian"
+msgstr "украјински"
+
+#: gnome-spell/spell-checker.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gnome-spell/spell-checker.glade.h:2
+msgid "Add to dictionary"
+msgstr "Додај у речник"
+
+#: gnome-spell/spell-checker.glade.h:3
+msgid "Checked word"
+msgstr "Проверена реч"
+
+#: gnome-spell/spell-checker.glade.h:4
+msgid "D_ictionaries"
+msgstr "Р_ечници"
+
+#: gnome-spell/spell-checker.glade.h:5
+msgid "Describe _all"
+msgstr "Опиши _све"
+
+#: gnome-spell/spell-checker.glade.h:6
+msgid "Ignore"
+msgstr "Zанемари"
+
+#: gnome-spell/spell-checker.glade.h:7
+msgid "Remember"
+msgstr "Zапамти"
+
+#: gnome-spell/spell-checker.glade.h:8
+msgid "Replace"
+msgstr "Zамени"
+
+#: gnome-spell/spell-checker.glade.h:10
+msgid "_Add word"
+msgstr "_Додај реч"
+
+#: gnome-spell/spell-checker.glade.h:11
+msgid "_Back"
+msgstr "_Назад"
+
+#: gnome-spell/spell-checker.glade.h:12
+msgid "_Describe"
+msgstr "_Опиши"
+
+#: gnome-spell/spell-checker.glade.h:13
+msgid "_Help"
+msgstr "_Помоћ"
+
+#: gnome-spell/spell-checker.glade.h:14
+msgid "_Ignore"
+msgstr "_Zанемари"
+
+#: gnome-spell/spell-checker.glade.h:15
+msgid "_Replace"
+msgstr "Zа_мени"
+
+#: gnome-spell/spell-checker.glade.h:16
+msgid "_Skip"
+msgstr "П_рескочи"
+
+#: gnome-spell/test-spell.c:39
+msgid "I could not initialize Bonobo"
+msgstr "Не могу да покренем Бонобо"
