@@ -367,6 +367,8 @@ server_xscreensaver_version (Display *dpy,
 
   if (version_ret)
     *version_ret = 0;
+  if (user_ret)
+    *user_ret = 0;
   if (host_ret)
     *host_ret = 0;
 
