@@ -353,7 +353,7 @@ XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 #define XdmConfigurationSubdirectory config
 #endif
 #ifndef TwmDir
-#define TwmDir $(LIBDIR)/twm
+#define TwmDir $(SHAREDIR)/twm
 #endif
 #ifndef ManPath
 #define ManPath ManDirectoryRoot
@@ -375,7 +375,7 @@ XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 #endif
 #ifndef XFileSearchPathBase
 /* avoid SCCS keyword */
-#define XFileSearchPathBase Concat4($(LIBDIR)/%L/%T/%N%C,%S:$(LIBDIR)/%l/%T/%N%C,%S:$(LIBDIR)/%T/%N%C,%S:$(LIBDIR)/%L/%T/%N%S:$(LIBDIR)/%l/%T/%N%S:$(LIBDIR)/%T/%N%S)
+#define XFileSearchPathBase Concat4($(SHAREDIR)/%L/%T/%N%C,%S:$(SHAREDIR)/%l/%T/%N%C,%S:$(SHAREDIR)/%T/%N%C,%S:$(SHAREDIR)/%L/%T/%N%S:$(SHAREDIR)/%l/%T/%N%S:$(SHAREDIR)/%T/%N%S)
 #endif
 #ifndef XFileSearchPathDefault
 #ifdef XAppLoadDir
@@ -386,7 +386,10 @@ XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 #endif
 #endif
 #ifndef XAppLoadDir
-#define XAppLoadDir $(LIBDIR)/app-defaults
+#define XAppLoadDir $(SHAREDIR)/app-defaults
+#endif
+#ifndef XSharedFilePath
+#define XSharedFilePath $(LIBDIR)
 #endif
 #ifndef XtErrorPrefix
 #define XtErrorPrefix /* as empty string */
@@ -528,6 +531,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
  */
           PATHSEP = /			/* for building filenames */
         USRLIBDIR = UsrLibDir		/* nonshared libraries */
+         SHAREDIR = XSharedFilePath	/* files shared among architectures */
          SHLIBDIR = ShLibDir            /* shared libraries */
            BINDIR = BinDir		/* programs */
           INCROOT = IncRoot		/* base of where to put header files */
