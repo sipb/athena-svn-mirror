@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.6 1992-05-08 13:36:55 epeisach Exp $
+# $Id: config_afs.sh,v 1.7 1992-08-14 12:55:18 probe Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -38,7 +38,7 @@ echo "Only allowing setuid/setgid programs from the following cells:"
 (awk '/^>/ {print $1}' ${CELLDB}; cat ${SUIDDB}) | awk '\
 	/^>/ {i++; cells[i]=substr($1,2,length($1)-1);suid[i]=0;next}; \
 	/^-/ {for (j=1;j<i;j++) {if (substr($1,2,length($1)-1)==cells[j]) \
-		suid[j]=0;next;}}; \
+		{suid[j]=0;next;}}}; \
 	{for (j=1;j<i;j++) {if ($1==cells[j]) {suid[j]=1;next}}}; \
 	END {	ns=0; nn=0; \
 		for (j=1;j<i;j++) { \
