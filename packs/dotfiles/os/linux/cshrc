@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.14 2001-07-09 21:50:14 ghudson Exp $
+# $Id: cshrc,v 1.15 2001-08-16 14:30:01 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -12,7 +12,7 @@ set initdir=/usr/athena/lib/init
 # Set standard path variables, for reference (actual paths set later in file).
 
 # Set standard Athena path variable (generic path for all users):
-set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena  \
+set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena  \
 		/usr/bin /bin /usr/X11R6/bin /usr/andrew/bin \
 		/usr/sbin /sbin )
 

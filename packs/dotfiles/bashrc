@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.22 2001-07-09 13:04:46 ghudson Exp $
+# $Id: bashrc,v 1.23 2001-08-16 14:30:01 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -32,7 +32,7 @@ if [ "${ENV_SET:+set}" != set ]; then
 	# PATH will get set later after .bash_environment is run.
 	case "$HOSTTYPE" in
 	sgi)
-		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc:
+		athena_path=/usr/athena/bin:/usr/athena/etc:
 		athena_path=$athena_path:/bin/athena:/usr/sbin:/usr/bsd:/sbin
 		athena_path=$athena_path:/usr/bin:/bin:/usr/bin/X11
 		athena_path=$athena_path:/usr/andrew/bin:/usr/etc
