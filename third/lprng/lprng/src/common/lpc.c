@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.8 2001-03-07 21:23:09 ghudson Exp $";
+"$Id: lpc.c,v 1.8.4.1 2002-09-10 20:24:06 ghudson Exp $";
 
 
 /***************************************************************************
@@ -379,7 +379,7 @@ void doaction( struct line_list *args )
  void usage(void);
 
  char LPC_optstr[] 	/* LPC options */
- = "D:P:S:V";
+ = "aD:P:S:V";
 
 /* scan the input arguments, setting up values */
 
@@ -389,6 +389,7 @@ void Get_parms(int argc, char *argv[] )
 
 	while ((option = Getopt (argc, argv, LPC_optstr )) != EOF) {
 		switch (option) {
+		case 'a': break;
 		case 'D': /* debug has already been done */
 			Parse_debug( Optarg, 1 );
 			break;
