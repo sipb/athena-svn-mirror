@@ -350,7 +350,7 @@ void split_and_exec(char *cmd, pid_t *pid)
 
   newcmd = malloc(strlen(cmd) + 1);
   strcpy(newcmd, cmd);
-  words = malloc(ntokens * sizeof(char *));
+  words = malloc((ntokens + 1) * sizeof(char *));
   
   i = 0;
   words[i++] = strtok(newcmd, " ");
