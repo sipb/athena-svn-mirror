@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.6 1999-12-10 16:31:10 danw Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.7 2000-04-24 02:13:29 mwhitson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -34,7 +34,7 @@ static const char rcsid[] = "$Id: conf.c,v 1.6 1999-12-10 16:31:10 danw Exp $";
 #include "locker_private.h"
 
 extern struct locker_ops locker__err_ops, locker__mul_ops, locker__afs_ops;
-extern struct locker_ops locker__nfs_ops, locker__ufs_ops;
+extern struct locker_ops locker__nfs_ops, locker__ufs_ops, locker__loc_ops;
 
 #define LOCKER_ALL_FSTYPES (-1L)
 
@@ -150,7 +150,7 @@ int locker_init(locker_context *contextp, uid_t user,
   context->allowopts.tab = NULL;
 
   /* Filesystem defaults. */
-  context->nfstypes = 5;
+  context->nfstypes = 6;
   context->fstype = malloc(context->nfstypes * sizeof(struct locker_ops *));
   if (!context->fstype)
     {
@@ -163,6 +163,7 @@ int locker_init(locker_context *contextp, uid_t user,
   context->fstype[2] = &locker__afs_ops;
   context->fstype[3] = &locker__nfs_ops;
   context->fstype[4] = &locker__ufs_ops;
+  context->fstype[5] = &locker__loc_ops;
   for (i = 0; i < context->nfstypes; i++)
     context->fstype[i]->id = 1 << i;
 

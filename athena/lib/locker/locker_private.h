@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.4 1999-06-04 14:06:41 danw Exp $ */
+/* $Id: locker_private.h,v 1.5 2000-04-24 02:13:44 mwhitson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -24,6 +24,7 @@
 
 #define LOCKER_AFS_MOUNT_DIR "/mit"
 #define LOCKER_UFS_MOUNT_DIR "/mnt"
+#define LOCKER_LOC_MOUNT_DIR "/mit"
 
 #define LOCKER_NFS_KSERVICE "rvdsrv"
 
