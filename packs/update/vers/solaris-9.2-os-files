@@ -117,7 +117,12 @@
 /platform/sun4u/kernel/drv/cmdk.conf
 /platform/sun4u/kernel/drv/cpc.conf
 /platform/sun4u/kernel/drv/kb_ps2.conf
+/platform/sun4u/kernel/drv/lom
+/platform/sun4u/kernel/drv/lomp
 /platform/sun4u/kernel/drv/sbusmem.conf
+/platform/sun4u/kernel/drv/sparcv9/lom
+/platform/sun4u/kernel/drv/sparcv9/lomp
+/platform/sun4u/kernel/drv/sparcv9/lomv
 /platform/sun4u/kernel/drv/stc.conf
 /platform/sun4u/kernel/drv/wrsmd.conf
 /platform/sun4u/kernel/drv/zsh.conf
