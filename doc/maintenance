@@ -169,6 +169,10 @@ Release cycles
 We haven't had one yet with the current repository, but some notes on
 how they should be carried out:
 
+	* doc/third-party should be checked to see if any tidbits of
+	  third-party material need to be updated before a release
+	  cycle.
+
 	* A branch should be made for each release cycle, of the form
 	  "athena-8_1".  Only the release engineers should commit on
 	  release branches.
