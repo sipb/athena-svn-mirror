@@ -1,6 +1,6 @@
 AnsiCC()
 
-#if !defined(ultrix)
+#if !defined(ultrix) && !defined(linux)
 RPCLIB=-lrpcsvc
 #endif
 
