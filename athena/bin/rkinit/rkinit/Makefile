@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.2 1989-11-13 15:10:23 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.3 1990-07-03 14:56:03 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v $
 #  $Author: qjb $
 #
@@ -9,13 +9,12 @@
 DESTDIR		= 
 INSTALLDIR	= /usr/athena
 
-KRB_TOP		= /afs/athena.mit.edu/system/krbuser/@sys
-KLIBS		= -L$(KRB_TOP)/lib -lkrb -ldes
+KLIBS		= -lkrb -ldes
 
 RKLIB		= ../lib/librkinit.a
 
 DFLAGS		= -O
-INCLUDES	= -I$(KRB_TOP)/include -I../include
+INCLUDES	= -I../include
 CFLAGS 		= $(DFLAGS) $(INCLUDES)
 LIBS		= $(RKLIB) $(KLIBS) -lcom_err
 
