@@ -2910,7 +2910,7 @@ gconf_activate_server (gboolean  start_if_not_found,
   int p[2] = { -1, -1 };
   char buf[1];
   GError *tmp_err;
-  char *argv[4];
+  char *argv[6];
   char *gconfd_dir;
   char *lock_dir;
   GString *failure_log;
@@ -2980,9 +2980,11 @@ gconf_activate_server (gboolean  start_if_not_found,
         }
 
       argv[0] = "dustbuster";
-      argv[1] = g_strconcat (GCONF_SERVERDIR, "/" GCONFD, NULL);
-      argv[2] = g_strdup_printf ("%d", p[1]);
-      argv[3] = NULL;
+      argv[1] = "-s";
+      argv[2] = "TERM";
+      argv[3] = g_strconcat (GCONF_SERVERDIR, "/" GCONFD, NULL);
+      argv[4] = g_strdup_printf ("%d", p[1]);
+      argv[5] = NULL;
   
       tmp_err = NULL;
       if (!g_spawn_async (NULL,
@@ -2994,8 +2996,8 @@ gconf_activate_server (gboolean  start_if_not_found,
                           NULL,
                           &tmp_err))
         {
-          g_free (argv[1]);
-          g_free (argv[2]);
+          g_free (argv[3]);
+          g_free (argv[4]);
           close (p[1]);
           g_set_error (error,
                        GCONF_ERROR,
@@ -3006,8 +3008,8 @@ gconf_activate_server (gboolean  start_if_not_found,
           goto out;
         }
       
-      g_free (argv[1]);
-      g_free (argv[2]);
+      g_free (argv[3]);
+      g_free (argv[4]);
 
       /* Close the write side of the pipe, so that we do not hang on the
        * read() below, in case the server does not get as far as writing
