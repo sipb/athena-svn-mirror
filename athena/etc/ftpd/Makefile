@@ -42,12 +42,7 @@ depend: ${SRCS}
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 
 install: 
-	if test ! -s ${DESTDIR}/etc/shells ; then cp etc.shells /etc/shells; fi
-	if test -s ${DESTDIR}/etc/ftpd; then \
-		install -s -o bin -g bin -m 755 ftpd ${DESTDIR}/etc/ftpd; \
-	else \
-		install -s -o bin -g bin -m 755 ftpd ${DESTDIR}/usr/etc/in.ftpd; \
-	fi
+	install -s -o root -g wheel -m 755 ftpd ${DESTDIR}/etc/ftpd; 
 
 lint: ${SRCS}
 	lint ${CFLAGS} ${SRCS}
