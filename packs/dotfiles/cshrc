@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.5 2003-05-29 16:29:55 ghudson Exp $
+# $Id: cshrc,v 1.6 2003-07-24 18:50:34 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -21,16 +21,36 @@ if ($?tcsh) then
   endif
 endif
 
+# Set host type and hostname variables.
+if (! $?ATHENA_HOSTTYPE) setenv ATHENA_HOSTTYPE "`/bin/athena/machtype`"
+if (! $?HOST) setenv HOST "`hostname`"
+setenv HOSTTYPE "$ATHENA_HOSTTYPE"
+set hosttype=$HOSTTYPE
+set host=$HOST
+
+switch ("$HOSTTYPE")
+case sun4:
+  set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena \
+		    /usr/openwin/bin /usr/openwin/demo /usr/bin \
+                    /usr/ccs/bin /usr/sbin /sbin /usr/ucb )
+  set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+  breaksw
+  case linux:
+  set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena /usr/bin \
+		    /bin /usr/X11R6/bin /usr/sbin /sbin )
+  set athena_manpath=/usr/athena/man:/usr/share/man:/usr/X11R6/man
+  breaksw
+default:
+  echo "Standard dotfiles do not support system type $HOSTTYPE."
+  breaksw
+endsw
+
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
 if (! $?ENV_SET) then
 
   setenv ENV_SET				# Avoid unnecessary repeat
-  setenv HOSTTYPE "`/bin/athena/machtype`"
-  setenv HOST "`hostname`"
-  set hosttype=$HOSTTYPE
-  set host=$HOST
 
   umask 077				# Strictly protect files
 					#  (does not apply in AFS)
@@ -44,23 +64,6 @@ if (! $?ENV_SET) then
 
   # Set standard Athena path variables.  Actual $path (and thus $PATH)
   # are set later, after ~/.environment is sourced.
-
-  switch ("$HOSTTYPE")
-  case sun4:
-    set athena_path=( /srvd/patch /usr/athena/bin /usr/athena/etc /bin/athena \
-		      /usr/openwin/bin /usr/openwin/demo /usr/bin \
-                      /usr/ccs/bin /usr/sbin /sbin /usr/ucb )
-    set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
-    breaksw
-  case linux:
-    set athena_path=( /usr/athena/bin /usr/athena/etc /bin/athena /usr/bin \
-		      /bin /usr/X11R6/bin /usr/sbin /sbin )
-    set athena_manpath=/usr/athena/man:/usr/share/man:/usr/X11R6/man
-    breaksw
-  default:
-    echo "Standard dotfiles do not support system type $HOSTTYPE."
-    breaksw
-  endsw
 
   setenv MANPATH "$athena_manpath"
 
@@ -200,13 +203,6 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
   set cdpath = (~)		#   Path to search for directory changes
   set interactive		#   Provide shell variable for compatability
   set nostat = (/afs/)		#   Don't stat when completing in /afs
-endif
-
-if ($?HOSTTYPE) then
-  set hosttype=$HOSTTYPE
-endif
-if ($?HOST) then
-  set host=$HOST
 endif
 
 # Set up standard C shell aliases
