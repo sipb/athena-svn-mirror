@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.10 1991-08-29 11:24:33 lwvanels Exp $
+ *	$Id: common.h,v 1.11 1991-10-31 14:59:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -40,6 +40,7 @@ ERRCODE read_response P((int fd , RESPONSE *response ));
 ERRCODE write_int_to_fd P((int fd , int response ));
 ERRCODE read_int_from_fd P((int fd , int *response ));
 ERRCODE read_text_into_file P((int fd , char *filename ));
+ERRCODE read_file_into_text P((char *filename, char **bufp ));
 ERRCODE write_file_to_fd P((int fd , char *filename ));
 ERRCODE write_text_to_fd P((int fd , char *buf ));
 char *read_text_from_fd P((int fd ));
