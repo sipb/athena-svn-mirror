@@ -32,8 +32,8 @@ ALstart(ALsession session, char *ttyname)
 
 long ALend(ALsession session)
 {
-  /* check reference count */
-  /* remove user from passwd file */
+  ALremovePasswdEntry(session);
+
   /* remove groups from groups file */
   /* detach home directory */
   /* remove temporary directory */

@@ -8,23 +8,28 @@
 /* etale.c */
 void initialize_ale_error_table P_((int NOARGS));
 
+/* etalw.c */
+void initialize_alw_error_table P_((int NOARGS));
+
 /* setuser.c */
 long ALsetUser P_((ALsession session, char *uname, ALflag_t initial_flags));
 
 /* passwd.c */
 long ALincRefCount P_((ALsession session));
+void ALgetErrorContextFromFile P_((ALsession session, char *filename));
 long ALaddPasswdEntry P_((ALsession session));
 long ALremovePasswdEntry P_((ALsession session));
 
 /* modify.c */
 int ALopenLockFile P_((char *filename));
 long ALmodifyRemoveUser P_((ALsession session, char buf[]));
+long ALmodifyAppendPasswd P_((ALsession session, int fd));
 long ALmodifyLinesOfFile P_((ALsession session, char *filename, char *lockfilename, long (*modify )(ALsession, char[]), long (*append )(ALsession, int )));
 
 /* group.c */
 char *ALcopySubstring P_((char *string, char buffer[], int delimiter));
 long ALgetGroups P_((ALsession session));
-int ALmodifyGroupAdd P_((ALsession session, char groupline[]));
+long ALmodifyGroupAdd P_((ALsession session, char groupline[]));
 long ALappendGroups P_((ALsession session, int fd));
 long ALaddToGroupsFile P_((ALsession session));
 
