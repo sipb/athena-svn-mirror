@@ -18,6 +18,10 @@ without express or implied warranty.
 **  cache.c:  manage the files in /tmp
 **
 **  Ensure we have the ones we need, and get rid of the ones no
+/*
+**  cache.c:  manage the files in /tmp
+**
+**  Ensure we have the ones we need, and get rid of the ones no
 **  longer in use.
 **
 */
@@ -33,8 +37,13 @@ without express or implied warranty.
 #include	"xdsc.h"
 
 #define		NUM_CACHED_FILES	5
+#define		CACHE_DIR_NEXT          1
+#define		CACHE_DIR_PREV          2
+#define		CACHE_DIR_NREF          3
+#define		CACHE_DIR_PREF          4
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.8 1991-05-07 15:22:32 sao Exp $";
+
+static char rcsid[] = "";
 
 extern char	*RunCommand();
 extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];
@@ -45,7 +54,7 @@ extern int	topscreen;
 extern int	edscversion;
 extern Widget	topW;
 extern void	TopSelect();
-
+extern Boolean	nocache;
 extern char	axis[];
 
 static int	next=0, prev=0, nref=0;
@@ -57,6 +66,8 @@ static int	current;
 static int	cache[NUM_CACHED_FILES] = {-1,-1,-1,-1,-1};
 static char	currentmtglong[LONGNAMELEN] = "";
 static char	currentmtgshort[SHORTNAMELEN] = "";
+
+char	*GetTransactionFile();
 
 char *
 CurrentMtg(which)
@@ -112,27 +123,31 @@ int	num;
 Boolean	update;
 {
 	static char	command[LONGNAMELEN + 25];
-	static char	filename[70];
+	char		*filename;
 	char		*returndata;
+	int		transactionnum;
 
 	if (!num) return;
 
-	sprintf (filename, "%s-%d", filebase, num);
+	if (num < 0)
+		transactionnum = TransactionNum(num);
+	else
+		transactionnum = num;
 
 	if (update && topscreen == LISTTRNS);
-		UpdateHighlightedTransaction(num);
+		UpdateHighlightedTransaction(transactionnum);
 
 	sprintf (command, "Reading %s [%d-%d], #%d...", 
-				currentmtglong, first, last, num);
+				currentmtglong, first, last, transactionnum);
 	PutUpStatusMessage(command);
 
-	if (GetTransactionFile(num) == -1)
+	if ((filename = GetTransactionFile(num)) == (char *) -1)
 		return (-1);
 
 	if (update)
 		FileIntoWidget(filename, bottextW);
 
-	sprintf (command, "(gti %d %s)\n", num, currentmtglong);
+	sprintf (command, "(gti %d %s)\n", transactionnum, currentmtglong);
 	returndata = RunCommand (command, NULL, NULL, True);
 
 	if ((int) returndata <= 0) goto DONE;
@@ -145,7 +160,8 @@ Boolean	update;
 	myfree(returndata);
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 
-	CacheSurroundingTransactions();
+	if (!nocache)
+		CacheSurroundingTransactions();
 
 	if ( current >  highestseen)
 		highestseen = current;
@@ -159,7 +175,7 @@ Boolean	update;
 		RemoveLetterC();
 DONE:
 	sprintf (command, "Reading %s [%d-%d], #%d", 
-				currentmtglong, first, last, num);
+				currentmtglong, first, last, transactionnum);
 	PutUpStatusMessage(command);
 }
 
@@ -238,45 +254,102 @@ int	num;
 }
 
 /*
-**  If this file is already in the cache, do nothing.  Otherwise, run the 
-**  edsc command to fetch it, and note it as cached.
+**  This function behaves differently depending on the version of
+**  edsc we're talking to.  
+**
+**  If edsc is doing the caching, just ask for the transaction and
+**  return the filename.
+**
+**  If we're doing the caching, ask if the file is already in the cache,
+**  and return the filename if it is.  Otherwise, run the 
+**  edsc command to fetch it, note it as cached, and return the filename.
+**
 */
 
+char *
 GetTransactionFile(num)
 int	num;
 {
-	char	filename[50], command[LONGNAMELEN + 25];
-	int	i;
-	char	*retval;
+	static char	filename[50];
+	char		command[LONGNAMELEN + 25];
+	int		i;
+	char		*retval;
+	int		transactionnum;
+	int		direction;
 
 	if (num == 0)
-		return(-1);
-
-	for (i = 0; i < NUM_CACHED_FILES; i++)
-		if (cache[i] == num) {
-			return (0);
-		}
-
-	sprintf (filename, "%s-%d", filebase, num);
+		return((char *)-1);
 
 /*
-** If file doesn't exist, go get it
+** have we been passed a symbol instead of a number?
 */
-	sprintf (command, "(gtf %s %d %s)\n", filename, num, currentmtglong);
-	retval = RunCommand (command, NULL, NULL, True);
 
-	if ((int) retval <= 0) 
-		return(-1);
+	if (num < 0)
+		transactionnum = TransactionNum(num);
+	else
+		transactionnum = num;
 
-	myfree (retval);
+	if (!nocache)
+		sprintf (filename, "%s-%d", filebase, transactionnum);
+/*
+** See if the file is in our cache.  If so, return its filename;.
+*/
+	if (!nocache) {
+		for (i = 0; i < NUM_CACHED_FILES; i++) {
+			if (cache[i] == num) {
+				return (filename);
+			}
+		}
+	}
 
-	for (i = 0; i < NUM_CACHED_FILES; i++)
-		if (cache[i] == -1) {
-			cache[i] = num;
+/*
+** If file doesn't exist, go get it.
+*/
+	if (nocache) {
+		switch (num) {
+		case NEXT:	
+			direction = CACHE_DIR_NEXT;
+			break;
+		case PREV:	
+			direction = CACHE_DIR_PREV;
+			break;
+		case NREF:	
+			direction = CACHE_DIR_NREF;
+			break;
+		case PREF:	
+			direction = CACHE_DIR_PREF;
+			break;
+		default:
+			direction = 0;
 			break;
 		}
 
-	return (num);
+		sprintf (	command, "(gtfc %d %d %s)\n", 
+				direction, transactionnum, currentmtglong);
+
+		retval = RunCommand (command, NULL, NULL, True);
+		if ((int) retval <= 0) 
+			return((char *)-1);
+		sscanf (retval, "(\"%[^\"]", filename);
+	}
+
+	else {
+		sprintf (	command, "(gtf %s %d %s)\n", 
+				filename, transactionnum, currentmtglong);
+		retval = RunCommand (command, NULL, NULL, True);
+		if ((int) retval <= 0) 
+			return((char *)-1);
+
+		for (i = 0; i < NUM_CACHED_FILES; i++) {
+			if (cache[i] == -1) {
+				cache[i] = num;
+				break;
+			}
+		}
+	}
+
+	myfree (retval);
+	return (filename);
 }
 
 /*
