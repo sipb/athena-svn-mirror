@@ -13,10 +13,17 @@
 #define SOCK_SECURE 1
 #define SOCK_INSECURE 2
 
+typedef struct {
+  pc_state *ps;
+  cons_state *cs;
+  ALut ut;
+  ALsessionStruct sess;
+  int socketSec;
+  int consolePreference;
+} disp_state;
+
 char *name;
 int debug = 5;
-int consolePreference = CONS_DOWN;
-int socketSec = SOCK_SECURE;
 
 #define NANNYPORT "/tmp/nanny"
 
@@ -28,67 +35,63 @@ int socketSec = SOCK_SECURE;
 #define DOLINK
 static char *athconsole="/etc/athena/consdev";
 
-char *startConsole(pc_state *ps, cons_state *cs)
+char *startConsole(disp_state *ds)
 {
   pc_fd fd;
 
-  cons_grabcons(cs);
-  if (cons_start(cs))
+  cons_grabcons(ds->cs);
+  if (cons_start(ds->cs))
     return "console startup failed";
   else
     {
-      fd.fd = cons_fd(cs);
+      fd.fd = cons_fd(ds->cs);
       fd.events = PC_READ;
-      pc_addfd(ps, &fd);
+      pc_addfd(ds->ps, &fd);
       return "console started";
     }
 }
 
-char *stopConsole(pc_state *ps, cons_state *cs)
+char *stopConsole(disp_state *ds)
 {
   pc_fd fd;
 
-  if (cons_stop(cs))
+  if (cons_stop(ds->cs))
     return "console stop failed";
   else
     {
-      fd.fd = cons_fd(cs);
+      fd.fd = cons_fd(ds->cs);
       fd.events = PC_READ;
-      pc_removefd(ps, &fd);
+      pc_removefd(ds->ps, &fd);
       return "console stopped";
     }
 }
 
-ALut ut;
-ALsessionStruct sess;
-
-void init_utmp(char *tty)
+void init_utmp(disp_state *ds, char *tty)
 {
   if (tty == NULL)
     tty = "/dev/ttyq??";
-  printf("%s\n", tty);
 
-  ut.user = NANNYNAME;
-  ut.host = ":0.0";
-  ut.line = tty + 5;
-  ut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ut);
-  ALputUtmp(&sess);
+  ds->ut.user = NANNYNAME;
+  ds->ut.host = ":0.0";
+  ds->ut.line = tty + 5;
+  ds->ut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
 }
 
-void clear_utmp()
+void clear_utmp(disp_state *ds)
 {
-  ut.user = NANNYNAME;
-  ut.type = ALutDEAD_PROC;
-  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
-  ALputUtmp(&sess);  
+  ds->ut.user = NANNYNAME;
+  ds->ut.type = ALutDEAD_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);  
 }
 
-char *do_login(pc_message *input, pc_state *ps, cons_state *cs)
+char *do_login(pc_message *input, disp_state *ds)
 {
   char *uname;
 
-  if (socketSec == SOCK_INSECURE)
+  if (ds->socketSec == SOCK_INSECURE)
     return "A user is currently logged in.";
 
   uname = strchr(input->data, ' ');
@@ -97,27 +100,27 @@ char *do_login(pc_message *input, pc_state *ps, cons_state *cs)
 
   uname++;
 
-  ut.user = uname;
-  ut.type = ALutUSER_PROC;
-  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
-  ALputUtmp(&sess);
+  ds->ut.user = uname;
+  ds->ut.type = ALutUSER_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
 
-  socketSec = SOCK_INSECURE;
+  ds->socketSec = SOCK_INSECURE;
   return "logged in";
 }
 
-char *do_logout(pc_state *ps)
+char *do_logout(disp_state *ds)
 {
-  ut.user = NANNYNAME;
-  ut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&sess, ALutUSER | ALutTYPE, &ut);
-  ALputUtmp(&sess);
+  ds->ut.user = NANNYNAME;
+  ds->ut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
+  ALputUtmp(&ds->sess);
 
-  socketSec = SOCK_SECURE;
+  ds->socketSec = SOCK_SECURE;
   return "logged out";
 }
 
-int process(pc_message *input, pc_state *ps, cons_state *cs)
+int process(pc_message *input, disp_state *ds)
 {
   char *reply = NULL;
   int ret = 0;
@@ -127,28 +130,28 @@ int process(pc_message *input, pc_state *ps, cons_state *cs)
 
   if (!strcmp(input->data, "-xup"))
     {
-      consolePreference = CONS_UP;
-      reply = startConsole(ps, cs);
+      ds->consolePreference = CONS_UP;
+      reply = startConsole(ds);
     }
 
   if (!strcmp(input->data, "-xdown"))
     {
-      consolePreference = CONS_DOWN;
-      reply = stopConsole(ps, cs);
+      ds->consolePreference = CONS_DOWN;
+      reply = stopConsole(ds);
     }
 
   if (!strcmp(input->data, "-die"))
     {
-      if (socketSec == SOCK_SECURE)
+      if (ds->socketSec == SOCK_SECURE)
 	{
 	  ret = 1;
 	  reply = "nanny shutting down";
-	  clear_utmp();
-	  stopConsole(ps, cs);
+	  clear_utmp(ds);
+	  stopConsole(ds);
 #ifdef DOLINK
 	  unlink(athconsole);
 #endif
-	  cons_close(cs);
+	  cons_close(ds->cs);
 	}
       else
 	reply = "can't shut down with user logged in";
@@ -156,12 +159,12 @@ int process(pc_message *input, pc_state *ps, cons_state *cs)
 
   if (!strncmp(input->data, "login", 5))
     {
-      reply = do_login(input, ps, cs);
+      reply = do_login(input, ds);
     }
 
   if (!strncmp(input->data, "logout", 5))
     {
-      reply = do_logout(ps);
+      reply = do_logout(ds);
     }
 
   if (reply == NULL)
@@ -204,22 +207,24 @@ void children(int sig, int code, struct sigcontext *sc)
     }
 }
 
-#define ALERROR() { com_err(argv[0], code, ALcontext(&sess)); }
+#define ALERROR() { com_err(argv[0], code, ALcontext(&ds.sess)); }
 
 int main(int argc, char **argv)
 {
   struct sigaction sigact;
   sigset_t mask, omask;
-  pc_state *ps;
+  disp_state ds;
   pc_port *inport, *outport;
   pc_message *message;
-  cons_state *cs;
   char *option;
   int ret = 0;
   long code;
 
 /*  fclose(stdout);
     fclose(stderr); */
+
+  ds.consolePreference = CONS_DOWN;
+  ds.socketSec = SOCK_SECURE;
 
   name = argv[0];
 
@@ -230,7 +235,7 @@ int main(int argc, char **argv)
 
   openlog(name, LOG_PID, LOG_USER);
 
-  ps = pc_init();
+  ds.ps = pc_init();
 
   /* Initialize message to send to nanny. We set source to NULL
      in case we wind up sending the message to ourselves. */
@@ -247,14 +252,14 @@ int main(int argc, char **argv)
       pc_send(message);
       free(message);
 
-      pc_addport(ps, outport);
-      message = pc_wait(ps);
+      pc_addport(ds.ps, outport);
+      message = pc_wait(ds.ps);
       if (message != NULL)
 	{
 	  fprintf(stderr, "%s\n", message->data);
 	  pc_freemessage(message);
 	}
-      pc_removeport(ps, outport);
+      pc_removeport(ds.ps, outport);
       pc_close(outport);
       exit(0);
     }
@@ -272,10 +277,10 @@ int main(int argc, char **argv)
   code = ALinit();
   if (code) ALERROR();
 
-  code = ALinitSession(&sess);
+  code = ALinitSession(&ds.sess);
   if (code) ALERROR();
 
-  code = ALinitUtmp(&sess);
+  code = ALinitUtmp(&ds.sess);
   if (code) ALERROR();
 
   /* Initialize our port for new connections. */
@@ -285,18 +290,18 @@ int main(int argc, char **argv)
       fprintf(stderr, "couldn't make the port\n");
       exit(1);
     }
-  pc_addport(ps, inport);
+  pc_addport(ds.ps, inport);
 
   /* Initialize console handling. */
-  cs = cons_init();
-  cons_getpty(cs);
+  ds.cs = cons_init();
+  cons_getpty(ds.cs);
 
 #ifdef DOLINK
   unlink(athconsole);
-  symlink(cons_name(cs), athconsole);
+  symlink(cons_name(ds.cs), athconsole);
 #endif
 
-  init_utmp(cons_name(cs));
+  init_utmp(&ds, cons_name(ds.cs));
 
   /* Signal handlers. */
   sigact.sa_flags = SA_NOCLDSTOP;
@@ -343,21 +348,21 @@ int main(int argc, char **argv)
    * happen after the fork so that anything created is our child and
    * not our sibling.
    */
-  process(message, ps, cs);
+  process(message, &ds);
   free(message);
 
   while (!ret)
     {
-      message = pc_wait(ps);
+      message = pc_wait(ds.ps);
 
       switch(message->type)
 	{
 	case PC_NEWCONN:
-	  pc_addport(ps, message->data);
+	  pc_addport(ds.ps, message->data);
 	  break;
 	case PC_DATA:
-	  ret = process(message, ps, cs);
-	  pc_removeport(ps, message->source);
+	  ret = process(message, &ds);
+	  pc_removeport(ds.ps, message->source);
 	  pc_close(message->source);
 	  break;
 	case PC_SIGNAL:
@@ -366,19 +371,20 @@ int main(int argc, char **argv)
 	      sigprocmask(SIG_BLOCK, &mask, &omask);
 	      while (numc)
 		{
-		  cons_child(cs, cstack[numc-1].pid, &cstack[numc-1].status);
+		  cons_child(ds.cs, cstack[numc-1].pid,
+			     &cstack[numc-1].status);
 		  numc--;
 		}
 	      sigprocmask(SIG_SETMASK, &omask, NULL);
 
-	      if (cons_status(cs) == CONS_DOWN &&
-		  consolePreference == CONS_UP)
-		startConsole(ps, cs);
+	      if (cons_status(ds.cs) == CONS_DOWN &&
+		  ds.consolePreference == CONS_UP)
+		startConsole(&ds);
 	    }
 	  break;
 	case PC_FD:
-	  if (message->fd == cons_fd(cs))
-	    cons_io(cs);
+	  if (message->fd == cons_fd(ds.cs))
+	    cons_io(ds.cs);
 	  break;
 	default:
 	  fprintf(stderr, "type=%d\n", message->type);
@@ -388,7 +394,7 @@ int main(int argc, char **argv)
       pc_freemessage(message);
     }
 
-  pc_removeport(ps, inport);
+  pc_removeport(ds.ps, inport);
   pc_close(inport);
   exit(0);
 }
