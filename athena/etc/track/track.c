@@ -1,12 +1,15 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.1 1987-02-12 21:15:48 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.2 1987-03-05 19:20:08 rfrench Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  87/02/12  21:15:48  rfrench
+ * Initial revision
+ * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.1 1987-02-12 21:15:48 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.2 1987-03-05 19:20:08 rfrench Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -199,7 +202,7 @@ char **argv;
 	sprintf(scratch,"%s%s",fromroot,fwdir);
 	strcpy(fwdir,scratch);
 
-	sprintf(subtmp,"%s/%s/%s",twdir,DEF_SUBDIR,subname);
+	sprintf(subtmp,"%s%s/%s",twdir,DEF_SUBDIR,subname);
 	if (!(subfile = fopen(subtmp,"r"))) {
 		sprintf(errmsg,"Can't open %s\n",subtmp);
 		do_panic();
@@ -360,8 +363,8 @@ writestat()
 
 	setlock();
 
-	sprintf(outname,"%s/%s/%s",twdir,DEF_STATDIR,subname);
-	sprintf(tmpoutname,"%s/%s/%s.tmp",twdir,DEF_STATDIR,subname);
+	sprintf(outname,"%s%s/%s",twdir,DEF_STATDIR,subname);
+	sprintf(tmpoutname,"%s%s/%s.tmp",twdir,DEF_STATDIR,subname);
 
 	if (exists(tmpoutname) && (unlink(tmpoutname) == -1)) {
 		sprintf(errmsg,"can't remove %s\n",tmpoutname);
@@ -731,7 +734,7 @@ open_stat()
 {
 	char statname[LINELEN];
 
-	sprintf(statname,"%s/%s/%s",fwdir,DEF_STATDIR,subname);
+	sprintf(statname,"%s%s/%s",fwdir,DEF_STATDIR,subname);
 
 	if (!(statfile = fopen(statname,"r"))) {
 		sprintf(errmsg,"can't open statfile %s\n",statname);
