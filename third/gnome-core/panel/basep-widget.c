@@ -871,7 +871,7 @@ make_hidebutton(BasePWidget *basep,
 			    GINT_TO_POINTER(1));
 
 	gtk_tooltips_set_tip (panel_tooltips, w,
-			      _("Hide this panel"), NULL);
+			      _("Hide/unhide this panel"), NULL);
 
 	return w;
 }
