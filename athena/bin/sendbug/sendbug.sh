@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.17 1997-04-30 08:32:56 ghudson Exp $
+# $Id: sendbug.sh,v 1.18 1999-05-10 23:05:31 danw Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -54,6 +54,19 @@ machtype=`machtype`
 cpu=`machtype -c`
 hostname=`hostname`
 dpy=`machtype -d`
+
+shell=`awk -F: '/^'$USER':/ { print $7; }' /etc/passwd 2>/dev/null`
+case $shell in
+$SHELL)
+    ;;
+"")
+    shell="$SHELL (?)"
+    ;;
+*)
+    shell="$shell ($SHELL?)"
+    ;;
+esac
+
 fmt << EOF
 Please enter the name of the program or locker with which you are
 having problems. You may first want to check with the consultants to
@@ -69,6 +82,9 @@ Subject: $machtype $short_version: $subject
 System name:		$hostname
 Type and version:	$cpu $version
 Display type:		$dpy
+
+Shell:			$shell
+Window manager:		${WINDOW_MANAGER:-unknown}
 
 What were you trying to do?
 	[Please replace this line with your information.]
