@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.68 $
+# $Revision: 1.69 $
 
 umask 2
 
@@ -171,7 +171,7 @@ switch ( $machine )
 
   case sgi
     set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins \
-	$end)
+	athena/bin/telnet $end)
 endsw
 
 # at the moment, lib/resolv gets built twice...
