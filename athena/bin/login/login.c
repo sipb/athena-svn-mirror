@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.32 1990-11-28 17:48:27 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.33 1991-01-29 11:38:46 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.32 1990-11-28 17:48:27 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.33 1991-01-29 11:38:46 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -142,7 +142,7 @@ struct	passwd nouser = {"", "nope", -2, -2, -2, "", "", "", "" };
 
 struct	passwd newuser = {"\0\0\0\0\0\0\0\0", "*", START_UID, MIT_GID, 0,
 			  NULL, NULL, "/mit/\0\0\0\0\0\0\0\0", NULL };
-#endif POSIX
+#endif /*POSIX*/
 
 struct	sgttyb ttyb;
 struct	utmp utmp;
@@ -213,9 +213,9 @@ main(argc, argv)
     signal(SIGQUIT, SIG_IGN);
     signal(SIGINT, SIG_IGN);
     setpriority(PRIO_PROCESS, 0, 0);
-#ifndef VFS
+#if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
-#endif !VFS
+#endif /* !VFS || ultrix */
     /*
      * -p is used by getty to tell login not to destroy the environment
      * -r is used by rlogind to cause the autologin protocol;
@@ -1365,7 +1365,11 @@ goodhomedir()
 make_homedir()
 {
     DIR *proto;
+#ifdef POSIX
+    struct dirent *dp;
+#else
     struct direct *dp;
+#endif
     char tempname[MAXPATHLEN+1];
     char buf[MAXBSIZE];
     struct stat statbuf;
