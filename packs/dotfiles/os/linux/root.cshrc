@@ -1,8 +1,7 @@
-# $Id: root.cshrc,v 1.5 2001-07-09 13:04:50 ghudson Exp $
+# $Id: root.cshrc,v 1.5.6.1 2004-10-27 01:21:36 ghudson Exp $
 
 set path=( /srvd/patch /usr/athena/bin /usr/athena/etc /etc/athena /usr/sbin \
 	   /sbin /bin/athena /bin /usr/bin /etc /usr/X11R6/bin )
-setenv MANPATH /usr/athena/man:/usr/share/man
 if ($?prompt) then
 	set prompt="`uname -n`# "
 	set nostat = (/afs/)
