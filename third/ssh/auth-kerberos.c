@@ -9,8 +9,11 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.4 1997-11-19 20:44:42 danw Exp $
+ * $Id: auth-kerberos.c,v 1.5 1998-01-24 01:47:20 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1997/11/19 20:44:42  danw
+ * do chown later
+ *
  * Revision 1.3  1997/11/15 00:04:12  danw
  * Use atexit() functions to destroy tickets and call al_acct_revert.
  * Work around Solaris lossage with libucb and grantpt.
@@ -20,6 +23,12 @@
  *
  * Revision 1.1.1.1  1997/10/17 22:26:14  danw
  * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:35  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.3  1998/01/02 06:13:56  kivinen
+ * 	Fixed kerberos ticket allocation.
  *
  * Revision 1.2  1997/04/17 03:56:51  kivinen
  * 	Kept FILE: prefix in kerberos ticket filename as DCE cache
@@ -246,7 +255,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
     goto errout;
   
   ticket = xmalloc(strlen(ccname + 5) + 1);
-  (void) sprintf(ticket, "%s", ccname+5);
+  (void) sprintf(ticket, "%s", ccname);
   
   /* Now try to get krb4 tickets */
   krb524_init_ets(ssh_context);

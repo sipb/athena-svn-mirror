@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.6 1998-01-09 22:57:55 danw Exp $
+ * $Id: auth-passwd.c,v 1.7 1998-01-24 01:47:21 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  1998/01/09 22:57:55  danw
+ * fix krb4 ticket lifetime bug
+ *
  * Revision 1.5  1997/11/19 20:52:24  danw
  * small security fix (originally from Matt Power)
  *
@@ -32,6 +35,13 @@ the password is valid for the user.
  *
  * Revision 1.1.1.1  1997/10/17 22:26:01  danw
  * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:19  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.12  1998/01/02 06:14:31  kivinen
+ * 	Fixed kerberos ticket name handling. Added OSF C2 account
+ * 	locking and expiration support.
  *
  * Revision 1.11  1997/04/17 03:57:05  kivinen
  * 	Kept FILE: prefix in kerberos ticket filename as DCE cache
@@ -709,7 +719,19 @@ int auth_password(const char *server_user, const char *password)
 #endif /* SECURE_RPC */
 
 #ifdef HAVE_OSF1_C2_SECURITY
-    osf1c2_getprpwent(correct_passwd, saved_pw_name, sizeof(correct_passwd));
+  switch (osf1c2_getprpwent(correct_passwd, saved_pw_name,
+			    sizeof(correct_passwd)))
+    {    /* jcastro@ist.utl.pt Sep 1997 */
+    case 0: /* All ok */ break;
+    case 1:
+      packet_disconnect("\n\tYour account is locked ...\n");
+      return 0;
+      break;
+    case 2:
+      packet_disconnect("\n\tYour password expired ...\n");
+      return 0;
+      break;
+    }
 #else /* HAVE_OSF1_C2_SECURITY */
   /* If we have shadow passwords, lookup the real encrypted password from
      the shadow file, and replace the saved encrypted password with the
