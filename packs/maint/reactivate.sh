@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.24 1996-06-04 21:33:47 ghudson Exp $
+# $Id: reactivate.sh,v 1.25 1996-06-06 17:51:36 ghudson Exp $
 
 trap "" 1 15
 
@@ -172,8 +172,30 @@ EOF
 			/usr/ucb/logger -t `hostname` -p user.notice at revision $VERSION
 			cp /dev/null /usr/tmp/update.check
 		fi
+	elif [ -s "$NEW_PRODUCTION_RELEASE" ]; then
+		V="$NEW_PRODUCTION_RELEASE"
+		cat <<EOF
+A new Athena release ($V) is available.  Since it may be
+incompatible with your workstation software, your workstation
+is still using the old system packs.  Please contact Athena
+Operations (x3-1410) to have your workstation updated.
+EOF
 	fi
 fi
+
+if [ -s "$NEW_TESTING_RELEASE" ]; then
+	if [ -s "$NEW_PRODUCTION_RELEASE" ]; then echo; fi
+	V="$NEW_TESTING_RELEASE"
+	cat << EOF
+A new Athena release ($V) is now in testing.  You are
+theoretically interested in this phase of testing, but
+because there may be bugs which would inconvenience
+your work, you must update to this release manually.
+Please contact Athena Operations (x3-1410) if you have
+not received instructions on how to do so.
+EOF
+fi
+
 fi				# END time-consuming stuff
 
 if [ -f /usr/athena/bin/access_off ]; then /usr/athena/bin/access_off; fi
