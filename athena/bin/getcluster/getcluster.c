@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include <hesiod.h>
 
 #ifndef INADDR_NONE
