@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.3 1991-03-28 13:19:16 lwvanels Exp $
+ *	$Id: nl.c,v 1.4 1991-04-08 20:48:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.3 1991-03-28 13:19:16 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.4 1991-04-08 20:48:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -118,6 +118,12 @@ KTEXT_ST my_auth;
     return(errno);
   }
   if ((retcode = swrite(fd,(char *) my_auth.dat,my_auth.length)) == -1) {
+    close(fd);
+    return(errno);
+  }
+#else
+  i = htonl((u_long) 0);
+  if ((retcode = swrite(fd,(char *) &i,sizeof(i))) == -1) {
     close(fd);
     return(errno);
   }
