@@ -13,6 +13,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #include "lp.local.h"
@@ -85,7 +86,8 @@ int pralias(buf, name)
 #endif
 	char *getclus();
 	
-	strcpy(temp, name);
+	strncpy(temp, name, sizeof(temp));
+	temp[sizeof(temp) - 1] = '\0';
 	/* If printer name == "default" then lookup based on LPR cluster info*/
 	if(!strcmp(name, DEFLP)) {
 	    if ((e = getclus()) != NULL) {
@@ -118,7 +120,7 @@ char *
 getclus()
 {
 	static char cluster[BUFSIZ/2];
-	char host[32];
+	char host[MAXHOSTNAMELEN + 1];
 	char **hv;
 	int len = 4;  /* length of string "lpr " */
 
@@ -127,7 +129,8 @@ getclus()
 		return NULL;
 	while (*hv) {
 		if (strncmp(*hv, "lpr ", len) == 0) {
-			strcpy(cluster, *hv + len);
+			strncpy(cluster, *hv + len, sizeof(cluster));
+			cluster[sizeof(cluster) - 1] = '\0';
 			return cluster;
 			}
 		++hv;
@@ -346,7 +349,8 @@ tnchktc()
 	/* p now points to beginning of last field */
 	if (p[0] != 't' || p[1] != 'c')
 		return(1);
-	strcpy(tcname,p+3);
+	strncpy(tcname,p+3,sizeof(tcname));
+	tcname[sizeof(tcname) - 1] = '\0';
 	q = tcname;
 	while (*q && *q != ':')/* was while (q && ... *//* SPD Athena 4/15/87 */
 		q++;
