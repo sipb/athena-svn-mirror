@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.23 2003-03-26 04:07:39 amb Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.24 2003-03-26 16:34:52 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -371,6 +371,7 @@ static void perform_updates(struct package **pkgtab, int depcheck, int dryrun,
       if (rpmdbOpen(NULL, &db, O_RDWR, 0644))
 	die("Can't open RPM database for writing");
       ts = rpmtsCreate();
+      rpmtsSetRootDir(ts, "/");
 
       if (copy)
 	{
