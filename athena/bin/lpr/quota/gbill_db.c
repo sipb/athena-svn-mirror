@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gbill_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -61,6 +61,11 @@ char *argv[];
   year = time_str->tm_year;
   month = time_str->tm_mon + 1;
 
+  if(argc != 3) {
+      fprintf(stderr, "gbill_db group_user_file quota_db\n");
+      exit(1);
+  }
+
 /* ask user for semester */
   printf("Please enter the semester.\n");
   printf("    1 = Fall\n");
@@ -69,7 +74,7 @@ char *argv[];
   scanf("%c", &semester);
 
 /* start */
-  if ((int)(group_list = read_group_list(argv[1])) == -1)
+  if (!(group_list = read_group_list(argv[1])))
     fprintf(stderr, "error in reading group list file %s\n", argv[1]);
   else if (gquota_db_set_name(argv[2]))
     fprintf(stderr, "error in setting db name %s\n", argv[2]);
@@ -116,7 +121,7 @@ char* argv;
 
   current = new = group_list = (struct group *)NULL;
 
-  fp = fopen(argv, "r");
+  if(!(fp = fopen(argv, "r"))) return NULL;
   while (fscanf(fp, "%d:%d\n", &number, &group) != EOF) {
     if (trip == 1) 
       new = (struct group *)malloc((unsigned)sizeof(struct group));
@@ -221,6 +226,9 @@ char semester;
 	  /* now restore */
 	  qrec.lastBilling = (gquota_time)time(0);
 	  qrec.yearToDateCharge += billing_amount;
+	  /* The following is to cause the quotaLimit 
+	     to reflect total allowed per managers request */
+	  qrec.quotaLimit += billing_amount;
 	  if (gquota_db_put_group(&qrec, (unsigned int)1) <= 0)
 	    printf("database locked\n");
 	}
@@ -254,8 +262,8 @@ char semester;
   fprintf(fp2, "%3s", STUFF);             /* trans code */
   fprintf(fp2, "%09d", group->account_number);    /* ID number */
   fprintf(fp2, "%3s", ATHCODE);           /* Athena code */
-  fprintf(fp2, "%2d%c", year, semester);  /* semester */
-  fprintf(fp2, "%02d-%02d-%2d", month, day, year); /* billing date */
+  fprintf(fp2, "%2d%c", year+(semester == '1' ? 1 : 0), semester);  /* semester */
+  fprintf(fp2, "%02d%02d%2d", month, day, year); /* billing date */
   fprintf(fp2, "%08d", billing_amount);   /* amount */
   fprintf(fp2, "%10s", TITLE);            /* title */
   fprintf(fp2, "%-20.20d", group->group_number);  /* real name */
