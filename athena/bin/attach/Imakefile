@@ -12,8 +12,6 @@ XLIBS = -lPW -lc
 RPCLIB=-lrpcsvc
 #endif
 
-BINDIR=/bin/athena
-
 LIBS = -lhesiod -lkrb -ldes $(RPCLIB) -lzephyr -lcom_err $(XLIBS)
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
@@ -25,7 +23,7 @@ OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
 
 
 build_program(attach,$(OBJS),,$(LIBS))
-install_program(attach,-m 4755 -o root,$(BINDIR)/)
+install_program(attach,-m 4755 -o root,$(ATHRBINDIR))
 
 install_man(attach.1,attach.1)
 install_man(detach.1,detach.1)
@@ -36,11 +34,11 @@ install_man(attachtab.5,attachtab.5)
 install_man(zinit.8,zinit.8)
 
 install::
-	$(RM) $(DESTDIR)$(BINDIR)/detach
-	$(RM) $(DESTDIR)$(BINDIR)/fsid
-	$(RM) $(DESTDIR)$(BINDIR)/nfsid
-	$(RM) $(DESTDIR)/etc/athena/zinit
-	ln -s attach $(DESTDIR)$(BINDIR)/detach
-	ln -s attach $(DESTDIR)$(BINDIR)/fsid
-	ln -s attach $(DESTDIR)$(BINDIR)/nfsid
-	ln -s $(BINDIR)/attach $(DESTDIR)/etc/athena/zinit
+	$(RM) $(DESTDIR)$(ATHRBINDIR)/detach
+	$(RM) $(DESTDIR)$(ATHRBINDIR)/fsid
+	$(RM) $(DESTDIR)$(ATHRBINDIR)/nfsid
+	$(RM) $(DESTDIR)$(ATHRETCDIR)/zinit
+	ln -s attach $(DESTDIR)$(ATHRBINDIR)/detach
+	ln -s attach $(DESTDIR)$(ATHRBINDIR)/fsid
+	ln -s attach $(DESTDIR)$(ATHRBINDIR)/nfsid
+	ln -s $(ATHRBINDIR)/attach $(DESTDIR)$(ATHRETCDIR)/zinit
