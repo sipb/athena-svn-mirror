@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: termclear.c,v 1.1.1.4 2000-03-31 15:47:59 mwhitson Exp $";
+"$Id: termclear.c,v 1.2 2001-03-07 01:19:47 ghudson Exp $";
 
 
 #include "lp.h"
@@ -67,9 +67,6 @@
  * Solaris 2.4 term.h
  * extern  int  tputs(char *, int, int (*)(char))
  *
- * HP-UX 10.20
- * extern  int     tputs(char *, int, void (*)(int));
- *
  *  Depending on you stdio package, putchar can return (void)
  *  or be a macro, returning wacko values.  We take the easy road,
  *  and return void(), be compatible with definitions.
@@ -79,7 +76,7 @@
 #define TPUTS_RETTYPE int
 #define PPUTS_VALTYPE int
 #define PPUTS_RETVAL(X) (X)
-#if defined(IS_BSDI) || defined(HPUX)
+#if defined(IS_BSDI)
 #undef PPUTS_RETTYPE
 #undef PPUTS_RETVAL
 #define PPUTS_RETTYPE void

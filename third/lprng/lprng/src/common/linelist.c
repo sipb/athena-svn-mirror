@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linelist.c,v 1.2 2000-11-06 23:36:32 zacheiss Exp $";
+"$Id: linelist.c,v 1.3 2001-03-07 01:19:25 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -17,7 +17,6 @@
 #include "child.h"
 #include "fileopen.h"
 #include "getqueue.h"
-#include "getprinter.h"
 
 /**** ENDINCLUDE ****/
 
@@ -86,11 +85,7 @@ void *malloc_or_die( size_t size, const char *file, int line )
 void *realloc_or_die( void *p, size_t size, const char *file, int line )
 {
 	void *orig = p;
-	if( p == 0 ){
-		p = malloc(size);
-	} else {
-		p = realloc(p, size);
-	}
+    p = realloc(p, size);
     if( p == 0 ){
         logerr_die( LOG_INFO, "realloc of %d failed, file '%s', line %d",
 			size, file, line );
@@ -183,28 +178,6 @@ char *safeextend3( char *s1, const char *s2, const char *s3,
 	return(s);
 }
 
-
-
-/*
- * char *safeextend4( char *s1, char *s2, char *s3, char *s4,
- *	char *file, int line )
- *  extends a malloc'd string
- *  returns: malloced string area
- */
-
-char *safeextend4( char *s1, const char *s2, const char *s3, const char *s4,
-	const char *file, int line )
-{
-	char *s;
-	int n = 1 + (s1?strlen(s1):0) + (s2?strlen(s2):0)
-		+ (s3?strlen(s3):0) + (s4?strlen(s4):0);
-	s = realloc_or_die( s1, n, file, line );
-	if( s1 == 0 ) *s = 0;
-	if( s2 ) strcat(s,s2);
-	if( s3 ) strcat(s,s3);
-	if( s4 ) strcat(s,s4);
-	return(s);
-}
 
 /*
  * char *safestrdup4
@@ -347,7 +320,7 @@ void Add_line_list( struct line_list *l, char *str,
 		l->list[l->count++] = str;
 	} else {
 		s = 0;
-		if( sep && (s = safestrpbrk( str, sep )) ){ c = *s; *s = 0; }
+		if( sep && (s = strpbrk( str, sep )) ){ c = *s; *s = 0; }
 		/* find everything <= the mid point */
 		/* cmp = key <> list[mid] */
 		cmp = Find_last_key( l, str, sep, &mid );
@@ -372,62 +345,6 @@ void Add_line_list( struct line_list *l, char *str,
 		}
 	}
 	/* if(DEBUGL4)Dump_line_list("Add_line_list: result", l); */
-}
-
-/*
- *void Add_casekey_line_list( struct line_list *l, char *str,
- *  char *sep, int sort, int uniq )
- *  - add a copy of str to the line list, using case sensitive keys
- *  sep      - key separator, used for sorting
- *  sort = 1 - sort the values
- *  uniq = 1 - only one value
- */
-
-void Add_casekey_line_list( struct line_list *l, char *str,
-		const char *sep, int sort, int uniq )
-{
-	char *s = 0;
-	int c = 0, cmp, mid;
-	if(DEBUGL5){
-		char b[40];
-		int n;
-		plp_snprintf( b,sizeof(b)-8,"%s",str );
-		if( (n = strlen(b)) > sizeof(b)-10 ) strcpy( b+n,"..." );
-		logDebug("Add_casekey_line_list: '%s', sep '%s', sort %d, uniq %d",
-			b, sep, sort, uniq );
-	}
-
-	Check_max(l, 2);
-	str = safestrdup( str,__FILE__,__LINE__);
-	if( sort == 0 ){
-		l->list[l->count++] = str;
-	} else {
-		s = 0;
-		if( sep && (s = safestrpbrk( str, sep )) ){ c = *s; *s = 0; }
-		/* find everything <= the mid point */
-		/* cmp = key <> list[mid] */
-		cmp = Find_last_casekey( l, str, sep, &mid );
-		if( s ) *s = c;
-		/* str < list[mid+1] */
-		if( cmp == 0 && uniq ){
-			/* we replace */
-			free( l->list[mid] );		
-			l->list[mid] = str;
-		} else if( cmp >= 0 ){
-			/* we need to insert after mid */
-			++l->count;
-			memmove( l->list+mid+2, l->list+mid+1,
-				sizeof( char * ) * (l->count - mid - 1));
-			l->list[mid+1] = str;
-		} else if( cmp < 0 ) {
-			/* we need to insert before mid */
-			++l->count;
-			memmove( l->list+mid+1, l->list+mid,
-				sizeof( char * ) * (l->count - mid));
-			l->list[mid] = str;
-		}
-	}
-	/* if(DEBUGL4)Dump_line_list("Add_casekey_line_list: result", l); */
 }
 
 void Merge_line_list( struct line_list *dest, struct line_list *src,
@@ -497,7 +414,7 @@ void Split( struct line_list *l, char *str, const char *sep,
 	if( str == 0 || *str == 0 ) return;
 	for( ; str && *str; str = end ){
 		end = 0;
-		if( sep && (t = safestrpbrk( str, sep )) ){
+		if( sep && (t = strpbrk( str, sep )) ){
 			end = t+1;
 		} else {
 			t = str + strlen(str);
@@ -518,7 +435,7 @@ void Split( struct line_list *l, char *str, const char *sep,
 			blen = 2*len;
 			buffer = realloc_or_die(buffer,blen+1,__FILE__,__LINE__);
 		}
-		memmove(buffer,str,len);
+		memcpy(buffer,str,len);
 		buffer[len] = 0;
 		Add_line_list( l, buffer, keysep, sort, uniq );
 	}
@@ -566,41 +483,6 @@ char *Join_line_list_with_sep( struct line_list *l, char *sep )
 	return( s );
 }
 
-/*
- * join the line list with a separator, putting quotes around
- *  the entries starting at position 1.
- */
-char *Join_line_list_with_quotes( struct line_list *l, char *sep )
-{
-	char *s, *t, *str = 0;
-	int len = 0, i, n = 0;
-
-	if( sep ) n = strlen(sep);
-	for( i = 0; i < l->count; ++i ){
-		s = l->list[i];
-		if( s && *s ) len += strlen(s) + n + 2;
-	}
-	if( len ){
-		str = malloc_or_die(len+1,__FILE__,__LINE__);
-		t = str;
-		for( i = 0; i < l->count; ++i ){
-			s = l->list[i];
-			if( s && *s ){
-				if( i ) *t++ = '\'';
-				strcpy( t, s );
-				t += strlen(t);
-				if( i ) *t++ = '\'';
-				if( n ){
-					strcpy(t,sep);
-					t += n;
-				}
-			}
-		}
-		*t = 0;
-	}
-	return( str );
-}
-
 void Dump_line_list( const char *title, struct line_list *l )
 {
 	int i;
@@ -637,7 +519,7 @@ char *Find_str_in_flat( char *str, const char *key, const char *sep )
 		s += n;
 		if( *s == '=' ){
 			++s;
-			if( (end = safestrpbrk( s, sep )) ) { c = *end; *end = c; }
+			if( (end = strpbrk( s, sep )) ) { c = *end; *end = c; }
 			s = safestrdup(s,__FILE__,__LINE__);
 			if( end ) *end = c;
 			return( s );
@@ -647,7 +529,6 @@ char *Find_str_in_flat( char *str, const char *key, const char *sep )
 }
 
 /*
- * int Find_first_key( struct line_list *l, char *key, char *sep, int *mid )
  * int Find_last_key( struct line_list *l, char *key, char *sep, int *mid )
  *  Search the list for the last corresponding key value
  *  The list has lines of the form:
@@ -669,8 +550,8 @@ int Find_last_key( struct line_list *l, const char *key, const char *sep, int *m
 		mid = (top+bot)/2;
 		s = l->list[mid];
 		t = 0;
-		if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-		cmp = safestrcasecmp(key,s);
+		if( sep && (t = strpbrk(s, sep )) ) { c = *t; *t = 0; }
+		cmp = strcasecmp(key,s);
 		if( t ) *t = c;
 		if( cmp > 0 ){
 			bot = mid+1;
@@ -681,8 +562,8 @@ int Find_last_key( struct line_list *l, const char *key, const char *sep, int *m
 			DEBUG5("Find_last_key: existing entry, mid %d, '%s'",
 				mid, l->list[mid] );
 			t = 0;
-			if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-			cmpl = safestrcasecmp(s,key);
+			if( sep && (t = strpbrk(s, sep )) ) { c = *t; *t = 0; }
+			cmpl = strcasecmp(s,key);
 			if( t ) *t = c;
 			if( cmpl ) break;
 			++mid;
@@ -692,56 +573,6 @@ int Find_last_key( struct line_list *l, const char *key, const char *sep, int *m
 	}
 	if( m ) *m = mid;
 	DEBUG5("Find_last_key: key '%s', cmp %d, mid %d", key, cmp, mid );
-	return( cmp );
-}
-
-
-/*
- * int Find_first_casekey( struct line_list *l, char *key, char *sep, int *mid )
- * int Find_last_casekey( struct line_list *l, char *key, char *sep, int *mid )
- *  Search the list for the last corresponding key value using case sensitive keys
- *  The list has lines of the form:
- *    key [separator] value
- *  returns:
- *    *at = index of last tested value
- *    return value: 0 if found;
- *                  <0 if list[*at] < key
- *                  >0 if list[*at] > key
- */
-
-int Find_last_casekey( struct line_list *l, const char *key, const char *sep, int *m )
-{
-	int c=0, cmp=-1, cmpl = 0, bot, top, mid;
-	char *s, *t;
-	mid = bot = 0; top = l->count-1;
-	DEBUG5("Find_last_casekey: count %d, key '%s'", l->count, key );
-	while( cmp && bot <= top ){
-		mid = (top+bot)/2;
-		s = l->list[mid];
-		t = 0;
-		if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-		cmp = safestrcmp(key,s);
-		if( t ) *t = c;
-		if( cmp > 0 ){
-			bot = mid+1;
-		} else if( cmp < 0 ){
-			top = mid -1;
-		} else while( mid+1 < l->count ){
-			s = l->list[mid+1];
-			DEBUG5("Find_last_key: existing entry, mid %d, '%s'",
-				mid, l->list[mid] );
-			t = 0;
-			if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-			cmpl = safestrcmp(s,key);
-			if( t ) *t = c;
-			if( cmpl ) break;
-			++mid;
-		}
-		DEBUG5("Find_last_casekey: cmp %d, top %d, mid %d, bot %d",
-			cmp, top, mid, bot);
-	}
-	if( m ) *m = mid;
-	DEBUG5("Find_last_casekey: key '%s', cmp %d, mid %d", key, cmp, mid );
 	return( cmp );
 }
 
@@ -756,8 +587,8 @@ int Find_first_key( struct line_list *l, const char *key, const char *sep, int *
 		mid = (top+bot)/2;
 		s = l->list[mid];
 		t = 0;
-		if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-		cmp = safestrcasecmp(key,s);
+		if( sep && (t = strpbrk(s, sep )) ) { c = *t; *t = 0; }
+		cmp = strcasecmp(key,s);
 		if( t ) *t = c;
 		if( cmp > 0 ){
 			bot = mid+1;
@@ -766,8 +597,8 @@ int Find_first_key( struct line_list *l, const char *key, const char *sep, int *
 		} else while( mid > 0 ){
 			s = l->list[mid-1];
 			t = 0;
-			if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-			cmpl = safestrcasecmp(s,key);
+			if( sep && (t = strpbrk(s, sep )) ) { c = *t; *t = 0; }
+			cmpl = strcasecmp(s,key);
 			if( t ) *t = c;
 			if( cmpl ) break;
 			--mid;
@@ -777,42 +608,6 @@ int Find_first_key( struct line_list *l, const char *key, const char *sep, int *
 	}
 	if( m ) *m = mid;
 	DEBUG5("Find_first_key: cmp %d, mid %d, key '%s', count %d",
-		cmp, mid, key, l->count );
-	return( cmp );
-}
-
-int Find_first_casekey( struct line_list *l, const char *key, const char *sep, int *m )
-{
-	int c=0, cmp=-1, cmpl = 0, bot, top, mid;
-	char *s, *t;
-	mid = bot = 0; top = l->count-1;
-	DEBUG5("Find_first_casekey: count %d, key '%s', sep '%s'",
-		l->count, key, sep );
-	while( cmp && bot <= top ){
-		mid = (top+bot)/2;
-		s = l->list[mid];
-		t = 0;
-		if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-		cmp = safestrcmp(key,s);
-		if( t ) *t = c;
-		if( cmp > 0 ){
-			bot = mid+1;
-		} else if( cmp < 0 ){
-			top = mid -1;
-		} else while( mid > 0 ){
-			s = l->list[mid-1];
-			t = 0;
-			if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-			cmpl = safestrcmp(s,key);
-			if( t ) *t = c;
-			if( cmpl ) break;
-			--mid;
-		}
-		DEBUG5("Find_first_casekey: cmp %d, top %d, mid %d, bot %d",
-			cmp, top, mid, bot);
-	}
-	if( m ) *m = mid;
-	DEBUG5("Find_first_casekey: cmp %d, mid %d, key '%s', count %d",
 		cmp, mid, key, l->count );
 	return( cmp );
 }
@@ -832,14 +627,14 @@ int Find_first_casekey( struct line_list *l, const char *key, const char *sep, i
 const char *Find_value( struct line_list *l, const char *key, const char *sep )
 {
 	const char *s = "0";
-	int mid, cmp = -1;
+	int mid, cmp;
 
 	DEBUG5("Find_value: key '%s', sep '%s'", key, sep );
-	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
+	cmp = Find_first_key( l, key, sep, &mid );
 	DEBUG5("Find_value: key '%s', cmp %d, mid %d", key, cmp, mid );
 	if( cmp==0 ){
 		if( sep ){
-			s = Fix_val( safestrpbrk(l->list[mid], sep ) );
+			s = Fix_val( strpbrk(l->list[mid], sep ) );
 		} else {
 			s = l->list[mid];
 		}
@@ -857,7 +652,7 @@ char *Find_first_letter( struct line_list *l, const char letter, int *mid )
 {
 	char *s = 0;
 	int i;
-	if(l)for( i = 0; i < l->count; ++i ){
+	for( i = 0; i < l->count; ++i ){
 		if( (s = l->list[i])[0] == letter ){
 			if( mid ) *mid = i;
 			DEBUG4( "Find_first_letter: letter '%c', at [%d]=value '%s'", letter, i, s );
@@ -881,12 +676,12 @@ char *Find_first_letter( struct line_list *l, const char letter, int *mid )
 const char *Find_exists_value( struct line_list *l, const char *key, const char *sep )
 {
 	const char *s = 0;
-	int mid, cmp = -1;
+	int mid, cmp = -2;
 
-	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
+	cmp = Find_first_key( l, key, sep, &mid );
 	if( cmp==0 ){
 		if( sep ){
-			s = Fix_val( safestrpbrk(l->list[mid], sep ) );
+			s = Fix_val( strpbrk(l->list[mid], sep ) );
 		} else {
 			s = l->list[mid];
 		}
@@ -909,16 +704,16 @@ const char *Find_exists_value( struct line_list *l, const char *key, const char 
 char *Find_str_value( struct line_list *l, const char *key, const char *sep )
 {
 	char *s = 0;
-	int mid, cmp = -1;
+	int mid, cmp;
 
-	if ( l ) cmp = Find_first_key( l, key, sep, &mid );
+	cmp = Find_first_key( l, key, sep, &mid );
 	if( cmp==0 ){
 		/*
 		 *  value: NULL, "", "@", "=xx", "#xx".
 		 *  returns: "0", "1","0",  "xx",  "xx"
 		 */
 		if( sep ){
-			s = safestrpbrk(l->list[mid], sep );
+			s = strpbrk(l->list[mid], sep );
 			if( s && *s == '=' ){
 				++s;
 			} else {
@@ -929,43 +724,6 @@ char *Find_str_value( struct line_list *l, const char *key, const char *sep )
 		}
 	}
 	DEBUG4( "Find_str_value: key '%s', value '%s'", key, s );
-	return(s);
-}
- 
-
-/*
- * char *Find_casekey_str_value( struct line_list *l, char *key, char *sep )
- *  Search the list for a corresponding key value using case sensitive keys
- *          value
- *   key    0
- *   key@   0
- *   key#v  0
- *   key=v  v
- */
-
-char *Find_casekey_str_value( struct line_list *l, const char *key, const char *sep )
-{
-	char *s = 0;
-	int mid, cmp = -1;
-
-	if ( l ) cmp = Find_first_casekey( l, key, sep, &mid );
-	if( cmp==0 ){
-		/*
-		 *  value: NULL, "", "@", "=xx", "#xx".
-		 *  returns: "0", "1","0",  "xx",  "xx"
-		 */
-		if( sep ){
-			s = safestrpbrk(l->list[mid], sep );
-			if( s && *s == '=' ){
-				++s;
-			} else {
-				s = 0;
-			}
-		} else {
-			s = l->list[mid];
-		}
-	}
-	DEBUG4( "Find_casekey_str_value: key '%s', value '%s'", key, s );
 	return(s);
 }
  
@@ -995,61 +753,6 @@ void Set_str_value( struct line_list *l, const char *key, const char *value )
 		Remove_line_list(l,mid);
 	}
 }
- 
-/*
- * Set_str_value( struct line_list *l, char *key, char *value )
- *   set a string value in an ordered, sorted list
- */
-void Set_expanded_str_value( struct line_list *l, const char *key, const char *orig )
-{
-	char *s = 0;
-	char *value = 0;
-	int mid;
-	if( key == 0 ) return;
-	value = Fix_str( (char *)orig );
-	if(DEBUGL6){
-		char buffer[16];
-		plp_snprintf(buffer,sizeof(buffer)-5,"%s",value);
-		buffer[12] = 0;
-		if( value && strlen(value) > 12 ) strcat(buffer,"...");
-		logDebug("Set_str_value: '%s'= 0x%lx '%s'", key,
-			Cast_ptr_to_long(value), buffer);
-	}
-	if( value && *value ){
-		s = safestrdup3(key,"=",value,__FILE__,__LINE__);
-		Add_line_list(l,s,Value_sep,1,1);
-		if(s) free(s); s = 0;
-	} else if( !Find_first_key(l, key, Value_sep, &mid ) ){
-		Remove_line_list(l,mid);
-	}
-	if( value ) free(value); value = 0;
-}
- 
-/*
- * Set_casekey_str_value( struct line_list *l, char *key, char *value )
- *   set an string value in an ordered, sorted list, with case sensitive keys
- */
-void Set_casekey_str_value( struct line_list *l, const char *key, const char *value )
-{
-	char *s = 0;
-	int mid;
-	if( key == 0 ) return;
-	if(DEBUGL6){
-		char buffer[16];
-		plp_snprintf(buffer,sizeof(buffer)-5,"%s",value);
-		buffer[12] = 0;
-		if( value && strlen(value) > 12 ) strcat(buffer,"...");
-		logDebug("Set_str_value: '%s'= 0x%lx '%s'", key,
-			Cast_ptr_to_long(value), buffer);
-	}
-	if( value && *value ){
-		s = safestrdup3(key,"=",value,__FILE__,__LINE__);
-		Add_casekey_line_list(l,s,Value_sep,1,1);
-		if(s) free(s); s = 0;
-	} else if( !Find_first_casekey(l, key, Value_sep, &mid ) ){
-		Remove_line_list(l,mid);
-	}
-}
 
  
 /*
@@ -1061,19 +764,6 @@ void Set_flag_value( struct line_list *l, const char *key, long value )
 	char buffer[SMALLBUFFER];
 	if( key == 0 ) return;
 	plp_snprintf(buffer,sizeof(buffer),"%s=0x%lx",key,value);
-	Add_line_list(l,buffer,Value_sep,1,1);
-}
-
- 
-/*
- * Set_double_value( struct line_list *l, char *key, int value )
- *   set a double value in an ordered, sorted list
- */
-void Set_double_value( struct line_list *l, const char *key, double value )
-{
-	char buffer[SMALLBUFFER];
-	if( key == 0 ) return;
-	plp_snprintf(buffer,sizeof(buffer),"%s=%0.0f",key,value);
 	Add_line_list(l,buffer,Value_sep,1,1);
 }
 
@@ -1138,7 +828,6 @@ void Remove_line_list( struct line_list *l, int mid )
 	if( mid >= 0 && mid < l->count ){
 		if( (s = l->list[mid]) ){
 			free(s);
-			l->list[mid] = 0;
 		}
 		memmove(&l->list[mid],&l->list[mid+1],(l->count-mid-1)*sizeof(char *));
 		--l->count;
@@ -1157,7 +846,7 @@ void Remove_duplicates_line_list( struct line_list *l )
 	for( i = 0; i < l->count; ){
 		if( (s = l->list[i]) ){
 			for( j = i+1; j < l->count; ){
-				if( !(t = l->list[j]) || !safestrcmp(s,t) ){
+				if( !(t = l->list[j]) || !strcmp(s,t) ){
 					Remove_line_list( l, j );
 				} else {
 					++j;
@@ -1187,7 +876,7 @@ int Find_flag_value( struct line_list *l, const char *key, const char *sep )
 	char *e;
 	int n = 0;
 
-	if( l && (s = Find_value( l, key, sep )) ){
+	if( (s = Find_value( l, key, sep )) ){
 		e = 0;
 		n = strtol(s,&e,0);
 		if( !e || *e ) n = 0;
@@ -1213,7 +902,7 @@ int Find_decimal_value( struct line_list *l, const char *key, const char *sep )
 	char *e;
 	int n = 0;
 
-	if( l && (s = Find_value( l, key, sep )) ){
+	if( (s = Find_value( l, key, sep )) ){
 		e = 0;
 		n = strtol(s,&e,10);
 		if( !e || *e ){
@@ -1223,31 +912,6 @@ int Find_decimal_value( struct line_list *l, const char *key, const char *sep )
 		}
 	}
 	DEBUG4( "Find_decimal_value: key '%s', value '%d'", key, n );
-	return(n);
-}
- 
-
-/*
- * double Find_double_value( struct line_list *l, char *key, char *sep )
- *  Search the list for a corresponding key value
- *          value
- *   key    1
- *   key@   0
- *   key#v  v  if v is decimal, 0 otherwise
- *   key=v  v  if v is decimal, 0 otherwise
- */
-
-double Find_double_value( struct line_list *l, const char *key, const char *sep )
-{
-	const char *s = 0;
-	char *e;
-	double n = 0;
-
-	if( l && (s = Find_value( l, key, sep )) ){
-		e = 0;
-		n = strtod(s,&e);
-	}
-	DEBUG4( "Find_double_value: key '%s', value '%0.0f'", key, n );
 	return(n);
 }
  
@@ -1275,110 +939,25 @@ const char *Fix_val( const char *s )
 }
 
 /*
- * Find_tags( struct line_list dest,
- *  struct line_list *list, char *tag )
- * 
- * Scan the list (ordered, of course) for the
- * set of entries starting with 'tag' and extract them
- * to list
- */
-
-void Find_tags( struct line_list *dest, struct line_list *l, char *key )
-{
-	int cmp=-1, cmpl = 0, bot, top, mid, len;
-	char *s;
-
-	if( key == 0 || *key == 0 ) return;
-	mid = bot = 0; top = l->count-1;
-	len = strlen(key);
-	DEBUG5("Find_tags: count %d, key '%s'", l->count, key );
-	while( cmp && bot <= top ){
-		mid = (top+bot)/2;
-		s = l->list[mid];
-		cmp = safestrncasecmp(key,s,len);
-		if( cmp > 0 ){
-			bot = mid+1;
-		} else if( cmp < 0 ){
-			top = mid -1;
-		} else while( mid > 0 ){
-			DEBUG5("Find_tags: existing entry, mid %d, '%s'", mid, l->list[mid] );
-			s = l->list[mid-1];
-			cmpl = safestrncasecmp(s,key,len);
-			if( cmpl ) break;
-			--mid;
-		}
-		DEBUG5("Find_tags: cmp %d, top %d, mid %d, bot %d",
-			cmp, top, mid, bot);
-	}
-	if( cmp == 0 ){
-		s = l->list[mid];
-		do{
-			DEBUG5("Find_tags: adding '%s'", s+len );
-			Add_line_list(dest,s+len,0,1,1);
-			++mid;
-		} while( mid < l->count
-			&& (s = l->list[mid])
-			&& !(cmp = safestrncasecmp(key,s,len)));
-	}
-}
-
-/*
- * Find_defaulttags( struct line_list dest,
- *  struct keywords *var_list, char *tag )
- * 
- * Scan the variable list for default values
- * starting with 'tag' and extract them
- * to list
- */
-
-void Find_default_tags( struct line_list *dest,
-	struct keywords *var_list, char *tag )
-{
-	int len = strlen(tag);
-	char *key, *value;
-
-	if( var_list ) while( var_list->keyword ){
-		if( !strncmp((key = var_list->keyword), tag, len)
-			&& (value = var_list->default_value) ){
-			if( *value == '=' ) ++value;
-			DEBUG5("Find_default_tags: adding '%s'='%s'", key, value);
-			Set_str_value(dest, key+len, value );
-		}
-		++var_list;
-	}
-}
-
-
-
-/*
  * Read_file_list( struct line_list *model, char *str
  *	char *sep, int sort, char *keysep, int uniq, int trim, int marker )
  *  read the model information from these files
  *  if marker != then add a NULL line after each file
  */
 
-void Read_file_list( int required, struct line_list *model, char *str,
+void Read_file_list( struct line_list *model, char *str,
 	const char *linesep, int sort, const char *keysep, int uniq, int trim,
 	int marker, int doinclude, int nocomment )
 {
 	struct line_list l;
 	int i, start, end, c=0, n, found;
 	char *s, *t;
-	struct stat statb;
 
 	Init_line_list(&l);
-	DEBUG3("Read_file_list: '%s', doinclude %d", str, doinclude );
+	DEBUG3("Read_file_list: '%s'", str );
 	Split( &l, str, File_sep, 0, 0, 0, 1, 0 );
 	start = model->count;
 	for( i = 0; i < l.count; ++i ){
-		if( stat( l.list[i], &statb ) == -1 ){
-			if( required ){
-				logerr_die(LOG_ERR,
-					"Read_file_list: cannot stat required file '%s'",
-					l.list[i] );
-			}
-			continue;
-		}
 		Read_file_and_split( model, l.list[i], linesep, sort, keysep,
 			uniq, trim, nocomment );
 		if( doinclude ){
@@ -1388,14 +967,14 @@ void Read_file_list( int required, struct line_list *model, char *str,
 				s = model->list[start];
 				found = 0;
 				t = 0;
-				if( s && (t = safestrpbrk( s, Whitespace )) ){
+				if( s && (t = strpbrk( s, Whitespace )) ){
 					c = *t; *t = 0;
-					found = !safestrcasecmp( s, "include" );
+					found = !strcasecmp( s, "include" );
 					*t = c;
 				}
 				if( found ){
 					DEBUG4("Read_file_list: include '%s'", t+1 );
-					Read_file_list( 1, model, t+1, linesep, sort, keysep, uniq, trim,
+					Read_file_list( model, t+1, linesep, sort, keysep, uniq, trim,
 						marker, doinclude, nocomment );
 					/* at this point the include lines are at
 					 *  end to model->count-1
@@ -1439,8 +1018,7 @@ void Read_file_list( int required, struct line_list *model, char *str,
 }
 
 void Read_fd_and_split( struct line_list *list, int fd,
-	const char *linesep, int sort, const char *keysep, int uniq,
-	int trim, int nocomment )
+	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment )
 {
 	int size = 0, count, len;
 	char *sv;
@@ -1454,7 +1032,7 @@ void Read_fd_and_split( struct line_list *list, int fd,
 			Errorcode = JFAIL;
 			logerr_die( LOG_INFO, "Read_fd_and_split: realloc %d failed", len );
 		}
-		memmove( sv+size, buffer, count );
+		memcpy( sv+size, buffer, count );
 		size += count;
 		sv[size] = 0;
 	}
@@ -1465,8 +1043,7 @@ void Read_fd_and_split( struct line_list *list, int fd,
 }
 
 void Read_file_and_split( struct line_list *list, char *file,
-	const char *linesep, int sort, const char *keysep, int uniq,
-	int trim, int nocomment )
+	const char *linesep, int sort, const char *keysep, int uniq, int trim, int nocomment )
 {
 	int fd;
 	struct stat statb;
@@ -1474,13 +1051,13 @@ void Read_file_and_split( struct line_list *list, char *file,
 	DEBUG3("Read_file_and_split: '%s', trim %d, nocomment %d",
 		file, trim, nocomment );
 	if( (fd = Checkread( file, &statb )) < 0 ){
-		logerr_die( LOG_INFO,
-		"Read_file_and_split: cannot open '%s' - '%s'",
-			file, Errormsg(errno) );
+		DEBUG1("Read_file_and_split: cannot open file '%s' - %s",
+			file, Errormsg(errno));
+		return;
 	}
-	Read_fd_and_split( list, fd, linesep, sort, keysep, uniq,
-		trim, nocomment );
+	Read_fd_and_split( list, fd, linesep, sort, keysep, uniq, trim, nocomment );
 }
+
 
 
 /*
@@ -1509,24 +1086,15 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 	Init_line_list(&oh);
 
 	DEBUG4("Build_pc_names: '%s'", str);
-	if( (s = safestrpbrk(str, ":")) ){
+	if( (s = strpbrk(str, ":")) ){
 		c = *s; *s = 0;
 		Split(&opts,s+1,":",1,Value_sep,0,1,0);
 	}
 	Split(&l,str,"|",0,0,0,1,0);
 	if( s ) *s = c;
 	if(DEBUGL4)Dump_line_list("Build_pc_names- names", &l);
-	if(DEBUGL4)Dump_line_list("Build_pc_names- options", &opts);
-	if( l.count == 0 ){
-		if(Warnings){
-			Warnmsg(
-			"no name for printcap entry '%s'", str );
-		} else {
-			logmsg(LOG_INFO,
-			"no name for printcap entry '%s'", str );
-		}
-	}
-	if( l.count && opts.count ){
+	if(DEBUGL4)Dump_line_list("Build_pc_names- options", &l);
+	if( l.count ){
 		ok = 1;
 		if( Find_flag_value( &opts,SERVER,Value_sep) && !Is_server ){
 			DEBUG4("Build_pc_names: not server" );
@@ -1534,14 +1102,11 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 		} else if( Find_flag_value( &opts,CLIENT,Value_sep) && Is_server ){
 			DEBUG4("Build_pc_names: not client" );
 			ok = 0;
-		} else if( !Find_first_key(&opts,"oh",Value_sep,&start_oh)
-			&& !Find_last_key(&opts,"oh",Value_sep,&end_oh) ){
+		} else if( !Find_first_key(&l,"oh",Value_sep,&start_oh)
+			&& !Find_last_key(&l,"oh",Value_sep,&end_oh) ){
 			ok = 0;
-			DEBUG4("Build_pc_names: start_oh %d, end_oh %d",
-				start_oh, end_oh );
 			for( i = start_oh; !ok && i <= end_oh; ++i ){
-				DEBUG4("Build_pc_names: [%d] '%s'", i, opts.list[i] );
-				if( (t = safestrchr( opts.list[i], '=' )) ){
+				if( (t = strchr( l.list[i], '=' )) ){
 					Split(&oh,t+1,File_sep,0,0,0,1,0);
 					ok = !Match_ipaddr_value(&oh, hostname);
 					DEBUG4("Build_pc_names: check host '%s', ok %d",
@@ -1550,17 +1115,16 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 				}
 			}
 		}
-		if( ok && ((s = safestrpbrk( l.list[0], Value_sep))
-			|| (s = safestrpbrk( l.list[0], "@")) ) ){
+		if( ok && strpbrk( l.list[0], Value_sep) ){
 			ok = 0;
 			if(Warnings){
 				Warnmsg(
-				"bad printcap name '%s', has '%c' character",
-				l.list[0], *s );
+				"bad printcap name '%s', has '%s' character",
+				l.list[0], Value_sep );
 			} else {
 				logmsg(LOG_INFO,
-				"bad printcap name '%s', has '%c' character",
-				l.list[0], *s );
+				"bad printcap name '%s', has '%s' character",
+				l.list[0], Value_sep );
 			}
 		} else if( ok ){
 			if(DEBUGL4)Dump_line_list("Build_pc_names: adding ", &l);
@@ -1570,7 +1134,7 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 				Add_line_list(order,l.list[0],0,0,0);
 			}
 			for( i = 0; i < l.count; ++i ){
-				if( safestrpbrk( l.list[i], Value_sep ) ){
+				if( strpbrk( l.list[i], Value_sep ) ){
 					continue;
 				}
 				Set_str_value(names,l.list[i],l.list[0]);
@@ -1599,7 +1163,6 @@ int  Build_pc_names( struct line_list *names, struct line_list *order,
 	
 	Free_line_list(&l);
 	Free_line_list(&opts);
-	DEBUG4("Build_pc_names: returning ok '%d'", ok );
 	return ok;
 }
 
@@ -1635,7 +1198,7 @@ void Build_printcap_info(
 		if( t == 0 || (c = *t) == 0 || c == '#') continue;
 		/* append lines starting with :, | */
 		if( keyid
-			&& (safestrchr(Printcap_sep,c) || appendline) ){
+			&& (strchr(Printcap_sep,c) || appendline) ){
 			DEBUG4("Build_printcap_info: old keyid '%s', adding '%s'",
 				keyid, t );
 			keyid = safeextend3(keyid, " ", t,__FILE__,__LINE__ );
@@ -1668,49 +1231,31 @@ void Build_printcap_info(
 }
 
 /*
- * char *Select_pc_info(
- *   - returns the main name of the print queue
- * struct line_list *aliases  = list of names and aliases
- * struct line_list *info     = printcap infor
- * struct line_list *names    = entry names in the input list
- *                              alias=mainname
- * struct line_list *input    = printcap entries, starting with mainname
+ * Select_pc_info( struct line_list *list, char *id )
+ *  info = output list of information 
+ *  names = names and aliases
+ *  input = input list
+ *  id    = look for this one
  *
  *  Select the printcap information and put it in the info list.
  *  Return the main name;
+ *  As a side effect, if names->count == 0, rebuild name list
  */
-
-char *Select_pc_info( const char *id, struct line_list *aliases,
-	struct line_list *info,
-	struct line_list *names,
-	struct line_list *order,
-	struct line_list *input, int depth )
+char *Select_pc_info( struct line_list *aliases, struct line_list *info,
+	struct line_list *names, struct line_list *input,
+	const char *id )
 {
 	int start, end, i, j, c, start_oh, end_oh;
 	char *s, *t, *u, *name = 0;
-	struct line_list l, pc, tc, oh;
+	struct line_list l, tc, oh;
 
-	DEBUG1("Select_pc_info: looking for '%s', depth %d", id, depth );
-	if( depth > 5 ){
-		Errorcode = JABORT;
-		fatal(LOG_ERR,"Select_pc_info: printcap tc recursion depth %d", depth );
-	}
+	DEBUG1("Select_pc_info: looking for '%s'", id );
 	if(DEBUGL4)Dump_line_list("Select_pc_info- aliases", aliases );
 	if(DEBUGL4)Dump_line_list("Select_pc_info- info", info );
 	if(DEBUGL4)Dump_line_list("Select_pc_info- names", names );
 	if(DEBUGL4)Dump_line_list("Select_pc_info- input", input );
-	Init_line_list(&l); Init_line_list(&pc); Init_line_list(&tc); Init_line_list(&oh);
+	Init_line_list(&l); Init_line_list(&tc); Init_line_list(&oh);
 	start = 0; end = 0;
-	name = Find_str_value( names, id, Value_sep );
-	if( !name && PC_filters_line_list.count ){
-		Filterprintcap( &l, &PC_filters_line_list, id);
-		Build_printcap_info( names, order, input, &l, &Host_IP );
-		Free_line_list( &l );
-		if(DEBUGL4)Dump_line_list("Select_pc_info- after filter aliases", aliases );
-		if(DEBUGL4)Dump_line_list("Select_pc_info- after filter info", info );
-		if(DEBUGL4)Dump_line_list("Select_pc_info- after filter names", names );
-		if(DEBUGL4)Dump_line_list("Select_pc_info- after filter input", input );
-	}
 	if( (name = Find_str_value( names, id, Value_sep )) ){
 		DEBUG1("Select_pc_info: found name '%s'", name );
 		if( Find_first_key(input,name,Printcap_sep,&start)
@@ -1726,57 +1271,55 @@ char *Select_pc_info( const char *id, struct line_list *aliases,
 			u = input->list[start];
 			DEBUG4("Select_pc_info: line [%d]='%s'", start, u );
 			if( u && *u ){
-				Add_line_list( &pc, u, 0, 0, 0 );
-			}
-		}
-		if(DEBUGL4)Dump_line_list("Select_pc_info- entry lines", &l );
-		for( start = 0; start < pc.count; ++ start ){
-			u = pc.list[start];
-			c = 0;
-			if( (t = safestrpbrk(u,":")) ){
-				if( aliases ){
-					c = *t; *t = 0;
-					Split(aliases, u, Printcap_sep, 0, 0, 0, 0, 0);
-					Remove_duplicates_line_list(aliases);
-					*t = c;
+				c = 0;
+				if( (t = strpbrk(u,":")) ){
+					if( aliases ){
+						c = *t; *t = 0;
+						Split(aliases, u, Printcap_sep, 0, 0, 0, 0, 0);
+						Remove_duplicates_line_list(aliases);
+						*t = c;
+					}
+					Split(&l, t+1, ":", 1, Value_sep, 0, 1, 0);
 				}
-				Split(&l, t+1, ":", 1, Value_sep, 0, 1, 0);
-			}
-			/* get the tc entries */
-			if(DEBUGL4)Dump_line_list("Select_pc_info- pc entry", &l );
-			if( !Find_first_key(&l,"tc",Value_sep,&start_oh)
-				&& !Find_last_key(&l,"tc",Value_sep,&end_oh) ){
-				for( ; start_oh <= end_oh; ++start_oh ){
-					if( (s = l.list[start_oh]) ){
-						lowercase(s);
-						DEBUG4("Select_pc_info: tc '%s'", s );
-						if( (t = safestrchr( s, '=' )) ){
-							Split(&tc,t+1,File_sep,0,0,0,1,0);
+				/* get the tc entries */
+				if( !Find_first_key(&l,"tc",Value_sep,&start_oh)
+					&& !Find_last_key(&l,"tc",Value_sep,&end_oh) ){
+					for( ; start_oh <= end_oh; ++start_oh ){
+						if( (s = l.list[start_oh]) ){
+							lowercase(s);
+							DEBUG4("Select_pc_info: tc '%s'", s );
+							if( (t = strchr( s, '=' )) ){
+								Split(&tc,t+1,File_sep,0,0,0,1,0);
+							}
+							free( l.list[start_oh] );
+							l.list[start_oh] = 0;
+							for( j = 0; j < tc.count; ++j ){
+								t = tc.list[j];
+								if( !Find_str_value( names, t, Value_sep ) ){
+									if( Warnings ){
+										Warnmsg( "printcap '%s' tc='%s' is nonexistent",
+											id, t );
+									} else {
+										logmsg(LOG_INFO, "printcap '%s' tc='%s' is nonexistent",
+											id, t );
+									}
+								} else {
+									Select_pc_info(0, info, names, input, t );
+								}
+							}
+							Free_line_list(&tc);
 						}
-						free( l.list[start_oh] );
-						l.list[start_oh] = 0;
 					}
 				}
-			}
-			if(DEBUGL4)Dump_line_list("Select_pc_info- tc", &tc );
-			for( j = 0; j < tc.count; ++j ){
-				s = tc.list[j];
-				DEBUG4("Select_pc_info: tc entry '%s'", s );
-				if( !Select_pc_info( s, 0, info, names, order, input, depth+1 ) ){
-					fatal( LOG_ERR,
-					"Select_pc_info: tc entry '%s' not found", s);
+				if(DEBUGL4)Dump_line_list("Select_pc_info - adding", &l );
+				for( i = 0; i < l.count; ++i ){
+					if( (t = l.list[i]) ){
+						Add_line_list( info, t, Value_sep, 1, 1 );
+					}
 				}
+				Free_line_list(&l);
 			}
-			Free_line_list(&tc);
-			if(DEBUGL4)Dump_line_list("Select_pc_info - adding", &l );
-			for( i = 0; i < l.count; ++i ){
-				if( (t = l.list[i]) ){
-					Add_line_list( info, t, Value_sep, 1, 1 );
-				}
-			}
-			Free_line_list(&l);
 		}
-		Free_line_list(&pc);
 	}
 	if(DEBUGL3){
 		logDebug("Select_pc_info: printer '%s', found '%s'", id, name );
@@ -1854,7 +1397,7 @@ int Check_str_keyword( const char *name, int *value )
 {
 	struct keywords *keys;
 	for( keys = simple_words; keys->keyword; ++keys ){
-		if( !safestrcasecmp( name, keys->keyword ) ){
+		if( !strcasecmp( name, keys->keyword ) ){
 			*value = keys->maxval;
 			return( 1 );
 		}
@@ -1890,7 +1433,7 @@ void Config_value_conversion( struct keywords *key, const char *s )
 				i = 0;
 			} else {
 				/* get rid of leading junk */
-				while( safestrchr(Value_sep,c) ){
+				while( strchr(Value_sep,c) ){
 					++s;
 					c = cval(s);
 				}
@@ -1913,7 +1456,7 @@ void Config_value_conversion( struct keywords *key, const char *s )
 		DEBUG5("Config_value_conversion:  current value '%s'", end );
 		if( end ) free( end );
 		((char **)p)[0] = 0;
-		while(s && (c=cval(s)) && safestrchr(Value_sep,c) ) ++s;
+		while(s && (c=cval(s)) && strchr(Value_sep,c) ) ++s;
 		end = 0;
 		if( s && *s ){
 			end = safestrdup(s,__FILE__,__LINE__);
@@ -1945,18 +1488,18 @@ void Expand_percent( char **var )
 	char *str, *s, *t, *u, **v = var;
 	int c, len;
 
-	if( v == 0 || (str = *v) == 0 || !safestrpbrk(str,"%") ){
+	if( v == 0 || (str = *v) == 0 || !strpbrk(str,"%") ){
 		return;
 	}
 	DEBUG4("Expand_percent: starting '%s'", str );
 	if( Current_date_DYN == 0 ){
 		Set_DYN(&Current_date_DYN, Time_str(0,0) );
-		if( (s = safestrrchr(Current_date_DYN,'-')) ){
+		if( (s = strrchr(Current_date_DYN,'-')) ){
 			*s = 0;
 		}
 	}
 	s = str;
-	while( (s = safestrpbrk(s,"%")) ){
+	while( (s = strpbrk(s,"%")) ){
 		t = 0;
 		if( (c = cval(s+1)) && isalpha( c ) ){
 			for( key = Keyletter; t == 0 && key->keyword; ++key ){
@@ -1993,6 +1536,7 @@ void Expand_vars( void )
 	struct keywords *var;
 
 	/* check to see if you need to expand */
+	/*for( var = Expand_var_list; var->keyword; ++var ){ */
 	for( var = Pc_var_list; var->keyword; ++var ){
 		if( var->type == STRING_K && (p = var->variable) ){
 			Expand_percent(p);
@@ -2029,32 +1573,15 @@ void Clear_config( void )
 	for( l = Allocs; *l; ++l ) Free_line_list(*l);
 }
 
-char *Find_default_var_value( void *v )
-{
-	struct keywords *k;
-	char *s;
-	for( k = Pc_var_list; (s = k->keyword); ++k ){
-		if( k->type == STRING_K && k->variable == v ){
-			s = k->default_value;
-			if( s && cval(s) == '=' ) ++s;
-			DEBUG1("Find_default_var_value: found 0x%x key '%s' '%s'",
-				(long)v, k->keyword, s );
-			return( s );
-		}
-	}
-	return(0);
-}
-
 /***************************************************************************
  * void Get_config( char *names )
  *  gets the configuration information from a list of files
  ***************************************************************************/
 
-void Get_config( int required, char *path )
+void Get_config( char *path )
 {
-	DEBUG1("Get_config: required '%d', '%s'", required, path );
-	Read_file_list( required, &Config_line_list, path,
-		Line_ends, 1, Value_sep, 1, 1, 0, 0, 1 ); 
+	DEBUG1("Get_config: '%s'", path );
+	Read_file_list( &Config_line_list, path, Line_ends, 1, Value_sep, 1, 1, 0, 0, 1 ); 
 	Set_var_list( Pc_var_list, &Config_line_list);
 	Get_local_host();
 	Expand_vars();
@@ -2095,7 +1622,6 @@ void Setup_env_for_process( struct line_list *env, struct job *job )
 	if( (pw = getpwuid( getuid())) == 0 ){
 		logerr_die( LOG_INFO, "setup_envp: getpwuid(%d) failed", getuid());
 	}
-	Set_str_value(env,"PRINTER",Printer_DYN);
 	Set_str_value(env,"USER",pw->pw_name);
 	Set_str_value(env,"LOGNAME",pw->pw_name);
 	Set_str_value(env,"HOME",pw->pw_dir);
@@ -2111,7 +1637,6 @@ void Setup_env_for_process( struct line_list *env, struct job *job )
 		t = Join_line_list_with_sep(&PC_alias_line_list,"|");
 		s = Join_line_list_with_sep(&PC_entry_line_list,"\n :");
 		u = safestrdup4(t,(s?"\n :":0),s,"\n",__FILE__,__LINE__);
-		Expand_percent( &u );
 		Set_str_value(env, "PRINTCAP_ENTRY",u);
 		if(s) free(s); s = 0;
 		if(t) free(t); t = 0;
@@ -2159,8 +1684,7 @@ void Setup_env_for_process( struct line_list *env, struct job *job )
  *   3. parse the printcap informormation
  ***************************************************************************/
 
-void Getprintcap_pathlist( int required,
-	struct line_list *raw, struct line_list *filters,
+void Getprintcap_pathlist( struct line_list *raw, struct line_list *filters,
 	char *path )
 {
 	struct line_list l;
@@ -2168,7 +1692,7 @@ void Getprintcap_pathlist( int required,
 
 	Init_line_list(&l);
 	DEBUG2("Getprintcap_pathlist: processing '%s'", path );
-	Split(&l,path,Strict_file_sep,0,0,0,1,0);
+	Split(&l,path,File_sep,0,0,0,1,0);
 	for( i = 0; i < l.count; ++i ){
 		path = l.list[i];
 		c = path[0];
@@ -2179,7 +1703,7 @@ void Getprintcap_pathlist( int required,
 			break;
 		case '/':
 			DEBUG2("Getprintcap_pathlist: file '%s'", path );
-			Read_file_list(required,raw,path,Line_ends,0,0,0,1,0,1,1);
+			Read_file_and_split( raw,path,Line_ends,0,0,0,1,1);
 			break;
 		default:
 			fatal( LOG_ERR,
@@ -2239,21 +1763,12 @@ void Filterprintcap( struct line_list *raw, struct line_list *filters,
 			out[1]);
 		}
 		Write_fd_str(in[1],str);
-		Write_fd_str(in[1],"\n");
 		if( close(in[1]) == -1 ){
 			logerr_die(LOG_ERR,"Filterprintcap: close in[1]=%d failed",
 			in[1]);
 		}
 		Read_fd_and_split( raw,out[0],Line_ends,0,0,0,1,1);
-		while( (n = plp_waitpid(pid,&status,0)) != pid ){
-			int err = errno;
-			DEBUG1("Filterprintcap: waitpid(%d) returned %d, err '%s'",
-				pid, n, Errormsg(err) );
-			if( err == EINTR ) continue; 
-			Errorcode = JABORT;
-			logerr_die( LOG_ERR, "Filterprintcap: waitpid(%d) failed", pid);
-		} 
-
+		while( (n = plp_waitpid(pid,&status,0)) != pid );
 		if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){
 			Errorcode = JFAIL;
 			fatal(LOG_INFO,"Filterprintcap: filter process exited with status %d", n);
@@ -2295,10 +1810,10 @@ int In_group( char *group, char *user )
 			result = 0;
 		} else for( members = grent->gr_mem; result && *members; ++members ){
 			DEBUGF(DDB3)("In_group: member '%s'", *members);
-			result = (safestrcmp( user, *members ) != 0);
+			result = (strcmp( user, *members ) != 0);
 		}
 	}
-	if( result && safestrchr( group, '*') ){
+	if( result && strchr( group, '*') ){
 		/* wildcard in group name, scan through all groups */
 		setgrent();
 		while( result && (grent = getgrent()) ){
@@ -2313,7 +1828,7 @@ int In_group( char *group, char *user )
 					DEBUGF(DDB3)("In_group: found '%s'", grent->gr_name);
 					for( members = grent->gr_mem; result && *members; ++members ){
 						DEBUGF(DDB3)("In_group: member '%s'", *members);
-						result = (safestrcmp( user, *members ) != 0);
+						result = (strcmp( user, *members ) != 0);
 					}
 				}
 			}
@@ -2391,7 +1906,7 @@ void Init_tempfile( void )
 		}
 		Tempfile=safestrdup2(dir,"/temp",__FILE__,__LINE__);
 		/* eliminate // */
-		for( s = Tempfile; (s = safestrchr(s,'/')); ){
+		for( s = Tempfile; (s = strchr(s,'/')); ){
 			if( cval(s+1)=='/' ){
 				memmove(s,s+1,strlen(s)+1);
 			} else {
@@ -2441,83 +1956,20 @@ void Clear_tempfile_list(void)
 }
 
 /***************************************************************************
- * Unlink_tempfiles()
- *  - remove the tempfiles created for this job
- ***************************************************************************/
-
-void Unlink_tempfiles(void)
-{
-	int i;
-	DEBUG4("Unlink_tempfiles: Tempfile '%s'", Tempfile );
-	for( i = 0; i < Tempfiles.count; ++i ){
-		DEBUG4("Unlink_tempfiles: unlinking '%s'", Tempfiles.list[i] );
-		unlink(Tempfiles.list[i]);
-	}
-	Free_line_list(&Tempfiles);
-}
-
-
-/***************************************************************************
  * Remove_tempfiles()
  *  - remove the tempfiles created for this job
  ***************************************************************************/
-
 void Remove_tempfiles(void)
 {
+	int i;
 	DEBUG4("Remove_tempfiles: Tempfile '%s'", Tempfile );
-	Unlink_tempfiles();
+	for( i = 0; i < Tempfiles.count; ++i ){
+		DEBUG4("Remove_tempfiles: unlinking '%s'", Tempfiles.list[i] );
+		unlink(Tempfiles.list[i]);
+	}
+	Free_line_list(&Tempfiles);
 	if( Tempfile ) free(Tempfile); Tempfile = 0;
 }
-
-/***************************************************************************
- * Split_cmd_line
- *   if we have xx "yy zz" we split this as
- *  xx
- *  yy zz
- ***************************************************************************/
-
-void Split_cmd_line( struct line_list *l, char *line )
-{
-	char *s = line, *t;
-	int c;
-
-	DEBUG1("Split_cmd_line: line '%s'", line );
-	while( s && cval(s) ){
-		while( strchr(Whitespace,cval(s)) ) ++s;
-		/* ok, we have skipped the whitespace */
-		if( (c = cval(s)) ){
-			if( c == '"' || c == '\'' ){
-				/* we now have hit a quoted string */
-				++s;
-				t = strchr(s,c);
-			} else if( !(t = strpbrk(s, Whitespace)) ){
-				t = s+strlen(s);
-			}
-			if( t ){
-				c = cval(t);
-				*t = 0;
-				Add_line_list(l, s, 0, 0, 0);
-				*t = c;
-				if( c ) ++t;
-			}
-			s = t;
-		}
-	}
-	if(DEBUGL1){ Dump_line_list("Split_cmd_line", l ); }
-}
-
-/***************************************************************************
- * Make_passthrough
- *   
- * int Make_passthrough   - returns PID of process
- *  char *line            - command line
- *  char *flags,          - additional flags
- *  struct line_list *passfd, - file descriptors
- *  struct job *job       - job with for option expansion
- *  struct line_list *env_init  - environment
- ***************************************************************************/
-
-
 
 int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 	struct job *job, struct line_list *env_init )
@@ -2528,7 +1980,6 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 	char error[SMALLBUFFER];
 	char *s;
 
-	DEBUG1("Make_passthrough: cmd '%s', flags '%s'", line, flags );
 	Init_line_list(&env);
 	if( env_init ){
 		Merge_line_list(&env,env_init,Value_sep,1,1);
@@ -2538,20 +1989,12 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 	while( isspace(cval(line)) ) ++line;
 	if( cval(line) == '|' ) ++line;
 	noopts = root = 0;
-	Split_cmd_line(&cmd, line);
+	Split(&cmd, line, Whitespace, 0,0, 0, 0, 0);
 	while( cmd.count ){
-		if( !safestrncmp((s = cmd.list[0]),"$-", 2) ){
+		if( !strcmp((s = cmd.list[0]),"$-") ){
 			noopts = 1;
-			memmove( cmd.list[0], cmd.list[0]+2, strlen(cmd.list[0]+2)+1);
-			if( cval(cmd.list[0]) ){
-				continue;
-			}
-		} else if( !safestrncasecmp((s = cmd.list[0]),"root", 4) ){
+		} else if( !strcasecmp((s = cmd.list[0]),"root") ){
 			root = 1;
-			memmove( cmd.list[0], cmd.list[0]+4, strlen(cmd.list[0]+4)+1);
-			if( cval(cmd.list[0]) ){
-				continue;
-			}
 		} else {
 			break;
 		}
@@ -2565,7 +2008,7 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 	cmd.list[cmd.count] = 0;
 
 	Setup_env_for_process(&env, job);
-	if(DEBUGL1){
+	if(DEBUGL4){
 		Dump_line_list("Make_passthrough - cmd",&cmd );
 		logDebug("Make_passthrough: fd count %d, root %d", passfd->count, root );
 		for( i = 0 ; i < passfd->count; ++i ){
@@ -2605,15 +2048,14 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 				logDebug("  [%d]=%d",i,fd);
 			}
 		}
-		/* set up full perms for filter */ 
 		if( Is_server ){
 			if( root ){
 				To_root();
 			} else {
-				Full_daemon_perms();
+				To_daemon();
 			}
 		} else {
-			Full_user_perms();
+			To_user();
 		}
 		for( i = 0; i < passfd->count; ++i ){
 			fd = Cast_ptr_to_int(passfd->list[i]);
@@ -2627,8 +2069,7 @@ int Make_passthrough( char *line, char *flags, struct line_list *passfd,
 		close_on_exec(passfd->count);
 		execve(cmd.list[0],cmd.list,env.list);
 		plp_snprintf(error,sizeof(error),
-			"Make_passthrough: pid %d, execve '%s' failed - '%s'\n", getpid(),
-			cmd.list[0], Errormsg(errno) );
+			"Make_passthrough: pid %d, execve '%s' failed\n", getpid(), cmd.list[0] );
 		Write_fd_str(2,error);
 		exit(JABORT);
 	}
@@ -2650,7 +2091,7 @@ char *Clean_name( char *s )
 	int c;
 	if( s ){
 		for( ; (c = cval(s)); ++s ){
-			if( !(isalnum(c) || safestrchr( SAFE, c )) ) return( s );
+			if( !(isalnum(c) || strchr( SAFE, c )) ) return( s );
 		}
 	}
 	return( 0 );
@@ -2663,8 +2104,8 @@ char *Clean_name( char *s )
 int Is_meta( int c )
 {
 	return( !( isspace(c) || isalnum( c )
-		|| (Safe_chars_DYN && safestrchr(Safe_chars_DYN,c))
-		|| safestrchr( LESS_SAFE, c ) ) );
+		|| (Safe_chars_DYN && strchr(Safe_chars_DYN,c))
+		|| strchr( LESS_SAFE, c ) ) );
 }
 
 char *Find_meta( char *s )
@@ -2683,7 +2124,7 @@ void Clean_meta( char *t )
 {
 	char *s = t;
 	if( t ){
-		while( (s = safestrchr(s,'\\')) ) *s = '/';
+		while( (s = strchr(s,'\\')) ) *s = '/';
 		s = t;
 		for( s = t; (s = Find_meta( s )); ++s ){
 			*s = '_';
@@ -2709,32 +2150,100 @@ void Dump_parms( char *title, struct keywords *k )
 		switch(k->type){
 		case FLAG_K:
 			v =	*(int *)(p);
-			logDebug( "  %s FLAG %d", k->keyword, v);
+			logDebug( "%s FLAG %d", k->keyword, v);
 			break;
 		case INTEGER_K:
 			v =	*(int *)(p);
-			logDebug( "  %s# %d (0x%x, 0%o)", k->keyword,v,v,v);
+			logDebug( "%s# %d (0x%x, 0%o)", k->keyword,v,v,v);
 			break;
 		case STRING_K:
 			s = *(char **)(p);
 			if( s ){
-				logDebug( "  %s= '%s'", k->keyword, s );
+				logDebug( "%s= '%s'", k->keyword, s );
 			} else {
-				logDebug( "  %s= <NULL>", k->keyword );
+				logDebug( "%s= <NULL>", k->keyword );
 			}
 			break;
 		case LIST_K:
 			l = *(char ***)(p);
-			logDebug( "  %s:", k->keyword );
+			logDebug( "%s:", k->keyword );
 			for( i = 0; l && l[i]; ++i ){
-				logDebug( "     [%d] %s", i, l[i]);
+				logDebug( " [%d] %s", i, l[i]);
 			}
 			break;
 		default:
-			logDebug( "  %s: UNKNOWN TYPE", k->keyword );
+			logDebug( "%s: UNKNOWN TYPE", k->keyword );
 		}
 	}
 	if( title ) logDebug( "*** <END> ***", title );
+}
+
+/***************************************************************************
+ * void Fix_auth() - get the Use_auth_DYN value for the remote printer
+ ***************************************************************************/
+struct sockaddr *Fix_auth( int sending, struct sockaddr *src_sin  )
+{
+	char *s, *t;
+	struct sockaddr *bindto = 0;
+	struct keywords *k;
+
+	if( src_sin ) memset(src_sin,0,sizeof(src_sin[0]));
+	if( sending ){
+		if( Is_server ){
+			Set_DYN(&Auth_DYN, Auth_forward_DYN);
+			Set_DYN(&Auth_filter_DYN, Auth_forward_filter_DYN);
+			Set_DYN(&Auth_id_DYN, Auth_forward_id_DYN);
+			Set_DYN(&Auth_sender_id_DYN, Auth_server_id_DYN );
+			Set_DYN(&Kerberos_dest_id_DYN, Kerberos_forward_principal_DYN);
+		} else {
+			for( k = Pc_var_list; (s = k->keyword); ++k ){
+				if( !strncasecmp("auth",s,4) && k->type == STRING_K
+					&& (t = Find_str_value(&PC_entry_line_list,s,Value_sep)) ){
+					DEBUG1("Fix_auth: '%s' = '%s', new value '%s'",
+						s, ((char **)(k->variable))[0], t );
+					Config_value_conversion(k, t);
+				}
+			}
+			if( (t = Find_str_value(&PC_entry_line_list,
+				"kerberos_server_principle", Value_sep )) ){
+				Set_DYN(&Kerberos_dest_id_DYN, t);
+			}
+			Set_DYN(&Auth_filter_DYN, Auth_client_filter_DYN);
+			Set_DYN(&Auth_id_DYN, Auth_server_id_DYN);
+			Set_DYN(&Auth_sender_id_DYN, Logname_DYN);
+			Set_DYN(&Auth_client_id_DYN, Logname_DYN);
+			if( src_sin && (!safestrcasecmp( Auth_DYN, KERBEROS4 )) ){
+				/* we need to bind to the real port of the host */
+				struct sockaddr_in *sinaddr = (struct sockaddr_in *)src_sin;
+				bindto = src_sin;
+				sinaddr->sin_family = Host_IP.h_addrtype;
+				memcpy( &sinaddr->sin_addr, Host_IP.h_addr_list.list[0],
+					Host_IP.h_length );
+			}
+		}
+	} else {
+		Set_DYN(&Auth_id_DYN, Auth_server_id_DYN);
+	}
+
+	if( !Auth_DYN ) Set_DYN(&Auth_DYN, NONE );
+	if( !Auth_id_DYN ) Set_DYN(&Auth_id_DYN, NONE );
+	if( !Auth_sender_id_DYN ) Set_DYN(&Auth_sender_id_DYN, NONE );
+	if( !Auth_client_id_DYN ) Set_DYN(&Auth_client_id_DYN, NONE );
+
+	Set_DYN(&esc_Auth_DYN,          (s = Escape(Auth_DYN,1)) ); if( s ) free(s); s = 0;
+	Set_DYN(&esc_Auth_id_DYN,       (s = Escape(Auth_id_DYN,1)) ); if( s ) free(s); s = 0;
+	Set_DYN(&esc_Auth_sender_id_DYN,(s = Escape(Auth_sender_id_DYN,1)) ); if( s ) free(s); s = 0;
+	Set_DYN(&esc_Auth_client_id_DYN,(s = Escape(Auth_client_id_DYN,1)) ); if(s) free(s); s = 0;
+
+
+	DEBUG1("Fix_auth: Auth_DYN '%s', Auth_filter_DYN '%s', Auth_id_DYN '%s', Auth_sender_id '%s'",
+		Auth_DYN, Auth_filter_DYN, Auth_id_DYN, Auth_sender_id_DYN );
+	DEBUG1("Fix_auth: sending %d, Is_server %d, Auth_receive_filter_DYN '%s'",
+		sending, Is_server, Auth_receive_filter_DYN );
+	DEBUG1("Fix_auth: Kerberos_dest_id_DYN '%s'", Kerberos_dest_id_DYN );
+	DEBUG1("Fix_auth: bindto '%s', '%s'", bindto?"yes":"no",
+		src_sin?(inet_ntoa( ((struct sockaddr_in *)src_sin)->sin_addr)):"" );
+	return( bindto );
 }
 
 /***************************************************************************
@@ -2761,7 +2270,7 @@ void Fix_dollars( struct line_list *l, struct job *job )
 
 	if(DEBUGL4)Dump_line_list("Fix_dollars- before", l );
 	for( count = 0; count < l->count; ++count ){
-		for( strv = l->list[count]; (s = safestrchr(strv,'$'));
+		for( strv = l->list[count]; (s = strchr(strv,'$'));
 				strv = l->list[count]){
 			DEBUG4("Fix_dollars: expanding [%d]='%s'", count, strv );
 			*s++ = 0;
@@ -2771,7 +2280,7 @@ void Fix_dollars( struct line_list *l, struct job *job )
 			notag = 0;
 			kind = STRING_K;
 			n = 0;
-			while( (c = *s) && safestrchr( " 0-'", c) ){
+			while( (c = *s) && strchr( " 0-'", c) ){
 				switch( c ){
 				case '0': case ' ': space = 1; break;
 				case '-':           notag = 1; break;
@@ -2788,7 +2297,7 @@ void Fix_dollars( struct line_list *l, struct job *job )
 				break;
 			} else if( c == '{' ){
 				++s;
-				if( !(rest = safestrchr(rest,'}')) ){
+				if( !(rest = strchr(rest,'}')) ){
 					break;
 				}
 				*rest++ = 0;
@@ -2800,10 +2309,10 @@ void Fix_dollars( struct line_list *l, struct job *job )
 				case 'a': str = Accounting_file_DYN; break;
 				case 'b': str = Find_str_value(&job->info,SIZE,Value_sep); break;
 				case 'c':
-					notag = 1; space=0;
+					space = 0; notag = 1; str = 0;
 					t = Find_str_value(&job->info,FORMAT,Value_sep);
 					if( t && *t == 'l'){
-						str="-c";
+						notag = 0;
 					}
 					break;
 				case 'd': str = Spool_dir_DYN; break;
@@ -2844,7 +2353,6 @@ void Fix_dollars( struct line_list *l, struct job *job )
 					break;
 				case 'P': str = Printer_DYN; break;
 				case 'S': str = Comment_tag_DYN; break;
-				/* case '_': str = esc_Auth_client_id_DYN; break; */
 				default:
 					if( isupper(c) ){
 						str = Find_first_letter( &job->controlfile,c,0);
@@ -2869,7 +2377,7 @@ void Fix_dollars( struct line_list *l, struct job *job )
 				} else {
 					plp_snprintf(tag, sizeof(tag), "-%c", c );
 				}
-				if( space && tag && tag[0] ){
+				if( space && tag[0] ){
 					rest = safestrdup2(str,rest,__FILE__,__LINE__);
 					s = strv;
 					l->list[count] = safestrdup2(strv,tag,__FILE__,__LINE__);
@@ -2934,7 +2442,7 @@ int Get_keyval( char *s, struct keywords *controlwords )
 {
 	int i;
 	for( i = 0; controlwords[i].keyword; ++i ){
-		if( safestrcasecmp( s, controlwords[i].keyword ) == 0 ){
+		if( strcasecmp( s, controlwords[i].keyword ) == 0 ){
 			return( controlwords[i].type );
 		}
 	}
@@ -2952,43 +2460,37 @@ char *Get_keystr( int c, struct keywords *controlwords )
 	return( 0 );
 }
 
-char *Escape( char *str, int ws, int level )
+char *Escape( char *str, int ws )
 {
 	char *s = 0;
-	int i, c, j, k, incr = 3*level;
+	int i, c;
 	int len = 0;
+	char *escape_str = ";,%\n";
 
 	if( str == 0 || *str == 0 ) return(0);
-	if( level <= 0 ) level = 1;
+	if(ws) escape_str = ";,%\n \t";
 
-	len = strlen(str);
-	for( j = 0; (c = cval(str+j)); ++j ){
-		if( !isalnum( c ) ){
-			len += incr;
+	c = strlen(str);
+	for( i = 0; i < c; ++i ){
+		if( strchr(escape_str, cval(str+i)) ){
+			len += 3;
+		} else {
+			len += 1;
 		}
 	}
-	DEBUG5("Escape: ws %d, level %d, allocated length %d, length %d, for '%s'",
-		ws, level, len, strlen(str), str );
 	s = malloc_or_die(len+1,__FILE__,__LINE__);
 	i = 0;
-	for( i = j = 0; (c = cval(str+j)); ++j ){
-		if( !isalnum( c ) ){
+	for( i = 0; (c = cval(str)); ++str ){
+		if( strchr(escape_str, c) ){
 			plp_snprintf(s+i,4,"%%%02x",c);
-			/* we encode the % as %25 and move the other stuff over */
-			for( k = 1; k < level; ++k ){
-				/* we move the stuff after the % two positions */
-				/* s+i is the %, s+i+1 is the first digit */
-				memmove(s+i+3, s+i+1, strlen(s+i+1)+1);
-				memmove(s+i+1, "25", 2 );
-			}
-			i += strlen(s+i);
+			i += 3;
 		} else {
 			s[i] = c;
 			i += 1;
 		}
 	}
 	s[i] = 0;
-	DEBUG5("Escape: final length %d '%s'", i,  s );
+	DEBUG5("Escape: '%s'", s );
 	return(s);
 }
 
@@ -3020,10 +2522,10 @@ char *Find_str_in_str( char *str, const char *key, const char *sep )
 
 	if(str) for( s = str; (s = strstr(s,key)); ++s ){
 		c = cval(s+len);
-		if( !(safestrchr(Value_sep, c) || safestrchr(sep, c)) ) continue;
-		if( s > str && !safestrchr(sep,cval(s-1)) ) continue;
+		if( !(strchr(Value_sep, c) || strchr(sep, c)) ) continue;
+		if( s > str && !strchr(sep,cval(s-1)) ) continue;
 		s += len;
-		if( (end = safestrpbrk(s,sep)) ){ c = *end; *end = 0; }
+		if( (end = strpbrk(s,sep)) ){ c = *end; *end = 0; }
 		/* skip over Value_sep character
 		 * x@;  -> x@\000  - get null str
 		 * x;   -> x\000  - get null str
@@ -3039,454 +2541,4 @@ char *Find_str_in_str( char *str, const char *key, const char *sep )
 		break;
 	}
 	return(s);
-}
-
-/*
- * int Find_key_in_list( struct line_list *l, char *key, char *sep, int *mid )
- *  Search and unsorted list for a key value, starting at *mid.
- *
- *  The list has lines of the form:
- *    key [separator] value
- *  returns:
- *    *at = index of last tested value
- *    return value: 0 if found;
- *                  <0 if list[*at] < key
- *                  >0 if list[*at] > key
- */
-
-int Find_key_in_list( struct line_list *l, const char *key, const char *sep, int *m )
-{
-	int mid = 0, cmp = -1, c = 0;
-	char *s, *t;
-	if( m ) mid = *m;
-	DEBUG5("Find_key_in_list: start %d, count %d, key '%s'", mid, l->count, key );
-	while( mid < l->count ){
-		s = l->list[mid];
-		t = 0;
-		if( sep && (t = safestrpbrk(s, sep )) ) { c = *t; *t = 0; }
-		cmp = safestrcasecmp(key,s);
-		if( t ) *t = c;
-		DEBUG5("Find_key_in_list: cmp %d, mid %d", cmp, mid);
-		if( cmp == 0 ){
-			if( m ) *m = mid;
-			break;
-		}
-		++mid;
-	}
-	DEBUG5("Find_key_in_list: key '%s', cmp %d, mid %d", key, cmp, mid );
-	return( cmp );
-}
-
-/***************************************************************************
- * int Fix_str( char * str )
- * - make a copy of the original string
- * - substitute all the escape characters
- * \f, \n, \r, \t, and \nnn
- ***************************************************************************/
-
-char *Fix_str( char *str )
-{
-	char *s, *end, *dupstr, buffer[4];
-	int c, len;
-	DEBUG3("Fix_str: '%s'", str );
-	if( str == 0 ) return(str);
-	dupstr = s = safestrdup(str,__FILE__,__LINE__);
-	DEBUG3("Fix_str: dup '%s', 0x%lx", dupstr, Cast_ptr_to_long(dupstr) );
-	for( ; (s = safestrchr(s,'\\')); ){
-		end = s+1;
-		c = cval(end);
-		/* check for \nnn */
-		if( isdigit( c ) ){
-			for( len = 0; len < 3; ++len ){
-				if( !isdigit(cval(end)) ){
-					break;
-				}
-				buffer[len] = *end++;
-			}
-			c = strtol(buffer,0,8);
-		} else {
-			switch( c ){
-				case 'f': c = '\f'; break;
-				case 'r': c = '\r'; break;
-				case 'n': c = '\n'; break;
-				case 't': c = '\t'; break;
-			}
-			++end;
-		}
-		s[0] = c;
-		if( c == 0 ) break;
-		memcpy(s+1,end,strlen(end)+1);
-		++s;
-	}
-	if( *dupstr == 0 ){ free(dupstr); dupstr = 0; }
-	DEBUG3( "Fix_str: final str '%s' -> '%s'", str, dupstr );
-	return( dupstr );
-}
-
-/***************************************************************************
- * int Shutdown_or_close( int fd )
- * - if the file descriptor is a socket, then do a shutdown (write), return fd;
- * - otherwise close it and return -1;
- ***************************************************************************/
-
-int Shutdown_or_close( int fd )
-{
-	struct stat statb;
-
-	if( fd < 0 || fstat( fd, &statb ) == -1 ){
-		fd = -1;
-	} else if( !(S_ISSOCK(statb.st_mode)) || shutdown( fd, 1 ) == -1 ){
-		close(fd);
-		fd = -1;
-	}
-	return( fd );
-}
-
-/***************************************************************************
- * Pgp encode and decode a file
- ***************************************************************************/
-
-
-int Pgp_get_pgppassfd( struct line_list *info, char *error, int errlen )
-{
-	char *s;
-	int pgppassfd = -1;
-	struct stat statb;
-	char *passphrasefile = Find_str_value(info,"passphrasefile",Value_sep);
-	char *server_passphrasefile = Find_str_value(info,"server_passphrasefile",Value_sep);
-
-	/* get the user authentication */
-	error[0] = 0;
-	if( !Is_server ){
-		if( (s = getenv( "PGPPASS" )) ){
-			DEBUG1("Pgp_get_pgppassfd: PGPPASS '%s'", s );
-		} else if( (s = getenv( "PGPPASSFD" )) ){
-			pgppassfd = atoi(s);
-			if( pgppassfd <= 0 || fstat(pgppassfd, &statb ) ){
-				Errorcode = JABORT;
-				Diemsg("PGPASSFD '%s' not file", s);
-			}
-		} else if( (s = getenv( "PGPPASSFILE" ) ) ){
-			if( (pgppassfd = Checkread( s, &statb )) < 0 ){
-				Errorcode = JABORT;
-				Diemsg("PGP phrasefile '%s' not opened - %s\n",
-					s, Errormsg(errno) );
-			}
-			DEBUG1("Pgp_get_pgppassfd: PGPPASSFD file '%s', size %0.0f, fd %d",
-				s, (double)statb.st_size, pgppassfd );
-		} else if( (s = getenv("HOME")) && passphrasefile ){
-			char *path;
-			s = safestrdup2(s,"/.pgp",__FILE__,__LINE__);
-			path = Make_pathname( s, passphrasefile);
-			if( s ) free(s); s = 0;
-			if( (pgppassfd = Checkread( path, &statb )) < 0 ){
-				Errorcode = JABORT;
-				Diemsg("passphrase file %s not readable - %s",
-					passphrasefile, Errormsg(errno));
-			}
-			DEBUG1("Pgp_get_pgppassfd: PGPPASSFD file '%s', size %0.0f, fd %d",
-				path, (double)statb.st_size, pgppassfd );
-			if( path ) free(path); path = 0;
-		}
-	} else if( (pgppassfd =
-		Checkread(server_passphrasefile,&statb)) < 0 ){
-		plp_snprintf(error,errlen,
-			"Pgp_get_pgppassfd: cannot open '%s' - '%s'",
-			server_passphrasefile, Errormsg(errno) );
-	}
-	return(pgppassfd);
-}
-
-int Pgp_decode(struct line_list *info, char *tempfile, char *pgpfile,
-	struct line_list *pgp_info, char *buffer, int bufflen,
-	char *error, int errlen, char *esc_to_id, struct line_list *from_info,
-	int *pgp_exit_code, int *not_a_ciphertext )
-{
-	struct line_list env, files;
-	plp_status_t procstatus;
-	int pgppassfd = -1, error_fd[2], status, cnt, n, pid, i;
-	char *s, *t;
-	char *path = Find_str_value( info, "path", Value_sep );
-	*pgp_exit_code = *not_a_ciphertext = 0;
-
-	Init_line_list(&env);
-	Init_line_list(&files);
-
-	DEBUG1("Pgp_decode: esc_to_id '%s'", esc_to_id );
-
-	error[0] = 0;
-	status = 0;
-	if( path == 0 ){
-		plp_snprintf( error, errlen,
-		"Pgp_decode: missing pgp_path info"); 
-		status = JFAIL;
-		goto error;
-	}
-
-	status = 0;
-	error_fd[0] = error_fd[1] = -1;
-
-	error[0] = 0;
-	pgppassfd = Pgp_get_pgppassfd( info, error, errlen );
-	if( error[0] ){
-		status = JFAIL;
-		goto error;
-	}
-
-	/* run the PGP decoder */
-	if( pipe(error_fd) == -1 ){
-		Errorcode = JFAIL;
-		logerr_die(LOG_INFO, "Pgp_decode: pipe failed - '%s'" );
-	}
-	Check_max(&files,10);
-	files.list[files.count++] = Cast_int_to_voidstar(0);
-	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-	if( pgppassfd >= 0 ){
-		Set_decimal_value(&env,"PGPPASSFD",files.count);
-		files.list[files.count++] = Cast_int_to_voidstar(pgppassfd);
-	}
-
-	/* now we run the PGP code */
-
-	plp_snprintf(buffer,bufflen,
-		"%s +force +batch %s -u $%%%s -o %s",
-		path, pgpfile, esc_to_id, tempfile ); 
-
-	if( (pid = Make_passthrough(buffer, 0, &files, 0, &env )) < 0 ){
-		DEBUG1("Pgp_decode: fork failed - %s", Errormsg(errno));
-		status = JFAIL;
-		goto error;
-	}
-
-	files.count = 0;
-	Free_line_list(&files);
-	Free_line_list(&env);
-	close(error_fd[1]); error_fd[1] = -1;
-	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
-
-	/* now we read authentication info from pgp */
-
-	n = 0;
-	while( n < bufflen-1
-		&& (cnt = read( error_fd[0], buffer+n, bufflen-1-n )) > 0 ){
-		buffer[n+cnt] = 0;
-		while( (s = safestrchr(buffer,'\n')) ){
-			*s++ = 0;
-			DEBUG1("Pgp_decode: pgp output '%s'", buffer );
-			while( cval(buffer) && !isprint(cval(buffer)) ){
-				memmove(buffer,buffer+1,strlen(buffer+1)+1);
-			}
-			/* rip out extra spaces */
-			for( t = buffer; *t ; ){
-				if( isspace(cval(t)) && isspace(cval(t+1)) ){
-					memmove(t,t+1,strlen(t+1)+1);
-				} else {
-					++t;
-				}
-			}
-			if( buffer[0] ){
-				DEBUG1("Pgp_decode: pgp final output '%s'", buffer );
-				Add_line_list( pgp_info, buffer, 0, 0, 0 );
-			}
-			memmove(buffer,s,strlen(s)+1);
-		}
-	}
-	close(error_fd[0]); error_fd[0] = -1;
-
-	/* wait for pgp to exit and check status */
-	while( (n = waitpid(pid,&procstatus,0)) != pid ){
-		int err = errno;
-		DEBUG1("Pgp_decode: waitpid(%d) returned %d, err '%s'",
-			pid, n, Errormsg(err) );
-		if( err == EINTR ) continue; 
-		Errorcode = JABORT;
-		logerr_die( LOG_ERR, "Pgp_decode: waitpid(%d) failed", pid);
-	} 
-	DEBUG1("Pgp_decode: pgp pid %d exit status '%s'",
-		pid, Decode_status(&procstatus) );
-	if( WIFEXITED(procstatus) && (n = WEXITSTATUS(procstatus)) ){
-		plp_snprintf(error,errlen,"Pgp_decode: exit status %d",n);
-		DEBUG1("Pgp_decode: pgp exited with status %d on host %s", n, FQDNHost_FQDN );
-		*pgp_exit_code = n;
-		for( i = 0; (n = strlen(error)) < errlen - 2 && i < pgp_info->count; ++i ){
-			s = pgp_info->list[i];
-			plp_snprintf(error+n, errlen-n,"\n %s",s);
-			if( !*not_a_ciphertext ){
-				*not_a_ciphertext = (strstr(s, "not a ciphertext") != 0);
-			}
-		}
-		status = JFAIL;
-		goto error;
-	} else if( WIFSIGNALED(procstatus) ){
-		n = WTERMSIG(procstatus);
-		DEBUG1( "Pgp_decode: pgp died with signal %d, '%s'",
-			n, Sigstr(n));
-		status = JFAIL;
-		goto error;
-	}
-
-	for( i = 0; i < pgp_info->count; ++i ){
-		s = pgp_info->list[i];
-		if( !safestrncmp("Good",s,4) ){
-			if( (t = safestrchr(s,'"')) ){
-				*t++ = 0;
-				if( (s = safestrrchr(t,'"')) ) *s = 0;
-				DEBUG1( "Pgp_decode: FROM '%s'", t );
-				Set_str_value(from_info,FROM,t);
-			}
-		}
-	}
-
- error:
-	DEBUG1( "Pgp_decode: error '%s'", error );
-	if( error_fd[0] >= 0 ) close(error_fd[0]); error_fd[0] = -1;
-	if( error_fd[1] >= 0 ) close(error_fd[1]); error_fd[1] = -1;
-	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
-	Free_line_list(&env);
-	files.count = 0;
-	Free_line_list(&files);
-	return( status );
-}
-
-int Pgp_encode(struct line_list *info, char *tempfile, char *pgpfile,
-	struct line_list *pgp_info, char *buffer, int bufflen,
-	char *error, int errlen, char *esc_from_id, char *esc_to_id,
-	int *pgp_exit_code )
-{
-	struct line_list env, files;
-	plp_status_t procstatus;
-	int error_fd[2], status, cnt, n, pid, pgppassfd = -1, i;
-	char *s, *t;
-	char *path = Find_str_value( info, "path", Value_sep );
-
-	Init_line_list(&env);
-	Init_line_list(&files);
-	*pgp_exit_code = 0;
-	status = 0;
-	if( path == 0 ){
-		plp_snprintf( error, errlen,
-		"Pgp_encode: missing pgp_path info"); 
-		status = JFAIL;
-		goto error;
-	}
-	DEBUG1("Pgp_encode: esc_from_id '%s', esc_to_id '%s'",
-		esc_from_id, esc_to_id );
-
-	status = 0;
-	pgppassfd = error_fd[0] = error_fd[1] = -1;
-
-	error[0] = 0;
-	pgppassfd = Pgp_get_pgppassfd( info, error, errlen );
-	if( error[0] ){
-		status = JFAIL;
-		goto error;
-	}
-
-	pgpfile = safestrdup2(tempfile,".pgp",__FILE__,__LINE__);
-	Check_max(&Tempfiles,1);
-	if( !Debug ) Tempfiles.list[Tempfiles.count++] = pgpfile;
-
-	if( pipe(error_fd) == -1 ){
-		Errorcode = JFAIL;
-		logerr_die(LOG_INFO, "Pgp_encode: pipe failed - '%s'" );
-	}
-	Check_max(&files,10);
-	files.count = 0;
-	files.list[files.count++] = Cast_int_to_voidstar(0);
-	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-	files.list[files.count++] = Cast_int_to_voidstar(error_fd[1]);
-
-	if( pgppassfd > 0 ){
-		Set_decimal_value(&env,"PGPPASSFD",files.count);
-		files.list[files.count++] = Cast_int_to_voidstar(pgppassfd);
-	}
-
-	/* now we run the PGP code */
-
-	plp_snprintf(buffer,bufflen,
-		"$- %s +armorlines=0 +verbose=0 +force +batch -sea %s $%%%s -u $%%%s -o %s",
-		path, tempfile, esc_to_id, esc_from_id, pgpfile );
-
-	if( (pid = Make_passthrough(buffer, 0, &files, 0, &env )) < 0 ){
-		Errorcode = JABORT;
-		logerr_die( LOG_INFO, "Pgp_encode: fork failed");
-	}
-
-	DEBUG1("Pgp_encode: pgp pid %d", pid );
-	files.count = 0;
-	Free_line_list(&files);
-	Free_line_list(&env);
-	close(error_fd[1]); error_fd[1] = -1;
-	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
-
-	/* now we read error info from pgp */
-
-	n = 0;
-	while( n < bufflen-1
-		&& (cnt = read( error_fd[0], buffer+n, bufflen-1-n )) > 0 ){
-		buffer[n+cnt] = 0;
-		while( (s = safestrchr(buffer,'\n')) ){
-			*s++ = 0;
-			DEBUG1("Pgp_encode: pgp output '%s'", buffer );
-			while( cval(buffer) && !isprint(cval(buffer)) ){
-				memmove(buffer,buffer+1,strlen(buffer+1)+1);
-			}
-			/* rip out extra spaces */
-			for( t = buffer; *t ; ){
-				if( isspace(cval(t)) && isspace(cval(t+1)) ){
-					memmove(t,t+1,strlen(t+1)+1);
-				} else {
-					++t;
-				}
-			}
-			if( buffer[0] ){
-				DEBUG1("Pgp_encode: pgp final output '%s'", buffer );
-				Add_line_list( pgp_info, buffer, 0, 0, 0 );
-			}
-			memmove(buffer,s,strlen(s)+1);
-		}
-	}
-	close(error_fd[0]); error_fd[0] = -1;
-
-	/* wait for pgp to exit and check status */
-	while( (n = waitpid(pid,&procstatus,0)) != pid ){
-		int err = errno;
-		DEBUG1("Pgp_encode: waitpid(%d) returned %d, err '%s', status '%s'",
-			pid, n, Errormsg(err), Decode_status(&procstatus));
-		if( err == EINTR ) continue; 
-		Errorcode = JABORT;
-		logerr_die( LOG_ERR, "Pgp_encode: waitpid(%d) failed", pid);
-	} 
-	DEBUG1("Pgp_encode: pgp pid %d exit status '%s'",
-		pid, Decode_status(&procstatus) );
-	if(DEBUGL1)Dump_line_list("Pgp_encode: pgp_info", pgp_info);
-	if( WIFEXITED(procstatus) && (n = WEXITSTATUS(procstatus)) ){
-		plp_snprintf(error,errlen,
-			"Pgp_encode: pgp exited with status %d on host %s", n, FQDNHost_FQDN );
-		*pgp_exit_code = n;
-		for( i = 0; (n = strlen(error)) < errlen - 2 && i < pgp_info->count; ++i ){
-			s = pgp_info->list[i];
-			plp_snprintf(error+n, errlen-n,"\n %s",s);
-		}
-		status = JFAIL;
-		goto error;
-	} else if( WIFSIGNALED(procstatus) ){
-		n = WTERMSIG(procstatus);
-		plp_snprintf(error,errlen,
-		"Pgp_encode: pgp died with signal %d, '%s'",
-			n, Sigstr(n));
-		status = JFAIL;
-		goto error;
-	}
-
- error:
-	DEBUG1("Pgp_encode: status %d, error '%s'", status, error );
-	if( error_fd[0] >= 0 ) close(error_fd[0]); error_fd[0] = -1;
-	if( error_fd[1] >= 0 ) close(error_fd[1]); error_fd[1] = -1;
-	if( pgppassfd >= 0) close(pgppassfd); pgppassfd = -1;
-	Free_line_list(&env);
-	files.count = 0;
-	Free_line_list(&files);
-	return( status );
 }

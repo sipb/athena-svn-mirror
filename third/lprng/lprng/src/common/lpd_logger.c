@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_logger.c,v 1.1.1.3 2000-03-31 15:48:03 mwhitson Exp $";
+"$Id: lpd_logger.c,v 1.2 2001-03-07 01:19:32 ghudson Exp $";
 
 
 #include "lp.h"
@@ -255,106 +255,92 @@ void Add_record( struct file_info *io, char *buf )
 	DEBUGFC(DLOG2)Dump_file_info_contents("Add_record - end", io );
 }
 
-int Dump_queue_status(int outfd)
+void Dump_queue_status(void)
 {
-	int i, count, fd;
-	char *s, *sp, *pr;
+	int i, count;
+	char *sp, *s, *record, *pr;
 	struct line_list info;
 	struct job job;
 	char buffer[SMALLBUFFER];
-	/* char *esc_lf_2 = Escape("\n",0, 2); */
-	/* char *esc_lf_2 = "%25250a"; */
-	char *esc_lf_1 = "%250a";
-	struct stat statb;
 
-	s = sp = 0;
+	sp = s = record = 0;
 	Init_job(&job);
 	Init_line_list(&info);
 	if(All_line_list.count == 0 ){
 		Get_all_printcap_entries();
 	}
-	DEBUGF(DLOG2)("Dump_queue_status: writing to fd %d", outfd );
 	for( i = 0; i < All_line_list.count; ++i ){
 		Set_DYN(&Printer_DYN,0);
+		if( sp ) free(sp); sp = 0;
+		if( s ) free(s); s = 0;
+		if( record ) free(record); record = 0;
 		pr = All_line_list.list[i];
-		DEBUGF(DLOG2)("Dump_queue_status: checking '%s'", pr );
+		DEBUG1("Dump_queue_status: checking '%s'", pr );
 		if( Setup_printer( pr, buffer, sizeof(buffer)) ) continue;
 		Free_line_list( &Sort_order );
 		if( Scan_queue( Spool_dir_DYN, &Spool_control, &Sort_order,
 				0,0,0, 0 ) ){
 			continue;
 		}
-		if( Write_fd_str( outfd, "DUMP=" ) < 0 ){ return(1); }
-		Free_line_list(&info);
-		Set_str_value(&info,PRINTER,Printer_DYN);
-		Set_str_value(&info,HOST,FQDNHost_FQDN);
-		Set_decimal_value(&info,PROCESS,getpid());
-		Set_str_value(&info,UPDATE_TIME,Time_str(0,0));
-
-		s = Join_line_list(&info,"\n");
-		sp = Escape(s,0, 1);
-		if( Write_fd_str( outfd, sp ) < 0 ){ return(1); }
-
-		if( s ) free(s); s = 0;
-		if( sp ) free(sp); s = 0;
-
-		if( Write_fd_str( outfd, "VALUE=" ) < 0 ){ return(1); }
-
-		if( Write_fd_str( outfd, "QUEUE%3d" ) < 0 ){ return(1); }
-		if( (fd = Checkread( Queue_control_file_DYN, &statb )) > 0 ){
-			while( (count = read(fd, buffer, sizeof(buffer)-1)) > 0 ){
-				buffer[count] = 0;
-				s = Escape(buffer,0,3);
-				if( Write_fd_str( outfd, s ) < 0 ){ return(1); }
-				free(s);
-			}
-			close(fd);
-		}
-		if( Write_fd_str( outfd, esc_lf_1 ) < 0 ){ return(1); }
-
-		if( Write_fd_str( outfd, "PRSTATUS%3d" ) < 0 ){ return(1); }
-		if( (fd = Checkread( Queue_status_file_DYN, &statb )) > 0 ){
-			while( (count = read(fd, buffer, sizeof(buffer)-1)) > 0 ){
-				buffer[count] = 0;
-				s = Escape(buffer,0,3);
-				if( Write_fd_str( outfd, s ) < 0 ){ return(1); }
-				free(s);
-			}
-			close(fd);
-		}
-		if( Write_fd_str( outfd, esc_lf_1 ) < 0 ){ return(1); }
+		/* now we generate spool queue record */
+		s = Join_line_list(&Spool_control,"\n");
+		sp = Escape(s,0);
+		if(s) free(s); s = 0;
+		s = safestrdup4(QUEUE,"=",sp,"\n",__FILE__,__LINE__);
+		if(sp) free(sp); sp = 0;
+		sp = Escape(s,0);
+		if(s) free(s); s = 0;
+		record = safeextend2(record,sp,__FILE__,__LINE__);
+		if(sp) free(sp); sp = 0;
+		DEBUGF(DLOG2)("Dump_queue_status: spool record '%s'", record );
 
 		for( count = 0; count < Sort_order.count; ++count ){
 			Free_job(&job);
 			s = Sort_order.list[count];
-			if( (s = safestrchr(s,';')) ){
+			if( (s = strchr(s,';')) ){
 				Split(&job.info,s+1,";",1,Value_sep,1,1,0);
 			}
 			if( job.info.count == 0 ) continue;
-			if( Write_fd_str( outfd, "UPDATE%3d" ) < 0 ){ return(1); }
+			DEBUGFC(DLOG2)Dump_job("Dump_queue_status - job", &job );
 			s = Join_line_list(&job.info,"\n");
-			sp = Escape(s,0, 3);
-			if( Write_fd_str( outfd, sp ) < 0 ){ return(1); }
-			if( s ) free(s); s = 0;
-			if( sp ) free(sp); s = 0;
-			if( Write_fd_str( outfd, esc_lf_1 ) < 0 ){ return(1); }
+			sp = Escape(s,0);
+			if(s) free(s); s = 0;
+			s = safestrdup4(UPDATE,"=",sp,"\n",__FILE__,__LINE__);
+			if(sp) free(sp); sp = 0;
+			sp = Escape(s,0);
+			if(s) free(s); s = 0;
+			DEBUGF(DLOG2)("Dump_queue_status: encoded '%s'", sp );
+			record = safeextend2(record,sp,__FILE__,__LINE__);
+			if(sp) free(sp); sp = 0;
 		}
-		if( Write_fd_str( outfd, "\n" ) < 0 ){ return(1); }
+		DEBUGF(DLOG2)("Dump_queue_status: total record '%s'", record );
+		Free_line_list(&info);
+		Put_header(0,&info);
+		Set_str_value(&info,VALUE,record);
+		if( record ) free(record); record = 0;
+		s = Join_line_list(&info,"\n");
+		Free_line_list(&info);
+		sp = Escape(s,0);
+		if( s ) free(s); s = 0;
+		s = safestrdup4(DUMP,"=",sp,"\n",__FILE__,__LINE__);
+		if( sp ) free(sp); sp = 0;
+		DEBUGF(DLOG2)("Dump_queue_status: total entry '%s'", s );
+		Put_buf_str( s, &Outbuf, &Outmax, &Outlen );
+		if( s ) free(s); s = 0;
 	}
-	if( Write_fd_str( outfd, "END\n" ) < 0 ){ return(1); }
 	Set_DYN(&Printer_DYN,0);
 
 	Free_line_list( &Sort_order );
 	Free_line_list(&info);
 	Free_job(&job);
-	if( s ) free(s); s = 0;
 	if( sp ) free(sp); sp = 0;
-	return(0);
+	if( s ) free(s); s = 0;
+	if( record ) free(record); record = 0;
 }
 
 void Logger( struct line_list *args )
 {
-	char *port, *s, *path, *host, *tempfile;
+	char *port, *s, *path, *host;
 	int max_size, writefd,m, c, timeout, readfd;
 	time_t start_time, current_time;
 	int elapsed, left, err;
@@ -362,12 +348,12 @@ void Logger( struct line_list *args )
 	fd_set readfds, writefds; /* for select() */
 	char inbuffer[LARGEBUFFER];
 	static struct file_info ioval;
-	int status_fd;
-	struct stat statb;
 
 	Errorcode = JABORT;
 
 
+	Name = "LOG";
+	setproctitle( "lpd %s", Name );
 	Name = "LOG2";
 	setproctitle( "lpd %s", Name );
 	Register_exit("Free_file_info", (exit_ret)Free_file_info, &ioval );
@@ -383,14 +369,14 @@ void Logger( struct line_list *args )
 	host = safestrdup(Logger_destination_DYN,__FILE__,__LINE__);
 	port = 0;
 	/* OK, we try to open a connection to the logger */
-	if( host && (port = safestrchr( host, '%')) ){
+	if( host && (port = strchr( host, '%')) ){
 		*port++ = 0;
 	}
 
 	readfd = Find_flag_value(args,INPUT,Value_sep);
 	Free_line_list(args);
 
-	writefd = -2;
+	writefd = -1;
 	/* now we set up the IO file */
 	Init_file_info(&ioval,path,max_size);
 	Set_nonblock_io(readfd);
@@ -400,10 +386,6 @@ void Logger( struct line_list *args )
 	time( &start_time );
 	Init_buf(&Inbuf,&Inmax,&Inlen);
 	Init_buf(&Outbuf,&Outmax,&Outlen);
-	status_fd = Make_temp_fd( &tempfile );
-	close( status_fd );
-	status_fd = -1;
-
 	while( 1 ){
 		tp = 0;
 		left = 0;
@@ -418,7 +400,7 @@ void Logger( struct line_list *args )
 			left = timeout - elapsed;
 			DEBUGF(DLOG2)("Logger: writefd fd %d, max timeout %d, left %d",
 					writefd, timeout, left );
-			if( left <= 0 || writefd == -2 ){
+			if( left <= 0 ){
 				writefd = Link_open(host, port, Connect_timeout_DYN, 0 );
 				DEBUGF(DLOG2)("Logger: open fd %d, host '%s', port '%s'",
 						writefd, host, port );
@@ -426,39 +408,8 @@ void Logger( struct line_list *args )
 					Set_nonblock_io( writefd );
 					ioval.start = 0;
 					ioval.count = 0;
-					if( (status_fd = Checkwrite(tempfile, &statb, O_RDWR, 1, 0)) < 0 ){
-						logerr_die( LOG_INFO, "Logger: cannot open file '%s'", tempfile);
-					}
-					if( lseek( status_fd, 0, SEEK_SET) != 0 ){
-						Errorcode = JABORT;
-						logerr_die( LOG_INFO, "Logger: lseek failed file '%s'", tempfile);
-					}
-					if( ftruncate( status_fd, 0 ) ){
-						Errorcode = JABORT;
-						logerr_die( LOG_INFO, "Logger: ftruncate failed file '%s'", tempfile);
-					}
 					Init_buf(&Outbuf,&Outmax,&Outlen);
-					if( Dump_queue_status(status_fd) ){
-						DEBUGF(DLOG2)("Logger: Dump_queue_status failed - %s", Errormsg(errno) );
-						Errorcode = JABORT;
-						logerr_die( LOG_INFO, "Logger: cannot write file '%s'", tempfile);
-					}
-					if( lseek( status_fd, 0, SEEK_SET) != 0 ){
-						Errorcode = JABORT;
-						logerr_die( LOG_INFO, "Logger: lseek failed file '%s'", tempfile);
-					}
-					if( (m = read( status_fd, inbuffer, sizeof(inbuffer) )) > 0 ){
-						Put_buf_len( inbuffer, m, &Outbuf, &Outmax, &Outlen );
-						DEBUGF(DLOG2)("Logger: queue status '%s'", Outbuf );
-					} else if( m == 0 ){
-						close( status_fd );
-						status_fd = -1;
-					} else {
-						Errorcode = JABORT;
-						logerr_die(LOG_INFO,"Logger: read error %s", tempfile);
-					}
-				} else {
-					writefd = -1;
+					Dump_queue_status();
 				}
 				time( &start_time );
 				time( &current_time );
@@ -476,12 +427,8 @@ void Logger( struct line_list *args )
 		FD_ZERO( &writefds );
 		FD_ZERO( &readfds );
 		m = 0;
-		if( writefd >= 0 ){
-			if( ioval.count || Outlen || status_fd >= 0 ){
-				FD_SET( writefd, &writefds );
-				if( m <= writefd ) m = writefd+1;
-			}
-			FD_SET( writefd, &readfds );
+		if( writefd >= 0 && (ioval.count || Outlen ) ){
+			FD_SET( writefd, &writefds );
 			if( m <= writefd ) m = writefd+1;
 		}
 		if( readfd >= 0 ){
@@ -504,12 +451,6 @@ void Logger( struct line_list *args )
 				logerr_die(LOG_INFO,"Logger: select error");
 			}
 		} else if( m > 0 ){
-			if( writefd >=0 && FD_ISSET( writefd, &readfds ) ){
-				/* we have EOF on the file descriptor */
-				DEBUGF(DLOG2)("Logger: eof on writefd fd %d", writefd );
-				close( writefd );
-				writefd = -2;
-			}
 			if( readfd >=0 && FD_ISSET( readfd, &readfds ) ){
 				DEBUGF(DLOG2)("Logger: read possible on fd %d", readfd );
 				inbuffer[0] = 0;
@@ -519,7 +460,7 @@ void Logger( struct line_list *args )
 				if( m > 0 ){
 					inbuffer[m] = 0;
 					Put_buf_len( inbuffer, m, &Inbuf, &Inmax, &Inlen );
-					while( (s = safestrchr(Inbuf,'\n')) ){
+					while( (s = strchr(Inbuf,'\n')) ){
 						c = s[1];
 						s[1] = 0;
 						DEBUGF(DLOG2)("Logger: found '%s'", Inbuf );
@@ -542,17 +483,6 @@ void Logger( struct line_list *args )
 			if( writefd >=0 && FD_ISSET( writefd, &writefds ) ){
 				DEBUGF(DLOG2)("Logger: write possible on fd %d, Outlen %d, ioval.count %d",
 					writefd, Outlen, ioval.count );
-				if( Outlen == 0 && status_fd >= 0 ){
-					if( (m = read( status_fd, inbuffer, sizeof(inbuffer) )) > 0 ){
-						Put_buf_len( inbuffer, m, &Outbuf, &Outmax, &Outlen );
-					} else if( m == 0 ){
-						close( status_fd );
-						status_fd = -1;
-					} else {
-						Errorcode = JABORT;
-						logerr_die(LOG_INFO,"Logger: read error %s", tempfile);
-					}
-				}
 				if( Outlen == 0 && ioval.count ){
 					Init_buf( &Outbuf, &Outmax, &Outlen );
 					if( (s = Get_record( &ioval, ioval.start, 0 )) ){
@@ -568,7 +498,7 @@ void Logger( struct line_list *args )
 					if( m < 0 ){
 						/* we have EOF on the file descriptor */
 						close( writefd );
-						writefd = -2;
+						writefd = -1;
 					} else {
 						memmove(Outbuf, Outbuf+m, strlen(Outbuf+m)+1 );
 						Outlen = strlen( Outbuf );

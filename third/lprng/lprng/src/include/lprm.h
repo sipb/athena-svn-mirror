@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lprm.h,v 1.3 2000-03-31 16:21:16 mwhitson Exp $
+ * $Id: lprm.h,v 1.4 2001-03-07 01:20:17 ghudson Exp $
  ***************************************************************************/
 
 
@@ -16,7 +16,6 @@
 EXTERN char *Auth_JOB; /* Auth type to use, overriding printcap */
 EXTERN int All_printers;    /* show all printers */
 EXTERN int LP_mode;    /* show all printers */
-EXTERN int Mail_fd;    /* show all printers */
 
 /* PROTOTYPES */
 

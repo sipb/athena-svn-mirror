@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendreq.c,v 1.3 1999-10-27 22:31:38 mwhitson Exp $";
+"$Id: sendreq.c,v 1.4 2001-03-07 01:19:46 ghudson Exp $";
 
 
 #include "lp.h"
@@ -88,7 +88,7 @@ int Send_request(
 	if( islower( class ) ) class = toupper(class);
 
 	if( Remote_support_DYN ){
-		if( safestrchr( Remote_support_DYN, class ) == 0 ){
+		if( strchr( Remote_support_DYN, class ) == 0 ){
 			DEBUG1("Send_request: no remote support for '%c' operation", class );
 			if( !Is_server ){
 				errormsg = _("no network support for request");
@@ -97,8 +97,8 @@ int Send_request(
 			}
 			goto error;
 		}
-		if( format == REQ_VERBOSE
-			&& safestrpbrk( "vV", Remote_support_DYN ) == 0 ){
+		if( format == REQ_VERBOSE 
+		    && strpbrk( "vV", Remote_support_DYN ) == 0 ){
 			DEBUG1("Send_request: no support for verbose status" );
 			if( !Is_server ){
 				errormsg = _("no network support for verbose status");
@@ -145,7 +145,7 @@ int Send_request(
 
 	/* now send the command line */
 
-	if( safestrcasecmp(Auth_DYN, NONEP)
+	if( safestrcasecmp(Auth_DYN, NONE)
 		&& safestrcasecmp(Auth_DYN, KERBEROS4) ){
 		/* all but Kerberos 4 */
 		tempfd = Make_temp_fd(&tempfile);

@@ -1,18 +1,17 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.11 2000-12-15 21:57:04 zacheiss Exp $";
+"$Id: sendmail.c,v 1.12 2001-03-07 01:19:46 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
-#include "permission.h"
 #include "fileopen.h"
 #include "getqueue.h"
 #include "sendmail.h"
@@ -30,7 +29,7 @@ void Sendmail_to_user( int retval, struct job *job )
 {
 	char buffer[LARGEBUFFER];
 	int in[2], out[2], pid, n, len, longoutput = 1;
-	char *id, *mailname, *s, *process;
+	char *id, *mailname, *path, *s, *process;
 	plp_status_t status;
 	struct line_list files;
 
@@ -73,12 +72,6 @@ void Sendmail_to_user( int retval, struct job *job )
 		char *p;
 
 		mailname += 7;
-
-		/* If mailname is an empty string, we'll end up sending
-		 * a zephyr to <message,personal,*>. 
-		 */
-		if (!*mailname)
-		  return;
 
 		/* Make sure printer and user names are sane */
 		for( p = Printer_DYN; *p; p++ ){
@@ -161,15 +154,10 @@ void Sendmail_to_user( int retval, struct job *job )
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
 		_(" failed and could not be retried.\n") );
 		break;
-	
-	case P_REJECT:
-	        plp_snprintf(buffer+len,sizeof(buffer)-len,
-		_(" failed.  You are not allowed to print here.\n") );
-		break;
-		
+
 	default:
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
-		_(" failed. Make sure that\nthe printer is turned on and has a working network connection.\n"));
+		_(" died a horrible death.\n"));
 		break;
 	}
 
@@ -177,9 +165,21 @@ void Sendmail_to_user( int retval, struct job *job )
 		/*
 		 * get the last status of the spooler
 		 */
-		if( (s = Get_file_image( Spool_dir_DYN, Queue_status_file_DYN, Max_status_size_DYN )) ){
+		path = safestrdup2( "status.", Printer_DYN, __FILE__,__LINE__ );
+		if( (s = Get_file_image( Spool_dir_DYN, path,
+			Max_status_size_DYN )) ){
 			len = strlen(buffer);
-			plp_snprintf(buffer+len,sizeof(buffer)-len, "\nStatus:\n\n%s", s);
+			plp_snprintf(buffer+len,sizeof(buffer)-len,
+				     "\nStatus:\n\n%s", s);
+			if(s) free(s); s = 0;
+		}
+		if(path) free(path); path = 0;
+
+		if( Status_file_DYN && (s = Get_file_image( Spool_dir_DYN,
+			Status_file_DYN, Max_status_size_DYN )) ){
+			len = strlen(buffer);
+			plp_snprintf(buffer+len,sizeof(buffer)-len,
+				     "\nFilter Status:\n\n%s", s);
 			if(s) free(s); s = 0;
 		}
 	}
@@ -191,7 +191,7 @@ void Sendmail_to_user( int retval, struct job *job )
 	while( len < sizeof(buffer)-1
 		&& (n = read(out[0],buffer+len,sizeof(buffer)-len-1)) >0 ){
 		buffer[n+len] = 0;
-		while( (s = safestrchr(buffer,'\n')) ){
+		while( (s = strchr(buffer,'\n')) ){
 			*s++ = 0;
 			setstatus(job,"mail: %s", buffer );
 			memmove(buffer,s,strlen(s)+1);
@@ -199,14 +199,7 @@ void Sendmail_to_user( int retval, struct job *job )
 		len = strlen(buffer);
 	}
 	close(out[0]);
-	while( (n = plp_waitpid(pid,&status,0)) != pid ){
-		int err = errno;
-		DEBUG1("Sendmail_to_user: waitpid(%d) returned %d, err '%s'",
-			pid, n, Errormsg(err) );
-		if( err == EINTR ) continue; 
-		Errorcode = JABORT;
-		logerr_die( LOG_ERR, "Sendmail_to_user: waitpid(%d) failed", pid);
-	} 
+	while( (n = plp_waitpid(pid,&status,0)) != pid );
 	DEBUG1("Sendmail_to_user: pid %d, exit status '%s'", pid,
 		Decode_status(&status) );
 	if( WIFEXITED(status) && (n = WEXITSTATUS(status)) ){

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpraccnt.c,v 1.1.1.3 2000-03-31 15:48:02 mwhitson Exp $";
+"$Id: lpraccnt.c,v 1.2 2001-03-07 01:19:38 ghudson Exp $";
 
 /*
  * Monitor for Accounting Information
@@ -31,6 +31,7 @@ int tcp_open( char *portnme );
 char buffer[1024];
 char *portname = "3000";
 
+const char * Errormsg ( int err );
 
 extern int Getopt(int argc, char *argv[], char *v), Optind;
 extern char *Optarg;
@@ -53,7 +54,6 @@ int main( int argc, char *argv[] )
 	struct sockaddr addr;
 	int len;
 
-	signal( SIGCHLD, SIG_DFL );
 	if( argv[0] ) prog = argv[0];
 	while( (i = Getopt( argc, argv, "D:p:")) != EOF ){
 		switch( i ){
@@ -187,7 +187,6 @@ int tcp_open( char *portnme )
 	return( fd );
 }
 
-#if 0
 /****************************************************************************
  * Extract the necessary definitions for error message reporting
  ****************************************************************************/
@@ -232,38 +231,3 @@ const char * Errormsg ( int err )
 #endif
     return (cp);
 }
-#endif
-
-/* VARARGS2 */
-#ifdef HAVE_STDARGS
- void setstatus (struct job *job,char *fmt,...)
-#else
- void setstatus (va_alist) va_dcl
-#endif
-{
-#ifndef HAVE_STDARGS
-    struct job *job;
-    char *fmt;
-#endif
-	char msg[LARGEBUFFER];
-    VA_LOCAL_DECL
-
-    VA_START (fmt);
-    VA_SHIFT (job, struct job * );
-    VA_SHIFT (fmt, char *);
-
-	msg[0] = 0;
-	(void) plp_vsnprintf( msg, sizeof(msg)-2, fmt, ap);
-	DEBUG4("setstatus: %s", msg );
-	if(  Verbose ){
-		(void) plp_vsnprintf( msg, sizeof(msg)-2, fmt, ap);
-		strcat( msg,"\n" );
-		if( Write_fd_str( 2, msg ) < 0 ) exit(0);
-	} else {
-		Add_line_list(&Status_lines,msg,0,0,0);
-	}
-	VA_END;
-	return;
-}
-
-void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}

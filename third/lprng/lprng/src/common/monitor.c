@@ -1,19 +1,18 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: monitor.c,v 1.1.1.3 2000-03-31 15:47:51 mwhitson Exp $";
+"$Id: monitor.c,v 1.2 2001-03-07 01:19:42 ghudson Exp $";
 
 
 #include "lp.h"
 #include "linelist.h"
-#include "getopt.h"
 #include "linksupport.h"
 #include "getqueue.h"
 /**** ENDINCLUDE ****/
@@ -54,6 +53,8 @@ char *prog = "???";
  *****************************************************************/
 
 /* use this before any error printing, sets up program Name */
+int Getopt( int argc, char *argv[], char *optstring );
+extern int Optind, Opterr;
 
 struct info {
 	char *buffer;
@@ -127,7 +128,7 @@ void usage(void)
 {
 	char *s;
 
-	if( (s = safestrrchr( prog, '/')) ){
+	if( (s = strrchr( prog, '/')) ){
 		prog  = s+1;
 	}
 	fprintf( stderr, "usage: %s [-u] [-t] [port]\n", prog );
@@ -140,18 +141,16 @@ void usage(void)
 	
 
 
-int main(int argc, char *argv[], char *envp[] )
+int main(int argc, char *argv[] )
 {
 	int n, i, c, err, max_port = 0;
 	char *portname, *s;
 	struct servent *servent;
 	struct info *in;
-
 	prog = argv[0];
-	Opterr = 1;
 	while( (n = Getopt(argc, argv, "dut")) != EOF ){
 		switch(n){
-		default:  usage(); break;
+		default: usage(); break;
 		case 'u': use_udp = !use_udp; break;
 		case 't': use_tcp = !use_tcp; break;
 		case 'd': debug = 1; break;
@@ -251,7 +250,7 @@ int main(int argc, char *argv[], char *envp[] )
 						if(debug)fprintf( stdout, "recv port %d: %s\n", i, buffer );
 						Add_buffer(i);
 						in = Save_outbuf_len( i, buffer, c );
-						while( (s = safestrchr(in->buffer,'\n')) ){
+						while( (s = strchr(in->buffer,'\n')) ){
 							*s++ = 0;
 							Decode(in->buffer);
 							memmove(in->buffer,s, strlen(s)+1 );
@@ -283,59 +282,48 @@ void Decode( char *in )
 
 	printf("****\n");
 	if( debug )printf( "Decode: %s\n", in );
-	if((s = safestrpbrk(in,Value_sep)) ){
+	if((s = strpbrk(in,Value_sep)) ){
 		*s++ = 0;
 		Unescape(s);
 		Free_line_list(&l);
 		Split(&l,s,Line_ends,1,Value_sep,1,1,1);
 		for( i = 0; i < l.count; ++i ){
 			t = l.list[i];
-			if( debug || safestrncasecmp(t,VALUE,5) ){
+			if( debug || strncasecmp(t,VALUE,5) ){
 				printf("%s\n", t );
 			}
 		}
 		s = Find_str_value(&l,VALUE,Value_sep);
 		if( s ) Unescape(s);
-		if( !safestrcasecmp(in,TRACE) ){
+		if( !strcasecmp(in,TRACE) ){
 			printf("TRACE: '%s'\n", s );
-		} else if( !safestrcasecmp(in,UPDATE) ){
+		} else if( !strcasecmp(in,UPDATE) ){
 			printf("UPDATE: '%s'\n", s );
-			Split(&info,s,Line_ends,0,0,0,0,0);
-			for( i = 0; i < info.count; ++i ){
-				header = info.list[i];
-				if( (value = safestrchr(header,'=')) ) *value++ = 0;
-				Unescape(value);
-				printf(" [%d] %s='%s'\n", i, header, value );
-			}
-		} else if( !safestrcasecmp(in,PRSTATUS) ){
+			Free_line_list(&cf);
+			Split(&cf,s,Line_ends,1,Value_sep,1,1,1);
+			s = Find_str_value(&cf,CF_ESC_IMAGE,Value_sep);
+			if( s ) Unescape(s);
+			printf("  CF: '%s'\n", s );
+		} else if( !strcasecmp(in,PRSTATUS) ){
 			printf("PRSTATUS: '%s'\n", s );
-		} else if( !safestrcasecmp(in,QUEUE) ){
+		} else if( !strcasecmp(in,QUEUE) ){
 			printf("QUEUE: '%s'\n", s );
-			Split(&info,s,Line_ends,0,0,0,0,0);
-			for( i = 0; i < info.count; ++i ){
-				header = info.list[i];
-				if( (value = safestrchr(header,'=')) ) *value++ = 0;
-				Unescape(value);
-				printf(" [%d] %s='%s'\n", i, header, value );
-			}
-			Free_line_list(&info);
-		} else if( !safestrcasecmp(in,DUMP) ){
+		} else if( !strcasecmp(in,DUMP) ){
 			printf("DUMP:\n");
 			Split(&info,s,Line_ends,0,0,0,0,0);
 			for( i = 0; i < info.count; ++i ){
 				header = info.list[i];
-				if( (value = safestrchr(header,'=')) ) *value++ = 0;
+				if( (value = strchr(header,'=')) ) *value++ = 0;
 				Unescape(value);
 				if(debug) printf(" [%d] %s='%s'\n", i, header, value );
-				if( !safestrcasecmp(header,QUEUE) ){
-					printf(" EXTRACT QUEUE '%s'\n",value);
-				} else if( !safestrcasecmp(header,UPDATE) ){
-					printf(" EXTRACT UPDATE '%s'\n",value);
+				if( !strcasecmp(header,QUEUE) ){
+					printf(" DUMP QUEUE '%s'\n",value);
+				} else if( !strcasecmp(header,UPDATE) ){
+					printf(" DUMP UPDATE '%s'\n",value);
 				} else {
-					printf(" EXTRACT '%s' '%s'\n",header, value);
+					printf(" DUMP '%s' '%s'\n",header, value);
 				}
 			}
-			Free_line_list(&info);
 		} else {
 			printf("%s: '%s'\n", in, s );
 		}
@@ -424,7 +412,7 @@ int tcp_open( int port )
 	return( fd );
 }
 
-void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
+void send_to_logger (struct job *job,const char *header, char *fmt){;}
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
 void setstatus (struct job *job,char *fmt,...)

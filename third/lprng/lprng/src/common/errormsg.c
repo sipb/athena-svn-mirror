@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: errormsg.c,v 1.4 2000-09-27 04:39:06 zacheiss Exp $";
+"$Id: errormsg.c,v 1.5 2001-03-07 01:19:21 ghudson Exp $";
 
 
 #include "lp.h"
@@ -149,14 +149,14 @@ const char * Errormsg ( int err )
         if (Name && *Name) {
 			s = Name;
 		}
-		if( Is_server ) Name = "lpd";
+		if (Is_server) s = "lpd";
 		openlog(s, LOG_PID | LOG_NOWAIT, SYSLOG_FACILITY);
         init = 1;
     }
-    (void) syslog(kind, "%s", msg);
+    (void) syslog(kind, msg);
 
 #else
-    (void) syslog(SYSLOG_FACILITY | kind, "%s", msg);
+    (void) syslog(SYSLOG_FACILITY | kind, msg);
 #endif							/* HAVE_OPENLOG */
 #endif                          /* HAVE_SYSLOG_H */
 }
