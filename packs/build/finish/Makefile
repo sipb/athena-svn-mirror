@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1998-12-26 15:51:23 ghudson Exp $
+# $Id: Makefile,v 1.7 1999-12-15 05:27:19 jweiss Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -42,6 +42,7 @@ install:
 			 ${DESTDIR}/patch
 	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
 	./fix_owners ${DESTDIR}
+	chmod go-w ${DESTDIR}
 	${DESTDIR}${ATHETCDIR}/track -w -F${DESTDIR} -W${DESTDIR}${ATHLIBDIR} \
 		-s stats/sys_rvd slists/sys_rvd
 	chown 0 ${DESTDIR}${ATHLIBDIR}/stats/*
