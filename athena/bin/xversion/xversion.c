@@ -1,16 +1,13 @@
-#ifndef sgi
-#include <X11/copyright.h>
-#endif
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*
  * This program determines which X server is likely to be running by
  * attempting to connect to the X socket.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.3 1995-07-21 01:40:39 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.4 1995-12-05 01:32:45 epeisach Exp $
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.3 1995-07-21 01:40:39 cfields Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.c,v 1.4 1995-12-05 01:32:45 epeisach Exp $";
 
 #include <X11/Xlib.h>
 #include <stdio.h>
