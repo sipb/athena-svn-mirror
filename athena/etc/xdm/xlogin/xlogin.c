@@ -1,5 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.35 1993-07-26 08:33:05 vrt Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.36 1993-09-14 15:24:31 vrt Exp $ */
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <stdio.h>
 #include <signal.h>
 #include <sys/types.h>

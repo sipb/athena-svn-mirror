@@ -1,6 +1,10 @@
 # Display Manager Configuration File
+# $Id: config.rsaix,v 1.3 1993-09-14 15:23:40 vrt Exp $
 
-#prog   command line
-X       /usr/lpp/X11/bin/X -n :0 -c 0 -a 2
-console /etc/athena/console -f /etc/athena/login/Console -display unix:0
-login   /etc/athena/xlogin -fp /etc/athena/login/fonts/,/usr/lpp/fonts/,/usr/lpp/fonts/100dpi/,/usr/lpp/fonts/75dpi/,/usr/andrew/X11fonts.100/,/usr/lpp/info/X11fonts/ -config /etc/athena/login -display unix:0 -tty
+#prog	command line
+#AIXGTX	/usr/bin/X11/X -n :0 -c 0 -a 2 -x dps -x pcsim -bs -fp /usr/lib/X11/fonts/,/usr/lib/X11/fonts/75dpi/
+#AIXX	/usr/bin/X11/X -n :0 -c 0 -a 2 -x dps -x pcsim -bs -fp /usr/lib/X11/fonts/,/usr/lib/X11/fonts/100dpi/
+
+console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
+#AIXGTlogin   /etc/athena/xlogin -fp /usr/lib/X11/fonts/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
+#AIXlogin   /etc/athena/xlogin -fp /etc/athena/login/fonts/100dpi/,/usr/lib/X11/fonts/,/usr/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/75dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
