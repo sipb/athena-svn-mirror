@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.3 1989-11-15 11:35:33 jtkohl Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.4 1989-11-15 22:47:29 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -325,9 +325,9 @@ static void load_subscriptions()
 {
     FILE *subscriptions_file;
 
+    /* no system default sub file on client--they live on the server */
     subscriptions_file = locate_file(subscriptions_filename_override,
-		     ".zephyr.subs",
-		     "/afs/athena.mit.edu/user/c/chariot/.zephyr.subs.new");
+				     USRSUBS, NULL);
     if (subscriptions_file)
       load_subscriptions_from_file(subscriptions_file);
 }

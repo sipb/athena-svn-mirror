@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/subscriptions.h,v $
  *      $Author: jtkohl $
- *	$Id: subscriptions.h,v 1.3 1989-11-08 14:36:24 jtkohl Exp $
+ *	$Id: subscriptions.h,v 1.4 1989-11-15 22:47:38 jtkohl Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -26,5 +26,7 @@ extern void punt();
 extern void unpunt();
 extern void zwgc_shutdown();
 extern void zwgc_startup();
+
+#define USRSUBS ".zephyr.subs"
 
 #endif
