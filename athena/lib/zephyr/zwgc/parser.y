@@ -6,7 +6,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/parser.y,v $
- *      $Author: jtkohl $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_parser_y[] = "$Id: parser.y,v 1.3 1989-11-15 16:34:42 jtkohl Exp $";
+static char rcsid_parser_y[] = "$Id: parser.y,v 1.4 1994-12-22 05:03:46 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -29,6 +29,8 @@ static char rcsid_parser_y[] = "$Id: parser.y,v 1.3 1989-11-15 16:34:42 jtkohl E
 #include "parser.h"
 #include "node.h"
 #include "zwgc.h"
+
+static void yyerror();
 
 /*
  * the_program - local variable used to communicate the program's node
