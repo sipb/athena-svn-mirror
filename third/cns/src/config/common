@@ -21,7 +21,8 @@ CFLAGS=$(CFLAGS_LINK) $(INCLUDEFLAGS) $(DEFINES) $(GLOBAL_CDEFS)
 DEPEND=$(BUILDTOP)util$(S)makedepend$(S)makedepend
 
 INSTALL = $(SRCTOP)$(U)install.sh -c
-INSTALL_PROGRAM = $(INSTALL)
+INSTALL_SCRIPT = $(INSTALL)
+INSTALL_PROGRAM = $(INSTALL) -s
 INSTALL_DATA = $(INSTALL) -m 644
 
 srcdir=
@@ -111,22 +112,23 @@ COMPILE_ET_H= $(AWK) -f $(SRCTOP)util$(S)et$(S)et_h.awk outfile=$@
 COMPILE_ET_C= $(AWK) -f $(SRCTOP)util$(S)et$(S)et_c.awk outfile=$@
 .SUFFIXES:  .h .c .et .ct
 
+COMPILE_ET= compile_et
 .et.h:
-	$(AWK) -f $(SRCTOP)util$(S)et$(S)et_h.awk outfile=$*.h $<
+	$(COMPILE_ET) $<
 
 .et.c:
-	$(AWK) -f $(SRCTOP)util$(S)et$(S)et_c.awk outfile=$*.c $<
+	$(COMPILE_ET) $<
 
 ### /*
 ###  * The name of a command which compiles command tables.
 ###  */
-MAKE_COMMANDS= $(BUILDTOP)util$(S)ss$(S)mk_cmds
+MAKE_COMMANDS= mk_cmds
 .ct.c:
-	$(MAKE_COMMANDS) -o $@ $<
+	$(MAKE_COMMANDS) $<
 ### /*
 ###  * Loader argument to get the com_err library
 ###  */
-COM_ERR = $(BUILDTOP)util$(S)et$(S)libcom_err.$(LIBEXT)
+COM_ERR = /usr/athena/lib/libcom_err.a
 ### /*
 ###  * Dependency name for COM_ERR, if any
 ###  */
@@ -134,7 +136,7 @@ COM_ERR_DEP = $(COM_ERR)
 ### /*
 ###  * Loader argument to get the ss library
 ###  */
-SS_LIB = $(BUILDTOP)util$(S)ss$(S)libss.$(LIBEXT)
+SS_LIB = /usr/athena/lib/libss.a
 ### /*
 ###  * Dependency name for SS_LIB, if any
 ###  */
@@ -195,6 +197,8 @@ RANLIB= ranlib
 INSTALLFILE= $(INSTALL_DATA)
 ### /* install a library */ 
 INSTALLLIB= $(INSTALL_DATA)
+### /* install a script */
+INSTALLSCRIPT= $(INSTALL_SCRIPT)
 ### /* install a program */
 INSTALLPROG= $(INSTALL_PROGRAM)
 ### /* invoke raw install program */
