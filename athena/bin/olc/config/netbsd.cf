@@ -1,0 +1,13 @@
+
+#define Posix   		1
+#define HaveTermIO		0
+#define HaveDefErrno		1
+#define HaveSelectMacros	1
+#define HaveAnsiIncludes	1
+#define HasVFork		1
+#define HasPutenv		1
+#define HasVoidSignalReturn	1
+#define HasSaberC		0
+#define StripInstalledPrograms	1
+/* temporary */
+#define HaveMotif		0

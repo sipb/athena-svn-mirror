@@ -1,0 +1,19 @@
+
+#define Posix   		1
+#define HaveTermIO		1
+#define HaveDefErrno		1
+#define HaveSelectMacros	1
+#define HaveAnsiIncludes	1
+#define HasVFork		1
+#define HasPutenv		1
+#define HasVoidSignalReturn	1
+#define HasSaberC		0
+#define StripInstalledPrograms	1
+#define HaveGcc			1
+#define HaveLibNcurses		1
+/* temporary */
+#define HaveMotif		0
+
+CursesIncludes	=	-I/usr/include/ncurses
+X11Includes	=	-I/usr/X11/include
+X11LdPath	=	-L/usr/X11/lib
