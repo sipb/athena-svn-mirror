@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.32 1991-10-30 16:18:37 lwvanels Exp $
+ *	$Id: olc.c,v 1.33 1991-11-05 14:03:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.32 1991-10-30 16:18:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.33 1991-11-05 14:03:10 lwvanels Exp $";
 #endif
 #endif
 
@@ -123,6 +123,9 @@ COMMAND OLCR_Command_Table[] = {
   "topic",	do_olc_topic,		"Show/Change question topic",
   "version",	do_olc_version,		"Print version number",
   "who",	do_olc_who,		"Find status for current instance",
+#ifdef ZEPHYR
+  "zephyr",	do_olc_zephyr,		"Toggle daemon zephyr use",
+#endif
   (char *) NULL, (ERRCODE(*)()) NULL,	""
   };
 
