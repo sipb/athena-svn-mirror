@@ -129,12 +129,12 @@ general architecture of the wash process is:
 	  This machine is on read:source and write:update.
 
 	* Each night at 4:30am, a machine of each architecture
-	  (currently whirlpool and snuggle) recreates empty /build and
-	  /localsrvd filesystems and performs a build of the tree with
-	  /srvd pointed at /localsrvd.  If the build fails, the update
-	  script sends mail to source-wash@mit.edu with the last few
-	  lines of the wash log, and saves the wash log in /var/wash
-	  on the local disk.
+	  (currently whirlpool, kenmore, and maytag) recreates empty
+	  /build and /localsrvd filesystems and performs a build of
+	  the tree with /srvd pointed at /localsrvd.  If the build
+	  fails, the update script sends mail to source-wash@mit.edu
+	  with the last few lines of the wash log, and saves the wash
+	  log in /var/wash on the local disk.
 
 Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines, along with a
@@ -240,15 +240,6 @@ following guidelines should help the release go smoothly:
 	  (the ones not under the "third" hierarchy) should be
 	  updated.
 
-	  At the end of the alpha phase, a release branch should
-	  be created with a name of the form athena-8_1, and tagged
-	  with athena-8_1-beta.  A checked-out tree should be made in
-	  /afs/dev.mit.edu/source for the release branch, with a name
-	  of the form src-8.1.  A final snapshot of the system packs
-	  should be constructed from the release branch, and the build
-	  tree copied into /afs/dev.mit.edu/project/release.  Build
-	  machines for the new release should be set up.
-
 	* Beta
 
 	  The beta phase involves outside testers.  System packs and
@@ -260,7 +251,20 @@ following guidelines should help the release go smoothly:
 
 	  User release notes should be essentially finished by the end
 	  of this phase.  System release notes may continue to be
-	  updated as bug fixes occur.
+	  updated as bug fixes occur.  Ideally, no new features should
+	  be committed to the source tree during the beta phase.
+
+	  At the end of the beta phase, a release branch should
+	  be created with a name of the form athena-8_1, and tagged
+	  with athena-8_1-early.  A checked-out tree should be made in
+	  /afs/dev.mit.edu/source for the release branch, with a name
+	  of the form src-8.1.  It should have a locker with a name of
+	  the form source-8.1.  A final full build of the system packs
+	  should be done from the release branch, with the build tree
+	  located in /afs/dev.mit.edu/project/release.  The new
+	  release build machines should be set up for incremental
+	  changes to the new release at this point (which means
+	  turning off the wash).
 
 	* Early
 
@@ -367,56 +371,29 @@ release are:
 Rel-eng machines
 ----------------
 
-There are six roles for rel-eng machines for each platform:
-
-	* A wash machine, for nightly rebuilds of the source tree
-	  during the development cycle.
-
-	* A crash and burn machine, for testing the release.
+There are three rel-eng machines for each platform:
 
 	* A current release build machine, for doing incremental
-	  updates to the last public release.
+	  updates to the last public release.  This machine may also
+	  be used by developers for building software.
 
-	* A new release build machine, for doing incremental updates
-	  to the new release during the beta and early phases.
+	* A new release build machine, for building and doing
+	  incremental updates to releases which are still in testing.
+	  Before a new release goes into testing, this machine should
+	  perform the wash.  This machine may also be used by
+	  developers for building software, or if they want a snapshot
+	  of the new system packs to build things against.
 
-	* A current release developer machine, for other developers to
-	  build and test software on under the current release.
+	* A crash and burn machine, usually located in the release
+	  engineer's office for easy physical access.
 
-	* A new release developer machine, for other developers to
-	  build and test software on under the next release.
-
-Six machines for each platform is a lot, especially when two of them
-are only needed during a release cycle.  The following modifications
-can collapse the number of required machines to three:
-
-	* During the beta and early phases of a release cycle, the
-	  wash can be shut down and the wash machines used as new
-	  release build engines.
-
-	* The new release build machine can be used as a new release
-	  developer machine during the beta and early phases.  Having
-	  a separate machine is preferrable since it is useful to have
-	  a new release developer machine during the entire
-	  development cycle, not just during the last two phases of
-	  the release cycle.  Sometimes the crash and burn machine may
-	  be useful for developers, although it cannot be treated as a
-	  reliable resource.
-
-	* The current release build machine can be used as a current
-	  release developer machine.
-
-Here is a list of the rel-eng machines for each platform, with repeat
-machine names listed in parentheses:
+Here is a list of the rel-eng machines for each platform:
 
 				Sun		Indy		O2
 
-Wash				whirlpool	kenmore		maytag
 Current release build		downy		snuggle		bounce
+New release build		whirlpool	kenmore		maytag
 Crash and burn			sourcery	pyramids	reaper-man
-New release build		(whirlpool)	(kenmore)	(maytag)
-Current release developer	(downy)		(snuggle)	(bounce)
-New release developer		(whirlpool)	(kenmore)	(maytag)
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
