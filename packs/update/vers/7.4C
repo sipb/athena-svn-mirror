@@ -4,6 +4,7 @@
 case "${MACH}" in
 DS*)
 	echo "/etc/nsyslog.conf"	>> ${CONFCHG}
+	echo "NEWUNIX=true"		>> ${CONFVARS}
 	;;
 RS*)
         if [ -f /etc/security/login.cfg ]; then
