@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.4 1989-07-12 17:19:49 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.5 1989-07-12 17:27:45 tjcoppet Exp $";
 #endif 
 
 
@@ -229,7 +229,7 @@ main(argc, argv)
       }
   else
     {       /* give them olc by default */
-      Command_Table = OLCR_Command_Table;
+      Command_Table = OLC_Command_Table;
       prompt=OLC_PROMPT;
       HELP_FILE = OLC_HELP_FILE;
       HELP_DIR =  OLC_HELP_DIR;
