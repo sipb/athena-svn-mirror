@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.3 1989-08-04 11:13:08 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.4 1989-08-15 17:39:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -198,7 +198,7 @@ t_mail(Request,file,editor)
 {
   int status;
   char topic[TOPIC_SIZE];
-  LIST *list;
+  LIST list;
   struct stat statbuf;
 
   set_option(Request->options, VERIFY);
@@ -214,16 +214,22 @@ t_mail(Request,file,editor)
 	  fprintf(stderr,"warning: Unable to get topic for conversation.\n");
 	  *topic = '\0';
 	}
-      status = OListPerson(Request,&list);
-      if(status != SUCCESS)
+      if(isme(Request))
 	{
-	  fprintf(stderr, 
-		  "Unable to get status of conversation... exitting\n");
-	  return(ERROR);
+	  status = OWho(Request,&list);
+	  if(status != SUCCESS)
+	    {
+	      fprintf(stderr, 
+		      "Unable to get status of conversation... exitting\n");
+	      return(ERROR);
+	    }
+	  
+	  (void) OMailHeader(Request,file,list.connected.username,
+			     topic,DEFAULT_MAILHUB);
 	}
-
-      (void) OMailHeader(Request,file,list->connected.username,
-			 topic,DEFAULT_MAILHUB);
+      else
+	  (void) OMailHeader(Request,file,Request->target.username,
+			     topic,DEFAULT_MAILHUB);
 
       status = edit_message(file,editor);
       if(status == ERROR)

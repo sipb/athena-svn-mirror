@@ -5,7 +5,7 @@
 #define DUTY            1<<3       /* general olc duty */
 #define SECOND          1<<4       /* backseat at questions in specialty */
 #define URGENT          1<<5       /* backseat general duty */
-#define SIGNED_ON       (ON || FIRST || DUTY || SECOND || URGENT)
+#define SIGNED_ON       (ON | FIRST | DUTY | SECOND | URGENT)
 
 #define LOGGED_OUT      1<<8       /* dearly departed */
 #define MACHINE_DOWN    1<<9
@@ -23,7 +23,7 @@
 #define DONE            1<<18      /* resolved the question */
 #define CANCEL          1<<19      /* cancelled the question */
 #define SERVICED        1<<20      /* was user helped ?*/
-#define QUESTION_STATUS (PENDING || NOT_SEEN| DONE || CANCEL || SERVICED)
+#define QUESTION_STATUS (PENDING | NOT_SEEN | DONE | CANCEL | SERVICED)
 #define PICKUP          1<<22      /*waiting for user */
 #define REFERRED        1<<23      /* waiting for someone else */
 
