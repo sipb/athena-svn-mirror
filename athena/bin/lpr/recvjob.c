@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.3 1990-04-17 08:55:49 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.4 1990-07-07 10:22:27 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.3 1990-04-17 08:55:49 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.4 1990-07-07 10:22:27 epeisach Exp $";
 #endif lint
 
 /*
@@ -25,14 +25,27 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
  */
 
 #include "lp.h"
+#ifdef _AUX_SOURCE
+#include <sys/sysmacros.h>
+#include <ufs/ufsparam.h>
+#endif
+
+#if !defined(AIX) || !defined(i386)
 #ifdef VFS
 #include <ufs/fs.h>
 #else
 #include <sys/fs.h>
 #endif VFS
+#endif
+
 #ifdef PQUOTA
 #include "quota.h"
 #include <sys/time.h>
+#endif
+
+#if BUFSIZ != 1024
+#undef BUFSIZ
+#define BUFSIZ 1024
 #endif
 
 char	*sp = "";
@@ -50,6 +63,12 @@ char    tempfile[40];           /* Same size as used for cfname and tfname */
 extern int kflag;
 #endif KERBEROS
 
+#ifdef _AUX_SOURCE
+/* They defined fds_bits correctly, but lose by not defining this */
+#define FD_ZERO(p)  ((p)->fds_bits[0] = 0)
+#define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
+#define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
+#endif
 
 char	*find_dev();
 
@@ -227,7 +246,9 @@ readjob()
 			       We do a cleanup cause we can't expect 
 			       client to do so. */
 			    (void) write(1, cret, 1);
+#ifdef DEBUG
 			    syslog(LOG_DEBUG, "Got %s", cret);
+#endif DEBUG
 			    rcleanup();
 			    continue;
 			}
@@ -407,6 +428,10 @@ noresponse()
 chksize(size)
 	int size;
 {
+#if defined(AIX) && defined(i386)
+	/* This is really not appropriate, but maybe someday XXX */
+	return 1;
+#else
 	int spacefree;
 	struct fs fs;
 
@@ -421,6 +446,7 @@ chksize(size)
 	if (minfree + size > spacefree)
 		return(0);
 	return(1);
+#endif /* AIX & i386 */
 }
 
 read_number(fn)
@@ -511,7 +537,7 @@ char file[];
 	    outbuf[39] = '\0';
 	else 
 	    strncpy(outbuf + 39, QS, 20);
-/* If can't open the control file, then there is some error...
+	/* If can't open the control file, then there is some error...
 	   We'll return allowed to print, but somewhere else it will be caught.
 	   Is this proper? XXX
 	   */
@@ -521,7 +547,7 @@ char file[];
 
 	/* Read the control file for the person sending the job */
 	while (getline(cfp)) {
-		if (line[0] == 'A') {
+		if (line[0] == 'Q' || line[0] == 'A') { /* 'A' for old clients */
 		    if(sscanf(line + 1, "%d", &act) != 1) act=0;
 		    break;
 		}
@@ -529,7 +555,7 @@ char file[];
 	fclose(cfp);
 
        	act = htonl(act);
-	bcopy(outbuf + 35, &act, 4);
+	bcopy(&act, outbuf + 35, 4);
 
 	strncpy(outbuf + 59, kprincipal, ANAME_SZ);
 	strncpy(outbuf + 59 + ANAME_SZ, kinstance, INST_SZ);
@@ -608,6 +634,14 @@ char file[];
 		return "\4";
 	    case UNKNOWNUSER:
 		return "\3";
+	    case UNKNOWNGROUP:
+		return "\5";
+	    case USERNOTINGROUP:
+		return "\6";
+	    case USERDELETED:
+		return "\7";
+	    case GROUPDELETED:
+		return "\10";
 	    default:
 		break;
 		/* Bogus, retry */
