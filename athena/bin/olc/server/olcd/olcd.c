@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.54 1993-04-28 14:34:58 vanharen Exp $
+ *	$Id: olcd.c,v 1.55 1993-04-28 14:46:23 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.54 1993-04-28 14:34:58 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.55 1993-04-28 14:46:23 vanharen Exp $";
 #endif
 #endif
 
@@ -760,6 +760,9 @@ punt(sig)
     log_status("Caught signal, exiting...");
     exit(1);
   }
+#ifndef VOID_SIGRET
+  return(0);
+#endif
 }
 
 
