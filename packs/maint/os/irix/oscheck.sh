@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: oscheck.sh,v 1.1 1999-04-23 01:10:12 rbasch Exp $
+# $Id: oscheck.sh,v 1.2 2000-06-21 20:51:05 ghudson Exp $
 
 # This script checks the integrity of the IRIX OS installation, by
 # running the os-checkfiles program against the appropriate set of
@@ -22,6 +22,7 @@ os=/os
 libdir=/install/oscheck
 checkfiles=os-checkfiles
 srvdstats=/srvd/usr/athena/lib/stats/sys_rvd
+configfiles=/srvd/usr/athena/lib/update/configfiles
 globalexceptions=$libdir/exceptions.all
 localexceptions=/etc/athena/oscheck.exceptions
 timestampfile=/var/athena/.oscheck
@@ -110,6 +111,7 @@ fi
 # extract all srvd paths from the srvd stats file, to add them to
 # the exception list.
 awk '{ print substr($1, 2, length($1) - 1); }' < $srvdstats >> $exceptions
+sed -e 's,^/,,' $configfiles >> $exceptions
 
 # If machine is not PUBLIC, we allow for other OS packages to be
 # installed (or removed).  Any files in those packages are excepted.
