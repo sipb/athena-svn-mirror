@@ -1,10 +1,10 @@
-.TH XCLUSTER 1 "April 27, 1992"
+.TH XCLUSTER 1 "July 3, 1995"
 .UC 4
 .SH NAME
 xcluster \- display MIT map, give info about Athena clusters
 .SH SYNOPSIS
-.B xcluster
-[-help] [-rv] [-inactive timeout] [-geometry {+/-}x{+/-}y]
+xcluster [-help] [-rv] [-inactive timeout] [-auto time]
+         [-geometry {+/-}x{+/-}y]
 .PP
 .SH DESCRIPTION
 .I Xcluster
@@ -33,6 +33,11 @@ exit after
 .I timeout
 seconds of inactivity.
 .TP 21
+.B \-auto time
+cycle through the clusters, selecting each for 
+.I time
+seconds.
+.TP 21
 .B \-geometry
 specify an x,y location for placement of window
 .PD 1
@@ -50,6 +55,9 @@ default is off.
 .TP 15
 inactive
 number of seconds of inactivity after which it dies.
+.TP 15
+auto
+number of seconds to keep each cluster selected while automatically cycling through them.
 .TP 15
 geometry
 an x, y location.
