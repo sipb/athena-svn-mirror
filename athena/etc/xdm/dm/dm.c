@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.44 1994-06-09 16:23:24 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.45 1994-07-27 23:52:04 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.44 1994-06-09 16:23:24 miki Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.45 1994-07-27 23:52:04 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -231,6 +231,51 @@ char **argv;
     int mask;
 #endif
 
+/*
+ * Note about setting environment variables in dm:
+ *
+ *   All environment variables passed to dm and set in dm are
+ *   subsequently passed to any children of dm. This is usually
+ *   true of processes that exec in children, so that's not a
+ *   big surprise.
+ *
+ *   However, xlogin is one of the children dm forks, and it goes
+ *   to lengths to ensure that the environments of users logging in
+ *   are ISOLATED from xlogin's own environment. Therefore, do not
+ *   expect that setting an environment variable here will reach the
+ *   user unless you have gone to lengths to make sure that xlogin
+ *   passes it on. Put another way, if you set a new environment
+ *   variable here, consider whether or not it should be seen by the
+ *   user. If it should, go modify verify.c as well. Consider also
+ *   whether the variable should be seen _only_ by the user. If so,
+ *   make the change only in xlogin, and not here.
+ *
+ *   As an added complication, xlogin _does_ pass environment variables
+ *   on to the pre-login options. Therefore, if you set an environment
+ *   variable that should _not_ be seen, you must filter it in xlogin.c.
+ *
+ *   Confused? Too bad. I'm in a nasty, if verbose, mood this year.
+ *
+ * General summary:
+ *
+ *   If you add an environment variable here there are three likely
+ *   possibilities:
+ *
+ *     1. It's for the user only, not needed by any of dm's children.
+ *        --> Don't set it here. Set it in verify.c for users and in
+ *        --> xlogin.c for the pre-login options, if appropriate.
+ *
+ *     2. It's for dm and its children only, and _should not_ be seen
+ *        by the user or pre-login options.
+ *        --> You must filter the option from the pre-login options
+ *        --> in xlogin.c. No changes to verify.c are required.
+ *
+ *     3. It's for dm and the user and the pre-login options.
+ *        --> You must pass the option explicitly to the user in
+ *        --> verify.c. No changes to xlogin.c are required.
+ *
+ *                                                   --- cfields
+ */
 #ifdef SOLARIS
     strcpy(openv, "LD_LIBRARY_PATH=");
     strcat(openv, "/usr/openwin/lib");
@@ -239,6 +284,7 @@ char **argv;
     strcat(openv, "/usr/openwin");
     putenv(openv);
 #endif
+
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
 	message("usage: ");
