@@ -15,7 +15,7 @@
 
 /* This is the server for the lert system. */
 
-static const char rcsid[] = "$Id: lertsrv.c,v 1.7 2002-09-01 03:31:25 zacheiss Exp $";
+static const char rcsid[] = "$Id: lertsrv.c,v 1.8 2003-11-07 08:44:57 zacheiss Exp $";
 
 #include <stdio.h>
 #include <unistd.h>
@@ -47,6 +47,7 @@ int main(int argc, char **argv)
   struct sockaddr_in sin;
   struct sockaddr_in from;
   char packet[2048];
+  char *username = NULL;
   int plen;
   char opacket[2048];
   int fromlen;
@@ -216,10 +217,9 @@ int main(int argc, char **argv)
 	   * or is from a realm other than the server's local realm, punt
 	   * them.
 	   */
-	  if ((krb5_princ_component(context, client, 1)->data) ||
+	  if ((krb5_princ_size(context, client) != 1) ||
 	      krb5_realm_compare(context, client, server) == 0)
 	    {
-	      char *username = NULL;
 	      krb5_unparse_name(context, client, &username);
 	      if (username)
 		{
@@ -241,8 +241,16 @@ int main(int argc, char **argv)
 	   * be 0 if the user didn't call lert with the -n flag, using 
 	   * the value from the packet directly seems a bit more sane.
 	   */
-	    get_user((krb5_princ_component(context, client, 0)->data),
-		     &(opacket[1]), packet[1]);
+	    {
+	      username = malloc(krb5_princ_component(context, client, 0)->length + 1);
+	      if (!username)
+		goto out;
+	      strncpy(username, krb5_princ_component(context, client, 0)->data,
+		      krb5_princ_component(context, client, 0)->length);
+	      username[krb5_princ_component(context, client, 0)->length] = '\0';
+
+	      get_user(username, &(opacket[1]), packet[1]);
+	    }
 
 	  inbuf.data = opacket;
 	  inbuf.length = strlen(opacket);
@@ -273,12 +281,15 @@ int main(int argc, char **argv)
 	    krb5_free_ticket(context, ticket);
 	  if (auth_con)
 	    krb5_auth_con_free(context, auth_con);
+	  if (username)
+	    free(username);
 	  /* reset to NULL after freeing since we're going to go through
 	   * this loop again.
 	   */
 	  client = server = NULL;
 	  ticket = NULL;
 	  auth_con = NULL;
+	  username = NULL;
 	}
       else
 	{
