@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.2 1999-03-29 17:33:20 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.3 1999-05-11 21:13:50 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ int locker_attach(locker_context context, char *filesystem, char *mountpoint,
 		  int authmode, int options, char *mountoptions,
 		  locker_attachent **atp)
 {
-  int status, order;
+  int status, astatus = LOCKER_EATTACH, order;
   locker_attachent *at;
 
   if (!context->trusted)
@@ -62,8 +62,8 @@ int locker_attach(locker_context context, char *filesystem, char *mountpoint,
       if (status)
 	continue;
 
-      status = locker_attach_attachent(context, at, authmode, options,
-				       mountoptions);
+      astatus = status = locker_attach_attachent(context, at, authmode,
+						 options, mountoptions);
       if (LOCKER_ATTACH_SUCCESS(status))
 	{
 	  if (atp)
@@ -76,7 +76,7 @@ int locker_attach(locker_context context, char *filesystem, char *mountpoint,
       locker_free_attachent(context, at);
     }
 
-  return status == LOCKER_ENOENT ? LOCKER_EATTACH : status;
+  return status == LOCKER_ENOENT ? astatus : status;
 }
 
 int locker_attach_explicit(locker_context context, char *type,
