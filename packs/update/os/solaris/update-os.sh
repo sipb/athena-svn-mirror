@@ -84,7 +84,20 @@ if [ "$OSCHANGES" = true ]; then
 	cmp -s "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.save-update" || {
 	  if [ false = "$PUBLIC" ]; then
 	    rm -rf "$UPDATE_ROOT$i.sunpkg"
-	    mv "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.sunpkg"
+	    case $i in
+	    /var/spool/cron/crontabs/*)
+	      # Save a crontab file in another directory.
+	      user=`basename $i`
+	      save_dir=/var/athena/update.save
+	      save_file="$save_dir/crontab.$user.sunpkg"
+	      mkdir -p "$UPDATE_ROOT$save_dir"
+	      mv "$UPDATE_ROOT$i" "$UPDATE_ROOT$save_file"
+	      ;;
+	    *)
+	      # Generic config file, save in the same directory.
+	      mv "$UPDATE_ROOT$i" "$UPDATE_ROOT$i.sunpkg"
+	      ;;
+	    esac
 	  fi
 	  rm -rf "$UPDATE_ROOT$i"
 	  cp -p "$UPDATE_ROOT$i.save-update" "$UPDATE_ROOT$i"
