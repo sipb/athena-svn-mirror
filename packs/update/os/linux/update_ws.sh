@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.12.2.3 2001-01-02 16:19:22 ghudson Exp $
+# $Id: update_ws.sh,v 1.12.2.4 2001-03-07 22:01:42 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -66,7 +66,7 @@ hosttype=`/bin/athena/machtype`
 
 # Get the current workstation version and see if we're already in the
 # middle of an update.
-oldvers=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
+oldvers=`awk '$0 != "" { a = $5; } END { print a; }' /etc/athena/version`
 case "$oldvers" in
 [0-9]*)
 	# Looks okay.
@@ -110,7 +110,9 @@ else
 	getclust "${versarg:-$oldvers}"
 fi
 if [ -z "$SYSPREFIX" -o -z "$SYSCONTROL" ]; then
-	errorout "Can't find system cluster information for this machine."
+	# Default to the release data a fresh install would use.
+	SYSPREFIX=/afs/athena.mit.edu/system/rhlinux
+	SYSCONTROL=control/control-current
 fi
 
 # Change to the system area.
