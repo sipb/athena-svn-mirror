@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_rpc.c,v 1.7 1996-09-20 03:15:06 ghudson Exp $
+ * $Id: rk_rpc.c,v 1.8 1997-12-03 22:01:22 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
  * $Author: ghudson $
  *
@@ -9,10 +9,11 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_rpc.c,v 1.7 1996-09-20 03:15:06 ghudson Exp $";
+static char *rcsid = "$Id: rk_rpc.c,v 1.8 1997-12-03 22:01:22 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -22,9 +23,6 @@ static char *rcsid = "$Id: rk_rpc.c,v 1.7 1996-09-20 03:15:06 ghudson Exp $";
 #include <rkinit.h>
 #include <rkinit_err.h>
 #include <rkinit_private.h>
-
-extern int errno;
-extern char *sys_errlist[];
 
 static int sock;
 struct sockaddr_in saddr;
@@ -66,7 +64,7 @@ int rki_send_packet(sock, type, length, data)
     memcpy(packet + PKT_DATA, data, length);
     if ((len = write(sock, packet, pkt_len)) != pkt_len) {
 	if (len == -1) 
-	    sprintf(errbuf, "write: %s", sys_errlist[errno]);
+	    sprintf(errbuf, "write: %s", strerror(errno));
 	else 
 	    sprintf(errbuf, "write: %d bytes written; %d bytes actually sent", 
 		    pkt_len, len);
@@ -108,7 +106,7 @@ int rki_get_packet(sock, type, length, data)
     while (! got_full_packet) {
 	if ((len = read(sock, packet + len_sofar, 
 			max_pkt_len - len_sofar)) < 0) {
-	    sprintf(errbuf, "read: %s", sys_errlist[errno]);
+	    sprintf(errbuf, "read: %s", strerror(errno));
 	    rkinit_errmsg(errbuf);
 	    return(RKINIT_READ);
 	}
@@ -189,13 +187,13 @@ int rki_setup_rpc(host)
     saddr.sin_port = port;
 
     if ((sock = socket(hp->h_addrtype, SOCK_STREAM, IPPROTO_IP)) < 0) {
-	sprintf(errbuf, "socket: %s", sys_errlist[errno]);
+	sprintf(errbuf, "socket: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	return(RKINIT_SOCKET);
     }
     
-    if (connect(sock, (char *)&saddr, sizeof (saddr)) < 0) {
-	sprintf(errbuf, "connect: %s", sys_errlist[errno]);
+    if (connect(sock, (struct sockaddr *)&saddr, sizeof (saddr)) < 0) {
+	sprintf(errbuf, "connect: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	close(sock);
 	return(RKINIT_CONNECT);
@@ -337,8 +335,8 @@ int rki_get_csaddr(caddrp, saddrp)
     
     memcpy(saddrp, &saddr, addrlen);
 
-    if (getsockname(sock, caddrp, &addrlen) < 0) {
-	sprintf(errbuf, "getsockname: %s", sys_errlist[errno]);
+    if (getsockname(sock, (struct sockaddr *) caddrp, &addrlen) < 0) {
+	sprintf(errbuf, "getsockname: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	return(RKINIT_GETSOCK);
     }
