@@ -169,6 +169,22 @@ static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { "replybutton", "newbutton", NULL },
         { "writebutton", "mailbutton", NULL }};
 
+typedef struct{
+	Boolean logging_on;
+	String	log_file;
+} defaults;
+
+static defaults	defs;
+
+static XtResource app_resources[] = {
+	{ "loggingOn", "LoggingOn",
+		XtRBoolean, sizeof (Boolean), XtOffset (defaults *, logging_on),
+		XtRString, "true" },
+	{ "logfile", "Logfile",
+		XtRString, sizeof (String), XtOffset (defaults *, log_file),
+		XtRString, "/afs/athena.mit.edu/user/s/sao/scores/xdsc.log"},
+};
+
 
 EntryRec        toplevelbuttons[2][MAX_BUTTONS];
 
@@ -181,6 +197,7 @@ char *argv[];
 	char	*oldpath, *newpath, *myname;
 	Arg	args[1];
 	int	width;
+	char	commandline[100];
 
 	if (argc > 1 && !strcmp(argv[1], "-debug"))
 		debug = True;
@@ -221,6 +238,10 @@ char *argv[];
 	oldpath = getenv("XFILESEARCHPATH");
 
 
+
+#define	appdefaults-in-stafftools	0
+
+#ifdef appdefaults-in-stafftools
 #ifdef mips
 	if (!oldpath) {
 		newpath = (char *) malloc (100);
@@ -243,7 +264,7 @@ char *argv[];
 	setenv ("XFILESEARCHPATH",newpath,1);
 
 #endif
-
+#endif
 
 	if (simplemode) {
 		topW = XtInitialize("topwidget", "Lucy", NULL, 0, &argc, argv);
@@ -252,6 +273,18 @@ char *argv[];
 		topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
 
 	myfree (newpath);
+
+	XtGetApplicationResources(	topW, (XtPointer) &defs,
+					app_resources, XtNumber (app_resources),
+					NULL, 0);
+
+	if (defs.logging_on) {
+		sprintf (commandline, "machtype >> %s", defs.log_file);
+		system (commandline);
+
+		sprintf (commandline, "date >> %s", defs.log_file);
+		system (commandline);
+	}
 
 	BuildUserInterface ();
 
@@ -311,8 +344,11 @@ SetUpEdsc()
 #endif
 #endif
 #endif
+#ifndef EDSC_PATH
+#define EDSC_PATH "/mit/StaffTools/%sbin/edsc"
+#endif
 		sprintf (	commandtorun, 
-				"/mit/StaffTools/%sbin/edsc",
+				EDSC_PATH,
 				machtype);
 	}
 
@@ -367,21 +403,6 @@ BuildUserInterface()
 			args,
 			n);
 
-/*
-** Cheezy hack...Set borderwidth of pane to zero to turn off logging.
-*/
-
-	n = 0;
-	XtSetArg(args[n], XtNborderWidth, &foo);		n++;
-	XtGetValues (paneW, args, n);
-
-	if (foo) {
-		system ("machtype >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
-		system ("date >> /afs/athena.mit.edu/user/s/sao/scores/xdsc.log");
-		n = 0;
-		XtSetArg(args[n], XtNborderWidth, 0);		n++;
-		XtSetValues (paneW, args, n);
-	}
 
 	n = 0;
 	topboxW = XtCreateManagedWidget(
