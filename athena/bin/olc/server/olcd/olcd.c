@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.58 1993-08-06 13:31:12 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olcd.c,v 1.59 1993-08-09 11:37:40 thorne Exp $
+ *	$Author: thorne $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.58 1993-08-06 13:31:12 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.59 1993-08-09 11:37:40 thorne Exp $";
 #endif
 #endif
 
@@ -62,7 +62,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <arpa/inet.h>		/* inet_* defs */
 
 #include <olcd.h>
-
+#ifdef DBMALLOC                  /* using a debugging malloc */
+#include <malloc.h>    
+#endif  
 /* Global variables. */
 
 #ifdef NEEDS_SELECT_MACROS
@@ -171,6 +173,16 @@ main (argc, argv)
 #ifdef _POSIX_SOURCE
     struct sigaction action;
 #endif
+
+#ifdef _DEBUG_MALLOC_INC 
+union dbmalloptarg m;
+
+m.i = M_HANDLE_CORE;
+dbmallopt(MALLOC_WARN,m);
+m.str = "/usr/spool/olc/malloc_err_log");
+dbmallopt(MALLOC_ERRFILE,m);
+
+#endif /* DBMALLOC */
 
 #if defined(PROFILE)
     /* Turn off profiling on startup; that way, we collect "steady state" */
@@ -516,11 +528,12 @@ restart:
 	int s;		        /* Duplicated file descriptor */
 	int len = sizeof (from);  /* Length of address. */
 	KNUCKLE **k_ptr;
-#ifdef KERBEROS
+	char tmpfile[MAXPATHLEN];
+
 	struct timeval tval;
 	int nfound;
 	fd_set readfds;
-
+	
 	FD_ZERO(&readfds);
 	FD_SET(fd,&readfds);
 	tval.tv_sec = 600;   /* 10 minutes */
@@ -553,7 +566,7 @@ restart:
 	    abort();
 	  }
 	}
-
+#ifdef KERBEROS
 	if (nfound == 0) {
 	  get_kerberos_ticket();
 	  continue;
@@ -603,6 +616,11 @@ restart:
 	    if ((*k_ptr)->user->permissions == 0)
 	      /*** DANGER WILL ROBINSON! ***/
 	      {
+		log_error("corrupt permissions!");
+		strcpy(tmpfile,"/usr/spool/olc/perm_corrupt_state_XXXX");
+		mktemp(tmpfile);
+		dump_data(tmpfile);
+		abort();
 		/*** DO SOMETHING! ***/
 	      }
 	  }
@@ -945,3 +963,15 @@ get_kerberos_ticket()
   return(SUCCESS);
 }
 #endif /* KERBEROS */
+
+
+
+
+
+
+
+
+
+
+
+
