@@ -28,6 +28,7 @@
 #include "gok-page-actions.h"
 #include "gok-action.h"
 #include "gok-input.h"
+#include "gok-data.h"
 #include "gok-log.h"
 #include "gok-settings-dialog.h"
 

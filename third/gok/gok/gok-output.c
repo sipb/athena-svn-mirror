@@ -31,6 +31,10 @@
 #include "gok-word-complete.h"
 #include "main.h"
 #include "gok-gconf-keys.h"
+#include "gok-data.h"
+#include "gok-gconf.h"
+
+extern long keysym2ucs(KeySym keysym);
 
 static gboolean
 gok_output_can_predict (void)
@@ -56,6 +60,8 @@ gok_output_update_predictions (GokOutput    *output,
 	gchar **prediction_list = NULL;
 	gchar *part = NULL;
 	GokWordComplete *complete = gok_wordcomplete_get_default ();
+
+	if (gok_main_safe_mode ()) return;
 
 	if (output) {
 		switch (output->Type) 
@@ -262,7 +268,7 @@ GokOutput* gok_output_new_from_xml (xmlNode* pNode)
 		return NULL;
 	}
 
-	return gok_output_new (typeOutput, g_strstrip (xmlNodeGetContent (pNode)), flagOutput);
+	return gok_output_new (typeOutput, g_strstrip ((char *)xmlNodeGetContent (pNode)), flagOutput);
 }
 
 static gunichar

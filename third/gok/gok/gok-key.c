@@ -28,6 +28,8 @@
 #include "gok-key.h"
 #include "gok-keyboard.h"
 #include "gok-mousecontrol.h"
+#include "gok-repeat.h"
+#include "gok-composer.h"
 #include "gok-log.h"
 #include "gok-modifier.h"
 #include "gok-scanner.h"
@@ -74,7 +76,7 @@ gok_key_print_utf8_debug (gchar *buf)
       cp = buf;
       while (*cp)
       {
-	  guchar c = *cp;
+	  gchar c = *cp;
 	  fprintf (stderr, "0x%x ", (unsigned) c);
 	  ++cp;
       }
@@ -82,11 +84,11 @@ gok_key_print_utf8_debug (gchar *buf)
 }
 
 /* returned string must be freed */
-static guchar *
-gok_key_lookup_shorter_label (guchar *str)
+static gchar *
+gok_key_lookup_shorter_label (gchar *str)
 {
 	gint i;
-	guchar *xstr = NULL;
+	gchar *xstr = NULL;
 
 	/* handle deadkeys gracefully */
 
@@ -191,7 +193,7 @@ gok_key_lookup_shorter_label (guchar *str)
 	else {
 		gint len;
 		gboolean prev_is_lower, is_upper;
-		guchar *s1, *st2, *st1;
+		gchar *s1, *st2, *st1;
 		
 		if (!strncmp (str, "Sun", 3)) {
 			s1 = g_strdup (str + 3);
@@ -219,10 +221,10 @@ gok_key_lookup_shorter_label (guchar *str)
 	return str;
 }
 
-static guchar *	
-gok_key_label_from_keysym_string (const guchar *str)
+static gchar *	
+gok_key_label_from_keysym_string (const gchar *str)
 {
-	guchar *cp;
+	gchar *cp;
 	size_t strl;
 
 	if (!str) return g_strdup ("<nil>");
@@ -288,12 +290,16 @@ gok_key_label_from_keysym_string (const guchar *str)
 	else if (!strcmp (str, "Mode_switch")) {
 		cp = _("Mode\nswitch");
 	}
+/*      REMOVE COMMENTS POST-BRANCH: freeze applies currently */
+ 	else if (!strcmp (str, "Hiragana_Katakana")) {
+	        cp = "Hiragana\nKatakana";
+/*
+	        cp = _("Hiragana\nKatakana");
+ */
+	}
 	else if (strncmp(str, "KP_", 3) == 0) {
  	        cp = g_strdup (str + 3);
  	}
- 	if (strncmp(str, "KP_", 3) == 0) {
-	        cp = g_strdup (str + 3);
-	}
 	else if ((strl >= 2) && (str[strl-1] == 'L') && (str[strl-2] == '_')) {
 		cp = g_strndup (str, strl - 2);
 	}
@@ -529,10 +535,10 @@ gok_key_set_effective_group (gint group)
 void
 gok_keyimage_set_size_from_spec (GokKeyImage *keyimage, gchar *sizespec, gchar *align)
 {
-	if (xmlStrPrefix (sizespec, XML_STRING_SIZE_STOCK)) {
+	if (xmlStrPrefix ((const unsigned char*)sizespec, XML_STRING_SIZE_STOCK)) {
 		keyimage->type = IMAGE_TYPE_STOCK;
 	}
-	else if (xmlStrPrefix (sizespec, XML_STRING_SIZE_FIXED)) {
+	else if (xmlStrPrefix ((const unsigned char*)sizespec, XML_STRING_SIZE_FIXED)) {
 		int w, h;
 		keyimage->type = IMAGE_TYPE_FIXED;
 		if (sscanf (sizespec, "%*6c%d,%d", &w, &h) == 2) {
@@ -540,12 +546,12 @@ gok_keyimage_set_size_from_spec (GokKeyImage *keyimage, gchar *sizespec, gchar *
 			keyimage->h = h;
 		}
 	}
-	else if (xmlStrPrefix (sizespec, XML_STRING_SIZE_FIT))
+	else if (xmlStrPrefix ((const unsigned char*)sizespec, XML_STRING_SIZE_FIT))
 		keyimage->type = IMAGE_TYPE_FIT;
-	else if (xmlStrPrefix (sizespec, XML_STRING_SIZE_FILL))
+	else if (xmlStrPrefix ((const unsigned char*)sizespec, XML_STRING_SIZE_FILL))
 		keyimage->type = IMAGE_TYPE_FILL;
 
-	if (!xmlStrcmp (align, (const xmlChar *) "right")) {
+	if (!xmlStrcmp ((const unsigned char*)align, (const xmlChar *) "right")) {
 		keyimage->placement_policy = IMAGE_PLACEMENT_RIGHT;
 	}
 	else { /* TODO: that's all we recognize for now, implement other options */
@@ -698,6 +704,7 @@ GokKey* gok_key_new (GokKey* pKeyPrevious, GokKey* pKeyNext, GokKeyboard* pKeybo
 	pgok_key_new->State = GTK_STATE_NORMAL;
 	pgok_key_new->StateWhenNotFlashed = GTK_STATE_NORMAL;
 	pgok_key_new->pGeneral = NULL;
+	pgok_key_new->action_ndx = 0;
 	pgok_key_new->is_repeatable = FALSE;
 	
 	return pgok_key_new;
@@ -766,7 +773,7 @@ void gok_key_delete (GokKey* pKey, GokKeyboard* pKeyboard, gboolean bDeleteButto
 	/* delete all the key's labels */
 	pLabel = pKey->pLabel;
 	if (pLabel) gok_log ("deleting key %s %x (%x)\n", pLabel->Text ? pLabel->Text : "<empty>", pKey,
-			     (pKey->accessible_node) ? pKey->accessible_node->paccessible : 0xFFFF);
+			     (pKey->accessible_node) ? pKey->accessible_node->paccessible : (gpointer) 0xFFFF);
 	while (pLabel != NULL)
 	{
 		pLabelTemp = pLabel;
@@ -933,7 +940,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 		if (pStringSubAttributeValue != NULL) 
 		{
 			* (GokKeyboardDirection *) pKey->pGeneral = 
-				gok_keyboard_parse_direction (pStringSubAttributeValue);
+				gok_keyboard_parse_direction ((const char *)pStringSubAttributeValue);
 			xmlFree (pStringSubAttributeValue);
 		}
 	}
@@ -947,7 +954,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 		if (pStringSubAttributeValue != NULL) 
 		{
 			* (GokKeyboardDirection *) pKey->pGeneral = 
-				gok_keyboard_parse_direction (pStringSubAttributeValue);
+				gok_keyboard_parse_direction ((const char *)pStringSubAttributeValue);
 			xmlFree (pStringSubAttributeValue);
 		}
 		pKey->is_repeatable = TRUE;
@@ -986,7 +993,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 		if (pStringSubAttributeValue != NULL) 
 		{
 			* (GokKeyboardValueOp *) pKey->pGeneral = 
-				gok_keyboard_parse_value_op (pStringSubAttributeValue);
+				gok_keyboard_parse_value_op ((const char *)pStringSubAttributeValue);
 			xmlFree (pStringSubAttributeValue);
 		}
 	}
@@ -1038,7 +1045,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 	{
 		if (pStringAttributeValue != NULL)
 		{
-			pKey->Target = (char *) g_strdup (pStringAttributeValue);
+			pKey->Target = (char *) g_strdup ((const char*)pStringAttributeValue);
 		}
 	}
 	xmlFree (pStringAttributeValue);
@@ -1110,7 +1117,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 	if (pStringAttributeValue != NULL)
 	{
 		/* add the modifier to the list of modifiers */
-		gok_modifier_add ((char *)g_strdup (pStringAttributeValue));
+		gok_modifier_add ((char *)g_strdup ((const char *)pStringAttributeValue));
 		
 		/* store the name of the modifier on the key */
 		pKey->ModifierName = (gchar*)g_malloc (strlen ((char *)pStringAttributeValue) + 1);
@@ -1140,7 +1147,7 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 			gchar *levelname = (gchar *) xmlGetProp (pNodeKeyChild, (const xmlChar *) "level");
 			gchar *groupname = (gchar *) xmlGetProp (pNodeKeyChild, (const xmlChar *) "group");
 			gchar *vmodname = (gchar *) xmlGetProp (pNodeKeyChild, (const xmlChar *) "modifier");
-			gchar *content = xmlNodeGetContent (pNodeKeyChild);
+			gchar *content = (gchar *) xmlNodeGetContent (pNodeKeyChild);
 
 			if (levelname) 
 			{
@@ -1161,9 +1168,9 @@ gboolean gok_key_initialize (GokKey* pKey, xmlNode* pNode)
 		if (xmlStrcmp (pNodeKeyChild->name, (const xmlChar *)"image") == 0)
 		{
 			/* TODO: support href as well as local files ? */
-			gchar *filename = xmlGetProp (pNodeKeyChild, (const xmlChar *) "source");
-			gchar *sizespec = xmlGetProp (pNodeKeyChild, (const xmlChar *) "type");
-			gchar *align = xmlGetProp (pNodeKeyChild, (const xmlChar *) "align");
+			gchar *filename = (gchar *)xmlGetProp (pNodeKeyChild, (const xmlChar *) "source");
+			gchar *sizespec = (gchar *)xmlGetProp (pNodeKeyChild, (const xmlChar *) "type");
+			gchar *align = (gchar *)xmlGetProp (pNodeKeyChild, (const xmlChar *) "align");
 			gok_keyimage_new (pKey, filename);
 			if (sizespec != NULL) 
 				gok_keyimage_set_size_from_spec (pKey->pImage, sizespec, align);
@@ -1840,13 +1847,27 @@ void gok_key_set_button_name (GokKey* pKey)
 		break;
 
 	case KEYSTYLE_BRANCHGUIACTIONS:
-	case KEYSTYLE_HYPERLINK:
 	case KEYSTYLE_EDIT:
 	case KEYSTYLE_REPEATNEXT:
 		strcpy (styleButton, "StyleButtonBranchGuiActions");
 		strcpy (styleText, "StyleTextNormal");
 		break;
 		
+	case KEYSTYLE_HYPERLINK:
+		strcpy (styleButton, "StyleButtonHyperlink");
+		strcpy (styleText, "StyleTextHyperlink");
+		break;
+
+	case KEYSTYLE_BRANCHHYPERTEXT:
+		strcpy (styleButton, "StyleButtonHyperText");
+		strcpy (styleText, "StyleTextNormal");
+		break;
+
+	case KEYSTYLE_HTMLACTION:
+		strcpy (styleButton, "StyleButtonHtmlAction");
+		strcpy (styleText, "StyleTextNormal");
+		break;
+
 	case KEYSTYLE_BRANCHALPHABET:
 	case KEYSTYLE_BRANCHTEXT:
 		strcpy (styleButton, "StyleButtonBranchAlphabet");

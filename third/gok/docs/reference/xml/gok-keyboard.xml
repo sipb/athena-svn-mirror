@@ -1,0 +1,998 @@
+<refentry id="gok-gok-keyboard">
+<refmeta>
+<refentrytitle>gok-keyboard</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-keyboard</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="KeyboardLayouts">KeyboardLayouts</link>;
+enum        <link linkend="KeyboardTypes">KeyboardTypes</link>;
+#define     <link linkend="MAX-KEYBOARD-NAME:CAPS">MAX_KEYBOARD_NAME</link>
+<link linkend="GokKeyboard">GokKeyboard</link>* <link linkend="gok-keyboard-new">gok_keyboard_new</link>               (void);
+<link linkend="GokKeyboard">GokKeyboard</link>* <link linkend="gok-keyboard-read">gok_keyboard_read</link>              (const <link linkend="gchar">gchar</link> *Filename);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-delete">gok_keyboard_delete</link>             (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bForce);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-delete-key">gok_keyboard_delete_key</link>         (<link linkend="GokKey">GokKey</link> *pKey,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-count-rows-columns">gok_keyboard_count_rows_columns</link> (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gint">gint</link>        <link linkend="gok-keyboard-get-number-rows">gok_keyboard_get_number_rows</link>    (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gint">gint</link>        <link linkend="gok-keyboard-get-number-columns">gok_keyboard_get_number_columns</link> (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-add-keys">gok_keyboard_add_keys</link>           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="xmlDoc">xmlDoc</link> *pDoc);
+<link linkend="gchar">gchar</link>*      <link linkend="gok-keyboard-get-name">gok_keyboard_get_name</link>           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-set-name">gok_keyboard_set_name</link>           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gchar">gchar</link> *Name);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-get-supports-wordcomplete">gok_keyboard_get_supports_wordcomplete</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-set-wordcomplete-keys-added">gok_keyboard_set_wordcomplete_keys_added</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bTrueFalse);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-get-wordcomplete-keys-added">gok_keyboard_get_wordcomplete_keys_added</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-set-commandpredict-keys-added">gok_keyboard_set_commandpredict_keys_added</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bTrueFalse);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-get-commandpredict-keys-added">gok_keyboard_get_commandpredict_keys_added</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-display">gok_keyboard_display</link>            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboardCurrent,
+                                             <link linkend="GtkWidget">GtkWidget</link> *pWindowMain,
+                                             <link linkend="gboolean">gboolean</link> CallbackScanner);
+<link linkend="xmlNode">xmlNode</link>*    <link linkend="gok-keyboard-find-node">gok_keyboard_find_node</link>          (<link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="gchar">gchar</link> *NameNode);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-position-keys">gok_keyboard_position_keys</link>      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="GtkWidget">GtkWidget</link> *pWindow);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-initialize">gok_keyboard_initialize</link>         (void);
+<link linkend="void">void</link>        <link linkend="gok-key-delete">gok_key_delete</link>                  (<link linkend="GokKey">GokKey</link> *pKey,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bDeleteButton);
+<link linkend="GokKey">GokKey</link>*     <link linkend="gok-key-new">gok_key_new</link>                     (<link linkend="GokKey">GokKey</link> *pKeyPrevious,
+                                             <link linkend="GokKey">GokKey</link> *pKeyNext,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-layout">gok_keyboard_layout</link>             (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="KeyboardLayouts">KeyboardLayouts</link> layout,
+                                             <link linkend="KeyboardShape">KeyboardShape</link> shape,
+                                             <link linkend="gboolean">gboolean</link> force);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-branch-gui">gok_keyboard_branch_gui</link>         (<link linkend="AccessibleNode">AccessibleNode</link> *pNodeAccessible,
+                                             <link linkend="GokSpySearchType">GokSpySearchType</link> type);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-branch-gui-actions">gok_keyboard_branch_gui_actions</link> (<link linkend="GokKeyboard">GokKeyboard</link> *keyboard,
+                                             <link linkend="AccessibleNode">AccessibleNode</link> *pNodeAccessible,
+                                             <link linkend="gint">gint</link> action_ndx);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-branch-edittext">gok_keyboard_branch_edittext</link>    (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk">gok_chunker_chunk</link>               (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-chunker-initialize">gok_chunker_initialize</link>          (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk-rows-ttb">gok_chunker_chunk_rows_ttb</link>      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk-rows-btt">gok_chunker_chunk_rows_btt</link>      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk-cols-ltr">gok_chunker_chunk_cols_ltr</link>      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk-cols-rtl">gok_chunker_chunk_cols_rtl</link>      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-chunker-chunk-recursive">gok_chunker_chunk_recursive</link>     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder,
+                                             <link linkend="gint">gint</link> Groups);
+<link linkend="GokKey">GokKey</link>*     <link linkend="gok-chunker-find-center">gok_chunker_find_center</link>         (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> centerRow,
+                                             <link linkend="gint">gint</link> centerColumn,
+                                             <link linkend="gint">gint</link> *pRowsDistant,
+                                             <link linkend="gint">gint</link> *pColumnsDistant);
+<link linkend="GokKey">GokKey</link>*     <link linkend="gok-keyboard-output-selectedkey">gok_keyboard_output_selectedkey</link> (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-validate-dynamic-keys">gok_keyboard_validate_dynamic_keys</link>
+                                            (<link linkend="Accessible">Accessible</link> *pAccessibleForeground);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-fill-row">gok_keyboard_fill_row</link>           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> RowNumber);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-insert-array">gok_keyboard_insert_array</link>       (<link linkend="GokKey">GokKey</link> *pKey);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-on-window-resize">gok_keyboard_on_window_resize</link>   (void);
+<link linkend="gint">gint</link>        <link linkend="gok-keyboard-get-keywidth-for-window">gok_keyboard_get_keywidth_for_window</link>
+                                            (<link linkend="gint">gint</link> WidthWindow,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="gint">gint</link>        <link linkend="gok-keyboard-get-keyheight-for-window">gok_keyboard_get_keyheight_for_window</link>
+                                            (<link linkend="gint">gint</link> HeightWindow,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-set-ignore-resize">gok_keyboard_set_ignore_resize</link>  (<link linkend="gboolean">gboolean</link> bFlag);
+<link linkend="Accessible">Accessible</link>* <link linkend="gok-keyboard-get-accessible">gok_keyboard_get_accessible</link>     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-set-accessible">gok_keyboard_set_accessible</link>     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="Accessible">Accessible</link> *pAccessible);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-calculate-font-size">gok_keyboard_calculate_font_size</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-calculate-font-size-group">gok_keyboard_calculate_font_size_group</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> GroupNumber,
+                                             <link linkend="gboolean">gboolean</link> bOverride);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-keyboard-update-dynamic">gok_keyboard_update_dynamic</link>     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+<link linkend="void">void</link>        <link linkend="gok-keyboard-update-labels">gok_keyboard_update_labels</link>      (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="KeyboardLayouts"/>enum KeyboardLayouts</title>
+<indexterm><primary>KeyboardLayouts</primary></indexterm><programlisting>typedef enum {
+KEYBOARD_LAYOUT_NORMAL,
+KEYBOARD_LAYOUT_QWERTY,
+KEYBOARD_LAYOUT_CENTER,
+KEYBOARD_LAYOUT_UPPERL,
+KEYBOARD_LAYOUT_UNSPECIFIED
+} KeyboardLayouts;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="KeyboardTypes"/>enum KeyboardTypes</title>
+<indexterm><primary>KeyboardTypes</primary></indexterm><programlisting>typedef enum {
+KEYBOARD_TYPE_PLAIN,
+KEYBOARD_TYPE_MAIN,
+KEYBOARD_TYPE_APPLICATIONS,
+KEYBOARD_TYPE_MENUS,
+KEYBOARD_TYPE_MENUITEMS,
+KEYBOARD_TYPE_ACTIONS,
+KEYBOARD_TYPE_ALLTOOLBARS,
+KEYBOARD_TYPE_TOOLBAR,
+KEYBOARD_TYPE_GUI,
+KEYBOARD_TYPE_EDITTEXT,
+KEYBOARD_TYPE_WINDOWS,
+KEYBOARD_TYPE_UNSPECIFIED,
+KEYBOARD_TYPE_MODAL
+} KeyboardTypes;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAX-KEYBOARD-NAME:CAPS"/>MAX_KEYBOARD_NAME</title>
+<indexterm><primary>MAX_KEYBOARD_NAME</primary></indexterm><programlisting>#define MAX_KEYBOARD_NAME 50
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-new"/>gok_keyboard_new ()</title>
+<indexterm><primary>gok_keyboard_new</primary></indexterm><programlisting><link linkend="GokKeyboard">GokKeyboard</link>* gok_keyboard_new               (void);</programlisting>
+<para>
+Allocates memory for a new keyboard and initializes the GokKeyboard structure.
+Call gok_keyboard_delete on this when done with it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new keyboard, NULL if it can't be created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-read"/>gok_keyboard_read ()</title>
+<indexterm><primary>gok_keyboard_read</primary></indexterm><programlisting><link linkend="GokKeyboard">GokKeyboard</link>* gok_keyboard_read              (const <link linkend="gchar">gchar</link> *Filename);</programlisting>
+<para>
+Reads in the given keyboard file. 
+Note: Call 'gok_keyboard_delete' on this keyboard when done with it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Filename</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the keyboard file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new keyboard, NULL if not created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-delete"/>gok_keyboard_delete ()</title>
+<indexterm><primary>gok_keyboard_delete</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_delete             (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bForce);</programlisting>
+<para>
+Deletes the given keyboard. This must be called on every keyboard that has
+been created. Don't use the given keyboard after calling this.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that's getting deleted.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bForce</parameter>&nbsp;:</term>
+<listitem><simpara> TRUE if the keyboard should be deleted even if it is in the stack.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-delete-key"/>gok_keyboard_delete_key ()</title>
+<indexterm><primary>gok_keyboard_delete_key</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_delete_key         (<link linkend="GokKey">GokKey</link> *pKey,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKey</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-count-rows-columns"/>gok_keyboard_count_rows_columns ()</title>
+<indexterm><primary>gok_keyboard_count_rows_columns</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_count_rows_columns (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Counts the number of rows and columns in the keyboard and updates members
+of the GokKeyboard structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that we want to get the rows and columns for.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-number-rows"/>gok_keyboard_get_number_rows ()</title>
+<indexterm><primary>gok_keyboard_get_number_rows</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_keyboard_get_number_rows    (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that you're concerned about.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The number of rows in the given keyboard.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-number-columns"/>gok_keyboard_get_number_columns ()</title>
+<indexterm><primary>gok_keyboard_get_number_columns</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_keyboard_get_number_columns (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard you want to know about.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The number of columns in the given keyboard.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-add-keys"/>gok_keyboard_add_keys ()</title>
+<indexterm><primary>gok_keyboard_add_keys</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_add_keys           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="xmlDoc">xmlDoc</link> *pDoc);</programlisting>
+<para>
+Adds the keys from the given DOM to this keyboard.
+The keys will all be deleted when gok_keyboard_delete is called.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will contain the keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pDoc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML document that describes the keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keys were added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-name"/>gok_keyboard_get_name ()</title>
+<indexterm><primary>gok_keyboard_get_name</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gok_keyboard_get_name           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard to get the name from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> gchar* name of keyboard
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-set-name"/>gok_keyboard_set_name ()</title>
+<indexterm><primary>gok_keyboard_set_name</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_set_name           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gchar">gchar</link> *Name);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that's getting named.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name for the keyboard.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-supports-wordcomplete"/>gok_keyboard_get_supports_wordcomplete ()</title>
+<indexterm><primary>gok_keyboard_get_supports_wordcomplete</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_get_supports_wordcomplete
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that we're testing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the given keyboard supports word completion.
+Only alphabetic keyboards should support word completion.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-set-wordcomplete-keys-added"/>gok_keyboard_set_wordcomplete_keys_added ()</title>
+<indexterm><primary>gok_keyboard_set_wordcomplete_keys_added</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_set_wordcomplete_keys_added
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bTrueFalse);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that is changed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bTrueFalse</parameter>&nbsp;:</term>
+<listitem><simpara> TRUE if you want the predictor keys added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-wordcomplete-keys-added"/>gok_keyboard_get_wordcomplete_keys_added ()</title>
+<indexterm><primary>gok_keyboard_get_wordcomplete_keys_added</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_get_wordcomplete_keys_added
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that we're testing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the given keyboard has the word completion keys added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-set-commandpredict-keys-added"/>gok_keyboard_set_commandpredict_keys_added ()</title>
+<indexterm><primary>gok_keyboard_set_commandpredict_keys_added</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_set_commandpredict_keys_added
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bTrueFalse);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that is changed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bTrueFalse</parameter>&nbsp;:</term>
+<listitem><simpara> TRUE if you want the prediction keys added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-commandpredict-keys-added"/>gok_keyboard_get_commandpredict_keys_added ()</title>
+<indexterm><primary>gok_keyboard_get_commandpredict_keys_added</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_get_commandpredict_keys_added
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that we're testing.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the given keyboard has the word completion keys added, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-display"/>gok_keyboard_display ()</title>
+<indexterm><primary>gok_keyboard_display</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_display            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboardCurrent,
+                                             <link linkend="GtkWidget">GtkWidget</link> *pWindowMain,
+                                             <link linkend="gboolean">gboolean</link> CallbackScanner);</programlisting>
+<para>
+Displays the given keyboard in the GOK window.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that gets displayed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboardCurrent</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the current keyboard.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pWindowMain</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the main window that holds the keyboards.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>CallbackScanner</parameter>&nbsp;:</term>
+<listitem><simpara> If TRUE then the keyboard is used by the GOK. If FALSE
+then the keyboard is used by the editor.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was displayed, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-find-node"/>gok_keyboard_find_node ()</title>
+<indexterm><primary>gok_keyboard_find_node</primary></indexterm><programlisting><link linkend="xmlNode">xmlNode</link>*    gok_keyboard_find_node          (<link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="gchar">gchar</link> *NameNode);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML node that may contain the node you're looking for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>NameNode</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the node you're looking for.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the first node that has the given name, NULL if it can't be found.
+Note: This is recursive.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-position-keys"/>gok_keyboard_position_keys ()</title>
+<indexterm><primary>gok_keyboard_position_keys</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_position_keys      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="GtkWidget">GtkWidget</link> *pWindow);</programlisting>
+<para>
+Positions the keys on the keyboard. The key cell coordinates are converted into
+window locations.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that contains the keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pWindow</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the window that displays the keys.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-initialize"/>gok_keyboard_initialize ()</title>
+<indexterm><primary>gok_keyboard_initialize</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_initialize         (void);</programlisting>
+<para>
+Initializes global data for all keyboards.
+Call this once at the beginning of the program.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-key-delete"/>gok_key_delete ()</title>
+<indexterm><primary>gok_key_delete</primary></indexterm><programlisting><link linkend="void">void</link>        gok_key_delete                  (<link linkend="GokKey">GokKey</link> *pKey,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gboolean">gboolean</link> bDeleteButton);</programlisting>
+<para>
+Deletes the given key. This must be called on every key that has been created.
+Don't use the given key after calling this.
+This unhooks the key from the next/previous list of keys.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKey</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the key that gets deleted.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that contains the key (can be NULL). If
+pKeyboard is not NULL then the key is unhooked from the keyboard.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bDeleteButton</parameter>&nbsp;:</term>
+<listitem><simpara> Flag that determines if the GTK button associated with
+the key should also be deleted. This should be set to TRUE if the key is
+deleted while the program is running. At the end of the program, when the
+GOK window is destroyed and the GTK buttons are destroyed, this should
+be set to FALSE.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-key-new"/>gok_key_new ()</title>
+<indexterm><primary>gok_key_new</primary></indexterm><programlisting><link linkend="GokKey">GokKey</link>*     gok_key_new                     (<link linkend="GokKey">GokKey</link> *pKeyPrevious,
+                                             <link linkend="GokKey">GokKey</link> *pKeyNext,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Allocates memory for a new key and initializes the GokKey structure.
+Returns a pointer to the new key, NULL if it can't be created.
+Call gok_key_delete on this when done with it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyPrevious</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the previous key in the list of keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyNext</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the next key in the list
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new key, NULL if it wasn't created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-layout"/>gok_keyboard_layout ()</title>
+<indexterm><primary>gok_keyboard_layout</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_layout             (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="KeyboardLayouts">KeyboardLayouts</link> layout,
+                                             <link linkend="KeyboardShape">KeyboardShape</link> shape,
+                                             <link linkend="gboolean">gboolean</link> force);</programlisting>
+<para>
+Arranges the keys on the keyboard.
+Predefined keyboards are already laid out. Runtime keyboards require this.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that is getting laid out.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><simpara> Can be used to specify a layout for the keys
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shape</parameter>&nbsp;:</term>
+<listitem><simpara> Can be used to specify a shape of the keyboard window
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>force</parameter>&nbsp;:</term>
+<listitem><simpara> If TRUE, perform a layout even if performed previously
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was laid out, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-branch-gui"/>gok_keyboard_branch_gui ()</title>
+<indexterm><primary>gok_keyboard_branch_gui</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_branch_gui         (<link linkend="AccessibleNode">AccessibleNode</link> *pNodeAccessible,
+                                             <link linkend="GokSpySearchType">GokSpySearchType</link> type);</programlisting>
+<para>
+Displays the generic gui keyboard - currently used for widgets inside windowish things</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNodeAccessible</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the accessible node (parent object).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> Type of dynamic keyboard to branch to (the role of the children).
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was displayed, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-branch-gui-actions"/>gok_keyboard_branch_gui_actions ()</title>
+<indexterm><primary>gok_keyboard_branch_gui_actions</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_branch_gui_actions (<link linkend="GokKeyboard">GokKeyboard</link> *keyboard,
+                                             <link linkend="AccessibleNode">AccessibleNode</link> *pNodeAccessible,
+                                             <link linkend="gint">gint</link> action_ndx);</programlisting>
+<para>
+Widgets can have multiple actions - build a keyboard of them.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>keyboard</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNodeAccessible</parameter>&nbsp;:</term>
+<listitem><simpara> the node which represents the gui widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>action_ndx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was displayed, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-branch-edittext"/>gok_keyboard_branch_edittext ()</title>
+<indexterm><primary>gok_keyboard_branch_edittext</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_branch_edittext    (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk"/>gok_chunker_chunk ()</title>
+<indexterm><primary>gok_chunker_chunk</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk               (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Breaks the keyboard ginto chunks (rows, columns etc.). The list of chunks is stored
+on the keyboard</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken ginto chunks.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if keyboard could be broken into chunks, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-initialize"/>gok_chunker_initialize ()</title>
+<indexterm><primary>gok_chunker_initialize</primary></indexterm><programlisting><link linkend="void">void</link>        gok_chunker_initialize          (void);</programlisting>
+<para>
+Initializes the chunker. This must be called before using the chunker.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk-rows-ttb"/>gok_chunker_chunk_rows_ttb ()</title>
+<indexterm><primary>gok_chunker_chunk_rows_ttb</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk_rows_ttb      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);</programlisting>
+<para>
+Keys are placed in the row in which they appear - starting at the top row and working
+towards the bottom row. If a key spans more than one row it will be placed in the 
+topmost row it occupies.
+The given keyboard should not have any chunks (call gok_chunker_delete_chunks
+before calling this).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken ginto chunks of rows.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ChunkOrder</parameter>&nbsp;:</term>
+<listitem><simpara> Defines the row order (left to right or right to left). See enum ChunkOrder.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was broken ginto rows, FALSE if not
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk-rows-btt"/>gok_chunker_chunk_rows_btt ()</title>
+<indexterm><primary>gok_chunker_chunk_rows_btt</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk_rows_btt      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);</programlisting>
+<para>
+Keys are placed in the row in which they appear - starting at the bottom row and working
+towards the top row. If a key spans more than one row it will be placed in the 
+lowest row it occupies.
+The given keyboard should not have any chunks (call gok_chunker_delete_chunks
+before calling this).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken ginto chunks of rows.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ChunkOrder</parameter>&nbsp;:</term>
+<listitem><simpara> Defines the row order (left to right or right to left). See enum ChunkOrder.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was broken ginto rows, FALSE if not
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk-cols-ltr"/>gok_chunker_chunk_cols_ltr ()</title>
+<indexterm><primary>gok_chunker_chunk_cols_ltr</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk_cols_ltr      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);</programlisting>
+<para>
+Keys are placed in the column in which they appear - starting at the left column and working
+towards the right row. If a key spans more than one column it will be placed in the 
+leftmost columns it occupies.
+The given keyboard should not have any chunks (call gok_chunker_delete_chunks
+before calling this).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken ginto chunks of rows.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ChunkOrder</parameter>&nbsp;:</term>
+<listitem><simpara> Defines the column order (top to bottom or bottom to top). See 
+enum ChunkOrder.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was broken ginto columns, FALSE if not
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk-cols-rtl"/>gok_chunker_chunk_cols_rtl ()</title>
+<indexterm><primary>gok_chunker_chunk_cols_rtl</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk_cols_rtl      (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder);</programlisting>
+<para>
+Keys are placed in the column in which they appear - starting at the right row 
+and working towards the left column. If a key spans more than one row it will be 
+placed in the rightmost row it occupies.
+The given keyboard should not have any chunks (call gok_chunker_delete_chunks
+before calling this).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken ginto chunks of columns.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ChunkOrder</parameter>&nbsp;:</term>
+<listitem><simpara> Defines the column order (top to bottom or bottom to top). See 
+enum ChunkOrder.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was broken ginto columns, FALSE if not
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-chunk-recursive"/>gok_chunker_chunk_recursive ()</title>
+<indexterm><primary>gok_chunker_chunk_recursive</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_chunker_chunk_recursive     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> ChunkOrder,
+                                             <link linkend="gint">gint</link> Groups);</programlisting>
+<para>
+Breaks the keyboard into recursive groups until a group consists of only one key.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be broken into chunks.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ChunkOrder</parameter>&nbsp;:</term>
+<listitem><simpara> Defines the column order (top to bottom or bottom to top). See 
+enum ChunkOrder.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Groups</parameter>&nbsp;:</term>
+<listitem><simpara> Number of groups the chunk should be broken into.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was broken ginto chunks, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-chunker-find-center"/>gok_chunker_find_center ()</title>
+<indexterm><primary>gok_chunker_find_center</primary></indexterm><programlisting><link linkend="GokKey">GokKey</link>*     gok_chunker_find_center         (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> centerRow,
+                                             <link linkend="gint">gint</link> centerColumn,
+                                             <link linkend="gint">gint</link> *pRowsDistant,
+                                             <link linkend="gint">gint</link> *pColumnsDistant);</programlisting>
+<para>
+Check pRowsDistant and pColumnsDistant to find out how close this key is to the 
+center. If both pRowsDistant and pColumnsDistant are 0 then the key returned is 
+directly at the center.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Keyboard that you want to find the center of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>centerRow</parameter>&nbsp;:</term>
+<listitem><simpara> Center row of the keyboard.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>centerColumn</parameter>&nbsp;:</term>
+<listitem><simpara> Center column of the keyboard.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pRowsDistant</parameter>&nbsp;:</term>
+<listitem><simpara> (out) Key returned is this number of rows away from the center.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pColumnsDistant</parameter>&nbsp;:</term>
+<listitem><simpara> (out) Key returned is this number of columns away from the center.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Pointer to the key that is closest to the center of the keyboard.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-output-selectedkey"/>gok_keyboard_output_selectedkey ()</title>
+<indexterm><primary>gok_keyboard_output_selectedkey</primary></indexterm><programlisting><link linkend="GokKey">GokKey</link>*     gok_keyboard_output_selectedkey (void);</programlisting>
+<para>
+Performs the events associated with the currently selected key</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Always 0.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-validate-dynamic-keys"/>gok_keyboard_validate_dynamic_keys ()</title>
+<indexterm><primary>gok_keyboard_validate_dynamic_keys</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_validate_dynamic_keys
+                                            (<link linkend="Accessible">Accessible</link> *pAccessibleForeground);</programlisting>
+<para>
+Enables or disables the keys that branch to the dynamic keyboards
+keyboards.
+</para>
+<para>
+Returns: TRUE if any of the keys have changed their state (disable/active).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pAccessibleForeground</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the foreground accessible pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>FALSE if none of the keys change state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-fill-row"/>gok_keyboard_fill_row ()</title>
+<indexterm><primary>gok_keyboard_fill_row</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_fill_row           (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> RowNumber);</programlisting>
+<para>
+This function resizes the keys in the given row so they fill the entire row.
+This should be used only on keyboards that are synamically created (not predefined).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that contains the row.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>RowNumber</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the row you want filled.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-insert-array"/>gok_keyboard_insert_array ()</title>
+<indexterm><primary>gok_keyboard_insert_array</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_insert_array       (<link linkend="GokKey">GokKey</link> *pKey);</programlisting>
+<para>
+Adds the given key to our array in order of the rightmost key location.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKey</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the key you want added to the array.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-on-window-resize"/>gok_keyboard_on_window_resize ()</title>
+<indexterm><primary>gok_keyboard_on_window_resize</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_on_window_resize   (void);</programlisting>
+<para>
+This will be called when the window has been resized.
+Change the key size, update the gok_data and settings dialog with the
+new key size.
+If we resize the window (by branching) then the m_bIgnoreResizeEvent flag
+will be set so we ignore the resize. This flag is needed because we can't get
+a message from the system letting us know that it was the user that resized
+the window.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-keywidth-for-window"/>gok_keyboard_get_keywidth_for_window ()</title>
+<indexterm><primary>gok_keyboard_get_keywidth_for_window</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_keyboard_get_keywidth_for_window
+                                            (<link linkend="gint">gint</link> WidthWindow,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Calculates a key width for the current keyboard given the window width.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>WidthWindow</parameter>&nbsp;:</term>
+<listitem><simpara> Width of the target window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be displayed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The key width.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-keyheight-for-window"/>gok_keyboard_get_keyheight_for_window ()</title>
+<indexterm><primary>gok_keyboard_get_keyheight_for_window</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_keyboard_get_keyheight_for_window
+                                            (<link linkend="gint">gint</link> HeightWindow,
+                                             <link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Calculates a key height for the current keyboard given the window height.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>HeightWindow</parameter>&nbsp;:</term>
+<listitem><simpara> Height of the target window.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that will be displayed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The key height.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-set-ignore-resize"/>gok_keyboard_set_ignore_resize ()</title>
+<indexterm><primary>gok_keyboard_set_ignore_resize</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_set_ignore_resize  (<link linkend="gboolean">gboolean</link> bFlag);</programlisting>
+<para>
+Sets/clears a flag so that the next resize event will be ignored.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bFlag</parameter>&nbsp;:</term>
+<listitem><simpara> State of the resize flag.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-get-accessible"/>gok_keyboard_get_accessible ()</title>
+<indexterm><primary>gok_keyboard_get_accessible</primary></indexterm><programlisting><link linkend="Accessible">Accessible</link>* gok_keyboard_get_accessible     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that we're using
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> pointer to the accessible (probably shared by keys on this keyboard)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-set-accessible"/>gok_keyboard_set_accessible ()</title>
+<indexterm><primary>gok_keyboard_set_accessible</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_set_accessible     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="Accessible">Accessible</link> *pAccessible);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that is to be changed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessible</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the new accessible interface.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-calculate-font-size"/>gok_keyboard_calculate_font_size ()</title>
+<indexterm><primary>gok_keyboard_calculate_font_size</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_calculate_font_size
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Sets the font size for each key on the given keyboard.
+Each key may be assigned to a a font size group (FSG). If the FSG is
+not specified then the key belongs to group FONT_SIZE_GROUP_UNDEFINED. 
+If the FSG is FONT_SIZE_GROUP_UNIQUE then the key does not belong to 
+any group and calculate a font size for that key.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that gets the new font size.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-calculate-font-size-group"/>gok_keyboard_calculate_font_size_group ()</title>
+<indexterm><primary>gok_keyboard_calculate_font_size_group</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_calculate_font_size_group
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard,
+                                             <link linkend="gint">gint</link> GroupNumber,
+                                             <link linkend="gboolean">gboolean</link> bOverride);</programlisting>
+<para>
+Sets the font size for each key that belongs to the given group on the 
+given keyboard.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that gets the new font size.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>GroupNumber</parameter>&nbsp;:</term>
+<listitem><simpara> Number of the font size group.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bOverride</parameter>&nbsp;:</term>
+<listitem><simpara> If TRUE then the font size is set for the key even if it
+already has a font size set. If FALSE then the font size is not set for
+the key if it is already set.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-update-dynamic"/>gok_keyboard_update_dynamic ()</title>
+<indexterm><primary>gok_keyboard_update_dynamic</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_keyboard_update_dynamic     (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Creates all the keys for the given dynamic keyboard.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the keyboard that gets updated.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the keyboard was updated, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-keyboard-update-labels"/>gok_keyboard_update_labels ()</title>
+<indexterm><primary>gok_keyboard_update_labels</primary></indexterm><programlisting><link linkend="void">void</link>        gok_keyboard_update_labels      (void);</programlisting>
+<para>
+Redraws the labels on all the keys. This should be called whenever
+a modifier key changes state.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

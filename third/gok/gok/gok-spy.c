@@ -40,6 +40,7 @@
 #include "gok-modifier-keymasks.h"
 #include "gok-gconf-keys.h"
 #include "gok-word-complete.h"
+#include "gok-keyboard.h"
 
 /*
  * NOTE: we can tweak the efficiency/accuracy of the
@@ -254,6 +255,8 @@ void gok_spy_accessible_unref(Accessible* accessible)
 
 	gok_log_leave ();
 }
+
+extern SPIBoolean cspi_accessible_is_a (Accessible *accessible, const char *interface_name);
 
 gboolean gok_spy_accessible_is_okay(Accessible* accessible)
 {
@@ -591,7 +594,7 @@ gok_spy_node_match (AccessibleNode *node, GokSpySearchType type)
 	case GOK_SPY_SEARCH_CHILDREN:
 	case GOK_SPY_SEARCH_COMBO:
 	case GOK_SPY_SEARCH_LISTITEMS:
-	case GOK_SPY_SEARCH_TABLE_ROWS:
+	case GOK_SPY_SEARCH_TABLE_CELLS:
 	case GOK_SPY_SEARCH_ALL:
 		return TRUE;
 		break;
@@ -748,13 +751,14 @@ gok_spy_concatenate_child_names (Accessible *parent)
 
 /**
  * 
- * gok_spy_get_table_row_nodes:
+ * gok_spy_get_table_nodes:
  * Returns a list of nodes which are children of a table, such that
- * there is exactly one child per table row plus one child per actionable table header.
+ * there is exactly one child per currently visible cell 
+ * plus one child per actionable table header.
  *
  **/
 GSList *
-gok_spy_get_table_row_nodes (Accessible *search_root)
+gok_spy_get_table_nodes (Accessible *search_root)
 {
 	GSList *nodes = NULL;
 	AccessibleNodeFlags flags;
@@ -767,7 +771,8 @@ gok_spy_get_table_row_nodes (Accessible *search_root)
 
 	g_assert (Accessible_isTable (search_root));
 	table = Accessible_getTable (search_root);
-	flags.value = 0xff;
+	flags.value = ~0;
+	flags.data.inside_html_container = FALSE;
 	col_count = AccessibleTable_getNColumns (table);
 	if (col_count > 1)
 	{
@@ -797,6 +802,8 @@ gok_spy_get_table_row_nodes (Accessible *search_root)
 		last_index = Accessible_getIndexInParent (last_child);
 	Accessible_unref (first_child);
 	Accessible_unref (last_child);
+
+	gok_log ("first row index %d; last row index %d", first_index, last_index);
 
 	row_count = AccessibleTable_getNRows (table);
 	first_row = AccessibleTable_getRowAtIndex (table, first_index);
@@ -829,10 +836,10 @@ gok_spy_get_table_row_nodes (Accessible *search_root)
 			{
 				nodes = gok_spy_append_node (nodes, child, flags);
 				gok_spy_accessible_unref (child);
-				break;
 			}
 			else 
 			{
+ 			        gok_log ("ignoring node at row %d, col %d", i, n);
 				gok_spy_accessible_unref (child);
 			}
 			++n;
@@ -857,7 +864,8 @@ gok_spy_get_children (Accessible *search_root)
 
 	g_assert (search_root);
 	/* TODO: should this recurse down, and should we check for 'interesting'-ness first ? */
-	flags.value = 0xff;
+	flags.value = ~0;
+	flags.data.inside_html_container = FALSE;
 	child_count = Accessible_getChildCount (search_root);
 	for (i = 0; i < child_count; ++i)
 	{
@@ -874,7 +882,8 @@ gok_spy_get_children (Accessible *search_root)
 
 /**
  * gok_spy_get_actionable_descendants:
- * Returns a list of actionable or selectable descendants of #accessible.
+ * Returns a list of actionable or selectable descendants of #accessible,
+ * including #accessible itself.
  **/
 GSList *
 gok_spy_get_actionable_descendants (Accessible *accessible, GSList *nodes)
@@ -882,10 +891,20 @@ gok_spy_get_actionable_descendants (Accessible *accessible, GSList *nodes)
     gint child_count, i, max_children = 20;
     Accessible *child;
     AccessibleNodeFlags flags;
-    GSList *ret_nodes = nodes;
+    GSList *ret_nodes;
     gboolean is_selection = Accessible_isSelection (accessible);
     flags.value = 0;
+    flags.data.inside_html_container = FALSE;
     flags.data.is_ui = TRUE;
+
+    if (Accessible_isAction (accessible))
+    {
+	ret_nodes = gok_spy_append_node (nodes, accessible, flags);
+    }
+    else
+    {
+	ret_nodes = nodes;
+    }
     child_count = Accessible_getChildCount (accessible);
     for (i = 0; i < child_count && i < max_children; ++i) 
     {
@@ -1035,7 +1054,9 @@ gboolean gok_spy_check_queues(void)
 			break;
 		case GOKSPY_STATE_EVENT:
 			gok_log("GOKSPY_STATE_EVENT");
-			((AccessibleChangeListenerCB)(m_ptheStateChangeListener))(en->event->source);
+			if (m_ptheStateChangeListener) {
+				((AccessibleChangeListenerCB)(m_ptheStateChangeListener))(en->event->source);
+			}
 			break;
 		case GOKSPY_WINDOW_ACTIVATE_EVENT:
 			gok_log("GOKSPY_WINDOW_ACTIVATE_EVENT");
@@ -1045,7 +1066,9 @@ gboolean gok_spy_check_queues(void)
 				gok_spy_accessible_unref (m_ptheWindowAccessible);
 				m_ptheWindowAccessible = en->event->source;
 				gok_spy_accessible_ref (m_ptheWindowAccessible);
-				((AccessibleChangeListenerCB)(m_ptheWindowChangeListener))(m_ptheWindowAccessible);
+				if (m_ptheWindowChangeListener) {
+					((AccessibleChangeListenerCB)(m_ptheWindowChangeListener))(m_ptheWindowAccessible);
+				}
 			}
 			break;
 		case GOKSPY_DEFUNCT_EVENT:
@@ -1056,7 +1079,9 @@ gboolean gok_spy_check_queues(void)
 			gok_spy_accessible_unref (m_ptheAccessibleWithText);
 			m_ptheWindowAccessible = NULL;
 			m_ptheAccessibleWithText = NULL;
-			((AccessibleChangeListenerCB)(m_ptheWindowChangeListener))(m_ptheWindowAccessible);
+			if (m_ptheWindowChangeListener) {
+				((AccessibleChangeListenerCB)(m_ptheWindowChangeListener))(m_ptheWindowAccessible);
+			}
 			break;
 		case GOKSPY_CONTAINER_EVENT:
 			gok_log("GOKSPY_CONTAINER_EVENT");
@@ -1213,7 +1238,24 @@ gok_spy_is_menu_role (AccessibleRole role)
 
 
 static gboolean
-gok_spy_is_ui (Accessible *accessible, AccessibleRole role)
+gok_spy_is_selectable_child (Accessible *accessible, Accessible *parent)
+{
+    if (parent && Accessible_isSelection (parent))
+    {
+/* see bug #153638
+	gboolean retval;
+	AccessibleStateSet *stateset = Accessible_getStateSet (accessible);
+	retval = AccessibleStateSet_contains (stateset, SPI_STATE_SELECTABLE);
+	AccessibleStateSet_unref (stateset);
+	return retval;
+*/
+	return TRUE;
+    }
+    return FALSE;
+}
+
+static gboolean
+gok_spy_is_ui (Accessible *accessible, Accessible *parent, AccessibleRole role)
 {
 	gboolean interesting = FALSE;
 
@@ -1227,14 +1269,17 @@ gok_spy_is_ui (Accessible *accessible, AccessibleRole role)
 	case SPI_ROLE_TOGGLE_BUTTON:
 	case SPI_ROLE_SLIDER:
 	case SPI_ROLE_SCROLL_BAR:
+        case SPI_ROLE_LIST:
 		interesting = TRUE;
 		break;
 	default:
 		if (Accessible_isEditableText (accessible) ||
 		    Accessible_isHypertext (accessible) ||
 		    Accessible_isTable (accessible) ||
-		    (Accessible_isAction (accessible) && !gok_spy_is_menu_role (role)))
-			interesting = TRUE;
+		    (!gok_spy_is_menu_role (role) && 
+		     (Accessible_isAction (accessible) ||
+		      gok_spy_is_selectable_child (accessible, parent))))
+		    interesting = TRUE;
 		gok_log ("checking for interesting interfaces... %s\n", interesting ? "yes" : "no");
 		gok_log ("is icon: %s\n", role == SPI_ROLE_ICON ? "yes" : "no");
 		break;
@@ -2023,6 +2068,25 @@ void gok_spy_process_focus (Accessible* accessible)
 	}
 	if (!has_menu) gok_spy_set_context_menu_accessible (NULL, 0);
 
+	/* 
+	 * if current active window is NULL, and this is a menu item, 
+	 * then we're in a popup menu of some kind; branch to the menus kbd
+	 */
+
+	if (accessible && (m_ptheWindowAccessible == NULL) && 
+	    gok_spy_is_menu_role (Accessible_getRole (accessible)))
+	{
+	    AccessibleNode *node = g_new0 (AccessibleNode, 1);
+	    gchar *name = Accessible_getName (accessible);
+	    node->link = -1;
+	    node->flags.value = 0;
+	    node->flags.data.is_menu = TRUE;
+	    node->pname = g_strdup (name ? name : "");
+	    gok_spy_accessible_ref (accessible);
+	    node->paccessible = accessible;
+	    gok_keyboard_branch_gui (node, GOK_SPY_SEARCH_CHILDREN);
+	}
+
 	gok_log_leave();
 } 
 
@@ -2204,32 +2268,35 @@ gok_spy_get_active_frame( )
 	return active_frame;
 }
 
-static Accessible*
-gok_spy_get_toolbar_item (Accessible *toolbar_child)
+/* recursive and exhaustive */
+static gboolean
+gok_spy_find_and_append_toolbar_items (Accessible *root, AccessibleNodeFlags flags)
 {
-	/* 
-	 * ROLE_TOOLBAR containers can have ROLE_PANEL or similarly useless children;
-	 * we need to drill down to the useful thingy i.e. pushbutton, etc.
-	 */
-	Accessible *child = toolbar_child, *tmp;
-	Accessible_ref (child);
-	while (child) 
+	Accessible *child, *tmp;
+	gint i, nchildren;
+	gboolean retval = FALSE;
+
+	if (gok_spy_is_menu_role (Accessible_getRole (root)))
 	{
-		if (Accessible_isAction (child)) 
-		{
-			return child;
-		}
-		else {
-			tmp = child;
-			child = Accessible_getChildAtIndex (child, 0);
-			Accessible_unref (tmp);
-		}
+	        return FALSE; /* make sure we continue searching independent of toolbars here */
 	}
-	return NULL;
+	else if (Accessible_isAction (root)) {
+		_priv_ui_nodes = gok_spy_append_node (_priv_ui_nodes, root, flags);
+		retval = TRUE;
+		/* uncomment if we don't care about children of actionables: */
+		/* return; */
+	}
+	nchildren = Accessible_getChildCount (root);
+	for (i = 0; i < nchildren; i++) {
+		child = Accessible_getChildAtIndex (root, i);
+		retval |= gok_spy_find_and_append_toolbar_items (child, flags);
+		Accessible_unref (child); 
+	}
+	return retval;
 }
 
 static GokSpyUIFlags 
-gok_spy_search_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboard_ui_flags)
+gok_spy_search_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboard_ui_flags, AccessibleNodeFlags context_flags)
 {
 	Accessible* child;
 	Accessible* parent;
@@ -2243,27 +2310,34 @@ gok_spy_search_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboar
 
 	ui_flags.value = 0;
 	parent = rootAccessible;
-	
+
 	if (gok_spy_worth_searching (parent) == FALSE) 
 	{
 		gok_log ("not worth searching.");
 		gok_log_leave ();
 		return ui_flags;
-	}	
+	}			
 	parent_role = Accessible_getRole (parent);
 	child_count = Accessible_getChildCount (parent);
+	
+	/* assign context */
+	if (parent_role == SPI_ROLE_HTML_CONTAINER) {
+			context_flags.data.inside_html_container = TRUE;
+	}
+	
 	/* MAX_CHILD_COUNT is a bit of a kludge and will cause certain table items to be unreachable via UI Grab */
 	if (child_count > MAX_CHILD_COUNT)
 		child_count = MAX_CHILD_COUNT;
 	for (i = 0; i < child_count; ++i)
 	{
-		AccessibleNodeFlags flags;
+		AccessibleNodeFlags flags;  /* TODO? memcpy context_flags? */
 		flags.value = 0;
+		flags.data.inside_html_container = context_flags.data.inside_html_container;
+
 		child = Accessible_getChildAtIndex (parent, i);
 		if (child)
 		{
 			gok_spy_accessible_implicit_ref (child);
-			flags.value = 0;
 			role = Accessible_getRole (child);
 			if (keyboard_ui_flags.data.menus && gok_spy_is_menu_role (role))
 			{
@@ -2278,22 +2352,16 @@ gok_spy_search_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboar
 			else if (keyboard_ui_flags.data.toolbars && 
 				 parent_role == SPI_ROLE_TOOL_BAR)
 			{
-				Accessible *toolbar_item = gok_spy_get_toolbar_item (child);
 				if (keyboard_ui_flags.data.gui) 
 					flags.data.is_ui = TRUE; /* toolbar items are ui elements too */
 				ui_flags.data.toolbars = flags.data.is_toolbar_item = TRUE;
-				if (toolbar_item) 
+				if (!gok_spy_find_and_append_toolbar_items (child, flags)) 
 				{
-					_priv_ui_nodes = gok_spy_append_node (_priv_ui_nodes, toolbar_item, flags);
-					Accessible_unref (toolbar_item);
-				}
-				else
-				{
-				    ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags).value;
+				    ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags, context_flags).value;
 				}
 			}
 			if ((keyboard_ui_flags.data.gui || keyboard_ui_flags.data.editable_text) && 
-			    !flags.data.is_menu && !flags.data.is_toolbar_item && gok_spy_is_ui (child, role))
+			    !flags.data.is_menu && !flags.data.is_toolbar_item && gok_spy_is_ui (child, parent, role))
 			{
 				if (keyboard_ui_flags.data.gui) 
 				{
@@ -2306,18 +2374,21 @@ gok_spy_search_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboar
 			}
 			if (!flags.data.is_toolbar_item) /* toolbar items already added */
 			{
-				if (flags.value) 
+			        AccessibleNodeFlags non_context_flags = flags;
+				non_context_flags.data.inside_html_container = FALSE;
+
+				if (non_context_flags.value) 
 				{
 				    _priv_ui_nodes = gok_spy_append_node (_priv_ui_nodes, child, flags);
 				    /* special case for notebook tabs, whose children should also appear */
   				    if (role == SPI_ROLE_PAGE_TAB)
   				    {
-  					ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags).value;
+  					ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags, context_flags).value;
   				    }
 				}
 				else
 				{
-					ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags).value;
+					ui_flags.value |= gok_spy_search_component_list (child, keyboard_ui_flags, context_flags).value;
 				}
 			}
 			gok_spy_accessible_unref (child);
@@ -2351,12 +2422,15 @@ GokSpyUIFlags
 gok_spy_update_component_list (Accessible *rootAccessible, GokSpyUIFlags keyboard_ui_flags)
 {
 	GokSpyUIFlags ui_flags;
+	AccessibleNodeFlags context_flags;
 
 	gok_log_enter ();
 
 	gok_spy_free_nodes (_priv_ui_nodes);
 	_priv_ui_nodes = NULL;
-	ui_flags = gok_spy_search_component_list (rootAccessible, keyboard_ui_flags);
+
+	context_flags.value = 0;
+	ui_flags = gok_spy_search_component_list (rootAccessible, keyboard_ui_flags, context_flags);
 	/* _priv_ui_nodes is now re-assigned, by above call. */
 	gok_spy_resolve_namesakes (_priv_ui_nodes);
 
@@ -2438,4 +2512,3 @@ gboolean gok_spy_accessible_is_desktopChild(Accessible* accessible)
 	gok_log_leave();
 }
 */
-

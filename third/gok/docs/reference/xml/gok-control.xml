@@ -1,0 +1,212 @@
+<refentry id="gok-gok-control">
+<refmeta>
+<refentrytitle>gok-control</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-control</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="ControlTypes">ControlTypes</link>;
+enum        <link linkend="ControlFillwiths">ControlFillwiths</link>;
+enum        <link linkend="ControlHandlers">ControlHandlers</link>;
+<link linkend="GokControl">GokControl</link>* <link linkend="gok-control-new">gok_control_new</link>                 (void);
+<link linkend="void">void</link>        <link linkend="gok-control-delete-all">gok_control_delete_all</link>          (<link linkend="GokControl">GokControl</link> *pControl);
+<link linkend="gint">gint</link>        <link linkend="gok-control-get-control-type">gok_control_get_control_type</link>    (<link linkend="gchar">gchar</link> *NameControlType);
+<link linkend="gint">gint</link>        <link linkend="gok-control-get-handler-type">gok_control_get_handler_type</link>    (<link linkend="gchar">gchar</link> *NameControlType);
+<link linkend="void">void</link>        <link linkend="gok-control-button-handler">gok_control_button_handler</link>      (<link linkend="GtkButton">GtkButton</link> *button,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="gok-control-add-handler">gok_control_add_handler</link>         (<link linkend="GtkWidget">GtkWidget</link> *pWidget,
+                                             <link linkend="gint">gint</link> HandlerType);
+<link linkend="void">void</link>        <link linkend="gok-control-button-callback-open">gok_control_button_callback_open</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-control-button-callback-close">gok_control_button_callback_close</link>
+                                            (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ControlTypes"/>enum ControlTypes</title>
+<indexterm><primary>ControlTypes</primary></indexterm><programlisting>typedef enum {
+CONTROL_TYPE_LABEL,
+CONTROL_TYPE_HBOX,
+CONTROL_TYPE_VBOX,
+CONTROL_TYPE_COMBOBOX,
+CONTROL_TYPE_SEPERATOR,
+CONTROL_TYPE_FRAME,
+CONTROL_TYPE_BUTTON,
+CONTROL_TYPE_CHECKBUTTON,
+CONTROL_TYPE_RADIOBUTTON,
+CONTROL_TYPE_SPINBUTTON,
+MAX_CONTROL_TYPES /* keep this as the last entry in the enum */
+} ControlTypes;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ControlFillwiths"/>enum ControlFillwiths</title>
+<indexterm><primary>ControlFillwiths</primary></indexterm><programlisting>typedef enum {
+CONTROL_FILLWITH_ACTIONS,
+CONTROL_FILLWITH_FEEDBACKS,
+CONTROL_FILLWITH_SOUNDS,
+CONTROL_FILLWITH_OPTIONS
+} ControlFillwiths;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ControlHandlers"/>enum ControlHandlers</title>
+<indexterm><primary>ControlHandlers</primary></indexterm><programlisting>typedef enum {
+CONTROL_HANDLER_BROWSESOUND,
+CONTROL_HANDLER_ADVANCED,
+MAX_CONTROL_HANDLERS /* keep this as the last entry in the enum */
+} ControlHandlers;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-control-new"/>gok_control_new ()</title>
+<indexterm><primary>gok_control_new</primary></indexterm><programlisting><link linkend="GokControl">GokControl</link>* gok_control_new                 (void);</programlisting>
+<para>
+Creates a new gok_control. It's the caller's responsibility to delete this.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new control.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-delete-all"/>gok_control_delete_all ()</title>
+<indexterm><primary>gok_control_delete_all</primary></indexterm><programlisting><link linkend="void">void</link>        gok_control_delete_all          (<link linkend="GokControl">GokControl</link> *pControl);</programlisting>
+<para>
+Deletes the given control and all other controls linked to it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pControl</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the control that will be deleted.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-get-control-type"/>gok_control_get_control_type ()</title>
+<indexterm><primary>gok_control_get_control_type</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_control_get_control_type    (<link linkend="gchar">gchar</link> *NameControlType);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameControlType</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the control type.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The ID number of the control type name. Returns -1 if the
+control type name can't be found.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-get-handler-type"/>gok_control_get_handler_type ()</title>
+<indexterm><primary>gok_control_get_handler_type</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_control_get_handler_type    (<link linkend="gchar">gchar</link> *NameControlType);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameControlType</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the control handler.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The ID number of the control handler name. Returns -1 if the
+control handler name can't be found.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-button-handler"/>gok_control_button_handler ()</title>
+<indexterm><primary>gok_control_button_handler</primary></indexterm><programlisting><link linkend="void">void</link>        gok_control_button_handler      (<link linkend="GtkButton">GtkButton</link> *button,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+<parameter>pButton</parameter>: Pointer to the button that was just pressed.
+<parameter>user_data</parameter>: User data that is associated with the button.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>button</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-add-handler"/>gok_control_add_handler ()</title>
+<indexterm><primary>gok_control_add_handler</primary></indexterm><programlisting><link linkend="void">void</link>        gok_control_add_handler         (<link linkend="GtkWidget">GtkWidget</link> *pWidget,
+                                             <link linkend="gint">gint</link> HandlerType);</programlisting>
+<para>
+<parameter>pWidget</parameter>: Pointer to the button gets added to the handler list.
+<parameter>HandlerType</parameter>: Type of handler the button requires.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pWidget</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>HandlerType</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-control-button-callback-open"/>gok_control_button_callback_open ()</title>
+<indexterm><primary>gok_control_button_callback_open</primary></indexterm><programlisting><link linkend="void">void</link>        gok_control_button_callback_open
+                                            (void);</programlisting>
+<para>
+Initializes the GOK control callback handlers. This must be called
+at the beginning of the program.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-control-button-callback-close"/>gok_control_button_callback_close ()</title>
+<indexterm><primary>gok_control_button_callback_close</primary></indexterm><programlisting><link linkend="void">void</link>        gok_control_button_callback_close
+                                            (void);</programlisting>
+<para>
+Frees any memory used by the control callbacks. This must be called
+at the end of the program.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

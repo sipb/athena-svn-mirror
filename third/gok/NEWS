@@ -1,6 +1,58 @@
+What's new in GOK 0.11.17
+
+* backport of bugfix for 159932
+
+What's new in GOK 0.11.16?
+
+* Emergency bugfix for #157420 in 0.11.15.
+
+* Bug fixes including: 155556, 157138, 157221, 154961, 155805, 156802
+  154918, 156802,   
+ 
+* Mostly fixes and improvements to the dynamic accessibility keyboards.
+
+
+What's new in GOK 0.11.14 ?
+
+* Bug fixes including: 155182 (double actions), 154499,
+  154604, #156153, #156479, 155344, 155473, 155476, 155512.
+           
+* LoginHelper's setSafe implementation now prevents
+  word completion, as it should.
+
+* Distinguish between HTML content and browser controls.
+
+* Hush compiler warnings (bug 154915).        
+
+What's new in GOK 0.11.10/0.11.11 ?
+
+* Fix regression caused by bugfix 151417; this release
+  should be used instead of 0.11.9.
+
+What's new in GOK 0.11.9 ?
+
+* Expose multiple actions for UI components which have more than one
+  possible user action available.  Fixes bug #151417.
+
+* Improved table and list behavior: Bugfixes for #153130, #152788,
+  #153389.
+
+* Rewrite of online help (thanks to Irene Ryan!)
+
 What's new in GOK 0.11.8 ?
 
 * Fixed broken .m4 macro (bugzilla 152086)
+
+What's new in GOK 0.11.7 ?
+
+* Account for BORDERPIX in DOCK windows, which 
+  prevents some resize problems with the 'Show' and 'Hide' keys.
+  (#149842).
+
+* Don't dist the merged .kbd files, they are regenerated on make.
+  (If this breaks anyone's rpm maker, we may reconsider this change)
+
+What's new in GOK 0.11.6 ?
 
 * Fixes for bug #144435, #147633, #142831, and #150260.
   Non-XKB compose keyboards are working better now with

@@ -1,0 +1,237 @@
+<refentry id="gok-gok-modifier">
+<refmeta>
+<refentrytitle>gok-modifier</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-modifier</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="MODIFIER-NORMAL:CAPS">MODIFIER_NORMAL</link>
+enum        <link linkend="ModifierStates">ModifierStates</link>;
+enum        <link linkend="ModifierTypes">ModifierTypes</link>;
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-modifier-add">gok_modifier_add</link>                (<link linkend="gchar">gchar</link> *Name);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-modifier-set-pre">gok_modifier_set_pre</link>            (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="GokOutput">GokOutput</link> *pOutput);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-modifier-set-post">gok_modifier_set_post</link>           (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="GokOutput">GokOutput</link> *pOutput);
+<link linkend="void">void</link>        <link linkend="gok-modifier-set-type">gok_modifier_set_type</link>           (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="gint">gint</link> Type);
+<link linkend="void">void</link>        <link linkend="gok-modifier-output-pre">gok_modifier_output_pre</link>         (void);
+<link linkend="void">void</link>        <link linkend="gok-modifier-output-post">gok_modifier_output_post</link>        (void);
+<link linkend="void">void</link>        <link linkend="gok-modifier-all-off">gok_modifier_all_off</link>            (void);
+<link linkend="int">int</link>         <link linkend="gok-modifier-get-state">gok_modifier_get_state</link>          (<link linkend="gchar">gchar</link> *pNameModifier);
+<link linkend="int">int</link>         <link linkend="gok-modifier-get-type">gok_modifier_get_type</link>           (<link linkend="gchar">gchar</link> *pNameModifier);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-modifier-get-normal">gok_modifier_get_normal</link>         (void);
+<link linkend="void">void</link>        <link linkend="gok-modifier-update-modifier-keys">gok_modifier_update_modifier_keys</link>
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="MODIFIER-NORMAL:CAPS"/>MODIFIER_NORMAL</title>
+<indexterm><primary>MODIFIER_NORMAL</primary></indexterm><programlisting>#define MODIFIER_NORMAL ""
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ModifierStates"/>enum ModifierStates</title>
+<indexterm><primary>ModifierStates</primary></indexterm><programlisting>typedef enum {
+MODIFIER_STATE_OFF,
+MODIFIER_STATE_ON,
+MODIFIER_STATE_LOCKED
+} ModifierStates;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ModifierTypes"/>enum ModifierTypes</title>
+<indexterm><primary>ModifierTypes</primary></indexterm><programlisting>typedef enum {
+/* a normal modifier like shift or CTRL */
+MODIFIER_TYPE_NORMAL,
+/* a toggle type of modifier like Capslock */
+MODIFIER_TYPE_TOGGLE
+} ModifierTypes;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-add"/>gok_modifier_add ()</title>
+<indexterm><primary>gok_modifier_add</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_modifier_add                (<link linkend="gchar">gchar</link> *Name);</programlisting>
+<para>
+Adds a modifier to the list of modifiers.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the modifier.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the modifier was created, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-set-pre"/>gok_modifier_set_pre ()</title>
+<indexterm><primary>gok_modifier_set_pre</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_modifier_set_pre            (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="GokOutput">GokOutput</link> *pOutput);</programlisting>
+<para>
+Sets the wrapper 'pre' output for the given modifier.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the modifier.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pOutput</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the output that will be set as the modifier wrapper 'pre'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the modifier 'pre' was set, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-set-post"/>gok_modifier_set_post ()</title>
+<indexterm><primary>gok_modifier_set_post</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_modifier_set_post           (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="GokOutput">GokOutput</link> *pOutput);</programlisting>
+<para>
+Sets the 'post' output for the given modifier.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the modifier.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pOutput</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the output that will be set as the modifier wrapper 'post'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the modifier 'pre' was set, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-set-type"/>gok_modifier_set_type ()</title>
+<indexterm><primary>gok_modifier_set_type</primary></indexterm><programlisting><link linkend="void">void</link>        gok_modifier_set_type           (<link linkend="gchar">gchar</link> *Name,
+                                             <link linkend="gint">gint</link> Type);</programlisting>
+<para>
+Sets the 'Type' attribute for the given modifier.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the modifier.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Type</parameter>&nbsp;:</term>
+<listitem><simpara> The type of the modifier.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-output-pre"/>gok_modifier_output_pre ()</title>
+<indexterm><primary>gok_modifier_output_pre</primary></indexterm><programlisting><link linkend="void">void</link>        gok_modifier_output_pre         (void);</programlisting>
+<para>
+Sends all the wrapper 'pre' outputs to the system.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-output-post"/>gok_modifier_output_post ()</title>
+<indexterm><primary>gok_modifier_output_post</primary></indexterm><programlisting><link linkend="void">void</link>        gok_modifier_output_post        (void);</programlisting>
+<para>
+Sends all the wrapper 'post' outputs to the system.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-all-off"/>gok_modifier_all_off ()</title>
+<indexterm><primary>gok_modifier_all_off</primary></indexterm><programlisting><link linkend="void">void</link>        gok_modifier_all_off            (void);</programlisting>
+<para>
+Changes the state of modifier keys to OFF, unless they are locked on.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-get-state"/>gok_modifier_get_state ()</title>
+<indexterm><primary>gok_modifier_get_state</primary></indexterm><programlisting><link linkend="int">int</link>         gok_modifier_get_state          (<link linkend="gchar">gchar</link> *pNameModifier);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNameModifier</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The state of the modifier
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-get-type"/>gok_modifier_get_type ()</title>
+<indexterm><primary>gok_modifier_get_type</primary></indexterm><programlisting><link linkend="int">int</link>         gok_modifier_get_type           (<link linkend="gchar">gchar</link> *pNameModifier);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNameModifier</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The type of the modifier
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-get-normal"/>gok_modifier_get_normal ()</title>
+<indexterm><primary>gok_modifier_get_normal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_modifier_get_normal         (void);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if there are no modifiers on (or locked on). Returns
+FALSE if one or more modifiers are on (or locked on).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-modifier-update-modifier-keys"/>gok_modifier_update_modifier_keys ()</title>
+<indexterm><primary>gok_modifier_update_modifier_keys</primary></indexterm><programlisting><link linkend="void">void</link>        gok_modifier_update_modifier_keys
+                                            (<link linkend="GokKeyboard">GokKeyboard</link> *pKeyboard);</programlisting>
+<para>
+Updates the indicator on all the modifier keys for the current keyboard.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKeyboard</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

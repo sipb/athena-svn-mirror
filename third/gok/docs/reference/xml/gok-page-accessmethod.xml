@@ -1,0 +1,214 @@
+<refentry id="gok-gok-page-accessmethod">
+<refmeta>
+<refentrytitle>gok-page-accessmethod</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-page-accessmethod</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-accessmethod-initialize">gok_page_accessmethod_initialize</link>
+                                            (<link linkend="GladeXML">GladeXML</link> *xml);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-accessmethod-apply">gok_page_accessmethod_apply</link>     (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-accessmethod-apply-controls">gok_page_accessmethod_apply_controls</link>
+                                            (<link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="gchar">gchar</link> *NameAccessMethod);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-page-accessmethod-revert">gok_page_accessmethod_revert</link>    (void);
+<link linkend="void">void</link>        <link linkend="gok-page-accessmethod-backup">gok_page_accessmethod_backup</link>    (void);
+<link linkend="void">void</link>        <link linkend="gok-page-accessmethod-change-controls">gok_page_accessmethod_change_controls</link>
+                                            (<link linkend="gchar">gchar</link> *pNameAccessMethod);
+<link linkend="void">void</link>        <link linkend="gok-page-accessmethod-draw-controls">gok_page_accessmethod_draw_controls</link>
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod,
+                                             <link linkend="GokControl">GokControl</link> *pControlParent,
+                                             <link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="gboolean">gboolean</link> bShow);
+<link linkend="void">void</link>        <link linkend="gok-page-accessmethod-update-controls">gok_page_accessmethod_update_controls</link>
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod,
+                                             <link linkend="GokControl">GokControl</link> *pControl);
+<link linkend="gchar">gchar</link>*      <link linkend="gok-page-accessmethod-get-displayname">gok_page_accessmethod_get_displayname</link>
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod);
+<link linkend="gchar">gchar</link>*      <link linkend="gok-page-accessmethod-get-name">gok_page_accessmethod_get_name</link>  (<link linkend="gchar">gchar</link> *DisplayNameAccessMethod);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-initialize"/>gok_page_accessmethod_initialize ()</title>
+<indexterm><primary>gok_page_accessmethod_initialize</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_accessmethod_initialize
+                                            (<link linkend="GladeXML">GladeXML</link> *xml);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>xml</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-apply"/>gok_page_accessmethod_apply ()</title>
+<indexterm><primary>gok_page_accessmethod_apply</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_accessmethod_apply     (void);</programlisting>
+<para>
+Updates the gok data with values from the controls.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any settings have changed, FALSE if no settings have changed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-apply-controls"/>gok_page_accessmethod_apply_controls ()</title>
+<indexterm><primary>gok_page_accessmethod_apply_controls</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_accessmethod_apply_controls
+                                            (<link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="gchar">gchar</link> *NameAccessMethod);</programlisting>
+<para>
+Updates the gok data with values from the controls. This function is recursive
+and gets the data from the next and child controls of the one given.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pControl</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the control that you want to get the data from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method that the control belongs to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any conrol value has changed. Returns FALSE if all control values
+are the same.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-revert"/>gok_page_accessmethod_revert ()</title>
+<indexterm><primary>gok_page_accessmethod_revert</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_page_accessmethod_revert    (void);</programlisting>
+<para>
+Revert to the backup settings for this page and store them in the gok_data.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if any of the settings have changed, FALSE 
+if they are all still the same.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-backup"/>gok_page_accessmethod_backup ()</title>
+<indexterm><primary>gok_page_accessmethod_backup</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_accessmethod_backup    (void);</programlisting>
+<para>
+Copies all the member settings to backup.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-change-controls"/>gok_page_accessmethod_change_controls ()</title>
+<indexterm><primary>gok_page_accessmethod_change_controls</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_accessmethod_change_controls
+                                            (<link linkend="gchar">gchar</link> *pNameAccessMethod);</programlisting>
+<para>
+Display the controls for the given access method.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-draw-controls"/>gok_page_accessmethod_draw_controls ()</title>
+<indexterm><primary>gok_page_accessmethod_draw_controls</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_accessmethod_draw_controls
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod,
+                                             <link linkend="GokControl">GokControl</link> *pControlParent,
+                                             <link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="gboolean">gboolean</link> bShow);</programlisting>
+<para>
+Draws the controls for the GokControl.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access methods that needs the controls.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pControlParent</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the GOK control that will contain the new controls.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pControl</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the GokControl that you want drawn.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>bShow</parameter>&nbsp;:</term>
+<listitem><simpara> If TRUE then the controls will be show, if FALSE they will be hidden.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-update-controls"/>gok_page_accessmethod_update_controls ()</title>
+<indexterm><primary>gok_page_accessmethod_update_controls</primary></indexterm><programlisting><link linkend="void">void</link>        gok_page_accessmethod_update_controls
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod,
+                                             <link linkend="GokControl">GokControl</link> *pControl);</programlisting>
+<para>
+Updates all the controls on the page with values from the settings.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pControl</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the control that will be updated.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-get-displayname"/>gok_page_accessmethod_get_displayname ()</title>
+<indexterm><primary>gok_page_accessmethod_get_displayname</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gok_page_accessmethod_get_displayname
+                                            (<link linkend="gchar">gchar</link> *NameAccessMethod);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The display name of the given access method.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-page-accessmethod-get-name"/>gok_page_accessmethod_get_name ()</title>
+<indexterm><primary>gok_page_accessmethod_get_name</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gok_page_accessmethod_get_name  (<link linkend="gchar">gchar</link> *DisplayNameAccessMethod);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>DisplayNameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Display name of the access method.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The name of the given access method.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

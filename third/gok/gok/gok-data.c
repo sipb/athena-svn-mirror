@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gok-data.h"
+#include "gok-action.h"
 #include "gok-log.h"
 #include "gok-gconf.h"
 #include "gok-gconf-keys.h"

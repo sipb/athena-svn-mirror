@@ -43,4 +43,5 @@ void gok_feedbacks_update_sound_combo (void);
 gboolean gok_page_feedbacks_get_changed (void);
 void gok_page_feedbacks_set_changed (gboolean bTrueFalse);
 void gok_page_feedbacks_feedback_changed (GtkEditable* pEditControl);
+void gok_page_feedbacks_check_speech_toggled (GtkToggleButton *button);
 

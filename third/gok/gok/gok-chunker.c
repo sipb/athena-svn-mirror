@@ -35,6 +35,7 @@
 #include "gok-chunker.h"
 #include "main.h"
 #include "gok-scanner.h"
+#include "gok-repeat.h"
 #include "gok-settings-dialog.h"
 #include "gok-log.h"
 #include "gok-feedback.h"

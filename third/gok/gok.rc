@@ -43,6 +43,20 @@ style "style_text_normal"
 }
 widget "*StyleTextNormal" style "style_text_normal"
 
+style "style_text_hyperlink"
+{
+	fg[PRELIGHT] = { 0.0, 0.0, 0.2 }
+	fg[ACTIVE] = { 0, 0, 0 }
+	fg[NORMAL] = { 0.2, 0.2, 1.0 }
+	fg[INSENSITIVE] = { 0, 1.0, 1.0 }
+  
+	bg[PRELIGHT] = { .5, .7, 0.5 }
+	bg[ACTIVE] = { .5, .5, 1.0 }
+	bg[NORMAL] = { .5, .5, 1.0 }
+	bg[INSENSITIVE] = { .5, .5, 1.0 }
+}
+widget "*StyleTextHyperlink" style "style_text_hyperlink"
+
 style "style_text_disabled"
 {
 	fg[PRELIGHT] = { 0.5, 0.5, 0.6 }
@@ -141,6 +155,20 @@ style "style_button_branchmenuitems"
 }
 widget "*StyleButtonBranchMenuItems" style "style_button_branchmenuitems"
 
+style "style_button_hyperlink"
+{
+	fg[PRELIGHT] = { 0.2, 0.2, 1.0 }
+	fg[ACTIVE] = { 1.0, 0, 0 }
+	fg[NORMAL] = { 0, 0, 1.0 }
+	fg[INSENSITIVE] = { .5, .3, .5 }
+  
+	bg[PRELIGHT] = { 1.0, 0.7, 0.5 }
+	bg[ACTIVE] = { 0.7, 1.0, 1.0 }
+	bg[NORMAL] = { 0.8, 0.8, 1.0 }
+	bg[INSENSITIVE] = { .2, .8, 1.0 }
+}
+widget "*StyleButtonHyperlink" style "style_button_hyperlink"
+
 style "style_button_menuitem"
 {
 	fg[PRELIGHT] = { 0, 0, 1.0 }
@@ -211,6 +239,20 @@ style "style_button_branchguiactions"
 	bg[INSENSITIVE] = { .6, .2, .2 }
 }
 widget "*StyleButtonBranchGuiActions" style "style_button_branchguiactions"
+
+style "style_button_branchhtmlaction"
+{
+	fg[PRELIGHT] = { 0, 0, 1.0 }
+	fg[ACTIVE] = { 1.0, 0, 0 }
+	fg[NORMAL] = { 0, 0, .99 }
+	fg[INSENSITIVE] = { .5, .3, .5 }
+  
+	bg[PRELIGHT] = { 1.0, 0.7, .5 }
+	bg[ACTIVE] = { 1.0, 1.0, 1.0 }
+	bg[NORMAL] = { .2, .6, .7 }
+	bg[INSENSITIVE] = { .6, .2, .2 }
+}
+widget "*StyleButtonHtmlAction" style "style_button_branchhtmlaction"
 
 style "style_button_branchpageselection"
 {

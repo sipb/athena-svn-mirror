@@ -42,6 +42,7 @@
 #include "gok-log.h"
 #include "main.h"
 #include "gok-gconf-keys.h"
+#include "gok-gconf.h"
 
 /* pointer to the settings dialog window */
 static GtkWidget* m_pWindowSettings;

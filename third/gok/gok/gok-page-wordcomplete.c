@@ -29,6 +29,7 @@
 #include "gok-log.h"
 #include "gok-word-complete.h"
 #include "gok-settings-dialog.h"
+#include "gok-keyslotter.h"
 
 /* settings for the page */
 static gboolean m_WordCompleteOnOff;

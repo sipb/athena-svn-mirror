@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gok-settings-dialog</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-gok-scanner.html" title="gok-scanner"><link rel="next" href="gok-gok-sound.html" title="gok-sound"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-gok-scanner.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-gok-sound.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-gok-settings-dialog"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gok-settings-dialog</span></h2><p>gok-settings-dialog &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gboolean    <a href="gok-gok-settings-dialog.html#gok-settingsdialog-open">gok_settingsdialog_open</a>         (gboolean bShow);
+void        <a href="gok-gok-settings-dialog.html#gok-settingsdialog-close">gok_settingsdialog_close</a>        (void);
+gboolean    <a href="gok-gok-settings-dialog.html#gok-settingsdialog-show">gok_settingsdialog_show</a>         (void);
+void        <a href="gok-gok-settings-dialog.html#gok-settingsdialog-hide">gok_settingsdialog_hide</a>         (void);
+void        <a href="gok-gok-settings-dialog.html#on-button-try">on_button_try</a>                   (GtkButton *button,
+                                             gpointer user_data);
+void        <a href="gok-gok-settings-dialog.html#on-button-revert">on_button_revert</a>                (GtkButton *button,
+                                             gpointer user_data);
+void        <a href="gok-gok-settings-dialog.html#on-button-ok">on_button_ok</a>                    (GtkButton *button,
+                                             gpointer user_data);
+void        <a href="gok-gok-settings-dialog.html#on-button-cancel">on_button_cancel</a>                (GtkButton *button,
+                                             gpointer user_data);
+void        <a href="gok-gok-settings-dialog.html#on-button-help">on_button_help</a>                  (GtkButton *button,
+                                             gpointer user_data);
+void        <a href="gok-gok-settings-dialog.html#gok-settingsdialog-refresh">gok_settingsdialog_refresh</a>      (void);
+void        <a href="gok-gok-settings-dialog.html#gok-settingsdialog-backup-settings">gok_settingsdialog_backup_settings</a>
+                                            (void);
+GtkWidget*  <a href="gok-gok-settings-dialog.html#gok-settingsdialog-get-window">gok_settingsdialog_get_window</a>   (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2615947"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2615957"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2615962"></a><h3><a name="gok-settingsdialog-open"></a>gok_settingsdialog_open ()</h3><a class="indexterm" name="id2615974"></a><pre class="programlisting">gboolean    gok_settingsdialog_open         (gboolean bShow);</pre><p>
+Creates the GOK settings dialog.
+</p><p>
+<i class="parameter"><tt>bShow</tt></i>: If TRUE the settings dialog will be shown. If FALSE the dialog will be
+created but not shown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bShow</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the settings dialog could be created, FALSE if not.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616046"></a><h3><a name="gok-settingsdialog-close"></a>gok_settingsdialog_close ()</h3><a class="indexterm" name="id2616057"></a><pre class="programlisting">void        gok_settingsdialog_close        (void);</pre><p>
+Destroys the GOK settings dialog.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2616083"></a><h3><a name="gok-settingsdialog-show"></a>gok_settingsdialog_show ()</h3><a class="indexterm" name="id2616094"></a><pre class="programlisting">gboolean    gok_settingsdialog_show         (void);</pre><p>
+Displays the GOK settings dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the settings dialog was shown, FALSE if not.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616135"></a><h3><a name="gok-settingsdialog-hide"></a>gok_settingsdialog_hide ()</h3><a class="indexterm" name="id2616146"></a><pre class="programlisting">void        gok_settingsdialog_hide         (void);</pre><p>
+Hides the GOK settings dialog.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2616172"></a><h3><a name="on-button-try"></a>on_button_try ()</h3><a class="indexterm" name="id2616183"></a><pre class="programlisting">void        on_button_try                   (GtkButton *button,
+                                             gpointer user_data);</pre><p>
+The TRY button has been clicked. Apply any changes from the settings but
+don't hide the dialog</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Any user data associated with the button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616256"></a><h3><a name="on-button-revert"></a>on_button_revert ()</h3><a class="indexterm" name="id2616267"></a><pre class="programlisting">void        on_button_revert                (GtkButton *button,
+                                             gpointer user_data);</pre><p>
+The REVERT button has been clicked. Returns the settings to the way they were
+and update the keyboard.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Any user data associated with the button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616340"></a><h3><a name="on-button-ok"></a>on_button_ok ()</h3><a class="indexterm" name="id2616351"></a><pre class="programlisting">void        on_button_ok                    (GtkButton *button,
+                                             gpointer user_data);</pre><p>
+The OK button has been clicked. Apply any changes from the settings and
+hide the settings dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Any user data associated with the button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616424"></a><h3><a name="on-button-cancel"></a>on_button_cancel ()</h3><a class="indexterm" name="id2616435"></a><pre class="programlisting">void        on_button_cancel                (GtkButton *button,
+                                             gpointer user_data);</pre><p>
+The CANCEL button has been clicked. Return settings to the way they were and
+update the keyboard and hide the settings dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Any user data associated with the button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616508"></a><h3><a name="on-button-help"></a>on_button_help ()</h3><a class="indexterm" name="id2616519"></a><pre class="programlisting">void        on_button_help                  (GtkButton *button,
+                                             gpointer user_data);</pre><p>
+The HELP button has been clicked.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Any user data associated with the button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2616591"></a><h3><a name="gok-settingsdialog-refresh"></a>gok_settingsdialog_refresh ()</h3><a class="indexterm" name="id2616604"></a><pre class="programlisting">void        gok_settingsdialog_refresh      (void);</pre><p>
+Refreshes the dialog controls. This should be called after the user has resized the keyboard
+(which causes the key size to change) or if the gok data has changed.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2616630"></a><h3><a name="gok-settingsdialog-backup-settings"></a>gok_settingsdialog_backup_settings ()</h3><a class="indexterm" name="id2616643"></a><pre class="programlisting">void        gok_settingsdialog_backup_settings
+                                            (void);</pre><p>
+Copies all the member settings to backup.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2616669"></a><h3><a name="gok-settingsdialog-get-window"></a>gok_settingsdialog_get_window ()</h3><a class="indexterm" name="id2616681"></a><pre class="programlisting">GtkWidget*  gok_settingsdialog_get_window   (void);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the settings dialog window.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-gok-scanner.html"><b>&lt;&lt; gok-scanner</b></a></td><td align="right"><a accesskey="n" href="gok-gok-sound.html"><b>gok-sound &gt;&gt;</b></a></td></tr></table></body></html>

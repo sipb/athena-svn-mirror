@@ -1,35 +1,23 @@
 <?xml version="1.0"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-  <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY prefs SYSTEM "prefs.xml">
-  <!ENTITY keyboards SYSTEM "keyboards.xml">
-  <!ENTITY appversion "0.10.1">
-  <!ENTITY manrevision "2.1">
-  <!ENTITY date "April 2004">
-  <!ENTITY app "<application>GOK</application>">
-  <!ENTITY atrc "Adaptive Technology Resource Centre">
-  <!-- Information about the entities
-       The legal.xml file contains legal information, there is no need to edit the file. 
-       Use the appversion entity to specify the version of the application.
-       Use the manrevision entity to specify the revision number of this manual.
-       Use the date entity to specify the release date of this manual.
-       Use the app entity to specify the name of the application. -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY app "<application>GOK</application>">
+<!ENTITY appname "GOK">
+<!ENTITY appversion "0.11.9">
+<!ENTITY date "October 2004">
+<!ENTITY legal SYSTEM "legal.xml">
+<!ENTITY manrevision "2.3">
+<!ENTITY author1 "Sun">
+<!ENTITY author2 "Java Desktop System Documentation Team">
+<!ENTITY publisher "Sun Microsystems, Inc.">
+<!ENTITY atrc "Adaptive Technology Resource Centre">
 ]>
-<!-- 
-      (Do not remove this comment block.)
-  Maintained by the GNOME Documentation Project
-  http://developer.gnome.org/projects/gdp
-  Template version: 2.0 beta
-  Template last modified Apr 11, 2002
--->
-<!-- =============Document Header ============================= -->
-<article id="index" lang="en">
-<!-- please do not change the id; for translations, change lang to -->
-<!-- appropriate code -->
+<article id="index" lang="en"> 
   <articleinfo> 
-    <title>&app; Manual V&manrevision;</title>       
-
+	 <title>&appname; Manual V&manrevision;</title> 
+	 <copyright> 
+		<year>2004</year> 
+		<holder>&publisher;</holder> 
+	 </copyright>  
     <copyright> 
       <year>2003</year> 
       <year>2004</year> 
@@ -40,94 +28,46 @@
       <year>2003</year> 
       <holder>ATRC</holder> 
     </copyright>
-<!-- translators: uncomment this:
-
-  <copyright>
-   <year>2002</year>
-   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
-  </copyright>
-
-   -->
-<!-- An address can be added to the publisher information.  If a role is 
-     not specified, the publisher/author is the same for all versions of the 
-     document.  -->
-    <publisher> 
-      <publishername>&atrc;</publishername> 
-    </publisher> 
-
-   <!-- This file  contains link to license for the documentation (GNU FDL), and 
-        other legal stuff such as "NO WARRANTY" statement. Please do not change 
-	any of this. -->
-  &legal;
- 
-
-	  <authorgroup>
-	  <author> 
-		<firstname>Simon</firstname> 
-		<surname>Bates</surname> 
-		<affiliation> 
-	  		<orgname>&atrc;</orgname> 
-	  		<address> <email>simon.bates@utoronto.ca</email> </address> 
-		</affiliation> 
-      </author> 
-      <author> 
-		<firstname>David</firstname> 
-		<surname>Bolter</surname> 
-		<affiliation> 
-	  		<orgname>&atrc;</orgname> 
-	  		<address> <email>david.bolter@utoronto.ca</email> </address> 
-		</affiliation> 
-      </author> 
-      <author> 
-		<firstname>Bruce</firstname> 
-		<surname>Etheridge</surname> 
-		<affiliation> 
-	  		<orgname>&atrc;</orgname> 
-	  		<address> <email>bruce.etheridge@utoronto.ca</email> </address> 
-		</affiliation> 
-      </author> 
-      <author> 
-		<firstname>Bill</firstname> 
-		<surname>Haneman</surname> 
-		<affiliation> 
-	  		<orgname>Sun Microsystems</orgname> 
-	  		<address> <email>bill.haneman@sun.com</email> </address> 
-		</affiliation> 
-      </author> 
-      
-<!-- This is appropriate place for other contributors: translators,
-     maintainers,  etc. Commented out by default.
-     
-      <othercredit role="translator">
-		<firstname>Latin</firstname> 
-		<surname>Translator 1</surname> 
-		<affiliation> 
-	  		<orgname>Latin Translation Team</orgname> 
-	  		<address> <email>translator@gnome.org</email> </address> 
-		</affiliation>
-		<contrib>Latin translation</contrib>
-      </othercredit>
--->
-    </authorgroup>
-
-
-<!-- According to GNU FDL, revision history is mandatory if you are -->
-<!-- modifying/reusing someone else's document.  If not, you can omit it. -->
-<!-- Remember to remove the &manrevision; entity from the revision entries other
--->
-<!-- than the current revision. -->
-<!-- The revision numbering system for GNOME manuals is as follows: -->
-<!-- * the revision number consists of two components -->
-<!-- * the first component of the revision number reflects the release version of the GNOME desktop. -->
-<!-- * the second component of the revision number is a decimal unit that is incremented with each revision of the manual. -->
-<!-- For example, if the GNOME desktop release is V2.x, the first version of the manual that -->
-<!-- is written in that desktop timeframe is V2.0, the second version of the manual is V2.1, etc. -->
-<!-- When the desktop release version changes to V3.x, the revision number of the manual changes -->
-<!-- to V3.0, and so on. -->  
-    <revhistory>
+	  
+	 <publisher> 
+		<publishername>&publisher;</publishername> 
+	 </publisher> 
+		&legal; 
+	 <legalnotice id="feedback"> 
+		<title>Feedback</title> 
+		<para>To report a bug or make a suggestion regarding the &appname; application or this manual, 
+		follow the directions in the <ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>.
+		</para>
+	 </legalnotice> 
+	 <authorgroup> 
+		<author> 
+		  <firstname>&author1;</firstname> 
+		  <surname>&author2;</surname> 
+		  <affiliation> 
+			 <orgname>&publisher;</orgname> 
+		  </affiliation> 
+		</author>  
+	 </authorgroup> 
+	 <revhistory> 
+		<revision> 
+		  <revnumber>&appname; Manual V&manrevision;</revnumber> 
+		  <date>&date;</date> 
+		  <revdescription> 
+			 <para>&author1; &author2;</para>
+			 <para>&publisher;</para>
+		  </revdescription> 
+	   </revision>
+		<revision> 
+		  <revnumber>&appname; Manual V2.2.1</revnumber> 
+		  <date>September 2004</date> 
+		  <revdescription> 
+			 <para>&author1; &author2;</para>
+			 <para>&publisher;</para>
+		  </revdescription> 
+	   </revision>
       <revision> 
-		<revnumber>GOK Manual V&manrevision;</revnumber> 
-		<date>&date;</date> 
+		<revnumber>GOK Manual V2.1</revnumber> 
+		<date>April 2004</date> 
 		<revdescription> 
 	  		<para role="author">David Bolter
 	    	<email>david.bolter@utoronto.ca</email>
@@ -148,243 +88,1518 @@
 	  		<para role="publisher">&atrc;</para>
 		</revdescription> 
       </revision> 
-    </revhistory> 
+	 </revhistory> 
+	 <releaseinfo> This manual describes version &appversion; of &appname;.</releaseinfo> 
+	 		
+  </articleinfo>
+  <indexterm><primary>GOK</primary></indexterm>
+  <indexterm><primary>on-screen keyboard</primary></indexterm>
 
-    <releaseinfo>This manual describes version &appversion; of GOK.
-    </releaseinfo> 
-    <legalnotice> 
-      <title>Feedback</title> 
-      <para>To report a bug or make a suggestion regarding the &app; application or
-      this manual, follow the directions in the <ulink url="ghelp:gnome-feedback"
-	  type="help">GNOME Feedback Page</ulink>. 
-      </para>
-<!-- Translators may also add here feedback address for translations -->
-    </legalnotice> 
-  </articleinfo> 
 
-  <indexterm zone="index"> 
-    <primary>GOK</primary> 
-  </indexterm> 
-  <indexterm zone="index"> 
-    <primary>gok</primary> 
-  </indexterm>
-
-<!-- ============= Document Body ============================= -->
-<!-- ============= Introduction ============================== -->
-<!-- Use the Introduction section to give a brief overview of what
-     the application is and what it does. -->
-  <sect1 id="myapp-introduction"> 
-    <title>Introduction</title> 
-    <para>The &app; application enables you to view image files. 
-    &app; provides the following features:</para> 
-	<para>
-	&app; is a dynamic onscreen keyboard for
-	UNIX and UNIX-like operating systems.  It features Direct Selection,
-	Dwell Selection, Automatic Scanning and Inverse Scanning access
-	methods and includes word completion.
-	</para>
-	
-	<para>
-	GOK includes an alphanumeric keyboard and a keyboard for launching
-	applications.  Keyboards are specified in XML enabling existing
-	keyboards to be modified and new keyboards to be created.  The access
-	methods are also specified in XML providing the ability to modify
-	existing access methods and create new ones.
-	</para>
-	
-	<para>
-	GOK is not limited to presenting keyboards that have been designed by
-	hand and is able to dynamically create keyboards so that it can adapt
-	to the user's current situation.  GOK is able to redisplay components
-	of the user interfaces of running applications directly within GOK as
-	keyboards.  This provides efficient access to elements of the user
-	interface, removing the need to navigate the interface indirectly
-	though keyboard accelerators.  GOK supports the redisplay of
-	application menus and toolbars.  GOK contains a window activator
-	keyboard that lists the current windows on the desktop and provides
-	the ability to switch between them.
-	</para>
-	
-	<para>
-	Users have the option of setting key width, height, and spacing as
-	well as visual and auditory feedback on highlighting and selection.
-	</para>
-    <note>
-      <para>GOK is constantly evolving.</para>
-    </note>
+<!-- Introduction-->
+  <sect1 id="introduction"> 
+	<title>Introduction</title> 
+	<para>The <application>GNOME On-Screen Keyboard (GOK)</application> application displays
+	virtual keyboards on your screen that you can operate using the standard mouse pointer or an alternative 
+	pointing device. &app; displays the following types of keyboards:</para>
+	<itemizedlist>
+		<listitem><para>Compose keyboard</para>
+		<para>The compose keyboard enables you to type alphanumeric characters to compose text by 
+		selecting the characters from the keyboard. 
+		</para>
+		</listitem>
+		<listitem><para>Dynamic keyboards</para>
+		<para>&app; generates keyboards that contain keys to represent the applications that are 
+		running on your desktop or the menus that are contained in an application. 
+		</para>
+		</listitem>
+	</itemizedlist>
   </sect1>
 
-<!-- =========== Getting Started ============================== -->
-<!-- Use the Getting Started section to describe the steps required
-     to start the application and to describe the user interface components
-     of the application. If there is other information that it is important
-     for readers to know before they start using the application, you should
-     also include this information here. 
-     If the information about how to get started is very short, you can 
-     include it in the Introduction and omit this section. -->
-
-  <sect1 id="gok-getting-started"> 
-    <title>Getting Started</title> 
-
-    <sect2 id="gok-start">
-    <title>To Start &app;</title>
-    <para>You can start <application>&app;</application> in the following ways:
-    </para> 
-    <variablelist>
-    	<varlistentry>
-    		<term><guimenu>Applications</guimenu> menu</term>
-    		<listitem>
-    		<para>Choose 
-    		<menuchoice>
-    		<guisubmenu>Accessibility</guisubmenu>
-    		<guimenuitem>On-Screen Keyboard</guimenuitem>
-    		</menuchoice>. </para>
-    		</listitem>
-    	</varlistentry>
-    	<varlistentry>
-    		<term>Command line</term>
-    		<listitem>
-    		<para>To start <application>&app;</application> from a command line, type the following command, 
-    		then press <keycap>Return</keycap>:</para>
-    		<para> 
-			<command>gok</command> 
-    		</para> 
-    		</listitem>
-    	</varlistentry>
-    </variablelist>
-    </sect2>
-     <sect2 id="gok-when-start">
-    <title>When You Start &app;</title>
-    <para>When you start <application>&app;</application>, the main keyboard is displayed.</para>
-
-    <!-- ==== Figure ==== -->
-	<!--
-      <figure id="mainwindow-fig"> 
-	<title>&app; Start Up Window</title> 
-	<screenshot> 
-	  <mediaobject> 
-	    <imageobject><imagedata
-		fileref="figures/myapp_start_window.png" format="PNG"/> 
-	    </imageobject>
-		-->
-	    <!-- EPS versions of the figures are not required at the moment. -->
-            <!-- 
+<!-- Getting Started-->
+  <sect1 id="getting-started"> 
+	 <title>Getting Started</title> 
+	 <sect2 id="gok-start">
+	 <title>To Start &appname;</title>
+	 <para>
+	 You can start &app; in the following ways:</para>
+	 <variablelist>
+		<varlistentry>
+		  <term>Menu</term>
+		  <listitem> 
+		  <para>Choose 
+			<menuchoice>
+				<guimenu>Applications</guimenu> 
+				<guisubmenu>Accessibility</guisubmenu> 
+				<guimenuitem>On-Screen Keyboard</guimenuitem>
+			</menuchoice>. 
+		  </para></listitem>
+		</varlistentry>
+	 	<varlistentry>
+		  <term>Command line</term>
+		  <listitem>
+			 <para>
+				Execute the following command: <userinput>gok</userinput>
+			 </para>
+			 <para>You can use the <option>-d</option> option to specify default settings.</para>
+		  </listitem>
+		</varlistentry>
+		</variablelist> 
+	 </sect2>
+<sect2 id="gok-started">
+	<title>When You Start &appname;</title>
+	<para>If support for assistive technologies is not enabled on your system when you start 
+	&app;, the following <guilabel>Warning</guilabel> window appears:</para>
+		<!-- ==== Figure ==== -->
+		<figure id="information-fig">
+		<title>Warning Window</title>
+		<screenshot>
+		  <mediaobject>
 		    <imageobject>
-      		<imagedata fileref="figures/image.eps" format="EPS"/>
-    		    </imageobject>
-	    -->
-		<!--
-	    <textobject> 
-	      <phrase>Shows &app; main window. Contains titlebar, menubar, toolbar, display area, and
-	      scrollbars. Menubar contains File, View, Settings, and Help menus. </phrase> 
-	    </textobject> 
-	  </mediaobject> 
-	</screenshot> 
-      </figure>
-	  -->
-    <!-- ==== End of Figure ==== -->
+		      <imagedata fileref="figures/gok-info.png" format="PNG"/>
+		    </imageobject>
+		    <textobject>
+		      <phrase>Shows GOK Warning window.</phrase>
+		    </textobject>
+		  </mediaobject>
+		</screenshot>
+		</figure>
+		<!-- ==== End of Figure ==== -->	
+	<para>To use the full capabilities of &app;, activate the <guibutton>Enable and Log Out
+	</guibutton> button. When you log in again and start &app;, support for assistive
+	technologies is enabled and the Information window is not displayed. </para>
+	<para>When you start &app; with support for assistive technologies enabled, the 
+	<guilabel>GOK - main</guilabel> window appears:
+	</para>
+		<!-- ==== Figure ==== -->
+		<figure id="mainwindow-fig">
+		<title>&app; - Main Window</title>
+		<screenshot>
+		  <mediaobject>
+		    <imageobject>
+		      <imagedata fileref="figures/gok-main.png" format="PNG"/>
+		    </imageobject>
+		    <textobject>
+		      <phrase>Shows GOK main window.</phrase>
+		    </textobject>
+		  </mediaobject>
+		</screenshot>
+		</figure>
+		<!-- ==== End of Figure ==== -->
 
-    <!-- Include any descriptions of the GUI immediately after the screenshot of the main UI, -->
-    <!-- for example, the items on the menubar and on the toolbar. This section is optional. -->
-
-	<para>To launch an editor and begin entering text:</para>
-    <variablelist>
-	<varlistentry>
-	<term>Select the [Launcher] key.</term>
-	<listitem>
-	<para>This will branch you to the &app; Launcher keyboard.</para>
-	</listitem>
-	</varlistentry>
-	<varlistentry>
-	<term>Select [Text Editor]</term>
-	<listitem>
-	<para>This will cause a text editor to be launched, and GOK should automatically branch to the Main keyboard.</para>
-	</listitem>
-	</varlistentry>
-	<varlistentry>
-	<term>Select [Compose]</term>
-	<listitem>
-	<para>This will branch you to a keyboard which will allow you to enter text in the editor application.</para>
-	</listitem>
-	</varlistentry>
-	</variablelist>
-    </sect2>
-     <sect2 id="gok-when-docked">
-    <title>Docking &app;</title>
-    <para><application>&app;</application> functions well as a docked window.</para>
-	<para>You can dock <application>&app;</application> via the preferences dialog, or alternatively via the "window" keyboard.</para>
-		<note>
-	   		<para><application>&app;</application> will not function correctly if docked on the same edge as something else.</para>
-		</note>
-	</sect2>
-  </sect1>
-
-&prefs;
-
-&keyboards;
-
-<!-- ============= Bugs ================================== -->
-<!-- This section is optional and is commented out by default. 
-     You can use it to describe known bugs and limitations of the 
-	  program if there are any - please be frank and list all
-     problems you know of. 
-  
-  <sect1 id="mayapp-bugs">
-  <title>Known Bugs and Limitations</title>
-  <para>Mouse grabs... </para>
- </sect1>
--->
-<!-- ============= About ================================== -->
-<!-- This section contains info about the program (not docs), such as
-      author's name(s), web page, license, feedback address. This
-      section is optional: primary place for this info is "About.." box of
-      the program. However, if you do wish to include this info in the
-      manual, this is the place to put it. Alternatively, you can put this information in the title page.-->
-  <sect1 id="gok-about"> 
-    <title>About &app;</title> 
-    <para> &app; was written by</para> 
+<para>The <guilabel>GOK - main</guilabel> window contains the following keys that you can activate to 
+display a variety of different keyboards:</para>
 	<variablelist>
-	<varlistentry>
-	<listitem>
-	David Bolter (<email>david.bolter@utoronto.ca</email>)
-	</listitem>
+	<varlistentry><term>Compose</term>
+	<listitem><para>Displays a compose keyboard.</para></listitem>
 	</varlistentry>
-	<varlistentry>
-	<listitem>
-	Bill Haneman (<email>bill.haneman@sun.com</email>)
-	</listitem>
+	<varlistentry><term>Window</term>
+	<listitem><para>Displays keys to enable you to move or resize the GOK windows.</para></listitem>
 	</varlistentry>
-	<varlistentry>
-	<listitem>
-	Chris Ridpath (<email>chris.ridpath@utoronto.ca</email>)
-	</listitem>
+	<varlistentry><term>Mouse</term>
+	<listitem><para>Displays keys that emulate standard mouse controls.</para></listitem>
 	</varlistentry>
-	<varlistentry>
-	<listitem>
-	Simon Bates (<email>simon.bates@utoronto.ca</email>)
-	</listitem>
+	<varlistentry><term>Launcher</term>
+	<listitem><para>Displays keys to enable you to start other applications.</para></listitem>
 	</varlistentry>
-	<varlistentry>
-	<listitem>
-	With contributions from many others (please see AUTHORS file)
-	</listitem>
+	<varlistentry><term>Activate</term>
+	<listitem><para>Displays keys to enable you to navigate and use the desktop and the 
+	applications that are currently running on the desktop.</para></listitem>
+	</varlistentry>
+	<varlistentry><term>GOK</term>
+	<listitem><para>Displays keys to enable you to access information about the GOK application
+	such as Help and Preferences, and also to exit the application.</para></listitem>
+	</varlistentry>
+	<varlistentry><term>Menus</term>
+	<listitem><para>Displays keys to reflect the menu items that are contained in the current 
+	application.</para></listitem>
+	</varlistentry>
+	<varlistentry><term>Toolbars</term>
+	<listitem><para>Displays keys to reflect the toolbar items that are contained in the 
+	current application.</para></listitem>
+	</varlistentry>
+	<varlistentry><term>UI Grab</term>
+	<listitem><para>Displays keys to reflect user interface elements that the user can interact
+	with, other than menus or toolbar items. For example, the UI Grab feature displays keys that 
+	represent the buttons that are displayed on a dialog. </para></listitem>
 	</varlistentry>
 	</variablelist>
-	<para>To find more information about
-      &app;, please visit GOK's web page: 
-      <ulink url="http://www.gok.ca" type="http">www.gok.ca</ulink>. </para>
-    <para>
-      To report a bug or make a suggestion regarding this application or
-      this manual, follow the directions in this 
-      <ulink url="ghelp:gnome-feedback"   type="help">document</ulink>.
-    </para>
+</sect2>
+</sect1>
 
-    <para> This program is distributed under the terms of the GNU
-      Library General Public license as published by the Free Software
-      Foundation; either version 2 of the License, or (at your option)
-      any later version. A copy of this license can be found at this
-      <ulink url="ghelp:lgpl" type="help">link</ulink>, or in the file
-      COPYING included with the source code of this program. </para>
+<sect1 id="gok-usage">
+<title>Usage</title>
+<para></para>
 
-  </sect1> 
-</article>
+<sect2 id="gok-std-keyboard">
+<title>To Use the Compose Keyboard</title>
+<para>To use the compose keyboard feature of &app;, activate
+<keycap>Compose</keycap> in the <guilabel>GOK - main</guilabel> window. The 
+<guilabel>GOK - Keyboard</guilabel> window is displayed.  
+</para>
+<para>
+The &app; compose keyboard is a standard alphanumeric keyboard. You can customize the type of 
+compose keyboard that &app; displays in the <guilabel>GOK Preferences</guilabel> dialog. 
+See <xref linkend="gok-prefs-keyboards"/> for more information.  
+</para> 
+<para>&app; uses the spaces at the top of the keyboard for word prediction, if you enable 
+the word prediction options in the <guilabel>GOK Preferences</guilabel> dialog.
+</para>
+<para>
+The method that you use to select and activate the keys on the keyboards depends on the option
+that you select in the <guilabel>GOK Preferences</guilabel> dialog. See 
+<xref linkend="gok-prefs-accessmethods"/> for more information.  
+</para>
+<para>To return to the <guilabel>GOK - main</guilabel> window at any time, activate <keycap>Back</keycap>.
+</para>
+<para>To hide the keyboard, activate <keycap>Hide</keycap>. To display the keyboard again, activate 
+<keycap>Show</keycap>.
+</para>
+
+<sect3 id="gok-edit-functions">
+<title>To Access Edit Functions</title>
+<para>To access standard text editing functions from the &app; standard
+keyboard, activate <keycap>Edit</keycap>.</para>
+<note><para>The <keycap>Edit</keycap> key is only available if you have a document open 
+in a text editor application. </para></note>
+<para>When you activate <keycap>Edit</keycap>, the <guilabel>GOK - text-operations</guilabel> window is
+displayed. The following table describes the keys that the <guilabel>GOK - text-operations</guilabel> 
+window contains. 
+</para>
+<table frame="topbot">
+<title>Text Editing Functions</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colnum="1" colname="col1" colwidth="1.00*"/>
+<colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1">
+	<entry colname="col1" rowsep="1" colsep="0">
+	<para>Key</para></entry>
+	<entry 	colname="col2" rowsep="1" colsep="0">
+	<para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>c -</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor back one character.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>word -</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor back one word.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>line -</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor back one line.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>sent. -</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor back one sentence.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>c +</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor forward one character.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>word +</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor forward one word.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>line +</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor forward one line.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>sent. +</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the cursor forward one sentence.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Select</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate the text selection function.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>word</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Select the current word when the Select option is enabled.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>sent.</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Select the current sentence when the Select option is enabled.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>all</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Select all of the text in the current document when the Select option is enabled.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Repeat Next</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate this key to repeat the current operation until you specifically
+				cancel the action.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>cut</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Delete the selected text.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>paste</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Insert text that you cut or copy.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>copy</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Copy selected text to the application memory.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>ins</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Return to the compose keyboard and use the keyboard to insert text at the 
+				current cursor position.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+<para>To close the <guilabel>GOK - text-operations</guilabel> window and return to the compose
+keyboard, activate <keycap>back</keycap>.</para>
+</sect3>
+
+<sect3 id="gok-numpad">
+<title>To Display a Numeric Keypad Only</title>
+<para>To display the numeric keypad only on the screen, activate <keycap>Num Pad</keycap> 
+in the <guilabel>GOK - Keyboard</guilabel> window.</para>
+</sect3>
+
+<sect3 id="gok-launch-editor">
+<title>To Launch a Text Editor and Start Entering Text in a New Document</title>
+<para>To use &app; to launch a text editor and start to enter text in a new document, 
+perform the following steps:</para>
+<orderedlist>
+<listitem><para>In the <guilabel>GOK - main</guilabel> window, activate <keycap>Launcher</keycap>.
+</para></listitem>
+<listitem><para>In the <guilabel>GOK - launcher</guilabel> window, activate <keycap>Text Editor</keycap>.
+</para></listitem>
+<listitem><para>In the <guilabel>GOK - launcher</guilabel> window, activate <keycap>back</keycap> to
+return to the <guilabel>GOK - main</guilabel> window.</para></listitem>
+<listitem><para>In the <guilabel>GOK - main</guilabel> window, activate <keycap>Compose</keycap>
+to display the compose keyboard.</para></listitem>
+</orderedlist>
+<para>You can now use the compose keyboard to enter text in the document.
+</para>
+</sect3>
+
+
+</sect2>
+
+<sect2 id="gok-window">
+<title>To Manipulate &appname; Windows</title>
+<para>To modify or move the &app; windows, activate
+<keycap>Window</keycap> in the <guilabel>GOK - main</guilabel> window. The following table describes
+the keys that the <guilabel>GOK - move-resize</guilabel> window contains.</para>
+<table frame="topbot">
+<title>Window Manipulation Functions</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colnum="1" colname="col1" colwidth="1.00*"/>
+<colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1">
+	<entry colname="col1" rowsep="1" colsep="0">
+	<para>Key</para></entry>
+	<entry 	colname="col2" rowsep="1" colsep="0">
+	<para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Dock Top</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Position the window at the top left of the screen and remove the window frame. 
+				Docked windows are typically not overlapped by other windows, or the amount by which 
+				docked windows can be overlapped is limited.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Dock Bottom</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Position the window at the bottom left of the screen and remove the window frame.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Fill</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Resize the window so that it fills the full width of the screen.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Left up diagonal arrow</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window left and upwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Up</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window up.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Right up diagonal arrow</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window right and upwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Narrower</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Decrease the width of the window.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Left</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window left.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Float</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Select this option to undock a window that is already docked so that you 
+				can move the window around the screen. Windows that are not docked are called floating
+				windows. Other windows can overlap floating windows.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Right</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window right.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Wider</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Increase the width of the window.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Left down diagonal arrow</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window left and downwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Down</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window down.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Right down diagonal arrow</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the window right and downwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Shorter</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Decrease the height of the window.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Hide</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Hide the <guilabel>GOK - move-resize</guilabel> window.</para>
+			</entry>
+		</row>		
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Repeat Next Key</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate this key to repeat the current window manipulation action until 
+				you select another action. 
+				For example, if this key is selected and you activate <keycap>Down</keycap>, &app;
+				continues to move the window down until you select another action or the window
+				cannot move down any further. </para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Taller</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Increase the height of the window.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="gok-mouse">
+<title>To Use Mouse Functions</title>
+<para>To use mouse functions, activate <keycap>Mouse</keycap> in the <guilabel>GOK - main</guilabel> window.
+The following table describes the keys that the <guilabel>GOK - mouse</guilabel> window contains.</para>
+<table frame="topbot">
+<title>Mouse Functions</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colnum="1" colname="col1" colwidth="1.00*"/>
+<colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1">
+	<entry colname="col1" rowsep="1" colsep="0">
+	<para>Key</para></entry>
+	<entry 	colname="col2" rowsep="1" colsep="0">
+	<para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>back</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Return to the <guilabel>GOK - main</guilabel> window.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Latch</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Press-and-hold the next key that you activate until you activate the key again. 
+				For example, if you activate <keycap>Latch</keycap> and then activate <keycap>Button 1</keycap>, 
+				you can perform a drag-and-drop operation. </para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Pointer</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Use the core mouse pointer to track the movement of any extended input device.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Repeat</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate this key to repeat the current mouse action until 
+				you select another action. </para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>NW</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer left and upwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>N</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer up.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>NE</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer right and upwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Button 1</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate the left mouse button.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>W</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer left.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Dbl Click</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Perform a double-click action.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>E</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer right.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Button 2</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate the middle mouse button.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>SW</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer left and downwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>S</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer down.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>SE</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Move the pointer right and downwards.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Button 3</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Activate the right mouse button.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+
+</sect2>
+
+<sect2 id="gok-launcher">
+<title>To Start Applications</title>
+<para>To start standard applications from &app;, activate
+<keycap>Launcher</keycap> in the <guilabel>GOK - main</guilabel> window. The 
+following table describes the keys that the <guilabel>GOK - launcher</guilabel> window contains.</para>
+<table frame="topbot">
+<title>Starting Applications Functions</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colnum="1" colname="col1" colwidth="1.00*"/>
+<colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1">
+	<entry colname="col1" rowsep="1" colsep="0">
+	<para>Key</para></entry>
+	<entry 	colname="col2" rowsep="1" colsep="0">
+	<para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Terminal</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Starts the default terminal application.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Web Browser</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Starts the default web browser application.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Text Editor</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Starts the default text editor application.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Help Browser</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Starts the default Help application.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="gok-activate">
+<title>To Navigate and Use the Desktop and Desktop Applications</title>
+<para>To move focus around the desktop environment, activate the 
+<keycap>Activate</keycap> key in the <guilabel>GOK - main</guilabel> window. The 
+<guilabel>GOK - Window List</guilabel> window contains keys that represent the desktop components and 
+applications that are currently running. For example, the <guilabel>GOK - Window List</guilabel> window
+may contain the following keys:</para>
+<table frame="topbot">
+<title>Focus Functions</title>
+<tgroup cols="2" colsep="0" rowsep="0">
+<colspec colnum="1" colname="col1" colwidth="1.00*"/>
+<colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1">
+	<entry colname="col1" rowsep="1" colsep="0">
+	<para>Key</para></entry>
+	<entry 	colname="col2" rowsep="1" colsep="0">
+	<para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Desktop</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Moves focus to the desktop.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Bottom Panel</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Moves focus to the panel at the bottom of the screen.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>GOK - main</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Moves focus to the <guilabel>GOK - main</guilabel> window.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Untitled 1 - gedit</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Moves focus to the <application>gedit</application> text editor.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Terminal</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Moves focus to the <application>Terminal</application> window.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="gok-menus">
+<title>To Access Application Menus</title>
+<para>&app; dynamically generates keyboards to reflect the menus 
+on the application that currently has focus. To view and access the menus for the current application,
+activate <keycap>Menus</keycap> in the <guilabel>GOK - main</guilabel> window. The 
+<guilabel>GOK - Menus</guilabel> window contains a key for each menu that is contained on the application
+menubar. For example, if the <application>Terminal</application> application currently has focus, and 
+you activate <keycap>Menus</keycap> in the <guilabel>GOK - main</guilabel> window, the 
+<guilabel>GOK - Menus</guilabel> window contains the following keys:</para>
+<itemizedlist>
+<listitem><para><keycap>File</keycap></para></listitem>
+<listitem><para><keycap>Edit</keycap></para></listitem>
+<listitem><para><keycap>View</keycap></para></listitem>
+<listitem><para><keycap>Terminal</keycap></para></listitem>
+<listitem><para><keycap>Tabs</keycap></para></listitem>
+<listitem><para><keycap>Help</keycap></para></listitem>
+</itemizedlist>
+<para>When you activate a key that represents a menu, a new keyboard is displayed 
+that contains a key for each menu item that is contained on that menu in the application. 
+</para>
+</sect2>
+
+<sect2 id="gok-toolbars">
+<title>To Access Application Toolbars</title>
+<para>&app; dynamically generates keyboards to reflect the toolbar items 
+on the application that currently has focus, if the application contains a toolbar. To view and 
+access the toolbar items for the current application, activate <keycap>Toolbars</keycap> in the 
+<guilabel>GOK - main</guilabel> window. The <guilabel>GOK - Toolbars</guilabel> window contains 
+a key for each toolbar item that is contained on the application toolbar.</para>
+</sect2>
+
+<sect2 id="gok-gok">
+<title>To Quit GOK</title>
+<para>Perform the following steps:</para>
+<orderedlist>
+	<listitem>
+		<para>Activate <keycap>GOK</keycap> in the <guilabel>GOK - main</guilabel> window.</para>
+	</listitem>
+	<listitem>
+		<para>Activate <keycap>Quit GOK</keycap>.</para>
+	</listitem>
+	<listitem>
+		<para>Activate <keycap>Really Quit</keycap>. </para>
+	</listitem>
+</orderedlist>
+</sect2>
+
+</sect1>
+  
+<!--Preferences-->
+<sect1 id="gok-prefs"> 
+<title>Preferences</title> 
+<para>
+To open the <guilabel>Preferences</guilabel> dialog, activate <keycap>GOK</keycap> in the <guilabel>&app; - main</guilabel> window, then activate <keycap>Preferences</keycap>. The <guilabel>GOK Preferences</guilabel> dialog contains the following tabbed sections:
+</para>
+<itemizedlist>
+<listitem>
+	<para><guilabel>Appearance</guilabel></para>
+	<para>The <guilabel>Appearance</guilabel> tabbed section contains preferences to enable you to
+	customize how the &app; windows and keys are displayed. </para>
+</listitem>
+<listitem>
+	<para><guilabel>Keyboards</guilabel></para>
+	<para>The <guilabel>Keyboards</guilabel> tabbed section enables you to specify the type of 
+	keyboard that &app; displays when you click the <keycap>Compose</keycap>
+	key. </para>
+</listitem>
+<listitem>
+	<para><guilabel>Actions</guilabel></para>
+	<para>In the context of &app;, an action is a method by which you activate
+	keys on the &app; keyboards. The <guilabel>Actions</guilabel> tabbed
+	section enables you to select predefined actions or create new actions to suit your requirements.</para>
+</listitem>
+<listitem>
+	<para><guilabel>Feedback</guilabel></para>
+	<para>The <guilabel>Feedback</guilabel> tabbed section enables you to specify how you want to receive 
+	feedback when you successfully activate a key. You can also create new feedback methods to suit your
+	requirements.</para>
+</listitem>
+<listitem>
+	<para><guilabel>Access Methods</guilabel></para>
+	<para>The <guilabel>Access Methods</guilabel> tabbed section enables you to specify how you access and 
+	select keys from the &app; keyboards.</para>	
+</listitem>
+<listitem>
+	<para><guilabel>Prediction</guilabel></para>
+	<para>The <guilabel>Prediction</guilabel> tabbed section enables you to select word completion or
+	command prediction options.</para>	
+</listitem>
+</itemizedlist>
+
+<sect2 id="gok-prefs-appearance">
+<title>Appearance Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Key width</guilabel></term> 
+		<listitem> 
+			<para>Use this spin box to specify the width of each key that is displayed on the 
+			on-screen keyboard. The maximum width allowed is 200 pixels.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Key height</guilabel></term> 
+		<listitem> 
+			<para>Use this spin box to specify the height of each key that is displayed on the 
+			on-screen keyboard. The maximum height allowed is 200 pixels.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Spacing</guilabel></term> 
+		<listitem> 
+			<para>Use this spin box to specify the space between each key that is displayed on the
+			on-screen keyboard. The maximum space allowed is 100 pixels.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Preview</guilabel></term> 
+		<listitem> 
+			<para>Use this area to preview any changes that you make to the key size and spacing preferences.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Dock</guilabel></term> 
+		<listitem> 
+			<para>Select this option to position the window at the top or bottom of the desktop and remove
+			the menubar from the window. When you select this option, the <guilabel>Dock Top</guilabel> 
+			and <guilabel>Dock Bottom</guilabel> options are activated. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Dock Top</guilabel></term> 
+		<listitem> 
+			<para>Select this option to position the window at the top of the desktop.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Dock Bottom</guilabel></term> 
+		<listitem> 
+			<para>Select this option to position the window at the bottom of the desktop.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Fill Width</guilabel></term> 
+		<listitem> 
+			<para>Select this option to expand the GOK window so that it fills the entire width of the
+			screen.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Use Desktop Theme Preferences</guilabel></term> 
+		<listitem> 
+			<para>Select this option to apply the desktop theme preferences to the <application>&app;
+			</application> application. To select a desktop theme, activate the <guibutton>Launch</guibutton> 
+			button on the menu panel, then choose 
+			<menuchoice>
+			<guimenu>Preferences</guimenu>
+			<guisubmenu>Desktop Preferences</guisubmenu>
+			<guisubmenu>Display</guisubmenu>
+			<guimenuitem>Theme</guimenuitem>
+			</menuchoice>. If you do not
+			select this option, the desktop theme is applied to all other applications except &app;.
+			</para>
+			<para>You must restart &app; before any change to this setting
+			takes effect.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gok-prefs-keyboards">
+<title>Keyboards Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Compose Keyboard</guilabel></term> 
+		<listitem> 
+			<para>Select one of the following options:</para>
+			<itemizedlist>
+			<listitem><para><guilabel>Match physical keyboard as reported by X Server</guilabel></para>
+			<para>Select this option to display the same keyboard layout as the physical keyboard that is 
+			attached to the system.</para></listitem>
+			<listitem><para><guilabel>Alphanumeric keyboard sorted alphabetically</guilabel></para>
+			<para>Select this option to display a keyboard with the keys sorted in 
+			alphabetical order.</para></listitem>
+			<listitem><para><guilabel>Alphanumeric keyboard arranged by letter frequency</guilabel></para>
+			<para>Select this option to display a keyboard with the keys sorted in order of usage.</para></listitem>
+			<listitem><para><guilabel>Read keyboard from file</guilabel></para>
+			<para>Select this option to display a bespoke keyboard. The keyboard contents and layout
+			are specified in an XML file. Select the file from the drop-down list or activate <guibutton>Browse</guibutton>
+			to search for the file. </para></listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Custom Keyboards</guilabel></term> 
+		<listitem> 
+			<para>Use this drop-down list to select a directory that contains other customized keyboard files
+			that &app; can display or activate <guibutton>Browse</guibutton> to select a directory.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gok-prefs-actions">
+<title>Actions Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Name</guilabel></term> 
+		<listitem>
+			<para>There are 12 default action methods defined in &app;
+			as follows:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Dwell</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Left Mouse Button</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Middle Mouse Button</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Mouse Button 4</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Mouse Button 5</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Mouse Pointer</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Right Mouse Button</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Switch 1</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Switch 2</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Switch 3</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Switch 4</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Switch 5</guilabel></para>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<para>When you select an action method from the <guilabel>Name</guilabel> drop-down list, the settings that are associated with the action are displayed in the dialog. The settings that are displayed vary depending on the type of action that you select. </para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Action Type</guilabel></term> 
+		<listitem>
+			<para>The action type can be one of the following options:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Switch</guilabel></para>
+				<para>If you select this option, the following settings are displayed:</para>
+				<variablelist>
+	 					<varlistentry><term><guilabel>Switch or Button Number</guilabel></term> 
+							<listitem>
+							<para>The options are <guilabel>Switch 1</guilabel> to <guilabel>Switch 5</guilabel>.</para>
+							</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Behavior</guilabel></term> 
+						<listitem> 
+							<para>This setting determines whether the action is performed when you press the switch or 
+							release the switch. The options are as follows:</para>
+							<itemizedlist>
+							<listitem>
+								<para><guilabel>Activate when pressed</guilabel></para>
+							</listitem>
+							<listitem>
+								<para><guilabel>Activate when released</guilabel></para>
+							</listitem>
+							</itemizedlist>
+						</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Delay Before Activation</guilabel></term> 
+						<listitem>
+							<para>This setting enables you to specify a time period that must elapse after you 
+							press or release a switch before &app; processes the action as intentional. Use the 
+							spin box to specify the time period in 100ths of a second. </para>
+						</listitem>
+						</varlistentry>
+				</variablelist>
+			</listitem>
+			<listitem>
+				<para><guilabel>Valuator</guilabel></para>
+				<para>If you select this option, the following settings are displayed:</para>
+				<variablelist>
+	 					<varlistentry><term><guilabel>Valuator Type</guilabel></term> 
+						<listitem>
+							<para>The options are as follows:</para>
+							<itemizedlist>
+							<listitem>
+								<para><guilabel>X-Y Valuator</guilabel></para>
+							</listitem>
+							<listitem>
+								<para><guilabel>Single axis</guilabel></para>
+							</listitem>
+							</itemizedlist>
+						</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Behavior</guilabel></term> 
+						<listitem> 
+							<para>The options are as follows:</para>
+							<itemizedlist>
+							<listitem>
+								<para><guilabel>Activate on Enter</guilabel></para>
+							</listitem>
+							<listitem>
+								<para><guilabel>Activate on Dwell</guilabel></para>
+							</listitem>
+							<listitem>
+								<para><guilabel>Activate on Move</guilabel></para>
+							</listitem>
+							</itemizedlist>
+						</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Timers and Delays</guilabel></term> 
+						<listitem>
+							<para>The <guilabel>100ths of a second</guilabel> spin box allows you to specify 
+							the time period for which you must hold the pointer over a key before &app; processes the 
+							action as intentional. Specify the time period in 100ths of a second. </para>
+						</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Use key averaging</guilabel></term> 
+						<listitem>
+							<para>This option is not currently available. </para>
+						</listitem>
+						</varlistentry>
+	 					<varlistentry><term><guilabel>Sensitivity</guilabel></term> 
+						<listitem>
+							<para>Use this slider to specify the sensitivity of the pointing device. </para>
+						</listitem>
+						</varlistentry>
+				</variablelist>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Event Source</guilabel></term> 
+		<listitem> 
+			<para>This setting determines the type of input device that you use to access 
+			and navigate the keyboard. The event source can be one of the following options:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Core pointer</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Other input device</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Joystick</guilabel></para>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="gok-prefs-feedback">
+<title>Feedback Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Name</guilabel></term> 
+		<listitem>
+			<para>There are five default feedback methods defined in &app;
+			as follows:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Key flashing</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>None</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Sound one</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Sound two</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Speech</guilabel></para>
+			</listitem>
+			</itemizedlist>
+			<para>Depending on the feedback method that you select, the following options are available.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Enable key flashing</guilabel></term> 
+		<listitem> 
+			<para>Select this option to see the key flash when you activate a key. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Key flashes</guilabel></term> 
+		<listitem> 
+			<para>When you select the <guilabel>Enable key flashing</guilabel> option, use 
+			this spin box to select the number of times the key flashes when you 
+			activate a key. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Enable sound</guilabel></term> 
+		<listitem> 
+			<para>Select this option to hear a sound when you activate a key. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Sound</guilabel></term> 
+		<listitem> 
+			<para>When you select the <guilabel>Enable sound</guilabel> option, use this 
+			drop-down list to select the sound file to play when you activate a key. You can also activate 
+			<guibutton>Browse</guibutton> to search for a file. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Speak key label</guilabel></term> 
+		<listitem> 
+			<para>Select this option to hear the name of the key when you activate a key.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<sect3 id="gok-prefs-feedback-add">
+<title>To Add a New Feedback Method</title>
+	<para>To add a new feedback method, perform the following steps:</para>
+	<orderedlist>
+	<listitem><para>Activate <guibutton>Add</guibutton>. </para></listitem>
+	<listitem><para>Type a name for the feedback method in the <guilabel>Name</guilabel> field. 
+	</para></listitem>
+	<listitem><para>Select the options that you want for the feedback.</para></listitem>
+	</orderedlist>
+</sect3>
+<sect3 id="gok-prefs-feedback-delete">
+<title>To Delete a Feedback Method</title>
+	<para>To delete a feedback method, select the feedback method that you want to delete 
+	from the <guilabel>Name</guilabel> drop-down list, then activate <guibutton>Delete</guibutton>.</para>
+</sect3>
+<sect3 id="gok-prefs-feedback-rename">
+<title>To Rename a Feedback Method</title>
+	<para>To rename a feedback method, perform the following steps:</para>
+	<orderedlist>
+	<listitem><para>Select the feedback method that you want to rename from the 
+	<guilabel>Name</guilabel> drop-down list.
+	</para></listitem>
+	<listitem><para>Activate <guibutton>Rename</guibutton>. </para></listitem>
+	<listitem><para>Type the new name in the <guilabel>Change the feedback name</guilabel>
+	field.</para></listitem>
+	<listitem><para>Activate <guibutton>OK</guibutton>. </para></listitem>
+	</orderedlist>
+</sect3>
+</sect2>
+
+<sect2 id="gok-prefs-accessmethods">
+<title>Access Methods Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Method</guilabel></term> 
+		<listitem>
+			<para>There are seven access methods defined in &app;
+			for selecting a key on a keyboard, as follows:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>5 Switch Directed</guilabel></para>
+				<para>This method enables you to use four switches to move the mouse pointer around the
+				keyboard in four directions; up, down, left, and right. You use a fifth switch to 
+				activate the selected key. </para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Automatic Scanning</guilabel></para>
+				<para>This method enables you to press a switch to start selecting the rows and keys 
+				on the keyboard in sequence. When the application reaches the
+				key that you require, you press another switch to activate the key.</para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Direct Selection</guilabel></para>
+				<para>This method enables you to use a direct mouse click. You use the
+				mouse pointer to select a key and then press a switch to activate the key.</para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Dwell Selection</guilabel></para>
+				<para>This method enables you to use a mouse or other pointing device to position 
+				the mouse pointer over a key for a specified period of time to select and activate the key.</para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Inverse Scanning</guilabel></para>
+				<para>This method enables you to press and hold a switch to start selecting the rows and keys of 
+				the keyboard. When you release the switch, the application stops the 
+				selection operation on the current key and you press another switch to activate the selected key.</para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Single Key Automatic Scanning</guilabel></para>
+				<para>This method enables you to press a switch to start the application to automatically
+				select each key on the keyboard in sequence. When the application reaches the
+				key that you require, you press another switch to activate the key.</para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Single Key Inverse Scanning</guilabel></para>
+				<para>This method enables you to press and hold a switch to select each key on the keyboard. 
+				When you release the switch, the application stops the selection operation on 
+				the current key and you press another switch to activate the selected key.</para>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<para>Depending on the access method that you select, the <guilabel>Operation</guilabel>,
+<guilabel>Feedback</guilabel>, and <guilabel>Options</guilabel> preferences differ, as described
+in the following sections. </para>
+
+<sect3 id="operation-prefs">
+<title>Operation Preferences</title>
+<para>If you select the <guilabel>Automatic Scanning</guilabel>, <guilabel>Inverse Scanning</guilabel>, 
+<guilabel>Single Key Automatic Scanning</guilabel>, or <guilabel>Single Key Inverse Scanning</guilabel> 
+method, the <guilabel>Operation</guilabel> preferences are as follows:</para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Scan</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the action that is required to start selecting  
+			the keys. For example, if you want to activate the right mouse button to start the selection operation,
+			select <guilabel>Right Mouse Button</guilabel> from the drop-down list. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Activate</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the action that is required to activate a selected key.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<para>If you select the <guilabel>Direct Selection</guilabel> or <guilabel>Dwell Selection</guilabel> method, the <guilabel>Operation</guilabel> preferences are as follows:</para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Select</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select how you want to select a key on the keyboard. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Activate</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the action that is required to activate a selected key.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<para>If you select the <guilabel>5 Switch Directed</guilabel> method, the <guilabel>Operation</guilabel> 
+preferences are as follows:</para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Up</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the switch that you want to use to move the mouse pointer up. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Down</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the switch that you want to use to move the mouse pointer down.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Left</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the switch that you want to use to move the mouse pointer left.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Right</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the switch that you want to use to move the mouse pointer right.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Activate</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select the action that is required to activate a selected key.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="feedback-prefs">
+<title>Feedback Preferences</title>
+<para>The feedback preferences are the same for all access methods as follows:</para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Movement</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select how you want to receive feedback when you 
+			are highlighting keys on the keyboard. The following options are available:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Key flashing</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>None</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Sound one</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Sound two</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Speech</guilabel></para>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Activation</guilabel></term> 
+		<listitem> 
+			<para>Use the drop-down list to select how you want to receive feedback when
+			you activate a key on the keyboard. The options that are available are the same as those 
+			listed above. </para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect3>
+
+<sect3 id="options-prefs">
+<title>Options Preferences</title>
+<para>If you select the <guilabel>Automatic Scanning</guilabel>, 
+<guilabel>Inverse Scanning</guilabel>, <guilabel>Single Key Automatic Scanning</guilabel>, or 
+<guilabel>Single Key Inverse Scanning</guilabel> method, the <guilabel>Options</guilabel> preferences 
+are as follows:</para>
+<variablelist>
+	 	<varlistentry><term><guilabel>Scan Delay</guilabel></term> 
+		<listitem> 
+			<para>Use this spin box to specify the speed at which the application highlights the rows and keys.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Initial Delay</guilabel> (<guilabel>Automatic Scanning</guilabel> 
+		and <guilabel>Single Key Automatic Scanning</guilabel> methods only)</term> 
+		<listitem> 
+			<para>Use this spin box to specify the time delay before the application starts to select the keys on the 
+			keyboard.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Wrap Rows/Columns</guilabel></term> 
+		<listitem> 
+			<para>No information available.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Scanning Direction</guilabel></term> 
+		<listitem> 
+			<para>Select one of the following options to determine the direction in which the application selects the 
+			rows and keys:</para>
+			<itemizedlist>
+			<listitem>
+				<para><guilabel>Top/Bottom</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Bottom/Top</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Left/Right</guilabel></para>
+			</listitem>
+			<listitem>
+				<para><guilabel>Right/Left</guilabel></para>
+			</listitem>
+			</itemizedlist>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Cycles Before Stopping</guilabel></term> 
+		<listitem> 
+			<para>Use this spin box to specify how many selection cycles the application performs before the application 
+			stops selecting keys.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+<note><para>If you select the <guilabel>5 Switch Directed</guilabel> method, only the 
+<guilabel>Scan Delay</guilabel> and <guilabel>Wrap Rows/Columns</guilabel> as described above
+are available.</para></note>
+</sect3>
+</sect2>
+
+<sect2 id="gok-prefs-prediction">
+<title>Prediction Preferences</title>
+<variablelist>
+	 	<varlistentry><term><guilabel>Enable word completion</guilabel></term> 
+		<listitem> 
+			<para>Select this option to enable the word prediction function when you are using the 
+			compose keyboard.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Number of predictions</guilabel></term> 
+		<listitem> 
+			<para>When you select the <guilabel>Enable word completion</guilabel> check box,
+			use this spin box to specify the number of predictions that
+			&app; attempts.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Use extra word list file</guilabel></term> 
+		<listitem> 
+			<para>When you select the <guilabel>Enable word completion</guilabel> check box,
+			select this option to specify additional word lists from which to predict the words. 
+			For example, you can select a word list that contains words that are specific to a 
+			project. Enter the path and filename for the word list in the field
+			provided or activate <guibutton>Browse</guibutton> to search the file system for the file. </para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Enable command prediction</guilabel></term> 
+		<listitem> 
+			<para>This option is not currently available.</para>
+		</listitem>
+		</varlistentry>
+	 	<varlistentry><term><guilabel>Number of predictions</guilabel></term> 
+		<listitem> 
+			<para>This option is not currently available.</para>
+		</listitem>
+		</varlistentry>
+</variablelist>
+</sect2>
+
+</sect1>
+  
+</article> 

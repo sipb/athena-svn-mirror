@@ -1,0 +1,93 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gok-gconf</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-gok-feedback.html" title="gok-feedback"><link rel="next" href="gok-gok-key.html" title="gok-key"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-gok-feedback.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-gok-key.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-gok-gconf"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gok-gconf</span></h2><p>gok-gconf &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-get-int">gok_gconf_get_int</a>               (GConfClient *client,
+                                             const gchar *key,
+                                             gint *dest);
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-set-int">gok_gconf_set_int</a>               (GConfClient *client,
+                                             const gchar *key,
+                                             gint value);
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-get-bool">gok_gconf_get_bool</a>              (GConfClient *client,
+                                             const gchar *key,
+                                             gboolean *dest);
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-set-bool">gok_gconf_set_bool</a>              (GConfClient *client,
+                                             const gchar *key,
+                                             gboolean value);
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-get-string">gok_gconf_get_string</a>            (GConfClient *client,
+                                             const gchar *key,
+                                             gchar **dest);
+gboolean    <a href="gok-gok-gconf.html#gok-gconf-set-string">gok_gconf_set_string</a>            (GConfClient *client,
+                                             const gchar *key,
+                                             const gchar *value);
+</pre></div><div class="refsect1" lang="en"><a name="id2570955"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2570965"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2570971"></a><h3><a name="gok-gconf-get-int"></a>gok_gconf_get_int ()</h3><a class="indexterm" name="id2570982"></a><pre class="programlisting">gboolean    gok_gconf_get_int               (GConfClient *client,
+                                             const gchar *key,
+                                             gint *dest);</pre><p>
+Retrieves the requested key and stores it in the given dest.  If an
+error occurs during retreiving the key a message is logged using
+gok_log_x and dest is left unchanged.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> GConfClient to use to retreive the key.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>    GConf key to retrieve.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td>   Pointer to a gint to store the retrieved key, if successful.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key retrieved successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571090"></a><h3><a name="gok-gconf-set-int"></a>gok_gconf_set_int ()</h3><a class="indexterm" name="id2571101"></a><pre class="programlisting">gboolean    gok_gconf_set_int               (GConfClient *client,
+                                             const gchar *key,
+                                             gint value);</pre><p>
+Stores the given (key, value) pair if it is different from what is
+in GConf already. If an error occurs during storing the key a
+message is logged using gok_log_x.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>  GConfClient to use to set the value.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>     GConf key to set.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>   gint to store.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key stored successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571208"></a><h3><a name="gok-gconf-get-bool"></a>gok_gconf_get_bool ()</h3><a class="indexterm" name="id2571220"></a><pre class="programlisting">gboolean    gok_gconf_get_bool              (GConfClient *client,
+                                             const gchar *key,
+                                             gboolean *dest);</pre><p>
+Retrieves the requested key and stores it in the given dest.  If an
+error occurs during retreiving the key a message is logged using
+gok_log_x and dest is left unchanged.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> GConfClient to use to retreive the key.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>    GConf key to retrieve.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td>   Pointer to a gboolean to store the retrieved key, if successful.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key retrieved successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571328"></a><h3><a name="gok-gconf-set-bool"></a>gok_gconf_set_bool ()</h3><a class="indexterm" name="id2571339"></a><pre class="programlisting">gboolean    gok_gconf_set_bool              (GConfClient *client,
+                                             const gchar *key,
+                                             gboolean value);</pre><p>
+Stores the given (key, value) pair if it is different from what is
+in GConf already.  If an error occurs during storing the key a
+message is logged using gok_log_x.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>  GConfClient to use to set the value.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>     GConf key to set.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>   gboolean to store.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key stored successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571446"></a><h3><a name="gok-gconf-get-string"></a>gok_gconf_get_string ()</h3><a class="indexterm" name="id2571458"></a><pre class="programlisting">gboolean    gok_gconf_get_string            (GConfClient *client,
+                                             const gchar *key,
+                                             gchar **dest);</pre><p>
+Retrieves the requested key and stores it in the given dest.  If an
+error occurs during retreiving the key a message is logged using
+gok_log_x and dest is left unchanged.
+</p><p>
+NOTE: *dest needs to be freed when finished with.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> GConfClient to use to retreive the key.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>    GConf key to retrieve.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dest</tt></i> :</span></td><td>   Pointer to a pointer to a gchar to store the retrieved key, if successful.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key retrieved successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2571571"></a><h3><a name="gok-gconf-set-string"></a>gok_gconf_set_string ()</h3><a class="indexterm" name="id2571582"></a><pre class="programlisting">gboolean    gok_gconf_set_string            (GConfClient *client,
+                                             const gchar *key,
+                                             const gchar *value);</pre><p>
+Stores the given (key, value) pair if it is different from what is
+in GConf already.  If an error occurs during storing the key a
+message is logged using gok_log_x.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>  GConfClient to use to set the value.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>     GConf key to set.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>   gchar to store.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if key stored successfully, FALSE if an error occured.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-gok-feedback.html"><b>&lt;&lt; gok-feedback</b></a></td><td align="right"><a accesskey="n" href="gok-gok-key.html"><b>gok-key &gt;&gt;</b></a></td></tr></table></body></html>

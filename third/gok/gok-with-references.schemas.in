@@ -10,6 +10,8 @@
 
 
 
+
+
 <!-- Please do not modify this file directly but rather modify
      gok-with-references.schemas.m4, this file is generated from it.
      If you modify gok-with-references.schemas.m4 and commit it to CVS
@@ -330,8 +332,8 @@
       <applyto>/apps/gok/actions/switch1/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Switch 1</default>
       <locale name="C">
+        <default>Switch 1</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -407,8 +409,8 @@
       <applyto>/apps/gok/actions/switch2/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Switch 2</default>
       <locale name="C">
+        <default>Switch 2</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -484,8 +486,8 @@
       <applyto>/apps/gok/actions/switch3/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Switch 3</default>
       <locale name="C">
+        <default>Switch 3</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -561,8 +563,8 @@
       <applyto>/apps/gok/actions/switch4/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Switch 4</default>
       <locale name="C">
+        <default>Switch 4</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -638,8 +640,8 @@
       <applyto>/apps/gok/actions/switch5/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Switch 5</default>
       <locale name="C">
+        <default>Switch 5</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -715,8 +717,8 @@
       <applyto>/apps/gok/actions/mousebutton1/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Left Mouse Button</default>
       <locale name="C">
+        <default>Left Mouse Button</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -792,8 +794,8 @@
       <applyto>/apps/gok/actions/mousebutton2/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Middle Mouse Button</default>
       <locale name="C">
+        <default>Middle Mouse Button</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -869,8 +871,8 @@
       <applyto>/apps/gok/actions/mousebutton3/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Right Mouse Button</default>
       <locale name="C">
+        <default>Right Mouse Button</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -946,8 +948,8 @@
       <applyto>/apps/gok/actions/mousebutton4/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Mouse Button 4</default>
       <locale name="C">
+        <default>Mouse Button 4</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -1023,8 +1025,8 @@
       <applyto>/apps/gok/actions/mousebutton5/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Mouse Button 5</default>
       <locale name="C">
+        <default>Mouse Button 5</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -1100,8 +1102,8 @@
       <applyto>/apps/gok/actions/mousepointer/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Mouse Pointer</default>
       <locale name="C">
+        <default>Mouse Pointer</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -1177,8 +1179,8 @@
       <applyto>/apps/gok/actions/dwell/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Dwell</default>
       <locale name="C">
+        <default>Dwell</default>
         <short>The name to display to the user for this action</short>
         <long></long>
       </locale>
@@ -1254,8 +1256,8 @@
       <applyto>/apps/gok/feedbacks/none/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>None</default>
       <locale name="C">
+        <default>None</default>
         <short>The name to display to the user for this feedback</short>
         <long></long>
       </locale>
@@ -1298,8 +1300,8 @@
       <applyto>/apps/gok/feedbacks/none/soundname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>none</default>
       <locale name="C">
+        <default>none</default>
         <short>The name of the sound that this feedback will play</short>
         <long></long>
       </locale>
@@ -1331,8 +1333,8 @@
       <applyto>/apps/gok/feedbacks/key_flashing/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Key flashing</default>
       <locale name="C">
+        <default>Key flashing</default>
         <short>The name to display to the user for this feedback</short>
         <long></long>
       </locale>
@@ -1375,8 +1377,8 @@
       <applyto>/apps/gok/feedbacks/key_flashing/soundname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>none</default>
       <locale name="C">
+        <default>none</default>
         <short>The name of the sound that this feedback will play</short>
         <long></long>
       </locale>
@@ -1408,8 +1410,8 @@
       <applyto>/apps/gok/feedbacks/goksound1/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Sound one</default>
       <locale name="C">
+        <default>Sound one</default>
         <short>The name to display to the user for this feedback</short>
         <long></long>
       </locale>
@@ -1452,8 +1454,8 @@
       <applyto>/apps/gok/feedbacks/goksound1/soundname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>$pkgdatadir/goksound1.wav</default>
       <locale name="C">
+        <default>$pkgdatadir/goksound1.wav</default>
         <short>The name of the sound that this feedback will play</short>
         <long></long>
       </locale>
@@ -1485,8 +1487,8 @@
       <applyto>/apps/gok/feedbacks/goksound2/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Sound two</default>
       <locale name="C">
+        <default>Sound two</default>
         <short>The name to display to the user for this feedback</short>
         <long></long>
       </locale>
@@ -1529,8 +1531,8 @@
       <applyto>/apps/gok/feedbacks/goksound2/soundname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>$pkgdatadir/goksound2.wav</default>
       <locale name="C">
+        <default>$pkgdatadir/goksound2.wav</default>
         <short>The name of the sound that this feedback will play</short>
         <long></long>
       </locale>
@@ -1562,8 +1564,8 @@
       <applyto>/apps/gok/feedbacks/gokspeech/displayname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>Speech</default>
       <locale name="C">
+        <default>Speech</default>
         <short>The name to display to the user for this feedback</short>
         <long></long>
       </locale>
@@ -1606,8 +1608,8 @@
       <applyto>/apps/gok/feedbacks/gokspeech/soundname</applyto>
       <owner>gok</owner>
       <type>string</type>
-      <default>none</default>
       <locale name="C">
+        <default>none</default>
         <short>The name of the sound that this feedback will play</short>
         <long></long>
       </locale>

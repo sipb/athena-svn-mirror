@@ -1,0 +1,987 @@
+<refentry id="gok-gok-scanner">
+<refmeta>
+<refentrytitle>gok-scanner</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gok-scanner</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="CallIds">CallIds</link>;
+enum        <link linkend="RateType">RateType</link>;
+#define     <link linkend="MAX-ACCESS-METHOD-NAME:CAPS">MAX_ACCESS_METHOD_NAME</link>
+#define     <link linkend="MAX-DESCRIPTION-TEXT:CAPS">MAX_DESCRIPTION_TEXT</link>
+#define     <link linkend="MAX-RATE-NAME:CAPS">MAX_RATE_NAME</link>
+#define     <link linkend="MAX-DISPLAY-RATE-NAME:CAPS">MAX_DISPLAY_RATE_NAME</link>
+#define     <link linkend="COMPARE-NO:CAPS">COMPARE_NO</link>
+#define     <link linkend="COMPARE-EQUAL:CAPS">COMPARE_EQUAL</link>
+#define     <link linkend="COMPARE-LESSTHAN:CAPS">COMPARE_LESSTHAN</link>
+#define     <link linkend="COMPARE-GREATERTHAN:CAPS">COMPARE_GREATERTHAN</link>
+#define     <link linkend="COMPARE-EQUALORLESSTHAN:CAPS">COMPARE_EQUALORLESSTHAN</link>
+#define     <link linkend="COMPARE-EQUALORGREATERTHAN:CAPS">COMPARE_EQUALORGREATERTHAN</link>
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-initialize">gok_scanner_initialize</link>          (const <link linkend="gchar">gchar</link> *directory,
+                                             const <link linkend="gchar">gchar</link> *accessmethod,
+                                             const <link linkend="gchar">gchar</link> *selectaction,
+                                             const <link linkend="gchar">gchar</link> *scanaction);
+<link linkend="void">void</link>        <link linkend="gok-scanner-close">gok_scanner_close</link>               (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-stop">gok_scanner_stop</link>                (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-start">gok_scanner_start</link>               (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-change-method">gok_scanner_change_method</link>       (<link linkend="gchar">gchar</link> *NameAccessMethod);
+<link linkend="GokAccessMethod">GokAccessMethod</link>* <link linkend="gok-scanner-create-access-method">gok_scanner_create_access_method</link>
+                                            (<link linkend="gchar">gchar</link> *Name);
+<link linkend="void">void</link>        <link linkend="gok-scanner-reset-access-method">gok_scanner_reset_access_method</link> (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-change-state">gok_scanner_change_state</link>        (<link linkend="GokScannerState">GokScannerState</link> *pState,
+                                             <link linkend="gchar">gchar</link> *NameAccessMethod);
+<link linkend="void">void</link>        <link linkend="gok-scanner-next-state">gok_scanner_next_state</link>          (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-set-handlers-null">gok_scanner_set_handlers_null</link>   (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-access-method">gok_scanner_read_access_method</link>  (<link linkend="gchar">gchar</link> *Filename);
+<link linkend="GokScannerState">GokScannerState</link>* <link linkend="gok-scanner-construct-state">gok_scanner_construct_state</link>
+                                            (void);
+<link linkend="GokAccessMethodRate">GokAccessMethodRate</link>* <link linkend="gok-scanner-construct-rate">gok_scanner_construct_rate</link>
+                                            (void);
+<link linkend="GokScannerHandler">GokScannerHandler</link>* <link linkend="gok-scanner-construct-handler">gok_scanner_construct_handler</link>
+                                            (<link linkend="gchar">gchar</link> *pHandlerName);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-rates">gok_scanner_read_rates</link>          (<link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-description">gok_scanner_read_description</link>    (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-operation">gok_scanner_read_operation</link>      (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);
+<link linkend="void">void</link>        <link linkend="gok-scanner-read-ui-loop">gok_scanner_read_ui_loop</link>        (<link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-feedback">gok_scanner_read_feedback</link>       (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-read-options">gok_scanner_read_options</link>        (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);
+<link linkend="void">void</link>        <link linkend="gok-scanner-update-rates">gok_scanner_update_rates</link>        (void);
+<link linkend="GokAccessMethod">GokAccessMethod</link>* <link linkend="gok-scanner-get-current-access-method">gok_scanner_get_current_access_method</link>
+                                            (void);
+<link linkend="GokAccessMethod">GokAccessMethod</link>* <link linkend="gok-scanner-get-first-access-method">gok_scanner_get_first_access_method</link>
+                                            (void);
+<link linkend="GokScannerState">GokScannerState</link>* <link linkend="gok-scanner-get-current-state">gok_scanner_get_current_state</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-get-pointer-location">gok_scanner_get_pointer_location</link>
+                                            (<link linkend="gint">gint</link> *pX,
+                                             <link linkend="gint">gint</link> *pY);
+<link linkend="gint">gint</link>        <link linkend="gok-scanner-timer-set">gok_scanner_timer_set</link>           (<link linkend="gint">gint</link> Rate,
+                                             <link linkend="gint">gint</link> ID);
+<link linkend="gint">gint</link>        <link linkend="gok-scanner-timer-stop">gok_scanner_timer_stop</link>          (<link linkend="gint">gint</link> TimerId);
+<link linkend="gint">gint</link>        <link linkend="gok-scanner-make-type-from-string">gok_scanner_make_type_from_string</link>
+                                            (<link linkend="gchar">gchar</link> *pString);
+<link linkend="void">void</link>        <link linkend="gok-scanner-timer-set-dwell-rate">gok_scanner_timer_set_dwell_rate</link>
+                                            (<link linkend="gint">gint</link> rate);
+<link linkend="void">void</link>        <link linkend="gok-scanner-timer-start-dwell">gok_scanner_timer_start_dwell</link>   (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-timer-stop-dwell">gok_scanner_timer_stop_dwell</link>    (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-timer-on-dwell">gok_scanner_timer_on_dwell</link>      (<link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        <link linkend="gok-scanner-left-button-down">gok_scanner_left_button_down</link>    (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-left-button-up">gok_scanner_left_button_up</link>      (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-right-button-down">gok_scanner_right_button_down</link>   (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-right-button-up">gok_scanner_right_button_up</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-middle-button-down">gok_scanner_middle_button_down</link>  (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-middle-button-up">gok_scanner_middle_button_up</link>    (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-mouse-movement">gok_scanner_mouse_movement</link>      (<link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-on-timer1">gok_scanner_on_timer1</link>           (<link linkend="gpointer">gpointer</link> data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-on-timer2">gok_scanner_on_timer2</link>           (<link linkend="gpointer">gpointer</link> data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-on-timer3">gok_scanner_on_timer3</link>           (<link linkend="gpointer">gpointer</link> data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-on-timer4">gok_scanner_on_timer4</link>           (<link linkend="gpointer">gpointer</link> data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gok-scanner-on-timer5">gok_scanner_on_timer5</link>           (<link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-key-enter">gok_scanner_on_key_enter</link>        (<link linkend="GokKey">GokKey</link> *pKey);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-key-leave">gok_scanner_on_key_leave</link>        (<link linkend="GokKey">GokKey</link> *pKey);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch1-down">gok_scanner_on_switch1_down</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch1-up">gok_scanner_on_switch1_up</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch2-down">gok_scanner_on_switch2_down</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch2-up">gok_scanner_on_switch2_up</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch3-down">gok_scanner_on_switch3_down</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch3-up">gok_scanner_on_switch3_up</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch4-down">gok_scanner_on_switch4_down</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch4-up">gok_scanner_on_switch4_up</link>       (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch5-down">gok_scanner_on_switch5_down</link>     (void);
+<link linkend="void">void</link>        <link linkend="gok-scanner-on-switch5-up">gok_scanner_on_switch5_up</link>       (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CallIds"/>enum CallIds</title>
+<indexterm><primary>CallIds</primary></indexterm><programlisting>typedef enum {
+CALL_CHUNKER_RESET,
+CALL_CHUNKER_CHUNK_NONE,
+CALL_CHUNKER_CHUNK_KEYS,
+CALL_CHUNKER_CHUNK_ROWS,
+CALL_CHUNKER_CHUNK_COLUMNS,
+CALL_CHUNKER_NEXT_CHUNK,
+CALL_CHUNKER_PREVIOUS_CHUNK,
+CALL_CHUNKER_NEXT_KEY,
+CALL_CHUNKER_PREVIOUS_KEY,
+CALL_CHUNKER_KEY_UP,
+CALL_CHUNKER_KEY_DOWN,
+CALL_CHUNKER_KEY_LEFT,
+CALL_CHUNKER_KEY_RIGHT,
+CALL_CHUNKER_KEY_HIGHLIGHT,
+CALL_CHUNKER_KEY_UNHIGHLIGHT,
+CALL_CHUNKER_WRAP_TOFIRST_CHUNK,
+CALL_CHUNKER_WRAP_TOLAST_CHUNK,
+CALL_CHUNKER_WRAP_TOFIRST_KEY,
+CALL_CHUNKER_WRAP_TOLAST_KEY,
+CALL_CHUNKER_WRAP_TOBOTTOM,
+CALL_CHUNKER_WRAP_TOTOP,
+CALL_CHUNKER_WRAP_TOLEFT,
+CALL_CHUNKER_WRAP_TORIGHT,
+CALL_CHUNKER_MOVE_LEFTRIGHT,
+CALL_CHUNKER_MOVE_TOPBOTTOM,
+CALL_CHUNKER_IF_NEXT_CHUNK,
+CALL_CHUNKER_IF_PREVIOUS_CHUNK,
+CALL_CHUNKER_IF_NEXT_KEY,
+CALL_CHUNKER_IF_PREVIOUS_KEY,
+CALL_CHUNKER_IF_TOP,
+CALL_CHUNKER_IF_BOTTOM,
+CALL_CHUNKER_IF_LEFT,
+CALL_CHUNKER_IF_RIGHT,
+CALL_CHUNKER_IF_KEY_SELECTED,
+CALL_CHUNKER_HIGHLIGHT_CENTER,
+CALL_CHUNKER_HIGHLIGHT_FIRST_CHUNK,
+CALL_CHUNKER_HIGHLIGHT_FIRST_KEY,
+CALL_CHUNKER_SELECT_CHUNK,
+CALL_CHUNKER_HIGHLIGHT_CHUNK,
+CALL_CHUNKER_UNHIGHLIGHT_ALL,
+
+
+CALL_SCANNER_REPEAT_ON,
+/* CALL_SCANNER_REPEAT_OFF,  use CALL_STATE_RESTART */
+
+CALL_TIMER1_SET,
+CALL_TIMER1_STOP,
+CALL_TIMER2_SET,
+CALL_TIMER2_STOP,
+CALL_TIMER3_SET,
+CALL_TIMER3_STOP,
+CALL_TIMER4_SET,
+CALL_TIMER4_STOP,
+CALL_TIMER5_SET,
+CALL_TIMER5_STOP,
+
+CALL_COUNTER_SET,
+CALL_COUNTER_INCREMENT,
+CALL_COUNTER_DECREMENT,
+CALL_COUNTER_GET,
+
+CALL_STATE_RESTART,
+CALL_STATE_NEXT,
+CALL_STATE_JUMP,
+
+CALL_OUTPUT_SELECTEDKEY,
+CALL_SET_SELECTEDKEY,
+
+CALL_FEEDBACK,
+
+CALL_GET_RATE
+} CallIds;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="RateType"/>enum RateType</title>
+<indexterm><primary>RateType</primary></indexterm><programlisting>typedef enum {
+RATE_TYPE_UNDEFINED,
+RATE_TYPE_EFFECT
+} RateType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAX-ACCESS-METHOD-NAME:CAPS"/>MAX_ACCESS_METHOD_NAME</title>
+<indexterm><primary>MAX_ACCESS_METHOD_NAME</primary></indexterm><programlisting>#define MAX_ACCESS_METHOD_NAME 50
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAX-DESCRIPTION-TEXT:CAPS"/>MAX_DESCRIPTION_TEXT</title>
+<indexterm><primary>MAX_DESCRIPTION_TEXT</primary></indexterm><programlisting>#define MAX_DESCRIPTION_TEXT 200
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAX-RATE-NAME:CAPS"/>MAX_RATE_NAME</title>
+<indexterm><primary>MAX_RATE_NAME</primary></indexterm><programlisting>#define MAX_RATE_NAME 20
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAX-DISPLAY-RATE-NAME:CAPS"/>MAX_DISPLAY_RATE_NAME</title>
+<indexterm><primary>MAX_DISPLAY_RATE_NAME</primary></indexterm><programlisting>#define MAX_DISPLAY_RATE_NAME 30
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-NO:CAPS"/>COMPARE_NO</title>
+<indexterm><primary>COMPARE_NO</primary></indexterm><programlisting>#define COMPARE_NO 0
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-EQUAL:CAPS"/>COMPARE_EQUAL</title>
+<indexterm><primary>COMPARE_EQUAL</primary></indexterm><programlisting>#define COMPARE_EQUAL 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-LESSTHAN:CAPS"/>COMPARE_LESSTHAN</title>
+<indexterm><primary>COMPARE_LESSTHAN</primary></indexterm><programlisting>#define COMPARE_LESSTHAN 2
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-GREATERTHAN:CAPS"/>COMPARE_GREATERTHAN</title>
+<indexterm><primary>COMPARE_GREATERTHAN</primary></indexterm><programlisting>#define COMPARE_GREATERTHAN 3
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-EQUALORLESSTHAN:CAPS"/>COMPARE_EQUALORLESSTHAN</title>
+<indexterm><primary>COMPARE_EQUALORLESSTHAN</primary></indexterm><programlisting>#define COMPARE_EQUALORLESSTHAN 4
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMPARE-EQUALORGREATERTHAN:CAPS"/>COMPARE_EQUALORGREATERTHAN</title>
+<indexterm><primary>COMPARE_EQUALORGREATERTHAN</primary></indexterm><programlisting>#define COMPARE_EQUALORGREATERTHAN 5
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-initialize"/>gok_scanner_initialize ()</title>
+<indexterm><primary>gok_scanner_initialize</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_initialize          (const <link linkend="gchar">gchar</link> *directory,
+                                             const <link linkend="gchar">gchar</link> *accessmethod,
+                                             const <link linkend="gchar">gchar</link> *selectaction,
+                                             const <link linkend="gchar">gchar</link> *scanaction);</programlisting>
+<para>
+Reads all the access methods from the given directory
+and gets them ready to go.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>directory</parameter>&nbsp;:</term>
+<listitem><simpara> The name of the directory to read the access method files from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>accessmethod</parameter>&nbsp;:</term>
+<listitem><simpara> If non-NULL, overrides access method name in gconf configuration data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>selectaction</parameter>&nbsp;:</term>
+<listitem><simpara> If non-NULL, overrides action associated with 'select' for 
+               the current access method in gconf configuration data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>scanaction</parameter>&nbsp;:</term>
+<listitem><simpara> If non-NULL, overrides access method associated with 'select' for 
+               the current access method in gconf configuration data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the access methods were initialized, FALSE if not. Don't use the 
+access methods if this fails.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-close"/>gok_scanner_close ()</title>
+<indexterm><primary>gok_scanner_close</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_close               (void);</programlisting>
+<para>
+Stops the current access method and frees any memory allocated for the
+access methods. This must be called at the end of the program.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-stop"/>gok_scanner_stop ()</title>
+<indexterm><primary>gok_scanner_stop</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_stop                (void);</programlisting>
+<para>
+Stops the current access method.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-start"/>gok_scanner_start ()</title>
+<indexterm><primary>gok_scanner_start</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_start               (void);</programlisting>
+<para>
+Starts the current access method.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-change-method"/>gok_scanner_change_method ()</title>
+<indexterm><primary>gok_scanner_change_method</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_change_method       (<link linkend="gchar">gchar</link> *NameAccessMethod);</programlisting>
+<para>
+Changes the type of access method.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the desired access method.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the access method was changed, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-create-access-method"/>gok_scanner_create_access_method ()</title>
+<indexterm><primary>gok_scanner_create_access_method</primary></indexterm><programlisting><link linkend="GokAccessMethod">GokAccessMethod</link>* gok_scanner_create_access_method
+                                            (<link linkend="gchar">gchar</link> *Name);</programlisting>
+<para>
+Creates a new access method structure and adds it to the list of access methods.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new access method, NULL if if can't be created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-reset-access-method"/>gok_scanner_reset_access_method ()</title>
+<indexterm><primary>gok_scanner_reset_access_method</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_reset_access_method (void);</programlisting>
+<para>
+Resets the current access method so it's ready for use.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-change-state"/>gok_scanner_change_state ()</title>
+<indexterm><primary>gok_scanner_change_state</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_change_state        (<link linkend="GokScannerState">GokScannerState</link> *pState,
+                                             <link linkend="gchar">gchar</link> *NameAccessMethod);</programlisting>
+<para>
+Maps event handlers to effects..</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pState</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the new state.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>NameAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method that contains the state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-next-state"/>gok_scanner_next_state ()</title>
+<indexterm><primary>gok_scanner_next_state</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_next_state          (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-set-handlers-null"/>gok_scanner_set_handlers_null ()</title>
+<indexterm><primary>gok_scanner_set_handlers_null</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_set_handlers_null   (void);</programlisting>
+<para>
+Sets all the event handlers to NULL.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-access-method"/>gok_scanner_read_access_method ()</title>
+<indexterm><primary>gok_scanner_read_access_method</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_access_method  (<link linkend="gchar">gchar</link> *Filename);</programlisting>
+<para>
+Read an access method file from disk and create a new access method.
+The new access method is added to the list of access methods.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Filename</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the access method file.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the acces method was created, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-construct-state"/>gok_scanner_construct_state ()</title>
+<indexterm><primary>gok_scanner_construct_state</primary></indexterm><programlisting><link linkend="GokScannerState">GokScannerState</link>* gok_scanner_construct_state
+                                            (void);</programlisting>
+<para>
+Creates a new handler state.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new state, NULL if it was not created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-construct-rate"/>gok_scanner_construct_rate ()</title>
+<indexterm><primary>gok_scanner_construct_rate</primary></indexterm><programlisting><link linkend="GokAccessMethodRate">GokAccessMethodRate</link>* gok_scanner_construct_rate
+                                            (void);</programlisting>
+<para>
+Creates a new access method rate.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new rate, NULL if it was not created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-construct-handler"/>gok_scanner_construct_handler ()</title>
+<indexterm><primary>gok_scanner_construct_handler</primary></indexterm><programlisting><link linkend="GokScannerHandler">GokScannerHandler</link>* gok_scanner_construct_handler
+                                            (<link linkend="gchar">gchar</link> *pHandlerName);</programlisting>
+<para>
+Creates a new access method handler.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pHandlerName</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the handler.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the new handler, NULL if it was not created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-rates"/>gok_scanner_read_rates ()</title>
+<indexterm><primary>gok_scanner_read_rates</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_rates          (<link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);</programlisting>
+<para>
+Reads the rates for the given access method and add them to the list of rates
+stored on the access method.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML node that contains the first rate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the access method that is associated with the rates.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the rates were read, FALSE if there were 1 or more errors  reading the rates.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-description"/>gok_scanner_read_description ()</title>
+<indexterm><primary>gok_scanner_read_description</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_description    (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);</programlisting>
+<para>
+Reads the description of the access method and stores it on the structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pDoc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML document that contains the node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML root node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the access method that is associated with the description.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the description was read, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-operation"/>gok_scanner_read_operation ()</title>
+<indexterm><primary>gok_scanner_read_operation</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_operation      (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);</programlisting>
+<para>
+Reads the UI 'operation' of the access method and stores it on the structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pDoc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML document that contains the node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML root node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the access method that is associated with the operation.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the operation was read, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-ui-loop"/>gok_scanner_read_ui_loop ()</title>
+<indexterm><primary>gok_scanner_read_ui_loop</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_read_ui_loop        (<link linkend="GokControl">GokControl</link> *pControl,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode);</programlisting>
+<para>
+Reads the UI 'operation' of the access method and stores it on the structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pControl</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the parent control that will contain any new controls
+found in the node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML root node.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-feedback"/>gok_scanner_read_feedback ()</title>
+<indexterm><primary>gok_scanner_read_feedback</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_feedback       (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);</programlisting>
+<para>
+Reads the UI 'feedback' of the access method and stores it on the structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pDoc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML doc that contains the feedbacks.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML root node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the access method that is associated with the feedback.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the feedback was read, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-read-options"/>gok_scanner_read_options ()</title>
+<indexterm><primary>gok_scanner_read_options</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_read_options        (<link linkend="xmlDoc">xmlDoc</link> *pDoc,
+                                             <link linkend="xmlNode">xmlNode</link> *pNode,
+                                             <link linkend="GokAccessMethod">GokAccessMethod</link> *pAccessMethod);</programlisting>
+<para>
+Reads the UI 'options' of the access method and stores it on the structure.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pDoc</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML document that contains the node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pNode</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the XML root node.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pAccessMethod</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the access method that is associated with the options.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE if the options were read, FALSE if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-update-rates"/>gok_scanner_update_rates ()</title>
+<indexterm><primary>gok_scanner_update_rates</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_update_rates        (void);</programlisting>
+<para>
+Updates all the rates in all access methods from the GokData.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-get-current-access-method"/>gok_scanner_get_current_access_method ()</title>
+<indexterm><primary>gok_scanner_get_current_access_method</primary></indexterm><programlisting><link linkend="GokAccessMethod">GokAccessMethod</link>* gok_scanner_get_current_access_method
+                                            (void);</programlisting>
+<para>
+Accessor function to get the current access method.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the current access method.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-get-first-access-method"/>gok_scanner_get_first_access_method ()</title>
+<indexterm><primary>gok_scanner_get_first_access_method</primary></indexterm><programlisting><link linkend="GokAccessMethod">GokAccessMethod</link>* gok_scanner_get_first_access_method
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-get-current-state"/>gok_scanner_get_current_state ()</title>
+<indexterm><primary>gok_scanner_get_current_state</primary></indexterm><programlisting><link linkend="GokScannerState">GokScannerState</link>* gok_scanner_get_current_state
+                                            (void);</programlisting>
+<para>
+Accessor function to get the current handler state.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the current handler state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-get-pointer-location"/>gok_scanner_get_pointer_location ()</title>
+<indexterm><primary>gok_scanner_get_pointer_location</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_get_pointer_location
+                                            (<link linkend="gint">gint</link> *pX,
+                                             <link linkend="gint">gint</link> *pY);</programlisting>
+<para>
+Gets the current location of the mouse pointer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pX</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the integer that receives the mouse pointer X coordinate.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pY</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the integer that receives the mouse pointer Y coordinate.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-set"/>gok_scanner_timer_set ()</title>
+<indexterm><primary>gok_scanner_timer_set</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_scanner_timer_set           (<link linkend="gint">gint</link> Rate,
+                                             <link linkend="gint">gint</link> ID);</programlisting>
+<para>
+Starts a timer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>Rate</parameter>&nbsp;:</term>
+<listitem><simpara> Time in 100s of a second.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ID</parameter>&nbsp;:</term>
+<listitem><simpara> Timer identifier
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Always 0.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-stop"/>gok_scanner_timer_stop ()</title>
+<indexterm><primary>gok_scanner_timer_stop</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_scanner_timer_stop          (<link linkend="gint">gint</link> TimerId);</programlisting>
+<para>
+Stops a timer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>TimerId</parameter>&nbsp;:</term>
+<listitem><simpara> Id of the timer that will be stopped.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Always 0.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-make-type-from-string"/>gok_scanner_make_type_from_string ()</title>
+<indexterm><primary>gok_scanner_make_type_from_string</primary></indexterm><programlisting><link linkend="gint">gint</link>        gok_scanner_make_type_from_string
+                                            (<link linkend="gchar">gchar</link> *pString);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pString</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the string that describes one or more effect types.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> An int that describes all the effect types in the string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-set-dwell-rate"/>gok_scanner_timer_set_dwell_rate ()</title>
+<indexterm><primary>gok_scanner_timer_set_dwell_rate</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_timer_set_dwell_rate
+                                            (<link linkend="gint">gint</link> rate);</programlisting>
+<para>
+Sets the dwell rate.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>rate</parameter>&nbsp;:</term>
+<listitem><simpara> Dwell rate in 100s of a second.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-start-dwell"/>gok_scanner_timer_start_dwell ()</title>
+<indexterm><primary>gok_scanner_timer_start_dwell</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_timer_start_dwell   (void);</programlisting>
+<para>
+Starts the dwell timer.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-stop-dwell"/>gok_scanner_timer_stop_dwell ()</title>
+<indexterm><primary>gok_scanner_timer_stop_dwell</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_timer_stop_dwell    (void);</programlisting>
+<para>
+Stops the dwell timer</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-timer-on-dwell"/>gok_scanner_timer_on_dwell ()</title>
+<indexterm><primary>gok_scanner_timer_on_dwell</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_timer_on_dwell      (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+This will be called when the dwell timer counts down.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Passed from the event. Ignored.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> Always FALSE.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-left-button-down"/>gok_scanner_left_button_down ()</title>
+<indexterm><primary>gok_scanner_left_button_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_left_button_down    (void);</programlisting>
+<para>
+Handler for the left mouse button down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-left-button-up"/>gok_scanner_left_button_up ()</title>
+<indexterm><primary>gok_scanner_left_button_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_left_button_up      (void);</programlisting>
+<para>
+Handler for the left mouse button up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-right-button-down"/>gok_scanner_right_button_down ()</title>
+<indexterm><primary>gok_scanner_right_button_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_right_button_down   (void);</programlisting>
+<para>
+Handler for the right mouse button down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-right-button-up"/>gok_scanner_right_button_up ()</title>
+<indexterm><primary>gok_scanner_right_button_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_right_button_up     (void);</programlisting>
+<para>
+Handler for the right mouse button up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-middle-button-down"/>gok_scanner_middle_button_down ()</title>
+<indexterm><primary>gok_scanner_middle_button_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_middle_button_down  (void);</programlisting>
+<para>
+Handler for the middle mouse button down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-middle-button-up"/>gok_scanner_middle_button_up ()</title>
+<indexterm><primary>gok_scanner_middle_button_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_middle_button_up    (void);</programlisting>
+<para>
+Handler for the mouse middle button up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-mouse-movement"/>gok_scanner_mouse_movement ()</title>
+<indexterm><primary>gok_scanner_mouse_movement</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_mouse_movement      (<link linkend="gint">gint</link> x,
+                                             <link linkend="gint">gint</link> y);</programlisting>
+<para>
+Handler for the mouse movement event. Stores the location of the mouse pointer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> Horizontal location of the mouse pointer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> Vertical location of the mouse pointer.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-timer1"/>gok_scanner_on_timer1 ()</title>
+<indexterm><primary>gok_scanner_on_timer1</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_on_timer1           (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Handler for the timer1 event (timer 1 has counted down).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the user data associated with the timer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> FALSE always. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-timer2"/>gok_scanner_on_timer2 ()</title>
+<indexterm><primary>gok_scanner_on_timer2</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_on_timer2           (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Handler for the timer2 event (timer 2 has counted down).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the user data associated with the timer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> FALSE always. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-timer3"/>gok_scanner_on_timer3 ()</title>
+<indexterm><primary>gok_scanner_on_timer3</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_on_timer3           (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Handler for the timer3 event (timer 3 has counted down).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the user data associated with the timer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> FALSE always. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-timer4"/>gok_scanner_on_timer4 ()</title>
+<indexterm><primary>gok_scanner_on_timer4</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_on_timer4           (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Handler for the timer4 event (timer 4 has counted down).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the user data associated with the timer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> FALSE always. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-timer5"/>gok_scanner_on_timer5 ()</title>
+<indexterm><primary>gok_scanner_on_timer5</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gok_scanner_on_timer5           (<link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Handler for the timer5 event (timer 5 has counted down).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the user data associated with the timer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> FALSE always. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-key-enter"/>gok_scanner_on_key_enter ()</title>
+<indexterm><primary>gok_scanner_on_key_enter</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_key_enter        (<link linkend="GokKey">GokKey</link> *pKey);</programlisting>
+<para>
+Handler for the key enter notify.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKey</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the key that the mouse pointer has entered.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-key-leave"/>gok_scanner_on_key_leave ()</title>
+<indexterm><primary>gok_scanner_on_key_leave</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_key_leave        (<link linkend="GokKey">GokKey</link> *pKey);</programlisting>
+<para>
+Handler for the key leave notify.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pKey</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to the key that the mouse pointer has left.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch1-down"/>gok_scanner_on_switch1_down ()</title>
+<indexterm><primary>gok_scanner_on_switch1_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch1_down     (void);</programlisting>
+<para>
+Handler for the switch 1 down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch1-up"/>gok_scanner_on_switch1_up ()</title>
+<indexterm><primary>gok_scanner_on_switch1_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch1_up       (void);</programlisting>
+<para>
+Handler for the switch 1 up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch2-down"/>gok_scanner_on_switch2_down ()</title>
+<indexterm><primary>gok_scanner_on_switch2_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch2_down     (void);</programlisting>
+<para>
+Handler for the switch 2 down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch2-up"/>gok_scanner_on_switch2_up ()</title>
+<indexterm><primary>gok_scanner_on_switch2_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch2_up       (void);</programlisting>
+<para>
+Handler for the switch 2 up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch3-down"/>gok_scanner_on_switch3_down ()</title>
+<indexterm><primary>gok_scanner_on_switch3_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch3_down     (void);</programlisting>
+<para>
+Handler for the switch 3 down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch3-up"/>gok_scanner_on_switch3_up ()</title>
+<indexterm><primary>gok_scanner_on_switch3_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch3_up       (void);</programlisting>
+<para>
+Handler for the switch 3 up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch4-down"/>gok_scanner_on_switch4_down ()</title>
+<indexterm><primary>gok_scanner_on_switch4_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch4_down     (void);</programlisting>
+<para>
+Handler for the switch 4 down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch4-up"/>gok_scanner_on_switch4_up ()</title>
+<indexterm><primary>gok_scanner_on_switch4_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch4_up       (void);</programlisting>
+<para>
+Handler for the switch 4 up event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch5-down"/>gok_scanner_on_switch5_down ()</title>
+<indexterm><primary>gok_scanner_on_switch5_down</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch5_down     (void);</programlisting>
+<para>
+Handler for the switch 5 down event.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gok-scanner-on-switch5-up"/>gok_scanner_on_switch5_up ()</title>
+<indexterm><primary>gok_scanner_on_switch5_up</primary></indexterm><programlisting><link linkend="void">void</link>        gok_scanner_on_switch5_up       (void);</programlisting>
+<para>
+Handler for the switch 5 up event.</para>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,118 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gok-page-actions</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gok-gok-page-accessmethod.html" title="gok-page-accessmethod"><link rel="next" href="gok-gok-page-feedbacks.html" title="gok-page-feedbacks"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="[Insert title here]"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gok-gok-page-accessmethod.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gok-gok-page-feedbacks.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gok-gok-page-actions"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gok-page-actions</span></h2><p>gok-page-actions &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gboolean    <a href="gok-gok-page-actions.html#gok-page-actions-initialize">gok_page_actions_initialize</a>     (GladeXML *xml);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-refresh">gok_page_actions_refresh</a>        (void);
+gboolean    <a href="gok-gok-page-actions.html#gok-page-actions-apply">gok_page_actions_apply</a>          (void);
+gboolean    <a href="gok-gok-page-actions.html#gok-page-actions-revert">gok_page_actions_revert</a>         (void);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-backup">gok_page_actions_backup</a>         (void);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-toggle-type-switch">gok_page_actions_toggle_type_switch</a>
+                                            (gboolean Pressed);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-button-clicked-new">gok_page_actions_button_clicked_new</a>
+                                            (void);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-button-clicked-delete">gok_page_actions_button_clicked_delete</a>
+                                            (void);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-button-clicked-change-name">gok_page_actions_button_clicked_change_name</a>
+                                            (void);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-action-changed">gok_page_actions_action_changed</a> (GtkEditable *pEditControl);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-enable-switch-controls">gok_page_actions_enable_switch_controls</a>
+                                            (gboolean bTrueFalse);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-enable-radios-type">gok_page_actions_enable_radios_type</a>
+                                            (gboolean bTrueFalse);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-fill-combo-action-names">gok_page_actions_fill_combo_action_names</a>
+                                            (void);
+gint        <a href="gok-gok-page-actions.html#gok-page-actions-get-radio-number">gok_page_actions_get_radio_number</a>
+                                            (GtkRadioButton *pRadioButtonGiven);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-update-controls">gok_page_actions_update_controls</a>
+                                            (GokAction *pAction);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-set-number">gok_page_actions_set_number</a>     (gint NumberSwitch);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-set-state">gok_page_actions_set_state</a>      (gint State);
+void        <a href="gok-gok-page-actions.html#gok-page-actions-set-rate">gok_page_actions_set_rate</a>       (gint Rate);
+</pre></div><div class="refsect1" lang="en"><a name="id2596521"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2596531"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2596537"></a><h3><a name="gok-page-actions-initialize"></a>gok_page_actions_initialize ()</h3><a class="indexterm" name="id2596549"></a><pre class="programlisting">gboolean    gok_page_actions_initialize     (GladeXML *xml);</pre><p>
+Initializes this page of the gok settings dialog. This must be called
+prior to any calls on this page.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>xml</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the page was properly initialized, FALSE if not.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596611"></a><h3><a name="gok-page-actions-refresh"></a>gok_page_actions_refresh ()</h3><a class="indexterm" name="id2596622"></a><pre class="programlisting">void        gok_page_actions_refresh        (void);</pre><p>
+Refreshes the controls on the this page from the gok data.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596647"></a><h3><a name="gok-page-actions-apply"></a>gok_page_actions_apply ()</h3><a class="indexterm" name="id2596658"></a><pre class="programlisting">gboolean    gok_page_actions_apply          (void);</pre><p>
+Updates the gok data with values from the controls.  Unfinished.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if any of the data members have changed, FALSE if not.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596700"></a><h3><a name="gok-page-actions-revert"></a>gok_page_actions_revert ()</h3><a class="indexterm" name="id2596711"></a><pre class="programlisting">gboolean    gok_page_actions_revert         (void);</pre><p>
+Revert to the backup settings for this page.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if any of the settings have changed, FALSE 
+if they are all still the same.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596752"></a><h3><a name="gok-page-actions-backup"></a>gok_page_actions_backup ()</h3><a class="indexterm" name="id2596764"></a><pre class="programlisting">void        gok_page_actions_backup         (void);</pre><p>
+Copies all the member settings to backup.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596789"></a><h3><a name="gok-page-actions-toggle-type-switch"></a>gok_page_actions_toggle_type_switch ()</h3><a class="indexterm" name="id2596802"></a><pre class="programlisting">void        gok_page_actions_toggle_type_switch
+                                            (gboolean Pressed);</pre><p>
+The radio button for the type 'switch' has been toggled.
+Hide or show the controls for the switch actions.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Pressed</tt></i> :</span></td><td> State of the toggle button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596854"></a><h3><a name="gok-page-actions-button-clicked-new"></a>gok_page_actions_button_clicked_new ()</h3><a class="indexterm" name="id2596867"></a><pre class="programlisting">void        gok_page_actions_button_clicked_new
+                                            (void);</pre><p>
+The button "new action" has been clicked so add a new action.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596893"></a><h3><a name="gok-page-actions-button-clicked-delete"></a>gok_page_actions_button_clicked_delete ()</h3><a class="indexterm" name="id2596906"></a><pre class="programlisting">void        gok_page_actions_button_clicked_delete
+                                            (void);</pre><p>
+The button "delete action" has been clicked so delete the current action.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596932"></a><h3><a name="gok-page-actions-button-clicked-change-name"></a>gok_page_actions_button_clicked_change_name ()</h3><a class="indexterm" name="id2596946"></a><pre class="programlisting">void        gok_page_actions_button_clicked_change_name
+                                            (void);</pre><p>
+The button "change name" has been clicked so allow the user to change the
+name of the action.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596972"></a><h3><a name="gok-page-actions-action-changed"></a>gok_page_actions_action_changed ()</h3><a class="indexterm" name="id2596984"></a><pre class="programlisting">void        gok_page_actions_action_changed (GtkEditable *pEditControl);</pre><p>
+The user has selected a new action from the combo box so update the
+page's controls with the new action data.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pEditControl</tt></i> :</span></td><td> Pointer to the edit control that contains the names of
+the actions.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597037"></a><h3><a name="gok-page-actions-enable-switch-controls"></a>gok_page_actions_enable_switch_controls ()</h3><a class="indexterm" name="id2597049"></a><pre class="programlisting">void        gok_page_actions_enable_switch_controls
+                                            (gboolean bTrueFalse);</pre><p>
+Enables/disables the controls for switch actions.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bTrueFalse</tt></i> :</span></td><td> State that the switch controls should be set to.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597102"></a><h3><a name="gok-page-actions-enable-radios-type"></a>gok_page_actions_enable_radios_type ()</h3><a class="indexterm" name="id2597115"></a><pre class="programlisting">void        gok_page_actions_enable_radios_type
+                                            (gboolean bTrueFalse);</pre><p>
+Enables/disables the radio buttons for action type.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bTrueFalse</tt></i> :</span></td><td> State the controls should be set to.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597166"></a><h3><a name="gok-page-actions-fill-combo-action-names"></a>gok_page_actions_fill_combo_action_names ()</h3><a class="indexterm" name="id2597179"></a><pre class="programlisting">void        gok_page_actions_fill_combo_action_names
+                                            (void);</pre><p>
+Fills the combo box that displays the action names.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2597206"></a><h3><a name="gok-page-actions-get-radio-number"></a>gok_page_actions_get_radio_number ()</h3><a class="indexterm" name="id2597219"></a><pre class="programlisting">gint        gok_page_actions_get_radio_number
+                                            (GtkRadioButton *pRadioButtonGiven);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pRadioButtonGiven</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597276"></a><h3><a name="gok-page-actions-update-controls"></a>gok_page_actions_update_controls ()</h3><a class="indexterm" name="id2597288"></a><pre class="programlisting">void        gok_page_actions_update_controls
+                                            (GokAction *pAction);</pre><p>
+Updates the controls so they reflect the given action.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pAction</tt></i> :</span></td><td> Controls are changed to display this action.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597340"></a><h3><a name="gok-page-actions-set-number"></a>gok_page_actions_set_number ()</h3><a class="indexterm" name="id2597352"></a><pre class="programlisting">void        gok_page_actions_set_number     (gint NumberSwitch);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>NumberSwitch</tt></i> :</span></td><td> Number of the switch selected.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597401"></a><h3><a name="gok-page-actions-set-state"></a>gok_page_actions_set_state ()</h3><a class="indexterm" name="id2597414"></a><pre class="programlisting">void        gok_page_actions_set_state      (gint State);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>State</tt></i> :</span></td><td> State selected.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597463"></a><h3><a name="gok-page-actions-set-rate"></a>gok_page_actions_set_rate ()</h3><a class="indexterm" name="id2597475"></a><pre class="programlisting">void        gok_page_actions_set_rate       (gint Rate);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>Rate</tt></i> :</span></td><td> Rate selected.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gok-gok-page-accessmethod.html"><b>&lt;&lt; gok-page-accessmethod</b></a></td><td align="right"><a accesskey="n" href="gok-gok-page-feedbacks.html"><b>gok-page-feedbacks &gt;&gt;</b></a></td></tr></table></body></html>

@@ -42,7 +42,7 @@ typedef enum {
 
 /* an output */
 typedef struct GokOutput{
-	gint Type;
+	GokOutputType Type;
 	AccessibleKeySynthType Flag;
 	gchar* Name;
 	struct GokOutput* pOutputNext;	

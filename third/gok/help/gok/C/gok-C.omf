@@ -1,18 +1,22 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <omf>
   <resource>
     <creator>
-      bruce.etheridge@utoronto.ca
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </creator>
+    <maintainer>
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
+    </maintainer>
     <title>
-      GNOME Onscreen Keyboard (GOK)
+		GOK Manual
     </title>
     <date>
-      2002-09-25
+      2004-10-13
     </date>
+    <version identifier="2.3" date="2004-10-13" description="Updated to support program version 0.11.9"/>
     <subject category="GNOME|Accessibility"/>
     <description>
-      The User Manual for the GNOME Onscreen Keyboard.
+      User manual for GOK. 
     </description>
     <type>
       user's guide
@@ -21,5 +25,6 @@
     <identifier url="gok.xml"/>
     <language code="C"/>
     <relation seriesid="d6ed21d2-d0d0-11d6-994a-eb03e80c0571"/>
-  </resource>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
+  </resource>        
 </omf>

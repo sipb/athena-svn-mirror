@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:gok.HEAD\n"
-"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-07 12:18-0500\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
 #: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
@@ -31,122 +31,123 @@ msgstr ""
 msgid "Auto Repeat Rate:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:4
+#. User interface for the access method
+#: automatic-scanning.xml.in.h:5
 msgid "Automatic Scanning"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+#: automatic-scanning.xml.in.h:6 singlekey-automatic-scanning.xml.in.h:1
 msgid "Autostart (starts automatically)"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:4
 #: singlekey-automatic-scanning.xml.in.h:2
 #: singlekey-inverse-scanning.xml.in.h:2
 msgid "Bottom/Top"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:5
 msgid "Continuous Cycle On"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: automatic-scanning.xml.in.h:9 inverse-scanning.xml.in.h:6
 #: singlekey-automatic-scanning.xml.in.h:3
 #: singlekey-inverse-scanning.xml.in.h:3
 msgid "Cycles Before Stopping:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: automatic-scanning.xml.in.h:10 direct-selection.xml.in.h:5
 #: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
 #: singlekey-automatic-scanning.xml.in.h:4
 #: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
 msgid "Feedback"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:11
 msgid "Feedback Movement"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:11
+#: automatic-scanning.xml.in.h:12
 msgid "Feedback Selection"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+#: automatic-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:7
 msgid "Initial Delay:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: automatic-scanning.xml.in.h:14 inverse-scanning.xml.in.h:10
 #: singlekey-automatic-scanning.xml.in.h:8
 #: singlekey-inverse-scanning.xml.in.h:7
 msgid "Left/Right"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:10
 #: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
 #: singlekey-automatic-scanning.xml.in.h:10
 #: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
 msgid "Operation"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: automatic-scanning.xml.in.h:16 direct-selection.xml.in.h:11
 #: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
 #: singlekey-inverse-scanning.xml.in.h:10
 #, fuzzy
 msgid "Options"
 msgstr "പ്ര‌വ‍ര്ത്തനം"
 
-#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:12
 msgid ""
 "Press a switch to start scanning.  Press another switch or the same switch "
 "again to select."
 msgstr ""
 
-#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+#: automatic-scanning.xml.in.h:18 singlekey-automatic-scanning.xml.in.h:13
 msgid "Press switch to start"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:15
 #: singlekey-automatic-scanning.xml.in.h:14
 #: singlekey-inverse-scanning.xml.in.h:12
 msgid "Right/Left"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:16
 #: singlekey-automatic-scanning.xml.in.h:15
 #: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
 msgid "Scan Delay:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: automatic-scanning.xml.in.h:21 inverse-scanning.xml.in.h:17
 #: singlekey-automatic-scanning.xml.in.h:16
 #: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
 msgid "Scan Speed:"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:21
+#: automatic-scanning.xml.in.h:22
 #, fuzzy
 msgid "Select"
 msgstr "നീക്കം ചെയ്യ‍ുക"
 
-#: automatic-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:23
 msgid "Start Scanning"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
-#: singlekey-automatic-scanning.xml.in.h:23
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:24
 #: singlekey-inverse-scanning.xml.in.h:20
 msgid "Top/Bottom"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: automatic-scanning.xml.in.h:25 inverse-scanning.xml.in.h:22
 #: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
 msgid "Wrap Rows/Columns"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:25
+#: automatic-scanning.xml.in.h:26
 msgid "feedbackmovement"
 msgstr ""
 
-#: automatic-scanning.xml.in.h:26
+#: automatic-scanning.xml.in.h:27
 msgid "feedbackselection"
 msgstr ""
 
@@ -223,190 +224,273 @@ msgid "Window"
 msgstr "ജാലക നാമാവലി"
 
 #. "back" means go to previous keyboard
-#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#. Translators: short label for go back.
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2481 gok/gok-windowlister.c:130
 #: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
-#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+#: numberpad.kbd.in.h:20 quit.kbd.in.h:4 valuator.kbd.in.h:3
 msgid "back"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:1 gok/main.c:284
+#: gok-with-references.schemas.in.h:1
+msgid "$pkgdatadir/goksound1.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:2
+msgid "$pkgdatadir/goksound2.wav"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3 gok/main.c:286
 msgid ""
 "A multiplier to be applied to input device valuator events before processing"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:2
+#: gok-with-references.schemas.in.h:4
 msgid ""
 "A semicolon-delimited list of fully specified paths to additional word-"
 "completion dictionaries"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:3
+#: gok-with-references.schemas.in.h:5
 msgid "Are the preferences to be restricted?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:4
+#: gok-with-references.schemas.in.h:6
 msgid "Determines the keyboard type used for the default compose keyboard"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:5
+#: gok-with-references.schemas.in.h:7
 msgid ""
 "Does GOK generate its compose keyboard dynamically based on information from "
 "the X Server?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:6
+#: gok-with-references.schemas.in.h:8
 msgid ""
 "Does each GOK user have a private copy of the word prediction dictionary?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:7
+#: gok-with-references.schemas.in.h:9
 msgid "Does the GOK window expand to fill the full screen width?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:8
+#: gok-with-references.schemas.in.h:10
 msgid "Does the core pointer follow the GOK keyboard pointer?"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:9
+#: gok-with-references.schemas.in.h:11
 msgid "Does this action use key averaging"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:10
+#: gok-with-references.schemas.in.h:12
 msgid "Does this feedback flash"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:11
+#: gok-with-references.schemas.in.h:13
 msgid "Does this feedback play a sound"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:12
+#: gok-with-references.schemas.in.h:14
 msgid "Does this feedback speak the label of a GOK key"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:13
+#: gok-with-references.schemas.in.h:15
+#, fuzzy
+msgid "Dwell"
+msgstr "നീക്കം ചെയ്യ‍ുക"
+
+#: gok-with-references.schemas.in.h:16
 msgid "GOK main window anchor location (if a dock), or empty string if not"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:14
+#: gok-with-references.schemas.in.h:17
 msgid ""
 "How many children of each node in the GUI tree to search for accessible "
 "objects"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:15
+#: gok-with-references.schemas.in.h:18
 msgid "How many levels down the GUI tree to search for accessible objects"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:16
+#: gok-with-references.schemas.in.h:19
 msgid "Is this action permanent"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:17
+#: gok-with-references.schemas.in.h:20
 msgid "Is this feedback permanent"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:18
+#: gok-with-references.schemas.in.h:21
 msgid "Is word completion on"
 msgstr ""
 
-#: gok-with-references.schemas.in.h:19
+#: gok-with-references.schemas.in.h:22
+msgid "Key flashing"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:23
+msgid "Left Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:24
+msgid "Middle Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:25
+msgid "Mouse Button 4"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:26
+msgid "Mouse Button 5"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:27
+msgid "Mouse Pointer"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:28
+msgid "None"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:29
+msgid "Right Mouse Button"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:30
 msgid ""
 "Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
 "custom, custom_compose_keyboard should be defined."
 msgstr ""
 
-#: gok-with-references.schemas.in.h:20
-msgid "The access method to use"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:21
-msgid "The directory to load access method files from."
-msgstr ""
-
-#: gok-with-references.schemas.in.h:22
-msgid "The directory to load dictionary files from."
-msgstr ""
-
-#: gok-with-references.schemas.in.h:23
-msgid "The directory to load the gok resource file from."
-msgstr ""
-
-#: gok-with-references.schemas.in.h:24
-msgid "The directory to load user-specific or custom keyboard files from."
-msgstr ""
-
-#: gok-with-references.schemas.in.h:25
-msgid "The full pathname to a file which defines a custom GOK compose keyboard"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:26
-msgid "The key height"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:27
-msgid "The key width"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:28
-msgid "The keyboards X coordinate"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:29
-msgid "The keyboards Y coordinate"
-msgstr ""
-
-#: gok-with-references.schemas.in.h:30
-msgid "The name of the sound that this feedback will play"
-msgstr ""
-
 #: gok-with-references.schemas.in.h:31
-msgid "The name of the xinput device to use"
+msgid "Sound one"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:32
-msgid "The name to display to the user for this action"
+msgid "Sound two"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:33
-msgid "The name to display to the user for this feedback"
-msgstr ""
+#, fuzzy
+msgid "Speech"
+msgstr "നീക്കം ചെയ്യ‍ുക"
 
 #: gok-with-references.schemas.in.h:34
-msgid "The number if applicable"
+msgid "Switch 1"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:35
-msgid "The number of predictions for word completion"
+msgid "Switch 2"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:36
-msgid "The number of times this feedback will flash"
+msgid "Switch 3"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:37
-msgid "The primary or system directory to load keyboard files from."
+msgid "Switch 4"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:38
-msgid "The rate for this action"
+msgid "Switch 5"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:39
-msgid "The space between keys"
+msgid "The access method to use"
 msgstr ""
 
 #: gok-with-references.schemas.in.h:40
-msgid "The state in which this action is activated"
+msgid "The directory to load access method files from."
 msgstr ""
 
 #: gok-with-references.schemas.in.h:41
-msgid "The type of this action"
+msgid "The directory to load dictionary files from."
 msgstr ""
 
 #: gok-with-references.schemas.in.h:42
+msgid "The directory to load the gok resource file from."
+msgstr ""
+
+#: gok-with-references.schemas.in.h:43
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr ""
+
+#: gok-with-references.schemas.in.h:44
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:45
+msgid "The key height"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:46
+msgid "The key width"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:47
+msgid "The keyboards X coordinate"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:48
+msgid "The keyboards Y coordinate"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:49
+msgid "The name of the sound that this feedback will play"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:50
+msgid "The name of the xinput device to use"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:51
+msgid "The name to display to the user for this action"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:52
+msgid "The name to display to the user for this feedback"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:53
+msgid "The number if applicable"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:54
+msgid "The number of predictions for word completion"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:55
+msgid "The number of times this feedback will flash"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:56
+msgid "The primary or system directory to load keyboard files from."
+msgstr ""
+
+#: gok-with-references.schemas.in.h:57
+msgid "The rate for this action"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:58
+msgid "The space between keys"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:59
+msgid "The state in which this action is activated"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:60
+msgid "The type of this action"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:61
 msgid ""
 "Whether to use additional word lists when searching for GOK word-completion "
 "candidates"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:62
+msgid "none"
 msgstr ""
 
 #: gok.desktop.in.h:1
@@ -1095,193 +1179,193 @@ msgstr ""
 msgid "(new)"
 msgstr ""
 
-#: gok/gok-key.c:115
+#: gok/gok-key.c:117
 #, fuzzy
 msgid "Mute"
 msgstr "പട്ടികകള്"
 
-#: gok/gok-key.c:118
+#: gok/gok-key.c:120
 #, fuzzy
 msgid ""
 "Mouse\n"
 "Keys"
 msgstr "പട്ടികകള്"
 
-#: gok/gok-key.c:121
+#: gok/gok-key.c:123
 msgid ""
 "Left\n"
 "Tab"
 msgstr ""
 
-#: gok/gok-key.c:232
+#: gok/gok-key.c:234
 msgid "Divide"
 msgstr ""
 
-#: gok/gok-key.c:235
+#: gok/gok-key.c:237
 msgid "Multiply"
 msgstr ""
 
-#: gok/gok-key.c:238
+#: gok/gok-key.c:240
 msgid "Subtract"
 msgstr ""
 
-#: gok/gok-key.c:241
+#: gok/gok-key.c:243
 #, fuzzy
 msgid "Addition"
 msgstr "പ്ര‌വ‍ര്ത്തനം"
 
-#: gok/gok-key.c:244
+#: gok/gok-key.c:246
 msgid "Prior"
 msgstr ""
 
-#: gok/gok-key.c:247
+#: gok/gok-key.c:249
 msgid "Next"
 msgstr ""
 
-#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+#: gok/gok-key.c:252 numberpad.kbd.in.h:6
 msgid "Home"
 msgstr ""
 
-#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+#: gok/gok-key.c:255 numberpad.kbd.in.h:4
 msgid "End"
 msgstr ""
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+#: gok/gok-key.c:258 move-resize.kbd.in.h:20 numberpad.kbd.in.h:18
 msgid "Up"
 msgstr ""
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+#: gok/gok-key.c:261 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
 #, fuzzy
 msgid "Down"
 msgstr "താഴേക്ക് നീക്കുക"
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+#: gok/gok-key.c:264 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
 msgid "Left"
 msgstr ""
 
 #. Translators: this describes the direction gok will move.
-#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+#: gok/gok-key.c:267 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
 msgid "Right"
 msgstr ""
 
-#: gok/gok-key.c:268
+#: gok/gok-key.c:270
 msgid "Begin"
 msgstr ""
 
-#: gok/gok-key.c:271
+#: gok/gok-key.c:273
 msgid "Decimal"
 msgstr ""
 
-#: gok/gok-key.c:274
+#: gok/gok-key.c:276
 msgid "Meta"
 msgstr ""
 
-#: gok/gok-key.c:277
+#: gok/gok-key.c:279
 msgid ""
 "Multi\n"
 "key"
 msgstr ""
 
-#: gok/gok-key.c:280
+#: gok/gok-key.c:282
 msgid ""
 "Eisu\n"
 "toggle"
 msgstr ""
 
-#: gok/gok-key.c:283
+#: gok/gok-key.c:285
 msgid ""
 "Henkan\n"
 "Mode"
 msgstr ""
 
-#: gok/gok-key.c:286
+#: gok/gok-key.c:288
 msgid "Muhenkan"
 msgstr ""
 
-#: gok/gok-key.c:289
+#: gok/gok-key.c:291
 msgid ""
 "Mode\n"
 "switch"
 msgstr ""
 
-#: gok/gok-keyboard.c:150
+#: gok/gok-keyboard.c:155
 #, c-format
 msgid "Xkb extension could not be initialized! (error code %x)"
 msgstr ""
 
-#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+#: gok/gok-keyboard.c:161 gok/gok-keyboard.c:201
 msgid "keyboard description not available!"
 msgstr ""
 
-#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+#: gok/gok-keyboard.c:167 gok/gok-keyboard.c:207 gok/gok-keyboard.c:504
 msgid "Keyboard Geometry cannot be read from your X Server."
 msgstr ""
 
-#: gok/gok-keyboard.c:425
+#: gok/gok-keyboard.c:430
 msgid "Back"
 msgstr "പിന്നോട്ട്"
 
-#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+#: gok/gok-keyboard.c:448 valuator.kbd.in.h:1
 msgid "Repeat Next"
 msgstr ""
 
-#: gok/gok-keyboard.c:456
+#: gok/gok-keyboard.c:461
 msgid "Edit"
 msgstr ""
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:469
+#: gok/gok-keyboard.c:474
 msgid ""
 "Num\n"
 "Pad"
 msgstr ""
 
 #. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
-#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+#: gok/gok-keyboard.c:488 move-resize.kbd.in.h:9
 msgid "Hide"
 msgstr ""
 
 #. translators: "shift" as in "the shift modifier key"
-#: gok/gok-keyboard.c:694
+#: gok/gok-keyboard.c:699
 msgid "shift"
 msgstr ""
 
 #. translators: The context is "key level" as in shift/caps status on keyboard
-#: gok/gok-keyboard.c:706
+#: gok/gok-keyboard.c:711
 msgid "Level 2"
 msgstr ""
 
 #. translators: see note for "Level 2"
-#: gok/gok-keyboard.c:718
+#: gok/gok-keyboard.c:723
 msgid "Level 3"
 msgstr ""
 
 #. translators: this is a label for a 'Back space' key
-#: gok/gok-keyboard.c:730
+#: gok/gok-keyboard.c:735
 msgid ""
 "Back\n"
 "Space"
 msgstr ""
 
 #. translators: this is a label for a "Tab" key, for instance on a keyboard
-#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+#: gok/gok-keyboard.c:746 numberpad.kbd.in.h:16
 msgid "Tab"
 msgstr ""
 
 #. translators: this is a label for a "spacebar" key, for instance on a keyboard
-#: gok/gok-keyboard.c:752
+#: gok/gok-keyboard.c:757
 msgid "space"
 msgstr ""
 
 #. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
-#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+#: gok/gok-keyboard.c:768 numberpad.kbd.in.h:5
 msgid "Enter"
 msgstr ""
 
-#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+#: gok/gok-keyboard.c:806 main.kbd.in.h:7
 msgid "Menus"
 msgstr "പട്ടികകള്"
 
@@ -1301,7 +1385,7 @@ msgstr "പട്ടികകള്"
 #. * precede alphabetic characters, digits and punctuation should be placed
 #. * at the end of the string.
 #.
-#: gok/gok-keyboard.c:860
+#: gok/gok-keyboard.c:865
 msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
 msgstr ""
 
@@ -1309,7 +1393,7 @@ msgstr ""
 #. * For languages/locales which use 'upper case', this string should
 #. * correspond to uppercase versions of characters in the 'level 0' string.
 #.
-#: gok/gok-keyboard.c:865
+#: gok/gok-keyboard.c:870
 msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
 msgstr ""
 
@@ -1319,13 +1403,16 @@ msgstr ""
 #. * 'level 3'.  At the translator's discretion, accented characters can be
 #. * placed here and in 'level 3' as well.
 #.
-#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+#.
+#. * Seldom-used or alternate characters can appear in levels 2 and 3 if necessary.
+#.
+#: gok/gok-keyboard.c:877 gok/gok-keyboard.c:933
 msgid "level 2|"
 msgstr ""
 
 #. For locales which need an even larger character set, or offer uppercase versions
 #. * of the 'level2' characters, add them to 'level 3'
-#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+#: gok/gok-keyboard.c:880 gok/gok-keyboard.c:934
 msgid "level 3|"
 msgstr ""
 
@@ -1340,54 +1427,54 @@ msgstr ""
 #. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
 #. * the characters in these two strings should occur in the same relative order.
 #.
-#: gok/gok-keyboard.c:923
+#: gok/gok-keyboard.c:928
 msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
 msgstr ""
 
-#: gok/gok-keyboard.c:924
+#: gok/gok-keyboard.c:929
 msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
 msgstr ""
 
 #. change the name of the window to the keyboard name
-#: gok/gok-keyboard.c:1908
+#: gok/gok-keyboard.c:1916
 msgid "GOK - "
 msgstr ""
 
-#: gok/gok-keyboard.c:2736
+#: gok/gok-keyboard.c:2808
 msgid "GUI"
 msgstr "GUI"
 
 #. translators: "table" as in row/column data structure
-#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+#: gok/gok-keyboard.c:2813 gok/gok-spy.c:1718
 #, fuzzy
 msgid "Table"
 msgstr "ലിഖിതം"
 
-#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+#: gok/gok-keyboard.c:2818 main.kbd.in.h:9
 msgid "Toolbars"
 msgstr ""
 
-#: gok/gok-keyboard.c:2750
+#: gok/gok-keyboard.c:2822
 msgid "Applications"
 msgstr "പ്രയോഗങ്ങള്‌"
 
-#: gok/gok-keyboard.c:2757
+#: gok/gok-keyboard.c:2832
 msgid "Menu"
 msgstr "പട്ടിക"
 
-#: gok/gok-keyboard.c:3527
+#: gok/gok-keyboard.c:3697
 msgid "translator_credits"
 msgstr "എഫ്.എസ്.എഫ് - ഇന്ത്യ <gnu@gnu.org.in>"
 
-#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+#: gok/gok-keyboard.c:3720 main.kbd.in.h:4
 msgid "GOK"
 msgstr ""
 
-#: gok/gok-keyboard.c:3552
+#: gok/gok-keyboard.c:3722
 msgid "Dynamic virtual keyboards for the GNOME desktop"
 msgstr ""
 
-#: gok/gok-keyboard.c:3561
+#: gok/gok-keyboard.c:3731
 msgid "Full Credits"
 msgstr ""
 
@@ -1396,49 +1483,49 @@ msgid "error reading description"
 msgstr ""
 
 #. translators: abbreviated version of "Vertical Scrollbar"
-#: gok/gok-spy.c:1593
+#: gok/gok-spy.c:1638
 msgid "V Scrollbar"
 msgstr ""
 
 #. translators: abbreviated version of "Horizontal Scrollbar"
-#: gok/gok-spy.c:1598
+#: gok/gok-spy.c:1643
 msgid "H Scrollbar"
 msgstr ""
 
 #. create the 'new action name' dialog
-#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
-#: gok/gok-page-actions.c:444
+#: gok/gok-page-actions.c:381 gok/gok-page-actions.c:426
+#: gok/gok-page-actions.c:445
 msgid "GOK Action Name"
 msgstr ""
 
 #. add a text label
-#: gok/gok-page-actions.c:386
+#: gok/gok-page-actions.c:387
 msgid "Change the action name:"
 msgstr ""
 
-#: gok/gok-page-actions.c:423
+#: gok/gok-page-actions.c:424
 msgid ""
 "Action name can't be empty.\n"
 "Please enter a new action name."
 msgstr ""
 
-#: gok/gok-page-actions.c:442
+#: gok/gok-page-actions.c:443
 msgid ""
 "Sorry, that action name already exists.\n"
 "Please enter a new action name"
 msgstr ""
 
-#: gok/gok-page-actions.c:497
+#: gok/gok-page-actions.c:498
 #, c-format
 msgid "New Action %d"
 msgstr ""
 
-#: gok/gok-page-actions.c:560
+#: gok/gok-page-actions.c:561
 #, c-format
 msgid "Do you wish to delete this action (%s)?"
 msgstr ""
 
-#: gok/gok-page-actions.c:568
+#: gok/gok-page-actions.c:569
 msgid "GOK Delete Action"
 msgstr ""
 
@@ -1497,7 +1584,7 @@ msgid "Button"
 msgstr ""
 
 #. and post a warning if the new settings use corepointer
-#: gok/gok-settings-dialog.c:259
+#: gok/gok-settings-dialog.c:260
 msgid "You appear to be configuring GOK to use 'core pointer' mode."
 msgstr ""
 
@@ -1510,7 +1597,7 @@ msgstr "ജാലക നാമാവലി"
 msgid "Could not read contents of dictionary file '%s'\n"
 msgstr ""
 
-#: gok/main.c:164
+#: gok/main.c:166
 msgid ""
 "Use the specified access method. NAME is a string and can be found in the "
 "various access method files (.xam) assigned to the \"name\" property of <gok:"
@@ -1518,19 +1605,19 @@ msgid ""
 "xam file. (See --list-accessmethods)"
 msgstr ""
 
-#: gok/main.c:165
+#: gok/main.c:167
 msgid "NAME"
 msgstr ""
 
-#: gok/main.c:173
+#: gok/main.c:175
 msgid "Start the GOK keyboard editor"
 msgstr ""
 
-#: gok/main.c:181
+#: gok/main.c:183
 msgid "Use special, but possibly unstable, gok stuff"
 msgstr ""
 
-#: gok/main.c:189
+#: gok/main.c:191
 msgid ""
 "Whenever --geometry is not used gok remembers its position between "
 "invocations and starts in the position that it had when it was last "
@@ -1542,124 +1629,126 @@ msgid ""
 "shutdown even when it was started with --geometry."
 msgstr ""
 
-#: gok/main.c:190
+#: gok/main.c:192
 msgid "GEOMETRY"
 msgstr "ജ്യാമിതി"
 
-#: gok/main.c:198
+#: gok/main.c:200
 msgid "Use the specified input device"
 msgstr ""
 
-#: gok/main.c:199
+#: gok/main.c:201
 msgid "DEVICENAME"
 msgstr ""
 
-#: gok/main.c:207
+#: gok/main.c:209
 msgid "Start GOK with the specified keyboard."
 msgstr ""
 
-#: gok/main.c:208
+#: gok/main.c:210
 msgid "KEYBOARDNAME"
 msgstr ""
 
-#: gok/main.c:216
+#: gok/main.c:218
 msgid "List the access methods that can used as options to other arguments."
 msgstr ""
 
-#: gok/main.c:225
+#: gok/main.c:227
 msgid "List the actions that can used as options to other arguments."
 msgstr ""
 
-#: gok/main.c:234
+#: gok/main.c:236
 msgid "GOK will be used to login"
 msgstr ""
 
-#: gok/main.c:245
+#: gok/main.c:247
 msgid ""
 "Can be used with --geometry.  Forces GOK to remember its position when "
 "shutdown even when it was started with --geometry.  Please see the "
 "discussion under the --geometry flag for more information."
 msgstr ""
 
-#: gok/main.c:256
+#: gok/main.c:258
 msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
 msgstr ""
 
-#: gok/main.c:266
+#: gok/main.c:268
 msgid ""
 "Start GOK and hook this action to select operations. (See --list-actions)"
 msgstr ""
 
-#: gok/main.c:275
+#: gok/main.c:277
 msgid "Open the settings dialog box when GOK starts"
 msgstr ""
 
-#: gok/main.c:588
+#: gok/main.c:590
+#, c-format
 msgid "gok: Unsupported geometry specification\n"
 msgstr ""
 
-#: gok/main.c:589
+#: gok/main.c:591
+#, c-format
 msgid ""
 "gok: Currently GOK requires that the x, y, width and height all be given\n"
 msgstr ""
 
-#: gok/main.c:685
+#: gok/main.c:687
 msgid "XKB extension is required."
 msgstr ""
 
-#: gok/main.c:695
+#: gok/main.c:697
 msgid "Can't initialize actions."
 msgstr ""
 
-#: gok/main.c:705
+#: gok/main.c:707
 msgid "Can't initialize feedbacks."
 msgstr ""
 
-#: gok/main.c:732
+#: gok/main.c:734
 msgid "Can't create the main GOK window!"
 msgstr ""
 
-#: gok/main.c:751
+#: gok/main.c:753
 msgid "Can't create the settings dialog window!"
 msgstr ""
 
-#: gok/main.c:773
+#: gok/main.c:775
 msgid "You are using GOK in 'core pointer' mode."
 msgstr ""
 
-#: gok/main.c:813
+#: gok/main.c:815
 msgid "No keyboards to display!"
 msgstr ""
 
-#: gok/main.c:949
+#: gok/main.c:951
 msgid "popup menu"
 msgstr ""
 
-#: gok/main.c:1805
+#: gok/main.c:1809
 msgid "Can't create a compose keyboard!"
 msgstr ""
 
-#: gok/main.c:1847
+#: gok/main.c:1851
 msgid "Can't read any keyboards!"
 msgstr ""
 
-#: gok/main.c:1964
+#: gok/main.c:1968
 msgid "could not access method directory key from GConf!"
 msgstr ""
 
-#: gok/main.c:1972
+#: gok/main.c:1976
 msgid "possibly unknown access method!"
 msgstr ""
 
-#: gok/main.c:2513
+#: gok/main.c:2517
 msgid "Sorry, GOK can't run because:\n"
 msgstr ""
 
-#: gok/main.c:2522
+#: gok/main.c:2526
 msgid "GOK Fatal Error"
 msgstr ""
 
-#: gok/main.c:2534
+#: gok/main.c:2538
 msgid ""
 "GOK uses GConf 2 to store its settings and requires certain settings to be "
 "in GConf to run.  GOK is currently unable to retrieve those settings.  If "
@@ -1668,31 +1757,31 @@ msgid ""
 "or log out and back in."
 msgstr ""
 
-#: gok/main.c:2551
+#: gok/main.c:2555
 msgid ""
 "Currently GOK requires that the x, y, width and height all be given.  Sorry, "
 "your geometry specification will not be used."
 msgstr ""
 
-#: gok/main.c:2553
+#: gok/main.c:2557
 msgid "gok: Unsupported geometry specification"
 msgstr ""
 
-#: gok/main.c:2760
+#: gok/main.c:2764
 msgid ""
 "GOK may not work properly, because it could not enable your desktop's "
 "'sticky keys' feature."
 msgstr ""
 
-#: gok/main.c:2767
+#: gok/main.c:2771
 msgid "GOK has enabled Sticky Keys, which it requires.\n"
 msgstr ""
 
-#: gok/main.c:2789
+#: gok/main.c:2793
 msgid "GOK cannot run because XKB display extension is missing.\n"
 msgstr ""
 
-#: gok/main.c:2853
+#: gok/main.c:2857
 msgid ""
 "This means that the device you are using to operate GOK\n"
 "is also controlling the system pointer (or 'mouse pointer').\n"
@@ -1703,7 +1792,7 @@ msgid ""
 "'Extended' input device instead; see GOK Help for more information."
 msgstr ""
 
-#: gok/main.c:2917
+#: gok/main.c:2921
 msgid ""
 "Assistive Technology Support Is Not Enabled.\n"
 "\n"
@@ -1719,11 +1808,11 @@ msgid ""
 "\n"
 msgstr ""
 
-#: gok/main.c:2936
+#: gok/main.c:2940
 msgid "Enable and Log Out"
 msgstr ""
 
-#: gok/main.c:2948
+#: gok/main.c:2952
 msgid "Continue"
 msgstr ""
 
@@ -1744,19 +1833,20 @@ msgstr ""
 msgid "Scanning Direction:"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:20
+#. User interface for the access method
+#: singlekey-automatic-scanning.xml.in.h:21
 msgid "Single Key Automatic Scanning"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:22
 msgid "Start Scanning:"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:22
+#: singlekey-automatic-scanning.xml.in.h:23
 msgid "Start scanning:"
 msgstr ""
 
-#: singlekey-automatic-scanning.xml.in.h:24
+#: singlekey-automatic-scanning.xml.in.h:25
 msgid "Wrap"
 msgstr ""
 
@@ -1948,6 +2038,11 @@ msgstr ""
 #: numberpad.kbd.in.h:15
 msgid "Shift"
 msgstr ""
+
+#: numberpad.kbd.in.h:17
+#, fuzzy
+msgid "Tab&lt;-"
+msgstr "ലിഖിതം"
 
 #. Translators: short phrase to confirm that user wants to quit.
 #: quit.kbd.in.h:2

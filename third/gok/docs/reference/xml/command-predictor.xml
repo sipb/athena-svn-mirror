@@ -1,0 +1,221 @@
+<refentry id="gok-command-predictor">
+<refmeta>
+<refentrytitle>command-predictor</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>command-predictor</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="Prediction-Algorithm">Prediction_Algorithm</link>;
+<link linkend="void">void</link>        <link linkend="command-predictor-free">command_predictor_free</link>          (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);
+<link linkend="Command-Predictor">Command_Predictor</link> <link linkend="command-predictor-create">command_predictor_create</link>  (const <link linkend="Command-Graph">Command_Graph</link> graph);
+<link linkend="void">void</link>        <link linkend="command-predictor-calculate-recency-percentages">command_predictor_calculate_recency_percentages</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);
+const <link linkend="float">float</link> <link linkend="command-predictor-get-recency-percent-correct">command_predictor_get_recency_percent_correct</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="int">int</link> index);
+<link linkend="void">void</link>        <link linkend="command-predictor-calculate-frequency-percentages">command_predictor_calculate_frequency_percentages</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);
+const <link linkend="float">float</link> <link linkend="command-predictor-get-frequency-percent-correct">command_predictor_get_frequency_percent_correct</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="int">int</link> index);
+const <link linkend="Command-Vertex">Command_Vertex</link>* <link linkend="command-predictor-predict-same-as-last">command_predictor_predict_same_as_last</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);
+const <link linkend="Command-Vertex">Command_Vertex</link>* <link linkend="command-predictor-predict-high-stat">command_predictor_predict_high_stat</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);
+<link linkend="void">void</link>        <link linkend="command-predictor-evaluate-prediction">command_predictor_evaluate_prediction</link>
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="Command-Vertex">Command_Vertex</link> actual_vertex,
+                                             const <link linkend="Prediction-Algorithm">Prediction_Algorithm</link> algorithm,
+                                             const <link linkend="int">int</link> num_predictions);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="Prediction-Algorithm"/>enum Prediction_Algorithm</title>
+<indexterm><primary>Prediction_Algorithm</primary></indexterm><programlisting>typedef enum {
+  RECENCY,
+  FREQUENCY
+} Prediction_Algorithm;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-free"/>command_predictor_free ()</title>
+<indexterm><primary>command_predictor_free</primary></indexterm><programlisting><link linkend="void">void</link>        command_predictor_free          (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-create"/>command_predictor_create ()</title>
+<indexterm><primary>command_predictor_create</primary></indexterm><programlisting><link linkend="Command-Predictor">Command_Predictor</link> command_predictor_create  (const <link linkend="Command-Graph">Command_Graph</link> graph);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>graph</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-calculate-recency-percentages"/>command_predictor_calculate_recency_percentages ()</title>
+<indexterm><primary>command_predictor_calculate_recency_percentages</primary></indexterm><programlisting><link linkend="void">void</link>        command_predictor_calculate_recency_percentages
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-get-recency-percent-correct"/>command_predictor_get_recency_percent_correct ()</title>
+<indexterm><primary>command_predictor_get_recency_percent_correct</primary></indexterm><programlisting>const <link linkend="float">float</link> command_predictor_get_recency_percent_correct
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="int">int</link> index);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>index</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-calculate-frequency-percentages"/>command_predictor_calculate_frequency_percentages ()</title>
+<indexterm><primary>command_predictor_calculate_frequency_percentages</primary></indexterm><programlisting><link linkend="void">void</link>        command_predictor_calculate_frequency_percentages
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-get-frequency-percent-correct"/>command_predictor_get_frequency_percent_correct ()</title>
+<indexterm><primary>command_predictor_get_frequency_percent_correct</primary></indexterm><programlisting>const <link linkend="float">float</link> command_predictor_get_frequency_percent_correct
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="int">int</link> index);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>index</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-predict-same-as-last"/>command_predictor_predict_same_as_last ()</title>
+<indexterm><primary>command_predictor_predict_same_as_last</primary></indexterm><programlisting>const <link linkend="Command-Vertex">Command_Vertex</link>* command_predictor_predict_same_as_last
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-predict-high-stat"/>command_predictor_predict_high_stat ()</title>
+<indexterm><primary>command_predictor_predict_high_stat</primary></indexterm><programlisting>const <link linkend="Command-Vertex">Command_Vertex</link>* command_predictor_predict_high_stat
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-predictor-evaluate-prediction"/>command_predictor_evaluate_prediction ()</title>
+<indexterm><primary>command_predictor_evaluate_prediction</primary></indexterm><programlisting><link linkend="void">void</link>        command_predictor_evaluate_prediction
+                                            (const <link linkend="Command-Predictor">Command_Predictor</link> predictor,
+                                             const <link linkend="Command-Vertex">Command_Vertex</link> actual_vertex,
+                                             const <link linkend="Prediction-Algorithm">Prediction_Algorithm</link> algorithm,
+                                             const <link linkend="int">int</link> num_predictions);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>predictor</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>actual_vertex</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>algorithm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>num_predictions</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

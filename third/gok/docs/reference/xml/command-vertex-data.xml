@@ -1,0 +1,238 @@
+<refentry id="gok-command-vertex-data">
+<refmeta>
+<refentrytitle>command-vertex-data</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>command-vertex-data</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="COMMAND-VERTEX-DATA-DEFAULT-WEIGHT:CAPS">COMMAND_VERTEX_DATA_DEFAULT_WEIGHT</link>
+#define     <link linkend="COMMAND-VERTEX-DATA-WEIGHT-DELTA:CAPS">COMMAND_VERTEX_DATA_WEIGHT_DELTA</link>
+const <link linkend="Boolean">Boolean</link> <link linkend="command-vertex-data-equals">command_vertex_data_equals</link>    (const <link linkend="Object">Object</link> data_1,
+                                             const <link linkend="Object">Object</link> data_2);
+<link linkend="void">void</link>        <link linkend="command-vertex-data-free">command_vertex_data_free</link>        (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);
+<link linkend="Command-Vertex-Data">Command_Vertex_Data</link> <link linkend="command-vertex-data-create">command_vertex_data_create</link>
+                                            (const <link linkend="char">char</link> *keyboard_id,
+                                             const <link linkend="char">char</link> *key_id,
+                                             const <link linkend="float">float</link> weight);
+<link linkend="Command-Vertex-Data">Command_Vertex_Data</link> <link linkend="command-vertex-data-create-from-log">command_vertex_data_create_from_log</link>
+                                            (<link linkend="char">char</link> *line);
+const <link linkend="char">char</link>* <link linkend="command-vertex-data-get-keyboard-id">command_vertex_data_get_keyboard_id</link>
+                                            (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);
+const <link linkend="char">char</link>* <link linkend="command-vertex-data-get-key-id">command_vertex_data_get_key_id</link>  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);
+<link linkend="void">void</link>        <link linkend="command-vertex-data-set-weight">command_vertex_data_set_weight</link>  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             const <link linkend="float">float</link> weight);
+<link linkend="float">float</link>       <link linkend="command-vertex-data-get-weight">command_vertex_data_get_weight</link>  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);
+<link linkend="void">void</link>        <link linkend="command-vertex-data-dump-text">command_vertex_data_dump_text</link>   (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             <link linkend="FILE:CAPS">FILE</link> *stream);
+<link linkend="void">void</link>        <link linkend="command-vertex-data-dump-binary">command_vertex_data_dump_binary</link> (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             <link linkend="FILE:CAPS">FILE</link> *stream);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="COMMAND-VERTEX-DATA-DEFAULT-WEIGHT:CAPS"/>COMMAND_VERTEX_DATA_DEFAULT_WEIGHT</title>
+<indexterm><primary>COMMAND_VERTEX_DATA_DEFAULT_WEIGHT</primary></indexterm><programlisting>#define COMMAND_VERTEX_DATA_DEFAULT_WEIGHT 1.0
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="COMMAND-VERTEX-DATA-WEIGHT-DELTA:CAPS"/>COMMAND_VERTEX_DATA_WEIGHT_DELTA</title>
+<indexterm><primary>COMMAND_VERTEX_DATA_WEIGHT_DELTA</primary></indexterm><programlisting>#define COMMAND_VERTEX_DATA_WEIGHT_DELTA 1.0
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-equals"/>command_vertex_data_equals ()</title>
+<indexterm><primary>command_vertex_data_equals</primary></indexterm><programlisting>const <link linkend="Boolean">Boolean</link> command_vertex_data_equals    (const <link linkend="Object">Object</link> data_1,
+                                             const <link linkend="Object">Object</link> data_2);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data_1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data_2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-free"/>command_vertex_data_free ()</title>
+<indexterm><primary>command_vertex_data_free</primary></indexterm><programlisting><link linkend="void">void</link>        command_vertex_data_free        (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-create"/>command_vertex_data_create ()</title>
+<indexterm><primary>command_vertex_data_create</primary></indexterm><programlisting><link linkend="Command-Vertex-Data">Command_Vertex_Data</link> command_vertex_data_create
+                                            (const <link linkend="char">char</link> *keyboard_id,
+                                             const <link linkend="char">char</link> *key_id,
+                                             const <link linkend="float">float</link> weight);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>keyboard_id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key_id</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>weight</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-create-from-log"/>command_vertex_data_create_from_log ()</title>
+<indexterm><primary>command_vertex_data_create_from_log</primary></indexterm><programlisting><link linkend="Command-Vertex-Data">Command_Vertex_Data</link> command_vertex_data_create_from_log
+                                            (<link linkend="char">char</link> *line);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>line</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-get-keyboard-id"/>command_vertex_data_get_keyboard_id ()</title>
+<indexterm><primary>command_vertex_data_get_keyboard_id</primary></indexterm><programlisting>const <link linkend="char">char</link>* command_vertex_data_get_keyboard_id
+                                            (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-get-key-id"/>command_vertex_data_get_key_id ()</title>
+<indexterm><primary>command_vertex_data_get_key_id</primary></indexterm><programlisting>const <link linkend="char">char</link>* command_vertex_data_get_key_id  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-set-weight"/>command_vertex_data_set_weight ()</title>
+<indexterm><primary>command_vertex_data_set_weight</primary></indexterm><programlisting><link linkend="void">void</link>        command_vertex_data_set_weight  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             const <link linkend="float">float</link> weight);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>weight</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-get-weight"/>command_vertex_data_get_weight ()</title>
+<indexterm><primary>command_vertex_data_get_weight</primary></indexterm><programlisting><link linkend="float">float</link>       command_vertex_data_get_weight  (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-dump-text"/>command_vertex_data_dump_text ()</title>
+<indexterm><primary>command_vertex_data_dump_text</primary></indexterm><programlisting><link linkend="void">void</link>        command_vertex_data_dump_text   (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             <link linkend="FILE:CAPS">FILE</link> *stream);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stream</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="command-vertex-data-dump-binary"/>command_vertex_data_dump_binary ()</title>
+<indexterm><primary>command_vertex_data_dump_binary</primary></indexterm><programlisting><link linkend="void">void</link>        command_vertex_data_dump_binary (const <link linkend="Command-Vertex-Data">Command_Vertex_Data</link> data,
+                                             <link linkend="FILE:CAPS">FILE</link> *stream);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stream</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

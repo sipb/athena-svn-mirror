@@ -84,6 +84,7 @@ struct _GokWordCompleteClass
 	const gchar*    (* get_delimiter) (GokWordComplete *complete);
 };
 
+GType    gok_wordcomplete_get_type       (void);
 gboolean gok_wordcomplete_open           (GokWordComplete *complete, gchar *directory);
 void     gok_wordcomplete_close          (GokWordComplete *complete);
 void     gok_wordcomplete_reset          (GokWordComplete *complete);
@@ -103,6 +104,7 @@ gchar*   gok_wordcomplete_get_word_part (GokWordComplete *complete);
 const gchar*   gok_wordcomplete_get_aux_dictionaries (GokWordComplete *complete);
 const gchar*   gok_wordcomplete_get_delimiter  (GokWordComplete *complete);
 gboolean gok_wordcomplete_set_aux_dictionaries (GokWordComplete *complete, gchar *dictionary_path);
+gboolean gok_wordcomplete_increment_word_frequency (GokWordComplete *complete, const gchar* pWord);
 
 #ifdef __cplusplus
 }

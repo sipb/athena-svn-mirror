@@ -1,0 +1,247 @@
+<refentry id="gok-arraylist">
+<refmeta>
+<refentrytitle>arraylist</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>arraylist</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="Boolean">Boolean</link>
+#define     <link linkend="Object">Object</link>
+<link linkend="void">void</link>        <link linkend="arraylist-free">arraylist_free</link>                  (const <link linkend="Arraylist">Arraylist</link> list);
+<link linkend="Arraylist">Arraylist</link>   <link linkend="arraylist-create">arraylist_create</link>                (const <link linkend="Boolean">Boolean</link> (*equals) (const Object object_1, const Object object_2));
+<link linkend="Boolean">Boolean</link>     <link linkend="arraylist-add">arraylist_add</link>                   (const <link linkend="Arraylist">Arraylist</link> list,
+                                             <link linkend="Object">Object</link> object);
+<link linkend="Boolean">Boolean</link>     <link linkend="arraylist-remove">arraylist_remove</link>                (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);
+<link linkend="Boolean">Boolean</link>     <link linkend="arraylist-contains">arraylist_contains</link>              (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);
+<link linkend="int">int</link>         <link linkend="arraylist-index-of">arraylist_index_of</link>              (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);
+<link linkend="Boolean">Boolean</link>     <link linkend="arraylist-is-empty">arraylist_is_empty</link>              (const <link linkend="Arraylist">Arraylist</link> list);
+<link linkend="int">int</link>         <link linkend="arraylist-size">arraylist_size</link>                  (const <link linkend="Arraylist">Arraylist</link> list);
+<link linkend="Object">Object</link>      <link linkend="arraylist-get">arraylist_get</link>                   (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="int">int</link> index);
+<link linkend="void">void</link>        <link linkend="arraylist-clear">arraylist_clear</link>                 (const <link linkend="Arraylist">Arraylist</link> list);
+<link linkend="void">void</link>        <link linkend="arraylist-sort">arraylist_sort</link>                  (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="int">int</link> (*compare) (const Object object_1, const Object object_2));
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="Boolean"/>Boolean</title>
+<indexterm><primary>Boolean</primary></indexterm><programlisting>#define     Boolean</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="Object"/>Object</title>
+<indexterm><primary>Object</primary></indexterm><programlisting>#define     Object</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="arraylist-free"/>arraylist_free ()</title>
+<indexterm><primary>arraylist_free</primary></indexterm><programlisting><link linkend="void">void</link>        arraylist_free                  (const <link linkend="Arraylist">Arraylist</link> list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-create"/>arraylist_create ()</title>
+<indexterm><primary>arraylist_create</primary></indexterm><programlisting><link linkend="Arraylist">Arraylist</link>   arraylist_create                (const <link linkend="Boolean">Boolean</link> (*equals) (const Object object_1, const Object object_2));</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>equals</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-add"/>arraylist_add ()</title>
+<indexterm><primary>arraylist_add</primary></indexterm><programlisting><link linkend="Boolean">Boolean</link>     arraylist_add                   (const <link linkend="Arraylist">Arraylist</link> list,
+                                             <link linkend="Object">Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-remove"/>arraylist_remove ()</title>
+<indexterm><primary>arraylist_remove</primary></indexterm><programlisting><link linkend="Boolean">Boolean</link>     arraylist_remove                (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-contains"/>arraylist_contains ()</title>
+<indexterm><primary>arraylist_contains</primary></indexterm><programlisting><link linkend="Boolean">Boolean</link>     arraylist_contains              (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-index-of"/>arraylist_index_of ()</title>
+<indexterm><primary>arraylist_index_of</primary></indexterm><programlisting><link linkend="int">int</link>         arraylist_index_of              (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="Object">Object</link> object);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-is-empty"/>arraylist_is_empty ()</title>
+<indexterm><primary>arraylist_is_empty</primary></indexterm><programlisting><link linkend="Boolean">Boolean</link>     arraylist_is_empty              (const <link linkend="Arraylist">Arraylist</link> list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-size"/>arraylist_size ()</title>
+<indexterm><primary>arraylist_size</primary></indexterm><programlisting><link linkend="int">int</link>         arraylist_size                  (const <link linkend="Arraylist">Arraylist</link> list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-get"/>arraylist_get ()</title>
+<indexterm><primary>arraylist_get</primary></indexterm><programlisting><link linkend="Object">Object</link>      arraylist_get                   (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="int">int</link> index);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>index</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-clear"/>arraylist_clear ()</title>
+<indexterm><primary>arraylist_clear</primary></indexterm><programlisting><link linkend="void">void</link>        arraylist_clear                 (const <link linkend="Arraylist">Arraylist</link> list);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="arraylist-sort"/>arraylist_sort ()</title>
+<indexterm><primary>arraylist_sort</primary></indexterm><programlisting><link linkend="void">void</link>        arraylist_sort                  (const <link linkend="Arraylist">Arraylist</link> list,
+                                             const <link linkend="int">int</link> (*compare) (const Object object_1, const Object object_2));</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>compare</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

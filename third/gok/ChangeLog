@@ -1,3 +1,390 @@
+2004-12-07  David Bolter  <david.bolter@utoronto.ca>
+
+        * NEWS:
+        * README:
+        * configure.in: gok version 0.11.17
+        * help/gok/C/Makefile.am: removed obsolete entries 
+        fixing bug #160717
+
+	Note: distcheck seems to fail at uninstall (distuninstallcheck)
+
+2004-12-07  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-keyboard.c: avoid overwrite of last action key settings,
+	fixing bug #159932
+
+2004-11-23  Irene Ryan <irene.ryan@sun.com>
+
+	* help/gok/C/prefs.xml: deleted, all Help contents 
+	  now in gok.xml
+	* help/gok/C/keyboards.xml: deleted, all Help 
+	  contents now in gok.xml
+
+2004-11-23  Irene Ryan <irene.ryan@sun.com>
+
+	* /help/gok/C/gok.xml: updated Help manual
+	* /help/gok/C/gok-C.omf: updated OMF file
+	* /help/gok/C/l10n.txt: new file with instructions for L10N team
+	* /help/gok/C/figures/gok-main.png, gok-info.png: latest screenshots
+
+2004-11-23  Bill Haneman <bill.haneman@sun.com>
+
+        * gok/gok-spy.c:
+        (gok_spy_find_and_append_toolbar_items):
+        Return 'FALSE' and stop searching if a 'menu type'
+        child is found; fixes Mozilla regression caused by patch
+        for #157420.
+
+2004-11-05  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 0.11.16.
+
+	* gok/gok-spy.c: 
+	(gok_spy_find_and_append_toolbar_items):
+	Fix for 157420, improper concatenation of toolbar items.	
+	Fix from Harry Lu.
+
+2004-11-04  David Bolter  <david.bolter@utoronto.ca>
+
+	* NEWS:
+	* README:
+	* configure.in: version 0.11.15
+
+2004-11-04  David Bolter  <david.bolter@utoronto.ca>
+
+	patch author:  sandie vanderme (sandie.vanderme@bull.net)
+
+	* Makefile.am: added srcdir path to  Keyboard.kbd: section
+	Fix for bug #157138. Thanks Sandie.
+
+2004-11-04  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-keyboard.c: include actionable children 
+	when displaying an accessible actions keyboard.
+	Fix for bug #155556.
+
+2004-11-03  David Bolter  <david.bolter@utoronto.ca>
+
+	patch author: Julio M. Merino Vidal (jmmv@menta.net)
+
+	* gok/main.c: 
+	(gok_main_open): two variables (both named listhead) 
+	moved to the top of the block to conform to the C89 
+	standard.  
+	Fix for bug #157221.  Thanks Julio.
+
+2004-11-01  Bill Haneman  <bill.haneman@sun.com>
+	
+	* gok.glade2: 
+	* gok/callbacks.h:
+	* gok/callbacks.c:
+	Added signal handler for "Use gtk+ theme" checkbutton; 
+	restores function of this button.
+
+	* gok/gok-keyboard.h:
+	* gok/gok-keyboard.c:
+	(gok_keyboard_on_window_resize):
+	Set the keyboard struct's private width and height fields,
+	instead of the gconf values, when the window is manually resized.
+	(gok_keyboard_calculate_font_size): Use the keyboard's
+	private keyWidth and keyHeight values, if available.
+	(gok_keyboard_position_keys): Use the keyboard's private
+	width/height if available, in preference to the gconf values.
+	(gok_keyboard_new): Init the keyWidth and keyHeight fields to 0.
+	Fix for bug #154961.
+	
+2004-10-29  Bill Haneman  <bill.haneman@sun.com>
+
+	* gok.rc: Changed style for hyperlink prelight to
+	be consistent with rest of gok style.  Made text on
+	html-contained actionables more readable.
+	
+2004-10-29  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-spy.c: 
+	(gok_spy_find_and_append_toolbar_items): new, adds all actionables
+	underneath the given Accessible.  
+	(gok_spy_search_component_list):  calls new method above.
+	Fixes bug #155805
+
+2004-10-29  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c: 
+	(gok_keyboard_validate_dynamic_keys): Use ~0 to create 
+	an 'all flags mask'.  Fixes bug #156802.
+
+	* gok/gok-spy.c:
+	(gok_main_process_focus):
+	If we get a menu-object focus: event while there's no
+	foreground Accessible window active, then treat as a popup
+	event, and branch to the appropriate menu.
+	Fixes bug #154918.
+	
+2004-10-29  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-spy.c: 
+	(gok_spy_find_and_append_toolbar_items): new, adds all actionables
+	underneath the given Accessible.  
+	(gok_spy_search_component_list):  calls new method above.
+	Fixes bug #155805
+
+2004-10-29  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c: 
+	(gok_keyboard_validate_dynamic_keys): Use ~0 to create 
+	an 'all flags mask'.  Fixes bug #156802.
+
+	* gok/gok-spy.c:
+	(gok_main_process_focus):
+	If we get a menu-object focus: event while there's no
+	foreground Accessible window active, then treat as a popup
+	event, and branch to the appropriate menu.
+	Fixes bug #154918.
+	
+2004-10-28  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c:
+	(gok_keyboard_update_dynamic): Keep the 
+	style for html textfields. Give text items
+	their own unique font size group.
+	
+2004-10-27  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c:
+	(gok_keyboard_has_multi_useful_actions): small fix;
+	check for "only one action" case first.
+	(gok_keyboard_update_dynamic): Move the test for
+	inside_html_container to after the rest of the
+	typing logic.  Only set the style, not the type.
+
+	* gok/gok-key.h: Removed KEYTYPE_HTMLACTION,
+	it was a misfeature.
+
+	* gok/gok-spy.c:
+	(gok_spy_search_component_list): Don't zero
+	the flags twice for each child.
+
+	* gok/gok-output.c: 
+	(gok_output_update_predictions): Don't do it 
+	if safe_mode is on.
+	
+2004-10-27  David Bolter  <david.bolter@utoronto.ca>
+
+	* configure.in: Rev to 0.11.13
+
+2004-10-27  David Bolter  <david.bolter@utoronto.ca
+	Bill Haneman <bill.haneman@sun.com>
+
+	* gok.rc: added hyperlink styles
+	* gok/gok-key.c: set styles for html gok keys
+	* gok/gok-key.h: added html style constants, and a new
+	font size group.
+	* gok/gok-keyboard.c: handle html dynamic keys
+	* gok/gok-spy-priv.h: added inside_html_container flag to
+	AccessibleNodeFlags
+	* gok/gok-spy.c: 
+	(gok_spy_search_component_list),
+	(gok_spy_update_component_list): added context info, in 
+	this case, html container context.
+	
+	Fixes bug # 154499
+
+2004-10-27  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-keyboard.c: 
+	(gok_keyboard_has_multi_useful_actions): new
+	Fixes bug #154604
+
+2004-10-26  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c:
+	(gok_keyboard_branch_gui_selectaction): 
+	(gok_keyboard_branch_or_invoke_actions): 
+	Add 'action_ndx' parameter.
+	
+	(gok_keyboard_get_compose): Add prototype.
+
+	(gok_keyboard_notify_xkb_event): Don't branch to XKB keyboard if
+	we're not configured to use the XKB compose kbd.
+
+	(gok_keyboard_branch_gui_selectaction): Return TRUE on branch.
+
+	(gok_keyboard_do_action): Remove unused method.
+
+	(gok_keyboard_branch_or_invoke_action): Return TRUE on branch,
+	otherwise FALSE.  Use action_ndx instead of node->link to
+	determine which action to invoke.
+
+	Fixes bugs #156153, #156479.
+	
+2004-10-19  David Bolter  <david.bolter@utoronto.ca>
+
+	* gok/gok-keyboard.c: 
+	(gok_keyboard_validate_dynamic_keys): no longer initialize 
+	keyboard ui flags to zero. 
+	Fix for bugs: 155344, 155473, 155476, 155512
+
+	* gok/gok-spy.c: 
+	(gok_spy_check_queues): added safety against NULL listeners
+	* gok/gok-spy.h: removed unimplemented function
+	* gok/main.c: (gok_main_ds): added comment
+
+	
+2004-10-13  David Bolter  <david.bolter@utoronto.ca>
+
+	* configure.in: Rev to 0.11.12
+
+2004-10-13  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gok/create-branching-keyboard.c gok/gok-gok-button.c
+	gok/gok-chunker.c gok/gok-data.c gok/gok-key.c gok/gok-key.h
+	gok/gok-keyboard.c gok/gok-keyboard.h gok/gok-mousecontrol.c
+	gok/gok-output.c gok/gok-output.h gok/gok-page-actions.c
+	gok/gok-page-feedbacks.h gok/gok-page-wordcomplete.c
+	gok/gok-repeat.c gok/gok-scanner.c gok/gok-scanner.h
+	gok/gok-settings-dialog.c gok/gok-sliding-window-word-complete.h
+	gok/gok-spy.c gok/gok-utf8-word-complete.h gok/gok-word-complete.h
+	gok/keyboard-geometry.c gok/main.c: Fix compiler warnings
+	on Solaris; bug #154915.
+	
+2004-10-12  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.c:
+	(gok_keyboard_branch_gui_actions): Prevent
+	double-actions for selectable items.  
+	
+2004-10-07  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Re-dist at 0.11.11, because of compile
+	issues below.
+	
+	* gok/gok-keyboard.c:
+	Remove shadowing local parameter GokKeyboard *keyboard.
+	Fixes bug #154603.
+	
+	* gok/gok-key.c:
+	s/gchar/guchar everywhere; fix for iso_string
+	compilation issue with some compilers.
+	
+2004-10-06  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Rev to 0.11.10.
+	
+	* gok/gok-key.c:
+	(gok_key_lookup_shorter_label): Detect
+	"Hiragana_Katakana" string [but don't
+	mark for translation until after we branch].
+
+2004-10-05  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-keyboard.h
+	(gok_keyboard_branch_gui_selectaction):
+	(gok_keyboard_branch_or_invoke_actions):
+	(gok_keyboard_branch_byKey):
+	Added GokKeyboard* param to some methods.
+	
+	* gok/gok-keyboard.c:
+	(gok_keyboard_branch_or_invoke_actions):
+	Don't branch if the keyboard's search type is already
+	SEARCH_ACTIONABLE - that means that the current key is
+	one of the "action keys" already.
+	Fixes #154570.
+
+2004-09-27  Bill Haneman <bill.haneman@sun.com>
+
+	Fix for bug #151417.
+	
+	* gok/gok-key.h:
+	Added action_ndx member to GokKey.
+	Added KEYTYPE_ACTION.
+	
+	* gok/gok-key.c:
+	(gok_key_new): Init action_ndx to 0.
+
+	* gok/gok-keyboard.h:
+	Added KEYBOARD_TYPE_ACTIONS.
+	
+	* gok/gok-keyboard.c:
+	(gok_keyboard_update_dynamic): Removed unused call to 
+	Accessible_getAction which was leaking, for the
+	GOK_SPY_SEARCH_MENU case.
+	Handle the GOK_SPY_SEARCH_ACTIONABLE case: add one node per
+	action for such nodes.  
+	(gok_keyboard_branch_or_invoke_actions): New; invoke action if
+	there is only one, or if there's a singleton child action.
+	Otherwise branch to an 'actions' keyboard.
+	(gok_keyboard_branch_gui): Handle the SEARCH_ACTIONABLE case
+	better, giving such keyboards a title of "Actions" rather than
+	menus.  Didn't mark for xlation yet, because of string freeze.
+	(gok_keyboard_branch_gui_selectaction): Call
+	gok_keyboard_branch_or_invoke_actions once the item has been 
+	selected.  This allows branching for multi-action "selectables".
+	(gok_keyboard_do_leaf_action): Call
+	gok_keyboard_branch_or_invoke_actions here too.
+	(gok_keyboard_branch_gui_actions): Call
+	gok_keyboard_branch_or_invoke_actions.
+
+	* gok/gok-spy.c:
+	(gok_spy_get_actionable_descendants): Tweaked to return 
+	not only actionable descendants, but also the ancestor if it is,
+	itself, actionable.
+	
+2004-09-24  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-spy.c:
+	(gok_spy_is_selectable_child):
+	Don't add selection-implementors directly, add their children.
+	(gok_spy_is_ui): Don't test for isSelection 
+	if the object is_menu_role() succeeds, because this
+	will cause the menu children to fail to be
+	included in the node list. Use gok_spy_is_selectable_child.
+	Add a 'parent' parameter to this call.
+	
+2004-09-23  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-spy.h:
+	Changed GOK_SPY_SEARCH_TABLE_ROW to 
+	GOK_SPY_SEARCH_TABLE_CELLS.
+	(gok_spy_get_table_nodes): Changed from 
+	gok_spy_get_table_row_nodes.
+
+	* gok/gok-keyboard.c:
+	(gok_keyboard_do_action): New, refactored from
+	gok_spy_branch_gui_actions.
+	(gok_keyboard_branch_gui_selectaction):
+	Call gok_keyboard_do_action.
+	(gok_keyboard_branch_gui_actions):
+	Always select item if parent implements Selection,
+	but don't return without doing an activation too.
+	This means we do selection even for EditableText objects,
+	when it's appropriate.
+	Call gok_keyboard_do_action.
+
+	Fixes for bug #153130.
+	
+2004-09-22  Bill Haneman <bill.haneman@sun.com>
+
+	* gok/gok-spy.c: Fixed gtk-doc comment
+	for gok_spy_get_table_row_nodes.
+	(gok_spy_is_ui): Add check for SPI_ROLE_LIST and
+	AccessibleSelection interfaces.  Fix for bug #152788.
+	
+	* gok/gok-keyboard.c: 
+	(gok_keyboard_branch_gui_actions): Don't
+	branch to the Compose keyboard when activating an
+	EditableText item unless the item also has STATE_EDITABLE
+	[since it may be locked or otherwise not in an editable state].
+	Fix for bug #153389.
+
+2004-09-10  Irene Ryan <irene.ryan@sun.com>
+
+	* /help/gok/C/gok.xml
+	* /help/gok/C/gok-C.omf
+	* /help/gok/C/legal.xml
+	* /help/gok/C/figures/gok-main.png, gok-info.png
+	Included a rewrite of the online Help for GOK to 
+	comply with the GDSG and reflect latest functionality.
+
 2004-09-10  Bill Haneman  <bill.haneman@sun.com>
 
 	* gok-with-references.schemas.m4:
@@ -35,6 +422,8 @@
 
 2004-08-25 Bill Haneman <bill.haneman@sun.com>
 
+	* configure.in: Revved to 0.11.7.
+	
 	* automatic-scanning.xml.in:
 	* direct-selection.xml.in:
 	* directed.xml.in:
@@ -54,12 +443,16 @@
 	(gok_main_update_struts): Pass x and y params.
 	* gok/main.c:
 	(gok_main_update_struts): Don't fill the whole partial strut, only
-	reserver the area actually in use.
+	reserve the area actually in use.
 	
 2004-08-18  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added «nb» to ALL_LINGUAS.
 
+2004-08-30 Bill Haneman <bill.haneman@sun.com>
+
+	* NEWS: Updated for 0.11.6.
+	
 2004-08-17 Bill Haneman <bill.haneman@sun.com>
 
 	* gok/gok-keyboard.c:
