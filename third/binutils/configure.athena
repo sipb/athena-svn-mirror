@@ -1,0 +1,15 @@
+#!/bin/sh
+# $Id: configure.athena,v 1.1 2004-12-24 18:36:24 ghudson Exp $
+
+# We can't use our config.site file since we're installing to /usr/gcc
+# and not using gcc to build.
+unset CONFIG_SITE
+
+# Build with the vendor compiler (since we're building before gcc) and
+# build for easy debugging.  Avoid picking up flex or gettext in case
+# this is a rebuild.
+CC=$sprobin/cc
+CFLAGS=-g
+LEX=lex
+export CC CFLAGS LEX
+exec ./configure --disable-nls --disable-shared --prefix=/usr/gcc
