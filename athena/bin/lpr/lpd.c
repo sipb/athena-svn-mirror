@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: vrt $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.18 1995-07-11 20:59:33 miki Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.18 1995-07-11 20:59:33 miki Exp $";
 #endif
 
 /*
@@ -52,7 +52,13 @@ static char *rcsid_lpd_c = "$Id: lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $";
  */
 
 #include "lp.h"
-
+#ifdef POSIX
+#if !defined(ultrix)
+#include "posix.h"    /* for flock() */
+#endif
+#else
+#include "nonposix.h"
+#endif
 #ifdef ZEPHYR
 #undef STAT
 #include <zephyr/zephyr.h>
@@ -60,8 +66,8 @@ static char *rcsid_lpd_c = "$Id: lpd.c,v 1.17 1993-05-10 13:36:33 vrt Exp $";
 
 int	lflag;				/* log requests flag */
 
-int	reapchild();
-int	mcleanup();
+void reapchild();
+void mcleanup();
 
 #ifdef KERBEROS
 KTEXT_ST kticket;
@@ -94,7 +100,12 @@ main(argc, argv)
 	struct sockaddr_un sockun, fromunix;
 	struct sockaddr_in sin, frominet;
 	struct hostent *hp;
-	int omask, lfd;
+	int  lfd;
+#if defined(POSIX) && !defined(ultrix)
+	sigset_t omask, mask;
+#else
+	int omask;
+#endif
 
 #ifdef ZEPHYR
         ZInitialize();
@@ -125,7 +136,6 @@ main(argc, argv)
 #endif KERBEROS
 			}
 	}
-
 #ifndef DEBUG
 	/*
 	 * Set up standard environment by detaching from the parent.
@@ -137,11 +147,13 @@ main(argc, argv)
 	(void) open("/dev/null", O_RDONLY);
 	(void) open("/dev/null", O_WRONLY);
 	(void) dup(1);
+#if !defined(SOLARIS) && !defined(_AIX)
 	f = open("/dev/tty", O_RDWR);
 	if (f > 0) {
 		ioctl(f, TIOCNOTTY, 0);
 		(void) close(f);
-	}
+	}  
+#endif 
 #endif
 
 #ifdef LOG_LPR
@@ -184,18 +196,32 @@ main(argc, argv)
 		exit(1);
 	}
 #define	mask(s)	(1 << ((s) - 1))
+#if defined(POSIX) && !defined(ultrix) 
+	(void) sigemptyset(&mask);
+
+	(void) sigaddset (&mask, SIGHUP);
+	(void) sigaddset (&mask, SIGINT);
+	(void) sigaddset (&mask, SIGTERM);
+	(void) sigprocmask (SIG_BLOCK, &mask, &omask);
+#else
 	omask = sigblock(mask(SIGHUP)|mask(SIGINT)|mask(SIGQUIT)|mask(SIGTERM));
+#endif
 	signal(SIGHUP, mcleanup);
 	signal(SIGINT, mcleanup);
 	signal(SIGQUIT, mcleanup);
 	signal(SIGTERM, mcleanup);
 	sockun.sun_family = AF_UNIX;
 	strcpy(sockun.sun_path, SOCKETNAME);
-	if (bind(funix, &sockun, strlen(sockun.sun_path) + 2) < 0) {
+	if (bind(funix, 
+	     (struct sockaddr *)&sockun, strlen(sockun.sun_path) + 2) < 0) {
 		syslog(LOG_ERR, "ubind: %m");
 		exit(1);
 	}
+#if defined(POSIX) && !defined(ultrix)
+	sigprocmask(SIG_SETMASK, &omask, NULL);
+#else
 	sigsetmask(omask);
+#endif
 	defreadfds = 1 << funix;
 	listen(funix, 5);
 	finet = socket(AF_INET, SOCK_STREAM, 0);
@@ -213,8 +239,9 @@ main(argc, argv)
 			mcleanup();
 		}
 		sin.sin_family = AF_INET;
+		sin.sin_addr.s_addr = INADDR_ANY;
 		sin.sin_port = sp->s_port;
-		if (bind(finet, &sin, sizeof(sin)) < 0) {
+		if (bind(finet, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 			syslog(LOG_ERR, "bind: %m");
 			mcleanup();
 		}
@@ -226,7 +253,6 @@ main(argc, argv)
 	 */
 	for (;;) {
 		int domain, nfds, s, readfds = defreadfds;
-
 		nfds = select(20, &readfds, 0, 0, 0);
 		if (nfds <= 0) {
 			if (nfds < 0 && errno != EINTR)
@@ -235,7 +261,8 @@ main(argc, argv)
 		}
 		if (readfds & (1 << funix)) {
 			domain = AF_UNIX, fromlen = sizeof(fromunix);
-			s = accept(funix, &fromunix, &fromlen);
+			s = accept(funix,
+			    (struct sockaddr *)&fromunix, &fromlen);
 		} else if (readfds & (1 << finet)) {
 			domain = AF_INET, fromlen = sizeof(frominet);
 			s = accept(finet, &frominet, &fromlen);
@@ -245,8 +272,14 @@ main(argc, argv)
 				syslog(LOG_WARNING, "accept: %m");
 			continue;
 		}
+
 		if (fork() == 0) {
-			signal(SIGCHLD, SIG_IGN);
+#if defined(_AIX) || defined(SOLARIS)
+			signal(SIGCHLD, SIG_DFL); 
+#else
+			signal(SIGCHLD, SIG_IGN); 
+#endif
+			signal(SIGCHLD, SIG_DFL); 
 			signal(SIGHUP, SIG_IGN);
 			signal(SIGINT, SIG_IGN);
 			signal(SIGQUIT, SIG_IGN);
@@ -263,23 +296,23 @@ main(argc, argv)
 		(void) close(s);
 	}
 }
-
+void
 reapchild()
 {
-#if !defined(POSIX)
+#if !defined(POSIX) || defined(ultrix)
 	union wait status;
 #else
 	int status;
 #endif
 
-#ifdef POSIX
+#if defined(POSIX) && !defined(ultrix)
 	while (waitpid(-1,&status,WNOHANG) >0)
 #else
 	while (wait3(&status, WNOHANG, 0) > 0)
 #endif
 		;
 }
-
+void
 mcleanup()
 {
 	if (lflag)
@@ -353,7 +386,8 @@ doit()
 	kerberos_cf = 0;
 	kerror = 0;
 #endif KERBEROS
-	
+
+
 	for (;;) {
 		cp = cbuf;
 		do {
@@ -476,8 +510,8 @@ doit()
 		case 'k':	/* Parse kerberos credentials */
 			printer = cp;
 			kprincipal[0] = krealm[0] = '\0';
-			bzero(&kticket, sizeof(KTEXT_ST));
-			bzero(&kdata,   sizeof(AUTH_DAT));
+			memset(&kticket, 0, sizeof(KTEXT_ST));
+			memset(&kdata, 0,   sizeof(AUTH_DAT));
 			sin_len = sizeof (struct sockaddr_in);
 			if (getpeername(1, &faddr, &sin_len) < 0) {
 				/* return error and exit */
@@ -744,7 +778,7 @@ int len;
 			return(0);
 		}
 		ldomain[MAXHOSTNAMELEN] = NULL;
-		if ((domainp = index(ldomain, '.')) == (char *)NULL) {
+		if ((domainp = strchr(ldomain, '.')) == (char *)NULL) {
 			nodomain = 1;
 			return(0);
 		}
