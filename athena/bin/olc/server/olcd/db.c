@@ -16,11 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology 
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header";
+static char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.4 1989-12-18 10:23:45 raeburn Exp $";
 #endif
 
 
@@ -126,7 +127,7 @@ load_db()
       insert_topic(t);
 
 #ifdef TEST
-      printf("load_db: %s %d %s\n",t->name,i, t->acl);
+      log_status (fmt ("load_db: %s %d %s\n",t->name,i, t->acl));
 #endif TEST
       ++i;
     } 
