@@ -1,4 +1,4 @@
-# $Id: packages,v 1.131 2001-04-30 22:30:47 ghudson Exp $
+# $Id: packages,v 1.132 2001-05-04 14:53:56 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -58,6 +58,7 @@ athena/bin/dash			requires Xj,krb5,athena/lib/athdir
 athena/bin/delete		requires afsbin,et
 athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
+athena/bin/dustbuster
 athena/bin/finger		requires hesiod,zephyr
 athena/bin/from			requires hesiod,krb5
 athena/bin/get_message		requires gms,hesiod
@@ -128,7 +129,7 @@ third/bzip2			except linux
 third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
 third/emacs			requires hesiod,krb5
-third/esound			except linux requires audiofile
+third/esound			requires audiofile
 third/flex			on solaris
 third/GConf			requires gtk,oaf,ORBit
 third/gdbm			except linux
