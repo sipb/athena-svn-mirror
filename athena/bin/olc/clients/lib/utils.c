@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.13 1991-02-24 11:33:34 lwvanels Exp $
+ *	$Id: utils.c,v 1.14 1991-03-05 14:47:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.13 1991-02-24 11:33:34 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.14 1991-03-05 14:47:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -366,64 +366,3 @@ file_length(file)
 
   return(statbuf.st_size);
 }
-
-  
-
-#ifdef ZEPHYR
-char *
-zephyr_get_opcode(class, instance)
-     char *class;
-     char *instance;
-{
-  ZNotice_t notice;
-  struct sockaddr_in from;
-  Code_t retval;
-  char *msg;
-
-  while (1) 
-    {
-      if ((retval = ZReceiveNotice(&notice, &from)) != ZERR_NONE)
-	{
-	  com_err("olc", retval, "while receiving notice");
-	  return((char *) NULL);
-	}
-      
-      if ((strcmp(notice.z_class, class) != 0) ||
-	  (strcmp(notice.z_class_inst, instance) != 0))
-	continue;
-      
-      msg =  strcpy(malloc(strlen((notice.z_opcode))+1), (notice.z_opcode));
-      ZFreeNotice(&notice);
-      return(msg);
-    }
-}
-
-
-zephyr_subscribe(class, instance, recipient)
-     char *class;
-     char *instance;
-     char *recipient;
-{
-  ZSubscription_t sub;
-  Code_t retval;
-
-#ifdef m68k
-  sub.class = class;
-  sub.classinst = instance;
-  sub.recipient = recipient;
-#else
-  sub.zsub_class = class;
-  sub.zsub_classinst = instance;
-  sub.zsub_recipient = recipient;
-#endif
-
-  if ((retval = ZSubscribeTo(&sub, 1, 0)) != ZERR_NONE)
-    {
-      com_err("olc", retval, "while subscribing");
-      return(ERROR);
-    }
-
-  return(SUCCESS);
-}
-
-#endif /* ZEPHYR */
