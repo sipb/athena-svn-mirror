@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.12 1999-09-10 17:20:04 danw Exp $
+# $Id: cshrc,v 1.13 2000-02-11 20:51:53 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -153,7 +153,7 @@ if (! $?ENV_SET) then
 		source ~/.path
 	else
 		# Standard Athena path
-		set path=(`athdir $HOME` $athena_path .)
+		set path=(`/usr/athena/bin/athdir $HOME` $athena_path .)
 	endif
 
 	# On IRIX, limits are reset on exec of a setuid program, e.g.

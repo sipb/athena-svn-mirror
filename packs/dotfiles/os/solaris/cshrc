@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 1999-06-23 23:04:36 danw Exp $
+# $Id: cshrc,v 1.8 2000-02-11 20:51:36 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -146,7 +146,7 @@ if (! $?ENV_SET) then
 		source ~/.path
 	else
 		# Standard Athena path
-		set path=(`athdir $HOME` $athena_path .)
+		set path=(`/usr/athena/bin/athdir $HOME` $athena_path .)
 	endif
 
 	# Make sure applications can properly find their appdefs, etc.

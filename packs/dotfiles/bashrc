@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.11 2000-02-11 20:52:29 ghudson Exp $
+# $Id: bashrc,v 1.12 2000-02-11 20:52:47 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -138,7 +138,7 @@ if [ "${ENV_SET+set}" != set ]; then
 	export COREDUMPSIZE_LIMIT=`ulimit -c`
 
 	# Standard Athena path
-	PATH=`athdir $HOME`:$athena_path:.
+	PATH=`/usr/athena/bin/athdir $HOME`:$athena_path:.
 	unset athena_path
 
 	# Make sure applications can properly find their appdefs, etc.
