@@ -1,13 +1,15 @@
 /* 
- * generic imake template
- */
-
-/* Useful ifdef constrints - 	ultrix, mips -> decmips
- *			      	vax & !ultrix -> bsd vax
- *				ibm - ibm architecture
- *				ibm032 - RT
- *				i386 - PS2
- *				aix - AIXarchitecture
+ * Generic Imake Template
+ *
+ * Future changes:
+ * 
+ * o Reorganize the structure to employ a config.Imakefile and reduce
+ *   the complexity of Imake.tmpl.  Also, the use of site.def should be
+ *   re-examined.
+ *
+ * o Support global project configurations.  This can be done by always
+ *   including a Project.tmpl and altering the include path such that
+ *   this is found prior to the minimal one in the global templates.
  */
 
 #include <site.def>
@@ -22,11 +24,11 @@
  */
 #ifdef TOPDIR
 #define UseInstalled
-#define CONFDIR TOPDIR/config
+#define ConfDir TOPDIR/config
 #endif
 
-#ifndef CONFDIR
-#define CONFDIR ${TOP}/config
+#ifndef ConfDir
+#define ConfDir ${TOP}/config
 #endif
 #ifndef NEWTOP
 #define NEWTOP .
@@ -48,6 +50,21 @@
 #endif
 #ifndef AConfDir
 #define AConfDir /etc/athena
+#endif
+#ifndef ARBinDir
+#define ARBinDir /bin/athena
+#endif
+#ifndef AREtcDir
+#define AREtcDir /etc/athena
+#endif
+#ifndef ANewDir
+#define ANewDir ABinDir
+#endif
+#ifndef XAppDefDir
+#define XAppDefDir /usr/athena/lib/X11/app-defaults
+#endif
+#ifndef XBitmapDir
+#define XBitmapDir /usr/athena/lib/X11/bitmaps
 #endif
 #ifndef LintCFlag
 #define LintCFlag -o
@@ -122,7 +139,7 @@ MAKESHELL=/bin/sh
 
 TOP = NEWTOP
 DESTDIR=
-CONFIGSRC = CONFDIR
+CONFIGSRC = ConfDir
 
 IRULESRC = $(CONFIGSRC)		
 #ifdef UseInstalled
@@ -136,13 +153,27 @@ IFLAGS= -I$(IRULESRC)
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
+
 ATHLIBDIR=ALibDir
 ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
 ATHETCDIR=AEtcDir
 ATHCONFDIR=AConfDir
+ATHMANDIR=AManDir
+ATHRBINDIR=ARBinDir
+ATHRETCDIR=AREtcDir
+ATHNEWDIR=ANewDir
+
+XAPPDEFDIR=XAppDefDir
+XBITMAPDIR=XBitmapDir
+
 LINTCFLAG=LintCFlag
-LINTFLAGS=
+#ifdef StdIncDir
+LINTFLAGS=$(DEFINES)
+#else
+LINTFLAGS=$(DEFINES) -I$(ATHINCDIR)
+#endif
+
 INSTALL=InstallCmd
 RANLIB=RanLibCmd
 CC=CcCmd
@@ -150,8 +181,19 @@ LD=LdCmd
 AS=AsCmd
 RM=RmCmd
 CDEBUG=CDebugFlags
+
+#ifdef StdIncDir
+CFLAGS=$(CDEBUG) CcFlags $(DEFINES)
+#else
 CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I$(ATHINCDIR)
-LDFLAGS=LdFlags $(CFLAGS) -L$(ATHLIBDIR)
+#endif
+
+#ifdef StdLibDir
+LDFLAGS=LdFlags $(LDDEFS)
+#else
+LDFLAGS=LdFlags $(LDDEFS) -L$(ATHLIBDIR)
+#endif
+
 LDLIBS=LdLibs
 SHLIB_EXT=ShlibExt
 SHLIB_DIR=ShlibDir
