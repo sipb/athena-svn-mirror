@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -
 # Version-specific update script for 7.4A
 
 echo "Adding NOREMOTE to rc.conf"
@@ -6,3 +6,15 @@ echo "NOREMOTE=false;		 export NOREMOTE       # Deny access to remote users not 
 
 echo "NEWUNIX=true"			>> ${CONFVARS}
 echo "NEWTTYS=true"			>> ${CONFVARS}
+
+echo "${SITE}/usr/vice/etc/SuidCells"	>> ${CONFCHG}
+
+case "${MACH}" in
+DS*)
+	echo "/etc/crontab"	>> ${CONFCHG}
+	echo "/etc/nsyslog.conf"	>> ${CONFCHG}
+	touch /etc/syslog.pid
+	touch /usr/adm/messages
+	/etc/chown daemon /etc/syslog.pid
+	;;
+esac
