@@ -2,6 +2,7 @@
 /* Copyright (C) 1988  Tim Shepard   All rights reserved. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "synctree.h"
 
 extern rule rules[];
@@ -33,10 +34,6 @@ static char *dstpath;
 %type  <action_type> action
 %type  <bool_exp>    boolexp boolexp1 boolexp0
 %%
-
-%{
-#include "lex.yy.c"
-%}
 
 rulefile:   rules |
 rules:      rules rule | rule 
@@ -288,3 +285,5 @@ yyerror(s)
 {
         printf("%s: %s near line %d\n", yyinfilename, s, lineno);
 }
+
+#include "lex.yy.c"
