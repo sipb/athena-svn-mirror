@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.29 1991-02-01 23:22:24 lwvanels Exp $
+ *	$Id: olcd.h,v 1.30 1991-03-07 13:24:36 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -175,11 +175,10 @@ typedef struct tKNUCKLE
   struct tQUESTION *question;        /* question */
   struct tKNUCKLE *connected;        /* connected user */
   struct tUSER *user;                /* central user */
-  char   title[NAME_SIZE];
+  char   *title;		     /* pointer to appropriate user title */
   int    instance;                   
-  int    priority;
-  int    queue;
   long   timestamp;                  /* specific to type */
+
   int    status;                     /* status of this instance 
                                         (on priorities, pending, etc..) */
   char   cusername[LOGIN_SIZE];
@@ -194,7 +193,7 @@ typedef struct tQUESTION
 {
   struct tKNUCKLE *owner;
   char  logfile[NAME_SIZE];          /* Name of the logfile. */
-  long  logfile_timestamp;           /* timestamp used for logfile caching */
+  char	infofile[NAME_SIZE];	     /* Name of the file to store aux. info */
   int   seen[MAX_SEEN];              /* UIDs of users who have seen 
                                         this question */
   int   nseen;                       /* Number who have seen it. */
@@ -340,6 +339,7 @@ QUEUE_STATUS *get_status_info P((void ));
 int verify_topic P((char *topic ));
 int owns_question P((KNUCKLE *knuckle ));
 int is_topic P((int *topics , int code ));
+void write_question_info P(( QUESTION *q ));
 
 /* db.c */
 int get_specialties P((USER *user ));
@@ -350,8 +350,7 @@ int save_user_info P((USER *user ));
 
 /* io.c */
 ERRCODE read_request P((int fd , REQUEST *request ));
-int send_list P((int fd , REQUEST *request , LIST *list ));
-ERRCODE send_person P((int fd , PERSON *person ));
+ERRCODE send_list P((int fd , REQUEST *request , LIST *list ));
 
 /* list.c */
 int list_knuckle P((KNUCKLE *knuckle , LIST *data ));
