@@ -23,7 +23,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.4 1991-03-01 12:19:44 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.5 1991-04-08 21:22:16 lwvanels Exp $
  */
 
 
@@ -213,7 +213,7 @@ display_entry(index)
   Current_Index = index;
   if (entry->type == CREF_FILE)
     {
-#ifdef LOG
+#ifdef LOG_USAGE
       log_view(entry->filename);
 #endif
       clear();

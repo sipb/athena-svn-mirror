@@ -80,8 +80,8 @@ main(argc, argv)
   set_current_dir(Current_Dir);
   make_abbrev_table();
   make_display();
-#ifdef LOG
-  log_startup("stock");
+#ifdef LOG_USAGE
+  log_startup("stock",LOGGER_HOST);
 #endif  
   command_loop();
 }

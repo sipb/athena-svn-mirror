@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.4 1991-03-24 23:27:04 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.5 1991-04-08 21:27:08 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>
@@ -236,7 +236,7 @@ int show_file(text_widget, file)
   XmTextSetString(text_widget, text);
   close(fd);
   free(text);
-#ifdef LOG
+#ifdef LOG_USAGE
   log_view(file);
 #endif
   return(SUCCESS);
