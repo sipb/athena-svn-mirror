@@ -1,0 +1,39 @@
+# $Id: Makefile.in,v 2.1 1997-10-21 02:04:40 ghudson Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+lsbindir=@lsbindir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+all: cleanup
+
+cleanup: cleanup.o
+	${CC} ${LDFLAGS} -o cleanup cleanup.o -lal -lhesiod ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
+	${INSTALL} -m 644 cleanup ${DESTDIR}${lsbindir}
+
+clean:
+	rm -f cleanup.o cleanup
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
