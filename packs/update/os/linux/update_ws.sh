@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.9 2000-03-08 22:14:53 ghudson Exp $
+# $Id: update_ws.sh,v 1.10 2000-03-25 19:03:34 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -178,6 +178,15 @@ if [ -n "$auto" -a true != "$AUTOUPDATE" ]; then
 	echo "yourself, or to schedule us to do it for you."
 	echo "    Thank you.  -Athena Operations"
 	exit
+fi
+
+if [ -n "$auto" ]; then
+	# Desynchronize automatic updates by the value of the desync
+	# cluster variable or four hours if it isn't set.
+	desync -t /var/athena/update.desync ${DESYNC-14400}
+	if [ $? -ne 0 ]; then
+		exit 0
+	fi
 fi
 
 if [ reactivate = "$auto" ]; then
