@@ -1,2 +1,0 @@
-input graycx % the `standard' gray font is for the CX
-
