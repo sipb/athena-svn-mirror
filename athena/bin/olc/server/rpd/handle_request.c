@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.18 1993-05-06 10:24:36 vanharen Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.19 1993-05-14 18:23:12 vanharen Exp $";
 #endif
 #endif
 
@@ -192,7 +192,7 @@ handle_request(fd, from)
       !acl_check(MONITOR_ACL,principal_buffer)) {
     /* Twit! */
     syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
-	   from_addr
+	   from_addr,
 	   principal_buffer);
     output_len = htonl(ERR_NO_ACL);
     write(fd,&output_len,sizeof(long));
