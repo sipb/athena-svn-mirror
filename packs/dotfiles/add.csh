@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.13 1994-11-28 07:35:18 cfields Exp $
+# $Id: add.csh,v 1.14 1994-11-28 23:42:32 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -15,7 +15,7 @@
 #
 # fix bugs section of attach manpage
 
-# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/add'
+# alias add 'source /afs/dev/user/cfields/add'
 
 # MANPATH search too
 
@@ -28,6 +28,8 @@ set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockernam
 #
 # Parse options
 #
+
+set add_opts = (!*)
 
 if ( $#add_opts == 0 ) set add_print
 
