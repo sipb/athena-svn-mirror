@@ -1,9 +1,8 @@
 #!/bin/csh -f
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
-# $Author: probe $
-# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.21 1990-12-27 18:04:41 probe Exp $
+#
+# $Id: xsession,v 1.22 1991-06-19 15:18:41 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -54,7 +53,7 @@ setenv XSESSION $$
 # Set the sleep time for waiting between launching large applications.
 # These can be overridden in the ~/.cshrc or ~/.environment files.
 
-switch (`/bin/athena/machtype -c`)
+switch (`machtype -c`)
     case VAXSTAR:
 	set sleep_time=10
 	breaksw
@@ -93,7 +92,7 @@ endif
 
 # Load user X resources.
 
-if ((! $?NOCALLS) && (-r ~/.Xresources)) /usr/bin/X11/xrdb -merge ~/.Xresources
+if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 
 # Start window manager.  To change your default window manager, set the 
@@ -121,7 +120,7 @@ if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	(xterm -geometry 80x56+0+0 &)
+	(xterm -geometry 80x48+0+0 &)
 	sleep $sleep_time
 endif
 
@@ -132,7 +131,7 @@ endif
 
 if (! $?skip_xlogout) then
 	if ($?verbose_login) echo "Creating logout button..."
-	(/usr/athena/dash -logout &)
+	(dash -logout &)
 	sleep $sleep_time
 	sleep $sleep_time
 endif
@@ -146,15 +145,15 @@ if (! $?skip_x_startup) then
 	# Start Zephyr client, and if zephyr started okay, send
 	# message of the day as windowgram
 	if ($?NOCALLS) then
-		( /usr/etc/zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
+		( /usr/athena/etc/zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
 				-subfile /dev/null && \
-		  /bin/athena/get_message -new -zephyr &)
+		  get_message -new -zephyr &)
 	else
-		( /usr/etc/zwgc && /bin/athena/get_message -new -zephyr &)
+		( /usr/athena/etc/zwgc && get_message -new -zephyr &)
 	endif
 	sleep $sleep_time
-	/usr/new/mh/bin/msgchk -nonotify nomail		# Check for mail
-	(/usr/athena/olc who &) >& /dev/null		# Ping the OLC server
+	msgchk -nonotify nomail		# Check for mail
+	(olc who &) >& /dev/null	# Ping the OLC server
 endif
 
 
@@ -180,6 +179,6 @@ endif
 # To terminate this process, type the "logout" command in an xterm window
 # or invoke the "end_session" program.
 
-exec /usr/athena/session_gate -logout			# Wait for logout
+exec session_gate -logout			# Wait for logout
 
 # The session gate will source .logout when it gets a SIGHUP.
