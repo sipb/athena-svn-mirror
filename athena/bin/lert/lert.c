@@ -550,7 +550,10 @@ int type;
   strcpy(mprog, "mhmail ");
   strcpy(cprog, "cat");
 
-  whoami = getlogin();
+  whoami = getenv("USER");
+  
+  if (!whoami)
+    whoami = getlogin();
 
   if(!whoami) {
     pw = getpwuid(getuid());

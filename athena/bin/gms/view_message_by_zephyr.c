@@ -9,12 +9,13 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.4 1996-09-19 22:39:06 ghudson Exp $";
+static char rcsid_view_message_by_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/view_message_by_zephyr.c,v 1.5 1996-10-04 03:59:32 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
 #include <pwd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <syslog.h>
 
 void view_message_by_zephyr(message)
@@ -23,8 +24,11 @@ void view_message_by_zephyr(message)
   char *whoami, *getlogin();
   char *ptr;
   
-  whoami = getlogin();
-
+  whoami = getenv("USER");
+  
+  if (!whoami)
+    whoami = getlogin();
+  
   if(!whoami) {
     struct passwd *pw;
     pw = getpwuid(getuid());
