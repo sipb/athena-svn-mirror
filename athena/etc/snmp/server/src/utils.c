@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/26  13:41:43  tom
+ * athena release 7.0e
+ * 
  * Revision 1.3  90/04/26  18:38:59  tom
  * corrected template header
  * 
@@ -25,13 +28,48 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 1.4 1990-05-26 13:41:43 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/utils.c,v 2.0 1992-04-22 01:59:26 tom Exp $";
 #endif
 
 #include "include.h"
 #include <mit-copyright.h>
 
 #ifdef MIT
+
+
+
+
+/*
+ * Function:    stattime()
+ * Description: Returns modification time on given file.
+ * Returns:     time if success
+ *              0 if error
+ */
+
+
+char *
+stattime(file)
+     char *file;
+{
+  struct stat statbuf;
+  char *c, *t;
+
+  bzero(&statbuf, sizeof(struct stat));
+
+  if(!file)
+    return(file);
+
+  if(stat(file, &statbuf) < 0)
+    return((char *) NULL);
+  
+  t   = ctime(&(statbuf.st_mtime));
+  c   = rindex(t, '\n');
+  *c  = '\0';
+  return(t);
+}
+
+
+
 
 /*
  * Function:     call_program()
@@ -70,7 +108,37 @@ call_program(program, arg, ret, size)
   wait(0);
   (void) close(f[0]);
   ret[size-1] = '\0';
+  return(0);
 }
   
+
+
+/*
+ * Function:     make_str()
+ * Description:  create strng object for given string 
+ */
+
+
+int 
+make_str(v, s)
+     objval *v;
+     char   *s;
+{
+  if(!s)
+    return(BUILD_ERR);
+
+  v->type = STR;
+  
+  if(!(v->value.str.str = malloc((strlen(s) + 1) * sizeof(char))))
+    {
+      syslog(LOG_ERR, "unable to allocate %d bytes for string.",
+	     (strlen(s) + 1) * sizeof(char));
+      return(BUILD_ERR);
+    }
+
+  strcpy(v->value.str.str, s);
+  v->value.str.len = strlen(v->value.str.str);
+  return(BUILD_SUCCESS);
+}
 
 #endif MIT
