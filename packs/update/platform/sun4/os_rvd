@@ -4,109 +4,160 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.1 1995-11-28 14:32:04 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.2 1996-05-10 04:02:21 ghudson Exp $
 	.:::
 		dev
 		devices
-		etc
-		export
-		home
 		kernel
+		kadb.old
+		etc
 		mnt
 		-> opt
 		proc
-		sbin
 		tmp
 		usr
 		var
 		ufsboot
-		hsfsboot
 		:
 	/etc:::			# These are specific to each machine.
+		.UNCON*
+		-> acct
+		-> asppp.cf
+		-> auto_*
+		driver_aliases
 		dumpdates
+		device.tab
+		dgroup.tab
+		defaultrouter 
+		dfs/dfstab
+		dfs/sharetab
 		ftpusers
 		group
-		-> lp
-                minor_perm
-		defaultrouter 
-		mail
-		motd
-		mnttab
-		-> opt
-		path_to_inst
-		passwd
-		-> security
-		shadow
-		system
-		ups_data
-		utmp
-		utmpx
-		vfstab
-		wtmp
-		wtmpx
 		inet/hosts
 		inet/inetd.conf
 		inet/netmasks
-		dfs/dfstab
-		dfs/sharetab
-			# The following are symbolic links; no update is
-			# needed
+		inet/services
 		-> inet/networks
-		-> protocols
+		-> inet/protocols
+                minor_perm
+		mail
+		motd
+		mnttab
+		name_to_major
+		-> opt
+		path_to_inst
+		passwd
+		-> rpld*
 		-> remote
+		-> security
+		shadow
+		system
 		-> skel
 		-> servers
 		-> uucp
+		vfstab
+			# The following are symbolic links; no update is
+			# needed
 		:
 	/etc/mail:::
 		sendmail.cf
 		aliases
 		:
-	/sbin::::
+	/etc/rc0.d:::
+		K20lp
+		K42audit
+		K47*
+		K57*
+		K66*
+		K69*
+		:
+	/etc/rc1.d:::
+		K42*
+		K47*
+		K57*
+		K65*
+		K68*
+		:
+	/etc/rc2.d:::
+		K20*
+		K60*
+		*gsconfig
+		*gtconfig
+		*leoconfig
+		*perf
+		*asppp
+		*autofs
+		*uucp
+		*lp
+		S88sendmail
+		*bdconfig
+		*audit
+		*rtvc-config
+		:
+	/etc/rc3.d:::
+		S*
+		:
+	/etc/init.d:::
+		*.old
+		:
 	/usr::: 
 		-> 4lib
-		adm
 		-> aset
+		bin
 		-> ccs
 		-> demo
-		-> dt
+		dt
 		-> games
-		-> include
-		 kernel
-		 kvm
-		 lib
+		include
+		kernel*
+		lib
 		-> net
-		news
 		-> oasys
 		-> old
 		openwin
-		preserve
 		-> sadm
 		sbin
 		share
 		-> snadm
-		spool
-		-> ucb*
+		-> ucb
+		-> ucbinclude
+		-> vmsys
 		:
+	/usr/include:::
+		-> *
+		:
+	/usr/dt:::
+		-> include
+		lib
+		-> man
+		-> bin
+		:
+	/usr/dt/lib:::
+		-> bindings
+		-> *_d*
+		:		
 	/usr/sbin:::
 		-> accept
 		-> add_drv
 		-> adm*
+		-> all*
 		-> aspp*
-		-> auditstat
-		-> auditreduce
-		-> auditd
-		-> audit
-		-> cfsadmin
+		-> audit*
 		-> chroot
 		-> convert*
+		-> deallocate
+		-> discover*
 		-> dispadmin
+		-> dumpolp
 		-> edquota
 		-> fuser
 		-> *4x
+		-> g*config
 		-> group*
 		-> gettable
+		-> general
 		-> host*
+		-> htable
 		-> in.c*
 		-> in.f*
 		-> in.rl*
@@ -120,32 +171,40 @@ GLOBAL : *.CKP *.local *.pid :
 		-> in.uu*
 		-> install.d
 		-> install4x
-		-> htable
 		-> installf
 		-> ker*
 		-> key*
 		-> lp*
+		-> leoconfig
+		-> makedbm
 		-> ni*
 		-> nl*
 		-> ns*
 		-> pass*
 		-> pkg*
+		-> praudit
+		-> psr*
 		-> pwconv
 		-> rf*
 		-> quot*
 		-> rem_drv
 		-> rpc.n*
+		-> rpld
 		-> *share*
 		-> *nisd
 		-> *share*
 		-> spray
 		-> snoop
+		-> swmtool
+		-> sys-unconfig
+		-> tcx*
 		-> user*
 		-> wall
 		-> whodo
 		-> yp*
 		-> *dump
 		-> rest*
+		-> volcopy
 		-> zdump
 		:
 	/usr/share:::
@@ -158,6 +217,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> mailx
 		-> nterm
 		-> pub
+		-> tmac
+		-> make
 		keytables
 		zoneinfo
 		:
@@ -166,11 +227,14 @@ GLOBAL : *.CKP *.local *.pid :
 		-> c*
 		-> d*
 		-> f*
+		-> g*
+		-> h*
 		-> i*
 		-> j*
 		-> k*
 		-> n*
 		-> p*
+		-> r*
 		-> s*
 		-> t*
 		-> uk*
@@ -179,11 +243,14 @@ GLOBAL : *.CKP *.local *.pid :
 		-> A*
 		-> B*
 		-> C*
-		-> E*
+		-> Egypt
+		-> Eire
+		-> Etc
 		-> F*
 		-> G*
 		-> H*
 		-> I*
+		-> K*
 		-> J*
 		-> L*
 		-> M*
@@ -208,6 +275,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> admintool
 		-> aliasadm
 		-> apropos
+		-> apm
 		-> at
 		-> atq
 		-> atqm
@@ -217,18 +285,23 @@ GLOBAL : *.CKP *.local *.pid :
 		-> batch
 		-> bc
 		-> bdiff
+		-> bfs
 		-> cal*
+		-> cancel
+		-> catman
 		-> checkeq
 		-> checknr
 		-> chkey
 		-> ckkeywd
 		-> *range
 		-> ckyorn
-		-> coltbl
+		-> col
+		-> colltbl
 		-> comm
+		-> compress
 		-> cpio
+		-> crontab
 		-> crypt
-		-> csh.sun
 		-> cancel
 		-> calendar
 		-> catman
@@ -236,58 +309,80 @@ GLOBAL : *.CKP *.local *.pid :
 		-> csplit
 		-> ct
 		-> ctags
+		-> cu
+		-> dapps
 		-> dc
 		-> deroff
 		-> diff*
 		-> dirname
+		-> dircmp
 		-> disp*
 		-> disable
 		-> dos2unix
 		-> dump*
 		-> *expand
 		-> enable
+		-> eqn
+		-> exstr
+		-> factor
+		-> fdetach
 		-> fdformat
+		-> fgrep
 		-> finger
 		-> fold
+		-> fmt
 		-> ftp
 		-> fmli
 		-> get*
+		-> fmtmsg
 		-> graph
 		-> gencat
 		-> head
+		-> i*86
+		-> iconv
 		-> indxbib
-		-> join
 		-> infocmp
+		-> iostat
 		-> ipcrm
 		-> ipcs
-		-> kdestroy*
+		-> join
+		-> kbd*
+		-> kgmon
 		-> keylogin*
 		-> keylogout
 		-> ksrv*
-		-> ksh
-		-> k*.sun
+		-> kinit
+		-> klist
+		-> kdestroy
 		-> lastcomm
 		-> listusers
+		-> listdgrp
 		-> look
  		-> lp*
-		-> lookbib
+		-> *bib
 		-> man
 		-> mail
 		-> mailstats
 		-> mailx
+		-> mailc*
 		-> mconnect
+		-> mpstat
+		-> neqn
 		-> new*
 		-> netstat
 		-> nice
 		-> nis*
 		-> nfsstat
 		-> nroff
-		-> od
+		-> *pack
 		-> page
 		-> paste
+		-> pic
 		-> pg
 		-> pkg*
 		-> rcp
+		-> rdate
+		-> refer
 		-> rdist
 		-> rlogin
 		-> rsh
@@ -296,7 +391,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> rusers
 		-> rwho
 		-> roffbib
+		-> script
+		-> sdiff
 		-> sort*
+		-> showrev
+		-> srchtxt
+		-> spline
 		-> spell
 		-> split
 		-> sunview1
@@ -312,6 +412,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> tip
 		-> tplot
 		-> troff
+		-> tbl
 		-> truss
 		-> ttyhstmgr
 		-> uncompress
@@ -319,23 +420,39 @@ GLOBAL : *.CKP *.local *.pid :
 		-> units
 		-> unix2dos
 		-> uu*
+		-> vacation
+		-> vmstat
+		-> vgrind*
 		-> *chrtbl
+		-> volcheck
+		-> write
 		-> whois
 		-> yp*
 		:
 	/usr/lib:::
+		*so*.old
+		*a.old
+		-> agefile
 		-> adb
 		-> acct
+		autofs/*.old
 		-> class
+		-> calp*
 		-> defaults
+		-> diffh
 		-> fs/fd
 		-> fs/hsfs
 		-> font
 		-> fonts
+		-> gs*
+		-> gt*
 		-> iconv
 		-> ideal
+		-> learn
 		-> libp
+		-> leo*
 		-> *.ln
+		-> lib.b
 		-> lib*.a
 		-> libkrb.so*
 		-> libnisdb.so*
@@ -349,16 +466,28 @@ GLOBAL : *.CKP *.local *.pid :
 		-> refer
 		-> security
 		-> spell
+		-> t3*
+		-> t4*
 		-> uucp
-		-> vold
+		-> uncompress
+		-> u3*
+		-> vol*
+		-> vplot
+		-> vgr*
+		-> vmstat
+		:
+	/usr/kvm:::
+		-> lib/adb
+		-> libkvm.a
+		crash.old
 		:
 	/usr/openwin:::
-		-> SUNW*
-		-> include
 		-> demo
-		-> etc/workspace
 		:
 	/usr/openwin/lib:::
+		*so*.old
+		*a.old
+		libp/*.old
 		-> C*
 		-> Xol
 		-> a*
@@ -377,25 +506,34 @@ GLOBAL : *.CKP *.local *.pid :
 	/usr/openwin/lib/X11/fonts:::
 		-> F*
 		-> S*
-		-> X*
 		-> T*
+		-> X*
 		-> enc*
 		-> 100dpi*
-		-> 75dpi*
+		misc/*.old
 		:
 	/usr/openwin/server:::
+		etc
 		modules
 		:
+	/usr/openwin/server/etc:::
+		*.old
+		:
 	/usr/openwin/server/modules:::
+		*.old
 		-> *cg1*
 		-> *cg2*
 		-> *cg4*
 		-> *cg8*
 		-> *PEX*
+		-> *gt*
+		-> *leo*
 		:
 	/usr/openwin/bin:::
+		*.old
 		-> a*
 		-> b*
+		-> calc*
 		-> co*
 		-> cp*
 		-> d*
@@ -408,6 +546,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> n*
 		-> o*
 		-> p*
+		-> q*
 		-> r*
 		-> s*
 		-> t*
@@ -432,9 +571,9 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xu*
 		-> xv*
 		-> xw*
+		-> y*
 		:		
 	/usr/openwin/share:::
-		-> bugform
 		-> images
 		-> include
 		-> locale
@@ -444,7 +583,24 @@ GLOBAL : *.CKP *.local *.pid :
 		etc
 		:
 	/usr/openwin/share/etc:::
-		-> keytables
+		 keytables
 		-> xnews
 		-> workspace
 		:
+	/usr/openwin/share/etc/keytables:::
+		*.old
+		-> C*
+		-> D*
+		-> F*
+		-> H*
+		-> I*
+		-> J*
+		-> K*
+		-> N*
+		-> P*
+		-> R*
+		-> S*
+		-> T*
+		-> UK*
+		:
+
