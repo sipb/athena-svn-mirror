@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.6 1993-07-02 09:56:10 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.7 1993-07-02 13:17:15 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -2276,7 +2276,7 @@ static void realize(me)
 	  size.width  = me->core.width - x;
 	  size.height = me->core.height;
 	  XjMove(me->menu.right_jet, x, me->menu.rootMenu->pane_y);
-	  XjResize(me->menu.right_jet, size);
+	  XjResize(me->menu.right_jet, &size);
 	}
     }
 }
