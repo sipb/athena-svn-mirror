@@ -8,7 +8,7 @@ lpr \- off line print
 .SH SYNOPSIS
 .B lpr
 [
-.B \-A
+.BI \-A " authtype"
 ]
 [
 .B \-b,l
@@ -73,6 +73,9 @@ lpr \- off line print
 .BI \-w " width"
 ]
 [
+.BI \-z
+]
+[
 .BI \-Z " zoptions"
 ]
 [
@@ -87,9 +90,13 @@ lpr \- off line print
 uses a spooling daemon to print the named files when facilities
 become available.  If no names appear, the standard input is assumed.
 .SH OPTIONS
+Options are read first from the
+.B LPROPT
+environment variable, and then from the command line.
 .TP 5
-.B \-A
-Use the authenticated transfer facilities if they are available.
+.BI \-A " name"
+Use the named authentication type (which can be "none") rather than
+the default type for the printer.
 .TP 5
 .BI \-C " class"
 Specify the job classification for use on the burst page and to
@@ -286,6 +293,9 @@ Use debug flags for extreme verbosity.
 .TP 5
 .BI \-w " width"
 Specify the page width for printing the job.
+.TP 5
+.BI \-z
+Send a zephyr to the user upon completion or failure of the job.
 .TP 5
 .BI -Z " zoptions"
 This option is used to pass options to the print spooler,
