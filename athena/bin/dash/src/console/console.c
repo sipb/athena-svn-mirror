@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v $
- * $Author: miki $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.7 1994-03-25 16:15:36 miki Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.8 1994-08-14 16:56:51 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -664,7 +664,7 @@ main(argc, argv)
   int auxinput = -1;
   int size=0;
   struct stat buf;
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(_IBMR2)
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
@@ -674,7 +674,7 @@ main(argc, argv)
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(_IBMR2)
   act.sa_handler= (void (*)()) sighandler;
   (void) sigaction(SIGHUP, &act, NULL);
   (void) sigaction(SIGFPE, &act, NULL);
