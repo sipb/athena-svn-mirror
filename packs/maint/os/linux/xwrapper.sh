@@ -2,7 +2,7 @@
 
 # Give people a way to disable the wrapper if it's annoying.
 if [ -f /etc/athena/x-no-wrapper ]; then
-	exec /usr/bin/X11/X "$@"
+	exec /usr/X11R6/bin/X "$@"
 fi
 
 options=
