@@ -1,9 +1,8 @@
+SUBDIRS = docs
+
 INCLUDES =						\
 	-I$(srcdir)					\
-	-I$(top_srcdir)/screen-exec			\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
-	-DGNOME_DISABLE_DEPRECATED=1	\
-	-DGTK_DISABLE_DEPRECATED=1	\
 	$(GNOME_APPLETS_CFLAGS)                         \
 	$(GTOP_APPLETS_CFLAGS)				\
 	-Wall
@@ -25,7 +24,6 @@ multiload_applet_2_SOURCES = \
 			swapload.c
 
 multiload_applet_2_LDADD = \
-	$(top_builddir)/screen-exec/libscreen-exec.la	\
 				$(GNOME_APPLETS_LIBS) 	\
 				$(GTOP_APPLETS_LIBS)
 
@@ -34,15 +32,15 @@ pixmaps = gnome-cpu.png
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = $(pixmaps)
 
-schemadir 	= @GCONF_SCHEMA_FILE_DIR@
-schema_DATA	= multiload.schemas
+schemasdir   = @GCONF_SCHEMA_FILE_DIR@
+schemas_in_files = multiload.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
-install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA) ;
-		
+@INTLTOOL_SCHEMAS_RULE@
+
 EXTRA_DIST =	\
 		GNOME_MultiLoadApplet_Factory.server.in.in \
-		multiload.schemas \
+		$(schemas_in_files) \
 		$(pixmaps) \
 		$(ui_DATA)
 
@@ -56,4 +54,11 @@ server_DATA     = $(server_in_files:.server.in=.server)
 $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 
+CLEANFILES = $(server_in_files) $(server_DATA)
+
 @INTLTOOL_SERVER_RULE@
+
+if GCONF_SCHEMAS_INSTALL
+install-data-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
+endif

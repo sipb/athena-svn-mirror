@@ -1,3 +1,218 @@
+2004-09-06  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/cdplayer-C.omf:
+	* docs/C/cdplayer.xml:
+	- Updates for 2.8 from Angela Boyle
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec.
+	* cdplayer.c: (help_cb), (phelp_cb): Use gnome_help_*
+
+2004-08-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* cdplayer.schemas.in: remove - we're now using /apps/gnome-cd/device
+
+2004-06-08  Denins Smit  <ds@nerds-incorporated.org>
+
+	* cdplayer.c (cdplayer_play_pause): Fixed two compile
+	warnings.
+
+2004-06-08  Michael Terry  <mike@mterry.name>
+
+	* cdplayer.c, cdplayer.h: Use /apps/gnome-cd/device as
+	default cdrom device instead of our own home-brewed gconf key.  Fixes
+	bug 93620.
+	* Makefile.am: Remove references to now-unused schema file.
+
+2004-06-01  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* cdplayer.h: Added error_io_dialog and error_busy_dialog widgets
+	to the applet structure.
+
+	* cdplayer.c (applet_fill): Initialize the error dialogs with NULL.
+	(cdplayer_destroy): Destroy the error dialogs.
+	(cdplayer_play_pause): Show an dialog on IO error, and let both
+	dialogs be privates per instance.
+
+	Based on a fix by: Santhosh  <santhu842k2@yahoo.co.in>
+
+	Fixes bug #142093.
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Add inlinepixbuf to SOURCES. Should fix one
+	distcheck issue.
+	* docs/ja/*: Adding ja docs since the author didn't get
+	back to me.
+
+2004-03-16  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/Makefile.am: Add l10n'd docs to the build.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Add localized documentation for de, es, fr, it,
+	ko, sv, zh_CN, zh_HK and zh_TW.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* cdplayer.c (about_cb):
+	Reset the right screen if the user requests
+	the about dialog.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* cdplayer.c (start_gtcd_cb):
+	Auto indent touched a few things i shouldn't have
+	in previous commit.
+
+2004-02-22  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* cdplayer.c (start_gtcd_cb):
+	Move from egg_screen_execute_command_line_async to
+	gdk_spawn_command_line_on_screen.
+
+	Fixes bug #135158.
+
+2004-02-17  Kevin Vandersloot
+
+	* Makefile.am: dist cdrom-netbsd. Patch from Julio M. Merino Vidal. Fixes bug
+	#134657.
+
+2004-02-11 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/cdplayer.xml: Updated for GNOME 2.6.
+	* docs/C/cdplayer-C.omf: Updated for GNOME 2.6.
+	* docs/C/l10n.txt: Updated for GNOME 2.6.
+
+2004-02-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* cdplayer.c (set_atk_name_description): Change that name and
+	description is changing before calling function to change them.
+
+	Fixes bug #133619.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-01-30  Chee Bin HOH  <cbhoh@gnome.org>
+
+	* cdplayer/cdplayer.c: Update documenters credit in 
+	About dialog.
+	
+2004-01-28  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* cdplayer.c: (about_cb): Set the screen after creating
+	the about dialog.
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-01-16  Archana Shah <archana.shah@wipro.com>
+
+	* cdplayer.h: Added a member in the structure CDPlayerData for
+	about dialog.
+	* cdplayer.c: (applet_fill): Initialized about_dialog with NULL.
+	(about_cb): Changed to use about_dialog member of the structure
+	instead of static variable.
+	(cdplayer_destroy): Destroy about dialog when applet is removed.
+	Fixes bug #131691
+
+2003-12-13  Michael Terry <mterry@fastmail.fm>
+
+	* GNOME_CDPlayerApplet.server.in.in, Makefile.am, cdplayer.c: Use
+	gnome-icon-theme icon instead of built-in application icon.
+
+2003-11-01  Kaushal Kumar <kaushal.kumar@wipro.com>
+
+	* cdplayer.h: Added played_by_applet in CDPlayerData.
+	* cdplayer.c: Set played_by_applet if cdplayer applet plays the cdrom,
+	un-set it otherwise. Helps to decide whether to stop the cdrom before
+	exit, when gnome-cd is running. Fixes bugzilla #123033.
+
+2003-10-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* cdplayer.c: (cdplayer_applet_factory), (cdplayer_destroy): Rename
+	applet_factory() to cdplayer_applet_factory() just to have a sane 
+	namespace. Also plug a couple of leaks found by valgrind. Fixes
+	bug #124300.
+
+2003-08-07  Irene Ryan <irene.ryan@sun.com>
+
+	* docs/C/cdplayer.xml, cdplayer-C.omf: updates to Help for GNOME 2.4 release
+	* docs/C/l10n.txt: update information for L10N teams
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cdplayer.c:  HIGify widget padding between the vbox 
+	and action area of the dialogs.
+
+2003-07-17  Rajkumar Sivasamy <rajkumar.siva@wipro.com>
+
+	* cdplayer.c: cdplayer applet to use "media-*" as stock-ids.
+	Fixes bug #117458.
+
+Thu Jul 03 16:12:58 2003  George Lebl <jirka@5z.com>
+
+	* cdplayer.c: key-writability fixes for the device path
+
+2003-06-21  Elijah Newren <newren@math.utah.edu>
+
+	* cdrom-linux.c: Fixed a crash on eject which occurred if the user
+	had paused the music, by simply correcting the cdp->use_count
+	reference count to have the right value.  Fixes bug #115686.
+
+2003-06-03  Kevin Vandersloot
+
+	* cdplayer.c: expand for FItt's law and get rid of external frame. Needed to remove
+	applet tooltip for full Fitt's law effect on the buttons. Should investigate a little. Also
+	fiddle a little with the packing
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* GNOME_CDPlayerApplet.xml:  Change "Run External CD Player" menu
+	item to "Open CD Player".
+ 
+2003-05-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cdplayer.c:  HIGify the action area of the preferences dialog.
+	
+2003-04-07  Kevin Vandersloot <kfv101@psu.edu>
+
+	* cdplayer.c: Popup error dialog if user doesn't have acces to device. Also give nicer
+	error message when device is not correct. Patch from Bala Viswanathan. Fixes
+	bug #79761
+
+2003-04-26  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* cdplayer.c : HIGify the preferences dialog: remove separator;
+	fix widget padding; dialog window shouldn't be resizable.
+
+2003-03-26  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* cdplayer.c : Mark the error dialog message in #105296 for
+	translation.
+
+2003-03-20  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+        * cdplayer.c, cdrom-solaris.c, writer-solaris.[ch]
+          Give a error dialog if the Audio device is busy.
+          Solves bug #105296
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* cdplayer.c: (help_cb), (phelp_cb): update for screen-exec changes.
+
+2003-03-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* docs/ja/*.xml, docs/ja/figures/*.png, docs/ja/Makefile.am:
+	Added new documents for GNOME 2.2 translated by
+	KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+
 2003-01-23  Breda McColgan <Breda.McColgan@sun.com>
 
         * docs/C/cdplayer.xml: updated for GNOME 2.2

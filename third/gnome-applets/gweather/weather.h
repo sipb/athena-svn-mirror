@@ -1,7 +1,7 @@
 #ifndef __WEATHER_H_
 #define __WEATHER_H_
 
-/* $Id: weather.h,v 1.1.1.1 2003-01-04 21:17:58 ghudson Exp $ */
+/* $Id: weather.h,v 1.1.1.2 2004-10-04 03:07:16 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -28,15 +28,17 @@ G_BEGIN_DECLS
 #define WEATHER_LOCATION_CODE_LEN 4
 
 struct _WeatherLocation {
-    gchar *name;
+    gchar *untrans_name;
+    gchar *trans_name;
     gchar *code;
     gchar *zone;
     gchar *radar;
+    gboolean zone_valid;
 };
 
 
 
-extern WeatherLocation *weather_location_new (const gchar *name, const gchar *code, const gchar *zone, const gchar *radar);
+extern WeatherLocation *weather_location_new (const gchar *untrans_name, const gchar *trans_name, const gchar *code, const gchar *zone, const gchar *radar);
 extern WeatherLocation *weather_location_clone (const WeatherLocation *location);
 extern void weather_location_free (WeatherLocation *location);
 extern gboolean weather_location_equal (const WeatherLocation *location1, const WeatherLocation *location2);
@@ -135,13 +137,6 @@ typedef struct _WeatherConditions WeatherConditions;
 
 extern const gchar *weather_conditions_string (WeatherConditions cond);
 
-enum _WeatherUnits {
-    UNITS_IMPERIAL,
-    UNITS_METRIC
-};
-
-typedef enum _WeatherUnits WeatherUnits;
-
 enum _WeatherForecastType {
     FORECAST_STATE,
     FORECAST_ZONE
@@ -150,13 +145,11 @@ enum _WeatherForecastType {
 typedef enum _WeatherForecastType WeatherForecastType;
 
 typedef gdouble WeatherTemperature;
-typedef gint WeatherHumidity;
+typedef gdouble WeatherHumidity;
 typedef gint WeatherWindSpeed;
 typedef gdouble WeatherPressure;
 typedef gdouble WeatherVisibility;
 
-extern void weather_units_set (WeatherUnits units);
-extern WeatherUnits weather_units_get (void);
 
 extern void weather_forecast_set (WeatherForecastType forecast);
 extern WeatherForecastType weather_forecast_get (void);
@@ -171,13 +164,11 @@ typedef time_t WeatherUpdate;
 struct _WeatherInfo {
     gboolean valid;
     WeatherLocation *location;
-    WeatherUnits units;
     WeatherUpdate update;
     WeatherSky sky;
     WeatherConditions cond;
     WeatherTemperature temp;
     WeatherTemperature dew;
-    WeatherHumidity humidity;
     WeatherWindDirection wind;
     WeatherWindSpeed windspeed;
     WeatherPressure pressure;
@@ -186,14 +177,17 @@ struct _WeatherInfo {
     gchar *metar_buffer;
     gchar *iwin_buffer;
     gchar *met_buffer;
+    gchar *bom_buffer;
     gchar *radar_buffer;
     gchar *radar_url;
     GdkPixbufLoader *radar_loader;
     GdkPixmap *radar;
+    GdkBitmap *radar_mask;
     GnomeVFSAsyncHandle *metar_handle;
     GnomeVFSAsyncHandle *iwin_handle;
     GnomeVFSAsyncHandle *wx_handle;
     GnomeVFSAsyncHandle *met_handle;
+    GnomeVFSAsyncHandle *bom_handle;
     gboolean requests_pending;
     GWeatherApplet *applet;
 };
@@ -224,6 +218,7 @@ extern const gchar *weather_info_get_humidity (WeatherInfo *info);
 extern const gchar *weather_info_get_wind (WeatherInfo *info);
 extern const gchar *weather_info_get_pressure (WeatherInfo *info);
 extern const gchar *weather_info_get_visibility (WeatherInfo *info);
+extern const gchar *weather_info_get_apparent (WeatherInfo *info);
 extern const gchar *weather_info_get_forecast (WeatherInfo *info);
 extern GdkPixmap *weather_info_get_radar (WeatherInfo *info);
 
@@ -241,4 +236,3 @@ extern void _weather_info_get_pixbuf (WeatherInfo *info, gboolean mini, GdkPixbu
 G_END_DECLS
 
 #endif /* __WEATHER_H_ */
-

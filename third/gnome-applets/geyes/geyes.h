@@ -22,7 +22,7 @@
 #include <gnome.h>
 #include <panel-applet.h>
 
-#define MAX_EYES 5
+#define MAX_EYES 1000
 typedef struct
 {
 	GtkWidget *pbox;
@@ -33,11 +33,14 @@ typedef struct
 typedef struct 
 {
 	/* Applet */
+	GtkWidget   *about_dialog;
 	PanelApplet *applet;
-	GtkWidget   *fixed;
+	GtkWidget   *vbox;
 	GtkWidget   *hbox;
-	GtkWidget   *eyes[MAX_EYES];
+	GtkWidget   **eyes;
 	guint        timeout_id;
+	gint pointer_last_x;
+	gint pointer_last_y;
 
 	/* Theme */
 	GdkPixbuf *eye_image;
@@ -67,8 +70,10 @@ void destroy_eyes (EyesApplet *eyes_applet);
 
 
 /* theme.c */
-void load_theme    (EyesApplet        *eyes_applet,
-		    const gchar       *theme_dir);
+void theme_dirs_create (void);
+
+int load_theme    (EyesApplet        *eyes_applet,
+		   const gchar       *theme_dir);
 
 void properties_cb (BonoboUIComponent *uic,
 		    EyesApplet        *eyes_applet,

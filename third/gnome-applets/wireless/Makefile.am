@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 NULL=
+SUBDIRS = docs
 
 INCLUDES = 							\
 	-I$(top_srcdir)/intl 					\
@@ -9,7 +10,7 @@ INCLUDES = 							\
 	-DICONDIR=\""$(datadir)/pixmaps"\"			\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		\
 	-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED		\
-	-DGTK_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED	\
+	-DGNOME_DISABLE_DEPRECATED	\
 	$(NULL)
 
 libexec_PROGRAMS = wireless-applet
@@ -47,7 +48,7 @@ pixmap_DATA = no-link-0.png	\
 	wireless-applet.png	\
 	$(NULL)
 
-CLEANFILES = GNOME_Panel_WirelessApplet.server *.bak *.gladep
+CLEANFILES = $(server_in_files) $(server_DATA) *.bak *.gladep
 
 EXTRA_DIST = 				\
 	$(server_in_in_files)		\

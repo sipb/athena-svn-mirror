@@ -1,3 +1,249 @@
+2004-09-12  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/geyes-C.omf:
+	* docs/C/geyes.xml:
+	* docs/C/figures/geyes_applet.png:
+	- Updated for 2.8
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec.
+	* geyes.c: (help_cb): Use gnome_help_*
+	* themes.c: (phelp_cb): Use gnome_help_*
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* geyes.h: ANSI this.
+	* themes.c: (theme_dirs_create): ANSI that. Also
+	static something == FALSE is bad. Add gboolean to that.
+
+2004-06-09  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* themes.c (properties_cb): Put the treeview
+	in a scrolled window and make the dialog a tad
+	bigger so everything fits better in it.
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/ja/*: Put back ja docs since the original
+	author never got back to me.
+
+2004-03-16  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/Makefile.am: Add l10n'd docs to the build.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*.sgml: Remove the old sgml stuff, we don't
+	need it anymore.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* docs/*: Localized online documentation from the 
+	Sun translation team for de, es, fr, it, ko, sv
+	zh_CN, zh_HK and zh_TW.
+
+2004-02-29  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.c (applet_back_change):
+	Removed bogus return.
+
+2004-02-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.h: Bumping up MAX_EYES hard limit
+	to 1000. 100 eyes seem to fit with a high
+	resolution.
+
+2004-02-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.c (applet_back_change):
+	Cleaned up and fixed transparency for color
+	background panels.
+
+	(applet_set_back_pixmap):
+	Cleaned up, trying to get panel pixmap
+	backgrounds working. Still crashes tho.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.c (about_cb):
+	Set the right screen when the user requests
+	the about dialog and it's already there
+	but not on the right screen.
+
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.c (destroy_cb): Destroy the eye
+	box and GtkWidget eye array.
+
+	(destroy_eyes):
+	Free the GtkWidget eye array.
+
+	(setup_eyes):
+	Allocate memory for the eye array.
+
+	* geyes.h: Changed GtkWidget *eyes[MAX_EYES] into
+	GtkWidget **eyes within the EyesApplet structure.
+
+	Bumped MAX_EYES up to 100 which is basicly sanity
+	because themes with such a great number of eyes are
+	insane anyway.
+
+	* themes.c (parse_theme_file):
+	Check if the eyes in the theme is above MAX_EYES. If
+	so set the num_eyes entry to MAX_EYES.
+
+	Fixes bug #106315.
+
+2004-02-22  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* themes.c (theme_dirs_create):
+	Added function that fills the theme_directories
+	list. Removed the static declaration so themes
+	installed in ~/.gnome2/geyes-themes/ works again.
+
+	* themes.h: Added prototype for theme_dirs_create.
+
+	* geyes.c (geyes_applet_factory):
+	Call theme_dirs_create.
+
+	Fixes bug #122872.
+
+2004-02-12 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/geyes.xml: Updated for GNOME 2.6.
+	* docs/C/geyes-C.omf: Updated for GNOME 2.6.
+	* docs/C/l10n.txt: Updated for GNOME 2.6.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-02-06  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* themes.c: Patch by Kjartan Maraas <kmaraas@gnome.org>
+	to cleanup some deprecated glib functions.
+
+2004-02-04  Chee Bin HOH  <cbhoh@gnome.org>
+
+        * themes/Makefile.am: Fix bug #133100 for properly
+        installing themes files.
+
+2004-02-01  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* geyes.c (properties_load): Check if the theme didn't have a fatal.
+	(create_eyes): Remove properties_load and setup_eyes here and do that
+	after the signals have been connected so we can fire the destroy
+	signal from properties_load, this happens when there is a major
+	error while loading the theme file.
+	(geyes_applet_fill):
+	Do the properties_load and setup_eyes after the signals are bind. Also
+	check on error from properties_load.
+	(geyes_applet_factory):
+	Check on error, and exit if one happened.
+	* geyes.h: Changed prototype for load_theme to reflect changes in
+	themes.c.
+	* themes.c (load_theme):
+	Popup an error when themes aren't installed instead of crashing.
+	Also emit the destroy signal and return FALSE so that the applet
+	exits itself.
+
+	Fixes #132635.
+
+2004-01-28  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* geyes.c: (about_cb): Set the screen for the
+	about dialog.
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+Fri Jan 12 2004 Archana Shah <archana.shah@wipro.com>
+
+	* geyes.h: Added a field in the structure EyesApplet.
+	* geyes.c: (about_cb): Replaced the static variable about by the
+	structure member about_dialog.
+	(geyes_applet_fill): Initialized the about_dialog member with NULL.
+	(destroy_cb): Destroy the about dialog when the applet is removed.
+	Fixes bug #131074
+
+Mon Sep 15 15:17:32 2003  George Lebl <jirka@5z.com>
+
+	* geyes.c: when started in lockdown mode, hide the preferences item
+
+2003-08-23  Irene Ryan <irene.ryan@sun.com>
+
+	* docs/C/geyes.xml, geyes-C.omf, l10n.txt: Minor updates for
+	  GNOME 2.4 release.
+	* docs/C/geyes.sgml, geyes_applet.sgml: deleting obsolete files.
+
+2003-08-21  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* docs/C/geyes-C.omf: Correct the Category name to fix the 
+	'geyes' applet link missing problem in yelp. Bugzilla bug: 120293
+
+2003-07-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* themes.c:  HIGify widget padding between the vbox and 
+	action area of the dialog.  Thanks to <chris@gnome-de.org>
+	Christian - Manny Calavera - Neumair.
+
+Thu Jul 03 15:58:56 2003  George Lebl <jirka@5z.com>
+
+	* themes.c: key-writability for theme_path preference
+
+2003-06-02  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* geyes.[ch]: Center the geyes image on the panel.
+ 
+2003-06-02  Kevin Vandersloot
+
+	* geyes.c: expand for Fitt's law.
+
+2003-05-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* themes.c:  HIGify the action area of the preferences dialog.  
+
+2003-05-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* themes.c: work on systems not supporting PATH_MAX. Patch by
+	Christian Marillat. Fixes part of bug #111466
+
+2003-04-26  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* themes.c:  More HIGification of the preferences dialog: adds 
+	a proper mnemonic label to the listview.
+
+2003-04-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* themes.c:  HIGify the preference dialog.
+
+2003-04-21  Kevin Vandersloot <kfv101@psu.edu>
+
+	* themes.c: fix small memory leak from previous patch. Thanks to Pasupathi
+	Duraisamy.
+
+2003-04-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	* geyes.c: themes.c: handle theme directories not configuree properly. Fixes bug
+	#110852
+
+2003-03-22  Kevin Vandersloot <kfv101@psu.edu>
+
+	* geyes.c: another optimization. Don't update the applet if the cursor hasn't moved.
+
+2003-03-15  Kevin Vandersloot <kfv101@psu.edu>
+
+	* geyes.c: small optimization of display and use GtkImage to get rid
+	of flashing.
+
+2003-03-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* geyes.c: (help_cb):
+	* themes.c: (phelp_cb): update for screen-exec changes.
+
 2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
 	* geyes.c (destroy_cb): Destroy the preferences dialog
 	when the applet is destroyed.

@@ -32,14 +32,28 @@
 #include "cmd_completion.h"
 #include "history.h"
 
-static gint file_browser_ok_signal(GtkWidget *widget, gpointer file_select);
+static gint file_browser_response_signal(GtkWidget *widget, gint response, gpointer mc_data);
 static gint history_popup_clicked_cb(GtkWidget *widget, gpointer data);
 static gint history_popup_clicked_inside_cb(GtkWidget *widget, gpointer data);
 static gchar* history_auto_complete(GtkWidget *widget, GdkEventKey *event);
 
 
 static int history_position = MC_HISTORY_LIST_LENGTH;
-static char browsed_filename[300] = "";
+static gchar *browsed_folder = NULL;
+
+static gboolean
+button_press_cb (GtkEntry   *entry,
+		 GdkEventKey *event,
+		 MCData      *mc)
+{
+    const gchar *str;
+    if (mc->error) { 
+	   mc->error = FALSE; 
+	   str = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+	   gtk_entry_set_text (entry, (gchar *) str + 3);
+	}
+    return FALSE;
+}
 
 static gboolean
 command_key_event (GtkEntry   *entry,
@@ -51,7 +65,14 @@ command_key_event (GtkEntry   *entry,
     static char current_command[MC_MAX_COMMAND_LENGTH];
     char buffer[MC_MAX_COMMAND_LENGTH];
     gboolean propagate_event = TRUE;
+    const gchar *str;
 
+    if (mc->error) { 
+	   mc->error = FALSE; 
+	   str = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+	   gtk_entry_set_text (entry, (gchar *) str + 3);
+	   gtk_editable_set_position (GTK_EDITABLE (entry), strlen (str));
+	}
     if(key == GDK_Tab
        || key == GDK_KP_Tab
        || key == GDK_ISO_Left_Tab)
@@ -120,12 +141,10 @@ command_key_event (GtkEntry   *entry,
 	    strcpy(command, (char *) gtk_entry_get_text(entry));
 	    mc_exec_command(mc, command);
 
-	    append_history_entry(mc, (char *) command, FALSE);
 	    history_position = MC_HISTORY_LIST_LENGTH;		   
 	    free(command);
 
 	    strcpy(current_command, "");
-	    gtk_entry_set_text(entry, (gchar *) "");
 	    propagate_event = FALSE;
 	}
     else if (mc->preferences.auto_complete_history && key >= GDK_space && key <= GDK_asciitilde )
@@ -276,7 +295,7 @@ mc_show_history (GtkWidget *widget,
 			    gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
      gtk_window_set_policy(GTK_WINDOW(window), 0, 0, 1);
      /* cb */
-     gtk_signal_connect_after(GTK_OBJECT(window),
+     g_signal_connect_after(GTK_OBJECT(window),
 			      "button_press_event",
 			      GTK_SIGNAL_FUNC(history_popup_clicked_cb),
 			      NULL);
@@ -299,7 +318,7 @@ mc_show_history (GtkWidget *widget,
      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				    GTK_POLICY_AUTOMATIC,
 				    GTK_POLICY_AUTOMATIC);
-     gtk_signal_connect(GTK_OBJECT(scrolled_window),
+     g_signal_connect(GTK_OBJECT(scrolled_window),
 			"button_press_event",
 			GTK_SIGNAL_FUNC(history_popup_clicked_inside_cb),
 			NULL);
@@ -312,7 +331,7 @@ mc_show_history (GtkWidget *widget,
      /* add history entries to list */
      if (j == 0) {
           gtk_list_store_append (store, &iter);
-          gtk_list_store_set (store, &iter,0, "no items in history", -1);
+          gtk_list_store_set (store, &iter,0, _("No items in history"), -1);
      }
      else {	
           for(i = 0; i < MC_HISTORY_LIST_LENGTH; i++)
@@ -398,22 +417,31 @@ mc_show_history (GtkWidget *widget,
 }
 
 static gint 
-file_browser_ok_signal(GtkWidget *widget, gpointer file_select)
+file_browser_response_signal(GtkWidget *widget, gint response, gpointer mc_data)
 {
-    GtkWidget *fs = file_select;
-    MCData *mc = g_object_get_data (G_OBJECT (fs), "applet");
-    /* get selected file name */
-    strcpy(browsed_filename, (char *) gtk_file_selection_get_filename(GTK_FILE_SELECTION(file_select)));
+    MCData *mc = mc_data;
+    gchar *filename;
+
+    if (response == GTK_RESPONSE_OK) {
+    
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(mc->file_select));
+        
+        if (filename != NULL) {
+            if (browsed_folder)
+                g_free (browsed_folder);
+            
+            browsed_folder = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER(mc->file_select));
+            
+            mc_exec_command(mc, filename);
+            g_free(filename);
+       }
+    }
 
     /* destroy file select dialog */
-    gtk_widget_destroy(GTK_WIDGET(file_select));
-    
-    /* printf("Filename: %s\n", (char *)  browsed_filename); */
+    gtk_widget_destroy (mc->file_select);
+    mc->file_select = NULL;
 
-    /* execute command */
-    mc_exec_command(mc, browsed_filename);
-
-    /* go on */
+     /* go on */
     return FALSE;  
 }
 
@@ -427,28 +455,30 @@ mc_show_file_browser (GtkWidget *widget,
     }
 
     /* build file select dialog */
-    mc->file_select = gtk_file_selection_new((gchar *) _("Start program"));
-    g_object_set_data (G_OBJECT (mc->file_select), "applet", mc);
-    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(mc->file_select)->ok_button),
-		       "clicked",
-		       GTK_SIGNAL_FUNC(file_browser_ok_signal),
-		       GTK_OBJECT(mc->file_select));
-    gtk_signal_connect_object(GTK_OBJECT(GTK_FILE_SELECTION(mc->file_select)->cancel_button),
-			      "clicked",
-			      GTK_SIGNAL_FUNC(gtk_widget_destroy),
-			      GTK_OBJECT (mc->file_select));
+    mc->file_select = gtk_file_chooser_dialog_new((gchar *) _("Start program"),
+						  NULL,
+						  GTK_FILE_CHOOSER_ACTION_OPEN,
+						  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						  GTK_STOCK_EXECUTE, GTK_RESPONSE_OK,
+						  NULL);
+
+    g_signal_connect(G_OBJECT(mc->file_select),
+		     "response",
+		     G_CALLBACK(file_browser_response_signal),
+		     mc);
 
     /* set path to last selected path */
-    gtk_file_selection_set_filename(GTK_FILE_SELECTION(mc->file_select),
-				    (gchar *) browsed_filename);
+    if (browsed_folder)
+        gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER(mc->file_select),
+			          (gchar *) browsed_folder);
 
     /* Set as modal */
     gtk_window_set_modal(GTK_WINDOW(mc->file_select),TRUE);
 
     gtk_window_set_screen (GTK_WINDOW (mc->file_select), 
 			   gtk_widget_get_screen (GTK_WIDGET (mc->applet)));
-    gtk_window_set_position (GTK_WINDOW (mc->file_select), GTK_WIN_POS_MOUSE);
-
+    gtk_window_set_position (GTK_WINDOW (mc->file_select), GTK_WIN_POS_CENTER);
+    
     gtk_widget_show(mc->file_select);
 
     return FALSE;
@@ -458,11 +488,12 @@ void
 mc_create_command_entry (MCData *mc)
 {
     mc->entry = gtk_entry_new_with_max_length (MC_MAX_COMMAND_LENGTH); 
-
-    g_signal_connect (mc->entry,"destroy",
-		      G_CALLBACK (gtk_widget_destroyed), &mc->entry);
+    
     g_signal_connect (mc->entry, "key_press_event",
 		      G_CALLBACK (command_key_event), mc);
+   
+    g_signal_connect (mc->entry, "button_press_event",
+		      G_CALLBACK (button_press_cb), mc);
 
     if (!mc->preferences.show_default_theme)
         mc_command_update_entry_color (mc); 
@@ -486,7 +517,7 @@ mc_command_update_entry_color (MCData *mc)
 
     gtk_widget_modify_text (mc->entry, GTK_STATE_NORMAL, &fg);
     gtk_widget_modify_text (mc->entry, GTK_STATE_PRELIGHT, &fg);
-
+   
     bg.red   = mc->preferences.cmd_line_color_bg_r;
     bg.green = mc->preferences.cmd_line_color_bg_g;
     bg.blue  = mc->preferences.cmd_line_color_bg_b;
@@ -499,16 +530,14 @@ void
 mc_command_update_entry_size (MCData *mc)
 {
     int size_x = -1;
-
+    
     size_x = mc->preferences.normal_size_x - 17;
-
-    if (mc->preferences.show_handle)
-	size_x -= 10;
-
-    if (mc->preferences.show_frame)
-	size_x -= 10;
-
-    gtk_widget_set_size_request (GTK_WIDGET (mc->entry), size_x, -1); 
+    if ((mc->orient == PANEL_APPLET_ORIENT_LEFT) || (mc->orient == PANEL_APPLET_ORIENT_RIGHT)) {
+      size_x = MIN(size_x, mc->preferences.panel_size_x - 17);
+      gtk_widget_set_size_request (GTK_WIDGET (mc->entry), size_x, -1);
+    } else {
+      gtk_widget_set_size_request (GTK_WIDGET (mc->entry), size_x, mc->preferences.normal_size_y+2);
+    }
 }
 
 

@@ -21,8 +21,7 @@
 
 #include <config.h>
 
-#include <libgnome/gnome-help.h>
-#include <egg-screen-help.h>
+#include <libgnomeui/gnome-help.h>
 
 #include "help.h"
 
@@ -33,9 +32,10 @@ show_help (BonoboUIComponent *uic,
 {
     GError *error = NULL;
    
-    egg_screen_help_display (
+    gnome_help_display_on_screen (
+		"command-line", NULL,
 		gtk_widget_get_screen (GTK_WIDGET (mcdata->applet)),
-		"command-line", NULL, &error);
+		&error);
 
     if (error) { /* FIXME: this error needs to be seen by the user */
     	g_warning ("help error: %s\n", error->message);

@@ -34,39 +34,43 @@ if BUILD_BATTSTAT_APPLET
 battstat_SUBDIR = battstat
 endif
 
-if BUILD_PANEL_MENU
-panel_menu_SUBDIR = panel-menu
+if APPLET_ACCESSX
+accessx_status_SUBDIR = accessx-status
+endif
+
+if APPLET_GSWITCHIT
+gswitchit_SUBDIRS = libgswitchit gswitchit
 endif
 
 always_built_SUBDIRS = \
 	drivemount	\
 	charpick	\
 	geyes		\
+	mailcheck	\
 	mini-commander	\
 	gkb-new		\
-	wireless
+	wireless	\
+	stickynotes
 
 SUBDIRS = \
 	po			\
-	screen-exec		\
+	$(always_built_SUBDIRS)	\
 	$(mixer_SUBDIRS)	\
 	$(modemlights_SUBDIRS)	\
 	$(cdplayer_SUBDIRS)	\
-	$(always_built_SUBDIRS)	\
 	$(gtop_SUBDIRS)		\
 	$(vfs_SUBDIRS)		\
 	$(battstat_SUBDIR)	\
-	$(panel_menu_SUBDIR)	\
-	omf-install	
+	$(accessx_status_SUBDIR)\
+	$(gswitchit_SUBDIRS)
 
 DIST_SUBDIRS = \
 	po		\
-	screen-exec	\
+	mailcheck	\
 	mixer		\
 	modemlights	\
 	cdplayer	\
 	drivemount	\
-	panel-menu	\
 	charpick	\
 	geyes		\
 	mini-commander	\
@@ -77,18 +81,19 @@ DIST_SUBDIRS = \
 	gweather 	\
 	mini-commander	\
 	man		\
-	omf-install	\
-	wireless
+	wireless	\
+	accessx-status	\
+	stickynotes	\
+	libgswitchit	\
+	gswitchit
 
 EXTRA_DIST = \
 	COPYING-DOCS		\
 	gnome-applets.spec.in	\
 	gnome-applets.spec	\
-	applet-docs.make	\
-	sgmldocs.make		\
 	intltool-update.in	\
 	intltool-extract.in	\
 	intltool-merge.in	\
-	message-of-doom		\
-	xmldocs.make
+	xmldocs.make		\
+	omf.make
 

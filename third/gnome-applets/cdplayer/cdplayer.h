@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <gconf/gconf-client.h>
 #include <panel-applet.h>
 #include "cdrom-interface.h"
 
@@ -35,14 +36,21 @@ G_BEGIN_DECLS
 typedef struct
 {
     int timeout;
+    gboolean played_by_applet;
     cdrom_device_t cdrom_device;
     int size;
     PanelAppletOrient orient;
     char *devpath;
     gchar *time_description;
     gchar *track_description;
+    GConfClient *gconf_client;
+    
+    GtkWidget *about_dialog;
     GtkWidget *play_image, *pause_image, *current_image;
     GtkWidget *prefs_dialog;
+    GtkWidget *error_io_dialog;
+    GtkWidget *error_busy_dialog;
+    
     struct
     {
         GtkWidget *applet;

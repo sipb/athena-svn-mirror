@@ -25,9 +25,8 @@
  *
  */
 
+#include <config.h>
 #include "gkb.h"
-
-
 
 /**
  * gkb_system_set_keymap_idle:
@@ -56,6 +55,10 @@ gkb_system_set_keymap_idle (GKB *gkb)
     gnome_error_dialog (str);
     g_free (str);
    }
+
+  if (gkb->update != NULL)
+    (gkb->update) (gkb, FALSE);
+
   return FALSE;
 }
 

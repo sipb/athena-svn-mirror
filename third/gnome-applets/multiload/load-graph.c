@@ -6,8 +6,10 @@
 #include <dirent.h>
 #include <string.h>
 #include <time.h>
-#include <gnome.h>
+#include <glib.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtk.h>
+#include <gnome.h>
 #include <panel-applet.h>
 
 #include "global.h"
@@ -41,10 +43,11 @@ load_graph_draw (LoadGraph *g)
     {
 		GdkColormap *colormap;
 
-		colormap = gdk_window_get_colormap (g->disp->window);
+		colormap = gdk_drawable_get_colormap (g->disp->window);
 		
 		for (i = 0; i < g->n; i++)
-	 	   gdk_color_alloc (colormap, &(g->colors [i]));
+	 	   gdk_colormap_alloc_color (colormap, &(g->colors [i]),
+					     FALSE, TRUE);
 
 		g->colors_allocated = 1;
     }
@@ -65,20 +68,20 @@ load_graph_draw (LoadGraph *g)
 
 		for (i = 0; i < g->draw_width; i++) {
 	 	   gdk_draw_line (g->pixmap, g->gc,
-				  g->draw_width - i, g->pos[i],
-			 	  g->draw_width - i, g->pos[i] - g->data[i][j]);
+				  g->draw_width - i - 1, g->pos[i],
+			 	  g->draw_width - i - 1, g->pos[i] - g->data[i][j]);
 
 		    g->pos [i] -= g->data [i][j];
 		}
     }
 	
-    gdk_draw_pixmap (g->disp->window,
-		     g->disp->style->fg_gc [GTK_WIDGET_STATE(g->disp)],
-		     g->pixmap,
-		     0, 0,
-		     0, 0,
-		     g->draw_width,
-		     g->draw_height);
+    gdk_draw_drawable (g->disp->window,
+		       g->disp->style->fg_gc [GTK_WIDGET_STATE(g->disp)],
+		       g->pixmap,
+		       0, 0,
+		       0, 0,
+		       g->draw_width,
+		       g->draw_height);
 	
     for (i = 0; i < g->draw_width; i++)
 		memcpy (g->odata [i], g->data [i], g->data_size);
@@ -87,15 +90,18 @@ load_graph_draw (LoadGraph *g)
 }
 
 /* Updates the load graph when the timeout expires */
-static int
+static gboolean
 load_graph_update (LoadGraph *g)
 {
     guint i, j;
 
-	if (g->tooltip_update)
-		multiload_applet_tooltip_update(g);
-	else		
-	    g->get_data (g->draw_height, g->data [0], g);
+    if (g->data == NULL)
+	return TRUE;
+    
+    if (g->tooltip_update)
+	multiload_applet_tooltip_update(g);
+    else		
+	g->get_data (g->draw_height, g->data [0], g);
 
     for (i=0; i < g->draw_width-1; i++)
 		for (j=0; j < g->n; j++)
@@ -109,7 +115,6 @@ void
 load_graph_unalloc (LoadGraph *g)
 {
     int i;
-	gchar name[32];
 	
     if (!g->allocated)
 		return;
@@ -127,13 +132,17 @@ load_graph_unalloc (LoadGraph *g)
     g->pos = NULL;
     g->data = g->odata = NULL;
     
-    g_snprintf(name, sizeof(name), "%s_size", g->name);
     g->size = panel_applet_gconf_get_int(g->applet, "size", NULL);
     g->size = MAX (g->size, 10);
 
     if (g->pixmap) {
-		gdk_pixmap_unref (g->pixmap);
+		g_object_unref (g->pixmap);
 		g->pixmap = NULL;
+    }
+
+    if (g->gc) {
+		g_object_unref (g->gc);
+		g->gc = NULL;
     }
 
     g->allocated = FALSE;
@@ -142,12 +151,10 @@ load_graph_unalloc (LoadGraph *g)
 static void
 load_graph_alloc (LoadGraph *g)
 {
-    int pixel_size, i;
+    int i;
 
     if (g->allocated)
 		return;
-
-    g->show_frame = 1;
 
     g->data = g_new0 (guint *, g->draw_width);
     g->odata = g_new0 (guint *, g->draw_width);
@@ -168,20 +175,16 @@ load_graph_configure (GtkWidget *widget, GdkEventConfigure *event,
 		      gpointer data_ptr)
 {
     LoadGraph *c = (LoadGraph *) data_ptr;
-	
+    
     load_graph_unalloc (c);
 
-    if (c->orient) {
-    	c->draw_width = c->pixel_size - 2;
-    	c->draw_height = c->size - 2;
-    }
-    else {
-    	c->draw_width = c->size - 2;
-    	c->draw_height = c->pixel_size - 2;
-    }
-
+    c->draw_width = c->disp->allocation.width;
+    c->draw_height = c->disp->allocation.height;
+    c->draw_width = MAX (c->draw_width, 1);
+    c->draw_height = MAX (c->draw_height, 1);
+    
     load_graph_alloc (c);
-
+ 
     if (!c->pixmap)
 	c->pixmap = gdk_pixmap_new (c->disp->window,
 				    c->draw_width,
@@ -193,16 +196,15 @@ load_graph_configure (GtkWidget *widget, GdkEventConfigure *event,
 			TRUE, 0,0,
 			c->draw_width,
 			c->draw_height);
-    gdk_draw_pixmap (widget->window,
-		     c->disp->style->fg_gc [GTK_WIDGET_STATE(widget)],
-		     c->pixmap,
-		     0, 0,
-		     0, 0,
-		     c->draw_width,
-		     c->draw_height);
-	
+    gdk_draw_drawable (widget->window,
+		       c->disp->style->fg_gc [GTK_WIDGET_STATE(widget)],
+		       c->pixmap,
+		       0, 0,
+		       0, 0,
+		       c->draw_width,
+		       c->draw_height);
+
     return TRUE;
-    event = NULL;
 }
 
 static gint
@@ -210,13 +212,14 @@ load_graph_expose (GtkWidget *widget, GdkEventExpose *event,
 		   gpointer data_ptr)
 {
     LoadGraph *g = (LoadGraph *) data_ptr;
-	
-    gdk_draw_pixmap (widget->window,
-		     widget->style->fg_gc [GTK_WIDGET_STATE(widget)],
-		     g->pixmap,
-		     event->area.x, event->area.y,
-		     event->area.x, event->area.y,
-		     event->area.width, event->area.height);
+
+    gdk_draw_drawable (widget->window,
+		       widget->style->fg_gc [GTK_WIDGET_STATE(widget)],
+		       g->pixmap,
+		       event->area.x, event->area.y,
+		       event->area.x, event->area.y,
+		       event->area.width, event->area.height);
+
     return FALSE;
 }
 
@@ -226,11 +229,14 @@ load_graph_destroy (GtkWidget *widget, gpointer data_ptr)
     LoadGraph *g = (LoadGraph *) data_ptr;
 	
     load_graph_stop (g);
+    if (g->tooltips) {
+    		g_object_unref (g->tooltips);
+		g->tooltips = NULL;
+    }
 
     gtk_widget_destroy(widget);
     object_list = g_list_remove (object_list, g);
     return;
-    widget = NULL;
 }
 
 void
@@ -274,7 +280,7 @@ load_graph_new (PanelApplet *applet, guint n, gchar *label,
     g->size   = MAX (size, 10);
     g->pixel_size = panel_applet_get_size (applet);
     g->tooltip_update = FALSE;
-    
+    g->show_frame = TRUE;
     g->applet = applet;
 		
     g->main_widget = gtk_vbox_new (FALSE, FALSE);
@@ -300,28 +306,17 @@ load_graph_new (PanelApplet *applet, guint n, gchar *label,
 	g_assert_not_reached ();
     }
     
-    if (g->orient) {
-    	g->draw_width = g->pixel_size - 2;
-    	g->draw_height = g->size - 2;
-    }
-    else {
-    	g->draw_width = g->size - 2;
-    	g->draw_height = g->pixel_size - 2;
-    }
-
-    load_graph_alloc (g);	
-		
     if (g->show_frame)
     {
 	g->frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (g->frame), GTK_SHADOW_ETCHED_IN);
+	gtk_frame_set_shadow_type (GTK_FRAME (g->frame), GTK_SHADOW_IN);
 	gtk_container_add (GTK_CONTAINER (g->frame), g->box);
-	gtk_container_add (GTK_CONTAINER (g->main_widget), g->frame);
+	gtk_box_pack_start (GTK_BOX (g->main_widget), g->frame, TRUE, TRUE, 0);
     }
     else
     {
 	g->frame = NULL;
-	gtk_container_add (GTK_CONTAINER (g->main_widget), g->box);
+	gtk_box_pack_start (GTK_BOX (g->main_widget), g->box, TRUE, TRUE, 0);
     }
 
     load_graph_load_config (g);
@@ -330,12 +325,15 @@ load_graph_new (PanelApplet *applet, guint n, gchar *label,
 
     g->timer_index = -1;
 
-
-    gtk_widget_set_size_request (g->main_widget, g->pixel_size, g->size);
-    gtk_widget_set_size_request (g->main_widget, g->size, g->pixel_size);
+    if (g->orient)
+    	gtk_widget_set_size_request (g->main_widget, -1, g->size);
+    else
+        gtk_widget_set_size_request (g->main_widget, g->size, -1);
 
     g->tooltips = gtk_tooltips_new();
-   	
+    g_object_ref (g->tooltips);
+    gtk_object_sink (GTK_OBJECT (g->tooltips));
+
     g->disp = gtk_drawing_area_new ();
     gtk_widget_set_events (g->disp, GDK_EXPOSURE_MASK | GDK_ENTER_NOTIFY_MASK 
     				    | GDK_LEAVE_NOTIFY_MASK);
@@ -347,7 +345,7 @@ load_graph_new (PanelApplet *applet, guint n, gchar *label,
     g_signal_connect (G_OBJECT(g->disp), "destroy",
 			G_CALLBACK (load_graph_destroy), g);
 	
-    gtk_box_pack_start_defaults (GTK_BOX (g->box), g->disp);    
+    gtk_box_pack_start (GTK_BOX (g->box), g->disp, TRUE, TRUE, 0);    
     gtk_widget_show_all(g->box);
     object_list = g_list_append (object_list, g);
     
@@ -357,19 +355,19 @@ load_graph_new (PanelApplet *applet, guint n, gchar *label,
 
 void
 load_graph_start (LoadGraph *g)
-{    
+{
     if (g->timer_index != -1)
-		gtk_timeout_remove (g->timer_index);
+		g_source_remove (g->timer_index);
 
-    g->timer_index = gtk_timeout_add (g->speed,
-				      (GtkFunction) load_graph_update, g);
+    g->timer_index = g_timeout_add (g->speed,
+                                    (GSourceFunc) load_graph_update, g);
 }
 
 void
 load_graph_stop (LoadGraph *g)
 {
     if (g->timer_index != -1)
-		gtk_timeout_remove (g->timer_index);
+		g_source_remove (g->timer_index);
     
     g->timer_index = -1;
 }

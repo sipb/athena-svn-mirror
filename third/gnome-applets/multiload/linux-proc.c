@@ -5,12 +5,17 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <assert.h>
+#ifdef __FreeBSD__
+#include <sys/socket.h>
+#include <net/if.h>
+#endif
 
 #include <glibtop.h>
 #include <glibtop/cpu.h>
 #include <glibtop/mem.h>
 #include <glibtop/swap.h>
 #include <glibtop/loadavg.h>
+#include <glibtop/netload.h>
 
 #include "linux-proc.h"
 
@@ -32,6 +37,10 @@ static unsigned needed_swap_flags =
 
 static unsigned needed_loadavg_flags =
 (1 << GLIBTOP_LOADAVG_LOADAVG);
+
+static unsigned needed_netload_flags =
+(1 << GLIBTOP_NETLOAD_IF_FLAGS) +
+(1 << GLIBTOP_NETLOAD_BYTES_TOTAL);
 
 void
 GetLoad (int Maximum, int data [4], LoadGraph *g)
@@ -127,27 +136,26 @@ GetPage (int Maximum, int data [3], LoadGraph *g)
 }
 
 void
-GetMemory (int Maximum, int data [4], LoadGraph *g)
+GetMemory (int Maximum, int data [5], LoadGraph *g)
 {
-    int user, shared, buffer, free;
-
+    int user, shared, buffer, cached;
+    
     glibtop_mem mem;
 	
     glibtop_get_mem (&mem);
 	
     assert ((mem.flags & needed_mem_flags) == needed_mem_flags);
 
-    user = mem.used - mem.buffer - mem.shared;
-	
-    user    = rint (Maximum * (float)user   / mem.total);
-    shared  = rint (Maximum * (float)mem.shared / mem.total);
-    buffer  = rint (Maximum * (float)mem.buffer / mem.total);
-    free    = rint (Maximum * (float)mem.free / mem.total);
-
+    user    = rint (Maximum * (float)mem.user / (float)mem.total);
+    shared  = rint (Maximum * (float)mem.shared / (float)mem.total);
+    buffer  = rint (Maximum * (float)mem.buffer / (float)mem.total);
+    cached = rint (Maximum * (float)mem.cached / (float)mem.total);
+    
     data [0] = user;
     data [1] = shared;
     data [2] = buffer;
-    data [3] = free;
+    data[3] = cached;
+    data [4] = Maximum-user-shared-buffer-cached;
 }
 
 void
@@ -222,19 +230,64 @@ GetLoadAvg (int Maximum, int data [2], LoadGraph *g)
 }
 
 void
-GetNet (int Maximum, int data [4], LoadGraph *g)
+GetNet (int Maximum, int data [5], LoadGraph *g)
 {
 #define SLIP_COUNT	0
 #define PPP_COUNT	1
 #define ETH_COUNT       2
 #define OTHER_COUNT	3
 #define COUNT_TYPES	4
-    int fields[4], present[COUNT_TYPES], delta[COUNT_TYPES], i;
-    static int ticks, past[COUNT_TYPES];
-    static char *netdevfmt;
+    gulong inbytes, outbytes;
+    gulong present[COUNT_TYPES];
+    int delta[COUNT_TYPES], i;
+    static int ticks = 0;
+    static gulong past[COUNT_TYPES] = {0};
+#ifdef __FreeBSD__
+    struct if_nameindex *ifindex, *ifptr;
+    static int max = 500;
+
+    ifindex = if_nameindex();
+    if (!ifindex)
+        return;
+
+    memset(present, 0, sizeof (present));
+
+    for (ifptr = ifindex; ifptr->if_index && ifptr->if_name; ifptr++)
+    {
+        int index;
+        glibtop_netload netload; 
+
+        glibtop_get_netload(&netload, ifptr->if_name);
+        if (!netload.flags)
+            continue;
+
+        assert ((netload.flags & needed_netload_flags) == needed_netload_flags);
+
+        if (!(netload.if_flags & (1L << GLIBTOP_IF_FLAGS_UP)))
+            continue;
+        if (netload.if_flags & (1L << GLIBTOP_IF_FLAGS_LOOPBACK))
+            continue;
+
+        if (netload.if_flags & (1L << GLIBTOP_IF_FLAGS_POINTOPOINT)) {
+            index = strncmp(ifptr->if_name, "sl", 2) ? PPP_COUNT : SLIP_COUNT;
+        } else {
+            index = ETH_COUNT;
+        }
+
+        present[index] += netload.bytes_total;
+    }
+
+    if_freenameindex(ifindex);    
+
+#else
+    static char *netdevfmt = NULL;
     char *cp, buffer[256];
-    int found = 0;
     FILE *fp;
+    
+    /* FIXME: this is hosed for multiple applets with the static variables */
+
+    /* FIXME: This function is generally incredibly evil -George
+       (too lazy to rewrite it though) */
 
     /*
      * We use the maximum number of bits we've seen come through to scale
@@ -251,8 +304,8 @@ GetNet (int Maximum, int data [4], LoadGraph *g)
     {
 	FILE *fp = popen("uname -r", "r");	/* still wins if /proc isn't */
 
-	/* pre-linux-2.2 format -- transmit packet count in 8th field */
-	netdevfmt = "%d %d %*d %*d %*d %d %*d %d %*d %*d %*d %*d %d";
+	/* pre-linux-2.2 format -- transmit packet count in 8th field (bytes in 1st and 7th) */
+	netdevfmt = "%lu %*d %*d %*d %*d %*d %lu";
 
 	if (!fp)
 	    return;
@@ -267,8 +320,8 @@ GetNet (int Maximum, int data [4], LoadGraph *g)
 	    }
 
 	    if (major >= 2 && minor >= 2)
-		/* Linux 2.2 -- transmit packet count in 10th field */
-		netdevfmt = "%d %d %*d %*d %*d %d %*d %*d %*d %*d %d %*d %d";
+		/* Linux 2.2 -- transmit packet count in 10th field (bytes in 1st and 9th) */
+		netdevfmt = "%lu %*d %*d %*d %*d %*d %*d %*d %lu";
 	    pclose(fp);
 	}
     }
@@ -277,55 +330,52 @@ GetNet (int Maximum, int data [4], LoadGraph *g)
     if (!fp)
 	return;
 
-    memset(present, '0', sizeof(present));
+    for (i = 0; i < COUNT_TYPES; i++)
+	    present[i] = 0;
 
     while (fgets(buffer, sizeof(buffer) - 1, fp))
     {
-	int	*resp;
+	int index;
 
 	for (cp = buffer; *cp == ' '; cp++)
 	    continue;
 
-	resp = present + OTHER_COUNT;
-	switch (cp[0]) {
-	case 'l':		
-		if (cp[1] == 'o')
-			continue;
-		break;
-	case 's':
-		if (!strncmp (cp+1, "lip", 3))
-			resp = present + SLIP_COUNT;
-		break;
-	case 'p':
-		if (!strncmp (cp+1, "pp", 2))
-			resp = present + PPP_COUNT;
-		break;
-	case 'e':
-		if (!strncmp (cp+1, "th", 2))
-			resp = present + ETH_COUNT;
-		break;
+	if (strncmp (cp, "lo", 2) == 0) {
+		continue;
+	} else if (strncmp (cp, "slip", 4) == 0) {
+		index = SLIP_COUNT;
+	} else if (strncmp (cp, "ppp", 3) == 0) {
+		index = PPP_COUNT;
+	} else if (strncmp (cp, "eth", 3) == 0) {
+		index = ETH_COUNT;
+	} else {
+      		index = OTHER_COUNT;
 	}
 
 	if ((cp = strchr(buffer, ':')))
 	{
 	    cp++;
-	    if (sscanf(cp, netdevfmt,
-		       fields, fields+1, fields+2, 
-		       fields+3,&found)>4)
-		*resp += fields[0] + fields[2];
+	    if ( sscanf(cp, netdevfmt, &inbytes, &outbytes) == 2 )
+		present[index] += inbytes + outbytes;
 	}
     }
 
     fclose(fp);
+#endif
 
-    memset(data, '\0', sizeof(data));
+    for (i = 0; i < 5; i++)
+	    data[i] = 0;
     if (ticks++ > 0)		/* avoid initial spike */
     {
 	int total = 0;
 
 	for (i = 0; i < COUNT_TYPES; i++)
 	{
-	    delta[i] = (present[i] - past[i]);
+	    /* protect against weirdness */
+	    if (present[i] >= past[i])
+		    delta[i] = (present[i] - past[i]);
+	    else
+		    delta[i] = 0;
 	    total += delta[i];
 	}
 	if (total > max)
@@ -341,7 +391,10 @@ GetNet (int Maximum, int data [4], LoadGraph *g)
 	       data[0], data[1], data[2], Maximum);
 #endif
     }
-    memcpy(past, present, sizeof(present));
+    data[4] = Maximum - data[3] - data[2] - data[1] - data[0];
+
+    for (i = 0; i < COUNT_TYPES; i++)
+	    past[i] = present[i];
 }
 
 

@@ -1,4 +1,219 @@
-2002-01-21  Arvind Samptur <arvind.samptur@wipro.com>
+2004-09-13  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/wireless.xml:
+	- Just updated how to add to the panel.  So tired.
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Remove references to screen-exec.
+	* wireless-applet.c: (wireless_applet_help_cb),
+	(prefs_response_cb): Use correct help API.
+
+2004-07-29  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (wireless_applet_draw): don't use a huge label
+	for the strength, only in the tooltip (patch by Paul Bolle
+	<pebolle@tiscali.nl>) (Closes: #140842)
+
+2004-06-10  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* wireless-applet.c: (wireless_applet_new): Display the proper
+	tooltip.
+
+	Fixes bug #140842.
+
+	Patch by: Archana Shah  <archana.shah@wipro.com>
+
+2004-04-13  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (wireless_applet_read_device_state): handle 2
+	wireless cards correctly, as well as cards with 2 interfaces such as
+	some Cisco cards (Closes: #139336)
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+	
+	* docs/*: Localized online documentation from Sun's
+	translation team in de, es, fr, it, ja, ko, sv, 
+	zh_CN, zh_HK and zh_TW.
+
+2004-02-29  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* wireless_applet.c (change_background_cb):
+	Removed bogus return.
+
+2004-02-26  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* wireless_applet.c (wireless_applet_about_cb):
+	Small fix when setting the screen.
+
+	(change_background_cb): Added function for
+	panel background change handler. 
+	Doesn't support pixmap panels yet.
+
+	(wireless_applet_new): Connect the signal
+	for change background.
+	
+2004-02-23  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* wireless_applet.c (wireless_applet_about_cb):
+	Be multihead aware.
+
+2004-02-18 Breda McColgan <breda.mccolgan@sun.com>
+
+	* docs/C/wireless.xml: Updated for GNOME 2.6.
+	* docs/C/wireless-C.omf: Updated for GNOME 2.6.
+	* docs/C/l10n.txt: Updated for GNOME 2.6.
+
+2004-02-08  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (CLEANFILES): Add .server and .server.in here.
+        (#132071, Padraig O'Briain)
+
+2004-02-05  Dennis Smit  <ds@nerds-incorporated.org>
+	
+	Patch by Kjartan Maraas <kmaraas@gnome.org>:
+
+	* wireless_applet.c (wireless_applet_draw):
+	cleanup deprecated, and added FIXME for the i18n
+	hostile icon.
+
+2004-01-31  Dennis Smit  <ds@nerds-incorporated.org>
+
+	* wireless/wireless_applet.c:
+	Added about_dialog GtkWidget to the WirelessApplet structure.
+	(wireless_applet_about_cb):
+	Use the per instance about dialog.
+	(wireless_applet_destroy):
+	Destroy the about dialog when it's still open.
+	(setup_widgets):
+	Initialize the about dialog with NULL.
+
+	Fixes #132541
+
+2004-01-12  Jon K Hellan  <hellan@acm.org>
+
+	* wireless-applet.c (wireless_applet_new): Remove spurious
+	newline, making it compile again.
+
+2004-01-12  Leena Gunda  <leena.gunda@wipro.com>
+
+	* wireless-applet.c: (wireless_applet_new)
+	Set the accessible name and description.
+	Fixes bug #128262.
+
+2003-10-23  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* Makefile.am: Removed GTK_DISABLE_DEPRECATED flag until
+	the porting is done. Fixes bug #124630. 
+
+2003-10-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* wireless-applet.c: (wireless_applet_destroy),
+	(wireless_applet_new): Merge fix for bug #124151 from
+	stable.
+
+2003-09-23  Muktha  <muktha.narayan@wipro.com>
+
+	* Provided Help in the applet's context menu and the prefences
+	  dialog. Fixes bug #122092.
+
+Mon Sep 15 15:13:29 2003  George Lebl <jirka@5z.com>
+
+	* wireless-applet.c: When started in locked down mode, hide
+	  the preferences item
+
+2003-08-22  Breda McColgan  <breda.mccolgan@sun.com>
+
+	* wireless/docs/C/wireless.xml: updated references to figures
+	* wireless/docs/C/wireless-C.omf: updated date and version number
+	* wireless/docs/C/l10n.txt: updated references to figures
+	* wireless/docs/C/figures/wireless_applet.png: deleted this file
+	* wireless/docs/C/figures/wireless_applet_conn.png: added this file
+	* wireless/docs/C/figures/wireless_applet_no_conn.png: added this file
+
+2003-08-10  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (wireless_applet_draw): make the applet have the
+	right display straight away, left-overs from the GNOME1 applet...
+
+2003-08-07  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (setup_widgets), (change_size_cb),
+	(change_orient_cb), (wireless_applet_new): make sure the pixmap
+	is updated when changing the panel's orientation or size
+
+2003-08-07  Breda McColgan  <breda.mccolgan@sun.com>
+
+	* wireless/docs: created this new directory for GNOME 2.4
+	* wireless/docs/C: created this new directory for GNOME 2.4
+	* wireless/docs/C/figures: created this new directory for GNOME 2.4
+	* wireless/docs/C/wireless.xml: created this new file for GNOME 2.4
+	* wireless/docs/C/wireless-C.omf: created this new file for GNOME 2.4
+	* wireless/docs/C/legal.xml: added this new file for GNOME 2.4
+	* wireless/docs/C/l10n.txt: created this new file for GNOME 2.4
+	* wireless/docs/C/figures/wireless_applet.png: created this new file for GNOME 2.4
+
+2003-08-06  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (wireless_applet_draw),
+	(wireless_applet_update_state), (wireless_applet_load_theme),
+	(wireless_applet_destroy), (setup_widgets), (change_orient_cb):
+	Massive cleanup to remove the over-engineered (for our use) theming
+	code and associated cleanups
+
+2003-08-06  Bastien Nocera  <hadess@hadess.net>
+
+	* wireless-applet.c: (wireless_applet_load_theme),
+	(show_warning_dialog): removed dead code
+
+2003-07-22  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* wireless-applet.glade, wireless-applet.c: Remove the "show
+	dialog box" preference, since it was never being used
+	internally. Fixes bug #117957.
+
+2003-06-04  Kevin Vandersloot
+
+	* wireless_applet.c: Expand for Fitt's law and pack tight when possible. Also handle 
+	vertical panels better.
+
+2003-05-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* wireless-applet.glade:  HIGify the action area of the preferences
+	dialog.  
+	* wireless-applet.c:  Disable resizing of the dialog.
+
+2003-04-07  Kevin Vandersloot <kfv101@psu.edu>
+
+	* *.server.in.in: tranlsate the catagory so applet gets placed in the right catagory.
+	Patch from Hidetoshi Tajima. Fixes bug #112455
+
+2003-04-30  Kevin Vandersloot <kfv101@psu.edu>
+
+	* wireless-applet.c: open pixbufs on startup so they aren't read form the file
+	all the time. Fixes bug #111893
+
+2003-04-26  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* wireless-applet.glade:  HIGify the preferences dialog: fix widget
+	padding; add missing mnemonic; set default button.
+	 
+2003-03-20  Evan Martin <martine@cs.washington.edu>
+
+	* wireless-applet.c: When there is no wireless device, show "No
+	Wireless Devices" in prefs dialog (instead of an empty menu).
+
+2003-03-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* wireless-applet.c: destroy the dialogs after being run. Fixes bug #104465. Draw
+	the applet even if no devices. Also don't close the wireless file if it doesn't exist
+
+2003-03-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* wireless-applet.c: don't set gconf string if it's NULL. Also if there's no devices then
+	there's no menuitems so don't try to get data from them. Should fix bug #107722
+
+2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
 	* wireless-applet.c (wireless_applet_destroy): Destroy
 	the prefs dialog on destroying the applet.
 

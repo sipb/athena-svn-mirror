@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000 by Jörgen Pehrson <jp@spektr.eu.org>
+ * Copyright (C) 2000 by JÃ¶rgen Pehrson <jp@spektr.eu.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *
  * May, 2000. Implemented on FreeBSD 4.0R (Compaq Armada M700)
  *
-$Id: battstat.h,v 1.1.1.2 2003-01-29 20:36:46 ghudson Exp $
+$Id: battstat.h,v 1.1.1.3 2004-10-04 03:07:32 ghudson Exp $
  */
 
 #define DEBUG 0
@@ -44,15 +44,10 @@ typedef struct _MeterData {
 
 typedef struct _ProgressData {
   GtkWidget *applet;
-  GnomeClient *smClient;
-  GtkAdjustment *adj;
   GtkStyle *style;
-  GtkTooltips *st_tip;
   GtkTooltips *ac_tip;
   GtkTooltips *progress_tip;
   GtkTooltips *progressy_tip;
-  GtkWidget *docklabel;
-  GtkWidget *aclabel;
   GtkWidget *progdir_radio;
   GtkWidget *radio_orient_horizont;
   GtkWidget *radio_lay_batt_on;
@@ -68,72 +63,60 @@ typedef struct _ProgressData {
   GdkGC *pixgc;
   GdkBitmap *mask;
   GtkWidget *pixmapwid;
-  GtkWidget *pixmapdockwid;
   GtkWidget *pixmapwidy;
-  GtkWidget *ac_event_box;
-  GtkWidget *progress_event_box;
-  GtkWidget *about_box;
+  GtkWidget *about_dialog;
   GtkDialog *prop_win;
   GtkWidget *hbox;
   GtkWidget *hbox1;
-  GtkWidget *framestatus;
-  GtkWidget *framebattery;
   GtkWidget *frameybattery;
+  GtkWidget *framebattery;
+  GtkWidget *framestatus;
   GtkWidget *percent;
   GtkWidget *eventbattery;
   GtkWidget *eventybattery;
   GtkWidget *eventstatus;
-  GtkWidget *eventdock;
-  GdkBitmap *statusmask;
   GdkPixmap *status;
   GtkWidget *statuspixmapwid;
   GtkWidget *statusvbox;
   GtkWidget *statuspercent;
-  GtkWidget *fontpicker;
-  GtkStyle *percentstyle;
-  gboolean font_changed;
+
   gboolean colors_changed;
   gboolean lowbattnotification;
   gboolean fullbattnot;
   gboolean beep;
   gboolean draintop;
   gboolean horizont;
-  gboolean own_font;
   gboolean showstatus;
   gboolean showbattery;
   gboolean showpercent;
-  gboolean suspend;
-  gboolean usedock;
+
   GtkWidget *suspend_entry;
-  gchar *suspend_cmd;
-  gchar *fontname;
-  gint ered;
-  gint eorange;
-  gint eyellow;
+  char *suspend_cmd;
+  char *fontname;
   guint red_val;
   guint orange_val;
   guint yellow_val;
-  gint panelsize;
+  int panelsize;
   PanelAppletOrient orienttype;
   GtkObject *ered_adj;
   GtkObject *eorange_adj;
   GtkObject *eyellow_adj;
   int pixtimer;
-  GtkWidget *font_toggle;
+  int acpiwatch;
+
   GtkWidget *lowbatt_toggle;
-  GtkWidget *dock_toggle;
   GtkWidget *full_toggle;
   GtkWidget *testpercent;
   GdkPixmap *testpixmap;
   GdkBitmap *testmask;
   GdkPixmap *testpixbuffer;
   GdkBitmap *testpixmask;
-  GtkWidget *testevent;
   GdkGC *testpixgc;
   GtkWidget *testpixmapwid;
-  GtkWidget *testhscale;
   GtkObject *testadj;
   GtkWidget *beep_toggle;
+  GtkWidget *lowbattnotificationdialog;
+
   /* last_* for the benefit of the timeout functions */
   guint flash;
   guint last_batt_life;
@@ -155,9 +138,8 @@ extern char * battery_gray_xpm[];
 void prop_cb (BonoboUIComponent *, ProgressData *, const char *);
 int prop_cancel (GtkWidget *, gpointer);
 
-void apm_readinfo(PanelApplet *);
+void apm_readinfo(PanelApplet *, ProgressData *);
 void adj_value_changed_cb(GtkAdjustment *, gpointer);
-void font_set_cb(GtkWidget *, int, gpointer);
 void simul_cb(GtkWidget *, gpointer);
 void helppref_cb(PanelApplet *, gpointer);
 gint pixmap_timeout(gpointer);
@@ -168,6 +150,8 @@ void help_cb (BonoboUIComponent *, ProgressData *, const char *);
 void suspend_cb (BonoboUIComponent *, ProgressData *, const char *);
 void destroy_about (GtkWidget *, gpointer);
 void about_cb (BonoboUIComponent *, ProgressData *, const char *);
-void change_size(PanelApplet *, gint, gpointer);
+void size_allocate(PanelApplet *, GtkAllocation *, gpointer);
+void change_background(PanelApplet *a, PanelAppletBackgroundType type, 
+		GdkColor *color, GdkPixmap *pixmap, ProgressData *battstat);	
 gint create_layout(ProgressData *battstat);
 void load_preferences(ProgressData *battstat);

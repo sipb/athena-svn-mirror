@@ -15,6 +15,7 @@
 G_BEGIN_DECLS
 
 #define NCPUSTATES 4
+#define NGRAPHS 5
 
 typedef struct _MultiloadApplet MultiloadApplet;
 typedef struct _LoadGraph LoadGraph;
@@ -59,7 +60,7 @@ struct _MultiloadApplet
 {
 	PanelApplet *applet;
 	
-	LoadGraph *graphs[5];
+	LoadGraph *graphs[NGRAPHS];
 	
 	GtkWidget *box;
 	
@@ -69,7 +70,9 @@ struct _MultiloadApplet
 	gboolean view_swapload;
 	gboolean view_loadavg;
 	
-	GtkWidget *check_boxes[5];
+	GtkWidget *about_dialog;
+	GtkWidget *check_boxes[NGRAPHS];
+	GtkWidget *prop_dialog;
 };
 
 #include "load-graph.h"

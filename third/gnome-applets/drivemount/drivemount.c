@@ -24,7 +24,6 @@
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
 #include <panel-applet.h>
-#include <egg-screen-exec.h>
 
 #include "drivemount.h"
 #include "properties.h"
@@ -33,18 +32,22 @@
 #include "floppy_v_out.xpm"
 #include "floppy_h_in.xpm"
 #include "floppy_h_out.xpm"
+
 #include "cdrom_v_in.xpm"
 #include "cdrom_v_out.xpm"
 #include "cdrom_h_in.xpm"
 #include "cdrom_h_out.xpm"
+
 #include "cdburn_v_in.xpm"
 #include "cdburn_v_out.xpm"
 #include "cdburn_h_in.xpm"
 #include "cdburn_h_out.xpm"
+
 #include "zipdrive_v_in.xpm"
 #include "zipdrive_v_out.xpm"
 #include "zipdrive_h_in.xpm"
 #include "zipdrive_h_out.xpm"
+
 #include "harddisk_v_in.xpm"
 #include "harddisk_v_out.xpm"
 #include "harddisk_h_in.xpm"
@@ -54,6 +57,11 @@
 #include "jazdrive_h_out.xpm"
 #include "jazdrive_v_in.xpm"
 #include "jazdrive_v_out.xpm"
+
+#include "usbstick_v_in.xpm"
+#include "usbstick_v_out.xpm"
+#include "usbstick_h_in.xpm"
+#include "usbstick_h_out.xpm"
 
 
 static gboolean applet_factory (PanelApplet *applet, const gchar *iid,
@@ -80,6 +88,7 @@ static void update_pixmap (DriveData *dd, gint t);
 static gint drive_update_cb (gpointer data);
 static void mount_cb (GtkWidget *widget, DriveData *dd);
 static void eject (DriveData *dd);
+static gboolean key_press_cb (GtkWidget *widget, GdkEventKey *event, DriveData *dd);
 
 static void browse_cb (BonoboUIComponent *uic,
 		       DriveData         *drivemount,
@@ -140,13 +149,18 @@ static IconData icon_list[] = {
 	 jazdrive_v_in_xpm,
 	 jazdrive_v_out_xpm},
 	{
+	 usbstick_h_in_xpm,
+	 usbstick_h_out_xpm,
+	 usbstick_v_in_xpm,
+	 usbstick_v_out_xpm},
+	{
 	 NULL,
 	 NULL,
 	 NULL,
 	 NULL}
 };
 
-static gint icon_list_count = 6;
+const int icon_list_count = 7;
 
 /* Bonobo Verbs for our popup menu */
 static const BonoboUIVerb applet_menu_verbs [] = {
@@ -191,8 +205,10 @@ applet_fill (PanelApplet *applet)
 	DriveData *dd;
 	BonoboUIComponent *component;
 	gchar *tmp_path;
+	AtkObject *atk_obj;
 	
 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/drivemount-applet.png");
+	panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
 	
 	panel_applet_add_preferences (applet,
 				      "/schemas/apps/drivemount-applet/prefs",
@@ -214,6 +230,9 @@ applet_fill (PanelApplet *applet)
 			  G_CALLBACK (applet_change_pixel_size), dd);
 	g_signal_connect (GTK_OBJECT (applet), "destroy",
 			  G_CALLBACK (destroy_drive_widget), dd);
+			  
+	g_signal_connect (applet, "key_press_event",
+				  G_CALLBACK (key_press_cb), dd);
 
 	panel_applet_setup_menu_from_file (PANEL_APPLET (applet),
                                            NULL,
@@ -221,6 +240,17 @@ applet_fill (PanelApplet *applet)
                                            NULL,
                                            applet_menu_verbs,
                                            dd);
+
+	if (panel_applet_get_locked_down (PANEL_APPLET (applet))) {
+		BonoboUIComponent *popup_component;
+
+		popup_component = panel_applet_get_popup_component (PANEL_APPLET (applet));
+
+		bonobo_ui_component_set_prop (popup_component,
+					      "/commands/Properties",
+					      "hidden", "1",
+					      NULL);
+	}
 
 	component = panel_applet_get_popup_component (PANEL_APPLET (applet));
 
@@ -232,6 +262,10 @@ applet_fill (PanelApplet *applet)
 		g_free (tmp_path);
 
 	redraw_pixmap (dd);
+
+	atk_obj = gtk_widget_get_accessible (dd->button);
+	atk_object_set_name (atk_obj, _("Disk Mounter"));
+
 	gtk_widget_show (GTK_WIDGET (applet));
 	start_callback_update (dd);
 	return TRUE;
@@ -244,6 +278,9 @@ create_drive_widget (PanelApplet *applet)
 
 	dd = g_new0 (DriveData, 1);
 	dd->applet = GTK_WIDGET (applet);
+
+	dd->about_dialog = NULL;
+	dd->prop_dialog = NULL;
 
 	properties_load (dd);
 
@@ -366,6 +403,20 @@ destroy_drive_widget (GtkWidget *widget, gpointer data)
 {
 	DriveData *dd = data;
 
+	gtk_timeout_remove (dd->timeout_id);
+
+	if (dd->error_dialog != NULL)
+		gtk_widget_destroy (dd->error_dialog);
+
+	if (dd->about_dialog != NULL)
+		gtk_widget_destroy (dd->about_dialog);
+
+	if (dd->prop_dialog != NULL)
+		gtk_widget_destroy (dd->prop_dialog);
+
+	g_free (dd->custom_icon_in);
+	g_free (dd->custom_icon_out);
+
 	g_free (dd->mount_point);
 	g_free (dd->mount_base);
 	g_free (dd);
@@ -386,19 +437,26 @@ browse_cb (BonoboUIComponent *uic,
 		return;
 
 	command = g_strdup_printf ("nautilus %s", drivemount->mount_point);
-	egg_screen_execute_command_line_async (
-		gtk_widget_get_screen (drivemount->applet), command, &error);
+
+	gdk_spawn_command_line_on_screen (gtk_widget_get_screen (GTK_WIDGET (drivemount->applet)),
+			command, &error); 
+
 	g_free (command);
+
 	if (error) {
 		GtkWidget *dialog;
+		char *msg;
 
-		dialog = gtk_message_dialog_new (NULL,
-						 GTK_DIALOG_DESTROY_WITH_PARENT,
-						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
-						 _("There was an error executing '%s' : %s"),
-						 command,
-						 error->message);
+		msg = g_strdup_printf (_("There was an error executing %s: %s"),
+				       command,
+				       error->message);
+		dialog = hig_dialog_new (NULL /* parent */,
+					 0 /* flags */,
+					 GTK_MESSAGE_ERROR,
+					 GTK_BUTTONS_OK,
+					 _("Cannot browse device"),
+					 msg);
+		g_free (msg);
 
 		g_signal_connect (dialog, "response",
 				  G_CALLBACK (gtk_widget_destroy),
@@ -428,6 +486,46 @@ help_cb (BonoboUIComponent *uic,
 	 const char        *verb)
 
 {
+	GError *error = NULL;
+	static GnomeProgram *applet_program = NULL;
+	
+	if (!applet_program) {
+		int argc = 1;
+		char *argv[2] = { "drivemount" };
+		applet_program = gnome_program_init ("drivemount", VERSION,
+						      LIBGNOME_MODULE, argc, argv,
+     						      GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
+	}
+
+	gnome_help_display_desktop_on_screen (
+			applet_program, "drivemount", "drivemount", NULL,
+			gtk_widget_get_screen (GTK_WIDGET (drivemount->applet)),
+			&error);
+
+	if (error) {
+		GtkWidget *error_dialog;
+		char *msg;
+
+		msg = g_strdup_printf (_("There was an error displaying help: %s"),
+				       error->message);
+		error_dialog = hig_dialog_new (NULL /* parent */,
+					       0 /* flags */,
+					       GTK_MESSAGE_ERROR,
+					       GTK_BUTTONS_OK,
+					       _("Error displaying help"),
+					       msg);
+		g_free (msg);
+
+		g_signal_connect (error_dialog, "response",
+				  G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (error_dialog), FALSE);
+		gtk_window_set_screen (GTK_WINDOW (error_dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (uic)));
+		gtk_widget_show (error_dialog);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -435,7 +533,6 @@ about_cb (BonoboUIComponent *uic,
 	  DriveData         *drivemount,
 	  const char        *verb)
 {
-	static GtkWidget *about = NULL;
    	GdkPixbuf        *pixbuf;
    	GError           *error = NULL;
    	gchar            *file;
@@ -447,15 +544,18 @@ about_cb (BonoboUIComponent *uic,
 	};
 
 	const gchar *documenters[] = {
+	        "Dan Mueth <muet@alumni.uchicago.edu>",
+                "John Fleck <jfleck@inkstain.net>",
 		NULL
 	};
 
 	const gchar *translator_credits = _("translator_credits");
 
-	if (about) {
-		gtk_window_set_screen (GTK_WINDOW (about),
-				       gtk_widget_get_screen (drivemount->applet));
-		gtk_window_present (GTK_WINDOW (about));
+	if (drivemount->about_dialog) {
+		gtk_window_set_screen (GTK_WINDOW (drivemount->about_dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (drivemount->applet)));
+	
+		gtk_window_present (GTK_WINDOW (drivemount->about_dialog));
 		return;
 	}
 
@@ -468,7 +568,7 @@ about_cb (BonoboUIComponent *uic,
 		g_error_free (error);
 	}
 
-	about = gnome_about_new (_("Disk Mounter"), VERSION,
+	drivemount->about_dialog = gnome_about_new (_("Disk Mounter"), VERSION,
 				 _("(C) 1999-2001 The GNOME Hackers\n"),
 				 _
 				 ("Applet for mounting and unmounting block volumes."),
@@ -479,12 +579,14 @@ about_cb (BonoboUIComponent *uic,
 	if (pixbuf) 
    		gdk_pixbuf_unref (pixbuf);
    
-   	gtk_window_set_wmclass (GTK_WINDOW (about), "disk mounter", "Disk Mounter");
-	gtk_window_set_screen (GTK_WINDOW (about),
+   	gtk_window_set_wmclass (GTK_WINDOW (drivemount->about_dialog), "disk mounter", "Disk Mounter");
+	gtk_window_set_screen (GTK_WINDOW (drivemount->about_dialog),
 			       gtk_widget_get_screen (drivemount->applet));
-   	g_signal_connect (G_OBJECT (about), "destroy",
-			  G_CALLBACK (gtk_widget_destroyed), &about);
-	gtk_widget_show (about);
+
+	g_signal_connect (G_OBJECT (drivemount->about_dialog), "destroy",
+			  G_CALLBACK (gtk_widget_destroyed), &drivemount->about_dialog);
+
+	gtk_widget_show (drivemount->about_dialog);
 }
 
 /*
@@ -574,6 +676,7 @@ update_pixmap (DriveData *dd, gint t)
 	GdkPixbuf *scaled;
 	char **pmap_d_in;
 	char **pmap_d_out;
+	gint pixmap;
 
 	gint width;
 	gint height;
@@ -583,11 +686,12 @@ update_pixmap (DriveData *dd, gint t)
 
 	gint hint = dd->sizehint;
 
+	pixmap = dd->device_pixmap;
 	if (dd->device_pixmap > icon_list_count - 1)
-		dd->device_pixmap = 0;
+		pixmap = 0;
 	if (dd->device_pixmap < 0
 	    && (!dd->custom_icon_in || !dd->custom_icon_out))
-		dd->device_pixmap = 0;
+		pixmap = 0;
 
 	if (!dd->button_pixmap) {
 		dd->button_pixmap = gtk_image_new ();
@@ -596,7 +700,7 @@ update_pixmap (DriveData *dd, gint t)
 		gtk_widget_show (dd->button_pixmap);
 	}
 
-	if (dd->device_pixmap < 0) {
+	if (pixmap < 0) {
 		if (t) {
 			pixbuf = gdk_pixbuf_new_from_file (dd->custom_icon_in,
 							   NULL);
@@ -607,7 +711,7 @@ update_pixmap (DriveData *dd, gint t)
 
 		if (pixbuf) {
 			width = gdk_pixbuf_get_width (pixbuf);
-			height = gdk_pixbuf_get_width (pixbuf);
+			height = gdk_pixbuf_get_height (pixbuf);
 
 			if (dd->orient == PANEL_APPLET_ORIENT_LEFT
 			    || dd->orient == PANEL_APPLET_ORIENT_RIGHT) {
@@ -639,10 +743,14 @@ update_pixmap (DriveData *dd, gint t)
 			height = ICON_HEIGHT;
 		}
 
-		if (dd->orient == PANEL_APPLET_ORIENT_LEFT
-		    || dd->orient == PANEL_APPLET_ORIENT_RIGHT || hint <= 36) {
-			pmap_d_in = icon_list[dd->device_pixmap].pmap_h_in;
-			pmap_d_out = icon_list[dd->device_pixmap].pmap_h_out;
+		if ((dd->orient == PANEL_APPLET_ORIENT_LEFT
+		     || dd->orient == PANEL_APPLET_ORIENT_RIGHT) && hint > 36) {
+			pmap_d_in = icon_list[pixmap].pmap_h_in;
+			pmap_d_out = icon_list[pixmap].pmap_h_out;
+		} else if ((dd->orient == PANEL_APPLET_ORIENT_UP
+		     || dd->orient == PANEL_APPLET_ORIENT_DOWN) && hint <= 36) {
+		        pmap_d_in = icon_list[pixmap].pmap_h_in;
+			pmap_d_out = icon_list[pixmap].pmap_h_out;
 		} else {
 			gint tmp;
 
@@ -650,8 +758,8 @@ update_pixmap (DriveData *dd, gint t)
 			width = height;
 			height = tmp;
 
-			pmap_d_in = icon_list[dd->device_pixmap].pmap_v_in;
-			pmap_d_out = icon_list[dd->device_pixmap].pmap_v_out;
+			pmap_d_in = icon_list[pixmap].pmap_v_in;
+			pmap_d_out = icon_list[pixmap].pmap_v_out;
 		}
 
 		if (t)
@@ -674,7 +782,7 @@ update_pixmap (DriveData *dd, gint t)
 		text = _(" not mounted");
 	}
 	tiptext = g_strconcat (dd->mount_point, text, NULL);
-	gtk_tooltips_set_tip (dd->tooltips, dd->applet, tiptext, NULL);
+	gtk_tooltips_set_tip (dd->tooltips, dd->button, tiptext, NULL);
 	g_free (tiptext);
 }
 
@@ -732,9 +840,6 @@ mount_cb (GtkWidget *widget,
 	FILE *fp;
 	GString *str;
 	gint check = device_is_mounted (dd);
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *image;
 
 	/* Stop the user from displaying zillions of error messages */
 	if (dd->error_dialog) {
@@ -764,10 +869,15 @@ mount_cb (GtkWidget *widget,
 
 	while (fgets (buf, sizeof (buf), fp) != NULL) {
 		gchar *b = buf;
-
+		const gchar *charset;
+		if (!g_get_charset (&charset)) {
+			b = g_convert (buf, -1, "UTF-8", charset, NULL, NULL, NULL);
+		} else {
+			b =g_strdup (buf);
+		}
 		g_string_append (str, b);
+		g_free (b);
 	}
-
 	pclose (fp);
 
 	dd->mounted = device_is_mounted (dd);
@@ -781,26 +891,19 @@ mount_cb (GtkWidget *widget,
 			eject (dd);
 		}
 	} else {
-		dd->error_dialog =
-			gtk_dialog_new_with_buttons (_
-						     ("Drive Mount Applet Warning"),
-						     NULL, GTK_DIALOG_MODAL,
-						     GTK_STOCK_OK,
-						     GTK_RESPONSE_OK, NULL);
-		gtk_window_set_screen (GTK_WINDOW (dd->error_dialog),
-				       gtk_widget_get_screen (dd->applet));
-		hbox = gtk_hbox_new (FALSE, 0);
-		gtk_box_pack_start (GTK_BOX
-				    (GTK_DIALOG (dd->error_dialog)->vbox), hbox,
-				    FALSE, FALSE, 10);
 		g_string_prepend (str, _("\" reported:\n"));
 		g_string_prepend (str, command_line);
 		g_string_prepend (str, _("Drivemount command failed.\n\""));
-		image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
-						  GTK_ICON_SIZE_DIALOG);
-		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 10);
-		label = gtk_label_new (str->str);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 10);
+
+		dd->error_dialog = hig_dialog_new (NULL /* parent */,
+						   GTK_DIALOG_MODAL /* flags */,
+						   GTK_MESSAGE_ERROR,
+						   GTK_BUTTONS_OK,
+						   _("Cannot mount device"),
+						   str->str);
+		gtk_window_set_screen (GTK_WINDOW (dd->error_dialog),
+				       gtk_widget_get_screen (dd->applet));
+
 		gtk_widget_show_all (dd->error_dialog);
 		gtk_dialog_run (GTK_DIALOG (dd->error_dialog));
 		gtk_widget_destroy (dd->error_dialog);
@@ -878,3 +981,137 @@ eject (DriveData *dd)
 		g_free (command_line);
 	}
 }
+
+static gboolean 
+key_press_cb (GtkWidget *widget, GdkEventKey *event, DriveData *dd)
+{
+	if (event->state != GDK_CONTROL_MASK)
+		return FALSE;
+	else {
+		switch (event->keyval) {
+	
+		case GDK_e:
+			eject (dd);
+			return TRUE;
+		case GDK_b:
+			browse_cb (NULL, dd, NULL);
+			return TRUE;
+		default:
+			break;
+		}
+	}
+
+	return FALSE;
+
+
+}
+
+/* stolen from gsearchtool */
+GtkWidget*
+hig_dialog_new (GtkWindow      *parent,
+		GtkDialogFlags flags,
+		GtkMessageType type,
+		GtkButtonsType buttons,
+		const gchar    *header,
+		const gchar    *message)
+{
+	GtkWidget *dialog;
+	GtkWidget *dialog_vbox;
+	GtkWidget *dialog_action_area;
+	GtkWidget *hbox;
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *image;
+	gchar     *title;
+
+	dialog = gtk_dialog_new ();
+	
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+	gtk_window_set_title (GTK_WINDOW (dialog), "");
+  
+	dialog_vbox = GTK_DIALOG (dialog)->vbox;
+	gtk_box_set_spacing (GTK_BOX (dialog_vbox), 14);
+
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (dialog_vbox), hbox, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_widget_show (hbox);
+
+	if (type == GTK_MESSAGE_ERROR) {
+		image = gtk_image_new_from_stock ("gtk-dialog-error", GTK_ICON_SIZE_DIALOG);
+	} else if (type == GTK_MESSAGE_QUESTION) {
+		image = gtk_image_new_from_stock ("gtk-dialog-question", GTK_ICON_SIZE_DIALOG);
+	} else {
+		g_assert_not_reached ();
+	}
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_widget_show (image);
+
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_widget_show (vbox);
+	
+	title = g_strconcat ("<b>", header, "</b>", NULL);
+	label = gtk_label_new (title);  
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_widget_show (label);
+	g_free (title);
+	
+	label = gtk_label_new (message);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_widget_show (label);
+	
+	dialog_action_area = GTK_DIALOG (dialog)->action_area;
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area), GTK_BUTTONBOX_END);
+
+	switch (buttons) 
+  	{		
+		case GTK_BUTTONS_OK_CANCEL:
+	
+			button = gtk_button_new_from_stock ("gtk-cancel");
+  			gtk_widget_show (button);
+  			gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_CANCEL);
+  			GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+
+		  	button = gtk_button_new_from_stock ("gtk-ok");
+  			gtk_widget_show (button);
+  			gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_OK);
+  			GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+			break;
+		
+		case GTK_BUTTONS_OK:
+		
+			button = gtk_button_new_from_stock ("gtk-ok");
+			gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, GTK_RESPONSE_OK);
+			GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+			gtk_widget_show (button);
+			break;
+		
+		default:
+			g_warning ("Unhandled GtkButtonsType");
+			break;
+  	}
+
+	if (parent != NULL) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
+	}
+	if (flags & GTK_DIALOG_MODAL) {
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	}
+	if (flags & GTK_DIALOG_DESTROY_WITH_PARENT) {
+		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+	}
+	
+  	return dialog;
+}
+

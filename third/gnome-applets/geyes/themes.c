@@ -24,15 +24,29 @@
 #include <limits.h>
 #include <ctype.h>
 
+#include <gconf/gconf-client.h>
 #include <panel-applet-gconf.h>
-#include <egg-screen-help.h>
+#include <libgnomeui/gnome-help.h>
 #include "geyes.h"
 
-gchar *theme_directories[] = {
-        GEYES_THEMES_DIR,
-        "~/.gnome/geyes-themes/"
-};
 #define NUM_THEME_DIRECTORIES 2
+#define HIG_IDENTATION  "    "
+
+gchar *theme_directories[NUM_THEME_DIRECTORIES];
+
+void
+theme_dirs_create (void)
+{
+	static gboolean themes_created = FALSE;
+	
+	if (themes_created == TRUE)
+		return;
+
+	theme_directories[0] = g_strdup (GEYES_THEMES_DIR);
+	theme_directories[1] = g_strdup_printf ("%s/.gnome2/geyes-themes/", g_get_home_dir());
+
+	themes_created = TRUE;
+}
 
 static void
 parse_theme_file (EyesApplet *eyes_applet, FILE *theme_file)
@@ -55,6 +69,8 @@ parse_theme_file (EyesApplet *eyes_applet, FILE *theme_file)
                                 token++;
                         }
                         sscanf (token, "%d", &eyes_applet->num_eyes);
+			if (eyes_applet->num_eyes > MAX_EYES)
+				eyes_applet->num_eyes = MAX_EYES;
                 } else if (strncmp (token, "eye-pixmap", strlen ("eye-pixmap")) == 0) {
                         token = strtok (NULL, "\"");
                         token = strtok (NULL, "\"");          
@@ -77,9 +93,11 @@ parse_theme_file (EyesApplet *eyes_applet, FILE *theme_file)
         }       
 }
 
-void
+int
 load_theme (EyesApplet *eyes_applet, const gchar *theme_dir)
 {
+	GtkWidget *dialog;
+
 	FILE* theme_file;
         gchar *file_name;
 
@@ -88,9 +106,33 @@ load_theme (EyesApplet *eyes_applet, const gchar *theme_dir)
         file_name = g_strdup_printf("%s%s",theme_dir,"/config");
         theme_file = fopen (file_name, "r");
         if (theme_file == NULL) {
-                g_error ("Unable to open theme file.");
+        	g_free (eyes_applet->theme_dir);
+        	eyes_applet->theme_dir = g_strdup_printf (GEYES_THEMES_DIR "Default-tiny/");
+        	g_free (file_name);
+                file_name = g_strdup (GEYES_THEMES_DIR "Default-tiny/config");
+                theme_file = fopen (file_name, "r");
         }
-        
+
+	/* if it's still NULL we've got a major problem */
+	if (theme_file == NULL) {
+		dialog = gtk_message_dialog_new_with_markup (NULL,
+				GTK_DIALOG_DESTROY_WITH_PARENT,
+				GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_OK,
+				"<b>%s</b>\n\n%s",
+				_("Can not launch the eyes applet."),
+				_("There was a fatal error while trying to load the theme."));
+
+		gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+		gtk_dialog_run (GTK_DIALOG (dialog));
+		gtk_widget_destroy (dialog);
+
+		gtk_widget_destroy (GTK_WIDGET (eyes_applet->applet));
+
+		return FALSE;
+	}
+
         parse_theme_file (eyes_applet, theme_file);
         fclose (theme_file);
 
@@ -109,7 +151,8 @@ load_theme (EyesApplet *eyes_applet, const gchar *theme_dir)
         eyes_applet->pupil_width = gdk_pixbuf_get_width (eyes_applet->pupil_image);
         
         g_free (file_name);
-        
+   
+	return TRUE;
 }
 
 static void
@@ -129,6 +172,25 @@ destroy_theme (EyesApplet *eyes_applet)
         g_free (eyes_applet->theme_name);
 }
 
+static gboolean
+key_writable (PanelApplet *applet, const char *key)
+{
+	gboolean writable;
+	char *fullkey;
+	static GConfClient *client = NULL;
+
+	if (client == NULL)
+		client = gconf_client_get_default ();
+
+	fullkey = panel_applet_gconf_get_full_key (applet, key);
+
+	writable = gconf_client_key_is_writable (client, fullkey, NULL);
+
+	g_free (fullkey);
+
+	return writable;
+}
+
 static void
 theme_selected_cb (GtkTreeSelection *selection, gpointer data)
 {
@@ -146,7 +208,7 @@ theme_selected_cb (GtkTreeSelection *selection, gpointer data)
 	g_return_if_fail (theme);
 	
 	theme_dir = g_strdup_printf ("%s/", theme);
-	if (!g_strcasecmp (theme_dir, eyes_applet->theme_dir)) {
+	if (!g_ascii_strncasecmp (theme_dir, eyes_applet->theme_dir, strlen (theme_dir))) {
 		g_free (theme_dir);
 		return;
 	}
@@ -168,9 +230,10 @@ phelp_cb (GtkDialog *dialog)
 {
 	GError *error = NULL;
 
-	egg_screen_help_display (
+	gnome_help_display_on_screen (
+		"geyes", "geyes-settings",
 		gtk_window_get_screen (GTK_WINDOW (dialog)),
-		"geyes", "geyes-settings", &error);
+		&error);
 
 	if (error) { /* FIXME: the user needs to see this */
 		g_warning ("help error: %s\n", error->message);
@@ -200,7 +263,11 @@ properties_cb (BonoboUIComponent *uic,
 	       const gchar       *verbname)
 {
 	GtkWidget *pbox, *hbox;
+	GtkWidget *vbox, *indent;
+	GtkWidget *categories_vbox;
+	GtkWidget *category_vbox, *control_vbox;
         GtkWidget *tree;
+	GtkWidget *scrolled;
         GtkWidget *label;
         GtkListStore *model;
         GtkTreeViewColumn *column;
@@ -210,7 +277,12 @@ properties_cb (BonoboUIComponent *uic,
         DIR *dfd;
         struct dirent *dp;
         int i;
+#ifdef PATH_MAX
         gchar filename [PATH_MAX];
+#else
+	gchar *filename;
+#endif
+        gchar *title;
      
 	if (eyes_applet->prop_box.pbox) {
 		gtk_window_set_screen (
@@ -225,26 +297,74 @@ properties_cb (BonoboUIComponent *uic,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					     GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 					     NULL);
+
 	gtk_window_set_screen (GTK_WINDOW (pbox),
 			       gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)));
+        
+	gtk_widget_set_size_request (GTK_WIDGET (pbox), 300, 200);
+	gtk_window_set_resizable (GTK_WINDOW (pbox), FALSE);
         gtk_dialog_set_default_response(GTK_DIALOG (pbox), GTK_RESPONSE_CLOSE);
+        gtk_dialog_set_has_separator (GTK_DIALOG (pbox), FALSE);
+        gtk_container_set_border_width (GTK_CONTAINER (pbox), 5);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (pbox)->vbox), 2);
 
         g_signal_connect (pbox, "response",
 			  G_CALLBACK (presponse_cb),
 			  eyes_applet);
 	
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pbox)->vbox), hbox, FALSE, FALSE, 2);
+	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
+	gtk_widget_show (vbox);
 	
-	label = gtk_label_new_with_mnemonic (_("_Theme Name:"));
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pbox)->vbox), vbox,
+			    TRUE, TRUE, 0);
+
+	categories_vbox = gtk_vbox_new (FALSE, 18);
+	gtk_box_pack_start (GTK_BOX (vbox), categories_vbox, TRUE, TRUE, 0);
+	gtk_widget_show (categories_vbox);
+
+	category_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (categories_vbox), category_vbox, TRUE, TRUE, 0);
+	gtk_widget_show (category_vbox);
+	
+	title = g_strconcat ("<span weight=\"bold\">", _("Themes"), "</span>", NULL);
+	label = gtk_label_new (_(title));
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (category_vbox), label, FALSE, FALSE, 0);
+	g_free (title);
+	
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (category_vbox), hbox, TRUE, TRUE, 0);
+	gtk_widget_show (hbox);
+	
+	indent = gtk_label_new (HIG_IDENTATION);
+	gtk_label_set_justify (GTK_LABEL (indent), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start (GTK_BOX (hbox), indent, FALSE, FALSE, 0);
+	gtk_widget_show (indent);
+	
+	control_vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), control_vbox, TRUE, TRUE, 0);
+	gtk_widget_show (control_vbox);
+	
+	label = gtk_label_new_with_mnemonic (_("_Select a theme:"));
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (control_vbox), label, FALSE, FALSE, 0);
+
+	scrolled = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
 
 	model = gtk_list_store_new (1, G_TYPE_STRING);
 	tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tree), FALSE);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label), tree);
 	g_object_unref (model);
+
+	gtk_container_add (GTK_CONTAINER (scrolled), tree);
 	
 	cell = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes ("not used", cell,
@@ -252,10 +372,15 @@ properties_cb (BonoboUIComponent *uic,
         gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
                                                            
         selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree));
-        g_signal_connect (selection, "changed",
-        		  G_CALLBACK (theme_selected_cb),
+	g_signal_connect (selection, "changed",
+			  G_CALLBACK (theme_selected_cb),
 			  eyes_applet);
-        
+
+	if ( ! key_writable (eyes_applet->applet, "theme_path")) {
+		gtk_widget_set_sensitive (tree, FALSE);
+		gtk_widget_set_sensitive (label, FALSE);
+	}
+
         for (i = 0; i < NUM_THEME_DIRECTORIES; i++) {
                 if ((dfd = opendir (theme_directories[i])) != NULL) {
                         while ((dp = readdir (dfd)) != NULL) {
@@ -263,13 +388,18 @@ properties_cb (BonoboUIComponent *uic,
                                         gchar *elems[2] = {NULL, NULL };
                                         gchar *theme_dir;
 					elems[0] = filename;
+#ifdef PATH_MAX
                                         strcpy (filename, 
                                                 theme_directories[i]);
                                         strcat (filename, dp->d_name);
+#else
+					asprintf (&filename, theme_directories[i], dp->d_name);
+#endif
                                         gtk_list_store_insert (model, &iter, 0);
                                         gtk_list_store_set (model, &iter, 0, &filename, -1);
                                         theme_dir = g_strdup_printf ("%s/", filename);
-                                        if (!g_strcasecmp (eyes_applet->theme_dir, theme_dir)) {
+                                        
+					if (!g_ascii_strncasecmp (eyes_applet->theme_dir, theme_dir, strlen (theme_dir))) {
                                         	GtkTreePath *path;
                                         	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), 
                                                         			&iter);
@@ -285,8 +415,11 @@ properties_cb (BonoboUIComponent *uic,
                         closedir (dfd);
                 }
         }
+#ifndef PATH_MAX
+	g_free (filename);
+#endif
         
-        gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pbox)->vbox), tree, TRUE, TRUE, 2);
+        gtk_box_pack_start (GTK_BOX (control_vbox), scrolled, TRUE, TRUE, 0);
         
         gtk_widget_show_all (pbox);
         

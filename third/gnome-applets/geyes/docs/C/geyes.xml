@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appletversion "2.1.3">
-  <!ENTITY manrevision "2.3">
-  <!ENTITY date "January 2003">
+  <!ENTITY appletversion "2.8">
+  <!ENTITY manrevision "2.8">
+  <!ENTITY date "September 2004">
   <!ENTITY applet "Geyes">
 ]>
 
@@ -13,26 +13,27 @@
   Maintained by the GNOME Documentation Project
   http://developer.gnome.org/projects/gdp
   Template version: 2.0 beta
-  Template last modified Mar 12, 2002  
+  Template last modified Mar 12, 2002  
 -->
 
 <article id="index" lang="en">
 <!-- please do not change the id; for translations, change lang to -->
 <!-- appropriate code -->
   <articleinfo> 
-	 <title>&applet; Applet Manual V&manrevision;</title> 
+	 <title>&applet; Applet Manual V2.6</title> 
 	 <copyright> 
-		<year>2003</year>  
+		<year>2002</year>
+		<year>2003</year> 
+		<year>2004</year> 
 		<holder>Sun Microsystems</holder> 
-	 </copyright> 
-
-	 <copyright> 
-		<year>2002</year>  
-		<holder>Sun Microsystems</holder> 
-	 </copyright> 
+	 </copyright>  
 	 <copyright> 
 		<year>2000</year> 
 		<holder>Telsa Gwynne</holder> 
+	 </copyright>
+	 <copyright> 
+		<year>2000</year> 
+		<holder>Arjan Scherpenisse</holder> 
 	 </copyright>
 <!-- translators: uncomment this:
 
@@ -45,7 +46,7 @@
 
 	 <publisher> 
 		<publishername>GNOME Documentation Project</publishername> 
-	 </publisher> 
+	 </publisher> 
 &legal;
 
 	 <authorgroup> 
@@ -54,7 +55,7 @@
 		  <surname>GNOME Documentation Team</surname> 
 		  <affiliation> 
 			 <orgname>Sun Microsystems</orgname> 
-			 <address> <email>gdocteam@sun.com</email> </address> 
+			 <address></address> 
 		  </affiliation> 
 		</author> 
 		<author> 
@@ -88,12 +89,43 @@
 	 </authorgroup>
 
 	 <revhistory>
+	   <revision>
+	     <revnumber>Version &manrevision;</revnumber>
+	     <date>&date;</date>
+	     <revdescription>
+	       <para role="author">GNOME Documentation Team</para>
+	       <para role="publisher">GNOME Documentation Project</para>
+	     </revdescription>
+	   </revision>
 		<revision> 
-		  <revnumber>&applet; Applet Manual V&manrevision;</revnumber> 
-		  <date>&date;</date> 
+		  <revnumber>&applet; Applet Manual V2.6</revnumber> 
+		  <date>February 2004</date> 
 		  <revdescription> 
-			 <para role="author">Sun GNOME Documentation Team
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>Geyes Applet Manual V2.5</revnumber> 
+		  <date>September 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>Geyes Applet Manual V2.4</revnumber> 
+		  <date>August 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
+			 <para role="publisher">GNOME Documentation Project</para> 
+		  </revdescription> 
+		</revision>
+		<revision> 
+		  <revnumber>Geyes Applet Manual V2.3</revnumber> 
+		  <date>January 2003</date> 
+		  <revdescription> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision>
@@ -101,8 +133,7 @@
 		  <revnumber>Geyes Applet Manual V2.2</revnumber> 
 		  <date>August 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun GNOME Documentation Team
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision> 
@@ -110,8 +141,7 @@
 		  <revnumber>Geyes Applet Manual V2.1</revnumber> 
 		  <date>June 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun GNOME Documentation Team
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision> 
@@ -119,8 +149,7 @@
 		  <revnumber>Geyes Applet Manual V2.0</revnumber> 
 		  <date>March 2002</date> 
 		  <revdescription> 
-			 <para role="author">Sun GNOME Documentation Team
-				<email>gdocteam@sun.com</email></para> 
+			 <para role="author">Sun GNOME Documentation Team</para> 
 			 <para role="publisher">GNOME Documentation Project</para> 
 		  </revdescription> 
 		</revision> 
@@ -168,31 +197,23 @@
 		</screenshot> 
 	 </figure> 
     <!-- ==== End of Figure ======================================= -->
-<para>The <application>&applet;</application> applet enables you to track the movement of 
-the mouse pointer around the desktop. The applet is an image of one or more
-eyes that follow the mouse pointer around the screen.</para>
-<para>To add <application>&applet;</application> to a panel, right-click on the panel, then choose 
-<menuchoice>
-<guimenu>Add to Panel</guimenu>
-<guisubmenu>Amusements</guisubmenu>
-<guimenuitem>Geyes</guimenuitem>
-</menuchoice>.</para>
+<para>The <application>&applet;</application> applet provides an entertaining
+way to track the movement of the mouse pointer around your screen. The applet
+is an image of one or more eyes that follow the mouse pointer around the
+screen.</para>
+<para>To add <application>&applet;</application> to a panel,
+right-click on the panel, then choose <guimenuitem>Add to
+Panel</guimenuitem>.  Select <application>&applet;</application>
+in the <application>Add to the panel</application> dialog, then
+click <guibutton>OK</guibutton>.</para>
 </sect1>
 <!-- ============= Preferences  ================================ -->
 <sect1 id="geyes-settings">
 <title>Preferences</title>
-<para>To configure <application>&applet;</application>, right-click on the <application>
-&applet;</application> applet, then choose <guimenu>Preferences</guimenu>. </para>
-<variablelist>
-<varlistentry>
-<term><guilabel>Theme Name</guilabel> </term>
-<listitem>
-<para>Choose a theme for <application>&applet;</application> from this list.
-Themes range from Horrid to Bizarre to provide a different look for <application>
-&applet;</application>.</para>
-<para>Default: <guilabel>.../Default-tiny</guilabel>.</para>
-</listitem>
-</varlistentry>
-</variablelist>
+<para>To configure <application>&applet;</application>, right-click on the
+<application>&applet;</application> applet, then choose
+<guimenuitem>Preferences</guimenuitem>.  You can choose from a number of
+different themes.  Each theme affects how the eyes look.
+</para>
 </sect1>
 </article> 

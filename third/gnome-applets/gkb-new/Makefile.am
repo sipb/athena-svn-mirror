@@ -1,13 +1,12 @@
 INCLUDES =                                           \
-	-I$(top_srcdir)/screen-exec			\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"      \
 	$(GNOME_APPLETS_CFLAGS)                                                            
 
-libexec_PROGRAMS = gkb-applet-2
-
+bin_PROGRAMS = gnome-keyboard-layout
 bin_SCRIPTS = gkb_xmmap
+noinst_LIBRARIES = libgkb.a
 
-gkb_applet_2_SOURCES = \
+gkb_COMMON = \
 		gkb.c 		\
 		gkb.h		\
 		keygrab.c	\
@@ -21,12 +20,11 @@ gkb_applet_2_SOURCES = \
 		util.c		\
 		gconf.c
 
-
-gkb_applet_2_LDADD = \
-	$(top_builddir)/screen-exec/libscreen-exec.la \
+gnome_keyboard_layout_SOURCES	= $(gkb_COMMON) gnome-keyboard-layout.c
+gnome_keyboard_layout_LDADD	= \
 	$(GNOME_APPLETS_LIBS) $(X_LIBS) $(INTLLIBS)
 
-@INTLTOOL_SERVER_RULE@
+libgkb_a_SOURCES		= $(gkb_COMMON) gkb-applet.c
 
 if GKB_SUN
 gkb_DDIRS= xmodmap.sun descs.sun
@@ -41,23 +39,18 @@ GKB_ICON = gkb.png gkb-icon.png
 gkbicondir = $(datadir)/pixmaps
 gkbicon_DATA = $(GKB_ICON)
 
-schemadir   = @GCONF_SCHEMA_FILE_DIR@
-schema_DATA = gkb.schemas
+schemasdir   = @GCONF_SCHEMA_FILE_DIR@
+schemas_in_files = gkb.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
 
-serverdir       = $(libdir)/bonobo/servers
-server_in_files = GNOME_KeyboardApplet_Factory.server.in
-server_DATA     = $(server_in_files:.server.in=.server)
-
-$(server_in_files): $(server_in_files:.server.in=.server.in.in)
-	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SCHEMAS_RULE@
 
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_KeyboardApplet.xml
 
 EXTRA_DIST =						\
-	GNOME_KeyboardApplet_Factory.server.in.in	\
 	$(GKB_ICON)					\
-	$(schema_DATA)					\
+	$(schemas_in_files)					\
 	$(ui_DATA)
 
 gkb_xmmap: gkb_xmmap.in
@@ -65,6 +58,7 @@ gkb_xmmap: gkb_xmmap.in
 	< gkb_xmmap.in >gkb_xmmap.tmp \
 	&& mv gkb_xmmap.tmp gkb_xmmap
 
+if GCONF_SCHEMAS_INSTALL
 install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA) ;
-
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
+endif

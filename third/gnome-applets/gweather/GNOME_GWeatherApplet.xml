@@ -1,15 +1,15 @@
 <Root>
    <popups>
       <popup name="button3">
-         <menuitem name="Item 1" verb="Forecast" _label="_Forecast"/>
+         <menuitem name="Item 1" verb="Details" _label="_Details" accel="*Control*d"/>
          <menuitem name="Item 2" verb="Update" _label="_Update"
-                   pixtype="stock" pixname="gtk-refresh"/>
+                   pixtype="stock" pixname="gtk-refresh" accel="*Control*u"/>
       <separator/>
-         <menuitem name="Item 3" verb="Props" _label="_Preferences..."
+         <menuitem name="Item 3" verb="Props" _label="_Preferences"
                    pixtype="stock" pixname="gtk-properties"/>
 	 <menuitem name="Item 4" verb="Help" _label="_Help"
                    pixtype="stock" pixname="gtk-help"/>
-         <menuitem name="Item 5" verb="About" _label="_About..."
+         <menuitem name="Item 5" verb="About" _label="_About"
                    pixtype="stock" pixname="gnome-stock-about"/>
       </popup>
    </popups>
