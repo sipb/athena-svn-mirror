@@ -7,8 +7,8 @@ Group: Development/Libraries
 Source: ftp://xmlsoft.org/XSLT/libxslt-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 URL: http://xmlsoft.org/XSLT/
-Requires: libxml2 >= 2.5.4
-BuildRequires: libxml2-devel >= 2.5.4
+Requires: libxml2 >= @LIBXML_REQUIRED_VERSION@
+BuildRequires: libxml2-devel >= @LIBXML_REQUIRED_VERSION@
 BuildRequires: python python-devel
 BuildRequires: libxml2-python
 Prefix: %{_prefix}
@@ -17,27 +17,28 @@ Docdir: %{_docdir}
 %description
 This C library allows to transform XML files into other XML files
 (or HTML, text, ...) using the standard XSLT stylesheet transformation
-mechanism. To use it you need to have a version of libxml2 >= 2.5.4
+mechanism. To use it you need to have a version of libxml2 >= @LIBXML_REQUIRED_VERSION@
 installed. The xsltproc command is a command line interface to the XSLT engine
 
 %package devel
 Summary: Libraries, includes, etc. to embed the Gnome XSLT engine
 Group: Development/Libraries
 Requires: libxslt = %{version}
-Requires: libxml2-devel >= 2.5.4
+Requires: libxml2-devel >= 2.5.6
 
 %description devel
 This C library allows to transform XML files into other XML files
 (or HTML, text, ...) using the standard XSLT stylesheet transformation
-mechanism. To use it you need to have a version of libxml2 >= 2.5.4
+mechanism. To use it you need to have a version of libxml2 >= @LIBXML_REQUIRED_VERSION@
 installed.
 
 %package python
 Summary: Python bindings for the libxslt library
 Group: Development/Libraries
 Requires: libxslt = %{version}
-Requires: libxml2 >= 2.5.4
-Requires: python
+Requires: libxml2 >= @LIBXML_REQUIRED_VERSION@
+Requires: libxml2-python >= @LIBXML_REQUIRED_VERSION@
+Requires: %{_libdir}/python%(echo `python -c "import sys; print sys.version[0:3]"`)
 
 %description python
 The libxslt-python package contains a module that permits applications
@@ -55,30 +56,12 @@ with XPath functions written in Python.
 %build
 %configure
 make
+gzip -9 ChangeLog
 
 %install
 rm -fr %{buildroot}
 
 %makeinstall
-
-#
-# this is a bit ugly but tries to generate the bindings for all versions
-# of python installed
-#
-for i in %{prefix}/include/python*
-do
-    py_version=`echo $i | sed "s+%{prefix}/include/python++"`
-    if test -x %{prefix}/bin/python$py_version
-    then
-        echo generating bindings for Python $py_version
-      (cd python ; make clean ; \
-         make PYTHON="%{prefix}/bin/python$py_version" \
-            PYTHON_VERSION="$py_version"; \
-%makeinstall PYTHON="%{prefix}/bin/python$py_version" \
-            PYTHON_VERSION="$py_version" \
-            prefix=$RPM_BUILD_ROOT%{prefix})
-    fi
-done
 
 %clean
 rm -fr %{buildroot}
@@ -92,7 +75,7 @@ rm -fr %{buildroot}
 %files
 %defattr(-, root, root)
 
-%doc AUTHORS ChangeLog NEWS README Copyright TODO FEATURES
+%doc AUTHORS ChangeLog.gz NEWS README Copyright TODO FEATURES
 %doc doc/*.html doc/html doc/tutorial doc/*.gif
 %doc %{_mandir}/man1/xsltproc.1*
 %{_libdir}/lib*.so.*
@@ -101,11 +84,13 @@ rm -fr %{buildroot}
 %files devel
 %defattr(-, root, root)
 
-%doc AUTHORS ChangeLog NEWS README Copyright TODO FEATURES
+%doc AUTHORS ChangeLog.gz NEWS README Copyright TODO FEATURES
 %doc doc/libxslt-api.xml
-%doc doc/libexslt-api.xml
-%doc %{_mandir}/man4/libxslt.4*
-%doc %{_mandir}/man4/libexslt.4*
+%doc doc/libxslt-refs.xml
+%doc doc/EXSLT/libexslt-api.xml
+%doc doc/EXSLT/libexslt-refs.xml
+%doc %{_mandir}/man3/libxslt.3*
+%doc %{_mandir}/man3/libexslt.3*
 %{_libdir}/lib*.so
 %{_libdir}/*a
 %{_libdir}/*.sh
@@ -113,11 +98,12 @@ rm -fr %{buildroot}
 %{prefix}/include/*
 %{prefix}/bin/xslt-config
 %{_libdir}/pkgconfig/libxslt.pc
+%{_libdir}/pkgconfig/libexslt.pc
 
 %files python
 %defattr(-, root, root)
 
-%doc AUTHORS ChangeLog NEWS README Copyright FEATURES
+%doc AUTHORS ChangeLog.gz NEWS README Copyright FEATURES
 %{_libdir}/python*/site-packages/libxslt.py
 %{_libdir}/python*/site-packages/libxsltmod*
 %doc python/TODO
@@ -129,6 +115,10 @@ rm -fr %{buildroot}
 %changelog
 * @RELDATE@ Daniel Veillard <veillard@redhat.com>
 - upstream release @VERSION@ see http://xmlsoft.org/XSLT/news.html
+
+* Sun Nov  2 2003 Daniel Veillard <veillard@redhat.com>
+- cleanup, removal of the deprecated breakpoint library and
+  automated libxml2 dependancy level in the generated spec file.
 
 * Wed Oct 23 2002 Daniel Veillard <veillard@redhat.com>
 - revamped the spec file, cleaned up some rpm building problems

@@ -5,17 +5,22 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/libxslt -I$(top_srcdir)/libexslt \
 EXTRA_PROGRAMS=
 bin_PROGRAMS = xsltproc $(XSLTPROCDV)
 
+AM_CFLAGS = $(LIBGCRYPT_CFLAGS)
+
 xsltproc_SOURCES = xsltproc.c
-xsltproc_LDFLAGS =
+xsltproc_LDFLAGS = 
 xsltproc_DEPENDENCIES = $(DEPS)
-xsltproc_LDADD = $(LDADDS)
 
 DEPS = $(top_builddir)/libxslt/libxslt.la \
 	$(top_builddir)/libexslt/libexslt.la 
 
-LDADDS = $(top_builddir)/libxslt/libxslt.la \
+LDADDS = @STATIC_BINARIES@ \
+         $(top_builddir)/libxslt/libxslt.la \
          $(top_builddir)/libexslt/libexslt.la \
-	@LIBXML_LIBS@ $(EXTRA_LIBS)
+	@LIBXML_LIBS@ $(EXTRA_LIBS) @WIN32_EXTRA_LIBADD@
+
+xsltproc_LDADD = $(LIBGCRYPT_LIBS) $(LDADDS)
 
 xsltproc.dv: xsltproc.o
 	$(CC) $(CFLAGS) -o xsltproc xsltproc.o ../libexslt/.libs/libexslt.a ../libxslt/.libs/libxslt.a @LIBXML_LIBS@ $(EXTRA_LIBS)
+

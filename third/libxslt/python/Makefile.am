@@ -6,7 +6,9 @@ SUBDIRS= . tests
 INCLUDES = \
 	-I$(PYTHON_INCLUDES) \
 	 $(LIBXML_CFLAGS) \
-	-I$(top_srcdir)
+	-I$(top_srcdir)/libxslt \
+	-I$(top_srcdir) \
+	-I../libexslt
 
 DOCS_DIR = $(datadir)/doc/libxslt-python-$(LIBXSLT_VERSION)
 # libxsltclass.txt is generated
@@ -32,7 +34,6 @@ mylibs = \
 
 all-local: libxslt.py
 
-pythondir = $(libdir)/python${PYTHON_VERSION}/site-packages
 python_LTLIBRARIES = libxsltmod.la
 
 libxsltmod_la_SOURCES = libxslt.c types.c libxslt-py.c
@@ -42,18 +43,19 @@ libxslt.py: $(srcdir)/libxsl.py $(srcdir)/libxsltclass.py
 	cat $(srcdir)/libxsl.py $(srcdir)/libxsltclass.py > libxslt.py
 
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
-	@INSTALL@ -m 0644 libxslt.py $(DESTDIR)$(libdir)/python${PYTHON_VERSION}/site-packages
+	$(mkinstalldirs) $(DESTDIR)$(pythondir)
+	@INSTALL@ -m 0644 libxslt.py $(DESTDIR)$(pythondir)
 	$(mkinstalldirs) $(DESTDIR)$(DOCS_DIR)
 	@(for doc in $(DOCS) ; \
-	   do @INSTALL@ -m 0644 $$doc $(DESTDIR)$(DOCS_DIR) ; done)
+	   do @INSTALL@ -m 0644 $(srcdir)/$$doc $(DESTDIR)$(DOCS_DIR) ; done)
 
 GENERATE = generator.py
 API_DESC = $(top_srcdir)/doc/libxslt-api.xml $(srcdir)/libxslt-python-api.xml
 GENERATED= $(srcdir)/libxsltclass.py \
            $(srcdir)/libxslt-export.c \
 	   $(srcdir)/libxslt-py.c \
-	   $(srcdir)/libxslt-py.h
+	   $(srcdir)/libxslt-py.h \
+	   $(srcdir)/libxsltclass.txt
 
 $(GENERATED): gen_prog
 
@@ -69,6 +71,4 @@ endif
 tests test: all
 	cd tests && $(MAKE) tests
 
-clean:
-	rm -f $(GENERATED) *.o libxslt.so *.pyc libxslt.py gen_prog
-
+CLEANFILES= $(GENERATED) *.o libxslt.so *.pyc libxslt.py gen_prog

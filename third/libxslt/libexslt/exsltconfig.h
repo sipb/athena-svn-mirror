@@ -18,21 +18,37 @@ extern "C" {
  *
  * the version string like "1.2.3"
  */
-#define LIBEXSLT_DOTTED_VERSION "1.0.27"
+#define LIBEXSLT_DOTTED_VERSION "1.1.10"
 
 /**
  * LIBEXSLT_VERSION:
  *
  * the version number: 1.2.3 value is 1002003
  */
-#define LIBEXSLT_VERSION 718
+#define LIBEXSLT_VERSION 808
 
 /**
  * LIBEXSLT_VERSION_STRING:
  *
  * the version number string, 1.2.3 value is "1002003"
  */
-#define LIBEXSLT_VERSION_STRING "718"
+#define LIBEXSLT_VERSION_STRING "808"
+
+/**
+ * LIBEXSLT_VERSION_EXTRA:
+ *
+ * extra version information, used to show a CVS compilation
+ */
+#define	LIBEXSLT_VERSION_EXTRA "-CVS940"
+
+/**
+ * WITH_CRYPTO:
+ *
+ * Whether crypto support is configured into exslt
+ */
+#if 0
+#define EXSLT_CRYPTO_ENABLED
+#endif
 
 /**
  * ATTRIBUTE_UNUSED:
@@ -44,27 +60,10 @@ extern "C" {
 #include <ansidecl.h>
 #endif
 #ifndef ATTRIBUTE_UNUSED
-#define ATTRIBUTE_UNUSED
+#define ATTRIBUTE_UNUSED __attribute__((unused))
 #endif
 #else
 #define ATTRIBUTE_UNUSED
-#endif
-
-/**
- * LIBEXSLT_PUBLIC:
- *
- * This macro is needed on Win32 when using MSVC. It enables the client code
- * to access exported variables. It should expand to nothing when compiling
- * this library itself, but must expand to __declspec(dllimport) when a
- * client includes the library header and that only if it links dynamically
- * against this library.
- */
-#if !defined LIBEXSLT_PUBLIC
-#if (defined (__CYGWIN__) || defined _MSC_VER) && !defined IN_LIBEXSLT && !defined LIBEXSLT_STATIC
-#define LIBEXSLT_PUBLIC __declspec(dllimport)
-#else
-#define LIBEXSLT_PUBLIC 
-#endif
 #endif
 
 #ifdef __cplusplus

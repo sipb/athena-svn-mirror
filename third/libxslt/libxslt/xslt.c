@@ -47,7 +47,7 @@
 /* #define WITH_XSLT_DEBUG_BLANKS */
 #endif
 
-const char *xsltEngineVersion = LIBXSLT_VERSION_STRING;
+const char *xsltEngineVersion = LIBXSLT_VERSION_STRING LIBXSLT_VERSION_EXTRA;
 const int xsltLibxsltVersion = LIBXSLT_VERSION;
 const int xsltLibxmlVersion = LIBXML_VERSION;
 
@@ -62,9 +62,15 @@ double xmlXPathStringEvalNumber(const xmlChar *str);
  * Useful macros
  */
 
+#ifdef  IS_BLANK
+#undef	IS_BLANK
+#endif
 #define IS_BLANK(c) (((c) == 0x20) || ((c) == 0x09) || ((c) == 0xA) ||	\
                      ((c) == 0x0D))
 
+#ifdef	IS_BLANK_NODE
+#undef	IS_BLANK_NODE
+#endif
 #define IS_BLANK_NODE(n)						\
     (((n)->type == XML_TEXT_NODE) && (xsltIsBlank((n)->content)))
 
@@ -366,6 +372,11 @@ xsltNewStylesheet(void) {
     cur->exclPrefixTab = NULL;
     cur->extInfos = NULL;
     cur->extrasNr = 0;
+    cur->dict = xmlDictCreate();
+#ifdef WITH_XSLT_DEBUG
+    xsltGenericDebug(xsltGenericDebugContext,
+                     "creating dictionary for stylesheet\n");
+#endif
 
     xsltInit();
 
@@ -507,9 +518,17 @@ xsltFreeStylesheet(xsltStylesheetPtr sheet)
         xmlFree(sheet->doctypeSystem);
     if (sheet->mediaType != NULL)
         xmlFree(sheet->mediaType);
+    if (sheet->attVTs)
+        xsltFreeAVTList(sheet->attVTs);
 
     if (sheet->imports != NULL)
         xsltFreeStylesheetList(sheet->imports);
+
+#ifdef WITH_XSLT_DEBUG
+    xsltGenericDebug(xsltGenericDebugContext,
+                     "freeing dictionary from stylesheet\n");
+#endif
+    xmlDictFree(sheet->dict);
 
     memset(sheet, -1, sizeof(xsltStylesheet));
     xmlFree(sheet);
@@ -566,7 +585,7 @@ xsltGetInheritedNsList(xsltStylesheetPtr style,
                                                sizeof(xmlNsPtr));
                     if (ret == NULL) {
                         xmlGenericError(xmlGenericErrorContext,
-                                        "xmlGetNsList : out of memory!\n");
+                                        "xsltGetInheritedNsList : out of memory!\n");
                         return(0);
                     }
                     ret[nbns] = NULL;
@@ -585,7 +604,7 @@ xsltGetInheritedNsList(xsltStylesheetPtr style,
                                                       sizeof(xmlNsPtr));
                         if (ret == NULL) {
                             xmlGenericError(xmlGenericErrorContext,
-                                            "xmlGetNsList : realloc failed!\n");
+                                            "xsltGetInheritedNsList : realloc failed!\n");
                             return(0);
                         }
                     }
@@ -769,8 +788,21 @@ xsltParseStylesheetOutput(xsltStylesheetPtr style, xmlNodePtr cur)
 		if (element == NULL) {
 		    if (style != NULL) style->errors++;
 		} else {
+		    xmlNsPtr ns;
+		    
 		    xmlHashAddEntry2(style->cdataSection, element, URI,
 			             (void *) "cdata");
+		    /*
+		     * if prefix is NULL, we must check whether it's
+		     * necessary to also put in the name of the default
+		     * namespace.
+		     */
+		    if (URI == NULL) {
+		        ns = xmlSearchNs(style->doc, cur, NULL);
+			if (ns != NULL)  
+			    xmlHashAddEntry2(style->cdataSection, element,
+			        ns->href, (void *) "cdata");
+		    }
 		    xmlFree(element);
 		}
             }
@@ -1165,17 +1197,17 @@ xsltPrecomputeStylesheet(xsltStylesheetPtr style, xmlNodePtr cur) {
 	}
 	if (cur->type == XML_ELEMENT_NODE) {
 	    int exclPrefixes;
-	    xmlChar *prefix;
 
 	    exclPrefixes = xsltParseStylesheetExcludePrefix(style, cur);
 	    if (IS_XSLT_ELEM(cur)) {
 		xsltStylePreCompute(style, cur);
 		if (IS_XSLT_NAME(cur, "text")) {
 		    for (;exclPrefixes > 0;exclPrefixes--)
-			prefix = exclPrefixPop(style);
+			exclPrefixPop(style);
 		    goto skip_children;
 		}
 	    }
+
 	    /*
 	     * Remove excluded prefixes
 	     */
@@ -1190,8 +1222,9 @@ xsltPrecomputeStylesheet(xsltStylesheetPtr style, xmlNodePtr cur) {
 			moved = 0;
 			next = ns->next;
 			for (i = 0;i < style->exclPrefixNr;i++) {
-			    if (xmlStrEqual(ns->href,
-					    style->exclPrefixTab[i])) {
+			    if ((ns->prefix != NULL) && 
+			        (xmlStrEqual(ns->href,
+					     style->exclPrefixTab[i]))) {
 				/*
 				 * Move the namespace definition on the root
 				 * element to avoid duplicating it without
@@ -1222,9 +1255,10 @@ xsltPrecomputeStylesheet(xsltStylesheetPtr style, xmlNodePtr cur) {
 	    if (exclPrefixes > 0) {
 		xsltPrecomputeStylesheet(style, cur->children);
 		for (;exclPrefixes > 0;exclPrefixes--)
-		    prefix = exclPrefixPop(style);
+		    exclPrefixPop(style);
 		goto skip_children;
 	    }
+
 	} else if (cur->type == XML_TEXT_NODE) {
 	    if (IS_BLANK_NODE(cur)) {
 		if (xmlNodeGetSpacePreserve(cur) != 1) {
@@ -1315,7 +1349,7 @@ xsltGatherNamespaces(xsltStylesheetPtr style) {
 		    URI = xmlHashLookup(style->nsHash, ns->prefix);
 		    if ((URI != NULL) && (!xmlStrEqual(URI, ns->href))) {
 			xsltTransformError(NULL, style, cur,
-	     "Namespaces prefix %s used for multiple namespaces\n");
+	     "Namespaces prefix %s used for multiple namespaces\n",ns->prefix);
 			if (style != NULL) style->warnings++;
 		    } else if (URI == NULL) {
 			xmlHashUpdateEntry(style->nsHash, ns->prefix,
@@ -1430,7 +1464,7 @@ xsltParseTemplateContent(xsltStylesheetPtr style, xmlNodePtr templ) {
 			    if (style != NULL) style->errors++;
 			    break;
 			}
-			if (noesc)
+			if ((noesc) && (text->type != XML_CDATA_SECTION_NODE))
 			    text->name = xmlStringTextNoenc;
 			text = text->next;
 		    }
@@ -1451,12 +1485,29 @@ xsltParseTemplateContent(xsltStylesheetPtr style, xmlNodePtr templ) {
 		delete = cur;
 		goto skip_children;
 	    }
-	} else if ((cur->ns != NULL) && (style->nsDefs != NULL)) {
-	    if (xsltCheckExtPrefix(style, cur->ns->prefix)) {
-		/*
-		 * okay this is an extension element compile it too
-		 */
-		xsltStylePreCompute(style, cur);
+	} else if ((cur->ns != NULL) && (style->nsDefs != NULL) &&
+	           (xsltCheckExtPrefix(style, cur->ns->prefix))) {
+	    /*
+	     * okay this is an extension element compile it too
+	     */
+	    xsltStylePreCompute(style, cur);
+	} else {
+	    /*
+	     * This is an element which will be output as part of the
+	     * template exectution, precompile AVT if found.
+	     */
+	    if ((cur->ns == NULL) && (style->defaultAlias != NULL) &&
+	    		(cur->type == XML_ELEMENT_NODE)) {
+		cur->ns = xmlSearchNsByHref(cur->doc, cur,
+			style->defaultAlias);
+	    }
+	    if (cur->properties != NULL) {
+	        xmlAttrPtr attr = cur->properties;
+
+		while (attr != NULL) {
+		    xsltCompileAttr(style, attr);
+		    attr = attr->next;
+		}
 	    }
 	}
 
@@ -1516,16 +1567,14 @@ skip_children:
 	if ((IS_XSLT_ELEM(cur)) && (IS_XSLT_NAME(cur, "param"))) {
 	    xmlNodePtr param = cur;
 
-            cur = cur->next;
 	    xsltTransformError(NULL, style, cur,
 		"xsltParseTemplateContent: ignoring misplaced param element\n");
 	    if (style != NULL) style->warnings++;
+            cur = cur->next;
 	    xmlUnlinkNode(param);
 	    xmlFreeNode(param);
-	    continue;
 	} else
 	    break;
-	cur = cur->next;
     }
 }
 
@@ -1701,6 +1750,12 @@ xsltParseStylesheetTemplate(xsltStylesheetPtr style, xmlNodePtr template) {
 	    if (style != NULL) style->errors++;
 	    goto error;
 	} else {
+	    if (xmlValidateNCName(prop,0)) {
+	        xsltTransformError(NULL, style, template,
+	            "xsl:template : error invalid name '%s'\n", prop);
+		if (style != NULL) style->errors++;
+		goto error;
+	    } 
 	    ret->name = prop;
 	    if (URI != NULL)
 		ret->nameURI = xmlStrdup(URI);
@@ -1849,10 +1904,20 @@ xsltParseStylesheetTop(xsltStylesheetPtr style, xmlNodePtr top) {
     } else if (IS_XSLT_NAME(cur, "namespace-alias")) {
 	    xsltNamespaceAlias(style, cur);
 	} else {
-	    xsltTransformError(NULL, style, cur,
+            if ((style != NULL) && (style->doc->version != NULL) &&
+	        (!strncmp((const char *) style->doc->version, "1.0", 3))) {
+	        xsltTransformError(NULL, style, cur,
+			"xsltParseStylesheetTop: unknown %s element\n",
+			cur->name);
+	        if (style != NULL) style->errors++;
+	    }
+	    else {
+                /* do Forwards-Compatible Processing */
+	        xsltTransformError(NULL, style, cur,
 			"xsltParseStylesheetTop: ignoring unknown %s element\n",
 			cur->name);
-	    if (style != NULL) style->warnings++;
+	        if (style != NULL) style->warnings++;
+            }
 	}
 	cur = cur->next;
     }
@@ -1957,7 +2022,8 @@ xsltParseStylesheetProcess(xsltStylesheetPtr ret, xmlDocPtr doc) {
 
 /**
  * xsltParseStylesheetImportedDoc:
- * @doc:  and xmlDoc parsed XML
+ * @doc:  an xmlDoc parsed XML
+ * @style: pointer to parent stylesheet
  *
  * parse an XSLT stylesheet building the associated structures
  * except the processing not needed for imported documents.
@@ -1966,7 +2032,7 @@ xsltParseStylesheetProcess(xsltStylesheetPtr ret, xmlDocPtr doc) {
  */
 
 xsltStylesheetPtr
-xsltParseStylesheetImportedDoc(xmlDocPtr doc) {
+xsltParseStylesheetImportedDoc(xmlDocPtr doc, xsltStylesheetPtr style) {
     xsltStylesheetPtr ret;
 
     if (doc == NULL)
@@ -1975,15 +2041,33 @@ xsltParseStylesheetImportedDoc(xmlDocPtr doc) {
     ret = xsltNewStylesheet();
     if (ret == NULL)
 	return(NULL);
+    if (doc->dict != NULL) {
+        xmlDictFree(ret->dict);
+	ret->dict = doc->dict;
+#ifdef WITH_XSLT_DEBUG
+        xsltGenericDebug(xsltGenericDebugContext,
+                         "reusing dictionary from %s for stylesheet\n",
+			 doc->URL);
+#endif
+	xmlDictReference(ret->dict);
+    }
     
     ret->doc = doc;
+    ret->parent = style;	/* needed to prevent loops */
     xsltGatherNamespaces(ret);
     if (xsltParseStylesheetProcess(ret, doc) == NULL) {
 	ret->doc = NULL;
 	xsltFreeStylesheet(ret);
 	ret = NULL;
     }
-
+    if (ret != NULL) {
+	if (ret->errors != 0) {
+	    ret->doc = NULL;
+	    xsltFreeStylesheet(ret);
+	    ret = NULL;
+	}
+    }
+    
     return(ret);
 }
 
@@ -2000,7 +2084,7 @@ xsltStylesheetPtr
 xsltParseStylesheetDoc(xmlDocPtr doc) {
     xsltStylesheetPtr ret;
 
-    ret = xsltParseStylesheetImportedDoc(doc);
+    ret = xsltParseStylesheetImportedDoc(doc, NULL);
     if (ret == NULL)
 	return(NULL);
 
@@ -2049,7 +2133,8 @@ xsltParseStylesheetFile(const xmlChar* filename) {
 	}
     }
 
-    doc = xmlParseFile((const char *) filename);
+    doc = xsltDocDefaultLoader(filename, NULL, XSLT_PARSE_OPTIONS,
+                               NULL, XSLT_LOAD_START);
     if (doc == NULL) {
 	xsltTransformError(NULL, NULL, NULL,
 		"xsltParseStylesheetFile : cannot parse %s\n", filename);
@@ -2244,6 +2329,18 @@ xsltLoadStylesheetPI(xmlDocPtr doc) {
 		subtree = ID->parent;
 		fake = xmlNewDoc(NULL);
 		if (fake != NULL) {
+                    /*
+		     * the dictionnary should be shared since nodes are
+		     * moved over.
+		     */
+		    fake->dict = doc->dict;
+		    xmlDictReference(doc->dict);
+#ifdef WITH_XSLT_DEBUG
+		    xsltGenericDebug(xsltGenericDebugContext,
+                         "reusing dictionary from %s for stylesheet\n",
+			 doc->URL);
+#endif
+
 		    xmlUnlinkNode(subtree);
 		    xmlAddChild((xmlNodePtr) fake, subtree);
 		    ret = xsltParseStylesheetDoc(fake);

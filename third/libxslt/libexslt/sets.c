@@ -1,7 +1,7 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
-#if defined(WIN32) && !defined (__CYGWIN__)
+#if defined(WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
 #include <win32config.h>
 #else
 #include "config.h"
@@ -99,13 +99,22 @@ exsltSetsIntersectionFunction (xmlXPathParserContextPtr ctxt, int nargs) {
  */
 static void
 exsltSetsDistinctFunction (xmlXPathParserContextPtr ctxt, int nargs) {
+    xmlXPathObjectPtr obj;
     xmlNodeSetPtr ns, ret;
+    int boolval = 0;
+    void *user = NULL;
 
     if (nargs != 1) {
 	xmlXPathSetArityError(ctxt);
 	return;
     }
 
+    if (ctxt->value != NULL) {
+        boolval = ctxt->value->boolval;
+	user = ctxt->value->user;
+	ctxt->value->boolval = 0;
+	ctxt->value->user = NULL;
+    }
     ns = xmlXPathPopNodeSet(ctxt);
     if (xmlXPathCheckError(ctxt))
 	return;
@@ -113,9 +122,13 @@ exsltSetsDistinctFunction (xmlXPathParserContextPtr ctxt, int nargs) {
     /* !!! must be sorted !!! */
     ret = xmlXPathDistinctSorted(ns);
 
-    xmlXPathFreeNodeSet(ns);
+	if (ret != ns)
+		xmlXPathFreeNodeSet(ns);
 
-    xmlXPathReturnNodeSet(ctxt, ret);
+    obj = xmlXPathWrapNodeSet(ret);
+    obj->user = user;
+    obj->boolval = boolval;
+    valuePush((ctxt), obj);
 }
 
 /**

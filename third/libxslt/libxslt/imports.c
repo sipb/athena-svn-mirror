@@ -44,7 +44,7 @@
 #include "imports.h"
 #include "documents.h"
 #include "security.h"
-
+#include "pattern.h"
 
 
 /************************************************************************
@@ -52,6 +52,25 @@
  *			Module interfaces				*
  *									*
  ************************************************************************/
+/**
+ * xsltFixImportedCompSteps:
+ * @master: the "master" stylesheet
+ * @style: the stylesheet being imported by the master
+ *
+ * normalize the comp steps for the stylesheet being imported
+ * by the master, together with any imports within that. 
+ *
+ */
+static void xsltFixImportedCompSteps(xsltStylesheetPtr master, 
+			xsltStylesheetPtr style) {
+    xsltStylesheetPtr res;
+    xmlHashScan(style->templatesHash,
+	            (xmlHashScanner) xsltNormalizeCompSteps, master);
+    master->extrasNr += style->extrasNr;
+    for (res = style->imports; res != NULL; res = res->next) {
+        xsltFixImportedCompSteps(master, res);
+    }
+}
 
 /**
  * xsltParseStylesheetImport:
@@ -91,6 +110,18 @@ xsltParseStylesheetImport(xsltStylesheetPtr style, xmlNodePtr cur) {
 	goto error;
     }
 
+    res = style;
+    while (res != NULL) {
+        if (res->doc == NULL)
+	    break;
+	if (xmlStrEqual(res->doc->URL, URI)) {
+	    xsltTransformError(NULL, style, cur,
+	       "xsl:import : recursion detected on imported URL %s\n", URI);
+	    goto error;
+	}
+	res = res->parent;
+    }
+
     /*
      * Security framework check
      */
@@ -107,19 +138,21 @@ xsltParseStylesheetImport(xsltStylesheetPtr style, xmlNodePtr cur) {
 	}
     }
 
-    import = xmlParseFile((const char *)URI);
+    import = xsltDocDefaultLoader(URI, style->dict, XSLT_PARSE_OPTIONS,
+                                  (void *) style, XSLT_LOAD_STYLESHEET);
     if (import == NULL) {
 	xsltTransformError(NULL, style, cur,
 	    "xsl:import : unable to load %s\n", URI);
 	goto error;
     }
 
-    res = xsltParseStylesheetImportedDoc(import);
+    res = xsltParseStylesheetImportedDoc(import, style);
     if (res != NULL) {
-	res->parent = style;
 	res->next = style->imports;
 	style->imports = res;
-	style->extrasNr += res->extrasNr;
+	if (style->parent == NULL) {
+	    xsltFixImportedCompSteps(style, res);
+	}
 	ret = 0;
     } else {
 	xmlFreeDoc(import);
@@ -153,7 +186,9 @@ xsltParseStylesheetInclude(xsltStylesheetPtr style, xmlNodePtr cur) {
     xmlChar *base = NULL;
     xmlChar *uriRef = NULL;
     xmlChar *URI = NULL;
+    xsltStylesheetPtr result;
     xsltDocumentPtr include;
+    xsltDocumentPtr docptr;
 
     if ((cur == NULL) || (style == NULL))
 	return (ret);
@@ -173,6 +208,20 @@ xsltParseStylesheetInclude(xsltStylesheetPtr style, xmlNodePtr cur) {
 	goto error;
     }
 
+    /*
+     * in order to detect recursion, we check all previously included
+     * stylesheets.
+     */
+    docptr = style->includes;
+    while (docptr != NULL) {
+        if (xmlStrEqual(docptr->doc->URL, URI)) {
+	    xsltTransformError(NULL, style, cur,
+	        "xsl:include : recursion detected on included URL %s\n", URI);
+	    goto error;
+	}
+	docptr = docptr->includes;
+    }
+
     include = xsltLoadStyleDocument(style, URI);
     if (include == NULL) {
 	xsltTransformError(NULL, style, cur,
@@ -182,12 +231,16 @@ xsltParseStylesheetInclude(xsltStylesheetPtr style, xmlNodePtr cur) {
 
     oldDoc = style->doc;
     style->doc = include->doc;
-    ret = (int)xsltParseStylesheetProcess(style, include->doc);
+    /* chain to stylesheet for recursion checking */
+    include->includes = style->includes;
+    style->includes = include;
+    result = xsltParseStylesheetProcess(style, include->doc);
+    style->includes = include->includes;
     style->doc = oldDoc;
-    if (ret == 0) {
-		ret = -1;
-		goto error;
-	}
+    if (result == NULL) {
+	ret = -1;
+	goto error;
+    }
     ret = 0;
 
 error:

@@ -3,16 +3,17 @@
 #define __EXSLT_H__
 
 #include <libxml/tree.h>
+#include "exsltexports.h"
 #include "exsltconfig.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-LIBEXSLT_PUBLIC extern const char *exsltLibraryVersion;
-LIBEXSLT_PUBLIC extern const int exsltLibexsltVersion;
-LIBEXSLT_PUBLIC extern const int exsltLibxsltVersion;
-LIBEXSLT_PUBLIC extern const int exsltLibxmlVersion;
+EXSLTPUBVAR const char *exsltLibraryVersion;
+EXSLTPUBVAR const int exsltLibexsltVersion;
+EXSLTPUBVAR const int exsltLibxsltVersion;
+EXSLTPUBVAR const int exsltLibxmlVersion;
 
 /**
  * EXSLT_COMMON_NAMESPACE:
@@ -20,6 +21,12 @@ LIBEXSLT_PUBLIC extern const int exsltLibxmlVersion;
  * Namespace for EXSLT common functions
  */
 #define EXSLT_COMMON_NAMESPACE ((const xmlChar *) "http://exslt.org/common")
+/**
+ * EXSLT_CRYPTO_NAMESPACE:
+ *
+ * Namespace for EXSLT crypto functions
+ */
+#define EXSLT_CRYPTO_NAMESPACE ((const xmlChar *) "http://exslt.org/crypto")
 /**
  * EXSLT_MATH_NAMESPACE:
  *
@@ -64,16 +71,19 @@ LIBEXSLT_PUBLIC extern const int exsltLibxmlVersion;
  */
 #define SAXON_NAMESPACE ((const xmlChar *) "http://icl.com/saxon")
 
-void LIBEXSLT_PUBLIC exsltCommonRegister (void);
-void LIBEXSLT_PUBLIC exsltMathRegister (void);
-void LIBEXSLT_PUBLIC exsltSetsRegister (void);
-void LIBEXSLT_PUBLIC exsltFuncRegister (void);
-void LIBEXSLT_PUBLIC exsltStrRegister (void);
-void LIBEXSLT_PUBLIC exsltDateRegister (void);
-void LIBEXSLT_PUBLIC exsltSaxonRegister (void);
-void LIBEXSLT_PUBLIC exsltDynRegister(void);
+EXSLTPUBFUN void EXSLTCALL exsltCommonRegister (void);
+#ifdef EXSLT_CRYPTO_ENABLED
+EXSLTPUBFUN void EXSLTCALL exsltCryptoRegister (void);
+#endif
+EXSLTPUBFUN void EXSLTCALL exsltMathRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltSetsRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltFuncRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltStrRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltDateRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltSaxonRegister (void);
+EXSLTPUBFUN void EXSLTCALL exsltDynRegister(void);
 
-void LIBEXSLT_PUBLIC exsltRegisterAll (void);
+EXSLTPUBFUN void EXSLTCALL exsltRegisterAll (void);
 
 #ifdef __cplusplus
 }

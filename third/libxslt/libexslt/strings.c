@@ -1,7 +1,7 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
-#if defined(WIN32) && !defined (__CYGWIN__)
+#if defined(WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
 #include <win32config.h>
 #else
 #include "config.h"
@@ -26,86 +26,208 @@
  * @ctxt: an XPath parser context
  * @nargs: the number of arguments
  *
- * Splits up a string and returns a node set of token elements, each
- * containing one token from the string. 
+ * Splits up a string on the characters of the delimiter string and returns a
+ * node set of token elements, each containing one token from the string. 
  */
 static void
-exsltStrTokenizeFunction (xmlXPathParserContextPtr ctxt, int nargs) {
+exsltStrTokenizeFunction(xmlXPathParserContextPtr ctxt, int nargs)
+{
+    xsltTransformContextPtr tctxt;
     xmlChar *str, *delimiters, *cur;
     const xmlChar *token, *delimiter;
     xmlNodePtr node;
-    xmlDocPtr doc;
-    xmlXPathObjectPtr ret;
+    xmlDocPtr container;
+    xmlXPathObjectPtr ret = NULL;
+    int clen;
 
     if ((nargs < 1) || (nargs > 2)) {
-	xmlXPathSetArityError (ctxt);
-	return;
+        xmlXPathSetArityError(ctxt);
+        return;
     }
 
     if (nargs == 2) {
-	delimiters = xmlXPathPopString (ctxt);
-	if (xmlXPathCheckError(ctxt))
-	    return;
+        delimiters = xmlXPathPopString(ctxt);
+        if (xmlXPathCheckError(ctxt))
+            return;
     } else {
-	delimiters = xmlStrdup((const xmlChar *) "\t\r\n ");
+        delimiters = xmlStrdup((const xmlChar *) "\t\r\n ");
     }
     if (delimiters == NULL)
-	return;
+        return;
 
-    str = xmlXPathPopString (ctxt);
+    str = xmlXPathPopString(ctxt);
     if (xmlXPathCheckError(ctxt) || (str == NULL)) {
-	xmlFree (delimiters);
-	return;
+        xmlFree(delimiters);
+        return;
     }
 
-    doc = xsltXPathGetTransformContext(ctxt)->document->doc;
-    ret = xmlXPathNewNodeSet (NULL);
-    if (ret != NULL) {
-	ret->boolval = 1;
-	/*
-	 * This is a hack: token elements are added as children of a
-	 * fake element node. This is necessary to free them up
-	 * correctly when freeing the node-set.
-	 */
-	ret->user = (void *) xmlNewDocNode (doc, NULL,
-				(const xmlChar *) "fake", NULL);
-	if (ret->user == NULL)
-	    goto error;
+    /* Return a result tree fragment */
+    tctxt = xsltXPathGetTransformContext(ctxt);
+    if (tctxt == NULL) {
+        xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
+	      "exslt:tokenize : internal error tctxt == NULL\n");
+	goto fail;
     }
 
-    for (cur = str, token = str; *cur != 0; cur++) {
-	for (delimiter = delimiters; *delimiter != 0; delimiter++) {
-	    if (*cur == *delimiter) {
-		if (cur == token) {
-		    /* discard empty tokens */
-		    break;
-		}
-		*cur = 0;
-		node = xmlNewDocNode (doc, NULL,
-				      (const xmlChar *) "token", token);
-		*cur = *delimiter;
-		token = cur + 1;
-
-		xmlAddChild ((xmlNodePtr) ret->user, node);
-		xmlXPathNodeSetAdd (ret->nodesetval, node);
-		break;
-	    }
-	}
+    container = xsltCreateRVT(tctxt);
+    if (container != NULL) {
+        xsltRegisterTmpRVT(tctxt, container);
+        ret = xmlXPathNewNodeSet(NULL);
+        if (ret != NULL) {
+            ret->boolval = 0; /* Freeing is not handled there anymore */
+            for (cur = str, token = str; *cur != 0; cur += clen) {
+	        clen = xmlUTF8Size(cur);
+		if (*delimiters == 0) {	/* empty string case */
+		    xmlChar ctmp;
+		    ctmp = *(cur+clen);
+		    *(cur+clen) = 0;
+                    node = xmlNewDocRawNode(container, NULL,
+                                       (const xmlChar *) "token", cur);
+		    xmlAddChild((xmlNodePtr) container, node);
+		    xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+                    *(cur+clen) = ctmp; /* restore the changed byte */
+                    token = cur + clen;
+                } else for (delimiter = delimiters; *delimiter != 0;
+				delimiter += xmlUTF8Size(delimiter)) {
+                    if (!xmlUTF8Charcmp(cur, delimiter)) {
+                        if (cur == token) {
+                            /* discard empty tokens */
+                            token = cur + clen;
+                            break;
+                        }
+                        *cur = 0;	/* terminate the token */
+                        node = xmlNewDocRawNode(container, NULL,
+                                           (const xmlChar *) "token", token);
+			xmlAddChild((xmlNodePtr) container, node);
+			xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+                        *cur = *delimiter; /* restore the changed byte */
+                        token = cur + clen;
+                        break;
+                    }
+                }
+            }
+            if (token != cur) {
+	    	node = xmlNewDocRawNode(container, NULL,
+				    (const xmlChar *) "token", token);
+                xmlAddChild((xmlNodePtr) container, node);
+	        xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+            }
+        }
     }
-    node = xmlNewDocNode (doc, NULL, (const xmlChar *) "token", token);
-    xmlAddChild ((xmlNodePtr) ret->user, node);
-    xmlXPathNodeSetAdd (ret->nodesetval, node);
 
-    valuePush (ctxt, ret);
-    ret = NULL;		/* hack to prevent freeing ret later */
-
-error:
-    if (ret != NULL)
-	xmlXPathFreeObject (ret);
+fail:
     if (str != NULL)
-	xmlFree(str);
+        xmlFree(str);
     if (delimiters != NULL)
-	xmlFree(delimiters);
+        xmlFree(delimiters);
+    if (ret != NULL)
+        valuePush(ctxt, ret);
+    else
+        valuePush(ctxt, xmlXPathNewNodeSet(NULL));
+}
+
+/**
+ * exsltStrSplitFunction:
+ * @ctxt: an XPath parser context
+ * @nargs: the number of arguments
+ *
+ * Splits up a string on a delimiting string and returns a node set of token
+ * elements, each containing one token from the string. 
+ */
+static void
+exsltStrSplitFunction(xmlXPathParserContextPtr ctxt, int nargs) {
+    xsltTransformContextPtr tctxt;
+    xmlChar *str, *delimiter, *cur;
+    const xmlChar *token;
+    xmlNodePtr node;
+    xmlDocPtr container;
+    xmlXPathObjectPtr ret = NULL;
+    int delimiterLength;
+
+    if ((nargs < 1) || (nargs > 2)) {
+        xmlXPathSetArityError(ctxt);
+        return;
+    }
+
+    if (nargs == 2) {
+        delimiter = xmlXPathPopString(ctxt);
+        if (xmlXPathCheckError(ctxt))
+            return;
+    } else {
+        delimiter = xmlStrdup((const xmlChar *) " ");
+    }
+    if (delimiter == NULL)
+        return;
+    delimiterLength = xmlStrlen (delimiter);
+
+    str = xmlXPathPopString(ctxt);
+    if (xmlXPathCheckError(ctxt) || (str == NULL)) {
+        xmlFree(delimiter);
+        return;
+    }
+
+    /* Return a result tree fragment */
+    tctxt = xsltXPathGetTransformContext(ctxt);
+    if (tctxt == NULL) {
+        xsltTransformError(xsltXPathGetTransformContext(ctxt), NULL, NULL,
+	      "exslt:tokenize : internal error tctxt == NULL\n");
+	goto fail;
+    }
+
+    container = xsltCreateRVT(tctxt);
+    if (container != NULL) {
+        xsltRegisterTmpRVT(tctxt, container);
+        ret = xmlXPathNewNodeSet(NULL);
+        if (ret != NULL) {
+            ret->boolval = 0; /* Freeing is not handled there anymore */
+            for (cur = str, token = str; *cur != 0; cur++) {
+		if (delimiterLength == 0) {
+		    if (cur != token) {
+			xmlChar tmp = *cur;
+			*cur = 0;
+                        node = xmlNewDocRawNode(container, NULL,
+                                           (const xmlChar *) "token", token);
+			xmlAddChild((xmlNodePtr) container, node);
+			xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+			*cur = tmp;
+			token++;
+		    }
+		}
+		else if (!xmlStrncasecmp(cur, delimiter, delimiterLength)) {
+		    if (cur == token) {
+			/* discard empty tokens */
+			cur = cur + delimiterLength - 1;
+			token = cur + 1;
+			continue;
+		    }
+		    *cur = 0;
+		    node = xmlNewDocRawNode(container, NULL,
+				       (const xmlChar *) "token", token);
+		    xmlAddChild((xmlNodePtr) container, node);
+		    xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+		    *cur = *delimiter;
+		    cur = cur + delimiterLength - 1;
+		    token = cur + 1;
+                }
+            }
+	    if (token != cur) {
+		node = xmlNewDocRawNode(container, NULL,
+				   (const xmlChar *) "token", token);
+		xmlAddChild((xmlNodePtr) container, node);
+		xmlXPathNodeSetAddUnique(ret->nodesetval, node);
+	    }
+        }
+    }
+
+fail:
+    if (str != NULL)
+        xmlFree(str);
+    if (delimiter != NULL)
+        xmlFree(delimiter);
+    if (ret != NULL)
+        valuePush(ctxt, ret);
+    else
+        valuePush(ctxt, xmlXPathNewNodeSet(NULL));
 }
 
 /**
@@ -382,6 +504,9 @@ exsltStrRegister (void) {
     xsltRegisterExtModuleFunction ((const xmlChar *) "tokenize",
 				   EXSLT_STRINGS_NAMESPACE,
 				   exsltStrTokenizeFunction);
+    xsltRegisterExtModuleFunction ((const xmlChar *) "split",
+				   EXSLT_STRINGS_NAMESPACE,
+				   exsltStrSplitFunction);
     xsltRegisterExtModuleFunction ((const xmlChar *) "encode-uri",
 				   EXSLT_STRINGS_NAMESPACE,
 				   exsltStrEncodeUriFunction);

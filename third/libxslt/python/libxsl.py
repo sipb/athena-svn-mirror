@@ -17,18 +17,25 @@ else:
         try:
             import os
             osname = os.uname()[0]
-            if osname == 'Linux':
+            if osname == 'Linux' or osname == 'SunOS':
                 RTLD_GLOBAL = 0x00100
                 RTLD_NOW = 0x00002
+	    elif osname == 'Darwin':
+	        RTLD_GLOBAL = 0x8
+		RTLD_NOW = 0x2
             #
             # is there a better method ?
             #
-            else:
-                print "libxslt could not guess RTLD_GLOBAL and RTLD_NOW " + \
-                      "on this platform: %s" % (osname)
+#            else:
+#                print "libxslt could not guess RTLD_GLOBAL and RTLD_NOW " + \
+#                      "on this platform: %s" % (osname)
         except:
-            print "libxslt could not guess RTLD_GLOBAL and RTLD_NOW " + \
-                  "on this platform: %s" % (osname)
+	     pass
+#            print "libxslt could not guess RTLD_GLOBAL and RTLD_NOW " + \
+#                  "on this platform: %s" % (osname)
+    except:
+	 RTLD_GLOBAL = -1
+	 RTLD_NOW = -1
 
     if RTLD_GLOBAL != -1 and RTLD_NOW != -1:
         try:
@@ -79,6 +86,11 @@ class extensionModule:
     def ctxtShutdown(self, ctxt, URI, data):
         """Callback function when a transformation using it finishes"""
 	pass
+
+def cleanup():
+    """Cleanup all libxslt and libxml2 memory allocated"""
+    libxsltmod.xsltPythonCleanup()
+    libxml2.cleanupParser()
 
 #
 # Everything below this point is automatically generated

@@ -105,7 +105,58 @@ EXTRA_DIST =	\
 	bug-103.xml \
 	bug-104.xml \
 	bug-105.xml \
+	bug-106.xml \
+	bug-107.xml \
+	bug-108.xml \
+	bug-109.xml \
+	bug-110.xml bug-110.ent \
+	bug-111.xml \
+	bug-112.xml \
+	bug-113.xml \
+	bug-114.xml \
+	bug-115.xml \
+	bug-116.xml \
+	bug-117.xml \
+	bug-118.xml \
+	bug-119.xml \
+	bug-120.xml \
+	bug-121.xml \
+	bug-122.xml \
+	bug-123.xml \
+	bug-124.xml \
+	bug-125.xml \
+	bug-126.xml \
+	bug-127.xml \
+	bug-128.xml \
+	bug-129.xml \
+	bug-130.xml bug-130.doc \
+	bug-131.xml \
+	bug-132.xml \
+	bug-133.xml \
+	bug-134.xml \
+	bug-135.xml \
+	bug-136.xml \
+	bug-137.xml \
+	bug-138.xml \
+	bug-139.xml \
+	bug-140.xml \
+	bug-141.xml \
+	bug-142.xml \
+	bug-143.xml \
+	bug-144.xml \
+	bug-145.xml \
+	bug-146.xml \
+	bug-147.xml \
+	bug-148.xml \
+	bug-149.xml \
+	bug-150.xml \
+	bug-151.xml \
+	bug-152.xml \
+	bug-153.xml bug-153.doc \
 	character.xml \
 	array.xml \
 	items.xml
 
+all:
+
+tests:

@@ -78,13 +78,13 @@ xsltEvalXPathPredicate(xsltTransformContextPtr ctxt, xmlXPathCompExprPtr comp,
 	ret = xmlXPathEvalPredicate(ctxt->xpathCtxt, res);
 	xmlXPathFreeObject(res);
 #ifdef WITH_XSLT_DEBUG_TEMPLATES
-	xsltGenericDebug(xsltGenericDebugContext,
-	     "xsltEvalXPathPredicate: returns %d\n", ret);
+	XSLT_TRACE(ctxt,XSLT_TRACE_TEMPLATES,xsltGenericDebug(xsltGenericDebugContext,
+	     "xsltEvalXPathPredicate: returns %d\n", ret));
 #endif
     } else {
 #ifdef WITH_XSLT_DEBUG_TEMPLATES
-	xsltGenericDebug(xsltGenericDebugContext,
-	     "xsltEvalXPathPredicate: failed\n");
+	XSLT_TRACE(ctxt,XSLT_TRACE_TEMPLATES,xsltGenericDebug(xsltGenericDebugContext,
+	     "xsltEvalXPathPredicate: failed\n"));
 #endif
 	ctxt->state = XSLT_STATE_STOPPED;
 	ret = 0;
@@ -150,8 +150,8 @@ xsltEvalXPathStringNs(xsltTransformContextPtr ctxt, xmlXPathCompExprPtr comp,
 	ctxt->state = XSLT_STATE_STOPPED;
     }
 #ifdef WITH_XSLT_DEBUG_TEMPLATES
-    xsltGenericDebug(xsltGenericDebugContext,
-	 "xsltEvalXPathString: returns %s\n", ret);
+    XSLT_TRACE(ctxt,XSLT_TRACE_TEMPLATES,xsltGenericDebug(xsltGenericDebugContext,
+	 "xsltEvalXPathString: returns %s\n", ret));
 #endif
     ctxt->inst = oldInst;
     ctxt->node = oldNode;
@@ -247,11 +247,20 @@ xsltAttrTemplateValueProcessNode(xsltTransformContextPtr ctxt,
     cur = str;
     while (*cur != 0) {
 	if (*cur == '{') {
+	    if (*(cur+1) == '{') {	/* escaped '{' */
+	        cur++;
+		ret = xmlStrncat(ret, str, cur - str);
+		cur++;
+		str = cur;
+		continue;
+	    }
 	    ret = xmlStrncat(ret, str, cur - str);
 	    str = cur;
 	    cur++;
 	    while ((*cur != 0) && (*cur != '}')) cur++;
 	    if (*cur == 0) {
+	        xsltTransformError(ctxt, NULL, NULL,
+			"xsltAttrTemplateValueProcessNode: unmatched '{'\n");
 		ret = xmlStrncat(ret, str, cur - str);
 		return(ret);
 	    }
@@ -288,6 +297,17 @@ xsltAttrTemplateValueProcessNode(xsltTransformContextPtr ctxt,
 	    }
 	    cur++;
 	    str = cur;
+	} else if (*cur == '}') {
+	    cur++;
+	    if (*cur == '}') {	/* escaped '}' */
+		ret = xmlStrncat(ret, str, cur - str);
+		cur++;
+		str = cur;
+		continue;
+	    } else {
+	        xsltTransformError(ctxt, NULL, NULL,
+		     "xsltAttrTemplateValueProcessNode: unmatched '}'\n");
+	    }
 	} else
 	    cur++;
     }
@@ -351,8 +371,8 @@ xsltEvalAttrValueTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
 
     ret = xsltAttrTemplateValueProcessNode(ctxt, expr, node);
 #ifdef WITH_XSLT_DEBUG_TEMPLATES
-    xsltGenericDebug(xsltGenericDebugContext,
-	 "xsltEvalAttrValueTemplate: %s returns %s\n", expr, ret);
+    XSLT_TRACE(ctxt,XSLT_TRACE_TEMPLATES,xsltGenericDebug(xsltGenericDebugContext,
+	 "xsltEvalAttrValueTemplate: %s returns %s\n", expr, ret));
 #endif
     if (expr != NULL)
 	xmlFree(expr);
@@ -373,7 +393,7 @@ xsltEvalAttrValueTemplate(xsltTransformContextPtr ctxt, xmlNodePtr node,
  * Returns the static string value or NULL, must be deallocated by the
  *    caller.
  */
-xmlChar *
+const xmlChar *
 xsltEvalStaticAttrValueTemplate(xsltStylesheetPtr style, xmlNodePtr node,
 			const xmlChar *name, const xmlChar *ns, int *found) {
     const xmlChar *ret;
@@ -394,7 +414,9 @@ xsltEvalStaticAttrValueTemplate(xsltStylesheetPtr style, xmlNodePtr node,
 	xmlFree(expr);
 	return(NULL);
     }
-    return(expr);
+    ret = xmlDictLookup(style->dict, expr, -1);
+    xmlFree(expr);
+    return(ret);
 }
 
 /**
@@ -410,6 +432,7 @@ xsltEvalStaticAttrValueTemplate(xsltStylesheetPtr style, xmlNodePtr node,
 xmlAttrPtr
 xsltAttrTemplateProcess(xsltTransformContextPtr ctxt, xmlNodePtr target,
 	                xmlAttrPtr cur) {
+    const xmlChar *value;
     xmlNsPtr ns;
     xmlAttrPtr ret;
     if ((ctxt == NULL) || (cur == NULL))
@@ -418,41 +441,70 @@ xsltAttrTemplateProcess(xsltTransformContextPtr ctxt, xmlNodePtr target,
     if (cur->type != XML_ATTRIBUTE_NODE)
 	return(NULL);
 
+    if ((cur->children == NULL) || (cur->children->type != XML_TEXT_NODE) ||
+        (cur->children->next != NULL)) {
+	xsltTransformError(ctxt, NULL, cur->parent,
+		"attribute %s content problem\n", cur->name);
+        return(NULL);
+    }
+    value = cur->children->content;
+    if (value == NULL) value = BAD_CAST "";
     if ((cur->ns != NULL) &&
 	(xmlStrEqual(cur->ns->href, XSLT_NAMESPACE))) {
 	if (xmlStrEqual(cur->name, (const xmlChar *)"use-attribute-sets")) {
-	    xmlChar *in;
-
-	    in = xmlNodeListGetString(ctxt->document->doc, cur->children, 1);
-	    if (in != NULL) {
-		xsltApplyAttributeSet(ctxt, ctxt->node, NULL, in);
-		xmlFree(in);
-	    }
+	    xsltApplyAttributeSet(ctxt, ctxt->node, NULL, value);
 	}
 	return(NULL);
     }
-    if (cur->ns != NULL)
-	ns = xsltGetNamespace(ctxt, cur->parent, cur->ns, target);
-    else
-	ns = NULL;
 
-    if (cur->children != NULL) {
-	xmlChar *in = xmlNodeListGetString(ctxt->document->doc,
-		                           cur->children, 1);
-	xmlChar *out;
+    ret = target->properties;
+    while (ret != NULL) {
+        if (xmlStrEqual(ret->name, cur->name)) {
+	    if (cur->ns == NULL) {
+	        if (ret->ns == NULL)
+		    break;
+	    } else {
+	        if ((ret->ns != NULL) &&
+		    (xmlStrEqual(ret->ns->href, cur->ns->href)))
+		    break;
+	    }
+	}
+        ret = ret->next;
+    }
+    if (ret != NULL) {
+        /* free the existing value */
+	xmlFreeNodeList(ret->children);
+	ret->children = ret->last = NULL;
+    } else {
+        /* create a new attribute */
+	if (cur->ns != NULL)
+	    ns = xsltGetPlainNamespace(ctxt, cur->parent, cur->ns, target);
+	else
+	    ns = NULL;
+	/* TODO output doc->dict, use xmlNewNsPropEatName() instead */
+	ret = xmlNewNsProp(target, ns, cur->name, NULL);
+    }
+    if (ret != NULL) {
+        xmlNodePtr text;
 
-	/* TODO: optimize if no template value was detected */
-	if (in != NULL) {
-            out = xsltAttrTemplateValueProcessNode(ctxt, in, cur->parent);
-	    ret = xmlSetNsProp(target, ns, cur->name, out);
-	    if (out != NULL)
-		xmlFree(out);
-	    xmlFree(in);
-	} else
-	    ret = xmlSetNsProp(target, ns, cur->name, (const xmlChar *)"");
-       
-    } else 
-	ret = xmlSetNsProp(target, ns, cur->name, (const xmlChar *)"");
+        text = xmlNewText(NULL);
+	if (text != NULL) {
+	    ret->last = ret->children = text;
+	    text->parent = (xmlNodePtr) ret;
+	    text->doc = ret->doc;
+	    if (cur->psvi != NULL) {
+		xmlChar *val;
+		val = xsltEvalAVT(ctxt, cur->psvi, cur->parent);
+		if (val == NULL) {
+		    text->content = xmlStrdup(BAD_CAST "runtime error");
+		} else {
+		    text->content = val;
+		}
+	    } else {
+		text->content = xmlStrdup(value);
+	    }
+	}
+    }
     return(ret);
 }
 

@@ -1,7 +1,7 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
-#if defined(WIN32) && !defined (__CYGWIN__)
+#if defined(WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
 #include <win32config.h>
 #else
 #include "config.h"
@@ -40,7 +40,12 @@ exsltNodeSetFunction (xmlXPathParserContextPtr ctxt, int nargs) {
     strval = xmlXPathPopString (ctxt);
     retNode = xmlNewDocText (NULL, strval);
     ret = xmlXPathNewValueTree (retNode);
-    ret->type = XPATH_NODESET;
+    if (ret == NULL) {
+        xsltGenericError(xsltGenericErrorContext,
+			 "exsltNodeSetFunction: ret == NULL\n");
+    } else {
+        ret->type = XPATH_NODESET;
+    }
 
     if (strval != NULL)
 	xmlFree (strval);

@@ -14,6 +14,8 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/tree.h>
 #include <libxml/hash.h>
+#include <libxml/parser.h>
+#include <libxml/parserInternals.h>
 #include "xslt.h"
 #include "xsltInternals.h"
 #include "xsltutils.h"
@@ -32,6 +34,96 @@
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_DOCUMENTS
 #endif
+
+/************************************************************************
+ * 									*
+ * 		Hooks for the document loader				*
+ * 									*
+ ************************************************************************/
+
+/**
+ * xsltDocDefaultLoaderFunc:
+ * @URI: the URI of the document to load
+ * @dict: the dictionnary to use when parsing that document
+ * @options: parsing options, a set of xmlParserOption
+ * @ctxt: the context, either a stylesheet or a transformation context
+ * @type: the xsltLoadType indicating the kind of loading required
+ *
+ * Default function to load document not provided by the compilation or
+ * transformation API themselve, for example when an xsl:import,
+ * xsl:include is found at compilation time or when a document()
+ * call is made at runtime.
+ *
+ * Returns the pointer to the document (which will be modified and
+ * freed by the engine later), or NULL in case of error.
+ */
+static xmlDocPtr
+xsltDocDefaultLoaderFunc(const xmlChar * URI, xmlDictPtr dict, int options,
+                         void *ctxt ATTRIBUTE_UNUSED,
+			 xsltLoadType type ATTRIBUTE_UNUSED)
+{
+    xmlParserCtxtPtr pctxt;
+    xmlParserInputPtr inputStream;
+    xmlDocPtr doc;
+
+    pctxt = xmlNewParserCtxt();
+    if (pctxt == NULL)
+        return(NULL);
+    if ((dict != NULL) && (pctxt->dict != NULL)) {
+        xmlDictFree(pctxt->dict);
+	pctxt->dict = NULL;
+    }
+    if (dict != NULL) {
+	pctxt->dict = dict;
+	xmlDictReference(pctxt->dict);
+#ifdef WITH_XSLT_DEBUG
+	xsltGenericDebug(xsltGenericDebugContext,
+                     "Reusing dictionary for document\n");
+#endif
+    }
+    xmlCtxtUseOptions(pctxt, options);
+    inputStream = xmlLoadExternalEntity((const char *) URI, NULL, pctxt);
+    if (inputStream == NULL) {
+        xmlFreeParserCtxt(pctxt);
+	return(NULL);
+    }
+    inputPush(pctxt, inputStream);
+    if (pctxt->directory == NULL)
+        pctxt->directory = xmlParserGetDirectory((const char *) URI);
+
+    xmlParseDocument(pctxt);
+
+    if (pctxt->wellFormed) {
+        doc = pctxt->myDoc;
+    }
+    else {
+        doc = NULL;
+        xmlFreeDoc(pctxt->myDoc);
+        pctxt->myDoc = NULL;
+    }
+    xmlFreeParserCtxt(pctxt);
+
+    return(doc);
+}
+
+
+xsltDocLoaderFunc xsltDocDefaultLoader = xsltDocDefaultLoaderFunc;
+
+/**
+ * xsltSetLoaderFunc:
+ * @f: the new function to handle document loading.
+ *
+ * Set the new function to load document, if NULL it resets it to the
+ * default function.
+ */
+ 
+void
+xsltSetLoaderFunc(xsltDocLoaderFunc f) {
+    if (f == NULL)
+        xsltDocDefaultLoader = xsltDocDefaultLoaderFunc;
+    else
+        xsltDocDefaultLoader = f;
+}
 
 /************************************************************************
  *									*
@@ -61,8 +153,10 @@ xsltNewDocument(xsltTransformContextPtr ctxt, xmlDocPtr doc) {
     memset(cur, 0, sizeof(xsltDocument));
     cur->doc = doc;
     if (ctxt != NULL) {
-	cur->next = ctxt->docList;
-	ctxt->docList = cur;
+        if (!xmlStrEqual((xmlChar *)doc->name, BAD_CAST " fake node libxslt")) {
+	    cur->next = ctxt->docList;
+	    ctxt->docList = cur;
+	}
 	xsltInitCtxtKeys(ctxt, cur);
     }
     return(cur);
@@ -147,7 +241,6 @@ xsltFreeDocuments(xsltTransformContextPtr ctxt) {
     }
 }
 
-
 /**
  * xsltLoadDocument:
  * @ctxt: an XSLT transformation context
@@ -192,13 +285,19 @@ xsltLoadDocument(xsltTransformContextPtr ctxt, const xmlChar *URI) {
 	ret = ret->next;
     }
 
-    doc = xmlParseFile((const char *) URI);
+    doc = xsltDocDefaultLoader(URI, ctxt->dict, ctxt->parserOptions,
+                               (void *) ctxt, XSLT_LOAD_DOCUMENT);
+
     if (doc == NULL)
 	return(NULL);
 
     if (ctxt->xinclude != 0) {
 #ifdef LIBXML_XINCLUDE_ENABLED
+#if LIBXML_VERSION >= 20603
+	xmlXIncludeProcessFlags(doc, ctxt->parserOptions);
+#else
 	xmlXIncludeProcess(doc);
+#endif
 #else
 	xsltTransformError(ctxt, NULL, NULL,
 	    "xsltLoadDocument(%s) : XInclude processing not compiled in\n",
@@ -210,6 +309,8 @@ xsltLoadDocument(xsltTransformContextPtr ctxt, const xmlChar *URI) {
      */
     if (xsltNeedElemSpaceHandling(ctxt))
 	xsltApplyStripSpaces(ctxt, xmlDocGetRootElement(doc));
+    if (ctxt->debugStatus == XSLT_DEBUG_NONE)
+	xmlXPathOrderDocElems(doc);
 
     ret = xsltNewDocument(ctxt, doc);
     return(ret);
@@ -260,7 +361,8 @@ xsltLoadStyleDocument(xsltStylesheetPtr style, const xmlChar *URI) {
 	ret = ret->next;
     }
 
-    doc = xmlParseFile((const char *) URI);
+    doc = xsltDocDefaultLoader(URI, style->dict, XSLT_PARSE_OPTIONS,
+                               (void *) style, XSLT_LOAD_STYLESHEET);
     if (doc == NULL)
 	return(NULL);
 

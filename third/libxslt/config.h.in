@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
+/* Define if gcrypt library is available. */
+#undef HAVE_GCRYPT
+
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
@@ -41,6 +44,9 @@
 
 /* Define to 1 if you have the `localtime' function. */
 #undef HAVE_LOCALTIME
+
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
 
 /* Define to 1 if you have the <math.h> header file. */
 #undef HAVE_MATH_H
@@ -83,6 +89,9 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/select.h> header file. */
+#undef HAVE_SYS_SELECT_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -140,3 +149,12 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Using the Win32 Socket implementation */
+#undef _WINSOCKAPI_
+
+/* Win32 Std C name mangling work-around */
+#undef snprintf
+
+/* Win32 Std C name mangling work-around */
+#undef vsnprintf

@@ -1,15 +1,23 @@
+/*
+ * Summary: Windows configuration header
+ * Description: Windows configuration header
+ *
+ * Copy: See Copyright for the status of this software.
+ *
+ * Author: Igor Zlatkovic
+ */
 #ifndef __LIBXSLT_WIN32_CONFIG__
 #define __LIBXSLT_WIN32_CONFIG__
 
-#define HAVE_CTYPE_H
-#define HAVE_STDLIB_H
-#define HAVE_MALLOC_H
-#define HAVE_TIME_H
-#define HAVE_LOCALTIME
-#define HAVE_GMTIME
-#define HAVE_TIME
-
-#define HAVE_FCNTL_H
+#define HAVE_CTYPE_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_MALLOC_H 1
+#define HAVE_TIME_H 1
+#define HAVE_LOCALTIME 1
+#define HAVE_GMTIME 1
+#define HAVE_TIME 1
+#define HAVE_MATH_H 1
+#define HAVE_FCNTL_H 1
 
 #include <io.h>
 
@@ -17,7 +25,7 @@
 #define HAVE_ISNAN
 
 #include <math.h>
-#ifdef _MSC_VER
+#if defined _MSC_VER || defined __MINGW32__
 /* MS C-runtime has functions which can be used in order to determine if
    a given floating-point variable contains NaN, (+-)INF. These are 
    preferred, because floating-point technology is considered propriatary
@@ -79,14 +87,6 @@ static int isnan (double d) {
 #define HAVE_STRING_H
 
 #include <libxml/xmlversion.h>
-
-#if !defined LIBXSLT_PUBLIC
-#if defined _MSC_VER && !defined IN_LIBXSLT && !defined LIBXSLT_STATIC
-#define LIBXSLT_PUBLIC __declspec(dllimport)
-#else
-#define LIBXSLT_PUBLIC 
-#endif
-#endif
 
 #ifndef ATTRIBUTE_UNUSED
 #define ATTRIBUTE_UNUSED

@@ -1,17 +1,21 @@
+dnl Process this file with autoconf to produce a configuration script.
+AC_PREREQ(2.2)
 AC_INIT(libxslt/xslt.c)
+AM_CONFIG_HEADER(config.h)
+AC_CANONICAL_HOST
 
 dnl
 dnl libxslt is the main part of the package
 dnl libexslt is an extension
 dnl
 LIBXSLT_MAJOR_VERSION=1
-LIBXSLT_MINOR_VERSION=0
-LIBXSLT_MICRO_VERSION=27
+LIBXSLT_MINOR_VERSION=1
+LIBXSLT_MICRO_VERSION=10
 PACKAGE=libxslt
 LIBEXSLT_MAJOR_VERSION=0
-LIBEXSLT_MINOR_VERSION=7
-LIBEXSLT_MICRO_VERSION=18
-LIBXML_REQUIRED_VERSION=2.5.2
+LIBEXSLT_MINOR_VERSION=8
+LIBEXSLT_MICRO_VERSION=8
+LIBXML_REQUIRED_VERSION=2.6.8
 
 
 LIBXSLT_VERSION=$LIBXSLT_MAJOR_VERSION.$LIBXSLT_MINOR_VERSION.$LIBXSLT_MICRO_VERSION
@@ -19,12 +23,22 @@ LIBXSLT_VERSION_INFO=`expr $LIBXSLT_MAJOR_VERSION + $LIBXSLT_MINOR_VERSION`:$LIB
 
 LIBXSLT_VERSION_NUMBER=`expr $LIBXSLT_MAJOR_VERSION \* 10000 + $LIBXSLT_MINOR_VERSION \* 100 + $LIBXSLT_MICRO_VERSION`
 
+if test -f CVS/Entries; then
+  extra=`grep ChangeLog CVS/Entries | grep -v LIBXSLT | sed -e s\%/ChangeLog/1\.%% -e s\%/.*$%%`
+  echo extra=$extra
+  if test "$extra" != ""
+  then
+      LIBXSLT_VERSION_EXTRA="-CVS$extra"
+  fi
+fi
+
 AC_SUBST(LIBXSLT_MAJOR_VERSION)
 AC_SUBST(LIBXSLT_MINOR_VERSION)
 AC_SUBST(LIBXSLT_MICRO_VERSION)
 AC_SUBST(LIBXSLT_VERSION)
 AC_SUBST(LIBXSLT_VERSION_INFO)
 AC_SUBST(LIBXSLT_VERSION_NUMBER)
+AC_SUBST(LIBXSLT_VERSION_EXTRA)
 
 dnl
 dnl libexslt is an extension library
@@ -35,43 +49,23 @@ LIBEXSLT_VERSION_INFO=`expr $LIBEXSLT_MAJOR_VERSION + $LIBEXSLT_MINOR_VERSION`:$
 
 LIBEXSLT_VERSION_NUMBER=`expr $LIBEXSLT_MAJOR_VERSION \* 10000 + $LIBEXSLT_MINOR_VERSION \* 100 + $LIBEXSLT_MICRO_VERSION`
 
+if test -f CVS/Entries; then
+  LIBEXSLT_VERSION_EXTRA=-CVS`grep ChangeLog CVS/Entries | sed -e s\%/ChangeLog/1\.%% -e s\%/.*$%%`
+fi
+
 AC_SUBST(LIBEXSLT_MAJOR_VERSION)
 AC_SUBST(LIBEXSLT_MINOR_VERSION)
 AC_SUBST(LIBEXSLT_MICRO_VERSION)
 AC_SUBST(LIBEXSLT_VERSION)
 AC_SUBST(LIBEXSLT_VERSION_INFO)
 AC_SUBST(LIBEXSLT_VERSION_NUMBER)
-
-dnl
-dnl libxsltbreakpoint is a compatibility obsoleted library
-dnl it's blocked at 1.0.8 and should be removed in default build in the
-dnl future
-dnl
-
-LIBXSLTBREAK_MAJOR_VERSION=1
-LIBXSLTBREAK_MINOR_VERSION=0
-LIBXSLTBREAK_MICRO_VERSION=8
-
-LIBXSLTBREAK_VERSION=$LIBXSLTBREAK_MAJOR_VERSION.$LIBXSLTBREAK_MINOR_VERSION.$LIBXSLTBREAK_MICRO_VERSION
-LIBXSLTBREAK_VERSION_INFO=`expr $LIBXSLTBREAK_MAJOR_VERSION + $LIBXSLTBREAK_MINOR_VERSION`:$LIBXSLTBREAK_MICRO_VERSION:$LIBXSLTBREAK_MINOR_VERSION
-
-LIBXSLTBREAK_VERSION_NUMBER=`expr $LIBXSLTBREAK_MAJOR_VERSION \* 10000 + $LIBXSLTBREAK_MINOR_VERSION \* 100 + $LIBXSLTBREAK_MICRO_VERSION`
-
-AC_SUBST(LIBXSLTBREAK_MAJOR_VERSION)
-AC_SUBST(LIBXSLTBREAK_MINOR_VERSION)
-AC_SUBST(LIBXSLTBREAK_MICRO_VERSION)
-AC_SUBST(LIBXSLTBREAK_VERSION)
-AC_SUBST(LIBXSLTBREAK_VERSION_INFO)
-AC_SUBST(LIBXSLTBREAK_VERSION_NUMBER)
-
-
-
+AC_SUBST(LIBEXSLT_VERSION_EXTRA)
 
 VERSION=${LIBXSLT_VERSION}
 
-AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-AM_MAINTAINER_MODE
+
+# AM_MAINTAINER_MODE
 
 AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
 
@@ -92,8 +86,13 @@ dnl
 
 AC_ISC_POSIX
 AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_CPP
+AC_PATH_PROG(RM, rm, /bin/rm)
+AC_PATH_PROG(MV, mv, /bin/mv)
+AC_PATH_PROG(TAR, tar, /bin/tar)
+
 AC_STDC_HEADERS
-AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
 
 dnl
@@ -102,7 +101,7 @@ dnl
 
 AC_CHECK_HEADERS(sys/types.h sys/time.h stdlib.h unistd.h string.h)
 AC_CHECK_HEADERS(ieeefp.h nan.h math.h fp_class.h float.h ansidecl.h)
-AC_CHECK_HEADERS(sys/timeb.h time.h sys/stat.h stdarg.h)
+AC_CHECK_HEADERS(sys/timeb.h time.h sys/stat.h sys/select.h stdarg.h)
 AC_CHECK_FUNCS(stat _stat)
 AC_CHECK_FUNC(isnan, , AC_CHECK_LIB(m, isnan,
   [M_LIBS="-lm"; AC_DEFINE(HAVE_ISNAN)]))
@@ -119,7 +118,7 @@ AC_CHECK_FUNC(floor, , AC_CHECK_LIB(m, floor,
 AC_CHECK_FUNC(fabs, , AC_CHECK_LIB(m, fabs,
   [M_LIBS="-lm"; AC_DEFINE(HAVE_FABS)]))
 AC_CHECK_FUNCS(gettimeofday)
-AC_CHECK_FUNCS(mktime localtime asctime time gmtime ftime)
+AC_CHECK_FUNCS(mktime localtime localtime_r asctime time gmtime ftime)
 
 dnl Checking the standard string functions availability
 AC_CHECK_FUNCS(printf sprintf fprintf snprintf vfprintf vsprintf vsnprintf sscanf,,
@@ -137,6 +136,13 @@ fi
 AC_SUBST(WITH_TRIO)
 
 dnl
+dnl Some packages need to be checked against version numbers so we
+dnl define a function here for later use
+dnl
+AC_DEFUN(VERSION_TO_NUMBER,
+[`$1 | sed -e 's/libxml //' | awk 'BEGIN { FS = "."; } { printf "%d", ([$]1 * 1000 + [$]2) * 1000 + [$]3;}'`])
+
+dnl
 dnl Perl is just needed for generating some data for XSLtmark
 dnl
 
@@ -151,20 +157,27 @@ PYTHON=
 PYTHON_VERSION=
 PYTHON_INCLUDES=
 PYTHON_SITE_PACKAGES=
+pythondir=
 AC_ARG_WITH(python, [  --with-python[=DIR]    Build Python bindings if found])
 if test "$with_python" != "no" ; then
-    if test -x "$with_python"
+    if test -x "$with_python/bin/python"
     then
-        echo Found python in $with_python
-        PYTHON="$with_python"
+        echo Found python in $with_python/bin/python
+        PYTHON="$with_python/bin/python"
     else
-	AC_PATH_PROG(PYTHON, python python2.2 python2.1 python2.0 python1.6 python1.5)
+	if test -x "$with_python"
+	then
+	    echo Found python in $with_python
+	    PYTHON="$with_python"
+	else
+	    AC_PATH_PROG(PYTHON, python python2.3 python2.2 python2.1 python2.0 python1.6 python1.5)
+	fi
     fi
     if test "$PYTHON" != ""
     then
         PYTHON_VERSION=`$PYTHON -c "import sys; print sys.version[[0:3]]"`
 	echo Found Python version $PYTHON_VERSION
-	LIBXML2_PYTHON=`python -c "try : import libxml2 ; print 1
+	LIBXML2_PYTHON=`$PYTHON -c "try : import libxml2 ; print 1
 except: print 0"`
 	if test "$LIBXML2_PYTHON" = "1"
 	then
@@ -194,11 +207,17 @@ except: print 0"`
 		    echo could not find python$PYTHON_VERSION/Python.h
 		fi
 	    fi
-	    if ! test -d "$PYTHON_SITE_PACKAGES"
+	    if test ! -d "$PYTHON_SITE_PACKAGES"
 	    then
 		    PYTHON_SITE_PACKAGES=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib()"`
 	    fi
 	fi
+    fi
+    if test "$with_python" != ""
+    then
+        pythondir='$(PYTHON_SITE_PACKAGES)'
+    else
+        pythondir='$(libdir)/python${PYTHON_VERSION}/site-packages'
     fi
 fi
 AM_CONDITIONAL(WITH_PYTHON, test "$PYTHON_INCLUDES" != "")
@@ -208,17 +227,61 @@ then
 else
     PYTHON_SUBDIR=
 fi
+AC_SUBST(pythondir)
 AC_SUBST(PYTHON_SUBDIR)
+
+AC_ARG_WITH(crypto, [  --with-crypto           Add crypto support to exslt (on)])
+WITH_CRYPTO=0
+if test "$with_crypto" = "no" ; then
+    echo Disabling crypto support
+    LIBGCRYPT_CFLAGS=""
+    LIBGCRYPT_LIBS=""
+else
+    AC_PATH_PROG(LIBGCRYPT_CONFIG, libgcrypt-config, no)
+    if test "$LIBGCRYPT_CONFIG" != "no" ; then
+      LIBGCRYPT_VERSION=`$LIBGCRYPT_CONFIG --version`
+      if test VERSION_TO_NUMBER(echo $LIBGCRYPT_VERSION) -lt VERSION_TO_NUMBER(echo "1.1.42")
+      then
+        LIBGCRYPT_CFLAGS=""
+        LIBGCRYPT_LIBS=""
+        echo gcrypt library version < 1.1.42 - Crypto extensions will not be available.
+      else
+        LIBGCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --cflags`
+        LIBGCRYPT_LIBS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --libs`
+        AC_DEFINE(HAVE_GCRYPT, 1, [Define if gcrypt library is available.])
+        echo Crypto extensions will be available.
+		WITH_CRYPTO=1
+      fi
+    else
+      LIBGCRYPT_CFLAGS=""
+      LIBGCRYPT_LIBS=""
+      echo Crypto extensions will not be available. Install libgcrypt and reconfigure to make available.
+    fi
+fi
+AC_SUBST(WITH_CRYPTO)
+AC_SUBST(LIBGCRYPT_CFLAGS)
+AC_SUBST(LIBGCRYPT_LIBS)
 
 dnl
 dnl Debug for DV (-Wunreachable-code)
 dnl
-if test "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XSLT" ; then
-    if test "${with_mem_debug}" = "" ; then
+if [[ "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XSLT" ]] || \
+   [[ "${LOGNAME}" = "bill" -a "`pwd`" = "/home/bill/gnomecvs/xsltest" ]]
+   then
+    if test "${with_mem_debug}" = "" ;
+    then
 	with_mem_debug="yes"
     fi
     CFLAGS="-Wall -g -O -ansi -pedantic -W -Wunused -Wimplicit -Wreturn-type -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Winline "
+    STATIC_BINARIES="-static"
+    if test "$LOGNAME" = "veillard"
+    then
+        LIBXML_SRC="/u/veillard/XML"
+    fi
+else
+    STATIC_BINARIES=
 fi
+AC_SUBST(STATIC_BINARIES)
 
 AC_ARG_WITH(debug, [  --with-debug            Add the debugging code (on)])
 if test "$with_debug" = "no" ; then
@@ -250,7 +313,6 @@ else
     WITH_DEBUGGER=1
     AC_DEFINE(WITH_DEBUGGER)
 fi
-AM_CONDITIONAL(WITH_DEBUGGER, test "${WITH_DEBUGGER}" = "1")
 AC_SUBST(WITH_DEBUGGER)
 
 dnl
@@ -284,6 +346,7 @@ AC_ARG_WITH(libxml-src,
 	[  --with-libxml-src=[DIR]              For libxml thats not installed yet (sets all three above)],
 	LIBXML_SRC="$withval"
 )
+AC_SUBST(LIBXML_SRC)
 
 dnl
 dnl where is xml2-config
@@ -346,8 +409,6 @@ dnl make sure xml2-config is executable,
 dnl test version and init our variables
 dnl
 
-AC_DEFUN(VERSION_TO_NUMBER,
-[`$1 | sed -e 's/libxml //' | awk 'BEGIN { FS = "."; } { printf "%d", ([$]1 * 1000 + [$]2) * 1000 + [$]3;}'`])
 if ${XML_CONFIG} --libs print > /dev/null 2>&1
 then
 	XMLVERS=`$XML_CONFIG --version`
@@ -368,31 +429,31 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-#
-# Some fun with prelinking :-(
-# try to check if there is already an installed shared lib of the same level
-#
-INSTALLED_XSLT_LIB=""
-if test -d $prefix
-then
-    shared_xslt_lib="$prefix/lib/libxslt.so.$LIBXSLT_MAJOR_VERSION"
-    shared_xslt_la="$prefix/lib/libxslt.la"
-    if test -f $shared_xslt_lib -a -f $shared_xslt_la
-    then
-	INSTALLED_XSLT_LIB="-L$libdir -lxslt"
-    fi
-fi
-AC_SUBST(INSTALLED_XSLT_LIB)
-
 dnl
 dnl In build tree I use a static version with memory debug enabled
 dnl
 if test "${LOGNAME}" = "veillard" -a "`pwd`" = "/u/veillard/XSLT" ; then
-    LIBXML_LIBS="../../XML/.libs/libxml2.a -lz"
+    LIBXML_LIBS="../../XML/.libs/libxml2.a -lpthread -lz"
     DV_LINK="1"
     XSLTPROCDV="xsltproc.dv"
-   # PYTHONSODV="libxsltmod.so.dv"
+    INSTALLED_XSLT_LIB=""
+    LIBXML_SRC="../../XML/"
 fi
+
+WIN32_EXTRA_LIBADD=
+WIN32_EXTRA_LDFLAGS=
+case "$host" in
+ *-*-mingw*)
+ WIN32_EXTRA_LIBADD="-lwsock32"
+ WIN32_EXTRA_LDFLAGS="-no-undefined"
+ AC_DEFINE([_WINSOCKAPI_],1,[Using the Win32 Socket implementation])
+ AC_DEFINE([snprintf],[_snprintf],[Win32 Std C name mangling work-around])
+ AC_DEFINE([vsnprintf],[_vsnprintf],[Win32 Std C name mangling work-around])
+ ;;
+esac
+AC_SUBST(WIN32_EXTRA_LIBADD)
+AC_SUBST(WIN32_EXTRA_LDFLAGS)
+
 
 AC_SUBST(XSLTPROCDV)
 AC_SUBST(PYTHONSODV)
@@ -405,38 +466,41 @@ AC_SUBST(PYTHON_INCLUDES)
 AC_SUBST(PYTHON_SITE_PACKAGES)
 
 XSLT_LIBDIR='-L${libdir}'
-
-case ${host} in
-    *-*-solaris*)
-        XSLT_LIBDIR="${XSLT_LIBDIR} -R${libdir}"
-	;;
-esac
-
 XSLT_INCLUDEDIR='-I${includedir}'
 XSLT_LIBS="-lxslt $LIBXML_LIBS $M_LIBS"
-EXTRA_LIBS="$LIBXML_LIBS $M_LIBS"
-
 AC_SUBST(XSLT_LIBDIR)
 AC_SUBST(XSLT_INCLUDEDIR)
-AC_SUBST(EXTRA_LIBS)
-AC_SUBST(M_LIBS)
 AC_SUBST(XSLT_LIBS)
+
+EXSLT_LIBDIR='-L${libdir}'
+EXSLT_INCLUDEDIR='-I${includedir}'
+EXSLT_LIBS="-lexslt $XSLT_LIBS $LIBGCRYPT_LIBS"
+AC_SUBST(EXSLT_LIBDIR)
+AC_SUBST(EXSLT_INCLUDEDIR)
+AC_SUBST(EXSLT_LIBS)
+
+EXTRA_LIBS="$LIBXML_LIBS $M_LIBS"
+AC_SUBST(EXTRA_LIBS)
+
+AC_SUBST(M_LIBS)
 
 dnl for the spec file
 RELDATE=`date +'%a %b %e %Y'`
 AC_SUBST(RELDATE)
 
+( cd $srcdir
 rm -f COPYING.LIB COPYING
-ln -s Copyright COPYING
+$LN_S Copyright COPYING
+)
 
 
 AC_OUTPUT([
 Makefile
 libxslt.pc
+libexslt.pc
 libxslt/Makefile
 libxslt/xsltconfig.h
 libxslt/xsltwin32config.h
-breakpoint/Makefile
 libexslt/Makefile
 libexslt/exsltconfig.h
 xsltproc/Makefile

@@ -1,15 +1,18 @@
 /*
- * preproc.h: precomputing data interfaces
+ * Summary: precomputing stylesheets
+ * Description: this is the compilation phase, where most of the
+ *              stylesheet is "compiled" into faster to use data.
  *
- * See Copyright for the status of this software.
+ * Copy: See Copyright for the status of this software.
  *
- * daniel@veillard.com
+ * Author: Daniel Veillard
  */
 
 #ifndef __XML_XSLT_PRECOMP_H__
 #define __XML_XSLT_PRECOMP_H__
 
 #include <libxml/tree.h>
+#include "xsltexports.h"
 #include "xsltInternals.h"
 
 #ifdef __cplusplus
@@ -21,13 +24,17 @@ extern "C" {
  */
 extern const xmlChar *xsltExtMarker;
 
-xsltElemPreCompPtr xsltDocumentComp	(xsltStylesheetPtr style,
+XSLTPUBFUN xsltElemPreCompPtr XSLTCALL 
+		xsltDocumentComp	(xsltStylesheetPtr style,
 					 xmlNodePtr inst,
 					 xsltTransformFunction function);
 
-void		xsltStylePreCompute	(xsltStylesheetPtr style,
+XSLTPUBFUN void XSLTCALL		
+		xsltStylePreCompute	(xsltStylesheetPtr style,
 					 xmlNodePtr inst);
-void		xsltFreeStylePreComps	(xsltStylesheetPtr style);
+XSLTPUBFUN void XSLTCALL		
+		xsltFreeStylePreComps	(xsltStylesheetPtr style);
+
 #ifdef __cplusplus
 }
 #endif

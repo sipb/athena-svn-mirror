@@ -4,6 +4,7 @@
 #
 
 functions = {}
+enums = {} # { enumType: { enumConstant: enumValue } }
 
 import string
 
@@ -136,6 +137,9 @@ class docParser:
                     self.function_return_info = attrs['info']
                 if attrs.has_key('field'):
                     self.function_return_field = attrs['field']
+        elif tag == 'enum':
+            enum(attrs['type'],attrs['name'],attrs['value']) 
+        
 
 
     def end(self, tag):
@@ -166,9 +170,12 @@ class docParser:
                 
                 
 def function(name, desc, ret, args, file):
-    global functions
-
     functions[name] = (desc, ret, args, file)
+
+def enum(type, name, value):
+    if not enums.has_key(type):
+        enums[type] = {}
+    enums[type][name] = value 
 
 #######################################################################
 #
@@ -185,6 +192,7 @@ skipped_modules = {
     'list': None,
     'threads': None,
     'xpointer': None,
+    'transform': None,
 }
 skipped_types = {
     'int *': "usually a return type",
@@ -267,6 +275,8 @@ py_types = {
     'FILE *': ('O', "File", "FILEPtr", "FILE *", "libxml_"),
     'xsltTransformContextPtr':  ('O', "transformCtxt", "xsltTransformContextPtr", "xsltTransformContextPtr", "libxslt_"),
     'xsltTransformContext *':  ('O', "transformCtxt", "xsltTransformContextPtr", "xsltTransformContextPtr", "libxslt_"),
+    'xsltStylePreCompPtr':  ('O', "compiledStyle", "xsltStylePreCompPtr", "xsltStylePreCompPtr", "libxslt_"),
+    'xsltStylePreComp *':  ('O', "compiledStyle", "xsltStylePreCompPtr", "xsltStylePreCompPtr", "libxslt_"),
     'xsltStylesheetPtr':  ('O', "stylesheet", "xsltStylesheetPtr", "xsltStylesheetPtr", "libxslt_"),
     'xsltStylesheet *':  ('O', "stylesheet", "xsltStylesheetPtr", "xsltStylesheetPtr", "libxslt_"),
     'xmlXPathContext *':  ('O', "xpathContext", "xmlXPathContextPtr", "xmlXPathContextPtr", "libxslt_"),
@@ -403,10 +413,11 @@ def print_function_wrapper(name, output, export, include):
         return 1
 
     output.write("PyObject *\n")
-    output.write("libxslt_%s(ATTRIBUTE_UNUSED PyObject *self," % (name))
+    output.write("libxslt_%s(PyObject *self ATTRIBUTE_UNUSED," % (name))
+    output.write(" PyObject *args")
     if format == "":
-	output.write("ATTRIBUTE_UNUSED ")
-    output.write(" PyObject *args) {\n")
+	output.write(" ATTRIBUTE_UNUSED")
+    output.write(") {\n")
     if ret[0] != 'void':
         output.write("    PyObject *py_retval;\n")
     if c_return != "":
@@ -741,8 +752,6 @@ def buildWrappers():
 		func = nameFixup(name, classe, type, file)
 		info = (2, func, name, ret, args, file)
 		function_classes[classe].append(info)
-	    if found == 1:
-		break
 	if found == 1:
 	    continue
 	if name[0:8] == "xmlXPath":
@@ -940,6 +949,17 @@ def buildWrappers():
 		    else:
 			classes.write("        return ret\n");
 		classes.write("\n");
+
+    #
+    # Generate enum constants
+    #
+    for type,enum in enums.items():
+        classes.write("# %s\n" % type)
+        items = enum.items()
+        items.sort(lambda i1,i2: cmp(long(i1[1]),long(i2[1])))
+        for name,value in items:
+            classes.write("%s = %s\n" % (name,value))
+        classes.write("\n"); 
 
     txt.close()
     classes.close()
