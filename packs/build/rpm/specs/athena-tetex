@@ -7,16 +7,18 @@ Group: Applications/Publishing
 The teTeX package of TeX typesetting system and support utilities, for
 Athena.
 
-%build
+%install
 if [ X$RPM_BUILD_ROOT = X ]; then
-cat 1>&2 << MESSAGE
+  cat 1>&2 << MESSAGE
 You must specify a build root in order to build this package.
 Use the --buildroot option to RPM or the buildroot rpmrc entry.
 MESSAGE
-exit 1
+  exit 1
 fi
-./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
-./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Don't try to install a /usr/athena/info/dir file.
 rm $RPM_BUILD_ROOT/usr/athena/info/dir
