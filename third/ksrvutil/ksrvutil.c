@@ -641,7 +641,8 @@ get_key_from_password(key)
 {
     char password[MAX_KPW_LEN];	/* storage for the password */
 
-    if (read_long_pw_string(password, sizeof(password)-1, "Password: ", 1))
+    if (read_long_pw_string(password, sizeof(password)-1, "Password: ",
+			    "Verifying, please re-enter password: "))
 	leave("Error reading password.", 1);
 
 #ifdef NOENCRYPTION

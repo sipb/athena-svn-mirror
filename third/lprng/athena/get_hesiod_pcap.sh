@@ -1,9 +1,9 @@
 #!/bin/sh
-# $Id: get_hesiod_pcap.sh,v 1.2 1999-04-08 01:26:11 mwhitson Exp $
+# $Id: get_hesiod_pcap.sh,v 1.2.2.1 1999-09-15 20:56:34 ghudson Exp $
 
 # Support script used by LPRng to fetch Hesiod printcap entries
 
-PATH=/bin/athena:/usr/bin:/usr/bsd
+PATH=/bin/athena:/usr/bin:/bin:/usr/bsd
 
 read printer
 
