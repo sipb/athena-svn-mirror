@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_c[] = "$Id: class.c,v 1.13 1989-12-14 08:42:10 jtkohl Exp $";
+static char rcsid_class_c[] = "$Id: class.c,v 1.14 1990-08-16 22:43:01 raeburn Exp $";
 #endif SABER
 #endif lint
 
@@ -331,8 +331,6 @@ char *class;
 	return(NULLZACLT);
 }
 
-#ifdef notdef
-/* currently not used */
 /*
  * restrict class by associating it with the acl structure acl.
  * return ZERR_NONE if no error, or ZSRV_NOCLASS if there is no such
@@ -361,7 +359,6 @@ ZAcl_t *acl;
 	/* fell off the end, no match */
 	return(ZSRV_NOCLASS);
 }
-#endif notdef
 
 /*
  * restrict class by registering it and  associating it with the acl
@@ -417,17 +414,16 @@ static unsigned int
 hash(string)
 char *string;
 {
-	register unsigned int hval = 0;
+	register int hval = 0;
 	register unsigned char *cp = (unsigned char *) string;
 
 	while (*cp) {
-	    if (isupper(*cp)) {
-		hval = (hval + (tolower(*cp)) * HASHMUL) % HASHSIZE;
-		cp++;
-	    } else
-		hval = (hval + (*cp++) * HASHMUL) % HASHSIZE;
+	    hval *= HASHMUL;
+	    hval += (isascii(*cp) && isupper(*cp)) ? tolower(*cp) : *cp;
+	    hval %= HASHSIZE;
+	    cp++;
 	}
-	return(hval);
+	return hval;
 }
 
 /* set up the class.instance in the class_buf, and return its hash val */
