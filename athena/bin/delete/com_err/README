@@ -35,6 +35,25 @@ architectures.  To do so, make the following changes to the Makefile:
 After that, you should be all set.
 
 
+		     I'M LOOKING FOR BETA-TESTERS
+
+I try to make this package run on as many different platforms as
+possible.  However, I do not have access to a large variety of
+platforms, so I can't effectively test all of the changes I make.  I'm
+therefore looking for people who are willing to beta-test changes
+before I release them to the general public.  If you are interested in
+doing this, please let me know.
+
+
+			     ARCHIVE SITE
+
+The most recent version of the com_err package and patches to get from
+previous versions to the most recent version are archived on
+pit-manager.mit.edu (18.72.1.58).  You can retrieve them via anonymous
+ftp in the directory /pub/com_err, or via mail-server (send a message
+with the subject "help" to "mail-server@pit-manager.mit.edu").
+
+
 			      QUESTIONS?
 
   I didn't write com_err, but I'm willing to answer questions and/or
