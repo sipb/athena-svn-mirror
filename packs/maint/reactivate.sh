@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.3 1991-01-31 15:22:49 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.4 1991-02-04 15:14:47 probe Exp $
 
 trap "" 1 15
 
@@ -91,11 +91,6 @@ fi
 # Perform an update if appropriate
 if [ -f /srvd/auto_update ] ; then 
 	/srvd/auto_update reactivate
-fi
-
-# set font path now that we're activated
-if [ -f /usr/bin/X11/xset ]; then
-	/usr/bin/X11/xset -display :0 fp= "/usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/"
 fi
 
 if [ -f /usr/athena/access_off ]; then /usr/athena/access_off; fi
