@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.28 1998-06-20 19:43:48 ghudson Exp $
+# $Id: do-update.sh,v 1.29 1998-09-30 17:46:34 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -144,11 +144,11 @@ fi
 if [ "$PUBLIC" = true ]; then
 	# Just substitute who we are into the current rc.conf from the srvd.
 	echo "Updating $CONFDIR/rc.conf from /srvd$CONFDIR/rc.conf"
-	sed -n	-e "s/^HOST=[^;]*/HOST=$HOST/" \
-		-e "s/^ADDR=[^;]*/ADDR=$ADDR/" \
-		-e "s/^MACHINE=[^;]*/MACHINE=$MACHINE/" \
-		-e "s/^SYSTEM=[^;]*/SYSTEM=$SYSTEM/" \
-		-e "s/^NETDEV=[^;]*/NETDEV=$NETDEV/" \
+	sed -n	-e "s#^HOST=[^;]*#HOST=$HOST#" \
+		-e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
+		-e "s#^MACHINE=[^;]*#MACHINE=$MACHINE#" \
+		-e "s#^SYSTEM=[^;]*#SYSTEM=$SYSTEM#" \
+		-e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
 		-e p "/srvd$CONFDIR/rc.conf" > "$CONFDIR/rc.conf"
 else
 	# Add any new variables to rc.conf.
