@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.32 2003-07-25 05:21:15 zacheiss Exp $
+# $Id: Makefile,v 1.33 2004-04-13 19:08:09 zacheiss Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -46,6 +46,7 @@ install:
 	install -c -m 0644 ntp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
+	install -c -m 0644 smb.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ssh_config ${DESTDIR}${ETCDIR}
 	install -c -m 0644 sshd_config ${DESTDIR}${ETCDIR}
 	install -c -m 0644 zephyr.vars ${DESTDIR}${ATHRETCDIR}
