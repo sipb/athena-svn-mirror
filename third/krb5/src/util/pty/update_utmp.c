@@ -83,6 +83,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #endif
 
 #ifndef NO_UT_PID
+#ifdef __linux__ /* Behave like native login. */
+    strncpy(ent.ut_id, line + 8, sizeof(ent.ut_id));
+#else
     if (!strcmp (line, "/dev/console"))
       strncpy (ent.ut_id, "cons", 4);
     else {
@@ -95,6 +98,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #endif
       strncpy(ent.ut_id, utmp_id, sizeof(ent.ut_id));
     }
+#endif /* __linux__ */
     strncpy(ent.ut_user, username, sizeof(ent.ut_user));
 #else
     strncpy(ent.ut_name, username, sizeof(ent.ut_name));
