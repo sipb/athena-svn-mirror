@@ -1571,7 +1571,7 @@ fi
 
 PACKAGE=gal
 
-VERSION=0.23
+VERSION=0.24
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -1711,11 +1711,11 @@ GAL_API_VERSION=1.0
 
 
 
-GAL_AGE=1
+GAL_AGE=0
 
-GAL_REVISION=1
+GAL_REVISION=0
 
-GAL_CURRENT=22
+GAL_CURRENT=23
 
 
 
