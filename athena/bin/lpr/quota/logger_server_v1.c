@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.4 1991-01-23 13:43:28 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.4 1991-01-23 13:43:28 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -74,10 +74,12 @@ quota_currency currency;
 
     CHECK_PROTECT();
 
+    syslog(LOG_INFO, "v1 request received");
 /* First verify that the user is authenticated - you must be authenticated for
    any info */
     if(check_krb_auth(h, auth, &ad))
 	return QBADTKTS;
+    syslog(LOG_INFO, "v1 request from %x", ad.address);
 
     make_kname(ad.pname, ad.pinst, ad.prealm, name1);
 
