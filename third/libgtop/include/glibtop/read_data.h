@@ -1,4 +1,4 @@
-/* $Id: read_data.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: read_data.h,v 1.1.1.2 2004-10-03 04:59:08 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,13 +27,13 @@
 #include <glibtop.h>
 #include <glibtop/error.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define glibtop_read_data()	glibtop_read_data_r(glibtop_global_server)
 
 void *glibtop_read_data_l (glibtop *server);
 void *glibtop_read_data_s (glibtop *server);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

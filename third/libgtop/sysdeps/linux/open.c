@@ -1,4 +1,4 @@
-/* $Id: open.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: open.c,v 1.1.1.2 2004-10-03 05:00:15 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -31,23 +31,27 @@
  */
 #include <sys/utsname.h>
 
-#define LINUX_VERSION(x,y,z)   (0x10000*(x) + 0x100*(y) + z)
+static unsigned get_linux_version(void) {
 
-static int linux_version_code = 0;
+    static unsigned linux_version_code = 0;
 
-static void set_linux_version(void) {
-    static struct utsname uts;
-    int x = 0, y = 0, z = 0;	/* cleared in case sscanf() < 3 */
-    
-    if (linux_version_code) return;
-    if (uname(&uts) == -1)	/* failure most likely implies impending death */
-	exit(1);
-    if (sscanf(uts.release, "%d.%d.%d", &x, &y, &z) < 3)
-	fprintf(stderr,		/* *very* unlikely to happen by accident */
-		"Non-standard uts for running kernel:\n"
-		"release %s=%d.%d.%d gives version code %d\n",
-		uts.release, x, y, z, LINUX_VERSION(x,y,z));
-    linux_version_code = LINUX_VERSION(x, y, z);
+    if(!linux_version_code) {
+	struct utsname uts;
+	unsigned x = 0, y = 0, z = 0;	/* cleared in case sscanf() < 3 */
+
+	if (uname(&uts) == -1) /* failure most likely implies impending death */
+	    exit(1);
+
+	if (sscanf(uts.release, "%u.%u.%u", &x, &y, &z) < 3)
+	    fprintf(stderr, /* *very* unlikely to happen by accident */
+		    "Non-standard uts for running kernel:\n"
+		    "release %s=%u.%u.%u gives version code %d\n",
+		    uts.release, x, y, z, LINUX_VERSION_CODE(x,y,z));
+
+	linux_version_code = LINUX_VERSION_CODE(x, y, z);
+    }
+
+    return linux_version_code;
 }
 
 /* ======================================================= */
@@ -61,49 +65,23 @@ glibtop_open_s (glibtop *server, const char *program_name,
 		const unsigned long features,
 		const unsigned flags)
 {
-	char buffer [BUFSIZ], *p;
-	struct stat statb;
-	int fd, len, i;
+	char buffer [BUFSIZ], *p = buffer;
 
 	server->name = program_name;
 
-	set_linux_version ();
-	server->os_version_code = (unsigned long) linux_version_code;
+	server->os_version_code = get_linux_version();
 
-	server->ncpu = 0;
+	file_to_buffer(server, buffer, FILENAME);
 
-	/* On Linux 2.4.x, /proc/stat has "cpu" and "cpu0" entries even
-	 * for non-SMP systems. Checking whether /proc/<pid>/cpu exists
-	 * is a much better way to detect SMP. */
+	for (server->ncpu = 0; server->ncpu < GLIBTOP_NCPU; server->ncpu++) {
 
-	if (stat ("/proc/1/cpu", &statb))
-	    return;
+		p = skip_line(p);
 
-	fd = open (FILENAME, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", FILENAME);
-
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", FILENAME);
-
-	close (fd);
-
-	buffer [len] = '\0';
-
-	p = skip_multiple_token (buffer, 5) + 1;
-
-	for (i = 0; i < GLIBTOP_NCPU; i++) {
-		
 		if (strncmp (p, "cpu", 3) || !isdigit (p [3]))
 			break;
-
-		server->ncpu++;
-
-		p = skip_multiple_token (p, 5) + 1;
 	}
 
-#if DEBUG	
+#if DEBUG
 	printf ("\nThis machine has %d CPUs.\n\n", server->ncpu);
 #endif
 }

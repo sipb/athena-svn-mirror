@@ -1,4 +1,4 @@
-/* $Id: uptime.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: uptime.c,v 1.1.1.2 2004-10-03 05:00:03 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,8 +24,9 @@
 #include <config.h>
 #include <glibtop/error.h>
 #include <glibtop/uptime.h>
+#include <time.h>
 
-static unsigned long _glibtop_sysdeps_uptime =
+static const unsigned long _glibtop_sysdeps_uptime =
 (1L << GLIBTOP_UPTIME_UPTIME) + (1L << GLIBTOP_UPTIME_IDLETIME);
 
 /* Init function. */
@@ -44,26 +45,16 @@ void
 glibtop_get_uptime_s (glibtop *server, glibtop_uptime *buf)
 {
 	char buffer [BUFSIZ], *p;
-	int fd, len;
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_UPTIME, 0);
 
 	memset (buf, 0, sizeof (glibtop_uptime));
 
-	fd = open (FILENAME, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", FILENAME);
-
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", FILENAME);
-
-	close (fd);
-
-	buffer [len] = '\0';
+	file_to_buffer(server, buffer, FILENAME);
 
 	buf->uptime   = strtod (buffer, &p);
 	buf->idletime = strtod (p, &p);
+	buf->boot_time = (guint64) time(NULL) - (guint64) buf->uptime;
 
 	buf->flags = _glibtop_sysdeps_uptime;
 }

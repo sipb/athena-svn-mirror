@@ -1,4 +1,4 @@
-/* $Id: netload.c,v 1.1.1.1 2003-01-02 04:56:11 ghudson Exp $ */
+/* $Id: netload.c,v 1.1.1.2 2004-10-03 04:59:55 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,17 +22,18 @@
 */
 
 #include <glibtop/netload.h>
+#include "libgtop-i18n.h"
 
 const char *glibtop_names_netload [GLIBTOP_MAX_NETLOAD] =
 {
 	"if_flags", "mtu", "subnet", "address", "packets_in",
 	"packets_out", "packets_total", "bytes_in", "bytes_out",
 	"bytes_total", "errors_in", "errors_out", "errors_total",
-	"collisions"
+	"collisions", "address6", "prefix6", "scope6"
 };
 
 const unsigned glibtop_types_netload [GLIBTOP_MAX_NETLOAD] =
-{ 
+{
 	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG,
 	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG,
 	GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG, GLIBTOP_TYPE_ULONG,
@@ -44,8 +45,8 @@ const char *glibtop_labels_netload [GLIBTOP_MAX_NETLOAD] =
 {
 	N_("Interface Flags"),
 	N_("MTU"),
-	N_("Subnet"),
-	N_("Address"),
+	N_("IPv4 Subnet"),
+	N_("IPv4 Address"),
 	N_("Packets In"),
 	N_("Packets Out"),
 	N_("Packets Total"),
@@ -55,15 +56,18 @@ const char *glibtop_labels_netload [GLIBTOP_MAX_NETLOAD] =
 	N_("Errors In"),
 	N_("Errors Out"),
 	N_("Errors Total"),
-	N_("Collisions")
+	N_("Collisions"),
+	N_("IPv6 Address"),
+	N_("IPv6 Prefix"),
+	N_("IPv6 Scope")
 };
 
 const char *glibtop_descriptions_netload [GLIBTOP_MAX_NETLOAD] =
 {
 	N_("Interface Flags"),
 	N_("Maximum Transfer Unit"),
-	N_("Subnet"),
-	N_("Address"),
+	N_("IPv4 Subnet"),
+	N_("IPv4 Address"),
 	N_("Packets In"),
 	N_("Packets Out"),
 	N_("Packets Total"),
@@ -73,5 +77,8 @@ const char *glibtop_descriptions_netload [GLIBTOP_MAX_NETLOAD] =
 	N_("Errors In"),
 	N_("Errors Out"),
 	N_("Errors Total"),
-	N_("Collisions")
+	N_("Collisions"),
+	N_("IPv6 Address"),
+	N_("IPv6 Prefix"),
+	N_("IPv6 Scope")
 };

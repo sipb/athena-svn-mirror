@@ -1,4 +1,4 @@
-/* $Id: procmem.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procmem.c,v 1.1.1.2 2004-10-03 05:00:02 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -33,34 +33,14 @@ static const unsigned long _glibtop_sysdeps_proc_mem_statm =
 (1L << GLIBTOP_PROC_MEM_SIZE) + (1L << GLIBTOP_PROC_MEM_RESIDENT) +
 (1L << GLIBTOP_PROC_MEM_SHARE);
 
-#ifndef LOG1024
-#define LOG1024		10
-#endif
-
-/* these are for getting the memory statistics */
-static int pageshift;		/* log base 2 of the pagesize */
-
-/* define pagetok in terms of pageshift */
-#define pagetok(size) ((size) << pageshift)
 
 /* Init function. */
 
 void
 glibtop_init_proc_mem_s (glibtop *server)
 {
-	register int pagesize;
-
 	server->sysdeps.proc_mem = _glibtop_sysdeps_proc_mem |
 	  _glibtop_sysdeps_proc_mem_statm;
-
-	/* get the page size with "getpagesize" and calculate pageshift
-	 * from it */
-	pagesize = getpagesize ();
-	pageshift = 0;
-	while (pagesize > 1) {
-		pageshift++;
-		pagesize >>= 1;
-	}
 }
 
 /* Provides detailed information about a process. */
@@ -69,7 +49,8 @@ void
 glibtop_get_proc_mem_s (glibtop *server, glibtop_proc_mem *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	
+	const unsigned pageshift = get_pageshift();
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_MEM, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_mem));
@@ -82,23 +63,23 @@ glibtop_get_proc_mem_s (glibtop *server, glibtop_proc_mem *buf, pid_t pid)
 
 	p = skip_multiple_token (p, 20);
 
-	buf->vsize = strtoul (p, &p, 0);
-	buf->rss = strtoul (p, &p, 0);
-	buf->rss_rlim = strtoul (p, &p, 0);
+	buf->vsize    = strtoull (p, &p, 0);
+	buf->rss      = strtoull (p, &p, 0);
+	buf->rss_rlim = strtoull (p, &p, 0);
 
 	buf->flags = _glibtop_sysdeps_proc_mem;
 
 	if (proc_statm_to_buffer (buffer, pid))
 		return;
 
-	buf->size = strtoul (buffer, &p, 0);
-	buf->resident = strtoul (p, &p, 0);
-	buf->share = strtoul (p, &p, 0);
+	buf->size     = strtoull (buffer, &p, 0);
+	buf->resident = strtoull (p, &p, 0);
+	buf->share    = strtoull (p, &p, 0);
 
-	buf->size <<= pageshift;
+	buf->size     <<= pageshift;
 	buf->resident <<= pageshift;
-	buf->share <<= pageshift;
-	buf->rss <<= pageshift;
+	buf->share    <<= pageshift;
+	buf->rss      <<= pageshift;
 
 	buf->flags |= _glibtop_sysdeps_proc_mem_statm;
 }

@@ -69,27 +69,29 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -103,11 +105,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -122,14 +122,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -145,19 +144,15 @@ static_targets = @static_targets@
 sysdeps_dir = @sysdeps_dir@
 sysdeps_suid_lib = @sysdeps_suid_lib@
 
-LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
-
 INCLUDES = @INCLUDES@
 
 lib_LTLIBRARIES = libgtop-2.0.la
 
-libgtop_2_0_la_SOURCES = init.c open.c close.c command.c read.c \
-				  read_data.c write.c lib.c parameter.c \
-				  sysdeps.c
+libgtop_2_0_la_SOURCES = init.c open.c close.c command.c read.c 				  read_data.c write.c lib.c parameter.c 				  sysdeps.c
 
 
 libgtop_2_0_la_LDFLAGS = $(LT_VERSION_INFO)
-libgtop_2_0_la_LIBADD = $(top_builddir)/sysdeps/common/libgtop_common-2.0.la $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la $(sysdeps_suid_lib) $(INTLLIBS)
+libgtop_2_0_la_LIBADD = $(GLIB_LIBS) $(top_builddir)/sysdeps/common/libgtop_common-2.0.la $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la $(sysdeps_suid_lib)
 
 BUILT_SOURCES = lib.c
 
@@ -187,12 +182,13 @@ CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libgtop_2_0_la_SOURCES)
 OBJECTS = $(libgtop_2_0_la_OBJECTS)
@@ -298,7 +294,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -325,26 +321,25 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 close.lo close.o : close.c ../glibtop.h ../include/glibtop/global.h \
-	../config.h ../support/gnomesupport.h ../support/getopt.h \
-	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/open.h \
-	../include/glibtop/read.h ../include/glibtop/error.h \
-	../include/glibtop/close.h ../include/glibtop/command.h \
-	../include/glibtop/union.h ../include/glibtop/cpu.h \
-	../include/glibtop/mem.h ../include/glibtop/swap.h \
-	../include/glibtop/uptime.h ../include/glibtop/loadavg.h \
-	../include/glibtop/shm_limits.h ../include/glibtop/msg_limits.h \
-	../include/glibtop/sem_limits.h ../include/glibtop/proclist.h \
-	../include/glibtop/procstate.h ../include/glibtop/procuid.h \
-	../include/glibtop/procmem.h ../include/glibtop/proctime.h \
-	../include/glibtop/procsignal.h ../include/glibtop/prockernel.h \
+	../config.h ../sysdeps/linux/glibtop_server.h \
+	../include/glibtop/types.h ../include/glibtop/sysdeps.h \
+	../include/glibtop/open.h ../include/glibtop/read.h \
+	../include/glibtop/error.h ../include/glibtop/close.h \
+	../include/glibtop/command.h ../include/glibtop/union.h \
+	../include/glibtop/cpu.h ../include/glibtop/mem.h \
+	../include/glibtop/swap.h ../include/glibtop/uptime.h \
+	../include/glibtop/loadavg.h ../include/glibtop/shm_limits.h \
+	../include/glibtop/msg_limits.h ../include/glibtop/sem_limits.h \
+	../include/glibtop/proclist.h ../include/glibtop/procstate.h \
+	../include/glibtop/procuid.h ../include/glibtop/procmem.h \
+	../include/glibtop/proctime.h ../include/glibtop/procsignal.h \
+	../include/glibtop/prockernel.h \
 	../include/glibtop/procsegment.h ../include/glibtop/procargs.h \
 	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
 	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
 	../include/glibtop/ppp.h
 command.lo command.o : command.c ../include/glibtop/read.h ../glibtop.h \
 	../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
 	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
 	../include/glibtop/sysdeps.h ../include/glibtop/error.h \
 	../include/glibtop/write.h ../include/glibtop/read_data.h \
@@ -360,36 +355,17 @@ command.lo command.o : command.c ../include/glibtop/read.h ../glibtop.h \
 	../include/glibtop/procsegment.h ../include/glibtop/procargs.h \
 	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
 	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
-	../include/glibtop/ppp.h ../include/glibtop/xmalloc.h
+	../include/glibtop/ppp.h
 init.lo init.o : init.c ../glibtop.h ../include/glibtop/global.h \
-	../config.h ../support/gnomesupport.h ../support/getopt.h \
-	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/xmalloc.h \
-	../include/glibtop/error.h ../include/glibtop/parameter.h \
-	../include/glibtop/open.h ../include/glibtop/read.h
-lib.lo lib.o : lib.c ../glibtop.h ../include/glibtop/global.h \
-	../config.h ../support/gnomesupport.h ../support/getopt.h \
-	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/open.h \
-	../include/glibtop/read.h ../include/glibtop/error.h \
-	../include/glibtop/union.h ../include/glibtop/cpu.h \
-	../include/glibtop/mem.h ../include/glibtop/swap.h \
-	../include/glibtop/uptime.h ../include/glibtop/loadavg.h \
-	../include/glibtop/shm_limits.h ../include/glibtop/msg_limits.h \
-	../include/glibtop/sem_limits.h ../include/glibtop/proclist.h \
-	../include/glibtop/procstate.h ../include/glibtop/procuid.h \
-	../include/glibtop/procmem.h ../include/glibtop/proctime.h \
-	../include/glibtop/procsignal.h ../include/glibtop/prockernel.h \
-	../include/glibtop/procsegment.h ../include/glibtop/procargs.h \
-	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
-	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
-	../include/glibtop/ppp.h ../include/glibtop/command.h
-open.lo open.o : open.c ../glibtop.h ../include/glibtop/global.h \
-	../config.h ../support/gnomesupport.h ../support/getopt.h \
-	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/open.h \
-	../include/glibtop/read.h ../include/glibtop/error.h \
-	../include/glibtop/version.h ../include/glibtop/union.h \
+	../config.h ../sysdeps/linux/glibtop_server.h \
+	../include/glibtop/types.h ../include/glibtop/sysdeps.h \
+	../include/glibtop/parameter.h ../include/glibtop/open.h \
+	../include/glibtop/read.h ../include/glibtop/error.h
+lib.lo lib.o : lib.c ../config.h ../glibtop.h \
+	../include/glibtop/global.h ../sysdeps/linux/glibtop_server.h \
+	../include/glibtop/types.h ../include/glibtop/sysdeps.h \
+	../include/glibtop/open.h ../include/glibtop/read.h \
+	../include/glibtop/error.h ../include/glibtop/union.h \
 	../include/glibtop/cpu.h ../include/glibtop/mem.h \
 	../include/glibtop/swap.h ../include/glibtop/uptime.h \
 	../include/glibtop/loadavg.h ../include/glibtop/shm_limits.h \
@@ -401,29 +377,44 @@ open.lo open.o : open.c ../glibtop.h ../include/glibtop/global.h \
 	../include/glibtop/procsegment.h ../include/glibtop/procargs.h \
 	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
 	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
+	../include/glibtop/ppp.h ../include/libgtop-i18n.h \
+	../include/glibtop/command.h
+open.lo open.o : open.c ../glibtop.h ../include/glibtop/global.h \
+	../config.h ../sysdeps/linux/glibtop_server.h \
+	../include/glibtop/types.h ../include/glibtop/sysdeps.h \
+	../include/glibtop/open.h ../include/glibtop/read.h \
+	../include/glibtop/error.h ../include/glibtop/version.h \
+	../include/glibtop/union.h ../include/glibtop/cpu.h \
+	../include/glibtop/mem.h ../include/glibtop/swap.h \
+	../include/glibtop/uptime.h ../include/glibtop/loadavg.h \
+	../include/glibtop/shm_limits.h ../include/glibtop/msg_limits.h \
+	../include/glibtop/sem_limits.h ../include/glibtop/proclist.h \
+	../include/glibtop/procstate.h ../include/glibtop/procuid.h \
+	../include/glibtop/procmem.h ../include/glibtop/proctime.h \
+	../include/glibtop/procsignal.h ../include/glibtop/prockernel.h \
+	../include/glibtop/procsegment.h ../include/glibtop/procargs.h \
+	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
+	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
 	../include/glibtop/ppp.h ../include/glibtop/command.h \
-	../include/glibtop/xmalloc.h ../include/glibtop/gnuserv.h
+	../include/glibtop/gnuserv.h
 parameter.lo parameter.o : parameter.c ../glibtop.h \
 	../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
 	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
 	../include/glibtop/sysdeps.h ../include/glibtop/parameter.h \
 	../include/glibtop/open.h ../include/glibtop/read.h \
 	../include/glibtop/error.h
-read.lo read.o : read.c ../include/glibtop/read.h ../glibtop.h \
-	../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
-	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/error.h
-read_data.lo read_data.o : read_data.c ../include/glibtop/xmalloc.h \
-	../glibtop.h ../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
+read.lo read.o : read.c ../config.h ../include/glibtop/read.h \
+	../glibtop.h ../include/glibtop/global.h \
 	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
 	../include/glibtop/sysdeps.h ../include/glibtop/error.h \
-	../include/glibtop/read_data.h
+	../include/libgtop-i18n.h
+read_data.lo read_data.o : read_data.c ../config.h \
+	../include/glibtop/read_data.h ../glibtop.h \
+	../include/glibtop/global.h ../sysdeps/linux/glibtop_server.h \
+	../include/glibtop/types.h ../include/glibtop/sysdeps.h \
+	../include/glibtop/error.h ../include/libgtop-i18n.h
 sysdeps.lo sysdeps.o : sysdeps.c ../glibtop.h \
 	../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
 	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
 	../include/glibtop/sysdeps.h ../include/glibtop/union.h \
 	../include/glibtop/cpu.h ../include/glibtop/mem.h \
@@ -438,11 +429,11 @@ sysdeps.lo sysdeps.o : sysdeps.c ../glibtop.h \
 	../include/glibtop/procmap.h ../include/glibtop/mountlist.h \
 	../include/glibtop/fsusage.h ../include/glibtop/netload.h \
 	../include/glibtop/ppp.h
-write.lo write.o : write.c ../include/glibtop/write.h ../glibtop.h \
-	../include/glibtop/global.h ../config.h \
-	../support/gnomesupport.h ../support/getopt.h \
+write.lo write.o : write.c ../config.h ../include/glibtop/write.h \
+	../glibtop.h ../include/glibtop/global.h \
 	../sysdeps/linux/glibtop_server.h ../include/glibtop/types.h \
-	../include/glibtop/sysdeps.h ../include/glibtop/error.h
+	../include/glibtop/sysdeps.h ../include/glibtop/error.h \
+	../include/libgtop-i18n.h
 
 info-am:
 info: info-am

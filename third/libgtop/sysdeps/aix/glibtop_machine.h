@@ -1,6 +1,6 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
-/* 
+/*
    This file is part of LibGTop 1.0.
 
    Contributed by Martin Baulig <martin@home-of-linux.org>, March 1999.
@@ -26,7 +26,7 @@
 
 #include <procinfo.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef struct _glibtop_machine glibtop_machine;
 
@@ -48,6 +48,6 @@ struct _glibtop_machine
 	struct procsinfo last_pinfo;
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif /* __GLIBTOP_MACHINE_H__ */

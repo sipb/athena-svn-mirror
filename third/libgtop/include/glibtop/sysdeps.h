@@ -1,4 +1,4 @@
-/* $Id: sysdeps.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: sysdeps.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -26,7 +26,7 @@
 
 #include <glibtop.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_SYSDEPS_FEATURES	0
 #define GLIBTOP_SYSDEPS_CPU		1
@@ -64,7 +64,7 @@ typedef struct _glibtop_sysdeps	glibtop_sysdeps;
 
 struct _glibtop_sysdeps
 {
-	u_int64_t flags,
+	guint64 flags,
 		features,		/* server features	*/
 		cpu,			/* glibtop_cpu		*/
 		mem,			/* glibtop_mem		*/
@@ -105,6 +105,6 @@ extern const char *glibtop_descriptions_sysdeps [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

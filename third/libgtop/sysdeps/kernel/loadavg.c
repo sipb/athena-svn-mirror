@@ -1,4 +1,4 @@
-/* $Id: loadavg.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: loadavg.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -45,14 +45,14 @@ void
 glibtop_get_loadavg_s (glibtop *server, glibtop_loadavg *buf)
 {
 	union table tbl;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_LOADAVG, 0);
 
 	memset (buf, 0, sizeof (glibtop_loadavg));
 
 	if (table (TABLE_LOADAVG, &tbl, NULL))
 		glibtop_error_io_r (server, "table(TABLE_LOADAVG)");
-	
+
 	buf->flags = _glibtop_sysdeps_loadavg;
 
 	buf->loadavg [0] = tbl.loadavg.loadavg [0];

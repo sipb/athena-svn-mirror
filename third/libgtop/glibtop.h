@@ -1,4 +1,4 @@
-/* $Id: glibtop.h,v 1.1.1.1 2003-01-02 04:56:04 ghudson Exp $ */
+/* $Id: glibtop.h,v 1.1.1.2 2004-10-03 05:00:28 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,6 +24,9 @@
 #ifndef __GLIBTOP_H__
 #define __GLIBTOP_H__
 
+typedef struct _glibtop		glibtop;
+
+
 #include <glibtop/global.h>
 
 #include <glibtop_server.h>
@@ -37,9 +40,9 @@
 #define GLIBTOP_MOUNTENTRY_LEN	79
 #endif
 
-typedef struct _glibtop		glibtop;
 
 #include <glibtop/sysdeps.h>
+
 
 struct _glibtop
 {
@@ -83,25 +86,5 @@ glibtop *
 glibtop_init_s (glibtop **server_ptr,
 		unsigned long features,
 		unsigned flags);
-
-#ifdef GLIBTOP_GUILE
-
-/* You need to link with -lgtop_guile to get this stuff here. */
-
-void glibtop_boot_guile (void);
-
-#endif
-
-#ifdef GLIBTOP_GUILE_NAMES
-
-/* You need to link with -lgtop_guile_names to get this stuff here. */
-
-void glibtop_boot_guile_names (void);
-
-#ifndef GLIBTOP_NAMES
-#define GLIBTOP_NAMES
-#endif
-
-#endif
 
 #endif

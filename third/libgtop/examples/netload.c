@@ -1,4 +1,4 @@
-/* $Id: netload.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: netload.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,11 +22,12 @@
 */
 
 #include <locale.h>
+#include <libintl.h>
+#include <stdio.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/parameter.h>
 
@@ -53,7 +54,7 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init_r (&glibtop_global_server, 0, GLIBTOP_INIT_NO_OPEN);
 
 	glibtop_get_parameter (GLIBTOP_PARAM_METHOD, &method, sizeof (method));
@@ -76,14 +77,14 @@ main (int argc, char *argv [])
 
 	if (argc != 2)
 		glibtop_error ("Usage: %s interface", argv [0]);
-	
+
 	glibtop_get_netload (&netload, argv [1]);
 
 	addr.s_addr = netload.address;
 	subnet.s_addr = netload.subnet;
 
-	address_string = glibtop_strdup (inet_ntoa (addr));
-	subnet_string  = glibtop_strdup (inet_ntoa (subnet));
+	address_string = g_strdup (inet_ntoa (addr));
+	subnet_string  = g_strdup (inet_ntoa (subnet));
 
 	printf ("Network Load (0x%08lx):\n\n"
 		"\tInterface Flags:\t0x%08lx\n"
@@ -116,8 +117,8 @@ main (int argc, char *argv [])
 		(unsigned long) netload.errors_out,
 		(unsigned long) netload.errors_total);
 
-	glibtop_free (address_string);
-	glibtop_free (subnet_string);
+	g_free (address_string);
+	g_free (subnet_string);
 
 	glibtop_close ();
 

@@ -1,4 +1,4 @@
-/* $Id: command.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: command.h,v 1.1.1.2 2004-10-03 05:00:18 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -28,7 +28,7 @@
 #include <glibtop/sysdeps.h>
 #include <glibtop/union.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_CMND_QUIT		0
 #define GLIBTOP_CMND_SYSDEPS		1
@@ -69,8 +69,8 @@ typedef union  _glibtop_response_union	glibtop_response_union;
 
 struct _glibtop_command
 {
-	u_int64_t	command;
-	u_int64_t	size, data_size;
+	guint64	command;
+	guint64	size, data_size;
 	char		parameter [_GLIBTOP_PARAM_SIZE];
 };
 
@@ -82,8 +82,8 @@ union _glibtop_response_union
 
 struct _glibtop_response
 {
-	int64_t offset;
-	u_int64_t size, data_size;
+	gint64 offset;
+	guint64 size, data_size;
 	glibtop_response_union u;
 };
 
@@ -97,6 +97,6 @@ void *
 glibtop_call_s (glibtop *server, unsigned command, size_t send_size,
 		const void *send_buf, size_t recv_size, void *recv_buf);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

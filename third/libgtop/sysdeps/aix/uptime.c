@@ -1,4 +1,4 @@
-/* $Id: uptime.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: uptime.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -29,6 +29,8 @@
 
 #include <glibtop_suid.h>
 
+#include <time.h>
+
 static const unsigned long _glibtop_sysdeps_uptime =
 (1L << GLIBTOP_UPTIME_UPTIME) + (1L << GLIBTOP_UPTIME_IDLETIME);
 
@@ -52,7 +54,7 @@ glibtop_get_uptime_p (glibtop *server, glibtop_uptime *buf)
 	glibtop_cpu cpu;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_UPTIME), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_uptime));
 
 	/* We simply calculate it from the CPU usage. */
@@ -68,6 +70,7 @@ glibtop_get_uptime_p (glibtop *server, glibtop_uptime *buf)
 
 	buf->uptime = (double) cpu.total / (double) cpu.frequency;
 	buf->idletime = (double) cpu.idle / (double) cpu.frequency;
+	buf->boot_time = (guint64) time(NULL) - (guint64) buf->uptime;
 
 	buf->flags = _glibtop_sysdeps_uptime;
 }

@@ -1,4 +1,4 @@
-/* $Id: sem_limits.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: sem_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -25,7 +25,7 @@
 #include <glibtop/error.h>
 #include <glibtop/sem_limits.h>
 
-static unsigned long _glibtop_sysdeps_sem_limits =
+static const unsigned long _glibtop_sysdeps_sem_limits =
 (1L << GLIBTOP_IPC_SEMMNI) + (1L << GLIBTOP_IPC_SEMMSL) +
 (1L << GLIBTOP_IPC_SEMOPM) + (1L << GLIBTOP_IPC_SEMVMX) +
 (1L << GLIBTOP_IPC_SEMAEM);
@@ -48,59 +48,59 @@ glibtop_get_sem_limits_s (glibtop *server, glibtop_sem_limits *buf)
 	glibtop_init_s (&server, 0, 0);
 
 	memset (buf, 0, sizeof (glibtop_sem_limits));
-	
+
 	ret = table (TBL_SEMINFO, SEMINFO_MNI, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SEMMNI);
 
 	buf->semmni = value;
-	
-	
+
+
 	ret = table (TBL_SEMINFO, SEMINFO_MSL, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SEMMSL);
 
 	buf->semmsl = value;
-	
-	
+
+
 	ret = table (TBL_SEMINFO, SEMINFO_OPM, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SEMOPM);
 
 	buf->semopm = value;
-	
+
 
 	ret = table (TBL_SEMINFO, SEMINFO_UME, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SEMUME);
 
 	buf->semume = value;
-	
-	
+
+
 	ret = table (TBL_SEMINFO, SEMINFO_VMX, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 
 	buf->flags += (1L << GLIBTOP_IPC_SEMVMX);
 
 	buf->semvmx = value;
-	
-	
+
+
 	ret = table (TBL_SEMINFO, SEMINFO_AEM, (char *) &value, 1,
-		     sizeof (value)); 
+		     sizeof (value));
 
 	if (ret != 1) return;
 

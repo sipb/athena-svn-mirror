@@ -1,4 +1,4 @@
-/* $Id: shm_limits.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: shm_limits.c,v 1.1.1.2 2004-10-03 04:59:52 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -26,7 +26,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-static unsigned long _glibtop_sysdeps_shm_limits =
+static const unsigned long _glibtop_sysdeps_shm_limits =
 (1L << GLIBTOP_IPC_SHMMAX) + (1L << GLIBTOP_IPC_SHMMIN) +
 (1L << GLIBTOP_IPC_SHMMNI) + (1L << GLIBTOP_IPC_SHMSEG) +
 (1L << GLIBTOP_IPC_SHMALL);
@@ -44,16 +44,16 @@ glibtop_init_shm_limits_s (glibtop *server)
 void
 glibtop_get_shm_limits_s (glibtop *server, glibtop_shm_limits *buf)
 {
-	struct shminfo	shminfo;
-  
+	struct shminfo shminfo;
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_SHM_LIMITS, 0);
 
 	memset (buf, 0, sizeof (glibtop_shm_limits));
-  
+
 	buf->flags = _glibtop_sysdeps_shm_limits;
-  
+
 	shmctl (0, IPC_INFO, (struct shmid_ds *) &shminfo);
-  
+
 	buf->shmmax = shminfo.shmmax;
 	buf->shmmin = shminfo.shmmin;
 	buf->shmmni = shminfo.shmmni;

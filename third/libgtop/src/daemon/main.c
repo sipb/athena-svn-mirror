@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1.1.1 2003-01-02 04:56:07 ghudson Exp $ */
+/* $Id: main.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -41,7 +41,7 @@ handle_parent_connection (int s)
     glibtop_mountentry *mount_list;
     char parameter [BUFSIZ];
     unsigned short device;
-    int64_t *param_ptr;
+    gint64 *param_ptr;
     int all_fs;
     pid_t pid;
     void *ptr;
@@ -64,18 +64,18 @@ handle_parent_connection (int s)
 	    syslog_message (LOG_DEBUG,
 			    "Parent (%d) received command %d from client.",
 			    getpid (), (int) cmnd->command);
-	
+
 	if (cmnd->data_size >= BUFSIZ) {
 	    syslog_message (LOG_WARNING,
 			    "Client sent %d bytes, but buffer is %d",
 			    cmnd->data_size, BUFSIZ);
 	    return;
 	}
-		
+
 	memset (resp, 0, sizeof (glibtop_response));
 
 	memset (parameter, 0, sizeof (parameter));
-		
+
 	if (cmnd->data_size) {
 	    if (enable_debug)
 		syslog_message (LOG_DEBUG, "Client has %d bytes of data.",
@@ -92,7 +92,7 @@ handle_parent_connection (int s)
 	    do_output (s, resp, 0, 0, NULL);
 	    return;
 	case GLIBTOP_CMND_SYSDEPS:
-	    memcpy (&resp->u.sysdeps, &server->sysdeps, 
+	    memcpy (&resp->u.sysdeps, &server->sysdeps,
 		    sizeof (glibtop_sysdeps));
 	    resp->u.sysdeps.features = GLIBTOP_SYSDEPS_ALL;
 	    do_output (s, resp, _offset_union (sysdeps), 0, NULL);
@@ -133,14 +133,14 @@ handle_parent_connection (int s)
 	    do_output (s, resp, _offset_data (sem_limits), 0, NULL);
 	    break;
 	case GLIBTOP_CMND_PROCLIST:
-	    param_ptr = (int64_t *) parameter;
+	    param_ptr = (gint64 *) parameter;
 	    ptr = glibtop_get_proclist_l (server,
 					  &resp->u.data.proclist,
 					  param_ptr [0],
 					  param_ptr [1]);
 	    do_output (s, resp, _offset_data (proclist),
 		       resp->u.data.proclist.total, ptr);
-	    glibtop_free_r (server, ptr);
+	    g_free (ptr);
 	    break;
 	case GLIBTOP_CMND_PROC_MAP:
 	    memcpy (&pid, parameter, sizeof (pid_t));
@@ -149,7 +149,7 @@ handle_parent_connection (int s)
 					  pid);
 	    do_output (s, resp, _offset_data (proc_map),
 		       resp->u.data.proc_map.total, ptr);
-	    glibtop_free_r (server, ptr);
+	    g_free (ptr);
 	    break;
 	case GLIBTOP_CMND_PROC_ARGS:
 	    memcpy (&pid, parameter, sizeof (pid_t));
@@ -158,7 +158,7 @@ handle_parent_connection (int s)
 					   pid, 0);
 	    do_output (s, resp, _offset_data (proc_args),
 		       ptr ? resp->u.data.proc_args.size+1 : 0, ptr);
-	    glibtop_free_r (server, ptr);
+	    g_free (ptr);
 	    break;
 	case GLIBTOP_CMND_PROC_STATE:
 	    memcpy (&pid, parameter, sizeof (pid_t));
@@ -208,7 +208,7 @@ handle_parent_connection (int s)
 		(server, &resp->u.data.mountlist, all_fs);
 	    do_output (s, resp, _offset_data (mountlist),
 		       resp->u.data.mountlist.total, mount_list);
-	    glibtop_free_r (server, mount_list);
+	    g_free (mount_list);
 	    break;
 	case GLIBTOP_CMND_FSUSAGE:
 	    glibtop_get_fsusage_l

@@ -1,4 +1,4 @@
-/* $Id: server.c,v 1.1.1.2 2003-01-27 03:24:12 ghudson Exp $ */
+/* $Id: server.c,v 1.1.1.3 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -95,7 +95,7 @@ main(int argc, char *argv[])
 		_exit (1);
 	}
 #endif
-	
+
 	glibtop_init_p (glibtop_global_server, 0, 0);
 
 	if (setreuid (euid, uid)) _exit (1);

@@ -1,4 +1,4 @@
-/* $Id: mountlist.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: mountlist.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,11 +22,12 @@
 */
 
 #include <locale.h>
+#include <libintl.h>
+#include <stdio.h>
 
 #include <glibtop.h>
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/parameter.h>
 
@@ -49,11 +50,11 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init_r (&glibtop_global_server, 0, GLIBTOP_INIT_NO_OPEN);
 
 	glibtop_get_parameter (GLIBTOP_PARAM_METHOD, &method, sizeof (method));
-	
+
 	printf ("Method = %d\n", method);
 
 	count = glibtop_get_parameter (GLIBTOP_PARAM_COMMAND, buffer, BUFSIZ);
@@ -73,7 +74,7 @@ main (int argc, char *argv [])
 	for (c = 0; c < PROFILE_COUNT; c++) {
 		mount_entries = glibtop_get_mountlist (&mount_list, 1);
 
-		glibtop_free (mount_entries);
+		g_free (mount_entries);
 	}
 
 	printf ("sbrk (0) = %p\n\n", sbrk (0));
@@ -89,21 +90,21 @@ main (int argc, char *argv [])
 			mount_entries [index].type,
 			mount_entries [index].devname);
 
-	printf ("\n\n%-23s %9s %9s %9s %9s %9s\n\n",
-		"", "Blocks", "Free", "Avail", "Files", "Free");
+	printf ("\n\n%-16s %9s %9s %9s %9s %9s %9s\n",
+		"Mount", "Blocks", "Free", "Avail", "Files", "Free", "BlockSz");
 
 	for (index = 0; index < mount_list.number; index++) {
 		glibtop_get_fsusage (&fsusage,
 				     mount_entries [index].mountdir);
 
-		printf ("Usage: %-16s %9Lu %9Lu %9Lu %9Lu %9Lu\n",
+		printf ("%-16s %9Lu %9Lu %9Lu %9Lu %9Lu %9d\n",
 			mount_entries [index].mountdir,
 			fsusage.blocks, fsusage.bfree,
 			fsusage.bavail, fsusage.files,
-			fsusage.ffree);
+			fsusage.ffree, fsusage.block_size);
 	}
 
-	glibtop_free (mount_entries);
+	g_free (mount_entries);
 
 	printf ("\nsbrk (0) = %p\n\n", sbrk (0));
 

@@ -1,4 +1,4 @@
-/* $Id: parameter.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: parameter.c,v 1.1.1.2 2004-10-03 04:59:47 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -26,7 +26,7 @@
 
 #define _write_data(ptr,size)	\
 	if ((data_ptr == NULL) || (data_size < size)) return -size; \
-	if (ptr == NULL) { strcpy (data_ptr, ""); return 1; } \
+	if (ptr == NULL) { char * const p = data_ptr; *p = '\0'; return 1; } \
 	memcpy (data_ptr, ptr, size);	\
 	return size;
 

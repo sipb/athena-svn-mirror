@@ -1,3 +1,47 @@
+2004-06-13  Benoît Dejean  <tazforever@dlfp.org>
+
+	* sysinfo.c: Added missing const qualifier.
+
+2004-06-06  Benoît Dejean  <tazforever@dlfp.org>
+
+	* proclist.c: (glibtop_get_proclist_s): Used g_memdup.
+
+2004-05-25  Benoît Dejean  <tazforever@dlfp.org>
+
+	* sem_limits.c:
+	* shm_limits.c:
+	* swap.c: Added missing const qualifiers.
+
+	* uptime.c: (glibtop_get_uptime_s): Cleaned up. Added boot_time.
+
+2004-03-09  Bastien Nocera  <hadess@hadess.net>
+
+	* proclist.c: (glibtop_get_proclist_s): fix g_malloc usage on non-Linux
+        platforms (patch by Benoît Dejean <bnet@ifrance.com>)
+
+2003-10-21  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: install only one library, libgtop-2.0
+	Fix build-time warnings due to the redefinition of guint64
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* glibtop_private.h: s/u_int64_t/guint64/
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* glibtop_private.h:
+	* glibtop_server.h:
+	* kernel.h:
+	* procargs.c:
+	* proclist.c:
+	* procmap.c: fixed compilation
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* proclist.c: (glibtop_get_proclist_s): replace all the xmalloc crap
+	by glib memory management functions
+
 2001-10-17  Abel Cheung <maddog@linux.org.hk>
 
 	* Makefile.am: move header to $(includedir)/libgtop-1.0/glibtop.

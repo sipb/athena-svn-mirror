@@ -1,4 +1,4 @@
-/* $Id: proclist.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: proclist.h,v 1.1.1.2 2004-10-03 05:00:18 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROCLIST_NUMBER	0
 #define GLIBTOP_PROCLIST_TOTAL	1
@@ -56,7 +56,7 @@ typedef struct _glibtop_proclist	glibtop_proclist;
 
 struct _glibtop_proclist
 {
-	u_int64_t	flags,
+	guint64	flags,
 		number,			/* GLIBTOP_PROCLIST_NUMBER	*/
 		total,			/* GLIBTOP_PROCLIST_TOTAL	*/
 		size;			/* GLIBTOP_PROCLIST_SIZE	*/
@@ -72,20 +72,20 @@ struct _glibtop_proclist
 
 unsigned *
 glibtop_get_proclist_l (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg);
+			gint64 which, gint64 arg);
 
 #if GLIBTOP_SUID_PROCLIST
 void glibtop_init_proclist_p (glibtop *server);
 
 unsigned *
 glibtop_get_proclist_p (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg);
+			gint64 which, gint64 arg);
 #else
 void glibtop_init_proclist_s (glibtop *server);
 
 unsigned *
 glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg);
+			gint64 which, gint64 arg);
 #endif
 
 #ifdef GLIBTOP_NAMES
@@ -99,6 +99,6 @@ extern const char *glibtop_descriptions_proclist [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

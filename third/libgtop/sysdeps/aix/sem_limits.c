@@ -1,4 +1,4 @@
-/* $Id: sem_limits.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: sem_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 
 #include "utils.h"
 
-static const unsigned long _glibtop_sysdeps_sem_limits = 
+static const unsigned long _glibtop_sysdeps_sem_limits =
 (1 << GLIBTOP_IPC_SEMMNI) + (1 << GLIBTOP_IPC_SEMMSL) +
 (1 << GLIBTOP_IPC_SEMOPM) + (1 << GLIBTOP_IPC_SEMUME) +
 (1 << GLIBTOP_IPC_SEMUSZ) + (1 << GLIBTOP_IPC_SEMVMX) +

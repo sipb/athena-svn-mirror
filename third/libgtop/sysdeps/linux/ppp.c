@@ -1,4 +1,4 @@
-/* $Id: ppp.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: ppp.c,v 1.1.1.2 2004-10-03 05:00:02 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,10 +23,8 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/ppp.h>
 
-#include <linux/isdn.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -34,6 +32,13 @@
 #include <ctype.h>
 
 #include <glib.h>
+
+#ifdef HAVE_ISDN_H
+#include <linux/isdn.h>
+#else
+#define ISDN_MAX_CHANNELS 64
+#define IIOCGETCPS  _IO('I',21)
+#endif /* HAVE_ISDN_H */
 
 static const unsigned long _glibtop_sysdeps_ppp =
 (1L << GLIBTOP_PPP_STATE) + (1L << GLIBTOP_PPP_BYTES_IN) +
@@ -47,41 +52,35 @@ glibtop_init_ppp_s (glibtop *server)
 	server->sysdeps.ppp = _glibtop_sysdeps_ppp;
 }
 
-static int
+static gboolean
 get_ISDN_stats (glibtop *server, int *in, int *out)
 {
-	unsigned long *isdn_stats, *ptr;
-	int fd, i;
-	
-	*in = *out = 0;
+	unsigned long isdn_stats[2 * ISDN_MAX_CHANNELS], *ptr;
+	int fd;
 
-	isdn_stats = glibtop_calloc_r (server, ISDN_MAX_CHANNELS * 2,
-				       sizeof (unsigned long));
+	*in = *out = 0;
 
 	fd = open ("/dev/isdninfo", O_RDONLY);
 	if (fd < 0) {
-		glibtop_free_r (server, isdn_stats);
 		return FALSE;
 	}
 
 	if ((ioctl (fd, IIOCGETCPS, isdn_stats) < 0) && (errno != 0)) {
-		glibtop_free_r (server, isdn_stats);
-		close (fd);
-		
+		close(fd);
 		return FALSE;
 	}
 
-	for (i = 0, ptr = isdn_stats; i < ISDN_MAX_CHANNELS; i++) {
+	for (ptr = isdn_stats;
+	     ptr != (isdn_stats + G_N_ELEMENTS(isdn_stats));
+	     /* NOOP */) {
 		*in  += *ptr++; *out += *ptr++;
 	}
 
-	glibtop_free_r (server, isdn_stats);
 	close (fd);
-
 	return TRUE;
 }
 
-static int is_ISDN_on (glibtop *server, int *online)
+static gboolean is_ISDN_on (glibtop *server, int *online)
 {
 	FILE *f = 0;
 	char buffer [BUFSIZ], *p;

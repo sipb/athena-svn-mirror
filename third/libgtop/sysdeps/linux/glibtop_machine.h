@@ -1,4 +1,4 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:46 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -28,19 +28,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 
-BEGIN_LIBGTOP_DECLS
-
-#if _IN_LIBGTOP
-
-static inline char *
-skip_token(const char *p)
-{
-    while (isspace(*p)) p++;
-    while (*p && !isspace(*p)) p++;
-    return (char *)p;
-}
-
-#endif
+G_BEGIN_DECLS
 
 typedef struct _glibtop_machine		glibtop_machine;
 
@@ -53,6 +41,6 @@ struct _glibtop_machine
 	char	proc_status [BUFSIZ];
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

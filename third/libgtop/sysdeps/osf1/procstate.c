@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -55,20 +55,20 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 	task_t thistask;
 
 	glibtop_init_p (server, GLIBTOP_SYSDEPS_PROC_STATE, 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_state));
 
 	/* !!! THE FOLLOWING CODE RUNS SUID ROOT - CHANGE WITH CAUTION !!! */
 
 	glibtop_suid_enter (server);
-	
+
 	ret = table (TBL_PROCINFO, pid, (char *) &procinfo, 1,
-		     sizeof (struct tbl_procinfo)); 
+		     sizeof (struct tbl_procinfo));
 
 	glibtop_suid_leave (server);
-		     
+
 	/* !!! END OF SUID ROOT PART !!! */
-	
+
 	if (ret != 1) return;
 
 	/* Check whether the process actually exists. */
@@ -81,9 +81,7 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 		return;
 	}
 
-	strncpy (buf->cmd, procinfo.pi_comm, sizeof (buf->cmd)-1);
-
-	buf->cmd [sizeof (buf->cmd)-1] = 0;
+	g_strlcpy (buf->cmd, procinfo.pi_comm, sizeof buf->cmd);
 
 	buf->uid = procinfo.pi_svuid;
 	buf->gid = procinfo.pi_svgid;
@@ -95,10 +93,10 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 	/* !!! THE FOLLOWING CODE RUNS SUID ROOT - CHANGE WITH CAUTION !!! */
 
 	glibtop_suid_enter (server);
-                
+
 	/* Get task structure. */
 	ret = task_by_unix_pid (task_self(), procinfo.pi_pid, &thistask);
-        
+
 	if (ret == KERN_SUCCESS) {
 		thread_array_t			threadarr;
 		unsigned int			threadarr_l;
@@ -118,7 +116,7 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 					    (thread_info_t) threadinfo, &threadinfo_l);
 
 			if (tret == KERN_SUCCESS) {
-          			if (minim_state > threadinfo->run_state) 
+          			if (minim_state > threadinfo->run_state)
 					minim_state=threadinfo->run_state;
 			}
 		}
@@ -127,20 +125,20 @@ glibtop_get_proc_state_p (glibtop *server, glibtop_proc_state *buf,
 	glibtop_suid_leave (server);
 
 	/* !!! END OF SUID ROOT PART !!! */
-        
+
 	if (ret != KERN_SUCCESS) return;
 
 	switch (minim_state) {
 	case TH_STATE_RUNNING:
 		buf->state = GLIBTOP_PROCESS_RUNNING;
 		break;
-	case TH_STATE_UNINTERRUPTIBLE: 
+	case TH_STATE_UNINTERRUPTIBLE:
 		buf->state = GLIBTOP_PROCESS_UNINTERRUPTIBLE;
 		break;
 	case TH_STATE_WAITING:
 		buf->state = GLIBTOP_PROCESS_INTERRUPTIBLE;
 		break;
-	case TH_STATE_STOPPED:      
+	case TH_STATE_STOPPED:
 	case TH_STATE_HALTED:
 		buf->state = GLIBTOP_PROCESS_STOPPED;
 		break;

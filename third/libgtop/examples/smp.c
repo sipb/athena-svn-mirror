@@ -1,4 +1,4 @@
-/* $Id: smp.c,v 1.1.1.2 2003-01-27 03:24:10 ghudson Exp $ */
+/* $Id: smp.c,v 1.1.1.3 2004-10-03 05:00:40 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -21,12 +21,17 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include <config.h>
+
 #include <locale.h>
+#include <libintl.h>
 #include <math.h>
+#include <stdio.h>
 
 #include <glibtop.h>
 #include <glibtop/cpu.h>
-#include <glibtop/xmalloc.h>
+
+#include "libgtop-i18n.h"
 
 int
 main (int argc, char *argv [])
@@ -42,7 +47,7 @@ main (int argc, char *argv [])
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, GTOPLOCALEDIR);
 	textdomain (GETTEXT_PACKAGE);
-	
+
 	glibtop_init();
 
 	glibtop_get_cpu (&cpu);
@@ -97,7 +102,7 @@ main (int argc, char *argv [])
 	printf ("%-26s %12s %12s %12s %12s %12s\n%s\n", _("Percent:"),
 		_("Total (%)"), _("User (%)"), _("Nice (%)"), _("Sys (%)"),
 		_("Idle (%)"), separator);
-	
+
 	printf (_("CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n\n"),
 		(unsigned long) cpu.flags, (double) total * 100.0 / total,
 		(double) user  * 100.0 / total,

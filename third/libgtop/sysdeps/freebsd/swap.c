@@ -1,4 +1,4 @@
-/* $Id: swap.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: swap.c,v 1.1.1.2 2004-10-03 05:00:38 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,8 +24,6 @@
 #include <glibtop.h>
 #include <glibtop/error.h>
 #include <glibtop/swap.h>
-
-#include <glibtop/xmalloc.h>
 
 #include <glibtop_suid.h>
 
@@ -69,9 +67,9 @@ static struct nlist nlst [] = {
 };
 #endif
 
-#elif defined(__NetBSD__)
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
 
-#if (__NetBSD_Version__ >= 104000000)
+#if (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 #include <uvm/uvm_extern.h>
 #include <sys/swap.h>
 #else
@@ -80,7 +78,7 @@ static struct nlist nlst [] = {
 
 #endif
 
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 static int mib_uvmexp [] = { CTL_VM, VM_UVMEXP };
 #else
 /* nlist structure for kernel access */
@@ -111,7 +109,7 @@ glibtop_init_swap_p (glibtop *server)
 #endif
 #endif
 
-#if !(defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000))
+#if !(defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)) && !defined(__OpenBSD__)
 	if (kvm_nlist (server->machine.kd, nlst2) < 0) {
 		glibtop_warn_io_r (server, "kvm_nlist (cnt)");
 		return;
@@ -149,16 +147,16 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 	struct kvm_swap kvmsw[16];
 # endif
 
-#elif defined(__bsdi__)	
+#elif defined(__bsdi__)
 	struct swapstats swap;
-#elif defined(__NetBSD__)
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
 	struct swapent *swaplist;
 #endif
 
 	int nswap, i;
 	int avail = 0, inuse = 0;
 
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 	struct uvmexp uvmexp;
 	size_t length_uvmexp;
 #else
@@ -169,13 +167,13 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 	static int swappgsout = -1;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_SWAP), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_swap));
 
 	if (server->sysdeps.swap == 0)
 		return;
 
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 	length_uvmexp = sizeof (uvmexp);
 	if (sysctl (mib_uvmexp, 2, &uvmexp, &length_uvmexp, NULL, 0)) {
 		glibtop_warn_io_r (server, "sysctl (uvmexp)");
@@ -183,7 +181,7 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 	}
 #else
 	/* This is used to get the `pagein' and `pageout' members. */
-	
+
 	if (kvm_read (server->machine.kd, nlst2[0].n_value,
 		      &vmm, sizeof (vmm)) != sizeof (vmm)) {
 		glibtop_warn_io_r (server, "kvm_read (cnt)");
@@ -199,7 +197,7 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 		buf->pagein = vmm.v_swappgsin - swappgsin;
 		buf->pageout = vmm.v_swappgsout - swappgsout;
 #else
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 		buf->pagein = uvmexp.swapins - swappgsin;
 		buf->pageout = uvmexp.swapouts - swappgsout;
 #else
@@ -213,7 +211,7 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
         swappgsin = vmm.v_swappgsin;
 	swappgsout = vmm.v_swappgsout;
 #else
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000) || defined(__OpenBSD__)
 	swappgsin = uvmexp.swapins;
 	swappgsout = uvmexp.swapouts;
 #else
@@ -269,14 +267,14 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 	/* List of swap devices and sizes. */
 
 	sw_size = nswdev * sizeof (*sw);
-	sw = glibtop_malloc_r (server, sw_size);
+	sw = g_malloc (sw_size);
 
 	if (kvm_read (server->machine.kd, ptr, sw, sw_size) != (ssize_t)sw_size) {
 		glibtop_warn_io_r (server, "kvm_read (*swdevt)");
 		return;
 	}
 
-	perdev = glibtop_malloc (nswdev * sizeof (*perdev));
+	perdev = g_malloc (nswdev * sizeof (*perdev));
 
 	/* Count up swap space. */
 
@@ -353,8 +351,8 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 	 */
 	inuse = avail - nfree;
 
-	glibtop_free_r (server, sw);
-	glibtop_free_r (server, perdev);
+	g_free (sw);
+	g_free (perdev);
 
 	buf->flags = _glibtop_sysdeps_swap;
 
@@ -369,8 +367,8 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 
 	buf->flags = _glibtop_sysdeps_swap;
 
-	buf->used = kvmsw[nswdev].ksw_used;
-	buf->total = kvmsw[nswdev].ksw_total;
+	buf->used = kvmsw[nswdev].ksw_used * getpagesize();
+	buf->total = kvmsw[nswdev].ksw_total * getpagesize();
 
 	buf->free = buf->total - buf->used;
 
@@ -393,7 +391,7 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 
 	buf->total = swap.swap_total;
 
-#elif defined(__NetBSD__)
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
 
 	nswap = swapctl (SWAP_NSWAP, NULL, 0);
 	if (nswap < 0) {
@@ -401,11 +399,11 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 		return;
 	}
 
-	swaplist = glibtop_calloc_r (server, nswap, sizeof (struct swapent));
+	swaplist = g_malloc (nswap * sizeof (struct swapent));
 
 	if (swapctl (SWAP_STATS, swaplist, nswap) != nswap) {
 		glibtop_warn_io_r (server, "swapctl (SWAP_STATS)");
-		glibtop_free_r (server, swaplist);
+		g_free (swaplist);
 		return;
 	}
 
@@ -414,7 +412,7 @@ glibtop_get_swap_p (glibtop *server, glibtop_swap *buf)
 		inuse += swaplist[i].se_inuse;
 	}
 
-	glibtop_free_r (server, swaplist);
+	g_free (swaplist);
 
 	buf->flags = _glibtop_sysdeps_swap;
 

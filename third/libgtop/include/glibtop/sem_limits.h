@@ -1,4 +1,4 @@
-/* $Id: sem_limits.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: sem_limits.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_IPC_SEMMAP	0
 #define GLIBTOP_IPC_SEMMNI	1
@@ -46,7 +46,7 @@ typedef struct _glibtop_sem_limits	glibtop_sem_limits;
 
 struct _glibtop_sem_limits
 {
-	u_int64_t	flags,
+	guint64	flags,
 		semmap,		/* GLIBTOP_IPC_SEMMAP	*/
 		semmni,		/* GLIBTOP_IPC_SEMMNI	*/
 		semmns,		/* GLIBTOP_IPC_SEMMNS	*/
@@ -88,6 +88,6 @@ extern const char *glibtop_descriptions_sem_limits [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

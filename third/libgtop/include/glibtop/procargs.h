@@ -1,4 +1,4 @@
-/* $Id: procargs.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procargs.h,v 1.1.1.2 2004-10-03 05:00:12 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_ARGS_SIZE		0
 
@@ -37,35 +37,75 @@ typedef struct _glibtop_proc_args	glibtop_proc_args;
 
 struct _glibtop_proc_args
 {
-	u_int64_t	flags,
+	guint64	flags,
 		size;			/* GLIBTOP_PROC_ARGS_SIZE	*/
 };
 
-#define glibtop_get_proc_args(proc_args,pid,max_len) glibtop_get_proc_args_l(glibtop_global_server, proc_args, pid, max_len)
-
-#if GLIBTOP_SUID_PROC_ARGS
-#define glibtop_get_proc_args_r		glibtop_get_proc_args_p
-#else
-#define glibtop_get_proc_args_r		glibtop_get_proc_args_s
-#endif
 
 char *
 glibtop_get_proc_args_l (glibtop *server, glibtop_proc_args *buf,
 			 pid_t pid, unsigned max_len);
 
+#define glibtop_get_proc_args(proc_args,pid,max_len) glibtop_get_proc_args_l(glibtop_global_server, proc_args, pid, max_len)
+
+
+
 #if GLIBTOP_SUID_PROC_ARGS
-void glibtop_init_proc_args_p (glibtop *server);
 
-char *
-glibtop_get_proc_args_p (glibtop *server, glibtop_proc_args *buf,
-			 pid_t pid, unsigned max_len);
-#else
-void glibtop_init_proc_args_s (glibtop *server);
+# define glibtop_get_proc_args_r		glibtop_get_proc_args_p
 
-char *
-glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
+  void glibtop_init_proc_args_p (glibtop *server);
+
+  char *
+  glibtop_get_proc_args_p (glibtop *server, glibtop_proc_args *buf,
+			   pid_t pid, unsigned max_len);
+
+
+#else /* !GLIBTOP_SUID_PROC_ARGS */
+
+# define glibtop_get_proc_args_r		glibtop_get_proc_args_s
+
+  void glibtop_init_proc_args_s (glibtop *server);
+
+  char *
+  glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
+			   pid_t pid, unsigned max_len);
+#endif /* GLIBTOP_SUID_PROC_ARGS */
+
+
+
+/*
+ * NEW functions
+ */
+
+char **
+glibtop_get_proc_argv_l (glibtop *server, glibtop_proc_args *buf,
 			 pid_t pid, unsigned max_len);
-#endif
+
+#define glibtop_get_proc_argv(proc_args,pid,max_len) glibtop_get_proc_argv_l(glibtop_global_server, proc_args, pid, max_len)
+
+
+#if GLIBTOP_SUID_PROC_ARGS
+
+# define glibtop_get_proc_argv_r		glibtop_get_proc_args_p
+# define glibtop_init_proc_argv_p		glibtop_init_proc_args_p
+
+  char **
+  glibtop_get_proc_argv_p (glibtop *server, glibtop_proc_args *buf,
+			   pid_t pid, unsigned max_len);
+
+
+#else /* !GLIBTOP_SUID_PROC_ARGS */
+
+# define glibtop_get_proc_argv_r		glibtop_get_proc_args_s
+# define glibtop_init_proc_argv_s		glibtop_init_proc_args_s
+
+  char **
+  glibtop_get_proc_argv_s (glibtop *server, glibtop_proc_args *buf,
+			   pid_t pid, unsigned max_len);
+#endif /* GLIBTOP_SUID_PROC_ARGS */
+
+
 
 #ifdef GLIBTOP_NAMES
 
@@ -78,6 +118,6 @@ extern const char *glibtop_descriptions_proc_args [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

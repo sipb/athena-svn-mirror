@@ -1,4 +1,4 @@
-/* $Id: signal.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: signal.h,v 1.1.1.2 2004-10-03 04:59:08 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -30,7 +30,7 @@
 #include <sys/signal.h>
 #endif
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef struct _glibtop_signame	glibtop_signame;
 
@@ -42,6 +42,6 @@ struct _glibtop_signame
 
 extern const glibtop_signame glibtop_sys_siglist [];
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

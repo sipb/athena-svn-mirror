@@ -20,11 +20,14 @@ print '/* lib.c */';
 print "/* This is a generated file.  Please modify `lib.pl' */";
 print '';
 
+print '#include <config.h>';
+print '';
 print '#include <glibtop.h>';
 print '#include <glibtop/open.h>';
 print '';
 print '#include <glibtop/sysdeps.h>';
 print '#include <glibtop/union.h>';
+print '#include "libgtop-i18n.h"';
 print '';
 print '#include <glibtop/command.h>';
 
@@ -34,9 +37,9 @@ print '';
 
 print 'static void';
 print '_glibtop_missing_feature (glibtop *server, const char *feature,';
-print "\t\t\t  const u_int64_t present, u_int64_t *required)";
+print "\t\t\t  const guint64 present, guint64 *required)";
 print '{';
-print "\tu_int64_t old_required = *required;\n";
+print "\tguint64 old_required = *required;\n";
 print "\t/* Return if we have all required fields. */";
 print "\tif ((~present & old_required) == 0)";
 print "\t\treturn;\n";
@@ -64,8 +67,8 @@ print '';
 print '/* Library functions. */';
 print '';
 
-$convert{'long'} = 'int64_t';
-$convert{'ulong'} = 'u_int64_t';
+$convert{'long'} = 'gint64';
+$convert{'ulong'} = 'guint64';
 $convert{'pid_t'} = 'pid_t';
 $convert{'int'} = 'int';
 $convert{'ushort'} = 'unsigned short';

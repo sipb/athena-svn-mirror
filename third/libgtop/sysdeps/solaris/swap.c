@@ -1,4 +1,4 @@
-/* $Id: swap.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: swap.c,v 1.1.1.2 2004-10-03 04:59:21 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -49,7 +49,7 @@ glibtop_get_swap_s (glibtop *server, glibtop_swap *buf)
 {
     kstat_ctl_t *kc = server->machine.kc;
     kstat_t *ksp = server->machine.vminfo_kstat;
-    u_int64_t swap_resv, swap_alloc, swap_avail, swap_free;
+    guint64 swap_resv, swap_alloc, swap_avail, swap_free;
     vminfo_t vminfo;
     double rate;
     kid_t ret;

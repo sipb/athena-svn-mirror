@@ -1,4 +1,4 @@
-/* $Id: slave.c,v 1.1.1.1 2003-01-02 04:56:07 ghudson Exp $ */
+/* $Id: slave.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@ void
 handle_slave_connection (int input, int output)
 {
 	glibtop *server G_GNUC_UNUSED = glibtop_global_server;
-	int64_t *param_ptr G_GNUC_UNUSED;
+	gint64 *param_ptr G_GNUC_UNUSED;
 	const void *ptr G_GNUC_UNUSED;
 
 	unsigned short max_len G_GNUC_UNUSED;
@@ -44,7 +44,7 @@ handle_slave_connection (int input, int output)
 		fprintf (stderr, "Slave %d received command "
 			 "%d from client.\n", getpid (), cmnd->command);
 #endif
-		
+
 		if (cmnd->data_size >= BUFSIZ)
 			glibtop_error ("Client sent %d bytes, "
 				       "but buffer is %d",
@@ -53,32 +53,32 @@ handle_slave_connection (int input, int output)
 		memset (resp, 0, sizeof (glibtop_response));
 
 		memset (parameter, 0, sizeof (parameter));
-		
+
 		if (cmnd->data_size) {
 #ifdef SLAVE_DEBUG
 			fprintf (stderr, "Client has %d bytes of data.\n",
 				 cmnd->data_size);
 #endif
-			
+
 			do_read (input, parameter, cmnd->data_size);
-			
+
 		} else if (cmnd->size) {
 			memcpy (parameter, cmnd->parameter, cmnd->size);
 		}
-    
+
 		switch (cmnd->command) {
 		case GLIBTOP_CMND_QUIT:
 			do_output (output, resp, 0, 0, NULL);
 			return;
 #if GLIBTOP_SUID_PROCLIST
 		case GLIBTOP_CMND_PROCLIST:
-			param_ptr = (int64_t *) parameter;
+			param_ptr = (gint64 *) parameter;
 			ptr = glibtop_get_proclist_p
 				(server, &resp->u.data.proclist,
 				 param_ptr [0], param_ptr [1]);
 			do_output (output, resp, _offset_data (proclist),
 				   resp->u.data.proclist.total, ptr);
-			glibtop_free_r (server, ptr);
+			g_free (ptr);
 			break;
 #endif
 #if GLIBTOP_SUID_PROC_ARGS
@@ -92,7 +92,7 @@ handle_slave_connection (int input, int output)
 			do_output (output, resp, _offset_data (proc_args),
 				   ptr ? resp->u.data.proc_args.size+1 : 0,
 				   ptr);
-			glibtop_free_r (server, ptr);
+			g_free (ptr);
 			break;
 #endif
 #if GLIBTOP_SUID_PROC_MAP
@@ -103,7 +103,7 @@ handle_slave_connection (int input, int output)
 						      pid);
 			do_output (output, resp, _offset_data (proc_map),
 				   resp->u.data.proc_map.total, ptr);
-			glibtop_free_r (server, ptr);
+			g_free (ptr);
 			break;
 #endif
 		default:
@@ -124,7 +124,7 @@ handle_slave_command (glibtop_command *cmnd, glibtop_response *resp,
 
 	switch (cmnd->command) {
 	case GLIBTOP_CMND_SYSDEPS:
-		memcpy (&resp->u.sysdeps, &server->sysdeps, 
+		memcpy (&resp->u.sysdeps, &server->sysdeps,
 			sizeof (glibtop_sysdeps));
 		resp->u.sysdeps.features = glibtop_server_features;
 		resp->u.sysdeps.flags = glibtop_server_features |

@@ -1,4 +1,4 @@
-/* $Id: procargs.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: procargs.c,v 1.1.1.2 2004-10-03 05:00:40 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procargs.h>
 
 #include <glibtop_suid.h>
@@ -51,7 +50,7 @@ glibtop_get_proc_args_p (glibtop *server, glibtop_proc_args *buf,
 {
 	struct kinfo_proc *pinfo;
 	char *retval, **args, **ptr;
-	unsigned size = 0, pos = 0;
+	size_t size = 0, pos = 0;
 	int count;
 
 #ifndef __bsdi__
@@ -60,7 +59,7 @@ glibtop_get_proc_args_p (glibtop *server, glibtop_proc_args *buf,
 #endif
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PROC_ARGS), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_args));
 
 	/* swapper, init, pagedaemon, vmdaemon, update - this doen't work. */
@@ -94,11 +93,10 @@ glibtop_get_proc_args_p (glibtop *server, glibtop_proc_args *buf,
 		size += strlen (*ptr)+1;
 
 	size += 2;
-	retval = glibtop_malloc_r (server, size);
-	memset (retval, 0, size);
+	retval = g_malloc0 (size);
 
 	for (ptr = args; *ptr; ptr++) {
-		int len = strlen (*ptr)+1;
+		const size_t len = strlen (*ptr)+1;
 		memcpy (retval+pos, *ptr, len);
 		pos += len;
 	}

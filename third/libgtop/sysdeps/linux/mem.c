@@ -1,4 +1,4 @@
-/* $Id: mem.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: mem.c,v 1.1.1.2 2004-10-03 05:00:02 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -46,36 +46,19 @@ glibtop_init_mem_s (glibtop *server)
 void
 glibtop_get_mem_s (glibtop *server, glibtop_mem *buf)
 {
-	char buffer [BUFSIZ], *p;
-	int fd, len;
+	char buffer [BUFSIZ];
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_MEM, 0);
 
-	memset (buf, 0, sizeof (glibtop_mem));
+	file_to_buffer(server, buffer, FILENAME);
 
-	fd = open (FILENAME, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", FILENAME);
+	buf->total  = get_scaled(buffer, "MemTotal:");
+	buf->free   = get_scaled(buffer, "MemFree:");
+	buf->used   = buf->total - buf->free;
+	buf->shared = 0;
+	buf->buffer = get_scaled(buffer, "Buffers:");
+	buf->cached = get_scaled(buffer, "Cached:");
 
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", FILENAME);
-
-	close (fd);
-
-	buffer [len] = '\0';
-
-	p = skip_line (buffer);
-	p = skip_token (p);		/* "Mem:" */
-
-	buf->total  = strtoul (p, &p, 0);
-	buf->used   = strtoul (p, &p, 0);
-	buf->free   = strtoul (p, &p, 0);
-	buf->shared = strtoul (p, &p, 0);
-	buf->buffer = strtoul (p, &p, 0);
-	buf->cached = strtoul (p, &p, 0);
-
-	buf->user = buf->total - buf->free - buf->shared - buf->buffer;
-
+	buf->user = buf->total - buf->free - buf->cached - buf->buffer;
 	buf->flags = _glibtop_sysdeps_mem;
 }

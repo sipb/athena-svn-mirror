@@ -1,4 +1,4 @@
-/* $Id: proclist.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: proclist.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,7 +22,6 @@
 */
 
 #include <glibtop.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/proclist.h>
 
 #include "kernel.h"
@@ -57,7 +56,7 @@ glibtop_init_proclist_s (glibtop *server)
 
 unsigned *
 glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg)
+			gint64 which, gint64 arg)
 {
 	union table tbl;
 	unsigned *pids_chain;
@@ -78,9 +77,7 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 
 	buf->total = buf->number * sizeof (unsigned);
 
-	pids_chain = glibtop_malloc_r (server, buf->total);
-
-	memcpy (pids_chain, tbl.proclist.pids, buf->total);
+	pids_chain = g_memdup(tbl.proclist.pids, buf->total);
 
 	return pids_chain;
 }

@@ -1,4 +1,4 @@
-/* $Id: procargs.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procargs.c,v 1.1.1.2 2004-10-03 05:00:41 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procargs.h>
 
 static const unsigned long _glibtop_sysdeps_proc_args =
@@ -43,59 +42,32 @@ char *
 glibtop_get_proc_args_s (glibtop *server, glibtop_proc_args *buf,
 			 pid_t pid, unsigned max_len)
 {
-	char fn [BUFSIZ], buffer [BUFSIZ];
-	int cmdline, len, total = 0;
-	char *retval = NULL;
+	char filename[48]; /* magiv */
+
+	char *args;
+	gsize length;
+	GError *error = NULL;
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_ARGS, 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_args));
 
-	sprintf (fn, "/proc/%d/cmdline", pid);
-	
-	cmdline = open (fn, O_RDONLY);
-	if (cmdline < 0) return NULL;
+	sprintf (filename, "/proc/%d/cmdline", pid);
 
-	if (max_len) {
-		retval = glibtop_malloc_r (server, max_len+1);
-
-		len = read (cmdline, retval, max_len);
-		close (cmdline);
-
-		if (len < 0) {
-			glibtop_free_r (server, retval);
-			return NULL;
-		}
-
-		*(retval+len) = 0;
-
-		buf->size = len;
-		buf->flags = _glibtop_sysdeps_proc_args;
-
-		return retval;
+	if(!g_file_get_contents(filename, &args, &length, &error)) {
+		g_error_free(error);
+		buf->size = 0;
+		return NULL;
 	}
 
-	while (1) {
-		len = read (cmdline, buffer, BUFSIZ-1);
-		if (len < 0) {
-			close (cmdline);
-			glibtop_free_r (server, retval);
-			return NULL;
-		}
-
-		if (len == 0)
-			break;
-
-		retval = glibtop_realloc_r (server, retval, total+len+1);
-		memcpy (retval+total, buffer, len);
-		*(retval+total+len) = 0;
-		total += len;
+	if(max_len && max_len < length) {
+		args = g_realloc(args, max_len);
+		args[max_len - 1] = '\0';
+		length = max_len;
 	}
-	
-	close (cmdline);
 
-	buf->size = total;
+	buf->size = length;
 	buf->flags = _glibtop_sysdeps_proc_args;
-	
-	return retval;
+
+	return args;
 }

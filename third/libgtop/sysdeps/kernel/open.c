@@ -1,4 +1,4 @@
-/* $Id: open.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: open.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -36,7 +36,7 @@ static int linux_version_code = 0;
 static void set_linux_version(void) {
     static struct utsname uts;
     int x = 0, y = 0, z = 0;	/* cleared in case sscanf() < 3 */
-    
+
     if (linux_version_code) return;
     if (uname(&uts) == -1)	/* failure most likely implies impending death */
 	exit(1);
@@ -57,7 +57,7 @@ glibtop_open_s (glibtop *server, const char *program_name,
 		const unsigned long features, const unsigned flags)
 {
 	server->name = program_name;
-	
+
 	set_linux_version ();
 	server->os_version_code = (unsigned long) linux_version_code;
 }

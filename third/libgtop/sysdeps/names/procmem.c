@@ -1,4 +1,4 @@
-/* $Id: procmem.c,v 1.1.1.1 2003-01-02 04:56:11 ghudson Exp $ */
+/* $Id: procmem.c,v 1.1.1.2 2004-10-03 04:59:34 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,6 +23,7 @@
 
 #include <glibtop.h>
 #include <glibtop/procmem.h>
+#include "libgtop-i18n.h"
 
 #define GLIBTOP_PROC_MEM_SIZE		0
 #define GLIBTOP_PROC_MEM_VSIZE		1

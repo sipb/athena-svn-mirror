@@ -1,4 +1,4 @@
-/* $Id: types.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: types.h,v 1.1.1.2 2004-10-03 04:59:08 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,7 +24,7 @@
 #ifndef __GLIBTOP_TYPES_H__
 #define __GLIBTOP_TYPES_H__
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_TYPE_LONG	1
 #define GLIBTOP_TYPE_ULONG	2
@@ -33,6 +33,6 @@ BEGIN_LIBGTOP_DECLS
 #define GLIBTOP_TYPE_CHAR	5
 #define GLIBTOP_TYPE_STRING	6
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,4 +1,4 @@
-/* $Id: sem_limits.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: sem_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -41,7 +41,7 @@ union semun
 };
 #endif
 
-static unsigned long _glibtop_sysdeps_sem_limits =
+static const unsigned long _glibtop_sysdeps_sem_limits =
 (1 << GLIBTOP_IPC_SEMMAP) + (1 << GLIBTOP_IPC_SEMMNI) +
 (1 << GLIBTOP_IPC_SEMMNS) + (1 << GLIBTOP_IPC_SEMMNU) +
 (1 << GLIBTOP_IPC_SEMMSL) + (1 << GLIBTOP_IPC_SEMOPM) +
@@ -62,17 +62,17 @@ void
 glibtop_get_sem_limits_s (glibtop *server, glibtop_sem_limits *buf)
 {
 	struct seminfo	seminfo;
-	union semun	arg;  
-  
+	union semun	arg;
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_SEM_LIMITS, 0);
 
 	memset (buf, 0, sizeof (glibtop_sem_limits));
-  
+
 	buf->flags = _glibtop_sysdeps_sem_limits;
-  
+
 	arg.array = (ushort *) &seminfo;
 	semctl (0, 0, IPC_INFO, arg);
-  
+
 	buf->semmap = seminfo.semmap;
 	buf->semmni = seminfo.semmni;
 	buf->semmns = seminfo.semmns;

@@ -1,4 +1,4 @@
-/* $Id: cpu.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: cpu.c,v 1.1.1.2 2004-10-03 05:00:01 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -54,58 +54,64 @@ void
 glibtop_get_cpu_s (glibtop *server, glibtop_cpu *buf)
 {
 	char buffer [BUFSIZ], *p;
-	int fd, len, i;
-	u_int64_t total;
+	int i;
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_CPU, 0);
 
 	memset (buf, 0, sizeof (glibtop_cpu));
 
-	fd = open (FILENAME, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", FILENAME);
+	file_to_buffer(server, buffer, FILENAME);
 
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", FILENAME);
-
-	close (fd);
-
-	buffer [len] = '\0';
+	/*
+	 * GLOBAL
+	 */
 
 	p = skip_token (buffer);	/* "cpu" */
 
-	buf->user = strtoul (p, &p, 0);
-	buf->nice = strtoul (p, &p, 0);
-	buf->sys  = strtoul (p, &p, 0);
-	buf->idle = strtoul (p, &p, 0);
+	buf->user = strtoull (p, &p, 0);
+	buf->nice = strtoull (p, &p, 0);
+	buf->sys  = strtoull (p, &p, 0);
+	buf->idle = strtoull (p, &p, 0);
 
-	total = buf->user;
-	total += buf->nice;
-	total += buf->sys;
-	total += buf->idle;
-	buf->total = total;
+	/* 2.6 kernel */
+	buf->idle += strtoull(p, &p, 0); /* "iowait" */
+	buf->sys  += strtoull(p, &p, 0); /* "irq" */
+	buf->sys  += strtoull(p, &p, 0); /* "softirq" */
+
+	buf->total = buf->user + buf->nice + buf->sys + buf->idle;
 
 	buf->frequency = 100;
 	buf->flags = _glibtop_sysdeps_cpu;
 
-	for (i = 0; i < server->ncpu; i++) {
-		if (strncmp (p+1, "cpu", 3) || !isdigit (p [4]))
+	/*
+	 * PER CPU
+	 */
+
+	for (i = 0; i < GLIBTOP_NCPU && i < server->ncpu; i++) {
+
+		p = skip_line(p); /* move to ^ */
+
+		if (strncmp (p, "cpu", 3) || !isdigit (p [3]))
 			break;
 
-		p += 6;
-		buf->xcpu_user [i] = strtoul (p, &p, 0);
-		buf->xcpu_nice [i] = strtoul (p, &p, 0);
-		buf->xcpu_sys  [i] = strtoul (p, &p, 0);
-		buf->xcpu_idle [i] = strtoul (p, &p, 0);
+		p = skip_token(p); /* "cpuN" */
 
-		total = buf->xcpu_user [i];
-		total += buf->xcpu_nice [i];
-		total += buf->xcpu_sys [i];
-		total += buf->xcpu_idle [i];
+		buf->xcpu_user [i] = strtoull (p, &p, 0);
+		buf->xcpu_nice [i] = strtoull (p, &p, 0);
+		buf->xcpu_sys  [i] = strtoull (p, &p, 0);
+		buf->xcpu_idle [i] = strtoull (p, &p, 0);
 
-		buf->xcpu_total [i] = total;
+		/* 2.6 kernel */
+		buf->xcpu_idle [i]  += strtoull(p, &p, 0); /* "iowait" */
+		buf->xcpu_sys  [i]  += strtoull(p, &p, 0); /* "irq" */
+		buf->xcpu_sys  [i]  += strtoull(p, &p, 0); /* "softirq" */
+
+		buf->xcpu_total[i] = buf->xcpu_user [i] \
+			+ buf->xcpu_nice [i] \
+			+ buf->xcpu_sys  [i] \
+			+ buf->xcpu_idle [i];
 	}
 
-	buf->flags |= _glibtop_sysdeps_cpu_smp;
+	if(i >= 2) /* ok, that's a real SMP */
+		buf->flags |= _glibtop_sysdeps_cpu_smp;
 }

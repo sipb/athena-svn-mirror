@@ -1,7 +1,6 @@
-/* $Id: fsusage.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: fsusage.h,v 1.1.1.2 2004-10-03 05:00:16 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
-   This file is part of LibGTop 1.0.
 
    Contributed by Martin Baulig <martin@home-of-linux.org>, April 1998.
 
@@ -27,26 +26,31 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_FSUSAGE_BLOCKS		0
 #define GLIBTOP_FSUSAGE_BFREE		1
 #define GLIBTOP_FSUSAGE_BAVAIL		2
 #define GLIBTOP_FSUSAGE_FILES		3
 #define GLIBTOP_FSUSAGE_FFREE		4
+#define GLIBTOP_FSUSAGE_BLOCK_SIZE	5
+#define GLIBTOP_FSUSAGE_READ           6
+#define GLIBTOP_FSUSAGE_WRITE          7
+#define GLIBTOP_MAX_FSUSAGE		8
 
-#define GLIBTOP_MAX_FSUSAGE		5
 
 typedef struct _glibtop_fsusage		glibtop_fsusage;
 
 struct _glibtop_fsusage
 {
-	u_int64_t	flags,
-		blocks,		/* Total blocks. */
+	guint64	flags,
+		blocks,		/* Total number of blocks. */
 		bfree,		/* Free blocks available to superuser. */
 		bavail,		/* Free blocks available to non-superuser. */
 		files,		/* Total file nodes. */
 		ffree;		/* Free file nodes. */
+	guint32	block_size;	/* Size of a block in bytes. */
+	guint64 read, write;    /* Total blocks read and written */
 };
 
 #define glibtop_get_fsusage(fsusage,disk)	glibtop_get_fsusage_l(glibtop_global_server, fsusage, disk)
@@ -67,6 +71,6 @@ extern const char *glibtop_descriptions_fsusage [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

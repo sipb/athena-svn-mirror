@@ -1,4 +1,4 @@
-/* $Id: procmap.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: procmap.c,v 1.1.1.2 2004-10-03 05:00:36 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/procmap.h>
 
 #include <glibtop_suid.h>
@@ -32,9 +31,21 @@
 #include <sys/param.h>
 #include <sys/proc.h>
 #include <sys/resource.h>
+#if defined(__NetBSD__) && (__NetBSD_Version__ < 105020000)
 #include <vm/vm_object.h>
 #include <vm/vm_prot.h>
 #include <vm/vm_map.h>
+#elif defined(__NetBSD__) && (__NetBSD_Version__ >= 105020000)
+#include <uvm/uvm_extern.h>
+#else
+#include <vm/vm_object.h>
+#include <vm/vm_map.h>
+#if (__FreeBSD_version >= 400011)
+#include <vm/vm.h>
+#else
+#include <vm/vm_prot.h>
+#endif
+#endif
 
 #include <sys/vnode.h>
 #include <sys/mount.h>
@@ -46,7 +57,9 @@
 #include <sys/user.h>
 #endif
 #include <sys/sysctl.h>
+#if !defined(__NetBSD__) || (__NetBSD_Version__ < 105020000)
 #include <vm/vm.h>
+#endif
 
 #if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
 /* Fixme ... */
@@ -91,19 +104,20 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 	glibtop_map_entry *maps;
 #if defined __FreeBSD__
 	struct vnode vnode;
+#if __FreeBSD_version >= 500039
 	struct inode inode;
-	struct mount mount;
+#endif
 #endif
 	int count, i = 0;
 	int update = 0;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PROC_MAP), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_map));
 
 	/* It does not work for the swapper task. */
 	if (pid == 0) return NULL;
-	
+
 	glibtop_suid_enter (server);
 
 	/* Get the process data */
@@ -114,7 +128,11 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 	/* Now we get the memory maps. */
 
 	if (kvm_read (server->machine.kd,
+#if defined(__FreeBSD__) && (__FreeBSD_version >= 500013)
+		      (unsigned long) pinfo [0].ki_vmspace,
+#else
 		      (unsigned long) pinfo [0].kp_proc.p_vmspace,
+#endif
 		      (char *) &vmspace, sizeof (vmspace)) != sizeof (vmspace))
 		glibtop_error_io_r (server, "kvm_read (vmspace)");
 
@@ -132,9 +150,7 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 
 	buf->total = buf->number * buf->size;
 
-	maps = glibtop_malloc_r (server, buf->total);
-
-	memset (maps, 0, buf->total);
+	maps = g_malloc0(buf->total);
 
 	buf->flags = _glibtop_sysdeps_proc_map;
 
@@ -214,9 +230,10 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 #endif
 
 #if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
+#if defined(UVM_VNODE_VALID)
 		if (!vnode.v_uvm.u_flags & UVM_VNODE_VALID)
 			continue;
-
+#endif
 		if ((vnode.v_type != VREG) || (vnode.v_tag != VT_UFS) ||
 		    !vnode.v_data) continue;
 
@@ -238,12 +255,21 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 
 		if (!object.handle)
 			continue;
-		
+
 		if (kvm_read (server->machine.kd,
 			      (unsigned long) object.handle,
 			      &vnode, sizeof (vnode)) != sizeof (vnode))
 			glibtop_error_io_r (server, "kvm_read (vnode)");
 
+#if defined(__FreeBSD__) && (__FreeBSD_version >= 500039)
+               switch (vnode.v_type) {
+                   case VREG:
+                       maps [i-1].inode = vnode.v_cachedid;
+                       maps [i-1].device = vnode.v_cachedfs;
+                   default:
+                   continue;
+               }
+#else
 		if ((vnode.v_type != VREG) || (vnode.v_tag != VT_UFS) ||
 		    !vnode.v_data) continue;
 
@@ -256,7 +282,7 @@ glibtop_get_proc_map_p (glibtop *server, glibtop_proc_map *buf,
 			      (unsigned long) vnode.v_mount,
 			      &mount, sizeof (mount)) != sizeof (mount))
 			glibtop_error_io_r (server, "kvm_read (mount)");
-
+#endif
 		maps [i-1].inode  = inode.i_number;
 		maps [i-1].device = inode.i_dev;
 #endif

@@ -1,4 +1,4 @@
-/* $Id: mem.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: mem.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_MEM_TOTAL	0
 #define GLIBTOP_MEM_USED	1
@@ -44,7 +44,7 @@ typedef struct _glibtop_mem	glibtop_mem;
 
 struct _glibtop_mem
 {
-	u_int64_t	flags,
+	guint64	flags,
 		total,		/* GLIBTOP_MEM_TOTAL	*/
 		used,		/* GLIBTOP_MEM_USED	*/
 		free,		/* GLIBTOP_MEM_FREE	*/
@@ -84,6 +84,6 @@ extern const char *glibtop_descriptions_mem [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

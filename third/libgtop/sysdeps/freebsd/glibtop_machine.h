@@ -1,4 +1,4 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -39,7 +39,15 @@
 #include <osreldate.h>
 #endif
 
-BEGIN_LIBGTOP_DECLS
+#ifdef __NetBSD__
+#include <sys/proc.h>
+
+#ifndef SRUN
+#define SRUN    SACTIVE
+#endif
+#endif
+
+G_BEGIN_DECLS
 
 typedef struct _glibtop_machine glibtop_machine;
 
@@ -47,13 +55,13 @@ struct _glibtop_machine
 {
 	uid_t uid, euid;
 	gid_t gid, egid;
-	
+
 	/* The kernel descriptor, used by kvm_* calls.  We keep and re-use
 	 * it rather than re-getting it for almost all function
 	 * invocations. */
 	kvm_t *kd;
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
-#endif __GLIBTOP_MACHINE_H__
+#endif /* __GLIBTOP_MACHINE_H__ */

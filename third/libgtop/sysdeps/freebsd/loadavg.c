@@ -1,4 +1,4 @@
-/* $Id: loadavg.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: loadavg.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -43,15 +43,15 @@ glibtop_init_loadavg_p (glibtop *server)
 void
 glibtop_get_loadavg_p (glibtop *server, glibtop_loadavg *buf)
 {
-	double ldavg[3]; 
+	double ldavg[3];
 	int i;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_LOADAVG), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_loadavg));
 
 	getloadavg (ldavg, 3);
-  
+
 	/* fill in the struct */
 	buf->flags = _glibtop_sysdeps_loadavg;
 	for (i = 0; i < 3; i++) {

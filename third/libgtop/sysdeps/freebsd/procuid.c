@@ -1,4 +1,4 @@
-/* $Id: procuid.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: procuid.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -35,15 +35,7 @@ static const unsigned long _glibtop_sysdeps_proc_uid =
 (1L << GLIBTOP_PROC_UID_NICE);
 
 static const unsigned long _glibtop_sysdeps_proc_uid_groups =
-#if LIBGTOP_VERSION_CODE >= 1001000
-#if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)
-(1L << GLIBTOP_PROC_UID_NGROUPS) + (1L << GLIBTOP_PROC_UID_GROUPS);
-#else
 0L;
-#endif
-#else /* LIBGTOP_VERSION_CODE < 1001000 */
-0L;
-#endif
 
 /* Init function. */
 
@@ -71,12 +63,12 @@ glibtop_get_proc_uid_p (glibtop *server, glibtop_proc_uid *buf,
 #endif
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PROC_UID), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proc_uid));
 
 	/* It does not work for the swapper task. */
 	if (pid == 0) return;
-	
+
 	/* Get the process information */
 	pinfo = kvm_getprocs (server->machine.kd, KERN_PROC_PID, pid, &count);
 	if ((pinfo == NULL) || (count != 1)) {
@@ -84,24 +76,57 @@ glibtop_get_proc_uid_p (glibtop *server, glibtop_proc_uid *buf,
 		return;
 	}
 
-	buf->uid  = pinfo [0].kp_eproc.e_pcred.p_ruid;
-	buf->euid = pinfo [0].kp_eproc.e_pcred.p_svuid;
-	buf->gid  = pinfo [0].kp_eproc.e_pcred.p_rgid;
-	buf->egid = pinfo [0].kp_eproc.e_pcred.p_svgid;
+#if defined(__FreeBSD__) && (__FreeBSD_version >= 500013)
 
-	buf->ppid  = pinfo [0].kp_eproc.e_ppid;
-	buf->pgrp  = pinfo [0].kp_eproc.e_pgid;
-	buf->tpgid = pinfo [0].kp_eproc.e_tpgid;
+#define	PROC_RUID	ki_ruid
+#define	PROC_SVUID	ki_svuid
+#define	PROC_RGID	ki_rgid
+#define	PROC_SVGID	ki_svgid
+#define	PROC_PPID	ki_ppid
+#define	PROC_PGID	ki_pgid
+#define	PROC_TPGID	ki_tpgid
+#define	PROC_NICE	ki_nice
+#if __FreeBSD_version >= 500013
+#define	PROC_PRIORITY	ki_pri.pri_user
+#else
+#define	PROC_PRIORITY	ki_priority
+#endif
+#else
 
-	buf->nice     = pinfo [0].kp_proc.p_nice;
-	buf->priority = pinfo [0].kp_proc.p_priority;
+#define	PROC_RUID	kp_eproc.e_pcred.p_ruid
+#define	PROC_SVUID	kp_eproc.e_pcred.p_svuid
+#define	PROC_RGID	kp_eproc.e_pcred.p_rgid
+#define	PROC_SVGID	kp_eproc.e_pcred.p_svgid
+#define	PROC_PPID	kp_eproc.e_ppid
+#define	PROC_PGID	kp_eproc.e_pgid
+#define	PROC_TPGID	kp_eproc.e_tpgid
+#define	PROC_NICE	kp_proc.p_nice
+#define	PROC_PRIORITY	kp_proc.p_priority
+
+#endif
+
+	buf->uid  = pinfo [0].PROC_RUID;
+	buf->euid = pinfo [0].PROC_SVUID;
+	buf->gid  = pinfo [0].PROC_RGID;
+	buf->egid = pinfo [0].PROC_SVGID;
+
+	buf->ppid  = pinfo [0].PROC_PPID;
+	buf->pgrp  = pinfo [0].PROC_PGID;
+	buf->tpgid = pinfo [0].PROC_TPGID;
+
+	buf->nice     = pinfo [0].PROC_NICE;
+#if defined(__NetBSD__) && defined(SACTIVE)
+	buf->priority = 0;
+#else
+	buf->priority = pinfo [0].PROC_PRIORITY;
+#endif
 
 	/* Set the flags for the data we're about to return*/
 	buf->flags = _glibtop_sysdeps_proc_uid;
 
 	/* Use LibGTop conditionals here so we can more easily merge this
 	 * code into the LIBGTOP_STABLE_1_0 branch. */
-#if LIBGTOP_VERSION_CODE >= 1001000
+#if 0
 	/* This probably also works with other versions, but not yet
 	 * tested. Please remove the conditional if this is true. */
 #if defined(__NetBSD__) && (__NetBSD_Version__ >= 104000000)

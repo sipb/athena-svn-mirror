@@ -1,4 +1,4 @@
-/* $Id: proctime.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: proctime.h,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -28,7 +28,7 @@
 #include <glibtop/cpu.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_TIME_START_TIME	0
 #define GLIBTOP_PROC_TIME_RTIME		1
@@ -50,15 +50,15 @@ typedef struct _glibtop_proc_time	glibtop_proc_time;
 
 struct _glibtop_proc_time
 {
-	u_int64_t	flags,
-		start_time,	/* start time of process -- 
+	guint64	flags,
+		start_time,	/* start time of process --
 				 * seconds since 1-1-70 */
 		rtime,		/* real time accumulated by process */
 		utime,		/* user-mode CPU time accumulated by process */
 		stime,		/* kernel-mode CPU time accumulated by process */
-		cutime,		/* cumulative utime of process and 
+		cutime,		/* cumulative utime of process and
 				 * reaped children */
-		cstime,		/* cumulative stime of process and 
+		cstime,		/* cumulative stime of process and
 				 * reaped children */
 		timeout,	/* The time (in jiffies) of the process's
 				 * next timeout */
@@ -99,6 +99,6 @@ extern const char *glibtop_descriptions_proc_time [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

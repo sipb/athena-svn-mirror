@@ -1,4 +1,4 @@
-/* $Id: inodedb.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: inodedb.c,v 1.1.1.2 2004-10-03 05:00:40 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/inodedb.h>
 
 #include <pwd.h>
@@ -45,7 +44,7 @@ glibtop_inodedb_open_s (glibtop *server, unsigned databases,
 	if (!databases)
 		databases = GLIBTOP_INODEDB_ALL;
 
-	inodedb = glibtop_calloc_r (server, 1, sizeof (glibtop_inodedb));
+	inodedb = g_malloc (sizeof (glibtop_inodedb));
 
 	if (stat (SYSTEM_INODEDB, &statb))
 		databases &= ~GLIBTOP_INODEDB_SYSTEM;
@@ -60,9 +59,9 @@ glibtop_inodedb_open_s (glibtop *server, unsigned databases,
 
 	pwd = getpwuid (getuid ());
 	if (!pwd) glibtop_error_io_r (server, "getpwuid");
-	
+
 	sprintf (filename, "%s/var/libgtop/inodedb.db", pwd->pw_dir);
-	
+
 	if (stat (filename, &statb))
 		databases &= ~GLIBTOP_INODEDB_USER;
 
@@ -80,7 +79,7 @@ glibtop_inodedb_open_s (glibtop *server, unsigned databases,
 const char *
 glibtop_inodedb_lookup_s (glibtop *server,
 			  glibtop_inodedb *inodedb,
-			  u_int64_t device, u_int64_t inode)
+			  guint64 device, guint64 inode)
 {
 	glibtop_inodedb_key key;
 	datum d_key, d_content;
@@ -109,9 +108,9 @@ glibtop_inodedb_close_s (glibtop *server, glibtop_inodedb *inodedb)
 {
 	if (inodedb->system_dbf)
 		gdbm_close (inodedb->system_dbf);
-	
+
 	if (inodedb->user_dbf)
 		gdbm_close (inodedb->user_dbf);
 
-	glibtop_free_r (server, inodedb);
+	g_free (inodedb);
 }

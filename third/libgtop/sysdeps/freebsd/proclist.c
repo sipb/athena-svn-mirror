@@ -1,4 +1,4 @@
-/* $Id: proclist.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: proclist.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -23,7 +23,6 @@
 
 #include <glibtop.h>
 #include <glibtop/error.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/proclist.h>
 
 #include <glibtop_suid.h>
@@ -60,7 +59,7 @@ glibtop_init_proclist_p (glibtop *server)
 
 unsigned *
 glibtop_get_proclist_p (glibtop *server, glibtop_proclist *buf,
-			int64_t real_which, int64_t arg)
+			gint64 real_which, gint64 arg)
 {
 	struct kinfo_proc *pinfo;
 	unsigned *pids = NULL;
@@ -68,7 +67,7 @@ glibtop_get_proclist_p (glibtop *server, glibtop_proclist *buf,
 	int i,j;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PROCLIST), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_proclist));
 
 	which = (int)(real_which & GLIBTOP_KERN_PROC_MASK);
@@ -83,16 +82,28 @@ glibtop_get_proclist_p (glibtop *server, glibtop_proclist *buf,
 
 	/* Allocate count objects in the pids_chain array
 	 * Same as malloc is pids is NULL, which it is. */
-	pids = glibtop_realloc_r (server, pids, count * sizeof (unsigned));
+	pids = g_realloc (pids, count * sizeof (unsigned));
 	/* Copy the pids over to this chain */
 	for (i=j=0; i < count; i++) {
+#if defined(__FreeBSD__) && (__FreeBSD_version >= 500013)
+#define PROC_STAT	ki_stat
+#define PROC_RUID	ki_ruid
+#define PROC_PID	ki_pid
+
+#else
+#define PROC_STAT	kp_proc.p_stat
+#define PROC_RUID	kp_eproc.e_pcred.p_ruid
+#define PROC_PID	kp_proc.p_pid
+
+#endif
+
 		if ((real_which & GLIBTOP_EXCLUDE_IDLE) &&
-		    (pinfo[i].kp_proc.p_stat != SRUN))
+		    (pinfo[i].PROC_STAT != SRUN))
 			continue;
 		else if ((real_which & GLIBTOP_EXCLUDE_SYSTEM) &&
-			 (pinfo[i].kp_eproc.e_pcred.p_ruid == 0))
+			 (pinfo[i].PROC_RUID == 0))
 			continue;
-		pids [j++] = (unsigned) pinfo[i].kp_proc.p_pid;
+		pids [j++] = (unsigned) pinfo[i].PROC_PID;
 	} /* end for */
 	/* Set the fields in buf */
 	buf->number = j;

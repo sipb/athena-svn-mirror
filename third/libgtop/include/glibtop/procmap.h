@@ -1,4 +1,4 @@
-/* $Id: procmap.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procmap.h,v 1.1.1.2 2004-10-03 04:59:36 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_MAP_NUMBER		0
 #define GLIBTOP_PROC_MAP_TOTAL		1
@@ -35,15 +35,15 @@ BEGIN_LIBGTOP_DECLS
 
 #define GLIBTOP_MAX_PROC_MAP		3
 
-#define GLIBTOP_MAP_ENTRY_START		1
-#define GLIBTOP_MAP_ENTRY_END		2
-#define GLIBTOP_MAP_ENTRY_OFFSET	3
-#define GLIBTOP_MAP_ENTRY_PERM		4
-#define GLIBTOP_MAP_ENTRY_INODE		5
-#define GLIBTOP_MAP_ENTRY_DEVICE	6
-#define GLIBTOP_MAP_ENTRY_FILENAME	7
+#define GLIBTOP_MAP_ENTRY_START		0
+#define GLIBTOP_MAP_ENTRY_END		1
+#define GLIBTOP_MAP_ENTRY_OFFSET	2
+#define GLIBTOP_MAP_ENTRY_PERM		3
+#define GLIBTOP_MAP_ENTRY_INODE		4
+#define GLIBTOP_MAP_ENTRY_DEVICE	5
+#define GLIBTOP_MAP_ENTRY_FILENAME	6
 
-#define GLIBTOP_MAX_MAP_ENTRY		8
+#define GLIBTOP_MAX_MAP_ENTRY		7
 
 #define GLIBTOP_MAP_FILENAME_LEN	215
 
@@ -59,13 +59,13 @@ typedef struct _glibtop_proc_map	glibtop_proc_map;
 
 struct _glibtop_map_entry
 {
-	u_int64_t flags, start, end, offset, perm, inode, device;
+	guint64 flags, start, end, offset, perm, inode, device;
 	char filename [GLIBTOP_MAP_FILENAME_LEN+1];
 };
 
 struct _glibtop_proc_map
 {
-	u_int64_t	flags,
+	guint64	flags,
 		number,			/* GLIBTOP_PROC_MAP_NUMBER	*/
 		total,			/* GLIBTOP_PROC_MAP_TOTAL	*/
 		size;			/* GLIBTOP_PROC_MAP_SIZE	*/
@@ -105,6 +105,6 @@ extern const char *glibtop_descriptions_proc_map [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,3 +1,57 @@
+2004-06-06  Benoît Dejean  <tazforever@dlfp.org>
+
+	* proclist.c: (glibtop_get_proclist_s): Removed useless tests.
+	* procmap.c: (glibtop_get_proc_map_s): Replace g_malloc + memset
+	by g_malloc0
+	* procstate.c: (glibtop_get_proc_state_s): Replace strncpy by g_strlcpy.
+
+2004-05-25  Benoît Dejean  <tazforever@dlfp.org>
+
+	* loadavg.c: (glibtop_get_loadavg_s):
+	* msg_limits.c:
+	* sem_limits.c:
+	* shm_limits.c: Added missing const qualifiers.
+
+2004-03-09  Bastien Nocera  <hadess@hadess.net>
+
+	* procargs.c: (glibtop_get_proc_args_s):
+	* procmap.c: (glibtop_get_proc_map_s): fix g_malloc usage on non-Linux
+        platforms (patch by Benoît Dejean <bnet@ifrance.com>)
+
+2003-10-21  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: install only one library, libgtop-2.0
+	Fix build-time warnings due to the redefinition of guint64
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* shm_limits.c: (glibtop_get_shm_limits_p): Apply patch by
+	the_h1ghlander@yahoo.com and Cory Omand <cory.omand@Sun.com> for
+	Solaris support
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* mem.c: (glibtop_get_mem_s):
+	* swap.c: (glibtop_get_swap_s): s/u_int64_t/guint64/
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* glibtop_machine.h:
+	* glibtop_private.h:
+	* glibtop_server.h:
+	* glibtop_suid.h:
+	* procargs.c:
+	* proclist.c:
+	* procmap.c:
+	* safeio.h: fixed compilation
+
+2003-10-20  Bastien Nocera  <hadess@hadess.net>
+
+	* procargs.c: (glibtop_get_proc_args_s):
+	* proclist.c: (glibtop_get_proclist_s):
+	* procmap.c: (glibtop_get_proc_map_s):
+	replace all the xmalloc crap by glib memory management functions
+
 2001-10-17  Abel Cheung <maddog@linux.org.hk>
 
 	* Makefile.am: move header to $(includedir)/libgtop-1.0/glibtop.
@@ -130,7 +184,7 @@
 1999-05-04  Drazen Kacar  <dave@srce.hr>
 
 	* glibtop_machine.h: Changed boot time to unsigned long long.
-	
+
 	* open.c: Added proper type checking for boot value. There's
 	no point in saving a few nanoseconds in init function. And
 	one day it will become 64-bit value.

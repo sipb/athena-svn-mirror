@@ -1,4 +1,4 @@
-/* $Id: proctime.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: proctime.c,v 1.1.1.2 2004-10-03 05:00:25 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,6 +24,7 @@
 #include <glibtop.h>
 #include <glibtop/error.h>
 #include <glibtop/proctime.h>
+#include <glibtop/uptime.h>
 
 static const unsigned long _glibtop_sysdeps_proc_time =
 (1L << GLIBTOP_PROC_TIME_UTIME) + (1L << GLIBTOP_PROC_TIME_CUTIME) +
@@ -52,7 +53,7 @@ glibtop_get_proc_time_s (glibtop *server, glibtop_proc_time *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
 	int i;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_TIME, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_time));
@@ -65,16 +66,49 @@ glibtop_get_proc_time_s (glibtop *server, glibtop_proc_time *buf, pid_t pid)
 
 	p = skip_multiple_token (p, 11);
 
-	buf->utime  = strtoul (p, &p, 0);
-	buf->stime  = strtoul (p, &p, 0);
-	buf->cutime = strtoul (p, &p, 0);
-	buf->cstime = strtoul (p, &p, 0);
+	/* clock_t  (1/100 s) */
+	buf->utime  = strtoull (p, &p, 0);
+	buf->stime  = strtoull (p, &p, 0);
+	buf->cutime = strtoull (p, &p, 0);
+	buf->cstime = strtoull (p, &p, 0);
 
-	p = skip_multiple_token (p, 2);
+	p = skip_multiple_token (p, 3);
 
-	buf->timeout = strtoul (p, &p, 0);
-	buf->it_real_value = strtoul (p, &p, 0);
-	buf->start_time = strtoul (p, &p, 0);
+	/* timeout is 0 on 2.4 and "thread_number" on 2.6
+	   lets skip it (using previous skip_multiple_token)
+	   buf->timeout       = strtoull (p, &p, 0);
+	*/
+	buf->it_real_value = strtoull (p, &p, 0);
+
+	/* seconds since epoch */
+	{
+	  /* Linux provides start_time as clock_t representing
+	     the start of <pid> after boot_time.
+	     Let's use glibtop_get_uptime to get boot_time.
+	     But i'm not sure if this is safe
+
+	     See libgtop documentation.
+
+	     #ifdef __KERNEL__
+	     ...
+	     *
+	     * Have the 32 bit jiffies value wrap 5 minutes after boot
+	     * so jiffies wrap bugs show up earlier.
+	     *
+	     #define INITIAL_JIFFIES ((unsigned long)(unsigned int) (-300*HZ))
+	     ...
+	     #endif
+
+	     start_time may be incremented by INITIAL_JIFFIES, so start_time
+	     may be not be exact. You may also get wrong start_time if your
+	     system clock is not synchronised with you hardware clock.
+	     'man hwclock'
+	  */
+	  glibtop_uptime up;
+	  glibtop_get_uptime_s(server, &up);
+
+	  buf->start_time = up.boot_time + strtoull (p, &p, 0) / 100;
+	}
 
 	buf->frequency = 100;
 
@@ -87,16 +121,16 @@ glibtop_get_proc_time_s (glibtop *server, glibtop_proc_time *buf, pid_t pid)
 		return;
 
 	p = skip_token (buffer);
-	buf->utime  = strtoul (p, &p, 0);
-	buf->stime  = strtoul (p, &p, 0);
+	buf->utime  = strtoull (p, &p, 0);
+	buf->stime  = strtoull (p, &p, 0);
 
 	for (i = 0; i < GLIBTOP_NCPU; i++) {
 		if (strncmp (p+1, "cpu", 3) || !isdigit (p [4]))
 			break;
 
 		p += 6;
-		buf->xcpu_utime [i] = strtoul (p, &p, 0);
-		buf->xcpu_stime [i] = strtoul (p, &p, 0);
+		buf->xcpu_utime [i] = strtoull (p, &p, 0);
+		buf->xcpu_stime [i] = strtoull (p, &p, 0);
 	}
 
 	buf->flags |= _glibtop_sysdeps_proc_time_smp;

@@ -31,7 +31,7 @@
 
 #define GLIBTOP_INODEDB_ALL		7
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef struct _glibtop_inodedb		glibtop_inodedb;
 
@@ -39,7 +39,7 @@ typedef struct _glibtop_inodedb_key	glibtop_inodedb_key;
 
 struct _glibtop_inodedb_key
 {
-	u_int64_t device, inode;
+	guint64 device, inode;
 };
 
 struct _glibtop_inodedb
@@ -57,11 +57,11 @@ glibtop_inodedb_open_s (glibtop *server, unsigned databases, unsigned long cache
 const char *
 glibtop_inodedb_lookup_s (glibtop *server,
 			  glibtop_inodedb *inodedb,
-			  u_int64_t device, u_int64_t inode);
+			  guint64 device, guint64 inode);
 
 void
 glibtop_inodedb_close_s (glibtop *server, glibtop_inodedb *inodedb);
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

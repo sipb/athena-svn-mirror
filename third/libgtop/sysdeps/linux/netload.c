@@ -1,4 +1,4 @@
-/* $Id: netload.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: netload.c,v 1.1.1.2 2004-10-03 05:00:26 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -47,10 +47,24 @@
 #include <linux/udp.h>
 #endif
 
+
+#ifdef HAVE_IFADDRS_H
+/* needed for IPV6 support */
+
+#include <ifaddrs.h>
+
+#ifndef IN6_IS_ADDR_GLOBAL
+#define IN6_IS_ADDR_GLOBAL(a) \
+   (((((__const uint8_t *) (a))[0] & 0xff) == 0x3f   \
+     || (((__const uint8_t *) (a))[0] & 0xff) == 0x20))
+#endif
+#endif /* HAVE_IFADDRS_H */
+
+
 #define _GLIBTOP_IP_FW_ACCTIN	0x1000	/* Account incoming packets only. */
 #define _GLIBTOP_IP_FW_ACCTOUT	0x2000	/* Account outgoing packets only. */
 
-static const unsigned long _glibtop_sysdeps_netload = 
+static const unsigned long _glibtop_sysdeps_netload =
 (1L << GLIBTOP_NETLOAD_ERRORS_IN) +
 (1L << GLIBTOP_NETLOAD_ERRORS_OUT) +
 (1L << GLIBTOP_NETLOAD_COLLISIONS);
@@ -86,6 +100,11 @@ static const unsigned long _glibtop_sysdeps_netload_out =
 (1L << GLIBTOP_NETLOAD_PACKETS_OUT) +
 (1L << GLIBTOP_NETLOAD_BYTES_OUT);
 
+static const unsigned long _glibtop_sysdeps_netload_6 =
+(1L << GLIBTOP_NETLOAD_ADDRESS6) +
+(1L << GLIBTOP_NETLOAD_PREFIX6) +
+(1L << GLIBTOP_NETLOAD_SCOPE6);
+
 /* Init function. */
 
 void
@@ -112,65 +131,66 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
     skfd = socket (AF_INET, SOCK_DGRAM, 0);
     if (skfd) {
 	struct ifreq ifr;
-	unsigned flags;
 
-	strcpy (ifr.ifr_name, interface);
+	g_strlcpy (ifr.ifr_name, interface, sizeof ifr.ifr_name);
 	if (!ioctl (skfd, SIOCGIFFLAGS, &ifr)) {
+	    const unsigned long long flags = ifr.ifr_flags;
+
 	    buf->flags |= (1L << GLIBTOP_NETLOAD_IF_FLAGS);
-	    flags = ifr.ifr_flags;
-	} else
-	    flags = 0;
 
-	if (flags & IFF_UP)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_UP);
+	    if (flags & IFF_UP)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_UP);
 
-	if (flags & IFF_BROADCAST)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_BROADCAST);
+	    if (flags & IFF_BROADCAST)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_BROADCAST);
 
-	if (flags & IFF_DEBUG)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_DEBUG);
+	    if (flags & IFF_DEBUG)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_DEBUG);
 
-	if (flags & IFF_LOOPBACK)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_LOOPBACK);
+	    if (flags & IFF_LOOPBACK)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_LOOPBACK);
 
-	if (flags & IFF_POINTOPOINT)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_POINTOPOINT);
+	    if (flags & IFF_POINTOPOINT)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_POINTOPOINT);
 
-	if (flags & IFF_RUNNING)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_RUNNING);
+	    if (flags & IFF_RUNNING)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_RUNNING);
 
-	if (flags & IFF_NOARP)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_NOARP);
+	    if (flags & IFF_NOARP)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_NOARP);
 
-	if (flags & IFF_PROMISC)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_PROMISC);
+	    if (flags & IFF_PROMISC)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_PROMISC);
 
-	if (flags & IFF_ALLMULTI)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_ALLMULTI);
+	    if (flags & IFF_ALLMULTI)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_ALLMULTI);
 
-	if (flags & IFF_MULTICAST)
-	    buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_MULTICAST);
+	    if (flags & IFF_MULTICAST)
+		buf->if_flags |= (1L << GLIBTOP_IF_FLAGS_MULTICAST);
+	    }
 
-	strcpy (ifr.ifr_name, interface);
+	g_strlcpy (ifr.ifr_name, interface, sizeof ifr.ifr_name);
 	if (!ioctl (skfd, SIOCGIFADDR, &ifr)) {
-	    struct sockaddr_in addr =
-		*(struct sockaddr_in *) &ifr.ifr_addr;
-	    buf->address = addr.sin_addr.s_addr;
+	    buf->address = ((struct sockaddr_in *) &ifr.ifr_addr)->sin_addr.s_addr;
 	    buf->flags |= (1L << GLIBTOP_NETLOAD_ADDRESS);
 	}
 
-	strcpy (ifr.ifr_name, interface);
+	g_strlcpy (ifr.ifr_name, interface, sizeof ifr.ifr_name);
 	if (!ioctl (skfd, SIOCGIFNETMASK, &ifr)) {
-	    struct sockaddr_in addr =
-		*(struct sockaddr_in *) &ifr.ifr_addr;
-	    buf->subnet = addr.sin_addr.s_addr;
+	    buf->subnet = ((struct sockaddr_in *) &ifr.ifr_addr)->sin_addr.s_addr;
 	    buf->flags |= (1L << GLIBTOP_NETLOAD_SUBNET);
 	}
 
-	strcpy (ifr.ifr_name, interface);
+	g_strlcpy (ifr.ifr_name, interface, sizeof ifr.ifr_name);
 	if (!ioctl (skfd, SIOCGIFMTU, &ifr)) {
 	    buf->mtu = ifr.ifr_mtu;
 	    buf->flags |= (1L << GLIBTOP_NETLOAD_MTU);
+	}
+
+	g_strlcpy (ifr.ifr_name, interface, sizeof ifr.ifr_name);
+	if (!ioctl (skfd, SIOCGIFHWADDR, &ifr)) {
+	    memcpy(buf->hwaddress, &ifr.ifr_hwaddr.sa_data, 8);
+	    buf->flags |= (1L << GLIBTOP_NETLOAD_HWADDRESS);
 	}
 
 	close (skfd);
@@ -181,7 +201,7 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 	 * need IP accounting.
 	 */
 
-    if (server->os_version_code < 131442) {
+    if (server->os_version_code < LINUX_VERSION_CODE(2, 1, 14)) {
 
 	/* If IP accounting is enabled in the kernel and it is
 	 * enabled for the requested interface, we use it to
@@ -197,10 +217,10 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 	    fgets (buffer, BUFSIZ-1, f);
 
 	    while (fgets (buffer, BUFSIZ-1, f)) {
-		unsigned long flags, packets, bytes;
+		unsigned long long flags, packets, bytes;
 		char *p, *dev;
 
-		/* Skip over the network thing. */		
+		/* Skip over the network thing. */
 		dev = skip_token (buffer) + 1;
 		p = skip_token (dev);
 		*p++ = 0;
@@ -212,12 +232,12 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 
 		p = skip_token (p);
 
-		flags   = strtoul (p, &p, 16);
+		flags   = strtoull (p, &p, 16);
 
 		p = skip_multiple_token (p, 2);
 
-		packets = strtoul (p, &p, 0);
-		bytes   = strtoul (p, &p, 0);
+		packets = strtoull (p, &p, 0);
+		bytes   = strtoull (p, &p, 0);
 
 		if (flags & _GLIBTOP_IP_FW_ACCTIN) {
 		    /* Incoming packets only. */
@@ -281,7 +301,7 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 
     /* Count remaining 'Receive' fields so we know where
 	 * the first 'Transmit' field starts. */
-	
+
     fields = 0;
     while (*p != '|') {
 	if (!isspace (*p++)) continue;
@@ -314,27 +334,29 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 	if (strcmp (dev, interface))
 	    continue;
 
+	/* Ok, we've found the interface */
+
 	/* Only read byte counts if we really have them. */
 
 	if (have_bytes) {
-	    buf->bytes_in = strtoul (p, &p, 0);
+	    buf->bytes_in = strtoull (p, &p, 0);
 	    fields--;
 	}
 
-	buf->packets_in = strtoul (p, &p, 0);
-	buf->errors_in  = strtoul (p, &p, 0);
+	buf->packets_in = strtoull (p, &p, 0);
+	buf->errors_in  = strtoull (p, &p, 0);
 
 	p = skip_multiple_token (p, fields);
 
 	if (have_bytes)
-	    buf->bytes_out = strtoul (p, &p, 0);
+	    buf->bytes_out = strtoull (p, &p, 0);
 
-	buf->packets_out = strtoul (p, &p, 0);
-	buf->errors_out  = strtoul (p, &p, 0);
+	buf->packets_out = strtoull (p, &p, 0);
+	buf->errors_out  = strtoull (p, &p, 0);
 
 	p = skip_multiple_token (p, 2);
 
-	buf->collisions  = strtoul (p, &p, 0);
+	buf->collisions  = strtoull (p, &p, 0);
 
 	/* Compute total valules. */
 
@@ -348,7 +370,60 @@ glibtop_get_netload_s (glibtop *server, glibtop_netload *buf,
 
 	if (have_bytes)
 	    buf->flags |= _glibtop_sysdeps_netload_bytes;
+
+	break; /* finished */
     }
 
     fclose (f);
+
+
+#ifdef HAVE_IFADDRS_H
+    /* IPv6 */
+    {
+	    struct ifaddrs *ifa0, *ifr6;
+	    getifaddrs (&ifa0);
+
+	    for (ifr6 = ifa0; ifr6; ifr6 = ifr6->ifa_next) {
+		    if (strcmp (ifr6->ifa_name, interface) == 0
+			&& ifr6->ifa_addr->sa_family == AF_INET6)
+			    break;
+	    }
+
+	    if(!ifr6) goto free_ipv6;
+
+	    memcpy(buf->address6,
+		   &((struct sockaddr_in6 *) ifr6->ifa_addr)->sin6_addr,
+		   16);
+
+	    memcpy(buf->prefix6,
+		   &((struct sockaddr_in6 *) ifr6->ifa_netmask)->sin6_addr,
+		   16);
+
+
+	    if (IN6_IS_ADDR_LINKLOCAL (buf->address6))
+		    buf->scope6 = GLIBTOP_IF_IN6_SCOPE_LINK;
+
+	    else if (IN6_IS_ADDR_SITELOCAL (buf->address6))
+		    buf->scope6 = GLIBTOP_IF_IN6_SCOPE_SITE;
+
+	    else if (IN6_IS_ADDR_GLOBAL (buf->address6)
+		     || IN6_IS_ADDR_MC_ORGLOCAL (buf->address6)
+		     || IN6_IS_ADDR_V4COMPAT (buf->address6)
+		     || IN6_IS_ADDR_MULTICAST (buf->address6)
+		     || IN6_IS_ADDR_UNSPECIFIED (buf->address6)
+		    )
+		    buf->scope6 = GLIBTOP_IF_IN6_SCOPE_GLOBAL;
+
+	    else if (IN6_IS_ADDR_LOOPBACK (buf->address6))
+		    buf->scope6 = GLIBTOP_IF_IN6_SCOPE_HOST;
+
+	    else
+		    buf->scope6 = GLIBTOP_IF_IN6_SCOPE_UNKNOWN;
+
+	    buf->flags |= _glibtop_sysdeps_netload_6;
+
+    free_ipv6:
+	    freeifaddrs(ifa0);
+    } /* IPV6 */
+#endif /* HAVE_IFADDRS_H */
 }

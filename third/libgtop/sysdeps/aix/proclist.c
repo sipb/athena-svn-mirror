@@ -1,4 +1,4 @@
-/* $Id: proclist.c,v 1.1.1.1 2003-01-27 03:24:17 ghudson Exp $ */
+/* $Id: proclist.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,10 +24,9 @@
 #include <procinfo.h>
 
 #include <glibtop.h>
-#include <glibtop/xmalloc.h>
 #include <glibtop/proclist.h>
 
-static const unsigned long _glibtop_sysdeps_proclist = 
+static const unsigned long _glibtop_sysdeps_proclist =
 (1 << GLIBTOP_PROCLIST_NUMBER) + (1 << GLIBTOP_PROCLIST_TOTAL) +
 (1 << GLIBTOP_PROCLIST_SIZE);
 
@@ -51,7 +50,7 @@ glibtop_init_proclist_s (glibtop *server)
 
 unsigned *
 glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg)
+			gint64 which, gint64 arg)
 {
 	struct procsinfo pinfo;
 	int count, total;
@@ -117,7 +116,7 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 				{
 					continue;
 				}
-				
+
 				break;
 
 			case GLIBTOP_KERN_PROC_PGRP:
@@ -185,18 +184,18 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 
 				break;
 		}
-	
+
 		if (count >= BLOCK_COUNT)
 		{
-			/* The following call to glibtop_realloc will be
-			 * equivalent to glibtop_malloc () if `pids_chain' is
+			/* The following call to g_realloc will be
+			 * equivalent to g_malloc () if `pids_chain' is
 			 * NULL. We just calculate the new size and copy `pids'
 			 * to the beginning of the newly allocated block. */
 
 			new_size = pids_size + BLOCK_SIZE;
 
-			pids_chain = glibtop_realloc_r
-					(server, pids_chain, new_size);
+			pids_chain = g_realloc
+					(pids_chain, new_size);
 			memcpy (pids_chain + pids_offset, pids, BLOCK_SIZE);
 
 			pids_size = new_size;
@@ -221,14 +220,14 @@ glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
 
 	if (!count) return NULL;
 
-	/* The following call to glibtop_realloc will be equivalent to
-	 * glibtop_malloc if pids_chain is NULL. We just calculate the
+	/* The following call to g_realloc will be equivalent to
+	 * g_malloc if pids_chain is NULL. We just calculate the
 	 * new size and copy pids to the beginning of the newly allocated
 	 * block. */
 
 	new_size = pids_size + count * sizeof (unsigned);
 
-	pids_chain = glibtop_realloc_r (server, pids_chain, new_size);
+	pids_chain = g_realloc (pids_chain, new_size);
 
 	memcpy (pids_chain + pids_offset, pids, count * sizeof (unsigned));
 

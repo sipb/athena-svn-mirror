@@ -1,4 +1,4 @@
-/* $Id: netload.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: netload.h,v 1.1.1.2 2004-10-03 05:00:16 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_NETLOAD_IF_FLAGS	0
 #define GLIBTOP_NETLOAD_MTU		1
@@ -43,8 +43,12 @@ BEGIN_LIBGTOP_DECLS
 #define GLIBTOP_NETLOAD_ERRORS_OUT	11
 #define GLIBTOP_NETLOAD_ERRORS_TOTAL	12
 #define GLIBTOP_NETLOAD_COLLISIONS	13
+#define GLIBTOP_NETLOAD_ADDRESS6	14
+#define GLIBTOP_NETLOAD_PREFIX6		15
+#define GLIBTOP_NETLOAD_SCOPE6		16
+#define GLIBTOP_NETLOAD_HWADDRESS	17
 
-#define GLIBTOP_MAX_NETLOAD		14
+#define GLIBTOP_MAX_NETLOAD		18
 
 typedef struct _glibtop_netload	glibtop_netload;
 
@@ -67,14 +71,25 @@ enum {
 	GLIBTOP_IF_FLAGS_MULTICAST
 };
 
+enum GLIBTOP_IF_IN6_SCOPE
+{
+	GLIBTOP_IF_IN6_SCOPE_UNKNOWN = 0,
+	GLIBTOP_IF_IN6_SCOPE_LINK    = 1,
+	GLIBTOP_IF_IN6_SCOPE_SITE    = 2,
+	GLIBTOP_IF_IN6_SCOPE_GLOBAL  = 4,
+	GLIBTOP_IF_IN6_SCOPE_HOST    = 8
+};
+
 struct _glibtop_netload
 {
-	u_int64_t	flags,
-		if_flags,		/* GLIBTOP_NETLOAD_IF_FLAGS	*/
-		mtu,			/* GLIBTOP_NETLOAD_MTU		*/
+	guint64	flags,
+		if_flags;		/* GLIBTOP_NETLOAD_IF_FLAGS	*/
+
+	guint32	mtu,			/* GLIBTOP_NETLOAD_MTU		*/
 		subnet,			/* GLIBTOP_NETLOAD_SUBNET	*/
-		address,		/* GLIBTOP_NETLOAD_ADDRESS	*/
-		packets_in,		/* GLIBTOP_NETLOAD_PACKETS_IN	*/
+		address;		/* GLIBTOP_NETLOAD_ADDRESS	*/
+
+	guint64	packets_in,		/* GLIBTOP_NETLOAD_PACKETS_IN	*/
 		packets_out,		/* GLIBTOP_NETLOAD_PACKETS_OUT	*/
 		packets_total,		/* GLIBTOP_NETLOAD_PACKETS_TOTAL*/
 		bytes_in,		/* GLIBTOP_NETLOAD_BYTES_IN	*/
@@ -84,6 +99,12 @@ struct _glibtop_netload
 		errors_out,		/* GLIBTOP_NETLOAD_ERRORS_OUT	*/
 		errors_total,		/* GLIBTOP_NETLOAD_ERRORS_TOTAL	*/
 		collisions;		/* GLIBTOP_NETLOAD_COLLISIONS	*/
+
+	guint8 address6[16];		/* GLIBTOP_NETLOAD_ADDRESS6     */
+	guint8 prefix6[16];		/* GLIBTOP_NETLOAD_PREXIF6      */
+	guint8 scope6;			/* GLIBTOP_NETLOAD_SCOPE6       */
+
+	guint8 hwaddress[8];		/* GLIBTOP_NETLOAD_HWADDRESS    */
 };
 
 #define glibtop_get_netload(netload,interface)	glibtop_get_netload_l(glibtop_global_server, netload, interface)
@@ -115,6 +136,6 @@ extern const char *glibtop_descriptions_netload [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,4 +1,4 @@
-/* $Id: ppp.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: ppp.c,v 1.1.1.2 2004-10-03 05:00:38 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -39,7 +39,7 @@
 #include <net/netisr.h>
 #include <net/route.h>
 
-#if defined(__FreeBSD__) || defined(__NetBSD__)
+#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #include <net/if_sppp.h>
 #else
 #include <i4b/sppp/if_sppp.h>
@@ -100,7 +100,7 @@ glibtop_get_ppp_p (glibtop *server, glibtop_ppp *buf, unsigned short device)
 	int phase;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_PPP), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_ppp));
 
 	if (kvm_read (server->machine.kd, nlst [0].n_value,

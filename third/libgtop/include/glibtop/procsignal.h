@@ -1,4 +1,4 @@
-/* $Id: procsignal.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: procsignal.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PROC_SIGNAL_SIGNAL	0
 #define GLIBTOP_PROC_SIGNAL_BLOCKED	1
@@ -42,7 +42,7 @@ typedef struct _glibtop_proc_signal	glibtop_proc_signal;
 
 struct _glibtop_proc_signal
 {
-	u_int64_t	flags,
+	guint64	flags,
 		signal [2],		/* mask of pending signals */
 		blocked [2],		/* mask of blocked signals */
 		sigignore [2],		/* mask of ignored signals */
@@ -78,6 +78,6 @@ extern const char *glibtop_descriptions_proc_signal [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

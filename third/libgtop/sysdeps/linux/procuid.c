@@ -1,4 +1,4 @@
-/* $Id: procuid.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: procuid.c,v 1.1.1.2 2004-10-03 05:00:15 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -35,7 +35,6 @@ static const unsigned long _glibtop_sysdeps_proc_uid_stat =
 (1L << GLIBTOP_PROC_UID_TTY) + (1L << GLIBTOP_PROC_UID_TPGID) +
 (1L << GLIBTOP_PROC_UID_PRIORITY) + (1L << GLIBTOP_PROC_UID_NICE);
 
-#define LINUX_VERSION(x,y,z)	(0x10000*(x) + 0x100*(y) + z)
 
 /* Init function. */
 
@@ -52,7 +51,7 @@ void
 glibtop_get_proc_uid_s (glibtop *server, glibtop_proc_uid *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_UID, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_uid));
@@ -66,10 +65,10 @@ glibtop_get_proc_uid_s (glibtop *server, glibtop_proc_uid *buf, pid_t pid)
 	if (!p) return;
 
 	p = skip_token (p); /* "Pid:" */
-	buf->pid = strtoul (p, &p, 0);
+	buf->pid = strtol (p, &p, 0);
 
 	p = skip_token (p); /* "PPid:" */
-	buf->ppid = strtoul (p, &p, 0);
+	buf->ppid = strtol (p, &p, 0);
 
 	/* Maybe future Linux versions place something between
 	 * "PPid" and "Uid", so we catch this here. */
@@ -77,8 +76,8 @@ glibtop_get_proc_uid_s (glibtop *server, glibtop_proc_uid *buf, pid_t pid)
 	if (!p) return;
 
 	p = skip_token (p); /* "Uid:" */
-	buf->uid = strtoul (p, &p, 0);
-	buf->euid = strtoul (p, &p, 0);
+	buf->uid  = strtol (p, &p, 0);
+	buf->euid = strtol (p, &p, 0);
 
 	/* We don't know how many entries on the "Uid:" line
 	 * future Linux version will have, so we catch this here. */
@@ -86,8 +85,8 @@ glibtop_get_proc_uid_s (glibtop *server, glibtop_proc_uid *buf, pid_t pid)
 	if (!p) return;
 
 	p = skip_token (p); /* "Gid:" */
-	buf->gid = strtoul (p, &p, 0);
-	buf->egid = strtoul (p, &p, 0);
+	buf->gid  = strtol (p, &p, 0);
+	buf->egid = strtol (p, &p, 0);
 
 	buf->flags = _glibtop_sysdeps_proc_uid;
 
@@ -99,28 +98,28 @@ glibtop_get_proc_uid_s (glibtop *server, glibtop_proc_uid *buf, pid_t pid)
 
 	p = skip_multiple_token (p, 2);
 
-	buf->pgrp = strtoul (p, &p, 0);
-	buf->session = strtoul (p, &p, 0);
-	buf->tty = strtoul (p, &p, 0);
-	buf->tpgid = strtoul (p, &p, 0);
+	buf->pgrp    = strtol (p, &p, 0);
+	buf->session = strtol (p, &p, 0);
+	buf->tty     = strtol (p, &p, 0);
+	buf->tpgid   = strtol (p, &p, 0);
 
 	p = skip_multiple_token (p, 9);
-	
-	buf->priority = strtoul (p, &p, 0);
-	buf->nice = strtoul (p, &p, 0);
+
+	buf->priority = strtol (p, &p, 0);
+	buf->nice     = strtol (p, &p, 0);
 
 	if (buf->tty == 0)
 		/* the old notty val, update elsewhere bef. moving to 0 */
 		buf->tty = -1;
 
-	if (server->os_version_code < LINUX_VERSION(1,3,39)) {
+	if (server->os_version_code < LINUX_VERSION_CODE(1,3,39)) {
 		/* map old meanings to new */
 		buf->priority = 2*15 - buf->priority;
 		buf->nice = 15 - buf->nice;
 	}
-	if (server->os_version_code < LINUX_VERSION(1,1,30) && buf->tty != -1)
+	else if (server->os_version_code < LINUX_VERSION_CODE(1,1,30) && buf->tty != -1)
 		/* when tty wasn't full devno */
 		buf->tty = 4*0x100 + buf->tty;
-	
+
 	buf->flags |= _glibtop_sysdeps_proc_uid_stat;
 }

@@ -1,4 +1,4 @@
-/* $Id: glibtop_server.h,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: glibtop_server.h,v 1.1.1.2 2004-10-03 04:59:12 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,7 +24,7 @@
 #ifndef __GLIBTOP_SERVER_H__
 #define __GLIBTOP_SERVER_H__
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_SUID_CPU		(1 << GLIBTOP_SYSDEPS_CPU)
 #define GLIBTOP_SUID_MEM		(1 << GLIBTOP_SYSDEPS_MEM)
@@ -47,6 +47,6 @@ BEGIN_LIBGTOP_DECLS
 #define GLIBTOP_SUID_NETLOAD		(1 << GLIBTOP_SYSDEPS_NETLOAD)
 #define GLIBTOP_SUID_PPP		(1 << GLIBTOP_SYSDEPS_PPP)
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

@@ -1,4 +1,4 @@
-/* $Id: swap.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: swap.c,v 1.1.1.2 2004-10-03 05:00:03 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,11 +27,11 @@
 
 #include <fcntl.h>
 
-static unsigned long _glibtop_sysdeps_swap =
+static const unsigned long _glibtop_sysdeps_swap =
 (1L << GLIBTOP_SWAP_TOTAL) + (1L << GLIBTOP_SWAP_USED) +
 (1L << GLIBTOP_SWAP_FREE);
 
-static unsigned long _glibtop_sysdeps_swap_paging =
+static const unsigned long _glibtop_sysdeps_swap_paging =
 (1L << GLIBTOP_SWAP_PAGEIN) + (1L << GLIBTOP_SWAP_PAGEOUT);
 
 /* Init function. */
@@ -52,53 +52,30 @@ void
 glibtop_get_swap_s (glibtop *server, glibtop_swap *buf)
 {
 	char buffer [BUFSIZ], *p;
-	int fd, len;
 
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_SWAP, 0);
 
 	memset (buf, 0, sizeof (glibtop_swap));
 
-	fd = open (MEMINFO, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", MEMINFO);
+	file_to_buffer(server, buffer, MEMINFO);
 
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", MEMINFO);
+	/* Kernel 2.6 with multiple lines */
 
-	close (fd);
-
-	buffer [len] = '\0';
-
-	p = skip_line (buffer);
-	p = skip_line (p);
-	p = skip_token (p);		/* "Swap:" */
-
-	buf->total  = strtoul (p, &p, 0);
-	buf->used   = strtoul (p, &p, 0);
-	buf->free   = strtoul (p, &p, 0);
+	buf->total = get_scaled(buffer, "SwapTotal:");
+	buf->free = get_scaled(buffer, "SwapFree:");
+	buf->used = buf->total - buf->free;
 
 	buf->flags = _glibtop_sysdeps_swap;
 
-	fd = open (PROC_STAT, O_RDONLY);
-	if (fd < 0)
-		glibtop_error_io_r (server, "open (%s)", PROC_STAT);
-
-	len = read (fd, buffer, BUFSIZ-1);
-	if (len < 0)
-		glibtop_error_io_r (server, "read (%s)", PROC_STAT);
-
-	close (fd);
-
-	buffer [len] = '\0';
+	file_to_buffer(server, buffer, PROC_STAT);
 
 	p = strstr (buffer, "\nswap");
 	if (p == NULL) return;
 
 	p = skip_token (p);
 
-	buf->pagein  = strtoul (p, &p, 0);
-	buf->pageout = strtoul (p, &p, 0);
+	buf->pagein  = strtoull (p, &p, 0);
+	buf->pageout = strtoull (p, &p, 0);
 
 	buf->flags |= _glibtop_sysdeps_swap_paging;
 }

@@ -1,4 +1,4 @@
-/* $Id: glibtop_machine.h,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: glibtop_machine.h,v 1.1.1.2 2004-10-03 04:59:17 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -24,7 +24,7 @@
 #ifndef __GLIBTOP_MACHINE_H__
 #define __GLIBTOP_MACHINE_H__
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef struct _glibtop_machine		glibtop_machine;
 
@@ -34,6 +34,6 @@ struct _glibtop_machine
 	gid_t gid, egid;		/* Real and effective group id */
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

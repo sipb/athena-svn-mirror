@@ -69,27 +69,29 @@ AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+LIB = @LIB@
 LIBGTOP_BINARY_AGE = @LIBGTOP_BINARY_AGE@
 LIBGTOP_BINDIR = @LIBGTOP_BINDIR@
 LIBGTOP_EXTRA_LIBS = @LIBGTOP_EXTRA_LIBS@
-LIBGTOP_GUILE_INCS = @LIBGTOP_GUILE_INCS@
-LIBGTOP_GUILE_LIBS = @LIBGTOP_GUILE_LIBS@
-LIBGTOP_GUILE_NAMES_INCS = @LIBGTOP_GUILE_NAMES_INCS@
-LIBGTOP_GUILE_NAMES_LIBS = @LIBGTOP_GUILE_NAMES_LIBS@
 LIBGTOP_INCS = @LIBGTOP_INCS@
 LIBGTOP_INTERFACE_AGE = @LIBGTOP_INTERFACE_AGE@
 LIBGTOP_LIBS = @LIBGTOP_LIBS@
@@ -103,11 +105,9 @@ LIBGTOP_SERVER_VERSION = @LIBGTOP_SERVER_VERSION@
 LIBGTOP_VERSION = @LIBGTOP_VERSION@
 LIBGTOP_VERSION_CODE = @LIBGTOP_VERSION_CODE@
 LIBGTOP_VERSION_SUFFIX = @LIBGTOP_VERSION_SUFFIX@
-LIBOBJS = @LIBOBJS@
-LIBSUPPORT = @LIBSUPPORT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIBOBJS = @LTLIBOBJS@
+LTLIB = @LTLIB@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -122,14 +122,13 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
-SUPPORTINCS = @SUPPORTINCS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-guile_examples = @guile_examples@
-guile_subdirs = @guile_subdirs@
-libgtop_guile_found = @libgtop_guile_found@
 libgtop_have_sysinfo = @libgtop_have_sysinfo@
 libgtop_need_server = @libgtop_need_server@
 libgtop_postinstall = @libgtop_postinstall@
@@ -151,88 +150,51 @@ INCLUDES = @INCLUDES@
 
 DEFS = @DEFS@
 
-# We install it in `libexec' since this will make it more easy
-# to put the examples into an extra RPM package.
-
-libgtopdir = $(libexecdir)/libgtop
-
-libgtop_PROGRAMS = first second\
-			  mountlist procmap netload sysdeps timings \
-			  @static_targets@ @guile_examples@ @smp_examples@
+noinst_PROGRAMS = first second 			  mountlist procmap netload sysdeps timings 			  @static_targets@ @smp_examples@
 
 
-EXTRA_PROGRAMS = first_static second_static \
-			  mountlist_static procmap_static \
-			  third third_static smp smp_static \
-			  netload_static sysdeps_static \
-			  timings_static
+EXTRA_PROGRAMS = first_static second_static 			  mountlist_static procmap_static 			  third third_static smp smp_static 			  netload_static sysdeps_static 			  timings_static
 
 
 first_SOURCES = first.c
-first_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+first_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 first_static_SOURCES = $(first_SOURCES)
 first_static_LDADD = $(first_LDADD)
 first_static_LDFLAGS = -static
 
 second_SOURCES = second.c
-second_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+second_LDADD = $(top_builddir)/lib/libgtop-2.0.la -lm
 
 second_static_SOURCES = $(second_SOURCES)
 second_static_LDADD = $(second_LDADD)
 second_static_LDFLAGS = -static
 
 procmap_SOURCES = procmap.c
-procmap_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+procmap_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 procmap_static_SOURCES = $(procmap_SOURCES)
 procmap_static_LDADD = $(procmap_LDADD)
 procmap_static_LDFLAGS = -static
 
 netload_SOURCES = netload.c
-netload_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+netload_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 netload_static_SOURCES = $(netload_SOURCES)
 netload_static_LDADD = $(netload_LDADD)
 netload_static_LDFLAGS = -static
 
 sysdeps_SOURCES = sysdeps.c
-sysdeps_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+sysdeps_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 sysdeps_static_SOURCES = $(sysdeps_SOURCES)
 sysdeps_static_LDADD = $(sysdeps_LDADD)
 sysdeps_static_LDFLAGS = -static
 
-third_guile_names_LIBS = $(top_builddir)/sysdeps/guile/names/libgtop_guile_names-2.0.la
 third_names_LIBS = $(top_builddir)/sysdeps/names/libgtop_names-2.0.la
 
 third_SOURCES = third.c
-third_LDADD = $(top_builddir)/sysdeps/guile/libgtop_guile-2.0.la \
-			  $(third_guile_names_LIBS) $(third_names_LIBS) \
-			  $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @GUILE_LIBS@ @LIBSUPPORT@ @INTLLIBS@
+third_LDADD = $(third_names_LIBS) 			  $(top_builddir)/lib/libgtop-2.0.la 			  @INTLLIBS@
 
 
 third_static_SOURCES = $(third_SOURCES)
@@ -240,33 +202,21 @@ third_static_LDADD = $(third_LDADD)
 third_static_LDFLAGS = -static
 
 mountlist_SOURCES = mountlist.c
-mountlist_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+mountlist_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 mountlist_static_SOURCES = $(mountlist_SOURCES)
 mountlist_static_LDADD = $(mountlist_LDADD)
 mountlist_static_LDFLAGS = -static
 
 smp_SOURCES = smp.c
-smp_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+smp_LDADD = $(top_builddir)/lib/libgtop-2.0.la -lm
 
 smp_static_SOURCES = $(smp_SOURCES)
 smp_static_LDADD = $(smp_LDADD)
 smp_static_LDFLAGS = -static
 
 timings_SOURCES = timings.c
-timings_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
-			  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-			  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
-			  @LIBSUPPORT@ @INTLLIBS@
-
+timings_LDADD = $(top_builddir)/lib/libgtop-2.0.la
 
 timings_static_SOURCES = $(timings_SOURCES)
 timings_static_LDADD = $(timings_LDADD)
@@ -274,10 +224,10 @@ timings_static_LDFLAGS = -static
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-libgtop_PROGRAMS =  first$(EXEEXT) second$(EXEEXT) mountlist$(EXEEXT) \
+noinst_PROGRAMS =  first$(EXEEXT) second$(EXEEXT) mountlist$(EXEEXT) \
 procmap$(EXEEXT) netload$(EXEEXT) sysdeps$(EXEEXT) timings$(EXEEXT) \
-@static_targets@ @guile_examples@ @smp_examples@
-PROGRAMS =  $(libgtop_PROGRAMS)
+@static_targets@ @smp_examples@
+PROGRAMS =  $(noinst_PROGRAMS)
 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
@@ -287,92 +237,52 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 first_static_OBJECTS =  first.$(OBJEXT)
-first_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+first_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 second_static_OBJECTS =  second.$(OBJEXT)
-second_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+second_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 mountlist_static_OBJECTS =  mountlist.$(OBJEXT)
-mountlist_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+mountlist_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 procmap_static_OBJECTS =  procmap.$(OBJEXT)
-procmap_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+procmap_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 third_OBJECTS =  third.$(OBJEXT)
-third_DEPENDENCIES =  $(top_builddir)/sysdeps/guile/libgtop_guile-2.0.la \
-$(top_builddir)/sysdeps/guile/names/libgtop_guile_names-2.0.la \
-$(top_builddir)/sysdeps/names/libgtop_names-2.0.la \
-$(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+third_DEPENDENCIES =  $(top_builddir)/sysdeps/names/libgtop_names-2.0.la \
+$(top_builddir)/lib/libgtop-2.0.la
 third_LDFLAGS = 
 third_static_OBJECTS =  third.$(OBJEXT)
 third_static_DEPENDENCIES =  \
-$(top_builddir)/sysdeps/guile/libgtop_guile-2.0.la \
-$(top_builddir)/sysdeps/guile/names/libgtop_guile_names-2.0.la \
 $(top_builddir)/sysdeps/names/libgtop_names-2.0.la \
-$(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+$(top_builddir)/lib/libgtop-2.0.la
 smp_OBJECTS =  smp.$(OBJEXT)
-smp_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+smp_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 smp_LDFLAGS = 
 smp_static_OBJECTS =  smp.$(OBJEXT)
-smp_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+smp_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 netload_static_OBJECTS =  netload.$(OBJEXT)
-netload_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+netload_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 sysdeps_static_OBJECTS =  sysdeps.$(OBJEXT)
-sysdeps_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+sysdeps_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 timings_static_OBJECTS =  timings.$(OBJEXT)
-timings_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+timings_static_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 first_OBJECTS =  first.$(OBJEXT)
-first_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+first_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 first_LDFLAGS = 
 second_OBJECTS =  second.$(OBJEXT)
-second_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+second_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 second_LDFLAGS = 
 mountlist_OBJECTS =  mountlist.$(OBJEXT)
-mountlist_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+mountlist_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 mountlist_LDFLAGS = 
 procmap_OBJECTS =  procmap.$(OBJEXT)
-procmap_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+procmap_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 procmap_LDFLAGS = 
 netload_OBJECTS =  netload.$(OBJEXT)
-netload_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+netload_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 netload_LDFLAGS = 
 sysdeps_OBJECTS =  sysdeps.$(OBJEXT)
-sysdeps_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+sysdeps_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 sysdeps_LDFLAGS = 
 timings_OBJECTS =  timings.$(OBJEXT)
-timings_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la \
-$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
-$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+timings_DEPENDENCIES =  $(top_builddir)/lib/libgtop-2.0.la
 timings_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -383,7 +293,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(first_static_SOURCES) $(second_static_SOURCES) $(mountlist_static_SOURCES) $(procmap_static_SOURCES) $(third_SOURCES) $(third_static_SOURCES) $(smp_SOURCES) $(smp_static_SOURCES) $(netload_static_SOURCES) $(sysdeps_static_SOURCES) $(timings_static_SOURCES) $(first_SOURCES) $(second_SOURCES) $(mountlist_SOURCES) $(procmap_SOURCES) $(netload_SOURCES) $(sysdeps_SOURCES) $(timings_SOURCES)
 OBJECTS = $(first_static_OBJECTS) $(second_static_OBJECTS) $(mountlist_static_OBJECTS) $(procmap_static_OBJECTS) $(third_OBJECTS) $(third_static_OBJECTS) $(smp_OBJECTS) $(smp_static_OBJECTS) $(netload_static_OBJECTS) $(sysdeps_static_OBJECTS) $(timings_static_OBJECTS) $(first_OBJECTS) $(second_OBJECTS) $(mountlist_OBJECTS) $(procmap_OBJECTS) $(netload_OBJECTS) $(sysdeps_OBJECTS) $(timings_OBJECTS)
@@ -399,30 +309,14 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libgtopPROGRAMS:
+mostlyclean-noinstPROGRAMS:
 
-clean-libgtopPROGRAMS:
-	-test -z "$(libgtop_PROGRAMS)" || rm -f $(libgtop_PROGRAMS)
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
-distclean-libgtopPROGRAMS:
+distclean-noinstPROGRAMS:
 
-maintainer-clean-libgtopPROGRAMS:
-
-install-libgtopPROGRAMS: $(libgtop_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libgtopdir)
-	@list='$(libgtop_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libgtopdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libgtopdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-libgtopPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(libgtop_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libgtopdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
+maintainer-clean-noinstPROGRAMS:
 
 .c.o:
 	$(COMPILE) -c $<
@@ -558,7 +452,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -596,20 +490,19 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-libgtopPROGRAMS
+install-data-am:
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libgtopPROGRAMS
+uninstall-am:
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libgtopdir)
 
 
 mostlyclean-generic:
@@ -621,25 +514,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libgtopPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libgtopPROGRAMS clean-compile clean-libtool clean-tags \
+clean-am:  clean-noinstPROGRAMS clean-compile clean-libtool clean-tags \
 		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libgtopPROGRAMS distclean-compile \
+distclean-am:  distclean-noinstPROGRAMS distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libgtopPROGRAMS \
+maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -648,18 +541,17 @@ maintainer-clean-am:  maintainer-clean-libgtopPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libgtopPROGRAMS distclean-libgtopPROGRAMS \
-clean-libgtopPROGRAMS maintainer-clean-libgtopPROGRAMS \
-uninstall-libgtopPROGRAMS install-libgtopPROGRAMS mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

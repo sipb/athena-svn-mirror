@@ -1,4 +1,4 @@
-/* $Id: proclist.c,v 1.1.1.1 2003-01-02 04:56:13 ghudson Exp $ */
+/* $Id: proclist.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -45,7 +45,7 @@ glibtop_init_proclist_s (glibtop *server)
 
 unsigned *
 glibtop_get_proclist_s (glibtop *server, glibtop_proclist *buf,
-			int64_t which, int64_t arg)
+			gint64 which, gint64 arg)
 {
 	memset (buf, 0, sizeof (glibtop_proclist));
 	return NULL;

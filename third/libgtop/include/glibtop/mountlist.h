@@ -1,4 +1,4 @@
-/* $Id: mountlist.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: mountlist.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_MOUNTLIST_NUMBER	0
 #define GLIBTOP_MOUNTLIST_TOTAL		1
@@ -41,7 +41,7 @@ typedef struct _glibtop_mountlist	glibtop_mountlist;
 
 struct _glibtop_mountentry
 {
-	u_int64_t dev;
+	guint64 dev;
 	char devname [GLIBTOP_MOUNTENTRY_LEN+1];
 	char mountdir [GLIBTOP_MOUNTENTRY_LEN+1];
 	char type [GLIBTOP_MOUNTENTRY_LEN+1];
@@ -49,7 +49,7 @@ struct _glibtop_mountentry
 
 struct _glibtop_mountlist
 {
-	u_int64_t	flags,
+	guint64	flags,
 		number,			/* GLIBTOP_MOUNTLIST_NUMBER	*/
 		total,			/* GLIBTOP_MOUNTLIST_TOTAL	*/
 		size;			/* GLIBTOP_MOUNTLIST_SIZE	*/
@@ -76,6 +76,6 @@ extern const char *glibtop_descriptions_mountlist [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

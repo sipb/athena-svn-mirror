@@ -1,4 +1,4 @@
-/* $Id: third.c,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: third.c,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -22,19 +22,20 @@
 */
 
 #include <locale.h>
+#include <libintl.h>
+#include <stdio.h>
 
 #include <glibtop.h>
-     
+
 #include <glibtop/open.h>
 #include <glibtop/close.h>
-#include <glibtop/xmalloc.h>
 
 #include <glibtop/union.h>
 #include <glibtop/sysdeps.h>
 
 void main_prog(int argc, char *argv[]);
 
-int     
+int
 main (int argc, char *argv[])
 {
 	setlocale (LC_ALL, "");

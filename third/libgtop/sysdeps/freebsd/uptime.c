@@ -1,4 +1,4 @@
-/* $Id: uptime.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: uptime.c,v 1.1.1.2 2004-10-03 05:00:38 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -49,10 +49,29 @@ glibtop_init_uptime_p (glibtop *server)
 void
 glibtop_get_uptime_p (glibtop *server, glibtop_uptime *buf)
 {
+#if defined(__NetBSD__) || defined(__OpenBSD__)
+	time_t now;
+	time_t uptime;
+	int mib[2];
+	struct timeval boottime;
+	size_t size;
+
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_BOOTTIME;
+	size = sizeof(boottime);
+	if (sysctl(mib, 2, &boottime, &size, NULL, 0) != -1 &&
+	    boottime.tv_sec != 0) {
+		time(&now);
+		buf->uptime = now - boottime.tv_sec;
+		/* XXX: don't know a useful value to put here. */
+		buf->idletime = 0;
+		buf->flags = _glibtop_sysdeps_uptime;
+	}
+#else
 	glibtop_cpu cpu;
 
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_UPTIME), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_uptime));
 
 	/* We simply calculate it from the CPU usage. */
@@ -70,4 +89,5 @@ glibtop_get_uptime_p (glibtop *server, glibtop_uptime *buf)
 	buf->idletime = (double) cpu.idle / (double) cpu.frequency;
 
 	buf->flags = _glibtop_sysdeps_uptime;
+#endif
 }

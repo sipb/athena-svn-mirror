@@ -1,4 +1,4 @@
-/* $Id: prockernel.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: prockernel.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -45,7 +45,7 @@ void
 glibtop_get_proc_kernel_s (glibtop *server, glibtop_proc_kernel *buf, pid_t pid)
 {
 	char buffer [BUFSIZ], *p;
-	
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_PROC_KERNEL, 0);
 
 	memset (buf, 0, sizeof (glibtop_proc_kernel));
@@ -58,20 +58,20 @@ glibtop_get_proc_kernel_s (glibtop *server, glibtop_proc_kernel *buf, pid_t pid)
 
 	p = skip_multiple_token (p, 6);
 
-	buf->k_flags   = strtoul (p, &p, 0);
-	buf->min_flt   = strtoul (p, &p, 0);
-	buf->cmin_flt  = strtoul (p, &p, 0);
-	buf->maj_flt   = strtoul (p, &p, 0);
-	buf->cmaj_flt  = strtoul (p, &p, 0);
+	buf->k_flags   = strtoull (p, &p, 0);
+	buf->min_flt   = strtoull (p, &p, 0);
+	buf->cmin_flt  = strtoull (p, &p, 0);
+	buf->maj_flt   = strtoull (p, &p, 0);
+	buf->cmaj_flt  = strtoull (p, &p, 0);
 
 	p = skip_multiple_token (p, 15);
 
-	buf->kstk_esp = strtoul (p, &p, 0);
-	buf->kstk_eip = strtoul (p, &p, 0);
-	
+	buf->kstk_esp = strtoull (p, &p, 0);
+	buf->kstk_eip = strtoull (p, &p, 0);
+
 	p = skip_multiple_token (p, 4);
-	
-	buf->nwchan = strtoul (p, &p, 0);
+
+	buf->nwchan = strtoull (p, &p, 0);
 
 	buf->flags = _glibtop_sysdeps_proc_kernel;
 }

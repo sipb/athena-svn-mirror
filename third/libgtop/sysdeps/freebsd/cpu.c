@@ -1,4 +1,4 @@
-/* $Id: cpu.c,v 1.1.1.1 2003-01-02 04:56:08 ghudson Exp $ */
+/* $Id: cpu.c,v 1.1.1.2 2004-10-03 05:00:19 ghudson Exp $ */
 
 /* Copyright (C) 1998 Joshua Sled
    This file is part of LibGTop 1.0.
@@ -27,11 +27,16 @@
 
 #include <glibtop_suid.h>
 
+#ifdef __NetBSD__
+#include <sys/sched.h>
+#endif
+
 static const unsigned long _glibtop_sysdeps_cpu =
 (1L << GLIBTOP_CPU_TOTAL) + (1L << GLIBTOP_CPU_USER) +
 (1L << GLIBTOP_CPU_NICE) + (1L << GLIBTOP_CPU_SYS) +
 (1L << GLIBTOP_CPU_IDLE) + (1L << GLIBTOP_CPU_FREQUENCY);
 
+#ifndef KERN_CP_TIME
 /* nlist structure for kernel access */
 static struct nlist nlst [] = {
 #ifdef __bsdi__
@@ -41,20 +46,26 @@ static struct nlist nlst [] = {
 #endif
 	{ 0 }
 };
+#endif
 
 /* MIB array for sysctl */
 static int mib_length=2;
 static int mib [] = { CTL_KERN, KERN_CLOCKRATE };
+#ifdef KERN_CP_TIME
+static int mib2 [] = { CTL_KERN, KERN_CP_TIME };
+#endif
 
 /* Init function. */
 
 void
 glibtop_init_cpu_p (glibtop *server)
 {
+#ifndef KERN_CP_TIME
 	if (kvm_nlist (server->machine.kd, nlst) < 0) {
 		glibtop_warn_io_r (server, "kvm_nlist (cpu)");
 		return;
 	}
+#endif
 
 	/* Set this only if kvm_nlist () succeeded. */
 	server->sysdeps.cpu = _glibtop_sysdeps_cpu;
@@ -65,25 +76,37 @@ glibtop_init_cpu_p (glibtop *server)
 void
 glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 {
+#ifdef KERN_CP_TIME
+	guint64 cpts [CPUSTATES];
+#else
 	long cpts [CPUSTATES];
+#endif
 	/* sysctl vars*/
 	struct clockinfo ci;
 	size_t length;
-	
+
 	glibtop_init_p (server, (1L << GLIBTOP_SYSDEPS_CPU), 0);
-	
+
 	memset (buf, 0, sizeof (glibtop_cpu));
 
 	/* If this fails, the nlist may not be valid. */
 	if (server->sysdeps.cpu == 0)
 		return;
 
+#ifdef KERN_CP_TIME
+	length = sizeof (cpts);
+	if (sysctl (mib2, mib_length, cpts, &length, NULL, 0)) {
+		glibtop_warn_io_r (server, "sysctl");
+		return;
+	}
+#else
 	if (kvm_read (server->machine.kd, nlst [0].n_value,
 		      &cpts, sizeof (cpts)) != sizeof (cpts)) {
 		glibtop_warn_io_r (server, "kvm_read (cp_time)");
 		return;
 	}
-	
+#endif
+
 	/* Get the clockrate data */
 	length = sizeof (struct clockinfo);
 	if (sysctl (mib, mib_length, &ci, &length, NULL, 0)) {
@@ -99,12 +122,12 @@ glibtop_get_cpu_p (glibtop *server, glibtop_cpu *buf)
 	buf->sys = cpts [CP_SYS];
 	/* set idle time */
 	buf->idle = cpts [CP_IDLE];
-	
+
 	/* set frequency */
-	/* 
+	/*
 	   FIXME --  is hz, tick, profhz or stathz wanted?
-	   buf->frequency = sysctl("kern.clockrate", ...); 
-	   
+	   buf->frequency = sysctl("kern.clockrate", ...);
+
 	   struct clockinfo
 	*/
 	buf->frequency = ci.hz;

@@ -1,4 +1,4 @@
-/* $Id: union.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: union.h,v 1.1.1.2 2004-10-03 04:59:08 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -50,7 +50,7 @@
 #include <glibtop/netload.h>
 #include <glibtop/ppp.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 typedef union _glibtop_union	glibtop_union;
 
@@ -80,6 +80,6 @@ union _glibtop_union
 	glibtop_ppp		ppp;
 };
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

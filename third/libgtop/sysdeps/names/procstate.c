@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:11 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 04:59:34 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -23,21 +23,25 @@
 
 #include <glibtop.h>
 #include <glibtop/procstate.h>
+#include "libgtop-i18n.h"
 
 const char *glibtop_names_proc_state [GLIBTOP_MAX_PROC_STATE] =
 {
-	"cmd", "state", "uid", "gid"
+	"cmd", "state", "uid", "gid", "ruid", "rgid",
+    "has_cpu", "processor", "last_processor"
 };
 
 const unsigned glibtop_types_proc_state [GLIBTOP_MAX_PROC_STATE] =
 {
-	GLIBTOP_TYPE_STRING, GLIBTOP_TYPE_CHAR,
-	GLIBTOP_TYPE_INT, GLIBTOP_TYPE_INT
+	GLIBTOP_TYPE_STRING, GLIBTOP_TYPE_CHAR, GLIBTOP_TYPE_INT,
+    GLIBTOP_TYPE_INT,    GLIBTOP_TYPE_INT,  GLIBTOP_TYPE_INT,
+    GLIBTOP_TYPE_INT,    GLIBTOP_TYPE_INT,  GLIBTOP_TYPE_INT
 };
 
 const char *glibtop_labels_proc_state [GLIBTOP_MAX_PROC_STATE] =
 {
-	N_("Cmd"), N_("State"), N_("UID"), N_("GID")
+	N_("Cmd"), N_("State"), N_("UID"), N_("GID"),
+    N_("RGid"), N_("RUid"), N_("HasCPU"), N_("Proc"), N_("LProc")
 };
 
 const char *glibtop_descriptions_proc_state [GLIBTOP_MAX_PROC_STATE] =
@@ -45,5 +49,10 @@ const char *glibtop_descriptions_proc_state [GLIBTOP_MAX_PROC_STATE] =
 	N_("Basename of executable file in call to exec()"),
 	N_("Single-Char code for process state (S=sleeping)"),
 	N_("UID of process"),
-	N_("GID of process")
+	N_("GID of process"),
+	N_("Real UID of process"),
+	N_("Real GID of process"),
+	N_("Has CPU"),
+	N_("Processor"),
+	N_("Last Processor"),
 };

@@ -1,4 +1,4 @@
-/* $Id: ppp.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: ppp.h,v 1.1.1.2 2004-10-03 04:59:48 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,10 +27,10 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_PPP_STATE	0
-#define GLIBTOP_PPP_BYTES_IN	1	
+#define GLIBTOP_PPP_BYTES_IN	1
 #define GLIBTOP_PPP_BYTES_OUT	2
 
 #define GLIBTOP_MAX_PPP		3
@@ -45,7 +45,7 @@ enum {
 
 struct _glibtop_ppp
 {
-	u_int64_t	flags,
+	guint64	flags,
 		state,			/* GLIBTOP_PPP_STATE		*/
 		bytes_in,		/* GLIBTOP_PPP_BYTES_IN		*/
 		bytes_out;		/* GLIBTOP_PPP_BYTES_OUT	*/
@@ -80,6 +80,6 @@ extern const char *glibtop_descriptions_ppp [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif

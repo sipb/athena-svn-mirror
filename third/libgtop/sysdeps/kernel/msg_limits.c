@@ -1,4 +1,4 @@
-/* $Id: msg_limits.c,v 1.1.1.1 2003-01-02 04:56:09 ghudson Exp $ */
+/* $Id: msg_limits.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -46,15 +46,15 @@ void
 glibtop_get_msg_limits_s (glibtop *server, glibtop_msg_limits *buf)
 {
 	struct msginfo	msginfo;
-  
+
 	glibtop_init_s (&server, GLIBTOP_SYSDEPS_MSG_LIMITS, 0);
 
 	memset (buf, 0, sizeof (glibtop_msg_limits));
-  
+
 	buf->flags = _glibtop_sysdeps_msg_limits;
-  
+
 	msgctl (0, IPC_INFO, (struct msqid_ds *) &msginfo);
-  
+
 	buf->msgpool = msginfo.msgpool;
 	buf->msgmap = msginfo.msgmap;
 	buf->msgmax = msginfo.msgmax;

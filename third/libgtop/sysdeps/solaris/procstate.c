@@ -1,4 +1,4 @@
-/* $Id: procstate.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: procstate.c,v 1.1.1.2 2004-10-03 04:59:49 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -73,7 +73,7 @@ glibtop_get_proc_state_s (glibtop *server, glibtop_proc_state *buf, pid_t pid)
         switch(psinfo.pr_state)
 #endif
 	{
-		case SONPROC: 
+		case SONPROC:
 #if (LIBGTOP_VERSION_CODE >= 1001002) && defined(HAVE_PROCFS_H)
 			buf->has_cpu = 1;
 			buf->processor = psinfo.pr_lwp.pr_onpro;
@@ -116,7 +116,7 @@ glibtop_get_proc_state_s (glibtop *server, glibtop_proc_state *buf, pid_t pid)
 #if (LIBGTOP_VERSION_CODE >= 1001002) && defined(HAVE_PROCFS_H)
 	buf->last_processor = psinfo.pr_lwp.pr_onpro;
 #endif
-	strncpy (buf->cmd, psinfo.pr_fname, 39);
+	g_strlcpy (buf->cmd, psinfo.pr_fname, sizeof buf->cmd);
 
 	buf->flags = _glibtop_sysdeps_proc_state;
 }

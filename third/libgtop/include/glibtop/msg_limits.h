@@ -1,4 +1,4 @@
-/* $Id: msg_limits.h,v 1.1.1.1 2003-01-02 04:56:05 ghudson Exp $ */
+/* $Id: msg_limits.h,v 1.1.1.2 2004-10-03 04:59:19 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -27,7 +27,7 @@
 #include <glibtop.h>
 #include <glibtop/global.h>
 
-BEGIN_LIBGTOP_DECLS
+G_BEGIN_DECLS
 
 #define GLIBTOP_IPC_MSGPOOL	0
 #define GLIBTOP_IPC_MSGMAP	1
@@ -43,7 +43,7 @@ typedef struct _glibtop_msg_limits	glibtop_msg_limits;
 
 struct _glibtop_msg_limits
 {
-	u_int64_t	flags,
+	guint64	flags,
 		msgpool,	/* GLIBTOP_IPC_MSGPOOL	*/
 		msgmap,		/* GLIBTOP_IPC_MSGMAP	*/
 		msgmax,		/* GLIBTOP_IPC_MSGMAX	*/
@@ -82,7 +82,7 @@ extern const char *glibtop_descriptions_msg_limits [];
 
 #endif
 
-END_LIBGTOP_DECLS
+G_END_DECLS
 
 #endif
 

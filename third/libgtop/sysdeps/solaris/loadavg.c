@@ -1,4 +1,4 @@
-/* $Id: loadavg.c,v 1.1.1.1 2003-01-02 04:56:12 ghudson Exp $ */
+/* $Id: loadavg.c,v 1.1.1.2 2004-10-03 04:59:44 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -52,7 +52,7 @@ glibtop_get_loadavg_s (glibtop *server, glibtop_loadavg *buf)
 	kstat_ctl_t *kc;
 	kstat_t *ksp;
 	int i;
-	static char *avestrings[] = { "avenrun_1min",
+	static const char *avestrings[] = { "avenrun_1min",
 	   			      "avenrun_5min",
 				      "avenrun_15min" };
 #endif
