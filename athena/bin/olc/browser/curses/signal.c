@@ -20,15 +20,17 @@
 /* This file is part of the CREF finder.  It contains the signal handling
  * functions.
  *
- *	$Source:
- *	$Author:
- *      $Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
+ *	$Author: lwvanels $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.4 1991-02-25 10:06:33 lwvanels Exp $
  */
 
 
 #ifndef lint
 static char *rcsid_cref_c = "$Header: ";
 #endif	lint
+
+#include <mit-copyright.h>
 
 #include <signal.h>
 #include <curses.h>

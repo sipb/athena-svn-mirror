@@ -24,14 +24,16 @@
  * contains several local state variables that are only accessible by
  * the functions in this file.
  *
- *	$Source:
- *	$Author:
- *	$Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
+ *	$Author: lwvanels $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.8 1991-02-25 10:07:44 lwvanels Exp $
  */
 
 #ifndef lint
 static char *rcsid_update_c = "$Header: ";
 #endif	lint
+
+#include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */

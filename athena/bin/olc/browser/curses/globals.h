@@ -20,10 +20,12 @@
 /* This file is part of the CREF finder.  It contains global variable
  * definitions.
  *
- *	$Source:
- *	$Author:
- *	$Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v $
+ *	$Author: lwvanels $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v 2.2 1991-02-25 10:05:36 lwvanels Exp $
  */
+
+#include <mit-copyright.h>
 
 /* System Variables. */
 
