@@ -87,8 +87,8 @@ Distribution sites for software under third
 
 	afsbin		See below.
 	bind		ftp.isc.org:isc/bind/src
-	emacs		prep.ai.mit.edu:pub/gnu
-	gcc		prep.ai.mit.edu:pub/gnu
+	emacs		ftp.gnu.org:pub/gnu
+	gcc		ftp.gnu.org:pub/gnu
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
@@ -96,15 +96,16 @@ Distribution sites for software under third
 	krb5		athena-dist.mit.edu:pub/kerberos
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
+	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
 	mh		ftp.ics.uci.edu:pub/mh
 	nmh		ftp.math.gatech.edu:pub/nmh
-	patch		prep.ai.mit.edu:pub/gnu
-	perl		prep.ai.mit.edu:pub/gnu
-	rcs		prep.ai.mit.edu:pub/gnu
+	patch		ftp.gnu.org:pub/gnu
+	perl		ftp.gnu.org:pub/gnu
+	rcs		ftp.gnu.org:pub/gnu
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	ssh		ftp.cs.hut.fi:pub/ssh
-	sysinfo		usc.edu:pub/sysinfo
+	sysinfo		http://www.magnicomp.com/
 	talk		From NetBSD (ftp.netbsd.org)
 			usr.bin/talk goes in the talk subdirectory
 			libexec/talkd goes in the talkd subdirectory
@@ -123,6 +124,7 @@ Distribution sites for software under third
 	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
 	x3270		ftp.x.org:contrib/applications
 	xmh		From X11R5
+	xscreensaver	http://www.jwz.org/xscreensaver/
 
 AFS Binaries
 ------------
@@ -143,6 +145,14 @@ binary files so that they won't get trashed by RCS ID mangling.
 For the sgi_53 and sun4m_54 platforms, we did not do an import of the
 "include" and "lib" directories, so you should just update the files
 with normal checkins.
+
+LPRng
+-----
+
+We import three packages: the LPRng sources themselves
+(LPRng/LPRng-x.tgz) into third/lprng/lprng, the LPRng documentation
+(LPRng/LPRng_DOC-x.tgz) into third/lprng/doc, and the ifhp filter
+(FILTERS/ifhp-x.tgz) nito third/lprng/ifhp.
 
 TeX
 ---
