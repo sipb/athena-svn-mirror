@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.3 1989-12-13 15:23:02 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.4 1990-04-16 11:45:57 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.3 1989-12-13 15:23:02 probe Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.4 1990-04-16 11:45:57 epeisach Exp $";
 #endif lint
 
 /*
@@ -40,6 +40,8 @@ static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
  *		return the current state of the queue (long form).
  *	\5printer person [users ...] [jobs ...]\n
  *		remove jobs from the queue.
+ *      kprinter\nkerberos credentials
+ *              Uses kerberos authentication
  *
  * Strategy to maintain protected spooling area:
  *	1. Spooling area is writable only by daemon and spooling group
@@ -56,20 +58,47 @@ static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
 
 #include "lp.h"
 
+#ifdef ZEPHYR
+#include <zephyr/zephyr.h>
+#endif
+
 int	lflag;				/* log requests flag */
 
 int	reapchild();
 int	mcleanup();
 
+#ifdef KERBEROS
+KTEXT_ST kticket;
+AUTH_DAT kdata;
+int kauth;
+int sin_len;
+struct sockaddr_in faddr;
+char krbname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
+char kprincipal[ANAME_SZ];
+char kinstance[INST_SZ];
+char krealm[REALM_SZ];
+char local_realm[REALM_SZ];
+char kversion[9];
+int kflag;                     /* Is the current job authentc */
+int kerror;		       /* They tried sending auth, but it failed */
+int kerberos_override = -1;    /* Does command option override KA in printcap? */
+int kerberos_cf = 0;           /* Are we using a kerberized cf file? */
+int use_kerberos;
+#endif KERBEROS
+
 main(argc, argv)
 	int argc;
 	char **argv;
 {
-	int f, funix, finet, options, defreadfds, fromlen;
+	int f, funix, finet, options=0, defreadfds, fromlen;
 	struct sockaddr_un sun, fromunix;
 	struct sockaddr_in sin, frominet;
 	struct hostent *hp;
 	int omask, lfd;
+
+#ifdef ZEPHYR
+        ZInitialize();
+#endif ZEPHYR
 
 	gethostname(host, sizeof(host));
 	if(hp = gethostbyname(host)) strcpy(host, hp -> h_name);
@@ -86,6 +115,14 @@ main(argc, argv)
 			case 'l':
 				lflag++;
 				break;
+#ifdef KERBEROS
+			case 'u':
+				kerberos_override = 0;
+				break;
+			case 'k':
+				kerberos_override = 1;
+				break;
+#endif KERBEROS
 			}
 	}
 
@@ -259,11 +296,52 @@ char	*cmdnames[] = {
 	"rmjob"
 };
 
+
+#ifdef KERBEROS
+require_kerberos(printer)
+char *printer;
+{
+	int status;
+	short KA;
+	int use_kerberos;
+	
+#ifdef HESIOD
+	if ((status = pgetent(line, printer)) <= 0) {
+		if (pralias(alibuf, printer))
+			printer = alibuf;
+		if ((status = hpgetent(line, printer)) < 1)
+			fatal("unknown printer");
+	}
+#else
+	if ((status = pgetent(line, printer)) < 0) {
+		fatal("can't open printer description file");
+	} else if (status == 0)
+		fatal("unknown printer");
+#endif HESIOD			
+	KA = pgetnum("ka");
+	if (KA > 0)
+		use_kerberos = 1;
+	else
+		use_kerberos = 0;
+	if (kerberos_override > -1)
+		use_kerberos = kerberos_override;
+	
+	return(use_kerberos);
+}
+#endif KERBEROS
+
+
 doit()
 {
 	register char *cp;
 	register int n;
-
+	
+#ifdef KERBEROS
+	kflag = 0;
+	kerberos_cf = 0;
+	kerror = 0;
+#endif KERBEROS
+	
 	for (;;) {
 		cp = cbuf;
 		do {
@@ -281,6 +359,11 @@ doit()
 			if (*cp >= '\1' && *cp <= '\5')
 				syslog(LOG_INFO, "%s requests %s %s",
 					from, cmdnames[*cp], cp+1);
+#ifdef KERBEROS
+			else if (*cp == 'k')
+				syslog(LOG_INFO, "%s sent kerberos credentials",
+				       from);
+#endif KERBEROS
 			else
 				syslog(LOG_INFO, "bad request (%d) from %s",
 					*cp, from);
@@ -292,6 +375,18 @@ doit()
 			break;
 		case '\2':	/* receive files to be queued */
 			printer = cp;
+#ifdef KERBEROS
+			if (require_kerberos(printer)) {
+			    if (kflag)
+				kerberos_cf = 1;
+			    else {
+				/* Return an error and abort */
+				syslog(LOG_DEBUG,"%s: Cannot receive job before authentication",printer);
+				putchar('\2');
+				exit(1);
+			    }
+			}
+#endif KERBEROS
 			recvjob();
 			break;
 		case '\3':	/* display the queue (short form) */
@@ -347,10 +442,78 @@ doit()
 					user[users++] = cp;
 				}
 			}
+#ifdef KERBEROS
+			if (require_kerberos(printer)) {
+			    if (kflag) {
+				kerberos_cf = 1;
+				make_kname(kprincipal, kinstance,
+					   krealm, krbname);
+				person = krbname;
+			    }
+			    else
+				/* This message gets sent to the user */
+				    {
+					printf("Kerberos authentication required to remove job.\n");
+					exit(1);
+				    }
+			}
+#endif KERBEROS
 			rmjob();
 			break;
+#ifdef KERBEROS
+		case 'k':	/* Parse kerberos credentials */
+			printer = cp;
+			kprincipal[0] = krealm[0] = '\0';
+			bzero(&kticket, sizeof(KTEXT_ST));
+			bzero(&kdata,   sizeof(AUTH_DAT));
+			sin_len = sizeof (struct sockaddr_in);
+			if (getpeername(1, &faddr, &sin_len) < 0) {
+				/* return error and exit */
+				fatal("Could not get peername");
+			}
+			/* Tell remote side that kerberos is accepted here! */
+			putchar('\0');
+			fflush(stdout);
+			strcpy(kinstance, "*");
+			kauth = krb_recvauth(0L, 1, &kticket, KLPR_SERVICE,
+					     kinstance, 
+					     &faddr,
+					     (struct sockaddr_in *)NULL,
+					     &kdata, "", NULL,
+					     kversion);
+			if (kauth != KSUCCESS) {
+				/* return error and exit */
+			        /* We cannot call fatal - not really
+				   in protocol yet. We will set error
+				   for return later. */
+			    putchar('\3');
+			    syslog(LOG_DEBUG,"%s: Sending back auth failed", printer);
+			    exit(1);
+			    break;
+			}
+			strncpy(kprincipal, kdata.pname,  ANAME_SZ);
+			strncpy(kinstance,  kdata.pinst,  INST_SZ);
+			krb_get_lrealm(local_realm, 1);
+			if (strncmp(kdata.prealm, local_realm, REALM_SZ))
+			    strncpy(krealm, kdata.prealm, REALM_SZ);
+#ifdef DEBUG
+			if (krealm[0] == '\0')
+				syslog(LOG_DEBUG,"Authentication for %s.%s",
+				       kprincipal, kinstance);
+			else
+				syslog(LOG_DEBUG,"Authentication for %s.%s@%s",
+				       kprincipal, kinstance, krealm);
+#endif DEBUG
+		        /* Ackknowledge accepted */
+			kflag = 1;
+			putchar('\0');
+			fflush(stdout);
+			break;
+#endif KERBEROS
+		default:
+			fatal("Illegal service request");
+			break;
 		}
-		fatal("Illegal service request");
 	}
 }
 
