@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.3 1996-10-13 20:33:53 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 1996-10-13 20:36:56 ghudson Exp $
 
 SHELL=/bin/sh
 
 configure: force
-	cd src && rm -f config.cache
+	rm -f src/config.cache
 	cd src && ./configure
 
 force:
