@@ -1,0 +1,19 @@
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.root,v 1.1 1990-04-05 18:06:13 probe Exp $
+
+; Root servers
+.                       99999999        IN      NS      NIC.DDN.MIL.
+                        99999999        IN      NS      NS.NASA.GOV.
+                        99999999        IN      NS      TERP.UMD.EDU.
+                        99999999        IN      NS      A.ISI.EDU.
+                        99999999        IN      NS      AOS.BRL.MIL.
+                        99999999        IN      NS      GUNTER-ADAM.AF.MIL.
+                        99999999        IN      NS      C.NYSER.NET.
+NIC.DDN.MIL.            99999999        IN      A       10.0.0.51
+NIC.DDN.MIL.            99999999        IN      A       26.0.0.73
+NS.NASA.GOV.            99999999        IN      A       128.102.16.10
+A.ISI.EDU.              99999999        IN      A       26.3.0.103
+AOS.BRL.MIL.            99999999        IN      A       128.20.1.2
+AOS.BRL.MIL.            99999999        IN      A       192.5.25.82
+GUNTER-ADAM.AF.MIL.     99999999        IN      A       26.1.0.13
+C.NYSER.NET.            99999999        IN      A       192.33.4.12
+TERP.UMD.EDU.           99999999        IN      A       128.8.10.90
