@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.17 1997-05-04 05:02:30 ghudson Exp $
+# $Id: do-update.sh,v 1.18 1997-05-13 20:01:15 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -29,6 +29,14 @@ SERVERDIR=/var/server
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 CPUTYPE=`/bin/athena/machtype -c`
+
+# Get the platform name for Solaris.  "uname -i" is the documented way, but
+# it doesn't work in Solaris 2.4 and prior, and "uname -m" works for now.
+case "$HOSTTYPE" in
+sun4)
+	platform=`uname -m`
+	;;
+esac
 
 # We get one argument, the method by which the machine was rebooted.
 # Possible values are Auto, Manual, and Remote.
@@ -201,6 +209,10 @@ if [ "$TRACKOS" = true ]; then
 		# with the same timestamp, so we must use -c.
 		track -c -v -F /os -T / -d -W /srvd/usr/athena/lib \
 			-s stats/os_rvd slists/os_rvd
+
+		# Bring this architecture's /platform directory local.
+		rm -rf "/platform/$platform"
+		cp -rp "/os/platform/$platform" "/platform/$platform"
 		;;
 	esac
 fi
@@ -244,16 +256,6 @@ if [ "$NEWBOOT" = true ]; then
 
 	case "$HOSTTYPE" in
 	sun4)
-		case "$VERSION" in
-		7*|8.0*)
-			# uname -i doesn't work with kernels prior to Solaris
-			# 2.5.1.  `uname -m` works for now.
-			platform=`uname -m`
-			;;
-		*)
-			platform=`uname -i`
-			;;
-		esac
 		/usr/sbin/installboot \
 			"/usr/platform/$platform/lib/fs/ufs/bootblk" \
 			/dev/rdsk/c0t3d0s0
