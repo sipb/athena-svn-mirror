@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v $
- * $Author: probe $
+ * $Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.2 1990-07-12 15:15:51 probe Exp $";
+static char rcsid_get_message_from_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message_from_server.c,v 1.3 1991-02-28 11:03:30 epeisach Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -113,15 +113,16 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
   }
 
   message_data = malloc(GMS_MAX_MESSAGE_LEN);
-  stat = recv(sck, message_data, GMS_MAX_MESSAGE_LEN, 0);
+  stat = recv(sck, message_data, GMS_MAX_MESSAGE_LEN-1, 0);
 
   close(sck); /* regardless of any errors... */
 
   if(stat == -1) {
-    free(*message_data);
+    free(message_data);
     return(errno);
   }
 
+  message_data[stat] ='\0';
   *ret_message_size = stat;
   *ret_message = message_data;
   return(0);
