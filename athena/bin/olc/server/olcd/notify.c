@@ -21,17 +21,14 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.6 1989-12-18 10:21:51 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.7 1990-01-03 23:42:56 raeburn Exp $";
 #endif
 
-
-#include <olc/olc.h>
-#include <olcd.h>
 
 #ifdef ZEPHYR
 #include <com_err.h>
 #include <zephyr/zephyr.h>      /* Zephyr defs. */
-#endif ZEPHYR
+#endif
 
 #include <sys/types.h>
 #include <sys/socket.h>	        /* IPC socket defs. */
@@ -43,7 +40,10 @@ static char rcsid[] =
 #include <signal.h>             /* System signal definitions. */
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
+#include <sys/uio.h>		/* for perror() */
 
+#include <olc/olc.h>
+#include <olcd.h>
 
 /* External Variables. */
 
@@ -51,6 +51,13 @@ extern char DaemonHost[];	/* Name of daemon's machine. */
 
 int notice_timeout();
 static jmp_buf env;
+
+#ifdef ZEPHYR
+static ERRCODE zwrite_message (const char *, const char *);
+static ERRCODE zsend_message (const char *, const char *, const char *,
+			      const char *, const char *, int);
+static ERRCODE zsend (ZNotice_t *);
+#endif
 
 /*
  * Function:	write_message() uses the program "write" to send a message
@@ -134,7 +141,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
         }
 
 
-	if (connect(fds, &sin, sizeof (sin)) < 0) {
+	if (connect(fds, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
 	  alarm(0);
 	  (void) close(fds);
 	  return(MACHINE_DOWN);
@@ -288,10 +295,10 @@ ERRCODE olc_broadcast_message(instance,message, code)
  */
 
 
-ERRCODE 
+static ERRCODE 
 zwrite_message(username, message)
-     char *username;
-     char *message;
+    const char *username;
+    const char *message;
 {
    char error[ERRSIZE];
 
@@ -317,10 +324,10 @@ zwrite_message(username, message)
 }
 
 
-ERRCODE 
+static ERRCODE 
 zsend_message(class,instance,opcode,username,message, flags)
-     char *class,*instance,*opcode,*username,*message;
-     int flags;
+    const char *class,*instance,*opcode,*username,*message;
+    int flags;
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value, length */
@@ -378,7 +385,7 @@ zsend_message(class,instance,opcode,username,message, flags)
  * Returns:	SUCCESS on success, else ERROR
  */
 
-ERRCODE 
+static ERRCODE 
 zsend(notice)
      ZNotice_t *notice;
 {
@@ -448,13 +455,12 @@ zsend(notice)
  *
  */
 
-#include <sys/uio.h>
 extern int sys_nerr;
 extern char *sys_errlist[];
 extern int errno;
 static char time_buf[20];
 
-perror(msg)
+void perror(msg)
 	char *msg;
 {
 	register int error_number;

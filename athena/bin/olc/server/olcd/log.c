@@ -16,31 +16,35 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.8 1989-12-22 16:25:57 vanharen Exp $";
+static const char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.9 1990-01-03 23:41:58 raeburn Exp $";
 #endif
 
-
-#include <olc/olc.h>
-#include <olcd.h>
 
 #include <sys/time.h>		/* System time definitions. */
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
-#include <strings.h>		/* Defs. for string functions. */
+#include <string.h>		/* Defs. for string functions. */
 #include <syslog.h>             /* syslog do hickies */
 
 #include <varargs.h>
+
+#include <olc/olc.h>
+#include <olcd.h>
 
 static FILE *status_log = (FILE *)NULL;
 static FILE *error_log = (FILE *)NULL;
 static FILE *admin_log = (FILE *) NULL;
 
- /*
+static ERRCODE terminate_log_crash (KNUCKLE *);
+static ERRCODE dispose_of_log (KNUCKLE *, int);
+
+/*
  * Function:	write_line_to_log() writes a single line of text into a
  *			log file.
  * Arguments:	log:	A FILE pointer to the log file.
@@ -143,7 +147,7 @@ char * fmt (va_alist) va_dcl {
     
 
 
-log_daemon(knuckle,message)
+void log_daemon(knuckle,message)
      KNUCKLE *knuckle;
      char *message;
 {
@@ -156,7 +160,7 @@ log_daemon(knuckle,message)
 }
 
 
-log_message(owner,sender,message)
+void log_message(owner,sender,message)
      KNUCKLE *owner,*sender;
      char *message;
 {
@@ -171,7 +175,7 @@ log_message(owner,sender,message)
 }
 
 
-log_mail(owner,sender,message)
+void log_mail(owner,sender,message)
      KNUCKLE *owner,*sender;
      char *message;
 {
@@ -186,7 +190,7 @@ log_mail(owner,sender,message)
 }
 
 
-log_comment(owner,sender,message)
+void log_comment(owner,sender,message)
      KNUCKLE *owner, *sender;
      char *message;
 {
@@ -202,7 +206,7 @@ log_comment(owner,sender,message)
 }
 
 
-log_description(owner,sender,message)
+void log_description(owner,sender,message)
      KNUCKLE *owner, *sender;
      char *message;
 {
@@ -231,8 +235,8 @@ log_description(owner,sender,message)
  *	Finally, close the file and return.
  */
 
-log_error(message)
-     char *message;
+void log_error(message)
+    const char *message;
 {
   char time_buf[32];
   char *time_string = &time_buf[0];
@@ -302,8 +306,8 @@ log_error(message)
  *	and return.
  */
 
-log_status(message)
-     char *message;
+void log_status(message)
+    const char *message;
 {
   char time_buf[32];
 
@@ -357,7 +361,7 @@ log_status(message)
 
 
 
-
+void
 log_admin(message)
      char *message;
 {
@@ -374,7 +378,7 @@ log_admin(message)
   fprintf(status_log, "%s ", time_buf);
   write_line_to_log(admin_log, message);
   return;
-#endif TEST
+#endif
 
 #ifdef SYSLOG
 
@@ -384,7 +388,7 @@ log_admin(message)
 
   syslog(LOG_INFO,message);
   return;
-#endif SYSLOG
+#endif
 
 #ifndef TEST
 
@@ -408,7 +412,7 @@ log_admin(message)
   (void) fflush(admin_log);
 
   return;
-#endif not TEST
+#endif
 }
 
 /*
@@ -574,7 +578,7 @@ terminate_log_unanswered(knuckle)
  *	the log and dispose of it.
  */
 
-ERRCODE
+static ERRCODE
 terminate_log_crash(knuckle)
      KNUCKLE *knuckle;
 {
@@ -617,7 +621,7 @@ terminate_log_crash(knuckle)
  *	it, free the memory space, and return.
  */
 
-ERRCODE
+static ERRCODE
 dispose_of_log(knuckle, answered)
      KNUCKLE *knuckle;
      int answered;
