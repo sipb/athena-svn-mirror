@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.3 1990-01-17 03:23:51 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.4 1990-01-17 05:23:20 vanharen Exp $";
 #endif
 
 #include <sys/types.h>             /* System type declarations. */
@@ -212,7 +212,7 @@ read_text_into_file(fd, filename)
   int nbytes;		/* Number of bytes to read. */
   char inbuf[BUFSIZ];	/* Ptr. to input buffer. */
   int filedes;		/* Output file descriptor. */
-  char error[ERRSIZE];	/* Error message. */
+  char error[ERROR_SIZE];	/* Error message. */
   
 #ifdef	TEST
   printf("read_text_into_file(%d, %s)\n", fd, filename);
