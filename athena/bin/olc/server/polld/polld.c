@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.4 1991-01-27 16:58:48 lwvanels Exp $
+ *	$Id: polld.c,v 1.5 1991-03-26 11:58:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.4 1991-01-27 16:58:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.5 1991-03-26 11:58:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -116,8 +116,8 @@ main(argc, argv)
     }
   }
   
-  if (dhost == NULL) {
 #ifdef HESIOD
+  if (dhost == NULL) {
     char **hp;
     if ((hp = hes_resolve(DaemonInst,"sloc")) == NULL) {	
       syslog(LOG_ERR,"Unable to find %s service location in hesiod",
@@ -126,8 +126,8 @@ main(argc, argv)
     }
     else
       dhost = *hp;
-#endif /* HESIOD */
   }
+#endif /* HESIOD */
 
   if (dhost == NULL) {
     fprintf (stderr, "Can't find OLC server host!\n");
