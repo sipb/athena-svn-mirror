@@ -207,7 +207,7 @@ main(argc, argv)
    * value.
    */
   tmp = getenv("ATHENA_SYS");
-  if (tmp != NULL)
+  if (tmp != NULL && strchr(tmp, '/') == NULL)
     athsys = tmp;
 
   if (argv[1][0] != '-')
