@@ -228,6 +228,8 @@ main(argc, argv)
 				auth_level = AUTH_USER;
 			} else if (strcasecmp(optarg, "valid") == 0) {
 				auth_level = AUTH_VALID;
+			} else if (strcasecmp(optarg, "cred") == 0) {
+				auth_level = AUTH_CRED;
 			} else if (strcasecmp(optarg, "off") == 0) {
 				/*
 				 * This hack turns off authentication
