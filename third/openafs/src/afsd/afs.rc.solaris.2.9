@@ -34,6 +34,32 @@ case $1 in
 'start')
 
 #
+# Athena additions
+#
+. /etc/athena/rc.conf
+if [ "$AFSCLIENT" = false ]; then
+        exit 0
+fi
+AFSCLIENTNUM=4
+if [ "$AFSCLIENT" != true ]; then
+        AFSCLIENTNUM="$AFSCLIENT"
+else
+        AFSCLIENTNUM=4
+fi
+OPTIONS="-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70 -afsdb"
+if [ \( "$AFSADJUST" = true -o $PUBLIC = true \) -a -d /usr/vice/cache/ ]; then
+        echo "Adjusting the cache size" > /dev/console
+        rm -f /usr/vice/etc/cacheinfo.old
+        mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
+        df -bk /usr/vice/cache/ | awk '
+                (NR == 2) {
+                        printf("/afs:/usr/vice/cache:%d\n", int($2 * 3 / 4));
+                }' > /usr/vice/etc/cacheinfo
+        sed -n '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
+                /usr/vice/etc/cacheinfo > /dev/console
+fi
+
+#
 # Make sure afs exists in /etc/name_to_sysnum
 #
 if grep -s "afs" /etc/name_to_sysnum > /dev/null; then
@@ -130,6 +156,12 @@ done
 
 echo "Starting afsd"
 /usr/vice/etc/afsd $OPTIONS
+
+if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+	/bin/athena/fs setcrypt on
+else
+	/bin/athena/fs setcrypt off
+fi
 
 #
 # Run package to update the disk

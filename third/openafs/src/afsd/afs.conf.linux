@@ -14,11 +14,11 @@ AFS_CLIENT=on
 AFS_SERVER=off
 
 # AFS client configuration options:
-XXLARGE="-stat 4000 -dcache 4000 -daemons 6 -volumes 256 -files 50000"
-XLARGE="-stat 3600 -dcache 3600 -daemons 5 -volumes 196 -files 50000"
-LARGE="-stat 2800 -dcache 2400 -daemons 5 -volumes 128"
-MEDIUM="-stat 2000 -dcache 800 -daemons 3 -volumes 70"
-SMALL="-stat 300 -dcache 100 -daemons 2 -volumes 50"
+XXLARGE="-stat 4000 -dcache 4000 -daemons 6 -volumes 256 -files 50000 -afsdb" 
+XLARGE="-stat 3600 -dcache 3600 -daemons 5 -volumes 196 -files 50000 -afsdb"
+LARGE="-stat 2800 -dcache 2400 -daemons 5 -volumes 128 -afsdb"
+MEDIUM="-stat 2000 -dcache 800 -daemons 4 -volumes 70 -afsdb"
+SMALL="-stat 300 -dcache 100 -daemons 2 -volumes 50 -afsdb"
 
 # cachesize and according options are set by /afs/rc.d/init.d/afs
 #   * if you set CACHESIZE to "AUTOMATIC", it will automatically be chosen
@@ -46,4 +46,4 @@ VERBOSE=
 
 # Either the name of an executable script or a set of commands go here.
 # AFS_POST_INIT=afs_serverprefs
-AFS_POST_INIT=
+AFS_POST_INIT=/etc/athena/config_afs

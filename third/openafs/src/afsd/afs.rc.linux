@@ -69,6 +69,23 @@ CACHEINFO=${CACHEINFO:-/usr/vice/etc/cacheinfo}
 CACHE=${CACHEDIR:-/usr/vice/cache}
 AFS=${AFSDIR:-/afs}
 
+athena_afsadjust () {
+        . /etc/athena/rc.conf
+        if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
+                df -k /usr/vice/cache | awk '
+                  (NR == 2) {
+                    printf "/afs:/usr/vice/cache:";
+                    print int($2 * 3 / 4);
+                  }' > /usr/vice/etc/cacheinfo.new
+                  
+                if df -k /usr/vice/cache | grep /usr/vice/cache ; then
+                        mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
+                else
+                        rm /usr/vice/etc/cacheinfo.new
+                fi
+        fi
+}
+
 # is_on returns 1 if value of arg is "on"
 is_on() {
 	if  test "$1" = "on" ; then return 0
@@ -106,7 +123,11 @@ choose_client() {
 	# For now, just use uname -r to get the module version. 
 	VERSION=`uname -r`
 
-	LIBAFS=libafs-$VERSION$MP.o
+	# Kernels compiled for different machine types may have
+        # different symbol versions.  Yay Linux.
+        MACHINE=`uname -m`
+
+	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
 
 #
@@ -224,6 +245,9 @@ case "$1" in
   start)
     if [ ! "$afs_rh" -o ! -f /var/lock/subsys/afs ]; then
 	on_network || exit 1
+
+	athena_afsadjust
+
 	# Load kernel extensions
 	if  load_client  ; then :
 	else
@@ -240,11 +264,14 @@ case "$1" in
 
 	# Start AFS client
 	if  is_on $AFS_CLIENT && test -x /usr/vice/etc/afsd  ; then
-		generate_cacheinfo
-		choose_afsdoptions
 		/usr/vice/etc/afsd ${AFSD_OPTIONS}
 		test "$afs_rh" && touch /var/lock/subsys/afs
 		$AFS_POST_INIT
+		if [ -f /afs/athena.mit.edu/system/config/afs/encrypt ]; then
+			/bin/athena/fs setcrypt on
+		else
+			/bin/athena/fs setcrypt off
+		fi
 	fi
     fi
 	;;
