@@ -4,21 +4,27 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.9 1988-08-01 12:09:55 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.10 1990-07-15 22:58:15 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.9 1988-08-01 12:09:55 jtkohl Exp $";
+static char rcsid_ZMakeAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.10 1990-07-15 22:58:15 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
+
+static
+#ifdef __STDC__
+    const
+#endif
+    char itox_chars[] = "0123456789ABCDEF";
 
 Code_t ZMakeAscii(ptr, len, field, num)
     char *ptr;
@@ -29,9 +35,11 @@ Code_t ZMakeAscii(ptr, len, field, num)
     int i;
 
     for (i=0;i<num;i++) {
-	if (!(i%4)) {
-	    if (len < 3+(i!=0))
-		return (ZERR_FIELDLEN);
+	/* we need to add "0x" if we are between 4 byte pieces */
+	if (i%4 == 0) {
+	    if (len < (i?4:3))
+		return ZERR_FIELDLEN;
+	    /* except at the beginning, put a space in before the "0x" */
 	    if (i) {
 		*ptr++ = ' ';
 		len--;
@@ -41,22 +49,12 @@ Code_t ZMakeAscii(ptr, len, field, num)
 	    len -= 2;
 	} 
 	if (len < 3)
-	    return (ZERR_FIELDLEN);
-	*ptr++ = Z_cnvt_itox((int) (field[i] >> 4));
-	*ptr++ = Z_cnvt_itox((int) (field[i] & 0xf));
+	    return ZERR_FIELDLEN;
+	*ptr++ = itox_chars[(int) (field[i] >> 4)];
+	*ptr++ = itox_chars[(int) (field[i] & 0xf)];
 	len -= 2;
     }
 
     *ptr = '\0';
-    return (ZERR_NONE);
-}
-
-Z_cnvt_itox(i)
-    int i;
-{
-    i += '0';
-    if (i <= '9')
-	return (i);
-    i += 'A'-'9'-1;
-    return (i);
+    return ZERR_NONE;
 }
