@@ -178,8 +178,9 @@ echo "Removing sendmail temporary files."			>/dev/console
 if [ -d /var/spool/mqueue ]; then
   (cd /var/spool/mqueue; rm -f nf* lf*)
 fi
-# Sync frozen sendmail configuration file.
-/usr/lib/sendmail -bz 
+# Sync frozen sendmail configuration file and aliases db.
+/usr/lib/sendmail -bz
+newaliases
 
 # Start standard daemons
 echo ""								>/dev/console
@@ -286,11 +287,3 @@ echo " done!"							>/dev/console
 	echo "usage: /etc/rc2.d/S90athena {start|stop}"
 	;;
 esac
-
-
-
-
-
-
-
-
