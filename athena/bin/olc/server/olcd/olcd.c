@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.57 1993-08-05 19:16:49 vanharen Exp $
+ *	$Id: olcd.c,v 1.58 1993-08-06 13:31:12 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.57 1993-08-05 19:16:49 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.58 1993-08-06 13:31:12 vanharen Exp $";
 #endif
 #endif
 
@@ -515,6 +515,7 @@ restart:
     {
 	int s;		        /* Duplicated file descriptor */
 	int len = sizeof (from);  /* Length of address. */
+	KNUCKLE **k_ptr;
 #ifdef KERBEROS
 	struct timeval tval;
 	int nfound;
@@ -594,7 +595,18 @@ restart:
 	    }
 	  }
 #endif
+
 	process_request(s, &from);
+
+	for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
+	  {
+	    if ((*k_ptr)->user->permissions == 0)
+	      /*** DANGER WILL ROBINSON! ***/
+	      {
+		/*** DO SOMETHING! ***/
+	      }
+	  }
+
 	close(s);
 	if (got_signal)
 	    punt(-1);
@@ -669,12 +681,17 @@ process_request (fd, from)
     if (proc_list[ind].proc_code != UNKNOWN_REQUEST)
     {
 
+	char msgbuf[BUFSIZ];
+
 	++request_count;
 	++request_counts[ind];
-#if 0
-	printf("%d> Got %s request from %s\n",request_count,
-	       proc_list[ind].description,
-	       request.requester.username);
+#if 1
+	sprintf(msgbuf, "serial #%d> \"%s\" (# %d) request from %s\n",
+		request_count,
+		proc_list[ind].description,
+		request_counts[ind],
+		request.requester.username);
+	log_debug(msgbuf);
 #endif
 
 	(*(proc_list[ind].olc_proc))(fd, &request);
