@@ -13,10 +13,8 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.4 1990-12-12 02:15:18 jfc Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.5 1991-06-20 09:22:15 jfc Exp $";
 #endif
-
-#include <zephyr/mit-copyright.h>
 
 /****************************************************************************/
 /*                                                                          */
@@ -28,6 +26,7 @@ static char rcsid_mux_c[] = "$Id: mux.c,v 1.4 1990-12-12 02:15:18 jfc Exp $";
 #include <sys/time.h>
 #include <errno.h>
 #include <stdio.h>
+#include <zephyr/zephyr.h>
 #include "mux.h"
 #include "error.h"
 #include "zwgc.h"
