@@ -40,7 +40,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #ifdef AfterVendorCF
 
 #undef ProjectRoot
-#define ProjectRoot	$(DESTDIR)/usr/athena
+#define ProjectRoot	/usr/athena
 
 #ifdef PS2Architecture
 #define ExtraLoadFlags  -T0x400000
