@@ -1,7 +1,6 @@
-# $Id: Makefile,v 1.58 2004-03-14 22:37:22 zacheiss Exp $
+# $Id: Makefile,v 1.59 2004-03-27 17:00:35 rbasch Exp $
 
 SHELL=/bin/sh
-ATHRBINDIR=/bin/athena
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
@@ -102,7 +101,6 @@ check:
 
 install:
 	mkdir -p ${DESTDIR}/usr
-	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
 	mkdir -p ${DESTDIR}${ATHLIBEXECDIR}
