@@ -19,7 +19,7 @@ idle_func (gpointer data)
 
   /*
   if (s_clock) {
-    g_print ("%lld\n", gst_clock_get_time (s_clock));
+    g_print ("%" G_GINT64_FORMAT "\n", gst_clock_get_time (s_clock));
   }
   */
 
@@ -37,7 +37,7 @@ idle_func (gpointer data)
 
   if (!busy) {
     gst_main_quit ();
-    g_print ("execution ended after %llu iterations (sum %llu ns, average %llu ns, min %llu ns, max %llu ns)\n", 
+    g_print ("execution ended after %" G_GUINT64_FORMAT " iterations (sum %" G_GUINT64_FORMAT " ns, average %" G_GUINT64_FORMAT " ns, min %" G_GUINT64_FORMAT " ns, max %" G_GUINT64_FORMAT " ns)\n", 
 		    iterations, sum, sum/iterations, min, max);
   }
 
@@ -187,13 +187,13 @@ int
 main(int argc, char *argv[])
 {
   /* options */
-  gboolean silent = FALSE;
+  gboolean verbose = FALSE;
   gboolean no_fault = FALSE;
   gchar *savefile = NULL;
   gchar *exclude_args = NULL;
   struct poptOption options[] = {
-    {"silent",	's',  POPT_ARG_NONE|POPT_ARGFLAG_STRIP,   &silent,   0,
-     "do not output status information", NULL},
+    {"verbose", 'v',  POPT_ARG_NONE|POPT_ARGFLAG_STRIP,   &verbose,   0,
+     "report various status information", NULL},
     {"exclude", 'X',  POPT_ARG_STRING|POPT_ARGFLAG_STRIP, &exclude_args,  0,
      "do not output status information of TYPE", "TYPE1,TYPE2,..."},
     {"output",	'o',  POPT_ARG_STRING|POPT_ARGFLAG_STRIP, &savefile, 0,
@@ -233,8 +233,7 @@ main(int argc, char *argv[])
     exit(1);
   }
   
-  if (!silent)
-  {
+  if (verbose) {
     gchar **exclude_list = exclude_args ? g_strsplit (exclude_args, ",", 0) : NULL;
     g_signal_connect (pipeline, "deep_notify", G_CALLBACK (gst_element_default_deep_notify), exclude_list);
   }

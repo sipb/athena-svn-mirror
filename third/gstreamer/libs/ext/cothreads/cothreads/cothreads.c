@@ -373,9 +373,9 @@ cothread_destroy (cothread *thread)
   cothread_chunk *chunk = private->chunk;
   
 #if PTH_STACK_GROWTH > 0
-  i = (gint) ((gulong)thread - chunk->chunk) / (chunk->size / chunk->nblocks);
+  i = (gint) ((gulong)thread - (gulong)chunk->chunk) / (chunk->size / chunk->nblocks);
 #else
-  i = (gint) (chunk->chunk + chunk->size - (gulong)thread) / (chunk->size / chunk->nblocks);
+  i = (gint) ((gulong)chunk->chunk + chunk->size - (gulong)thread) / (chunk->size / chunk->nblocks);
 #endif
 
   COTHREADS_DEBUG ("destroying cothread %d (%p, %p)", i, thread, chunk->chunk);

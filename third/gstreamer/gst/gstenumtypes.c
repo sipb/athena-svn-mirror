@@ -134,6 +134,23 @@ gst_buffer_flag_get_type (void)
 }
 
 
+/* enumerations from "gstcaps.h" */
+GType
+gst_caps_flags_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GST_CAPS_FIXED, "GST_CAPS_FIXED", "fixed" },
+      { GST_CAPS_FLOATING, "GST_CAPS_FLOATING", "floating" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GstCapsFlags", values);
+  }
+  return etype;
+}
+
+
 /* enumerations from "gstclock.h" */
 GType
 gst_clock_entry_status_get_type (void)
@@ -532,6 +549,21 @@ gst_pad_presence_get_type (void)
   return etype;
 }
 
+GType
+gst_pad_template_flags_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GST_PAD_TEMPLATE_FIXED, "GST_PAD_TEMPLATE_FIXED", "fixed" },
+      { GST_PAD_TEMPLATE_FLAG_LAST, "GST_PAD_TEMPLATE_FLAG_LAST", "flag-last" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GstPadTemplateFlags", values);
+  }
+  return etype;
+}
+
 
 /* enumerations from "gstplugin.h" */
 GType
@@ -573,6 +605,21 @@ gst_props_type_get_type (void)
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GstPropsType", values);
+  }
+  return etype;
+}
+
+GType
+gst_props_flags_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GST_PROPS_FIXED, "GST_PROPS_FIXED", "fixed" },
+      { GST_PROPS_FLOATING, "GST_PROPS_FLOATING", "floating" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GstPropsFlags", values);
   }
   return etype;
 }

@@ -53,7 +53,7 @@ main (int argc, char *argv[])
 
   /* add objects to the thread */
   gst_bin_add_many (GST_BIN (thread), filesrc, decoder, audiosink, NULL);
-  /* connect them in the logical order */
+  /* link them in the logical order */
   gst_element_link_many (filesrc, decoder, audiosink, NULL);
 
   /* start playing */
