@@ -16,8 +16,11 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterWidget.c,v $
- * $Author: djf $
+ * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/02/13  14:26:54  djf
+ * fixed bad buffer declaration in MuRegisterWidget()
+ * 
  * Revision 1.2  90/02/13  14:21:08  djf
  * 
  * Revision 1.1  89/12/09  15:14:44  djf
@@ -256,7 +259,7 @@ char *name;
 }
 
 
-Widget MuGetWidget(string)
+Widget MuLookupWidget(string)
       char *string;
 {
    XrmQuark quark;
@@ -264,6 +267,9 @@ Widget MuGetWidget(string)
 
    quark = XrmStringToQuark(string);
    
+   if (h == NULL)		/* if hash table hasn't been initialized */
+     return(NULL);		/* yet, return null. */
+
    w = (Widget)(hash_lookup(h, quark));
    return(w);
  }
