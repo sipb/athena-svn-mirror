@@ -8,6 +8,10 @@
  */
 
 #include <stdio.h>
+#ifdef _AUX_SOURCE
+/* AUX uses caddr_t in <sys/file.h>, and it's defined in <sys/types.h> */
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 #include <string.h>
 #include <sys/param.h>
@@ -23,7 +27,7 @@ static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
 static const char rcsid_compile_et_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/compile_et.c,v 1.1 1989-11-07 19:05:27 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/compile_et.c,v 1.2 1990-06-07 21:48:57 jik Exp $";
 #endif
 
 extern char *gensym();
