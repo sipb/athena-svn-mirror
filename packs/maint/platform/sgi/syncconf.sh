@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2 1997-02-11 18:26:48 ghudson Exp $
+# $Id: syncconf.sh,v 1.3 1997-03-14 21:36:49 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -43,33 +43,22 @@ syncvar()
 	esac
 }
 
-# Usage: syncrc2 scriptname order value
-# e.g. "syncrc2 mail 50 false" turns off the /etc/rc2.d/S50mail link.
-syncrc2()
+# Usage: syncrc level {K/S} order scriptname boolvalue
+# e.g. "syncrc 2 S 50 mail false" turns off the /etc/rc2.d/S50mail link
+syncrc()
 {
-	if [ "$3" = false ]; then
-		prefix=s
+	uprefix=$2
+	lprefix=`echo $uprefix | tr SK sk`
+	if [ "$5" = false ]; then
+		prefix="$lprefix"
 	else
-		prefix=S
+		prefix="$uprefix"
 	fi
-	if [ "$3" != false -a ! -h "/etc/rc2.d/S$2$1" ]; then
+	if [ "$1$prefix" = 2S -a ! -h "/etc/rc2.d/S$3$4" ]; then
 		rc2added=1
 	fi
-	$maybe rm -f "/etc/rc2.d/s$2$1" "/etc/rc2.d/S$2$1"
-	$maybe ln -s "../init.d/$2" "/etc/rc2.d/$prefix$2$1"
-}
-
-# Usage: syncrc scriptname order value
-# e.g. "syncrc0 mail 20 true" turns on the /etc/rc2.d/K20mail link.
-syncrc0()
-{
-	if [ "$3" = false ]; then
-		prefix=k
-	else
-		prefix=K
-	fi
-	$maybe rm -f "/etc/rc0.d/k$2$1" "/etc/rc0.d/K$2$1"
-	$maybe ln -s "../init.d/$2" "/etc/rc0.d/$prefix$2$1"
+	$maybe rm -f "/etc/rc$1.d/$lprefix$3$4" "/etc/rc$1.d/$uprefix$3$4"
+	$maybe ln -s "../init.d/$4" "/etc/rc$1.d/$prefix$3$4"
 }
 
 remove()
@@ -186,8 +175,8 @@ handle()
 		;;
 
 	SENDMAIL)
-		syncrc2 mail 50 "$SENDMAIL"
-		syncrc0 mail 20 "$SENDMAIL"
+		syncrc 0 K 20 mail "$SENDMAIL"
+		syncrc 2 S 50 mail "$SENDMAIL"
 		;;
 
 	SNMP)
@@ -206,7 +195,7 @@ handle()
 			esac
 			put /var/adm/crash/minfree $minfree
 		fi
-		syncrc2 savecore 48 "$SAVECORE"
+		syncrc 2 S 48 savecore "$SAVECORE"
 		;;
 
 	ACCOUNT)
