@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.7 1990-07-15 13:25:38 probe Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.8 1991-06-10 03:09:39 probe Exp $";
 #endif lint
 
 /*
@@ -19,8 +19,8 @@ All Rights Reserved.
 
 #include <stdio.h>
 #include <strings.h>
-#include <sys/file.h>
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <ctype.h>
