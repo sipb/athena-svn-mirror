@@ -18,7 +18,6 @@
 
 DASH		=	dash
 DASHRESOURCES	=	Dash
-COMPILE		=	compile_menu
 
 #if defined(HaveKerberos)
 K_DEF		=	-DKERBEROS
@@ -38,9 +37,6 @@ A_DEF		=	-DATTACH
 A_DEF		=
 #endif /* HaveAttach */
 
-
-CMP_OBJS        =       compile_menu.o
-CMP_SRCS	=	compile_menu.c
 
 OBJS		=	dash.o ${K_OBJ}
 SRCS		=	dash.c ${K_SRC}
@@ -63,21 +59,18 @@ M_LIB		=
 DEFINES		=	${G_DEFINES} ${K_DEF} ${A_DEF}
 INCLUDES	=	-I../lib ${LOCAL_INCLUDES}
 
-
-AllTarget(${COMPILE})
 AllTarget(${DASH})
 AllTarget(${DASHRESOURCES})
 
-NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
 NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
 InstallProgram($(DASH),$(DASH_BIN_DIR))
 
-InstallNonExec(${DASH}.1,${MAN_DIR}/man1/${DASH}.1)
-InstallNonExec(${DASHRESOURCES},${DASH_APP_DIR}/${DASHRESOURCES})
-InstallNonExec(arrow,${DASH_XBM_DIR}/arrow)
-InstallNonExec(gray,${DASH_XBM_DIR}/gray)
-InstallNonExec(question,${DASH_XBM_DIR}/question)
-InstallNonExec(Dash.xbm,${DASH_XBM_DIR}/Dash.xbm)
+InstallNonExecFile(${DASH}.1,${MAN_DIR}/man1)
+InstallNonExecFile(${DASHRESOURCES},${DASH_APP_DIR})
+InstallNonExecFile(arrow,${DASH_XBM_DIR})
+InstallNonExecFile(gray,${DASH_XBM_DIR})
+InstallNonExecFile(question,${DASH_XBM_DIR})
+InstallNonExecFile(Dash.xbm,${DASH_XBM_DIR})
 
 DependTarget()
 
@@ -95,9 +88,6 @@ $(DASHRESOURCES): Dash.pre-sed
 	sed -e "s,DASH_FALLBACK,$(DASH_FALLBACK)," | \
 	sed -e "s/FOREGROUND/$(FOREGROUND)/" | \
 	sed -e "s/BACKGROUND/$(BACKGROUND)/" > $(DASHRESOURCES)
-
-compile_menu.o:	compile_menu.c
-	${CC} -c -DMENU_COMPILER ${CFLAGS} compile_menu.c
 
 clean::
 	${RM} strings
