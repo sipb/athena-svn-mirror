@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.8 1987-08-08 00:36:48 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.9 1987-08-10 18:24:50 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.8 1987-08-08 00:36:48 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.9 1987-08-10 18:24:50 don Exp $";
 #endif	lint
 
 /*
@@ -705,7 +705,7 @@ leavethis:
 		   (st.st_mtime > st.st_atime) ? "new " : "");
     }
 #ifdef VFS
-    system(QUOTAWARN);
+    if (! access( QUOTAWARN, X_OK)) system(QUOTAWARN);
 #endif VFS
     signal(SIGALRM, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
