@@ -1,5 +1,5 @@
 #!/bin/sh -
-# Version-specific update script for 8.0A
+# Version-specific update script for 8.0B
 
 case ${MACH} in
 SUN*)
