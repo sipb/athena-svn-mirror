@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.9 1988-08-18 18:23:21 raeburn Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.10 1988-09-01 19:56:04 probe Exp $
 
 # Set the initialization directory pathname to find initialization files.
 
@@ -21,8 +21,8 @@ if ($?prompt) set interactive
 if (! -d ${INITDIR} && $?interactive) then
 	echo "System-wide initialization files not found."
 	echo "Some initialization has not been performed."
-	set path = (. /usr/athena /bin/athena /usr/bin/X /usr/new \
-			 /usr/new/mh/bin /usr/ucb /bin /usr/bin)
+	set path = (. /srvd/patch /usr/athena /bin/athena /usr/bin/X \
+			 /usr/new /usr/new/mh/bin /usr/ucb /bin /usr/bin)
 endif
 
 # Source the various standard initialization files:
