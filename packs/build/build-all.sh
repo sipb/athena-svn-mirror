@@ -7,7 +7,7 @@ usage="$usage [package [endpackage]]"
 
 # Default variables
 
-source="/mit/source"
+source="/mit/source-9.3"
 destdir="/build"
 ignore=false
 nobuild=false

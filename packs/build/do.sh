@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: do.sh,v 1.81 2004-03-09 18:24:04 ghudson Exp $
+# $Id: do.sh,v 1.81.2.1 2004-10-27 04:14:31 ghudson Exp $
 
-source=/mit/source
+source=/mit/source-9.3
 srvd=/.srvd
 contained=false
 mungepath=true

@@ -6,7 +6,7 @@
 usage="build-package [-s srcdir] [-d destdir] [-v version] [-r release]"
 usage="$usage source rpmname"
 
-sourcedir=/mit/source
+sourcedir=/mit/source-9.3
 destdir=/build
 
 while getopts s:d:v:r: opt; do
