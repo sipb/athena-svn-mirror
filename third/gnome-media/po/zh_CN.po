@@ -1,54 +1,54 @@
+# translation of gnome-media.po to zh_CN
 # simplified chinese translation for gnome-media.
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002,2003 Free Software Foundation, Inc.
 # Dillion Chen <dillon.chen@turbolinux.com.cn>, 1999
-#   Replaced by He Qiangqiang <carton@linux.net.cn>, 2002
+# Replaced by He Qiangqiang <carton@linux.net.cn>, 2002
 # Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002
+# Xiong Jiang <jxiong@offtopic.org>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media\n"
 "POT-Creation-Date: 2002-12-07 15:16+0000\n"
-"PO-Revision-Date: 2002-08-21 21:21+0800\n"
+"PO-Revision-Date: 2003-01-21 12:12-0500\n"
 "Last-Translator: He Qiangqiang <carton@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:1
 msgid "Address of the server to contact for CD queries"
-msgstr ""
+msgstr "进行 CD 查询的服务器的地址"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
 msgid "Port"
 msgstr "端口"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:3
-#, fuzzy
 msgid "Server name"
-msgstr "服务器"
+msgstr "服务器名"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:4
 msgid "The hostname that will be sent with all queries"
-msgstr ""
+msgstr "将用于进行所有查询的主机名"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:5
 msgid "The port that the server is running the database on"
-msgstr ""
+msgstr "访问服务器运行的数据库的端口"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:6
-#, fuzzy
 msgid "The username"
-msgstr "主题名称"
+msgstr "用户名"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:7
 msgid "The username that will be sent with all queries"
-msgstr ""
+msgstr "进行所有查询时将要用到的用户名"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:8
-#, fuzzy
 msgid "Your hostname"
-msgstr "主机名："
+msgstr "您的主机名："
 
 # SUN NEW TRANSLATION
 #: cddb-slave2/cddb-disclosure.c:245
@@ -1208,10 +1208,10 @@ msgstr "帮助"
 
 #: gmix/gmix.c:146
 msgid "Mixer device to use"
-msgstr ""
+msgstr "要使用的混音器设备"
 
 #: gmix/gmix.c:327
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Volume control is unable to run correctly.\n"
 "\n"
@@ -1221,9 +1221,13 @@ msgid ""
 "\n"
 "Press Quit to exit Volume control"
 msgstr ""
-"无法打开音频设备。\n"
-"请确认您拥有打开 /dev/mixer 的权限\n"
-"并确认您在编译内核时已经加入了声音支持。"
+"无法正常运行音量控制。\n"
+"\n"
+"无法打开音频设备‘%s’。\n"
+"请确认您拥有打开‘%s’的权限\n"
+"并且您在编译内核时已经加入了声卡支持。\n"
+"\n"
+"请单击退出来退出音量控制"
 
 #: gmix/gmix.c:381
 msgid ""
@@ -1233,16 +1237,19 @@ msgid ""
 "\n"
 "Press Quit to quit Volume control"
 msgstr ""
+"无法正常运行音量控制。\n"
+"\n"
+"要查看详细的出错原因请单击详细按钮。\n"
+"\n"
+"请单击退出来退出音量控制"
 
 #: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
-#, fuzzy
 msgid "_Details"
-msgstr "金属乐"
+msgstr "详细(_D)"
 
 #: gmix/gmix.c:387
-#, fuzzy
 msgid "Invalid mixer device"
-msgstr "无效的 CD 设备"
+msgstr "无效的混音器设备"
 
 #: gmix/gmix.c:626
 #, c-format
@@ -1308,18 +1315,18 @@ msgid "Volume Control"
 msgstr "音量控制"
 
 #: gmix/gmix.c:1748
-#, fuzzy
 msgid "GNOME Volume Control"
-msgstr "运行 GNOME 音量控制"
+msgstr "GNOME 音量控制"
 
 #: gmix/gmix.c:1749
 msgid ""
 "(C) 1998 Jens Ch. Restemeier\n"
 "(C) 2001 Iain Holmes"
 msgstr ""
+"(C) 1998 Jens Ch. Restemeier\n"
+"(C) 2001 Iain Holmes"
 
 #: gmix/gmix.c:1751
-#, fuzzy
 msgid "A mixer for sound devices"
 msgstr "声音设备的混音器"
 
@@ -1404,9 +1411,9 @@ msgid "Pause"
 msgstr "暂停"
 
 #: gnome-cd/callbacks.c:530
-#, fuzzy, c-format
+#, c-format
 msgid "Playing %s - %s"
-msgstr "播放"
+msgstr "正在播放 %s - %s"
 
 #: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
@@ -1418,27 +1425,24 @@ msgstr "未知曲集"
 
 #: gnome-cd/callbacks.c:534 grecord/src/gui.c:827
 msgid "Playing"
-msgstr "播放"
+msgstr "正在播放"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:557
-#, fuzzy
 msgid "Paused"
-msgstr "暂停"
+msgstr "已暂停"
 
 #. Update tray icon tooltip
 #: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
 #: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
 #: gnome-cd/gnome-cd.desktop.in.h:1
-#, fuzzy
 msgid "CD Player"
 msgstr "CD 播放器"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:620
-#, fuzzy
 msgid "Stopped"
-msgstr "停止"
+msgstr "已停止"
 
 #: gnome-cd/callbacks.c:626
 msgid "Disc error"
@@ -1468,11 +1472,11 @@ msgstr "光驱出错"
 
 #: gnome-cd/callbacks.c:824
 msgid "(C) 2001 Iain Holmes"
-msgstr ""
+msgstr "(C) 2001 Iain Holmes"
 
 #: gnome-cd/callbacks.c:825
 msgid "A CD player for GNOME"
-msgstr ""
+msgstr "GNOME 的 CD 播放器"
 
 #: gnome-cd/cdrom.c:367
 #, c-format
@@ -1480,7 +1484,7 @@ msgid "You do not seem to have permission to access %s."
 msgstr "您没有权限访问%s。"
 
 #: gnome-cd/cdrom.c:373
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
 "a) CD support is not present in your machine\n"
@@ -1488,7 +1492,7 @@ msgid ""
 "c) %s is not the CD drive.\n"
 msgstr ""
 "%s 似乎不指向一个有效的 CD 设备。这可能是因为：\n"
-"a) CD 支持没有被编译进 Linux 内核\n"
+"a) 您的系统中没有 CD 支持\n"
 "b) 您没有访问 CD 设备的权限\n"
 "c) %s 不是 CD 设备。\n"
 
@@ -1526,25 +1530,22 @@ msgid "_Eject disc"
 msgstr "弹出碟片(_E)"
 
 #: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
-#, fuzzy
 msgid "_Help"
-msgstr "帮助"
+msgstr "帮助(_H)"
 
 #: gnome-cd/gnome-cd.c:306
-#, fuzzy
 msgid "_About CD player"
-msgstr "Gnome CD 播放器"
+msgstr "关于 CD 播放器(_A)"
 
 #: gnome-cd/gnome-cd.c:414
-#, fuzzy
 msgid ""
 "There is no CD device set. This means that the CD player\n"
 "will be unable to run. Click 'Set device' to go to a dialog\n"
 "where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
-"没有找到 CD 设备。这意味着 GnomeCD 将\n"
+"没有设置 CD 设备。这意味着 CD 播放器将\n"
 "无法运行。单击“设置设备”，然后在对话框中\n"
-"设置 CD 设备，或单击“退出”以退出 GnomeCD"
+"设置 CD 设备，或单击“退出”以退出 CD 播放器。"
 
 #: gnome-cd/gnome-cd.c:418
 msgid "Set device"
@@ -1555,7 +1556,6 @@ msgid "No CD device"
 msgstr "无 CD 设备"
 
 #: gnome-cd/gnome-cd.c:474
-#, fuzzy
 msgid ""
 "The CD player is unable to run correctly.\n"
 "\n"
@@ -1564,14 +1564,15 @@ msgid ""
 "Press 'Set device' to go to a dialog where you can set the device, or press "
 "'Quit' to quit the CD player"
 msgstr ""
-"%s\n"
-"这意味着 GnomeCD 将无法正确运行。单击“设置设备”，然后在对话框中设置 CD 设备，"
-"或单击“退出”以退出 GnomeCD"
+"无法正常运行 CD 播放器\n"
+"\n"
+"要查看详细的出错原因请单击‘详细’按钮。\n"
+"\n"
+"单击“设置设备”，然后在对话框中设置 CD 设备，或单击“退出”以退出 CD 播放器"
 
 #: gnome-cd/gnome-cd.c:479
-#, fuzzy
 msgid "_Set device"
-msgstr "设置设备"
+msgstr "设置设备(_S)"
 
 #: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
@@ -1638,17 +1639,16 @@ msgid "Eject"
 msgstr "弹出"
 
 #: gnome-cd/gnome-cd.c:731
-#, fuzzy
 msgid "CD device to use"
-msgstr "无 CD 设备"
+msgstr "要使用的 CD 设备"
 
 #: gnome-cd/gnome-cd.c:740
 msgid "Only start if there isn't already a CD player application running"
-msgstr ""
+msgstr "仅当没有任何 CD 播放器应用程序在运行时才启用"
 
 #: gnome-cd/gnome-cd.c:742
 msgid "Play the CD on startup"
-msgstr ""
+msgstr "在启动后播放 CD"
 
 #. Stick a message box here?
 #: gnome-cd/gnome-cd.c:773
@@ -1661,71 +1661,71 @@ msgstr "播放音频 CD"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:1
 msgid "Action on application exit"
-msgstr ""
+msgstr "应用程序退出时的操作"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:2
 msgid "Action on start"
-msgstr ""
+msgstr "启动时的操作"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:3
-#, fuzzy
 msgid "CD player theme"
-msgstr "CD 播放器"
+msgstr "CD 播放器主题"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:4
 msgid "Device path"
-msgstr ""
+msgstr "设备路径"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:5
 msgid "Should the CD player attempt to shut the CD drive on start up?"
-msgstr ""
+msgstr "CD 播放器在启动时是否应该尝试关闭 CD 驱动器？"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:6
 msgid "Shut the CD tray on start"
-msgstr ""
+msgstr "在启动时关闭 CD 托盘"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:7
 msgid "The path to the CD drive that the CD player should use to play CDs"
-msgstr ""
+msgstr "到 CD 播放器应该用于播放 CD 的 CD 设备的路径"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:8
 msgid ""
 "What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
 "playing, 2 = Eject the CD, 3 = Attempt to close the tray"
 msgstr ""
+"当 CD 播放器退出时应该执行什么操作？0 = 无操作，1 = 停止播放，2 = 弹出 CD，3 "
+"= 尝试关闭托盘"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:9
 msgid ""
 "What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
 "playing, 2 = Stop playing"
 msgstr ""
+"当 CD 播放器启动时应该执行什么操作？0 = 无操作，1 = 开始播放，2 = 停止播放"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:10
 msgid "What theme should the CD player use for it's appearance"
-msgstr ""
+msgstr "CD 播放器的外观应该使用什么主题"
 
 #: gnome-cd/preferences.c:83
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "This means that the CD player will not be able to run."
 msgstr ""
 "%s\n"
-"这意味着 Gnome-CD 将无法运行。"
+"这意味着 CD 播放器将无法运行。"
 
 #: gnome-cd/preferences.c:84
 msgid "Error setting device"
 msgstr "设置设备时出错"
 
 #: gnome-cd/preferences.c:824
-#, fuzzy
 msgid "CD Player Preferences"
-msgstr "Gnome CD 播放器首选项"
+msgstr "CD 播放器首选项"
 
 #: gnome-cd/preferences.c:853
-#, fuzzy
 msgid "CD player de_vice:"
-msgstr "CD 播放器设备(_V)"
+msgstr "CD 播放器设备(_V)："
 
 #: gnome-cd/preferences.c:868
 msgid "_Apply change"
@@ -1733,36 +1733,32 @@ msgstr "应用修改(_A)"
 
 #. left side
 #: gnome-cd/preferences.c:881
-#, fuzzy
 msgid "When CD player starts"
-msgstr "当 Gnome CD 播放器启动时"
+msgstr "当 CD 播放器启动时"
 
 #: gnome-cd/preferences.c:889
 msgid "Do _nothing"
 msgstr "不做任何操作(_N)"
 
 #: gnome-cd/preferences.c:890
-#, fuzzy
 msgid "Do nothing when CD Player starts"
-msgstr "当 Gnome CD 播放器启动时"
+msgstr "当 CD 播放器启动时不做任何操作"
 
 #: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
 msgstr "开始播放 CD(_P)"
 
 #: gnome-cd/preferences.c:901
-#, fuzzy
 msgid "Start playing CD when CD Player starts"
-msgstr "当 Gnome CD 播放器启动时"
+msgstr "当 CD 播放器启动时开始播放 CD"
 
 #: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
 msgstr "停止播放 CD(_S)"
 
 #: gnome-cd/preferences.c:911
-#, fuzzy
 msgid "Stop playing CD when CD Player starts"
-msgstr "当 Gnome CD 播放器启动时"
+msgstr "当 CD 播放器启动时停止播放 CD"
 
 #: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
@@ -1770,18 +1766,16 @@ msgstr "试图关闭 CD 托盘(_C)"
 
 #. Right side
 #: gnome-cd/preferences.c:937
-#, fuzzy
 msgid "When CD player quits"
-msgstr "当 Gnome CD 播放器退出时"
+msgstr "当 CD 播放器退出时"
 
 #: gnome-cd/preferences.c:945
 msgid "Do not_hing"
 msgstr "不做任何操作(_H)"
 
 #: gnome-cd/preferences.c:946
-#, fuzzy
 msgid "Do nothing when CD Player exits"
-msgstr "当 Gnome CD 播放器退出时"
+msgstr "当 CD 播放器退出时不做任何操作"
 
 #: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
@@ -1789,16 +1783,15 @@ msgstr "停止播放 CD(_T)"
 
 #: gnome-cd/preferences.c:956
 msgid "Stop playing CD when CD player quits"
-msgstr ""
+msgstr "当 CD 播放器退出时停止播放 CD"
 
 #: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
-msgstr "试图打开 CD 托盘(_O)"
+msgstr "尝试弹出 CD 托盘(_O)"
 
 #: gnome-cd/preferences.c:967
-#, fuzzy
 msgid "Attempt to open CD tray when CD Player exits"
-msgstr "试图打开 CD 托盘(_O)"
+msgstr "当 CD 播放器退出时尝试弹出 CD 托盘"
 
 #: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
@@ -1948,13 +1941,13 @@ msgstr "保存“%s”时出错"
 
 # SUN NEW TRANSLATION
 #: grecord/src/grec.c:976
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
 "\n"
 "Your changes will be lost if you don't save them."
 msgstr ""
-"<b>是否要保存对 “%s” 所做的更改？</b>\n"
+"<b>您是否要保存对“%s”所做的更改？</b>\n"
 "\n"
 "如果不保存，这些更改将丢失。"
 
@@ -1995,14 +1988,13 @@ msgstr ""
 
 #: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
 #: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
-#, fuzzy
 msgid "hours"
-msgstr "合声"
+msgstr "小时"
 
 #: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
 #: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
 msgid "hour"
-msgstr ""
+msgstr "小时"
 
 #: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
 #: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
@@ -2012,132 +2004,118 @@ msgstr "分钟"
 
 #: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
 #: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
-#, fuzzy
 msgid "minute"
 msgstr "分钟"
 
 #: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
 #: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
 #: grecord/src/gsr-window.c:284
-#, fuzzy
 msgid "seconds"
-msgstr "%s 录音"
+msgstr "秒"
 
 #: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
 #: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
-#, fuzzy
 msgid "second"
-msgstr "%s 录音"
+msgstr "秒"
 
 #: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
-#, fuzzy
 msgid "Open a file"
-msgstr "打开混音器"
+msgstr "打开文件"
 
 #: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
 #: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
 msgid "Ready"
-msgstr ""
+msgstr "就绪"
 
 #: grecord/src/gsr-window.c:541
-#, fuzzy, c-format
+#, c-format
 msgid "Saving %s..."
-msgstr "正在保存..."
+msgstr "正在保存 %s..."
 
 #: grecord/src/gsr-window.c:600
-#, fuzzy
 msgid "Save file as"
-msgstr "保存声音文件"
+msgstr "文件另存为"
 
 #: grecord/src/gsr-window.c:654
-#, fuzzy, c-format
+#, c-format
 msgid "%s is not installed in the path."
 msgstr "%s 没有安装到路径中"
 
 #: grecord/src/gsr-window.c:736
 #, c-format
 msgid "%s (Has not been saved)"
-msgstr ""
+msgstr "%s (尚未被保存)"
 
 #: grecord/src/gsr-window.c:751
-#, fuzzy
 msgid "Unknown size"
-msgstr "未知碟片"
+msgstr "未知大小"
 
 #: grecord/src/gsr-window.c:771
 #, c-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: grecord/src/gsr-window.c:780
 #, c-format
 msgid "%.0f kb/s"
-msgstr ""
+msgstr "%.0f kb/s"
 
 #: grecord/src/gsr-window.c:792
-#, fuzzy
 msgid "1 (mono)"
-msgstr "单声道"
+msgstr "1 (单声道)"
 
 #: grecord/src/gsr-window.c:796
-#, fuzzy
 msgid "2 (stereo)"
-msgstr "立体声"
+msgstr "2 (立体声)"
 
 #: grecord/src/gsr-window.c:825
-#, fuzzy, c-format
+#, c-format
 msgid "%s Information"
-msgstr "记录信息"
+msgstr "%s 信息"
 
 #: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
-#, fuzzy
 msgid "File Information"
-msgstr "记录信息"
+msgstr "文件信息"
 
 #: grecord/src/gsr-window.c:859
-#, fuzzy
 msgid "Folder:"
-msgstr "目录"
+msgstr "目录："
 
 #: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
 msgid "Filename:"
-msgstr ""
+msgstr "文件名："
 
 #: grecord/src/gsr-window.c:871
 msgid "File size:"
-msgstr ""
+msgstr "文件大小："
 
 #: grecord/src/gsr-window.c:880
-#, fuzzy
 msgid "Audio Information"
-msgstr "音频格式："
+msgstr "音频信息"
 
 #: grecord/src/gsr-window.c:894
 msgid "Song length:"
-msgstr ""
+msgstr "歌曲长度："
 
 #: grecord/src/gsr-window.c:900
-#, fuzzy
 msgid "Number of channels:"
-msgstr "次数(_N)："
+msgstr "声道个数："
 
 #: grecord/src/gsr-window.c:906
-#, fuzzy
 msgid "Sample rate:"
 msgstr "采样率："
 
 #: grecord/src/gsr-window.c:912
 msgid "Bit rate:"
-msgstr ""
+msgstr "位速率："
 
 #: grecord/src/gsr-window.c:981
 msgid "(C) 2002 Iain Holmes"
-msgstr ""
+msgstr "(C) 2002 Iain Holmes"
 
 #: grecord/src/gsr-window.c:982
-#, fuzzy
 msgid "A sound recorder for GNOME"
-msgstr "录音机"
+msgstr "GNOME 的录音机程序"
 
 #: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
 #, c-format
@@ -2145,18 +2123,16 @@ msgid "%s - Sound Recorder"
 msgstr "%s - 录音机"
 
 #: grecord/src/gsr-window.c:1548
-#, fuzzy
 msgid "File information"
-msgstr "记录信息"
+msgstr "文件信息"
 
 #: grecord/src/gsr-window.c:1569
 msgid "<none>"
-msgstr ""
+msgstr "<无>"
 
 #: grecord/src/gsr-window.c:1578
-#, fuzzy
 msgid "Length:"
-msgstr "长度"
+msgstr "长度："
 
 #: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
@@ -2268,16 +2244,14 @@ msgstr ""
 "Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002"
 
 #: grecord/src/gui.c:431
-#, fuzzy
 msgid "GNOME Sound Recorder"
-msgstr "录音机"
+msgstr "GNOME 录音机"
 
 #. if your charset allows it, replace the
 #. "e" of Hyden by an "eacute" (U00E9)
 #: grecord/src/gui.c:434
-#, fuzzy
 msgid "(C) 2000 Andreas Hyden"
-msgstr "版权所有 (C)  2000 Andreas Hyden"
+msgstr "(C) 2000 Andreas Hyden"
 
 #: grecord/src/gui.c:435
 msgid ""
@@ -2478,240 +2452,219 @@ msgstr "正在给采样添加回音..."
 
 # SUN NEW TRANSLATION
 #: grecord/gsr.xml.h:1
-#, fuzzy
 msgid "About"
-msgstr "原声"
+msgstr "关于"
 
 # SUN NEW TRANSLATION
 #: grecord/gsr.xml.h:2
-#, fuzzy
 msgid "Close"
-msgstr "Club-House"
+msgstr "关闭"
 
 #: grecord/gsr.xml.h:3
 msgid "Close this window"
-msgstr ""
+msgstr "关闭这个窗口"
 
 #: grecord/gsr.xml.h:4
 msgid "Contents"
-msgstr ""
+msgstr "内容"
 
 #: grecord/gsr.xml.h:6
-#, fuzzy
 msgid "Display help for Sound Recorder"
-msgstr "%s - 录音机"
+msgstr "显示录音机的帮助内容"
 
 #: grecord/gsr.xml.h:8
-#, fuzzy
 msgid "File _Information"
-msgstr "记录信息"
+msgstr "文件信息(_I)"
 
 #: grecord/gsr.xml.h:9
 msgid "Main toolbar"
-msgstr ""
+msgstr "主工具栏"
 
 #: grecord/gsr.xml.h:11
-#, fuzzy
 msgid "Open"
-msgstr "歌剧"
+msgstr "打开"
 
 #: grecord/gsr.xml.h:14
 msgid "Play sound"
-msgstr ""
+msgstr "播放声音"
 
 #: grecord/gsr.xml.h:15
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: grecord/gsr.xml.h:16
 msgid "Quit the application"
-msgstr ""
+msgstr "退出应用程序"
 
 #: grecord/gsr.xml.h:17
 msgid "Recent _Files"
-msgstr ""
+msgstr "最近的文件(_F)"
 
 #: grecord/gsr.xml.h:19
-#, fuzzy
 msgid "Record sound"
-msgstr "录制声音剪辑"
+msgstr "录制声音"
 
 #: grecord/gsr.xml.h:20
-#, fuzzy
 msgid "Run Mixer"
-msgstr "运行混音器(_M)"
+msgstr "运行混音器"
 
 #: grecord/gsr.xml.h:22
 msgid "Run the audio mixer"
-msgstr ""
+msgstr "运行音频混音器"
 
 #: grecord/gsr.xml.h:23
 msgid "Save"
 msgstr "保存"
 
 #: grecord/gsr.xml.h:24
-#, fuzzy
 msgid "Save As"
-msgstr "保存 %s？"
+msgstr "另存为"
 
 #: grecord/gsr.xml.h:25
-#, fuzzy
 msgid "Save _As..."
-msgstr "保存 %s？"
+msgstr "另存为(_A)..."
 
 #: grecord/gsr.xml.h:26
-#, fuzzy
 msgid "Save the current file"
-msgstr "保存声音文件"
+msgstr "保存当前的文件"
 
 #: grecord/gsr.xml.h:27
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "用不同的文件名保存当前的文件"
 
 #: grecord/gsr.xml.h:28
 msgid "Show information about the current file"
-msgstr ""
+msgstr "显示关于当前文件的信息"
 
 #: grecord/gsr.xml.h:29
-#, fuzzy
 msgid "Show information for Sound Recorder"
-msgstr "Gnome 录音机"
+msgstr "显示录音机的信息"
 
 #: grecord/gsr.xml.h:31
-#, fuzzy
 msgid "Stop sound"
-msgstr "声音"
+msgstr "停止声音"
 
 #: grecord/gsr.xml.h:32
 msgid "_About"
-msgstr ""
+msgstr "关于(_A)"
 
 #: grecord/gsr.xml.h:33
 msgid "_Close Window"
-msgstr ""
+msgstr "关闭窗口(_C)"
 
 #: grecord/gsr.xml.h:34
 msgid "_Contents"
-msgstr ""
+msgstr "内容(_C)"
 
 #: grecord/gsr.xml.h:35
-#, fuzzy
 msgid "_Control"
-msgstr "乡村音乐"
+msgstr "控制(_C)"
 
 #: grecord/gsr.xml.h:36
 msgid "_File"
-msgstr ""
+msgstr "文件(_F)"
 
 #: grecord/gsr.xml.h:39
 msgid "_Open..."
-msgstr ""
+msgstr "打开(_O)..."
 
 #: grecord/gsr.xml.h:40
-#, fuzzy
 msgid "_Play"
-msgstr "播放"
+msgstr "播放(_P)"
 
 #: grecord/gsr.xml.h:41
 msgid "_Quit"
-msgstr ""
+msgstr "退出(_Q)"
 
 #: grecord/gsr.xml.h:42
-#, fuzzy
 msgid "_Record"
-msgstr "录音"
+msgstr "录音(_R)"
 
 #: grecord/gsr.xml.h:43
-#, fuzzy
 msgid "_Save"
-msgstr "保存"
+msgstr "保存(_S)"
 
 #. Fatal error
 #: gstreamer-properties/gstreamer-properties.c:249
 msgid "Failure instantiating main window"
-msgstr ""
+msgstr "初始化主窗口失败"
 
 #. Fatal error
 #: gstreamer-properties/gstreamer-properties.c:289
-#, fuzzy, c-format
+#, c-format
 msgid "Could not load UI resource %s"
-msgstr "无法 fork 子进程"
+msgstr "无法载入用户界面资源 %s"
 
 #: gstreamer-properties/gstreamer-properties.desktop.in.h:1
 msgid "Configure defaults for GStreamer applications"
-msgstr ""
+msgstr "配置 GStreamer 应用程序的默认值"
 
 # SUN NEW TRANSLATION
 #: gstreamer-properties/gstreamer-properties.desktop.in.h:2
-#, fuzzy
 msgid "GStreamer"
-msgstr "游戏音乐"
+msgstr "GStreamer"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:2
 msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
-msgstr ""
+msgstr "<span weight=\"bold\" size=\"x-large\">正在测试...</span>"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:3
 msgid "Audio"
-msgstr ""
+msgstr "音频"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:4
-#, fuzzy
 msgid "Audio _Input:"
-msgstr "音频格式："
+msgstr "音频输入(_I)："
 
 #: gstreamer-properties/gstreamer-properties.glade.h:5
-#, fuzzy
 msgid "Audio _Output:"
-msgstr "话筒输出"
+msgstr "音频输出(_O)："
 
 #: gstreamer-properties/gstreamer-properties.glade.h:6
 msgid "Click Ok to finish"
-msgstr ""
+msgstr "单击确定来结束"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:7
 msgid "Default Sink"
-msgstr ""
+msgstr "默认接收器"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:8
 msgid "Default Source"
-msgstr ""
+msgstr "默认音源"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:9
-#, fuzzy
 msgid "GStreamer Properties"
-msgstr "CDDBSlave 2 属性"
+msgstr "GStreamer 属性"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:10
 msgid "Pipeline:"
-msgstr ""
+msgstr "流水线："
 
 #: gstreamer-properties/gstreamer-properties.glade.h:11
 msgid "Test..."
-msgstr ""
+msgstr "测试..."
 
 #: gstreamer-properties/gstreamer-properties.glade.h:12
 msgid "Testing Pipeline"
-msgstr ""
+msgstr "正在测试流水线"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:14
 msgid "Video _Input:"
-msgstr ""
+msgstr "视频输入(_I)："
 
 #: gstreamer-properties/gstreamer-properties.glade.h:15
-#, fuzzy
 msgid "Video _Output:"
-msgstr "话筒输出"
+msgstr "视频输出(_O)："
 
 #: gstreamer-properties/pipeline-test-old.c:215
 #: gstreamer-properties/pipeline-tests.c:111
 #, c-format
 msgid "Failed to construct test pipeline for '%s'"
-msgstr ""
+msgstr "为‘%s’创建测试流水线失败"
 
 #: vu-meter/main.c:120
 msgid ""

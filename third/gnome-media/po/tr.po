@@ -1,30 +1,29 @@
-# -------------------------------------------------------
+# Turkish translation of gnome-media.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Fatih Demir <kabalak@gmx.net>, 2000.
+# Fatih Demir <kabalak@gtranslator.org>, 2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-media 1.2.3\n"
-"POT-Creation-Date: 2002-12-07 15:16+0000\n"
-"PO-Revision-Date: 2001-06-07 22:57+0200\n"
+"Project-Id-Version: gnome-media\n"
+"POT-Creation-Date: 2003-01-28 04:54+0100\n"
+"PO-Revision-Date: 2003-01-30 20:38+0000\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-9\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:1
 msgid "Address of the server to contact for CD queries"
-msgstr ""
+msgstr "CD taramalarý için baðlantý kurulacak sunucu adý"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
 msgid "Port"
 msgstr "Port"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:3
-#, fuzzy
 msgid "Server name"
-msgstr "Sunucu"
+msgstr "Sunucu adý"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:4
 msgid "The hostname that will be sent with all queries"
@@ -35,18 +34,16 @@ msgid "The port that the server is running the database on"
 msgstr ""
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:6
-#, fuzzy
 msgid "The username"
-msgstr "Tema adý"
+msgstr "Kullanýcý adý"
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:7
 msgid "The username that will be sent with all queries"
 msgstr ""
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:8
-#, fuzzy
 msgid "Your hostname"
-msgstr "Makine adý:"
+msgstr "Makine adý"
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -63,7 +60,7 @@ msgstr "Giriþ bilgileri"
 
 #: cddb-slave2/cddb-slave-capplet.c:657
 msgid "Send _no info"
-msgstr ""
+msgstr "_Bilgi gönderme"
 
 #: cddb-slave2/cddb-slave-capplet.c:666
 msgid "Send real _info"
@@ -71,11 +68,11 @@ msgstr "Gerçek bilgi _gönder"
 
 #: cddb-slave2/cddb-slave-capplet.c:675
 msgid "Send _other info..."
-msgstr ""
+msgstr "B_aþka bir bilgi gönder..."
 
 #: cddb-slave2/cddb-slave-capplet.c:692
 msgid "N_ame:"
-msgstr ""
+msgstr "Ý_sim:"
 
 #: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
@@ -88,11 +85,11 @@ msgstr "Sunucu"
 
 #: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
-msgstr ""
+msgstr "_FreeDB sunucusu"
 
 #: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
-msgstr ""
+msgstr "_Baþka bir FreeDB sunucusu..."
 
 #: cddb-slave2/cddb-slave-capplet.c:779
 msgid "Location"
@@ -115,9 +112,8 @@ msgid "_Port:"
 msgstr "_Port:"
 
 #: cddb-slave2/cddb-slave-capplet.c:866
-#, fuzzy
 msgid "CD Database Preferences"
-msgstr "Gnome-CD Tercihleri"
+msgstr "CD Veritabaný Tercihleri"
 
 #: cddb-slave2/cddb-slave.c:213
 msgid "Unknown / Unknown"
@@ -154,17 +150,16 @@ msgstr "Þarkýcý ve Baþlýk"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
 #: gnome-cd/gnome-cd.c:130
-#, fuzzy
 msgid "Unknown track"
-msgstr "Bilinmeyen CD"
+msgstr "Bilinmeyen iz"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:1
 msgid "CD Database"
-msgstr ""
+msgstr "CD Veritabaný"
 
 #: cddb-slave2/cddb-slave.desktop.in.h:2
 msgid "Modify your CD database preferences"
-msgstr ""
+msgstr "CD veritabaný tercihlerinizi düzenleyin"
 
 #: cddb-slave2/cddb-track-editor.c:78
 msgid "Blues"
@@ -422,15 +417,15 @@ msgstr "Pop/Funk"
 
 #: cddb-slave2/cddb-track-editor.c:141
 msgid "Jungle"
-msgstr ""
+msgstr "Jungle"
 
 #: cddb-slave2/cddb-track-editor.c:142
 msgid "Native American"
-msgstr ""
+msgstr "Native American"
 
 #: cddb-slave2/cddb-track-editor.c:143
 msgid "Cabaret"
-msgstr ""
+msgstr "Cabaret"
 
 #: cddb-slave2/cddb-track-editor.c:144
 msgid "New Wave"
@@ -486,31 +481,31 @@ msgstr "Rock & Roll"
 
 #: cddb-slave2/cddb-track-editor.c:157
 msgid "Hard Rock"
-msgstr ""
+msgstr "Hard Rock"
 
 #: cddb-slave2/cddb-track-editor.c:158
 msgid "Folk"
-msgstr ""
+msgstr "Folk"
 
 #: cddb-slave2/cddb-track-editor.c:159
 msgid "Folk/Rock"
-msgstr ""
+msgstr "Folk/Rock"
 
 #: cddb-slave2/cddb-track-editor.c:160
 msgid "National Folk"
-msgstr ""
+msgstr "National Folk"
 
 #: cddb-slave2/cddb-track-editor.c:161
 msgid "Swing"
-msgstr ""
+msgstr "Swing"
 
 #: cddb-slave2/cddb-track-editor.c:162
 msgid "Fast-Fusion"
-msgstr ""
+msgstr "Fast-Fusion"
 
 #: cddb-slave2/cddb-track-editor.c:163
 msgid "Bebop"
-msgstr ""
+msgstr "Bebop"
 
 #: cddb-slave2/cddb-track-editor.c:164
 msgid "Latin"
@@ -638,23 +633,23 @@ msgstr "Ballad"
 
 #: cddb-slave2/cddb-track-editor.c:195
 msgid "Power Ballad"
-msgstr ""
+msgstr "Power Ballad"
 
 #: cddb-slave2/cddb-track-editor.c:196
 msgid "Rythmic Soul"
-msgstr ""
+msgstr "Rythmic Soul"
 
 #: cddb-slave2/cddb-track-editor.c:197
 msgid "Freestyle"
-msgstr ""
+msgstr "Freestyle"
 
 #: cddb-slave2/cddb-track-editor.c:198
 msgid "Duet"
-msgstr ""
+msgstr "Duet"
 
 #: cddb-slave2/cddb-track-editor.c:199
 msgid "Punk Rock"
-msgstr ""
+msgstr "Punk Rock"
 
 #: cddb-slave2/cddb-track-editor.c:200
 msgid "Drum Solo"
@@ -766,7 +761,7 @@ msgstr "Nu-Metal"
 
 #: cddb-slave2/cddb-track-editor.c:227
 msgid "Art Rock"
-msgstr ""
+msgstr "Art Rock"
 
 #: cddb-slave2/cddb-track-editor.c:525
 #, c-format
@@ -780,7 +775,7 @@ msgstr ""
 
 #: cddb-slave2/cddb-track-editor.c:626
 msgid "_Artist:"
-msgstr ""
+msgstr "_Sanatçý:"
 
 #: cddb-slave2/cddb-track-editor.c:640
 msgid "Disc _Title:"
@@ -796,9 +791,8 @@ msgstr "Geliþmiþ CD seçeneklerini gizle"
 
 #. Top box: Disc comments. Maybe should be a GtkText?
 #: cddb-slave2/cddb-track-editor.c:664
-#, fuzzy
 msgid "_Disc comments:"
-msgstr "CD açýklamasý:"
+msgstr "_Disk açýklamasý:"
 
 #. Genre
 #: cddb-slave2/cddb-track-editor.c:679
@@ -807,13 +801,12 @@ msgstr ""
 
 #. Year
 #: cddb-slave2/cddb-track-editor.c:695
-#, fuzzy
 msgid "_Year:"
-msgstr "Yýl:"
+msgstr "_Yýl:"
 
 #: cddb-slave2/cddb-track-editor.c:734
 msgid "Title"
-msgstr "Ýsim"
+msgstr "Baþlýk"
 
 #: cddb-slave2/cddb-track-editor.c:741
 msgid "Length"
@@ -830,9 +823,8 @@ msgstr "Geliþmiþ parça seçeneklerini gizle"
 
 #. Extra data
 #: cddb-slave2/cddb-track-editor.c:764
-#, fuzzy
 msgid "_Extra track data:"
-msgstr "Ek parça bilgisi:"
+msgstr "_Ek iz bilgisi:"
 
 #: cddb-slave2/cddb-track-editor.c:891
 msgid "CDDB Track Editor"
@@ -889,7 +881,7 @@ msgstr "Radyo"
 msgid "Phone"
 msgstr "Kulaklýk"
 
-#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1090
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
 msgid "Mono"
 msgstr "Mono"
 
@@ -1109,73 +1101,71 @@ msgid ""
 msgstr ""
 
 #: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
-#, fuzzy
 msgid "_Details"
-msgstr "Öntanýmlýlar"
+msgstr "_Ayrýntýlar"
 
 #: gmix/gmix.c:387
-#, fuzzy
 msgid "Invalid mixer device"
-msgstr "Geçersiz CDROM aygýtý"
+msgstr "Geçersiz karýþtýrýcý aygýtý"
 
 #: gmix/gmix.c:626
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "a version prior to 3.6.0.\n"
 msgstr ""
-"Uyarý: gmix'in bu sürümü OSS %d.%d.%d ile \n"
-"derlenmiþ, ancak þimdiki sisteminizde çalýþan\n"
+"Uyarý: Gnome Ses Denetim sisteminin bu sürümü \n"
+"OSS %d.%d.%d ile derlenmiþ, ancak þimdiki sisteminizde çalýþan\n"
 "sürüm 3.6.0'dan daha eski.\n"
 
 #: gmix/gmix.c:634
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
 "OSS version %d.%d.%d, and your system is running\n"
 "version %d.%d.%d.\n"
 msgstr ""
-"Uyarý: gmix'in bu sürümü OSS %d.%d.%d ile \n"
-"derlenmiþ, ancak þimdiki sisteminizde çalýþan\n"
+"Uyarý: Gnome Ses Denetimi sisteminin bu sürümü \n"
+"OSS %d.%d.%d ile derlenmiþ, ancak þimdiki sisteminizde çalýþan\n"
 "sürüm %d.%d.%d\n"
 
 #: gmix/gmix.c:1088
-#, fuzzy, c-format
+#, c-format
 msgid "left %s"
-msgstr "sol "
+msgstr "sol %s"
 
 #: gmix/gmix.c:1114
-#, fuzzy, c-format
+#, c-format
 msgid "Right %s"
-msgstr "sað "
+msgstr "Sað %s"
 
 #: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "Kilitle"
 
 #: gmix/gmix.c:1220
-#, fuzzy, c-format
+#, c-format
 msgid "%s Lock"
-msgstr "Kilitle"
+msgstr "%s Kilitle"
 
 #: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "Sessiz"
 
 #: gmix/gmix.c:1244
-#, fuzzy, c-format
+#, c-format
 msgid "%s Mute"
-msgstr "Sessiz"
+msgstr "%s Sessiz"
 
 #: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "Kayd."
 
 #: gmix/gmix.c:1270
-#, fuzzy, c-format
+#, c-format
 msgid "%s Record"
-msgstr "Kaydet"
+msgstr "%s Kayýt"
 
 #: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
@@ -1183,20 +1173,12 @@ msgid "Volume Control"
 msgstr "Ses Kontrolü"
 
 #: gmix/gmix.c:1748
-#, fuzzy
 msgid "GNOME Volume Control"
-msgstr "Ses Kontrolü"
-
-#: gmix/gmix.c:1749
-msgid ""
-"(C) 1998 Jens Ch. Restemeier\n"
-"(C) 2001 Iain Holmes"
-msgstr ""
+msgstr "GNOME Ses Denetimi"
 
 #: gmix/gmix.c:1751
-#, fuzzy
 msgid "A mixer for sound devices"
-msgstr "Bu ses aygýtlarý için bir karýþtýrýcýdýr"
+msgstr "Ses aygýtlarý için bir karýþtýrýcý"
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:1
@@ -1204,14 +1186,12 @@ msgid "Adjust the volume level"
 msgstr "Ses seviyesini ayarla"
 
 #: gmix/prefs.c:193 gmix/prefs.c:196
-#, fuzzy
 msgid "Shown"
-msgstr "Showtunes"
+msgstr "Gösteriliyor"
 
 #: gmix/prefs.c:204 gmix/prefs.c:207
-#, fuzzy
 msgid "Mixer label"
-msgstr "Karýþtýrýcý etiketleri kullan"
+msgstr "Karýþtýrýcý etiketi"
 
 #. Add the label reset button
 #: gmix/prefs.c:216
@@ -1219,14 +1199,12 @@ msgid "_Reset labels to their defaults"
 msgstr ""
 
 #: gmix/prefs.c:313
-#, fuzzy
 msgid "Gnome Volume Control Preferences"
-msgstr "Gnome-CD Tercihleri"
+msgstr "Gnome Ses Denetimi Tercihleri"
 
 #: gnome-cd/access/cddisplayaccessible.c:117
-#, fuzzy
 msgid "CD Display"
-msgstr "CD Çalýcý"
+msgstr "CD Görüntüleyici"
 
 #: gnome-cd/access/cddisplayaccessible.c:119
 msgid ""
@@ -1235,28 +1213,24 @@ msgid ""
 msgstr ""
 
 #: gnome-cd/access/cddisplayaccessible.c:188
-#, fuzzy
 msgid "Time Line"
-msgstr "Tema adý"
+msgstr "Zaman Çizgisi"
 
 #: gnome-cd/access/cddisplayaccessible.c:189
 msgid "Line for displaying the time elapsed for the current track"
 msgstr ""
 
 #: gnome-cd/access/cddisplayaccessible.c:192
-#, fuzzy
 msgid "Info Line"
-msgstr "Satýr "
+msgstr "Bilgi Çizgisi"
 
 #: gnome-cd/access/cddisplayaccessible.c:193
-#, fuzzy
 msgid "Line for displaying information"
-msgstr "Giriþ bilgileri"
+msgstr ""
 
 #: gnome-cd/access/cddisplayaccessible.c:196
-#, fuzzy
 msgid "Artist Line"
-msgstr "Þarkýcý ve Baþlýk"
+msgstr "Sanatçý Çizgisi"
 
 #: gnome-cd/access/cddisplayaccessible.c:197
 msgid "Line for displaying the name of the artist"
@@ -1264,7 +1238,7 @@ msgstr ""
 
 #: gnome-cd/access/cddisplayaccessible.c:200
 msgid "Album Line"
-msgstr ""
+msgstr "Albüm Çizgisi"
 
 #: gnome-cd/access/cddisplayaccessible.c:201
 msgid "Line for displaying the name of the album"
@@ -1283,9 +1257,9 @@ msgid "Pause"
 msgstr "Duraklat"
 
 #: gnome-cd/callbacks.c:530
-#, fuzzy, c-format
+#, c-format
 msgid "Playing %s - %s"
-msgstr "Çalýyor"
+msgstr "Çalýyor: %s - %s"
 
 #: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 msgid "Unknown Artist"
@@ -1295,15 +1269,14 @@ msgstr "Bilinmeyen Þarkýcý"
 msgid "Unknown Album"
 msgstr "Bilinmeyen Albüm"
 
-#: gnome-cd/callbacks.c:534 grecord/src/gui.c:827
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
 msgid "Playing"
 msgstr "Çalýyor"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:557
-#, fuzzy
 msgid "Paused"
-msgstr "Duraklat"
+msgstr "Duraklatýldý"
 
 #. Update tray icon tooltip
 #: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
@@ -1314,14 +1287,12 @@ msgstr "CD Çalýcý"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:620
-#, fuzzy
 msgid "Stopped"
-msgstr "Dur"
+msgstr "Durduruldu"
 
 #: gnome-cd/callbacks.c:626
-#, fuzzy
 msgid "Disc error"
-msgstr "Disco"
+msgstr "Disk hatasý"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
@@ -1334,29 +1305,25 @@ msgstr "Sürücü açýk"
 
 #: gnome-cd/callbacks.c:766
 msgid "Data CD"
-msgstr ""
+msgstr "Veri CD'si"
 
 #. Updated the tray icon tooltip
 #: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
-msgstr ""
+msgstr "CD yok"
 
 #: gnome-cd/callbacks.c:803
 msgid "Drive Error"
 msgstr "Sürücü Hatasý"
 
-#: gnome-cd/callbacks.c:824
-msgid "(C) 2001 Iain Holmes"
-msgstr ""
-
 #: gnome-cd/callbacks.c:825
 msgid "A CD player for GNOME"
-msgstr ""
+msgstr "GNOME için CD çalýcý"
 
 #: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
-msgstr ""
+msgstr "%s aygýtýna eriþmek için izniniz yok."
 
 #: gnome-cd/cdrom.c:373
 #, c-format
@@ -1401,14 +1368,12 @@ msgid "_Eject disc"
 msgstr "_CD'yi çýkar"
 
 #: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
-#, fuzzy
 msgid "_Help"
-msgstr "Yardým"
+msgstr "_Yardým"
 
 #: gnome-cd/gnome-cd.c:306
-#, fuzzy
 msgid "_About CD player"
-msgstr "CD Çalýcý"
+msgstr "_CD Çalýcý Hakkýnda"
 
 #: gnome-cd/gnome-cd.c:414
 msgid ""
@@ -1419,7 +1384,7 @@ msgstr ""
 
 #: gnome-cd/gnome-cd.c:418
 msgid "Set device"
-msgstr "CDROM aygýtý tanýmla"
+msgstr "Aygýt tanýmla"
 
 #: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
@@ -1436,18 +1401,16 @@ msgid ""
 msgstr ""
 
 #: gnome-cd/gnome-cd.c:479
-#, fuzzy
 msgid "_Set device"
-msgstr "CDROM aygýtý tanýmla"
+msgstr "Aygýt _tanýmla"
 
 #: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
 msgstr "Geçersiz CDROM aygýtý"
 
 #: gnome-cd/gnome-cd.c:542
-#, fuzzy
 msgid "Volume control"
-msgstr "Ses Kontrolü"
+msgstr "Ses kontrolü"
 
 #: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
@@ -1458,18 +1421,16 @@ msgid "Track editor"
 msgstr "Parça düzenleyici"
 
 #: gnome-cd/gnome-cd.c:559
-#, fuzzy
 msgid "Open preferences"
-msgstr "Ayarlar"
+msgstr "Tercihleri aç"
 
 #: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
-msgstr "Ayarlar"
+msgstr "Tercihler"
 
 #: gnome-cd/gnome-cd.c:568
-#, fuzzy
 msgid "Track List"
-msgstr "Parça düzenleyici"
+msgstr "Ýz listesi"
 
 #: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
@@ -1507,21 +1468,20 @@ msgstr "CD'yi Çýkar"
 msgid "Eject"
 msgstr "Çýkar"
 
-#: gnome-cd/gnome-cd.c:731
-#, fuzzy
+#: gnome-cd/gnome-cd.c:734
 msgid "CD device to use"
-msgstr "CDROM aygýtý yok"
+msgstr "Kullanýlacak CD aygýtý"
 
-#: gnome-cd/gnome-cd.c:740
+#: gnome-cd/gnome-cd.c:736
 msgid "Only start if there isn't already a CD player application running"
 msgstr ""
 
-#: gnome-cd/gnome-cd.c:742
+#: gnome-cd/gnome-cd.c:738
 msgid "Play the CD on startup"
-msgstr ""
+msgstr "Baþlarken CD'yi çal"
 
 #. Stick a message box here?
-#: gnome-cd/gnome-cd.c:773
+#: gnome-cd/gnome-cd.c:769
 msgid "Cannot create player"
 msgstr "Çalýýcý baþlatýlamadý"
 
@@ -1531,21 +1491,19 @@ msgstr "Ses CD'si çal"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:1
 msgid "Action on application exit"
-msgstr ""
+msgstr "Uygulama çýkýþýnda yapýlacak iþlem"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:2
-#, fuzzy
 msgid "Action on start"
-msgstr "Açýlýþta menüyü gizle"
+msgstr "Baþlangýçta yapýlacak iþlem"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:3
-#, fuzzy
 msgid "CD player theme"
-msgstr "CDROM aygýtý"
+msgstr "CD çalýcý temasý"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:4
 msgid "Device path"
-msgstr ""
+msgstr "Aygýt yolu"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:5
 msgid "Should the CD player attempt to shut the CD drive on start up?"
@@ -1584,17 +1542,15 @@ msgstr ""
 
 #: gnome-cd/preferences.c:84
 msgid "Error setting device"
-msgstr ""
+msgstr "Aygýt tanýmlanýrken hata oluþtu"
 
 #: gnome-cd/preferences.c:824
-#, fuzzy
 msgid "CD Player Preferences"
-msgstr "Gnome-CD Tercihleri"
+msgstr "CD Çalýcý Tercihleri"
 
 #: gnome-cd/preferences.c:853
-#, fuzzy
 msgid "CD player de_vice:"
-msgstr "CDROM aygýtý"
+msgstr "CD _aygýtý:"
 
 #: gnome-cd/preferences.c:868
 msgid "_Apply change"
@@ -1602,9 +1558,8 @@ msgstr "_Deðiþiklikleri uygula"
 
 #. left side
 #: gnome-cd/preferences.c:881
-#, fuzzy
 msgid "When CD player starts"
-msgstr "Gnome-CD baþlayýnca"
+msgstr "CD çalýcý baþladýðýnda"
 
 #: gnome-cd/preferences.c:889
 msgid "Do _nothing"
@@ -1612,7 +1567,7 @@ msgstr "Hiç _bir þey yapma"
 
 #: gnome-cd/preferences.c:890
 msgid "Do nothing when CD Player starts"
-msgstr ""
+msgstr "CD çalýcý baþladýðýnda iþlem yapma"
 
 #: gnome-cd/preferences.c:900
 msgid "Start _playing CD"
@@ -1620,7 +1575,7 @@ msgstr "Çalmaya _baþla"
 
 #: gnome-cd/preferences.c:901
 msgid "Start playing CD when CD Player starts"
-msgstr ""
+msgstr "CD çalýcý baþladýðýnda CD'yi çalmaya baþla"
 
 #: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
@@ -1628,7 +1583,7 @@ msgstr "Ç_almayý durdur"
 
 #: gnome-cd/preferences.c:911
 msgid "Stop playing CD when CD Player starts"
-msgstr ""
+msgstr "CD çalýcý baþladýðýnda CD'yi çalmayý durdur"
 
 #: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
@@ -1636,9 +1591,8 @@ msgstr "CD kapaðýný kapat"
 
 #. Right side
 #: gnome-cd/preferences.c:937
-#, fuzzy
 msgid "When CD player quits"
-msgstr "GNOME-CD programý kapandýðýnda"
+msgstr "CD çalýcý kapandýðýnda"
 
 #: gnome-cd/preferences.c:945
 msgid "Do not_hing"
@@ -1646,24 +1600,23 @@ msgstr "_Hiç bir þey yapma"
 
 #: gnome-cd/preferences.c:946
 msgid "Do nothing when CD Player exits"
-msgstr ""
+msgstr "CD çalýcý kapandýðýnda bir iþlem yapma"
 
 #: gnome-cd/preferences.c:955
 msgid "S_top playing CD"
-msgstr "Çalmayý durdur"
+msgstr "CD'yi ç_almayý durdur"
 
 #: gnome-cd/preferences.c:956
 msgid "Stop playing CD when CD player quits"
-msgstr ""
+msgstr "CD çalýcý kapandýðýnda CD'yi çalmayý durdur"
 
 #: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr "CD _kapaðýný aç"
 
 #: gnome-cd/preferences.c:967
-#, fuzzy
 msgid "Attempt to open CD tray when CD Player exits"
-msgstr "CD _kapaðýný aç"
+msgstr "CD çalýcý kapandýðýnda CD kapaðýný aç"
 
 #: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
@@ -1679,9 +1632,8 @@ msgstr "Ses parçalarýný kaydet"
 
 #: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
 #: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
-#, fuzzy
 msgid "Sound Recorder"
-msgstr "Ses Kayýtçýsý:"
+msgstr "Ses Kayýtçýsý"
 
 #: grecord/src/grec.c:56
 msgid "Sound Recorder:"
@@ -1721,9 +1673,8 @@ msgid "Converting file..."
 msgstr "Dosya dönüþtürülüyor..."
 
 #: grecord/src/grec.c:302 grecord/src/grec.c:436
-#, fuzzy
 msgid "Cancel"
-msgstr "Dans"
+msgstr "Ýptal"
 
 #: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
@@ -1739,7 +1690,7 @@ msgstr "Kanal: "
 
 #: grecord/src/grec.c:381
 msgid "Cancel open"
-msgstr ""
+msgstr "Açmayý iptal et"
 
 #: grecord/src/grec.c:390
 msgid "Select a sound file"
@@ -1748,19 +1699,19 @@ msgstr "Bir ses dosyasýný seçin"
 #: grecord/src/grec.c:516
 #, c-format
 msgid "%s is not installed in the path"
-msgstr ""
+msgstr "%s programý kurulu deðil"
 
 #: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
-msgstr ""
+msgstr "%s baþlatýlýrken bir hata oluþtu: %s"
 
 #: grecord/src/grec.c:615
 msgid "Undoing all changes..."
 msgstr "Deðiþiklikler geri alýnýyor..."
 
 #: grecord/src/grec.c:718
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "'%s' is a folder.\n"
 "Please select a sound file to be opened."
@@ -1769,7 +1720,7 @@ msgstr ""
 "Açýlacak olan ses dosyasýný seçiniz."
 
 #: grecord/src/grec.c:730
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File '%s' doesn't exist.\n"
 "Please select an existing sound file to be opened."
@@ -1778,40 +1729,40 @@ msgstr ""
 "Lütfen bir ses dosyasý belirtin."
 
 #: grecord/src/grec.c:743
-#, fuzzy, c-format
+#, c-format
 msgid "File '%s isn't a valid sound file."
 msgstr "`%s' geçerli bir ses dosyasý deðildir."
 
 #: grecord/src/grec.c:819
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "'%s' is a folder.\n"
 "Please enter another filename."
 msgstr ""
 "'%s' bir dizindir.\n"
-"Baþka bir dosya adý verin."
+"Lütfen baþka bir dosya adý verin."
 
 #: grecord/src/grec.c:831
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
 "Do you want to overwrite it?"
 msgstr ""
-"'%s dosyasý zaten var.\n"
+"<b>'%s dosyasý zaten var.</b>\n"
 "Üzerine yazýlsýn mý?"
 
 #: grecord/src/grec.c:834
 msgid "Cancel save"
-msgstr ""
+msgstr "Kaydý iptal et"
 
 #: grecord/src/grec.c:835
 msgid "Overwrite"
-msgstr ""
+msgstr "Üzerine yaz"
 
 #: grecord/src/grec.c:862
-#, fuzzy, c-format
+#, c-format
 msgid "Error saving '%s'"
-msgstr "Ses dosyasýný kaydederken hata oldu"
+msgstr "'%s' kaydedilirken hata"
 
 #: grecord/src/grec.c:976
 #, c-format
@@ -1823,12 +1774,12 @@ msgstr ""
 
 #: grecord/src/grec.c:981
 msgid "Do_n't save"
-msgstr ""
+msgstr "_Kaydetme"
 
 #: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
-msgstr ""
+msgstr "%s kaydedilsin mi?"
 
 #. Save the file
 #: grecord/src/grec.c:1012
@@ -1836,18 +1787,19 @@ msgid "Saving..."
 msgstr "Kaydediliyor..."
 
 #: grecord/src/grec.c:1142
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The size of the current sample is more than\n"
 "%i Mb!"
-msgstr "Mevcut örneklemeenin boyu %i Mb'den büyük!"
+msgstr ""
+"Mevcut örneklemenin boyu \n"
+"%i Mb'den büyük!"
 
 #: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "Ses dosyasýný kaydet"
 
 #: grecord/src/grec.c:1429
-#, fuzzy
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
 "another program running that is using the device."
@@ -1857,168 +1809,147 @@ msgstr ""
 
 #: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
 #: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
-#, fuzzy
 msgid "hours"
-msgstr "Chorus"
+msgstr "saat"
 
 #: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
 #: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
 msgid "hour"
-msgstr ""
+msgstr "saat"
 
 #: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
 #: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
-#: grecord/src/gui.c:756
+#: grecord/src/gui.c:753
 msgid "minutes"
 msgstr "dakika"
 
 #: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
 #: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
-#, fuzzy
 msgid "minute"
 msgstr "dakika"
 
 #: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
 #: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
 #: grecord/src/gsr-window.c:284
-#, fuzzy
 msgid "seconds"
-msgstr "Kaydet"
+msgstr "saniye"
 
 #: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
 #: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
-#, fuzzy
 msgid "second"
-msgstr "Kaydet"
+msgstr "saniye"
 
 #: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
-#, fuzzy
 msgid "Open a file"
-msgstr "Karýþtýrýcýyý aç"
+msgstr "Bir dosya aç"
 
 #: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
 #: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
 msgid "Ready"
-msgstr ""
+msgstr "Hazýr"
 
 #: grecord/src/gsr-window.c:541
-#, fuzzy, c-format
+#, c-format
 msgid "Saving %s..."
-msgstr "Kaydediliyor..."
+msgstr "%s kaydediliyor..."
 
 #: grecord/src/gsr-window.c:600
-#, fuzzy
 msgid "Save file as"
-msgstr "Ses dosyasýný kaydet"
+msgstr "Dosyayý farklý kaydet"
 
 #: grecord/src/gsr-window.c:654
 #, c-format
 msgid "%s is not installed in the path."
-msgstr ""
+msgstr "%s sistemde bulunmuyor."
 
 #: grecord/src/gsr-window.c:736
 #, c-format
 msgid "%s (Has not been saved)"
-msgstr ""
+msgstr "%s (henüz kaydedilmedi)"
 
 #: grecord/src/gsr-window.c:751
-#, fuzzy
 msgid "Unknown size"
-msgstr "Bilinmeyen CD"
+msgstr "Bilinmeyen boyut"
 
 #: grecord/src/gsr-window.c:771
 #, c-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: grecord/src/gsr-window.c:780
 #, c-format
 msgid "%.0f kb/s"
-msgstr ""
+msgstr "%.0f kb/s"
 
 #: grecord/src/gsr-window.c:792
-#, fuzzy
 msgid "1 (mono)"
-msgstr "mono (1)"
+msgstr "1 (mono)"
 
 #: grecord/src/gsr-window.c:796
-#, fuzzy
 msgid "2 (stereo)"
-msgstr "stereo (2)"
+msgstr "2 (stereo)"
 
 #: grecord/src/gsr-window.c:825
-#, fuzzy, c-format
+#, c-format
 msgid "%s Information"
-msgstr "Giriþ bilgileri"
+msgstr "%s Bilgi"
 
 #: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
-#, fuzzy
 msgid "File Information"
-msgstr "Giriþ bilgileri"
+msgstr "Dosya Bilgisi"
 
 #: grecord/src/gsr-window.c:859
-#, fuzzy
 msgid "Folder:"
-msgstr "Eskilerden"
+msgstr "Dizin:"
 
 #: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
 msgid "Filename:"
-msgstr ""
+msgstr "Dosya adý:"
 
 #: grecord/src/gsr-window.c:871
 msgid "File size:"
-msgstr ""
+msgstr "Dosya boyutu:"
 
 #: grecord/src/gsr-window.c:880
-#, fuzzy
 msgid "Audio Information"
-msgstr "Ses tipi:"
+msgstr "Ses Bilgisi"
 
 #: grecord/src/gsr-window.c:894
 msgid "Song length:"
-msgstr ""
+msgstr "Þarký boyutu:"
 
 #: grecord/src/gsr-window.c:900
-#, fuzzy
 msgid "Number of channels:"
-msgstr "Defa:"
+msgstr "Kanal sayýsý:"
 
 #: grecord/src/gsr-window.c:906
-#, fuzzy
 msgid "Sample rate:"
-msgstr "Örnekleme seviyesi: "
+msgstr "Örnekleme hýzý:"
 
 #: grecord/src/gsr-window.c:912
 msgid "Bit rate:"
-msgstr ""
-
-#: grecord/src/gsr-window.c:981
-msgid "(C) 2002 Iain Holmes"
-msgstr ""
+msgstr "Bit oraný:"
 
 #: grecord/src/gsr-window.c:982
-#, fuzzy
 msgid "A sound recorder for GNOME"
-msgstr "Ses kayýtçýsý"
+msgstr "GNOME için bir ses kayýtçýsý"
 
 #: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
-#, fuzzy, c-format
+#, c-format
 msgid "%s - Sound Recorder"
-msgstr "Ses Kayýtçýsý:"
+msgstr "%s Ses Kayýtçýsý"
 
 #: grecord/src/gsr-window.c:1548
-#, fuzzy
 msgid "File information"
-msgstr "Giriþ bilgileri"
+msgstr "Dosya Bilgisi"
 
 #: grecord/src/gsr-window.c:1569
 msgid "<none>"
-msgstr ""
+msgstr "<hiçbiri>"
 
 #: grecord/src/gsr-window.c:1578
-#, fuzzy
 msgid "Length:"
-msgstr "Uzunluk"
+msgstr "Uzunluk:"
 
 #: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
@@ -2029,14 +1960,12 @@ msgid "Create a new sample"
 msgstr "Yeni bir parça yarat"
 
 #: grecord/src/gui.c:54 grecord/gsr.xml.h:21
-#, fuzzy
 msgid "Run _Mixer"
-msgstr "Karýþtýrýcýyý çalýþtýr..."
+msgstr "K_arýþtýrýcýyý Çalýþtýr"
 
 #: grecord/src/gui.c:55
-#, fuzzy
 msgid "Run GNOME Volume Control"
-msgstr "Ses Kontrolü"
+msgstr "GNOME Ses Kontrolünü Çalýþtýr"
 
 #: grecord/src/gui.c:69
 msgid "Add echo"
@@ -2052,7 +1981,7 @@ msgstr "Yanký"
 
 #: grecord/src/gui.c:112
 msgid "_Undo All"
-msgstr ""
+msgstr "_Hepsini Geri Al"
 
 #: grecord/src/gui.c:113
 msgid "Undo all changes made on the current sample"
@@ -2063,14 +1992,12 @@ msgid "Effects"
 msgstr "Efektler"
 
 #: grecord/src/gui.c:197
-#, fuzzy
 msgid "16bit PCM"
-msgstr "16bit pcm"
+msgstr "16bit PCM"
 
 #: grecord/src/gui.c:199
-#, fuzzy
 msgid "8bit PCM"
-msgstr "8bit pcm"
+msgstr "8bit PCM"
 
 #: grecord/src/gui.c:202
 msgid "stereo"
@@ -2105,9 +2032,8 @@ msgid "Start recording"
 msgstr "Kaydetmeye baþla"
 
 #: grecord/src/gui.c:301
-#, fuzzy
 msgid "Audio format: "
-msgstr "Ses tipi: "
+msgstr "Ses biçimi: "
 
 #: grecord/src/gui.c:358
 #, c-format
@@ -2119,29 +2045,15 @@ msgstr "`%s' dosyasý bulunamadý, öntanýmlý deðerler kullanýlýyor."
 msgid "File '%s' isn't a supported soundfile."
 msgstr "`%s' desteklenen bir ses dosyasý deðildir."
 
-#. if your charset allows it, replace the "e" of "Hyden"
-#. *  by an "eacute" (U00E9)
-#: grecord/src/gui.c:420
-msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
-msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
-
-#: grecord/src/gui.c:427
+#: grecord/src/gui.c:425
 msgid "translator_credits"
-msgstr ""
+msgstr "Görkem Çetin"
+
+#: grecord/src/gui.c:429
+msgid "GNOME Sound Recorder"
+msgstr "GNOME Ses Kayýtçýsý"
 
 #: grecord/src/gui.c:431
-#, fuzzy
-msgid "GNOME Sound Recorder"
-msgstr "Ses Kayýtçýsý:"
-
-#. if your charset allows it, replace the
-#. "e" of Hyden by an "eacute" (U00E9)
-#: grecord/src/gui.c:434
-#, fuzzy
-msgid "(C) 2000 Andreas Hyden"
-msgstr "Telif hakký (C) 2000 Andreas Hydén"
-
-#: grecord/src/gui.c:435
 msgid ""
 "A simple soundrecorder and soundplayer for GNOME.\n"
 "Dedicated to my cat, Malte."
@@ -2149,158 +2061,143 @@ msgstr ""
 "Küçük bir ses kaydedicisi.\n"
 "Minik kedim Malte için yazýlmýþtýr."
 
-#: grecord/src/gui.c:703
-#, fuzzy
+#: grecord/src/gui.c:700
 msgid "Gnome Sound Recorder Preferences"
-msgstr "Gnome-CD Tercihleri"
+msgstr "GNOME Ses Kayýtçý Tercihleri"
 
-#: grecord/src/gui.c:710
-#, fuzzy
+#: grecord/src/gui.c:707
 msgid "Sound Recorder Preferences"
-msgstr "Ses Kayýtçýsý:"
+msgstr "GNOME Ses Kayýtçý Tercihleri"
 
-#: grecord/src/gui.c:722
+#: grecord/src/gui.c:719
 msgid "Recording"
 msgstr "Kaydediliyor"
 
-#: grecord/src/gui.c:727
+#: grecord/src/gui.c:724
 msgid "Time"
 msgstr "Zaman"
 
-#: grecord/src/gui.c:740
-#, fuzzy
+#: grecord/src/gui.c:737
 msgid "_Recording timeout: "
-msgstr "Kaydetme zaman aþýmý: "
+msgstr "_Kaydetme zaman aþýmý: "
 
-#: grecord/src/gui.c:763
-#, fuzzy
+#: grecord/src/gui.c:760
 msgid "_Stop recording on timeout"
-msgstr "Zaman aþýmýnda kaydetmeyi durdur"
+msgstr "Z_aman aþýmýnda kaydetmeyi durdur"
 
-#: grecord/src/gui.c:771
-#, fuzzy
+#: grecord/src/gui.c:768
 msgid "_Open save dialog when recording is finished"
-msgstr "Kayýt bitince kaydetme penceresi aç"
+msgstr "_Kayýt bitince kaydetme penceresi aç"
 
-#: grecord/src/gui.c:778
+#: grecord/src/gui.c:775
 msgid "Size"
 msgstr "Boy"
 
-#: grecord/src/gui.c:787
+#: grecord/src/gui.c:784
 #, fuzzy
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
 msgstr "Parçanýn boyu bu sýnýrý aþarsa uyarý mesajý ver (Mb): "
 
-#: grecord/src/gui.c:805
+#: grecord/src/gui.c:802
 #, fuzzy
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
 msgstr "Parçanýn boyu bu sýnýrý aþarsa kaydetmeyi durdur (Mb): "
 
-#: grecord/src/gui.c:832
-#, fuzzy
+#: grecord/src/gui.c:829
 msgid "Repetition"
 msgstr "Tekrarla"
 
-#: grecord/src/gui.c:842
+#: grecord/src/gui.c:839
 msgid "_Repeat the sound"
-msgstr ""
+msgstr "S_esi terarla"
 
-#: grecord/src/gui.c:849
+#: grecord/src/gui.c:846
 msgid "Play the sound _once only."
-msgstr ""
+msgstr "_Sesi sadece bir defa çal."
 
-#: grecord/src/gui.c:855
+#: grecord/src/gui.c:852
 msgid "Repeat _forever"
-msgstr ""
+msgstr "So_nsuza kadar tekrarla"
 
-#: grecord/src/gui.c:866
-#, fuzzy
+#: grecord/src/gui.c:863
 msgid "_Number of times:"
-msgstr "Defa:"
+msgstr "Tek_rarlama sayýsý:"
 
-#: grecord/src/gui.c:888
+#: grecord/src/gui.c:885
 msgid "Paths"
 msgstr "Yollar"
 
-#: grecord/src/gui.c:893
+#: grecord/src/gui.c:890
 msgid "Program files"
 msgstr "Program dosyalarý"
 
-#: grecord/src/gui.c:906
-#, fuzzy
+#: grecord/src/gui.c:903
 msgid "_Path to sox:"
-msgstr "Sox yolu: "
+msgstr "_Sox yolu: "
 
-#: grecord/src/gui.c:920
-#, fuzzy
+#: grecord/src/gui.c:917
 msgid "_Apply"
-msgstr "_Deðiþiklikleri uygula"
+msgstr "_Uygula"
 
-#: grecord/src/gui.c:929
+#: grecord/src/gui.c:926
 #, fuzzy
 msgid "Folders"
 msgstr "Eskilerden"
 
-#: grecord/src/gui.c:942
+#: grecord/src/gui.c:939
 msgid "_Temporary folder:"
-msgstr ""
+msgstr "_Geçici dizin:"
 
-#: grecord/src/gui.c:956
+#: grecord/src/gui.c:953
 msgid "Apply"
-msgstr ""
+msgstr "Uygula"
 
-#: grecord/src/gui.c:968
+#: grecord/src/gui.c:965
 msgid "Sound"
 msgstr "Ses"
 
-#: grecord/src/gui.c:973
+#: grecord/src/gui.c:970
 msgid "Sound options"
 msgstr "Ses seçenekleri"
 
-#: grecord/src/gui.c:982
+#: grecord/src/gui.c:979
 msgid ""
 "Note: These options only take effect whenever a new sound sample\n"
 "is created. They do not operate on an existing sample."
 msgstr ""
 
-#: grecord/src/gui.c:995
-#, fuzzy
+#: grecord/src/gui.c:992
 msgid "Audio format:"
-msgstr "Ses tipi:"
+msgstr "Ses biçimi:"
 
-#: grecord/src/gui.c:1004
+#: grecord/src/gui.c:1001
 msgid "8 _bit PCM"
-msgstr ""
+msgstr "8 _bit PCM"
 
-#: grecord/src/gui.c:1010
+#: grecord/src/gui.c:1007
 msgid "16 b_it PCM"
-msgstr ""
+msgstr "16 b_it PCM"
 
 #. If only combos didn't suck!
-#: grecord/src/gui.c:1024
-#, fuzzy
+#: grecord/src/gui.c:1021
 msgid "S_ample rate:"
-msgstr "Örnekleme oraný:"
+msgstr "Ö_rnekleme oraný:"
 
-#: grecord/src/gui.c:1055
-#, fuzzy
+#: grecord/src/gui.c:1052
 msgid "Mono or Stereo:"
-msgstr "mono/stereo"
+msgstr "Mono / stereo:"
 
-#: grecord/src/gui.c:1064
-#, fuzzy
+#: grecord/src/gui.c:1061
 msgid "_Mono"
-msgstr "Mono"
+msgstr "_Mono"
 
-#: grecord/src/gui.c:1070
-#, fuzzy
+#: grecord/src/gui.c:1067
 msgid "_Stereo"
-msgstr "stereo (2)"
+msgstr "_Stereo"
 
-#: grecord/src/gui.c:1091
-#, fuzzy
+#: grecord/src/gui.c:1088
 msgid "Stereo"
-msgstr "stereo (2)"
+msgstr "Stereo"
 
 #: grecord/src/main.c:50
 msgid "Specify the geometry of the main window"
@@ -2327,119 +2224,105 @@ msgid "Sound recorder"
 msgstr "Ses kayýtçýsý"
 
 #: grecord/src/preferences.c:201
-#, fuzzy
 msgid "Audio format: 8bit PCM"
-msgstr "Ses tipi: "
+msgstr "Ses biçimi: 8bit PCM"
 
 #: grecord/src/preferences.c:201
-#, fuzzy
 msgid "Audio format: 16bit PCM"
-msgstr "Ses tipi: "
+msgstr "Ses biçimi: 16bit PCM"
 
 #: grecord/src/preferences.c:222
-#, fuzzy, c-format
+#, c-format
 msgid "Sample rate: %s"
-msgstr "Örnekleme seviyesi: "
+msgstr "Örnekleme seviyesi: %s"
 
 #: grecord/src/preferences.c:240
-#, fuzzy
 msgid "Channels: mono"
-msgstr "Kanal: "
+msgstr "Kanal: mono"
 
 #: grecord/src/preferences.c:240
-#, fuzzy
 msgid "Channels: stereo"
-msgstr "Kanal: "
+msgstr "Kanal: stereo"
 
 #: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "Parçaya yanký ekleniyor..."
 
 #: grecord/gsr.xml.h:1
-#, fuzzy
 msgid "About"
-msgstr "Akustik"
+msgstr "Hakkýnda"
 
 #: grecord/gsr.xml.h:2
-#, fuzzy
 msgid "Close"
-msgstr "Club-House"
+msgstr "Kapat"
 
 #: grecord/gsr.xml.h:3
 msgid "Close this window"
-msgstr ""
+msgstr "Bu pencereyi kapat"
 
 #: grecord/gsr.xml.h:4
 msgid "Contents"
-msgstr ""
+msgstr "Ýçindekiler"
 
 #: grecord/gsr.xml.h:6
-#, fuzzy
 msgid "Display help for Sound Recorder"
-msgstr "Ses Kayýtçýsý:"
+msgstr "Ses kayýtçýsý için yardým"
 
 #: grecord/gsr.xml.h:8
-#, fuzzy
 msgid "File _Information"
-msgstr "Giriþ bilgileri"
+msgstr "Dosya _Bilgisi"
 
 #: grecord/gsr.xml.h:9
 msgid "Main toolbar"
-msgstr ""
+msgstr "Ana araç çubuðu"
 
 #: grecord/gsr.xml.h:11
-#, fuzzy
 msgid "Open"
-msgstr "Opera"
+msgstr "Aç"
 
 #: grecord/gsr.xml.h:14
 msgid "Play sound"
-msgstr ""
+msgstr "Ses çal"
 
 #: grecord/gsr.xml.h:15
 msgid "Quit"
-msgstr ""
+msgstr "Çýk"
 
 #: grecord/gsr.xml.h:16
 msgid "Quit the application"
-msgstr ""
+msgstr "Uygulamadan çýk"
 
 #: grecord/gsr.xml.h:17
 msgid "Recent _Files"
-msgstr ""
+msgstr "_Son Kullanýlan Dosyalar"
 
 #: grecord/gsr.xml.h:19
-#, fuzzy
 msgid "Record sound"
-msgstr "Ses parçalarýný kaydet"
+msgstr "Sesi kaydet"
 
 #: grecord/gsr.xml.h:20
-#, fuzzy
 msgid "Run Mixer"
-msgstr "Karýþtýrýcýyý çalýþtýr..."
+msgstr "Karýþtýrýcýyý Çalýþtýr"
 
 #: grecord/gsr.xml.h:22
-#, fuzzy
 msgid "Run the audio mixer"
-msgstr "Karýþtýrýcý yolu: "
+msgstr "Ses karýþtýrýcýsýný çalýþtýr"
 
 #: grecord/gsr.xml.h:23
-#, fuzzy
 msgid "Save"
-msgstr "Rave"
+msgstr "Kaydet"
 
 #: grecord/gsr.xml.h:24
 msgid "Save As"
-msgstr ""
+msgstr "Farklý Kaydet"
 
 #: grecord/gsr.xml.h:25
 msgid "Save _As..."
-msgstr ""
+msgstr "Farklý _Kaydet..."
 
 #: grecord/gsr.xml.h:26
-#, fuzzy
 msgid "Save the current file"
-msgstr "Ses dosyasýný kaydet"
+msgstr "Güncel dosyayý kaydet"
 
 #: grecord/gsr.xml.h:27
 msgid "Save the current file with a different name"
@@ -2455,61 +2338,56 @@ msgid "Show information for Sound Recorder"
 msgstr "Ses Kayýtçýsý:"
 
 #: grecord/gsr.xml.h:31
-#, fuzzy
 msgid "Stop sound"
-msgstr "Ses"
+msgstr "Sesi durdur"
 
 #: grecord/gsr.xml.h:32
 msgid "_About"
-msgstr ""
+msgstr "_Hakkýnda"
 
 #: grecord/gsr.xml.h:33
 msgid "_Close Window"
-msgstr ""
+msgstr "Pencereyi _Kapat"
 
 #: grecord/gsr.xml.h:34
 msgid "_Contents"
-msgstr ""
+msgstr "Ýç_indekiler"
 
 #: grecord/gsr.xml.h:35
-#, fuzzy
 msgid "_Control"
-msgstr "Country"
+msgstr "_Kontrol"
 
 #: grecord/gsr.xml.h:36
 msgid "_File"
-msgstr ""
+msgstr "_Dosya"
 
 #: grecord/gsr.xml.h:39
 msgid "_Open..."
-msgstr ""
+msgstr "_Aç..."
 
 #: grecord/gsr.xml.h:40
-#, fuzzy
 msgid "_Play"
-msgstr "Çal"
+msgstr "Ç_al"
 
 #: grecord/gsr.xml.h:41
 msgid "_Quit"
-msgstr ""
+msgstr "Çý_k"
 
 #: grecord/gsr.xml.h:42
-#, fuzzy
 msgid "_Record"
-msgstr "Kaydet"
+msgstr "_Sesi Kaydet"
 
 #: grecord/gsr.xml.h:43
-#, fuzzy
 msgid "_Save"
-msgstr "Rave"
+msgstr "_Kaydet"
 
 #. Fatal error
-#: gstreamer-properties/gstreamer-properties.c:249
+#: gstreamer-properties/gstreamer-properties.c:263
 msgid "Failure instantiating main window"
 msgstr ""
 
 #. Fatal error
-#: gstreamer-properties/gstreamer-properties.c:289
+#: gstreamer-properties/gstreamer-properties.c:303
 #, fuzzy, c-format
 msgid "Could not load UI resource %s"
 msgstr "Oðul süreç çatallanamadý"
@@ -2519,35 +2397,32 @@ msgid "Configure defaults for GStreamer applications"
 msgstr ""
 
 #: gstreamer-properties/gstreamer-properties.desktop.in.h:2
-#, fuzzy
 msgid "GStreamer"
-msgstr "Game"
+msgstr "GStreamer"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:2
 msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
-msgstr ""
+msgstr "<span weight=\"bold\" size=\"x-large\">Deneme yapýlýyor...</span>"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:3
 msgid "Audio"
-msgstr ""
+msgstr "Ses"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:4
-#, fuzzy
 msgid "Audio _Input:"
-msgstr "Ses tipi:"
+msgstr "Ses _Giriþi:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:5
-#, fuzzy
 msgid "Audio _Output:"
-msgstr "Kulaklýk Çýkýþý"
+msgstr "Ses Çý_kýþý:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:6
 msgid "Click Ok to finish"
-msgstr ""
+msgstr "Bitirmek için Tamam'ý týklayýn"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:7
 msgid "Default Sink"
@@ -2558,9 +2433,8 @@ msgid "Default Source"
 msgstr ""
 
 #: gstreamer-properties/gstreamer-properties.glade.h:9
-#, fuzzy
 msgid "GStreamer Properties"
-msgstr "CDDBSlave 2 Özellikleri"
+msgstr "GStreamer Özellikleri"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:10
 msgid "Pipeline:"
@@ -2568,7 +2442,7 @@ msgstr ""
 
 #: gstreamer-properties/gstreamer-properties.glade.h:11
 msgid "Test..."
-msgstr ""
+msgstr "Dene..."
 
 #: gstreamer-properties/gstreamer-properties.glade.h:12
 msgid "Testing Pipeline"
@@ -2576,12 +2450,11 @@ msgstr ""
 
 #: gstreamer-properties/gstreamer-properties.glade.h:14
 msgid "Video _Input:"
-msgstr ""
+msgstr "Görüntü _Giriþi:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:15
-#, fuzzy
 msgid "Video _Output:"
-msgstr "Kulaklýk Çýkýþý"
+msgstr "Görüntü Çý_kýþý:"
 
 #: gstreamer-properties/pipeline-test-old.c:215
 #: gstreamer-properties/pipeline-tests.c:111
@@ -2647,18 +2520,23 @@ msgid "Monitor the recording input volume"
 msgstr "Kayýt giriþini izleyin"
 
 #: vu-meter/reclevel.desktop.in.h:2
-#, fuzzy
 msgid "Recording level monitor"
-msgstr "Kaydetme Seviye Göstergesi"
+msgstr "Kaydetme seviye göstergesi"
 
 #: vu-meter/vumeter.desktop.in.h:1
 msgid "Monitor the sound output volume"
 msgstr "Ses çýkýþýný izleyin"
 
 #: vu-meter/vumeter.desktop.in.h:2
-#, fuzzy
 msgid "Volume monitor"
-msgstr "Ses Göstergesi"
+msgstr "Ses göstergesi"
+
+#~ msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
+#~ msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
+
+#, fuzzy
+#~ msgid "(C) 2000 Andreas Hyden"
+#~ msgstr "Telif hakký (C) 2000 Andreas Hydén"
 
 #, fuzzy
 #~ msgid "Gnome Volume Control"
@@ -2828,3 +2706,4 @@ msgstr "Ses Göstergesi"
 
 #~ msgid " untitled.wav"
 #~ msgstr " isimsiz.wav"
+

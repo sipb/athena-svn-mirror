@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media\n"
 "POT-Creation-Date: 2003-01-08 06:00+0100\n"
-"PO-Revision-Date: 2003-01-14 11:02+EDT\n"
+"PO-Revision-Date: 2003-02-03 10:16+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: cddb-slave2/CDDB-Slave2.schemas.in.h:8
 msgid "Your hostname"
-msgstr ""
+msgstr "የእርሶ የእንግዳ ተቀባይ ስም"
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -1380,11 +1380,11 @@ msgstr ""
 
 #: gnome-cd/gnome-cd.c:418
 msgid "Set device"
-msgstr ""
+msgstr "ዲቫይስን ይምረጡ"
 
 #: gnome-cd/gnome-cd.c:420
 msgid "No CD device"
-msgstr ""
+msgstr "የሲዲ ዲቫይስ የልም"
 
 #: gnome-cd/gnome-cd.c:474
 msgid ""
@@ -1398,11 +1398,11 @@ msgstr ""
 
 #: gnome-cd/gnome-cd.c:479
 msgid "_Set device"
-msgstr ""
+msgstr "ዲቫይስን ይምረጡ (_S)"
 
 #: gnome-cd/gnome-cd.c:481
 msgid "Invalid CD device"
-msgstr ""
+msgstr "የማይሰራ የሲዲ ዲቫይስ"
 
 #: gnome-cd/gnome-cd.c:542
 msgid "Volume control"
@@ -1410,11 +1410,11 @@ msgstr ""
 
 #: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
-msgstr "የዱካ አርትዒ ክፈት"
+msgstr "የዱካ ማቀናጃ ክፈት"
 
 #: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
-msgstr "የዱካ አርትዒ"
+msgstr "የዱካ ማቀናጃ"
 
 #: gnome-cd/gnome-cd.c:559
 msgid "Open preferences"
@@ -1500,7 +1500,7 @@ msgstr ""
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:4
 msgid "Device path"
-msgstr ""
+msgstr "የዲቫይስ መተላለፊያ"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:5
 msgid "Should the CD player attempt to shut the CD drive on start up?"
