@@ -37,6 +37,10 @@ After attaching the correct locker, you can build a package by doing:
 
 	-s SRCDIR	Specifies the source hierarchy, if not default
 	-d DESTDIR	Specifies the install hierarchy, if not /srvd
+	-c		Use libraries, includes, and tools from
+			install hierarchy
+	-n		Show what build steps would be done, but don't
+			do them.
 
 The default location for SRCDIR is the source locker you attached
 (/mit/source, /mit/source-8.1, etc.).  "do" recognizes supports the
