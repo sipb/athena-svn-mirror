@@ -45,6 +45,24 @@ for i in 1 2 3 4 5 6; do
   fi
 done
 
+# Turn on the sound card for the cluster workstations.  Unfortunately,
+# there is no generic tool, but if we know what kind of card to do, then
+# we can do it.
+if pnpdump | grep -q CS4236B ; then
+  if grep -q cs4232 /etc/conf.modules ; then true ; else
+	cat >> /etc/conf.modules << EOF
+alias sound cs4232
+pre-install sound insmod sound dmabuf=1
+alias midi opl3
+options opl3 io=0x388
+options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
+EOF
+  fi
+fi
+
+# Make sure the permissions on the sound devices are appropriate
+chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
+
 %files
 /etc/athena/clean_tmp_areas
 /etc/athena/masks
