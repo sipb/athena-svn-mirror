@@ -1,17 +1,17 @@
 # Swedish messages for gnome-applets.
-# Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Martin Wahlen <mva@sbbs.se>, 1998.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
 # Martin Norbäck <d95mback@dtek.chalmers.ser>, 2000, 2001.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-04 21:21:05 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-01-29 20:37:15 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets\n"
-"POT-Creation-Date: 2002-11-18 23:05+0000\n"
-"PO-Revision-Date: 2002-10-04 15:29+0200\n"
+"POT-Creation-Date: 2003-01-26 03:36+0100\n"
+"PO-Revision-Date: 2003-01-26 03:37+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #. The long name of the applet in the About dialog.
 #: battstat/GNOME_BattstatApplet.server.in.in.h:1
-#: battstat/battstat_applet.c:839
+#: battstat/battstat_applet.c:851
 msgid "Battery Charge Monitor"
 msgstr "Batteriövervakare"
 
@@ -50,6 +50,7 @@ msgstr "Verktyg"
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:1
 #: mixer/GNOME_MixerApplet.xml.h:1 modemlights/GNOME_ModemlightsApplet.xml.h:1
 #: multiload/GNOME_MultiloadApplet.xml.h:1
+#: wireless/GNOME_WirelessApplet.xml.h:1
 msgid "_About..."
 msgstr "_Om..."
 
@@ -71,6 +72,7 @@ msgstr "_Hjälp"
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:3
 #: modemlights/GNOME_ModemlightsApplet.xml.h:3
 #: multiload/GNOME_MultiloadApplet.xml.h:2
+#: wireless/GNOME_WirelessApplet.xml.h:2
 msgid "_Preferences..."
 msgstr "_Inställningar..."
 
@@ -80,49 +82,49 @@ msgstr "_Pausa datorn..."
 
 #. Message displayed if user tries to run applet
 #. on unsupported platform
-#: battstat/battstat_applet.c:284
+#: battstat/battstat_applet.c:286
 msgid "Your platform is not supported!\n"
 msgstr "Din plattform stöds inte!\n"
 
-#: battstat/battstat_applet.c:285
+#: battstat/battstat_applet.c:287
 msgid "The applet will not work properly (if at all).\n"
 msgstr "Panelprogrammet kommer inte att fungera ordentligt (om alls).\n"
 
 #. The following four messages will be displayed as tooltips over
 #. the battery meter.
 #. High = The APM BIOS thinks that the battery charge is High.
-#: battstat/battstat_applet.c:316 battstat/battstat_applet.c:868
+#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:882
 msgid "High"
 msgstr "Hög"
 
 #. Low = The APM BIOS thinks that the battery charge is Low.
-#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:870
+#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:884
 msgid "Low"
 msgstr "Låg"
 
 #. Critical = The APM BIOS thinks that the battery charge is Critical.
-#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:872
+#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:886
 msgid "Critical"
 msgstr "Kritisk"
 
 #. Charging = The APM BIOS thinks that the battery is recharging.
-#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:874
+#: battstat/battstat_applet.c:324 battstat/battstat_applet.c:888
 msgid "Charging"
 msgstr "Laddar"
 
-#: battstat/battstat_applet.c:403
+#: battstat/battstat_applet.c:405
 #, c-format
 msgid "Battery low (%d%%) and AC is offline"
 msgstr "Batterinivån är låg (%d%%) och nätspänningen är frånkopplad"
 
-#: battstat/battstat_applet.c:427
+#: battstat/battstat_applet.c:429
 msgid "Battery is now fully re-charged!"
 msgstr "Batteriet är nu helt uppladdat!"
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:446 battstat/battstat_applet.c:1032
+#: battstat/battstat_applet.c:448 battstat/battstat_applet.c:1046
 #, c-format
 msgid ""
 "System is running on battery power\n"
@@ -134,7 +136,7 @@ msgstr ""
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:450 battstat/battstat_applet.c:1040
+#: battstat/battstat_applet.c:452 battstat/battstat_applet.c:1054
 #, c-format
 msgid ""
 "System is running on AC power\n"
@@ -145,32 +147,32 @@ msgstr ""
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:456 battstat/battstat_applet.c:964
-#: battstat/battstat_applet.c:1053
+#: battstat/battstat_applet.c:458 battstat/battstat_applet.c:978
+#: battstat/battstat_applet.c:1067
 msgid "System is running on battery power"
 msgstr "Systemet körs på batteri"
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:459 battstat/battstat_applet.c:970
-#: battstat/battstat_applet.c:1059
+#: battstat/battstat_applet.c:461 battstat/battstat_applet.c:984
+#: battstat/battstat_applet.c:1073
 msgid "System is running on AC power"
 msgstr "Systemet körs på nätspänning"
 
-#: battstat/battstat_applet.c:473
+#: battstat/battstat_applet.c:475
 msgid "N/A"
 msgstr "--"
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:597 battstat/battstat_applet.c:944
+#: battstat/battstat_applet.c:599 battstat/battstat_applet.c:958
 #, c-format
 msgid "System is running on battery power. Battery: %d%% (%s)"
 msgstr "Systemet körs på batteri. Batteri: %d%% (%s)"
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:604 battstat/battstat_applet.c:951
+#: battstat/battstat_applet.c:606 battstat/battstat_applet.c:965
 #, c-format
 msgid "System is running on AC power. Battery: %d%% (%s)"
 msgstr "Systemet körs på nätspänning. Batteri: %d%% (%s)"
@@ -179,33 +181,33 @@ msgstr "Systemet körs på nätspänning. Batteri: %d%% (%s)"
 #. battery frame when the computer is using battery
 #. power and the battery isn't present. Not a
 #. possible combination, I guess... :)
-#: battstat/battstat_applet.c:615
+#: battstat/battstat_applet.c:617
 msgid "System is running on battery power. Battery: Not present"
 msgstr "Systemet körs på batteri. Batteri: Inte tillgängligt"
 
 #. This string will display as a tooltip over the
 #. battery frame when the computer is using AC
 #. power and the battery isn't present.
-#: battstat/battstat_applet.c:621
+#: battstat/battstat_applet.c:623
 msgid "System is running on AC power. Battery: Not present"
 msgstr "Systemet körs på nätspänning. Batteri: Inte tillgängligt"
 
 #. Displayed as a tooltip over the battery meter when there is
 #. a battery present. %d will hold the current charge and %s will
 #. hold the status of the battery, (High, Low, Critical, Charging.
-#: battstat/battstat_applet.c:630
+#: battstat/battstat_applet.c:632
 #, c-format
 msgid "Battery: %d%% (%s)"
 msgstr "Batteri: %d%% (%s)"
 
 #. Displayed as a tooltip over the battery meter when no
 #. battery is present.
-#: battstat/battstat_applet.c:637
+#: battstat/battstat_applet.c:639
 msgid "Battery: Not present"
 msgstr "Batteri: Inte tillgängligt"
 
 #. Displayed if the APM device couldn't be opened. (Used under *BSD)
-#: battstat/battstat_applet.c:715
+#: battstat/battstat_applet.c:722
 msgid ""
 "Can't open the APM device!\n"
 "\n"
@@ -218,7 +220,7 @@ msgstr ""
 "APM-enheten."
 
 #. Displayed if the APM system is disabled (Used under *BSD)
-#: battstat/battstat_applet.c:724
+#: battstat/battstat_applet.c:731
 msgid ""
 "The APM Management subsystem seems to be disabled.\n"
 "Try executing \"apm -e 1\" (FreeBSD) and see if \n"
@@ -228,7 +230,7 @@ msgstr ""
 "avstängt. Prova att köra \"apm -e 1\" (under\n"
 "FreeBSD) och se om det hjälper.\n"
 
-#: battstat/battstat_applet.c:774
+#: battstat/battstat_applet.c:786
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command: %s\n"
@@ -238,7 +240,7 @@ msgstr ""
 "Försök att rätta till detta fel"
 
 #. Probably because the shell_ret is != 0
-#: battstat/battstat_applet.c:777
+#: battstat/battstat_applet.c:789
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command, the command returned "
@@ -248,7 +250,7 @@ msgstr ""
 "Ett fel uppstod vid start av pauskommandot, kommandot returnerade \"%d\"\n"
 "Försök att rätta till detta fel"
 
-#: battstat/battstat_applet.c:785
+#: battstat/battstat_applet.c:797
 msgid ""
 "Suspend command wasn't setup correctly in the preferences.\n"
 "Please change the preferences and try again."
@@ -258,16 +260,16 @@ msgstr ""
 
 #. if your charset supports it, please replace the "o" in
 #. * "Jorgen" into U00F6
-#: battstat/battstat_applet.c:816
+#: battstat/battstat_applet.c:828
 msgid "Jorgen Pehrson <jp@spektr.eu.org>"
 msgstr "Jörgen Pehrson <jp@spektr.eu.org>"
 
-#: battstat/battstat_applet.c:826 cdplayer/cdplayer.c:467
-#: charpick/charpick.c:373 drivemount/drivemount.c:449 geyes/geyes.c:216
-#: gkb-new/gkb.c:593 gtik/gtik.c:712 gweather/gweather-about.c:43
-#: mini-commander/src/about.c:46 mixer/mixer.c:807
-#: modemlights/modemlights.c:208 multiload/main.c:56
-#: panel-menu/panel-menu.c:674
+#: battstat/battstat_applet.c:838 cdplayer/cdplayer.c:517
+#: charpick/charpick.c:374 drivemount/drivemount.c:453 geyes/geyes.c:217
+#: gkb-new/gkb.c:594 gtik/gtik.c:704 gweather/gweather-about.c:43
+#: mini-commander/src/about.c:48 mixer/mixer.c:817
+#: modemlights/modemlights.c:209 multiload/main.c:57
+#: panel-menu/panel-menu.c:674 wireless/wireless-applet.c:703
 msgid "translator_credits"
 msgstr ""
 "Christian Rose\n"
@@ -276,11 +278,11 @@ msgstr ""
 "Martin Wahlén\n"
 "Skicka synpunkter på översättningen till sv@li.org"
 
-#: battstat/battstat_applet.c:841
+#: battstat/battstat_applet.c:853
 msgid "(C) 2000 The Gnulix Society, (C) 2002 Free Software Foundation"
 msgstr "© 2000 Gnulix Society, © 2002 Free Software Foundation"
 
-#: battstat/battstat_applet.c:842
+#: battstat/battstat_applet.c:854
 msgid "This utility show the status of your laptop battery."
 msgstr "Detta verktyg visar laddningsnivån på batteriet i din bärbara dator."
 
@@ -289,8 +291,8 @@ msgstr "Detta verktyg visar laddningsnivån på batteriet i din bärbara dator."
 msgid "100%"
 msgstr "100%"
 
-#. appearance frame
-#: battstat/battstat_applet.glade.h:3 mini-commander/src/preferences.c:743
+#: battstat/battstat_applet.glade.h:3 gtik/gtik.c:1456
+#: mini-commander/src/mini-commander.glade.h:3
 msgid "Appearance"
 msgstr "Utseende"
 
@@ -311,7 +313,8 @@ msgstr "Nivåfärger för batteri (%)"
 msgid "Beep when either of the above is true"
 msgstr "Pip till när något av ovanstående händer"
 
-#: battstat/battstat_applet.glade.h:9
+#: battstat/battstat_applet.glade.h:9 gweather/gweather-pref.c:707
+#: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:428
 msgid "General"
 msgstr "Allmänt"
 
@@ -383,8 +386,8 @@ msgstr "Batteriet helt uppladdat"
 msgid "Battery power low"
 msgstr "Låg batteriladdning"
 
-#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:169
-#: cdplayer/cdplayer.c:483 cdplayer/cdplayer.c:896
+#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:189
+#: cdplayer/cdplayer.c:535 cdplayer/cdplayer.c:926
 msgid "CD Player"
 msgstr "CD-spelare"
 
@@ -409,61 +412,61 @@ msgstr "Panelprogram för spelning av ljud-cd"
 msgid "_Run External CD Player"
 msgstr "_Kör extern CD-spelare"
 
-#: cdplayer/cdplayer.c:157 cdplayer/cdplayer.c:886
+#: cdplayer/cdplayer.c:169 cdplayer/cdplayer.c:916
 msgid "Stop"
 msgstr "Stopp"
 
-#: cdplayer/cdplayer.c:159 cdplayer/cdplayer.c:888
+#: cdplayer/cdplayer.c:173 cdplayer/cdplayer.c:918
 msgid "Play / Pause"
 msgstr "Spela / Paus"
 
-#: cdplayer/cdplayer.c:161 cdplayer/cdplayer.c:890
+#: cdplayer/cdplayer.c:177 cdplayer/cdplayer.c:920
 msgid "Eject"
 msgstr "Mata ut"
 
-#: cdplayer/cdplayer.c:163 cdplayer/cdplayer.c:892
+#: cdplayer/cdplayer.c:181 cdplayer/cdplayer.c:922
 msgid "Previous Track"
 msgstr "Föregående spår"
 
-#: cdplayer/cdplayer.c:165 cdplayer/cdplayer.c:894
+#: cdplayer/cdplayer.c:185 cdplayer/cdplayer.c:924
 msgid "Next Track"
 msgstr "Nästa spår"
 
-#: cdplayer/cdplayer.c:280 drivemount/drivemount.c:397 mixer/mixer.c:774
-#: multiload/main.c:111
+#: cdplayer/cdplayer.c:307 drivemount/drivemount.c:399 mixer/mixer.c:783
+#: multiload/main.c:118
 #, c-format
 msgid "There was an error executing '%s' : %s"
 msgstr "Ett fel uppstod vid körning av \"%s\": %s"
 
-#: cdplayer/cdplayer.c:379
+#: cdplayer/cdplayer.c:422
 msgid "CD Player Preferences"
 msgstr "Inställningar för CD-spelare"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:442
 msgid "Disc Image"
 msgstr "Skivbild"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:442
 msgid "An image of a cd-rom disc"
 msgstr "En bild av en cdromskiva"
 
-#: cdplayer/cdplayer.c:397
+#: cdplayer/cdplayer.c:444
 msgid "Device _Path:"
 msgstr "Enhetss_ökväg:"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:453
 msgid "Device Path"
 msgstr "Enhetssökväg"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:453
 msgid "Set the device path here"
 msgstr "Ställ in enhetssökvägen här"
 
-#: cdplayer/cdplayer.c:409
+#: cdplayer/cdplayer.c:456
 msgid "Use _Default"
 msgstr "Använd _standard"
 
-#: cdplayer/cdplayer.c:484
+#: cdplayer/cdplayer.c:536
 msgid ""
 "(C) 1997 The Free Software Foundation\n"
 "(C) 2001 Chris Phelps (GNOME 2 Port)"
@@ -471,40 +474,40 @@ msgstr ""
 "© 1997 Free Software Foundation\n"
 "© 2001 Chris Phelps (port till GNOME 2)"
 
-#: cdplayer/cdplayer.c:486 cdplayer/cdplayer.c:897
+#: cdplayer/cdplayer.c:538 cdplayer/cdplayer.c:927
 msgid "The CD Player applet is a simple audio CD player for your panel"
 msgstr "CD-spelarpanelprogrammet är en enkel ljud-CD-spelare för din panel"
 
-#: cdplayer/cdplayer.c:767 cdplayer/cdplayer.c:778
+#: cdplayer/cdplayer.c:795 cdplayer/cdplayer.c:806
 msgid "Elapsed time"
 msgstr "Förlupen tid"
 
-#: cdplayer/cdplayer.c:770 cdplayer/cdplayer.c:780
+#: cdplayer/cdplayer.c:798 cdplayer/cdplayer.c:808
 msgid "Track number"
 msgstr "Spårnummer"
 
-#: cdplayer/cdplayer.c:887
+#: cdplayer/cdplayer.c:917
 msgid "Click this button to Stop playing the CD"
 msgstr "Klicka på denna knapp för att stoppa spelandet av cd-skivan"
 
-#: cdplayer/cdplayer.c:889
+#: cdplayer/cdplayer.c:919
 msgid "Click this button to Play or Pause the CD"
 msgstr "Klicka på denna knapp för att spela eller pausa cd-skivan"
 
-#: cdplayer/cdplayer.c:891
+#: cdplayer/cdplayer.c:921
 msgid "Click this button to eject the CD"
 msgstr "Klicka på denna knapp för att mata ut cd-skivan"
 
-#: cdplayer/cdplayer.c:893
+#: cdplayer/cdplayer.c:923
 msgid "Click this button to Play the previous track in the CD"
 msgstr "Klicka på denna knapp för att spela föregående spår på cd-skivan"
 
-#: cdplayer/cdplayer.c:895
+#: cdplayer/cdplayer.c:925
 msgid "Click this button to Play the next track in the CD"
 msgstr "Klicka på denna knapp för att spela nästa spår på cd-skivan"
 
-#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:389
-#: charpick/charpick.c:482
+#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:392
+#: charpick/charpick.c:493
 msgid "Character Palette"
 msgstr "Teckenpalett"
 
@@ -518,15 +521,15 @@ msgstr "Infoga tecken"
 
 #. If your charset supports it, please use U00F1 to replace the "n"
 #. * in "Muniz".
-#: charpick/charpick.c:365
+#: charpick/charpick.c:366
 msgid "Alexandre Muniz <munizao@xprt.net>"
 msgstr "Alexandre Muñiz <munizao@xprt.net>"
 
-#: charpick/charpick.c:391
+#: charpick/charpick.c:394
 msgid "Copyright (C) 1998"
 msgstr "Copyright © 1998"
 
-#: charpick/charpick.c:392
+#: charpick/charpick.c:395
 msgid ""
 "Gnome Panel applet for selecting strange characters that are not on my "
 "keyboard. Released under GNU General Public Licence."
@@ -534,23 +537,23 @@ msgstr ""
 "Gnome-panelprogram för att välja underliga tecken som inte finns på mitt "
 "tangentbord. Släppt under GNU General Public License."
 
-#: charpick/charpick.c:481
+#: charpick/charpick.c:492
 msgid "Insert special characters"
 msgstr "Infoga specialtecken"
 
-#: charpick/properties.c:79
+#: charpick/properties.c:80
 msgid "_Default character list:"
 msgstr "_Standardteckenlista:"
 
-#: charpick/properties.c:88
+#: charpick/properties.c:89
 msgid "Default list of characters"
 msgstr "Standardlista med tecken"
 
-#: charpick/properties.c:89
+#: charpick/properties.c:90
 msgid "Set the default character list here"
 msgstr "Ställ in standardteckenlistan här"
 
-#: charpick/properties.c:91
+#: charpick/properties.c:92
 msgid ""
 "These characters will appear when the panel is started. To return to this "
 "list, hit <d> while the applet has focus."
@@ -558,12 +561,12 @@ msgstr ""
 "Dessa tecken kommer att visas när panelen startas. För att gå tillbaka till "
 "denna lista trycker du <d> när panelprogrammet har fokus."
 
-#: charpick/properties.c:150
+#: charpick/properties.c:156
 msgid "Character Palette Preferences"
 msgstr "Inställningar för teckenpalett"
 
 #: drivemount/GNOME_DriveMountApplet.server.in.in.h:1
-#: drivemount/drivemount.c:465
+#: drivemount/drivemount.c:471
 msgid "Disk Mounter"
 msgstr "Diskmonterare"
 
@@ -587,31 +590,31 @@ msgstr "_Bläddra..."
 msgid "_Eject"
 msgstr "_Mata ut"
 
-#: drivemount/drivemount.c:466
+#: drivemount/drivemount.c:472
 msgid "(C) 1999-2001 The GNOME Hackers\n"
 msgstr "© 1999-2001 GNOME-hackarna\n"
 
-#: drivemount/drivemount.c:468
+#: drivemount/drivemount.c:474
 msgid "Applet for mounting and unmounting block volumes."
 msgstr "Panelprogram för montering och avmontering av blockvolymer."
 
-#: drivemount/drivemount.c:664
+#: drivemount/drivemount.c:672
 msgid " mounted"
 msgstr " monterad"
 
-#: drivemount/drivemount.c:666
+#: drivemount/drivemount.c:674
 msgid " not mounted"
 msgstr " inte monterad"
 
-#: drivemount/drivemount.c:776
+#: drivemount/drivemount.c:786
 msgid "Drive Mount Applet Warning"
 msgstr "Varning för panelprogram för enhetsmontering"
 
-#: drivemount/drivemount.c:784
+#: drivemount/drivemount.c:796
 msgid "\" reported:\n"
 msgstr "\" rapporterad:\n"
 
-#: drivemount/drivemount.c:786
+#: drivemount/drivemount.c:798
 msgid ""
 "Drivemount command failed.\n"
 "\""
@@ -623,75 +626,71 @@ msgstr ""
 msgid "Disk Mounter Preferences"
 msgstr "Inställningar för enhetsmontören"
 
-#: drivemount/properties.c:258
-msgid "Settings"
-msgstr "Inställningar"
-
-#: drivemount/properties.c:271
+#: drivemount/properties.c:273
 msgid "_Mount point:"
 msgstr "_Monteringspunkt:"
 
-#: drivemount/properties.c:289
+#: drivemount/properties.c:291
 msgid "_Update interval (seconds):"
 msgstr "_Uppdateringsintervall (sekunder):"
 
-#: drivemount/properties.c:305 panel-menu/panel-menu-properties.c:109
+#: drivemount/properties.c:307 panel-menu/panel-menu-properties.c:111
 msgid "_Icon :"
 msgstr "_Ikon:"
 
-#: drivemount/properties.c:323
+#: drivemount/properties.c:325
 msgid "Floppy"
 msgstr "Diskett"
 
-#: drivemount/properties.c:326
+#: drivemount/properties.c:328
 msgid "Cdrom"
 msgstr "Cdrom"
 
-#: drivemount/properties.c:329
+#: drivemount/properties.c:331
 msgid "Cd Recorder"
 msgstr "Cd-brännare"
 
-#: drivemount/properties.c:332
+#: drivemount/properties.c:334
 msgid "Zip Drive"
 msgstr "Zipenhet"
 
-#: drivemount/properties.c:335
+#: drivemount/properties.c:337
 msgid "Hard Disk"
 msgstr "Hårddisk"
 
-#: drivemount/properties.c:338
+#: drivemount/properties.c:340
 msgid "Jaz Drive"
 msgstr "Jazenhet"
 
-#: drivemount/properties.c:341
+#: drivemount/properties.c:343
 msgid "Custom"
 msgstr "Anpassad"
 
-#: drivemount/properties.c:354
+#: drivemount/properties.c:356
 msgid "Select icon for mounted"
 msgstr "Välj en ikon för monterad"
 
-#: drivemount/properties.c:361
+#: drivemount/properties.c:363
 msgid "Custom icon for moun_ted:"
 msgstr "Anpassad ikon för mon_terad:"
 
-#: drivemount/properties.c:370
+#: drivemount/properties.c:372
 msgid "Select icon for unmounted"
 msgstr "Välj en ikon för avmonterad"
 
-#: drivemount/properties.c:377
+#: drivemount/properties.c:379
 msgid "Custom icon for not mou_nted:"
 msgstr "Anpassad ikon för omo_nterad:"
 
-#: drivemount/properties.c:387
+#: drivemount/properties.c:389
 msgid "_Scale size to panel"
 msgstr "An_passa storlek till panelen"
 
-#: drivemount/properties.c:394
+#: drivemount/properties.c:396
 msgid "_Eject on unmount"
 msgstr "_Mata ut vid avmontering"
 
-#: drivemount/properties.c:401
+#: drivemount/properties.c:403
 msgid "Use _automount friendly status test"
 msgstr "Använd _automount-vänlig statustest"
 
@@ -703,8 +702,8 @@ msgstr "Ett par ögon till din panel"
 msgid "Amusements"
 msgstr "Underhållning"
 
-#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:233
-#: geyes/geyes.c:420 geyes/geyes.c:422
+#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:237
+#: geyes/geyes.c:432 geyes/geyes.c:434
 msgid "Geyes"
 msgstr "Geyes"
 
@@ -712,25 +711,25 @@ msgstr "Geyes"
 msgid "Geyes Applet Factory"
 msgstr "Fabrik för panelprogrammet Geyes"
 
-#: geyes/geyes.c:234
+#: geyes/geyes.c:238
 msgid "Copyright (C) 1999 Dave Camp"
 msgstr "Copyright © 1999 Dave Camp"
 
-#: geyes/geyes.c:235
+#: geyes/geyes.c:239
 msgid "A goofy little xeyes clone for the GNOME panel."
 msgstr "En knäpp liten xeyes-klon för GNOME-panelen."
 
-#: geyes/geyes.c:423
+#: geyes/geyes.c:435
 msgid "The eyes look in the direction of the mouse pointer"
 msgstr "Ögonen tittar i muspekarens riktning"
 
-#: geyes/themes.c:215
+#: geyes/themes.c:223
 msgid "Geyes Preferences"
 msgstr "Inställningar för Geyes"
 
-#: geyes/themes.c:229
-msgid "T_heme Name"
-msgstr "_Temanamn"
+#: geyes/themes.c:239
+msgid "_Theme Name:"
+msgstr "_Temanamn:"
 
 #: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:1
 msgid "Change the keyboard layout"
@@ -740,7 +739,7 @@ msgstr "Ändra tangentbordslayouten"
 msgid "GKB Factory"
 msgstr "GKB-fabrik"
 
-#: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:3 gkb-new/gkb.c:604
+#: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:3 gkb-new/gkb.c:605
 msgid "Keyboard Layout Switcher"
 msgstr "Tangentbordsbytare"
 
@@ -748,7 +747,7 @@ msgstr "Tangentbordsbytare"
 msgid "Produces keyboard layout switcher applets."
 msgstr "Producerar panelprogram för byte av tangentbordslayout."
 
-#: gkb-new/gkb.c:112
+#: gkb-new/gkb.c:113
 msgid ""
 "Press the hotkey to switch between layouts. The hotkey can be set through "
 "Properties dialog"
@@ -756,15 +755,15 @@ msgstr ""
 "Klicka på snabbtangenten för att byta mellan layouter. Snabbtangenten kan "
 "konfigureras i egenskapsdialogen"
 
-#: gkb-new/gkb.c:551 gkb-new/gkb.c:558
+#: gkb-new/gkb.c:552 gkb-new/gkb.c:559
 msgid "GKB"
 msgstr "GKB"
 
-#: gkb-new/gkb.c:606
+#: gkb-new/gkb.c:607
 msgid "(C) 1998-2000 Free Software Foundation"
 msgstr "© 1998-2000 Free Software Foundation"
 
-#: gkb-new/gkb.c:607
+#: gkb-new/gkb.c:608
 msgid ""
 "This applet switches between keyboard maps using setxkbmap or xmodmap.\n"
 "Mail me your flag and keyboard layout if you want support for your locale "
@@ -784,462 +783,152 @@ msgstr ""
 "KevinV.\n"
 "Shooby Ban <shooby@gnome.hu>"
 
-#: gkb-new/gkb.c:624
+#: gkb-new/gkb.c:625
 msgid "GKB Home Page (http://projects.gnome.hu/gkb)"
 msgstr "GKB-hemsidan (http://projects.gnome.hu/gkb)"
 
-#: gkb-new/keygrab.c:69 gkb-new/keygrab.c:144
+#: gkb-new/keygrab.c:69 gkb-new/keygrab.c:148
 msgid "Disabled"
 msgstr "Inaktiverad"
 
-#: gkb-new/keygrab.c:301
+#: gkb-new/keygrab.c:313
 msgid "Press a key or press Esc to cancel"
 msgstr "Tryck en tangent eller tryck Esc för att avbryta"
 
-#: gkb-new/prop-add.c:86
+#: gkb-new/prop-add.c:88
 msgid "Keyboards (select and press add)"
 msgstr "Tangentbord (välj och tryck Lägg till)"
 
-#: gkb-new/prop-add.c:372
+#: gkb-new/prop-add.c:392
 msgid "Select Keyboard"
 msgstr "Välj tangentbord"
 
-#: gkb-new/prop-list.c:398 gtik/gtik.c:1134
-msgid "_Add"
-msgstr "_Lägg till"
-
-#: gkb-new/prop-list.c:399
-msgid "_Edit"
-msgstr "_Redigera"
-
-#: gkb-new/prop-list.c:400
-msgid "_Up"
-msgstr "_Upp"
-
-#: gkb-new/prop-list.c:401
-msgid "Dow_n"
-msgstr "_Ned"
-
-#: gkb-new/prop-list.c:402
-msgid "_Delete"
-msgstr "_Ta bort"
-
-#: gkb-new/prop-map.c:199
-msgid "Armenia"
-msgstr "Armenien"
-
-#: gkb-new/prop-map.c:200
-msgid "Australia"
-msgstr "Australien"
-
-#: gkb-new/prop-map.c:201
-msgid "Austria"
-msgstr "Österrike"
-
-#: gkb-new/prop-map.c:202
-msgid "Belgium"
-msgstr "Belgien"
-
-#: gkb-new/prop-map.c:203
-msgid "Brazil"
-msgstr "Brasilien"
-
-#: gkb-new/prop-map.c:204
-msgid "Bulgaria"
-msgstr "Bulgarien"
-
-#: gkb-new/prop-map.c:205
-msgid "Canada"
-msgstr "Kanada"
-
-#: gkb-new/prop-map.c:206
-msgid "Caribic"
-msgstr "Karibien"
-
-#: gkb-new/prop-map.c:207
-msgid "France"
-msgstr "Frankrike"
-
-#: gkb-new/prop-map.c:208
-msgid "Georgia"
-msgstr "Georgien"
-
-#: gkb-new/prop-map.c:209
-msgid "Germany"
-msgstr "Tyskland"
-
-#: gkb-new/prop-map.c:210
-msgid "Great Britain"
-msgstr "Storbritannien"
-
-#: gkb-new/prop-map.c:211
-msgid "Greece"
-msgstr "Grekland"
-
-#: gkb-new/prop-map.c:212
-msgid "Hungary"
-msgstr "Ungern"
-
 #: gkb-new/prop-map.c:213
-msgid "Jamaica"
-msgstr "Jamaica"
-
-#: gkb-new/prop-map.c:214
-msgid "New Zealand"
-msgstr "Nya Zeeland"
-
-#: gkb-new/prop-map.c:215
-msgid "Norway"
-msgstr "Norge"
-
-#: gkb-new/prop-map.c:216
-msgid "Poland"
-msgstr "Polen"
-
-#: gkb-new/prop-map.c:217
-msgid "Portugal"
-msgstr "Portugal"
-
-#: gkb-new/prop-map.c:218
-msgid "Russia"
-msgstr "Ryssland"
-
-#: gkb-new/prop-map.c:219
-msgid "Slovak Republic"
-msgstr "Slovakien"
-
-#: gkb-new/prop-map.c:220
-msgid "Slovenia"
-msgstr "Slovenien"
-
-#: gkb-new/prop-map.c:221
-msgid "South Africa"
-msgstr "Sydafrika"
-
-#: gkb-new/prop-map.c:222
-msgid "Spain"
-msgstr "Spanien"
-
-#: gkb-new/prop-map.c:223
-msgid "Sweden"
-msgstr "Sverige"
-
-#: gkb-new/prop-map.c:224
-msgid "Switzerland"
-msgstr "Schweiz"
-
-#: gkb-new/prop-map.c:225
-msgid "Thailand"
-msgstr "Thailand"
-
-#: gkb-new/prop-map.c:226
-msgid "Turkey"
-msgstr "Turkiet"
-
-#: gkb-new/prop-map.c:227
-msgid "United Kingdom"
-msgstr "Storbritannien"
-
-#: gkb-new/prop-map.c:228
-msgid "United States"
-msgstr "USA"
-
-#: gkb-new/prop-map.c:229
-msgid "Yugoslavia"
-msgstr "Jugoslavien"
-
-#: gkb-new/prop-map.c:249
-msgid "Armenian"
-msgstr "Armeniska"
-
-#: gkb-new/prop-map.c:250
-msgid "Basque"
-msgstr "Baskiska"
-
-#: gkb-new/prop-map.c:251
-msgid "Bulgarian"
-msgstr "Bulgariska"
-
-#: gkb-new/prop-map.c:252
-msgid "Dutch"
-msgstr "Holländska"
-
-#: gkb-new/prop-map.c:253
-msgid "English"
-msgstr "Engelska"
-
-#: gkb-new/prop-map.c:254
-msgid "French"
-msgstr "Franska"
-
-#: gkb-new/prop-map.c:255
-msgid "Georgian"
-msgstr "Georgiska"
-
-#: gkb-new/prop-map.c:256
-msgid "German"
-msgstr "Tyska"
-
-#: gkb-new/prop-map.c:257
-msgid "Greek"
-msgstr "Grekiska"
-
-#: gkb-new/prop-map.c:258
-msgid "Hungarian"
-msgstr "Ungerska"
-
-#: gkb-new/prop-map.c:259
-msgid "Norwegian"
-msgstr "Norska"
-
-#: gkb-new/prop-map.c:260
-msgid "Polish"
-msgstr "Polska"
-
-#: gkb-new/prop-map.c:261
-msgid "Portuguese"
-msgstr "Portugisiska"
-
-#: gkb-new/prop-map.c:262
-msgid "Russian"
-msgstr "Ryska"
-
-#: gkb-new/prop-map.c:263
-msgid "Slovak"
-msgstr "Slovakiska"
-
-#: gkb-new/prop-map.c:264
-msgid "Slovenian"
-msgstr "Slovenska"
-
-#: gkb-new/prop-map.c:265
-msgid "Swedish"
-msgstr "Svenska"
-
-#: gkb-new/prop-map.c:266
-msgid "Thai"
-msgstr "Thailändska"
-
-#: gkb-new/prop-map.c:267
-msgid "Turkish"
-msgstr "Turkiska"
-
-#: gkb-new/prop-map.c:268
-msgid "Wallon"
-msgstr "Wallonska"
-
-#: gkb-new/prop-map.c:269
-msgid "Yugoslavian"
-msgstr "Jugoslaviska"
-
-#: gkb-new/prop-map.c:287
-msgid "105"
-msgstr "105"
-
-#: gkb-new/prop-map.c:288
-msgid "101"
-msgstr "101"
-
-#: gkb-new/prop-map.c:289
-msgid "102"
-msgstr "102"
-
-#: gkb-new/prop-map.c:290
-msgid "450"
-msgstr "450"
-
-#: gkb-new/prop-map.c:291
-msgid "84"
-msgstr "84"
-
-#: gkb-new/prop-map.c:292
-msgid "mklinux"
-msgstr "mklinux"
-
-#: gkb-new/prop-map.c:293
-msgid "type5"
-msgstr "type5"
-
-#: gkb-new/prop-map.c:313
-msgid "iso-8859-1"
-msgstr "iso-8859-1"
-
-#: gkb-new/prop-map.c:314
-msgid "iso-8859-2"
-msgstr "iso-8859-2"
-
-#: gkb-new/prop-map.c:315
-msgid "iso-8859-7"
-msgstr "iso-8859-7"
-
-#: gkb-new/prop-map.c:316
-msgid "iso-8859-9"
-msgstr "iso-8859-9"
-
-#: gkb-new/prop-map.c:317
-msgid "am-armscii8"
-msgstr "am-armscii8"
-
-#: gkb-new/prop-map.c:318
-msgid "be-latin1"
-msgstr "be-latin1"
-
-#: gkb-new/prop-map.c:319
-msgid "cp1251"
-msgstr "cp1251"
-
-#: gkb-new/prop-map.c:320
-msgid "georgian-academy"
-msgstr "georgian-academy"
-
-#: gkb-new/prop-map.c:321
-msgid "koi8-r"
-msgstr "koi8-r"
-
-#: gkb-new/prop-map.c:322
-msgid "tis620"
-msgstr "tis620"
-
-#: gkb-new/prop-map.c:340
-msgid "ix86"
-msgstr "ix86"
-
-#: gkb-new/prop-map.c:341
-msgid "Sun"
-msgstr "Sun"
-
-#: gkb-new/prop-map.c:342
-msgid "mac"
-msgstr "mac"
-
-#: gkb-new/prop-map.c:343
-msgid "sgi"
-msgstr "sgi"
-
-#: gkb-new/prop-map.c:344
-msgid "dec"
-msgstr "dec"
-
-#: gkb-new/prop-map.c:345
-msgid "ibm"
-msgstr "ibm"
-
-#: gkb-new/prop-map.c:582
 msgid "Edit Keyboard"
 msgstr "Redigera tangentbord"
 
-#. Add the labels  and entries/combos/icon_entry
-#: gkb-new/prop-map.c:610 panel-menu/panel-menu-directory.c:672
+#: gkb-new/prop-map.c:232 panel-menu/panel-menu-directory.c:674
 #: panel-menu/panel-menu-documents.c:398 panel-menu/panel-menu-documents.c:435
 #: panel-menu/panel-menu-links.c:404 panel-menu/panel-menu-links.c:440
 msgid "_Name:"
 msgstr "_Namn:"
 
-#: gkb-new/prop-map.c:614
+#: gkb-new/prop-map.c:235
 msgid "_Label:"
 msgstr "_Etikett:"
 
-#: gkb-new/prop-map.c:618
-msgid "Lan_guage:"
-msgstr "Spr_åk:"
-
-#: gkb-new/prop-map.c:624
-msgid "Count_ry:"
-msgstr "_Land:"
-
-#: gkb-new/prop-map.c:631
-msgid ""
-"_Flag\n"
-"Pixmap:"
-msgstr ""
-"_Flagga\n"
-"Bild:"
-
-#: gkb-new/prop-map.c:635
-msgid "Arc_hitecture:"
-msgstr "Ar_kitektur:"
-
-#: gkb-new/prop-map.c:641
-msgid "_Type:"
-msgstr "_Typ:"
-
-#: gkb-new/prop-map.c:647
-msgid "Code_page:"
-msgstr "T_eckentabell:"
-
-#: gkb-new/prop-map.c:654
+#: gkb-new/prop-map.c:238
 msgid "Co_mmand:"
 msgstr "Ko_mmando:"
 
-#: gkb-new/prop-map.c:661
+#: gkb-new/prop-map.c:246
 msgid ""
 "Where command can be:\n"
-"* xmodmap /full/path/xmodmap.hu\n"
-"* gkb__xmmap hu\n"
-"* setxkbmap hu"
+" * xmodmap /full/path/xmodmap.hu\n"
+" * gkb_xmmap hu\n"
+" * setxkbmap hu"
 msgstr ""
 "Där kommando kan vara:\n"
-"* xmodmap /sökväg/till/xmodmap.sv\n"
-"* gkb__xmmap sv\n"
-"* setxkbmap sv"
+" * xmodmap /sökväg/till/xmodmap.sv\n"
+" * gkb_xmmap sv\n"
+" * setxkbmap sv"
 
-#: gkb-new/prop.c:131 gkb-new/prop.c:201
+#: gkb-new/prop-map.c:279
+msgid "_Flag"
+msgstr "_Flagga"
+
+#: gkb-new/prop.c:132 gkb-new/prop.c:202
 msgid "Normal"
 msgstr "Normal"
 
-#: gkb-new/prop.c:132 gkb-new/prop.c:205
+#: gkb-new/prop.c:133 gkb-new/prop.c:206
 msgid "Big"
 msgstr "Stor"
 
-#: gkb-new/prop.c:150 gkb-new/util.c:41 gkb-new/util.c:48 gkb-new/util.c:74
+#: gkb-new/prop.c:151 gkb-new/util.c:41 gkb-new/util.c:48 gkb-new/util.c:74
 msgid "Flag"
 msgstr "Flagga"
 
-#: gkb-new/prop.c:151 gkb-new/util.c:38 gkb-new/util.c:71
+#: gkb-new/prop.c:152 gkb-new/util.c:38 gkb-new/util.c:71
 msgid "Label"
 msgstr "Etikett"
 
-#: gkb-new/prop.c:152 gkb-new/util.c:44 gkb-new/util.c:77
+#: gkb-new/prop.c:153 gkb-new/util.c:44 gkb-new/util.c:77
 msgid "Flag and Label"
 msgstr "Flagga och etikett"
 
-#: gkb-new/prop.c:290 modemlights/properties.c:389
+#: gkb-new/prop.c:291 modemlights/properties.c:393
 msgid "Display"
 msgstr "Visa"
 
 #. Labels and option Menus
-#: gkb-new/prop.c:310
+#: gkb-new/prop.c:311
 msgid "_Appearance: "
 msgstr "_Utseende: "
 
-#: gkb-new/prop.c:317
+#: gkb-new/prop.c:318
 msgid "Applet _size: "
 msgstr "_Storlek på panelprogram: "
 
-#: gkb-new/prop.c:344
+#: gkb-new/prop.c:345
 msgid "Hotkey for switching between layouts"
 msgstr "Snabbtangent för att byta mellan layouter"
 
-#: gkb-new/prop.c:356
+#: gkb-new/prop.c:357
 msgid "_Grab hotkey"
 msgstr "_Hämta snabbtangent"
 
 #. Create property box
-#: gkb-new/prop.c:417
+#: gkb-new/prop.c:423
 msgid "Keyboard Layout Switcher Preferences"
 msgstr "Inställningar för tangentbordsbytare"
 
-#: gkb-new/prop.c:432
-msgid "_Keymaps"
-msgstr "_Tangentbordstabeller"
+#: gkb-new/prop.c:440
+msgid "Keymaps"
+msgstr "Tangentbordstabeller"
 
-#: gkb-new/prop.c:444
-msgid "_Options"
-msgstr "Alternati_v"
+#.
+#. check_box = gtk_check_button_new_with_mnemonic(_("_Average"));
+#. gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_box),
+#. panel_applet_gconf_get_bool(multiload_applet->applet, "view_loadavg", NULL));
+#. gtk_box_pack_start(GTK_BOX(hbox), check_box, FALSE, FALSE, 0);
+#.
+#: gkb-new/prop.c:452 multiload/properties.c:313
+msgid "Options"
+msgstr "Alternativ"
 
-#: gkb-new/system.c:45
-msgid "The keymap switching command returned with error!"
-msgstr "Kommandot för byte av teckentabell returnerade ett fel!"
+#: gkb-new/system.c:46
+#, c-format
+msgid ""
+"An error occured.\n"
+"\n"
+"Keymap `%s' is not supported on this system. Please choose another keymap.\n"
+"\n"
+"The command was: %s"
+msgstr ""
+"Ett fel inträffade.\n"
+"\n"
+"Tangentbordstabellen \"%s\" stöds inte på detta system. Välj en annan "
+"tangentbordstabell.\n"
+"\n"
+"Kommandot var: %s"
+
+#: gkb-new/system.c:51
+#, c-format
+msgid ""
+"An error occured.\n"
+"\n"
+"Unable to load keymap `%s', probably because command `xmodmap' could not be "
+"located in your PATH.\n"
+"\n"
+"The command was: %s"
+msgstr ""
+"Ett fel inträffade.\n"
+"\n"
+"Kan inte läsa in tangentbordstabellen \"%s\", troligtvis på grund av att "
+"\"xmodmap\" inte kunde hittas i din PATH.\n"
+"\n"
+"Kommandot var: %s"
 
 #: gtik/GNOME_GtikApplet.server.in.in.h:1
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:1
@@ -1254,7 +943,7 @@ msgstr "Få kontinuerligt uppdaterade aktiekurser"
 msgid "Gtik Applet Factory"
 msgstr "Fabrik för panelprogrammet gtik"
 
-#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:728
+#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:720
 msgid "Stock Ticker"
 msgstr "Aktieövervakare"
 
@@ -1262,11 +951,11 @@ msgstr "Aktieövervakare"
 msgid "_Update"
 msgstr "_Uppdatera"
 
-#: gtik/gtik.c:206
+#: gtik/gtik.c:202
 msgid "No data available or properties not set"
 msgstr "Ingen data tillgänglig eller egenskaper inte inställda"
 
-#: gtik/gtik.c:730
+#: gtik/gtik.c:722
 msgid ""
 "This program connects to a popular site and downloads current stock quotes.  "
 "The GNOME Stock Ticker is a free Internet-based application.  It comes with "
@@ -1279,84 +968,84 @@ msgstr ""
 "aktieövervakare för att göra beslut om investeringar; det är endast till för "
 "att informera."
 
-#: gtik/gtik.c:1123
+#: gtik/gtik.c:1147
 msgid "_New Symbol:"
 msgstr "_Ny symbol:"
 
-#: gtik/gtik.c:1145
+#: gtik/gtik.c:1158
+msgid "_Add"
+msgstr "_Lägg till"
+
+#: gtik/gtik.c:1169
 msgid "_Remove Selected"
 msgstr "_Ta bort markerad"
 
-#: gtik/gtik.c:1221
+#: gtik/gtik.c:1251
 msgid "Stock Ticker Preferences"
 msgstr "Inställningar för aktieövervakare"
 
-#: gtik/gtik.c:1244
-msgid "Update Fre_quency in minutes:"
-msgstr "Uppdateringsfre_kvens i minuter:"
+#: gtik/gtik.c:1275
+msgid "Stock update Fre_quency in minutes:"
+msgstr "Aktieuppdateringsfre_kvens i minuter:"
 
-#: gtik/gtik.c:1262
-msgid "Enter symbols delimited with \"+\" in the box below."
-msgstr "Ange symboler avgränsade med \"+\" i rutan nedan."
+#: gtik/gtik.c:1294
+msgid "Scroll Speed :"
+msgstr "Rullningshastighet:"
 
-#: gtik/gtik.c:1269
+#: gtik/gtik.c:1314
+msgid "_Width :"
+msgstr "_Bredd:"
+
+#: gtik/gtik.c:1326
 msgid "Displa_y only symbols and price"
 msgstr "Visa endast s_ymboler och pris"
 
-#: gtik/gtik.c:1272
+#: gtik/gtik.c:1329
 msgid "Scroll _left to right"
 msgstr "Rulla från _vänster till höger"
 
-#: gtik/gtik.c:1275
+#: gtik/gtik.c:1332
 msgid "_Enable scroll buttons"
 msgstr "_Aktivera rullningsknappar"
 
-#: gtik/gtik.c:1299
-msgid "+ C_olor"
-msgstr "+ F_ärg"
+#: gtik/gtik.c:1356
+msgid "+ C_olor:"
+msgstr "+ F_ärg:"
 
-#: gtik/gtik.c:1319
-msgid "- Colo_r"
-msgstr "- Fä_rg"
+#: gtik/gtik.c:1376
+msgid "- Colo_r:"
+msgstr "- Fä_rg:"
 
-#: gtik/gtik.c:1336
-msgid "_Unchanged Color"
-msgstr "_Oförändrad färg"
+#: gtik/gtik.c:1393
+msgid "_Unchanged Color:"
+msgstr "_Oförändrad färg:"
 
-#: gtik/gtik.c:1353
-msgid "Back_ground Color"
-msgstr "Bak_grundsfärg"
+#: gtik/gtik.c:1410
+msgid "Back_ground Color:"
+msgstr "Bak_grundsfärg:"
 
-#: gtik/gtik.c:1375
-msgid "Stock Sy_mbol:"
-msgstr "Aktiesy_mbol:"
+#: gtik/gtik.c:1432
+msgid "_Font:"
+msgstr "_Typsnitt:"
 
-#: gtik/gtik.c:1389
-msgid "Stock C_hange:"
-msgstr "Aktie_ändring:"
+#: gtik/gtik.c:1452
+msgid "Symbols"
+msgstr "Symboler"
 
-#: gtik/gtik.c:1413
-msgid "_Symbols"
-msgstr "_Symboler"
-
-#: gtik/gtik.c:1415
-msgid "_Behavior"
-msgstr "_Beteende"
-
-#: gtik/gtik.c:1417
-msgid "_Appearance"
-msgstr "_Utseende"
+#: gtik/gtik.c:1454
+msgid "Behavior"
+msgstr "Beteende"
 
 # SUN NEW TRANSLATION
-#: gtik/gtik.c:1491
+#: gtik/gtik.c:1541
 msgid "Skip forward"
 msgstr "Hoppa framåt"
 
-#: gtik/gtik.c:1492
+#: gtik/gtik.c:1542
 msgid "Skip backward"
 msgstr "Hoppa bakåt"
 
-#: gtik/gtik.c:1493
+#: gtik/gtik.c:1543
 msgid ""
 "Stock Ticker\n"
 "Get continuously updated stock quotes"
@@ -1364,15 +1053,15 @@ msgstr ""
 "Aktieövervakare\n"
 "Få kontinuerligt uppdaterade aktiekurser"
 
-#: gtik/gtik.c:1679
+#: gtik/gtik.c:1733
 msgid "(No"
 msgstr "(Inga"
 
-#: gtik/gtik.c:1680
+#: gtik/gtik.c:1734
 msgid "Change "
 msgstr "Ändra "
 
-#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:302
+#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:304
 msgid "_Forecast"
 msgstr "_Prognos"
 
@@ -1389,15 +1078,15 @@ msgid "Monitor the current weather conditions, and forecasts"
 msgstr "Övervaka aktuella väderförhållanden och väderprognoser"
 
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:5
-#: gweather/gweather-about.c:61
+#: gweather/gweather-about.c:63
 msgid "Weather Report"
 msgstr "Väderrapport"
 
-#: gweather/gweather-about.c:62
+#: gweather/gweather-about.c:64
 msgid "Copyright (c)1999 by S. Papadimitriou"
 msgstr "Copyright ©1999 av S. Papadimitriou"
 
-#: gweather/gweather-about.c:63
+#: gweather/gweather-about.c:65
 msgid ""
 "Released under the GNU General Public License.\n"
 "\n"
@@ -1407,11 +1096,11 @@ msgstr ""
 "\n"
 "Panelprogram för övervakning av lokala väderförhållanden."
 
-#: gweather/gweather-applet.c:194
+#: gweather/gweather-applet.c:209
 msgid "GNOME Weather"
 msgstr "GNOME Weather"
 
-#: gweather/gweather-applet.c:319
+#: gweather/gweather-applet.c:334
 msgid "Updating..."
 msgstr "Uppdaterar..."
 
@@ -1419,75 +1108,75 @@ msgstr "Uppdaterar..."
 msgid "Forecast"
 msgstr "Prognos"
 
-#: gweather/gweather-dialog.c:108
+#: gweather/gweather-dialog.c:110
 msgid "Location:"
 msgstr "Plats:"
 
-#: gweather/gweather-dialog.c:116
+#: gweather/gweather-dialog.c:118
 msgid "Update:"
 msgstr "Uppdatera:"
 
-#: gweather/gweather-dialog.c:124
+#: gweather/gweather-dialog.c:126
 msgid "Conditions:"
 msgstr "Förhållanden:"
 
-#: gweather/gweather-dialog.c:132
+#: gweather/gweather-dialog.c:134
 msgid "Sky:"
 msgstr "Himmel:"
 
-#: gweather/gweather-dialog.c:140
+#: gweather/gweather-dialog.c:142
 msgid "Temperature:"
 msgstr "Temperatur:"
 
-#: gweather/gweather-dialog.c:148
+#: gweather/gweather-dialog.c:150
 msgid "Dew point:"
 msgstr "Daggpunkt:"
 
-#: gweather/gweather-dialog.c:156
+#: gweather/gweather-dialog.c:158
 msgid "Humidity:"
 msgstr "Luftfuktighet:"
 
-#: gweather/gweather-dialog.c:164
+#: gweather/gweather-dialog.c:166
 msgid "Wind:"
 msgstr "Vind:"
 
-#: gweather/gweather-dialog.c:172
+#: gweather/gweather-dialog.c:174
 msgid "Pressure:"
 msgstr "Tryck:"
 
-#: gweather/gweather-dialog.c:180
+#: gweather/gweather-dialog.c:182
 msgid "Visibility:"
 msgstr "Sikt:"
 
-#: gweather/gweather-dialog.c:279
+#: gweather/gweather-dialog.c:281
 msgid "C_urrent conditions"
 msgstr "_Nuvarande förhållanden"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 msgid "ForeCast Report"
 msgstr "Väderrapport"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 msgid "See the ForeCast Details"
 msgstr "Se detaljerad väderrapport"
 
-#: gweather/gweather-dialog.c:327
+#: gweather/gweather-dialog.c:329
 msgid "_Visit Weather.com"
 msgstr "_Besök Weather.com"
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 msgid "URL link Button"
 msgstr "URL-länkknapp"
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 msgid "Click to Enter Weather.com"
 msgstr "Klicka för att besöka Weather.com"
 
-#: gweather/gweather-dialog.c:336
+#: gweather/gweather-dialog.c:338
 msgid "_Radar map"
 msgstr "_Radarkarta"
 
-#: gweather/gweather-dialog.c:408
+#: gweather/gweather-dialog.c:410
 msgid ""
 "Detailed forecast not available for this location.\n"
 "Please try the state forecast; note that IWIN forecasts are available only "
@@ -1497,94 +1186,89 @@ msgstr ""
 "Var vänlig och prova statsprognosen. Observera att IWIN-prognoser är bara "
 "tillgängliga för städer i USA."
 
-#: gweather/gweather-dialog.c:410
+#: gweather/gweather-dialog.c:412
 msgid ""
 "State forecast not available for this location.\n"
 "Please try the detailed forecast; note that IWIN forecasts are available "
 "only for US cities."
 msgstr ""
-"Det finns ingen statsprognos för den valda platsen.\n"
+"Det finns ingen delstatsprognos för den valda platsen.\n"
 "Var vänlig och prova den detaljerade prognosen. Observera att IWIN-prognoser "
 "är bara tillgängliga för städer i USA."
 
 #. Accessible Name and Description for the components in Preference Dialog
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 msgid "Location view"
 msgstr "Platsvy"
 
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 msgid "Select Location from the list"
 msgstr "Välj plats från listan"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 msgid "Update spin button"
 msgstr "Uppdatera spinnknapp"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 msgid "Spinbutton for updating"
 msgstr "Spinnknapp för uppdatering"
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Address Entry"
 msgstr "Adressfält"
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Enter the URL"
 msgstr "Ange URL:en"
 
-#: gweather/gweather-pref.c:560
+#: gweather/gweather-pref.c:561
 msgid "Weather Preferences"
 msgstr "Väderinställningar"
 
-#: gweather/gweather-pref.c:607
-msgid "_Location"
-msgstr "_Plats"
-
-#: gweather/gweather-pref.c:638
+#: gweather/gweather-pref.c:604
 msgid "_Automatically update every"
 msgstr "_Uppdatera automatiskt var"
 
-#: gweather/gweather-pref.c:644
+#: gweather/gweather-pref.c:610
 msgid "Use _metric system units"
 msgstr "Använd _metriska enheter"
 
-#: gweather/gweather-pref.c:650
+#: gweather/gweather-pref.c:616
 msgid "Enable _detailed forecast"
 msgstr "Använd _detaljerad prognos"
 
-#: gweather/gweather-pref.c:657
+#: gweather/gweather-pref.c:623
 msgid "Enable _radar map"
 msgstr "Använd _radarkarta"
 
-#: gweather/gweather-pref.c:663
+#: gweather/gweather-pref.c:629
 msgid "Use cus_tom address for radar map"
 msgstr "Använd an_passad adress för radarkarta"
 
-#: gweather/gweather-pref.c:674
+#: gweather/gweather-pref.c:640
 msgid "A_ddress :"
 msgstr "A_dress:"
 
-#: gweather/gweather-pref.c:686
+#: gweather/gweather-pref.c:652
 msgid "Updates"
 msgstr "Uppdateringar"
 
-#: gweather/gweather-pref.c:692
+#: gweather/gweather-pref.c:658
 msgid "_Automatically update every "
 msgstr "_Uppdatera automatiskt var "
 
-#: gweather/gweather-pref.c:712
+#: gweather/gweather-pref.c:678
 msgid "minute(s)"
 msgstr "minut"
 
 #. The Miscellaneous frame
-#: gweather/gweather-pref.c:723
+#: gweather/gweather-pref.c:689
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: gweather/gweather-pref.c:741 mini-commander/src/preferences.c:972
-#: modemlights/properties.c:424
-msgid "_General"
-msgstr "_Allmänt"
+#: gweather/gweather-pref.c:743
+msgid "Location"
+msgstr "Plats"
 
 #: gweather/weather.c:57
 msgid "knots"
@@ -1620,7 +1304,7 @@ msgstr "Nord"
 
 #: gweather/weather.c:133
 msgid "North - NorthEast"
-msgstr "Nordnordost"
+msgstr "Nord-nordost"
 
 #: gweather/weather.c:133
 msgid "Northeast"
@@ -1628,7 +1312,7 @@ msgstr "Nordost"
 
 #: gweather/weather.c:133
 msgid "East - NorthEast"
-msgstr "Ostnordost"
+msgstr "Ost-nordost"
 
 #: gweather/weather.c:134
 msgid "East"
@@ -1636,7 +1320,7 @@ msgstr "Ost"
 
 #: gweather/weather.c:134
 msgid "East - Southeast"
-msgstr "Ostsydost"
+msgstr "Ost-sydost"
 
 #: gweather/weather.c:134
 msgid "Southeast"
@@ -1644,7 +1328,7 @@ msgstr "Sydost"
 
 #: gweather/weather.c:134
 msgid "South - Southeast"
-msgstr "Sydsydost"
+msgstr "Syd-sydost"
 
 #: gweather/weather.c:135
 msgid "South"
@@ -1652,7 +1336,7 @@ msgstr "Syd"
 
 #: gweather/weather.c:135
 msgid "South - Southwest"
-msgstr "Sydsydväst"
+msgstr "Syd-sydväst"
 
 #: gweather/weather.c:135
 msgid "Southwest"
@@ -1660,7 +1344,7 @@ msgstr "Sydväst"
 
 #: gweather/weather.c:135
 msgid "West - Southwest"
-msgstr "Västsydväst"
+msgstr "Väst-sydväst"
 
 #: gweather/weather.c:136
 msgid "West"
@@ -1668,7 +1352,7 @@ msgstr "Väst"
 
 #: gweather/weather.c:136
 msgid "West - Northwest"
-msgstr "Västnordväst"
+msgstr "Väst-nordväst"
 
 #: gweather/weather.c:136
 msgid "Northwest"
@@ -1676,7 +1360,7 @@ msgstr "Nordväst"
 
 #: gweather/weather.c:136
 msgid "North - Northwest"
-msgstr "Nordnordväst"
+msgstr "Nord-nordväst"
 
 #: gweather/weather.c:143 gweather/weather.c:160 gweather/weather.c:224
 msgid "Invalid"
@@ -1684,23 +1368,23 @@ msgstr "Ogiltig"
 
 #: gweather/weather.c:149
 msgid "Clear Sky"
-msgstr "Klart"
+msgstr "Klar himmel"
 
 #: gweather/weather.c:150
 msgid "Broken clouds"
-msgstr "Växlande molnighet"
+msgstr "Brutet molntäcke"
 
 #: gweather/weather.c:151
 msgid "Scattered clouds"
-msgstr "Lätt molnighet"
+msgstr "Spridda moln"
 
 #: gweather/weather.c:152
 msgid "Few clouds"
-msgstr "Halvklart"
+msgstr "Få moln"
 
 #: gweather/weather.c:153
 msgid "Overcast"
-msgstr "Mulet"
+msgstr "Heltäckande moln"
 
 #. NONE                         VICINITY                             LIGHT                      MODERATE                      HEAVY                      SHALLOW                      PATCHES                         PARTIAL                      THUNDERSTORM                    BLOWING                      SHOWERS                         DRIFTING                      FREEZING
 #. ******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************
@@ -1728,15 +1412,15 @@ msgstr "Kraftigt duggregn"
 
 #: gweather/weather.c:186
 msgid "Shallow drizzle"
-msgstr "Tunt duggregn"
+msgstr "Låga bankar med duggregn"
 
 #: gweather/weather.c:186
 msgid "Patches of drizzle"
-msgstr "Områden med duggregn"
+msgstr "Höga bankar med duggregn"
 
 #: gweather/weather.c:186
 msgid "Partial drizzle"
-msgstr "Delvis duggregn"
+msgstr "Partiella bankar med duggregn"
 
 #: gweather/weather.c:186 gweather/weather.c:187
 msgid "Thunderstorm"
@@ -1752,11 +1436,11 @@ msgstr "Skurar"
 
 #: gweather/weather.c:186
 msgid "Drifting drizzle"
-msgstr "Drivande duggregn"
+msgstr "Lågt duggregnsdrev"
 
 #: gweather/weather.c:186
 msgid "Freezing drizzle"
-msgstr "Bitande duggregn"
+msgstr "Underkylt duggregn"
 
 #. RAIN
 #: gweather/weather.c:187
@@ -1769,7 +1453,7 @@ msgstr "Regn i närheten"
 
 #: gweather/weather.c:187
 msgid "Light rain"
-msgstr "Något regn"
+msgstr "Lätt regn"
 
 #: gweather/weather.c:187
 msgid "Moderate rain"
@@ -1781,19 +1465,19 @@ msgstr "Kraftigt regn"
 
 #: gweather/weather.c:187
 msgid "Shallow rain"
-msgstr "Stänkregn"
+msgstr "Låga bankar med regn"
 
 #: gweather/weather.c:187
 msgid "Patches of rain"
-msgstr "Områden med regn"
+msgstr "Höga bankar med regn"
 
 #: gweather/weather.c:187
 msgid "Partial rainfall"
-msgstr "Delvis regn"
+msgstr "Partiella bankar med regn"
 
 #: gweather/weather.c:187
 msgid "Blowing rainfall"
-msgstr "Blåst med regn"
+msgstr "Högt regndrev"
 
 #: gweather/weather.c:187
 msgid "Rain showers"
@@ -1801,20 +1485,20 @@ msgstr "Regnskurar"
 
 #: gweather/weather.c:187
 msgid "Drifting rain"
-msgstr "Drivande regn"
+msgstr "Lågt regndrev"
 
 #: gweather/weather.c:187
 msgid "Freezing rain"
-msgstr "Bitande regn"
+msgstr "Underkylt regn"
 
 #. SNOW
 #: gweather/weather.c:188
 msgid "Snow"
-msgstr "Snö"
+msgstr "Snöfall"
 
 #: gweather/weather.c:188
 msgid "Snow in the vicinity"
-msgstr "Snö i närheten"
+msgstr "Snöfall i närheten"
 
 #: gweather/weather.c:188
 msgid "Light snow"
@@ -1830,15 +1514,15 @@ msgstr "Kraftigt snöfall"
 
 #: gweather/weather.c:188
 msgid "Shallow snow"
-msgstr "Något snö"
+msgstr "Låga bankar med snöfall"
 
 #: gweather/weather.c:188
 msgid "Patches of snow"
-msgstr "Områden med snö"
+msgstr "Höga bankar med snöfall"
 
 #: gweather/weather.c:188
 msgid "Partial snowfall"
-msgstr "Delvis snöfall"
+msgstr "Partiella bankar med snöfall"
 
 #: gweather/weather.c:188 gweather/weather.c:189
 msgid "Snowstorm"
@@ -1846,7 +1530,7 @@ msgstr "Snöstorm"
 
 #: gweather/weather.c:188
 msgid "Blowing snowfall"
-msgstr "Blåsigt snöfall"
+msgstr "Högt snödrev"
 
 #: gweather/weather.c:188
 msgid "Snow showers"
@@ -1854,89 +1538,89 @@ msgstr "Snöskurar"
 
 #: gweather/weather.c:188
 msgid "Drifting snow"
-msgstr "Drivande snö"
+msgstr "Lågt snödrev"
 
 #: gweather/weather.c:188
 msgid "Freezing snow"
-msgstr "Frysande snö"
+msgstr "Underkyld snö"
 
 #. SNOW_GRAINS
 #: gweather/weather.c:189
 msgid "Snow grains"
-msgstr "Snökorn"
+msgstr "Kornsnö"
 
 #: gweather/weather.c:189
 msgid "Snow grains in the vicinity"
-msgstr "Snökorn i närheten"
+msgstr "Kornsnö i närheten"
 
 #: gweather/weather.c:189
 msgid "Light snow grains"
-msgstr "Lätta snökorn"
+msgstr "Lätt kornsnö"
 
 #: gweather/weather.c:189
 msgid "Moderate snow grains"
-msgstr "Måttliga snökorn"
+msgstr "Måttlig kornsnö"
 
 #: gweather/weather.c:189
 msgid "Heavy snow grains"
-msgstr "Kraftiga snökorn"
+msgstr "Kraftig kornsnö"
 
 #: gweather/weather.c:189
 msgid "Shallow snow grains"
-msgstr "Tunna snökorn"
+msgstr "Låga bankar med kornsnö"
 
 #: gweather/weather.c:189
 msgid "Patches of snow grains"
-msgstr "Områden med snökorn"
+msgstr "Höga bankar med kornsnö"
 
 #: gweather/weather.c:189
 msgid "Partial snow grains"
-msgstr "Delvis snökorn"
+msgstr "Partiella bankar med kornsnö"
 
 #: gweather/weather.c:189
 msgid "Blowing snow grains"
-msgstr "Blåsande snökorn"
+msgstr "Högt kornsnödrev"
 
 #: gweather/weather.c:189
 msgid "Snow grain showers"
-msgstr "Snökornsskurar"
+msgstr "Kornsnöskurar"
 
 #: gweather/weather.c:189
 msgid "Drifting snow grains"
-msgstr "Drivande snökorn"
+msgstr "Lågt kornsnödrev"
 
 #: gweather/weather.c:189
 msgid "Freezing snow grains"
-msgstr "Bitande snökorn"
+msgstr "Underkyld kornsnö"
 
 #. ICE_CRYSTALS
 #: gweather/weather.c:190
 msgid "Ice crystals"
-msgstr "Iskristaller"
+msgstr "Isnålar"
 
 #: gweather/weather.c:190
 msgid "Ice crystals in the vicinity"
-msgstr "Iskristaller i närheten"
+msgstr "Isnålar i närheten"
 
 #: gweather/weather.c:190
 msgid "Few ice crystals"
-msgstr "Få iskristaller"
+msgstr "Få isnålar"
 
 #: gweather/weather.c:190
 msgid "Moderate ice crystals"
-msgstr "Måttliga iskristaller"
+msgstr "Måttliga isnålar"
 
 #: gweather/weather.c:190
 msgid "Heavy ice crystals"
-msgstr "Kraftiga iskristaller"
+msgstr "Kraftiga isnålar"
 
 #: gweather/weather.c:190
 msgid "Patches of ice crystals"
-msgstr "Områden med iskristaller"
+msgstr "Höga bankar med isnålar"
 
 #: gweather/weather.c:190
 msgid "Partial ice crystals"
-msgstr "Delvis iskristaller"
+msgstr "Partiella bankar med isnålar"
 
 #: gweather/weather.c:190
 msgid "Ice crystal storm"
@@ -1944,72 +1628,72 @@ msgstr "Iskristallby"
 
 #: gweather/weather.c:190
 msgid "Blowing ice crystals"
-msgstr "Blåsande iskristaller"
+msgstr "Högt isnåldrev"
 
 #: gweather/weather.c:190
 msgid "Showers of ice crystals"
-msgstr "Skurar av iskristaller"
+msgstr "Skurar med isnålar"
 
 #: gweather/weather.c:190
 msgid "Drifting ice crystals"
-msgstr "Drivande iskristaller"
+msgstr "Lågt isnåldrev"
 
 #: gweather/weather.c:190
 msgid "Freezing ice crystals"
-msgstr "Bitande iskristaller"
+msgstr "Underkylda isnålar"
 
 #. ICE_PELLETS
 #: gweather/weather.c:191
 msgid "Ice pellets"
-msgstr "Ispellets"
+msgstr "Iskorn"
 
 #: gweather/weather.c:191
 msgid "Ice pellets in the vicinity"
-msgstr "Ispellets i närheten"
+msgstr "Iskorn i närheten"
 
 #: gweather/weather.c:191
 msgid "Few ice pellets"
-msgstr "Få ispellets"
+msgstr "Få iskorn"
 
 #: gweather/weather.c:191
 msgid "Moderate ice pellets"
-msgstr "Måttliga ispellets"
+msgstr "Måttliga iskorn"
 
 #: gweather/weather.c:191
 msgid "Heavy ice pellets"
-msgstr "Krafiga ispellets"
+msgstr "Kraftiga iskorn"
 
 #: gweather/weather.c:191
 msgid "Shallow ice pellets"
-msgstr "Tunna ispellets"
+msgstr "Låga bankar med iskorn"
 
 #: gweather/weather.c:191
 msgid "Patches of ice pellets"
-msgstr "Områden med ispellets"
+msgstr "Höga bankar med iskorn"
 
 #: gweather/weather.c:191
 msgid "Partial ice pellets"
-msgstr "Delvis ispellets"
+msgstr "Partiella bankar med iskorn"
 
 #: gweather/weather.c:191
 msgid "Ice pellet storm"
-msgstr "Ispelletby"
+msgstr "Iskornby"
 
 #: gweather/weather.c:191
 msgid "Blowing ice pellets"
-msgstr "Blåsande ispellets"
+msgstr "Högt iskorndrev"
 
 #: gweather/weather.c:191
 msgid "Showers of ice pellets"
-msgstr "Skurar av ispellets"
+msgstr "Skurar med iskorn"
 
 #: gweather/weather.c:191
 msgid "Drifting ice pellets"
-msgstr "Drivande ispellets"
+msgstr "Lågt iskorndrev"
 
 #: gweather/weather.c:191
 msgid "Freezing ice pellets"
-msgstr "Bitande ispellets"
+msgstr "Underkylda iskorn"
 
 #. HAIL
 #: gweather/weather.c:192
@@ -2030,19 +1714,19 @@ msgstr "Måttligt hagel"
 
 #: gweather/weather.c:192
 msgid "Heavy hail"
-msgstr "Tungt hagel"
+msgstr "Kraftigt hagel"
 
 #: gweather/weather.c:192
 msgid "Shallow hail"
-msgstr "Tunnt hagel"
+msgstr "Låga bankar med hagel"
 
 #: gweather/weather.c:192
 msgid "Patches of hail"
-msgstr "Områden med hagel"
+msgstr "Höga bankar med hagel"
 
 #: gweather/weather.c:192
 msgid "Partial hail"
-msgstr "Delvis hagel"
+msgstr "Partiella bankar med hagel"
 
 #: gweather/weather.c:192
 msgid "Hailstorm"
@@ -2050,7 +1734,7 @@ msgstr "Hagelby"
 
 #: gweather/weather.c:192
 msgid "Blowing hail"
-msgstr "Blåsande hagel"
+msgstr "Högt hageldrev"
 
 #: gweather/weather.c:192
 msgid "Hail showers"
@@ -2058,11 +1742,11 @@ msgstr "Hagelskurar"
 
 #: gweather/weather.c:192
 msgid "Drifting hail"
-msgstr "Drivande hagel"
+msgstr "Lågt hageldrev"
 
 #: gweather/weather.c:192
 msgid "Freezing hail"
-msgstr "Bitande hagel"
+msgstr "Underkylt hagel"
 
 #. SMALL_HAIL
 #: gweather/weather.c:193
@@ -2083,15 +1767,15 @@ msgstr "Kraftigt småhagel"
 
 #: gweather/weather.c:193
 msgid "Shallow small hail"
-msgstr "Tunnt småhagel"
+msgstr "Låga bankar med småhagel"
 
 #: gweather/weather.c:193
 msgid "Patches of small hail"
-msgstr "Delar med småhagel"
+msgstr "Höga bankar med småhagel"
 
 #: gweather/weather.c:193
 msgid "Partial small hail"
-msgstr "Smått småhagel"
+msgstr "Partiella bankar med småhagel"
 
 #: gweather/weather.c:193
 msgid "Small hailstorm"
@@ -2099,19 +1783,19 @@ msgstr "Lätt småhagelby"
 
 #: gweather/weather.c:193
 msgid "Blowing small hail"
-msgstr "Blåsande småhagel"
+msgstr "Högt småhageldrev"
 
 #: gweather/weather.c:193
 msgid "Showers of small hail"
-msgstr "Skurar av småhagel"
+msgstr "Skurar med småhagel"
 
 #: gweather/weather.c:193
 msgid "Drifting small hail"
-msgstr "Drivande småhagel"
+msgstr "Lågt småhageldrev"
 
 #: gweather/weather.c:193
 msgid "Freezing small hail"
-msgstr "Bitande småhagel"
+msgstr "Underkylt småhagel"
 
 #. PRECIPITATION
 #: gweather/weather.c:194
@@ -2136,15 +1820,15 @@ msgstr "Kraftig nederbörd"
 
 #: gweather/weather.c:194
 msgid "Shallow precipitation"
-msgstr "Tunn nederbörd"
+msgstr "Låga bankar med nederbörd"
 
 #: gweather/weather.c:194
 msgid "Patches of precipitation"
-msgstr "Områden med nederbörd"
+msgstr "Höga bankar med nederbörd"
 
 #: gweather/weather.c:194
 msgid "Partial precipitation"
-msgstr "Delvis nederbörd"
+msgstr "Partiella bankar med nederbörd"
 
 #: gweather/weather.c:194
 msgid "Unknown thunderstorm"
@@ -2152,7 +1836,7 @@ msgstr "Okänd åskstorm"
 
 #: gweather/weather.c:194
 msgid "Blowing precipitation"
-msgstr "Blåsande nederbörd"
+msgstr "Högt nederbördsdrev"
 
 #: gweather/weather.c:194
 msgid "Showers, type unknown"
@@ -2160,56 +1844,56 @@ msgstr "Skurar, okänd typ"
 
 #: gweather/weather.c:194
 msgid "Drifting precipitation"
-msgstr "Drivande nederbörd"
+msgstr "Lågt nederbördsdrev"
 
 #: gweather/weather.c:194
 msgid "Freezing precipitation"
-msgstr "Bitande nederbörd"
+msgstr "Underkyld nederbörd"
 
 #. MIST
 #: gweather/weather.c:195
 msgid "Mist"
-msgstr "Dis"
+msgstr "Fuktdis"
 
 #: gweather/weather.c:195
 msgid "Mist in the vicinity"
-msgstr "Dis i närheten"
+msgstr "Fuktdis i närheten"
 
 #: gweather/weather.c:195
 msgid "Light mist"
-msgstr "Lätt dis"
+msgstr "Lätt fuktdis"
 
 #: gweather/weather.c:195
 msgid "Moderate mist"
-msgstr "Måttligt dis"
+msgstr "Måttligt fuktdis"
 
 #: gweather/weather.c:195
 msgid "Thick mist"
-msgstr "Tjock dis"
+msgstr "Kraftigt fuktdis"
 
 #: gweather/weather.c:195
 msgid "Shallow mist"
-msgstr "Tunn dis"
+msgstr "Låga bankar med fuktdis"
 
 #: gweather/weather.c:195
 msgid "Patches of mist"
-msgstr "Områden med dis"
+msgstr "Höga bankar med fuktdis"
 
 #: gweather/weather.c:195
 msgid "Partial mist"
-msgstr "Delvis dis"
+msgstr "Partiella bankar med fuktdis"
 
 #: gweather/weather.c:195
 msgid "Mist with wind"
-msgstr "Dis med vind"
+msgstr "Fuktdis med vind"
 
 #: gweather/weather.c:195
 msgid "Drifting mist"
-msgstr "Drivande dis"
+msgstr "Lågt fuktdisdrev"
 
 #: gweather/weather.c:195
 msgid "Freezing mist"
-msgstr "Bitande dis"
+msgstr "Underkylt fuktdis"
 
 #. FOG
 #: gweather/weather.c:196
@@ -2234,27 +1918,27 @@ msgstr "Tjock dimma"
 
 #: gweather/weather.c:196
 msgid "Shallow fog"
-msgstr "Tunn dimma"
+msgstr "Låga bankar med dimma"
 
 #: gweather/weather.c:196
 msgid "Patches of fog"
-msgstr "Områden med dimma"
+msgstr "Höga bankar med dimma"
 
 #: gweather/weather.c:196
 msgid "Partial fog"
-msgstr "Delvis dimma"
+msgstr "Partiella bankar med dimma"
 
 #: gweather/weather.c:196
 msgid "Fog with wind"
-msgstr "Dimma med vinden"
+msgstr "Dimma med vind"
 
 #: gweather/weather.c:196
 msgid "Drifting fog"
-msgstr "Drivande dimma"
+msgstr "Lågt dimdrev"
 
 #: gweather/weather.c:196
 msgid "Freezing fog"
-msgstr "Bitande dimma"
+msgstr "Underkyld dimma"
 
 #. SMOKE
 #: gweather/weather.c:197
@@ -2279,27 +1963,27 @@ msgstr "Tjock rök"
 
 #: gweather/weather.c:197
 msgid "Shallow smoke"
-msgstr "Tunn rök"
+msgstr "Låga bankar med rök"
 
 #: gweather/weather.c:197
 msgid "Patches of smoke"
-msgstr "Områden med rök"
+msgstr "Höga bankar med rök"
 
 #: gweather/weather.c:197
 msgid "Partial smoke"
-msgstr "Delvis rök"
+msgstr "Partiella bankar med rök"
 
 #: gweather/weather.c:197
 msgid "Smoke w/ thunders"
-msgstr "Rök med storm"
+msgstr "Rök med åska"
 
 #: gweather/weather.c:197
 msgid "Smoke with wind"
-msgstr "Rök med vinden"
+msgstr "Rök med vind"
 
 #: gweather/weather.c:197
 msgid "Drifting smoke"
-msgstr "Drivande rök"
+msgstr "Lågt rökdrev"
 
 #. VOLCANIC_ASH
 #: gweather/weather.c:198
@@ -2320,15 +2004,15 @@ msgstr "Tjock vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Shallow volcanic ash"
-msgstr "Tunn vulkanisk aska"
+msgstr "Låga bankar med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Patches of volcanic ash"
-msgstr "Områden med vulkanisk aska"
+msgstr "Höga bankar med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Partial volcanic ash"
-msgstr "Delvis vulkanisk aska"
+msgstr "Partiella bankar med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Volcanic ash w/ thunders"
@@ -2336,19 +2020,19 @@ msgstr "Vulkanisk aska med storm"
 
 #: gweather/weather.c:198
 msgid "Blowing volcanic ash"
-msgstr "Blåsande vulkanisk aska"
+msgstr "Högt drev med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Showers of volcanic ash "
-msgstr "Skurar av vulkanisk aska"
+msgstr "Skurar med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Drifting volcanic ash"
-msgstr "Drivande vulkanisk aska"
+msgstr "Lågt drev med vulkanisk aska"
 
 #: gweather/weather.c:198
 msgid "Freezing volcanic ash"
-msgstr "Bitande vulkanisk aska"
+msgstr "Underkyld vulkanisk aska"
 
 #. SAND
 #: gweather/weather.c:199
@@ -2373,64 +2057,64 @@ msgstr "Kraftig sand"
 
 #: gweather/weather.c:199
 msgid "Patches of sand"
-msgstr "Områden med sand"
+msgstr "Höga bankar med sand"
 
 #: gweather/weather.c:199
 msgid "Partial sand"
-msgstr "Delvis sand"
+msgstr "Partiella bankar med sand"
 
 #: gweather/weather.c:199
 msgid "Blowing sand"
-msgstr "Blåsande sand"
+msgstr "Högt sanddrev"
 
 #: gweather/weather.c:199
 msgid "Drifting sand"
-msgstr "Drivande sand"
+msgstr "Lågt sanddrev"
 
 #. HAZE
 #: gweather/weather.c:200
 msgid "Haze"
-msgstr "Lätt dimma"
+msgstr "Torrdis"
 
 #: gweather/weather.c:200
 msgid "Haze in the vicinity"
-msgstr "Lätt dimma i närheten"
+msgstr "Torrdis i närheten"
 
 #: gweather/weather.c:200
 msgid "Light haze"
-msgstr "Mycket lätt dimma i närheten"
+msgstr "Lätt torrdis"
 
 #: gweather/weather.c:200
 msgid "Moderate haze"
-msgstr "Måttlig lätt dimma"
+msgstr "Måttligt torrdis"
 
 #: gweather/weather.c:200
 msgid "Thick haze"
-msgstr "Tjock lätt dimma"
+msgstr "Tjockt torrdis"
 
 #: gweather/weather.c:200
 msgid "Shallow haze"
-msgstr "Tunn lätt dimma"
+msgstr "Låga bankar med torrdis"
 
 #: gweather/weather.c:200
 msgid "Patches of haze"
-msgstr "Delar med lätt dimma"
+msgstr "Höga bankar med torrdis"
 
 #: gweather/weather.c:200
 msgid "Partial haze"
-msgstr "Delvis lätt dimma"
+msgstr "Partiella bankar med torrdis"
 
 #: gweather/weather.c:200
 msgid "Haze with wind"
-msgstr "Lätt dimma med vinden"
+msgstr "Torrdis med vind"
 
 #: gweather/weather.c:200
 msgid "Drifting haze"
-msgstr "Drivande lätt dimma"
+msgstr "Lågt torrdisdrev"
 
 #: gweather/weather.c:200
 msgid "Freezing haze"
-msgstr "Bitande lätt dimma"
+msgstr "Underkylt torrdis"
 
 #. SPRAY
 #: gweather/weather.c:201
@@ -2455,105 +2139,105 @@ msgstr "Kraftiga vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Shallow sprays"
-msgstr "Tuna vattendroppar i luften"
+msgstr "Låga bankar med vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Patches of sprays"
-msgstr "Områden med vattendroppar i luften"
+msgstr "Höga bankar med vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Partial sprays"
-msgstr "Delvis vattendroppar i luften"
+msgstr "Partiella bankar med vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Blowing sprays"
-msgstr "Blåsande vattendroppar i luften"
+msgstr "Högt drev med vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Drifting sprays"
-msgstr "Drivande vattendroppar i luften"
+msgstr "Lågt drev med vattendroppar i luften"
 
 #: gweather/weather.c:201
 msgid "Freezing sprays"
-msgstr "Bitande vattendroppar i luften"
+msgstr "Underkylda vattendroppar i luften"
 
 #. DUST
 #: gweather/weather.c:202
 msgid "Dust"
-msgstr "Damm"
+msgstr "Stoft"
 
 #: gweather/weather.c:202
 msgid "Dust in the vicinity"
-msgstr "Damm i närheten"
+msgstr "Stoft i närheten"
 
 #: gweather/weather.c:202
 msgid "Light dust"
-msgstr "Lätt damm"
+msgstr "Lätt stoft"
 
 #: gweather/weather.c:202
 msgid "Moderate dust"
-msgstr "Måttligt damm"
+msgstr "Måttligt stoft"
 
 #: gweather/weather.c:202
 msgid "Heavy dust"
-msgstr "Kraftigt damm"
+msgstr "Kraftigt stoft"
 
 #: gweather/weather.c:202
 msgid "Patches of dust"
-msgstr "Områden med damm"
+msgstr "Höga bankar med stoft"
 
 #: gweather/weather.c:202
 msgid "Partial dust"
-msgstr "Delvis damm"
+msgstr "Partiella bankar med stoft"
 
 #: gweather/weather.c:202
 msgid "Blowing dust"
-msgstr "Blåsande damm"
+msgstr "Högt stoftdrev"
 
 #: gweather/weather.c:202
 msgid "Drifting dust"
-msgstr "Drivande damm"
+msgstr "Lågt stoftdrev"
 
 #. SQUALL
 #: gweather/weather.c:203
 msgid "Squall"
-msgstr "Kastby"
+msgstr "Linjeby"
 
 #: gweather/weather.c:203
 msgid "Squall in the vicinity"
-msgstr "Kastby i närheten"
+msgstr "Linjeby i närheten"
 
 #: gweather/weather.c:203
 msgid "Light squall"
-msgstr "Lätt kastby"
+msgstr "Lätt linjeby"
 
 #: gweather/weather.c:203
 msgid "Moderate squall"
-msgstr "Måttlig kastby"
+msgstr "Måttlig linjeby"
 
 #: gweather/weather.c:203
 msgid "Heavy squall"
-msgstr "Kraftig kastby"
+msgstr "Kraftig linjeby"
 
 #: gweather/weather.c:203
 msgid "Partial squall"
-msgstr "Områden med kastbyar"
+msgstr "Partiella bankar med linjebyar"
 
 #: gweather/weather.c:203
 msgid "Thunderous squall"
-msgstr "Åskande kastby"
+msgstr "Åskande linjeby"
 
 #: gweather/weather.c:203
 msgid "Blowing squall"
-msgstr "Blåsande kastby"
+msgstr "Högt linjebydrev"
 
 #: gweather/weather.c:203
 msgid "Drifting squall"
-msgstr "Drivande kastby"
+msgstr "Lågt linjebydrev"
 
 #: gweather/weather.c:203
 msgid "Freezing squall"
-msgstr "Bitande kastby"
+msgstr "Underkyld linjeby"
 
 #. SANDSTORM
 #: gweather/weather.c:204
@@ -2578,11 +2262,11 @@ msgstr "Kraftig sandstorm"
 
 #: gweather/weather.c:204
 msgid "Shallow sandstorm"
-msgstr "Tunn sandstorm"
+msgstr "Låga bankar med sandstorm"
 
 #: gweather/weather.c:204
 msgid "Partial sandstorm"
-msgstr "Liten sandstorm"
+msgstr "Partiella bankar med sandstorm"
 
 #: gweather/weather.c:204
 msgid "Thunderous sandstorm"
@@ -2590,15 +2274,15 @@ msgstr "Åska och sandstorm"
 
 #: gweather/weather.c:204
 msgid "Blowing sandstorm"
-msgstr "Blåsande sandstorm"
+msgstr "Högt sandstormdrev"
 
 #: gweather/weather.c:204
 msgid "Drifting sandstorm"
-msgstr "Drivande sandstorm"
+msgstr "Lågt sandstormdrev"
 
 #: gweather/weather.c:204
 msgid "Freezing sandstorm"
-msgstr "Bitande sandstorm"
+msgstr "Underkyld sandstorm"
 
 #. DUSTSTORM
 #: gweather/weather.c:205
@@ -2623,11 +2307,11 @@ msgstr "Kraftig dammstorm"
 
 #: gweather/weather.c:205
 msgid "Shallow duststorm"
-msgstr "Tunn dammstorm"
+msgstr "Låga bankar med dammstorm"
 
 #: gweather/weather.c:205
 msgid "Partial duststorm"
-msgstr "Områden med dammstorm"
+msgstr "Partiella bankar med dammstorm"
 
 #: gweather/weather.c:205
 msgid "Thunderous duststorm"
@@ -2635,56 +2319,56 @@ msgstr "Åska och dammstorm"
 
 #: gweather/weather.c:205
 msgid "Blowing duststorm"
-msgstr "Blåsande dammstorm"
+msgstr "Högt dammstormdrev"
 
 #: gweather/weather.c:205
 msgid "Drifting duststorm"
-msgstr "Drivande dammstorm"
+msgstr "Lågt dammstormdrev"
 
 #: gweather/weather.c:205
 msgid "Freezing duststorm"
-msgstr "Bitande dammstorm"
+msgstr "Underkyld dammstorm"
 
 #. FUNNEL_CLOUD
 #: gweather/weather.c:206
 msgid "Funnel cloud"
-msgstr "Rökmoln"
+msgstr "Skydrag"
 
 #: gweather/weather.c:206
 msgid "Funnel cloud in the vicinity"
-msgstr "Rökmoln i närheten"
+msgstr "Skydrag i närheten"
 
 #: gweather/weather.c:206
 msgid "Light funnel cloud"
-msgstr "Lätta rökmoln"
+msgstr "Lätt skydrag"
 
 #: gweather/weather.c:206
 msgid "Moderate funnel cloud"
-msgstr "Måttliga rökmoln"
+msgstr "Måttligt skydrag"
 
 #: gweather/weather.c:206
 msgid "Thick funnel cloud"
-msgstr "Tjocka rökmoln"
+msgstr "Tjockt skydrag"
 
 #: gweather/weather.c:206
 msgid "Shallow funnel cloud"
-msgstr "Tunna rökmoln"
+msgstr "Låga bankar med skydrag"
 
 #: gweather/weather.c:206
 msgid "Patches of funnel clouds"
-msgstr "Områden med rökmoln"
+msgstr "Höga bankar med skydrag"
 
 #: gweather/weather.c:206
 msgid "Partial funnel clouds"
-msgstr "Delvis rökmoln"
+msgstr "Partiella bankar med skydrag"
 
 #: gweather/weather.c:206
 msgid "Funnel cloud w/ wind"
-msgstr "Rökmoln med vind"
+msgstr "Skydrag med vind"
 
 #: gweather/weather.c:206
 msgid "Drifting funnel cloud"
-msgstr "Drivande rökmoln"
+msgstr "Lågt skydragsdrev"
 
 #. TORNADO
 #: gweather/weather.c:207
@@ -2705,7 +2389,7 @@ msgstr "Våldsam tornado"
 
 #: gweather/weather.c:207
 msgid "Partial tornado"
-msgstr "Områden med tornado"
+msgstr "Partiella bankar med tornado"
 
 #: gweather/weather.c:207
 msgid "Thunderous tornado"
@@ -2713,11 +2397,11 @@ msgstr "Åska och tornado"
 
 #: gweather/weather.c:207
 msgid "Drifting tornado"
-msgstr "Drivande tornado"
+msgstr "Lågt tornadodrev"
 
 #: gweather/weather.c:207
 msgid "Freezing tornado"
-msgstr "Bitande tornado"
+msgstr "Underkyld tornado"
 
 #. DUST_WHIRLS
 #: gweather/weather.c:208
@@ -2730,7 +2414,7 @@ msgstr "Dammvirvlar i närheten"
 
 #: gweather/weather.c:208
 msgid "Light dust whirls"
-msgstr "Tunna dammvirvlar"
+msgstr "Lätta dammvirvlar"
 
 #: gweather/weather.c:208
 msgid "Moderate dust whirls"
@@ -2742,31 +2426,31 @@ msgstr "Kraftiga dammvirvlar"
 
 #: gweather/weather.c:208
 msgid "Shallow dust whirls"
-msgstr "Tunna dammvirvlar"
+msgstr "Låga bankar med dammvirvlar"
 
 #: gweather/weather.c:208
 msgid "Patches of dust whirls"
-msgstr "Områden med dammvirvlar"
+msgstr "Höga bankar med dammvirvlar"
 
 #: gweather/weather.c:208
 msgid "Partial dust whirls"
-msgstr "Delvis dammvirvlar"
+msgstr "Partiella bankar med dammvirvlar"
 
 #: gweather/weather.c:208
 msgid "Blowing dust whirls"
-msgstr "Blåsande dammvirvlar"
+msgstr "Högt dammvirveldrev"
 
 #: gweather/weather.c:208
 msgid "Drifting dust whirls"
-msgstr "Drivande dammvirvlar"
+msgstr "Lågt dammvirveldrev"
 
-#: gweather/weather.c:824 gweather/weather.c:864 gweather/weather.c:1436
+#: gweather/weather.c:824 gweather/weather.c:864 gweather/weather.c:1437
 msgid "Failed to get METAR data.\n"
 msgstr "Misslyckades med att hämta METAR-data.\n"
 
 #: gweather/weather.c:856 gweather/weather.c:884 gweather/weather.c:1081
 msgid "WeatherInfo missing location"
-msgstr "Väderinformation-plats saknas."
+msgstr "Väderinformationen saknar plats"
 
 #: gweather/weather.c:1047
 msgid "Failed to get IWIN data.\n"
@@ -2785,33 +2469,33 @@ msgstr "Misslyckades med att hämta Met Office-data.\n"
 msgid "Failed to get Met Office forecast data.\n"
 msgstr "Misslyckades med att hämta prognosdata från Met Office.\n"
 
-#: gweather/weather.c:1466
+#: gweather/weather.c:1468
 msgid "Failed to get radar map image.\n"
 msgstr "Misslyckades med att hämta radarkartbild.\n"
 
-#: gweather/weather.c:1769
+#: gweather/weather.c:1771
 msgid "%a, %b %d / %H:%M"
 msgstr "%a %d %b / %H.%M"
 
-#: gweather/weather.c:1773
+#: gweather/weather.c:1775
 msgid "Unknown observation time"
 msgstr "Okänd observationstid"
 
-#: gweather/weather.c:1833
+#: gweather/weather.c:1835
 msgid "Calm"
 msgstr "Lugnt"
 
-#: gweather/weather.c:1859
+#: gweather/weather.c:1861
 msgid "Unknown"
 msgstr "Okänd"
 
-#: gweather/weather.c:1893
+#: gweather/weather.c:1895
 msgid "Retrieval failed"
 msgstr "Mottagning misslyckades"
 
 #: mini-commander/src/GNOME_MiniCommanderApplet.server.in.in.h:1
-#: mini-commander/src/about.c:62
-#: mini-commander/src/mini-commander_applet.c:317
+#: mini-commander/src/about.c:66
+#: mini-commander/src/mini-commander_applet.c:353
 msgid "Command Line"
 msgstr "Kommandorad"
 
@@ -2823,7 +2507,7 @@ msgstr "Mini-Commander"
 msgid "MiniCommander Applet Factory"
 msgstr "Fabrik för panelprogrammet MiniCommander"
 
-#: mini-commander/src/about.c:65
+#: mini-commander/src/about.c:69
 msgid ""
 "This GNOME applet adds a command line to the panel. It features command "
 "completion, command history, changeable macros and an optional built-in "
@@ -2842,208 +2526,179 @@ msgstr ""
 "under villkoren i GNU General Public License, publicerad av Free Software "
 "Foundation; antingen version 2 eller någon senare version (ditt val)."
 
-#: mini-commander/src/cmd_completion.c:69
-#: mini-commander/src/cmd_completion.c:115
-#: mini-commander/src/cmd_completion.c:151
-#: mini-commander/src/cmd_completion.c:202
-msgid "not unique"
-msgstr "inte unik"
-
-#: mini-commander/src/cmd_completion.c:73
-#: mini-commander/src/cmd_completion.c:155
-msgid "completing..."
-msgstr "komplettering..."
-
-#: mini-commander/src/cmd_completion.c:113
-#: mini-commander/src/cmd_completion.c:200
-msgid "completed"
-msgstr "ifylld"
-
-#: mini-commander/src/cmd_completion.c:118
-#: mini-commander/src/cmd_completion.c:205
-msgid "not found"
-msgstr "inte hittad"
-
-#: mini-commander/src/cmd_completion.c:167
-msgid "no /bin/sh"
-msgstr "ingen /bin/sh"
-
-#: mini-commander/src/command_line.c:98 mini-commander/src/command_line.c:118
-msgid "end of history list"
-msgstr "slut på historik"
-
-#. enter pressed -> exec command
-#: mini-commander/src/command_line.c:128
-msgid "starting..."
-msgstr "startar..."
-
-#: mini-commander/src/command_line.c:157
-msgid "autocompleted"
-msgstr "automatiskt ifylld"
-
 #. build file select dialog
-#: mini-commander/src/command_line.c:502
+#: mini-commander/src/command_line.c:430
 msgid "Start program"
 msgstr "Starta program"
 
-#: mini-commander/src/command_line.c:538
+#: mini-commander/src/command_line.c:473
 msgid "Command line"
 msgstr "Kommandorad"
 
-#: mini-commander/src/command_line.c:539
+#: mini-commander/src/command_line.c:474
 msgid "Type a command here and Gnome will execute it for you"
 msgstr "Ange ett kommando här och Gnome kommer att utföra det åt dig"
 
-#: mini-commander/src/message.c:149
-msgid "%H:%M - %d. %b"
-msgstr "%H.%M - %d %b"
+#: mini-commander/src/mc-install-default-macros.c:71
+#, c-format
+msgid "Cannot get schema for %s : %s"
+msgstr "Kan inte få tag i schema för %s: %s"
 
-#: mini-commander/src/message.c:151
-msgid "%H:%M"
-msgstr "%H.%M"
+#: mini-commander/src/mc-install-default-macros.c:99
+#, c-format
+msgid "Cannot set schema for %s : %s"
+msgstr "Kan inte ställa in schema för %s: %s"
 
-#: mini-commander/src/message.c:153
-msgid "%d. %b"
-msgstr "%d %b"
+#: mini-commander/src/mc-install-default-macros.c:105
+#, c-format
+msgid "Set default list value for %s\n"
+msgstr "Ställ in standardlistvärde för %s\n"
 
-#: mini-commander/src/mini-commander_applet.c:123
-msgid "orient. changed"
-msgstr "riktning ändrad"
+#: mini-commander/src/mc-install-default-macros.c:117
+msgid "GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"
+msgstr ""
+"GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL är inte inställd, installerar inte\n"
+"scheman\n"
 
-#: mini-commander/src/mini-commander_applet.c:140
-msgid "size changed"
-msgstr "storlek ändrad"
+#: mini-commander/src/mc-install-default-macros.c:125
+msgid "Must set the GCONF_CONFIG_SOURCE environment variable\n"
+msgstr "Måste ställa in miljövariabeln GCONF_CONFIG_SOURCE\n"
 
-#: mini-commander/src/mini-commander_applet.c:290
-#: mini-commander/src/mini-commander_applet.c:293
-msgid "Browser"
-msgstr "Bläddra"
+#: mini-commander/src/mc-install-default-macros.c:142
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Misslyckades med att komma åt konfigurationskällor: %s\n"
 
-#: mini-commander/src/mini-commander_applet.c:294
-msgid "Click this button to start the browser"
-msgstr "Klicka på denna knapp för att starta webbläsaren"
+#: mini-commander/src/mc-install-default-macros.c:154
+#, c-format
+msgid "Error syncing config data: %s"
+msgstr "Fel vid synkronisering av konfigurationsdata: %s"
 
-#: mini-commander/src/mini-commander_applet.c:309
-#: mini-commander/src/mini-commander_applet.c:312
-msgid "History"
-msgstr "Historik"
+#: mini-commander/src/mini-commander.glade.h:1
+msgid "*"
+msgstr "*"
 
-#: mini-commander/src/mini-commander_applet.c:313
-msgid "Click this button for the list of previous commands"
-msgstr "Klicka på denna knapp för listan med tidigare kommandon"
+#: mini-commander/src/mini-commander.glade.h:2
+msgid "Add New Macro"
+msgstr "Lägg till nytt makro"
 
-#: mini-commander/src/mini-commander_applet.c:314
-msgid "Mini-Commander applet"
-msgstr "Panelprogrammet Mini-Commander"
-
-#: mini-commander/src/mini-commander_applet.c:315
-msgid "This applet adds a command line to the panel"
-msgstr "Detta panelprogran lägger till en kommandorad på panelen"
-
-#: mini-commander/src/mini-commander_applet.c:448
-msgid "ready..."
-msgstr "klar..."
-
-#: mini-commander/src/preferences.c:703
-msgid "Command Line Preferences"
-msgstr "Kommandoradsinställningar"
-
-#: mini-commander/src/preferences.c:720
-msgid "Clock"
-msgstr "Klocka"
-
-#. show time check box
-#: mini-commander/src/preferences.c:728
-msgid "Show time"
-msgstr "Visa tid"
-
-#. show date check box
-#: mini-commander/src/preferences.c:735
-msgid "Show date"
-msgstr "Visa datum"
-
-#. show handle check box
-#: mini-commander/src/preferences.c:751
-msgid "Show han_dle"
-msgstr "Visa han_dtag"
-
-#. show frame check box
-#: mini-commander/src/preferences.c:758
-msgid "Show fram_e"
-msgstr "Visa _ram"
-
-#. auto complete frame
-#: mini-commander/src/preferences.c:767
-msgid "Autocompletion"
-msgstr "Automatisk ifyllnad"
-
-#. show history autocomplete
-#: mini-commander/src/preferences.c:775
-msgid "Enable _history based autocompletion"
-msgstr "Använd _historikbaserad automatisk ifyllnad"
-
-#. Size
-#: mini-commander/src/preferences.c:782
-msgid "Size"
-msgstr "Storlek"
-
-#. applet width
-#: mini-commander/src/preferences.c:794
+#: mini-commander/src/mini-commander.glade.h:4
 msgid "Applet _width:"
 msgstr "Panelprograms_bredd:"
 
-#. applet height
-#: mini-commander/src/preferences.c:828
-msgid "Applet height:"
-msgstr "Panelprogramshöjd:"
+#: mini-commander/src/mini-commander.glade.h:5
+msgid "Autocompletion"
+msgstr "Automatisk ifyllnad"
 
-#. cmd line height
-#: mini-commander/src/preferences.c:850
-msgid "Command line height:"
-msgstr "Kommandoradshöjd:"
-
-#. Color
-#: mini-commander/src/preferences.c:885 multiload/properties.c:365
+#: mini-commander/src/mini-commander.glade.h:6 modemlights/properties.c:468
+#: multiload/properties.c:365
 msgid "Colors"
 msgstr "Färger"
 
-#. default bg and fg theme
-#: mini-commander/src/preferences.c:895
-msgid "_Use default theme colors"
-msgstr "_Använd standardtemafärger"
+#: mini-commander/src/mini-commander.glade.h:7
+msgid "Command Line Preferences"
+msgstr "Kommandoradsinställningar"
 
-#. fg
-#: mini-commander/src/preferences.c:907
-msgid "Command line _foreground:"
-msgstr "_Förgrundfärg för kommandorad:"
-
-#. bg
-#: mini-commander/src/preferences.c:941
+#: mini-commander/src/mini-commander.glade.h:8
 msgid "Command line _background:"
 msgstr "_Bakgrundsfärg för kommandorad:"
 
-#. prefix
-#: mini-commander/src/preferences.c:1001
-#, c-format
-msgid "Regex _%.2d:"
-msgstr "Regex _%.2d:"
+#: mini-commander/src/mini-commander.glade.h:9
+msgid "Command line _foreground:"
+msgstr "_Förgrundfärg för kommandorad:"
 
-#. command
-#: mini-commander/src/preferences.c:1021
-#, c-format
-msgid "   Macro _%.2d:"
-msgstr "   Makro _%.2d:"
+#: mini-commander/src/mini-commander.glade.h:10
+msgid "Command:"
+msgstr "Kommando:"
 
-#: mini-commander/src/preferences.c:1041
-msgid "_Macros"
-msgstr "_Makron"
+#: mini-commander/src/mini-commander.glade.h:11
+msgid "E_nable history based autocompletion"
+msgstr "A_nvänd historikbaserad automatisk ifyllnad"
+
+#: mini-commander/src/mini-commander.glade.h:13
+msgid "Macros"
+msgstr "Makron"
+
+#: mini-commander/src/mini-commander.glade.h:14
+msgid "Pattern:"
+msgstr "Mönster:"
+
+#: mini-commander/src/mini-commander.glade.h:15
+msgid "Pick a color"
+msgstr "Välj en färg"
+
+#: mini-commander/src/mini-commander.glade.h:16
+msgid "Show fram_e"
+msgstr "Visa _ram"
+
+#: mini-commander/src/mini-commander.glade.h:17
+msgid "Show han_dle"
+msgstr "Visa han_dtag"
+
+#: mini-commander/src/mini-commander.glade.h:18
+msgid "Size"
+msgstr "Storlek"
+
+#: mini-commander/src/mini-commander.glade.h:19
+msgid "_Add new macro..."
+msgstr "_Lägg till nytt makro..."
+
+#: mini-commander/src/mini-commander.glade.h:20
+msgid "_Delete Macro"
+msgstr "_Ta bort makro"
+
+#: mini-commander/src/mini-commander.glade.h:21
+msgid "_Use default theme colors"
+msgstr "_Använd standardtemafärger"
+
+#: mini-commander/src/mini-commander_applet.c:189
+#: mini-commander/src/mini-commander_applet.c:193
+msgid "Browser"
+msgstr "Bläddrare"
+
+#: mini-commander/src/mini-commander_applet.c:194
+msgid "Click this button to start the browser"
+msgstr "Klicka på denna knapp för att starta webbläsaren"
+
+#: mini-commander/src/mini-commander_applet.c:208
+#: mini-commander/src/mini-commander_applet.c:212
+msgid "History"
+msgstr "Historik"
+
+#: mini-commander/src/mini-commander_applet.c:213
+msgid "Click this button for the list of previous commands"
+msgstr "Klicka på denna knapp för listan med tidigare kommandon"
+
+#: mini-commander/src/mini-commander_applet.c:351
+msgid "Mini-Commander applet"
+msgstr "Panelprogrammet Mini-Commander"
+
+#: mini-commander/src/mini-commander_applet.c:352
+msgid "This applet adds a command line to the panel"
+msgstr "Detta panelprogran lägger till en kommandorad på panelen"
+
+#: mini-commander/src/preferences.c:343
+msgid "You must specify a pattern"
+msgstr "Du måste ange ett mönster"
+
+#: mini-commander/src/preferences.c:347
+msgid "You must specify a pattern and a command"
+msgstr "Du måste ange ett mönster och ett kommando"
+
+#: mini-commander/src/preferences.c:348
+msgid "You must specify a command"
+msgstr "Du måste ange ett kommando"
+
+#: mini-commander/src/preferences.c:351
+msgid "You may not specify duplicate patterns"
+msgstr "Du får inte ange dublettmönster"
 
 #: mixer/GNOME_MixerApplet.server.in.in.h:1
 msgid "Adjust the sound volume"
 msgstr "Justera ljudvolymen"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:140
-#: mixer/mixer.c:818
+#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:143
+#: mixer/mixer.c:830
 msgid "Volume Control"
 msgstr "Volymkontroll"
 
@@ -3055,11 +2710,11 @@ msgstr "_Tysta"
 msgid "_Run Volume Control..."
 msgstr "_Kör volymkontroll..."
 
-#: mixer/mixer.c:141
+#: mixer/mixer.c:144
 msgid "Volume Control (muted)"
 msgstr "Volymkontroll (tystad)"
 
-#: mixer/mixer.c:193
+#: mixer/mixer.c:196
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -3067,37 +2722,37 @@ msgstr ""
 "varning: denna version av gmix kompilerades med en annan version av\n"
 "soundcard.h.\n"
 
-#: mixer/mixer.c:204
+#: mixer/mixer.c:207
 #, c-format
 msgid "Querying available channels of mixer device %s failed\n"
 msgstr "Undersökning av tillgängliga kanaler på mixerenheten %s misslyckades\n"
 
-#: mixer/mixer.c:211
+#: mixer/mixer.c:214
 msgid "warning: mixer has no volume channel - using PCM instead.\n"
 msgstr "varning: mixern har ingen volymkanal - använder PCM istället.\n"
 
-#: mixer/mixer.c:214
+#: mixer/mixer.c:217
 #, c-format
 msgid "Mixer device %s has neither volume nor PCM channels.\n"
 msgstr "Mixerenheten %s har varken volym- eller PCM-kanaler.\n"
 
-#: mixer/mixer.c:567
+#: mixer/mixer.c:575
 msgid "Volume Controller"
 msgstr "Volymkontroll"
 
-#: mixer/mixer.c:568
+#: mixer/mixer.c:576
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "Använd upp-/nertangenterna för att ändra volymen"
 
-#: mixer/mixer.c:819
+#: mixer/mixer.c:831
 msgid "(C) 2001 Richard Hult"
 msgstr "© 2001 Richard Hult"
 
-#: mixer/mixer.c:820
+#: mixer/mixer.c:832
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr "Volymkontrollen låter dig ställa in volymnivån för ditt skrivbord."
 
-#: mixer/mixer.c:1053
+#: mixer/mixer.c:1077
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr "Volymkontrollen låter dig ställa in volymnivån för ditt skrivbord"
 
@@ -3106,11 +2761,11 @@ msgid "Internet"
 msgstr "Internet"
 
 #: modemlights/GNOME_ModemLightsApplet.server.in.in.h:2
-#: modemlights/modemlights.c:224
+#: modemlights/modemlights.c:227
 msgid "Modem Lights"
 msgstr "Modemlampor"
 
-#: modemlights/modemlights.c:226
+#: modemlights/modemlights.c:229
 msgid ""
 "Released under the GNU general public license.\n"
 "A modem status indicator and dialer.\n"
@@ -3120,7 +2775,7 @@ msgstr ""
 "En indikator för modemstatus och uppringare.\n"
 "Lamporna uppifrån eller från vänster är Sänd data och Mottag Data."
 
-#: modemlights/modemlights.c:553
+#: modemlights/modemlights.c:558
 msgid ""
 "You are currently connected.\n"
 "Do you want to disconnect?"
@@ -3128,148 +2783,144 @@ msgstr ""
 "Du är just nu ansluten.\n"
 "Vill du avbryta och koppla ner förbindelsen?"
 
-#: modemlights/modemlights.c:568
+#: modemlights/modemlights.c:573
 msgid "Do you want to connect?"
 msgstr "Vill du ansluta?"
 
-#: modemlights/modemlights.c:596
+#: modemlights/modemlights.c:601
 #, c-format
 msgid "%#.1fMb received / %#.1fMb sent / time: %.1d:%.2d"
 msgstr "%#.1fMB mottaget / %#.1fMB skickat / tid: %.1d.%.2d"
 
-#: modemlights/modemlights.c:601
+#: modemlights/modemlights.c:606
 msgid "not connected"
 msgstr "inte ansluten"
 
-#: modemlights/properties.c:326
+#: modemlights/properties.c:328
 msgid "Modem Lights Preferences"
 msgstr "Inställningar för modemlampor"
 
-#: modemlights/properties.c:338
+#: modemlights/properties.c:342
 msgid "Connecting"
 msgstr "Ansluter"
 
-#: modemlights/properties.c:352
+#: modemlights/properties.c:356
 msgid "Co_nnect command:"
 msgstr "_Anslutningskommando:"
 
-#: modemlights/properties.c:369
+#: modemlights/properties.c:373
 msgid "_Disconnect command:"
 msgstr "_Frånkopplingskommando:"
 
 #. confirmation checkbox
-#: modemlights/properties.c:382
+#: modemlights/properties.c:386
 msgid "Con_firm connection"
 msgstr "_Bekräfta anslutningen"
 
-#: modemlights/properties.c:403
+#: modemlights/properties.c:407
 msgid "U_pdates per second"
 msgstr "U_ppdateringar per sekund"
 
 #. extra info checkbox
-#: modemlights/properties.c:417
+#: modemlights/properties.c:421
 msgid "Sho_w connect time and throughput"
 msgstr "_Visa anslutningstid och bandbredd"
 
-#: modemlights/properties.c:434
+#: modemlights/properties.c:438
 msgid "Receive data"
 msgstr "Mottag data"
 
-#: modemlights/properties.c:436
+#: modemlights/properties.c:440
 msgid "_Foreground"
 msgstr "_Förgrund"
 
-#: modemlights/properties.c:437
+#: modemlights/properties.c:441
 msgid "_Background"
 msgstr "_Bakgrund"
 
-#: modemlights/properties.c:439
+#: modemlights/properties.c:443
 msgid "Send data"
 msgstr "Skicka data"
 
-#: modemlights/properties.c:441
+#: modemlights/properties.c:445
 msgid "Foregroun_d"
 msgstr "Förgrun_d"
 
-#: modemlights/properties.c:442
+#: modemlights/properties.c:446
 msgid "Backg_round"
 msgstr "Bakg_rund"
 
-#: modemlights/properties.c:444
+#: modemlights/properties.c:448
 msgid "Connection status"
 msgstr "Anslutningsstatus"
 
-#: modemlights/properties.c:446
+#: modemlights/properties.c:450
 msgid "Co_nnected"
 msgstr "A_nsluten"
 
-#: modemlights/properties.c:447
+#: modemlights/properties.c:451
 msgid "No_t connected"
 msgstr "In_te ansluten"
 
-#: modemlights/properties.c:448
+#: modemlights/properties.c:452
 msgid "A_waiting connection"
 msgstr "_Väntar på anslutning"
 
-#: modemlights/properties.c:451
+#: modemlights/properties.c:455
 msgid "B_link"
 msgstr "B_link"
 
-#: modemlights/properties.c:458
+#: modemlights/properties.c:462
 msgid "Text"
 msgstr "Text"
 
-#: modemlights/properties.c:460
+#: modemlights/properties.c:464
 msgid "For_eground"
 msgstr "F_örgrund"
 
-#: modemlights/properties.c:461
+#: modemlights/properties.c:465
 msgid "Bac_kground"
 msgstr "Ba_kgrund"
 
-#: modemlights/properties.c:462
+#: modemlights/properties.c:466
 msgid "O_utline"
 msgstr "_Ram"
 
-#: modemlights/properties.c:464
-msgid "C_olors"
-msgstr "F_ärger"
-
-#: modemlights/properties.c:473
+#: modemlights/properties.c:477
 msgid "Modem options"
 msgstr "Modemalternativ"
 
-#: modemlights/properties.c:487
+#: modemlights/properties.c:491
 msgid "_Modem lock file:"
 msgstr "Låsfil för _modemet:"
 
-#: modemlights/properties.c:499
+#: modemlights/properties.c:503
 msgid "_Verify owner of lock file"
 msgstr "_Verifiera ägaren av låsfilen"
 
-#: modemlights/properties.c:511
+#: modemlights/properties.c:515
 msgid "_Device:"
 msgstr "_Enhet:"
 
 #. ISDN checkbox
-#: modemlights/properties.c:524
+#: modemlights/properties.c:528
 msgid "U_se ISDN"
 msgstr "A_nvänd ISDN"
 
-#: modemlights/properties.c:544
+#: modemlights/properties.c:548
 msgid "Set options as default"
 msgstr "Ställ in alternativ som standard"
 
-#: modemlights/properties.c:550
-msgid "_Advanced"
-msgstr "_Avancerat"
+#: modemlights/properties.c:554
+msgid "Advanced"
+msgstr "Avancerat"
 
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:1
 msgid "A system load indicator"
 msgstr "En systembelastningsindikator"
 
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:2
-#: multiload/main.c:75
+#: multiload/main.c:78
 msgid "System Monitor"
 msgstr "Systemövervakare"
 
@@ -3285,7 +2936,7 @@ msgstr "Processorbelastning"
 msgid "Load Average"
 msgstr "Medelbelastning"
 
-#: multiload/main.c:77
+#: multiload/main.c:80
 msgid ""
 "Released under the GNU General Public License.\n"
 "\n"
@@ -3297,27 +2948,27 @@ msgstr ""
 "En systemövervakare som kan visa grafer för processor-, minnes- och "
 "växlingsfilsanvändning, plus nätverkstrafik."
 
-#: multiload/main.c:227
+#: multiload/main.c:236 multiload/properties.c:373
 msgid "Processor"
 msgstr "Processor"
 
-#: multiload/main.c:229
+#: multiload/main.c:238 multiload/properties.c:379
 msgid "Memory"
 msgstr "Minne"
 
-#: multiload/main.c:231
+#: multiload/main.c:240 multiload/properties.c:385
 msgid "Network"
 msgstr "Nätverk"
 
-#: multiload/main.c:233
+#: multiload/main.c:242 multiload/properties.c:391
 msgid "Swap File"
 msgstr "Växlingsfil"
 
-#: multiload/main.c:235
+#: multiload/main.c:244
 msgid "Resource"
 msgstr "Resurs"
 
-#: multiload/main.c:247
+#: multiload/main.c:256
 #, c-format
 msgid ""
 "%s:\n"
@@ -3354,16 +3005,6 @@ msgstr "_Nätverk"
 msgid "_Swap File"
 msgstr "_Växlingsfil"
 
-#.
-#. check_box = gtk_check_button_new_with_mnemonic(_("_Average"));
-#. gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_box),
-#. panel_applet_gconf_get_bool(multiload_applet->applet, "view_loadavg", NULL));
-#. gtk_box_pack_start(GTK_BOX(hbox), check_box, FALSE, FALSE, 0);
-#.
-#: multiload/properties.c:313
-msgid "Options"
-msgstr "Alternativ"
-
 #: multiload/properties.c:326
 msgid "System m_onitor width: "
 msgstr "System_övervakarbredd: "
@@ -3384,10 +3025,6 @@ msgstr "Uppdateringsintervall för sys_temövervakare: "
 msgid "milliseconds"
 msgstr "millisekunder"
 
-#: multiload/properties.c:373
-msgid "P_rocessor"
-msgstr "P_rocessor"
-
 #: multiload/properties.c:374
 msgid "_User"
 msgstr "_Användare"
@@ -3403,10 +3040,6 @@ msgstr "\"N_ice\""
 #: multiload/properties.c:377
 msgid "I_dle"
 msgstr "_Tomgång (idle)"
-
-#: multiload/properties.c:379
-msgid "M_emory"
-msgstr "_Minne"
 
 #: multiload/properties.c:380
 msgid "Ot_her"
@@ -3424,10 +3057,6 @@ msgstr "_Buffertar"
 msgid "F_ree"
 msgstr "Ledi_gt"
 
-#: multiload/properties.c:385
-msgid "Net_work"
-msgstr "Nät_verk"
-
 #: multiload/properties.c:386
 msgid "S_LIP"
 msgstr "S_LIP"
@@ -3444,10 +3073,6 @@ msgstr "Et_hernet"
 msgid "_Other"
 msgstr "_Annat"
 
-#: multiload/properties.c:391
-msgid "Swap _File"
-msgstr "Växlings_fil"
-
 #: multiload/properties.c:392
 msgid "_Used"
 msgstr "Anv_änt"
@@ -3456,7 +3081,7 @@ msgstr "Anv_änt"
 msgid "_Free"
 msgstr "_Ledigt"
 
-#: multiload/properties.c:411
+#: multiload/properties.c:413
 msgid "System Monitor Preferences"
 msgstr "Inställningar för systemövervakare"
 
@@ -3488,16 +3113,16 @@ msgstr "Åtgärdsmeny"
 msgid "Add items to the Menu Bar"
 msgstr "Lägg till objekt till menyraden"
 
-#: panel-menu/panel-menu-add.c:240 panel-menu/panel-menu-links.c:139
+#: panel-menu/panel-menu-add.c:244 panel-menu/panel-menu-links.c:139
 #: panel-menu/panel-menu-links.c:405
 msgid "Shortcuts"
 msgstr "Genvägar"
 
-#: panel-menu/panel-menu-add.c:246
+#: panel-menu/panel-menu-add.c:250
 msgid "My Documents"
 msgstr "Mina dokument"
 
-#: panel-menu/panel-menu-add.c:252 panel-menu/panel-menu-documents.c:134
+#: panel-menu/panel-menu-add.c:256 panel-menu/panel-menu-documents.c:134
 #: panel-menu/panel-menu-documents.c:399
 msgid "Documents"
 msgstr "Dokument"
@@ -3506,7 +3131,7 @@ msgstr "Dokument"
 msgid "Applications"
 msgstr "Program"
 
-#: panel-menu/panel-menu-common.c:735
+#: panel-menu/panel-menu-common.c:738
 msgid ""
 "Removing this entry is not allowed as this will cause the Menu Bar applet to "
 "be removed from GNOME Panel"
@@ -3526,19 +3151,19 @@ msgstr "Hem"
 msgid "Edit directory item..."
 msgstr "Redigera katalogobjekt..."
 
-#: panel-menu/panel-menu-directory.c:684 panel-menu/panel-menu-path.c:734
+#: panel-menu/panel-menu-directory.c:686 panel-menu/panel-menu-path.c:736
 msgid "_Path:"
 msgstr "_Sökväg:"
 
-#: panel-menu/panel-menu-directory.c:692
+#: panel-menu/panel-menu-directory.c:694
 msgid "..."
 msgstr "..."
 
-#: panel-menu/panel-menu-directory.c:702
+#: panel-menu/panel-menu-directory.c:704
 msgid "_Depth level:"
 msgstr "_Djupnivå:"
 
-#: panel-menu/panel-menu-directory.c:799
+#: panel-menu/panel-menu-directory.c:801
 msgid "Path specified is currently not a valid directory."
 msgstr "Sökvägen som angivits är för närvarande inte en giltig katalog."
 
@@ -3587,31 +3212,31 @@ msgstr "Inställningar"
 msgid "Menu Bar Preferences"
 msgstr "Inställningar för menyrad"
 
-#: panel-menu/panel-menu-properties.c:76
+#: panel-menu/panel-menu-properties.c:78
 msgid "Layout"
 msgstr "Layout"
 
-#: panel-menu/panel-menu-properties.c:91
+#: panel-menu/panel-menu-properties.c:93
 msgid "_Applications Menu"
 msgstr "_Programmeny"
 
-#: panel-menu/panel-menu-properties.c:115
+#: panel-menu/panel-menu-properties.c:117
 msgid "Select an icon for the Applications menu"
 msgstr "Välj en ikon för programmenyn"
 
-#: panel-menu/panel-menu-properties.c:132
+#: panel-menu/panel-menu-properties.c:134
 msgid "_Preferences Menu"
 msgstr "_Inställningsmeny"
 
-#: panel-menu/panel-menu-properties.c:143
+#: panel-menu/panel-menu-properties.c:145
 msgid "Ac_tions Menu"
 msgstr "_Åtgärdsmeny"
 
-#: panel-menu/panel-menu-properties.c:154
+#: panel-menu/panel-menu-properties.c:156
 msgid "_Windows Menu"
 msgstr "_Fönstermeny"
 
-#: panel-menu/panel-menu-properties.c:165
+#: panel-menu/panel-menu-properties.c:167
 msgid "W_orkspaces Menu"
 msgstr "_Arbetsytemeny"
 
@@ -3623,17 +3248,512 @@ msgstr "Fönster"
 msgid "Workspaces"
 msgstr "Arbetsytor"
 
-#: panel-menu/panel-menu.c:691
+#: panel-menu/panel-menu.c:693
 msgid "Menu Bar"
 msgstr "Menyrad"
 
-#: panel-menu/panel-menu.c:692
+#: panel-menu/panel-menu.c:694
 msgid "(c) 2001 Chris Phelps"
 msgstr "© 2001 Chris Phelps"
 
-#: panel-menu/panel-menu.c:693
+#: panel-menu/panel-menu.c:695
 msgid "The Menu Bar allows you to display customized menubars on your panels."
 msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
+
+#: screen-exec/egg-screen-help.c:174
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr "Kan inte hitta domänen GNOME_FILE_DOMAIN_APP_HELP"
+
+#: screen-exec/egg-screen-help.c:187
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr "Kan inte hitta domänen GNOME_FILE_DOMAIN_HELP."
+
+#: screen-exec/egg-screen-help.c:200 screen-exec/egg-screen-help.c:215
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+"Kan inte visa hjälp eftersom %s inte är en katalog. Kontrollera din "
+"installation."
+
+#: screen-exec/egg-screen-help.c:224 screen-exec/egg-screen-help.c:240
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+"Kan inte hitta hjälpfilerna varken i %s eller %s. Kontrollera din "
+"installation"
+
+#: screen-exec/egg-screen-help.c:315
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr "Kan inte hitta doc_id %s i hjälpsökvägen"
+
+#: screen-exec/egg-screen-help.c:336
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr "Hjälpdokumentet %s/%s hittades inte"
+
+#: wireless/wireless-applet.c:343
+msgid ""
+"The images necessary to run the wireless monitor are missing.\n"
+"Please make sure that it is correctly installed."
+msgstr ""
+"Bilderna som krävs för att köra den trådlösa övervakaren saknas.\n"
+"Försäkra dig om att det är korrekt installerat."
+
+#: wireless/wireless-applet.c:524
+msgid "No Wireless Devices"
+msgstr "Inga trådlösa enheter"
+
+#: wireless/wireless-applet.c:526
+msgid ""
+"There doesn't seem to be any wireless devices configured on your system.\n"
+"Please verify your configuration if you think this is incorrect."
+msgstr ""
+"Det verkar inte finnas några trådlösa enheter konfigurerade på ditt system.\n"
+"Verifiera din konfiguration om du tror den är felaktig."
+
+#: wireless/wireless-applet.c:718
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
+msgid "Wireless Link Monitor"
+msgstr "Övervakare av trådlös länk"
+
+#: wireless/wireless-applet.c:720
+msgid "(C) 2001, 2002 Free Software Foundation "
+msgstr "© 2001, 2002 Free Software Foundation "
+
+#: wireless/wireless-applet.c:721
+msgid "This utility shows the status of a wireless link."
+msgstr "Detta verktyg visar statusen på en trådlös länk."
+
+#: wireless/wireless-applet.glade.h:1
+msgid "Monitored Device:"
+msgstr "Övervakad enhet:"
+
+#: wireless/wireless-applet.glade.h:2
+msgid "Show _dialog boxes"
+msgstr "Visa _dialogfönster"
+
+#: wireless/wireless-applet.glade.h:3
+msgid "Show signal strength in _percentage"
+msgstr "Visa signalstyrka i _procent"
+
+#: wireless/wireless-applet.glade.h:4
+msgid "Wireless Link Monitor Preferences"
+msgstr "Inställningar för övervakare av trådlös länk"
+
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:1
+msgid "Monitor the quality of a wireless network link"
+msgstr "Övervaka kvaliteten på en trådlös nätverkslänk"
+
+#~ msgid "Browse"
+#~ msgstr "Bläddra"
+
+#~ msgid "Heavy mist"
+#~ msgstr "Kraftigt fuktdis"
+
+#~ msgid "_Keymaps"
+#~ msgstr "_Tangentbordstabeller"
+
+#~ msgid "_Symbols"
+#~ msgstr "_Symboler"
+
+#~ msgid "_Behavior"
+#~ msgstr "_Beteende"
+
+#~ msgid "_Location"
+#~ msgstr "_Plats"
+
+#~ msgid "_Advanced"
+#~ msgstr "_Avancerat"
+
+#~ msgid "_Options"
+#~ msgstr "Alternati_v"
+
+#~ msgid "_Appearance"
+#~ msgstr "_Utseende"
+
+#~ msgid "_General"
+#~ msgstr "_Allmänt"
+
+#~ msgid "C_olors"
+#~ msgstr "F_ärger"
+
+#~ msgid "P_rocessor"
+#~ msgstr "P_rocessor"
+
+#~ msgid "M_emory"
+#~ msgstr "_Minne"
+
+#~ msgid "Net_work"
+#~ msgstr "Nät_verk"
+
+#~ msgid "Swap _File"
+#~ msgstr "Växlings_fil"
+
+#~ msgid "_Edit"
+#~ msgstr "_Redigera"
+
+#~ msgid "_Up"
+#~ msgstr "_Upp"
+
+#~ msgid "Dow_n"
+#~ msgstr "_Ned"
+
+#~ msgid "_Delete"
+#~ msgstr "_Ta bort"
+
+#~ msgid "Armenia"
+#~ msgstr "Armenien"
+
+#~ msgid "Australia"
+#~ msgstr "Australien"
+
+#~ msgid "Austria"
+#~ msgstr "Österrike"
+
+#~ msgid "Belgium"
+#~ msgstr "Belgien"
+
+#~ msgid "Brazil"
+#~ msgstr "Brasilien"
+
+#~ msgid "Bulgaria"
+#~ msgstr "Bulgarien"
+
+#~ msgid "Canada"
+#~ msgstr "Kanada"
+
+#~ msgid "Caribic"
+#~ msgstr "Karibien"
+
+#~ msgid "France"
+#~ msgstr "Frankrike"
+
+#~ msgid "Georgia"
+#~ msgstr "Georgien"
+
+#~ msgid "Germany"
+#~ msgstr "Tyskland"
+
+#~ msgid "Great Britain"
+#~ msgstr "Storbritannien"
+
+#~ msgid "Greece"
+#~ msgstr "Grekland"
+
+#~ msgid "Hungary"
+#~ msgstr "Ungern"
+
+#~ msgid "Jamaica"
+#~ msgstr "Jamaica"
+
+#~ msgid "New Zealand"
+#~ msgstr "Nya Zeeland"
+
+#~ msgid "Norway"
+#~ msgstr "Norge"
+
+#~ msgid "Poland"
+#~ msgstr "Polen"
+
+#~ msgid "Portugal"
+#~ msgstr "Portugal"
+
+#~ msgid "Russia"
+#~ msgstr "Ryssland"
+
+#~ msgid "Slovak Republic"
+#~ msgstr "Slovakien"
+
+#~ msgid "Slovenia"
+#~ msgstr "Slovenien"
+
+#~ msgid "South Africa"
+#~ msgstr "Sydafrika"
+
+#~ msgid "Spain"
+#~ msgstr "Spanien"
+
+#~ msgid "Sweden"
+#~ msgstr "Sverige"
+
+#~ msgid "Switzerland"
+#~ msgstr "Schweiz"
+
+#~ msgid "Thailand"
+#~ msgstr "Thailand"
+
+#~ msgid "Turkey"
+#~ msgstr "Turkiet"
+
+#~ msgid "United Kingdom"
+#~ msgstr "Storbritannien"
+
+#~ msgid "United States"
+#~ msgstr "USA"
+
+#~ msgid "Yugoslavia"
+#~ msgstr "Jugoslavien"
+
+#~ msgid "Armenian"
+#~ msgstr "Armeniska"
+
+#~ msgid "Basque"
+#~ msgstr "Baskiska"
+
+#~ msgid "Bulgarian"
+#~ msgstr "Bulgariska"
+
+#~ msgid "Dutch"
+#~ msgstr "Holländska"
+
+#~ msgid "English"
+#~ msgstr "Engelska"
+
+#~ msgid "French"
+#~ msgstr "Franska"
+
+#~ msgid "Georgian"
+#~ msgstr "Georgiska"
+
+#~ msgid "German"
+#~ msgstr "Tyska"
+
+#~ msgid "Greek"
+#~ msgstr "Grekiska"
+
+#~ msgid "Hungarian"
+#~ msgstr "Ungerska"
+
+#~ msgid "Norwegian"
+#~ msgstr "Norska"
+
+#~ msgid "Polish"
+#~ msgstr "Polska"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugisiska"
+
+#~ msgid "Russian"
+#~ msgstr "Ryska"
+
+#~ msgid "Slovak"
+#~ msgstr "Slovakiska"
+
+#~ msgid "Slovenian"
+#~ msgstr "Slovenska"
+
+#~ msgid "Swedish"
+#~ msgstr "Svenska"
+
+#~ msgid "Thai"
+#~ msgstr "Thailändska"
+
+#~ msgid "Turkish"
+#~ msgstr "Turkiska"
+
+#~ msgid "Wallon"
+#~ msgstr "Wallonska"
+
+#~ msgid "Yugoslavian"
+#~ msgstr "Jugoslaviska"
+
+#~ msgid "105"
+#~ msgstr "105"
+
+#~ msgid "101"
+#~ msgstr "101"
+
+#~ msgid "102"
+#~ msgstr "102"
+
+#~ msgid "450"
+#~ msgstr "450"
+
+#~ msgid "84"
+#~ msgstr "84"
+
+#~ msgid "mklinux"
+#~ msgstr "mklinux"
+
+#~ msgid "type5"
+#~ msgstr "type5"
+
+#~ msgid "iso-8859-1"
+#~ msgstr "iso-8859-1"
+
+#~ msgid "iso-8859-2"
+#~ msgstr "iso-8859-2"
+
+#~ msgid "iso-8859-7"
+#~ msgstr "iso-8859-7"
+
+#~ msgid "iso-8859-9"
+#~ msgstr "iso-8859-9"
+
+#~ msgid "am-armscii8"
+#~ msgstr "am-armscii8"
+
+#~ msgid "be-latin1"
+#~ msgstr "be-latin1"
+
+#~ msgid "cp1251"
+#~ msgstr "cp1251"
+
+#~ msgid "georgian-academy"
+#~ msgstr "georgian-academy"
+
+#~ msgid "koi8-r"
+#~ msgstr "koi8-r"
+
+#~ msgid "tis620"
+#~ msgstr "tis620"
+
+#~ msgid "ix86"
+#~ msgstr "ix86"
+
+#~ msgid "Sun"
+#~ msgstr "Sun"
+
+#~ msgid "mac"
+#~ msgstr "mac"
+
+#~ msgid "sgi"
+#~ msgstr "sgi"
+
+#~ msgid "dec"
+#~ msgstr "dec"
+
+#~ msgid "ibm"
+#~ msgstr "ibm"
+
+#~ msgid "Lan_guage:"
+#~ msgstr "Spr_åk:"
+
+#~ msgid "Count_ry:"
+#~ msgstr "_Land:"
+
+#~ msgid ""
+#~ "_Flag\n"
+#~ "Pixmap:"
+#~ msgstr ""
+#~ "_Flagga\n"
+#~ "Bild:"
+
+#~ msgid "Arch_itecture:"
+#~ msgstr "Ark_itektur:"
+
+#~ msgid "_Type:"
+#~ msgstr "_Typ:"
+
+#~ msgid "Code_page:"
+#~ msgstr "T_eckentabell:"
+
+#~ msgid "The keymap switching command returned with error!"
+#~ msgstr "Kommandot för byte av teckentabell returnerade ett fel!"
+
+#~ msgid "_Theme Name"
+#~ msgstr "_Temanamn"
+
+#~ msgid "Arc_hitecture:"
+#~ msgstr "Ar_kitektur:"
+
+#~ msgid "_Width:"
+#~ msgstr "_Bredd:"
+
+#~ msgid "Scroll Speed:"
+#~ msgstr "Rullningshastighet:"
+
+#~ msgid "Cannot get schema for %s: %s"
+#~ msgstr "Kan inte få tag i schema för %s: %s"
+
+#~ msgid "Cannot set schema for %s: %s"
+#~ msgstr "Kan inte ställa in schema för %s: %s"
+
+#~ msgid "_Macros"
+#~ msgstr "_Makron"
+
+#~ msgid "Pattern"
+#~ msgstr "Mönster"
+
+#~ msgid "Settings"
+#~ msgstr "Inställningar"
+
+#~ msgid "Enter symbols delimited with \"+\" in the box below."
+#~ msgstr "Ange symboler avgränsade med \"+\" i rutan nedan."
+
+#~ msgid "Stock Sy_mbol:"
+#~ msgstr "Aktiesy_mbol:"
+
+#~ msgid "Stock C_hange:"
+#~ msgstr "Aktie_ändring:"
+
+#~ msgid "not unique"
+#~ msgstr "inte unik"
+
+#~ msgid "completing..."
+#~ msgstr "komplettering..."
+
+#~ msgid "completed"
+#~ msgstr "ifylld"
+
+#~ msgid "not found"
+#~ msgstr "inte hittad"
+
+#~ msgid "no /bin/sh"
+#~ msgstr "ingen /bin/sh"
+
+#~ msgid "end of history list"
+#~ msgstr "slut på historik"
+
+#~ msgid "starting..."
+#~ msgstr "startar..."
+
+#~ msgid "autocompleted"
+#~ msgstr "automatiskt ifylld"
+
+#~ msgid "%H:%M - %d. %b"
+#~ msgstr "%H.%M - %d %b"
+
+#~ msgid "%H:%M"
+#~ msgstr "%H.%M"
+
+#~ msgid "%d. %b"
+#~ msgstr "%d %b"
+
+#~ msgid "orient. changed"
+#~ msgstr "riktning ändrad"
+
+#~ msgid "size changed"
+#~ msgstr "storlek ändrad"
+
+#~ msgid "ready..."
+#~ msgstr "klar..."
+
+#~ msgid "Clock"
+#~ msgstr "Klocka"
+
+#~ msgid "Show time"
+#~ msgstr "Visa tid"
+
+#~ msgid "Show date"
+#~ msgstr "Visa datum"
+
+#~ msgid "Applet height:"
+#~ msgstr "Panelprogramshöjd:"
+
+#~ msgid "Command line height:"
+#~ msgstr "Kommandoradshöjd:"
+
+#~ msgid "Regex _%.2d:"
+#~ msgstr "Regex _%.2d:"
+
+#~ msgid "   Macro _%.2d:"
+#~ msgstr "   Makro _%.2d:"
 
 #~ msgid "Apperance"
 #~ msgstr "Utseende"
@@ -4298,9 +4418,6 @@ msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
 #~ msgid "Character Picker Settings"
 #~ msgstr "Inställningar för teckenväljare"
 
-#~ msgid "(C) 1998-2002 Free Software Foundation"
-#~ msgstr "© 1998-2002 Free Software Foundation"
-
 #~ msgid "Copyright (C) 2002"
 #~ msgstr "Copyright © 2002"
 
@@ -4420,9 +4537,6 @@ msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
 
 #~ msgid "Odometer setting"
 #~ msgstr "Inställningar för trippmätare"
-
-#~ msgid "Clock color"
-#~ msgstr "Klockfärg"
 
 #~ msgid "Hour needle color"
 #~ msgstr "Timvisarens färg"
@@ -4693,9 +4807,6 @@ msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
 #~ msgid "Fonts"
 #~ msgstr "Typsnitt"
 
-#~ msgid "Font:"
-#~ msgstr "Typsnitt:"
-
 #~ msgid "Diskusage Settings"
 #~ msgstr "Inställningar för Diskusage"
 
@@ -4858,9 +4969,6 @@ msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
 #~ msgid "Maximum:"
 #~ msgstr "Maximalt:"
 
-#~ msgid "Speed:"
-#~ msgstr "Hastighet:"
-
 #~ msgid "Memory Load Applet"
 #~ msgstr "Panelprogram för minnesbelastning"
 
@@ -4916,9 +5024,6 @@ msgstr "Menyraden låter dig visa anpassade menyrader på dina paneler."
 
 #~ msgid "Launcher properties..."
 #~ msgstr "Egenskaper för programstartare..."
-
-#~ msgid "Delete launcher"
-#~ msgstr "Ta bort programstartare"
 
 #~ msgid "File '%s' does not exist"
 #~ msgstr "Filen \"%s\" finns inte"

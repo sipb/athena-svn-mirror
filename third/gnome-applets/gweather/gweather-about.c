@@ -1,4 +1,4 @@
-/* $Id: gweather-about.c,v 1.1.1.1 2003-01-04 21:19:22 ghudson Exp $ */
+/* $Id: gweather-about.c,v 1.1.1.2 2003-01-29 20:36:58 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -45,6 +45,8 @@ void gweather_about_run (GWeatherApplet *gw_applet)
     static GtkWidget *about_dialog = NULL;
     
     if (about_dialog) {
+	gtk_window_set_screen (GTK_WINDOW (about_dialog),
+			       gtk_widget_get_screen (GTK_WIDGET (gw_applet->applet)));
 	gtk_window_present (GTK_WINDOW (about_dialog));
 	return;
     }
@@ -68,7 +70,9 @@ void gweather_about_run (GWeatherApplet *gw_applet)
                                     pixbuf);
     if (pixbuf)
     	gdk_pixbuf_unref (pixbuf);
-	
+
+    gtk_window_set_screen (GTK_WINDOW (about_dialog),
+			   gtk_widget_get_screen (GTK_WIDGET (gw_applet->applet)));
     gtk_window_set_wmclass (GTK_WINDOW (about_dialog), "weather report", "Weather Report");	
     gnome_window_icon_set_from_file (GTK_WINDOW (about_dialog), GNOME_ICONDIR"/gweather/tstorm.xpm");	
     

@@ -46,6 +46,8 @@
 #include <libgnomeui/gnome-about.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <panel-applet.h>
+#include <egg-screen-exec.h>
+#include <egg-screen-help.h>
 
 #ifdef HAVE_LINUX_SOUNDCARD_H
 #include <linux/soundcard.h>
@@ -93,6 +95,7 @@
 
 #define VOLUME_DEFAULT_ICON_SIZE 48
 static GtkIconSize volume_icon_size = 0;
+static gboolean icons_initialized = FALSE;
 
 #define IS_PANEL_HORIZONTAL(o) (o == PANEL_APPLET_ORIENT_UP || o == PANEL_APPLET_ORIENT_DOWN)
 
@@ -264,7 +267,10 @@ setMixer(gint vol)
 	tvol = (vol << 8) + vol;
 /*g_message("Saving mixer value of %d",tvol);*/
 	ioctl(mixerfd, MIXER_WRITE(mixerchannel), &tvol);
+/* SOUND_MIXER_SPEAKER is output level on Mac, but input level on PC. #96639 */
+#ifdef __powerpc__
 	ioctl(mixerfd, MIXER_WRITE(SOUND_MIXER_SPEAKER), &tvol);
+#endif
 #endif
 #ifdef SUN_API
  	audio_info_t ainfo;
@@ -540,6 +546,8 @@ mixer_popup_show (MixerData *data)
 	GdkGrabStatus   pointer, keyboard;
 
 	data->popup = gtk_window_new (GTK_WINDOW_POPUP);
+	gtk_window_set_screen (GTK_WINDOW (data->popup),
+			       gtk_widget_get_screen (data->applet));
 
 	data->vol_before_popup = readMixer ();
 	
@@ -763,7 +771,8 @@ mixer_start_gmix_cb (BonoboUIComponent *uic,
 	if (!run_mixer_cmd)
 		return;
 
-	g_spawn_command_line_async (run_mixer_cmd, &error);
+	egg_screen_execute_command_line_async (
+			gtk_widget_get_screen (data->applet), run_mixer_cmd, &error);
 	if (error) {
 		GtkWidget *dialog;
 
@@ -780,7 +789,8 @@ mixer_start_gmix_cb (BonoboUIComponent *uic,
 				  NULL);
 
 		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (data->applet));
 		gtk_widget_show (dialog);
 
 		g_error_free (error);
@@ -807,6 +817,8 @@ mixer_about_cb (BonoboUIComponent *uic,
 	const gchar *translator_credits = _("translator_credits");
 	
         if (about) {
+		gtk_window_set_screen (GTK_WINDOW (about),
+				       gtk_widget_get_screen (data->applet));
                 gtk_window_present (GTK_WINDOW (about));
                 return;
         }
@@ -823,6 +835,8 @@ mixer_about_cb (BonoboUIComponent *uic,
 				 strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
                                  pixbuf);
 
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (data->applet));
 	gtk_window_set_wmclass (GTK_WINDOW(about), "volume control", "Volume Control");
 	gnome_window_icon_set_from_file (GTK_WINDOW (about), GNOME_ICONDIR"/mixer/gnome-mixer-applet.png");
         g_signal_connect (G_OBJECT (about), "destroy",
@@ -834,13 +848,16 @@ mixer_about_cb (BonoboUIComponent *uic,
 
 static void
 mixer_help_cb (BonoboUIComponent *uic,
-	       gpointer           data,
+	       MixerData         *data,
 	       const gchar       *verbname)
 {
         GError *error = NULL;
-        
-	gnome_help_display("mixer_applet2",NULL,&error);
-	if (error) {
+
+	egg_screen_help_display (
+		gtk_widget_get_screen (data->applet),
+		"mixer_applet2", NULL, &error);
+
+	if (error) { /* FIXME: the user needs to see this error */
 		g_print ("%s \n", error->message);
 		g_error_free (error);
 		error = NULL;
@@ -952,6 +969,9 @@ static void
 mixer_init_stock_icons ()
 {
 	GtkIconFactory *factory;
+	
+	if (icons_initialized)
+		return;
 
 	volume_icon_size = gtk_icon_size_register ("panel-menu", 
 						   VOLUME_DEFAULT_ICON_SIZE,
@@ -963,6 +983,8 @@ mixer_init_stock_icons ()
 	register_mixer_stock_icons (factory);
 
 	g_object_unref (factory);
+
+	icons_initialized = TRUE;
 }
 
 const BonoboUIVerb mixer_applet_menu_verbs [] = {
@@ -975,8 +997,8 @@ const BonoboUIVerb mixer_applet_menu_verbs [] = {
 };
 
 static void
-applet_style_event_cb (GtkWidget *w, GtkStyle *prev_style, gpointer *user_data)
-{
+applet_style_event_cb (GtkWidget *w, GtkStyle *prev_style, MixerData *user_data)
+{	
 	mixer_load_volume_images (user_data);
 	mixer_update_image (user_data);
 }
@@ -1013,6 +1035,8 @@ mixer_applet_create (PanelApplet *applet)
 						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 						 ("Couldn't open mixer device %s\n"),
 						 device, NULL);
+		gtk_window_set_screen (GTK_WINDOW (dialog),
+				       gtk_widget_get_screen (GTK_WIDGET (applet)));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 	}

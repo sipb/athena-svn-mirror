@@ -1,5 +1,6 @@
 INCLUDES =						\
 	-I$(srcdir)					\
+	-I$(top_srcdir)/screen-exec			\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
 	-DGNOME_DISABLE_DEPRECATED=1	\
 	-DGTK_DISABLE_DEPRECATED=1	\
@@ -24,6 +25,7 @@ multiload_applet_2_SOURCES = \
 			swapload.c
 
 multiload_applet_2_LDADD = \
+	$(top_builddir)/screen-exec/libscreen-exec.la	\
 				$(GNOME_APPLETS_LIBS) 	\
 				$(GTOP_APPLETS_LIBS)
 

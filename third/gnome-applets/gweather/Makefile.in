@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -140,15 +144,31 @@ gnomelocaledir = @gnomelocaledir@
 
 SUBDIRS = pixmaps docs
 
-INCLUDES =  	-I$(srcdir)	-I$(srcdir)/pixmaps		-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	-DGTK_ENABLE_BROKEN		$(GNOME_APPLETS_CFLAGS)		$(GNOME_VFS_APPLETS_CFLAGS)
+INCLUDES = \
+	-I$(srcdir)	-I$(srcdir)/pixmaps	\
+	-I$(top_srcdir)/screen-exec		\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DGTK_ENABLE_BROKEN	\
+	$(GNOME_APPLETS_CFLAGS)	\
+	$(GNOME_VFS_APPLETS_CFLAGS)
 
 
 libexec_PROGRAMS = gweather-applet-2
 
-gweather_applet_2_SOURCES =  	gweather.h 	main.c 	gweather-about.c gweather-about.h 	gweather-pref.c gweather-pref.h 	gweather-dialog.c gweather-dialog.h 	gweather-applet.c gweather-applet.h 	weather.c weather.h
+gweather_applet_2_SOURCES = \
+	gweather.h \
+	main.c \
+	gweather-about.c gweather-about.h \
+	gweather-pref.c gweather-pref.h \
+	gweather-dialog.c gweather-dialog.h \
+	gweather-applet.c gweather-applet.h \
+	weather.c weather.h
 
 
-gweather_applet_2_LDADD =  	$(GNOME_APPLETS_LIBS)		$(GNOME_VFS_APPLETS_LIBS)
+gweather_applet_2_LDADD = \
+	$(top_builddir)/screen-exec/libscreen-exec.la \
+	$(GNOME_APPLETS_LIBS)	\
+	$(GNOME_VFS_APPLETS_LIBS)
 
 
 schemadir = @GCONF_SCHEMA_FILE_DIR@
@@ -164,7 +184,11 @@ server_DATA = $(server_in_files:.server.in=.server)
 gweatherlocationsdir = $(datadir)/gweather
 gweatherlocations_DATA = Locations
 
-EXTRA_DIST =  	GNOME_GWeatherApplet_Factory.server.in.in 	gweather.schemas 	$(ui_DATA)		Locations
+EXTRA_DIST = \
+	GNOME_GWeatherApplet_Factory.server.in.in \
+	gweather.schemas \
+	$(ui_DATA)	\
+	Locations
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -183,7 +207,8 @@ X_PRE_LIBS = @X_PRE_LIBS@
 gweather_applet_2_OBJECTS =  main.$(OBJEXT) gweather-about.$(OBJEXT) \
 gweather-pref.$(OBJEXT) gweather-dialog.$(OBJEXT) \
 gweather-applet.$(OBJEXT) weather.$(OBJEXT)
-gweather_applet_2_DEPENDENCIES = 
+gweather_applet_2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 gweather_applet_2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -199,7 +224,7 @@ TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gweather_applet_2_SOURCES)
 OBJECTS = $(gweather_applet_2_OBJECTS)
@@ -442,7 +467,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -478,6 +503,27 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+gweather-about.o: gweather-about.c ../config.h gweather.h \
+	gweather-about.h
+gweather-applet.o: gweather-applet.c ../config.h \
+	../screen-exec/egg-screen-help.h weather.h gweather.h \
+	gweather-about.h gweather-pref.h gweather-dialog.h \
+	gweather-applet.h
+gweather-dialog.o: gweather-dialog.c ../config.h weather.h gweather.h \
+	gweather-applet.h gweather-pref.h gweather-dialog.h
+gweather-pref.o: gweather-pref.c ../config.h \
+	../screen-exec/egg-screen-help.h gweather.h gweather-pref.h \
+	weather.h gweather-applet.h
+main.o: main.c ../config.h gweather.h gweather-pref.h weather.h \
+	gweather-dialog.h gweather-applet.h
+weather.o: weather.c ../config.h weather.h gweather.h \
+	pixmaps/unknown-mini.xpm pixmaps/sun-mini.xpm \
+	pixmaps/suncloud-mini.xpm pixmaps/cloud-mini.xpm \
+	pixmaps/rain-mini.xpm pixmaps/tstorm-mini.xpm \
+	pixmaps/snow-mini.xpm pixmaps/fog-mini.xpm pixmaps/unknown.xpm \
+	pixmaps/sun.xpm pixmaps/suncloud.xpm pixmaps/cloud.xpm \
+	pixmaps/rain.xpm pixmaps/tstorm.xpm pixmaps/snow.xpm \
+	pixmaps/fog.xpm
 
 info-am:
 info: info-recursive

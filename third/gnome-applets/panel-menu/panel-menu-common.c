@@ -123,6 +123,9 @@ widget_dnd_drag_begin_cb (GtkWidget      *widget,
 			gtk_drag_set_icon_pixbuf (context, pixbuf, -5, -5);
 	} else {
 		window = gtk_window_new (GTK_WINDOW_POPUP);
+		gtk_window_set_screen (
+			GTK_WINDOW (window),
+			gtk_widget_get_screen (GTK_WIDGET (entry->parent->applet)));
 		button = gtk_button_new_with_label (gtk_label_get_text
 						    (GTK_LABEL
 						    (GTK_BIN (widget)->
@@ -734,6 +737,8 @@ panel_menu_common_remove_entry (GtkWidget      *widget,
 				GTK_BUTTONS_OK,
 				_("Removing this entry is not allowed as this will cause the Menu Bar applet to be removed from GNOME Panel"));
 		gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK);
+		gtk_window_set_screen (GTK_WINDOW (message_dlg),
+				       gtk_widget_get_screen (GTK_WIDGET (entry->parent->applet)));
 		gtk_window_set_resizable (GTK_WINDOW (message_dlg), FALSE);
 		g_signal_connect (message_dlg, "response",
 				  G_CALLBACK (handle_response), NULL);
@@ -799,6 +804,8 @@ panel_menu_common_single_entry_dialog_new (PanelMenu  *panel_menu,
 					      GTK_STOCK_CLOSE,
 					      GTK_RESPONSE_CLOSE, GTK_STOCK_OK,
 					      GTK_RESPONSE_OK, NULL);
+	gtk_window_set_screen (GTK_WINDOW (dialog),
+			       gtk_widget_get_screen (GTK_WIDGET (panel_menu->applet)));
 
 	box = GTK_DIALOG (dialog)->vbox;
 

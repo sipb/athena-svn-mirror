@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-applets 1.4.0.3\n"
-"POT-Creation-Date: 2002-11-18 23:05+0000\n"
+"POT-Creation-Date: 2002-10-04 14:23+1200\n"
 "PO-Revision-Date: 2001-08-07 20:48GMT +0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #. The long name of the applet in the About dialog.
 #: battstat/GNOME_BattstatApplet.server.in.in.h:1
-#: battstat/battstat_applet.c:839
+#: battstat/battstat_applet.c:841
 msgid "Battery Charge Monitor"
 msgstr "Batareya Dolma İzləyicisi"
 
@@ -46,6 +46,7 @@ msgstr ""
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:1
 #: mixer/GNOME_MixerApplet.xml.h:1 modemlights/GNOME_ModemlightsApplet.xml.h:1
 #: multiload/GNOME_MultiloadApplet.xml.h:1
+#: wireless/GNOME_WirelessApplet.xml.h:1
 #, fuzzy
 msgid "_About..."
 msgstr "Haqqında..."
@@ -69,6 +70,7 @@ msgstr "Yardım"
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:3
 #: modemlights/GNOME_ModemlightsApplet.xml.h:3
 #: multiload/GNOME_MultiloadApplet.xml.h:2
+#: wireless/GNOME_WirelessApplet.xml.h:2
 #, fuzzy
 msgid "_Preferences..."
 msgstr "Xüsusiyyətlər..."
@@ -90,24 +92,24 @@ msgstr ""
 #. The following four messages will be displayed as tooltips over
 #. the battery meter.
 #. High = The APM BIOS thinks that the battery charge is High.
-#: battstat/battstat_applet.c:316 battstat/battstat_applet.c:868
+#: battstat/battstat_applet.c:316 battstat/battstat_applet.c:872
 #, fuzzy
 msgid "High"
 msgstr "Hündürlük:"
 
 #. Low = The APM BIOS thinks that the battery charge is Low.
-#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:870
+#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:874
 msgid "Low"
 msgstr ""
 
 #. Critical = The APM BIOS thinks that the battery charge is Critical.
-#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:872
+#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:876
 #, fuzzy
 msgid "Critical"
 msgstr "Qəraib"
 
 #. Charging = The APM BIOS thinks that the battery is recharging.
-#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:874
+#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:878
 #, fuzzy
 msgid "Charging"
 msgstr "Dəyişdir "
@@ -125,7 +127,7 @@ msgstr "Batareya doludur."
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:446 battstat/battstat_applet.c:1032
+#: battstat/battstat_applet.c:446 battstat/battstat_applet.c:1036
 #, c-format
 msgid ""
 "System is running on battery power\n"
@@ -135,7 +137,7 @@ msgstr ""
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:450 battstat/battstat_applet.c:1040
+#: battstat/battstat_applet.c:450 battstat/battstat_applet.c:1044
 #, c-format
 msgid ""
 "System is running on AC power\n"
@@ -144,15 +146,15 @@ msgstr ""
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:456 battstat/battstat_applet.c:964
-#: battstat/battstat_applet.c:1053
+#: battstat/battstat_applet.c:456 battstat/battstat_applet.c:968
+#: battstat/battstat_applet.c:1057
 msgid "System is running on battery power"
 msgstr ""
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:459 battstat/battstat_applet.c:970
-#: battstat/battstat_applet.c:1059
+#: battstat/battstat_applet.c:459 battstat/battstat_applet.c:974
+#: battstat/battstat_applet.c:1063
 msgid "System is running on AC power"
 msgstr ""
 
@@ -162,14 +164,14 @@ msgstr ""
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:597 battstat/battstat_applet.c:944
+#: battstat/battstat_applet.c:597 battstat/battstat_applet.c:948
 #, c-format
 msgid "System is running on battery power. Battery: %d%% (%s)"
 msgstr ""
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:604 battstat/battstat_applet.c:951
+#: battstat/battstat_applet.c:604 battstat/battstat_applet.c:955
 #, c-format
 msgid "System is running on AC power. Battery: %d%% (%s)"
 msgstr ""
@@ -204,7 +206,7 @@ msgid "Battery: Not present"
 msgstr ""
 
 #. Displayed if the APM device couldn't be opened. (Used under *BSD)
-#: battstat/battstat_applet.c:715
+#: battstat/battstat_applet.c:717
 msgid ""
 "Can't open the APM device!\n"
 "\n"
@@ -213,14 +215,14 @@ msgid ""
 msgstr ""
 
 #. Displayed if the APM system is disabled (Used under *BSD)
-#: battstat/battstat_applet.c:724
+#: battstat/battstat_applet.c:726
 msgid ""
 "The APM Management subsystem seems to be disabled.\n"
 "Try executing \"apm -e 1\" (FreeBSD) and see if \n"
 "that helps.\n"
 msgstr ""
 
-#: battstat/battstat_applet.c:774
+#: battstat/battstat_applet.c:776
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command: %s\n"
@@ -228,7 +230,7 @@ msgid ""
 msgstr ""
 
 #. Probably because the shell_ret is != 0
-#: battstat/battstat_applet.c:777
+#: battstat/battstat_applet.c:779
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command, the command returned "
@@ -236,7 +238,7 @@ msgid ""
 "Please try to correct this error"
 msgstr ""
 
-#: battstat/battstat_applet.c:785
+#: battstat/battstat_applet.c:787
 msgid ""
 "Suspend command wasn't setup correctly in the preferences.\n"
 "Please change the preferences and try again."
@@ -244,25 +246,25 @@ msgstr ""
 
 #. if your charset supports it, please replace the "o" in
 #. * "Jorgen" into U00F6
-#: battstat/battstat_applet.c:816
+#: battstat/battstat_applet.c:818
 msgid "Jorgen Pehrson <jp@spektr.eu.org>"
 msgstr ""
 
-#: battstat/battstat_applet.c:826 cdplayer/cdplayer.c:467
-#: charpick/charpick.c:373 drivemount/drivemount.c:449 geyes/geyes.c:216
-#: gkb-new/gkb.c:593 gtik/gtik.c:712 gweather/gweather-about.c:43
-#: mini-commander/src/about.c:46 mixer/mixer.c:807
-#: modemlights/modemlights.c:208 multiload/main.c:56
-#: panel-menu/panel-menu.c:674
+#: battstat/battstat_applet.c:828 cdplayer/cdplayer.c:481
+#: charpick/charpick.c:374 drivemount/drivemount.c:453 geyes/geyes.c:217
+#: gkb-new/gkb.c:593 gtik/gtik.c:708 gweather/gweather-about.c:43
+#: mini-commander/src/about.c:48 mixer/mixer.c:794
+#: modemlights/modemlights.c:209 multiload/main.c:57
+#: panel-menu/panel-menu.c:674 wireless/wireless-applet.c:704
 msgid "translator_credits"
 msgstr ""
 
-#: battstat/battstat_applet.c:841
+#: battstat/battstat_applet.c:843
 #, fuzzy
 msgid "(C) 2000 The Gnulix Society, (C) 2002 Free Software Foundation"
 msgstr "Təlif haqqı (C) 2000 the Free Software Foundation"
 
-#: battstat/battstat_applet.c:842
+#: battstat/battstat_applet.c:844
 msgid "This utility show the status of your laptop battery."
 msgstr ""
 
@@ -271,8 +273,8 @@ msgstr ""
 msgid "100%"
 msgstr ""
 
-#. appearance frame
-#: battstat/battstat_applet.glade.h:3 mini-commander/src/preferences.c:743
+#: battstat/battstat_applet.glade.h:3
+#: mini-commander/src/mini-commander.glade.h:3
 msgid "Appearance"
 msgstr "Görünüş"
 
@@ -337,8 +339,9 @@ msgid "Progress bar direction"
 msgstr ""
 
 #: battstat/battstat_applet.glade.h:18
+#, fuzzy
 msgid "Red:"
-msgstr ""
+msgstr "Sür'ət:"
 
 #: battstat/battstat_applet.glade.h:19
 #, fuzzy
@@ -378,8 +381,8 @@ msgstr "Batareya doludur."
 msgid "Battery power low"
 msgstr "Boş Batareya rəngi:"
 
-#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:169
-#: cdplayer/cdplayer.c:483 cdplayer/cdplayer.c:896
+#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:171
+#: cdplayer/cdplayer.c:499 cdplayer/cdplayer.c:914
 msgid "CD Player"
 msgstr "CD Çalğıcı"
 
@@ -407,107 +410,107 @@ msgstr ""
 msgid "_Run External CD Player"
 msgstr "CD Çalğıcısını işə sal..."
 
-#: cdplayer/cdplayer.c:157 cdplayer/cdplayer.c:886
+#: cdplayer/cdplayer.c:159 cdplayer/cdplayer.c:904
 #, fuzzy
 msgid "Stop"
 msgstr "mövzu"
 
-#: cdplayer/cdplayer.c:159 cdplayer/cdplayer.c:888
+#: cdplayer/cdplayer.c:161 cdplayer/cdplayer.c:906
 msgid "Play / Pause"
 msgstr ""
 
-#: cdplayer/cdplayer.c:161 cdplayer/cdplayer.c:890
+#: cdplayer/cdplayer.c:163 cdplayer/cdplayer.c:908
 msgid "Eject"
 msgstr "Çıxart"
 
-#: cdplayer/cdplayer.c:163 cdplayer/cdplayer.c:892
+#: cdplayer/cdplayer.c:165 cdplayer/cdplayer.c:910
 msgid "Previous Track"
 msgstr ""
 
-#: cdplayer/cdplayer.c:165 cdplayer/cdplayer.c:894
+#: cdplayer/cdplayer.c:167 cdplayer/cdplayer.c:912
 msgid "Next Track"
 msgstr ""
 
-#: cdplayer/cdplayer.c:280 drivemount/drivemount.c:397 mixer/mixer.c:774
-#: multiload/main.c:111
+#: cdplayer/cdplayer.c:283 drivemount/drivemount.c:399 mixer/mixer.c:760
+#: multiload/main.c:118
 #, c-format
 msgid "There was an error executing '%s' : %s"
 msgstr ""
 
-#: cdplayer/cdplayer.c:379
+#: cdplayer/cdplayer.c:388
 #, fuzzy
 msgid "CD Player Preferences"
 msgstr "CD Çalğıcı Appleti"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:406
 #, fuzzy
 msgid "Disc Image"
 msgstr "Disk İstifadəsi"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:406
 msgid "An image of a cd-rom disc"
 msgstr ""
 
-#: cdplayer/cdplayer.c:397
+#: cdplayer/cdplayer.c:408
 #, fuzzy
 msgid "Device _Path:"
 msgstr "Avadanlıq"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:417
 #, fuzzy
 msgid "Device Path"
 msgstr "Avadanlıq"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:417
 msgid "Set the device path here"
 msgstr ""
 
-#: cdplayer/cdplayer.c:409
+#: cdplayer/cdplayer.c:420
 #, fuzzy
 msgid "Use _Default"
 msgstr "Yox ( əsas)"
 
-#: cdplayer/cdplayer.c:484
+#: cdplayer/cdplayer.c:500
 #, fuzzy
 msgid ""
 "(C) 1997 The Free Software Foundation\n"
 "(C) 2001 Chris Phelps (GNOME 2 Port)"
 msgstr "Təlif haqqı (C) 1997 The Free Software Foundation"
 
-#: cdplayer/cdplayer.c:486 cdplayer/cdplayer.c:897
+#: cdplayer/cdplayer.c:502 cdplayer/cdplayer.c:915
 msgid "The CD Player applet is a simple audio CD player for your panel"
 msgstr "CD Çalğıcı appleti panelində balaca bir CD çalğıcı təşkil edir"
 
-#: cdplayer/cdplayer.c:767 cdplayer/cdplayer.c:778
+#: cdplayer/cdplayer.c:785 cdplayer/cdplayer.c:796
 msgid "Elapsed time"
 msgstr ""
 
-#: cdplayer/cdplayer.c:770 cdplayer/cdplayer.c:780
+#: cdplayer/cdplayer.c:788 cdplayer/cdplayer.c:798
 msgid "Track number"
 msgstr ""
 
-#: cdplayer/cdplayer.c:887
+#: cdplayer/cdplayer.c:905
 msgid "Click this button to Stop playing the CD"
 msgstr ""
 
-#: cdplayer/cdplayer.c:889
+#: cdplayer/cdplayer.c:907
 msgid "Click this button to Play or Pause the CD"
 msgstr ""
 
-#: cdplayer/cdplayer.c:891
+#: cdplayer/cdplayer.c:909
 msgid "Click this button to eject the CD"
 msgstr ""
 
-#: cdplayer/cdplayer.c:893
+#: cdplayer/cdplayer.c:911
 msgid "Click this button to Play the previous track in the CD"
 msgstr ""
 
-#: cdplayer/cdplayer.c:895
+#: cdplayer/cdplayer.c:913
 msgid "Click this button to Play the next track in the CD"
 msgstr ""
 
-#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:389
-#: charpick/charpick.c:482
+#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:392
+#: charpick/charpick.c:490
 #, fuzzy
 msgid "Character Palette"
 msgstr "Hərf Seçici"
@@ -523,15 +526,15 @@ msgstr "Əsas hərflər siyahısı:"
 
 #. If your charset supports it, please use U00F1 to replace the "n"
 #. * in "Muniz".
-#: charpick/charpick.c:365
+#: charpick/charpick.c:366
 msgid "Alexandre Muniz <munizao@xprt.net>"
 msgstr ""
 
-#: charpick/charpick.c:391
+#: charpick/charpick.c:394
 msgid "Copyright (C) 1998"
 msgstr "Təlif haqqı (C) 1998"
 
-#: charpick/charpick.c:392
+#: charpick/charpick.c:395
 msgid ""
 "Gnome Panel applet for selecting strange characters that are not on my "
 "keyboard. Released under GNU General Public Licence."
@@ -539,27 +542,27 @@ msgstr ""
 "Klaviaturanda olmayan xüsusi hərfləri seçmək üçün balaca bir Gnome panel "
 "appleti .GNU General Public Licence'ə görə nəşr edilib."
 
-#: charpick/charpick.c:481
+#: charpick/charpick.c:489
 #, fuzzy
 msgid "Insert special characters"
 msgstr "Əsas hərflər siyahısı:"
 
-#: charpick/properties.c:79
+#: charpick/properties.c:80
 #, fuzzy
 msgid "_Default character list:"
 msgstr "Əsas hərflər siyahısı:"
 
-#: charpick/properties.c:88
+#: charpick/properties.c:89
 #, fuzzy
 msgid "Default list of characters"
 msgstr "Əsas hərflər siyahısı:"
 
-#: charpick/properties.c:89
+#: charpick/properties.c:90
 #, fuzzy
 msgid "Set the default character list here"
 msgstr "Əsas hərflər siyahısı:"
 
-#: charpick/properties.c:91
+#: charpick/properties.c:92
 #, fuzzy
 msgid ""
 "These characters will appear when the panel is started. To return to this "
@@ -568,13 +571,13 @@ msgstr ""
 "Panel başlarkən bu hərfler görünəcəkdir . Bu siyahıya almaq üçün , appletin "
 "fokus sahibi olduğu zaman , <space>'ə bas ."
 
-#: charpick/properties.c:150
+#: charpick/properties.c:156
 #, fuzzy
 msgid "Character Palette Preferences"
 msgstr "Hərf Seçici Qurğuları"
 
 #: drivemount/GNOME_DriveMountApplet.server.in.in.h:1
-#: drivemount/drivemount.c:465
+#: drivemount/drivemount.c:471
 #, fuzzy
 msgid "Disk Mounter"
 msgstr "Sürücü Baǧlama"
@@ -603,32 +606,32 @@ msgstr "Gəz ..."
 msgid "_Eject"
 msgstr "Çıxart"
 
-#: drivemount/drivemount.c:466
+#: drivemount/drivemount.c:472
 msgid "(C) 1999-2001 The GNOME Hackers\n"
 msgstr ""
 
-#: drivemount/drivemount.c:468
+#: drivemount/drivemount.c:474
 msgid "Applet for mounting and unmounting block volumes."
 msgstr ""
 
-#: drivemount/drivemount.c:664
+#: drivemount/drivemount.c:672
 msgid " mounted"
 msgstr " bağlanmış"
 
-#: drivemount/drivemount.c:666
+#: drivemount/drivemount.c:674
 msgid " not mounted"
 msgstr " ayrılmış"
 
-#: drivemount/drivemount.c:776
+#: drivemount/drivemount.c:786
 #, fuzzy
 msgid "Drive Mount Applet Warning"
 msgstr "Sürücü Bağlanma Appleti"
 
-#: drivemount/drivemount.c:784
+#: drivemount/drivemount.c:796
 msgid "\" reported:\n"
 msgstr "\" raport edilmiş:\n"
 
-#: drivemount/drivemount.c:786
+#: drivemount/drivemount.c:798
 msgid ""
 "Drivemount command failed.\n"
 "\""
@@ -641,83 +644,78 @@ msgstr ""
 msgid "Disk Mounter Preferences"
 msgstr "Sürücü Bağlanma Appleti Seçənəkləri"
 
-#: drivemount/properties.c:258
-#, fuzzy
-msgid "Settings"
-msgstr "Saat Qurğuları"
-
-#: drivemount/properties.c:271
+#: drivemount/properties.c:273
 #, fuzzy
 msgid "_Mount point:"
 msgstr "Bağlama yeri:"
 
-#: drivemount/properties.c:289
+#: drivemount/properties.c:291
 #, fuzzy
 msgid "_Update interval (seconds):"
 msgstr "Yeniləmə Fasiləsi (san.):"
 
-#: drivemount/properties.c:305 panel-menu/panel-menu-properties.c:109
+#: drivemount/properties.c:307 panel-menu/panel-menu-properties.c:111
 #, fuzzy
 msgid "_Icon :"
 msgstr "Timsal:"
 
-#: drivemount/properties.c:323
+#: drivemount/properties.c:325
 msgid "Floppy"
 msgstr "Floppy"
 
-#: drivemount/properties.c:326
+#: drivemount/properties.c:328
 msgid "Cdrom"
 msgstr "Cd"
 
-#: drivemount/properties.c:329
+#: drivemount/properties.c:331
 msgid "Cd Recorder"
 msgstr ""
 
-#: drivemount/properties.c:332
+#: drivemount/properties.c:334
 msgid "Zip Drive"
 msgstr "Zip Sürücüsü"
 
-#: drivemount/properties.c:335
+#: drivemount/properties.c:337
 msgid "Hard Disk"
 msgstr "Sabit Disk"
 
-#: drivemount/properties.c:338
+#: drivemount/properties.c:340
 msgid "Jaz Drive"
 msgstr "Jaz Sürücüsü"
 
-#: drivemount/properties.c:341
+#: drivemount/properties.c:343
 msgid "Custom"
 msgstr "Xüsusi"
 
-#: drivemount/properties.c:354
+#: drivemount/properties.c:356
 msgid "Select icon for mounted"
 msgstr "Bağlanmış hal üçün timsalı seç"
 
-#: drivemount/properties.c:361
+#: drivemount/properties.c:363
 #, fuzzy
 msgid "Custom icon for moun_ted:"
 msgstr "Bağlanmış hal üçün xüsusi timsal seç:"
 
-#: drivemount/properties.c:370
+#: drivemount/properties.c:372
 msgid "Select icon for unmounted"
 msgstr "Ayrıılmış hal üçün timsalı seç"
 
-#: drivemount/properties.c:377
+#: drivemount/properties.c:379
 #, fuzzy
 msgid "Custom icon for not mou_nted:"
 msgstr "Ayrılmış hal üçün xüsusi timsal:"
 
-#: drivemount/properties.c:387
+#: drivemount/properties.c:389
 #, fuzzy
 msgid "_Scale size to panel"
 msgstr "Panelə görə ölçüsünü dəyişdir"
 
-#: drivemount/properties.c:394
+#: drivemount/properties.c:396
 #, fuzzy
 msgid "_Eject on unmount"
 msgstr "Ayrılmış sürücünü çıxart"
 
-#: drivemount/properties.c:401
+#: drivemount/properties.c:403
 #, fuzzy
 msgid "Use _automount friendly status test"
 msgstr "automount'a yaraşan şəkildə işlə"
@@ -731,8 +729,8 @@ msgstr "Panel'dəki bütün sahəni istifadə et"
 msgid "Amusements"
 msgstr ""
 
-#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:233
-#: geyes/geyes.c:420 geyes/geyes.c:422
+#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:237
+#: geyes/geyes.c:429 geyes/geyes.c:431
 #, fuzzy
 msgid "Geyes"
 msgstr "gEyes"
@@ -741,23 +739,23 @@ msgstr "gEyes"
 msgid "Geyes Applet Factory"
 msgstr ""
 
-#: geyes/geyes.c:234
+#: geyes/geyes.c:238
 msgid "Copyright (C) 1999 Dave Camp"
 msgstr "Təlif haqqı (C) 1999 Dave Camp"
 
-#: geyes/geyes.c:235
+#: geyes/geyes.c:239
 msgid "A goofy little xeyes clone for the GNOME panel."
 msgstr "Gnome paneli üçün yazılmış olan xeyes üzü."
 
-#: geyes/geyes.c:423
+#: geyes/geyes.c:432
 msgid "The eyes look in the direction of the mouse pointer"
 msgstr ""
 
-#: geyes/themes.c:215
+#: geyes/themes.c:223
 msgid "Geyes Preferences"
 msgstr ""
 
-#: geyes/themes.c:229
+#: geyes/themes.c:239
 #, fuzzy
 msgid "T_heme Name"
 msgstr "Örtü adı"
@@ -821,20 +819,20 @@ msgstr "GKB web səhifəsi ( http://projects.gnome.hu/gkb )"
 msgid "Disabled"
 msgstr "Passivləşdirilmiş"
 
-#: gkb-new/keygrab.c:301
+#: gkb-new/keygrab.c:303
 msgid "Press a key or press Esc to cancel"
 msgstr ""
 
-#: gkb-new/prop-add.c:86
+#: gkb-new/prop-add.c:88
 msgid "Keyboards (select and press add)"
 msgstr ""
 
-#: gkb-new/prop-add.c:372
+#: gkb-new/prop-add.c:375
 #, fuzzy
 msgid "Select Keyboard"
 msgstr "Xəritə seçin"
 
-#: gkb-new/prop-list.c:398 gtik/gtik.c:1134
+#: gkb-new/prop-list.c:398 gtik/gtik.c:1167
 #, fuzzy
 msgid "_Add"
 msgstr "Əlavə Et"
@@ -859,366 +857,366 @@ msgstr "Aşağı"
 msgid "_Delete"
 msgstr "Sil"
 
-#: gkb-new/prop-map.c:199
+#: gkb-new/prop-map.c:206
 msgid "Armenia"
 msgstr "Ermənistan"
 
-#: gkb-new/prop-map.c:200
+#: gkb-new/prop-map.c:207
 msgid "Australia"
 msgstr "Avstraliya"
 
-#: gkb-new/prop-map.c:201
+#: gkb-new/prop-map.c:208
 msgid "Austria"
 msgstr "Avstriya"
 
-#: gkb-new/prop-map.c:202
+#: gkb-new/prop-map.c:209
 msgid "Belgium"
 msgstr "Belçika"
 
-#: gkb-new/prop-map.c:203
+#: gkb-new/prop-map.c:210
 msgid "Brazil"
 msgstr "Braziliya"
 
-#: gkb-new/prop-map.c:204
+#: gkb-new/prop-map.c:211
 msgid "Bulgaria"
 msgstr "Bolqariya"
 
-#: gkb-new/prop-map.c:205
+#: gkb-new/prop-map.c:212
 msgid "Canada"
 msgstr "Kanada"
 
-#: gkb-new/prop-map.c:206
+#: gkb-new/prop-map.c:213
 msgid "Caribic"
 msgstr "Qəraib"
 
-#: gkb-new/prop-map.c:207
+#: gkb-new/prop-map.c:214
 msgid "France"
 msgstr "Fransa"
 
-#: gkb-new/prop-map.c:208
+#: gkb-new/prop-map.c:215
 msgid "Georgia"
 msgstr "Gürcüstan"
 
-#: gkb-new/prop-map.c:209
+#: gkb-new/prop-map.c:216
 msgid "Germany"
 msgstr "Almanya"
 
-#: gkb-new/prop-map.c:210
+#: gkb-new/prop-map.c:217
 msgid "Great Britain"
 msgstr "Böyük Britaniya"
 
-#: gkb-new/prop-map.c:211
+#: gkb-new/prop-map.c:218
 msgid "Greece"
 msgstr ""
 
-#: gkb-new/prop-map.c:212
+#: gkb-new/prop-map.c:219
 msgid "Hungary"
 msgstr "Macarstan"
 
-#: gkb-new/prop-map.c:213
+#: gkb-new/prop-map.c:220
 msgid "Jamaica"
 msgstr "Yamayka"
 
-#: gkb-new/prop-map.c:214
+#: gkb-new/prop-map.c:221
 msgid "New Zealand"
 msgstr "Yeni Zellandiya"
 
-#: gkb-new/prop-map.c:215
+#: gkb-new/prop-map.c:222
 msgid "Norway"
 msgstr "Norveç"
 
-#: gkb-new/prop-map.c:216
+#: gkb-new/prop-map.c:223
 msgid "Poland"
 msgstr "Polşa"
 
-#: gkb-new/prop-map.c:217
+#: gkb-new/prop-map.c:224
 msgid "Portugal"
 msgstr "Portuqaliya"
 
-#: gkb-new/prop-map.c:218
+#: gkb-new/prop-map.c:225
 msgid "Russia"
 msgstr "Rusiya"
 
-#: gkb-new/prop-map.c:219
+#: gkb-new/prop-map.c:226
 msgid "Slovak Republic"
 msgstr "Slovak Respublikası"
 
-#: gkb-new/prop-map.c:220
+#: gkb-new/prop-map.c:227
 msgid "Slovenia"
 msgstr "Sloveniya"
 
-#: gkb-new/prop-map.c:221
+#: gkb-new/prop-map.c:228
 msgid "South Africa"
 msgstr "Cənubi Afrika"
 
-#: gkb-new/prop-map.c:222
+#: gkb-new/prop-map.c:229
 msgid "Spain"
 msgstr "İspaniya"
 
-#: gkb-new/prop-map.c:223
+#: gkb-new/prop-map.c:230
 msgid "Sweden"
 msgstr "İsveç"
 
-#: gkb-new/prop-map.c:224
+#: gkb-new/prop-map.c:231
 msgid "Switzerland"
 msgstr "İsveçrə"
 
-#: gkb-new/prop-map.c:225
+#: gkb-new/prop-map.c:232
 msgid "Thailand"
 msgstr "Tayland"
 
-#: gkb-new/prop-map.c:226
+#: gkb-new/prop-map.c:233
 msgid "Turkey"
 msgstr "Türkiyə"
 
-#: gkb-new/prop-map.c:227
+#: gkb-new/prop-map.c:234
 msgid "United Kingdom"
 msgstr "Birləşmiş Krallıq"
 
-#: gkb-new/prop-map.c:228
+#: gkb-new/prop-map.c:235
 msgid "United States"
 msgstr "Birləşmiş Ştatlar"
 
-#: gkb-new/prop-map.c:229
+#: gkb-new/prop-map.c:236
 msgid "Yugoslavia"
 msgstr "Yuqoslaviya"
 
-#: gkb-new/prop-map.c:249
+#: gkb-new/prop-map.c:256
 msgid "Armenian"
 msgstr "Ermənicə"
 
-#: gkb-new/prop-map.c:250
+#: gkb-new/prop-map.c:257
 msgid "Basque"
 msgstr "Bask"
 
-#: gkb-new/prop-map.c:251
+#: gkb-new/prop-map.c:258
 msgid "Bulgarian"
 msgstr "Bolqarca"
 
-#: gkb-new/prop-map.c:252
+#: gkb-new/prop-map.c:259
 msgid "Dutch"
 msgstr "Flemenkcə"
 
-#: gkb-new/prop-map.c:253
+#: gkb-new/prop-map.c:260
 msgid "English"
 msgstr "İngiliscə"
 
-#: gkb-new/prop-map.c:254
+#: gkb-new/prop-map.c:261
 msgid "French"
 msgstr "Fransızca"
 
-#: gkb-new/prop-map.c:255
+#: gkb-new/prop-map.c:262
 msgid "Georgian"
 msgstr "Gürcücə"
 
-#: gkb-new/prop-map.c:256
+#: gkb-new/prop-map.c:263
 msgid "German"
 msgstr "Almanca"
 
-#: gkb-new/prop-map.c:257
+#: gkb-new/prop-map.c:264
+#, fuzzy
 msgid "Greek"
-msgstr ""
+msgstr "Boş"
 
-#: gkb-new/prop-map.c:258
+#: gkb-new/prop-map.c:265
 msgid "Hungarian"
 msgstr "Macarca"
 
-#: gkb-new/prop-map.c:259
+#: gkb-new/prop-map.c:266
 msgid "Norwegian"
 msgstr "Norveçcə"
 
-#: gkb-new/prop-map.c:260
+#: gkb-new/prop-map.c:267
 msgid "Polish"
 msgstr "Polyakca"
 
-#: gkb-new/prop-map.c:261
+#: gkb-new/prop-map.c:268
 msgid "Portuguese"
 msgstr "Portuqalca"
 
-#: gkb-new/prop-map.c:262
+#: gkb-new/prop-map.c:269
 msgid "Russian"
 msgstr "Rusca"
 
-#: gkb-new/prop-map.c:263
+#: gkb-new/prop-map.c:270
 msgid "Slovak"
 msgstr "Slovakca"
 
-#: gkb-new/prop-map.c:264
+#: gkb-new/prop-map.c:271
 msgid "Slovenian"
 msgstr "Slovencə"
 
-#: gkb-new/prop-map.c:265
+#: gkb-new/prop-map.c:272
 msgid "Swedish"
 msgstr "İsveçcə"
 
-#: gkb-new/prop-map.c:266
+#: gkb-new/prop-map.c:273
 msgid "Thai"
 msgstr "Taylandca"
 
-#: gkb-new/prop-map.c:267
+#: gkb-new/prop-map.c:274
 msgid "Turkish"
 msgstr "Türkcə"
 
-#: gkb-new/prop-map.c:268
+#: gkb-new/prop-map.c:275
 msgid "Wallon"
 msgstr "Valun(Belçika)"
 
-#: gkb-new/prop-map.c:269
+#: gkb-new/prop-map.c:276
 msgid "Yugoslavian"
 msgstr "Yuqoslav"
 
-#: gkb-new/prop-map.c:287
+#: gkb-new/prop-map.c:294
 msgid "105"
 msgstr "105"
 
-#: gkb-new/prop-map.c:288
+#: gkb-new/prop-map.c:295
 msgid "101"
 msgstr "101"
 
-#: gkb-new/prop-map.c:289
+#: gkb-new/prop-map.c:296
 msgid "102"
 msgstr "102"
 
-#: gkb-new/prop-map.c:290
+#: gkb-new/prop-map.c:297
 msgid "450"
 msgstr "450"
 
-#: gkb-new/prop-map.c:291
+#: gkb-new/prop-map.c:298
 msgid "84"
 msgstr "84"
 
-#: gkb-new/prop-map.c:292
+#: gkb-new/prop-map.c:299
 msgid "mklinux"
 msgstr "mklinux"
 
-#: gkb-new/prop-map.c:293
+#: gkb-new/prop-map.c:300
 msgid "type5"
 msgstr "type5"
 
-#: gkb-new/prop-map.c:313
+#: gkb-new/prop-map.c:320
 msgid "iso-8859-1"
 msgstr "iso-8859-1"
 
-#: gkb-new/prop-map.c:314
+#: gkb-new/prop-map.c:321
 msgid "iso-8859-2"
 msgstr "iso-8859-2"
 
-#: gkb-new/prop-map.c:315
+#: gkb-new/prop-map.c:322
 #, fuzzy
 msgid "iso-8859-7"
 msgstr "iso-8859-1"
 
-#: gkb-new/prop-map.c:316
+#: gkb-new/prop-map.c:323
 msgid "iso-8859-9"
 msgstr "iso-8859-9"
 
-#: gkb-new/prop-map.c:317
+#: gkb-new/prop-map.c:324
 msgid "am-armscii8"
 msgstr "am-armscii8"
 
-#: gkb-new/prop-map.c:318
+#: gkb-new/prop-map.c:325
 msgid "be-latin1"
 msgstr "be-latin1"
 
-#: gkb-new/prop-map.c:319
+#: gkb-new/prop-map.c:326
 msgid "cp1251"
 msgstr "cp1251"
 
-#: gkb-new/prop-map.c:320
+#: gkb-new/prop-map.c:327
 msgid "georgian-academy"
 msgstr "georgian-academy"
 
-#: gkb-new/prop-map.c:321
+#: gkb-new/prop-map.c:328
 msgid "koi8-r"
 msgstr "koi8-r"
 
-#: gkb-new/prop-map.c:322
+#: gkb-new/prop-map.c:329
 msgid "tis620"
 msgstr "tis620"
 
-#: gkb-new/prop-map.c:340
+#: gkb-new/prop-map.c:347
 msgid "ix86"
 msgstr "ix86"
 
-#: gkb-new/prop-map.c:341
+#: gkb-new/prop-map.c:348
 #, fuzzy
 msgid "Sun"
 msgstr "sun"
 
-#: gkb-new/prop-map.c:342
+#: gkb-new/prop-map.c:349
 msgid "mac"
 msgstr "mac"
 
-#: gkb-new/prop-map.c:343
+#: gkb-new/prop-map.c:350
 msgid "sgi"
 msgstr "sgi"
 
-#: gkb-new/prop-map.c:344
+#: gkb-new/prop-map.c:351
 msgid "dec"
 msgstr "dec"
 
-#: gkb-new/prop-map.c:345
+#: gkb-new/prop-map.c:352
 msgid "ibm"
 msgstr "ibm"
 
-#: gkb-new/prop-map.c:582
+#: gkb-new/prop-map.c:591
 #, fuzzy
 msgid "Edit Keyboard"
 msgstr "Klaviatura xəritəsinda düzəliş et"
 
 #. Add the labels  and entries/combos/icon_entry
-#: gkb-new/prop-map.c:610 panel-menu/panel-menu-directory.c:672
+#: gkb-new/prop-map.c:619 panel-menu/panel-menu-directory.c:674
 #: panel-menu/panel-menu-documents.c:398 panel-menu/panel-menu-documents.c:435
 #: panel-menu/panel-menu-links.c:404 panel-menu/panel-menu-links.c:440
 #, fuzzy
 msgid "_Name:"
 msgstr "Ad"
 
-#: gkb-new/prop-map.c:614
+#: gkb-new/prop-map.c:623
 #, fuzzy
 msgid "_Label:"
 msgstr "Etiket"
 
-#: gkb-new/prop-map.c:618
+#: gkb-new/prop-map.c:627
 #, fuzzy
 msgid "Lan_guage:"
 msgstr "Dil"
 
-#: gkb-new/prop-map.c:624
+#: gkb-new/prop-map.c:633
 #, fuzzy
 msgid "Count_ry:"
 msgstr "Ölkə"
 
-#: gkb-new/prop-map.c:631
-#, fuzzy
+#: gkb-new/prop-map.c:640
 msgid ""
-"_Flag\n"
-"Pixmap:"
+"Flag\n"
+"Pixmap"
 msgstr ""
 "Bayraq\n"
 "Piksmap"
 
-#: gkb-new/prop-map.c:635
+#: gkb-new/prop-map.c:644
 #, fuzzy
 msgid "Arc_hitecture:"
 msgstr "Me'mari"
 
-#: gkb-new/prop-map.c:641
+#: gkb-new/prop-map.c:650
 #, fuzzy
 msgid "_Type:"
 msgstr "Növ"
 
-#: gkb-new/prop-map.c:647
+#: gkb-new/prop-map.c:656
 #, fuzzy
 msgid "Code_page:"
 msgstr "Kod səhifəsi"
 
-#: gkb-new/prop-map.c:654
+#: gkb-new/prop-map.c:663
 #, fuzzy
 msgid "Co_mmand:"
 msgstr "Əmr"
 
-#: gkb-new/prop-map.c:661
+#: gkb-new/prop-map.c:670
 msgid ""
 "Where command can be:\n"
 "* xmodmap /full/path/xmodmap.hu\n"
@@ -1230,11 +1228,11 @@ msgstr ""
 "* gkb_xmmap hu\n"
 "* setxkbmap hu"
 
-#: gkb-new/prop.c:131 gkb-new/prop.c:201
+#: gkb-new/prop.c:131 gkb-new/prop.c:199
 msgid "Normal"
 msgstr "Normal"
 
-#: gkb-new/prop.c:132 gkb-new/prop.c:205
+#: gkb-new/prop.c:132 gkb-new/prop.c:203
 msgid "Big"
 msgstr "Böyük"
 
@@ -1250,42 +1248,41 @@ msgstr "Etiket"
 msgid "Flag and Label"
 msgstr "Bayraq və Etiket"
 
-#: gkb-new/prop.c:290 modemlights/properties.c:389
+#: gkb-new/prop.c:288 modemlights/properties.c:393
 msgid "Display"
 msgstr "Göstər"
 
 #. Labels and option Menus
-#: gkb-new/prop.c:310
+#: gkb-new/prop.c:308
 #, fuzzy
 msgid "_Appearance: "
 msgstr "Görünüş"
 
-#: gkb-new/prop.c:317
+#: gkb-new/prop.c:315
 #, fuzzy
 msgid "Applet _size: "
 msgstr "Applet böyüklüyü:"
 
-#: gkb-new/prop.c:344
+#: gkb-new/prop.c:341
 msgid "Hotkey for switching between layouts"
 msgstr "Xəritələr arasında gəzmək üçün əlverişli düymə"
 
-#: gkb-new/prop.c:356
-#, fuzzy
-msgid "_Grab hotkey"
+#: gkb-new/prop.c:353
+msgid "Grab hotkey"
 msgstr "Düyməni yaxala"
 
 #. Create property box
-#: gkb-new/prop.c:417
+#: gkb-new/prop.c:418
 #, fuzzy
 msgid "Keyboard Layout Switcher Preferences"
 msgstr "GNOME Klaviatura Dəyişdiricisi"
 
-#: gkb-new/prop.c:432
+#: gkb-new/prop.c:435
 #, fuzzy
 msgid "_Keymaps"
 msgstr "Klaviatura xəritələri"
 
-#: gkb-new/prop.c:444
+#: gkb-new/prop.c:447
 #, fuzzy
 msgid "_Options"
 msgstr "Seçənəklər"
@@ -1308,7 +1305,7 @@ msgstr ""
 msgid "Gtik Applet Factory"
 msgstr ""
 
-#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:728
+#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:724
 #, fuzzy
 msgid "Stock Ticker"
 msgstr "GNOME Stock Ticker"
@@ -1318,11 +1315,11 @@ msgstr "GNOME Stock Ticker"
 msgid "_Update"
 msgstr "Güncəllə"
 
-#: gtik/gtik.c:206
+#: gtik/gtik.c:202
 msgid "No data available or properties not set"
 msgstr "Heç verilən yoxdur ya da seçənəklər qurulmayıb"
 
-#: gtik/gtik.c:730
+#: gtik/gtik.c:726
 msgid ""
 "This program connects to a popular site and downloads current stock quotes.  "
 "The GNOME Stock Ticker is a free Internet-based application.  It comes with "
@@ -1334,112 +1331,113 @@ msgstr ""
 "ABSOLUTELY NO WARRANTY.  Do not use the GNOME Stock Ticker for making "
 "investment decisions; it is for informational purposes only."
 
-#: gtik/gtik.c:1123
+#: gtik/gtik.c:1156
 #, fuzzy
 msgid "_New Symbol:"
 msgstr "Yeni Simvol:"
 
-#: gtik/gtik.c:1145
+#: gtik/gtik.c:1178
 #, fuzzy
 msgid "_Remove Selected"
 msgstr "Seçiləni Sil"
 
-#: gtik/gtik.c:1221
+#: gtik/gtik.c:1260
 #, fuzzy
 msgid "Stock Ticker Preferences"
 msgstr "Gnome Stock Ticker Seçənəkləri"
 
-#: gtik/gtik.c:1244
+#: gtik/gtik.c:1284
 #, fuzzy
-msgid "Update Fre_quency in minutes:"
+msgid "Stock update Fre_quency in minutes:"
 msgstr "Təzələme Sıxlığı  ( dəq. ) :"
 
-#: gtik/gtik.c:1262
-msgid "Enter symbols delimited with \"+\" in the box below."
-msgstr "Aşağıda \"+\" ilə ayrılmış olan simvolları girin"
+#: gtik/gtik.c:1303
+#, fuzzy
+msgid "Scroll Speed :"
+msgstr "Sür'ət:"
 
-#: gtik/gtik.c:1269
+#: gtik/gtik.c:1323
+#, fuzzy
+msgid "_Width :"
+msgstr "En:"
+
+#: gtik/gtik.c:1335
 #, fuzzy
 msgid "Displa_y only symbols and price"
 msgstr "Sadəcə olaraq simvolları və qiymətini göstər"
 
-#: gtik/gtik.c:1272
+#: gtik/gtik.c:1338
 #, fuzzy
 msgid "Scroll _left to right"
 msgstr "Soldan Sağa Sürüşdür"
 
-#: gtik/gtik.c:1275
+#: gtik/gtik.c:1341
 #, fuzzy
 msgid "_Enable scroll buttons"
 msgstr "Sürüşdürmə düymələrini fəallaşdır"
 
-#: gtik/gtik.c:1299
+#: gtik/gtik.c:1365
 #, fuzzy
 msgid "+ C_olor"
 msgstr "+Rəng"
 
-#: gtik/gtik.c:1319
+#: gtik/gtik.c:1385
 #, fuzzy
 msgid "- Colo_r"
 msgstr "-Rəng"
 
-#: gtik/gtik.c:1336
+#: gtik/gtik.c:1402
 msgid "_Unchanged Color"
 msgstr ""
 
-#: gtik/gtik.c:1353
+#: gtik/gtik.c:1419
 #, fuzzy
 msgid "Back_ground Color"
 msgstr "Arxa üz: "
 
-#: gtik/gtik.c:1375
+#: gtik/gtik.c:1441
 #, fuzzy
-msgid "Stock Sy_mbol:"
-msgstr "Qundaq Sİmvolu:"
+msgid "_Font:"
+msgstr "Yazı növü :"
 
-#: gtik/gtik.c:1389
-#, fuzzy
-msgid "Stock C_hange:"
-msgstr "Qundaq Dəyişikliyi:"
-
-#: gtik/gtik.c:1413
+#: gtik/gtik.c:1461
 #, fuzzy
 msgid "_Symbols"
 msgstr "Simvollar"
 
-#: gtik/gtik.c:1415
+#: gtik/gtik.c:1463
 #, fuzzy
 msgid "_Behavior"
 msgstr "Davranış"
 
-#: gtik/gtik.c:1417
+#: gtik/gtik.c:1465
 #, fuzzy
 msgid "_Appearance"
 msgstr "Görünüş"
 
-#: gtik/gtik.c:1491
+#: gtik/gtik.c:1550
 msgid "Skip forward"
 msgstr ""
 
-#: gtik/gtik.c:1492
+#: gtik/gtik.c:1551
 msgid "Skip backward"
 msgstr ""
 
-#: gtik/gtik.c:1493
+#: gtik/gtik.c:1552
 msgid ""
 "Stock Ticker\n"
 "Get continuously updated stock quotes"
 msgstr ""
 
-#: gtik/gtik.c:1679
+#: gtik/gtik.c:1739
 msgid "(No"
 msgstr "(Xeyr"
 
-#: gtik/gtik.c:1680
+#: gtik/gtik.c:1740
 msgid "Change "
 msgstr "Dəyişdir "
 
-#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:302
+#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:304
 #, fuzzy
 msgid "_Forecast"
 msgstr "Göndər"
@@ -1458,15 +1456,15 @@ msgid "Monitor the current weather conditions, and forecasts"
 msgstr ""
 
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:5
-#: gweather/gweather-about.c:61
+#: gweather/gweather-about.c:63
 msgid "Weather Report"
 msgstr ""
 
-#: gweather/gweather-about.c:62
+#: gweather/gweather-about.c:64
 msgid "Copyright (c)1999 by S. Papadimitriou"
 msgstr "Təlif haqqı (C) 1999 S. Papadimitriou"
 
-#: gweather/gweather-about.c:63
+#: gweather/gweather-about.c:65
 #, fuzzy
 msgid ""
 "Released under the GNU General Public License.\n"
@@ -1477,11 +1475,11 @@ msgstr ""
 "\n"
 "Şəbəkə Yükü göstərici bir appletdir ."
 
-#: gweather/gweather-applet.c:194
+#: gweather/gweather-applet.c:198
 msgid "GNOME Weather"
 msgstr "Gnome Hava Appleti"
 
-#: gweather/gweather-applet.c:319
+#: gweather/gweather-applet.c:323
 msgid "Updating..."
 msgstr "Güncəllə ..."
 
@@ -1489,80 +1487,80 @@ msgstr "Güncəllə ..."
 msgid "Forecast"
 msgstr "Göndər"
 
-#: gweather/gweather-dialog.c:108
+#: gweather/gweather-dialog.c:110
 msgid "Location:"
 msgstr "Yeri:"
 
-#: gweather/gweather-dialog.c:116
+#: gweather/gweather-dialog.c:118
 msgid "Update:"
 msgstr "Güncəllə:"
 
-#: gweather/gweather-dialog.c:124
+#: gweather/gweather-dialog.c:126
 msgid "Conditions:"
 msgstr "Şərtlər:"
 
-#: gweather/gweather-dialog.c:132
+#: gweather/gweather-dialog.c:134
 msgid "Sky:"
 msgstr "Göyüzü:"
 
-#: gweather/gweather-dialog.c:140
+#: gweather/gweather-dialog.c:142
 msgid "Temperature:"
 msgstr "İstilik:"
 
-#: gweather/gweather-dialog.c:148
+#: gweather/gweather-dialog.c:150
 msgid "Dew point:"
 msgstr "Buxar nöqtəsi:"
 
-#: gweather/gweather-dialog.c:156
+#: gweather/gweather-dialog.c:158
 msgid "Humidity:"
 msgstr "Nəm nisbəti:"
 
-#: gweather/gweather-dialog.c:164
+#: gweather/gweather-dialog.c:166
 msgid "Wind:"
 msgstr "Külək:"
 
-#: gweather/gweather-dialog.c:172
+#: gweather/gweather-dialog.c:174
 msgid "Pressure:"
 msgstr "Təzyiq:"
 
-#: gweather/gweather-dialog.c:180
+#: gweather/gweather-dialog.c:182
 msgid "Visibility:"
 msgstr "Görünüş:"
 
-#: gweather/gweather-dialog.c:279
+#: gweather/gweather-dialog.c:281
 #, fuzzy
 msgid "C_urrent conditions"
 msgstr "Hazırkı şərtlər"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 #, fuzzy
 msgid "ForeCast Report"
 msgstr "Göndər"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 msgid "See the ForeCast Details"
 msgstr ""
 
-#: gweather/gweather-dialog.c:327
+#: gweather/gweather-dialog.c:329
 #, fuzzy
 msgid "_Visit Weather.com"
 msgstr "Weatcher.com'a bax"
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 msgid "URL link Button"
 msgstr ""
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 #, fuzzy
 msgid "Click to Enter Weather.com"
 msgstr "Weatcher.com'a bax"
 
-#: gweather/gweather-dialog.c:336
+#: gweather/gweather-dialog.c:338
 #, fuzzy
 msgid "_Radar map"
 msgstr "Radar xəritəsi"
 
-#: gweather/gweather-dialog.c:408
+#: gweather/gweather-dialog.c:410
 msgid ""
 "Detailed forecast not available for this location.\n"
 "Please try the state forecast; note that IWIN forecasts are available only "
@@ -1572,7 +1570,7 @@ msgstr ""
 "Lütfən əyalət/bölgə verilişisi sına ; IWIN verilişini sadəcə olaraq ABŞ'dakı "
 "şəhərlər üçündür ."
 
-#: gweather/gweather-dialog.c:410
+#: gweather/gweather-dialog.c:412
 msgid ""
 "State forecast not available for this location.\n"
 "Please try the detailed forecast; note that IWIN forecasts are available "
@@ -1583,91 +1581,91 @@ msgstr ""
 "üçündür."
 
 #. Accessible Name and Description for the components in Preference Dialog
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 #, fuzzy
 msgid "Location view"
 msgstr "Yer"
 
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 #, fuzzy
 msgid "Select Location from the list"
 msgstr "Bağlanmış hal üçün timsalı seç"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 #, fuzzy
 msgid "Update spin button"
 msgstr "Güncəlləmə arası ( san. ):"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 msgid "Spinbutton for updating"
 msgstr ""
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Address Entry"
 msgstr ""
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Enter the URL"
 msgstr ""
 
-#: gweather/gweather-pref.c:560
+#: gweather/gweather-pref.c:561
 #, fuzzy
 msgid "Weather Preferences"
 msgstr "Gweather Qurğular"
 
-#: gweather/gweather-pref.c:607
+#: gweather/gweather-pref.c:610
 #, fuzzy
 msgid "_Location"
 msgstr "Yer"
 
-#: gweather/gweather-pref.c:638
+#: gweather/gweather-pref.c:641
 #, fuzzy
 msgid "_Automatically update every"
 msgstr "Avtomatik olaraq güncəlləmə aralığı"
 
-#: gweather/gweather-pref.c:644
+#: gweather/gweather-pref.c:647
 #, fuzzy
 msgid "Use _metric system units"
 msgstr "Metrik sistem vahidlləri istifadə et"
 
-#: gweather/gweather-pref.c:650
+#: gweather/gweather-pref.c:653
 #, fuzzy
 msgid "Enable _detailed forecast"
 msgstr "Ətraflı verilişi fəallaşdır"
 
-#: gweather/gweather-pref.c:657
+#: gweather/gweather-pref.c:660
 #, fuzzy
 msgid "Enable _radar map"
 msgstr "Radar xəritələrini aç"
 
-#: gweather/gweather-pref.c:663
+#: gweather/gweather-pref.c:666
 msgid "Use cus_tom address for radar map"
 msgstr ""
 
-#: gweather/gweather-pref.c:674
+#: gweather/gweather-pref.c:677
 msgid "A_ddress :"
 msgstr ""
 
-#: gweather/gweather-pref.c:686
+#: gweather/gweather-pref.c:689
 msgid "Updates"
 msgstr "Güncəlləmələr"
 
-#: gweather/gweather-pref.c:692
+#: gweather/gweather-pref.c:695
 #, fuzzy
 msgid "_Automatically update every "
 msgstr "Avtomatik olaraq güncəlləmə aralığı"
 
-#: gweather/gweather-pref.c:712
+#: gweather/gweather-pref.c:715
 msgid "minute(s)"
 msgstr "dəqiqə"
 
 #. The Miscellaneous frame
-#: gweather/gweather-pref.c:723
+#: gweather/gweather-pref.c:726
 msgid "Miscellaneous"
 msgstr "Müxtəlif"
 
-#: gweather/gweather-pref.c:741 mini-commander/src/preferences.c:972
-#: modemlights/properties.c:424
+#: gweather/gweather-pref.c:744 mini-commander/src/mini-commander.glade.h:19
+#: modemlights/properties.c:428
 #, fuzzy
 msgid "_General"
 msgstr "Ümumi"
@@ -2898,8 +2896,8 @@ msgid "Retrieval failed"
 msgstr "Alış iflas etdi"
 
 #: mini-commander/src/GNOME_MiniCommanderApplet.server.in.in.h:1
-#: mini-commander/src/about.c:62
-#: mini-commander/src/mini-commander_applet.c:317
+#: mini-commander/src/about.c:66
+#: mini-commander/src/mini-commander_applet.c:313
 #, fuzzy
 msgid "Command Line"
 msgstr "Əmr"
@@ -2913,7 +2911,7 @@ msgstr "Kiçik Əmr Verici"
 msgid "MiniCommander Applet Factory"
 msgstr "Kiçik-əmr Appleti"
 
-#: mini-commander/src/about.c:65
+#: mini-commander/src/about.c:69
 msgid ""
 "This GNOME applet adds a command line to the panel. It features command "
 "completion, command history, changeable macros and an optional built-in "
@@ -2933,220 +2931,191 @@ msgstr ""
 "görə dağıdılıb ya da dəyişdirilirsə . Bu GNU General Public License'in 2. ci "
 "nəsli ya da daha sonrakı nəsillərinə görədir ."
 
-#: mini-commander/src/cmd_completion.c:69
-#: mini-commander/src/cmd_completion.c:115
-#: mini-commander/src/cmd_completion.c:151
-#: mini-commander/src/cmd_completion.c:202
-msgid "not unique"
-msgstr "mə'lum deyil"
-
-#: mini-commander/src/cmd_completion.c:73
-#: mini-commander/src/cmd_completion.c:155
-msgid "completing..."
-msgstr "tamamlayıram ..."
-
-#: mini-commander/src/cmd_completion.c:113
-#: mini-commander/src/cmd_completion.c:200
-msgid "completed"
-msgstr "tamamlandı"
-
-#: mini-commander/src/cmd_completion.c:118
-#: mini-commander/src/cmd_completion.c:205
-msgid "not found"
-msgstr "tapılmadı"
-
-#: mini-commander/src/cmd_completion.c:167
-msgid "no /bin/sh"
-msgstr "/bin/sh yoxdur"
-
-#: mini-commander/src/command_line.c:98 mini-commander/src/command_line.c:118
-msgid "end of history list"
-msgstr "keçmişin sonu"
-
-#. enter pressed -> exec command
-#: mini-commander/src/command_line.c:128
-msgid "starting..."
-msgstr "başlayır ..."
-
-#: mini-commander/src/command_line.c:157
-msgid "autocompleted"
-msgstr "avtomatik olaraq tamamlandı"
-
 #. build file select dialog
-#: mini-commander/src/command_line.c:502
+#: mini-commander/src/command_line.c:427
 msgid "Start program"
 msgstr "Proqramı başlat"
 
-#: mini-commander/src/command_line.c:538
+#: mini-commander/src/command_line.c:470
 #, fuzzy
 msgid "Command line"
 msgstr "Əmr"
 
-#: mini-commander/src/command_line.c:539
+#: mini-commander/src/command_line.c:471
 msgid "Type a command here and Gnome will execute it for you"
 msgstr ""
 
-#: mini-commander/src/message.c:149
-msgid "%H:%M - %d. %b"
-msgstr "%H:%M - %d %b"
-
-#: mini-commander/src/message.c:151
-msgid "%H:%M"
-msgstr "%H:%M"
-
-#: mini-commander/src/message.c:153
-msgid "%d. %b"
-msgstr "%d %b"
-
-#: mini-commander/src/mini-commander_applet.c:123
-msgid "orient. changed"
-msgstr "istiqamət dəyişdi"
-
-#: mini-commander/src/mini-commander_applet.c:140
-msgid "size changed"
-msgstr "böyüklük dəyişdi"
-
-#: mini-commander/src/mini-commander_applet.c:290
-#: mini-commander/src/mini-commander_applet.c:293
-msgid "Browser"
-msgstr "Səyyah"
-
-#: mini-commander/src/mini-commander_applet.c:294
-msgid "Click this button to start the browser"
+#: mini-commander/src/mc-install-default-macros.c:71
+#, c-format
+msgid "Cannot get schema for %s : %s"
 msgstr ""
 
-#: mini-commander/src/mini-commander_applet.c:309
-#: mini-commander/src/mini-commander_applet.c:312
-msgid "History"
-msgstr "Keçmiş"
-
-#: mini-commander/src/mini-commander_applet.c:313
-msgid "Click this button for the list of previous commands"
+#: mini-commander/src/mc-install-default-macros.c:99
+#, c-format
+msgid "Cannot set schema for %s : %s"
 msgstr ""
 
-#: mini-commander/src/mini-commander_applet.c:314
-#, fuzzy
-msgid "Mini-Commander applet"
-msgstr "Kiçik-əmr Appleti"
-
-#: mini-commander/src/mini-commander_applet.c:315
-msgid "This applet adds a command line to the panel"
+#: mini-commander/src/mc-install-default-macros.c:105
+#, c-format
+msgid "Set default list value for %s\n"
 msgstr ""
 
-#: mini-commander/src/mini-commander_applet.c:448
-msgid "ready..."
-msgstr "hazır ..."
+#: mini-commander/src/mc-install-default-macros.c:117
+msgid "GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"
+msgstr ""
 
-#: mini-commander/src/preferences.c:703
-#, fuzzy
-msgid "Command Line Preferences"
-msgstr "Kiçik-əmr qurğuları"
+#: mini-commander/src/mc-install-default-macros.c:125
+msgid "Must set the GCONF_CONFIG_SOURCE environment variable\n"
+msgstr ""
 
-#: mini-commander/src/preferences.c:720
-msgid "Clock"
-msgstr "Saat"
+#: mini-commander/src/mc-install-default-macros.c:142
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr ""
 
-#. show time check box
-#: mini-commander/src/preferences.c:728
-msgid "Show time"
-msgstr "Vaaxtı göstər"
+#: mini-commander/src/mc-install-default-macros.c:154
+#, c-format
+msgid "Error syncing config data: %s"
+msgstr ""
 
-#. show date check box
-#: mini-commander/src/preferences.c:735
-msgid "Show date"
-msgstr "Tarixi göstər"
+#: mini-commander/src/mini-commander.glade.h:1
+msgid "*"
+msgstr ""
 
-#. show handle check box
-#: mini-commander/src/preferences.c:751
-#, fuzzy
-msgid "Show han_dle"
-msgstr "Qulpu göstər"
+#: mini-commander/src/mini-commander.glade.h:2
+msgid "Add New Macro"
+msgstr ""
 
-#. show frame check box
-#: mini-commander/src/preferences.c:758
-#, fuzzy
-msgid "Show fram_e"
-msgstr "Çərçivəni göstər"
-
-#. auto complete frame
-#: mini-commander/src/preferences.c:767
-#, fuzzy
-msgid "Autocompletion"
-msgstr "Avtomatik Tamamlama"
-
-#. show history autocomplete
-#: mini-commander/src/preferences.c:775
-#, fuzzy
-msgid "Enable _history based autocompletion"
-msgstr "Keçmiş əsaslı tamamlama"
-
-#. Size
-#: mini-commander/src/preferences.c:782
-msgid "Size"
-msgstr "Böyüklük"
-
-#. applet width
-#: mini-commander/src/preferences.c:794
+#: mini-commander/src/mini-commander.glade.h:4
 #, fuzzy
 msgid "Applet _width:"
 msgstr "Applet eni:"
 
-#. applet height
-#: mini-commander/src/preferences.c:828
-msgid "Applet height:"
-msgstr "Applet hündürlüyü:"
+#: mini-commander/src/mini-commander.glade.h:5
+#, fuzzy
+msgid "Autocompletion"
+msgstr "Avtomatik Tamamlama"
 
-#. cmd line height
-#: mini-commander/src/preferences.c:850
-msgid "Command line height:"
-msgstr "Əmr sətiri hündürlüyü:"
-
-#. Color
-#: mini-commander/src/preferences.c:885 multiload/properties.c:365
+#: mini-commander/src/mini-commander.glade.h:6 multiload/properties.c:365
 msgid "Colors"
 msgstr "Rənglər"
 
-#. default bg and fg theme
-#: mini-commander/src/preferences.c:895
+#: mini-commander/src/mini-commander.glade.h:7
 #, fuzzy
-msgid "_Use default theme colors"
-msgstr "Əsas xüsusisiyyətləri istifadə et"
+msgid "Command Line Preferences"
+msgstr "Kiçik-əmr qurğuları"
 
-#. fg
-#: mini-commander/src/preferences.c:907
-#, fuzzy
-msgid "Command line _foreground:"
-msgstr "Əmr sətiri ön sahəsi:"
-
-#. bg
-#: mini-commander/src/preferences.c:941
+#: mini-commander/src/mini-commander.glade.h:8
 #, fuzzy
 msgid "Command line _background:"
 msgstr "Əmr sətiri arxa sahəsi:"
 
-#. prefix
-#: mini-commander/src/preferences.c:1001
-#, fuzzy, c-format
-msgid "Regex _%.2d:"
-msgstr "Qayalı İfadə  %.2d:"
+#: mini-commander/src/mini-commander.glade.h:9
+#, fuzzy
+msgid "Command line _foreground:"
+msgstr "Əmr sətiri ön sahəsi:"
 
-#. command
-#: mini-commander/src/preferences.c:1021
-#, fuzzy, c-format
-msgid "   Macro _%.2d:"
-msgstr "   Makro %.2d:"
+#: mini-commander/src/mini-commander.glade.h:10
+#, fuzzy
+msgid "Command:"
+msgstr "Əmr"
 
-#: mini-commander/src/preferences.c:1041
+#: mini-commander/src/mini-commander.glade.h:11
+#, fuzzy
+msgid "Enable _history based autocompletion"
+msgstr "Keçmiş əsaslı tamamlama"
+
+#: mini-commander/src/mini-commander.glade.h:12
+msgid "Pattern:"
+msgstr ""
+
+#: mini-commander/src/mini-commander.glade.h:13
+#, fuzzy
+msgid "Pick a color"
+msgstr "Saat rəngi"
+
+#: mini-commander/src/mini-commander.glade.h:14
+#, fuzzy
+msgid "Show fram_e"
+msgstr "Çərçivəni göstər"
+
+#: mini-commander/src/mini-commander.glade.h:15
+#, fuzzy
+msgid "Show han_dle"
+msgstr "Qulpu göstər"
+
+#: mini-commander/src/mini-commander.glade.h:16
+msgid "Size"
+msgstr "Böyüklük"
+
+#: mini-commander/src/mini-commander.glade.h:17
+msgid "_Add new macro..."
+msgstr ""
+
+#: mini-commander/src/mini-commander.glade.h:18
+#, fuzzy
+msgid "_Delete Macro"
+msgstr "Başladıcını sil"
+
+#: mini-commander/src/mini-commander.glade.h:20
 #, fuzzy
 msgid "_Macros"
 msgstr "Makrolar"
+
+#: mini-commander/src/mini-commander.glade.h:21
+#, fuzzy
+msgid "_Use default theme colors"
+msgstr "Əsas xüsusisiyyətləri istifadə et"
+
+#: mini-commander/src/mini-commander_applet.c:143
+#: mini-commander/src/mini-commander_applet.c:147
+msgid "Browser"
+msgstr "Səyyah"
+
+#: mini-commander/src/mini-commander_applet.c:148
+msgid "Click this button to start the browser"
+msgstr ""
+
+#: mini-commander/src/mini-commander_applet.c:164
+#: mini-commander/src/mini-commander_applet.c:168
+msgid "History"
+msgstr "Keçmiş"
+
+#: mini-commander/src/mini-commander_applet.c:169
+msgid "Click this button for the list of previous commands"
+msgstr ""
+
+#: mini-commander/src/mini-commander_applet.c:311
+#, fuzzy
+msgid "Mini-Commander applet"
+msgstr "Kiçik-əmr Appleti"
+
+#: mini-commander/src/mini-commander_applet.c:312
+msgid "This applet adds a command line to the panel"
+msgstr ""
+
+#: mini-commander/src/preferences.c:343
+msgid "You must specify a pattern"
+msgstr ""
+
+#: mini-commander/src/preferences.c:347
+msgid "You must specify a pattern and a command"
+msgstr ""
+
+#: mini-commander/src/preferences.c:348
+msgid "You must specify a command"
+msgstr ""
+
+#: mini-commander/src/preferences.c:351
+msgid "You may not specify duplicate patterns"
+msgstr ""
 
 #: mixer/GNOME_MixerApplet.server.in.in.h:1
 msgid "Adjust the sound volume"
 msgstr ""
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:140
-#: mixer/mixer.c:818
+#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:130
+#: mixer/mixer.c:807
 #, fuzzy
 msgid "Volume Control"
 msgstr "WebControl"
@@ -3161,12 +3130,12 @@ msgstr "Xarici"
 msgid "_Run Volume Control..."
 msgstr "WebControl"
 
-#: mixer/mixer.c:141
+#: mixer/mixer.c:131
 #, fuzzy
 msgid "Volume Control (muted)"
 msgstr "WebControl"
 
-#: mixer/mixer.c:193
+#: mixer/mixer.c:183
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -3175,38 +3144,38 @@ msgstr ""
 "yoxlandı\n"
 " .\n"
 
-#: mixer/mixer.c:204
+#: mixer/mixer.c:194
 #, c-format
 msgid "Querying available channels of mixer device %s failed\n"
 msgstr ""
 
-#: mixer/mixer.c:211
+#: mixer/mixer.c:201
 msgid "warning: mixer has no volume channel - using PCM instead.\n"
 msgstr ""
 
-#: mixer/mixer.c:214
+#: mixer/mixer.c:204
 #, c-format
 msgid "Mixer device %s has neither volume nor PCM channels.\n"
 msgstr ""
 
-#: mixer/mixer.c:567
+#: mixer/mixer.c:552
 #, fuzzy
 msgid "Volume Controller"
 msgstr "WebControl"
 
-#: mixer/mixer.c:568
+#: mixer/mixer.c:553
 msgid "Use Up/Down arrow keys to change volume"
 msgstr ""
 
-#: mixer/mixer.c:819
+#: mixer/mixer.c:808
 msgid "(C) 2001 Richard Hult"
 msgstr ""
 
-#: mixer/mixer.c:820
+#: mixer/mixer.c:809
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr ""
 
-#: mixer/mixer.c:1053
+#: mixer/mixer.c:1019
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr ""
 
@@ -3216,11 +3185,11 @@ msgid "Internet"
 msgstr "Başqa"
 
 #: modemlights/GNOME_ModemLightsApplet.server.in.in.h:2
-#: modemlights/modemlights.c:224
+#: modemlights/modemlights.c:227
 msgid "Modem Lights"
 msgstr "Modem İşıqları"
 
-#: modemlights/modemlights.c:226
+#: modemlights/modemlights.c:229
 msgid ""
 "Released under the GNU general public license.\n"
 "A modem status indicator and dialer.\n"
@@ -3230,7 +3199,7 @@ msgstr ""
 "Modem vəziyyət göstəricisi və çeviricisidir.\n"
 "Üstdəki ya da soldakı işıkqar göndərilen və gələn bilgilərdir ."
 
-#: modemlights/modemlights.c:553
+#: modemlights/modemlights.c:558
 msgid ""
 "You are currently connected.\n"
 "Do you want to disconnect?"
@@ -3238,161 +3207,161 @@ msgstr ""
 "Bu dəqiqe bağlısan .\n"
 "Bağlantıyı kəsim mi ?"
 
-#: modemlights/modemlights.c:568
+#: modemlights/modemlights.c:573
 msgid "Do you want to connect?"
 msgstr "Bağlanmaq istəyirsən mi ?"
 
-#: modemlights/modemlights.c:596
+#: modemlights/modemlights.c:601
 #, c-format
 msgid "%#.1fMb received / %#.1fMb sent / time: %.1d:%.2d"
 msgstr "%#.1fMb alındı / %#.1fMb gödərildi / müddət: %.1d:%.2d"
 
-#: modemlights/modemlights.c:601
+#: modemlights/modemlights.c:606
 msgid "not connected"
 msgstr "bağlı deyil"
 
-#: modemlights/properties.c:326
+#: modemlights/properties.c:328
 #, fuzzy
 msgid "Modem Lights Preferences"
 msgstr "Modem İşıqları Qurğuları"
 
-#: modemlights/properties.c:338
+#: modemlights/properties.c:342
 msgid "Connecting"
 msgstr "Bağlanılır"
 
-#: modemlights/properties.c:352
+#: modemlights/properties.c:356
 #, fuzzy
 msgid "Co_nnect command:"
 msgstr "Bağlanma əmri:"
 
-#: modemlights/properties.c:369
+#: modemlights/properties.c:373
 #, fuzzy
 msgid "_Disconnect command:"
 msgstr "Ayrılma əmri:"
 
 #. confirmation checkbox
-#: modemlights/properties.c:382
+#: modemlights/properties.c:386
 #, fuzzy
 msgid "Con_firm connection"
 msgstr "Bağlantıyı qəbul et"
 
-#: modemlights/properties.c:403
+#: modemlights/properties.c:407
 #, fuzzy
 msgid "U_pdates per second"
 msgstr "Saniyədəki təzələmələr"
 
 #. extra info checkbox
-#: modemlights/properties.c:417
+#: modemlights/properties.c:421
 #, fuzzy
 msgid "Sho_w connect time and throughput"
 msgstr "Bağlı olma müddətini və gedəni göstər"
 
-#: modemlights/properties.c:434
+#: modemlights/properties.c:438
 msgid "Receive data"
 msgstr "Datanı al"
 
-#: modemlights/properties.c:436
+#: modemlights/properties.c:440
 #, fuzzy
 msgid "_Foreground"
 msgstr "Ön üz"
 
-#: modemlights/properties.c:437
+#: modemlights/properties.c:441
 #, fuzzy
 msgid "_Background"
 msgstr "Arxa üz: "
 
-#: modemlights/properties.c:439
+#: modemlights/properties.c:443
 msgid "Send data"
 msgstr "Göndərilən data"
 
-#: modemlights/properties.c:441
+#: modemlights/properties.c:445
 #, fuzzy
 msgid "Foregroun_d"
 msgstr "Ön üz"
 
-#: modemlights/properties.c:442
+#: modemlights/properties.c:446
 #, fuzzy
 msgid "Backg_round"
 msgstr "Arxa üz: "
 
-#: modemlights/properties.c:444
+#: modemlights/properties.c:448
 msgid "Connection status"
 msgstr "Bağlantı Vəziyyəti"
 
-#: modemlights/properties.c:446
+#: modemlights/properties.c:450
 #, fuzzy
 msgid "Co_nnected"
 msgstr "Bağlı"
 
-#: modemlights/properties.c:447
+#: modemlights/properties.c:451
 #, fuzzy
 msgid "No_t connected"
 msgstr "Ayrı"
 
-#: modemlights/properties.c:448
+#: modemlights/properties.c:452
 #, fuzzy
 msgid "A_waiting connection"
 msgstr "Bağlantının gözlədilməsi"
 
-#: modemlights/properties.c:451
+#: modemlights/properties.c:455
 #, fuzzy
 msgid "B_link"
 msgstr "Yan sön"
 
-#: modemlights/properties.c:458
+#: modemlights/properties.c:462
 msgid "Text"
 msgstr "Mətn :"
 
-#: modemlights/properties.c:460
+#: modemlights/properties.c:464
 #, fuzzy
 msgid "For_eground"
 msgstr "Ön üz"
 
-#: modemlights/properties.c:461
+#: modemlights/properties.c:465
 #, fuzzy
 msgid "Bac_kground"
 msgstr "Arxa üz: "
 
-#: modemlights/properties.c:462
+#: modemlights/properties.c:466
 #, fuzzy
 msgid "O_utline"
 msgstr "Xarici"
 
-#: modemlights/properties.c:464
+#: modemlights/properties.c:468
 #, fuzzy
 msgid "C_olors"
 msgstr "Rənglər"
 
-#: modemlights/properties.c:473
+#: modemlights/properties.c:477
 msgid "Modem options"
 msgstr "Modem qurğuları"
 
-#: modemlights/properties.c:487
+#: modemlights/properties.c:491
 #, fuzzy
 msgid "_Modem lock file:"
 msgstr "Modem qıfıl faylı:"
 
-#: modemlights/properties.c:499
+#: modemlights/properties.c:503
 #, fuzzy
 msgid "_Verify owner of lock file"
 msgstr "Qıfıllama faylının yiyəsini göstər"
 
-#: modemlights/properties.c:511
+#: modemlights/properties.c:515
 #, fuzzy
 msgid "_Device:"
 msgstr "Avadanlıq"
 
 #. ISDN checkbox
-#: modemlights/properties.c:524
+#: modemlights/properties.c:528
 #, fuzzy
 msgid "U_se ISDN"
 msgstr "ISDN istifadə et"
 
-#: modemlights/properties.c:544
+#: modemlights/properties.c:548
 msgid "Set options as default"
 msgstr "Bu qurğuları əsas olaraq al"
 
-#: modemlights/properties.c:550
+#: modemlights/properties.c:554
 #, fuzzy
 msgid "_Advanced"
 msgstr "Ətraflı"
@@ -3403,7 +3372,7 @@ msgid "A system load indicator"
 msgstr "Zirvə Göstəricisi"
 
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:2
-#: multiload/main.c:75
+#: multiload/main.c:78
 #, fuzzy
 msgid "System Monitor"
 msgstr "Səs Göstərici"
@@ -3421,7 +3390,7 @@ msgstr "CPU Yükü"
 msgid "Load Average"
 msgstr "Yük Göstərici"
 
-#: multiload/main.c:77
+#: multiload/main.c:80
 #, fuzzy
 msgid ""
 "Released under the GNU General Public License.\n"
@@ -3432,31 +3401,31 @@ msgstr ""
 "GNU Generel Public License'na görə nəşr edilmişdir.\n"
 "Sürücülərin boş olan və istifadədə olan bölmələrini göstərir ."
 
-#: multiload/main.c:227
+#: multiload/main.c:236
 #, fuzzy
 msgid "Processor"
 msgstr "Təzyiq:"
 
-#: multiload/main.c:229
+#: multiload/main.c:238
 #, fuzzy
 msgid "Memory"
 msgstr "Yaddaş Yükü"
 
-#: multiload/main.c:231
+#: multiload/main.c:240
 msgid "Network"
 msgstr "Şəbəkə"
 
-#: multiload/main.c:233
+#: multiload/main.c:242
 #, fuzzy
 msgid "Swap File"
 msgstr "Nümunələr"
 
-#: multiload/main.c:235
+#: multiload/main.c:244
 #, fuzzy
 msgid "Resource"
 msgstr "Təzəden başlat"
 
-#: multiload/main.c:247
+#: multiload/main.c:256
 #, c-format
 msgid ""
 "%s:\n"
@@ -3618,7 +3587,7 @@ msgstr "İstifadədə"
 msgid "_Free"
 msgstr "Boş"
 
-#: multiload/properties.c:411
+#: multiload/properties.c:413
 #, fuzzy
 msgid "System Monitor Preferences"
 msgstr "WebControl qurğuları"
@@ -3653,17 +3622,17 @@ msgstr ""
 msgid "Add items to the Menu Bar"
 msgstr ""
 
-#: panel-menu/panel-menu-add.c:240 panel-menu/panel-menu-links.c:139
+#: panel-menu/panel-menu-add.c:244 panel-menu/panel-menu-links.c:139
 #: panel-menu/panel-menu-links.c:405
 #, fuzzy
 msgid "Shortcuts"
 msgstr "Yağış"
 
-#: panel-menu/panel-menu-add.c:246
+#: panel-menu/panel-menu-add.c:250
 msgid "My Documents"
 msgstr ""
 
-#: panel-menu/panel-menu-add.c:252 panel-menu/panel-menu-documents.c:134
+#: panel-menu/panel-menu-add.c:256 panel-menu/panel-menu-documents.c:134
 #: panel-menu/panel-menu-documents.c:399
 msgid "Documents"
 msgstr ""
@@ -3673,7 +3642,7 @@ msgstr ""
 msgid "Applications"
 msgstr "Seçənəklər"
 
-#: panel-menu/panel-menu-common.c:735
+#: panel-menu/panel-menu-common.c:738
 msgid ""
 "Removing this entry is not allowed as this will cause the Menu Bar applet to "
 "be removed from GNOME Panel"
@@ -3693,20 +3662,20 @@ msgstr "Səs səviyyəsi"
 msgid "Edit directory item..."
 msgstr ""
 
-#: panel-menu/panel-menu-directory.c:684 panel-menu/panel-menu-path.c:734
+#: panel-menu/panel-menu-directory.c:686 panel-menu/panel-menu-path.c:736
 msgid "_Path:"
 msgstr ""
 
-#: panel-menu/panel-menu-directory.c:692
+#: panel-menu/panel-menu-directory.c:694
 #, fuzzy
 msgid "..."
 msgstr "Yardım ..."
 
-#: panel-menu/panel-menu-directory.c:702
+#: panel-menu/panel-menu-directory.c:704
 msgid "_Depth level:"
 msgstr ""
 
-#: panel-menu/panel-menu-directory.c:799
+#: panel-menu/panel-menu-directory.c:801
 msgid "Path specified is currently not a valid directory."
 msgstr ""
 
@@ -3756,36 +3725,36 @@ msgstr ""
 msgid "Menu Bar Preferences"
 msgstr "GKB Qurğuları"
 
-#: panel-menu/panel-menu-properties.c:76
+#: panel-menu/panel-menu-properties.c:78
 #, fuzzy
 msgid "Layout"
 msgstr "Oxu"
 
-#: panel-menu/panel-menu-properties.c:91
+#: panel-menu/panel-menu-properties.c:93
 #, fuzzy
 msgid "_Applications Menu"
 msgstr "Seçənəklər"
 
-#: panel-menu/panel-menu-properties.c:115
+#: panel-menu/panel-menu-properties.c:117
 #, fuzzy
 msgid "Select an icon for the Applications menu"
 msgstr "Bağlanmış hal üçün timsalı seç"
 
-#: panel-menu/panel-menu-properties.c:132
+#: panel-menu/panel-menu-properties.c:134
 msgid "_Preferences Menu"
 msgstr ""
 
-#: panel-menu/panel-menu-properties.c:143
+#: panel-menu/panel-menu-properties.c:145
 #, fuzzy
 msgid "Ac_tions Menu"
 msgstr "Seçənəklər"
 
-#: panel-menu/panel-menu-properties.c:154
+#: panel-menu/panel-menu-properties.c:156
 #, fuzzy
 msgid "_Windows Menu"
 msgstr "Külək:"
 
-#: panel-menu/panel-menu-properties.c:165
+#: panel-menu/panel-menu-properties.c:167
 msgid "W_orkspaces Menu"
 msgstr ""
 
@@ -3798,16 +3767,100 @@ msgstr "Külək:"
 msgid "Workspaces"
 msgstr ""
 
-#: panel-menu/panel-menu.c:691
+#: panel-menu/panel-menu.c:693
 msgid "Menu Bar"
 msgstr ""
 
-#: panel-menu/panel-menu.c:692
+#: panel-menu/panel-menu.c:694
 msgid "(c) 2001 Chris Phelps"
 msgstr ""
 
-#: panel-menu/panel-menu.c:693
+#: panel-menu/panel-menu.c:695
 msgid "The Menu Bar allows you to display customized menubars on your panels."
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:174
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:187
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:200 screen-exec/egg-screen-help.c:215
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:224 screen-exec/egg-screen-help.c:240
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:315
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr ""
+
+#: screen-exec/egg-screen-help.c:336
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr ""
+
+#: wireless/wireless-applet.c:344
+msgid ""
+"The images necessary to run the wireless monitor are missing.\n"
+"Please make sure that it is correctly installed."
+msgstr ""
+
+#: wireless/wireless-applet.c:525
+msgid "No Wireless Devices"
+msgstr ""
+
+#: wireless/wireless-applet.c:527
+msgid ""
+"There doesn't seem to be any wireless devices configured on your system.\n"
+"Please verify your configuration if you think this is incorrect."
+msgstr ""
+
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
+#: wireless/wireless-applet.c:719
+msgid "Wireless Link Monitor"
+msgstr ""
+
+#: wireless/wireless-applet.c:721
+#, fuzzy
+msgid "(C) 2001, 2002 Free Software Foundation "
+msgstr "Təlif haqqı (C) 1998-2000 the Free Software Foundation"
+
+#: wireless/wireless-applet.c:722
+msgid "This utility shows the status of a wireless link."
+msgstr ""
+
+#: wireless/wireless-applet.glade.h:1
+msgid "Monitored Device:"
+msgstr ""
+
+#: wireless/wireless-applet.glade.h:2
+#, fuzzy
+msgid "Show _dialog boxes"
+msgstr "Qulpu göstər"
+
+#: wireless/wireless-applet.glade.h:3
+msgid "Show signal strength in _percentage"
+msgstr ""
+
+#: wireless/wireless-applet.glade.h:4
+#, fuzzy
+msgid "Wireless Link Monitor Preferences"
+msgstr "Sürücü Bağlanma Appleti Seçənəkləri"
+
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:1
+msgid "Monitor the quality of a wireless network link"
 msgstr ""
 
 #~ msgid "CD Player Applet"
@@ -3866,9 +3919,20 @@ msgstr ""
 #~ msgid "Pass_word:"
 #~ msgstr "Parol:"
 
+#~ msgid "Enter symbols delimited with \"+\" in the box below."
+#~ msgstr "Aşağıda \"+\" ilə ayrılmış olan simvolları girin"
+
 #, fuzzy
 #~ msgid "Display a_rrows instead of -/+"
 #~ msgstr " -/+ Yerinə oxları istifadə et"
+
+#, fuzzy
+#~ msgid "Stock Sy_mbol:"
+#~ msgstr "Qundaq Sİmvolu:"
+
+#, fuzzy
+#~ msgid "Stock C_hange:"
+#~ msgstr "Qundaq Dəyişikliyi:"
 
 #, fuzzy
 #~ msgid "_Proxy"
@@ -3897,6 +3961,30 @@ msgstr ""
 #~ msgid "Mini-Commander Applet"
 #~ msgstr "Kiçik-əmr Appleti"
 
+#~ msgid "not unique"
+#~ msgstr "mə'lum deyil"
+
+#~ msgid "completing..."
+#~ msgstr "tamamlayıram ..."
+
+#~ msgid "completed"
+#~ msgstr "tamamlandı"
+
+#~ msgid "not found"
+#~ msgstr "tapılmadı"
+
+#~ msgid "no /bin/sh"
+#~ msgstr "/bin/sh yoxdur"
+
+#~ msgid "end of history list"
+#~ msgstr "keçmişin sonu"
+
+#~ msgid "starting..."
+#~ msgstr "başlayır ..."
+
+#~ msgid "autocompleted"
+#~ msgstr "avtomatik olaraq tamamlandı"
+
 #~ msgid "history list empty"
 #~ msgstr "keçmiş boşdur"
 
@@ -3908,6 +3996,47 @@ msgstr ""
 
 #~ msgid "child exited"
 #~ msgstr "törəmə qurtardı"
+
+#~ msgid "%H:%M - %d. %b"
+#~ msgstr "%H:%M - %d %b"
+
+#~ msgid "%H:%M"
+#~ msgstr "%H:%M"
+
+#~ msgid "%d. %b"
+#~ msgstr "%d %b"
+
+#~ msgid "orient. changed"
+#~ msgstr "istiqamət dəyişdi"
+
+#~ msgid "size changed"
+#~ msgstr "böyüklük dəyişdi"
+
+#~ msgid "ready..."
+#~ msgstr "hazır ..."
+
+#~ msgid "Clock"
+#~ msgstr "Saat"
+
+#~ msgid "Show time"
+#~ msgstr "Vaaxtı göstər"
+
+#~ msgid "Show date"
+#~ msgstr "Tarixi göstər"
+
+#~ msgid "Applet height:"
+#~ msgstr "Applet hündürlüyü:"
+
+#~ msgid "Command line height:"
+#~ msgstr "Əmr sətiri hündürlüyü:"
+
+#, fuzzy
+#~ msgid "Regex _%.2d:"
+#~ msgstr "Qayalı İfadə  %.2d:"
+
+#, fuzzy
+#~ msgid "   Macro _%.2d:"
+#~ msgstr "   Makro %.2d:"
 
 #~ msgid "Run Audio Mixer..."
 #~ msgstr "Səs Mikser'ini işə sal ..."
@@ -4051,8 +4180,8 @@ msgstr ""
 #~ msgid "SwapLoad"
 #~ msgstr "Dəyiş Toqquş Yükü"
 
-#~ msgid "Clock color"
-#~ msgstr "Saat rəngi"
+#~ msgid "Clock Settings"
+#~ msgstr "Saat Qurğuları"
 
 #~ msgid "Hour needle color"
 #~ msgstr "Saat iynəsinin rəngi"
@@ -4355,9 +4484,6 @@ msgstr ""
 #~ msgid "Fonts"
 #~ msgstr "Yazı növləri"
 
-#~ msgid "Font:"
-#~ msgstr "Yazı növü :"
-
 #~ msgid "Diskusage Settings"
 #~ msgstr "Disk İstifadə Etmə Appletinın Qurğuları"
 
@@ -4604,9 +4730,6 @@ msgstr ""
 #~ msgid "Maximum:"
 #~ msgstr "Maksimum : "
 
-#~ msgid "Speed:"
-#~ msgstr "Sür'ət:"
-
 #~ msgid "PPP"
 #~ msgstr "PPP"
 
@@ -4698,9 +4821,6 @@ msgstr ""
 
 #~ msgid "Launcher properties..."
 #~ msgstr "Başladıcı xüsusisiyyətləri ..."
-
-#~ msgid "Delete launcher"
-#~ msgstr "Başladıcını sil"
 
 #~ msgid "File '%s' does not exist"
 #~ msgstr "`%s' faylı yoxdur"
@@ -5451,9 +5571,6 @@ msgstr ""
 
 #~ msgid "Choose a log file"
 #~ msgstr "Bir qeyd faylını seç"
-
-#~ msgid "Width:"
-#~ msgstr "En:"
 
 #~ msgid "Use panel size hint"
 #~ msgstr "Panel böyüklüyü dəstəyindən istifadə et"

@@ -1,6 +1,74 @@
-2002-08-19  Satyajit Kanungo  <satyajit.kanungo@wipro.com>
-        * Checked in the new cdplayer applet graphics into the
-          stable gnome-2-0 branch. (bug #87221)
+2003-01-23  Breda McColgan <Breda.McColgan@sun.com>
+
+        * docs/C/cdplayer.xml: updated for GNOME 2.2
+        * docs/C/cdplayer-C.omf: updated manual date
+          and version number
+        * docs/C/figures/cdplayer_applet.png: updated for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_eject.png: updated for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_nexttrack.png: updated for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_pause.png: added for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_play.png: added for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_playafterpause.png: added for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_playing.png: updated for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_prevtrack.png: updated for GNOME 2.2
+        * docs/C/figures/cdplayer_applet_stop.png: updated for GNOME 2.2
+
+2003-01-21  Arvind Samptur <arvind.samptur@wipro.com>
+	* cdplayer.[ch] (preferences_cb) (response_cb) (cdplayer_destroy):
+	Destroy the preferences dialog when the applet is destroyed.
+
+2003-01-11  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* cdplayer.c (activate_cb): Stop playing if the user changes the
+	device when the applet is playing
+
+2002-12-15  Kevin Vandersloot <kfv101@psu.edu>
+
+	* cdplayer.c: change packing so as to not try to expand panels. Fixes
+	bugs #83282. Change packing on vertical panels. Fixes bug 
+	#67596
+
+2002-12-14  Fernando Herrera <fherrera@onirica.com>
+
+	* GNOME_CDPlayerApplet.server.in.in: added bugzilla attributtes
+
+2002-12-08  Kevin Vandersloot <kfv101@psu.edu>
+
+	* cdplayer.c: fix segfault on exit when we don't need to stop the cd.
+
+2002-12-05  Ghee Teo <ghee.teo@sun.com>
+
+	* cdplayer.c: cd continue to be played even when applet is removed from 
+	  panel or user logout, #100223. 
+
+2002-12-01  Kevin Vandersloot <kfv101@psu.edu>
+
+	* cdrom-linux.c: don't open cd device unless needed. Patch by
+	Owen Taylor <otaylor@redhat.com>. Fixes the Linux side of 
+	bug #91512.
+
+2002-09-15  Juan Salaverria <rael@vectorstar.net>
+
+	* GNOME_CDPlayerApplet.xml: Added a separator in the
+	menu. May fix bug #89864
+
+2002-09-24  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (cdplayer_applet2_SOURCES): remove $(EGGFILES)
+
+2002-09-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* cdplayer.c: (start_gtcd_cb), (activate_cb), (preferences_cb),
+	(help_cb), (about_cb), (phelp_cb): kill the HAVE_GTK_MULTIHEAD
+	conditionals - we require gtk HEAD now.
+
+2002-08-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: link against the libscreen-exec.la.
+
+	* cdplayer.c:
+	(help_cb), (phelp_cb): use the multiscreen
+	gnome_help variants.
 
 2002-07-18  Kevin Vandersloot <kfv101@psu.edu>
 
@@ -16,15 +84,26 @@
 
 2002-07-16  Kevin Vandersloot <kfv101@psu.edu>
 
-        * writer-solaris.c: fix function clashing from auidovar.h.
-        Patch from Darragh O'Brien <Darragh.Obrien@sun.com>
+	* writer-solaris.c: fix function clashing from auidovar.h.
+	Patch from Darragh O'Brien <Darragh.Obrien@sun.com>
 
 2002-07-11  Kevin Vandersloot <kfv101@psu.edu>
 
-        * cdrom-solaris.c, cdplayer.c, reader-solaris.c, writer-solaris.c:
-        Fix cdplayer applet to work with some Solaris setups where the
-        cdplayer issn't attached to the soundcard. From patch by
-        Darragh O'Brien <Darragh.Obrien@sun.com>
+	* cdrom-solaris.c, cdplayer.c, reader-solaris.c, writer-solaris.c:
+	Fix cdplayer applet to work with some Solaris setups where the
+	cdplayer issn't attached to the soundcard. From patch by
+	Darragh O'Brien <Darragh.Obrien@sun.com>
+
+2002-07-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add egg-screen-exec.[ch] to the
+	build.
+
+	* cdplayer.c:
+	(start_gtcd_cb): launch cdplayer on the same screen
+	as the applet.
+	(activate_cb), (preferences_cb), (about_cb): realise
+	dialogs on the same screen as the applet.
 
 2002-07-10  Mark McLoughlin  <mark@skynet.ie>
 

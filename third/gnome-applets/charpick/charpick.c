@@ -4,6 +4,7 @@
 
 #include <config.h>
 #include <panel-applet.h>
+#include <egg-screen-help.h>
 #include "charpick.h"
 
 
@@ -373,6 +374,8 @@ about (BonoboUIComponent *uic,
   const gchar *translator_credits = _("translator_credits");
 
   if (about_box) {
+	gtk_window_set_screen (GTK_WINDOW (about_box),
+			       gtk_widget_get_screen (curr_data->applet));
 	gtk_window_present (GTK_WINDOW (about_box));
 	return;
   }
@@ -400,6 +403,8 @@ about (BonoboUIComponent *uic,
   if (pixbuf) 
   	gdk_pixbuf_unref (pixbuf);
    
+  gtk_window_set_screen (GTK_WINDOW (about_box),
+			 gtk_widget_get_screen (curr_data->applet));
   gtk_window_set_wmclass (GTK_WINDOW (about_box), "character palette", "Character Palette");
   gnome_window_icon_set_from_file (GTK_WINDOW (about_box), GNOME_ICONDIR"/charpick.png");
 
@@ -416,9 +421,12 @@ help_cb (BonoboUIComponent *uic,
 	 const char        *verb)
 {
   GError *error = NULL;
-  gnome_help_display("char-palette",NULL,&error);
 
-  if (error) {
+  egg_screen_help_display (
+		gtk_widget_get_screen (curr_data->applet),
+		"char-palette", NULL, &error);
+
+  if (error) { /* FIXME: the user needs to see this */
     g_warning ("help error: %s\n", error->message);
     g_error_free (error);
     error = NULL;
@@ -444,6 +452,9 @@ applet_destroy (GtkWidget *widget, gpointer data)
       g_object_set_data (G_OBJECT (applet), "tooltips", NULL);
   }
   
+  if (curr_data->propwindow)
+    gtk_widget_destroy (curr_data->propwindow);
+
   g_free (curr_data);
   
 }

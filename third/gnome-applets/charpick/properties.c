@@ -7,6 +7,7 @@
 #endif
 
 #include "charpick.h"
+#include <egg-screen-help.h>
 
 static void
 update_default_list_cb (GtkEditable *editable, gpointer data)
@@ -110,12 +111,15 @@ static void default_chars_frame_create(charpick_data *curr_data)
 }
 
 static void
-phelp_cb (GtkWidget *w, gint tab, gpointer data)
+phelp_cb (GtkDialog *dialog, gint tab, gpointer data)
 {
   GError *error = NULL;
-  gnome_help_display("char-palette","charpick-prefs",&error);
 
-  if (error) {
+  egg_screen_help_display (
+		gtk_window_get_screen (GTK_WINDOW (dialog)),
+		"char-palette", "charpick-prefs", &error);
+
+  if (error) { /* FIXME: the user needs to see this */
     g_warning ("help error: %s\n", error->message);
     g_error_free (error);
     error = NULL;
@@ -128,7 +132,7 @@ response_cb (GtkDialog *dialog, gint id, gpointer data)
   charpick_data *curr_data = data;
 
   if(id == GTK_RESPONSE_HELP){
-    phelp_cb (NULL,id,data);
+    phelp_cb (dialog,id,data);
     return;
   }
   
@@ -143,6 +147,8 @@ show_preferences_dialog (BonoboUIComponent *uic,
 			 const gchar       *verbname)
 {
   if (curr_data->propwindow) {
+    gtk_window_set_screen (GTK_WINDOW (curr_data->propwindow),
+			   gtk_widget_get_screen (curr_data->applet));
     gtk_window_present (GTK_WINDOW (curr_data->propwindow));
     return;
   }
@@ -153,6 +159,8 @@ show_preferences_dialog (BonoboUIComponent *uic,
 					    GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					    GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 					    NULL);
+  gtk_window_set_screen (GTK_WINDOW (curr_data->propwindow),
+			 gtk_widget_get_screen (curr_data->applet));
   gtk_dialog_set_default_response (GTK_DIALOG (curr_data->propwindow), GTK_RESPONSE_CLOSE);
   /*size_frame_create();*/
   default_chars_frame_create(curr_data);

@@ -253,9 +253,11 @@ properties_show (BonoboUIComponent *uic,
 					     GTK_DIALOG_DESTROY_WITH_PARENT,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					     NULL);
+	gtk_window_set_screen (GTK_WINDOW (dialog),
+			       gtk_widget_get_screen (dd->applet));
 
 	box = GTK_DIALOG(dialog)->vbox;
-	frame = gtk_frame_new(_("Settings"));
+	frame = gtk_frame_new("Settings");
 	gtk_container_set_border_width(GTK_CONTAINER(frame), GNOME_PAD_SMALL);
 	gtk_box_pack_start(GTK_BOX(box), frame, TRUE, TRUE, 0);
 

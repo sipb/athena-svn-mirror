@@ -43,10 +43,12 @@ always_built_SUBDIRS = \
 	charpick	\
 	geyes		\
 	mini-commander	\
-	gkb-new	
+	gkb-new		\
+	wireless
 
 SUBDIRS = \
 	po			\
+	screen-exec		\
 	$(mixer_SUBDIRS)	\
 	$(modemlights_SUBDIRS)	\
 	$(cdplayer_SUBDIRS)	\
@@ -59,6 +61,7 @@ SUBDIRS = \
 
 DIST_SUBDIRS = \
 	po		\
+	screen-exec	\
 	mixer		\
 	modemlights	\
 	cdplayer	\
@@ -74,7 +77,8 @@ DIST_SUBDIRS = \
 	gweather 	\
 	mini-commander	\
 	man		\
-	omf-install
+	omf-install	\
+	wireless
 
 EXTRA_DIST = \
 	COPYING-DOCS		\

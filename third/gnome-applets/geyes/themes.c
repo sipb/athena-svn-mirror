@@ -25,6 +25,7 @@
 #include <ctype.h>
 
 #include <panel-applet-gconf.h>
+#include <egg-screen-help.h>
 #include "geyes.h"
 
 gchar *theme_directories[] = {
@@ -163,11 +164,15 @@ theme_selected_cb (GtkTreeSelection *selection, gpointer data)
 }
 
 static void
-phelp_cb ()
+phelp_cb (GtkDialog *dialog)
 {
 	GError *error = NULL;
-	gnome_help_display("geyes","geyes-settings",&error);
-	if (error) {
+
+	egg_screen_help_display (
+		gtk_window_get_screen (GTK_WINDOW (dialog)),
+		"geyes", "geyes-settings", &error);
+
+	if (error) { /* FIXME: the user needs to see this */
 		g_warning ("help error: %s\n", error->message);
 		g_error_free (error);
 		error = NULL;
@@ -179,7 +184,7 @@ presponse_cb (GtkDialog *dialog, gint id, gpointer data)
 {
 	EyesApplet *eyes_applet = data;
 	if(id == GTK_RESPONSE_HELP){
-		phelp_cb ();
+		phelp_cb (dialog);
 		return;
 	}
 
@@ -208,6 +213,9 @@ properties_cb (BonoboUIComponent *uic,
         gchar filename [PATH_MAX];
      
 	if (eyes_applet->prop_box.pbox) {
+		gtk_window_set_screen (
+			GTK_WINDOW (eyes_applet->prop_box.pbox),
+			gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)));
 		gtk_window_present (GTK_WINDOW (eyes_applet->prop_box.pbox));
 		return;
 	}
@@ -217,6 +225,8 @@ properties_cb (BonoboUIComponent *uic,
 					     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 					     GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 					     NULL);
+	gtk_window_set_screen (GTK_WINDOW (pbox),
+			       gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)));
         gtk_dialog_set_default_response(GTK_DIALOG (pbox), GTK_RESPONSE_CLOSE);
 
         g_signal_connect (pbox, "response",
@@ -226,7 +236,7 @@ properties_cb (BonoboUIComponent *uic,
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pbox)->vbox), hbox, FALSE, FALSE, 2);
 	
-	label = gtk_label_new_with_mnemonic (_("T_heme Name"));
+	label = gtk_label_new_with_mnemonic (_("_Theme Name:"));
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 

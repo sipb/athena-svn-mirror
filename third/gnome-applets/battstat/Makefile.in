@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -143,26 +147,44 @@ glade_DATA = battstat_applet.glade
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = battstat.png
-@HAVE_LIBAPM_TRUE@APMLIB = -lapm
-@HAVE_LIBAPM_FALSE@APMLIB = apmlib/libapm.a
+@HAVE_LIBAPM_TRUE@APMLIB = @HAVE_LIBAPM_TRUE@-lapm
+@HAVE_LIBAPM_FALSE@APMLIB = @HAVE_LIBAPM_FALSE@apmlib/libapm.a
 @HAVE_LIBAPM_TRUE@APMDIR = 
-@HAVE_LIBAPM_FALSE@APMDIR = apmlib
+@HAVE_LIBAPM_FALSE@APMDIR = @HAVE_LIBAPM_FALSE@apmlib
 @HAVE_LIBAPM_TRUE@APMINC = 
-@HAVE_LIBAPM_FALSE@APMINC = -Iapmlib/
+@HAVE_LIBAPM_FALSE@APMINC = @HAVE_LIBAPM_FALSE@-Iapmlib/
 
 SUBDIRS = docs sounds $(APMDIR)
 
 DIST_SUBDIRS = docs sounds apmlib
 
-INCLUDES =  	$(GNOME_APPLETS_CFLAGS) 	$(LIBGLADE_CFLAGS) 	$(APMINC) 	-DDATA_DIR=\"$(datadir)\" 	-DGLADE_DIR=\"$(gladedir)\" 	-DG_LOG_DOMAIN=\"battstat_applet\" 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+INCLUDES = \
+	$(GNOME_APPLETS_CFLAGS) \
+	$(LIBGLADE_CFLAGS) \
+	$(APMINC) \
+	-I$(top_srcdir)/screen-exec \
+	-DDATA_DIR=\"$(datadir)\" \
+	-DGLADE_DIR=\"$(gladedir)\" \
+	-DG_LOG_DOMAIN=\"battstat_applet\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
 
 
 libexec_PROGRAMS = battstat-applet-2
 
-battstat_applet_2_SOURCES =  	battstat.h 	pixmaps.h 	properties.c 	battstat_applet.c 	acpi-linux.c 	acpi-linux.h
+battstat_applet_2_SOURCES = \
+	battstat.h \
+	pixmaps.h \
+	properties.c \
+	battstat_applet.c \
+	acpi-linux.c \
+	acpi-linux.h
 
 
-battstat_applet_2_LDADD =  		     $(GNOME_APPLETS_LIBS) 		     $(LIBGLADE_LIBS) 		     $(APMLIB)
+battstat_applet_2_LDADD = \
+		     $(GNOME_APPLETS_LIBS) \
+		     $(LIBGLADE_LIBS) \
+		     $(top_builddir)/screen-exec/libscreen-exec.la \
+		     $(APMLIB)
 
 
 schemadir = @GCONF_SCHEMA_FILE_DIR@
@@ -175,7 +197,12 @@ server_DATA = $(server_in_files:.server.in=.server)
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = GNOME_BattstatApplet.xml
 
-EXTRA_DIST =  	$(glade_DATA)					GNOME_BattstatApplet.server.in.in		$(ui_DATA)					battstat.schemas				battstat.png
+EXTRA_DIST = \
+	$(glade_DATA)				\
+	GNOME_BattstatApplet.server.in.in	\
+	$(ui_DATA)				\
+	battstat.schemas			\
+	battstat.png
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -193,8 +220,11 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 battstat_applet_2_OBJECTS =  properties.$(OBJEXT) \
 battstat_applet.$(OBJEXT) acpi-linux.$(OBJEXT)
-@HAVE_LIBAPM_TRUE@battstat_applet_2_DEPENDENCIES = 
-@HAVE_LIBAPM_FALSE@battstat_applet_2_DEPENDENCIES =  apmlib/libapm.a
+@HAVE_LIBAPM_TRUE@battstat_applet_2_DEPENDENCIES =  \
+@HAVE_LIBAPM_TRUE@$(top_builddir)/screen-exec/libscreen-exec.la
+@HAVE_LIBAPM_FALSE@battstat_applet_2_DEPENDENCIES =  \
+@HAVE_LIBAPM_FALSE@$(top_builddir)/screen-exec/libscreen-exec.la \
+@HAVE_LIBAPM_FALSE@apmlib/libapm.a
 battstat_applet_2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -210,7 +240,7 @@ TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(battstat_applet_2_SOURCES)
 OBJECTS = $(battstat_applet_2_OBJECTS)
@@ -472,7 +502,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -508,6 +538,11 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+acpi-linux.o: acpi-linux.c ../config.h acpi-linux.h
+battstat_applet.o: battstat_applet.c ../config.h \
+	../screen-exec/egg-screen-help.h battstat.h pixmaps.h \
+	acpi-linux.h
+properties.o: properties.c ../config.h battstat.h
 
 info-am:
 info: info-recursive

@@ -92,6 +92,10 @@ convert_string_to_keysym_state (const char *string,
 	{
 	  *state |= GDK_MOD1_MASK;
 	}
+      else if (strcmp (p, "Alt") == 0)
+	{
+	  *state |= GDK_MOD1_MASK;
+	}
       else if (strcmp (p, "Mod2") == 0)
 	{
 	  *state |= GDK_MOD2_MASK;
@@ -173,7 +177,7 @@ convert_keysym_state_to_string (guint keysym, guint state)
   if (state & GDK_MOD1_MASK)
     {
       g_string_append (gs, sep);
-      g_string_append (gs, "Mod1");
+      g_string_append (gs, "Alt");
       sep = "-";
     }
   if (state & GDK_MOD2_MASK)
@@ -217,6 +221,7 @@ static GdkFilterReturn
 grab_key_filter (GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
 {
   XEvent *xevent = (XEvent *) gdk_xevent;
+  XKeyEvent *xkevent = (XKeyEvent *) gdk_xevent;
   GtkEntry *entry;
   KeySym keysym;
   guint  state;
@@ -226,8 +231,8 @@ grab_key_filter (GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
   GdkWindow *root_window;
   GkbPropertyBoxInfo *pbi = (GkbPropertyBoxInfo *)data;
   GKB *gkb = pbi->gkb;
-
-  if (xevent->type != KeyRelease)
+  
+  if ((xevent->type != KeyPress) && (xevent->type != KeyRelease))
     return GDK_FILTER_CONTINUE;
 
   entry = GTK_ENTRY (pbi->hotkey_entry);
@@ -237,16 +242,20 @@ grab_key_filter (GdkXEvent * gdk_xevent, GdkEvent * event, gpointer data)
   state = xevent->xkey.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK);
 
   XLookupString (&xevent->xkey, buf, 0, &keysym, NULL);
-  
-  gdk_keyboard_ungrab (GDK_CURRENT_TIME);
-  gtk_widget_destroy (grab_dialog);
-  gdk_window_remove_filter (root_window, grab_key_filter, data);
+
+  if (xevent->type == KeyRelease) {
+   gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+   gtk_widget_destroy (grab_dialog);
+   gdk_window_remove_filter (root_window, grab_key_filter, data);
+   return GDK_FILTER_REMOVE;
+  }
   
   /* Esc cancels */
   if (event->key.keyval == GDK_Escape) 
     return GDK_FILTER_REMOVE;
   
-  key = convert_keysym_state_to_string (event->key.keyval, event->key.state);
+  key = convert_keysym_state_to_string (XKeycodeToKeysym(GDK_DISPLAY(),
+                  xkevent->keycode,0), xkevent->state);
   gtk_entry_set_text (GTK_ENTRY (entry), key ? key : "");
   
   newkey = XKeysymToKeycode (GDK_DISPLAY (), gkb->keysym);
@@ -276,12 +285,15 @@ grab_button_pressed (GtkButton *button,
   GtkWidget *label;
   GdkWindow *root_window;
 
-  root_window = gdk_get_default_root_window ();
+  root_window = gdk_screen_get_root_window (
+			gtk_widget_get_screen (GTK_WIDGET (button)));
 
   gdk_keyboard_grab (root_window, FALSE, GDK_CURRENT_TIME);
   gdk_window_add_filter (root_window, grab_key_filter, data);
 
   grab_dialog = gtk_window_new (GTK_WINDOW_POPUP);
+  gtk_window_set_screen (GTK_WINDOW (grab_dialog),
+			 gtk_widget_get_screen (GTK_WIDGET (button)));
   g_object_set (G_OBJECT (grab_dialog),
     		"allow_grow", FALSE,
     	        "allow_shrink", FALSE,

@@ -1,14 +1,15 @@
 SUBDIRS = docs
 
 pixmapsdir = $(datadir)/pixmaps/mixer
-pixmaps_DATA =  gnome-mixer-applet.png \
-		volume-max.png \
-		volume-medium.png \
-		volume-min.png \
-		volume-mute.png \
-		volume-zero.png
+pixmaps_DATA =  gnome-mixer-applet.png		\
+ 		volume-max.png			\
+ 		volume-medium.png		\
+ 		volume-min.png			\
+ 		volume-mute.png			\
+ 		volume-zero.png
 
 INCLUDES = -I. -I$(srcdir) 				\
+	-I$(top_srcdir)/screen-exec			\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
 	-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED \
 	-DGNOME_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED \
@@ -21,7 +22,8 @@ mixer_applet2_SOURCES = 				\
 
 mixer_applet2_LDADD = 					\
 	$(MIXER_LIBS) 					\
-	$(GNOME_APPLETS_LIBS)
+	$(GNOME_APPLETS_LIBS)				\
+	$(top_builddir)/screen-exec/libscreen-exec.la
 
 serverdir       = $(libdir)/bonobo/servers
 server_in_files = GNOME_MixerApplet.server.in

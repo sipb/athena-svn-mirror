@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -139,38 +143,89 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 
 gtop_applets = multiload
-@BUILD_GTOP_APPLETS_TRUE@gtop_SUBDIRS = $(gtop_applets)
+@BUILD_GTOP_APPLETS_TRUE@gtop_SUBDIRS = @BUILD_GTOP_APPLETS_TRUE@$(gtop_applets)
 
-vfs_applets =  	gtik		gweather 
+vfs_applets = \
+	gtik	\
+	gweather 
 
-@BUILD_GNOME_VFS_APPLETS_TRUE@vfs_SUBDIRS = $(vfs_applets)
+@BUILD_GNOME_VFS_APPLETS_TRUE@vfs_SUBDIRS = @BUILD_GNOME_VFS_APPLETS_TRUE@$(vfs_applets)
 
-cdplayer_applets =  	cdplayer
+cdplayer_applets = \
+	cdplayer
 
-@APPLET_CDPLAYER_TRUE@cdplayer_SUBDIRS = $(cdplayer_applets)
+@APPLET_CDPLAYER_TRUE@cdplayer_SUBDIRS = @APPLET_CDPLAYER_TRUE@$(cdplayer_applets)
 
-mixer_applets =  	mixer
+mixer_applets = \
+	mixer
 
-@APPLET_MIXER_TRUE@mixer_SUBDIRS = $(mixer_applets)
+@APPLET_MIXER_TRUE@mixer_SUBDIRS = @APPLET_MIXER_TRUE@$(mixer_applets)
 
-modemlights_applets =  	modemlights
+modemlights_applets = \
+	modemlights
 
-@APPLET_MODEMLIGHTS_TRUE@modemlights_SUBDIRS = $(modemlights_applets)
+@APPLET_MODEMLIGHTS_TRUE@modemlights_SUBDIRS = @APPLET_MODEMLIGHTS_TRUE@$(modemlights_applets)
 
-@BUILD_BATTSTAT_APPLET_TRUE@battstat_SUBDIR = battstat
+@BUILD_BATTSTAT_APPLET_TRUE@battstat_SUBDIR = @BUILD_BATTSTAT_APPLET_TRUE@battstat
 
-@BUILD_PANEL_MENU_TRUE@panel_menu_SUBDIR = panel-menu
+@BUILD_PANEL_MENU_TRUE@panel_menu_SUBDIR = @BUILD_PANEL_MENU_TRUE@panel-menu
 
-always_built_SUBDIRS =  	drivemount		charpick		geyes			mini-commander		gkb-new	
+always_built_SUBDIRS = \
+	drivemount	\
+	charpick	\
+	geyes		\
+	mini-commander	\
+	gkb-new		\
+	wireless
 
 
-SUBDIRS =  	po				$(mixer_SUBDIRS)		$(modemlights_SUBDIRS)		$(cdplayer_SUBDIRS)		$(always_built_SUBDIRS)		$(gtop_SUBDIRS)			$(vfs_SUBDIRS)			$(battstat_SUBDIR)		$(panel_menu_SUBDIR)		omf-install	
+SUBDIRS = \
+	po			\
+	screen-exec		\
+	$(mixer_SUBDIRS)	\
+	$(modemlights_SUBDIRS)	\
+	$(cdplayer_SUBDIRS)	\
+	$(always_built_SUBDIRS)	\
+	$(gtop_SUBDIRS)		\
+	$(vfs_SUBDIRS)		\
+	$(battstat_SUBDIR)	\
+	$(panel_menu_SUBDIR)	\
+	omf-install	
 
 
-DIST_SUBDIRS =  	po			mixer			modemlights		cdplayer		drivemount		panel-menu		charpick		geyes			mini-commander		gkb-new			battstat		multiload		gtik			gweather 		mini-commander		man			omf-install
+DIST_SUBDIRS = \
+	po		\
+	screen-exec	\
+	mixer		\
+	modemlights	\
+	cdplayer	\
+	drivemount	\
+	panel-menu	\
+	charpick	\
+	geyes		\
+	mini-commander	\
+	gkb-new		\
+	battstat	\
+	multiload	\
+	gtik		\
+	gweather 	\
+	mini-commander	\
+	man		\
+	omf-install	\
+	wireless
 
 
-EXTRA_DIST =  	COPYING-DOCS			gnome-applets.spec.in		gnome-applets.spec		applet-docs.make		sgmldocs.make			intltool-update.in		intltool-extract.in		intltool-merge.in		message-of-doom			xmldocs.make
+EXTRA_DIST = \
+	COPYING-DOCS		\
+	gnome-applets.spec.in	\
+	gnome-applets.spec	\
+	applet-docs.make	\
+	sgmldocs.make		\
+	intltool-update.in	\
+	intltool-extract.in	\
+	intltool-merge.in	\
+	message-of-doom		\
+	xmldocs.make
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -184,7 +239,7 @@ gnome-applets.spec.in install-sh ltmain.sh missing mkinstalldirs
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -311,7 +366,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LI
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

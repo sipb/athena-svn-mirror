@@ -22,6 +22,7 @@
 #include <gnome.h>
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
+#include <egg-screen-help.h>
 #include "geyes.h"
 
 #define UPDATE_TIMEOUT 75
@@ -216,6 +217,9 @@ about_cb (BonoboUIComponent *uic,
 	const gchar *translator_credits = _("translator_credits");
 
 	if (about) {
+		gtk_window_set_screen (
+			GTK_WINDOW (about),
+			gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)));
 		gtk_window_present (GTK_WINDOW (about));
 		return;
 	}
@@ -242,6 +246,8 @@ about_cb (BonoboUIComponent *uic,
 		gdk_pixbuf_unref (pixbuf);
 			
 	gtk_window_set_wmclass (GTK_WINDOW (about), "geyes", "Geyes");
+	gtk_window_set_screen (GTK_WINDOW (about),
+			       gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)));
 	g_signal_connect (about, "destroy",
 			  G_CALLBACK (gtk_widget_destroyed),
 			  &about);
@@ -351,6 +357,9 @@ destroy_cb (GtkObject *object, EyesApplet *eyes_applet)
 		g_free (eyes_applet->pupil_filename);
 	eyes_applet->pupil_filename = NULL;
 	
+	if (eyes_applet->prop_box.pbox)
+	  gtk_widget_destroy (eyes_applet->prop_box.pbox);
+
 	g_free (eyes_applet);
 }
 
@@ -360,9 +369,12 @@ help_cb (BonoboUIComponent *uic,
 	 const char        *verbname)
 {
 	GError *error = NULL;
-	gnome_help_display("geyes",NULL,&error);
 
-	if (error) {
+	egg_screen_help_display (
+		gtk_widget_get_screen (GTK_WIDGET (eyes_applet->applet)),
+		"geyes", NULL, &error);
+
+	if (error) { /* FIXME: the user needs to see this */
 		g_warning ("help error: %s\n", error->message);
 		g_error_free (error);
 		error = NULL;

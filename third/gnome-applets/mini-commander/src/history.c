@@ -31,30 +31,30 @@
 
 #include "history.h"
 #include "preferences.h"
-#include "message.h"
 
-static void delete_history_entry(MCData *mcdata, int element_number);
+static char *history_command[MC_HISTORY_LIST_LENGTH];
+static void delete_history_entry(int element_number);
 
 
 int
-exists_history_entry(MCData *mcdata, int pos)
+exists_history_entry(int pos)
 {
-    return(mcdata->history_command[pos] != NULL);
+    return(history_command[pos] != NULL);
 }
 
 char *
-get_history_entry(MCData *mcdata, int pos)
+get_history_entry(int pos)
 {
-    return(mcdata->history_command[pos]);
+    return(history_command[pos]);
 }
 
 void
-set_history_entry(MCData *mcdata, int pos, char * entry)
+set_history_entry(int pos, char * entry)
 {
-    if(mcdata->history_command[pos] != NULL)
-	free(mcdata->history_command[pos]);
-    mcdata->history_command[pos] = (char *)malloc(sizeof(char) * (strlen(entry) + 1));
-    strcpy(mcdata->history_command[pos], entry);
+    if(history_command[pos] != NULL)
+	free(history_command[pos]);
+    history_command[pos] = (char *)malloc(sizeof(char) * (strlen(entry) + 1));
+    strcpy(history_command[pos], entry);
 }
 
 /* load_history indicates whether the history list is being loaded at startup.
@@ -62,7 +62,7 @@ set_history_entry(MCData *mcdata, int pos, char * entry)
 ** using gconf
 */
 void
-append_history_entry(MCData *mcdata, char * entry, gboolean load_history)
+append_history_entry(MCData *mcdata, const char * entry, gboolean load_history)
 {
     PanelApplet *applet = mcdata->applet;
     GConfValue *history;
@@ -70,27 +70,27 @@ append_history_entry(MCData *mcdata, char * entry, gboolean load_history)
     int pos, i;
 
     /* remove older dupes */
-    for(pos = 0; pos <= LENGTH_HISTORY_LIST - 1; pos++)
+    for(pos = 0; pos <= MC_HISTORY_LIST_LENGTH - 1; pos++)
 	{
-	    if(exists_history_entry(mcdata, pos) && strcmp(entry, mcdata->history_command[pos]) == 0)
+	    if(exists_history_entry(pos) && strcmp(entry, history_command[pos]) == 0)
 		/* dupe found */
-		delete_history_entry(mcdata, pos);
+		delete_history_entry(pos);
 	}
 
     /* delete oldest entry */
-    if(mcdata->history_command[0] != NULL)
-	free(mcdata->history_command[0]);
+    if(history_command[0] != NULL)
+	free(history_command[0]);
 
     /* move entries */
-    for(pos = 0; pos < LENGTH_HISTORY_LIST - 1; pos++)
+    for(pos = 0; pos < MC_HISTORY_LIST_LENGTH - 1; pos++)
 	{
-	    mcdata->history_command[pos] = mcdata->history_command[pos+1];
-	    /* printf("%s\n", mcdata->history_command[pos]); */
+	    history_command[pos] = history_command[pos+1];
+	    /* printf("%s\n", history_command[pos]); */
 	}
 
     /* append entry */
-    mcdata->history_command[LENGTH_HISTORY_LIST - 1] = (char *)malloc(sizeof(char) * (strlen(entry) + 1));
-    strcpy(mcdata->history_command[LENGTH_HISTORY_LIST - 1], entry);
+    history_command[MC_HISTORY_LIST_LENGTH - 1] = (char *)malloc(sizeof(char) * (strlen(entry) + 1));
+    strcpy(history_command[MC_HISTORY_LIST_LENGTH - 1], entry);
     
     if (load_history)
     	return;
@@ -98,13 +98,13 @@ append_history_entry(MCData *mcdata, char * entry, gboolean load_history)
     /* Save history - this seems like a waste to do it every time it's updated 
     ** but it doesn't seem to work when called on the destroy signal of the applet 
     */
-    for(i = 0; i < LENGTH_HISTORY_LIST; i++)
+    for(i = 0; i < MC_HISTORY_LIST_LENGTH; i++)
 	{
 	    GConfValue *entry;
 	    
 	    entry = gconf_value_new (GCONF_VALUE_STRING);
-	    if(exists_history_entry(mcdata, i)) {
-	    	gconf_value_set_string (entry, (gchar *) get_history_entry(mcdata, i));
+	    if(exists_history_entry(i)) {
+	    	gconf_value_set_string (entry, (gchar *) get_history_entry(i));
 	    	list = g_slist_append (list, entry);
 	    }        
 	    
@@ -128,12 +128,12 @@ append_history_entry(MCData *mcdata, char * entry, gboolean load_history)
 }
 
 void
-delete_history_entry(MCData *mcdata, int element_number)
+delete_history_entry(int element_number)
 {
     int pos;
 
     for(pos = element_number; pos > 0; --pos)
-	mcdata->history_command[pos] = mcdata->history_command[pos - 1];
+	history_command[pos] = history_command[pos - 1];
 
-    mcdata->history_command[0] = NULL;   
+    history_command[0] = NULL;   
 }

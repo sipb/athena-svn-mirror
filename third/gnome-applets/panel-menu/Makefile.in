@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -145,14 +149,53 @@ SUBDIRS = help
 icondir = $(datadir)/pixmaps
 icon_DATA = panel-menu-icon.png
 
-INCLUDES =  	-DPREFIX=\""$(prefix)"\" 	-DG_LOG_DOMAIN=\"PanelMenu\" 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	-DDATADIR=\""$(datadir)"\" 	-DWNCK_I_KNOW_THIS_IS_UNSTABLE 	-I$(top_srcdir) 	$(PANEL_MENU_CFLAGS)
+INCLUDES = \
+	-DPREFIX=\""$(prefix)"\" \
+	-DG_LOG_DOMAIN=\"PanelMenu\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DDATADIR=\""$(datadir)"\" \
+	-DWNCK_I_KNOW_THIS_IS_UNSTABLE \
+	-I$(top_srcdir) \
+	$(PANEL_MENU_CFLAGS)
 
 
 lib_LTLIBRARIES = libpanel-menu.la
 #bin_PROGRAMS = panel-menu-applet
 
 #panel_menu_applet_SOURCES =
-libpanel_menu_la_SOURCES =  panel-menu-desktop-item.c panel-menu-desktop-item.h panel-menu-pixbuf.c panel-menu-pixbuf.h panel-menu-common.c panel-menu-common.h panel-menu-applications.c panel-menu-applications.h panel-menu-preferences.c panel-menu-preferences.h panel-menu-path.c panel-menu-path.h panel-menu-links.c panel-menu-links.h panel-menu-directory.c panel-menu-directory.h panel-menu-documents.c panel-menu-documents.h panel-menu-actions.c panel-menu-actions.h panel-menu-windows.c panel-menu-windows.h panel-menu-workspaces.c panel-menu-workspaces.h panel-menu-properties.c panel-menu-properties.h panel-menu-config.c panel-menu-config.h panel-menu-add.c panel-menu-add.h panel-menu.c panel-menu.h
+libpanel_menu_la_SOURCES = \
+panel-menu-desktop-item.c \
+panel-menu-desktop-item.h \
+panel-menu-pixbuf.c \
+panel-menu-pixbuf.h \
+panel-menu-common.c \
+panel-menu-common.h \
+panel-menu-applications.c \
+panel-menu-applications.h \
+panel-menu-preferences.c \
+panel-menu-preferences.h \
+panel-menu-path.c \
+panel-menu-path.h \
+panel-menu-links.c \
+panel-menu-links.h \
+panel-menu-directory.c \
+panel-menu-directory.h \
+panel-menu-documents.c \
+panel-menu-documents.h \
+panel-menu-actions.c \
+panel-menu-actions.h \
+panel-menu-windows.c \
+panel-menu-windows.h \
+panel-menu-workspaces.c \
+panel-menu-workspaces.h \
+panel-menu-properties.c \
+panel-menu-properties.h \
+panel-menu-config.c \
+panel-menu-config.h \
+panel-menu-add.c \
+panel-menu-add.h \
+panel-menu.c \
+panel-menu.h
 
 
 #panel_menu_applet_LDADD = $(PANEL_MENU_LIBS)
@@ -197,7 +240,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libpanel_menu_la_SOURCES)
 OBJECTS = $(libpanel_menu_la_OBJECTS)
@@ -420,7 +463,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

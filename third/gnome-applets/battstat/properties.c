@@ -18,7 +18,7 @@
  *
  * May, 2000. Implemented on FreeBSD 4.0-RELEASE (Compaq Armada M700)
  *
-$Id: properties.c,v 1.1.1.1 2003-01-04 21:19:18 ghudson Exp $
+$Id: properties.c,v 1.1.1.2 2003-01-29 20:36:46 ghudson Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -265,6 +265,8 @@ prop_cb (BonoboUIComponent *uic,
   if (DEBUG) g_print("prop_cb()\n");
 
    if (battstat->prop_win) { 
+     gtk_window_set_screen (GTK_WINDOW (battstat->prop_win),
+			    gtk_widget_get_screen (battstat->applet));
      gtk_window_present (GTK_WINDOW (battstat->prop_win));
      return;
    } 
@@ -274,6 +276,8 @@ prop_cb (BonoboUIComponent *uic,
   
   battstat->prop_win = GTK_DIALOG (glade_xml_get_widget (glade_xml, 
   				   "battstat_properties"));
+  gtk_window_set_screen (GTK_WINDOW (battstat->prop_win),
+			 gtk_widget_get_screen (battstat->applet));
 	
   widget = glade_xml_get_widget (glade_xml, "yellow_spin");
   

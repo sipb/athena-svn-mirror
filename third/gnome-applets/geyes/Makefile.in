@@ -77,11 +77,14 @@ GAILUTIL_LIBS = @GAILUTIL_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_LIBS2_CFLAGS = @GNOME_LIBS2_CFLAGS@
+GNOME_LIBS2_LIBS = @GNOME_LIBS2_LIBS@
 GNOME_VFS_APPLETS_CFLAGS = @GNOME_VFS_APPLETS_CFLAGS@
 GNOME_VFS_APPLETS_LIBS = @GNOME_VFS_APPLETS_LIBS@
 GTOP_APPLETS_CFLAGS = @GTOP_APPLETS_CFLAGS@
@@ -106,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -140,15 +144,25 @@ gnomelocaledir = @gnomelocaledir@
 
 SUBDIRS = themes docs
 
-INCLUDES = -I. -I$(srcdir) 					$(GNOME_APPLETS_CFLAGS)					-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-I$(includedir) 					-DGEYES_THEMES_DIR=\""$(datadir)/geyes/"\"
+INCLUDES = -I. -I$(srcdir) 				\
+	-I$(top_srcdir)/screen-exec			\
+	$(GNOME_APPLETS_CFLAGS)				\
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-I$(includedir) 				\
+	-DGEYES_THEMES_DIR=\""$(datadir)/geyes/"\"
 
 
 libexec_PROGRAMS = geyes_applet2
 
-geyes_applet2_SOURCES =          geyes.c 	themes.c 	geyes.h
+geyes_applet2_SOURCES = \
+        geyes.c \
+	themes.c \
+	geyes.h
 
 
-geyes_applet2_LDADD =  	$(GNOME_APPLETS_LIBS)
+geyes_applet2_LDADD = \
+	$(top_builddir)/screen-exec/libscreen-exec.la \
+	$(GNOME_APPLETS_LIBS)
 
 
 serverdir = $(libdir)/bonobo/servers
@@ -166,7 +180,14 @@ themesdir = $(datadir)/geyes
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-eyes.png
 
-EXTRA_DIST =  	     geyes.h 	     gnome-eyes.png 	     README.themes 	     $(pixmap_DATA) 	     GNOME_GeyesApplet.server.in.in 	     $(schema_DATA) 	     $(ui_DATA)
+EXTRA_DIST = \
+	     geyes.h \
+	     gnome-eyes.png \
+	     README.themes \
+	     $(pixmap_DATA) \
+	     GNOME_GeyesApplet.server.in.in \
+	     $(schema_DATA) \
+	     $(ui_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -183,7 +204,8 @@ X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 geyes_applet2_OBJECTS =  geyes.$(OBJEXT) themes.$(OBJEXT)
-geyes_applet2_DEPENDENCIES = 
+geyes_applet2_DEPENDENCIES =  \
+$(top_builddir)/screen-exec/libscreen-exec.la
 geyes_applet2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -197,7 +219,7 @@ DIST_COMMON =  README AUTHORS ChangeLog Makefile.am Makefile.in NEWS
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(geyes_applet2_SOURCES)
 OBJECTS = $(geyes_applet2_OBJECTS)
@@ -440,7 +462,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -476,6 +498,8 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+geyes.o: geyes.c ../config.h ../screen-exec/egg-screen-help.h geyes.h
+themes.o: themes.c ../config.h ../screen-exec/egg-screen-help.h geyes.h
 
 info-am:
 info: info-recursive

@@ -7,9 +7,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-applets 2.0.3\n"
-"POT-Creation-Date: 2002-11-18 23:05+0000\n"
-"PO-Revision-Date: 2002-11-15 12:38+0100\n"
+"Project-Id-Version: gnome-applets 2.1.3\n"
+"POT-Creation-Date: 2002-12-20 11:55+0100\n"
+"PO-Revision-Date: 2002-12-20 11:53+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #. The long name of the applet in the About dialog.
 #: battstat/GNOME_BattstatApplet.server.in.in.h:1
-#: battstat/battstat_applet.c:839
+#: battstat/battstat_applet.c:848
 msgid "Battery Charge Monitor"
 msgstr "Moniteur de charge de batterie"
 
@@ -38,7 +38,7 @@ msgstr "Surveille la puissance restante d'un portable"
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:3
 #: panel-menu/GNOME_PanelMenuApplet.server.in.h:4
 msgid "Utility"
-msgstr "Utilitaires"
+msgstr "Utilitaire"
 
 #: battstat/GNOME_BattstatApplet.xml.h:1 cdplayer/GNOME_CDPlayerApplet.xml.h:1
 #: charpick/GNOME_CharpickerApplet.xml.h:1
@@ -48,6 +48,7 @@ msgstr "Utilitaires"
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:1
 #: mixer/GNOME_MixerApplet.xml.h:1 modemlights/GNOME_ModemlightsApplet.xml.h:1
 #: multiload/GNOME_MultiloadApplet.xml.h:1
+#: wireless/GNOME_WirelessApplet.xml.h:1
 msgid "_About..."
 msgstr "À _propos..."
 
@@ -69,6 +70,7 @@ msgstr "_Aide"
 #: mini-commander/src/GNOME_MiniCommanderApplet.xml.h:3
 #: modemlights/GNOME_ModemlightsApplet.xml.h:3
 #: multiload/GNOME_MultiloadApplet.xml.h:2
+#: wireless/GNOME_WirelessApplet.xml.h:2
 msgid "_Preferences..."
 msgstr "_Préférences..."
 
@@ -78,51 +80,51 @@ msgstr "_Suspendre l'ordinateur..."
 
 #. Message displayed if user tries to run applet
 #. on unsupported platform
-#: battstat/battstat_applet.c:284
+#: battstat/battstat_applet.c:286
 msgid "Your platform is not supported!\n"
 msgstr "Votre plateforme n'est pas supportée !\n"
 
-#: battstat/battstat_applet.c:285
+#: battstat/battstat_applet.c:287
 msgid "The applet will not work properly (if at all).\n"
 msgstr "Cette applet ne fonctionne pas correctement (si elle fonctionne).\n"
 
 #. The following four messages will be displayed as tooltips over
 #. the battery meter.
 #. High = The APM BIOS thinks that the battery charge is High.
-#: battstat/battstat_applet.c:316 battstat/battstat_applet.c:868
+#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:879
 msgid "High"
 msgstr "Haut"
 
 #. Low = The APM BIOS thinks that the battery charge is Low.
-#: battstat/battstat_applet.c:318 battstat/battstat_applet.c:870
+#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:881
 msgid "Low"
 msgstr "Faible"
 
 #. Critical = The APM BIOS thinks that the battery charge is Critical.
-#: battstat/battstat_applet.c:320 battstat/battstat_applet.c:872
+#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:883
 msgid "Critical"
 msgstr "Critique"
 
 #. Charging = The APM BIOS thinks that the battery is recharging.
-#: battstat/battstat_applet.c:322 battstat/battstat_applet.c:874
+#: battstat/battstat_applet.c:324 battstat/battstat_applet.c:885
 msgid "Charging"
 msgstr "Changement"
 
-#: battstat/battstat_applet.c:403
+#: battstat/battstat_applet.c:405
 #, c-format
 msgid "Battery low (%d%%) and AC is offline"
 msgstr ""
 "La batterie est faible (%d%%) et votre ordinateur n'est pas branché sur le "
 "secteur"
 
-#: battstat/battstat_applet.c:427
+#: battstat/battstat_applet.c:429
 msgid "Battery is now fully re-charged!"
 msgstr "La batterie est totalement rechargée"
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:446 battstat/battstat_applet.c:1032
+#: battstat/battstat_applet.c:448 battstat/battstat_applet.c:1043
 #, c-format
 msgid ""
 "System is running on battery power\n"
@@ -134,7 +136,7 @@ msgstr ""
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power and the battery meter
 #. and percent meter is hidden by the user.
-#: battstat/battstat_applet.c:450 battstat/battstat_applet.c:1040
+#: battstat/battstat_applet.c:452 battstat/battstat_applet.c:1051
 #, c-format
 msgid ""
 "System is running on AC power\n"
@@ -145,32 +147,32 @@ msgstr ""
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:456 battstat/battstat_applet.c:964
-#: battstat/battstat_applet.c:1053
+#: battstat/battstat_applet.c:458 battstat/battstat_applet.c:975
+#: battstat/battstat_applet.c:1064
 msgid "System is running on battery power"
 msgstr "Le système utilise sur sa batterie"
 
 #. This string will display as a tooltip over the status frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:459 battstat/battstat_applet.c:970
-#: battstat/battstat_applet.c:1059
+#: battstat/battstat_applet.c:461 battstat/battstat_applet.c:981
+#: battstat/battstat_applet.c:1070
 msgid "System is running on AC power"
 msgstr "Le système utilise le courant du secteur"
 
-#: battstat/battstat_applet.c:473
+#: battstat/battstat_applet.c:475
 msgid "N/A"
 msgstr "N/D"
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using battery power.
-#: battstat/battstat_applet.c:597 battstat/battstat_applet.c:944
+#: battstat/battstat_applet.c:599 battstat/battstat_applet.c:955
 #, c-format
 msgid "System is running on battery power. Battery: %d%% (%s)"
 msgstr "Le système fonctionne sur la batterie. Batterie : %d%% (%s)"
 
 #. This string will display as a tooltip over the battery frame
 #. when the computer is using AC power.
-#: battstat/battstat_applet.c:604 battstat/battstat_applet.c:951
+#: battstat/battstat_applet.c:606 battstat/battstat_applet.c:962
 #, c-format
 msgid "System is running on AC power. Battery: %d%% (%s)"
 msgstr "Le système fonctionne sur le secteur. Batterie : %d%% (%s)"
@@ -179,33 +181,33 @@ msgstr "Le système fonctionne sur le secteur. Batterie : %d%% (%s)"
 #. battery frame when the computer is using battery
 #. power and the battery isn't present. Not a
 #. possible combination, I guess... :)
-#: battstat/battstat_applet.c:615
+#: battstat/battstat_applet.c:617
 msgid "System is running on battery power. Battery: Not present"
 msgstr "Le système fonctionne sur la batterie. Batterie : Non présente"
 
 #. This string will display as a tooltip over the
 #. battery frame when the computer is using AC
 #. power and the battery isn't present.
-#: battstat/battstat_applet.c:621
+#: battstat/battstat_applet.c:623
 msgid "System is running on AC power. Battery: Not present"
 msgstr "Le système fonctionne sur le secteur. Batterie : Non présente"
 
 #. Displayed as a tooltip over the battery meter when there is
 #. a battery present. %d will hold the current charge and %s will
 #. hold the status of the battery, (High, Low, Critical, Charging.
-#: battstat/battstat_applet.c:630
+#: battstat/battstat_applet.c:632
 #, c-format
 msgid "Battery: %d%% (%s)"
 msgstr "Batterie : %d%% (%s)"
 
 #. Displayed as a tooltip over the battery meter when no
 #. battery is present.
-#: battstat/battstat_applet.c:637
+#: battstat/battstat_applet.c:639
 msgid "Battery: Not present"
 msgstr "Batterie : absente"
 
 #. Displayed if the APM device couldn't be opened. (Used under *BSD)
-#: battstat/battstat_applet.c:715
+#: battstat/battstat_applet.c:719
 msgid ""
 "Can't open the APM device!\n"
 "\n"
@@ -217,7 +219,7 @@ msgstr ""
 "Vérifiez que vous avez les droits de lecture sur ce périphérique."
 
 #. Displayed if the APM system is disabled (Used under *BSD)
-#: battstat/battstat_applet.c:724
+#: battstat/battstat_applet.c:728
 msgid ""
 "The APM Management subsystem seems to be disabled.\n"
 "Try executing \"apm -e 1\" (FreeBSD) and see if \n"
@@ -226,7 +228,7 @@ msgstr ""
 "Le système de gestion APM est apparemment desactivé.\n"
 "Essayez de lancer « apm -e 1 » (FreeBSD).\n"
 
-#: battstat/battstat_applet.c:774
+#: battstat/battstat_applet.c:783
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command: %s\n"
@@ -237,7 +239,7 @@ msgstr ""
 "Veuillez essayer de corriger cette erreur"
 
 #. Probably because the shell_ret is != 0
-#: battstat/battstat_applet.c:777
+#: battstat/battstat_applet.c:786
 #, c-format
 msgid ""
 "An error occured while launching the Suspend command, the command returned "
@@ -248,7 +250,7 @@ msgstr ""
 "commande a retournée « %d »\n"
 "Veuillez essayer de corriger cette erreur"
 
-#: battstat/battstat_applet.c:785
+#: battstat/battstat_applet.c:794
 msgid ""
 "Suspend command wasn't setup correctly in the preferences.\n"
 "Please change the preferences and try again."
@@ -259,16 +261,16 @@ msgstr ""
 
 #. if your charset supports it, please replace the "o" in
 #. * "Jorgen" into U00F6
-#: battstat/battstat_applet.c:816
+#: battstat/battstat_applet.c:825
 msgid "Jorgen Pehrson <jp@spektr.eu.org>"
 msgstr "Jorgen Pehrson <jp@spektr.eu.org>"
 
-#: battstat/battstat_applet.c:826 cdplayer/cdplayer.c:467
-#: charpick/charpick.c:373 drivemount/drivemount.c:449 geyes/geyes.c:216
-#: gkb-new/gkb.c:593 gtik/gtik.c:712 gweather/gweather-about.c:43
-#: mini-commander/src/about.c:46 mixer/mixer.c:807
-#: modemlights/modemlights.c:208 multiload/main.c:56
-#: panel-menu/panel-menu.c:674
+#: battstat/battstat_applet.c:835 cdplayer/cdplayer.c:502
+#: charpick/charpick.c:374 drivemount/drivemount.c:453 geyes/geyes.c:217
+#: gkb-new/gkb.c:594 gtik/gtik.c:704 gweather/gweather-about.c:43
+#: mini-commander/src/about.c:48 mixer/mixer.c:814
+#: modemlights/modemlights.c:209 multiload/main.c:57
+#: panel-menu/panel-menu.c:674 wireless/wireless-applet.c:703
 msgid "translator_credits"
 msgstr ""
 "Mainteneur :\n"
@@ -277,11 +279,11 @@ msgstr ""
 "Contributeur :\n"
 "Christophe Fergeau <teuf@users.sourceforge.net>"
 
-#: battstat/battstat_applet.c:841
+#: battstat/battstat_applet.c:850
 msgid "(C) 2000 The Gnulix Society, (C) 2002 Free Software Foundation"
 msgstr "© 2000 The Gnulix Society, © 2002 Free Software Foundation"
 
-#: battstat/battstat_applet.c:842
+#: battstat/battstat_applet.c:851
 msgid "This utility show the status of your laptop battery."
 msgstr ""
 "Cet utilitaire affiche l'état de charge de la batterie de votre ordinateur "
@@ -292,8 +294,8 @@ msgstr ""
 msgid "100%"
 msgstr "100%"
 
-#. appearance frame
-#: battstat/battstat_applet.glade.h:3 mini-commander/src/preferences.c:743
+#: battstat/battstat_applet.glade.h:3 gtik/gtik.c:1456
+#: mini-commander/src/mini-commander.glade.h:3
 msgid "Appearance"
 msgstr "Apparence"
 
@@ -308,13 +310,14 @@ msgstr "Préférences du moniteur de charge de batterie"
 #: battstat/battstat_applet.glade.h:7
 #, no-c-format
 msgid "Battery color levels (%)"
-msgstr "Couleurs des niveaux de charge (%)"
+msgstr "Niveaux de couleur de la batterie (%)"
 
 #: battstat/battstat_applet.glade.h:8
 msgid "Beep when either of the above is true"
-msgstr "Bipper quand une des conditions ci-dessus est vrai"
+msgstr "Bip quand un de ceux ci-dessus est vrai"
 
-#: battstat/battstat_applet.glade.h:9
+#: battstat/battstat_applet.glade.h:9 gweather/gweather-pref.c:707
+#: mini-commander/src/mini-commander.glade.h:12 modemlights/properties.c:428
 msgid "General"
 msgstr "Général"
 
@@ -336,7 +339,7 @@ msgstr "M'avertir quand la charge de la batterie est faible"
 
 #: battstat/battstat_applet.glade.h:14
 msgid "Notify me when battery is fully re-charged"
-msgstr "M'avertir quand la batterie est chargée à bloc"
+msgstr "Me prévenir quand la batterie est chargée à bloc"
 
 #: battstat/battstat_applet.glade.h:15
 msgid "Orange:"
@@ -360,7 +363,7 @@ msgstr "Afficher"
 
 #: battstat/battstat_applet.glade.h:20
 msgid "Suspend"
-msgstr "Suspension"
+msgstr "Suspendre"
 
 #: battstat/battstat_applet.glade.h:21
 msgid "Suspend command:"
@@ -386,8 +389,8 @@ msgstr "La batterie est totalement rechargée"
 msgid "Battery power low"
 msgstr "Batterie faible"
 
-#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:169
-#: cdplayer/cdplayer.c:483 cdplayer/cdplayer.c:896
+#: cdplayer/GNOME_CDPlayerApplet.server.in.in.h:1 cdplayer/cdplayer.c:189
+#: cdplayer/cdplayer.c:520 cdplayer/cdplayer.c:911
 msgid "CD Player"
 msgstr "Lecteur de CD"
 
@@ -412,61 +415,61 @@ msgstr "Applet pour lire les CD audios"
 msgid "_Run External CD Player"
 msgstr "_Exécuter un lecteur de CD externe"
 
-#: cdplayer/cdplayer.c:157 cdplayer/cdplayer.c:886
+#: cdplayer/cdplayer.c:169 cdplayer/cdplayer.c:901
 msgid "Stop"
 msgstr "Arrêter"
 
-#: cdplayer/cdplayer.c:159 cdplayer/cdplayer.c:888
+#: cdplayer/cdplayer.c:173 cdplayer/cdplayer.c:903
 msgid "Play / Pause"
 msgstr "Lecture / Pause"
 
-#: cdplayer/cdplayer.c:161 cdplayer/cdplayer.c:890
+#: cdplayer/cdplayer.c:177 cdplayer/cdplayer.c:905
 msgid "Eject"
 msgstr "Éjecter"
 
-#: cdplayer/cdplayer.c:163 cdplayer/cdplayer.c:892
+#: cdplayer/cdplayer.c:181 cdplayer/cdplayer.c:907
 msgid "Previous Track"
 msgstr "Morceau précédent"
 
-#: cdplayer/cdplayer.c:165 cdplayer/cdplayer.c:894
+#: cdplayer/cdplayer.c:185 cdplayer/cdplayer.c:909
 msgid "Next Track"
 msgstr "Morceau suivant"
 
-#: cdplayer/cdplayer.c:280 drivemount/drivemount.c:397 mixer/mixer.c:774
-#: multiload/main.c:111
+#: cdplayer/cdplayer.c:304 drivemount/drivemount.c:399 mixer/mixer.c:780
+#: multiload/main.c:118
 #, c-format
 msgid "There was an error executing '%s' : %s"
-msgstr "Il y a eu une erreur lors de l'exécution de « %s » : %s"
+msgstr "Il y a eu une erreur à l'exécution de « %s » : %s"
 
-#: cdplayer/cdplayer.c:379
+#: cdplayer/cdplayer.c:409
 msgid "CD Player Preferences"
 msgstr "Préférences du lecteur de CD"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:427
 msgid "Disc Image"
 msgstr "Image disque"
 
-#: cdplayer/cdplayer.c:395
+#: cdplayer/cdplayer.c:427
 msgid "An image of a cd-rom disc"
 msgstr "Une image de disque CD-ROM"
 
-#: cdplayer/cdplayer.c:397
+#: cdplayer/cdplayer.c:429
 msgid "Device _Path:"
 msgstr "Chemin du _périphérique :"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:438
 msgid "Device Path"
 msgstr "Chemin du périphérique"
 
-#: cdplayer/cdplayer.c:406
+#: cdplayer/cdplayer.c:438
 msgid "Set the device path here"
 msgstr "Indiquez le chemin du périphérique ici"
 
-#: cdplayer/cdplayer.c:409
+#: cdplayer/cdplayer.c:441
 msgid "Use _Default"
 msgstr "Valeur par _défaut"
 
-#: cdplayer/cdplayer.c:484
+#: cdplayer/cdplayer.c:521
 msgid ""
 "(C) 1997 The Free Software Foundation\n"
 "(C) 2001 Chris Phelps (GNOME 2 Port)"
@@ -474,43 +477,43 @@ msgstr ""
 "© 1997 The Free Software Foundation\n"
 "© 2001 Chris Phelps (Portage GNOME 2)"
 
-#: cdplayer/cdplayer.c:486 cdplayer/cdplayer.c:897
+#: cdplayer/cdplayer.c:523 cdplayer/cdplayer.c:912
 msgid "The CD Player applet is a simple audio CD player for your panel"
 msgstr ""
 "L'applet GNOME Lecteur CD est un simple lecteur de CD Audio pour votre "
 "tableau de bord.\n"
 "Distribuée sous les termes de la Licence Publique Générale GNU."
 
-#: cdplayer/cdplayer.c:767 cdplayer/cdplayer.c:778
+#: cdplayer/cdplayer.c:780 cdplayer/cdplayer.c:791
 msgid "Elapsed time"
 msgstr "Temps écoulé"
 
-#: cdplayer/cdplayer.c:770 cdplayer/cdplayer.c:780
+#: cdplayer/cdplayer.c:783 cdplayer/cdplayer.c:793
 msgid "Track number"
 msgstr "Numéro du morceau"
 
-#: cdplayer/cdplayer.c:887
+#: cdplayer/cdplayer.c:902
 msgid "Click this button to Stop playing the CD"
-msgstr "Cliquez sur ce bouton pour arrêter la lecture du CD"
+msgstr "Cliquer sur ce bouton pour arrêter la lecture du CD"
 
-#: cdplayer/cdplayer.c:889
+#: cdplayer/cdplayer.c:904
 msgid "Click this button to Play or Pause the CD"
-msgstr "Cliquez sur ce bouton pour lancer ou suspendre la lecture du CD"
+msgstr "Cliquer sur ce bouton pour lancer ou suspendre la lecture du CD"
 
-#: cdplayer/cdplayer.c:891
+#: cdplayer/cdplayer.c:906
 msgid "Click this button to eject the CD"
-msgstr "Cliquez sur ce bouton pour éjecter le CD"
+msgstr "Cliquer sur ce bouton pour éjecter le CD"
 
-#: cdplayer/cdplayer.c:893
+#: cdplayer/cdplayer.c:908
 msgid "Click this button to Play the previous track in the CD"
-msgstr "Cliquez sur ce bouton pour lire le morceau précédent du CD"
+msgstr "Cliquer sur ce bouton pour lire le morceau précédent du CD"
 
-#: cdplayer/cdplayer.c:895
+#: cdplayer/cdplayer.c:910
 msgid "Click this button to Play the next track in the CD"
-msgstr "Cliquez sur ce bouton pour lire le morceau suivant de ce CD"
+msgstr "Cliquer sur ce bouton pour lire le morceau suivant de ce CD"
 
-#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:389
-#: charpick/charpick.c:482
+#: charpick/GNOME_CharpickerApplet.server.in.in.h:1 charpick/charpick.c:392
+#: charpick/charpick.c:490
 msgid "Character Palette"
 msgstr "Table de caractères"
 
@@ -524,15 +527,15 @@ msgstr "Insére des caractères"
 
 #. If your charset supports it, please use U00F1 to replace the "n"
 #. * in "Muniz".
-#: charpick/charpick.c:365
+#: charpick/charpick.c:366
 msgid "Alexandre Muniz <munizao@xprt.net>"
 msgstr "Alexandre Muniz <munizao@xprt.net>"
 
-#: charpick/charpick.c:391
+#: charpick/charpick.c:394
 msgid "Copyright (C) 1998"
 msgstr "Copyright © 1998"
 
-#: charpick/charpick.c:392
+#: charpick/charpick.c:395
 msgid ""
 "Gnome Panel applet for selecting strange characters that are not on my "
 "keyboard. Released under GNU General Public Licence."
@@ -541,23 +544,23 @@ msgstr ""
 "sont pas disponibles sur votre clavier.\n"
 "Distribuée sous les termes de la Licence Publique Générale GNU."
 
-#: charpick/charpick.c:481
+#: charpick/charpick.c:489
 msgid "Insert special characters"
 msgstr "Insérer des caractères spéciaux"
 
-#: charpick/properties.c:79
+#: charpick/properties.c:80
 msgid "_Default character list:"
 msgstr "Liste de caractères par _défaut : "
 
-#: charpick/properties.c:88
+#: charpick/properties.c:89
 msgid "Default list of characters"
 msgstr "Liste de caractères par défaut"
 
-#: charpick/properties.c:89
+#: charpick/properties.c:90
 msgid "Set the default character list here"
 msgstr "Défini la liste de caractères par défaut ici"
 
-#: charpick/properties.c:91
+#: charpick/properties.c:92
 msgid ""
 "These characters will appear when the panel is started. To return to this "
 "list, hit <d> while the applet has focus."
@@ -565,12 +568,12 @@ msgstr ""
 "Ces caractères apparaitront quand le tableau de bord sera démarré. Pour "
 "revenir à cette liste, tapez <d> quand l'applet a le focus."
 
-#: charpick/properties.c:150
+#: charpick/properties.c:156
 msgid "Character Palette Preferences"
 msgstr "Préférences de la palette de caractères"
 
 #: drivemount/GNOME_DriveMountApplet.server.in.in.h:1
-#: drivemount/drivemount.c:465
+#: drivemount/drivemount.c:471
 msgid "Disk Mounter"
 msgstr "Monteur de disques"
 
@@ -594,31 +597,31 @@ msgstr "_Parcourir..."
 msgid "_Eject"
 msgstr "_Éjecter"
 
-#: drivemount/drivemount.c:466
+#: drivemount/drivemount.c:472
 msgid "(C) 1999-2001 The GNOME Hackers\n"
 msgstr "© 1999-2001 les hackers GNOME\n"
 
-#: drivemount/drivemount.c:468
+#: drivemount/drivemount.c:474
 msgid "Applet for mounting and unmounting block volumes."
 msgstr "Applet pour monter et démonter des volumes."
 
-#: drivemount/drivemount.c:664
+#: drivemount/drivemount.c:672
 msgid " mounted"
 msgstr " monté"
 
-#: drivemount/drivemount.c:666
+#: drivemount/drivemount.c:674
 msgid " not mounted"
 msgstr " démonté"
 
-#: drivemount/drivemount.c:776
+#: drivemount/drivemount.c:786
 msgid "Drive Mount Applet Warning"
 msgstr "Avertissement Applet de montage de disques"
 
-#: drivemount/drivemount.c:784
+#: drivemount/drivemount.c:796
 msgid "\" reported:\n"
 msgstr " » rapporté :\n"
 
-#: drivemount/drivemount.c:786
+#: drivemount/drivemount.c:798
 msgid ""
 "Drivemount command failed.\n"
 "\""
@@ -630,77 +633,73 @@ msgstr ""
 msgid "Disk Mounter Preferences"
 msgstr "Préférences pour le monteur de disques"
 
-#: drivemount/properties.c:258
-msgid "Settings"
-msgstr "Paramètres"
-
-#: drivemount/properties.c:271
+#: drivemount/properties.c:273
 msgid "_Mount point:"
-msgstr "_Point de montage :"
+msgstr "Point de _montage :"
 
-#: drivemount/properties.c:289
+#: drivemount/properties.c:291
 msgid "_Update interval (seconds):"
-msgstr "Inter_valle de mise à jour (secondes) :"
+msgstr "Intervalle de mise à jour (secondes) :"
 
-#: drivemount/properties.c:305 panel-menu/panel-menu-properties.c:109
+#: drivemount/properties.c:307 panel-menu/panel-menu-properties.c:111
 msgid "_Icon :"
 msgstr "_Icône :"
 
-#: drivemount/properties.c:323
+#: drivemount/properties.c:325
 msgid "Floppy"
 msgstr "Disquette"
 
-#: drivemount/properties.c:326
+#: drivemount/properties.c:328
 msgid "Cdrom"
-msgstr "CD-ROM"
+msgstr "Cédérom"
 
-#: drivemount/properties.c:329
+#: drivemount/properties.c:331
 msgid "Cd Recorder"
 msgstr "Graveur de CD"
 
-#: drivemount/properties.c:332
+#: drivemount/properties.c:334
 msgid "Zip Drive"
 msgstr "Lecteur Zip"
 
-#: drivemount/properties.c:335
+#: drivemount/properties.c:337
 msgid "Hard Disk"
 msgstr "Disque dur"
 
-#: drivemount/properties.c:338
+#: drivemount/properties.c:340
 msgid "Jaz Drive"
 msgstr "Lecteur Jaz"
 
-#: drivemount/properties.c:341
+#: drivemount/properties.c:343
 msgid "Custom"
-msgstr "Personnalisée"
+msgstr "Personnalisé"
 
-#: drivemount/properties.c:354
+#: drivemount/properties.c:356
 msgid "Select icon for mounted"
 msgstr "Choisissez une icône pour « monté »"
 
-#: drivemount/properties.c:361
+#: drivemount/properties.c:363
 msgid "Custom icon for moun_ted:"
-msgstr "Icône personnalisée pour « _monté » :"
+msgstr "Icône personnalisée pour un périphérique monté"
 
-#: drivemount/properties.c:370
+#: drivemount/properties.c:372
 msgid "Select icon for unmounted"
 msgstr "Choisissez une icône pour « démonté »"
 
-#: drivemount/properties.c:377
+#: drivemount/properties.c:379
 msgid "Custom icon for not mou_nted:"
 msgstr "Icône personnalisée pour « _démonté » :"
 
-#: drivemount/properties.c:387
+#: drivemount/properties.c:389
 msgid "_Scale size to panel"
 msgstr "_Ajuster à la taille du tableau de bord"
 
-#: drivemount/properties.c:394
+#: drivemount/properties.c:396
 msgid "_Eject on unmount"
 msgstr "_Éjecter au démontage"
 
-#: drivemount/properties.c:401
+#: drivemount/properties.c:403
 msgid "Use _automount friendly status test"
-msgstr "_Utiliser un test d'état compatible avec « automount »"
+msgstr "Utiliser un test d'état compatible _automount"
 
 #: geyes/GNOME_GeyesApplet.server.in.in.h:1
 msgid "A set of eyeballs for your panel"
@@ -710,8 +709,8 @@ msgstr "Deux globes oculaires pour votre tableau de bord"
 msgid "Amusements"
 msgstr "Divertissement"
 
-#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:233
-#: geyes/geyes.c:420 geyes/geyes.c:422
+#: geyes/GNOME_GeyesApplet.server.in.in.h:3 geyes/geyes.c:237
+#: geyes/geyes.c:429 geyes/geyes.c:431
 msgid "Geyes"
 msgstr "Geyes"
 
@@ -719,27 +718,27 @@ msgstr "Geyes"
 msgid "Geyes Applet Factory"
 msgstr "Fabrique pour l'applet Geyes"
 
-#: geyes/geyes.c:234
+#: geyes/geyes.c:238
 msgid "Copyright (C) 1999 Dave Camp"
 msgstr "Copyright © 1999 Dave Camp"
 
-#: geyes/geyes.c:235
+#: geyes/geyes.c:239
 msgid "A goofy little xeyes clone for the GNOME panel."
 msgstr ""
 "Un clone maladroit de xeyes pour le tableau de bord GNOME.\n"
 "Distribué sous les termes de la Licence Publique Générale GNU."
 
-#: geyes/geyes.c:423
+#: geyes/geyes.c:432
 msgid "The eyes look in the direction of the mouse pointer"
 msgstr "Les yeux regardent dans la direction de votre pointeur de souris"
 
-#: geyes/themes.c:215
+#: geyes/themes.c:223
 msgid "Geyes Preferences"
 msgstr "Préférences de Geyes"
 
-#: geyes/themes.c:229
-msgid "T_heme Name"
-msgstr "Nom du t_hème"
+#: geyes/themes.c:239
+msgid "_Theme Name:"
+msgstr "Nom du _thème :"
 
 #: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:1
 msgid "Change the keyboard layout"
@@ -749,7 +748,7 @@ msgstr "Change l'agencement du clavier"
 msgid "GKB Factory"
 msgstr "Fabrique pour GKB"
 
-#: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:3 gkb-new/gkb.c:604
+#: gkb-new/GNOME_KeyboardApplet_Factory.server.in.in.h:3 gkb-new/gkb.c:605
 msgid "Keyboard Layout Switcher"
 msgstr "Sélecteur d'agencement clavier"
 
@@ -757,7 +756,7 @@ msgstr "Sélecteur d'agencement clavier"
 msgid "Produces keyboard layout switcher applets."
 msgstr "Produit une applet de sélection d'agencement de clavier."
 
-#: gkb-new/gkb.c:112
+#: gkb-new/gkb.c:113
 msgid ""
 "Press the hotkey to switch between layouts. The hotkey can be set through "
 "Properties dialog"
@@ -765,15 +764,15 @@ msgstr ""
 "Pressez le raccourci pour basculer entre les agencements. Le raccourci peut "
 "être défini via le dialogue de propriétés"
 
-#: gkb-new/gkb.c:551 gkb-new/gkb.c:558
+#: gkb-new/gkb.c:552 gkb-new/gkb.c:559
 msgid "GKB"
 msgstr "GKB"
 
-#: gkb-new/gkb.c:606
+#: gkb-new/gkb.c:607
 msgid "(C) 1998-2000 Free Software Foundation"
 msgstr "© 1998-2000 Free Software Foundation"
 
-#: gkb-new/gkb.c:607
+#: gkb-new/gkb.c:608
 msgid ""
 "This applet switches between keyboard maps using setxkbmap or xmodmap.\n"
 "Mail me your flag and keyboard layout if you want support for your locale "
@@ -791,460 +790,152 @@ msgstr ""
 "<emese@gnome.hu> pour sa solidarité, aide de gars comme KevinV.\n"
 "Shooby Ban <shooby@gnome.hu>"
 
-#: gkb-new/gkb.c:624
+#: gkb-new/gkb.c:625
 msgid "GKB Home Page (http://projects.gnome.hu/gkb)"
 msgstr "Page de GKB (http://projects.gnome.hu/gkb)"
 
-#: gkb-new/keygrab.c:69 gkb-new/keygrab.c:144
+#: gkb-new/keygrab.c:69 gkb-new/keygrab.c:148
 msgid "Disabled"
 msgstr "Désactivé"
 
-#: gkb-new/keygrab.c:301
+#: gkb-new/keygrab.c:313
 msgid "Press a key or press Esc to cancel"
 msgstr "Pressez une touche ou appuyez sur Echap pour annuler"
 
-#: gkb-new/prop-add.c:86
+#: gkb-new/prop-add.c:88
 msgid "Keyboards (select and press add)"
 msgstr "Claviers (choisissez-en un et cliquez sur Ajouter)"
 
-#: gkb-new/prop-add.c:372
+#: gkb-new/prop-add.c:392
 msgid "Select Keyboard"
 msgstr "Sélectionner un clavier"
 
-#: gkb-new/prop-list.c:398 gtik/gtik.c:1134
-msgid "_Add"
-msgstr "_Ajouter"
-
-#: gkb-new/prop-list.c:399
-msgid "_Edit"
-msgstr "_Éditer"
-
-#: gkb-new/prop-list.c:400
-msgid "_Up"
-msgstr "_Haut"
-
-#: gkb-new/prop-list.c:401
-msgid "Dow_n"
-msgstr "_Bas"
-
-#: gkb-new/prop-list.c:402
-msgid "_Delete"
-msgstr "_Effacer"
-
-#: gkb-new/prop-map.c:199
-msgid "Armenia"
-msgstr "Arménie"
-
-#: gkb-new/prop-map.c:200
-msgid "Australia"
-msgstr "Australie"
-
-#: gkb-new/prop-map.c:201
-msgid "Austria"
-msgstr "Autriche"
-
-#: gkb-new/prop-map.c:202
-msgid "Belgium"
-msgstr "Belgique"
-
-#: gkb-new/prop-map.c:203
-msgid "Brazil"
-msgstr "Brésil"
-
-#: gkb-new/prop-map.c:204
-msgid "Bulgaria"
-msgstr "Bulgarie"
-
-#: gkb-new/prop-map.c:205
-msgid "Canada"
-msgstr "Canada"
-
-#: gkb-new/prop-map.c:206
-msgid "Caribic"
-msgstr "Caraibes"
-
-#: gkb-new/prop-map.c:207
-msgid "France"
-msgstr "France"
-
-#: gkb-new/prop-map.c:208
-msgid "Georgia"
-msgstr "Georgie"
-
-#: gkb-new/prop-map.c:209
-msgid "Germany"
-msgstr "Allemagne"
-
-#: gkb-new/prop-map.c:210
-msgid "Great Britain"
-msgstr "Grande-bretagne"
-
-#: gkb-new/prop-map.c:211
-msgid "Greece"
-msgstr "Grèce"
-
-#: gkb-new/prop-map.c:212
-msgid "Hungary"
-msgstr "Hongrie"
-
 #: gkb-new/prop-map.c:213
-msgid "Jamaica"
-msgstr "Jamaique"
-
-#: gkb-new/prop-map.c:214
-msgid "New Zealand"
-msgstr "Nouvelle zélande"
-
-#: gkb-new/prop-map.c:215
-msgid "Norway"
-msgstr "Norvège"
-
-#: gkb-new/prop-map.c:216
-msgid "Poland"
-msgstr "Pologne"
-
-#: gkb-new/prop-map.c:217
-msgid "Portugal"
-msgstr "Portugal"
-
-#: gkb-new/prop-map.c:218
-msgid "Russia"
-msgstr "Russie"
-
-#: gkb-new/prop-map.c:219
-msgid "Slovak Republic"
-msgstr "République slave"
-
-#: gkb-new/prop-map.c:220
-msgid "Slovenia"
-msgstr "Slovénie"
-
-#: gkb-new/prop-map.c:221
-msgid "South Africa"
-msgstr "Afrique du Sud"
-
-#: gkb-new/prop-map.c:222
-msgid "Spain"
-msgstr "Espagne"
-
-#: gkb-new/prop-map.c:223
-msgid "Sweden"
-msgstr "Suède"
-
-#: gkb-new/prop-map.c:224
-msgid "Switzerland"
-msgstr "Suisse"
-
-#: gkb-new/prop-map.c:225
-msgid "Thailand"
-msgstr "Thailande"
-
-#: gkb-new/prop-map.c:226
-msgid "Turkey"
-msgstr "Turquie"
-
-#: gkb-new/prop-map.c:227
-msgid "United Kingdom"
-msgstr "Royaume Uni"
-
-#: gkb-new/prop-map.c:228
-msgid "United States"
-msgstr "État-Unis"
-
-#: gkb-new/prop-map.c:229
-msgid "Yugoslavia"
-msgstr "Yougoslavie"
-
-#: gkb-new/prop-map.c:249
-msgid "Armenian"
-msgstr "Armènien"
-
-#: gkb-new/prop-map.c:250
-msgid "Basque"
-msgstr "Basque"
-
-#: gkb-new/prop-map.c:251
-msgid "Bulgarian"
-msgstr "Bulgarie"
-
-#: gkb-new/prop-map.c:252
-msgid "Dutch"
-msgstr "Allemand"
-
-#: gkb-new/prop-map.c:253
-msgid "English"
-msgstr "Anglais"
-
-#: gkb-new/prop-map.c:254
-msgid "French"
-msgstr "Français"
-
-#: gkb-new/prop-map.c:255
-msgid "Georgian"
-msgstr "Georgien"
-
-#: gkb-new/prop-map.c:256
-msgid "German"
-msgstr "Allemand"
-
-#: gkb-new/prop-map.c:257
-msgid "Greek"
-msgstr "Grec"
-
-#: gkb-new/prop-map.c:258
-msgid "Hungarian"
-msgstr "Hongrois"
-
-#: gkb-new/prop-map.c:259
-msgid "Norwegian"
-msgstr "Norvégien"
-
-#: gkb-new/prop-map.c:260
-msgid "Polish"
-msgstr "Polonais"
-
-#: gkb-new/prop-map.c:261
-msgid "Portuguese"
-msgstr "Portugais"
-
-#: gkb-new/prop-map.c:262
-msgid "Russian"
-msgstr "Russe"
-
-#: gkb-new/prop-map.c:263
-msgid "Slovak"
-msgstr "Slovaque"
-
-#: gkb-new/prop-map.c:264
-msgid "Slovenian"
-msgstr "Slovène"
-
-#: gkb-new/prop-map.c:265
-msgid "Swedish"
-msgstr "Suédois"
-
-#: gkb-new/prop-map.c:266
-msgid "Thai"
-msgstr "Thailandais"
-
-#: gkb-new/prop-map.c:267
-msgid "Turkish"
-msgstr "Turque"
-
-#: gkb-new/prop-map.c:268
-msgid "Wallon"
-msgstr "Suisse"
-
-#: gkb-new/prop-map.c:269
-msgid "Yugoslavian"
-msgstr "Yougoslave"
-
-#: gkb-new/prop-map.c:287
-msgid "105"
-msgstr "105"
-
-#: gkb-new/prop-map.c:288
-msgid "101"
-msgstr "101"
-
-#: gkb-new/prop-map.c:289
-msgid "102"
-msgstr "102"
-
-#: gkb-new/prop-map.c:290
-msgid "450"
-msgstr "450"
-
-#: gkb-new/prop-map.c:291
-msgid "84"
-msgstr "84"
-
-#: gkb-new/prop-map.c:292
-msgid "mklinux"
-msgstr "mklinux"
-
-#: gkb-new/prop-map.c:293
-msgid "type5"
-msgstr "type5"
-
-#: gkb-new/prop-map.c:313
-msgid "iso-8859-1"
-msgstr "iso-8859-1"
-
-#: gkb-new/prop-map.c:314
-msgid "iso-8859-2"
-msgstr "iso-8859-2"
-
-#: gkb-new/prop-map.c:315
-msgid "iso-8859-7"
-msgstr "iso-8859-7"
-
-#: gkb-new/prop-map.c:316
-msgid "iso-8859-9"
-msgstr "iso-8859-9"
-
-#: gkb-new/prop-map.c:317
-msgid "am-armscii8"
-msgstr "am-armscii8"
-
-#: gkb-new/prop-map.c:318
-msgid "be-latin1"
-msgstr "be-latin1"
-
-#: gkb-new/prop-map.c:319
-msgid "cp1251"
-msgstr "cp1251"
-
-#: gkb-new/prop-map.c:320
-msgid "georgian-academy"
-msgstr "georgian-academy"
-
-#: gkb-new/prop-map.c:321
-msgid "koi8-r"
-msgstr "koi8-r"
-
-#: gkb-new/prop-map.c:322
-msgid "tis620"
-msgstr "tis620"
-
-#: gkb-new/prop-map.c:340
-msgid "ix86"
-msgstr "ix86"
-
-#: gkb-new/prop-map.c:341
-msgid "Sun"
-msgstr "Sun"
-
-#: gkb-new/prop-map.c:342
-msgid "mac"
-msgstr "mac"
-
-#: gkb-new/prop-map.c:343
-msgid "sgi"
-msgstr "sgi"
-
-#: gkb-new/prop-map.c:344
-msgid "dec"
-msgstr "dec"
-
-#: gkb-new/prop-map.c:345
-msgid "ibm"
-msgstr "ibm"
-
-#: gkb-new/prop-map.c:582
 msgid "Edit Keyboard"
 msgstr "Éditer le clavier"
 
-#. Add the labels  and entries/combos/icon_entry
-#: gkb-new/prop-map.c:610 panel-menu/panel-menu-directory.c:672
+#: gkb-new/prop-map.c:232 panel-menu/panel-menu-directory.c:674
 #: panel-menu/panel-menu-documents.c:398 panel-menu/panel-menu-documents.c:435
 #: panel-menu/panel-menu-links.c:404 panel-menu/panel-menu-links.c:440
 msgid "_Name:"
 msgstr "_Nom :"
 
-#: gkb-new/prop-map.c:614
+#: gkb-new/prop-map.c:235
 msgid "_Label:"
 msgstr "_Étiquette :"
 
-#: gkb-new/prop-map.c:618
-msgid "Lan_guage:"
-msgstr "_Langue :"
-
-#: gkb-new/prop-map.c:624
-msgid "Count_ry:"
-msgstr "_Pays :"
-
-#: gkb-new/prop-map.c:631
-msgid ""
-"_Flag\n"
-"Pixmap:"
-msgstr "_Drapeau :"
-
-#: gkb-new/prop-map.c:635
-msgid "Arc_hitecture:"
-msgstr "Arc_hitecture :"
-
-#: gkb-new/prop-map.c:641
-msgid "_Type:"
-msgstr "_Type :"
-
-#: gkb-new/prop-map.c:647
-msgid "Code_page:"
-msgstr "Co_depage :"
-
-#: gkb-new/prop-map.c:654
+#: gkb-new/prop-map.c:238
 msgid "Co_mmand:"
 msgstr "Co_mmande :"
 
-#: gkb-new/prop-map.c:661
+#: gkb-new/prop-map.c:246
 msgid ""
 "Where command can be:\n"
-"* xmodmap /full/path/xmodmap.hu\n"
-"* gkb__xmmap hu\n"
-"* setxkbmap hu"
+" * xmodmap /full/path/xmodmap.hu\n"
+" * gkb_xmmap hu\n"
+" * setxkbmap hu"
 msgstr ""
 "Où les commandes peuvent être :\n"
 "* xmodmap /chemin/complet/xmodmap.hu\n"
-"* gkb__xmmap hu\n"
+"* gkb_xmmap hu\n"
 "* setxkbmap hu"
 
-#: gkb-new/prop.c:131 gkb-new/prop.c:201
+#: gkb-new/prop-map.c:279
+msgid "_Flag"
+msgstr "_Drapeau"
+
+#: gkb-new/prop.c:132 gkb-new/prop.c:202
 msgid "Normal"
 msgstr "Normal"
 
-#: gkb-new/prop.c:132 gkb-new/prop.c:205
+#: gkb-new/prop.c:133 gkb-new/prop.c:206
 msgid "Big"
 msgstr "Grand"
 
-#: gkb-new/prop.c:150 gkb-new/util.c:41 gkb-new/util.c:48 gkb-new/util.c:74
+#: gkb-new/prop.c:151 gkb-new/util.c:41 gkb-new/util.c:48 gkb-new/util.c:74
 msgid "Flag"
 msgstr "Drapeau"
 
-#: gkb-new/prop.c:151 gkb-new/util.c:38 gkb-new/util.c:71
+#: gkb-new/prop.c:152 gkb-new/util.c:38 gkb-new/util.c:71
 msgid "Label"
 msgstr "Étiquette"
 
-#: gkb-new/prop.c:152 gkb-new/util.c:44 gkb-new/util.c:77
+#: gkb-new/prop.c:153 gkb-new/util.c:44 gkb-new/util.c:77
 msgid "Flag and Label"
 msgstr "Drapeau et étiquette"
 
-#: gkb-new/prop.c:290 modemlights/properties.c:389
+#: gkb-new/prop.c:291 modemlights/properties.c:393
 msgid "Display"
 msgstr "Affichage"
 
 #. Labels and option Menus
-#: gkb-new/prop.c:310
+#: gkb-new/prop.c:311
 msgid "_Appearance: "
 msgstr "_Apparence : "
 
-#: gkb-new/prop.c:317
+#: gkb-new/prop.c:318
 msgid "Applet _size: "
 msgstr "_Taille de l'applet :"
 
-#: gkb-new/prop.c:344
+#: gkb-new/prop.c:345
 msgid "Hotkey for switching between layouts"
 msgstr "Combinaison de touches pour basculer entre les agencements"
 
-#: gkb-new/prop.c:356
+#: gkb-new/prop.c:357
 msgid "_Grab hotkey"
 msgstr "_Capturer la combinaison de touches"
 
 #. Create property box
-#: gkb-new/prop.c:417
+#: gkb-new/prop.c:423
 msgid "Keyboard Layout Switcher Preferences"
 msgstr "Préférences du sélecteur d'agencement clavier"
 
-#: gkb-new/prop.c:432
-msgid "_Keymaps"
-msgstr "Tables de _caractères"
+#: gkb-new/prop.c:440
+msgid "Keymaps"
+msgstr "Tables de caractères"
 
-#: gkb-new/prop.c:444
-msgid "_Options"
-msgstr "_Options"
+#.
+#. check_box = gtk_check_button_new_with_mnemonic(_("_Average"));
+#. gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_box),
+#. panel_applet_gconf_get_bool(multiload_applet->applet, "view_loadavg", NULL));
+#. gtk_box_pack_start(GTK_BOX(hbox), check_box, FALSE, FALSE, 0);
+#.
+#: gkb-new/prop.c:452 multiload/properties.c:313
+msgid "Options"
+msgstr "Options"
 
-#: gkb-new/system.c:45
-msgid "The keymap switching command returned with error!"
-msgstr "La commande de changement de mappage clavier a retourné une erreur !"
+#: gkb-new/system.c:46
+#, c-format
+msgid ""
+"An error occured.\n"
+"\n"
+"Keymap `%s' is not supported on this system. Please choose another keymap.\n"
+"\n"
+"The command was: %s"
+msgstr ""
+"Une erreur est survenue.\n"
+"\n"
+"La table de caractères « %s » n'est pas supporté sur ce système. Veuillez "
+"choisir une autre table de caractère.\n"
+"\n"
+"La commande était : %s"
+
+#: gkb-new/system.c:51
+#, c-format
+msgid ""
+"An error occured.\n"
+"\n"
+"Unable to load keymap `%s', probably because command `xmodmap' could not be "
+"located in your PATH.\n"
+"\n"
+"The command was: %s"
+msgstr ""
+"Une erreur est survenue.\n"
+"\n"
+"Incapable de charger la table de caractère « %s », probablement que la "
+"commande « xmodmap » ne peut être localisé dans votre PATH.\n"
+"\n"
+"La commande était : %s"
 
 #: gtik/GNOME_GtikApplet.server.in.in.h:1
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:1
@@ -1253,13 +944,13 @@ msgstr "Accessoires"
 
 #: gtik/GNOME_GtikApplet.server.in.in.h:2
 msgid "Get continuously updated stock quotes"
-msgstr "Obtient continuellement les cotations boursières mises à jour"
+msgstr "Obtient continuellement les quotations mises à jour"
 
 #: gtik/GNOME_GtikApplet.server.in.in.h:3
 msgid "Gtik Applet Factory"
 msgstr "Fabrique pour l'applet Gtik"
 
-#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:728
+#: gtik/GNOME_GtikApplet.server.in.in.h:4 gtik/gtik.c:720
 msgid "Stock Ticker"
 msgstr "Piocheur de valeurs boursières"
 
@@ -1267,116 +958,116 @@ msgstr "Piocheur de valeurs boursières"
 msgid "_Update"
 msgstr "_Mettre à jour"
 
-#: gtik/gtik.c:206
+#: gtik/gtik.c:202
 msgid "No data available or properties not set"
 msgstr "Aucune donnée disponible ou propriétés non définies"
 
-#: gtik/gtik.c:730
+#: gtik/gtik.c:722
 msgid ""
 "This program connects to a popular site and downloads current stock quotes.  "
 "The GNOME Stock Ticker is a free Internet-based application.  It comes with "
 "ABSOLUTELY NO WARRANTY.  Do not use the GNOME Stock Ticker for making "
 "investment decisions; it is for informational purposes only."
 msgstr ""
-"Ce programme se connecte à un site populaire et télécharge les cotations "
+"Ce programme se connecte à un site populaire et télécharge les quotations "
 "boursières en cours. Le piocheur de valeurs boursières GNOME est une "
 "application libre basé sur Internet. Il est fournit avec ABSOLUMENT AUCUNE "
 "GARANTIE. N'utilisez pas le piocheur de valeurs boursières GNOME pour "
 "décider vos investissements; il n'est conçu qu'a des fins d'informations."
 
-#: gtik/gtik.c:1123
+#: gtik/gtik.c:1147
 msgid "_New Symbol:"
 msgstr "_Nouveau symbole :"
 
-#: gtik/gtik.c:1145
+#: gtik/gtik.c:1158
+msgid "_Add"
+msgstr "_Ajouter"
+
+#: gtik/gtik.c:1169
 msgid "_Remove Selected"
 msgstr "_Supprimer la sélection"
 
-#: gtik/gtik.c:1221
+#: gtik/gtik.c:1251
 msgid "Stock Ticker Preferences"
 msgstr "Préférences du piocheur de valeurs boursières"
 
-#: gtik/gtik.c:1244
-msgid "Update Fre_quency in minutes:"
+#: gtik/gtik.c:1275
+msgid "Stock update Fre_quency in minutes:"
 msgstr "Fré_quence de mises à jour en minutes :"
 
-#: gtik/gtik.c:1262
-msgid "Enter symbols delimited with \"+\" in the box below."
-msgstr "Saisissez les symboles délimités avec \"+\" dans la boîte ci-dessous."
+#: gtik/gtik.c:1294
+msgid "Scroll Speed :"
+msgstr "Vitesse de défilement :"
 
-#: gtik/gtik.c:1269
+#: gtik/gtik.c:1314
+msgid "_Width :"
+msgstr "_Largeur :"
+
+#: gtik/gtik.c:1326
 msgid "Displa_y only symbols and price"
 msgstr "_Afficher seulement les symboles et prix"
 
-#: gtik/gtik.c:1272
+#: gtik/gtik.c:1329
 msgid "Scroll _left to right"
 msgstr "Défiler de _gauche à droite"
 
-#: gtik/gtik.c:1275
+#: gtik/gtik.c:1332
 msgid "_Enable scroll buttons"
 msgstr "_Activer les boutons de défilement"
 
-#: gtik/gtik.c:1299
-msgid "+ C_olor"
-msgstr "+ C_ouleur"
+#: gtik/gtik.c:1356
+msgid "+ C_olor:"
+msgstr "+ C_ouleur :"
 
-#: gtik/gtik.c:1319
-msgid "- Colo_r"
-msgstr "- Couleu_r"
+#: gtik/gtik.c:1376
+msgid "- Colo_r:"
+msgstr "- Couleu_r :"
 
-#: gtik/gtik.c:1336
-msgid "_Unchanged Color"
-msgstr "Couleur _inchangée"
+#: gtik/gtik.c:1393
+msgid "_Unchanged Color:"
+msgstr "Couleur _inchangée :"
 
-#: gtik/gtik.c:1353
-msgid "Back_ground Color"
-msgstr "Couleur d'_arrière-plan"
+#: gtik/gtik.c:1410
+msgid "Back_ground Color:"
+msgstr "Couleur d'_arrière-plan :"
 
-#: gtik/gtik.c:1375
-msgid "Stock Sy_mbol:"
-msgstr "Sy_mbole de la valeur :"
+#: gtik/gtik.c:1432
+msgid "_Font:"
+msgstr "_Police :"
 
-#: gtik/gtik.c:1389
-msgid "Stock C_hange:"
-msgstr "C_hangement de valeur :"
+#: gtik/gtik.c:1452
+msgid "Symbols"
+msgstr "Symboles"
 
-#: gtik/gtik.c:1413
-msgid "_Symbols"
-msgstr "_Symboles"
+#: gtik/gtik.c:1454
+msgid "Behavior"
+msgstr "Comportement"
 
-#: gtik/gtik.c:1415
-msgid "_Behavior"
-msgstr "_Comportement"
-
-#: gtik/gtik.c:1417
-msgid "_Appearance"
-msgstr "_Apparence"
-
-#: gtik/gtik.c:1491
+#: gtik/gtik.c:1541
 msgid "Skip forward"
 msgstr "Sauter en avant"
 
-#: gtik/gtik.c:1492
+#: gtik/gtik.c:1542
 msgid "Skip backward"
 msgstr "Sauter en arrière"
 
-#: gtik/gtik.c:1493
+#: gtik/gtik.c:1543
 msgid ""
 "Stock Ticker\n"
 "Get continuously updated stock quotes"
 msgstr ""
 "Piocheur de valeurs boursières\n"
-"Obtient continuellement les cotation boursières mises à jour"
+"Obtient continuellement les quotation mises à jour"
 
-#: gtik/gtik.c:1679
+#: gtik/gtik.c:1731
 msgid "(No"
 msgstr "(Aucun"
 
-#: gtik/gtik.c:1680
+#: gtik/gtik.c:1732
 msgid "Change "
 msgstr "Changement "
 
-#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:302
+#: gweather/GNOME_GWeatherApplet.xml.h:2 gweather/gweather-dialog.c:304
 msgid "_Forecast"
 msgstr "_Météo"
 
@@ -1393,15 +1084,15 @@ msgid "Monitor the current weather conditions, and forecasts"
 msgstr "Surveille les conditions météos, et donne des prévisions"
 
 #: gweather/GNOME_GWeatherApplet_Factory.server.in.in.h:5
-#: gweather/gweather-about.c:61
+#: gweather/gweather-about.c:63
 msgid "Weather Report"
 msgstr "Météo"
 
-#: gweather/gweather-about.c:62
+#: gweather/gweather-about.c:64
 msgid "Copyright (c)1999 by S. Papadimitriou"
 msgstr "Copyright © 1999 par S. Papadimitriou"
 
-#: gweather/gweather-about.c:63
+#: gweather/gweather-about.c:65
 msgid ""
 "Released under the GNU General Public License.\n"
 "\n"
@@ -1411,11 +1102,11 @@ msgstr ""
 "\n"
 "Une applet pour surveiller les conditions météo locales"
 
-#: gweather/gweather-applet.c:194
+#: gweather/gweather-applet.c:198
 msgid "GNOME Weather"
 msgstr "Applet GNOME Météo"
 
-#: gweather/gweather-applet.c:319
+#: gweather/gweather-applet.c:323
 msgid "Updating..."
 msgstr "Mise à jour..."
 
@@ -1423,75 +1114,75 @@ msgstr "Mise à jour..."
 msgid "Forecast"
 msgstr "Prévisions"
 
-#: gweather/gweather-dialog.c:108
+#: gweather/gweather-dialog.c:110
 msgid "Location:"
 msgstr "Emplacement :"
 
-#: gweather/gweather-dialog.c:116
+#: gweather/gweather-dialog.c:118
 msgid "Update:"
 msgstr "Mise à jour :"
 
-#: gweather/gweather-dialog.c:124
+#: gweather/gweather-dialog.c:126
 msgid "Conditions:"
 msgstr "Conditions :"
 
-#: gweather/gweather-dialog.c:132
+#: gweather/gweather-dialog.c:134
 msgid "Sky:"
 msgstr "Ciel :"
 
-#: gweather/gweather-dialog.c:140
+#: gweather/gweather-dialog.c:142
 msgid "Temperature:"
 msgstr "Température :"
 
-#: gweather/gweather-dialog.c:148
+#: gweather/gweather-dialog.c:150
 msgid "Dew point:"
 msgstr "Point de condensation :"
 
-#: gweather/gweather-dialog.c:156
+#: gweather/gweather-dialog.c:158
 msgid "Humidity:"
 msgstr "Humidité :"
 
-#: gweather/gweather-dialog.c:164
+#: gweather/gweather-dialog.c:166
 msgid "Wind:"
 msgstr "Vent :"
 
-#: gweather/gweather-dialog.c:172
+#: gweather/gweather-dialog.c:174
 msgid "Pressure:"
 msgstr "Pression :"
 
-#: gweather/gweather-dialog.c:180
+#: gweather/gweather-dialog.c:182
 msgid "Visibility:"
 msgstr "Visibilité :"
 
-#: gweather/gweather-dialog.c:279
+#: gweather/gweather-dialog.c:281
 msgid "C_urrent conditions"
 msgstr "Conditions actuelles"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 msgid "ForeCast Report"
 msgstr "Prévisions ForeCast"
 
-#: gweather/gweather-dialog.c:292
+#: gweather/gweather-dialog.c:294
 msgid "See the ForeCast Details"
 msgstr "Voir les détails de la prévision"
 
-#: gweather/gweather-dialog.c:327
+#: gweather/gweather-dialog.c:329
 msgid "_Visit Weather.com"
 msgstr "_Visiter Weather.com"
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 msgid "URL link Button"
 msgstr "Bouton de lien URL"
 
-#: gweather/gweather-dialog.c:328
+#: gweather/gweather-dialog.c:330
 msgid "Click to Enter Weather.com"
 msgstr "Cliquer pour visualiser Weather.com"
 
-#: gweather/gweather-dialog.c:336
+#: gweather/gweather-dialog.c:338
 msgid "_Radar map"
 msgstr "Carte _radar"
 
-#: gweather/gweather-dialog.c:408
+#: gweather/gweather-dialog.c:410
 msgid ""
 "Detailed forecast not available for this location.\n"
 "Please try the state forecast; note that IWIN forecasts are available only "
@@ -1501,7 +1192,7 @@ msgstr ""
 "Essayez les prévisions par état; notez que les prévisions IWIN ne sont "
 "disponibles que pour les villes américaines."
 
-#: gweather/gweather-dialog.c:410
+#: gweather/gweather-dialog.c:412
 msgid ""
 "State forecast not available for this location.\n"
 "Please try the detailed forecast; note that IWIN forecasts are available "
@@ -1512,83 +1203,78 @@ msgstr ""
 "disponibles que pour les villes américaines."
 
 #. Accessible Name and Description for the components in Preference Dialog
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 msgid "Location view"
 msgstr "Vue de l'emplacement"
 
-#: gweather/gweather-pref.c:107
+#: gweather/gweather-pref.c:108
 msgid "Select Location from the list"
 msgstr "Sélectionnez l'emplacement dans la liste"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 msgid "Update spin button"
 msgstr "Bouton de mise à jour"
 
-#: gweather/gweather-pref.c:109
+#: gweather/gweather-pref.c:110
 msgid "Spinbutton for updating"
 msgstr "Bouton de mise à jour"
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Address Entry"
 msgstr "Entrée d'adresse"
 
-#: gweather/gweather-pref.c:110
+#: gweather/gweather-pref.c:111
 msgid "Enter the URL"
 msgstr "Saisissez l'URL"
 
-#: gweather/gweather-pref.c:560
+#: gweather/gweather-pref.c:561
 msgid "Weather Preferences"
 msgstr "Préférences Météo"
 
-#: gweather/gweather-pref.c:607
-msgid "_Location"
-msgstr "_Emplacement"
-
-#: gweather/gweather-pref.c:638
+#: gweather/gweather-pref.c:604
 msgid "_Automatically update every"
 msgstr "Mettre à jour _automatiquement toutes les"
 
-#: gweather/gweather-pref.c:644
+#: gweather/gweather-pref.c:610
 msgid "Use _metric system units"
 msgstr "Utiliser le système _métrique"
 
-#: gweather/gweather-pref.c:650
+#: gweather/gweather-pref.c:616
 msgid "Enable _detailed forecast"
 msgstr "Activer les prévisions _détaillées"
 
-#: gweather/gweather-pref.c:657
+#: gweather/gweather-pref.c:623
 msgid "Enable _radar map"
 msgstr "Activer la carte _radar"
 
-#: gweather/gweather-pref.c:663
+#: gweather/gweather-pref.c:629
 msgid "Use cus_tom address for radar map"
 msgstr "Utilser une adresse personnalisée pour la carte radar"
 
-#: gweather/gweather-pref.c:674
+#: gweather/gweather-pref.c:640
 msgid "A_ddress :"
 msgstr "_Adresse :"
 
-#: gweather/gweather-pref.c:686
+#: gweather/gweather-pref.c:652
 msgid "Updates"
 msgstr "Mises à jour"
 
-#: gweather/gweather-pref.c:692
+#: gweather/gweather-pref.c:658
 msgid "_Automatically update every "
 msgstr "Mettre à jour _automatiquement toutes les "
 
-#: gweather/gweather-pref.c:712
+#: gweather/gweather-pref.c:678
 msgid "minute(s)"
 msgstr "minute(s)"
 
 #. The Miscellaneous frame
-#: gweather/gweather-pref.c:723
+#: gweather/gweather-pref.c:689
 msgid "Miscellaneous"
 msgstr "Divers"
 
-#: gweather/gweather-pref.c:741 mini-commander/src/preferences.c:972
-#: modemlights/properties.c:424
-msgid "_General"
-msgstr "_Général"
+#: gweather/gweather-pref.c:743
+msgid "Location"
+msgstr "Emplacement"
 
 #: gweather/weather.c:57
 msgid "knots"
@@ -2764,7 +2450,7 @@ msgstr "Tourbillons de poussière venteux"
 msgid "Drifting dust whirls"
 msgstr "Amoncellement de tourbillons de poussière"
 
-#: gweather/weather.c:824 gweather/weather.c:864 gweather/weather.c:1436
+#: gweather/weather.c:824 gweather/weather.c:864 gweather/weather.c:1437
 msgid "Failed to get METAR data.\n"
 msgstr "Impossible d'obtenir les données METAR.\n"
 
@@ -2789,33 +2475,33 @@ msgstr "Impossible d'obtenir les données du Met Office.\n"
 msgid "Failed to get Met Office forecast data.\n"
 msgstr "Impossible d'obtenir les prévisions du Met Office\n"
 
-#: gweather/weather.c:1466
+#: gweather/weather.c:1468
 msgid "Failed to get radar map image.\n"
 msgstr "Impossible d'obtenir l'image de la vue radar.\n"
 
-#: gweather/weather.c:1769
+#: gweather/weather.c:1771
 msgid "%a, %b %d / %H:%M"
 msgstr "%a %d %b / %H:%M"
 
-#: gweather/weather.c:1773
+#: gweather/weather.c:1775
 msgid "Unknown observation time"
 msgstr "Date d'observation inconnue"
 
-#: gweather/weather.c:1833
+#: gweather/weather.c:1835
 msgid "Calm"
 msgstr "Calme"
 
-#: gweather/weather.c:1859
+#: gweather/weather.c:1861
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: gweather/weather.c:1893
+#: gweather/weather.c:1895
 msgid "Retrieval failed"
 msgstr "Échc de la récupération"
 
 #: mini-commander/src/GNOME_MiniCommanderApplet.server.in.in.h:1
-#: mini-commander/src/about.c:62
-#: mini-commander/src/mini-commander_applet.c:317
+#: mini-commander/src/about.c:66
+#: mini-commander/src/mini-commander_applet.c:353
 msgid "Command Line"
 msgstr "Ligne de commande"
 
@@ -2827,7 +2513,7 @@ msgstr "Mini-Commander"
 msgid "MiniCommander Applet Factory"
 msgstr "Fabrique pour l'applet MiniCommander"
 
-#: mini-commander/src/about.c:65
+#: mini-commander/src/about.c:69
 msgid ""
 "This GNOME applet adds a command line to the panel. It features command "
 "completion, command history, changeable macros and an optional built-in "
@@ -2847,208 +2533,179 @@ msgstr ""
 "publiée par la Free Software Foundation; soit la version 2, ou (à votre "
 "discrétion) toute version ultérieure."
 
-#: mini-commander/src/cmd_completion.c:69
-#: mini-commander/src/cmd_completion.c:115
-#: mini-commander/src/cmd_completion.c:151
-#: mini-commander/src/cmd_completion.c:202
-msgid "not unique"
-msgstr "non unique"
-
-#: mini-commander/src/cmd_completion.c:73
-#: mini-commander/src/cmd_completion.c:155
-msgid "completing..."
-msgstr "terminaison..."
-
-#: mini-commander/src/cmd_completion.c:113
-#: mini-commander/src/cmd_completion.c:200
-msgid "completed"
-msgstr "complété"
-
-#: mini-commander/src/cmd_completion.c:118
-#: mini-commander/src/cmd_completion.c:205
-msgid "not found"
-msgstr "non trouvé"
-
-#: mini-commander/src/cmd_completion.c:167
-msgid "no /bin/sh"
-msgstr "pas de /bin/sh"
-
-#: mini-commander/src/command_line.c:98 mini-commander/src/command_line.c:118
-msgid "end of history list"
-msgstr "fin de l'historique"
-
-#. enter pressed -> exec command
-#: mini-commander/src/command_line.c:128
-msgid "starting..."
-msgstr "lancement..."
-
-#: mini-commander/src/command_line.c:157
-msgid "autocompleted"
-msgstr "autocomplété"
-
 #. build file select dialog
-#: mini-commander/src/command_line.c:502
+#: mini-commander/src/command_line.c:430
 msgid "Start program"
 msgstr "Démarrer le programme"
 
-#: mini-commander/src/command_line.c:538
+#: mini-commander/src/command_line.c:473
 msgid "Command line"
 msgstr "Ligne de commande"
 
-#: mini-commander/src/command_line.c:539
+#: mini-commander/src/command_line.c:474
 msgid "Type a command here and Gnome will execute it for you"
 msgstr "Saisissez une commande ici et GNOME la lancera"
 
-#: mini-commander/src/message.c:149
-msgid "%H:%M - %d. %b"
-msgstr "%H:%M - %d. %b"
+#: mini-commander/src/mc-install-default-macros.c:71
+#, c-format
+msgid "Cannot get schema for %s : %s"
+msgstr "Ne peut obtenir le schéma pour %s : %s"
 
-#: mini-commander/src/message.c:151
-msgid "%H:%M"
-msgstr "%H:%M"
+#: mini-commander/src/mc-install-default-macros.c:99
+#, c-format
+msgid "Cannot set schema for %s : %s"
+msgstr "Ne peut définir le schéma pour %s : %s"
 
-#: mini-commander/src/message.c:153
-msgid "%d. %b"
-msgstr "%d: %b"
+#: mini-commander/src/mc-install-default-macros.c:105
+#, c-format
+msgid "Set default list value for %s\n"
+msgstr "Définit la liste de valeur par défaut pour %s\n"
 
-#: mini-commander/src/mini-commander_applet.c:123
-msgid "orient. changed"
-msgstr "orient. changée"
+#: mini-commander/src/mc-install-default-macros.c:117
+msgid "GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"
+msgstr ""
+"GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL est définit, n'installe pas les "
+"schémas\n"
 
-#: mini-commander/src/mini-commander_applet.c:140
-msgid "size changed"
-msgstr "taille modifiée"
+#: mini-commander/src/mc-install-default-macros.c:125
+msgid "Must set the GCONF_CONFIG_SOURCE environment variable\n"
+msgstr "Vous devez définir la vavriable d'environnement GCONF_CONFIG_SOURCE\n"
 
-#: mini-commander/src/mini-commander_applet.c:290
-#: mini-commander/src/mini-commander_applet.c:293
-msgid "Browser"
-msgstr "Navigateur"
+#: mini-commander/src/mc-install-default-macros.c:142
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Échec à l'accès de la(es) source(s) de configuration : %s\n"
 
-#: mini-commander/src/mini-commander_applet.c:294
-msgid "Click this button to start the browser"
-msgstr "Cliquez sur ce bouton pour lancer le navigateur"
+#: mini-commander/src/mc-install-default-macros.c:154
+#, c-format
+msgid "Error syncing config data: %s"
+msgstr "Erreur de synchronisation des données de configuration : %s"
 
-#: mini-commander/src/mini-commander_applet.c:309
-#: mini-commander/src/mini-commander_applet.c:312
-msgid "History"
-msgstr "Historique"
+#: mini-commander/src/mini-commander.glade.h:1
+msgid "*"
+msgstr "*"
 
-#: mini-commander/src/mini-commander_applet.c:313
-msgid "Click this button for the list of previous commands"
-msgstr "Cliquez sur ce bouton pour un historique des commandes"
+#: mini-commander/src/mini-commander.glade.h:2
+msgid "Add New Macro"
+msgstr "Ajouter une nouvelle macro"
 
-#: mini-commander/src/mini-commander_applet.c:314
-msgid "Mini-Commander applet"
-msgstr "Aplet Mini-Commander"
-
-#: mini-commander/src/mini-commander_applet.c:315
-msgid "This applet adds a command line to the panel"
-msgstr "Cette applet ajoute une ligne de commande au tableau de bord"
-
-#: mini-commander/src/mini-commander_applet.c:448
-msgid "ready..."
-msgstr "prêt..."
-
-#: mini-commander/src/preferences.c:703
-msgid "Command Line Preferences"
-msgstr "Préférences pour la ligne de commande"
-
-#: mini-commander/src/preferences.c:720
-msgid "Clock"
-msgstr "Horloge"
-
-#. show time check box
-#: mini-commander/src/preferences.c:728
-msgid "Show time"
-msgstr "Affiche l'heure"
-
-#. show date check box
-#: mini-commander/src/preferences.c:735
-msgid "Show date"
-msgstr "Affiche la date"
-
-#. show handle check box
-#: mini-commander/src/preferences.c:751
-msgid "Show han_dle"
-msgstr "Afficher la _poignée"
-
-#. show frame check box
-#: mini-commander/src/preferences.c:758
-msgid "Show fram_e"
-msgstr "Afficher le _cadre"
-
-#. auto complete frame
-#: mini-commander/src/preferences.c:767
-msgid "Autocompletion"
-msgstr "Complétion automatique"
-
-#. show history autocomplete
-#: mini-commander/src/preferences.c:775
-msgid "Enable _history based autocompletion"
-msgstr "Activer l'auto-complétion basé sur l'historique"
-
-#. Size
-#: mini-commander/src/preferences.c:782
-msgid "Size"
-msgstr "Taille"
-
-#. applet width
-#: mini-commander/src/preferences.c:794
+#: mini-commander/src/mini-commander.glade.h:4
 msgid "Applet _width:"
 msgstr "_Largeur de l'applet :"
 
-#. applet height
-#: mini-commander/src/preferences.c:828
-msgid "Applet height:"
-msgstr "Hauteur de l'applet"
+#: mini-commander/src/mini-commander.glade.h:5
+msgid "Autocompletion"
+msgstr "Complétion automatique"
 
-#. cmd line height
-#: mini-commander/src/preferences.c:850
-msgid "Command line height:"
-msgstr "Hauteur de la ligne de commande :"
-
-#. Color
-#: mini-commander/src/preferences.c:885 multiload/properties.c:365
+#: mini-commander/src/mini-commander.glade.h:6 modemlights/properties.c:468
+#: multiload/properties.c:365
 msgid "Colors"
 msgstr "Couleurs"
 
-#. default bg and fg theme
-#: mini-commander/src/preferences.c:895
-msgid "_Use default theme colors"
-msgstr "_Utiliser les couleurs par défaut du thème"
+#: mini-commander/src/mini-commander.glade.h:7
+msgid "Command Line Preferences"
+msgstr "Préférences pour la ligne de commande"
 
-#. fg
-#: mini-commander/src/preferences.c:907
-msgid "Command line _foreground:"
-msgstr "Couleur des _caractères de la ligne de commande :"
-
-#. bg
-#: mini-commander/src/preferences.c:941
+#: mini-commander/src/mini-commander.glade.h:8
 msgid "Command line _background:"
 msgstr "Couleur d'_arrière-plan de la ligne de commande :"
 
-#. prefix
-#: mini-commander/src/preferences.c:1001
-#, c-format
-msgid "Regex _%.2d:"
-msgstr "Expr. reg. _%.2d :"
+#: mini-commander/src/mini-commander.glade.h:9
+msgid "Command line _foreground:"
+msgstr "Couleur des _caractères de la ligne de commande :"
 
-#. command
-#: mini-commander/src/preferences.c:1021
-#, c-format
-msgid "   Macro _%.2d:"
-msgstr "   Macro _%.2d :"
+#: mini-commander/src/mini-commander.glade.h:10
+msgid "Command:"
+msgstr "Commande :"
 
-#: mini-commander/src/preferences.c:1041
-msgid "_Macros"
-msgstr "_Macros"
+#: mini-commander/src/mini-commander.glade.h:11
+msgid "E_nable history based autocompletion"
+msgstr "_Activer l'auto-complétion basé sur l'historique"
+
+#: mini-commander/src/mini-commander.glade.h:13
+msgid "Macros"
+msgstr "Macros"
+
+#: mini-commander/src/mini-commander.glade.h:14
+msgid "Pattern:"
+msgstr "Motif :"
+
+#: mini-commander/src/mini-commander.glade.h:15
+msgid "Pick a color"
+msgstr "Choisissez une couleur"
+
+#: mini-commander/src/mini-commander.glade.h:16
+msgid "Show fram_e"
+msgstr "Afficher le _cadre"
+
+#: mini-commander/src/mini-commander.glade.h:17
+msgid "Show han_dle"
+msgstr "Afficher la _poignée"
+
+#: mini-commander/src/mini-commander.glade.h:18
+msgid "Size"
+msgstr "Taille"
+
+#: mini-commander/src/mini-commander.glade.h:19
+msgid "_Add new macro..."
+msgstr "A_jouter une nouvelle macro..."
+
+#: mini-commander/src/mini-commander.glade.h:20
+msgid "_Delete Macro"
+msgstr "_Supprimer la macro"
+
+#: mini-commander/src/mini-commander.glade.h:21
+msgid "_Use default theme colors"
+msgstr "_Utiliser les couleurs par défaut du thème"
+
+#: mini-commander/src/mini-commander_applet.c:189
+#: mini-commander/src/mini-commander_applet.c:193
+msgid "Browser"
+msgstr "Navigateur"
+
+#: mini-commander/src/mini-commander_applet.c:194
+msgid "Click this button to start the browser"
+msgstr "Cliquez sur ce bouton pour lancer le navigateur"
+
+#: mini-commander/src/mini-commander_applet.c:208
+#: mini-commander/src/mini-commander_applet.c:212
+msgid "History"
+msgstr "Historique"
+
+#: mini-commander/src/mini-commander_applet.c:213
+msgid "Click this button for the list of previous commands"
+msgstr "Cliquez sur ce bouton pour un historique des commandes"
+
+#: mini-commander/src/mini-commander_applet.c:351
+msgid "Mini-Commander applet"
+msgstr "Aplet Mini-Commander"
+
+#: mini-commander/src/mini-commander_applet.c:352
+msgid "This applet adds a command line to the panel"
+msgstr "Cette applet ajoute une ligne de commande au tableau de bord"
+
+#: mini-commander/src/preferences.c:343
+msgid "You must specify a pattern"
+msgstr "Vous devez spécifier un motif"
+
+#: mini-commander/src/preferences.c:347
+msgid "You must specify a pattern and a command"
+msgstr "Vous devez spécifier un motif ou une commande"
+
+#: mini-commander/src/preferences.c:348
+msgid "You must specify a command"
+msgstr "Vous devez spécifier une commande"
+
+#: mini-commander/src/preferences.c:351
+msgid "You may not specify duplicate patterns"
+msgstr "Vous ne pouvez pas spécifier des motifs dupliqués"
 
 #: mixer/GNOME_MixerApplet.server.in.in.h:1
 msgid "Adjust the sound volume"
-msgstr "Régle le volume sonore"
+msgstr "Régler le volume sonore"
 
-#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:140
-#: mixer/mixer.c:818
+#: mixer/GNOME_MixerApplet.server.in.in.h:3 mixer/mixer.c:143
+#: mixer/mixer.c:827
 msgid "Volume Control"
 msgstr "Contrôle du volume"
 
@@ -3060,11 +2717,11 @@ msgstr "_Silence"
 msgid "_Run Volume Control..."
 msgstr "_Exécuter le contrôle du volume..."
 
-#: mixer/mixer.c:141
+#: mixer/mixer.c:144
 msgid "Volume Control (muted)"
 msgstr "Contrôle du volume (silencieux)"
 
-#: mixer/mixer.c:193
+#: mixer/mixer.c:196
 msgid ""
 "warning: this version of gmix was compiled with a different version of\n"
 "soundcard.h.\n"
@@ -3072,40 +2729,40 @@ msgstr ""
 "attention : cette version de gmix a été compilée avec une autre version de "
 "soundcard.h\n"
 
-#: mixer/mixer.c:204
+#: mixer/mixer.c:207
 #, c-format
 msgid "Querying available channels of mixer device %s failed\n"
 msgstr "La recherche des canaux du périphérique de mixage %s a échoué\n"
 
-#: mixer/mixer.c:211
+#: mixer/mixer.c:214
 msgid "warning: mixer has no volume channel - using PCM instead.\n"
 msgstr ""
 "attention : le mixeur n'a pas de canal de volume - utilisation de PCM à la "
 "place.\n"
 
-#: mixer/mixer.c:214
+#: mixer/mixer.c:217
 #, c-format
 msgid "Mixer device %s has neither volume nor PCM channels.\n"
 msgstr "Le périphérique de mixage %s n'a ni canal de volume, ni canal PCM\n"
 
-#: mixer/mixer.c:567
+#: mixer/mixer.c:572
 msgid "Volume Controller"
 msgstr "Contrôleur de volume"
 
-#: mixer/mixer.c:568
+#: mixer/mixer.c:573
 msgid "Use Up/Down arrow keys to change volume"
 msgstr "Utilisez les touches fléchées Haut/Bas pour changer le volume"
 
-#: mixer/mixer.c:819
+#: mixer/mixer.c:828
 msgid "(C) 2001 Richard Hult"
 msgstr "© 2001 Richard Hult"
 
-#: mixer/mixer.c:820
+#: mixer/mixer.c:829
 msgid "The volume control lets you set the volume level for your desktop."
 msgstr ""
 "Le contrôleur de volume vous permet de régler le volume de votre bureau."
 
-#: mixer/mixer.c:1053
+#: mixer/mixer.c:1074
 msgid "The volume control lets you set the volume level for your desktop"
 msgstr ""
 "Le contrôleur de volume vous permet de régler le volume de votre bureau"
@@ -3115,11 +2772,11 @@ msgid "Internet"
 msgstr "Internet"
 
 #: modemlights/GNOME_ModemLightsApplet.server.in.in.h:2
-#: modemlights/modemlights.c:224
+#: modemlights/modemlights.c:227
 msgid "Modem Lights"
 msgstr "Lumières du modem"
 
-#: modemlights/modemlights.c:226
+#: modemlights/modemlights.c:229
 msgid ""
 "Released under the GNU general public license.\n"
 "A modem status indicator and dialer.\n"
@@ -3129,7 +2786,7 @@ msgstr ""
 "Les lumières dans l'ordre à partir de la gauche ou du haut sont RX et TX.\n"
 "Distribué sous les termes de la Licence Publique Générale GNU."
 
-#: modemlights/modemlights.c:553
+#: modemlights/modemlights.c:558
 msgid ""
 "You are currently connected.\n"
 "Do you want to disconnect?"
@@ -3137,148 +2794,144 @@ msgstr ""
 "Vous êtes actuellement connecté.\n"
 "Voulez-vous vous déconnecter ?"
 
-#: modemlights/modemlights.c:568
+#: modemlights/modemlights.c:573
 msgid "Do you want to connect?"
 msgstr "Voulez-vous vous connecter ?"
 
-#: modemlights/modemlights.c:596
+#: modemlights/modemlights.c:601
 #, c-format
 msgid "%#.1fMb received / %#.1fMb sent / time: %.1d:%.2d"
 msgstr "%#.1f Mb reçus / %#.1f Mb envoyés / temps : %.1d:%.2d"
 
-#: modemlights/modemlights.c:601
+#: modemlights/modemlights.c:606
 msgid "not connected"
 msgstr "non connecté"
 
-#: modemlights/properties.c:326
+#: modemlights/properties.c:328
 msgid "Modem Lights Preferences"
 msgstr "Préférences de Lumières du modem"
 
-#: modemlights/properties.c:338
+#: modemlights/properties.c:342
 msgid "Connecting"
 msgstr "Connexion"
 
-#: modemlights/properties.c:352
+#: modemlights/properties.c:356
 msgid "Co_nnect command:"
 msgstr "Commande de co_nnexion :"
 
-#: modemlights/properties.c:369
+#: modemlights/properties.c:373
 msgid "_Disconnect command:"
 msgstr "Commande de _déconnexion :"
 
 #. confirmation checkbox
-#: modemlights/properties.c:382
+#: modemlights/properties.c:386
 msgid "Con_firm connection"
 msgstr "Confir_mez la connexion"
 
-#: modemlights/properties.c:403
+#: modemlights/properties.c:407
 msgid "U_pdates per second"
 msgstr "_Mises à jour par secondes"
 
 #. extra info checkbox
-#: modemlights/properties.c:417
+#: modemlights/properties.c:421
 msgid "Sho_w connect time and throughput"
 msgstr "_Afficher la durée de connexion et le débit"
 
-#: modemlights/properties.c:434
+#: modemlights/properties.c:438
 msgid "Receive data"
 msgstr "Réception de données"
 
-#: modemlights/properties.c:436
+#: modemlights/properties.c:440
 msgid "_Foreground"
 msgstr "_Premier plan"
 
-#: modemlights/properties.c:437
+#: modemlights/properties.c:441
 msgid "_Background"
 msgstr "_Arrière-plan"
 
-#: modemlights/properties.c:439
+#: modemlights/properties.c:443
 msgid "Send data"
 msgstr "Envoi de données"
 
-#: modemlights/properties.c:441
+#: modemlights/properties.c:445
 msgid "Foregroun_d"
 msgstr "P_remier plan"
 
-#: modemlights/properties.c:442
+#: modemlights/properties.c:446
 msgid "Backg_round"
 msgstr "A_rrière-plan"
 
-#: modemlights/properties.c:444
+#: modemlights/properties.c:448
 msgid "Connection status"
 msgstr "État de la connexion"
 
-#: modemlights/properties.c:446
+#: modemlights/properties.c:450
 msgid "Co_nnected"
 msgstr "Co_nnecté"
 
-#: modemlights/properties.c:447
+#: modemlights/properties.c:451
 msgid "No_t connected"
 msgstr "_Non connecté"
 
-#: modemlights/properties.c:448
+#: modemlights/properties.c:452
 msgid "A_waiting connection"
 msgstr "A_ttente de connexion"
 
-#: modemlights/properties.c:451
+#: modemlights/properties.c:455
 msgid "B_link"
 msgstr "_Clignotant"
 
-#: modemlights/properties.c:458
+#: modemlights/properties.c:462
 msgid "Text"
 msgstr "Texte"
 
-#: modemlights/properties.c:460
+#: modemlights/properties.c:464
 msgid "For_eground"
 msgstr "Pr_emier plan"
 
-#: modemlights/properties.c:461
+#: modemlights/properties.c:465
 msgid "Bac_kground"
 msgstr "Arr_ière-plan"
 
-#: modemlights/properties.c:462
+#: modemlights/properties.c:466
 msgid "O_utline"
 msgstr "So_uligné"
 
-#: modemlights/properties.c:464
-msgid "C_olors"
-msgstr "_Couleurs"
-
-#: modemlights/properties.c:473
+#: modemlights/properties.c:477
 msgid "Modem options"
 msgstr "Options du modem"
 
-#: modemlights/properties.c:487
+#: modemlights/properties.c:491
 msgid "_Modem lock file:"
 msgstr "Fichier de verrouillage du modem :"
 
-#: modemlights/properties.c:499
+#: modemlights/properties.c:503
 msgid "_Verify owner of lock file"
 msgstr "_Vérifier le propriétaire du fichier de verrouillage"
 
-#: modemlights/properties.c:511
+#: modemlights/properties.c:515
 msgid "_Device:"
 msgstr "_Périphérique :"
 
 #. ISDN checkbox
-#: modemlights/properties.c:524
+#: modemlights/properties.c:528
 msgid "U_se ISDN"
 msgstr "_Utiliser ISDN (Numéris)"
 
-#: modemlights/properties.c:544
+#: modemlights/properties.c:548
 msgid "Set options as default"
 msgstr "Définir les options par défaut"
 
-#: modemlights/properties.c:550
-msgid "_Advanced"
-msgstr "_Avancé"
+#: modemlights/properties.c:554
+msgid "Advanced"
+msgstr "Avancé"
 
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:1
 msgid "A system load indicator"
 msgstr "Indicateur de charge système"
 
 #: multiload/GNOME_MultiLoadApplet_Factory.server.in.in.h:2
-#: multiload/main.c:75
+#: multiload/main.c:78
 msgid "System Monitor"
 msgstr "Moniteur système"
 
@@ -3294,7 +2947,7 @@ msgstr "Charge processeur"
 msgid "Load Average"
 msgstr "Charge moyenne"
 
-#: multiload/main.c:77
+#: multiload/main.c:80
 msgid ""
 "Released under the GNU General Public License.\n"
 "\n"
@@ -3306,27 +2959,27 @@ msgstr ""
 "Un moniteur de charge système capable d'afficher des graphiques pour le CPU, "
 "la RAM, le swap, et le trafic réseau."
 
-#: multiload/main.c:227
+#: multiload/main.c:236 multiload/properties.c:373
 msgid "Processor"
 msgstr "Processeur"
 
-#: multiload/main.c:229
+#: multiload/main.c:238 multiload/properties.c:379
 msgid "Memory"
 msgstr "Mémoire"
 
-#: multiload/main.c:231
+#: multiload/main.c:240 multiload/properties.c:385
 msgid "Network"
 msgstr "Réseau"
 
-#: multiload/main.c:233
+#: multiload/main.c:242 multiload/properties.c:391
 msgid "Swap File"
 msgstr "Fichier d'échange"
 
-#: multiload/main.c:235
+#: multiload/main.c:244
 msgid "Resource"
 msgstr "Ressource"
 
-#: multiload/main.c:247
+#: multiload/main.c:256
 #, c-format
 msgid ""
 "%s:\n"
@@ -3363,23 +3016,13 @@ msgstr "_Réseau"
 msgid "_Swap File"
 msgstr "_Fichier d'échange"
 
-#.
-#. check_box = gtk_check_button_new_with_mnemonic(_("_Average"));
-#. gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_box),
-#. panel_applet_gconf_get_bool(multiload_applet->applet, "view_loadavg", NULL));
-#. gtk_box_pack_start(GTK_BOX(hbox), check_box, FALSE, FALSE, 0);
-#.
-#: multiload/properties.c:313
-msgid "Options"
-msgstr "Options"
-
 #: multiload/properties.c:326
 msgid "System m_onitor width: "
-msgstr "_Largeur du moniteur système :"
+msgstr "Largeur du _moniteur système :"
 
 #: multiload/properties.c:328
 msgid "System m_onitor height: "
-msgstr "_Hauteur du moniteur système :"
+msgstr "Hauteur du _moniteur système :"
 
 #: multiload/properties.c:342
 msgid "pixels"
@@ -3387,15 +3030,11 @@ msgstr "pixels"
 
 #: multiload/properties.c:348
 msgid "Sys_tem monitor update interval: "
-msgstr "_Intervalle de mises à jour du moniteur système :"
+msgstr "Intervalles de mises à jour du moniteur sys_tème :"
 
 #: multiload/properties.c:360
 msgid "milliseconds"
 msgstr "millisecondes"
-
-#: multiload/properties.c:373
-msgid "P_rocessor"
-msgstr "_Processeur"
 
 #: multiload/properties.c:374
 msgid "_User"
@@ -3403,27 +3042,23 @@ msgstr "_Utilisateur"
 
 #: multiload/properties.c:375
 msgid "S_ystem"
-msgstr "_Système"
+msgstr "S_ystème"
 
 #: multiload/properties.c:376
 msgid "N_ice"
-msgstr "_Nice"
+msgstr "N_ice"
 
 #: multiload/properties.c:377
 msgid "I_dle"
-msgstr "_Idle"
-
-#: multiload/properties.c:379
-msgid "M_emory"
-msgstr "_Mémoire"
+msgstr "I_dle"
 
 #: multiload/properties.c:380
 msgid "Ot_her"
-msgstr "_Autre"
+msgstr "Au_tre"
 
 #: multiload/properties.c:381
 msgid "Sh_ared"
-msgstr "_Partagé"
+msgstr "Part_agé"
 
 #: multiload/properties.c:382
 msgid "_Buffers"
@@ -3431,11 +3066,7 @@ msgstr "_Tampons"
 
 #: multiload/properties.c:383
 msgid "F_ree"
-msgstr "_Libre"
-
-#: multiload/properties.c:385
-msgid "Net_work"
-msgstr "_Réseau"
+msgstr "L_ibre"
 
 #: multiload/properties.c:386
 msgid "S_LIP"
@@ -3447,15 +3078,11 @@ msgstr "_PLIP"
 
 #: multiload/properties.c:388
 msgid "Et_hernet"
-msgstr "_Ethernet"
+msgstr "Et_hernet"
 
 #: multiload/properties.c:389
 msgid "_Other"
 msgstr "_Autre"
-
-#: multiload/properties.c:391
-msgid "Swap _File"
-msgstr "_Fichier d'échange"
 
 #: multiload/properties.c:392
 msgid "_Used"
@@ -3465,7 +3092,7 @@ msgstr "_Utilisé"
 msgid "_Free"
 msgstr "_Libre"
 
-#: multiload/properties.c:411
+#: multiload/properties.c:413
 msgid "System Monitor Preferences"
 msgstr "Préférences du moniteur système"
 
@@ -3497,16 +3124,16 @@ msgstr "Menu Actions"
 msgid "Add items to the Menu Bar"
 msgstr "Ajouter des éléments à la barre de menu"
 
-#: panel-menu/panel-menu-add.c:240 panel-menu/panel-menu-links.c:139
+#: panel-menu/panel-menu-add.c:244 panel-menu/panel-menu-links.c:139
 #: panel-menu/panel-menu-links.c:405
 msgid "Shortcuts"
 msgstr "Raccourcis"
 
-#: panel-menu/panel-menu-add.c:246
+#: panel-menu/panel-menu-add.c:250
 msgid "My Documents"
 msgstr "Mes documents"
 
-#: panel-menu/panel-menu-add.c:252 panel-menu/panel-menu-documents.c:134
+#: panel-menu/panel-menu-add.c:256 panel-menu/panel-menu-documents.c:134
 #: panel-menu/panel-menu-documents.c:399
 msgid "Documents"
 msgstr "Documents"
@@ -3515,7 +3142,7 @@ msgstr "Documents"
 msgid "Applications"
 msgstr "Applications"
 
-#: panel-menu/panel-menu-common.c:735
+#: panel-menu/panel-menu-common.c:738
 msgid ""
 "Removing this entry is not allowed as this will cause the Menu Bar applet to "
 "be removed from GNOME Panel"
@@ -3535,19 +3162,19 @@ msgstr "Maison"
 msgid "Edit directory item..."
 msgstr "Éditer l'élément de dossier..."
 
-#: panel-menu/panel-menu-directory.c:684 panel-menu/panel-menu-path.c:734
+#: panel-menu/panel-menu-directory.c:686 panel-menu/panel-menu-path.c:736
 msgid "_Path:"
 msgstr "_Chemin :"
 
-#: panel-menu/panel-menu-directory.c:692
+#: panel-menu/panel-menu-directory.c:694
 msgid "..."
 msgstr "..."
 
-#: panel-menu/panel-menu-directory.c:702
+#: panel-menu/panel-menu-directory.c:704
 msgid "_Depth level:"
 msgstr "_Niveau de profondeur :"
 
-#: panel-menu/panel-menu-directory.c:799
+#: panel-menu/panel-menu-directory.c:801
 msgid "Path specified is currently not a valid directory."
 msgstr "Le chemin spécifié n'est pas un répertoire valide."
 
@@ -3596,31 +3223,31 @@ msgstr "Préférences"
 msgid "Menu Bar Preferences"
 msgstr "Préférences de la barre de menu"
 
-#: panel-menu/panel-menu-properties.c:76
+#: panel-menu/panel-menu-properties.c:78
 msgid "Layout"
 msgstr "Agencement"
 
-#: panel-menu/panel-menu-properties.c:91
+#: panel-menu/panel-menu-properties.c:93
 msgid "_Applications Menu"
 msgstr "Menu _Applications"
 
-#: panel-menu/panel-menu-properties.c:115
+#: panel-menu/panel-menu-properties.c:117
 msgid "Select an icon for the Applications menu"
 msgstr "Sélectionnez une icône pour le menu Applications"
 
-#: panel-menu/panel-menu-properties.c:132
+#: panel-menu/panel-menu-properties.c:134
 msgid "_Preferences Menu"
 msgstr "Menu des _préférences"
 
-#: panel-menu/panel-menu-properties.c:143
+#: panel-menu/panel-menu-properties.c:145
 msgid "Ac_tions Menu"
 msgstr "Menu Ac_tions"
 
-#: panel-menu/panel-menu-properties.c:154
+#: panel-menu/panel-menu-properties.c:156
 msgid "_Windows Menu"
 msgstr "Menu _Fenêtres"
 
-#: panel-menu/panel-menu-properties.c:165
+#: panel-menu/panel-menu-properties.c:167
 msgid "W_orkspaces Menu"
 msgstr "Menu _Bureau"
 
@@ -3632,19 +3259,400 @@ msgstr "Fenêtres"
 msgid "Workspaces"
 msgstr "Bureaux"
 
-#: panel-menu/panel-menu.c:691
+#: panel-menu/panel-menu.c:693
 msgid "Menu Bar"
 msgstr "Barre de menu"
 
-#: panel-menu/panel-menu.c:692
+#: panel-menu/panel-menu.c:694
 msgid "(c) 2001 Chris Phelps"
 msgstr "© 2001 Chris Phelps"
 
-#: panel-menu/panel-menu.c:693
+#: panel-menu/panel-menu.c:695
 msgid "The Menu Bar allows you to display customized menubars on your panels."
 msgstr ""
 "La barre de menu vous permet d'ajouter des barres de menus personnalisées à "
 "vos tableaux de bord."
+
+#: screen-exec/egg-screen-help.c:174
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr "Incapable de trouver le domaine GNOME_FILE_DOMAIN_APP_HELP"
+
+#: screen-exec/egg-screen-help.c:187
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr "Incapable de trouver le domaine GNOME_FILE_DOMAIN_HELP."
+
+#: screen-exec/egg-screen-help.c:200 screen-exec/egg-screen-help.c:215
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+"Incapable d'afficher l'aide car %s n'est pas un répertoire. Veuillez "
+"vérifier votre installation."
+
+#: screen-exec/egg-screen-help.c:224 screen-exec/egg-screen-help.c:240
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+"Incapable de trouver les fichiers d'aide dans %s ou %s. Veuillez vérifier "
+"votre installation"
+
+#: screen-exec/egg-screen-help.c:315
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr "Incapable de trouver le doc_id %s dans votre chemin d'aide"
+
+#: screen-exec/egg-screen-help.c:336
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr "Le document d'aide %s/%s n'a pas été trouvé"
+
+#: wireless/wireless-applet.c:343
+msgid ""
+"The images necessary to run the wireless monitor are missing.\n"
+"Please make sure that it is correctly installed."
+msgstr ""
+"Les images nécessaires au fonctionnement du moniteur de réseau sans fil sont "
+"manquantes.\n"
+"Veuillez vérifier quelles sont correctement installées."
+
+#: wireless/wireless-applet.c:524
+msgid "No Wireless Devices"
+msgstr "Aucun périphériques sans fil"
+
+#: wireless/wireless-applet.c:526
+msgid ""
+"There doesn't seem to be any wireless devices configured on your system.\n"
+"Please verify your configuration if you think this is incorrect."
+msgstr ""
+"Il ne semble pas qu'il y ai de périphériques sans fil configuré sur votre "
+"système.\n"
+"Veuillez vérifier votre configuration si vous pensez que cela est incorrect."
+
+#: wireless/wireless-applet.c:718
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:2
+msgid "Wireless Link Monitor"
+msgstr "Moniteur de réseau sans fil"
+
+#: wireless/wireless-applet.c:720
+msgid "(C) 2001, 2002 Free Software Foundation "
+msgstr "© 2001, 2002 Free Software Foundation"
+
+#: wireless/wireless-applet.c:721
+msgid "This utility shows the status of a wireless link."
+msgstr "Cet utilitaire affiche l'état d'un lien de réseau sans fil."
+
+#: wireless/wireless-applet.glade.h:1
+msgid "Monitored Device:"
+msgstr "Périphérique surveillé :"
+
+#: wireless/wireless-applet.glade.h:2
+msgid "Show _dialog boxes"
+msgstr "Afficher les boîtes de _dialogue"
+
+#: wireless/wireless-applet.glade.h:3
+msgid "Show signal strength in _percentage"
+msgstr "Afficher la force du signal en _pourcentage"
+
+#: wireless/wireless-applet.glade.h:4
+msgid "Wireless Link Monitor Preferences"
+msgstr "Préférences pour le moniteur de réseau sans fil"
+
+#: wireless/GNOME_Panel_WirelessApplet.server.in.in.h:1
+msgid "Monitor the quality of a wireless network link"
+msgstr "Surveille la qualité d'un lien de réseau sans fil"
+
+#~ msgid "_Edit"
+#~ msgstr "_Éditer"
+
+#~ msgid "_Up"
+#~ msgstr "_Haut"
+
+#~ msgid "Dow_n"
+#~ msgstr "_Bas"
+
+#~ msgid "_Delete"
+#~ msgstr "_Effacer"
+
+#~ msgid "Armenia"
+#~ msgstr "Arménie"
+
+#~ msgid "Australia"
+#~ msgstr "Australie"
+
+#~ msgid "Austria"
+#~ msgstr "Autriche"
+
+#~ msgid "Belgium"
+#~ msgstr "Belgique"
+
+#~ msgid "Brazil"
+#~ msgstr "Brésil"
+
+#~ msgid "Bulgaria"
+#~ msgstr "Bulgarie"
+
+#~ msgid "Canada"
+#~ msgstr "Canada"
+
+#~ msgid "Caribic"
+#~ msgstr "Caraibes"
+
+#~ msgid "France"
+#~ msgstr "France"
+
+#~ msgid "Georgia"
+#~ msgstr "Georgie"
+
+#~ msgid "Germany"
+#~ msgstr "Allemagne"
+
+#~ msgid "Great Britain"
+#~ msgstr "Grande-bretagne"
+
+#~ msgid "Greece"
+#~ msgstr "Grèce"
+
+#~ msgid "Hungary"
+#~ msgstr "Hongrie"
+
+#~ msgid "Jamaica"
+#~ msgstr "Jamaique"
+
+#~ msgid "New Zealand"
+#~ msgstr "Nouvelle zélande"
+
+#~ msgid "Norway"
+#~ msgstr "Norvège"
+
+#~ msgid "Poland"
+#~ msgstr "Pologne"
+
+#~ msgid "Portugal"
+#~ msgstr "Portugal"
+
+#~ msgid "Russia"
+#~ msgstr "Russie"
+
+#~ msgid "Slovak Republic"
+#~ msgstr "République slave"
+
+#~ msgid "Slovenia"
+#~ msgstr "Slovénie"
+
+#~ msgid "South Africa"
+#~ msgstr "Afrique du Sud"
+
+#~ msgid "Spain"
+#~ msgstr "Espagne"
+
+#~ msgid "Sweden"
+#~ msgstr "Suède"
+
+#~ msgid "Switzerland"
+#~ msgstr "Suisse"
+
+#~ msgid "Thailand"
+#~ msgstr "Thailande"
+
+#~ msgid "Turkey"
+#~ msgstr "Turquie"
+
+#~ msgid "United Kingdom"
+#~ msgstr "Royaume Uni"
+
+#~ msgid "United States"
+#~ msgstr "État-Unis"
+
+#~ msgid "Yugoslavia"
+#~ msgstr "Yougoslavie"
+
+#~ msgid "Armenian"
+#~ msgstr "Armènien"
+
+#~ msgid "Basque"
+#~ msgstr "Basque"
+
+#~ msgid "Bulgarian"
+#~ msgstr "Bulgarie"
+
+#~ msgid "Dutch"
+#~ msgstr "Allemand"
+
+#~ msgid "English"
+#~ msgstr "Anglais"
+
+#~ msgid "French"
+#~ msgstr "Français"
+
+#~ msgid "Georgian"
+#~ msgstr "Georgien"
+
+#~ msgid "German"
+#~ msgstr "Allemand"
+
+#~ msgid "Greek"
+#~ msgstr "Grec"
+
+#~ msgid "Hungarian"
+#~ msgstr "Hongrois"
+
+#~ msgid "Norwegian"
+#~ msgstr "Norvégien"
+
+#~ msgid "Polish"
+#~ msgstr "Polonais"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugais"
+
+#~ msgid "Russian"
+#~ msgstr "Russe"
+
+#~ msgid "Slovak"
+#~ msgstr "Slovaque"
+
+#~ msgid "Slovenian"
+#~ msgstr "Slovène"
+
+#~ msgid "Swedish"
+#~ msgstr "Suédois"
+
+#~ msgid "Thai"
+#~ msgstr "Thailandais"
+
+#~ msgid "Turkish"
+#~ msgstr "Turque"
+
+#~ msgid "Wallon"
+#~ msgstr "Suisse"
+
+#~ msgid "Yugoslavian"
+#~ msgstr "Yougoslave"
+
+#~ msgid "105"
+#~ msgstr "105"
+
+#~ msgid "101"
+#~ msgstr "101"
+
+#~ msgid "102"
+#~ msgstr "102"
+
+#~ msgid "450"
+#~ msgstr "450"
+
+#~ msgid "84"
+#~ msgstr "84"
+
+#~ msgid "mklinux"
+#~ msgstr "mklinux"
+
+#~ msgid "type5"
+#~ msgstr "type5"
+
+#~ msgid "iso-8859-1"
+#~ msgstr "iso-8859-1"
+
+#~ msgid "iso-8859-2"
+#~ msgstr "iso-8859-2"
+
+#~ msgid "iso-8859-7"
+#~ msgstr "iso-8859-7"
+
+#~ msgid "iso-8859-9"
+#~ msgstr "iso-8859-9"
+
+#~ msgid "am-armscii8"
+#~ msgstr "am-armscii8"
+
+#~ msgid "be-latin1"
+#~ msgstr "be-latin1"
+
+#~ msgid "cp1251"
+#~ msgstr "cp1251"
+
+#~ msgid "georgian-academy"
+#~ msgstr "georgian-academy"
+
+#~ msgid "koi8-r"
+#~ msgstr "koi8-r"
+
+#~ msgid "tis620"
+#~ msgstr "tis620"
+
+#~ msgid "ix86"
+#~ msgstr "ix86"
+
+#~ msgid "Sun"
+#~ msgstr "Sun"
+
+#~ msgid "mac"
+#~ msgstr "mac"
+
+#~ msgid "sgi"
+#~ msgstr "sgi"
+
+#~ msgid "dec"
+#~ msgstr "dec"
+
+#~ msgid "ibm"
+#~ msgstr "ibm"
+
+#~ msgid "Lan_guage:"
+#~ msgstr "Lan_gue :"
+
+#~ msgid "Count_ry:"
+#~ msgstr "Pa_ys :"
+
+#~ msgid ""
+#~ "Flag\n"
+#~ "Pixmap"
+#~ msgstr ""
+#~ "Drapeau\n"
+#~ "Pixmap"
+
+#~ msgid "Arc_hitecture:"
+#~ msgstr "Arc_hitecture :"
+
+#~ msgid "_Type:"
+#~ msgstr "_Type :"
+
+#~ msgid "Code_page:"
+#~ msgstr "Code_page :"
+
+#~ msgid "_Options"
+#~ msgstr "_Options"
+
+#~ msgid "The keymap switching command returned with error!"
+#~ msgstr ""
+#~ "La commande de changement de mappage clavier a retourné une erreur !"
+
+#~ msgid "_Appearance"
+#~ msgstr "_Apparence"
+
+#~ msgid "_Location"
+#~ msgstr "_Emplacement"
+
+#~ msgid "_General"
+#~ msgstr "_Général"
+
+#~ msgid "C_olors"
+#~ msgstr "_Couleurs"
+
+#~ msgid "P_rocessor"
+#~ msgstr "P_rocesseur"
+
+#~ msgid "M_emory"
+#~ msgstr "M_émoire"
+
+#~ msgid "Net_work"
+#~ msgstr "Ré_seau"
+
+#~ msgid "Swap _File"
+#~ msgstr "_Fichier d'échange"
 
 #~ msgid "Apperance"
 #~ msgstr "Apparence"
@@ -3652,11 +3660,84 @@ msgstr ""
 #~ msgid "_Refresh"
 #~ msgstr "_Rafraîchir"
 
+#~ msgid "Enter symbols delimited with \"+\" in the box below."
+#~ msgstr ""
+#~ "Saisissez les symboles délimités avec \"+\" dans la boîte ci-dessous."
+
+#~ msgid "Stock Sy_mbol:"
+#~ msgstr "Sy_mbole de la valeur :"
+
+#~ msgid "Stock C_hange:"
+#~ msgstr "C_hangement de valeur :"
+
+#~ msgid "not unique"
+#~ msgstr "non unique"
+
+#~ msgid "completing..."
+#~ msgstr "terminaison..."
+
+#~ msgid "completed"
+#~ msgstr "complété"
+
+#~ msgid "not found"
+#~ msgstr "non trouvé"
+
+#~ msgid "no /bin/sh"
+#~ msgstr "pas de /bin/sh"
+
+#~ msgid "end of history list"
+#~ msgstr "fin de l'historique"
+
+#~ msgid "starting..."
+#~ msgstr "lancement..."
+
+#~ msgid "autocompleted"
+#~ msgstr "autocomplété"
+
 #~ msgid "fork error"
 #~ msgstr "erreur de clonage"
 
 #~ msgid "child exited"
 #~ msgstr "fin du fils"
+
+#~ msgid "%H:%M - %d. %b"
+#~ msgstr "%H:%M - %d. %b"
+
+#~ msgid "%H:%M"
+#~ msgstr "%H:%M"
+
+#~ msgid "%d. %b"
+#~ msgstr "%d: %b"
+
+#~ msgid "orient. changed"
+#~ msgstr "orient. changée"
+
+#~ msgid "size changed"
+#~ msgstr "taille modifiée"
+
+#~ msgid "ready..."
+#~ msgstr "prêt..."
+
+#~ msgid "Clock"
+#~ msgstr "Horloge"
+
+#~ msgid "Show time"
+#~ msgstr "Affiche l'heure"
+
+#~ msgid "Show date"
+#~ msgstr "Affiche la date"
+
+#~ msgid "Applet height:"
+#~ msgstr "Hauteur de l'applet"
+
+#~ msgid "Command line height:"
+#~ msgstr "Hauteur de la ligne de commande :"
+
+#~ msgid "Regex _%.2d:"
+#~ msgstr "Expr. reg. _%.2d :"
+
+#~ msgid "   Macro _%.2d:"
+#~ msgstr "   Macro _%.2d :"
 
 #~ msgid "name_%d"
 #~ msgstr "nom_%d"
@@ -3881,8 +3962,8 @@ msgstr ""
 #~ msgid "Load Average Applet"
 #~ msgstr "Applet Usage Disque"
 
-#~ msgid "Clock color"
-#~ msgstr "Couleurs de l'horloge"
+#~ msgid "Clock Settings"
+#~ msgstr "Paramètres de l'horloge"
 
 #~ msgid "Hour needle color"
 #~ msgstr "Couleur de l'aiguille des heures"
@@ -3903,7 +3984,7 @@ msgstr ""
 #~ msgstr "Une autre Applet GNOME Horloge"
 
 #~ msgid "(C) 1999 the Free Software Foundation"
-#~ msgstr "© 1999 la Free Software Foundation"
+#~ msgstr "© 1999 the Free Software Foundation"
 
 #~ msgid "An analog clock similar to that in CDE panel."
 #~ msgstr ""
@@ -3914,7 +3995,7 @@ msgstr ""
 #~ msgstr "ASClock"
 
 #~ msgid "(C) 1998 the Free Software Foundation"
-#~ msgstr "© 1998 la Free Software Foundation"
+#~ msgstr "© 1998 the Free Software Foundation"
 
 #~ msgid "Who said NeXT is dead?"
 #~ msgstr ""
@@ -4193,9 +4274,6 @@ msgstr ""
 #~ msgid "Fonts"
 #~ msgstr "Polices"
 
-#~ msgid "Font:"
-#~ msgstr "Police :"
-
 #~ msgid "Diskusage Settings"
 #~ msgstr "Paramètres de Diskusage"
 
@@ -4370,8 +4448,9 @@ msgstr ""
 #~ msgid "Can't create life applet!"
 #~ msgstr "Ne peut créer l'applet fifteen !"
 
+#, fuzzy
 #~ msgid "(c) 1998 The Free Software Foundation"
-#~ msgstr "© 1998 la Free Software Foundation"
+#~ msgstr "© 1997 la Free Software Foundation"
 
 #, fuzzy
 #~ msgid "CPU Load Applet"
@@ -4445,8 +4524,9 @@ msgstr ""
 #~ msgid "Odometer"
 #~ msgstr "Odomètre"
 
+#, fuzzy
 #~ msgid "(C) 1999 The Free Software Foundation"
-#~ msgstr "© 1999 la Free Software Foundation"
+#~ msgstr "© 1999 the Free Software Foundation"
 
 #, fuzzy
 #~ msgid "Odometer setting"
@@ -4469,11 +4549,8 @@ msgstr ""
 #~ msgstr "Propriétés..."
 
 #, fuzzy
-#~ msgid "Delete launcher"
-#~ msgstr "Supprimer la note"
-
 #~ msgid "Copyright (C) 1999 Tom Gilbert"
-#~ msgstr "Copyright © 1999 Tom Gilbert"
+#~ msgstr "Copyright © 1998"
 
 #, fuzzy
 #~ msgid "Screen-Shooter Settings"
@@ -4499,8 +4576,9 @@ msgstr ""
 #~ msgid "Proxy Port: "
 #~ msgstr "Hôte proxy :"
 
+#, fuzzy
 #~ msgid "(C) 1998-2000"
-#~ msgstr "© 1998-2000"
+#~ msgstr "© 2000"
 
 #, fuzzy
 #~ msgid "No articles"
@@ -4577,10 +4655,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Test Module"
 #~ msgstr "Mode applet :"
-
-#, fuzzy
-#~ msgid "Width:"
-#~ msgstr "Vent :"
 
 #, fuzzy
 #~ msgid "Use panel size hint"

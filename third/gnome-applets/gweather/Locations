@@ -1061,19 +1061,18 @@ loc17=Jackson KJXN MIZ074 dtw
 loc18=Kalamazoo KAZO MIZ072 mkg
 loc19=Lansing KLAN MIZ066 mkg
 loc20=Manistee KMBL MIZ031 mkg
-loc21=Marquette KMQT MIZ005 htl
-loc22=Menominee KMNM MIZ012 htl
-loc23=Mount\\ Clemens KMTC MIZ070 dtw
-loc24=Muskegon KMKG MIZ050 mkg
-loc25=Oscoda KOSC MIZ036 mkg
-loc26=Pellston KPLN MIZ016 htl
-loc27=Pontiac KPTK MIZ069 mkg
-loc28=Saginaw KMBS MIZ053 mkg
-loc29=Sault\\ Ste\\ Marie KSSM MIZ008 htl
-loc30=Sawyer\\ AFB KSAW MIZ077 ord
-loc31=Seul\\ Choix\\ Pt KP75 ------ htl
-loc32=Traverse\\ City KTVC MIZ020 htl
-loc33=Ypsilanti KYIP MIZ075 dtw
+loc21=Menominee KMNM MIZ012 htl
+loc22=Mount\\ Clemens KMTC MIZ070 dtw
+loc23=Muskegon KMKG MIZ050 mkg
+loc24=Oscoda KOSC MIZ036 mkg
+loc25=Pellston KPLN MIZ016 htl
+loc26=Pontiac KPTK MIZ069 mkg
+loc27=Saginaw KMBS MIZ053 mkg
+loc28=Sault\\ Ste\\ Marie KSSM MIZ008 htl
+loc29=Sawyer\\ AFB KSAW MIZ077 ord
+loc30=Seul\\ Choix\\ Pt KP75 ------ htl
+loc31=Traverse\\ City KTVC MIZ020 htl
+loc32=Ypsilanti KYIP MIZ075 dtw
 
 [US_MN]
 name=Minnesota
@@ -1507,7 +1506,7 @@ loc31=Yakima KYKM WAZ025 sea
 
 [CA]
 name=Canada
-states=AB BC MB NB NF NS NT ON PE QC SK YK
+states=AB BC MB NB NF NS NT NU ON PE QC SK YK
 
 [CA_AB]
 name=Alberta
@@ -1528,12 +1527,14 @@ loc5=Victoria CYYJ ------ ---
 name=Manitoba
 loc0=Churchill CYYQ ------ ---
 loc1=Winnipeg CYWG ------ ---
+loc2=Brandon CYBR ------ ---
 
 [CA_NB]
 name=New Brunswick
 loc0=Chatham CYCH ------ ---
 loc1=Fredericton CYFC ------ ---
 loc2=Moncton CYQM ------ ---
+loc3=Saint\\ John CYSJ ------- ---
 
 [CA_NF]
 name=Newfoundland
@@ -1543,6 +1544,7 @@ loc2=Goose\\ Bay CYYR ------ ---
 loc3=Saint\\ Anthony CYAY ------ ---
 loc4=St.\\ John's CYYT ------ ---
 loc5=Stephenville CYJT ------ ---
+loc6=Bonavista CWVA ------ ---
 
 [CA_NS]
 name=Nova Scotia
@@ -1550,34 +1552,54 @@ loc0=Greenwood CYZX ------ ---
 loc1=Halifax CYHZ ------ ---
 loc2=Shearwater CYAW ------ ---
 loc3=Sydney CYQY ------ ---
+loc4=Amherst CWAH ------ ---
+loc5=Truro CWUR ------ ---
+loc6=Yarmouth CYQI ------ ---
 
 [CA_NT]
 name=Northwest Territories
+loc0=Yellowknife CYZF ------ ---
+loc1=Baker\\ Lake CYBK ------ ---
+
+[CA_NU]
+name=Nunavut
 loc0=Frobisher CYFB ------ ---
 loc1=Iqaluit CYFB ------ ---
-loc2=Yellowknife CYZF ------ ---
+loc2=Alert CWLT ------ ---
 
 [CA_ON]
 name=Ontario
-loc0=Ottawa CYOW ------ ---
+loc0=Ottawa CYOW ------ tyx
 loc1=Toronto CYYZ ------ 047
-loc2=Trenton CYTR ------ ---
+loc2=Trenton CYTR ------ buf
 loc3=Windsor CYQG ------ ---
+loc4=Kingston CYGK ------ tyx
+loc4=Atikokan CWCH ------ ---
+loc5=Barrie CWCU ------ ---
+loc6=Peterborough CYPQ ------ ---
+loc7=Hamilton CYHM ------ ---
+loc8=London CYXU ------ ---
+loc9=North\\ Bay CYYB ------ ---
+loc10=Sudbury CYSB ------ ---
+loc11=Timmins CYTS ------ ---
+loc12=Thunder\\ Bay CYQT ------ ---
 
 [CA_PE]
 name=Prince Edward Island
-loc0=Charlottetown CYYG ------ ---
+loc0=Charlottetown CWYG ------ ---
+loc1=Summerside CWUS ------ ---
 
 [CA_QC]
 name=Quebec
 loc0=Bagotville CYBG ------ ---
 loc1=Gatineau CYND ------ ---
 loc2=La\\ Grande CYGL ------ ---
-loc3=Montreal\\ Saint-Hubert CYHU ------ ---
-loc4=Montreal\\ Mirabel CYMX ------ ---
-loc5=Montreal\\ Dorval CYUL ------ ---
+loc3=Montreal\\ Saint-Hubert CYHU ------ cxx
+loc4=Montreal\\ Mirabel CYMX ------ cxx
+loc5=Montreal\\ Dorval CYUL ------ cxx
 loc6=Quebec\\ City CYQB ------ ---
 loc7=Sept-Iles CYZV ------ ---
+loc8=Trois\\ Rivieres CWTY ------ ---
 
 [CA_SK]
 name=Saskatchewan
@@ -1589,6 +1611,7 @@ loc3=Swift\\ Current CYYN ------ ---
 [CA_YK]
 name=Yukon
 loc0=Shingle\\ Point CYUA ------ ---
+loc1-Whitehorse CYXY ------ ---
 
 [EU]
 name=Europe
@@ -1615,18 +1638,19 @@ name=Belgium
 loc0=Antwerpen EBAW ------ ---
 loc1=Beauvechain EBBE ------ ---
 loc2=Brasschaat EBBT ------ ---
-loc3=Brussels/National EBBR ------ ---
-loc4=Charleroi/Brussels\\ South EBCI ------ ---
-loc5=Chievres EBCV ------ ---
-loc6=Elsenborn EBLB ------ ---
-loc7=Florennes EBFS ------ ---
-loc8=Goetsenhoven EBTN ------ ---
-loc9=Kleine\\ Brogel EBBL ------ ---
-loc10=Koksijde EBFN ------ ---
-loc11=Liege EBLG ------ ---
-loc12=Oostende EBOS ------ ---
-loc13=Sint-Truiden EBST ------ ---
-loc14=? EBDT ------ ---
+loc3=Charleroi EBCI ------ ---
+loc4=Chievres EBCV ------ ---
+loc5=Elsenborn EBLB ------ ---
+loc6=Florennes EBFS ------ ---
+loc7=Goetsenhoven EBTN ------ ---
+loc8=Kleine\\ Brogel EBBL ------ ---
+loc9=Koksijde EBFN ------ ---
+loc10=Liege EBLG ------ ---
+loc11=Oostende EBOS ------ ---
+loc12=Saint-Hubert EBSH ------ ---
+loc13=Schaffen EBDT ------ ---
+loc14=Spa EBSP ------ ---
+loc15=Zaventem EBBR ------ ---
 
 [EU_BA]
 name=Bosnia-Herzegovina
@@ -1736,7 +1760,7 @@ loc14=Fagernes ENFG ------ ---
 loc15=Floro ENFL ------ ---
 loc16=Frigg ENFR ------ ---
 loc17=Gullfax\\ C ENGC ------ ---
-loc18=Oslo/Gardenmoen ENGM ------ ---
+loc18=Oslo/Gardermoen ENGM ------ ---
 loc19=Haugesund ENHD ------ ---
 loc20=Hammerfest ENHF ------ ---
 loc21=Honningsvag ENHV ------ ---
@@ -1865,7 +1889,8 @@ loc52=Yuzhno-Sakhalinsk UHSS ------ ---
 [EU_SK]
 name=Slovakia
 loc0=Bratislava LZIB ------ ---
-loc1=Poprad LZTT ------ ---
+loc1=Kosice LZKZ ------ ---
+loc2=Poprad LZTT ------ ---
 
 [EU_SI]
 name=Slovenia
@@ -1879,16 +1904,17 @@ loc0=Goteborg\\ (Landvetter) ESGG ------ ---
 loc1=Goteborg\\ (Save) ESGP ------ ---
 loc2=Jonkoping ESGJ ------ ---
 loc3=Kiruna ESNQ ------ ---
-loc4=Malmo/Sturup ESMS ------ ---
-loc5=Norrkoping ESSP ------ ---
-loc6=Ronneby ESDF ------ ---
-loc7=Stockholm\\ (Arlanda) ESSA ------ ---
-loc8=Stockholm\\ (Bromma) ESSB ------ ---
-loc9=Sundsvall-Harnosand ESNN ------ ---
-loc10=Umea ESNU ------ ---
-loc11=Vasteras ESOW ------ ---
-loc12=Vaxjo ESMX ------ ---
-loc13=Visby ESSV ------ ---
+loc4=Lulea ESPA ------ ---
+loc5=Malmo/Sturup ESMS ------ ---
+loc6=Norrkoping ESSP ------ ---
+loc7=Ronneby ESDF ------ ---
+loc8=Stockholm\\ (Arlanda) ESSA ------ ---
+loc9=Stockholm\\ (Bromma) ESSB ------ ---
+loc10=Sundsvall-Harnosand ESNN ------ ---
+loc11=Umea ESNU ------ ---
+loc12=Vasteras ESOW ------ ---
+loc13=Vaxjo ESMX ------ ---
+loc14=Visby ESSV ------ ---
 
 [EU_CH]
 name=Switzerland
@@ -1941,9 +1967,20 @@ loc3=Paphos LCPH ------ ---
 
 [EU_FI]
 name=Finland
-loc0=Helsinki EFHK ------ ---
-loc1=Tampere EFTP ------ ---
-loc2=Turku EFTU ------ ---
+loc0=Helsinki-Malmi EFHF ------ ---
+loc1=Helsinki-Vantaa EFHK ------ ---
+loc2=Ivalo EFIV ------ ---
+loc3=Jyvaskyla EFJY ------ ---
+loc4=Kemi EFKE ------ ---
+loc5=Kruunupyy EFKK ------ ---
+loc6=Kuopio EFKU ------ ---
+loc7=Mariehamn EFMA ------ ---
+loc8=Oulu EFOU ------ ---
+loc9=Pori EFPO ------ ---
+loc10=Rovaniemi EFRO ------ ---
+loc11=Tampere EFTP ------ ---
+loc12=Turku EFTU ------ ---
+loc13=Vaasa EFVA ------ ---
 
 [EU_FR]
 name=France
@@ -2032,17 +2069,18 @@ loc11=Hamburg-Finkenwerder EDHI ------ ---
 loc12=Hannover EDDV ------ ---
 loc13=Hof EDQM ------ ---
 loc14=Kassel-Calden EDVK ------ ---
-loc15=Koln/Bonn EDDK ------ ---
-loc16=Lubeck-Blankensee EDHL ------ ---
-loc17=Monchengladbach EDLN ------ ---
-loc18=Munchen EDDM ------ ---
-loc19=Munster/Osnabruck EDDG ------ ---
-loc20=Nurnberg EDDN ------ ---
-loc21=Oberpfaffenhofen EDMO ------ ---
-loc22=Paderborn-Haxterberg EDLP ------ ---
-loc23=Saarbrucken EDDR ------ ---
-loc24=Stuttgart EDDS ------ ---
-loc25=Westerland EDXW ------ ---
+loc15=Kiel-Holtenau EDHK ------ ---
+loc16=Koln/Bonn EDDK ------ ---
+loc17=Lubeck-Blankensee EDHL ------ ---
+loc18=Monchengladbach EDLN ------ ---
+loc19=Munchen EDDM ------ ---
+loc20=Munster/Osnabruck EDDG ------ ---
+loc21=Nurnberg EDDN ------ ---
+loc22=Oberpfaffenhofen EDMO ------ ---
+loc23=Paderborn-Haxterberg EDLP ------ ---
+loc24=Saarbrucken EDDR ------ ---
+loc25=Stuttgart EDDS ------ ---
+loc26=Westerland EDXW ------ ---
 
 [EU_GR]
 name=Greece
