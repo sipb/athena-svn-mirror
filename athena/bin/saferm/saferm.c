@@ -21,7 +21,7 @@
  * resulting in security problems.
  */
 
-static char rcsid[] = "$Id: saferm.c,v 1.5 1999-04-21 16:45:08 kcr Exp $";
+static const char rcsid[] = "$Id: saferm.c,v 1.6 1999-09-21 20:09:11 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -38,8 +38,95 @@ char *program_name;
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
+static int safe_open(char *filename, struct stat *file_stat);
+static int zero(int file, struct stat *file_stat);
+static int safe_to_unlink(char *name);
+static char *safe_cd(char *path);
+static int safe_rm(char *path, int zero_file);
+static int safe_rmdir(char *path, int quietflag);
+
+int main(int argc, char **argv)
+{
+  int c, zeroflag = 0, dirflag = 0, quietflag = 0, errflag = 0;
+  int dir, status = 0;
+
+  /* Set up our program name. */
+  if (argv[0] != NULL)
+    {
+      program_name = strrchr(argv[0], '/');
+      if (program_name != NULL)
+        program_name++;
+      else
+        program_name = argv[0];
+    }
+  else
+    program_name = "saferm";
+
+  while ((c = getopt(argc, argv, "dqz")) != EOF)
+    {
+      switch(c)
+	{
+	case 'd':
+	  dirflag = 1;
+	  break;
+	case 'q':
+	  quietflag = 1;
+	  break;
+	case 'z':
+	  zeroflag = 1;
+	  break;
+	case '?':
+	  errflag = 1;
+	  break;
+	}
+    }
+
+  if (errflag || optind == argc || (dirflag && zeroflag))
+    {
+      fprintf(stderr, "usage: %s [-q] [-d|-z] filename [filename ...]\n",
+	      program_name);
+      exit(1);
+    }
+
+  /* Remember our current directory in case we are being passed
+   * relative paths.
+   */
+  dir = open(".", O_RDONLY);
+  if (dir == -1)
+    {
+      fprintf(stderr, "%s: error opening current directory: %s\n",
+	      program_name, strerror(errno));
+      exit(1);
+    }
+
+  while (optind < argc)
+    {
+      /* If we're removing a relative path, be sure to cd to where
+       * we started.
+       */
+      if (argv[optind][0] != '/')
+	{
+	  if (fchdir(dir) == -1)
+	    {
+	      fprintf(stderr, "%s: error cding to initial directory: %s\n",
+		      program_name, strerror(errno));
+	      exit(1);
+	    }
+	}
+
+      if (dirflag && safe_rmdir(argv[optind], quietflag) == -1)
+	status = 1;
+      else if (!dirflag && safe_rm(argv[optind], zeroflag) == -1)
+	status = 1;
+
+      optind++;
+    }
+
+  exit(status);
+}
+
 /* Safely open a file with intent to zero. */
-int safe_open(char *filename, struct stat *file_stat)
+static int safe_open(char *filename, struct stat *file_stat)
 {
   int file;
   struct stat name_stat;
@@ -137,7 +224,7 @@ int safe_open(char *filename, struct stat *file_stat)
  * that the file pointer is already at the beginning of the file, and
  * file_stat points to a stat of the file.
  */
-int zero(int file, struct stat *file_stat)
+static int zero(int file, struct stat *file_stat)
 {
   char zeroes[BUFSIZ];
   int written = 0, status;
@@ -161,7 +248,7 @@ int zero(int file, struct stat *file_stat)
 }
 
 /* Return non-zero if it is safe to unlink NAME. */
-int safe_to_unlink(char *name)
+static int safe_to_unlink(char *name)
 {
   struct stat st;
   
@@ -185,7 +272,7 @@ int safe_to_unlink(char *name)
  * the filename is returned on success (a substring of path), and NULL
  * is returned on failure.
  */
-char *safe_cd(char *path)
+static char *safe_cd(char *path)
 {
   char *start_ptr, *end_ptr, *path_buf;
   struct stat above, below;
@@ -209,7 +296,7 @@ char *safe_cd(char *path)
    * as well as beginning to address the double-/ case.
    */
   start_ptr = path_buf;
-  while (end_ptr = strchr(start_ptr + 1, '/'))
+  while ((end_ptr = strchr(start_ptr + 1, '/')))
     {
       /* Include any remaining extra /'s at the end of this component. */
       while (*(end_ptr + 1) == '/')
@@ -271,7 +358,7 @@ char *safe_cd(char *path)
 /* Safely remove and optionally zero a file. -1 is returned for any
  * level of failure, such as zeroing failed but unlinking succeeded.
  */
-int safe_rm(char *path, int zero_file)
+static int safe_rm(char *path, int zero_file)
 {
   int file, status = 0;
   struct stat file_stat;
@@ -310,7 +397,7 @@ int safe_rm(char *path, int zero_file)
 }
 
 /* Safely remove a directory. -1 is returned for any level of failure. */
-int safe_rmdir(char *path, int quietflag)
+static int safe_rmdir(char *path, int quietflag)
 {
   char *name;
 
@@ -336,84 +423,4 @@ int safe_rmdir(char *path, int quietflag)
     }
 
   return 0;
-}
-
-int main(int argc, char **argv)
-{
-  int c, zeroflag = 0, dirflag = 0, quietflag = 0, errflag = 0;
-  int dir, status = 0;
-
-  /* Set up our program name. */
-  if (argv[0] != NULL)
-    {
-      program_name = strrchr(argv[0], '/');
-      if (program_name != NULL)
-        program_name++;
-      else
-        program_name = argv[0];
-    }
-  else
-    program_name = "saferm";
-
-  while ((c = getopt(argc, argv, "dqz")) != EOF)
-    {
-      switch(c)
-	{
-	case 'd':
-	  dirflag = 1;
-	  break;
-	case 'q':
-	  quietflag = 1;
-	  break;
-	case 'z':
-	  zeroflag = 1;
-	  break;
-	case '?':
-	  errflag = 1;
-	  break;
-	}
-    }
-
-  if (errflag || optind == argc || (dirflag && zeroflag))
-    {
-      fprintf(stderr, "usage: %s [-q] [-d|-z] filename [filename ...]\n",
-	      program_name);
-      exit(1);
-    }
-
-  /* Remember our current directory in case we are being passed
-   * relative paths.
-   */
-  dir = open(".", O_RDONLY);
-  if (dir == -1)
-    {
-      fprintf(stderr, "%s: error opening current directory: %s\n",
-	      program_name, strerror(errno));
-      exit(1);
-    }
-
-  while (optind < argc)
-    {
-      /* If we're removing a relative path, be sure to cd to where
-       * we started.
-       */
-      if (argv[optind][0] != '/')
-	{
-	  if (fchdir(dir) == -1)
-	    {
-	      fprintf(stderr, "%s: error cding to initial directory: %s\n",
-		      program_name, strerror(errno));
-	      exit(1);
-	    }
-	}
-
-      if (dirflag && safe_rmdir(argv[optind], quietflag) == -1)
-	status = 1;
-      else if (!dirflag && safe_rm(argv[optind], zeroflag) == -1)
-	status = 1;
-
-      optind++;
-    }
-
-  exit(status);
 }
