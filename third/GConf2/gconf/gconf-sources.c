@@ -285,7 +285,7 @@ gconf_source_set_schema        (GConfSource* source,
 static gboolean
 gconf_source_sync_all         (GConfSource* source, GError** err)
 {
-  GError *lock_error;
+  GError *lock_error = NULL;
   gboolean status;
 
   /* Make sure there has not already been an error set. */
