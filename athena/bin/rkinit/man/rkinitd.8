@@ -1,7 +1,7 @@
 .\" 
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v 1.4 1989-11-13 16:20:49 qjb Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v 1.5 1991-08-15 14:55:37 lwvanels Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v $
-.\" $Author: qjb $
+.\" $Author: lwvanels $
 .\"
 .\"
 .TH RKINITD 8 "November 12, 1989"
@@ -22,21 +22,11 @@ for information about
 .I rkinit.
 .I rkinitd
 is started from inetd and must be run as root or be installed
-setuid(root) as it needs to be able to read /etc/srvtab and
+setuid(root) as it needs to be able to read /etc/athena/srvtab and
 change its uid to create tickets.
 
 .I rkinitd
 times out in 60 seconds if the transaction is not completed.
-
-If you wish to run 
-.I rkinitd,
-you should put the following line in inetd.conf:
-
-rkinit	stream	tcp	nowait	unswitched	root	
-.br
-/usr/local/rkinitd	rkinitd
-
-rkinit should be port number 2108.
 
 .I rkinitd 
 must be running on a machine that is registered for rlogin
