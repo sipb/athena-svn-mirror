@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: do.sh,v 1.56.2.1 2000-06-22 17:26:34 ghudson Exp $
+# $Id: do.sh,v 1.56.2.2 2000-08-01 19:08:23 ghudson Exp $
 
-source=/mit/source-8.4
+source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
 athtoolroot=$ATHTOOLROOT
 contained=false
@@ -135,6 +135,7 @@ SunOS)
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
 	PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
 	CC=/usr/gcc/bin/gcc
+	CXX=/usr/gcc/bin/g++
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
@@ -142,6 +143,7 @@ IRIX)
 	OS=irix
 	PATH=/usr/bsd:/usr/bin:/usr/bin/X11
 	CC=cc
+	CXX=CC
 	WARN_CFLAGS=-fullwarn
 	ERROR_CFLAGS=-w2
 	;;
@@ -149,6 +151,7 @@ Linux)
 	OS=linux
 	PATH=/usr/bin:/bin:/usr/X11R6/bin
 	CC=cc
+	CXX=g++
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
