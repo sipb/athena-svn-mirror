@@ -33,7 +33,8 @@ OPTLIBS=-lbsd
 #endif
 
 #ifdef SOLARIS
-OPTLIBS=-lucb
+OPTLIBS=/usr/ucblib/libucb.a
+
 
 SpecialObject(ln01filter.o,ln01filter.c,-I/usr/ucbinclude)
 SpecialObject(ln01raw.o,ln01raw.c,-I/usr/ucbinclude)
