@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.2 1990-11-27 14:09:06 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.3 1990-11-27 15:46:57 lwvanels Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ handle_request(fd, from)
     return;
   }
 
-  version = ntohs(version);
+  version = ntohl(version);
   if (version != VERSION) {
     fprintf(stderr,"Version skew from %s\n curr = %d, recvd = %d\n",
 	    inet_ntoa(from.sin_addr),VERSION,version);
@@ -64,7 +64,7 @@ handle_request(fd, from)
     return;
   }
 
-  instance = ntohs(instance);
+  instance = ntohl(instance);
 
 #ifdef KERBEROS
 
@@ -76,7 +76,7 @@ handle_request(fd, from)
     return;
   }
 
-  their_auth.length = ntohs(their_auth.length);
+  their_auth.length = ntohl(their_auth.length);
   bzero(their_auth.dat,sizeof(their_auth.dat));
   ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	   sizeof(their_auth.dat));
