@@ -1,4 +1,4 @@
-# $Id: athena,v 1.17 2000-04-28 14:27:19 ghudson Exp $
+# $Id: athena,v 1.18 2000-05-23 18:00:17 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -182,12 +182,6 @@ if [ "$PUBLIC" = true ]; then
 					src=/os$i
 				fi
 				syncupdate -c $i.new $src $i
-			done
-			platform=`uname -m`
-			for i in driver_aliases driver_classes minor_perm \
-				 name_to_major; do
-				syncupdate -c /etc/$i.new \
-					"/srvd/etc/$i.$platform" /etc/$i
 			done
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
