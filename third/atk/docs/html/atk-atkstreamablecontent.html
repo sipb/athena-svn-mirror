@@ -1,0 +1,513 @@
+<HTML
+><HEAD
+><TITLE
+>AtkStreamableContent</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+REL="HOME"
+TITLE="ATK Library Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="ATK Library"
+HREF="atk.html"><LINK
+REL="PREVIOUS"
+TITLE="AtkStateSet"
+HREF="atkstateset.html"><LINK
+REL="NEXT"
+TITLE="AtkTable"
+HREF="atk-atktable.html"></HEAD
+><BODY
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>ATK Library Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkstateset.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atk-atktable.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="ATK-ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4929"
+></A
+><H2
+>Name</H2
+>AtkStreamableContent&nbsp;--&nbsp;The ATK interface which provides access to streamable content.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4932"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+>;
+gint        <A
+HREF="atk-atkstreamablecontent.html#ATK-STREAMABLE-CONTENT-GET-N-MIME-TYPES"
+>atk_streamable_content_get_n_mime_types</A
+>
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable);
+G_CONST_RETURN gchar* <A
+HREF="atk-atkstreamablecontent.html#ATK-STREAMABLE-CONTENT-GET-MIME-TYPE"
+>atk_streamable_content_get_mime_type</A
+>
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable,
+                                             gint i);
+GIOChannel* <A
+HREF="atk-atkstreamablecontent.html#ATK-STREAMABLE-CONTENT-GET-STREAM"
+>atk_streamable_content_get_stream</A
+>
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable,
+                                             const gchar *mime_type);&#13;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4947"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4950"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4952"
+></A
+><H3
+><A
+NAME="ATKSTREAMABLECONTENT"
+></A
+>struct AtkStreamableContent</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct AtkStreamableContent;</PRE
+></TD
+></TR
+></TABLE
+><P
+>The AtkStreamableContent structure does not contain any fields.&#13;</P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4957"
+></A
+><H3
+><A
+NAME="ATK-STREAMABLE-CONTENT-GET-N-MIME-TYPES"
+></A
+>atk_streamable_content_get_n_mime_types ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gint        atk_streamable_content_get_n_mime_types
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the number of mime types supported by this object.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>streamable</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkStreamableContentIface</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> a gint which is the number of mime types supported by the object.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4976"
+></A
+><H3
+><A
+NAME="ATK-STREAMABLE-CONTENT-GET-MIME-TYPE"
+></A
+>atk_streamable_content_get_mime_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>G_CONST_RETURN gchar* atk_streamable_content_get_mime_type
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable,
+                                             gint i);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the character string of the specified mime type. The first mime
+type is at position 0, the second at position 1, and so on.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>streamable</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkStreamableContent</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>i</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a gint representing the position of the mime type starting from 0</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+>: a gchar* representing the specified mime type; the caller
+should not free the character string.</P
+></DD
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN5001"
+></A
+><H3
+><A
+NAME="ATK-STREAMABLE-CONTENT-GET-STREAM"
+></A
+>atk_streamable_content_get_stream ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GIOChannel* atk_streamable_content_get_stream
+                                            (<A
+HREF="atk-atkstreamablecontent.html#ATKSTREAMABLECONTENT"
+>AtkStreamableContent</A
+> *streamable,
+                                             const gchar *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Gets the content in the specified mime type.</P
+><P
+></P
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>streamable</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a GObject instance that implements AtkStreamableContentIface</P
+></DD
+><DT
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</DT
+><DD
+><P
+> a gchar* representing the mime type</P
+></DD
+><DT
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</DT
+><DD
+><P
+> A GIOChannel which contains the content in the specified mime
+type.</P
+></DD
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="atkstateset.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="atk.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="atk-atktable.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkStateSet</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AtkTable</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
