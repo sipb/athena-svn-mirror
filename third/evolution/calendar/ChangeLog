@@ -1,3 +1,106 @@
+2003-09-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* conduits/todo/Makefile.am:
+	Statically link with wombat. Fix broken ETodo conduit
+	(Mdk bug #5348)
+
+2003-09-04  Dan Winship  <danw@ximian.com>
+
+	* gui/Makefile.am (IDL_GENERATED): Don't compile the calendar idl
+	here. It's already in libcal-client.
+
+2003-08-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	Fixes #29032.
+
+	* gui/dialogs/task-details-page.c (status_changed): When task status
+	is set to "In Progress", set percent complete to 50% only if it was
+	previously set to 0% or 100%.
+
+2003-08-26  Jack Jia  <jack.jia@sun.com>
+
+	** Fixes #47863.
+
+	* gui/alarm-notify/alarm-notify.c (AlarmNotify_removeCalendar): set
+	the initial value of lc_ptr and orig_str_ptr to NULL to avoid crash.
+
+2003-08-21  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gui/alarm-notify/notify-main.c: (main):
+	Ensure we get UTF-8 strings from gettext.
+
+2002-08-20  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gui/e-itip-control.c (start_defalt_server): Rename to
+	start_default_server_async () and don't run a nested main loop. Let
+	the caller deal with the client object and signals.
+	(default_server_started_cb): Implement. Async signal handler for
+	'cal_opened' signal, does the embedding.
+	(object_requested_cb): Rewritten to work asynchronously, and finish
+	the embedding when default_server_started_cb() is called.
+
+2003-08-12  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gui/calendar-offline-handler.c (impl_dispose): Chain. Prevent
+	double unrefs.
+	(impl_finalize): Chain.
+
+	* gui/e-alarm-list.c (finalize): Chain.
+
+	* gui/e-comp-editor-registry.c (destroy): Chain. Prevent double frees.
+	(editor_destroy_cb): Don't crash if we get the destroy signal twice.
+
+	* gui/e-date-time-list.c (e_date_time_list_finalize): Chain.
+
+	* gui/e-meeting-attendee.c (finalize): Chain.
+
+	* gui/e-meeting-model.c (finalize): Chain.
+
+2003-08-12  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gui/e-itip-control.c (html_destroyed):
+	(init):
+	(write_html): Add destroy chaining.
+
+2003-08-12  Harry Lu <harry.lu@sun.com>
+
+	** Fixes #47464.
+
+	* gui/dialogs/meeting-page.c: (get_widgets): The Organizer's value
+	need not match one of the values in the list.
+
+2003-08-12  Andrew Wu <andrew.wu@sun.com>
+
+	* gui/e-calendar-table.c: Alt+o to open task.
+	* gui/e-day-view.c: e_day_view_on_open_event  replaces e_day_view_on_event_double_click.
+	* gui/e-week-view.c: (e_week_view_on_open_event) new function, Alt+o to open event.
+
+2003-08-05  Jack Jia  <jack.jia@sun.com>
+
+	* gui/dialogs/event-page.glade: changed one of the "Con_fidential" to 
+	"Co_nfidential" since we already have "File" using the same 'F' key.
+
+2003-08-01  Lorenzo Gil <lgs@sicem.biz>
+
+	* gui/e-alarm-list.c: added the include <config.h> line at the
+	beginning to enable gettext.
+	
+2003-07-29  Rodrigo Moya <rodrigo@ximian.com>
+
+        Fixes all "alarm daemon doesn't start with session"
+
+        * gui/alarm-notify/notify-main.c (main): use LIBGNOMEUI_MODULE
+        instead of LIBGNOME_MODULE so that the default session client
+        is created in gnome_program_init.
+
+2003-07-29 Harry Lu <harry.lu@sun.com>
+
+	Fixes #46769
+        
+	* gui/dialogs/task-page.c: (task_page_fill_component): Popup a
+	error dialog if due date time is before start datetime when saving
+	a task.
+
 2003-07-16  Andrew Wu <Yang.Wu@sun.com>
 
       Fixes #45774

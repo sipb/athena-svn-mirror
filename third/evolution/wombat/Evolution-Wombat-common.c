@@ -172,6 +172,7 @@ ORBit_IMethod GNOME_Evolution_WombatClient__imethods[] = {
       0}
 };
 static CORBA_string GNOME_Evolution_WombatClient__base_itypes[] = {
+   "IDL:Bonobo/Unknown:1.0",
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
@@ -182,10 +183,11 @@ ORBit_IInterface GNOME_Evolution_WombatClient__iinterface = {
    TC_GNOME_Evolution_WombatClient, {2, 2,
 				     GNOME_Evolution_WombatClient__imethods,
 				     FALSE},
-   {1, 1, GNOME_Evolution_WombatClient__base_itypes, FALSE}
+   {2, 2, GNOME_Evolution_WombatClient__base_itypes, FALSE}
 };
 
 static CORBA_string GNOME_Evolution_Config__base_itypes[] = {
+   "IDL:Bonobo/Unknown:1.0",
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
@@ -194,7 +196,7 @@ static
 #endif
 ORBit_IInterface GNOME_Evolution_Config__iinterface = {
    TC_GNOME_Evolution_Config, {0, 0, GNOME_Evolution_Config__imethods, FALSE},
-   {1, 1, GNOME_Evolution_Config__base_itypes, FALSE}
+   {2, 2, GNOME_Evolution_Config__base_itypes, FALSE}
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_Evolution_Wombat

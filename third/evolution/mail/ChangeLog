@@ -1,3 +1,137 @@
+2003-09-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_text_plain): Don't set inend until after
+	we've appended the '\n', this fixes bug #48345. Instead of passing
+	inend to handle_uuencode(), scan for a "\nend\n" and use that as
+	the max end boundary - fixes bug #48184. Also don't bother
+	checking lineptr against "begin ..." if inptr == inend, since it
+	couldn't possibly be the start of a uuencoded blob.
+
+2003-09-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): Allow the user to
+	select any fodler for his/her Drafts and Sent folders. Fixes bug
+	#45412.
+
+2003-09-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (invisible_selection_clear_event_callback): Don't
+	clear the clipboard. Fixes bug #48203.
+
+2003-09-09  Not Zed  <NotZed@Ximian.com>
+
+	* mail-send-recv.c (build_dialogue): use an eclippedlabel for
+	status.  Fixed all uses.
+
+2003-09-09  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (folder_browser_set_message_preview): clear the
+	'loaded uid' when we hide, so when we re-show it reloads.
+
+2003-09-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_text_plain): Scan for uuencoded parts and
+	show them as separate attachments if we encounter any. Works
+	around Broken Mailers (tm). Also fixes bug #43808.
+
+2003-08-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (on_link_clicked): Don't pass cid: nor
+	thismessage: urls off to gnome_url_show(). See discussion of bug
+	#47541.
+
+2003-08-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_send_message): Don't abort at the first failure
+	after sending (filtering, appending to Sent, syncing). Instead,
+	keep a running tab of exceptions and then set a culmulative
+	exception at the end to report to our caller. Also, if we fail to
+	append to the account Sent folder, try again with the local Sent
+	folder. Fixes bug #46512.
+
+2003-08-19  Harry Lu  <harry.lu@sun.com>
+
+	** For #45348
+
+	* mail-display.c (mail_display_render): Change "%P" to "%p" so
+	that strftime() can work under solaris.
+
+2003-08-13  Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+	* e-searching-tokenizer.c (searcher_next_token): Fix for 45818 ( i18n
+	mail messages search only produces '[?]'). Now multibyte character
+	selection works correctly. But due to associated gtkhtml bug, the find
+	button functionallity for multibyte characters is broken.
+
+2003-08-05  Not Zed  <NotZed@Ximian.com>
+
+	** See bug #32732
+
+	* message-list.c (mail_regen_list): use thread_new.
+
+	* mail-local.c (reconfigure_response): use thread_new.
+
+	* mail-display.c (stream_write_or_redisplay_when_loaded): use
+	thread_new.
+
+	* mail-config.c (mail_config_check_service): use thread_new rather
+	than queue.
+
+	* mail-callbacks.c (view_msg): change to use mail_get_messages(),
+	fixes FIXME.
+	(do_view_messages): handle get_messages callback.
+	(do_view_message): removed.
+
+	* mail-ops.c (mail_get_folderinfo): Use a new thread thread
+	semantic.
+	(mail_save_part): "
+	(mail_store_set_offline): "
+	(mail_sync_folder): use queued_slow thread queue.
+	(mail_expunge_folder): "
+	(mail_empty_trash): "
+
+	** See bug #47224.  Hook onto clicked rather than button_pressed,
+	so that dnd works.
+	
+	* mail-display.c (inline_toggle): toggle a part inline.
+	(button_press): change back to only handle button clicked events,
+	renamed to inline_button_clicked.
+	(do_attachment_header): hook onto clicked rather than
+	button_press_event, and move key_press_event to
+	inline_button_pressed.
+	(do_signature): Same.
+	(inline_button_pressed): handle inline button key press event
+	explicitly.
+
+2003-07-29  Not Zed  <NotZed@Ximian.com>
+
+	* mail-folder-cache.c (mail_note_store): add a CamelOperation for
+	overriding status handler.
+
+	* mail-send-recv.c (receive_update_got_store): Pass our own cancel
+	handle to get_folderinfo and mail_note_store.
+	(mail_send_receive, mail_receive_uri): Same for get_store.
+
+	* mail-ops.c (mail_get_store, mail_get_folderinfo): Add a
+	CamelOperation argument, for overriding the status handler.  Fixed
+	most calles to pass NULL to use the default.
+
+2003-08-01  Yuedong Du  <yuedong.du@sun.com>
+
+	* message-browser.c (on_key_press): close mail message window
+	using 'ESC' key, fix bug #47087
+
+2003-07-29  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (pixbuf_for_mime_type): Gone
+	(pixbuf_gen_idle): Use e_icon_for_mime_type instead.
+
+2003-07-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-browser.c (on_key_press): New callback function to
+	override the behaviour of hitting the Delete key. Fixes bug
+	#45597.
+
 2003-07-15  Federico Mena Quintero  <federico@ximian.com>
 
 	* folder-browser.c (message_list_drag_data_received): Handle

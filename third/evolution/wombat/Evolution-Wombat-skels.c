@@ -74,6 +74,28 @@ get_skel_small_GNOME_Evolution_WombatClient(POA_GNOME_Evolution_WombatClient *
 	return (ORBitSmallSkeleton)
 	   _ORBIT_skel_small_GNOME_Evolution_WombatClient_getPassword;
 	break;
+     case 'q':
+	if (strcmp((opname + 1), "ueryInterface"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[2];
+	return (ORBitSmallSkeleton)
+	   _ORBIT_skel_small_Bonobo_Unknown_queryInterface;
+	break;
+     case 'r':
+	if (strcmp((opname + 1), "ef"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[0];
+	return (ORBitSmallSkeleton) _ORBIT_skel_small_Bonobo_Unknown_ref;
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[1];
+	return (ORBitSmallSkeleton) _ORBIT_skel_small_Bonobo_Unknown_unref;
+	break;
      default:
 	break;
    }
@@ -97,12 +119,16 @@ POA_GNOME_Evolution_WombatClient__init(PortableServer_Servant servant,
    }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
+   POA_Bonobo_Unknown__init(servant, env);
    ORBit_classinfo_register(&class_info);
    ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
 
    if (!class_info.vepvmap) {
       class_info.vepvmap =
 	 g_new0(ORBit_VepvIdx, GNOME_Evolution_WombatClient__classid + 1);
+      class_info.vepvmap[Bonobo_Unknown__classid] =
+	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
+	  ((char *) (fakevepv))) / sizeof(GFunc);
       class_info.vepvmap[GNOME_Evolution_WombatClient__classid] =
 	 (((char *) &(fakevepv->GNOME_Evolution_WombatClient_epv)) -
 	  ((char *) (fakevepv))) / sizeof(GFunc);
@@ -113,6 +139,7 @@ void
 POA_GNOME_Evolution_WombatClient__fini(PortableServer_Servant servant,
 				       CORBA_Environment * env)
 {
+   POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);
 }
 
@@ -122,6 +149,28 @@ get_skel_small_GNOME_Evolution_Config(POA_GNOME_Evolution_Config * servant,
 				      gpointer * impl)
 {
    switch (opname[0]) {
+     case 'q':
+	if (strcmp((opname + 1), "ueryInterface"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[2];
+	return (ORBitSmallSkeleton)
+	   _ORBIT_skel_small_Bonobo_Unknown_queryInterface;
+	break;
+     case 'r':
+	if (strcmp((opname + 1), "ef"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[0];
+	return (ORBitSmallSkeleton) _ORBIT_skel_small_Bonobo_Unknown_ref;
+	break;
+     case 'u':
+	if (strcmp((opname + 1), "nref"))
+	   break;
+	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
+	*m_data = (gpointer) & Bonobo_Unknown__iinterface.methods._buffer[1];
+	return (ORBitSmallSkeleton) _ORBIT_skel_small_Bonobo_Unknown_unref;
+	break;
      default:
 	break;
    }
@@ -144,12 +193,16 @@ POA_GNOME_Evolution_Config__init(PortableServer_Servant servant,
    }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
+   POA_Bonobo_Unknown__init(servant, env);
    ORBit_classinfo_register(&class_info);
    ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
 
    if (!class_info.vepvmap) {
       class_info.vepvmap =
 	 g_new0(ORBit_VepvIdx, GNOME_Evolution_Config__classid + 1);
+      class_info.vepvmap[Bonobo_Unknown__classid] =
+	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
+	  ((char *) (fakevepv))) / sizeof(GFunc);
       class_info.vepvmap[GNOME_Evolution_Config__classid] =
 	 (((char *) &(fakevepv->GNOME_Evolution_Config_epv)) -
 	  ((char *) (fakevepv))) / sizeof(GFunc);
@@ -160,6 +213,7 @@ void
 POA_GNOME_Evolution_Config__fini(PortableServer_Servant servant,
 				 CORBA_Environment * env)
 {
+   POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);
 }
 

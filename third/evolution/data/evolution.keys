@@ -11,7 +11,8 @@ text/x-vcard
 	[es]description=tarjeta de dirección
 	[et]description=aadressi kaart
 	[eu]description=helbide-txartela
-	[fr]description=Carte Adresse
+	[fi]description=Osoitekortti
+	[fr]description=Carte de visite
 	[ga]description=carta sheoladh
 	[gl]description=tarxeta de enderezo
 	[hu]description=címkártya
@@ -20,6 +21,7 @@ text/x-vcard
 	[ko]description=주소 카드
 	[lt]description=adreso kortelė
 	[lv]description=adreses karte
+	[ms]description=kad alamat
 	[nl]description=adreskaart
 	[nn]description=adressekort
 	[no]description=adressekort
@@ -51,12 +53,13 @@ text/x-calendar
 	[bg]description=календарна информация
 	[cs]description=informace kalendáře
 	[da]description=kalenderinformation
-	[de]description=Kalender-Information
+	[de]description=Kalenderinformationen
 	[el]description=πληροφορίες ημερολογίου
-	[es]description=información del agenda
+	[es]description=información de agenda
 	[et]description=kalendri info
 	[eu]description=egutegi-informazioa
-	[fr]description=Information calendrier
+	[fi]description=Tietoja kalenterista
+	[fr]description=Informations du calendrier
 	[ga]description=eolas fheilire
 	[gl]description=información de axenda
 	[hu]description=naptárinformáció
@@ -65,6 +68,7 @@ text/x-calendar
 	[ko]description=달력 정보
 	[lt]description=kalendoriaus informacija
 	[lv]description=kalendāra informācija
+	[ms]description=maklumat kalendar
 	[nl]description=kalenderinformatie
 	[nn]description=kalendarinformasjon
 	[no]description=kalenderinformasjon
@@ -96,12 +100,13 @@ text/calendar
 	[bg]description=календарна информация
 	[cs]description=informace kalendáře
 	[da]description=kalenderinformation
-	[de]description=Kalender-Information
+	[de]description=Kalenderinformationen
 	[el]description=πληροφορίες ημερολογίου
-	[es]description=información del agenda
+	[es]description=información de agenda
 	[et]description=kalendri info
 	[eu]description=egutegi-informazioa
-	[fr]description=Information calendrier
+	[fi]description=Tietoja kalenterista
+	[fr]description=Informations du calendrier
 	[ga]description=eolas fheilire
 	[gl]description=información de axenda
 	[hu]description=naptárinformáció
@@ -110,6 +115,7 @@ text/calendar
 	[ko]description=달력 정보
 	[lt]description=kalendoriaus informacija
 	[lv]description=kalendāra informācija
+	[ms]description=maklumat kalendar
 	[nl]description=kalenderinformatie
 	[nn]description=kalendarinformasjon
 	[no]description=kalenderinformasjon

@@ -19,8 +19,10 @@
                        value="Evolution-iCalendar-Importeur"/>
 	<oaf_attribute name="name-es" type="string"
                        value="Importador de iCalendar de Evolution"/>
+	<oaf_attribute name="name-fi" type="string"
+                       value="Evolution iCalendar-tuoja"/>
 	<oaf_attribute name="name-fr" type="string"
-                       value="Importeur iCalendar d&apos;Evolution"/>
+                       value="Assistant d&apos;importation iCalendar d&apos;Evolution"/>
 	<oaf_attribute name="name-hu" type="string"
                        value="Evolution iCalendar importáló"/>
 	<oaf_attribute name="name-it" type="string"
@@ -28,7 +30,7 @@
 	<oaf_attribute name="name-ja" type="string"
                        value="Evolution iCalendar インポータ"/>
 	<oaf_attribute name="name-ms" type="string"
-                       value="Pengimport iCalendar Evolusi"/>
+                       value="Pengimport iCalendar Evolution"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution iKalender import"/>
 	<oaf_attribute name="name-no" type="string"
@@ -70,8 +72,10 @@
                        value="iCalendar-Dateien (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-es" type="string"
                        value="Archivos iCalendar (.ics)"/>
+	<oaf_attribute name="evolution:menu_name-fi" type="string"
+                       value="iCalendar-tiedostot (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-fr" type="string"
-                       value="Fichier iCalendar (.ics)"/>
+                       value="Fichiers iCalendar (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-hu" type="string"
                        value="iCalendar-fájlok (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
@@ -114,8 +118,10 @@
                        value="Evolution-iCalendar-Importeur"/>
         <oaf_attribute name="name-es" type="string"
                        value="Importador de iCalendar de Evolution"/>
+        <oaf_attribute name="name-fi" type="string"
+                       value="Evolution iCalendar-tuoja"/>
         <oaf_attribute name="name-fr" type="string"
-                       value="Importeur iCalendar d&apos;Evolution"/>
+                       value="Assistant d&apos;importation iCalendar d&apos;Evolution"/>
         <oaf_attribute name="name-hu" type="string"
                        value="Evolution iCalendar importáló"/>
         <oaf_attribute name="name-it" type="string"
@@ -123,7 +129,7 @@
         <oaf_attribute name="name-ja" type="string"
                        value="Evolution iCalendar インポータ"/>
         <oaf_attribute name="name-ms" type="string"
-                       value="Pengimport iCalendar Evolusi"/>
+                       value="Pengimport iCalendar Evolution"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution iKalender import"/>
         <oaf_attribute name="name-no" type="string"
@@ -166,6 +172,10 @@
                        value="vCalendar-Dateien (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-es" type="string"
                        value="Archivos vCalendar (.vcf)"/>
+	<oaf_attribute name="evolution:menu_name-fi" type="string"
+                       value="vCalendar-tiedostot (.vcf)"/>
+	<oaf_attribute name="evolution:menu_name-fr" type="string"
+                       value="Fichiers vCalendar (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-hu" type="string"
                        value="vCalendar-fájlok (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
@@ -208,8 +218,10 @@
                        value="Evolution-vCalendar-Importeur"/>
         <oaf_attribute name="name-es" type="string"
                        value="Importador de vCalendar de Evolution"/>
+        <oaf_attribute name="name-fi" type="string"
+                       value="Evolution vCalendar-tuoja"/>
         <oaf_attribute name="name-fr" type="string"
-                       value="Importeur vCalendar d&apos;Evolution"/>
+                       value="Assistant d&apos;importation vCalendar d&apos;Evolution"/>
         <oaf_attribute name="name-hu" type="string"
                        value="Evolution vCalendar importáló"/>
         <oaf_attribute name="name-it" type="string"
@@ -217,7 +229,7 @@
         <oaf_attribute name="name-ja" type="string"
                        value="Evolution vCalendar インポータ"/>
         <oaf_attribute name="name-ms" type="string"
-                       value="Pengimport vCalendar Evolusi"/>
+                       value="Pengimport vCalendar Evolution"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution vKaender import"/>
         <oaf_attribute name="name-no" type="string"
@@ -260,7 +272,11 @@
         <oaf_attribute name="name-de" type="string"
                        value="Intelligenter Evolution-Kalender-Importeur"/>
         <oaf_attribute name="name-es" type="string"
-                       value="Importador inteligente del calendario de Evolution"/>
+                       value="Importador inteligente de la agenda de Evolution"/>
+        <oaf_attribute name="name-fi" type="string"
+                       value="Evolution kalenterin älykäs sisäänlukija"/>
+        <oaf_attribute name="name-fr" type="string"
+                       value="Assistant d&apos;importation intelligent du calendrier d&apos;Evolution"/>
         <oaf_attribute name="name-hu" type="string"
                        value="Evolution Naptár intellingens importáló"/>
         <oaf_attribute name="name-it" type="string"
@@ -268,7 +284,7 @@
         <oaf_attribute name="name-ja" type="string"
                        value="Evolution カレンダ・インテリジェント・インポータ"/>
         <oaf_attribute name="name-ms" type="string"
-                       value="Pengimport cerdas Kalendar Evolusi"/>
+                       value="Pengimport cerdas Kalendar Evolution"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution kalender intelligente import"/>
         <oaf_attribute name="name-no" type="string"

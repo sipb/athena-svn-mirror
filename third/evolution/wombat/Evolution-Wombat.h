@@ -125,20 +125,18 @@ extern "C"
 				   CORBA_Environment * ev);
       void (*forgetPassword) (PortableServer_Servant _servant,
 			      const CORBA_char * key, CORBA_Environment * ev);
-   }
-   POA_GNOME_Evolution_WombatClient__epv;
+   } POA_GNOME_Evolution_WombatClient__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_WombatClient__epv *GNOME_Evolution_WombatClient_epv;
-   }
-   POA_GNOME_Evolution_WombatClient__vepv;
+   } POA_GNOME_Evolution_WombatClient__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_WombatClient__vepv *vepv;
-   }
-   POA_GNOME_Evolution_WombatClient;
+   } POA_GNOME_Evolution_WombatClient;
    extern void POA_GNOME_Evolution_WombatClient__init(PortableServer_Servant
 						      servant,
 						      CORBA_Environment * ev);
@@ -151,20 +149,18 @@ extern "C"
    typedef struct
    {
       void *_private;
-   }
-   POA_GNOME_Evolution_Config__epv;
+   } POA_GNOME_Evolution_Config__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_Config__epv *GNOME_Evolution_Config_epv;
-   }
-   POA_GNOME_Evolution_Config__vepv;
+   } POA_GNOME_Evolution_Config__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_Config__vepv *vepv;
-   }
-   POA_GNOME_Evolution_Config;
+   } POA_GNOME_Evolution_Config;
    extern void POA_GNOME_Evolution_Config__init(PortableServer_Servant
 						servant,
 						CORBA_Environment * ev);
@@ -179,22 +175,19 @@ extern "C"
       void *_private;
        CORBA_string(*_get_interfaceVersion) (PortableServer_Servant _servant,
 					     CORBA_Environment * ev);
-   }
-   POA_GNOME_Evolution_WombatInterfaceCheck__epv;
+   } POA_GNOME_Evolution_WombatInterfaceCheck__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_GNOME_Evolution_WombatInterfaceCheck__epv
 	 *GNOME_Evolution_WombatInterfaceCheck_epv;
-   }
-   POA_GNOME_Evolution_WombatInterfaceCheck__vepv;
+   } POA_GNOME_Evolution_WombatInterfaceCheck__vepv;
    typedef struct
    {
       void *_private;
       POA_GNOME_Evolution_WombatInterfaceCheck__vepv *vepv;
-   }
-   POA_GNOME_Evolution_WombatInterfaceCheck;
+   } POA_GNOME_Evolution_WombatInterfaceCheck;
    extern void
       POA_GNOME_Evolution_WombatInterfaceCheck__init(PortableServer_Servant
 						     servant,
@@ -233,6 +226,9 @@ extern "C"
 						   CORBA_Environment * ev));
 
 /** stub prototypes **/
+#define GNOME_Evolution_WombatClient_ref Bonobo_Unknown_ref
+#define GNOME_Evolution_WombatClient_unref Bonobo_Unknown_unref
+#define GNOME_Evolution_WombatClient_queryInterface Bonobo_Unknown_queryInterface
    CORBA_string
       GNOME_Evolution_WombatClient_getPassword(GNOME_Evolution_WombatClient
 					       _obj,
@@ -244,6 +240,9 @@ extern "C"
 						  _obj,
 						  const CORBA_char * key,
 						  CORBA_Environment * ev);
+#define GNOME_Evolution_Config_ref Bonobo_Unknown_ref
+#define GNOME_Evolution_Config_unref Bonobo_Unknown_unref
+#define GNOME_Evolution_Config_queryInterface Bonobo_Unknown_queryInterface
 #define GNOME_Evolution_WombatInterfaceCheck_ref Bonobo_Unknown_ref
 #define GNOME_Evolution_WombatInterfaceCheck_unref Bonobo_Unknown_unref
 #define GNOME_Evolution_WombatInterfaceCheck_queryInterface Bonobo_Unknown_queryInterface

@@ -19,15 +19,19 @@
 	<oaf_attribute name="name-de" type="string"
 		       value="Evolution-MBox-Importeur"/>
 	<oaf_attribute name="name-es" type="string"
-		       value="Importador de mbox de Evolution."/>
+		       value="Importador de mbox de Evolution"/>
+	<oaf_attribute name="name-fi" type="string"
+		       value="Evolutionin mbox-tuoja"/>
 	<oaf_attribute name="name-fr" type="string"
-		       value="Importeur mbox d&apos;Evolution"/>
+		       value="Assistant d&apos;importation mbox d&apos;Evolution"/>
 	<oaf_attribute name="name-hu" type="string"
 		       value="Evolution mbox-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore mbox di Evolution."/>
 	<oaf_attribute name="name-ja" type="string"
 		       value="Evolution mbox インポータ"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Pengimport peti mel Evolution"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution mbox-import"/>
 	<oaf_attribute name="name-no" type="string"
@@ -68,7 +72,11 @@
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-de" type="string"
 		       value="MBox (mbox)"/>
+	<oaf_attribute name="evolution:menu_name-el" type="string"
+		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-es" type="string"
+		       value="MBox (mbox)"/>
+	<oaf_attribute name="evolution:menu_name-fi" type="string"
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-fr" type="string"
 		       value="MBox (mbox)"/>
@@ -78,6 +86,8 @@
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-ja" type="string"
 		       value="MBox (mbox)"/>
+	<oaf_attribute name="evolution:menu_name-ms" type="string"
+		       value="Peti Mel (peti mel)"/>
 	<oaf_attribute name="evolution:menu_name-nl" type="string"
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-no" type="string"
@@ -107,15 +117,19 @@
 	<oaf_attribute name="name-de" type="string"
 		       value="Evolution-MBox-Importeur"/>
 	<oaf_attribute name="name-es" type="string"
-		       value="Importador de mbox de Evolution."/>
+		       value="Importador de mbox de Evolution"/>
+	<oaf_attribute name="name-fi" type="string"
+		       value="Evolutionin mbox-tuoja"/>
 	<oaf_attribute name="name-fr" type="string"
-		       value="Importeur mbox d&apos;Evolution"/>
+		       value="Assistant d&apos;importation mbox d&apos;Evolution"/>
 	<oaf_attribute name="name-hu" type="string"
 		       value="Evolution mbox-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore mbox di Evolution."/>
 	<oaf_attribute name="name-ja" type="string"
 		       value="Evolution mbox インポータ"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Pengimport peti mel Evolution"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution mbox-import"/>
 	<oaf_attribute name="name-no" type="string"
