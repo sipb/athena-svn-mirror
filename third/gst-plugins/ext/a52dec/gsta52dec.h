@@ -21,7 +21,6 @@
 #ifndef __GST_A52DEC_H__
 #define __GST_A52DEC_H__
 
-#include <config.h>
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 
@@ -64,7 +63,8 @@ struct _GstA52Dec {
   GstClockTime	last_ts;
   GstClockTime	current_ts;
 
-  GstCaps	*streaminfo;
+  GstClockTime last_timestamp;
+  GstClockTimeDiff last_diff;
 };
 
 struct _GstA52DecClass {

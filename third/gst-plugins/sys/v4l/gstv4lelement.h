@@ -1,4 +1,7 @@
-/* G-Streamer generic V4L element - generic V4L calls handling
+/* GStreamer
+ *
+ * gstv4lelement.h: base class for V4L elements
+ *
  * Copyright (C) 2001-2002 Ronald Bultje <rbultje@ronald.bitfreak.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -20,14 +23,27 @@
 #ifndef __GST_V4LELEMENT_H__
 #define __GST_V4LELEMENT_H__
 
-#include <config.h>
 #include <gst/gst.h>
-#include <sys/types.h>
-#include <linux/videodev.h>
+#include <gst/xwindowlistener/xwindowlistener.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+/* Because of some really cool feature in video4linux1, also known as
+ * 'not including sys/types.h and sys/time.h', we had to include it
+ * ourselves. In all their intelligence, these people decided to fix
+ * this in the next version (video4linux2) in such a cool way that it
+ * breaks all compilations of old stuff...
+ * The real problem is actually that linux/time.h doesn't use proper
+ * macro checks before defining types like struct timeval. The proper
+ * fix here is to either fuck the kernel header (which is what we do
+ * by defining _LINUX_TIME_H, an innocent little hack) or by fixing it
+ * upstream, which I'll consider doing later on. If you get compiler
+ * errors here, check your linux/time.h && sys/time.h header setup.
+ */
+#include <sys/types.h>
+#define _LINUX_TIME_H
+#include <linux/videodev.h>
+#include <gst/gst.h>
+
+G_BEGIN_DECLS
 
 #define GST_TYPE_V4LELEMENT \
   (gst_v4lelement_get_type())
@@ -39,13 +55,11 @@ extern "C" {
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_V4LELEMENT))
 #define GST_IS_V4LELEMENT_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_V4LELEMENT))
+#define GST_V4LELEMENT_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_V4LELEMENT, GstV4lElementClass))
 
 typedef struct _GstV4lElement GstV4lElement;
 typedef struct _GstV4lElementClass GstV4lElementClass;
-
-typedef struct _GstV4lRect {
-  gint x, y, w, h;
-} GstV4lRect;
 
 struct _GstV4lElement {
   GstElement element;
@@ -59,40 +73,52 @@ struct _GstV4lElement {
   /* the video buffer (mmap()'ed) */
   guint8 *buffer;
 
-  /* the video-device's capabilities */
+  /* the video device's capabilities */
   struct video_capability vcap;
+
+  /* the video device's window properties */
+  struct video_window vwin;
 
   /* some more info about the current input's capabilities */
   struct video_channel vchan;
 
+  /* lists... */
+  GList *colors;
+  GList *norms;
+  GList *channels;
+
+  /* X-overlay */
+  GstXWindowListener *overlay;
+  XID xwindow_id;
+
   /* caching values */
-  gint channel;
-  gint norm;
-  gulong frequency;
-  gboolean mute;
-  gint volume;
-  gint mode;
-  gint brightness;
-  gint hue;
-  gint contrast;
-  gint saturation;
   gchar *display;
 };
 
 struct _GstV4lElementClass {
   GstElementClass parent_class;
 
+  /* probed devices */
+  GList *devices;
+
   /* signals */
-  void (*open)  (GstElement  *element,
-                 const gchar *device);
-  void (*close) (GstElement  *element,
-                 const gchar *device);
+  void     (*open)           (GstElement  *element,
+                              const gchar *device);
+  void     (*close)          (GstElement  *element,
+                              const gchar *device);
+
+  /* actions */
+  gboolean (*get_attribute)   (GstElement  *element,
+                               const gchar *attr_name,
+                               int         *value);
+  gboolean (*set_attribute)   (GstElement  *element,
+                               const gchar *attr_name,
+                               const int    value);
 };
 
 GType gst_v4lelement_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+
+G_END_DECLS
 
 #endif /* __GST_V4LELEMENT_H__ */

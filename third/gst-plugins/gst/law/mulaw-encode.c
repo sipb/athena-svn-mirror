@@ -17,167 +17,193 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <gst/gst.h>
 #include "mulaw-encode.h"
 #include "mulaw-conversion.h"
 
 extern GstPadTemplate *mulawenc_src_template, *mulawenc_sink_template;
 
-
 /* Stereo signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0
 };
 
-static void		gst_mulawenc_class_init		(GstMuLawEncClass *klass);
-static void		gst_mulawenc_init			(GstMuLawEnc *mulawenc);
+static void gst_mulawenc_class_init (GstMuLawEncClass * klass);
+static void gst_mulawenc_base_init (GstMuLawEncClass * klass);
+static void gst_mulawenc_init (GstMuLawEnc * mulawenc);
 
-static void		gst_mulawenc_set_property			(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
-static void		gst_mulawenc_get_property			(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
-
-static void		gst_mulawenc_chain			(GstPad *pad, GstBuffer *buf);
-
+static void gst_mulawenc_chain (GstPad * pad, GstData * _data);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_stereo_signals[LAST_SIGNAL] = { 0 }; */
 
-/*
-static GstPadNegotiateReturn
-mulawenc_negotiate_sink (GstPad *pad, GstCaps **caps, gint counter)
+static GstCaps *
+mulawenc_getcaps (GstPad * pad)
 {
-  GstCaps* tempcaps;
-  
-  GstMuLawEnc* mulawenc=GST_MULAWENC (GST_OBJECT_PARENT (pad));
-  
-  if (*caps==NULL) 
-    return GST_PAD_NEGOTIATE_FAIL;
+  GstMuLawEnc *mulawenc = GST_MULAWENC (gst_pad_get_parent (pad));
+  GstPad *otherpad;
+  GstCaps *base_caps, *othercaps;
+  GstStructure *structure;
+  const GValue *rate, *chans;
 
-  tempcaps = gst_caps_copy(*caps);
-
-  gst_caps_set(tempcaps,"format",GST_PROPS_STRING("int"));
-  gst_caps_set(tempcaps,"law",GST_PROPS_INT(1));
-  gst_caps_set(tempcaps,"depth",GST_PROPS_INT(8));
-  gst_caps_set(tempcaps,"width",GST_PROPS_INT(8));
-  gst_caps_set(tempcaps,"signed",GST_PROPS_BOOLEAN(FALSE));
-
-  if (gst_pad_try_set_caps (mulawenc->srcpad, tempcaps) > 0)
-  {
-    return GST_PAD_NEGOTIATE_AGREE;
+  if (pad == mulawenc->srcpad) {
+    otherpad = mulawenc->sinkpad;
+    base_caps = gst_caps_new_simple ("audio/x-mulaw", NULL);
+  } else {
+    otherpad = mulawenc->srcpad;
+    base_caps = gst_caps_new_simple ("audio/x-raw-int",
+        "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
+        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
   }
-  else {
-    gst_caps_unref (tempcaps);
-    return GST_PAD_NEGOTIATE_FAIL;
+  othercaps = gst_pad_get_allowed_caps (otherpad);
+
+  /* Not fully correct, but usually, all structures in a caps have
+   * the same samplerate and channels range. */
+  structure = gst_caps_get_structure (othercaps, 0);
+  rate = gst_structure_get_value (structure, "rate");
+  chans = gst_structure_get_value (structure, "channels");
+  if (!rate || !chans)
+    return gst_caps_new_empty ();
+
+  /* Set the samplerate/channels on the to-be-returned caps */
+  structure = gst_caps_get_structure (base_caps, 0);
+  gst_structure_set_value (structure, "rate", rate);
+  gst_structure_set_value (structure, "channels", chans);
+  gst_caps_free (othercaps);
+
+  return base_caps;
+}
+
+static GstPadLinkReturn
+mulawenc_link (GstPad * pad, const GstCaps * caps)
+{
+  GstMuLawEnc *mulawenc = GST_MULAWENC (gst_pad_get_parent (pad));
+  GstPad *otherpad;
+  GstStructure *structure;
+  const GValue *rate, *chans;
+  GstCaps *base_caps;
+
+  structure = gst_caps_get_structure (caps, 0);
+  rate = gst_structure_get_value (structure, "rate");
+  chans = gst_structure_get_value (structure, "channels");
+  if (!rate || !chans)
+    return GST_PAD_LINK_REFUSED;
+
+  if (pad == mulawenc->sinkpad) {
+    otherpad = mulawenc->srcpad;
+    base_caps = gst_caps_new_simple ("audio/x-mulaw", NULL);
+  } else {
+    otherpad = mulawenc->sinkpad;
+    base_caps = gst_caps_new_simple ("audio/x-raw-int",
+        "width", G_TYPE_INT, 16, "depth", G_TYPE_INT, 16,
+        "endianness", G_TYPE_INT, G_BYTE_ORDER, NULL);
   }
-}		
-*/
+
+  structure = gst_caps_get_structure (base_caps, 0);
+  gst_structure_set_value (structure, "rate", rate);
+  gst_structure_set_value (structure, "channels", chans);
+
+  return gst_pad_try_set_caps (otherpad, base_caps);
+}
 
 GType
-gst_mulawenc_get_type(void) {
+gst_mulawenc_get_type (void)
+{
   static GType mulawenc_type = 0;
 
   if (!mulawenc_type) {
     static const GTypeInfo mulawenc_info = {
-      sizeof(GstMuLawEncClass),      NULL,
+      sizeof (GstMuLawEncClass),
+      (GBaseInitFunc) gst_mulawenc_base_init,
       NULL,
-      (GClassInitFunc)gst_mulawenc_class_init,
+      (GClassInitFunc) gst_mulawenc_class_init,
       NULL,
       NULL,
-      sizeof(GstMuLawEnc),
+      sizeof (GstMuLawEnc),
       0,
-      (GInstanceInitFunc)gst_mulawenc_init,
+      (GInstanceInitFunc) gst_mulawenc_init,
     };
-    mulawenc_type = g_type_register_static(GST_TYPE_ELEMENT, "GstMuLawEnc", &mulawenc_info, 0);
+
+    mulawenc_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstMuLawEnc", &mulawenc_info,
+        0);
   }
   return mulawenc_type;
 }
 
 static void
-gst_mulawenc_class_init (GstMuLawEncClass *klass)
+gst_mulawenc_base_init (GstMuLawEncClass * klass)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+  GstElementDetails mulawenc_details = {
+    "PCM to Mu Law conversion",
+    "Codec/Encoder/Audio",
+    "Convert 16bit PCM to 8bit mu law",
+    "Zaheer Merali <zaheer@bellworldwide.net>"
+  };
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
-
-  parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
-
-  gobject_class->set_property = gst_mulawenc_set_property;
-  gobject_class->get_property = gst_mulawenc_get_property;
+  gst_element_class_add_pad_template (element_class, mulawenc_src_template);
+  gst_element_class_add_pad_template (element_class, mulawenc_sink_template);
+  gst_element_class_set_details (element_class, &mulawenc_details);
 }
 
 static void
-gst_mulawenc_init (GstMuLawEnc *mulawenc)
+gst_mulawenc_class_init (GstMuLawEncClass * klass)
 {
-  mulawenc->sinkpad = gst_pad_new_from_template(mulawenc_sink_template,"sink");
-  mulawenc->srcpad = gst_pad_new_from_template(mulawenc_src_template,"src");
-  /*gst_pad_set_negotiate_function(mulawenc->sinkpad, mulawenc_negotiate_sink);*/
-
-  gst_element_add_pad(GST_ELEMENT(mulawenc),mulawenc->sinkpad);
-  gst_pad_set_chain_function(mulawenc->sinkpad,gst_mulawenc_chain);
-  gst_element_add_pad(GST_ELEMENT(mulawenc),mulawenc->srcpad);
+  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 }
 
 static void
-gst_mulawenc_chain (GstPad *pad,GstBuffer *buf)
+gst_mulawenc_init (GstMuLawEnc * mulawenc)
 {
+  mulawenc->sinkpad =
+      gst_pad_new_from_template (mulawenc_sink_template, "sink");
+  gst_pad_set_link_function (mulawenc->sinkpad, mulawenc_link);
+  gst_pad_set_getcaps_function (mulawenc->sinkpad, mulawenc_getcaps);
+  gst_pad_set_chain_function (mulawenc->sinkpad, gst_mulawenc_chain);
+  gst_element_add_pad (GST_ELEMENT (mulawenc), mulawenc->sinkpad);
+
+  mulawenc->srcpad = gst_pad_new_from_template (mulawenc_src_template, "src");
+  gst_pad_set_link_function (mulawenc->srcpad, mulawenc_link);
+  gst_pad_set_getcaps_function (mulawenc->srcpad, mulawenc_getcaps);
+  gst_element_add_pad (GST_ELEMENT (mulawenc), mulawenc->srcpad);
+}
+
+static void
+gst_mulawenc_chain (GstPad * pad, GstData * _data)
+{
+  GstBuffer *buf = GST_BUFFER (_data);
   GstMuLawEnc *mulawenc;
   gint16 *linear_data;
   guint8 *mulaw_data;
-  GstBuffer* outbuf;
+  GstBuffer *outbuf;
 
-  g_return_if_fail(pad != NULL);
-  g_return_if_fail(GST_IS_PAD(pad));
-  g_return_if_fail(buf != NULL);
+  g_return_if_fail (pad != NULL);
+  g_return_if_fail (GST_IS_PAD (pad));
+  g_return_if_fail (buf != NULL);
 
-  mulawenc = GST_MULAWENC(GST_OBJECT_PARENT (pad));
-  g_return_if_fail(mulawenc != NULL);
-  g_return_if_fail(GST_IS_MULAWENC(mulawenc));
+  mulawenc = GST_MULAWENC (GST_OBJECT_PARENT (pad));
+  g_return_if_fail (mulawenc != NULL);
+  g_return_if_fail (GST_IS_MULAWENC (mulawenc));
 
-  linear_data = (gint16 *)GST_BUFFER_DATA(buf);
-  outbuf=gst_buffer_new();
-  GST_BUFFER_DATA(outbuf) = (gchar*)g_new(gint16,GST_BUFFER_SIZE(buf)/4);
-  GST_BUFFER_SIZE(outbuf) = GST_BUFFER_SIZE(buf)/2;
+  linear_data = (gint16 *) GST_BUFFER_DATA (buf);
+  outbuf = gst_buffer_new_and_alloc (GST_BUFFER_SIZE (buf) / 2);
+  GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
+  GST_BUFFER_DURATION (outbuf) = GST_BUFFER_DURATION (buf);
+  mulaw_data = (gint8 *) GST_BUFFER_DATA (outbuf);
+  mulaw_encode (linear_data, mulaw_data, GST_BUFFER_SIZE (outbuf));
 
-  mulaw_data = (gint8*)GST_BUFFER_DATA(outbuf);
-  mulaw_encode(linear_data,mulaw_data,GST_BUFFER_SIZE(outbuf));
-
-  gst_buffer_unref(buf);
-  gst_pad_push(mulawenc->srcpad,outbuf);
-}
-
-static void
-gst_mulawenc_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
-{
-  GstMuLawEnc *mulawenc;
-
-  /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_MULAWENC(object));
-  mulawenc = GST_MULAWENC(object);
-
-  switch (prop_id) {
-    default:
-      break;
-  }
-}
-
-static void
-gst_mulawenc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
-{
-  GstMuLawEnc *mulawenc;
-
-  /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_MULAWENC(object));
-  mulawenc = GST_MULAWENC(object);
-
-  switch (prop_id) {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
+  gst_buffer_unref (buf);
+  gst_pad_push (mulawenc->srcpad, GST_DATA (outbuf));
 }

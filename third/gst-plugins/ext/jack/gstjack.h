@@ -1,7 +1,7 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 /*
     Copyright (C) 2002 Andy Wingo <wingo@pobox.com>
-                            
+
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
@@ -24,6 +24,8 @@
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 
+//#define JACK_DEBUG(str, a...) g_message (str, ##a)
+#define JACK_DEBUG(str, a...)
 
 #define GST_JACK(obj) G_TYPE_CHECK_INSTANCE_CAST(obj, GST_TYPE_JACK, GstJack)
 #define GST_JACK_CLASS(klass) G_TYPE_CHECK_CLASS_CAST(klass, GST_TYPE_JACK, GstJackClass)
@@ -65,16 +67,17 @@ typedef GstJackClass GstJackSrcClass;
 enum {
     GST_JACK_OPEN = GST_BIN_FLAG_LAST,
     GST_JACK_ACTIVE,
-    GST_JACK_FLAG_LAST = GST_BIN_FLAG_LAST + 3,
+    GST_JACK_FLAG_LAST = GST_BIN_FLAG_LAST + 3
 };
 
+
+typedef jack_default_audio_sample_t sample_t;
 
 typedef struct {
     GstPad *pad;
     void *data;
     const gchar *name;
     const gchar *peer_name;
-    GstByteStream *bs;
     jack_port_t *port;
 } GstJackPad;
 
@@ -83,12 +86,12 @@ struct _GstJack {
 
     /* list of GstJackPads */
     GList *pads;
-    
+
     /* for convenience */
     GstPadDirection direction;
-    
+
     gchar *port_name_prefix;
-    
+
     GstJackBin *bin;
 };
 
@@ -110,12 +113,6 @@ struct _GstJackBin {
 
     guint rate;
     jack_nframes_t nframes;
-
-    /* the scheduler needs to be setup from within the jack client thread; this
-       variable is to keep track of whether or not we have been set up yet */
-    gboolean sched_setup;
-    GCond *cond;
-    GMutex *lock;
 };
 
 struct _GstJackBinClass {

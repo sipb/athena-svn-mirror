@@ -1,8 +1,3 @@
-if HAVE_LIBMMX
-GSTIDCTARCH_SRCS = mmxidct.S mmx32idct.c sseidct.S
-else
-GSTIDCTARCH_SRCS =
-endif
 
 librarydir = $(libdir)/gstreamer-@GST_MAJORMINOR@
 
@@ -12,8 +7,7 @@ libgstidct_la_SOURCES = \
         fastintidct.c \
 	floatidct.c \
 	idct.c \
-	intidct.c \
-	$(GSTIDCTARCH_SRCS)
+	intidct.c
 
 libgstidctincludedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/idct
 libgstidctinclude_HEADERS = idct.h
@@ -28,5 +22,5 @@ noinst_HEADERS = dct.h
 
 
 libgstidct_la_LIBADD =
-libgstidct_la_CFLAGS = $(GST_CFLAGS) -finline-functions -ffast-math
+libgstidct_la_CFLAGS = $(GST_CFLAGS)
 libgstidct_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)

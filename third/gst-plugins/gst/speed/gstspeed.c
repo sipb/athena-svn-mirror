@@ -18,289 +18,255 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <string.h>
-#include <gst/gst.h>
 #include <math.h>
+#include <gst/gst.h>
 #include <gst/audio/audio.h>
+
 #include "gstspeed.h"
 
-/* buffer size to make if no bufferpool is available, must be divisible by 
+/* buffer size to make if no bufferpool is available, must be divisible by
  * sizeof(gfloat) */
 #define SPEED_BUFSIZE 4096
 /* number of buffers to allocate per chunk in sink buffer pool */
 #define SPEED_NUMBUF 6
 
 /* elementfactory information */
-static GstElementDetails speed_details = {
-  "Speed",
-  "Filter/Audio/Effect",
-  "LGPL",
-  "Set speed/pitch on audio/raw streams (resampler)",
-  VERSION,
-  "Andy Wingo <apwingo@eos.ncsu.edu>",
-  "(C) 2001"
-};
+static GstElementDetails speed_details = GST_ELEMENT_DETAILS ("Speed",
+    "Filter/Effect/Audio",
+    "Set speed/pitch on audio/raw streams (resampler)",
+    "Andy Wingo <apwingo@eos.ncsu.edu>");
 
 
 /* Filter signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
-  ARG_SILENT,
   ARG_SPEED
 };
 
-static GstPadTemplate*                    
-speed_sink_factory (void)            
-{                                         
-  static GstPadTemplate *template = NULL; 
-                                          
-  if (!template) {                        
-    template = gst_pad_template_new 
-      ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
-      gst_caps_append(gst_caps_new ("sink_int",  "audio/raw",
-                                    GST_AUDIO_INT_MONO_PAD_TEMPLATE_PROPS),
-                      gst_caps_new ("sink_float", "audio/raw",
-                                    GST_AUDIO_FLOAT_MONO_PAD_TEMPLATE_PROPS)),
-      NULL);
-  }                                       
-  return template;                        
-}
+static GstStaticPadTemplate gst_speed_sink_template =
+    GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_AUDIO_INT_PAD_TEMPLATE_CAPS "; "
+        GST_AUDIO_FLOAT_STANDARD_PAD_TEMPLATE_CAPS)
+    );
 
-static GstPadTemplate*
-speed_src_factory (void)
-{
-  static GstPadTemplate *template = NULL;
-  
-  if (!template)
-    template = gst_pad_template_new 
-      ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-       gst_caps_append (gst_caps_new ("src_float", "audio/raw",
-                                      GST_AUDIO_FLOAT_MONO_PAD_TEMPLATE_PROPS),
-                        gst_caps_new ("src_int", "audio/raw",
-                                      GST_AUDIO_INT_MONO_PAD_TEMPLATE_PROPS)),
-       NULL);
-  
-  return template;
-}
+static GstStaticPadTemplate gst_speed_src_template =
+    GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_AUDIO_INT_PAD_TEMPLATE_CAPS "; "
+        GST_AUDIO_FLOAT_STANDARD_PAD_TEMPLATE_CAPS)
+    );
 
-static GstBufferPool*
-speed_sink_get_bufferpool (GstPad *pad)
-{
-  GstSpeed *filter;
-  
-  filter = GST_SPEED (gst_pad_get_parent(pad));
+static void speed_base_init (gpointer g_class);
+static void speed_class_init (GstSpeedClass * klass);
+static void speed_init (GstSpeed * filter);
 
-  return filter->sinkpool;
-}
+static void speed_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void speed_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec);
 
-static void		speed_class_init		(GstSpeedClass *klass);
-static void		speed_init		(GstSpeed *filter);
+static gboolean speed_parse_caps (GstSpeed * filter, const GstCaps * caps);
 
-static void		speed_set_property	(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
-static void		speed_get_property        (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
-
-static gboolean		speed_parse_caps          (GstSpeed *filter, GstCaps *caps);
-
-static void		speed_loop              (GstElement *element);
+static void speed_loop (GstElement * element);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_filter_signals[LAST_SIGNAL] = { 0 }; */
 
 static GstPadLinkReturn
-speed_connect (GstPad *pad, GstCaps *caps)
+speed_link (GstPad * pad, const GstCaps * caps)
 {
   GstSpeed *filter;
   GstPad *otherpad;
-  
+
   filter = GST_SPEED (gst_pad_get_parent (pad));
   g_return_val_if_fail (filter != NULL, GST_PAD_LINK_REFUSED);
   g_return_val_if_fail (GST_IS_SPEED (filter), GST_PAD_LINK_REFUSED);
   otherpad = (pad == filter->srcpad ? filter->sinkpad : filter->srcpad);
-  
-  if (GST_CAPS_IS_FIXED (caps)) {
-    if (!speed_parse_caps (filter, caps))
-      return GST_PAD_LINK_REFUSED;
-    
-    return gst_pad_try_set_caps(otherpad, caps);
-  }
-  
-  return GST_PAD_LINK_DELAYED;
+
+  if (!speed_parse_caps (filter, caps))
+    return GST_PAD_LINK_REFUSED;
+
+  return gst_pad_try_set_caps (otherpad, caps);
 }
 
 static gboolean
-speed_parse_caps (GstSpeed *filter, GstCaps *caps)
+speed_parse_caps (GstSpeed * filter, const GstCaps * caps)
 {
-  const gchar *format;
-  
-  g_return_val_if_fail(filter!=NULL,-1);
-  g_return_val_if_fail(caps!=NULL,-1);
-  
-  gst_caps_get_string(caps, "format", &format);
-  
-  gst_caps_get_int (caps, "rate", &filter->rate);
-  gst_caps_get_int (caps, "channels", &filter->channels);
-  
-  if (strcmp(format, "int")==0) {
-    filter->format        = GST_SPEED_FORMAT_INT;
-    gst_caps_get_int	 (caps, "width", 	  &filter->width);
-    gst_caps_get_int	 (caps, "depth",      &filter->depth);
-    gst_caps_get_int	 (caps, "law",        &filter->law);
-    gst_caps_get_int	 (caps, "endianness", &filter->endianness);
-    gst_caps_get_boolean (caps, "signed",     &filter->is_signed);
+  const gchar *mimetype;
+  GstStructure *structure;
+  gboolean ret;
 
-    if (!filter->silent) {
-      g_print ("Speed : channels %d, rate %d\n",  
-               filter->channels, filter->rate);
-      g_print ("Speed : format int, bit width %d, endianness %d, signed %s\n",
-               filter->width, filter->endianness, filter->is_signed ? "yes" : "no");
-    }
-  } else if (strcmp(format, "float")==0) {
-    filter->format     = GST_SPEED_FORMAT_FLOAT;
-    gst_caps_get_string (caps, "layout",    &filter->layout);
-    gst_caps_get_float  (caps, "intercept", &filter->intercept);
-    gst_caps_get_float  (caps, "slope",     &filter->slope);
+  g_return_val_if_fail (filter != NULL, FALSE);
+  g_return_val_if_fail (caps != NULL, FALSE);
 
-    if (!filter->silent) {
-      g_print ("Speed : channels %d, rate %d\n",  
-               filter->channels, filter->rate);
-      g_print ("Speed : format float, layout %s, intercept %f, slope %f\n",
-               filter->layout, filter->intercept, filter->slope);
-    }
-  } else  {
+  structure = gst_caps_get_structure (caps, 0);
+
+  ret = gst_structure_get_int (structure, "rate", &filter->rate);
+  ret &= gst_structure_get_int (structure, "channels", &filter->channels);
+  ret &= gst_structure_get_int (structure, "width", &filter->width);
+  ret &= gst_structure_get_int (structure, "endianness", &filter->endianness);
+
+  filter->buffer_frames = 0;
+  gst_structure_get_int (structure, "buffer-frames", &filter->buffer_frames);
+
+  mimetype = gst_structure_get_name (structure);
+
+  if (strcmp (mimetype, "audio/x-raw-int") == 0) {
+    filter->format = GST_SPEED_FORMAT_INT;
+    ret &= gst_structure_get_int (structure, "depth", &filter->depth);
+    ret &= gst_structure_get_boolean (structure, "signed", &filter->is_signed);
+  } else if (strcmp (mimetype, "audio/x-raw-float") == 0) {
+    filter->format = GST_SPEED_FORMAT_FLOAT;
+  } else {
     return FALSE;
   }
-  return TRUE;
+  return ret;
 }
 
 
 GType
-gst_speed_get_type(void) {
+gst_speed_get_type (void)
+{
   static GType speed_type = 0;
 
   if (!speed_type) {
     static const GTypeInfo speed_info = {
-      sizeof(GstSpeedClass),      NULL,
+      sizeof (GstSpeedClass),
+      speed_base_init,
       NULL,
-      (GClassInitFunc)speed_class_init,
+      (GClassInitFunc) speed_class_init,
       NULL,
       NULL,
-      sizeof(GstSpeed),
+      sizeof (GstSpeed),
       0,
-      (GInstanceInitFunc)speed_init,
+      (GInstanceInitFunc) speed_init,
     };
-    speed_type = g_type_register_static(GST_TYPE_ELEMENT, "GstSpeed", &speed_info, 0);
+
+    speed_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstSpeed", &speed_info, 0);
   }
   return speed_type;
 }
 
 static void
-speed_class_init (GstSpeedClass *klass)
+speed_base_init (gpointer g_class)
 {
-  GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
+  gst_element_class_set_details (element_class, &speed_details);
 
-  parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
-
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_SILENT,
-    g_param_spec_boolean("silent","silent","silent",
-                         TRUE,G_PARAM_READWRITE)); /* CHECKME */
-
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_SPEED,
-    g_param_spec_float("speed","speed","speed",
-                       0.1,40.0,1.0,G_PARAM_READWRITE));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_speed_src_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_speed_sink_template));
+}
+static void
+speed_class_init (GstSpeedClass * klass)
+{
+  GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->set_property = speed_set_property;
   gobject_class->get_property = speed_get_property;
+
+  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SPEED,
+      g_param_spec_float ("speed", "speed", "speed",
+          0.1, 40.0, 1.0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 }
 
 static void
-speed_init (GstSpeed *filter)
+speed_init (GstSpeed * filter)
 {
-  filter->sinkpad = gst_pad_new_from_template(speed_sink_factory (),"sink");
-  gst_pad_set_link_function(filter->sinkpad,speed_connect);
-  gst_pad_set_bufferpool_function (filter->sinkpad, speed_sink_get_bufferpool);
-  filter->srcpad = gst_pad_new_from_template(speed_src_factory (),"src");
-  gst_pad_set_link_function(filter->srcpad,speed_connect);
-  
-  gst_element_add_pad(GST_ELEMENT(filter),filter->sinkpad);
-  gst_element_add_pad(GST_ELEMENT(filter),filter->srcpad);
-  gst_element_set_loop_function(GST_ELEMENT(filter),speed_loop);
-  filter->silent = FALSE;
-  filter->speed = 1.0;
-  
-  filter->sinkpool = gst_buffer_pool_get_default(SPEED_BUFSIZE,
-                                                 SPEED_NUMBUF);
+  filter->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&gst_speed_sink_template), "sink");
+  gst_pad_set_link_function (filter->sinkpad, speed_link);
+  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
+
+  filter->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&gst_speed_src_template), "src");
+  gst_pad_set_link_function (filter->srcpad, speed_link);
+  gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
+
+  gst_element_set_loop_function (GST_ELEMENT (filter), speed_loop);
 }
 
 static void
-speed_loop (GstElement *element)
+speed_loop (GstElement * element)
 {
-  GstSpeed *filter = GST_SPEED(element);
+  GstSpeed *filter = GST_SPEED (element);
   GstBuffer *in, *out;
   guint i, j, nin, nout;
   gfloat interp, speed, lower, i_float;
-  
-  g_return_if_fail(filter != NULL);
-  g_return_if_fail(GST_IS_SPEED(filter));
 
-  filter->srcpool = gst_pad_get_bufferpool(filter->srcpad);
-  
+  g_return_if_fail (filter != NULL);
+  g_return_if_fail (GST_IS_SPEED (filter));
+
   i = j = 0;
   speed = filter->speed;
-  
-  in = gst_pad_pull(filter->sinkpad);
+
+  in = GST_BUFFER (gst_pad_pull (filter->sinkpad));
+
   if (GST_IS_EVENT (in)) {
     gst_pad_event_default (filter->sinkpad, GST_EVENT (in));
     return;
   }
-  
+
   while (GST_IS_EVENT (in)) {
     gst_pad_event_default (filter->srcpad, GST_EVENT (in));
-    in = gst_pad_pull (filter->sinkpad);
+    in = GST_BUFFER (gst_pad_pull (filter->sinkpad));
   }
 
   /* this is a bit nasty, but hey, it's what you've got to do to keep the same
    * algorithm and multiple data types in c. */
-  if (filter->format==GST_SPEED_FORMAT_FLOAT) {
+  if (filter->format == GST_SPEED_FORMAT_FLOAT) {
 #define _FORMAT gfloat
 #include "filter.func"
 #undef _FORMAT
-  } else if (filter->format==GST_SPEED_FORMAT_INT && filter->width==16) {
+  } else if (filter->format == GST_SPEED_FORMAT_INT && filter->width == 16) {
 #define _FORMAT gint16
 #include "filter.func"
 #undef _FORMAT
-  } else if (filter->format==GST_SPEED_FORMAT_INT && filter->width==8) {
+  } else if (filter->format == GST_SPEED_FORMAT_INT && filter->width == 8) {
 #define _FORMAT gint8
 #include "filter.func"
 #undef _FORMAT
   } else {
-    gst_element_error (element, "capsnego was never performed, bailing...");
+    GST_ELEMENT_ERROR (filter, CORE, NEGOTIATION, (NULL),
+        ("format wasn't negotiated before chain function"));
     gst_element_yield (element);
   }
 }
 
 static void
-speed_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+speed_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstSpeed *filter;
 
   /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_SPEED(object));
-  filter = GST_SPEED(object);
+  g_return_if_fail (GST_IS_SPEED (object));
+  filter = GST_SPEED (object);
 
-  switch (prop_id) 
-  {
-    case ARG_SILENT:
-      filter->silent = g_value_get_boolean (value);
-      break;
+  switch (prop_id) {
     case ARG_SPEED:
       filter->speed = g_value_get_float (value);
       break;
@@ -310,18 +276,16 @@ speed_set_property (GObject *object, guint prop_id, const GValue *value, GParamS
 }
 
 static void
-speed_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+speed_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstSpeed *filter;
 
   /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_SPEED(object));
-  filter = GST_SPEED(object);
+  g_return_if_fail (GST_IS_SPEED (object));
+  filter = GST_SPEED (object);
 
   switch (prop_id) {
-    case ARG_SILENT:
-      g_value_set_boolean (value, filter->silent);
-      break;
     case ARG_SPEED:
       g_value_set_float (value, filter->speed);
       break;
@@ -332,25 +296,13 @@ speed_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *p
 }
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  factory = gst_element_factory_new("speed",GST_TYPE_SPEED,
-                                   &speed_details);
-  g_return_val_if_fail(factory != NULL, FALSE);
-  
-  gst_element_factory_add_pad_template (factory, speed_src_factory ());
-  gst_element_factory_add_pad_template (factory, speed_sink_factory ());
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "speed", GST_RANK_NONE, GST_TYPE_SPEED);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "speed",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "speed",
+    "Set speed/pitch on audio/raw streams (resampler)",
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE, GST_ORIGIN)

@@ -1,1 +1,2 @@
-SUBDIRS = ffmpeg
+SUBDIRS =
+DIST_SUBDIRS =

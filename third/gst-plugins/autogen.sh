@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
 DIE=0
@@ -17,7 +17,7 @@ fi
 mkdir -p gst-libs/ext/ffmpeg/ffmpeg
 
 # source helper functions
-if test ! -e common/gst-autogen.sh;
+if test ! -f common/gst-autogen.sh;
 then
   echo There is something wrong with your source tree.
   echo You are missing common/gst-autogen.sh
@@ -30,19 +30,21 @@ CONFIGURE_DEF_OPT='--enable-maintainer-mode --enable-plugin-builddir --enable-de
 autogen_options $@
 
 echo -n "+ check for build tools"
-if test ! -z $NOCHECK; then echo " skipped"; else  echo; fi
+if test ! -z "$NOCHECK"; then echo " skipped"; else  echo; fi
 version_check "autoconf" "$AUTOCONF autoconf autoconf-2.54 autoconf-2.53 autoconf-2.52" \
               "ftp://ftp.gnu.org/pub/gnu/autoconf/" 2 52 || DIE=1
 version_check "automake" "$AUTOMAKE automake automake-1.7 automake-1.6 automake-1.5" \
-              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 5 || DIE=1
-version_check "libtool" "" \
-              "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 4 0 || DIE=1
+              "ftp://ftp.gnu.org/pub/gnu/automake/" 1 6 || DIE=1
+version_check "autopoint" "autopoint" \
+              "ftp://ftp.gnu.org/pub/gnu/gettext/" 0 11 5 || DIE=1
+version_check "libtoolize" "$LIBTOOLIZE libtoolize" \
+              "ftp://ftp.gnu.org/pub/gnu/libtool/" 1 5 0 || DIE=1
 version_check "pkg-config" "" \
               "http://www.freedesktop.org/software/pkgconfig" 0 8 0 || DIE=1
 
 die_check $DIE
 
-autoconf_2.52d_check || DIE=1
+autoconf_2_52d_check || DIE=1
 aclocal_check || DIE=1
 autoheader_check || DIE=1
 
@@ -59,8 +61,19 @@ fi
 
 toplevel_check $srcfile
 
+# autopoint
+#    older autopoint (< 0.12) has a tendency to complain about mkinstalldirs
+if test -x mkinstalldirs; then rm mkinstalldirs; fi
+#    first remove patch if necessary, then run autopoint, then reapply
+if test -f po/Makefile.in.in;
+then
+  patch -p0 -R < common/gettext.patch
+fi
+tool_run "$autopoint --force"
+patch -p0 < common/gettext.patch
+
 tool_run "$aclocal" "-I m4 -I common/m4 $ACLOCAL_FLAGS"
-tool_run "libtoolize" "--copy --force"
+tool_run "$libtoolize" "--copy --force"
 tool_run "$autoheader"
 
 # touch the stamp-h.in build stamp so we don't re-run autoheader in maintainer mode -- wingo
@@ -72,14 +85,14 @@ tool_run "$automake" "-a -c"
 # if enable exists, add an -enable option for each of the lines in that file
 if test -f enable; then
   for a in `cat enable`; do
-    CONFIGURE_OPT="$CONFIGURE_OPT --enable-$a"
+    CONFIGURE_FILE_OPT="--enable-$a"
   done
 fi
 
 # if disable exists, add an -disable option for each of the lines in that file
 if test -f disable; then
   for a in `cat disable`; do
-    CONFIGURE_OPT="$CONFIGURE_OPT --disable-$a"
+    CONFIGURE_FILE_OPT="$CONFIGURE_FILE_OPT --disable-$a"
   done
 fi
 
@@ -92,9 +105,10 @@ test -n "$NOCONFIGURE" && {
 echo "+ running configure ... "
 test ! -z "$CONFIGURE_DEF_OPT" && echo "  ./configure default flags: $CONFIGURE_DEF_OPT"
 test ! -z "$CONFIGURE_EXT_OPT" && echo "  ./configure external flags: $CONFIGURE_EXT_OPT"
+test ! -z "$CONFIGURE_FILE_OPT" && echo "  ./configure enable/disable flags: $CONFIGURE_FILE_OPT"
 echo
 
-./configure $CONFIGURE_DEF_OPT $CONFIGURE_EXT_OPT || {
+./configure $CONFIGURE_DEF_OPT $CONFIGURE_EXT_OPT $CONFIGURE_FILE_OPT || {
         echo "  configure failed"
         exit 1
 }

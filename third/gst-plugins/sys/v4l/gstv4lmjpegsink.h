@@ -1,4 +1,7 @@
-/* G-Streamer hardware MJPEG video sink plugin
+/* GStreamer
+ *
+ * gstv4lmjpegsink.h: hardware MJPEG video sink element
+ *
  * Copyright (C) 2001-2002 Ronald Bultje <rbultje@ronald.bitfreak.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -25,9 +28,7 @@
 #include <videodev_mjpeg.h>
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 
 #define GST_TYPE_V4LMJPEGSINK \
@@ -68,9 +69,6 @@ struct _GstV4lMjpegSink {
   GCond **cond_queued_frames;
   gint current_frame;
 
-  /* something to get our buffers from */
-  GstBufferPool *bufferpool;
-
   /* width/height/norm of the jpeg stream */
   gint width;
   gint height;
@@ -89,14 +87,11 @@ struct _GstV4lMjpegSinkClass {
 
   /* signals */
   void (*frame_displayed) (GstElement *element);
-  void (*have_size) 	  (GstElement *element, guint width, guint height);
 };
 
 GType gst_v4lmjpegsink_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
+G_END_DECLS
 
 #endif /* __GST_SDLVIDEOSINK_H__ */

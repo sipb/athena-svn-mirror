@@ -58,6 +58,7 @@ struct _GstJpegEnc {
   gint format;
   gint width;
   gint height;
+  gdouble fps;
   /* the video buffer */
   gint bufsize;
   GstBuffer *buffer;
@@ -69,6 +70,8 @@ struct _GstJpegEnc {
   struct jpeg_error_mgr jerr;
   struct jpeg_destination_mgr jdest;
 
+  int quality;
+  int smoothing;
 };
 
 struct _GstJpegEncClass {

@@ -25,7 +25,6 @@
 #define __GST_AFSRC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <audiofile.h>			/* what else are we to do */
 
@@ -95,7 +94,7 @@ struct _GstAFSrcClass {
 };
 
 GType 		gst_afsrc_get_type	(void);
-gboolean        gst_afsrc_plugin_init  (GModule *module, GstPlugin *plugin);
+gboolean        gst_afsrc_plugin_init  (GstPlugin *plugin);
 
 
 

@@ -21,7 +21,6 @@
 #ifndef __GST_MIKMOD_H__
 #define __GST_MIKMOD_H__
 
-#include <config.h>
 #include <mikmod.h>
 #include <gst/gst.h>
 
@@ -64,6 +63,8 @@ struct _GstMikMod {
   gboolean soft_music;
   gboolean soft_sndfx;
   gboolean stereo;
+
+  gboolean initialized;
 };
 
 struct _GstMikModClass {
@@ -73,11 +74,11 @@ struct _GstMikModClass {
 typedef struct _GstMikMod GstMikMod;
 typedef struct _GstMikModClass GstMikModClass;
 
-MODULE *module;
-MREADER *reader;
-GstPad *srcpad;
-gint64 timestamp;
-int need_sync;
+extern MODULE *module;
+extern MREADER *reader;
+extern GstPad *srcpad;
+extern GstClockTime timestamp;
+extern int need_sync;
 
 GType gst_mikmod_get_type(void);
 

@@ -22,8 +22,6 @@
 #define __GST_SIDDEC_H__
 
 
-#include <config.h>
-
 #include <stdlib.h>
 #include <sidplay/player.h>
 
@@ -46,22 +44,25 @@ typedef struct _GstSidDec GstSidDec;
 typedef struct _GstSidDecClass GstSidDecClass;
 
 struct _GstSidDec {
-  GstElement element;
+  GstElement 	 element;
 
   /* pads */
-  GstPad *sinkpad, *srcpad;
+  GstPad 	*sinkpad, 
+  		*srcpad;
 
-  gint state;
-  guchar *tune_buffer;
-  gint tune_len;
-  gint tune_number;
-  guint64 total_bytes;
+  gint 		 state;
+  guchar	*tune_buffer;
+  gint		 tune_len;
+  gint 		 tune_number;
+  guint64 	 total_bytes;
 
-  emuEngine *engine;
-  sidTune *tune;
-  emuConfig *config;
+  emuEngine 	*engine;
+  sidTune 	*tune;
+  emuConfig 	*config;
 
-  GstCaps *metadata;
+  gulong	 blocksize;
+
+  GstCaps	*metadata;
 };
 
 struct _GstSidDecClass {

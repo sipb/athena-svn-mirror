@@ -25,12 +25,9 @@
 #define __GST_SINESRC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 
 GstElementDetails gst_sinesrc_details;
@@ -58,11 +55,12 @@ struct _GstSineSrc {
   GstDParamManager *dpman;
 
   /* parameters */
-  gfloat volume;
-  gfloat freq;
+  gdouble volume;
+  gdouble freq;
+  gboolean sync;
   
   /* lookup table data */
-  gfloat *table_data;
+  gdouble *table_data;
   gdouble table_pos;
   gdouble table_inc;
   gint table_size;
@@ -71,17 +69,19 @@ struct _GstSineSrc {
   gint table_lookup_next;
     
   /* audio parameters */
-  gint width;
   gint samplerate;
 
   gint samples_per_buffer;
   gulong seq;
   
-  gint64 timestamp;
-  GstBufferPool *bufpool;
+  guint64 timestamp;
+  guint64 offset;
 
-  gboolean newcaps;
+  gdouble accumulator;
 
+  gboolean tags_pushed;
+
+  GstClock *clock;
 };
 
 struct _GstSineSrcClass {
@@ -91,9 +91,7 @@ struct _GstSineSrcClass {
 GType gst_sinesrc_get_type(void);
 gboolean gst_sinesrc_factory_init (GstElementFactory *factory);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 
 #endif /* __GST_SINESRC_H__ */

@@ -21,7 +21,6 @@
 #ifndef __GST_UDPSRC_H__
 #define __GST_UDPSRC_H__
 
-#include <config.h>
 #include <gst/gst.h>
 
 #ifdef __cplusplus
@@ -32,8 +31,10 @@ extern "C" {
 #include <string.h>
 #include <sys/types.h>
 #include <netdb.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <fcntl.h>
 #include "gstudp.h"
 
@@ -67,10 +68,14 @@ struct _GstUDPSrc {
   int sock;
   int control_sock;
   Gst_UDP_Control control;
+  gchar *multi_group;
+
   struct sockaddr_in myaddr;
+  struct ip_mreq multi_addr;
   GstClock *clock;
 
   gboolean first_buf;
+  GstData *defer_data;
 };
 
 struct _GstUDPSrcClass {

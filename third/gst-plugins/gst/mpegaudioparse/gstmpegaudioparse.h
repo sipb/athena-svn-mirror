@@ -22,7 +22,6 @@
 #define __MP3PARSE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 
@@ -53,6 +52,7 @@ struct _GstMPEGAudioParse {
   GstBuffer *partialbuf;	/* previous buffer (if carryover) */
   guint skip; /* number of frames to skip */
   guint bit_rate;
+  gint channels, rate, layer;
   gboolean in_flush;
 };
 

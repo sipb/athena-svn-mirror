@@ -21,117 +21,68 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
 #include <gst/gst.h>
+#include <gst/video/video.h>
 #include "gsteffectv.h"
 
 
-struct _elements_entry {
+struct _elements_entry
+{
   gchar *name;
-  GType (*type) (void);
-  GstElementDetails *details;
-  gboolean (*factoryinit) (GstElementFactory *factory);
+    GType (*type) (void);
 };
 
 static struct _elements_entry _elements[] = {
-  { "edgeTV",  		gst_edgetv_get_type,  		&gst_edgetv_details,  		NULL },
-  { "agingTV", 		gst_agingtv_get_type, 		&gst_agingtv_details, 		NULL },
-  { "diceTV",  		gst_dicetv_get_type,  		&gst_dicetv_details,  		NULL },
-  { "warpTV",  		gst_warptv_get_type,  		&gst_warptv_details,  		NULL },
-  { "shagadelicTV",  	gst_shagadelictv_get_type,  	&gst_shagadelictv_details,  	NULL },
-  { "vertigoTV",  	gst_vertigotv_get_type, 	&gst_vertigotv_details,  	NULL },
-  { "revTV",  		gst_revtv_get_type,  		&gst_revtv_details,  		NULL },
-  { "quarkTV", 		gst_quarktv_get_type,  		&gst_quarktv_details,  		NULL },
-  { NULL, 0 },
+  {"edgeTV", gst_edgetv_get_type},
+  {"agingTV", gst_agingtv_get_type},
+  {"diceTV", gst_dicetv_get_type},
+  {"warpTV", gst_warptv_get_type},
+  {"shagadelicTV", gst_shagadelictv_get_type},
+  {"vertigoTV", gst_vertigotv_get_type},
+  {"revTV", gst_revtv_get_type},
+  {"quarkTV", gst_quarktv_get_type},
+  {NULL, 0},
 };
 
 
-GstPadTemplate* 
-gst_effectv_src_factory (void)
-{
-  static GstPadTemplate *templ = NULL;
-  if (!templ) {
-    templ = GST_PAD_TEMPLATE_NEW ( 
-  		"src",
-  		GST_PAD_SRC,
-  		GST_PAD_ALWAYS,
-  		GST_CAPS_NEW (
-  		  "effectv_src",
-  		  "video/raw",
-  		    "format",         GST_PROPS_FOURCC (GST_STR_FOURCC ("RGB ")),
-  		    "bpp",            GST_PROPS_INT (32),
-  		    "depth",          GST_PROPS_INT (32),
-  		    "endianness",     GST_PROPS_INT (G_BYTE_ORDER),
-  		    "red_mask",       GST_PROPS_INT (0xff0000),
-  		    "green_mask",     GST_PROPS_INT (0xff00),
-  		    "blue_mask",      GST_PROPS_INT (0xff),
-  		    "width",          GST_PROPS_INT_RANGE (16, 4096),
-  		    "height",         GST_PROPS_INT_RANGE (16, 4096)
-		)
-  	     );
-  }
-  return templ;
-}
+GstStaticPadTemplate gst_effectv_src_template = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
+    );
 
-GstPadTemplate* 
-gst_effectv_sink_factory (void)
-{
-  static GstPadTemplate *templ = NULL;
-  if (!templ) {
-    templ = GST_PAD_TEMPLATE_NEW ( 
-  		"sink",
-  		GST_PAD_SINK,
-  		GST_PAD_ALWAYS,
-  		GST_CAPS_NEW (
-  		  "effectv_sink",
-  		  "video/raw",
-  		    "format",         GST_PROPS_FOURCC (GST_STR_FOURCC ("RGB ")),
-  		    "bpp",            GST_PROPS_INT (32),
-  		    "depth",          GST_PROPS_INT (32),
-  		    "endianness",     GST_PROPS_INT (G_BYTE_ORDER),
-  		    "red_mask",       GST_PROPS_INT (0xff0000),
-  		    "green_mask",     GST_PROPS_INT (0xff00),
-  		    "blue_mask",      GST_PROPS_INT (0xff),
-  		    "width",          GST_PROPS_INT_RANGE (16, 4096),
-  		    "height",         GST_PROPS_INT_RANGE (16, 4096)
-		)
-  	     );
-  }
-  return templ;
-}
+GstStaticPadTemplate gst_effectv_sink_template =
+    GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRx "; " GST_VIDEO_CAPS_RGBx)
+    );
 
 static gboolean
-plugin_init (GModule * module, GstPlugin * plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
   gint i = 0;
 
+  if (!gst_library_load ("gstvideofilter"))
+    return FALSE;
+
   while (_elements[i].name) {
-    factory = gst_element_factory_new (_elements[i].name,
-                                      (_elements[i].type) (),
-                                       _elements[i].details);
-
-    if (!factory) {
-      g_warning ("gst_effecttv_new failed for `%s'",
-                 _elements[i].name);
-      continue;
-    }
-    gst_element_factory_add_pad_template (factory, gst_effectv_src_factory ());
-    gst_element_factory_add_pad_template (factory, gst_effectv_sink_factory ());
-
-    gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-    if (_elements[i].factoryinit) {
-      _elements[i].factoryinit (factory);
-    }
+    if (!gst_element_register (plugin, _elements[i].name,
+            GST_RANK_NONE, (_elements[i].type) ()))
+      return FALSE;
     i++;
   }
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "effectv",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "effectv",
+    "effect plugins from the effectv project",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN);

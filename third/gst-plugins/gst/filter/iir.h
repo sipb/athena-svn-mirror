@@ -12,7 +12,7 @@
  ********************************************************************
 
   function: Direct Form I, II IIR filters, plus some specializations
-  last mod: $Id: iir.h,v 1.1.1.1 2003-01-29 21:50:42 ghudson Exp $
+  last mod: $Id: iir.h,v 1.1.1.2 2004-10-06 18:27:02 ghudson Exp $
 
  ********************************************************************/
 

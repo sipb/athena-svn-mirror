@@ -22,19 +22,18 @@
 #define __PRIVATE_H__
 
 #include "resample.h"
-#include "config.h"
 
-void resample_nearest_s16(resample_t *r);
-void resample_bilinear_s16(resample_t *r);
-void resample_sinc_s16(resample_t *r);
-void resample_sinc_slow_s16(resample_t *r);
-void resample_sinc_ft_s16(resample_t * r);
+void gst_resample_nearest_s16(gst_resample_t *r);
+void gst_resample_bilinear_s16(gst_resample_t *r);
+void gst_resample_sinc_s16(gst_resample_t *r);
+void gst_resample_sinc_slow_s16(gst_resample_t *r);
+void gst_resample_sinc_ft_s16(gst_resample_t * r);
 
-void resample_nearest_float(resample_t *r);
-void resample_bilinear_float(resample_t *r);
-void resample_sinc_float(resample_t *r);
-void resample_sinc_slow_float(resample_t *r);
-void resample_sinc_ft_float(resample_t * r);
+void gst_resample_nearest_float(gst_resample_t *r);
+void gst_resample_bilinear_float(gst_resample_t *r);
+void gst_resample_sinc_float(gst_resample_t *r);
+void gst_resample_sinc_slow_float(gst_resample_t *r);
+void gst_resample_sinc_ft_float(gst_resample_t * r);
 
 
 typedef struct functable_s functable_t;
@@ -89,11 +88,16 @@ void conv_short_double_ppcasm(short *dest, double *src, int n);
 #endif
 
 #ifdef HAVE_CPU_PPC
-#define conv_double_short conv_double_short_table
-#define conv_short_double conv_short_double_ppcasm
+#  define conv_double_short conv_double_short_table
+#  if 0
+/* disabled as in .c */
+#    define conv_short_double conv_short_double_ppcasm
+#  else
+#    define conv_short_double conv_short_double_ref
+#  endif
 #else
-#define conv_double_short conv_double_short_ref
-#define conv_short_double conv_short_double_ref
+#  define conv_double_short conv_double_short_ref
+#  define conv_short_double conv_short_double_ref
 #endif
 
 #define conv_double_float conv_double_float_ref

@@ -20,103 +20,56 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "gstfilter.h"
+#include <gst/audio/audio.h>
 
 
-struct _elements_entry {
+struct _elements_entry
+{
   gchar *name;
-  GType (*type) (void);
-  GstElementDetails *details;
-  gboolean (*factoryinit) (GstElementFactory *factory);
+    GType (*type) (void);
 };
 
 static struct _elements_entry _elements[] = {
-  { "iir",  	gst_iir_get_type,  	&gst_iir_details,  	NULL },
-  { "lpwsinc",  gst_lpwsinc_get_type,	&gst_lpwsinc_details,	NULL },
-  { "bpwsinc",  gst_bpwsinc_get_type,	&gst_bpwsinc_details,	NULL },
-  { NULL, 0 },
+  {"iir", gst_iir_get_type},
+  {"lpwsinc", gst_lpwsinc_get_type},
+  {"bpwsinc", gst_bpwsinc_get_type},
+  {NULL, 0},
 };
 
-GstPadTemplate* 
-gst_filter_src_factory (void)
-{
-  static GstPadTemplate *templ = NULL;
-  if (!templ) {
-    templ = GST_PAD_TEMPLATE_NEW ( 
-  		"src",
-  		GST_PAD_SRC,
-  		GST_PAD_ALWAYS,
-  		GST_CAPS_NEW (
-  		  "filter_src",
-  		  "audio/raw",
-  		    "format",		GST_PROPS_STRING ("float"),
-  		    "rate",            	GST_PROPS_INT_RANGE (1, G_MAXINT),
-		    "layout",     	GST_PROPS_STRING ("gfloat"),
-		    "intercept",  	GST_PROPS_FLOAT(0.0),
-		    "slope",      	GST_PROPS_FLOAT(1.0),
-		    "channels",   	GST_PROPS_INT (1)
-		)
-  	     );
-  }
-  return templ;
-}
+GstStaticPadTemplate gst_filter_src_template = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_AUDIO_FLOAT_STANDARD_PAD_TEMPLATE_CAPS)
+    );
 
-GstPadTemplate* 
-gst_filter_sink_factory (void)
-{
-  static GstPadTemplate *templ = NULL;
-  if (!templ) {
-    templ = GST_PAD_TEMPLATE_NEW ( 
-  		"sink",
-  		GST_PAD_SINK,
-  		GST_PAD_ALWAYS,
-  		GST_CAPS_NEW (
-  		  "filter_src",
-  		  "audio/raw",
-  		    "format",		GST_PROPS_STRING ("float"),
-  		    "rate",            	GST_PROPS_INT_RANGE (1, G_MAXINT),
-		    "layout",     	GST_PROPS_STRING ("gfloat"),
-		    "intercept",  	GST_PROPS_FLOAT(0.0),
-		    "slope",      	GST_PROPS_FLOAT(1.0),
-		    "channels",   	GST_PROPS_INT (1)
-		)
-  	     );
-  }
-  return templ;
-}
+GstStaticPadTemplate gst_filter_sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_AUDIO_FLOAT_STANDARD_PAD_TEMPLATE_CAPS)
+    );
 
 static gboolean
-plugin_init (GModule * module, GstPlugin * plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
   gint i = 0;
 
   while (_elements[i].name) {
-    factory = gst_element_factory_new (_elements[i].name,
-                                      (_elements[i].type) (),
-                                       _elements[i].details);
+    if (!gst_element_register (plugin, _elements[i].name, GST_RANK_NONE,
+            _elements[i].type ()))
+      return FALSE;
 
-    if (!factory) {
-      g_warning ("gst_filter_new failed for `%s'",
-                 _elements[i].name);
-      continue;
-    }
-    gst_element_factory_add_pad_template (factory, gst_filter_src_factory ());
-    gst_element_factory_add_pad_template (factory, gst_filter_sink_factory ());
-
-    gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-    if (_elements[i].factoryinit) {
-      _elements[i].factoryinit (factory);
-    }
     i++;
   }
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "filter",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "filter",
+    "IIR, lpwsinc and bpwsinc audio filter elements",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN);

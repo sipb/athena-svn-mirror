@@ -1,4 +1,10 @@
-# This is an example arts .m4 adapted and scrubbed by thomasvs
+dnl as-arts.m4 0.1.0
+
+dnl $Id: as-arts.m4,v 1.1.1.2 2004-10-06 18:27:59 ghudson Exp $
+dnl if you copy this file to your cvs,
+dnl add this file using cvs -ko add to retain this header
+
+dnl This is an example arts .m4 adapted and scrubbed by thomasvs
 
 # Configure paths for ARTS
 # Philip Stadermann   2001-06-21
@@ -46,8 +52,9 @@ AC_ARG_ENABLE(artstest,
   if test "$ARTS_CONFIG" = "no" ; then
     no_arts=yes
   else
-    # FIXME : thomas added this sed to get arts path instead of artsc
-    ARTS_CXXFLAGS=`$ARTS_CONFIG $artsconf_args --cflags | sed 's/artsc$/arts/'`
+    # FIXME: thomas added this sed to get arts path instead of artsc
+    # replace -I.../artsc with -I.../arts
+    ARTS_CXXFLAGS=`$ARTS_CONFIG $artsconf_args --cflags | artsc-config --cflags | sed 's/\(-I.*\)artsc/\1arts/'`
     ARTS_LIBS=`$ARTS_CONFIG $artsconf_args --libs | sed 's/artsc$/arts/'`
 
     arts_major_version=`$ARTS_CONFIG $arts_args --version | \

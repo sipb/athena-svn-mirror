@@ -22,15 +22,10 @@
 #define __GST_DEINTERLACE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 /* #include <gst/meta/audioraw.h> */
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
+G_BEGIN_DECLS
 
 #define GST_TYPE_DEINTERLACE \
   (gst_deinterlace_get_type())
@@ -68,9 +63,6 @@ struct _GstDeInterlaceClass {
   GstElementClass parent_class;
 };
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
-
-#endif /* __GST_STEREO_H__ */
+#endif /* __GST_DEINTERLACE_H__ */

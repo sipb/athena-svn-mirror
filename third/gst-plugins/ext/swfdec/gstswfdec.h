@@ -22,7 +22,6 @@
 #define __GST_SWFDEC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <swfdec.h>
 
@@ -52,18 +51,18 @@ struct _GstSwfdec {
   GstPad *sinkpad;
   GstPad *videopad;
   GstPad *audiopad;
-  GstBufferPool *pool;
 
   SwfdecDecoder *state;
   gboolean closed;
 
   /* the timestamp of the next frame */
   gboolean first;
+  gboolean have_format;
 
   double rate;
   gint64 timestamp;
   gint64 interval;
-  gdouble frame_rate;
+  double frame_rate;
 
   /* video state */
   gint format;

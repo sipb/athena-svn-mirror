@@ -21,8 +21,6 @@
 #ifndef __GST_MODPLUG_H__
 #define __GST_MODPLUG_H__
 
-#include <config.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -30,8 +28,6 @@ extern "C" {
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 	
-#include "modplug_types.h"	
-
 #define GST_TYPE_MODPLUG \
   (gst_modplug_get_type())
   
@@ -48,8 +44,6 @@ struct _GstModPlug {
   GstElement element;
   GstPad *sinkpad, *srcpad;
   guint8 *buffer_in;
-  GstCaps *metadata;
-  GstCaps	*streaminfo;
   GstByteStream *bs;
 
   const gchar *songname;
@@ -75,11 +69,11 @@ struct _GstModPlug {
   gboolean need_discont;
   gboolean eos;
   gint64 seek_at;
-  guint64 total_samples;
   guint64 song_size;
-  guint64 bytes_read;
+  guint64 timestamp;
 
   CSoundFile *mSoundFile;
+  gboolean opened; /* set to TRUE when mSoundFile is created */
 };
 
 struct _GstModPlugClass {

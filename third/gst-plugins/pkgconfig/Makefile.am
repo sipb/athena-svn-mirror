@@ -7,36 +7,41 @@ GCONF_PC_UNINSTALLED=
 endif
 
 ### all of the standard pc files we need to generate
-pcfiles =  \
-	gstreamer-libs-@GST_MAJORMINOR@.pc \
-	gstreamer-play-@GST_MAJORMINOR@.pc
-pcfiles_uninstalled = \
-	gstreamer-libs-@GST_MAJORMINOR@-uninstalled.pc \
-	gstreamer-play-@GST_MAJORMINOR@-uninstalled.pc
-
-all-local: $(pcfiles) $(pcfiles_uninstalled) \
+pcverfiles =  \
 	$(GCONF_PC) \
-	$(GCONF_PC_UNINSTALLED)
+	gstreamer-interfaces-@GST_MAJORMINOR@.pc \
+	gstreamer-libs-@GST_MAJORMINOR@.pc \
+	gstreamer-media-info-@GST_MAJORMINOR@.pc \
+	gstreamer-play-@GST_MAJORMINOR@.pc \
+	gstreamer-plugins-@GST_MAJORMINOR@.pc
+pcverfiles_uninstalled = \
+	$(GCONF_PC_UNINSTALLED) \
+	gstreamer-interfaces-@GST_MAJORMINOR@-uninstalled.pc \
+	gstreamer-libs-@GST_MAJORMINOR@-uninstalled.pc \
+	gstreamer-media-info-@GST_MAJORMINOR@-uninstalled.pc \
+	gstreamer-play-@GST_MAJORMINOR@-uninstalled.pc \
+	gstreamer-plugins-@GST_MAJORMINOR@-uninstalled.pc
 
-### how to generate pc files
-$(pcfiles): %-@GST_MAJORMINOR@.pc: %.pc
-	cp $< $@
-$(pcfiles_uninstalled): %-@GST_MAJORMINOR@-uninstalled.pc: %-uninstalled.pc
-	cp $< $@
+pcverfiles_gconf = $(GCONF_PC) $(GCONF_PC_UNINSTALLED)
+all-local: $(pcverfiles) $(pcverfiles_uninstalled)
 
-gstreamer-gconf-@GST_MAJORMINOR@.pc: \
-	$(srcdir)/../gst-libs/gst/gconf/gstreamer-gconf.pc
+### how to generate versioned .pc files from .pc files in this dir
+%-@GST_MAJORMINOR@.pc: %.pc
 	cp $< $@
-gstreamer-gconf-@GST_MAJORMINOR@-uninstalled.pc: \
-	$(srcdir)/../gst-libs/gst/gconf/gstreamer-gconf-uninstalled.pc
+%-@GST_MAJORMINOR@-uninstalled.pc: %-uninstalled.pc
 	cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = \
-	$(GCONF_PC) \
-	gstreamer-libs-@GST_MAJORMINOR@.pc \
-	gstreamer-play-@GST_MAJORMINOR@.pc
+pkgconfig_DATA = $(pcverfiles)
 
-EXTRA_DIST= \
+CLEANFILES = $(pcverfiles) $(pcverfiles_uninstalled)
+pcinfiles = \
+           gstreamer-gconf.pc.in gstreamer-gconf-uninstalled.pc.in \
+           gstreamer-interfaces.pc.in gstreamer-interfaces-uninstalled.pc.in \
            gstreamer-libs.pc.in gstreamer-libs-uninstalled.pc.in \
-           gstreamer-play.pc.in gstreamer-play-uninstalled.pc.in
+           gstreamer-media-info.pc.in gstreamer-media-info-uninstalled.pc.in \
+           gstreamer-play.pc.in gstreamer-play-uninstalled.pc.in \
+           gstreamer-plugins.pc.in gstreamer-plugins-uninstalled.pc.in
+
+DISTCLEANFILES = $(pcinfiles:.in=)
+EXTRA_DIST = $(pcinfiles)

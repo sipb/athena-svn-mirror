@@ -21,16 +21,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <string.h>
 #include <gst/gst.h>
-#include "gsteffectv.h"
+#include <gstvideofilter.h>
 
 #define GST_TYPE_EDGETV \
   (gst_edgetv_get_type())
 #define GST_EDGETV(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_EDGETV,GstEdgeTV))
 #define GST_EDGETV_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_ULAW,GstEdgeTV))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_EDGETV,GstEdgeTVClass))
 #define GST_IS_EDGETV(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_EDGETV))
 #define GST_IS_EDGETV_CLASS(obj) \
@@ -41,9 +44,7 @@ typedef struct _GstEdgeTVClass GstEdgeTVClass;
 
 struct _GstEdgeTV
 {
-  GstElement element;
-
-  GstPad *sinkpad, *srcpad;
+  GstVideofilter videofilter;
 
   gint width, height;
   gint map_width, map_height;
@@ -53,20 +54,8 @@ struct _GstEdgeTV
 
 struct _GstEdgeTVClass
 {
-  GstElementClass parent_class;
+  GstVideofilterClass parent_class;
 };
-
-/* elementfactory information */
-GstElementDetails gst_edgetv_details = {
-  "EdgeTV",
-  "Filter/Video/Effect",
-  "LGPL",
-  "Aply edge detect on video",
-  VERSION,
-  "Wim Taymans <wim.taymans@chello.be>",
-  "(C) 2001 FUKUCHI Kentarou",
-};
-
 
 /* Filter signals and args */
 enum
@@ -77,29 +66,32 @@ enum
 
 enum
 {
-  ARG_0,
+  ARG_0
 };
 
-static void 	gst_edgetv_class_init 		(GstEdgeTVClass * klass);
-static void 	gst_edgetv_init 		(GstEdgeTV * filter);
+static void gst_edgetv_base_init (gpointer g_class);
+static void gst_edgetv_class_init (gpointer g_class, gpointer class_data);
+static void gst_edgetv_init (GTypeInstance * instance, gpointer g_class);
 
-static void 	gst_edgetv_set_property 	(GObject * object, guint prop_id,
-					  	 const GValue * value, GParamSpec * pspec);
-static void 	gst_edgetv_get_property 	(GObject * object, guint prop_id,
-					  	 GValue * value, GParamSpec * pspec);
+static void gst_edgetv_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_edgetv_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
-static void 	gst_edgetv_chain 		(GstPad * pad, GstBuffer * buf);
+static void gst_edgetv_setup (GstVideofilter * videofilter);
+static void gst_edgetv_rgb32 (GstVideofilter * videofilter, void *d, void *s);
 
-static GstElementClass *parent_class = NULL;
 /*static guint gst_edgetv_signals[LAST_SIGNAL] = { 0 }; */
 
-GType gst_edgetv_get_type (void)
+GType
+gst_edgetv_get_type (void)
 {
   static GType edgetv_type = 0;
 
   if (!edgetv_type) {
     static const GTypeInfo edgetv_info = {
-      sizeof (GstEdgeTVClass), NULL,
+      sizeof (GstEdgeTVClass),
+      gst_edgetv_base_init,
       NULL,
       (GClassInitFunc) gst_edgetv_class_init,
       NULL,
@@ -109,66 +101,90 @@ GType gst_edgetv_get_type (void)
       (GInstanceInitFunc) gst_edgetv_init,
     };
 
-    edgetv_type = g_type_register_static (GST_TYPE_ELEMENT, "GstEdgeTV", &edgetv_info, 0);
+    edgetv_type =
+        g_type_register_static (GST_TYPE_VIDEOFILTER, "GstEdgeTV", &edgetv_info,
+        0);
   }
   return edgetv_type;
 }
 
+static GstVideofilterFormat gst_edgetv_formats[] = {
+  {"RGB ", 32, gst_edgetv_rgb32, 24, G_BIG_ENDIAN, 0x0000ff00, 0x00ff0000,
+      0xff000000}
+};
+
 static void
-gst_edgetv_class_init (GstEdgeTVClass * klass)
+gst_edgetv_base_init (gpointer g_class)
+{
+  /* elementfactory information */
+  static GstElementDetails gst_edgetv_details = GST_ELEMENT_DETAILS ("EdgeTV",
+      "Filter/Effect/Video",
+      "Apply edge detect on video",
+      "Wim Taymans <wim.taymans@chello.be>");
+
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  GstVideofilterClass *videofilter_class = GST_VIDEOFILTER_CLASS (g_class);
+  int i;
+
+  gst_element_class_set_details (element_class, &gst_edgetv_details);
+
+  for (i = 0; i < G_N_ELEMENTS (gst_edgetv_formats); i++) {
+    gst_videofilter_class_add_format (videofilter_class,
+        gst_edgetv_formats + i);
+  }
+
+  gst_videofilter_class_add_pad_templates (GST_VIDEOFILTER_CLASS (g_class));
+}
+
+static void
+gst_edgetv_class_init (gpointer g_class, gpointer class_data)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
+  GstVideofilterClass *videofilter_class;
 
-  gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-
-  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+  gobject_class = G_OBJECT_CLASS (g_class);
+  videofilter_class = GST_VIDEOFILTER_CLASS (g_class);
 
   gobject_class->set_property = gst_edgetv_set_property;
   gobject_class->get_property = gst_edgetv_get_property;
-}
 
-static GstPadLinkReturn
-gst_edgetv_sinkconnect (GstPad * pad, GstCaps * caps)
-{
-  GstEdgeTV *filter;
-
-  filter = GST_EDGETV (gst_pad_get_parent (pad));
-
-  if (!GST_CAPS_IS_FIXED (caps))
-    return GST_PAD_LINK_DELAYED;
-
-  gst_caps_get_int (caps, "width", &filter->width);
-  gst_caps_get_int (caps, "height", &filter->height);
-
-  filter->map_width = filter->width / 4;
-  filter->map_height = filter->height / 4;
-  filter->video_width_margin = filter->width - filter->map_width * 4;
-
-  g_free (filter->map);
-  filter->map = (guint32 *)g_malloc (filter->map_width * filter->map_height * sizeof(guint32) * 2);
-  bzero(filter->map, filter->map_width * filter->map_height * sizeof(guint32) * 2);
-
-  return gst_pad_try_set_caps (filter->srcpad, caps);
+  videofilter_class->setup = gst_edgetv_setup;
 }
 
 static void
-gst_edgetv_init (GstEdgeTV * filter)
+gst_edgetv_init (GTypeInstance * instance, gpointer g_class)
 {
-  filter->sinkpad = gst_pad_new_from_template (gst_effectv_sink_factory (), "sink");
-  gst_pad_set_chain_function (filter->sinkpad, gst_edgetv_chain);
-  gst_pad_set_link_function (filter->sinkpad, gst_edgetv_sinkconnect);
-  gst_element_add_pad (GST_ELEMENT (filter), filter->sinkpad);
+  GstEdgeTV *edgetv = GST_EDGETV (instance);
 
-  filter->srcpad = gst_pad_new_from_template (gst_effectv_src_factory (), "src");
-  gst_element_add_pad (GST_ELEMENT (filter), filter->srcpad);
-
-  filter->map = NULL;
+  edgetv->map = NULL;
 }
 
 static void
-gst_edgetv_chain (GstPad * pad, GstBuffer * buf)
+gst_edgetv_setup (GstVideofilter * videofilter)
+{
+  GstEdgeTV *edgetv;
+  int width = gst_videofilter_get_input_width (videofilter);
+  int height = gst_videofilter_get_input_height (videofilter);
+
+  g_return_if_fail (GST_IS_EDGETV (videofilter));
+  edgetv = GST_EDGETV (videofilter);
+
+  edgetv->width = width;
+  edgetv->height = height;
+  edgetv->map_width = width / 4;
+  edgetv->map_height = height / 4;
+  edgetv->video_width_margin = width % 4;
+
+  g_free (edgetv->map);
+  edgetv->map =
+      (guint32 *) g_malloc (edgetv->map_width * edgetv->map_height *
+      sizeof (guint32) * 2);
+  memset (edgetv->map, 0,
+      edgetv->map_width * edgetv->map_height * sizeof (guint32) * 2);
+}
+
+static void
+gst_edgetv_rgb32 (GstVideofilter * videofilter, void *d, void *s)
 {
   GstEdgeTV *filter;
   int x, y;
@@ -176,20 +192,15 @@ gst_edgetv_chain (GstPad * pad, GstBuffer * buf)
   guint32 *src, *dest;
   guint32 p, q;
   guint32 v0, v1, v2, v3;
-  GstBuffer *outbuf;
 
-  filter = GST_EDGETV (gst_pad_get_parent (pad));
+  filter = GST_EDGETV (videofilter);
 
-  src = (guint32 *) GST_BUFFER_DATA (buf);
+  src = (guint32 *) s;
+  dest = (guint32 *) d;
 
-  outbuf = gst_buffer_new ();
-  GST_BUFFER_SIZE (outbuf) = (filter->width * filter->height * 4);
-  dest = (guint32 *) GST_BUFFER_DATA (outbuf) = g_malloc (GST_BUFFER_SIZE (outbuf));
-  GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
-  
   src += filter->width * 4 + 4;
   dest += filter->width * 4 + 4;
-  
+
   for (y = 1; y < filter->map_height - 1; y++) {
     for (x = 1; x < filter->map_width - 1; x++) {
 
@@ -203,15 +214,15 @@ gst_edgetv_chain (GstPad * pad, GstBuffer * buf)
       r *= r;
       g *= g;
       b *= b;
-      r = r >> 5;		/* To lack the lower bit for saturated addition,  */
-      g = g >> 5;		/* devide the value with 32, instead of 16. It is */
-      b = b >> 4;		/* same as `v2 &= 0xfefeff' */
+      r = r >> 5;               /* To lack the lower bit for saturated addition,  */
+      g = g >> 5;               /* devide the value with 32, instead of 16. It is */
+      b = b >> 4;               /* same as `v2 &= 0xfefeff' */
       if (r > 127)
-	r = 127;
+        r = 127;
       if (g > 127)
-	g = 127;
+        g = 127;
       if (b > 255)
-	b = 255;
+        b = 255;
       v2 = (r << 17) | (g << 9) | b;
 
 /* difference between the current pixel and upper neighbor. */
@@ -226,11 +237,11 @@ gst_edgetv_chain (GstPad * pad, GstBuffer * buf)
       g = g >> 5;
       b = b >> 4;
       if (r > 127)
-	r = 127;
+        r = 127;
       if (g > 127)
-	g = 127;
+        g = 127;
       if (b > 255)
-	b = 255;
+        b = 255;
       v3 = (r << 17) | (g << 9) | b;
 
       v0 = filter->map[(y - 1) * filter->map_width * 2 + x * 2];
@@ -264,13 +275,11 @@ gst_edgetv_chain (GstPad * pad, GstBuffer * buf)
     src += filter->width * 3 + 8 + filter->video_width_margin;
     dest += filter->width * 3 + 8 + filter->video_width_margin;
   }
-  gst_buffer_unref (buf);
-
-  gst_pad_push (filter->srcpad, outbuf);
 }
 
 static void
-gst_edgetv_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+gst_edgetv_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstEdgeTV *filter;
 
@@ -286,7 +295,8 @@ gst_edgetv_set_property (GObject * object, guint prop_id, const GValue * value, 
 }
 
 static void
-gst_edgetv_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
+gst_edgetv_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstEdgeTV *filter;
 

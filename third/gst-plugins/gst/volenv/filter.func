@@ -41,7 +41,7 @@
                     increase;
       stop_sample = 2 * (guint) (rate * (filter->next_time -
 filter->run_time));
-      GST_DEBUG (MSG_E_IDX, "control point at sample %d",
+      GST_DEBUG ("control point at sample %d",
 	         stop_sample);
     }
 
@@ -51,7 +51,7 @@ filter->run_time));
 	 can be full-range */
       printf ("ERROR : level is %f at %f\n",
 	         filter->level, filter->run_time);
-      GST_DEBUG (MSG_E_IDX, "\t rise is %f, increase %e",
+      GST_DEBUG ("\t rise is %f, increase %e",
 	         filter->rise, filter->increase);
       print_volume_envelope (filter);
       filter->level = 1.0;
@@ -69,20 +69,20 @@ filter->run_time));
   {
     for (j = 0; j < stop_sample; j += 2)
     {
-       (*out_data)[j] = in_data[j] * (*plevel);
-       (*out_data)[j + 1] = in_data[j + 1] * (*plevel);
+       out_data[j] = in_data[j] * (*plevel);
+       out_data[j + 1] = in_data[j + 1] * (*plevel);
        *plevel += increase;
     }
     increase = 0.0;
 
     *plevel = filter->next_level;
-    GST_DEBUG (MSG_E_IDX, "volenv : loop split at sample %d : level is %f", stop_sample, *plevel);
+    GST_DEBUG ("volenv : loop split at sample %d : level is %f", stop_sample, *plevel);
     filter->increase = 0.0;
 
     {
       double *pnt, *pnl;
 
-      GST_DEBUG (MSG_E_IDX, "reached cp at %f, level  %f",
+      GST_DEBUG ("reached cp at %f, level  %f",
 		 filter->next_time,
 	         filter->level);
 
@@ -103,7 +103,7 @@ filter->run_time));
       }
       else
       {
-        GST_DEBUG (MSG_E_IDX, "volenv : reached last control point.");
+        GST_DEBUG ("volenv : reached last control point.");
         filter->envelope_active = FALSE;
 	rise = 0.0;
       }
@@ -114,16 +114,16 @@ filter->run_time));
 
     for (j = stop_sample; j < num_samples; j += 2)
     {
-       (*out_data)[j] = in_data[j] * (*plevel);
-       (*out_data)[j + 1] = in_data[j + 1] * (*plevel);
+       out_data[j] = in_data[j] * (*plevel);
+       out_data[j + 1] = in_data[j + 1] * (*plevel);
     }
   }
   else
   {
     for (j = 0; j < num_samples; j += 2) {
        if (j > stop_sample) { printf ("level : %f\n", *plevel); }
-       (*out_data)[j] = in_data[j] * (*plevel);
-       (*out_data)[j + 1] = in_data[j + 1] * (*plevel);
+       out_data[j] = in_data[j] * (*plevel);
+       out_data[j + 1] = in_data[j + 1] * (*plevel);
        *plevel += increase;
     }
   }

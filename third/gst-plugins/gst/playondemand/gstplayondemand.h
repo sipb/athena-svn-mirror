@@ -22,22 +22,20 @@
 #ifndef __GST_PLAYONDEMAND_H__
 #define __GST_PLAYONDEMAND_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
-#include <config.h>
 #include <gst/gst.h>
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
+G_BEGIN_DECLS
 
 #define GST_TYPE_PLAYONDEMAND \
   (gst_play_on_demand_get_type())
 #define GST_PLAYONDEMAND(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_PLAYONDEMAND,GstPlayOnDemand))
 #define GST_PLAYONDEMAND_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_ULAW,GstPlayOnDemand))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_PLAYONDEMAND,GstPlayOnDemand))
 #define GST_IS_PLAYONDEMAND(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_PLAYONDEMAND))
 #define GST_IS_PLAYONDEMAND_CLASS(obj) \
@@ -55,7 +53,6 @@ enum _GstPlayOnDemandFormat {
 struct _GstPlayOnDemand {
   GstElement element;
 
-  GstBufferPool *bufpool;
   GstPad   *sinkpad, *srcpad;
   GstClock *clock;
 
@@ -63,9 +60,9 @@ struct _GstPlayOnDemand {
   gboolean  mute;
   gfloat    buffer_time;
   guint     max_plays;
-  gfloat    clock_speed;
+  gfloat    tick_rate;
   guint     total_ticks;
-  GSList   *tick_list;
+  guint32  *ticks;
 
   /* internal buffer info */
   gchar    *buffer;
@@ -86,18 +83,15 @@ struct _GstPlayOnDemand {
 struct _GstPlayOnDemandClass {
   GstElementClass parent_class;
 
-  void (*play)   (GstElement *elem);
-  void (*clear)  (GstElement *elem);
-  void (*reset)  (GstElement *elem);
-  void (*played) (GstElement *elem);
+  void (*play)    (GstElement *elem);
+  void (*clear)   (GstElement *elem);
+  void (*reset)   (GstElement *elem);
+  void (*played)  (GstElement *elem);
+  void (*stopped) (GstElement *elem);
 };
 
 GType gst_play_on_demand_get_type(void);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __GST_PLAYONDEMAND_H__ */

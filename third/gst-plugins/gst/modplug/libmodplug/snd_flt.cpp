@@ -4,6 +4,10 @@
  * Authors: Olivier Lapicque <olivierl@jps.net>
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "stdafx.h"
 #include "sndfile.h"
 
@@ -80,7 +84,7 @@ void CSoundFile::SetupChannelFilter(MODCHANNEL *pChn, BOOL bReset, int flt_modif
 	float d = (1.0f-2.0f*dmpfac)* fc;
 	if (d>2.0) d = 2.0;
 	d = (2.0f*dmpfac - d)/fc;
-	float e = pow(1.0f/fc,2.0);
+	float e = pow(1.0f/fc, 2);
 
 	fg=1/(1+d+e);
 	fb0=(d+e+e)/(1+d+e);

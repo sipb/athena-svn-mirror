@@ -6,7 +6,7 @@ musicin.c
 #ifndef __MUSICIN_H__
 #define __MUSICIN_H__
 
-#include <gst/putbits/putbits.h>
+#include "putbits.h"
 #include "common.h"
 #include "encoder.h"
 

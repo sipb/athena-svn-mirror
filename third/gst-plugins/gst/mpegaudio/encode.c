@@ -78,7 +78,11 @@ encode.c
  * 8/05/93  TEST                changed I_a_bit_allocation() from:    *
  *                              if( ad > ...) to if(ad >= ...)        *
  **********************************************************************/
- 
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "common.h"
 #include "encoder.h"
 
@@ -109,7 +113,7 @@ extern unsigned _stklen = 16384;
 | Routines associated with a given layer are prefixed by "I_" for layer |
 | 1 and "II_" for layer 2.                                              |
 \=======================================================================*/
- 
+
 /************************************************************************
  *
  * read_samples()
@@ -122,38 +126,39 @@ extern unsigned _stklen = 16384;
  *
  ************************************************************************/
 
-unsigned long mpegaudio_read_samples(musicin, sample_buffer, num_samples, frame_size)
-unsigned char *musicin;
-short sample_buffer[2304];
-unsigned long num_samples, frame_size;
+unsigned long
+mpegaudio_read_samples (musicin, sample_buffer, num_samples, frame_size)
+     unsigned char *musicin;
+     short sample_buffer[2304];
+     unsigned long num_samples, frame_size;
 {
-    unsigned long samples_read;
-    static unsigned long samples_to_read;
-    static char init = TRUE;
+  unsigned long samples_read;
+  static unsigned long samples_to_read;
+  static char init = TRUE;
 
-    if (init) {
-        samples_to_read = num_samples;
-        init = FALSE;
-    }
-    if (samples_to_read >= frame_size)
-        samples_read = frame_size;
-    else
-        samples_read = samples_to_read;
+  if (init) {
+    samples_to_read = num_samples;
+    init = FALSE;
+  }
+  if (samples_to_read >= frame_size)
+    samples_read = frame_size;
+  else
+    samples_read = samples_to_read;
 
-    memcpy(sample_buffer, musicin, (int)samples_read*sizeof(short));
-    /*
-    if ((samples_read =
-         fread(sample_buffer, sizeof(short), (int)samples_read, musicin)) == 0)
-        printf("Hit end of audio data\n");
-	*/
+  memcpy (sample_buffer, musicin, (int) samples_read * sizeof (short));
+  /*
+     if ((samples_read =
+     fread(sample_buffer, sizeof(short), (int)samples_read, musicin)) == 0)
+     printf("Hit end of audio data\n");
+   */
 
-    samples_to_read -= samples_read;
-    if (samples_read < frame_size && samples_read > 0) {
-        printf("Insufficient PCM input for one frame - fillout with zeros\n");
-        for (; samples_read < frame_size; sample_buffer[samples_read++] = 0);
-        samples_to_read = 0;
-    }
-    return(samples_read);
+  samples_to_read -= samples_read;
+  if (samples_read < frame_size && samples_read > 0) {
+    printf ("Insufficient PCM input for one frame - fillout with zeros\n");
+    for (; samples_read < frame_size; sample_buffer[samples_read++] = 0);
+    samples_to_read = 0;
+  }
+  return (samples_read);
 }
 
 /************************************************************************ 
@@ -173,68 +178,64 @@ unsigned long num_samples, frame_size;
  * #buffer[1][]#
  *
  ************************************************************************/
- 
-unsigned long mpegaudio_get_audio(musicin, buffer, num_samples, stereo, lay)
-unsigned char *musicin;
-short FAR buffer[2][1152];
-unsigned long num_samples;
-int stereo, lay;
+
+unsigned long
+mpegaudio_get_audio (musicin, buffer, num_samples, stereo, lay)
+     unsigned char *musicin;
+     short FAR buffer[2][1152];
+     unsigned long num_samples;
+     int stereo, lay;
 {
-   int j;
-   short insamp[2304];
-   unsigned long samples_read;
- 
-   if (lay == 1){
-      if(stereo == 2){ /* layer 1, stereo */
-         samples_read = mpegaudio_read_samples(musicin, insamp, num_samples,
-                                     (unsigned long) 768);
-         for(j=0;j<448;j++) {
-            if(j<64) {
-               buffer[0][j] = buffer[0][j+384];
-               buffer[1][j] = buffer[1][j+384];
-            }
-            else {
-               buffer[0][j] = insamp[2*j-128];
-               buffer[1][j] = insamp[2*j-127];
-            }
-         }
+  int j;
+  short insamp[2304];
+  unsigned long samples_read;
+
+  if (lay == 1) {
+    if (stereo == 2) {          /* layer 1, stereo */
+      samples_read = mpegaudio_read_samples (musicin, insamp, num_samples,
+          (unsigned long) 768);
+      for (j = 0; j < 448; j++) {
+        if (j < 64) {
+          buffer[0][j] = buffer[0][j + 384];
+          buffer[1][j] = buffer[1][j + 384];
+        } else {
+          buffer[0][j] = insamp[2 * j - 128];
+          buffer[1][j] = insamp[2 * j - 127];
+        }
       }
-      else { /* layer 1, mono */
-         samples_read = mpegaudio_read_samples(musicin, insamp, num_samples,
-                                     (unsigned long) 384);
-         for(j=0;j<448;j++){
-            if(j<64) {
-               buffer[0][j] = buffer[0][j+384];
-               buffer[1][j] = 0;
-            }
-            else {
-               buffer[0][j] = insamp[j-64];
-               buffer[1][j] = 0;
-            }
-         }
+    } else {                    /* layer 1, mono */
+      samples_read = mpegaudio_read_samples (musicin, insamp, num_samples,
+          (unsigned long) 384);
+      for (j = 0; j < 448; j++) {
+        if (j < 64) {
+          buffer[0][j] = buffer[0][j + 384];
+          buffer[1][j] = 0;
+        } else {
+          buffer[0][j] = insamp[j - 64];
+          buffer[1][j] = 0;
+        }
       }
-   }
-   else {
-      if(stereo == 2){ /* layer 2 (or 3), stereo */
-         samples_read = mpegaudio_read_samples(musicin, insamp, num_samples,
-                                     (unsigned long) 2304);
-         for(j=0;j<1152;j++) {
-            buffer[0][j] = insamp[2*j];
-            buffer[1][j] = insamp[2*j+1];
-         }
+    }
+  } else {
+    if (stereo == 2) {          /* layer 2 (or 3), stereo */
+      samples_read = mpegaudio_read_samples (musicin, insamp, num_samples,
+          (unsigned long) 2304);
+      for (j = 0; j < 1152; j++) {
+        buffer[0][j] = insamp[2 * j];
+        buffer[1][j] = insamp[2 * j + 1];
       }
-      else { /* layer 2 (or 3), mono */
-         samples_read = mpegaudio_read_samples(musicin, insamp, num_samples,
-                                     (unsigned long) 1152);
-         for(j=0;j<1152;j++){
-            buffer[0][j] = insamp[j];
-            buffer[1][j] = 0;
-         }
+    } else {                    /* layer 2 (or 3), mono */
+      samples_read = mpegaudio_read_samples (musicin, insamp, num_samples,
+          (unsigned long) 1152);
+      for (j = 0; j < 1152; j++) {
+        buffer[0][j] = insamp[j];
+        buffer[1][j] = 0;
       }
-   }
-   return(samples_read);
+    }
+  }
+  return (samples_read);
 }
- 
+
 /************************************************************************ 
  *
  * window_subband()
@@ -248,37 +249,42 @@ int stereo, lay;
  * windowed sample #z#
  *
  ************************************************************************/
- 
-void mpegaudio_window_subband(buffer, z, k)
-short FAR **buffer;
-double FAR z[HAN_SIZE];
-int k;
-{
-    typedef double FAR XX[2][HAN_SIZE];
-    static XX FAR *x;
-    int i, j;
-    static int off[2] = {0,0};
-    static char init = 0;
-    static double FAR *c;
-    if (!init) {
-        c = (double FAR *) mpegaudio_mem_alloc(sizeof(double) * HAN_SIZE, "window");
-        mpegaudio_read_ana_window(c);
-        x = (XX FAR *) mpegaudio_mem_alloc(sizeof(XX),"x");
-        for (i=0;i<2;i++)
-            for (j=0;j<HAN_SIZE;j++)
-                (*x)[i][j] = 0;
-        init = 1;
-    }
 
-    /* replace 32 oldest samples with 32 new samples */
-    for (i=0;i<32;i++) (*x)[k][31-i+off[k]] = (double) *(*buffer)++/SCALE;
-    /* shift samples into proper window positions */
-    for (i=0;i<HAN_SIZE;i++) z[i] = (*x)[k][(i+off[k])&(HAN_SIZE-1)] * c[i];
-    off[k] += 480;              /*offset is modulo (HAN_SIZE-1)*/
-    off[k] &= HAN_SIZE-1;
+void
+mpegaudio_window_subband (buffer, z, k)
+     short FAR **buffer;
+     double FAR z[HAN_SIZE];
+     int k;
+{
+  typedef double FAR XX[2][HAN_SIZE];
+  static XX FAR *x;
+  int i, j;
+  static int off[2] = { 0, 0 };
+  static char init = 0;
+  static double FAR *c;
+
+  if (!init) {
+    c = (double FAR *) mpegaudio_mem_alloc (sizeof (double) * HAN_SIZE,
+        "window");
+    mpegaudio_read_ana_window (c);
+    x = (XX FAR *) mpegaudio_mem_alloc (sizeof (XX), "x");
+    for (i = 0; i < 2; i++)
+      for (j = 0; j < HAN_SIZE; j++)
+        (*x)[i][j] = 0;
+    init = 1;
+  }
+
+  /* replace 32 oldest samples with 32 new samples */
+  for (i = 0; i < 32; i++)
+    (*x)[k][31 - i + off[k]] = (double) *(*buffer)++ / SCALE;
+  /* shift samples into proper window positions */
+  for (i = 0; i < HAN_SIZE; i++)
+    z[i] = (*x)[k][(i + off[k]) & (HAN_SIZE - 1)] * c[i];
+  off[k] += 480;                /*offset is modulo (HAN_SIZE-1) */
+  off[k] &= HAN_SIZE - 1;
 
 }
- 
+
 /************************************************************************ 
  *
  * create_ana_filter()
@@ -291,20 +297,22 @@ int k;
  * document.  The coefficients are stored in #filter#
  *
  ************************************************************************/
- 
-void mpegaudio_create_ana_filter(filter)
-double FAR filter[SBLIMIT][64];
+
+void
+mpegaudio_create_ana_filter (filter)
+     double FAR filter[SBLIMIT][64];
 {
-   register int i,k;
- 
-   for (i=0; i<32; i++)
-      for (k=0; k<64; k++) {
-          if ((filter[i][k] = 1e9*cos((double)((2*i+1)*(16-k)*PI64))) >= 0)
-             modf(filter[i][k]+0.5, &filter[i][k]);
-          else
-             modf(filter[i][k]-0.5, &filter[i][k]);
-          filter[i][k] *= 1e-9;
-   }
+  register int i, k;
+
+  for (i = 0; i < 32; i++)
+    for (k = 0; k < 64; k++) {
+      if ((filter[i][k] =
+              1e9 * cos ((double) ((2 * i + 1) * (16 - k) * PI64))) >= 0)
+        modf (filter[i][k] + 0.5, &filter[i][k]);
+      else
+        modf (filter[i][k] - 0.5, &filter[i][k]);
+      filter[i][k] *= 1e-9;
+    }
 }
 
 /************************************************************************ 
@@ -320,34 +328,40 @@ double FAR filter[SBLIMIT][64];
  * them by the filter matrix, producing 32 subband samples.
  *
  ************************************************************************/
- 
-void mpegaudio_filter_subband(z,s)
-double FAR z[HAN_SIZE], s[SBLIMIT];
+
+void
+mpegaudio_filter_subband (z, s)
+     double FAR z[HAN_SIZE], s[SBLIMIT];
 {
-   double y[64];
-   int i,j;
-static char init = 0;
-   typedef double MM[SBLIMIT][64];
-static MM FAR *m;
+  double y[64];
+  int i, j;
+  static char init = 0;
+  typedef double MM[SBLIMIT][64];
+  static MM FAR *m;
+
 #ifdef MS_DOS
-   long    SIZE_OF_MM;
-   SIZE_OF_MM      = SBLIMIT*64;
-   SIZE_OF_MM      *= 8;
-   if (!init) {
-       m = (MM FAR *) mpegaudio_mem_alloc(SIZE_OF_MM, "filter");
-       mpegaudio_create_ana_filter(*m);
-       init = 1;
-   }
+  long SIZE_OF_MM;
+
+  SIZE_OF_MM = SBLIMIT * 64;
+  SIZE_OF_MM *= 8;
+  if (!init) {
+    m = (MM FAR *) mpegaudio_mem_alloc (SIZE_OF_MM, "filter");
+    mpegaudio_create_ana_filter (*m);
+    init = 1;
+  }
 #else
-   if (!init) {
-       m = (MM FAR *) mpegaudio_mem_alloc(sizeof(MM), "filter");
-       mpegaudio_create_ana_filter(*m);
-       init = 1;
-   }
+  if (!init) {
+    m = (MM FAR *) mpegaudio_mem_alloc (sizeof (MM), "filter");
+    mpegaudio_create_ana_filter (*m);
+    init = 1;
+  }
 #endif
-   for (i=0;i<64;i++) for (j=0, y[i] = 0;j<8;j++) y[i] += z[i+64*j];
-   for (i=0;i<SBLIMIT;i++)
-       for (j=0, s[i]= 0;j<64;j++) s[i] += (*m)[i][j] * y[j];
+  for (i = 0; i < 64; i++)
+    for (j = 0, y[i] = 0; j < 8; j++)
+      y[i] += z[i + 64 * j];
+  for (i = 0; i < SBLIMIT; i++)
+    for (j = 0, s[i] = 0; j < 64; j++)
+      s[i] += (*m)[i][j] * y[j];
 }
 
 /************************************************************************ 
@@ -358,28 +372,29 @@ static MM FAR *m;
  * bitstream.
  *
  ************************************************************************/
- 
-void mpegaudio_encode_info(fr_ps,pb)
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_encode_info (fr_ps, pb)
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-        layer *info = fr_ps->header;
- 
-        gst_putbits12(pb,0xfff);                    /* syncword 12 bits */
-        gst_putbits1(pb,info->version);               /* ID        1 bit  */
-        gst_putbits2(pb,4-info->lay);               /* layer     2 bits */
-        gst_putbits1(pb,!info->error_protection);     /* bit set => no err prot */
-        gst_putbits4(pb,info->bitrate_index);
-        gst_putbits2(pb,info->sampling_frequency);
-        gst_putbits1(pb,info->padding);
-        gst_putbits1(pb,info->extension);             /* private_bit */
-        gst_putbits2(pb,info->mode);
-        gst_putbits2(pb,info->mode_ext);
-        gst_putbits1(pb,info->copyright);
-        gst_putbits1(pb,info->original);
-        gst_putbits2(pb,info->emphasis);
+  layer *info = fr_ps->header;
+
+  gst_putbits12 (pb, 0xfff);    /* syncword 12 bits */
+  gst_putbits1 (pb, info->version);     /* ID        1 bit  */
+  gst_putbits2 (pb, 4 - info->lay);     /* layer     2 bits */
+  gst_putbits1 (pb, !info->error_protection);   /* bit set => no err prot */
+  gst_putbits4 (pb, info->bitrate_index);
+  gst_putbits2 (pb, info->sampling_frequency);
+  gst_putbits1 (pb, info->padding);
+  gst_putbits1 (pb, info->extension);   /* private_bit */
+  gst_putbits2 (pb, info->mode);
+  gst_putbits2 (pb, info->mode_ext);
+  gst_putbits1 (pb, info->copyright);
+  gst_putbits1 (pb, info->original);
+  gst_putbits2 (pb, info->emphasis);
 }
- 
+
 /************************************************************************ 
  *
  * mod()
@@ -387,13 +402,14 @@ gst_putbits_t *pb;
  * PURPOSE:  Returns the absolute value of its argument
  *
  ************************************************************************/
- 
-double mpegaudio_mod(a)
-double a;
+
+double
+mpegaudio_mod (a)
+     double a;
 {
-    return (a > 0) ? a : -a;
+  return (a > 0) ? a : -a;
 }
- 
+
 /************************************************************************ 
  *
  * I_combine_LR    (Layer I)
@@ -407,33 +423,35 @@ double a;
  * Layer I and II differ in frame length and # subbands used
  *
  ************************************************************************/
- 
-void mpegaudio_I_combine_LR(sb_sample, joint_sample)
-double FAR sb_sample[2][3][SCALE_BLOCK][SBLIMIT];
-double FAR joint_sample[3][SCALE_BLOCK][SBLIMIT];
-{   /* make a filtered mono for joint stereo */
-    int sb, smp;
- 
-   for(sb = 0; sb<SBLIMIT; ++sb)
-      for(smp = 0; smp<SCALE_BLOCK; ++smp)
-        joint_sample[0][smp][sb] = .5 *
-                    (sb_sample[0][0][smp][sb] + sb_sample[1][0][smp][sb]);
+
+void
+mpegaudio_I_combine_LR (sb_sample, joint_sample)
+     double FAR sb_sample[2][3][SCALE_BLOCK][SBLIMIT];
+     double FAR joint_sample[3][SCALE_BLOCK][SBLIMIT];
+{                               /* make a filtered mono for joint stereo */
+  int sb, smp;
+
+  for (sb = 0; sb < SBLIMIT; ++sb)
+    for (smp = 0; smp < SCALE_BLOCK; ++smp)
+      joint_sample[0][smp][sb] = .5 *
+          (sb_sample[0][0][smp][sb] + sb_sample[1][0][smp][sb]);
 }
- 
-void mpegaudio_II_combine_LR(sb_sample, joint_sample, sblimit)
-double FAR sb_sample[2][3][SCALE_BLOCK][SBLIMIT];
-double FAR joint_sample[3][SCALE_BLOCK][SBLIMIT];
-int sblimit;
-{  /* make a filtered mono for joint stereo */
-   int sb, smp, sufr;
- 
-   for(sb = 0; sb<sblimit; ++sb)
-      for(smp = 0; smp<SCALE_BLOCK; ++smp)
-         for(sufr = 0; sufr<3; ++sufr)
-            joint_sample[sufr][smp][sb] = .5 * (sb_sample[0][sufr][smp][sb]
-                                           + sb_sample[1][sufr][smp][sb]);
+
+void
+mpegaudio_II_combine_LR (sb_sample, joint_sample, sblimit)
+     double FAR sb_sample[2][3][SCALE_BLOCK][SBLIMIT];
+     double FAR joint_sample[3][SCALE_BLOCK][SBLIMIT];
+     int sblimit;
+{                               /* make a filtered mono for joint stereo */
+  int sb, smp, sufr;
+
+  for (sb = 0; sb < sblimit; ++sb)
+    for (smp = 0; smp < SCALE_BLOCK; ++smp)
+      for (sufr = 0; sufr < 3; ++sufr)
+        joint_sample[sufr][smp][sb] = .5 * (sb_sample[0][sufr][smp][sb]
+            + sb_sample[1][sufr][smp][sb]);
 }
- 
+
 /************************************************************************
  *
  * I_scale_factor_calc     (Layer I)
@@ -450,53 +468,59 @@ int sblimit;
  * subband.
  *
  ************************************************************************/
- 
-void mpegaudio_I_scale_factor_calc(sb_sample,scalar,stereo)
-double FAR sb_sample[][3][SCALE_BLOCK][SBLIMIT];
-unsigned int scalar[][3][SBLIMIT];
-int stereo;
+
+void
+mpegaudio_I_scale_factor_calc (sb_sample, scalar, stereo)
+     double FAR sb_sample[][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int scalar[][3][SBLIMIT];
+     int stereo;
 {
-   int i,j, k;
-   double s[SBLIMIT];
- 
-   for (k=0;k<stereo;k++) {
-     for (i=0;i<SBLIMIT;i++)
-       for (j=1, s[i] = mpegaudio_mod(sb_sample[k][0][0][i]);j<SCALE_BLOCK;j++)
-         if (mpegaudio_mod(sb_sample[k][0][j][i]) > s[i])
-            s[i] = mpegaudio_mod(sb_sample[k][0][j][i]);
- 
-     for (i=0;i<SBLIMIT;i++)
-       for (j=SCALE_RANGE-2,scalar[k][0][i]=0;j>=0;j--) /* $A 6/16/92 */
-         if (s[i] <= mpegaudio_multiple[j]) {
-            scalar[k][0][i] = j;
-            break;
-         }
-   }
+  int i, j, k;
+  double s[SBLIMIT];
+
+  for (k = 0; k < stereo; k++) {
+    for (i = 0; i < SBLIMIT; i++)
+      for (j = 1, s[i] = mpegaudio_mod (sb_sample[k][0][0][i]); j < SCALE_BLOCK;
+          j++)
+        if (mpegaudio_mod (sb_sample[k][0][j][i]) > s[i])
+          s[i] = mpegaudio_mod (sb_sample[k][0][j][i]);
+
+    for (i = 0; i < SBLIMIT; i++)
+      for (j = SCALE_RANGE - 2, scalar[k][0][i] = 0; j >= 0; j--)       /* $A 6/16/92 */
+        if (s[i] <= mpegaudio_multiple[j]) {
+          scalar[k][0][i] = j;
+          break;
+        }
+  }
 }
 
 /******************************** Layer II ******************************/
- 
-void mpegaudio_II_scale_factor_calc(sb_sample,scalar,stereo,sblimit)
-double FAR sb_sample[][3][SCALE_BLOCK][SBLIMIT];
-unsigned int scalar[][3][SBLIMIT];
-int stereo,sblimit;
+
+void
+mpegaudio_II_scale_factor_calc (sb_sample, scalar, stereo, sblimit)
+     double FAR sb_sample[][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int scalar[][3][SBLIMIT];
+     int stereo, sblimit;
 {
-  int i,j, k,t;
+  int i, j, k, t;
   double s[SBLIMIT];
- 
-  for (k=0;k<stereo;k++) for (t=0;t<3;t++) {
-    for (i=0;i<sblimit;i++)
-      for (j=1, s[i] = mpegaudio_mod(sb_sample[k][t][0][i]);j<SCALE_BLOCK;j++)
-        if (mpegaudio_mod(sb_sample[k][t][j][i]) > s[i])
-             s[i] = mpegaudio_mod(sb_sample[k][t][j][i]);
- 
-  for (i=0;i<sblimit;i++)
-    for (j=SCALE_RANGE-2,scalar[k][t][i]=0;j>=0;j--)    /* $A 6/16/92 */
-      if (s[i] <= mpegaudio_multiple[j]) {
-         scalar[k][t][i] = j;
-         break;
-      }
-      for (i=sblimit;i<SBLIMIT;i++) scalar[k][t][i] = SCALE_RANGE-1;
+
+  for (k = 0; k < stereo; k++)
+    for (t = 0; t < 3; t++) {
+      for (i = 0; i < sblimit; i++)
+        for (j = 1, s[i] = mpegaudio_mod (sb_sample[k][t][0][i]);
+            j < SCALE_BLOCK; j++)
+          if (mpegaudio_mod (sb_sample[k][t][j][i]) > s[i])
+            s[i] = mpegaudio_mod (sb_sample[k][t][j][i]);
+
+      for (i = 0; i < sblimit; i++)
+        for (j = SCALE_RANGE - 2, scalar[k][t][i] = 0; j >= 0; j--)     /* $A 6/16/92 */
+          if (s[i] <= mpegaudio_multiple[j]) {
+            scalar[k][t][i] = j;
+            break;
+          }
+      for (i = sblimit; i < SBLIMIT; i++)
+        scalar[k][t][i] = SCALE_RANGE - 1;
     }
 }
 
@@ -510,21 +534,24 @@ int stereo,sblimit;
  * (I would recommend changin max_sc to min_sc)
  *
  ************************************************************************/
- 
-void mpegaudio_pick_scale(scalar, fr_ps, max_sc)
-unsigned int scalar[2][3][SBLIMIT];
-frame_params *fr_ps;
-double FAR max_sc[2][SBLIMIT];
+
+void
+mpegaudio_pick_scale (scalar, fr_ps, max_sc)
+     unsigned int scalar[2][3][SBLIMIT];
+     frame_params *fr_ps;
+     double FAR max_sc[2][SBLIMIT];
 {
-  int i,j,k,max;
-  int stereo  = fr_ps->stereo;
+  int i, j, k, max;
+  int stereo = fr_ps->stereo;
   int sblimit = fr_ps->sblimit;
- 
-  for (k=0;k<stereo;k++)
-    for (i=0;i<sblimit;max_sc[k][i] = mpegaudio_multiple[max],i++)
-      for (j=1, max = scalar[k][0][i];j<3;j++)
-         if (max > scalar[k][j][i]) max = scalar[k][j][i];
-  for (i=sblimit;i<SBLIMIT;i++) max_sc[0][i] = max_sc[1][i] = 1E-20;
+
+  for (k = 0; k < stereo; k++)
+    for (i = 0; i < sblimit; max_sc[k][i] = mpegaudio_multiple[max], i++)
+      for (j = 1, max = scalar[k][0][i]; j < 3; j++)
+        if (max > scalar[k][j][i])
+          max = scalar[k][j][i];
+  for (i = sblimit; i < SBLIMIT; i++)
+    max_sc[0][i] = max_sc[1][i] = 1E-20;
 }
 
 /************************************************************************
@@ -535,19 +562,21 @@ double FAR max_sc[2][SBLIMIT];
  * This is used by Psychoacoustic Model I
  *
  ************************************************************************/
- 
-void mpegaudio_put_scale(scalar, fr_ps, max_sc)
-unsigned int scalar[2][3][SBLIMIT];
-frame_params *fr_ps;
-double FAR max_sc[2][SBLIMIT];
-{
-   int i,k;
-   int stereo  = fr_ps->stereo;
 
-   for (k=0;k<stereo;k++) for (i=0;i<SBLIMIT;i++)
-        max_sc[k][i] = mpegaudio_multiple[scalar[k][0][i]];
+void
+mpegaudio_put_scale (scalar, fr_ps, max_sc)
+     unsigned int scalar[2][3][SBLIMIT];
+     frame_params *fr_ps;
+     double FAR max_sc[2][SBLIMIT];
+{
+  int i, k;
+  int stereo = fr_ps->stereo;
+
+  for (k = 0; k < stereo; k++)
+    for (i = 0; i < SBLIMIT; i++)
+      max_sc[k][i] = mpegaudio_multiple[scalar[k][0][i]];
 }
- 
+
 /************************************************************************
  *
  * II_transmission_pattern (Layer II only)
@@ -564,62 +593,77 @@ double FAR max_sc[2][SBLIMIT];
  * #scfsi#, is filled in accordingly.
  *
  ************************************************************************/
- 
-void mpegaudio_II_transmission_pattern(scalar, scfsi, fr_ps)
-unsigned int scalar[2][3][SBLIMIT];
-unsigned int scfsi[2][SBLIMIT];
-frame_params *fr_ps;
+
+void
+mpegaudio_II_transmission_pattern (scalar, scfsi, fr_ps)
+     unsigned int scalar[2][3][SBLIMIT];
+     unsigned int scfsi[2][SBLIMIT];
+     frame_params *fr_ps;
 {
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int dscf[2];
-   int class[2],i,j,k;
-static int pattern[5][5] = {{0x123, 0x122, 0x122, 0x133, 0x123},
-			    {0x113, 0x111, 0x111, 0x444, 0x113},
-			    {0x111, 0x111, 0x111, 0x333, 0x113},
-			    {0x222, 0x222, 0x222, 0x333, 0x123},
-			    {0x123, 0x122, 0x122, 0x133, 0x123}};
- 
-   for (k=0;k<stereo;k++)
-     for (i=0;i<sblimit;i++) {
-       dscf[0] =  (scalar[k][0][i]-scalar[k][1][i]);
-       dscf[1] =  (scalar[k][1][i]-scalar[k][2][i]);
-       for (j=0;j<2;j++) {
-         if (dscf[j]<=-3) class[j] = 0;
-         else if (dscf[j] > -3 && dscf[j] <0) class[j] = 1;
-              else if (dscf[j] == 0) class[j] = 2;
-                   else if (dscf[j] > 0 && dscf[j] < 3) class[j] = 3;
-                        else class[j] = 4;
-       }
-       switch (pattern[class[0]][class[1]]) {
-         case 0x123 :    scfsi[k][i] = 0;
-                         break;
-         case 0x122 :    scfsi[k][i] = 3;
-                         scalar[k][2][i] = scalar[k][1][i];
-                         break;
-         case 0x133 :    scfsi[k][i] = 3;
-                         scalar[k][1][i] = scalar[k][2][i];
-                         break;
-         case 0x113 :    scfsi[k][i] = 1;
-                         scalar[k][1][i] = scalar[k][0][i];
-                         break;
-         case 0x111 :    scfsi[k][i] = 2;
-                         scalar[k][1][i] = scalar[k][2][i] = scalar[k][0][i];
-                         break;
-         case 0x222 :    scfsi[k][i] = 2;
-                         scalar[k][0][i] = scalar[k][2][i] = scalar[k][1][i];
-                         break;
-         case 0x333 :    scfsi[k][i] = 2;
-                         scalar[k][0][i] = scalar[k][1][i] = scalar[k][2][i];
-                         break;
-         case 0x444 :    scfsi[k][i] = 2;
-                         if (scalar[k][0][i] > scalar[k][2][i])
-                              scalar[k][0][i] = scalar[k][2][i];
-                         scalar[k][1][i] = scalar[k][2][i] = scalar[k][0][i];
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int dscf[2];
+  int class[2], i, j, k;
+  static int pattern[5][5] = { {0x123, 0x122, 0x122, 0x133, 0x123},
+  {0x113, 0x111, 0x111, 0x444, 0x113},
+  {0x111, 0x111, 0x111, 0x333, 0x113},
+  {0x222, 0x222, 0x222, 0x333, 0x123},
+  {0x123, 0x122, 0x122, 0x133, 0x123}
+  };
+
+  for (k = 0; k < stereo; k++)
+    for (i = 0; i < sblimit; i++) {
+      dscf[0] = (scalar[k][0][i] - scalar[k][1][i]);
+      dscf[1] = (scalar[k][1][i] - scalar[k][2][i]);
+      for (j = 0; j < 2; j++) {
+        if (dscf[j] <= -3)
+          class[j] = 0;
+        else if (dscf[j] > -3 && dscf[j] < 0)
+          class[j] = 1;
+        else if (dscf[j] == 0)
+          class[j] = 2;
+        else if (dscf[j] > 0 && dscf[j] < 3)
+          class[j] = 3;
+        else
+          class[j] = 4;
       }
-   }
+      switch (pattern[class[0]][class[1]]) {
+        case 0x123:
+          scfsi[k][i] = 0;
+          break;
+        case 0x122:
+          scfsi[k][i] = 3;
+          scalar[k][2][i] = scalar[k][1][i];
+          break;
+        case 0x133:
+          scfsi[k][i] = 3;
+          scalar[k][1][i] = scalar[k][2][i];
+          break;
+        case 0x113:
+          scfsi[k][i] = 1;
+          scalar[k][1][i] = scalar[k][0][i];
+          break;
+        case 0x111:
+          scfsi[k][i] = 2;
+          scalar[k][1][i] = scalar[k][2][i] = scalar[k][0][i];
+          break;
+        case 0x222:
+          scfsi[k][i] = 2;
+          scalar[k][0][i] = scalar[k][2][i] = scalar[k][1][i];
+          break;
+        case 0x333:
+          scfsi[k][i] = 2;
+          scalar[k][0][i] = scalar[k][1][i] = scalar[k][2][i];
+          break;
+        case 0x444:
+          scfsi[k][i] = 2;
+          if (scalar[k][0][i] > scalar[k][2][i])
+            scalar[k][0][i] = scalar[k][2][i];
+          scalar[k][1][i] = scalar[k][2][i] = scalar[k][0][i];
+      }
+    }
 }
- 
+
 /************************************************************************
  *
  * I_encode_scale  (Layer I)
@@ -633,49 +677,59 @@ static int pattern[5][5] = {{0x123, 0x122, 0x122, 0x133, 0x123},
  * with the scfsi, which is transmitted first.
  *
  ************************************************************************/
- 
-void mpegaudio_I_encode_scale(scalar, bit_alloc, fr_ps, pb)
-unsigned int scalar[2][3][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_I_encode_scale (scalar, bit_alloc, fr_ps, pb)
+     unsigned int scalar[2][3][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   int stereo  = fr_ps->stereo;
-   int i,j;
- 
-   for (i=0;i<SBLIMIT;i++) for (j=0;j<stereo;j++)
-      if (bit_alloc[j][i]) gst_putbits6(pb,scalar[j][0][i]);
+  int stereo = fr_ps->stereo;
+  int i, j;
+
+  for (i = 0; i < SBLIMIT; i++)
+    for (j = 0; j < stereo; j++)
+      if (bit_alloc[j][i])
+        gst_putbits6 (pb, scalar[j][0][i]);
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-void mpegaudio_II_encode_scale(bit_alloc, scfsi, scalar, fr_ps, pb)
-unsigned int bit_alloc[2][SBLIMIT], scfsi[2][SBLIMIT];
-unsigned int scalar[2][3][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_II_encode_scale (bit_alloc, scfsi, scalar, fr_ps, pb)
+     unsigned int bit_alloc[2][SBLIMIT], scfsi[2][SBLIMIT];
+     unsigned int scalar[2][3][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int i,j,k;
- 
-   for (i=0;i<sblimit;i++) for (k=0;k<stereo;k++)
-     if (bit_alloc[k][i])  gst_putbits2(pb,scfsi[k][i]);
- 
-   for (i=0;i<sblimit;i++) for (k=0;k<stereo;k++)
-     if (bit_alloc[k][i])  /* above jsbound, bit_alloc[0][i] == ba[1][i] */
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int i, j, k;
+
+  for (i = 0; i < sblimit; i++)
+    for (k = 0; k < stereo; k++)
+      if (bit_alloc[k][i])
+        gst_putbits2 (pb, scfsi[k][i]);
+
+  for (i = 0; i < sblimit; i++)
+    for (k = 0; k < stereo; k++)
+      if (bit_alloc[k][i])      /* above jsbound, bit_alloc[0][i] == ba[1][i] */
         switch (scfsi[k][i]) {
-           case 0: for (j=0;j<3;j++)
-                     gst_putbits6(pb,scalar[k][j][i]);
-                   break;
-           case 1:
-           case 3: gst_putbits6(pb,scalar[k][0][i]);
-                   gst_putbits6(pb,scalar[k][2][i]);
-                   break;
-           case 2: gst_putbits6(pb,scalar[k][0][i]);
+          case 0:
+            for (j = 0; j < 3; j++)
+              gst_putbits6 (pb, scalar[k][j][i]);
+            break;
+          case 1:
+          case 3:
+            gst_putbits6 (pb, scalar[k][0][i]);
+            gst_putbits6 (pb, scalar[k][2][i]);
+            break;
+          case 2:
+            gst_putbits6 (pb, scalar[k][0][i]);
         }
 }
- 
+
 /*=======================================================================\
 |                                                                        |
 |      The following routines are done after the masking threshold       |
@@ -684,7 +738,7 @@ gst_putbits_t *pb;
 | to each subband is found iteratively.                                  |
 |                                                                        |
 \=======================================================================*/
- 
+
 /************************************************************************
  *
  * I_bits_for_nonoise  (Layer I)
@@ -714,90 +768,101 @@ gst_putbits_t *pb;
  *
  ************************************************************************/
 
-static double snr[18] = {0.00, 7.00, 11.00, 16.00, 20.84,
-                         25.28, 31.59, 37.75, 43.84,
-                         49.89, 55.93, 61.96, 67.98, 74.01,
-                         80.03, 86.05, 92.01, 98.01};
+static double snr[18] = { 0.00, 7.00, 11.00, 16.00, 20.84,
+  25.28, 31.59, 37.75, 43.84,
+  49.89, 55.93, 61.96, 67.98, 74.01,
+  80.03, 86.05, 92.01, 98.01
+};
 
-int mpegaudio_I_bits_for_nonoise(perm_smr, fr_ps)
-double FAR perm_smr[2][SBLIMIT];
-frame_params *fr_ps;
+int
+mpegaudio_I_bits_for_nonoise (perm_smr, fr_ps)
+     double FAR perm_smr[2][SBLIMIT];
+     frame_params *fr_ps;
 {
-   int i,j,k;
-   int stereo  = fr_ps->stereo;
-   int jsbound = fr_ps->jsbound;
-   int req_bits = 0;
- 
-   /* initial b_anc (header) allocation bits */
-   req_bits = 32 + 4 * ( (jsbound * stereo) + (SBLIMIT-jsbound) );
- 
-   for(i=0; i<SBLIMIT; ++i)
-     for(j=0; j<((i<jsbound)?stereo:1); ++j) {
-       for(k=0;k<14; ++k)
-         if( (-perm_smr[j][i] + snr[k]) >= NOISY_MIN_MNR)
-           break; /* we found enough bits */
-         if(stereo == 2 && i >= jsbound)     /* check other JS channel */
-           for(;k<14; ++k)
-             if( (-perm_smr[1-j][i] + snr[k]) >= NOISY_MIN_MNR) break;
-         if(k>0) req_bits += (k+1)*SCALE_BLOCK + 6*((i>=jsbound)?stereo:1);
-   }
-   return req_bits;
+  int i, j, k;
+  int stereo = fr_ps->stereo;
+  int jsbound = fr_ps->jsbound;
+  int req_bits = 0;
+
+  /* initial b_anc (header) allocation bits */
+  req_bits = 32 + 4 * ((jsbound * stereo) + (SBLIMIT - jsbound));
+
+  for (i = 0; i < SBLIMIT; ++i)
+    for (j = 0; j < ((i < jsbound) ? stereo : 1); ++j) {
+      for (k = 0; k < 14; ++k)
+        if ((-perm_smr[j][i] + snr[k]) >= NOISY_MIN_MNR)
+          break;                /* we found enough bits */
+      if (stereo == 2 && i >= jsbound)  /* check other JS channel */
+        for (; k < 14; ++k)
+          if ((-perm_smr[1 - j][i] + snr[k]) >= NOISY_MIN_MNR)
+            break;
+      if (k > 0)
+        req_bits += (k + 1) * SCALE_BLOCK + 6 * ((i >= jsbound) ? stereo : 1);
+    }
+  return req_bits;
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-int mpegaudio_II_bits_for_nonoise(perm_smr, scfsi, fr_ps)
-double FAR perm_smr[2][SBLIMIT];
-unsigned int scfsi[2][SBLIMIT];
-frame_params *fr_ps;
-{
-   int sb,ch,ba;
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int jsbound = fr_ps->jsbound;
-   al_table *alloc = fr_ps->alloc;
-   int req_bits = 0, bbal = 0, berr = 0, banc = 32;
-   int maxAlloc, sel_bits, sc_bits, smp_bits;
-static int sfsPerScfsi[] = { 3,2,1,2 };    /* lookup # sfs per scfsi */
 
-   /* added 92-08-11 shn */
-   if (fr_ps->header->error_protection) berr=16; else berr=0; 
- 
-   for (sb=0; sb<jsbound; ++sb)
-     bbal += stereo * (*alloc)[sb][0].bits;
-   for (sb=jsbound; sb<sblimit; ++sb)
-     bbal += (*alloc)[sb][0].bits;
-   req_bits = banc + bbal + berr;
- 
-   for(sb=0; sb<sblimit; ++sb)
-     for(ch=0; ch<((sb<jsbound)?stereo:1); ++ch) {
-       maxAlloc = (1<<(*alloc)[sb][0].bits)-1;
-       sel_bits = sc_bits = smp_bits = 0;
-       for(ba=0;ba<maxAlloc-1; ++ba)
-         if( (-perm_smr[ch][sb] + snr[(*alloc)[sb][ba].quant+((ba>0)?1:0)])
-             >= NOISY_MIN_MNR)
-            break;      /* we found enough bits */
-       if(stereo == 2 && sb >= jsbound) /* check other JS channel */
-         for(;ba<maxAlloc-1; ++ba)
-           if( (-perm_smr[1-ch][sb]+ snr[(*alloc)[sb][ba].quant+((ba>0)?1:0)])
-               >= NOISY_MIN_MNR)
-             break;
-       if(ba>0) {
-         smp_bits = SCALE_BLOCK * ((*alloc)[sb][ba].group * (*alloc)[sb][ba].bits);
-         /* scale factor bits required for subband */
-         sel_bits = 2;
-         sc_bits  = 6 * sfsPerScfsi[scfsi[ch][sb]];
-         if(stereo == 2 && sb >= jsbound) {
-           /* each new js sb has L+R scfsis */
-           sel_bits += 2;
-           sc_bits  += 6 * sfsPerScfsi[scfsi[1-ch][sb]];
-         }
-         req_bits += smp_bits+sel_bits+sc_bits;
-       }
-   }
-   return req_bits;
+int
+mpegaudio_II_bits_for_nonoise (perm_smr, scfsi, fr_ps)
+     double FAR perm_smr[2][SBLIMIT];
+     unsigned int scfsi[2][SBLIMIT];
+     frame_params *fr_ps;
+{
+  int sb, ch, ba;
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int jsbound = fr_ps->jsbound;
+  al_table *alloc = fr_ps->alloc;
+  int req_bits = 0, bbal = 0, berr = 0, banc = 32;
+  int maxAlloc, sel_bits, sc_bits, smp_bits;
+  static int sfsPerScfsi[] = { 3, 2, 1, 2 };    /* lookup # sfs per scfsi */
+
+  /* added 92-08-11 shn */
+  if (fr_ps->header->error_protection)
+    berr = 16;
+  else
+    berr = 0;
+
+  for (sb = 0; sb < jsbound; ++sb)
+    bbal += stereo * (*alloc)[sb][0].bits;
+  for (sb = jsbound; sb < sblimit; ++sb)
+    bbal += (*alloc)[sb][0].bits;
+  req_bits = banc + bbal + berr;
+
+  for (sb = 0; sb < sblimit; ++sb)
+    for (ch = 0; ch < ((sb < jsbound) ? stereo : 1); ++ch) {
+      maxAlloc = (1 << (*alloc)[sb][0].bits) - 1;
+      sel_bits = sc_bits = smp_bits = 0;
+      for (ba = 0; ba < maxAlloc - 1; ++ba)
+        if ((-perm_smr[ch][sb] + snr[(*alloc)[sb][ba].quant + ((ba >
+                            0) ? 1 : 0)])
+            >= NOISY_MIN_MNR)
+          break;                /* we found enough bits */
+      if (stereo == 2 && sb >= jsbound) /* check other JS channel */
+        for (; ba < maxAlloc - 1; ++ba)
+          if ((-perm_smr[1 - ch][sb] + snr[(*alloc)[sb][ba].quant + ((ba >
+                              0) ? 1 : 0)])
+              >= NOISY_MIN_MNR)
+            break;
+      if (ba > 0) {
+        smp_bits =
+            SCALE_BLOCK * ((*alloc)[sb][ba].group * (*alloc)[sb][ba].bits);
+        /* scale factor bits required for subband */
+        sel_bits = 2;
+        sc_bits = 6 * sfsPerScfsi[scfsi[ch][sb]];
+        if (stereo == 2 && sb >= jsbound) {
+          /* each new js sb has L+R scfsis */
+          sel_bits += 2;
+          sc_bits += 6 * sfsPerScfsi[scfsi[1 - ch][sb]];
+        }
+        req_bits += smp_bits + sel_bits + sc_bits;
+      }
+    }
+  return req_bits;
 }
- 
+
 /************************************************************************
  *
  * I_main_bit_allocation   (Layer I)
@@ -823,76 +888,80 @@ static int sfsPerScfsi[] = { 3,2,1,2 };    /* lookup # sfs per scfsi */
  *     This function calls *_bits_for_nonoise() and *_a_bit_allocation().
  *
  ************************************************************************/
- 
-void mpegaudio_I_main_bit_allocation(perm_smr, bit_alloc, adb, fr_ps)
-double FAR perm_smr[2][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-int *adb;
-frame_params *fr_ps;
+
+void
+mpegaudio_I_main_bit_allocation (perm_smr, bit_alloc, adb, fr_ps)
+     double FAR perm_smr[2][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     int *adb;
+     frame_params *fr_ps;
 {
-   int  noisy_sbs;
-   int  mode, mode_ext, lay, i;
-   int  rq_db;
-static  int init = 0;
- 
-   if(init == 0) {
-     /* rearrange snr for layer I */
-     snr[2] = snr[3];
-     for (i=3;i<16;i++) snr[i] = snr[i+2];
-     init = 1;
-   }
- 
-   if((mode = fr_ps->actual_mode) == MPG_MD_JOINT_STEREO) {
-     fr_ps->header->mode = MPG_MD_STEREO;
-     fr_ps->header->mode_ext = 0;
-     fr_ps->jsbound = fr_ps->sblimit;
-     if((rq_db = mpegaudio_I_bits_for_nonoise(perm_smr, fr_ps) > *adb)) {
-       fr_ps->header->mode = MPG_MD_JOINT_STEREO;
-       mode_ext = 4;           /* 3 is least severe reduction */
-       lay = fr_ps->header->lay;
-       do {
-          --mode_ext;
-          fr_ps->jsbound = mpegaudio_js_bound(lay, mode_ext);
-          rq_db = mpegaudio_I_bits_for_nonoise(perm_smr, fr_ps);
-       } while( (rq_db > *adb) && (mode_ext > 0));
-       fr_ps->header->mode_ext = mode_ext;
-     }    /* well we either eliminated noisy sbs or mode_ext == 0 */
-   }
-   noisy_sbs = mpegaudio_I_a_bit_allocation(perm_smr, bit_alloc, adb, fr_ps);
+  int noisy_sbs;
+  int mode, mode_ext, lay, i;
+  int rq_db;
+  static int init = 0;
+
+  if (init == 0) {
+    /* rearrange snr for layer I */
+    snr[2] = snr[3];
+    for (i = 3; i < 16; i++)
+      snr[i] = snr[i + 2];
+    init = 1;
+  }
+
+  if ((mode = fr_ps->actual_mode) == MPG_MD_JOINT_STEREO) {
+    fr_ps->header->mode = MPG_MD_STEREO;
+    fr_ps->header->mode_ext = 0;
+    fr_ps->jsbound = fr_ps->sblimit;
+    if ((rq_db = mpegaudio_I_bits_for_nonoise (perm_smr, fr_ps) > *adb)) {
+      fr_ps->header->mode = MPG_MD_JOINT_STEREO;
+      mode_ext = 4;             /* 3 is least severe reduction */
+      lay = fr_ps->header->lay;
+      do {
+        --mode_ext;
+        fr_ps->jsbound = mpegaudio_js_bound (lay, mode_ext);
+        rq_db = mpegaudio_I_bits_for_nonoise (perm_smr, fr_ps);
+      } while ((rq_db > *adb) && (mode_ext > 0));
+      fr_ps->header->mode_ext = mode_ext;
+    }                           /* well we either eliminated noisy sbs or mode_ext == 0 */
+  }
+  noisy_sbs = mpegaudio_I_a_bit_allocation (perm_smr, bit_alloc, adb, fr_ps);
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-void mpegaudio_II_main_bit_allocation(perm_smr, scfsi, bit_alloc, adb, fr_ps)
-double FAR perm_smr[2][SBLIMIT];
-unsigned int scfsi[2][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-int *adb;
-frame_params *fr_ps;
+
+void
+mpegaudio_II_main_bit_allocation (perm_smr, scfsi, bit_alloc, adb, fr_ps)
+     double FAR perm_smr[2][SBLIMIT];
+     unsigned int scfsi[2][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     int *adb;
+     frame_params *fr_ps;
 {
-   int  noisy_sbs;
-   int  mode, mode_ext, lay;
-   int  rq_db;
- 
-   if((mode = fr_ps->actual_mode) == MPG_MD_JOINT_STEREO) {
-     fr_ps->header->mode = MPG_MD_STEREO;
-     fr_ps->header->mode_ext = 0;
-     fr_ps->jsbound = fr_ps->sblimit;
-     if((rq_db=mpegaudio_II_bits_for_nonoise(perm_smr, scfsi, fr_ps)) > *adb) {
-       fr_ps->header->mode = MPG_MD_JOINT_STEREO;
-       mode_ext = 4;           /* 3 is least severe reduction */
-       lay = fr_ps->header->lay;
-       do {
-         --mode_ext;
-         fr_ps->jsbound = mpegaudio_js_bound(lay, mode_ext);
-         rq_db = mpegaudio_II_bits_for_nonoise(perm_smr, scfsi, fr_ps);
-       } while( (rq_db > *adb) && (mode_ext > 0));
-       fr_ps->header->mode_ext = mode_ext;
-     }    /* well we either eliminated noisy sbs or mode_ext == 0 */
-   }
-   noisy_sbs = mpegaudio_II_a_bit_allocation(perm_smr, scfsi, bit_alloc, adb, fr_ps);
+  int noisy_sbs;
+  int mode, mode_ext, lay;
+  int rq_db;
+
+  if ((mode = fr_ps->actual_mode) == MPG_MD_JOINT_STEREO) {
+    fr_ps->header->mode = MPG_MD_STEREO;
+    fr_ps->header->mode_ext = 0;
+    fr_ps->jsbound = fr_ps->sblimit;
+    if ((rq_db = mpegaudio_II_bits_for_nonoise (perm_smr, scfsi, fr_ps)) > *adb) {
+      fr_ps->header->mode = MPG_MD_JOINT_STEREO;
+      mode_ext = 4;             /* 3 is least severe reduction */
+      lay = fr_ps->header->lay;
+      do {
+        --mode_ext;
+        fr_ps->jsbound = mpegaudio_js_bound (lay, mode_ext);
+        rq_db = mpegaudio_II_bits_for_nonoise (perm_smr, scfsi, fr_ps);
+      } while ((rq_db > *adb) && (mode_ext > 0));
+      fr_ps->header->mode_ext = mode_ext;
+    }                           /* well we either eliminated noisy sbs or mode_ext == 0 */
+  }
+  noisy_sbs =
+      mpegaudio_II_a_bit_allocation (perm_smr, scfsi, bit_alloc, adb, fr_ps);
 }
- 
+
 /************************************************************************
  *
  * I_a_bit_allocation  (Layer I)
@@ -918,197 +987,230 @@ frame_params *fr_ps;
  *    subband.)
  *
  ************************************************************************/
- 
-int mpegaudio_I_a_bit_allocation(perm_smr, bit_alloc, adb, fr_ps) /* return noisy sbs */
-double FAR perm_smr[2][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-int *adb;
-frame_params *fr_ps;
+
+int
+mpegaudio_I_a_bit_allocation (perm_smr, bit_alloc, adb, fr_ps)  /* return noisy sbs */
+     double FAR perm_smr[2][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     int *adb;
+     frame_params *fr_ps;
 {
-   int i, k, smpl_bits, scale_bits, min_sb, min_ch, oth_ch;
-   int bspl, bscf, ad, noisy_sbs, bbal ;
-   double mnr[2][SBLIMIT], small;
-   char used[2][SBLIMIT];
-   int stereo  = fr_ps->stereo;
-   int jsbound = fr_ps->jsbound;
-   static char init= 0;
-   static int banc=32, berr=0;
- 
-   if (!init) {
-      init = 1;
-      if (fr_ps->header->error_protection) berr = 16;  /* added 92-08-11 shn */
-   }
-   bbal = 4 * ( (jsbound * stereo) + (SBLIMIT-jsbound) );
-   *adb -= bbal + berr + banc;
-   ad= *adb;
- 
-   for (i=0;i<SBLIMIT;i++) for (k=0;k<stereo;k++) {
-     mnr[k][i]=snr[0]-perm_smr[k][i];
-     bit_alloc[k][i] = 0;
-     used[k][i] = 0;
-   }
-   bspl = bscf = 0;
- 
-   do  {
-     /* locate the subband with minimum SMR */
-     small = mnr[0][0]+1;    min_sb = -1; min_ch = -1;
-     for (i=0;i<SBLIMIT;i++) for (k=0;k<stereo;k++)
-       /* go on only if there are bits left */
-       if (used[k][i] != 2 && small > mnr[k][i]) {
-         small = mnr[k][i];
-         min_sb = i;  min_ch = k;
-       }
-     if(min_sb > -1) {   /* there was something to find */
-       /* first step of bit allocation is biggest */
-       if (used[min_ch][min_sb])  { smpl_bits = SCALE_BLOCK; scale_bits = 0; }
-       else                       { smpl_bits = 24; scale_bits = 6; }
-       if(min_sb >= jsbound)        scale_bits *= stereo;
- 
-       /* check to see enough bits were available for */
-       /* increasing resolution in the minimum band */
- 
-       if (ad >= bspl + bscf + scale_bits + smpl_bits) {
-         bspl += smpl_bits; /* bit for subband sample */
-         bscf += scale_bits; /* bit for scale factor */
-         bit_alloc[min_ch][min_sb]++;
-         used[min_ch][min_sb] = 1; /* subband has bits */
-         mnr[min_ch][min_sb] = -perm_smr[min_ch][min_sb]
-                               + snr[bit_alloc[min_ch][min_sb]];
-         /* Check if subband has been fully allocated max bits */
-         if (bit_alloc[min_ch][min_sb] ==  14 ) used[min_ch][min_sb] = 2;
-       }
-       else            /* no room to improve this band */
-         used[min_ch][min_sb] = 2; /*   for allocation anymore */
-       if(stereo == 2 && min_sb >= jsbound) {
-         oth_ch = 1-min_ch;  /* joint-st : fix other ch */
-         bit_alloc[oth_ch][min_sb] = bit_alloc[min_ch][min_sb];
-         used[oth_ch][min_sb] = used[min_ch][min_sb];
-         mnr[oth_ch][min_sb] = -perm_smr[oth_ch][min_sb]
-                               + snr[bit_alloc[oth_ch][min_sb]];
-       }
-     }
-   } while(min_sb>-1);     /* i.e. still some sub-bands to find */
+  int i, k, smpl_bits, scale_bits, min_sb, min_ch, oth_ch;
+  int bspl, bscf, ad, noisy_sbs, bbal;
+  double mnr[2][SBLIMIT], small;
+  char used[2][SBLIMIT];
+  int stereo = fr_ps->stereo;
+  int jsbound = fr_ps->jsbound;
+  static char init = 0;
+  static int banc = 32, berr = 0;
 
-   /* Calculate the number of bits left, add on to pointed var */
-   ad -= bspl+bscf;
-   *adb = ad;
+  if (!init) {
+    init = 1;
+    if (fr_ps->header->error_protection)
+      berr = 16;                /* added 92-08-11 shn */
+  }
+  bbal = 4 * ((jsbound * stereo) + (SBLIMIT - jsbound));
+  *adb -= bbal + berr + banc;
+  ad = *adb;
 
-   /* see how many channels are noisy */
-   noisy_sbs = 0; small = mnr[0][0];
-   for(k=0; k<stereo; ++k) {
-     for(i = 0; i< SBLIMIT; ++i) {
-       if(mnr[k][i] < NOISY_MIN_MNR)   ++noisy_sbs;
-       if(small > mnr[k][i])           small = mnr[k][i];
-     }
-   }
-   return noisy_sbs;
+  for (i = 0; i < SBLIMIT; i++)
+    for (k = 0; k < stereo; k++) {
+      mnr[k][i] = snr[0] - perm_smr[k][i];
+      bit_alloc[k][i] = 0;
+      used[k][i] = 0;
+    }
+  bspl = bscf = 0;
+
+  do {
+    /* locate the subband with minimum SMR */
+    small = mnr[0][0] + 1;
+    min_sb = -1;
+    min_ch = -1;
+    for (i = 0; i < SBLIMIT; i++)
+      for (k = 0; k < stereo; k++)
+        /* go on only if there are bits left */
+        if (used[k][i] != 2 && small > mnr[k][i]) {
+          small = mnr[k][i];
+          min_sb = i;
+          min_ch = k;
+        }
+    if (min_sb > -1) {          /* there was something to find */
+      /* first step of bit allocation is biggest */
+      if (used[min_ch][min_sb]) {
+        smpl_bits = SCALE_BLOCK;
+        scale_bits = 0;
+      } else {
+        smpl_bits = 24;
+        scale_bits = 6;
+      }
+      if (min_sb >= jsbound)
+        scale_bits *= stereo;
+
+      /* check to see enough bits were available for */
+      /* increasing resolution in the minimum band */
+
+      if (ad >= bspl + bscf + scale_bits + smpl_bits) {
+        bspl += smpl_bits;      /* bit for subband sample */
+        bscf += scale_bits;     /* bit for scale factor */
+        bit_alloc[min_ch][min_sb]++;
+        used[min_ch][min_sb] = 1;       /* subband has bits */
+        mnr[min_ch][min_sb] = -perm_smr[min_ch][min_sb]
+            + snr[bit_alloc[min_ch][min_sb]];
+        /* Check if subband has been fully allocated max bits */
+        if (bit_alloc[min_ch][min_sb] == 14)
+          used[min_ch][min_sb] = 2;
+      } else                    /* no room to improve this band */
+        used[min_ch][min_sb] = 2;       /*   for allocation anymore */
+      if (stereo == 2 && min_sb >= jsbound) {
+        oth_ch = 1 - min_ch;    /* joint-st : fix other ch */
+        bit_alloc[oth_ch][min_sb] = bit_alloc[min_ch][min_sb];
+        used[oth_ch][min_sb] = used[min_ch][min_sb];
+        mnr[oth_ch][min_sb] = -perm_smr[oth_ch][min_sb]
+            + snr[bit_alloc[oth_ch][min_sb]];
+      }
+    }
+  } while (min_sb > -1);        /* i.e. still some sub-bands to find */
+
+  /* Calculate the number of bits left, add on to pointed var */
+  ad -= bspl + bscf;
+  *adb = ad;
+
+  /* see how many channels are noisy */
+  noisy_sbs = 0;
+  small = mnr[0][0];
+  for (k = 0; k < stereo; ++k) {
+    for (i = 0; i < SBLIMIT; ++i) {
+      if (mnr[k][i] < NOISY_MIN_MNR)
+        ++noisy_sbs;
+      if (small > mnr[k][i])
+        small = mnr[k][i];
+    }
+  }
+  return noisy_sbs;
 }
 
 /***************************** Layer II  ********************************/
- 
-int mpegaudio_II_a_bit_allocation(perm_smr, scfsi, bit_alloc, adb, fr_ps)
-double FAR perm_smr[2][SBLIMIT];
-unsigned int scfsi[2][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-int *adb;
-frame_params *fr_ps;
-{
-   int i, min_ch, min_sb, oth_ch, k, increment, scale, seli, ba;
-   int bspl, bscf, bsel, ad, noisy_sbs, bbal=0;
-   double mnr[2][SBLIMIT], small;
-   char used[2][SBLIMIT];
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int jsbound = fr_ps->jsbound;
-   al_table *alloc = fr_ps->alloc;
-static char init= 0;
-static int banc=32, berr=0;
-static int sfsPerScfsi[] = { 3,2,1,2 };    /* lookup # sfs per scfsi */
- 
-   if (!init) { 
-       init = 1;  
-       if (fr_ps->header->error_protection) berr=16; /* added 92-08-11 shn */
-   }
-   for (i=0; i<jsbound; ++i)
-     bbal += stereo * (*alloc)[i][0].bits;
-   for (i=jsbound; i<sblimit; ++i)
-     bbal += (*alloc)[i][0].bits;
-   *adb -= bbal + berr + banc;
-   ad = *adb;
- 
-   for (i=0;i<sblimit;i++) for (k=0;k<stereo;k++) {
-     mnr[k][i]=snr[0]-perm_smr[k][i];
-     bit_alloc[k][i] = 0;
-     used[k][i] = 0;
-   }
-   bspl = bscf = bsel = 0;
- 
-   do  {
-     /* locate the subband with minimum SMR */
-     small = 999999.0; min_sb = -1; min_ch = -1;
-     for (i=0;i<sblimit;i++) for(k=0;k<stereo;++k)
-       if (used[k][i]  != 2 && small > mnr[k][i]) {
-         small = mnr[k][i];
-         min_sb = i;  min_ch = k;
-     }
-     if(min_sb > -1) {   /* there was something to find */
-       /* find increase in bit allocation in subband [min] */
-       increment = SCALE_BLOCK * ((*alloc)[min_sb][bit_alloc[min_ch][min_sb]+1].group *
-                        (*alloc)[min_sb][bit_alloc[min_ch][min_sb]+1].bits);
-       if (used[min_ch][min_sb])
-         increment -= SCALE_BLOCK * ((*alloc)[min_sb][bit_alloc[min_ch][min_sb]].group*
-                           (*alloc)[min_sb][bit_alloc[min_ch][min_sb]].bits);
- 
-       /* scale factor bits required for subband [min] */
-       oth_ch = 1 - min_ch;    /* above js bound, need both chans */
-       if (used[min_ch][min_sb]) scale = seli = 0;
-       else {          /* this channel had no bits or scfs before */
-         seli = 2;
-         scale = 6 * sfsPerScfsi[scfsi[min_ch][min_sb]];
-         if(stereo == 2 && min_sb >= jsbound) {
-           /* each new js sb has L+R scfsis */
-           seli += 2;
-           scale += 6 * sfsPerScfsi[scfsi[oth_ch][min_sb]];
-         }
-       }
-       /* check to see enough bits were available for */
-       /* increasing resolution in the minimum band */
-       if (ad >= bspl + bscf + bsel + seli + scale + increment) {
-         ba = ++bit_alloc[min_ch][min_sb]; /* next up alloc */
-         bspl += increment;  /* bits for subband sample */
-         bscf += scale;      /* bits for scale factor */
-         bsel += seli;       /* bits for scfsi code */
-         used[min_ch][min_sb] = 1; /* subband has bits */
-         mnr[min_ch][min_sb] = -perm_smr[min_ch][min_sb] +
-                               snr[(*alloc)[min_sb][ba].quant+1];
-         /* Check if subband has been fully allocated max bits */
-         if (ba >= (1<<(*alloc)[min_sb][0].bits)-1) used[min_ch][min_sb] = 2;
-       }
-       else used[min_ch][min_sb] = 2; /* can't increase this alloc */
-       if(min_sb >= jsbound && stereo == 2) {
-         /* above jsbound, alloc applies L+R */
-         ba = bit_alloc[oth_ch][min_sb] = bit_alloc[min_ch][min_sb];
-         used[oth_ch][min_sb] = used[min_ch][min_sb];
-         mnr[oth_ch][min_sb] = -perm_smr[oth_ch][min_sb] +
-                               snr[(*alloc)[min_sb][ba].quant+1];
-       }
-     }
-   } while(min_sb > -1);   /* until could find no channel */
-   /* Calculate the number of bits left */
-   ad -= bspl+bscf+bsel;   *adb = ad;
-   for (i=sblimit;i<SBLIMIT;i++) for (k=0;k<stereo;k++) bit_alloc[k][i]=0;
- 
-   noisy_sbs = 0;  small = mnr[0][0];      /* calc worst noise in case */
-   for(k=0;k<stereo;++k) {
-     for (i=0;i<sblimit;i++) {
-       if (small > mnr[k][i]) small = mnr[k][i];
-       if(mnr[k][i] < NOISY_MIN_MNR) ++noisy_sbs; /* noise is not masked */
 
-     }
-   }
-   return noisy_sbs;
+int
+mpegaudio_II_a_bit_allocation (perm_smr, scfsi, bit_alloc, adb, fr_ps)
+     double FAR perm_smr[2][SBLIMIT];
+     unsigned int scfsi[2][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     int *adb;
+     frame_params *fr_ps;
+{
+  int i, min_ch, min_sb, oth_ch, k, increment, scale, seli, ba;
+  int bspl, bscf, bsel, ad, noisy_sbs, bbal = 0;
+  double mnr[2][SBLIMIT], small;
+  char used[2][SBLIMIT];
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int jsbound = fr_ps->jsbound;
+  al_table *alloc = fr_ps->alloc;
+  static char init = 0;
+  static int banc = 32, berr = 0;
+  static int sfsPerScfsi[] = { 3, 2, 1, 2 };    /* lookup # sfs per scfsi */
+
+  if (!init) {
+    init = 1;
+    if (fr_ps->header->error_protection)
+      berr = 16;                /* added 92-08-11 shn */
+  }
+  for (i = 0; i < jsbound; ++i)
+    bbal += stereo * (*alloc)[i][0].bits;
+  for (i = jsbound; i < sblimit; ++i)
+    bbal += (*alloc)[i][0].bits;
+  *adb -= bbal + berr + banc;
+  ad = *adb;
+
+  for (i = 0; i < sblimit; i++)
+    for (k = 0; k < stereo; k++) {
+      mnr[k][i] = snr[0] - perm_smr[k][i];
+      bit_alloc[k][i] = 0;
+      used[k][i] = 0;
+    }
+  bspl = bscf = bsel = 0;
+
+  do {
+    /* locate the subband with minimum SMR */
+    small = 999999.0;
+    min_sb = -1;
+    min_ch = -1;
+    for (i = 0; i < sblimit; i++)
+      for (k = 0; k < stereo; ++k)
+        if (used[k][i] != 2 && small > mnr[k][i]) {
+          small = mnr[k][i];
+          min_sb = i;
+          min_ch = k;
+        }
+    if (min_sb > -1) {          /* there was something to find */
+      /* find increase in bit allocation in subband [min] */
+      increment =
+          SCALE_BLOCK * ((*alloc)[min_sb][bit_alloc[min_ch][min_sb] +
+              1].group * (*alloc)[min_sb][bit_alloc[min_ch][min_sb] + 1].bits);
+      if (used[min_ch][min_sb])
+        increment -=
+            SCALE_BLOCK * ((*alloc)[min_sb][bit_alloc[min_ch][min_sb]].group *
+            (*alloc)[min_sb][bit_alloc[min_ch][min_sb]].bits);
+
+      /* scale factor bits required for subband [min] */
+      oth_ch = 1 - min_ch;      /* above js bound, need both chans */
+      if (used[min_ch][min_sb])
+        scale = seli = 0;
+      else {                    /* this channel had no bits or scfs before */
+        seli = 2;
+        scale = 6 * sfsPerScfsi[scfsi[min_ch][min_sb]];
+        if (stereo == 2 && min_sb >= jsbound) {
+          /* each new js sb has L+R scfsis */
+          seli += 2;
+          scale += 6 * sfsPerScfsi[scfsi[oth_ch][min_sb]];
+        }
+      }
+      /* check to see enough bits were available for */
+      /* increasing resolution in the minimum band */
+      if (ad >= bspl + bscf + bsel + seli + scale + increment) {
+        ba = ++bit_alloc[min_ch][min_sb];       /* next up alloc */
+        bspl += increment;      /* bits for subband sample */
+        bscf += scale;          /* bits for scale factor */
+        bsel += seli;           /* bits for scfsi code */
+        used[min_ch][min_sb] = 1;       /* subband has bits */
+        mnr[min_ch][min_sb] = -perm_smr[min_ch][min_sb] +
+            snr[(*alloc)[min_sb][ba].quant + 1];
+        /* Check if subband has been fully allocated max bits */
+        if (ba >= (1 << (*alloc)[min_sb][0].bits) - 1)
+          used[min_ch][min_sb] = 2;
+      } else
+        used[min_ch][min_sb] = 2;       /* can't increase this alloc */
+      if (min_sb >= jsbound && stereo == 2) {
+        /* above jsbound, alloc applies L+R */
+        ba = bit_alloc[oth_ch][min_sb] = bit_alloc[min_ch][min_sb];
+        used[oth_ch][min_sb] = used[min_ch][min_sb];
+        mnr[oth_ch][min_sb] = -perm_smr[oth_ch][min_sb] +
+            snr[(*alloc)[min_sb][ba].quant + 1];
+      }
+    }
+  } while (min_sb > -1);        /* until could find no channel */
+  /* Calculate the number of bits left */
+  ad -= bspl + bscf + bsel;
+  *adb = ad;
+  for (i = sblimit; i < SBLIMIT; i++)
+    for (k = 0; k < stereo; k++)
+      bit_alloc[k][i] = 0;
+
+  noisy_sbs = 0;
+  small = mnr[0][0];            /* calc worst noise in case */
+  for (k = 0; k < stereo; ++k) {
+    for (i = 0; i < sblimit; i++) {
+      if (small > mnr[k][i])
+        small = mnr[k][i];
+      if (mnr[k][i] < NOISY_MIN_MNR)
+        ++noisy_sbs;            /* noise is not masked */
+
+    }
+  }
+  return noisy_sbs;
 }
- 
+
 /************************************************************************
  *
  * I_subband_quantization  (Layer I)
@@ -1126,136 +1228,158 @@ static int sfsPerScfsi[] = { 3,2,1,2 };    /* lookup # sfs per scfsi */
  * negative number x is equivalent to adding 1 to it.
  *
  ************************************************************************/
- 
+
 static double a[17] = {
   0.750000000, 0.625000000, 0.875000000, 0.562500000, 0.937500000,
   0.968750000, 0.984375000, 0.992187500, 0.996093750, 0.998046875,
   0.999023438, 0.999511719, 0.999755859, 0.999877930, 0.999938965,
-  0.999969482, 0.999984741 };
- 
+  0.999969482, 0.999984741
+};
+
 static double b[17] = {
   -0.250000000, -0.375000000, -0.125000000, -0.437500000, -0.062500000,
   -0.031250000, -0.015625000, -0.007812500, -0.003906250, -0.001953125,
   -0.000976563, -0.000488281, -0.000244141, -0.000122070, -0.000061035,
-  -0.000030518, -0.000015259 };
- 
-void mpegaudio_I_subband_quantization(scalar, sb_samples, j_scale, j_samps,
-                            bit_alloc, sbband, fr_ps)
-unsigned int scalar[2][3][SBLIMIT];
-double FAR sb_samples[2][3][SCALE_BLOCK][SBLIMIT];
-unsigned int j_scale[3][SBLIMIT];
-double FAR j_samps[3][SCALE_BLOCK][SBLIMIT]; /* L+R for j-stereo if necess */
-unsigned int bit_alloc[2][SBLIMIT];
-unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
-frame_params *fr_ps;
-{
-   int i, j, k, n, sig;
-   int stereo  = fr_ps->stereo;
-   int jsbound = fr_ps->jsbound;
-   double d;
-static char init = 0;
+  -0.000030518, -0.000015259
+};
 
-   if (!init) {
-     init = 1;
-     /* rearrange quantization coef to correspond to layer I table */
-     a[1] = a[2]; b[1] = b[2];
-     for (i=2;i<15;i++) { a[i] = a[i+2]; b[i] = b[i+2]; }
-   }
-   for (j=0;j<SCALE_BLOCK;j++) for (i=0;i<SBLIMIT;i++)
-     for (k=0;k<((i<jsbound)?stereo:1);k++)
-       if (bit_alloc[k][i]) {
-         /* for joint stereo mode, have to construct a single subband stream
-            for the js channels.  At present, we calculate a set of mono
-            subband samples and pass them through the scaling system to
-            generate an alternate normalised sample stream.
- 
-            Could normalise both streams (divide by their scfs), then average
-            them.  In bad conditions, this could give rise to spurious
-            cancellations.  Instead, we could just select the sb stream from
-            the larger channel (higher scf), in which case _that_ channel
-            would be 'properly' reconstructed, and the mate would just be a
-            scaled version.  Spec recommends averaging the two (unnormalised)
-            subband channels, then normalising this new signal without
-            actually sending this scale factor... This means looking ahead.
-         */
-         if(stereo == 2 && i>=jsbound)
-           /* use the joint data passed in */
-           d = j_samps[0][j][i] / mpegaudio_multiple[j_scale[0][i]];
-         else
-           d = sb_samples[k][0][j][i] / mpegaudio_multiple[scalar[k][0][i]];
-         /* scale and quantize floating point sample */
-         n = bit_alloc[k][i];
-         d = d * a[n-1] + b[n-1];
-         /* extract MSB N-1 bits from the floating point sample */
-         if (d >= 0) sig = 1;
-         else { sig = 0; d += 1.0; }
-         sbband[k][0][j][i] = (unsigned int) (d * (double) (1L<<n));
-         /* tag the inverted sign bit to sbband at position N */
-         if (sig) sbband[k][0][j][i] |= 1<<n;
-       }
+void
+mpegaudio_I_subband_quantization (scalar, sb_samples, j_scale, j_samps,
+    bit_alloc, sbband, fr_ps)
+     unsigned int scalar[2][3][SBLIMIT];
+     double FAR sb_samples[2][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int j_scale[3][SBLIMIT];
+     double FAR j_samps[3][SCALE_BLOCK][SBLIMIT];       /* L+R for j-stereo if necess */
+     unsigned int bit_alloc[2][SBLIMIT];
+     unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
+     frame_params *fr_ps;
+{
+  int i, j, k, n, sig;
+  int stereo = fr_ps->stereo;
+  int jsbound = fr_ps->jsbound;
+  double d;
+  static char init = 0;
+
+  if (!init) {
+    init = 1;
+    /* rearrange quantization coef to correspond to layer I table */
+    a[1] = a[2];
+    b[1] = b[2];
+    for (i = 2; i < 15; i++) {
+      a[i] = a[i + 2];
+      b[i] = b[i + 2];
+    }
+  }
+  for (j = 0; j < SCALE_BLOCK; j++)
+    for (i = 0; i < SBLIMIT; i++)
+      for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+        if (bit_alloc[k][i]) {
+          /* for joint stereo mode, have to construct a single subband stream
+             for the js channels.  At present, we calculate a set of mono
+             subband samples and pass them through the scaling system to
+             generate an alternate normalised sample stream.
+
+             Could normalise both streams (divide by their scfs), then average
+             them.  In bad conditions, this could give rise to spurious
+             cancellations.  Instead, we could just select the sb stream from
+             the larger channel (higher scf), in which case _that_ channel
+             would be 'properly' reconstructed, and the mate would just be a
+             scaled version.  Spec recommends averaging the two (unnormalised)
+             subband channels, then normalising this new signal without
+             actually sending this scale factor... This means looking ahead.
+           */
+          if (stereo == 2 && i >= jsbound)
+            /* use the joint data passed in */
+            d = j_samps[0][j][i] / mpegaudio_multiple[j_scale[0][i]];
+          else
+            d = sb_samples[k][0][j][i] / mpegaudio_multiple[scalar[k][0][i]];
+          /* scale and quantize floating point sample */
+          n = bit_alloc[k][i];
+          d = d * a[n - 1] + b[n - 1];
+          /* extract MSB N-1 bits from the floating point sample */
+          if (d >= 0)
+            sig = 1;
+          else {
+            sig = 0;
+            d += 1.0;
+          }
+          sbband[k][0][j][i] = (unsigned int) (d * (double) (1L << n));
+          /* tag the inverted sign bit to sbband at position N */
+          if (sig)
+            sbband[k][0][j][i] |= 1 << n;
+        }
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-void mpegaudio_II_subband_quantization(scalar, sb_samples, j_scale, j_samps,
-                             bit_alloc, sbband, fr_ps)
-unsigned int scalar[2][3][SBLIMIT];
-double FAR sb_samples[2][3][SCALE_BLOCK][SBLIMIT];
-unsigned int j_scale[3][SBLIMIT];
-double FAR j_samps[3][SCALE_BLOCK][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
-frame_params *fr_ps;
-{
-   int i, j, k, s, n, qnt, sig;
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int jsbound = fr_ps->jsbound;
-   unsigned int stps;
-   double d;
-   al_table *alloc = fr_ps->alloc;
 
-   for (s=0;s<3;s++)
-     for (j=0;j<SCALE_BLOCK;j++)
-       for (i=0;i<sblimit;i++)
-         for (k=0;k<((i<jsbound)?stereo:1);k++)
-           if (bit_alloc[k][i]) {
-             /* scale and quantize floating point sample */
-             if(stereo == 2 && i>=jsbound)       /* use j-stereo samples */
-               d = j_samps[s][j][i] / mpegaudio_multiple[j_scale[s][i]];
-             else
-               d = sb_samples[k][s][j][i] / mpegaudio_multiple[scalar[k][s][i]];
-             if (mpegaudio_mod(d) > 1.0)
-               printf("Not scaled properly %d %d %d %d\n",k,s,j,i);
-             qnt = (*alloc)[i][bit_alloc[k][i]].quant;
-             d = d * a[qnt] + b[qnt];
-             /* extract MSB N-1 bits from the floating point sample */
-             if (d >= 0) sig = 1;
-             else { sig = 0; d += 1.0; }
-             n = 0;
+void
+mpegaudio_II_subband_quantization (scalar, sb_samples, j_scale, j_samps,
+    bit_alloc, sbband, fr_ps)
+     unsigned int scalar[2][3][SBLIMIT];
+     double FAR sb_samples[2][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int j_scale[3][SBLIMIT];
+     double FAR j_samps[3][SCALE_BLOCK][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
+     frame_params *fr_ps;
+{
+  int i, j, k, s, n, qnt, sig;
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int jsbound = fr_ps->jsbound;
+  unsigned int stps;
+  double d;
+  al_table *alloc = fr_ps->alloc;
+
+  for (s = 0; s < 3; s++)
+    for (j = 0; j < SCALE_BLOCK; j++)
+      for (i = 0; i < sblimit; i++)
+        for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+          if (bit_alloc[k][i]) {
+            /* scale and quantize floating point sample */
+            if (stereo == 2 && i >= jsbound)    /* use j-stereo samples */
+              d = j_samps[s][j][i] / mpegaudio_multiple[j_scale[s][i]];
+            else
+              d = sb_samples[k][s][j][i] / mpegaudio_multiple[scalar[k][s][i]];
+            if (mpegaudio_mod (d) > 1.0)
+              printf ("Not scaled properly %d %d %d %d\n", k, s, j, i);
+            qnt = (*alloc)[i][bit_alloc[k][i]].quant;
+            d = d * a[qnt] + b[qnt];
+            /* extract MSB N-1 bits from the floating point sample */
+            if (d >= 0)
+              sig = 1;
+            else {
+              sig = 0;
+              d += 1.0;
+            }
+            n = 0;
 #ifndef MS_DOS
-             stps = (*alloc)[i][bit_alloc[k][i]].steps;
-             while ((1L<<n) < stps) n++;
+            stps = (*alloc)[i][bit_alloc[k][i]].steps;
+            while ((1L << n) < stps)
+              n++;
 #else
-             while  ( ( (unsigned long)(1L<<(long)n) <
-                       ((unsigned long) ((*alloc)[i][bit_alloc[k][i]].steps)
-                        & 0xffff
-                        )
-                       ) && ( n <16)
-                     ) n++;
+            while (((unsigned long) (1L << (long) n) <
+                    ((unsigned long) ((*alloc)[i][bit_alloc[k][i]].steps)
+                        & 0xffff)
+                ) && (n < 16)
+                )
+              n++;
 #endif
-             n--;
-             sbband[k][s][j][i] = (unsigned int) (d * (double) (1L<<n));
-             /* tag the inverted sign bit to sbband at position N */
-             /* The bit inversion is a must for grouping with 3,5,9 steps
-                so it is done for all subbands */
-             if (sig) sbband[k][s][j][i] |= 1<<n;
-           }
-           for (s=0;s<3;s++)
-             for (j=sblimit;j<SBLIMIT;j++)
-               for (i=0;i<SCALE_BLOCK;i++) for (k=0;k<stereo;k++) sbband[k][s][i][j] = 0;
+            n--;
+            sbband[k][s][j][i] = (unsigned int) (d * (double) (1L << n));
+            /* tag the inverted sign bit to sbband at position N */
+            /* The bit inversion is a must for grouping with 3,5,9 steps
+               so it is done for all subbands */
+            if (sig)
+              sbband[k][s][j][i] |= 1 << n;
+          }
+  for (s = 0; s < 3; s++)
+    for (j = sblimit; j < SBLIMIT; j++)
+      for (i = 0; i < SCALE_BLOCK; i++)
+        for (k = 0; k < stereo; k++)
+          sbband[k][s][i][j] = 0;
 }
- 
+
 /************************************************************************
  *
  * I_encode_bit_alloc  (Layer I)
@@ -1268,38 +1392,41 @@ frame_params *fr_ps;
  * quantization table used.
  *
  ************************************************************************/
- 
-void mpegaudio_I_encode_bit_alloc(bit_alloc, fr_ps, pb)
-unsigned int bit_alloc[2][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_I_encode_bit_alloc (bit_alloc, fr_ps, pb)
+     unsigned int bit_alloc[2][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   int i,k;
-   int stereo  = fr_ps->stereo;
-   int jsbound = fr_ps->jsbound;
- 
-   for (i=0;i<SBLIMIT;i++)
-     for (k=0;k<((i<jsbound)?stereo:1);k++) gst_putbits4(pb,bit_alloc[k][i]);
+  int i, k;
+  int stereo = fr_ps->stereo;
+  int jsbound = fr_ps->jsbound;
+
+  for (i = 0; i < SBLIMIT; i++)
+    for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+      gst_putbits4 (pb, bit_alloc[k][i]);
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-void mpegaudio_II_encode_bit_alloc(bit_alloc, fr_ps, pb)
-unsigned int bit_alloc[2][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_II_encode_bit_alloc (bit_alloc, fr_ps, pb)
+     unsigned int bit_alloc[2][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   int i,k;
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int jsbound = fr_ps->jsbound;
-   al_table *alloc = fr_ps->alloc;
- 
-   for (i=0;i<sblimit;i++)
-     for (k=0;k<((i<jsbound)?stereo:1);k++)
-       gst_putbitsn(pb,bit_alloc[k][i],(*alloc)[i][0].bits);
+  int i, k;
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int jsbound = fr_ps->jsbound;
+  al_table *alloc = fr_ps->alloc;
+
+  for (i = 0; i < sblimit; i++)
+    for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+      gst_putbitsn (pb, bit_alloc[k][i], (*alloc)[i][0].bits);
 }
- 
+
 /************************************************************************
  *
  * I_sample_encoding   (Layer I)
@@ -1313,67 +1440,70 @@ gst_putbits_t *pb;
  * that are not a power of 2.
  *
  ************************************************************************/
- 
-void mpegaudio_I_sample_encoding(sbband, bit_alloc, fr_ps, pb)
-unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_I_sample_encoding (sbband, bit_alloc, fr_ps, pb)
+     unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   int i,j,k;
-   int stereo  = fr_ps->stereo;
-   int jsbound = fr_ps->jsbound;
- 
-   for(j=0;j<SCALE_BLOCK;j++) {
-     for(i=0;i<SBLIMIT;i++)
-       for(k=0;k<((i<jsbound)?stereo:1);k++)
-         if(bit_alloc[k][i]) gst_putbitsn(pb,sbband[k][0][j][i],bit_alloc[k][i]+1);
-   }
+  int i, j, k;
+  int stereo = fr_ps->stereo;
+  int jsbound = fr_ps->jsbound;
+
+  for (j = 0; j < SCALE_BLOCK; j++) {
+    for (i = 0; i < SBLIMIT; i++)
+      for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+        if (bit_alloc[k][i])
+          gst_putbitsn (pb, sbband[k][0][j][i], bit_alloc[k][i] + 1);
+  }
 }
- 
+
 /***************************** Layer II  ********************************/
- 
-void mpegaudio_II_sample_encoding(sbband, bit_alloc, fr_ps, pb)
-unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
-unsigned int bit_alloc[2][SBLIMIT];
-frame_params *fr_ps;
-gst_putbits_t *pb;
+
+void
+mpegaudio_II_sample_encoding (sbband, bit_alloc, fr_ps, pb)
+     unsigned int FAR sbband[2][3][SCALE_BLOCK][SBLIMIT];
+     unsigned int bit_alloc[2][SBLIMIT];
+     frame_params *fr_ps;
+     gst_putbits_t *pb;
 {
-   unsigned int temp;
-   unsigned int i,j,k,s,x,y;
-   int stereo  = fr_ps->stereo;
-   int sblimit = fr_ps->sblimit;
-   int jsbound = fr_ps->jsbound;
-   al_table *alloc = fr_ps->alloc;
- 
-   for (s=0;s<3;s++)
-     for (j=0;j<SCALE_BLOCK;j+=3)
-       for (i=0;i<sblimit;i++)
-         for (k=0;k<((i<jsbound)?stereo:1);k++)
-           if (bit_alloc[k][i]) {
-             if ((*alloc)[i][bit_alloc[k][i]].group == 3) {
-               for (x=0;x<3;x++) gst_putbitsn(pb,sbband[k][s][j+x][i],
-                                         (*alloc)[i][bit_alloc[k][i]].bits);
-             }
-             else {
-               y =(*alloc)[i][bit_alloc[k][i]].steps;
-               temp = sbband[k][s][j][i] +
-                      sbband[k][s][j+1][i] * y +
-                      sbband[k][s][j+2][i] * y * y;
-               gst_putbitsn(pb,temp,(*alloc)[i][bit_alloc[k][i]].bits);
-             }
-           }
+  unsigned int temp;
+  unsigned int i, j, k, s, x, y;
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int jsbound = fr_ps->jsbound;
+  al_table *alloc = fr_ps->alloc;
+
+  for (s = 0; s < 3; s++)
+    for (j = 0; j < SCALE_BLOCK; j += 3)
+      for (i = 0; i < sblimit; i++)
+        for (k = 0; k < ((i < jsbound) ? stereo : 1); k++)
+          if (bit_alloc[k][i]) {
+            if ((*alloc)[i][bit_alloc[k][i]].group == 3) {
+              for (x = 0; x < 3; x++)
+                gst_putbitsn (pb, sbband[k][s][j + x][i],
+                    (*alloc)[i][bit_alloc[k][i]].bits);
+            } else {
+              y = (*alloc)[i][bit_alloc[k][i]].steps;
+              temp = sbband[k][s][j][i] +
+                  sbband[k][s][j + 1][i] * y + sbband[k][s][j + 2][i] * y * y;
+              gst_putbitsn (pb, temp, (*alloc)[i][bit_alloc[k][i]].bits);
+            }
+          }
 }
- 
+
 /************************************************************************
  *
  * encode_CRC
  *
  ************************************************************************/
- 
-void mpegaudio_encode_CRC(crc, pb)
-unsigned int crc;
-gst_putbits_t *pb;
+
+void
+mpegaudio_encode_CRC (crc, pb)
+     unsigned int crc;
+     gst_putbits_t *pb;
 {
-   gst_putbitsn(pb, crc, 16);
+  gst_putbitsn (pb, crc, 16);
 }

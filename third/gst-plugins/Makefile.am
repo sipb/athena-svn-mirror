@@ -16,24 +16,45 @@ else
 EXAMPLES_DIR=
 endif
 
-
-gst-element-check-@GST_MAJORMINOR@.m4: gst-element-check.m4
-	cp $(srcdir)/gst-element-check.m4 gst-element-check-@GST_MAJORMINOR@.m4
-
-aclocaldir = $(datadir)/aclocal
-aclocal_DATA = gst-element-check-@GST_MAJORMINOR@.m4
-
-SUBDIRS=\
-	gst-libs \
+SUBDIRS=gst-libs \
 	gst sys $(EXT_DIR) \
-	$(EXAMPLES_DIR) tools $(GCONF_DIR) testsuite pkgconfig
+	$(EXAMPLES_DIR) \
+	tools \
+	$(GCONF_DIR) \
+	testsuite \
+	po \
+	common \
+	m4 \
+	pkgconfig
 
-DIST_SUBDIRS=gst-libs gst sys ext examples tools gconf testsuite pkgconfig
+DIST_SUBDIRS=ext gst-libs \
+	gst sys \
+	examples \
+	tools \
+	gconf \
+	testsuite \
+	po \
+	common \
+	m4 \
+	pkgconfig
 
-EXTRA_DIST=gst-plugins.spec depcomp gst-element-check.m4 \
-	   AUTHORS COPYING README RELEASE REQUIREMENTS \
-	   ChangeLog autogen.sh common m4
+EXTRA_DIST=gst-plugins.spec depcomp \
+	   AUTHORS COPYING COPYING.LIB NEWS README RELEASE REQUIREMENTS \
+	   ChangeLog autogen.sh
 
-dist-hook:
-	rm -rf `find $(distdir)/common -name CVS`
-	rm -rf `find $(distdir)/m4 -name CVS`
+DISTCLEANFILES=_stdint.h
+
+# check that no marshal or enumtypes files are included
+# this in turn ensures that distcheck fails for missing .list files which is currently
+# shadowed when the corresponding .c and .h files are included.
+distcheck-hook:
+	@test "x" = "x`find $(distdir) -name \*-enumtypes.[ch]`" && \
+	test "x" = "x`find $(distdir) -name \*-marshal.[ch]`" || \
+	( $(ECHO) "*** Leftover enumtypes or marshal files in the tarball." && \
+          $(ECHO) "*** Make sure the following files are not disted:" && \
+          find $(distdir) -name \*-enumtypes.[ch] && \
+          find $(distdir) -name \*-marshal.[ch] && \
+          false )
+
+include $(top_srcdir)/common/release.mak
+include $(top_srcdir)/common/po.mak

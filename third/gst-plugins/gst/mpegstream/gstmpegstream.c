@@ -18,32 +18,36 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "gstmpegparse.h"
 #include "gstmpegdemux.h"
+#include "gstdvddemux.h"
 #include "gstrfc2250enc.h"
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  /* mpegdemux needs the bytestream package */
-  if (!gst_library_load ("gstbytestream"))
-    return FALSE;
-
   /* short-circuit here; this is potentially dangerous since if the second
    * or third init fails then the whole plug-in will be placed on the register
    * stack again and the first _init will be called more than once
    * and wtay wants to use dlclose at some point in the future */
-  
-  if (!gst_mpeg_parse_plugin_init (module, plugin)) return FALSE;
-  if (!gst_mpeg_demux_plugin_init (module, plugin)) return FALSE;
-  if (!gst_rfc2250_enc_plugin_init (module, plugin)) return FALSE;
+
+  if (!gst_library_load ("gstbytestream"))
+    return FALSE;
+
+  if (!gst_mpeg_parse_plugin_init (plugin) ||
+      !gst_mpeg_demux_plugin_init (plugin) ||
+      !gst_dvd_demux_plugin_init (plugin) ||
+      !gst_rfc2250_enc_plugin_init (plugin))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "mpegstream",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "mpegstream",
+    "MPEG system stream parser",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

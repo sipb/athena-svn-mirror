@@ -55,7 +55,7 @@ encoder.h
 #ifndef __ENCODER_H__
 #define __ENCODER_H__
 
-#include "gst/putbits/putbits.h"
+#include "putbits.h"
 
 /* General Definitions */
 

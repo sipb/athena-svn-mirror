@@ -22,7 +22,6 @@
 #define __FLACDEC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 
@@ -74,6 +73,5 @@ GType flacdec_get_type(void);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
 
 #endif /* __FLACDEC_H__ */

@@ -22,23 +22,16 @@
 #ifndef __GST_SPEED_H__
 #define __GST_SPEED_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
-/* #include <gst/meta/audioraw.h> */
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
+G_BEGIN_DECLS
 
 #define GST_TYPE_SPEED \
   (gst_speed_get_type())
 #define GST_SPEED(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_SPEED,GstSpeed))
 #define GST_SPEED_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_ULAW,GstSpeed))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_SPEED,GstSpeed))
 #define GST_IS_SPEED(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_SPEED))
 #define GST_IS_SPEED_CLASS(obj) \
@@ -57,39 +50,20 @@ struct _GstSpeed {
   GstElement element;
 
   GstPad *sinkpad, *srcpad;
-  GstBufferPool *sinkpool, *srcpool;
-  
-  gboolean silent;
-  
-  gfloat speed;
-  
-  /* the next three are valid for both int and float */
-  
-  GstSpeedFormat format;
-  
-  guint rate;
-  
-  guint channels;
-  
-  /* the next five are valid only for format==GST_SPEED_FORMAT_INT */
-  
-  guint width;
-  
-  guint depth;
 
+  gfloat speed;
+
+  /* valid for both int and float */
+  GstSpeedFormat format;
+  guint rate;
+  guint channels;
+  guint width;
   guint endianness;
-  
-  guint law;
-  
+  guint buffer_frames;
+
+  /* valid only for format==GST_SPEED_FORMAT_INT */
+  guint depth;
   gboolean is_signed;
-  
-  /* the next three are valid only for format==GST_SPEED_FORMAT_FLOAT */
-  
-  const gchar *layout;
-  
-  gfloat slope;
-  
-  gfloat intercept;
 };
 
 struct _GstSpeedClass {
@@ -98,9 +72,6 @@ struct _GstSpeedClass {
 
 GType gst_speed_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __GST_SPEED_H__ */
