@@ -1,0 +1,552 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+APACHE_CFLAGS = @APACHE_CFLAGS@
+APACHE_LIBS = @APACHE_LIBS@
+APXS = @APXS@
+AS = @AS@
+CC = @CC@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_CONFIG = @GLIB_CONFIG@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
+GMODULE_LIBS = @GMODULE_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
+LIBTOOL = @LIBTOOL@
+LINK_DYNAMIC = @LINK_DYNAMIC@
+LINK_STATIC = @LINK_STATIC@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+NSS_CFLAGS = @NSS_CFLAGS@
+NSS_LIBS = @NSS_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LIBS = @OPENSSL_LIBS@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POPT_CFLAGS = @POPT_CFLAGS@
+POPT_LIBS = @POPT_LIBS@
+RANLIB = @RANLIB@
+SOUP_AGE = @SOUP_AGE@
+SOUP_APACHE_INCLUDEDIR = @SOUP_APACHE_INCLUDEDIR@
+SOUP_APACHE_LIBDIR = @SOUP_APACHE_LIBDIR@
+SOUP_APACHE_LIBS = @SOUP_APACHE_LIBS@
+SOUP_CURRENT = @SOUP_CURRENT@
+SOUP_DEBUG_FLAGS = @SOUP_DEBUG_FLAGS@
+SOUP_INCLUDEDIR = @SOUP_INCLUDEDIR@
+SOUP_LIBDIR = @SOUP_LIBDIR@
+SOUP_LIBS = @SOUP_LIBS@
+SOUP_PKGCONFIG_REQUIRES = @SOUP_PKGCONFIG_REQUIRES@
+SOUP_REVISION = @SOUP_REVISION@
+SOUP_WSDL_INCLUDEDIR = @SOUP_WSDL_INCLUDEDIR@
+SOUP_WSDL_LIBDIR = @SOUP_WSDL_LIBDIR@
+SOUP_WSDL_LIBS = @SOUP_WSDL_LIBS@
+SSL_PROXY_NAME = @SSL_PROXY_NAME@
+STRIP = @STRIP@
+VERSION = @VERSION@
+XML_CFLAGS = @XML_CFLAGS@
+XML_CONFIG = @XML_CONFIG@
+XML_LIBS = @XML_LIBS@
+
+INCLUDES = \
+	-DG_LOG_DOMAIN=\"SOUP\" 	\
+	-DSYSCONFDIR=\"$(sysconfdir)\" 	\
+	-DBINDIR=\"$(bindir)\"		\
+	-I$(top_srcdir)/src		\
+	$(SOUP_DEBUG_FLAGS)		\
+	$(GLIB_CFLAGS)			\
+	$(XML_CFLAGS)			\
+	$(NSS_CFLAGS)
+
+
+libsoupincludedir = $(includedir)/soup/libsoup
+
+libsoupinclude_HEADERS = \
+	soup.h			\
+	soup-context.h		\
+	soup-dav.h		\
+	soup-dav-server.h	\
+	soup-env.h		\
+	soup-error.h		\
+	soup-fault.h		\
+	soup-headers.h		\
+	soup-message.h		\
+	soup-method.h		\
+	soup-misc.h     	\
+	soup-ntlm.h		\
+	soup-parser.h		\
+	soup-serializer.h	\
+	soup-server-auth.h	\
+	soup-server.h		\
+	soup-socket.h		\
+	soup-uri.h
+
+
+lib_LTLIBRARIES = libsoup.la
+
+libsoup_la_LDFLAGS = -version-info $(SOUP_CURRENT):$(SOUP_REVISION):$(SOUP_AGE)
+
+libsoup_la_LIBADD = \
+	$(GLIB_LIBS)		\
+	$(XML_LIBS)		\
+	$(NSS_LIBS)
+
+
+libsoup_la_SOURCES = \
+	md5-utils.h		\
+	md5-utils.c		\
+	soup-auth.h		\
+	soup-auth.c		\
+	soup-context.c		\
+	soup-dav.c		\
+	soup-dav-server.c	\
+	soup-env.c		\
+	soup-error.c		\
+	soup-fault.c		\
+	soup-headers.c		\
+	soup-message.c		\
+	soup-method.c		\
+	soup-misc.c     	\
+	soup-nss.h		\
+	soup-nss.c		\
+	soup-ntlm.c     	\
+	soup-parser.c		\
+	soup-private.h     	\
+	soup-queue.h		\
+	soup-queue.c		\
+	soup-serializer.c	\
+	soup-server.c		\
+	soup-server-auth.c	\
+	soup-socket.c		\
+	soup-socket-unix.c	\
+	soup-socks.h		\
+	soup-socks.c		\
+	soup-ssl.h		\
+	soup-ssl.c		\
+	soup-transfer.h		\
+	soup-transfer.c		\
+	soup-uri.c
+
+
+EXTRA_DIST = 
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libsoup_la_DEPENDENCIES = 
+libsoup_la_OBJECTS =  md5-utils.lo soup-auth.lo soup-context.lo \
+soup-dav.lo soup-dav-server.lo soup-env.lo soup-error.lo soup-fault.lo \
+soup-headers.lo soup-message.lo soup-method.lo soup-misc.lo soup-nss.lo \
+soup-ntlm.lo soup-parser.lo soup-queue.lo soup-serializer.lo \
+soup-server.lo soup-server-auth.lo soup-socket.lo soup-socket-unix.lo \
+soup-socks.lo soup-ssl.lo soup-transfer.lo soup-uri.lo
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libsoupinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libsoup_la_SOURCES)
+OBJECTS = $(libsoup_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/libsoup/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libsoup.la: $(libsoup_la_OBJECTS) $(libsoup_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libsoup_la_LDFLAGS) $(libsoup_la_OBJECTS) $(libsoup_la_LIBADD) $(LIBS)
+
+install-libsoupincludeHEADERS: $(libsoupinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libsoupincludedir)
+	@list='$(libsoupinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libsoupincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libsoupincludedir)/$$p; \
+	done
+
+uninstall-libsoupincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libsoupinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libsoupincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src/libsoup
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+md5-utils.lo md5-utils.o : md5-utils.c md5-utils.h
+soup-auth.lo soup-auth.o : soup-auth.c ../../config.h md5-utils.h \
+	soup-auth.h soup-context.h soup-uri.h soup-message.h \
+	soup-error.h soup-method.h soup-misc.h soup-context.h \
+	soup-headers.h soup-message.h soup-private.h soup-auth.h \
+	soup-server.h soup-socket.h soup-server-auth.h soup-ntlm.h
+soup-context.lo soup-context.o : soup-context.c ../../config.h \
+	soup-auth.h soup-context.h soup-uri.h soup-message.h \
+	soup-error.h soup-method.h soup-misc.h soup-context.h \
+	soup-private.h soup-auth.h soup-server.h soup-socket.h \
+	soup-server-auth.h soup-misc.h soup-socket.h soup-ssl.h
+soup-dav-server.lo soup-dav-server.o : soup-dav-server.c soup-dav.h \
+	soup-message.h soup-context.h soup-uri.h soup-error.h \
+	soup-method.h soup-dav-server.h soup-server.h soup-misc.h \
+	soup-socket.h soup-server-auth.h soup-dav.h soup-message.h
+soup-dav.lo soup-dav.o : soup-dav.c soup-dav.h soup-message.h \
+	soup-context.h soup-uri.h soup-error.h soup-method.h \
+	soup-error.h
+soup-env.lo soup-env.o : soup-env.c soup-env.h soup-fault.h \
+	soup-server.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-misc.h soup-socket.h \
+	soup-server-auth.h
+soup-error.lo soup-error.o : soup-error.c soup-error.h
+soup-fault.lo soup-fault.o : soup-fault.c soup-fault.h
+soup-headers.lo soup-headers.o : soup-headers.c soup-headers.h \
+	soup-message.h soup-context.h soup-uri.h soup-error.h \
+	soup-method.h soup-private.h ../../config.h soup-auth.h \
+	soup-misc.h soup-server.h soup-socket.h soup-server-auth.h
+soup-message.lo soup-message.o : soup-message.c soup-auth.h \
+	soup-context.h soup-uri.h soup-message.h soup-error.h \
+	soup-method.h soup-misc.h soup-error.h soup-message.h \
+	soup-misc.h soup-context.h soup-private.h ../../config.h \
+	soup-auth.h soup-server.h soup-socket.h soup-server-auth.h \
+	soup-queue.h soup-transfer.h
+soup-method.lo soup-method.o : soup-method.c soup-method.h
+soup-misc.lo soup-misc.o : soup-misc.c soup-misc.h soup-context.h \
+	soup-uri.h soup-message.h soup-error.h soup-method.h \
+	soup-private.h ../../config.h soup-auth.h soup-misc.h \
+	soup-server.h soup-socket.h soup-server-auth.h soup-queue.h
+soup-nss.lo soup-nss.o : soup-nss.c ../../config.h
+soup-ntlm.lo soup-ntlm.o : soup-ntlm.c ../../config.h soup-ntlm.h \
+	soup-misc.h soup-context.h soup-uri.h soup-message.h \
+	soup-error.h soup-method.h
+soup-parser.lo soup-parser.o : soup-parser.c soup-parser.h \
+	soup-serializer.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-fault.h
+soup-queue.lo soup-queue.o : soup-queue.c ../../config.h soup-queue.h \
+	soup-message.h soup-context.h soup-uri.h soup-error.h \
+	soup-method.h soup-auth.h soup-misc.h soup-message.h \
+	soup-context.h soup-headers.h soup-misc.h soup-private.h \
+	soup-auth.h soup-server.h soup-socket.h soup-server-auth.h \
+	soup-socks.h soup-ssl.h soup-transfer.h
+soup-serializer.lo soup-serializer.o : soup-serializer.c \
+	soup-serializer.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-misc.h
+soup-server-auth.lo soup-server-auth.o : soup-server-auth.c \
+	soup-server-auth.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-misc.h md5-utils.h \
+	soup-headers.h soup-ntlm.h
+soup-server.lo soup-server.o : soup-server.c ../../config.h \
+	soup-server.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-misc.h soup-socket.h \
+	soup-server-auth.h soup-headers.h soup-private.h soup-auth.h \
+	soup-server.h soup-ssl.h soup-transfer.h
+soup-socket-unix.lo soup-socket-unix.o : soup-socket-unix.c \
+	../../config.h soup-private.h soup-auth.h soup-context.h \
+	soup-uri.h soup-message.h soup-error.h soup-method.h \
+	soup-misc.h soup-server.h soup-socket.h soup-server-auth.h \
+	soup-socket.h
+soup-socket.lo soup-socket.o : soup-socket.c ../../config.h \
+	soup-private.h soup-auth.h soup-context.h soup-uri.h \
+	soup-message.h soup-error.h soup-method.h soup-misc.h \
+	soup-server.h soup-socket.h soup-server-auth.h soup-socket.h
+soup-socks.lo soup-socks.o : soup-socks.c soup-socks.h soup-context.h \
+	soup-uri.h soup-context.h soup-socket.h soup-private.h \
+	../../config.h soup-auth.h soup-message.h soup-error.h \
+	soup-method.h soup-misc.h soup-server.h soup-socket.h \
+	soup-server-auth.h
+soup-ssl-tunnel.lo soup-ssl-tunnel.o : soup-ssl-tunnel.c \
+	soup-ssl-tunnel.h soup-context.h soup-uri.h soup-message.h \
+	soup-auth.h soup-private.h ../../config.h soup-server.h \
+	soup-socket.h soup-context.h soup-misc.h soup-socket.h \
+	soup-transfer.h soup-private.h
+soup-ssl.lo soup-ssl.o : soup-ssl.c ../../config.h soup-ssl.h soup-nss.h \
+	soup-misc.h soup-context.h soup-uri.h soup-message.h \
+	soup-error.h soup-method.h soup-ssl.h soup-misc.h
+soup-transfer.lo soup-transfer.o : soup-transfer.c ../../config.h \
+	soup-transfer.h soup-message.h soup-context.h soup-uri.h \
+	soup-error.h soup-method.h soup-private.h soup-auth.h \
+	soup-misc.h soup-server.h soup-socket.h soup-server-auth.h
+soup-uri.lo soup-uri.o : soup-uri.c soup-uri.h soup-misc.h \
+	soup-context.h soup-uri.h soup-message.h soup-error.h \
+	soup-method.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-libsoupincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-libsoupincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(libsoupincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool uninstall-libsoupincludeHEADERS \
+install-libsoupincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+@SET_MAKE@
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,438 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+APACHE_CFLAGS = @APACHE_CFLAGS@
+APACHE_LIBS = @APACHE_LIBS@
+APXS = @APXS@
+AS = @AS@
+CC = @CC@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_CONFIG = @GLIB_CONFIG@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
+GMODULE_LIBS = @GMODULE_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
+LIBTOOL = @LIBTOOL@
+LINK_DYNAMIC = @LINK_DYNAMIC@
+LINK_STATIC = @LINK_STATIC@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+NSS_CFLAGS = @NSS_CFLAGS@
+NSS_LIBS = @NSS_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LIBS = @OPENSSL_LIBS@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POPT_CFLAGS = @POPT_CFLAGS@
+POPT_LIBS = @POPT_LIBS@
+RANLIB = @RANLIB@
+SOUP_AGE = @SOUP_AGE@
+SOUP_APACHE_INCLUDEDIR = @SOUP_APACHE_INCLUDEDIR@
+SOUP_APACHE_LIBDIR = @SOUP_APACHE_LIBDIR@
+SOUP_APACHE_LIBS = @SOUP_APACHE_LIBS@
+SOUP_CURRENT = @SOUP_CURRENT@
+SOUP_DEBUG_FLAGS = @SOUP_DEBUG_FLAGS@
+SOUP_INCLUDEDIR = @SOUP_INCLUDEDIR@
+SOUP_LIBDIR = @SOUP_LIBDIR@
+SOUP_LIBS = @SOUP_LIBS@
+SOUP_PKGCONFIG_REQUIRES = @SOUP_PKGCONFIG_REQUIRES@
+SOUP_REVISION = @SOUP_REVISION@
+SOUP_WSDL_INCLUDEDIR = @SOUP_WSDL_INCLUDEDIR@
+SOUP_WSDL_LIBDIR = @SOUP_WSDL_LIBDIR@
+SOUP_WSDL_LIBS = @SOUP_WSDL_LIBS@
+SSL_PROXY_NAME = @SSL_PROXY_NAME@
+STRIP = @STRIP@
+VERSION = @VERSION@
+XML_CFLAGS = @XML_CFLAGS@
+XML_CONFIG = @XML_CONFIG@
+XML_LIBS = @XML_LIBS@
+
+bin_PROGRAMS = soup-wsdl
+
+INCLUDES = \
+	-DG_LOG_DOMAIN=\"SOUP-WSDL\" 	\
+	-I$(top_srcdir)/src		\
+	$(SOUP_DEBUG_FLAGS) 		\
+	$(GLIB_CFLAGS) 			\
+	$(POPT_CFLAGS) 			\
+	$(XML_CFLAGS)
+
+
+soup_wsdl_LDADD = \
+	$(GLIB_LIBS)					\
+	$(POPT_LIBS)					\
+	$(XML_LIBS)					\
+	$(top_builddir)/src/libsoup/libsoup.la		\
+	$(top_builddir)/src/libwsdl/libwsdl-build.a
+
+
+soup_wsdl_SOURCES = \
+	main.c 			\
+	wsdl.h			\
+	wsdl-parse.c 		\
+	wsdl-parse.h 		\
+	wsdl-describe.c		\
+	wsdl-describe.h		\
+	wsdl-soap-emit.c	\
+	wsdl-soap-emit.h	\
+	wsdl-soap-stubs.c	\
+	wsdl-soap-stubs.h 	\
+	wsdl-soap-skels.c 	\
+	wsdl-soap-skels.h 	\
+	wsdl-soap-common.c	\
+	wsdl-soap-common.h 	\
+	wsdl-soap-headers.c 	\
+	wsdl-soap-headers.h 	\
+	wsdl-memory.c 		\
+	wsdl-memory.h 		\
+	wsdl-trace.c 		\
+	wsdl-trace.h 		\
+	wsdl-locate.c 		\
+	wsdl-locate.h		\
+	wsdl-thread.c		\
+	wsdl-thread.h
+
+
+soup_wsdl_LDFLAGS = 
+soup_wsdl_DEPENDENCIES = 
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  soup-wsdl$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+soup_wsdl_OBJECTS =  main.$(OBJEXT) wsdl-parse.$(OBJEXT) \
+wsdl-describe.$(OBJEXT) wsdl-soap-emit.$(OBJEXT) \
+wsdl-soap-stubs.$(OBJEXT) wsdl-soap-skels.$(OBJEXT) \
+wsdl-soap-common.$(OBJEXT) wsdl-soap-headers.$(OBJEXT) \
+wsdl-memory.$(OBJEXT) wsdl-trace.$(OBJEXT) wsdl-locate.$(OBJEXT) \
+wsdl-thread.$(OBJEXT)
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(soup_wsdl_SOURCES)
+OBJECTS = $(soup_wsdl_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/soup-wsdl/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+soup-wsdl$(EXEEXT): $(soup_wsdl_OBJECTS) $(soup_wsdl_DEPENDENCIES)
+	@rm -f soup-wsdl$(EXEEXT)
+	$(LINK) $(soup_wsdl_LDFLAGS) $(soup_wsdl_OBJECTS) $(soup_wsdl_LDADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src/soup-wsdl
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+main.o: main.c ../../src/libwsdl/wsdl-typecodes.h wsdl.h wsdl-parse.h \
+	wsdl-memory.h wsdl-soap-stubs.h wsdl-soap-skels.h \
+	wsdl-soap-common.h wsdl-soap-headers.h wsdl-trace.h \
+	wsdl-thread.h wsdl-describe.h
+wsdl-describe.o: wsdl-describe.c wsdl-parse.h \
+	../../src/libwsdl/wsdl-typecodes.h wsdl-describe.h
+wsdl-locate.o: wsdl-locate.c wsdl-parse.h \
+	../../src/libwsdl/wsdl-typecodes.h wsdl-locate.h
+wsdl-memory.o: wsdl-memory.c ../../src/libwsdl/wsdl-typecodes.h \
+	wsdl-memory.h wsdl-parse.h
+wsdl-parse.o: wsdl-parse.c ../../src/libwsdl/wsdl-schema.h wsdl.h \
+	wsdl-parse.h ../../src/libwsdl/wsdl-typecodes.h wsdl-trace.h
+wsdl-soap-common.o: wsdl-soap-common.c \
+	../../src/libwsdl/wsdl-typecodes.h \
+	../../src/libwsdl/wsdl-typecodes-c.h wsdl-soap-common.h \
+	wsdl-parse.h wsdl-trace.h
+wsdl-soap-emit.o: wsdl-soap-emit.c wsdl-soap-emit.h wsdl-parse.h \
+	../../src/libwsdl/wsdl-typecodes.h
+wsdl-soap-headers.o: wsdl-soap-headers.c \
+	../../src/libwsdl/wsdl-typecodes.h \
+	../../src/libwsdl/wsdl-typecodes-c.h wsdl-parse.h \
+	wsdl-soap-headers.h wsdl-trace.h wsdl-locate.h wsdl-soap-emit.h
+wsdl-soap-skels.o: wsdl-soap-skels.c ../../src/libsoup/soup-uri.h \
+	wsdl-parse.h ../../src/libwsdl/wsdl-typecodes.h \
+	wsdl-soap-skels.h wsdl-trace.h wsdl-soap-emit.h
+wsdl-soap-stubs.o: wsdl-soap-stubs.c wsdl-parse.h \
+	../../src/libwsdl/wsdl-typecodes.h wsdl-soap-stubs.h \
+	wsdl-trace.h wsdl-soap-emit.h
+wsdl-thread.o: wsdl-thread.c wsdl-thread.h wsdl-parse.h \
+	../../src/libwsdl/wsdl-typecodes.h wsdl-trace.h wsdl-locate.h
+wsdl-trace.o: wsdl-trace.c wsdl-trace.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+@SET_MAKE@
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
