@@ -16,6 +16,9 @@ static char sccsid[] = "@(#)necf.c	5.1 (Berkeley) 5/15/85";
 #ifdef _AUX_SOURCE
 char	_sobuf[BUFSIZ];
 #endif
+#ifdef sun
+char	_sobuf[BUFSIZ];
+#endif
 
 main()
 {
