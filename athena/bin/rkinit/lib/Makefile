@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.4 1990-07-03 14:57:56 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.5 1990-07-17 12:33:53 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v $
 #  $Author: qjb $
 #
@@ -7,7 +7,7 @@
 #
 
 DESTDIR		=
-INSTALLDIR	= /usr/athena/lib
+ATHLIBDIR	= /usr/athena/lib
 
 DFLAGS		= -O
 INCLUDES	= -I../include
@@ -37,7 +37,7 @@ depend:
 	makedepend $(CFLAGS) $(LSRCS)
 
 install:
-	install -c librkinit.a $(DESTDIR)$(INSTALLDIR)/librkinit.a
+	install -c -m 444 librkinit.a $(DESTDIR)$(ATHLIBDIR)/librkinit.a
 
 clean:
 	rm -f core *.o *~ *.bak librkinit.a rkinit_err.h rkinit_err.c
