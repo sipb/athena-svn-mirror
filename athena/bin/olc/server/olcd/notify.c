@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.37 1993-04-28 14:49:36 vanharen Exp $
+ *	$Id: notify.c,v 1.38 1993-08-05 19:10:41 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.37 1993-04-28 14:49:36 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.38 1993-08-05 19:10:41 vanharen Exp $";
 #endif
 #endif
 
@@ -548,7 +548,7 @@ toggle_zephyr(toggle,punt_time)
     zpunt_duration = punt_time * 60;
     /* Create file to tell other daemons to punt zephyr */
     if ((fd = creat(ZEPHYR_DOWN_FILE,0644)) < 0) {
-      sprintf(errbuf,"error trying to creat %s: %%m",ZEPHYR_DOWN_FILE);
+      sprintf(errbuf,"error trying to create %s: %%m",ZEPHYR_DOWN_FILE);
       log_error(errbuf);
       return;
     }
