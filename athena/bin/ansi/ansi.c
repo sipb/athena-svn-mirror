@@ -1,13 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ansi/ansi.c,v $
- *	$Author: builder $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/ansi.c,v 1.1 1985-04-12 15:28:23 builder Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/ansi.c,v 1.2 1997-10-02 17:27:42 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_ansi_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/ansi.c,v 1.1 1985-04-12 15:28:23 builder Exp $";
-#endif	lint
+static char *rcsid_ansi_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/ansi.c,v 1.2 1997-10-02 17:27:42 ghudson Exp $";
+#endif /* lint */
 
 #include <stdio.h>
 /* Rewritten almost entirely from stolen MIT original by Jim Gettys,

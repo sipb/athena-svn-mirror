@@ -1,13 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v $
- *	$Author: vrt $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.2 1994-06-28 16:36:28 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.3 1997-10-02 17:27:42 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_unseg_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.2 1994-06-28 16:36:28 vrt Exp $";
-#endif	lint
+static char *rcsid_unseg_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.3 1997-10-02 17:27:42 ghudson Exp $";
+#endif /* lint */
 
 #include <stdio.h>
 /* written by Jim Gettys, The Institute for Advanced Study, Princeton, NJ.
