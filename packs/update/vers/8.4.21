@@ -1,0 +1,23 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "106980-10"					>> $PATCHES
+  echo "107636-03"					>> $PATCHES
+  echo "108376-07"					>> $PATCHES
+  echo "107153-01"					>> $PATCHES
+  echo "106541-11"					>> $PATCHES
+  echo "107544-03"					>> $PATCHES
+  echo "109104-01"					>> $PATCHES
+  echo "106950-09"					>> $PATCHES
+  echo "106327-08"					>> $PATCHES
+  echo "106300-09"					>> $PATCHES
+  echo "107081-20"					>> $PATCHES
+  echo "OSCHANGES=true"					>> $CONFVARS
+  echo "/etc/athena/athinfo.defs"			>> $CONFCHG
+  ;;
+
+sgi)
+  ;;
+
+esac
