@@ -1,5 +1,10 @@
-Version 0.24
+Version 0.25
 
+* support latest version of Makefile.in.in from glib-gettextize
+  from glib >= 2.1.5 (Frederic Crozat)
+
+Version 0.24
+ 
 * strip the hints from POTFILES.in in -M mode. (Yanko Kaneti)
 * Don't generate .h.h lines in the POTFILES.in
   for xgettext when the input file line is from a known type and also has
