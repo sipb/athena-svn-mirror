@@ -11,7 +11,7 @@
 #include <afs/param.h>
 
 RCSID
-    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.5 2005-03-11 05:25:51 zacheiss Exp $");
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.6 2005-03-11 23:41:01 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -3000,7 +3000,7 @@ print_vcache(kmem, vep, ptr, pnt)
 	}
     }
 #ifdef AFS_LINUX22_ENV
-    printf("\tflushcnt=%d, mapcnt=%d\n", vep->flushcnt, vep->mapcnt);
+    printf("\tmapcnt=%d\n", vep->mapcnt);
 #endif
 }
 
