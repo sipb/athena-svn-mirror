@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.31 1993-02-16 14:55:53 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.32 1993-04-22 15:00:57 miki Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,7 +9,11 @@
  */
 
 #include <mit-copyright.h>
+#ifndef SOLARIS
 #include <signal.h>
+#else
+#include "/usr/ucbinclude/sys/signal.h"
+#endif
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #if defined(sun)
@@ -23,6 +27,13 @@
 #include <ctype.h>
 #include <strings.h>
 #include <errno.h>
+#ifdef SOLARIS
+#include <sgtty.h>
+#include <unistd.h>
+#include <sys/strredir.h>
+#include <sys/stropts.h>
+#include <utmpx.h>
+#endif
 
 #if defined(ultrix) && defined(POSIX)
 #undef POSIX
@@ -49,7 +60,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.31 1993-02-16 14:55:53 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.32 1993-04-22 15:00:57 miki Exp $";
 #endif
 
 #ifndef NULL
@@ -71,6 +82,13 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #define TRUE		(!FALSE)
 #endif
 
+#ifdef SOLARIS
+#define L_INCR          1
+#define RAW     040
+#define INPUT_FD_CARD   6
+#define BROKEN_CONSOLE_DRIVER
+#endif
+
 /* flags used by signal handlers */
 volatile int alarm_running = NONEXISTANT;
 volatile int xpid, x_running = NONEXISTANT;
@@ -90,14 +108,26 @@ int ultrix_console;
 #ifdef ultrix
 char *login_prog = "/etc/athena/console-getty";
 #else
+#ifdef SOLARIS
+char *login_prog = "/etc/athena/console-ttymon";
+#else
 char *login_prog = "/bin/login";
+#endif
 #endif /* ultrix */
 
 /* Files */
 char *utmpf =	"/etc/utmp";
 char *wtmpf =	"/usr/adm/wtmp";
+#ifdef SOLARIS
+char *utmpfx =	"/etc/utmpx";
+char *wtmpfx =	"/usr/adm/wtmpx";
+#endif
 char *passwdf =	"/etc/passwd";
 char *passwdtf ="/etc/ptmp";
+#ifdef SOLARIS
+char *spasswdf =	"/etc/shadow";
+char *spasswdtf =	"/etc/stmp";
+#endif
 char *xpidf = 	"/usr/tmp/X0.pid";
 char *consolepidf = "/etc/athena/console.pid";
 char *dmpidf =	"/etc/athena/dm.pid";
@@ -125,6 +155,32 @@ char *ultrixcons = "/dev/xcons";
 #endif
 
 
+#ifdef SOLARIS
+#include <stdio.h>
+int
+grabconsole()
+{
+    int	tty, console;
+    int cc;
+    int		p[2];
+    char buf[BUFSIZ];
+    
+    if (pipe(p) < 0) {
+       fprintf(stderr, "dm: could not open pipe\n");
+       exit(1);
+    }
+
+    if ((console = open("/dev/console", O_RDONLY)) < 0 ) {
+        fprintf(stderr, "dm:could not open /dev/console\n");
+	exit(1);
+    }
+    if (ioctl(console, SRIOCSREDIR, p[1]) < 0) {
+        fprintf(stderr, "dm:could not issue ioctl\n");
+	exit(1);
+    }
+    return(p[0]);
+  }
+#endif
 
 /* Setup signals, start X, start console, start login, wait */
 
@@ -148,13 +204,20 @@ char **argv;
 #ifdef _AIX
     char pathenv[1024];
 #endif
+#ifdef SOLARIS
+    char ldenv[1024];
+#endif
 #ifdef USE_X11R3
     fd_set rdlist;
     int pp[2], nfd, nfound;
     struct timeval timeout;
     static char displayenv[256] = "DISPLAY=";
 #endif
-
+#ifdef SOLARIS
+    strcpy(ldenv, "LD_LIBRARY_PATH=");
+    strcat(ldenv, "/usr/openwin/lib");
+    putenv(ldenv);
+#endif
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
 	message("usage: ");
@@ -176,7 +239,11 @@ char **argv;
 	p = getconf(conf, "console");
 	if (p == NULL)
 	  console_login("\ndm: Can't find console command line\n");
-	consoleargv = parseargs(p, NULL, NULL, NULL);
+#ifdef SOLARIS
+          consoleargv = parseargs(p, "-inputfd", "0", NULL);
+#else
+          consoleargv = parseargs(p, NULL, NULL, NULL);
+#endif
     }
     p = getconf(conf, "login");
     if (p == NULL)
@@ -207,7 +274,11 @@ char **argv;
 #ifdef POSIX
     setsid();
 #endif
+#ifdef SOLARIS
+    setpgrp();
+#else
     setpgrp(0,0);
+#endif
     strcpy(line, "/dev/");
     strcat(line, consoletty);
     open(line, O_RDWR, 0622);
@@ -221,7 +292,7 @@ char **argv;
     if (console)
       ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
-    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
+    setpgrp(0, pgrp=getpid()); /* Reset the tty pgrp  */
     ioctl (0, TIOCSPGRP, &pgrp);
 #endif
 #endif
@@ -516,9 +587,14 @@ char *msg;
 
 #else /* supports console login */
 
-    int pgrp, i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
-    struct sgttyb mode;
+    int i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
     char *nl = "\r\n";
+#ifdef POSIX
+    struct termios ttybuf;
+#else
+    int pgrp;
+    struct sgttyb mode;
+#endif
 
 #ifdef DEBUG
     message("starting console login\n");
@@ -544,8 +620,10 @@ char *msg;
 	}
 
 	/* wait 1 sec for children to exit */
+#ifndef SOLARIS
 	alarm(2);
-	sigpause(0);
+	sigpause(0); 
+#endif
 
 	if (x_running == NONEXISTANT &&
 	    console_running == NONEXISTANT &&
@@ -583,10 +661,15 @@ char *msg;
 	}
     }
 #endif /* vax */
-
+#ifdef POSIX
+    (void) tcgetattr(0, &ttybuf);
+    ttybuf.c_lflag |= (ICANON|ISIG|ECHO);
+    (void) tcsetattr(0, TCSADRAIN, &ttybuf);
+#else    
     ioctl(0, TIOCGETP, &mode);
     mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
     ioctl(0, TIOCSETP, &mode);
+#endif
     sigsetmask(0);
     for (i = 3; i < getdtablesize(); i++)
       close(i);
@@ -595,7 +678,17 @@ char *msg;
       message(msg);
     else
       message(nl);
+#ifdef SOLARIS 
+    close(0); close(1); close(2);
+    setsid();
+    setpgrp();
+    open("/dev/console", O_RDWR, 0);
+    dup2(0, 1);
+    dup2(0, 2);
     execl(login_prog, login_prog, 0);
+#else
+    execl(login_prog, login_prog, 0);
+#endif
     message("dm: Unable to start console login\n");
     _exit(1);
 #endif /* supports console login */
@@ -620,7 +713,9 @@ char **argv;
 #else
     struct sgttyb mode;
 #endif
-
+#ifdef SOLARIS
+    int fd;
+#endif
 #ifdef DEBUG
     message("Starting Console\n");
 #endif
@@ -703,8 +798,12 @@ char **argv;
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
-	setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
-	ioctl (0, TIOCSPGRP, &pgrp);
+#ifdef SOLARIS
+	pgrp = setpgrp();		/* Reset the tty pgrp */
+#else
+    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
+#endif
+    ioctl (0, TIOCSPGRP, &pgrp);
 #endif /* _IBMR2 */
 #endif /* BROKEN_CONSOLE_DRIVER */
 	console_failed = TRUE;
@@ -729,7 +828,9 @@ char **argv;
 	}
 	dup2(console_tty, 0);
 	close(console_tty);
-
+#ifdef SOLARIS
+        fd = grabconsole();
+#endif
 	/* Since we are the session leader, we must initialize the tty */
 #ifdef POSIX
 	(void) tcgetattr(0, &tc);
@@ -796,6 +897,9 @@ char **argv;
 	setregid(DAEMON, DAEMON);
 	setreuid(DAEMON, DAEMON);
 	sigsetmask(0);
+#ifdef SOLARIS
+        sprintf(argv[INPUT_FD_CARD], "%d", fd);
+#endif
 	execv(argv[0], argv);
 	message("dm: Failed to exec console\n");
 	_exit(1);
@@ -861,6 +965,9 @@ char *tty;
 {
     int file, found;
     struct utmp utmp;    
+#ifdef SOLARIS
+    struct utmpx utmpx;    
+#endif
     char login[9];
 
     if (login_running == RUNNING)
@@ -894,20 +1001,53 @@ char *tty;
 	}
 	close(file);
     }
+#ifdef SOLARIS
+    if ((file = open(utmpfx, O_RDWR, 0)) >= 0) {
+	while (read(file, (char *) &utmpx, sizeof(utmpx)) > 0) {
+	    if (!strncmp(utmpx.ut_line, tty, sizeof(utmpx.ut_line))
+		) {
+		if (utmpx.ut_name[0] != '\0') {
+		    strncpy(utmpx.ut_name, "", sizeof(utmpx.ut_name));
+		    lseek(file, (long) -sizeof(utmpx), L_INCR);
+		    write(file, (char *) &utmpx, sizeof(utmpx));
+		}
+		break;
+	    }
+	}
+	close(file);
+    }
+#endif
     if (found) {
 	if ((file = open(wtmpf, O_WRONLY|O_APPEND, 0644)) >= 0) {
 	    strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
 	    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
+#ifndef SOLARIS
 	    strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
+#else
+	    strncpy(utmpx.ut_host, "", sizeof(utmpx.ut_host));
+#endif
 	    time(&utmp.ut_time);
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
 	}
     }
-
+#ifdef SOLARIS
+    if (found) {
+	if ((file = open(wtmpfx, O_WRONLY|O_APPEND, 0644)) >= 0) {
+	    strncpy(utmpx.ut_line, tty, sizeof(utmpx.ut_line));
+	    strncpy(utmpx.ut_name, "", sizeof(utmpx.ut_name));
+	    strncpy(utmpx.ut_host, "", sizeof(utmpx.ut_host));
+	    write(file, (char *) &utmpx, sizeof(utmpx));
+	    close(file);
+	}
+    }
+#endif
     if (clflag) {
 	/* Clean up password file */
 	removepwent(login);
+#ifdef SOLARIS
+	removespwent(login);
+#endif
     }
 
     file = 0;
@@ -922,11 +1062,19 @@ char *tty;
 void child()
 {
     int pid;
+#ifdef SOLARIS
+    int status;
+#else
     union wait status;
+#endif
     char *number();
 
     signal(SIGCHLD, child);
+#ifdef SOLARIS
+    pid = waitpid(-1, &status, WNOHANG);
+#else
     pid = wait3(&status, WNOHANG, 0);
+#endif
     if (pid == 0 || pid == -1) return;
 
 #ifdef DEBUG
@@ -958,7 +1106,11 @@ void child()
 	trace("X Login exited status ");
 	trace(number(status.w_retcode));
 #endif
+#ifdef SOLARIS
+        if (WEXITSTATUS(status) == CONSOLELOGIN)
+#else
 	if (status.w_retcode == CONSOLELOGIN)
+#endif
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTANT;
@@ -1140,6 +1292,54 @@ char *login;
     rename(passwdtf, passwdf);
 }
 #endif /* RIOS */
+#ifdef SOLARIS
+removespwent(login)
+char *login;
+{
+    int count = 10;
+    int newfile, oldfile, cc;
+    char buf[BUFSIZ], *p, *start;
+
+    if (!strcmp(login, "root")) return;
+
+    for (count = 0; count < 10; count++)
+      if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0644)) == -1 &&
+	  errno == EEXIST) {
+	  alarm(1);
+	  sigpause(0);
+      } else
+	break;
+    if (newfile == -1) {
+	if (count < 10)
+	  return(errno);
+	else
+	  (void) unlink(spasswdtf);
+	return;
+    }
+    oldfile = open(spasswdf, O_RDONLY, 0);
+    if (oldfile < 0) return;
+
+    /* process each line of file */
+    cc = read(oldfile, buf, BUFSIZ);
+    while (1) {
+	start = index(buf, '\n');
+	if (start == NULL || start > &buf[cc]) break;
+	start++; /* pointing at start of next line */
+	if (strncmp(buf, login, strlen(login)) ||
+	    buf[strlen(login)] != ':') {
+	    write(newfile, buf, start - buf);
+	}
+	cc -= start - buf;
+	/* don't use lib routine to make sure it works with overlapping copy */
+	/* bcopy(buf, start, cc); */
+	for (p = buf; p != &buf[cc]; p++) *p = p[start - buf];
+	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
+    }
+    close(newfile);
+    close(oldfile);
+    rename(spasswdtf, spasswdf);
+}
+#endif 
 
 
 /* Takes a command line, returns an argv-style  NULL terminated array 
