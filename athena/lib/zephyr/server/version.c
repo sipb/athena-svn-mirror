@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/version.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,18 +14,19 @@
 #include <zephyr/mit-copyright.h>
 
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) $Revision: 3.20 $";
+extern const char version[] = "Zephyr Server (DEBUG) $Revision: 3.21 $";
 #else
-char version[] = "Zephyr Server $Revision: 3.20 $";
-#endif DEBUG
-#ifndef lint
-#ifndef SABER
-static char rcsid_version_c[] = "$Id: version.c,v 3.20 1990-01-10 12:54:36 jtkohl Exp $";
-char copyright[] = "Copyright (c) 1987,1988,1989 Massachusetts Institute of Technology.\n";
+extern const char version[] = "Zephyr Server $Revision: 3.21 $";
+#endif
+
+#if !defined (lint) && !defined (SABER)
+static const char rcsid_version_c[] =
+    "$Id: version.c,v 3.21 1990-11-13 17:07:00 raeburn Exp $";
+extern const char copyright[] =
+    "Copyright (c) 1987,1988,1989,1990 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
-char concurrent[] = "Brain-dump concurrency enabled";
+extern const char concurrent[] = "Brain-dump concurrency enabled";
 #else
-char concurrent[] = "no brain-dump concurrency";
-#endif CONCURRENT
-#endif SABER
-#endif lint
+extern const char concurrent[] = "no brain-dump concurrency";
+#endif
+#endif
