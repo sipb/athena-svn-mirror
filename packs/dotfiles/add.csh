@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.14 1994-11-28 23:42:32 cfields Exp $
+# $Id: add.csh,v 1.15 1994-11-30 23:40:37 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -15,31 +15,38 @@
 #
 # fix bugs section of attach manpage
 
-# alias add 'source /afs/dev/user/cfields/add'
+# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/add'
 
 # MANPATH search too
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
               add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_print add_path add_arg add_i)
+              add_man add_mandir add_print add_path add_olddebug add_arg add_i)
 
-set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
+set add_usage = "Usage: add [-v] [-v0] [-f] [-p] [-w] [-e] [-d] [-a attachflags] [lockername] ..."
 
 #
 # Parse options
 #
-
-set add_opts = (!*)
 
 if ( $#add_opts == 0 ) set add_print
 
 while ( $#add_opts > 0 )
   set add_arg = $add_opts[1]
 
-  switch ($add_arg)
+  switch ( $add_arg )
 
     case -v:
       set add_verbose
+      set add_olddebug
+      breaksw
+
+    case -v0:
+      set add_verbose
+      breaksw
+
+    case -d:
+      set add_olddebug
       breaksw
 
     case -f:
@@ -188,14 +195,14 @@ foreach add_i ($add_dirs)
       case 00:
         if ( $?add_bin ) then
           if ( "$PATH" !~ *"$add_bin"* ) then
-            if ($?add_verbose) echo $add_bin added to end of \$PATH
+            if ($?add_olddebug) echo $add_bin added to end of \$PATH
             set add_path = ${add_path}:$add_bin
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ($?add_verbose) echo $add_man added to end of \$MANPATH
+            if ($?add_olddebug) echo $add_man added to end of \$MANPATH
             setenv MANPATH ${MANPATH}:$add_man
           endif
         endif
@@ -204,14 +211,14 @@ foreach add_i ($add_dirs)
       case 01:
         if ( $?add_bin ) then
           if ( "$PATH" !~ *"$add_bin"* ) then
-            if ($?add_verbose) echo $add_bin added to front of \$PATH
+            if ($?add_olddebug) echo $add_bin added to front of \$PATH
             set add_path = ${add_bin}:$add_path
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ($?add_verbose) echo $add_man added to front of \$MANPATH
+            if ($?add_olddebug) echo $add_man added to front of \$MANPATH
             setenv MANPATH ${add_man}:$MANPATH
           endif
         endif
@@ -220,14 +227,14 @@ foreach add_i ($add_dirs)
       case 10:
         if ( $?add_bin ) then
           if ( "$athena_path" !~ *"$add_bin"* ) then
-            if ($?add_verbose) echo $add_bin added to end of \$athena_path
+            if ($?add_olddebug) echo $add_bin added to end of \$athena_path
             set athena_path = ($athena_path $add_bin)
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$athena_manpath" !~ *"$add_man"* ) then
-            if ($?add_verbose) echo $add_man added to end of \$athena_manpath
+            if ($?add_olddebug) echo $add_man added to end of \$athena_manpath
             set athena_manpath = ${athena_manpath}:$add_man
           endif
         endif
@@ -236,14 +243,14 @@ foreach add_i ($add_dirs)
       case 11:
         if ( $?add_bin ) then
           if ( "$athena_path" !~ *"$add_bin"* ) then
-            if ($?add_verbose) echo $add_bin added to front of \$athena_path
+            if ($?add_olddebug) echo $add_bin added to front of \$athena_path
             set athena_path = ($add_bin $athena_path)
           endif
         endif
 
         if ( $?add_man ) then
           if ( "$athena_manpath" !~ *"$add_man"* ) then
-            if ($?add_verbose) echo $add_man added to front of \$athena_manpath
+            if ($?add_olddebug) echo $add_man added to front of \$athena_manpath
             set athena_manpath = ${add_man}:$athena_manpath
           endif
         endif
