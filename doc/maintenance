@@ -91,18 +91,18 @@ the source tree:
 		Contains developers with commit access to the source
 		tree.  This group has write access to the repository,
 		but not to the checked-out copy of the mainline
-		(/source).
+		(/mit/source).
 
 	* write:update
 
 		Contains the service principal responsible for
-		updating /source.  This group has write access to
-		/source but not to the repository.
+		updating /mit/source.  This group has write access to
+		/mit/source but not to the repository.
 
 	* adm:source
 
 		This group has administrative access to the repository
-		and to /source.
+		and to /mit/source.
 
 system:anyuser has read access to public areas of the source tree and
 list access to the rest.  system:authuser occasionally has read access
@@ -111,8 +111,8 @@ example).
 
 The script CVSROOT/afs-protections.sh in the repository makes sure the
 permissions are correct in the repository or in a working directory.
-Run it from the top level of the repository or of /source, giving it
-the argument "repository" or "wd".
+Run it from the top level of the repository or of /mit/source, giving
+it the argument "repository" or "wd".
 
 The wash process
 ----------------

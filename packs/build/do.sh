@@ -1,9 +1,9 @@
 #!/bin/sh
-# $Id: do.sh,v 1.13 1997-07-27 15:56:08 ghudson Exp $
+# $Id: do.sh,v 1.14 1997-07-30 16:10:29 ghudson Exp $
 
 n=""
 maybe=""
-source="/source"
+source="/mit/source"
 build="/build"
 srvd="/srvd"
 usage="do [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
