@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.3 1996-05-14 03:10:35 ghudson Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.4 1996-06-19 19:56:04 ghudson Exp $
 	.:::
 		dev
 		devices
@@ -109,7 +109,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> demo
 		dt
 		-> games
-		include
+		-> include
 		kernel*
 		lib
 		-> net
@@ -123,9 +123,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> ucb
 		-> ucbinclude
 		-> vmsys
-		:
-	/usr/include:::
-		-> *
 		:
 	/usr/dt:::
 		-> include
