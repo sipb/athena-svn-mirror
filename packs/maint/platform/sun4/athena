@@ -73,7 +73,7 @@ if [ "${AFSCLIENT}" != "false" ]; then
 		echo "Adjusting the cache size..."		>/dev/console
 		rm -f /usr/vice/etc/cacheinfo.old
 		mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
-		/bin/df /usr/vice/cache/ | \
+		/bin/df -bk /usr/vice/cache/ | \
 		  /bin/awk ' \
 			(NR == 2) { x = int($2*3/4); \
 			printf("/afs:/usr/vice/cache:%d\n",x);};' \
@@ -184,9 +184,9 @@ if [ "${PUBLIC}" = "true" ]; then
 	rm -f /var/spool/cron/crontabs/root
 	cp -p /srvd/etc/crontab.root.add /var/spool/cron/crontabs/root
 	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
-	cp -p /srvd/etc/inetd.conf /etc/inetd.conf
+	cp -p /srvd/etc/inet/inetd.conf /etc/inet/inetd.conf
 	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
-#	cp -p /srvd/etc/minor_perm /etc/minor_perm
+	cp -p /srvd/etc/minor_perm /etc/minor_perm
 	cp -p /srvd/etc/passwd.std /etc/passwd.local
 	cp -p /etc/passwd.local /etc/passwd
 	cp -p /srvd/etc/shadow.std /etc/shadow.local
@@ -206,6 +206,8 @@ if [ "${PUBLIC}" = "true" ]; then
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 	    if [ "${NEWVERS}" = "${THISVERS}" ]; then
 		echo "Running track..."				>/dev/console
+		/usr/athena/etc/track -F /os -T / -W /srvd/usr/athena/lib \
+			-s stats/os_rvd slists/os_rvd
 		/usr/athena/etc/track
 		cp -p /etc/inet/hosts.save /etc/inet/hosts
 		rm -f /etc/inet/hosts.save
@@ -225,7 +227,7 @@ fi
 if [ "${NEWMAILCF}" = "true" ];then
 	echo "Copying sendmail.cf... \c"			>/dev/console
 	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
-	cp -p /srvd/etc/mail/aliases /etc/mail/aliases
+	cp -p /os/etc/mail/aliases /etc/mail/aliases
 fi
 # no matter what freeze the configuration
 /usr/lib/sendmail -bz 
