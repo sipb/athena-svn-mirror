@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_send_file.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_send_file.c,v 1.1 1993-10-12 03:03:52 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_send_file.c,v 1.2 1996-09-20 04:36:16 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,13 +14,13 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_send_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_send_file.c,v 1.1 1993-10-12 03:03:52 probe Exp $";
+static char rcsid_fx_send_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_send_file.c,v 1.2 1996-09-20 04:36:16 ghudson Exp $";
 #endif /* lint */
 
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <strings.h>
+#include <string.h>
 #include "fxcl.h"
 
 /*
@@ -47,7 +47,7 @@ fx_send_file(fxp, p, filename)
 
   /* send file with correct name */
   if (!to_send.filename) {
-    to_send.filename = rindex(filename, '/') + 1;
+    to_send.filename = strrchr(filename, '/') + 1;
     if (to_send.filename == (char *) 1) to_send.filename = filename;
   }
   if ((fp = fopen(filename, "r")) == NULL) return((long) errno);

@@ -151,7 +151,7 @@ authunix_create(machname, uid, gid, len, aup_gids)
 		return (NULL);
 	}
 #endif
-	bcopy(mymem, au->au_origcred.oa_base, (u_int)len);
+	memcpy(au->au_origcred.oa_base, mymem, (u_int)len);
 
 	/*
 	 * set auth handle to reflect new cred.

@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: vrt $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.1 1993-05-06 15:28:58 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.2 1996-09-20 04:40:27 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.1 1993-05-06 15:28:58 vrt Exp $";
+static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.2 1996-09-20 04:40:27 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -115,7 +115,7 @@ multi_init()
 					      sizeof(struct _servers));
       else
 	servers = (struct _servers *)xmalloc(sizeof(struct _servers));
-      bzero((char*)&servers[nservers], sizeof(struct _servers));
+      memset(&servers[nservers], 0, sizeof(struct _servers));
       servers[nservers].name = xsave_string(hent->h_name);
       servers[nservers].inet_addr = *(long *)hent->h_addr_list[0];
       servers[nservers].cl = (CLIENT*)NULL;
@@ -518,7 +518,7 @@ multi_update_server(num)
       DebugMulti(("Updating server %s, course %s\n", servers[num].name,
 		  coursename));
       init.course = coursename;
-      bzero(&init.auth, sizeof(init.auth));
+      memset(&init.auth, 0, sizeof(init.auth));
       init_r = (init_res*)_init_1(&init, servers[num].cl);
       if (!init_r) {
 	exit(1);
@@ -641,7 +641,7 @@ multi_set_course()
   init_res *res;
 
   params.course = curconn->course;
-  bzero(&params.auth, sizeof(params.auth));
+  memset(&params.auth, 0, sizeof(params.auth));
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
       res = (init_res *)_init_1(&params, servers[i].cl);

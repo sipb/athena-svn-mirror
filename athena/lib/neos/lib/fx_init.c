@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: epeisach $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.2 1992-04-27 12:59:42 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.3 1996-09-20 04:36:12 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.2 1992-04-27 12:59:42 epeisach Exp $";
+static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.3 1996-09-20 04:36:12 ghudson Exp $";
 #endif /* lint */
 
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 #include <krb.h>
 #include <des.h>
 #include "fxcl.h"
@@ -139,7 +139,7 @@ _fx_get_auth(fxp, authent)
   if (dummy) goto _FX_GET_AUTH_CLEANUP;
   (void) sprintf(fxp->owner, "%s%s%s@%s", pname, (pinst[0]?".":""),
 		 pinst, prealm);
-  fxp->extension = index(fxp->owner, '@');
+  fxp->extension = strchr(fxp->owner, '@');
 
  _FX_GET_AUTH_CLEANUP:
   if (opened) tf_close();

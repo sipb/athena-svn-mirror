@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange pickup client
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.2 1991-06-30 16:26:42 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.3 1996-09-20 04:34:45 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.2 1991-06-30 16:26:42 probe Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/pickup.c,v 1.3 1996-09-20 04:34:45 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/errno.h>
 #include <sys/types.h>
@@ -51,7 +51,7 @@ pickup_arg(argc, argv, ip, p, flagp)
     *flagp |= ONE_AUTHOR;
     initialized = 1;
   }
-  if (argv[*ip][0] == '-' && index("*TtPheAH", argv[*ip][1])) {
+  if (argv[*ip][0] == '-' && strchr("*TtPheAH", argv[*ip][1])) {
     *flagp |= PRESERVE;
     *flagp &= ~ONE_AUTHOR;
   }

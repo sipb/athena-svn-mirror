@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.1 1993-10-12 03:03:11 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.2 1996-09-20 04:36:13 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_open_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.1 1993-10-12 03:03:11 probe Exp $";
+static char rcsid_fx_open_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.2 1996-09-20 04:36:13 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include "fxcl.h"
 #include "memory.h"
 

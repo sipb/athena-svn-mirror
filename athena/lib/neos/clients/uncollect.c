@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange uncollect client
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.1 1993-10-12 03:08:56 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.2 1996-09-20 04:34:52 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,14 +14,14 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uncollect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.1 1993-10-12 03:08:56 probe Exp $";
+static char rcsid_uncollect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/uncollect.c,v 1.2 1996-09-20 04:34:52 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
 #include <sys/time.h>
 #include <memory.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -37,7 +37,7 @@ static char sccsid[] = "@(#)rpc_main.c 1.7 87/06/24 (C) 1987 SMI";
  */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/file.h>
 #include "rpc_util.h"
 #include "rpc_parse.h"
@@ -78,7 +78,7 @@ extendfile(file, ext)
 	if (res == NULL) {
 		abort();
 	}
-	p = rindex(file, '.');
+	p = strrchr(file, '.');
 	if (p == NULL) {
 		p = file + strlen(file);
 	}

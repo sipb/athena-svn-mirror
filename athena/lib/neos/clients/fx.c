@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client routines
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fx.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fx.c,v 1.1 1993-10-12 03:08:49 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fx.c,v 1.2 1996-09-20 04:34:36 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fx.c,v 1.1 1993-10-12 03:08:49 probe Exp $";
+static char rcsid_fx_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fx.c,v 1.2 1996-09-20 04:34:36 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -474,7 +474,7 @@ grade_papers(argc, argv)
       j++;
       if (j < lo || j > hi) continue;
       anything = 1;
-      bcopy(&(node->p), &taken, sizeof(Paper));
+      memcpy(&taken, &(node->p), sizeof(Paper));
       taken.type = TAKEN;
       code = fx_move(fxp, &(node->p), &taken);
       if (code) com_err(argv[0], code, "(# %d)", j);
@@ -487,7 +487,7 @@ grade_papers(argc, argv)
   }
   anything = j = 0;
 
-  bzero(&taken, sizeof(Paper));
+  memset(&taken, 0, sizeof(Paper));
   taken.location.host = ID_WILDCARD;
   taken.author = AUTHOR_WILDCARD;
   taken.owner = fxp->owner;

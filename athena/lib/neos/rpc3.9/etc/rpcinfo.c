@@ -477,11 +477,11 @@ pmapdump(argc, argv)
 	if (argc == 1)
 		get_inet_address(&server_addr, argv[0]);
 	else {
-		bzero((char *)&server_addr, sizeof server_addr);
+		memset(&server_addr, 0, sizeof server_addr);
 		server_addr.sin_family = AF_INET;
 		if ((hp = gethostbyname("localhost")) != NULL)
-			bcopy(hp->h_addr, (caddr_t)&server_addr.sin_addr,
-			    hp->h_length);
+			memcpy(&server_addr.sin_addr, hp->h_addr,
+			       hp->h_length);
 		else
 			server_addr.sin_addr.s_addr = inet_addr("0.0.0.0");
 	}
@@ -616,14 +616,14 @@ get_inet_address(addr, host)
 {
 	register struct hostent *hp;
 
-	bzero((char *)addr, sizeof *addr);
+	memset(addr, 0, sizeof *addr);
 	addr->sin_addr.s_addr = (u_long) inet_addr(host);
 	if (addr->sin_addr.s_addr == -1 || addr->sin_addr.s_addr == 0) {
 		if ((hp = gethostbyname(host)) == NULL) {
 			fprintf(stderr, "rpcinfo: %s is unknown host\n", host);
 			exit(1);
 		}
-		bcopy(hp->h_addr, (char *)&addr->sin_addr, hp->h_length);
+		memcpy(&addr->sin_addr, hp->h_addr, hp->h_length);
 	}
 	addr->sin_family = AF_INET;
 }

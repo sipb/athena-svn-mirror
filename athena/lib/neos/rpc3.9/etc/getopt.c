@@ -18,8 +18,6 @@
 	(void) write(2, s, strlen(s));\
 	(void) write(2, errbuf, 2);}
 
-#define strchr index
-
 extern int strcmp();
 extern char *strchr();
 

@@ -77,7 +77,7 @@ _svcauth_unix(rqst, msg)
 	if (buf != NULL) {
 		aup->aup_time = IXDR_GET_LONG(buf);
 		str_len = IXDR_GET_U_LONG(buf);
-		bcopy((caddr_t)buf, aup->aup_machname, (u_int)str_len);
+		memcpy(aup->aup_machname, buf, str_len);
 		aup->aup_machname[str_len] = 0;
 		str_len = RNDUP(str_len);
 		buf += str_len / sizeof (long);

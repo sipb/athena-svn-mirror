@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Author: epeisach $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.5 1992-04-27 12:43:09 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.6 1996-09-20 04:34:22 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.5 1992-04-27 12:43:09 epeisach Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.6 1996-09-20 04:34:22 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/errno.h>
 #include <sys/types.h>
@@ -45,7 +45,7 @@ collect_arg(argc, argv, ip, p, flagp)
      Paper *p;
      int *flagp;
 {
-  if (argv[*ip][0] == '-' && index("*tgPheAH", argv[*ip][1]))
+  if (argv[*ip][0] == '-' && strchr("*tgPheAH", argv[*ip][1]))
     *flagp |= PRESERVE;
   return(0);
 }

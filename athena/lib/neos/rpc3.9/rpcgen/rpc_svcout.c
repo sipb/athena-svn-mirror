@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)rpc_svcout.c 1.6 87/06/24 (C) 1987 SMI";
  * Copyright (C) 1987, Sun Microsytsems, Inc. 
  */
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include "rpc_parse.h"
 #include "rpc_util.h"
 
@@ -220,7 +220,7 @@ write_program(def, storage)
 		f_print(fout, "\t\treturn;\n");
 		f_print(fout, "\t}\n");
 
-		f_print(fout, "\tbzero(&%s, sizeof(%s));\n", ARG, ARG);
+		f_print(fout, "\tmemset(&%s, 0, sizeof(%s));\n", ARG, ARG);
 		printif("getargs", TRANSP, "&", ARG);
 		printerr("decode", TRANSP);
 		f_print(fout, "\t\treturn;\n");

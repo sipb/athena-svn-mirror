@@ -2,9 +2,9 @@
 /**********************************************************************
  * Access Control List Library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.3 1993-02-15 15:42:39 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.4 1996-09-20 04:36:17 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,11 +15,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.3 1993-02-15 15:42:39 probe Exp $";
+static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.4 1996-09-20 04:36:17 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <krb.h>
@@ -47,10 +47,10 @@ acl_canonicalize_principal(principal, buf)
   char name[ANAME_SZ], instance[INST_SZ], realm[REALM_SZ];
   char *s1, *s2;
 
-  s1 = index(principal, '@');
+  s1 = strchr(principal, '@');
   if (s1) {
     (void) strcpy(realm, s1);
-    s2 = index(principal, '.');
+    s2 = strchr(principal, '.');
     if (s2 != NULL && s2 < s1) {
       (void) strncpy(instance, s2, s1 - s2);
       instance[s1 - s2] = '\0';
@@ -65,7 +65,7 @@ acl_canonicalize_principal(principal, buf)
   }    
   else {   /* s1 */
     (void) strcat(strcpy(realm, "@"), KRB_REALM);
-    s2 = index(principal, '.');
+    s2 = strchr(principal, '.');
     if (s2) {
       (void) strcpy(instance, s2);
       (void) strncpy(name, principal, s2 - principal);

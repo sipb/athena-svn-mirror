@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange access control list client
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxblanche.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxblanche.c,v 1.1 1993-10-12 03:09:27 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxblanche.c,v 1.2 1996-09-20 04:34:39 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,13 +14,13 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxblanche_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxblanche.c,v 1.1 1993-10-12 03:09:27 probe Exp $";
+static char rcsid_fxblanche_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxblanche.c,v 1.2 1996-09-20 04:34:39 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
 #include <fxcl.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 
 FX *
 open_course(course, module)

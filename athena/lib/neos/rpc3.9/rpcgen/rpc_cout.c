@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)rpc_cout.c 1.8 87/06/24 (C) 1987 SMI";
  * Copyright (C) 1987, Sun Microsystems, Inc. 
  */
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include "rpc_util.h"
 #include "rpc_parse.h"
 

@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: vrt $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.3 1993-04-27 17:33:21 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.4 1996-09-20 04:40:20 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,12 +18,13 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.3 1993-04-27 17:33:21 vrt Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.4 1996-09-20 04:40:20 ghudson Exp $";
 #endif /* lint */
 
 #include <com_err.h>
 #include <fxserver.h>
 #include <sys/file.h>
+#include <string.h>
 #ifdef POSIX
 #include <unistd.h>
 #endif /* POSIX */
@@ -208,7 +209,7 @@ stringlist_res *list_acl_1(aclname, rqstp)
     if (*aclbfr && aclbfr[strlen(aclbfr)-1] < ' ')
       aclbfr[strlen(aclbfr)-1] = '\0';
     /* Eliminate silly ".@" in <user>.@<realm> */
-    dotptr = (char*)index(aclbfr, '.');
+    dotptr = strchr(aclbfr, '.');
     if (dotptr && dotptr[1] == '@')
       strcpy(dotptr, dotptr+1);
     *next = (stringnode *)xmalloc(sizeof(stringnode));

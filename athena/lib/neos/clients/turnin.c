@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange turnin client
  *
- * $Author: miki $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/turnin.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/turnin.c,v 1.2 1994-03-22 14:42:25 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/turnin.c,v 1.3 1996-09-20 04:34:51 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 #include <stdio.h>
 #include "fxmain.h"
-#include <strings.h>
+#include <string.h>
 
 /*
  * turnin_arg checks to see if the current argument is -g author,

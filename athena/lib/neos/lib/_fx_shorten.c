@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_shorten.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_shorten.c,v 1.1 1993-10-12 03:03:26 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_shorten.c,v 1.2 1996-09-20 04:36:07 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,10 +14,10 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid__fx_shorten_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_shorten.c,v 1.1 1993-10-12 03:03:26 probe Exp $";
+static char rcsid__fx_shorten_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/_fx_shorten.c,v 1.2 1996-09-20 04:36:07 ghudson Exp $";
 #endif /* lint */
 
-#include <strings.h>
+#include <string.h>
 #include "fxcl.h"
 
 /*
@@ -30,7 +30,7 @@ _fx_shorten(fxp, name)
      char *name;
 {
   register char *s;
-  s = index(name, '@');
+  s = strchr(name, '@');
   if (s)
     if (strcmp(s, fxp->extension) == 0)
       *s = '\0';

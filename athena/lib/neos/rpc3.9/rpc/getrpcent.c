@@ -41,6 +41,7 @@ static  char sccsid[] = "@(#)getrpcent.c 1.9 87/08/11  Copyr 1984 Sun Micro";
 #include <rpc/rpc.h>
 #include <netdb.h>
 #include <sys/socket.h>
+#include <string.h>
 
 /*
  * Internet version.
@@ -60,7 +61,6 @@ struct rpcdata {
 static	struct rpcent *interpret();
 struct	hostent *gethostent();
 char	*inet_ntoa();
-/*static*/	char *index();
 
 static char RPCDB[] = "/etc/rpc";
 
@@ -182,18 +182,18 @@ interpret(val, len)
 	d->line[len] = '\n';
 	if (*p == '#')
 		return (getrpcent());
-	cp = index(p, '#');
+	cp = strchr(p, '#');
 	if (cp == NULL)
     {
-		cp = index(p, '\n');
+		cp = strchr(p, '\n');
 		if (cp == NULL)
 			return (getrpcent());
 	}
 	*cp = '\0';
-	cp = index(p, ' ');
+	cp = strchr(p, ' ');
 	if (cp == NULL)
     {
-		cp = index(p, '\t');
+		cp = strchr(p, '\t');
 		if (cp == NULL)
 			return (getrpcent());
 	}
@@ -204,12 +204,12 @@ interpret(val, len)
 		cp++;
 	d->rpc.r_number = atoi(cp);
 	q = d->rpc.r_aliases = d->rpc_aliases;
-	cp = index(p, ' ');
+	cp = strchr(p, ' ');
 	if (cp != NULL)
 		*cp++ = '\0';
 	else
     {
-		cp = index(p, '\t');
+		cp = strchr(p, '\t');
 		if (cp != NULL)
 			*cp++ = '\0';
 	}
@@ -220,12 +220,12 @@ interpret(val, len)
 		}
 		if (q < &(d->rpc_aliases[MAXALIASES - 1]))
 			*q++ = cp;
-		cp = index(p, ' ');
+		cp = strchr(p, ' ');
 		if (cp != NULL)
 			*cp++ = '\0';
 		else
 	    {
-			cp = index(p, '\t');
+			cp = strchr(p, '\t');
 			if (cp != NULL)
 				*cp++ = '\0';
 		}

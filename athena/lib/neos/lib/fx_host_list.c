@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_host_list.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_host_list.c,v 1.1 1993-10-12 03:03:16 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_host_list.c,v 1.2 1996-09-20 04:36:10 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,10 +14,10 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_host_list_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_host_list.c,v 1.1 1993-10-12 03:03:16 probe Exp $";
+static char rcsid_fx_host_list_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_host_list.c,v 1.2 1996-09-20 04:36:10 ghudson Exp $";
 #endif /* lint */
 
-#include <strings.h>
+#include <string.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #endif /* HESIOD */
@@ -50,7 +50,7 @@ fx_host_list()
 
       /* find the next host */
       if (*fxpath == '\0') break;
-      s = index(fxpath, ':');
+      s = strchr(fxpath, ':');
       if (s) i = (int) (s - fxpath);
       else i = strlen(fxpath);
 

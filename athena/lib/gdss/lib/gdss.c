@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
- * $Author: cfields $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.10 1995-07-20 22:39:29 cfields Exp $
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.11 1996-09-20 04:33:28 ghudson Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -31,7 +31,7 @@ SigInfo *aSigInfo;
   unsigned char *cp;
 
   cp = aSigInfo->rawsig;
-  bzero(aSigInfo, sizeof(SigInfo));
+  memset(aSigInfo, 0, sizeof(SigInfo));
   aSigInfo->rawsig = cp;
   aSigInfo->SigInfoVersion = 0;
   do {
@@ -65,9 +65,9 @@ SigInfo *aSigInfo;
   status = pfetchkey();
   if (status) return (status);
 
-  bzero(&bSigInfo, sizeof(bSigInfo));
+  memset(&bSigInfo, 0, sizeof(bSigInfo));
   cp = iSigInfo->rawsig;
-  bzero(iSigInfo, sizeof(bSigInfo));
+  memset(iSigInfo, 0, sizeof(bSigInfo));
   iSigInfo->rawsig = cp;
 
   RSA_MD2(Data, DataLen, hash);
@@ -150,13 +150,13 @@ unsigned char *Signature;
   int trys;
   char *krb_get_phost();
 
-  bzero(packet, sizeof(packet)); /* Zeroize Memory */
-  bzero(ipacket, sizeof(ipacket));
+  memset(packet, 0, sizeof(packet)); /* Zeroize Memory */
+  memset(ipacket, 0, sizeof(ipacket));
   krb_get_lrealm(lrealm, 1);	/* Get our Kerberos realm */
 
   RSA_MD2(Data, DataLen, hash);
   RSA_MD2(hash, 16, dhash);	/* For use of Kerberos */
-  bcopy(hash, packet, 16);
+  memcpy(packet, hash, 16);
 
   cksum = 0;
   for (i = 0; i < 4; i++)	/* High order 32 bits of dhash is the
@@ -179,10 +179,9 @@ unsigned char *Signature;
 
   if(hp == NULL) return (-1);	/* Could not find host, you lose */
 
-  bzero(&sin, sizeof(sin));
+  memset(&sin, 0, sizeof(sin));
   sin.sin_family = hp->h_addrtype;
-  (void) bcopy((char *)hp->h_addr, (char *)&sin.sin_addr,
-	       sizeof(hp->h_addr));
+  memcpy(&sin.sin_addr, hp->h_addr, sizeof(hp->h_addr));
   sin.sin_port = htons(7201);	/* Should get this from services or Hesiod */
 
   strcpy(linst, "gdss");	/* Grrr... krb_mk_req bashes its input
@@ -190,8 +189,8 @@ unsigned char *Signature;
   status = krb_mk_req(&authent, linst, sinst, lrealm, cksum);
   if (status != KSUCCESS) return (GDSS_E_KRBFAIL);
   packet[0] = 0;		/* Version 0 of protocol */
-  (void) bcopy((char *)hash, (char *)&packet[1], 16);
-  (void) bcopy((char *)&authent, (char *)&packet[17], sizeof(authent));
+  memcpy(&packet[1], hash, 16);
+  memcpy(&packet[17], &authent, sizeof(authent));
   plen = sizeof(authent) + 16 + 1;	/* KTEXT_ST plus the hash + version */
 
   s = -1;			/* "NULL" Value for socket */
@@ -224,6 +223,6 @@ unsigned char *Signature;
   shutdown(s, 0);
   close(s);
   if (status != GDSS_SUCCESS) return (status);
-  (void) bcopy((char *)ipacket, (char *)Signature, iplen);
+  memcpy(Signature, ipacket, iplen);
   return (GDSS_SUCCESS);
 }

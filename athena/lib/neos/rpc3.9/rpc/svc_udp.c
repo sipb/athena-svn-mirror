@@ -109,7 +109,7 @@ svcudp_bufcreate(sock, sendsz, recvsz)
 		}
 		madesock = TRUE;
 	}
-	bzero((char *)&addr, sizeof (addr));
+	memset(&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
 	if (bindresvport(sock, &addr)) {
 		addr.sin_port = 0;
@@ -279,7 +279,7 @@ svcudp_destroy(xprt)
 	(type *) mem_alloc((unsigned) (sizeof(type) * (size)))
 
 #define BZERO(addr, type, size)	 \
-	bzero((char *) addr, sizeof(type) * (int) (size)) 
+	memset(addr, 0, sizeof(type) * (int) (size)) 
 
 /*
  * An entry in the cache

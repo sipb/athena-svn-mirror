@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange purge client
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxpurge.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxpurge.c,v 1.1 1993-10-12 03:09:12 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxpurge.c,v 1.2 1996-09-20 04:34:42 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxpurge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxpurge.c,v 1.1 1993-10-12 03:09:12 probe Exp $";
+static char rcsid_fxpurge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxpurge.c,v 1.2 1996-09-20 04:34:42 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/errno.h>
 #include "fxmain.h"

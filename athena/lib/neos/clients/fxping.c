@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange fxping client
  *
- * $Author: miki $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.2 1995-12-06 15:16:04 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.3 1996-09-20 04:34:41 ghudson Exp $
  *
  * Copyright 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,11 +14,11 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fxping_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.2 1995-12-06 15:16:04 miki Exp $";
+static char rcsid_fxping_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/fxping.c,v 1.3 1996-09-20 04:34:41 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <fxcl.h>		/* overrides #include <time.h> */
 
 main(argc, argv)
@@ -43,7 +43,7 @@ main(argc, argv)
   if (!fxp) exit(1);
  */
   fxp = &fx;
-  bzero(&fx, sizeof(fx));
+  memset(&fx, 0, sizeof(fx));
   for (node = fx_host_list(); node != NULL; node = node->next) {
     strcpy(fx.host, node->s);
     code = fx_connect(&fx);

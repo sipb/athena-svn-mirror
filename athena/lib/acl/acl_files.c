@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: epeisach $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.10 1993-10-17 19:03:41 epeisach Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.11 1996-09-20 04:29:53 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -18,7 +18,7 @@ All Rights Reserved.
 /*** Routines for manipulating access control list files ***/
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #ifdef POSIX

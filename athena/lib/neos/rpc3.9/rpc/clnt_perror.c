@@ -44,7 +44,7 @@ static char sccsid[] = "@(#)clnt_perror.c 1.15 87/10/07 Copyr 1984 Sun Micro";
 #include <rpc/clnt.h>
 /* brlewis@athena includes the following files */
 #include <errno.h>
-#include <strings.h>
+#include <string.h>
 
 /* brlewis@athena comments out the following declarations
 extern int sprintf();

@@ -119,7 +119,7 @@ universal(rqstp, transp)
 	for (pl = proglst; pl != NULL; pl = pl->p_nxt)
 		if (pl->p_prognum == prog && pl->p_procnum == proc) {
 			/* decode arguments into a CLEAN buffer */
-			bzero(xdrbuf, sizeof(xdrbuf)); /* required ! */
+			memset(xdrbuf, 0, sizeof(xdrbuf)); /* required ! */
 			if (!svc_getargs(transp, pl->p_inproc, xdrbuf)) {
 				svcerr_decode(transp);
 				return;

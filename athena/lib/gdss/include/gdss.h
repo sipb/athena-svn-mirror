@@ -3,7 +3,7 @@
  *
  */
 #ifdef SOLARIS
-#include <strings.h>
+#include <string.h>
 #endif
 
 /* Structures Needed */

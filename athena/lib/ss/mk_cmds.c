@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.4 1996-05-13 19:12:19 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.5 1996-09-20 04:42:12 ghudson Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/file.h>
-#include <strings.h>
+#include <string.h>
 #include "ss_internal.h"
 
 static const char copyright[] =

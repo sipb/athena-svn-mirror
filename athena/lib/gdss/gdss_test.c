@@ -38,7 +38,7 @@ char **argv;
     printf("SUCCESS\n");
   }
 
-  bzero(&aSigInfo, sizeof(aSigInfo));
+  memset(&aSigInfo, 0, sizeof(aSigInfo));
 
   printf("Attempting to Verify signature...");
   status = GDSS_Verify(TestMessage, strlen(TestMessage), Signature,

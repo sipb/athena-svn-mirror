@@ -77,7 +77,7 @@ xdr_reference(xdrs, pp, size, proc)
 				    "xdr_reference: out of memory\n");
 				return (FALSE);
 			}
-			bzero(loc, (int)size);
+			memset(loc, 0, size);
 			break;
 	}
 

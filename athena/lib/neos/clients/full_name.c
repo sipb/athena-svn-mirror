@@ -3,7 +3,7 @@
  *
  * $Author
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v 1.2 1992-12-23 11:49:08 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v 1.3 1996-09-20 04:34:34 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <hesiod.h>
 
 /**** borrowed from eos sources ****/
@@ -40,16 +40,16 @@ char *full_name(name)
     /* Extract name from password entry */
     realname = *namelist;
     for (i=0; i<4; i++)
-      if ((realname = index(++realname, ':')) == NULL) {
+      if ((realname = strchr(++realname, ':')) == NULL) {
 	/* Password entry is screwy - so give up and return original */
 	strcpy(finalname, name);
 	return finalname;
       }
     /* Remove rest of password entry */
-    if ((tmp = index(++realname,':')) != NULL)
+    if ((tmp = strchr(++realname,':')) != NULL)
       *tmp = '\0';
     /* Make sure this is just the name, no unneccassry junk */
-    if ((tmp = index(realname, ',')) != NULL)
+    if ((tmp = strchr(realname, ',')) != NULL)
       *tmp = '\0';
     /* Just to be nice, add on the original name */
     strcpy(finalname, realname);

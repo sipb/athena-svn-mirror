@@ -1,9 +1,9 @@
 /***********************************************************************
  * to be included by all fx library clients
  *
- * $Author: miki $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.4 1994-03-22 14:39:45 miki Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.5 1996-09-20 04:35:29 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,7 @@
 #define _fxcl_h_
 
 #ifndef lint
-static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.4 1994-03-22 14:39:45 miki Exp $";
+static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.5 1996-09-20 04:35:29 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -30,11 +30,11 @@ static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <time.h>
 #ifdef SOLARIS
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 #endif /* SOLARIS */
 
-#define paper_clear(p) bzero((char *) p, sizeof(Paper))
-#define paper_copy(a, b)  bcopy((char *) a, (char *) b, sizeof(Paper))
+#define paper_clear(p) memset((char *) p, 0, sizeof(Paper))
+#define paper_copy(a, b)  memcpy(b, a, sizeof(Paper))
 #define ENV_FXPATH "FXPATH"   /* environment variable of FX hosts */
 #ifdef KERBEROS
 #define FX_UNAMSZ (ANAME_SZ + REALM_SZ + 2)

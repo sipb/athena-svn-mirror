@@ -69,7 +69,7 @@ rstatprog_3(rqstp, transp)
 		svcerr_noproc(transp);
 		return;
 	}
-	bzero(&argument, sizeof(argument));
+	memset(&argument, 0, sizeof(argument));
 	if (!svc_getargs(transp, xdr_argument, &argument)) {
 		svcerr_decode(transp);
 		return;
@@ -118,7 +118,7 @@ rstatprog_2(rqstp, transp)
 		svcerr_noproc(transp);
 		return;
 	}
-	bzero(&argument, sizeof(argument));
+	memset(&argument, 0, sizeof(argument));
 	if (!svc_getargs(transp, xdr_argument, &argument)) {
 		svcerr_decode(transp);
 		return;
@@ -167,7 +167,7 @@ rstatprog_1(rqstp, transp)
 		svcerr_noproc(transp);
 		return;
 	}
-	bzero(&argument, sizeof(argument));
+	memset(&argument, 0, sizeof(argument));
 	if (!svc_getargs(transp, xdr_argument, &argument)) {
 		svcerr_decode(transp);
 		return;

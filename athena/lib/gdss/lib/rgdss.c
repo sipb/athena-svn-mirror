@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v $
- * $Author: mar $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.4 1993-01-25 12:19:36 mar Exp $
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.5 1996-09-20 04:33:30 ghudson Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -79,7 +79,7 @@ int siglen;
   register int c;
   buf = (unsigned char *)malloc(siglen + GDSS_PAD + 1); /* 1 for the null! */
   if (buf == NULL) return (GDSS_E_ALLOC);
-  bzero(buf, siglen + GDSS_PAD + 1); /* Just to be safe */
+  memset(buf, 0, siglen + GDSS_PAD + 1); /* Just to be safe */
   bp = buf;
   cp = signature;
   c = 0;
@@ -98,7 +98,7 @@ int siglen;
     cp++;
   }
   *bp++ = '\0';			/* Null Terminate */
-  bcopy(buf, signature, bp - buf);
+  memcpy(signature, buf, bp - buf);
   free(buf);
   return (GDSS_SUCCESS);
 }
@@ -125,7 +125,7 @@ int *outlen;
     if(!*cp++) break;
   }
   *outlen = bp - buf;
-  bcopy(buf, signature, *outlen);
+  memcpy(signature, buf, *outlen);
   free (buf);
   return (GDSS_SUCCESS);
 }
@@ -181,7 +181,7 @@ unsigned char *rawsig;
     free (signature);
     return (GDSS_SUCCESS);
   }
-  bcopy(&signature[cp - signature], rawsig, siglen - (cp - signature));
+  memcpy(rawsig, &signature[cp - signature], siglen - (cp - signature));
   status = gdss_rpadout(rawsig, siglen - (cp - signature));
   free (signature);
   return (status);
@@ -218,7 +218,7 @@ unsigned char *signature;
   *cp++ = ((aSigInfo->timestamp) >> 16) & 0xff;
   *cp++ = ((aSigInfo->timestamp) >> 8) & 0xff;
   *cp++ = aSigInfo->timestamp & 0xff;
-  bcopy(isignature, cp, siglen);
+  memcpy(cp, isignature, siglen);
   free(isignature);
   return(gdss_rpadout(signature, cp - signature + siglen));
 }

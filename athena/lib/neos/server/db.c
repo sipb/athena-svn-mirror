@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: epeisach $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.2 1992-04-27 13:26:18 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.3 1996-09-20 04:40:22 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,13 +18,14 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.2 1992-04-27 13:26:18 epeisach Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/db.c,v 1.3 1996-09-20 04:40:22 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
 #include <sys/file.h>
 #include <sys/types.h>
 #include <ndbm.h>
+#include <string.h>
 
 datum *make_dbm_key(), *make_dbm_contents();
 time_t time();
@@ -80,7 +81,7 @@ db_init()
       fatal("Can't open %s for writing!", pathspec);
     fprintf(fp, "0\n0\n");
     fclose(fp);
-    bzero(&db_vers, sizeof(db_vers));
+    memset(&db_vers, 0, sizeof(db_vers));
   }
   else {
     fscanf(fp, "%ld\n%ld", &db_vers.synctime, &db_vers.commit);
@@ -270,7 +271,7 @@ _db_add_key(key)
 					 sizeof(char*));
 
   if (i < dblist[IDX].nkeys)
-    bcopy((char*)(dblist[IDX].keylist+i), (char*)(dblist[IDX].keylist+i+1),
+    memmove(dblist[IDX].keylist+i+1, dblist[IDX].keylist+i,
 	  (dblist[IDX].nkeys-i)*sizeof(char*));
   dblist[IDX].keylist[i] = xsave_string(key);
   dblist[IDX].nkeys++;
@@ -284,7 +285,7 @@ _db_add_key(key)
 char *_db_next_field(ptr)
      char *ptr;
 {
-  ptr = (char *)index(ptr, (char)1);
+  ptr = strchr(ptr, (char)1);
   if (!ptr)
     ptr += strlen(ptr);
   return ptr;
@@ -557,9 +558,8 @@ db_delete(contents)
     i = db_key_position(keybfr);
     if (i >= dblist[IDX].nkeys) return;
     if (!strcmp(dblist[IDX].keylist[i], keybfr)) {
-      bcopy((char*)(dblist[IDX].keylist+i+1),
-	    (char*)(dblist[IDX].keylist+i),
-	    (dblist[IDX].nkeys-i-1)*sizeof(char*));
+      memmove(dblist[IDX].keylist+i, dblist[IDX].keylist+i+1,
+	      (dblist[IDX].nkeys-i-1)*sizeof(char*));
       dblist[IDX].nkeys--;
     }
   }

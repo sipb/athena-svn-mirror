@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)rpc_clntout.c 1.2 87/06/24 (C) 1987 SMI";
  * Copyright (C) 1987, Sun Microsytsems, Inc.
  */
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include "rpc_parse.h"
 #include "rpc_util.h"
 
@@ -107,7 +107,7 @@ printbody(proc)
 	}
 	f_print(fout, "res;\n");
 	f_print(fout, "\n");
-	f_print(fout, "\tbzero(%sres, sizeof(res));\n", ampr(proc->res_type));
+	f_print(fout, "\tmemset(%sres, 0, sizeof(res));\n", ampr(proc->res_type));
 	f_print(fout,
 		"\tif (clnt_call(clnt, %s, xdr_%s, argp, xdr_%s, %sres, TIMEOUT) != RPC_SUCCESS) {\n",
 		proc->proc_name, stringfix(proc->arg_type),

@@ -137,7 +137,7 @@ svctcp_create(sock, sendsize, recvsize)
 		}
 		madesock = TRUE;
 	}
-	bzero((char *)&addr, sizeof (addr));
+	memset(&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
 	if (bindresvport(sock, &addr)) {
 		addr.sin_port = 0;

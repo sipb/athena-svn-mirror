@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: vrt $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.1 1993-05-06 15:25:46 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.2 1996-09-20 04:40:23 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.1 1993-05-06 15:25:46 vrt Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.2 1996-09-20 04:40:23 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -60,8 +60,7 @@ child_dead()
     DebugMulti(("Pid %d has died!\n", pid));
     for (i=0; i<update_server_npids; i++) {
 	if (update_server_pids[i] == pid) {
-	    bcopy(update_server_pids+i+1,
-		  update_server_pids+i,
+	    memmove(update_server_pids+i, update_server_pids+i+1,
 		  (update_server_npids-i-1)*sizeof(int));
 	    update_server_npids--;
 	    DebugMulti(("We got one!  npids is %d\n", update_server_npids));
@@ -117,7 +116,7 @@ main(argc, argv)
     multi_init();
 #endif /* MULTI */
     
-    bzero(&stats, sizeof(stats));
+    memset(&stats, 0, sizeof(stats));
     stats.start_time = time(0);
     
     init_fxsv_err_tbl();
@@ -145,14 +144,14 @@ main(argc, argv)
       exit(1);
     }
 
-    bzero((char*)Connection, sizeof(Connection));
+    memset(Connection, 0, sizeof(Connection));
     
 #ifdef MULTI
     /*
      * Initialize multi-server support.
      */
     multi_ping_servers();
-    bzero(&seltimeout, sizeof(seltimeout));
+    memset(&seltimeout, 0, sizeof(seltimeout));
     
 #endif /* MULTI */
 
@@ -174,7 +173,7 @@ main(argc, argv)
 		if (Connection[i].server_num)
 		    multi_conn_dropped(Connection[i].server_num-1);
 #endif /* MULTI */
-		bzero((char*)&Connection[i], sizeof(struct _Connection));
+		memset((char*)&Connection[i], 0, sizeof(struct _Connection));
 	    }
 	}
 	Debug(("Selecting...\n"));

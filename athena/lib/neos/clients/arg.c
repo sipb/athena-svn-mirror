@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client routines
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.1 1993-10-12 03:09:07 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.2 1996-09-20 04:34:21 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,12 +14,12 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_arg_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.1 1993-10-12 03:09:07 probe Exp $";
+static char rcsid_arg_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/arg.c,v 1.2 1996-09-20 04:34:21 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
 #include <fxcl.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 
 /*** Global variables ***/
@@ -70,8 +70,8 @@ high_bound(arg)
       || strcmp(arg, "*") == 0 || strcmp(arg, "all") == 0)
     return(count_papers(Plist->Paperlist_res_u.list));
   
-  if (index(arg, ',')) s = index(arg, ',');
-  else s = index(arg, ':');
+  if (strchr(arg, ',')) s = strchr(arg, ',');
+  else s = strchr(arg, ':');
 
   if (s) return(atoi(s+1));
   else return(atoi(arg));
