@@ -16,13 +16,15 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 
 #include <olc/olc.h>
 #include <olcd.h>
 
+static const char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.6 1990-01-03 23:36:19 raeburn Exp $";
 
 char *DATABASE_FILE      = "/usr/lib/olc/database";
 char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
@@ -90,7 +92,7 @@ PROC Proc_List[] =
   OLC_GET_DBINFO,      olc_get_dbinfo,       "olc db info",
 /*  OLC_SET_DBINFO,      olc_change_dbinfo,    "olc db info"*/
   OLC_GET_ACCESSES,    olc_get_accesses,     "olc get access",
-  UNKNOWN_REQUEST,     (int(*)()) NULL,      (char *) NULL,
+  UNKNOWN_REQUEST,     (ERRCODE(*)()) NULL,  (char *) NULL,
 };
 
 KNUCKLE **Knuckle_List  = (KNUCKLE **) NULL;
