@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.4 1989-08-08 14:35:05 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.5 1989-08-15 02:16:59 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -106,7 +106,7 @@ t_display_list(list,comments)
 	  sprintf(ustatusbuf,"(%s/%s)",buf,cbuf);
 
 	  OGetStatusString(l->ckstatus,buf);
-	  sprintf(chstatusbuf,"(%-3s)",buf);
+	  sprintf(chstatusbuf,"(%-3.3s)",buf);
 	  sprintf(uinstbuf,"[%d]",l->user.instance);
 	  sprintf(cinstbuf,"[%d]",l->connected.instance);
 	  sprintf(nseenbuf,"(%d)",l->nseen);
@@ -143,7 +143,7 @@ t_display_list(list,comments)
     if((l->nseen < 0) && (l->connected.uid < 0))
       {
 	OGetStatusString(l->ukstatus,buf);
-	sprintf(chstatusbuf,"(%-3s)",buf);
+	sprintf(chstatusbuf,"(%-3.3s)",buf);
 	sprintf(cbuf,"%s@%s",l->user.username,l->user.machine);
 	sprintf(cinstbuf,"[%d]",l->connected.instance);
 	printf("                               %-20.20s %-4.4s %-5.5s\n",
