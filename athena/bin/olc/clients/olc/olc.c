@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.25 1991-03-28 16:45:48 lwvanels Exp $
+ *	$Id: olc.c,v 1.26 1991-03-29 01:25:59 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.25 1991-03-28 16:45:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.26 1991-03-29 01:25:59 lwvanels Exp $";
 #endif
 #endif
 
@@ -376,12 +376,6 @@ do_olc_init()
 	  printf("To ask a TA a question, type:        ask\n");
 #else
 	  printf("To ask a consultant a question, type:          ask\n");
-#endif
-#if 0
-	  if(t_input_topic(&Request,topic,TRUE) != SUCCESS)
-	    exit(1);
-	  if(t_ask(&Request,topic) != SUCCESS)
-	    exit(1);
 #endif
 	}
     }
