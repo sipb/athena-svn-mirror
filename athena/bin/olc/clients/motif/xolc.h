@@ -1,23 +1,9 @@
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 #include <olc/olc_parser.h>
-#include "olc.h"
 
-#include <zephyr/zephyr.h>
-#include <X11/cursorfont.h>
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
-#include <Mu.h>
-
-#ifdef XTCOMM_CLIENT
-#include <XtComm.h>
-#endif XTCOMM_CLIENT
-
-#include <signal.h>
-#include <sys/file.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <pwd.h>
-#include <netdb.h>
+#include <Xm/Mu.h>
 
 /*  All the widget pointers that have been created  */
 
@@ -80,54 +66,6 @@ extern Widget			/* Widget ID's */
   w_send_scrl
 ;
 
-/*
- *  Callbacks that are attached to the buttons and widgets in the
- *   interface.
- *
- *   ... and other routines.
- */
-
-extern void
-  olc_new_ques(),
-  olc_cont_ques(),
-  olc_stock(),
-  olc_help(),
-  olc_quit(),
-  olc_send(),
-  olc_done(),
-  olc_cancel(),
-  olc_savelog(),
-  olc_motd(),
-  olc_update(),
-  dlg_ok(),
-  dlg_cancel(),
-  olc_topic_select(),
-  olc_clear_newq(),
-  olc_send_newq(),
-  olc_send_msg(),
-  olc_clear_msg(),
-  olc_close_msg(),
-
-  Help(),	
-
-  MakeInterface(),
-  MakeContqForm(),
-  MakeNewqForm(),
-  MakeMotdForm(),
-  MakeDialogs(),
-
-  t_set_default_instance()
-;
-
-extern ERRCODE x_done(),
-  x_cancel(),
-  x_list_topics(),
-  x_ask(),
-  x_reply(),
-  handle_response()
-;
-
-extern char *happy_message();
 
 /*
  *  Global variables.
@@ -151,3 +89,103 @@ extern int has_question,
 
 #define  MotifString(s)		XmStringLtoRCreate(s, XmSTRING_DEFAULT_CHARSET)
 #define  AddItemToList(l, s)	XmListAddItem(l, MotifString(s), 0);
+
+/* File locations */
+
+#define HELP_PATH "/afs/athena/astaff/project/olcdev/vax/clients/motif/help/"
+
+/*
+ * Function Prototypes
+ */
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define P_(s) s
+#else
+# define P_(s) ()
+#endif
+
+
+/* Cursor.c */
+void SetCursor P_((int wait));
+
+/* main.c */
+int olc_init P_((void));
+
+     /* procs.c */
+void Help P_((Widget w, int *tag, XmAnyCallbackStruct *callback_data));
+void olc_new_ques P_((Widget w, caddr_t *tag,
+		      XmAnyCallbackStruct *callback_data));
+void olc_clear_newq P_((Widget w, caddr_t *tag, 
+			XmAnyCallbackStruct *callback_data));
+void olc_send_newq P_((Widget w, caddr_t *tag,
+		       XmAnyCallbackStruct *callback_data));
+void olc_topic_select P_((Widget w, caddr_t *tag,
+			  XmListCallbackStruct *callback_data));
+void olc_cont_ques P_((Widget w, caddr_t *tag,
+		       XmAnyCallbackStruct *callback_data));
+int olc_topic P_((void));
+int olc_status P_((void));
+int olc_replay P_((void));
+void olc_done P_((Widget w, caddr_t *tag,
+		  XmAnyCallbackStruct *callback_data));
+void olc_cancel P_((Widget w, caddr_t *tag,
+		    XmAnyCallbackStruct *callback_data));
+void olc_savelog P_((Widget w, caddr_t *tag,
+		     XmAnyCallbackStruct *callback_data));
+void olc_stock P_((Widget w, caddr_t *tag,
+		   XmAnyCallbackStruct *callback_data));
+void olc_motd P_((Widget w, caddr_t *tag,
+		  XmAnyCallbackStruct *callback_data));
+void olc_update P_((Widget w, caddr_t *tag,
+		    XmAnyCallbackStruct *callback_data));
+void olc_help P_((Widget w, caddr_t *tag,
+		  XmAnyCallbackStruct *callback_data));
+void olc_quit P_((Widget w, caddr_t *tag,
+		  XmAnyCallbackStruct *callback_data));
+void dlg_ok P_((Widget w, int *tag,
+		XmAnyCallbackStruct *callback_data));
+void dlg_cancel P_((Widget w, int *tag,
+		    XmAnyCallbackStruct *callback_data));
+void olc_send P_((Widget w, caddr_t *tag,
+		  XmAnyCallbackStruct *callback_data));
+void olc_clear_msg P_((Widget w, caddr_t *tag,
+		       XmAnyCallbackStruct *callback_data));
+void olc_send_msg P_((Widget w, caddr_t *tag,
+		      XmAnyCallbackStruct *callback_data));
+void olc_close_msg P_((Widget w, caddr_t *tag,
+		       XmAnyCallbackStruct *callback_data));
+char *parse_text P_((char *string, int columns));
+
+/* visual.c */
+void MakeInterface P_((void));
+void MakeNewqForm P_((void));
+void MakeContqForm P_((void));
+void MakeMotdForm P_((void));
+void MakeDialogs P_((void));
+
+/* x_ask.c */
+ERRCODE x_ask P_((REQUEST *Request, char *topic, char *question));
+
+/* x_instance.c */
+int t_set_default_instance P_((REQUEST *Request));
+
+/* x_motd.c */
+ERRCODE x_get_motd P_((REQUEST *Request, int type, char *file, int dialog));
+
+/* x_resolve.c */
+ERRCODE x_done P_((REQUEST *Request));
+ERRCODE x_cancel P_((REQUEST *Request));
+
+/* x_send.c */
+ERRCODE x_reply P_((REQUEST *Request, char *message));
+
+/* x_topic.c */
+ERRCODE x_list_topics P_((REQUEST *Request, char *file));
+
+/* x_utils.c */
+ERRCODE handle_response P_((int response, REQUEST *req));
+int popup_error P_((char *message));
+int popup_option P_((char *message));
+char *happy_message P_((void));
+
+#undef P_
