@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <hesiod.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <hesiod.h>
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long) -1)
@@ -20,63 +20,81 @@ static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
 static int vercmp(const char *v1, const char *v2);
 
-/*
- * Make a hesiod cluster query
- * for the machine you are on
- * and produce a set of environment variable
- * assignments for the C shell or the Bourne shell,
- * depending on the '-b' flag
+/* Make a hesiod cluster query for the machine you are on and produce a
+ * set of environment variable assignments for the C shell or the Bourne
+ * shell, depending on the '-b' flag
  *
- * If any stdio errors, truncate standard output to 0
- * and return an exit status.
+ * If any stdio errors, truncate standard output to 0 and return an exit
+ * status.
  */
 
 int main(int argc, char **argv)
 {
   char buf[256], **hp, **hpp;
   int debug = 0, bourneshell = 0, ch;
+  void *hescontext;
 
-  while ((ch = getopt(argc, argv, "bd")) != -1) {
-    switch (ch) {
-    case 'd':
-      debug = 1;
-      break;
-    case 'b':
-      bourneshell = 1;
-      break;
-    default:
-      usage();
+  while ((ch = getopt(argc, argv, "bd")) != -1)
+    {
+      switch (ch)
+	{
+	case 'd':
+	  debug = 1;
+	  break;
+	case 'b':
+	  bourneshell = 1;
+	  break;
+	default:
+	  usage();
+	}
     }
-  }
   argc -= optind;
   argv += optind;
 
   if (argc != 2)
     usage();
 
-  if (debug) {
-    /* Get clusterinfo records from standard input. */
-    hpp = (char **) malloc(100 * sizeof(char *));
-    hp = hpp;
-    while (fgets(buf, sizeof(buf), stdin) != NULL)
-      {
-	*hpp = malloc(strlen(buf) + 1);
-	strcpy(*hpp, buf);
-	(*hpp)[strlen(buf) - 1] = 0;
-	hpp++;
-      }
-    *hpp = NULL;
-  } else {
-    /* Get clusterinfo records from Hesiod. */
-    hp = hes_resolve(argv[0], "cluster");
-    if (hp == NULL)
-      {
-	fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
-	return(1);
-      }
-  }
+  if (debug)
+    {
+      /* Get clusterinfo records from standard input. */
+      hpp = (char **) malloc(100 * sizeof(char *));
+      hp = hpp;
+      while (fgets(buf, sizeof(buf), stdin) != NULL)
+	{
+	  *hpp = malloc(strlen(buf) + 1);
+	  strcpy(*hpp, buf);
+	  (*hpp)[strlen(buf) - 1] = 0;
+	  hpp++;
+	}
+      *hpp = NULL;
+    }
+  else
+    {
+      /* Get clusterinfo records from Hesiod. */
+      if (hesiod_init(&hescontext) != 0)
+	{
+	  perror("hesiod_init");
+	  return 0;
+	}
+      hp = hesiod_resolve(hescontext, argv[0], "cluster");
+      if (hp == NULL && errno == ENOENT)
+	{
+	  fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
+	  return 2;
+	}
+      else if (hp == NULL)
+	{
+	  perror("hesiod_resolve");
+	  return 1;
+	}
+    }
 
   shellenv(hp, argv[1], bourneshell);
+  if (!debug)
+    {
+      hesiod_free_list(hescontext, hp);
+      hesiod_end(hescontext);
+    }
   return (ferror(stdout)) ? 1 : 0;
 }
 
@@ -261,5 +279,5 @@ static int vercmp(const char *v1, const char *v2)
 
   sscanf(v1, "%d.%d", &major1, &minor1);
   sscanf(v2, "%d.%d", &major2, &minor2);
-  return((major1 != major2) ? (major1 - major2) : (minor1 - minor2));
+  return (major1 != major2) ? (major1 - major2) : (minor1 - minor2);
 }
