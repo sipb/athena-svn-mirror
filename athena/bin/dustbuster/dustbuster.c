@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.2 2001-05-30 02:15:28 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.3 2002-04-18 12:22:58 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -38,6 +38,7 @@ static void usage(void);
 static const char *progname;
 static pid_t child_pid = 0;
 static int sig = SIGHUP;
+static int session_leader = 0;
 
 int main(int argc, char **argv)
 {
@@ -69,6 +70,10 @@ int main(int argc, char **argv)
 	    signame = *++argv;		/* -s SIGNAME */
 	  sig = find_signal(signame);
 	  argv++;
+	  break;
+
+	case 'S':
+	  session_leader = 1;
 	  break;
 
 	default:
@@ -139,7 +144,7 @@ static void ttybust(char **argv)
       fd = open("/dev/tty", O_RDWR, 0);
       if (fd == -1)
 	{
-	  kill(child_pid, sig);
+	  killpg(child_pid, sig);
 	  exit(0);
 	}
       close(fd);
@@ -177,6 +182,12 @@ static void start_child(char **argv)
   /* In the child, run the specified program. */
   if (child_pid == 0)
     {
+      /* Make session leader if requested, or process group leader if not. */
+      if (session_leader)
+	setsid();
+      else
+	setpgid(getpid(), getpid());
+
       execvp(argv[0], argv);
       fprintf(stderr, "%s: error: can't execute %s: %s\n", progname, argv[0],
 	      strerror(errno));
@@ -189,7 +200,7 @@ static void start_child(char **argv)
  */
 static int xhandler(Display *dpy)
 {
-  kill(child_pid, sig);
+  killpg(child_pid, sig);
   exit(0);
 }
 
@@ -252,6 +263,6 @@ static int find_signal(const char *signame)
 
 static void usage(void)
 {
-  fprintf(stderr, "Usage: %s [-s signame] program args...\n", progname);
+  fprintf(stderr, "Usage: %s [-S] [-s signame] program args...\n", progname);
   exit(1);
 }
