@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.13 2000-03-31 14:59:00 ghudson Exp $
+# $Id: Makefile.athena,v 1.14 2000-04-09 16:28:51 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -13,14 +13,21 @@ prepare:
 clean:
 	${MAKE} clean
 
+# Unfortunately, this build step cannot be reliably aborted and
+# restarted.
 all:
-	${MAKE} all LANGUAGES=c
-	${MAKE} stage1
-	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2
+	cd libiberty && ${MAKE} all
+	cd gcc && ${MAKE} all LANGUAGES=c
+	cd gcc && ${MAKE} stage1
+	cd libiberty && ${MAKE} clean
+	${MAKE} all CC="`pwd`/gcc/stage1/xgcc -B`pwd`/gcc/stage1/" \
+		CFLAGS="-g -O2"
 
 check:
 
-install:
+install: force
 	mkdir -p "$$SRVD/usr"
-	${MAKE} install "prefix=$$SRVD/usr/gcc" CC="stage1/xgcc -Bstage1/" \
-		CFLAGS=-O2
+	${MAKE} install "prefix=$$SRVD/usr/gcc" \
+		CC="`pwd`/gcc/stage1/xgcc -B`pwd`/gcc/stage1/" CFLAGS="-g -O2"
+
+force:
