@@ -1,6 +1,6 @@
 /* scansbr.c - routines to help scan along... */
 #ifndef	lint
-static char ident[] = "@(#)$Id: scansbr.c,v 1.1.1.1 1996-10-07 07:14:21 ghudson Exp $";
+static char ident[] = "@(#)$Id: scansbr.c,v 1.2 1999-01-29 18:28:50 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -238,14 +238,26 @@ register FILE   *inb;
 		 */
 	body: 	;
 		while (state == BODY) {
+#ifdef _STDIO_USES_IOSTREAM
+		    if (scnout->_IO_write_ptr == scnout->_IO_write_end) {
+#else
 		    if (scnout->_cnt <= 0) {
+#endif
 			if (fflush(scnout) == EOF)
 			    adios (scnmsg, "write error on");
 		    }
+#ifdef _STDIO_USES_IOSTREAM
+		    state = m_getfld(state, name, scnout->_IO_write_ptr,
+				     (long) scnout->_IO_write_ptr
+				     - (long) scnout->_IO_write_end,
+				     inb);
+		    scnout->_IO_write_ptr += msg_count;
+#else
 		    state = m_getfld( state, name, scnout->_ptr,
 				      -(scnout->_cnt), inb );
 		    scnout->_cnt -= msg_count;
 		    scnout->_ptr += msg_count;
+#endif
 		}
 		goto finished;
 
