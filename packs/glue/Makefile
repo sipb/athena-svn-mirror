@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.36 1999-09-02 14:57:10 ghudson Exp $
+# $Id: Makefile,v 1.37 2000-03-01 03:23:16 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -8,7 +8,7 @@ ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
 	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
-	olh_motif pts usermaint vos xinfo \
+	olh_motif pts stella usermaint vos xinfo \
 	show-application show-audio show-binhex show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex
@@ -44,6 +44,8 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/mrcheck.1	${ATHMANDIR}/cat1/mrcheck.1 \
 		${HELP}/man/man1/olh.1		${ATHMANDIR}/man1/olh.1 \
 		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
+		${MOIRA}/man/man1/stella.1	${ATHMANDIR}/man1/stella.1 \
+		${MOIRA}/man/cat1/stella.1	${ATHMANDIR}/cat1/stella.1 \
 		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
 		${MOIRA}/man/cat1/usermaint.1	${ATHMANDIR}/cat1/usermaint.1 \
 		${MKSERV}/man/man8/mkserv.8	${ATHMANDIR}/man8/mkserv.8 \
@@ -94,6 +96,7 @@ install:
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
+	install -c -m 555 stella ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
 	install -c -m 555 verify-message.sh \
