@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/registerCB.c,v 1.1 1991-09-03 11:17:25 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/registerCB.c,v 1.2 1991-12-17 11:37:18 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -23,23 +23,21 @@ static char rcsid[] =
 
 static struct hash *h = NULL;
 
+
 void XjRegisterCallback(w, name)
-XjCallbackProc w;
-char *name;
+     XjCallbackProc w;
+     char *name;
 {
   XrmQuark quark;
-  int i;
   
   quark = XrmStringToQuark(name);
     
   if ( h == NULL ) 
     h = create_hash(HASHSIZE);
 
-  i = hash_store(h, quark, (caddr_t)w);
-  
-  if (i == 1)		/* if a callback already exists by that name, warn */
-    {
-      char errtext[100];
+  if (hash_store(h, quark, (caddr_t)w) == 1)	/* if a callback already */
+    {						/* exists by that name, */
+      char errtext[100];			/* give a warning */ 
 
       sprintf(errtext,
 	      "XjRegisterCallbacks: duplicate procedure registration: %s",
@@ -48,42 +46,29 @@ char *name;
     }
 }
 
+
 XjCallbackProc XjGetCallback(string)
-      char *string;
+     char *string;
 {
-   XrmQuark quark;
-   XjCallbackProc w;
-
-   if (h == NULL)
-     return NULL;
-
-   quark = XrmStringToQuark(string);
-   
-   w = (XjCallbackProc)(hash_lookup(h, quark));
-   return(w);
- }
-   
-void XjRegisterCallbacks(c, num)
-XjCallbackRec c[];
-int num;
-{
-  int i;
   XrmQuark quark;
+  XjCallbackProc w;
 
   if (h == NULL)
-    h = create_hash(HASHSIZE);
+    return NULL;
+
+  quark = XrmStringToQuark(string);
+   
+  w = (XjCallbackProc)(hash_lookup(h, quark));
+  return(w);
+}
+
+
+void XjRegisterCallbacks(c, num)
+     XjCallbackRec c[];
+     int num;
+{
+  int i;
 
   for (i = 0; i < num; i++)
-    {
-      quark = XrmStringToQuark(c[i].name);
-      if (1 == hash_store(h, quark, (caddr_t) c[i].proc))
-        {
-	  char errtext[100];
-
-          sprintf(errtext,
-		  "XjRegisterCallbacks: duplicate procedure registration: %s",
-                  c[i].name);
-          XjWarning(errtext);
-        }
-    }
+    XjRegisterCallback(c[i].proc, c[i].name);
 }
