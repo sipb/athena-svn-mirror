@@ -107,6 +107,7 @@ PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
 PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+RELDATE = @RELDATE@
 STRIP = @STRIP@
 VERSION = @VERSION@
 WITH_DEBUGGER = @WITH_DEBUGGER@
@@ -218,6 +219,11 @@ EXTRA_DIST = \
     bug-96.out bug-96.xsl \
     bug-97.out bug-97.xsl \
     bug-98.out bug-98.xsl \
+    bug-99.out bug-99.xsl \
+    bug-100.out bug-100.xsl \
+    bug-101.out bug-101.xsl \
+    bug-102.out bug-102.xsl \
+    bug-102-inc.out bug-102-inc.xsl \
     character.out character.xsl \
     character2.out character2.xsl \
     itemschoose.out itemschoose.xsl \

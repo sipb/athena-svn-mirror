@@ -47,6 +47,7 @@
 #include "imports.h"
 #include "transform.h"
 
+#define WITH_XSLT_DEBUG_ATTRIBUTES
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_ATTRIBUTES
 #endif
@@ -170,6 +171,7 @@ xsltAddAttrElemList(xsltAttrElemPtr list, xmlNodePtr attr) {
 	    return(cur);
 	if (cur->next == NULL) {
 	    cur->next = xsltNewAttrElem(attr);
+	    return(list);
 	}
 	cur = next;
     }
@@ -266,10 +268,9 @@ xsltMergeAttrElemList(xsltAttrElemPtr list, xsltAttrElemPtr old) {
 /**
  * xsltParseStylesheetAttributeSet:
  * @style:  the XSLT stylesheet
- * @template:  the "preserve-space" element
+ * @cur:  the "attribute-set" element
  *
- * parse an XSLT stylesheet preserve-space element and record
- * elements needing preserving
+ * parse an XSLT stylesheet attribute-set element
  */
 
 void
@@ -373,14 +374,16 @@ xsltParseStylesheetAttributeSet(xsltStylesheetPtr style, xmlNodePtr cur) {
 		values2->set = ncname2;
 		values2->ns = prefix2;
 		values = xsltMergeAttrElemList(values, values2);
+		xsltFreeAttrElem(values2);
+	    } else {
+		if (ncname2 != NULL)
+		    xmlFree(ncname2);
+		if (prefix2 != NULL)
+		    xmlFree(prefix2);
 	    }
 
 	    if (attrib != NULL)
 		xmlFree(attrib);
-	    if (ncname2 != NULL)
-		xmlFree(ncname2);
-	    if (prefix2 != NULL)
-		xmlFree(prefix2);
 	}
 	attrib = endattr;
     }
@@ -489,6 +492,38 @@ xsltResolveSASCallback(xsltAttrElemPtr values, xsltStylesheetPtr style,
 }
 
 /**
+ * xsltMergeSASCallback,:
+ * @style:  the XSLT stylesheet
+ *
+ * Merge an attribute set from an imported stylesheet.
+ */
+static void
+xsltMergeSASCallback(xsltAttrElemPtr values, xsltStylesheetPtr style,
+	               const xmlChar *name, const xmlChar *ns,
+		       ATTRIBUTE_UNUSED const xmlChar *ignored) {
+    int ret;
+
+    ret = xmlHashAddEntry2(style->attributeSets, name, ns, values);
+    if (ret < 0) {
+	/*
+	 * Add failed, this attribute set can be removed.
+	 */
+#ifdef WITH_XSLT_DEBUG_ATTRIBUTES
+	xsltGenericDebug(xsltGenericDebugContext,
+		"attribute sets %s present already in top stylesheet\n",
+		         name);
+#endif
+	xsltFreeAttrElem(values);
+#ifdef WITH_XSLT_DEBUG_ATTRIBUTES
+    } else {
+	xsltGenericDebug(xsltGenericDebugContext,
+		"attribute sets %s moved to top stylesheet\n",
+		         name);
+#endif
+    }
+}
+
+/**
  * xsltResolveStylesheetAttributeSet:
  * @style:  the XSLT stylesheet
  *
@@ -496,10 +531,40 @@ xsltResolveSASCallback(xsltAttrElemPtr values, xsltStylesheetPtr style,
  */
 void
 xsltResolveStylesheetAttributeSet(xsltStylesheetPtr style) {
+    xsltStylesheetPtr cur;
+
 #ifdef WITH_XSLT_DEBUG_ATTRIBUTES
     xsltGenericDebug(xsltGenericDebugContext,
 	    "Resolving attribute sets references\n");
 #endif
+    /*
+     * First aggregate all the attribute sets definitions from the imports
+     */
+    cur = xsltNextImport(style);
+    while (cur != NULL) {
+	if (cur->attributeSets != NULL) {
+	    if (style->attributeSets == NULL) {
+#ifdef WITH_XSLT_DEBUG_ATTRIBUTES
+		xsltGenericDebug(xsltGenericDebugContext,
+		    "creating attribute set table\n");
+#endif
+		style->attributeSets = xmlHashCreate(10);
+	    }
+	    xmlHashScanFull(cur->attributeSets, 
+		(xmlHashScannerFull) xsltMergeSASCallback, style);
+	    /*
+	     * the attribute lists have either been migrated to style
+	     * or freed directly in xsltMergeSASCallback()
+	     */
+	    xmlHashFree(cur->attributeSets, NULL);
+	    cur->attributeSets = NULL;
+	}
+	cur = xsltNextImport(cur);
+    }
+
+    /*
+     * Then resolve all the references and computes the resulting sets
+     */
     if (style->attributeSets != NULL) {
 	xmlHashScanFull(style->attributeSets, 
 		(xmlHashScannerFull) xsltResolveSASCallback, style);

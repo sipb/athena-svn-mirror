@@ -26,7 +26,11 @@ A:link, A:visited, A:active { text-decoration: underline }
 <td valign="top" width="200" bgcolor="#8b7765"><table border="0" cellspacing="0" cellpadding="1" width="100%" bgcolor="#000000"><tr><td>
 <table width="100%" border="0" cellspacing="1" cellpadding="3">
 <tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>Main Menu</b></center></td></tr>
-<tr><td bgcolor="#fffacd"><ul>
+<tr><td bgcolor="#fffacd">
+<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
+<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
+</form>
+<ul>
 <li><a href="index.html">Home</a></li>
 <li><a href="intro.html">Introduction</a></li>
 <li><a href="docs.html">Documentation</a></li>
@@ -45,20 +49,6 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li>
 <a href="xslt.html">flat page</a>, <a href="site.xsl">stylesheet</a>
 </li>
-</ul></td></tr>
-</table>
-<table width="100%" border="0" cellspacing="1" cellpadding="3">
-<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
-<tr><td bgcolor="#fffacd">
-<form action="search.php" enctype="application/x-www-form-urlencoded" method="GET">
-<input name="query" type="TEXT" size="20" value=""><input name="submit" type="submit" value="Search ...">
-</form>
-<ul>
-<li><a href="APIchunk0.html">Alphabetic</a></li>
-<li><a href="APIconstructors.html">Constructors</a></li>
-<li><a href="APIfunctions.html">Functions/Types</a></li>
-<li><a href="APIfiles.html">Modules</a></li>
-<li><a href="APIsymbols.html">Symbols</a></li>
 </ul>
 </td></tr>
 </table>
@@ -71,12 +61,22 @@ A:link, A:visited, A:active { text-decoration: underline }
 <li><a href="http://xmlsoft.org/">XML libxml</a></li>
 <li><a href="http://phd.cs.unibo.it/gdome2/">DOM gdome2</a></li>
 <li><a href="ftp://xmlsoft.org/">FTP</a></li>
-<li><a href="http://www.fh-frankfurt.de/~igor/projects/libxml/">Windows binaries</a></li>
+<li><a href="http://www.zlatkovic.com/projects/libxml/">Windows binaries</a></li>
 <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
 <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
 <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
 <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxslt">Bug Tracker</a></li>
 <li><a href="http://xsldbg.sourceforge.net/">Xsldbg Debugger</a></li>
+</ul></td></tr>
+</table>
+<table width="100%" border="0" cellspacing="1" cellpadding="3">
+<tr><td colspan="1" bgcolor="#eecfa1" align="center"><center><b>API Indexes</b></center></td></tr>
+<tr><td bgcolor="#fffacd"><ul>
+<li><a href="APIchunk0.html">Alphabetic</a></li>
+<li><a href="APIconstructors.html">Constructors</a></li>
+<li><a href="APIfunctions.html">Functions/Types</a></li>
+<li><a href="APIfiles.html">Modules</a></li>
+<li><a href="APIsymbols.html">Symbols</a></li>
 </ul></td></tr>
 </table>
 </td></tr></table></td>
@@ -117,7 +117,8 @@ for portability problem, it makes things really harder to track and in some
 cases I'm not the best person to answer a given question, ask the list
 instead. <strong>Do not send code, I won't debug it</strong> (but patches are
 really appreciated!).</p>
-<p>Check the following too before posting:</p>
+<p>Check the following too <span style="color: #E50000">before
+posting</span>:</p>
 <ul>
 <li>
 <a href="search.php">use the search engine</a> to get informations
@@ -135,6 +136,25 @@ really appreciated!).</p>
     logs just preceding the possible problem</li>
   <li>Please send the command showing the error as well as the input and
     stylesheet (as an attachment)</li>
+</ul>
+<p>Then send the bug with associated informations to reproduce it to the <a href="mailto:xslt@gnome.org">xslt@gnome.org</a> list; if it's really libxslt
+related I will approve it. Please do not send mail to me directly, it makes
+things really hard to track and in some cases I am not the best person to
+answer a given question, ask on the list.</p>
+<p>To <span style="color: #E50000">be really clear about support</span>:</p>
+<ul>
+<li>Support or help <span style="color: #E50000">request MUST be sent to
+    the list or on bugzilla</span> in case of problems, so that the Question
+    and Answers can be shared publicly. Failing to do so carries the implicit
+    message &quot;I want free support but I don't want to share the benefits with
+    others&quot; and is not welcome.</li>
+  <li>There is <span style="color: #E50000">no garantee for support</span>,
+    if your question remains unanswered after a week, repost it, making sure
+    you gave all the detail needed and the informations requested.</li>
+  <li>Failing to provide informations as requested or double checking first
+    for prior feedback also carries the implicit message &quot;the time of the
+    library maintainers is less valuable than my time&quot; and might not be
+    welcome.</li>
 </ul>
 <p>Of course, bugs reports with a suggested patch for fixing them will
 probably be processed faster.</p>

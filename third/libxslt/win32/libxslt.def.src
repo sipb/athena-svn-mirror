@@ -13,7 +13,7 @@
    from the libxslt.dll, its name is most certainly missing here.
    Add the name of the offending function to this file and rebuild.
 
-   21.03.2002, Igor Zlatkovic (igor@stud.fh-frankfurt.de)
+   21.03.2002, Igor Zlatkovic (igor@zlatkovic.com)
 */
 
 LIBRARY libxslt
@@ -24,6 +24,7 @@ EXPORTS
 	xsltParseStylesheetAttributeSet
 	xsltFreeAttributeSetsHashes
 	xsltApplyAttributeSet
+	xsltResolveStylesheetAttributeSet
 
 
 /* documents.h
@@ -200,6 +201,7 @@ EXPORTS
 	xsltAttrListTemplateProcess
 	xsltAttrTemplateProcess
 	xsltAttrTemplateValueProcess
+	xsltAttrTemplateValueProcessNode
 
 
 /* transform.h
@@ -242,6 +244,8 @@ EXPORTS
 
 	/* Hook for the debugger if activated. */
 	xslHandleDebugger
+
+	xsltCopyTree
 
 
 /* variables.h
@@ -293,7 +297,7 @@ EXPORTS
 	xsltAllocateExtraCtxt
 
 
-/* xsltInternals.h
+/* xsltutils.h
    --------------------------------------------------------------------- */
 	/* Our own version of namespaced atributes lookup. */
 	xsltGetNsProp
@@ -307,10 +311,15 @@ EXPORTS
 	xsltMessage
 	xsltSetGenericErrorFunc
 	xsltSetGenericDebugFunc
+	xsltSetTransformErrorFunc
+	xsltTransformError
 
 	/* Sorting. */
 	xsltDocumentSortFunction
+	xsltComputeSortResult
 	xsltDoSortFunction
+	xsltSetSortFunc
+	xsltSetCtxtSortFunc
 
 	/* QNames handling. */
 	xsltGetQNameURI
@@ -320,9 +329,11 @@ EXPORTS
 	xsltSaveResultToFilename
 	xsltSaveResultToFile
 	xsltSaveResultToFd
+	xsltSaveResultToString
 
 	/* Profiling. */
 	xsltSaveProfiling
+	xsltGetProfileInformation
 	xsltTimestamp
 	xsltCalibrateAdjust
 

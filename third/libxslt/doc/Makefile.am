@@ -1,8 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 EXTRA_DIST = 			\
 	libxslt-api.xml		\
+	libexslt-api.xml		\
 	libxslt-decl.txt	\
-	xsltproc.xml
+	xsltproc.xml		\
+	apibuild.py
 
 # The name of the module.
 DOC_MODULE=libxslt-$(VERSION)
@@ -51,15 +53,13 @@ html:
 	if ! test -d html ; then mkdir html ; fi
 	-cd html && gtkdoc-mkhtml libxslt ../$(DOC_MAIN_SGML_FILE)
 
-xml: sgml
+xml: sgml 
 	if test -d xml ; then rm xml/* ; else mkdir xml ; fi
 	-@(for s in sgml/*.sgml ; do name=`basename $$s .sgml` ; \
-	   echo '<!DOCTYPE refentry [ <!ENTITY nbsp   "&#x00A0;"> ]>' > \
-	       xml/"$$name".xml ;\
-	   grep -v "^<colspec" $$s >> xml/"$$name".xml ; done)
+	   xmllint --sgml $$s > xml/"$$name".xml ; done)
 	   
-libxslt-api.xml libxslt-refs.xml: xml parsedecl.py libxslt-decl.txt libxslt-decl-list.txt
-	-(./parsedecl.py)
+libxslt-api.xml libexslt-api.xml: apibuild.py ../libxslt/*.h ../libxslt/*.c ../libexslt/*.h ../libexslt/*.c
+	-(./apibuild.py)
 
 api: libxslt-api.xml libxslt-refs.xml
 

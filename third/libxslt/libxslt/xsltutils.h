@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /**
- * TODO:
+ * XSLT_TODO:
  *
  * Macro to flag unimplemented blocks.
  */
@@ -34,7 +34,7 @@ extern "C" {
             __FILE__, __LINE__);
 
 /**
- * STRANGE:
+ * XSLT_STRANGE:
  *
  * Macro to flag that a problem was detected internally.
  */
@@ -125,9 +125,17 @@ void		xsltTransformError		(xsltTransformContextPtr ctxt,
  */
 
 void		xsltDocumentSortFunction	(xmlNodeSetPtr list);
-void		xsltDoSortFunction		(xsltTransformContextPtr ctxt,
+void		xsltSetSortFunc			(xsltSortFunc handler);
+void		xsltSetCtxtSortFunc		(xsltTransformContextPtr ctxt,
+						 xsltSortFunc handler);
+void		xsltDefaultSortFunction		(xsltTransformContextPtr ctxt,
 						 xmlNodePtr *sorts,
 						 int nbsorts);
+void		xsltDoSortFunction		(xsltTransformContextPtr ctxt,
+						 xmlNodePtr * sorts,
+						 int nbsorts);
+xmlXPathObjectPtr *xsltComputeSortResult	(xsltTransformContextPtr ctxt,
+						 xmlNodePtr sort);
 
 /*
  * QNames handling.
@@ -162,10 +170,16 @@ int             xsltSaveResultToString          (xmlChar **doc_txt_ptr,
  */
 void		xsltSaveProfiling		(xsltTransformContextPtr ctxt,
 						 FILE *output);
+xmlDocPtr	xsltGetProfileInformation	(xsltTransformContextPtr ctxt);
 
 long		xsltTimestamp			(void);
 void		xsltCalibrateAdjust		(long delta);
 
+/**
+ * XSLT_TIMESTAMP_TICS_PER_SEC:
+ *
+ * Sampling precision for profiling
+ */
 #define XSLT_TIMESTAMP_TICS_PER_SEC 100000l
 
 /*
@@ -202,4 +216,5 @@ void		xslDropCall			(void);
 #endif
 
 #endif /* __XML_XSLTUTILS_H__ */
+
 

@@ -15,6 +15,7 @@
 #include <libxml/tree.h>
 #include <libxml/hash.h>
 #include <libxml/xpath.h>
+#include <libxml/xmlerror.h>
 #include <libxslt/xslt.h>
 #include "numbersInternals.h"
 
@@ -27,7 +28,7 @@ extern "C" {
  *
  * Max number of specified xsl:sort on an element.
  */
-#define XSLT_MAX_SORT 5
+#define XSLT_MAX_SORT 15
 
 /**
  * XSLT_PAT_NO_PRIORITY:
@@ -49,8 +50,29 @@ struct _xsltRuntimeExtra {
     void       *val;		/* data not needing deallocation */
 };
 
+/**
+ * XSLT_RUNTIME_EXTRA_LST:
+ * @ctxt: the transformation context
+ * @nr: the index
+ *
+ * Macro used to access extra information stored in the context
+ */
 #define XSLT_RUNTIME_EXTRA_LST(ctxt, nr) (ctxt)->extras[(nr)].info
+/**
+ * XSLT_RUNTIME_EXTRA_FREE:
+ * @ctxt: the transformation context
+ * @nr: the index
+ *
+ * Macro used to free extra information stored in the context
+ */
 #define XSLT_RUNTIME_EXTRA_FREE(ctxt, nr) (ctxt)->extras[(nr)].deallocate
+/**
+ * XSLT_RUNTIME_EXTRA:
+ * @ctxt: the transformation context
+ * @nr: the index
+ *
+ * Macro used to define extra information stored in the context
+ */
 #define	XSLT_RUNTIME_EXTRA(ctxt, nr) (ctxt)->extras[(nr)].val
 
 /**
@@ -147,6 +169,17 @@ typedef void (*xsltTransformFunction) (xsltTransformContextPtr ctxt,
 				       xmlNodePtr inst,
 			               xsltElemPreCompPtr comp);
 
+/**
+ * xsltSortFunc:
+ * @ctxt:    a transformation context
+ * @sorts:   the node-set to sort
+ * @nbsorts: the number of sorts
+ *
+ * Signature of the function to use during sorting
+ */
+typedef void (*xsltSortFunc) (xsltTransformContextPtr ctxt, xmlNodePtr *sorts,
+			      int nbsorts);
+
 typedef enum {
     XSLT_FUNC_COPY=1,
     XSLT_FUNC_SORT,
@@ -222,6 +255,10 @@ struct _xsltStylePreComp {
     xmlChar *order;             /* sort */
     int      has_order;		/* sort */
     int      descending;	/* sort */
+    xmlChar *lang;		/* sort */
+    int      has_lang;		/* sort */
+    xmlChar *case_order;	/* sort */
+    int      lower_first;	/* sort */
 
     xmlChar *use;		/* copy, element */
     int      has_use;		/* copy, element */
@@ -459,6 +496,8 @@ struct _xsltTransformContext {
 
     xmlGenericErrorFunc  error;		/* a specific error handler */
     void              * errctx;		/* context for the error handler */
+
+    xsltSortFunc      sortfunc;		/* a ctxt specific sort routine */
 };
 
 /**
@@ -503,6 +542,7 @@ xsltStylesheetPtr	xsltParseStylesheetProcess(xsltStylesheetPtr ret,
 void			xsltParseStylesheetOutput(xsltStylesheetPtr style,
 						  xmlNodePtr cur);
 xsltStylesheetPtr	xsltParseStylesheetDoc	(xmlDocPtr doc);
+xsltStylesheetPtr	xsltParseStylesheetImportedDoc(xmlDocPtr doc);
 xsltStylesheetPtr	xsltLoadStylesheetPI	(xmlDocPtr doc);
 void 			xsltNumberFormat	(xsltTransformContextPtr ctxt,
 						 xsltNumberDataPtr data,

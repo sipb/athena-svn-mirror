@@ -107,6 +107,7 @@ PYTHON_SITE_PACKAGES = @PYTHON_SITE_PACKAGES@
 PYTHON_SUBDIR = @PYTHON_SUBDIR@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+RELDATE = @RELDATE@
 STRIP = @STRIP@
 VERSION = @VERSION@
 WITH_DEBUGGER = @WITH_DEBUGGER@
@@ -246,6 +247,10 @@ test tests: $(top_builddir)/xsltproc/xsltproc
 	rm -f result)
 	@($(CHECKER) $(top_builddir)/xsltproc/xsltproc $(srcdir)/message.xsl $(srcdir)/message.xml > result 2>&1 ; \
 	diff $(srcdir)/message.result result; \
+	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0" || true;\
+	rm -f result)
+	@($(CHECKER) $(top_builddir)/xsltproc/xsltproc $(srcdir)/fragment.xsl $(srcdir)/fragment.xml > result 2>&1 ; \
+	diff $(srcdir)/fragment.result result; \
 	grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0" || true;\
 	rm -f result)
 
