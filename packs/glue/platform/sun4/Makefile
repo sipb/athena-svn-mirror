@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.12.2.1 1998-09-24 14:51:21 ghudson Exp $
+# $Id: Makefile,v 1.12.2.2 1998-09-29 17:24:14 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
 USRLIBDIR=/usr/lib
+PRINTDIR=${USRLIBDIR}/print
 ATTACHRUN=cc f77 f90 pc CC
 ATTRUNTEMPLATE=../../template.sh
 
@@ -21,6 +22,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${USRBINDIR}
 	mkdir -p ${DESTDIR}${USRLIBDIR}
+	mkdir -p ${DESTDIR}${PRINTDIR}
 	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
 	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
@@ -30,6 +32,8 @@ install:
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp
+	rm -f ${DESTDIR}${PRINTDIR}/printd
+	ln -s /os/usr/bin/lp ${DESTDIR}${PRINTDIR}/printd
 	rm -f ${DESTDIR}${ATHBINDIR}/otalk
 	ln -s /usr/bin/talk ${DESTDIR}${ATHBINDIR}/otalk
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
