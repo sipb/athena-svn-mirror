@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2000-05-31 19:37:39 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2000-09-25 22:01:15 ghudson Exp $
 
 TEXMFDIR=/usr/athena/share/texmf
 TEXCONFIG=$$SRVD/usr/athena/bin/texconfig
@@ -25,6 +25,16 @@ install:
 	mkdir -p $$SRVD${TEXMFDIR}/doc/fonts/marvosym
 	mkdir -p $$SRVD${TEXMFDIR}/doc/help/faq/uktug-faq
 	mkdir -p $$SRVD${TEXMFDIR}/dvips/base
+	mkdir -p $$SRVD${TEXMFDIR}/dvips/misc
+	install -c -m 644 bottomtray.pro $$SRVD${TEXMFDIR}/dvips/misc
+	install -c -m 644 duplex.pro $$SRVD${TEXMFDIR}/dvips/misc
+	install -c -m 644 tumble.pro $$SRVD${TEXMFDIR}/dvips/misc
+	rm -f $$SRVD${TEXMFDIR}/dvips/misc/bottomtray
+	ln -s bottomtray.pro $$SRVD${TEXMFDIR}/dvips/misc/bottomtray
+	rm -f $$SRVD${TEXMFDIR}/dvips/misc/duplex
+	ln -s duplex.pro $$SRVD${TEXMFDIR}/dvips/misc/duplex
+	rm -f $$SRVD${TEXMFDIR}/dvips/misc/tumble
+	ln -s tumble.pro $$SRVD${TEXMFDIR}/dvips/misc/tumble
 	rm -f $$SRVD${TEXMFDIR}/doc/index.html
 	ln -s newhelpindex.html $$SRVD${TEXMFDIR}/doc/index.html
 	rm -f $$SRVD${TEXMFDIR}/doc/fonts/marvosym/astro.README
