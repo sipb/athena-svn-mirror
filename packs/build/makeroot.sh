@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.12 2003-01-24 19:45:03 ghudson Exp $
+# $Id: makeroot.sh,v 1.13 2003-02-25 22:29:15 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -23,7 +23,7 @@ linux)
   rpms=`awk '
     /^athena/ { next; }
     /\/(ee|gmc|gnorpm|gtop|libgtop|wmconfig|Xconfigurator)-/ { next; }
-    /\/(iptables|pciutils|shapecfg|sndconfig)-/ { next; }
+    /\/(iptables|pciutils|shapecfg|sndconfig|gnome-pilot)-/ { next; }
     /\/(tcpdump|pygtk|nfs-utils|kudzu-devel|xsri)-/ { next; }
     { print $1; }' $list`
 
