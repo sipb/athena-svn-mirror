@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.4 1991-04-08 20:48:24 lwvanels Exp $
+ *	$Id: nl.c,v 1.5 1991-04-10 00:16:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.4 1991-04-08 20:48:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.5 1991-04-10 00:16:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -143,7 +143,7 @@ KTEXT_ST my_auth;
 /* Need to re-allocate and resize buffer */
     *buflen = MAX(len+1, 2*(*buflen));
     free(*buf);
-    *buf = malloc(*buflen);
+    *buf = (char *) malloc(*buflen);
     if (*buf == NULL) {
       close(fd);
       return(ERR_MEM);
@@ -161,7 +161,7 @@ KTEXT_ST my_auth;
   }
   close(fd);
   (*buf)[len] = '\0';
-  *outlen = len+1;
+  *outlen = len;
   return(SUCCESS);
 }
 
@@ -240,7 +240,7 @@ KTEXT_ST my_auth;
 /* Need to re-allocate and resize buffer */
     *buflen = MAX(len, 2*(*buflen));
     free(*buf);
-    *buf = malloc(*buflen);
+    *buf = (char *) malloc(*buflen);
     if (*buf == NULL) {
       close(fd);
       return(ERR_MEM);
