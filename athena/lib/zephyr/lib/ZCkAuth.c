@@ -4,27 +4,28 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.14 1989-03-24 14:17:38 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.15 1991-03-22 18:17:55 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.14 1989-03-24 14:17:38 jtkohl Exp $";
-#endif lint
+static char rcsid_ZCheckAuthentication_c[] =
+    "$Zephyr: /mit/zephyr/src/lib/RCS/ZCheckAuthentication.c,v 1.14 89/03/24 14:17:38 jtkohl Exp Locker: raeburn $";
+#endif
 
 #include <zephyr/mit-copyright.h>
-
+#include <sys/param.h>
 #include <zephyr/zephyr_internal.h>
 
 /* Check authentication of the notice.
    If it looks authentic but fails the Kerberos check, return -1.
    If it looks authentic and passes the Kerberos check, return 1.
    If it doesn't look authentic, return 0
-  
+
    When not using Kerberos, return (looks-authentic-p)
  */
 int ZCheckAuthentication(notice, from)
@@ -43,6 +44,13 @@ int ZCheckAuthentication(notice, from)
 	return (ZAUTH_NO);
 	
     if (__Zephyr_server) {
+	/* XXX: This routine needs to know where the server ticket
+	   file is! */
+	static char srvtab[MAXPATHLEN];
+	if (srvtab[0] == 0) {
+	    strcpy (srvtab, Z_LIBDIR);
+	    strcat (srvtab, "/srvtab");
+	}
 	if (notice->z_authent_len <= 0)	/* bogus length */
 	    return(ZAUTH_FAILED);
 	if (ZReadAscii(notice->z_ascii_authent, 
@@ -54,7 +62,7 @@ int ZCheckAuthentication(notice, from)
 	authent.length = notice->z_authent_len;
 	result = krb_rd_req(&authent, SERVER_SERVICE, 
 			    SERVER_INSTANCE, from->sin_addr.s_addr, 
-			    &dat, SERVER_SRVTAB);
+			    &dat, srvtab);
 	if (result == RD_AP_OK) {
 		bcopy((char *)dat.session, (char *)__Zephyr_session, 
 		      sizeof(C_Block));
