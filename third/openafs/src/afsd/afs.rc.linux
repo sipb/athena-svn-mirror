@@ -58,7 +58,7 @@ runcmd() {
    echo
 }
 
-SYSCNF=/etc/sysconfig/afs
+SYSCNF=/etc/sysconfig/openafs
 
 # Gather up options and post startup script name, if present
 if [ -f $SYSCNF ] ; then

@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 2002-04-06 21:59:39 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 2002-04-09 19:26:00 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -292,9 +292,9 @@ install:
 	   install -c -m 555 $$ATHENA_SYS/dest/etc/kdump-$${LINUX_VERS} \
 		$$SRVD${ATHBINDIR} ; \
 	   install -c -m 555 $$ATHENA_SYS/dest/root.client${VICE}/afs.rc \
-		$$SRVD/etc/rc.d/init.d/afs ; \
+		$$SRVD/etc/rc.d/init.d/openafs ; \
 	   install -c -m 555 $$ATHENA_SYS/dest/root.client${VICE}/afs.conf \
-		$$SRVD/etc/sysconfig/afs ; \
+		$$SRVD/etc/sysconfig/openafs ; \
 	   for arch in i386 i586 i686; do \
 		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.o $$SRVD${VICE}/modload ; \
 		install -c -m 444 $$ATHENA_SYS/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}smp.$${arch}.mp.o ; \
