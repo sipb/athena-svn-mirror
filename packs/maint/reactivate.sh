@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.72 2002-11-11 22:18:28 ghudson Exp $
+# $Id: reactivate.sh,v 1.73 2003-04-03 14:41:38 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -206,6 +206,9 @@ fi
 # Clean up socket files left by sawfish.
 rm -rf /tmp/.sawfish-*
 
+# Clean up per-session temporary directories.
+rm -rf /tmp/session-*
+
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
 	if [ "$PUBLIC" = true ]; then
@@ -332,6 +335,8 @@ if [ "$PUBLIC" = true ]; then
 		kill `cat /var/athena/sshd.pid`
 	fi
 	rm -rf /etc/athena/orbitrc
+	# Clean up Mozilla cache directories.
+	rm -rf /var/tmp/Mozilla-*
 fi
 
 if [ "$ACCESSON" = true -a -f /usr/athena/bin/access_on ]; then

@@ -1,4 +1,4 @@
-# $Id: athena-ws.rc,v 1.4 2003-04-02 15:36:06 ghudson Exp $
+# $Id: athena-ws.rc,v 1.5 2003-04-03 14:41:38 rbasch Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -74,6 +74,7 @@ start)
 
   # Remove old cruft, locks, and login session records.
   rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/*
+  rm -rf /tmp/session-*
   rm -rf /var/tmp/!!!SuperLock!!! /tmp/.esd
   rm -rf /var/athena/reactivate.pid /var/athena/reactivate.count
   rm -rf /var/adm/utmp /var/adm/wtmp
@@ -140,6 +141,8 @@ start)
     rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
     rm -f /etc/ssh_host_* /etc/ssh_random_seed
     rm -rf /etc/athena/orbitrc
+    # Clean up Mozilla cache directories.
+    rm -rf /var/tmp/Mozilla-*
     if [ -r /srvd/etc/passwd ]; then
       syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
         /etc/passwd.local
