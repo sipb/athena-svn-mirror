@@ -421,6 +421,12 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
+/* Define if you have the <db.h> header file. */
+#undef HAVE_DB_H
+
+/* Define if you have the <ndbm.h> header file. */
+#undef HAVE_NDBM_H
+
 /* Define if you have the ndbm library (-lndbm).  */
 #undef HAVE_LIBNDBM
 
