@@ -1,4 +1,4 @@
-# $Id: athena,v 1.22 2001-06-05 19:08:49 ghudson Exp $
+# $Id: athena,v 1.23 2001-06-19 14:50:27 rbasch Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -75,6 +75,7 @@ fi
 # Remove old cruft, locks, and login session records.
 rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/*
 rm -f /var/tmp/!!!SuperLock!!!
+rm -rf /var/athena/reactivate.pid /var/athena/reactivate.count
 
 # Reset time with the time hub
 if [ "$TIMECLIENT" = true ]; then
