@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v $
- *	$Id: t_motd.c,v 1.9 1991-01-03 15:33:04 lwvanels Exp $
+ *	$Id: t_motd.c,v 1.10 1992-01-13 18:57:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.9 1991-01-03 15:33:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.10 1992-01-13 18:57:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -62,12 +62,13 @@ t_get_file(Request,type,file,display_opts)
   
 
 ERRCODE
-t_change_file(Request,type,file, editor, incflag)
+t_change_file(Request,type,file, editor, incflag,clearflag)
      REQUEST *Request;
      int type;
      char *file;
      char *editor;
      int incflag;
+     int clearflag;
 {
   int status;
 
@@ -104,12 +105,18 @@ t_change_file(Request,type,file, editor, incflag)
 	printf("Error getting file, continuing...\n");
     }
     
-  status = enter_message(file,editor);
-  if(status)
-    return(status);
+  if (! clearflag) {
+    status = enter_message(file,editor);
+    if(status)
+      return(status);
+  }
 
-  status = OChangeFile(Request,type,file);
-  
+  if (clearflag) {
+    status = OChangeFile(Request,type,"/dev/null");
+  } else {
+    status = OChangeFile(Request,type,file);
+  }
+
   switch(status)
     {
     case SUCCESS:
