@@ -19,6 +19,12 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
+# Hack: we build libXm with the wrong soname (libXm.so.1.2 instead of
+# libXm.so.1).  Make a symlink for now so that programs built against
+# outside Motif libraries will work.  For the next full release, we
+# should instead build libXm with the right soname and use ldconfig.
+ln -s libXm.so.1.2 $RPM_BUILD_ROOT/usr/athena/lib/libXm.so.1
+
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
 cp system.mwmrc $RPM_BUILD_ROOT/usr/athena/lib/X11/system.mwmrc
