@@ -141,7 +141,7 @@ str-llist.o tex-glyph.o tex-make.o tilde.o truncate.o uppercasify.o     \
 variable.o version.o xcalloc.o xfopen.o xmalloc.o xopendir.o xputenv.o	\
 xrealloc.o xstat.o xstrdup.o $(malloc)
 
-all: $(lib) kpathsea.info
+all: $(lib)
 
 $(lib): $(objects)
 	rm -f $(lib)
