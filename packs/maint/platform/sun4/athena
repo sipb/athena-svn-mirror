@@ -179,11 +179,12 @@ if [ "${PUBLIC}" = "true" ]; then
 	    fi
 	fi
 
-	# MAE tries to open /dev/dsk/c0t6d0s0 to read the floppy, and
-	# complains if it can't be read.  (It can still read the disk,
-	# going through vold, but it complains anyway.)  Work around that
-	# here.  Better solutions are welcome.
-	chmod 644 /dev/dsk/c0t6d0s0
+	# MAE tries to open /dev/dsk/c0t6d0s[02] to read the floppy
+	# and CDROM, and complains if they can't be read.  (In the
+	# case of the floppy, it can still read the disk by going
+	# through vold, but it can't read the CD-ROM.)  Work around
+	# that here.  Better solutions are welcome.
+	chmod a+r /dev/dsk/c0t6d0s0 /dev/dsk/c0t6d0s2
 
         echo "done."						>/dev/console
 fi
