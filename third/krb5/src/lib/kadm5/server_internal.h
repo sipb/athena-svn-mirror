@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/server_internal.h,v 1.1.1.1 1996-09-12 04:43:54 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/server_internal.h,v 1.1.1.2 1997-01-21 09:25:58 ghudson Exp $
  */
 
 /*
@@ -14,7 +14,7 @@
 #define __KADM5_SERVER_INTERNAL_H__
 
 #include    <memory.h>
-#include    <malloc.h>
+#include    <stdlib.h>
 #include    "k5-int.h"
 #include    <krb5/kdb.h>
 #include    <kadm5/admin.h>
@@ -75,14 +75,17 @@ extern	krb5_principal	current_caller;
  * all the various mask bits or'd together
  */
 
-#define	ALL_PRINC_MASK (KADM5_PRINCIPAL | KADM5_PRINC_EXPIRE_TIME | KADM5_PW_EXPIRATION | \
-			KADM5_LAST_PWD_CHANGE | KADM5_ATTRIBUTES | KADM5_MAX_LIFE | \
-			KADM5_MOD_TIME | KADM5_MOD_NAME | KADM5_KVNO | KADM5_MKVNO | \
-			KADM5_AUX_ATTRIBUTES | KADM5_POLICY_CLR | KADM5_POLICY)
+#define	ALL_PRINC_MASK \
+ (KADM5_PRINCIPAL | KADM5_PRINC_EXPIRE_TIME | KADM5_PW_EXPIRATION | \
+  KADM5_LAST_PWD_CHANGE | KADM5_ATTRIBUTES | KADM5_MAX_LIFE | \
+  KADM5_MOD_TIME | KADM5_MOD_NAME | KADM5_KVNO | KADM5_MKVNO | \
+  KADM5_AUX_ATTRIBUTES | KADM5_POLICY_CLR | KADM5_POLICY | \
+  KADM5_MAX_RLIFE | KADM5_TL_DATA | KADM5_KEY_DATA)
 
-#define ALL_POLICY_MASK (KADM5_POLICY | KADM5_PW_MAX_LIFE | KADM5_PW_MIN_LIFE | \
-			 KADM5_PW_MIN_LENGTH | KADM5_PW_MIN_CLASSES | KADM5_PW_HISTORY_NUM | \
-			 KADM5_REF_COUNT)
+#define ALL_POLICY_MASK \
+ (KADM5_POLICY | KADM5_PW_MAX_LIFE | KADM5_PW_MIN_LIFE | \
+  KADM5_PW_MIN_LENGTH | KADM5_PW_MIN_CLASSES | KADM5_PW_HISTORY_NUM | \
+  KADM5_REF_COUNT)
 
 #define SERVER_CHECK_HANDLE(handle) \
 { \

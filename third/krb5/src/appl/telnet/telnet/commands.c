@@ -44,6 +44,9 @@
 #endif	/* defined(unix) */
 #include <sys/socket.h>
 #include <netinet/in.h>
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif /* HAVE_ARPA_INET_H */
 #ifdef	CRAY
 #include <fcntl.h>
 #endif	/* CRAY */
@@ -89,6 +92,9 @@
 #ifndef MAXDNAME
 #define MAXDNAME 256 /*per the rfc*/
 #endif
+#ifndef INADDR_NONE
+#define INADDR_NONE 0xffffffff
+#endif
 
 #if	defined(IPPROTO_IP) && defined(IP_TOS)
 int tos = -1;
@@ -96,6 +102,7 @@ int tos = -1;
 
 char	*hostname;
 static char _hostname[MAXDNAME];
+struct in_addr hostaddr;
 
 extern char *getenv();
 
@@ -1661,7 +1668,7 @@ env_cmd(argc, argv)
     if (c->narg + 2 != argc) {
 	fprintf(stderr,
 	    "Need %s%d argument%s to 'environ %s' command.  'environ ?' for help.\n",
-		c->narg < argc + 2 ? "only " : "",
+		c->narg < argc - 2 ? "only " : "",
 		c->narg, c->narg == 1 ? "" : "s", c->name);
 	return 0;
     }
@@ -1872,6 +1879,17 @@ env_getvalue(var)
 	return(NULL);
 }
 
+	int
+env_is_exported(var)
+	unsigned char *var;
+{
+	register struct env_lst *ep;
+
+	if ((ep = env_find(var)))
+		return ep->export;
+	return 0;
+}
+	    
 #if defined(OLD_ENVIRON) && defined(ENV_HACK)
 	void
 env_varval(what)
@@ -2113,6 +2131,117 @@ encrypt_cmd(argc, argv)
 }
 #endif	/* ENCRYPTION */
 
+#if	defined(FORWARD)
+#include <libtelnet/auth.h>
+
+/*
+ * The FORWARD command.
+ */
+
+
+extern int forward_flags;
+
+struct forwlist {
+	char	*name;
+	char	*help;
+	int	(*handler)();
+	int	f_flags;
+};
+
+static int
+	forw_status P((void)),
+	forw_set P((int)),
+	forw_help P((void));
+
+struct forwlist ForwList[] = {
+    { "status",	"Display current status of credential forwarding",
+						forw_status,	0 },
+    { "disable", "Disable credential forwarding",
+						forw_set,	0 },
+    { "enable", "Enable credential forwarding",
+						forw_set,
+						OPTS_FORWARD_CREDS },
+    { "forwardable", "Enable credential forwarding of forwardable credentials",
+						forw_set,
+						OPTS_FORWARD_CREDS |
+						OPTS_FORWARDABLE_CREDS },
+    { "help",	0,				forw_help,		0 },
+    { "?",	"Print help information",	forw_help,		0 },
+    { 0 },
+};
+
+    static int
+forw_status()
+{
+    if (forward_flags & OPTS_FORWARD_CREDS) {
+	if (forward_flags & OPTS_FORWARDABLE_CREDS) {
+	    printf("Credential forwarding of forwardable credentials enabled\n");
+	} else {
+	    printf("Credential forwarding enabled\n");
+	}
+    } else {
+	printf("Credential forwarding disabled\n");
+    }
+    return(0);
+}
+
+forw_set(f_flags)
+     int f_flags;
+{
+    forward_flags = f_flags;
+    return(0);
+}
+
+    static int
+forw_help()
+{
+    struct forwlist *c;
+
+    for (c = ForwList; c->name; c++) {
+	if (c->help) {
+	    if (*c->help)
+		printf("%-15s %s\n", c->name, c->help);
+	    else
+		printf("\n");
+	}
+    }
+    return 0;
+}
+
+forw_cmd(argc, argv)
+    int  argc;
+    char *argv[];
+{
+    struct forwlist *c;
+
+    if (argc < 2) {
+      fprintf(stderr,
+          "Need an argument to 'forward' command.  'forward ?' for help.\n");
+      return 0;
+    }
+
+    c = (struct forwlist *)
+		genget(argv[1], (char **) ForwList, sizeof(struct forwlist));
+    if (c == 0) {
+        fprintf(stderr, "'%s': unknown argument ('forw ?' for help).\n",
+    				argv[1]);
+        return 0;
+    }
+    if (Ambiguous(c)) {
+        fprintf(stderr, "'%s': ambiguous argument ('forw ?' for help).\n",
+    				argv[1]);
+        return 0;
+    }
+    if (argc != 2) {
+	fprintf(stderr,
+       "No arguments needed to 'forward %s' command.  'forward ?' for help.\n",
+		c->name);
+	return 0;
+    }
+    return((*c->handler)(c->f_flags));
+}
+#endif
+
 #if	defined(unix) && defined(TN3270)
     static void
 filestuff(fd)
@@ -2156,7 +2285,7 @@ status(argc, argv)
     char *argv[];
 {
     if (connected) {
-	printf("Connected to %s.\r\n", hostname);
+	printf("Connected to %s (%s).\r\n", hostname, inet_ntoa(hostaddr));
 	if ((argc < 2) || strcmp(argv[1], "notmuch")) {
 	    int mode = getconnmode();
 
@@ -2229,8 +2358,6 @@ ayt_status()
 }
 #endif
 
-unsigned long inet_addr();
-
     int
 tn(argc, argv)
     int argc;
@@ -2240,7 +2367,6 @@ tn(argc, argv)
     struct sockaddr_in sin;
     struct servent *sp = 0;
     unsigned long temp;
-    extern char *inet_ntoa();
 #if	defined(IP_OPTIONS) && defined(IPPROTO_IP)
     char *srp = 0;
     unsigned long sourceroute(), srlen;
@@ -2321,10 +2447,10 @@ tn(argc, argv)
     } else {
 #endif
 	temp = inet_addr(hostp);
-	if (temp != (unsigned long) -1) {
+	if (temp & 0xffffffff != INADDR_NONE) {
 	    sin.sin_addr.s_addr = temp;
 	    sin.sin_family = AF_INET;
-	    (void) strcpy(_hostname, hostp);
+	    (void) strcpy(_hostname, hostp);  
 	    hostname = _hostname;
 	} else {
 	    host = gethostbyname(hostp);
@@ -2332,9 +2458,10 @@ tn(argc, argv)
 		sin.sin_family = host->h_addrtype;
 #if	defined(h_addr)		/* In 4.3, this is a #define */
 		memcpy((caddr_t)&sin.sin_addr,
-				host->h_addr_list[0], host->h_length);
+		       host->h_addr_list[0], sizeof(sin.sin_addr));
 #else	/* defined(h_addr) */
-		memcpy((caddr_t)&sin.sin_addr, host->h_addr, host->h_length);
+		memcpy((caddr_t)&sin.sin_addr, host->h_addr, 
+		       sizeof(sin.sin_addr)); 
 #endif	/* defined(h_addr) */
 		strncpy(_hostname, host->h_name, sizeof(_hostname));
 		_hostname[sizeof(_hostname)-1] = '\0';
@@ -2348,6 +2475,7 @@ tn(argc, argv)
 #if	defined(IP_OPTIONS) && defined(IPPROTO_IP)
     }
 #endif
+    hostaddr.s_addr = sin.sin_addr.s_addr;
     if (portp) {
 	if (*portp == '-') {
 	    portp++;
@@ -2423,7 +2551,9 @@ tn(argc, argv)
 		perror((char *)0);
 		host->h_addr_list++;
 		memcpy((caddr_t)&sin.sin_addr, 
-			host->h_addr_list[0], host->h_length);
+			host->h_addr_list[0], sizeof(sin.sin_addr));
+		memcpy((caddr_t)&hostaddr,
+		       host->h_addr_list[0], sizeof(sin.sin_addr));
 		(void) NetClose(net);
 		continue;
 	    }
@@ -2432,11 +2562,24 @@ tn(argc, argv)
 	    return 0;
 	}
 	connected++;
+	host = gethostbyaddr((char *) &sin.sin_addr, sizeof(struct in_addr), sin.sin_family);
+	    if (host) {
+	      strncpy(_hostname, host->h_name, sizeof(_hostname));
+		_hostname[sizeof(_hostname)-1] = '\0';
+		hostname = _hostname;
+	    } 
+
 #if	defined(AUTHENTICATION) || defined(ENCRYPTION)
 	auth_encrypt_connect(connected);
 #endif	/* defined(AUTHENTICATION) || defined(ENCRYPTION) */
     } while (connected == 0);
+    if (user)
+      user = strdup(user);
+    if (hostp)
+      hostp = strdup(hostp);
     cmdrc(hostp, hostname);
+    if (hostp)
+      free(hostp);
     if (autologin && user == NULL) {
 	struct passwd *pw;
 
@@ -2448,6 +2591,8 @@ tn(argc, argv)
 		else
 			user = NULL;
 	}
+	if (user)
+	  user = strdup(user);
     }
     if (user) {
 	env_define((unsigned char *)"USER", (unsigned char *)user);
@@ -2456,6 +2601,8 @@ tn(argc, argv)
     (void) call(status, "status", "notmuch", 0);
     if (setjmp(peerdied) == 0)
 	telnet(user);
+    if (user)
+      free(user);
     (void) NetClose(net);
     ExitString("Connection closed by foreign host.\r\n",1);
     /*NOTREACHED*/
@@ -2485,6 +2632,9 @@ static char
 #ifdef	ENCRYPTION
 	encrypthelp[] =	"turn on (off) encryption ('encrypt ?' for more)",
 #endif	/* ENCRYPTION */
+#ifdef  FORWARD
+	forwardhelp[] = "turn on (off) credential forwarding ('forward ?' for more)",
+#endif
 #if	defined(unix)
 	zhelp[] =	"suspend telnet",
 #endif	/* defined(unix) */
@@ -2516,6 +2666,9 @@ static Command cmdtab[] = {
 #ifdef	ENCRYPTION
 	{ "encrypt",	encrypthelp,	encrypt_cmd,	0 },
 #endif	/* ENCRYPTION */
+#ifdef  FORWARD
+	{ "forward",    forwardhelp,    forw_cmd,       0 },
+#endif
 #if	defined(unix)
 	{ "z",		zhelp,		suspend,	0 },
 #endif	/* defined(unix) */
@@ -2907,9 +3060,10 @@ sourceroute(arg, cpp, lenp)
 		} else if (host = gethostbyname(cp)) {
 #if	defined(h_addr)
 			memcpy((caddr_t)&sin_addr,
-				host->h_addr_list[0], host->h_length);
+				host->h_addr_list[0], sizeof(sin_addr));
 #else
-			memcpy((caddr_t)&sin_addr, host->h_addr, host->h_length);
+			memcpy((caddr_t)&sin_addr, host->h_addr, 
+			       sizeof(sin_addr));
 #endif
 		} else {
 			*cpp = cp;

@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.1 1996-09-12 04:43:16 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.2 1997-01-21 09:23:01 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.1 1996-09-12 04:43:16 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.2 1997-01-21 09:23:01 ghudson Exp $";
 #endif
 
 #include    <stdio.h>
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
      
      if (ret = kadm5_get_config_params(context, NULL, NULL, &params,
 				       &params)) {
-	  krb5_klog_syslog(LOG_ERR, "%s: %s while initializing, aborting\n",
+	  krb5_klog_syslog(LOG_ERR, "%s: %s while initializing, aborting",
 			   whoami, error_message(ret));
 	  fprintf(stderr, "%s: %s while initializing, aborting\n",
 		  whoami, error_message(ret));
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 
      if ((params.mask & REQUIRED_PARAMS) != REQUIRED_PARAMS) {
 	  krb5_klog_syslog(LOG_ERR, "%s: Missing required configuration values "
-			   "while initializing, aborting\n", whoami,
+			   "while initializing, aborting", whoami,
 			   (params.mask & REQUIRED_PARAMS) ^ REQUIRED_PARAMS);
 	  fprintf(stderr, "%s: Missing required configuration values "
 		  "(%x) while initializing, aborting\n", whoami,
@@ -255,7 +255,8 @@ int main(int argc, char *argv[])
 	  fprintf(stderr, "%s: Cannot bind socket.\n", whoami);
 	  fprintf(stderr, "bind: %s\n", error_message(oerrno));
 	  errno = oerrno;
-	  krb5_klog_syslog(LOG_ERR, "Cannot bind socket: %m");
+	  krb5_klog_syslog(LOG_ERR, "Cannot bind socket: %s",
+			   error_message(errno));
 	  if(oerrno == EADDRINUSE) {
 	       char *w = strrchr(whoami, '/');
 	       if (w) {
@@ -315,6 +316,8 @@ int main(int argc, char *argv[])
 	  exit(1);
      }
 
+     /* XXX krb5_defkeyname is an internal library global and should
+        go away */
      krb5_defkeyname = params.admin_keytab;
 
      /*
@@ -721,7 +724,7 @@ void log_badauth(OM_uint32 major, OM_uint32 minor,
      krb5_klog_syslog(LOG_NOTICE, "Authentication attempt failed: %s, GSS-API "
 	    "error strings are:", a);
      log_badauth_display_status("   ", major, minor);
-     krb5_klog_syslog(LOG_NOTICE, "   GSS-API error strings complete.\n");
+     krb5_klog_syslog(LOG_NOTICE, "   GSS-API error strings complete.");
 }
 
 void log_badauth_display_status(char *msg, OM_uint32 major, OM_uint32 minor)
@@ -749,11 +752,11 @@ void log_badauth_display_status_1(char *m, OM_uint32 code, int type,
 						 GSS_C_MECH_CODE, 1);
 	       } else
 		    krb5_klog_syslog(LOG_ERR, "GSS-API authentication error %s: "
-			   "recursive failure!\n", msg);
+			   "recursive failure!", msg);
 	       return;
 	  }
 
-	  krb5_klog_syslog(LOG_NOTICE, "%s %s\n", m, (char *)msg.value); 
+	  krb5_klog_syslog(LOG_NOTICE, "%s %s", m, (char *)msg.value); 
 	  (void) gss_release_buffer(&minor_stat, &msg);
 	  
 	  if (!msg_ctx)

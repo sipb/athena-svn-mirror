@@ -1,7 +1,7 @@
 /*
   * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
   * 
-  * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.h,v 1.1.1.1 1996-09-12 04:43:11 ghudson Exp $
+  * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/string_table.h,v 1.1.1.2 1997-01-21 09:22:22 ghudson Exp $
   *
   */
  

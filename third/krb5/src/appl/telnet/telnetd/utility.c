@@ -59,8 +59,11 @@ ttloop()
     if (nfrontp-nbackp) {
 	netflush();
     }
+read_again:
     ncc = read(net, netibuf, sizeof netibuf);
     if (ncc < 0) {
+	if (errno == EINTR)
+	    goto read_again;
 	syslog(LOG_INFO, "ttloop:  read: %m");
 	exit(1);
     } else if (ncc == 0) {
@@ -979,11 +982,13 @@ printsub(direction, pointer, length)
 		    nfrontp += strlen(nfrontp);
 		    break;
 		}
-		sprintf(nfrontp, "%s|%s",
+		sprintf(nfrontp, "%s|%s%s",
 			((pointer[3] & AUTH_WHO_MASK) == AUTH_WHO_CLIENT) ?
 			"CLIENT" : "SERVER",
 			((pointer[3] & AUTH_HOW_MASK) == AUTH_HOW_MUTUAL) ?
-			"MUTUAL" : "ONE-WAY");
+			"MUTUAL" : "ONE-WAY",
+			((pointer[3] & AUTH_ENCRYPT_MASK) == AUTH_ENCRYPT_ON) ?
+			"|ENCRYPT" : "");
 		nfrontp += strlen(nfrontp);
 
 		auth_printsub(&pointer[1], length - 1, buf, sizeof(buf));
@@ -1006,11 +1011,13 @@ printsub(direction, pointer, length)
 			nfrontp += strlen(nfrontp);
 			break;
 		    }
-		    sprintf(nfrontp, "%s|%s ",
+		    sprintf(nfrontp, "%s|%s%s ",
 			((pointer[i] & AUTH_WHO_MASK) == AUTH_WHO_CLIENT) ?
 							"CLIENT" : "SERVER",
 			((pointer[i] & AUTH_HOW_MASK) == AUTH_HOW_MUTUAL) ?
-							"MUTUAL" : "ONE-WAY");
+							"MUTUAL" : "ONE-WAY",
+			((pointer[3] & AUTH_ENCRYPT_MASK) == AUTH_ENCRYPT_ON) ?
+			"|ENCRYPT" : "");
 		    nfrontp += strlen(nfrontp);
 		    ++i;
 		}
@@ -1020,9 +1027,15 @@ printsub(direction, pointer, length)
 		i = 2;
 		sprintf(nfrontp, " NAME \"");
 		nfrontp += strlen(nfrontp);
-		while (i < length)
-		    *nfrontp += pointer[i++];
-		*nfrontp += '"';
+		while (i < length) {
+		    if (isprint(pointer[i]))
+			*nfrontp++ = pointer[i++];
+		    else {
+			sprintf(nfrontp, "\"%03o",pointer[i++]);
+		    	nfrontp += strlen(nfrontp);
+		    }
+		}
+		*nfrontp++ = '"';
 		break;
 
 	    default:

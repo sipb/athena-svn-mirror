@@ -50,17 +50,9 @@ dnl
 AC_SUBST(LOGINLIBS)
 dnl
 AC_TYPE_MODE_T
+AC_CHECK_TYPE(time_t, int)
 AC_FUNC_CHECK(strsave,AC_DEFINE(HAS_STRSAVE))
-AC_FUNC_CHECK(getutent,AC_DEFINE(HAVE_GETUTENT))
-AC_FUNC_CHECK(setreuid,AC_DEFINE(HAVE_SETREUID))
-AC_FUNC_CHECK(gettosbyname,AC_DEFINE(HAVE_GETTOSBYNAME))
-AC_FUNC_CHECK(setsid,AC_DEFINE(HAVE_SETSID))
-AC_FUNC_CHECK(ttyname,AC_DEFINE(HAVE_TTYNAME))
-AC_FUNC_CHECK(line_push,AC_DEFINE(HAVE_LINE_PUSH))
-AC_FUNC_CHECK(ptsname,AC_DEFINE(HAVE_PTSNAME))
-AC_FUNC_CHECK(grantpt,AC_DEFINE(HAVE_GRANTPT))
-AC_FUNC_CHECK(openpty,AC_DEFINE(HAVE_OPENPTY))
-AC_FUNC_CHECK(logwtmp,AC_DEFINE(HAVE_LOGWTMP))
+AC_HAVE_FUNCS(getutent setreuid gettosbyname setsid ttyname line_push ptsname grantpt openpty logwtmp getutmpx)
 AC_CHECK_HEADERS(unistd.h stdlib.h string.h utmpx.h utmp.h sys/filio.h sys/sockio.h sys/label.h sys/tty.h ttyent.h lastlog.h sys/select.h sys/ptyvar.h)
 AC_CHECK_HEADERS(sys/wait.h)
 AC_CHECK_FUNCS(waitpid updwtmpx)
@@ -141,6 +133,20 @@ AC_DEFINE(SETPGRP_TWOARG)
 fi
 dnl
 dnl
+if test $ac_cv_header_utmpx_h  = yes -a $ac_cv_func_getutmpx = no; then
+AC_MSG_CHECKING([if utmpx and utmp ut_exit structures differ])
+AC_CACHE_VAL(krb5_cv_utmp_utmpx_diff_exit_struct,
+[AC_TRY_COMPILE(
+[#include <sys/types.h>
+#include <utmp.h>
+#include <utmpx.h>],[struct utmpx utx; struct utmp ut;
+utx.ut_exit.ut_exit = ut.ut_exit.e_exit],
+krb5_cv_utmp_utmpx_diff_exit_struct=yes, krb5_cv_utmp_utmpx_diff_exit_struct=no)])
+AC_MSG_RESULT($krb5_cv_utmp_utmpx_diff_exit_struct)
+if test $krb5_cv_utmp_utmpx_diff_exit_struct = yes; then
+AC_DEFINE(UT_EXIT_STRUCTURE_DIFFER)
+fi
+fi
 dnl
 ADD_DEF(-DKERBEROS)
 AC_CONST

@@ -54,6 +54,9 @@ krb5_init_context(context)
 	memset(ctx, 0, sizeof(struct _krb5_context));
 	ctx->magic = KV5M_CONTEXT;
 
+	/* Initialize error tables */
+	krb5_init_ets(ctx);
+
 	/* Set the default encryption types, possible defined in krb5/conf */
 	if ((retval = krb5_set_default_in_tkt_ktypes(ctx, NULL)))
 		goto cleanup;
@@ -69,10 +72,12 @@ krb5_init_context(context)
 			    0, 5 * 60, &tmp);
 	ctx->clockskew = tmp;
 
-	/* Default ticket lifetime is 
+#if 0
+	/* Default ticket lifetime is currently not supported */
 	profile_get_integer(ctx->profile, "libdefaults", "tkt_lifetime",
 			    0, 10 * 60 * 60, &tmp);
-	ctx->clockskew = tmp;
+	ctx->tkt_lifetime = tmp;
+#endif
 
 	/* DCE 1.1 and below only support CKSUMTYPE_RSA_MD4 (2)  */
 	/* DCE add kdc_req_checksum_type = 2 to krb5.conf */

@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/get_admhst.c,v 1.1.1.1 1996-09-12 04:43:54 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/get_admhst.c,v 1.1.1.2 1997-01-21 09:25:53 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>

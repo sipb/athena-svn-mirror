@@ -421,7 +421,9 @@ char *kadmin_startup(argc, argv)
 	 exit(1);
     }
     {
-#define DEFAULT_KEYTAB "WRFILE:/etc/v5srvtab"
+#define DEFAULT_KEYTAB "WRFILE:/etc/krb5.keytab"
+	 /* XXX krb5_defkeyname is an internal library global and
+            should go away */
 	 extern char *krb5_defkeyname;
 	 krb5_defkeyname = DEFAULT_KEYTAB;
     }
@@ -490,79 +492,6 @@ void kadmin_delprinc(argc, argv)
     }
     printf("Principal \"%s\" deleted.\nMake sure that you have removed this principal from all ACLs before reusing.\n", canon);
     free(canon);
-    return;
-}
-
-void kadmin_renprinc(argc, argv)
-    int argc;
-    char *argv[];
-{
-    krb5_principal oldprinc, newprinc;
-    char *oldcanon, *newcanon;
-    char reply[5];
-    kadm5_ret_t retval;
-    
-    if (! (argc == 3 ||
-	   (argc == 4 && !strcmp("-force", argv[1])))) {
-	 fprintf(stderr, "usage: rename_principal [-force] old new\n");
-	 return;
-    }
-    retval = kadmin_parse_name(argv[argc - 2], &oldprinc);
-    if (retval) {
-	com_err("rename_principal", retval, "while parsing old principal");
-	return;
-    }
-    retval = kadmin_parse_name(argv[argc - 1], &newprinc);
-    if (retval) {
-	krb5_free_principal(context, oldprinc);
-	com_err("rename_principal", retval, "while parsing new principal");
-	return;
-    }
-    retval = krb5_unparse_name(context, oldprinc, &oldcanon);
-    if (retval) {
-	com_err("rename_principal", retval,
-		"while canonicalizing old principal");
-	krb5_free_principal(context, newprinc);
-	krb5_free_principal(context, oldprinc);
-	return;
-    }
-    retval = krb5_unparse_name(context, newprinc, &newcanon);
-    if (retval) {
-	com_err("rename_principal", retval,
-		"while canonicalizing new principal");
-	free(oldcanon);
-	krb5_free_principal(context, newprinc);
-	krb5_free_principal(context, oldprinc);
-	return;
-    }
-    if (argc == 3) {
-	printf("Are you sure you want to rename the principal \"%s\" to \"%s\"? (yes/no): ",
-	       oldcanon, newcanon);
-	fgets(reply, sizeof (reply), stdin);
-	if (strcmp("yes\n", reply)) {
-	    fprintf(stderr,
-		    "rename_principal: \"%s\" NOT renamed to \"%s\".\n",
-		    oldcanon, newcanon);
-	    free(newcanon);
-	    free(oldcanon);
-	    krb5_free_principal(context, newprinc);
-	    krb5_free_principal(context, oldprinc);
-	    return;
-	}
-    }
-    retval = kadm5_rename_principal(handle, oldprinc, newprinc);
-    krb5_free_principal(context, oldprinc);
-    krb5_free_principal(context, newprinc);
-    if (retval) {
-	com_err("rename_principal", retval,
-		"while renaming \"%s\" to \"%s\".", oldcanon,
-		newcanon);
-	free(newcanon);
-	free(oldcanon);
-	return;
-    }
-    printf("Principal \"%s\" renamed to \"%s\".\nMake sure that you have removed \"%s\" from all ACLs before reusing.\n",
-	   oldcanon, newcanon, newcanon);
     return;
 }
 
@@ -650,7 +579,7 @@ void kadmin_cpw(argc, argv)
 	krb5_free_principal(context, princ);
    usage:
 	fprintf(stderr,
-		"usage: change_password [-randkey] [-pw passowrd] "
+		"usage: change_password [-randkey] [-pw password] "
 		"principal\n");
 	return;
    }
@@ -846,12 +775,18 @@ void kadmin_addprinc(argc, argv)
     char *argv[];
 {
     kadm5_principal_ent_rec princ;
+    kadm5_policy_ent_rec defpol;
     long mask;
-    int randkey = 0;
+    int randkey = 0, i;
     char *pass, *canon;
     krb5_error_code retval;
-    static char newpw[1024];
+    static char newpw[1024], dummybuf[256];
     static char prompt1[1024], prompt2[1024];
+
+    if (dummybuf[0] == 0) {
+	 for (i = 0; i < 256; i++)
+	      dummybuf[i] = (i+1) % 256;
+    }
     
     /* Zero all fields in request structure */
     memset(&princ, 0, sizeof(princ));
@@ -863,6 +798,7 @@ void kadmin_addprinc(argc, argv)
 	 kadmin_addprinc_usage("add_principal");
 	 return;
     }
+
     retval = krb5_unparse_name(context, princ.principal, &canon);
     if (retval) {
 	com_err("add_principal",
@@ -870,10 +806,26 @@ void kadmin_addprinc(argc, argv)
 	krb5_free_principal(context, princ.principal);
 	return;
     }
+
+    /*
+     * If -policy was not specified, and -clearpolicy was not
+     * specified, and the policy "default" exists, assign it.  If
+     * -clearpolicy was specified, then KADM5_POLICY_CLR should be
+     * unset, since it is never valid for kadm5_create_principal.
+     */
+    if ((! (mask & KADM5_POLICY)) &&
+	(! (mask & KADM5_POLICY_CLR)) &&
+	(! (retval = kadm5_get_policy(handle, "default", &defpol)))) {
+	 princ.policy = "default";
+	 mask |= KADM5_POLICY;
+	 (void) kadm5_free_policy_ent(handle, &defpol);
+    }
+    mask &= ~KADM5_POLICY_CLR;
+    
     if (randkey) {		/* do special stuff if -randkey specified */
 	princ.attributes |= KRB5_KDB_DISALLOW_ALL_TIX; /* set notix */
 	mask |= KADM5_ATTRIBUTES;
-	pass = "dummy";
+	pass = dummybuf;
     } else if (pass == NULL) {
 	int i = sizeof (newpw) - 1;
 	

@@ -60,7 +60,7 @@ usage()
 	     "\tdump	[-old] [-ov] [-b6] [-verbose] [filename	[princs...]]\n"
 	     "\tload	[-old] [-ov] [-b6] [-verbose] [-update] filename\n"
 	     "\tdump_v4	[filename]\n"
-	     "\tload_v4	[-t] [-n] [-v] [-K] inputfile\n");
+	     "\tload_v4	[-t] [-n] [-v] [-K] [-s stashfile] inputfile\n");
      exit(1);
 }
 
@@ -82,6 +82,7 @@ int dump_db(int, char **);
 int load_db(int, char **);
 int dump_v4db(int, char **);
 int load_v4db(int, char **);
+int open_db_and_mkey();
    
 typedef int (*cmd_func)(int, char **);
 
@@ -114,7 +115,7 @@ struct _cmd_table *cmd_lookup(name)
      return NULL;
 }
 
-#define ARG_VAL (--argc > 0 ? optarg = *(++argv) : (usage(), NULL))
+#define ARG_VAL (--argc > 0 ? (optarg = *(++argv)) : (char *)(usage(), NULL))
      
 int main(argc, argv)
     int argc;
@@ -280,7 +281,7 @@ void set_dbname(argc, argv)
 int open_db_and_mkey()
 {
     krb5_error_code retval;
-    int nentries, i;
+    int nentries;
     krb5_boolean more;
     krb5_data scratch, pwd;
 

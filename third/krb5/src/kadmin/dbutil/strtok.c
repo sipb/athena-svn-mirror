@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/strtok.c,v 1.1.1.1 1996-09-12 04:43:11 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/strtok.c,v 1.1.1.2 1997-01-21 09:22:23 ghudson Exp $
  * 
  * $Log: not supported by cvs2svn $
  * Revision 1.1  1996/08/01 18:39:54  bjaspan
@@ -17,7 +17,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/strtok.c,v 1.1.1.1 1996-09-12 04:43:11 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/dbutil/strtok.c,v 1.1.1.2 1997-01-21 09:22:23 ghudson Exp $";
 #endif
 
 

@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi_misc.c,v 1.1.1.1 1996-09-12 04:44:35 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi_misc.c,v 1.1.1.2 1997-01-21 09:27:56 ghudson Exp $
  * 
  * $Log: not supported by cvs2svn $
  * Revision 1.15  1996/08/14 00:01:37  tlyu
@@ -102,7 +102,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi_misc.c,v 1.1.1.1 1996-09-12 04:44:35 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi_misc.c,v 1.1.1.2 1997-01-21 09:27:56 ghudson Exp $";
 #endif
 
 #include <rpc/rpc.h>

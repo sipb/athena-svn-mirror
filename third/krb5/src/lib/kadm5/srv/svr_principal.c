@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.1 1996-09-12 04:43:58 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.2 1997-01-21 09:26:18 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.1 1996-09-12 04:43:58 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.2 1997-01-21 09:26:18 ghudson Exp $";
 #endif
 
 #include	<sys/types.h>
@@ -194,16 +194,9 @@ kadm5_create_principal(void *server_handle,
 	else
 	    kdb.pw_expiration = 0;
     }
-    if ((mask & KADM5_PW_EXPIRATION)) {
-	if(!kdb.pw_expiration)
-	    kdb.pw_expiration = entry->pw_expiration;
-	else {
-	    if(entry->pw_expiration != 0)
-		kdb.pw_expiration = (entry->pw_expiration < kdb.pw_expiration) ?
-		    entry->pw_expiration : kdb.pw_expiration;
-	}
-    }
-
+    if ((mask & KADM5_PW_EXPIRATION))
+	 kdb.pw_expiration = entry->pw_expiration;
+    
     kdb.last_success = 0;
     kdb.last_failed = 0;
     kdb.fail_auth_count = 0;
@@ -384,6 +377,14 @@ kadm5_modify_principal(void *server_handle,
 	return KADM5_BAD_MASK;
     if(entry == (kadm5_principal_ent_t) NULL)
 	return EINVAL;
+    if (mask & KADM5_TL_DATA) {
+	 tl_data_orig = entry->tl_data;
+	 while (tl_data_orig) {
+	      if (tl_data_orig->tl_data_type < 256)
+		   return KADM5_BAD_TL_TYPE;
+	      tl_data_orig = tl_data_orig->tl_data_next;
+	 }
+    }
 
     if (ret = kdb_get_entry(handle, entry->principal, &kdb, &adb))
 	return(ret);
@@ -393,98 +394,88 @@ kadm5_modify_principal(void *server_handle,
      */
 
     if ((mask & KADM5_POLICY)) {
-	ret = kadm5_get_policy(handle->lhandle, entry->policy, &npol);
-	switch(ret) {
-	case EINVAL:
-	    ret = KADM5_BAD_POLICY;
-	    break;
-	case KADM5_UNK_POLICY:
-	case KADM5_BAD_POLICY:
-	    ret =  KADM5_UNK_POLICY;
-	    goto done;
-	    break;
-	case KADM5_OK:
-	    have_npol = 1;
-	    if(adb.aux_attributes & KADM5_POLICY) {
-		if(strcmp(adb.policy, entry->policy)) {
-		    ret = kadm5_get_policy(handle->lhandle,
-					   adb.policy, &opol);
-		    switch(ret) {
-		    case EINVAL:
-		    case KADM5_BAD_POLICY:
-		    case KADM5_UNK_POLICY:
+	 /* get the new policy */
+	 ret = kadm5_get_policy(handle->lhandle, entry->policy, &npol);
+	 if (ret) {
+	      switch (ret) {
+	      case EINVAL:
+		   ret = KADM5_BAD_POLICY;
+		   break;
+	      case KADM5_UNK_POLICY:
+	      case KADM5_BAD_POLICY:
+		   ret =  KADM5_UNK_POLICY;
+		   break;
+	      }
+	      goto done;
+	 }
+	 have_npol = 1;
+
+	 /* if we already have a policy, get it to decrement the refcnt */
+	 if(adb.aux_attributes & KADM5_POLICY) {
+	      /* ... but not if the old and new are the same */
+	      if(strcmp(adb.policy, entry->policy)) {
+		   ret = kadm5_get_policy(handle->lhandle,
+					  adb.policy, &opol);
+		   switch(ret) {
+		   case EINVAL:
+		   case KADM5_BAD_POLICY:
+		   case KADM5_UNK_POLICY:
 			break;
-		    case KADM5_OK:
+		   case KADM5_OK:
 			have_opol = 1;
 			opol.policy_refcnt--;
 			break;
-	            default:
+		   default:
 			goto done;
 			break;
-		    }
-		    npol.policy_refcnt++;
-		}
-	    } else npol.policy_refcnt++;
-	    adb.aux_attributes |= KADM5_POLICY;
-	    if (adb.policy)
-		 free(adb.policy);
-	    adb.policy = strdup(entry->policy);
-	    if (npol.pw_max_life) {
-		if (ret =
-		    krb5_dbe_lookup_last_pwd_change(handle->context, &kdb,
-						    &(kdb.pw_expiration)))
-		    goto done;
-		kdb.pw_expiration += npol.pw_max_life;
-	    } else {
-		kdb.pw_expiration = 0;
-	    }
-	    break;
-	default:
-	    goto done;
-	}
-	if ((mask & KADM5_PW_EXPIRATION)) {
-	    if(kdb.pw_expiration == 0)
-		kdb.pw_expiration = entry->pw_expiration;
-	    else if(entry->pw_expiration != 0)
-		kdb.pw_expiration = (entry->pw_expiration < kdb.pw_expiration) ?
-				    entry->pw_expiration : kdb.pw_expiration;
-	}
-    }
-    if ((mask & KADM5_PW_EXPIRATION) && !(mask & KADM5_POLICY)) {
-	    if(kdb.pw_expiration == 0)
-		kdb.pw_expiration = entry->pw_expiration;
-	    else if(entry->pw_expiration != 0)
-		kdb.pw_expiration = (entry->pw_expiration < kdb.pw_expiration) ?
-				    entry->pw_expiration : kdb.pw_expiration;
+		   }
+		   npol.policy_refcnt++;
+	      }
+	 } else npol.policy_refcnt++;
+
+	 /* set us up to use the new policy */
+	 adb.aux_attributes |= KADM5_POLICY;
+	 if (adb.policy)
+	      free(adb.policy);
+	 adb.policy = strdup(entry->policy);
+
+	 /* set pw_max_life based on new policy */
+	 if (npol.pw_max_life) {
+	      if (ret = krb5_dbe_lookup_last_pwd_change(handle->context, &kdb,
+							&(kdb.pw_expiration)))
+		   goto done;
+	      kdb.pw_expiration += npol.pw_max_life;
+	 } else {
+	      kdb.pw_expiration = 0;
+	 }
     }
 
-    if ((mask & KADM5_POLICY_CLR)) {
-	if (adb.aux_attributes & KADM5_POLICY) {
-	    adb.aux_attributes &= ~KADM5_POLICY;
-	    kdb.pw_expiration = 0;
-	    ret = kadm5_get_policy(handle->lhandle, adb.policy, &opol);
-	    switch(ret) {
-	    case EINVAL:
-	    case KADM5_BAD_POLICY:
-	    case KADM5_UNK_POLICY:
-		ret = KADM5_BAD_DB;
-		goto done;
-		break;
-	    case KADM5_OK:
-		have_opol = 1;
-		if (adb.policy)
-		     free(adb.policy);
-		adb.policy = NULL;
-		opol.policy_refcnt--;
-		break;
-	    default:
-		goto done;
-		break;
-	    }
-	}
+    if ((mask & KADM5_POLICY_CLR) &&
+	(adb.aux_attributes & KADM5_POLICY)) {
+	 ret = kadm5_get_policy(handle->lhandle, adb.policy, &opol);
+	 switch(ret) {
+	 case EINVAL:
+	 case KADM5_BAD_POLICY:
+	 case KADM5_UNK_POLICY:
+	      ret = KADM5_BAD_DB;
+	      goto done;
+	      break;
+	 case KADM5_OK:
+	      have_opol = 1;
+	      if (adb.policy)
+		   free(adb.policy);
+	      adb.policy = NULL;
+	      adb.aux_attributes &= ~KADM5_POLICY;
+	      kdb.pw_expiration = 0;
+	      opol.policy_refcnt--;
+	      break;
+	 default:
+	      goto done;
+	      break;
+	 }
     }
-    if (((mask & KADM5_POLICY) ||
-	 (mask & KADM5_POLICY_CLR)) &&
+
+    if (((mask & KADM5_POLICY) || (mask & KADM5_POLICY_CLR)) &&
 	(((have_opol) &&
 	  (ret =
 	   kadm5_modify_policy_internal(handle->lhandle, &opol,
@@ -501,8 +492,8 @@ kadm5_modify_principal(void *server_handle,
 	kdb.max_life = entry->max_life;
     if ((mask & KADM5_PRINC_EXPIRE_TIME))
 	kdb.expiration = entry->princ_expire_time;
-    /* the pw_expiration logic would go here if it wasn't spread
-       all over the policy code */
+    if (mask & KADM5_PW_EXPIRATION)
+	 kdb.pw_expiration = entry->pw_expiration;
     if (mask & KADM5_MAX_RLIFE)
 	 kdb.max_renewable_life = entry->max_renewable_life;
     if (mask & KADM5_FAIL_AUTH_COUNT)
@@ -514,24 +505,40 @@ kadm5_modify_principal(void *server_handle,
     }
 
     if (mask & KADM5_TL_DATA) {
-	 /* splice entry->tl_data onto the front of kdb.tl_data */
-	 tl_data_orig = kdb.tl_data;
-	 for (tl_data_tail = entry->tl_data; tl_data_tail->tl_data_next;
-	      tl_data_tail = tl_data_tail->tl_data_next)
-	      ;
-	 tl_data_tail->tl_data_next = kdb.tl_data;
-	 kdb.tl_data = entry->tl_data;
+	 krb5_tl_data *tl, *tl2;
+	 /*
+	  * Replace kdb.tl_data with what was passed in.  The
+	  * KRB5_TL_KADM_DATA will be re-added (based on adb) by
+	  * kdb_put_entry, below.
+	  *
+	  * Note that we have to duplicate the passed in tl_data
+	  * before adding it to kdb.  The reason is that kdb_put_entry
+	  * will add its own tl_data entries that we will need to
+	  * free, but we cannot free the caller's tl_data (an
+	  * alternative would be to scan the tl_data after put_entry
+	  * and only free those entries that were not passed in).
+	  */
+	 while (kdb.tl_data) {
+	      tl = kdb.tl_data->tl_data_next;
+	      free(kdb.tl_data->tl_data_contents);
+	      free(kdb.tl_data);
+	      kdb.tl_data = tl;
+	 }
+
+	 kdb.n_tl_data = entry->n_tl_data;
+	 kdb.tl_data = NULL;
+	 tl2 = entry->tl_data;
+	 while (tl2) {
+	      tl = dup_tl_data(tl2);
+	      tl->tl_data_next = kdb.tl_data;
+	      kdb.tl_data = tl;
+	      tl2 = tl2->tl_data_next;
+	 }
     }
 
-    if ((ret = kdb_put_entry(handle, &kdb, &adb)))
-	goto done;
+    ret = kdb_put_entry(handle, &kdb, &adb);
+    if (ret) goto done;
 
-    if (mask & KADM5_TL_DATA) {
-	 /* remove entry->tl_data from the front of kdb.tl_data */
-	 tl_data_tail->tl_data_next = NULL;
-	 kdb.tl_data = tl_data_orig;
-    }
-    
     ret = KADM5_OK;
 done:
     if (have_opol) {
@@ -708,42 +715,35 @@ kadm5_get_principal(void *server_handle, krb5_principal principal,
 	 if (mask & KADM5_TL_DATA) {
 	      krb5_tl_data td, *tl, *tl2;
 
-	      entry->n_tl_data = kdb.n_tl_data;
 	      entry->tl_data = NULL;
 	      
 	      tl = kdb.tl_data;
 	      while (tl) {
-		   if ((tl2 = dup_tl_data(tl)) == NULL) {
-			ret = ENOMEM;
-			goto done;
+		   if (tl->tl_data_type > 255) {
+			if ((tl2 = dup_tl_data(tl)) == NULL) {
+			     ret = ENOMEM;
+			     goto done;
+			}
+			tl2->tl_data_next = entry->tl_data;
+			entry->tl_data = tl2;
+			entry->n_tl_data++;
 		   }
-		   tl2->tl_data_next = entry->tl_data;
-		   entry->tl_data = tl2;
-
+			
 		   tl = tl->tl_data_next;
-	      }
-	      
-	      if (kdb.e_length) {
-		   td.tl_data_type = KRB5_TL_KADM5_E_DATA;
-		   td.tl_data_length = kdb.e_length;
-		   td.tl_data_contents = kdb.e_data;
-
-		   if ((tl = dup_tl_data(&td)) == NULL) {
-			ret = ENOMEM;
-			goto done;
-		   }
-		   tl->tl_data_next = entry->tl_data;
-		   entry->tl_data = tl;
 	      }
 	 }
 	 if (mask & KADM5_KEY_DATA) {
 	      entry->n_key_data = kdb.n_key_data;
-	      entry->key_data = (krb5_key_data *)
-		   malloc(entry->n_key_data*sizeof(krb5_key_data));
-	      if (entry->key_data == NULL) {
-		   ret = ENOMEM;
-		   goto done;
-	      }
+	      if(entry->n_key_data) {
+		      entry->key_data = (krb5_key_data *)
+			      malloc(entry->n_key_data*sizeof(krb5_key_data));
+		      if (entry->key_data == NULL) {
+			      ret = ENOMEM;
+			      goto done;
+		      }
+	      } else 
+		      entry->key_data = NULL;
+
 	      for (i = 0; i < entry->n_key_data; i++)
 		   if (ret = krb5_copy_key_data_contents(handle->context,
 							 &kdb.key_data[i],

@@ -160,7 +160,7 @@ error_code KRB5PLACEHOLD_125,	"KRB5 error code 125"
 error_code KRB5PLACEHOLD_126,	"KRB5 error code 126"
 error_code KRB5PLACEHOLD_127,	"KRB5 error code 127"
 
-error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.1 1996-09-12 04:44:51 ghudson Exp $"
+error_code KRB5_ERR_RCSID,	"$Id: krb5_err.et,v 1.1.1.2 1997-01-21 09:30:23 ghudson Exp $"
 
 error_code KRB5_LIBOS_BADLOCKFLAG,	"Invalid flag for file lock mode"
 error_code KRB5_LIBOS_CANTREADPWD,	"Cannot read password"
@@ -170,8 +170,8 @@ error_code KRB5_LIBOS_PWDINTR,		"Password read interrupted"
 error_code KRB5_PARSE_ILLCHAR,		"Illegal character in component name"
 error_code KRB5_PARSE_MALFORMED,	"Malformed representation of principal"
 
-error_code KRB5_CONFIG_CANTOPEN,	"Can't open/find configuration file"
-error_code KRB5_CONFIG_BADFORMAT,	"Improper format of configuration file"
+error_code KRB5_CONFIG_CANTOPEN,	"Can't open/find Kerberos configuration file"
+error_code KRB5_CONFIG_BADFORMAT,	"Improper format of Kerberos configuration file"
 error_code KRB5_CONFIG_NOTENUFSPACE,	"Insufficient space to return complete information"
 
 error_code KRB5_BADMSGTYPE,		"Invalid message type specified for encoding"
@@ -300,5 +300,6 @@ error_code KRB5_CONFIG_NODEFREALM,	"Configuration file does not specify default 
 
 error_code KRB5_SAM_UNSUPPORTED,  "Bad SAM flags in obtain_sam_padata"
 error_code KRB5_KT_NAME_TOOLONG,	"Keytab name too long"
+error_code KRB5_KT_KVNONOTFOUND,	"Key version number for principal in key table is incorrect"
 
 end

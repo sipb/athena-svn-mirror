@@ -472,8 +472,11 @@ main(argc, argv)
 	exit(1);
     }
 #ifdef KERBEROS
-    krb5_init_context(&bsd_context);
-    krb5_init_ets(bsd_context);
+    status = krb5_init_context(&bsd_context);
+    if (status) {
+	    com_err(argv[0], status, "while initializing krb5");
+	    exit(1);
+    }
     desinbuf.data = des_inbuf;
     desoutbuf.data = des_outpkt+4;	/* Set up des buffers */
 #endif
@@ -593,10 +596,11 @@ main(argc, argv)
 		  0);		/* Not any port # */
     if (status) {
 	/* should check for KDC_PR_UNKNOWN, NO_TKT_FILE here -- XXX */
-	fprintf(stderr,
-		"%s: kcmd to host %s failed - %s\n",orig_argv[0], host,
-		error_message(status));
-	try_normal(orig_argv);
+	 if (status != -1) 
+	      fprintf(stderr,
+		      "%s: kcmd to host %s failed - %s\n",orig_argv[0], host,
+		      error_message(status));
+	 try_normal(orig_argv);
     }
     rem = sock;
     

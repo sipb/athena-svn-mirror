@@ -1,3 +1,49 @@
+Sat Nov 23 17:26:22 1996  Mark Eichin  <eichin@kitten.gen.ma.us>
+
+	* [krb5-libs/149] only generate requests that you can actually
+	handle.
+	
+	Tue Sep  3 22:53:56 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kdc_preauth.c (get_preauth_hint_list): detect ap->get_edata
+	return status and don't pass back hint if it failed.
+	(get_etype_info): malloc one more word in entry for end marker.
+
+Wed Nov 20 11:25:05 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* main.c (initialize_realms): krb5_aprof_init can succeed while
+ 	leaving aprof == NULL, but krb5_aprof_finish will fail.  This is
+ 	just more grossness that needs to be redone when the kdc.conf
+ 	interface is reworked.
+
+Thu Nov  7 12:27:21 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kdc_preauth.c (check_padata): Fixed error handling; in order for
+		check_preauth to return successfully, there must be at
+		least one preauth which succeeded, and no REQUIRED preauth
+		system which failed.  If a preauth is marked SUFFICIENT,
+		then the rest of the preauth list aren't checked.  Fixed
+		bug where when none of the preauth types were recognized,
+		an error message corresponding to stack garbage was printed.
+
+Wed Nov  6 12:00:48 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* main.c (argv): Check the error return from krb5_init_context(),
+ 		and print an error message if necessary.
+
+Mon Nov  4 22:29:30 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* main.c (initialize_realms): Remove rather pointless use of
+ 		krb5.conf to find the kdc.conf used to get the default
+ 		port list.  It's not useful for anything else, and will
+		just confuse people.
+		(init_realm): Reformat function to be readable.  Add error
+		checking to call of krb5_read_realm_params
+
+Wed Sep 18 16:03:26 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kdc_util.c: Added magic number to initializer of nolrentry.
+
 Tue Sep 10 14:18:41 1996  Tom Yu  <tlyu@mit.edu>
 
 	* krb5kdc.M: remove ".so man1/header.doc"

@@ -41,11 +41,10 @@ char copyright[] =
  * 1) Check authentication.
  * 2) Check authorization via the access-control files: 
  *    ~/.k5login (using krb5_kuserok) and/or
- *    ~/.rhosts  (using ruserok).
  * 3) Prompt for password if any checks fail, or if so configured.
  * Allow login if all goes well either by calling the accompanying 
  * login.krb5 or /bin/login, according to the definition of 
- * DO_NOT_USE_K_LOGIN.
+ * DO_NOT_USE_K_LOGIN.l
  * 
  * The configuration is done either by command-line arguments passed by 
  * inetd, or by the name of the daemon. If command-line arguments are
@@ -53,7 +52,6 @@ char copyright[] =
  * -k means trust krb4 or krb5
 * -5 means trust krb5
 * -4 means trust krb4
- * -r means trust .rhosts  (using ruserok).
  * -p and -P means prompt for password.
  *    If the -P option is passed, then the password is verified in 
  * addition to all other checks. If -p is not passed with -k or -r,
@@ -72,9 +70,7 @@ char copyright[] =
  *   KERBEROS - Define this if application is to be kerberised.
  *   CRYPT    - Define this if encryption is to be an option.
  *   DO_NOT_USE_K_LOGIN - Define this if you want to use /bin/login
- *              instead  of the accompanying login.krb5. In that case,
- *              the remote user's name must be present in the local
- *              .rhosts file, regardless of any options specified.
+ *              instead  of the accompanying login.krb5. 
  *   KRB5_KRB4_COMPAT - Define this if v4 rlogin clients are also to be served.
  *   ALWAYS_V5_KUSEROK - Define this if you want .k5login to be
  *              checked even for v4 clients (instead of .klogin).
@@ -94,7 +90,7 @@ char copyright[] =
  */
 #define LOG_REMOTE_REALM
 #define CRYPT
-
+#define USE_LOGIN_F
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -250,7 +246,7 @@ krb5_ccache ccache = NULL;
 
 krb5_keytab keytab = NULL;
 
-#define ARGSTR	"rk54ciepPD:S:M:L:?"
+#define ARGSTR	"k54ciepPD:S:M:L:?"
 #else /* !KERBEROS */
 #define ARGSTR	"rpPD:?"
 #define (*des_read)  read
@@ -314,7 +310,6 @@ krb5_error_code recvauth();
 */
 #define AUTH_KRB4 (0x1)
 #define AUTH_KRB5 (0x2)
-#define AUTH_RHOSTS (0x4)
 int auth_ok = 0, auth_sent = 0;
 int do_encrypt = 0, passwd_if_fail = 0, passwd_req = 0;
 int checksum_required = 0, checksum_ignored = 0;
@@ -342,24 +337,25 @@ int main(argc, argv)
 #define LOG_NDELAY 0
 #endif
     
-#ifdef KERBEROS
-    krb5_init_context(&bsd_context);
-    krb5_init_ets(bsd_context);
-#endif
-    
 #ifndef LOG_AUTH /* 4.2 syslog */
     openlog(progname, LOG_PID | LOG_NDELAY);
 #else
     openlog(progname, LOG_PID | LOG_NDELAY, LOG_AUTH);
 #endif /* 4.2 syslog */
     
+#ifdef KERBEROS
+    status = krb5_init_context(&bsd_context);
+    if (status) {
+	    syslog(LOG_ERR, "Error initializing krb5: %s",
+		   error_message(status));
+	    exit(1);
+    }
+#endif
+    
     /* Analyse parameters. */
     opterr = 0;
     while ((ch = getopt(argc, argv, ARGSTR)) != EOF)
       switch (ch) {
-	case 'r':         
-	auth_ok |= AUTH_RHOSTS;
-	  break;
 #ifdef KERBEROS
 	case 'k':
 #ifdef KRB5_KRB4_COMPAT
@@ -507,8 +503,8 @@ struct winsize win = { 0, 0, 0, 0 };
 int pid; /* child process id */
 
 void doit(f, fromp)
-     int f;
-     struct sockaddr_in *fromp;
+  int f;
+  struct sockaddr_in *fromp;
 {
     int p, t, on = 1;
     register struct hostent *hp;
@@ -562,11 +558,6 @@ int syncpipe[2];
     desinbuf.data = des_inbuf;
     desoutbuf.data = des_outpkt+4;    /* Set up des buffers */
 
-    /* Must come from privileged port when .rhosts is being looked into */
-    if ((auth_ok&AUTH_RHOSTS) 
-	&& (fromp->sin_port >= IPPORT_RESERVED ||
-	    fromp->sin_port < IPPORT_RESERVED/2))
-      non_privileged = 1;
 #else /* !KERBEROS */
     if (fromp->sin_port >= IPPORT_RESERVED ||
 	fromp->sin_port < IPPORT_RESERVED/2)
@@ -622,12 +613,12 @@ int syncpipe[2];
 
 #if defined(POSIX_TERMIOS) && !defined(ultrix)
 	tcgetattr(t,&new_termio);
-#if !(defined(DO_NOT_USE_K_LOGIN)&&defined(USE_LOGIN_F))
+#if !defined(USE_LOGIN_F)
 	new_termio.c_lflag &=  ~(ICANON|ECHO|ISIG|IEXTEN);
 	new_termio.c_iflag &= ~(IXON|IXANY|BRKINT|INLCR|ICRNL);
 #else
 	new_termio.c_lflag |= (ICANON|ECHO|ISIG|IEXTEN);
-	new_termio.c_oflag |= (ONLCR|OPOST|TAB3);
+	new_termio.c_oflag |= (ONLCR|OPOST);
 	new_termio.c_iflag|= (IXON|IXANY|BRKINT|INLCR|ICRNL);
 #endif /*Do we need binary stream?*/
 	new_termio.c_iflag &= ~(ISTRIP);
@@ -714,7 +705,6 @@ int syncpipe[2];
 	}
 #endif
 
-#ifdef DO_NOT_USE_K_LOGIN
 #ifdef USE_LOGIN_F
 /* use the vendors login, which has -p and -f. Tested on 
  * AIX 4.1.4 and HPUX 10 
@@ -735,12 +725,6 @@ int syncpipe[2];
 #else /* USE_LOGIN_F */
 	execl(login_program, "login", "-r", rhost_name, 0);
 #endif /* USE_LOGIN_F */
-#else
-	if (passwd_req)
-	  execl(login_program, "login","-h", rhost_name, lusername, 0);
-	else
-	  execl(login_program, "login", "-h", rhost_name, "-e", lusername, 0);
-#endif
 	
 	fatalperror(2, login_program);
 	/*NOTREACHED*/
@@ -791,12 +775,10 @@ int syncpipe[2];
 #endif
 
     
-#if defined(DO_NOT_USE_K_LOGIN)&&!defined(USE_LOGIN_F)
+#if!defined(USE_LOGIN_F)
     /* Pass down rusername and lusername to login. */
     (void) write(p, rusername, strlen(rusername) +1);
     (void) write(p, lusername, strlen(lusername) +1);
-#endif
-#if !defined(DO_NOT_USE_K_LOGIN) || !defined(USE_LOGIN_F) 
     /* stuff term info down to login */
     if ((write(p, term, strlen(term)+1) != (int) strlen(term)+1)) {
 	/*
@@ -805,7 +787,8 @@ int syncpipe[2];
 	sprintf(buferror,"Cannot write slave pty %s ",line);
 	fatalperror(f,buferror);
     }
-#endif /* DO_NOT_USE_K_LOGIN && USE_LOGIN_F */
+
+#endif
     protocol(f, p);
     signal(SIGCHLD, SIG_IGN);
     cleanup();
@@ -1125,16 +1108,6 @@ do_krb_login(host)
 #endif
 
     
-/* See if we pass .rhosts.*/
-    if (auth_ok&AUTH_RHOSTS) {
-	/* Cannot check .rhosts unless connection from a privileged port. */
-	if (!non_privileged) {
-	    pwd = (struct passwd *) getpwnam(lusername);
-	    if (pwd &&
-		!ruserok(rhost_name, pwd->pw_uid == 0, rusername, lusername))
-		auth_sent |= AUTH_RHOSTS;
-	}
-    }
 
     if (checksum_required && !valid_checksum) {
 	if (auth_sent & AUTH_KRB5) {
@@ -1356,7 +1329,7 @@ void usage()
 {
 #ifdef KERBEROS
     syslog(LOG_ERR, 
-	   "usage: klogind [-rke45pP] [-D port] or [r/R][k/K][x/e][p/P]logind");
+	   "usage: klogind [-ke45pP] [-D port] or [r/R][k/K][x/e][p/P]logind");
 #else
     syslog(LOG_ERR, 
 	   "usage: rlogind [-rpP] [-D port] or [r/R][p/P]logind");

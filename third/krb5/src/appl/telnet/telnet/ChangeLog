@@ -1,3 +1,69 @@
+Tue Nov 26 20:41:31 1996  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* configure.in: Check for apra/inet.h
+
+	* commands.c: Remove explicit declaration of inet_addr, and
+	declare INADDR_NONE to be 0xffffffff again, but mask off the lower
+	32 bits while doing the compare.
+
+Sat Nov 23 00:33:58 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* commands.c (tn): Patch from mycroft@mit.edu for Alpha NetBSD.
+  	Comparing to -1 is not 64-bit clean.
+ 	[233]
+	(INADDR_NONE): Mycroft suggests using -1 not 0xffffffff if I have
+ 	to define it ourselves. [233]
+
+	Fri Nov 22 15:48:57 1996  unknown  <bjaspan@mit.edu>
+
+	* commands.c (sourceroute): use sizeof instead of h_length to
+ 	determine number of bytes of addr to copy from DNS response
+ 	[krb5-misc/211]
+
+Thu Nov 14 14:25:51 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* sys_bsd.c(intr): Added checks to intr_waiting and intr_happened
+		to handle ^C while waiting for encryption negotiation.
+
+	* telnet.c (telnet): Allow ^C to work while waiting for encryption
+		negotiation to finish. [telnet/64]
+
+Sun Nov 10 17:34:40 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* commands.c (tn): Reverse resolve address to deal with dialup
+ 	pools [krb5-libs/170]
+	(tn): Store IP and print in status; patch from jhawk. [113]
+
+Fri Nov  1 00:49:21 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* main.c: Implement Type Of Service patch from jhawk. [57]
+
+Thu Oct 31 18:12:15 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* main.c commands.c: Don't define OPTS_FORWARD* here; include
+ 	libtelnet/auth.h to get them.
+
+	* commands.c (forw_status): Integrate forward command from
+ 	jik@cam.ov.com [45]
+
+Mon Oct 14 02:22:16 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* commands.c (env_cmd): Print only' at correct times.  Patch from
+ 	jhawk. [
+75]
+Sat Sep 21 03:47:46 1996  Sam Hartman  <hartmans@mit.edu>
+
+	* telnet.c (telnet): Only support XDISPLOC if DISPLAY is
+ 	supported, thanks to jik.
+
+	* commands.c (tn): Save away arguments before memory used by other
+ 	functions.  Patch thanks to jik.
+	(env_init): Cannonify DISPLAY; patch thanks to jik.
+
+	* sys_bsd.c: Use POSIX_SIGNALS when available.  This patch is
+ 	contribued by jik.  It could be cleaned up a bit to be more
+ 	consistent with Kerberos style, but is functionally correct.
+
 Tue Sep 10 14:09:49 1996  Tom Yu  <tlyu@mit.edu>
 
 	* telnet.1: remove ".so man1/header.doc"

@@ -1,12 +1,13 @@
 #!/bin/sh
 
 DUMMY=${TESTDIR=$TOP/testing}
-DUMMY=${SAVE_FILES=$TESTDIR/scripts/save_files.sh}
+DUMMY=${STESTDIR=$STOP/testing}
+DUMMY=${SAVE_FILES=$STESTDIR/scripts/save_files.sh}
 DUMMY=${FIX_CONF_FILES=$TESTDIR/scripts/fixup-conf-files.pl}
-DUMMY=${INITDB=$TESTDIR/scripts/init_db}
+DUMMY=${INITDB=$STESTDIR/scripts/init_db}
 DUMMY=${SRVTCL=$TESTDIR/util/ovsec_kadm_srv_tcl}; export SRVTCL
 DUMMY=${LOCAL_MAKE_KEYTAB=$TESTDIR/scripts/make-host-keytab.pl}
-DUMMY=${STOP_SERVERS_LOCAL=$TESTDIR/scripts/stop_servers_local}
+DUMMY=${STOP_SERVERS_LOCAL=$STESTDIR/scripts/stop_servers_local}
 
 if [ -d /usr/tmp ]; then
 	usrtmp=/usr/tmp
@@ -15,11 +16,6 @@ else
 fi
 
 $STOP_SERVERS_LOCAL -start_servers
-
-# If it's set, set it to true
-VERBOSE=${VERBOSE_TEST:+true}
-# Otherwise, set it to false
-DUMMY=${VERBOSE:=false}
 
 if $VERBOSE; then
 	REDIRECT=
@@ -81,22 +77,22 @@ $INITDB "$keysalts" || exit 1
 # Post-process the config files based on our arguments
 if [ "$keysalts" != "" ]; then
 	sedcmd="s/\([ 	]*supported_enctypes =\).*/\1 $keysalts/"
-	sed -e "$sedcmd" < /krb5/kdc.conf > /krb5/kdc.conf.new
-	mv /krb5/kdc.conf.new /krb5/kdc.conf
+	sed -e "$sedcmd" < $K5ROOT/kdc.conf > $K5ROOT/kdc.conf.new
+	mv $K5ROOT/kdc.conf.new $K5ROOT/kdc.conf
 fi
 if [ "$kdcport" != "" ] ; then
 	sedcmd="s/\(kdc_ports = .*\)[ 	]*/\1, $kdcport/"
-	sed -e "$sedcmd" < /krb5/kdc.conf > /krb5/kdc.conf.new
-	mv /krb5/kdc.conf.new /krb5/kdc.conf
+	sed -e "$sedcmd" < $K5ROOT/kdc.conf > $K5ROOT/kdc.conf.new
+	mv $K5ROOT/kdc.conf.new $K5ROOT/kdc.conf
 fi
 
 # allow admin to krlogin as root (for cleanup)
 DUMMY=${REALM=SECURE-TEST.OV.COM}; export REALM
 hostname=`hostname`
-QUALNAME=`$TOP/testing/scripts/qualname $hostname`; export QUALNAME
+QUALNAME=`$TOP/testing/scripts/qualname.pl $hostname`; export QUALNAME
 
-eval $SRVTCL <<'EOF' $REDIRECT
-source $env(TOP)/testing/tcl/util.t
+cat - > /tmp/start_servers_local$$ <<\EOF
+source $env(STOP)/testing/tcl/util.t
 set r $env(REALM)
 set q $env(QUALNAME)
 puts stdout [ovsec_kadm_init $env(SRVTCL) mrroot null $r \
@@ -105,6 +101,8 @@ puts stdout [ovsec_kadm_create_principal $server_handle \
 	[simple_principal host/$q@$r] {OVSEC_KADM_PRINCIPAL} notathena]
 puts stdout [ovsec_kadm_destroy $server_handle]
 EOF
+eval "$SRVTCL < /tmp/start_servers_local$$ $REDIRECT"
+rm /tmp/start_servers_local$$
 
 # rm -f /etc/v5srvtab
 # eval $LOCAL_MAKE_KEYTAB -princ host/xCANONHOSTx /etc/v5srvtab $REDIRECT
@@ -154,7 +152,7 @@ while true; do
 		else
 			LOG_USER='log_user 0'
 		fi
-		if expect <<EOF
+		if $EXPECT <<EOF
 		$LOG_USER
 		spawn telnet localhost 1751
 		expect {

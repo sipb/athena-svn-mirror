@@ -126,7 +126,29 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     
 #ifdef HAVE_SETUTXENT
     setutxent();
+#ifdef HAVE_GETUTMPX
     getutmpx(&ent, &utx);
+#else
+    /* For platforms like HPUX and Dec Unix which don't have getutmpx */
+    strncpy(utx.ut_user, ent.ut_user, sizeof(ent.ut_user));
+    strncpy(utx.ut_id, ent.ut_id, sizeof(ent.ut_id));
+    strncpy(utx.ut_line, ent.ut_line, sizeof(ent.ut_line));
+    utx.ut_pid = ent.ut_pid;
+    utx.ut_type = ent.ut_type;
+#ifdef UT_EXIT_STRUCTURE_DIFFER
+    utx.ut_exit.ut_exit = ent.ut_exit.e_exit;
+#else
+/* KLUDGE for now; eventually this will be a feature test... See PR#[40] */
+#ifdef __hpux	
+    utx.ut_exit.__e_termination = ent.ut_exit.e_termination;
+    utx.ut_exit.__e_exit = ent.ut_exit.e_exit;
+#else
+    utx.ut_exit = ent.ut_exit;
+#endif
+#endif
+    utx.ut_tv.tv_sec = ent.ut_time;
+    utx.ut_tv.tv_usec = 0;
+#endif
     if (host)
       strncpy(utx.ut_host, host, sizeof(utx.ut_host));
     else

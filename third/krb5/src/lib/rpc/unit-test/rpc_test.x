@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: rpc_test.x,v 1.1.1.1 1996-09-12 04:44:39 ghudson Exp $
+ * $Id: rpc_test.x,v 1.1.1.2 1997-01-21 09:28:28 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/rpc_test.x,v $
  * 
  * $Log: not supported by cvs2svn $

@@ -162,8 +162,11 @@ int main(argc, argv)
     int euid;
     char **orig_argv = save_argv(argc, argv);
 
-    krb5_init_context(&bsd_context);
-    krb5_init_ets(bsd_context);
+    status = krb5_init_context(&bsd_context);
+    if (status) {
+	    com_err(argv[0], status, "while initializing krb5");
+	    exit(1);
+    }
     desinbuf.data = des_inbuf;
     desoutbuf.data = des_outbuf;    /* Set up des buffers */
 #endif
@@ -426,10 +429,11 @@ krb5_creds *cred;
 				  authopts,
 				  0); /* Not any port # */
 		    if (status) {
-			fprintf(stderr,
-				"%s: kcmd to host %s failed - %s\n",
-				orig_argv[0], host,
-				error_message(status));
+			if (status != -1) 
+			     fprintf(stderr,
+				     "%s: kcmd to host %s failed - %s\n",
+				     orig_argv[0], host,
+				     error_message(status));
 			try_normal(orig_argv);
 		    }
 		    else {
@@ -522,10 +526,11 @@ krb5_creds *cred;
 			      authopts,
 			      0); /* Not any port # */
 		if (status) {
-		    fprintf(stderr,
-			    "%s: kcmd to host %s failed - %s\n",
-			    orig_argv[0], host,
-			    error_message(status));
+		    if (status != -1)
+			 fprintf(stderr,
+				 "%s: kcmd to host %s failed - %s\n",
+				 orig_argv[0], host,
+				 error_message(status));
 		    try_normal(orig_argv);
 		    
 		} else {

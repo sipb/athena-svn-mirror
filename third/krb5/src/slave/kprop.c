@@ -104,8 +104,11 @@ main(argc, argv)
 	krb5_auth_context auth_context;
 	char	Errmsg[256];
 	
-	krb5_init_context(&context);
-	krb5_init_ets(context);
+	retval = krb5_init_context(&context);
+	if (retval) {
+		com_err(argv[0], retval, "while initializing krb5");
+		exit(1);
+	}
 	PRS(argc, argv);
 	get_tickets(context);
 
@@ -321,7 +324,7 @@ open_connection(host, fd, Errmsg)
 		return(0);
 	}
 	sin.sin_family = hp->h_addrtype;
-	memcpy((char *)&sin.sin_addr, hp->h_addr, hp->h_length);
+	memcpy((char *)&sin.sin_addr, hp->h_addr, sizeof(sin.sin_addr));
 	if(!port) {
 		sp = getservbyname(KPROP_SERVICE, "tcp");
 		if (sp == 0) {

@@ -1,3 +1,30 @@
+Wed Nov 13 02:53:31 1996  Tom Yu  <tlyu@mit.edu>
+
+	* osconfig.c: Add warning re: global variables.
+
+	* ktdefname.c, osconfig.c: Revert previous kt_default_name
+	changes.
+
+	* ktdefname.c (krb5_kt_default_name): Fix a few memory-leak type
+	problems in previous changes.
+
+Tue Nov 12 22:07:55 1996  Tom Yu  <tlyu@mit.edu>
+
+	* osconfig.c: Remove krb5_defkeyname to catch other things that
+	may break.
+
+	* ktdefname.c (krb5_kt_default_name): Change logic to no longer
+	use a global variable; also add krb5_kt_set_default_name() to
+	allow for the changing of the default keytab name in the context.
+
+Wed Nov  6 16:24:56 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* init_os_ctx.c (os_init_paths): Don't ignore errors found from
+		parsing the config file.  Currently, we return an error if
+		the profile isn't found.  In the future we can maybe do
+		something better with intelligent defaulting if krb5.conf
+		doesn't exist, but we don't have this today.
+
 Thu Aug 22 15:19:47 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* an_to_ln.c (db_an_to_ln): Remove references to dead BERK_DB_DBM

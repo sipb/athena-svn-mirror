@@ -64,8 +64,11 @@ dnl DO_SUBDIRS
 dnl recurse into subdirs by specifying the recursion targets
 dnl the rules are in post.in but the target needs substitution
 AC_DEFUN([DO_SUBDIRS],
-[RECURSE_TARGETS="all-unix clean-unix install-unix check-unix Makefiles"
-AC_SUBST(RECURSE_TARGETS)])
+[ALL_RECURSE="all-recurse"
+CLEAN_RECURSE="clean-recurse"
+INSTALL_RECURSE="install-recurse"
+CHECK_RECURSE="check-recurse"
+MAKEFILES_RECURSE="Makefiles-recurse"])
 dnl
 dnl drop in standard rules for all configure files -- CONFIG_RULES
 dnl
@@ -82,6 +85,11 @@ AC_CONST dnl
 WITH_NETLIB dnl
 KRB_INCLUDE dnl
 AC_ARG_PROGRAM dnl
+AC_SUBST(ALL_RECURSE)
+AC_SUBST(CLEAN_RECURSE)
+AC_SUBST(INSTALL_RECURSE)
+AC_SUBST(CHECK_RECURSE)
+AC_SUBST(MAKEFILES_RECURSE)
 ])dnl
 
 dnl This is somewhat gross and should go away when the build system
@@ -228,8 +236,6 @@ if test $withval = no; then
 	DEPKRB4_LIB=
 	KRB4_CRYPTO_LIB=
 	DEPKRB4_CRYPTO_LIB=
-	KDB4_LIB=
-	DEPKDB4_LIB=
 	KRB4_INCLUDES=
 	LDARGS=
 	krb5_cv_build_krb4_libs=no
@@ -243,8 +249,6 @@ else
 	DEPKRB4_LIB='$(TOPLIBD)/libkrb4.a'
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB='-lkdb4'
-	DEPKDB4_LIB='$(TOPLIBD)/libkdb4.a'
 	KRB4_INCLUDES='-I$(SRCTOP)/include/kerberosIV'
 	LDARGS=
 	krb5_cv_build_krb4_libs=yes
@@ -256,8 +260,6 @@ else
 	DEPKRB4_LIB="$withval/lib/libkrb.a"
 	KRB4_CRYPTO_LIB='-ldes425'
 	DEPKRB4_CRYPTO_LIB='$(TOPLIBD)/libdes425.a'
-	KDB4_LIB="-lkdb"
-	DEPKDB4_LIB="$withval/lib/libkdb.a"
 	KRB4_INCLUDES="-I$withval/include"
 	LDARGS="-L$withval/lib"
 	krb5_cv_build_krb4_libs=no
@@ -342,7 +344,7 @@ dnl
 dnl Imake LinkFile rule, so they occur in the right place -- LinkFile(dst,src)
 dnl
 define(LinkFile,[
-AC_LN_S
+AC_REQUIRE([AC_LN_S])
 AC_PUSH_MAKEFILE()dnl
 changequote({,})dnl
 
@@ -360,7 +362,7 @@ dnl LinkFileDir(../foo, blotz, ./bar) issues a:
 dnl	ln -s ../foo ./bar/blotz
 dnl
 define(LinkFileDir,[
-AC_LN_S
+AC_REQUIRE([AC_LN_S])
 AC_PUSH_MAKEFILE()dnl
 changequote({,})dnl
 
@@ -405,7 +407,8 @@ dnl
 define(CopyHeader,[
 AC_PUSH_MAKEFILE()dnl
 
-includes:: $1
+includes:: $2/$1
+$2/$1: $1
 	@if test -d $2; then :; else (set -x; mkdir $2) fi
 	@if cmp $1 $2/$1 >/dev/null 2>&1; then :; \
 	else \
@@ -423,7 +426,8 @@ dnl
 define(CopySrcHeader,[
 AC_PUSH_MAKEFILE()dnl
 
-includes:: $1
+includes:: $2/$1
+$2/$1: $(srcdir)/$1
 	@if test -d $2; then :; else (set -x; mkdir $2) fi
 	@if cmp $(srcdir)/$1 $2/$1 >/dev/null 2>&1; then :; \
 	else \
@@ -785,7 +789,7 @@ db_deplib=''
 db_lib=''
 define(USE_DB_LIBRARY,[
 db_deplib="\[$](TOPLIBD)/libdb.a"
-db_lib=-ldb
+db_lib="\[$](TOPLIBD)/libdb.a"
 ])
 dnl
 dnl This rule generates library lists for programs.
@@ -805,12 +809,12 @@ else
 fi]
 dnl this is ugly, but it wouldn't be necessary if krb5 didn't abuse
 dnl configure so badly
-SRVDEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
-SRVLIBS="\[$](LOCAL_LIBRARIES) $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
-CLNTDEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmclnt_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
-CLNTLIBS="\[$](LOCAL_LIBRARIES) $kadmclnt_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
-DEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmclnt_deplib $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $kdb4_deplib $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
-LIBS="\[$](LOCAL_LIBRARIES) $kadmclnt_lib $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kdb4_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+SRVDEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
+SRVLIBS="\[$](LOCAL_LIBRARIES) $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+CLNTDEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmclnt_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
+CLNTLIBS="\[$](LOCAL_LIBRARIES) $kadmclnt_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
+DEPLIBS="\[$](DEPLOCAL_LIBRARIES) $kadmclnt_deplib $kadmsrv_deplib $gssrpc_deplib $gssapi_deplib $kdb5_deplib $kutil_deplib \[$](TOPLIBD)/libkrb5.a $krb4_deplib \[$](TOPLIBD)/libcrypto.a $ss_deplib $dyn_deplib $db_deplib \[$](TOPLIBD)/libcom_err.a"
+LIBS="\[$](LOCAL_LIBRARIES) $kadmclnt_lib $kadmsrv_lib $gssrpc_lib $gssapi_lib $kdb5_lib $kutil_lib $krb4_lib -lkrb5 -lcrypto $ss_lib $dyn_lib $db_lib -lcom_err $LIBS"
 LDFLAGS="$LDFLAGS -L\$(TOPLIBD)"
 AC_SUBST(LDFLAGS)
 AC_SUBST(LDARGS)
@@ -1077,4 +1081,44 @@ else
 	KRB5_RUN_ENV=
 fi
 AC_SUBST(KRB5_RUN_ENV)
+])dnl
+dnl
+dnl AC_KRB5_TCL - determine if the TCL library is present on system
+dnl
+AC_DEFUN(AC_KRB5_TCL,[
+TCL_INC=
+TCL_LIB=
+TCL_WITH=
+AC_ARG_WITH(tcl,
+[  --with-tcl=path         where Tcl resides],
+	TCL_WITH=$withval
+	if test "$withval" != yes -a "$withval" != no ; then
+		TCL_INC=-I$withval/include
+		TCL_LIB=-L$withval/lib
+	fi)
+AC_CHECK_LIB(dl, dlopen, DL_LIB=-ldl)
+if test "$TCL_WITH" != no ; then
+	hold_cflags=$CPPFLAGS
+	hold_ldflags=$LDFLAGS
+	CPPFLAGS="$CPPFLAGS $TCL_INC"
+	LDFLAGS="$CPPFLAGS $TCL_LIB"
+	AC_CHECK_HEADER(tcl.h,dnl
+		AC_CHECK_LIB(tcl7.5, Tcl_CreateCommand, 
+			TCL_LIB="$TCL_LIB -ltcl7.5 $DL_LIB",
+			AC_CHECK_LIB(tcl, Tcl_CreateCommand, 
+				TCL_LIB="$TCL_LIB -ltcl $DL_LIB",
+				AC_MSG_WARN("tcl.h found but not library"),
+				-lm $DL_LIB),
+			-lm $DL_LIB)
+	,dnl If tcl.h not found
+	AC_MSG_WARN(Could not find Tcl which is needed for the kadm5 tests)
+	TCL_LIB=
+	)
+	CPPFLAGS=$hold_cflags
+	LDFLAGS=$hold_ldflags
+	AC_SUBST(TCL_LIB)
+	AC_SUBST(TCL_INC)
+else
+	AC_MSG_RESULT("Not looking for Tcl library")
+fi
 ])dnl

@@ -1,3 +1,36 @@
+Mon Nov 25 14:23:06 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* defualt.exp: Ezra's fix so that the dejagnu tests don't bomb out
+ 		if KRB5_KTNAME is set for some reason.
+
+Tue Nov 19 15:13:30 1996  Tom Yu  <tlyu@mit.edu>
+
+	* default.exp (check_k5login): Check for principal
+ 	$env(USER)@$REALMNAME rather than simply $env(USER), so that
+ 	kuser_ok dtrt, hopefully.
+
+Mon Nov 11 20:52:27 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* dejagnu: set env(TERM) dumb, find ktutil
+
+	Tue Sep 17 20:58:43 1996  Ken Raeburn  <raeburn@cygnus.com>
+
+	* default.exp: Set terminal type to "dumb" to avoid interference
+	from "resize".
+
+	Tue Sep  3 02:27:40 1996  Mark W. Eichin  <eichin@kitten.gen.ma.us>
+
+	* default.exp: find a path to ktutil, for the v4 tests.
+
+	Wed Jun 12 12:56:10 1996  Mark W. Eichin  <eichin@kitten.gen.ma.us>
+
+	* default.exp (setup_kerberos_files): set default_domain, so v4
+	tests work.
+
+Sun Nov 10 09:48:58 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* default.exp (setup_wrapper): Set KRB5_CONFIG in script.
+
 Mon Aug 12 22:58:58 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
 
 	* default.exp: Rewrite to use kadmin.local instead of kdb5_edit.

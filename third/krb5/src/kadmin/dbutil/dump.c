@@ -85,7 +85,7 @@ typedef struct _dump_version {
      char *name;
      char *header;
      int updateonly;
-     int create_kadm5_princs;
+     int create_kadm5;
      dump_func dump_princ;
      osa_adb_iter_policy_func dump_policy;
      load_func load_record;
@@ -196,8 +196,10 @@ static const char stdin_name[] = "standard input";
 static const char restfail_fmt[] = "%s: %s restore failed\n";
 static const char close_err_fmt[] = "%s: cannot close database (%s)\n";
 static const char dbinit_err_fmt[] = "%s: cannot initialize database (%s)\n";
+static const char dblock_err_fmt[] = "%s: cannot initialize database lock (%s)\n";
 static const char dbname_err_fmt[] = "%s: cannot set database name to %s (%s)\n";
 static const char dbdelerr_fmt[] = "%s: cannot delete bad database %s (%s)\n";
+static const char dbunlockerr_fmt[] = "%s: cannot unlock database %s (%s)\n";
 static const char dbrenerr_fmt[] = "%s: cannot rename database %s to %s (%s)\n";
 static const char dbcreaterr_fmt[] = "%s: cannot create database %s (%s)\n";
 static const char dfile_err_fmt[] = "%s: cannot open %s (%s)\n";
@@ -566,7 +568,7 @@ dump_k5beta6_iterator(ptr, entry)
     char		*name;
     krb5_tl_data	*tlp;
     krb5_key_data	*kdata;
-    int			counter, i, j;
+    int			counter, skip, i, j;
 
     /* Initialize */
     arg = (struct dump_args *) ptr;
@@ -610,15 +612,28 @@ dump_k5beta6_iterator(ptr, entry)
 	/*
 	 * Make sure that the tagged list is reasonably correct.
 	 */
-	counter = 0;
-	for (tlp = entry->tl_data; tlp; tlp = tlp->tl_data_next)
-	    counter++;
-	if (counter == entry->n_tl_data) {
+	counter = skip = 0;
+	for (tlp = entry->tl_data; tlp; tlp = tlp->tl_data_next) {
+	     /*
+	      * don't dump tl data types we know aren't understood by
+	      * earlier revisions [krb5-admin/89]
+	      */
+	     switch (tlp->tl_data_type) {
+	     case KRB5_TL_KADM_DATA:
+		  skip++;
+		  break;
+	     default:
+		  counter++;
+		  break;
+	     }
+	}
+	
+	if (counter + skip == entry->n_tl_data) {
 	    /* Pound out header */
 	    fprintf(arg->ofile, "%d\t%d\t%d\t%d\t%d\t%s\t",
 		    (int) entry->len,
 		    strlen(name),
-		    (int) entry->n_tl_data,
+		    counter,
 		    (int) entry->n_key_data,
 		    (int) entry->e_length,
 		    name);
@@ -633,6 +648,9 @@ dump_k5beta6_iterator(ptr, entry)
 		    entry->fail_auth_count);
 	    /* Pound out tagged data. */
 	    for (tlp = entry->tl_data; tlp; tlp = tlp->tl_data_next) {
+		if (tlp->tl_data_type == KRB5_TL_KADM_DATA)
+		     continue; /* see above, [krb5-admin/89] */
+
 		fprintf(arg->ofile, "%d\t%d\t",
 			(int) tlp->tl_data_type,
 			(int) tlp->tl_data_length);
@@ -679,7 +697,8 @@ dump_k5beta6_iterator(ptr, entry)
 	}
 	else {
 	    fprintf(stderr, sdump_tl_inc_err,
-		    arg->programname, name, counter, (int) entry->n_tl_data);
+		    arg->programname, name, counter+skip,
+		    (int) entry->n_tl_data); 
 	    retval = EINVAL;
 	}
     }
@@ -935,7 +954,8 @@ dump_db(argc, argv)
 	    fprintf(stderr, ofopen_error,
 		    programname, ofile, error_message(errno));
 	    exit_status++;
-	}
+	    return;
+       }
 	if ((kret = krb5_lock_file(util_context,
 				   fileno(f),
 				   KRB5_LOCKMODE_EXCLUSIVE))) {
@@ -994,7 +1014,7 @@ read_string(f, buf, len, lp)
 
     retval = 0;
     for (i=0; i<len; i++) {
-	c = (char) fgetc(f);
+	c = fgetc(f);
 	if (c < 0) {
 	    retval = 1;
 	    break;
@@ -1540,7 +1560,16 @@ process_k5beta6_record(fname, kcontext, filep, verbose, linenop, pol_db)
 		    error++;
 		}
 
-		/* Get the tagged data */
+		/*
+		 * Get the tagged data.
+		 *
+		 * Really, this code ought to discard tl data types
+		 * that it knows are special to the current version
+		 * and were not supported in the previous version.
+		 * But it's a pain to implement that here, and doing
+		 * it at dump time has almost as good an effect, so
+		 * that's what I did.  [krb5-admin/89/
+		 */
 		if (!error && dbentry.n_tl_data) {
 		    for (tl = dbentry.tl_data; tl; tl = tl->tl_data_next) {
 			nread = fscanf(filep, "%d\t%d\t", &t1, &t2);
@@ -1855,7 +1884,7 @@ load_db(argc, argv)
     char	**argv;
 {
     kadm5_config_params newparams;
-    osa_adb_policy_t	pol_db;
+    osa_adb_policy_t	tmppol_db;
     krb5_error_code	kret;
     krb5_context	kcontext;
     FILE		*f;
@@ -1863,8 +1892,8 @@ load_db(argc, argv)
     extern int		optind;
     char		*programname;
     char		*dumpfile;
-    char		*dbname, *adbname;
-    char		*dbname_tmp, *adbname_real;
+    char		*dbname;
+    char		*dbname_tmp;
     char		buf[BUFSIZ];
     dump_version	*load;
     int			update, verbose;
@@ -1878,13 +1907,12 @@ load_db(argc, argv)
 	programname = strrchr(argv[0], (int) '/') + 1;
     dumpfile = (char *) NULL;
     dbname = global_params.dbname;
-    adbname = global_params.admin_dbname;
     load = NULL;
     update = 0;
     verbose = 0;
     exit_status = 0;
-    adbname_real = dbname_tmp = (char *) NULL;
-    pol_db = NULL;
+    dbname_tmp = (char *) NULL;
+    tmppol_db = NULL;
     for (aindex = 1; aindex < argc; aindex++) {
 	if (!strcmp(argv[aindex], oldoption))
 	     load = &old_version;
@@ -1950,12 +1978,8 @@ load_db(argc, argv)
      */
     fgets(buf, sizeof(buf), f);
     if (load) {
-	 /*
-	  * If the header does not end in null, only check what we know.
-	  */
-	 if ((load->header[strlen(load->header)-1] != '\n' &&
-	      strncmp(buf, load->header, strlen(load->header)) != 0) ||
-	     (strcmp(buf, load->header) != 0)) {
+	 /* only check what we know; some headers only contain a prefix */
+	 if (strncmp(buf, load->header, strlen(load->header)) != 0) {
 	      fprintf(stderr, head_bad_fmt, programname, dumpfile);
 	      exit_status++;
 	      if (dumpfile) fclose(f);
@@ -1980,33 +2004,35 @@ load_db(argc, argv)
 	 }
     }
     if (load->updateonly && !update) {
-	 fprintf(stderr, "%s: dump version %s can only be loaded in "
-		 "update mode\n", programname, load->name);
+	 fprintf(stderr, "%s: dump version %s can only be loaded with the "
+		 "-update flag\n", programname, load->name);
 	 exit_status++;
 	 return;
     }
 
     /*
      * Cons up params for the new databases.  If we are not in update
-     * mode change the actual file name to temp names that we'll
-     * rename later (but use the correct lock file).
+     * mode use a temp name that we'll rename later.
      */
     newparams = global_params;
-    adbname_real = newparams.admin_dbname;
     if (! update) {
+	 newparams.mask |= KADM5_CONFIG_DBNAME;
 	 newparams.dbname = dbname_tmp;
-	 newparams.admin_dbname = (char *) malloc(strlen(adbname_real) +
-						  strlen(dump_tmptrail) + 1);
-	 strcpy(newparams.admin_dbname, adbname_real);
-	 strcat(newparams.admin_dbname, dump_tmptrail);
+
+	 if (kret = kadm5_get_config_params(kcontext, NULL, NULL,
+					    &newparams, &newparams)) {
+	      com_err(argv[0], kret,
+		      "while retreiving new configuration parameters");
+	      exit_status++;
+	      return;
+	 }
     }
     
     /*
-     * If not an update restoration, create the new database.  Always
-     * create the policy db, even if we are not loading a dump file
+     * If not an update restoration, create the temp database.  Always
+     * create a temp policy db, even if we are not loading a dump file
      * with policy info, because they may be loading an old dump
-     * intending to use it with the new kadm5 system (ie: using load
-     * as create).
+     * intending to use it with the new kadm5 system.
      */
     if (!update && (kret = krb5_db_create(kcontext, dbname_tmp))) {
 	 fprintf(stderr, dbcreaterr_fmt,
@@ -2036,7 +2062,7 @@ load_db(argc, argv)
 	 exit_status++;
 	 goto error;
     }
-    if (kret = osa_adb_open_policy(&pol_db, &newparams)) {
+    if (kret = osa_adb_open_policy(&tmppol_db, &newparams)) {
 	 fprintf(stderr, "%s: %s while opening policy database\n",
 		 programname, error_message(kret));
 	 exit_status++;
@@ -2047,7 +2073,7 @@ load_db(argc, argv)
      * the update fails.
      */
     if (update) {
-	 if (kret = osa_adb_get_lock(pol_db, OSA_ADB_PERMANENT)) {
+	 if (kret = osa_adb_get_lock(tmppol_db, OSA_ADB_PERMANENT)) {
 	      fprintf(stderr, "%s: %s while permanently locking database\n",
 		      programname, error_message(kret));
 	      exit_status++;
@@ -2064,21 +2090,39 @@ load_db(argc, argv)
 	 exit_status++;
 	 goto error;
     }
+    /* 
+     * grab an extra lock, since there are no other users
+     */
+    if (!update) {
+	 kret = krb5_db_lock(kcontext, KRB5_LOCKMODE_EXCLUSIVE);
+	 if (kret) {
+		 fprintf(stderr, dblock_err_fmt,
+			 programname, error_message(kret));
+		 exit_status++;
+		 goto error;
+	 }
+    }
     
     if (restore_dump(programname, kcontext, (dumpfile) ? dumpfile : stdin_name,
-		     f, verbose, load, pol_db)) {
+		     f, verbose, load, tmppol_db)) {
 	 fprintf(stderr, restfail_fmt,
 		 programname, load->name);
 	 exit_status++;
     }
 
+    if (!update && (kret = krb5_db_unlock(kcontext))) {
+	 /* change this error? */
+	 fprintf(stderr, dbunlockerr_fmt,
+		 programname, dbname_tmp, error_message(kret));
+	 exit_status++;
+    }
     if (kret = krb5_db_fini(kcontext)) {
 	 fprintf(stderr, close_err_fmt,
 		 programname, error_message(kret));
 	 exit_status++;
     }
 
-    if (!update && load->create_kadm5_princs &&
+    if (!update && load->create_kadm5 &&
 	(kret = kadm5_create_magic_princs(&newparams, kcontext))) {
 	 /* error message printed by create_magic_princs */
 	 exit_status++;
@@ -2088,14 +2132,14 @@ load_db(argc, argv)
 
 error:
     /*
-     * If not an update: if there was an error, destroy the database,
+     * If not an update: if there was an error, destroy the temp database,
      * otherwise rename it into place.
      *
      * If an update: if there was no error, unlock the database.
      */
     if (!update) {
 	 if (exit_status) {
-	      if ((kret = kdb5_db_destroy(kcontext, dbname))) {
+	      if ((kret = kdb5_db_destroy(kcontext, dbname_tmp))) {
 		   fprintf(stderr, dbdelerr_fmt,
 			   programname, dbname_tmp, error_message(kret));
 		   exit_status++;
@@ -2114,55 +2158,41 @@ error:
 			   programname, dbname_tmp, dbname,
 			   error_message(kret));
 		   exit_status++;
-	      }
+	      } 
 
-	      if (kret = osa_adb_get_lock(pol_db, OSA_ADB_PERMANENT)) {
-		   fprintf(stderr,
-			   "%s: %s while getting permanent lock\n",
+	      if (kret = osa_adb_close_policy(tmppol_db)) {
+		   fprintf(stderr, close_err_fmt,
 			   programname, error_message(kret));
 		   exit_status++;
-	      } else if (rename(newparams.admin_dbname,
-				adbname_real) < 0) { 
-		   fprintf(stderr, "%s: %s while renaming %s to %s\n",
+	      }
+
+	      if (kret = osa_adb_rename_policy_db(&newparams,
+						  &global_params)) {
+		   fprintf(stderr,
+			   "%s: %s while renaming policy db %s to %s\n",
 			   programname, error_message(kret),
-			   newparams.admin_dbname, adbname_real); 
-		   exit_status++;
-	      } else if (kret = osa_adb_release_lock(pol_db)) {
-		   fprintf(stderr, "%s: %s while unlocking %s\n",
-			   programname, error_message(kret),
-			   adbname_real);
+			   newparams.admin_dbname,
+			   global_params.admin_dbname);
 		   exit_status++;
 	      }
 	 }
     } else /* update */ {
-	 if (! exit_status && (kret = osa_adb_release_lock(pol_db))) {
+	 if (! exit_status && (kret = osa_adb_release_lock(tmppol_db))) {
 	      fprintf(stderr, "%s: %s while releasing permanent lock\n",
+		      programname, error_message(kret));
+	      exit_status++;
+	 }
+
+	 if(tmppol_db && (kret = osa_adb_close_policy(tmppol_db))) {
+	      fprintf(stderr, close_err_fmt,
 		      programname, error_message(kret));
 	      exit_status++;
 	 }
     }
 
-    /*
-     * Don't close this database until here because of permanent lock
-     * handling above.  However, always close it even in case of
-     * error, so that the refcnt for an acquired permanent lock that
-     * is not released due to an error is decremented, thus ensuring
-     * that a subsequent attempt to get a lock in the same process
-     * fails.
-     */
-    if(pol_db && (kret = osa_adb_close_policy(pol_db))) {
-	 fprintf(stderr, close_err_fmt,
-		 programname, error_message(kret));
-	 exit_status++;
-    }
-
     if (dumpfile) {
 	 (void) krb5_lock_file(kcontext, fileno(f), KRB5_LOCKMODE_UNLOCK);
 	 fclose(f);
-    }
-
-    if (adbname_real && adbname_real != newparams.admin_dbname) {
-	 free(newparams.admin_dbname);
     }
 
     if (dbname_tmp)
