@@ -22,7 +22,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.8 1991-02-11 16:30:27 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.9 1991-02-15 13:31:18 sao Exp $";
 
 /*
 ** Globals
@@ -38,6 +38,8 @@ void		RemoveLetterC();
 int		char_width;
 char		axis[10];
 void		TopSelect(), BotSelect();
+void		Update(), Stub();
+void		PrintEvent();
 
 /*
 ** External functions
@@ -53,6 +55,7 @@ extern char     *getenv();
 extern void	TriggerAdd(), TriggerNum(), TriggerDelete();
 extern void	TriggerWrite(), TriggerPopdown(), TriggerSend();
 extern void	TriggerFocusMove();
+extern void	DispatchClick();
 
 /*
 ** Private functions
@@ -65,7 +68,6 @@ static void	MenuCallback();
 static void	KeyCallback();
 static void	QuitCB(), HelpCB();
 static void	BuildUserInterface();
-static void	Update(), Stub();
 static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
 static void	DisplayHighlightedTransaction();
@@ -317,6 +319,7 @@ BuildUserInterface()
 		{"MenuCallback",	MenuCallback},
 		{"KeyCallback",		KeyCallback},
 		{"Update",		Update},
+		{"DispatchClick",	DispatchClick},
 		{"TriggerAdd",		TriggerAdd},
 		{"TriggerDelete",	TriggerDelete},
 		{"TriggerFocusMove",	TriggerFocusMove},
@@ -329,8 +332,8 @@ BuildUserInterface()
 		{"HelpCB",		HelpCB},
 		{"QuitCB",		QuitCB},
 		{"PopdownCB",		PopdownCB},
-		{"Stub",		Stub}};
-
+		{"Stub",		Stub},
+		{"PrintEvent",		PrintEvent}};
 
 	n = 0;
 	paneW = XtCreateManagedWidget(
@@ -1132,7 +1135,7 @@ char	*ptr;
 ** If it's a transaction, we display it in the lower window.
 */
 
-static void
+void
 Update()
 {
 	if (topscreen == MAIN) {
@@ -1174,10 +1177,22 @@ DisplayHighlightedTransaction()
 	GoToTransaction(num, True);
 }
 
-static void
+void
 Stub()
 {
 }
+
+void
+PrintEvent(w, event, params, num_params)
+Widget	w;
+XEvent	*event;
+String 	*params;
+int	*num_params;
+{
+	fprintf(stderr, "event type %d for widget %s\n",
+		event->type, XtName(w));
+}
+
 
 /*
 **  If we're reading a transaction, scroll it one page down.
@@ -1195,7 +1210,6 @@ DoTheRightThing()
 		
 /*
 **  Are we at the end of a meeting?
-	if (TransactionNum(CURRENT) < TransactionNum(LAST)) {
 */
 	if (TransactionNum(NEXT) != 0) {
 /*
@@ -1210,11 +1224,6 @@ DoTheRightThing()
 		if (MoveToMeeting(NEXTNEWS) == 0) {
 			BotSelect(NULL, 0, NULL);
 		}
-/*
-		TopSelect(NULL, (XtPointer)0, NULL);
-		BotSelect(NULL, 0, NULL);
-*/
-		
 	}
 }
 
@@ -1754,4 +1763,34 @@ int	*num_params;
 				(XEvent *) &MyEvent);
 	}
 
+}
+
+/*
+**  Check time interval between mouse clicks.  If it's less than the
+**  intrinsics' multi-click timer, call my own "Update" procedure.
+**  Otherwise, pass the click on to the text widget.
+*/
+
+void
+DispatchClick(w, event, params, num_params)
+Widget w;
+XEvent *event;
+String *params;         /* unused */
+Cardinal *num_params;   /* unused */
+{
+	static Time	lasttime = 0;
+
+/*
+	XtSetKeyboardFocus(paneW, w);
+*/
+
+	if (	lasttime == 0 ||
+		(XtLastTimestampProcessed(XtDisplay(w)) - lasttime) >
+			(Time) XtGetMultiClickTime(XtDisplay(w))) {
+		XtCallActionProc(w, "select-start", event, params, num_params);
+	}
+	else {
+		XtCallActionProc(w, "Update", event, params, num_params);
+	}
+	lasttime = XtLastTimestampProcessed(XtDisplay(w));
 }
