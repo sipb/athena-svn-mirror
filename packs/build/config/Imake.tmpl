@@ -89,10 +89,10 @@
 #define RanLibCmd ranlib
 #endif
 #ifndef InstPgmFlags
-#define InstPgmFlags -s
+#define InstPgmFlags -m 555
 #endif
 #ifndef InstScriptFlags
-#define InstScriptFlags -m 755
+#define InstScriptFlags -m 555
 #endif
 #ifndef RmCmd
 #define RmCmd rm -f
@@ -101,7 +101,7 @@
 #define CcFlags
 #endif
 #ifndef CDebugFlags
-#define CDebugFlags -O
+#define CDebugFlags -g
 #endif
 #ifndef ProfCcFlags
 #define ProfCcFlags -p
