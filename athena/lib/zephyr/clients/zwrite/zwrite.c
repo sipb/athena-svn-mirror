@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.41 1993-11-21 03:34:27 probe Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.42 1994-04-30 18:33:03 probe Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -227,7 +227,7 @@ main(argc, argv)
     if (!nocheck && nrecips)
 	send_off(&notice, 0);
 	
-    if (quiet)
+    if (quiet || !nrecips)
 	notice.z_kind = UNACKED;	/* change for real sending */
 
     if (!msgarg && isatty(0))
