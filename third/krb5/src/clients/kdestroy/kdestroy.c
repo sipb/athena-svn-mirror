@@ -104,24 +104,30 @@ main(argc, argv)
     code = krb5_cc_destroy (kcontext, cache);
     if (code != 0) {
 	com_err (argv[0], code, "while destroying cache");
-	if (quiet)
-	    fprintf(stderr, "Ticket cache NOT destroyed!\n");
-	else {
+	if (code != KRB5_FCC_NOFILE) {
+	    if (quiet)
+		fprintf(stderr, "Ticket cache NOT destroyed!\n");
+	    else {
 #ifdef __STDC__
-	    fprintf(stderr, "Ticket cache \aNOT\a destroyed!\n");
+		fprintf(stderr, "Ticket cache \aNOT\a destroyed!\n");
 #else
-	    fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
+		fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
 #endif
+	    }
+	    errflg = 1;
 	}
-	errflg = 1;
     }
 #ifdef KRB5_KRB4_COMPAT
-    if (v4 && dest_tkt() != KSUCCESS) {
-	if (quiet)
-	    fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
-	else
-	    fprintf(stderr, "Kerberos 4 ticket file \007NOT\007 destroyed!\n");
-	errflg = 1;
+    if (v4) {
+	code = dest_tkt();
+	if (code != KSUCCESS && code != RET_TKFIL) {
+	    if (quiet)
+		fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
+	    else
+		fprintf(stderr,
+			"Kerberos 4 ticket file \007NOT\007 destroyed!\n");
+	    errflg = 1;
+	}
     }
 #endif
     exit (errflg);
