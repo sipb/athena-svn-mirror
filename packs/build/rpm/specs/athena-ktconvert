@@ -1,0 +1,11 @@
+Name: athena-ktconvert
+Summary: Script to convert /etc/athena/srvtab to /etc/krb5.keytab
+License: MIT
+Group: System Environment/Base
+
+Requires: athena-krb5
+
+%description
+The ktconvert script automates the process of converting a Kerberos 4
+srvtab located at /etc/athena/srvtab into a Kerberos 5 keytab located
+at /etc/krb5.keytab.  It also allows this process to be reversed.
