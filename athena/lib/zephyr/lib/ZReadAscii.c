@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.14 1990-07-15 22:56:25 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.15 1990-12-12 09:31:27 raeburn Exp $ */
 
 #ifndef lint
 static
@@ -18,20 +18,17 @@ static
     const
 #endif
     char rcsid_ZReadAscii_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.14 1990-07-15 22:56:25 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.15 1990-12-12 09:31:27 raeburn Exp $";
 #endif /* lint */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-static int
-#ifdef __STDC__
-Z_cnvt_xtoi (char c) /* may be faster */
-#else
-Z_cnvt_xtoi(c)
-    char c;
-#endif
+#if 0
+static __inline__
+int
+Z_cnvt_xtoi (char c)
 {
     c -= '0';
     if (c < 10)
@@ -41,6 +38,9 @@ Z_cnvt_xtoi(c)
 	return c;
     return -1;
 }
+#endif
+
+#define Z_cnvt_xtoi(c)  ((temp=(c)-'0'),(temp<10)?temp:((temp-='A'-'9'-1),(temp<16)?temp:-1))
 
 int ZReadAscii(ptr, len, field, num)
     char *ptr;
@@ -51,6 +51,9 @@ int ZReadAscii(ptr, len, field, num)
     int i;
     unsigned int hexbyte;
     register char c1, c2;
+#ifdef Z_cnvt_xtoi
+    register unsigned int temp;
+#endif
 
     for (i=0;i<num;i++) {
 	if (*ptr == ' ') {
