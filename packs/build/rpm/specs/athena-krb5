@@ -52,11 +52,11 @@ rm $RPM_BUILD_ROOT/bin/login
 
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/athena/krb.conf|%config \0|" \
-      -e "s|/etc/athena/krb.realms|%config \0|" \
-      -e "s|/etc/krb5.conf|%config \0|" \
-      -e "s|/etc/ftpusers|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/krb.conf$|%config \0|" \
+      -e "s|^/etc/athena/krb.realms$|%config \0|" \
+      -e "s|^/etc/krb5.conf$|%config \0|" \
+      -e "s|^/etc/ftpusers$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /var/athena/sessions" >> rpm.filelist
 

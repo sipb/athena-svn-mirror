@@ -51,8 +51,8 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/syslog.conf.athena|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/syslog.conf.athena$|%config \0|" |
   sort > rpm.filelist
 
 %triggerin -- sysklogd

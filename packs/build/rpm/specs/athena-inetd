@@ -33,9 +33,9 @@ mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
 	$RPM_BUILD_ROOT/usr/athena/man/man8/athena-inetd.8
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/inetd.conf.minimal|%config \0|" \
-      -e "s|/etc/athena/inetd.conf|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/inetd.conf.minimal$|%config \0|" \
+      -e "s|^/etc/athena/inetd.conf$|%config \0|" |
   sort > rpm.filelist
 
 

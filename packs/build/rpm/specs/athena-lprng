@@ -28,9 +28,9 @@ cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/lpd.conf|%config \0|" \
-      -e "s|/etc/lpd.perms|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/lpd.conf$|%config \0|" \
+      -e "s|^/etc/lpd.perms$|%config \0|" |
   sort > rpm.filelist
 
 

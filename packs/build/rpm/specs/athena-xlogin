@@ -25,6 +25,6 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
+  sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
 echo "%dir /var/athena/sessions" >> rpm.filelist
 

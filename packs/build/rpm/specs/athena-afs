@@ -27,11 +27,11 @@ cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/usr/vice/etc/CellServDB|%config \0|" \
-      -e "s|/usr/vice/etc/ThisCell|%config \0|" \
-      -e "s|/usr/vice/etc/cacheinfo|%config \0|" \
-      -e "s|/etc/sysconfig/afs|%config \0" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/usr/vice/etc/CellServDB$|%config \0|" \
+      -e "s|^/usr/vice/etc/ThisCell$|%config \0|" \
+      -e "s|^/usr/vice/etc/cacheinfo$|%config \0|" \
+      -e "s|^/etc/sysconfig/afs$|%config \0" |
   sort > rpm.filelist
 echo "%dir /usr/vice/cache" >> rpm.filelist	    
 

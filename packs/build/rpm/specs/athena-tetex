@@ -24,4 +24,4 @@ mkdir $RPM_BUILD_ROOT
 rm $RPM_BUILD_ROOT/usr/athena/info/dir
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
+    sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist

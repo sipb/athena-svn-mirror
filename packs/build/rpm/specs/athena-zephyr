@@ -32,8 +32,8 @@ chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/athena/zephyr.vars|%config \0" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/zephyr.vars$|%config \0" |
   sort > rpm.filelist
 
 %post

@@ -31,8 +31,8 @@ cp attach.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/etc/athena/attach.conf|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/attach.conf$|%config \0|" |
   sort > rpm.filelist
 
 cat << EOF >> rpm.filelist

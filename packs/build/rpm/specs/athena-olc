@@ -24,7 +24,7 @@ cp olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
+    sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
 %post
 grep -q OLC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf

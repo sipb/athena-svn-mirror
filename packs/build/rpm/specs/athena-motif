@@ -25,6 +25,6 @@ cp system.mwmrc $RPM_BUILD_ROOT/usr/athena/lib/X11/system.mwmrc
 cp Mwm $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Mwm
 
 find $RPM_BUILD_ROOT -type f -or -type l |
-  sed -e "s|$RPM_BUILD_ROOT||" \
-      -e "s|/usr/athena/lib/X11/system.mwmrc|%config \0|" |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/usr/athena/lib/X11/system.mwmrc$|%config \0|" |
   sort > rpm.filelist
