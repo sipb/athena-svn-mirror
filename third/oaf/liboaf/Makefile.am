@@ -89,7 +89,6 @@ oaf-factory.h stamp-factory-idl: $(top_srcdir)/idl/oaf-factory.idl
 CLEANFILES=			\
 	stamp-idl 		\
 	stamp-factory-idl 	\
-	$(BUILT_SOURCES)	\
 	$(NULL)
 
 

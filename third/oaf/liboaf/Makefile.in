@@ -131,7 +131,7 @@ liboaf_la_SOURCES =  	oaf-stubs.c 			oaf-skels.c 			oaf-common.c 			oaf-mainloop
 BUILT_SOURCES =  	oaf-stubs.c 			oaf-skels.c 			oaf-common.c 			oaf-factory-stubs.c 		oaf-factory-skels.c 		oaf-factory-common.c 		oaf.h 				oaf-factory.h			$(NULL)
 
 
-CLEANFILES =  	stamp-idl 			stamp-factory-idl 		$(BUILT_SOURCES)		$(NULL)
+CLEANFILES =  	stamp-idl 			stamp-factory-idl 		$(NULL)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
