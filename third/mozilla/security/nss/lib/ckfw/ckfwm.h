@@ -35,7 +35,7 @@
 #define CKFWM_H
 
 #ifdef DEBUG
-static const char CKFWM_CVS_ID[] = "@(#) $RCSfile: ckfwm.h,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 13:29:15 $ $Name: not supported by cvs2svn $";
+static const char CKFWM_CVS_ID[] = "@(#) $RCSfile: ckfwm.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:19:47 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
