@@ -211,10 +211,16 @@ image (the filter is designed to be idempotent for 1:1 pixel mapping).
                                              <link linkend="double">double</link> scale_y,
                                              <link linkend="GdkInterpType">GdkInterpType</link> interp_type);</programlisting>
 <para>
-Transforms the image by source image by scaling by <parameter>scale_x</parameter> and <parameter>scale_y</parameter> then
-translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>, then renders the rectangle
-(<parameter>dest</parameter>,<parameter>dest_y</parameter>,<parameter>dest_width</parameter>,<parameter>dest_height</parameter>) of the resulting image onto the
-destination drawable replacing the previous contents.</para>
+Creates a transformation of the source image <parameter>src</parameter> by scaling by
+<parameter>scale_x</parameter> and <parameter>scale_y</parameter> then translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>,
+then renders the rectangle (<parameter>dest_x</parameter>, <parameter>dest_y</parameter>, <parameter>dest_width</parameter>,
+<parameter>dest_height</parameter>) of the resulting image onto the destination image
+replacing the previous contents.
+</para>
+<para>
+Try to use <link linkend="gdk-pixbuf-scale-simple">gdk_pixbuf_scale_simple</link>() first, this function is
+the industrial-strength power tool you can fall back to if
+<link linkend="gdk-pixbuf-scale-simple">gdk_pixbuf_scale_simple</link>() isn't powerful enough.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -271,10 +277,10 @@ destination drawable replacing the previous contents.</para>
                                              <link linkend="GdkInterpType">GdkInterpType</link> interp_type,
                                              int overall_alpha);</programlisting>
 <para>
-Transforms the image by source image by scaling by <parameter>scale_x</parameter> and <parameter>scale_y</parameter> then
-translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>, then composites the rectangle
-(<parameter>dest</parameter>,<parameter>dest_y</parameter>,<parameter>dest_width</parameter>,<parameter>dest_height</parameter>) of the resulting image onto the
-destination drawable.</para>
+Creates a transformation of the source image <parameter>src</parameter> by scaling by
+<parameter>scale_x</parameter> and <parameter>scale_y</parameter> then translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>,
+then composites the rectangle (<parameter>dest_x</parameter>, <parameter>dest_y</parameter>, <parameter>dest_width</parameter>,
+<parameter>dest_height</parameter>) of the resulting image onto the destination image.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -339,11 +345,16 @@ destination drawable.</para>
                                              <link linkend="guint32">guint32</link> color1,
                                              <link linkend="guint32">guint32</link> color2);</programlisting>
 <para>
-Transforms the image by source image by scaling by <parameter>scale_x</parameter> and <parameter>scale_y</parameter> then
-translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>, then composites the rectangle
-(<parameter>dest</parameter>,<parameter>dest_y</parameter>,<parameter>dest_width</parameter>,<parameter>dest_height</parameter>) of the resulting image with
-a checkboard of the colors <parameter>color1</parameter> and <parameter>color2</parameter> and renders it onto the
-destination drawable.</para>
+Creates a transformation of the source image <parameter>src</parameter> by scaling by
+<parameter>scale_x</parameter> and <parameter>scale_y</parameter> then translating by <parameter>offset_x</parameter> and <parameter>offset_y</parameter>,
+then composites the rectangle (<parameter>dest_x</parameter> ,<parameter>dest_y</parameter>, <parameter>dest_width</parameter>,
+<parameter>dest_height</parameter>) of the resulting image with a checkboard of the
+colors <parameter>color1</parameter> and <parameter>color2</parameter> and renders it onto the destination
+image.
+</para>
+<para>
+See <link linkend="gdk-pixbuf-composite-color-simple">gdk_pixbuf_composite_color_simple</link>() for a simpler variant of this
+function suitable for many tasks.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -410,8 +421,16 @@ destination drawable.</para>
                                              int dest_height,
                                              <link linkend="GdkInterpType">GdkInterpType</link> interp_type);</programlisting>
 <para>
-Scale the <link linkend="GdkPixbuf">GdkPixbuf</link> <parameter>src</parameter> to <parameter>dest_width</parameter> x <parameter>dest_height</parameter> and render the result into
-a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
+Create a new <link linkend="GdkPixbuf">GdkPixbuf</link> containing a copy of <parameter>src</parameter> scaled to
+<parameter>dest_width</parameter> x <parameter>dest_height</parameter>. Leaves <parameter>src</parameter> unaffected.  <parameter>interp_type</parameter>
+should be <link linkend="GDK-INTERP-NEAREST-CAPS">GDK_INTERP_NEAREST</link> if you want maximum speed (but when
+scaling down <link linkend="GDK-INTERP-NEAREST-CAPS">GDK_INTERP_NEAREST</link> is usually unusably ugly).  The
+default <parameter>interp_type</parameter> should be <link linkend="GDK-INTERP-BILINEAR-CAPS">GDK_INTERP_BILINEAR</link> which offers
+reasonable quality and speed.
+</para>
+<para>
+For more complicated scaling/compositing see <link linkend="gdk-pixbuf-scale">gdk_pixbuf_scale</link>()
+and <link linkend="gdk-pixbuf-composite">gdk_pixbuf_composite</link>().</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -431,7 +450,7 @@ a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
 <row><entry align="right"><parameter>interp_type</parameter>&nbsp;:</entry>
 <entry> the interpolation type for the transformation.
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new <link linkend="GdkPixbuf">GdkPixbuf</link>, or NULL if not enough memory could be
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new <link linkend="GdkPixbuf">GdkPixbuf</link>, or <literal>NULL</literal> if not enough memory could be
 allocated for it.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -447,9 +466,9 @@ allocated for it.
                                              <link linkend="guint32">guint32</link> color1,
                                              <link linkend="guint32">guint32</link> color2);</programlisting>
 <para>
-Scale the <link linkend="GdkPixbuf">GdkPixbuf</link> <parameter>src</parameter> to <parameter>dest_width</parameter> x <parameter>dest_height</parameter> composite the result with
-a checkboard of colors <parameter>color1</parameter> and <parameter>color2</parameter> and render the result into
-a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
+Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> by scaling <parameter>src</parameter> to <parameter>dest_width</parameter> x
+<parameter>dest_height</parameter> and compositing the result with a checkboard of colors
+<parameter>color1</parameter> and <parameter>color2</parameter>.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">
@@ -481,7 +500,7 @@ a new <link linkend="GdkPixbuf">GdkPixbuf</link>.</para>
 <row><entry align="right"><parameter>color2</parameter>&nbsp;:</entry>
 <entry> the color of the other check
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new <link linkend="GdkPixbuf">GdkPixbuf</link>, or NULL if not enough memory could be
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the new <link linkend="GdkPixbuf">GdkPixbuf</link>, or <literal>NULL</literal> if not enough memory could be
 allocated for it.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

@@ -1,3 +1,52 @@
+2002-04-18  Federico Mena Quintero  <federico@ximian.com>
+
+	Released 0.17.0 "Your Wise Men Don't Know How It Feels".
+
+	* configure.in: Bumped version number to 0.17.0.
+
+2002-04-16  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/io-bmp.c: Integrated changes from GTK+ 2.0 up to
+	2002-04-11.
+
+2002-04-15  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-loader.c (gdk_pixbuf_loader_close): Only
+	cal the stop_load function on the module if its context is not
+	NULL.
+
+2002-04-15  Federico Mena Quintero  <federico@ximian.com>
+
+	Merging patches from GTK+ HEAD.  
+
+	These are from Matthias Clasen <maclas@gmx.de>:
+
+	* pixops/pixops.c (tile_make_weights): Move the call to
+	correct_total() to the right spot. (#72732)
+
+	* pixops/pixops.c (correct_total): New function to make sure
+	that the weights sum up to the correct total without introducing
+	negative weights.
+	(tile_make_weights, bilinear_make_fast_weights, 
+	bilinear_make_weights): Use correct_total.
+
+	These are from Owen Taylor <otaylor@redhat.com>:
+
+	* gdk-pixbuf.c (gdk_pixbuf_new): Bullet-proof against integer
+	overflow.
+
+	* pixops/pixops.c (bilinear_make_weights): Fix handing of
+	overall alpha.
+
+	* pixops/pixops.c: Force all weight arrays to sum exactly
+	to 65535. (Fixes #70971, reported by Federico Mena Quintero)
+
+2002-03-14  Federico Mena Quintero  <federico@ximian.com>
+
+	* gdk-pixbuf/gdk-pixbuf-xlibrgb.c (xlib_rgb_init): Fixed C++
+	comment.  Thanks to Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu>
+	for pointing this out.
+
 2002-01-22  Federico Mena Quintero  <federico@ximian.com>
 
 	Released 0.16.0 "Deadly Yellow Snow".

@@ -348,7 +348,7 @@ given drawables should use <link linkend="gdk-pixbuf-render-to-drawable-alpha">g
 </para>
 <para>
 If the pixbuf does not have an alpha channel, then *<parameter>mask_return</parameter> will be set
-to NULL.</para>
+to <literal>NULL</literal>.</para>
 <para>
 
 </para><informaltable pgwide="1" frame="none" role="params">

@@ -109,7 +109,7 @@ to fill it completely yourself.</para>
 <row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
 <entry> Height of image in pixels.
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created <link linkend="GdkPixbuf">GdkPixbuf</link> with a reference count of 1, or NULL
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created <link linkend="GdkPixbuf">GdkPixbuf</link> with a reference count of 1, or <literal>NULL</literal>
 if not enough memory could be allocated for the image buffer.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -157,7 +157,7 @@ images with 8 bits per sample are supported.</para>
 </entry></row>
 <row><entry align="right"><parameter>destroy_fn</parameter>&nbsp;:</entry>
 <entry> Function used to free the data when the pixbuf's reference count
-drops to zero, or NULL if the data should not be freed.
+drops to zero, or <literal>NULL</literal> if the data should not be freed.
 </entry></row>
 <row><entry align="right"><parameter>destroy_fn_data</parameter>&nbsp;:</entry>
 <entry> Closure data to pass to the destroy notification function.
@@ -201,7 +201,7 @@ Creates a new <link linkend="GdkPixbuf">GdkPixbuf</link> with a copy of the info
 <row><entry align="right"><parameter>pixbuf</parameter>&nbsp;:</entry>
 <entry> A pixbuf.
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created pixbuf with a reference count of 1, or NULL if
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created pixbuf with a reference count of 1, or <literal>NULL</literal> if
 not enough memory could be allocated.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

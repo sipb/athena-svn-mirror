@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -143,10 +143,10 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libpixops_la_LDFLAGS = 
 libpixops_la_LIBADD = 
-@USE_MMX_FALSE@libpixops_la_OBJECTS =  pixops.lo
 @USE_MMX_TRUE@libpixops_la_OBJECTS =  pixops.lo have_mmx.lo \
 @USE_MMX_TRUE@scale_line_22_33_mmx.lo composite_line_22_4a4_mmx.lo \
 @USE_MMX_TRUE@composite_line_color_22_4a4_mmx.lo
+@USE_MMX_FALSE@libpixops_la_OBJECTS =  pixops.lo
 noinst_PROGRAMS =  timescale$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 

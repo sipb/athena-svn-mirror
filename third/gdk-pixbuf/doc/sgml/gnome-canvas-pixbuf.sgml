@@ -33,7 +33,7 @@
 </refsect1>
 
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <synopsis>
 
   &quot;<link linkend="GnomeCanvasPixbuf--pixbuf">pixbuf</link>&quot;               <link linkend="gpointer">gpointer</link>             : Read / Write
@@ -243,7 +243,7 @@
 
 </refsect1>
 <refsect1>
-<title>Args</title>
+<title>Properties</title>
 <variablelist>
 <varlistentry><term><anchor id="GnomeCanvasPixbuf--pixbuf">&quot;<literal>pixbuf</literal>&quot; (<link linkend="gpointer">gpointer</link> : Read / Write)</term>
 <listitem>

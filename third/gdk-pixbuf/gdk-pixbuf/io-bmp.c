@@ -204,6 +204,9 @@ gdk_pixbuf__bmp_image_load(FILE *f)
 
 	State = gdk_pixbuf__bmp_image_begin_load(NULL, NULL, NULL, NULL, NULL);
 
+	if (State == NULL)
+		return NULL;
+
 	while (feof(f) == 0) {
 		length = fread(membuf, 1, sizeof (membuf), f);
 		if (length > 0)
@@ -232,7 +235,17 @@ DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 
 	if (State->BufferSize < GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14) {
 		State->BufferSize = GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14;
-		State->buff = g_realloc (State->buff, State->BufferSize);
+		State->buff = realloc (State->buff, State->BufferSize);
+		if (State->buff == NULL) {
+#if 0
+			g_set_error (error,
+				     GDK_PIXBUF_ERROR,
+                                     GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY,
+                                     _("Not enough memory to load bitmap image"));
+#endif
+			State->read_state = READ_STATE_ERROR;
+			return FALSE;
+		}
 		return TRUE;
 	}
 
@@ -366,8 +379,16 @@ DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 	} else if (State->Compressed == BI_BITFIELDS) {
 		State->read_state = READ_STATE_BITMASKS;
 		State->BufferSize = 12;
-	} else
-		g_assert_not_reached ();
+	} else {
+#if 0
+		g_set_error (error,
+			     GDK_PIXBUF_ERROR,
+			     GDK_PIXBUF_ERROR_CORRUPT_IMAGE,
+			     _("BMP image has bogus header data"));
+#endif
+		State->read_state = READ_STATE_ERROR;
+		return FALSE;
+	}
 
 	State->buff = g_realloc (State->buff, State->BufferSize);
 
@@ -578,29 +599,6 @@ OneLine32 (struct bmp_progressive_state *context)
 
 			src += 4;
 		}
-#if 0
-
-	gint X;
-	guchar *Pixels;
-
-	X = 0;
-	if (context->Header.Negative == 0)
-		Pixels = (context->pixbuf->pixels +
-			  context->pixbuf->rowstride *
-			  (context->Header.height - context->Lines - 1));
-	else
-		Pixels = (context->pixbuf->pixels +
-			  context->pixbuf->rowstride *
-			  context->Lines);
-
-	while (X < context->Header.width) {
-		Pixels[X * 4 + 0] = context->buff[X * 4 + 2];
-		Pixels[X * 4 + 1] = context->buff[X * 4 + 1];
-		Pixels[X * 4 + 2] = context->buff[X * 4 + 0];
-		Pixels[X * 4 + 3] = context->buff[X * 4 + 3];
-		X++;
-	}
-#endif
 }
 
 static void

@@ -538,7 +538,7 @@ gdk_pixbuf_loader_close (GdkPixbufLoader *loader)
 	if (priv->image_module == NULL)
 		gdk_pixbuf_loader_load_module (loader);
 
-	if (priv->image_module && priv->image_module->stop_load)
+	if (priv->image_module && priv->image_module->stop_load && priv->context)
 		(* priv->image_module->stop_load) (priv->context);
 
 	priv->closed = TRUE;
