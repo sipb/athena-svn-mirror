@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1998-12-27 22:42:31 rbasch Exp $
+# $Id: Makefile.in,v 1.2.4.1 1999-11-08 17:50:42 tb Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -32,7 +32,8 @@ check:
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 555 inetd ${DESTDIR}${lsbindir}
 	${INSTALL} -m 444 ${srcdir}/inetd.8 ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 444 ${srcdir}/inetd.conf.5 ${DESTDIR}${mandir}/man5
