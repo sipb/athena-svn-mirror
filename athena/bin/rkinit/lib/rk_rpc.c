@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_rpc.c,v 1.5 1990-08-01 11:53:04 qjb Exp $
+ * $Id: rk_rpc.c,v 1.6 1994-03-30 15:58:07 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
- * $Author: qjb $
+ * $Author: cfields $
  *
  * This file contains functions that are used for network communication.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_rpc.c,v 1.5 1990-08-01 11:53:04 qjb Exp $";
+static char *rcsid = "$Id: rk_rpc.c,v 1.6 1994-03-30 15:58:07 cfields Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -62,9 +62,13 @@ int rki_send_packet(sock, type, length, data)
     net_pkt_len = htonl(pkt_len);
 
     packet[PKT_TYPE] = type;
+#ifdef POSIX
+    memmove(packet + PKT_LEN, (char *)&net_pkt_len, sizeof(u_long));
+    memmove(packet + PKT_DATA, data, length);
+#else
     bcopy((char *)&net_pkt_len, packet + PKT_LEN, sizeof(u_long));
     bcopy(data, packet + PKT_DATA, length);
-    
+#endif    
     if ((len = write(sock, packet, pkt_len)) != pkt_len) {
 	if (len == -1) 
 	    sprintf(errbuf, "write: %s", sys_errlist[errno]);
@@ -115,7 +119,11 @@ int rki_get_packet(sock, type, length, data)
 	}
 	len_sofar += len;
 	if (len_sofar >= PKT_DATA) {
+#ifdef POSIX
+           memmove((char *)&expected_length, packet + PKT_LEN, sizeof(u_long));
+#else
 	    bcopy(packet + PKT_LEN, (char *)&expected_length, sizeof(u_long));
+#endif
 	    expected_length = ntohl(expected_length);
 	    if (expected_length == len_sofar)
 		got_full_packet = TRUE;
@@ -151,7 +159,11 @@ int rki_get_packet(sock, type, length, data)
     }
 
     *length = len_sofar - PKT_DATA;
+#ifdef POSIX
+    memmove(data, packet + PKT_DATA,  *length);
+#else
     bcopy(packet + PKT_DATA, data, *length);
+#endif
 
     free(packet);
 
@@ -186,7 +198,11 @@ int rki_setup_rpc(host)
 	port = htons(PORT);
 
     saddr.sin_family = hp->h_addrtype;
+#ifdef POSIX
+    memmove((char *)&saddr.sin_addr, hp->h_addr, hp->h_length);
+#else
     bcopy(hp->h_addr, (char *)&saddr.sin_addr, hp->h_length);
+#endif
     saddr.sin_port = port;
 
     if ((sock = socket(hp->h_addrtype, SOCK_STREAM, IPPROTO_IP)) < 0) {
@@ -247,7 +263,11 @@ int rki_rpc_send_rkinit_info(info)
 {
     rkinit_info info_copy;
     
+#ifdef POSIX
+    memmove(&info_copy, info, sizeof(rkinit_info));
+#else
     bcopy(info, &info_copy, sizeof(rkinit_info));
+#endif
     info_copy.lifetime = htonl(info_copy.lifetime);
     return(rki_send_packet(sock, MT_RKINIT_INFO, sizeof(rkinit_info), 
 			   (char *)&info_copy));
@@ -336,7 +356,11 @@ int rki_get_csaddr(caddrp, saddrp)
 {
     int addrlen = sizeof(struct sockaddr_in);
     
+#ifdef POSIX
+    memmove((char *)saddrp, (char *)&saddr, addrlen);
+#else
     bcopy((char *)&saddr, (char *)saddrp, addrlen);
+#endif
 
     if (getsockname(sock, caddrp, &addrlen) < 0) {
 	sprintf(errbuf, "getsockname: %s", sys_errlist[errno]);
