@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.40 1992-08-17 17:00:09 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.41 1992-08-18 19:27:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.40 1992-08-17 17:00:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.41 1992-08-18 19:27:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -1228,7 +1228,7 @@ match_maker(knuckle)
 		int s1, s2;
 		s1 = match->status & SIGNED_ON;
 		s2 = k->status & SIGNED_ON;
-		if (s1 > s2)
+		if (s1 < s2)
 		    continue;
 		if ((s1 == s2)
 		    && is_specialty (match->user,
