@@ -1,15 +1,16 @@
 This document describes guidelines for code which is to be
 incorporated into the Athena source tree.  Here are the areas covered:
 
-	Coding conventions
+	Conventions for C code
+	Conventions for shell scripts
 	Software engineering practices
 	Symbol namespaces
 	Portability considerations for code we maintain
 	Portability considerations for code we release
 	Portability considerations for code we get from third parties
 
-Coding conventions
-------------------
+Conventions for C code
+----------------------
 
 If you are working on an existing module which does not follow these
 conventions, be consistent with the existent source code rather than
@@ -52,14 +53,15 @@ examples in the standards.
 Each C source file should begin with an MIT copyright statement, a
 comment describing what the file does, and a line:
 
-	static char rcsid[] = "$Id: $";
+	static char rcsid[] = "$Id$";
 
 Each C header file should begin with:
 
-	/* $Id: $ */
+	/* $Id$ */
 
 followed by an MIT copyright statement and a comment describing what
-the file does.
+the file does.  MIT copyright statements may be omitted for source
+code which is not distributed outside of MIT.
 
 The preferred convention for comments is
 
@@ -77,6 +79,35 @@ ending with a period.
 
 Write prototypes for all of your functions.  Include argument names in
 your prototypes, to help the reader understand what they mean.
+
+Conventions for shell scripts
+-----------------------------
+
+Use /bin/sh to write shell scripts, not csh.
+
+Begin each shell script with:
+
+	#!/bin/sh
+	# $Id$
+
+followed by an MIT copyright if the shell script will be distributed
+outside of MIT.
+
+Use tabs for indentation.  Avoid putting the then or else clauses of
+an if statement on the same line.  Avoid creating lines longer than 79
+characters.  Write case statements according to the format:
+
+	case expression in
+	pattern)
+		statements
+		;;
+	esac
+
+Environment variable names should be in all capitals; shell variable
+names should be in all lowercase.  Avoid writing ${varname} for
+variable expansion except when necessary; just write $varname.  In
+most cases, if you intend to expand a variable as a single word, you
+should write "$varname" with double quotes.
 
 Software engineering practices
 ------------------------------
