@@ -52,13 +52,18 @@
 #endif
 #include "nsFontPSDebug.h"
 
+#include "nsArray.h"
+
 extern nsIAtom *gUsersLocale;
 #define NS_IS_BOLD(weight) ((weight) > 400 ? 1 : 0)
 
+#ifdef MOZ_ENABLE_FREETYPE2
 static nsFontPS* CreateFontPS(nsITrueTypeFontCatalogEntry*, const nsFont&,
                               nsFontMetricsPS*);
 
 static NS_DEFINE_CID(kFCSCID, NS_FONTCATALOGSERVICE_CID);
+#endif
+
 /** ---------------------------------------------------
  *  See documentation in nsFontMetricsPS.h
  *	@update 2/26/99 dwc
@@ -1034,7 +1039,7 @@ nsFontPSFreeType::AddFontEntries(nsACString& aFamilyName, nsACString& aLanguage,
   nsCOMPtr<nsIFontCatalogService> fcs(do_GetService(kFCSCID, &rv));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsISupportsArray> entryList = nsnull;
+  nsCOMPtr<nsIArray> entryList;
   rv = fcs->GetFontCatalogEntries(aFamilyName, aLanguage,
                                   aWeight, aWidth, aSlant, aSpacing,
                                   getter_AddRefs(entryList));
@@ -1043,16 +1048,13 @@ nsFontPSFreeType::AddFontEntries(nsACString& aFamilyName, nsACString& aLanguage,
   PRUint32 i, count = 0;
   NS_ENSURE_TRUE(entryList, NS_ERROR_FAILURE);
 
-  rv = entryList->Count(&count);
+  rv = entryList->GetLength(&count);
   NS_ENSURE_SUCCESS(rv, rv);
   ADD_ENTRY_FONTPS_PRINTF(("    count    = %d", count));
 
   for (i=0; i<count; i++) {
-    nsCOMPtr<nsISupports> item;
-    rv = entryList->GetElementAt(i, getter_AddRefs(item));
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    nsCOMPtr<nsITrueTypeFontCatalogEntry> entry(do_QueryInterface(item, &rv));
+    nsCOMPtr<nsITrueTypeFontCatalogEntry> entry = do_QueryElementAt(entryList,
+                                                                    i, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCAutoString fontname, stylename;
@@ -1607,7 +1609,7 @@ void nsFT2Type8Generator::GeneratePSFont(FILE* aFile)
     return;
  
   int wmode = 0;
-  if (mSubset.Length() > 0)
+  if (!mSubset.IsEmpty())
     FT2SubsetToType8(face, mSubset.get(), mSubset.Length(), wmode, aFile);
 }
 #endif //MOZ_ENABLE_FREETYPE2

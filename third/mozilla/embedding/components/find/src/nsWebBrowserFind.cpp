@@ -83,7 +83,7 @@ nsWebBrowserFind::~nsWebBrowserFind()
 {
 }
 
-NS_IMPL_ISUPPORTS2(nsWebBrowserFind, nsIWebBrowserFind, nsIWebBrowserFindInFrames);
+NS_IMPL_ISUPPORTS2(nsWebBrowserFind, nsIWebBrowserFind, nsIWebBrowserFindInFrames)
 
 
 /* boolean findNext (); */
@@ -99,7 +99,7 @@ NS_IMETHODIMP nsWebBrowserFind::FindNext(PRBool *outDidFind)
     NS_ENSURE_TRUE(searchFrame, NS_ERROR_NOT_INITIALIZED);
 
     nsCOMPtr<nsIDOMWindow> rootFrame = do_QueryReferent(mRootSearchFrame);
-    NS_ENSURE_TRUE(searchFrame, NS_ERROR_NOT_INITIALIZED);
+    NS_ENSURE_TRUE(rootFrame, NS_ERROR_NOT_INITIALIZED);
     
     // first, if there's a "cmd_findagain" observer around, check to see if it
     // wants to perform the find again command . If it performs the find again
@@ -538,7 +538,7 @@ NS_IMETHODIMP nsWebBrowserFind::SetCurrentSearchFrame(nsIDOMWindow * aCurrentSea
 {
     // is it ever valid to set this to null?
     NS_ENSURE_ARG(aCurrentSearchFrame);
-    mCurrentSearchFrame = getter_AddRefs(NS_GetWeakReference(aCurrentSearchFrame));
+    mCurrentSearchFrame = do_GetWeakReference(aCurrentSearchFrame);
     return NS_OK;
 }
 
@@ -555,7 +555,7 @@ NS_IMETHODIMP nsWebBrowserFind::SetRootSearchFrame(nsIDOMWindow * aRootSearchFra
 {
     // is it ever valid to set this to null?
     NS_ENSURE_ARG(aRootSearchFrame);
-    mRootSearchFrame = getter_AddRefs(NS_GetWeakReference(aRootSearchFrame));
+    mRootSearchFrame = do_GetWeakReference(aRootSearchFrame);
     return NS_OK;
 }
 
@@ -758,7 +758,7 @@ nsresult nsWebBrowserFind::OnFind(nsIDOMWindow *aFoundWindow)
     {
         nsCOMPtr<nsIDOMWindowInternal> windowInt = do_QueryInterface(aFoundWindow);
         focusController->SetFocusedWindow(windowInt);
-        mLastFocusedWindow = getter_AddRefs(NS_GetWeakReference(aFoundWindow));
+        mLastFocusedWindow = do_GetWeakReference(aFoundWindow);
     }
 
     return NS_OK;

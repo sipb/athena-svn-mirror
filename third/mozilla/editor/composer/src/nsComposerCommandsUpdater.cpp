@@ -25,17 +25,17 @@
 
 #include "nsIDOMWindow.h"
 #include "nsComposerCommandsUpdater.h"
-#include "nsIServiceManager.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIDOMDocument.h"
 #include "nsISelection.h"
 #include "nsIScriptGlobalObject.h"
 
 #include "nsIInterfaceRequestorUtils.h"
+#include "nsString.h"
 
 #include "nsICommandManager.h"
 #include "nsPICommandUpdater.h"
 
-#include "nsIEditor.h"
 #include "nsIDocShell.h"
 #include "nsITransactionManager.h"
 
@@ -53,7 +53,7 @@ nsComposerCommandsUpdater::~nsComposerCommandsUpdater()
 }
 
 NS_IMPL_ISUPPORTS4(nsComposerCommandsUpdater, nsISelectionListener,
-                   nsIDocumentStateListener, nsITransactionListener, nsITimerCallback);
+                   nsIDocumentStateListener, nsITransactionListener, nsITimerCallback)
 
 #if 0
 #pragma mark -
@@ -243,18 +243,12 @@ nsComposerCommandsUpdater::Init(nsIDOMWindow* aDOMWindow)
 nsresult
 nsComposerCommandsUpdater::PrimeUpdateTimer()
 {
-  nsresult rv = NS_OK;
-    
-  if (mUpdateTimer)
+  if (!mUpdateTimer)
   {
-    // i'd love to be able to just call SetDelay on the existing timer, but
-    // i think i have to tear it down and make a new one.
-    mUpdateTimer->Cancel();
-    mUpdateTimer = NULL;      // free it
+    nsresult rv = NS_OK;
+    mUpdateTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
+    if (NS_FAILED(rv)) return rv;
   }
-  
-  mUpdateTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
-  if (NS_FAILED(rv)) return rv;
 
   const PRUint32 kUpdateTimerDelay = 150;
   return mUpdateTimer->InitWithCallback(NS_STATIC_CAST(nsITimerCallback*, this),
@@ -388,7 +382,6 @@ nsresult
 nsComposerCommandsUpdater::Notify(nsITimer *timer)
 {
   NS_ASSERTION(timer == mUpdateTimer.get(), "Hey, this ain't my timer!");
-  mUpdateTimer = NULL;    // release my hold  
   TimerCallback();
   return NS_OK;
 }

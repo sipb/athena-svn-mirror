@@ -52,7 +52,7 @@
 #include "nsRuleNode.h"
 #include "nsIStyleRule.h"
 #include "nsICSSStyleRule.h"
-#include "nsIDOMCSSStyleRule.h"
+#include "nsICSSStyleRuleDOMWrapper.h"
 #include "nsIDOMWindowInternal.h"
 
 static NS_DEFINE_CID(kInspectorCSSUtilsCID, NS_INSPECTORCSSUTILS_CID);
@@ -68,7 +68,7 @@ inDOMUtils::~inDOMUtils()
 {
 }
 
-NS_IMPL_ISUPPORTS1(inDOMUtils, inIDOMUtils);
+NS_IMPL_ISUPPORTS1(inDOMUtils, inIDOMUtils)
 
 ///////////////////////////////////////////////////////////////////////////////
 // inIDOMUtils
@@ -121,7 +121,39 @@ inDOMUtils::IsIgnorableWhitespace(nsIDOMCharacterData *aDataNode,
 }
 
 NS_IMETHODIMP
-inDOMUtils::GetStyleRules(nsIDOMElement *aElement, nsISupportsArray **_retval)
+inDOMUtils::GetParentForNode(nsIDOMNode* aNode,
+                             PRBool aShowingAnonymousContent,
+                             nsIDOMNode** aParent)
+{
+    // First do the special cases -- document nodes and anonymous content
+  nsCOMPtr<nsIDOMDocument> doc(do_QueryInterface(aNode));
+  nsCOMPtr<nsIDOMNode> parent;
+
+  if (doc) {
+    parent = inLayoutUtils::GetContainerFor(doc);
+  } else if (aShowingAnonymousContent) {
+    nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+    nsCOMPtr<nsIContent> bparent;
+    nsCOMPtr<nsIBindingManager> bindingManager = inLayoutUtils::GetBindingManagerFor(aNode);
+    if (bindingManager) {
+      bindingManager->GetInsertionParent(content, getter_AddRefs(bparent));
+    }
+    
+    parent = do_QueryInterface(bparent);
+  }
+  
+  if (!parent) {
+    // Ok, just get the normal DOM parent node
+    aNode->GetParentNode(getter_AddRefs(parent));
+  }
+
+  NS_IF_ADDREF(*aParent = parent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+inDOMUtils::GetCSSStyleRules(nsIDOMElement *aElement,
+                             nsISupportsArray **_retval)
 {
   if (!aElement) return NS_ERROR_NULL_POINTER;
 
@@ -136,12 +168,19 @@ inDOMUtils::GetStyleRules(nsIDOMElement *aElement, nsISupportsArray **_retval)
   mCSSUtils->GetRuleNodeForContent(content, &ruleNode);
 
   nsCOMPtr<nsIStyleRule> srule;
+  nsCOMPtr<nsICSSStyleRule> cssRule;
+  nsCOMPtr<nsIDOMCSSRule> domRule;
   for (PRBool isRoot;
        mCSSUtils->IsRuleNodeRoot(ruleNode, &isRoot), !isRoot;
        mCSSUtils->GetRuleNodeParent(ruleNode, &ruleNode))
   {
     mCSSUtils->GetRuleNodeRule(ruleNode, getter_AddRefs(srule));
-    rules->InsertElementAt(srule, 0);
+    cssRule = do_QueryInterface(srule);
+    if (cssRule) {
+      cssRule->GetDOMRule(getter_AddRefs(domRule));
+      if (domRule)
+        rules->InsertElementAt(domRule, 0);
+    }
   }
 
   *_retval = rules;
@@ -151,22 +190,16 @@ inDOMUtils::GetStyleRules(nsIDOMElement *aElement, nsISupportsArray **_retval)
 }
 
 NS_IMETHODIMP
-inDOMUtils::GetRuleWeight(nsIDOMCSSStyleRule *aRule, PRUint32 *_retval)
-{
-  if (!aRule) return NS_OK;
-  nsCOMPtr<nsIDOMCSSStyleRule> rule = aRule;
-  nsCOMPtr<nsICSSStyleRule> cssrule = do_QueryInterface(rule);
-  *_retval = cssrule->GetWeight();
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 inDOMUtils::GetRuleLine(nsIDOMCSSStyleRule *aRule, PRUint32 *_retval)
 {
-  if (!aRule) return NS_OK;
-  nsCOMPtr<nsIDOMCSSStyleRule> rule = aRule;
-  nsCOMPtr<nsICSSStyleRule> cssrule = do_QueryInterface(rule);
-  *_retval = cssrule->GetLineNumber();
+  *_retval = 0;
+  if (!aRule)
+    return NS_OK;
+  nsCOMPtr<nsICSSStyleRuleDOMWrapper> rule = do_QueryInterface(aRule);
+  nsCOMPtr<nsICSSStyleRule> cssrule;
+  rule->GetCSSStyleRule(getter_AddRefs(cssrule));
+  if (cssrule)
+    *_retval = cssrule->GetLineNumber();
   return NS_OK;
 }
 

@@ -544,7 +544,7 @@
 
 #define NS_JARPROTOCOLHANDLER_CLASSNAME \
     "nsJarProtocolHandler"
-#define NS_JARPROTOCOLHANDLER_CID					 \
+#define NS_JARPROTOCOLHANDLER_CID                    \
 { /* 0xc7e410d4-0x85f2-11d3-9f63-006008a6efe9 */     \
     0xc7e410d4,                                      \
     0x85f2,                                          \
@@ -569,5 +569,21 @@
     0x456b,                                          \
     {0x8c, 0x31, 0x28, 0x65, 0xfb, 0xb6, 0x8c, 0x91} \
 }
+
+/******************************************************************************
+ * netwerk/mime classes
+ */
+
+#define NS_MIMEHEADERPARAM_CLASSNAME \
+    "nsMIMEHeaderParamImpl"
+// {1F4DBCF7-245C-4c8c-943D-8A1DA0495E8A} 
+#define NS_MIMEHEADERPARAM_CID                         \
+{   0x1f4dbcf7,                                        \
+    0x245c,                                            \
+    0x4c8c,                                            \
+    { 0x94, 0x3d, 0x8a, 0x1d, 0xa0, 0x49, 0x5e, 0x8a } \
+}
+
+#define NS_MIMEHEADERPARAM_CONTRACTID "@mozilla.org/network/mime-hdrparam;1"
 
 #endif // nsNetCID_h__

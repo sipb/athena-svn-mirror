@@ -58,6 +58,7 @@ interface nsISimpleEnumerator;
 
 typedef long eventMethodProperty;
 typedef long eventStatusProperty;
+typedef long Componenttype;
 
 interface oeIICal;
 
@@ -95,10 +96,14 @@ interface oeIICalEvent : nsISupports
     const eventStatusProperty ICAL_STATUS_FINAL = 10036;
     const eventStatusProperty ICAL_STATUS_NONE = 10037;
 
+    const Componenttype XPICAL_VEVENT_COMPONENT = 4;
+    const Componenttype XPICAL_VTODO_COMPONENT = 5;
+
     readonly attribute oeIDateTime start;
     readonly attribute oeIDateTime end;
     readonly attribute oeIDateTime stamp;
     readonly attribute oeIICal parent;
+    readonly attribute Componenttype type;
     attribute string id;
     attribute AUTF8String title;
     attribute AUTF8String description;
@@ -150,6 +155,10 @@ interface oeIICalEvent : nsISupports
     void addContact(in nsIAbCard contact);
     void removeContact(in nsIAbCard contact);
     void removeContacts();
+
+    void reportError( in short severity, in unsigned long errorid, in string errorstring );
+    void setParameter( in string name, in string value );
+    string getParameter( in string name );
 };
 
 [scriptable, uuid(f95df40e-0d5f-49ec-9ba8-4b88d3eb53e0)]
@@ -180,6 +189,7 @@ interface oeIICalObserver : nsISupports
     void onModifyItem( in oeIICalEvent e, in oeIICalEvent olde );
     void onDeleteItem( in oeIICalEvent e);
     void onAlarm( in oeIICalEventDisplay e);
+    void onError( in short severity, in unsigned long errorid, in string errorstring );
 };
 
 [scriptable, uuid(7a4fd625-69a8-4008-932e-cccc227b402c)]
@@ -191,7 +201,8 @@ interface oeIICalTodoObserver : nsISupports
     void onAddItem( in oeIICalTodo e);
     void onModifyItem( in oeIICalTodo e, in oeIICalTodo olde );
     void onDeleteItem( in oeIICalTodo e);
-    void onAlarm( in oeIICalTodo e);
+    void onAlarm( in oeIICalEventDisplay e);
+    void onError( in short severity, in unsigned long errorid, in string errorstring );
 };
 
 [scriptable, uuid(981ab93d-ad51-45bb-a4a2-e158c2cfdeb4)]
@@ -227,6 +238,7 @@ interface oeIICal : nsISupports
 	nsISimpleEnumerator getAllTodos();
 
     void resetFilter();
+    void reportError( in short severity, in unsigned long errorid, in string errorstring );
 };
 
 [scriptable, uuid(c89ec938-f690-4f62-a4b3-11e962ba2314)]
@@ -262,6 +274,20 @@ interface oeIICalContainer : nsISupports
 	nsISimpleEnumerator getAllTodos();
 
     void resetFilter();
+    void reportError( in short severity, in unsigned long errorid, in string errorstring );
+};
+
+[scriptable, uuid(0d42d962-e5fd-428b-b622-867928c9b669)]
+interface oeIICalError : nsISupports
+{
+    //severity codes
+    const long CAL_DEBUG = 0;
+    const long CAL_WARN = 1;
+    const long CAL_PROBLEM = 2;
+    const long CAL_CRITICAL = 3;
+
+    //error codes
+    const long UID_NOT_FOUND               =  1001;
 };
 
 %{ C++
@@ -275,4 +301,9 @@ extern nsresult
 NS_NewDateTime(oeIDateTime** inst);
 extern nsresult
 NS_NewICalEventDisplay( oeIICalEvent* event, oeIICalEventDisplay** inst );
+
+#define GENERATE_CAL_FAILURE(x) \
+            (NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_CALENDAR,x))
+#define NS_ERROR_CAL_UID_NOT_FOUND              \
+  GENERATE_CAL_FAILURE(oeIICalError::UID_NOT_FOUND)
 %}

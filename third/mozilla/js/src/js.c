@@ -257,8 +257,8 @@ GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
      * another handle.  Are other filehandles interactive?
      */
     if (file == stdin) {
-        char *linep;
-        if ((linep = readline(prompt)) == NULL)
+        char *linep = readline(prompt);
+        if (!linep)
             return JS_FALSE;
         if (linep[0] != '\0')
             add_history(linep);
@@ -277,7 +277,7 @@ GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
         /* Print a CR after the prompt because MPW grabs the entire line when entering an interactive command */
         fputc('\n', gOutFile);
 #endif
-        if (fgets(line, sizeof line, file) == NULL)
+        if (!fgets(line, sizeof line, file))
             return JS_FALSE;
         strcpy(bufp, line);
     }
@@ -297,7 +297,9 @@ Process(JSContext *cx, JSObject *obj, char *filename)
     int startline;
     FILE *file;
 
-    if (filename != NULL && strcmp(filename, "-") != 0) {
+    if (!filename || strcmp(filename, "-") == 0) {
+        file = stdin;
+    } else {
         file = fopen(filename, "r");
         if (!file) {
             JS_ReportErrorNumber(cx, my_GetErrorMessage, NULL,
@@ -305,8 +307,6 @@ Process(JSContext *cx, JSObject *obj, char *filename)
             gExitCode = EXITCODE_FILE_NOT_FOUND;
             return;
         }
-    } else {
-        file = stdin;
     }
 
     if (!isatty(fileno(file))) {
@@ -410,99 +410,106 @@ my_BranchCallback(JSContext *cx, JSScript *script)
 static int
 ProcessArgs(JSContext *cx, JSObject *obj, char **argv, int argc)
 {
-    int i, j;
-    char *filename = NULL;
-    jsint length;
-    jsval *vector;
+    int i, j, length;
     JSObject *argsObj;
+    char *filename = NULL;
     JSBool isInteractive = JS_TRUE;
 
-    for (i=0; i < argc; i++) {
-        if (argv[i][0] == '-') {
-            switch (argv[i][1]) {
-            case 'v':
-                if (i+1 == argc) {
-                    return usage();
-                }
-                JS_SetVersion(cx, (JSVersion) atoi(argv[i+1]));
-                i++;
-                break;
-
-            case 'w':
-                reportWarnings = JS_TRUE;
-                break;
-
-            case 'W':
-                reportWarnings = JS_FALSE;
-                break;
-
-            case 's':
-                JS_ToggleOptions(cx, JSOPTION_STRICT);
-                break;
-
-            case 'b':
-                gBranchLimit = atoi(argv[++i]);
-                JS_SetBranchCallback(cx, my_BranchCallback);
-                break;
-
-            case 'c':
-                /* set stack chunk size */
-                gStackChunkSize = atoi(argv[++i]);
-                break;
-
-            case 'f':
-                if (i+1 == argc) {
-                    return usage();
-                }
-                filename = argv[i+1];
-                /* "-f -" means read from stdin */
-                if (filename[0] == '-' && filename[1] == '\0')
-                    filename = NULL;
-                Process(cx, obj, filename);
-                filename = NULL;
-                /* XXX: js -f foo.js should interpret foo.js and then
-                 * drop into interactive mode, but that breaks test
-                 * harness. Just execute foo.js for now.
-                 */
-                isInteractive = JS_FALSE;
-                i++;
-                break;
-
-            default:
-                return usage();
-            }
-        } else {
-            filename = argv[i++];
-            isInteractive = JS_FALSE;
+    /*
+     * Scan past all optional arguments so we can create the arguments object
+     * before processing any -f options, which must interleave properly with
+     * -v and -w options.  This requires two passes, and without getopt, we'll
+     * have to keep the option logic here and in the second for loop in sync.
+     */
+    for (i = 0; i < argc; i++) {
+        if (argv[i][0] != '-' || argv[i][1] == '\0') {
+            ++i;
+            break;
+        }
+        switch (argv[i][1]) {
+          case 'v':
+          case 'f':
+            ++i;
             break;
         }
     }
 
-    length = argc - i;
-    if (length == 0) {
-        vector = NULL;
-    } else {
-        vector = (jsval *) JS_malloc(cx, length * sizeof(jsval));
-        if (vector == NULL)
-            return 1;
-
-        for (j = 0; j < length; j++) {
-            JSString *str = JS_NewStringCopyZ(cx, argv[i++]);
-            if (str == NULL)
-                return 1;
-            vector[j] = STRING_TO_JSVAL(str);
-        }
-    }
-
-    argsObj = JS_NewArrayObject(cx, length, vector);
-    if (vector)
-        JS_free(cx, vector);
-    if (argsObj == NULL)
+    /*
+     * Create arguments early and define it to root it, so it's safe from any
+     * GC calls nested below, and so it is available to -f <file> arguments.
+     */
+    argsObj = JS_NewArrayObject(cx, 0, NULL);
+    if (!argsObj)
         return 1;
-
     if (!JS_DefineProperty(cx, obj, "arguments", OBJECT_TO_JSVAL(argsObj),
                            NULL, NULL, 0)) {
         return 1;
+    }
+
+    length = argc - i;
+    for (j = 0; j < length; j++) {
+        JSString *str = JS_NewStringCopyZ(cx, argv[i++]);
+        if (!str)
+            return 1;
+        if (!JS_DefineElement(cx, argsObj, j, STRING_TO_JSVAL(str),
+                              NULL, NULL, JSPROP_ENUMERATE)) {
+            return 1;
+        }
+    }
+
+    for (i = 0; i < argc; i++) {
+        if (argv[i][0] != '-' || argv[i][1] == '\0') {
+            filename = argv[i++];
+            isInteractive = JS_FALSE;
+            break;
+        }
+
+        switch (argv[i][1]) {
+        case 'v':
+            if (++i == argc) {
+                return usage();
+            }
+            JS_SetVersion(cx, (JSVersion) atoi(argv[i]));
+            break;
+
+        case 'w':
+            reportWarnings = JS_TRUE;
+            break;
+
+        case 'W':
+            reportWarnings = JS_FALSE;
+            break;
+
+        case 's':
+            JS_ToggleOptions(cx, JSOPTION_STRICT);
+            break;
+
+        case 'b':
+            gBranchLimit = atoi(argv[++i]);
+            JS_SetBranchCallback(cx, my_BranchCallback);
+            break;
+
+        case 'c':
+            /* set stack chunk size */
+            gStackChunkSize = atoi(argv[++i]);
+            break;
+
+        case 'f':
+            if (++i == argc) {
+                return usage();
+            }
+            Process(cx, obj, argv[i]);
+            /*
+             * XXX: js -f foo.js should interpret foo.js and then
+             * drop into interactive mode, but that breaks test
+             * harness. Just execute foo.js for now.
+             */
+            isInteractive = JS_FALSE;
+            break;
+
+        default:
+            return usage();
+        }
     }
 
     if (filename || isInteractive)
@@ -851,71 +858,69 @@ SrcNotes(JSContext *cx, JSScript *script)
     jsatomid atomIndex;
     JSAtom *atom;
 
-    notes = script->notes;
-    if (notes) {
-        fprintf(gOutFile, "\nSource notes:\n");
-        offset = 0;
-        for (sn = notes; !SN_IS_TERMINATOR(sn); sn = SN_NEXT(sn)) {
-            delta = SN_DELTA(sn);
-            offset += delta;
-            fprintf(gOutFile, "%3u: %5u [%4u] %-8s",
-                    PTRDIFF(sn, notes, jssrcnote), offset, delta,
-                    js_SrcNoteSpec[SN_TYPE(sn)].name);
-            type = (JSSrcNoteType) SN_TYPE(sn);
-            switch (type) {
-              case SRC_SETLINE:
-                fprintf(gOutFile, " lineno %u", (uintN) js_GetSrcNoteOffset(sn, 0));
-                break;
-              case SRC_FOR:
-                fprintf(gOutFile, " cond %u update %u tail %u",
-                       (uintN) js_GetSrcNoteOffset(sn, 0),
-                       (uintN) js_GetSrcNoteOffset(sn, 1),
-                       (uintN) js_GetSrcNoteOffset(sn, 2));
-                break;
-              case SRC_COND:
-              case SRC_IF_ELSE:
-              case SRC_WHILE:
-              case SRC_PCBASE:
-              case SRC_PCDELTA:
-                fprintf(gOutFile, " offset %u", (uintN) js_GetSrcNoteOffset(sn, 0));
-                break;
-              case SRC_LABEL:
-              case SRC_LABELBRACE:
-              case SRC_BREAK2LABEL:
-              case SRC_CONT2LABEL:
-              case SRC_FUNCDEF: {
-                const char *bytes;
-                JSFunction *fun;
-                JSString *str;
+    fprintf(gOutFile, "\nSource notes:\n");
+    offset = 0;
+    notes = SCRIPT_NOTES(script);
+    for (sn = notes; !SN_IS_TERMINATOR(sn); sn = SN_NEXT(sn)) {
+        delta = SN_DELTA(sn);
+        offset += delta;
+        fprintf(gOutFile, "%3u: %5u [%4u] %-8s",
+                PTRDIFF(sn, notes, jssrcnote), offset, delta,
+                js_SrcNoteSpec[SN_TYPE(sn)].name);
+        type = (JSSrcNoteType) SN_TYPE(sn);
+        switch (type) {
+          case SRC_SETLINE:
+            fprintf(gOutFile, " lineno %u", (uintN) js_GetSrcNoteOffset(sn, 0));
+            break;
+          case SRC_FOR:
+            fprintf(gOutFile, " cond %u update %u tail %u",
+                   (uintN) js_GetSrcNoteOffset(sn, 0),
+                   (uintN) js_GetSrcNoteOffset(sn, 1),
+                   (uintN) js_GetSrcNoteOffset(sn, 2));
+            break;
+          case SRC_COND:
+          case SRC_IF_ELSE:
+          case SRC_WHILE:
+          case SRC_PCBASE:
+          case SRC_PCDELTA:
+            fprintf(gOutFile, " offset %u", (uintN) js_GetSrcNoteOffset(sn, 0));
+            break;
+          case SRC_LABEL:
+          case SRC_LABELBRACE:
+          case SRC_BREAK2LABEL:
+          case SRC_CONT2LABEL:
+          case SRC_FUNCDEF: {
+            const char *bytes;
+            JSFunction *fun;
+            JSString *str;
 
-                atomIndex = (jsatomid) js_GetSrcNoteOffset(sn, 0);
-                atom = js_GetAtom(cx, &script->atomMap, atomIndex);
-                if (type != SRC_FUNCDEF) {
-                    bytes = ATOM_BYTES(atom);
-                } else {
-                    fun = (JSFunction *)
-                        JS_GetPrivate(cx, ATOM_TO_OBJECT(atom));
-                    str = JS_DecompileFunction(cx, fun, JS_DONT_PRETTY_PRINT);
-                    bytes = str ? JS_GetStringBytes(str) : "N/A";
-                }
-                fprintf(gOutFile, " atom %u (%s)", (uintN)atomIndex, bytes);
-                break;
-              }
-              case SRC_SWITCH:
-                fprintf(gOutFile, " length %u", (uintN) js_GetSrcNoteOffset(sn, 0));
-                caseOff = (uintN) js_GetSrcNoteOffset(sn, 1);
-                if (caseOff)
-                    fprintf(gOutFile, " first case offset %u", caseOff);
-                break;
-              case SRC_CATCH:
-                delta = (uintN) js_GetSrcNoteOffset(sn, 0);
-                if (delta)
-                    fprintf(gOutFile, " guard size %u", delta);
-                break;
-              default:;
+            atomIndex = (jsatomid) js_GetSrcNoteOffset(sn, 0);
+            atom = js_GetAtom(cx, &script->atomMap, atomIndex);
+            if (type != SRC_FUNCDEF) {
+                bytes = js_AtomToPrintableString(cx, atom);
+            } else {
+                fun = (JSFunction *)
+                    JS_GetPrivate(cx, ATOM_TO_OBJECT(atom));
+                str = JS_DecompileFunction(cx, fun, JS_DONT_PRETTY_PRINT);
+                bytes = str ? JS_GetStringBytes(str) : "N/A";
             }
-            fputc('\n', gOutFile);
+            fprintf(gOutFile, " atom %u (%s)", (uintN)atomIndex, bytes);
+            break;
+          }
+          case SRC_SWITCH:
+            fprintf(gOutFile, " length %u", (uintN) js_GetSrcNoteOffset(sn, 0));
+            caseOff = (uintN) js_GetSrcNoteOffset(sn, 1);
+            if (caseOff)
+                fprintf(gOutFile, " first case offset %u", caseOff);
+            break;
+          case SRC_CATCH:
+            delta = (uintN) js_GetSrcNoteOffset(sn, 0);
+            if (delta)
+                fprintf(gOutFile, " guard size %u", delta);
+            break;
+          default:;
         }
+        fputc('\n', gOutFile);
     }
 }
 
@@ -984,7 +989,7 @@ Disassemble(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
                 SHOW_FLAG(GETTER);
                 SHOW_FLAG(BOUND_METHOD);
                 SHOW_FLAG(HEAVYWEIGHT);
-                
+
 #undef SHOW_FLAG
                 putchar('\n');
             }
@@ -1108,16 +1113,22 @@ Tracing(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
+typedef struct DumpAtomArgs {
+    JSContext   *cx;
+    FILE        *fp;
+} DumpAtomArgs;
+
 static int
 DumpAtom(JSHashEntry *he, int i, void *arg)
 {
-    FILE *fp = (FILE *) arg;
+    DumpAtomArgs *args = (DumpAtomArgs *)arg;
+    FILE *fp = args->fp;
     JSAtom *atom = (JSAtom *)he;
 
     fprintf(fp, "%3d %08x %5lu ",
             i, (uintN)he->keyHash, (unsigned long)atom->number);
     if (ATOM_IS_STRING(atom))
-        fprintf(fp, "\"%s\"\n", ATOM_BYTES(atom));
+        fprintf(fp, "\"%s\"\n", js_AtomToPrintableString(args->cx, atom));
     else if (ATOM_IS_INT(atom))
         fprintf(fp, "%ld\n", (long)ATOM_TO_INT(atom));
     else
@@ -1138,10 +1149,12 @@ DumpScope(JSContext *cx, JSObject *obj, FILE *fp)
         if (SCOPE_HAD_MIDDLE_DELETE(scope) && !SCOPE_HAS_PROPERTY(scope, sprop))
             continue;
         fprintf(fp, "%3u %p", i, sprop);
-        if (sprop->id & JSVAL_INT)
+        if (JSVAL_IS_INT(sprop->id)) {
             fprintf(fp, " [%ld]", (long)JSVAL_TO_INT(sprop->id));
-        else
-            fprintf(fp, " \"%s\"", ATOM_BYTES((JSAtom *)sprop->id));
+        } else {
+            fprintf(fp, " \"%s\"",
+                    js_AtomToPrintableString(cx, (JSAtom *)sprop->id));
+        }
 
 #define DUMP_ATTR(name) if (sprop->attrs & JSPROP_##name) fputs(" " #name, fp)
         DUMP_ATTR(ENUMERATE);
@@ -1178,8 +1191,19 @@ DumpStats(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
             JS_DumpArenaStats(stdout);
 #endif
         } else if (strcmp(bytes, "atom") == 0) {
+            DumpAtomArgs args;
+
             fprintf(gOutFile, "\natom table contents:\n");
-            JS_HashTableDump(cx->runtime->atomState.table, DumpAtom, stdout);
+            args.cx = cx;
+            args.fp = stdout;
+            JS_HashTableEnumerateEntries(cx->runtime->atomState.table,
+                                         DumpAtom,
+                                         &args);
+#ifdef HASHMETER
+            JS_HashTableDumpMeter(cx->runtime->atomState.table,
+                                  DumpAtom,
+                                  stdout);
+#endif
         } else if (strcmp(bytes, "global") == 0) {
             DumpScope(cx, cx->globalObject, stdout);
         } else {
@@ -1867,7 +1891,7 @@ Exec(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
         return JS_FALSE;
     if (!fun->atom)
         return JS_TRUE;
-    name = ATOM_BYTES(fun->atom);
+    name = JS_GetStringBytes(ATOM_TO_STRING(fun->atom));
     nargc = 1 + argc;
     nargv = JS_malloc(cx, (nargc + 1) * sizeof(char *));
     if (!nargv)
@@ -1990,13 +2014,127 @@ static JSClass global_class = {
     JS_ConvertStub,   JS_FinalizeStub
 };
 
+static JSBool
+env_setProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
+{
+/* XXX porting may be easy, but these don't seem to supply setenv by default */
+#if !defined XP_BEOS && !defined XP_OS2 && !defined SOLARIS
+    JSString *idstr, *valstr;
+    const char *name, *value;
+    int rv;
+
+    idstr = JS_ValueToString(cx, id);
+    valstr = JS_ValueToString(cx, *vp);
+    if (!idstr || !valstr)
+        return JS_FALSE;
+    name = JS_GetStringBytes(idstr);
+    value = JS_GetStringBytes(valstr);
+#if defined XP_WIN || defined HPUX || defined OSF1 || defined IRIX
+    {
+        char *waste = JS_smprintf("%s=%s", name, value);
+        if (!waste) {
+            JS_ReportOutOfMemory(cx);
+            return JS_FALSE;
+        }
+        rv = putenv(waste);
+#ifdef XP_WIN
+        /*
+         * HPUX9 at least still has the bad old non-copying putenv.
+         *
+         * Per mail from <s.shanmuganathan@digital.com>, OSF1 also has a putenv
+         * that will crash if you pass it an auto char array (so it must place
+         * its argument directly in the char *environ[] array).
+         */
+        free(waste);
+#endif
+    }
+#else
+    rv = setenv(name, value, 1);
+#endif
+    if (rv < 0) {
+        JS_ReportError(cx, "can't set envariable %s to %s", name, value);
+        return JS_FALSE;
+    }
+    *vp = STRING_TO_JSVAL(valstr);
+#endif /* !defined XP_BEOS && !defined XP_OS2 && !defined SOLARIS */
+    return JS_TRUE;
+}
+
+static JSBool
+env_enumerate(JSContext *cx, JSObject *obj)
+{
+    static JSBool reflected;
+    char **evp, *name, *value;
+    JSString *valstr;
+    JSBool ok;
+
+    if (reflected)
+        return JS_TRUE;
+
+    for (evp = (char **)JS_GetPrivate(cx, obj); (name = *evp) != NULL; evp++) {
+        value = strchr(name, '=');
+        if (!value)
+            continue;
+        *value++ = '\0';
+        valstr = JS_NewStringCopyZ(cx, value);
+        if (!valstr) {
+            ok = JS_FALSE;
+        } else {
+            ok = JS_DefineProperty(cx, obj, name, STRING_TO_JSVAL(valstr),
+                                   NULL, NULL, JSPROP_ENUMERATE);
+        }
+        value[-1] = '=';
+        if (!ok)
+            return JS_FALSE;
+    }
+
+    reflected = JS_TRUE;
+    return JS_TRUE;
+}
+
+static JSBool
+env_resolve(JSContext *cx, JSObject *obj, jsval id, uintN flags,
+            JSObject **objp)
+{
+    JSString *idstr, *valstr;
+    const char *name, *value;
+
+    if (flags & JSRESOLVE_ASSIGNING)
+        return JS_TRUE;
+
+    idstr = JS_ValueToString(cx, id);
+    if (!idstr)
+        return JS_FALSE;
+    name = JS_GetStringBytes(idstr);
+    value = getenv(name);
+    if (value) {
+        valstr = JS_NewStringCopyZ(cx, value);
+        if (!valstr)
+            return JS_FALSE;
+        if (!JS_DefineProperty(cx, obj, name, STRING_TO_JSVAL(valstr),
+                               NULL, NULL, JSPROP_ENUMERATE)) {
+            return JS_FALSE;
+        }
+        *objp = obj;
+    }
+    return JS_TRUE;
+}
+
+static JSClass env_class = {
+    "environment", JSCLASS_HAS_PRIVATE | JSCLASS_NEW_RESOLVE,
+    JS_PropertyStub,  JS_PropertyStub,
+    JS_PropertyStub,  env_setProperty,
+    env_enumerate, (JSResolveOp) env_resolve,
+    JS_ConvertStub,   JS_FinalizeStub
+};
+
 int
-main(int argc, char **argv)
+main(int argc, char **argv, char **envp)
 {
     JSVersion version;
     JSRuntime *rt;
     JSContext *cx;
-    JSObject *glob, *it;
+    JSObject *glob, *it, *envobj;
     int result;
 #ifdef LIVECONNECT
     JavaVM *java_vm = NULL;
@@ -2017,41 +2155,41 @@ main(int argc, char **argv)
 
 #ifdef XP_MAC
 #ifndef XP_MAC_MPW
-        initConsole("\pJavaScript Shell", "Welcome to js shell.", &argc, &argv);
+    initConsole("\pJavaScript Shell", "Welcome to js shell.", &argc, &argv);
 #endif
 #endif
 
 #ifdef MAC_TEST_HACK
 /*
-        Open a file "testArgs.txt" and read each line into argc/argv.
-        Re-direct all output to "results.txt"
+    Open a file "testArgs.txt" and read each line into argc/argv.
+    Re-direct all output to "results.txt"
 */
-        {
-                char argText[256];
-                FILE *f = fopen("testargs.txt", "r");
-                if (f != NULL) {
-                        int maxArgs = 32; /* arbitrary max !!! */
-                        int argText_strlen;
-                        argc = 1;
-                        argv = malloc(sizeof(char *) * maxArgs);
-                        argv[0] = NULL;
-                        while (fgets(argText, 255, f) != NULL) {
-                                 /* argText includes '\n' */
-                                argText_strlen = strlen(argText);
-                                argv[argc] = malloc(argText_strlen);
-                                strncpy(argv[argc], argText,
-                                                    argText_strlen - 1);
-                                argv[argc][argText_strlen - 1] = '\0';
-                                argc++;
-                                if (argc >= maxArgs) break;
-                        }
-                        fclose(f);
-                }
-                gTestResultFile = fopen("results.txt", "w");
+    {
+        char argText[256];
+        FILE *f = fopen("testargs.txt", "r");
+        if (f) {
+            int maxArgs = 32; /* arbitrary max !!! */
+            int argText_strlen;
+            argc = 1;
+            argv = malloc(sizeof(char *) * maxArgs);
+            argv[0] = NULL;
+            while (fgets(argText, 255, f)) {
+                 /* argText includes '\n' */
+                argText_strlen = strlen(argText);
+                argv[argc] = malloc(argText_strlen);
+                strncpy(argv[argc], argText, argText_strlen - 1);
+                argv[argc][argText_strlen - 1] = '\0';
+                argc++;
+                if (argc >= maxArgs)
+                    break;
+            }
+            fclose(f);
         }
+        gTestResultFile = fopen("results.txt", "w");
+    }
 
-        gErrFile = gTestResultFile;
-        gOutFile = gTestResultFile;
+    gErrFile = gTestResultFile;
+    gOutFile = gTestResultFile;
 #endif
 
     version = JSVERSION_DEFAULT;
@@ -2130,9 +2268,13 @@ main(int argc, char **argv)
 #endif /* JSDEBUGGER */
 
 #ifdef LIVECONNECT
-        if (!JSJ_SimpleInit(cx, glob, java_vm, getenv("CLASSPATH")))
-            return 1;
+    if (!JSJ_SimpleInit(cx, glob, java_vm, getenv("CLASSPATH")))
+        return 1;
 #endif
+
+    envobj = JS_DefineObject(cx, glob, "environment", &env_class, NULL, 0);
+    if (!envobj || !JS_SetPrivate(cx, envobj, envp))
+        return 1;
 
     result = ProcessArgs(cx, glob, argv, argc);
 

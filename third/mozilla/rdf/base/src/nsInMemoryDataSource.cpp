@@ -84,7 +84,6 @@
 #include "prlog.h"
 #include "rdf.h"
 
-static NS_DEFINE_CID(kRDFServiceCID,        NS_RDFSERVICE_CID);
 
 #if defined(MOZ_THREADSAFE_RDF)
 #define NS_AUTOLOCK(_lock) nsAutoLock _autolock(_lock)
@@ -456,8 +455,7 @@ public:
     Destroy(InMemoryAssertionEnumeratorImpl* aEnumerator) {
         // Keep the datasource alive for the duration of the stack
         // frame so its allocator stays valid.
-        nsCOMPtr<nsIRDFDataSource> kungFuDeathGrip =
-            dont_QueryInterface(aEnumerator->mDataSource);
+        nsCOMPtr<nsIRDFDataSource> kungFuDeathGrip = aEnumerator->mDataSource;
 
         // Grab the pool from the datasource; since we keep the
         // datasource alive, this has to be safe.
@@ -662,8 +660,7 @@ public:
     Destroy(InMemoryArcsEnumeratorImpl* aEnumerator) {
         // Keep the datasource alive for the duration of the stack
         // frame so its allocator stays valid.
-        nsCOMPtr<nsIRDFDataSource> kungFuDeathGrip =
-            dont_QueryInterface(aEnumerator->mDataSource);
+        nsCOMPtr<nsIRDFDataSource> kungFuDeathGrip = aEnumerator->mDataSource;
 
         // Grab the pool from the datasource; since we keep the
         // datasource alive, this has to be safe.
@@ -891,6 +888,8 @@ InMemoryDataSource::InMemoryDataSource(nsISupports* aOuter)
 #ifdef MOZ_THREADSAFE_RDF
     mLock = nsnull;
 #endif
+    mForwardArcs.ops = nsnull;
+    mReverseArcs.ops = nsnull;
     mPropagateChanges = PR_TRUE;
 }
 
@@ -898,17 +897,22 @@ InMemoryDataSource::InMemoryDataSource(nsISupports* aOuter)
 nsresult
 InMemoryDataSource::Init()
 {
-    PL_DHashTableInit(&mForwardArcs,
-                      PL_DHashGetStubOps(),
-                      nsnull,
-                      sizeof(Entry),
-                      PL_DHASH_MIN_SIZE);
-
-    PL_DHashTableInit(&mReverseArcs,
-                      PL_DHashGetStubOps(),
-                      nsnull,
-                      sizeof(Entry),
-                      PL_DHASH_MIN_SIZE);
+    if (!PL_DHashTableInit(&mForwardArcs,
+                           PL_DHashGetStubOps(),
+                           nsnull,
+                           sizeof(Entry),
+                           PL_DHASH_MIN_SIZE)) {
+        mForwardArcs.ops = nsnull;
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
+    if (!PL_DHashTableInit(&mReverseArcs,
+                           PL_DHashGetStubOps(),
+                           nsnull,
+                           sizeof(Entry),
+                           PL_DHASH_MIN_SIZE)) {
+        mReverseArcs.ops = nsnull;
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
 
 #ifdef MOZ_THREADSAFE_RDF
     mLock = PR_NewLock();
@@ -932,14 +936,16 @@ InMemoryDataSource::~InMemoryDataSource()
     fprintf(stdout, "%d - RDF: InMemoryDataSource\n", gInstanceCount);
 #endif
 
-    // This'll release all of the Assertion objects that are
-    // associated with this data source. We only need to do this
-    // for the forward arcs, because the reverse arcs table
-    // indexes the exact same set of resources.
-    PL_DHashTableEnumerate(&mForwardArcs, DeleteForwardArcsEntry, &mAllocator);
-    PL_DHashTableFinish(&mForwardArcs);
-
-    PL_DHashTableFinish(&mReverseArcs);
+    if (mForwardArcs.ops) {
+        // This'll release all of the Assertion objects that are
+        // associated with this data source. We only need to do this
+        // for the forward arcs, because the reverse arcs table
+        // indexes the exact same set of resources.
+        PL_DHashTableEnumerate(&mForwardArcs, DeleteForwardArcsEntry, &mAllocator);
+        PL_DHashTableFinish(&mForwardArcs);
+    }
+    if (mReverseArcs.ops)
+        PL_DHashTableFinish(&mReverseArcs);
 
     PR_LOG(gLog, PR_LOG_ALWAYS,
            ("InMemoryDataSource(%p): destroyed.", this));
@@ -1091,8 +1097,8 @@ InMemoryDataSource::GetSource(nsIRDFResource* property,
 
     NS_AUTOLOCK(mLock);
 
-    for (Assertion* as = GetReverseArcs(target); as != nsnull; as = as->mNext) {
-        if ((property == as->u.as.mProperty) && (tv == (as->u.as.mTruthValue))) {
+    for (Assertion* as = GetReverseArcs(target); as; as = as->u.as.mInvNext) {
+        if ((property == as->u.as.mProperty) && (tv == as->u.as.mTruthValue)) {
             *source = as->mSource;
             NS_ADDREF(*source);
             return NS_OK;

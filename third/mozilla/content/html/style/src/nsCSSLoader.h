@@ -41,6 +41,9 @@ class CSSLoaderImpl;
 #include "nsICSSLoader.h"
 #include "nsICSSParser.h"
 #include "nsIUnicharStreamLoader.h"
+#include "nsURIHashKey.h"
+#include "nsInterfaceHashtable.h"
+#include "nsDataHashtable.h"
 
 /**
  * OVERALL ARCHITECTURE
@@ -62,69 +65,13 @@ class CSSLoaderImpl;
  * The detailed documentation for these functions is found with the
  * function implementations.
  *
- * The following helper objects are used:
- * A) URLKey -- a nsHashKey implementation that uses an nsIURI as the key
- * B) SheetLoadData -- a small class that is used to store all the
+ * The following helper object is used:
+ *    SheetLoadData -- a small class that is used to store all the
  *                     information needed for the loading of a sheet;
  *                     this class handles listening for the stream
  *                     loader completion and also handles charset
  *                     determination.
  */
-
-/************************************
- * URLKey class used for hashtables *
- ************************************/
-                                                            
-MOZ_DECL_CTOR_COUNTER(URLKey)
-
-class URLKey: public nsHashKey {
-public:
-  URLKey(nsIURI* aURL)
-    : mURL(aURL)
-  {
-    MOZ_COUNT_CTOR(URLKey);
-    mHashValue = 0;
-
-    nsCAutoString spec;
-    mURL->GetSpec(spec);
-    if (!spec.IsEmpty()) {
-      mHashValue = nsCRT::HashCode(spec.get());
-    }
-  }
-
-  URLKey(const URLKey& aKey)
-    : mURL(aKey.mURL),
-      mHashValue(aKey.mHashValue)
-  {
-    MOZ_COUNT_CTOR(URLKey);
-  }
-
-  virtual ~URLKey(void)
-  {
-    MOZ_COUNT_DTOR(URLKey);
-  }
-
-  virtual PRUint32 HashCode(void) const
-  {
-    return mHashValue;
-  }
-
-  virtual PRBool Equals(const nsHashKey* aKey) const
-  {
-    URLKey* key = (URLKey*)aKey;
-    PRBool equals = PR_FALSE;
-    nsresult result = mURL->Equals(key->mURL, &equals);
-    return (NS_SUCCEEDED(result) && equals);
-  }
-
-  virtual nsHashKey *Clone(void) const
-  {
-    return new URLKey(*this);
-  }
-
-  nsCOMPtr<nsIURI>  mURL;
-  PRUint32          mHashValue;
-};
 
 /*********************************************
  * Data needed to properly load a stylesheet *
@@ -260,7 +207,6 @@ public:
                              nsIUnicharInputStream* aIn, 
                              const nsAString& aTitle, 
                              const nsAString& aMedia, 
-                             PRInt32 aDefaultNameSpaceID,
                              nsIParser* aParserToUnblock,
                              PRBool& aCompleted,
                              nsICSSLoaderObserver* aObserver);
@@ -269,7 +215,6 @@ public:
                            nsIURI* aURL, 
                            const nsAString& aTitle, 
                            const nsAString& aMedia, 
-                           PRInt32 aDefaultNameSpaceID,
                            nsIParser* aParserToUnblock,
                            PRBool& aCompleted,
                            nsICSSLoaderObserver* aObserver);
@@ -277,7 +222,6 @@ public:
   NS_IMETHOD LoadChildSheet(nsICSSStyleSheet* aParentSheet,
                             nsIURI* aURL, 
                             const nsAString& aMedia,
-                            PRInt32 aDefaultNameSpaceID,
                             nsICSSImportRule* aRule);
 
   NS_IMETHOD LoadAgentSheet(nsIURI* aURL, nsICSSStyleSheet** aSheet);
@@ -307,9 +251,11 @@ private:
   nsresult CheckLoadAllowed(nsIURI* aSourceURI,
                             nsIURI* aTargetURI,
                             nsISupports* aContext);
-  
+
+  // For inline style, the aURI param is null, but the aLinkingContent
+  // must be non-null then.
   nsresult CreateSheet(nsIURI* aURI,
-                       PRUint32 aDefaultNameSpaceID,
+                       nsIContent* aLinkingContent,
                        PRBool aSyncLoad,
                        StyleSheetState& aSheetState,
                        nsICSSStyleSheet** aSheet);
@@ -319,7 +265,7 @@ private:
                         const nsAString& aMedia);
 
   nsresult InsertSheetInDoc(nsICSSStyleSheet* aSheet,
-                            nsIContent* aLinkingElement,
+                            nsIContent* aLinkingContent,
                             nsIDocument* aDocument);
 
   nsresult InsertChildSheet(nsICSSStyleSheet* aSheet,
@@ -340,6 +286,7 @@ protected:
   // access to
   nsresult ParseSheet(nsIUnicharInputStream* aStream,
                       SheetLoadData* aLoadData,
+                      nsIURI* aSheetURI,
                       PRBool& aCompleted);
 
 public:
@@ -361,9 +308,9 @@ private:
   nsCompatibility   mCompatMode;
   nsString          mPreferredSheet;  // title of preferred sheet
 
-  nsSupportsHashtable mCompleteSheets;
-  nsHashtable         mLoadingDatas;  // weak refs
-  nsHashtable         mPendingDatas;  // weak refs
+  nsInterfaceHashtable<nsURIHashKey,nsICSSStyleSheet> mCompleteSheets;
+  nsDataHashtable<nsURIHashKey,SheetLoadData*> mLoadingDatas; // weak refs
+  nsDataHashtable<nsURIHashKey,SheetLoadData*> mPendingDatas; // weak refs
   
   // We're not likely to have many levels of @import...  But likely to have
   // some.  Allocate some storage, what the hell.

@@ -91,7 +91,6 @@ extern "C" {
 PRLogModuleInfo* gPIPNSSLog = nsnull;
 #endif
 
-static NS_DEFINE_CID(kDateTimeFormatCID, NS_DATETIMEFORMAT_CID);
 static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
 int nsNSSComponent::mInstanceCount = 0;
 
@@ -1321,7 +1320,7 @@ NS_IMPL_THREADSAFE_ISUPPORTS5(nsNSSComponent,
                               nsIEntropyCollector,
                               nsINSSComponent,
                               nsIObserver,
-                              nsISupportsWeakReference);
+                              nsISupportsWeakReference)
 
 //---------------------------------------------
 // Functions Implementing nsISignatureVerifier
@@ -1537,16 +1536,16 @@ nsNSSComponent::PrefChanged(const char* prefName)
 #define DEBUG_PSM_PROFILE
 
 #ifdef DEBUG_PSM_PROFILE
-#define PROFILE_CHANGE_NET_TEARDOWN_TOPIC NS_LITERAL_CSTRING("profile-change-net-teardown").get()
-#define PROFILE_CHANGE_NET_RESTORE_TOPIC NS_LITERAL_CSTRING("profile-change-net-restore").get()
+#define PROFILE_CHANGE_NET_TEARDOWN_TOPIC "profile-change-net-teardown"
+#define PROFILE_CHANGE_NET_RESTORE_TOPIC "profile-change-net-restore"
 #endif
 
-#define PROFILE_APPROVE_CHANGE_TOPIC NS_LITERAL_CSTRING("profile-approve-change").get()
-#define PROFILE_CHANGE_TEARDOWN_TOPIC NS_LITERAL_CSTRING("profile-change-teardown").get()
-#define PROFILE_CHANGE_TEARDOWN_VETO_TOPIC NS_LITERAL_CSTRING("profile-change-teardown-veto").get()
-#define PROFILE_BEFORE_CHANGE_TOPIC NS_LITERAL_CSTRING("profile-before-change").get()
-#define PROFILE_AFTER_CHANGE_TOPIC NS_LITERAL_CSTRING("profile-after-change").get()
-#define SESSION_LOGOUT_TOPIC NS_LITERAL_CSTRING("session-logout").get()
+#define PROFILE_APPROVE_CHANGE_TOPIC "profile-approve-change"
+#define PROFILE_CHANGE_TEARDOWN_TOPIC "profile-change-teardown"
+#define PROFILE_CHANGE_TEARDOWN_VETO_TOPIC "profile-change-teardown-veto"
+#define PROFILE_BEFORE_CHANGE_TOPIC "profile-before-change"
+#define PROFILE_AFTER_CHANGE_TOPIC "profile-after-change"
+#define SESSION_LOGOUT_TOPIC "session-logout"
 
 NS_IMETHODIMP
 nsNSSComponent::Observe(nsISupports *aSubject, const char *aTopic, 
@@ -2189,7 +2188,7 @@ getPSMContentType(const char * aContentType)
 
 NS_IMPL_ISUPPORTS2(PSMContentListener,
                    nsIURIContentListener,
-                   nsISupportsWeakReference); 
+                   nsISupportsWeakReference) 
 
 PSMContentListener::PSMContentListener()
 {

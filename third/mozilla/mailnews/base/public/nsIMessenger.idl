@@ -55,7 +55,7 @@ interface nsIMessenger : nsISupports {
     const long eMoveMsg = 2;
     const long eCopyMsg = 3;
 
-    void setDisplayCharset(in wstring aCharset);
+    void setDisplayCharset(in string aCharset);
 
     readonly attribute nsITransactionManager transactionManager;
 
@@ -86,6 +86,8 @@ interface nsIMessenger : nsISupports {
       */
     void loadURL(in nsIDOMWindowInternal ptr, in string aURL); 
 
+    void launchExternalURL(in string aURL);
+
     void RenameFolder(in nsIRDFCompositeDataSource db, 
                       in nsIRDFResource folder, in wstring name);
     void CompactFolder(in nsIRDFCompositeDataSource db,
@@ -101,7 +103,7 @@ interface nsIMessenger : nsISupports {
     void Undo(in nsIMsgWindow msgWindow);
     void Redo(in nsIMsgWindow msgWindow);
     void sendUnsentMessages(in nsIMsgIdentity aIdentity, in nsIMsgWindow aMsgWindow);
-    void SetDocumentCharset(in wstring characterSet);
+    void SetDocumentCharset(in string characterSet);
     void saveAs(in string aURI, in boolean aAsFile, in nsIMsgIdentity aIdentity, in nsIMsgWindow aMsgWindow);
     void openAttachment(in string contentTpe, in string url, in string displayName, in string messageUri);
     void saveAttachment(in string contentTpe, in string url, in string displayName, in string messageUri);

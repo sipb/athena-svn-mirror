@@ -91,7 +91,7 @@ nsNodeInfo::Init(nsIAtom *aName, nsIAtom *aPrefix, PRInt32 aNamespaceID,
 
 // nsISupports
 
-NS_IMPL_ISUPPORTS1(nsNodeInfo, nsINodeInfo);
+NS_IMPL_ISUPPORTS1(nsNodeInfo, nsINodeInfo)
 
 
 // nsINodeInfo
@@ -170,11 +170,9 @@ nsNodeInfo::SetIDAttributeAtom(nsIAtom* aID)
 
 
 NS_IMETHODIMP
-nsNodeInfo::GetNodeInfoManager(nsINodeInfoManager*& aNodeInfoManager) const
+nsNodeInfo::GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager) const
 {
-  aNodeInfoManager = mOwnerManager;
-
-  NS_ADDREF(aNodeInfoManager);
+  NS_ADDREF(*aNodeInfoManager = mOwnerManager);
 
   return NS_OK;
 }
@@ -214,8 +212,6 @@ NS_IMETHODIMP_(PRBool)
 nsNodeInfo::Equals(const nsAString& aName, const nsAString& aPrefix,
                    PRInt32 aNamespaceID) const
 {
-  PRUnichar nullChar = '\0';
-
   if (!mInner.mNamespaceID == aNamespaceID ||
       !mInner.mName->Equals(aName))
     return PR_FALSE;
@@ -229,7 +225,7 @@ NS_IMETHODIMP_(PRBool)
 nsNodeInfo::NamespaceEquals(const nsAString& aNamespaceURI) const
 {
   PRInt32 nsid;
-  nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI, nsid);
+  nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI, &nsid);
 
   return nsINodeInfo::NamespaceEquals(nsid);
 }
@@ -278,7 +274,7 @@ nsNodeInfo::QualifiedNameEquals(const nsACString& aQualifiedName) const
 }
 
 NS_IMETHODIMP
-nsNodeInfo::NameChanged(nsIAtom *aName, nsINodeInfo*& aResult)
+nsNodeInfo::NameChanged(nsIAtom *aName, nsINodeInfo** aResult)
 {
   return mOwnerManager->GetNodeInfo(aName, mInner.mPrefix, mInner.mNamespaceID,
                                     aResult);
@@ -286,16 +282,16 @@ nsNodeInfo::NameChanged(nsIAtom *aName, nsINodeInfo*& aResult)
 
 
 NS_IMETHODIMP
-nsNodeInfo::PrefixChanged(nsIAtom *aPrefix, nsINodeInfo*& aResult)
+nsNodeInfo::PrefixChanged(nsIAtom *aPrefix, nsINodeInfo** aResult)
 {
   return mOwnerManager->GetNodeInfo(mInner.mName, aPrefix, mInner.mNamespaceID,
                                     aResult);
 }
 
-NS_IMETHODIMP
-nsNodeInfo::GetDocument(nsIDocument*& aDocument) const
+nsIDocument*
+nsNodeInfo::GetDocument() const
 {
-  return mOwnerManager->GetDocument(aDocument);
+  return mOwnerManager->GetDocument();
 }
 
 NS_IMETHODIMP

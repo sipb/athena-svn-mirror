@@ -41,7 +41,6 @@
 #include "nsIStreamConverterService.h"
 #include "nsStreamConverterService.h"
 
-static NS_DEFINE_CID(kStreamConvServiceCID,      NS_STREAMCONVERTERSERVICE_CID);
 
 nsresult NS_NewStreamConv(nsStreamConverterService** aStreamConv);
 
@@ -104,4 +103,4 @@ static const nsModuleComponentInfo components[] =
     },
 };
 
-NS_IMPL_NSGETMODULE(nsStreamConvModule, components);
+NS_IMPL_NSGETMODULE(nsStreamConvModule, components)

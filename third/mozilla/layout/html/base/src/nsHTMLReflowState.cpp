@@ -389,15 +389,11 @@ nsHTMLReflowState::DetermineFrameType(nsIFrame* aFrame,
 {
   nsCSSFrameType frameType;
 
-  // Get the frame state
-  nsFrameState  frameState;
-  aFrame->GetFrameState(&frameState);
-  
   // Section 9.7 of the CSS2 spec indicates that absolute position
   // takes precedence over float which takes precedence over display.
   // Make sure the frame was actually moved out of the flow, and don't
   // just assume what the style says
-  if (frameState & NS_FRAME_OUT_OF_FLOW) {
+  if (aFrame->GetStateBits() & NS_FRAME_OUT_OF_FLOW) {
     if (aDisplay->IsAbsolutelyPositioned()) {
       frameType = NS_CSS_FRAME_TYPE_ABSOLUTE;
     }
@@ -448,7 +444,7 @@ nsHTMLReflowState::DetermineFrameType(nsIFrame* aFrame,
   }
 
   // See if the frame is replaced
-  if (frameState & NS_FRAME_REPLACED_ELEMENT) {
+  if (aFrame->GetStateBits() & NS_FRAME_REPLACED_ELEMENT) {
     frameType = NS_FRAME_REPLACED(frameType);
   }
 
@@ -589,7 +585,7 @@ nsHTMLReflowState::ComputeRelativeOffsets(const nsHTMLReflowState* cbrs,
 static nsIFrame*
 GetNearestContainingBlock(nsIFrame* aFrame, nsMargin& aContentArea)
 {
-  aFrame->GetParent(&aFrame);
+  aFrame = aFrame->GetParent();
   while (aFrame) {
     nsIAtom*  frameType;
     PRBool    isBlock;
@@ -602,13 +598,12 @@ GetNearestContainingBlock(nsIFrame* aFrame, nsMargin& aContentArea)
     if (isBlock) {
       break;
     }
-    aFrame->GetParent(&aFrame);
+    aFrame = aFrame->GetParent();
   }
 
   if (aFrame) {
-    nsSize  size;
-  
-    aFrame->GetSize(size);
+    nsSize  size = aFrame->GetSize();
+
     aContentArea.left = 0;
     aContentArea.top = 0;
     aContentArea.right = size.width;
@@ -738,18 +733,14 @@ GetPlaceholderOffset(nsIFrame* aPlaceholderFrame,
                      nsIFrame* aBlockFrame,
                      nsPoint&  aOffset)
 {
-  aPlaceholderFrame->GetOrigin(aOffset);
+  aOffset = aPlaceholderFrame->GetPosition();
 
   // Convert the placeholder position to the coordinate space of the block
   // frame that contains it
-  nsIFrame* parent;
-  aPlaceholderFrame->GetParent(&parent);
+  nsIFrame* parent = aPlaceholderFrame->GetParent();
   while (parent && (parent != aBlockFrame)) {
-    nsPoint origin;
-
-    parent->GetOrigin(origin);
-    aOffset += origin;
-    parent->GetParent(&parent);
+    aOffset += parent->GetPosition();
+    parent = parent->GetParent();
   }
 }
 
@@ -759,9 +750,7 @@ FindImmediateChildOf(nsIFrame* aParent, nsIFrame* aDescendantFrame)
   nsIFrame* result = aDescendantFrame;
 
   while (result) {
-    nsIFrame* parent;
-    
-    result->GetParent(&parent);
+    nsIFrame* parent = result->GetParent();
     if (parent == aParent) {
       break;
     }
@@ -928,15 +917,14 @@ nsHTMLReflowState::CalculateHypotheticalBox(nsIPresContext*    aPresContext,
   if (aBlockFrame != aAbsoluteContainingBlockFrame) {
     nsIFrame* parent = aBlockFrame;
     do {
-      nsPoint origin;
+      nsPoint origin = parent->GetPosition();
 
-      parent->GetOrigin(origin);
       aHypotheticalBox.mLeft += origin.x;
       aHypotheticalBox.mRight += origin.x;
       aHypotheticalBox.mTop += origin.y;
 
       // Move up the tree one level
-      parent->GetParent(&parent);
+      parent = parent->GetParent();
     } while (parent && (parent != aAbsoluteContainingBlockFrame));
   }
 
@@ -1335,23 +1323,14 @@ nsHTMLReflowState::InitAbsoluteConstraints(nsIPresContext* aPresContext,
 static PRBool
 IsInitialContainingBlock(nsIFrame* aFrame)
 {
-  nsIContent* content;
-  PRBool      result = PR_FALSE;
+  nsIContent* content = aFrame->GetContent();
 
-  aFrame->GetContent(&content);
-  if (content) {
-    nsIContent* parentContent;
-
-    content->GetParent(parentContent);
-    if (!parentContent) {
-      // The containing block corresponds to the document element so it's
-      // the initial containing block
-      result = PR_TRUE;
-    }
-    NS_IF_RELEASE(parentContent);
+  if (content && !content->GetParent()) {
+    // The containing block corresponds to the document element so it's
+    // the initial containing block
+    return PR_TRUE;
   }
-  NS_IF_RELEASE(content);
-  return result;
+  return PR_FALSE;
 }
 
 nscoord 
@@ -1459,19 +1438,19 @@ CalcQuirkContainingBlockHeight(const nsHTMLReflowState& aReflowState,
 
 #ifdef DEBUG
       // make sure the Area is the HTML and the Block is the BODY
-      nsCOMPtr<nsIContent> frameContent;
-      nsCOMPtr<nsIAtom> contentTag;
-      if(firstBlockRS) {
-        firstBlockRS->frame->GetContent(getter_AddRefs(frameContent));
+      if (firstBlockRS) {
+        nsIContent* frameContent = firstBlockRS->frame->GetContent();
         if (frameContent) {
-          frameContent->GetTag(*getter_AddRefs(contentTag));
+          nsCOMPtr<nsIAtom> contentTag;
+          frameContent->GetTag(getter_AddRefs(contentTag));
           NS_ASSERTION(contentTag.get() == nsHTMLAtoms::body, "block is not BODY");
         }
       }
-      if(firstAreaRS) {
-        firstAreaRS->frame->GetContent(getter_AddRefs(frameContent));
+      if (firstAreaRS) {
+        nsIContent* frameContent = firstAreaRS->frame->GetContent();
         if (frameContent) {
-          frameContent->GetTag(*getter_AddRefs(contentTag));
+          nsCOMPtr<nsIAtom> contentTag;
+          frameContent->GetTag(getter_AddRefs(contentTag));
           NS_ASSERTION(contentTag.get() == nsHTMLAtoms::html, "Area frame is not HTML element");
         }
       }
@@ -2522,27 +2501,21 @@ nsHTMLReflowState::ComputeMargin(nscoord aContainingBlockWidth,
       // According to the CSS2 spec, margin percentages are
       // calculated with respect to the *width* of the containing
       // block, even for margin-top and margin-bottom.
-      if (NS_UNCONSTRAINEDSIZE == aContainingBlockWidth) {
-        mComputedMargin.top = 0;
-        mComputedMargin.bottom = 0;
-
+      if (eStyleUnit_Inherit == mStyleMargin->mMargin.GetTopUnit()) {
+        mComputedMargin.top = aContainingBlockRS->mComputedMargin.top;
       } else {
-        if (eStyleUnit_Inherit == mStyleMargin->mMargin.GetTopUnit()) {
-          mComputedMargin.top = aContainingBlockRS->mComputedMargin.top;
-        } else {
-          ComputeHorizontalValue(aContainingBlockWidth,
-                                 mStyleMargin->mMargin.GetTopUnit(),
-                                 mStyleMargin->mMargin.GetTop(top),
-                                 mComputedMargin.top);
-        }
-        if (eStyleUnit_Inherit == mStyleMargin->mMargin.GetBottomUnit()) {
-          mComputedMargin.bottom = aContainingBlockRS->mComputedMargin.bottom;
-        } else {
-          ComputeHorizontalValue(aContainingBlockWidth,
-                                 mStyleMargin->mMargin.GetBottomUnit(),
-                                 mStyleMargin->mMargin.GetBottom(bottom),
-                                 mComputedMargin.bottom);
-        }
+        ComputeHorizontalValue(aContainingBlockWidth,
+                               mStyleMargin->mMargin.GetTopUnit(),
+                               mStyleMargin->mMargin.GetTop(top),
+                               mComputedMargin.top);
+      }
+      if (eStyleUnit_Inherit == mStyleMargin->mMargin.GetBottomUnit()) {
+        mComputedMargin.bottom = aContainingBlockRS->mComputedMargin.bottom;
+      } else {
+        ComputeHorizontalValue(aContainingBlockWidth,
+                               mStyleMargin->mMargin.GetBottomUnit(),
+                               mStyleMargin->mMargin.GetBottom(bottom),
+                               mComputedMargin.bottom);
       }
     }
   }
@@ -2787,11 +2760,7 @@ nsHTMLReflowState::IsBidiFormControl(nsIPresContext* aPresContext)
     return PR_FALSE;
   }
 
-  nsCOMPtr<nsIContent> content, parent;
-  nsresult rv = frame->GetContent(getter_AddRefs(content) );
-  if (NS_FAILED(rv)) {
-    return PR_FALSE;
-  }
+  nsIContent* content = frame->GetContent();
   if (!content) {
     return PR_FALSE;
   }
@@ -2800,12 +2769,10 @@ nsHTMLReflowState::IsBidiFormControl(nsIPresContext* aPresContext)
   // find out if the reflow root is a descendant of a form control.
   // Otherwise, just test this content node
   if (mReflowDepth == 0) {
-    while (content) {
-      if  (content->IsContentOfType(nsIContent::eHTML_FORM_CONTROL)) {
+    for ( ; content; content = content->GetParent()) {
+      if (content->IsContentOfType(nsIContent::eHTML_FORM_CONTROL)) {
         return PR_TRUE;
       }
-      content->GetParent(*getter_AddRefs(parent));
-      content = parent;
     }
   } else {
     return (content->IsContentOfType(nsIContent::eHTML_FORM_CONTROL));

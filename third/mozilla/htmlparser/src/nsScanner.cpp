@@ -108,7 +108,7 @@ MOZ_DECL_CTOR_COUNTER(nsScanner)
  *  @param   aMode represents the parser mode (nav, other)
  *  @return  
  */
-nsScanner::nsScanner(const nsAString& anHTMLString, const nsString& aCharset, PRInt32 aSource)
+nsScanner::nsScanner(const nsAString& anHTMLString, const nsACString& aCharset, PRInt32 aSource)
 {
   MOZ_COUNT_CTOR(nsScanner);
 
@@ -134,7 +134,7 @@ nsScanner::nsScanner(const nsAString& anHTMLString, const nsString& aCharset, PR
  *  @param   aFilename --
  *  @return  
  */
-nsScanner::nsScanner(nsString& aFilename,PRBool aCreateStream, const nsString& aCharset, PRInt32 aSource) : 
+nsScanner::nsScanner(nsString& aFilename,PRBool aCreateStream, const nsACString& aCharset, PRInt32 aSource) : 
     mFilename(aFilename)
 {
   MOZ_COUNT_CTOR(nsScanner);
@@ -173,7 +173,7 @@ nsScanner::nsScanner(nsString& aFilename,PRBool aCreateStream, const nsString& a
  *  @param   aFilename --
  *  @return  
  */
-nsScanner::nsScanner(const nsAString& aFilename,nsIInputStream* aStream,const nsString& aCharset, PRInt32 aSource) :
+nsScanner::nsScanner(const nsAString& aFilename,nsIInputStream* aStream,const nsACString& aCharset, PRInt32 aSource) :
     mFilename(aFilename)
 {  
   MOZ_COUNT_CTOR(nsScanner);
@@ -195,7 +195,7 @@ nsScanner::nsScanner(const nsAString& aFilename,nsIInputStream* aStream,const ns
 }
 
 
-nsresult nsScanner::SetDocumentCharset(const nsAString& aCharset , PRInt32 aSource) {
+nsresult nsScanner::SetDocumentCharset(const nsACString& aCharset , PRInt32 aSource) {
 
   nsresult res = NS_OK;
 
@@ -204,7 +204,6 @@ nsresult nsScanner::SetDocumentCharset(const nsAString& aCharset , PRInt32 aSour
 
   nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID, &res));
   NS_ASSERTION( nsnull != calias, "cannot find charset alias");
-  nsAutoString charsetName; charsetName.Assign(aCharset);
   if( NS_SUCCEEDED(res) && (nsnull != calias))
   {
     PRBool same = PR_FALSE;
@@ -214,12 +213,13 @@ nsresult nsScanner::SetDocumentCharset(const nsAString& aCharset , PRInt32 aSour
       return NS_OK; // no difference, don't change it
     }
     // different, need to change it
+    nsCAutoString charsetName;
     res = calias->GetPreferred(aCharset, charsetName);
 
     if(NS_FAILED(res) && (kCharsetUninitialized == mCharsetSource) )
     {
        // failed - unknown alias , fallback to ISO-8859-1
-      charsetName.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+      charsetName.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
     }
     mCharset = charsetName;
     mCharsetSource = aSource;
@@ -229,7 +229,7 @@ nsresult nsScanner::SetDocumentCharset(const nsAString& aCharset , PRInt32 aSour
     if(NS_SUCCEEDED(res) && (nsnull != ccm))
     {
       nsIUnicodeDecoder * decoder = nsnull;
-      res = ccm->GetUnicodeDecoder(&mCharset, &decoder);
+      res = ccm->GetUnicodeDecoderRaw(mCharset.get(), &decoder);
       if(NS_SUCCEEDED(res) && (nsnull != decoder))
       {
          NS_IF_RELEASE(mUnicodeDecoder);

@@ -57,6 +57,55 @@
     </nc:subheadings>
   </rdf:Description>
 
+<!-- IE HELP SECTION -->
+
+  <rdf:Description about="urn:root">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="ieusers" nc:name="For Internet Explorer Users" nc:link="chrome://help/locale/forieusers.html#for_microsoft_users"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+  <rdf:Description about="#ieusers">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="terms" nc:name="Terminology Differences" nc:link="chrome://help/locale/forieusers.html#terminology_differences"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+  <rdf:Description about="#ieusers">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="favorites" nc:name="About Your IE Favorites" nc:link="chrome://help/locale/forieusers.html#your_favorites"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+  <rdf:Description about="#ieusers">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="key-features" nc:name="Browser Features" nc:link="chrome://help/locale/forieusers.html#key_features"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+  <rdf:Description about="#ieusers">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="more-features" nc:name="Other Features" nc:link="chrome://help/locale/forieusers.html#additional_software"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+  <rdf:Description about="#ieusers">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> <rdf:Description ID="keyboard-shortcuts" nc:name="Keyboard Shortcuts" nc:link="chrome://help/locale/forieusers.html#keyboard_shortcuts"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
 
 <!-- NAVIGATOR HELP SECTION -->
 
@@ -230,14 +279,6 @@
     </nc:subheadings>
   </rdf:Description>
 
-  <rdf:Description about="#nav-doc-printsave">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="nav-doc-printplus" nc:name="Using Print Plus" nc:link="chrome://help/locale/nav_help.html#nav_printplus"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
 
   <rdf:Description about="#nav">
     <nc:subheadings>
@@ -400,14 +441,6 @@
     </nc:subheadings>
   </rdf:Description>
 
-  <rdf:Description about="#nav-page-info">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="pageinfo_privacy" nc:name="Privacy Tab" nc:link="chrome://help/locale/page_info_help.html#pageinfo_privacy"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
 
 <!-- MAIL HELP SECTION -->
 
@@ -436,27 +469,11 @@
     </nc:subheadings>
   </rdf:Description>
 
-<rdf:Description about="#mail-doc-setup">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="mail-doc-setup-ISP" nc:name="Setting up Mail Accounts with an ISP or Email Provider"  nc:link="chrome://help/locale/mail_help.html#ISP_Provider"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
 
   <rdf:Description about="#mail-doc">
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="mail-doc-add" nc:name="Setting Up Additional Accounts"  nc:link="chrome://help/locale/mail_help.html#account_settings"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
-  <rdf:Description about="#mail-doc">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="mail-doc-id-chx" nc:name="Changing Account Settings"  nc:link="chrome://help/locale/mail_help.html#account_settings_change"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -795,14 +812,6 @@ nc:link="chrome://help/locale/mail_help.html#delete_POP_IMAP" /> </rdf:li>
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="mail-doc-add-listedit" nc:name="Editing a Mailing List" nc:link="chrome://help/locale/mail_help.html#EDIT_LIST_MAILING_LIST" /> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
-  <rdf:Description about="#mail-doc-address">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="mail-doc-add-import" nc:name="Importing Address Books" nc:link="chrome://help/locale/mail_help.html#import_address_book" /> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -1462,14 +1471,6 @@ nc:link="chrome://help/locale/mail_help.html#mail-account-receipts"/> </rdf:li>
     <nc:subheadings>
       <rdf:Seq>
         <rdf:li> <rdf:Description ID="mail_smtp" nc:name="Outgoing Server (SMTP)"  nc:link="chrome://help/locale/mail_help.html#PREFERENCES_MAILNEWS_SMTP"/> </rdf:li>
-      </rdf:Seq>
-    </nc:subheadings>
-  </rdf:Description>
-
-<rdf:Description about="#mail-doc-account-settings">
-    <nc:subheadings>
-      <rdf:Seq>
-        <rdf:li> <rdf:Description ID="free_webmail" nc:name="Free Webmail"  nc:link="chrome://help/locale/mail_help.html#free_webmail"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>
@@ -3106,6 +3107,36 @@ nc:link="chrome://help/locale/mail_help.html#mail-account-receipts"/> </rdf:li>
         <rdf:li> 
 	<rdf:Description ID="images-help-managing" nc:name="Managing Images"
   		nc:link="chrome://help/locale/using_priv_help.html#managing_images"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+<rdf:Description about="#using-priv-help">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> 
+	<rdf:Description ID="images-help-managing" nc:name="Managing Images"
+  		nc:link="chrome://help/locale/using_priv_help.html#managing_images"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+<rdf:Description about="#using-priv-help">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> 
+	<rdf:Description ID="pop_up_blocking" nc:name="Controlling Popups"
+  		nc:link="chrome://help/locale/cs_priv_prefs_popup.html"/> </rdf:li>
+      </rdf:Seq>
+    </nc:subheadings>
+  </rdf:Description>
+
+<rdf:Description about="#pop_up_blocking">
+    <nc:subheadings>
+      <rdf:Seq>
+        <rdf:li> 
+	<rdf:Description ID="pop_up_blocking_prefs" nc:name="Popup Preferences"
+  		nc:link="chrome://help/locale/cs_priv_prefs_popup.html#popup_prefs"/> </rdf:li>
       </rdf:Seq>
     </nc:subheadings>
   </rdf:Description>

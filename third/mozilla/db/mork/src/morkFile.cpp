@@ -116,7 +116,7 @@ morkFile::morkFile(morkEnv* ev, const morkUsage& inUsage,
   }
 }
 
-NS_IMPL_ISUPPORTS_INHERITED1(morkFile, morkObject, nsIMdbFile);
+NS_IMPL_ISUPPORTS_INHERITED1(morkFile, morkObject, nsIMdbFile)
 /*public non-poly*/ void
 morkFile::CloseFile(morkEnv* ev) // called by CloseMorkNode();
 {
@@ -269,17 +269,17 @@ morkFile::NewFileErrnoError(morkEnv* ev) const
 // ````` ````` ````` ````` newlines ````` ````` ````` `````  
 
 #if defined(MORK_MAC)
-       static const char* morkFile_kNewlines = 
+       static const char morkFile_kNewlines[] = 
        "\015\015\015\015\015\015\015\015\015\015\015\015\015\015\015\015";
 #      define morkFile_kNewlinesCount 16
 #else
 #  if defined(MORK_WIN) || defined(MORK_OS2)
-       static const char* morkFile_kNewlines = 
+       static const char morkFile_kNewlines[] = 
        "\015\012\015\012\015\012\015\012\015\012\015\012\015\012\015\012";
 #    define morkFile_kNewlinesCount 8
 #  else
 #    if defined(MORK_UNIX) || defined(MORK_BEOS)
-       static const char* morkFile_kNewlines = 
+       static const char morkFile_kNewlines[] = 
        "\012\012\012\012\012\012\012\012\012\012\012\012\012\012\012\012";
 #      define morkFile_kNewlinesCount 16
 #    endif /* MORK_UNIX || MORK_BEOS */

@@ -38,9 +38,10 @@
 #include "nsMIMEInfoImpl.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
+#include "nsStringEnumerator.h"
 
 // nsISupports methods
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsMIMEInfoImpl, nsIMIMEInfo);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsMIMEInfoImpl, nsIMIMEInfo)
 
 // nsMIMEInfoImpl methods
 nsMIMEInfoImpl::nsMIMEInfoImpl() {
@@ -59,32 +60,9 @@ nsMIMEInfoImpl::GetExtCount() {
 }
 
 NS_IMETHODIMP
-nsMIMEInfoImpl::GetFileExtensions(PRUint32 *elementCount, char ***extensions) {
-    PRUint32 count = mExtensions.Count();
-    *elementCount = count; 
-    *extensions = nsnull;
-    if (count < 1) {
-      return NS_OK;
-    }
-
-    char **_retExts = (char**)nsMemory::Alloc((count)*sizeof(char*));
-    if (!_retExts) return NS_ERROR_OUT_OF_MEMORY;
-
-    for (PRUint32 i=0; i < count; i++) {
-        nsCString* ext = mExtensions.CStringAt(i);
-        _retExts[i] = ToNewCString(*ext);
-        if (!_retExts[i]) {
-            // clean up all the strings we've allocated
-            while (i-- != 0) nsMemory::Free(_retExts[i]);
-            nsMemory::Free(_retExts);
-            return NS_ERROR_OUT_OF_MEMORY;
-        }
-    }
-
-    *elementCount = count;
-    *extensions   = _retExts;
-
-    return NS_OK;
+nsMIMEInfoImpl::GetFileExtensions(nsIUTF8StringEnumerator** aResult)
+{
+  return NS_NewUTF8StringEnumerator(aResult, &mExtensions, this);
 }
 
 NS_IMETHODIMP
@@ -161,10 +139,7 @@ nsMIMEInfoImpl::Clone(nsIMIMEInfo** aClone) {
   clone->mExtensions = mExtensions;
   clone->mDescription = mDescription;
   nsresult result = NS_OK;
-  if (mURI) {
-    result = mURI->Clone(getter_AddRefs(clone->mURI));
-    NS_ASSERTION(NS_SUCCEEDED(result), "Failed to clone URI");
-  }
+
   clone->mMacType = mMacType;
   clone->mMacCreator = mMacCreator;
   if (mPreferredApplication) {
@@ -181,7 +156,7 @@ NS_IMETHODIMP
 nsMIMEInfoImpl::GetMIMEType(char * *aMIMEType) {
     if (!aMIMEType) return NS_ERROR_NULL_POINTER;
 
-    if (mMIMEType.Length() < 1)
+    if (mMIMEType.IsEmpty())
         return NS_ERROR_NOT_INITIALIZED;
 
     *aMIMEType = ToNewCString(mMIMEType);
@@ -210,11 +185,6 @@ NS_IMETHODIMP nsMIMEInfoImpl::SetDescription(const PRUnichar * aDescription)
 {
 	mDescription =  aDescription;
 	return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMIMEInfoImpl::GetDataURI(nsIURI * *aDataURI) {
-    return mURI->Clone(aDataURI);
 }
 
 NS_IMETHODIMP
@@ -266,7 +236,7 @@ NS_IMETHODIMP nsMIMEInfoImpl::SetFileExtensions( const char* aExtensions )
 		mExtensions.AppendCString( ext );
 		extList.Cut(0, breakLocation+1 );
 	}
-	if ( extList.Length() )
+	if ( !extList.IsEmpty() )
 		mExtensions.AppendCString( extList );
 	return NS_OK;
 }
@@ -325,6 +295,13 @@ NS_IMETHODIMP nsMIMEInfoImpl::SetPreferredApplicationHandler(nsIFile * aPreferre
   mPreferredApplication = aPreferredAppHandler;
   return NS_OK;
 }
+
+NS_IMETHODIMP nsMIMEInfoImpl::GetHasDefaultHandler(PRBool * _retval)
+{
+  *_retval = mDefaultApplication != nsnull;
+  return NS_OK;
+}
+
 
 NS_IMETHODIMP nsMIMEInfoImpl::GetDefaultApplicationHandler(nsIFile ** aDefaultAppHandler)
 {

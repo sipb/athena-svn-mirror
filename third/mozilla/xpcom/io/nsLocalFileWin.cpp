@@ -26,7 +26,7 @@
 #include "nsCOMPtr.h"
 #include "nsMemory.h"
 
-#include "nsLocalFileWin.h"
+#include "nsLocalFile.h"
 #include "nsNativeCharsetUtils.h"
 
 #include "nsISimpleEnumerator.h"
@@ -257,8 +257,13 @@ myLL_L2II(PRInt64 result, PRInt32 *hi, PRInt32 *lo )
     LL_L2I(*lo, a64);
 }
 
-static PRBool IsShortcut(const char* workingPath, int filePathLen)
+static PRBool
+IsShortcut(const char* workingPath, int filePathLen)
 {
+    // XXX this is badly broken!!
+    // XXX consider "C:\FOO.LNK"
+    // XXX consider "C:\foo.lnkx\bar.lnk"
+
     // check to see if it is shortcut, i.e., it has ".lnk" in it
     unsigned char* dest = _mbsstr((unsigned char*)workingPath,
                                   (unsigned char*)".lnk");
@@ -277,9 +282,7 @@ static PRBool IsShortcut(const char* workingPath, int filePathLen)
             return PR_FALSE;
     }
     return PR_TRUE;
-
 }
-
 
 //-----------------------------------------------------------------------------
 // nsDirEnumerator
@@ -389,7 +392,7 @@ class nsDirEnumerator : public nsISimpleEnumerator
         nsCOMPtr<nsILocalFile>  mNext;
 };
 
-NS_IMPL_ISUPPORTS1(nsDirEnumerator, nsISimpleEnumerator);
+NS_IMPL_ISUPPORTS1(nsDirEnumerator, nsISimpleEnumerator)
 
 
 //-----------------------------------------------------------------------------
@@ -438,11 +441,14 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(nsLocalFile, nsILocalFile, nsIFile)
 // nsLocalFile <private>
 //-----------------------------------------------------------------------------
 
-// This function resets any cached information about the file.
-void
-nsLocalFile::MakeDirty()
+nsLocalFile::nsLocalFile(const nsLocalFile& other)
+  : mDirty(other.mDirty)
+  , mLastResolution(other.mLastResolution)
+  , mFollowSymlinks(other.mFollowSymlinks)
+  , mWorkingPath(other.mWorkingPath)
+  , mResolvedPath(other.mResolvedPath)
+  , mFileInfo64(other.mFileInfo64)
 {
-    mDirty = PR_TRUE;
 }
 
 // ResolvePath
@@ -535,7 +541,7 @@ nsLocalFile::ResolvePath(const char* workingPath, PRBool resolveTerminal, char**
                 
         // check to see the file is a shortcut by the magic .lnk extension.
         size_t offset = strlen(filePath) - 4;
-        if ((offset > 0) && (strncmp( (filePath + offset), ".lnk", 4) == 0))
+        if ((offset > 0) && (strnicmp( (filePath + offset), ".lnk", 4) == 0))
         {
             nsAutoString ucsBuf;
             NS_CopyNativeToUnicode(nsDependentCString(filePath), ucsBuf);
@@ -652,7 +658,7 @@ nsLocalFile::ResolveAndStat(PRBool resolveTerminal)
     
         // if we found the file and we are not following symlinks, then return success.
  
-        if (!mFollowSymlinks || pathLen < 4 || (strcmp(leaf, ".lnk") != 0))
+        if (!mFollowSymlinks || pathLen < 4 || (stricmp(leaf, ".lnk") != 0))
         {
 		    mDirty = PR_FALSE;
             return NS_OK;
@@ -693,21 +699,13 @@ nsLocalFile::ResolveAndStat(PRBool resolveTerminal)
 NS_IMETHODIMP  
 nsLocalFile::Clone(nsIFile **file)
 {
-    NS_ENSURE_ARG(file);
-    *file = nsnull;
-    
     // Just copy-construct ourselves
-    nsLocalFile *localFile = new nsLocalFile(*this);
-    if (localFile == NULL)
-        return NS_ERROR_OUT_OF_MEMORY;
+    *file = new nsLocalFile(*this);
+    if (!*file)
+      return NS_ERROR_OUT_OF_MEMORY;
 
-    // don't forget to re-initialize mRefCnt
-    // or the new object will have the old refcnt
-    localFile->mRefCnt = 0;
-    
-    *file = localFile;
     NS_ADDREF(*file);
-        
+    
     return NS_OK;
 }
 
@@ -1070,7 +1068,7 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent, const nsAC
             if (copyOK) 
             {
                 // remove the backup copy.
-                (void) remove(backup.get());
+                remove(backup.get());
             }
             else
             {
@@ -1237,26 +1235,20 @@ nsLocalFile::CopyMove(nsIFile *aParentDir, const nsACString &newName, PRBool fol
                 return NS_ERROR_FILE_DIR_NOT_EMPTY;
         }
 
-        
-        nsDirEnumerator* dirEnum = new nsDirEnumerator();
-        if (!dirEnum)
-            return NS_ERROR_OUT_OF_MEMORY;
-        
-        rv = dirEnum->Init(this);
+        nsDirEnumerator dirEnum;
+
+        rv = dirEnum.Init(this);
         if (NS_FAILED(rv)) {
             NS_WARNING("dirEnum initalization failed");
             return rv;
         }
 
-        nsCOMPtr<nsISimpleEnumerator> iterator = do_QueryInterface(dirEnum);
-
         PRBool more;
-        iterator->HasMoreElements(&more);
-        while (more)
+        while (NS_SUCCEEDED(dirEnum.HasMoreElements(&more)) && more)
         {
             nsCOMPtr<nsISupports> item;
             nsCOMPtr<nsIFile> file;
-            iterator->GetNext(getter_AddRefs(item));
+            dirEnum.GetNext(getter_AddRefs(item));
             file = do_QueryInterface(item);
             if (file)
             {    
@@ -1282,7 +1274,6 @@ nsLocalFile::CopyMove(nsIFile *aParentDir, const nsACString &newName, PRBool fol
                     NS_ENSURE_SUCCESS(rv,rv);
                 }
             }
-            iterator->HasMoreElements(&more);
         }
         // we've finished moving all the children of this directory
         // in the new directory.  so now delete the directory
@@ -1371,46 +1362,78 @@ nsLocalFile::Load(PRLibrary * *_retval)
 NS_IMETHODIMP  
 nsLocalFile::Remove(PRBool recursive)
 {
-    PRBool isDir;
-    
-    nsresult rv = IsDirectory(&isDir);
-    if (NS_FAILED(rv))
-        return rv;
+    nsresult rv;
+    PRBool isDir, isLink;
+    nsXPIDLCString buf;
+    const char *filePath;
 
-    const char *filePath = mResolvedPath.get();
- 
+    // NOTE:
+    //
+    // if the working path points to a shortcut, then we will only
+    // delete the shortcut itself.  even if the shortcut points to
+    // a directory, we will not recurse into that directory or 
+    // delete that directory itself.  likewise, if the shortcut
+    // points to a normal file, we will not delete the real file.
+    // this is done to be consistent with the other platforms that
+    // behave this way.  we do this even if the followLinks attribute
+    // is set to true.  this helps protect against misuse that could
+    // lead to security bugs (e.g., bug 210588).
+    //
+    // in the case of non-terminal shortcuts, those are all followed
+    // unconditionally.  this is done because 1) we only delete 
+    // terminal nodes and possibly their children, and 2) the remove
+    // and rmdir CRT calls don't know how to handle shortcuts.
+
+    IsSymlink(&isLink);
+    if (isLink)
+    {
+        isDir = PR_FALSE;
+        // resolve non-terminal nodes only.
+        rv = ResolvePath(mWorkingPath.get(), PR_FALSE, getter_Copies(buf));
+        if (NS_FAILED(rv))
+            return rv;
+        filePath = buf.get();
+    }
+    else
+    {
+        rv = IsDirectory(&isDir);
+        if (NS_FAILED(rv))
+            return rv;
+        // in this case, it doesn't matter that terminal nodes were
+        // resolved, so we can safely leverage mResolvedPath.
+        filePath = mResolvedPath.get();
+    }
+
     if (isDir)
     {
         if (recursive)
         {
-            nsDirEnumerator* dirEnum = new nsDirEnumerator();
-            if (dirEnum == nsnull)
-                return NS_ERROR_OUT_OF_MEMORY;
-        
-            rv = dirEnum->Init(this);
+            nsDirEnumerator dirEnum;
 
-            nsCOMPtr<nsISimpleEnumerator> iterator = do_QueryInterface(dirEnum);
-        
+            rv = dirEnum.Init(this);
+            if (NS_FAILED(rv))
+                return rv;
+
             PRBool more;
-            iterator->HasMoreElements(&more);
-            while (more)
+            while (NS_SUCCEEDED(dirEnum.HasMoreElements(&more)) && more)
             {
                 nsCOMPtr<nsISupports> item;
-                nsCOMPtr<nsIFile> file;
-                iterator->GetNext(getter_AddRefs(item));
-                file = do_QueryInterface(item);
+                dirEnum.GetNext(getter_AddRefs(item));
+                nsCOMPtr<nsIFile> file = do_QueryInterface(item);
                 if (file)
                     file->Remove(recursive);
-                
-                iterator->HasMoreElements(&more);
             }
         }
-        rv = rmdir(filePath);  // todo: save return value?
+        rv = rmdir(filePath);
     }
     else
     {
-        rv = remove(filePath); // todo: save return value?
+        rv = remove(filePath);
     }
+
+    // fixup error code if necessary...
+    if (rv == -1)
+        rv = NSRESULT_FOR_ERRNO();
     
     MakeDirty();
     return rv;
@@ -1839,6 +1862,7 @@ nsLocalFile::IsExecutable(PRBool *_retval)
                                                 ".lnk",
                                                 ".reg",
                                                 ".wsf",
+                                                ".hta",
                                                 0 };
         for ( int i = 0; executableExts[i]; i++ ) {
             if ( ::strcmp( executableExts[i], ext ) == 0 ) {
@@ -1856,16 +1880,15 @@ nsLocalFile::IsExecutable(PRBool *_retval)
 NS_IMETHODIMP  
 nsLocalFile::IsDirectory(PRBool *_retval)
 {
-    NS_ENSURE_ARG(_retval);
-    *_retval = PR_FALSE;
+    NS_PRECONDITION(_retval, "null pointer");
 
     nsresult rv = ResolveAndStat(PR_TRUE);
-    
-    if (NS_FAILED(rv))
+    if (NS_FAILED(rv)) {
+        *_retval = PR_FALSE;
         return rv;
+    }
 
     *_retval = (mFileInfo64.type == PR_FILE_DIRECTORY); 
-
     return NS_OK;
 }
 
@@ -1915,22 +1938,15 @@ nsLocalFile::IsHidden(PRBool *_retval)
 NS_IMETHODIMP  
 nsLocalFile::IsSymlink(PRBool *_retval)
 {
-    NS_ENSURE_ARG(_retval);
-    *_retval = PR_FALSE;
+    NS_PRECONDITION(_retval, "null pointer");
 
-    nsCAutoString path;
-    int   pathLen;
-    
-    GetNativePath(path);
-    pathLen = path.Length();
-    
-    const char* leaf = path.get() + pathLen - 4;
-    
-    if ( (strcmp(leaf, ".lnk") == 0)) 
-    {
-        *_retval = PR_TRUE;
+    PRUint32 len = mWorkingPath.Length();
+    if (len < 4)
+        *_retval = PR_FALSE;
+    else {
+        const char* leaf = mWorkingPath.get() + len - 4;
+        *_retval = (strnicmp(leaf, ".lnk", 4) == 0);
     }
-    
     return NS_OK;
 }
 
@@ -2422,12 +2438,13 @@ nsLocalFile::GetTarget(nsAString &_retval)
 nsresult 
 NS_NewLocalFile(const nsAString &path, PRBool followLinks, nsILocalFile* *result)
 {
-    nsCAutoString tmp;
-    nsresult rv = NS_CopyUnicodeToNative(path, tmp);
-    if (NS_SUCCEEDED(rv))
-        return NS_NewNativeLocalFile(tmp, followLinks, result);
-
-    return NS_OK;
+    nsCAutoString buf;
+    nsresult rv = NS_CopyUnicodeToNative(path, buf);
+    if (NS_FAILED(rv)) {
+        *result = nsnull;
+        return rv;
+    }
+    return NS_NewNativeLocalFile(buf, followLinks, result);
 }
 
 //-----------------------------------------------------------------------------

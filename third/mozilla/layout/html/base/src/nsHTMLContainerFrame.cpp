@@ -147,7 +147,7 @@ nsHTMLContainerFrame::PaintDecorationsAndChildren(
 }
 
 static PRBool 
-HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* parent);
+HasTextFrameDescendantOrInFlow(nsIPresContext* aPresContext, nsIFrame* aFrame);
 
 void
 nsHTMLContainerFrame::GetTextDecorations(nsIPresContext* aPresContext, 
@@ -180,7 +180,7 @@ nsHTMLContainerFrame::GetTextDecorations(nsIPresContext* aPresContext,
   }
   else {
     // walk tree
-    for (nsIFrame *frame = this; frame && decorMask; frame->GetParent(&frame)) {
+    for (nsIFrame *frame = this; frame && decorMask; frame = frame->GetParent()) {
       // find text-decorations.  "Inherit" from parent *block* frames
 
       nsStyleContext* styleContext = frame->GetStyleContext();
@@ -220,7 +220,7 @@ nsHTMLContainerFrame::GetTextDecorations(nsIPresContext* aPresContext,
   
   if (aDecorations) {
     // If this frame contains no text, we're required to ignore this property
-    if (!HasTextFrameDescendant(aPresContext, this)) {
+    if (!HasTextFrameDescendantOrInFlow(aPresContext, this)) {
       aDecorations = NS_STYLE_TEXT_DECORATION_NONE;
     }
   }
@@ -233,7 +233,7 @@ HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* aParent)
   nsCOMPtr<nsIAtom> frameType;
     
   for (aParent->FirstChild(aPresContext, nsnull, &kid); kid; 
-       kid->GetNextSibling(&kid))
+       kid = kid->GetNextSibling())
   {
     kid->GetFrameType(getter_AddRefs(frameType));
     if (frameType == nsLayoutAtoms::textFrame) {
@@ -258,6 +258,17 @@ HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* aParent)
   }
   return PR_FALSE;
 }
+
+static PRBool 
+HasTextFrameDescendantOrInFlow(nsIPresContext* aPresContext, nsIFrame* aFrame)
+{
+  for (nsIFrame *f = aFrame->GetFirstInFlow(); f; f->GetNextInFlow(&f)) {
+    if (HasTextFrameDescendant(aPresContext, f))
+      return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
 
 /*virtual*/ void
 nsHTMLContainerFrame::PaintTextDecorationLines(
@@ -319,8 +330,7 @@ nsHTMLContainerFrame::CreateNextInFlow(nsIPresContext* aPresContext,
   if (nsnull == nextInFlow) {
     // Create a continuation frame for the child frame and insert it
     // into our lines child list.
-    nsIFrame* nextFrame;
-    aFrame->GetNextSibling(&nextFrame);
+    nsIFrame* nextFrame = aFrame->GetNextSibling();
 
     nsIPresShell* presShell;
     nsIStyleSet*  styleSet;
@@ -352,14 +362,13 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
                     nsIView*        aNewParentView,
                     nsIView*        aOldParentView)
 {
-  nsIView*  view;
 
   // XXX What to do about placeholder views for "position: fixed" elements?
   // They should be reparented too.
 
   // Does aFrame have a view?
-  aFrame->GetView(aPresContext, &view);
-  if (view) {
+  if (aFrame->HasView()) {
+    nsIView* view = aFrame->GetView();
     // Verify that the current parent view is what we think it is
     //nsIView*  parentView;
     //NS_ASSERTION(parentView == aOldParentView, "unexpected parent view");
@@ -382,7 +391,7 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
       // a view
       nsIFrame* childFrame;
       aFrame->FirstChild(aPresContext, listName, &childFrame);
-      for (; childFrame; childFrame->GetNextSibling(&childFrame)) {
+      for (; childFrame; childFrame = childFrame->GetNextSibling()) {
         ReparentFrameViewTo(aPresContext, childFrame, aViewManager,
                             aNewParentView, aOldParentView);
       }
@@ -390,26 +399,6 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
   }
 
   return NS_OK;
-}
-
-// Helper function that returns the nearest view to this frame. Checks
-// this frame, its parent frame, its parent frame, ...
-static nsIView*
-GetClosestViewFor(nsIPresContext* aPresContext, nsIFrame* aFrame)
-{
-  NS_PRECONDITION(aFrame, "null frame pointer");
-  nsIView*  view;
-
-  do {
-    aFrame->GetView(aPresContext, &view);
-    if (view) {
-      break;
-    }
-    aFrame->GetParent(&aFrame);
-  } while (aFrame);
-
-  NS_POSTCONDITION(view, "no containing view");
-  return view;
 }
 
 nsresult
@@ -423,14 +412,9 @@ nsHTMLContainerFrame::ReparentFrameView(nsIPresContext* aPresContext,
   NS_PRECONDITION(aNewParentFrame, "null new parent frame pointer");
   NS_PRECONDITION(aOldParentFrame != aNewParentFrame, "same old and new parent frame");
 
-  nsIView*  childView;
-  nsIView*  oldParentView;
-  nsIView*  newParentView;
-  
   // This code is called often and we need it to be as fast as possible, so
   // see if we can trivially detect that no work needs to be done
-  aChildFrame->GetView(aPresContext, &childView);
-  if (!childView) {
+  if (!aChildFrame->HasView()) {
     // Child frame doesn't have a view. See if it has any child frames
     nsIFrame* firstChild;
     aChildFrame->FirstChild(aPresContext, nsnull, &firstChild);
@@ -440,10 +424,8 @@ nsHTMLContainerFrame::ReparentFrameView(nsIPresContext* aPresContext,
   }
 
   // See if either the old parent frame or the new parent frame have a view
-  aOldParentFrame->GetView(aPresContext, &oldParentView);
-  aNewParentFrame->GetView(aPresContext, &newParentView);
 
-  if (!oldParentView && !newParentView) {
+  while (!aOldParentFrame->HasView() && !aNewParentFrame->HasView()) {
     // Walk up both the old parent frame and the new parent frame nodes
     // stopping when we either find a common parent or views for one
     // or both of the frames.
@@ -451,25 +433,18 @@ nsHTMLContainerFrame::ReparentFrameView(nsIPresContext* aPresContext,
     // This works well in the common case where we push/pull and the old parent
     // frame and the new parent frame are part of the same flow. They will
     // typically be the same distance (height wise) from the
-    do {
-      aOldParentFrame->GetParent(&aOldParentFrame);
-      aNewParentFrame->GetParent(&aNewParentFrame);
-      
-      // We should never walk all the way to the root frame without finding
-      // a view
-      NS_ASSERTION(aOldParentFrame && aNewParentFrame, "didn't find view");
+    aOldParentFrame = aOldParentFrame->GetParent();
+    aNewParentFrame = aNewParentFrame->GetParent();
+    
+    // We should never walk all the way to the root frame without finding
+    // a view
+    NS_ASSERTION(aOldParentFrame && aNewParentFrame, "didn't find view");
 
-      // See if we reached a common parent
-      if (aOldParentFrame == aNewParentFrame) {
-        break;
-      }
-
-      // Get the views
-      aOldParentFrame->GetView(aPresContext, &oldParentView);
-      aNewParentFrame->GetView(aPresContext, &newParentView);
-    } while (!(oldParentView || newParentView));
+    // See if we reached a common ancestor
+    if (aOldParentFrame == aNewParentFrame) {
+      break;
+    }
   }
-
 
   // See if we found a common parent frame
   if (aOldParentFrame == aNewParentFrame) {
@@ -480,25 +455,17 @@ nsHTMLContainerFrame::ReparentFrameView(nsIPresContext* aPresContext,
     return NS_OK;
   }
 
-  // We found views for one or both of the parent frames before we found a
-  // common parent
-  NS_ASSERTION(oldParentView || newParentView, "internal error");
-  if (!oldParentView) {
-    oldParentView = GetClosestViewFor(aPresContext, aOldParentFrame);
-  }
-  if (!newParentView) {
-    newParentView = GetClosestViewFor(aPresContext, aNewParentFrame);
-  }
+  // We found views for one or both of the ancestor frames before we
+  // found a common ancestor.
+  nsIView* oldParentView = aOldParentFrame->GetClosestView();
+  nsIView* newParentView = aNewParentFrame->GetClosestView();
   
   // See if the old parent frame and the new parent frame are in the
   // same view sub-hierarchy. If they are then we don't have to do
   // anything
   if (oldParentView != newParentView) {
-    nsCOMPtr<nsIViewManager>  viewManager;
-    oldParentView->GetViewManager(*getter_AddRefs(viewManager));
-
     // They're not so we need to reparent any child views
-    return ReparentFrameViewTo(aPresContext, aChildFrame, viewManager, newParentView,
+    return ReparentFrameViewTo(aPresContext, aChildFrame, oldParentView->GetViewManager(), newParentView,
                                oldParentView);
   }
 
@@ -516,14 +483,8 @@ nsHTMLContainerFrame::ReparentFrameViewList(nsIPresContext* aPresContext,
   NS_PRECONDITION(aNewParentFrame, "null new parent frame pointer");
   NS_PRECONDITION(aOldParentFrame != aNewParentFrame, "same old and new parent frame");
 
-  nsIView*  oldParentView;
-  nsIView*  newParentView;
-  
   // See if either the old parent frame or the new parent frame have a view
-  aOldParentFrame->GetView(aPresContext, &oldParentView);
-  aNewParentFrame->GetView(aPresContext, &newParentView);
-
-  if (!oldParentView && !newParentView) {
+  while (!aOldParentFrame->HasView() && !aNewParentFrame->HasView()) {
     // Walk up both the old parent frame and the new parent frame nodes
     // stopping when we either find a common parent or views for one
     // or both of the frames.
@@ -531,23 +492,17 @@ nsHTMLContainerFrame::ReparentFrameViewList(nsIPresContext* aPresContext,
     // This works well in the common case where we push/pull and the old parent
     // frame and the new parent frame are part of the same flow. They will
     // typically be the same distance (height wise) from the
-    do {
-      aOldParentFrame->GetParent(&aOldParentFrame);
-      aNewParentFrame->GetParent(&aNewParentFrame);
-      
-      // We should never walk all the way to the root frame without finding
-      // a view
-      NS_ASSERTION(aOldParentFrame && aNewParentFrame, "didn't find view");
+    aOldParentFrame = aOldParentFrame->GetParent();
+    aNewParentFrame = aNewParentFrame->GetParent();
+    
+    // We should never walk all the way to the root frame without finding
+    // a view
+    NS_ASSERTION(aOldParentFrame && aNewParentFrame, "didn't find view");
 
-      // See if we reached a common parent
-      if (aOldParentFrame == aNewParentFrame) {
-        break;
-      }
-
-      // Get the views
-      aOldParentFrame->GetView(aPresContext, &oldParentView);
-      aNewParentFrame->GetView(aPresContext, &newParentView);
-    } while (!(oldParentView || newParentView));
+    // See if we reached a common ancestor
+    if (aOldParentFrame == aNewParentFrame) {
+      break;
+    }
   }
 
 
@@ -560,25 +515,19 @@ nsHTMLContainerFrame::ReparentFrameViewList(nsIPresContext* aPresContext,
     return NS_OK;
   }
 
-  // We found views for one or both of the parent frames before we found a
-  // common parent
-  NS_ASSERTION(oldParentView || newParentView, "internal error");
-  if (!oldParentView) {
-    oldParentView = GetClosestViewFor(aPresContext, aOldParentFrame);
-  }
-  if (!newParentView) {
-    newParentView = GetClosestViewFor(aPresContext, aNewParentFrame);
-  }
+  // We found views for one or both of the ancestor frames before we
+  // found a common ancestor.
+  nsIView* oldParentView = aOldParentFrame->GetClosestView();
+  nsIView* newParentView = aNewParentFrame->GetClosestView();
   
   // See if the old parent frame and the new parent frame are in the
   // same view sub-hierarchy. If they are then we don't have to do
   // anything
   if (oldParentView != newParentView) {
-    nsCOMPtr<nsIViewManager>  viewManager;
-    oldParentView->GetViewManager(*getter_AddRefs(viewManager));
+    nsIViewManager* viewManager = oldParentView->GetViewManager();
 
     // They're not so we need to reparent any child views
-    for (nsIFrame* f = aChildFrameList; f; f->GetNextSibling(&f)) {
+    for (nsIFrame* f = aChildFrameList; f; f = f->GetNextSibling()) {
       ReparentFrameViewTo(aPresContext, f, viewManager, newParentView,
                           oldParentView);
     }
@@ -594,9 +543,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
                                          nsIFrame* aContentParentFrame,
                                          PRBool aForce)
 {
-  nsIView* view;
-  aFrame->GetView(aPresContext, &view);
-  if (nsnull != view) {
+  if (aFrame->HasView()) {
     return NS_OK;
   }
 
@@ -607,29 +554,25 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
   }
 
   // Create a view
-  nsIFrame* parent = nsnull;
-  aFrame->GetParentWithView(aPresContext, &parent);
+  nsIFrame* parent = aFrame->GetAncestorWithView();
   NS_ASSERTION(parent, "GetParentWithView failed");
 
-  nsIView* parentView = nsnull;
-  parent->GetView(aPresContext, &parentView);
+  nsIView* parentView = parent->GetView();
   NS_ASSERTION(parentView, "no parent with view");
 
   // Create a view
   static NS_DEFINE_CID(kViewCID, NS_VIEW_CID);
+  nsIView* view;
   nsresult result = CallCreateInstance(kViewCID, &view);
   if (NS_FAILED(result)) {
     return result;
   }
     
-  nsCOMPtr<nsIViewManager> viewManager;
-  parentView->GetViewManager(*getter_AddRefs(viewManager));
-  NS_ASSERTION(nsnull != viewManager, "null view manager");
+  nsIViewManager* viewManager = parentView->GetViewManager();
+  NS_ASSERTION(viewManager, "null view manager");
     
   // Initialize the view
-  nsRect bounds;
-  aFrame->GetRect(bounds);
-  view->Init(viewManager, bounds, parentView);
+  view->Init(viewManager, aFrame->GetRect(), parentView);
 
   SyncFrameViewProperties(aPresContext, aFrame, aStyleContext, view);
 
@@ -643,23 +586,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
     viewManager->InsertChild(parentView, view, nsnull, PR_TRUE);
 
     if (nsnull != aContentParentFrame) {
-      // If, for some reason, GetView below fails to initialize zParentView,
-      // then ensure that we completely bypass InsertZPlaceholder below.
-      // The effect will be as if we never knew about aContentParentFrame
-      // in the first place, so at least this code won't be doing any damage.
-      nsIView* zParentView = parentView;
-      
-      aContentParentFrame->GetView(aPresContext, &zParentView);
-      
-      if (nsnull == zParentView) {
-        nsIFrame* zParentFrame = nsnull;
-        
-        aContentParentFrame->GetParentWithView(aPresContext, &zParentFrame);
-        NS_ASSERTION(zParentFrame, "GetParentWithView failed");
-        zParentFrame->GetView(aPresContext, &zParentView);
-        NS_ASSERTION(zParentView, "no parent with view");
-      }
-      
+      nsIView* zParentView = aContentParentFrame->GetClosestView();
       if (zParentView != parentView) {
         viewManager->InsertZPlaceholder(zParentView, view, nsnull, PR_TRUE);
       }
@@ -674,7 +601,7 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIPresContext* aPresContext,
   }
 
   // Remember our view
-  aFrame->SetView(aPresContext, view);
+  aFrame->SetView(view);
 
   NS_FRAME_LOG(NS_FRAME_TRACE_CALLS,
                ("nsHTMLContainerFrame::CreateViewForFrame: frame=%p view=%p",

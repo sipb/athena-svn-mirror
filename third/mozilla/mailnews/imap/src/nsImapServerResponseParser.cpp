@@ -295,84 +295,84 @@ void nsImapServerResponseParser::HandleMemoryFailure()
 // SEARCH is the only command that requires pre-processing for now.
 // others will be added here.
 void nsImapServerResponseParser::PreProcessCommandToken(const char *commandToken,
-										      const char *currentCommand)
+                                                        const char *currentCommand)
 {
-	fCurrentCommandIsSingleMessageFetch = PR_FALSE;
-	fWaitingForMoreClientInput = PR_FALSE;
-	
-	if (!PL_strcasecmp(commandToken, "SEARCH"))
-		fSearchResults->ResetSequence();
-	else if (!PL_strcasecmp(commandToken, "SELECT") && currentCommand)
-	{
-		// the mailbox name must be quoted, so strip the quotes
-		const char *openQuote = PL_strstr(currentCommand, "\"");
-		NS_ASSERTION(openQuote, "expected open quote in imap server response");
-		if (!openQuote)
-        { // ill formed select command
-            openQuote = PL_strstr(currentCommand, " ");
+  fCurrentCommandIsSingleMessageFetch = PR_FALSE;
+  fWaitingForMoreClientInput = PR_FALSE;
+  
+  if (!PL_strcasecmp(commandToken, "SEARCH"))
+    fSearchResults->ResetSequence();
+  else if (!PL_strcasecmp(commandToken, "SELECT") && currentCommand)
+  {
+    // the mailbox name must be quoted, so strip the quotes
+    const char *openQuote = PL_strstr(currentCommand, "\"");
+    NS_ASSERTION(openQuote, "expected open quote in imap server response");
+    if (!openQuote)
+    { // ill formed select command
+      openQuote = PL_strstr(currentCommand, " ");
+    }
+    PR_Free( fSelectedMailboxName);
+    fSelectedMailboxName = PL_strdup(openQuote + 1);
+    if (fSelectedMailboxName)
+    {
+      // strip the escape chars and the ending quote
+      char *currentChar = fSelectedMailboxName;
+      while (*currentChar)
+      {
+        if (*currentChar == '\\')
+        {
+          PL_strcpy(currentChar, currentChar+1);
+          currentChar++;	// skip what we are escaping
         }
-		PR_Free( fSelectedMailboxName);
-		fSelectedMailboxName = PL_strdup(openQuote + 1);
-		if (fSelectedMailboxName)
-		{
-			// strip the escape chars and the ending quote
-			char *currentChar = fSelectedMailboxName;
-			while (*currentChar)
-			{
-				if (*currentChar == '\\')
-				{
-					PL_strcpy(currentChar, currentChar+1);
-					currentChar++;	// skip what we are escaping
-				}
-				else if (*currentChar == '\"')
-					*currentChar = 0;	// end quote
-				else
-					currentChar++;
-			}
-		}
-		else
-			HandleMemoryFailure();
-		
-		// we don't want bogus info for this new box
-		//delete fFlagState;	// not our object
-		//fFlagState = nsnull;
-	}
-	else if (!PL_strcasecmp(commandToken, "CLOSE"))
-	{
-		return;	// just for debugging
-		// we don't want bogus info outside the selected state
-		//delete fFlagState;	// not our object
-		//fFlagState = nsnull;
-	}
-	else if (!PL_strcasecmp(commandToken, "UID"))
-	{
-	
-		char *copyCurrentCommand = PL_strdup(currentCommand);
-		if (copyCurrentCommand && !fServerConnection.DeathSignalReceived())
-		{
-			char *placeInTokenString = nsnull;
-			char *tagToken           = Imapstrtok_r(copyCurrentCommand, WHITESPACE,&placeInTokenString);
-			char *uidToken           = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
-			char *fetchToken         = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
-			uidToken = nsnull; // use variable to quiet compiler warning
-            tagToken = nsnull; // use variable to quiet compiler warning
-			if (!PL_strcasecmp(fetchToken, "FETCH") )
-			{
-				char *uidStringToken = Imapstrtok_r(nsnull, WHITESPACE, &placeInTokenString);
-				if (!PL_strchr(uidStringToken, ',') && !PL_strchr(uidStringToken, ':'))	// , and : are uid delimiters
-				{
-					fCurrentCommandIsSingleMessageFetch = PR_TRUE;
-					fUidOfSingleMessageFetch = atoi(uidStringToken);
-				}
-			}
-			PR_Free(copyCurrentCommand);
-		}
-	}
+        else if (*currentChar == '\"')
+          *currentChar = 0;	// end quote
+        else
+          currentChar++;
+      }
+    }
+    else
+      HandleMemoryFailure();
+    
+    // we don't want bogus info for this new box
+    //delete fFlagState;	// not our object
+    //fFlagState = nsnull;
+  }
+  else if (!PL_strcasecmp(commandToken, "CLOSE"))
+  {
+    return;	// just for debugging
+    // we don't want bogus info outside the selected state
+    //delete fFlagState;	// not our object
+    //fFlagState = nsnull;
+  }
+  else if (!PL_strcasecmp(commandToken, "UID"))
+  {
+    
+    char *copyCurrentCommand = PL_strdup(currentCommand);
+    if (copyCurrentCommand && !fServerConnection.DeathSignalReceived())
+    {
+      char *placeInTokenString = nsnull;
+      char *tagToken           = Imapstrtok_r(copyCurrentCommand, WHITESPACE,&placeInTokenString);
+      char *uidToken           = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
+      char *fetchToken         = Imapstrtok_r(nsnull, WHITESPACE,&placeInTokenString);
+      uidToken = nsnull; // use variable to quiet compiler warning
+      tagToken = nsnull; // use variable to quiet compiler warning
+      if (!PL_strcasecmp(fetchToken, "FETCH") )
+      {
+        char *uidStringToken = Imapstrtok_r(nsnull, WHITESPACE, &placeInTokenString);
+        if (!PL_strchr(uidStringToken, ',') && !PL_strchr(uidStringToken, ':'))	// , and : are uid delimiters
+        {
+          fCurrentCommandIsSingleMessageFetch = PR_TRUE;
+          fUidOfSingleMessageFetch = atoi(uidStringToken);
+        }
+      }
+      PR_Free(copyCurrentCommand);
+    }
+  }
 }
 
 const char *nsImapServerResponseParser::GetSelectedMailboxName()
 {
-	return fSelectedMailboxName;
+  return fSelectedMailboxName;
 }
 
 nsImapSearchResultIterator *nsImapServerResponseParser::CreateSearchResultIterator()
@@ -420,7 +420,7 @@ void nsImapServerResponseParser::ProcessOkCommand(const char *commandToken)
 	}
 	else if (!PL_strcasecmp(commandToken, "FETCH"))
 	{
-		if (fZeroLengthMessageUidString.Length())
+		if (!fZeroLengthMessageUidString.IsEmpty())
 		{
 			// "Deleting zero length message");
 			fServerConnection.Store(fZeroLengthMessageUidString.get(), "+Flags (\\Deleted)", PR_TRUE);
@@ -810,158 +810,158 @@ void nsImapServerResponseParser::mailbox_data()
 
 void nsImapServerResponseParser::mailbox_list(PRBool discoveredFromLsub)
 {
-	nsImapMailboxSpec *boxSpec = new nsImapMailboxSpec;
-	NS_ADDREF(boxSpec);
-    PRBool needsToFreeBoxSpec = PR_TRUE;
-	if (!boxSpec)
-		HandleMemoryFailure();
-	else
-	{
-		boxSpec->folderSelected = PR_FALSE;
-		boxSpec->box_flags = kNoFlags;
-		boxSpec->allocatedPathName = nsnull;
-		boxSpec->hostName = nsnull;
-		boxSpec->connection = &fServerConnection;
-		boxSpec->flagState = nsnull;
-		boxSpec->discoveredFromLsub = discoveredFromLsub;
-		boxSpec->onlineVerified = PR_TRUE;
-		boxSpec->box_flags &= ~kNameSpace;
-		
-		PRBool endOfFlags = PR_FALSE;
-		fNextToken++;	// eat the first "("
-		do {
-			if (!PL_strncasecmp(fNextToken, "\\Marked", 7))
-				boxSpec->box_flags |= kMarked;	
-			else if (!PL_strncasecmp(fNextToken, "\\Unmarked", 9))
-				boxSpec->box_flags |= kUnmarked;	
-			else if (!PL_strncasecmp(fNextToken, "\\Noinferiors", 12))
-				boxSpec->box_flags |= kNoinferiors;	
-			else if (!PL_strncasecmp(fNextToken, "\\Noselect", 9))
-				boxSpec->box_flags |= kNoselect;	
-			// we ignore flag extensions
-			
-			endOfFlags = *(fNextToken + strlen(fNextToken) - 1) == ')';
-			fNextToken = GetNextToken();
-		} while (!endOfFlags && ContinueParse());
-		
-		if (ContinueParse())
-		{
-			if (*fNextToken == '"')
-			{
-				fNextToken++;
-				if (*fNextToken == '\\')	// handle escaped char
-					boxSpec->hierarchySeparator = *(fNextToken + 1);
-				else
-					boxSpec->hierarchySeparator = *fNextToken;
-			}
-			else	// likely NIL.  Discovered late in 4.02 that we do not handle literals here (e.g. {10} <10 chars>), although this is almost impossibly unlikely
-				boxSpec->hierarchySeparator = kOnlineHierarchySeparatorNil;
-			fNextToken = GetNextToken();	
-			if (ContinueParse())
-            {
-                // nsImapProtocol::DiscoverMailboxSpec() eventually frees the
-                // boxSpec
-                needsToFreeBoxSpec = PR_FALSE;
-				mailbox(boxSpec);
-            }
-		}
-	}
-    if (needsToFreeBoxSpec)
-        NS_RELEASE(boxSpec); // mscott - do we have any fields we need to
-                            // release?
+  nsImapMailboxSpec *boxSpec = new nsImapMailboxSpec;
+  NS_ADDREF(boxSpec);
+  PRBool needsToFreeBoxSpec = PR_TRUE;
+  if (!boxSpec)
+    HandleMemoryFailure();
+  else
+  {
+    boxSpec->folderSelected = PR_FALSE;
+    boxSpec->box_flags = kNoFlags;
+    boxSpec->allocatedPathName = nsnull;
+    boxSpec->hostName = nsnull;
+    boxSpec->connection = &fServerConnection;
+    boxSpec->flagState = nsnull;
+    boxSpec->discoveredFromLsub = discoveredFromLsub;
+    boxSpec->onlineVerified = PR_TRUE;
+    boxSpec->box_flags &= ~kNameSpace;
+    
+    PRBool endOfFlags = PR_FALSE;
+    fNextToken++;	// eat the first "("
+    do {
+      if (!PL_strncasecmp(fNextToken, "\\Marked", 7))
+        boxSpec->box_flags |= kMarked;	
+      else if (!PL_strncasecmp(fNextToken, "\\Unmarked", 9))
+        boxSpec->box_flags |= kUnmarked;	
+      else if (!PL_strncasecmp(fNextToken, "\\Noinferiors", 12))
+        boxSpec->box_flags |= kNoinferiors;	
+      else if (!PL_strncasecmp(fNextToken, "\\Noselect", 9))
+        boxSpec->box_flags |= kNoselect;	
+      // we ignore flag extensions
+      
+      endOfFlags = *(fNextToken + strlen(fNextToken) - 1) == ')';
+      fNextToken = GetNextToken();
+    } while (!endOfFlags && ContinueParse());
+    
+    if (ContinueParse())
+    {
+      if (*fNextToken == '"')
+      {
+        fNextToken++;
+        if (*fNextToken == '\\')	// handle escaped char
+          boxSpec->hierarchySeparator = *(fNextToken + 1);
+        else
+          boxSpec->hierarchySeparator = *fNextToken;
+      }
+      else	// likely NIL.  Discovered late in 4.02 that we do not handle literals here (e.g. {10} <10 chars>), although this is almost impossibly unlikely
+        boxSpec->hierarchySeparator = kOnlineHierarchySeparatorNil;
+      fNextToken = GetNextToken();	
+      if (ContinueParse())
+      {
+        // nsImapProtocol::DiscoverMailboxSpec() eventually frees the
+        // boxSpec
+        needsToFreeBoxSpec = PR_FALSE;
+        mailbox(boxSpec);
+      }
+    }
+  }
+  if (needsToFreeBoxSpec)
+    NS_RELEASE(boxSpec); // mscott - do we have any fields we need to
+  // release?
 }
 
 /* mailbox         ::= "INBOX" / astring
 */
 void nsImapServerResponseParser::mailbox(nsImapMailboxSpec *boxSpec)
 {
-	char *boxname = nsnull;
-    const char *serverKey = fServerConnection.GetImapServerKey();
-	
-	if (!PL_strcasecmp(fNextToken, "INBOX"))
-	{
-		boxname = PL_strdup("INBOX");
-		fNextToken = GetNextToken();
-	}
-	else 
-	{
-		boxname = CreateAstring();
-		// handle a literal ending the line here
-		if (fTokenizerAdvanced)
-		{
-			fTokenizerAdvanced = PR_FALSE;
-			if (!PL_strcmp(fCurrentTokenPlaceHolder, CRLF))
-				fAtEndOfLine = PR_FALSE;
-		}
-		fNextToken = GetNextToken();
-	}
-	
-    if (boxname && fHostSessionList)
+  char *boxname = nsnull;
+  const char *serverKey = fServerConnection.GetImapServerKey();
+  
+  if (!PL_strcasecmp(fNextToken, "INBOX"))
+  {
+    boxname = PL_strdup("INBOX");
+    fNextToken = GetNextToken();
+  }
+  else 
+  {
+    boxname = CreateAstring();
+    // handle a literal ending the line here
+    if (fTokenizerAdvanced)
     {
-		// should the namespace check go before or after the Utf7 conversion?
-		fHostSessionList->SetNamespaceHierarchyDelimiterFromMailboxForHost(
-            serverKey, boxname, boxSpec->hierarchySeparator);
-
-		
-		nsIMAPNamespace *ns = nsnull;
-		fHostSessionList->GetNamespaceForMailboxForHost(serverKey, boxname, ns);
-		if (ns)
-		{
-			switch (ns->GetType())
-			{
-			case kPersonalNamespace:
-				boxSpec->box_flags |= kPersonalMailbox;
-				break;
-			case kPublicNamespace:
-				boxSpec->box_flags |= kPublicMailbox;
-				break;
-			case kOtherUsersNamespace:
-				boxSpec->box_flags |= kOtherUsersMailbox;
-				break;
-			default:	// (kUnknownNamespace)
-				break;
-			}
-			boxSpec->namespaceForFolder = ns;
-		}
-
-//    	char *convertedName =
-//            fServerConnection.CreateUtf7ConvertedString(boxname, PR_FALSE);
-//		PRUnichar *unicharName;
-//        unicharName = fServerConnection.CreatePRUnicharStringFromUTF7(boxname);
-//    	PL_strfree(boxname);
-//    	boxname = convertedName;
+      fTokenizerAdvanced = PR_FALSE;
+      if (!PL_strcmp(fCurrentTokenPlaceHolder, CRLF))
+        fAtEndOfLine = PR_FALSE;
     }
-
-	if (!boxname)
-	{
-		if (!fServerConnection.DeathSignalReceived())
-			HandleMemoryFailure();
-	}
-	else
-	{
-		NS_ASSERTION(boxSpec->connection, "box spec has null connection");
-		NS_ASSERTION(boxSpec->connection->GetCurrentUrl(), "box spec has connection with null url");
-		//boxSpec->hostName = nsnull;
-		//if (boxSpec->connection && boxSpec->connection->GetCurrentUrl())
-		boxSpec->connection->GetCurrentUrl()->AllocateCanonicalPath(boxname, boxSpec->hierarchySeparator, &boxSpec->allocatedPathName);
-		nsIURI * aURL = nsnull;
-		boxSpec->connection->GetCurrentUrl()->QueryInterface(NS_GET_IID(nsIURI), (void **) &aURL);
-		if (aURL) {
-            nsCAutoString host;
-			aURL->GetHost(host);
-            boxSpec->hostName = ToNewCString(host);
-        }
-		NS_IF_RELEASE(aURL);
-        if (boxname)
-            PL_strfree( boxname);
-		// storage for the boxSpec is now owned by server connection
-		fServerConnection.DiscoverMailboxSpec(boxSpec);
-		
-		// if this was cancelled by the user,then we sure don't want to
-		// send more mailboxes their way
-		if (fServerConnection.GetConnectionStatus() < 0)
-			SetConnected(PR_FALSE);
-	}
+    fNextToken = GetNextToken();
+  }
+  
+  if (boxname && fHostSessionList)
+  {
+    // should the namespace check go before or after the Utf7 conversion?
+    fHostSessionList->SetNamespaceHierarchyDelimiterFromMailboxForHost(
+      serverKey, boxname, boxSpec->hierarchySeparator);
+    
+    
+    nsIMAPNamespace *ns = nsnull;
+    fHostSessionList->GetNamespaceForMailboxForHost(serverKey, boxname, ns);
+    if (ns)
+    {
+      switch (ns->GetType())
+      {
+      case kPersonalNamespace:
+        boxSpec->box_flags |= kPersonalMailbox;
+        break;
+      case kPublicNamespace:
+        boxSpec->box_flags |= kPublicMailbox;
+        break;
+      case kOtherUsersNamespace:
+        boxSpec->box_flags |= kOtherUsersMailbox;
+        break;
+      default:	// (kUnknownNamespace)
+        break;
+      }
+      boxSpec->namespaceForFolder = ns;
+    }
+    
+    //    	char *convertedName =
+    //            fServerConnection.CreateUtf7ConvertedString(boxname, PR_FALSE);
+    //		PRUnichar *unicharName;
+    //        unicharName = fServerConnection.CreatePRUnicharStringFromUTF7(boxname);
+    //    	PL_strfree(boxname);
+    //    	boxname = convertedName;
+  }
+  
+  if (!boxname)
+  {
+    if (!fServerConnection.DeathSignalReceived())
+      HandleMemoryFailure();
+  }
+  else
+  {
+    NS_ASSERTION(boxSpec->connection, "box spec has null connection");
+    NS_ASSERTION(boxSpec->connection->GetCurrentUrl(), "box spec has connection with null url");
+    //boxSpec->hostName = nsnull;
+    //if (boxSpec->connection && boxSpec->connection->GetCurrentUrl())
+    boxSpec->connection->GetCurrentUrl()->AllocateCanonicalPath(boxname, boxSpec->hierarchySeparator, &boxSpec->allocatedPathName);
+    nsIURI * aURL = nsnull;
+    boxSpec->connection->GetCurrentUrl()->QueryInterface(NS_GET_IID(nsIURI), (void **) &aURL);
+    if (aURL) {
+      nsCAutoString host;
+      aURL->GetHost(host);
+      boxSpec->hostName = ToNewCString(host);
+    }
+    NS_IF_RELEASE(aURL);
+    if (boxname)
+      PL_strfree( boxname);
+    // storage for the boxSpec is now owned by server connection
+    fServerConnection.DiscoverMailboxSpec(boxSpec);
+    
+    // if this was cancelled by the user,then we sure don't want to
+    // send more mailboxes their way
+    if (fServerConnection.GetConnectionStatus() < 0)
+      SetConnected(PR_FALSE);
+  }
 }
 
 
@@ -1199,13 +1199,10 @@ void nsImapServerResponseParser::msg_fetch()
 					char uidString[100];
 					sprintf(uidString, "%ld", (long)CurrentResponseUID());
 					
-					if (!fZeroLengthMessageUidString.Length())
-						fZeroLengthMessageUidString = uidString;
-					else
-					{
+					if (!fZeroLengthMessageUidString.IsEmpty())
 						fZeroLengthMessageUidString += ",";
-						fZeroLengthMessageUidString += uidString;
-					}
+
+                    fZeroLengthMessageUidString += uidString;
 				}
 				
 				// if this token ends in ')', then it is the last token
@@ -1327,11 +1324,11 @@ typedef enum _envelopeItemType
 
 typedef struct 
 {
-	const char *name;
+	const char * name;
 	envelopeItemType type;
 } envelopeItem;
 
-static envelopeItem EnvelopeTable[] =
+static const envelopeItem EnvelopeTable[] =
 {
 	{"Date", envelopeString},
 	{"Subject", envelopeString},
@@ -1379,7 +1376,7 @@ void nsImapServerResponseParser::envelope_data()
 				nsCAutoString address;
 				parse_address(address);
 				headerLine += address;
-				if (address.Length() == 0)
+				if (address.IsEmpty())
 					headerNonNil = PR_FALSE;
 			}
 			if (headerNonNil)
@@ -2620,93 +2617,93 @@ void nsImapServerResponseParser::ResetCapabilityFlag()
 // returns PR_TRUE if this is the last chunk and we should close the stream
 PRBool nsImapServerResponseParser::msg_fetch_literal(PRBool chunk, PRInt32 origin)
 {
-	numberOfCharsInThisChunk = atoi(fNextToken + 1); // might be the whole message
-	charsReadSoFar = 0;
-	static PRBool lastCRLFwasCRCRLF = PR_FALSE;
-
-	PRBool lastChunk = !chunk || (origin + numberOfCharsInThisChunk >= fTotalDownloadSize);
-
-	nsImapAction imapAction; 
-	fServerConnection.GetCurrentUrl()->GetImapAction(&imapAction);
-	if (!lastCRLFwasCRCRLF && 
-		fServerConnection.GetIOTunnellingEnabled() && 
-		(numberOfCharsInThisChunk > fServerConnection.GetTunnellingThreshold()) &&
-		(imapAction != nsIImapUrl::nsImapOnlineToOfflineCopy) &&
-		(imapAction != nsIImapUrl::nsImapOnlineToOfflineMove))
-	{
-		// One day maybe we'll make this smarter and know how to handle CR/LF boundaries across tunnels.
-		// For now, we won't, even though it might not be too hard, because it is very rare and will add
-		// some complexity.
-		charsReadSoFar = fServerConnection.OpenTunnel(numberOfCharsInThisChunk);
-	}
-
-	// If we opened a tunnel, finish everything off here.  Otherwise, get everything here.
-	// (just like before)
-
-	while (ContinueParse() && (charsReadSoFar < numberOfCharsInThisChunk))
-	{
-		AdvanceToNextLine();
-		if (ContinueParse())
-		{
-			if (lastCRLFwasCRCRLF && (*fCurrentLine == nsCRT::CR))
-			{
-				char *usableCurrentLine = PL_strdup(fCurrentLine + 1);
-				PR_Free(fCurrentLine);
-				fCurrentLine = usableCurrentLine;
-			}
-
-			if (ContinueParse())
-			{
-				charsReadSoFar += strlen(fCurrentLine);
-				if (!fDownloadingHeaders && fCurrentCommandIsSingleMessageFetch)
-				{
-					fServerConnection.ProgressEventFunctionUsingId(IMAP_DOWNLOADING_MESSAGE);
-					if (fTotalDownloadSize > 0)
-						fServerConnection.PercentProgressUpdateEvent(0,charsReadSoFar + origin, fTotalDownloadSize);
-				}
-				if (charsReadSoFar > numberOfCharsInThisChunk)
-				{	// this is rare.  If this msg ends in the middle of a line then only display the actual message.
-					char *displayEndOfLine = (fCurrentLine + strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk));
-					char saveit = *displayEndOfLine;
-					*displayEndOfLine = 0;
-					fServerConnection.HandleMessageDownLoadLine(fCurrentLine, !lastChunk);
-					*displayEndOfLine = saveit;
-					lastCRLFwasCRCRLF = (*(displayEndOfLine - 1) == nsCRT::CR);
-				}
-				else
-				{
-					lastCRLFwasCRCRLF = (*(fCurrentLine + strlen(fCurrentLine) - 1) == nsCRT::CR);
-					fServerConnection.HandleMessageDownLoadLine(fCurrentLine, !lastChunk && (charsReadSoFar == numberOfCharsInThisChunk));
-				}
-			}
-		}
-	}
-
-	// This would be a good thing to log.
-	if (lastCRLFwasCRCRLF)
-		PR_LOG(IMAP, PR_LOG_ALWAYS, ("PARSER: CR/LF fell on chunk boundary."));
-	
-	if (ContinueParse())
-	{
-		if (charsReadSoFar > numberOfCharsInThisChunk)
-		{
-			// move the lexical analyzer state to the end of this message because this message
-			// fetch ends in the middle of this line.
-			//fCurrentTokenPlaceHolder = fLineOfTokens + nsCRT::strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk);
-			AdvanceTokenizerStartingPoint(strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk));
-			fNextToken = GetNextToken();
-		}
-		else
-		{
-			skip_to_CRLF();
-			fNextToken = GetNextToken();
-		}
-	}
-	else
-	{
-		lastCRLFwasCRCRLF = PR_FALSE;
-	}
-	return lastChunk;
+  numberOfCharsInThisChunk = atoi(fNextToken + 1); // might be the whole message
+  charsReadSoFar = 0;
+  static PRBool lastCRLFwasCRCRLF = PR_FALSE;
+  
+  PRBool lastChunk = !chunk || (origin + numberOfCharsInThisChunk >= fTotalDownloadSize);
+  
+  nsImapAction imapAction; 
+  fServerConnection.GetCurrentUrl()->GetImapAction(&imapAction);
+  if (!lastCRLFwasCRCRLF && 
+    fServerConnection.GetIOTunnellingEnabled() && 
+    (numberOfCharsInThisChunk > fServerConnection.GetTunnellingThreshold()) &&
+    (imapAction != nsIImapUrl::nsImapOnlineToOfflineCopy) &&
+    (imapAction != nsIImapUrl::nsImapOnlineToOfflineMove))
+  {
+    // One day maybe we'll make this smarter and know how to handle CR/LF boundaries across tunnels.
+    // For now, we won't, even though it might not be too hard, because it is very rare and will add
+    // some complexity.
+    charsReadSoFar = fServerConnection.OpenTunnel(numberOfCharsInThisChunk);
+  }
+  
+  // If we opened a tunnel, finish everything off here.  Otherwise, get everything here.
+  // (just like before)
+  
+  while (ContinueParse() && (charsReadSoFar < numberOfCharsInThisChunk))
+  {
+    AdvanceToNextLine();
+    if (ContinueParse())
+    {
+      if (lastCRLFwasCRCRLF && (*fCurrentLine == nsCRT::CR))
+      {
+        char *usableCurrentLine = PL_strdup(fCurrentLine + 1);
+        PR_Free(fCurrentLine);
+        fCurrentLine = usableCurrentLine;
+      }
+      
+      if (ContinueParse())
+      {
+        charsReadSoFar += strlen(fCurrentLine);
+        if (!fDownloadingHeaders && fCurrentCommandIsSingleMessageFetch)
+        {
+          fServerConnection.ProgressEventFunctionUsingId(IMAP_DOWNLOADING_MESSAGE);
+          if (fTotalDownloadSize > 0)
+            fServerConnection.PercentProgressUpdateEvent(0,charsReadSoFar + origin, fTotalDownloadSize);
+        }
+        if (charsReadSoFar > numberOfCharsInThisChunk)
+        {	// this is rare.  If this msg ends in the middle of a line then only display the actual message.
+          char *displayEndOfLine = (fCurrentLine + strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk));
+          char saveit = *displayEndOfLine;
+          *displayEndOfLine = 0;
+          fServerConnection.HandleMessageDownLoadLine(fCurrentLine, !lastChunk);
+          *displayEndOfLine = saveit;
+          lastCRLFwasCRCRLF = (*(displayEndOfLine - 1) == nsCRT::CR);
+        }
+        else
+        {
+          lastCRLFwasCRCRLF = (*(fCurrentLine + strlen(fCurrentLine) - 1) == nsCRT::CR);
+          fServerConnection.HandleMessageDownLoadLine(fCurrentLine, !lastChunk && (charsReadSoFar == numberOfCharsInThisChunk));
+        }
+      }
+    }
+  }
+  
+  // This would be a good thing to log.
+  if (lastCRLFwasCRCRLF)
+    PR_LOG(IMAP, PR_LOG_ALWAYS, ("PARSER: CR/LF fell on chunk boundary."));
+  
+  if (ContinueParse())
+  {
+    if (charsReadSoFar > numberOfCharsInThisChunk)
+    {
+      // move the lexical analyzer state to the end of this message because this message
+      // fetch ends in the middle of this line.
+      //fCurrentTokenPlaceHolder = fLineOfTokens + nsCRT::strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk);
+      AdvanceTokenizerStartingPoint(strlen(fCurrentLine) - (charsReadSoFar - numberOfCharsInThisChunk));
+      fNextToken = GetNextToken();
+    }
+    else
+    {
+      skip_to_CRLF();
+      fNextToken = GetNextToken();
+    }
+  }
+  else
+  {
+    lastCRLFwasCRCRLF = PR_FALSE;
+  }
+  return lastChunk;
 }
 
 PRBool nsImapServerResponseParser::CurrentFolderReadOnly()

@@ -107,7 +107,7 @@ nsHTMLContentSerializer::~nsHTMLContentSerializer()
 
 NS_IMETHODIMP 
 nsHTMLContentSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
-                              nsIAtom* aCharSet, PRBool aIsCopying)
+                              const char* aCharSet, PRBool aIsCopying)
 {
   mFlags = aFlags;
   if (!aWrapColumn) {
@@ -509,12 +509,10 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
   // See HTML 4.01 spec, "Appendix B.2.1 Non-ASCII characters in URI attribute values"
   nsCOMPtr<nsITextToSubURI> textToSubURI;
   nsAutoString uri(aURI); // in order to use FindCharInSet(), IsASCII()
-  nsXPIDLCString documentCharset;
   nsresult rv = NS_OK;
 
 
-  if (mCharSet && !uri.IsASCII()) {
-    mCharSet->ToUTF8String(documentCharset);
+  if (!mCharSet.IsEmpty() && !uri.IsASCII()) {
     textToSubURI = do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
   }
@@ -529,7 +527,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
   while ((end = uri.FindCharInSet("%#;/?:@&=+$,", start)) != -1) {
     part = Substring(aURI, start, (end-start));
     if (textToSubURI && !part.IsASCII()) {
-      rv = textToSubURI->ConvertAndEscape(documentCharset, part.get(), getter_Copies(escapedURI));
+      rv = textToSubURI->ConvertAndEscape(mCharSet.get(), part.get(), getter_Copies(escapedURI));
       NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
@@ -547,7 +545,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
     // Escape the remaining part.
     part = Substring(aURI, start, aURI.Length()-start);
     if (textToSubURI) {
-      rv = textToSubURI->ConvertAndEscape(documentCharset, part.get(), getter_Copies(escapedURI));
+      rv = textToSubURI->ConvertAndEscape(mCharSet.get(), part.get(), getter_Copies(escapedURI));
       NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
@@ -572,13 +570,13 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
 
   aContent->GetAttrCount(count);
 
-  NS_NAMED_LITERAL_STRING(mozStr1, "_moz");
-  
+  NS_NAMED_LITERAL_STRING(_mozStr, "_moz");
+
   for (index = 0; index < count; index++) {
     aContent->GetAttrNameAt(index, 
-                            namespaceID,
-                            *getter_AddRefs(attrName),
-                            *getter_AddRefs(attrPrefix));
+                            &namespaceID,
+                            getter_AddRefs(attrName),
+                            getter_AddRefs(attrPrefix));
 
     // Filter out any attribute starting with [-|_]moz
     const char* sharedName;
@@ -593,9 +591,8 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     // Filter out special case of <br type="_moz"> or <br _moz*>,
     // used by the editor.  Bug 16988.  Yuck.
     //
-    if ((aTagName == nsHTMLAtoms::br) &&
-        (attrName.get() == nsHTMLAtoms::type) &&
-        (mozStr1.Equals(Substring(valueStr, 0, mozStr1.Length())))) {
+    if (aTagName == nsHTMLAtoms::br && attrName == nsHTMLAtoms::type &&
+        StringBeginsWith(valueStr, _mozStr)) {
       continue;
     }
     
@@ -622,13 +619,10 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
         // but that gets more complicated since we have to
         // search the tag list for CODEBASE as well.
         // For now, just leave them relative.
-        nsCOMPtr<nsIDocument> document;
-        aContent->GetDocument(*getter_AddRefs(document));
+        nsIDocument* document = aContent->GetDocument();
         if (document) {
           nsCOMPtr<nsIURI> uri;
-          document->GetBaseURL(*getter_AddRefs(uri));
-          if (!uri)
-            document->GetDocumentURL(getter_AddRefs(uri));
+          document->GetBaseURL(getter_AddRefs(uri));
           if (uri) {
             nsAutoString absURI;
             rv = NS_MakeAbsoluteURI(absURI, valueStr, uri);
@@ -683,7 +677,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   PRBool hasDirtyAttr = HasDirtyAttr(content);
 
   nsCOMPtr<nsIAtom> name;
-  content->GetTag(*getter_AddRefs(name));
+  content->GetTag(getter_AddRefs(name));
 
   if (name.get() == nsHTMLAtoms::br && mPreLevel > 0
       && (mFlags & nsIDocumentEncoder::OutputNoFormattingInPre)) {
@@ -797,7 +791,7 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   PRBool hasDirtyAttr = HasDirtyAttr(content);
 
   nsCOMPtr<nsIAtom> name;
-  content->GetTag(*getter_AddRefs(name));
+  content->GetTag(getter_AddRefs(name));
 
   if ((name.get() == nsHTMLAtoms::pre) ||
       (name.get() == nsHTMLAtoms::script) ||
@@ -816,16 +810,13 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
     }
   }
   
-  nsAutoString nameStr;
-  name->ToString(nameStr);
-
   nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
 
   if (parserService && (name.get() != nsHTMLAtoms::style)) {
     PRBool isContainer;
     PRInt32 id;
 
-    parserService->HTMLStringTagToId(nameStr, &id);
+    parserService->HTMLAtomTagToId(name, &id);
     parserService->IsContainer(id, isContainer);
     if (!isContainer) return NS_OK;
   }
@@ -842,6 +833,9 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   }
 
   EndIndentation(name, hasDirtyAttr, aStr);
+
+  nsAutoString nameStr;
+  name->ToString(nameStr);
 
   AppendToString(kEndTag, aStr);
   AppendToString(nameStr.get(), -1, aStr);
@@ -887,10 +881,10 @@ nsHTMLContentSerializer::AppendToString(const PRUnichar aChar,
   aOutputStr.Append(aChar);
 }
 
-static PRUint16 kValNBSP = 160;
-static const char* kEntityNBSP = "nbsp";
+static const PRUint16 kValNBSP = 160;
+static const char kEntityNBSP[] = "nbsp";
 
-static PRUint16 kGTVal = 62;
+static const PRUint16 kGTVal = 62;
 static const char* kEntities[] = {
   "", "", "", "", "", "", "", "", "", "",
   "", "", "", "", "", "", "", "", "", "",
@@ -1078,12 +1072,10 @@ nsHTMLContentSerializer::LineBreakBeforeOpen(nsIAtom* aName,
       nsContentUtils::GetParserServiceWeakRef();
     
     if (parserService) {
-      nsAutoString str;
-      aName->ToString(str);
       PRBool res;
       PRInt32 id;
 
-      parserService->HTMLStringTagToId(str, &id);
+      parserService->HTMLAtomTagToId(aName, &id);
       parserService->IsBlock(id, res);
       return res;
     }
@@ -1181,12 +1173,10 @@ nsHTMLContentSerializer::LineBreakAfterClose(nsIAtom* aName,
       nsContentUtils::GetParserServiceWeakRef();
     
     if (parserService) {
-      nsAutoString str;
-      aName->ToString(str);
       PRBool res;
       PRInt32 id;
 
-      parserService->HTMLStringTagToId(str, &id);
+      parserService->HTMLAtomTagToId(aName, &id);
       parserService->IsBlock(id, res);
       return res;
     }

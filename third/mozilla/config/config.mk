@@ -505,11 +505,11 @@ NFSPWD		= $(CONFIG_TOOLS)/nfspwd
 PURIFY		= purify $(PURIFYOPTIONS)
 QUANTIFY	= quantify $(QUANTIFYOPTIONS)
 ifdef CROSS_COMPILE
-XPIDL_COMPILE 	= $(DIST)/host/bin/host_xpidl$(BIN_SUFFIX)
-XPIDL_LINK	= $(DIST)/host/bin/host_xpt_link$(BIN_SUFFIX)
+XPIDL_COMPILE 	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpidl$(BIN_SUFFIX)
+XPIDL_LINK	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpt_link$(BIN_SUFFIX)
 else
-XPIDL_COMPILE 	= $(DIST)/bin/xpidl$(BIN_SUFFIX)
-XPIDL_LINK	= $(DIST)/bin/xpt_link$(BIN_SUFFIX)
+XPIDL_COMPILE 	= $(CYGWIN_WRAPPER) $(DIST)/bin/xpidl$(BIN_SUFFIX)
+XPIDL_LINK	= $(CYGWIN_WRAPPER) $(DIST)/bin/xpt_link$(BIN_SUFFIX)
 endif
 
 REQ_INCLUDES	= $(foreach d,$(REQUIRES),-I$(DIST)/include/$d)
@@ -667,10 +667,10 @@ endif
 
 ifdef MOZ_NATIVE_MAKEDEPEND
 MKDEPEND_DIR	=
-MKDEPEND	= $(MOZ_NATIVE_MAKEDEPEND)
+MKDEPEND	= $(CYGWIN_WRAPPER) $(MOZ_NATIVE_MAKEDEPEND)
 else
 MKDEPEND_DIR	= $(CONFIG_TOOLS)/mkdepend
-MKDEPEND	= $(MKDEPEND_DIR)/mkdepend$(BIN_SUFFIX)
+MKDEPEND	= $(CYGWIN_WRAPPER) $(MKDEPEND_DIR)/mkdepend$(BIN_SUFFIX)
 endif
 
 # Set link flags according to whether we want a console.
@@ -691,6 +691,18 @@ BIN_FLAGS	:= -Zlinker /PM:PM -Zlinker /Stack:0x30000
 endif
 ifeq ($(OS_ARCH),WINNT)
 WIN32_EXE_LDFLAGS	+= /SUBSYSTEM:WINDOWS
+endif
+endif
+endif
+
+# Flags needed to link against the component library
+ifdef MOZ_COMPONENTLIB
+MOZ_COMPONENTLIB_EXTRA_DSO_LIBS = mozcomps xpcom_compat
+
+# Tell the linker where NSS is, if we're building crypto
+ifeq ($(OS_ARCH),Darwin)
+ifeq (,$(findstring crypto,$(MOZ_META_COMPONENTS)))
+MOZ_COMPONENTLIB_EXTRA_LIBS = $(foreach library, $(patsubst -l%, $(LIB_PREFIX)%$(DLL_SUFFIX), $(filter -l%, $(NSS_LIBS))), -dylib_file @executable_path/$(library):$(DIST)/bin/$(library))
 endif
 endif
 endif
@@ -759,3 +771,9 @@ endif # WINNT
 
 # Use nsinstall in copy mode to install files on the system
 SYSINSTALL	= $(NSINSTALL) -t
+
+ifeq ($(OS_ARCH),WINNT)
+ifneq (,$(CYGDRIVE_MOUNT))
+export CYGDRIVE_MOUNT
+endif
+endif

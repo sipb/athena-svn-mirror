@@ -111,7 +111,7 @@ static const nsModuleComponentInfo components[] =
     NS_FILEVIEW_CONTRACTID, nsFileViewConstructor }
 };
 
-NS_IMPL_NSGETMODULE(nsFileViewModule, components);
+NS_IMPL_NSGETMODULE(nsFileViewModule, components)
 
 
 nsFileView::nsFileView() :
@@ -133,8 +133,8 @@ nsFileView::~nsFileView()
 nsresult
 nsFileView::Init()
 {
-  mDirectoryAtom = dont_AddRef(NS_NewAtom("directory"));
-  mFileAtom = dont_AddRef(NS_NewAtom("file"));
+  mDirectoryAtom = do_GetAtom("directory");
+  mFileAtom = do_GetAtom("file");
   NS_NewISupportsArray(getter_AddRefs(mFileList));
   NS_NewISupportsArray(getter_AddRefs(mDirList));
   NS_NewISupportsArray(getter_AddRefs(mFilteredFiles));
@@ -145,7 +145,7 @@ nsFileView::Init()
 
 // nsISupports implementation
 
-NS_IMPL_ISUPPORTS2(nsFileView, nsITreeView, nsIFileView);
+NS_IMPL_ISUPPORTS2(nsFileView, nsITreeView, nsIFileView)
 
 // nsIFileView implementation
 

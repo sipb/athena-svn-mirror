@@ -340,8 +340,7 @@ FinishEventHandlerMap()
 
 static PRBool HasMutationListeners(nsIContent* aContent, PRUint32 aType)
 {
-  nsCOMPtr<nsIDocument> doc;
-  aContent->GetDocument(*getter_AddRefs(doc));
+  nsIDocument* doc = aContent->GetDocument();
   if (!doc)
     return PR_FALSE;
 
@@ -361,10 +360,9 @@ static PRBool HasMutationListeners(nsIContent* aContent, PRUint32 aType)
 
   // We know a mutation listener is registered, but it might not
   // be in our chain.  Check quickly to see.
-  nsCOMPtr<nsIContent> curr = aContent;
   nsCOMPtr<nsIEventListenerManager> manager;
 
-  while (curr) {
+  for (nsIContent* curr = aContent; curr; curr = curr->GetParent()) {
     nsCOMPtr<nsIDOMEventReceiver> rec(do_QueryInterface(curr));
     if (rec) {
       rec->GetListenerManager(getter_AddRefs(manager));
@@ -375,9 +373,6 @@ static PRBool HasMutationListeners(nsIContent* aContent, PRUint32 aType)
           return PR_TRUE;
       }
     }
-
-    nsCOMPtr<nsIContent> prev = curr;
-    prev->GetParent(*getter_AddRefs(curr));
   }
 
   nsCOMPtr<nsIDOMEventReceiver> rec(do_QueryInterface(doc));
@@ -404,23 +399,6 @@ static PRBool HasMutationListeners(nsIContent* aContent, PRUint32 aType)
 
   return PR_FALSE;
 }
-
-//----------------------------------------------------------------------
-
-static nsChangeHint
-StyleHintFor(nsINodeInfo* aNodeInfo)
-{
-    nsCOMPtr<nsIAtom> tagName;
-    aNodeInfo->GetNameAtom(*getter_AddRefs(tagName));
-    if ((tagName == nsXULAtoms::broadcaster) ||
-        (tagName == nsXULAtoms::command) ||
-        (tagName == nsXULAtoms::key)) {
-        return NS_STYLE_HINT_NONE;
-    }
-
-    return NS_STYLE_HINT_UNKNOWN;
-}
-
 
 //----------------------------------------------------------------------
 
@@ -590,8 +568,8 @@ nsXULElement::Create(nsINodeInfo *aNodeInfo, nsIContent** aResult)
 //----------------------------------------------------------------------
 // nsISupports interface
 
-NS_IMPL_ADDREF(nsXULElement);
-NS_IMPL_RELEASE(nsXULElement);
+NS_IMPL_ADDREF(nsXULElement)
+NS_IMPL_RELEASE(nsXULElement)
 
 NS_IMETHODIMP
 nsXULElement::QueryInterface(REFNSIID iid, void** result)
@@ -747,7 +725,7 @@ nsXULElement::GetChildNodes(nsIDOMNodeList** aChildNodes)
 
     for (PRInt32 i = 0; i < count; ++i) {
         nsCOMPtr<nsIContent> child;
-        rv = ChildAt(i, *getter_AddRefs(child));
+        rv = ChildAt(i, getter_AddRefs(child));
         NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get child");
         if (NS_FAILED(rv))
             break;
@@ -775,7 +753,7 @@ nsXULElement::GetFirstChild(nsIDOMNode** aFirstChild)
 {
     nsresult rv;
     nsCOMPtr<nsIContent> child;
-    rv = ChildAt(0, *getter_AddRefs(child));
+    rv = ChildAt(0, getter_AddRefs(child));
 
     if (child) {
         rv = CallQueryInterface(child, aFirstChild);
@@ -798,7 +776,7 @@ nsXULElement::GetLastChild(nsIDOMNode** aLastChild)
 
     if (NS_SUCCEEDED(rv) && (count != 0)) {
         nsCOMPtr<nsIContent> child;
-        rv = ChildAt(count - 1, *getter_AddRefs(child));
+        rv = ChildAt(count - 1, getter_AddRefs(child));
 
         NS_ASSERTION(child, "no child");
 
@@ -822,7 +800,7 @@ nsXULElement::GetPreviousSibling(nsIDOMNode** aPreviousSibling)
         mParent->IndexOf(NS_STATIC_CAST(nsIStyledContent*, this), pos);
         if (pos > 0) {
             nsCOMPtr<nsIContent> prev;
-            mParent->ChildAt(--pos, *getter_AddRefs(prev));
+            mParent->ChildAt(--pos, getter_AddRefs(prev));
             if (prev) {
                 nsresult rv = CallQueryInterface(prev, aPreviousSibling);
                 NS_ASSERTION(*aPreviousSibling, "not a DOM node");
@@ -846,7 +824,7 @@ nsXULElement::GetNextSibling(nsIDOMNode** aNextSibling)
         mParent->IndexOf(NS_STATIC_CAST(nsIStyledContent*, this), pos);
         if (pos > -1) {
             nsCOMPtr<nsIContent> next;
-            mParent->ChildAt(++pos, *getter_AddRefs(next));
+            mParent->ChildAt(++pos, getter_AddRefs(next));
             if (next) {
                 nsresult res = CallQueryInterface(next, aNextSibling);
                 NS_ASSERTION(*aNextSibling, "not a DOM Node");
@@ -900,8 +878,7 @@ nsXULElement::GetOwnerDocument(nsIDOMDocument** aOwnerDocument)
     if (mDocument) {
         return CallQueryInterface(mDocument, aOwnerDocument);
     }
-    nsCOMPtr<nsIDocument> doc;
-    NodeInfo()->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = NodeInfo()->GetDocument();
     if (doc) {
         return CallQueryInterface(doc, aOwnerDocument);
     }
@@ -929,7 +906,7 @@ nsXULElement::SetPrefix(const nsAString& aPrefix)
 {
     // XXX: Validate the prefix string!
 
-    nsINodeInfo *newNodeInfo = nsnull;
+    nsCOMPtr<nsINodeInfo> newNodeInfo;
     nsCOMPtr<nsIAtom> prefix;
 
     if (!aPrefix.IsEmpty() && !DOMStringIsNull(aPrefix)) {
@@ -940,7 +917,8 @@ nsXULElement::SetPrefix(const nsAString& aPrefix)
     nsresult rv = EnsureSlots();
     NS_ENSURE_SUCCESS(rv, rv);
 
-    rv = mSlots->mNodeInfo->PrefixChanged(prefix, newNodeInfo);
+    rv = mSlots->mNodeInfo->PrefixChanged(prefix,
+                                          getter_AddRefs(newNodeInfo));
     NS_ENSURE_SUCCESS(rv, rv);
 
     NS_ASSERTION(newNodeInfo, "trying to assign null nodeinfo!");
@@ -983,9 +961,7 @@ nsXULElement::InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,
 
     // First, check to see if the content was already parented
     // somewhere. If so, remove it.
-    nsCOMPtr<nsIContent> oldparent;
-    rv = newcontent->GetParent(*getter_AddRefs(oldparent));
-    if (NS_FAILED(rv)) return rv;
+    nsCOMPtr<nsIContent> oldparent = newcontent->GetParent();
 
     if (oldparent) {
         PRInt32 oldindex;
@@ -1258,10 +1234,10 @@ nsXULElement::GetTagName(nsAString& aTagName)
 }
 
 NS_IMETHODIMP
-nsXULElement::GetNodeInfo(nsINodeInfo*& aResult) const
+nsXULElement::GetNodeInfo(nsINodeInfo** aResult) const
 {
-    aResult = NodeInfo();
-    NS_IF_ADDREF(aResult);
+    *aResult = NodeInfo();
+    NS_IF_ADDREF(*aResult);
 
     return NS_OK;
 }
@@ -1270,19 +1246,16 @@ NS_IMETHODIMP
 nsXULElement::GetAttribute(const nsAString& aName,
                            nsAString& aReturn)
 {
-    nsresult rv;
-    PRInt32 nameSpaceID;
-    nsCOMPtr<nsIAtom> nameAtom;
     nsCOMPtr<nsINodeInfo> nodeInfo;
-
-    if (NS_FAILED(rv = NormalizeAttrString(aName,
-                                           *getter_AddRefs(nodeInfo)))) {
+    nsresult rv = NormalizeAttrString(aName,
+                                      getter_AddRefs(nodeInfo));
+    if (NS_FAILED(rv)) {
         NS_WARNING("unable to normalize attribute name");
         return rv;
     }
 
-    nodeInfo->GetNameAtom(*getter_AddRefs(nameAtom));
-    nodeInfo->GetNamespaceID(nameSpaceID);
+    nsCOMPtr<nsIAtom> nameAtom = nodeInfo->GetNameAtom();
+    PRInt32 nameSpaceID = nodeInfo->GetNamespaceID();
 
     GetAttr(nameSpaceID, nameAtom, aReturn);
     return NS_OK;
@@ -1297,7 +1270,7 @@ nsXULElement::SetAttribute(const nsAString& aName,
 
     nsCOMPtr<nsINodeInfo> ni;
 
-    rv = NormalizeAttrString(aName, *getter_AddRefs(ni));
+    rv = NormalizeAttrString(aName, getter_AddRefs(ni));
     NS_ASSERTION(NS_SUCCEEDED(rv), "unable to normalize attribute name");
 
     if (NS_SUCCEEDED(rv)) {
@@ -1312,18 +1285,14 @@ nsXULElement::SetAttribute(const nsAString& aName,
 NS_IMETHODIMP
 nsXULElement::RemoveAttribute(const nsAString& aName)
 {
-    nsresult rv;
-
-    PRInt32 nameSpaceID;
-    nsCOMPtr<nsIAtom> tag;
     nsCOMPtr<nsINodeInfo> ni;
 
-    rv = NormalizeAttrString(aName, *getter_AddRefs(ni));
+    nsresult rv = NormalizeAttrString(aName, getter_AddRefs(ni));
     NS_ASSERTION(NS_SUCCEEDED(rv), "unable to parse attribute name");
 
     if (NS_SUCCEEDED(rv)) {
-        ni->GetNameAtom(*getter_AddRefs(tag));
-        ni->GetNamespaceID(nameSpaceID);
+        nsCOMPtr<nsIAtom> tag = ni->GetNameAtom();
+        PRInt32 nameSpaceID = ni->GetNamespaceID();
 
         rv = UnsetAttr(nameSpaceID, tag, PR_TRUE);
         NS_ASSERTION(NS_SUCCEEDED(rv), "unable to remove attribute");
@@ -1415,7 +1384,7 @@ nsXULElement::GetAttributeNS(const nsAString& aNamespaceURI,
     PRInt32 nsid;
 
     nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
-                                                          nsid);
+                                                          &nsid);
 
     if (nsid == kNameSpaceID_Unknown) {
         // Unkonwn namespace means no attr...
@@ -1435,11 +1404,11 @@ nsXULElement::SetAttributeNS(const nsAString& aNamespaceURI,
                              const nsAString& aValue)
 {
     nsCOMPtr<nsINodeInfoManager> nimgr;
-    nsresult rv = NodeInfo()->GetNodeInfoManager(*getter_AddRefs(nimgr));
+    nsresult rv = NodeInfo()->GetNodeInfoManager(getter_AddRefs(nimgr));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsINodeInfo> ni;
-    rv = nimgr->GetNodeInfo(aQualifiedName, aNamespaceURI, *getter_AddRefs(ni));
+    rv = nimgr->GetNodeInfo(aQualifiedName, aNamespaceURI, getter_AddRefs(ni));
     NS_ENSURE_SUCCESS(rv, rv);
 
     return SetAttr(ni, aValue, PR_TRUE);
@@ -1453,7 +1422,7 @@ nsXULElement::RemoveAttributeNS(const nsAString& aNamespaceURI,
     nsCOMPtr<nsIAtom> tag = do_GetAtom(aLocalName);
 
     nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
-                                                          nameSpaceId);
+                                                          &nameSpaceId);
 
     return UnsetAttr(nameSpaceId, tag, PR_TRUE);
 }
@@ -1506,7 +1475,7 @@ nsXULElement::GetElementsByTagNameNS(const nsAString& aNamespaceURI,
 
     if (!aNamespaceURI.Equals(NS_LITERAL_STRING("*"))) {
         nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
-                                                              nameSpaceId);
+                                                              &nameSpaceId);
 
         if (nameSpaceId == kNameSpaceID_Unknown) {
             // Unknown namespace means no matches, we create an empty list...
@@ -1530,15 +1499,13 @@ nsXULElement::HasAttribute(const nsAString& aName, PRBool* aReturn)
 {
   NS_ENSURE_ARG_POINTER(aReturn);
 
-  nsCOMPtr<nsIAtom> name;
   nsCOMPtr<nsINodeInfo> ni;
-  PRInt32 nsid;
 
-  nsresult rv = NormalizeAttrString(aName, *getter_AddRefs(ni));
+  nsresult rv = NormalizeAttrString(aName, getter_AddRefs(ni));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  ni->GetNameAtom(*getter_AddRefs(name));
-  ni->GetNamespaceID(nsid);
+  nsCOMPtr<nsIAtom> name = ni->GetNameAtom();
+  PRInt32 nsid = ni->GetNamespaceID();
 
   *aReturn = HasAttr(nsid, name);
   return NS_OK;
@@ -1554,7 +1521,7 @@ nsXULElement::HasAttributeNS(const nsAString& aNamespaceURI,
     nsCOMPtr<nsIAtom> name = do_GetAtom(aLocalName);
     PRInt32 nsid;
 
-    nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI, nsid);
+    nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI, &nsid);
 
     if (nsid == kNameSpaceID_Unknown) {
         // Unkonwn namespace means no attr...
@@ -1599,38 +1566,6 @@ nsXULElement::MaybeTriggerAutoLink(nsIDocShell *aShell)
 {
   return NS_OK;
 }
-
-NS_IMETHODIMP
-nsXULElement::GetXMLBaseURI(nsIURI **aURI)
-{
-  // XXX TODO, should share the impl with nsXMLElement
-  NS_ENSURE_ARG_POINTER(aURI);
-  *aURI=nsnull;
-  if (mDocument) {
-    mDocument->GetBaseURL(*aURI);
-    if (!*aURI) {
-      mDocument->GetDocumentURL(aURI);
-    }
-  }
-  return NS_OK;
-}
-
-#if 0
-NS_IMETHODIMP
-nsXULElement::GetBaseURI(nsAString &aURI)
-{
-  // XXX TODO, should share the impl with nsXMLElement
-  aURI.Truncate();
-  nsresult rv = NS_OK;
-  if (mDocument) {
-    nsCOMPtr<nsIDOMDocument> doc(do_QueryInterface(mDocument));
-    if (doc) {
-      rv = doc->GetBaseURI(aURI);
-    }
-  }
-  return rv;
-}
-#endif
 
 //----------------------------------------------------------------------
 // nsIXULContent interface
@@ -1783,6 +1718,8 @@ nsXULElement::CompileEventHandler(nsIScriptContext* aContext,
                                   void* aTarget,
                                   nsIAtom *aName,
                                   const nsAString& aBody,
+                                  const char* aURL,
+                                  PRUint32 aLineNo,
                                   void** aHandler)
 {
     nsresult rv;
@@ -1803,7 +1740,8 @@ nsXULElement::CompileEventHandler(nsIScriptContext* aContext,
     }
 
     // Compile the event handler
-    rv = aContext->CompileEventHandler(scopeObject, aName, aBody, !scopeObject,
+    rv = aContext->CompileEventHandler(scopeObject, aName, aBody,
+                                       aURL, aLineNo, !scopeObject,
                                        aHandler);
     if (NS_FAILED(rv)) return rv;
 
@@ -1847,12 +1785,10 @@ nsXULElement::CompileEventHandler(nsIScriptContext* aContext,
 // nsIContent interface
 //
 
-NS_IMETHODIMP
-nsXULElement::GetDocument(nsIDocument*& aResult) const
+NS_IMETHODIMP_(nsIDocument*)
+nsXULElement::GetDocument() const
 {
-    aResult = mDocument;
-    NS_IF_ADDREF(aResult);
-    return NS_OK;
+    return mDocument;
 }
 
 nsresult
@@ -1862,12 +1798,10 @@ nsXULElement::AddListenerFor(nsINodeInfo *aNodeInfo,
     // If appropriate, add a popup listener and/or compile the event
     // handler. Called when we change the element's document, create a
     // new element, change an attribute's value, etc.
-    PRInt32 nameSpaceID;
-    aNodeInfo->GetNamespaceID(nameSpaceID);
+    PRInt32 nameSpaceID = aNodeInfo->GetNamespaceID();
 
     if (nameSpaceID == kNameSpaceID_None) {
-        nsCOMPtr<nsIAtom> attr;
-        aNodeInfo->GetNameAtom(*getter_AddRefs(attr));
+        nsCOMPtr<nsIAtom> attr = aNodeInfo->GetNameAtom();
 
         if (attr == nsXULAtoms::menu ||
             attr == nsXULAtoms::contextmenu ||
@@ -1986,12 +1920,10 @@ nsXULElement::SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileE
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXULElement::GetParent(nsIContent*& aResult) const
+NS_IMETHODIMP_(nsIContent*)
+nsXULElement::GetParent() const
 {
-    aResult = mParent;
-    NS_IF_ADDREF(aResult);
-    return NS_OK;
+    return mParent;
 }
 
 NS_IMETHODIMP
@@ -1999,8 +1931,7 @@ nsXULElement::SetParent(nsIContent* aParent)
 {
     mParent = aParent; // no refcount
     if (aParent) {
-      nsCOMPtr<nsIContent> bindingPar;
-      aParent->GetBindingParent(getter_AddRefs(bindingPar));
+      nsIContent* bindingPar = aParent->GetBindingParent();
       if (bindingPar)
         SetBindingParent(bindingPar);
     }
@@ -2041,17 +1972,17 @@ nsXULElement::ChildCount(PRInt32& aResult) const
 }
 
 NS_IMETHODIMP
-nsXULElement::ChildAt(PRInt32 aIndex, nsIContent*& aResult) const
+nsXULElement::ChildAt(PRInt32 aIndex, nsIContent** aResult) const
 {
     nsresult rv;
     if (NS_FAILED(rv = EnsureContentsGenerated())) {
-        aResult = nsnull;
+        *aResult = nsnull;
         return rv;
     }
 
     nsIContent* content = NS_STATIC_CAST(nsIContent*, mChildren.SafeElementAt(aIndex));
-    aResult = content;
-    NS_IF_ADDREF(aResult);
+    *aResult = content;
+    NS_IF_ADDREF(*aResult);
 
     return NS_OK;
 }
@@ -2234,7 +2165,7 @@ nsXULElement::RemoveChildAt(PRInt32 aIndex, PRBool aNotify)
     // anything else = index to re-set as current
     PRInt32 newCurrentIndex = -1;
 
-    oldKid->GetTag(*getter_AddRefs(tag));
+    oldKid->GetTag(getter_AddRefs(tag));
     if (tag == nsXULAtoms::listitem) {
       // This is the nasty case. We have (potentially) a slew of selected items
       // and cells going away.
@@ -2337,20 +2268,25 @@ nsXULElement::RemoveChildAt(PRInt32 aIndex, PRBool aNotify)
 }
 
 NS_IMETHODIMP
-nsXULElement::GetNameSpaceID(PRInt32& aNameSpaceID) const
+nsXULElement::GetNameSpaceID(PRInt32* aNameSpaceID) const
 {
-    return NodeInfo()->GetNamespaceID(aNameSpaceID);
+    *aNameSpaceID = NodeInfo()->GetNamespaceID();
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXULElement::GetTag(nsIAtom*& aResult) const
+nsXULElement::GetTag(nsIAtom** aResult) const
 {
-    return NodeInfo()->GetNameAtom(aResult);
+    // AddRefs
+    *aResult = NodeInfo()->GetNameAtom().get();
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP
 nsXULElement::NormalizeAttrString(const nsAString& aStr,
-                                  nsINodeInfo*& aNodeInfo)
+                                  nsINodeInfo** aNodeInfo)
 {
     PRInt32 i, count = Attributes() ? Attributes()->Count() : 0;
     NS_ConvertUCS2toUTF8 utf8String(aStr);
@@ -2360,8 +2296,8 @@ nsXULElement::NormalizeAttrString(const nsAString& aStr,
                                                    Attributes()->ElementAt(i));
         nsINodeInfo *ni = attr->GetNodeInfo();
         if (ni->QualifiedNameEquals(utf8String)) {
-            aNodeInfo = ni;
-            NS_ADDREF(aNodeInfo);
+            *aNodeInfo = ni;
+            NS_ADDREF(*aNodeInfo);
 
             return NS_OK;
         }
@@ -2373,15 +2309,15 @@ nsXULElement::NormalizeAttrString(const nsAString& aStr,
 
         nsINodeInfo *ni = attr->mNodeInfo;
         if (ni->QualifiedNameEquals(utf8String)) {
-            aNodeInfo = ni;
-            NS_ADDREF(aNodeInfo);
+            *aNodeInfo = ni;
+            NS_ADDREF(*aNodeInfo);
 
             return NS_OK;
         }
     }
 
     nsCOMPtr<nsINodeInfoManager> nimgr;
-    NodeInfo()->GetNodeInfoManager(*getter_AddRefs(nimgr));
+    NodeInfo()->GetNodeInfoManager(getter_AddRefs(nimgr));
     NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
     return nimgr->GetNodeInfo(aStr, nsnull, kNameSpaceID_None, aNodeInfo);
@@ -2401,7 +2337,7 @@ nsXULElement::UnregisterAccessKey(const nsAString& aOldValue)
 
             // find out what type of content node this is
             nsCOMPtr<nsIAtom> atom;
-            nsresult rv = GetTag(*getter_AddRefs(atom));
+            nsresult rv = GetTag(getter_AddRefs(atom));
             if (NS_SUCCEEDED(rv) && atom) {
                 if (atom == nsXULAtoms::label) {
                     // XXXjag a side-effect is that we filter out anonymous <label>s
@@ -2439,73 +2375,71 @@ nsXULElement::SetAttr(nsINodeInfo* aNodeInfo,
     if (nsnull == aNodeInfo)
         return NS_ERROR_NULL_POINTER;
 
-    nsresult rv;
-    nsCOMPtr<nsIAtom> attrName;
-    PRInt32 attrns;
+    nsCOMPtr<nsIAtom> attrName = aNodeInfo->GetNameAtom();
+    PRInt32 attrns = aNodeInfo->GetNamespaceID();
 
-    aNodeInfo->GetNameAtom(*getter_AddRefs(attrName));
-    aNodeInfo->GetNamespaceID(attrns);
+    nsresult rv = EnsureAttributes();
+    if (NS_FAILED(rv)) return rv;
 
-    // XXXwaterson should likely also be conditioned on aNotify. Do we
-    // need to BeginUpdate() here as well?
-    if (mDocument) {
+    nsAutoString oldValue;
+    nsXULAttribute* attr = FindLocalAttribute(aNodeInfo);
+    nsXULPrototypeAttribute *protoattr = nsnull;
+    if (attr) {
+        attr->GetValue(oldValue);
+    } else {
+        // Don't have it locally, but might be shadowing a prototype attribute.
+        protoattr = FindPrototypeAttribute(aNodeInfo);
+        if (protoattr) {
+            protoattr->mValue.GetValue(oldValue);
+        }
+    }
+
+    if ((attr || protoattr) && oldValue.Equals(aValue)) {
+        // do nothing if there is no change
+        return NS_OK;
+    }
+
+    // Send the update notification _before_ changing anything
+    if (mDocument && aNotify) {
+        mDocument->BeginUpdate();
         mDocument->AttributeWillChange(this, attrns, attrName);
     }
 
-    rv = EnsureAttributes();
-    if (NS_FAILED(rv)) return rv;
-
-    // XXX Class and Style attribute setting should be checking for the XUL namespace!
-
-    // Check to see if the CLASS attribute is being set.  If so, we need to rebuild our
-    // class list.
+    // Check to see if the CLASS attribute is being set.  If so, we need to
+    // rebuild our class list.
     if (aNodeInfo->Equals(nsXULAtoms::clazz, kNameSpaceID_None)) {
         Attributes()->UpdateClassList(aValue);
     }
 
-    // Check to see if the STYLE attribute is being set.  If so, we need to create a new
-    // style rule based off the value of this attribute, and we need to let the document
-    // know about the StyleRule change.
-    if (aNodeInfo->Equals(nsXULAtoms::style, kNameSpaceID_None) &&
-        (mDocument != nsnull)) {
-        nsCOMPtr <nsIURI> docURL;
-        mDocument->GetBaseURL(*getter_AddRefs(docURL));
-        Attributes()->UpdateStyleRule(docURL, aValue);
-        // XXX Some kind of special document update might need to happen here.
+    // Check to see if the STYLE attribute is being set.  If so, we need to
+    // create a new style rule based off the value of this attribute, and we
+    // need to let the document know about the StyleRule change.
+    if (aNodeInfo->Equals(nsXULAtoms::style, kNameSpaceID_None)) {
+        nsCOMPtr <nsIURI> baseURL;
+        GetBaseURL(getter_AddRefs(baseURL));
+        Attributes()->UpdateStyleRule(baseURL, aValue);
     }
 
     nsCOMPtr<nsIAtom> tag;
-    GetTag(*getter_AddRefs(tag));
+    GetTag(getter_AddRefs(tag));
 
     if (tag == nsXULAtoms::window &&
         aNodeInfo->Equals(nsXULAtoms::hidechrome)) {
-      nsAutoString val;
-      val.Assign(aValue);
+      nsAutoString val(aValue);
       HideWindowChrome(val.EqualsIgnoreCase("true"));
     }
 
     // XXX need to check if they're changing an event handler: if so, then we need
     // to unhook the old one.
 
-    nsXULAttribute* attr = FindLocalAttribute(aNodeInfo);
-    PRBool modification;
-    nsAutoString oldValue;
+    // Save whether this is a modification before we muck with the attr pointer.
+    PRBool modification = attr || protoattr; 
 
     if (attr) {
-        attr->GetValue(oldValue);
         attr->SetValueInternal(aValue);
-        modification = PR_TRUE;
     }
     else {
-        // Don't have it locally, but might be shadowing a prototype attribute.
-        nsXULPrototypeAttribute *protoattr = FindPrototypeAttribute(aNodeInfo);
-        if (protoattr) {
-            protoattr->mValue.GetValue(oldValue);
-            modification = PR_TRUE;
-        } else {
-            modification = PR_FALSE;
-        }
-
+        // Need to create a local attr
         rv = nsXULAttribute::Create(NS_STATIC_CAST(nsIStyledContent*, this),
                                     aNodeInfo, aValue, &attr);
         if (NS_FAILED(rv)) return rv;
@@ -2564,10 +2498,8 @@ nsXULElement::SetAttr(nsINodeInfo* aNodeInfo,
             ? PRInt32(nsIDOMMutationEvent::MODIFICATION)
             : PRInt32(nsIDOMMutationEvent::ADDITION);
 
-        mDocument->AttributeChanged(this, attrns, attrName, modHint,
-                                    StyleHintFor(NodeInfo()));
-
-        // XXXwaterson do we need to mDocument->EndUpdate() here?
+        mDocument->AttributeChanged(this, attrns, attrName, modHint);
+        mDocument->EndUpdate();
       }
     }
 
@@ -2582,11 +2514,11 @@ nsXULElement::SetAttr(PRInt32 aNameSpaceID,
 {
     nsCOMPtr<nsINodeInfoManager> nimgr;
 
-    NodeInfo()->GetNodeInfoManager(*getter_AddRefs(nimgr));
+    NodeInfo()->GetNodeInfoManager(getter_AddRefs(nimgr));
     NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsINodeInfo> ni;
-    nimgr->GetNodeInfo(aName, nsnull, aNameSpaceID, *getter_AddRefs(ni));
+    nimgr->GetNodeInfo(aName, nsnull, aNameSpaceID, getter_AddRefs(ni));
 
     return SetAttr(ni, aValue, aNotify);
 }
@@ -2597,16 +2529,19 @@ nsXULElement::GetAttr(PRInt32 aNameSpaceID,
                       nsAString& aResult) const
 {
     nsCOMPtr<nsIAtom> prefix;
-    return GetAttr(aNameSpaceID, aName, *getter_AddRefs(prefix), aResult);
+    return GetAttr(aNameSpaceID, aName, getter_AddRefs(prefix), aResult);
 }
 
 NS_IMETHODIMP
 nsXULElement::GetAttr(PRInt32 aNameSpaceID,
                       nsIAtom* aName,
-                      nsIAtom*& aPrefix,
+                      nsIAtom** aPrefix,
                       nsAString& aResult) const
 {
     NS_ASSERTION(nsnull != aName, "must have attribute name");
+    NS_ASSERTION(aNameSpaceID != kNameSpaceID_Unknown,
+                 "must have a real namespace ID!");
+
     if (nsnull == aName) {
         return NS_ERROR_NULL_POINTER;
     }
@@ -2621,7 +2556,8 @@ nsXULElement::GetAttr(PRInt32 aNameSpaceID,
 
                 nsINodeInfo *ni = attr->GetNodeInfo();
                 if (ni->Equals(aName, aNameSpaceID)) {
-                    ni->GetPrefixAtom(aPrefix);
+                    // AddRefs
+                    *aPrefix = ni->GetPrefixAtom().get();
                     attr->GetValue(aResult);
                     return aResult.IsEmpty() ? NS_CONTENT_ATTR_NO_VALUE : NS_CONTENT_ATTR_HAS_VALUE;
                 }
@@ -2636,7 +2572,8 @@ nsXULElement::GetAttr(PRInt32 aNameSpaceID,
 
             nsINodeInfo *ni = attr->mNodeInfo;
             if (ni->Equals(aName, aNameSpaceID)) {
-                ni->GetPrefixAtom(aPrefix);
+                // AddRefs
+                *aPrefix = ni->GetPrefixAtom().get();
                 attr->mValue.GetValue( aResult );
                 return aResult.IsEmpty() ? NS_CONTENT_ATTR_NO_VALUE : NS_CONTENT_ATTR_HAS_VALUE;
             }
@@ -2645,6 +2582,7 @@ nsXULElement::GetAttr(PRInt32 aNameSpaceID,
 
     // Not found.
     aResult.Truncate();
+    *aPrefix = nsnull;
     return NS_CONTENT_ATTR_NOT_THERE;
 }
 
@@ -2652,6 +2590,9 @@ NS_IMETHODIMP_(PRBool)
 nsXULElement::HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const
 {
     NS_ASSERTION(nsnull != aName, "must have attribute name");
+    NS_ASSERTION(aNameSpaceID != kNameSpaceID_Unknown,
+                 "must have a real namespace ID!");
+
     if (!aName)
         return PR_FALSE;
 
@@ -2748,21 +2689,19 @@ nsXULElement::UnsetAttr(PRInt32 aNameSpaceID,
     // XXXwaterson if aNotify == PR_TRUE, do we want to call
     // nsIDocument::BeginUpdate() now?
     if (aNameSpaceID == kNameSpaceID_None) {
-      if (mDocument) {
         if (aName == nsXULAtoms::clazz) {
             // If CLASS is being unset, delete our class list.
             Attributes()->UpdateClassList(nsAutoString());
         } else if (aName == nsXULAtoms::style) {
-            nsCOMPtr <nsIURI> docURL;
-            mDocument->GetBaseURL(*getter_AddRefs(docURL));
-            Attributes()->UpdateStyleRule(docURL, nsAutoString());
+            nsCOMPtr <nsIURI> baseURL;
+            GetBaseURL(getter_AddRefs(baseURL));
+            Attributes()->UpdateStyleRule(baseURL, nsAutoString());
             // XXX Some kind of special document update might need to happen here.
         }
-      }
     }
 
     nsCOMPtr<nsIAtom> tag;
-    GetTag(*getter_AddRefs(tag));
+    GetTag(getter_AddRefs(tag));
 
     if (tag == nsXULAtoms::window &&
         aName == nsXULAtoms::hidechrome)
@@ -2836,8 +2775,7 @@ nsXULElement::UnsetAttr(PRInt32 aNameSpaceID,
 
         if (aNotify) {
             mDocument->AttributeChanged(this, aNameSpaceID, aName,
-                                        nsIDOMMutationEvent::REMOVAL,
-                                        StyleHintFor(NodeInfo()));
+                                        nsIDOMMutationEvent::REMOVAL);
 
             // XXXwaterson do we need to mDocument->EndUpdate() here?
         }
@@ -2848,9 +2786,9 @@ nsXULElement::UnsetAttr(PRInt32 aNameSpaceID,
 
 NS_IMETHODIMP
 nsXULElement::GetAttrNameAt(PRInt32 aIndex,
-                            PRInt32& aNameSpaceID,
-                            nsIAtom*& aName,
-                            nsIAtom*& aPrefix) const
+                            PRInt32* aNameSpaceID,
+                            nsIAtom** aName,
+                            nsIAtom** aPrefix) const
 {
 #ifdef DEBUG_ATTRIBUTE_STATS
     int local = Attributes() ? Attributes()->Count() : 0;
@@ -2863,10 +2801,12 @@ nsXULElement::GetAttrNameAt(PRInt32 aIndex,
         haveLocalAttributes = PR_TRUE;
         if (aIndex < Attributes()->Count()) {
             nsXULAttribute* attr = NS_REINTERPRET_CAST(nsXULAttribute*, Attributes()->ElementAt(aIndex));
-            if (nsnull != attr) {
-                attr->GetNodeInfo()->GetNamespaceID(aNameSpaceID);
-                attr->GetNodeInfo()->GetNameAtom(aName);
-                attr->GetNodeInfo()->GetPrefixAtom(aPrefix);
+            if (attr) {
+                *aNameSpaceID = attr->GetNodeInfo()->GetNamespaceID();
+                // AddRefs
+                *aName = attr->GetNodeInfo()->GetNameAtom().get();
+                // AddRefs
+                *aPrefix = attr->GetNodeInfo()->GetPrefixAtom().get();
 #ifdef DEBUG_ATTRIBUTE_STATS
                 fprintf(stderr, " local!\n");
 #endif
@@ -2895,9 +2835,13 @@ nsXULElement::GetAttrNameAt(PRInt32 aIndex,
 #ifdef DEBUG_ATTRIBUTE_STATS
                 fprintf(stderr, " proto[%d]!\n", aIndex);
 #endif
-                attr->mNodeInfo->GetNamespaceID(aNameSpaceID);
-                attr->mNodeInfo->GetNameAtom(aName);
-                attr->mNodeInfo->GetPrefixAtom(aPrefix);
+                *aNameSpaceID = attr->mNodeInfo->GetNamespaceID();
+
+                // AddRefs
+                *aName = attr->mNodeInfo->GetNameAtom().get();
+                // AddRefs
+                *aPrefix = attr->mNodeInfo->GetPrefixAtom().get();
+
                 return NS_OK;
             }
             // else, we are out of attrs to return, fall-through
@@ -2908,9 +2852,10 @@ nsXULElement::GetAttrNameAt(PRInt32 aIndex,
     fprintf(stderr, " not found\n");
 #endif
 
-    aNameSpaceID = kNameSpaceID_None;
-    aName = nsnull;
-    aPrefix = nsnull;
+    *aNameSpaceID = kNameSpaceID_None;
+    *aName = nsnull;
+    *aPrefix = nsnull;
+
     return NS_ERROR_ILLEGAL_VALUE;
 }
 
@@ -2995,7 +2940,8 @@ nsXULElement::List(FILE* out, PRInt32 aIndent) const
         nsCOMPtr<nsIAtom> attr;
         nsCOMPtr<nsIAtom> prefix;
         PRInt32 nameSpaceID;
-        GetAttrNameAt(i, nameSpaceID, *getter_AddRefs(attr), *getter_AddRefs(prefix));
+        GetAttrNameAt(i, &nameSpaceID, getter_AddRefs(attr),
+                      getter_AddRefs(prefix));
 
         nsAutoString v;
         GetAttr(nameSpaceID, attr, v);
@@ -3026,7 +2972,7 @@ nsXULElement::List(FILE* out, PRInt32 aIndent) const
 
         for (i = 0; i < nchildren; ++i) {
             nsCOMPtr<nsIContent> child;
-            ChildAt(i, *getter_AddRefs(child));
+            ChildAt(i, getter_AddRefs(child));
 
             child->List(out, aIndent + 1);
         }
@@ -3204,19 +3150,16 @@ nsXULElement::HandleDOMEvent(nsIPresContext* aPresContext,
         (*aDOMEvent)->GetTarget(getter_AddRefs(oldTarget));
         nsCOMPtr<nsIContent> content(do_QueryInterface(oldTarget));
         if (content)
-            content->GetBindingParent(getter_AddRefs(bindingParent));
+            bindingParent = content->GetBindingParent();
     }
     else
-        GetBindingParent(getter_AddRefs(bindingParent));
+        bindingParent = GetBindingParent();
 
     if (bindingParent) {
         // We're anonymous.  We may potentially need to retarget
         // our event if our parent is in a different scope.
-        if (mParent) {
-            nsCOMPtr<nsIContent> parentScope;
-            mParent->GetBindingParent(getter_AddRefs(parentScope));
-            if (parentScope != bindingParent)
-                retarget = PR_TRUE;
+        if (mParent && mParent->GetBindingParent() != bindingParent) {
+            retarget = PR_TRUE;
         }
     }
 
@@ -3374,6 +3317,18 @@ nsXULElement::SetContentID(PRUint32 aID)
 }
 
 NS_IMETHODIMP
+nsXULElement::GetBaseURL(nsIURI **aURI) const
+{
+  // XXX TODO, should share the impl with nsGenericElement
+  if (mDocument) {
+    return mDocument->GetBaseURL(aURI);
+  }
+
+  *aURI = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsXULElement::RangeAdd(nsIDOMRange* aRange)
 {
     // rdf content does not yet support DOM ranges
@@ -3390,10 +3345,10 @@ nsXULElement::RangeRemove(nsIDOMRange* aRange)
 
 
 NS_IMETHODIMP
-nsXULElement::GetRangeList(nsVoidArray*& aResult) const
+nsXULElement::GetRangeList(nsVoidArray** aResult) const
 {
-    // rdf content does not yet support DOM ranges
-    aResult = nsnull;
+    // XUL content does not yet support DOM ranges
+    *aResult = nsnull;
     return NS_OK;
 }
 
@@ -3478,8 +3433,7 @@ nsXULElement::EnsureContentsGenerated(void) const
 
         // Walk up our ancestor chain, looking for an element with a
         // XUL content model builder attached to it.
-        nsCOMPtr<nsIContent> element
-            = do_QueryInterface(NS_STATIC_CAST(nsIStyledContent*, unconstThis));
+        nsIContent* element = unconstThis;
 
         do {
             nsCOMPtr<nsIDOMXULElement> xulele = do_QueryInterface(element);
@@ -3496,10 +3450,7 @@ nsXULElement::EnsureContentsGenerated(void) const
                 }
             }
 
-            nsCOMPtr<nsIContent> parent;
-            element->GetParent(*getter_AddRefs(parent));
-
-            element = parent;
+            element = element->GetParent();
         } while (element);
 
         NS_ERROR("lazy state set with no XUL content builder in ancestor chain");
@@ -3570,7 +3521,7 @@ nsXULElement::GetElementsByAttribute(nsIDOMNode* aNode,
 
 // nsIStyledContent Implementation
 NS_IMETHODIMP
-nsXULElement::GetID(nsIAtom*& aResult) const
+nsXULElement::GetID(nsIAtom** aResult) const
 {
     if (mSlots) {
         nsXULAttributes *attrs = mSlots->GetAttributes();
@@ -3583,7 +3534,7 @@ nsXULElement::GetID(nsIAtom*& aResult) const
                     NS_STATIC_CAST(nsXULAttribute*, attrs->ElementAt(i));
 
                 if (attr->GetNodeInfo()->Equals(nsXULAtoms::id, kNameSpaceID_None)) {
-                    attr->GetValueAsAtom(&aResult);
+                    attr->GetValueAsAtom(aResult);
                     return NS_OK;
                 }
             }
@@ -3595,13 +3546,13 @@ nsXULElement::GetID(nsIAtom*& aResult) const
         for (PRInt32 i = 0; i < count; i++) {
             nsXULPrototypeAttribute* attr = &(mPrototype->mAttributes[i]);
             if (attr->mNodeInfo->Equals(nsXULAtoms::id, kNameSpaceID_None)) {
-                attr->mValue.GetValueAsAtom(&aResult);
+                attr->mValue.GetValueAsAtom(aResult);
                 return NS_OK;
             }
         }
     }
 
-    aResult = nsnull;
+    *aResult = nsnull;
     return NS_OK;
 }
 
@@ -3659,37 +3610,21 @@ nsXULElement::GetInlineStyleRule(nsIStyleRule** aStyleRule)
 }
 
 NS_IMETHODIMP
-nsXULElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                       nsChangeHint& aHint) const
+nsXULElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                     PRInt32 aModType,
+                                     nsChangeHint& aHint) const
 {
-    aHint = NS_STYLE_HINT_CONTENT;  // by default, never map attributes to style
+    aHint = NS_STYLE_HINT_NONE;
 
     if (aAttribute == nsXULAtoms::value &&
         (aModType == nsIDOMMutationEvent::REMOVAL || aModType == nsIDOMMutationEvent::ADDITION)) {
       nsCOMPtr<nsIAtom> tag;
-      GetTag(*getter_AddRefs(tag));
+      GetTag(getter_AddRefs(tag));
       if (tag == nsXULAtoms::label || tag == nsXULAtoms::description)
         // Label and description dynamically morph between a normal block and a cropping single-line
         // XUL text frame.  If the value attribute is being added or removed, then we need to return
         // a hint of frame change.  (See bugzilla bug 95475 for details.)
         aHint = NS_STYLE_HINT_FRAMECHANGE;
-      else
-        aHint = NS_STYLE_HINT_ATTRCHANGE;
-    }
-    else if (aAttribute == nsXULAtoms::value || aAttribute == nsXULAtoms::flex ||
-        aAttribute == nsXULAtoms::label || aAttribute == nsXULAtoms::mousethrough) {
-      // VERY IMPORTANT! This has a huge positive performance impact!
-      aHint = NS_STYLE_HINT_ATTRCHANGE;
-    }
-    else if (NodeInfo()->Equals(nsXULAtoms::window) ||
-             NodeInfo()->Equals(nsXULAtoms::page) ||
-             NodeInfo()->Equals(nsXULAtoms::dialog) ||
-             NodeInfo()->Equals(nsXULAtoms::wizard)) {
-        // Ignore 'width', 'height', 'screenX', 'screenY' and 'sizemode' on a <window>
-        if (nsXULAtoms::width == aAttribute || nsXULAtoms::height == aAttribute ||
-            nsXULAtoms::screenX == aAttribute || nsXULAtoms::screenY == aAttribute ||
-            nsXULAtoms::sizemode == aAttribute)
-           aHint = NS_STYLE_HINT_NONE;
     } else {
         // if left or top changes we reflow. This will happen in xul containers that
         // manage positioned children such as a bulletinboard.
@@ -3698,6 +3633,12 @@ nsXULElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModTy
     }
 
     return NS_OK;
+}
+
+NS_IMETHODIMP_(PRBool)
+nsXULElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+{
+    return PR_FALSE;
 }
 
 // Controllers Methods
@@ -4186,21 +4127,15 @@ nsXULElement::GetStyle(nsIDOMCSSStyleDeclaration** aStyle)
 NS_IMETHODIMP
 nsXULElement::GetParentTree(nsIDOMXULMultiSelectControlElement** aTreeElement)
 {
-  nsCOMPtr<nsIContent> current;
-  GetParent(*getter_AddRefs(current));
-  while (current) {
+  for (nsIContent* current = mParent; current; current = current->GetParent()) {
     nsCOMPtr<nsIAtom> tag;
-    current->GetTag(*getter_AddRefs(tag));
+    current->GetTag(getter_AddRefs(tag));
     if (tag == nsXULAtoms::listbox) {
-      nsCOMPtr<nsIDOMXULMultiSelectControlElement> element = do_QueryInterface(current);
-      *aTreeElement = element;
-      NS_IF_ADDREF(*aTreeElement);
+      CallQueryInterface(current, aTreeElement);
+      // XXX returning NS_OK because that's what the code used to do;
+      // is that the right thing, though?
       return NS_OK;
     }
-
-    nsCOMPtr<nsIContent> parent;
-    current->GetParent(*getter_AddRefs(parent));
-    current = parent;
   }
   return NS_OK;
 }
@@ -4208,7 +4143,7 @@ nsXULElement::GetParentTree(nsIDOMXULMultiSelectControlElement** aTreeElement)
 PRBool
 nsXULElement::IsAncestor(nsIDOMNode* aParentNode, nsIDOMNode* aChildNode)
 {
-  nsCOMPtr<nsIDOMNode> parent = dont_QueryInterface(aChildNode);
+  nsCOMPtr<nsIDOMNode> parent = aChildNode;
   while (parent && (parent != aParentNode)) {
     nsCOMPtr<nsIDOMNode> newParent;
     parent->GetParentNode(getter_AddRefs(newParent));
@@ -4274,8 +4209,7 @@ nsXULElement::Click()
   if (disabled == NS_LITERAL_STRING("true"))
     return NS_OK;
 
-  nsCOMPtr<nsIDocument> doc; // Strong
-  GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = mDocument; // Strong just in case
   if (doc) {
     PRInt32 numShells = doc->GetNumberOfShells();
     nsCOMPtr<nsIPresShell> shell; // Strong
@@ -4321,8 +4255,7 @@ nsXULElement::Click()
 NS_IMETHODIMP
 nsXULElement::DoCommand()
 {
-  nsCOMPtr<nsIDocument> doc;
-  GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = mDocument; // strong just in case
   if (doc) {
     PRInt32 numShells = doc->GetNumberOfShells();
     nsCOMPtr<nsIPresShell> shell;
@@ -4369,12 +4302,10 @@ nsXULElement::RemoveFocus(nsIPresContext* aPresContext)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXULElement::GetBindingParent(nsIContent** aContent)
+NS_IMETHODIMP_(nsIContent*)
+nsXULElement::GetBindingParent() const
 {
-  *aContent = mBindingParent;
-  NS_IF_ADDREF(*aContent);
-  return NS_OK;
+  return mBindingParent;
 }
 
 NS_IMETHODIMP
@@ -4386,7 +4317,7 @@ nsXULElement::SetBindingParent(nsIContent* aParent)
     ChildCount(count);
     for (PRInt32 i = 0; i < count; i++) {
       nsCOMPtr<nsIContent> child;
-      ChildAt(i, *getter_AddRefs(child));
+      ChildAt(i, getter_AddRefs(child));
       child->SetBindingParent(aParent);
     }
   }
@@ -4625,20 +4556,11 @@ nsXULElement::HideWindowChrome(PRBool aShouldHide)
       shell->GetPresContext(getter_AddRefs(presContext));
 
       if (frame && presContext) {
-        nsIView* view = nsnull;
-        frame->GetView(presContext, &view);
-
-        if (!view) {
-          frame->GetParentWithView(presContext, &frame);
-          if (frame)
-            frame->GetView(presContext, &view);
-        }
+        nsIView* view = frame->GetClosestView();
 
         if (view) {
-          nsCOMPtr<nsIWidget> widget;
-          view->GetWidget(*getter_AddRefs(widget));
-
-          widget->HideWindowChrome(aShouldHide);
+          // XXXldb Um, not all views have widgets...
+          view->GetWidget()->HideWindowChrome(aShouldHide);
         }
       }
     }

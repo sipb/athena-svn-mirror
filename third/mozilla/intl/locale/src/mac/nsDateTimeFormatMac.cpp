@@ -231,7 +231,7 @@ static void AbbrevWeekdayString(DateTimeRec &dateTime, Str255 weekdayString, Int
 ////////////////////////////////////////////////////////////////////////////////
 
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsDateTimeFormatMac, nsIDateTimeFormat);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsDateTimeFormatMac, nsIDateTimeFormat)
 
 nsresult nsDateTimeFormatMac::Initialize(nsILocale* locale)
 {
@@ -262,7 +262,7 @@ nsresult nsDateTimeFormatMac::Initialize(nsILocale* locale)
   mScriptcode = smSystemScript;
   mLangcode = langEnglish;
   mRegioncode = verUS;
-  mCharset.Assign(NS_LITERAL_STRING("x-mac-roman"));
+  mCharset.Assign(NS_LITERAL_CSTRING("x-mac-roman"));
   
 
   // get application locale
@@ -302,11 +302,10 @@ nsresult nsDateTimeFormatMac::Initialize(nsILocale* locale)
 
     nsCOMPtr <nsIPlatformCharset> platformCharset = do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &res);
     if (NS_SUCCEEDED(res)) {
-      PRUnichar* mappedCharset = NULL;
-      res = platformCharset->GetDefaultCharsetForLocale(mLocale.get(), &mappedCharset);
-      if (NS_SUCCEEDED(res) && mappedCharset) {
-        mCharset.Assign(mappedCharset);
-        nsMemory::Free(mappedCharset);
+      nsCAutoString  mappedCharset;
+      res = platformCharset->GetDefaultCharsetForLocale(mLocale.get(), mappedCharset);
+      if (NS_SUCCEEDED(res)) {
+        mCharset = mappedCharset;
       }
       
       // get a system charset (used when getting date/time strings as default)
@@ -316,14 +315,12 @@ nsresult nsDateTimeFormatMac::Initialize(nsILocale* locale)
 
   // Initialize unicode decoder
   nsCOMPtr <nsIAtom>                      charsetAtom;
-  nsCOMPtr <nsICharsetConverterManager2>  charsetConverterManager;
+  nsCOMPtr <nsICharsetConverterManager>  charsetConverterManager;
   charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &res);
   if (NS_SUCCEEDED(res)) {
-    res = charsetConverterManager->GetCharsetAtom(mUseDefaultLocale ? mSystemCharset.get() : mCharset.get(), 
-                                                  getter_AddRefs(charsetAtom));
-    if (NS_SUCCEEDED(res)) {
-      res = charsetConverterManager->GetUnicodeDecoder(charsetAtom, getter_AddRefs(mDecoder));
-    }
+    res = charsetConverterManager->GetUnicodeDecoder(mUseDefaultLocale ? mSystemCharset.get() : 
+                                                     mCharset.get(), 
+                                                     getter_AddRefs(mDecoder));
   }
   
   return res;

@@ -40,6 +40,7 @@
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
 #include "nsITreeBoxObject.h"
+#include "nsTreeSelection.h"
 #include "nsBoxObject.h"
 #include "nsIFrame.h"
 #include "nsTreeBodyFrame.h"
@@ -79,8 +80,13 @@ nsTreeBoxObject::SetDocument(nsIDocument* aDocument)
   nsCOMPtr<nsISupports> suppView;
   GetPropertyAsSupports(NS_LITERAL_STRING("view").get(), getter_AddRefs(suppView));
   nsCOMPtr<nsITreeView> treeView(do_QueryInterface(suppView));
-  if (treeView)
+  if (treeView) {
+    nsCOMPtr<nsITreeSelection> sel;
+    treeView->GetSelection(getter_AddRefs(sel));
+    if (sel)
+      sel->SetTree(nsnull);
     treeView->SetTree(nsnull); // Break the circular ref between the view and us.
+  }
 
   return nsBoxObject::SetDocument(aDocument);
 }
@@ -119,7 +125,7 @@ static void FindBodyElement(nsIContent* aParent, nsIContent** aResult)
   for (ChildIterator::Init(aParent, &iter, &last); iter != last; ++iter) {
     nsCOMPtr<nsIContent> content = *iter;
     nsCOMPtr<nsIAtom> tag;
-    content->GetTag(*getter_AddRefs(tag));
+    content->GetTag(getter_AddRefs(tag));
     if (tag.get() == nsXULAtoms::treechildren) {
       *aResult = content;
       NS_ADDREF(*aResult);
@@ -149,11 +155,8 @@ nsTreeBoxObject::GetTreeBody()
     return nsnull;
 
   // Iterate over our content model children looking for the body.
-  nsCOMPtr<nsIContent> startContent;
-  frame->GetContent(getter_AddRefs(startContent));
-
   nsCOMPtr<nsIContent> content;
-  FindBodyElement(startContent, getter_AddRefs(content));
+  FindBodyElement(frame->GetContent(), getter_AddRefs(content));
 
   mPresShell->GetPrimaryFrameFor(content, &frame);
   if (!frame)

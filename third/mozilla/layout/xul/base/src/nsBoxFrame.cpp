@@ -269,18 +269,13 @@ nsBoxFrame::Init(nsIPresContext*  aPresContext,
     PRBool needsWidget = PR_FALSE;
     parent->ChildrenMustHaveWidgets(needsWidget);
     if (needsWidget) {
-        nsIView* view = nsnull;
-        GetView(aPresContext, &view);
 
-        if (!view) {
+        if (!HasView()) {
            nsHTMLContainerFrame::CreateViewForFrame(aPresContext,this,mStyleContext,nsnull,PR_TRUE); 
-           GetView(aPresContext, &view);
         }
 
-        nsCOMPtr<nsIWidget> widget;
-        view->GetWidget(*getter_AddRefs(widget));
-
-        if (!widget)
+        nsIView* view = GetView();
+        if (!view->HasWidget())
            view->CreateWidget(kWidgetCID);   
     }
   }
@@ -724,17 +719,11 @@ nsBoxFrame::DidReflow(nsIPresContext*           aPresContext,
                       const nsHTMLReflowState*  aReflowState,
                       nsDidReflowStatus         aStatus)
 {
-  PRBool isDirty = mState & NS_FRAME_IS_DIRTY;
-  PRBool hasDirtyChildren = mState & NS_FRAME_HAS_DIRTY_CHILDREN;
+  nsFrameState preserveBits =
+    mState & (NS_FRAME_IS_DIRTY | NS_FRAME_HAS_DIRTY_CHILDREN);
   nsresult rv = nsFrame::DidReflow(aPresContext, aReflowState, aStatus);
-  if (isDirty)
-    mState |= NS_FRAME_IS_DIRTY;
-
-  if (hasDirtyChildren)
-    mState |= NS_FRAME_HAS_DIRTY_CHILDREN;
-
+  mState |= preserveBits;
   return rv;
-
 }
 
 #ifdef DO_NOISY_REFLOW
@@ -923,15 +912,11 @@ nsBoxFrame::Reflow(nsIPresContext*          aPresContext,
      nsSize minSize(0,0);
      GetMinSize(state,  minSize);
 
-     if (mRect.width > minSize.width) {
-       if (aReflowState.mComputedWidth == NS_INTRINSICSIZE) {
-         *maxElementWidth = minSize.width;
-       } else {
-         *maxElementWidth = mRect.width;
-       }
-     } else {
-        *maxElementWidth = mRect.width;
-     }
+     if (mRect.width > minSize.width &&
+         aReflowState.mComputedWidth == NS_INTRINSICSIZE)
+       *maxElementWidth = minSize.width;
+     else
+       *maxElementWidth = mRect.width;
   }
 #ifdef DO_NOISY_REFLOW
   {
@@ -1225,12 +1210,27 @@ nsBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
                              nsIContent* aChild,
                              PRInt32 aNameSpaceID,
                              nsIAtom* aAttribute,
-                             PRInt32 aModType,
-                             PRInt32 aHint)
+                             PRInt32 aModType)
 {
   nsresult rv = nsContainerFrame::AttributeChanged(aPresContext, aChild,
                                                    aNameSpaceID, aAttribute,
-                                                   aModType, aHint);
+                                                   aModType);
+
+  // Ignore 'width', 'height', 'screenX', 'screenY' and 'sizemode' on a
+  // <window>.
+  nsCOMPtr<nsIAtom> tag;
+  mContent->GetTag(getter_AddRefs(tag));
+  if ((tag == nsXULAtoms::window ||
+       tag == nsXULAtoms::page ||
+       tag == nsXULAtoms::dialog ||
+       tag == nsXULAtoms::wizard) &&
+      (nsXULAtoms::width == aAttribute ||
+       nsXULAtoms::height == aAttribute ||
+       nsXULAtoms::screenX == aAttribute ||
+       nsXULAtoms::screenY == aAttribute ||
+       nsXULAtoms::sizemode == aAttribute)) {
+    return rv;
+  }
 
   if (aAttribute == nsHTMLAtoms::width       ||
       aAttribute == nsHTMLAtoms::height      ||
@@ -1331,6 +1331,8 @@ nsBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
   nsCOMPtr<nsIPresShell> shell;
   aPresContext->GetShell(getter_AddRefs(shell));
   nsBoxLayoutState state(aPresContext);
+  // XXX This causes us to reflow for any attribute change (e.g.,
+  // flipping through menus).
   MarkDirty(state);
 
   return rv;
@@ -1422,7 +1424,7 @@ nsBoxFrame::GetDebugPref(nsIPresContext* aPresContext)
     gDebug = PR_FALSE;
     nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
     if (prefBranch) {
-	    prefBranch->GetBoolPref("xul.debug.box", &gDebug);
+        prefBranch->GetBoolPref("xul.debug.box", &gDebug);
     }
 }
 
@@ -1490,11 +1492,8 @@ nsBoxFrame::PaintChild(nsIPresContext*      aPresContext,
   if (aFrame->GetStyleVisibility()->mVisible == NS_STYLE_VISIBILITY_COLLAPSE)
      return;
 
-  nsIView *pView;
-  aFrame->GetView(aPresContext, &pView);
-  if (nsnull == pView) {
-    nsRect kidRect;
-    aFrame->GetRect(kidRect);
+  if (!aFrame->HasView()) {
+    nsRect kidRect = aFrame->GetRect();
  
     nsRect damageArea;
     PRBool overlap;
@@ -1878,7 +1877,7 @@ nsBoxFrame::GetFrameForPoint(nsIPresContext*   aPresContext,
       }
     }
 
-    kid->GetNextSibling(&kid);
+    kid = kid->GetNextSibling();
   }
 
   if (*aFrame) {
@@ -1906,10 +1905,9 @@ nsBoxFrame::GetBoxForFrame(nsIFrame* aFrame, PRBool& aIsAdaptor)
 
     // if we hit a non box. Find the box in out last container
     // and clear its cache.
-    nsIFrame* parent = nsnull;
-    aFrame->GetParent(&parent);
     nsIBox* parentBox = nsnull;
-    if (NS_FAILED(parent->QueryInterface(NS_GET_IID(nsIBox), (void**)&parentBox))) 
+    if (NS_FAILED(aFrame->GetParent()->
+                  QueryInterface(NS_GET_IID(nsIBox), (void**)&parentBox)))
        return nsnull;
 
     if (parentBox) {
@@ -2002,10 +2000,9 @@ nsBoxFrame::TranslateEventCoords(nsIPresContext* aPresContext,
   // If we have a view then the event coordinates are already relative
   // to this frame; otherwise we have to adjust the coordinates
   // appropriately.
-  nsIView* view;
-  GetView(aPresContext, &view);
-  if (nsnull == view) {
+  if (!HasView()) {
     nsPoint offset;
+    nsIView* view;
     GetOffsetFromView(aPresContext, offset, &view);
     if (nsnull != view) {
       x -= offset.x;
@@ -2026,15 +2023,17 @@ nsBoxFrame::GetContentOf(nsIContent** aContent)
     nsIFrame* frame;
     GetFrame(&frame);
 
-    while(frame != nsnull) {
-       
-      frame->GetContent(aContent);
-        if (*aContent != nsnull)
-            return NS_OK;
+    while (frame) {
+      *aContent = frame->GetContent();
+      if (*aContent) {
+        NS_ADDREF(*aContent);
+        return NS_OK;
+      }
 
-        frame->GetParent(&frame);
+      frame = frame->GetParent();
     }
 
+    *aContent = nsnull;
     return NS_OK;
 }
 
@@ -2356,22 +2355,16 @@ nsBoxFrame::DisplayDebugInfoFor(nsIBox*         aBox,
                         if (mDebugChild == child)
                             return NS_OK;
 
-                            nsCOMPtr<nsIContent> content;
-                            ourFrame->GetContent(getter_AddRefs(content));
+                        if (ourFrame->GetContent()) {
+                          printf("---------------\n");
+                          DumpBox(stdout);
+                          printf("\n");
+                        }
 
-                            if (content) {                             
-                              printf("---------------\n");
-                              DumpBox(stdout);
-                              printf("\n");
-                            }
-
-                        childFrame->GetContent(getter_AddRefs(content));
-
-                        if (content) {
+                        if (childFrame->GetContent()) {
                             printf("child #%d: ", count);
                             child->DumpBox(stdout);
                             printf("\n");
-
                         }
 
                         mDebugChild = child;
@@ -2464,10 +2457,8 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
                                nsStyleContext*  aStyleContext,
                                PRBool           aForce)
 {
-  nsIView* view;
-  aFrame->GetView(aPresContext, &view);
   // If we don't yet have a view, see if we need a view
-  if (nsnull == view) {
+  if (!aFrame->HasView()) {
     PRInt32 zIndex = 0;
     PRBool  autoZIndex = PR_FALSE;
     PRBool  fixedBackgroundAttachment = PR_FALSE;
@@ -2503,27 +2494,21 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
 
     if (aForce) {
       // Create a view
-      nsIFrame* parent;
-
-      aFrame->GetParentWithView(aPresContext, &parent);
-      NS_ASSERTION(parent, "GetParentWithView failed");
-      nsIView* parentView;
-   
-      parent->GetView(aPresContext, &parentView);
+      nsIFrame* parent = aFrame->GetAncestorWithView();
+      NS_ASSERTION(parent, "GetAncestorWithView failed");
+      nsIView* parentView = parent->GetView();
       NS_ASSERTION(parentView, "no parent with view");
 
       // Create a view
       static NS_DEFINE_IID(kViewCID, NS_VIEW_CID);
+      nsIView *view;
       nsresult result = CallCreateInstance(kViewCID, &view);
       if (NS_SUCCEEDED(result)) {
-        nsIViewManager* viewManager;
-        parentView->GetViewManager(viewManager);
+        nsIViewManager* viewManager = parentView->GetViewManager();
         NS_ASSERTION(nsnull != viewManager, "null view manager");
 
         // Initialize the view
-        nsRect bounds;
-        aFrame->GetRect(bounds);
-        view->Init(viewManager, bounds, parentView);
+        view->Init(viewManager, aFrame->GetRect(), parentView);
 
         // If the frame has a fixed background attachment, then indicate that the
         // view's contents should be repainted and not bitblt'd
@@ -2554,11 +2539,8 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
         }
         else if (NS_STYLE_VISIBILITY_HIDDEN == vis->mVisible) {
           // If it has a widget, hide the view because the widget can't deal with it
-          nsIWidget* widget = nsnull;
-          view->GetWidget(widget);
-          if (widget) {
+          if (view->HasWidget()) {
             viewIsVisible = PR_FALSE;
-            NS_RELEASE(widget);
           }
           else {
             // If it's a container element, then leave the view visible, but
@@ -2569,10 +2551,9 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
             // Because this function is called before processing the content
             // object's child elements, we can't tell if it's a leaf by looking
             // at whether the frame has any child frames
-            nsCOMPtr<nsIContent> content;
+            nsIContent* content = aFrame->GetContent();
             PRBool canContainChildren = PR_FALSE;
 
-            aFrame->GetContent(getter_AddRefs(content));
             if (content) {
               content->CanContainChildren(canContainChildren);
             }
@@ -2598,11 +2579,10 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
         }
 
         viewManager->SetViewOpacity(view, vis->mOpacity);
-        NS_RELEASE(viewManager);
       }
 
       // Remember our view
-      aFrame->SetView(aPresContext, view);
+      aFrame->SetView(view);
 
       NS_FRAME_LOG(NS_FRAME_TRACE_CALLS,
         ("nsBoxFrame::CreateViewForFrame: frame=%p view=%p",
@@ -2624,7 +2604,7 @@ nsBoxFrame::RegUnregAccessKey(nsIPresContext* aPresContext, PRBool aDoReg)
 
   // find out what type of element this is
   nsCOMPtr<nsIAtom> atom;
-  nsresult rv = mContent->GetTag(*getter_AddRefs(atom));
+  nsresult rv = mContent->GetTag(getter_AddRefs(atom));
   if (NS_FAILED(rv))
     return rv;
 

@@ -42,6 +42,8 @@
 #include "nsString.h"
 #include "nsUnicharUtils.h"
 #include "nsEditor.h"
+#include "nsEditProperty.h"
+#include "nsIAtom.h"
 #include "nsIDOMNode.h"
 #include "nsIContent.h"
 #include "nsIDOMNodeList.h"
@@ -52,16 +54,74 @@
 PRBool 
 nsHTMLEditUtils::IsBig(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("big"));
+  return nsEditor::NodeIsType(node, nsEditProperty::big);
 }
 
+
+///////////////////////////////////////////////////////////////////////////
+// IsInlineStyle true if node is an inline style
+//                  
+PRBool 
+nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node)
+{
+  NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsInlineStyle");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::b)
+      || (nodeAtom == nsEditProperty::i)
+      || (nodeAtom == nsEditProperty::u)
+      || (nodeAtom == nsEditProperty::tt)
+      || (nodeAtom == nsEditProperty::s)
+      || (nodeAtom == nsEditProperty::strike)
+      || (nodeAtom == nsEditProperty::big)
+      || (nodeAtom == nsEditProperty::small)
+      || (nodeAtom == nsEditProperty::blink)
+      || (nodeAtom == nsEditProperty::sub)
+      || (nodeAtom == nsEditProperty::sup)
+      || (nodeAtom == nsEditProperty::font);
+}
+
+///////////////////////////////////////////////////////////////////////////
+// IsFormatNode true if node is a format node
+// 
+PRBool
+nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node)
+{
+  NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsFormatNode");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::p)
+      || (nodeAtom == nsEditProperty::pre)
+      || (nodeAtom == nsEditProperty::h1)
+      || (nodeAtom == nsEditProperty::h2)
+      || (nodeAtom == nsEditProperty::h3)
+      || (nodeAtom == nsEditProperty::h4)
+      || (nodeAtom == nsEditProperty::h5)
+      || (nodeAtom == nsEditProperty::h6)
+      || (nodeAtom == nsEditProperty::address);
+}
+
+///////////////////////////////////////////////////////////////////////////
+// IsNodeThatCanOutdent true if node is a list, list item, or blockquote      
+//
+PRBool
+nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node)
+{
+  NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::ul)
+      || (nodeAtom == nsEditProperty::ol)
+      || (nodeAtom == nsEditProperty::dl)
+      || (nodeAtom == nsEditProperty::li)
+      || (nodeAtom == nsEditProperty::dd)
+      || (nodeAtom == nsEditProperty::dt)
+      || (nodeAtom == nsEditProperty::blockquote);
+}
 
 ///////////////////////////////////////////////////////////////////////////
 //                  
 PRBool 
 nsHTMLEditUtils::IsSmall(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("small"));
+  return nsEditor::NodeIsType(node, nsEditProperty::small);
 }
 
 
@@ -76,19 +136,13 @@ PRBool
 nsHTMLEditUtils::IsHeader(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsHeader");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if ( (tag.Equals(NS_LITERAL_STRING("h1"))) ||
-       (tag.Equals(NS_LITERAL_STRING("h2"))) ||
-       (tag.Equals(NS_LITERAL_STRING("h3"))) ||
-       (tag.Equals(NS_LITERAL_STRING("h4"))) ||
-       (tag.Equals(NS_LITERAL_STRING("h5"))) ||
-       (tag.Equals(NS_LITERAL_STRING("h6"))) )
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::h1)
+      || (nodeAtom == nsEditProperty::h2)
+      || (nodeAtom == nsEditProperty::h3)
+      || (nodeAtom == nsEditProperty::h4)
+      || (nodeAtom == nsEditProperty::h5)
+      || (nodeAtom == nsEditProperty::h6);
 }
 
 
@@ -98,7 +152,7 @@ nsHTMLEditUtils::IsHeader(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsParagraph(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("p"));
+  return nsEditor::NodeIsType(node, nsEditProperty::p);
 }
 
 
@@ -108,7 +162,7 @@ nsHTMLEditUtils::IsParagraph(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsHR(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("hr"));
+  return nsEditor::NodeIsType(node, nsEditProperty::hr);
 }
 
 
@@ -119,16 +173,10 @@ PRBool
 nsHTMLEditUtils::IsListItem(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsListItem");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if (tag.Equals(NS_LITERAL_STRING("li")) ||
-      tag.Equals(NS_LITERAL_STRING("dd")) ||
-      tag.Equals(NS_LITERAL_STRING("dt")))
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::li)
+      || (nodeAtom == nsEditProperty::dd)
+      || (nodeAtom == nsEditProperty::dt);
 }
 
 
@@ -139,18 +187,33 @@ PRBool
 nsHTMLEditUtils::IsTableElement(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElement");
-  nsAutoString tagName;
-  nsEditor::GetTagString(node,tagName);
-  if (tagName.Equals(NS_LITERAL_STRING("table")) || tagName.Equals(NS_LITERAL_STRING("tr")) || 
-      tagName.Equals(NS_LITERAL_STRING("td"))    || tagName.Equals(NS_LITERAL_STRING("th")) ||
-      tagName.Equals(NS_LITERAL_STRING("thead")) || tagName.Equals(NS_LITERAL_STRING("tfoot")) ||
-      tagName.Equals(NS_LITERAL_STRING("tbody")) || tagName.Equals(NS_LITERAL_STRING("caption")))
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::table)
+      || (nodeAtom == nsEditProperty::tr)
+      || (nodeAtom == nsEditProperty::td)
+      || (nodeAtom == nsEditProperty::th)
+      || (nodeAtom == nsEditProperty::thead)
+      || (nodeAtom == nsEditProperty::tfoot)
+      || (nodeAtom == nsEditProperty::tbody)
+      || (nodeAtom == nsEditProperty::caption);
 }
 
+///////////////////////////////////////////////////////////////////////////
+// IsTableElementButNotTable: true if node an html td, tr, ... (doesn't include table)
+//                  
+PRBool 
+nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node)
+{
+  NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElementButNotTable");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::tr)
+      || (nodeAtom == nsEditProperty::td)
+      || (nodeAtom == nsEditProperty::th)
+      || (nodeAtom == nsEditProperty::thead)
+      || (nodeAtom == nsEditProperty::tfoot)
+      || (nodeAtom == nsEditProperty::tbody)
+      || (nodeAtom == nsEditProperty::caption);
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // IsTable: true if node an html table
@@ -158,7 +221,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsTable(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("table"));
+  return nsEditor::NodeIsType(node, nsEditProperty::table);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -167,7 +230,7 @@ nsHTMLEditUtils::IsTable(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsTableRow(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("tr"));
+  return nsEditor::NodeIsType(node, nsEditProperty::tr);
 }
 
 
@@ -178,14 +241,9 @@ PRBool
 nsHTMLEditUtils::IsTableCell(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if (tag.Equals(NS_LITERAL_STRING("td")) || tag.Equals(NS_LITERAL_STRING("th")))
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::td)
+      || (nodeAtom == nsEditProperty::th);
 }
 
 
@@ -196,16 +254,10 @@ PRBool
 nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if (tag.Equals(NS_LITERAL_STRING("td")) || 
-      tag.Equals(NS_LITERAL_STRING("th")) ||
-      tag.Equals(NS_LITERAL_STRING("caption")) )
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::td)
+      || (nodeAtom == nsEditProperty::th)
+      || (nodeAtom == nsEditProperty::caption);
 }
 
 
@@ -216,16 +268,10 @@ PRBool
 nsHTMLEditUtils::IsList(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsList");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if ( (tag.Equals(NS_LITERAL_STRING("dl"))) ||
-       (tag.Equals(NS_LITERAL_STRING("ol"))) ||
-       (tag.Equals(NS_LITERAL_STRING("ul"))) )
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::ul)
+      || (nodeAtom == nsEditProperty::ol)
+      || (nodeAtom == nsEditProperty::dl);
 }
 
 
@@ -235,7 +281,7 @@ nsHTMLEditUtils::IsList(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("ol"));
+  return nsEditor::NodeIsType(node, nsEditProperty::ol);
 }
 
 
@@ -245,7 +291,7 @@ nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("ul"));
+  return nsEditor::NodeIsType(node, nsEditProperty::ul);
 }
 
 
@@ -255,7 +301,7 @@ nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsBlockquote(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("blockquote"));
+  return nsEditor::NodeIsType(node, nsEditProperty::blockquote);
 }
 
 
@@ -265,7 +311,7 @@ nsHTMLEditUtils::IsBlockquote(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsPre(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("pre"));
+  return nsEditor::NodeIsType(node, nsEditProperty::pre);
 }
 
 
@@ -275,7 +321,7 @@ nsHTMLEditUtils::IsPre(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsAddress(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("address"));
+  return nsEditor::NodeIsType(node, nsEditProperty::address);
 }
 
 
@@ -285,7 +331,7 @@ nsHTMLEditUtils::IsAddress(nsIDOMNode *node)
 PRBool 
 nsHTMLEditUtils::IsImage(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("img"));
+  return nsEditor::NodeIsType(node, nsEditProperty::img);
 }
 
 PRBool 
@@ -296,7 +342,7 @@ nsHTMLEditUtils::IsLink(nsIDOMNode *aNode)
   if (anchor)
   {
     nsAutoString tmpText;
-    if (NS_SUCCEEDED(anchor->GetHref(tmpText)) && tmpText.get() && tmpText.Length() != 0)
+    if (NS_SUCCEEDED(anchor->GetHref(tmpText)) && !tmpText.IsEmpty())
       return PR_TRUE;
   }
   return PR_FALSE;
@@ -310,7 +356,7 @@ nsHTMLEditUtils::IsNamedAnchor(nsIDOMNode *aNode)
   if (anchor)
   {
     nsAutoString tmpText;
-    if (NS_SUCCEEDED(anchor->GetName(tmpText)) && tmpText.get() && tmpText.Length() != 0)
+    if (NS_SUCCEEDED(anchor->GetName(tmpText)) && !tmpText.IsEmpty())
       return PR_TRUE;
   }
   return PR_FALSE;
@@ -323,7 +369,7 @@ nsHTMLEditUtils::IsNamedAnchor(nsIDOMNode *aNode)
 PRBool 
 nsHTMLEditUtils::IsDiv(nsIDOMNode *node)
 {
-  return nsTextEditUtils::NodeIsType(node, NS_LITERAL_STRING("div"));
+  return nsEditor::NodeIsType(node, nsEditProperty::div);
 }
 
 
@@ -381,43 +427,32 @@ PRBool
 nsHTMLEditUtils::IsFormWidget(nsIDOMNode *node)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditUtils::IsFormWidget");
-  nsAutoString tag;
-  nsEditor::GetTagString(node,tag);
-  ToLowerCase(tag);
-  if (tag.Equals(NS_LITERAL_STRING("textarea")) || 
-      tag.Equals(NS_LITERAL_STRING("select")) ||
-      tag.Equals(NS_LITERAL_STRING("button")) ||
-      tag.Equals(NS_LITERAL_STRING("input")) )
-  {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  return (nodeAtom == nsEditProperty::textarea)
+      || (nodeAtom == nsEditProperty::select)
+      || (nodeAtom == nsEditProperty::button)
+      || (nodeAtom == nsEditProperty::input);
 }
 
 PRBool
 nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode)
 {
   NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::SupportsAlignAttr");
-  nsAutoString tag;
-  nsEditor::GetTagString(aNode, tag);
-  ToLowerCase(tag);
-  if (tag.Equals(NS_LITERAL_STRING("hr")) ||
-      tag.Equals(NS_LITERAL_STRING("table")) ||
-      tag.Equals(NS_LITERAL_STRING("tbody")) ||
-      tag.Equals(NS_LITERAL_STRING("tfoot")) ||
-      tag.Equals(NS_LITERAL_STRING("thead")) ||
-      tag.Equals(NS_LITERAL_STRING("tr")) ||
-      tag.Equals(NS_LITERAL_STRING("td")) ||
-      tag.Equals(NS_LITERAL_STRING("th")) ||
-      tag.Equals(NS_LITERAL_STRING("div")) ||
-      tag.Equals(NS_LITERAL_STRING("p")) ||
-      tag.Equals(NS_LITERAL_STRING("h1")) ||
-      tag.Equals(NS_LITERAL_STRING("h2")) ||
-      tag.Equals(NS_LITERAL_STRING("h3")) ||
-      tag.Equals(NS_LITERAL_STRING("h4")) ||
-      tag.Equals(NS_LITERAL_STRING("h5")) ||
-      tag.Equals(NS_LITERAL_STRING("h6"))) {
-    return PR_TRUE;
-  }
-  return PR_FALSE;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(aNode);
+  return (nodeAtom == nsEditProperty::hr)
+      || (nodeAtom == nsEditProperty::table)
+      || (nodeAtom == nsEditProperty::tbody)
+      || (nodeAtom == nsEditProperty::tfoot)
+      || (nodeAtom == nsEditProperty::thead)
+      || (nodeAtom == nsEditProperty::tr)
+      || (nodeAtom == nsEditProperty::td)
+      || (nodeAtom == nsEditProperty::th)
+      || (nodeAtom == nsEditProperty::div)
+      || (nodeAtom == nsEditProperty::p)
+      || (nodeAtom == nsEditProperty::h1)
+      || (nodeAtom == nsEditProperty::h2)
+      || (nodeAtom == nsEditProperty::h3)
+      || (nodeAtom == nsEditProperty::h4)
+      || (nodeAtom == nsEditProperty::h5)
+      || (nodeAtom == nsEditProperty::h6);
 }

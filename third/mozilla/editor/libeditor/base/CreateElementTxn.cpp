@@ -50,8 +50,6 @@
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
-#else
-static const PRBool gNoisy = PR_FALSE;
 #endif
 
 CreateElementTxn::CreateElementTxn()
@@ -89,6 +87,7 @@ CreateElementTxn::~CreateElementTxn()
 
 NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy)
   {
     char* nodename = ToNewCString(mTag);
@@ -96,22 +95,22 @@ NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
            mParent.get(), nodename, mOffsetInParent);
     nsMemory::Free(nodename);
   }
+#endif
 
   NS_ASSERTION(mEditor && mParent, "bad state");
   if (!mEditor || !mParent) return NS_ERROR_NOT_INITIALIZED;
-  nsresult result;
   // create a new node
-  nsCOMPtr<nsIDOMDocument>doc;
-  result = mEditor->GetDocument(getter_AddRefs(doc));
-  if (NS_FAILED(result)) return result;
-  if (!doc) return NS_ERROR_NULL_POINTER;
-
   nsAutoString textNodeTag;
-  result = nsEditor::GetTextNodeTag(textNodeTag);
+  nsresult result = nsEditor::GetTextNodeTag(textNodeTag);
   if (NS_FAILED(result)) { return result; }
 
   if (textNodeTag == mTag) 
   {
+    nsCOMPtr<nsIDOMDocument>doc;
+    result = mEditor->GetDocument(getter_AddRefs(doc));
+    if (NS_FAILED(result)) return result;
+    if (!doc) return NS_ERROR_NULL_POINTER;
+
     const nsString stringData;
     nsCOMPtr<nsIDOMText>newTextNode;
     result = doc->CreateTextNode(stringData, getter_AddRefs(newTextNode));
@@ -122,12 +121,11 @@ NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
   else 
   {
     nsCOMPtr<nsIContent> newContent;
-    nsCOMPtr<nsIDOMElement>newElement;
  
     //new call to use instead to get proper HTML element, bug# 39919
     result = mEditor->CreateHTMLContent(mTag, getter_AddRefs(newContent));
-    newElement = do_QueryInterface(newContent);
     if (NS_FAILED(result)) return result;
+    nsCOMPtr<nsIDOMElement>newElement = do_QueryInterface(newContent);
     if (!newElement) return NS_ERROR_NULL_POINTER;
     mNewNode = do_QueryInterface(newElement);
     // Try to insert formatting whitespace for the new node:
@@ -136,7 +134,10 @@ NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
   NS_ASSERTION(((NS_SUCCEEDED(result)) && (mNewNode)), "could not create element.");
   if (!mNewNode) return NS_ERROR_NULL_POINTER;
 
+#ifdef NS_DEBUG
   if (gNoisy) { printf("  newNode = %p\n", mNewNode.get()); }
+#endif
+
   // insert the new node
   nsCOMPtr<nsIDOMNode> resultNode;
   if (CreateElementTxn::eAppend==(PRInt32)mOffsetInParent)
@@ -187,25 +188,29 @@ NS_IMETHODIMP CreateElementTxn::DoTransaction(void)
 
 NS_IMETHODIMP CreateElementTxn::UndoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("Undo Create Element, mParent = %p, node = %p\n",
                         mParent.get(), mNewNode.get()); }
+#endif
+
   NS_ASSERTION(mEditor && mParent, "bad state");
   if (!mEditor || !mParent) return NS_ERROR_NOT_INITIALIZED;
 
   nsCOMPtr<nsIDOMNode> resultNode;
-  nsresult result = mParent->RemoveChild(mNewNode, getter_AddRefs(resultNode));
-  return result;
+  return mParent->RemoveChild(mNewNode, getter_AddRefs(resultNode));
 }
 
 NS_IMETHODIMP CreateElementTxn::RedoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("Redo Create Element\n"); }
+#endif
+
   NS_ASSERTION(mEditor && mParent, "bad state");
   if (!mEditor || !mParent) return NS_ERROR_NOT_INITIALIZED;
 
   // first, reset mNewNode so it has no attributes or content
-  nsCOMPtr<nsIDOMCharacterData>nodeAsText;
-  nodeAsText = do_QueryInterface(mNewNode);
+  nsCOMPtr<nsIDOMCharacterData>nodeAsText = do_QueryInterface(mNewNode);
   if (nodeAsText)
   {
     nsAutoString nullString;
@@ -214,13 +219,12 @@ NS_IMETHODIMP CreateElementTxn::RedoTransaction(void)
   
   // now, reinsert mNewNode
   nsCOMPtr<nsIDOMNode> resultNode;
-  nsresult result = mParent->InsertBefore(mNewNode, mRefNode, getter_AddRefs(resultNode));
-  return result;
+  return mParent->InsertBefore(mNewNode, mRefNode, getter_AddRefs(resultNode));
 }
 
 NS_IMETHODIMP CreateElementTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMerge)
 {
-  if (nsnull!=aDidMerge)
+  if (aDidMerge)
     *aDidMerge=PR_FALSE;
   return NS_OK;
 }

@@ -109,13 +109,6 @@
 #define HOME_DIR NS_BEOS_HOME_DIR
 #endif
 
-// define default product directory
-#if defined(XP_WIN) || defined(XP_MAC) || defined(XP_OS2) || defined(XP_BEOS)
-#define DEFAULT_PRODUCT_DIR "Mozilla"
-#elif defined (XP_UNIX) || defined(XP_MACOSX)
-#define DEFAULT_PRODUCT_DIR ".mozilla"
-#endif
-
 //----------------------------------------------------------------------------------------
 nsresult 
 nsDirectoryService::GetCurrentProcessDirectory(nsILocalFile** aFile)
@@ -434,10 +427,10 @@ NS_METHOD
 nsDirectoryService::Create(nsISupports *outer, REFNSIID aIID, void **aResult)
 {
     NS_ENSURE_ARG_POINTER(aResult);
-    if (mService == nsnull)
+    if (!mService)
     {
         mService = new nsDirectoryService();
-        if (mService == NULL)
+        if (!mService)
             return NS_ERROR_OUT_OF_MEMORY;
     }
     return mService->QueryInterface(aIID, aResult);
@@ -643,9 +636,7 @@ nsDirectoryService::Get(const char* prop, const nsIID & uuid, void* *result)
     {
         nsCOMPtr<nsIFile> cloneFile;
         nsCOMPtr<nsIFile> cachedFile = do_QueryInterface(value);
-        
-        if (!cachedFile)
-            return NS_ERROR_NULL_POINTER;
+        NS_ASSERTION(cachedFile, "nsIFile expected");
 
         cachedFile->Clone(getter_AddRefs(cloneFile));
         return cloneFile->QueryInterface(uuid, result);

@@ -47,6 +47,7 @@
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsRuleNode.h"
+#include "nsIDocument.h"
 
 class nsHTMLTableCellElement : public nsGenericHTMLContainerElement,
                                public nsIHTMLTableCellElement,
@@ -83,13 +84,13 @@ public:
                                nsAString& aResult) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
 protected:
   // This does not return a nsresult since all we care about is if we
   // found the row element that this cell is in or not.
   void GetRow(nsIDOMHTMLTableRowElement** aRow);
+  void GetTable(nsIContent** aTable);
 
   PRInt32 mColIndex;
 };
@@ -200,6 +201,28 @@ nsHTMLTableCellElement::GetRow(nsIDOMHTMLTableRowElement** aRow)
   }
 }
 
+// protected method
+void
+nsHTMLTableCellElement::GetTable(nsIContent** aTable)
+{
+  *aTable = nsnull;
+
+  if (mParent) {  // mParent should be a row
+    nsIContent* section = mParent->GetParent();
+    if (section) {
+      nsCOMPtr<nsIAtom> tag;
+      section->GetTag(getter_AddRefs(tag));
+      if (tag == nsHTMLAtoms::table) {
+        // XHTML, without a row group
+        NS_ADDREF(*aTable = section);
+      } else {
+        // we have a row group.
+        NS_IF_ADDREF(*aTable = section->GetParent());
+      }
+    }
+  }
+}
+
 NS_IMETHODIMP
 nsHTMLTableCellElement::GetCellIndex(PRInt32* aCellIndex)
 {
@@ -244,30 +267,18 @@ nsHTMLTableCellElement::GetCellIndex(PRInt32* aCellIndex)
 NS_IMETHODIMP
 nsHTMLTableCellElement::WalkContentStyleRules(nsRuleWalker* aRuleWalker)
 {
-  // get table, add its rules too
-  // XXX can we safely presume structure or do we need to QI on the way up?
-  nsCOMPtr<nsIContent> row;
-
-  GetParent(*getter_AddRefs(row));
-
-  if (row) {
-    nsCOMPtr<nsIContent> section;
-
-    row->GetParent(*getter_AddRefs(section));
-
-    if (section) {
-      nsCOMPtr<nsIContent> table;
-
-      section->GetParent(*getter_AddRefs(table));
-
-      if (table) {
-        nsCOMPtr<nsIStyledContent> styledTable(do_QueryInterface(table));
-
-        if (styledTable) {
-          styledTable->WalkContentStyleRules(aRuleWalker);
-        }
-      }
-    }
+  // Add style information from the mapped attributes of the table
+  // element.  This depends on the strange behavior of the
+  // |MapAttributesIntoRule| in nsHTMLTableElement.cpp, which is
+  // technically incorrect since it's violating the nsIStyleRule
+  // contract.  However, things are OK (except for the incorrect
+  // dependence on display type rather than tag) since tables and cells
+  // match different, less specific, rules.
+  nsCOMPtr<nsIContent> table;
+  GetTable(getter_AddRefs(table));
+  nsCOMPtr<nsIStyledContent> styledTable(do_QueryInterface(table));
+  if (styledTable) {
+    styledTable->WalkContentStyleRules(aRuleWalker);
   }
 
   return nsGenericHTMLContainerElement::WalkContentStyleRules(aRuleWalker);
@@ -315,7 +326,7 @@ nsHTMLTableCellElement::SetAlign(const nsAString& aValue)
 }
 
 
-static nsHTMLValue::EnumTable kCellScopeTable[] = {
+static const nsHTMLValue::EnumTable kCellScopeTable[] = {
   { "row",      NS_STYLE_CELL_SCOPE_ROW },
   { "col",      NS_STYLE_CELL_SCOPE_COL },
   { "rowgroup", NS_STYLE_CELL_SCOPE_ROWGROUP },
@@ -379,7 +390,8 @@ nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::bgcolor) {
-    if (aResult.ParseColor(aValue, mDocument)) {
+    if (aResult.ParseColor(aValue,
+                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -505,32 +517,33 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
-NS_IMETHODIMP
-nsHTMLTableCellElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                                 nsChangeHint& aHint) const
+NS_IMETHODIMP_(PRBool)
+nsHTMLTableCellElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW }, 
-    { &nsHTMLAtoms::valign, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::nowrap, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::abbr, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::axis, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::headers, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::scope, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE }
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::align }, 
+    { &nsHTMLAtoms::valign },
+    { &nsHTMLAtoms::nowrap },
+#if 0
+    // XXXldb If these are implemented, they might need to move to
+    // GetAttributeChangeHint (depending on how, and preferably not).
+    { &nsHTMLAtoms::abbr },
+    { &nsHTMLAtoms::axis },
+    { &nsHTMLAtoms::headers },
+    { &nsHTMLAtoms::scope },
+#endif
+    { &nsHTMLAtoms::width },
+    { &nsHTMLAtoms::height },
+    { nsnull }
   };
 
-  static const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
     sBackgroundAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 NS_IMETHODIMP

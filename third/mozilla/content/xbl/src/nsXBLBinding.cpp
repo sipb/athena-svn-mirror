@@ -312,8 +312,7 @@ nsXBLBinding::InstallAnonymousContent(nsIContent* aAnonParent, nsIContent* aElem
   // We need to ensure two things.
   // (1) The anonymous content should be fooled into thinking it's in the bound
   // element's document.
-  nsCOMPtr<nsIDocument> doc;
-  aElement->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = aElement->GetDocument();
 
   aAnonParent->SetDocument(doc, PR_TRUE, AllowScripts());
 
@@ -323,7 +322,7 @@ nsXBLBinding::InstallAnonymousContent(nsIContent* aAnonParent, nsIContent* aElem
   aAnonParent->ChildCount(childCount);
   for (PRInt32 i = 0; i < childCount; i++) {
     nsCOMPtr<nsIContent> child;
-    aAnonParent->ChildAt(i, *getter_AddRefs(child));
+    aAnonParent->ChildAt(i, getter_AddRefs(child));
     child->SetParent(aElement);
     child->SetBindingParent(mBoundElement);
 
@@ -569,7 +568,7 @@ PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aCl
         clonedContent->ChildCount(cloneKidCount);
         for (PRInt32 k = 0; k < cloneKidCount; k++) {
           nsCOMPtr<nsIContent> cloneChild;
-          clonedContent->ChildAt(k, *getter_AddRefs(cloneChild));
+          clonedContent->ChildAt(k, getter_AddRefs(cloneChild));
           bm->SetInsertionParent(cloneChild, insParent);
           currPoint->AddChild(cloneChild);
         }
@@ -638,8 +637,7 @@ nsXBLBinding::GenerateAnonymousContent()
 #endif
 
   if (hasContent || hasInsertionPoints) {
-    nsCOMPtr<nsIDocument> doc;
-    mBoundElement->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = mBoundElement->GetDocument();
 
     // XXX doc will be null if we're in the midst of paint suppression.
     if (! doc)
@@ -664,7 +662,7 @@ nsXBLBinding::GenerateAnonymousContent()
         children->Item(i, getter_AddRefs(node));
         childContent = do_QueryInterface(node);
         nsCOMPtr<nsIAtom> tag;
-        childContent->GetTag(*getter_AddRefs(tag));
+        childContent->GetTag(getter_AddRefs(tag));
         if (tag != nsXULAtoms::observes && tag != nsXULAtoms::templateAtom) {
           hasContent = PR_FALSE;
           break;
@@ -742,7 +740,7 @@ nsXBLBinding::GenerateAnonymousContent()
                 // We were unable to place this child.  All anonymous content
                 // should be thrown out.  Special-case template and observes.
                 nsCOMPtr<nsIAtom> tag;
-                childContent->GetTag(*getter_AddRefs(tag));
+                childContent->GetTag(getter_AddRefs(tag));
                 if (tag != nsXULAtoms::observes && tag != nsXULAtoms::templateAtom) {
                   // Kill all anonymous content.
                   mContent = nsnull;
@@ -794,7 +792,8 @@ nsXBLBinding::GenerateAnonymousContent()
   nsCOMPtr<nsIAtom> prefix;
 
   for (PRInt32 i = 0; i < length; ++i) {
-    content->GetAttrNameAt(i, namespaceID, *getter_AddRefs(name), *getter_AddRefs(prefix));
+    content->GetAttrNameAt(i, &namespaceID, getter_AddRefs(name),
+                           getter_AddRefs(prefix));
 
     if (name != nsXBLAtoms::includes) {
       nsAutoString value;
@@ -875,7 +874,7 @@ nsXBLBinding::InstallEventHandlers()
               attachType == NS_LITERAL_STRING("_window"))
             {
               nsCOMPtr<nsIDocument> boundDoc;
-              mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
+              mBoundElement->GetDocument(getter_AddRefs(boundDoc));
               if (attachType == NS_LITERAL_STRING("_window")) {
                 nsCOMPtr<nsIScriptGlobalObject> global;
                 boundDoc->GetScriptGlobalObject(getter_AddRefs(global));
@@ -885,7 +884,7 @@ nsXBLBinding::InstallEventHandlers()
             }
           else if (!attachType.IsEmpty() && !attachType.Equals(NS_LITERAL_STRING("_element"))) {
             nsCOMPtr<nsIDocument> boundDoc;
-            mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
+            mBoundElement->GetDocument(getter_AddRefs(boundDoc));
             nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(boundDoc));
             nsCOMPtr<nsIDOMElement> otherElement;
             domDoc->GetElementById(attachType, getter_AddRefs(otherElement));
@@ -1372,9 +1371,8 @@ nsXBLBinding::InitClass(const nsCString& aClassName,
   rv = DoInitJSClass(cx, global, object, aClassName, aClassObject);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  // Root mBoundElement so that it doesn't loose it's binding
-  nsCOMPtr<nsIDocument> doc;
-  mBoundElement->GetDocument(*getter_AddRefs(doc));
+  // Root mBoundElement so that it doesn't lose it's binding
+  nsIDocument* doc = mBoundElement->GetDocument();
 
   if (doc) {
     nsCOMPtr<nsIXPConnectWrappedNative> native_wrapper =
@@ -1398,9 +1396,9 @@ nsXBLBinding::GetImmediateChild(nsIAtom* aTag, nsIContent** aResult)
   binding->ChildCount(childCount);
   for (PRInt32 i = 0; i < childCount; i++) {
     nsCOMPtr<nsIContent> child;
-    binding->ChildAt(i, *getter_AddRefs(child));
+    binding->ChildAt(i, getter_AddRefs(child));
     nsCOMPtr<nsIAtom> tag;
-    child->GetTag(*getter_AddRefs(tag));
+    child->GetTag(getter_AddRefs(tag));
     if (aTag == tag) {
       *aResult = child;
       NS_ADDREF(*aResult);
@@ -1470,8 +1468,7 @@ nsXBLBinding::AddScriptEventListener(nsIContent* aElement, nsIAtom* aName,
   nsCOMPtr<nsIAtom> eventName = do_GetAtom(eventStr);
 
   nsresult rv;
-  nsCOMPtr<nsIDocument> document;
-  aElement->GetDocument(*getter_AddRefs(document));
+  nsCOMPtr<nsIDocument> document = aElement->GetDocument();
   if (!document)
     return NS_OK;
 
@@ -1513,7 +1510,7 @@ nsXBLBinding::GetTextData(nsIContent *aParent, nsString& aResult)
   nsAutoString answer;
   for (PRInt32 j = 0; j < textCount; j++) {
     // Get the child.
-    aParent->ChildAt(j, *getter_AddRefs(textChild));
+    aParent->ChildAt(j, getter_AddRefs(textChild));
     nsCOMPtr<nsIDOMText> text(do_QueryInterface(textChild));
     if (text) {
       nsAutoString data;

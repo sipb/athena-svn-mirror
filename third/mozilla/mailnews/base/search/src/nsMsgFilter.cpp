@@ -74,7 +74,7 @@ nsMsgRuleAction::~nsMsgRuleAction()
 
 NS_IMPL_ISUPPORTS1(nsMsgRuleAction, nsIMsgRuleAction)
 
-NS_IMPL_GETSET(nsMsgRuleAction, Type, nsMsgRuleActionType, m_type);
+NS_IMPL_GETSET(nsMsgRuleAction, Type, nsMsgRuleActionType, m_type)
 
 NS_IMETHODIMP nsMsgRuleAction::SetPriority(nsMsgPriorityValue aPriority)
 {
@@ -150,10 +150,10 @@ nsMsgFilter::~nsMsgFilter()
 
 NS_IMPL_ISUPPORTS1(nsMsgFilter, nsIMsgFilter)
 
-NS_IMPL_GETSET(nsMsgFilter, FilterType, nsMsgFilterTypeType, m_type);
-NS_IMPL_GETSET(nsMsgFilter, Enabled, PRBool, m_enabled);
-NS_IMPL_GETSET(nsMsgFilter, Temporary, PRBool, m_temporary);
-NS_IMPL_GETSET(nsMsgFilter, Unparseable, PRBool, m_unparseable);
+NS_IMPL_GETSET(nsMsgFilter, FilterType, nsMsgFilterTypeType, m_type)
+NS_IMPL_GETSET(nsMsgFilter, Enabled, PRBool, m_enabled)
+NS_IMPL_GETSET(nsMsgFilter, Temporary, PRBool, m_temporary)
+NS_IMPL_GETSET(nsMsgFilter, Unparseable, PRBool, m_unparseable)
 
 NS_IMETHODIMP nsMsgFilter::GetFilterName(PRUnichar **name)
 {
@@ -438,10 +438,10 @@ NS_IMETHODIMP nsMsgFilter::MatchHdr(nsIMsgDBHdr	*msgHdr, nsIMsgFolder *folder, n
     nsMsgSearchScopeTerm* scope = new nsMsgSearchScopeTerm(nsnull, nsMsgSearchScope::offlineMail, folder);
     if (!scope) return NS_ERROR_OUT_OF_MEMORY;
 
-    nsXPIDLString folderCharset;
+    nsXPIDLCString folderCharset;
     folder->GetCharset(getter_Copies(folderCharset));
     nsresult rv = nsMsgSearchOfflineMail::MatchTermsForFilter(msgHdr, m_termList,
-                                                           NS_ConvertUCS2toUTF8(folderCharset).get(),
+                                                           folderCharset.get(),
                                                            scope,
                                                            db, 
                                                            headers,

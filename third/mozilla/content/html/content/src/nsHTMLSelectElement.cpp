@@ -257,8 +257,10 @@ public:
                                const nsAString& aValue,
                                nsHTMLValue& aResult);
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute,
-                                      PRInt32 aModType, nsChangeHint& aHint) const;
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType,
+                                    nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
 
 
 protected:
@@ -484,8 +486,8 @@ nsHTMLSelectElement::~nsHTMLSelectElement()
 
 // ISupports
 
-NS_IMPL_ADDREF_INHERITED(nsHTMLSelectElement, nsGenericElement);
-NS_IMPL_RELEASE_INHERITED(nsHTMLSelectElement, nsGenericElement);
+NS_IMPL_ADDREF_INHERITED(nsHTMLSelectElement, nsGenericElement)
+NS_IMPL_RELEASE_INHERITED(nsHTMLSelectElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLSelectElement
@@ -756,7 +758,7 @@ nsHTMLSelectElement::InsertOptionsIntoListRecurse(nsIContent* aOptions,
   }
 
   nsCOMPtr<nsIAtom> tag;
-  aOptions->GetTag(*getter_AddRefs(tag));
+  aOptions->GetTag(getter_AddRefs(tag));
   if (tag == nsHTMLAtoms::optgroup) {
     mOptGroupCount++;
     DispatchDOMEvent(NS_LITERAL_STRING("selectHasGroups"));
@@ -772,8 +774,8 @@ nsHTMLSelectElement::InsertOptionsIntoListRecurse(nsIContent* aOptions,
   PRInt32 numChildren;
   aOptions->ChildCount(numChildren);
   nsCOMPtr<nsIContent> child;
-  for (PRInt32 i=0;i<numChildren;i++) {
-    aOptions->ChildAt(i,*getter_AddRefs(child));
+  for (PRInt32 i = 0; i < numChildren; ++i) {
+    aOptions->ChildAt(i, getter_AddRefs(child));
     nsresult rv = InsertOptionsIntoListRecurse(child, aInsertIndex, aDepth+1);
     NS_ENSURE_SUCCESS(rv, rv);
   }
@@ -809,7 +811,7 @@ nsHTMLSelectElement::RemoveOptionsFromListRecurse(nsIContent* aOptions,
 
   if (mOptGroupCount) {
     nsCOMPtr<nsIAtom> tag;
-    aOptions->GetTag(*getter_AddRefs(tag));
+    aOptions->GetTag(getter_AddRefs(tag));
     if (tag == nsHTMLAtoms::optgroup) {
       mOptGroupCount--;
       DispatchDOMEvent(NS_LITERAL_STRING("selectHasNoGroups"));
@@ -826,9 +828,11 @@ nsHTMLSelectElement::RemoveOptionsFromListRecurse(nsIContent* aOptions,
   PRInt32 numChildren;
   aOptions->ChildCount(numChildren);
   nsCOMPtr<nsIContent> child;
-  for (PRInt32 i=0;i<numChildren;i++) {
-    aOptions->ChildAt(i,*getter_AddRefs(child));
-    nsresult rv = RemoveOptionsFromListRecurse(child, aRemoveIndex, aNumRemoved, aDepth+1);
+  for (PRInt32 i = 0; i < numChildren; ++i) {
+    aOptions->ChildAt(i, getter_AddRefs(child));
+    nsresult rv = RemoveOptionsFromListRecurse(child, aRemoveIndex,
+                                               aNumRemoved,
+                                               aDepth + 1);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
@@ -869,7 +873,7 @@ nsHTMLSelectElement::WillAddOptions(nsIContent* aOptions,
       // we want to get the option currently at the index and insert in front of
       // that.
       nsCOMPtr<nsIContent> currentKid;
-      aParent->ChildAt(aContentIndex, *getter_AddRefs(currentKid));
+      aParent->ChildAt(aContentIndex, getter_AddRefs(currentKid));
       NS_ASSERTION(currentKid, "Child not found!");
       if (currentKid) {
         ind = GetOptionIndexAt(currentKid);
@@ -895,7 +899,7 @@ nsHTMLSelectElement::WillRemoveOptions(nsIContent* aParent,
 
   // Get the index where the options will be removed
   nsCOMPtr<nsIContent> currentKid;
-  aParent->ChildAt(aContentIndex, *getter_AddRefs(currentKid));
+  aParent->ChildAt(aContentIndex, getter_AddRefs(currentKid));
   if (currentKid) {
     PRInt32 ind;
     if (!mNonOptionChildren) { 
@@ -917,14 +921,12 @@ nsHTMLSelectElement::WillRemoveOptions(nsIContent* aParent,
 PRInt32
 nsHTMLSelectElement::GetContentDepth(nsIContent* aContent)
 {
-  nsCOMPtr<nsIContent> content = aContent;
-  nsCOMPtr<nsIContent> prevContent;
+  nsIContent* content = aContent;
 
   PRInt32 retval = 0;
   while (content != this) {
     retval++;
-    prevContent = content;
-    prevContent->GetParent(*getter_AddRefs(content));
+    content = content->GetParent();
     if (!content) {
       retval = -1;
       break;
@@ -962,8 +964,7 @@ nsHTMLSelectElement::GetOptionIndexAfter(nsIContent* aOptions)
 
   PRInt32 retval = -1;
 
-  nsCOMPtr<nsIContent> parent;
-  aOptions->GetParent(*getter_AddRefs(parent));
+  nsCOMPtr<nsIContent> parent = aOptions->GetParent();
 
   if (parent) {
     PRInt32 index;
@@ -1007,8 +1008,8 @@ nsHTMLSelectElement::GetFirstChildOptionIndex(nsIContent* aOptions,
 {
   PRInt32 retval = -1;
   nsCOMPtr<nsIContent> child;
-  for (PRInt32 i=aStartIndex;i<aEndIndex;i++) {
-    aOptions->ChildAt(i,*getter_AddRefs(child));
+  for (PRInt32 i = aStartIndex; i < aEndIndex; ++i) {
+    aOptions->ChildAt(i, getter_AddRefs(child));
     retval = GetFirstOptionIndex(child);
     if (retval != -1) {
       break;
@@ -1137,7 +1138,7 @@ nsHTMLSelectElement::SetLength(PRUint32 aLength)
     nsCOMPtr<nsIHTMLContent> element;
     nsCOMPtr<nsINodeInfo> nodeInfo;
 
-    mNodeInfo->NameChanged(nsHTMLAtoms::option, *getter_AddRefs(nodeInfo));
+    mNodeInfo->NameChanged(nsHTMLAtoms::option, getter_AddRefs(nodeInfo));
 
     rv = NS_NewHTMLOptionElement(getter_AddRefs(element), nodeInfo);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -1731,16 +1732,12 @@ nsHTMLSelectElement::RemoveFocus(nsIPresContext* aPresContext)
   aPresContext->GetEventStateManager(getter_AddRefs(esm));
 
   if (esm) {
-    nsCOMPtr<nsIDocument> doc;
-
-    GetDocument(*getter_AddRefs(doc));
-
-    if (!doc) {
+    if (!mDocument) {
       return NS_ERROR_NULL_POINTER;
     }
 
     nsCOMPtr<nsIContent> rootContent;
-    doc->GetRootContent(getter_AddRefs(rootContent));
+    mDocument->GetRootContent(getter_AddRefs(rootContent));
 
     rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
   }
@@ -1871,30 +1868,34 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
   if (!aData || !aAttributes)
     return;
 
-  nsGenericHTMLElement::MapAlignAttributeInto(aAttributes, aData);
+  nsGenericHTMLElement::MapImageAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
 NS_IMETHODIMP
-nsHTMLSelectElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
-                                              PRInt32 aModType,
-                                              nsChangeHint& aHint) const
+nsHTMLSelectElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                            PRInt32 aModType,
+                                            nsChangeHint& aHint) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::multiple, NS_STYLE_HINT_FRAMECHANGE },
-    { &nsHTMLAtoms::size, NS_STYLE_HINT_FRAMECHANGE },
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE }
-  };
+  nsresult rv =
+    nsGenericHTMLContainerFormElement::GetAttributeChangeHint(aAttribute,
+                                                              aModType, aHint);
+  if (aAttribute == nsHTMLAtoms::multiple ||
+      aAttribute == nsHTMLAtoms::size) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_FRAMECHANGE);
+  }
+  return rv;
+}
 
-  static const AttributeImpactEntry* const map[] = {
-    attributes,
+NS_IMETHODIMP_(PRBool)
+nsHTMLSelectElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+{
+  static const AttributeDependenceEntry* const map[] = {
     sCommonAttributeMap,
+    sImageAlignAttributeMap
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 NS_IMETHODIMP
@@ -2190,9 +2191,7 @@ nsHTMLSelectElement::GetHasOptGroups(PRBool* aHasGroups)
 void
 nsHTMLSelectElement::DispatchDOMEvent(const nsAString& aName)
 {
-  nsCOMPtr<nsIDocument> document;
-  GetDocument(*getter_AddRefs(document));
-  nsCOMPtr<nsIDOMDocumentEvent> domDoc = do_QueryInterface(document);
+  nsCOMPtr<nsIDOMDocumentEvent> domDoc = do_QueryInterface(mDocument);
   if (domDoc) {
     nsCOMPtr<nsIDOMEvent> selectEvent;
     domDoc->CreateEvent(NS_LITERAL_STRING("Events"), getter_AddRefs(selectEvent));

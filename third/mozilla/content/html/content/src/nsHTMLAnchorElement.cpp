@@ -38,7 +38,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsCOMPtr.h"
-#include "nsHTMLUtils.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsIDOMHTMLAnchorElement.h"
@@ -106,7 +105,7 @@ public:
   // nsILink
   NS_IMETHOD GetLinkState(nsLinkState &aState);
   NS_IMETHOD SetLinkState(nsLinkState aState);
-  NS_IMETHOD GetHrefCString(char* &aBuf);
+  NS_IMETHOD GetHrefURI(nsIURI** aURI);
 
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
@@ -164,12 +163,10 @@ NS_NewHTMLAnchorElement(nsIHTMLContent** aInstancePtrResult,
 
 nsHTMLAnchorElement::nsHTMLAnchorElement() : mLinkState(eLinkState_Unknown)
 {
-  nsHTMLUtils::AddRef(); // for GetHrefCString
 }
 
 nsHTMLAnchorElement::~nsHTMLAnchorElement()
 {
-  nsHTMLUtils::Release(); // for GetHrefCString
 }
 
 
@@ -218,6 +215,7 @@ nsHTMLAnchorElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 
 NS_IMPL_STRING_ATTR(nsHTMLAnchorElement, Charset, charset)
 NS_IMPL_STRING_ATTR(nsHTMLAnchorElement, Coords, coords)
+NS_IMPL_URI_ATTR(nsHTMLAnchorElement, Href, href)
 NS_IMPL_STRING_ATTR(nsHTMLAnchorElement, Hreflang, hreflang)
 NS_IMPL_STRING_ATTR(nsHTMLAnchorElement, Name, name)
 NS_IMPL_STRING_ATTR(nsHTMLAnchorElement, Rel, rel)
@@ -232,16 +230,19 @@ NS_IMETHODIMP
 nsHTMLAnchorElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                  PRBool aCompileEventHandlers)
 {
+  PRBool documentChanging = (aDocument != mDocument);
+  
   // Unregister the access key for the old document.
-  if (mDocument) {
+  if (documentChanging && mDocument) {
     RegUnRegAccessKey(PR_FALSE);
   }
 
-  nsresult rv = nsGenericHTMLContainerElement::SetDocument(aDocument, aDeep,
-                                                        aCompileEventHandlers);
+  nsresult rv =
+    nsGenericHTMLContainerElement::SetDocument(aDocument, aDeep,
+                                               aCompileEventHandlers);
 
   // Register the access key for the new document.
-  if (mDocument) {
+  if (documentChanging && mDocument) {
     RegUnRegAccessKey(PR_TRUE);
   }
 
@@ -309,13 +310,11 @@ nsHTMLAnchorElement::RemoveFocus(nsIPresContext* aPresContext)
   aPresContext->GetEventStateManager(getter_AddRefs(esm));
 
   if (esm) {
-    nsCOMPtr<nsIDocument> doc;
-    GetDocument(*getter_AddRefs(doc));
-    if (!doc)
+    if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
     nsCOMPtr<nsIContent> rootContent;
-    doc->GetRootContent(getter_AddRefs(rootContent));
+    mDocument->GetRootContent(getter_AddRefs(rootContent));
     rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
   }
 
@@ -350,28 +349,8 @@ nsHTMLAnchorElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                     PRUint32 aFlags,
                                     nsEventStatus* aEventStatus)
 {
-  return HandleDOMEventForAnchors(this, aPresContext, aEvent, aDOMEvent, 
+  return HandleDOMEventForAnchors(aPresContext, aEvent, aDOMEvent, 
                                   aFlags, aEventStatus);
-}
-
-NS_IMETHODIMP
-nsHTMLAnchorElement::GetHref(nsAString& aValue)
-{
-  char *buf;
-  nsresult rv = GetHrefCString(buf);
-  if (NS_FAILED(rv)) return rv;
-  if (buf) {
-    aValue.Assign(NS_ConvertUTF8toUCS2(buf));
-    nsCRT::free(buf);
-  }
-  // NS_IMPL_STRING_ATTR does nothing where we have (buf == null)
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLAnchorElement::SetHref(const nsAString& aValue)
-{
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::href, aValue, PR_TRUE);
 }
 
 NS_IMETHODIMP
@@ -403,10 +382,9 @@ nsHTMLAnchorElement::GetProtocol(nsAString& aProtocol)
   if (NS_FAILED(rv))
     return rv;
 
-  nsCOMPtr<nsIDocument> doc;
-  mNodeInfo->GetDocument(*getter_AddRefs(doc));
-
-  return GetProtocolFromHrefString(href, aProtocol, doc);
+  // XXX this should really use GetHrefURI and not do so much string stuff
+  return GetProtocolFromHrefString(href, aProtocol,
+                                   nsGenericHTMLContainerElement::GetOwnerDocument());
 }
 
 NS_IMETHODIMP
@@ -661,39 +639,9 @@ nsHTMLAnchorElement::SetLinkState(nsLinkState aState)
 }
 
 NS_IMETHODIMP
-nsHTMLAnchorElement::GetHrefCString(char* &aBuf)
+nsHTMLAnchorElement::GetHrefURI(nsIURI** aURI)
 {
-  // Get href= attribute (relative URL).
-  nsAutoString relURLSpec;
-
-  if (NS_CONTENT_ATTR_HAS_VALUE ==
-      GetAttr(kNameSpaceID_None, nsHTMLAtoms::href, relURLSpec)) {
-    // Clean up any leading or trailing whitespace
-    relURLSpec.Trim(" \t\n\r");
-
-    // Get base URL.
-    nsCOMPtr<nsIURI> baseURL;
-    GetBaseURL(*getter_AddRefs(baseURL));
-
-    if (baseURL) {
-      // Get absolute URL.
-      nsCAutoString buf;
-      NS_MakeAbsoluteURIWithCharset(buf, relURLSpec, mDocument, baseURL,
-                                    nsHTMLUtils::IOService,
-                                    nsHTMLUtils::CharsetMgr);
-      aBuf = ToNewCString(buf);
-    }
-    else {
-      // Absolute URL is same as relative URL.
-      aBuf = ToNewUTF8String(relURLSpec);
-    }
-  }
-  else {
-    // Absolute URL is null to say we have no HREF.
-    aBuf = nsnull;
-  }
-
-  return NS_OK;
+  return GetHrefURIForAnchors(aURI);
 }
 
 NS_IMETHODIMP

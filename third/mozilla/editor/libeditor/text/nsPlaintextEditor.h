@@ -51,7 +51,6 @@
 
 #include "nsEditRules.h"
  
-class nsIDOMKeyEvent;
 class nsITransferable;
 class nsIDOMEventReceiver;
 class nsIDocumentEncoder;
@@ -86,20 +85,7 @@ public:
   NS_DECL_NSIPLAINTEXTEDITOR
 
   /* ------------ nsIEditorMailSupport overrides -------------- */
-  NS_IMETHOD InsertTextWithQuotations(const nsAString &aStringToInsert);
-  NS_IMETHOD PasteAsQuotation(PRInt32 aSelectionType);
-  NS_IMETHOD InsertAsQuotation(const nsAString& aQuotedText,
-                               nsIDOMNode** aNodeInserted);
-  NS_IMETHOD PasteAsCitedQuotation(const nsAString& aCitation,
-                                   PRInt32 aSelectionType);
-  NS_IMETHOD InsertAsCitedQuotation(const nsAString& aQuotedText,
-                                    const nsAString& aCitation,
-                                    PRBool aInsertHTML,
-                                    const nsAString& aCharset,
-                                    nsIDOMNode** aNodeInserted);
-  NS_IMETHOD Rewrap(PRBool aRespectNewlines);
-  NS_IMETHOD StripCites();
-  NS_IMETHOD GetEmbeddedObjects(nsISupportsArray** aNodeList);
+  NS_DECL_NSIEDITORMAILSUPPORT
 
   /* ------------ nsIEditorIMESupport overrides -------------- */
   
@@ -124,7 +110,7 @@ public:
 
   NS_IMETHOD DeleteSelection(EDirection aAction);
 
-  NS_IMETHOD SetDocumentCharacterSet(const nsAString & characterSet);
+  NS_IMETHOD SetDocumentCharacterSet(const nsACString & characterSet);
 
   /** we override this here to install event listeners */
   NS_IMETHOD PostCreate();
@@ -152,7 +138,7 @@ public:
                             
   NS_IMETHOD OutputToStream(nsIOutputStream* aOutputStream,
                             const nsAString& aFormatType,
-                            const nsAString& aCharsetOverride,
+                            const nsACString& aCharsetOverride,
                             PRUint32 aFlags);
 
 
@@ -213,7 +199,7 @@ protected:
   // Helpers for output routines
   NS_IMETHOD GetAndInitDocEncoder(const nsAString& aFormatType,
                                   PRUint32 aFlags,
-                                  const nsAString& aCharset,
+                                  const nsACString& aCharset,
                                   nsIDocumentEncoder** encoder);
 
   // key event helpers
@@ -225,9 +211,6 @@ protected:
                          EDirection aSelect);
   NS_IMETHOD InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode);
 
-  NS_IMETHOD IsRootTag(nsString &aTag, PRBool &aIsTag);
-
-
   // factored methods for handling insertion of data from transferables (drag&drop or clipboard)
   NS_IMETHOD PrepareTransferable(nsITransferable **transferable);
   NS_IMETHOD InsertTextFromTransferable(nsITransferable *transferable,
@@ -236,6 +219,9 @@ protected:
                                         PRBool aDoDeleteSelection);
   virtual nsresult SetupDocEncoder(nsIDocumentEncoder **aDocEncoder);
   virtual nsresult PutDragDataInTransferable(nsITransferable **aTransferable);
+
+  /** shared outputstring; returns whether selection is collapsed and resulting string */
+  nsresult SharedOutputString(PRUint32 aFlags, PRBool* aIsCollapsed, nsAString& aResult);
 
   /** simple utility to handle any error with event listener allocation or registration */
   void HandleEventListenerError();

@@ -62,7 +62,12 @@ REQUIRES	= xpcom \
 		  intl \
 		  uconv \
 		  windowwatcher \
+		  history \
 		  $(NULL)
+
+ifdef MOZ_PHOENIX
+REQUIRES	+= toolkitcomps
+endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 REQUIRES		+= windowwatcher \

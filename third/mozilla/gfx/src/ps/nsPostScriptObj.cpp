@@ -50,7 +50,6 @@
 #include "nsReadableUtils.h"
 
 #include "nsICharsetAlias.h"
-#include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsIPersistentProperties2.h"
 #include "nsCRT.h"
@@ -62,9 +61,9 @@
 
 #include "prenv.h"
 #include "prprf.h"
+#include "prerror.h"
 
 #include <locale.h>
-#include <limits.h>
 #include <errno.h>
 
 #ifdef VMS
@@ -78,8 +77,6 @@
 #ifdef PR_LOGGING
 static PRLogModuleInfo *nsPostScriptObjLM = PR_NewLogModule("nsPostScriptObj");
 #endif /* PR_LOGGING */
-
-extern "C" PS_FontInfo *PSFE_MaskToFI[N_FONTS];   // need fontmetrics.c
 
 // These set the location to standard C and back
 // which will keep the "." from converting to a "," 
@@ -95,7 +92,6 @@ extern "C" PS_FontInfo *PSFE_MaskToFI[N_FONTS];   // need fontmetrics.c
 
 static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
-static NS_DEFINE_IID(kICharsetConverterManagerIID, NS_ICHARSETCONVERTERMANAGER_IID);
 
 /* 
  * global
@@ -324,12 +320,6 @@ nsPostScriptObj::Init( nsIDeviceContextSpecPS *aSpec )
          * - which means that if the ${MOZ_PRINTER_NAME} env var is not empty
          * the "-P" option of lpr will be set to the printer name.
          */
-#ifndef ARG_MAX
-#define ARG_MAX 4096
-#endif /* !ARG_MAX */
-        /* |putenv()| will use the pointer to this buffer directly and will not
-         * |strdup()| the content!!!! */
-        static char envvar[ARG_MAX];
 
         /* get printer name */
         aSpec->GetPrinterName(&printername);
@@ -347,26 +337,34 @@ nsPostScriptObj::Init( nsIDeviceContextSpecPS *aSpec )
         else 
           printername = "";
 
-        /* We're using a |static| buffer (|envvar|) here to ensure that the
-         * memory "remembered" in the env var pool does still exist when we
-         * leave this context.
-         * However we can't write to the buffer while it's memory is linked
-         * to the env var pool - otherwise we may corrupt the pool.
-         * Therefore we're feeding a "dummy" env name/value string to the pool
-         * to "unlink" our static buffer (if it was set by an previous print
-         * job), then we write to the buffer and finally we |putenv()| our
-         * static buffer again.
+        /* Construct an environment string MOZ_PRINTER_NAME=<printername>
+         * and add it to the environment.
+         * On a POSIX system the original buffer becomes part of the
+         * environment, so it must remain valid until replaced. To preserve
+         * the ability to unload shared libraries, we have to either remove
+         * the string from the environment at unload time or else store the
+         * string in the heap, where it'll be left behind after unloading
+         * the library.
          */
-        PR_SetEnv("MOZ_PRINTER_NAME=dummy_value_to_make_putenv_happy");
-        PRInt32 nchars = PR_snprintf(envvar, ARG_MAX,
-                                  "MOZ_PRINTER_NAME=%s", printername);
-        if (nchars < 0 || nchars >= ARG_MAX)
-            sprintf(envvar, "MOZ_PRINTER_NAME=");
-
+        static char *moz_printer_string;
+        char *old_printer_string = moz_printer_string;
+        moz_printer_string = PR_smprintf("MOZ_PRINTER_NAME=%s", printername);
 #ifdef DEBUG
-        printf("setting printer name via '%s'\n", envvar);
-#endif /* DEBUG */
-        PR_SetEnv(envvar);
+        printf("setting '%s'\n", moz_printer_string);
+#endif
+
+        if (!moz_printer_string) {
+          /* We're probably out of memory */
+          moz_printer_string = old_printer_string;
+          return (PR_OUT_OF_MEMORY_ERROR == PR_GetError()) ? 
+            NS_ERROR_OUT_OF_MEMORY : NS_ERROR_UNEXPECTED;
+        }
+        else {
+          PR_SetEnv(moz_printer_string);
+          if (old_printer_string)
+            PR_smprintf_free(old_printer_string);
+        }
+
         
         aSpec->GetCommand(&mPrintSetup->print_cmd);
         mPrintSetup->out = tmpfile();
@@ -449,13 +447,7 @@ nsPostScriptObj::Init( nsIDeviceContextSpecPS *aSpec )
     mPrintSetup->completion = nsnull;          // Called when translation finished 
     mPrintSetup->carg = nsnull;                // Data saved for completion routine 
     mPrintSetup->status = 0;                   // Status of URL on completion 
-	                                    // "other" font is for encodings other than iso-8859-1 
-    mPrintSetup->otherFontName[0] = nsnull;		   
-  				                            // name of "other" PostScript font 
-    mPrintSetup->otherFontInfo[0] = nsnull;	   
-    // font info parsed from "other" afm file 
-    mPrintSetup->otherFontCharSetID = 0;	      // charset ID of "other" font 
-    //mPrintSetup->cx = nsnull;                 // original context, if available 
+
     pi->page_height = mPrintSetup->height * 10;	// Size of printable area on page 
     pi->page_width = mPrintSetup->width * 10;	// Size of printable area on page 
     pi->page_break = 0;	              // Current page bottom 
@@ -601,30 +593,6 @@ FILE *f;
 
   fprintf(f, "] /isolatin1encoding exch def\n");
 
-#ifdef OLDFONTS
-  // output the fonts supported here    
-  for (i = 0; i < N_FONTS; i++){
-    fprintf(f, 
-	          "/F%d\n"
-	          "    /%s findfont\n"
-	          "    dup length dict begin\n"
-	          "	{1 index /FID ne {def} {pop pop} ifelse} forall\n"
-	          "	/Encoding isolatin1encoding def\n"
-	          "    currentdict end\n"
-	          "definefont pop\n"
-	          "/f%d { /csize exch def /F%d findfont csize scalefont setfont } bind def\n",
-		        i, PSFE_MaskToFI[i]->name, i, i);
-  }
-
-  for (i = 0; i < N_FONTS; i++){
-    if (mPrintContext->prSetup->otherFontName[i]) {
-	    fprintf(f, 
-	          "/of%d { /%s findfont exch scalefont setfont } bind def\n",
-		        i, mPrintContext->prSetup->otherFontName[i]);
-            //fprintf(f, "/of /of1;\n", mPrintContext->prSetup->otherFontName); 
-    }
-  }
-#else
   for(i=0;i<NUM_AFM_FONTS;i++){
     fprintf(f, 
 	          "/F%d\n"
@@ -638,12 +606,6 @@ FILE *f;
 		        i, gSubstituteFonts[i].mPSName, i, i);
 
   }
-#endif
-
-
-
-
-
 
   fprintf(f, "/rhc {\n");
   fprintf(f, "    {\n");
@@ -1969,7 +1931,8 @@ FILE *f;
   fprintf(f, "\n");
 
   // read the printer properties file
-  InitUnixPrinterProps();
+  NS_LoadPersistentPropertiesFromURISpec(getter_AddRefs(mPrinterProps),
+    NS_LITERAL_CSTRING("resource:/res/unixpsfonts.properties"));
 
   // setup prolog for each langgroup
   initlanggroup();
@@ -2596,57 +2559,63 @@ nsPostScriptObj::translate(int x, int y)
  *	@update 2/1/99 dwc
  */
 void 
-nsPostScriptObj::grayimage(nsIImage *aImage,int aX,int aY, int aWidth,int aHeight)
+nsPostScriptObj::grayimage(nsIImage *aImage,
+                            int aSX, int aSY, int aSWidth, int aSHeight,
+                            int aDX, int aDY, int aDWidth, int aDHeight)
 {
-PRInt32 rowData,bytes_Per_Pix,x,y;
-PRInt32 width,height,bytewidth,cbits,n;
-PRUint8 *theBits,*curline;
-PRBool isTopToBottom;
-PRInt32 sRow, eRow, rStep; 
+  PRInt32 rowData, x, y;
+  PRInt32 width, height, bytewidth, cbits, n;
+  PRUint8 *theBits, *curline;
+  PRBool isTopToBottom;
+  PRInt32 sRow, eRow, rStep; 
 
   XL_SET_NUMERIC_LOCALE();
-  bytes_Per_Pix = aImage->GetBytesPix();
 
-  if(bytes_Per_Pix == 1)
-    return ;
+  aImage->LockImagePixels(PR_FALSE);
+  theBits = aImage->GetBits();
+
+  /* image data might not be available (ex: spacer image) */
+  if (!theBits)
+  {
+    aImage->UnlockImagePixels(PR_FALSE);
+    return;
+  }
 
   rowData = aImage->GetLineStride();
   height = aImage->GetHeight();
   width = aImage->GetWidth();
-  bytewidth = 3*width;
+  bytewidth = 3*aSWidth;
   cbits = 8;
 
   FILE *f = mPrintContext->prSetup->tmpBody;
   fprintf(f, "gsave\n");
-  fprintf(f, "/rowdata %d string def\n",bytewidth/3);
-  translate(aX, aY + aHeight);
+  fprintf(f, "/rowdata %d string def\n", bytewidth/3);
+  translate(aDX, aDY + aDHeight);
   fprintf(f, "%g %g scale\n",
-          PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
-  fprintf(f, "%d %d ", width, height);
+          PAGE_TO_POINT_F(aDWidth), PAGE_TO_POINT_F(aDHeight));
+  fprintf(f, "%d %d ", aSWidth, aSHeight);
   fprintf(f, "%d ", cbits);
-  fprintf(f, "[%d 0 0 %d 0 0]\n", width,height);
+  fprintf(f, "[%d 0 0 %d 0 0]\n", aSWidth, aSHeight);
   fprintf(f, " { currentfile rowdata readhexstring pop }\n");
   fprintf(f, " image\n");
 
-  aImage->LockImagePixels(PR_FALSE);
-  theBits = aImage->GetBits();
   n = 0;
   if ( ( isTopToBottom = aImage->GetIsRowOrderTopToBottom()) == PR_TRUE ) {
-	sRow = height - 1;
-        eRow = 0;
-        rStep = -1;
+    sRow = aSY + aSHeight - 1;
+    eRow = aSY;
+    rStep = -1;
   } else {
-	sRow = 0;
-        eRow = height;
-        rStep = 1;
+	sRow = aSY;
+    eRow = aSY + aSHeight;
+    rStep = 1;
   }
 
   y = sRow;
   while ( 1 ) {
-    curline = theBits + (y*rowData);
-    for(x=0;x<bytewidth;x+=3){
+    curline = theBits + y * rowData + 3 * aSX;
+    for(x=0; x < bytewidth; x+=3) {
       if (n > 71) {
-          fprintf(mPrintContext->prSetup->tmpBody,"\n");
+          fprintf(mPrintContext->prSetup->tmpBody, "\n");
           n = 0;
       }
       fprintf(mPrintContext->prSetup->tmpBody, "%02x", (int) (0xff & *curline));
@@ -2670,68 +2639,75 @@ PRInt32 sRow, eRow, rStep;
  *	@update 2/1/99 dwc
  */
 void 
-nsPostScriptObj::colorimage(nsIImage *aImage,int aX,int aY, int aWidth,int aHeight)
+nsPostScriptObj::colorimage(nsIImage *aImage, 
+                            int aSX, int aSY, int aSWidth, int aSHeight,
+                            int aDX, int aDY, int aDWidth, int aDHeight)
 {
-PRInt32 rowData,bytes_Per_Pix,x,y;
-PRInt32 width,height,bytewidth,cbits,n;
-PRUint8 *theBits,*curline;
-PRBool isTopToBottom;
-PRInt32 sRow, eRow, rStep; 
+  PRInt32 rowData, x, y;
+  PRInt32 width, height, bytewidth, cbits, n;
+  PRUint8 *theBits, *curline;
+  PRBool isTopToBottom;
+  PRInt32 sRow, eRow, rStep; 
 
   // No point in scaling images to 0--some printers choke on it (bug 191684)
-  if (aWidth == 0 || aHeight == 0) {
+  if (aDWidth == 0 || aDHeight == 0) {
     return;
   }
 
   XL_SET_NUMERIC_LOCALE();
 
   if(mPrintSetup->color == PR_FALSE ){
-    this->grayimage(aImage,aX,aY,aWidth,aHeight);
+    this->grayimage(aImage,
+                    aSX, aSY, aSWidth, aSHeight,
+                    aDX, aDY, aDWidth, aDHeight);
     return;
   }
 
-  bytes_Per_Pix = aImage->GetBytesPix();
+  aImage->LockImagePixels(PR_FALSE);
+  theBits = aImage->GetBits();
 
-  if(bytes_Per_Pix == 1)
-    return ;
+  /* image data might not be available (ex: spacer image) */
+  if (!theBits)
+  {
+    aImage->UnlockImagePixels(PR_FALSE);
+    return;
+  }
 
   rowData = aImage->GetLineStride();
   height = aImage->GetHeight();
   width = aImage->GetWidth();
-  bytewidth = 3*width;
+  bytewidth = 3*aSWidth;
   cbits = 8;
 
   FILE *f = mPrintContext->prSetup->tmpBody;
   fprintf(f, "gsave\n");
-  fprintf(f, "/rowdata %d string def\n",bytewidth);
-  translate(aX, aY + aHeight);
+  fprintf(f, "/rowdata %d string def\n", bytewidth);
+  translate(aDX, aDY + aDHeight);
   fprintf(f, "%g %g scale\n",
-          PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
-  fprintf(f, "%d %d ", width, height);
+          PAGE_TO_POINT_F(aDWidth), PAGE_TO_POINT_F(aDHeight));
+  fprintf(f, "%d %d ", aSWidth, aSHeight);
   fprintf(f, "%d ", cbits);
-  fprintf(f, "[%d 0 0 %d 0 0]\n", width,height);
+  fprintf(f, "[%d 0 0 %d 0 0]\n", aSWidth, aSHeight);
   fprintf(f, " { currentfile rowdata readhexstring pop }\n");
   fprintf(f, " false 3 colorimage\n");
 
-  aImage->LockImagePixels(PR_FALSE);
-  theBits = aImage->GetBits();
   n = 0;
   if ( ( isTopToBottom = aImage->GetIsRowOrderTopToBottom()) == PR_TRUE ) {
-	sRow = height - 1;
-        eRow = 0;
-        rStep = -1;
+	sRow = aSY + aSHeight - 1;
+    eRow = aSY;
+    rStep = -1;
   } else {
-	sRow = 0;
-        eRow = height;
-        rStep = 1;
+	sRow = aSY;
+    eRow = aSY + aSHeight;
+    rStep = 1;
   }
 
   y = sRow;
   while ( 1 ) {
-    curline = theBits + (y*rowData);
-    for(x=0;x<bytewidth;x++){
+    curline = theBits + y * rowData + 3 * aSX;
+    for(x=0; x < bytewidth; x++) {
       if (n > 71) {
-          fprintf(f,"\n");
+          fprintf(f, "\n");
           n = 0;
       }
       fprintf(f, "%02x", (int) (0xff & *curline++));
@@ -2903,24 +2879,6 @@ nsPostScriptObj::setlanggroup(nsIAtom * aLangGroup)
 }
 
 PRBool
-nsPostScriptObj::InitUnixPrinterProps()
-{
-  nsCOMPtr<nsIPersistentProperties> printerprops_tmp;
-  const char propertyURL[] = "resource:/res/unixpsfonts.properties";
-  nsCOMPtr<nsIURI> uri;
-  NS_ENSURE_SUCCESS(NS_NewURI(getter_AddRefs(uri), NS_LITERAL_CSTRING(propertyURL)), PR_FALSE);
-  nsCOMPtr<nsIInputStream> in;
-  NS_ENSURE_SUCCESS(NS_OpenURI(getter_AddRefs(in), uri), PR_FALSE);
-  NS_ENSURE_SUCCESS(nsComponentManager::CreateInstance(
-    NS_PERSISTENTPROPERTIES_CONTRACTID, nsnull,
-    NS_GET_IID(nsIPersistentProperties), getter_AddRefs(printerprops_tmp)),
-    PR_FALSE);
-  NS_ENSURE_SUCCESS(printerprops_tmp->Load(in), PR_FALSE);
-  mPrinterProps = printerprops_tmp;
-  return PR_TRUE;
-}
-
-PRBool
 nsPostScriptObj::GetUnixPrinterSetting(const nsCAutoString& aKey, char** aVal)
 {
 
@@ -3076,21 +3034,11 @@ static void PrefEnumCallback(const char *aName, void *aClosure)
 
     if (psnativecode) {
       nsAutoString str;
-      nsICharsetConverterManager *ccMain = nsnull;
-      nsICharsetAlias *aliasmgr = nsnull;
-      res = nsServiceManager::GetService(kCharsetConverterManagerCID,
-	   kICharsetConverterManagerIID, (nsISupports **) & ccMain);
-      if (NS_SUCCEEDED(res) && ccMain) {
-        res = nsServiceManager::GetService(NS_CHARSETALIAS_CONTRACTID,
-	  NS_GET_IID(nsICharsetAlias), (nsISupports **) & aliasmgr);
-	if (NS_SUCCEEDED(res) && aliasmgr) {
-	  res = aliasmgr->GetPreferred(NS_ConvertASCIItoUCS2(psnativecode), str);
-	  if (NS_SUCCEEDED(res)) {
-	    res = ccMain->GetUnicodeEncoder(&str, &linfo->mEncoder);
-	  }
-          nsServiceManager::ReleaseService(NS_CHARSETALIAS_CONTRACTID, aliasmgr);
-	}
-        nsServiceManager::ReleaseService(kCharsetConverterManagerCID, ccMain);
+      nsCOMPtr<nsICharsetConverterManager> ccMain =
+        do_GetService(kCharsetConverterManagerCID, &res);
+      
+      if (NS_SUCCEEDED(res)) {
+        res = ccMain->GetUnicodeEncoder(psnativecode.get(), &linfo->mEncoder);
       }
     }
 

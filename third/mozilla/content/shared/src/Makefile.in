@@ -36,9 +36,7 @@ REQUIRES	= xpcom \
 		  locale \
 		  dom \
 		  necko \
-		  htmlparser \
 		  unicharutil \
-		  uconv \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -49,7 +47,6 @@ CPPSRCS		= \
 		nsCSSKeywords.cpp \
 		nsCSSProps.cpp \
 		nsHTMLAtoms.cpp \
-		nsHTMLUtils.cpp   \
 		nsHTMLValue.cpp \
 		nsImageMapUtils.cpp \
 		nsLayoutAtoms.cpp \

@@ -34,7 +34,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.1.1.2 2003-07-08 17:52:16 rbasch Exp $
+ * $Id: certdb.c,v 1.1.1.3 2003-12-24 16:01:41 rbasch Exp $
  */
 
 #include "nssilock.h"
@@ -1200,13 +1200,15 @@ loser:
 SECStatus
 CERT_CheckKeyUsage(CERTCertificate *cert, unsigned int requiredUsage)
 {
-    SECKEYPublicKey *key;
-    
+    if (!cert) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+	return SECFailure;
+    }
     /* choose between key agreement or key encipherment based on key
      * type in cert
      */
     if ( requiredUsage & KU_KEY_AGREEMENT_OR_ENCIPHERMENT ) {
-	key = CERT_ExtractPublicKey(cert);
+	SECKEYPublicKey *key = CERT_ExtractPublicKey(cert);
 	if (!key)
 	    return SECFailure;
 	if ( ( key->keyType == keaKey ) || ( key->keyType == fortezzaKey ) ||
@@ -2573,10 +2575,7 @@ CERT_FilterCertListByUsage(CERTCertList *certList, SECCertUsage usage,
     unsigned int requiredKeyUsage;
     unsigned int requiredCertType;
     CERTCertListNode *node, *savenode;
-    PRBool bad;
     SECStatus rv;
-    unsigned int certType;
-    PRBool dummyret;
     
     if (certList == NULL) goto loser;
 
@@ -2590,26 +2589,28 @@ CERT_FilterCertListByUsage(CERTCertList *certList, SECCertUsage usage,
 	
     while ( !CERT_LIST_END(node, certList) ) {
 
-	bad = PR_FALSE;
+	PRBool bad = (PRBool)(!node->cert);
 
-	/* bad key usage */
-	if ( CERT_CheckKeyUsage(node->cert, requiredKeyUsage )
-	    != SECSuccess ) {
+	/* bad key usage ? */
+	if ( !bad && 
+	     CERT_CheckKeyUsage(node->cert, requiredKeyUsage) != SECSuccess ) {
 	    bad = PR_TRUE;
 	}
-	/* bad cert type */
-	if ( ca ) {
-	    /* This function returns a more comprehensive cert type that
-	     * takes trust flags into consideration.  Should probably
-	     * fix the cert decoding code to do this.
-	     */
-	    dummyret = CERT_IsCACert(node->cert, &certType);
-	} else {
-	    certType = node->cert->nsCertType;
-	}
-	
-	if ( ! ( certType & requiredCertType ) ) {
-	    bad = PR_TRUE;
+	/* bad cert type ? */
+	if ( !bad ) {
+	    unsigned int certType = 0;
+	    if ( ca ) {
+		/* This function returns a more comprehensive cert type that
+		 * takes trust flags into consideration.  Should probably
+		 * fix the cert decoding code to do this.
+		 */
+		PRBool dummyret = CERT_IsCACert(node->cert, &certType);
+	    } else {
+		certType = node->cert->nsCertType;
+	    }
+	    if ( !( certType & requiredCertType ) ) {
+		bad = PR_TRUE;
+	    }
 	}
 
 	if ( bad ) {
@@ -2629,9 +2630,10 @@ loser:
 
 PRBool CERT_IsUserCert(CERTCertificate* cert)
 {
-    if ( (cert->trust->sslFlags & CERTDB_USER ) ||
+    if ( cert->trust &&
+        ((cert->trust->sslFlags & CERTDB_USER ) ||
          (cert->trust->emailFlags & CERTDB_USER ) ||
-         (cert->trust->objectSigningFlags & CERTDB_USER ) ) {
+         (cert->trust->objectSigningFlags & CERTDB_USER )) ) {
         return PR_TRUE;
     } else {
         return PR_FALSE;

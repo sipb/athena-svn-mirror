@@ -224,7 +224,7 @@ public:
   static nsresult AddBlinkFrame(nsIPresContext* aPresContext, nsIFrame* aFrame);
   static nsresult RemoveBlinkFrame(nsIFrame* aFrame);
   
-  static PRBool   GetBlinkIsOff() { return sBlinkTextOff; }
+  static PRBool   GetBlinkIsOff() { return sState == 3; }
   
 protected:
 
@@ -245,12 +245,12 @@ protected:
 protected:
 
   static nsBlinkTimer* sTextBlinker;
-  static PRBool        sBlinkTextOff;
+  static PRUint32      sState; // 0-2 == on; 3 == off
   
 };
 
 nsBlinkTimer* nsBlinkTimer::sTextBlinker = nsnull;
-PRBool        nsBlinkTimer::sBlinkTextOff = PR_FALSE;
+PRUint32      nsBlinkTimer::sState = 0;
 
 #ifdef NOISY_BLINK
 static PRTime gLastTick;
@@ -271,7 +271,7 @@ void nsBlinkTimer::Start()
   nsresult rv;
   mTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
   if (NS_OK == rv) {
-    mTimer->InitWithCallback(this, 750, nsITimer::TYPE_REPEATING_PRECISE);
+    mTimer->InitWithCallback(this, 250, nsITimer::TYPE_REPEATING_PRECISE);
   }
 }
 
@@ -320,7 +320,10 @@ NS_IMETHODIMP nsBlinkTimer::Notify(nsITimer *timer)
   // Toggle blink state bit so that text code knows whether or not to
   // render. All text code shares the same flag so that they all blink
   // in unison.
-  sBlinkTextOff = PRBool(!sBlinkTextOff);
+  sState = (sState + 1) % 4;
+  if (sState == 1 || sState == 2)
+    // States 0, 1, and 2 are all the same.
+    return NS_OK;
 
 #ifdef NOISY_BLINK
   PRTime now = PR_Now();
@@ -338,16 +341,12 @@ NS_IMETHODIMP nsBlinkTimer::Notify(nsITimer *timer)
 
     // Determine damaged area and tell view manager to redraw it
     nsPoint offset;
-    nsRect bounds;
-    frameData->mFrame->GetRect(bounds);
+    nsRect bounds = frameData->mFrame->GetRect();
     nsIView* view;
     frameData->mFrame->GetOffsetFromView(frameData->mPresContext, offset, &view);
-    nsIViewManager* vm;
-    view->GetViewManager(vm);
     bounds.x = offset.x;
     bounds.y = offset.y;
-    vm->UpdateView(view, bounds, 0);
-    NS_RELEASE(vm);
+    view->GetViewManager()->UpdateView(view, bounds, 0);
   }
   return NS_OK;
 }
@@ -659,7 +658,7 @@ public:
     {}
   };
 
-  nsIDocument* GetDocument(nsIPresContext* aPresContext);
+  already_AddRefed<nsIDocument> GetDocument(nsIPresContext* aPresContext);
 
   PRIntn PrepareUnicodeText(nsTextTransformer& aTransformer,
                             nsAutoIndexBuffer* aIndexBuffer,
@@ -889,10 +888,7 @@ nsContinuingTextFrame::Init(nsIPresContext*  aPresContext,
     mPrevInFlow = aPrevInFlow;
     aPrevInFlow->SetNextInFlow(this);
 #ifdef IBMBIDI
-    nsFrameState state;
-    aPrevInFlow->GetFrameState(&state);
-
-    if (state & NS_FRAME_IS_BIDI) {
+    if (aPrevInFlow->GetStateBits() & NS_FRAME_IS_BIDI) {
       PRInt32 start, end;
       aPrevInFlow->GetOffsets(start, mContentOffset);
 
@@ -1028,10 +1024,8 @@ DrawSelectionIterator::DrawSelectionIterator(nsIContent *aContent,
     mSelectionPseudoBGIsTransparent = PR_FALSE;
 
     if (aContent) {
-      nsCOMPtr<nsIContent> parentContent;
-      aContent->GetParent(*getter_AddRefs(parentContent));
       nsRefPtr<nsStyleContext> sc;
-      sc = aPresContext->ProbePseudoStyleContextFor(parentContent,
+      sc = aPresContext->ProbePseudoStyleContextFor(aContent->GetParent(),
 						    nsCSSPseudoElements::mozSelection,
 						    aStyleContext);
       if (sc) {
@@ -1351,20 +1345,15 @@ nsTextFrame::~nsTextFrame()
   }
 }
 
-nsIDocument*
+already_AddRefed<nsIDocument>
 nsTextFrame::GetDocument(nsIPresContext* aPresContext)
 {
   nsIDocument* result = nsnull;
   if (mContent) {
-    mContent->GetDocument(result);
+    NS_IF_ADDREF(result = mContent->GetDocument());
   }
   if (!result && aPresContext) {
-    nsIPresShell* shell;
-    aPresContext->GetShell(&shell);
-    if (shell) {
-      shell->GetDocument(&result);
-      NS_RELEASE(shell);
-    }
+    aPresContext->GetPresShell()->GetDocument(&result);
   }
   return result;
 }
@@ -1860,8 +1849,7 @@ nsTextFrame::PaintTextDecorations(nsIRenderingContext& aRenderingContext,
   }
 
   if (aDetails){
-    nsRect rect;
-    GetRect(rect);
+    nsRect rect = GetRect();
     while(aDetails){
       const nscoord* sp= aSpacing;
       PRInt32 startOffset = 0;
@@ -1983,26 +1971,23 @@ nsTextFrame::GetContentAndOffsetsForSelection(nsIPresContext *aPresContext, nsIC
   *aContent = nsnull;
   *aOffset = mContentOffset;
   *aLength = mContentLength;
-  nsIFrame *parent;
-  nsresult rv = GetParent(&parent);
-  if (NS_SUCCEEDED(rv) && parent)
+  nsIFrame *parent = GetParent();
+  if (parent)
   {
     if ((mState & NS_FRAME_GENERATED_CONTENT) != 0)//parent is generated so so are we.
     {
       //we COULD check the previous sibling but I dont think that is reliable
-      rv = parent->GetContent(aContent);
-      if (NS_FAILED(rv))
-        return rv;
+      *aContent = parent->GetContent();
       if(!*aContent)
         return NS_ERROR_FAILURE;
+      NS_ADDREF(*aContent);
 
       //ARE WE A BEFORE FRAME? if not then we assume we are an after frame. this may be bad later
-      nsIFrame *grandParent;
-      nsIFrame *firstParent;
-      rv = parent->GetParent(&grandParent);
-      if (NS_SUCCEEDED(rv) && grandParent)
+      nsIFrame *grandParent = parent->GetParent();
+      if (grandParent)
       {
-        rv = grandParent->FirstChild(aPresContext,nsnull, &firstParent);
+	nsIFrame *firstParent;
+        nsresult rv = grandParent->FirstChild(aPresContext,nsnull, &firstParent);
         if (NS_SUCCEEDED(rv) && firstParent)
         {
           *aLength = 0;
@@ -2090,9 +2075,7 @@ nsresult nsTextFrame::GetTextInfoForPainting(nsIPresContext*          aPresConte
 
   doc->GetLineBreaker(aLineBreaker);
 
-  nsFrameState  frameState;
-  GetFrameState(&frameState);
-  aIsSelected = (frameState & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
+  aIsSelected = (GetStateBits() & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
 
   return NS_OK;
 }
@@ -2529,7 +2512,7 @@ nsTextFrame::GetPositionSlowly(nsIPresContext* aPresContext,
       *aNewContent = mContent;
       aOffset =0;
   }
-  nsCOMPtr<nsIDocument> doc(getter_AddRefs(GetDocument(aPresContext)));
+  nsCOMPtr<nsIDocument> doc(GetDocument(aPresContext));
 
   // Make enough space to transform
   nsAutoTextBuffer paintBuffer;
@@ -3439,7 +3422,7 @@ nsTextFrame::GetPosition(nsIPresContext* aCX,
       SetFontFromStyle(acx, mStyleContext);
 
       // Get the renderable form of the text
-      nsCOMPtr<nsIDocument> doc(getter_AddRefs(GetDocument(aCX)));
+      nsCOMPtr<nsIDocument> doc(GetDocument(aCX));
       nsCOMPtr<nsILineBreaker> lb;
       doc->GetLineBreaker(getter_AddRefs(lb));
       nsTextTransformer tx(lb, nsnull, aCX);
@@ -3605,10 +3588,8 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
   if (aSelected && ParentDisablesSelection())
     return NS_OK;
 
-  nsFrameState  frameState;
-  GetFrameState(&frameState);
 #if 0
-  PRBool isSelected = ((frameState & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT);
+  PRBool isSelected = ((GetStateBits() & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT);
   if (!aSelected && !isSelected) //already set thanks
   {
     return NS_OK;
@@ -3622,7 +3603,6 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
     return NS_OK;//do not continue no selection for this frame.
 
   PRBool found = PR_FALSE;
-  PRBool wholeContentFound = PR_FALSE;//if the entire content we look at is selected.
   if (aRange) {
     //lets see if the range contains us, if so we must redraw!
     nsCOMPtr<nsIDOMNode> endNode;
@@ -3633,10 +3613,7 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
     aRange->GetEndOffset(&endOffset);
     aRange->GetStartContainer(getter_AddRefs(startNode));
     aRange->GetStartOffset(&startOffset);
-    nsCOMPtr<nsIContent> content;
-    result = GetContent(getter_AddRefs(content));
-    nsCOMPtr<nsIDOMNode> thisNode;
-    thisNode = do_QueryInterface(content);
+    nsCOMPtr<nsIDOMNode> thisNode = do_QueryInterface(GetContent());
 
     if (thisNode == startNode)
     {
@@ -3660,7 +3637,6 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
       else
       {
         found = PR_FALSE;
-        wholeContentFound = PR_TRUE;
       }
     }
     else
@@ -3669,13 +3645,12 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
     }
   }
   else {
-    if ( aSelected != (PRBool)(frameState | NS_FRAME_SELECTED_CONTENT) ){
-      found = PR_TRUE;
-    }
+    // null range means the whole thing
+    found = PR_TRUE;
   }
 
   if ( aSelected )
-    frameState |=  NS_FRAME_SELECTED_CONTENT;
+    AddStateBits(NS_FRAME_SELECTED_CONTENT);
   else
   {//we need to see if any other selection available.
     SelectionDetails *details = nsnull;
@@ -3707,7 +3682,7 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
       }
     }
     if (!details)
-      frameState &= ~NS_FRAME_SELECTED_CONTENT;
+      RemoveStateBits(NS_FRAME_SELECTED_CONTENT);
     else
     {
       SelectionDetails *sdptr = details;
@@ -3718,10 +3693,8 @@ nsTextFrame::SetSelected(nsIPresContext* aPresContext,
       delete details;
     }
   }
-  SetFrameState(frameState);
   if (found){ //if range contains this frame...
-    nsRect frameRect;
-    GetRect(frameRect);
+    nsRect frameRect = GetRect();
     nsRect rect(0, 0, frameRect.width, frameRect.height);
     if (!rect.IsEmpty())
       Invalidate(aPresContext, rect, PR_FALSE);
@@ -3787,7 +3760,7 @@ nsTextFrame::GetPointFromOffset(nsIPresContext* aPresContext,
   }
 
   // Transform text from content into renderable form
-  nsCOMPtr<nsIDocument> doc(getter_AddRefs(GetDocument(aPresContext)));
+  nsCOMPtr<nsIDocument> doc(GetDocument(aPresContext));
   nsCOMPtr<nsILineBreaker> lb;
   doc->GetLineBreaker(getter_AddRefs(lb));
   nsTextTransformer tx(lb, nsnull, aPresContext);
@@ -3902,8 +3875,7 @@ nsTextFrame::GetChildFrameContainingOffset(PRInt32 inContentOffset,
     // continuation frame
     if (mState & NS_FRAME_IS_BIDI)
     {
-      nsIFrame *nextBidi;
-      GetNextSibling(&nextBidi);
+      nsIFrame *nextBidi = GetNextSibling();
       if (nextBidi)
       {
         PRInt32 start, end;
@@ -3996,14 +3968,12 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
     case eSelectNoAmount:
     {
       // Transform text from content into renderable form
-      nsIDocument* doc;
-      result = mContent->GetDocument(doc);
-      if (NS_FAILED(result) || !doc) {
-        return result;
+      nsIDocument* doc = mContent->GetDocument();
+      if (!doc) {
+        return NS_OK;
       }
       nsCOMPtr<nsILineBreaker> lb;
       doc->GetLineBreaker(getter_AddRefs(lb));
-      NS_RELEASE(doc);
 
       nsTextTransformer tx(lb, nsnull, aPresContext);
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
@@ -4028,14 +3998,12 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
     case eSelectCharacter:
     {
       // Transform text from content into renderable form
-      nsIDocument* doc;
-      result = mContent->GetDocument(doc);
-      if (NS_FAILED(result) || !doc) {
-        return result;
+      nsIDocument* doc = mContent->GetDocument();
+      if (!doc) {
+        return NS_OK;
       }
       nsCOMPtr<nsILineBreaker> lb;
       doc->GetLineBreaker(getter_AddRefs(lb));
-      NS_RELEASE(doc);
 
       nsTextTransformer tx(lb, nsnull, aPresContext);
       PrepareUnicodeText(tx, &indexBuffer, &paintBuffer, &textLength);
@@ -4174,9 +4142,8 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
     case eSelectWord:
     {
       // Transform text from content into renderable form
-      nsIDocument* doc;
-      result = mContent->GetDocument(doc);
-      if (NS_FAILED(result) || !doc) {
+      nsIDocument* doc = mContent->GetDocument();
+      if (!doc) {
         return result;
       }
 
@@ -4184,7 +4151,6 @@ nsTextFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
       doc->GetLineBreaker(getter_AddRefs(lb));
       nsCOMPtr<nsIWordBreaker> wb;
       doc->GetWordBreaker(getter_AddRefs(wb));
-      NS_RELEASE(doc);
 
       nsTextTransformer tx(lb, wb, aPresContext);
 
@@ -5366,8 +5332,7 @@ nsTextFrame::Reflow(nsIPresContext*          aPresContext,
   nscoord maxWidth = aReflowState.availableWidth;
 
   // Setup text transformer to transform this frames text content
-  nsCOMPtr<nsIDocument> doc;
-  mContent->GetDocument(*getter_AddRefs(doc));
+  nsIDocument* doc = mContent->GetDocument();
   if (!doc) {
     NS_WARNING("Content has no document.");
     return NS_ERROR_FAILURE; 
@@ -5710,9 +5675,8 @@ nsTextFrame::ComputeTotalWordDimensions(nsIPresContext* aPresContext,
   nsTextDimensions addedDimensions;
   PRUnichar *newWordBuf = aWordBuf;
   PRUint32 newWordBufSize = aWordBufSize;
-  while (nsnull != aNextFrame) {
-    nsCOMPtr<nsIContent> content;
-    aNextFrame->GetContent(getter_AddRefs(content));
+  while (aNextFrame) {
+    nsIContent* content = aNextFrame->GetContent();
 
 #ifdef DEBUG_WORD_WRAPPING
     printf("  next textRun=");
@@ -6009,10 +5973,8 @@ nsTextFrame::List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) cons
 #ifdef DEBUG_waterson
   fprintf(out, " [parent=%p]", mParent);
 #endif
-  nsIView* view;
-  GetView(aPresContext, &view);
-  if (nsnull != view) {
-    fprintf(out, " [view=%p]", NS_STATIC_CAST(void*, view));
+  if (HasView()) {
+    fprintf(out, " [view=%p]", NS_STATIC_CAST(void*, GetView()));
   }
 
   PRInt32 totalContentLength;
@@ -6120,12 +6082,7 @@ void nsTextFrame::AdjustSelectionPointsForBidi(SelectionDetails *sdptr,
 void
 nsTextFrame::AdjustOffsetsForBidi(PRInt32 aStart, PRInt32 aEnd)
 {
-  nsFrameState frameState;
-
-  GetFrameState(&frameState);
-  frameState |= NS_FRAME_IS_BIDI;
-  SetFrameState(frameState);
-
+  AddStateBits(NS_FRAME_IS_BIDI);
   SetOffsets(aStart, aEnd);
 }
 

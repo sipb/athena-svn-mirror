@@ -164,7 +164,6 @@ nsMathMLmactionFrame::Init(nsIPresContext*  aPresContext,
 nsIFrame* 
 nsMathMLmactionFrame::GetSelectedFrame()
 {
-  nsresult rv = NS_OK;
   nsAutoString value;
   PRInt32 selection; 
 
@@ -195,7 +194,7 @@ nsMathMLmactionFrame::GetSelectedFrame()
     if (++count == selection) 
       mSelectedFrame = childFrame;
 
-    childFrame->GetNextSibling(&childFrame);
+    childFrame = childFrame->GetNextSibling();
   }
   // cater for invalid user-supplied selection
   if (selection > count || selection < 1) 
@@ -244,8 +243,7 @@ nsMathMLmactionFrame::GetFrameForPoint(nsIPresContext*   aPresContext,
 {
   nsIFrame* childFrame = GetSelectedFrame();
   if (childFrame) {
-    nsPoint pt;
-    pt.MoveTo(aPoint.x - mRect.x, aPoint.y - mRect.y);
+    nsPoint pt(aPoint.x - mRect.x, aPoint.y - mRect.y);
     return childFrame->GetFrameForPoint(aPresContext, pt, aWhichLayer, aFrame);
   }
   return nsFrame::GetFrameForPoint(aPresContext, aPoint, aWhichLayer, aFrame);
@@ -315,8 +313,7 @@ nsMathMLmactionFrame::Reflow(nsIPresContext*          aPresContext,
                                        childFrame, availSize, reason);
     rv = ReflowChild(childFrame, aPresContext, aDesiredSize,
                      childReflowState, aStatus);
-    childFrame->SetRect(aPresContext,
-                        nsRect(aDesiredSize.descent,aDesiredSize.ascent,
+    childFrame->SetRect(nsRect(aDesiredSize.descent,aDesiredSize.ascent,
                         aDesiredSize.width,aDesiredSize.height));
     mBoundingMetrics = aDesiredSize.mBoundingMetrics;
     FinalizeReflow(aPresContext, *aReflowState.rendContext, aDesiredSize);
@@ -426,7 +423,7 @@ nsMathMLmactionFrame::MouseClick(nsIDOMEvent* aMouseEvent)
     }
   }
   else if (NS_MATHML_ACTION_TYPE_RESTYLE == mActionType) {
-    if (0 < mRestyle.Length()) {
+    if (!mRestyle.IsEmpty()) {
       nsCOMPtr<nsIDOMElement> node( do_QueryInterface(mContent) );
       if (node.get()) {
         if (NS_CONTENT_ATTR_HAS_VALUE == mContent->GetAttr(kNameSpaceID_None, 

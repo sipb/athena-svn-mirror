@@ -125,9 +125,8 @@ nsPageFrame::SetInitialChildList(nsIPresContext* aPresContext,
                                       nsIAtom*        aListName,
                                       nsIFrame*       aChildList)
 {
-  nsIView * view;
-  aChildList->GetView(aPresContext, &view);
-  if (view != nsnull && mDoCreateWidget) {
+  nsIView* view = aChildList->GetView();
+  if (view && mDoCreateWidget) {
     nscoord dx, dy;
     nsCOMPtr<nsIWidget> widget;
     view->GetOffsetFromWidget(&dx, &dy, *getter_AddRefs(widget));
@@ -228,14 +227,11 @@ NS_IMETHODIMP nsPageFrame::Reflow(nsIPresContext*          aPresContext,
         aDesiredSize.height = aReflowState.availableHeight;
       }
 
-      nsIView * view;
-      frame->GetView(aPresContext, &view);
+      nsIView* view = frame->GetView();
       if (view) {
-        nsCOMPtr<nsIViewManager> vm;
-        view->GetViewManager(*getter_AddRefs(vm));
         nsRegion region;
         region.Copy(nsRect(0, 0, aDesiredSize.width, aDesiredSize.height));
-        vm->SetViewChildClipRegion(view, &region);
+        view->GetViewManager()->SetViewChildClipRegion(view, &region);
       }
 
 #ifdef NS_DEBUG
@@ -510,7 +506,7 @@ nsPageFrame::DrawHeaderFooter(nsIPresContext*      aPresContext,
 
   // first make sure we have a vaild string and that the height of the
   // text will fit in the margin
-  if (aStr.Length() > 0 && 
+  if (!aStr.IsEmpty() && 
       ((aHeaderFooter == eHeader && aHeight < mMargin.top) ||
        (aHeaderFooter == eFooter && aHeight < mMargin.bottom))) {
     nsAutoString str;
@@ -575,10 +571,7 @@ nsPageFrame::DrawHeaderFooter(nsIPresContext*      aPresContext,
 
 #ifdef DEBUG_PRINTING
     PR_PL(("Page: %p", this));
-    const char * s = NS_ConvertUCS2toUTF8(str).get();
-    if (s) {
-      PR_PL((" [%s]", s));
-    }
+    PR_PL((" [%s]", NS_ConvertUCS2toUTF8(str).get()));
     char justStr[64];
     switch (aJust) {
       case nsIPrintSettings::kJustLeft:strcpy(justStr, "Left");break;
@@ -747,13 +740,11 @@ nsPageFrame::DrawBackground(nsIPresContext*      aPresContext,
     nsIFrame* pageContentFrame  = mFrames.FirstChild();
     NS_ASSERTION(pageContentFrame, "Must always be there.");
 
-    nsRect rect;
-    pageContentFrame->GetRect(rect);
     const nsStyleBorder* border = GetStyleBorder();
     const nsStylePadding* padding = GetStylePadding();
 
     nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                    aDirtyRect, rect, *border, *padding,
+                                    aDirtyRect, pageContentFrame->GetRect(), *border, *padding,
                                     PR_TRUE);
   }
 }

@@ -60,22 +60,29 @@ public:
   // corresponds to the attribute nsHTMLAtoms::id and that the Class
   // corresponds to the attribute nsHTMLAtoms::kClass.  If this becomes
   // incorrect, then new methods need to be added here.
-  NS_IMETHOD GetID(nsIAtom*& aResult) const = 0;
+  NS_IMETHOD GetID(nsIAtom** aResult) const = 0;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const = 0;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const = 0;
 
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker) = 0;
   NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule) = 0;
 
-  /** NRA ***
-   * Get a hint that tells the style system what to do when 
-   * an attribute on this node changes.
-   * This only applies to attributes that map their value
-   * DIRECTLY into style contexts via NON-CSS style rules
-   * All other attributes return NS_STYLE_HINT_CONTENT
+  /**
+   * Does the list of style rules walked by |WalkContentStyleRules|
+   * depend on the attribute?
    */
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType, 
-                                      nsChangeHint& aHint) const = 0;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const = 0;
+
+
+  /**
+   * Get a hint that tells the style system what to do when 
+   * an attribute on this node changes, if something needs to happen
+   * in response to the change *other* than the result of what is
+   * mapped into style data via any type of style rule.
+   */
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType, 
+                                    nsChangeHint& aHint) const = 0;
 
 };
 

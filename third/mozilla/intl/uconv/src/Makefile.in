@@ -38,8 +38,6 @@ ifneq ($(OS_ARCH),WINNT)
 SHORT_LIBNAME  = mozuconv
 endif
 REQUIRES	= xpcom \
-                  mozreg \
-                  xpcom_obsolete \
 		  string \
 		  intl \
 		  locale \
@@ -61,6 +59,7 @@ CPPSRCS		= \
 		nsTextToSubURI.cpp \
 		nsURLProperties.cpp \
 		nsCharsetConverterManager.cpp \
+		nsUTF8ConverterService.cpp \
 		$(NULL)
 
 ifndef MOZ_USE_NATIVE_UCONV
@@ -119,11 +118,7 @@ EXTRA_DSO_LDOPTS = \
 		$(NULL)
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-OS_LIBS += libuls.lib
-else
 OS_LIBS += -llibuni
-endif
 endif
 
 LOCAL_INCLUDES	= -I$(srcdir)/../util

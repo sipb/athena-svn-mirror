@@ -144,6 +144,12 @@ public:
   typedef typename EntryType::KeyTypePointer KeyTypePointer;
 
   /**
+   * Return the number of entries in the table.
+   * @return    number of entries
+   */
+  PRUint32 Count() const { return mTable.entryCount; }
+
+  /**
    * Get the entry associated with a key.
    * @param     aKey the key to retrieve
    * @return    pointer to the entry class, if the key exists; nsnull if the
@@ -159,7 +165,7 @@ public:
                             NS_CONST_CAST(PLDHashTable*,&mTable),
                             EntryType::KeyToPointer(aKey),
                             PL_DHASH_LOOKUP));
-    return PL_DHASH_ENTRY_IS_BUSY(entry) ?  entry : nsnull;
+    return PL_DHASH_ENTRY_IS_BUSY(entry) ? entry : nsnull;
   }
 
   /**
@@ -262,9 +268,9 @@ protected:
   static void PR_CALLBACK s_ClearEntry(PLDHashTable *table,
                                        PLDHashEntryHdr *entry);
 
-  static void PR_CALLBACK s_InitEntry(PLDHashTable     *table,
-                                      PLDHashEntryHdr  *entry,
-                                      const void       *key);
+  static PRBool PR_CALLBACK s_InitEntry(PLDHashTable     *table,
+                                        PLDHashEntryHdr  *entry,
+                                        const void       *key);
 
   /**
    * passed internally during enumeration.  Allocated on the stack.
@@ -283,6 +289,12 @@ protected:
                                                 PLDHashEntryHdr *entry,
                                                 PRUint32         number,
                                                 void            *arg);
+private:
+  // copy constructor, not implemented
+  nsTHashtable(nsTHashtable<EntryType>& toCopy);
+
+  // assignment operator, not implemented
+  nsTHashtable<EntryType>& operator= (nsTHashtable<EntryType>& toEqual);
 };
 
 //
@@ -375,9 +387,12 @@ nsTHashtable<EntryType>::s_CopyEntry(PLDHashTable          *table,
                                      const PLDHashEntryHdr *from,
                                      PLDHashEntryHdr       *to)
 {
-  new(to) EntryType(* NS_REINTERPRET_CAST(const EntryType*,from));
+  EntryType* fromEntry =
+    NS_CONST_CAST(EntryType*, NS_REINTERPRET_CAST(const EntryType*, from));
 
-  NS_CONST_CAST(EntryType*,NS_REINTERPRET_CAST(const EntryType*,from))->~EntryType();
+  new(to) EntryType(*fromEntry);
+
+  fromEntry->~EntryType();
 }
 
 template<class EntryType>
@@ -389,12 +404,13 @@ nsTHashtable<EntryType>::s_ClearEntry(PLDHashTable    *table,
 }
 
 template<class EntryType>
-void
+PRBool
 nsTHashtable<EntryType>::s_InitEntry(PLDHashTable    *table,
                                      PLDHashEntryHdr *entry,
                                      const void      *key)
 {
   new(entry) EntryType(NS_REINTERPRET_CAST(KeyTypePointer,key));
+  return PR_TRUE;
 }
 
 template<class EntryType>

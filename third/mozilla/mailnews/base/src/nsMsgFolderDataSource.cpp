@@ -64,8 +64,6 @@
 #include "nsIMsgFolder.h" // TO include biffState enum. Change to bool later...
 #include "nsArray.h"
 
-static NS_DEFINE_CID(kRDFServiceCID,            NS_RDFSERVICE_CID);
-
 nsIRDFResource* nsMsgFolderDataSource::kNC_Child = nsnull;
 nsIRDFResource* nsMsgFolderDataSource::kNC_Folder= nsnull;
 nsIRDFResource* nsMsgFolderDataSource::kNC_Name= nsnull;
@@ -1596,10 +1594,10 @@ nsMsgFolderDataSource::createFolderSizeNode(nsIMsgFolder *folder, nsIRDFNode **t
 nsresult
 nsMsgFolderDataSource::createCharsetNode(nsIMsgFolder *folder, nsIRDFNode **target)
 {
-  nsXPIDLString charset;
+  nsXPIDLCString charset;
   nsresult rv = folder->GetCharset(getter_Copies(charset));
   if (NS_SUCCEEDED(rv))
-    createNode(charset.get(), target, getRDFService());
+    createNode(NS_ConvertASCIItoUCS2(charset).get(), target, getRDFService());
   else
     createNode(NS_LITERAL_STRING("").get(), target, getRDFService());
   return NS_OK;
@@ -1943,12 +1941,10 @@ nsMsgFolderDataSource::GetFolderSizeNode(PRInt32 aFolderSize, nsIRDFNode **aNode
     // XXX todo
     // can we catch this problem at compile time?
     // see #179234
-    nsAutoString units;
     if (sizeInMB)
-      units = NS_LITERAL_STRING(" MB");
+      sizeString.Append(NS_LITERAL_STRING(" MB"));
     else
-      units = NS_LITERAL_STRING(" KB");
-    sizeString.Append(units);
+      sizeString.Append(NS_LITERAL_STRING(" KB"));
     createNode(sizeString.get(), aNode, getRDFService());
   }
   return NS_OK;
@@ -2128,11 +2124,11 @@ nsresult nsMsgFolderDataSource::DoFolderAssert(nsIMsgFolder *folder, nsIRDFResou
     nsCOMPtr<nsIRDFLiteral> literal(do_QueryInterface(target));
     if(literal)
     {
-      nsXPIDLString value;
-      rv = literal->GetValue(getter_Copies(value));
+      const PRUnichar* value;
+      rv = literal->GetValueConst(&value);
       if(NS_SUCCEEDED(rv))
       {
-        rv = folder->SetCharset(value.get());
+        rv = folder->SetCharset(NS_LossyConvertUCS2toASCII(value).get());
       }
     }
     else

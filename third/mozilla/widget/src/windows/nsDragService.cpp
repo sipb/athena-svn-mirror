@@ -48,8 +48,11 @@
 #include "nsISupportsArray.h"
 #include "nsDataObjCollection.h"
 
+#include "nsAutoPtr.h"
+
 #include <OLE2.h>
 #include "OLEIDL.H"
+#include "shlobj.h";
 
 // shellapi.h is needed to build with WIN32_LEAN_AND_MEAN
 #include <shellapi.h>
@@ -97,31 +100,32 @@ NS_IMETHODIMP nsDragService::InvokeDragSession (nsIDOMNode *aDOMNode, nsISupport
   // if we're dragging more than one item, we need to create a "collection" object to fake out
   // the OS. This collection contains one |IDataObject| for each transerable. If there is just
   // the one (most cases), only pass around the native |IDataObject|.
-  IDataObject* itemToDrag = nsnull;
+  nsRefPtr<IDataObject> itemToDrag;
   if ( numItemsToDrag > 1 ) {
     nsDataObjCollection * dataObjCollection = new nsDataObjCollection();
-    IDataObject* dataObj = nsnull;
+    if (!dataObjCollection)
+      return NS_ERROR_OUT_OF_MEMORY;
+    itemToDrag = dataObjCollection;
     for ( PRUint32 i=0; i<numItemsToDrag; ++i ) {
       nsCOMPtr<nsISupports> supports;
       anArrayTransferables->GetElementAt(i, getter_AddRefs(supports));
       nsCOMPtr<nsITransferable> trans(do_QueryInterface(supports));
       if ( trans ) {
-        if ( NS_SUCCEEDED(nsClipboard::CreateNativeDataObject(trans, &dataObj)) ) {
+        nsRefPtr<IDataObject> dataObj;
+        if ( NS_SUCCEEDED(nsClipboard::CreateNativeDataObject(trans, getter_AddRefs(dataObj))) ) {
           dataObjCollection->AddDataObject(dataObj);
-          NS_IF_RELEASE(dataObj);
         }
         else
           return NS_ERROR_FAILURE;
       }
     }
-    itemToDrag = NS_STATIC_CAST ( IDataObject*, dataObjCollection );
   } // if dragging multiple items
   else {
     nsCOMPtr<nsISupports> supports;
     anArrayTransferables->GetElementAt(0, getter_AddRefs(supports));
     nsCOMPtr<nsITransferable> trans(do_QueryInterface(supports));
     if ( trans ) {
-      if ( NS_FAILED(nsClipboard::CreateNativeDataObject(trans, &itemToDrag)) )
+      if ( NS_FAILED(nsClipboard::CreateNativeDataObject(trans, getter_AddRefs(itemToDrag))) )
         return NS_ERROR_FAILURE;
     }
   } // else dragging a single object
@@ -159,6 +163,18 @@ NS_IMETHODIMP nsDragService::StartInvokingDragSession(IDataObject * aDataObj, PR
 
   // Call the native D&D method
   HRESULT res = ::DoDragDrop(aDataObj, mNativeDragSrc, effects, &dropRes);
+
+  // For some drag/drop interactions, IDataObject::SetData doesn't get called with
+  // a CFSTR_PERFORMEDDROPEFFECT format and the intermediate file (if it was created)
+  // isn't deleted.  See http://bugzilla.mozilla.org/show_bug.cgi?id=203847#c4 for a
+  // detailed description of the different cases.  Now that we know that the drag/drop 
+  // operation has ended, call SetData() so that the intermediate file is deleted.
+  static CLIPFORMAT PerformedDropEffect = ::RegisterClipboardFormat( CFSTR_PERFORMEDDROPEFFECT );
+  FORMATETC fmte = {(CLIPFORMAT) PerformedDropEffect, NULL, DVASPECT_CONTENT, -1, TYMED_NULL};
+  STGMEDIUM medium;
+  medium.tymed = TYMED_NULL;
+  medium.pUnkForRelease = NULL;
+  aDataObj->SetData(&fmte, &medium, FALSE);
 
   mDoingDrag  = PR_FALSE;
 

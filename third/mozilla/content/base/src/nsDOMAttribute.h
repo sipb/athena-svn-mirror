@@ -46,6 +46,7 @@
 #include "nsString.h"
 #include "nsCOMPtr.h"
 #include "nsINodeInfo.h"
+#include "nsIDOM3Node.h"
 
 class nsIContent;
 class nsDOMAttribute;
@@ -93,7 +94,7 @@ public:
   NS_IMETHOD DropReference();
   NS_IMETHOD SetContent(nsIContent* aContent);
   NS_IMETHOD GetContent(nsIContent** aContent);
-  NS_IMETHOD GetNodeInfo(nsINodeInfo*& aNodeInfo);
+  NS_IMETHOD GetNodeInfo(nsINodeInfo** aNodeInfo);
 
 private:
   nsIContent* mContent;

@@ -136,7 +136,7 @@ nsImapExtensionSinkProxy::~nsImapExtensionSinkProxy()
     NS_IF_RELEASE (m_realImapExtensionSink);
 }
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsImapExtensionSinkProxy, nsIImapExtensionSink);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsImapExtensionSinkProxy, nsIImapExtensionSink)
 
 NS_IMETHODIMP
 nsImapExtensionSinkProxy::ClearFolderRights(nsIImapProtocol* aProtocol,
@@ -307,27 +307,6 @@ nsImapMiscellaneousSinkProxy::HeaderFetchCompleted(nsIImapProtocol* aProtocol)
     return res;
 }
 
-NS_IMETHODIMP
-nsImapMiscellaneousSinkProxy::UpdateSecurityStatus(nsIImapProtocol* aProtocol)
-{
-    nsresult res = NS_OK;
-    NS_ASSERTION (m_protocol == aProtocol, "Ooh ooh, wrong protocol");
-
-    if (PR_GetCurrentThread() == m_thread)
-    {
-        UpdateSecurityStatusProxyEvent *ev =
-            new UpdateSecurityStatusProxyEvent(this);
-        if(nsnull == ev)
-            res = NS_ERROR_OUT_OF_MEMORY;
-        else
-            ev->PostEvent(m_eventQueue);
-    }
-    else
-    {
-        res = m_realImapMiscellaneousSink->UpdateSecurityStatus(aProtocol);
-    }
-    return res;
-}
 
 NS_IMETHODIMP
 nsImapMiscellaneousSinkProxy::SetBiffStateAndUpdate(nsIImapProtocol* aProtocol,
@@ -351,63 +330,6 @@ nsImapMiscellaneousSinkProxy::SetBiffStateAndUpdate(nsIImapProtocol* aProtocol,
     else
     {
         res = m_realImapMiscellaneousSink->SetBiffStateAndUpdate(aProtocol, biffState);
-        aProtocol->NotifyFEEventCompletion();
-    }
-    return res;
-}
-
-NS_IMETHODIMP
-nsImapMiscellaneousSinkProxy::GetStoredUIDValidity(nsIImapProtocol* aProtocol,
-                                               uid_validity_info* aInfo)
-{
-    nsresult res = NS_OK;
-    NS_PRECONDITION (aInfo, "Oops... null aInfo");
-    if(!aInfo)
-        return NS_ERROR_NULL_POINTER;
-    NS_ASSERTION (m_protocol == aProtocol, "Ooh ooh, wrong protocol");
-
-    if (PR_GetCurrentThread() == m_thread)
-    {
-        GetStoredUIDValidityProxyEvent *ev =
-            new GetStoredUIDValidityProxyEvent(this, aInfo);
-        if(nsnull == ev)
-            res = NS_ERROR_OUT_OF_MEMORY;
-        else
-        {
-            ev->SetNotifyCompletion(PR_TRUE);
-            ev->PostEvent(m_eventQueue);
-        }
-    }
-    else
-    {
-        res = m_realImapMiscellaneousSink->GetStoredUIDValidity(aProtocol, aInfo);
-        aProtocol->NotifyFEEventCompletion();
-    }
-    return res;
-}
-
-NS_IMETHODIMP
-nsImapMiscellaneousSinkProxy::LiteSelectUIDValidity(nsIImapProtocol* aProtocol,
-                                                PRUint32 uidValidity)
-{
-    nsresult res = NS_OK;
-    NS_ASSERTION (m_protocol == aProtocol, "Ooh ooh, wrong protocol");
-
-    if (PR_GetCurrentThread() == m_thread)
-    {
-        LiteSelectUIDValidityProxyEvent *ev =
-            new LiteSelectUIDValidityProxyEvent(this, uidValidity);
-        if(nsnull == ev)
-            res = NS_ERROR_OUT_OF_MEMORY;
-        else
-        {
-            ev->SetNotifyCompletion(PR_TRUE);
-            ev->PostEvent(m_eventQueue);
-        }
-    }
-    else
-    {
-        res = m_realImapMiscellaneousSink->LiteSelectUIDValidity(aProtocol, uidValidity);
         aProtocol->NotifyFEEventCompletion();
     }
     return res;
@@ -623,26 +545,6 @@ HeaderFetchCompletedProxyEvent::HandleEvent()
     return res;
 }
 
-UpdateSecurityStatusProxyEvent::UpdateSecurityStatusProxyEvent(
-    nsImapMiscellaneousSinkProxy* aProxy) :
-    nsImapMiscellaneousSinkProxyEvent(aProxy)
-{
-}
-
-UpdateSecurityStatusProxyEvent::~UpdateSecurityStatusProxyEvent()
-{
-}
-
-NS_IMETHODIMP
-UpdateSecurityStatusProxyEvent::HandleEvent()
-{
-    nsresult res = m_proxy->m_realImapMiscellaneousSink->UpdateSecurityStatus(
-        m_proxy->m_protocol);
-    if (m_notifyCompletion)
-        m_proxy->m_protocol->NotifyFEEventCompletion();
-    return res;
-}
-
 SetBiffStateAndUpdateProxyEvent::SetBiffStateAndUpdateProxyEvent(
     nsImapMiscellaneousSinkProxy* aProxy, nsMsgBiffState biffState) :
     nsImapMiscellaneousSinkProxyEvent(aProxy)
@@ -664,62 +566,6 @@ SetBiffStateAndUpdateProxyEvent::HandleEvent()
     return res;
 }
 
-GetStoredUIDValidityProxyEvent::GetStoredUIDValidityProxyEvent(
-    nsImapMiscellaneousSinkProxy* aProxy, uid_validity_info* aInfo) :
-    nsImapMiscellaneousSinkProxyEvent(aProxy)
-{
-    NS_ASSERTION (aInfo, "Oops... a null uid validity info");
-    if (aInfo)
-    {
-        m_uidValidityInfo.canonical_boxname = 
-            PL_strdup(aInfo->canonical_boxname);
-        m_uidValidityInfo.hostName = aInfo->hostName;
-        m_uidValidityInfo.returnValidity = aInfo->returnValidity;
-    }
-    else
-    {
-        m_uidValidityInfo.canonical_boxname = nsnull;
-        m_uidValidityInfo.hostName = nsnull;
-        m_uidValidityInfo.returnValidity = 0;
-    }
-}
-
-GetStoredUIDValidityProxyEvent::~GetStoredUIDValidityProxyEvent()
-{
-    if (m_uidValidityInfo.canonical_boxname)
-        PL_strfree(m_uidValidityInfo.canonical_boxname);
-}
-
-NS_IMETHODIMP
-GetStoredUIDValidityProxyEvent::HandleEvent()
-{
-    nsresult res = m_proxy->m_realImapMiscellaneousSink->GetStoredUIDValidity(
-        m_proxy->m_protocol, &m_uidValidityInfo);
-    if (m_notifyCompletion)
-        m_proxy->m_protocol->NotifyFEEventCompletion();
-    return res;
-}
-
-LiteSelectUIDValidityProxyEvent::LiteSelectUIDValidityProxyEvent(
-    nsImapMiscellaneousSinkProxy* aProxy, PRUint32 uidValidity) :
-    nsImapMiscellaneousSinkProxyEvent(aProxy)
-{
-    m_uidValidity = uidValidity;
-}
-
-LiteSelectUIDValidityProxyEvent::~LiteSelectUIDValidityProxyEvent()
-{
-}
-
-NS_IMETHODIMP
-LiteSelectUIDValidityProxyEvent::HandleEvent()
-{
-    nsresult res = m_proxy->m_realImapMiscellaneousSink->LiteSelectUIDValidity(
-        m_proxy->m_protocol, m_uidValidity);
-    if (m_notifyCompletion)
-        m_proxy->m_protocol->NotifyFEEventCompletion();
-    return res;
-}
 
 ProgressStatusProxyEvent::ProgressStatusProxyEvent(
     nsImapMiscellaneousSinkProxy* aProxy, PRUint32 aMsgId, const PRUnichar *extraInfo) :

@@ -55,7 +55,6 @@
 #include "nsIHTMLContentContainer.h"
 #include "nsNetUtil.h"
 #include "nsXBLAtoms.h"
-#include "nsINameSpaceManager.h"
 #include "nsIFrameManager.h"
 #include "nsStyleContext.h"
 #include "nsXBLPrototypeBinding.h"
@@ -146,10 +145,11 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
 
       // Always load chrome synchronously
       PRBool chrome;
+      nsresult rv;
       if (NS_SUCCEEDED(url->SchemeIs("chrome", &chrome)) && chrome)
       {
         nsCOMPtr<nsICSSStyleSheet> sheet;
-        nsresult rv = cssLoader->LoadAgentSheet(url, getter_AddRefs(sheet));
+        rv = cssLoader->LoadAgentSheet(url, getter_AddRefs(sheet));
         NS_ASSERTION(NS_SUCCEEDED(rv), "Load failed!!!");
         if (NS_SUCCEEDED(rv))
         {
@@ -161,8 +161,8 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
       {
         PRBool doneLoading;
         NS_NAMED_LITERAL_STRING(empty, "");
-        nsresult rv = cssLoader->LoadStyleLink(nsnull, url, empty, empty, kNameSpaceID_Unknown,
-                                               nsnull, doneLoading, this);
+        rv = cssLoader->LoadStyleLink(nsnull, url, empty, empty,
+                                      nsnull, doneLoading, this);
         NS_ASSERTION(NS_SUCCEEDED(rv), "Load failed!!!");
 
         if (!doneLoading)
@@ -263,16 +263,14 @@ nsXBLResourceLoader::NotifyBoundElements()
     xblService->BindingReady(content, bindingURI, &ready);
 
     if (ready) {
-      nsCOMPtr<nsIDocument> doc;
-      content->GetDocument(*getter_AddRefs(doc));
+      nsCOMPtr<nsIDocument> doc = content->GetDocument();
     
       if (doc) {
         // Flush first
         doc->FlushPendingNotifications();
 
         // Notify
-        nsCOMPtr<nsIContent> parent;
-        content->GetParent(*getter_AddRefs(parent));
+        nsCOMPtr<nsIContent> parent = content->GetParent();
         PRInt32 index = 0;
         if (parent)
           parent->IndexOf(content, index);

@@ -239,23 +239,17 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
   if (popupType == eXULPopupType_popup) {
     nsCOMPtr<nsIContent> targetContent = do_QueryInterface(target);
     nsCOMPtr<nsIAtom> tag;
-    targetContent->GetTag(*getter_AddRefs(tag));
+    targetContent->GetTag(getter_AddRefs(tag));
     if (tag && (tag.get() == nsXULAtoms::menu || tag.get() == nsXULAtoms::menuitem))
       return NS_OK;
   }
 
   // Get the document with the popup.
-  nsCOMPtr<nsIDocument> document;
   nsCOMPtr<nsIContent> content = do_QueryInterface(mElement);
-  nsresult rv;
-  if (NS_FAILED(rv = content->GetDocument(*getter_AddRefs(document)))) {
-    NS_ERROR("Unable to retrieve the document.");
-    return rv;
-  }
 
   // Turn the document into a XUL document so we can use SetPopupNode.
-  nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(document);
-  if (xulDocument == nsnull) {
+  nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(content->GetDocument());
+  if (!xulDocument) {
     NS_ERROR("Popup attached to an element that isn't in XUL!");
     return NS_ERROR_FAILURE;
   }
@@ -336,14 +330,14 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
         if ((ui->mUserFocus != NS_STYLE_USER_FOCUS_IGNORE) &&
             (ui->mUserFocus != NS_STYLE_USER_FOCUS_NONE)) 
         {
-          currFrame->GetContent(getter_AddRefs(newFocus));
+          newFocus = currFrame->GetContent();
           nsCOMPtr<nsIDOMElement> domElement(do_QueryInterface(newFocus));
           if (domElement) {
             element = domElement;
             break;
           }
         }
-        currFrame->GetParent(&currFrame);
+        currFrame = currFrame->GetParent();
     } 
     nsCOMPtr<nsIContent> focusableContent = do_QueryInterface(element);
     nsCOMPtr<nsIEventStateManager> esm;
@@ -412,9 +406,9 @@ GetImmediateChild(nsIContent* aContent, nsIAtom *aTag, nsIContent** aResult)
   aContent->ChildCount(childCount);
   for (PRInt32 i = 0; i < childCount; i++) {
     nsCOMPtr<nsIContent> child;
-    aContent->ChildAt(i, *getter_AddRefs(child));
+    aContent->ChildAt(i, getter_AddRefs(child));
     nsCOMPtr<nsIAtom> tag;
-    child->GetTag(*getter_AddRefs(tag));
+    child->GetTag(getter_AddRefs(tag));
     if (aTag == tag.get()) {
       *aResult = child;
       NS_ADDREF(*aResult);
@@ -512,12 +506,8 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
   }
 
   // Try to find the popup content and the document.
-  nsCOMPtr<nsIDocument> document;
   nsCOMPtr<nsIContent> content = do_QueryInterface(mElement);
-  if (NS_FAILED(rv = content->GetDocument(*getter_AddRefs(document)))) {
-    NS_ERROR("Unable to retrieve the document.");
-    return rv;
-  }
+  nsCOMPtr<nsIDocument> document = content->GetDocument();
 
   // Turn the document into a DOM document so we can use getElementById
   nsCOMPtr<nsIDOMDocument> domDocument = do_QueryInterface(document);
@@ -549,7 +539,7 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
           list->Item(ctr, getter_AddRefs(node));
           nsCOMPtr<nsIContent> childContent(do_QueryInterface(node));
           nsCOMPtr<nsIAtom> childTag;
-          childContent->GetTag(*getter_AddRefs(childTag));
+          childContent->GetTag(getter_AddRefs(childTag));
           if (childTag.get() == tag) {
             popupContent = do_QueryInterface(childContent);
             break;

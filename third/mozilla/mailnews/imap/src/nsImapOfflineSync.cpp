@@ -179,7 +179,11 @@ nsresult nsImapOfflineSync::AdvanceToNextFolder()
 	// we always start by changing flags
   mCurrentPlaybackOpType = nsIMsgOfflineImapOperation::kFlagsChanged;
 	
-  m_currentFolder = nsnull;
+  if (m_currentFolder)
+  {
+    m_currentFolder->SetMsgDatabase(nsnull);
+    m_currentFolder = nsnull;
+  }
 
   if (!m_currentServer)
      rv = AdvanceToNextServer();
@@ -601,17 +605,11 @@ PRBool nsImapOfflineSync::CreateOfflineFolder(nsIMsgFolder *folder)
 
 PRInt32 nsImapOfflineSync::GetCurrentUIDValidity()
 {
-   uid_validity_info uidStruct;
-
   if (m_currentFolder)
   {
-    nsCOMPtr <nsIImapMiscellaneousSink> miscellaneousSink = do_QueryInterface(m_currentFolder);
-    if (miscellaneousSink)
-    {
-      uidStruct.returnValidity = kUidUnknown;
-      miscellaneousSink->GetStoredUIDValidity(nsnull, &uidStruct);
-      mCurrentUIDValidity = uidStruct.returnValidity;    
-    }
+    nsCOMPtr <nsIImapMailFolderSink> imapFolderSink = do_QueryInterface(m_currentFolder);
+    if (imapFolderSink)
+      imapFolderSink->GetUidValidity(&mCurrentUIDValidity);
   }
   return mCurrentUIDValidity; 
 }
@@ -656,11 +654,12 @@ nsresult nsImapOfflineSync::ProcessNextOperation()
   while (m_currentFolder && !m_currentDB)
   {
     m_currentFolder->GetFlags(&folderFlags);
-    // need to check if folder has offline events, or is configured for offline
-    if (folderFlags & (MSG_FOLDER_FLAG_OFFLINEEVENTS | MSG_FOLDER_FLAG_OFFLINE))
-    {
+    // need to check if folder has offline events, /* or is configured for offline */
+    // shouldn't need to check if configured for offline use, since any folder with
+    // events should have MSG_FOLDER_FLAG_OFFLINEEVENTS set.
+    if (folderFlags & (MSG_FOLDER_FLAG_OFFLINEEVENTS /* | MSG_FOLDER_FLAG_OFFLINE */))
       m_currentFolder->GetDBFolderInfoAndDB(getter_AddRefs(folderInfo), getter_AddRefs(m_currentDB));
-    }
+
     if (m_currentDB)
     {
       m_CurrentKeys.RemoveAll();
@@ -668,6 +667,7 @@ nsresult nsImapOfflineSync::ProcessNextOperation()
       if ((m_currentDB->ListAllOfflineOpIds(&m_CurrentKeys) != 0) || !m_CurrentKeys.GetSize())
       {
         m_currentDB = nsnull;
+        folderInfo = nsnull; // can't hold onto folderInfo longer than db
         m_currentFolder->ClearFlag(MSG_FOLDER_FLAG_OFFLINEEVENTS);
       }
       else
@@ -928,7 +928,7 @@ void nsImapOfflineSync::DeleteAllOfflineOpsForCurrentDB()
     if (++m_KeyIndex < m_CurrentKeys.GetSize())
       m_currentDB->GetOfflineOpForKey(m_CurrentKeys[m_KeyIndex], PR_FALSE, getter_AddRefs(currentOp));
   }
-  // turn off MSG_FOLDER_PREF_OFFLINEEVENTS
+  // turn off MSG_FOLDER_FLAG_OFFLINEEVENTS
   if (m_currentFolder)
     m_currentFolder->ClearFlag(MSG_FOLDER_FLAG_OFFLINEEVENTS);
 }
@@ -998,6 +998,11 @@ nsresult nsImapOfflineDownloader::ProcessNextOperation()
             // so just advance to the next server.
             if (!imapInbox || offlineImapFolder)
             {
+              // here we should check if this a pop3 server/inbox, and the user doesn't want
+              // to download pop3 mail for offline use.
+              if (!imapInbox)
+              {
+              }
               rv = inbox->GetNewMessages(m_window, this);
               if (NS_SUCCEEDED(rv))
                 return rv; // otherwise, fall through.

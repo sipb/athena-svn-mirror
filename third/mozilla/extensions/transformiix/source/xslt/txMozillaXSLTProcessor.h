@@ -47,18 +47,16 @@
 #include "nsVoidArray.h"
 #include "nsWeakPtr.h"
 #include "txExpandedNameMap.h"
-#include "nsIDOMNode.h"
 #include "txXMLEventHandler.h"
-#include "nsIDOMDocument.h"
 #include "nsIXSLTProcessorObsolete.h"
 #include "txXSLTProcessor.h"
 #include "nsVoidArray.h"
-#include "txStylesheet.h"
 #include "nsAutoPtr.h"
 #include "nsIDocumentObserver.h"
 
 class nsIURI;
 class nsIXMLContentSink;
+class nsIDOMNode;
 
 /* bacd8ad0-552f-11d3-a9f7-000064657374 */
 #define TRANSFORMIIX_XSLT_PROCESSOR_CID   \
@@ -76,20 +74,17 @@ public:
                                      mTxValue(nsnull)
     {
     }
-    ~txVariable()
-    {
-        delete mTxValue;
-    }
-    nsresult getValue(ExprResult** aValue)
+    nsresult getValue(txAExprResult** aValue)
     {
         NS_ASSERTION(mValue, "variablevalue is null");
 
         if (!mTxValue) {
-            nsresult rv = Convert(mValue, &mTxValue);
+            nsresult rv = Convert(mValue, getter_AddRefs(mTxValue));
             NS_ENSURE_SUCCESS(rv, rv);
         }
 
         *aValue = mTxValue;
+        NS_ADDREF(*aValue);
 
         return NS_OK;
     }
@@ -103,15 +98,14 @@ public:
     {
         NS_ASSERTION(aValue, "setting variablevalue to null");
         mValue = aValue;
-        delete mTxValue;
         mTxValue = nsnull;
     }
 
 private:
-    static nsresult Convert(nsIVariant *aValue, ExprResult** aResult);
+    static nsresult Convert(nsIVariant *aValue, txAExprResult** aResult);
 
     nsCOMPtr<nsIVariant> mValue;
-    ExprResult* mTxValue;
+    nsRefPtr<txAExprResult> mTxValue;
 };
 
 /**

@@ -821,7 +821,7 @@ nsresult nsMsgSearchTerm::MatchBody (nsIMsgSearchScopeTerm *scope, PRUint32 offs
 					StripQuotedPrintable ((unsigned char*)buf);
 			    nsCString  compare(buf);
 //				ConvertToUnicode(charset, buf, compare);
-				if (compare.Length() > 0) {
+				if (!compare.IsEmpty()) {
 					char startChar = (char) compare.CharAt(0);
 					if (startChar != nsCRT::CR && startChar != nsCRT::LF)
 					{
@@ -1367,8 +1367,8 @@ nsresult nsMsgSearchTerm::InitHeaderAddressParser()
 	return res;
 }
 
-NS_IMPL_GETSET(nsMsgSearchTerm, Attrib, nsMsgSearchAttribValue, m_attribute);
-NS_IMPL_GETSET(nsMsgSearchTerm, Op, nsMsgSearchOpValue, m_operator);
+NS_IMPL_GETSET(nsMsgSearchTerm, Attrib, nsMsgSearchAttribValue, m_attribute)
+NS_IMPL_GETSET(nsMsgSearchTerm, Op, nsMsgSearchOpValue, m_operator)
 
 
 NS_IMETHODIMP
@@ -1420,8 +1420,8 @@ nsMsgSearchTerm::SetArbitraryHeader(const char* aValue)
     return NS_OK;
 }
 
-NS_IMPL_GETSET(nsMsgSearchTerm, BeginsGrouping, PRBool, mEndsGrouping);
-NS_IMPL_GETSET(nsMsgSearchTerm, EndsGrouping, PRBool, mEndsGrouping);
+NS_IMPL_GETSET(nsMsgSearchTerm, BeginsGrouping, PRBool, mEndsGrouping)
+NS_IMPL_GETSET(nsMsgSearchTerm, EndsGrouping, PRBool, mEndsGrouping)
 
 //-----------------------------------------------------------------------------
 // nsMsgSearchScopeTerm implementation
@@ -1433,7 +1433,7 @@ nsMsgSearchScopeTerm::nsMsgSearchScopeTerm (nsIMsgSearchSession *session,
 	m_attribute = attribute;
 	m_folder = folder;
 	m_searchServer = PR_TRUE;
-    m_searchSession = getter_AddRefs(NS_GetWeakReference(session));
+    m_searchSession = do_GetWeakReference(session);
 }
 
 nsMsgSearchScopeTerm::nsMsgSearchScopeTerm ()

@@ -106,7 +106,6 @@
 #include "nsXULAtoms.h"
 #include "nsXULElement.h"
 #include "jsapi.h"
-#include "jscntxt.h"
 #include "prlog.h"
 #include "rdf.h"
 #include "pldhash.h"
@@ -314,8 +313,7 @@ nsXULTemplateBuilder::AttributeChanged(nsIDocument *aDocument,
                                        nsIContent*  aContent,
                                        PRInt32      aNameSpaceID,
                                        nsIAtom*     aAttribute,
-                                       PRInt32      aModType, 
-                                       nsChangeHint aHint)
+                                       PRInt32      aModType)
 {
     // Check for a change to the 'ref' attribute on an atom, in which
     // case we may need to nuke and rebuild the entire content model
@@ -707,8 +705,7 @@ nsXULTemplateBuilder::LoadDataSources()
     if (allowneg == NS_LITERAL_STRING("false"))
 		mDB->SetAllowNegativeAssertions(PR_FALSE);
 
-    nsCOMPtr<nsIDocument> doc;
-    mRoot->GetDocument(*getter_AddRefs(doc));
+    nsCOMPtr<nsIDocument> doc = mRoot->GetDocument();
     NS_ASSERTION(doc, "element has no document");
     if (! doc)
         return NS_ERROR_UNEXPECTED;
@@ -850,9 +847,8 @@ nsXULTemplateBuilder::InitHTMLTemplateRoot()
     // 'database' and 'builder' properties onto aElement.
     nsresult rv;
 
-    nsCOMPtr<nsIDocument> doc;
-    mRoot->GetDocument(*getter_AddRefs(doc));
-    NS_ASSERTION(doc != nsnull, "no document");
+    nsCOMPtr<nsIDocument> doc = mRoot->GetDocument();
+    NS_ASSERTION(doc, "no document");
     if (! doc)
         return NS_ERROR_UNEXPECTED;
 
@@ -866,7 +862,7 @@ nsXULTemplateBuilder::InitHTMLTemplateRoot()
     if (! context)
         return NS_ERROR_UNEXPECTED;
 
-    JSContext* jscontext = NS_STATIC_CAST(JSContext*, context->GetNativeContext());
+    JSContext* jscontext = NS_REINTERPRET_CAST(JSContext*, context->GetNativeContext());
     NS_ASSERTION(context != nsnull, "no jscontext");
     if (! jscontext)
         return NS_ERROR_UNEXPECTED;
@@ -1035,7 +1031,9 @@ nsXULTemplateBuilder::SubstituteText(nsTemplateMatch& aMatch,
 
         const char *uri = nsnull;
         member->GetValueConst(&uri);
-        aResult = NS_ConvertUTF8toUCS2(uri);
+
+        CopyUTF8toUTF16(uri, aResult);
+
         return NS_OK;
     }
 
@@ -1382,11 +1380,11 @@ PRBool
 nsXULTemplateBuilder::IsTemplateElement(nsIContent* aContent)
 {
     PRInt32 nameSpaceID;
-    aContent->GetNameSpaceID(nameSpaceID);
+    aContent->GetNameSpaceID(&nameSpaceID);
 
     if (nameSpaceID == kNameSpaceID_XUL) {
         nsCOMPtr<nsIAtom> tag;
-        aContent->GetTag(*getter_AddRefs(tag));
+        aContent->GetTag(getter_AddRefs(tag));
 
         if (tag.get() == nsXULAtoms::Template)
             return PR_TRUE;
@@ -1442,13 +1440,7 @@ nsXULTemplateBuilder::GetTemplateRoot(nsIContent** aResult)
     mRoot->GetAttr(kNameSpaceID_None, nsXULAtoms::templateAtom, templateID);
 
     if (!templateID.IsEmpty()) {
-        nsCOMPtr<nsIDocument> doc;
-        mRoot->GetDocument(*getter_AddRefs(doc));
-        NS_ASSERTION(doc != nsnull, "root element has no document");
-        if (! doc)
-            return NS_ERROR_FAILURE;
-
-        nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(doc);
+        nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(mRoot->GetDocument());
         NS_ASSERTION(domDoc, "expected a XUL document");
         if (! domDoc)
             return NS_ERROR_FAILURE;
@@ -1469,7 +1461,7 @@ nsXULTemplateBuilder::GetTemplateRoot(nsIContent** aResult)
 
         for (PRInt32 i = 0; i < count; ++i) {
             nsCOMPtr<nsIContent> child;
-            mRoot->ChildAt(i, *getter_AddRefs(child));
+            mRoot->ChildAt(i, getter_AddRefs(child));
 
             if (IsTemplateElement(child)) {
                 NS_ADDREF(*aResult = child.get());
@@ -1481,9 +1473,8 @@ nsXULTemplateBuilder::GetTemplateRoot(nsIContent** aResult)
 
     // If we couldn't find a real child, look through the anonymous
     // kids, too.
-    nsCOMPtr<nsIDocument> doc;
-    mRoot->GetDocument(*getter_AddRefs(doc));
-    NS_ASSERTION(doc != nsnull, "root element has no document");
+    nsCOMPtr<nsIDocument> doc = mRoot->GetDocument();
+    NS_ASSERTION(doc, "root element has no document");
     if (! doc)
         return NS_ERROR_FAILURE;
 
@@ -1558,18 +1549,18 @@ nsXULTemplateBuilder::CompileRules()
 
     for (PRInt32 i = 0; i < count; i++) {
         nsCOMPtr<nsIContent> rule;
-        tmpl->ChildAt(i, *getter_AddRefs(rule));
+        tmpl->ChildAt(i, getter_AddRefs(rule));
         if (! rule)
             break;
 
         PRInt32 nameSpaceID = kNameSpaceID_Unknown;
-        rule->GetNameSpaceID(nameSpaceID);
+        rule->GetNameSpaceID(&nameSpaceID);
 
         if (nameSpaceID != kNameSpaceID_XUL)
             continue;
 
         nsCOMPtr<nsIAtom> tag;
-        rule->GetTag(*getter_AddRefs(tag));
+        rule->GetTag(getter_AddRefs(tag));
 
         if (tag.get() == nsXULAtoms::rule) {
             ++nrules;
@@ -1681,7 +1672,7 @@ nsXULTemplateBuilder::CompileExtendedRule(nsIContent* aRuleElement,
 
             for (PRInt32 i = 0; i < count; ++i) {
                 nsCOMPtr<nsIContent> child;
-                next->ChildAt(i, *getter_AddRefs(child));
+                next->ChildAt(i, getter_AddRefs(child));
 
                 unvisited.AppendElement(child.get());
             }
@@ -1758,10 +1749,10 @@ nsXULTemplateBuilder::CompileConditions(nsTemplateRule* aRule,
 
     for (PRInt32 i = 0; i < count; ++i) {
         nsCOMPtr<nsIContent> condition;
-        aConditions->ChildAt(i, *getter_AddRefs(condition));
+        aConditions->ChildAt(i, getter_AddRefs(condition));
 
         nsCOMPtr<nsIAtom> tag;
-        condition->GetTag(*getter_AddRefs(tag));
+        condition->GetTag(getter_AddRefs(tag));
 
         TestNode* testnode = nsnull;
         rv = CompileCondition(tag, aRule, condition, aParentNode, &testnode);
@@ -1967,10 +1958,10 @@ nsXULTemplateBuilder::CompileBindings(nsTemplateRule* aRule, nsIContent* aBindin
 
     for (PRInt32 i = 0; i < count; ++i) {
         nsCOMPtr<nsIContent> binding;
-        aBindings->ChildAt(i, *getter_AddRefs(binding));
+        aBindings->ChildAt(i, getter_AddRefs(binding));
 
         nsCOMPtr<nsIAtom> tag;
-        binding->GetTag(*getter_AddRefs(tag));
+        binding->GetTag(getter_AddRefs(tag));
 
         if (tag.get() == nsXULAtoms::binding) {
             rv = CompileBinding(aRule, binding);
@@ -2095,9 +2086,9 @@ nsXULTemplateBuilder::CompileSimpleRule(nsIContent* aRuleElement,
     for (PRInt32 i = 0; i < count; ++i) {
         PRInt32 attrNameSpaceID;
         nsCOMPtr<nsIAtom> attr, prefix;
-        rv = aRuleElement->GetAttrNameAt(i, attrNameSpaceID,
-                                         *getter_AddRefs(attr),
-                                         *getter_AddRefs(prefix));
+        rv = aRuleElement->GetAttrNameAt(i, &attrNameSpaceID,
+                                         getter_AddRefs(attr),
+                                         getter_AddRefs(prefix));
         if (NS_FAILED(rv)) return rv;
 
         // Note: some attributes must be skipped on XUL template rule subtree
@@ -2281,8 +2272,8 @@ nsXULTemplateBuilder::AddSimpleRuleBindings(nsTemplateRule* aRule, nsIContent* a
             PRInt32 nameSpaceID;
             nsCOMPtr<nsIAtom> attr, prefix;
 
-            element->GetAttrNameAt(i, nameSpaceID, *getter_AddRefs(attr),
-                                   *getter_AddRefs(prefix));
+            element->GetAttrNameAt(i, &nameSpaceID, getter_AddRefs(attr),
+                                   getter_AddRefs(prefix));
 
             nsAutoString value;
             element->GetAttr(nameSpaceID, attr, value);
@@ -2297,7 +2288,7 @@ nsXULTemplateBuilder::AddSimpleRuleBindings(nsTemplateRule* aRule, nsIContent* a
 
         while (--count >= 0) {
             nsCOMPtr<nsIContent> child;
-            element->ChildAt(count, *getter_AddRefs(child));
+            element->ChildAt(count, getter_AddRefs(child));
             elements.AppendElement(child);
         }
     }
@@ -2312,7 +2303,7 @@ nsXULTemplateBuilder::AddBindingsFor(nsXULTemplateBuilder* aThis,
 {
     // We should *only* be recieving "rdf:"-style variables. Make
     // sure...
-    if (Substring(aVariable, PRUint32(0), PRUint32(4)) != NS_LITERAL_STRING("rdf:"))
+    if (!StringBeginsWith(aVariable, NS_LITERAL_STRING("rdf:")))
         return;
 
     nsTemplateRule* rule = NS_STATIC_CAST(nsTemplateRule*, aClosure);

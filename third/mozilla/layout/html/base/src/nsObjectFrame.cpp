@@ -22,6 +22,8 @@
  * Contributor(s):
  *   Pierre Phaneuf <pp@ludusdesign.com>
  *   Jacek Piskozub <piskozub@iopan.gda.pl>
+ *   Leon Sha <leon.sha@sun.com>
+ *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -103,7 +105,6 @@
 #include "npapi.h"
 #include "nsIPrintSettings.h"
 #include "nsGfxCIID.h"
-#include "nsHTMLUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsTransform2D.h"
 #include "nsIImageLoadingContent.h"
@@ -143,6 +144,13 @@
 #include "nsIAccessibilityService.h"
 #endif
 
+#ifdef MOZ_LOGGING
+#define FORCE_PR_LOG 1 /* Allow logging in the release build */
+#endif /* MOZ_LOGGING */
+#include "prlog.h"
+
+#include <errno.h>
+
 #include "nsContentCID.h"
 static NS_DEFINE_CID(kRangeCID,     NS_RANGE_CID);
 
@@ -155,6 +163,10 @@ static NS_DEFINE_CID(kRangeCID,     NS_RANGE_CID);
 #include <wtypes.h>
 #include <winuser.h>
 #endif
+
+#ifdef PR_LOGGING 
+static PRLogModuleInfo *nsObjectFrameLM = PR_NewLogModule("nsObjectFrame");
+#endif /* PR_LOGGING */
 
 // special class for handeling DOM context menu events
 // because for some reason it starves other mouse events if implemented on the same class
@@ -370,7 +382,9 @@ private:
   nsresult EnsureCachedAttrParamArrays();
 };
 
+#if defined(XP_WIN) || defined(XP_MAC) || defined(XP_MACOSX)
 static void ConvertTwipsToPixels(nsIPresContext& aPresContext, nsRect& aTwipsRect, nsRect& aPixelRect);
+#endif
 
   // Mac specific code to fix up port position and clip during paint
 #if defined(XP_MAC) || defined(XP_MACOSX)
@@ -474,12 +488,12 @@ PRBool nsObjectFrame::IsSupportedImage(nsIContent* aContent)
 
   nsAutoString uType;
   nsresult rv = aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, uType);
-  nsCAutoString type = NS_ConvertUCS2toUTF8(uType);
+  NS_ConvertUCS2toUTF8 type(uType);
   PRBool haveType = (rv == NS_CONTENT_ATTR_HAS_VALUE) && (!type.IsEmpty());
   if (!haveType) 
   {
     nsCOMPtr<nsIAtom> tag;
-    aContent->GetTag(*getter_AddRefs(tag));
+    aContent->GetTag(getter_AddRefs(tag));
     nsAutoString data;
 
     // If this is an OBJECT tag, we should look for a DATA attribute.
@@ -558,7 +572,7 @@ void nsObjectFrame::IsSupportedDocument(nsIContent* aContent, PRBool* aDoc)
     nsCOMPtr<nsIURI> uri;
     nsCOMPtr<nsIURI> baseURL;
 
-    if (NS_FAILED(GetBaseURL(*getter_AddRefs(baseURL)))) return; // XXX NS_NewURI fails without base
+    aContent->GetBaseURL(getter_AddRefs(baseURL));
     rv = NS_NewURI(getter_AddRefs(uri), data, nsnull, baseURL);
     if (NS_FAILED(rv)) return;
 
@@ -576,7 +590,7 @@ void nsObjectFrame::IsSupportedDocument(nsIContent* aContent, PRBool* aDoc)
     nsXPIDLCString value;
     rv = catman->GetCategoryEntry("Gecko-Content-Viewers",contentType, getter_Copies(value));
 
-    if (NS_SUCCEEDED(rv) && value && *value && (value.Length() > 0))
+    if (NS_SUCCEEDED(rv) && !value.IsEmpty())
       *aDoc = PR_TRUE;
 
     if (contentType)
@@ -622,7 +636,7 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
     }
 
     nsCOMPtr<nsIAtom> tag;
-    aContent->GetTag(*getter_AddRefs(tag));
+    aContent->GetTag(getter_AddRefs(tag));
     nsAutoString data;
     
     // If this is an OBJECT tag, we should look for a DATA attribute.
@@ -658,7 +672,7 @@ nsObjectFrame::Init(nsIPresContext*  aPresContext,
   
   // only do the following for the object tag
   nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(*getter_AddRefs(tag));
+  aContent->GetTag(getter_AddRefs(tag));
   if (tag.get() != nsHTMLAtoms::object) return rv;
 
   // for now, we should try to do the same for "document" types and create
@@ -790,66 +804,57 @@ nsObjectFrame::CreateWidget(nsIPresContext* aPresContext,
   if (NS_OK != result) {
     return result;
   }
-  nsCOMPtr<nsIViewManager> viewMan;
 
   nsRect boundBox(0, 0, aWidth, aHeight);
 
-  nsIFrame* parWithView;
-  nsIView *parView;
+  nsIView *parView = GetAncestorWithView()->GetView();
+  nsIViewManager* viewMan = parView->GetViewManager();
 
-  GetParentWithView(aPresContext, &parWithView);
-  parWithView->GetView(aPresContext, &parView);
-
-  if (NS_SUCCEEDED(parView->GetViewManager(*getter_AddRefs(viewMan))))
-  {
   //  nsWidgetInitData* initData = GetWidgetInitData(aPresContext); // needs to be deleted
     // initialize the view as hidden since we don't know the (x,y) until Paint
-    result = view->Init(viewMan, boundBox, parView, nsViewVisibility_kHide);
+  result = view->Init(viewMan, boundBox, parView, nsViewVisibility_kHide);
   //  if (nsnull != initData) {
   //    delete(initData);
   //  }
 
-    if (NS_FAILED(result)) {
-      return NS_OK;       //XXX why OK? MMP
-    }
+  if (NS_FAILED(result)) {
+    return NS_OK;       //XXX why OK? MMP
+  }
 
 #if 0
-    // set the content's widget, so it can get content modified by the widget
-    nsIWidget *widget;
-    result = GetWidget(view, &widget);
-    if (NS_OK == result) {
-      nsInput* content = (nsInput *)mContent; // change this cast to QueryInterface 
-      content->SetWidget(widget);
-      NS_IF_RELEASE(widget);
-    } else {
-      NS_ASSERTION(0, "could not get widget");
-    }
+  // set the content's widget, so it can get content modified by the widget
+  nsIWidget *widget = view->GetWidget();
+  if (widget) {
+    nsInput* content = (nsInput *)mContent; // change this cast to QueryInterface 
+    content->SetWidget(widget);
+  } else {
+    NS_ASSERTION(0, "could not get widget");
+  }
 #endif
 
-    // Turn off double buffering on the Mac. This depends on bug 49743 and partially
-    // fixes 32327, 19931 amd 51787
+  // Turn off double buffering on the Mac. This depends on bug 49743 and partially
+  // fixes 32327, 19931 amd 51787
 #if defined(XP_MAC) || defined(XP_MACOSX)
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
-    PRBool doubleBuffer = PR_FALSE;
-    if (prefBranch) {
-      prefBranch->GetBoolPref("plugin.enable_double_buffer", &doubleBuffer);
-    }
-
-    viewMan->AllowDoubleBuffering(doubleBuffer);
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  PRBool doubleBuffer = PR_FALSE;
+  if (prefBranch) {
+    prefBranch->GetBoolPref("plugin.enable_double_buffer", &doubleBuffer);
+  }
+  
+  viewMan->AllowDoubleBuffering(doubleBuffer);
 #endif
-
-    // XXX Put this last in document order
-    // XXX Should we be setting the z-index here?
-    viewMan->InsertChild(parView, view, nsnull, PR_TRUE);
-
-    if(aViewOnly != PR_TRUE) {
-      // Bug 179822: Create widget and allow non-unicode SubClass
-      nsWidgetInitData initData;
-      initData.mUnicode = PR_FALSE;
-      result = view->CreateWidget(kWidgetCID, &initData);
-      if (NS_FAILED(result)) {
-        return NS_OK;       //XXX why OK? MMP
-      }
+  
+  // XXX Put this last in document order
+  // XXX Should we be setting the z-index here?
+  viewMan->InsertChild(parView, view, nsnull, PR_TRUE);
+  
+  if(aViewOnly != PR_TRUE) {
+    // Bug 179822: Create widget and allow non-unicode SubClass
+    nsWidgetInitData initData;
+    initData.mUnicode = PR_FALSE;
+    result = view->CreateWidget(kWidgetCID, &initData);
+    if (NS_FAILED(result)) {
+      return NS_OK;       //XXX why OK? MMP
     }
   }
 
@@ -858,11 +863,10 @@ nsObjectFrame::CreateWidget(nsIPresContext* aPresContext,
     // the child window background color when painting. If it's not set, it may default to gray
     // Sometimes, a frame doesn't have a background color or is transparent. In this
     // case, walk up the frame tree until we do find a frame with a background color
-    for (nsIFrame* frame = this; frame; frame->GetParent(&frame)) {
+    for (nsIFrame* frame = this; frame; frame = frame->GetParent()) {
       const nsStyleBackground* background = frame->GetStyleBackground();
       if (!background->IsTransparent()) {  // make sure we got an actual color
-        nsCOMPtr<nsIWidget> win;
-        view->GetWidget(*getter_AddRefs(win));
+        nsIWidget* win = view->GetWidget();
         if (win)
           win->SetBackgroundColor(background->mBackgroundColor);
         break;
@@ -884,7 +888,7 @@ nsObjectFrame::CreateWidget(nsIPresContext* aPresContext,
     viewMan->MoveViewTo(view, origin.x, origin.y);
   }
 
-  SetView(aPresContext, view);
+  SetView(view);
 
   return result;
 }
@@ -915,7 +919,7 @@ nsObjectFrame::GetDesiredSize(nsIPresContext* aPresContext,
 
   // for EMBED and APPLET, default to 240x200 for compatibility
   nsCOMPtr<nsIAtom> atom;
-  mContent->GetTag(*getter_AddRefs(atom));
+  mContent->GetTag(getter_AddRefs(atom));
   if (atom == nsHTMLAtoms::applet || atom == nsHTMLAtoms::embed) {
     float p2t;
     aPresContext->GetScaledPixelsToTwips(&p2t);
@@ -973,16 +977,12 @@ nsObjectFrame::MakeAbsoluteURL(nsIURI* *aFullURI,
   nsCOMPtr<nsIDocument> document;
   rv = mInstanceOwner->GetDocument(getter_AddRefs(document));
 
-  //trim leading and trailing whitespace
-  aSrc.Trim(" \n\r\t\b", PR_TRUE, PR_TRUE, PR_FALSE);
-
   // get document charset
-  nsAutoString originCharset;
+  nsCAutoString originCharset;
   if (document && NS_FAILED(document->GetDocumentCharacterSet(originCharset)))
     originCharset.Truncate();
  
-  return NS_NewURI(aFullURI, aSrc, NS_LossyConvertUCS2toASCII(originCharset).get(),
-                   aBaseURI, nsHTMLUtils::IOService);
+  return NS_NewURI(aFullURI, aSrc, originCharset.get(), aBaseURI);
 }
 
 NS_IMETHODIMP
@@ -1030,16 +1030,15 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
     nsAutoString classid;
 
-    if (NS_SUCCEEDED(rv = GetBaseURL(*getter_AddRefs(baseURL)))) {
-      nsAutoString codeBase;
-      if ((NS_CONTENT_ATTR_HAS_VALUE ==
-            mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::codebase, codeBase)) &&
-          !codeBase.IsEmpty()) {
-        nsCOMPtr<nsIURI> codeBaseURL;
-        rv = MakeAbsoluteURL(getter_AddRefs(codeBaseURL), codeBase, baseURL);
-        if (NS_SUCCEEDED(rv)) {
-          baseURL = codeBaseURL;
-        }
+    mContent->GetBaseURL(getter_AddRefs(baseURL));
+    nsAutoString codeBase;
+    if ((NS_CONTENT_ATTR_HAS_VALUE ==
+         mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::codebase, codeBase)) &&
+        !codeBase.IsEmpty()) {
+      nsCOMPtr<nsIURI> codeBaseURL;
+      rv = MakeAbsoluteURL(getter_AddRefs(codeBaseURL), codeBase, baseURL);
+      if (NS_SUCCEEDED(rv)) {
+        baseURL = codeBaseURL;
       }
     }
 
@@ -1112,7 +1111,7 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
       mInstanceOwner->SetPluginHost(pluginHost);
 
       nsCOMPtr<nsIAtom> tag;
-      mContent->GetTag(*getter_AddRefs(tag));
+      mContent->GetTag(getter_AddRefs(tag));
       if (tag.get() == nsHTMLAtoms::applet) {
         if (NS_CONTENT_ATTR_HAS_VALUE == mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::code, src)) {
           // Create an absolute URL
@@ -1158,7 +1157,7 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
 
         // now try to instantiate a plugin instance based on a mime type
         const char* mimeType = mimeTypeStr.get();
-        if (mimeType || (src.Length() > 0)) {
+        if (mimeType || !src.IsEmpty()) {
           if (!mimeType) {
             // we don't have a mime type, try to figure it out from extension
             nsXPIDLCString extension;
@@ -1193,7 +1192,7 @@ nsObjectFrame::Reflow(nsIPresContext*          aPresContext,
     //check for alternative content with CantRenderReplacedElement()
     nsIPresShell* presShell;
     aPresContext->GetShell(&presShell);
-    rv = presShell->CantRenderReplacedElement(aPresContext, this);
+    rv = presShell->CantRenderReplacedElement(this);
     NS_RELEASE(presShell);
   } else {
     NotifyContentObjectWrapper();
@@ -1360,6 +1359,8 @@ nsObjectFrame::ReinstantiatePlugin(nsIPresContext* aPresContext, nsHTMLReflowMet
   GetDesiredSize(aPresContext, aReflowState, aMetrics);
 
   mInstanceOwner->GetWindow(window);
+  
+  NS_ENSURE_TRUE(window, NS_ERROR_NULL_POINTER);
 
   GetOffsetFromView(aPresContext, origin, &parentWithView);
 
@@ -1400,29 +1401,6 @@ nsObjectFrame::HandleChild(nsIPresContext*          aPresContext,
   return NS_OK;
 }
 
-
-nsresult
-nsObjectFrame::GetBaseURL(nsIURI* &aURL)
-{
-  nsIHTMLContent* htmlContent;
-  if (NS_SUCCEEDED(mContent->QueryInterface(NS_GET_IID(nsIHTMLContent), (void**)&htmlContent))) 
-  {
-    htmlContent->GetBaseURL(aURL);
-    NS_RELEASE(htmlContent);
-  }
-  else 
-  {
-    nsCOMPtr<nsIDocument> doc;
-    mContent->GetDocument(*getter_AddRefs(doc));
-    if (doc)
-      doc->GetBaseURL(aURL);
-    else
-      return NS_ERROR_FAILURE;
-  }
-  return NS_OK;
-}
-
-
 PRBool
 nsObjectFrame::IsHidden(PRBool aCheckVisibilityStyle) const
 {
@@ -1432,7 +1410,7 @@ nsObjectFrame::IsHidden(PRBool aCheckVisibilityStyle) const
   }
 
   nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(*getter_AddRefs(tag));
+  mContent->GetTag(getter_AddRefs(tag));
 
   // only <embed> tags support the HIDDEN attribute
   if (tag.get() == nsHTMLAtoms::embed) {
@@ -1489,23 +1467,17 @@ nsresult nsObjectFrame::GetWindowOriginInPixels(nsIPresContext * aPresContext, P
   // if it's windowless, let's make sure we have our origin set right
   // it may need to be corrected, like after scrolling
   if (aWindowless && parentWithView) {
-    nsPoint correction(0,0);
-    nsCOMPtr<nsIViewManager> parentVM;
-    parentWithView->GetViewManager(*getter_AddRefs(parentVM));
+    nsIViewManager* parentVM = parentWithView->GetViewManager();
 
     // Walk up all the views and add up their positions. This will give us our
     // absolute position which is what we want to give the plugin
     nsIView* theView = parentWithView;
     while (theView) {
-      nsCOMPtr<nsIViewManager> vm;
-      theView->GetViewManager(*getter_AddRefs(vm));
-      if (vm != parentVM)
+      if (theView->GetViewManager() != parentVM)
         break;
 
-      theView->GetPosition(&correction.x, &correction.y);
-      origin += correction;
-      
-      theView->GetParent(theView);
+      origin += theView->GetPosition();
+      theView = theView->GetParent();
     }  
   }
 
@@ -1531,11 +1503,9 @@ nsObjectFrame::DidReflow(nsIPresContext*           aPresContext,
 
   PRBool bHidden = IsHidden();
 
-  nsIView* view = nsnull;
-  GetView(aPresContext, &view);
-  if (view) {
-    nsCOMPtr<nsIViewManager> vm;
-    view->GetViewManager(*getter_AddRefs(vm));
+  if (HasView()) {
+    nsIView* view = GetView();
+    nsIViewManager* vm = view->GetViewManager();
     if (vm)
       vm->SetViewVisibility(view, bHidden ? nsViewVisibility_kHide : nsViewVisibility_kShow);
   }
@@ -1621,8 +1591,7 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
     // for THIS content node in order to call ->Print() on the right plugin
 
     // first, we need to get the document
-    nsCOMPtr<nsIDocument> doc;
-    mContent->GetDocument(*getter_AddRefs(doc));
+    nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
     NS_ENSURE_TRUE(doc, NS_ERROR_NULL_POINTER);
 
     // now we need to get the shell for the screen
@@ -1708,22 +1677,85 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
     
     window.window = &port;
     npprint.print.embedPrint.platformPrint = (void*)window.window;
-
+    npprint.print.embedPrint.window = window;
+    // send off print info to plugin
+    rv = pi->Print(&npprint);
 #elif defined(XP_UNIX) && !defined(XP_MACOSX)
-    // UNIX does things completely differently
-    PRUnichar *printfile = nsnull;
-    if (printSettings) {
-      printSettings->GetToFileName(&printfile);
-    }
-    if (!printfile) 
-      return NS_OK; // XXX what to do on UNIX when we don't have a PS file???? 
+    /* UNIX does things completely differently:
+     * We call the plugin and it sends generated PostScript data into a
+     * file handle we provide. If the plugin returns with success we embed
+     * this PostScript code fragment into the PostScript job we send to the
+     * printer.
+     */
 
+    PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("nsObjectFrame::Paint() start for X11 platforms\n"));
+           
+    FILE *plugintmpfile = tmpfile();
+    if( !plugintmpfile ) {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: could not open tmp. file, errno=%d\n", errno));
+      return NS_ERROR_FAILURE;
+    }
+ 
+    /* Send off print info to plugin */
     NPPrintCallbackStruct npPrintInfo;
     npPrintInfo.type = NP_PRINT;
-    npPrintInfo.fp = (FILE*)printfile;    
-    npprint.print.embedPrint.platformPrint = (void*) &npPrintInfo;
+    npPrintInfo.fp   = plugintmpfile;
+    npprint.print.embedPrint.platformPrint = (void *)&npPrintInfo;
+    npprint.print.embedPrint.window        = window;
+    rv = pi->Print(&npprint);
+    if (NS_FAILED(rv)) {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: plugin returned failure %lx\n", (long)rv));
+      fclose(plugintmpfile);
+      return rv;
+    }
+
+    unsigned char *pluginbuffer;
+    long           fileLength;
+
+    /* Get file size */
+    fseek(plugintmpfile, 0, SEEK_END);
+    fileLength = ftell(plugintmpfile);
+    
+    /* Safeguard against bogus values
+     * (make sure we clamp the size to a reasonable value (say... 128 MB)) */
+    if( fileLength <= 0 || fileLength > (128 * 1024 * 1024) ) {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: file size %ld too large\n", fileLength));
+      fclose(plugintmpfile);
+      return NS_ERROR_FAILURE;
+    }
+
+    pluginbuffer = new unsigned char[fileLength+1];
+    if (!pluginbuffer) {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("error: no buffer memory for %ld bytes\n", fileLength+1));
+      fclose(plugintmpfile);
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+    /* Read data into temp. buffer */
+    long numBytesRead = 0;
+    fseek(plugintmpfile, 0, SEEK_SET);
+    numBytesRead = fread(pluginbuffer, 1, fileLength, plugintmpfile);
+    
+    if( numBytesRead == fileLength ) {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("sending %ld bytes of PostScript data to printer\n", numBytesRead));
+
+      /* Send data to printer */
+      aRenderingContext.RenderPostScriptDataFragment(pluginbuffer, numBytesRead);
+    }
+    else
+    {
+      PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG,
+             ("error: bytes read in buffer (%ld) does not match file length (%ld)\n",
+             numBytesRead, fileLength));
+    }
+
+    fclose(plugintmpfile);
+    delete [] pluginbuffer;
+
+    PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG, ("plugin printing done, return code is %lx\n", (long)rv));
 
 #else  // Windows and non-UNIX, non-Mac(Classic) cases
+
     // we need the native printer device context to pass to plugin
     // On Windows, this will be the HDC
     PRUint32 pDC = 0;
@@ -1733,12 +1765,11 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
       return NS_OK;  // no dc implemented so quit
 
     npprint.print.embedPrint.platformPrint = (void*)pDC;
-#endif 
-
-
     npprint.print.embedPrint.window = window;
     // send off print info to plugin
     rv = pi->Print(&npprint);
+
+#endif
 
 #if defined(XP_MAC) && !TARGET_CARBON
     // Clean-up on Mac
@@ -1807,17 +1838,12 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
 #ifdef XP_WIN    // Windowless plugins on windows need a special event to update their location, see bug 135737
 
           // first, lets find out how big the window is, in pixels
-          nsCOMPtr<nsIPresShell> shell;
-          nsCOMPtr<nsIViewManager> vm;
-          aPresContext->GetShell(getter_AddRefs(shell));
-          if (shell) {
-            shell->GetViewManager(getter_AddRefs(vm));
-            if (vm) {  
+          nsIViewManager* vm = aPresContext->GetViewManager();
+            if (vm) {
               nsIView* view;
               vm->GetRootView(view);
               if (view) {
-                nsCOMPtr<nsIWidget> win;
-                view->GetWidget(*getter_AddRefs(win));
+                nsIWidget* win = view->GetWidget();
                 if (win) {
                   nsRect visibleRect;
                   win->GetBounds(visibleRect);         
@@ -1851,7 +1877,6 @@ nsObjectFrame::Paint(nsIPresContext*      aPresContext,
                 }
               }
             }
-          }
 #endif
 
           inst->SetWindow(window);        
@@ -1881,8 +1906,7 @@ nsObjectFrame::HandleEvent(nsIPresContext* aPresContext,
 
   if (anEvent->message == NS_PLUGIN_ACTIVATE)
   {
-    nsCOMPtr<nsIContent> content;
-    GetContent(getter_AddRefs(content));
+    nsIContent* content = GetContent();
     if (content)
     {
       content->SetFocus(aPresContext);
@@ -1913,12 +1937,6 @@ nsObjectFrame::HandleEvent(nsIPresContext* aPresContext,
 }
 
 nsresult
-nsObjectFrame::Scrolled(nsIView *aView)
-{
-  return NS_OK;
-}
-
-nsresult
 nsObjectFrame::SetFullURL(nsIURI* aURL)
 {
   mFullURL = aURL;
@@ -1945,9 +1963,7 @@ nsresult nsObjectFrame::GetPluginInstance(nsIPluginInstance*& aPluginInstance)
 nsresult
 nsObjectFrame::NotifyContentObjectWrapper()
 {
-  nsCOMPtr<nsIDocument> doc;
-
-  mContent->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
   NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
   nsCOMPtr<nsIScriptGlobalObject> sgo;
@@ -2010,7 +2026,7 @@ nsObjectFrame::GetNextObjectFrame(nsIPresContext* aPresContext,
   nsIFrame * child;
   aRoot->FirstChild(aPresContext, nsnull, &child);
 
-  while (child != nsnull) {
+  while (child) {
     *outFrame = nsnull;
     CallQueryInterface(child, outFrame);
     if (nsnull != *outFrame) {
@@ -2020,7 +2036,7 @@ nsObjectFrame::GetNextObjectFrame(nsIPresContext* aPresContext,
     }
 
     GetNextObjectFrame(aPresContext, child, outFrame);
-    child->GetNextSibling(&child);
+    child = child->GetNextSibling();
   }
 
   return NS_ERROR_FAILURE;
@@ -2052,12 +2068,11 @@ nsPluginDOMContextMenuListener::~nsPluginDOMContextMenuListener()
 {
 }
 
-NS_IMPL_ISUPPORTS2(nsPluginDOMContextMenuListener, nsIDOMContextMenuListener, nsIEventListener);
+NS_IMPL_ISUPPORTS2(nsPluginDOMContextMenuListener, nsIDOMContextMenuListener, nsIEventListener)
 
 nsresult nsPluginDOMContextMenuListener::Init(nsObjectFrame *aFrame)
 {
-  nsCOMPtr<nsIContent> content;
-  aFrame->GetContent(getter_AddRefs(content));
+  nsIContent* content = aFrame->GetContent();
 
   // Register context menu listener
   if (content) {
@@ -2077,8 +2092,7 @@ nsresult nsPluginDOMContextMenuListener::Init(nsObjectFrame *aFrame)
 
 nsresult nsPluginDOMContextMenuListener::Destroy(nsObjectFrame *aFrame)
 {
-  nsCOMPtr<nsIContent> content;
-  aFrame->GetContent(getter_AddRefs(content));
+  nsIContent* content = aFrame->GetContent();
 
   // Unregister context menu listener
   if (content) {
@@ -2278,14 +2292,10 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDOMElement(nsIDOMElement* *result)
 
   if (nsnull != mOwner)
   {
-    nsIContent  *cont;
-
-    mOwner->GetContent(&cont);
-
-    if (nsnull != cont)
+    nsIContent* cont = mOwner->GetContent();
+    if (cont)
     {
       rv = cont->QueryInterface(NS_GET_IID(nsIDOMElement), (void **)result);
-      NS_RELEASE(cont);
     }
   }
 
@@ -2324,7 +2334,9 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetURL(const char *aURL, const char *aTarge
   nsCOMPtr<nsIDocument> doc;
   rv = GetDocument(getter_AddRefs(doc));
   if (NS_SUCCEEDED(rv) && doc) {
-    rv = doc->GetBaseURL(*getter_AddRefs(baseURL));  // gets the document's url
+    // XXX should this really be the document base URL?  Or the
+    // content's base URL?
+    rv = doc->GetBaseURL(getter_AddRefs(baseURL));  // gets the document's url
   } else {
     mOwner->GetFullURL(*getter_AddRefs(baseURL)); // gets the plugin's content url
   }
@@ -2334,8 +2346,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetURL(const char *aURL, const char *aTarge
   rv = NS_NewURI(getter_AddRefs(uri), aURL, baseURL);
 
   NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
-  nsCOMPtr<nsIContent> content;
-  mOwner->GetContent(getter_AddRefs(content));
+  nsIContent* content = mOwner->GetContent();
   NS_ENSURE_TRUE(content, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIInputStream> postDataStream;
@@ -2431,10 +2442,9 @@ NS_IMETHODIMP nsPluginInstanceOwner::InvalidateRect(nsPluginRect *invalidRect)
   if(invalidRect)
   {
     //no reference count on view
-    nsIView* view;
-    rv = mOwner->GetView(mContext, &view);
+    nsIView* view = mOwner->GetView();
 
-    if((rv == NS_OK) && view)
+    if (view)
     {
       float ptot;
       mContext->GetPixelsToTwips(&ptot);
@@ -2444,15 +2454,8 @@ NS_IMETHODIMP nsPluginInstanceOwner::InvalidateRect(nsPluginRect *invalidRect)
             (int)(ptot * (invalidRect->right - invalidRect->left)),
             (int)(ptot * (invalidRect->bottom - invalidRect->top)));
 
-      nsIViewManager* manager;
-      rv = view->GetViewManager(manager);
-
       //set flags to not do a synchronous update, force update does the redraw
-      if((rv == NS_OK) && manager)
-      {
-        rv = manager->UpdateView(view, rect, NS_VMREFRESH_NO_SYNC);
-        NS_RELEASE(manager);
-      }
+      view->GetViewManager()->UpdateView(view, rect, NS_VMREFRESH_NO_SYNC);
     }
   }
 
@@ -2466,23 +2469,13 @@ NS_IMETHODIMP nsPluginInstanceOwner::InvalidateRegion(nsPluginRegion invalidRegi
 
 NS_IMETHODIMP nsPluginInstanceOwner::ForceRedraw()
 {
-  //no reference count on view
-  nsIView* view;
-  nsresult rv = mOwner->GetView(mContext, &view);
-
-  if((rv == NS_OK) && view)
+  nsIView* view = mOwner->GetView();
+  if (view)
   {
-    nsIViewManager* manager;
-    rv = view->GetViewManager(manager);
-
-    if((rv == NS_OK) && manager)
-    {
-      rv = manager->Composite();
-      NS_RELEASE(manager);
-    }
+    return view->GetViewManager()->Composite();
   }
 
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsPluginInstanceOwner::GetValue(nsPluginInstancePeerVariable variable, void *value)
@@ -2497,11 +2490,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetValue(nsPluginInstancePeerVariable varia
       // get the view manager from the pres shell, not from the view!
       // we may not have a view if we are hidden
       if (mContext) {
-        nsCOMPtr<nsIPresShell> shell;
-        mContext->GetShell(getter_AddRefs(shell));
-        if (shell) {
-          nsCOMPtr<nsIViewManager> vm;
-          shell->GetViewManager(getter_AddRefs(vm));
+        nsIViewManager* vm = mContext->GetViewManager();
           if (vm) {
             nsCOMPtr<nsIWidget> widget;
             rv = vm->GetWidget(getter_AddRefs(widget));            
@@ -2512,7 +2501,6 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetValue(nsPluginInstancePeerVariable varia
 
             } else NS_ASSERTION(widget, "couldn't get doc's widget in getting doc's window handle");
           } else NS_ASSERTION(vm, "couldn't get view manager in getting doc's window handle");
-        } else NS_ASSERTION(shell, "couldn't get pres shell in getting doc's window handle");
       } else NS_ASSERTION(mContext, "plugin owner has no pres context in getting doc's window handle");
 
       break;
@@ -2529,19 +2517,15 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetTagType(nsPluginTagType *result)
 
   *result = nsPluginTagType_Unknown;
 
-  if (nsnull != mOwner)
+  if (mOwner)
   {
-    nsIContent  *cont;
-
-    mOwner->GetContent(&cont);
-
-    if (nsnull != cont)
+    nsIContent* cont = mOwner->GetContent();
+    if (cont)
     {
-      nsIAtom     *atom;
+      nsCOMPtr<nsIAtom> atom;
+      cont->GetTag(getter_AddRefs(atom));
 
-      cont->GetTag(atom);
-
-      if (nsnull != atom)
+      if (atom)
       {
         if (atom == nsHTMLAtoms::applet)
           *result = nsPluginTagType_Applet;
@@ -2551,10 +2535,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetTagType(nsPluginTagType *result)
           *result = nsPluginTagType_Object;
 
         rv = NS_OK;
-        NS_RELEASE(atom);
       }
-
-      NS_RELEASE(cont);
     }
   }
 
@@ -2566,10 +2547,8 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetTagText(const char* *result)
     NS_ENSURE_ARG_POINTER(result);
     if (nsnull == mTagText) {
         nsresult rv;
-        nsCOMPtr<nsIContent> content;
-        rv = mOwner->GetContent(getter_AddRefs(content));
-        if (NS_FAILED(rv))
-            return rv;
+        nsIContent* content = mOwner->GetContent();
+
         nsCOMPtr<nsIDOMNode> node(do_QueryInterface(content, &rv));
         if (NS_FAILED(rv))
             return rv;
@@ -2658,7 +2637,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentBase(const char* *result)
     shell->GetDocument(getter_AddRefs(doc));
 
     nsCOMPtr<nsIURI> docURL;
-    doc->GetBaseURL(*getter_AddRefs(docURL));  // should return base + doc url
+    doc->GetBaseURL(getter_AddRefs(docURL));  // should return base + doc url
 
     rv = docURL->GetSpec(mDocumentBase);
   }
@@ -2736,7 +2715,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentEncoding(const char* *result)
   NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get document");
   if (NS_FAILED(rv)) return rv;
 
-  nsString charset;
+  nsCAutoString charset;
   rv = doc->GetDocumentCharacterSet(charset);
   NS_ASSERTION(NS_SUCCEEDED(rv), "can't get charset");
   if (NS_FAILED(rv)) return rv;
@@ -2744,11 +2723,11 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentEncoding(const char* *result)
   if (charset.IsEmpty()) return NS_OK;
 
   // common charsets and those not requiring conversion first
-  if (charset == NS_LITERAL_STRING("us-acsii")) {
+  if (charset == NS_LITERAL_CSTRING("us-acsii")) {
     *result = PL_strdup("US_ASCII");
-  } else if (charset == NS_LITERAL_STRING("ISO-8859-1") ||
-      !nsCRT::strncmp(charset.get(), NS_LITERAL_STRING("UTF").get(), 3)) {
-    *result = ToNewUTF8String(charset);
+  } else if (charset == NS_LITERAL_CSTRING("ISO-8859-1") ||
+      !nsCRT::strncmp(charset.get(), "UTF", 3)) {
+    *result = ToNewCString(charset);
   } else {
     if (!gCharsetMap) {
       gCharsetMap = new nsHashtable(sizeof(charsets)/sizeof(moz2javaCharset));
@@ -2759,10 +2738,10 @@ NS_IMETHODIMP nsPluginInstanceOwner::GetDocumentEncoding(const char* *result)
         gCharsetMap->Put(&key, (void *)(charsets[i].javaName));
       }
     }
-    nsCStringKey mozKey(NS_LossyConvertUCS2toASCII(charset).get());
+    nsCStringKey mozKey(charset);
     // if found mapping, return it; otherwise return original charset
     char *mapping = (char *)gCharsetMap->Get(&mozKey);
-    *result = mapping ? PL_strdup(mapping) : ToNewUTF8String(charset);
+    *result = mapping ? PL_strdup(mapping) : ToNewCString(charset);
   }
 
   return (*result) ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
@@ -2914,13 +2893,11 @@ void nsObjectFrame::FixUpURLS(const nsString &name, nsString &value)
       name.EqualsIgnoreCase("PLUGINSPAGE")) {        
     
     nsCOMPtr<nsIURI> baseURL;
-    GetBaseURL(*getter_AddRefs(baseURL));
-    if (baseURL) {
-      nsAutoString newURL;
-      NS_MakeAbsoluteURI(newURL, value, baseURL);
-      if (!newURL.IsEmpty())
-        value = newURL;
-    }
+    mContent->GetBaseURL(getter_AddRefs(baseURL));
+    nsAutoString newURL;
+    NS_MakeAbsoluteURI(newURL, value, baseURL);
+    if (!newURL.IsEmpty())
+      value = newURL;
   }
 }
 
@@ -2945,8 +2922,8 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   // arrays count up attributes
   mNumCachedAttrs = 0;
 
-  nsCOMPtr<nsIContent> content; 
-  nsresult rv = mOwner->GetContent(getter_AddRefs(content));
+  nsIContent* content = mOwner->GetContent();
+  nsresult rv = NS_OK;
   NS_ENSURE_TRUE(content, rv);
 
   PRInt32 cattrs;
@@ -2982,7 +2959,7 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   nsCOMPtr<nsIDOMNodeList> allParams; 
 
   nsCOMPtr<nsINodeInfo> ni;
-  content->GetNodeInfo(*getter_AddRefs(ni));
+  content->GetNodeInfo(getter_AddRefs(ni));
 
   if (ni->NamespaceEquals(kNameSpaceID_XHTML)) {
     // For XHTML elements we need to take the namespace URI into
@@ -3015,7 +2992,7 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
         // let's NOT count up param tags that don't have a name attribute
         nsAutoString name;
         domelement->GetAttribute(NS_LITERAL_STRING("name"), name);
-        if (name.Length() > 0) {
+        if (!name.IsEmpty()) {
           nsCOMPtr<nsIDOMNode> parent;
           nsCOMPtr<nsIDOMHTMLObjectElement> domobject;
           nsCOMPtr<nsIDOMHTMLAppletElement> domapplet;
@@ -3065,7 +3042,7 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   PRInt16 numRealAttrs = mNumCachedAttrs;
   nsAutoString data;
   nsCOMPtr<nsIAtom> tag;
-  content->GetTag(*getter_AddRefs(tag));
+  content->GetTag(getter_AddRefs(tag));
   if (nsHTMLAtoms::object == tag.get() 
     && !content->HasAttr(kNameSpaceID_None, nsHTMLAtoms::src)
     && NS_CONTENT_ATTR_NOT_THERE != content->GetAttr(kNameSpaceID_None, nsHTMLAtoms::data, data)) {
@@ -3084,9 +3061,9 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
     PRInt32 nameSpaceID;
     nsCOMPtr<nsIAtom> atom;
     nsCOMPtr<nsIAtom> prefix;
-    content->GetAttrNameAt(index, nameSpaceID,
-                           *getter_AddRefs(atom),
-                           *getter_AddRefs(prefix));
+    content->GetAttrNameAt(index, &nameSpaceID,
+                           getter_AddRefs(atom),
+                           getter_AddRefs(prefix));
     nsAutoString value;
     if (NS_CONTENT_ATTR_NOT_THERE != content->GetAttr(nameSpaceID, atom, value)) {
       nsAutoString name;
@@ -3168,8 +3145,7 @@ void nsPluginInstanceOwner::GUItoMacEvent(const nsGUIEvent& anEvent, EventRecord
     case NS_FOCUS_EVENT_START:   // this is the same as NS_FOCUS_CONTENT
         aMacEvent.what = nsPluginEventType_GetFocusEvent;
         if (mOwner && mOwner->mPresContext) {
-            nsCOMPtr<nsIContent> content;
-            mOwner->GetContent(getter_AddRefs(content));
+            nsIContent* content = mOwner->GetContent();
             if (content)
                 content->SetFocus(mOwner->mPresContext);
         }
@@ -3178,8 +3154,7 @@ void nsPluginInstanceOwner::GUItoMacEvent(const nsGUIEvent& anEvent, EventRecord
     case NS_BLUR_CONTENT:
         aMacEvent.what = nsPluginEventType_LoseFocusEvent;
         if (mOwner && mOwner->mPresContext) {
-            nsCOMPtr<nsIContent> content;
-            mOwner->GetContent(getter_AddRefs(content));
+            nsIContent* content = mOwner->GetContent();
             if (content)
                 content->RemoveFocus(mOwner->mPresContext);
         }
@@ -3546,8 +3521,7 @@ nsPluginInstanceOwner::MouseDown(nsIDOMEvent* aMouseEvent)
   // if the plugin is windowless, we need to set focus ourselves
   // otherwise, we might not get key events
   if (mPluginWindow && mPluginWindow->type == nsPluginWindowType_Drawable) {
-    nsCOMPtr<nsIContent> content;
-    mOwner->GetContent(getter_AddRefs(content));
+    nsIContent* content = mOwner->GetContent();
     if (content)
       content->SetFocus(mContext);
   }
@@ -3700,8 +3674,7 @@ nsEventStatus nsPluginInstanceOwner::ProcessEvent(const nsGUIEvent& anEvent)
 nsresult
 nsPluginInstanceOwner::Destroy()
 {
-  nsCOMPtr<nsIContent> content;
-  mOwner->GetContent(getter_AddRefs(content));
+  nsIContent* content = mOwner->GetContent();
 
   // stop the timer explicitly to reduce reference count.
   CancelTimer();
@@ -3741,19 +3714,15 @@ nsPluginInstanceOwner::Destroy()
   }
 
   // Unregister scroll position listener
-  nsIFrame* parentWithView;
-  mOwner->GetParentWithView(mContext, &parentWithView);
-  
-  nsIView* curView = nsnull;
-  if (parentWithView)
-    parentWithView->GetView(mContext, &curView);
+  nsIFrame* parentWithView = mOwner->GetAncestorWithView();
+  nsIView* curView = parentWithView ? parentWithView->GetView() : nsnull;
   while (curView)
   {
     nsIScrollableView* scrollingView;
     if (NS_SUCCEEDED(CallQueryInterface(curView, &scrollingView)))
       scrollingView->RemoveScrollPositionListener((nsIScrollPositionListener *)this);
     
-    curView->GetParent(curView);
+    curView = curView->GetParent();
   }
 
   mOwner = nsnull; // break relationship between frame and plugin instance owner
@@ -3897,8 +3866,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::Init(nsIPresContext* aPresContext, nsObject
   mContext = aPresContext;
   mOwner = aFrame;
   
-  nsCOMPtr<nsIContent> content;
-  mOwner->GetContent(getter_AddRefs(content));
+  nsIContent* content = mOwner->GetContent();
   
   // Some plugins require a specific sequence of shutdown and startup when
   // a page is reloaded. Shutdown happens usually when the last instance
@@ -3969,18 +3937,15 @@ NS_IMETHODIMP nsPluginInstanceOwner::Init(nsIPresContext* aPresContext, nsObject
   // Register scroll position listener
   // We need to register a scroll pos listener on every scrollable
   // view up to the top
-  nsIFrame* parentWithView;
-  mOwner->GetParentWithView(mContext, &parentWithView);
-  nsIView* curView = nsnull;
-  if (parentWithView)
-    parentWithView->GetView(mContext, &curView);
+  nsIFrame* parentWithView = mOwner->GetAncestorWithView();
+  nsIView* curView = parentWithView ? parentWithView->GetView() : nsnull;
   while (curView)
   {
     nsIScrollableView* scrollingView;
     if (NS_SUCCEEDED(CallQueryInterface(curView, &scrollingView)))
       scrollingView->AddScrollPositionListener((nsIScrollPositionListener *)this);
     
-    curView->GetParent(curView);
+    curView = curView->GetParent();
   }
 
   return NS_OK; 
@@ -4026,7 +3991,7 @@ NS_IMETHODIMP nsPluginInstanceOwner::CreateWidget(void)
   {
     // Create view if necessary
 
-    mOwner->GetView(mContext, &view);
+    view = mOwner->GetView();
 
     if (!view || !mWidget)
     {
@@ -4042,18 +4007,14 @@ NS_IMETHODIMP nsPluginInstanceOwner::CreateWidget(void)
                                 windowless);
       if (NS_OK == rv)
       {
-        mOwner->GetView(mContext, &view);
+        view = mOwner->GetView();
         if (view)
         {
-          view->GetWidget(*getter_AddRefs(mWidget));
+          mWidget = view->GetWidget();
           PRBool fTransparent = PR_FALSE;
           mInstance->GetValue(nsPluginInstanceVariable_TransparentBool, (void *)&fTransparent);
           
-          nsCOMPtr<nsIViewManager> vm;
-          view->GetViewManager(*getter_AddRefs(vm));
-          if (vm) {
-            vm->SetViewContentTransparency(view, fTransparent);
-          }
+          view->GetViewManager()->SetViewContentTransparency(view, fTransparent);
         }
 
         if (PR_TRUE == windowless)
@@ -4090,6 +4051,7 @@ void nsPluginInstanceOwner::SetPluginHost(nsIPluginHost* aHost)
   mPluginHost = aHost;
 }
 
+#if defined(XP_WIN) || defined(XP_MAC) || defined(XP_MACOSX)
 // convert frame coordinates from twips to pixels
 static void ConvertTwipsToPixels(nsIPresContext& aPresContext, nsRect& aTwipsRect, nsRect& aPixelRect)
 {
@@ -4100,6 +4062,7 @@ static void ConvertTwipsToPixels(nsIPresContext& aPresContext, nsRect& aTwipsRec
   aPixelRect.width = NSTwipsToIntPixels(aTwipsRect.width, t2p);
   aPixelRect.height = NSTwipsToIntPixels(aTwipsRect.height, t2p);
 }
+#endif
 
   // Mac specific code to fix up the port location and clipping region
 #if defined(XP_MAC) || defined(XP_MACOSX)
@@ -4107,35 +4070,32 @@ static void ConvertTwipsToPixels(nsIPresContext& aPresContext, nsRect& aTwipsRec
 #ifdef DO_DIRTY_INTERSECT
 // Convert from a frame relative coordinate to a coordinate relative to its
 // containing window
-static void ConvertRelativeToWindowAbsolute(nsIFrame* aFrame, nsIPresContext* aPresContext, nsPoint& aRel, nsPoint& aAbs, nsIWidget *&
-aContainerWidget)
+static void ConvertRelativeToWindowAbsolute(nsIFrame* aFrame,
+  nsIPresContext* aPresContext, nsPoint& aRel, nsPoint& aAbs,
+  nsIWidget *& aContainerWidget)
 {
-  aAbs.x = 0;
-  aAbs.y = 0;
-
-  nsIView *view = nsnull;
   // See if this frame has a view
-  aFrame->GetView(aPresContext, &view);
-  if (nsnull == view) {
-   // Calculate frames offset from its nearest view
-   aFrame->GetOffsetFromView(aPresContext,
+  nsIView *view = aFrame->GetView();
+  if (!view) {
+    aAbs.x = 0;
+    aAbs.y = 0;
+    // Calculate frames offset from its nearest view
+    aFrame->GetOffsetFromView(aPresContext,
                    aAbs,
                    &view);
   } else {
-   // Store frames offset from its view.
-   nsRect rect;
-   aFrame->GetRect(rect);
-   aAbs.x = rect.x;
-   aAbs.y = rect.y;
+    // Store frames offset from its view.
+    aAbs = aFrame->GetPosition();
   }
 
-  if (view != nsnull) {
+  if (view) {
     // Caclulate the views offset from its nearest widget
 
    nscoord viewx = 0; 
    nscoord viewy = 0;
-   view->GetWidget(aContainerWidget);
-   if (nsnull == aContainerWidget) {
+   aContainerWidget = view->GetWidget();
+   NS_IF_ADDREF(aContainerWidget);
+   if (!aContainerWidget) {
      view->GetOffsetFromWidget(&viewx, &viewy, aContainerWidget/**getter_AddRefs(widget)*/);
      aAbs.x += viewx;
      aAbs.y += viewy;
@@ -4143,10 +4103,7 @@ aContainerWidget)
    
    // GetOffsetFromWidget does not include the views offset, so we need to add
    // that in.
-     nscoord x, y;
-     view->GetPosition(&x, &y);
-     aAbs.x += x;
-     aAbs.y += y;
+     aAbs += view->GetPosition();
     }
    
    nsRect widgetBounds;
@@ -4171,11 +4128,8 @@ nsPluginPort* nsPluginInstanceOwner::FixUpPluginWindow(PRInt32 inPaintState)
     return nsnull;
 
   // first, check our view for CSS visibility style
-  nsIView *view;
-  mOwner->GetView(mContext, &view);
-  nsViewVisibility vis;
-  view->GetVisibility(vis);
-  PRBool isVisible = (vis == nsViewVisibility_kShow) ? PR_TRUE : PR_FALSE;
+  PRBool isVisible =
+    mOwner->GetView()->GetVisibility() == nsViewVisibility_kShow;
 
   nsCOMPtr<nsIPluginWidget> pluginWidget = do_QueryInterface(mWidget);
   
@@ -4183,7 +4137,8 @@ nsPluginPort* nsPluginInstanceOwner::FixUpPluginWindow(PRInt32 inPaintState)
   nsRect widgetClip;
   PRBool widgetVisible;
   pluginWidget->GetPluginClipRect(widgetClip, pluginOrigin, widgetVisible);
-  isVisible &= widgetVisible;
+  if (!widgetVisible)
+    isVisible = FALSE;
   if (!isVisible)
     widgetClip.Empty();
 
@@ -4230,18 +4185,9 @@ nsPluginPort* nsPluginInstanceOwner::FixUpPluginWindow(PRInt32 inPaintState)
 void nsPluginInstanceOwner::Composite()
 {
   //no reference count on view
-  nsIView* view;
-  nsresult rv = mOwner->GetView(mContext, &view);
-
-  if (NS_SUCCEEDED(rv) && view) {
-    nsIViewManager* manager;
-    rv = view->GetViewManager(manager);
-
-    //set flags to not do a synchronous update, force update does the redraw
-    if (NS_SUCCEEDED(rv) && manager) {
-      rv = manager->UpdateView(view, NS_VMREFRESH_IMMEDIATE);
-      NS_RELEASE(manager);
-    }
+  nsIView* view = mOwner->GetView();
+  if (view) {
+    view->GetViewManager()->UpdateView(view, NS_VMREFRESH_IMMEDIATE);
   }
 }
 

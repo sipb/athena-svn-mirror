@@ -94,13 +94,6 @@ nsNativeBrowserWindow::InitNativeWindow()
   return NS_OK;
 }
 
-static NS_DEFINE_IID( kMenuBarCID, 	NS_MENUBAR_CID );
-static NS_DEFINE_IID( kIMenuBarIID, NS_IMENUBAR_IID );
-static NS_DEFINE_IID( kMenuCID, 	NS_MENU_CID );
-static NS_DEFINE_IID( kIMenuIID, 	NS_IMENU_IID );
-static NS_DEFINE_IID( kMenuItemCID, NS_MENUITEM_CID );
-static NS_DEFINE_IID( kIMenuItemIID,NS_IMENUITEM_IID );
-
 extern void  CreateViewerMenus(PtWidget_t*, void *);
 
 nsresult
@@ -157,11 +150,11 @@ void abnormal_exit_handler(int signum)
 #if 0
     printf("stack logged to someplace\n");
     printf("need to fix xpcom/base/nsTraceRefCnt.cpp in WalkTheStack.\n");
-    nsTraceRefcnt::WalkTheStack(stdout);
+    nsTraceRefcntImpl::WalkTheStack(stdout);
 #endif
 
     printf("Sleeping for 5 minutes.\n");
-    printf("Type 'gdb viewer %d' to attatch your debugger to this thread.\n", getpid());
+    printf("Type 'gdb viewer %d' to attach your debugger to this thread.\n", getpid());
     sleep(300);
     printf("Done sleeping...\n");
   }

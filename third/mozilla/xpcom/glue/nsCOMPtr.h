@@ -196,7 +196,7 @@ class nsDerivedSafe : public T
       nsrefcnt Release(void);
 #endif
 
-#if !defined(XP_OS2_VACPP) && !defined(AIX) && !defined(IRIX)
+#if !defined(AIX) && !defined(IRIX)
       void operator delete( void*, size_t );                  // NOT TO BE IMPLEMENTED
         // declaring |operator delete| private makes calling delete on an interface pointer a compile error
 #endif
@@ -209,6 +209,13 @@ class nsDerivedSafe : public T
           If you see that, that means somebody checked in a [XP]COM interface class that declares an
           |operator=()|, and that's _bad_.  So bad, in fact, that this declaration exists explicitly
           to stop people from doing it.
+        */
+
+    protected:
+      nsDerivedSafe();                                        // NOT TO BE IMPLEMENTED
+        /*
+          This ctor exists to avoid compile errors and warnings about nsDeriviedSafe using the
+          default ctor but inheriting classes without an empty ctor. See bug 209667.
         */
   };
 
@@ -294,25 +301,6 @@ const already_AddRefed<T>
 dont_AddRef( const already_AddRefed<T> aAlreadyAddRefedPtr )
   {
     return aAlreadyAddRefedPtr;
-  }
-
-
-
-
-  /*
-    There used to be machinery to allow |dont_QueryInterface()| to work, but
-     since it is now equivalent to using a raw pointer ... all that machinery
-     has gone away.  For pointer arguments, the following definition should
-     optimize away.  This is better than using a |#define| because it is
-     scoped.
-  */
-
-template <class T>
-inline
-T*
-dont_QueryInterface( T* expr )
-  {
-    return expr;
   }
 
 
@@ -449,17 +437,6 @@ class nsCOMPtr
     : private nsCOMPtr_base
 #endif
   {
-    enum { _force_even_compliant_compilers_to_fail_ = sizeof(T) };
-      /*
-        The declaration above exists specifically to make |nsCOMPtr<T>| _not_ compile with only
-        a forward declaration of |T|.  This should prevent Windows and Mac engineers from
-        breaking Solaris and other compilers that naturally have this behavior.  Thank
-        <law@netscape.com> for inventing this specific trick.
-
-        Of course, if you're using |nsCOMPtr| outside the scope of wanting to compile on
-        Solaris and old GCC, you probably want to remove the enum so you can exploit forward
-        declarations.
-      */
 
 #ifdef NSCAP_FEATURE_DEBUG_PTR_TYPES
     private:
@@ -1215,7 +1192,7 @@ operator!=( const U* lhs, const nsCOMPtr<T>& rhs )
 // This is defined by an autoconf test, but VC++ also has a bug that
 // prevents us from using these.  (It also, fortunately, has the bug
 // that we don't need them either.)
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && (_MSC_VER < 1310)
 #define NSCAP_DONT_PROVIDE_NONCONST_OPEQ
 #endif
 

@@ -43,8 +43,6 @@
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
-#else
-static const PRBool gNoisy = PR_FALSE;
 #endif
 
 JoinElementTxn::JoinElementTxn()
@@ -72,7 +70,10 @@ JoinElementTxn::~JoinElementTxn()
 // After DoTransaction() and RedoTransaction(), the left node is removed from the content tree and right node remains.
 NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("%p Do Join of %p and %p\n", this, mLeftNode.get(), mRightNode.get()); }
+#endif
+
   NS_PRECONDITION((mEditor && mLeftNode && mRightNode), "null arg");
   if (!mEditor || !mLeftNode || !mRightNode) { return NS_ERROR_NOT_INITIALIZED; }
 
@@ -92,8 +93,7 @@ NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
   {
     mParent= do_QueryInterface(leftParent); // set this instance mParent. 
                                             // Other methods will see a non-null mParent and know all is well
-    nsCOMPtr<nsIDOMCharacterData> leftNodeAsText;
-    leftNodeAsText = do_QueryInterface(mLeftNode);
+    nsCOMPtr<nsIDOMCharacterData> leftNodeAsText = do_QueryInterface(mLeftNode);
     if (leftNodeAsText) 
     {
       leftNodeAsText->GetLength(&mOffset);
@@ -109,10 +109,12 @@ NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
       }
     }
     result = mEditor->JoinNodesImpl(mRightNode, mLeftNode, mParent, PR_FALSE);
+#ifdef NS_DEBUG
     if (NS_SUCCEEDED(result))
     {
       if (gNoisy) { printf("  left node = %p removed\n", mLeftNode.get()); }
     }
+#endif
   }
   else 
   {
@@ -126,14 +128,16 @@ NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
 //     and re-inserted mLeft?
 NS_IMETHODIMP JoinElementTxn::UndoTransaction(void)
 {
+#ifdef NS_DEBUG
   if (gNoisy) { printf("%p Undo Join, right node = %p\n", this, mRightNode.get()); }
+#endif
+
   NS_ASSERTION(mRightNode && mLeftNode && mParent, "bad state");
   if (!mRightNode || !mLeftNode || !mParent) { return NS_ERROR_NOT_INITIALIZED; }
   nsresult result;
   nsCOMPtr<nsIDOMNode>resultNode;
   // first, massage the existing node so it is in its post-split state
-  nsCOMPtr<nsIDOMCharacterData>rightNodeAsText;
-  rightNodeAsText = do_QueryInterface(mRightNode);
+  nsCOMPtr<nsIDOMCharacterData>rightNodeAsText = do_QueryInterface(mRightNode);
   if (rightNodeAsText)
   {
     result = rightNodeAsText->DeleteData(0, mOffset);
@@ -141,8 +145,8 @@ NS_IMETHODIMP JoinElementTxn::UndoTransaction(void)
   else
   {
     nsCOMPtr<nsIDOMNode>child;
-    nsCOMPtr<nsIDOMNode>nextSibling;
     result = mRightNode->GetFirstChild(getter_AddRefs(child));
+    nsCOMPtr<nsIDOMNode>nextSibling;
     PRUint32 i;
     for (i=0; i<mOffset; i++)
     {
@@ -161,15 +165,15 @@ NS_IMETHODIMP JoinElementTxn::UndoTransaction(void)
 
 NS_IMETHODIMP JoinElementTxn::GetIsTransient(PRBool *aIsTransient)
 {
-  if (nsnull!=aIsTransient)
+  if (aIsTransient)
     *aIsTransient = PR_FALSE;
   return NS_OK;
 }
 
 nsresult JoinElementTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMerge)
 {
-  if (nsnull!=aDidMerge)
-    *aDidMerge=PR_FALSE;
+  if (aDidMerge)
+    *aDidMerge = PR_FALSE;
   return NS_OK;
 }
 

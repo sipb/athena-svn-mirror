@@ -156,7 +156,8 @@ nsXBLContentSink::FlushText(PRBool aCreateTextNode,
     }
     else if (mSecondaryState == eXBL_InBody) {
       // Get the text and add it to the method
-      mMethod->AppendBodyText(text);
+      if (mMethod)
+        mMethod->AppendBodyText(text);
     }
     else if (mSecondaryState == eXBL_InField) {
       // Get the text and add it to the method
@@ -328,7 +329,8 @@ PRBool
 nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts, 
                                   PRUint32 aAttsCount, 
                                   PRInt32 aNameSpaceID, 
-                                  nsIAtom* aTagName)
+                                  nsIAtom* aTagName,
+                                  PRUint32 aLineNumber)
 {
   PRBool ret = PR_TRUE;
   if (aNameSpaceID == kNameSpaceID_XBL) {
@@ -362,7 +364,7 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
     }
     else if (aTagName == nsXBLAtoms::handler) {
       mSecondaryState = eXBL_InHandler;
-      ConstructHandler(aAtts);
+      ConstructHandler(aAtts, aLineNumber);
       ret = PR_FALSE;
     }
     else if (aTagName == nsXBLAtoms::resources) {
@@ -385,8 +387,9 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
         nsXBLPrototypeHandler* newHandler;
         newHandler = new nsXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull,
                                                nsnull, nsnull, nsnull, nsnull,
-                                               nsnull, nsnull);
+                                               nsnull, nsnull, mBinding);
         newHandler->SetEventName(nsXBLAtoms::constructor);
+        newHandler->SetLineNumber(aLineNumber);
         mBinding->SetConstructor(newHandler);
       }
       else if (aTagName == nsXBLAtoms::destructor) {
@@ -394,30 +397,44 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
         nsXBLPrototypeHandler* newHandler;
         newHandler = new nsXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull,
                                                nsnull, nsnull, nsnull, nsnull,
-                                               nsnull, nsnull);
+                                               nsnull, nsnull, mBinding);
         newHandler->SetEventName(nsXBLAtoms::destructor);
+        newHandler->SetLineNumber(aLineNumber);
         mBinding->SetDestructor(newHandler);
       }
       else if (aTagName == nsXBLAtoms::field) {
         mSecondaryState = eXBL_InField;
-        ConstructField(aAtts);
+        ConstructField(aAtts, aLineNumber);
       }
       else if (aTagName == nsXBLAtoms::property) {
         mSecondaryState = eXBL_InProperty;
         ConstructProperty(aAtts);
       }
-      else if (aTagName == nsXBLAtoms::getter)
+      else if (aTagName == nsXBLAtoms::getter) {
+        if (mSecondaryState == eXBL_InProperty && mProperty) {
+          mProperty->SetGetterLineNumber(aLineNumber);
+        }        
         mSecondaryState = eXBL_InGetter;
-      else if (aTagName == nsXBLAtoms::setter)
+      }
+      else if (aTagName == nsXBLAtoms::setter) {
+        if (mSecondaryState == eXBL_InProperty && mProperty) {
+          mProperty->SetSetterLineNumber(aLineNumber);
+        }
         mSecondaryState = eXBL_InSetter;
+      }
       else if (aTagName == nsXBLAtoms::method) {
         mSecondaryState = eXBL_InMethod;
         ConstructMethod(aAtts);
       }
       else if (aTagName == nsXBLAtoms::parameter)
         ConstructParameter(aAtts);
-      else if (aTagName == nsXBLAtoms::body)
+      else if (aTagName == nsXBLAtoms::body) {
+        if (mSecondaryState == eXBL_InMethod && mMethod) {
+          // stash away the line number
+          mMethod->SetLineNumber(aLineNumber);
+        }
         mSecondaryState = eXBL_InBody;
+      }
 
       ret = PR_FALSE; // Ignore everything we encounter inside an <implementation> block.
     }
@@ -429,7 +446,7 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
 void 
 nsXBLContentSink::ConstructBinding()
 {
-  nsCOMPtr<nsIContent> binding = getter_AddRefs(GetCurrentContent());
+  nsCOMPtr<nsIContent> binding = GetCurrentContent();
   nsAutoString id;
   binding->GetAttr(kNameSpaceID_None, nsHTMLAtoms::id, id);
   nsCAutoString cid; cid.AssignWithConversion(id);
@@ -443,7 +460,7 @@ nsXBLContentSink::ConstructBinding()
 
 
 void
-nsXBLContentSink::ConstructHandler(const PRUnichar **aAtts)
+nsXBLContentSink::ConstructHandler(const PRUnichar **aAtts, PRUint32 aLineNumber)
 {
   nsCOMPtr<nsIAtom> nameSpacePrefix, nameAtom;
 
@@ -504,9 +521,11 @@ nsXBLContentSink::ConstructHandler(const PRUnichar **aAtts)
   nsXBLPrototypeHandler* newHandler;
   newHandler = new nsXBLPrototypeHandler(event, phase, action, command,
                                          keycode, charcode, modifiers, button,
-                                         clickcount, preventdefault);
+                                         clickcount, preventdefault, mBinding);
 
   if (newHandler) {
+    newHandler->SetLineNumber(aLineNumber);
+    
     // Add this handler to our chain of handlers.
     if (mHandler)
       mHandler->SetNextHandler(newHandler); // Already have a chain. Just append to the end.
@@ -579,7 +598,7 @@ nsXBLContentSink::ConstructImplementation(const PRUnichar **aAtts)
 }
 
 void
-nsXBLContentSink::ConstructField(const PRUnichar **aAtts)
+nsXBLContentSink::ConstructField(const PRUnichar **aAtts, PRUint32 aLineNumber)
 {
   nsCOMPtr<nsIAtom> nameSpacePrefix, nameAtom;
 
@@ -607,6 +626,8 @@ nsXBLContentSink::ConstructField(const PRUnichar **aAtts)
   // parameters.
   mField = new nsXBLProtoImplField(name, readonly);
   if (mField) {
+    mField->SetLineNumber(aLineNumber);
+    
     // Add this member to our chain.
     if (mImplMember)
       mImplMember->SetNext(mField); // Already have a chain. Just append to the end.
@@ -815,7 +836,7 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
     } 
 
     mNodeInfoManager->GetNodeInfo(nameAtom, nameSpacePrefix, nameSpaceID,
-                                  *getter_AddRefs(attrs->mNodeInfo));
+                                  getter_AddRefs(attrs->mNodeInfo));
     
     attrs->mValue.SetValue(nsDependentString(aAtts[1]));
     ++attrs;

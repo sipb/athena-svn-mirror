@@ -44,7 +44,7 @@
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetAlias.h"
 #include "nsIPlatformCharset.h"
-#include "nsICharsetConverterManager2.h"
+#include "nsICharsetConverterManager.h"
 
 #include "nsCRT.h"
 #include "nsString.h"
@@ -71,7 +71,6 @@
 PRLogModuleInfo *IMPORTLOGMODULE = nsnull;
 
 static NS_DEFINE_CID(kComponentManagerCID, 	NS_COMPONENTMANAGER_CID);
-static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 static nsIImportService *	gImportService = nsnull;
 static const char *	kWhitespace = "\b\t\r\n ";
 
@@ -154,7 +153,7 @@ NS_IMETHODIMP nsImportService::SystemStringToUnicode(const char *sysStr, nsStrin
 			rv = platformCharset->GetCharset(kPlatformCharsetSel_FileName, m_sysCharset);
 
 		if (NS_FAILED(rv)) 
-			m_sysCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+			m_sysCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
 	}
 
 	if (!sysStr) {
@@ -179,15 +178,11 @@ NS_IMETHODIMP nsImportService::SystemStringToUnicode(const char *sysStr, nsStrin
 
 	
 	if (!m_pDecoder) {
-		nsCOMPtr<nsICharsetConverterManager2> ccm2 = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+		nsCOMPtr<nsICharsetConverterManager> ccm = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
 
-		if (NS_SUCCEEDED( rv) && (nsnull != ccm2)) {
-			// get charset atom due to getting unicode converter
-			nsCOMPtr <nsIAtom> charsetAtom;
-			rv = ccm2->GetCharsetAtom(m_sysCharset.get(), getter_AddRefs(charsetAtom));
-
+		if (NS_SUCCEEDED( rv) && (nsnull != ccm)) {
 			// get an unicode converter
-			rv = ccm2->GetUnicodeDecoder(charsetAtom, &m_pDecoder);
+			rv = ccm->GetUnicodeDecoder(m_sysCharset.get(), &m_pDecoder);
 		}	    
 	}
 
@@ -223,7 +218,7 @@ NS_IMETHODIMP nsImportService::SystemStringFromUnicode(const PRUnichar *uniStr, 
 			rv = platformCharset->GetCharset(kPlatformCharsetSel_FileName, m_sysCharset);
 
 		if (NS_FAILED(rv)) 
-			m_sysCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+			m_sysCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
 	}
 
 	if (!uniStr) {
@@ -244,15 +239,11 @@ NS_IMETHODIMP nsImportService::SystemStringFromUnicode(const PRUnichar *uniStr, 
 	}
 
 	if (!m_pEncoder) {
-		nsCOMPtr<nsICharsetConverterManager2> ccm2 = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+		nsCOMPtr<nsICharsetConverterManager> ccm = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
 
-		if (NS_SUCCEEDED( rv) && (nsnull != ccm2)) {
-			// get charset atom due to getting unicode converter
-			nsCOMPtr <nsIAtom> charsetAtom;
-			rv = ccm2->GetCharsetAtom(m_sysCharset.get(), getter_AddRefs(charsetAtom));
-
+		if (NS_SUCCEEDED(rv) && (nsnull != ccm)) {
 			// get an unicode converter
-			rv = ccm2->GetUnicodeEncoder(charsetAtom, &m_pEncoder);
+			rv = ccm->GetUnicodeEncoder(m_sysCharset.get(), &m_pEncoder);
       if (NS_SUCCEEDED(rv))
         rv = m_pEncoder->SetOutputErrorBehavior(nsIUnicodeEncoder::kOnError_Replace, nsnull, '?');
 		}

@@ -39,6 +39,7 @@
 #include "nsDOMCSSDeclaration.h"
 #include "nsIDOMCSSRule.h"
 #include "nsICSSParser.h"
+#include "nsICSSLoader.h"
 #include "nsIStyleRule.h"
 #include "nsCSSDeclaration.h"
 #include "nsCSSProps.h"
@@ -49,7 +50,7 @@
 
 
 nsDOMCSSDeclaration::nsDOMCSSDeclaration()
-  : mInner(nsnull)
+  : mInner(this)
 {
 }
 
@@ -58,57 +59,17 @@ nsDOMCSSDeclaration::~nsDOMCSSDeclaration()
 }
 
 
-NS_IMETHODIMP
-nsDOMCSSDeclaration::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (!aInstancePtr) {
-    NS_ERROR("QueryInterface requires a non-NULL destination!");
-    return NS_ERROR_NULL_POINTER;
-  }
+// QueryInterface implementation for nsDOMCSSDeclaration
+NS_INTERFACE_MAP_BEGIN(nsDOMCSSDeclaration)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMCSSStyleDeclaration)
+  NS_INTERFACE_MAP_ENTRY_AGGREGATED(nsIDOMCSS2Properties, &mInner)
+  NS_INTERFACE_MAP_ENTRY_AGGREGATED(nsIDOMNSCSS2Properties, &mInner)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMCSSStyleDeclaration)
+  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(CSSStyleDeclaration)
+NS_INTERFACE_MAP_END
 
-  nsISupports* inst;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMCSSStyleDeclaration))) {
-    inst = NS_STATIC_CAST(nsIDOMCSSStyleDeclaration*, this);
-  } else if (aIID.Equals(NS_GET_IID(nsIDOMCSS2Properties))) {
-    if (!mInner) {
-      mInner = new CSS2PropertiesTearoff(this);
-      NS_ENSURE_TRUE(mInner, NS_ERROR_OUT_OF_MEMORY);
-    }
-    inst = NS_STATIC_CAST(nsIDOMCSS2Properties*,
-                          NS_STATIC_CAST(nsISupports*, mInner));
-  } else if (aIID.Equals(NS_GET_IID(nsIDOMNSCSS2Properties))) {
-    if (!mInner) {
-      mInner = new CSS2PropertiesTearoff(this);
-      NS_ENSURE_TRUE(mInner, NS_ERROR_OUT_OF_MEMORY);
-    }
-    inst = NS_STATIC_CAST(nsIDOMNSCSS2Properties*,
-                          NS_STATIC_CAST(nsISupports*, mInner));
-  } else if (aIID.Equals(NS_GET_IID(nsISupports))) {
-    inst = NS_STATIC_CAST(nsISupports*,
-                          NS_STATIC_CAST(nsIDOMCSSStyleDeclaration*, this));
-  } else if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {
-    inst = nsContentUtils::GetClassInfoInstance(eDOMClassInfo_CSSStyleDeclaration_id);
-    NS_ENSURE_TRUE(inst, NS_ERROR_OUT_OF_MEMORY);
-  } else {
-    inst = nsnull;
-  }
-
-  nsresult rv;
-  if (!inst) {
-    rv = NS_NOINTERFACE;
-  } else {
-    NS_ADDREF(inst);
-    rv = NS_OK;
-  }
-
-  *aInstancePtr = inst;
-  return rv;
-}
-
-
-NS_IMPL_ADDREF(nsDOMCSSDeclaration);
-NS_IMPL_RELEASE(nsDOMCSSDeclaration);
+NS_IMPL_ADDREF(nsDOMCSSDeclaration)
+NS_IMPL_RELEASE(nsDOMCSSDeclaration)
 
 
 NS_IMETHODIMP
@@ -138,29 +99,13 @@ nsDOMCSSDeclaration::GetLength(PRUint32* aLength)
   nsCSSDeclaration *decl;
   nsresult result = GetCSSDeclaration(&decl, PR_FALSE);
  
-  *aLength = 0;
-  if ((NS_OK == result) && (nsnull != decl)) {
+  if (decl) {
     *aLength = decl->Count();
+  } else {
+    *aLength = 0;
   }
 
   return result;
-}
-
-NS_IMETHODIMP
-nsDOMCSSDeclaration::GetParentRule(nsIDOMCSSRule** aParentRule)
-{
-  NS_ENSURE_ARG_POINTER(aParentRule);
-  *aParentRule = nsnull;
-
-  nsCOMPtr<nsISupports> parent;
-
-  GetParent(getter_AddRefs(parent));
-
-  if (parent) {
-    CallQueryInterface(parent, aParentRule);
-  }
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -182,7 +127,7 @@ nsDOMCSSDeclaration::Item(PRUint32 aIndex, nsAString& aReturn)
   nsresult result = GetCSSDeclaration(&decl, PR_FALSE);
 
   aReturn.SetLength(0);
-  if ((NS_OK == result) && (nsnull != decl)) {
+  if (decl) {
     result = decl->GetNthProperty(aIndex, aReturn);
   }
 
@@ -197,8 +142,8 @@ nsDOMCSSDeclaration::GetPropertyValue(const nsAString& aPropertyName,
   nsCSSDeclaration *decl;
   nsresult result = GetCSSDeclaration(&decl, PR_FALSE);
 
-  aReturn.SetLength(0);
-  if ((NS_OK == result) && (nsnull != decl)) {
+  aReturn.Truncate();
+  if (decl) {
     result = decl->GetValue(aPropertyName, aReturn);
   }
 
@@ -211,17 +156,10 @@ nsDOMCSSDeclaration::GetPropertyPriority(const nsAString& aPropertyName,
 {
   nsCSSDeclaration *decl;
   nsresult result = GetCSSDeclaration(&decl, PR_FALSE);
-  PRBool isImportant = PR_FALSE;
 
-  if ((NS_OK == result) && (nsnull != decl)) {
-    isImportant = decl->GetValueIsImportant(aPropertyName);
-  }
-
-  if ((NS_OK == result) && isImportant) {
+  aReturn.Truncate();
+  if (decl && decl->GetValueIsImportant(aPropertyName)) {
     aReturn.Assign(NS_LITERAL_STRING("important"));    
-  }
-  else {
-    aReturn.SetLength(0);
   }
 
   return result;
@@ -252,47 +190,166 @@ nsDOMCSSDeclaration::SetProperty(const nsAString& aPropertyName,
                           PR_TRUE, PR_FALSE);
 }
 
+NS_IMETHODIMP
+nsDOMCSSDeclaration::RemoveProperty(const nsAString& aPropertyName,
+                                    nsAString& aReturn)
+{
+  aReturn.Truncate();
+
+  nsCSSDeclaration* decl;
+  nsresult rv = GetCSSDeclaration(&decl, PR_FALSE);
+  if (!decl) {
+    return rv;
+  }
+
+  nsCSSProperty prop = nsCSSProps::LookupProperty(aPropertyName);
+
+  decl->GetValue(prop, aReturn);
+
+  rv = decl->RemoveProperty(prop);
+
+  if (NS_SUCCEEDED(rv)) {
+    rv = DeclarationChanged();
+  } else {
+    // RemoveProperty used to throw in all sorts of situations -- e.g.
+    // if the property was a shorthand one.  Do not propagate its return
+    // value to callers.  (XXX or should we propagate it again now?)
+    rv = NS_OK;
+  }
+
+  return rv;
+}
+
+nsresult
+nsDOMCSSDeclaration::ParsePropertyValue(const nsAString& aPropName,
+                                        const nsAString& aPropValue)
+{
+  nsCSSDeclaration* decl;
+  nsresult result = GetCSSDeclaration(&decl, PR_TRUE);
+  if (!decl) {
+    return result;
+  }
+  
+  nsCOMPtr<nsICSSLoader> cssLoader;
+  nsCOMPtr<nsICSSParser> cssParser;
+  nsCOMPtr<nsIURI> baseURI;
+  
+  result = GetCSSParsingEnvironment(getter_AddRefs(baseURI),
+                                    getter_AddRefs(cssLoader),
+                                    getter_AddRefs(cssParser));
+  if (NS_FAILED(result)) {
+    return result;
+  }
+
+  PRBool changed;
+  result = cssParser->ParseProperty(aPropName, aPropValue, baseURI, decl,
+                                    &changed);
+  if (NS_SUCCEEDED(result) && changed) {
+    result = DeclarationChanged();
+  }
+
+  if (cssLoader) {
+    cssLoader->RecycleParser(cssParser);
+  }
+
+  return result;
+}
+
+nsresult
+nsDOMCSSDeclaration::ParseDeclaration(const nsAString& aDecl,
+                                      PRBool aParseOnlyOneDecl,
+                                      PRBool aClearOldDecl)
+{
+  nsCSSDeclaration* decl;
+  nsresult result = GetCSSDeclaration(&decl, PR_TRUE);
+  if (!decl) {
+    return result;
+  }
+
+  nsCOMPtr<nsICSSLoader> cssLoader;
+  nsCOMPtr<nsICSSParser> cssParser;
+  nsCOMPtr<nsIURI> baseURI;
+
+  result = GetCSSParsingEnvironment(getter_AddRefs(baseURI),
+                                    getter_AddRefs(cssLoader),
+                                    getter_AddRefs(cssParser));
+
+  if (NS_FAILED(result)) {
+    return result;
+  }
+
+  PRBool changed;
+  result = cssParser->ParseAndAppendDeclaration(aDecl, baseURI, decl,
+                                                aParseOnlyOneDecl,
+                                                &changed,
+                                                aClearOldDecl);
+  
+  if (NS_SUCCEEDED(result) && changed) {
+    result = DeclarationChanged();
+  }
+
+  if (cssLoader) {
+    cssLoader->RecycleParser(cssParser);
+  }
+
+  return result;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 
-CSS2PropertiesTearoff::CSS2PropertiesTearoff(nsISupports *aOuter)
+CSS2PropertiesTearoff::CSS2PropertiesTearoff(nsIDOMCSSStyleDeclaration *aOuter)
+  : mOuter(aOuter)
 {
-  NS_INIT_AGGREGATED(aOuter);
+  NS_ASSERTION(mOuter, "must have outer");
 }
 
 CSS2PropertiesTearoff::~CSS2PropertiesTearoff()
 {
 }
 
-NS_IMPL_AGGREGATED(CSS2PropertiesTearoff);
+NS_IMETHODIMP_(nsrefcnt)
+CSS2PropertiesTearoff::AddRef(void)
+{
+  return mOuter->AddRef();
+}
 
-NS_INTERFACE_MAP_BEGIN_AGGREGATED(CSS2PropertiesTearoff)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMCSS2Properties)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMNSCSS2Properties)
-NS_INTERFACE_MAP_END_AGGREGATED(fOuter)
+NS_IMETHODIMP_(nsrefcnt)
+CSS2PropertiesTearoff::Release(void)
+{
+  return mOuter->Release();
+}
 
+NS_IMETHODIMP
+CSS2PropertiesTearoff::QueryInterface(REFNSIID aIID, void** aInstancePtr)
+{
+  return mOuter->QueryInterface(aIID, aInstancePtr);
+}
 
 // nsIDOMCSS2Properties
 // nsIDOMNSCSS2Properties
 
-#define CSS_PROP(name_, id_, method_, hint_)                            \
+#define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
   NS_IMETHODIMP                                                         \
   CSS2PropertiesTearoff::Get##method_(nsAString& aValue)                \
   {                                                                     \
-    return NS_STATIC_CAST(nsIDOMCSSStyleDeclaration*, fOuter)->         \
-      GetPropertyValue(NS_LITERAL_STRING(#name_), aValue);              \
+    return mOuter->GetPropertyValue(NS_LITERAL_STRING(#name_), aValue); \
   }                                                                     \
                                                                         \
   NS_IMETHODIMP                                                         \
   CSS2PropertiesTearoff::Set##method_(const nsAString& aValue)          \
   {                                                                     \
-    return NS_STATIC_CAST(nsIDOMCSSStyleDeclaration*, fOuter)->         \
-      SetProperty(NS_LITERAL_STRING(#name_), aValue,                    \
-                  NS_LITERAL_STRING(""));                               \
+    return mOuter->SetProperty(NS_LITERAL_STRING(#name_), aValue,       \
+                               NS_LITERAL_STRING(""));                  \
   }
 
-#define CSS_PROP_INTERNAL(name_, id_, method_, hint_)  /* nothing */
-#define CSS_PROP_NOTIMPLEMENTED(name_, id_, method_, hint_)             \
-  CSS_PROP(name_, id_, method_, hint_)
+#define CSS_PROP_LIST_EXCLUDE_INTERNAL
+#define CSS_PROP_NOTIMPLEMENTED(name_, id_, method_) \
+  CSS_PROP(name_, id_, method_, , , ,)
+#define CSS_PROP_SHORTHAND(name_, id_, method_) \
+  CSS_PROP(name_, id_, method_, , , ,)
 #include "nsCSSPropList.h"
-#undef CSS_PROP_INTERNAL
+#undef CSS_PROP_SHORTHAND
+#undef CSS_PROP_NOTIMPLEMENTED
+#undef CSS_PROP_LIST_EXCLUDE_INTERNAL
 #undef CSS_PROP

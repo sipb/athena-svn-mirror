@@ -39,6 +39,8 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsGlobalWindow.h"
+#include "nsIScriptSecurityManager.h"
+#include "nsIScriptContext.h"
 #include "nsIWebShell.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellLoadInfo.h"
@@ -97,12 +99,7 @@ static nsresult GetDocumentCharacterSetForURI(const nsAString& aHref, nsACString
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
   NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
-  nsAutoString charset;
-  rv = doc->GetDocumentCharacterSet(charset);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  CopyUCS2toASCII(charset, aCharset);
-
+  rv = doc->GetDocumentCharacterSet(aCharset);
   return rv;
 }
 
@@ -575,10 +572,11 @@ LocationImpl::SetHrefWithBase(const nsAString& aHref,
 
       result = stack->Peek(&cx);
       if (cx) {
-        nsIScriptContext* scriptCX = (nsIScriptContext*)JS_GetContextPrivate(cx);
-       
-        if (scriptCX) {
-          scriptCX->GetProcessingScriptTag(&inScriptTag);
+        nsCOMPtr<nsIScriptContext> scriptContext;
+        nsJSUtils::GetDynamicScriptContext(cx, getter_AddRefs(scriptContext));
+
+        if (scriptContext) {
+          scriptContext->GetProcessingScriptTag(&inScriptTag);
         }  
       } //cx
     }  // stack
@@ -932,14 +930,10 @@ LocationImpl::GetSourceBaseURL(JSContext* cx, nsIURI** sourceURL)
   nsCOMPtr<nsIDocument> doc;
   nsresult rv = GetSourceDocument(cx, getter_AddRefs(doc));
   if (doc) {
-    rv = doc->GetBaseURL(*sourceURL);
-
-    if (!*sourceURL) {
-      doc->GetDocumentURL(sourceURL);
-    }
-  } else {
-    *sourceURL = nsnull;
+    return doc->GetBaseURL(sourceURL);
   }
+
+  *sourceURL = nsnull;
   return rv;
 }
 

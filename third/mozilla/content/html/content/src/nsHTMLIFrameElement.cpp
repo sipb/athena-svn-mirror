@@ -113,9 +113,13 @@ public:
 
     return rv;
   }
+  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo, const nsAString& aValue,
+                     PRBool aNotify) {
+    // This will end up calling our other SetAttr method
+    return nsGenericHTMLContainerElement::SetAttr(aNodeInfo, aValue, aNotify);
+  }
 
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 
 protected:
@@ -166,8 +170,8 @@ nsHTMLIFrameElement::~nsHTMLIFrameElement()
 }
 
 
-NS_IMPL_ADDREF(nsHTMLIFrameElement);
-NS_IMPL_RELEASE(nsHTMLIFrameElement);
+NS_IMPL_ADDREF(nsHTMLIFrameElement)
+NS_IMPL_RELEASE(nsHTMLIFrameElement)
 
 // QueryInterface implementation for nsHTMLIFrameElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLIFrameElement,
@@ -211,28 +215,13 @@ nsHTMLIFrameElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, Align, align)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, FrameBorder, frameborder)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, Height, height)
-NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, LongDesc, longdesc)
+NS_IMPL_URI_ATTR(nsHTMLIFrameElement, LongDesc, longdesc)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, MarginHeight, marginheight)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, MarginWidth, marginwidth)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, Name, name)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, Scrolling, scrolling)
+NS_IMPL_URI_ATTR(nsHTMLIFrameElement, Src, src)
 NS_IMPL_STRING_ATTR(nsHTMLIFrameElement, Width, width)
-
-NS_IMETHODIMP
-nsHTMLIFrameElement::GetSrc(nsAString& aSrc)
-{
-  nsGenericHTMLContainerElement::GetAttr(kNameSpaceID_None, nsHTMLAtoms::src,
-                                         aSrc);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLIFrameElement::SetSrc(const nsAString& aSrc)
-{
-  SetAttribute(NS_LITERAL_STRING("src"), aSrc);
-  return NS_OK;
-}
 
 NS_IMETHODIMP
 nsHTMLIFrameElement::GetContentDocument(nsIDOMDocument** aContentDocument)
@@ -463,14 +452,14 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       if (NS_STYLE_FRAME_0 == frameborder ||
           NS_STYLE_FRAME_NO == frameborder ||
           NS_STYLE_FRAME_OFF == frameborder) {
-        if (aData->mMarginData->mBorderWidth->mLeft.GetUnit() == eCSSUnit_Null)
-          aData->mMarginData->mBorderWidth->mLeft.SetFloatValue(0.0f, eCSSUnit_Pixel);
-        if (aData->mMarginData->mBorderWidth->mRight.GetUnit() == eCSSUnit_Null)
-          aData->mMarginData->mBorderWidth->mRight.SetFloatValue(0.0f, eCSSUnit_Pixel);
-        if (aData->mMarginData->mBorderWidth->mTop.GetUnit() == eCSSUnit_Null)
-          aData->mMarginData->mBorderWidth->mTop.SetFloatValue(0.0f, eCSSUnit_Pixel);
-        if (aData->mMarginData->mBorderWidth->mBottom.GetUnit() == eCSSUnit_Null)
-          aData->mMarginData->mBorderWidth->mBottom.SetFloatValue(0.0f, eCSSUnit_Pixel);
+        if (aData->mMarginData->mBorderWidth.mLeft.GetUnit() == eCSSUnit_Null)
+          aData->mMarginData->mBorderWidth.mLeft.SetFloatValue(0.0f, eCSSUnit_Pixel);
+        if (aData->mMarginData->mBorderWidth.mRight.GetUnit() == eCSSUnit_Null)
+          aData->mMarginData->mBorderWidth.mRight.SetFloatValue(0.0f, eCSSUnit_Pixel);
+        if (aData->mMarginData->mBorderWidth.mTop.GetUnit() == eCSSUnit_Null)
+          aData->mMarginData->mBorderWidth.mTop.SetFloatValue(0.0f, eCSSUnit_Pixel);
+        if (aData->mMarginData->mBorderWidth.mBottom.GetUnit() == eCSSUnit_Null)
+          aData->mMarginData->mBorderWidth.mBottom.SetFloatValue(0.0f, eCSSUnit_Pixel);
       }
     }
   }
@@ -495,31 +484,27 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     }
   }
 
-  nsGenericHTMLElement::MapAlignAttributeInto(aAttributes, aData);
+  nsGenericHTMLElement::MapImageAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
-NS_IMETHODIMP
-nsHTMLIFrameElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
-                                              PRInt32 aModType,
-                                              nsChangeHint& aHint) const
+NS_IMETHODIMP_(PRBool)
+nsHTMLIFrameElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_FRAMECHANGE },
-    { &nsHTMLAtoms::frameborder, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE },
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::width },
+    { &nsHTMLAtoms::height },
+    { &nsHTMLAtoms::frameborder },
+    { nsnull },
   };
 
-  static const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
+    sImageAlignAttributeMap,
     sCommonAttributeMap,
   };
   
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 

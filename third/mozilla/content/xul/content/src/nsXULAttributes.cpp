@@ -193,14 +193,13 @@ nsXULAttribute::Create(nsIContent* aContent,
 NS_INTERFACE_MAP_BEGIN(nsXULAttribute)
     NS_INTERFACE_MAP_ENTRY(nsIDOMAttr)
     NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
-    NS_INTERFACE_MAP_ENTRY(nsIDOM3Node)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMAttr)
     NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(XULAttr)
 NS_INTERFACE_MAP_END
 
 
-NS_IMPL_ADDREF(nsXULAttribute);
-NS_IMPL_RELEASE(nsXULAttribute);
+NS_IMPL_ADDREF(nsXULAttribute)
+NS_IMPL_RELEASE(nsXULAttribute)
 
 
 // nsIDOMNode interface
@@ -304,7 +303,7 @@ nsXULAttribute::SetPrefix(const nsAString& aPrefix)
 {
     // XXX: Validate the prefix string!
 
-    nsINodeInfo *newNodeInfo = nsnull;
+    nsCOMPtr<nsINodeInfo> newNodeInfo;
     nsCOMPtr<nsIAtom> prefix;
 
     if (!aPrefix.IsEmpty()) {
@@ -312,11 +311,13 @@ nsXULAttribute::SetPrefix(const nsAString& aPrefix)
         NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
     }
 
-    nsresult rv = mNodeInfo->PrefixChanged(prefix, newNodeInfo);
+    nsresult rv = mNodeInfo->PrefixChanged(prefix,
+                                           getter_AddRefs(newNodeInfo));
     NS_ENSURE_SUCCESS(rv, rv);
 
     NS_RELEASE(mNodeInfo);
     mNodeInfo = newNodeInfo;
+    NS_ADDREF(mNodeInfo);
 
     return NS_OK;
 }
@@ -388,49 +389,6 @@ nsXULAttribute::IsSupported(const nsAString& aFeature,
   NS_NOTYETIMPLEMENTED("write me");
   return NS_ERROR_NOT_IMPLEMENTED;
 }
-
-// nsIDOM3Node interface
-
-NS_IMETHODIMP
-nsXULAttribute::GetBaseURI(nsAString &aURI)
-{
-  NS_NOTYETIMPLEMENTED("write me");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsXULAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
-                                        PRUint16* aReturn)
-{
-  NS_NOTYETIMPLEMENTED("write me");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsXULAttribute::IsSameNode(nsIDOMNode* aOther,
-                           PRBool* aReturn)
-{
-  NS_NOTYETIMPLEMENTED("write me");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-
-NS_IMETHODIMP
-nsXULAttribute::LookupNamespacePrefix(const nsAString& aNamespaceURI,
-                                      nsAString& aPrefix)
-{
-  NS_NOTYETIMPLEMENTED("write me");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsXULAttribute::LookupNamespaceURI(const nsAString& aNamespacePrefix,
-                                   nsAString& aNamespaceURI) 
-{
-  NS_NOTYETIMPLEMENTED("write me");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 
 // nsIDOMAttr interface
 
@@ -601,7 +559,7 @@ NS_INTERFACE_MAP_BEGIN(nsXULAttributes)
     NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(XULNamedNodeMap)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_ADDREF(nsXULAttributes);
+NS_IMPL_ADDREF(nsXULAttributes)
 
 // Custom release method to go through the fixed-size allocator
 nsrefcnt
@@ -646,7 +604,7 @@ nsXULAttributes::GetNamedItem(const nsAString& aName,
     // PRInt32 nameSpaceID;
     nsCOMPtr<nsINodeInfo> inpNodeInfo;
 
-    if (NS_FAILED(rv = mContent->NormalizeAttrString(aName, *getter_AddRefs(inpNodeInfo))))
+    if (NS_FAILED(rv = mContent->NormalizeAttrString(aName, getter_AddRefs(inpNodeInfo))))
         return rv;
 
     // if (kNameSpaceID_Unknown == nameSpaceID) {

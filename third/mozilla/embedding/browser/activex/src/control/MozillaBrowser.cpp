@@ -55,7 +55,9 @@
 #include "HelperAppDlg.h"
 #include "WindowCreator.h"
 
+#include "nsNetUtil.h"
 #include "nsCWebBrowser.h"
+#include "nsIAtom.h"
 #include "nsILocalFile.h"
 #include "nsIWebBrowserPersist.h"
 #include "nsIClipboardCommands.h"
@@ -85,6 +87,7 @@ static HANDLE s_hHackedNonReentrancy = NULL;
 
 static NS_DEFINE_CID(kPromptServiceCID, NS_PROMPTSERVICE_CID);
 static NS_DEFINE_CID(kHelperAppLauncherDialogCID, NS_HELPERAPPLAUNCHERDIALOG_CID);
+static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 class PrintListener : public nsIWebProgressListener
 {
@@ -118,14 +121,16 @@ protected:
     nsCOMPtr<nsILocalFile> mUserProfileDir;
 };
 
-// Prefs
+// Default page in design mode. The data protocol may or may not be supported
+// so the scheme is checked before the page is loaded.
 
-static OLECHAR *kDesignModeURL =
+static const char kDesignModeScheme[] = "data";
+static const OLECHAR kDesignModeURL[] =
     L"data:text/html,<html><body bgcolor=\"#00FF00\"><p>Mozilla Control</p></body></html>";
 
 // Registry keys and values
 
-static const TCHAR *kBrowserHelperObjectRegKey =
+static const TCHAR kBrowserHelperObjectRegKey[] =
     _T("Software\\Mozilla\\ActiveX Control\\Browser Helper Objects");
 
 
@@ -324,7 +329,7 @@ void CMozillaBrowser::ShowURIPropertyDlg(const nsAString &aURI, const nsAString 
     CPPageDlg linkDlg;
     dlg.AddPage(&linkDlg);
 
-    if (aURI.Length() > 0)
+    if (!aURI.IsEmpty())
     {
         linkDlg.mType = aContentType;
         linkDlg.mURL = aURI;
@@ -424,7 +429,22 @@ LRESULT CMozillaBrowser::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
     {
         if (!bUserMode)
         {
-            Navigate(const_cast<BSTR>(kDesignModeURL), NULL, NULL, NULL, NULL);
+            // Load a page in design mode if the specified page is supported
+            nsCOMPtr<nsIIOService> ios = do_GetIOService();
+            if (ios)
+            {
+                // Ensure design page can be loaded by checking for a
+                // registered protocol handler that supports the scheme
+                nsCOMPtr<nsIProtocolHandler> ph;
+                nsCAutoString phScheme;
+                ios->GetProtocolHandler(kDesignModeScheme, getter_AddRefs(ph));
+                if (ph &&
+                    NS_SUCCEEDED(ph->GetScheme(phScheme)) &&
+                    phScheme.EqualsIgnoreCase(kDesignModeScheme))
+                {
+                    Navigate(const_cast<BSTR>(kDesignModeURL), NULL, NULL, NULL, NULL);
+                }
+            }
         }
     }
 
@@ -844,7 +864,7 @@ LRESULT CMozillaBrowser::OnLinkOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
         anchorElement->GetHref(uri);
     }
 
-    if (uri.Length() > 0)
+    if (!uri.IsEmpty())
     {
         CComBSTR bstrURI(uri.get());
         CComVariant vFlags(0);
@@ -865,7 +885,7 @@ LRESULT CMozillaBrowser::OnLinkOpenInNewWindow(WORD wNotifyCode, WORD wID, HWND 
         anchorElement->GetHref(uri);
     }
 
-    if (uri.Length() > 0)
+    if (!uri.IsEmpty())
     {
         CComBSTR bstrURI(uri.get());
         CComVariant vFlags(navOpenInNewWindow);
@@ -886,7 +906,7 @@ LRESULT CMozillaBrowser::OnLinkCopyShortcut(WORD wNotifyCode, WORD wID, HWND hWn
         anchorElement->GetHref(uri);
     }
 
-    if (uri.Length() > 0 && OpenClipboard())
+    if (!uri.IsEmpty() && OpenClipboard())
     {
         EmptyClipboard();
 
@@ -1153,7 +1173,7 @@ HRESULT CMozillaBrowser::CreateBrowser()
 
     // Subscribe for progress notifications
     nsCOMPtr<nsIWeakReference> listener(
-        dont_AddRef(NS_GetWeakReference(NS_STATIC_CAST(nsIWebProgressListener*, mWebBrowserContainer))));
+        do_GetWeakReference(NS_STATIC_CAST(nsIWebProgressListener*, mWebBrowserContainer)));
     mWebBrowser->AddWebBrowserListener(listener, NS_GET_IID(nsIWebProgressListener));
 
     // Visible

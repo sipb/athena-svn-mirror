@@ -49,7 +49,6 @@
 #include "nsFontMetricsGTK.h"
 #include "nsIServiceManager.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
 #include "nsILanguageAtomService.h"
 #include "nsISaveAsCharset.h"
 #include "nsIPref.h"
@@ -163,7 +162,7 @@ static PRBool gAllowDoubleByteSpecialChars = PR_TRUE;
 static nsIPref* gPref = nsnull;
 static float gDevScale = 0.0f; /* Scaler value from |GetCanonicalPixelScale()| */
 static PRBool gScaleBitmapFontsWithDevScale = PR_FALSE;
-static nsICharsetConverterManager2* gCharSetManager = nsnull;
+static nsICharsetConverterManager* gCharSetManager = nsnull;
 static nsIUnicodeEncoder* gUserDefinedConverter = nsnull;
 
 static nsHashtable* gAliases = nsnull;
@@ -285,16 +284,22 @@ static nsFontCharSetInfo KOI8R =
 static nsFontCharSetInfo KOI8U =
   { "KOI8-U", SingleByteConvert, 0,
     TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN | TT_OS2_CPR2_CYRILLIC };
-static nsFontCharSetInfo TIS620 =
+static nsFontCharSetInfo TIS6202 =
 /* Added to support thai context sensitive shaping if
  * CTL extension is is in force */
 #ifdef SUNCTL
   { "tis620-2", SingleByteConvert, 0,
     TT_OS2_CPR1_THAI, 0 };
 #else
-  { "TIS-620", SingleByteConvert, 0,
+  { "windows-874", SingleByteConvert, 0,
     TT_OS2_CPR1_THAI, 0 };
 #endif /* SUNCTL */
+static nsFontCharSetInfo TIS620 =
+  { "TIS-620", SingleByteConvert, 0,
+    TT_OS2_CPR1_THAI, 0 };
+static nsFontCharSetInfo ISO885911 =
+  { "ISO-8859-11", SingleByteConvert, 0,
+    TT_OS2_CPR1_THAI, 0 };
 static nsFontCharSetInfo Big5 =
   { "x-x-big5", DoubleByteConvert, 1,
     TT_OS2_CPR1_CHINESE_TRAD, 0 };
@@ -538,6 +543,9 @@ static nsFontCharSetMap gCharSetMap[] =
   { "johabs-1",           &FLG_KO,      &X11Johab      },
   { "johabsh-1",          &FLG_KO,      &X11Johab      },
   { "ksc5601.1987-0",     &FLG_KO,      &KSC5601       },
+  // we can handle GR fonts with GL encoders (KSC5601 and GB2312)
+  // See |DoubleByteConvert|.
+  { "ksc5601.1987-1",     &FLG_KO,      &KSC5601       },
   { "ksc5601.1992-3",     &FLG_KO,      &JohabNoAscii  },
   { "koreanjamo-0",       &FLG_KO,      &JamoTTF       },
   { "microsoft-cp1251",   &FLG_RUSSIAN, &CP1251        },
@@ -551,11 +559,14 @@ static nsFontCharSetMap gCharSetMap[] =
   { "tis620.2533-0",      &FLG_THAI,    &TIS620        },
   { "tis620.2533-1",      &FLG_THAI,    &TIS620        },
   { "tis620-0",           &FLG_THAI,    &TIS620        },
-  { "iso8859-11",         &FLG_THAI,    &TIS620        },
+  { "tis620-2",           &FLG_THAI,    &TIS6202       },
+  { "iso8859-11",         &FLG_THAI,    &ISO885911     },
   { "ucs2.cjk-0",         &FLG_NONE,    &ISO106461     },
   { "ucs2.cjk_china-0",   &FLG_ZHCN,    &ISO106461     },
+  { "iso10646.2000-cn",   &FLG_ZHCN,    &ISO106461     },  // HP/UX
   { "ucs2.cjk_japan-0",   &FLG_JA,      &ISO106461     },
   { "ucs2.cjk_korea-0",   &FLG_KO,      &ISO106461     },
+  { "korean.ucs2-0",      &FLG_KO,      &ISO106461     },  // HP/UX
   { "ucs2.cjk_taiwan-0",  &FLG_ZHTW,    &ISO106461     },
   { "ucs2.thai-0",        &FLG_THAI,    &ISO106461     },
   { "tamilttf-0",         &FLG_TAMIL,   &TamilTTF      },
@@ -875,7 +886,7 @@ InitGlobals(nsIDeviceContext *aDevice)
   aDevice->GetCanonicalPixelScale(gDevScale);
 
   nsServiceManager::GetService(kCharSetManagerCID,
-    NS_GET_IID(nsICharsetConverterManager2), (nsISupports**) &gCharSetManager);
+    NS_GET_IID(nsICharsetConverterManager), (nsISupports**) &gCharSetManager);
   if (!gCharSetManager) {
     FreeGlobals();
     return NS_ERROR_FAILURE;
@@ -1370,7 +1381,7 @@ NS_IMETHODIMP nsFontMetricsGTK::Init(const nsFont& aFont, nsIAtom* aLangGroup,
 {
   NS_ASSERTION(!(nsnull == aContext), "attempt to init fontmetrics with null device context");
 
-  nsresult res;
+  nsresult res = NS_OK;
   mDocConverterType = nsnull;
 
   if (!gInitialized) {
@@ -1435,29 +1446,19 @@ NS_IMETHODIMP nsFontMetricsGTK::Init(const nsFont& aFont, nsIAtom* aLangGroup,
 
   if (mLangGroup.get() == gUserDefined) {
     if (!gUserDefinedConverter) {
-      nsCOMPtr<nsIAtom> charset;
-      res = gCharSetManager->GetCharsetAtom2("x-user-defined",
-        getter_AddRefs(charset));
-      if (NS_SUCCEEDED(res)) {
-        res = gCharSetManager->GetUnicodeEncoder(charset,
+      res = gCharSetManager->GetUnicodeEncoderRaw("x-user-defined",
                                                  &gUserDefinedConverter);
-        if (NS_SUCCEEDED(res)) {
-          res = gUserDefinedConverter->SetOutputErrorBehavior(
-            gUserDefinedConverter->kOnError_Replace, nsnull, '?');
-          nsCOMPtr<nsICharRepresentable> mapper =
-            do_QueryInterface(gUserDefinedConverter);
-          if (mapper) {
-            gUserDefinedCCMap = MapperToCCMap(mapper);
-            if (!gUserDefinedCCMap)
-              return NS_ERROR_OUT_OF_MEMORY;          
-          }
-        }
-        else {
-          return res;
-        }
-      }
-      else {
+      if (NS_FAILED(res)) {
         return res;
+      }
+      res = gUserDefinedConverter->SetOutputErrorBehavior(
+          gUserDefinedConverter->kOnError_Replace, nsnull, '?');
+      nsCOMPtr<nsICharRepresentable> mapper =
+        do_QueryInterface(gUserDefinedConverter);
+      if (mapper) {
+        gUserDefinedCCMap = MapperToCCMap(mapper);
+        if (!gUserDefinedCCMap)
+          return NS_ERROR_OUT_OF_MEMORY;          
       }
     }
 
@@ -2132,6 +2133,8 @@ DoubleByteConvert(nsFontCharSetInfo* aSelf, XFontStruct* aFont,
           aDestBuf[i] &= 0x7F;
         }
       }
+      // We're using a GL encoder (KSC5601 or GB2312) but the font is a GR font.
+      // (ksc5601.1987-1 or gb2312.1980-1)
       else if ((!(aDestBuf[0] & 0x80)) && (aFont->min_byte1 & 0x80)) {
         for (PRInt32 i = 0; i < aDestLen; i++) {
           aDestBuf[i] |= 0x80;
@@ -2173,16 +2176,13 @@ CheckMap(nsFontCharSetMap* aEntry)
 {
   while (aEntry->mName) {
     if (aEntry->mInfo->mCharSet) {
+      // used to use NS_NewAtom??
       nsresult res;
-      nsCOMPtr<nsIAtom> charset =
-        getter_AddRefs(NS_NewAtom(aEntry->mInfo->mCharSet));
-      if (charset) {
-        nsCOMPtr<nsIUnicodeEncoder> converter;
-        res = gCharSetManager->GetUnicodeEncoder(charset,
-          getter_AddRefs(converter));
-        if (NS_FAILED(res)) {
-          printf("=== %s failed (%s)\n", aEntry->mInfo->mCharSet, __FILE__);
-        }
+      nsCOMPtr<nsIUnicodeEncoder> converter;
+      res = gCharSetManager->GetUnicodeEncoderRaw(aEntry->mInfo->mCharSet,
+                                                  getter_AddRefs(converter));
+      if (NS_FAILED(res)) {
+        printf("=== %s failed (%s)\n", aEntry->mInfo->mCharSet, __FILE__);
       }
     }
     aEntry++;
@@ -2215,64 +2215,55 @@ SetUpFontCharSetInfo(nsFontCharSetInfo* aSelf)
 #endif
 
   nsresult res;
-  nsCOMPtr<nsIAtom> charset = getter_AddRefs(NS_NewAtom(aSelf->mCharSet));
-  if (charset) {
-    nsIUnicodeEncoder* converter = nsnull;
-    res = gCharSetManager->GetUnicodeEncoder(charset, &converter);
-    if (NS_SUCCEEDED(res)) {
-      aSelf->mConverter = converter;
-      res = converter->SetOutputErrorBehavior(converter->kOnError_Replace,
-        nsnull, '?');
-      nsCOMPtr<nsICharRepresentable> mapper = do_QueryInterface(converter);
-      if (mapper) {
-        aSelf->mCCMap = MapperToCCMap(mapper);
-        if (aSelf->mCCMap) {
+  // used NS_NewAtom before??
+  nsIUnicodeEncoder* converter = nsnull;
+  res = gCharSetManager->GetUnicodeEncoderRaw(aSelf->mCharSet, &converter);
+  if (NS_SUCCEEDED(res)) {
+    aSelf->mConverter = converter;
+    res = converter->SetOutputErrorBehavior(converter->kOnError_Replace,
+                                            nsnull, '?');
+    nsCOMPtr<nsICharRepresentable> mapper = do_QueryInterface(converter);
+    if (mapper) {
+      aSelf->mCCMap = MapperToCCMap(mapper);
+      if (aSelf->mCCMap) {
 #ifdef DEBUG_bzbarsky
-          char* atomname = atomToName(charset);
-          if (atomname) {
-            NS_WARNING(nsPrintfCString("\n\ncharset = %s", atomname).get());
-            nsMemory::Free(atomname);
-          }
+          NS_WARNING(nsPrintfCString("\n\ncharset = %s", aSelf->mCharSet).get());
 #endif /* DEBUG */
   
-          /*
-           * We used to disable special characters like smart quotes
-           * in CJK fonts because if they are quite a bit larger than
-           * western glyphs and we did not want glyph fill-in to use them
-           * in single byte documents.
-           *
-           * Now, single byte documents find these special chars before
-           * the CJK fonts are searched so this is no longer needed
-           * but is useful when trying to determine which font(s) the
-           * special chars are found in.
-           */
-          if ((aSelf->Convert == DoubleByteConvert) 
-              && (!gAllowDoubleByteSpecialChars)) {
-            PRUint16* ccmap = aSelf->mCCMap;
-            PRUint32 page = CCMAP_BEGIN_AT_START_OF_MAP;
-            const PRUint16* specialmap = gDoubleByteSpecialCharsCCMap;
-            while (NextNonEmptyCCMapPage(specialmap, &page)) {
-              PRUint32 pagechar = page;
-              for (int i=0; i < CCMAP_BITS_PER_PAGE; i++) {
-                if (CCMAP_HAS_CHAR(specialmap, pagechar)) 
-                    CCMAP_UNSET_CHAR(ccmap, pagechar);
-                pagechar++;
-              }
+        /*
+         * We used to disable special characters like smart quotes
+         * in CJK fonts because if they are quite a bit larger than
+         * western glyphs and we did not want glyph fill-in to use them
+         * in single byte documents.
+         *
+         * Now, single byte documents find these special chars before
+         * the CJK fonts are searched so this is no longer needed
+         * but is useful when trying to determine which font(s) the
+         * special chars are found in.
+         */
+        if ((aSelf->Convert == DoubleByteConvert) 
+            && (!gAllowDoubleByteSpecialChars)) {
+          PRUint16* ccmap = aSelf->mCCMap;
+          PRUint32 page = CCMAP_BEGIN_AT_START_OF_MAP;
+          const PRUint16* specialmap = gDoubleByteSpecialCharsCCMap;
+          while (NextNonEmptyCCMapPage(specialmap, &page)) {
+            PRUint32 pagechar = page;
+            for (int i=0; i < CCMAP_BITS_PER_PAGE; i++) {
+              if (CCMAP_HAS_CHAR(specialmap, pagechar)) 
+                CCMAP_UNSET_CHAR(ccmap, pagechar);
+              pagechar++;
             }
           }
-          return PR_TRUE;
         }
-      }
-      else {
-        NS_WARNING("cannot get nsICharRepresentable");
+        return PR_TRUE;
       }
     }
     else {
-      NS_WARNING("cannot get Unicode converter");
+      NS_WARNING("cannot get nsICharRepresentable");
     }
   }
   else {
-    NS_WARNING("cannot get atom");
+    NS_WARNING("cannot get Unicode converter");
   }
 
   //
@@ -2402,7 +2393,14 @@ GetMapFor10646Font(XFontStruct* aFont)
     PRInt32 offset = (((row - minByte1) * charsPerRow) - minByte2);
     for (PRInt32 cell = minByte2; cell <= maxByte2; cell++) {
       XCharStruct* bounds = &aFont->per_char[offset + cell];
-      if (bounds->ascent || bounds->descent) {
+      // From Section 8.5 Font Metrics in the Xlib programming manual:
+      // A nonexistent character is represented with all members of its XCharStruct set to zero. 
+      if (bounds->ascent ||
+          bounds->descent ||
+          bounds->lbearing ||
+          bounds->rbearing ||
+          bounds->width ||
+          bounds->attributes) {
         ccmapObj.SetChar((row << 8) | cell);
       }
     }
@@ -4747,18 +4745,15 @@ SetCharsetLangGroup(nsFontCharSetInfo* aCharSetInfo)
   if (!aCharSetInfo->mCharSet || aCharSetInfo->mLangGroup)
     return;
 
-  nsCOMPtr<nsIAtom> charset;
-  nsresult res = gCharSetManager->GetCharsetAtom2(aCharSetInfo->mCharSet,
-                                             getter_AddRefs(charset));
-  if (NS_SUCCEEDED(res)) {
-    res = gCharSetManager->GetCharsetLangGroup(charset,
-                                             &aCharSetInfo->mLangGroup);
-    if (NS_FAILED(res)) {
-      aCharSetInfo->mLangGroup = NS_NewAtom("");
+  nsresult res;
+  
+  res = gCharSetManager->GetCharsetLangGroupRaw(aCharSetInfo->mCharSet,
+                                                &aCharSetInfo->mLangGroup);
+  if (NS_FAILED(res)) {
+    aCharSetInfo->mLangGroup = NS_NewAtom("");
 #ifdef NOISY_FONTS
-      printf("=== cannot get lang group for %s\n", aCharSetInfo->mCharSet);
+    printf("=== cannot get lang group for %s\n", aCharSetInfo->mCharSet);
 #endif
-    }
   }
 }
 

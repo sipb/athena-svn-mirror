@@ -49,6 +49,7 @@
 #include "plstr.h"
 #include "prprf.h"
 #include "nsEscape.h"
+#include "nsICookieService.h"
 
 static NS_DEFINE_CID(kStreamListenerTeeCID, NS_STREAMLISTENERTEE_CID);
 
@@ -546,6 +547,24 @@ nsHttpChannel::SetupTransaction()
 }
 
 void
+nsHttpChannel::AddCookiesToRequest()
+{
+    nsXPIDLCString cookie;
+
+    nsICookieService *cs = gHttpHandler->GetCookieService();
+    if (cs)
+        cs->GetCookieStringFromHttp(mURI,
+                                    mDocumentURI ? mDocumentURI : mOriginalURI,
+                                    this,
+                                    getter_Copies(cookie));
+
+    // overwrite any existing cookie headers.  be sure to clear any
+    // existing cookies if we have no cookies to set or if the cookie
+    // service is unavailable.
+    mRequestHead.SetHeader(nsHttp::Cookie, cookie, PR_FALSE);
+}
+
+void
 nsHttpChannel::ApplyContentConversions()
 {
     if (!mResponseHead)
@@ -586,28 +605,35 @@ nsresult
 nsHttpChannel::CallOnStartRequest()
 {
     if (mResponseHead && mResponseHead->ContentType().IsEmpty()) {
-        // Uh-oh.  We had better find out what type we are!
+        if (!mContentTypeHint.IsEmpty())
+            mResponseHead->SetContentType(mContentTypeHint);
+        else {
+            // Uh-oh.  We had better find out what type we are!
 
-        // XXX This does not work with content-encodings...  but
-        // neither does applying the conversion from the URILoader
+            // XXX This does not work with content-encodings...  but
+            // neither does applying the conversion from the URILoader
 
-        nsCOMPtr<nsIStreamConverterService> serv;
-        nsresult rv = gHttpHandler->
+            nsCOMPtr<nsIStreamConverterService> serv;
+            nsresult rv = gHttpHandler->
                 GetStreamConverterService(getter_AddRefs(serv));
-        // If we failed, we just fall through to the "normal" case
-        if (NS_SUCCEEDED(rv)) {
-            NS_ConvertASCIItoUCS2 from(UNKNOWN_CONTENT_TYPE);
-            nsCOMPtr<nsIStreamListener> converter;
-            rv = serv->AsyncConvertData(from.get(),
-                                        NS_LITERAL_STRING("*/*").get(),
-                                        mListener,
-                                        mListenerContext,
-                                        getter_AddRefs(converter));
+            // If we failed, we just fall through to the "normal" case
             if (NS_SUCCEEDED(rv)) {
-                mListener = converter;
+                NS_ConvertASCIItoUCS2 from(UNKNOWN_CONTENT_TYPE);
+                nsCOMPtr<nsIStreamListener> converter;
+                rv = serv->AsyncConvertData(from.get(),
+                                            NS_LITERAL_STRING("*/*").get(),
+                                            mListener,
+                                            mListenerContext,
+                                            getter_AddRefs(converter));
+                if (NS_SUCCEEDED(rv)) {
+                    mListener = converter;
+                }
             }
         }
     }
+
+    if (mResponseHead && mResponseHead->ContentCharset().IsEmpty())
+        mResponseHead->SetContentCharset(mContentCharsetHint);
     
     LOG(("  calling mListener->OnStartRequest\n"));
     nsresult rv = mListener->OnStartRequest(this, mListenerContext);
@@ -627,6 +653,9 @@ nsHttpChannel::ProcessResponse()
 
     LOG(("nsHttpChannel::ProcessResponse [this=%x httpStatus=%u]\n",
         this, httpStatus));
+
+    // set cookies, if any exist
+    SetCookie(mResponseHead->PeekHeader(nsHttp::Set_Cookie));
 
     // notify nsIHttpNotify implementations
     rv = gHttpHandler->OnExamineResponse(this);
@@ -747,28 +776,20 @@ nsHttpChannel::ProcessNormal()
     return rv;
 }
 
-nsresult
+void
 nsHttpChannel::GetCallback(const nsIID &aIID, void **aResult)
 {
-    nsresult rv;
-    NS_ASSERTION(aResult, "Invalid argument in GetCallback!");
-    *aResult = nsnull;
-    NS_ENSURE_TRUE(mCallbacks, NS_ERROR_NOT_INITIALIZED);
-    rv = mCallbacks->GetInterface(aIID, aResult);
-    if (NS_FAILED(rv)) {
-        if (mLoadGroup) {
-            nsCOMPtr<nsIInterfaceRequestor> cbs;
-            rv = mLoadGroup->GetNotificationCallbacks(getter_AddRefs(cbs));
-            if (NS_SUCCEEDED(rv))
-                rv = cbs->GetInterface(aIID, aResult);
-        }
+    NS_ASSERTION(aResult && !*aResult, "invalid argument in GetCallback");
+
+    if (mCallbacks)
+        mCallbacks->GetInterface(aIID, aResult);
+
+    if (!*aResult && mLoadGroup) {
+        nsCOMPtr<nsIInterfaceRequestor> cbs;
+        mLoadGroup->GetNotificationCallbacks(getter_AddRefs(cbs));
+        if (cbs)
+            cbs->GetInterface(aIID, aResult);
     }
-
-    // defend against bad nsIInterfaceRequestor implementations.
-    if (NS_SUCCEEDED(rv) && !*aResult)
-        return NS_ERROR_NO_INTERFACE;
-
-    return rv;
 }
 
 nsresult
@@ -785,12 +806,15 @@ nsHttpChannel::PromptTempRedirect()
 
     nsXPIDLString messageString;
     rv = stringBundle->GetStringFromName(NS_LITERAL_STRING("RepostFormData").get(), getter_Copies(messageString));
-    //GetStringFromName can return NS_OK and NULL messageString.
+    // GetStringFromName can return NS_OK and NULL messageString.
     if (NS_SUCCEEDED(rv) && messageString) {
         PRBool repost = PR_FALSE;
+
         nsCOMPtr<nsIPrompt> prompt;
-        rv = GetCallback(NS_GET_IID(nsIPrompt), getter_AddRefs(prompt));
-        if (NS_FAILED(rv)) return rv;
+        GetCallback(NS_GET_IID(nsIPrompt), getter_AddRefs(prompt));
+        if (!prompt)
+            return NS_ERROR_NO_INTERFACE;
+
         prompt->Confirm(nsnull, messageString, &repost);
         if (!repost)
             return NS_ERROR_FAILURE;
@@ -1947,20 +1971,18 @@ nsHttpChannel::GetCredentials(const char *challenges,
     }
     */
 
-    // proxy auth's never in prehost.  only take user:pass from URL if this
-    // is the first 401 response (mIdent holds previously attempted identity).
-    PRBool identFromURI = PR_FALSE;
-    if (!proxyAuth && mIdent.IsEmpty()) {
-        GetIdentityFromURI(authFlags, mIdent);
-        identFromURI = !mIdent.IsEmpty(); 
-    }
-
     const char *host;
     PRInt32 port;
     nsHttpAuthIdentity *ident;
     nsCAutoString path;
+    PRBool identFromURI = PR_FALSE;
 
-    if (proxyAuth) {
+    // it is possible for the origin server to fake a proxy challenge.  if
+    // that happens we need to be sure to use the origin server as the auth
+    // domain.  otherwise, we could inadvertantly expose the user's proxy
+    // credentials to an origin server.
+
+    if (proxyAuth && mConnectionInfo->ProxyHost()) {
         host = mConnectionInfo->ProxyHost();
         port = mConnectionInfo->ProxyPort();
         ident = &mProxyIdent;
@@ -1972,6 +1994,13 @@ nsHttpChannel::GetCredentials(const char *challenges,
 
         rv = GetCurrentPath(path);
         if (NS_FAILED(rv)) return rv;
+
+        // if this is the first challenge, then try using the identity
+        // specified in the URL.
+        if (mIdent.IsEmpty()) {
+            GetIdentityFromURI(authFlags, mIdent);
+            identFromURI = !mIdent.IsEmpty();
+        }
     }
 
     //
@@ -2012,9 +2041,15 @@ nsHttpChannel::GetCredentials(const char *challenges,
                 entry = nsnull;
                 ident->Clear();
             }
-            else {
+            else if (!identFromURI || nsCRT::strcmp(ident->User(), entry->Identity().User()) == 0) {
                 LOG(("  taking identity from auth cache\n"));
+                // the password from the auth cache is more likely to be correct than
+                // the one in the URL.  at least, we know that it works with the given
+                // username.  it is possible for a server to distinguish logons based
+                // on the supplied password alone, but that would be quite unusual...
+                // and i don't think we need to worry about such unorthodox cases.
                 ident->Set(entry->Identity());
+                identFromURI = PR_FALSE;
                 if (entry->Creds()[0] != '\0') {
                     LOG(("    using cached credentials!\n"));
                     creds.Assign(entry->Creds());
@@ -2033,6 +2068,7 @@ nsHttpChannel::GetCredentials(const char *challenges,
             // username and password for this domain.
             rv = PromptForIdentity(host, port, proxyAuth, realm.get(), scheme.get(), authFlags, *ident);
             if (NS_FAILED(rv)) return rv;
+            identFromURI = PR_FALSE;
         }
     }
 
@@ -2055,20 +2091,24 @@ nsHttpChannel::GetCredentials(const char *challenges,
     // let's try these credentials
     creds = result;
 
-    // find out if this authenticator allows reuse of credentials
-    PRBool saveCreds     = (authFlags & nsIHttpAuthenticator::REUSABLE_CREDENTIALS);
-    PRBool saveChallenge = (authFlags & nsIHttpAuthenticator::REUSABLE_CHALLENGE);
+    // don't bother remember the identity if it came from the URI.
+    if (!identFromURI) {
+        // find out if this authenticator allows reuse of credentials
+        PRBool saveCreds     = (authFlags & nsIHttpAuthenticator::REUSABLE_CREDENTIALS);
+        PRBool saveChallenge = (authFlags & nsIHttpAuthenticator::REUSABLE_CHALLENGE);
 
-    // create a cache entry.  we do this even though we don't yet know that
-    // these credentials are valid b/c we need to avoid prompting the user more
-    // than once in case the credentials are valid.
-    //
-    // if the credentials are not reusable, then we don't bother sticking them
-    // in the auth cache.
-    return authCache->SetAuthEntry(host, port, path.get(), realm.get(),
-                                   saveCreds ? creds.get() : nsnull,
-                                   saveChallenge ? challenge.get() : nsnull,
-                                   *ident, sessionState);
+        // create a cache entry.  we do this even though we don't yet know that
+        // these credentials are valid b/c we need to avoid prompting the user more
+        // than once in case the credentials are valid.
+        //
+        // if the credentials are not reusable, then we don't bother sticking them
+        // in the auth cache.
+        rv = authCache->SetAuthEntry(host, port, path.get(), realm.get(),
+                                     saveCreds ? creds.get() : nsnull,
+                                     saveChallenge ? challenge.get() : nsnull,
+                                     *ident, sessionState);
+    }
+    return rv;
 }
 
 nsresult
@@ -2187,10 +2227,10 @@ nsHttpChannel::PromptForIdentity(const char *host,
 
     // XXX i18n: IDN not supported.
 
-    nsresult rv;
     nsCOMPtr<nsIAuthPrompt> authPrompt;
-    rv = GetCallback(NS_GET_IID(nsIAuthPrompt), getter_AddRefs(authPrompt));
-    if (NS_FAILED(rv)) return rv;
+    GetCallback(NS_GET_IID(nsIAuthPrompt), getter_AddRefs(authPrompt));
+    if (!authPrompt)
+        return NS_ERROR_NO_INTERFACE;
 
     //
     // construct the single signon key
@@ -2206,6 +2246,8 @@ nsHttpChannel::PromptForIdentity(const char *host,
     key.AppendWithConversion(" (");
     key.AppendWithConversion(realm);
     key.Append(PRUnichar(')'));
+
+    nsresult rv;
 
     // construct the message string
     nsCOMPtr<nsIStringBundleService> bundleSvc =
@@ -2281,6 +2323,17 @@ nsHttpChannel::SetAuthorizationHeader(nsHttpAuthCache *authCache,
 
     rv = authCache->GetAuthEntryForPath(host, port, path, &entry);
     if (NS_SUCCEEDED(rv)) {
+        // if we are trying to add a header for origin server auth and if the
+        // URL contains an explicit username, then be sure to try the given
+        // username first.
+        if (header == nsHttp::Authorization) {
+            nsHttpAuthIdentity temp;
+            GetIdentityFromURI(0, temp);
+            if (!temp.IsEmpty() &&
+                    nsCRT::strcmp(temp.User(), entry->Identity().User()) != 0)
+                return; // different username; let the server challenge us.
+        }
+
         nsXPIDLCString temp;
         const char *creds     = entry->Creds();
         const char *challenge = entry->Challenge();
@@ -2562,17 +2615,24 @@ nsHttpChannel::GetContentType(nsACString &value)
 NS_IMETHODIMP
 nsHttpChannel::SetContentType(const nsACString &value)
 {
-    if (!mResponseHead)
-        return NS_ERROR_NOT_AVAILABLE;
+    if (mListener) {
+        if (!mResponseHead)
+            return NS_ERROR_NOT_AVAILABLE;
 
-    nsCAutoString contentTypeBuf, charsetBuf;
-    NS_ParseContentType(value, contentTypeBuf, charsetBuf);
+        nsCAutoString contentTypeBuf, charsetBuf;
+        NS_ParseContentType(value, contentTypeBuf, charsetBuf);
 
-    mResponseHead->SetContentType(contentTypeBuf);
+        mResponseHead->SetContentType(contentTypeBuf);
 
-    // take care not to stomp on an existing charset
-    if (!charsetBuf.IsEmpty())
-        mResponseHead->SetContentCharset(charsetBuf);
+        // take care not to stomp on an existing charset
+        if (!charsetBuf.IsEmpty())
+            mResponseHead->SetContentCharset(charsetBuf);
+    } else {
+        // We are being given a content-type hint.
+        nsCAutoString charsetBuf;
+        NS_ParseContentType(value, mContentTypeHint, mContentCharsetHint);
+    }
+    
     return NS_OK;
 }
 
@@ -2589,10 +2649,15 @@ nsHttpChannel::GetContentCharset(nsACString &value)
 NS_IMETHODIMP
 nsHttpChannel::SetContentCharset(const nsACString &value)
 {
-    if (!mResponseHead)
-        return NS_ERROR_NOT_AVAILABLE;
+    if (mListener) {
+        if (!mResponseHead)
+            return NS_ERROR_NOT_AVAILABLE;
 
-    mResponseHead->SetContentCharset(value);
+        mResponseHead->SetContentCharset(value);
+    } else {
+        // Charset hint
+        mContentCharsetHint = value;
+    }
     return NS_OK;
 }
 
@@ -2640,6 +2705,9 @@ nsHttpChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *context)
     if (NS_FAILED(rv))
         return rv;
 
+    // fetch cookies, and add them to the request header
+    AddCookiesToRequest();
+
     // Notify nsIHttpNotify implementations
     rv = gHttpHandler->OnModifyRequest(this);
     NS_ASSERTION(NS_SUCCEEDED(rv), "OnModifyRequest failed");
@@ -2682,22 +2750,6 @@ nsHttpChannel::SetRequestMethod(const nsACString &method)
         return NS_ERROR_FAILURE;
 
     mRequestHead.SetMethod(atom);
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHttpChannel::GetDocumentURI(nsIURI **aDocumentURI)
-{
-    NS_ENSURE_ARG_POINTER(aDocumentURI);
-    *aDocumentURI = mDocumentURI;
-    NS_IF_ADDREF(*aDocumentURI);
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHttpChannel::SetDocumentURI(nsIURI *aDocumentURI)
-{
-    mDocumentURI = aDocumentURI;
     return NS_OK;
 }
 
@@ -2995,14 +3047,9 @@ nsHttpChannel::SetResponseHeader(const nsACString &header,
         atom == nsHttp::Transfer_Encoding)
         return NS_ERROR_ILLEGAL_VALUE;
 
-    nsresult rv = mResponseHead->SetHeader(atom, value, merge);
-
-    // XXX temporary hack until http supports some form of a header change observer
-    if ((atom == nsHttp::Set_Cookie) && NS_SUCCEEDED(rv))
-        rv = gHttpHandler->OnExamineResponse(this);
-
     mResponseHeadersModified = PR_TRUE;
-    return rv;
+
+    return mResponseHead->SetHeader(atom, value, merge);
 }
 
 NS_IMETHODIMP
@@ -3095,6 +3142,75 @@ nsHttpChannel::GetContentEncodings(nsISimpleEnumerator** aEncodings)
         return NS_ERROR_OUT_OF_MEMORY;
     
     return CallQueryInterface(enumerator, aEncodings);
+}
+
+//-----------------------------------------------------------------------------
+// nsHttpChannel::nsIHttpChannelInternal
+//-----------------------------------------------------------------------------
+
+NS_IMETHODIMP
+nsHttpChannel::GetDocumentURI(nsIURI **aDocumentURI)
+{
+    NS_ENSURE_ARG_POINTER(aDocumentURI);
+    *aDocumentURI = mDocumentURI;
+    NS_IF_ADDREF(*aDocumentURI);
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHttpChannel::SetDocumentURI(nsIURI *aDocumentURI)
+{
+    mDocumentURI = aDocumentURI;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHttpChannel::GetRequestVersion(PRUint32 *major, PRUint32 *minor)
+{
+  int version = mRequestHead.Version();
+
+  if (major) { *major = version / 10; }
+  if (minor) { *minor = version % 10; }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHttpChannel::GetResponseVersion(PRUint32 *major, PRUint32 *minor)
+{
+  if (!mResponseHead)
+  {
+    *major = *minor = 0;                   // we should at least be kind about it
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
+  int version = mResponseHead->Version();
+
+  if (major) { *major = version / 10; }
+  if (minor) { *minor = version % 10; }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHttpChannel::SetCookie(const char *aCookieHeader)
+{
+    // empty header isn't an error
+    if (!(aCookieHeader && *aCookieHeader))
+        return NS_OK;
+
+    nsICookieService *cs = gHttpHandler->GetCookieService();
+    NS_ENSURE_TRUE(cs, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsIPrompt> prompt;
+    GetCallback(NS_GET_IID(nsIPrompt), getter_AddRefs(prompt));
+
+    return cs->SetCookieStringFromHttp(mURI,
+                                       mDocumentURI ? mDocumentURI : mOriginalURI,
+                                       prompt,
+                                       aCookieHeader,
+                                       mResponseHead->PeekHeader(nsHttp::Date),
+                                       this);
 }
 
 //-----------------------------------------------------------------------------
@@ -3498,9 +3614,12 @@ nsHttpChannel::DoAuthRetry(nsAHttpConnection *conn)
     // the request headers (bug 95044).
     mIsPending = PR_FALSE;
 
-    // notify nsIHttpNotify implementations.. the server response could
-    // have included cookies that must be sent with this authentication
-    // attempt (bug 84794).
+    // fetch cookies, and add them to the request header.
+    // the server response could have included cookies that must be sent with
+    // this authentication attempt (bug 84794).
+    AddCookiesToRequest();
+
+    // notify nsIHttpNotify implementations
     rv = gHttpHandler->OnModifyRequest(this);
     NS_ASSERTION(NS_SUCCEEDED(rv), "OnModifyRequest failed");
 
@@ -3674,4 +3793,3 @@ nsHttpChannel::nsContentEncodings::PrepareForNext(void)
     mReady = PR_TRUE;
     return NS_OK;
 }
-

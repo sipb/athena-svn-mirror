@@ -38,8 +38,10 @@
 
 #include "txMozillaTextOutput.h"
 #include "nsContentCID.h"
+#include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMDocumentFragment.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIDOMText.h"
@@ -181,7 +183,7 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     }
     doc->Reset(channel, loadGroup);
     nsCOMPtr<nsIURI> baseURL;
-    sourceDoc->GetBaseURL(*getter_AddRefs(baseURL));
+    sourceDoc->GetBaseURL(getter_AddRefs(baseURL));
     doc->SetBaseURL(baseURL);
 
     // Notify the contentsink that the document is created

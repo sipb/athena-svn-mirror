@@ -70,7 +70,7 @@ static char * sAtkPropertyNameArray[PROP_LAST] = {
     "accessible_table_summary"
 };
 
-static  AtkStateType TranslateAState(PRUint32 aAccState);
+static  AtkStateType TranslateAState(PRUint32 aState);
 
 nsDocAccessibleWrap::nsDocAccessibleWrap(nsIDOMNode *aDOMNode,
                                          nsIWeakReference *aShell): 
@@ -88,6 +88,9 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
 {
     NS_ENSURE_ARG_POINTER(aAccessible);
 
+    // First fire nsIObserver event for internal xpcom accessibility clients
+    nsDocAccessible::FireToolkitEvent(aEvent, aAccessible, aEventData);
+
     nsresult rv = NS_ERROR_FAILURE;
 
     nsAccessibleWrap *accWrap =
@@ -99,13 +102,13 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
     AtkTableChange * pAtkTableChange = nsnull;
 
     switch (aEvent) {
-    case nsIAccessibleEventReceiver::EVENT_FOCUS:
+    case nsIAccessibleEvent::EVENT_FOCUS:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_FOCUS\n"));
         atk_focus_tracker_notify(accWrap->GetAtkObject());
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_STATE_CHANGE:
+    case nsIAccessibleEvent::EVENT_STATE_CHANGE:
         AtkStateChange *pAtkStateChange;
         AtkStateType atkState;
 
@@ -135,7 +138,7 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
          * More complex than I ever thought.
          * Need handle them separately.
          */
-    case nsIAccessibleEventReceiver::EVENT_ATK_PROPERTY_CHANGE :
+    case nsIAccessibleEvent::EVENT_ATK_PROPERTY_CHANGE :
         AtkPropertyChange *pAtkPropChange;
         AtkPropertyValues values;
 
@@ -199,14 +202,14 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
 
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_SELECTION_CHANGE:
+    case nsIAccessibleEvent::EVENT_ATK_SELECTION_CHANGE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_SELECTION_CHANGE\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "selection_changed");
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TEXT_CHANGE:
+    case nsIAccessibleEvent::EVENT_ATK_TEXT_CHANGE:
         AtkTextChange *pAtkTextChange;
 
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TEXT_CHANGE\n"));
@@ -222,14 +225,14 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TEXT_SELECTION_CHANGE:
+    case nsIAccessibleEvent::EVENT_ATK_TEXT_SELECTION_CHANGE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TEXT_SELECTION_CHANGE\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "text_selection_changed");
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TEXT_CARET_MOVE:
+    case nsIAccessibleEvent::EVENT_ATK_TEXT_CARET_MOVE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TEXT_CARET_MOVE\n"));
         if (!aEventData)
             break;
@@ -242,14 +245,14 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_MODEL_CHANGE:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_MODEL_CHANGE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_MODEL_CHANGE\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "model_changed");
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_ROW_INSERT:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_ROW_INSERT:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_ROW_INSERT\n"));
         if (!aEventData)
             break;
@@ -265,7 +268,7 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
         
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_ROW_DELETE:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_ROW_DELETE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_ROW_DELETE\n"));
         if (!aEventData)
             break;
@@ -281,14 +284,14 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
         
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_ROW_REORDER:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_ROW_REORDER:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_ROW_REORDER\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "row_reordered");
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_COLUMN_INSERT:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_COLUMN_INSERT:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_COLUMN_INSERT\n"));
         if (!aEventData)
             break;
@@ -304,7 +307,7 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_COLUMN_DELETE:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_COLUMN_DELETE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_COLUMN_DELETE\n"));
         if (!aEventData)
             break;
@@ -320,22 +323,29 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_TABLE_COLUMN_REORDER:
+    case nsIAccessibleEvent::EVENT_ATK_TABLE_COLUMN_REORDER:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_TABLE_COLUMN_REORDER\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "column_reordered");
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_ATK_VISIBLE_DATA_CHANGE:
+    case nsIAccessibleEvent::EVENT_ATK_VISIBLE_DATA_CHANGE:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_VISIBLE_DATA_CHANGE\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "visible_data_changed");
         rv = NS_OK;
         break;
 
+    case nsIAccessibleEvent::EVENT_ATK_LINK_SELECTED:
+        MAI_LOG_DEBUG(("\n\nReceived: EVENT_ATK_LINK_SELECTED\n"));
+        g_signal_emit_by_name(accWrap->GetAtkObject(),
+                              "link_selected");
+        rv = NS_OK;
+        break;
+
         // Is a superclass of ATK event children_changed
-    case nsIAccessibleEventReceiver::EVENT_REORDER:
+    case nsIAccessibleEvent::EVENT_REORDER:
         AtkChildrenChange *pAtkChildrenChange;
 
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_REORDER(children_change)\n"));
@@ -369,7 +379,7 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
          * following two event.
          * Need more verification by AT test.
          */
-    case nsIAccessibleEventReceiver::EVENT_MENUSTART:
+    case nsIAccessibleEvent::EVENT_MENUSTART:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_MENUSTART\n"));
         atk_focus_tracker_notify(accWrap->GetAtkObject());
         g_signal_emit_by_name(accWrap->GetAtkObject(),
@@ -377,7 +387,7 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
         rv = NS_OK;
         break;
 
-    case nsIAccessibleEventReceiver::EVENT_MENUEND:
+    case nsIAccessibleEvent::EVENT_MENUEND:
         MAI_LOG_DEBUG(("\n\nReceived: EVENT_MENUEND\n"));
         g_signal_emit_by_name(accWrap->GetAtkObject(),
                               "selection_changed");
@@ -395,9 +405,9 @@ NS_IMETHODIMP nsDocAccessibleWrap::FireToolkitEvent(PRUint32 aEvent,
 
 /* static */
 AtkStateType
-TranslateAState(PRUint32 aAccState)
+TranslateAState(PRUint32 aState)
 {
-    switch (aAccState) {
+    switch (aState) {
     case nsIAccessible::STATE_SELECTED:
         return ATK_STATE_SELECTED;
     case nsIAccessible::STATE_FOCUSED:

@@ -311,16 +311,19 @@ NS_IMETHODIMP
 nsHTMLLabelElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                 PRBool aCompileEventHandlers)
 {
+  PRBool documentChanging = (aDocument != mDocument);
+
   // Unregister the access key for the old document.
-  if (mDocument) {
+  if (documentChanging && mDocument) {
     RegUnRegAccessKey(PR_FALSE);
   }
 
-  nsresult rv = nsGenericHTMLContainerFormElement::SetDocument(aDocument,
-                                                 aDeep, aCompileEventHandlers);
+  nsresult rv =
+    nsGenericHTMLContainerFormElement::SetDocument(aDocument, aDeep,
+                                                   aCompileEventHandlers);
 
   // Register the access key for the new document.
-  if (mDocument) {
+  if (documentChanging && mDocument) {
     RegUnRegAccessKey(PR_TRUE);
   }
 
@@ -335,16 +338,17 @@ EventTargetIn(nsIPresContext *aPresContext, nsEvent *aEvent,
   aPresContext->GetEventStateManager(getter_AddRefs(esm));
   nsCOMPtr<nsIContent> c;
   esm->GetEventTargetContent(aEvent, getter_AddRefs(c));
-  while (c) {
-    if (c == aChild) {
+  nsIContent *content = c;
+  while (content) {
+    if (content == aChild) {
       return PR_TRUE;
     }
-    if (c == aStop) {
+
+    if (content == aStop) {
       break;
     }
-    nsIContent *parent;
-    c->GetParent(parent);
-    c = dont_AddRef(parent);
+
+    content = content->GetParent();
   }
   return PR_FALSE;
 }
@@ -512,7 +516,7 @@ nsHTMLLabelElement::GetFirstFormControl(nsIContent *current)
   if (NS_SUCCEEDED(rv)) {
     for (PRInt32 i = 0; i < numNodes; i++) {
       nsIContent *child;
-      current->ChildAt(i, child);
+      current->ChildAt(i, &child);
       if (child) {
         if (child->IsContentOfType(nsIContent::eHTML_FORM_CONTROL)) {
           return child;

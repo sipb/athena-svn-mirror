@@ -43,7 +43,6 @@ PRLogModuleInfo* gGopherLog = nsnull;
 #endif
 
 static NS_DEFINE_CID(kStandardURLCID, NS_STANDARDURL_CID);
-//static NS_DEFINE_CID(kHTTPHandlerCID, NS_IHTTPHANDLER_CID);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +59,7 @@ nsGopherHandler::~nsGopherHandler() {
 
 NS_IMPL_THREADSAFE_ISUPPORTS2(nsGopherHandler,
                               nsIProxiedProtocolHandler,
-                              nsIProtocolHandler);
+                              nsIProtocolHandler)
 
 NS_METHOD
 nsGopherHandler::Create(nsISupports* aOuter, const nsIID& aIID, void* *aResult) {

@@ -58,7 +58,6 @@
 #include "nsIUnicodeDecoder.h"
 #include "nsIServiceManagerUtils.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
 #include "nsICharRepresentable.h"
 #include <string.h>
 
@@ -160,7 +159,7 @@ static nsresult     ScanDecomposeSyllable (PRUnichar *aIn, PRInt32* aLength,
 //----------------------------------------------------------------------
 // Class nsUnicodeToJamoTTF [implementation]
   
-NS_IMPL_ISUPPORTS2(nsUnicodeToJamoTTF, nsIUnicodeEncoder, nsICharRepresentable);
+NS_IMPL_ISUPPORTS2(nsUnicodeToJamoTTF, nsIUnicodeEncoder, nsICharRepresentable)
 
 NS_IMETHODIMP 
 nsUnicodeToJamoTTF::SetOutputErrorBehavior(PRInt32 aBehavior, 
@@ -759,13 +758,10 @@ nsresult GetDecoder(nsIUnicodeDecoder** aDecoder)
     return NS_OK;
   }
 
-  nsCOMPtr<nsICharsetConverterManager2> charsetConverterManager;
-  nsCOMPtr<nsIAtom> charsetAtom;
+  nsCOMPtr<nsICharsetConverterManager> charsetConverterManager;
   charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
-  rv = charsetConverterManager->GetCharsetAtom2("EUC-KR", getter_AddRefs(charsetAtom));
-  NS_ENSURE_SUCCESS(rv,rv);
-  rv = charsetConverterManager->GetUnicodeDecoder(charsetAtom, getter_AddRefs(gDecoder));
+  rv = charsetConverterManager->GetUnicodeDecoderRaw("EUC-KR", getter_AddRefs(gDecoder));
   NS_ENSURE_SUCCESS(rv,rv);
 
   *aDecoder = gDecoder.get();

@@ -34,6 +34,7 @@ REQUIRES	= xpcom \
 		  necko \
 		  widget \
 		  dom \
+		  js \
 		  gfx \
 		  layout \
 		  content \
@@ -82,7 +83,6 @@ CPPSRCS		+= EmbedComponents.cpp
 
 XP_LIBS		+= \
 		$(PNG_LIBS) \
-		$(MNG_LIBS) \
 		$(JPEG_LIBS) \
 		$(ZLIB_LIBS) \
 		$(MOZ_GDK_PIXBUF_LIBS) \
@@ -144,7 +144,11 @@ ifdef BUILD_STATIC_LIBS
 # This is so sick! We'll work backwards from the embedding manifest to
 # produce the set of components that we need to link in to a
 # ``minimal'' embedding harness.
+ifdef MINIMO
+EMBED_MANIFEST=$(topsrcdir)/embedding/config/minimo-unix
+else
 EMBED_MANIFEST=$(topsrcdir)/embedding/config/basebrowser-unix
+endif
 
 ifdef MOZ_FAT_EMBED
 EMBED_LINK_COMPS=$(FINAL_LINK_COMPS)

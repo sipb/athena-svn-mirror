@@ -40,31 +40,24 @@
 #define nsPermission_h__
 
 #include "nsIPermission.h"
-#include "nsWeakReference.h"
 #include "nsString.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class nsPermission : public nsIPermission,
-                     public nsSupportsWeakReference
+class nsPermission : public nsIPermission
 {
 public:
   // nsISupports
   NS_DECL_ISUPPORTS
   NS_DECL_NSIPERMISSION
 
-  nsPermission(const nsACString &aHost, PRUint32 aType, PRUint32 aCapability);
-  nsPermission();
+  nsPermission(const nsACString &aHost, const nsACString &aType, PRUint32 aCapability);
   virtual ~nsPermission();
   
 protected:
   nsCString mHost;
-  PRUint32  mType;
+  nsCString mType;
   PRUint32  mCapability;
 };
 
-// {28F16D80-157B-11d5-A542-0010A401EB10}
-#define NS_PERMISSION_CID \
-{ 0x28f16d80, 0x157b, 0x11d5, { 0xa5, 0x42, 0x0, 0x10, 0xa4, 0x1, 0xeb, 0x10 } }
-
-#endif /* nsPermission_h__ */
+#endif // nsPermission_h__

@@ -65,7 +65,6 @@ static inline PRBool
 IsContextMenuKey(const nsKeyEvent& inKeyEvent);
 
 static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
-static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 static NS_DEFINE_IID(kCDragServiceCID,  NS_DRAGSERVICE_CID);
 
 // this is the nsWindow with the focus
@@ -1227,7 +1226,8 @@ nsresult nsWidget::CreateWidget(nsIWidget *aParent,
 
   nsIWidget *baseParent = aInitData &&
     (aInitData->mWindowType == eWindowType_dialog ||
-     aInitData->mWindowType == eWindowType_toplevel) ?
+     aInitData->mWindowType == eWindowType_toplevel ||
+     aInitData->mWindowType == eWindowType_invisible) ?
     nsnull : aParent;
 
   BaseCreate(baseParent, aRect, aHandleEventFunction, aContext,

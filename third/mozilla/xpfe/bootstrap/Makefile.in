@@ -51,7 +51,6 @@ endif
 
 MODULE		= apprunner
 REQUIRES	= xpcom \
-		  xpconnect \
 		  string \
 		  webbrwsr \
 		  widget \
@@ -63,32 +62,22 @@ REQUIRES	= xpcom \
 		  chrome \
 		  xpinstall \
 		  uriloader \
-		  view \
 		  windowwatcher \
 		  embed_base \
 		  embedcomponents \
-		  browser \
 		  docshell \
-		  uconv \
 		  locale \
-		  xremoteservice \
 		  profile \
 		  $(NULL)
 # for jprof
 REQUIRES	+= jprof
-ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
-REQUIRES	+= \
-		  intl \
-		  profile \
-		  $(NULL)
-DIRS		+= os2turbo
-endif
-ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
-REQUIRES	+= intl profile appcomps
-endif
 
 ifdef NS_TRACE_MALLOC
 REQUIRES	+= tracemalloc
+endif
+
+ifdef MOZ_ENABLE_XREMOTE
+REQUIRES	+= xremoteservice
 endif
 
 include $(topsrcdir)/config/config.mk
@@ -104,6 +93,9 @@ endif
 ifneq (,$(filter mozcomps,$(MOZ_META_COMPONENTS)))
 BUILD_STATIC_LIBS=
 BUILD_SHARED_LIBS=1
+ifdef MOZ_COMPONENTLIB
+DEFINES += -D_MOZCOMPS_SHARED_LIBRARY -D_BUILD_STATIC_BIN
+endif
 endif
 
 CPPSRCS		= \
@@ -124,15 +116,25 @@ STACKWALK_CPPSRCS := $(addprefix $(topsrcdir)/xpcom/base/, $(STACKWALK_SRC_LCSRC
 CPPSRCS		+= nsSigHandlers.cpp nsStackFrameUnix.cpp
 endif
 
-LIBS	= $(EXTRA_DSO_LDOPTS) \
-	  $(EXTRA_DSO_LIBS) \
-	  $(NULL)
+ifdef BUILD_STATIC_LIBS
+STATIC_COMPONENTS_LINKER_PATH = -L$(DIST)/lib/components
+endif
+
+LIBS	= \
+	$(STATIC_COMPONENTS_LINKER_PATH) \
+	$(EXTRA_DSO_LIBS) \
+	$(NULL)
 
 
 ifndef BUILD_STATIC_LIBS
 
 ifdef NS_TRACE_MALLOC
 EXTRA_DSO_LIBS	+= tracemalloc
+endif
+
+ifdef MOZ_COMPONENTLIB
+EXTRA_DSO_LIBS += $(MOZ_COMPONENTLIB_EXTRA_DSO_LIBS)
+LIBS += $(MOZ_COMPONENTLIB_EXTRA_LIBS)
 endif
 
 else
@@ -143,9 +145,6 @@ EXTRA_DEPS	+= \
 	$(NULL)
 DEFINES		+= $(STATIC_DEFINES)
 CPPSRCS		+= $(STATIC_CPPSRCS)
-ifneq ($(OS_ARCH),WINNT)
-EXTRA_DSO_LDOPTS+= -L$(DEPTH)/dist/lib/components
-endif # !WINNT
 EXTRA_DSO_LIBS	+= $(STATIC_EXTRA_DSO_LIBS)
 REQUIRES	+= $(STATIC_REQUIRES)
 LIBS		+= $(STATIC_EXTRA_LIBS)
@@ -193,6 +192,8 @@ LIBS += -lphexlib -lph
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
+DIRS += os2turbo
+REQUIRES += xpconnect intl profile
 CPPSRCS += nsNativeAppSupportOS2.cpp
 CPPSRCS += nsNativeAppSupportBase.cpp
 RESFILE = splashos2.res
@@ -221,6 +222,7 @@ LIBS += $(MOZ_GTK2_LIBS)
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
+REQUIRES += xpconnect intl appcomps
 RCINCLUDE = splash.rc
 CPPSRCS += nsNativeAppSupportWin.cpp nsNativeAppSupportBase.cpp
 OS_LIBS	+= $(call EXPAND_LIBNAME,comctl32 comdlg32 uuid shell32 ole32 oleaut32 version winspool gdi32)
@@ -282,11 +284,7 @@ endif
 ifeq ($(OS_ARCH),OS2)
 ifdef BUILD_STATIC_LIBS
 EXE_DEF_FILE = mozilla.def
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-OS_LIBS += libuls.lib libconv.lib
-else
 OS_LIBS += -llibuni -luconv
-endif
 endif
 endif
 
@@ -311,10 +309,6 @@ ifeq ($(MOZ_WIDGET_TOOLKIT),gtk)
 $(PROGRAM): $(SPLASH_XPM)
 endif
 
-ifeq ($(OS_ARCH),Darwin)
-EXTRA_DSO_LDOPTS := $(subst -dynamiclib -install_name @executable_path/\$@ -compatibility_version 1 -current_version 1,-execute,$(EXTRA_DSO_LDOPTS))
-endif
-
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 ifdef BUILD_STATIC_LIBS
 LIBS	+= -framework QuickTime
@@ -335,6 +329,10 @@ ifeq ($(OS_ARCH),WINNT)
 #
 ifndef GNU_CC
 LDFLAGS += /HEAP:0x40000
+endif
+# Get rid of console window
+ifdef GNU_CC
+LDFLAGS += -mwindows
 endif
 endif
 
@@ -377,11 +375,7 @@ libs:: $(srcdir)/splash.bmp
 endif
 
 ifeq ($(OS_ARCH),OS2)
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-LDFLAGS += /NOE
-else
 LDFLAGS += -Zlinker /NOE
-endif
 ifdef BUILD_STATIC_LIBS
 $(EXE_DEF_FILE):
 	rm -f $@

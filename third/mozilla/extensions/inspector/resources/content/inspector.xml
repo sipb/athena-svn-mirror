@@ -477,6 +477,7 @@
         </setter>
       </property>
 
+      <field name="mLinkedPanel">null</field>
       <field name="mCurrentViewer">null</field>
       <field name="mCurrentEntry">null</field>
       
@@ -566,7 +567,7 @@
           this.mParams = null;
           
           // get the list of viewers which match the node
-          var entries = this.registry.findViewersForObject(aObject);
+          var entries = this.registry.findViewersForObject(aObject, this.id);
           this.rebuildViewerList(entries);
 
           if (entries.length == 0) {

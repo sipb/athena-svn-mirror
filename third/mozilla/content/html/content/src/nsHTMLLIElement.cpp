@@ -73,8 +73,7 @@ public:
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
@@ -114,8 +113,8 @@ nsHTMLLIElement::~nsHTMLLIElement()
 }
 
 
-NS_IMPL_ADDREF_INHERITED(nsHTMLLIElement, nsGenericElement);
-NS_IMPL_RELEASE_INHERITED(nsHTMLLIElement, nsGenericElement);
+NS_IMPL_ADDREF_INHERITED(nsHTMLLIElement, nsGenericElement)
+NS_IMPL_RELEASE_INHERITED(nsHTMLLIElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLLIElement
@@ -159,7 +158,7 @@ NS_IMPL_STRING_ATTR(nsHTMLLIElement, Type, type)
 NS_IMPL_INT_ATTR(nsHTMLLIElement, Value, value)
 
 
-static nsHTMLValue::EnumTable kUnorderedListItemTypeTable[] = {
+static const nsHTMLValue::EnumTable kUnorderedListItemTypeTable[] = {
   { "disc", NS_STYLE_LIST_STYLE_DISC },
   { "circle", NS_STYLE_LIST_STYLE_CIRCLE },
   { "round", NS_STYLE_LIST_STYLE_CIRCLE },
@@ -167,7 +166,7 @@ static nsHTMLValue::EnumTable kUnorderedListItemTypeTable[] = {
   { 0 }
 };
 
-static nsHTMLValue::EnumTable kOrderedListItemTypeTable[] = {
+static const nsHTMLValue::EnumTable kOrderedListItemTypeTable[] = {
   { "A", NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA },
   { "a", NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA },
   { "I", NS_STYLE_LIST_STYLE_OLD_UPPER_ROMAN },
@@ -236,23 +235,20 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
-NS_IMETHODIMP
-nsHTMLLIElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                          nsChangeHint& aHint) const
+NS_IMETHODIMP_(PRBool)
+nsHTMLLIElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::type, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE },
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::type },
+    { nsnull },
   };
 
-  static const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 

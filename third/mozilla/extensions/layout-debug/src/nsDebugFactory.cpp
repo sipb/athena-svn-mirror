@@ -40,21 +40,33 @@
 #include "nsLayoutDebugCIID.h"
 #include "nsIFactory.h"
 #include "nsISupports.h"
-#include "nsDebugObject.h"
+#include "nsRegressionTester.h"
+#include "nsLayoutDebuggingTools.h"
+#include "nsLayoutDebugCLH.h"
 #include "nsIGenericFactory.h"
 
-
-
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDebugObject)
-
-
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsRegressionTester)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsLayoutDebuggingTools)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsLayoutDebugCLH)
 
 static const nsModuleComponentInfo components[] =
 {
-  { "nsDebugObject",
-    NS_FRAME_DEBUG_OBJECT_CID,
-    "@mozilla.org/layout_debug/framedebugobject;1",
-    nsDebugObjectConstructor 
+  { "nsRegressionTester",
+    NS_REGRESSION_TESTER_CID,
+    "@mozilla.org/layout-debug/regressiontester;1",
+    nsRegressionTesterConstructor 
+  },
+  { "nsLayoutDebuggingTools",
+    NS_LAYOUT_DEBUGGINGTOOLS_CID,
+    NS_LAYOUT_DEBUGGINGTOOLS_CONTRACTID,
+    nsLayoutDebuggingToolsConstructor
+  },
+  { "LayoutDebug Startup Handler",
+    NS_LAYOUTDEBUGCLH_CID,
+    "@mozilla.org/commandlinehandler/general-startup;1?type=layoutdebug",
+    nsLayoutDebugCLHConstructor,
+    nsLayoutDebugCLH::RegisterProc,
+    nsLayoutDebugCLH::UnregisterProc
   }
 };
 

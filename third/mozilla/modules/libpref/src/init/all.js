@@ -47,7 +47,7 @@ pref("keyword.URL", "http://keyword.netscape.com/keyword/");
 pref("keyword.enabled", false);
 pref("general.useragent.locale", "chrome://navigator/locale/navigator.properties");
 pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
-pref("general.useragent.misc", "rv:1.4");
+pref("general.useragent.misc", "rv:1.5");
 
 pref("general.startup.browser",             true);
 pref("general.startup.mail",                false);
@@ -198,6 +198,9 @@ pref("browser.tabs.opentabfor.middleclick", false);
 pref("browser.tabs.opentabfor.urlbar", false);
 pref("browser.tabs.opentabfor.windowopen", false);
 pref("browser.tabs.opentabfor.bookmarks", false);
+pref("browser.tabs.warnOnClose", true);
+// 0 = append, 1 = replace
+pref("browser.tabs.loadGroup", 1);
 
 // lets new tab/window load something different than first window
 // -1 - use navigator startup preference
@@ -555,7 +558,7 @@ pref("network.http.connect.timeout",  30);	// in seconds
 pref("network.http.request.timeout", 120);	// in seconds
 
 // Headers
-pref("network.http.accept.default", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1");
+pref("network.http.accept.default", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1");
 
 pref("network.http.sendRefererHeader",      2); // 0=don't send any, 1=send only on clicks, 2=send on image requests as well
 
@@ -670,7 +673,7 @@ pref("imageblocker.enabled",                true);
 pref("intl.accept_languages",               "chrome://navigator/locale/navigator.properties");
 pref("intl.accept_charsets",                "iso-8859-1,*,utf-8");
 pref("intl.collationOption",                "chrome://navigator-platform/locale/navigator.properties");
-pref("intl.menuitems.alwaysappendacceskeys","chrome://navigator/locale/navigator.properties");
+pref("intl.menuitems.alwaysappendaccesskeys","chrome://navigator/locale/navigator.properties");
 pref("intl.charsetmenu.browser.static",     "chrome://navigator/locale/navigator.properties");
 pref("intl.charsetmenu.browser.more1",      "chrome://navigator/locale/navigator.properties");
 pref("intl.charsetmenu.browser.more2",      "chrome://navigator/locale/navigator.properties");
@@ -866,3 +869,10 @@ pref("privacy.popups.sound_url",                  "");
 pref("privacy.popups.statusbar_icon_enabled",     true);
 pref("privacy.popups.prefill_whitelist",          false);
 pref("privacy.popups.remove_blacklist",           true);
+
+// whether use prefs from system
+pref("config.use_system_prefs", false);
+
+// if the system has enabled accessibility
+pref("config.use_system_prefs.accessibility", false);
+

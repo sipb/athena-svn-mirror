@@ -42,11 +42,15 @@ default: $(SUBMAKEFILES)
 	$(MAKE) tier_1
 	$(MAKE) tier_2
 	$(MAKE) tier_9
+ifdef MOZ_PSM
+	$(MAKE) tier_40
+endif
+	$(MAKE) tier_50
+ifdef MOZ_JSDEBUGGER
+	$(MAKE) tier_93
+endif
 ifdef MOZ_EXTENSIONS
 	$(MAKE) tier_94
-endif
-ifdef MOZ_PSM
-	$(MAKE) tier_95
 endif
 ifdef MOZ_MAIL_NEWS
 	$(MAKE) tier_97
@@ -62,17 +66,19 @@ DIRS = \
 	$(tier_1_dirs) \
 	$(tier_2_dirs) \
 	$(tier_9_dirs) \
+	$(tier_40_dirs) \
+	$(tier_50_dirs) \
 	$(NULL)
 
 ifdef GC_LEAK_DETECTOR
 DIRS += gc/boehm
 endif
 
+ifdef MOZ_JSDEBUGGER
+DIRS += $(tier_93_dirs)
+endif
 ifdef MOZ_EXTENSIONS
 DIRS += $(tier_94_dirs)
-endif
-ifdef MOZ_PSM
-DIRS += $(tier_95_dirs)
 endif
 ifdef MOZ_MAIL_NEWS
 DIRS += $(tier_97_dirs)
@@ -124,9 +130,8 @@ tier_2_dirs += lib/mac/MoreFiles
 endif
 
 tier_2_dirs	+= \
-		modules/libreg \
-		string \
 		xpcom \
+		modules/libreg \
 		xpcom/obsolete \
 		$(NULL)
 
@@ -149,10 +154,6 @@ tier_9_dirs	+= \
 		js/src/liveconnect \
 		modules/oji \
 		$(NULL)
-endif
-
-ifdef MOZ_JSDEBUGGER
-tier_9_dirs	+= js/jsd
 endif
 
 ifdef MOZ_ENABLE_XLIB
@@ -197,8 +198,24 @@ tier_9_dirs	+= \
 		profile \
 		embedding \
 		editor \
-		themes \
 		$(NULL)
+
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+tier_9_dirs	+= xpfe/bootstrap/appleevents
+endif
+
+tier_9_dirs	+= \
+		xpfe/appshell \
+		xpfe/browser/public \
+		xpfe/components/sidebar/public \
+		xpfe/components/xremote/public \
+		$(NULL)
+
+ifdef MOZ_XUL_APP
+tier_9_dirs	+= toolkit/components/history/public chrome
+else
+tier_9_dirs	+= xpfe/components/history/public
+endif
 
 ifdef ACCESSIBILITY
 tier_9_dirs    += accessible
@@ -208,45 +225,64 @@ ifdef MOZ_LDAP_XPCOM
 tier_9_dirs	+= directory/xpcom
 endif
 
+#
+# tier 40 - security
+#
+ifdef MOZ_PSM
+tier_40_dirs	+= security/manager
+endif
+
+# 
+# tier 50 - xpfe & toolkit
+#
+
 # This must preceed xpfe
 ifdef MOZ_JPROF
-tier_9_dirs        += tools/jprof
+tier_50_dirs        += tools/jprof
 endif
 
-tier_9_dirs	+= xpfe
-
-ifdef MOZ_XPINSTALL
-tier_9_dirs     +=  xpinstall
-endif
+tier_50_dirs	+= xpfe themes
 
 ifdef MOZ_LEAKY
-tier_9_dirs        += tools/leaky
+tier_50_dirs        += tools/leaky
 endif
 
 ifdef MOZ_MAPINFO
-tier_9_dirs	+= tools/codesighs
+tier_50_dirs	+= tools/codesighs
 endif
 
 ifneq (,$(MOZ_L10N_LANG)$(MOZ_L10N_TOOLS))
-tier_9_dirs	+= l10n
+tier_50_dirs	+= l10n
+endif
+
+ifdef MOZ_XUL_APP
+tier_50_dirs	+= toolkit
+endif
+
+ifdef MINIMO
+tier_9_dirs	+= embedding/minimo
 endif
 
 ifdef MOZ_PHOENIX
-tier_9_dirs	+= toolkit
-# remove this when bug 201821 is fixed
-tier_9_dirs	+= browser/components/bookmarks/public
+# xpfe/components/search depends on nsIBookmarksService.idl
+tier_50_dirs    += browser/components/bookmarks/public
+endif
+
+# toolkit/xre/ depends on xpinstall, so it must be in tier 50
+ifdef MOZ_XPINSTALL
+tier_50_dirs     +=  xpinstall
 endif
 
 #
 # tier 9x - application features
 #
 
-ifdef MOZ_EXTENSIONS
-tier_94_dirs	+= extensions
+ifdef MOZ_JSDEBUGGER
+tier_93_dirs	+= js/jsd
 endif
 
-ifdef MOZ_PSM
-tier_95_dirs	+= security/manager
+ifdef MOZ_EXTENSIONS
+tier_94_dirs	+= extensions
 endif
 
 ifdef MOZ_MAIL_NEWS
@@ -261,16 +297,20 @@ endif
 # tier 99 - application binaries
 #
 
+ifdef MOZ_COMPONENTLIB
+tier_99_dirs   += embedding/componentlib
+else
 ifneq (,$(MOZ_STATIC_COMPONENTS)$(MOZ_META_COMPONENTS))
 tier_99_dirs   += modules/staticmod
 endif
+endif # MOZ_COMPONENTLIB
 
 ifdef MOZ_PHOENIX
 tier_99_dirs	+= browser
 endif
 
 ifdef MOZ_THUNDERBIRD
-tier_99_dirs	+= toolkit/xre mail
+tier_99_dirs	+= mail
 endif
 
 ifdef MOZ_XUL_APP

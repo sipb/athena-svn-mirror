@@ -378,12 +378,8 @@ nsScrollBoxObject::GetScrollableView()
   if (!frame) 
     return nsnull;
   
-  nsCOMPtr<nsIPresContext> context;
-  mPresShell->GetPresContext(getter_AddRefs(context));
-  nsIView* view;
-  frame->GetView(context, &view);
-  nsIScrollableView* scrollingView = nsnull;
-  if (NS_SUCCEEDED(view->QueryInterface(NS_GET_IID(nsIScrollableView), (void**)&scrollingView))) {  
+  nsIScrollableView* scrollingView;
+  if (NS_SUCCEEDED(CallQueryInterface(frame->GetView(), &scrollingView))) {  
     return scrollingView;
   }
 

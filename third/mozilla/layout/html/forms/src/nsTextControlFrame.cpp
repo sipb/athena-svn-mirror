@@ -262,22 +262,19 @@ nsTextInputListener::NotifySelectionChanged(nsIDOMDocument* aDoc, nsISelection* 
     mFrame->GetFormContent(*getter_AddRefs(content));
     if (content) 
     {
-      nsCOMPtr<nsIDocument> doc;
-      if (NS_SUCCEEDED(content->GetDocument(*getter_AddRefs(doc)))) 
+      nsCOMPtr<nsIDocument> doc = content->GetDocument();
+      if (doc) 
       {
-        if (doc) 
+        nsCOMPtr<nsIPresShell> presShell;
+        doc->GetShellAt(0, getter_AddRefs(presShell));
+        if (presShell) 
         {
-          nsCOMPtr<nsIPresShell> presShell;
-          doc->GetShellAt(0, getter_AddRefs(presShell));
-          if (presShell) 
-          {
-            nsEventStatus status = nsEventStatus_eIgnore;
-            nsEvent event;
-            event.eventStructType = NS_EVENT;
-            event.message = NS_FORM_SELECTED;
+          nsEventStatus status = nsEventStatus_eIgnore;
+          nsEvent event;
+          event.eventStructType = NS_EVENT;
+          event.message = NS_FORM_SELECTED;
 
-            presShell->HandleEventWithTarget(&event,mFrame,content,NS_EVENT_FLAG_INIT,&status);
-          }
+          presShell->HandleEventWithTarget(&event,mFrame,content,NS_EVENT_FLAG_INIT,&status);
         }
       }
     }
@@ -381,16 +378,14 @@ nsTextInputListener::EditAction()
 nsresult
 nsTextInputListener::UpdateTextInputCommands(const nsAString& commandsToUpdate)
 {
-  nsCOMPtr<nsIContent> content;
-  nsresult rv = mFrame->GetContent(getter_AddRefs(content));
+  nsIContent* content = mFrame->GetContent();
   NS_ENSURE_TRUE(content, NS_ERROR_FAILURE);
   
-  nsCOMPtr<nsIDocument> doc;
-  rv = content->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = content->GetDocument();
   NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
-  rv = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
+  nsresult rv = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
   NS_ENSURE_TRUE(scriptGlobalObject, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(scriptGlobalObject);
@@ -428,6 +423,7 @@ public:
   NS_IMETHOD SetCaretWidth(PRInt16 twips);
   NS_IMETHOD SetCaretReadOnly(PRBool aReadOnly);
   NS_IMETHOD GetCaretEnabled(PRBool *_retval);
+  NS_IMETHOD SetCaretVisibilityDuringSelection(PRBool aVisibility);
   NS_IMETHOD CharacterMove(PRBool aForward, PRBool aExtend);
   NS_IMETHOD WordMove(PRBool aForward, PRBool aExtend);
   NS_IMETHOD LineMove(PRBool aForward, PRBool aExtend);
@@ -473,6 +469,7 @@ public:
   NS_IMETHOD CommonPageMove(PRBool aForward, PRBool aExtend, nsIScrollableView *aScrollableView, nsIFrameSelection *aFrameSel);
   NS_IMETHOD SetMouseDoubleDown(PRBool aDoubleDown);
   NS_IMETHOD GetMouseDoubleDown(PRBool *aDoubleDown);
+  NS_IMETHOD MaintainSelection();
 #ifdef IBMBIDI
   NS_IMETHOD GetPrevNextBidiLevels(nsIPresContext *aPresContext,
                                    nsIContent *aNode,
@@ -514,7 +511,7 @@ nsTextInputSelectionImpl::nsTextInputSelectionImpl(nsIFrameSelection *aSel, nsIP
     nsCOMPtr<nsIFocusTracker> tracker = do_QueryInterface(aShell);
     mLimiter = aLimiter;
     mFrameSelection->Init(tracker, mLimiter);
-    mPresShellWeak = getter_AddRefs( NS_GetWeakReference(aShell) );
+    mPresShellWeak = do_GetWeakReference(aShell);
 #ifdef IBMBIDI
     mBidiKeyboard = do_GetService("@mozilla.org/widget/bidikeyboard;1");
 #endif
@@ -676,6 +673,27 @@ nsTextInputSelectionImpl::GetCaretEnabled(PRBool *_retval)
   return NS_ERROR_FAILURE;
 }
 
+NS_IMETHODIMP
+nsTextInputSelectionImpl::SetCaretVisibilityDuringSelection(PRBool aVisibility)
+{
+  if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
+  nsresult result;
+  nsCOMPtr<nsIPresShell> shell = do_QueryReferent(mPresShellWeak, &result);
+  if (shell)
+  {
+    nsCOMPtr<nsICaret> caret;
+    if (NS_SUCCEEDED(result = shell->GetCaret(getter_AddRefs(caret))))
+    {
+      nsCOMPtr<nsISelection> domSel;
+      if (NS_SUCCEEDED(result = mFrameSelection->GetSelection(nsISelectionController::SELECTION_NORMAL, getter_AddRefs(domSel))))
+      {
+        return caret->SetVisibilityDuringSelection(aVisibility);
+      }
+    }
+
+  }
+  return NS_ERROR_FAILURE;
+}
 
 NS_IMETHODIMP
 nsTextInputSelectionImpl::CharacterMove(PRBool aForward, PRBool aExtend)
@@ -780,11 +798,11 @@ nsTextInputSelectionImpl::CompleteMove(PRBool aForward, PRBool aExtend)
     if (offset > 0)
     {
       nsCOMPtr<nsIContent> child;
-      result = parentDIV->ChildAt(offset - 1, *getter_AddRefs(child));
+      result = parentDIV->ChildAt(offset - 1, getter_AddRefs(child));
       if (NS_SUCCEEDED(result) && child)
       {
         nsCOMPtr<nsIAtom> tagName;
-        result = child->GetTag(*getter_AddRefs(tagName));
+        result = child->GetTag(getter_AddRefs(tagName));
         if (NS_SUCCEEDED(result) && tagName.get() == nsHTMLAtoms::br)
         {
           --offset;
@@ -1044,6 +1062,11 @@ NS_IMETHODIMP nsTextInputSelectionImpl::GetMouseDoubleDown(PRBool *aDoubleDown)
   return mFrameSelection->GetMouseDoubleDown(aDoubleDown);
 }
 
+NS_IMETHODIMP nsTextInputSelectionImpl::MaintainSelection()
+{
+  return mFrameSelection->MaintainSelection();
+}
+
 NS_IMETHODIMP nsTextInputSelectionImpl::CommonPageMove(PRBool aForward, PRBool aExtend, nsIScrollableView *aScrollableView, nsIFrameSelection *aFrameSel)
 {
   return mFrameSelection->CommonPageMove(aForward, aExtend, aScrollableView, this);
@@ -1094,8 +1117,8 @@ NS_NewTextControlFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame)
   return NS_OK;
 }
 
-NS_IMPL_ADDREF_INHERITED(nsTextControlFrame, nsBoxFrame);
-NS_IMPL_RELEASE_INHERITED(nsTextControlFrame, nsBoxFrame);
+NS_IMPL_ADDREF_INHERITED(nsTextControlFrame, nsBoxFrame)
+NS_IMPL_RELEASE_INHERITED(nsTextControlFrame, nsBoxFrame)
  
 
 NS_IMETHODIMP
@@ -1322,7 +1345,7 @@ PRBool nsTextControlFrame::IsTextArea() const
     return PR_FALSE;
 
   nsCOMPtr<nsIAtom> tag;
-  mContent->GetTag(*getter_AddRefs(tag));
+  mContent->GetTag(getter_AddRefs(tag));
 
   if (nsHTMLAtoms::textarea == tag)
     return PR_TRUE;
@@ -1655,7 +1678,7 @@ nsTextControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
     return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsINodeInfoManager> nodeInfoManager;
-  rv = doc->GetNodeInfoManager(*getter_AddRefs(nodeInfoManager));
+  rv = doc->GetNodeInfoManager(getter_AddRefs(nodeInfoManager));
 
   if (NS_FAILED(rv))
     return rv;
@@ -1665,7 +1688,7 @@ nsTextControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   nsCOMPtr<nsINodeInfo> nodeInfo;
   rv = nodeInfoManager->GetNodeInfo(nsHTMLAtoms::div, nsnull,
                                     kNameSpaceID_XHTML,
-                                    *getter_AddRefs(nodeInfo));
+                                    getter_AddRefs(nodeInfo));
 
   if (NS_FAILED(rv))
     return rv;
@@ -1694,7 +1717,7 @@ nsTextControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
     if (disp->mOverflow == NS_STYLE_OVERFLOW_SCROLL)
       divStr += NS_LITERAL_STRING("overflow:scroll;");
     else if (disp->mOverflow == NS_STYLE_OVERFLOW_HIDDEN)
-      divStr += NS_LITERAL_STRING("overflow:hidden;");
+      divStr += NS_LITERAL_STRING("overflow:-moz-scrollbars-none;");
     else divStr += NS_LITERAL_STRING("overflow:auto;");
     rv = divContent->SetAttr(kNameSpaceID_None,nsHTMLAtoms::style, divStr, PR_FALSE);
   }
@@ -2156,12 +2179,9 @@ nsTextControlFrame::GetFont(nsIPresContext* aPresContext,
 NS_IMETHODIMP
 nsTextControlFrame::GetFormContent(nsIContent*& aContent) const
 {
-  nsIContent* content;
-  nsresult    rv;
-
-  rv = GetContent(&content);
-  aContent = content;
-  return rv;
+  aContent = GetContent();
+  NS_IF_ADDREF(aContent);
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsTextControlFrame::SetProperty(nsIPresContext* aPresContext, nsIAtom* aName, const nsAString& aValue)
@@ -2295,10 +2315,10 @@ nsTextControlFrame::SelectAllContents()
     // We never want to place the selection after the last
     // br under the root node!
     nsCOMPtr<nsIContent> child;
-    rv = rootContent->ChildAt(numChildren - 1, *getter_AddRefs(child));
+    rv = rootContent->ChildAt(numChildren - 1, getter_AddRefs(child));
     if (NS_SUCCEEDED(rv) && child) {
       nsCOMPtr<nsIAtom> tagName;
-      rv = child->GetTag(*getter_AddRefs(tagName));
+      rv = child->GetTag(getter_AddRefs(tagName));
       if (NS_SUCCEEDED(rv) && tagName == nsHTMLAtoms::br)
         --numChildren;
     }
@@ -2645,20 +2665,12 @@ nsTextControlFrame::AttributeChanged(nsIPresContext* aPresContext,
                                         nsIContent*     aChild,
                                         PRInt32         aNameSpaceID,
                                         nsIAtom*        aAttribute,
-                                        PRInt32         aModType, 
-                                        PRInt32         aHint)
+                                        PRInt32         aModType)
 {
   if (!mEditor || !mSelCon) {return NS_ERROR_NOT_INITIALIZED;}
   nsresult rv = NS_OK;
 
-  if (nsHTMLAtoms::value == aAttribute) 
-  {
-    // XXX If this should happen when value= attribute is set, shouldn't it
-    // happen when .value is set too?
-    if (aHint != NS_STYLE_HINT_REFLOW)
-      nsFormControlHelper::StyleChangeReflow(aPresContext, this);
-  } 
-  else if (nsHTMLAtoms::maxlength == aAttribute) 
+  if (nsHTMLAtoms::maxlength == aAttribute) 
   {
     PRInt32 maxLength;
     nsresult rv = GetMaxLength(&maxLength);
@@ -2726,22 +2738,10 @@ nsTextControlFrame::AttributeChanged(nsIPresContext* aPresContext,
     }    
     mEditor->SetFlags(flags);
   }
-  else if ((nsHTMLAtoms::size == aAttribute ||
-            nsHTMLAtoms::rows == aAttribute ||
-            nsHTMLAtoms::cols == aAttribute) && aHint != NS_STYLE_HINT_REFLOW) {
-    // XXX Bug 34573 & 50280
-    // The following code should be all we need for these two bugs (it does work for bug 50280)
-    // This doesn't wrong entirely for rows/cols, the borders don't get painted
-    // to fix that I have added a REFLOW hint in nsHTMLTextAreaElement::GetMappedAttributeImpact
-    // but it appears there are some problems when you hold down the return key
-    mPrefSize.width  = -1;
-    mPrefSize.height = -1;
-    nsFormControlHelper::StyleChangeReflow(aPresContext, this);
-  }
   // Allow the base class to handle common attributes supported
   // by all form elements... 
   else {
-    rv = nsBoxFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType, aHint);
+    rv = nsBoxFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType);
   }
 
   return rv;
@@ -3057,13 +3057,10 @@ nsTextControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
                                   nsIFrame*       aChildList)
 {
   /*nsIFrame *list = aChildList;
-  nsFrameState  frameState;
   while (list)
   {
-    list->GetFrameState(&frameState);
-    frameState |= NS_FRAME_INDEPENDENT_SELECTION;
-    list->SetFrameState(frameState);
-    list->GetNextSibling(&list);
+    list->AddStateBits(NS_FRAME_INDEPENDENT_SELECTION);
+    list = list->GetNextSibling();
   }
   */
   nsresult rv = nsBoxFrame::SetInitialChildList(aPresContext, aListName, aChildList);
@@ -3076,10 +3073,7 @@ nsTextControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
   // Mark the scroll frame as being a reflow root. This will allow
   // incremental reflows to be initiated at the scroll frame, rather
   // than descending from the root frame of the frame hierarchy.
-  nsFrameState state;
-  first->GetFrameState(&state);
-  state |= NS_FRAME_REFLOW_ROOT;
-  first->SetFrameState(state);
+  first->AddStateBits(NS_FRAME_REFLOW_ROOT);
 
 //we must turn off scrollbars for singleline text controls
   if (IsSingleLineTextControl()) 
@@ -3108,13 +3102,11 @@ nsTextControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
 
   while(first)
   {
-    nsIScrollableView *scrollView;
-    nsIView *view;
-    first->GetView(aPresContext,&view);
+    nsIView *view = first->GetView();
     if (view)
     {
-      view->QueryInterface(NS_GET_IID(nsIScrollableView),(void **)&scrollView);
-      if (scrollView)
+      nsIScrollableView *scrollView;
+      if (NS_SUCCEEDED(CallQueryInterface(view, &scrollView)))
       {
         mScrollableView = scrollView; // Note: views are not addref'd
         mTextSelImpl->SetScrollableView(scrollView);
@@ -3169,7 +3161,7 @@ nsTextControlFrame::GetScrollableView(nsIPresContext* aPresContext,
       rv = view->QueryInterface(NS_GET_IID(nsIScrollableView), (void **)&scrollableView);
       if (NS_SUCCEEDED(rv) && scrollableView)
         *aView = scrollableView;
-      view->GetParent(view);
+      view = view->GetParent();
     }
   }
   return rv;

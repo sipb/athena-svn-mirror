@@ -97,20 +97,28 @@ function initServices()
 
   kPREFContractID  = "@mozilla.org/preferences-service;1";
   kPREFIID         = Components.interfaces.nsIPrefService;
-  PREF             = Components.classes[kPREFContractID].getService(kPREFIID)
-                               .getBranch(null);
+  try {
+    PREF             = Components.classes[kPREFContractID].getService(kPREFIID)
+                                 .getBranch(null);
+  } catch (e) {}
 
   kSOUNDContractID = "@mozilla.org/sound;1";
   kSOUNDIID        = Components.interfaces.nsISound;
-  SOUND            = Components.classes[kSOUNDContractID].createInstance(kSOUNDIID);
+  try {
+    SOUND            = Components.classes[kSOUNDContractID].createInstance(kSOUNDIID);
+  } catch (e) {}
 
   kWINDOWContractID = "@mozilla.org/appshell/window-mediator;1";
   kWINDOWIID        = Components.interfaces.nsIWindowMediator;
-  WINDOWSVC         = Components.classes[kWINDOWContractID].getService(kWINDOWIID);
+  try {
+    WINDOWSVC         = Components.classes[kWINDOWContractID].getService(kWINDOWIID);
+  } catch (e) {}
 
   kDSContractID     = "@mozilla.org/widget/dragservice;1";
   kDSIID            = Components.interfaces.nsIDragService;
-  DS                = Components.classes[kDSContractID].getService(kDSIID);
+  try {
+    DS                = Components.classes[kDSContractID].getService(kDSIID);
+  } catch (e) {}
 }
 
 function initBMService()
@@ -573,25 +581,18 @@ var BookmarksCommand = {
       var tabPanels = browser.mPanelContainer.childNodes;
       var tabCount  = tabPanels.length;
       var index = 0;
+      var URIs = [];
       while (containerChildren.hasMoreElements()) {
         var res = containerChildren.getNext().QueryInterface(kRDFRSCIID);
         var target = BMDS.GetTarget(res, urlArc, true);
         if (target) {
-          var uri = target.QueryInterface(kRDFLITIID).Value;
-          browser.addTab(uri);
+          URIs.push({ URI: target.QueryInterface(kRDFLITIID).Value });
           ++index;
         }
       }
-
-      // If the bookmark group was completely invalid, just bail.
-      if (index == 0)
-        return;
-
-      // Select the first tab in the group if we aren't loading in the background.
-      if (!PREF.getBoolPref("browser.tabs.loadInBackground")) {
-        var tabs = browser.mTabContainer.childNodes;
-        browser.selectedTab = tabs[tabCount];
-      }
+      var tab = browser.loadGroup(URIs);
+      if (!PREF.getBoolPref("browser.tabs.loadInBackground"))
+        browser.selectedTab = tab;
     } else {
       dump("Open Group in new window: not implemented...\n");
     }
@@ -1318,7 +1319,7 @@ var BookmarksUtils = {
         transaction.index[i]  = RDFC.IndexOf(aSelection.item[i]);
       }
     }
-    if (aAction != "move" && !BookmarksUtils.all(transaction.isValid))
+    if (SOUND && aAction != "move" && !BookmarksUtils.all(transaction.isValid))
       SOUND.beep();
     var isCancelled = !BookmarksUtils.any(transaction.isValid);
     if (!isCancelled) {
@@ -1363,7 +1364,7 @@ var BookmarksUtils = {
         transaction.parent[i] = aSelection.parent[i];
       } 
     }
-    if (!BookmarksUtils.all(transaction.isValid))
+    if (SOUND && !BookmarksUtils.all(transaction.isValid))
       SOUND.beep();
     var isCancelled = !BookmarksUtils.any(transaction.isValid);
     if (!isCancelled) {
@@ -1380,7 +1381,7 @@ var BookmarksUtils = {
     var isCancelled = !BookmarksUtils.any(transaction.isValid);
     if (!isCancelled) {
       BMSVC.transactionManager.doTransaction(transaction);
-    } else
+    } else if (SOUND)
       SOUND.beep();
     return !isCancelled;
   }, 

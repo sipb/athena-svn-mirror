@@ -181,8 +181,10 @@ public:
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType,
+                                    nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
                             nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
@@ -190,6 +192,7 @@ public:
                             
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
+  NS_IMETHOD SetParent(nsIContent* aParent);
 
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      const nsAString& aValue, PRBool aNotify) {
@@ -430,7 +433,8 @@ nsHTMLInputElement::BeforeSetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
       mType == NS_FORM_INPUT_RADIO &&
       (mForm || !(GET_BOOLBIT(mBitField, BF_PARSER_CREATING)))) {
     WillRemoveFromRadioGroup();
-  } else if (aName == nsHTMLAtoms::src && aNameSpaceID == kNameSpaceID_None &&
+  } else if (aNotify && aName == nsHTMLAtoms::src &&
+             aNameSpaceID == kNameSpaceID_None &&
              aValue && mType == NS_FORM_INPUT_IMAGE) {
     // Null value means the attr got unset; don't trigger on that
     ImageURIChanged(*aValue);
@@ -502,12 +506,14 @@ nsHTMLInputElement::AfterSetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
       }
     }
 
-    if (mType == NS_FORM_INPUT_IMAGE && !mCurrentRequest) {
+    if (aNotify && mType == NS_FORM_INPUT_IMAGE && !mCurrentRequest) {
       // We just got switched to be an image input; we should see
       // whether we have an image to load;
       nsAutoString src;
-      GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, src);
-      ImageURIChanged(src);
+      nsresult rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, src);
+      if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
+        ImageURIChanged(src);
+      }
     }
 
     // If the type of the input has changed we might need to change the type
@@ -676,7 +682,7 @@ nsHTMLInputElement::GetValue(nsAString& aValue)
       if (!GET_BOOLBIT(mBitField, BF_VALUE_CHANGED) || !mValue) {
         GetDefaultValue(aValue);
       } else {
-        aValue = NS_ConvertUTF8toUCS2(mValue);
+        CopyUTF8toUTF16(mValue, aValue);
       }
     }
 
@@ -1099,16 +1105,12 @@ nsHTMLInputElement::RemoveFocus(nsIPresContext* aPresContext)
   aPresContext->GetEventStateManager(getter_AddRefs(esm));
 
   if (esm) {
-    nsCOMPtr<nsIDocument> doc;
-
-    GetDocument(*getter_AddRefs(doc));
-
-    if (!doc)
+    if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
     nsCOMPtr<nsIContent> rootContent;
 
-    doc->GetRootContent(getter_AddRefs(rootContent));
+    mDocument->GetRootContent(getter_AddRefs(rootContent));
 
     rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
   }
@@ -1235,9 +1237,7 @@ nsHTMLInputElement::Click()
       mType == NS_FORM_INPUT_RADIO || mType == NS_FORM_INPUT_RESET ||
       mType == NS_FORM_INPUT_SUBMIT) {
 
-    nsCOMPtr<nsIDocument> doc; // Strong
-    rv = GetDocument(*getter_AddRefs(doc));
-
+    nsCOMPtr<nsIDocument> doc = mDocument; // Strong in case the event kills it
     if (doc) {
       PRInt32 numShells = doc->GetNumberOfShells();
       nsCOMPtr<nsIPresContext> context;
@@ -1617,7 +1617,11 @@ nsHTMLInputElement::HandleDOMEvent(nsIPresContext* aPresContext,
                   textFrame->CheckFireOnChange();
                 }
               }
+            }
 
+            // mForm is null if the event handler (CheckFireOnChange above)
+            // removed us from the document (bug 194582).
+            if (mForm) {
               // Find the first submit control in elements[]
               // and also check how many text controls we have in the form
               nsCOMPtr<nsIContent> submitControl;
@@ -1771,10 +1775,12 @@ NS_IMETHODIMP
 nsHTMLInputElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                 PRBool aCompileEventHandlers)
 {
+  PRBool documentChanging = (aDocument != mDocument);
+
   // SetDocument() sets the form and that takes care of form's WillRemove
   // so we just have to take care of the case where we're removing from the
   // document and we don't have a form
-  if (!aDocument && !mForm && mType == NS_FORM_INPUT_RADIO) {
+  if (documentChanging && !mForm && mType == NS_FORM_INPUT_RADIO) {
     WillRemoveFromRadioGroup();
   }
 
@@ -1782,6 +1788,17 @@ nsHTMLInputElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                                           aCompileEventHandlers);
 
   NS_ENSURE_SUCCESS(rv, rv);
+
+  if (mType == NS_FORM_INPUT_IMAGE &&
+      documentChanging && aDocument && mParent) {
+    // Our base URI may have changed; claim that our URI changed, and the
+    // nsImageLoadingContent will decide whether a new image load is warranted.
+    nsAutoString uri;
+    nsresult result = GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, uri);
+    if (result == NS_CONTENT_ATTR_HAS_VALUE) {
+      ImageURIChanged(uri);
+    }
+  }
   
   // If this is radio button which is in a form,
   // and the parser is still creating the element.
@@ -1799,9 +1816,26 @@ nsHTMLInputElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsHTMLInputElement::SetParent(nsIContent* aParent)
+{
+  nsresult rv = nsGenericHTMLLeafFormElement::SetParent(aParent);
+  if (mType == NS_FORM_INPUT_IMAGE && aParent && mDocument) {
+    // Our base URI may have changed; claim that our URI changed, and the
+    // nsImageLoadingContent will decide whether a new image load is warranted.
+    nsAutoString uri;
+    nsresult result = GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, uri);
+    if (result == NS_CONTENT_ATTR_HAS_VALUE) {
+      ImageURIChanged(uri);
+    }
+  }
+  return rv;
+}
+
+
 // nsIHTMLContent
 
-static nsHTMLValue::EnumTable kInputTypeTable[] = {
+static const nsHTMLValue::EnumTable kInputTypeTable[] = {
   { "browse", NS_FORM_BROWSE }, // XXX not valid html, but it is convenient
   { "button", NS_FORM_INPUT_BUTTON },
   { "checkbox", NS_FORM_INPUT_CHECKBOX },
@@ -1822,7 +1856,7 @@ nsHTMLInputElement::StringToAttribute(nsIAtom* aAttribute,
                                       nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    nsHTMLValue::EnumTable *table = kInputTypeTable;
+    const nsHTMLValue::EnumTable *table = kInputTypeTable;
     nsAutoString valueStr(aValue);
     while (nsnull != table->tag) { 
       if (valueStr.EqualsIgnoreCase(table->tag)) {
@@ -1893,7 +1927,11 @@ nsHTMLInputElement::StringToAttribute(nsIAtom* aAttribute,
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
-  else if (IsImage()) {
+  else {
+    // We have to call |ParseImageAttribute| unconditionally since we
+    // don't know if we're going to have a type="image" attribute yet,
+    // (or could have it set dynamically in the future).  See bug
+    // 214077.
     if (ParseImageAttribute(aAttribute, aValue, aResult)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
@@ -1933,8 +1971,7 @@ nsHTMLInputElement::AttributeToString(nsIAtom* aAttribute,
     aResult.Assign(NS_LITERAL_STRING("checked"));
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
-  else if (IsImage() && ImageAttributeToString(aAttribute, aValue,
-                                               aResult)) {
+  else if (ImageAttributeToString(aAttribute, aValue, aResult)) {
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
 
@@ -1955,9 +1992,9 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       value.GetIntValue() == NS_FORM_INPUT_IMAGE) {
     nsGenericHTMLElement::MapImageBorderAttributeInto(aAttributes, aData);
     nsGenericHTMLElement::MapImageMarginAttributeInto(aAttributes, aData);
-    nsGenericHTMLElement::MapImagePositionAttributeInto(aAttributes, aData);
+    nsGenericHTMLElement::MapImageSizeAttributesInto(aAttributes, aData);
     // Images treat align as "float"
-    nsGenericHTMLElement::MapAlignAttributeInto(aAttributes, aData);
+    nsGenericHTMLElement::MapImageAlignAttributeInto(aAttributes, aData);
   } else {
     // Everything else treats align as "text-align"
     nsGenericHTMLElement::MapDivAlignAttributeInto(aAttributes, aData);
@@ -1967,33 +2004,43 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP
-nsHTMLInputElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                             nsChangeHint& aHint) const
+nsHTMLInputElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                           PRInt32 aModType,
+                                           nsChangeHint& aHint) const
 {
-  nsChangeHint valueHint = (mType == NS_FORM_INPUT_BUTTON ||
-                            mType == NS_FORM_INPUT_RESET ||
-                            mType == NS_FORM_INPUT_SUBMIT) ?
-    NS_STYLE_HINT_CONTENT : NS_STYLE_HINT_ATTRCHANGE;
+  nsresult rv =
+    nsGenericHTMLLeafFormElement::GetAttributeChangeHint(aAttribute,
+                                                         aModType, aHint);
+  if (aAttribute == nsHTMLAtoms::type) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_FRAMECHANGE);
+  } else if (aAttribute == nsHTMLAtoms::value) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_REFLOW);
+  } else if (aAttribute == nsHTMLAtoms::size &&
+             (mType == NS_FORM_INPUT_TEXT ||
+              mType == NS_FORM_INPUT_PASSWORD)) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_REFLOW);
+  }
+  return rv;
+}
 
-  const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::value, valueHint },
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_FRAMECHANGE },
-    { &nsHTMLAtoms::type, NS_STYLE_HINT_FRAMECHANGE },
-    { nsnull, NS_STYLE_HINT_NONE },
+NS_IMETHODIMP_(PRBool)
+nsHTMLInputElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+{
+  static const AttributeDependenceEntry attributes[] = {
+    { &nsHTMLAtoms::align },
+    { &nsHTMLAtoms::type },
+    { nsnull },
   };
 
-  const AttributeImpactEntry* const map[] = {
+  static const AttributeDependenceEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
-    sImageAttributeMap,
+    sImageMarginSizeAttributeMap,
     sImageBorderAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-  
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
-
 
 NS_IMETHODIMP
 nsHTMLInputElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const
@@ -2345,8 +2392,8 @@ nsHTMLInputElement::SubmitNamesValues(nsIFormSubmission* aFormSubmission,
     //
     nsCOMPtr<nsIFile> file;
  
-    if (Substring(value, 0, 5).Equals(NS_LITERAL_STRING("file:"),
-                                      nsCaseInsensitiveStringComparator())) {
+    if (StringBeginsWith(value, NS_LITERAL_STRING("file:"),
+                         nsCaseInsensitiveStringComparator())) {
       // Converts the URL string into the corresponding nsIFile if possible.
       // A local file will be created if the URL string begins with file://.
       rv = NS_GetFileFromURLSpec(NS_ConvertUCS2toUTF8(value),

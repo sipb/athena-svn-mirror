@@ -40,6 +40,8 @@
 #include "nsCOMArray.h"
 #include "nsIAuthPrompt.h"
 #include "nsICharsetAlias.h"
+#include "nsIDOMNode.h"
+#include "nsIDOMDocument.h"
 #include "nsIDocument.h"
 #include "nsIExpatSink.h"
 #include "nsIHttpEventSink.h"
@@ -82,7 +84,7 @@ getSpec(nsIChannel* aChannel, nsAString& aSpec)
 
     nsCAutoString spec;
     uri->GetSpec(spec);
-    aSpec.Append(NS_ConvertUTF8toUCS2(spec));
+    AppendUTF8toUTF16(spec, aSpec);
 }
 
 class txStylesheetSink : public nsIXMLContentSink,
@@ -104,12 +106,12 @@ public:
 
     // nsIContentSink
     NS_IMETHOD WillBuildModel(void) { return NS_OK; }
-    NS_IMETHOD DidBuildModel(PRInt32 aQualityLevel);
+    NS_IMETHOD DidBuildModel();
     NS_IMETHOD WillInterrupt(void) { return NS_OK; }
     NS_IMETHOD WillResume(void) { return NS_OK; }
     NS_IMETHOD SetParser(nsIParser* aParser) { return NS_OK; }
     NS_IMETHOD FlushPendingNotifications() { return NS_OK; }
-    NS_IMETHOD SetDocumentCharset(nsAString& aCharset) { return NS_OK; }
+    NS_IMETHOD SetDocumentCharset(nsACString& aCharset) { return NS_OK; }
 
 private:
     nsRefPtr<txStylesheetCompiler> mCompiler;
@@ -235,7 +237,7 @@ txStylesheetSink::ReportError(const PRUnichar *aErrorText,
 }
 
 NS_IMETHODIMP 
-txStylesheetSink::DidBuildModel(PRInt32 aQualityLevel)
+txStylesheetSink::DidBuildModel()
 {  
     return mCompiler->doneLoading();
 }
@@ -270,7 +272,7 @@ txStylesheetSink::OnDataAvailable(nsIRequest *aRequest, nsISupports *aContext,
 NS_IMETHODIMP
 txStylesheetSink::OnStartRequest(nsIRequest *aRequest, nsISupports *aContext)
 {
-    nsAutoString charset(NS_LITERAL_STRING("UTF-8"));
+    nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8"));
     PRInt32 charsetSource = kCharsetFromDocTypeDefault;
 
     nsCOMPtr<nsIChannel> channel = do_QueryInterface(aRequest);
@@ -283,8 +285,8 @@ txStylesheetSink::OnStartRequest(nsIRequest *aRequest, nsISupports *aContext)
             do_GetService(NS_CHARSETALIAS_CONTRACTID);
 
         if (calias) {
-            nsAutoString preferred;
-            rv = calias->GetPreferred(NS_ConvertASCIItoUCS2(charsetVal),
+            nsCAutoString preferred;
+            rv = calias->GetPreferred(charsetVal,
                                       preferred);
             if (NS_SUCCEEDED(rv)) {            
                 charset = preferred;
@@ -572,13 +574,11 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
             nsCOMPtr<nsIContent> element = do_QueryInterface(aNode);
 
             nsCOMPtr<nsINodeInfo> ni;
-            element->GetNodeInfo(*getter_AddRefs(ni));
+            element->GetNodeInfo(getter_AddRefs(ni));
 
-            PRInt32 namespaceID;
-            nsCOMPtr<nsIAtom> prefix, localname;
-            ni->GetNamespaceID(namespaceID);
-            ni->GetNameAtom(*getter_AddRefs(localname));
-            ni->GetPrefixAtom(*getter_AddRefs(prefix));
+            PRInt32 namespaceID = ni->GetNamespaceID();
+            nsCOMPtr<nsIAtom> localname = ni->GetNameAtom();
+            nsCOMPtr<nsIAtom> prefix = ni->GetPrefixAtom();
 
             PRInt32 attsCount;
             element->GetAttrCount(attsCount);
@@ -590,9 +590,9 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
                 PRInt32 counter;
                 for (counter = 0; counter < attsCount; ++counter) {
                     txStylesheetAttr& att = atts[counter];
-                    element->GetAttrNameAt(counter, att.mNamespaceID,
-                                           *getter_AddRefs(att.mLocalName),
-                                           *getter_AddRefs(att.mPrefix));
+                    element->GetAttrNameAt(counter, &att.mNamespaceID,
+                                           getter_AddRefs(att.mLocalName),
+                                           getter_AddRefs(att.mPrefix));
                     element->GetAttr(att.mNamespaceID, att.mLocalName, att.mValue);
                 }
             }
@@ -609,7 +609,7 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
             if (childCount > 0) {
                 PRInt32 counter = 0;
                 nsCOMPtr<nsIContent> child;
-                while (NS_SUCCEEDED(element->ChildAt(counter++, *getter_AddRefs(child))) && child) {
+                while (NS_SUCCEEDED(element->ChildAt(counter++, getter_AddRefs(child))) && child) {
                     nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(child);
                     rv = handleNode(childNode, aCompiler);
                     NS_ENSURE_SUCCESS(rv, rv);
@@ -639,7 +639,7 @@ handleNode(nsIDOMNode* aNode, txStylesheetCompiler* aCompiler)
             if (childCount > 0) {
                 PRInt32 counter = 0;
                 nsCOMPtr<nsIContent> child;
-                while (NS_SUCCEEDED(document->ChildAt(counter++, *getter_AddRefs(child))) && child) {
+                while (NS_SUCCEEDED(document->ChildAt(counter++, getter_AddRefs(child))) && child) {
                     nsCOMPtr<nsIDOMNode> childNode = do_QueryInterface(child);
                     rv = handleNode(childNode, aCompiler);
                     NS_ENSURE_SUCCESS(rv, rv);
@@ -763,7 +763,7 @@ TX_CompileStylesheet(nsIDOMNode* aNode, txStylesheet** aStylesheet)
 
     nsCOMPtr<nsIDocument> doc = do_QueryInterface(document);
     nsCOMPtr<nsIURI> uri;
-    doc->GetBaseURL(*getter_AddRefs(uri));
+    doc->GetBaseURL(getter_AddRefs(uri));
     nsCAutoString baseURI;
     uri->GetSpec(baseURI);
 
@@ -774,7 +774,7 @@ TX_CompileStylesheet(nsIDOMNode* aNode, txStylesheet** aStylesheet)
         new txStylesheetCompiler(base, obs);
     NS_ENSURE_TRUE(compiler, NS_ERROR_OUT_OF_MEMORY);
 
-    nsresult rv = handleNode(document, compiler);
+    nsresult rv = handleNode(aNode, compiler);
     if (NS_FAILED(rv)) {
         compiler->cancel(rv);
         return rv;

@@ -153,14 +153,12 @@ public:
    * @param aAttribute the atom name of the attribute
    * @param aModType Whether or not the attribute was added, changed, or removed.
    *   The constants are defined in nsIDOMMutationEvent.h.
-   * @param aHint The style hint.
    */
   NS_IMETHOD AttributeChanged(nsIDocument *aDocument,
                               nsIContent*  aContent,
                               PRInt32      aNameSpaceID,
                               nsIAtom*     aAttribute,
-                              PRInt32      aModType,    
-                              nsChangeHint aHint) = 0;
+                              PRInt32      aModType) = 0;
 
   /**
    * Notifcation that the content model has had data appended to the
@@ -281,15 +279,26 @@ public:
    * the document. The notification is passed on to all of 
    * the document observers.
    *
+   * Since nsIStyleRule objects are immutable, there is a new object
+   * replacing the old one.  However, the use of this method (rather
+   * than StyleRuleAdded and StyleRuleRemoved) implies that the new rule
+   * matches the same elements and has the same priority (weight,
+   * origin, specificity) as the old one.  (However, if it is a CSS
+   * style rule, there may be a change in whether it has an important
+   * rule.)
+   *
    * @param aDocument The document being observed
    * @param aStyleSheet the StyleSheet that contians the rule
-   * @param aStyleRule the rule that was modified
-   * @param aHint some possible info about the nature of the change
+   * @param aOldStyleRule The rule being removed.  This rule may not be
+   *                      fully valid anymore -- however, it can still
+   *                      be used for pointer comparison and
+   *                      |QueryInterface|.
+   * @param aNewStyleRule The rule being added.
    */
   NS_IMETHOD StyleRuleChanged(nsIDocument *aDocument,
                               nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint) = 0;
+                              nsIStyleRule* aOldStyleRule,
+                              nsIStyleRule* aNewStyleRule) = 0;
 
   /**
    * A StyleRule has just been added to a style sheet.
@@ -351,8 +360,7 @@ public:
                                 nsIContent* aContent,                        \
                                 PRInt32 aNameSpaceID,                        \
                                 nsIAtom* aAttribute,                         \
-                                PRInt32 aModType,                            \
-                                nsChangeHint aHint);                         \
+                                PRInt32 aModType);                           \
     NS_IMETHOD ContentAppended(nsIDocument* aDocument,                       \
                                nsIContent* aContainer,                       \
                                PRInt32 aNewIndexInContainer);                \
@@ -378,8 +386,8 @@ public:
                                                 PRBool aApplicable);         \
     NS_IMETHOD StyleRuleChanged(nsIDocument* aDocument,                      \
                                 nsIStyleSheet* aStyleSheet,                  \
-                                nsIStyleRule* aStyleRule,                    \
-                                nsChangeHint aHint);                         \
+                                nsIStyleRule* aOldStyleRule,                 \
+                                nsIStyleRule* aNewStyleRule);                \
     NS_IMETHOD StyleRuleAdded(nsIDocument* aDocument,                        \
                               nsIStyleSheet* aStyleSheet,                    \
                               nsIStyleRule* aStyleRule);                     \
@@ -455,8 +463,7 @@ _class::AttributeChanged(nsIDocument* aDocument,                          \
                                        nsIContent* aContent,              \
                                        PRInt32 aNameSpaceID,              \
                                        nsIAtom* aAttribute,               \
-                                       PRInt32 aModType,                  \
-                                       nsChangeHint aHint)                \
+                                       PRInt32 aModType)                  \
 {                                                                         \
   return NS_OK;                                                           \
 }                                                                         \
@@ -515,9 +522,9 @@ _class::StyleSheetApplicableStateChanged(nsIDocument* aDocument,          \
 }                                                                         \
 NS_IMETHODIMP                                                             \
 _class::StyleRuleChanged(nsIDocument* aDocument,                          \
-                                       nsIStyleSheet* aStyleSheet,        \
-                                       nsIStyleRule* aStyleRule,          \
-                                       nsChangeHint aHint)                \
+                         nsIStyleSheet* aStyleSheet,                      \
+                         nsIStyleRule* aOldStyleRule,                     \
+                         nsIStyleRule* aNewStyleRule)                     \
 {                                                                         \
   return NS_OK;                                                           \
 }                                                                         \

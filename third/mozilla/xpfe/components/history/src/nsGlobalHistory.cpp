@@ -106,9 +106,6 @@ nsIPrefBranch* nsGlobalHistory::gPrefBranch = nsnull;
 
 #define PREF_BRANCH_BASE                        "browser."
 #define PREF_BROWSER_HISTORY_EXPIRE_DAYS        "history_expire_days"
-#define PREF_BROWSER_STARTUP_PAGE               "startup.page"
-#define PREF_BROWSER_TABS_LOADONNEWTAB          "tabs.loadOnNewTab"
-#define PREF_BROWSER_WINDOWS_LOADONNEWWINDOW    "windows.loadOnNewWindow"
 #define PREF_AUTOCOMPLETE_ONLY_TYPED            "urlbar.matchOnlyTyped"
 #define PREF_AUTOCOMPLETE_ENABLED               "urlbar.autocomplete.enabled"
 
@@ -448,7 +445,7 @@ nsMdbTableEnumerator::~nsMdbTableEnumerator()
 }
 
 
-NS_IMPL_ISUPPORTS1(nsMdbTableEnumerator, nsISimpleEnumerator);
+NS_IMPL_ISUPPORTS1(nsMdbTableEnumerator, nsISimpleEnumerator)
 
 NS_IMETHODIMP
 nsMdbTableEnumerator::HasMoreElements(PRBool* _result)
@@ -614,20 +611,6 @@ nsGlobalHistory::AddPage(const char *aURL)
 
   nsresult rv = AddPageToDatabase(aURL, GetNow());
   NS_ENSURE_SUCCESS(rv, rv);
-
-  if (gPrefBranch) {
-    PRInt32 choice = 0;
-    gPrefBranch->GetIntPref(PREF_BROWSER_STARTUP_PAGE, &choice);
-    if (choice != 2) {
-      gPrefBranch->GetIntPref(PREF_BROWSER_WINDOWS_LOADONNEWWINDOW, &choice);
-      if (choice != 2)
-        gPrefBranch->GetIntPref(PREF_BROWSER_TABS_LOADONNEWTAB, &choice);
-    }
-    if (choice == 2) {
-      rv = SaveLastPageVisited(aURL);
-      NS_ENSURE_SUCCESS(rv, rv);
-    }
-  }
 
   return NS_OK;
 }
@@ -804,6 +787,7 @@ nsGlobalHistory::SetRowValue(nsIMdbRow *aRow, mdb_column aCol,
   mdb_err err;
 
   PRInt32 len = (nsCRT::strlen(aValue) * sizeof(PRUnichar));
+  PRUnichar *swapval = nsnull;
 
   // eventually turn this on when we're confident in mork's abilitiy
   // to handle yarn forms properly
@@ -813,10 +797,20 @@ nsGlobalHistory::SetRowValue(nsIMdbRow *aRow, mdb_column aCol,
   mdbYarn yarn = { (void *)utf8Value.get(), utf8Value.Length(), utf8Value.Length(), 0, 1, nsnull };
 #else
 
+  if (mReverseByteOrder) {
+    // The file is other-endian.  Byte-swap the value.
+    swapval = (PRUnichar *)malloc(len);
+    if (!swapval)
+      return NS_ERROR_OUT_OF_MEMORY;
+    SwapBytes(aValue, swapval, len / sizeof(PRUnichar));
+    aValue = swapval;
+  }
   mdbYarn yarn = { (void *)aValue, len, len, 0, 0, nsnull };
   
 #endif
   err = aRow->AddColumn(mEnv, aCol, &yarn);
+  if (swapval)
+    free(swapval);
   if (err != 0) return NS_ERROR_FAILURE;
   return NS_OK;
 }
@@ -865,7 +859,19 @@ nsGlobalHistory::GetRowValue(nsIMdbRow *aRow, mdb_column aCol,
   
   switch (yarn.mYarn_Form) {
   case 0:                       // unicode
-    aResult.Assign((const PRUnichar *)yarn.mYarn_Buf, yarn.mYarn_Fill/sizeof(PRUnichar));
+    if (mReverseByteOrder) {
+      // The file is other-endian; we must byte-swap the result.
+      PRUnichar *swapval;
+      int len = yarn.mYarn_Fill / sizeof(PRUnichar);
+      swapval = (PRUnichar *)malloc(yarn.mYarn_Fill);
+      if (!swapval)
+        return NS_ERROR_OUT_OF_MEMORY;
+      SwapBytes((const PRUnichar *)yarn.mYarn_Buf, swapval, len);
+      aResult.Assign(swapval, len);
+      free(swapval);
+    }
+    else
+      aResult.Assign((const PRUnichar *)yarn.mYarn_Buf, yarn.mYarn_Fill/sizeof(PRUnichar));
     break;
 
     // eventually we'll be supporting this in SetRowValue()
@@ -879,6 +885,25 @@ nsGlobalHistory::GetRowValue(nsIMdbRow *aRow, mdb_column aCol,
   return NS_OK;
 }
 
+// Copy an array of 16-bit values, reversing the byte order.
+void
+nsGlobalHistory::SwapBytes(const PRUnichar *source, PRUnichar *dest,
+                           PRInt32 aLen)
+{
+  PRUint16 c;
+  const PRUint16 *inp;
+  PRUint16 *outp;
+  PRInt32 i;
+
+  inp = source;
+  outp = dest;
+  for (i = 0; i < aLen; i++) {
+    c = *inp++;
+    *outp++ = (((c >> 8) & 0xff) | (c << 8));
+  }
+  return;
+}
+      
 nsresult
 nsGlobalHistory::GetRowValue(nsIMdbRow *aRow, mdb_column aCol,
                              PRInt64 *aResult)
@@ -1095,6 +1120,10 @@ nsGlobalHistory::RemoveAllPages()
   rv = RemoveMatchingRows(matchAllCallback, nsnull, PR_TRUE);
   if (NS_FAILED(rv)) return rv;
   
+  // Reset the file byte order.
+  rv = InitByteOrder(PR_TRUE);
+  if (NS_FAILED(rv)) return rv;
+
   return Commit(kCompressCommit);
 }
 
@@ -1195,8 +1224,8 @@ nsGlobalHistory::IsVisited(const char *aURL, PRBool *_retval)
   return NS_OK;
 }
 
-nsresult
-nsGlobalHistory::SaveLastPageVisited(const char *aURL)
+NS_IMETHODIMP
+nsGlobalHistory::SetLastPageVisited(const char *aURL)
 {
   NS_ENSURE_TRUE(aURL, NS_ERROR_FAILURE);
   NS_ENSURE_STATE(mMetaRow);
@@ -1221,6 +1250,42 @@ nsGlobalHistory::GetLastPageVisited(char **_retval)
   NS_ENSURE_TRUE(err == 0, NS_ERROR_FAILURE);
   
   *_retval = ToNewCString(lastPageVisited);
+  NS_ENSURE_TRUE(*_retval, NS_ERROR_OUT_OF_MEMORY);
+
+  return NS_OK;
+}
+
+// Set the byte order in the history file.  The given string value should
+// be either "BE" (big-endian) or "LE" (little-endian).
+nsresult
+nsGlobalHistory::SaveByteOrder(const char *aByteOrder)
+{
+  if (PL_strcmp(aByteOrder, "BE") != 0 && PL_strcmp(aByteOrder, "LE") != 0) {
+    NS_WARNING("Invalid byte order argument.");
+    return NS_ERROR_INVALID_ARG;
+  }
+  NS_ENSURE_STATE(mMetaRow);
+
+  mdb_err err = SetRowValue(mMetaRow, kToken_ByteOrder, aByteOrder);
+  NS_ENSURE_TRUE(err == 0, NS_ERROR_FAILURE);
+
+  return NS_OK;
+}
+
+// Get the file byte order.
+nsresult
+nsGlobalHistory::GetByteOrder(char **_retval)
+{ 
+  NS_ENSURE_SUCCESS(OpenDB(), NS_ERROR_FAILURE);
+
+  NS_ENSURE_ARG_POINTER(_retval);
+  NS_ENSURE_STATE(mMetaRow);
+
+  nsCAutoString byteOrder;
+  mdb_err err = GetRowValue(mMetaRow, kToken_ByteOrder, byteOrder);
+  NS_ENSURE_TRUE(err == 0, NS_ERROR_FAILURE);
+
+  *_retval = ToNewCString(byteOrder);
   NS_ENSURE_TRUE(*_retval, NS_ERROR_OUT_OF_MEMORY);
 
   return NS_OK;
@@ -2427,6 +2492,9 @@ nsGlobalHistory::OpenDB()
     LL_I2L(mFileSizeOnDisk, 0);
   }
   
+  // See if we need to byte-swap.
+  InitByteOrder(PR_FALSE);
+
   return NS_OK;
 }
 
@@ -2526,6 +2594,12 @@ nsGlobalHistory::OpenNewFile(nsIMdbFactory *factory, const char *filePath)
   if (err != 0) return NS_ERROR_FAILURE;
   if (!mTable) return NS_ERROR_FAILURE;
 
+  // Create the meta row.
+  mdbOid oid = { kToken_HistoryRowScope, 1 };
+  err = mTable->GetMetaRow(mEnv, &oid, nsnull, getter_AddRefs(mMetaRow));
+  if (err != 0)
+    NS_WARNING("Could not get meta row\n");
+
   // Force a commit now to get it written out.
   nsCOMPtr<nsIMdbThumb> thumb;
   err = mStore->LargeCommit(mEnv, getter_AddRefs(thumb));
@@ -2541,6 +2615,39 @@ nsGlobalHistory::OpenNewFile(nsIMdbFactory *factory, const char *filePath)
   } while ((err == 0) && !broken && !done);
 
   if ((err != 0) || !done) return NS_ERROR_FAILURE;
+
+  return NS_OK;
+}
+
+// Set the history file byte order if necessary, and determine if
+// we need to byte-swap Unicode values.
+// If the force argument is true, the file byte order will be set
+// to that of this machine.
+nsresult
+nsGlobalHistory::InitByteOrder(PRBool aForce)
+{
+#ifdef IS_LITTLE_ENDIAN
+  NS_NAMED_LITERAL_CSTRING(machine_byte_order, "LE");
+#endif
+#ifdef IS_BIG_ENDIAN
+  NS_NAMED_LITERAL_CSTRING(machine_byte_order, "BE");
+#endif
+  nsXPIDLCString file_byte_order;
+  nsresult rv = NS_OK;
+
+  if (!aForce)
+    rv = GetByteOrder(getter_Copies(file_byte_order));
+  if (aForce || NS_FAILED(rv) ||
+      !(file_byte_order.Equals(NS_LITERAL_CSTRING("BE")) ||
+        file_byte_order.Equals(NS_LITERAL_CSTRING("LE")))) {
+    // Byte order is not yet set, or needs to be reset; initialize it.
+    mReverseByteOrder = PR_FALSE;
+    rv = SaveByteOrder(machine_byte_order.get());
+    if (NS_FAILED(rv))
+      return rv;
+  }
+  else
+    mReverseByteOrder = !file_byte_order.Equals(machine_byte_order);
 
   return NS_OK;
 }
@@ -2698,6 +2805,7 @@ nsGlobalHistory::CreateTokens()
 
   // meta-data tokens
   err = mStore->StringToToken(mEnv, "LastPageVisited", &kToken_LastPageVisited);
+  err = mStore->StringToToken(mEnv, "ByteOrder", &kToken_ByteOrder);
 
   return NS_OK;
 }
@@ -3950,7 +4058,7 @@ nsGlobalHistory::OnStartLookup(const PRUnichar *searchString,
   // there is no need to proceed with the search
   nsAutoString cut(searchString);
   AutoCompleteCutPrefix(cut, nsnull);
-  if (cut.Length() == 0) {
+  if (cut.IsEmpty()) {
     listener->OnAutoComplete(results, status);
     return NS_OK;
   }
@@ -4024,9 +4132,8 @@ nsGlobalHistory::AutoCompleteSearch(const nsAString& aSearchString,
   if (aPrevResults) {
     nsXPIDLString prevURL;
     aPrevResults->GetSearchString(getter_Copies(prevURL));
-    nsDependentString prevURLStr(prevURL);
     // if search string begins with the previous search string, it's a go
-    searchPrevious = Substring(aSearchString, 0, prevURLStr.Length()).Equals(prevURLStr);
+    searchPrevious = StringBeginsWith(aSearchString, prevURL);
   }
     
   nsCOMPtr<nsISupportsArray> resultItems;
@@ -4148,7 +4255,7 @@ nsGlobalHistory::AutoCompleteGetExcludeInfo(const nsAString& aURL, AutocompleteE
   PRInt32 i;
   for (i = 0; i < mIgnoreSchemes.Count(); ++i) {
     nsString* string = mIgnoreSchemes.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       aExclude->schemePrefix = i;
       index = string->Length();
       break;
@@ -4177,7 +4284,7 @@ nsGlobalHistory::AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aEx
     if (aExclude && i == aExclude->schemePrefix)
       continue;
     nsString* string = mIgnoreSchemes.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       idx = string->Length();
       break;
     }
@@ -4191,7 +4298,7 @@ nsGlobalHistory::AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aEx
     if (aExclude && i == aExclude->hostnamePrefix)
       continue;
     nsString* string = mIgnoreHostnames.StringAt(i);    
-    if (Substring(aURL, 0, string->Length()).Equals(*string)) {
+    if (StringBeginsWith(aURL, *string)) {
       idx = string->Length();
       break;
     }
@@ -4230,7 +4337,7 @@ nsGlobalHistory::AutoCompleteCompare(nsAString& aHistoryURL,
 {
   AutoCompleteCutPrefix(aHistoryURL, aExclude);
   
-  return Substring(aHistoryURL, 0, aUserURL.Length()).Equals(aUserURL);
+  return StringBeginsWith(aHistoryURL, aUserURL);
 }
 
 int PR_CALLBACK 

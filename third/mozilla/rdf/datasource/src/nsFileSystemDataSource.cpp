@@ -71,10 +71,6 @@
 #include "nsCRT.h"
 
 #ifdef  XP_WIN
-#include "nsIUnicodeDecoder.h"
-#include "nsIPlatformCharset.h"
-#include "nsICharsetConverterManager.h"
-#include "nsICharsetAlias.h"
 #include "windef.h"
 #include "winbase.h"
 #include "nsILineInputStream.h"
@@ -99,10 +95,6 @@
 #endif
 
 static NS_DEFINE_CID(kRDFServiceCID,               NS_RDFSERVICE_CID);
-static NS_DEFINE_IID(kISupportsIID,                NS_ISUPPORTS_IID);
-#ifdef  XP_WIN
-static NS_DEFINE_CID(kCharsetConverterManagerCID,  NS_ICHARSETCONVERTERMANAGER_CID);
-#endif
 
 #define NS_MOZICON_SCHEME           "moz-icon:"
 
@@ -139,7 +131,6 @@ private:
     static nsIRDFResource       *kNC_IEFavoriteObject;
     static nsIRDFResource       *kNC_IEFavoriteFolder;
     static char                 *ieFavoritesDir;
-    nsCOMPtr<nsIUnicodeDecoder> mUnicodeDecoder;
 #endif
 
 #ifdef  XP_BEOS

@@ -103,8 +103,8 @@ nsHTMLSpanElement::~nsHTMLSpanElement()
 }
 
 
-NS_IMPL_ADDREF_INHERITED(nsHTMLSpanElement, nsGenericElement);
-NS_IMPL_RELEASE_INHERITED(nsHTMLSpanElement, nsGenericElement);
+NS_IMPL_ADDREF_INHERITED(nsHTMLSpanElement, nsGenericElement)
+NS_IMPL_RELEASE_INHERITED(nsHTMLSpanElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLSpanElement
@@ -146,7 +146,7 @@ nsresult
 nsHTMLSpanElement::GetInnerHTML(nsAString& aInnerHTML)
 {
   nsCOMPtr<nsIAtom> tag;
-  GetTag(*getter_AddRefs(tag));
+  GetTag(getter_AddRefs(tag));
   if (tag == nsHTMLAtoms::xmp || tag == nsHTMLAtoms::plaintext) {
     return GetContentsAsText(aInnerHTML);
   }
@@ -158,7 +158,7 @@ nsresult
 nsHTMLSpanElement::SetInnerHTML(const nsAString& aInnerHTML)
 {
   nsCOMPtr<nsIAtom> tag;
-  GetTag(*getter_AddRefs(tag));
+  GetTag(getter_AddRefs(tag));
   if (tag == nsHTMLAtoms::xmp || tag == nsHTMLAtoms::plaintext) {
     return ReplaceContentsWithText(aInnerHTML, PR_TRUE);
   }

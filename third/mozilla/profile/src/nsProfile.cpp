@@ -153,17 +153,9 @@ static nsHashtable *gLocaleProfiles = nsnull;
 static nsProfileDirServiceProvider *gDirServiceProvider = nsnull;
 
 // IID and CIDs of all the services needed
-static NS_DEFINE_CID(kIProfileIID, NS_IPROFILE_IID);
-static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
-static NS_DEFINE_CID(kRegistryCID, NS_REGISTRY_CID);
-static NS_DEFINE_IID(kIFactoryIID,  NS_IFACTORY_IID);
-static NS_DEFINE_IID(kIIOServiceIID, NS_IIOSERVICE_IID);
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 static NS_DEFINE_CID(kPrefMigrationCID, NS_PREFMIGRATION_CID);
 static NS_DEFINE_CID(kPrefConverterCID, NS_PREFCONVERTER_CID);
-static NS_DEFINE_IID(kCookieServiceCID, NS_COOKIESERVICE_CID);
 
-static NS_DEFINE_CID(kStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 
 
 /*
@@ -459,7 +451,7 @@ nsProfile::LoadDefaultProfileDir(nsCString & profileURLStr, PRBool canInteract)
     
     GetProfileCount(&numProfiles);
 
-    if (profileURLStr.Length() == 0)
+    if (profileURLStr.IsEmpty())
     {
         // If this flag is TRUE, it makes the multiple profile case
         // just like the single profile case - the profile will be
@@ -515,7 +507,7 @@ nsProfile::LoadDefaultProfileDir(nsCString & profileURLStr, PRBool canInteract)
             profileURLStr = PROFILE_SELECTION_URL;
     }
 
-    if (profileURLStr.Length() != 0)
+    if (!profileURLStr.IsEmpty())
     {
         if (!canInteract) return NS_ERROR_PROFILE_REQUIRES_INTERACTION;
 
@@ -742,7 +734,7 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
             }
             else {
                 // get a platform charset
-                nsAutoString charSet;
+                nsCAutoString charSet;
                 rv = GetPlatformCharset(charSet);
                 NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get a platform charset");
 
@@ -811,7 +803,7 @@ nsProfile::ProcessArgs(nsICmdLineService *cmdLineArgs,
             }
             else {
                 // get a platform charset
-                nsAutoString charSet;
+                nsCAutoString charSet;
                 rv = GetPlatformCharset(charSet);
                 NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get a platform charset");
 

@@ -84,7 +84,7 @@ nsProgressDialog.prototype = {
 
     // Chrome-related constants.
     dialogChrome:   "chrome://global/content/nsProgressDialog.xul",
-    dialogFeatures: "chrome,titlebar,minimizable=yes",
+    dialogFeatures: "chrome,titlebar,minimizable=yes,dialog=no",
 
     // getters/setters
     get saving()            { return this.MIMEInfo == null ||
@@ -656,6 +656,9 @@ nsProgressDialog.prototype = {
 
                 // Fix up dialog layout (which gets messed up sometimes).
                 this.dialog.sizeToContent();
+
+                // GetAttention to show the user that we're done
+               this.dialog.getAttention();
             } else if ( this.dialog ) {
                 this.dialog.close();
             }
@@ -837,15 +840,13 @@ nsProgressDialog.prototype = {
 var module = {
     // registerSelf: Register this component.
     registerSelf: function (compMgr, fileSpec, location, type) {
-        compMgr = compMgr.QueryInterface( Components.interfaces.nsIComponentManagerObsolete );
-        compMgr.registerComponentWithType( this.cid,
-                                           "Mozilla Download Progress Dialog",
-                                           this.contractId,
-                                           fileSpec,
-                                           location,
-                                           true,
-                                           true,
-                                           type );
+        var compReg = compMgr.QueryInterface( Components.interfaces.nsIComponentRegistrar );
+        compReg.registerFactoryLocation( this.cid,
+                                         "Mozilla Download Progress Dialog",
+                                         this.contractId,
+                                         fileSpec,
+                                         location,
+                                         type );
     },
 
     // getClassObject: Return this component's factory object.

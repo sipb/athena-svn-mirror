@@ -73,6 +73,7 @@
 #ifdef DNS_TIMING
 #include "prinrval.h"
 #include "prtime.h"
+#include "nsTraceRefcntImpl.h" // for NS_MeanAndStdDev
 #endif
 #include "prsystem.h"
 #include "nsNetCID.h"
@@ -370,7 +371,7 @@ ClearEntry(PLDHashTable *      /* table */,
  *  nsDNSRequest methods:
  *****************************************************************************/
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsDNSRequest, nsIRequest);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsDNSRequest, nsIRequest)
 
 
 nsresult
@@ -526,7 +527,7 @@ nsDNSRequest::SetLoadFlags(nsLoadFlags  loadFlags)
 #pragma mark nsDNSLookup
 #endif
 
-NS_IMPL_THREADSAFE_ISUPPORTS0(nsDNSLookup);
+NS_IMPL_THREADSAFE_ISUPPORTS0(nsDNSLookup)
 
 nsDNSLookup::nsDNSLookup()
     : mHostName(nsnull)
@@ -789,7 +790,8 @@ nsDNSLookup::EnqueueRequest(nsDNSRequest * request)
         mState = LOOKUP_PENDING;
         rv = InitiateLookup();
 
-        if (NS_FAILED(rv))  MarkComplete(rv);
+        if (NS_FAILED(rv))
+            MarkComplete(rv);
     }
     return NS_OK;
 }
@@ -1133,7 +1135,7 @@ nsDNSService::~nsDNSService()
 }
 
 
-NS_IMPL_THREADSAFE_ISUPPORTS3(nsDNSService, nsIDNSService, nsIRunnable, nsIObserver);
+NS_IMPL_THREADSAFE_ISUPPORTS3(nsDNSService, nsIDNSService, nsIRunnable, nsIObserver)
 
 NS_METHOD
 nsDNSService::Create(nsISupports* aOuter, const nsIID& aIID, void* *aResult)
@@ -1235,7 +1237,7 @@ nsDNSService::InstallPrefObserver()
     if (NS_FAILED(rv))  return rv;
     
     // save for later
-    mPrefService = getter_AddRefs( NS_GetWeakReference(prefs));
+    mPrefService = do_GetWeakReference(prefs);
     
     nsCOMPtr<nsIPrefBranchInternal> prefInternal = do_QueryInterface(prefs, &rv);
     if (NS_FAILED(rv))  return rv;
@@ -1549,12 +1551,15 @@ nsDNSLookup *
 nsDNSService::FindOrCreateLookup(const char* hostName)
 {
     // find hostname in hashtable
-    PLDHashEntryHdr *  hashEntry;
-    nsDNSLookup *      lookup = nsnull;
+    PLDHashEntryHdr *hashEntry = PL_DHashTableOperate(&mHashTable, hostName,
+                                                      PL_DHASH_ADD);
+    if (!hashEntry)
+        return nsnull;
 
-    hashEntry = PL_DHashTableOperate(&mHashTable, hostName, PL_DHASH_LOOKUP);
-    if (PL_DHASH_ENTRY_IS_BUSY(hashEntry)) {
-        lookup = ((DNSHashTableEntry *)hashEntry)->mLookup;
+    DNSHashTableEntry *dnsEntry = NS_STATIC_CAST(DNSHashTableEntry*, hashEntry);
+    nsDNSLookup *lookup = dnsEntry->mLookup;
+    if (lookup) {
+        // found an existing entry (PL_DHASH_ADD didn't have to add one)
         if (lookup->IsComplete() && lookup->IsExpired() && lookup->IsNotProcessing()) {
             lookup->Reset();
             PR_REMOVE_AND_INIT_LINK(lookup);  // remove us from eviction queue
@@ -1566,16 +1571,13 @@ nsDNSService::FindOrCreateLookup(const char* hostName)
 
     // no lookup entry exists for this request 
     lookup = nsDNSLookup::Create(hostName);
-    if (lookup == nsnull)  return nsnull;
-
-    // insert in hash table
-    hashEntry = PL_DHashTableOperate(&mHashTable, lookup->HostName(), PL_DHASH_ADD);
-    if (!hashEntry) {
-        NS_RELEASE(lookup);
+    if (!lookup) {
+        PL_DHashTableRawRemove(&mHashTable, hashEntry);
         return nsnull;
     }
-    ((DNSHashTableEntry *)hashEntry)->mLookup = lookup;
 
+    // insert lookup in hash table entry
+    dnsEntry->mLookup = lookup;
     return lookup;
 }
 
@@ -1819,7 +1821,7 @@ static unsigned long convert_addr(const char* ip)
         PL_strfree(buf);
     }
     return htonl(addr);
-};
+}
 
 
 NS_IMETHODIMP

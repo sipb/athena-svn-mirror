@@ -70,8 +70,9 @@ public:
   // nsIDOMHTMLMapElement
   NS_DECL_NSIDOMHTMLMAPELEMENT
 
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType,
+                                    nsChangeHint& aHint) const;
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
 
@@ -137,24 +138,30 @@ NS_IMETHODIMP
 nsHTMLMapElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                               PRBool aCompileEventHandlers)
 {
-  nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(mDocument));
-  nsresult rv;
+  PRBool documentChanging = (aDocument != mDocument);
+  
+  if (documentChanging) {
+    nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(mDocument));
 
-  if (htmlDoc) {
-    htmlDoc->RemoveImageMap(this);
+    if (htmlDoc) {
+      htmlDoc->RemoveImageMap(this);
+    }
   }
 
-  rv = nsGenericHTMLContainerElement::SetDocument(aDocument, aDeep,
-                                                  aCompileEventHandlers);
+  nsresult rv = nsGenericHTMLContainerElement::SetDocument(aDocument, aDeep,
+                                                           aCompileEventHandlers);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  if (documentChanging) {
+    // Since we changed the document, gotta re-QI
+    nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(mDocument));
 
-  // Since we changed the document, gotta re-QI
-  htmlDoc = do_QueryInterface(mDocument);
-
-  if (NS_SUCCEEDED(rv) && htmlDoc) {
-    htmlDoc->AddImageMap(this);
+    if (htmlDoc) {
+      htmlDoc->AddImageMap(this);
+    }
   }
   
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -212,20 +219,15 @@ NS_IMPL_STRING_ATTR(nsHTMLMapElement, Name, name)
 
 
 NS_IMETHODIMP
-nsHTMLMapElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                           nsChangeHint& aHint) const
+nsHTMLMapElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                         PRInt32 aModType,
+                                         nsChangeHint& aHint) const
 {
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::name, NS_STYLE_HINT_RECONSTRUCT_ALL },
-    { nsnull, NS_STYLE_HINT_NONE }
-  };
-
-  static const AttributeImpactEntry* const map[] = {
-    attributes,
-    sCommonAttributeMap,
-  };
-
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-  
-  return NS_OK;
+  nsresult rv =
+    nsGenericHTMLContainerElement::GetAttributeChangeHint(aAttribute,
+                                                          aModType, aHint);
+  if (aAttribute == nsHTMLAtoms::name) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_RECONSTRUCT_ALL);
+  }
+  return rv;
 }

@@ -151,7 +151,7 @@ interface nsIEditor  : nsISupports
   readonly attribute boolean documentModified;
 
   /** Sets the current 'Save' document character set */
-  attribute AString documentCharacterSet;
+  attribute ACString documentCharacterSet;
 
   /** to be used ONLY when we need to override the doc's modification
     * state (such as when it's saved).
@@ -374,6 +374,21 @@ interface nsIEditor  : nsISupports
                        in AString aAttribute);
 
   /**
+   * cloneAttribute() copies the attribute from the source node to
+   * the destination node and delete those not in the source.
+   *
+   * The supplied nodes MUST BE ELEMENTS (most callers are working with nodes)
+   * @param aAttribute    the name of the attribute to copy
+   * @param aDestNode     the destination element to operate on
+   * @param aSourceNode   the source element to copy attributes from
+   * @exception NS_ERROR_NULL_POINTER at least one of the nodes is null
+   * @exception NS_ERROR_NO_INTERFACE at least one of the nodes is not an
+   *                                  element
+   */
+  void cloneAttribute(in AString aAttribute,
+                      in nsIDOMNode aDestNode, in nsIDOMNode aSourceNode);
+
+  /**
    * cloneAttributes() is similar to nsIDOMNode::cloneNode(),
    *   it assures the attribute nodes of the destination are identical
    *   with the source node by copying all existing attributes from the
@@ -465,7 +480,7 @@ interface nsIEditor  : nsISupports
                          in unsigned long flags);
   void outputToStream(in nsIOutputStream aStream,
                       in AString formatType,
-                      in AString charsetOverride,
+                      in ACString charsetOverride,
                       in unsigned long flags);
 
 

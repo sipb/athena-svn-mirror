@@ -183,13 +183,6 @@ void DEBUG_CheckWrapperThreadSafety(const XPCWrappedNative* wrapper);
 #undef GetClassInfo
 #endif
 
-// To kill #define index(a,b) strchr(a,b) macro in Toolkit types.h
-#ifdef XP_OS2_VACPP
-#ifdef index
-#undef index
-#endif
-#endif
-
 /***************************************************************************/
 // default initial sizes for maps (hashtables)
 
@@ -554,6 +547,7 @@ public:
 #ifdef XPC_IDISPATCH_SUPPORT
         IDX_ACTIVEX_OBJECT          ,
         IDX_COM_OBJECT              ,
+        IDX_ACTIVEX_SUPPORTS        ,
 #endif
         IDX_TOTAL_COUNT // just a count of the above
     };

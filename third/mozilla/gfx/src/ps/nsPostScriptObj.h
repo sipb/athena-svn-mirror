@@ -110,23 +110,6 @@ PSOrientationRec postscript_module_orientations[] =
 
 typedef void (*XL_CompletionRoutine)(void*);
 
-
-typedef struct {
-    short llx, lly, urx, ury;
-} PS_BBox;
-
-typedef struct {
-	short wx, wy;
-	PS_BBox charBBox;
-} PS_CharInfo;
-
-typedef struct {
-    const char *name;
-    PS_BBox fontBBox;
-    short upos, uthick;
-    PS_CharInfo chars[256];
-} PS_FontInfo;
-
 typedef struct page_breaks {
     int32 y_top;
     int32 y_break;
@@ -224,14 +207,6 @@ struct PrintSetup_ {
   int status;                   /* Status of URL on completion */
   const char *print_cmd;        /* print command */
   int num_copies;               /* Number of copies of job to print */
-
-	/* "other" font is for encodings other than iso-8859-1 */
-  char *otherFontName[N_FONTS];		   
-  /* name of "other" PostScript font */
-  PS_FontInfo *otherFontInfo[N_FONTS];	   
-  /* font info parsed from "other" afm file */
-  int16 otherFontCharSetID;	    /* charset ID of "other" font */
-
 };
 
 typedef struct PrintSetup_ PrintSetup;
@@ -360,13 +335,17 @@ public:
    *  output a color postscript image
    *	@update 2/1/99 dwc
    */
-  void colorimage(nsIImage *aImage,int aX, int aY, int aWidth, int aHeight);
+  void colorimage(nsIImage *aImage,
+                  int aSX, int aSY, int aSWidth, int aSHeight,
+                  int aDX, int aDY, int aDWidth, int aDHeight);
 
   /** ---------------------------------------------------
    *  output a grayscale postscript image
    *	@update 9/1/99 dwc
    */
-  void grayimage(nsIImage *aImage,int aX, int aY, int aWidth, int aHeight);
+  void grayimage(nsIImage *aImage,
+                 int aSX, int aSY, int aSWidth, int aSHeight,
+                 int aDX, int aDY, int aDWidth, int aDHeight);
 
   /** ---------------------------------------------------
    *  ???
@@ -462,7 +441,6 @@ public:
   void settitle(PRUnichar * aTitle);
 
   FILE * GetPrintFile();
-  PRBool  InitUnixPrinterProps();
   PRBool  GetUnixPrinterSetting(const nsCAutoString&, char**);
   PrintSetup            *mPrintSetup;
 private:

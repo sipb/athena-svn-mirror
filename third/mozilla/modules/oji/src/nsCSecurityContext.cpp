@@ -75,8 +75,8 @@ static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
 // Thes macro expands to the aggregated query interface scheme.
 
-NS_IMPL_ADDREF(nsCSecurityContext);
-NS_IMPL_RELEASE(nsCSecurityContext);
+NS_IMPL_ADDREF(nsCSecurityContext)
+NS_IMPL_RELEASE(nsCSecurityContext)
 
 NS_METHOD
 nsCSecurityContext::QueryInterface(const nsIID& aIID, void** aInstancePtr)
@@ -120,42 +120,18 @@ nsCSecurityContext::Implies(const char* target, const char* action, PRBool *bAll
 NS_METHOD 
 nsCSecurityContext::GetOrigin(char* buf, int buflen)
 {
-    // Get the Script Security Manager.
-
-    nsresult rv      = NS_OK;
-    nsCOMPtr<nsIScriptSecurityManager> secMan = 
-             do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-    if (NS_FAILED(rv) || !secMan) return NS_ERROR_FAILURE;
-
-
-    // First, try to get the principal from the security manager.
-    // Next, try to get it from the dom.
-    // If neither of those work, the qi for codebase will fail.
-
     if (!m_pPrincipal) {
-        if (NS_FAILED(secMan->GetSubjectPrincipal(&m_pPrincipal))) 
-        // return NS_ERROR_FAILURE;
-        ; // Don't return here because the security manager returns 
-          // NS_ERROR_FAILURE when there is no subject principal. In
-          // that case we are not done.
-        
-        if (!m_pPrincipal && m_pJSCX ) {
-            nsCOMPtr<nsIScriptContext> scriptContext = (nsIScriptContext*)JS_GetContextPrivate(m_pJSCX);
-            if (scriptContext) {
-                nsCOMPtr<nsIScriptGlobalObject> global;
-                scriptContext->GetGlobalObject(getter_AddRefs(global));
-                NS_ASSERTION(global, "script context has no global object");
+        // Get the Script Security Manager.
+        nsresult rv = NS_OK;
+        nsCOMPtr<nsIScriptSecurityManager> secMan =
+             do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+        if (NS_FAILED(rv) || !secMan) {
+            return NS_ERROR_FAILURE;
+        }
 
-                if (global) {
-                    nsCOMPtr<nsIScriptObjectPrincipal> globalData = do_QueryInterface(global);
-                    if (globalData) {
-                        // ISSUE: proper ref counting.
-                        if (NS_FAILED(globalData->GetPrincipal(&m_pPrincipal)))
-                            return NS_ERROR_FAILURE; 
-                       
-                   }
-                }
-            }
+        secMan->GetSubjectPrincipal(getter_AddRefs(m_pPrincipal));
+        if (!m_pPrincipal) {
+            return NS_ERROR_FAILURE;
         }
     }
 
@@ -295,9 +271,7 @@ nsCSecurityContext::nsCSecurityContext(nsIPrincipal *principal)
 
     // Do early evaluation of "UniversalJavaPermission" capability.
 
-    PRBool equals;
-    if (!m_pPrincipal || 
-        NS_SUCCEEDED(m_pPrincipal->Equals(sysprincipal, &equals)) && equals) {
+    if (!m_pPrincipal || m_pPrincipal == sysprincipal) {
         // We have native code or the system principal: just allow general access
         m_HasUniversalBrowserReadCapability = PR_TRUE;
         m_HasUniversalJavaCapability = PR_TRUE;

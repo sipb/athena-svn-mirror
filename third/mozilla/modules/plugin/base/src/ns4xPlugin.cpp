@@ -88,10 +88,6 @@ enum eNPPStreamTypeInternal {
 // CID's && IID's
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 static NS_DEFINE_IID(kCPluginManagerCID, NS_PLUGINMANAGER_CID);
-static NS_DEFINE_IID(kIPluginIID, NS_IPLUGIN_IID); 
-static NS_DEFINE_IID(kIFactoryIID, NS_IFACTORY_IID);
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIWindowlessPluginInstancePeerIID, NS_IWINDOWLESSPLUGININSTANCEPEER_IID);
 static NS_DEFINE_IID(kPluginManagerCID, NS_PLUGINMANAGER_CID);
 static NS_DEFINE_IID(kIPluginManagerIID, NS_IPLUGINMANAGER_IID); 
 static NS_DEFINE_IID(kMemoryCID, NS_MEMORY_CID);
@@ -296,7 +292,7 @@ ns4xPlugin::CheckClassInitialized(void)
 
 ////////////////////////////////////////////////////////////////////////
 // nsISupports stuff
-NS_IMPL_ISUPPORTS2(ns4xPlugin, nsIPlugin, nsIFactory);
+NS_IMPL_ISUPPORTS2(ns4xPlugin, nsIPlugin, nsIFactory)
 
 ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary, NP_PLUGINSHUTDOWN aShutdown, nsIServiceManagerObsolete* serviceMgr)
 {
@@ -959,7 +955,7 @@ public:
   NPStream* GetNPStream(void) { return &fNPStream; };
 };
 
-NS_IMPL_ISUPPORTS1(ns4xStreamWrapper, nsISupports);
+NS_IMPL_ISUPPORTS1(ns4xStreamWrapper, nsISupports)
 
 ns4xStreamWrapper::ns4xStreamWrapper(nsIOutputStream* stream)
   : fStream(stream)

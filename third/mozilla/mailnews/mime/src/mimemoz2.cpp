@@ -156,7 +156,7 @@ ProcessBodyAsAttachment(MimeObject *obj, nsMsgAttachmentData **data)
   {
     char *fname = NULL;
     fname = mime_decode_filename(tmp->real_name, charset, obj->options);
-    PR_FREEIF(charset);
+    nsMemory::Free(charset);
     if (fname && fname != tmp->real_name)
     {
       PR_Free(tmp->real_name);
@@ -282,7 +282,7 @@ ValidateRealName(nsMsgAttachmentData *aAttach, MimeHeaders *aHdrs)
     if (NS_SUCCEEDED(rv) && mimeFinder) 
     {
       nsIMIMEInfo *mimeInfo = nsnull;
-      rv = mimeFinder->GetFromMIMEType(contentType.get(), &mimeInfo);
+      rv = mimeFinder->GetFromTypeAndExtension(contentType.get(), nsnull, &mimeInfo);
       if (NS_SUCCEEDED(rv) && mimeInfo) 
       {
         char *aFileExtension = nsnull;
@@ -367,7 +367,7 @@ GenerateAttachmentData(MimeObject *object, const char *aMessageURL, MimeDisplayO
       for (i = 0; i < 2 && !tmp->real_name; i ++)
       {
         PR_FREEIF(disp);
-        PR_FREEIF(charset);
+        nsMemory::Free(charset);
         disp = MimeHeaders_get(((MimeContainer *)object)->children[i]->headers, HEADER_CONTENT_DISPOSITION, PR_FALSE, PR_FALSE);
         tmp->real_name = MimeHeaders_get_parameter(disp, "filename", &charset, nsnull);
       }
@@ -382,7 +382,7 @@ GenerateAttachmentData(MimeObject *object, const char *aMessageURL, MimeDisplayO
 
       char *fname = nsnull;
       fname = mime_decode_filename(tmp->real_name, charset, options);
-      PR_FREEIF(charset);
+      nsMemory::Free(charset);
 
       if (fname && fname != tmp->real_name)
       {
@@ -408,7 +408,7 @@ GenerateAttachmentData(MimeObject *object, const char *aMessageURL, MimeDisplayO
         for (i = 0; i < 2 && !tmp->real_name; i ++)
         {
           PR_FREEIF(disp);
-          PR_FREEIF(charset);
+          nsMemory::Free(charset);
           disp = MimeHeaders_get(((MimeContainer *)object)->children[i]->headers, HEADER_CONTENT_TYPE, PR_FALSE, PR_FALSE);
           tmp->real_name = MimeHeaders_get_parameter(disp, "name", &charset, nsnull);
         }
@@ -423,7 +423,7 @@ GenerateAttachmentData(MimeObject *object, const char *aMessageURL, MimeDisplayO
 
         char *fname = nsnull;
         fname = mime_decode_filename(tmp->real_name, charset, options);
-        PR_FREEIF(charset);
+        nsMemory::Free(charset);
 
         if (fname && fname != tmp->real_name)
         {
@@ -705,8 +705,8 @@ SetMailCharacterSetToMsgWindow(MimeObject *obj, const char *aCharacterSet)
             msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
             if (msgWindow)
               rv = msgWindow->SetMailCharacterSet(!nsCRT::strcasecmp(aCharacterSet, "us-ascii") ?
-                                                  NS_LITERAL_STRING("ISO-8859-1").get() :
-                                                  NS_ConvertASCIItoUCS2(aCharacterSet).get());
+                                                  "ISO-8859-1" :
+                                                  aCharacterSet);
           }
         }
       }
@@ -2069,8 +2069,7 @@ nsresult GetMailNewsFont(MimeObject *obj, PRBool styleFixed,  PRInt32 *fontPixel
     else
       charset.Assign(text->charset);
 
-    nsCOMPtr<nsICharsetConverterManager2> charSetConverterManager2;
-    nsCOMPtr <nsIAtom> charsetAtom;
+    nsCOMPtr<nsICharsetConverterManager> charSetConverterManager2;
     nsCOMPtr<nsIAtom> langGroupAtom;
     nsCAutoString prefStr;
 
@@ -2081,10 +2080,7 @@ nsresult GetMailNewsFont(MimeObject *obj, PRBool styleFixed,  PRInt32 *fontPixel
       return rv;
 
     // get a language, e.g. x-western, ja
-    rv = charSetConverterManager2->GetCharsetAtom2(charset.get(),getter_AddRefs(charsetAtom));
-    if (NS_FAILED(rv))
-      return rv;
-    rv = charSetConverterManager2->GetCharsetLangGroup(charsetAtom,getter_AddRefs(langGroupAtom));
+    rv = charSetConverterManager2->GetCharsetLangGroup(charset.get(), getter_AddRefs(langGroupAtom));
     if (NS_FAILED(rv))
       return rv;
     rv = langGroupAtom->ToUTF8String(fontLang);

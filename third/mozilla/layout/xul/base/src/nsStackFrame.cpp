@@ -141,7 +141,7 @@ nsStackFrame::GetFrameForPoint(nsIPresContext* aPresContext,
       PRBool        transparentBG = NS_STYLE_BG_COLOR_TRANSPARENT ==
                                     (color->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT);
 
-      PRBool backgroundImage = (color->mBackgroundImage.Length() > 0);
+      PRBool backgroundImage = !color->mBackgroundImage.IsEmpty();
 
       if (!transparentBG || backgroundImage)
       {
@@ -174,12 +174,11 @@ nsStackFrame::GetStackedFrameForPoint(nsIPresContext* aPresContext,
 {
     // look at all the children is reverse order. Use the stack to do 
     // this.
-    nsIFrame* next;
     nsresult rv;
-    aChild->GetNextSibling(&next);   
-    if (next != nsnull) {
+    nsIFrame* next = aChild->GetNextSibling();
+    if (next) {
        rv = GetStackedFrameForPoint(aPresContext, next, aRect, aPoint, aFrame);
-       if (NS_SUCCEEDED(rv) && *aFrame)  
+       if (NS_SUCCEEDED(rv) && *aFrame)
            return rv;
     }
 

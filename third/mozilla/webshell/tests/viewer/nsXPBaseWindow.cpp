@@ -81,14 +81,12 @@
 //#include "nsUnitConversion.h"
 //#include "nsIDeviceContext.h"
 
-static NS_DEFINE_IID(kXPBaseWindowCID, NS_XPBASE_WINDOW_CID);
 static NS_DEFINE_IID(kWebShellCID, NS_WEB_SHELL_CID);
 static NS_DEFINE_IID(kWindowCID, NS_WINDOW_CID);
 
 
 static NS_DEFINE_IID(kIXPBaseWindowIID, NS_IXPBASE_WINDOW_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIDOMDocumentIID, NS_IDOMDOCUMENT_IID);
 static NS_DEFINE_IID(kIFactoryIID, NS_IFACTORY_IID);
 static NS_DEFINE_IID(kIWebShellIID, NS_IWEB_SHELL_IID);
 static NS_DEFINE_IID(kIWebShellContainerIID, NS_IWEB_SHELL_CONTAINER_IID);
@@ -97,7 +95,6 @@ static NS_DEFINE_IID(kIWidgetIID, NS_IWIDGET_IID);
 
 static NS_DEFINE_IID(kIDOMMouseListenerIID,   NS_IDOMMOUSELISTENER_IID);
 static NS_DEFINE_IID(kIDOMEventReceiverIID,   NS_IDOMEVENTRECEIVER_IID);
-static NS_DEFINE_IID(kIDOMElementIID, NS_IDOMELEMENT_IID);
 static NS_DEFINE_IID(kIDOMHTMLDocumentIID, NS_IDOMHTMLDOCUMENT_IID);
 
 //----------------------------------------------------------------------
@@ -584,12 +581,11 @@ NS_IMETHODIMP nsXPBaseWindow::GetPresShell(nsIPresShell*& aPresShell)
       nsIDocumentViewer* docv = nsnull;
       cv->QueryInterface(kIDocumentViewerIID, (void**) &docv);
       if (nsnull != docv) {
-        nsIPresContext* cx;
-        docv->GetPresContext(cx);
+        nsCOMPtr<nsIPresContext> cx;
+        docv->GetPresContext(getter_AddRefs(cx));
         if (nsnull != cx) {
           cx->GetShell(&shell); // does an add ref
           aPresShell = shell;
-          NS_RELEASE(cx);
         }
         NS_RELEASE(docv);
       }
@@ -697,8 +693,8 @@ nsXPBaseWindowFactory::QueryInterface(const nsIID &aIID, void **aResult)
   return NS_OK;
 }
 
-NS_IMPL_ADDREF(nsXPBaseWindowFactory);
-NS_IMPL_RELEASE(nsXPBaseWindowFactory);
+NS_IMPL_ADDREF(nsXPBaseWindowFactory)
+NS_IMPL_RELEASE(nsXPBaseWindowFactory)
 
 //----------------------------------------------------------------------
 nsresult

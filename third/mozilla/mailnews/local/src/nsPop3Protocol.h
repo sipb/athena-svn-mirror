@@ -101,7 +101,8 @@ enum Pop3CapabilityEnum {
     POP3_TOP_UNDEFINED         = 0x00000400,
     POP3_HAS_TOP              = 0x00000800,
     POP3_HAS_AUTH_USER		    = 0x00001000,
-    POP3_HAS_AUTH_CRAM_MD5	    = 0x00002000
+    POP3_HAS_AUTH_CRAM_MD5	    = 0x00002000,
+    POP3_HAS_AUTH_APOP		    = 0x00004000
 };
 
 enum Pop3StatesEnum {
@@ -154,7 +155,8 @@ enum Pop3StatesEnum {
 
     POP3_GURL_RESPONSE,                         // 38
     POP3_QUIT_RESPONSE,
-    POP3_INTERRUPTED
+    POP3_INTERRUPTED,
+    POP3_STOPLOGIN
 };
 
 
@@ -251,6 +253,7 @@ typedef struct _Pop3ConData {
     PRInt32 pop3_size;
     PRBool dot_fix;
     PRBool assumed_end;
+    PRInt32 logonFailureCount;
 } Pop3ConData;
 
 // State Flags (Note, I use the word state in terms of storing 
@@ -280,6 +283,7 @@ public:
     virtual PRInt32 HandleLine(char *line, PRUint32 line_length);
 
 private:
+  nsCString m_ApopTimestamp;
   nsCOMPtr<nsIMsgStringService> mStringService;
 
   nsCString m_username;

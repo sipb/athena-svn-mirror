@@ -47,6 +47,7 @@
 #include "nsWeakReference.h"
 #include "nsHashtable.h"
 #include "nsITimer.h"
+#include "nsCOMPtr.h"
 #include "nsIDocument.h"
 #include "nsCOMArray.h"
 
@@ -77,7 +78,7 @@ class nsEventStateManager : public nsSupportsWeakReference,
   //eTabFocus_textControlsMask = (1<<0),  // unused - textboxes always tabbable
     eTabFocus_formElementsMask = (1<<1),  // non-text form elements
     eTabFocus_linksMask = (1<<2),         // links
-    eTabFocus_any = 1 + (1<<1) + (1<<2),  // everything that can be focused
+    eTabFocus_any = 1 + (1<<1) + (1<<2)   // everything that can be focused
   };
 
   enum nsTextfieldSelectModel {
@@ -185,7 +186,7 @@ protected:
   void EnsureDocument(nsIPresShell* aPresShell);
   void EnsureDocument(nsIPresContext* aPresContext);
   void FlushPendingEvents(nsIPresContext* aPresContext);
-  nsIFocusController* GetFocusControllerForDocument(nsIDocument* aDocument);
+  already_AddRefed<nsIFocusController> GetFocusControllerForDocument(nsIDocument* aDocument);
 
   typedef enum {
     eAccessKeyProcessingNormal = 0,

@@ -139,15 +139,14 @@ nsFileControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
                                            nsISupportsArray& aChildList)
 {
   // Get the NodeInfoManager and tag necessary to create input elements
-  nsCOMPtr<nsIDocument> doc;
-  mContent->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
   nsCOMPtr<nsINodeInfoManager> nimgr;
-  nsresult rv = doc->GetNodeInfoManager(*getter_AddRefs(nimgr));
+  nsresult rv = doc->GetNodeInfoManager(getter_AddRefs(nimgr));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
-                     *getter_AddRefs(nodeInfo));
+                     getter_AddRefs(nodeInfo));
 
   nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID,&rv));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -224,8 +223,7 @@ nsFileControlFrame::SetFocus(PRBool aOn, PRBool aRepaint)
 {
   // Fix for Bug 6133 
   if (mTextFrame) {
-    nsCOMPtr<nsIContent> content;
-    mTextFrame->GetContent(getter_AddRefs(content));
+    nsIContent* content = mTextFrame->GetContent();
     if (content) {
       content->SetFocus(mPresContext);
     }
@@ -266,15 +264,13 @@ nsFileControlFrame::MouseClick(nsIDOMEvent* aMouseEvent)
   nsresult result;
 
   // Get parent nsIDOMWindowInternal object.
-  nsCOMPtr<nsIContent> content;
-  result = GetContent(getter_AddRefs(content));
+  nsIContent* content = GetContent();
   if (!content)
-    return NS_FAILED(result) ? result : NS_ERROR_FAILURE;
+    return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIDocument> doc;
-  result = content->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = content->GetDocument();
   if (!doc)
-    return NS_FAILED(result) ? result : NS_ERROR_FAILURE;
+    return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIScriptGlobalObject> scriptGlobalObject;
   result = doc->GetScriptGlobalObject(getter_AddRefs(scriptGlobalObject));
@@ -378,14 +374,12 @@ NS_IMETHODIMP nsFileControlFrame::Reflow(nsIPresContext*          aPresContext,
 
     nsIFrame * child;
     FirstChild(aPresContext, nsnull, &child);
-    while (child == mTextFrame) {
-      child->GetNextSibling(&child);
+    if (child == mTextFrame) {
+      child = child->GetNextSibling();
     }
-    if (child != nsnull) {
-      nsRect buttonRect;
-      nsRect txtRect;
-      mTextFrame->GetRect(txtRect);
-      child->GetRect(buttonRect);
+    if (child) {
+      nsRect buttonRect = child->GetRect();
+      nsRect txtRect = mTextFrame->GetRect();
 
       // check to see if we must reflow just the area frame again 
       // in order for the text field to be the correct height
@@ -410,7 +404,7 @@ NS_IMETHODIMP nsFileControlFrame::Reflow(nsIPresContext*          aPresContext,
           // now adjust the frame positions
           txtRect.y      = aReflowState.mComputedBorderPadding.top;
           txtRect.height = aDesiredSize.height;
-          mTextFrame->SetRect(aPresContext, txtRect);
+          mTextFrame->SetRect(txtRect);
         }
       }
 
@@ -420,11 +414,11 @@ NS_IMETHODIMP nsFileControlFrame::Reflow(nsIPresContext*          aPresContext,
       // and we must make sure the text field is the correct height
       if (NS_STYLE_DIRECTION_RTL == vis->mDirection) {
         buttonRect.x      = aReflowState.mComputedBorderPadding.left;
-        child->SetRect(aPresContext, buttonRect);
+        child->SetRect(buttonRect);
         txtRect.x         = aDesiredSize.width - txtRect.width + aReflowState.mComputedBorderPadding.left;
         txtRect.y         = aReflowState.mComputedBorderPadding.top;
         txtRect.height    = aDesiredSize.height;
-        mTextFrame->SetRect(aPresContext, txtRect);
+        mTextFrame->SetRect(txtRect);
       }
 
     }
@@ -458,11 +452,10 @@ nsFileControlFrame::GetTextControlFrame(nsIPresContext* aPresContext, nsIFrame* 
 
   while (childFrame) {
     // see if the child is a text control
-    nsCOMPtr<nsIContent> content;
-    nsresult res = childFrame->GetContent(getter_AddRefs(content));
-    if (NS_SUCCEEDED(res) && content) {
+    nsIContent* content = childFrame->GetContent();
+    if (content) {
       nsCOMPtr<nsIAtom> atom;
-      res = content->GetTag(*getter_AddRefs(atom));
+      nsresult res = content->GetTag(getter_AddRefs(atom));
       if (NS_SUCCEEDED(res) && atom) {
         if (atom.get() == nsHTMLAtoms::input) {
 
@@ -482,8 +475,7 @@ nsFileControlFrame::GetTextControlFrame(nsIPresContext* aPresContext, nsIFrame* 
     if (frame)
        result = frame;
      
-    res = childFrame->GetNextSibling(&childFrame);
-    NS_ASSERTION(res == NS_OK,"failed to get next child");
+    childFrame = childFrame->GetNextSibling();
   }
 
   return result;
@@ -533,8 +525,7 @@ nsFileControlFrame::AttributeChanged(nsIPresContext* aPresContext,
                                        nsIContent*     aChild,
                                        PRInt32         aNameSpaceID,
                                        nsIAtom*        aAttribute,
-                                       PRInt32         aModType, 
-                                       PRInt32         aHint)
+                                       PRInt32         aModType)
 {
   // propagate disabled to text / button inputs
   if (aNameSpaceID == kNameSpaceID_None &&
@@ -546,7 +537,7 @@ nsFileControlFrame::AttributeChanged(nsIPresContext* aPresContext,
     SyncAttr(aNameSpaceID, aAttribute, SYNC_TEXT);
   }
 
-  return nsAreaFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType, aHint);
+  return nsAreaFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType);
 }
 
 NS_IMETHODIMP
@@ -579,12 +570,9 @@ nsFileControlFrame::GetFrameName(nsAString& aResult) const
 NS_IMETHODIMP
 nsFileControlFrame::GetFormContent(nsIContent*& aContent) const
 {
-  nsIContent* content;
-  nsresult    rv;
-
-  rv = GetContent(&content);
-  aContent = content;
-  return rv;
+  aContent = GetContent();
+  NS_IF_ADDREF(aContent);
+  return NS_OK;
 }
 
 NS_IMETHODIMP

@@ -92,7 +92,9 @@ nsIAtom*   nsProfileDirServiceProvider::sApp_MessengerFolderCache50;
 //*****************************************************************************   
 
 nsProfileDirServiceProvider::nsProfileDirServiceProvider(PRBool aNotifyObservers) :
+#ifdef MOZ_PROFILELOCKING
   mProfileDirLock(nsnull),
+#endif
   mNotifyObservers(aNotifyObservers),
   mSharingEnabled(PR_FALSE)
 {
@@ -101,7 +103,9 @@ nsProfileDirServiceProvider::nsProfileDirServiceProvider(PRBool aNotifyObservers
 
 nsProfileDirServiceProvider::~nsProfileDirServiceProvider()
 {
+#ifdef MOZ_PROFILELOCKING
   delete mProfileDirLock;
+#endif
 }
 
 nsresult
@@ -114,7 +118,9 @@ nsProfileDirServiceProvider::SetProfileDir(nsIFile* aProfileDir)
       NS_WARNING("Setting profile dir to same as current");
       return NS_OK;
     }
+#ifdef MOZ_PROFILELOCKING
     mProfileDirLock->Unlock();
+#endif
     UndefineFileLocations();
   }
   mProfileDir = aProfileDir;
@@ -141,6 +147,7 @@ nsProfileDirServiceProvider::SetProfileDir(nsIFile* aProfileDir)
   }
 #endif
   
+#ifdef MOZ_PROFILELOCKING
   // Lock the non-shared sub-dir if we are sharing,
   // the whole profile dir if we are not.
   nsCOMPtr<nsILocalFile> dirToLock;
@@ -151,6 +158,7 @@ nsProfileDirServiceProvider::SetProfileDir(nsIFile* aProfileDir)
   rv = mProfileDirLock->Lock(dirToLock);
   if (NS_FAILED(rv))
     return rv;
+#endif
       
   if (mNotifyObservers) {
     nsCOMPtr<nsIObserverService> observerService = 
@@ -283,9 +291,6 @@ nsProfileDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFi
     }
   }
   else if (inAtom == sApp_BookmarksFile50) {
-#ifdef XP_MACOSX
-    *persistant = PR_FALSE; // See bug 192124
-#endif
     rv = domainDir->Clone(getter_AddRefs(localFile));
     if (NS_SUCCEEDED(rv))
       rv = localFile->AppendNative(BOOKMARKS_FILE_50_NAME);
@@ -339,9 +344,11 @@ nsProfileDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFi
 nsresult
 nsProfileDirServiceProvider::Initialize()
 {
+#ifdef MOZ_PROFILELOCKING
   mProfileDirLock = new nsProfileLock;
   if (!mProfileDirLock)
     return NS_ERROR_OUT_OF_MEMORY;
+#endif
 
 #ifdef MOZ_PROFILESHARING
   nsCOMPtr<nsIProfileSharingSetup> sharingSetup =

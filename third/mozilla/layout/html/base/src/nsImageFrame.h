@@ -122,8 +122,7 @@ public:
                               nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType, 
-                              PRInt32 aHint);
+                              PRInt32 aModType);
 
 #ifdef ACCESSIBILITY
   NS_IMETHOD GetAccessible(nsIAccessible** aAccessible);
@@ -200,11 +199,10 @@ private:
   inline void SpecToURI(const nsAString& aSpec, nsIIOService *aIOService,
                         nsIURI **aURI);
 
-  inline void GetBaseURI(nsIURI **uri);
   inline void GetLoadGroup(nsIPresContext *aPresContext,
                            nsILoadGroup **aLoadGroup);
   nscoord GetContinuationOffset(nscoord* aWidth = 0) const;
-  void GetDocumentCharacterSet(nsAString& aCharset) const;
+  void GetDocumentCharacterSet(nsACString& aCharset) const;
 
   /**
    * This function will recalculate mTransform.  If a non-null image

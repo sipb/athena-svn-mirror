@@ -97,8 +97,7 @@ public:
                                nsIContent*     aChild,
                                PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
-                               PRInt32         aModType, 
-                               PRInt32         aHint);
+                               PRInt32         aModType);
 
   // table cells contain an area frame which does most of the work, and
   // so these functions should never be called. They assert and return
@@ -289,10 +288,6 @@ private:
 protected:
 
   friend class nsTableRowFrame;
-  void      MapBorderPadding(nsIPresContext* aPresContext);
-
-  void      MapVAlignAttribute(nsIPresContext* aPresContext, nsTableFrame *aTableFrame);
-  void      MapHAlignAttribute(nsIPresContext* aPresContext, nsTableFrame *aTableFrame);
 
   // paint backgrounds and borders (in separate border model) if aVisibleBackground, always set aPaintChildren
   virtual void PaintUnderlay(nsIPresContext&           aPresContext,

@@ -30,9 +30,10 @@ MODULE		= msgcompose
 LIBRARY_NAME	= msgcompose_s
 META_COMPONENT = mail
 REQUIRES	= xpcom \
-                  xpcom_obsolete \
+		  xpcom_obsolete \
 		  string \
 		  dom \
+		  js \
 		  editor \
 		  uriloader \
 		  msgbase \
@@ -59,7 +60,6 @@ REQUIRES	= xpcom \
 		  txmgr \
 		  caps \
 		  exthandler \
-		  mork \
 		  nkcache \
 		  mimetype \
 		  windowwatcher \

@@ -66,7 +66,7 @@ NS_IMETHODIMP nsBasicStreamGenerator::Setup(PRUint32 salt, nsISupports *consumer
 
   /* reestablish setup */
   if (consumer) {
-    mWeakPasswordSink = getter_AddRefs(NS_GetWeakReference(consumer, &rv));
+    mWeakPasswordSink = do_GetWeakReference(consumer, &rv);
     if (NS_FAILED(rv)) return rv;
   }
   mSalt = salt;
@@ -82,7 +82,7 @@ NS_IMETHODIMP nsBasicStreamGenerator::GetLevel(float *aLevel) {
 NS_IMETHODIMP nsBasicStreamGenerator::GetByte(PRUint32 offset, PRUint8 *retval) {
   NS_ENSURE_ARG_POINTER(retval);
   nsresult rv = NS_OK;
-  if (mPassword.Length() == 0) {
+  if (mPassword.IsEmpty()) {
     /* this is the first time, so we need to get the password */
     nsCOMPtr<nsIPasswordSink> weakPasswordSink = do_QueryReferent(mWeakPasswordSink);
     if (!weakPasswordSink) {

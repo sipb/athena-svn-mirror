@@ -59,12 +59,12 @@
 #include "nsIAppShell.h"
 #include "nsIJSContextStack.h"
 
-/* XXX
+/*
  * defining CAUTIOUS_SCRIPTHOOK makes jsds disable GC while calling out to the
- * script hook.  This is a hack to avoid some js engine problems that I havn't
- * properly tracked down.  I'm lame.
+ * script hook.  This was a hack to avoid some js engine problems that should
+ * be fixed now (see Mozilla bug 77636).
  */
-#define CAUTIOUS_SCRIPTHOOK
+#undef CAUTIOUS_SCRIPTHOOK
 
 #ifdef DEBUG_verbose
 #   define DEBUG_COUNT(name, count)                                             \
@@ -96,14 +96,15 @@
 }
 
 #define JSDS_MAJOR_VERSION 1
-#define JSDS_MINOR_VERSION 1
+#define JSDS_MINOR_VERSION 2
 
 #define NS_CATMAN_CTRID   "@mozilla.org/categorymanager;1"
 #define NS_JSRT_CTRID     "@mozilla.org/js/xpc/RuntimeService;1"
 
 #define AUTOREG_CATEGORY  "xpcom-autoregistration"
 #define APPSTART_CATEGORY "app-startup"
-#define JSD_STARTUP_ENTRY "JSDebugger Startup Observer"
+#define JSD_AUTOREG_ENTRY "JSDebugger Startup Observer"
+#define JSD_STARTUP_ENTRY "JSDebugger Startup Observer,service"
 
 JS_STATIC_DLL_CALLBACK (JSBool)
 jsds_GCCallbackProc (JSContext *cx, JSGCStatus status);
@@ -789,7 +790,7 @@ jsdContext::GetJSDContext(JSDContext **_rval)
 */
 
 /* Objects */
-NS_IMPL_THREADSAFE_ISUPPORTS1(jsdObject, jsdIObject); 
+NS_IMPL_THREADSAFE_ISUPPORTS1(jsdObject, jsdIObject)
 
 NS_IMETHODIMP
 jsdObject::GetJSDContext(JSDContext **_rval)
@@ -857,7 +858,7 @@ jsdObject::GetValue(jsdIValue **_rval)
 }
 
 /* Properties */
-NS_IMPL_THREADSAFE_ISUPPORTS2(jsdProperty, jsdIProperty, jsdIEphemeral);
+NS_IMPL_THREADSAFE_ISUPPORTS2(jsdProperty, jsdIProperty, jsdIEphemeral)
 
 jsdProperty::jsdProperty (JSDContext *aCx, JSDProperty *aProperty) :
     mCx(aCx), mProperty(aProperty)
@@ -955,7 +956,7 @@ jsdProperty::GetVarArgSlot(PRUint32 *_rval)
 }
 
 /* Scripts */
-NS_IMPL_THREADSAFE_ISUPPORTS2(jsdScript, jsdIScript, jsdIEphemeral); 
+NS_IMPL_THREADSAFE_ISUPPORTS2(jsdScript, jsdIScript, jsdIEphemeral)
 
 jsdScript::jsdScript (JSDContext *aCx, JSDScript *aScript) : mValid(PR_FALSE),
                                                              mTag(0),
@@ -1420,7 +1421,7 @@ jsdScript::ClearAllBreakpoints()
 }
 
 /* Contexts */
-NS_IMPL_THREADSAFE_ISUPPORTS2(jsdContext, jsdIContext, jsdIEphemeral);
+NS_IMPL_THREADSAFE_ISUPPORTS2(jsdContext, jsdIContext, jsdIEphemeral)
 
 jsdIContext *
 jsdContext::FromPtr (JSDContext *aJSDCx, JSContext *aJSCx)
@@ -1620,7 +1621,7 @@ jsdContext::SetScriptsEnabled (PRBool _rval)
 }
 
 /* Stack Frames */
-NS_IMPL_THREADSAFE_ISUPPORTS2(jsdStackFrame, jsdIStackFrame, jsdIEphemeral);
+NS_IMPL_THREADSAFE_ISUPPORTS2(jsdStackFrame, jsdIStackFrame, jsdIEphemeral)
 
 jsdStackFrame::jsdStackFrame (JSDContext *aCx, JSDThreadState *aThreadState,
                               JSDStackFrameInfo *aStackFrameInfo) :
@@ -1902,7 +1903,7 @@ jsdStackFrame::Eval (const nsAString &bytes, const char *fileName,
 }        
 
 /* Values */
-NS_IMPL_THREADSAFE_ISUPPORTS2(jsdValue, jsdIValue, jsdIEphemeral);
+NS_IMPL_THREADSAFE_ISUPPORTS2(jsdValue, jsdIValue, jsdIEphemeral)
 jsdIValue *
 jsdValue::FromPtr (JSDContext *aCx, JSDValue *aValue)
 {
@@ -2242,7 +2243,7 @@ jsdValue::GetWrappedValue()
 /******************************************************************************
  * debugger service implementation
  ******************************************************************************/
-NS_IMPL_THREADSAFE_ISUPPORTS1(jsdService, jsdIDebuggerService); 
+NS_IMPL_THREADSAFE_ISUPPORTS1(jsdService, jsdIDebuggerService)
 
 NS_IMETHODIMP
 jsdService::GetJSDContext(JSDContext **_rval)
@@ -2269,7 +2270,7 @@ jsdService::GetInitAtStartup (PRBool *_rval)
         nsresult autoreg_rv, appstart_rv;
         
         autoreg_rv = categoryManager->GetCategoryEntry(AUTOREG_CATEGORY, 
-                                                       JSD_STARTUP_ENTRY,
+                                                       JSD_AUTOREG_ENTRY,
                                                        getter_Copies(notused));
         appstart_rv = categoryManager->GetCategoryEntry(APPSTART_CATEGORY,
                                                         JSD_STARTUP_ENTRY,
@@ -2337,7 +2338,7 @@ jsdService::SetInitAtStartup (PRBool state)
 
     if (state) {
         rv = categoryManager->AddCategoryEntry(AUTOREG_CATEGORY,
-                                               JSD_STARTUP_ENTRY,
+                                               JSD_AUTOREG_ENTRY,
                                                jsdASObserverCtrID,
                                                PR_TRUE, PR_TRUE, nsnull);
         if (NS_FAILED(rv))
@@ -2351,7 +2352,7 @@ jsdService::SetInitAtStartup (PRBool state)
         mInitAtStartup = triYes;
     } else {
         rv = categoryManager->DeleteCategoryEntry(AUTOREG_CATEGORY,
-                                                  JSD_STARTUP_ENTRY, PR_TRUE);
+                                                  JSD_AUTOREG_ENTRY, PR_TRUE);
         if (NS_FAILED(rv))
             return rv;
         rv = categoryManager->DeleteCategoryEntry(APPSTART_CATEGORY,
@@ -3222,7 +3223,7 @@ jsdService::GetService ()
     return gJsds;
 }
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(jsdService, jsdService::GetService);
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(jsdService, jsdService::GetService)
 
 /* app-start observer.  turns on the debugger at app-start.  this is inserted
  * and/or removed from the app-start category by the jsdService::initAtStartup
@@ -3234,12 +3235,10 @@ class jsdASObserver : public nsIObserver
     NS_DECL_ISUPPORTS
     NS_DECL_NSIOBSERVER
 
-    jsdASObserver ()
-    {
-    }    
+    jsdASObserver () {}    
 };
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(jsdASObserver, nsIObserver); 
+NS_IMPL_THREADSAFE_ISUPPORTS1(jsdASObserver, nsIObserver)
 
 NS_IMETHODIMP
 jsdASObserver::Observe (nsISupports *aSubject, const char *aTopic,
@@ -3266,18 +3265,20 @@ jsdASObserver::Observe (nsISupports *aSubject, const char *aTopic,
         return rv;
 
     rv = jsds->OnForRuntime(rt);
+    if (NS_FAILED(rv))
+        return rv;
     
-    return rv;
+    return jsds->SetFlags(JSD_DISABLE_OBJECT_TRACE);
 }
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(jsdASObserver);
+NS_GENERIC_FACTORY_CONSTRUCTOR(jsdASObserver)
 
 static const nsModuleComponentInfo components[] = {
-    {"JSDService", JSDSERVICE_CID,     jsdServiceCtrID, jsdServiceConstructor},
-    {"JSDASObserver",  JSDASO_CID,  jsdASObserverCtrID, jsdASObserverConstructor}
+    {"JSDService", JSDSERVICE_CID,    jsdServiceCtrID, jsdServiceConstructor},
+    {"JSDASObserver",  JSDASO_CID, jsdASObserverCtrID, jsdASObserverConstructor}
 };
 
-NS_IMPL_NSGETMODULE(JavaScript_Debugger, components);
+NS_IMPL_NSGETMODULE(JavaScript_Debugger, components)
 
 /********************************************************************************
  ********************************************************************************

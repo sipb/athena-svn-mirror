@@ -55,11 +55,13 @@ REQUIRES	= xpcom \
 		  shistory \
 		  plugin \
 		  windowwatcher \
-		  htmlparser \
 		  chardet \
 		  find \
 		  appshell \
 		  intl \
+		  unicharutil \
+		  rdf \
+		  xultmpl \
 		  $(NULL)
 
 ifdef NS_TRACE_MALLOC

@@ -57,41 +57,19 @@
 #include "mimebuf.h"
 #include "nsMsgI18N.h"
 #include "nsMimeTypes.h"
-#include "nsICharsetConverterManager2.h"
+#include "nsICharsetConverterManager.h"
 #include "nsISaveAsCharset.h"
 #include "nsHankakuToZenkakuCID.h"
 #include "nsReadableUtils.h"
 #include "mimehdrs.h"
+#include "nsIMIMEHeaderParam.h"
+#include "nsNetCID.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
 static char basis_64[] =
    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-#define XX 127
-/*
- * Table for decoding base64
- */
-static char index_64[256] = {
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,62, XX,XX,XX,63,
-    52,53,54,55, 56,57,58,59, 60,61,XX,XX, XX,XX,XX,XX,
-    XX, 0, 1, 2,  3, 4, 5, 6,  7, 8, 9,10, 11,12,13,14,
-    15,16,17,18, 19,20,21,22, 23,24,25,XX, XX,XX,XX,XX,
-    XX,26,27,28, 29,30,31,32, 33,34,35,36, 37,38,39,40,
-    41,42,43,44, 45,46,47,48, 49,50,51,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-};
-#define CHAR64(c)  (index_64[(unsigned char)(c)])
 
 #define NO_Q_ENCODING_NEEDED(ch)  \
   (((ch) >= 'a' && (ch) <= 'z') || ((ch) >= 'A' && (ch) <= 'Z') || \
@@ -178,72 +156,6 @@ intlmime_encode_b(const unsigned char* input, PRInt32 inlen, char* output)
   return (output - head);
 }
 
-static char *intlmime_decode_b (const char *in, unsigned length)
-{
-  char *out, *dest = 0;
-  PRInt32 c1, c2, c3, c4;
-
-  out = dest = (char *)PR_Malloc(length+1);
-  if (dest == NULL)
-    return NULL;
-
-  while (length > 0) {
-    while (length > 0 && CHAR64(*in) == XX) {
-      if (*in == '=') goto badsyntax;
-      in++;
-      length--;
-    }
-    if (length == 0) break;
-    c1 = *in++;
-    length--;
-    
-    while (length > 0 && CHAR64(*in) == XX) {
-      if (*in == '=') goto badsyntax;
-      in++;
-      length--;
-    }
-    if (length == 0) goto badsyntax;
-    c2 = *in++;
-    length--;
-    
-    while (length > 0 && *in != '=' && CHAR64(*in) == XX) {
-      in++;
-      length--;
-    }
-    if (length == 0) goto badsyntax;
-    c3 = *in++;
-    length--;
-    
-    while (length > 0 && *in != '=' && CHAR64(*in) == XX) {
-      in++;
-      length--;
-    }
-    if (length == 0) goto badsyntax;
-    c4 = *in++;
-    length--;
-
-    c1 = CHAR64(c1);
-    c2 = CHAR64(c2);
-    *out++ = ((c1<<2) | ((c2&0x30)>>4));
-    if (c3 == '=') {
-      if (c4 != '=') goto badsyntax;
-      break; /* End of data */
-    }
-    c3 = CHAR64(c3);
-    *out++ = (((c2&0x0F) << 4) | ((c3&0x3C) >> 2));
-    if (c4 == '=') {
-      break; /* End of data */
-    }
-    c4 = CHAR64(c4);
-    *out++ = (((c3&0x03) << 6) | c4);
-  }
-  *out++ = '\0';
-  return dest;
-
-badsyntax:
-  PR_Free(dest);
-  return NULL;
-}
 
 /*      some utility function used by this file */
 static PRBool intlmime_only_ascii_str(const char *s)
@@ -282,7 +194,8 @@ PRInt32 generate_encodedwords(char *pUTF8, const char *charset, char method, cha
   nsCOMPtr <nsISaveAsCharset> conv;
   PRUnichar *_pUCS2 = nsnull, *pUCS2 = nsnull, *pUCS2Head = nsnull, cUCS2Tmp = 0;
   char  *ibuf, *o = output;
-  char  encodedword_head[kMAX_CSNAME+4+1], _charset[kMAX_CSNAME];
+  char  encodedword_head[kMAX_CSNAME+4+1];
+  nsCAutoString _charset;
   char  *pUTF8Head = nsnull, cUTF8Tmp = 0;
   PRInt32   olen = 0, offset, linelen = output_carryoverlen, convlen = 0;
   PRInt32   encodedword_headlen = 0, encodedword_taillen = foldingonly ? 0 : 2; // "?="
@@ -299,21 +212,19 @@ PRInt32 generate_encodedwords(char *pUTF8, const char *charset, char method, cha
 
     // Resolve charset alias
     {
-      nsCOMPtr <nsICharsetConverterManager2> ccm2 = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+      nsCOMPtr <nsICharsetAlias> calias = do_GetService(NS_CHARSETALIAS_CONTRACTID, &rv);
       nsCOMPtr <nsIAtom> charsetAtom;
       charset = !nsCRT::strcasecmp(charset, "us-ascii") ? "ISO-8859-1" : charset;
-      rv = ccm2->GetCharsetAtom(NS_ConvertASCIItoUCS2(charset).get(), getter_AddRefs(charsetAtom));
+      rv = calias->GetPreferred(nsDependentCString(charset),
+                                _charset);
       if (NS_FAILED(rv)) {
         if (_pUCS2)
           nsMemory::Free(_pUCS2);
         return -1;
       }
-      const char *charsetName;
-      charsetAtom->GetUTF8String(&charsetName);
-      strncpy(_charset, charsetName, sizeof(_charset)-1);
-      _charset[sizeof(_charset)-1] = '\0';
-      if (_charset[0])
-        charset = _charset;
+
+      // this is so nasty, but _charset won't be going away..
+      charset = _charset.get();
     }
 
     // Prepare MIME encoded-word head with official charset name
@@ -804,329 +715,6 @@ char * apply_rfc2047_encoding(const char *_src, PRBool structured, const char *c
   return output;
 }
 
-/*
- * Table for decoding hexadecimal in quoted-printable
- */
-static char index_hex[256] = {
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-     0, 1, 2, 3,  4, 5, 6, 7,  8, 9,XX,XX, XX,XX,XX,XX,
-    XX,10,11,12, 13,14,15,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,10,11,12, 13,14,15,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-    XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
-};
-#define HEXCHAR(c)  (index_hex[(unsigned char)(c)])
-
-static void convert_htab(char *s)
-{
-  for (; *s; ++s) {
-    if (*s == TAB)
-      *s = ' ';
-  }
-}
-
-static char *intlmime_decode_q(const char *in, unsigned length)
-{
-  char *out, *dest = 0;
-
-  out = dest = (char *)PR_Malloc(length+1);
-  if (dest == NULL)
-    return NULL;
-  memset(out, 0, length+1);
-  while (length > 0) {
-    switch (*in) {
-    case '=':
-      if (length < 3 || HEXCHAR(in[1]) == XX ||
-          HEXCHAR(in[2]) == XX) goto badsyntax;
-      *out++ = (HEXCHAR(in[1]) << 4) + HEXCHAR(in[2]);
-      in += 3;
-      length -= 3;
-      break;
-
-    case '_':
-      *out++ = ' ';
-      in++;
-      length--;
-      continue;
-
-    default:
-      if (*in & 0x80) goto badsyntax;
-      *out++ = *in++;
-      length--;
-    }
-  }
-  *out++ = '\0';
-  convert_htab(dest);
-  return dest;
-
- badsyntax:
-  PR_Free(dest);
-  return NULL;
-}
-
-static PRBool intl_is_utf8(const char *input, unsigned len)
-{
-  PRInt32 c;
-  /*
-   * Input which contains legal HZ sequences should not be detected
-   * as UTF-8.
-   */
-  enum { hz_initial, /* No HZ seen yet */
-         hz_escaped, /* Inside an HZ ~{ escape sequence */
-         hz_seen, /* Have seen at least one complete HZ sequence */
-         hz_notpresent /* Have seen something that is not legal HZ */
-  } hz_state;
-
-  hz_state = hz_initial;
-  while (len) {
-    c = (unsigned char)*input++;
-    len--;
-    if (c == 0x1B) return PR_FALSE;
-    if (c == '~') {
-      switch (hz_state) {
-      case hz_initial:
-      case hz_seen:
-        if (*input == '{') {
-          hz_state = hz_escaped;
-        } else if (*input == '~') {
-          /* ~~ is the HZ encoding of ~.  Skip over second ~ as well */
-          hz_state = hz_seen;
-          input++;
-          len--;
-        } else {
-          hz_state = hz_notpresent;
-        }
-        break;
-
-      case hz_escaped:
-        if (*input == '}') hz_state = hz_seen;
-        break;
-      }
-      continue;
-    }
-    if ((c & 0x80) == 0) continue;
-    hz_state = hz_notpresent;
-    if ((c & 0xE0) == 0xC0) {
-      if (len < 1 || (*input & 0xC0) != 0x80 ||
-        ((c & 0x1F)<<6) + (*input & 0x3f) < 0x80) {
-        return PR_FALSE;
-      }
-      input++;
-      len--;
-    } else if ((c & 0xF0) == 0xE0) {
-      if (len < 2 || (input[0] & 0xC0) != 0x80 ||
-        (input[1] & 0xC0) != 0x80) {
-        return PR_FALSE;
-      }
-      input += 2;
-      len -= 2;
-    } else if ((c & 0xF8) == 0xF0) {
-      if (len < 3 || (input[0] & 0xC0) != 0x80 ||
-        (input[1] & 0xC0) != 0x80 || (input[2] & 0xC0) != 0x80) {
-        return PR_FALSE;
-      }
-      input += 2;
-      len -= 2;
-    } else {
-      return PR_FALSE;
-    }
-  }
-  if (hz_state == hz_seen) return PR_FALSE;
-  return PR_TRUE;
-}
-
-static void intl_copy_uncoded_header(char **output, const char *input,
-  unsigned len, const char *default_charset)
-{
-  PRInt32 c;
-  char *dest = *output;
-
-  if (!default_charset) {
-    memcpy(dest, input, len);
-    *output = dest + len;
-    return;
-  }
-
-  // Copy as long as it's US-ASCII.  An ESC may indicate ISO 2022
-  // A ~ may indicate it is HZ
-  while (len && (c = (unsigned char)*input++) != 0x1B && c != '~' && !(c & 0x80)) {
-    *dest++ = c;
-    len--;
-  }
-  if (!len) {
-    *output = dest;
-    return;
-  }
-  input--;
-
-  // If not UTF-8, treat as default charset
-  nsAutoString tempUnicodeString;
-  if (!intl_is_utf8(input, len))    {
-    if (NS_FAILED(ConvertToUnicode(default_charset, nsCAutoString(input, len).get(), tempUnicodeString))) {
-      // Failed to convert. Populate the outString with Unicode Replacement Char
-      tempUnicodeString.Truncate();
-      for (unsigned i = 0; i < len; i++) {
-        tempUnicodeString.Append((PRUnichar)0xFFFD);
-      }
-    }
-    NS_ConvertUCS2toUTF8 utf8_text(tempUnicodeString);
-    PRInt32 output_len = utf8_text.Length();
-    memcpy(dest, utf8_text.get(), output_len);
-    *output = dest + output_len;
-  } else {
-    memcpy(dest, input, len);
-    *output = dest + len;
-  }
-}
-
-static const char especials[] = "()<>@,;:\\\"/[]?.=";
-
-static
-char *intl_decode_mime_part2_str(const char *header,
-  const char *default_charset, PRBool override_charset)
-{
-  char *output_p = NULL;
-  char *retbuff = NULL;
-  const char *p, *q, *r;
-  char *decoded_text;
-  const char *begin; /* tracking pointer for where we are in the input buffer */
-  PRInt32 last_saw_encoded_word = 0;
-  const char *charset_start, *charset_end;
-  char charset[80];
-  nsAutoString tempUnicodeString;
-
-  // initialize charset name to an empty string
-  charset[0] = '\0';
-
-  /* Assume no more than 3X expansion due to UTF-8 conversion */
-  retbuff = (char *)PR_Malloc(3*strlen(header)+1);
-
-  if (retbuff == NULL)
-    return NULL;
-
-  output_p = retbuff;
-  begin = header;
-
-  while ((p = PL_strstr(begin, "=?")) != 0) {
-    if (last_saw_encoded_word) {
-      /* See if it's all whitespace. */
-      for (q = begin; q < p; q++) {
-        if (!PL_strchr(" \t\r\n", *q)) break;
-      }
-    }
-
-    if (!last_saw_encoded_word || q < p) {
-      /* copy the part before the encoded-word */
-      intl_copy_uncoded_header(&output_p, begin, p - begin, default_charset);
-      begin = p;
-    }
-
-    p += 2;
-
-    /* Get charset info */
-    charset_start = p;
-    charset_end = 0;
-    for (q = p; *q != '?'; q++) {
-      if (*q <= ' ' || PL_strchr(especials, *q)) {
-        goto badsyntax;
-      }
-
-      /* RFC 2231 section 5 */
-      if (!charset_end && *q == '*') {
-        charset_end = q; 
-      }
-    }
-    if (!charset_end) {
-      charset_end = q;
-    }
-
-    /* Check for too-long charset name */
-    if ((unsigned)(charset_end - charset_start) >= sizeof(charset)) goto badsyntax;
-    
-    memcpy(charset, charset_start, charset_end - charset_start);
-    charset[charset_end - charset_start] = 0;
-
-    q++;
-    if (*q != 'Q' && *q != 'q' && *q != 'B' && *q != 'b')
-      goto badsyntax;
-
-    if (q[1] != '?')
-      goto badsyntax;
-
-    r = q;
-    for (r = q + 2; *r != '?'; r++) {
-      if (*r < ' ') goto badsyntax;
-    }
-    if (r[1] != '=')
-	    goto badsyntax;
-    else if (r == q + 2) {
-	    // it's empty, skip
-	    begin = r + 2;
-	    last_saw_encoded_word = 1;
-	    continue;
-    }
-
-
-    if(*q == 'Q' || *q == 'q')
-      decoded_text = intlmime_decode_q(q+2, r - (q+2));
-    else
-      decoded_text = intlmime_decode_b(q+2, r - (q+2));
-
-    if (decoded_text == NULL)
-      goto badsyntax;
-
-    // Override charset if requested.  Never override labeled UTF-8.
-    // Use default charset instead of UNKNOWN-8BIT
-    if ((override_charset && 0 != nsCRT::strcasecmp(charset, "UTF-8")) ||
-        (default_charset && 0 == nsCRT::strcasecmp(charset, "UNKNOWN-8BIT"))) {
-      PL_strncpy(charset, default_charset, sizeof(charset)-1);
-      charset[sizeof(charset)-1] = '\0';
-    }
-
-    if (NS_SUCCEEDED(ConvertToUnicode(charset, decoded_text, tempUnicodeString))) {
-      NS_ConvertUCS2toUTF8 utf8_text(tempUnicodeString.get());
-      PRInt32 utf8_len = utf8_text.Length();
-
-      memcpy(output_p, utf8_text.get(), utf8_len);
-      output_p += utf8_len;
-    } else {
-      PL_strcpy(output_p, "\347\277\275"); /* UTF-8 encoding of U+FFFD */
-      output_p += 3;
-    }
-
-    PR_Free(decoded_text);
-
-    begin = r + 2;
-    last_saw_encoded_word = 1;
-    continue;
-
-  badsyntax:
-    /* copy the part before the encoded-word */
-    PL_strncpy(output_p, begin, p - begin);
-    output_p += p - begin;
-    begin = p;
-    last_saw_encoded_word = 0;
-  }
-
-  /* put the tail back  */
-  intl_copy_uncoded_header(&output_p, begin, strlen(begin), default_charset);
-  *output_p = '\0';
-  convert_htab(retbuff);
-
-  return retbuff;
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // BEGIN PUBLIC INTERFACE
 extern "C" {
@@ -1138,25 +726,16 @@ extern "C" char *MIME_DecodeMimeHeader(const char *header,
                                        PRBool override_charset,
                                        PRBool eatContinuations)
 {
-  char *result = nsnull;
-
-  if (header == 0)
+  nsresult rv;
+  nsCOMPtr <nsIMIMEHeaderParam> mimehdrpar = do_GetService(NS_MIMEHEADERPARAM_CONTRACTID, &rv);
+  if (NS_FAILED(rv))
     return nsnull;
-
-  // If no MIME encoded then do nothing otherwise decode the input.
-  if (PL_strstr(header, "=?") ||
-      (default_charset && !intl_is_utf8(header, strlen(header)))) {
-	  result = intl_decode_mime_part2_str(header, default_charset, override_charset);
-  } else if (eatContinuations && 
-             (PL_strchr(header, '\n') || PL_strchr(header, '\r'))) {
-    result = nsCRT::strdup(header);
-  } else {
-    eatContinuations = PR_FALSE;
-  }
-  if (eatContinuations)
-    result = MIME_StripContinuations(result);
-
-  return result;
+  nsCAutoString result;
+  rv = mimehdrpar->DecodeRFC2047Header(header, default_charset, override_charset, 
+                                       eatContinuations, result);
+  if (NS_SUCCEEDED(rv))
+    return nsCRT::strdup(result.get());
+  return nsnull;
 }  
 
 char *MIME_EncodeMimePartIIStr(const char* header, PRBool structured, const char* mailCharset, const PRInt32 fieldNameLen, const PRInt32 encodedWordSize)
@@ -1212,17 +791,15 @@ MIME_get_unicode_decoder(const char* aInputCharset, nsIUnicodeDecoder **aDecoder
   nsresult res;
 
   // get charset converters.
-  nsCOMPtr<nsICharsetConverterManager2> ccm2 = 
+  nsCOMPtr<nsICharsetConverterManager> ccm = 
            do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &res); 
   if (NS_SUCCEEDED(res)) {
-    nsCOMPtr <nsIAtom> charsetAtom;
-    if (!*aInputCharset || !nsCRT::strcasecmp("us-ascii", aInputCharset))
-      res = ccm2->GetCharsetAtom(NS_LITERAL_STRING("ISO-8859-1").get(), getter_AddRefs(charsetAtom));
-    else
-      res = ccm2->GetCharsetAtom(NS_ConvertASCIItoUCS2(aInputCharset).get(), getter_AddRefs(charsetAtom));
+
     // create a decoder (conv to unicode), ok if failed if we do auto detection
-    if (NS_SUCCEEDED(res))
-      res = ccm2->GetUnicodeDecoder(charsetAtom, aDecoder);
+    if (!*aInputCharset || !nsCRT::strcasecmp("us-ascii", aInputCharset))
+      res = ccm->GetUnicodeDecoderRaw("ISO-8859-1", aDecoder);
+    else
+      res = ccm->GetUnicodeDecoder(aInputCharset, aDecoder);
   }
    
   return res;
@@ -1235,17 +812,11 @@ MIME_get_unicode_encoder(const char* aOutputCharset, nsIUnicodeEncoder **aEncode
   nsresult res;
 
   // get charset converters.
-  nsCOMPtr<nsICharsetConverterManager2> ccm2 = 
+  nsCOMPtr<nsICharsetConverterManager> ccm = 
            do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &res); 
-  if (NS_SUCCEEDED(res)) {
-    nsCOMPtr <nsIAtom> charsetAtom;
-    if (*aOutputCharset) {
-      res = ccm2->GetCharsetAtom(NS_ConvertASCIItoUCS2(aOutputCharset).get(), getter_AddRefs(charsetAtom));
-
+  if (NS_SUCCEEDED(res) && *aOutputCharset) {
       // create a encoder (conv from unicode)
-      if (NS_SUCCEEDED(res))
-        res = ccm2->GetUnicodeEncoder(charsetAtom, aEncoder);
-    }
+      res = ccm->GetUnicodeEncoder(aOutputCharset, aEncoder);
   }
    
   return res;

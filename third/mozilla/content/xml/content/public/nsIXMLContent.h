@@ -75,12 +75,6 @@ public:
    *         which case, the caller should stop parsing as well.
    */
   NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell) = 0;
-
-  /**
-   * Get the XML Base URI for this element (http://www.w3.org/TR/xmlbase/)
-   * @param aURI the base URI [OUT]
-   */
-  NS_IMETHOD GetXMLBaseURI(nsIURI **aURI) = 0;
 };
 
 nsresult
@@ -95,25 +89,6 @@ NS_NewXMLProcessingInstruction(nsIContent** aInstancePtrResult,
 nsresult
 NS_NewXMLStylesheetProcessingInstruction(nsIContent** aInstancePtrResult,
                                          const nsAString& aData);
-
-nsresult
-NS_NewXMLEntity(nsIContent** aInstancePtrResult,
-                const nsAString& aName,
-                const nsAString& aPublicId,
-                const nsAString& aSystemId,
-                const nsAString& aNotationName);
-
-nsresult
-NS_NewXMLNotation(nsIContent** aInstancePtrResult,
-                  const nsAString& aName,
-                  const nsAString& aPublicId,
-                  const nsAString& aSystemId);
-
-class nsIDOMNamedNodeMap;
-
-nsresult
-NS_NewXMLNamedNodeMap(nsIDOMNamedNodeMap** aInstancePtrResult,
-                      nsISupportsArray *aArray);
 
 nsresult
 NS_NewXMLCDATASection(nsIContent** aInstancePtrResult);

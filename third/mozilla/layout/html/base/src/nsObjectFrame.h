@@ -84,7 +84,6 @@ public:
                           nsGUIEvent*     aEvent,
                           nsEventStatus*  aEventStatus);
 
-  NS_IMETHOD Scrolled(nsIView *aView);
   NS_IMETHOD GetFrameType(nsIAtom** aType) const;
   
   virtual PRBool SupportsVisibilityHidden() { return PR_FALSE; }
@@ -172,8 +171,6 @@ protected:
                        nsReflowStatus&          aStatus,
                        nsIFrame*                child);
  
-  nsresult GetBaseURL(nsIURI* &aURL);
-
   // check attributes and optionally CSS to see if we should display anything
   PRBool IsHidden(PRBool aCheckVisibilityStyle = PR_TRUE) const;
 

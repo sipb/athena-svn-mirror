@@ -39,10 +39,9 @@ Rights Reserved.
   xmlns:nc="http://home.netscape.com/NC-rdf#"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-<script src="chrome://messenger/content/mailCommands.js"/>
-<script src="chrome://messenger/content/mailWindowOverlay.js"/>
-<script src="chrome://messenger/content/commandglue.js"/>
-<script src="chrome://messenger/content/mail-offline.js"/>
+<script type="application/x-javascript" src="chrome://messenger/content/mailCommands.js"/>
+<script type="application/x-javascript" src="chrome://messenger/content/mailWindowOverlay.js"/>
+<script type="application/x-javascript" src="chrome://messenger/content/mail-offline.js"/>
 <script type="application/x-javascript" src="chrome://communicator/content/findUtils.js"/>
 <script type="application/x-javascript" src="chrome://communicator/content/bookmarks/bookmarks.js"/>
 <script type="application/x-javascript" src="chrome://communicator/content/printing.js"/>
@@ -255,6 +254,7 @@ Rights Reserved.
     <command id="cmd_markAsRead" oncommand="goDoCommand('cmd_markAsRead'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markAllRead" oncommand="goDoCommand('cmd_markAllRead'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markThreadAsRead" oncommand="goDoCommand('cmd_markThreadAsRead'); event.preventBubble()" disabled="true"/>
+    <command id="cmd_markReadByDate" oncommand="goDoCommand('cmd_markReadByDate');" disabled="true"/>
     <command id="cmd_markAsFlagged" oncommand="goDoCommand('cmd_markAsFlagged'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markAsJunk" oncommand="goDoCommand('cmd_markAsJunk'); event.preventBubble()" disabled="true"/>
     <command id="cmd_markAsNotJunk" oncommand="goDoCommand('cmd_markAsNotJunk'); event.preventBubble()" disabled="true"/>
@@ -304,6 +304,7 @@ Rights Reserved.
   <key id="key_toggleRead" key="&markAsReadCmd.key;"                 oncommand="goDoCommand('cmd_markAsRead');"/>
   <key id="key_markAllRead" key="&markAllReadCmd.key;"               oncommand="goDoCommand('cmd_markAllRead');" modifiers="accel, shift"/>
   <key id="key_markThreadAsRead" key="&markThreadAsReadCmd.key;"     oncommand="goDoCommand('cmd_markThreadAsRead')"/>
+  <key id="key_markReadByDate" key="&markReadByDateCmd.key;"         oncommand="goDoCommand('cmd_markReadByDate')"/>
   <key id="key_nextMsg" key="&nextMsgCmd.key;"                       oncommand="goDoCommand('cmd_nextMsg')"/>
   <key id="key_nextUnreadMsg" key="&nextUnreadMsgCmd.key;"           oncommand="goDoCommand('cmd_nextUnreadMsg')"/>
   <key id="key_expandAllThreads" key="&expandAllThreadsCmd.key;"     oncommand="goDoCommand('cmd_expandAllThreads')"/>
@@ -582,6 +583,10 @@ Rights Reserved.
                   key="key_markThreadAsRead"
                   accesskey="&markThreadAsReadCmd.accesskey;"
                   observes="cmd_markThreadAsRead"/>
+        <menuitem label="&markReadByDateCmd.label;"
+                  key="key_markReadByDate"
+                  accesskey="&markReadByDateCmd.accesskey;"
+                  command="cmd_markReadByDate"/>
         <menuitem label="&markAllReadCmd.label;"
                   key="key_markAllRead"
                   accesskey="&markAllReadCmd.accesskey;"
@@ -640,9 +645,13 @@ Rights Reserved.
         label="&folderContextGetMessages.label;"
         accesskey="&folderContextGetMessages.accesskey;"
         oncommand="MsgGetMessage();"/>
-    <menuitem id="folderPaneContext-markAllRead"
+    <menuitem id="folderPaneContext-markNewsgroupAllRead"
         label="&folderContextMarkNewsgroupRead.label;"
         accesskey="&folderContextMarkNewsgroupRead.accesskey;"
+        oncommand="MsgMarkAllRead();"/>
+    <menuitem id="folderPaneContext-markMailFolderAllRead"
+        label="&folderContextMarkMailFolderRead.label;"
+        accesskey="&folderContextMarkMailFolderRead.accesskey;"
         oncommand="MsgMarkAllRead();"/>
     <menuitem id="folderPaneContext-new"
         label="&folderContextNew.label;"
@@ -916,6 +925,10 @@ Rights Reserved.
                   key="key_markThreadAsRead"
                   accesskey="&markThreadAsReadCmd.accesskey;"
                   observes="cmd_markThreadAsRead"/>
+        <menuitem label="&markReadByDateCmd.label;"
+                  key="key_markReadByDate"
+                  accesskey="&markReadByDateCmd.accesskey;"
+                  command="cmd_markReadByDate"/>
         <menuitem label="&markAllReadCmd.label;"
                   key="key_markAllRead"
                   accesskey="&markAllReadCmd.accesskey;"
@@ -979,7 +992,8 @@ Rights Reserved.
         <menuitem id="context-bookmarklink"
                   label="&bookmarkLinkCmd.label;"
                   accesskey="&bookmarkLinkCmd.accesskey;"
-                  oncommand="BookmarksUtils.addBookmark(gContextMenu.linkURL(),
+                  oncommand="initBMService();
+                             BookmarksUtils.addBookmark(gContextMenu.linkURL(),
                                                         gContextMenu.linkText());"/>
 
 </popup>
@@ -1176,6 +1190,8 @@ Rights Reserved.
       </menu>
       <menu label="&msgsMenu.label;" id="viewMessageViewMenu" accesskey="&msgsMenu.accesskey;">
         <menupopup id="viewMessageViewPopup" onpopupshowing="InitViewMessageViewMenu()">
+					<menuitem id="viewThreaded" type="checkbox" label="&viewThreaded.label;" accesskey="&viewThreaded.accesskey;" oncommand="MsgToggleThreaded();"/>
+          <menuseparator/>
           <menuitem id="viewAll" type="radio" name="viewmessages" label="&viewAll.label;" accesskey="&viewAll.accesskey;" oncommand="ViewMessagesBy('viewPickerAll');"/>
           <menuitem id="viewUnread" type="radio" name="viewmessages" label="&viewUnread.label;" accesskey="&viewUnread.accesskey;" oncommand="ViewMessagesBy('viewPickerUnread');"/>
           <menuseparator/>
@@ -1500,6 +1516,10 @@ Rights Reserved.
                   key="key_markThreadAsRead"
                   accesskey="&markThreadAsReadCmd.accesskey;"
                   observes="cmd_markThreadAsRead"/>
+        <menuitem label="&markReadByDateCmd.label;"
+                  key="key_markReadByDate"
+                  accesskey="&markReadByDateCmd.accesskey;"
+                  command="cmd_markReadByDate"/>
         <menuitem label="&markAllReadCmd.label;"
                   key="key_markAllRead"
                   accesskey="&markAllReadCmd.accesskey;"
@@ -1699,6 +1719,7 @@ Rights Reserved.
             <menupopup onpopupshowing="InitMessageMark()">
                 <menuitem type="checkbox" key="key_toggleRead" id="markReadToolbarItem" label="&markAsReadCmd.label;" accesskey="&markAsReadCmd.accesskey;" observes="cmd_markAsRead" default="true" />
                 <menuitem label="&markThreadAsReadCmd.label;" key="key_markThreadAsRead" accesskey="&markThreadAsReadCmd.accesskey;" observes="cmd_markThreadAsRead"/>
+                <menuitem label="&markReadByDateCmd.label;" key="key_markReadByDate" accesskey="&markReadByDateCmd.accesskey;" command="cmd_markReadByDate"/>
                 <menuitem label="&markAllReadCmd.label;" key="key_markAllRead" accesskey="&markAllReadCmd.accesskey;" observes="cmd_markAllRead"/>
                 <menuseparator/>
                 <menuitem type="checkbox" id="markFlaggedToolbarItem" label="&markFlaggedCmd.label;" accesskey="&markFlaggedCmd.accesskey;" observes="cmd_markAsFlagged"/>

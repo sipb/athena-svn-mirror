@@ -140,7 +140,7 @@ public:
   void* operator new(size_t sz, nsIPresShell* aPresShell) CPP_THROW_NEW;
 
   // Overridden to prevent the global delete from being called, since the memory
-  // came out of an nsIArena instead of the global delete operator's heap.  
+  // came out of an arena instead of the global delete operator's heap.  
   // XXX Would like to make this private some day, but our UNIX compilers can't 
   // deal with it.
   void operator delete(void* aPtr, size_t sz);
@@ -232,25 +232,16 @@ public:
                                nsIContent*     aChild,
                                PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
-                               PRInt32         aModType, 
-                               PRInt32         aHint);
-  NS_IMETHOD  ContentStateChanged(nsIPresContext* aPresContext,
-                                  nsIContent*     aChild,
-                                  PRInt32         aHint);
+                               PRInt32         aModType);
   NS_IMETHOD  IsSplittable(nsSplittableType& aIsSplittable) const;
   NS_IMETHOD  GetPrevInFlow(nsIFrame** aPrevInFlow) const;
   NS_IMETHOD  SetPrevInFlow(nsIFrame*);
   NS_IMETHOD  GetNextInFlow(nsIFrame** aNextInFlow) const;
   NS_IMETHOD  SetNextInFlow(nsIFrame*);
-  NS_IMETHOD  GetView(nsIPresContext* aPresContext, nsIView** aView) const;
-  NS_IMETHOD  SetView(nsIPresContext* aPresContext, nsIView* aView);
-  NS_IMETHOD  GetParentWithView(nsIPresContext* aPresContext, nsIFrame** aParent) const;
   NS_IMETHOD  GetOffsetFromView(nsIPresContext* aPresContext, nsPoint& aOffset, nsIView** aView) const;
   NS_IMETHOD  GetOriginToViewOffset(nsIPresContext *aPresContext, nsPoint& aOffset, nsIView **aView) const;
-  NS_IMETHOD  GetWindow(nsIPresContext* aPresContext, nsIWidget**) const;
   NS_IMETHOD  GetFrameType(nsIAtom** aType) const;
   NS_IMETHOD  IsPercentageBase(PRBool& aBase) const;
-  NS_IMETHOD  Scrolled(nsIView *aView);
 #ifdef NS_DEBUG
   NS_IMETHOD  List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD  GetFrameName(nsAString& aResult) const;
@@ -358,10 +349,6 @@ public:
   PRBool IsFrameTreeTooDeep(const nsHTMLReflowState& aReflowState,
                             nsHTMLReflowMetrics& aMetrics);
 
-  virtual nsresult GetClosestViewForFrame(nsIPresContext* aPresContext,
-                                          nsIFrame *aFrame,
-                                          nsIView **aView);
-
   static nsresult CreateAndPostReflowCommand(nsIPresShell*                   aPresShell,
                                              nsIFrame*                       aTargetFrame,
                                              nsReflowType aReflowType,
@@ -372,14 +359,11 @@ public:
   // Do the work for getting the parent style context frame so that
   // other frame's |GetParentStyleContextFrame| methods can call this
   // method on *another* frame.  (This function handles out-of-flow
-  // frames by using the frame manager's placeholder map and it handles
-  // block-within-inline by calling |GetIBSpecialParent|.)
+  // frames by using the frame manager's placeholder map and it also
+  // handles block-within-inline and generated content wrappers.)
   nsresult DoGetParentStyleContextFrame(nsIPresContext* aPresContext,
                                         nsIFrame**      aProviderFrame,
                                         PRBool*         aIsChild);
-
-  nsresult GetIBSpecialParent(nsIPresContext* aPresContext,
-                              nsIFrame** aSpecialParent);
 
   // Return the previously stored overflow area, if the frame does not 
   // overflow and a creation is not requested it will return nsnull

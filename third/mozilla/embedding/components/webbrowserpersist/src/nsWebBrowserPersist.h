@@ -89,7 +89,8 @@ protected:
 
 // Private members
 private:
-    void CleanUp();
+    void Cleanup();
+    void CleanupLocalFiles();
     nsresult GetValidURIFromObject(nsISupports *aObject, nsIURI **aURI) const;
     nsresult GetLocalFileFromURI(nsIURI *aURI, nsILocalFile **aLocalFile) const;
     nsresult AppendPathToURI(nsIURI *aURI, const nsAString & aPath) const;
@@ -130,7 +131,7 @@ private:
     nsresult SaveDocumentWithFixup(
         nsIDocument *pDocument, nsIDocumentEncoderNodeFixup *pFixup,
         nsIURI *aFile, PRBool aReplaceExisting, const nsACString &aFormatType,
-        const nsString &aSaveCharset, PRUint32  aFlags);
+        const nsCString &aSaveCharset, PRUint32  aFlags);
     nsresult SaveSubframeContent(
         nsIDOMDocument *aFrameContent, URIData *aData);
     nsresult SetDocumentBase(nsIDOMDocument *aDocument, nsIURI *aBaseURI);
@@ -167,6 +168,7 @@ private:
     PRBool                    mCurrentDataPathIsRelative;
     nsCString                 mCurrentRelativePathToData;
     nsCOMPtr<nsIURI>          mCurrentBaseURI;
+    nsCString                 mCurrentCharset;
     nsCOMPtr<nsIURI>          mTargetBaseURI;
     PRUint32                  mCurrentThingsToPersist;
 
@@ -177,6 +179,7 @@ private:
     nsHashtable               mUploadList;
     nsHashtable               mURIMap;
     nsVoidArray               mDocList;
+    nsVoidArray               mCleanupList;
     nsCStringArray            mFilenameList;
     PRPackedBool              mFirstAndOnlyUse;
     PRPackedBool              mCancel;

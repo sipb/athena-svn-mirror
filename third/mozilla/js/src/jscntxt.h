@@ -75,7 +75,7 @@ struct JSRuntime {
     JSDHashTable        gcRootsHash;
     JSDHashTable        *gcLocksHash;
     JSGCThing           *gcFreeList;
-    jsrefcount          gcDisabled;
+    jsrefcount          gcKeepAtoms;
     uint32              gcBytes;
     uint32              gcLastBytes;
     uint32              gcMaxBytes;
@@ -248,8 +248,8 @@ struct JSRuntime {
 # define JS_RUNTIME_UNMETER(rt, which)  /* nothing */
 #endif
 
-#define JS_ENABLE_GC(rt)    JS_ATOMIC_DECREMENT(&(rt)->gcDisabled);
-#define JS_DISABLE_GC(rt)   JS_ATOMIC_INCREMENT(&(rt)->gcDisabled);
+#define JS_KEEP_ATOMS(rt)   JS_ATOMIC_INCREMENT(&(rt)->gcKeepAtoms);
+#define JS_UNKEEP_ATOMS(rt) JS_ATOMIC_DECREMENT(&(rt)->gcKeepAtoms);
 
 #ifdef JS_ARGUMENT_FORMATTER_DEFINED
 /*
@@ -286,7 +286,11 @@ typedef struct JSResolvingKey {
 typedef struct JSResolvingEntry {
     JSDHashEntryHdr     hdr;
     JSResolvingKey      key;
+    uint32              flags;
 } JSResolvingEntry;
+
+#define JSRESFLAG_LOOKUP        0x1     /* resolving id from lookup */
+#define JSRESFLAG_WATCH         0x2     /* resolving id from watch */
 
 struct JSContext {
     JSCList             links;
@@ -382,12 +386,11 @@ struct JSContext {
     JSLocaleCallbacks   *localeCallbacks;
 
     /*
-     * cx->resolving is non-zero if we are init'ing standard classes lazily, or
-     * if we are otherwise recursing indirectly from js_LookupProperty through
-     * a JSClass.resolve hook.  It is used together with cx->resolvingTable to
+     * cx->resolvingTable is non-null and non-empty if we are initializing
+     * standard classes lazily, or if we are otherwise recursing indirectly
+     * from js_LookupProperty through a JSClass.resolve hook.  It is used to
      * limit runaway recursion (see jsapi.c and jsobj.c).
      */
-    uint32              resolving;
     JSDHashTable        *resolvingTable;
 
     /* PDL of stack headers describing stack slots not rooted by argv, etc. */

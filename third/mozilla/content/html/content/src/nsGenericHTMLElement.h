@@ -176,9 +176,9 @@ public:
   // Implementation for nsIContent
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
-  NS_IMETHOD GetNameSpaceID(PRInt32& aID) const;
+  NS_IMETHOD GetNameSpaceID(PRInt32* aID) const;
   NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-                                 nsINodeInfo*& aNodeInfo);
+                                 nsINodeInfo** aNodeInfo);
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      const nsAString& aValue,
                           PRBool aNotify);
@@ -188,14 +188,14 @@ public:
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                      nsAString& aResult) const;
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     nsIAtom*& aPrefix, nsAString& aResult) const;
+                     nsIAtom** aPrefix, nsAString& aResult) const;
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                        PRBool aNotify);
   NS_IMETHOD GetAttrNameAt(PRInt32 aIndex,
-                           PRInt32& aNameSpaceID, 
-                           nsIAtom*& aName,
-                           nsIAtom*& aPrefix) const;
+                           PRInt32* aNameSpaceID,
+                           nsIAtom** aName,
+                           nsIAtom** aPrefix) const;
   NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
@@ -207,31 +207,33 @@ public:
    * Standard anchor HandleDOMEvent, used by A, AREA and LINK (parameters
    * are the same as HandleDOMEvent)
    */
-  nsresult HandleDOMEventForAnchors(nsIContent* aOuter,
-                                    nsIPresContext* aPresContext,
+  nsresult HandleDOMEventForAnchors(nsIPresContext* aPresContext,
                                     nsEvent* aEvent,
                                     nsIDOMEvent** aDOMEvent,
                                     PRUint32 aFlags,
                                     nsEventStatus* aEventStatus);
 
+  // Used by A, AREA, LINK, and STYLE.
+  // Callers must hold a reference to nsHTMLUtils's global reference count.
+  nsresult GetHrefURIForAnchors(nsIURI** aURI);
+
   // Implementation for nsIHTMLContent
   NS_IMETHOD SetHTMLAttribute(nsIAtom* aAttribute, const nsHTMLValue& aValue,
                               PRBool aNotify);
   NS_IMETHOD GetHTMLAttribute(nsIAtom* aAttribute, nsHTMLValue& aValue) const;
-  NS_IMETHOD GetID(nsIAtom*& aResult) const;
+  NS_IMETHOD GetID(nsIAtom** aResult) const;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
-  NS_IMETHOD GetBaseURL(nsIURI*& aBaseURL) const;
+  NS_IMETHOD GetBaseURL(nsIURI** aBaseURL) const;
   NS_IMETHOD GetBaseTarget(nsAString& aBaseTarget) const;
 
   //----------------------------------------
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 
 #ifdef DEBUG
@@ -452,6 +454,12 @@ public:
                                        nsAString& aResult);
 
   /**
+   * Take an attribute name, and return the value of that attribute,
+   * resolved to an absolute URI.  Used by NS_IMPL_URI_ATTR macro.
+   */
+  nsresult AttrToURI(nsIAtom* aAttrName, nsAString& aAbsoluteURI);
+
+  /**
    * Create the style struct from the style attr.  Used when an element is first
    * put into a document.  Only has an effect if the old value is a string.
    */
@@ -484,32 +492,27 @@ public:
    */
   static void MapCommonAttributesInto(const nsIHTMLMappedAttributes* aAttributes, 
                                       nsRuleData* aRuleData);
-  struct AttributeImpactEntry {
+  struct AttributeDependenceEntry {
     nsIAtom** attribute;
-    nsChangeHint hint;
   };
 
-  static const AttributeImpactEntry sCommonAttributeMap[];
-  static const AttributeImpactEntry sImageAttributeMap[];
-  static const AttributeImpactEntry sImageBorderAttributeMap[];
-  static const AttributeImpactEntry sImageAlignAttributeMap[];
-  static const AttributeImpactEntry sBackgroundAttributeMap[];
+  static const AttributeDependenceEntry sCommonAttributeMap[];
+  static const AttributeDependenceEntry sImageMarginSizeAttributeMap[];
+  static const AttributeDependenceEntry sImageBorderAttributeMap[];
+  static const AttributeDependenceEntry sImageAlignAttributeMap[];
+  static const AttributeDependenceEntry sDivAlignAttributeMap[];
+  static const AttributeDependenceEntry sBackgroundAttributeMap[];
   
   /**
-   * A common method where you can just pass in a list of maps to
-   * check for impact. Most implementations of GetMappedAttributeImpact
-   * should use this function as a default handler.
-   *
-   * @param aAttribute   attribute that we care about
-   * @param aHint the    resulting hint
-   * @param aImpactFlags the types of attributes that we care about - see the
-   *                     NS_*_ATTRIBUTE_IMPACT flags
+   * A common method where you can just pass in a list of maps to check
+   * for attribute dependence. Most implementations of
+   * HasAttributeDependentStyle should use this function as a default
+   * handler.
    */
-
-  static void
-  FindAttributeImpact(const nsIAtom* aAttribute, nsChangeHint& aHint,
-                      const AttributeImpactEntry* const aMaps[],
-                      PRUint32 aMapCount);
+  static PRBool
+  FindAttributeDependence(const nsIAtom* aAttribute,
+                          const AttributeDependenceEntry* const aMaps[],
+                          PRUint32 aMapCount);
   /**
    * Helper to map the align attribute into a style struct.
    *
@@ -517,8 +520,8 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapAlignAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
-                                    nsRuleData* aData);
+  static void MapImageAlignAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+                                         nsRuleData* aData);
 
   /**
    * Helper to map the align attribute into a style struct for things
@@ -556,8 +559,8 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapImagePositionAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
-                                            nsRuleData* aData);
+  static void MapImageSizeAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
+                                         nsRuleData* aData);
   /**
    * Helper to map the background attributes (currently background and bgcolor)
    * into a style struct.
@@ -814,7 +817,7 @@ public:
     aResult = 0;
     return NS_OK;
   }
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const {
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const {
     aResult = nsnull;
     return NS_OK;
   }
@@ -883,7 +886,7 @@ public:
   NS_IMETHOD Compact();
   NS_IMETHOD CanContainChildren(PRBool& aResult) const;
   NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const;
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
   NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
   NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument);
@@ -1141,6 +1144,30 @@ protected:
   }
 
 /**
+ * A macro to implement the getter and setter for a given content
+ * property that needs to return a URI in string form.  The method
+ * uses the generic GetAttr and SetAttr methods.  This macro is much
+ * like the NS_IMPL_STRING_ATTR macro, except we make sure the URI is
+ * absolute.
+ */
+#define NS_IMPL_URI_ATTR_GETTER(_class, _method, _atom)             \
+  NS_IMETHODIMP                                                     \
+  _class::Get##_method(nsAString& aValue)                           \
+  {                                                                 \
+    return AttrToURI(nsHTMLAtoms::_atom, aValue);                   \
+  }
+#define NS_IMPL_URI_ATTR_SETTER(_class, _method, _atom)             \
+  NS_IMETHODIMP                                                     \
+  _class::Set##_method(const nsAString& aValue)                     \
+  {                                                                 \
+    return SetAttr(kNameSpaceID_None, nsHTMLAtoms::_atom, aValue,   \
+                   PR_TRUE);                                        \
+  }
+#define NS_IMPL_URI_ATTR(_class, _method, _atom) \
+  NS_IMPL_URI_ATTR_GETTER(_class, _method, _atom) \
+  NS_IMPL_URI_ATTR_SETTER(_class, _method, _atom)
+
+/**
  * QueryInterface() implementation helper macros
  */
 
@@ -1322,9 +1349,6 @@ NS_NewHTMLMenuElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
 nsresult
 NS_NewHTMLMetaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
-
-nsresult
-NS_NewHTMLModElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
 
 nsresult
 NS_NewHTMLOListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);

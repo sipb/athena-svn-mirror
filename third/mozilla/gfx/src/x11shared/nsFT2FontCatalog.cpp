@@ -54,9 +54,10 @@ PRUint32 gFontDebug = 0 | NS_FONT_DEBUG_FONT_SCAN;
 #include <sys/time.h>
 #include <dirent.h>
 #include "nsAppDirectoryServiceDefs.h"
-#include "nsLocalFileUnix.h"
+#include "nsLocalFile.h"
 #include "nsIEnumerator.h"
 #include "nsITimelineService.h"
+#include "nsArray.h"
 
 //
 // Short overview:
@@ -105,9 +106,6 @@ extern "C" {char *ctime(const time_t *timep);}
 extern nsFontVendorName sVendorNamesList[];
 extern nsulCodePageRangeLanguage    ulCodePageRange1Language[];
 extern nsulCodePageRangeLanguage    ulCodePageRange2Language[];
-
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
-static NS_DEFINE_CID(kCharSetManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
 
 nsHashtable* nsFT2FontCatalog::sVendorNames = nsnull;
 nsIPref*     nsFT2FontCatalog::sPref = nsnull;
@@ -165,7 +163,7 @@ nsFT2FontCatalog::GetFontCatalogEntries(const nsACString & aFamilyName,
                                         PRUint16 aWidth,
                                         PRUint16 aSlant,
                                         PRUint16 aSpacing,
-                                        nsISupportsArray **_retval)
+                                        nsIArray **_retval)
 {
 #if (!defined(MOZ_ENABLE_FREETYPE2))
   *_retval = nsnull;
@@ -183,8 +181,8 @@ nsFT2FontCatalog::GetFontCatalogEntries(const nsACString & aFamilyName,
   GetFontNames(aFamilyName, aLanguage, aWeight, aWidth, aSlant, aSpacing, fc);
   nsCOMPtr<nsITrueTypeFontCatalogEntry> aFce;
   nsCOMPtr<nsISupports> genericFce;
-  nsCOMPtr<nsISupportsArray> entries;
-  NS_NewISupportsArray(getter_AddRefs(entries));
+  nsCOMPtr<nsIMutableArray> entries;
+  NS_NewArray(getter_AddRefs(entries));
   if (!entries)
     return NS_ERROR_OUT_OF_MEMORY;
   
@@ -192,7 +190,7 @@ nsFT2FontCatalog::GetFontCatalogEntries(const nsACString & aFamilyName,
   for (i = 0; i < fc->numFonts; i++) {
     aFce = nsFreeTypeGetFaceID(fc->fonts[i]);
     genericFce = do_QueryInterface(aFce);
-    entries->InsertElementAt(genericFce, 0);
+    entries->InsertElementAt(genericFce, 0, PR_FALSE);
   }
  
   free(fc->fonts);

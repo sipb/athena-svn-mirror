@@ -36,7 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsLocalFileOSX.h"
+#include "nsLocalFile.h"
 
 #include "nsString.h"
 #include "nsReadableUtils.h"
@@ -997,13 +997,11 @@ NS_IMETHODIMP nsLocalFile::IsSpecial(PRBool *_retval)
 /* nsIFile clone (); */
 NS_IMETHODIMP nsLocalFile::Clone(nsIFile **_retval)
 {
-    NS_ENSURE_ARG_POINTER(_retval);
-    *_retval = nsnull;
-    
-    nsLocalFile *newFile = new nsLocalFile(*this);
-    if (!newFile)
-        return NS_ERROR_OUT_OF_MEMORY;
-    *_retval = newFile;
+    // Just copy-construct ourselves
+    *_retval = new nsLocalFile(*this);
+    if (!*_retval)
+      return NS_ERROR_OUT_OF_MEMORY;
+
     NS_ADDREF(*_retval);
     
     return NS_OK;
@@ -1142,7 +1140,7 @@ NS_IMETHODIMP nsLocalFile::InitWithPath(const nsAString& filePath)
 /* [noscript] void initWithNativePath (in ACString filePath); */
 NS_IMETHODIMP nsLocalFile::InitWithNativePath(const nsACString& filePath)
 {
-  if (filePath.First() != '/' || filePath.Length() == 0)
+  if (filePath.IsEmpty() || filePath.First() != '/')
     return NS_ERROR_FILE_UNRECOGNIZED_PATH;
   // On 10.2, huge paths crash CFURLGetFSRef()
   if (filePath.Length() > PATH_MAX)

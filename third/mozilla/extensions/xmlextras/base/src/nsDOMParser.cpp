@@ -36,6 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "jsapi.h"
 #include "nsDOMParser.h"
 #include "nsIURI.h"
 #include "nsIChannel.h"
@@ -51,10 +52,13 @@
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMDOMImplementation.h"
+#include "nsIDOMWindow.h"
 #include "nsIPrivateDOMImplementation.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
-#include "nsICodebasePrincipal.h"
+#include "nsIPrincipal.h"
+#include "nsIScriptContext.h"
+#include "nsIScriptGlobalObject.h"
 #include "nsIDOMClassInfo.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
@@ -353,7 +357,6 @@ ConvertWStringToStream(const PRUnichar* aStr,
 {
   nsresult rv;
   nsCOMPtr<nsIUnicodeEncoder> encoder;
-  nsAutoString charsetStr;
   char* charBuf;
 
   // We want to encode the string as utf-8, so get the right encoder
@@ -361,8 +364,7 @@ ConvertWStringToStream(const PRUnichar* aStr,
            do_GetService(kCharsetConverterManagerCID, &rv);
   NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
   
-  charsetStr.Assign(NS_LITERAL_STRING("UTF-8"));
-  rv = charsetConv->GetUnicodeEncoder(&charsetStr,
+  rv = charsetConv->GetUnicodeEncoderRaw("UTF-8",
                                       getter_AddRefs(encoder));
   NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
   
@@ -438,10 +440,6 @@ nsDOMParser::ParseFromStream(nsIInputStream *stream,
   NS_ENSURE_ARG_POINTER(_retval);
   *_retval = nsnull;
 
-  nsresult rv;
-  nsCOMPtr<nsIURI> baseURI;
-  nsCOMPtr<nsIPrincipal> principal;
-
   // For now, we can only create XML documents.
   if (nsCRT::strcmp(contentType, "text/xml") != 0 &&
     nsCRT::strcmp(contentType, "application/xml") != 0 &&
@@ -449,7 +447,17 @@ nsDOMParser::ParseFromStream(nsIInputStream *stream,
     return NS_ERROR_NOT_IMPLEMENTED;
   }
 
-  // First try to find a base URI for the document we're creating
+  nsresult rv;
+  nsCOMPtr<nsIPrincipal> principal;
+  nsCOMPtr<nsIScriptSecurityManager> secMan = 
+    do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv)) {
+    secMan->GetSubjectPrincipal(getter_AddRefs(principal));
+  }
+
+  // Try to find a base URI for the document we're creating.
+  nsCOMPtr<nsIURI> baseURI;
+
   nsCOMPtr<nsIXPCNativeCallContext> cc;
   nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
   if(NS_SUCCEEDED(rv)) {
@@ -460,15 +468,21 @@ nsDOMParser::ParseFromStream(nsIInputStream *stream,
     JSContext* cx;
     rv = cc->GetJSContext(&cx);
     if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-  
-    nsCOMPtr<nsIScriptSecurityManager> secMan = 
-             do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-    if (NS_SUCCEEDED(rv)) {
-      rv = secMan->GetSubjectPrincipal(getter_AddRefs(principal));
-      if (NS_SUCCEEDED(rv)) {
-        nsCOMPtr<nsICodebasePrincipal> codebase(do_QueryInterface(principal));
-        if (codebase) {
-          codebase->GetURI(getter_AddRefs(baseURI));
+
+    nsCOMPtr<nsIScriptContext> scriptContext;
+    GetScriptContextFromJSContext(cx, getter_AddRefs(scriptContext));
+    if (scriptContext) {
+      nsCOMPtr<nsIScriptGlobalObject> globalObject;
+      scriptContext->GetGlobalObject(getter_AddRefs(globalObject));
+
+      nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(globalObject);
+      if (window) {
+        nsCOMPtr<nsIDOMDocument> domdoc;
+        window->GetDocument(getter_AddRefs(domdoc));
+
+        nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
+        if (doc) {
+          doc->GetBaseURL(getter_AddRefs(baseURI));
         }
       }
     }
@@ -510,7 +524,7 @@ nsDOMParser::ParseFromStream(nsIInputStream *stream,
   // Register as a load listener on the document
   nsCOMPtr<nsIDOMEventReceiver> target(do_QueryInterface(domDocument));
   if (target) {
-    nsWeakPtr requestWeak(getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIDOMParser*, this))));
+    nsWeakPtr requestWeak(do_GetWeakReference(NS_STATIC_CAST(nsIDOMParser*, this)));
     nsLoadListenerProxy* proxy = new nsLoadListenerProxy(requestWeak);
     if (!proxy) return NS_ERROR_OUT_OF_MEMORY;
 

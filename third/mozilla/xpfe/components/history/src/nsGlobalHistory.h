@@ -295,6 +295,7 @@ protected:
 
   // meta-data tokens
   mdb_column kToken_LastPageVisited;
+  mdb_column kToken_ByteOrder;
 
   //
   // AddPage-oriented stuff
@@ -324,10 +325,18 @@ protected:
   nsresult FindRow(mdb_column aCol, const char *aURL, nsIMdbRow **aResult);
 
   //
+  // byte order
+  //
+  nsresult SaveByteOrder(const char *aByteOrder);
+  nsresult GetByteOrder(char **_retval);
+  nsresult InitByteOrder(PRBool aForce);
+  void SwapBytes(const PRUnichar *source, PRUnichar *dest, PRInt32 aLen);
+  PRBool mReverseByteOrder;
+
+  //
   // misc unrelated stuff
   //
   nsCOMPtr<nsIStringBundle> mBundle;
-  nsresult SaveLastPageVisited(const char *);
 
   // pseudo-constants. although the global history really is a
   // singleton, we'll use this metaphor to be consistent.

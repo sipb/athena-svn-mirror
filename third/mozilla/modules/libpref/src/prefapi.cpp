@@ -78,6 +78,10 @@
 #include <os2.h>
 #endif
 
+#ifdef XP_BEOS
+#include "Alert.h"
+#endif
+
 extern JSRuntime* PREF_GetJSRuntime();
 
 #define BOGUS_DEFAULT_INT_PREF_VALUE (-5632)
@@ -601,10 +605,7 @@ pref_savePref(PLDHashTable *table, PLDHashEntryHdr *heh, PRUint32 i, void *arg)
     return PL_DHASH_NEXT;
 }
 
-int
-#ifdef XP_OS2_VACPP
-_Optlink
-#endif
+int PR_CALLBACK
 pref_CompareStrings(const void *v1, const void *v2, void *unused)
 {
     char *s1 = *(char**) v1;
@@ -1239,7 +1240,7 @@ void pref_Alert(char* msg)
 void pref_Alert(char* msg)
 {
 #if defined(XP_UNIX) || defined(XP_OS2) || defined(XP_BEOS)
-#if defined(XP_UNIX) || defined(XP_OS2)
+#if defined(XP_UNIX) || defined(XP_OS2) || defined(XP_BEOS)
     if ( getenv("NO_PREF_SPAM") == NULL )
 #endif
     fputs(msg, stderr);
@@ -1248,6 +1249,10 @@ void pref_Alert(char* msg)
       MessageBox (NULL, msg, "Configuration Warning", MB_OK);
 #elif defined(XP_OS2)
       WinMessageBox (HWND_DESKTOP, 0, msg, "Configuration Warning", 0, MB_WARNING | MB_OK | MB_APPLMODAL | MB_MOVEABLE);
+#elif defined(XP_BEOS)
+      BAlert *alert = new BAlert("Configuration Warning", msg, "OK", NULL, NULL, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
+      // Calling Go() runs the BAlert and waits for the user to close the window.  Go will delete the BAlert when it finishes.
+      alert->Go();
 #endif
 }
 

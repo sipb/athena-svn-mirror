@@ -2,14 +2,22 @@ $! Command file to run Mozilla.
 $! This command file must exist in the root Mozilla directory (where the main
 $! images and shareables reside).
 $!
+$ moz_self = f$envir("procedure")
+$ moz_dir = f$parse(moz_self,,,"device") + f$parse(moz_self,,,"directory")
+$!
 $ moz_user = f$edit(f$getjpi("","username"),"trim")
 $ moz_cwd = f$environment("default")
 $ moz_image = f$trnlnm("MOZILLA_IMAGE")
-$ if moz_image .eqs. "" then moz_image = "mozilla-bin"
-$ moz_image = f$edit(moz_image,"lowercase")
-$!
-$ moz_self = f$envir("procedure")
-$ moz_dir = f$parse(moz_self,,,"device") + f$parse(moz_self,,,"directory")
+$ if moz_image .eqs. ""
+$ then
+$   moz_image = f$search("''moz_dir'*-bin.;") 
+$   if moz_image .nes. ""
+$   then
+$     moz_image = f$parse(moz_image,,,"name")
+$   else
+$     moz_image = "mozilla-bin"
+$   endif
+$ endif
 $!
 $ moz_gblpages_needed = (336 * 120/100)
 $ moz_gblsects_needed = (1 * 120/100) 
@@ -119,7 +127,7 @@ $ define /user VMS_OPEN_ARGS_4 " ",-
 	"rfm=stmlf", "rat=cr"
 $!
 $ if f$trnlnm("USER") .eqs. "" then define /user user "''moz_user'"
-$ if f$trnlnm("LOGNAME") .eqs. "" then define /user logname "''moz_cwd'"
+$ if f$trnlnm("LOGNAME") .eqs. "" then define /user logname "''moz_user'"
 $ define /user MOZILLA_FIVE_HOME "''moz_unix'"
 $ define /user VMS_USE_VMS_DEF_PROT 1
 $ define /user VMS_ACCESS_FIX_WOK 1

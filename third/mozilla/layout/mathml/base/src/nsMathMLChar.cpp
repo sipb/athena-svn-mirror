@@ -40,7 +40,6 @@
 #include "nsIObserverService.h"
 #include "nsIObserver.h"
 #include "nsNetUtil.h"
-#include "nsIURI.h"
 
 #include "nsILookAndFeel.h"
 #include "nsIDeviceContext.h"
@@ -195,24 +194,13 @@ static nsresult
 LoadProperties(const nsString& aName,
                nsCOMPtr<nsIPersistentProperties>& aProperties)
 {
-  nsresult rv;
   nsAutoString uriStr;
   uriStr.Assign(NS_LITERAL_STRING("resource:/res/fonts/mathfont"));
   uriStr.Append(aName);
   uriStr.StripWhitespace(); // that may come from aName
   uriStr.Append(NS_LITERAL_STRING(".properties"));
-  nsCOMPtr<nsIURI> uri;
-  rv = NS_NewURI(getter_AddRefs(uri), uriStr);
-  if (NS_FAILED(rv)) return rv;
-  nsCOMPtr<nsIInputStream> in;
-  rv = NS_OpenURI(getter_AddRefs(in), uri);
-  if (NS_FAILED(rv)) return rv;
-  rv = nsComponentManager::
-       CreateInstance(NS_PERSISTENTPROPERTIES_CONTRACTID, nsnull,
-                      NS_GET_IID(nsIPersistentProperties),
-                      getter_AddRefs(aProperties));
-  if (NS_FAILED(rv)) return rv;
-  return aProperties->Load(in);
+  return NS_LoadPersistentPropertiesFromURISpec(getter_AddRefs(aProperties), 
+                                                NS_ConvertUTF16toUTF8(uriStr));
 }
 
 // helper to get the stretchy direction of a char
@@ -349,8 +337,8 @@ nsGlyphTable::GetAnnotation(nsMathMLChar* aChar, PRInt32 aPosition)
   NS_ASSERTION(aChar->mDirection == NS_STRETCH_DIRECTION_VERTICAL ||
                aChar->mDirection == NS_STRETCH_DIRECTION_HORIZONTAL,
                "invalid call");
-  static const char* kVertical   = "TMBG";
-  static const char* kHorizontal = "LMRG";
+  static const char kVertical[]   = "TMBG";
+  static const char kHorizontal[] = "LMRG";
   if (aPosition >= 4) {
     // return an ASCII digit for the size=0,1,2,...
     return '0' + aPosition - 4;
@@ -765,7 +753,7 @@ private:
   nsVoidArray mAdditionalTableList; 
 };
 
-NS_IMPL_ISUPPORTS1(nsGlyphTableList, nsIObserver);
+NS_IMPL_ISUPPORTS1(nsGlyphTableList, nsIObserver)
 
 // -----------------------------------------------------------------------------------
 // Here is the global list of applicable glyph tables that we will be using
@@ -909,7 +897,7 @@ nsGlyphTableList::GetListFor(nsIPresContext* aPresContext,
                              nsFont*         aFont,
                              nsVoidArray*    aGlyphTableList)
 {
-  // @see the documentation of -moz-math-font-style-stretchy in mathml.css
+  // @see the documentation of -moz-math-stretchy in mathml.css
   // for how this work
   aGlyphTableList->Clear();
   PRBool useDocumentFonts = PR_TRUE;
@@ -917,7 +905,7 @@ nsGlyphTableList::GetListFor(nsIPresContext* aPresContext,
   // Check to honor the pref("browser.display.use_document_fonts", 0)
   // Only include fonts from CSS if the pref to disallow authors' fonts isn't set
   if (useDocumentFonts) {
-    // Convert the list of fonts in aFont (from -moz-math-font-style-stretchy)
+    // Convert the list of fonts in aFont (from -moz-math-stretchy)
     // to an ordered list of corresponding glyph extension tables
     StretchyFontEnumContext context = {aPresContext, aChar, aGlyphTableList};
     aFont->EnumerateFamilies(StretchyFontEnumCallback, &context);
@@ -1385,7 +1373,7 @@ nsMathMLChar::SetData(nsIPresContext* aPresContext,
  2) We search for the first larger variant of the char that fits the
     container' size. We search fonts for larger variants in the order
     specified in the list of stretchy fonts held by the leaf style
-    context (from -moz-math-font-style-stretchy in mathml.css).
+    context (from -moz-math-stretchy in mathml.css).
     Issues :
     a) the largeop and display settings determine the starting
        size when we do the above search, regardless of whether

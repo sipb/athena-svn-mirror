@@ -61,8 +61,8 @@ NS_IMPL_CI_INTERFACE_GETTER3(nsCodebasePrincipal,
                              nsIPrincipal,
                              nsISerializable)
 
-NSBASEPRINCIPALS_ADDREF(nsCodebasePrincipal);
-NSBASEPRINCIPALS_RELEASE(nsCodebasePrincipal);
+NSBASEPRINCIPALS_ADDREF(nsCodebasePrincipal)
+NSBASEPRINCIPALS_RELEASE(nsCodebasePrincipal)
 
 ///////////////////////////////////////
 // Methods implementing nsIPrincipal //
@@ -234,9 +234,8 @@ nsCodebasePrincipal::Equals(nsIPrincipal *aOther, PRBool *result)
     otherCodebase->GetURI(getter_AddRefs(otherURI));
 
     NS_ENSURE_TRUE(otherURI, NS_ERROR_FAILURE);
-    return nsScriptSecurityManager::SecurityCompareURIs(mURI,
-                                                        otherURI,
-                                                        result);
+    return nsScriptSecurityManager::GetScriptSecurityManager()
+           ->SecurityCompareURIs(mURI, otherURI, result);
 }
 
 //////////////////////////////////////////

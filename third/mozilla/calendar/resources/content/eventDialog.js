@@ -21,8 +21,9 @@
  * Contributor(s): Garth Smedley <garths@oeone.com>
  *                 Mike Potter <mikep@oeone.com>
  *                 Colin Phillips <colinp@oeone.com> 
- *                 Chris Charabaruk <ccharabaruk@meldstar.com>
+ *                 Chris Charabaruk <coldacid@meldstar.com>
  *                 ArentJan Banck <ajbanck@planet.nl>
+ *                 Mostafa Hosseini <mostafah@oeone.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -40,7 +41,7 @@
 
 
 
-/***** calendar/calendarEventDialog.js
+/***** calendar/eventDialog.js
 * AUTHOR
 *   Garth Smedley
 * REQUIRED INCLUDES 
@@ -55,8 +56,8 @@
    args.mode = "new";               // "new" or "edit"
    args.onOk = <function>;          // funtion to call when OK is clicked
    args.calendarEvent = calendarEvent;    // newly creatd calendar event to be editted
-    
-   calendar.openDialog("caNewEvent", "chrome://calendar/content/eventDialog.xul", true, args );
+   
+   openDialog("chrome://calendar/content/eventDialog.xul", "caEditEvent", "chrome,modal", args );
 *
 *  Invoke this dialog to edit an existing event as follows:
 *
@@ -77,6 +78,7 @@
 *   W I N D O W      V A R I A B L E S
 */
 
+var debugenabled=false;
 
 var gEvent;          // event being edited
 var gOnOkFunction;   // function to be called when user clicks OK
@@ -85,7 +87,6 @@ var gTimeDifference = 3600000;  //when editing an event, we change the end time 
 var gDateDifference = 3600000;  //this is the difference for the dates, not the times.
 
 var gDefaultAlarmLength = 15; //number of minutes to default the alarm to
-var gCategoryManager;
 
 var gMode = ''; //what mode are we in? new or edit...
 
@@ -134,7 +135,7 @@ function loadCalendarEventDialog()
    
    var titleString = titleDataItem.getAttribute( "value" );
    document.getElementById("calendar-new-eventwindow").setAttribute("title", titleString);
-   
+
    // fill in fields from the event
    gStartDate.setTime( gEvent.start.getTime() );
    document.getElementById( "start-date-picker" ).value = gStartDate;
@@ -148,8 +149,6 @@ function loadCalendarEventDialog()
    gTimeDifference = gEndDate.getTime() - gStartDate.getTime(); //the time difference in ms
    gDateDifference = gTimeDifference; //the time difference in ms
    
-   var today = new Date();
-
    if ( gEvent.recurForever ) 
    {
       gEvent.recurEnd.setTime( gEndDate );
@@ -183,7 +182,7 @@ function loadCalendarEventDialog()
    setFieldValue( "description-field", gEvent.description );
    setFieldValue( "location-field", gEvent.location );
    setFieldValue( "uri-field", gEvent.url );
-   
+
    switch( gEvent.status )
    {
       case gEvent.ICAL_STATUS_TENTATIVE:
@@ -206,9 +205,13 @@ function loadCalendarEventDialog()
       gEvent.alarmLength = gDefaultAlarmLength;
    }
    
+   if( "new" == args.mode )
+      gEvent.alarm = opener.getIntPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.onforevents", 0 );
+
    setFieldValue( "alarm-checkbox", gEvent.alarm, "checked" );
    setFieldValue( "alarm-length-field", gEvent.alarmLength );
    setFieldValue( "alarm-length-units", gEvent.alarmUnits );
+   setFieldValue( "alarm-trigger-relation", gEvent.getParameter( "ICAL_RELATED_PARAMETER" ) );
 
    if( gEvent.alarmEmailAddress == "" && "new" == args.mode )
       gEvent.alarmEmailAddress = opener.getCharPref( opener.gCalendarWindow.calendarPreferences.calendarPref, "alarms.emailaddress", "" );
@@ -252,8 +255,7 @@ function loadCalendarEventDialog()
 
    setFieldValue( "repeat-numberoftimes-radio", (gEvent.recurCount != 0), "selected" );
    setFieldValue( "repeat-numberoftimes-textbox", gEvent.recurCount );
-   
-   
+
    /* Categories stuff */
    // Load categories
    var categoriesString = opener.GetUnicharPref(opener.gCalendarWindow.calendarPreferences.calendarPref, "categories.names", getDefaultCategories() );
@@ -267,7 +269,7 @@ function loadCalendarEventDialog()
          categoriesList[categoriesList.length] =  gEvent.categories;
    }
 
-   // categoriesList.sort();
+   categoriesList.sort();
 
    var oldMenulist = document.getElementById( "categories-menulist-menupopup" );
    while( oldMenulist.hasChildNodes() )
@@ -358,7 +360,6 @@ function onOKCommand()
       gEvent.status      = eval( "gEvent."+getFieldValue( "status-field" ) );
    
    gEvent.allDay      = getFieldValue( "all-day-event-checkbox", "checked" );
-   
    gEvent.url = getFieldValue( "uri-field" );
 
    gEvent.privateEvent = getFieldValue( "private-checkbox", "checked" );
@@ -374,12 +375,11 @@ function onOKCommand()
    gEvent.alarm       = getFieldValue( "alarm-checkbox", "checked" );
    gEvent.alarmLength = getFieldValue( "alarm-length-field" );
    gEvent.alarmUnits  = getFieldValue( "alarm-length-units", "value" );  
+   gEvent.setParameter( "ICAL_RELATED_PARAMETER", getFieldValue( "alarm-trigger-relation", "value" ) );
 
-   dump( "!!!-->in calendarEventDialog.js, alarmUnits is "+gEvent.alarmUnits );
    if ( getFieldValue( "alarm-email-checkbox", "checked" ) ) 
    {
       gEvent.alarmEmailAddress = getFieldValue( "alarm-email-field", "value" );
-      dump( "!!!-->in calendarEventDialog.js, alarmEmailAddress is "+gEvent.alarmEmailAddress );
    }
    else
    {
@@ -440,7 +440,7 @@ function onOKCommand()
 
    for( i = 0; i < listbox.childNodes.length; i++ )
    {
-      dump( "\n exception added for "+listbox.childNodes[i].value );
+      debug( "\n exception added for "+listbox.childNodes[i].value );
 
       var dateObj = new Date( );
 
@@ -457,7 +457,6 @@ function onOKCommand()
 
    for( i = 0; i < attachmentListbox.childNodes.length; i++ )
    {
-      dump( "\n adding attachment to event added for "+attachmentListbox.childNodes[i].getAttribute( "label" ) );
       Attachment = Components.classes["@mozilla.org/messengercompose/attachment;1"].createInstance( Components.interfaces.nsIMsgAttachment );
 	   
       Attachment.url = attachmentListbox.childNodes[i].getAttribute( "label" );
@@ -489,6 +488,7 @@ function onOKCommand()
 
    var Server = getFieldValue( "server-field" );
    
+   // :TODO: REALLY only do this if the alarm or start settings change.?
    //if the end time is later than the start time... alert the user using text from the dtd.
    // call caller's on OK function
    gOnOkFunction( gEvent, Server );
@@ -576,7 +576,7 @@ function checkSetRecurTime()
 
    var recur = getFieldValue( "repeat-checkbox", "checked" );
    
-   dump(recurForever+ " and "+ recur+ "\n"); 
+   debug(recurForever+ " and "+ recur+ "\n"); 
    var state = ( recurEndDate.getTime() < endDate.getTime() && 
                  ( recurEndDate.getFullYear() != endDate.getFullYear() ||
                  recurEndDate.getMonth() != endDate.getMonth() ||
@@ -680,7 +680,6 @@ function onDatePick( datepicker )
 function prepareTimePicker( timeFieldName )
 {
    // get the popup and the field we are editing
-   
    var timePickerPopup = document.getElementById( "oe-time-picker-popup" );
    var timeField = document.getElementById( timeFieldName );
    
@@ -739,6 +738,27 @@ function onTimePick( timepopup )
 }
 
 /**
+*   Called when an item with a datepicker is clicked, BEFORE the picker is shown.
+*/
+
+function prepareDatePicker( dateFieldName )
+{
+   // get the popup and the field we are editing
+   
+   var datePickerPopup = document.getElementById( "oe-date-picker-popup" );
+   var dateField = document.getElementById( dateFieldName );
+   
+   // tell the date picker the date to edit.
+   
+   setFieldValue( "oe-date-picker-popup", dateField.editDate, "value" );
+   
+   // remember the date field that is to be updated by adding a 
+   // property "dateField" to the popup.
+   
+   datePickerPopup.dateField = dateField;
+}
+   
+/**
 *   Called when the repeat checkbox is clicked.
 */
 
@@ -791,7 +811,7 @@ function updateAlarmItemEnabled()
    
    var alarmField = "alarm-length-field";
    var alarmMenu = "alarm-length-units";
-   var alarmLabel = "alarm-length-text";
+   var alarmTrigger = "alarm-trigger-relation";
       
    var alarmEmailCheckbox = "alarm-email-checkbox";
    var alarmEmailField = "alarm-email-field";
@@ -803,14 +823,14 @@ function updateAlarmItemEnabled()
       setFieldValue( alarmCheckBox, true, "checked" );
       setFieldValue( alarmField, false, "disabled" );
       setFieldValue( alarmMenu, false, "disabled" );
-      setFieldValue( alarmLabel, false, "disabled" );
+      setFieldValue( alarmTrigger, false, "disabled" );
       setFieldValue( alarmEmailCheckbox, false, "disabled" );
    }
    else
    {
       setFieldValue( alarmField, true, "disabled" );
       setFieldValue( alarmMenu, true, "disabled" );
-      setFieldValue( alarmLabel, true, "disabled" );
+      setFieldValue( alarmTrigger, true, "disabled" );
       setFieldValue( alarmEmailField, true, "disabled" );
       setFieldValue( alarmEmailCheckbox, true, "disabled" );
       setFieldValue( alarmEmailCheckbox, false, "checked" );
@@ -1458,7 +1478,6 @@ function getWeekNumberText( weekNumber )
 
 }
 
-
 var launch = true;
 
 /* URL */
@@ -1666,8 +1685,8 @@ function formatTime( time )
 }
 
 
-function debug( Text )
+function debug( text )
 {
-   dump( "\n"+ Text + "\n");
-
+    if( debugenabled )
+        dump( "\n"+ text + "\n");
 }
