@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.10 2003-02-06 20:12:27 zacheiss Exp $
+# $Id: Makefile.in,v 1.10.2.1 2003-07-16 17:11:32 ghudson Exp $
 
 # uncomment if you run a non bourne compatable shell. Ie. csh
 #SHELL = @SH@
@@ -227,7 +227,7 @@ install-files: scard-install
 	if test ! -z "$(INSTALL_SSH_RAND_HELPER)" ; then \
 		$(INSTALL) -m 0755 ssh-rand-helper $(DESTDIR)$(libexecdir)/ssh-rand-helper ; \
 	fi
-	$(INSTALL) -m 4711 ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
+	$(INSTALL) -o root -m 4755 ssh-keysign $(DESTDIR)$(SSH_KEYSIGN)
 	@NO_SFTP@$(INSTALL) -m 0755 sftp $(DESTDIR)$(bindir)/sftp
 	@NO_SFTP@$(INSTALL) -m 0755 sftp-server $(DESTDIR)$(SFTP_SERVER)
 	$(INSTALL) -m 644 ssh.1.out $(DESTDIR)$(mandir)/$(mansubdir)1/ssh.1
