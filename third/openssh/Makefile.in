@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.7 2002-04-13 21:58:41 ghudson Exp $
+# $Id: Makefile.in,v 1.8 2002-04-17 14:04:08 ghudson Exp $
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -98,7 +98,7 @@ ssh$(EXEEXT): $(LIBCOMPAT) libssh.a $(SSHOBJS)
 	$(LD) -o $@ $(SSHOBJS) $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
 
 sshd$(EXEEXT): libssh.a	$(LIBCOMPAT) $(SSHDOBJS)
-	$(LD) -o $@ $(SSHDOBJS) $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
+	./athstatic $(LD) -o $@ $(SSHDOBJS) $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
 
 scp$(EXEEXT): $(LIBCOMPAT) libssh.a scp.o
 	$(LD) -o $@ scp.o $(LDFLAGS) -lssh -lopenbsd-compat $(LIBS)
