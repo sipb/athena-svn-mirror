@@ -47,6 +47,9 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 # location of sendmail binary (usually /usr/sbin or /usr/lib)
 BINDIR=	${DESTDIR}ifdef(`confMBINDIR', `confMBINDIR', `/usr/sbin')
 
+# BINDIR for symlink purposes (no DESTDIR)
+LNBINDIR= ifdef(`confMBINDIR', `confMBINDIR', `/usr/sbin')
+
 # location of "user" binaries (usually /usr/bin or /usr/ucb)
 UBINDIR=${DESTDIR}ifdef(`confUBINDIR', `confUBINDIR', `/usr/bin')
 
@@ -130,8 +133,12 @@ sendmail.${MAN8SRC}: sendmail.8
 install: install-sendmail install-docs
 
 install-sendmail: sendmail
+	mkdir -p ${BINDIR}
+	mkdir -p ${UBINDIR}
+	mkdir -p ${HFDIR}
+	mkdir -p ${STDIR}
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} sendmail ${BINDIR}
-	for i in ${LINKS}; do rm -f $$i; ln -s ${BINDIR}/sendmail $$i; done
+	for i in ${LINKS}; do rm -f $$i; ln -s ${LNBINDIR}/sendmail $$i; done
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 444 sendmail.hf \
 	    ${HFDIR}/sendmail.hf
 	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m 644 sendmail.st \
