@@ -1,5 +1,4 @@
-#define		MAX_TOP_BUTTONS		7
-#define		MAX_BOT_BUTTONS		9
+#define		MAX_BUTTONS		8
 #define		BUFSIZE			512
 #define		HELL_FROZEN_OVER	0
 #define		LONGNAMELEN		100
@@ -26,4 +25,15 @@
 #define		EDITMTGS		2
 #define		LISTTRNS		3
 
-static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.2 1990-12-06 16:42:38 sao Exp $";
+/*
+** In a chain of entryrecs, the head will be either a command widget or
+** a menubutton, and any following entries will be command children
+** of the menubutton.
+*/
+
+typedef struct entryrec {
+        Widget          button;
+        struct entryrec *nextrec;
+} EntryRec;
+
+static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.3 1991-02-05 09:12:50 sao Exp $";
