@@ -52,11 +52,9 @@ static char sccsid[] = "@(#)install.c	5.12 (Berkeley) 7/6/88";
 }
 
 #ifdef SOLARIS
-#define EXECSTRIP "/usr/ccs/bin/strip %s"
-#endif
-
-#ifdef sgi
-#define EXECSTRIP "/usr/bin/strip %s"
+#define STRIP "/usr/ccs/bin/strip"
+#else
+#define STRIP "/usr/bin/strip"
 #endif
 
 #define MAXARGS 1024
@@ -81,10 +79,6 @@ static int	docopy = NO,
 
 static char	*group, *owner,
 		pathbuf[MAXPATHLEN];
-
-#ifdef ultrix
-char *strdup();
-#endif
 
 extern char *getenv();
 
@@ -293,26 +287,18 @@ install(from_name, to_name, isdir)
 			PERROR("install: open: ", from_name);
 			exit(1);
 		}
-#ifndef EXECSTRIP
-		if (dostrip)
-			strip(from_fd, from_name, to_fd, to_name);
-		else
-#else
+		copy(from_fd, from_name, to_fd, to_name);
+		(void)close(from_fd);
+		(void)close(to_fd);
 		if (dostrip) {
 		      char stripname[PATH_MAX + 50];
 
-		      copy(from_fd, from_name, to_fd, to_name);
-		      (void)close(from_fd);
-		      sprintf(stripname, EXECSTRIP, to_name);
+		      sprintf(stripname, "%s %s", STRIP, to_name);
 		      system(stripname);
-		} else
-#endif
-			copy(from_fd, from_name, to_fd, to_name);
-		(void)close(from_fd);
+		}
 		if (!docopy)
 			(void)unlink(from_name);
 	}
-	(void)close(to_fd);
 	if (dotime) {
 		timep[0].tv_sec = from_sb.st_atime;
 		timep[1].tv_sec = from_sb.st_mtime;
@@ -337,131 +323,6 @@ install(from_name, to_name, isdir)
 }
 
 /*
- * strip --
- *	copy file, strip(1)'ing it at the same time
- *      This routine must know about the a.out architecture
- */
-#if defined(ultrix) || defined(_IBMR2)
-static
-strip(from_fd, from_name, to_fd, to_name)
-	register int from_fd, to_fd;
-	char *from_name, *to_name;
-{
-#if defined(ibm032) || defined(vax) || defined(sun)
-        /* BSD a.out format */
-	typedef struct exec EXEC;
-	EXEC head;
-#else
-	/* COFF */
-	int swapheader = 0;
-	FILHDR head;
-#endif
-	register long size;
-	register int n;
-	char buf[MAXBSIZE];
-	off_t lseek();
-
-#ifdef F_EXEC
-	if ((read(from_fd, (char *)&head, sizeof(head)) < 0) ||
-	    (head.f_flags & F_EXEC) == 0) {
-		fprintf(stderr, "install: %s is not an executable\n",
-			from_name);
-		(void)lseek(from_fd, 0L, L_SET);
-		copy(from_fd, from_name, to_fd, to_name);
-		return;
-	}
-	if (0 ||
-#if defined(_IBMR2)
-	    head.f_magic != U802WRMAGIC &&
-	    head.f_magic != U802ROMAGIC &&
-	    head.f_magic != U802TOCMAGIC
-#endif
-#if defined(_AUX_SOURCE)
-	    head.f_magic != MC68MAGIC
-#endif
-#if defined(ultrix)
-	    head.f_magic != MIPSEBMAGIC &&
-	    head.f_magic != MIPSELMAGIC &&
-	    head.f_magic != SMIPSEBMAGIC &&
-	    head.f_magic != SMIPSELMAGIC
-#endif
-#if defined(__alpha)
-	    head.f_magic != ALPHAMAGIC &&
-	    head.f_magic != ALPHAUMAGIC
-#endif
-	    ) {
-		fprintf(stderr, "install: %s is not an executable.\n",
-			from_name);
-		(void)lseek(from_fd, 0L, L_SET);
-		copy(from_fd, from_name, to_fd, to_name);
-		return;
-	}
-#if defined(ultrix)
-	if (head.f_magic == SMIPSEBMAGIC || head.f_magic == SMIPSELMAGIC)
-		swapheader = 1;
-	if (swapheader) swap_filehdr(&head, gethostsex());
-#endif
-	if (head.f_symptr) {
-		size = head.f_symptr - sizeof(FILHDR);
-		head.f_symptr = head.f_nsyms = 0;
-	} else {
-		(void)lseek(from_fd, 0L, L_SET);
-		copy(from_fd, from_name, to_fd, to_name);
-		return;
-	}
-#if defined(ultrix) 
-	if (swapheader) swap_filehdr(&head, gethostsex());
-#endif
-	if (write(to_fd, (char *)&head, sizeof(FILHDR)) != sizeof(FILHDR)) {
-		PERROR("install: write: ", to_name);
-		bad();
-	}
-#else /* !F_EXEC */
-	if (read(from_fd, (char *)&head, sizeof(head)) < 0 || N_BADMAG(head)) {
-		fprintf(stderr, "install: %s not in a.out format.\n", from_name);
-		(void)lseek(from_fd, 0L, L_SET);
-		copy(from_fd, from_name, to_fd, to_name);
-		return;
-	}
-	if (head.a_syms || head.a_trsize || head.a_drsize) {
-		size = (long)head.a_text + head.a_data;
-		head.a_syms = head.a_trsize = head.a_drsize = 0;
-		if ((head.a_magic == ZMAGIC)
-#ifdef Z0MAGIC
-		    || (head.a_magic == Z0MAGIC)
-#endif
-		    )
-			size += getpagesize() - sizeof(EXEC);
-	}
-	else {
-		(void)lseek(from_fd, 0L, L_SET);
-		copy(from_fd, from_name, to_fd, to_name);
-		return;
-	}
-	if (write(to_fd, (char *)&head, sizeof(EXEC)) != sizeof(EXEC)) {
-		PERROR("install: write: ", to_name);
-		bad();
-	}
-#endif /* !F_EXEC */
-	for (; size; size -= n)
-		/* sizeof(buf) guaranteed to fit in an int */
-		if ((n = read(from_fd, buf, (int)MIN(size, sizeof(buf)))) <= 0)
-			break;
-		else if (write(to_fd, buf, n) != n) {
-			PERROR("install: write: ", to_name);
-			bad();
-		}
-	if (size) {
-		fprintf(stderr, "install: read: %s: premature EOF.\n", from_name);
-		bad();
-	}
-	if (n == -1) {
-		PERROR("install: read: ", from_name);
-		bad();
-	}
-}
-#endif
-/*
  * copy --
  *	copy from one file to another
  */
@@ -483,22 +344,6 @@ copy(from_fd, from_name, to_fd, to_name)
 		bad();
 	}
 }
-
-#ifdef ultrix
-/*
- * strdup --
- * 	Duplicate a string
- */
-char *strdup(string)
-    char *string;
-{
-    char *temp;
-
-    if (temp = (char *)malloc(strlen(string)+1))
-        strcpy(temp,string);
-    return(temp);
-}
-#endif
 
 /*
  * isnumber --
