@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.6 1989-09-11 04:34:06 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.7 1989-10-23 13:35:27 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,19 +20,24 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <strings.h>
+#include <errno.h>
+#include <com_err.h>
 #include "col.h"
 #include "util.h"
 #include "directories.h"
 #include "pattern.h"
 #include "lsdel.h"
+#include "shell_regexp.h"
 #include "mit-copyright.h"
+#include "delete_errs.h"
+#include "errors.h"
 
 char *malloc(), *realloc();
 extern int current_time;
+extern int errno;
 
 int block_total = 0;
 int dirsonly, recursive, timev, yield;
-char *whoami, *error_buf;
 
 main(argc, argv)
 int argc;
@@ -43,11 +48,7 @@ char *argv[];
      int arg;
      
      whoami = lastpart(argv[0]);
-     error_buf = malloc(strlen(whoami) + MAXPATHLEN + 3);
-     if (! error_buf) {
-	  perror(whoami);
-	  exit(1);
-     }
+
      dirsonly = recursive = timev = yield = 0;
      while ((arg = getopt(argc, argv, "drt:y")) != -1) {
 	  switch (arg) {
@@ -72,9 +73,14 @@ char *argv[];
 	  char *cwd;
 
 	  cwd = ".";
-	  exit(ls(&cwd, 1));
+
+	  if (ls(&cwd, 1))
+	       error("ls of .");
      }
-     exit(ls(&argv[optind], argc - optind));
+     if (ls(&argv[optind], argc - optind))
+	  error ("ls");
+
+     exit (error_occurred ? 1 : 0);
 }
 
 
@@ -104,26 +110,41 @@ int num;
      int num_found, total = 0;
      char *file_re;
      int status = 0;
+     int retval;
 
-     if (initialize_tree())
-	  exit(1);
+     initialize_del_error_table();
+     
+     if (retval = initialize_tree()) {
+	  error("initialize_tree");
+	  return retval;
+     }
      
      for ( ; num; num--) {
 	  if (*args[num - 1] == '/') {
 	       start_dir = "/";
-	       file_re = parse_pattern(args[num - 1] + 1);
+	       file_re = args[num - 1] + 1;
 	  }
 	  else {
 	       start_dir = "";
-	       file_re = parse_pattern(args[num - 1]);
+	       file_re = args[num - 1];
 	  }
-	  if (! file_re)
-	       return(ERROR_MASK);
 
-	  found_files = get_the_files(start_dir, file_re, &num_found);
-	  total += num_found;
-	  if (num_found)
+	  if (retval = get_the_files(start_dir, file_re, &num_found,
+				     &found_files)) {
+	       error(args[num - 1]);
+	       status = retval;
+	       continue;
+	  }
+
+	  if (num_found) {
 	       num_found = process_files(found_files, num_found);
+	       if (num_found < 0) {
+		    error("process_files");
+		    status = error_code;
+		    continue;
+	       }
+	       total += num_found;
+	  }
 	  else {
 	       /* What we do at this point depends on exactly what the
 	        * file_re is.  There are several possible conditions:
@@ -139,54 +160,78 @@ int num;
 		*/
 	       if (no_wildcards(file_re)) {
 		    if (! directory_exists(args[num - 1])) {
-			 fprintf(stderr, "%s: %s: not found\n",
-				 whoami, args[num - 1]);
+			 set_error(ENOENT);
+			 error(args[num - 1]);
+			 status = error_code;
+			 continue;
 		    }
 	       }
 	       else {
-		    fprintf(stderr, "%s: %s: no match\n",
-			    whoami, args[num-1]);
+		    set_error(ENOMATCH);
+		    error(args[num - 1]);
+		    status = error_code;
+		    continue;
 	       }
 	  }
-	  free(file_re);
      }
      if (total) {
-	  list_files();
+	  if (list_files()) {
+	       error("list_files");
+	       return error_code;
+	  }
      }
      if (yield)
 	  printf("\nTotal space taken up by file%s: %dk\n",
 		 (total == 1 ? "" : "s"), blk_to_k(block_total));
-     return(status);
+
+     return status;
 }
 
 
 
 
-char **get_the_files(start_dir, file_re, number_found)
+int get_the_files(start_dir, file_re, number_found, found)
 char *start_dir, *file_re;
 int *number_found;
+char ***found;
 {
      char **matches;
      int num_matches;
-     char **found;
      int num;
      int i;
-
-     found = (char **) malloc(0);
+     int retval;
+     int status = 0;
+     
+     *found = (char **) malloc(0);
      num = 0;
 
-     matches = find_matches(start_dir, file_re, &num_matches);
+     if (retval = find_matches(start_dir, file_re, &num_matches, &matches)) {
+	  error("find_matches");
+	  return retval;
+     }
+     
      if (recursive) {
 	  char **recurs_found;
 	  int recurs_num;
 
 	  for (i = 0; i < num_matches; free(matches[i]), i++) {
 	       if (is_deleted(lastpart(matches[i]))) {
-		    found = add_str(found, num, matches[i]);
+		    if (retval = add_str(found, num, matches[i])) {
+			 error("add_str");
+			 return retval;
+		    }
 		    num++;
 	       }
-	       recurs_found = find_deleted_recurses(matches[i], &recurs_num);
-	       add_arrays(&found, &num, &recurs_found, &recurs_num);
+	       if (retval = find_deleted_recurses(matches[i], &recurs_num,
+						  &recurs_found)) {
+		    error("find_deleted_recurses");
+		    return retval;
+	       }
+	       if (retval = add_arrays(found, &num, &recurs_found,
+				       &recurs_num)) {
+		    error("add_arrays");
+		    return retval;
+	       }
 	  }
      }
      else {
@@ -196,24 +241,37 @@ int *number_found;
 	  
 	  for (i = 0; i < num_matches; free(matches[i]), i++) {
 	       if (is_deleted(lastpart(matches[i]))) {
-		    found = add_str(found, num, matches[i]);
+		    if (retval = add_str(found, num, matches[i])) {
+			 error("add_str");
+			 return retval;
+		    }
 		    num++;
 	       }
 	       if (dirsonly)
 		    continue;
-	       if (lstat(matches[i], &stat_buf))
+	       if (lstat(matches[i], &stat_buf)) {
+		    set_error(errno);
+		    error(matches[i]);
+		    status = error_code;
 		    continue;
+	       }
 	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-		    contents_found = find_deleted_contents_recurs(matches[i],
-							  &num_contents);
-		    add_arrays(&found, &num, &contents_found, &num_contents);
-		    
+		    if (retval = find_deleted_contents_recurs(matches[i],
+				      &num_contents, &contents_found)) {
+			 error("find_deleted_contents_recurs");
+			 return retval;
+		    }
+		    if (retval = add_arrays(found, &num, &contents_found,
+					    &num_contents)) {
+			 error("add_arrays");
+			 return retval;
+		    }
 	       }
 	  }
      }
      free(matches);
      *number_found = num;
-     return(found);
+     return status;
 }
 
 
@@ -229,12 +287,10 @@ int num;
      filerec *leaf;
      
      for (i = 0; i < num; i++) {
-	  if (! (leaf = add_path_to_tree(files[i]))) {
-	       fprintf(stderr, "%s: error adding path to filename tree\n",
-		       whoami);
-	       exit(1);
+	  if (add_path_to_tree(files[i], &leaf)) {
+	       error("add_path_to_tree");
+	       return -1;
 	  }
-
 	  free(files[i]);
 	  if (! timed_out(leaf, current_time, timev)) {
 	       free_leaf(leaf);
@@ -256,20 +312,93 @@ list_files()
      filerec *current;
      char **strings;
      int num;
-
+     int retval;
+     
      strings = (char **) malloc(sizeof(char *));
      num = 0;
      if (! strings) {
-	  perror(sprintf(error_buf, "%s: list_files", whoami));
-	  exit(1);
+	  set_error(errno);
+	  error("malloc");
+	  return error_code;
      }
      current = get_root_tree();
-     strings = accumulate_names(current, strings, &num);
+     if (retval = accumulate_names(current, &strings, &num)) {
+	  error("accumulate_names");
+	  return retval;
+     }
      current = get_cwd_tree();
-     strings = accumulate_names(current, strings, &num);
-     column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0, 1, stdout);
+     if (retval = accumulate_names(current, &strings, &num)) {
+	  error("accumulate_names");
+	  return retval;
+     }
+
+     if (retval = sort_files(strings, num)) {
+	  error("sort_files");
+	  return retval;
+     }
+     
+     if (retval = unique(&strings, &num)) {
+	  error("unique");
+	  return retval;
+     }
+     
+     if (retval = column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0,
+			       1, stdout)) {
+	  error("column_array");
+	  return retval;
+     }
+     
      for ( ; num; num--)
 	  free(strings[num - 1]);
      free(strings);
-     return(0);
+     return 0;
+}
+
+
+int sort_files(data, num_data)
+char **data;
+int num_data;
+{
+     qsort((char *) data, num_data, sizeof(char *), strcmp);
+
+     return 0;
+}
+
+
+int unique(the_files, number)
+char ***the_files;
+int *number;
+{
+     int i, last;
+     int offset;
+     char **files;
+
+     files = *the_files;
+     for (last = 0, i = 1; i < *number; i++) {
+	  if (! strcmp(files[last], files[i])) {
+	       free (files[i]);
+	       free (files[i]);
+	       files[i] = (char *) NULL;
+	  }
+	  else
+	       last = i;
+     }
+     
+     for (offset = 0, i = 0; i + offset < *number; i++) {
+	  if (! files[i])
+	       offset++;
+	  if (i + offset < *number)
+	       files[i] = files[i + offset];
+     }
+     *number -= offset;
+     files = (char **) realloc((char *) files,
+			       (unsigned) (sizeof(char *) * *number));
+     if (! files) {
+	  set_error(errno);
+	  error("realloc");
+	  return errno;
+     }
+
+     *the_files = files;
+     return 0;
 }
