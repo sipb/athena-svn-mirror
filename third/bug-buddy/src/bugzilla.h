@@ -25,6 +25,10 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libxml/parser.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtktreemodel.h>
+
+#define DOWNLOAD_FINISHED_OK_RESPONSE 1001
+#define DOWNLOAD_FINISHED_ZERO_RESPONSE 1002
 
 typedef struct _BugzillaBTS BugzillaBTS;
 
@@ -59,6 +63,11 @@ struct _BugzillaBTS {
 	BugzillaXMLFile *config_xml;
 	BugzillaXMLFile *mostfreq_xml;
 
+	char products_xml_md5[33];
+	char config_xml_md5[33];
+	char mostfreq_xml_md5[33];
+	gboolean md5s_downloaded;
+
 	BugzillaSubmitType submit_type;
 	char *icon;
 
@@ -69,7 +78,7 @@ struct _BugzillaBTS {
 	char *severity_header;
 	
 	/* products.xml */
-	GSList *products;
+	GHashTable *products;
 
 	/* config.xml */
 	GSList    *severities;
@@ -83,7 +92,7 @@ typedef struct {
 	BugzillaBTS *bts;
 	char        *name;
 	char        *description;
-	GSList      *components;
+	GHashTable  *components;
 } BugzillaProduct;
 
 typedef struct {
@@ -100,6 +109,17 @@ typedef struct {
 	char *url;
 	/* gboolean shown : 1; */
 } BugzillaBug;
+
+typedef struct {
+	char *name;
+	char *comment;
+	GdkPixbuf *pixbuf;
+	char *bugzilla;
+	char *product;
+	char *component;
+	char *email;
+	GtkTreeIter iter;
+} BugzillaApplication;
 
 enum {
 	PRODUCT_ICON,
@@ -129,10 +149,11 @@ enum {
 	MOSTFREQ_COLS,
 };
 
+void load_applications (void);
 void load_bugzillas (void);
 void load_bugzilla_xml (void);
 
-void bugzilla_bts_add_products_to_clist (BugzillaBTS *bts);
+void products_list_load (void);
 void bugzilla_product_add_components_to_clist (BugzillaProduct *product);
 
 gboolean bugzilla_add_mostfreq (BugzillaBTS *bts);
@@ -146,6 +167,6 @@ typedef enum {
 	END_BUGZILLA_CANCEL   = 1 << 0,
 	END_BUGZILLA_HIDE_BOX = 1 << 1
 } EndBugzillaFlags;
-void end_bugzilla_download (EndBugzillaFlags flags);
+void end_bugzilla_download (int count);
 
 #endif /* __BUGZILLA_H__ */

@@ -5,6 +5,7 @@ email=submit@bugzilla.ximian.com
 products=http://bugzilla.ximian.com/bugzilla-products.xml
 config=http://bugzilla.ximian.com/bugzilla-config.xml
 mostfreq=http://bugzilla.ximian.com/bugzilla-mostfreq.xml
+md5sums=http://bugzilla.ximian.com/md5sums
 icon=ximian.png
 submit_type=debian
 severity_node=priorities

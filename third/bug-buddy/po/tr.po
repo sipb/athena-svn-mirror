@@ -1,190 +1,200 @@
+# translation of tr.po to Turkish
 # Turkish translation of bug-buddy.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
-# Görkem Cetin <gorkem@gelecek.com.tr>, 2001.
+# GÃ¶rkem Cetin <gorkem@gelecek.com.tr>, 2001.
+# GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>, 2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy 2.0\n"
-"POT-Creation-Date: 2002-06-19 15:19-0400\n"
-"PO-Revision-Date: 2002-02-08 07:58-0500\n"
-"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Project-Id-Version: tr\n"
+"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"PO-Revision-Date: 2002-07-28 20:28+0000\n"
+"Last-Translator: GÃ¶rkem Ã‡etin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-9\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: src/bug-buddy.c:55
-msgid "Submit bug report"
-msgstr "Hata raporunu gönder"
+"X-Generator: KBabel 1.0beta2\n"
 
 #: src/bug-buddy.c:56
-msgid "Only send report to yourself"
-msgstr "Raporu sadece kendine gönder"
+msgid "Submit bug report"
+msgstr "Hata raporunu gÃ¶nder"
 
 #: src/bug-buddy.c:57
+msgid "Only send report to yourself"
+msgstr "Raporu sadece kendine gÃ¶nder"
+
+#: src/bug-buddy.c:58
 msgid "Save report to file"
 msgstr "Raporu dosyaya kaydet"
 
-#: src/bug-buddy.c:62
-msgid "crashed application"
-msgstr "çöken uygulama"
-
 #: src/bug-buddy.c:63
-msgid "core file"
-msgstr "core dosyası"
+msgid "crashed application"
+msgstr "Ã§Ã¶ken uygulama"
 
 #: src/bug-buddy.c:64
-msgid "nothing"
-msgstr "hiçbirşey"
+msgid "core file"
+msgstr "core dosyasÄ±"
 
-#: src/bug-buddy.c:69
+#: src/bug-buddy.c:65
+msgid "nothing"
+msgstr "hiÃ§birÅŸey"
+
+#: src/bug-buddy.c:70
 msgid "Create a new bug report"
 msgstr "Yeni bir hata raporu yarat"
 
-#: src/bug-buddy.c:70
+#: src/bug-buddy.c:71
 msgid "Add more information to existing report"
 msgstr "Bu rapora daha fazla bilgi ekle"
 
-#: src/bug-buddy.c:79
+#: src/bug-buddy.c:80
 msgid "Name of contact"
-msgstr "İsminiz"
-
-#: src/bug-buddy.c:79
-msgid "NAME"
-msgstr "İSİM"
+msgstr "Ä°sminiz"
 
 #: src/bug-buddy.c:80
+msgid "NAME"
+msgstr "Ä°SÄ°M"
+
+#: src/bug-buddy.c:81
 msgid "Email address of contact"
 msgstr "E-posta adresiniz"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:81
 msgid "EMAIL"
 msgstr "EPOSTA"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:82
 msgid "Package containing the program"
-msgstr "Programı içeren paket"
+msgstr "ProgramÄ± iÃ§eren paket"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:82
 msgid "PACKAGE"
 msgstr "PAKET"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:83
 msgid "Version of the package"
-msgstr "Paketin sürüm numarası"
-
-#: src/bug-buddy.c:82
-msgid "VERSION"
-msgstr "SÜRÜM"
+msgstr "Paketin sÃ¼rÃ¼m numarasÄ±"
 
 #: src/bug-buddy.c:83
-msgid "File name of crashed program"
-msgstr "Çöken uygulamanın adı"
+msgid "VERSION"
+msgstr "SÃœRÃœM"
 
-#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+#: src/bug-buddy.c:84
+msgid "File name of crashed program"
+msgstr "Ã‡Ã¶ken uygulamanÄ±n adÄ±"
+
+#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
 msgid "FILE"
 msgstr "DOSYA"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:85
 msgid "PID of crashed program"
-msgstr "Çöken uygulamanın PID numarası"
+msgstr "Ã‡Ã¶ken uygulamanÄ±n PID numarasÄ±"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:85
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:85
-msgid "Core file from program"
-msgstr "Programın core dosyası"
-
 #: src/bug-buddy.c:86
-msgid "Text file to include in the report"
-msgstr "Rapora eklenecek metin dosyası"
+msgid "Core file from program"
+msgstr "ProgramÄ±n core dosyasÄ±"
 
-#: src/bug-buddy.c:96
+#: src/bug-buddy.c:87
+msgid "Text file to include in the report"
+msgstr "Rapora eklenecek metin dosyasÄ±"
+
+#: src/bug-buddy.c:97
 #, c-format
 msgid "Could not find widget named %s at %s"
-msgstr ""
+msgstr "%s isimli parÃ§acÄ±k %s iÃ§inde bulunamadÄ±"
 
-#: src/bug-buddy.c:208
+#: src/bug-buddy.c:209
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
-"gdb hata ayıklama bilgilerini almayı tamamlamadı.\n"
-"gdb işlemi kapatılsın mı?"
+"gdb hata ayÄ±klama bilgilerini almayÄ± tamamlamadÄ±.\n"
+"gdb iÅŸlemi kapatÄ±lsÄ±n mÄ±?"
 
-#: src/bug-buddy.c:219 src/gdb-buddy.c:125
+#: src/bug-buddy.c:220 src/gdb-buddy.c:125
 msgid "gdb has already exited"
-msgstr "gdb'den zaten çıkılmış"
+msgstr "gdb'den zaten Ã§Ä±kÄ±lmÄ±ÅŸ"
 
-#: src/bug-buddy.c:286
+#: src/bug-buddy.c:250
 msgid "Save Backtrace"
 msgstr ""
 
-#: src/bug-buddy.c:305
+#: src/bug-buddy.c:261
+#, fuzzy
+msgid "Please wait while Bug Buddy saves the stack trace..."
+msgstr ""
+"LÃ¼tfen Bug Buddy listesini gÃ¼ncelleyene kadar bekleyiniz\n"
+"(Hata tarama sistemi iÃ§in)"
+
+#: src/bug-buddy.c:270
 #, c-format
 msgid ""
-"There was an error trying to save %s:\n"
+"The stack trace was not saved in %s:\n"
 "\n"
 "%s\n"
 "\n"
-"Please choose another file and try again."
+"Please try again, maybe with a different file name."
 msgstr ""
 
-#: src/bug-buddy.c:402
+#: src/bug-buddy.c:298
+#, fuzzy
+msgid "Show _Applications"
+msgstr "Ã§Ã¶ken uygulama"
+
+#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
+#, fuzzy
+msgid "Show _Products"
+msgstr "ÃœrÃ¼n"
+
+#: src/bug-buddy.c:368
 msgid "_Start Mailer"
-msgstr ""
+msgstr "_E-posta ProgramÄ±nÄ± Ã‡alÄ±ÅŸtÄ±r"
 
-#: src/bug-buddy.c:406
+#: src/bug-buddy.c:372
 msgid "_Send Report"
-msgstr "_Rapor Gönder"
+msgstr "_Rapor GÃ¶nder"
 
-#: src/bug-buddy.c:443
-#, c-format
-msgid ""
-"There was an error showing the proxy settings:\n"
-"\n"
-"%s.\n"
-"\n"
-"Please make sure the GNOME Control Center is properly installed."
-msgstr ""
-
-#: src/bug-buddy.c:491
+#: src/bug-buddy.c:400
 msgid "Hide Debugging Options"
-msgstr "Hata Ayıklama Bilgilerini Gizle"
+msgstr "Hata AyÄ±klama Bilgilerini Gizle"
 
-#: src/bug-buddy.c:492
+#: src/bug-buddy.c:401
 msgid "Show Debugging Options"
-msgstr "Hata Ayıklama Bilgilerini Göster"
+msgstr "Hata AyÄ±klama Bilgilerini GÃ¶ster"
 
-#: src/bug-buddy.c:556
+#: src/bug-buddy.c:503
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
 "Please use the --appname command lineargument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME tam desteklenmiyor.\n"
-"Lütfen yerine --appname parametresini kullanın."
+"LÃ¼tfen yerine --appname parametresini kullanÄ±n."
 
-#: src/bug-buddy.c:566
+#: src/bug-buddy.c:513
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
 "Please use the --pid command lineargument instead."
 msgstr ""
 "$GNOME_CRASHED_PID deskteklenmiyor.\n"
-"Lütfen yerine --pid parametresini kullanın."
+"LÃ¼tfen yerine --pid parametresini kullanÄ±n."
 
-#: src/bug-buddy.c:582
+#: src/bug-buddy.c:529
 msgid ""
 "Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
 "It will step you through the process of submitting a bug report."
 msgstr ""
-"GNOME hata raporlama aracı Bug Buddy'ye hoşgeldiniz.\n"
-"Bu program, hata rapor sunmanızı kolaylaştırmak için size rehberlik "
-"yapacaktır."
+"GNOME hata raporlama aracÄ± Bug Buddy'ye hoÅŸgeldiniz.\n"
+"Bu program, hata rapor sunmanÄ±zÄ± kolaylaÅŸtÄ±rmak iÃ§in size rehberlik "
+"yapacaktÄ±r."
 
-#: src/bug-buddy.c:585
+#: src/bug-buddy.c:532
 msgid ""
 "\n"
 "\n"
@@ -192,337 +202,318 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Başka bir uygulama çöktüğü için bunu görüyorsunuz."
+"BaÅŸka bir uygulama Ã§Ã¶ktÃ¼ÄŸÃ¼ iÃ§in bunu gÃ¶rÃ¼yorsunuz."
 
-#: src/bug-buddy.c:588
+#: src/bug-buddy.c:535
 msgid ""
 "\n"
 "\n"
 "Please wait a few moments while Bug Buddy obtains debugging information from "
 "the applications.  This allows Bug Buddy to provide a more useful bug report."
 msgstr ""
+"\n"
+"\n"
+"LÃ¼tfen bekleyiniz. Bug Buddy bu sÃ¼re iÃ§inde uygulamadan Ã§eÅŸitli bilgiler "
+"alacak."
 
-#: src/bug-buddy.c:727
+#: src/bug-buddy.c:650
 #, c-format
 msgid "Could not find pixmap: %s (%d)\n"
-msgstr "Resim bulunamadı: %s (%d)\n"
+msgstr "Resim bulunamadÄ±: %s (%d)\n"
 
-#: src/bug-buddy.c:794
+#: src/bug-buddy.c:717
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"Bug Buddy kullanıcı arayüz dosyasını (%s) açamadı.\n"
-"Lütfen Bug Buddy'nin düzgün kurulduğuna emin olun."
+"Bug Buddy kullanÄ±cÄ± arayÃ¼z dosyasÄ±nÄ± (%s) aÃ§amadÄ±.\n"
+"LÃ¼tfen Bug Buddy'nin dÃ¼zgÃ¼n kurulduÄŸuna emin olun."
+
+#: src/bug-buddy.c:749
+msgid ""
+"Bug Buddy could not update its bug information.\n"
+"The old one will be used."
+msgstr ""
+
+#: src/bug-buddy.c:763
+msgid "Bug Buddy updated its bug information correctly."
+msgstr ""
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
-msgstr "Hata Raporlama Aracı"
+msgstr "Hata Raporlama AracÄ±"
 
 #: src/bug-buddy.desktop.in.h:2
 msgid "Report a bug in GNOME"
-msgstr "GNOME'da oluşan hatayı raporla"
+msgstr "GNOME'da oluÅŸan hatayÄ± raporla"
 
 #: src/bug-buddy.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/bug-buddy.glade.h:2
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
 #: src/bug-buddy.glade.h:3
-msgid "Advanced"
-msgstr "Gelişmiş"
+msgid ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
+"\n"
+"The bug information that is stored on your system is outdated. Choosing "
+"'Update' will update it. Choosing 'Don't update' will force the bug "
+"reporting to use old data.'\n"
+msgstr ""
 
-#: src/bug-buddy.glade.h:4
+#: src/bug-buddy.glade.h:7
+msgid "Advanced"
+msgstr "GeliÅŸmiÅŸ"
+
+#: src/bug-buddy.glade.h:8
 msgid "Assbarn Phenomenon"
 msgstr ""
 
-#: src/bug-buddy.glade.h:5
-#, fuzzy
+#: src/bug-buddy.glade.h:9
 msgid "Binary file:"
-msgstr "Binary dosya"
+msgstr "Ä°kili dosya:"
 
-#: src/bug-buddy.glade.h:6 src/united-states-of-bug-buddy.c:95
+#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:11
+#, fuzzy
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
-"The correct options should have been selected for you automatically.\n"
-"For more information, please click the Help button below."
+"The correct options should have been selected for you automatically."
 msgstr ""
-"Bug Buddy hatayı ayıklamak için gerekli olan bilgileri hata bildirici ile\n"
+"Bug Buddy hatayÄ± ayÄ±klamak iÃ§in gerekli olan bilgileri hata bildirici ile\n"
 "yollayabilir.\n"
-"Gerekli ve uygun seçenekler sizin için otomatik olarak belirtilmelidir.\n"
-"Daha Fazla bilgi için lütfen yardım tuşunu tıklayınız."
+"Gerekli ve uygun seÃ§enekler sizin iÃ§in otomatik olarak belirtilmelidir.\n"
+"Daha Fazla bilgi iÃ§in lÃ¼tfen yardÄ±m tuÅŸunu tÄ±klayÄ±nÄ±z."
 
-#: src/bug-buddy.glade.h:10
+#: src/bug-buddy.glade.h:13
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
-"Please choose how you would like Bug Buddy to send email.\n"
-"If you choose to use the default GNOME mailer, this setting\n"
-"will be shared with some other GNOME applications."
+"Please choose how you would like Bug Buddy to send email."
 msgstr ""
-
-#: src/bug-buddy.glade.h:14
-msgid "Bug tracking system"
-msgstr "Hata Takip sistemi"
 
 #: src/bug-buddy.glade.h:15
 msgid "Cc"
 msgstr "Cc"
 
 #: src/bug-buddy.glade.h:16
-msgid "Command"
-msgstr "Komut"
+msgid "Core file"
+msgstr "Core dosyasÄ±"
 
 #: src/bug-buddy.glade.h:17
-msgid "Core file"
-msgstr "Core dosyası"
+msgid "Debug"
+msgstr "AyÄ±kla"
 
-#: src/bug-buddy.glade.h:18
-msgid "Custom mailer"
-msgstr "Özel postalayıcı"
+#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
+#: src/bugzilla.c:819
+msgid "Description"
+msgstr "AnlatÄ±m"
 
 #: src/bug-buddy.glade.h:19
-msgid "Debug"
-msgstr "Ayıkla"
+#, fuzzy
+msgid "Downloading files"
+msgstr "Ä°ndirme Ä°ÅŸlemi"
 
-#: src/bug-buddy.glade.h:20 src/bugzilla.c:642 src/bugzilla.c:683
-#: src/bugzilla.c:711
-msgid "Description"
-msgstr "Anlatım"
-
-#: src/bug-buddy.glade.h:21
-msgid "Download Progress"
-msgstr "İndirme İşlemi"
-
-#: src/bug-buddy.glade.h:22
+#: src/bug-buddy.glade.h:20
 msgid "Email"
 msgstr "Eposta"
 
+#: src/bug-buddy.glade.h:21
+msgid "Include a text file"
+msgstr "Bir metin dosyasÄ± iÃ§er"
+
+#: src/bug-buddy.glade.h:22
+msgid "Just save to a file so I can submit a bug report manually"
+msgstr "Bir dosyaya kaydet, bÃ¶ylece elle hata raporu gÃ¶nderebileyim"
+
 #: src/bug-buddy.glade.h:23
-msgid "GNOME Mailer Settings"
-msgstr "GNOME Posta Ayarları"
+msgid "Name"
+msgstr "Ä°sim"
 
 #: src/bug-buddy.glade.h:24
-msgid "Include a text file"
-msgstr "Bir metin dosyası içer"
-
-#: src/bug-buddy.glade.h:25
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr "Bir dosyaya kaydet, böylece elle hata raporu gönderebileyim"
-
-#: src/bug-buddy.glade.h:26
-msgid "Name"
-msgstr "İsim"
-
-#: src/bug-buddy.glade.h:27
 msgid "Path of sendmail"
 msgstr "Sendmail'a giden yol"
 
-#: src/bug-buddy.glade.h:28
+#: src/bug-buddy.glade.h:25
 msgid "Please choose a component, version, and severity level."
-msgstr "Lütfen bir içerik, sürüm ve önem kademesini seçiniz."
+msgstr "LÃ¼tfen bir iÃ§erik, sÃ¼rÃ¼m ve Ã¶nem kademesini seÃ§iniz."
+
+#: src/bug-buddy.glade.h:26
+msgid "Please make any final corrections to the bug report."
+msgstr "LÃ¼tfen hata raporundaki son dÃ¼zeltmelerinizi yapÄ±nÄ±z."
+
+#: src/bug-buddy.glade.h:27
+msgid "Please make your bug report in English, if possible."
+msgstr "Hata raporunuzu mÃ¼mkÃ¼nse Ä°ngilizce gÃ¶nderin."
+
+#: src/bug-buddy.glade.h:28
+#, fuzzy
+msgid ""
+"Please select the product or application for the bug you wish to report."
+msgstr "Bildirmek istediÄŸiniz hatanÄ±n Ã¼rÃ¼nÃ¼nÃ¼ seÃ§iniz."
 
 #: src/bug-buddy.glade.h:29
-msgid "Please make any final corrections to the bug report."
-msgstr "Lütfen hata raporundaki son düzeltmelerinizi yapınız."
-
-#: src/bug-buddy.glade.h:30
-msgid "Please make your bug report in English, if possible."
-msgstr "Hata raporunuzu mümkünse İngilizce gönderin."
-
-#: src/bug-buddy.glade.h:31
-msgid "Please select the product for the bug you wish to report."
-msgstr "Bildirmek istediğiniz hatanın ürününü seçiniz."
-
-#: src/bug-buddy.glade.h:32
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
 
-#: src/bug-buddy.glade.h:34
+#: src/bug-buddy.glade.h:31
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Lütfen Bug Buddy listesini güncelleyene kadar bekleyiniz\n"
-"(Hata tarama sistemi için)"
+"LÃ¼tfen Bug Buddy listesini gÃ¼ncelleyene kadar bekleyiniz\n"
+"(Hata tarama sistemi iÃ§in)"
 
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:33
 msgid "Process ID:"
-msgstr "İşlem ID'si"
+msgstr "SÃ¼reÃ§ NumarasÄ±:"
 
-#: src/bug-buddy.glade.h:37
-msgid "Proxy Settings..."
-msgstr "Vekil Sunucu Ayarları..."
-
-#: src/bug-buddy.glade.h:38
+#: src/bug-buddy.glade.h:34
 msgid "Save in"
 msgstr "Kaydet:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:35
 msgid "Save the report to..."
 msgstr "Raporu kaydet..."
 
-#: src/bug-buddy.glade.h:40
-msgid "Saving:"
+#: src/bug-buddy.glade.h:36
+#, fuzzy
+msgid "Saving: "
 msgstr "Kaydetme:"
 
+#: src/bug-buddy.glade.h:37
+msgid "Sendmail Settings"
+msgstr "Sendmail AyarlarÄ±"
+
+#: src/bug-buddy.glade.h:38
+msgid "Severity"
+msgstr "Ã–nem"
+
+#: src/bug-buddy.glade.h:39
+msgid "Show _Debugging Details"
+msgstr "_Hata Raporu AyrÄ±ntÄ±larÄ±nÄ± GÃ¶ster"
+
 #: src/bug-buddy.glade.h:41
-msgid "Select a mailer"
-msgstr "Bir postalayıcı seçin"
+msgid "Show most frequent bugs in:"
+msgstr "En sÄ±k hatalarÄ± gÃ¶ster:"
 
 #: src/bug-buddy.glade.h:42
-msgid "Sendmail Settings"
-msgstr "Sendmail Ayarları"
-
-#: src/bug-buddy.glade.h:43
-msgid "Severity"
-msgstr "Önem"
-
-#: src/bug-buddy.glade.h:44
-#, fuzzy
-msgid "Show _Debugging Details"
-msgstr "Hata Ayıklama Ayrıntılarını Göster"
-
-#: src/bug-buddy.glade.h:45
-msgid "Show most frequent bugs in:"
-msgstr "En sık hataları göster:"
-
-#: src/bug-buddy.glade.h:46
 msgid "Simple"
 msgstr "Basit"
 
-#: src/bug-buddy.glade.h:47
+#: src/bug-buddy.glade.h:43
 msgid "Start"
-msgstr "Başla"
+msgstr "BaÅŸla"
 
-#: src/bug-buddy.glade.h:48
-msgid "Start in terminal"
-msgstr "Terminalde başla"
-
-#: src/bug-buddy.glade.h:49
+#: src/bug-buddy.glade.h:44
 msgid "Stop"
 msgstr "Dur"
 
-#: src/bug-buddy.glade.h:50
+#: src/bug-buddy.glade.h:45
 msgid "Submit another bug"
-msgstr "Başka bir hata gönder"
+msgstr "BaÅŸka bir hata gÃ¶nder"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:46
 msgid "Summary"
-msgstr "Özet"
+msgstr "Ã–zet"
 
-#: src/bug-buddy.glade.h:52
-msgid "The product is not listed above."
-msgstr "Ürün yukarıda listelenmemiş."
+#: src/bug-buddy.glade.h:47
+#, fuzzy
+msgid "The product or application is not listed above."
+msgstr "ÃœrÃ¼n yukarÄ±da listelenmemiÅŸ."
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:48
 msgid "To"
 msgstr "Kime"
 
-#: src/bug-buddy.glade.h:54
-msgid "To:"
-msgstr "Kime:"
-
-#: src/bug-buddy.glade.h:55
-msgid "Understands Netscape remote control"
-msgstr "Netscape uzaktan denetimi anlar"
-
-#: src/bug-buddy.glade.h:56
-msgid "Updating products list:"
-msgstr "Ürün listesi güncelleniyor:"
-
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:49
 msgid "Use sendmail directly"
-msgstr "Sendmail'i doğrudan kullan"
+msgstr "Sendmail'i doÄŸrudan kullan"
 
-#: src/bug-buddy.glade.h:58
-msgid "Use the default GNOME mailer"
-msgstr "Öntanımlı GNOME postalayıcısını kullan"
-
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:50
 msgid "Version"
-msgstr "Sürüm"
+msgstr "SÃ¼rÃ¼m"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:51
+msgid "_Don't update"
+msgstr ""
+
+#: src/bug-buddy.glade.h:52
+msgid "_Update"
+msgstr ""
+
+#: src/bug-buddy.glade.h:53
 msgid "component"
 msgstr "komponent"
 
-#: src/bug-buddy.glade.h:61
+#: src/bug-buddy.glade.h:54
 msgid "desc"
 msgstr "Tanimlama"
 
-#: src/bug-buddy.glade.h:62
+#: src/bug-buddy.glade.h:55
 msgid "email info"
 msgstr "E-Posta bilgisi"
 
-#: src/bug-buddy.glade.h:63
+#: src/bug-buddy.glade.h:56
 msgid "finished"
-msgstr "tamamlandı"
+msgstr "tamamlandÄ±"
 
-#: src/bug-buddy.glade.h:64
+#: src/bug-buddy.glade.h:57
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:65
-msgid "gnome"
-msgstr "gnome"
-
-#: src/bug-buddy.glade.h:66
+#: src/bug-buddy.glade.h:58
 msgid "mail config"
-msgstr "posta yapılandırması"
+msgstr "posta yapÄ±landÄ±rmasÄ±"
 
-#: src/bug-buddy.glade.h:67
+#: src/bug-buddy.glade.h:59
 msgid "mostfreq"
-msgstr "en sık"
+msgstr "en sÄ±k"
 
-#: src/bug-buddy.glade.h:68
+#: src/bug-buddy.glade.h:60
 msgid "product"
-msgstr "ürün"
+msgstr "Ã¼rÃ¼n"
 
-#: src/bug-buddy.glade.h:69
-msgid "sendmail"
-msgstr "sendmail"
+#: src/bugzilla.c:257
+#, c-format
+msgid "%d of %d"
+msgstr ""
 
-#: src/bugzilla.c:616
+#: src/bugzilla.c:687
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:630 src/bugzilla.c:665
+#: src/bugzilla.c:701 src/bugzilla.c:770
 msgid "Product"
-msgstr "Ürün"
+msgstr "ÃœrÃ¼n"
 
-#: src/bugzilla.c:636 src/bugzilla.c:705
+#: src/bugzilla.c:707 src/bugzilla.c:813
 msgid "Component"
-msgstr "İçerik"
+msgstr "Ä°Ã§erik"
 
-#: src/bugzilla.c:774
-#, fuzzy, c-format
+#: src/bugzilla.c:870
+#, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
 "Please make sure Bug Buddy was installed correctly.\n"
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy, '%s' dosyasını açılamadı.\n"
-"Lütfen Bug Buddy'nin düzgün kurulduğuna emin olun."
+"Bug Buddy, '%s' dosyasÄ±nÄ± aÃ§Ä±lamadÄ±.\n"
+"LÃ¼tfen Bug Buddy'nin dÃ¼zgÃ¼n kurulduÄŸuna emin olun.\n"
+"\n"
+"Bug Buddy kapatÄ±lacaktÄ±r."
 
-#: src/bugzilla.c:793
-msgid "All"
-msgstr "Tümü"
-
-#: src/bugzilla.c:822
-#, fuzzy
+#: src/bugzilla.c:915
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -530,204 +521,255 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy kullanıcı arayüz dosyasını (%s) açamadı.\n"
-"Lütfen Bug Buddy'nin düzgün kurulduğuna emin olun."
 
-#: src/cell-renderer-uri.c:145
+#: src/bugzilla.c:994
+#, c-format
+msgid "Couldn't load icon for %s: %s"
+msgstr ""
+
+#: src/cell-renderer-uri.c:151
 msgid "URI"
 msgstr "URI"
 
-#: src/cell-renderer-uri.c:146
+#: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr "Tıklanınca gösterilecek URI."
+msgstr "TÄ±klanÄ±nca gÃ¶sterilecek URI."
 
-#: src/cell-renderer-uri.c:153
+#: src/cell-renderer-uri.c:159
 msgid "Visited"
 msgstr "Ziyaret edilen"
 
-#: src/cell-renderer-uri.c:154
+#: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr "Bu URI daha önce ziyaret edilmişse."
-
-#: src/config.c:75
-msgid "Evolution"
-msgstr "Evolution"
+msgstr "Bu URI daha Ã¶nce ziyaret edilmiÅŸse."
 
 #: src/gdb-buddy.c:82
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr "Yığın izi alınıyor... (%d)"
+msgstr "YÄ±ÄŸÄ±n izi alÄ±nÄ±yor... (%d)"
 
-#: src/gdb-buddy.c:165
+#: src/gdb-buddy.c:175
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
 "'%s'"
 msgstr ""
-"gdb ile core dosyası taranamadı:\n"
+"gdb ile core dosyasÄ± taranamadÄ±:\n"
 "'%s'"
 
-#: src/gdb-buddy.c:196
+#: src/gdb-buddy.c:206
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"GDB, aşağıdaki dosyanın hangi uygulama tarafından oluşturulduğunu "
-"anlayamadı.'%s'"
+"GDB, aÅŸaÄŸÄ±daki dosyanÄ±n hangi uygulama tarafÄ±ndan oluÅŸturulduÄŸunu "
+"anlayamadÄ±.'%s'"
 
-#: src/gdb-buddy.c:228
+#: src/gdb-buddy.c:238
 msgid "Error on read... aborting"
-msgstr "Okurken hata oluştu... çıkılıyor"
+msgstr "Okurken hata oluÅŸtu... Ã§Ä±kÄ±lÄ±yor"
 
-#: src/gdb-buddy.c:274
+#: src/gdb-buddy.c:290
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
 msgstr ""
-"GDB sisteminizde bulunamadı.\n"
-"Hatayı ayıklama için gerekli bilgiler toplanamadı."
+"GDB sisteminizde bulunamadÄ±.\n"
+"HatayÄ± ayÄ±klama iÃ§in gerekli bilgiler toplanamadÄ±."
 
-#: src/gdb-buddy.c:308
+#: src/gdb-buddy.c:333
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
-"gdb-cmd dosyası bulanamadı.\n"
-"Lütfen bug-buddy'yi yeniden yükleyin."
+"gdb-cmd dosyasÄ± bulanamadÄ±.\n"
+"LÃ¼tfen bug-buddy'yi yeniden yÃ¼kleyin."
 
-#: src/gdb-buddy.c:328
-msgid "There was an error running gdb."
-msgstr "Gdb çalıştırılırken bir hata oluştu."
+#: src/gdb-buddy.c:352
+#, fuzzy, c-format
+msgid ""
+"There was an error running gdb:\n"
+"\n"
+"%s"
+msgstr "Gdb Ã§alÄ±ÅŸtÄ±rÄ±lÄ±rken bir hata oluÅŸtu."
 
-#: src/united-states-of-bug-buddy.c:49
-msgid "Welcome to Bug Buddy"
-msgstr "Bug Buddy 'ye hoşgeldiniz"
+#: src/save-buddy.c:83
+#, c-format
+msgid "Could not read symbolic link information for %s"
+msgstr ""
 
-#: src/united-states-of-bug-buddy.c:50
-msgid "Select a Product"
-msgstr "Bir Ürün Seçin"
+#: src/save-buddy.c:125
+msgid "The file has too many symbolic links."
+msgstr ""
 
-#: src/united-states-of-bug-buddy.c:51
-msgid "Select a Component"
-msgstr "Bir Bileşen Seçin"
+#: src/save-buddy.c:268
+msgid "Main loop isn't running!"
+msgstr ""
 
-#: src/united-states-of-bug-buddy.c:52
-msgid "Frequently Reported Bugs"
-msgstr "Sıkça Raporlanan Hatalar"
+#: src/save-buddy.c:284
+#, c-format
+msgid "Error setting up sigchld handler: %s"
+msgstr ""
 
-#: src/united-states-of-bug-buddy.c:53
-msgid "Bug Description"
-msgstr "Yama Tanımı"
+#: src/save-buddy.c:387
+msgid "Invalid filename."
+msgstr ""
+
+#: src/save-buddy.c:412
+#, c-format
+msgid ""
+"There already exists a file name '%s'.\n"
+"\n"
+"Do you wish to overwrite this file?"
+msgstr ""
+
+#: src/save-buddy.c:417
+msgid "_Overwrite"
+msgstr ""
+
+#: src/save-buddy.c:516
+msgid "Could not create a backup file."
+msgstr ""
 
 #: src/united-states-of-bug-buddy.c:54
-msgid "Mail Configuration"
-msgstr "E-posta Ayarları"
+msgid "Welcome to Bug Buddy"
+msgstr "Bug Buddy 'ye hoÅŸgeldiniz"
 
 #: src/united-states-of-bug-buddy.c:55
+#, fuzzy
+msgid "Select a Product or Application"
+msgstr "Bir ÃœrÃ¼n SeÃ§in"
+
+#: src/united-states-of-bug-buddy.c:56
+msgid "Select a Component"
+msgstr "Bir BileÅŸen SeÃ§in"
+
+#: src/united-states-of-bug-buddy.c:57
+msgid "Frequently Reported Bugs"
+msgstr "SÄ±kÃ§a Raporlanan Hatalar"
+
+#: src/united-states-of-bug-buddy.c:58
+msgid "Bug Description"
+msgstr "Yama TanÄ±mÄ±"
+
+#: src/united-states-of-bug-buddy.c:59
+msgid "Mail Configuration"
+msgstr "E-posta AyarlarÄ±"
+
+#: src/united-states-of-bug-buddy.c:60
 msgid "Confirmation"
 msgstr "Onaylama"
 
-#: src/united-states-of-bug-buddy.c:56
+#: src/united-states-of-bug-buddy.c:61
 msgid "Finished!"
-msgstr "Tamamlandı!"
+msgstr "TamamlandÄ±!"
 
-#: src/united-states-of-bug-buddy.c:98
+#: src/united-states-of-bug-buddy.c:105
 msgid "The graphical bug reporting tool for GNOME."
-msgstr "GNOME için grafiksel hata raporlama programı."
+msgstr "GNOME iÃ§in grafiksel hata raporlama programÄ±."
 
-#: src/united-states-of-bug-buddy.c:109
+#: src/united-states-of-bug-buddy.c:118
 msgid "The lame Bug Buddy web page"
-msgstr "Bug Buddy web sayfası"
+msgstr "Bug Buddy web sayfasÄ±"
 
-#: src/united-states-of-bug-buddy.c:293
+#: src/united-states-of-bug-buddy.c:308
 msgid "Please enter your name."
-msgstr "Lütfen isminizi girin."
+msgstr "LÃ¼tfen isminizi girin."
 
-#: src/united-states-of-bug-buddy.c:309
+#: src/united-states-of-bug-buddy.c:324
 msgid "Please enter a valid email address."
-msgstr "Lütfen geçerli bir e-posta adresi girin."
+msgstr "LÃ¼tfen geÃ§erli bir e-posta adresi girin."
 
-#: src/united-states-of-bug-buddy.c:325
+#: src/united-states-of-bug-buddy.c:340
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
-"'%s' bulunamadı.\n"
+"'%s' bulunamadÄ±.\n"
 "\n"
-"Lütfen sendmail'ın tam yolunu girin."
+"LÃ¼tfen sendmail'Ä±n tam yolunu girin."
 
-#: src/united-states-of-bug-buddy.c:357
+#: src/united-states-of-bug-buddy.c:372
 msgid "Please enter a valid email command."
-msgstr "Lütfen geçerli bir e-posta adresi girin."
+msgstr "LÃ¼tfen geÃ§erli bir e-posta adresi girin."
 
-#: src/united-states-of-bug-buddy.c:421
+#: src/united-states-of-bug-buddy.c:436
 msgid "The specified file does not exist."
-msgstr "Belirtilen dosya bulunamadı."
+msgstr "Belirtilen dosya bulunamadÄ±."
 
-#: src/united-states-of-bug-buddy.c:431
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid "File is of type: %s"
-msgstr "Dosya türü: %s"
+msgstr "Dosya tÃ¼rÃ¼: %s"
 
-#: src/united-states-of-bug-buddy.c:438
+#: src/united-states-of-bug-buddy.c:453
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
-"'%s' bir %s dosyasıdır\n"
+"'%s' bir %s dosyasÄ±dÄ±r\n"
 "\n"
-"Bug Buddy sadece düz metin dosyaları gönderebilir."
+"Bug Buddy sadece dÃ¼z metin dosyalarÄ± gÃ¶nderebilir."
 
-#: src/united-states-of-bug-buddy.c:458
+#: src/united-states-of-bug-buddy.c:473
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr "Hata raporunda bir konu satırı bulunmak zorundadır"
+msgstr "Hata raporunda bir konu satÄ±rÄ± bulunmak zorundadÄ±r"
 
-#: src/united-states-of-bug-buddy.c:474
+#: src/united-states-of-bug-buddy.c:489
 msgid "You must include a comprehensible description in your bug report."
-msgstr "Hata raporunda bir tanım bulunmak zorundadır"
+msgstr "Hata raporunda bir tanÄ±m bulunmak zorundadÄ±r"
 
-#: src/united-states-of-bug-buddy.c:502
+#: src/united-states-of-bug-buddy.c:520
 msgid "Submit this bug report now?"
-msgstr "Hata raporunu göndermek istiyor musunuz?"
+msgstr "Hata raporunu gÃ¶ndermek istiyor musunuz?"
 
-#: src/united-states-of-bug-buddy.c:505
+#: src/united-states-of-bug-buddy.c:523
 msgid "_Submit"
-msgstr ""
+msgstr "_GÃ¶nder"
 
-#: src/united-states-of-bug-buddy.c:526
+#: src/united-states-of-bug-buddy.c:560
+#, fuzzy
+msgid "Please wait while Bug Buddy saves your bug report..."
+msgstr ""
+"LÃ¼tfen Bug Buddy listesini gÃ¼ncelleyene kadar bekleyiniz\n"
+"(Hata tarama sistemi iÃ§in)"
+
+#: src/united-states-of-bug-buddy.c:567
 #, c-format
 msgid ""
-"Unable to open file '%s':\n"
-"%s"
+"The bug report was not saved in %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please try again, maybe with a different file name."
 msgstr ""
-"'%s' dosyası açılamadı:\n"
-"%s"
 
-#: src/united-states-of-bug-buddy.c:540
-#, c-format
-msgid "about to run '%s'"
-msgstr "'%s' çalıştırılıyor"
-
-#: src/united-states-of-bug-buddy.c:548
-#, c-format
-msgid ""
-"Unable to start mail program '%s':\n"
-"%s"
-msgstr ""
-"E-posta uygulaması '%s' çalıştırılamadı:\n"
-"%s"
-
-#: src/united-states-of-bug-buddy.c:586
-#, c-format
-msgid "Your bug report was saved in '%s'"
+#: src/united-states-of-bug-buddy.c:576
+#, fuzzy, c-format
+msgid "Your bug report was saved in %s"
 msgstr "Hata raporu `%s''de kadedildi"
 
-#: src/united-states-of-bug-buddy.c:589
+#: src/united-states-of-bug-buddy.c:584
+#, fuzzy
+msgid "Please wait while Bug Buddy submits your bug report..."
+msgstr ""
+"LÃ¼tfen Bug Buddy listesini gÃ¼ncelleyene kadar bekleyiniz\n"
+"(Hata tarama sistemi iÃ§in)"
+
+#: src/united-states-of-bug-buddy.c:591
+#, fuzzy, c-format
+msgid ""
+"There was an error submitting the bug report:\n"
+"\n"
+"%s"
+msgstr "Gdb Ã§alÄ±ÅŸtÄ±rÄ±lÄ±rken bir hata oluÅŸtu."
+
+#: src/united-states-of-bug-buddy.c:599
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
@@ -736,61 +778,152 @@ msgid ""
 "\n"
 "Thanks!"
 msgstr ""
-"Hata raporu aşağıdaki e-posta adresine gönderilmiştir:\n"
+"Hata raporu aÅŸaÄŸÄ±daki e-posta adresine gÃ¶nderilmiÅŸtir:\n"
 "\n"
 "           <%s>\n"
 "\n"
-"Teşekkürler!"
+"TeÅŸekkÃ¼rler!"
 
-#: src/united-states-of-bug-buddy.c:644
+#: src/united-states-of-bug-buddy.c:745
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
 msgstr ""
-"Bug Buddy, sizin hangi ürün için bir hata raporu gönderdiğinizi "
-"bilmediğinden dolayı, hata raporlamasını elle yapacaksınız."
+"Bug Buddy, sizin hangi Ã¼rÃ¼n iÃ§in bir hata raporu gÃ¶nderdiÄŸinizi "
+"bilmediÄŸinden dolayÄ±, hata raporlamasÄ±nÄ± elle yapacaksÄ±nÄ±z."
 
-#: src/united-states-of-bug-buddy.c:665
-msgid "You must specify a product for your bug report."
-msgstr "Hata raporunuz için bir ürün seçmelisiniz."
+#: src/united-states-of-bug-buddy.c:769
+#, fuzzy
+msgid "Please choose a product for your bug report."
+msgstr "Hata raporunuz iÃ§in bir Ã¼rÃ¼n seÃ§melisiniz."
 
-#: src/united-states-of-bug-buddy.c:688
-msgid "You must specify a component for your bug report."
-msgstr "Hata raporunuz için bir içerik seçmelisiniz."
+#: src/united-states-of-bug-buddy.c:783
+#, fuzzy
+msgid "Please choose an application for your bug report."
+msgstr "LÃ¼tfen hata raporundaki son dÃ¼zeltmelerinizi yapÄ±nÄ±z."
 
-#: src/united-states-of-bug-buddy.c:702
-msgid "You must specify a version for your bug report."
-msgstr "Hara raporunuz için bir sürüm seçmelisiniz."
-
-#: src/united-states-of-bug-buddy.c:785
+#: src/united-states-of-bug-buddy.c:802
 msgid ""
-"Your email program has been launched.  Please look it over and send it.\n"
+"This application has not included information about how to submit bugs.\n"
 "\n"
-"Thank you for submitting this bug report."
+"If you know an email address where bug reports should be sent, you will be "
+"able to specify that later.\n"
+"\n"
+"You may be able to find one in an \"About\" box in the application, or in "
+"the application's documentation."
 msgstr ""
-"E-posta programınız çalıştırıldı. Lütfen yeniden bakıp, gönderin.\n"
-"\n"
-"Bu hata mesajını ilettiğiniz için teşekkürler."
 
-#: src/united-states-of-bug-buddy.c:812
+#: src/united-states-of-bug-buddy.c:843
+msgid "You must specify a component for your bug report."
+msgstr "Hata raporunuz iÃ§in bir iÃ§erik seÃ§melisiniz."
+
+#: src/united-states-of-bug-buddy.c:857
+msgid "You must specify a version for your bug report."
+msgstr "Hara raporunuz iÃ§in bir sÃ¼rÃ¼m seÃ§melisiniz."
+
+#: src/united-states-of-bug-buddy.c:909
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"
 msgstr ""
-"Bu hata raporunu göndermeyi\n"
+"Bu hata raporunu gÃ¶ndermeyi\n"
 "iptal etmek istediginizden eminmisiniz?"
+
+#~ msgid ""
+#~ "There was an error showing the proxy settings:\n"
+#~ "\n"
+#~ "%s.\n"
+#~ "\n"
+#~ "Please make sure the GNOME Control Center is properly installed."
+#~ msgstr ""
+#~ "Vekil sunucu ayarlarÄ± gÃ¶sterilirken bir hata oluÅŸtu:\n"
+#~ "\n"
+#~ "%s\n"
+#~ "\n"
+#~ "LÃ¼tfen GNOME Kontrol Merkezinin kurulumunu kontrol edin."
+
+#~ msgid "Proxy Settings..."
+#~ msgstr "Vekil Sunucu AyarlarÄ±..."
+
+#~ msgid "To:"
+#~ msgstr "Kime:"
+
+#~ msgid "Updating products list:"
+#~ msgstr "ÃœrÃ¼n listesi gÃ¼ncelleniyor:"
+
+#~ msgid "Bug tracking system"
+#~ msgstr "Hata Takip sistemi"
+
+#~ msgid "Command"
+#~ msgstr "Komut"
+
+#~ msgid "Custom mailer"
+#~ msgstr "Ã–zel postalayÄ±cÄ±"
+
+#~ msgid "GNOME Mailer Settings"
+#~ msgstr "GNOME Posta AyarlarÄ±"
+
+#~ msgid "Select a mailer"
+#~ msgstr "Bir postalayÄ±cÄ± seÃ§in"
+
+#~ msgid "Start in terminal"
+#~ msgstr "Terminalde baÅŸla"
+
+#~ msgid "Understands Netscape remote control"
+#~ msgstr "Netscape uzaktan denetimi anlar"
+
+#~ msgid "Use the default GNOME mailer"
+#~ msgstr "Ã–ntanÄ±mlÄ± GNOME postalayÄ±cÄ±sÄ±nÄ± kullan"
+
+#~ msgid "gnome"
+#~ msgstr "gnome"
+
+#~ msgid "sendmail"
+#~ msgstr "sendmail"
+
+#~ msgid "All"
+#~ msgstr "TÃ¼mÃ¼"
+
+#~ msgid "Evolution"
+#~ msgstr "Evolution"
+
+#~ msgid ""
+#~ "Unable to open file '%s':\n"
+#~ "%s"
+#~ msgstr ""
+#~ "'%s' dosyasÄ± aÃ§Ä±lamadÄ±:\n"
+#~ "%s"
+
+#~ msgid "about to run '%s'"
+#~ msgstr "'%s' Ã§alÄ±ÅŸtÄ±rÄ±lÄ±yor"
+
+#~ msgid ""
+#~ "Unable to start mail program '%s':\n"
+#~ "%s"
+#~ msgstr ""
+#~ "E-posta uygulamasÄ± '%s' Ã§alÄ±ÅŸtÄ±rÄ±lamadÄ±:\n"
+#~ "%s"
+
+#~ msgid ""
+#~ "Your email program has been launched.  Please look it over and send it.\n"
+#~ "\n"
+#~ "Thank you for submitting this bug report."
+#~ msgstr ""
+#~ "E-posta programÄ±nÄ±z Ã§alÄ±ÅŸtÄ±rÄ±ldÄ±. LÃ¼tfen yeniden bakÄ±p, gÃ¶nderin.\n"
+#~ "\n"
+#~ "Bu hata mesajÄ±nÄ± ilettiÄŸiniz iÃ§in teÅŸekkÃ¼rler."
 
 #~ msgid "%P %%"
 #~ msgstr "%P %%"
 
 #~ msgid "About"
-#~ msgstr "Hakkında"
+#~ msgstr "HakkÄ±nda"
 
 #~ msgid "Go"
 #~ msgstr "Git"
 
 #~ msgid "HTTP Proxy Settings"
-#~ msgstr "HTTP Vekil Ayarları"
+#~ msgstr "HTTP Vekil AyarlarÄ±"
 
 #~ msgid "Location"
 #~ msgstr "Konum"
@@ -802,10 +935,10 @@ msgstr ""
 #~ msgstr "Port"
 
 #~ msgid "Proxy requires a username and password"
-#~ msgstr "Vekil sunucum bir kullanıcı adı ve parola istiyor"
+#~ msgstr "Vekil sunucum bir kullanÄ±cÄ± adÄ± ve parola istiyor"
 
 #~ msgid "Use HTTP Proxy"
 #~ msgstr "HTTP Vekil Sunucu Kullan"
 
 #~ msgid "Username"
-#~ msgstr "Kullanıcı adı"
+#~ msgstr "KullanÄ±cÄ± adÄ±"

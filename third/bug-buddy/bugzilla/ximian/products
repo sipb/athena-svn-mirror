@@ -1,23 +1,23 @@
 <!DOCTYPE products SYSTEM "http://bugzilla.ximian.com/bugzilla.ximian.com/bugzilla-ximian-com.dtd">
 <products>
   <product votestoconfirm="0" description="The Bonobo component/document model" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Bonobo">
-    <component initialowner="3" description="Bonobo's API for merging menus and toolbars across components and containers." initialqacontact="1038" value="BonoboUIHandler" />
-    <component initialowner="12" description="Bonobo IDL" initialqacontact="1038" value="IDL" />
-    <component initialowner="3" description="Issues with component embedding in Bonobo." initialqacontact="1038" value="Component embedding" />
-    <component initialowner="12" description="Bonobo Component wishlist" initialqacontact="1038" value="Components" />
+    <component initialowner="38" description="Bonobo's API for merging menus and toolbars across components and containers." initialqacontact="1038" value="BonoboUIHandler" />
+    <component initialowner="38" description="Bonobo IDL" initialqacontact="1038" value="IDL" />
+    <component initialowner="38" description="Issues with component embedding in Bonobo." initialqacontact="1038" value="Component embedding" />
+    <component initialowner="38" description="Bonobo Component wishlist" initialqacontact="1038" value="Components" />
     <version value="unspecified" />
   </product>
   <product votestoconfirm="0" description="The GNOME Apps Library" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="GAL">
-    <component initialowner="2" description="The ETable widget." initialqacontact="3661" value="ETable" />
-    <component initialowner="2" description="The EText widget" initialqacontact="3661" value="EText" />
-    <component initialowner="2" description="EPaned" initialqacontact="3661" value="EPaned" />
-    <component initialowner="2" description="the tree cell renderer and e-table model code." initialqacontact="3661" value="ETree" />
-    <component initialowner="68" description="UTF-8 font handling" initialqacontact="3661" value="EFont" />
-    <component initialowner="2" description="Other GAL problems" initialqacontact="3661" value="GAL Miscellaneous" />
-    <component initialowner="21" description="Shortcut Bar" initialqacontact="3661" value="Shortcut Bar" />
-    <component initialowner="2" description="Gal View menus." initialqacontact="3661" value="GalView" />
-    <component initialowner="2" description="The categories dialog" initialqacontact="3661" value="ECategories" />
-    <component initialowner="2" description="The reflow widget" initialqacontact="3661" value="EReflow" />
+    <component initialowner="6228" description="The ETable widget." initialqacontact="3661" value="ETable" />
+    <component initialowner="6228" description="The EText widget" initialqacontact="3661" value="EText" />
+    <component initialowner="6228" description="EPaned" initialqacontact="3661" value="EPaned" />
+    <component initialowner="6228" description="the tree cell renderer and e-table model code." initialqacontact="3661" value="ETree" />
+    <component initialowner="6228" description="UTF-8 font handling" initialqacontact="3661" value="EFont" />
+    <component initialowner="6228" description="Other GAL problems" initialqacontact="3661" value="GAL Miscellaneous" />
+    <component initialowner="6228" description="Shortcut Bar" initialqacontact="3661" value="Shortcut Bar" />
+    <component initialowner="6228" description="Gal View menus." initialqacontact="3661" value="GalView" />
+    <component initialowner="6228" description="The categories dialog" initialqacontact="3661" value="ECategories" />
+    <component initialowner="6228" description="The reflow widget" initialqacontact="3661" value="EReflow" />
     <version value="unspecified" />
     <version value="evolution-1-0-branch" />
     <version value="trunk" />
@@ -32,43 +32,33 @@
     <component initialowner="41" description="External libraries and programs for evolution" initialqacontact="3661" value="Gnome-pilot &amp; pilot-link" />
     <component initialowner="3" description="The Evolution Developer's Guide" initialqacontact="3661" value="Developer Documentation" />
     <component initialowner="330" description="The stand-alone task component and the small tasks view in the calendar day view" initialqacontact="3661" value="Tasks" />
-    <component initialowner="69" description="The various built-in importing tools" initialqacontact="3661" value="Importers" />
-    <component initialowner="69" description="the Evolution summary page" initialqacontact="3661" value="Summary [was My Evolution]" />
+    <component initialowner="3" description="The various built-in importing tools" initialqacontact="3661" value="Importers" />
+    <component initialowner="3" description="the Evolution summary page" initialqacontact="3661" value="Summary [was My Evolution]" />
     <component initialowner="18" description="Evolution's pretty images." initialqacontact="3661" value="Icons and Artwork" />
     <component initialowner="330" description="Library for handling iCalendar data." initialqacontact="3661" value="libical" />
     <component initialowner="27" description="User Docs" initialqacontact="3661" value="User Documentation" />
     <component initialowner="12" description="Bugs in the Ximian Connector for Exchange that don't belong in Mail, Calendar, or Contacts" initialqacontact="5143" value="Connector" />
     <version value="unspecified" />
-    <version value="0.8" />
-    <version value="post-0.8" />
-    <version value="0.9" />
-    <version value="0.10" />
-    <version value="post-0.10" />
-    <version value="0.10.99" />
-    <version value="0.11" />
-    <version value="0.11.99" />
-    <version value="0.12" />
-    <version value="0.12.99" />
-    <version value="0.13" />
-    <version value="0.13.99" />
-    <version value="0.14" />
-    <version value="0.14.99" />
-    <version value="0.15" />
-    <version value="0.15.99" />
-    <version value="0.16" />
-    <version value="0.16.99" />
-    <version value="0.99" />
-    <version value="0.99.2" />
+    <version value="1.2" />
     <version value="1.0" />
-    <version value="1.0.0.99" />
     <version value="1.0.2" />
     <version value="1.1.0.99" />
     <version value="1.0.1" />
     <version value="1.0.3" />
     <version value="1.0.4" />
-    <version value="1.0.4.99" />
+    <version value="1.1.90.99" />
     <version value="1.0.5" />
-    <version value="1.0.5.99" />
+    <version value="1.1.90" />
+    <version value="1.0.7" />
+    <version value="1.0.8" />
+    <version value="1.0.8.99" />
+    <version value="1.3.0.99" />
+    <version value="1.1.1" />
+    <version value="1.2.1" />
+    <version value="1.1.1.99" />
+    <version value="1.1.2.99" />
+    <version value="1.1.2" />
+    <version value="pre-1.0" />
   </product>
   <product votestoconfirm="0" description="GNOME's lightweight engine for the rendering, printing and editing of HTML." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="GtkHtml">
     <component initialowner="450" description="The GtkHTML C API." initialqacontact="3661" value="API" />
@@ -92,9 +82,9 @@
   </product>
   <product votestoconfirm="0" description="The Ximian Red Carpet package management and updating system." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Red Carpet">
     <component initialowner="191" description="General Red Carpet issues" initialqacontact="4235" value="Red Carpet" />
-    <component initialowner="191" description="bugs against the installer should go here." initialqacontact="4235" value="Installer" />
-    <component initialowner="170" description="Problems with the Red Carpet server, including bad XML and missing packages. Please don't file 'it's slow'- we know that already :)" initialqacontact="3545" value="Server" />
-    <component initialowner="191" description="Transfer Problems." initialqacontact="4235" value="Transfer Library" />
+    <component initialowner="191" description="Bugs against the installer should go here." initialqacontact="4235" value="Installer" />
+    <component initialowner="170" description="Problems with the Red Carpet server, including bad XML and missing packages." initialqacontact="3545" value="Server" />
+    <component initialowner="191" description="Download Problems. Missing files should be in entered in the server component." initialqacontact="4235" value="Transfer Library" />
     <component initialowner="191" description="Report here any type of dependency resolution problems." initialqacontact="4235" value="Dependency Resolution" />
     <component initialowner="191" description="Problems related to rpmlib crashes, dpkg config bugs, etc." initialqacontact="4235" value="Package Backend" />
     <component initialowner="191" description="Problems related to the autopull client." initialqacontact="4235" value="Autopull" />
@@ -121,6 +111,7 @@
     <version value="1.2.99" />
     <version value="1.2.99.5" />
     <version value="1.3" />
+    <version value="1.4.0" />
   </product>
   <product votestoconfirm="0" description="The Ximian Setup Tools simplify workstation system configuration" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Ximian Setup Tools">
     <component initialowner="143" description="The network interfaces / DNS settings tool." initialqacontact="1569" value="network" />
@@ -139,6 +130,7 @@
     <component initialowner="150" description="Printer configuration" initialqacontact="1569" value="print" />
     <component initialowner="143" description="Controls sharing the computer's internet connection with other users on a local network." initialqacontact="1569" value="internetsharing" />
     <component initialowner="149" description="Font tool for XST." initialqacontact="1569" value="Font Tool" />
+    <component initialowner="5690" description="runlevel too" initialqacontact="1569" value="runlevel-admin" />
     <version value="unspecified" />
     <version value="0.7" />
     <version value="0.6" />
@@ -280,6 +272,9 @@
     <component initialowner="170" description="spellchecking library" initialqacontact="3545" value="pspell" />
     <component initialowner="170" description="This is only for problems with the Ximian packages, and specifically for problems related to our packaging.  Feature requests etc. that are best handled by Sun should be reported to Sun." initialqacontact="3545" value="StarOffice" />
     <component initialowner="170" description="GNOME documentation for users." initialqacontact="3545" value="gnome-user-docs" />
+    <component initialowner="170" description="Bugs against open office packaging." initialqacontact="3545" value="Open Office/Open Office Skeleton" />
+    <component initialowner="170" description="bonobo-conf, libbonobo-conf0, bonobo-conf-devel, libbonobo-conf-dev, libbonobo-conf-devel, libbonobo-conf0-devel" initialqacontact="3545" value="bonobo-conf" />
+    <component initialowner="170" description="gtoaster" initialqacontact="3545" value="gtoaster" />
     <version value="unspecified" />
   </product>
   <product votestoconfirm="0" description="bonobo component for spell checking" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Gnome-spell">
@@ -307,7 +302,7 @@
   
   Use Ximian Web Site for reporting a problem with www.ximian.com, store.ximian.com, support.ximian.com, or developer.ximian.com" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Ximian Web Site">
     <component initialowner="529" description="For problems with the support section of the website, support.ximian.com" initialqacontact="27" value="Support" />
-    <component initialowner="4554" description="content or technical bugs in store.ximian.com (under purchase tab) - for problems with an order you have placed, please call our order number (see store.ximian.com or www.ximian.com)" initialqacontact="27" value="Store" />
+    <component initialowner="6123" description="content or technical bugs in store.ximian.com (under purchase tab) - for problems with an order you have placed, please call our order number (see store.ximian.com or www.ximian.com)" initialqacontact="27" value="Store" />
     <component initialowner="529" description="content for the about section of the website" initialqacontact="27" value="About" />
     <component initialowner="529" description="developer site" initialqacontact="27" value="Developer" />
     <component initialowner="529" description="everything under the products tab -except- download/install instructions" initialqacontact="27" value="Products" />
@@ -331,7 +326,7 @@
     <version value="unspecified" />
   </product>
   <product votestoconfirm="0" description="The GNOME 2.0 developer snapshots available from Red Carpet" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="GNOME 2.0 Snapshots">
-    <component initialowner="25" description="General problems with the developer snapshots" initialqacontact="25" value="general" />
+    <component initialowner="162" description="General problems with the developer snapshots" initialqacontact="162" value="general" />
     <version value="unspecified" />
   </product>
   <product votestoconfirm="0" description="These bugs are against the _programs_ in the Ximian Desktop. Packaging bugs (i.e., something doesn't install or Red Carpet fails) belong in Ximian Packages." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Ximian Desktop">
@@ -457,84 +452,62 @@
     <component initialowner="3144" description="SVG-based theme for Nautilus" initialqacontact="2219" value="Scalable Gorilla" />
     <component initialowner="3144" description="PNG version of Gorilla theme for Nautilus" initialqacontact="2219" value="Unscalable Gorilla" />
     <component initialowner="3144" description="Unicode library" initialqacontact="2219" value="libunicode" />
+    <component initialowner="3144" description="Capplet for configuring a gnome-vfs proxy in the absence of Nautilus." initialqacontact="2219" value="gnome-vfs-proxy-capplet" />
+    <component initialowner="3144" description="Image viewer" initialqacontact="2219" value="gqview" />
     <version value="unspecified" />
-  </product>
-  <product votestoconfirm="0" description="Tasks to be performed by Ximian's GNOME 2 team" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="GNOME 2 Tasks">
-    <component initialowner="37" description="Porting GNOME 1.4 code to the GNOME 2.0 platform." initialqacontact="37" value="1.4 -&gt; 2.0 porting" />
-    <component initialowner="37" description="Ensuring the functional quality on Solaris" initialqacontact="37" value="Solaris porting" />
-    <component initialowner="37" description="Adding accessible interfaces to GNOME applications" initialqacontact="37" value="Accessibility Enhancement" />
-    <component initialowner="37" description="Implementing features and applications that GNOME lacks but CDE has" initialqacontact="37" value="Building CDE equivalent features" />
-    <component initialowner="37" description="Tasks to help the GNOME 2 community" initialqacontact="37" value="Community Engagement" />
-    <component initialowner="37" description="Ensuring the stability and bugfreeness of GNOME 2." initialqacontact="37" value="Bugfixing" />
-    <version value="ongoing" />
-    <version value="0%" />
-    <version value="10%" />
-    <version value="20%" />
-    <version value="30%" />
-    <version value="40%" />
-    <version value="50%" />
-    <version value="60%" />
-    <version value="70%" />
-    <version value="80%" />
-    <version value="90%" />
-    <version value="95%" />
-    <version value="done" />
-  </product>
-  <product votestoconfirm="0" description="Task management for the Mono project." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Mono Tasks">
-    <component initialowner="14" description="This is for the C# compiler" initialqacontact="14" value="C# Compiler" />
-    <component initialowner="1190" description="This is the component for the runtime" initialqacontact="14" value="Runtime" />
-    <component initialowner="4934" description="The ASP.NET support infrastructure" initialqacontact="4934" value="ASP.NET support" />
-    <version value="0%" />
-    <version value="10%" />
-    <version value="20%" />
-    <version value="30%" />
-    <version value="40%" />
-    <version value="50%" />
-    <version value="60%" />
-    <version value="70%" />
-    <version value="80%" />
-    <version value="90%" />
-    <version value="95%" />
-    <version value="done" />
-    <version value="ongoing" />
-  </product>
-  <product votestoconfirm="0" description="Project management for Evolution" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Evolution Tasks">
-    <component initialowner="3" description="Administrative tasks" initialqacontact="3" value="Administrative" />
-    <component initialowner="3" description="Tasks for the Mail Component" initialqacontact="3" value="Mail" />
-    <component initialowner="3" description="Tasks for the Calendar component" initialqacontact="3" value="Calendar" />
-    <component initialowner="3" description="Tasks for the Addressbook component." initialqacontact="3" value="Addressbook" />
-    <component initialowner="3" description="Tasks for Evolution's shell" initialqacontact="3" value="Shell" />
-    <component initialowner="3" description="Tasks related to Pilot synchronization" initialqacontact="3" value="Pilot Synchronization" />
-    <component initialowner="3" description="Tasks related to the message composer" initialqacontact="3" value="Composer" />
-    <component initialowner="3" description="Tasks related to the imported functionality in Evolution." initialqacontact="3" value="Importers" />
-    <component initialowner="3" description="GtkHTML Tasks" initialqacontact="3" value="GtkHTML" />
-    <version value="0%" />
-    <version value="10%" />
-    <version value="20%" />
-    <version value="40%" />
-    <version value="30%" />
-    <version value="50%" />
-    <version value="60%" />
-    <version value="70%" />
-    <version value="80%" />
-    <version value="90%" />
-    <version value="done" />
-    <version value="ongoing" />
+    <version value="2.0" />
+    <version value="1.4" />
   </product>
   <product votestoconfirm="0" description="Bugzilla-based project management system" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Natzilla">
     <component initialowner="37" description="Miscellaneous bugs" initialqacontact="37" value="General" />
     <version value="1.0" />
     <version value="1.0beta" />
   </product>
-  <product votestoconfirm="0" description="Project management for Natzilla (do not file bugs here)" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Natzilla Tasks">
-    <component initialowner="37" description="Catch-all." initialqacontact="37" value="General" />
-    <version value="10%" />
-    <version value="0%" />
-  </product>
   <product votestoconfirm="0" description="Documentation tools and support libraries for Mono." maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Mono/Doctools">
     <component initialowner="2539" description="Core documentation libraries" initialqacontact="2539" value="Core" />
     <component initialowner="2539" description="Monodoc GUI interface" initialqacontact="2539" value="Gui" />
     <component initialowner="2539" description="Monodoc commandline interface" initialqacontact="2539" value="Console" />
     <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="C# language binding for the Gtk+ toolkit" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="gtk#">
+    <component initialowner="6079" description="All bugs should go here for now." initialqacontact="6079" value="general" />
+    <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="Beta-completed.  DEAD.  
+  Red Carpet Daemon and RC Command Line programs" maxvotesperbug="10000" votesperuser="0" disallownew="1" name="RCD Public Beta">
+    <component initialowner="29" description="Red Carpet Daemon" initialqacontact="5894" value="RCD" />
+    <component initialowner="29" description="Red Carpet Command Line Tools" initialqacontact="5894" value="RC" />
+    <version value="0.5.0" />
+    <version value="0.6.0" />
+    <version value="0.6.1" />
+    <version value="0.9.0" />
+    <version value="1.0.0" />
+  </product>
+  <product votestoconfirm="0" description="SunONE Hydrogen" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="Hydrogen">
+    <component initialowner="41" description="SunONE Connector" initialqacontact="3661" value="Hydrogen" />
+    <component initialowner="41" description="SunONE addressbook" initialqacontact="3661" value="Addressbook" />
+    <component initialowner="41" description="Administration for SunONE" initialqacontact="3661" value="Administrative" />
+    <component initialowner="41" description="SunONE calendar" initialqacontact="3661" value="Calendar" />
+    <component initialowner="41" description="Mail for SunONE" initialqacontact="3661" value="Mail" />
+    <component initialowner="41" description="Pilot Synchronization for SunONE" initialqacontact="3661" value="Pilot Synchronization" />
+    <component initialowner="41" description="Shell for SunONE" initialqacontact="3661" value="Shell" />
+    <component initialowner="41" description="Tasks for SunONE" initialqacontact="3661" value="Tasks" />
+    <version value="unspecified" />
+  </product>
+  <product votestoconfirm="0" description="Luis testing some bugzilla stuff" maxvotesperbug="10000" votesperuser="0" disallownew="0" name="xd2 tasks">
+    <component initialowner="4445" description="Distro foo." initialqacontact="1038" value="distros" />
+    <version value="0%" />
+    <version value="50%" />
+    <version value="10%" />
+    <version value="60%" />
+    <version value="95%" />
+    <version value="done" />
+    <version value="ongoing" />
+    <version value="20%" />
+    <version value="30%" />
+    <version value="40%" />
+    <version value="70%" />
+    <version value="80%" />
+    <version value="90%" />
   </product>
 </products>

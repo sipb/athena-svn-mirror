@@ -1,579 +1,580 @@
 # bug-buddy Greek PO file
-# Copyright (C) 1999-2001 Free Software Foundation, Inc.
-# Simos Xenitellis <simos@hellug.gr>, 1999-2001.
+# Copyright (C) 1999-2003 Free Software Foundation, Inc.
+# Simos Xenitellis <simos@hellug.gr>, 1999-2003.
+# Kostas Papadimas <pkst@gmx.net>, 2003
 #
 # simos: 121 messages, 11Feb2001.
 # simos: 140 messages, 13Feb2001.
 # simos: 137 messages, 16Feb2001.
 # simos: 119 messages, 26Mar2001, (sgpbea).
 # simos: 122 messages, 06Jul2001, (sgpbea).
+# kostas: 157 messages,05Jan2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.0.6\n"
-"POT-Creation-Date: 2002-06-19 15:19-0400\n"
-"PO-Revision-Date: 2001-03-26 19:15:45+0900\n"
-"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"POT-Creation-Date: 2003-01-19 22:34+0000\n"
+"PO-Revision-Date: 2003-01-05 13:21+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #
-#
-#: src/bug-buddy.c:55
-msgid "Submit bug report"
-msgstr "Αποστολή αναφοράς σφάλματος"
-
 #
 #: src/bug-buddy.c:56
-msgid "Only send report to yourself"
-msgstr "Αποστολή αναφοράς μόνο στον εαυτό σας"
+msgid "Submit bug report"
+msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
 
 #
 #: src/bug-buddy.c:57
-msgid "Save report to file"
-msgstr "Αποθήκευση της αναφοράς σε αρχείο"
+msgid "Only send report to yourself"
+msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΞΌΟΞ½ΞΏ ΟƒΟ„ΞΏΞ½ ΞµΞ±Ο…Ο„Ο ΟƒΞ±Ο‚"
 
 #
-#: src/bug-buddy.c:62
-msgid "crashed application"
-msgstr "εφαρμογή που κατέρρευσε"
+#: src/bug-buddy.c:58
+msgid "Save report to file"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ"
 
 #
 #: src/bug-buddy.c:63
-msgid "core file"
-msgstr "αρχείο core"
-
-#: src/bug-buddy.c:64
-msgid "nothing"
-msgstr "τίποτα"
+msgid "crashed application"
+msgstr "ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® Ο€ΞΏΟ… ΞΊΞ±Ο„Ξ­ΟΟΞµΟ…ΟƒΞµ"
 
 #
-#: src/bug-buddy.c:69
-msgid "Create a new bug report"
-msgstr "Δημιουργία νέας αναφοράς σφάλματος"
+#: src/bug-buddy.c:64
+msgid "core file"
+msgstr "Ξ±ΟΟ‡ΞµΞ―ΞΏ core"
+
+#: src/bug-buddy.c:65
+msgid "nothing"
+msgstr "Ο„Ξ―Ο€ΞΏΟ„Ξ±"
 
 #
 #: src/bug-buddy.c:70
+msgid "Create a new bug report"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ½Ξ­Ξ±Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
+
+#
+#: src/bug-buddy.c:71
 msgid "Add more information to existing report"
-msgstr "Προσθήκη επιπλέον πληροφοριών σε υπάρχουσα αναφορά σφάλματος"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· ΞµΟ€ΞΉΟ€Ξ»Ξ­ΞΏΞ½ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½ ΟƒΞµ Ο…Ο€Ξ¬ΟΟ‡ΞΏΟ…ΟƒΞ± Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
 
-#: src/bug-buddy.c:79
+#: src/bug-buddy.c:80
 msgid "Name of contact"
-msgstr "Όνομα προσώπου επαφής"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο€ΟΞΏΟƒΟΟ€ΞΏΟ… ΞµΟ€Ξ±Ο†Ξ®Ο‚"
 
 #
-#: src/bug-buddy.c:79
+#: src/bug-buddy.c:80
 msgid "NAME"
-msgstr "ΟΝΟΜΑ"
+msgstr "ΞΞΞΞΞ‘"
 
 #
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:81
 msgid "Email address of contact"
-msgstr "Ηλεκτρ. διεύθυνση προσώπου επαφής"
+msgstr "Ξ—Ξ»ΞµΞΊΟ„Ο. Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ· Ο€ΟΞΏΟƒΟΟ€ΞΏΟ… ΞµΟ€Ξ±Ο†Ξ®Ο‚"
 
 #
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:81
 msgid "EMAIL"
-msgstr "ΗΛ.ΔΙΕΥΘΥΝΣΗ"
+msgstr "Ξ—Ξ›.Ξ”Ξ™Ξ•Ξ¥ΞΞ¥ΞΞ£Ξ—"
 
 #
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:82
 msgid "Package containing the program"
-msgstr "Πακέτο που περιέχει το πρόγραμμα"
+msgstr "Ξ Ξ±ΞΊΞ­Ο„ΞΏ Ο€ΞΏΟ… Ο€ΞµΟΞΉΞ­Ο‡ΞµΞΉ Ο„ΞΏ Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ±"
 
 #
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:82
 msgid "PACKAGE"
-msgstr "ΠΑΚΕΤΟ"
-
-#
-#: src/bug-buddy.c:82
-msgid "Version of the package"
-msgstr "Έκδοση πακέτου"
-
-#
-#: src/bug-buddy.c:82
-msgid "VERSION"
-msgstr "ΕΚΔΟΣΗ"
+msgstr "Ξ Ξ‘ΞΞ•Ξ¤Ξ"
 
 #
 #: src/bug-buddy.c:83
+msgid "Version of the package"
+msgstr "ΞΞΊΞ΄ΞΏΟƒΞ· Ο€Ξ±ΞΊΞ­Ο„ΞΏΟ…"
+
+#
+#: src/bug-buddy.c:83
+msgid "VERSION"
+msgstr "Ξ•ΞΞ”ΞΞ£Ξ—"
+
+#
+#: src/bug-buddy.c:84
 msgid "File name of crashed program"
-msgstr "Όνομα αρχείου εφαρμογής που κατέρρευσε"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚ Ο€ΞΏΟ… ΞΊΞ±Ο„Ξ­ΟΟΞµΟ…ΟƒΞµ"
 
 #
-#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
 msgid "FILE"
-msgstr "ΑΡΧΕΙΟ"
-
-#
-#: src/bug-buddy.c:84
-msgid "PID of crashed program"
-msgstr "Αριθμός Διεργασίας εφαρμογής που κατέρρευσε"
-
-#
-#: src/bug-buddy.c:84
-msgid "PID"
-msgstr "ΑΡΙΘΜ.ΔΙΕΡΓΑΣΙΑΣ"
+msgstr "Ξ‘Ξ΅Ξ§Ξ•Ξ™Ξ"
 
 #
 #: src/bug-buddy.c:85
-msgid "Core file from program"
-msgstr "Αρχείο core από εφαρμογή"
-
-#: src/bug-buddy.c:86
-msgid "Text file to include in the report"
-msgstr "Αρχείο κειμένου προς συμπερίληψη στην αναφορά"
-
-#: src/bug-buddy.c:96
-#, c-format
-msgid "Could not find widget named %s at %s"
-msgstr ""
+msgid "PID of crashed program"
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚ Ξ”ΞΉΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚ ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚ Ο€ΞΏΟ… ΞΊΞ±Ο„Ξ­ΟΟΞµΟ…ΟƒΞµ"
 
 #
-#: src/bug-buddy.c:208
+#: src/bug-buddy.c:85
+msgid "PID"
+msgstr "Ξ‘Ξ΅Ξ™ΞΞ.Ξ”Ξ™Ξ•Ξ΅Ξ“Ξ‘Ξ£Ξ™Ξ‘Ξ£"
+
+#
+#: src/bug-buddy.c:86
+msgid "Core file from program"
+msgstr "Ξ‘ΟΟ‡ΞµΞ―ΞΏ core Ξ±Ο€Ο ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®"
+
+#: src/bug-buddy.c:87
+msgid "Text file to include in the report"
+msgstr "Ξ‘ΟΟ‡ΞµΞ―ΞΏ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… Ο€ΟΞΏΟ‚ ΟƒΟ…ΞΌΟ€ΞµΟΞ―Ξ»Ξ·ΟΞ· ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬"
+
+#: src/bug-buddy.c:97
+#, c-format
+msgid "Could not find widget named %s at %s"
+msgstr "Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± ΞµΟΟΞµΟƒΞ·Ο‚ Ο„ΞΏΟ… Ξ³ΟΞ±Ο†ΞΉΞΊΞΏΟ ΟƒΟ…ΟƒΟ„Ξ±Ο„ΞΉΞΊΞΏΟ Ο€ΞΏΟ… ΞΏΞ½ΞΏΞΌΞ¬Ξ¶ΞµΟ„Ξ±ΞΉ %s ΟƒΞµ %s"
+
+#
+#: src/bug-buddy.c:209
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
-"Το gdb δεν τελείωσε τη λήψη πληροφοριών εκσφαλμάτωσης.\n"
-"Τερματισμός της διεργασίας gdb (η ακολουθία στοίβας θα είναι ελλιπής);"
+"Ξ¤ΞΏ gdb Ξ΄ΞµΞ½ Ο„ΞµΞ»ΞµΞ―Ο‰ΟƒΞµ Ο„Ξ· Ξ»Ξ®ΟΞ· Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞ·Ο‚.\n"
+"Ξ¤ΞµΟΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚ Ο„Ξ·Ο‚ Ξ΄ΞΉΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚ gdb (Ξ· Ξ±ΞΊΞΏΞ»ΞΏΟ…ΞΈΞ―Ξ± ΟƒΟ„ΞΏΞ―Ξ²Ξ±Ο‚ ΞΈΞ± ΞµΞ―Ξ½Ξ±ΞΉ ΞµΞ»Ξ»ΞΉΟ€Ξ®Ο‚);"
 
 #
-#: src/bug-buddy.c:219 src/gdb-buddy.c:125
+#: src/bug-buddy.c:220 src/gdb-buddy.c:125
 msgid "gdb has already exited"
-msgstr "το gdb έχει ήδη τερματίσει"
+msgstr "Ο„ΞΏ gdb Ξ­Ο‡ΞµΞΉ Ξ®Ξ΄Ξ· Ο„ΞµΟΞΌΞ±Ο„Ξ―ΟƒΞµΞΉ"
 
-#: src/bug-buddy.c:286
+#: src/bug-buddy.c:250
 msgid "Save Backtrace"
-msgstr ""
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½ Ξ±Ξ½Ξ―Ο‡Ξ½ΞµΟ…ΟƒΞ·Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
 
-#: src/bug-buddy.c:305
+#: src/bug-buddy.c:261
+msgid "Please wait while Bug Buddy saves the stack trace..."
+msgstr ""
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ο€ΞµΟΞΉΞΌΞ­Ξ½ΞµΟ„Ξµ ΞΊΞ±ΞΈΟΟ‚ o Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΞµΞΉ Ο„ΞΉΟ‚ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ "
+"Ξ±Ξ½Ξ―Ο‡Ξ½ΞµΟ…ΟƒΞ·Ο‚..."
+
+#: src/bug-buddy.c:270
 #, c-format
 msgid ""
-"There was an error trying to save %s:\n"
+"The stack trace was not saved in %s:\n"
 "\n"
 "%s\n"
 "\n"
-"Please choose another file and try again."
+"Please try again, maybe with a different file name."
 msgstr ""
-
-#: src/bug-buddy.c:402
-msgid "_Start Mailer"
-msgstr ""
-
-#: src/bug-buddy.c:406
-msgid "_Send Report"
-msgstr ""
-
-#: src/bug-buddy.c:443
-#, c-format
-msgid ""
-"There was an error showing the proxy settings:\n"
+"ΞΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ±Ξ½Ξ―Ο‡Ξ½ΞµΟ…ΟƒΞ·Ο‚ Ξ΄ΞµΞ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟ„Ξ·ΞΊΞ±Ξ½ %s:\n"
 "\n"
-"%s.\n"
+"%s\n"
 "\n"
-"Please make sure the GNOME Control Center is properly installed."
-msgstr ""
-
-#: src/bug-buddy.c:491
-#, fuzzy
-msgid "Hide Debugging Options"
-msgstr "Πληροφορίες Εκσφαλμάτωσης"
-
-#: src/bug-buddy.c:492
-#, fuzzy
-msgid "Show Debugging Options"
-msgstr "Πληροφορίες Εκσφαλμάτωσης"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»ΞΊΟ Ξ΄ΞΏΞΊΞΉΞΌΞ¬ΟƒΟ„Ξµ ΞΎΞ±Ξ½Ξ¬, Ξ―ΟƒΟ‰Ο‚ ΞΌΞµ Ξ­Ξ½Ξ± Ξ΄ΞΉΞ±Ο†ΞΏΟΞµΟ„ΞΉΞΊΞΏ ΟΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…."
 
 #
-#: src/bug-buddy.c:556
+#: src/bug-buddy.c:298
+msgid "Show _Applications"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® _Ξ•Ο†Ξ±ΟΞΌΞΏΞ³ΟΞ½"
+
+#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
+msgid "Show _Products"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® _Ξ ΟΞΏΟΟΞ½Ο„Ο‰Ξ½"
+
+#: src/bug-buddy.c:368
+msgid "_Start Mailer"
+msgstr "_ΞΞ½Ξ±ΟΞΎΞ· Ξ±Ξ»Ξ»Ξ·Ξ»ΞΏΞ³ΟΞ±Ο†Ξ―Ξ±Ο‚"
+
+#: src/bug-buddy.c:372
+msgid "_Send Report"
+msgstr "_Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚"
+
+#: src/bug-buddy.c:400
+msgid "Hide Debugging Options"
+msgstr "Ξ‘Ο€ΟΞΊΟΟ…ΟΞ· ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞ·Ο‚"
+
+#: src/bug-buddy.c:401
+msgid "Show Debugging Options"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞ·Ο‚"
+
+#
+#: src/bug-buddy.c:503
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
 "Please use the --appname command lineargument instead."
 msgstr ""
-"To $GNOME_CRASHED_APPNAME βαίνει εκτός χρήσης.\n"
-"Παρακαλώ κάντε χρήση της επιλογής --appname command lineargument."
+"To $GNOME_CRASHED_APPNAME Ξ²Ξ±Ξ―Ξ½ΞµΞΉ ΞµΞΊΟ„ΟΟ‚ Ο‡ΟΞ®ΟƒΞ·Ο‚.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΊΞ¬Ξ½Ο„Ξµ Ο‡ΟΞ®ΟƒΞ· Ο„Ξ·Ο‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚ --appname command lineargument."
 
 #
-#: src/bug-buddy.c:566
+#: src/bug-buddy.c:513
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
 "Please use the --pid command lineargument instead."
 msgstr ""
-"To $GNOME_CRASHED_PID βαίνει εκτός χρήσης.\n"
-"Αντί αυτού, παρακαλώ κάντε χρήση της επιλογής γραμμής εντολών --pid."
+"To $GNOME_CRASHED_PID Ξ²Ξ±Ξ―Ξ½ΞµΞΉ ΞµΞΊΟ„ΟΟ‚ Ο‡ΟΞ®ΟƒΞ·Ο‚.\n"
+"Ξ‘Ξ½Ο„Ξ― Ξ±Ο…Ο„ΞΏΟ, Ο€Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΊΞ¬Ξ½Ο„Ξµ Ο‡ΟΞ®ΟƒΞ· Ο„Ξ·Ο‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚ Ξ³ΟΞ±ΞΌΞΌΞ®Ο‚ ΞµΞ½Ο„ΞΏΞ»ΟΞ½ --pid."
 
-#: src/bug-buddy.c:582
+#: src/bug-buddy.c:529
 msgid ""
 "Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
 "It will step you through the process of submitting a bug report."
 msgstr ""
+"ΞΞ±Ξ»ΟΟ‚ ΞΟΞ―ΟƒΞ±Ο„Ξµ ΟƒΟ„ΞΏΞ½ Ξ’ΞΏΞ·ΞΈΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½, Ξ­Ξ½Ξ± ΞµΟΞ³Ξ±Ξ»ΞµΞ― Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ "
+"Ο„ΞΏΟ… GNOME.\n"
+"ΞΞ± ΟƒΞ±Ο‚ ΞΊΞ±ΞΈΞΏΞ΄Ξ·Ξ³Ξ®ΟƒΞµΞΉ ΟƒΟ„Ξ·Ξ½ Ξ΄ΞΉΞ±Ξ΄ΞΉΞΊΞ±ΟƒΞ―Ξ± Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΞµΞ½ΟΟ‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚."
 
-#: src/bug-buddy.c:585
+#: src/bug-buddy.c:532
 msgid ""
 "\n"
 "\n"
 "You are seeing this because another application has crashed."
 msgstr ""
+"\n"
+"\n"
+"Ξ’Ξ»Ξ­Ο€ΞµΟ„Ξµ Ξ±Ο…Ο„Ο ΞµΟ€ΞµΞΉΞ΄Ξ® ΞΌΞΉΞ± Ξ¬Ξ»Ξ»Ξ· ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® ΞΊΟΞ»Ξ»Ξ·ΟƒΞµ."
 
-#: src/bug-buddy.c:588
+#: src/bug-buddy.c:535
 msgid ""
 "\n"
 "\n"
 "Please wait a few moments while Bug Buddy obtains debugging information from "
 "the applications.  This allows Bug Buddy to provide a more useful bug report."
 msgstr ""
+"\n"
+"\n"
+"Ξ ΞµΟΞΉΞΌΞ­Ξ½ΞµΟ„Ξµ Ξ»Ξ―Ξ³Ξ± Ξ»ΞµΟ€Ο„Ξ¬ ΞΌΞ­Ο‡ΟΞΉ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ½Ξ± Ξ»Ξ¬Ξ²ΞµΞΉ Ο„ΞΉΟ‚ Ξ±Ο€Ξ±ΞΉΟ„ΞΏΟΞΌΞµΞ½ΞµΟ‚ "
+"Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ±Ο€Ο Ο„ΞΉΟ‚ ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ­Ο‚. Ξ‘Ο…Ο„Ο ΞµΟ€ΞΉΟ„ΟΞ­Ο€ΞµΞΉ ΟƒΟ„ΞΏΞ½ Ξ’ΞΏΞ·ΞΈΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ½Ξ± "
+"Ο€Ξ±ΟΞ­ΞΎΞµΞΉ ΞΌΞΉΞ± Ο€ΞΉΟ Ο‡ΟΞ®ΟƒΞΉΞΌΞ· Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬."
 
-#: src/bug-buddy.c:727
+#: src/bug-buddy.c:650
 #, c-format
 msgid "Could not find pixmap: %s (%d)\n"
-msgstr ""
+msgstr "Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± ΞµΟΟΞµΟƒΞ·Ο‚ pixmap: %s (%d)\n"
 
 #
-#: src/bug-buddy.c:794
-#, fuzzy, c-format
+#: src/bug-buddy.c:717
+#, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"Αδύνατη η φόρτωση του '%s'.\n"
-"Παρακαλώ ελέγξτε ότι ο Βοηθός Σφαλμάτων έχει εγκατασταθεί σωστά."
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌ'Ξ±Ο„Ο‰Ξ½ Ξ΄ΞµΞ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ο†ΞΏΟΟ„ΟΟƒΞµΞΉ Ο„ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ο„ΞΏΟ… Ξ³ΟΞ±Ο†ΞΉΞΊΞΏΟ "
+"Ο€ΞµΟΞΉΞ²Ξ¬Ξ»Ξ»ΞΏΞ½Ο„ΞΏΟ‚ Ο„ΞΏΟ… '%s'.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ±ΞΈΞµΞ― ΟƒΟ‰ΟƒΟ„Ξ¬."
+
+#: src/bug-buddy.c:749
+msgid ""
+"Bug Buddy could not update its bug information.\n"
+"The old one will be used."
+msgstr ""
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ΄ΞµΞ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΞµΞ½Ξ·ΞΌΞµΟΟΟƒΞµΞΉ Ο„ΞΉΟ‚ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½.\n"
+"ΞΞ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞ·ΞΈΞΏΟΞ½ ΞΏΞΉ Ο€Ξ±Ξ»ΞΉΞ­Ο‚."
+
+#: src/bug-buddy.c:763
+msgid "Bug Buddy updated its bug information correctly."
+msgstr "Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞµΞ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞµ Ο„ΞΉΟ‚ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞµΟ€ΞΉΟ„Ο…Ο‡ΟΟ‚."
 
 #: src/bug-buddy.desktop.in.h:1
 msgid "Bug Report Tool"
-msgstr "Εργαλείο Αναφοράς Σφαλμάτων"
+msgstr "Ξ•ΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½"
 
 #: src/bug-buddy.desktop.in.h:2
 msgid "Report a bug in GNOME"
-msgstr "Αναφορά σφαλμάτων του GNOME"
+msgstr "Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο„ΞΏΟ… GNOME"
 
 #: src/bug-buddy.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/bug-buddy.glade.h:2
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½</span>"
 
 #: src/bug-buddy.glade.h:3
-msgid "Advanced"
-msgstr ""
-
-#: src/bug-buddy.glade.h:4
-msgid "Assbarn Phenomenon"
-msgstr "Φαινόμενο Assbarn"
-
-#
-#: src/bug-buddy.glade.h:5
 #, fuzzy
-msgid "Binary file:"
-msgstr "Δυαδικό αρχείο"
-
-#
-#: src/bug-buddy.glade.h:6 src/united-states-of-bug-buddy.c:95
-msgid "Bug Buddy"
-msgstr "Βοηθός Σφαλμάτων"
+msgid ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
+"\n"
+"The bug information that is stored on your system is outdated. Choosing "
+"'Update' will update it. Choosing 'Don't update' will force the bug "
+"reporting to use old data.'\n"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">Ξ•Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ· Ξ’ΞΏΞ·ΞΈΞΏΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½</span>\n"
+"\n"
+"ΞΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο€ΞΏΟ… Ξ²ΟΞ―ΟƒΞΊΞΏΞ½Ο„Ξ±ΞΉ ΟƒΟ„ΞΏΞ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ® ΟƒΞ±Ο‚ ΞµΞ―Ξ½Ξ±ΞΉ "
+"ΞΎΞµΟ€ΞµΟΞ±ΟƒΞΌΞ­Ξ½ΞµΟ‚. Ξ•Ο€ΞΉΞ»Ξ­Ξ³ΞΏΞ½Ο„Ξ±Ο‚ ΞΞ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ·' ΞΈΞ± ΞµΞ½Ξ·ΞΌΞµΟΟ‰ΞΈΞΏΟΞ½. Ξ•Ο€ΞΉΞ»Ξ­Ξ³ΞΏΞ½Ο„Ξ±Ο‚ 'ΞΞ± ΞΌΞ·Ξ½ "
+"Ξ³Ξ―Ξ½ΞµΞΉ ΞµΞ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ·' ΞΈΞ± Ο…Ο€ΞΏΟ‡ΟΞµΟΟƒΞµΟ„Ξµ Ο„ΞΏΞ½ Ξ’ΞΏΞ·ΞΈΟ Ξ½Ξ± Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞ®ΟƒΞµΞΉ Ο„Ξ± Ο€Ξ±Ξ»Ξ±ΞΉΞ¬ "
+"Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ξ±."
 
 #: src/bug-buddy.glade.h:7
-msgid ""
-"Bug Buddy can send debugging information with your bug report.\n"
-"The correct options should have been selected for you automatically.\n"
-"For more information, please click the Help button below."
-msgstr ""
-"Ο Βοηθός Σφαλμάτων μπορεί να αποστείλει πληροφορίες εκσφαλμάτωσεις μαζί με "
-"την\n"
-"αναφορά σφάλματος. Οι σωστές επιλογές πρέπει να έχουν επιλεγεί για σας\n"
-"αυτόματα.\n"
-"Για περισσότερες πληροφορίες, παρακαλώ κάντε κλικ στο κουμπί Βοηθείας "
-"παρακάτω."
+msgid "Advanced"
+msgstr "Ξ“ΞΉΞ± Ο€ΟΞΏΟ‡Ο‰ΟΞ·ΞΌΞ­Ξ½ΞΏΟ…Ο‚"
 
-#: src/bug-buddy.glade.h:10
-msgid ""
-"Bug Buddy uses email to submit the bug reports.\n"
-"Please choose how you would like Bug Buddy to send email.\n"
-"If you choose to use the default GNOME mailer, this setting\n"
-"will be shared with some other GNOME applications."
-msgstr ""
+#: src/bug-buddy.glade.h:8
+msgid "Assbarn Phenomenon"
+msgstr "Ξ¦Ξ±ΞΉΞ½ΟΞΌΞµΞ½ΞΏ Assbarn"
 
 #
-#: src/bug-buddy.glade.h:14
-msgid "Bug tracking system"
-msgstr "Συστήματα εντοπισμού σφαλμάτων"
+#: src/bug-buddy.glade.h:9
+msgid "Binary file:"
+msgstr "Ξ”Ο…Ξ±Ξ΄ΞΉΞΊΟ Ξ±ΟΟ‡ΞµΞ―ΞΏ:"
+
+#
+#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+msgid "Bug Buddy"
+msgstr "Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½"
+
+#: src/bug-buddy.glade.h:11
+msgid ""
+"Bug Buddy can send debugging information with your bug report.\n"
+"The correct options should have been selected for you automatically."
+msgstr ""
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ξ±Ο€ΞΏΟƒΟ„ΞµΞ―Ξ»ΞµΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞµΞΉΟ‚ ΞΌΞ±Ξ¶Ξ― ΞΌΞµ\n"
+"Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚. ΞΞΉ ΟƒΟ‰ΟƒΟ„Ξ­Ο‚ ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ­Ο‚ Ο€ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± Ξ­Ο‡ΞΏΟ…Ξ½ ΞµΟ€ΞΉΞ»ΞµΞ³ΞµΞ― Ξ³ΞΉΞ± ΟƒΞ±Ο‚ "
+"Ξ±Ο…Ο„ΟΞΌΞ±Ο„Ξ±."
+
+#: src/bug-buddy.glade.h:13
+msgid ""
+"Bug Buddy uses email to submit the bug reports.\n"
+"Please choose how you would like Bug Buddy to send email."
+msgstr ""
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο‡ΟΞ·ΟƒΞΉΞΌΞΏΟ€ΞΏΞΉΞµΞ― Ο„ΞΏ email Ξ³ΞΉΞ± Ξ½Ξ± Ο…Ο€ΞΏΞ²Ξ¬Ξ»Ξ»ΞµΞΉ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ­Ο‚.\n"
+"Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ο„ΞΏΞ½ Ο„ΟΟΟ€ΞΏ ΞΌΞµ Ο„ΞΏΞ½ ΞΏΟ€ΞΏΞ―ΞΏ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞΈΞ± ΟƒΟ„Ξ­Ξ»Ξ½ΞµΞΉ email."
 
 #: src/bug-buddy.glade.h:15
 msgid "Cc"
-msgstr "Ομοίως"
-
-#: src/bug-buddy.glade.h:16
-msgid "Command"
-msgstr ""
+msgstr "ΞΞΏΞΉΞ½ΞΏΟ€."
 
 #
-#: src/bug-buddy.glade.h:17
+#: src/bug-buddy.glade.h:16
 msgid "Core file"
-msgstr "Αρχείο core"
+msgstr "Ξ‘ΟΟ‡ΞµΞ―ΞΏ core"
 
-#: src/bug-buddy.glade.h:18
-msgid "Custom mailer"
-msgstr ""
+#: src/bug-buddy.glade.h:17
+msgid "Debug"
+msgstr "Ξ•ΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞ·"
+
+#
+#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
+#: src/bugzilla.c:819
+msgid "Description"
+msgstr "Ξ ΞµΟΞΉΞ³ΟΞ±Ο†Ξ®"
 
 #: src/bug-buddy.glade.h:19
-msgid "Debug"
-msgstr "Εκσφαλμάτωση"
+msgid "Downloading files"
+msgstr "ΞΞµΟ„Ξ±Ο†ΟΟΟ„Ο‰ΟƒΞ· Ξ±ΟΟ‡ΞµΞ―Ο‰Ξ½"
+
+#: src/bug-buddy.glade.h:20
+msgid "Email"
+msgstr "Ξ—Ξ»ΞµΞΊ. Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ·"
 
 #
-#: src/bug-buddy.glade.h:20 src/bugzilla.c:642 src/bugzilla.c:683
-#: src/bugzilla.c:711
-msgid "Description"
-msgstr "Περιγραφή"
-
 #: src/bug-buddy.glade.h:21
-msgid "Download Progress"
-msgstr ""
+msgid "Include a text file"
+msgstr "Ξ£Ο…ΞΌΟ€ΞµΟΞ―Ξ»Ξ·ΟΞ· Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #: src/bug-buddy.glade.h:22
-msgid "Email"
-msgstr "Ηλεκ. διεύθυνση"
-
-#: src/bug-buddy.glade.h:23
-msgid "GNOME Mailer Settings"
-msgstr ""
-
-#
-#: src/bug-buddy.glade.h:24
-msgid "Include a text file"
-msgstr "Συμπερίληψη αρχείου κειμένου"
-
-#: src/bug-buddy.glade.h:25
 msgid "Just save to a file so I can submit a bug report manually"
 msgstr ""
+"ΞΞ± Ξ³Ξ―Ξ½ΞµΞΉ Ξ±Ο€Ξ»Ξ¬ Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„ΞΏΟ… Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ­Ο„ΟƒΞΉ ΟΟƒΟ„Ξµ Ξ½Ξ± Ο…Ο€ΞΏΞ²Ξ¬Ξ»Ξ»Ο‰ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ "
+"Ο‡ΞµΞΉΟΞΏΞΊΞ―Ξ½Ξ·Ο„Ξ±"
 
 #
-#: src/bug-buddy.glade.h:26
+#: src/bug-buddy.glade.h:23
 msgid "Name"
-msgstr "Όνομα"
+msgstr "ΞΞ½ΞΏΞΌΞ±"
+
+#: src/bug-buddy.glade.h:24
+msgid "Path of sendmail"
+msgstr "Ξ”ΞΉΞ±Ξ΄ΟΞΏΞΌΞ® Ο„ΞΏΟ… sendmail"
+
+#: src/bug-buddy.glade.h:25
+msgid "Please choose a component, version, and severity level."
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ ΟƒΟ…ΟƒΟ„Ξ±Ο„ΞΉΞΊΟ, Ξ­ΞΊΞ΄ΞΏΟƒΞ· ΞΊΞ±ΞΉ ΞµΟ€Ξ―Ο€ΞµΞ΄ΞΏ ΟƒΞΏΞ²Ξ±ΟΟΟ„Ξ·Ο„Ξ±Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚."
+
+#: src/bug-buddy.glade.h:26
+msgid "Please make any final corrections to the bug report."
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΊΞ¬Ξ½Ο„Ξµ Ο„ΞΉΟ‚ Ο„ΞµΞ»ΞµΟ…Ο„Ξ±Ξ―ΞµΟ‚ Ξ΄ΞΉΞΏΟΞΈΟΟƒΞµΞΉΟ‚ ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚."
 
 #: src/bug-buddy.glade.h:27
-msgid "Path of sendmail"
-msgstr ""
+msgid "Please make your bug report in English, if possible."
+msgstr "Ξ•Ξ¬Ξ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ΄Ο…Ξ½Ξ±Ο„Ο, Ο€Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ξ³ΟΞ¬ΟΟ„Ξµ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ„Ξ± Ξ‘Ξ³Ξ³Ξ»ΞΉΞΊΞ¬."
 
 #: src/bug-buddy.glade.h:28
-msgid "Please choose a component, version, and severity level."
-msgstr "Παρακαλώ επιλέξτε συστατικό, έκδοση και επίπεδο σοβαρότητας σφάλματος."
+msgid ""
+"Please select the product or application for the bug you wish to report."
+msgstr ""
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ο„ΞΏ Ο€ΟΞΏΟΟΞ½ Ξ® Ο„Ξ·Ξ½ ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ³ΞΉΞ± Ο„Ξ·Ξ½ ΞΏΟ€ΞΏΞ―Ξ± ΞΈΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± ΟƒΟ„ΞµΞ―Ξ»ΞµΟ„Ξµ "
+"Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚."
 
 #: src/bug-buddy.glade.h:29
-msgid "Please make any final corrections to the bug report."
-msgstr ""
-
-#: src/bug-buddy.glade.h:30
-msgid "Please make your bug report in English, if possible."
-msgstr "Εάν είναι δυνατό, παρακαλώ γράψτε την αναφορά σφάλματος στα Αγγλικά."
-
-#: src/bug-buddy.glade.h:31
-msgid "Please select the product for the bug you wish to report."
-msgstr "Παρακαλώ επιλέξτε το προϊόν για το σφάλμα που επιθυμείτε να αναφέρετε."
-
-#: src/bug-buddy.glade.h:32
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ξ±Ο†ΞΉΞµΟΟΟƒΟ„Ξµ Ξ­Ξ½Ξ± Ξ»ΞµΟ€Ο„Ο Ξ³ΞΉΞ± Ξ½Ξ± Ξ΄ΞµΞ―Ο„Ξµ Ξ±Ξ½ Ο„ΞΏ ΟƒΟ†Ξ¬Ξ»ΞΌΞ± ΟƒΞ±Ο‚ ΞµΞ―Ξ½Ξ±ΞΉ ΟƒΟ„Ξ± ΟƒΟ…Ο‡Ξ½Ξ¬ "
+"ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„Ξ±.\n"
+"Ξ‘Ξ½ Ο„ΞΏ ΟƒΟ†Ξ¬Ξ»ΞΌΞ± Ξ­Ο‡ΞµΞΉ Ο…Ο€ΞΏΞ²Ξ»ΞΎΞΈΞµΞ― ΞΎΞ±Ξ½Ξ¬, Ο€Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞΌΞ·Ξ½ Ο„ΞΏ Ο…Ο€ΞΏΞ²Ξ¬Ξ»ΞµΟ„Ξµ ΞΎΞ±Ξ½Ξ¬."
 
-#: src/bug-buddy.glade.h:34
+#: src/bug-buddy.glade.h:31
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Παρακαλώ περιμένετε καθώς o Βοηθός Σφαλμάτων ενημερώνει\n"
-"την λίστα των προϊόντων του για τα συστήματα εντοπισμού\n"
-"σφαλμάτων."
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ο€ΞµΟΞΉΞΌΞ­Ξ½ΞµΟ„Ξµ ΞΊΞ±ΞΈΟΟ‚ o Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞµΞ½Ξ·ΞΌΞµΟΟΞ½ΞµΞΉ\n"
+"Ο„Ξ·Ξ½ Ξ»Ξ―ΟƒΟ„Ξ± Ο„Ο‰Ξ½ Ο€ΟΞΏΟΟΞ½Ο„Ο‰Ξ½ Ο„ΞΏΟ… Ξ³ΞΉΞ± Ο„Ξ± ΟƒΟ…ΟƒΟ„Ξ®ΞΌΞ±Ο„Ξ± ΞµΞ½Ο„ΞΏΟ€ΞΉΟƒΞΌΞΏΟ\n"
+"ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½."
 
 #
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:33
 msgid "Process ID:"
-msgstr "Αριθμός Διεργασίας"
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚ Ξ”ΞΉΞµΟΞ³Ξ±ΟƒΞ―Ξ±Ο‚:"
+
+#: src/bug-buddy.glade.h:34
+msgid "Save in"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· ΟƒΞµ"
+
+#
+#: src/bug-buddy.glade.h:35
+msgid "Save the report to..."
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ„ΞΏ..."
+
+#: src/bug-buddy.glade.h:36
+msgid "Saving: "
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ·:"
 
 #: src/bug-buddy.glade.h:37
-msgid "Proxy Settings..."
-msgstr ""
+msgid "Sendmail Settings"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Sendmail"
 
+#
 #: src/bug-buddy.glade.h:38
-#, fuzzy
-msgid "Save in"
-msgstr "Αποθήκευση:"
+msgid "Severity"
+msgstr "Ξ£ΞΏΞ²Ξ±ΟΟΟ„Ξ·Ο„Ξ±"
 
-#
 #: src/bug-buddy.glade.h:39
-msgid "Save the report to..."
-msgstr "Αποθήκευση της αναφοράς στο..."
+msgid "Show _Debugging Details"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® Ξ»ΞµΟ€Ο„ΞΏΞΌΞµΟΞµΞΉΟΞ½ _ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞ·Ο‚"
 
-#: src/bug-buddy.glade.h:40
-msgid "Saving:"
-msgstr "Αποθήκευση:"
-
-#
 #: src/bug-buddy.glade.h:41
-#, fuzzy
-msgid "Select a mailer"
-msgstr "Επιλέξτε ενέργεια"
+msgid "Show most frequent bugs in:"
+msgstr "Ξ ΟΞΏΞ²ΞΏΞ»Ξ® Ο„Ο‰Ξ½ Ο€ΞΉΞΏ ΟƒΟ…Ο‡Ξ½Ο‰Ξ½ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΟƒΞµ:"
 
 #: src/bug-buddy.glade.h:42
-#, fuzzy
-msgid "Sendmail Settings"
-msgstr "Sendmail"
+msgid "Simple"
+msgstr "Ξ‘Ο€Ξ»Ο"
 
-#
 #: src/bug-buddy.glade.h:43
-msgid "Severity"
-msgstr "Σοβαρότητα"
+msgid "Start"
+msgstr "ΞΞ½Ξ±ΟΞΎΞ·"
 
 #: src/bug-buddy.glade.h:44
-#, fuzzy
-msgid "Show _Debugging Details"
-msgstr "Πληροφορίες Εκσφαλμάτωσης"
+msgid "Stop"
+msgstr "Ξ”ΞΉΞ±ΞΊΞΏΟ€Ξ®"
 
 #: src/bug-buddy.glade.h:45
-msgid "Show most frequent bugs in:"
-msgstr ""
+msgid "Submit another bug"
+msgstr "Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ¬ ΞΊΞ±ΞΉ Ξ¬Ξ»Ξ»ΞΏΟ… ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
 
 #: src/bug-buddy.glade.h:46
-msgid "Simple"
-msgstr ""
+msgid "Summary"
+msgstr "Ξ ΞµΟΞ―Ξ»Ξ·ΟΞ·"
 
 #: src/bug-buddy.glade.h:47
-msgid "Start"
-msgstr ""
+msgid "The product or application is not listed above."
+msgstr "Ξ¤ΞΏ Ο€ΟΞΏΟΟΞ½ Ξ® Ξ· ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ΄ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ ΟƒΟ„Ξ·Ξ½ Ο€Ξ±ΟΞ±Ο€Ξ¬Ξ½Ο‰ Ξ»Ξ―ΟƒΟ„Ξ±."
 
 #: src/bug-buddy.glade.h:48
-msgid "Start in terminal"
-msgstr ""
+msgid "To"
+msgstr "Ξ ΟΞΏΟ‚"
 
 #: src/bug-buddy.glade.h:49
-msgid "Stop"
-msgstr "Διακοπή"
-
-#: src/bug-buddy.glade.h:50
-msgid "Submit another bug"
-msgstr "Αναφορά και άλλου σφάλματος"
-
-#: src/bug-buddy.glade.h:51
-msgid "Summary"
-msgstr ""
-
-#: src/bug-buddy.glade.h:52
-msgid "The product is not listed above."
-msgstr ""
-
-#: src/bug-buddy.glade.h:53
-msgid "To"
-msgstr "Προς"
-
-#: src/bug-buddy.glade.h:54
-msgid "To:"
-msgstr "Προς:"
-
-#: src/bug-buddy.glade.h:55
-msgid "Understands Netscape remote control"
-msgstr ""
-
-#: src/bug-buddy.glade.h:56
-#, fuzzy
-msgid "Updating products list:"
-msgstr "Γίνεται Ανανέωση της Λίστας Προϊόντων"
-
-#: src/bug-buddy.glade.h:57
 msgid "Use sendmail directly"
-msgstr ""
-
-#: src/bug-buddy.glade.h:58
-msgid "Use the default GNOME mailer"
-msgstr ""
+msgstr "Ξ‘Ο€ΞµΟ…ΞΈΞµΞ―Ξ±Ο‚ Ο‡ΟΞ®ΟƒΞ· Ο„ΞΏΟ… sendmail "
 
 #
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:50
 msgid "Version"
-msgstr "Έκδοση"
+msgstr "ΞΞΊΞ΄ΞΏΟƒΞ·"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:51
+msgid "_Don't update"
+msgstr "_ΞΞ± ΞΌΞ·Ξ½ Ξ³Ξ―Ξ½ΞµΞΉ ΞµΞ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ·"
+
+#: src/bug-buddy.glade.h:52
+msgid "_Update"
+msgstr "Ξ•_Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ·"
+
+#: src/bug-buddy.glade.h:53
 msgid "component"
-msgstr "συστατικό"
+msgstr "ΟƒΟ…ΟƒΟ„Ξ±Ο„ΞΉΞΊΟ"
 
-#: src/bug-buddy.glade.h:61
+#: src/bug-buddy.glade.h:54
 msgid "desc"
-msgstr "περιγραφή"
+msgstr "Ο€ΞµΟΞΉΞ³ΟΞ±Ο†Ξ®"
 
-#: src/bug-buddy.glade.h:62
+#: src/bug-buddy.glade.h:55
 msgid "email info"
-msgstr "πληροφορίες ηλεκ. διεύθ."
+msgstr "Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ·Ξ»ΞµΞΊ. Ξ΄ΞΉΞµΟΞΈ."
 
-#: src/bug-buddy.glade.h:63
+#: src/bug-buddy.glade.h:56
 msgid "finished"
-msgstr "ολοκληρώθηκε"
+msgstr "ΞΏΞ»ΞΏΞΊΞ»Ξ·ΟΟΞΈΞ·ΞΊΞµ"
 
-#: src/bug-buddy.glade.h:64
+#: src/bug-buddy.glade.h:57
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:65
-msgid "gnome"
-msgstr ""
-
-#: src/bug-buddy.glade.h:66
-#, fuzzy
+#: src/bug-buddy.glade.h:58
 msgid "mail config"
-msgstr "πληροφορίες ηλεκ. διεύθ."
+msgstr "ΟΟ…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ±Ξ»Ξ»Ξ·Ξ»ΞΏΞ³ΟΞ±Ο†Ξ―Ξ±Ο‚"
 
-#: src/bug-buddy.glade.h:67
+#: src/bug-buddy.glade.h:59
 msgid "mostfreq"
-msgstr ""
+msgstr "ΟƒΟ…Ξ½Ξ·ΞΈΞ­ΟƒΟ„ΞµΟΞ±"
 
-#: src/bug-buddy.glade.h:68
+#: src/bug-buddy.glade.h:60
 msgid "product"
-msgstr "προϊόν"
+msgstr "Ο€ΟΞΏΟΟΞ½"
 
-#: src/bug-buddy.glade.h:69
-#, fuzzy
-msgid "sendmail"
-msgstr "Sendmail"
+#: src/bugzilla.c:257
+#, c-format
+msgid "%d of %d"
+msgstr "%d Ξ±Ο€Ο %d"
 
 #
-#: src/bugzilla.c:616
-#, fuzzy
+#: src/bugzilla.c:687
 msgid "ID"
-msgstr "ΑΡΙΘΜ.ΔΙΕΡΓΑΣΙΑΣ"
+msgstr "ID"
 
-#: src/bugzilla.c:630 src/bugzilla.c:665
+#: src/bugzilla.c:701 src/bugzilla.c:770
 msgid "Product"
-msgstr "Προϊόν"
+msgstr "Ξ ΟΞΏΟΟΞ½"
 
-#: src/bugzilla.c:636 src/bugzilla.c:705
+#: src/bugzilla.c:707 src/bugzilla.c:813
 msgid "Component"
-msgstr "Συστατικό"
+msgstr "Ξ£Ο…ΟƒΟ„Ξ±Ο„ΞΉΞΊΟ"
 
 #
-#: src/bugzilla.c:774
-#, fuzzy, c-format
+#: src/bugzilla.c:870
+#, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
 "Please make sure Bug Buddy was installed correctly.\n"
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Αδύνατο το άνοιγμα του '%s'.\n"
-"Παρακαλώ ελέγξτε ότι ο Βοηθός Σφαλμάτων έχει εγκατασταθεί σωστά."
-
-#: src/bugzilla.c:793
-msgid "All"
-msgstr "Όλα"
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ΄ΞµΞ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ξ±Ξ½ΞΏΞ―ΞΎΞµΞΉ'%s'.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ±ΞΈΞµΞ― ΟƒΟ‰ΟƒΟ„Ξ¬..\n"
+"\n"
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο„ΟΟΞ± ΞΈΞ± Ο€ΞµΟΞΌΞ±Ο„ΞΉΟƒΟ„ΞµΞ―."
 
 #
-#: src/bugzilla.c:822
-#, fuzzy
+#: src/bugzilla.c:915
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -581,217 +582,291 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Αδύνατη η φόρτωση του '%s'.\n"
-"Παρακαλώ ελέγξτε ότι ο Βοηθός Σφαλμάτων έχει εγκατασταθεί σωστά."
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ΄ΞµΞ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ξ²ΟΞµΞ― Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ³ΞΉΞ± Ο„ΞΏ Ο€ΞΏΟ… ΞΈΞ± Ο…Ο€ΞΏΞ²Ξ¬Ξ»Ξ»ΞµΞΉ "
+"ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„Ξ±.\n"
+"\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ±ΞΈΞµΞ― ΟƒΟ‰ΟƒΟ„Ξ¬..\n"
+"\n"
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο„ΟΟΞ± ΞΈΞ± Ο€ΞµΟΞΌΞ±Ο„ΞΉΟƒΟ„ΞµΞ―."
 
-#: src/cell-renderer-uri.c:145
+#: src/bugzilla.c:994
+#, c-format
+msgid "Couldn't load icon for %s: %s"
+msgstr "Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ο†ΟΟΟ„Ο‰ΟƒΞ·Ο‚ ΞµΞΉΞΊΞΏΞ½ΞΉΞ΄Ξ―ΞΏΟ… Ξ³ΞΉΞ± %s: %s"
+
+#: src/cell-renderer-uri.c:151
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
-#: src/cell-renderer-uri.c:146
+#: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr ""
+msgstr "URI Ξ³ΞΉΞ± Ο€ΟΞΏΞ²ΞΏΞ»Ξ® ΟΟ„Ξ±Ξ½ Ξ³Ξ―Ξ½ΞµΟ„Ξ±ΞΉ ΞΊΞ»Ξ―ΞΊ."
 
-#: src/cell-renderer-uri.c:153
+#: src/cell-renderer-uri.c:159
 msgid "Visited"
-msgstr ""
+msgstr "Ξ‘Ξ½Ξ±Ξ³Ξ½Ο‰ΟƒΞΌΞ­Ξ½ΞΏ"
 
-#: src/cell-renderer-uri.c:154
+#: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr ""
-
-#: src/config.c:75
-msgid "Evolution"
-msgstr ""
+msgstr "Ξ‘Ξ½ Ξ­Ο‡ΞµΞΉ Ξ³Ξ―Ξ½ΞµΞΉ ΞµΟ€Ξ―ΟƒΞΊΞµΟΞ· ΟƒΟ„ΞΏ  URI Ο€ΞΉΞΏ Ο€Ξ±Ξ»ΞΉΞ¬"
 
 #
 #: src/gdb-buddy.c:82
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr "Λήψη ακολουθίας στοίβας... (%d)"
+msgstr "Ξ›Ξ®ΟΞ· Ξ±ΞΊΞΏΞ»ΞΏΟ…ΞΈΞ―Ξ±Ο‚ ΟƒΟ„ΞΏΞ―Ξ²Ξ±Ο‚... (%d)"
 
 #
-#: src/gdb-buddy.c:165
+#: src/gdb-buddy.c:175
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
 "'%s'"
 msgstr ""
-"Η επεξεργασία του αρχείου core μέσω του gdb είναι αδύνατη:\n"
+"Ξ— ΞµΟ€ΞµΞΎΞµΟΞ³Ξ±ΟƒΞ―Ξ± Ο„ΞΏΟ… Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… core ΞΌΞ­ΟƒΟ‰ Ο„ΞΏΟ… gdb ΞµΞ―Ξ½Ξ±ΞΉ Ξ±Ξ΄ΟΞ½Ξ±Ο„Ξ·:\n"
 "'%s'"
 
 #
-#: src/gdb-buddy.c:196
-#, fuzzy, c-format
+#: src/gdb-buddy.c:206
+#, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"Ο προσδιορισμός του δυαδικού αρχείου που δημιουργήθηκε είναι αδύνατος\n"
+"Ξ Ο€ΟΞΏΟƒΞ΄ΞΉΞΏΟΞΉΟƒΞΌΟΟ‚ Ξ±Ο€Ο Ο„ΞΏ GDB Ο„ΞΏΟ… Ξ΄Ο…Ξ±Ξ΄ΞΉΞΊΞΏΟ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ο€ΞΏΟ… Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ®ΞΈΞ·ΞΊΞµ ΞµΞ―Ξ½Ξ±ΞΉ "
+"Ξ±Ξ΄ΟΞ½Ξ±Ο„ΞΏΟ‚\n"
 "'%s'"
 
 #
-#: src/gdb-buddy.c:228
+#: src/gdb-buddy.c:238
 msgid "Error on read... aborting"
-msgstr "Σφάλμα στην ανάγνωση... ματαίωση"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ¬Ξ³Ξ½Ο‰ΟƒΞ·... ΞΌΞ±Ο„Ξ±Ξ―Ο‰ΟƒΞ·"
 
-#: src/gdb-buddy.c:274
+#: src/gdb-buddy.c:290
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
 msgstr ""
-"Η εφαρμογή GDB δε βρέθηκε στο σύστημά σας.\n"
-"Δε θα ληφθούν πληροφορίες εκσφαλμάτωσεις."
+"Ξ— ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® GDB Ξ΄Ξµ Ξ²ΟΞ­ΞΈΞ·ΞΊΞµ ΟƒΟ„ΞΏ ΟƒΟΟƒΟ„Ξ·ΞΌΞ¬ ΟƒΞ±Ο‚.\n"
+"Ξ”Ξµ ΞΈΞ± Ξ»Ξ·Ο†ΞΈΞΏΟΞ½ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞµΞΉΟ‚."
 
 #
-#: src/gdb-buddy.c:308
+#: src/gdb-buddy.c:333
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
-"Δε βρέθηκε το αρχείο gdb-cmd.\n"
-"Παρακαλώ εγκαταστήστε ξανά το Βοηθό Σφαλμάτων."
+"Ξ”Ξµ Ξ²ΟΞ­ΞΈΞ·ΞΊΞµ Ο„ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ gdb-cmd.\n"
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ®ΟƒΟ„Ξµ ΞΎΞ±Ξ½Ξ¬ Ο„ΞΏ Ξ’ΞΏΞ·ΞΈΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½."
 
-#: src/gdb-buddy.c:328
-msgid "There was an error running gdb."
+#: src/gdb-buddy.c:352
+#, c-format
+msgid ""
+"There was an error running gdb:\n"
+"\n"
+"%s"
 msgstr ""
+"Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΞµΞΊΟ„Ξ­Ξ»ΞµΟƒΞ·Ο‚ gdb:\n"
+"\n"
+"%s"
+
+#: src/save-buddy.c:83
+#, c-format
+msgid "Could not read symbolic link information for %s"
+msgstr "Ξ”ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ΄Ο…Ξ½Ξ±Ο„Ξ® Ξ· Ξ±Ξ½Ξ¬Ξ³Ξ½Ο‰ΟƒΞ· Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½ ΟƒΟ…ΞΌΞ²ΞΏΞ»ΞΉΞΊΞΏΟ Ξ΄ΞµΟƒΞΌΞΏΟ Ξ³ΞΉΞ± %s"
+
+#: src/save-buddy.c:125
+msgid "The file has too many symbolic links."
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ­Ο‡ΞµΞΉ Ο€Ξ¬ΟΞ± Ο€ΞΏΞ»Ξ»ΞΏΟΟ‚ ΟƒΟ…ΞΌΞ²ΞΏΞ»ΞΉΞΊΞΏΟΟ‚ Ξ΄ΞµΟƒΞΌΞΏΟΟ‚."
+
+#: src/save-buddy.c:268
+msgid "Main loop isn't running!"
+msgstr "Ξ¤ΞΏ ΞΊΟΟΞΉΞΏ loop Ξ΄ΞµΞ½ ΞµΞΊΟ„ΞµΞ»ΞµΞ―Ο„Ξ±ΞΉ!"
+
+#: src/save-buddy.c:284
+#, c-format
+msgid "Error setting up sigchld handler: %s"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΟΟΞΈΞΌΞΉΟƒΞ·Ο‚ Ο„ΞΏΟ… Ο‡ΞµΞΉΟΞΉΟƒΟ„Ξ® sigchld: %s"
+
+#: src/save-buddy.c:387
+msgid "Invalid filename."
+msgstr "ΞΞ® Ξ­Ξ³ΞΊΟ…ΟΞΏ ΟΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…."
 
 #
-#: src/united-states-of-bug-buddy.c:49
-msgid "Welcome to Bug Buddy"
-msgstr "Καλώς ήλθατε στο Βοηθό Σφαλμάτων"
-
-#
-#: src/united-states-of-bug-buddy.c:50
-#, fuzzy
-msgid "Select a Product"
-msgstr "Επιλέξτε ενέργεια"
-
-#: src/united-states-of-bug-buddy.c:51
-#, fuzzy
-msgid "Select a Component"
-msgstr "συστατικό"
-
-#: src/united-states-of-bug-buddy.c:52
-msgid "Frequently Reported Bugs"
+#: src/save-buddy.c:412
+#, c-format
+msgid ""
+"There already exists a file name '%s'.\n"
+"\n"
+"Do you wish to overwrite this file?"
 msgstr ""
+"Ξ¤ΞΏ ΟΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… '%s' Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ Ξ®Ξ΄Ξ·.\n"
+"\n"
+"ΞΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± Ξ±Ξ½Ο„ΞΉΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ®ΟƒΞµΟ„Ξµ Ξ±Ο…Ο„Ο Ο„ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ?"
+
+#: src/save-buddy.c:417
+msgid "_Overwrite"
+msgstr "_Ξ‘Ξ½Ο„ΞΉΞΊΞ±Ο„Ξ¬ΟƒΟ„Ξ±ΟƒΞ·"
+
+#: src/save-buddy.c:516
+msgid "Could not create a backup file."
+msgstr "Ξ‘Ξ΄Ο…Ξ½Ξ±ΞΌΞ―Ξ± Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±Ο‚ Ξ±Ξ½Ο„ΞΉΞ³ΟΞ¬Ο†ΞΏΟ… Ξ±ΟƒΟ†Ξ±Ξ»ΞµΞ―Ξ±Ο‚."
 
 #
-#: src/united-states-of-bug-buddy.c:53
-msgid "Bug Description"
-msgstr "Περιγραφή Σφάλματος"
-
 #: src/united-states-of-bug-buddy.c:54
-#, fuzzy
-msgid "Mail Configuration"
-msgstr "Ρύθμιση Συστήματος"
+msgid "Welcome to Bug Buddy"
+msgstr "ΞΞ±Ξ»ΟΟ‚ Ξ®Ξ»ΞΈΞ±Ο„Ξµ ΟƒΟ„ΞΏ Ξ’ΞΏΞ·ΞΈΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½"
 
+#
 #: src/united-states-of-bug-buddy.c:55
-#, fuzzy
-msgid "Confirmation"
-msgstr "Ρύθμιση Συστήματος"
+msgid "Select a Product or Application"
+msgstr "Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ­Ξ½Ξ± Ξ ΟΞΏΟΟΞ½ Ξ® Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ®"
 
 #: src/united-states-of-bug-buddy.c:56
+msgid "Select a Component"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΞµΞ½ΟΟ‚ ΟƒΟ…ΟƒΟ„Ξ±Ο„ΞΉΞΊΞΏΟ"
+
+#: src/united-states-of-bug-buddy.c:57
+msgid "Frequently Reported Bugs"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ±Ο„Ξ± Ο€ΞΏΟ… Ξ±Ξ½Ξ±Ο†Ξ­ΟΞΏΞ½Ο„Ξ±ΞΉ Ο€ΞΉΟ ΟƒΟ…Ο‡Ξ½Ξ¬"
+
+#
+#: src/united-states-of-bug-buddy.c:58
+msgid "Bug Description"
+msgstr "Ξ ΞµΟΞΉΞ³ΟΞ±Ο†Ξ® Ξ£Ο†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
+
+#: src/united-states-of-bug-buddy.c:59
+msgid "Mail Configuration"
+msgstr "Ξ΅ΟΞΈΞΌΞΉΟƒΞ· Ξ±Ξ»Ξ»Ξ·Ξ»ΞΏΞ³ΟΞ±Ο†Ξ―Ξ±Ο‚"
+
+#: src/united-states-of-bug-buddy.c:60
+msgid "Confirmation"
+msgstr "Ξ•Ο€ΞΉΞ²ΞµΞ²Ξ±Ξ―Ο‰ΟƒΞ·"
+
+#: src/united-states-of-bug-buddy.c:61
 msgid "Finished!"
-msgstr "Ολοκληρώθηκε!"
+msgstr "ΞΞ»ΞΏΞΊΞ»Ξ·ΟΟΞΈΞ·ΞΊΞµ!"
 
-#: src/united-states-of-bug-buddy.c:98
+#: src/united-states-of-bug-buddy.c:105
 msgid "The graphical bug reporting tool for GNOME."
-msgstr "Το γραφικό εργαλείο αναφοράς σφαλμάτων του GNOME."
+msgstr "Ξ¤ΞΏ Ξ³ΟΞ±Ο†ΞΉΞΊΟ ΞµΟΞ³Ξ±Ξ»ΞµΞ―ΞΏ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο„ΞΏΟ… GNOME."
 
-#: src/united-states-of-bug-buddy.c:109
+#: src/united-states-of-bug-buddy.c:118
 msgid "The lame Bug Buddy web page"
-msgstr "Η κουτσή σελίδα WWW του Βοηθού Σφαλμάτων"
+msgstr "Ξ— ΞΊΞΏΟ…Ο„ΟƒΞ® ΟƒΞµΞ»Ξ―Ξ΄Ξ± WWW Ο„ΞΏΟ… Ξ’ΞΏΞ·ΞΈΞΏΟ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½"
 
 #
-#: src/united-states-of-bug-buddy.c:293
+#: src/united-states-of-bug-buddy.c:308
 msgid "Please enter your name."
-msgstr "Παρακαλώ εισάγετε το όνομά σας."
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ο„ΞΏ ΟΞ½ΞΏΞΌΞ¬ ΟƒΞ±Ο‚."
 
 #
-#: src/united-states-of-bug-buddy.c:309
+#: src/united-states-of-bug-buddy.c:324
 msgid "Please enter a valid email address."
-msgstr "Παρακαλώ εισάγετε την ηλεκτρονική διεύθυνσή σας."
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ο„Ξ·Ξ½ Ξ·Ξ»ΞµΞΊΟ„ΟΞΏΞ½ΞΉΞΊΞ® Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ® ΟƒΞ±Ο‚."
 
-#: src/united-states-of-bug-buddy.c:325
+#: src/united-states-of-bug-buddy.c:340
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
+"'%s' Ξ΄ΞµΞ½ Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ½Ξ± Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ.\n"
+"\n"
+"Ξ•Ξ»Ξ­Ξ³ΞΎΟ„Ξµ Ο„Ξ·Ξ½ Ξ΄ΞΉΞ±Ξ΄ΟΞΏΞΌΞ® Ο„ΞΏΟ… sendmail ΞΎΞ±Ξ½Ξ¬."
 
 #
-#: src/united-states-of-bug-buddy.c:357
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:372
 msgid "Please enter a valid email command."
-msgstr "Παρακαλώ εισάγετε την ηλεκτρονική διεύθυνσή σας."
+msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ ΞΌΞΉΞ± Ξ­Ξ³ΞΊΟ…ΟΞ· ΞµΞ½Ο„ΞΏΞ»Ξ® email."
 
-#: src/united-states-of-bug-buddy.c:421
+#: src/united-states-of-bug-buddy.c:436
 msgid "The specified file does not exist."
-msgstr "Το ζητούμενο αρχείο δεν υπάρχει."
+msgstr "Ξ¤ΞΏ Ξ¶Ξ·Ο„ΞΏΟΞΌΞµΞ½ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ΄ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ."
 
-#: src/united-states-of-bug-buddy.c:431
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid "File is of type: %s"
-msgstr "Το αρχείου είναι του είδους: %s"
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… ΞµΞ―Ξ½Ξ±ΞΉ Ο„ΞΏΟ… ΞµΞ―Ξ΄ΞΏΟ…Ο‚: %s"
 
-#: src/united-states-of-bug-buddy.c:438
+#: src/united-states-of-bug-buddy.c:453
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
+"'%s' ΞµΞ―Ξ½Ξ±ΞΉ Ξ­Ξ½Ξ± %s Ξ±ΟΟ‡ΞµΞ―ΞΏ.\n"
+"\n"
+"Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ο…Ο€ΞΏΞ²Ξ¬Ξ»Ξ»ΞµΞΉ ΞΌΟΞ½ΞΏ Ξ±ΟΟ‡ΞµΞ―Ξ± Ξ±Ο€Ξ»ΞΏΟ ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…  (text/*)."
 
-#: src/united-states-of-bug-buddy.c:458
+#: src/united-states-of-bug-buddy.c:473
 msgid "You must include a comprehensible subject line in your bug report."
 msgstr ""
-"Πρέπει να συμπεριλάβετε ένα ευκατανόητο θέμα/τίτλο \n"
-"στην αναφορά σφάλματός σας."
+"Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΟƒΟ…ΞΌΟ€ΞµΟΞΉΞ»Ξ¬Ξ²ΞµΟ„Ξµ Ξ­Ξ½Ξ± ΞµΟ…ΞΊΞ±Ο„Ξ±Ξ½ΟΞ·Ο„ΞΏ ΞΈΞ­ΞΌΞ±/Ο„Ξ―Ο„Ξ»ΞΏ \n"
+"ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
 
-#: src/united-states-of-bug-buddy.c:474
+#: src/united-states-of-bug-buddy.c:489
 msgid "You must include a comprehensible description in your bug report."
 msgstr ""
-"Πρέπει να συμπεριλάβετε μια ευκατανόητη περιγραφή\n"
-"στην αναφορά σφάλματός σας."
+"Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΟƒΟ…ΞΌΟ€ΞµΟΞΉΞ»Ξ¬Ξ²ΞµΟ„Ξµ ΞΌΞΉΞ± ΞµΟ…ΞΊΞ±Ο„Ξ±Ξ½ΟΞ·Ο„Ξ· Ο€ΞµΟΞΉΞ³ΟΞ±Ο†Ξ®\n"
+"ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
 
 #
 #
-#: src/united-states-of-bug-buddy.c:502
+#: src/united-states-of-bug-buddy.c:520
 msgid "Submit this bug report now?"
-msgstr "Αποστολή αυτής της αναφοράς σφάλματος τώρα;"
+msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ξ±Ο…Ο„Ξ®Ο‚ Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚ Ο„ΟΟΞ±;"
 
-#: src/united-states-of-bug-buddy.c:505
+#: src/united-states-of-bug-buddy.c:523
 msgid "_Submit"
-msgstr ""
+msgstr "_Ξ¥Ο€ΞΏΞ²ΞΏΞ»Ξ®"
 
 #
-#: src/united-states-of-bug-buddy.c:526
-#, fuzzy, c-format
-msgid ""
-"Unable to open file '%s':\n"
-"%s"
-msgstr "Αδύνατο το άνοιγμα αρχείου: '%s'"
+#: src/united-states-of-bug-buddy.c:560
+msgid "Please wait while Bug Buddy saves your bug report..."
+msgstr ""
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ο€ΞµΟΞΉΞΌΞ­Ξ½ΞµΟ„Ξµ ΟΟƒΞΏ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΞµΞΉ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΞ±Ο‚..."
 
-#: src/united-states-of-bug-buddy.c:540
+#: src/united-states-of-bug-buddy.c:567
 #, c-format
-msgid "about to run '%s'"
-msgstr "πρόκειτε να εκτελεστεί το '%s'"
-
-#: src/united-states-of-bug-buddy.c:548
-#, fuzzy, c-format
 msgid ""
-"Unable to start mail program '%s':\n"
-"%s"
-msgstr "Αδύνατη η εκκίνηση του προγράμματος ηλεκ. αλληλογραφίας: '%s'"
+"The bug report was not saved in %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please try again, maybe with a different file name."
+msgstr ""
+"Ξ— Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚ Ξ΄ΞµΞ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟ„Ξ·ΞΊΞµ%s:\n"
+"\n"
+"%s\n"
+"\n"
+"Ξ”ΞΏΞΊΞΉΞΌΞ¬ΟƒΟ„Ξµ ΞΎΞ±Ξ½Ξ¬, Ξ―ΟƒΟ‰Ο‚ ΞΌΞµ Ξ­Ξ½Ξ± Ξ΄ΞΉΞ±Ο†ΞΏΟΞµΟ„ΞΉΞΊΟ ΟΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…."
 
-#: src/united-states-of-bug-buddy.c:586
+#: src/united-states-of-bug-buddy.c:576
 #, c-format
-msgid "Your bug report was saved in '%s'"
-msgstr "Η αναφορά σφάλματος έχει αποθηκευθεί στο '%s'"
+msgid "Your bug report was saved in %s"
+msgstr "Ξ— Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚ Ξ­Ο‡ΞµΞΉ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟ…ΞΈΞµΞ― ΟƒΞµ '%s'"
 
-#: src/united-states-of-bug-buddy.c:589
+#
+#: src/united-states-of-bug-buddy.c:584
+msgid "Please wait while Bug Buddy submits your bug report..."
+msgstr ""
+"Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ο€ΞµΟΞΉΞΌΞ­Ξ½ΞµΟ„Ξµ ΟΟƒΞΏ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ο…Ο€ΞΏΞ²Ξ¬Ξ»Ξ»ΞµΞΉ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΞ±Ο‚..."
+
+#: src/united-states-of-bug-buddy.c:591
+#, c-format
+msgid ""
+"There was an error submitting the bug report:\n"
+"\n"
+"%s"
+msgstr ""
+"Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΞΊΞ±Ο„Ξ¬ Ο„Ξ·Ξ½ Ο…Ο€ΞΏΞ²ΞΏΞ»Ξ® Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚:\n"
+"\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:599
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
@@ -800,89 +875,152 @@ msgid ""
 "\n"
 "Thanks!"
 msgstr ""
-"Η αναφορά σφάλματός σας έχει σταλεί στο:\n"
+"Ξ— Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚ Ξ­Ο‡ΞµΞΉ ΟƒΟ„Ξ±Ξ»ΞµΞ― ΟƒΟ„ΞΏ:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Ευχαριστούμε!"
+"Ξ•Ο…Ο‡Ξ±ΟΞΉΟƒΟ„ΞΏΟΞΌΞµ!"
 
-#: src/united-states-of-bug-buddy.c:644
+#: src/united-states-of-bug-buddy.c:745
 msgid ""
 "Since Bug Buddy doesn't know about the product you wish to submit a bug "
 "report in, you will have to manually address the bug report."
 msgstr ""
+"Ξ•Ο€ΞµΞΉΞ΄Ξ® ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ΄ΞµΞ½ Ξ³Ξ½Ο‰ΟΞ―Ξ¶ΞµΞΉ Ο„ΞΏ Ο€ΟΞΏΟΟΞ½ Ξ³ΞΉΞ± Ο„ΞΏ ΞΏΟ€ΞΏΞ―ΞΏ ΞΈΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± "
+"ΟƒΟ„ΞµΞ―Ξ»ΞµΟ„Ξµ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬, ΞΈΞ± Ο€ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± Ο…Ο€ΞΏΞ²Ξ¬Ξ»ΞµΟ„Ξµ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΞ±Ο‚ Ο‡ΞµΞΉΟΞΏΞΊΞ―Ξ½Ξ·Ο„Ξ±."
 
-#: src/united-states-of-bug-buddy.c:665
-msgid "You must specify a product for your bug report."
+#: src/united-states-of-bug-buddy.c:769
+msgid "Please choose a product for your bug report."
+msgstr "Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ­Ξ½Ξ± Ο€ΟΞΏΟΟΞ½ Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΞ±Ο‚."
+
+#: src/united-states-of-bug-buddy.c:783
+msgid "Please choose an application for your bug report."
+msgstr "Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ ΞΌΞΉΞ± ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
+
+#: src/united-states-of-bug-buddy.c:802
+msgid ""
+"This application has not included information about how to submit bugs.\n"
+"\n"
+"If you know an email address where bug reports should be sent, you will be "
+"able to specify that later.\n"
+"\n"
+"You may be able to find one in an \"About\" box in the application, or in "
+"the application's documentation."
 msgstr ""
-"Πρέπει να καθορίσετε το συγκεκριμένο λογισμικό\n"
-"στην αναφορά σφάλματός σας."
+"Ξ‘Ο…Ο„Ξ® Ξ· ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ΄ΞµΞ½ Ο€ΞµΟΞΉΞ»Ξ±ΞΌΞ²Ξ¬Ξ½ΞµΞΉ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ³ΞΉΞ± Ο„ΞΏΞ½ Ο„ΟΟΟ€ΞΏ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ "
+"ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½.\n"
+"\n"
+"Ξ‘Ξ½ Ξ³Ξ½Ο‰ΟΞ―Ξ¶ΞµΟ„Ξµ ΞΌΞΉΞ± Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ· Ξ±Ξ»Ξ»Ξ·Ξ»ΞΏΞ³ΟΞ±Ο†Ξ―Ξ±Ο‚ ΟΟ€ΞΏΟ… ΞΌΟ€ΞΏΟΞµΞ― Ξ½Ξ± ΟƒΟ„ΞµΞ―Ξ»ΞµΟ„Ξµ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„Ξ±, "
+"ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± Ο„ΞΏ ΞΊΞ±ΞΈΞΏΟΞ―ΟƒΞµΟ„Ξµ Ξ±ΟΞ³ΟΟ„ΞµΟΞ±\n"
+"\n"
+"ΞΟ€ΞΏΟΞµΞ― Ξ½Ξ± Ξ²ΟΞµΞ―Ο„Ξµ ΞΌΞΉΞ± ΟƒΟ„ΞΏ ΞΌΞµΞ½ΞΏΟ  \"Ξ ΞµΟΞ―\" Ο„Ξ·Ο‚ ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚ Ξ® ΟƒΟ„Ξ·Ξ½ Ο„ΞµΞΊΞΌΞ·ΟΞ―Ο‰ΟƒΞ· Ο„Ξ·Ο‚ "
+"ΞµΟ†Ξ±ΟΞΌΞΏΞ³Ξ®Ο‚."
 
-#: src/united-states-of-bug-buddy.c:688
+#: src/united-states-of-bug-buddy.c:843
 msgid "You must specify a component for your bug report."
 msgstr ""
-"Πρέπει να καθορίσετε ένα συστατικό\n"
-"για την αναφορά σφάλματός σας."
+"Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΊΞ±ΞΈΞΏΟΞ―ΟƒΞµΟ„Ξµ Ξ­Ξ½Ξ± ΟƒΟ…ΟƒΟ„Ξ±Ο„ΞΉΞΊΟ\n"
+"Ξ³ΞΉΞ± Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
 
-#: src/united-states-of-bug-buddy.c:702
+#: src/united-states-of-bug-buddy.c:857
 msgid "You must specify a version for your bug report."
 msgstr ""
-"Πρέπει να καθορίσετε μια έκδοση\n"
-"στην αναφορά σφάλματός σας."
+"Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΊΞ±ΞΈΞΏΟΞ―ΟƒΞµΟ„Ξµ ΞΌΞΉΞ± Ξ­ΞΊΞ΄ΞΏΟƒΞ·\n"
+"ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
 
-#: src/united-states-of-bug-buddy.c:785
-msgid ""
-"Your email program has been launched.  Please look it over and send it.\n"
-"\n"
-"Thank you for submitting this bug report."
-msgstr ""
-
-#: src/united-states-of-bug-buddy.c:812
+#: src/united-states-of-bug-buddy.c:909
 msgid ""
 "Are you sure you want to cancel\n"
 "this bug report?"
-msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
+msgstr "Ξ•Ξ―ΟƒΟ„Ξµ ΟƒΞ―Ξ³ΞΏΟ…ΟΞΏΟ‚ ΟΟ„ΞΉ ΞΈΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± Ξ±ΞΊΟ…ΟΟΟƒΞµΟ„Ξµ Ξ±Ο…Ο„Ξ®Ξ½ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚;"
+
+#~ msgid ""
+#~ "There was an error showing the proxy settings:\n"
+#~ "\n"
+#~ "%s.\n"
+#~ "\n"
+#~ "Please make sure the GNOME Control Center is properly installed."
+#~ msgstr ""
+#~ "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± Ο€ΟΞΏΞ²ΞΏΞ»Ξ®Ο‚ Ο„Ο‰Ξ½ ΟΟ…ΞΈΞΌΞ―ΟƒΞµΟ‰Ξ½ Ξ΄ΞΉΞ±ΞΌΞµΟƒΞΏΞ»Ξ±Ξ²Ξ·Ο„Ξ®:\n"
+#~ "\n"
+#~ "%s.\n"
+#~ "\n"
+#~ "Ξ’ΞµΞ²Ξ±ΞΉΟ‰ΞΈΞµΞ―Ο„Ξµ ΟΟ„ΞΉ Ο„ΞΏ ΞΞ­Ξ½Ο„ΟΞΏ Ξ•Ξ»Ξ­Ξ³Ο‡ΞΏΟ… Ο„ΞΏΟ… GNOME Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ·ΞΈΞµΞ― ΟƒΟ‰ΟƒΟ„Ξ¬."
+
+#~ msgid "Proxy Settings..."
+#~ msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ΄ΞΉΞ±ΞΌΞµΟƒΞΏΞ»Ξ±Ξ²Ξ·Ο„Ξ®..."
+
+#~ msgid "To:"
+#~ msgstr "Ξ ΟΞΏΟ‚:"
+
+#~ msgid "Updating products list:"
+#~ msgstr "Ξ“Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ‘Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ· Ο„Ξ·Ο‚ Ξ›Ξ―ΟƒΟ„Ξ±Ο‚ Ξ ΟΞΏΟΟΞ½Ο„Ο‰Ξ½:"
+
+#
+#~ msgid "Bug tracking system"
+#~ msgstr "Ξ£Ο…ΟƒΟ„Ξ®ΞΌΞ±Ο„Ξ± ΞµΞ½Ο„ΞΏΟ€ΞΉΟƒΞΌΞΏΟ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½"
+
+#
+#, fuzzy
+#~ msgid "Select a mailer"
+#~ msgstr "Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ ΞµΞ½Ξ­ΟΞ³ΞµΞΉΞ±"
+
+#, fuzzy
+#~ msgid "sendmail"
+#~ msgstr "Sendmail"
+
+#~ msgid "All"
+#~ msgstr "ΞΞ»Ξ±"
+
+#
+#, fuzzy
+#~ msgid ""
+#~ "Unable to open file '%s':\n"
+#~ "%s"
+#~ msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„ΞΏ Ο„ΞΏ Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…: '%s'"
+
+#~ msgid "about to run '%s'"
+#~ msgstr "Ο€ΟΟΞΊΞµΞΉΟ„Ξµ Ξ½Ξ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΟ„ΞµΞ― Ο„ΞΏ '%s'"
+
+#, fuzzy
+#~ msgid ""
+#~ "Unable to start mail program '%s':\n"
+#~ "%s"
+#~ msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„Ξ· Ξ· ΞµΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· Ο„ΞΏΟ… Ο€ΟΞΏΞ³ΟΞ¬ΞΌΞΌΞ±Ο„ΞΏΟ‚ Ξ·Ξ»ΞµΞΊ. Ξ±Ξ»Ξ»Ξ·Ξ»ΞΏΞ³ΟΞ±Ο†Ξ―Ξ±Ο‚: '%s'"
 
 #
 #~ msgid "%P %%"
 #~ msgstr "%P %%"
 
 #~ msgid "About"
-#~ msgstr "Σχετικά"
+#~ msgstr "Ξ£Ο‡ΞµΟ„ΞΉΞΊΞ¬"
 
 #~ msgid "Go"
-#~ msgstr "Πήγαινε"
+#~ msgstr "Ξ Ξ®Ξ³Ξ±ΞΉΞ½Ξµ"
 
 #
 #, fuzzy
 #~ msgid "Automatically continue to the next step when debugging is complete"
 #~ msgstr ""
-#~ "Αυτόματη μετάβαση στο επόμενο βήμα μετά την ολοκλήρωση της εκσφαλμάτωσεις"
+#~ "Ξ‘Ο…Ο„ΟΞΌΞ±Ο„Ξ· ΞΌΞµΟ„Ξ¬Ξ²Ξ±ΟƒΞ· ΟƒΟ„ΞΏ ΞµΟ€ΟΞΌΞµΞ½ΞΏ Ξ²Ξ®ΞΌΞ± ΞΌΞµΟ„Ξ¬ Ο„Ξ·Ξ½ ΞΏΞ»ΞΏΞΊΞ»Ξ®ΟΟ‰ΟƒΞ· Ο„Ξ·Ο‚ ΞµΞΊΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰ΟƒΞµΞΉΟ‚"
 
 #
 #~ msgid "Automatically go to next page when complete"
-#~ msgstr "Αυτόματη μετάβαση στην επόμενη σελίδα μετά την ολοκλήρωση"
+#~ msgstr "Ξ‘Ο…Ο„ΟΞΌΞ±Ο„Ξ· ΞΌΞµΟ„Ξ¬Ξ²Ξ±ΟƒΞ· ΟƒΟ„Ξ·Ξ½ ΞµΟ€ΟΞΌΞµΞ½Ξ· ΟƒΞµΞ»Ξ―Ξ΄Ξ± ΞΌΞµΟ„Ξ¬ Ο„Ξ·Ξ½ ΞΏΞ»ΞΏΞΊΞ»Ξ®ΟΟ‰ΟƒΞ·"
 
 #~ msgid "Content"
-#~ msgstr "Περιεχόμενο"
+#~ msgstr "Ξ ΞµΟΞΉΞµΟ‡ΟΞΌΞµΞ½ΞΏ"
 
 #
 #~ msgid "Package"
-#~ msgstr "Πακέτο"
-
-#
-#~ msgid ""
-#~ "Please wait while Bug Buddy determines some information about your system."
-#~ msgstr ""
-#~ "Παρακαλώ περιμένετε όσο ο Βοηθός Σφαλμάτων συλλέγει πληροφορίες για το "
-#~ "σύστημά σας."
+#~ msgstr "Ξ Ξ±ΞΊΞ­Ο„ΞΏ"
 
 #~ msgid "Send copy to yourself"
-#~ msgstr "Αποστολή αντιγράφου στον εαυτό σας"
+#~ msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ξ±Ξ½Ο„ΞΉΞ³ΟΞ¬Ο†ΞΏΟ… ΟƒΟ„ΞΏΞ½ ΞµΞ±Ο…Ο„Ο ΟƒΞ±Ο‚"
 
 #
 #~ msgid "Skip this step in the future"
-#~ msgstr "Παράκαμψη αυτού του βήματος στο μέλλον"
+#~ msgstr "Ξ Ξ±ΟΞ¬ΞΊΞ±ΞΌΟΞ· Ξ±Ο…Ο„ΞΏΟ Ο„ΞΏΟ… Ξ²Ξ®ΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ„ΞΏ ΞΌΞ­Ξ»Ξ»ΞΏΞ½"
 
 #~ msgid ""
 #~ "This program will walk you through the steps for \n"
@@ -893,28 +1031,28 @@ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
 #~ "contacted if further information is required, or\n"
 #~ "when a fixed version is available."
 #~ msgstr ""
-#~ "Αυτό το πρόγραμμα θα σας καθοδηγήσει στη διαδικασία\n"
-#~ "αποστολής αναφοράς σφάλματος για έργα όπως το GNOME.\n"
+#~ "Ξ‘Ο…Ο„Ο Ο„ΞΏ Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ± ΞΈΞ± ΟƒΞ±Ο‚ ΞΊΞ±ΞΈΞΏΞ΄Ξ·Ξ³Ξ®ΟƒΞµΞΉ ΟƒΟ„Ξ· Ξ΄ΞΉΞ±Ξ΄ΞΉΞΊΞ±ΟƒΞ―Ξ±\n"
+#~ "Ξ±Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ®Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚ Ξ³ΞΉΞ± Ξ­ΟΞ³Ξ± ΟΟ€Ο‰Ο‚ Ο„ΞΏ GNOME.\n"
 #~ "\n"
-#~ "Αυτές οι αναφορές σφαλμάτων αποστέλονται μέσω του ηλεκτρονικού\n"
-#~ "ταχυδρομείου, οπότε παρακαλώ δώστε την ηλεκτρονική σας διεύθυνση\n"
-#~ "για παραιτέρω επικοινωνία αν απαιτούνται περισσότερες πληροφορίες\n"
-#~ "ή για να ειδοποιηθείτε όταν η διορθωμένη έκδοση είναι διαθέσιμη."
+#~ "Ξ‘Ο…Ο„Ξ­Ο‚ ΞΏΞΉ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ­Ο‚ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ±Ο€ΞΏΟƒΟ„Ξ­Ξ»ΞΏΞ½Ο„Ξ±ΞΉ ΞΌΞ­ΟƒΟ‰ Ο„ΞΏΟ… Ξ·Ξ»ΞµΞΊΟ„ΟΞΏΞ½ΞΉΞΊΞΏΟ\n"
+#~ "Ο„Ξ±Ο‡Ο…Ξ΄ΟΞΏΞΌΞµΞ―ΞΏΟ…, ΞΏΟ€ΟΟ„Ξµ Ο€Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ξ΄ΟΟƒΟ„Ξµ Ο„Ξ·Ξ½ Ξ·Ξ»ΞµΞΊΟ„ΟΞΏΞ½ΞΉΞΊΞ® ΟƒΞ±Ο‚ Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ·\n"
+#~ "Ξ³ΞΉΞ± Ο€Ξ±ΟΞ±ΞΉΟ„Ξ­ΟΟ‰ ΞµΟ€ΞΉΞΊΞΏΞΉΞ½Ο‰Ξ½Ξ―Ξ± Ξ±Ξ½ Ξ±Ο€Ξ±ΞΉΟ„ΞΏΟΞ½Ο„Ξ±ΞΉ Ο€ΞµΟΞΉΟƒΟƒΟΟ„ΞµΟΞµΟ‚ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚\n"
+#~ "Ξ® Ξ³ΞΉΞ± Ξ½Ξ± ΞµΞΉΞ΄ΞΏΟ€ΞΏΞΉΞ·ΞΈΞµΞ―Ο„Ξµ ΟΟ„Ξ±Ξ½ Ξ· Ξ΄ΞΉΞΏΟΞΈΟ‰ΞΌΞ­Ξ½Ξ· Ξ­ΞΊΞ΄ΞΏΟƒΞ· ΞµΞ―Ξ½Ξ±ΞΉ Ξ΄ΞΉΞ±ΞΈΞ­ΟƒΞΉΞΌΞ·."
 
 #
 #~ msgid "Version installed"
-#~ msgstr "Εγκατεστημένη έκδοση"
+#~ msgstr "Ξ•Ξ³ΞΊΞ±Ο„ΞµΟƒΟ„Ξ·ΞΌΞ­Ξ½Ξ· Ξ­ΞΊΞ΄ΞΏΟƒΞ·"
 
 #~ msgid "intro"
-#~ msgstr "εισαγωγή"
+#~ msgstr "ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #~ msgid "system"
-#~ msgstr "σύστημα"
+#~ msgstr "ΟƒΟΟƒΟ„Ξ·ΞΌΞ±"
 
 #
 #
 #~ msgid "Submitting the Report"
-#~ msgstr "Αποστολή της Αναφοράς"
+#~ msgstr "Ξ‘Ο€ΞΏΟƒΟ„ΞΏΞ»Ξ® Ο„Ξ·Ο‚ Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚"
 
 #
 #~ msgid ""
@@ -925,12 +1063,12 @@ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
 #~ "\n"
 #~ "Specify a new location for sendmail?"
 #~ msgstr ""
-#~ "Το '%s' δε φαίνεται να υπάρχει.\n"
+#~ "Ξ¤ΞΏ '%s' Ξ΄Ξµ Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ½Ξ± Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ.\n"
 #~ "\n"
-#~ "Δε θα μπορέσετε να αποστείλετε την αναφορά σφάλματος, αλλά\n"
-#~ "θα μπορέσετε να την αποθηκεύσετε σε αρχείο.\n"
+#~ "Ξ”Ξµ ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΟƒΟ„ΞµΞ―Ξ»ΞµΟ„Ξµ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚, Ξ±Ξ»Ξ»Ξ¬\n"
+#~ "ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± Ο„Ξ·Ξ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ.\n"
 #~ "\n"
-#~ "Θέλετε να καθορίσετε νέα διαδρομή για το sendmail;"
+#~ "ΞΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± ΞΊΞ±ΞΈΞΏΟΞ―ΟƒΞµΟ„Ξµ Ξ½Ξ­Ξ± Ξ΄ΞΉΞ±Ξ΄ΟΞΏΞΌΞ® Ξ³ΞΉΞ± Ο„ΞΏ sendmail;"
 
 #~ msgid ""
 #~ "Bug Buddy has determined that some of its information about\n"
@@ -938,83 +1076,83 @@ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
 #~ "\n"
 #~ "Should Bug Buddy try to update these files now?"
 #~ msgstr ""
-#~ "Ο Βοηθός Σφαλμάτων έχει διαπιστώσει ότι μερικά από τα δεδομένα του\n"
-#~ "σχετικά με διάφορα συστήματα εντοπισμού σφαλμάτων είναι πιθανό να\n"
-#~ "απαιτούν ανανέωση.\n"
+#~ "Ξ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ­Ο‡ΞµΞΉ Ξ΄ΞΉΞ±Ο€ΞΉΟƒΟ„ΟΟƒΞµΞΉ ΟΟ„ΞΉ ΞΌΞµΟΞΉΞΊΞ¬ Ξ±Ο€Ο Ο„Ξ± Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ξ± Ο„ΞΏΟ…\n"
+#~ "ΟƒΟ‡ΞµΟ„ΞΉΞΊΞ¬ ΞΌΞµ Ξ΄ΞΉΞ¬Ο†ΞΏΟΞ± ΟƒΟ…ΟƒΟ„Ξ®ΞΌΞ±Ο„Ξ± ΞµΞ½Ο„ΞΏΟ€ΞΉΟƒΞΌΞΏΟ ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ ΞµΞ―Ξ½Ξ±ΞΉ Ο€ΞΉΞΈΞ±Ξ½Ο Ξ½Ξ±\n"
+#~ "Ξ±Ο€Ξ±ΞΉΟ„ΞΏΟΞ½ Ξ±Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ·.\n"
 #~ "\n"
-#~ "Θέλετε ο Βοηθός Σφαλμάτων να προσπαθήσει να ανανεώσει αυτά τα αρχεία τώρα;"
+#~ "ΞΞ­Ξ»ΞµΟ„Ξµ ΞΏ Ξ’ΞΏΞ·ΞΈΟΟ‚ Ξ£Ο†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ½Ξ± Ο€ΟΞΏΟƒΟ€Ξ±ΞΈΞ®ΟƒΞµΞΉ Ξ½Ξ± Ξ±Ξ½Ξ±Ξ½ΞµΟΟƒΞµΞΉ Ξ±Ο…Ο„Ξ¬ Ο„Ξ± Ξ±ΟΟ‡ΞµΞ―Ξ± Ο„ΟΟΞ±;"
 
 #~ msgid "download"
-#~ msgstr "μεταφόρτωση"
+#~ msgstr "ΞΌΞµΟ„Ξ±Ο†ΟΟΟ„Ο‰ΟƒΞ·"
 
 #~ msgid "Are you sure you want to cancel this update?"
-#~ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την ανανέωση;"
+#~ msgstr "Ξ•Ξ―ΟƒΟ„Ξµ ΟƒΞ―Ξ³ΞΏΟ…ΟΞΏΟ‚ ΟΟ„ΞΉ ΞΈΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± Ξ±ΞΊΟ…ΟΟΟƒΞµΟ„Ξµ Ξ±Ο…Ο„Ξ®Ξ½ Ο„Ξ·Ξ½ Ξ±Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ·;"
 
 #
 #~ msgid "Error on fork()."
-#~ msgstr "Σφάλμα στην κλήση συστήματος fork()."
+#~ msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΟƒΟ„Ξ·Ξ½ ΞΊΞ»Ξ®ΟƒΞ· ΟƒΟ…ΟƒΟ„Ξ®ΞΌΞ±Ο„ΞΏΟ‚ fork()."
 
 #
 #~ msgid "Full description of the bug, including how to reproduce it"
-#~ msgstr "Πλήρης περιγραφή του σφάλματος, με πληροφορίες αναπαραγωγής"
+#~ msgstr "Ξ Ξ»Ξ®ΟΞ·Ο‚ Ο€ΞµΟΞΉΞ³ΟΞ±Ο†Ξ® Ο„ΞΏΟ… ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚, ΞΌΞµ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚"
 
 #
 #~ msgid "Short subject for the bug report"
-#~ msgstr "Σύντομη περιγραφή της αναφοράς σφάλματος"
+#~ msgstr "Ξ£ΟΞ½Ο„ΞΏΞΌΞ· Ο€ΞµΟΞΉΞ³ΟΞ±Ο†Ξ® Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚"
 
 #~ msgid "'%s' does not look like a text file."
-#~ msgstr "Το '%s' δε μοιάζει με αρχείου κειμένου."
+#~ msgstr "Ξ¤ΞΏ '%s' Ξ΄Ξµ ΞΌΞΏΞΉΞ¬Ξ¶ΞµΞΉ ΞΌΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…."
 
 #
 #~ msgid "Unable to open pipe"
-#~ msgstr "Αδύνατο το άνοιγμα σωλήνωσης"
+#~ msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„ΞΏ Ο„ΞΏ Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ± ΟƒΟ‰Ξ»Ξ®Ξ½Ο‰ΟƒΞ·Ο‚"
 
 #~ msgid "Could not run '%s'."
-#~ msgstr "Αδύνατη η εκτέλεση του '%s'."
+#~ msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„Ξ· Ξ· ΞµΞΊΟ„Ξ­Ξ»ΞµΟƒΞ· Ο„ΞΏΟ… '%s'."
 
 #
 #~ msgid "Error on read..."
-#~ msgstr "Σφάλμα στην ανάγνωση..."
+#~ msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ± ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ¬Ξ³Ξ½Ο‰ΟƒΞ·..."
 
 #
 #~ msgid ""
 #~ "Could not open '%s'.\n"
 #~ "Please make sure bug-buddy was installed correctly."
 #~ msgstr ""
-#~ "Το άνοιγμα του '%s' είναι αδύνατο.\n"
-#~ "Παρακαλώ ελέγξτε ότι ο βοηθός-σφαλμάτων έχει εγκατασταθεί σωστά."
+#~ "Ξ¤ΞΏ Ξ¬Ξ½ΞΏΞΉΞ³ΞΌΞ± Ο„ΞΏΟ… '%s' ΞµΞ―Ξ½Ξ±ΞΉ Ξ±Ξ΄ΟΞ½Ξ±Ο„ΞΏ.\n"
+#~ "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΞ»Ξ­Ξ³ΞΎΟ„Ξµ ΟΟ„ΞΉ ΞΏ Ξ²ΞΏΞ·ΞΈΟΟ‚-ΟƒΟ†Ξ±Ξ»ΞΌΞ¬Ο„Ο‰Ξ½ Ξ­Ο‡ΞµΞΉ ΞµΞ³ΞΊΞ±Ο„Ξ±ΟƒΟ„Ξ±ΞΈΞµΞ― ΟƒΟ‰ΟƒΟ„Ξ¬."
 
 #
 #~ msgid "critical"
-#~ msgstr "κρίσιμο"
+#~ msgstr "ΞΊΟΞ―ΟƒΞΉΞΌΞΏ"
 
 #
 #~ msgid "grave"
-#~ msgstr "σημαντικό"
+#~ msgstr "ΟƒΞ·ΞΌΞ±Ξ½Ο„ΞΉΞΊΟ"
 
 #
 #~ msgid "normal"
-#~ msgstr "κανονικο"
+#~ msgstr "ΞΊΞ±Ξ½ΞΏΞ½ΞΉΞΊΞΏ"
 
 #
 #~ msgid "wishlist"
-#~ msgstr "προς υλοποίηση"
+#~ msgstr "Ο€ΟΞΏΟ‚ Ο…Ξ»ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·"
 
 #
 #~ msgid "software bug"
-#~ msgstr "σφάλμα λογισμικού"
+#~ msgstr "ΟƒΟ†Ξ¬Ξ»ΞΌΞ± Ξ»ΞΏΞ³ΞΉΟƒΞΌΞΉΞΊΞΏΟ"
 
 #
 #~ msgid "documentation bug"
-#~ msgstr "σφάλμα τεκμηρίωσης"
+#~ msgstr "ΟƒΟ†Ξ¬Ξ»ΞΌΞ± Ο„ΞµΞΊΞΌΞ·ΟΞ―Ο‰ΟƒΞ·Ο‚"
 
 #
 #~ msgid "change request"
-#~ msgstr "αίτημα αλλαγής"
+#~ msgstr "Ξ±Ξ―Ο„Ξ·ΞΌΞ± Ξ±Ξ»Ξ»Ξ±Ξ³Ξ®Ο‚"
 
 #
 #~ msgid "support"
-#~ msgstr "υποστήριξη"
+#~ msgstr "Ο…Ο€ΞΏΟƒΟ„Ξ®ΟΞΉΞΎΞ·"
 
 #~ msgid ""
 #~ "It is much more helpful if you specify\n"
@@ -1022,17 +1160,17 @@ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
 #~ "\n"
 #~ "Please specify a package."
 #~ msgstr ""
-#~ "Είναι αρκετά πιο βοηθητικό αν διευκρινίσετε\n"
-#~ "ένα πιο συγκεκριμένο πακέτο από το 'γενικό'.\n"
+#~ "Ξ•Ξ―Ξ½Ξ±ΞΉ Ξ±ΟΞΊΞµΟ„Ξ¬ Ο€ΞΉΞΏ Ξ²ΞΏΞ·ΞΈΞ·Ο„ΞΉΞΊΟ Ξ±Ξ½ Ξ΄ΞΉΞµΟ…ΞΊΟΞΉΞ½Ξ―ΟƒΞµΟ„Ξµ\n"
+#~ "Ξ­Ξ½Ξ± Ο€ΞΉΞΏ ΟƒΟ…Ξ³ΞΊΞµΞΊΟΞΉΞΌΞ­Ξ½ΞΏ Ο€Ξ±ΞΊΞ­Ο„ΞΏ Ξ±Ο€Ο Ο„ΞΏ 'Ξ³ΞµΞ½ΞΉΞΊΟ'.\n"
 #~ "\n"
-#~ "Παρακαλώ διευκρινίστε το πακέτο."
+#~ "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο Ξ΄ΞΉΞµΟ…ΞΊΟΞΉΞ½Ξ―ΟƒΟ„Ξµ Ο„ΞΏ Ο€Ξ±ΞΊΞ­Ο„ΞΏ."
 
 #~ msgid ""
 #~ "You must include a subject and a description\n"
 #~ "in your bug report."
 #~ msgstr ""
-#~ "Πρέπει να συμπεριλάβετε θέμα και περιγραφή\n"
-#~ "στην αναφορά σφάλματός σας."
+#~ "Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΟƒΟ…ΞΌΟ€ΞµΟΞΉΞ»Ξ¬Ξ²ΞµΟ„Ξµ ΞΈΞ­ΞΌΞ± ΞΊΞ±ΞΉ Ο€ΞµΟΞΉΞ³ΟΞ±Ο†Ξ®\n"
+#~ "ΟƒΟ„Ξ·Ξ½ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΟΟ‚ ΟƒΞ±Ο‚."
 
 #
 #~ msgid ""
@@ -1041,38 +1179,30 @@ msgstr "Είστε σίγουρος ότι θέλετε να ακυρώσετε αυτήν την αναφορά σφάλματος;"
 #~ "\n"
 #~ "Specify a new location for sendmail?"
 #~ msgstr ""
-#~ "Το '%s' δε φαίνετε να υπάρχει. Δε θα μπορέσετε να αποστείλετε\n"
-#~ "μια αναφορά σφάλματος, αλλά θα μπορέσετε να την αποθηκεύσετε σε αρχείο.\n"
+#~ "Ξ¤ΞΏ '%s' Ξ΄Ξµ Ο†Ξ±Ξ―Ξ½ΞµΟ„Ξµ Ξ½Ξ± Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ. Ξ”Ξµ ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± Ξ±Ο€ΞΏΟƒΟ„ΞµΞ―Ξ»ΞµΟ„Ξµ\n"
+#~ "ΞΌΞΉΞ± Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬ ΟƒΟ†Ξ¬Ξ»ΞΌΞ±Ο„ΞΏΟ‚, Ξ±Ξ»Ξ»Ξ¬ ΞΈΞ± ΞΌΟ€ΞΏΟΞ­ΟƒΞµΟ„Ξµ Ξ½Ξ± Ο„Ξ·Ξ½ Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ.\n"
 #~ "\n"
-#~ "Θέλετε να ορίσετε νέα θέση για το sendmail;"
+#~ "ΞΞ­Ξ»ΞµΟ„Ξµ Ξ½Ξ± ΞΏΟΞ―ΟƒΞµΟ„Ξµ Ξ½Ξ­Ξ± ΞΈΞ­ΟƒΞ· Ξ³ΞΉΞ± Ο„ΞΏ sendmail;"
 
 #~ msgid "You must specify a recipient email address"
-#~ msgstr "Πρέπει να ορίσετε ηλεκ. διεύθυνση παραλήπτη"
+#~ msgstr "Ξ ΟΞ­Ο€ΞµΞΉ Ξ½Ξ± ΞΏΟΞ―ΟƒΞµΟ„Ξµ Ξ·Ξ»ΞµΞΊ. Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ· Ο€Ξ±ΟΞ±Ξ»Ξ®Ο€Ο„Ξ·"
 
 #
 #~ msgid "Please choose a file to save to."
-#~ msgstr "Παρακαλώ επιλέξτε ένα αρχείου για να αποθηκεύσετε."
-
-#
-#~ msgid ""
-#~ "The file '%s' already exists.\n"
-#~ "Overwrite this file?"
-#~ msgstr ""
-#~ "Το αρχείο '%s' υπάρχει ήδη.\n"
-#~ "Επανεγγραφή στο ίδιο αρχείο;"
+#~ msgstr "Ξ Ξ±ΟΞ±ΞΊΞ±Ξ»Ο ΞµΟ€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ­Ξ½Ξ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… Ξ³ΞΉΞ± Ξ½Ξ± Ξ±Ο€ΞΏΞΈΞ·ΞΊΞµΟΟƒΞµΟ„Ξµ."
 
 #~ msgid "Help"
-#~ msgstr "Βοήθεια"
+#~ msgstr "Ξ’ΞΏΞ®ΞΈΞµΞΉΞ±"
 
 #~ msgid "Refresh"
-#~ msgstr "Ανανέωση"
+#~ msgstr "Ξ‘Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ·"
 
 #
 #~ msgid "Distribution"
-#~ msgstr "Διανομή"
+#~ msgstr "Ξ”ΞΉΞ±Ξ½ΞΏΞΌΞ®"
 
 #~ msgid "System"
-#~ msgstr "Σύστημα"
+#~ msgstr "Ξ£ΟΟƒΟ„Ξ·ΞΌΞ±"
 
 #~ msgid "Finish"
-#~ msgstr "Τερματισμός"
+#~ msgstr "Ξ¤ΞµΟΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚"

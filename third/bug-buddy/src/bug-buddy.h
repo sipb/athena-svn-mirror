@@ -58,13 +58,6 @@ typedef enum {
 } BuddyState;
 
 typedef struct {
-	const char *name;
-	const char *command;
-	gboolean    start_in_terminal;
-	gboolean    use_moz_remote;
-} MailerItem;
-
-typedef struct {
 	/* contact page */
 	gchar *name;
 	gchar *email;
@@ -88,6 +81,9 @@ extern PoptData popt_data;
 typedef struct {
 	GladeXML  *xml;
 	BuddyState state;
+	gboolean	product_skipped;
+	gboolean	component_skipped;
+	gboolean	mostfreq_skipped;
 
 	/* canvas stuff */
 	GnomeCanvasItem *title_box;
@@ -104,9 +100,6 @@ typedef struct {
 
 	gboolean already_run;
 
-#if 0
-	Distribution      *distro;
-#endif
 	char              *bts_file;
 
 	CrashType  crash_type;
@@ -121,16 +114,13 @@ typedef struct {
 	int         fd;
 	gboolean    explicit_dirty;
 
-	BugzillaBTS *all_products;
-	GSList      *bugzillas;
+	GHashTable  *bugzillas;
+	GSList *applications;
+	GHashTable *program_to_application;
+	char *current_appname;
 
 	/* Debian BTS stuff */
 	SubmitType    submit_type;
-#if 0
-	BugType       bug_type; 
-	SeverityType  severity;
-	BugClassType  bug_class;
-#endif
 	GSList       *packages;
 
 	GSList       *bugs;
@@ -143,6 +133,7 @@ typedef struct {
 	GList *dlsources;
 	GList *dldests;
 
+	int last_update_check;
 	gboolean download_in_progress;
 
 	GnomeVFSAsyncHandle *vfshandle;
@@ -153,11 +144,12 @@ typedef struct {
 
 	const char *gnome_version;
 
-	GHashTable *mailer_hash;
-	MailerItem *mailer;
-	MailerItem  custom_mailer;
+	char *gnome_platform_version;
+	char *gnome_vendor;
 
 	guint dl_timeout;
+
+	gboolean show_products;
 } DruidData;
 
 extern DruidData druid_data;

@@ -24,9 +24,11 @@
 #include "bug-buddy.h"
 #include "libglade-buddy.h"
 #include "cell-renderer-uri.h"
+#include "md5-utils.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <utime.h>
 #include <errno.h>
 #include <string.h>
@@ -36,37 +38,32 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <libgnome/gnome-desktop-item.h>
+
+#include <bonobo/bonobo-exception.h>
+#include <bonobo-activation/bonobo-activation.h>
+
 #include <dirent.h>
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 
+#define CHECK_UPDATES_TIME (3600*24)
+
 /* define to x for some debugging output */
 #define d(x)
-
-static int
-prod_cmp (BugzillaProduct *a, BugzillaProduct *b)
-{
-	return strcasecmp (a->name, b->name);
-}
-
-static int
-comp_cmp (BugzillaComponent *a, BugzillaComponent *b)
-{
-	return strcasecmp (a->name, b->name);
-}
 
 static void
 bugzilla_bts_insert_product (BugzillaBTS *bts, BugzillaProduct *prod)
 {
-	bts->products = g_slist_insert_sorted (bts->products, prod, (gpointer)prod_cmp);
+	g_hash_table_insert (bts->products, prod->name, prod);
 }
 
 static void
 bugzilla_product_insert_component (BugzillaProduct *prod, BugzillaComponent *comp)
 {
-	prod->components = g_slist_insert_sorted (prod->components, comp, (gpointer)comp_cmp);
+	g_hash_table_insert (prod->components, comp->name, comp);
 }
 
 /* i think the bugzilla files are ISO8859-1 */
@@ -180,8 +177,8 @@ load_products_xml (BugzillaBTS *bts, xmlDoc *doc)
 
 	d(g_print ("products:\n"));
 
-	/* FIXME: free list */
-	bts->products = NULL;
+	/* FIXME: g_hash_table_foreach_remove(); */
+	bts->products = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (node = xmlDocGetRootElement (doc)->children; node; node = node->next) {
 		d(g_print ("\t%s\n", node->name));
@@ -191,9 +188,9 @@ load_products_xml (BugzillaBTS *bts, xmlDoc *doc)
 
 			prod->name        = XML_NODE_GET_PROP (node, "name");
 			prod->description = XML_NODE_GET_PROP (node, "description");
+			prod->components  = g_hash_table_new (g_str_hash, g_str_equal);
 
 			bugzilla_bts_insert_product (bts, prod);
-			bugzilla_bts_insert_product (druid_data.all_products, prod);
 
 			for (cur = node->children; cur; cur = cur->next) {
 				d(g_print ("\t\t%s\n", node->name));
@@ -240,43 +237,33 @@ print_item (gpointer data, gpointer user_data)
 }
 #endif
 
-#if 0
-static void
-goto_product_page (void)
-{
-	druid_set_sensitive (TRUE, TRUE, TRUE);
-	druid_set_state (STATE_PRODUCT);
-}
-#endif
-
 static int
 async_update (GnomeVFSAsyncHandle *handle, GnomeVFSXferProgressInfo *info, gpointer data)
 {
+	static int count = 0;
+	
 	d(g_print ("%" GNOME_VFS_SIZE_FORMAT_STR "\n", info->bytes_copied));
 
 	if (info->status == GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR) {
-		end_bugzilla_download (END_BUGZILLA_NOOP);
+		end_bugzilla_download (0);
 		g_message ("there was an error........");
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	}
 
-	if (info->source_name) {
-		d(g_print ("source: %s\n", info->source_name));
-		buddy_set_text ("progress-source", info->source_name);
-	}
-
-	if (info->target_name) {
-		d(g_print ("target: %s\n", info->target_name));
-		buddy_set_text ("progress-dest", info->target_name);
-	}
-
-	if (info->bytes_total)
+	if (info->bytes_total) {
+		char *text_count;
+		if (info->file_index>0)
+			count++;
+		text_count = g_strdup_printf (_("%d of %d"), info->file_index, info->files_total);
+		buddy_set_text ("progress-count", text_count);
+		g_free (text_count);
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (GET_WIDGET ("progress-progress")), 
 					       (gfloat)info->total_bytes_copied / info->bytes_total);
+	}
 
 	if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
-		end_bugzilla_download (END_BUGZILLA_HIDE_BOX);
-		load_bugzilla_xml ();
+		d(g_print ("Transfer finished\n"));
+		end_bugzilla_download (count);
 	}
 
 	return druid_data.download_in_progress;
@@ -317,11 +304,29 @@ e_mkdir_hier(const char *path, mode_t mode)
         return 0;
 }
 
+static gboolean
+md5str_equal_digest(char *md5, guchar digest[16])
+{
+	int i;
+	char cmp[3];
+	for (i=0;i<=15;i++) {
+		g_snprintf(cmp, sizeof(cmp), "%02x", (guint)digest[i]);
+		if (cmp[0]!=md5[i*2] || cmp[1]!=md5[i*2+1])
+			return FALSE;
+	}
+	return TRUE;
+}
+
 static BugzillaXMLFile *
-get_xml_file (BugzillaBTS *bts, const char *key, XMLFunc parse_func)
+get_xml_file (BugzillaBTS *bts, const char *key, char md5[33], XMLFunc parse_func)
 {
 	BugzillaXMLFile *xmlfile;
 	char *localdir, *tmppath, *src_uri, *tmp_key;
+	guchar digest[16];
+	int res;
+	
+	gboolean need_to_download = FALSE;
+	
 
 	src_uri = gnome_config_get_string (key);
 	if (!src_uri) {
@@ -348,8 +353,13 @@ get_xml_file (BugzillaBTS *bts, const char *key, XMLFunc parse_func)
 	
 	g_free (localdir);
 
-	d(g_print ("wanting to save: %s\nto %s\n", src_uri, xmlfile->cache_path));
+	if (!bts->md5s_downloaded || !md5 || md5=="")
+		return xmlfile;
 
+	md5_get_digest_from_file (xmlfile->cache_path, digest);
+	if (md5str_equal_digest(md5, digest))
+		return xmlfile;
+		
 	xmlfile->source_uri = gnome_vfs_uri_new (src_uri);
 	g_free (src_uri);
 
@@ -366,12 +376,79 @@ get_xml_file (BugzillaBTS *bts, const char *key, XMLFunc parse_func)
 		return xmlfile;
 	}
 
+	d(g_print("Need to download %s\n", xmlfile->cache_path));
+
 	druid_data.dlsources = g_list_prepend (druid_data.dlsources, xmlfile->source_uri);
 	druid_data.dldests   = g_list_prepend (druid_data.dldests,   xmlfile->dest_uri);
 
 	xmlfile->download = xmlfile->read_from_cache = TRUE;
 	return xmlfile;
 }
+
+static void
+bugzilla_get_md5sums (BugzillaBTS *bts, char *url)
+{
+	GnomeVFSHandle *handle;
+	GnomeVFSResult res;
+	GnomeVFSFileSize read;
+	char *buffer;
+	char md5str[33];
+	char *products_filename;
+	char *config_filename;
+	char *mostfreq_filename;
+	char *ptr;
+
+	buffer = g_malloc0(1024*sizeof(char));
+
+	res = gnome_vfs_open (&handle, url, GNOME_VFS_OPEN_READ);
+	if (res != GNOME_VFS_OK) {
+		druid_data.last_update_check = 0;
+		return;
+	}
+
+	res = gnome_vfs_read (handle, buffer, 1024, &read);
+	
+	/* md5sum file greater than 1024 is really wrong! */
+	if (res != GNOME_VFS_OK || read >= 1024) {
+		druid_data.last_update_check = 0;
+		return;
+	}
+
+	druid_data.last_update_check++;
+
+	gnome_vfs_close (handle);
+
+	products_filename = rindex (gnome_config_get_string("products"), '/') + 1;
+	config_filename = rindex (gnome_config_get_string("config"), '/') + 1;
+	mostfreq_filename = rindex (gnome_config_get_string("mostfreq"), '/') + 1;
+	ptr = buffer;
+
+	while (*ptr) {
+		sscanf (ptr, "%32s", md5str);
+		ptr = index (ptr, ' ');
+		ptr += 2;
+		if (!strncmp (products_filename, ptr, strlen(products_filename))) {
+			strncpy(bts->products_xml_md5, md5str, 32);
+			ptr += strlen (products_filename);
+			if (ptr)
+				ptr++;
+		} else if (!strncmp (config_filename, ptr, strlen(config_filename))) {
+			strncpy(bts->config_xml_md5, md5str, 32);
+			ptr += strlen (config_filename);
+			if (ptr)
+				ptr++;
+		} else if (!strncmp (mostfreq_filename, ptr, strlen(mostfreq_filename))) {
+			strncpy(bts->mostfreq_xml_md5, md5str, 32);
+			ptr += strlen (mostfreq_filename);
+			if (ptr)
+				ptr++;
+		} 
+	}
+	bts->md5s_downloaded = TRUE;
+
+}
+		
+	
 
 static BugzillaBTS *
 load_bugzilla (const char *filename)
@@ -389,6 +466,8 @@ load_bugzilla (const char *filename)
 	path = g_strdup_printf ("=%s=/Bugzilla/", filename);
 
 	gnome_config_push_prefix (path);
+
+	g_free (path);
 
 	bts->name = gnome_config_get_string ("name");
 
@@ -429,15 +508,28 @@ load_bugzilla (const char *filename)
 	bts->severity_node   = gnome_config_get_string ("severity_node=severities");
 	bts->severity_item   = gnome_config_get_string ("severity_item=severity");
 	bts->severity_header = gnome_config_get_string ("severity_header=Severity");
-
-	bts->products_xml = get_xml_file (bts, "products", load_products_xml);
-	bts->config_xml   = get_xml_file (bts, "config",   load_config_xml);
-	bts->mostfreq_xml = get_xml_file (bts, "mostfreq", load_mostfreq_xml);
+	if ((time (NULL) - druid_data.last_update_check) > CHECK_UPDATES_TIME )
+		bugzilla_get_md5sums (bts, gnome_config_get_string ("md5sums"));
+	
+	bts->products_xml = get_xml_file (bts, "products", 
+					  bts->products_xml_md5,
+					  load_products_xml);
+	
+	bts->config_xml   = get_xml_file (bts, "config",
+					  bts->config_xml_md5,
+					  load_config_xml);
+	
+	bts->mostfreq_xml = get_xml_file (bts, "mostfreq",
+					  bts->mostfreq_xml_md5,
+					  load_mostfreq_xml);
 
 	gnome_config_pop_prefix ();
 
+		
+
 	if ((bts->products_xml && bts->products_xml->download) ||
-	    (bts->config_xml   && bts->config_xml->download))
+	    (bts->config_xml   && bts->config_xml->download) || 
+	    (bts->mostfreq_xml   && bts->mostfreq_xml->download))
 		druid_data.need_to_download = TRUE;
 
 	return bts;
@@ -454,12 +546,6 @@ on_progress_cancel_clicked (GtkWidget *w, gpointer data)
 	d(g_print ("scooby dooby doo!\n"));
 }
 #endif
-
-static void
-show_products (GtkWidget *w, gpointer data)
-{
-	bugzilla_bts_add_products_to_clist ((BugzillaBTS *)data);
-}
 
 static xmlDoc *
 load_bugzilla_xml_file (BugzillaXMLFile *xml_file)
@@ -480,57 +566,42 @@ load_bugzilla_xml_file (BugzillaXMLFile *xml_file)
 	return doc;
 }
 
+static void
+load_bugzilla_xml_cb (gpointer key, BugzillaBTS *bts, GtkListStore *store)
+{
+	xmlDoc *doc;
+
+	if (bts->products_xml) { // && !bts->products_xml->done) {
+		doc = load_bugzilla_xml_file (bts->products_xml);
+		if (doc)
+			load_products_xml (bts, doc);
+		bts->products_xml->done = TRUE;
+	}
+	
+	if (bts->config_xml) { // && !bts->config_xml->done) {
+		doc = load_bugzilla_xml_file (bts->config_xml);
+		if (doc) 
+			load_config_xml (bts, doc);
+		bts->config_xml->done = TRUE;
+	}
+	
+	if (bts->mostfreq_xml) { // && !bts->mostfreq_xml->done) {
+		doc = load_bugzilla_xml_file (bts->mostfreq_xml);
+		if (doc)
+			load_mostfreq_xml (bts, doc);
+		bts->mostfreq_xml->done = TRUE;
+	}
+}
+
 void
 load_bugzilla_xml (void)
 {
-	static gboolean loaded;
-	xmlDoc *doc;
-	BugzillaBTS *bts;
-	GSList *item;
-	GtkWidget *m;
-	GtkWidget *w;
-
-	if (loaded) return;
-	loaded = TRUE;
-
 	d(g_print ("loading xml..\n"));
 
-	m = gtk_menu_new ();
+	g_hash_table_foreach (druid_data.bugzillas, (GHFunc)load_bugzilla_xml_cb, NULL);
 
-	for (item = druid_data.bugzillas; item; item = item->next) {
-		bts = (BugzillaBTS *)item->data;
-		if (bts->products_xml) { // && !bts->products_xml->done) {
-			doc = load_bugzilla_xml_file (bts->products_xml);
-			if (doc)
-				load_products_xml (bts, doc);
-			bts->products_xml->done = TRUE;
-		}
-
-		if (bts->config_xml) { // && !bts->config_xml->done) {
-			doc = load_bugzilla_xml_file (bts->config_xml);
-			if (doc) 
-				load_config_xml (bts, doc);
-			bts->config_xml->done = TRUE;
-		}
-
-		if (bts->mostfreq_xml) { // && !bts->mostfreq_xml->done) {
-			doc = load_bugzilla_xml_file (bts->mostfreq_xml);
-			if (doc)
-				load_mostfreq_xml (bts, doc);
-			bts->mostfreq_xml->done = TRUE;
-		}
-
-		w = gtk_menu_item_new_with_label (bts->name);
-		g_signal_connect (G_OBJECT (w), "activate",
-				  G_CALLBACK (show_products),
-				  bts);
-		gtk_widget_show (w);
-		gtk_menu_shell_append (GTK_MENU_SHELL (m), w);
-	}
-	w = GET_WIDGET ("bts-menu");
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (w), m);
-	gtk_option_menu_set_history (GTK_OPTION_MENU (w), 0);
-	bugzilla_bts_add_products_to_clist (druid_data.all_products);	
+	if (druid_data.show_products)
+		products_list_load ();
 }
 
 static void
@@ -644,6 +715,37 @@ create_mostfreq_list (void)
 						     NULL);
 }
 
+gboolean
+open_mostfreq_bug (const char *path_str)
+{
+
+	GtkTreeView *view;
+	GtkListStore *store;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GValue value = {0};
+
+	view = GTK_TREE_VIEW (GET_WIDGET ("mostfreq-list"));
+	g_object_get (G_OBJECT (view), "model", &store, NULL);
+		                                                                                           
+	path = gtk_tree_path_new_from_string (path_str);
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (store), &iter, path);
+	g_free(path);
+					                                                                                           
+	gtk_tree_model_get_value (GTK_TREE_MODEL (store), &iter, MOSTFREQ_URL, &value);
+	d(g_print("Asked to go to %s\n", g_value_get_string (&value)));
+	
+	if (gnome_url_show (g_value_get_string (&value), NULL)) {
+		g_value_unset (&value);
+		return TRUE;
+	} 
+	
+	g_value_unset (&value);
+	return FALSE;
+}
+
+
+
 static void
 create_products_list (void)
 {
@@ -657,6 +759,9 @@ create_products_list (void)
 	model = gtk_list_store_new (PRODUCT_COLS, GDK_TYPE_PIXBUF, 
 				    G_TYPE_STRING, G_TYPE_STRING,
 				    G_TYPE_POINTER);
+
+	/* sort on Product name */
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model), PRODUCT_NAME, GTK_SORT_ASCENDING);
 
 	g_object_set (G_OBJECT (view), "model", model, NULL);
 	g_object_unref (G_OBJECT (model));
@@ -696,6 +801,9 @@ create_components_list (void)
 
 	model = gtk_list_store_new (COMPONENT_COLS, G_TYPE_STRING, 
 				    G_TYPE_STRING, G_TYPE_POINTER);
+
+	/* sort on Product name */
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model), COMPONENT_NAME, GTK_SORT_ASCENDING);
 	
 	g_object_set (G_OBJECT (view), "model", model, NULL);
 	g_object_unref (G_OBJECT (model));
@@ -714,34 +822,21 @@ create_components_list (void)
 }
 
 void
-end_bugzilla_download (EndBugzillaFlags flags)
+end_bugzilla_download (int count)
 {
-	gboolean cancel   = flags & END_BUGZILLA_CANCEL;
-	gboolean hide_box = flags & END_BUGZILLA_HIDE_BOX;
-
-	if (druid_data.download_in_progress && cancel)
-		gnome_vfs_async_cancel (druid_data.vfshandle);
-
-	if (hide_box) {
-		gtk_widget_hide (GET_WIDGET ("progress-box"));
-		gtk_widget_hide (GET_WIDGET ("progress-sep"));
-	} else {
-		gtk_widget_set_sensitive (GET_WIDGET ("progress-start"), TRUE);
-		gtk_widget_set_sensitive (GET_WIDGET ("progress-stop"),  FALSE);
-	}
-
 	druid_data.download_in_progress = FALSE;
+	if (count>0)
+		gtk_dialog_response (GTK_DIALOG (GET_WIDGET ("progress-dialog")),
+				     DOWNLOAD_FINISHED_OK_RESPONSE);
+	else
+		gtk_dialog_response (GTK_DIALOG (GET_WIDGET ("progress-dialog")),
+				     DOWNLOAD_FINISHED_ZERO_RESPONSE);
+
 }
 
 gboolean
 start_bugzilla_download (void)
 {
-	end_bugzilla_download (END_BUGZILLA_CANCEL);
-
-	gtk_widget_show (GET_WIDGET ("progress-box"));
-	gtk_widget_show (GET_WIDGET ("progress-sep"));
-	gtk_widget_set_sensitive (GET_WIDGET ("progress-start"), FALSE);
-	gtk_widget_set_sensitive (GET_WIDGET ("progress-stop"), TRUE);
 	druid_data.download_in_progress = TRUE;
 	gnome_vfs_async_xfer (	    
 		&druid_data.vfshandle,
@@ -753,6 +848,7 @@ start_bugzilla_download (void)
 		GNOME_VFS_PRIORITY_DEFAULT,
 		async_update, NULL, NULL, NULL);
 	druid_data.dl_timeout = 0;
+
 	return FALSE;
 }
 
@@ -789,10 +885,7 @@ load_bugzillas (void)
 
 	create_mostfreq_list ();
 
-	druid_data.all_products = g_new0 (BugzillaBTS, 1);
-	druid_data.all_products->name = _("All");
-
-	druid_data.bugzillas = g_slist_append (druid_data.bugzillas, druid_data.all_products);
+	druid_data.bugzillas = g_hash_table_new (g_str_hash, g_str_equal);
 
 	while ((dent = readdir (dir))) {
 		if (dent->d_name[0] == '.')
@@ -808,13 +901,13 @@ load_bugzillas (void)
 		g_free (p);
 		if (bts) {
 			d(g_print ("bugzilla loaded: %s\n", bts->name));
-			druid_data.bugzillas = g_slist_append (druid_data.bugzillas, bts);
+			g_hash_table_insert (druid_data.bugzillas, bts->name, bts);
 		}
 	}
 
 	closedir (dir);
 
-	if (!druid_data.dlsources) {
+	if (druid_data.need_to_download && !druid_data.dlsources) {
 		w = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
 					    0,
 					    GTK_MESSAGE_ERROR,
@@ -823,8 +916,7 @@ load_bugzillas (void)
 					      "where to submit bugs.\n\n"
 					      "Please make sure Bug Buddy was "
 					      "installed correctly.\n\n"
-					      "Bug Buddy will now quit."),
-					    BUDDY_DATADIR "/bugzilla/");
+					      "Bug Buddy will now quit."));
 		gtk_dialog_set_default_response (GTK_DIALOG (w),
 						 GTK_RESPONSE_OK);
 		gtk_dialog_run (GTK_DIALOG (w));
@@ -838,39 +930,237 @@ load_bugzillas (void)
 	d(g_list_foreach (druid_data.dldests, (GFunc)p_string, NULL));
 }
 
-static void
-add_product (BugzillaProduct *p, GtkListStore *store)
-{
-	GtkTreeIter iter;
+#define ALL_APPLICATIONS_URI "applications-all-users:///"
+#define APPLET_REQUIREMENTS \
+	"has_all (repo_ids, ['IDL:Bonobo/Control:1.0'," \
+	"		     'IDL:GNOME/Vertigo/PanelAppletShell:1.0']) && " \
+	"defined (panel:icon) && defined (panel:category)"
 
-	gtk_list_store_append (store, &iter);
-	gtk_list_store_set (store, &iter,
-			    PRODUCT_ICON, p->bts->pixbuf,
-			    PRODUCT_NAME, p->name,
-			    PRODUCT_DESC, p->description,
-			    PRODUCT_DATA, p,
-			    -1);
+#define BUGZILLA_BUGZILLA               "X-GNOME-Bugzilla-Bugzilla"
+#define BUGZILLA_PRODUCT                "X-GNOME-Bugzilla-Product"
+#define BUGZILLA_COMPONENT              "X-GNOME-Bugzilla-Component"
+#define BUGZILLA_EMAIL                  "X-GNOME-Bugzilla-Email"
+#define BUGZILLA_OTHER_BINARIES         "X-Gnome-Bugzilla-OtherBinaries"
+
+#define BA_BUGZILLA_BUGZILLA            "bugzilla:bugzilla"
+#define BA_BUGZILLA_PRODUCT             "bugzilla:product"
+#define BA_BUGZILLA_COMPONENT           "bugzilla:component"
+#define BA_BUGZILLA_EMAIL               "bugzilla:email"
+#define BA_BUGZILLA_OTHER_BINARIES      "bugzilla:other_binaries"
+
+static void
+bugzilla_application_new (const char *name, 
+			  const char *comment, 
+			  const char *bugzilla, 
+			  const char *product,
+			  const char *component, 
+			  const char *email, 
+			  const char *icon,
+			  const char *program,
+			  const char *other_programs)
+{
+	BugzillaApplication *app;
+	GdkPixbuf *pb = NULL;
+	char *icon_copy;
+	GError *error = NULL;
+	char **programv;
+	int i;
+
+	app = g_new0 (BugzillaApplication, 1);
+	
+	app->name        = g_strdup (name);
+	app->comment     = g_strdup (comment);
+	app->bugzilla    = g_strdup (bugzilla);
+	app->product     = g_strdup (product);
+	app->component   = g_strdup (component);
+	app->email       = g_strdup (email);
+
+	if (icon && *icon != G_DIR_SEPARATOR)
+		icon_copy = gnome_program_locate_file (NULL,
+						       GNOME_FILE_DOMAIN_PIXMAP,
+						       icon, TRUE, NULL);
+	else
+		icon_copy = g_strdup (icon);
+
+	if (icon_copy) {
+		pb = gdk_pixbuf_new_from_file (icon_copy, &error);
+		g_free (icon_copy);
+	}
+
+	if (pb) {
+		app->pixbuf = gdk_pixbuf_scale_simple (pb, 20, 20, GDK_INTERP_HYPER);
+		g_object_unref (pb);
+	} else if (error) {
+		g_warning (_("Couldn't load icon for %s: %s"), app->name, error->message);
+		g_error_free (error);
+	}
+	
+	druid_data.applications = g_slist_prepend (druid_data.applications, app);
+
+	if (program) {
+		g_shell_parse_argv (program, &i, &programv, NULL);
+		if (programv[0]) {
+			char *s;
+			s = strrchr (programv[0], G_DIR_SEPARATOR);
+			s = s ? s+1 : programv[0];
+			d(g_print ("adding app: %s\n", s));
+			g_hash_table_insert (druid_data.program_to_application, g_strdup (s), app);
+		}
+		if (programv)
+			g_strfreev (programv);
+	}
+
+	if (other_programs) {
+		programv = g_strsplit (other_programs, ";", -1);
+		for (i=0; programv[i]; i++) {
+			d(g_print ("adding app: %s\n", programv[i]));
+			g_hash_table_insert (druid_data.program_to_application, g_strdup (programv[i]), app);
+		}
+		g_strfreev (programv);
+	}
+}
+
+static const GSList *
+get_i18n_slist (void)
+{
+  GList *langs_glist;
+  static GSList *langs_gslist;
+
+  if (langs_gslist)
+	  return langs_gslist;
+
+  langs_glist = (GList *)gnome_i18n_get_language_list ("LC_MESSAGES");
+  langs_gslist = NULL;
+  while (langs_glist != NULL) {
+    langs_gslist = g_slist_append (langs_gslist, langs_glist->data);
+    langs_glist = langs_glist->next;
+  }
+
+  return langs_gslist;
+}
+
+static void
+load_applets (GnomeIconTheme *git)
+{
+	Bonobo_ServerInfoList *info_list;
+	Bonobo_ServerInfo *info;
+	CORBA_Environment ev;
+	GSList *langs;
+	int i;
+
+	CORBA_exception_init (&ev);
+	info_list = bonobo_activation_query (APPLET_REQUIREMENTS, NULL, &ev);
+	if (BONOBO_EX (&ev)) {
+		g_warning ("Applet list query failed: %s", BONOBO_EX_REPOID (&ev));
+		CORBA_exception_free (&ev);
+		return;
+	}
+	CORBA_exception_free (&ev);
+
+	langs = (GSList *)get_i18n_slist ();
+
+	for (i = 0; i < info_list->_length; i++) {
+		info = info_list->_buffer + i;
+
+		bugzilla_application_new (
+			bonobo_server_info_prop_lookup (info, "name", langs),
+			bonobo_server_info_prop_lookup (info, "description", langs),
+			bonobo_server_info_prop_lookup (info, BA_BUGZILLA_BUGZILLA,  NULL),
+			bonobo_server_info_prop_lookup (info, BA_BUGZILLA_PRODUCT,   NULL),
+			bonobo_server_info_prop_lookup (info, BA_BUGZILLA_COMPONENT, NULL),
+			bonobo_server_info_prop_lookup (info, BA_BUGZILLA_EMAIL,     NULL),
+			bonobo_server_info_prop_lookup (info, "panel:icon", NULL),
+			NULL,
+			bonobo_server_info_prop_lookup (info, BA_BUGZILLA_OTHER_BINARIES, NULL));
+	}
+
+	CORBA_free (info_list);
+}
+
+static gboolean
+visit_cb (const char *rel_path,
+	  GnomeVFSFileInfo *info,
+	  gboolean recursing_will_loop,
+	  gpointer data,
+	  gboolean *recurse)
+{
+	GnomeDesktopItem *ditem;
+	GError *error = NULL;
+	char *full_path, *icon;
+	GnomeIconTheme *git = data;
+	
+	if (info->name[0] != '.'
+	    || (info->name[1] != '.' && info->name[1] != 0)
+	    || info->name[2] != 0) {
+		if (recursing_will_loop) {
+			g_print ("Loop detected\n");
+			return TRUE;
+		}
+		*recurse = TRUE;
+	} else {
+		*recurse = FALSE;
+	}
+
+	full_path = g_strconcat (ALL_APPLICATIONS_URI, rel_path, NULL);
+
+	ditem = gnome_desktop_item_new_from_uri (full_path, 0, &error);
+	if (!ditem) {
+		if (error) {
+			g_warning ("Couldn't load %s: %s", full_path, error->message);
+		}
+		goto visit_cb_out;
+	}
+    
+	if (gnome_desktop_item_get_entry_type (ditem) != GNOME_DESKTOP_ITEM_TYPE_APPLICATION)
+		goto visit_cb_out;
+
+	icon = gnome_desktop_item_get_icon (ditem, git);
+	bugzilla_application_new (
+		gnome_desktop_item_get_localestring (ditem, GNOME_DESKTOP_ITEM_NAME),
+		gnome_desktop_item_get_localestring (ditem, GNOME_DESKTOP_ITEM_COMMENT),
+		gnome_desktop_item_get_string (ditem, BUGZILLA_BUGZILLA),
+		gnome_desktop_item_get_string (ditem, BUGZILLA_PRODUCT),
+		gnome_desktop_item_get_string (ditem, BUGZILLA_COMPONENT),
+		gnome_desktop_item_get_string (ditem, BUGZILLA_EMAIL),
+		icon,
+		gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC),
+		gnome_desktop_item_get_string (ditem, BUGZILLA_OTHER_BINARIES));
+	g_free (icon);
+
+ visit_cb_out:
+	g_free (full_path);
+	if (error)
+		g_error_free (error);
+	if (ditem)
+		gnome_desktop_item_unref (ditem);
+
+	return TRUE;
 }
 
 void
-bugzilla_bts_add_products_to_clist (BugzillaBTS *bts)
+load_applications (void)
 {
-	GtkTreeView *w;
-	GtkListStore *store;
+	GnomeIconTheme *git;
 
-	w = GTK_TREE_VIEW (GET_WIDGET ("product-list"));
+	druid_data.program_to_application = g_hash_table_new (g_str_hash, g_str_equal);
 
-	g_object_get (G_OBJECT (w), "model", &store, NULL);
+	git = gnome_icon_theme_new ();
+	gnome_icon_theme_set_allow_svg (git, FALSE);
+	
+	/* load applications */
+	gnome_vfs_directory_visit (ALL_APPLICATIONS_URI,
+				   GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
+				   GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK,
+				   visit_cb, git);
 
-	gtk_list_store_clear (store);
-	druid_data.product = NULL;
 
-	g_slist_foreach (bts->products, (GFunc)add_product, store);
-	gtk_tree_view_columns_autosize (w);
+	load_applets (git);
+
+	g_object_unref (git);
 }
 
 static void
-add_component (BugzillaComponent *comp, GtkListStore *store)
+add_component (gpointer key, BugzillaComponent *comp, GtkListStore *store)
 {
 	GtkTreeIter iter;
 
@@ -906,6 +1196,71 @@ add_severity (char *s, GtkMenu *m)
 	}
 }
 
+static void
+add_product (gpointer key, BugzillaProduct *p, GtkListStore *store)
+{
+	GtkTreeIter iter;
+
+	gtk_list_store_append (store, &iter);
+	gtk_list_store_set (store, &iter,
+			    PRODUCT_ICON, p->bts->pixbuf,
+			    PRODUCT_NAME, p->name,
+			    PRODUCT_DESC, p->description,
+			    PRODUCT_DATA, p,
+			    -1);
+}
+
+static void
+add_products (gpointer key, BugzillaBTS *bts, GtkListStore *store)
+{
+	g_hash_table_foreach (bts->products, (GHFunc)add_product, store);
+}
+
+static void
+add_application (BugzillaApplication *app, GtkListStore *store)
+{
+	gtk_list_store_append (store, &app->iter);
+	gtk_list_store_set (store, &app->iter,
+			    PRODUCT_ICON, app->pixbuf,
+			    PRODUCT_NAME, app->name,
+			    PRODUCT_DESC, app->comment,
+			    PRODUCT_DATA, app,
+			    -1);
+}
+
+static gboolean
+unselect (gpointer data)
+{
+	gtk_tree_selection_unselect_all (data);
+	return FALSE;
+}
+
+void
+products_list_load (void)
+{
+	BugzillaApplication *app;
+	GtkTreeView *view;
+	GtkListStore *store;
+	GtkTreeSelection *selection;
+	GtkTreeIter *iter = NULL;
+
+	view = GTK_TREE_VIEW (GET_WIDGET ("product-list"));
+	selection = gtk_tree_view_get_selection (view);
+	g_object_get (G_OBJECT (view), "model", &store, NULL);
+	gtk_list_store_clear (store);
+
+	druid_data.product = NULL;
+
+	if (druid_data.show_products) {
+		if (druid_data.download_in_progress)
+			return;
+		g_hash_table_foreach (druid_data.bugzillas, (GHFunc)add_products, store);
+	} else {
+		g_slist_foreach (druid_data.applications, (GFunc)add_application, store);
+	}
+	gtk_tree_view_columns_autosize (view);
+}
+
 void
 bugzilla_product_add_components_to_clist (BugzillaProduct *prod)
 {
@@ -920,7 +1275,7 @@ bugzilla_product_add_components_to_clist (BugzillaProduct *prod)
 	gtk_list_store_clear (store);
 	druid_data.component = NULL;
 
-	g_slist_foreach (prod->components, (GFunc)add_component, store);
+	g_hash_table_foreach (prod->components, (GHFunc)add_component, store);
 
 	gtk_tree_view_columns_autosize (w);
 
@@ -1037,117 +1392,73 @@ format_for_width (const char *s)
 gchar *
 generate_email_text (gboolean include_headers)
 {	
-	char *subject, *product,  *component, *version;
-	char *opsys,   *platform, *severity,  *body, *tmp_body;
-	char *debug_info;
-	char *email, *email1= NULL, *email2;
-	char *gnome_version;
-#if 0
-	char *text_file, *sysinfo;
-#endif
+	GString *email;
+	char *subject, *body, *s, *debug_info, *version, *severity;
 
 	gboolean is_bugzilla = !GTK_TOGGLE_BUTTON (GET_WIDGET ("no-product-toggle"))->active;
 
+	email = g_string_new (NULL);
+
 	subject    = buddy_get_text ("desc-subject");
-	if (is_bugzilla) {
-		product    = druid_data.product->name;
-		component  = druid_data.component->name;
-		version    = buddy_get_text ("the-version-entry");
-	} else {
-		product = component = version = NULL;
-	}
-	opsys      = "Linux";
-	platform   = "Debian";
-	severity   = druid_data.severity ? druid_data.severity : "Normal";
-	/* sysinfo    = generate_sysinfo (); */
-	gnome_version = druid_data.gnome_version
-		? g_strdup_printf ("BugBuddy-GnomeVersion: %s\n", druid_data.gnome_version)
-		: "";
+	version    = buddy_get_text ("the-version-entry");
 
-	tmp_body   = buddy_get_text ("desc-text");		
-	body = format_for_width (tmp_body);
-	g_free (tmp_body);
+	s          = buddy_get_text ("desc-text");
+	body = format_for_width (s);
+	g_free (s);
 
-	tmp_body = buddy_get_text ("gdb-text");
-	debug_info = format_for_width (tmp_body);
-	g_free (tmp_body);
+	s = buddy_get_text ("gdb-text");
+	debug_info = format_for_width (s);
+	g_free (s);
+
+	severity = druid_data.severity ? druid_data.severity : "Normal";
+
+	if (include_headers)
+		g_string_append_printf (email, "Subject: %s\n\n", subject);
 
 	if (!is_bugzilla) {
-		if (include_headers)
-			email1 = g_strdup_printf ("Subject: %s\n\n", subject);
-		email2 = g_strdup_printf (
-			"(This bug report was generated by Bug Buddy " VERSION ")\n"
-			"%s\n"
-			"\n",
-			body);
-	} else if (druid_data.product->bts->submit_type == BUGZILLA_SUBMIT_FREITAG) {
-		if (include_headers)
-			email1 = g_strdup_printf ("Subject: %s\n\n", subject);
-				
-		email2 = g_strdup_printf (
-			"@product = %s\n"
-			"@component = %s\n"
-			"@version = %s\n"
-#if 0
-			"@op_sys = %s\n"
-			"@rep_platform = %s\n"
-#endif
-			"@severity = %s\n"
-			"\n"
-			"%s\n"
-			"\n",
-			product,
-			component,
-			version,
-#if 0
-			opsys,
-			platform,
-#endif
-			severity,
-			body);
+		g_string_append (email, "(This bug report was generated by Bug Buddy " VERSION ")\n");
 	} else if (druid_data.product->bts->submit_type == BUGZILLA_SUBMIT_DEBIAN) {
-		if (include_headers)
-			email1 = g_strdup_printf ("Subject: %s\n\n", subject);
+		/* This is what gnome.org and ximian.com use */
+		g_string_append_printf (email, "Package: %s\n", druid_data.product->name);
+		g_string_append_printf (email, "%s: %s\n", druid_data.product->bts->severity_header, severity);					
+		g_string_append_printf (email, "Version: %s %s\n",
+					druid_data.gnome_platform_version
+					? druid_data.gnome_platform_version
+					: "",
+					version);
+		if (druid_data.gnome_vendor)
+			g_string_append_printf (email, "os_details: %s\n", druid_data.gnome_vendor);
+		g_string_append_printf (email, "Synopsis: %s\n", subject);
+		g_string_append_printf (email, "Bugzilla-Product: %s\n", druid_data.product->name);
+		g_string_append_printf (email, "Bugzilla-Component: %s\n", druid_data.component->name);
+		if (druid_data.gnome_version)
+			g_string_append_printf (email, "BugBuddy-GnomeVersion: %s\n", druid_data.gnome_version);
+		g_string_append (email, "Description:\n");
+	} else if (druid_data.product->bts->submit_type == BUGZILLA_SUBMIT_FREITAG) {
+		/* i don't know of anything that uses this */
+		g_string_append_printf (email, "@product = %s\n", druid_data.product->name);
+		g_string_append_printf (email, "@component = %s\n", druid_data.component->name);
+		g_string_append_printf (email, "@version = %s\n", version);
+#if 0
+		g_string_append_printf (email, "@op_sys = %s\n", opsys);
+		g_string_append_printf (email, "@rep_platform = %s\n", platform);
+#endif
+		g_string_append_printf (email, "@severity = %s\n", severity);
+	}
 
-		email2 = g_strdup_printf (
-			"Package: %s\n"
-			"%s: %s\n"
-			"Version: %s\n"
-			"Synopsis: %s\n"
-			"Bugzilla-Product: %s\n"
-			"Bugzilla-Component: %s\n"
-			"%s"
-			"\n"
-			"Description:\n"
-			"%s\n"
-			"\n",
-			product,
-			druid_data.product->bts->severity_header,
-			severity,
-			version,
-			subject,
-			product,
-			component,
-			gnome_version,
-			body);
-	} else 
-		email2 = g_strdup ("Unkown format.");
-	
-	email = g_strconcat (email1 ? email1 : "", 
-			     email2, 
-			     druid_data.crash_type != CRASH_NONE && debug_info[0]
-			     ? "\nDebugging Information:\n\n"
-			     : NULL,
-			     debug_info, NULL);
+	g_string_append (email, body);
 
-	g_free (email1);
-	g_free (email2);
+	if (druid_data.crash_type != CRASH_NONE && *debug_info)
+		g_string_append_printf (email, "\n\nDebugging Information:\n\n%s\n", debug_info);
+
 	g_free (subject);
 	g_free (version);
 	g_free (body);
 	g_free (debug_info);
-	if (druid_data.gnome_version)
-		g_free (gnome_version);
 
-	return email;
+	s = email->str;
+
+	g_string_free (email, FALSE);
+
+	return s;
 }
