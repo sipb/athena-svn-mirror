@@ -1,10 +1,10 @@
 /*
- * $Id: main.c,v 1.35 1998-08-23 15:28:08 ghudson Exp $
+ * $Id: main.c,v 1.36 1998-09-23 02:59:47 ghudson Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.35 1998-08-23 15:28:08 ghudson Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.36 1998-09-23 02:59:47 ghudson Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -998,6 +998,10 @@ attachandruncmd(argc, argv)
 
 	    execv(path, argv + 3);
 
+	    /* Feed text files to the shell by hand. */
+	    if (errno == ENOEXEC)
+		try_shell_exec(path, argc - 3, argv + 3);
+
 	    fprintf(stderr, "%s: failure to exec %s: %s\n", progname,
 		    argv[2], strerror(errno));
 	    free(path);
@@ -1014,4 +1018,60 @@ attachandruncmd(argc, argv)
         /* Assume attach code must have already given an error. */
         return(status);
     }
+}
+
+/* Try to feed a text file to the shell by hand.  On error, errno will
+ * be the error value from open() or read() or execv(), or ENOEXEC if
+ * the file looks binary, or ENOMEM if we couldn't allocate memory for
+ * an argument list. */
+try_shell_exec(path, argc, argv)
+    char *path;
+    int argc;
+    char **argv;
+{
+    int i, count, fd, err;
+    unsigned char sample[128];
+    char **arg;
+
+    /* First we should check if the file looks binary.  Open the file. */
+    fd = open(path, O_RDONLY, 0);
+    if (fd == -1)
+	return(-1);
+
+    /* Read in a bit of data from the file. */
+    count = read(fd, sample, sizeof(sample));
+    err = errno;
+    close(fd);
+    if (count < 0) {
+	errno = err;
+	return(-1);
+    }
+
+    /* Look for binary characters in the first line. */
+    for (i = 0; i < count; i++) {
+	if (sample[i] == '\n')
+	    break;
+	if (!isspace(sample[i]) && !isprint(sample[i])) {
+	    errno = ENOEXEC;
+	    return(-1);
+	}
+    }
+
+    /* Allocate space for a longer argument list. */
+    arg = malloc((argc + 2) * sizeof(char *));
+    if (!arg) {
+	errno = ENOMEM;
+	return(-1);
+    }
+
+    /* Set up the argument list.  Copy in the argument part of argv
+     * including the terminating NULL.  argv[0] is lost,
+     * unfortunately. */
+    arg[0] = "/bin/sh";
+    arg[1] = path;
+    memcpy(arg + 2, argv + 1, argc * sizeof(char *));
+
+    execv(arg[0], arg);
+    free(arg);
+    return(-1);
 }
