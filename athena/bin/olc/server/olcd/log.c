@@ -8,7 +8,7 @@
  *      MIT Project Athena
  *
  *      Ken Raeburn
- *      MIT Information Systems
+ *      MIT Information Systems / Project Athena
  *
  *      Tom Coppeto
  *      MIT Project Athena
@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.4 1989-11-17 13:58:12 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.5 1989-12-18 10:20:59 raeburn Exp $";
 #endif
 
 
@@ -33,6 +33,8 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <sys/file.h>
 #include <strings.h>		/* Defs. for string functions. */
 #include <syslog.h>             /* syslog do hickies */
+
+#include <varargs.h>
 
 static FILE *status_log = (FILE *)NULL;
 static FILE *error_log = (FILE *)NULL;
@@ -54,9 +56,9 @@ write_line_to_log(log, line)
 	char *line;
 {
 	 
-	fprintf(log, "%s", line);
+	fputs (line, log);
 	if (line[strlen(line) - 1] != '\n')
-		fprintf(log, "\n");
+		fputc('\n', log);
 }
 
 /*
@@ -75,7 +77,7 @@ format_line_to_user_log(log,line)
 	FILE *log;
 	char *line;
 {
-  fprintf(log,"%s",line);
+    fputs (line, log);
 }
 	
 /*
@@ -116,6 +118,23 @@ log_log(knuckle, message, header)
   return(SUCCESS);
 }
 
+
+char * fmt (va_alist) va_dcl {
+    va_list pvar;
+    static char buf[BUFSIZ];
+    FILE strbuf;
+    char *format;
+    va_start (pvar);
+    format = va_arg (pvar, char *);
+    /* copied from sprintf.c, BSD */
+    strbuf._flag = _IOWRT + _IOSTRG;
+    strbuf._ptr = buf;
+    strbuf._cnt = 32767;
+    _doprnt (format, pvar, &strbuf);
+    va_end (pvar);
+    return buf;
+}
+    
 
 
 log_daemon(knuckle,message)
@@ -277,7 +296,7 @@ log_status(message)
   fprintf(status_log, "%s ", time_buf);
   write_line_to_log(status_log, message);
   return;
-#endif TEST
+#endif
 
 #ifdef SYSLOG
 
@@ -287,7 +306,7 @@ log_status(message)
 
   syslog(LOG_INFO,message);
   return;
-#endif SYSLOG
+#endif
 
 #ifndef TEST
 
@@ -311,7 +330,7 @@ log_status(message)
   (void) fflush(status_log);
 
   return;
-#endif not TEST
+#endif
 }
 
 
