@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.5 2000-05-17 20:23:32 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.6 2000-07-09 05:31:26 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -53,6 +53,12 @@ struct package {
   struct package *next;
 };
 
+struct notify_data {
+  FD_t fd;
+  int hashmarks_flag;
+  int hashmarks_printed;
+};
+
 enum act { UPDATE, ERASE, NONE };
 
 static char *progname;
@@ -60,7 +66,8 @@ static char *progname;
 static void read_old_list(struct package **pkgtab, const char *oldlistname);
 static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_installed_versions(struct package **pkgtab);
-static void perform_updates(struct package **pkgtab, int public, int dryrun);
+static void perform_updates(struct package **pkgtab, int public, int dryrun,
+			    int hashmarks);
 static void *notify(const Header h, const rpmCallbackType what,
 		    const unsigned long amount, const unsigned long total,
 		    const void *pkgKey, void *data);
@@ -89,7 +96,7 @@ static void usage(void);
 int main(int argc, char **argv)
 {
   struct package *pkgtab[HASHSIZE];
-  int i, c, public = 0, dryrun = 0;
+  int i, c, public = 0, dryrun = 0, hashmarks = 0;
   const char *oldlistname, *newlistname;
 
   /* Initialize rpmlib. */
@@ -99,10 +106,13 @@ int main(int argc, char **argv)
   rpmSetVerbosity(RPMMESS_NORMAL);
   progname = strrchr(argv[0], '/');
   progname = (progname == NULL) ? argv[0] : progname + 1;
-  while ((c = getopt(argc, argv, "npv")) != EOF)
+  while ((c = getopt(argc, argv, "hnpv")) != EOF)
     {
       switch (c)
 	{
+	case 'h':
+	  hashmarks = 1;
+	  break;
 	case 'n':
 	  dryrun = 1;
 	  break;
@@ -133,7 +143,7 @@ int main(int argc, char **argv)
   read_installed_versions(pkgtab);
 
   /* Walk the table and perform the required updates. */
-  perform_updates(pkgtab, public, dryrun);
+  perform_updates(pkgtab, public, dryrun, hashmarks);
 
   if (!dryrun)
     update_lilo(get_package(pkgtab, "kernel"));
@@ -241,7 +251,8 @@ static void read_installed_versions(struct package **pkgtab)
   rpmdbClose(db);
 }
 
-static void perform_updates(struct package **pkgtab, int public, int dryrun)
+static void perform_updates(struct package **pkgtab, int public, int dryrun,
+			    int hashmarks)
 {
   int r, i, offset;
   struct package *pkg;
@@ -253,7 +264,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun)
   Header h;
   enum act action;
   char *pkgname;
-  FD_t notify_fd;
+  struct notify_data ndata;
 
   if (!dryrun)
     {
@@ -317,7 +328,9 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun)
       exit(1);
     }
 
-  r = rpmRunTransactions(rpmdep, notify, &notify_fd, NULL, &probs, 0,
+  ndata.hashmarks_flag = hashmarks;
+  ndata.hashmarks_printed = 0;
+  r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
 			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
   if (r < 0)
     die("Failed to run transactions\n");
@@ -337,16 +350,39 @@ static void *notify(const Header h, const rpmCallbackType what,
 		    const void *pkgKey, void *data)
 {
   const char *filename = pkgKey;
-  FD_t *fd = (FD_t *) data;
+  struct notify_data *ndata = data;
+  int n;
 
   switch (what)
     {
     case RPMCALLBACK_INST_OPEN_FILE:
-      *fd = fdOpen(filename, O_RDONLY, 0);
-      return *fd;
+      ndata->fd = fdOpen(filename, O_RDONLY, 0);
+      return ndata->fd;
 
     case RPMCALLBACK_INST_CLOSE_FILE:
-      fdClose(*fd);
+      fdClose(ndata->fd);
+      return NULL;
+
+    case RPMCALLBACK_INST_START:
+      if (ndata->hashmarks_flag)
+	{
+	  ndata->hashmarks_printed = 0;
+	  printf("%-28s", headerSprintf(h, "%{NAME}", rpmTagTable,
+					rpmHeaderFormats, NULL));
+	  fflush(stdout);
+	}
+      return NULL;
+
+    case RPMCALLBACK_INST_PROGRESS:
+      if (ndata->hashmarks_flag)
+	{
+	  n = (amount == total) ? 50 : 50.0 * amount / total;
+	  for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
+	    putchar('#');
+	  fflush(stdout);
+	  if (amount == total)
+	    putchar('\n');
+	}
       return NULL;
 
     default:
