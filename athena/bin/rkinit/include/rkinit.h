@@ -1,12 +1,12 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.1 1989-11-12 19:26:17 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.2 1989-11-13 14:45:27 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_h = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.1 1989-11-12 19:26:17 qjb Exp $";
+static char *rcsid_rkinit_h = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit.h,v 1.2 1989-11-13 14:45:27 qjb Exp $";
 #endif lint || SABER
 
 #include <krb.h>
@@ -24,3 +24,7 @@ typedef struct {
 } rkinit_info;
 
 #define RKINIT_SUCCESS 0
+
+/* Declaration of routines */
+extern int rkinit();
+extern char *rkinit_errmsg();
