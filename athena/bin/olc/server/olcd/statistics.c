@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.2 1990-02-06 03:52:50 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.3 1990-02-13 17:17:00 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -42,11 +42,18 @@ dump_request_stats(file)
 {
   FILE *fp;
   int i, j, k;
+  long current_time;
+  struct tm *time_info;
 
   fp = fopen(file,"a");
-  
+
+  time(&current_time);
+  fprintf(fp, "Daemon started at:  %s,\n",
+	  format_time(localtime(&start_time)));
+  fprintf(fp, "  stats dumped at:  %s.\n",
+	  format_time(localtime(&current_time)));
   fprintf(fp, "%d requests, processed in %d seconds.\n",
-	  request_count, time(0) - start_time);
+	  request_count, current_time - start_time);
 
   for (i = 0; Proc_List[i].proc_code != UNKNOWN_REQUEST; i++)
     {
@@ -57,7 +64,7 @@ dump_request_stats(file)
       fprintf(fp, "%d\n", request_counts[i]);
     }
 
-  fprintf(fp, "-------------------------\n");
+  fprintf(fp, "---------------------------\n");
   fclose(fp);
 }
 
