@@ -32,6 +32,7 @@ zephyr-clt      2103/udp                        # Zephyr serv-hm connection
 zephyr-hm       2104/udp                        # Zephyr hostmanager
 
 write		811/tcp 			# Athena remote write service
+page		1234/tcp			# NOC pager
 andrewhelp	2016/tcp			# Andrew help
 discuss		2100/tcp			# Networked conferencing.
 globalmessage	2106/udp			# Global message system
@@ -74,6 +75,10 @@ afserror		7006/udp	# error interpretation service
 afsnanny		7007/udp	# basic overseer process
 afsupdate		7008/udp	# server-to-server updater
 afsrmtsys		7009/udp	# remote cache manager service
+
+# Used by mitdir
+csnet-cs	105/tcp
+csnet-fi	106/tcp
 
 #
 # End of Athena additions
