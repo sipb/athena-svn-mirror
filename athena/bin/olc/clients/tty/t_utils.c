@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.50 1999-06-28 22:52:19 ghudson Exp $
+ *	$Id: t_utils.c,v 1.51 2002-06-29 19:02:16 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.50 1999-06-28 22:52:19 ghudson Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.51 2002-06-29 19:02:16 zacheiss Exp $";
 #endif
 #endif
 
@@ -544,6 +544,7 @@ If the error persists, seek help.\n", client_service_name());
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Cannot access your Kerberos ticket file.\n");
       printf("Try:              setenv   KRBTKFILE  /tmp/random\n");
+      printf("                  setenv   KRB5CCNAME /tmp/krb5cc_random\n");
       printf("                  renew\n");
       if(client_is_user_client()) {
 	printf("%s",kmessage);
