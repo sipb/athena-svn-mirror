@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.17 1994-12-05 05:44:19 cfields Exp $
+# $Id: add.csh,v 1.18 1994-12-05 06:54:32 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -16,18 +16,15 @@
 #		  etc.)
 #	-a	pass further options to attach
 #
-# fix bugs section of attach manpage
 
 # alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/add'
 
-# MANPATH search too
+set add_vars=( add_vars add_usage add_verbose add_front add_warn add_env \
+               add_opts add_attach add_dirs add_bin add_bindir \
+               add_man add_mandir add_print add_path add_new add_oldverbose \
+               add_debug add_arg add_i )
 
-set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
-              add_opts add_attach add_dirs add_bin add_bindir add_flags \
-              add_man add_mandir add_print add_path add_new add_oldverbose \
-              add_debug add_arg add_i)
-
-set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
+set add_usage = "Usage: add [-v] [-v0] [-d] [-n] [-f] [-p] [-w] [-e] [-a attachflags]                   [lockername] [lockername] ..."
 
 #
 # Parse options
