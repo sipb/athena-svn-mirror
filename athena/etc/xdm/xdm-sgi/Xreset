@@ -6,3 +6,6 @@
 # before the display is closed
 #
 /etc/athena/nanny -xdown
+
+chown root /dev/audio /dev/hdsp/* /dev/video /dev/vid /dev/dmrb
+chmod  600 /dev/audio /dev/hdsp/* /dev/video /dev/vid /dev/dmrb
