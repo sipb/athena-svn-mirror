@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)common.c	5.2 (Berkeley) 5/6/86";
-#endif not lint
+#endif /* not lint */
 
 /*
  * Routines and data common to all the line printer functions.
@@ -19,11 +19,6 @@ static char sccsid[] = "@(#)common.c	5.2 (Berkeley) 5/6/86";
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
-#ifdef SOLARIS
-#include "dirent.h"
-#else
-#include <dirent.h>
-#endif
 #include <string.h>
 
 
@@ -88,17 +83,15 @@ char	*from = host;	/* client's machine name */
 #ifdef HESIOD
 char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 #endif
-#if defined(POSIX) && !defined(ultrix) && !defined(_AIX)
+
+#ifdef SOLARIS
 /*
  * The DIRSIZ macro is the minimum record length which will hold the directory
- * entry.  This requires the amount of space in struct dirent without the
- * d_name field, plus enough space for the name and a terminating nul byte
- * (dp->d_namlen + 1), rounded up to a 4 byte boundary.
+ * entry. sizeof(dirent) includes a byte for the null termination, so 1 need
+ * not be added to the strlen().
  */
 #undef DIRSIZ
-#define DIRSIZ(dp)							\
-	((sizeof(struct dirent) - sizeof(dp)->d_name) +			\
-	    ((MAXNAMELEN+1 + 1 + 3) &~ 3))
+#define DIRSIZ(dp) ((sizeof (struct dirent)) + strlen(dp->d_name))
 
 int
 scandir(dirname, namelist, select, dcomp)
@@ -139,7 +132,7 @@ scandir(dirname, namelist, select, dcomp)
 		p->d_ino = d->d_ino;
 		p->d_reclen = d->d_reclen;
 /*		p->d_namlen = d->d_namlen; */
-		memcpy(p->d_name, d->d_name,MAXNAMELEN+1 );
+		memcpy(p->d_name, d->d_name, strlen(d->d_name)+1 );
 		/*
 		 * Check to make sure the array has space left and
 		 * realloc the maximum size.
@@ -198,7 +191,8 @@ flock(int fd, int operation)
    lock.l_whence = SEEK_SET;
    return fcntl(fd, operation & LOCK_NB? F_SETLK: F_SETLKW, &lock);
 }
-#endif /* POSIX !ultrix !AIX */
+#endif /* SOLARIS */
+
 #if defined(POSIX) && !defined(ultrix) 
 #include <signal.h>
 typedef void    Sigfunc(int);   /* for signal handlers */
@@ -444,4 +438,4 @@ char *principal, *instance, *realm, *out_name;
 		}
 	}
 }
-#endif KERBEROS
+#endif /* KERBEROS */
