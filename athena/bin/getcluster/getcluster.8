@@ -1,62 +1,97 @@
-.TH GETCLUSTER 8 "20 April 1987"
+.TH GETCLUSTER 8 "3 July 1997"
 .SH NAME
 getcluster \- retrieve service cluster info from Hesiod as environment vars
 .SH SYNOPSIS
-getcluster [-b] [-d] hostname version
-
-# C shell example
-.br
-getcluster `hostname` 5.3 > file; source file
-
-# Bourne shell example
-.br
-getcluster -b `hostname` 5.3 > file; . file
-
+.B getcluster
+[
+.B \-b
+] [
+.B \-d
+] hostname version
 .PP
 .SH DESCRIPTION
 .I Getcluster
 queries the Hesiod database for service cluster information associated
 with the workstation on which it is run.  It writes a set of environment
 variable assignments on its standard output in a format acceptable
-to the C shell, or, if the -b flag is present, in Bourne shell syntax.
+to the C shell, or, if the
+.B \-b
+flag is present, in Bourne shell syntax.
 .I Getcluster
 returns an exit status of 1 if any errors were encountered.
-
-In some cases there may be several Hesiod variable definitions for the
-same variable, all or all but one of which is tagged with a distinct
-version number in the third field.  In this case, if the environment
-variable AUTOUPDATE does not have the value "true",
+.PP
+A Hesiod cluster record contains between two and four fields: a
+variable name, a value, an optional version number, and an optional
+list of flags.  The version number is a dotted pair giving the major
+and minor numbers of the Athena release to which the variable
+definition applies.  Currently, the only defined flag is 't',
+indicating that the Athena release specified by the version is in
+testing.
+.PP
 .I Getcluster
-takes the value matching the major and minor number of the version
-number passed on the command line.  If the environment variable
-AUTOUPDATE has the value "true",
+may discard a Hesiod cluster record if it specifies a version which is
+higher than the current workstation version (as given by the
+.I version
+argument on the command line).  A record with a new version is
+rejected if any of the following are true:
+.TP 3
+1.
+The environment variable
+.B AUTOUPDATE
+is not defined or has a value other than "true".
+.TP 3
+2.
+The record specifies the 't' flag.
+.TP 3
+3.
+The environment variable
+.B UPDATE_TIME
+is not defined or specifies a Unix time value greater than the current
+time.
+.PP
+After discarding records for the above reasons,
+.I getcluster
+outputs variable definitions for each of the variables mentioned in
+the remaining records.  For each variable,
+.I getcluster
+selects the value given in the record with the highest version number,
+or uses a record with no version number if no records with version
+numbers are present.
+.PP
 .I Getcluster
-takes the value with the higher version number tag, discarding any
-entries marked as testing whose version numbers do not match the major
-and minor number of the command line version.  Entries are marked as
-testing by a fourth field containing the letter t.  The idea is that
-the maintainer of an auto-update machine must update manually to
-testing releases, but the machine will update automatically to
-production releases.
-
-If any cluster entries were discarded because they had versions higher
-than the current workstation version (either because AUTOUPDATE was
-not set or because they were marked with the t flag),
-.I Getcluster
-will output a variable definition for NEW_TESTING_RELEASE,
-NEW_PRODUCTION_RELEASE, or both, giving the highest discarded version
-with the t flag set and without the t flag set, respectively.  This
-allows
-.I reactivate
-to display a console message indicating the presence of a new testing
-or production release (or, in some cases, both).
-
-If the -d flag is present,
-.I Getcluster
+may also output three special variable definitions:
+.IP NEW_TESTING_RELEASE
+If any records were discarded because they contained the 't' flag and
+specified versions greater than the current workstation version,
+.B NEW_TESTING_RELEASE
+is set to the highest version number given in those records.
+.IP NEW_PRODUCTION_RELEASE
+If any records were discarded because they specified versions greater
+than the current workstation version and the
+.B AUTOUPDATE
+environment variable was not "true,"
+.B NEW_PRODUCTION_RELEASE
+is set to the highest version number given in those records.
+.IP UPDATE_TIME
+If any records specified higher version numbers than the current
+workstation version and were not discarded for the first two reasons,
+.B UPDATE_TIME
+is set to a time at which the workstation should accept the new
+values.  The value is taken from the current value in the environment
+if it is present; otherwise a random Unix time value between the
+current time and four hours in the future is chosen.  The random
+number generator is seeded with the IP address given in the
+.B ADDR
+environment variable, or with a fixed value if none is specified.
+.PP
+If the
+.B \-d
+flag is present,
+.I getcluster
 will ignore the hostname argument and instead read lines from standard
 input, treating each line as if it were an entry in the Hesiod
 database for the host's cluster information.
-
+.PP
 .I Getcluster
 is usually invoked from
 .I save_cluster_info (8),
@@ -68,12 +103,22 @@ to be accessed by the C shell in a user's .login file and the Bourne
 shell in a user's .profile, respectively.  It may also be invoked
 directly by any user.
 .PP
-Getcluster uses the Hesiodnametypes "clustername" and "cluster".
+Getcluster uses the Hesiod types "clustername" and "cluster".
+.SH EXAMPLES
+# C shell example
+.br
+getcluster `hostname` 5.3 > file; source file
+.PP
+# Bourne shell example
+.br
+getcluster -b `hostname` 5.3 > file; . file
 .SH "SEE ALSO"
 `Hesiod - Project Athena Technical Plan -- Name Service', save_cluster_info(8)
 .SH AUTHOR
 Steve Dyer, IBM/Project Athena
 .br
-Copyright 1987, Massachusetts Institute of Technology
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1987, 1997, Massachusetts Institute of Technology
 .br
 .SH BUGS
