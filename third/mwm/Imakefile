@@ -1,0 +1,92 @@
+XCOMM 
+XCOMM (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC. 
+XCOMM ALL RIGHTS RESERVED 
+XCOMM 
+XCOMM 
+XCOMM Motif Release 1.2.1
+XCOMM 
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1997-03-25 09:12:15 $
+
+DEFINES = AutoDefines MwmDefines
+INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) AutoIncludes
+DEPLIBS1 = XmClientDepLibs
+LOCAL_LIBRARIES = $(AUTOUTILLIB) XmClientLibs 
+
+OBJS1=	WmCDecor.o\
+	WmColormap.o\
+	WmCDInfo.o\
+	WmCEvent.o\
+	WmCPlace.o\
+	WmError.o\
+	WmEvent.o\
+	WmFeedback.o\
+	WmFunction.o\
+	WmGraphics.o\
+	WmIconBox.o\
+	WmIDecor.o\
+	WmImage.o\
+	WmInitWs.o\
+	WmIPlace.o\
+	WmKeyFocus.o\
+	WmMain.o\
+	WmManage.o\
+	WmMenu.o\
+	WmProperty.o\
+	WmProtocol.o\
+	WmResCvt.o\
+	WmResource.o\
+	WmResParse.o\
+	WmSignal.o\
+	WmWinConf.o\
+	WmWinInfo.o\
+	WmWinList.o\
+	WmWinState.o\
+	version.o
+
+
+SRCS1=	WmCDecor.c\
+	WmColormap.c\
+	WmCDInfo.c\
+	WmCEvent.c\
+	WmCPlace.c\
+	WmError.c\
+	WmEvent.c\
+	WmFeedback.c\
+	WmFunction.c\
+	WmGraphics.c\
+	WmIconBox.c\
+	WmIDecor.c\
+	WmImage.c\
+	WmInitWs.c\
+	WmIPlace.c\
+	WmKeyFocus.c\
+	WmMain.c\
+	WmManage.c\
+	WmMenu.c\
+	WmProperty.c\
+	WmProtocol.c\
+	WmResCvt.c\
+	WmResource.c\
+	WmResParse.c\
+	WmSignal.c\
+	WmWinConf.c\
+	WmWinInfo.c\
+	WmWinList.c\
+	WmWinState.c\
+	version.c
+
+
+PROGRAMS=mwm
+
+NormalLibraryObjectRule()
+
+MComplexProgramTarget_1(mwm,$(LOCAL_LIBRARIES),NullParameter)
+SpecialObjectRule(WmResParse.o,$(ICONFIGFILES),-DLIBDIR=\"$(LIBDIR)\")
+SpecialObjectRule(WmResource.o,$(ICONFIGFILES),-DBITMAPDIR=\"$(INCDIR)/bitmaps/\")
+
+InstallNonExecFile(system.mwmrc,$(LIBDIR))
+InstallAppDefaults(Mwm)
+
+#ifdef UseVista
+VistaMapRule(mwm.M,$(PROGRAMS))
+#endif
