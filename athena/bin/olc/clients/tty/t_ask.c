@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.7 1990-01-17 02:38:14 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.8 1990-02-14 15:16:48 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -38,7 +38,6 @@ t_ask(Request,topic)
   int status;
   char file[NAME_SIZE];
   struct stat statbuf;
-  char buf[BUF_SIZE];
 
   set_option(Request->options,VERIFY);
   status = OAsk(Request,topic,NULL);
@@ -89,15 +88,9 @@ t_ask(Request,topic)
       break;
 
     case HAS_QUESTION:
-      printf("Your current instance is busy, would you like to create\n");
-      get_prompted_input("another instance to ask your question? ",buf);
-      if(string_equiv(buf,"yes",1))
-	{
-	  set_option(Request->options, SPLIT_OPT);
-	  t_ask(Request,topic);
-	}
-      else
-	status = NO_ACTION;
+      printf("Your current instance is busy, creating another one for you.\n");
+      set_option(Request->options, SPLIT_OPT);
+      t_ask(Request,topic);
       break;
       
     case ALREADY_SIGNED_ON:
