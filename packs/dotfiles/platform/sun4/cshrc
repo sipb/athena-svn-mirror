@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.18 1996-06-10 03:16:16 ghudson Exp $
+# $Id: cshrc,v 1.19 1996-06-11 06:54:33 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -171,7 +171,7 @@ alias mail 'Mail'
 alias Mail 'more /usr/prototype_user/README.mail ; echo \!* > /dev/null'
 
 #   aliases dealing with x window system
-alias xresize 'set noglob; eval `resize` || unset noglob'	# xresize
+alias xresize 'set noglob; eval `resize -c` || unset noglob'
 
 if ($?XSESSION) then
     if ("$XSESSION" == "") then
