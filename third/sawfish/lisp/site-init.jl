@@ -1,14 +1,17 @@
-;; $Id: site-init.jl,v 1.1 2000-12-27 22:35:45 ghudson Exp $
+;; $Id: site-init.jl,v 1.1 2001-01-03 03:40:22 ghudson Exp $
 ;; Site initialization for Athena
 
-;; FOCUS MODE
+;; Load gnome stuff even if we start before any gnome properties are set.
+(require 'sawfish.wm.state.gnome)
+
+;; Focus mode customizations
 (require 'auto-raise)
 (setq focus-click-through nil)
 (setq focus-mode 'click)
 (setq raise-windows-on-focus t)
 (setq raise-window-timeout 0)
 
-;; KEY BINDINGS
+;; Key bindings
 (unbind-keys border-keymap "Button3-Off")
 (bind-keys border-keymap "Button3-Click" 'popup-window-menu)
 (bind-keys window-keymap "Button1-Click1" 'raise-window-and-pass-through-click
@@ -18,14 +21,14 @@
 (bind-keys title-keymap "Button3-Click1" 'popup-window-menu)
 (unbind-keys global-keymap "C-Left" "C-Right")
 
-;; FRAME STYLE
+;; Special treatment for zwgc windows
+(require 'sawfish.wm.ext.match-window)
 (add-window-matcher 'WM_NAME "zwgc" '(never-focus . t)
 				    '(skip-tasklist . t)
 				    '(sticky-viewport . t)
-				    '(frame-type . border-only)
-				    '(depth . 1))
+				    '(frame-type . border-only))
 
-;; MENUS
+;; Menu customizations
 (require 'menus)
 (require 'old-window-menu)
 (setq menu-program-stays-running t)
@@ -48,7 +51,20 @@
 	 ("None" set-frame:unframed))
 	("Frame style" . frame-style-menu)))
 
-;; WINDOW HISTORY
+(setq root-menu
+      '(("_New terminal window" (system "gnome-terminal &"))
+	("_Windows" . window-menu)
+	("Work_spaces" . workspace-menu)
+	("_Customize" . custom-menu)
+	("_Help"
+	 ("_Athena help" (system "exec help &"))
+	 ("Sawfish _manual" help:show-programmer-manual)
+	 ("About Sawfish..." help:about))
+	()
+	("Restart" restart)
+	("Quit" quit)))
+
+;; Window history
 (require 'window-history)
 (setq window-history-auto-save-position nil)
 (setq window-history-auto-save-dimensions nil)
