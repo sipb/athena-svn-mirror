@@ -4,14 +4,14 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/xzwrite/Imakefile,v $
-/**/#	$Author: raeburn $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/xzwrite/Imakefile,v 1.3 1990-12-01 17:43:59 raeburn Exp $
+/**/#	$Author: jfc $
+/**/#	$Id: Imakefile,v 1.4 1991-09-02 18:58:26 jfc Exp $
 /**/#
 
-LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB} $(DYN_LIB) \
+LIBS= ${ZEPHYR_LIB} ${KRB_LIB} ${DES_LIB} $(DYN_LIB) ${COMERR_LIB} \
 	-lXaw -lXmu -lXt -lXext -lX11
-LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} \
-	${DES_LINTLIB} $(DYN_LINTLIB)
+LINTLIBS= ${ZEPHYR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB} \
+	$(DYN_LINTLIB) ${COMERR_LINTLIB}
 
 SRCS	= interface.c resource.c destlist.c util.c bfgets.c \
 	gethomedir.c dest_window.c xzwrite.c edit_window.c zephyr.c\

@@ -4,12 +4,12 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/Imakefile,v $
-/**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/Imakefile,v 1.2 1989-03-23 11:19:10 jtkohl Exp $
+/**/#	$Author: jfc $
+/**/#	$Id: Imakefile,v 1.3 1991-09-02 19:04:09 jfc Exp $
 /**/#
 
-LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
-LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
+LIBS= ${ZEPHYR_LIB} ${KRB_LIB} ${DES_LIB} ${COMERR_LIB}
+LINTLIBS= ${ZEPHYR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB} ${COMERR_LINTLIB}
 SRCS = znol.c
 OBJS = znol.o
 
