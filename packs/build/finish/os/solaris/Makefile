@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1999-03-29 22:13:09 ghudson Exp $
+# $Id: Makefile,v 1.6 1999-03-30 16:09:00 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -21,7 +21,7 @@ install:
 			;; \
 		*) \
 			u=$$f.unstripped; \
-			case "`file $$f`" in \
+			case "`/usr/bin/file -h $$f`" in \
 			*"not stripped") \
 				rm -f $$u; \
 				cp -p $$f $$u || exit 1; \
