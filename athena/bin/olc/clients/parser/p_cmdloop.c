@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.13 1991-02-24 11:37:20 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.14 1991-04-02 13:58:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.13 1991-02-24 11:37:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.14 1991-04-02 13:58:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -155,12 +155,14 @@ command_loop(Command_Table, prompt)
  *	function with the given argument list, and return SUCCESS.
  */
 
+ERRCODE
 do_command(Command_Table, arguments)
      COMMAND Command_Table[];
      char *arguments[];
 {
   int ind;		    /* Index in the command table. */
-	
+  int status;
+
 #ifdef CSH
   if(*arguments[0] == '\\') /* want to escape olc command */
     return(-1);
@@ -184,8 +186,8 @@ do_command(Command_Table, arguments)
       }
     else 
       {
-	(*(Command_Table[ind].command_function))(arguments);
-	return(SUCCESS);
+	status = (*(Command_Table[ind].command_function))(arguments);
+	return(status);
       }
 }
 
