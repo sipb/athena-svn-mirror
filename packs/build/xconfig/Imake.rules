@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM Imake rules for building libraries, programs, scripts, and data files
-XCOMM rules:  $XConsortium: Imake.rules,v 1.123 91/09/16 20:12:16 rws Exp $
+XCOMM rules:  $XConsortium: Imake.rules,v 1.124 91/11/17 16:57:39 rws Exp $
 
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
@@ -917,6 +917,7 @@ Concat(lib,libname.a): deplist						@@\
 all:: DONE								@@\
 									@@\
 DONE: objlist								@@\
+	$(RM) $@							@@\
 	touch $@							@@\
 									@@\
 clean::									@@\
