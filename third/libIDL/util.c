@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.c,v 1.1.1.2 2004-09-22 23:38:50 ghudson Exp $
+    $Id: util.c,v 1.1.1.3 2005-03-10 21:56:55 ghudson Exp $
 
 ***************************************************************************/
 #include <assert.h>
@@ -3668,7 +3668,7 @@ IDL_tree_is_recursive (IDL_tree tree, gpointer dummy)
 	info.ident_list = NULL;
 	info.recursive  = FALSE;
 
-	IDL_tree_walk2 (tree, 0, IDL_WalkF_TypespecOnly, 
+	IDL_tree_walk2 (tree, NULL, IDL_WalkF_TypespecOnly, 
 			IDL_tree_is_recursive_walker_pre, 
 			IDL_tree_is_recursive_walker_post, 
 			&info);
