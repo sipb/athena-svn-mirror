@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-# $Id: sys_rvd,v 1.1 1999-06-16 14:41:56 ghudson Exp $
+# $Id: sys_rvd,v 1.1.2.1 1999-06-18 22:02:33 ghudson Exp $
 	/core::::
 	/etc:::
 		aliases

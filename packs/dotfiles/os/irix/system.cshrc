@@ -1,4 +1,4 @@
-# $Id: system.cshrc,v 1.1 1999-06-16 14:46:25 rbasch Exp $
+# $Id: system.cshrc,v 1.1.2.1 1999-06-18 22:00:56 ghudson Exp $
 #
 # /etc/cshrc - System-specific default settings for all csh-like login
 # shells.

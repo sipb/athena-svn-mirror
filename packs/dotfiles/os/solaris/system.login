@@ -1,4 +1,4 @@
-# $Id: system.login,v 1.1 1999-06-16 14:54:46 rbasch Exp $
+# $Id: system.login,v 1.1.2.1 1999-06-18 22:02:27 ghudson Exp $
 #
 # /etc/.login - System-specific default settings for all csh-like login
 # shells.

@@ -1,4 +1,4 @@
-# $Id: system.profile,v 1.1 1999-06-16 14:54:46 rbasch Exp $
+# $Id: system.profile,v 1.1.2.1 1999-06-18 22:02:28 ghudson Exp $
 #
 # /etc/profile - System-specific default settings for all sh-like login
 # shells.
