@@ -21,7 +21,7 @@
  * resulting in security problems.
  */
 
-static char rcsid[] = "$Id: saferm.c,v 1.2 1998-05-29 17:45:26 tb Exp $";
+static char rcsid[] = "$Id: saferm.c,v 1.3 1998-06-17 17:53:11 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -309,9 +309,38 @@ int safe_rm(char *path, int zero_file)
   return status;
 }
 
+/* Safely remove a directory. -1 is returned for any level of failure. */
+int safe_rmdir(char *path, int quietflag)
+{
+  char *name;
+
+  name = safe_cd(path);
+  if (name == NULL)
+    return -1;
+
+  if (rmdir(name) == -1)
+    {
+      /* System V systems return EEXIST when a directory isn't empty
+       * but hack the rmdir command to display a better error message.
+       * Well, we can do that too.
+       */
+      if (errno == EEXIST)
+	errno = ENOTEMPTY;
+
+      if (!quietflag || errno != ENOTEMPTY)
+	{
+	  fprintf(stderr, "%s: error removing directory %s: %s\n",
+		  program_name, path, strerror(errno));
+	}
+      return -1;
+    }
+
+  return 0;
+}
+
 int main(int argc, char **argv)
 {
-  int c, zflag = 0, errflag = 0;
+  int c, zeroflag = 0, dirflag = 0, quietflag = 0, errflag = 0;
   int dir, status = 0;
 
   /* Set up our program name. */
@@ -326,12 +355,18 @@ int main(int argc, char **argv)
   else
     program_name = "saferm";
 
-  while ((c = getopt(argc, argv, "z")) != EOF)
+  while ((c = getopt(argc, argv, "dqz")) != EOF)
     {
       switch(c)
 	{
+	case 'd':
+	  dirflag = 1;
+	  break;
+	case 'q':
+	  quietflag = 1;
+	  break;
 	case 'z':
-	  zflag = 1;
+	  zeroflag = 1;
 	  break;
 	case '?':
 	  errflag = 1;
@@ -339,9 +374,9 @@ int main(int argc, char **argv)
 	}
     }
 
-  if (errflag || optind == argc)
+  if (errflag || optind == argc || (dirflag && zeroflag))
     {
-      fprintf(stderr, "usage: %s [-z] filename [filename ...]\n",
+      fprintf(stderr, "usage: %s [-q] [-d|-z] filename [filename ...]\n",
 	      program_name);
       exit(1);
     }
@@ -372,7 +407,9 @@ int main(int argc, char **argv)
 	    }
 	}
 
-      if (safe_rm(argv[optind], zflag) == -1)
+      if (dirflag && safe_rmdir(argv[optind], quietflag) == -1)
+	status = 1;
+      else if (!dirflag && safe_rm(argv[optind], zeroflag) == -1)
 	status = 1;
 
       optind++;

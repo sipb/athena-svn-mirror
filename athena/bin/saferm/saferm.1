@@ -1,4 +1,4 @@
-.\" $Id: saferm.8,v 1.1 1998-04-02 03:27:32 cfields Exp $
+.\" $Id: saferm.1,v 1.1 1998-06-17 17:53:10 ghudson Exp $
 .\"
 .\" Copyright 1998 by the Massachusetts Institute of Technology.
 .\"
@@ -20,6 +20,10 @@ saferm \- remove files without race conditions
 .SH SYNOPSIS
 .B saferm
 [
+.B \-q
+] [
+.B \-d
+|
 .B \-z
 ]
 .B filename
@@ -30,12 +34,17 @@ saferm \- remove files without race conditions
 .SH DESCRIPTION
 .I saferm
 is a file removal program which can be used running as root to safely
-remove and optionally zero files from world-writable directories, such
-as /tmp. It will refuse to change directories through symbolic links,
-and it will not zero files that have more than one hard link. Files
-are zeroed only when the
+remove and optionally zero files or directories from world-writable
+directories, such as /tmp.  It will refuse to change directories
+through symbolic links, and it will not zero files that have more than
+one hard link.  Files are zeroed only when the
 .B \-z
-option is specified.
+option is specified.  If a directory is being removed, the
+.B \-d
+flag must be specified.  The
+.B \-q
+flag suppresses the error message for the case when a directory
+cannot be removed because it is not empty.
 
 .SH AUTHOR
 Craig Fields, MIT Information Systems
