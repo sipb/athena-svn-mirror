@@ -25,7 +25,7 @@ linit ()
 	register struct dent *dp;
 
 	if (inited)
-		return;
+		return(-1);
 
 	if ((hashfd = open (hashname, 0)) < 0) {
 		fprintf (stderr, "can't open %s\r\n", hashname);

@@ -293,13 +293,13 @@ char *filename;
 	if ((infile = fopen (filename, "r")) == NULL) {
 		fprintf (stderr, "Can't open %s\r\n", filename);
 		sleep (2);
-		return;
+		return(-1);
 	}
 
 	if (access (filename, 2) < 0) {
 		fprintf (stderr, "Can't write to %s\r\n", filename);
 		sleep (2);
-		return;
+		return(-1);
 	}
 
 	(void) strcpy(tempfile, TEMPNAME);
@@ -307,7 +307,7 @@ char *filename;
 	if ((outfile = fopen (tempfile, "w")) == NULL) {
 		fprintf (stderr, "Can't create %s\r\n", tempfile);
 		sleep (2);
-		return;
+		return(-1);
 	}
 
 	quit = 0;
@@ -323,7 +323,7 @@ char *filename;
 	if ((infile = fopen (tempfile, "r")) == NULL) {
 		fprintf (stderr, "temporary file disappeared (%s)\r\n", tempfile);	
 		sleep (2);
-		return;
+		return(-1);
 	}
 
 	(void) sprintf(bakfile, "%s.bak", filename);
@@ -334,7 +334,7 @@ char *filename;
 	if ((outfile = fopen (filename, "w")) == NULL) {
 		fprintf (stderr, "can't create %s\r\n", filename);
 		sleep (2);
-		return;
+		return(-1);
 	}
 
 	while ((c = getc (infile)) != EOF)
