@@ -1,6 +1,7 @@
 This document describes guidelines for designing the build system for
-a program or library in the Athena source tree (code we maintain, not
-code we get from third parties).
+code we maintain in the Athena source tree.  A discussion of build
+systems for code we get from third parties is in the file
+"third-party" in this directory.
 
 First, here are some desirable properties of a build system for
 programs or libraries.
